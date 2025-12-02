@@ -2,6 +2,7 @@
 use std::env;
 use std::panic;
 use std::path::Path;
+use std::path::PathBuf;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
@@ -19,9 +20,7 @@ use tauri::{Manager, RunEvent};
 use tauri_plugin_shell::process::CommandChild;
 use util::get_log_dir;
 
-use crate::util::{
-	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
-};
+use crate::util::{show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION};
 
 mod presence;
 mod state;
@@ -94,14 +93,8 @@ fn main() -> Result<()> {
 	// Spawn server process
 	let exit_flag = Arc::new(AtomicBool::new(false));
 	let backend = Arc::new(Mutex::new(Option::<CommandChild>::None));
-
-	let server_info = execute_server(cli)?;
-	let build_result = setup_tauri(
-		tauri_context,
-		server_info,
-		exit_flag.clone(),
-		backend.clone(),
-	);
+	let build_result =
+		setup_tauri(cli, tauri_context, exit_flag.clone(), backend.clone());
 
 	tauri_build_result(build_result, exit_flag, backend);
 
@@ -164,38 +157,52 @@ fn check_environment_variables() {
 	}
 }
 
-fn execute_server(
-	cli: Cli,
-) -> Result<Option<(std::ffi::OsString, std::path::PathBuf)>> {
-	use const_format::formatcp;
-	if let Some(p) = get_launch_path(cli) {
-		log::info!("Server found on path: {}", p.to_str().unwrap());
+fn find_java_bin<P: AsRef<Path>>(shared_dir: P) -> Option<PathBuf> {
+	let shared_dir = shared_dir.as_ref();
+	// Check if any Java already installed is compatible
+	let jre = shared_dir.join("jre/bin").join(JAVA_BIN);
+	let java_bin = jre
+		.exists()
+		.then(|| jre.into_os_string())
+		.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()))?;
+	Some(PathBuf::from(java_bin))
+}
 
-		// Check if any Java already installed is compatible
-		let jre = p.join("jre/bin").join(JAVA_BIN);
-		let java_bin = jre
-			.exists()
-			.then(|| jre.into_os_string())
-			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
-		let Some(java_bin) = java_bin else {
-			show_error(formatcp!(
-                "Couldn't find a compatible Java version, please download Java {} or higher",
-                MINIMUM_JAVA_VERSION
-            ));
-			return Ok(None);
-		};
+fn find_server_jar(cli: &Cli) -> Option<PathBuf> {
+	let paths = [
+		cli.launch_from_path.clone(),
+		// AppImage passes the fakeroot in `APPDIR` env var.
+		env::var_os("APPDIR").map(|a| PathBuf::from(a).join("usr/share/slimevr/")),
+		env::current_dir().ok(),
+		// getcwd in Mac can't be trusted, so let's get the executable's path
+		env::current_exe()
+			.map(|mut f| {
+				f.pop();
+				f
+			})
+			.ok(),
+		// For development
+		#[cfg(debug_assertions)]
+		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
+		// For flatpak container
+		Some(PathBuf::from("/app/share/slimevr/")),
+		Some(PathBuf::from("/usr/share/slimevr/")),
+	];
 
-		log::info!("Using Java binary: {:?}", java_bin);
-		Ok(Some((java_bin, p)))
-	} else {
-		log::warn!("No server found. We will not start the server.");
-		Ok(None)
-	}
+	paths
+		.into_iter()
+		.flatten()
+		.map(|x| x.join("slimevr.jar"))
+		.find(|x| x.exists())
+}
+
+fn server_running() -> bool {
+	std::net::TcpListener::bind("127.0.0.1:21110").is_err()
 }
 
 fn setup_tauri(
+	cli: Cli,
 	context: tauri::Context,
-	server_info: Option<(std::ffi::OsString, std::path::PathBuf)>,
 	exit_flag: Arc<AtomicBool>,
 	backend: Arc<Mutex<Option<CommandChild>>>,
 ) -> Result<tauri::App, tauri::Error> {
@@ -267,16 +274,36 @@ fn setup_tauri(
 
 			app.manage(Mutex::new(window_state));
 
-			if let Some((java_bin, p)) = server_info {
+			if cli.no_start_server {
+				log::info!("Skipping server start.");
+				return Ok(());
+			}
+
+			if server_running() {
+				log::info!("Skipping server start: server is already running.");
+				return Ok(());
+			}
+
+			struct ServerStartInfo {
+				server_jar: PathBuf,
+				java_bin: PathBuf,
+			}
+
+			let start_server = move |start_info: ServerStartInfo| {
 				let app_handle = app.app_handle().clone();
 				tauri::async_runtime::spawn(async move {
 					use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 
 					let (mut rx, child) = app_handle
 						.shell()
-						.command(java_bin.to_str().unwrap())
-						.current_dir(p)
-						.args(["-Xmx128M", "-jar", "slimevr.jar", "run"])
+						.command(start_info.java_bin.to_str().unwrap())
+						.current_dir(start_info.server_jar.parent().unwrap())
+						.args([
+							"-Xmx128M",
+							"-jar",
+							start_info.server_jar.to_str().unwrap(),
+							"run",
+						])
 						.spawn()
 						.expect("Unable to start the server jar");
 
@@ -309,7 +336,36 @@ fn setup_tauri(
 						.emit("server-status", ("other", "receiver cancelled"))
 						.expect("Failed to emit");
 				});
+			};
+
+			let find_server = || -> Option<ServerStartInfo> {
+				use const_format::formatcp;
+
+				let server_jar = find_server_jar(&cli)?;
+				log::info!("Server found on path: {}", server_jar.to_str().unwrap());
+
+				let shared_dir = server_jar.parent().unwrap();
+				let Some(java_bin) = find_java_bin(shared_dir) else {
+					show_error(formatcp!(
+						"Couldn't find a compatible Java version, please download Java {} or higher",
+						MINIMUM_JAVA_VERSION
+					));
+					return None;
+				};
+				log::info!("Using Java binary: {:?}", java_bin);
+
+				Some(ServerStartInfo {
+					server_jar,
+					java_bin,
+				})
+			};
+
+			if let Some(start_info) = find_server() {
+				start_server(start_info);
+			} else {
+				log::warn!("No server found. We will not start the server.");
 			}
+
 			Ok(())
 		})
 		.on_window_event(|w, e| match e {
