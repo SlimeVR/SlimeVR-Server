@@ -1541,7 +1541,6 @@ class HumanSkeleton(
 
 	@JvmOverloads
 	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
-
 		humanPoseManager.server?.serverGuards?.onFullReset()
 
 		var referenceRotation = IDENTITY

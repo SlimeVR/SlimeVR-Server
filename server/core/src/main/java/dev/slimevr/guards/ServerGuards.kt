@@ -4,8 +4,7 @@ import java.util.Timer
 import java.util.TimerTask
 import kotlin.concurrent.schedule
 
-
-class ServerGuards() {
+class ServerGuards {
 
 	var canDoMounting: Boolean = false
 	var canDoYawReset: Boolean = false

@@ -123,7 +123,7 @@ class VRServer @JvmOverloads constructor(
 
 	val networkProfileChecker: NetworkProfileChecker
 
-	val serverGuards = ServerGuards();
+	val serverGuards = ServerGuards()
 
 	init {
 		// UwU
