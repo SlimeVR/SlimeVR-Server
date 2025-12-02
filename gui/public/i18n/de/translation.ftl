@@ -324,6 +324,7 @@ tracker-settings-name_section-label = Trackername
 tracker-settings-forget = Tracker Vergessen
 tracker-settings-forget-description = Entfernt den Tracker vom SlimeVR Server und verhindert, dass er sich wieder verbindet, bis der Server neu gestartet wurde. Die Konfiguration des Trackers geht nicht verloren.
 tracker-settings-forget-label = Tracker Vergessen
+tracker-settings-update-incompatible = Update nicht möglich. Board inkompatibel
 tracker-settings-update-low-battery = Aktualisierung nicht möglich. Akku unter 50 %
 tracker-settings-update-up_to_date = Auf dem neusten Stand
 tracker-settings-update-available = { $versionName } ist jetzt Verfügbar
@@ -394,6 +395,7 @@ mounting_selection_menu-close = Schließen
 
 settings-sidebar-title = Einstellungen
 settings-sidebar-general = Allgemein
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Tracker-Mechanik
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = FK-Einstellungen
