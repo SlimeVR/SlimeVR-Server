@@ -124,7 +124,7 @@ android {
 
 		// adds an offset of the version code as we might do apk releases in the middle of actual
 		// releases if we failed on bundling or stuff
-		val versionCodeOffset = 1
+		val versionCodeOffset = 2
 		// Defines the version number of your app.
 		versionCode = (extra["gitVersionCode"] as? Int)?.plus(versionCodeOffset) ?: 0
 

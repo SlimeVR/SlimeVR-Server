@@ -1,6 +1,5 @@
 import { ResetResponseT, ResetStatus, ResetType } from 'solarxr-protocol';
 import Xylophone, { ValidNote } from './xylophone';
-import { fetchResourceUrl } from '@/utils/tauri';
 
 const tones: ValidNote[][] = [
   ['E3', 'G3', 'B3'],
@@ -11,6 +10,46 @@ const tones: ValidNote[][] = [
 ];
 
 const xylophone = new Xylophone();
+const mew = createAudio('/sounds/mew.ogg');
+const resetSounds: Record<
+  ResetType,
+  {
+    initial: HTMLAudioElement | null;
+    tick: HTMLAudioElement[] | null;
+    end: HTMLAudioElement;
+    mew: HTMLAudioElement | null;
+  }
+> = {
+  [ResetType.Full]: {
+    initial: createAudio('/sounds/full-reset/init-full-reset-with-tail.ogg'),
+    tick: [
+      createAudio('/sounds/full-reset/full-click-1.ogg'),
+      createAudio('/sounds/full-reset/full-click-2.ogg'),
+      createAudio('/sounds/full-reset/full-click-3.ogg'),
+    ],
+    end: createAudio('/sounds/full-reset/end-full-reset-with-tail.ogg'),
+    mew,
+  },
+  [ResetType.Yaw]: {
+    initial: null,
+    tick: null,
+    end: createAudio('/sounds/yaw-reset/yaw-reset.ogg'),
+    mew: null,
+  },
+  [ResetType.Mounting]: {
+    initial: createAudio('/sounds/mounting-reset/init-mounting-reset-with-tail.ogg'),
+    tick: [
+      createAudio('/sounds/mounting-reset/mount-click-1.ogg'),
+      createAudio('/sounds/mounting-reset/mount-click-2.ogg'),
+      createAudio('/sounds/mounting-reset/mount-click-3.ogg'),
+    ],
+    end: createAudio('/sounds/mounting-reset/end-mounting-reset-with-tail.ogg'),
+    mew,
+  },
+};
+
+export const trackingPauseSound = createAudio('/sounds/tracking/pause.ogg')
+export const trackingPlaySound = createAudio('/sounds/tracking/play.ogg')
 
 let lastTap = 0;
 export async function playTapSetupSound(volume = 1) {
@@ -45,30 +84,15 @@ export async function playTapSetupSound(volume = 1) {
   }
 }
 
-async function createAudio(path: string): Promise<HTMLAudioElement> {
-  const audio = new Audio(await fetchResourceUrl(path));
+function createAudio(path: string): HTMLAudioElement {
+  const audio = new Audio(path);
   audio.preload = 'auto';
   audio.load();
   return audio;
 }
 
-const fullResetSounds = {
-  initial: await createAudio('/sounds/full-reset/initial.mp3'),
-  tick: [
-    await createAudio('/sounds/full-reset/click_1.mp3'),
-    await createAudio('/sounds/full-reset/click_2.mp3'),
-    await createAudio('/sounds/full-reset/click_3.mp3'),
-  ],
-  end: await createAudio('/sounds/full-reset/end_chord.mp3'),
-  mew: await createAudio('/sounds/full-reset/mew.mp3'),
-};
-const resetSounds = {
-  [ResetType.Full]: fullResetSounds,
-  [ResetType.Yaw]: fullResetSounds,
-  [ResetType.Mounting]: fullResetSounds,
-};
-
-function restartAndPlay(audio: HTMLAudioElement, volume: number) {
+export function restartAndPlay(audio: HTMLAudioElement | null, volume: number) {
+  if (!audio) return;
   try {
     audio.load(); // LINUX: Solves wierd bug where webkit would unload sounds wierdly and make the sounds not play anymore
 
@@ -89,18 +113,27 @@ export function handleResetSounds(
   volume: number,
   { progress, status, resetType }: ResetResponseT
 ) {
+  if (!resetSounds) throw 'sounds not loaded';
   const sounds = resetSounds[resetType];
 
   if (status === ResetStatus.STARTED) {
-    if (progress === 0) restartAndPlay(sounds.initial, volume);
+    if (progress === 0) {
+      performance.mark('sound_start')
+      restartAndPlay(sounds.initial, volume);
+    }
 
-    const tickIndex = (progress / 1000) % sounds.tick.length;
-    if (progress >= 1 && sounds.tick[tickIndex]) {
-      restartAndPlay(sounds.tick[tickIndex], volume);
+    if (sounds.tick) {
+      const tickIndex = (progress / 1000) % sounds.tick.length;
+      if (progress >= 1000 && sounds.tick[tickIndex]) {
+        restartAndPlay(sounds.tick[tickIndex], volume);
+      }
     }
   }
 
   if (status === ResetStatus.FINISHED) {
+    performance.mark('sound_end')
+    console.log(performance.measure('sound', 'sound_start', 'sound_end'))
+
     restartAndPlay(sounds.end, volume);
     restartAndPlay(sounds.mew, volume);
   }

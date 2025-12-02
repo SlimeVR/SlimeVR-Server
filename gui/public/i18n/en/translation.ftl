@@ -1153,7 +1153,7 @@ onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Mounting calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 
-onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes, both feets pointing forward. Alternatively you can do it siting on a chair.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes with both feet pointing forward. Alternatively you can do it siting on a chair.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Press the "Feet calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 
 onboarding-automatic_mounting-preparation-title = Preparation
@@ -1300,7 +1300,7 @@ onboarding-stay_aligned-put_trackers_on-title = Put on your trackers
 onboarding-stay_aligned-put_trackers_on-description = To save your resting poses, we'll use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-stay_aligned-put_trackers_on-trackers_warning = You have fewer than 5 trackers currently connected and assigned! This is the minimum amount of trackers required for Stay Aligned to function properly.
 onboarding-stay_aligned-put_trackers_on-next = I have all my trackers on
-onboarding-stay_aligned-verify_mounting-title = Check your Mounting
+onboarding-stay_aligned-verify_mounting-title = Mounting Reset
 onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned requires good mounting. Otherwise, you won't get a good experience with Stay Aligned.
 onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
 onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
@@ -1566,7 +1566,7 @@ tracking_checklist-STEAMVR_DISCONNECTED = SteamVR not running
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for vr?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
-tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didnt perform the tracker calibration. Please let your slimes, highlited in yellow, rest on a static surface for a few secconds
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your Slimes (highlighted in yellow) rest on a stable surface for a few secconds.
 tracking_checklist-TRACKER_ERROR = Trackers with Errors
 tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the tracker.
 tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings
@@ -1586,7 +1586,7 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = {$count ->
 }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
-tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the stay aligned poses for an improved imu drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses for an improved imu drift
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
 
 tracking_checklist-ignore = Ignore
