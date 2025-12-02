@@ -244,6 +244,10 @@ reset-mounting = 配戴重置
 reset-mounting-feet = 重置腳部配戴
 reset-mounting-fingers = 重置手指配戴
 reset-yaw = 左右偏擺重置
+reset-error-no_feet_tracker = 未分配腳部追蹤器
+reset-error-no_fingers_tracker = 未分配手指追蹤器
+reset-error-mounting-need_full_reset = 配戴校正前需要完整重置
+reset-error-yaw-need_full_reset = 左右偏擺重置前需要完整重置
 
 ## Serial detection stuff
 
@@ -267,6 +271,7 @@ navbar-settings = 詳細設定
 ## Biovision hierarchy recording
 
 bvh-start_recording = 錄製 BVH 檔案
+bvh-stop_recording = 儲存 BVH 紀錄
 bvh-recording = 錄製中…
 bvh-save_title = 儲存 BVH 紀錄
 
@@ -476,6 +481,7 @@ mounting_selection_menu-close = 關閉
 
 settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = 追蹤機制
 settings-sidebar-stay_aligned = 持續校正
 settings-sidebar-fk_settings = 追蹤設定
@@ -483,9 +489,12 @@ settings-sidebar-gesture_control = 手勢控制
 settings-sidebar-interface = 使用者介面
 settings-sidebar-osc_router = OSC 路由
 settings-sidebar-osc_trackers = VRChat OSC 追蹤器
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 工具
 settings-sidebar-serial = 序列埠終端
 settings-sidebar-appearance = 外觀
+settings-sidebar-home = 首頁
+settings-sidebar-checklist = 檢查清單
 settings-sidebar-notifications = 通知
 settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
@@ -904,6 +913,7 @@ settings-utils-advanced-open_logs-label = 打開資料夾
 
 ## Home Screen
 
+settings-home-list-layout = 追蹤器清單檢視方式
 
 ## Tracking Checlist
 
