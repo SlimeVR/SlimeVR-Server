@@ -8,10 +8,10 @@
 ## Websocket (server) status
 
 websocket-connecting = กำลังเชื่อมต่อกับเซิร์ฟเวอร์...
-websocket-connection_lost = เซิร์ฟเวอร์ขัดข้อง!
-websocket-connection_lost-desc = ดูเหมือนว่าเซิร์ฟเวอร์ SlimeVR ขัดข้อง กรุณาตรวจสอบไฟล์บันทึกและรีสตาร์ทโปรแกรม
+websocket-connection_lost = การเชื่อมต่อกับเซิร์ฟเวอร์ขาดหาย!
+websocket-connection_lost-desc = ดูเหมือนว่าเซิร์ฟเวอร์ SlimeVR หยุดการตอบสนองหรือการเชื่อมต่อขาดหาย กรุณาตรวจสอบไฟล์บันทึกและรีสตาร์ทโปรแกรม
 websocket-timedout = ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้
-websocket-timedout-desc = ดูเหมือนว่าเซิร์ฟเวอร์ SlimeVR ขัดข้องหรือหมดเวลาการเชื่อมต่อ ตรวจสอบไฟล์บันทึกและรีสตาร์ทโปรแกรม
+websocket-timedout-desc = ดูเหมือนว่าเซิร์ฟเวอร์ SlimeVR ขัดข้องหรือหมดเวลาการเชื่อมต่อ กรุณาตรวจสอบไฟล์บันทึกและรีสตาร์ทโปรแกรม
 websocket-error-close = ออกจาก SlimeVR
 websocket-error-logs = เปิดโฟลเดอร์ไฟล์บันทึก
 
@@ -24,7 +24,7 @@ version_update-close = ปิด
 
 ## Tips
 
-tips-find_tracker = ไม่แน่ใจว่าแทร็กเกอร์เป็นตัวไหน? สามารถขยับแทรคเกอร์ตัวนั้นให้อุปกรณ์ที่ขยับนั้นสว่างขึ้นมาได้
+tips-find_tracker = ไม่แน่ใจว่าแทร็กเกอร์ตัวไหน? ให้ขยับแทร็กเกอร์ตัวนั้นเพื่อสังเกตว่าอุปกรณ์ใดกำลังสว่างอยู่
 tips-do_not_move_heels = ห้ามขยับส้นเท้าในระหว่างการบันทึก!
 tips-file_select = ลากและวางไฟล์ที่จะใช้ หรือ<u>เรียกดู</u>
 tips-tap_setup = คุณสามารถแตะที่แทร็กเกอร์ 2 ครั้ง เพื่อเป็นการเลือกแทนการเลือกจากเมนู
@@ -483,7 +483,7 @@ settings-sidebar-general = การตั้งค่าทั่วไป
 settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = การทำงานแทร็กเกอร์
 settings-sidebar-stay_aligned = Stay Aligned
-settings-sidebar-fk_settings = ตั้งค่าการจับตำแหน่ง
+settings-sidebar-fk_settings = การตั้งค่าแทร็กเกอร์
 settings-sidebar-gesture_control = ควบคุมผ่านท่าทาง
 settings-sidebar-interface = อินเทอร์เฟซ
 settings-sidebar-osc_router = เราเตอร์ OSC
