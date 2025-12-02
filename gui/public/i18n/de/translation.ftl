@@ -95,6 +95,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -185,7 +187,9 @@ navbar-settings = Einstellungen
 ## Biovision hierarchy recording
 
 bvh-start_recording = BVH aufnehmen
+bvh-stop_recording = BVH-Aufnahme speichern
 bvh-recording = Aufnahme läuft...
+bvh-save_title = BVH-Aufnahme speichern
 
 ## Tracking pause
 
@@ -226,6 +230,7 @@ widget-imu_visualizer-rotation_raw = Rohe Drehung
 widget-imu_visualizer-rotation_preview = Vorschau
 widget-imu_visualizer-acceleration = Beschleunigung
 widget-imu_visualizer-position = Position
+widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 
@@ -253,6 +258,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Beschleunigung X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
+tracker-table-column-stay_aligned = Stay Aligned
 tracker-table-column-url = Adresse
 
 ## Tracker rotation
@@ -389,11 +395,13 @@ mounting_selection_menu-close = Schließen
 settings-sidebar-title = Einstellungen
 settings-sidebar-general = Allgemein
 settings-sidebar-tracker_mechanics = Tracker-Mechanik
+settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = FK-Einstellungen
 settings-sidebar-gesture_control = Gestensteuerung
 settings-sidebar-interface = Bedienoberfläche
 settings-sidebar-osc_router = OSC-Router
 settings-sidebar-osc_trackers = VRChat OSC-Tracker
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
 settings-sidebar-appearance = Erscheinungsbild
@@ -1201,9 +1209,12 @@ onboarding-scaled_proportions-done-description = Ihre Körperproportionen sollte
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Stay Aligned
 onboarding-stay_aligned-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-stay_aligned-preparation-title = Vorbereitung
 onboarding-stay_aligned-relaxed_poses-skip_step = Überspringen
+onboarding-stay_aligned-previous_step = Zurück
+onboarding-stay_aligned-next_step = Weiter
 onboarding-stay_aligned-done = Fertig
 
 ## Home
@@ -1244,6 +1255,8 @@ firmware_tool = DIY Firmware-Tool
 firmware_tool-description = Erlaubt ihnen das Konfigurieren und Flashen von DIY Trackern
 firmware_tool-not_available = Das Firmware Tool ist im Moment nicht verfügbar. Versuche sie später erneut!
 firmware_tool-not_compatible = Das Firmware Tool ist nicht mit dieser Version des Servers kompatibel. Bitte den Server aktualisieren!
+firmware_tool-select_source-board_type = Boardtyp
+firmware_tool-select_source-firmware = Firmware-Quelle
 firmware_tool-flash_method_step = Flash-Methode
 firmware_tool-flash_method_step-description = Bitte wählen Sie die Flash-Methode aus, die Sie verwenden möchten.
 firmware_tool-flashbtn_step = Drücken Sie den Boot-Button
@@ -1350,6 +1363,7 @@ vrc_config-mute = Warnung stummschalten
 vrc_config-mute-btn = Stummschalten
 vrc_config-unmute-btn = Stummschaltung aufheben
 vrc_config-user_height = Echte Benutzergröße
+vrc_config-spine_mode-UNKNOWN = Unbekannt
 vrc_config-tracker_model-UNKNOWN = Unbekannt
 vrc_config-tracker_model-AXIS = Achse
 
