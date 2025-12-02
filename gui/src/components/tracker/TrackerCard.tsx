@@ -164,16 +164,9 @@ export function TrackerCard({
   warning?: TrackingChecklistStepT | boolean;
   showUpdates?: boolean;
 }) {
-  const { currentFirmwareRelease } = useAppContext();
   const { useVelocity } = useTracker(tracker);
   const velocity = useVelocity();
 
-  const showUpdate =
-    showUpdates &&
-    tracker.status !== TrackerStatusEnum.DISCONNECTED &&
-    currentFirmwareRelease &&
-    device &&
-    checkForUpdate(currentFirmwareRelease, device);
   return (
     <div className="relative">
       <div
@@ -182,8 +175,6 @@ export function TrackerCard({
           'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear',
           interactable && 'hover:bg-background-50 cursor-pointer',
           outlined && 'outline outline-2 outline-accent-background-40',
-          // warning &&
-          //   'outline outline-2 -outline-offset-2 outline-status-warning',
           bg
         )}
         style={
@@ -215,7 +206,7 @@ export function TrackerCard({
         )}
         {!smol && <TrackerBig tracker={tracker} device={device} />}
       </div>
-      <FirmwareIcon tracker={tracker} size={6} />
+      <FirmwareIcon tracker={tracker} device={device}/>
     </div>
   );
 }

@@ -206,9 +206,9 @@ function Row({
         spacing={-5}
       >
         <>
-          <div className="relative">
-            <div className="absolute top-1.5 left-5">
-              <FirmwareIcon tracker={tracker} size={6} />
+          <div className="relative z-10">
+            <div className="absolute top-2 left-5">
+              <FirmwareIcon tracker={tracker} device={device} />
             </div>
           </div>
           <tr className="group" onClick={() => clickedTracker(tracker)}>
@@ -322,7 +322,7 @@ export function TrackersTable({
   const moreInfo = config?.devSettings?.moreInfo;
 
   return (
-    <div className="w-full overflow-x-auto py-2">
+    <div className="w-full overflow-x-auto py-2 px-2">
       <table className="w-full" cellPadding={0} cellSpacing={0}>
         <tr>
           <Header name={'tracker-table-column-name'} first />

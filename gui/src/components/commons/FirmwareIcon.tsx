@@ -3,18 +3,17 @@ import {
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
-import { Typography } from '@/components/commons/Typography';
+import { Typography } from './Typography';
 import classNames from 'classnames';
-import { DownloadIcon } from '@/components/commons/icon/DownloadIcon';
+import { DownloadIcon } from './icon/DownloadIcon';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '@/hooks/app';
-import { Tooltip } from '@/components/commons/Tooltip';
+import { Tooltip } from './Tooltip';
 import { Localized } from '@fluent/react';
 import { checkForUpdate } from '@/hooks/firmware-update';
 
 function UpdateIcon({
   showUpdate,
-  size,
 }: {
   showUpdate:
     | 'can-update'
@@ -22,19 +21,18 @@ function UpdateIcon({
     | 'updated'
     | 'unavailable'
     | 'blocked';
-  size: number;
 }) {
   const content = (
     <div className="relative">
       <div
         className={classNames(
-          `absolute rounded-full h-${size} w-${size} left-0.5 top-0.5 bg-accent-background-10 animate-[ping_2s_linear_3]`,
+          'absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_3]',
           showUpdate !== 'can-update' && 'hidden'
         )}
       />
       <div
         className={classNames(
-          `absolute rounded-full h-${size + 1} w-${size + 1} justify-center flex items-center`,
+          'absolute rounded-full h-8 w-8 justify-center flex items-center',
           showUpdate === 'low-battery'
             ? 'cursor-not-allowed bg-background-80 outline-2 outline-status-critical outline'
             : 'hover:bg-background-40 hover:cursor-pointer bg-background-50'
@@ -66,11 +64,9 @@ function UpdateIcon({
 export function FirmwareIcon({
   tracker,
   device,
-  size,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
-  size: number;
 }) {
   const { currentFirmwareRelease } = useAppContext();
 
@@ -85,7 +81,7 @@ export function FirmwareIcon({
       {showUpdate &&
         showUpdate !== 'unavailable' &&
         showUpdate !== 'updated' && (
-          <UpdateIcon showUpdate={'can-update'} size={size} />
+          <UpdateIcon showUpdate={'can-update'} />
         )}
     </div>
   );
