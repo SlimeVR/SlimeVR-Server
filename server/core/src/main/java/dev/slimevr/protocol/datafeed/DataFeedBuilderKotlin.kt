@@ -41,14 +41,10 @@ object DataFeedBuilderKotlin {
 		return StayAlignedTracker.endStayAlignedTracker(fbb)
 	}
 
-<<<<<<< HEAD
 	fun createServerGuard(fbb: FlatBufferBuilder, serverGuards: ServerGuards): Int = solarxr_protocol.data_feed.server.ServerGuards.createServerGuards(
 		fbb,
 		serverGuards.canDoMounting,
 		serverGuards.canDoYawReset,
 		serverGuards.canDoUserHeightCalibration,
 	)
-=======
-	fun createServerGuard(fbb: FlatBufferBuilder, serverGuards: ServerGuards): Int = solarxr_protocol.data_feed.server.ServerGuards.createServerGuards(fbb, serverGuards.canDoMounting, serverGuards.canDoYawReset)
->>>>>>> a5160fbb8a0329cf65166d824bd49ceb95a18d19
 }
