@@ -95,6 +95,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -246,6 +248,9 @@ reset-mounting = รีเซ็ตการติดตั้ง
 reset-mounting-feet = รีเซ็ตทิศทางติดตั้งเท้า
 reset-mounting-fingers = รีเซ็ตการติดตั้งนิ้วมือ
 reset-yaw = รีเซ็ตแกนหมุน
+reset-error-no_feet_tracker = ไม่ได้กําหนดตัวแทร็กเกอร์เท้า
+reset-error-no_fingers_tracker = ไม่ได้กําหนดตัวแทร็กเกอร์นิ้ว
+reset-error-mounting-need_full_reset = ต้องรีเซ็ตแทร็กเกอร์ทั้งหมดก่อนติดตั้ง
 
 ## Serial detection stuff
 
@@ -475,6 +480,7 @@ mounting_selection_menu-close = ปิด
 
 settings-sidebar-title = การตั้งค่า
 settings-sidebar-general = การตั้งค่าทั่วไป
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = การทำงานแทร็กเกอร์
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = ตั้งค่าการจับตำแหน่ง
@@ -482,6 +488,7 @@ settings-sidebar-gesture_control = ควบคุมผ่านท่าทา
 settings-sidebar-interface = อินเทอร์เฟซ
 settings-sidebar-osc_router = เราเตอร์ OSC
 settings-sidebar-osc_trackers = แทร็กเกอร์ OSC ใน VRChat
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = ยูทิลิตี้
 settings-sidebar-serial = ซีเรียลคอนโซล
 settings-sidebar-appearance = รูปลักษณ์
@@ -1512,3 +1519,8 @@ error_collection_modal-description_v2 =
     คุณสามารถเปลี่ยนการตั้งค่านี้ในภายหลังได้ในแถบ พฤติกรรม ภายในหน้าการตั้งค่า
 error_collection_modal-confirm = ฉันตกลง
 error_collection_modal-cancel = ฉันไม่ต้องการ
+tracking_checklist-status-complete = คุณพร้อมที่จะใช้ SlimeVR แล้ว!
+tracking_checklist-STEAMVR_DISCONNECTED-open = เปิด SteamVR
+toolbar-mounting_calibration-default = ตัว
+toolbar-mounting_calibration-feet = เท้า
+toolbar-mounting_calibration-fingers = นิ้ว
