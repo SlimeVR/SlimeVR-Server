@@ -68,7 +68,7 @@ export function useProvideAppContext(): AppContext {
 
   useEffect(() => {
     loadSounds();
-  })
+  });
 
   return {
     currentFirmwareRelease,
