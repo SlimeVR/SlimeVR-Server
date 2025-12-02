@@ -27,19 +27,6 @@ export function ResetButtonIcon(options: UseResetOptions) {
   }
 }
 
-export function ResetButtonIcon(options: UseResetOptions) {
-  if (options.type === ResetType.Mounting && !options.group)
-    options.group = 'default';
-
-  if (options.type === ResetType.Yaw) return <YawResetIcon width={18} />;
-  if (options.type === ResetType.Full) return <FullResetIcon width={18} />;
-  if (options.type === ResetType.Mounting) {
-    if (options.group === 'default') return <SkiIcon />;
-    if (options.group === 'feet') return <FootIcon />;
-    if (options.group === 'fingers') return <FingersIcon width={16} />;
-  }
-}
-
 export function ResetButton({
   className,
   onReseted,
