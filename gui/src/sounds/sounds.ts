@@ -1,6 +1,5 @@
 import { ResetResponseT, ResetStatus, ResetType } from 'solarxr-protocol';
 import Xylophone, { ValidNote } from './xylophone';
-import { fetchResourceUrl } from '@/utils/tauri';
 
 const tones: ValidNote[][] = [
   ['E3', 'G3', 'B3'],
@@ -45,10 +44,8 @@ export async function playTapSetupSound(volume = 1) {
   }
 }
 
-async function createAudio(path: string): Promise<HTMLAudioElement> {
-  const audio = new Audio(await fetchResourceUrl(path));
-  audio.preload = 'auto';
-  audio.load();
+function createAudio(path: string): HTMLAudioElement {
+  const audio = new Audio(path);
   return audio;
 }
 
@@ -62,23 +59,22 @@ let resetSounds: Record<
   }
 > | null = null;
 
-export async function loadSounds() {
-  const fullResetSounds = {
-    initial: await createAudio('/sounds/full-reset/initial.mp3'),
+const fullResetSounds = {
+    initial: createAudio('/sounds/full-reset/initial.mp3'),
     tick: [
-      await createAudio('/sounds/full-reset/click_1.mp3'),
-      await createAudio('/sounds/full-reset/click_2.mp3'),
-      await createAudio('/sounds/full-reset/click_3.mp3'),
+      createAudio('/sounds/full-reset/click_1.mp3'),
+      createAudio('/sounds/full-reset/click_2.mp3'),
+      createAudio('/sounds/full-reset/click_3.mp3'),
     ],
-    end: await createAudio('/sounds/full-reset/end_chord.mp3'),
-    mew: await createAudio('/sounds/full-reset/mew.mp3'),
+    end: createAudio('/sounds/full-reset/end_chord.mp3'),
+    mew: createAudio('/sounds/full-reset/mew.mp3'),
   };
   resetSounds = {
     [ResetType.Full]: fullResetSounds,
     [ResetType.Yaw]: fullResetSounds,
     [ResetType.Mounting]: fullResetSounds,
   };
-}
+
 
 function restartAndPlay(audio: HTMLAudioElement, volume: number) {
   try {
