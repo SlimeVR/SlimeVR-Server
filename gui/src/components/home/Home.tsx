@@ -1,31 +1,28 @@
-import { Localized, useLocalization } from '@fluent/react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { StatusData, TrackerDataT } from 'solarxr-protocol';
+import { useLocalization } from '@fluent/react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { TrackerDataT } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { TrackersTable } from '@/components/tracker/TrackersTable';
-import {
-  parseStatusToLocale,
-  trackerStatusRelated,
-  useStatusContext,
-} from '@/hooks/status-system';
-import { useMemo } from 'react';
-import { WarningBox } from '@/components/commons/TipBox';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
-import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
-import { flatTrackersAtom } from '@/store/app-store';
-import { useVRCConfig } from '@/hooks/vrc-config';
-
-const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];
+import {
+  assignedTrackersAtom,
+  unassignedTrackersAtom,
+} from '@/store/app-store';
+import { useTrackingChecklist } from '@/hooks/tracking-checklist';
+import { Checklist } from '@/components/commons/icon/ChecklistIcon';
+import { useState } from 'react';
+import { HomeSettingsModal } from './HomeSettingsModal';
+import { LayoutIcon } from '@/components/commons/icon/LayoutIcon';
 
 export function Home() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
-  const trackers = useAtomValue(flatTrackersAtom);
-  const { statuses } = useStatusContext();
-  const { invalidConfig } = useVRCConfig();
+  const trackers = useAtomValue(assignedTrackersAtom);
+  const unassignedTrackers = useAtomValue(unassignedTrackersAtom);
+  const { highlightedTrackers } = useTrackingChecklist();
   const navigate = useNavigate();
 
   const sendToSettings = (tracker: TrackerDataT) => {
@@ -34,95 +31,121 @@ export function Home() {
     );
   };
 
-  const filteredStatuses = useMemo(() => {
-    const dontRepeat = new Map(DONT_REPEAT_STATUSES.map((x) => [x, false]));
-    return Object.entries(statuses).filter(([, value]) => {
-      if (dontRepeat.get(value.dataType)) return false;
-      if (dontRepeat.has(value.dataType)) dontRepeat.set(value.dataType, true);
-      return true;
-    });
-  }, [statuses]);
+  const settingsOpenState = useState(false);
+  const [, setSettingsOpen] = settingsOpenState;
 
   return (
     <div className="relative h-full">
+      <HomeSettingsModal open={settingsOpenState} />
       <NavLink
         to="/vr-mode"
         className="xs:hidden absolute z-50 h-12 w-12 rounded-full bg-accent-background-30 bottom-3 right-3 flex justify-center items-center fill-background-10"
       >
         <HeadsetIcon />
       </NavLink>
-      <div className="h-full overflow-y-auto">
-        <div
-          className={classNames(
-            'px-3 pt-3 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1'
-          )}
-        >
-          {filteredStatuses
-            .filter(([, status]) => status.prioritized)
-            .map(([, status]) => (
-              <Localized
-                key={status.id}
-                id={`status_system-${StatusData[status.dataType]}`}
-                vars={parseStatusToLocale(status, trackers, l10n)}
-              >
-                <WarningBox whitespace={false}>
-                  {`Warning, you should fix ${StatusData[status.dataType]}`}
-                </WarningBox>
-              </Localized>
-            ))}
-          {invalidConfig && (
-            <WarningBox whitespace={false}>
-              <div className="flex gap-2 justify-between items-center w-full">
-                <div className="flex">
-                  <Localized id={'vrc_config-invalid'} />
-                </div>
-                <div className="flex">
-                  <Link to="/vrc-warnings">
-                    <div className="rounded-md p-2 bg-background-90 bg-opacity-15 hover:bg-background-10 hover:bg-opacity-25 text-nowrap">
-                      <Localized id={'vrc_config-show_more'} />
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            </WarningBox>
-          )}
+      <NavLink
+        to="/checklist"
+        className="xs:hidden absolute z-50 h-12 w-12 rounded-full bg-accent-background-30 bottom-[70px] right-3 flex justify-center items-center fill-background-10"
+      >
+        <Checklist />
+      </NavLink>
+      <div className="overflow-y-auto flex flex-col gap-3">
+        <div className="flex w-full gap-2 items-center px-4 h-5">
+          <Typography
+            color="secondary"
+            id="toolbar-assigned_trackers"
+            vars={{ count: trackers.length }}
+          />
+          <div className="bg-background-50 h-[2px] rounded-lg flex-grow" />
+          <div
+            className="fill-background-30 hover:fill-background-20 cursor-pointer"
+            onClick={() => setSettingsOpen(true)}
+          >
+            <LayoutIcon size={18} />
+          </div>
         </div>
-        <div className="overflow-y-auto flex flex-col gap-3">
-          {trackers.length === 0 && (
-            <div className="flex px-5 pt-5 justify-center">
-              <Typography variant="standard">
-                {l10n.getString('home-no_trackers')}
-              </Typography>
-            </div>
-          )}
+        {trackers.length === 0 && (
+          <div className="flex px-5 pt-5 justify-center">
+            <Typography variant="standard">
+              {l10n.getString('home-no_trackers')}
+            </Typography>
+          </div>
+        )}
 
-          {!config?.debug && trackers.length > 0 && (
-            <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-5 my-5">
-              {trackers.map(({ tracker, device }, index) => (
-                <TrackerCard
-                  key={index}
-                  tracker={tracker}
-                  device={device}
-                  onClick={() => sendToSettings(tracker)}
-                  smol
-                  showUpdates
-                  interactable
-                  warning={Object.values(statuses).some((status) =>
-                    trackerStatusRelated(tracker, status)
-                  )}
-                />
-              ))}
-            </div>
-          )}
-          {config?.debug && trackers.length > 0 && (
-            <div className="px-2 pt-5 overflow-y-scroll overflow-x-auto">
-              <TrackersTable
-                flatTrackers={trackers}
-                clickedTracker={(tracker) => sendToSettings(tracker)}
+        {config?.homeLayout == 'default' && trackers.length > 0 && (
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-5 my-5">
+            {trackers.map(({ tracker, device }, index) => (
+              <TrackerCard
+                key={index}
+                tracker={tracker}
+                device={device}
+                onClick={() => sendToSettings(tracker)}
+                smol
+                showUpdates
+                interactable
+                warning={
+                  !!highlightedTrackers?.trackers.find(
+                    (t) =>
+                      t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
+                      t?.trackerNum === tracker.trackerId?.trackerNum
+                  ) && highlightedTrackers.step
+                }
               />
+            ))}
+          </div>
+        )}
+
+        {config?.homeLayout === 'table' && trackers.length > 0 && (
+          <div className="mx-2 overflow-x-auto">
+            <TrackersTable
+              flatTrackers={trackers}
+              clickedTracker={(tracker) => sendToSettings(tracker)}
+            />
+          </div>
+        )}
+
+        {unassignedTrackers.length > 0 && (
+          <>
+            <div className="flex w-full gap-2 items-center px-4 h-5">
+              <Typography
+                color="secondary"
+                id="toolbar-unassigned_trackers"
+                vars={{ count: unassignedTrackers.length }}
+              />
+              <div className="bg-background-50 h-[2px] rounded-lg flex-grow" />
             </div>
-          )}
-        </div>
+            {config?.homeLayout == 'default' && (
+              <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-5 my-3">
+                {unassignedTrackers.map(({ tracker, device }, index) => (
+                  <TrackerCard
+                    key={index}
+                    tracker={tracker}
+                    device={device}
+                    onClick={() => sendToSettings(tracker)}
+                    smol
+                    showUpdates
+                    interactable
+                    warning={
+                      !!highlightedTrackers?.trackers.find(
+                        (t) =>
+                          t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
+                          t?.trackerNum === tracker.trackerId?.trackerNum
+                      ) && highlightedTrackers.step
+                    }
+                  />
+                ))}
+              </div>
+            )}
+            {config?.homeLayout === 'table' && (
+              <div className="mx-2 overflow-x-auto">
+                <TrackersTable
+                  flatTrackers={unassignedTrackers}
+                  clickedTracker={(tracker) => sendToSettings(tracker)}
+                />
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

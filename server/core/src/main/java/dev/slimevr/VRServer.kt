@@ -18,6 +18,8 @@ import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.reset.ResetHandler
+import dev.slimevr.reset.ResetTimerManager
+import dev.slimevr.reset.resetTimer
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
 import dev.slimevr.serial.SerialHandlerStub
@@ -28,6 +30,7 @@ import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.*
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
+import dev.slimevr.trackingchecklist.TrackingChecklistManager
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
 import io.eiren.util.ann.ThreadSafe
@@ -55,6 +58,7 @@ class VRServer @JvmOverloads constructor(
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
 	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
+	networkProfileProvider: (VRServer) -> NetworkProfileChecker = { _ -> NetworkProfileCheckerStub() },
 	acquireMulticastLock: () -> Any? = { null },
 	@JvmField val configManager: ConfigManager,
 ) : Thread("VRServer") {
@@ -99,6 +103,7 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val protocolAPI: ProtocolAPI
 	private val timer = Timer()
+	private val resetTimerManager = ResetTimerManager()
 	val fpsTimer = NanoTimer()
 
 	@JvmField
@@ -113,6 +118,10 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val handshakeHandler = HandshakeHandler()
 
+	val trackingChecklistManager: TrackingChecklistManager
+
+	val networkProfileChecker: NetworkProfileChecker
+
 	init {
 		// UwU
 		deviceManager = DeviceManager(this)
@@ -126,6 +135,8 @@ class VRServer @JvmOverloads constructor(
 		autoBoneHandler = AutoBoneHandler(this)
 		firmwareUpdateHandler = FirmwareUpdateHandler(this)
 		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
+		networkProfileChecker = networkProfileProvider(this)
+		trackingChecklistManager = TrackingChecklistManager(this)
 		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
@@ -164,6 +175,7 @@ class VRServer @JvmOverloads constructor(
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)
 		}
+
 		instance = this
 	}
 
@@ -300,7 +312,7 @@ class VRServer @JvmOverloads constructor(
 		queueTask { humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts) }
 	}
 
-	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>? = null) {
 		queueTask { humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts) }
 	}
 
@@ -330,40 +342,52 @@ class VRServer @JvmOverloads constructor(
 		}
 	}
 
-	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
-		if (delay > 0) {
-			resetHandler.sendStarted(ResetType.Full)
-		}
-		timer.schedule(delay) {
-			queueTask {
-				humanPoseManager.resetTrackersFull(resetSourceName)
-				resetHandler.sendFinished(ResetType.Full)
-			}
-		}
+	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList()) {
+		resetTimer(
+			resetTimerManager,
+			delay,
+			onTick = { progress ->
+				resetHandler.sendStarted(ResetType.Full, bodyParts, progress, delay.toInt())
+			},
+			onComplete = {
+				queueTask {
+					humanPoseManager.resetTrackersFull(resetSourceName, bodyParts)
+					resetHandler.sendFinished(ResetType.Full, bodyParts, delay.toInt())
+				}
+			},
+		)
 	}
 
-	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
-		if (delay > 0) {
-			resetHandler.sendStarted(ResetType.Yaw)
-		}
-		timer.schedule(delay) {
-			queueTask {
-				humanPoseManager.resetTrackersYaw(resetSourceName)
-				resetHandler.sendFinished(ResetType.Yaw)
-			}
-		}
+	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+		resetTimer(
+			resetTimerManager,
+			delay,
+			onTick = { progress ->
+				resetHandler.sendStarted(ResetType.Yaw, bodyParts, progress, delay.toInt())
+			},
+			onComplete = {
+				queueTask {
+					humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts)
+					resetHandler.sendFinished(ResetType.Yaw, bodyParts, delay.toInt())
+				}
+			},
+		)
 	}
 
-	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
-		if (delay > 0) {
-			resetHandler.sendStarted(ResetType.Mounting)
-		}
-		timer.schedule(delay) {
-			queueTask {
-				humanPoseManager.resetTrackersMounting(resetSourceName)
-				resetHandler.sendFinished(ResetType.Mounting)
-			}
-		}
+	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<Int>? = null) {
+		resetTimer(
+			resetTimerManager,
+			delay,
+			onTick = { progress ->
+				resetHandler.sendStarted(ResetType.Mounting, bodyParts, progress, delay.toInt())
+			},
+			onComplete = {
+				queueTask {
+					humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts)
+					resetHandler.sendFinished(ResetType.Mounting, bodyParts, delay.toInt())
+				}
+			},
+		)
 	}
 
 	fun scheduleSetPauseTracking(pauseTracking: Boolean, sourceName: String?, delay: Long) {

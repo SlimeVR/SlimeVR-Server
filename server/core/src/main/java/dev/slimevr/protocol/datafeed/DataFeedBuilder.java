@@ -141,7 +141,7 @@ public class DataFeedBuilder {
 			TrackerInfo.addAllowDriftCompensation(fbb, false);
 		}
 
-		if (tracker.getNeedsMounting()) {
+		if (tracker.getAllowMounting()) {
 			Quaternion quaternion = tracker.getResetsHandler().getMountingOrientation();
 			Quaternion mountResetFix = tracker.getResetsHandler().getMountRotFix();
 			TrackerInfo.addMountingOrientation(fbb, createQuat(fbb, quaternion));
@@ -215,7 +215,7 @@ public class DataFeedBuilder {
 			if (trackerTemperatureOffset != 0)
 				TrackerData.addTemp(fbb, trackerTemperatureOffset);
 		}
-		if (tracker.getNeedsMounting() && tracker.getHasRotation()) {
+		if (tracker.getAllowMounting() && tracker.getHasRotation()) {
 			if (mask.getRotationReferenceAdjusted()) {
 				TrackerData
 					.addRotationReferenceAdjusted(fbb, createQuat(fbb, tracker.getRotation()));
@@ -227,7 +227,7 @@ public class DataFeedBuilder {
 						createQuat(fbb, tracker.getIdentityAdjustedRotation())
 					);
 			}
-		} else if (tracker.getNeedsReset() && tracker.getHasRotation()) {
+		} else if (tracker.getAllowReset() && tracker.getHasRotation()) {
 			if (mask.getRotationReferenceAdjusted()) {
 				TrackerData
 					.addRotationReferenceAdjusted(fbb, createQuat(fbb, tracker.getRotation()));

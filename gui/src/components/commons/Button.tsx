@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React, { ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LoaderIcon, SlimeState } from './icon/LoaderIcon';
+import { Localized, LocalizedProps } from '@fluent/react';
 
 function ButtonContent({
   loading,
@@ -17,11 +18,11 @@ function ButtonContent({
       <div
         className={classNames(
           { 'opacity-0': loading },
-          'flex flex-row gap-2 justify-center'
+          'flex flex-row gap-2 justify-center items-center'
         )}
       >
         {icon && (
-          <div className="flex justify-center items-center fill-background-10 w-5 h-5">
+          <div className="flex justify-center items-center fill-background-10 w-5">
             {icon}
           </div>
         )}
@@ -44,7 +45,9 @@ export type ButtonProps = {
   loading?: boolean;
   rounded?: boolean;
   state?: any;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+  id?: string;
+} & React.ButtonHTMLAttributes<HTMLButtonElement> &
+  Omit<LocalizedProps, 'id'>;
 
 export function Button({
   children,
@@ -55,6 +58,10 @@ export function Button({
   state = {},
   icon,
   rounded = false,
+  attrs,
+  id,
+  vars,
+  elems,
   ...props
 }: ButtonProps) {
   const classes = useMemo(() => {
@@ -95,7 +102,7 @@ export function Button({
     );
   }, [variant, disabled, rounded, props.className]);
 
-  return to ? (
+  const content = to ? (
     <NavLink
       to={to}
       className={classes}
@@ -103,14 +110,26 @@ export function Button({
       onClick={(ev) => disabled && ev.preventDefault()}
     >
       <ButtonContent icon={icon} loading={loading}>
-        {children}
+        {id && (
+          <Localized attrs={attrs} vars={vars} elems={elems} id={id}>
+            {children}
+          </Localized>
+        )}
+        {!id && children}
       </ButtonContent>
     </NavLink>
   ) : (
     <button type="button" {...props} className={classes} disabled={disabled}>
       <ButtonContent icon={icon} loading={loading}>
-        {children}
+        {id && (
+          <Localized attrs={attrs} vars={vars} elems={elems} id={id}>
+            {children}
+          </Localized>
+        )}
+        {!id && children}
       </ButtonContent>
     </button>
   );
+
+  return content;
 }

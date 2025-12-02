@@ -4,7 +4,6 @@ import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { useLocalization } from '@fluent/react';
-import { Typography } from '@/components/commons/Typography';
 
 export interface DeveloperModeWidgetForm {
   highContrast: boolean;
@@ -57,6 +56,7 @@ export function DeveloperModeWidget() {
       key={index}
       control={control}
       variant="toggle"
+      outlined
       name={name}
       label={l10n.getString(`widget-developer_mode-${label}`)}
     />
@@ -73,10 +73,7 @@ export function DeveloperModeWidget() {
   };
 
   return (
-    <form className="bg-background-60 flex flex-col w-full rounded-md px-2">
-      <div className="mt-2 px-1">
-        <Typography>{l10n.getString('widget-developer_mode')}</Typography>
-      </div>
+    <form className="grid grid-cols-2 w-full rounded-md gap-2">
       {Object.entries(toggles).map(makeToggle)}
     </form>
   );

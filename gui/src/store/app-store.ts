@@ -9,6 +9,7 @@ import {
 } from 'solarxr-protocol';
 import { selectAtom } from 'jotai/utils';
 import { isEqual } from '@react-hookz/deep-equal';
+import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from '@/hooks/body-parts';
 
 export interface FlatDeviceTracker {
   device?: DeviceDataT;
@@ -45,12 +46,16 @@ export const unassignedTrackersAtom = atom((get) => {
   return trackers.filter(({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE);
 });
 
-export const connectedIMUTrackersAtom = atom((get) => {
+export const connectedTrackersAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
   return trackers.filter(
-    ({ tracker }) =>
-      tracker.status !== TrackerStatus.DISCONNECTED && tracker.info?.isImu
+    ({ tracker }) => tracker.status !== TrackerStatus.DISCONNECTED
   );
+});
+
+export const connectedIMUTrackersAtom = atom((get) => {
+  const trackers = get(connectedTrackersAtom);
+  return trackers.filter(({ tracker }) => tracker.info?.isImu);
 });
 
 export const computedTrackersAtom = selectAtom(
@@ -95,3 +100,16 @@ export const trackerFromIdAtom = ({
     (a) => a,
     isEqual
   );
+
+export const feetAssignedTrackers = atom((get) =>
+  get(assignedTrackersAtom).some(
+    (t) => t.tracker.info?.bodyPart && FEET_BODY_PARTS.includes(t.tracker.info.bodyPart)
+  )
+);
+
+export const fingerAssignedTrackers = atom((get) =>
+  get(assignedTrackersAtom).some(
+    (t) =>
+      t.tracker.info?.bodyPart && FINGER_BODY_PARTS.includes(t.tracker.info.bodyPart)
+  )
+);

@@ -63,12 +63,11 @@ body {
   background: theme('colors.background.20');
 
   --navbar-w: 101px;
-  --widget-w: 274px;
   --topbar-h: 38px;
 
   @screen mobile {
     --topbar-h: 44px;
-    --navbar-h: 90px;
+    --navbar-h: 73px;
   }
 }
 
@@ -91,7 +90,7 @@ body {
   --accent-background-50: 46, 33, 69;
 
   --success: 80, 232, 151;
-  --warning: 216, 205, 55;
+  --warning: 255, 225, 53;
   --critical: 223, 109, 140;
   --special: 164, 79, 237;
   --window-icon-stroke: 192, 161, 216;
@@ -153,7 +152,7 @@ body {
   --accent-background-50: 19, 57, 19;
 
   --success: 80, 232, 151;
-  --warning: 216, 205, 55;
+  --warning: 255, 225, 53;
   --critical: 223, 109, 140;
   --special: 54, 161, 54;
   --window-icon-stroke: 129, 213, 130;
@@ -179,7 +178,7 @@ body {
   --accent-background-50: 57, 57, 19;
 
   --success: 80, 232, 151;
-  --warning: 216, 205, 55;
+  --warning: 255, 225, 53;
   --critical: 223, 109, 140;
   --special: 161, 160, 54;
   --window-icon-stroke: 213, 212, 129;
@@ -205,7 +204,7 @@ body {
   --accent-background-50: 57, 34, 19;
 
   --success: 80, 232, 151;
-  --warning: 216, 205, 55;
+  --warning: 255, 225, 53;
   --critical: 223, 109, 140;
   --special: 161, 95, 54;
   --window-icon-stroke: 213, 162, 129;
@@ -231,7 +230,7 @@ body {
   --accent-background-50: 57, 19, 19;
 
   --success: 80, 232, 151;
-  --warning: 216, 205, 55;
+  --warning: 255, 225, 53;
   --critical: 223, 109, 140;
   --special: 161, 54, 54;
   --window-icon-stroke: 213, 129, 129;
@@ -257,7 +256,7 @@ body {
   --accent-background-50: 39, 39, 39;
 
   --success: 80, 232, 151;
-  --warning: 216, 205, 55;
+  --warning: 255, 225, 53;
   --critical: 223, 109, 140;
   --special: 121, 121, 121;
   --window-icon-stroke: 172, 172, 172;

@@ -7,9 +7,9 @@
   grid-template:
     't t t' var(--topbar-h)
     'n s c' calc(100% - var(--topbar-h))
-    / var(--navbar-w) var(--settings-sidebar-w) calc(
-      100% - var(--navbar-w) - var(--settings-sidebar-w)
-    );
+    / var(--navbar-w) var(--settings-sidebar-w) calc(100% - var(--navbar-w) - var(
+          --settings-sidebar-w
+        ));
 
   @screen lg {
     --settings-sidebar-w: 270px;

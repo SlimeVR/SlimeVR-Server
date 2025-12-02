@@ -26,8 +26,8 @@ class LegTweaksTests {
 			hasRotation = true,
 			isComputed = true,
 			imuType = null,
-			needsReset = false,
-			needsMounting = false,
+			allowReset = false,
+			allowMounting = false,
 			isHmd = true,
 			trackRotDirection = false,
 		)

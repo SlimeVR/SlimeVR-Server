@@ -15,20 +15,18 @@ import dev.slimevr.tracking.trackers.TrackerRole.Companion.getById
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.collections.FastList
-import solarxr_protocol.rpc.StatusData
-import solarxr_protocol.rpc.StatusDataUnion
-import solarxr_protocol.rpc.StatusSteamVRDisconnectedT
 
 abstract class SteamVRBridge(
 	protected val server: VRServer,
 	threadName: String,
 	bridgeName: String,
-	protected val bridgeSettingsKey: String,
+	val bridgeSettingsKey: String,
 	protected val shareableTrackers: List<Tracker>,
 ) : ProtobufBridge(bridgeName),
 	Runnable {
 	protected val runnerThread: Thread = Thread(this, threadName)
 	protected val config: BridgeConfig = server.configManager.vrConfig.getBridge(bridgeSettingsKey)
+	var connected: Boolean = false
 
 	@VRServerThread
 	override fun startBridge() {
@@ -187,7 +185,7 @@ abstract class SteamVRBridge(
 			hasRotation = true,
 			userEditable = true,
 			isComputed = true,
-			needsReset = true,
+			allowReset = true,
 			isHmd = isHmd,
 		)
 
@@ -428,33 +426,13 @@ abstract class SteamVRBridge(
 		}
 	}
 
-	/**
-	 * When 0, then it means null
-	 */
-	protected var lastSteamVRStatus: Int = 0
-
 	@BridgeThread
 	protected fun reportDisconnected() {
-		if (lastSteamVRStatus != 0) {
-			return
-		}
-		val statusData = StatusSteamVRDisconnectedT()
-		statusData.bridgeSettingsName = bridgeSettingsKey
-
-		val status = StatusDataUnion()
-		status.type = StatusData.StatusSteamVRDisconnected
-		status.value = statusData
-		lastSteamVRStatus = instance.statusSystem
-			.addStatus(status, false).toInt()
+		connected = false
 	}
 
 	@BridgeThread
 	protected fun reportConnected() {
-		if (lastSteamVRStatus == 0) {
-			return
-		}
-		instance.statusSystem
-			.removeStatus(lastSteamVRStatus.toUInt())
-		lastSteamVRStatus = 0
+		connected = true
 	}
 }

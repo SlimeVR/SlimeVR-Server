@@ -54,6 +54,10 @@ class VRConfig {
 
 	val overlay: OverlayConfig = OverlayConfig()
 
+	val trackingChecklist: TrackingChecklistConfig = TrackingChecklistConfig()
+
+	val vrcConfig: VRCConfig = VRCConfig()
+
 	init {
 		// Initialize default settings for OSC Router
 		oscRouter.portIn = 9002
@@ -104,7 +108,7 @@ class VRConfig {
 			tracker.readConfig(config)
 			if (tracker.isImu()) tracker.resetsHandler.readDriftCompensationConfig(driftCompensation)
 			tracker.resetsHandler.readResetConfig(resetsConfig)
-			if (tracker.needsReset) {
+			if (tracker.allowReset) {
 				tracker.saveMountingResetOrientation(config)
 			}
 			if (tracker.allowFiltering) {
