@@ -24,13 +24,17 @@ fun resetTimer(resetTimerManager: ResetTimerManager, delay: Long, onTick: (progr
 	}
 
 	val ticks: Int = floor(delay / 1000f).toInt()
-	for (tick in 0.. ticks) {
-		if (tick * 1000L == delay) continue;
-		resetTimerManager.timers.add(resetTimerManager.timer.schedule(tick * 1000L) {
-			onTick(tick * 1000)
-		})
+	for (tick in 0..ticks) {
+		if (tick * 1000L == delay) continue
+		resetTimerManager.timers.add(
+			resetTimerManager.timer.schedule(tick * 1000L) {
+				onTick(tick * 1000)
+			},
+		)
 	}
-	resetTimerManager.timers.add(resetTimerManager.timer.schedule(delay) {
-		onComplete()
-	})
+	resetTimerManager.timers.add(
+		resetTimerManager.timer.schedule(delay) {
+			onComplete()
+		},
+	)
 }

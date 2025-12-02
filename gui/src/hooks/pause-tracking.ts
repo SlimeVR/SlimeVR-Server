@@ -10,7 +10,7 @@ import { restartAndPlay, trackingPauseSound, trackingPlaySound } from '@/sounds/
 import { useConfig } from './config';
 
 export function usePauseTracking() {
-  const { config } = useConfig()
+  const { config } = useConfig();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [paused, setPaused] = useState(false);
 
@@ -20,9 +20,9 @@ export function usePauseTracking() {
 
     if (!config) return;
     if (pause.pauseTracking) {
-      restartAndPlay(trackingPauseSound, config.feedbackSoundVolume)
+      restartAndPlay(trackingPauseSound, config.feedbackSoundVolume);
     } else {
-      restartAndPlay(trackingPlaySound, config.feedbackSoundVolume)
+      restartAndPlay(trackingPlaySound, config.feedbackSoundVolume);
     }
   };
 

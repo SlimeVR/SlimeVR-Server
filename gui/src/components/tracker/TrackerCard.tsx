@@ -13,10 +13,8 @@ import { TrackerStatus } from './TrackerStatus';
 import classNames from 'classnames';
 import { useTracker } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
-import { useAppContext } from '@/hooks/app';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
-import { checkForUpdate } from '@/hooks/firmware-update';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { trackingchecklistIdtoLabel } from '@/hooks/tracking-checklist';
 
@@ -206,7 +204,7 @@ export function TrackerCard({
         )}
         {!smol && <TrackerBig tracker={tracker} device={device} />}
       </div>
-      {showUpdates && <FirmwareIcon tracker={tracker} device={device}/>}
+      {showUpdates && <FirmwareIcon tracker={tracker} device={device} />}
     </div>
   );
 }
