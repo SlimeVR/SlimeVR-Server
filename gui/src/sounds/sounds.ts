@@ -48,8 +48,8 @@ const resetSounds: Record<
   },
 };
 
-export const trackingPauseSound = createAudio('/sounds/tracking/pause.ogg')
-export const trackingPlaySound = createAudio('/sounds/tracking/play.ogg')
+export const trackingPauseSound = createAudio('/sounds/tracking/pause.ogg');
+export const trackingPlaySound = createAudio('/sounds/tracking/play.ogg');
 
 let lastTap = 0;
 export async function playTapSetupSound(volume = 1) {
@@ -118,7 +118,7 @@ export function handleResetSounds(
 
   if (status === ResetStatus.STARTED) {
     if (progress === 0) {
-      performance.mark('sound_start')
+      performance.mark('sound_start');
       restartAndPlay(sounds.initial, volume);
     }
 
@@ -131,8 +131,8 @@ export function handleResetSounds(
   }
 
   if (status === ResetStatus.FINISHED) {
-    performance.mark('sound_end')
-    console.log(performance.measure('sound', 'sound_start', 'sound_end'))
+    performance.mark('sound_end');
+    console.log(performance.measure('sound', 'sound_start', 'sound_end'));
 
     restartAndPlay(sounds.end, volume);
     restartAndPlay(sounds.mew, volume);
