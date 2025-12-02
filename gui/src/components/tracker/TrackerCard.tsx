@@ -206,7 +206,7 @@ export function TrackerCard({
         )}
         {!smol && <TrackerBig tracker={tracker} device={device} />}
       </div>
-      <FirmwareIcon tracker={tracker} device={device}/>
+      {showUpdates && <FirmwareIcon tracker={tracker} device={device}/>}
     </div>
   );
 }
