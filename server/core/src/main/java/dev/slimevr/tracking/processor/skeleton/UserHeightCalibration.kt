@@ -103,7 +103,6 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		status = UserHeightCalibrationStatus.RECORDING_FLOOR
 		currentFloorLevel = Float.MAX_VALUE
 
-
 		sendStatusUpdate()
 	}
 
@@ -245,7 +244,6 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 
 		status = UserHeightCalibrationStatus.RECORDING_HEIGHT
 		hmdPositionSamples.add(currentPos)
-
 
 		if (hmdPositionSamples.isAtFullCapacity) {
 			val std = calculatePositionStdDev(hmdPositionSamples)

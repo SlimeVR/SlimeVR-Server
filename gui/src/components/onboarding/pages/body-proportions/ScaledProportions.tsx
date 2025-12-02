@@ -138,7 +138,10 @@ function UserHeightStatus({
     <div className="flex flex-col h-full rounded-t-lg xs:rounded-b-lg bg-background-60 xs:py-2 px-2 pt-4 relative">
       <div className="flex flex-col bg-background-60 rounded-lg">
         <div className="px-4 hidden xs:block">
-          <Typography variant="mobile-title" id="onboarding-user_height-calibration-title"/>
+          <Typography
+            variant="mobile-title"
+            id="onboarding-user_height-calibration-title"
+          />
         </div>
         <div className="flex flex-col py-2">
           <Stepper status={status} />
