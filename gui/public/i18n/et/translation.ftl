@@ -125,7 +125,7 @@ widget-overlay-is_mirrored_label = Näita Ülekatet Peeglina
 
 widget-drift_compensation-clear = Selgem triivi kompenseerimine
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Lähtesta paigaldusasend
 
@@ -533,6 +533,12 @@ settings-osc-vmc-anchor_hip-label = Ankurda puusadel
 
 
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu

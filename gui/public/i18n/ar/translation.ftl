@@ -197,7 +197,7 @@ widget-overlay-is_mirrored_label = عكس تراكب الشاشة
 
 widget-drift_compensation-clear = حذف تعويض الانجراف
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = مسح إعادة تعيين التركيب
 
@@ -790,6 +790,12 @@ settings-utils-advanced-open_data-label = فتح المجلد
 settings-utils-advanced-open_logs = مجلد السجلات
 settings-utils-advanced-open_logs-description = افتح مجلد سجلات SlimeVR في مستكشف الملفات ، والذي يحتوي على سجلات التطبيق
 settings-utils-advanced-open_logs-label = فتح المجلد
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

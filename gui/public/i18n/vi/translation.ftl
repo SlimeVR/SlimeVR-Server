@@ -136,7 +136,7 @@ widget-overlay-is_mirrored_label = Xem overlay trong gương
 
 widget-drift_compensation-clear = Xóa sai số
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Đặt lại hướng gắn tracker
 
@@ -627,6 +627,12 @@ settings-utils-advanced-reset-all-label = Đặt lại tất cả
 settings-utils-advanced-reset_warning-reset = Đặt lại cài đặt
 settings-utils-advanced-reset_warning-cancel = Hủy
 settings-utils-advanced-open_data-label = Mở thư mục
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

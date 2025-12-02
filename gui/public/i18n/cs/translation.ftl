@@ -167,7 +167,7 @@ widget-overlay-is_mirrored_label = Zobrazit překrytí jako zrcadlo
 
 widget-drift_compensation-clear = Vymazat kompenzaci driftu
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Vymazat reset nasazení
 
@@ -760,6 +760,12 @@ settings-utils-advanced-open_data-label = Otevřít složku
 settings-utils-advanced-open_logs = Složka s záznamy protokolů
 settings-utils-advanced-open_logs-description = Otevřít složku s konfiguračními soubory pro SlimeVR v průzkumníku souborů?
 settings-utils-advanced-open_logs-label = Otevřít složku
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

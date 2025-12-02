@@ -287,7 +287,7 @@ widget-overlay-is_mirrored_label = สะท้อนการแสดงโอ
 
 widget-drift_compensation-clear = ล้างการชดเชยค่าดริฟท์
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = ล้างค้าการติดตั้ง
 
@@ -887,6 +887,12 @@ settings-utils-advanced-open_data-label = เปิดโฟลเดอร์
 settings-utils-advanced-open_logs = โฟลเดอร์บันทึก
 settings-utils-advanced-open_logs-description = เปิดโฟลเดอร์บันทึกไฟล์ของ SlimeVR โดยจะมีไฟล์บันทึกการทำงานของแอพ
 settings-utils-advanced-open_logs-label = เปิดโฟลเดอร์
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

@@ -111,7 +111,7 @@ tracking-unpaused = Takibi duraklat
 ## Widget: Drift compensation
 
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
@@ -279,6 +279,12 @@ settings-osc-vrchat-network-address = Ağ adresi
 
 
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu

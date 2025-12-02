@@ -260,7 +260,7 @@ widget-overlay-is_mirrored_label = Mostrar overlay como espejo
 
 widget-drift_compensation-clear = Eliminar compensacion del drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Limpiar reinicio de montura
 
@@ -875,6 +875,12 @@ settings-utils-advanced-open_data-label = Abrir carpeta
 settings-utils-advanced-open_logs = Carpeta de registros
 settings-utils-advanced-open_logs-description = Abra la carpeta de registros de SlimeVR en el explorador de archivos, que contiene los registros de la aplicación
 settings-utils-advanced-open_logs-label = Abrir carpeta
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

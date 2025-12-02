@@ -147,7 +147,7 @@ widget-overlay-is_mirrored_label = Vis overlegg som speil
 ## Widget: Drift compensation
 
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
@@ -477,6 +477,12 @@ settings-osc-vrchat-network-trackers-elbows = Albuer
 
 
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu

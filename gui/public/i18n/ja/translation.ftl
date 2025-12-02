@@ -155,7 +155,7 @@ widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示
 
 widget-drift_compensation-clear = ドリフト補正をクリアする
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = リセットマウンティングをクリア
 
@@ -555,6 +555,12 @@ settings-osc-vmc-vrm = VRMモデル
 
 
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu

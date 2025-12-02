@@ -121,7 +121,7 @@ widget-overlay-is_mirrored_label = Vis Overlejring som Spejl
 
 widget-drift_compensation-clear = Klar afdriftskompensation
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
@@ -458,6 +458,12 @@ settings-osc-vmc-vrm-file_select = Træk og slip en model, du vil bruge, eller <
 
 
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu

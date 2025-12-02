@@ -127,7 +127,7 @@ widget-overlay-is_mirrored_label = Відображення накладання
 
 widget-drift_compensation-clear = Очистити компенсацію дрейфу
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Очистити скидання положення
 
@@ -589,6 +589,12 @@ settings-osc-vmc-mirror_tracking-label = Дзеркальний трекінг
 
 
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu

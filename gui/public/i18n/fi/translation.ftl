@@ -125,7 +125,7 @@ widget-overlay-is_mirrored_label = Näytä Overlay Peilinä
 
 widget-drift_compensation-clear = Tyhjennä ajautumakompensaatio
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Tyhjennä asennuksen nollaus
 
@@ -566,6 +566,12 @@ settings-osc-vmc-anchor_hip-label = Ankkuroi lonkalle
 
 
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu

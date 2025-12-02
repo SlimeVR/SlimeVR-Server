@@ -202,7 +202,7 @@ widget-overlay-is_mirrored_label = Visualisierung spiegeln
 
 widget-drift_compensation-clear = Driftkompensation zurücksetzen
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Befestigungs-Reset zurücksetzen
 
@@ -792,6 +792,12 @@ settings-utils-advanced-open_data-label = Ordner öffnen
 settings-utils-advanced-open_logs = Logs-Ordner
 settings-utils-advanced-open_logs-description = Öffnet den Logs-Ordner von SlimeVR im Explorer, der die Protokolle der App enthält.
 settings-utils-advanced-open_logs-label = Ordner öffnen
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

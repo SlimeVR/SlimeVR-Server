@@ -270,7 +270,7 @@ widget-overlay-is_mirrored_label = Visa överlägg som spegel
 
 widget-drift_compensation-clear = Kompensation för clear drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Montage med tydlig återställning
 
@@ -818,6 +818,12 @@ settings-utils-advanced-open_data-label = Öppna mapp
 settings-utils-advanced-open_logs = Logg-mapp
 settings-utils-advanced-open_logs-description = Öppna SlimeVR's config mapp i filutforskaren, som innehåller appens loggar
 settings-utils-advanced-open_logs-label = Öppna mapp
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

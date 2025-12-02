@@ -279,7 +279,7 @@ widget-overlay-is_mirrored_label = 镜像显示覆盖层
 
 widget-drift_compensation-clear = 清除漂移补偿数据
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = 清除重置佩戴
 
@@ -899,6 +899,12 @@ settings-utils-advanced-open_data-label = 打开文件夹
 settings-utils-advanced-open_logs = 日志文件夹
 settings-utils-advanced-open_logs-description = 在文件管理器中打开SlimeVR的日志文件夹，查看SlimeVR的日志文件。
 settings-utils-advanced-open_logs-label = 打开文件夹
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

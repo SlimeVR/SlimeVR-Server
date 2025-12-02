@@ -159,7 +159,7 @@ widget-overlay-is_mirrored_label = 오버레이 반전
 
 widget-drift_compensation-clear = 틀어짐 보정 초기화
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = 착용 방향 정렬 초기화
 
@@ -719,6 +719,12 @@ settings-utils-advanced-open_data-v1 = 설정 폴더
 settings-utils-advanced-open_data-label = 폴더 열기
 settings-utils-advanced-open_logs = 로그 폴더
 settings-utils-advanced-open_logs-label = 폴더 열기
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

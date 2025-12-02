@@ -109,7 +109,7 @@ widget-overlay-is_mirrored_label = Εμφάνιση υπέρθεσης ως κα
 
 widget-drift_compensation-clear = Επαναφορά αντιστάθμισης drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
@@ -277,6 +277,12 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 
 
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu

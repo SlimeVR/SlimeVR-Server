@@ -290,7 +290,7 @@ widget-overlay-is_mirrored_label = Afficher le squelette en tant que miroir
 
 widget-drift_compensation-clear = Réinitialiser la compensation de la dérive
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Réinitialiser la calibration de l'alignement
 
@@ -915,6 +915,12 @@ settings-utils-advanced-open_data-label = Ouvrir le dossier
 settings-utils-advanced-open_logs = Dossier des logs
 settings-utils-advanced-open_logs-description = Ouvre le dossier des logs de SlimeVR, contenant ses logs, dans l'explorateur de fichier
 settings-utils-advanced-open_logs-label = Ouvrir le dossier
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

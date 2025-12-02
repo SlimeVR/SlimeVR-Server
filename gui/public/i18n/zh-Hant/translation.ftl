@@ -285,7 +285,7 @@ widget-overlay-is_mirrored_label = 鏡像顯示內嵌介面
 
 widget-drift_compensation-clear = 清除偏移補償數據
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = 清除配戴重置
 
@@ -901,6 +901,12 @@ settings-utils-advanced-open_data-label = 打開資料夾
 settings-utils-advanced-open_logs = 紀錄檔資料夾
 settings-utils-advanced-open_logs-description = 在檔案管理器中開啟 SlimeVR 的紀錄檔資料夾，該資料夾包含程式的紀錄檔。
 settings-utils-advanced-open_logs-label = 打開資料夾
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

@@ -285,7 +285,7 @@ widget-overlay-is_mirrored_label = Overlay weergeven als spiegel
 
 widget-drift_compensation-clear = Reset huidige drift compensatie
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Reset montage legen
 
@@ -890,6 +890,12 @@ settings-utils-advanced-open_data-label = Map openen
 settings-utils-advanced-open_logs = logboeken
 settings-utils-advanced-open_logs-description = Open de logmap van SlimeVR in de bestandsverkenner, met de logboeken van de app
 settings-utils-advanced-open_logs-label = Map openen
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

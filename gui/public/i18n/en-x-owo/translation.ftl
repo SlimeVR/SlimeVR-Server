@@ -189,7 +189,7 @@ widget-overlay-is_mirrored_label = dispway owovelay as miwwow
 
 widget-drift_compensation-clear = cwear dwift compensation
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = cweaw weset meownting
 
@@ -718,6 +718,12 @@ settings-utils-advanced-open_data-label = open fowdew
 settings-utils-advanced-open_logs = logs fowdew
 settings-utils-advanced-open_logs-description = open swimevr's logs fowdew in da fiwe explowew, containing teh logs of da app
 settings-utils-advanced-open_logs-label = open fowdew
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

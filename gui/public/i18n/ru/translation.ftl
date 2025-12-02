@@ -287,7 +287,7 @@ widget-overlay-is_mirrored_label = Показывать оверлей как з
 
 widget-drift_compensation-clear = Очистить компенсацию дрифта
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Обнулить сброс выравнивания
 
@@ -896,6 +896,12 @@ settings-utils-advanced-open_data-label = Открыть папку
 settings-utils-advanced-open_logs = Папка логов
 settings-utils-advanced-open_logs-description = Открыть в проводнике папку логов SlimeVR, содержащую логи приложения
 settings-utils-advanced-open_logs-label = Открыть папку
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 

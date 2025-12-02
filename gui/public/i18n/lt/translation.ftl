@@ -239,7 +239,7 @@ widget-overlay-is_mirrored_label = Rodyti perdangą kaip veidrodį
 
 widget-drift_compensation-clear = Išvalyti dreifo kompensavimą
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Išvalyti tvirtinimo atstatymą
 
@@ -596,6 +596,12 @@ settings-general-gesture_control-trackers =
 
 
 ## Advanced settings
+
+
+## Home Screen
+
+
+## Tracking Checlist
 
 
 ## Setup/onboarding menu

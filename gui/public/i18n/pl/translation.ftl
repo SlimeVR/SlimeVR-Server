@@ -287,7 +287,7 @@ widget-overlay-is_mirrored_label = Wyświetlaj nakładkę w lustrzanym odbiciu
 
 widget-drift_compensation-clear = Wyczyść kompensację dryfu
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Wyczyść resetowanie montażu
 
@@ -901,6 +901,12 @@ settings-utils-advanced-open_data-label = Otwórz folder
 settings-utils-advanced-open_logs = Folder dzienników
 settings-utils-advanced-open_logs-description = Otwórz folder dzienników SlimeVR w eksploratorze plików, zawierający dzienniki aplikacji
 settings-utils-advanced-open_logs-label = Otwórz folder
+
+## Home Screen
+
+
+## Tracking Checlist
+
 
 ## Setup/onboarding menu
 
