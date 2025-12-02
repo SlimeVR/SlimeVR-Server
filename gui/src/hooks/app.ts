@@ -6,7 +6,7 @@ import {
   RpcMessage,
   StartDataFeedT,
 } from 'solarxr-protocol';
-import { handleResetSounds } from '@/sounds/sounds';
+import { handleResetSounds, loadSounds } from '@/sounds/sounds';
 import { useConfig } from './config';
 import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
@@ -67,7 +67,8 @@ export function useProvideAppContext(): AppContext {
   }, []);
 
   useEffect(() => {
-  });
+    loadSounds();
+  }, []);
 
   return {
     currentFirmwareRelease,
