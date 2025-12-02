@@ -493,8 +493,8 @@ settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 工具
 settings-sidebar-serial = 序列埠終端
 settings-sidebar-appearance = 外觀
-settings-sidebar-home = 首頁
-settings-sidebar-checklist = 檢查清單
+settings-sidebar-home = 主畫面
+settings-sidebar-checklist = 追蹤清單
 settings-sidebar-notifications = 通知
 settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
@@ -914,9 +914,14 @@ settings-utils-advanced-open_logs-label = 打開資料夾
 ## Home Screen
 
 settings-home-list-layout = 追蹤器清單檢視方式
+settings-home-list-layout-desc = 請從以下選項選擇一個主畫面的檢視方式
+settings-home-list-layout-grid = 格狀
+settings-home-list-layout-table = 表格
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = 列出的追蹤清單項目
+settings-tracking_checklist-active_steps-desc = 列出所有會在追蹤清單中顯示的步驟，你可以停用或啟用可忽略的步驟。
 
 ## Setup/onboarding menu
 
@@ -1192,6 +1197,8 @@ onboarding-automatic_mounting-done-restart = 再試一次
 onboarding-automatic_mounting-mounting_reset-title = 配戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 雙腿彎曲以滑雪的姿勢蹲下，上身向前傾斜，手臂彎曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. 按下「配戴重置」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. 以腳尖站立，雙腳朝前。你也能坐在椅子上進行。
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. 按下「腳部校正」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
 onboarding-automatic_mounting-preparation-title = 準備
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. 請按下「完整重置」按鈕。
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直，雙臂放在身體兩側，確保向前直視。
@@ -1359,6 +1366,8 @@ onboarding-stay_aligned-done = 完成
 ## Home
 
 home-no_trackers = 未偵測到或未分配追蹤器
+home-settings = 主畫面設定
+home-settings-close = 關閉
 
 ## Trackers Still On notification
 
@@ -1567,3 +1576,14 @@ error_collection_modal-description_v2 =
     若之後要變更此設定，可以在「詳細設定」頁面中的「行為」來變更。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 我不想要
+tracking_checklist = 追蹤清單
+tracking_checklist-settings = 追蹤清單設定
+tracking_checklist-settings-close = 關閉
+tracking_checklist-status-incomplete = 還沒做完 SlimeVR 使用前的準備！
+tracking_checklist-status-partial = 你有 { $count } 項警告！
+tracking_checklist-status-complete = 已經準備好使用 SlimeVR 了！
+tracking_checklist-MOUNTING_CALIBRATION = 進行配戴校正
+tracking_checklist-FEET_MOUNTING_CALIBRATION = 進行腳部的配戴校正
+tracking_checklist-FULL_RESET = 進行完整重置
+tracking_checklist-FULL_RESET-desc = 有追蹤器需要進行重置
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR 未執行
