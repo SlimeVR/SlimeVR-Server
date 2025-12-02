@@ -1303,7 +1303,7 @@ onboarding-scaled_proportions-done-description = Your body proportions should no
 ## User height calibration
 onboarding-user_height-title = What is your Height?
 onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR Calculate it or input your height manually
-onboarding-user_height-need_head_tracker = An HMD (or Head tracker) is required to perform the calibration
+onboarding-user_height-need_head_tracker = An HMD (or Head tracker) and positional controllers are required to perform the calibration
 onboarding-user_height-calculate = Calculate my height Automatically
 onboarding-user_height-next_step = Continue and save
 onboarding-user_height-manual-proportions = Manual Proportions
