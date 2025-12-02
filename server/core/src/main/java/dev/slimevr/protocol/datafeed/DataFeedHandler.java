@@ -107,6 +107,12 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				.createStayAlignedPose(fbb, this.api.server.humanPoseManager.skeleton);
 		}
 
+		int serverGuardsOffset = 0;
+		if (config.getServerGuardsMask()) {
+			serverGuardsOffset = DataFeedBuilderKotlin.INSTANCE
+				.createServerGuard(fbb, this.api.server.getServerGuards());
+		}
+
 		return DataFeedUpdate
 			.createDataFeedUpdate(
 				fbb,
@@ -114,7 +120,8 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				trackersOffset,
 				bonesOffset,
 				stayAlignedPoseOffset,
-				index
+				index,
+				serverGuardsOffset
 			);
 	}
 

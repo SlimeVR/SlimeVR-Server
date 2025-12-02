@@ -196,7 +196,10 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		val trackerRequireReset = imuTrackers.filter {
 			it.status !== TrackerStatus.ERROR && !it.isInternal && it.allowReset && it.needReset
 		}
-		updateValidity(TrackingChecklistStepId.FULL_RESET, trackerRequireReset.isEmpty()) {
+		// We ask for a full reset if you need to do mounting calibration but cant because you haven't done full reset in a while
+		// or if you have trackers that need reset after re-assigning
+		val needFullReset = (!resetMountingCompleted && !vrServer.serverGuards.canDoMounting) || trackerRequireReset.isNotEmpty()
+		updateValidity(TrackingChecklistStepId.FULL_RESET, !needFullReset) {
 			if (trackerRequireReset.isNotEmpty()) {
 				it.extraData = TrackingChecklistExtraDataUnion().apply {
 					type = TrackingChecklistExtraData.TrackingChecklistTrackerReset
@@ -210,7 +213,6 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 				it.extraData = null
 			}
 		}
-
 		val hmd =
 			assignedTrackers.firstOrNull { it.isHmd && !it.isInternal && it.status.sendData }
 		val assignedHmd = hmd == null || vrServer.humanPoseManager.skeleton.headTracker != null
