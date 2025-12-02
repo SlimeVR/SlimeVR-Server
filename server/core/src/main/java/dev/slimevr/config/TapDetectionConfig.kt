@@ -15,15 +15,15 @@ class TapDetectionConfig {
 	var setupMode = false
 	var yawResetTaps = 2
 		set(yawResetTaps) {
-			field = FastMath.clamp(yawResetTaps.toFloat(), 2f, 10f).toInt()
+			field = yawResetTaps.coerceIn(2, 10)
 		}
 	var fullResetTaps = 3
 		set(fullResetTaps) {
-			field = FastMath.clamp(fullResetTaps.toFloat(), 2f, 10f).toInt()
+			field = fullResetTaps.coerceIn(2, 10)
 		}
 	var mountingResetTaps = 3
 		set(mountingResetTaps) {
-			field = FastMath.clamp(mountingResetTaps.toFloat(), 2f, 10f).toInt()
+			field = mountingResetTaps.coerceIn(2, 10)
 		}
 	var numberTrackersOverThreshold = 1
 }

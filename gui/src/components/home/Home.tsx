@@ -95,8 +95,8 @@ export function Home() {
           </div>
         )}
 
-        {config?.homeLayout === 'table' && (
-          <div className="px-2 overflow-x-auto">
+        {config?.homeLayout === 'table' && trackers.length > 0 && (
+          <div className="mx-2 overflow-x-auto">
             <TrackersTable
               flatTrackers={trackers}
               clickedTracker={(tracker) => sendToSettings(tracker)}
@@ -137,7 +137,7 @@ export function Home() {
               </div>
             )}
             {config?.homeLayout === 'table' && (
-              <div className="px-2 overflow-x-auto">
+              <div className="mx-2 overflow-x-auto">
                 <TrackersTable
                   flatTrackers={unassignedTrackers}
                   clickedTracker={(tracker) => sendToSettings(tracker)}

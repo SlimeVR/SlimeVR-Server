@@ -72,7 +72,7 @@ export function TrackingChecklistSettings({
         />
       </div>
       <form
-        className="grid grid-cols-2 gap-2 mobile:flex flex-col"
+        className="grid md:grid-cols-2 gap-2 grid-rows-3 mobile:flex flex-col"
         onChange={handleSubmit(onSubmit)}
       >
         {steps
