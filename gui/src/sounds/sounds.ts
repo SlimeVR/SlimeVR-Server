@@ -52,21 +52,33 @@ async function createAudio(path: string): Promise<HTMLAudioElement> {
   return audio;
 }
 
-const fullResetSounds = {
-  initial: await createAudio('/sounds/full-reset/initial.mp3'),
-  tick: [
-    await createAudio('/sounds/full-reset/click_1.mp3'),
-    await createAudio('/sounds/full-reset/click_2.mp3'),
-    await createAudio('/sounds/full-reset/click_3.mp3'),
-  ],
-  end: await createAudio('/sounds/full-reset/end_chord.mp3'),
-  mew: await createAudio('/sounds/full-reset/mew.mp3'),
-};
-const resetSounds = {
-  [ResetType.Full]: fullResetSounds,
-  [ResetType.Yaw]: fullResetSounds,
-  [ResetType.Mounting]: fullResetSounds,
-};
+let resetSounds: Record<
+  ResetType,
+  {
+    initial: HTMLAudioElement;
+    tick: HTMLAudioElement[];
+    end: HTMLAudioElement;
+    mew: HTMLAudioElement;
+  }
+> | null = null;
+
+export async function loadSounds() {
+  const fullResetSounds = {
+    initial: await createAudio('/sounds/full-reset/initial.mp3'),
+    tick: [
+      await createAudio('/sounds/full-reset/click_1.mp3'),
+      await createAudio('/sounds/full-reset/click_2.mp3'),
+      await createAudio('/sounds/full-reset/click_3.mp3'),
+    ],
+    end: await createAudio('/sounds/full-reset/end_chord.mp3'),
+    mew: await createAudio('/sounds/full-reset/mew.mp3'),
+  };
+  resetSounds = {
+    [ResetType.Full]: fullResetSounds,
+    [ResetType.Yaw]: fullResetSounds,
+    [ResetType.Mounting]: fullResetSounds,
+  };
+}
 
 function restartAndPlay(audio: HTMLAudioElement, volume: number) {
   try {
@@ -89,6 +101,7 @@ export function handleResetSounds(
   volume: number,
   { progress, status, resetType }: ResetResponseT
 ) {
+  if (!resetSounds) throw 'sounds not loaded';
   const sounds = resetSounds[resetType];
 
   if (status === ResetStatus.STARTED) {

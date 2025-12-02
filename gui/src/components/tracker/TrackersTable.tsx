@@ -320,7 +320,7 @@ export function TrackersTable({
           <Header name={'tracker-table-column-name'} first />
           <Header name={'tracker-table-column-type'} />
           <Header name={'tracker-table-column-battery'} />
-          <Header name={'tracker-table-column-ping'} />
+          <Header name={'tracker-table-column-ping'} className="w-24" />
           <Header name={'tracker-table-column-tps'} />
           <Header
             name={'tracker-table-column-rotation'}

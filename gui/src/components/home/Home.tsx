@@ -95,7 +95,7 @@ export function Home() {
           </div>
         )}
 
-        {config?.homeLayout === 'table' && (
+        {config?.homeLayout === 'table' && trackers.length > 0 && (
           <div className="px-2 overflow-x-auto">
             <TrackersTable
               flatTrackers={trackers}

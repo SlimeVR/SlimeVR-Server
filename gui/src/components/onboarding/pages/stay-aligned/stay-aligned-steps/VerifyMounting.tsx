@@ -54,8 +54,8 @@ export function VerifyMountingStep({
             {l10n.getString('onboarding-automatic_mounting-prev_step')}
           </Button>
           <ResetButton
-            size="small"
             type={ResetType.Mounting}
+            group="default"
             onReseted={nextStep}
           />
         </div>

@@ -5,10 +5,9 @@ import java.util.TimerTask
 import kotlin.concurrent.schedule
 import kotlin.math.min
 
-
 class ResetTimerManager {
-	val timer: Timer = Timer();
-	val timers: ArrayList<TimerTask> = arrayListOf();
+	val timer: Timer = Timer()
+	val timers: ArrayList<TimerTask> = arrayListOf()
 
 	fun cancelTimers() {
 		timers.forEach { it.cancel() }
@@ -31,10 +30,11 @@ fun resetTimer(resetTimerManager: ResetTimerManager, delay: Long, onTick: (progr
 			cancel()
 			onComplete()
 		} else {
-			if (delay >= 1000L)
+			if (delay >= 1000L) {
 				onTick(current)
+			}
 		}
 		progress++
 	}
-	resetTimerManager.timers.add(task);
+	resetTimerManager.timers.add(task)
 }

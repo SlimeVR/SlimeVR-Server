@@ -52,9 +52,8 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
   };
 
   const onResetCanceled = () => {
-    if (status !== 'finished')
-      setStatus('idle');
-  }
+    if (status !== 'finished') setStatus('idle');
+  };
 
   useEffect(() => {
     if (status === 'finished') {
@@ -77,13 +76,12 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
   useRPCPacket(
     RpcMessage.ResetResponse,
     ({ status, resetType, progress, duration, bodyParts }: ResetResponseT) => {
-
       if (
         resetType !== options.type ||
         (resetType == ResetType.Mounting &&
           JSON.stringify(parts) !== JSON.stringify(bodyParts))
       ) {
-        onResetCanceled()
+        onResetCanceled();
         return;
       }
       onResetProgress(progress, duration);
