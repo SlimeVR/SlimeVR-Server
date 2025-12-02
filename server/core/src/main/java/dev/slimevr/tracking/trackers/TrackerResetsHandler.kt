@@ -24,6 +24,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		Math.PI.toFloat(),
 		0f,
 	).toQuaternion()
+	private val QuarterPitch = Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
+
 	private var driftAmount = 0f
 	private var averagedDriftQuat = Quaternion.IDENTITY
 	private var rotationSinceReset = Quaternion.IDENTITY
@@ -51,16 +53,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 	// Reference adjustment quats
-
-	/**
-	 * Gyro fix is set by full reset. This sets the current y rotation to 0, correcting
-	 * for initial yaw rotation and the rotation incurred by mounting orientation. This
-	 * is a local offset in rotation and does not affect the axes of rotation.
-	 *
-	 * This rotation is only used to compute [attachmentFix], otherwise [yawFix] would
-	 * correct for the same rotation.
-	 */
-	private var gyroFix = Quaternion.IDENTITY
 
 	/**
 	 * Attachment fix is set by full reset. This sets the current x and z rotations to
@@ -186,9 +178,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun getIdentityAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToIdentity(rotation))
 
 	/**
-	 * Get the adjusted accel from yawFixZeroReference
+	 * Get the reference adjusted accel.
 	 */
-	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = (adjustToReference(rawRot) / yawFix).sandwich(accel)
+	// All IMU axis corrections are inverse to undo `adjustToReference` after local yaw offsets are added
+	// Order is VERY important here! Please be extremely careful! >~>
+	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = (adjustToReference(rawRot) * (attachmentFix * mountingOrientation * mountRotFix * tposeDownFix).inv()).sandwich(accel)
 
 	/**
 	 * Converts raw or filtered rotation into reference- and
@@ -197,13 +191,17 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
-		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
-			rot *= mountingOrientation
-		}
-		rot = gyroFix * rot
+		// Correct for global pitch/roll offset
 		rot *= attachmentFix
-		rot = mountRotFix.inv() * (rot * mountRotFix)
+		// Correct for global yaw offset without affecting local yaw so we can change this
+		// later without invalidating local yaw offset corrections
+		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
+			rot = mountingOrientation.inv() * rot * mountingOrientation
+		}
+		rot = mountRotFix.inv() * rot * mountRotFix
+		// T-pose global correction
 		rot *= tposeDownFix
+		// Align local yaw with reference
 		rot = yawFix * rot
 		rot = constraintFix * rot
 		return rot
@@ -267,15 +265,23 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		lastResetQuaternion = oldRot
 
 		// Adjust raw rotation to mountingOrientation
-		val mountingAdjustedRotation = tracker.getRawRotation() * mountingOrientation
+		val rotation = tracker.getRawRotation()
 
 		// Gyrofix
-		if (tracker.allowMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
-			gyroFix = if (tracker.isComputed) {
-				fixGyroscope(tracker.getRawRotation())
+		val gyroFix = if (tracker.allowMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
+			if (tracker.isComputed) {
+				fixGyroscope(rotation)
 			} else {
-				fixGyroscope(mountingAdjustedRotation * tposeDownFix)
+				if (tracker.trackerPosition.isFoot()) {
+					// Feet are rotated by 90 deg pitch, this means we're relying on IMU rotation
+					//  to be set correctly here.
+					fixGyroscope(rotation * tposeDownFix * QuarterPitch)
+				} else {
+					fixGyroscope(rotation * tposeDownFix)
+				}
 			}
+		} else {
+			Quaternion.IDENTITY
 		}
 
 		// Mounting for computed trackers
@@ -290,7 +296,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			if (resetHmdPitch) {
 				// Reset the HMD's pitch if it's assigned to head and resetHmdPitch is true
 				// Get rotation without yaw (make sure to use the raw rotation directly!)
-				val rotBuf = getYawQuaternion(tracker.getRawRotation()).inv() * tracker.getRawRotation()
+				val rotBuf = getYawQuaternion(rotation).inv() * rotation
 				// Isolate pitch
 				Quaternion(rotBuf.w, -rotBuf.x, 0f, 0f).unit()
 			} else {
@@ -298,7 +304,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				Quaternion.IDENTITY
 			}
 		} else {
-			fixAttachment(mountingAdjustedRotation)
+			(gyroFix * rotation).inv()
 		}
 
 		// Rotate attachmentFix by 180 degrees as a workaround for t-pose (down)
@@ -310,7 +316,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Don't adjust yaw if head and computed
 		if (tracker.trackerPosition != TrackerPosition.HEAD || !tracker.isComputed) {
-			yawFix = fixYaw(mountingAdjustedRotation, reference)
+			yawFix = gyroFix * reference.project(Vector3.POS_Y).unit()
 			tracker.yawResetSmoothing.reset()
 		}
 
@@ -354,7 +360,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		lastResetQuaternion = oldRot
 
 		val yawFixOld = yawFix
-		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
+		yawFix = fixYaw(tracker.getRawRotation(), reference)
 		tracker.yawResetSmoothing.reset()
 
 		makeIdentityAdjustmentQuatsYaw()
@@ -393,9 +399,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		constraintFix = Quaternion.IDENTITY
 
 		// Get the current calibrated rotation
-		var rotBuf = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
-		rotBuf = gyroFix * rotBuf
+		var rotBuf = adjustToDrift(tracker.getRawRotation())
 		rotBuf *= attachmentFix
+		rotBuf = mountingOrientation.inv() * rotBuf * mountingOrientation
 		rotBuf = yawFix * rotBuf
 
 		// Adjust buffer to reference
@@ -451,14 +457,22 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		mountRotFix = Quaternion.IDENTITY
 	}
 
-	private fun fixGyroscope(sensorRotation: Quaternion): Quaternion = getYawQuaternion(sensorRotation).inv()
-
-	private fun fixAttachment(sensorRotation: Quaternion): Quaternion = (gyroFix * sensorRotation).inv()
+	// EulerOrder.YXZ is actually better for gyroscope fix, as it can get yaw at any roll.
+	//  Consequentially, instead of the roll being limited, the pitch is limited to
+	//  90 degrees from the yaw plane. This means trackers may be mounted upside down
+	//  or with incorrectly configured IMU rotation, but we will need to compensate for
+	//  the pitch.
+	private fun fixGyroscope(sensorRotation: Quaternion): Quaternion = getYawQuaternion(sensorRotation, EulerOrder.YXZ).inv()
 
 	private fun fixYaw(sensorRotation: Quaternion, reference: Quaternion): Quaternion {
-		var rot = gyroFix * sensorRotation
-		rot *= attachmentFix
-		rot = mountRotFix.inv() * (rot * mountRotFix)
+		var rot = sensorRotation * attachmentFix
+		// We need to fix the global yaw offset for the euler yaw calculation
+		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
+			rot = mountingOrientation.inv() * rot * mountingOrientation
+		}
+		rot = mountRotFix.inv() * rot * mountRotFix
+		// TODO: Get diff from ref to rot, use euler angle (YZX) yaw as output.
+		//  This prevents pitch and roll from affecting the alignment.
 		rot = getYawQuaternion(rot)
 		return rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
@@ -469,7 +483,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// In both cases, the isolated yaw value changes
 	// with the tracker's roll when pointing forward.
 	// calling twinNearest() makes sure this rotation has the wanted polarity (+-).
-	private fun getYawQuaternion(rot: Quaternion): Quaternion = EulerAngles(EulerOrder.YZX, 0f, rot.toEulerAngles(EulerOrder.YZX).y, 0f).toQuaternion().twinNearest(rot)
+	private fun getYawQuaternion(rot: Quaternion, order: EulerOrder = EulerOrder.YZX): Quaternion = EulerAngles(order, 0f, rot.toEulerAngles(order).y, 0f).toQuaternion().twinNearest(rot)
 
 	private fun makeIdentityAdjustmentQuatsFull() {
 		val sensorRotation = tracker.getRawRotation()
