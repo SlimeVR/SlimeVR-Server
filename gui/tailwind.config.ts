@@ -3,6 +3,7 @@ import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 import gradient from 'tailwind-gradient-mask-image';
 import type { Config } from 'tailwindcss';
+import { transform } from 'typescript';
 
 const colors = {
   'blue-gray': {
@@ -172,6 +173,7 @@ const config = {
       nsm: { raw: 'not (min-width: 900px)' },
       sm: '900px',
       md: '1100px',
+      nmd: { raw: 'not (min-width: 1100px)' },
       'md-max': { raw: 'not (min-width: 1100px)' },
       lg: '1300px',
       xl: '1600px',
@@ -228,6 +230,54 @@ const config = {
             'animation-timing-function': 'cubic-bezier(0.8, 0, 1, 1)',
           },
         },
+        'timer-tick': {
+          "0%, 40%": {
+            transform: 'scale(1)',
+          },
+          "20%": {
+            transform: 'scale(1.3)',
+          },
+        },
+        'spin-ccw': {
+          '0%': {
+            transform: 'rotate(0deg)',
+          },
+          '100%': {
+            transform: 'rotate(-360deg)',
+          },
+        },
+        skiing: {
+          '0%, 100%': {
+            transform: 'rotate(0deg) translateX(0%) translateY(0%)',
+          },
+          '10%': {
+            transform: 'rotate(12deg) translateX(-5%) translateY(5%)',
+          },
+          '20%': {
+            transform: 'rotate(10deg) translateX(0%) translateY(0%)',
+          },
+          '30%': {
+            transform: 'rotate(12deg) translateX(5%) translateY(-5%)',
+          },
+          '40%': {
+            transform: 'rotate(10deg) translateX(0%) translateY(0%)',
+          },
+          '50%': {
+            transform: 'rotate(12deg) translateX(-5%) translateY(5%)',
+          },
+          '60%': {
+            transform: 'rotate(10deg) translateX(0%) translateY(0%)',
+          },
+          '70%': {
+            transform: 'rotate(12deg) translateX(5%) translateY(-5%)',
+          },
+          '80%': {
+            transform: 'rotate(10deg) translateX(0%) translateY(0%)',
+          },
+          '90%': {
+            transform: 'rotate(10deg) translateX(-5%) translateY(5%)',
+          },
+        },
       },
       backgroundImage: {
         slime: `linear-gradient(135deg, ${colors.purple[100]} 50%, ${colors['blue-gray'][700]} 50% 100%)`,
@@ -239,6 +289,11 @@ const config = {
         light: `linear-gradient(135deg, ${colors['light-accent'][100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
         'asexual-flag': `linear-gradient(135deg, ${colors['asexual'][100]} 30%, ${colors['asexual'][200]} 30% 50%, ${colors['asexual'][300]} 50% 70%, ${colors['asexual'][400]} 70% 100%)`,
+      },
+      animation: {
+        'spin-ccw': 'spin-ccw 1s linear infinite',
+        'timer-tick': 'timer-tick 1s linear infinite',
+        skiing: 'skiing 1s linear infinite',
       },
     },
     data: {

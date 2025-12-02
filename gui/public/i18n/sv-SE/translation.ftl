@@ -376,7 +376,7 @@ tracker-settings-use_mag = Aktivera magnetometer på denna sensorn.
 # Multiline!
 tracker-settings-use_mag-description =
     Ska denna sensorn använda magnetometern för att minska drift när magnetometer-användning är tillåten? <b> Var vänlig och stäng inte av sensorn när du växlar av och på denna inställningen! <b>
-
+    
     Du behöver tillåta magnetometer-användning först <magSetting> klicka här för att gå till inställningen </magSetting>.
 tracker-settings-use_mag-label = Tillåt magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
@@ -388,7 +388,6 @@ tracker-settings-name_section-label = Sensorns namn
 tracker-settings-forget = Glöm spårning
 tracker-settings-forget-description = Tar bort trackern från SlimeVR-servern och förhindrar den från att ansluta till den tills servern startas om. Konfigurationen av trackern kommer inte att gå förlorad.
 tracker-settings-forget-label = Glöm spårning
-tracker-settings-update-unavailable = Kan ej uppdateras (DIY)
 tracker-settings-update-low-battery = Kan ej uppdatera. Batteriet är under 50%
 tracker-settings-update-up_to_date = Uppdaterad
 tracker-settings-update-available = { $versionName } är nu tillgänlig
@@ -576,8 +575,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan m
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap försöker gissa rotationen på dina fötter om fotspårare inte används.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fotplatta roterar fötterna så att de är parallella med marken vid kontakt.
 settings-general-fk_settings-leg_fk = Spårning av ben
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Aktivera fötterna Montering Återställning genom att gå på tå.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Fötter Montering Återställning
 settings-general-fk_settings-enforce_joint_constraints = Skelett-gränser
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Upprätthåll begränsningar
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
@@ -675,9 +672,6 @@ settings-general-interface-connected_trackers_warning-label = Varning för uppko
 ## Behavior settings
 
 settings-interface-behavior = Beteende
-settings-general-interface-dev_mode = Utvecklarläge
-settings-general-interface-dev_mode-description = Det här läget kan vara användbart om du behöver djupgående data eller vill interagera med anslutna trackers på en mer avancerad nivå.
-settings-general-interface-dev_mode-label = Utvecklarläge
 settings-general-interface-use_tray = Minimera till systemfältet
 settings-general-interface-use_tray-description = Låter dig stänga fönstret utan att stänga SlimeVR-servern så att du kan fortsätta använda den utan att GUI stör dig.
 settings-general-interface-use_tray-label = Minimera till systemfältet
@@ -687,9 +681,9 @@ settings-general-interface-discord_presence-label = Dela aktivitet på Discord
 settings-interface-behavior-error_tracking = Error samling via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Tillåter du samlingen av anonym error-data?</h1>
-
+    
     <b>Vi samlar inte personlig information</b> så som din IP adress eller trådlösa referenser. Slimevr värdesätter din integritet!
-
+    
     För att tillhandhålla den bästa användarupplevelsen, så samlar vi anonyma error-raporter, prestandamått och operativsystems-info. Detta hjälper oss upptäcka buggar och problem med Slimevr. Dessa rapporterna samlas via Sentry.io.
 settings-interface-behavior-error_tracking-label = Skicka errors till utväcklare
 
@@ -789,6 +783,9 @@ settings-osc-vmc-mirror_tracking = Spegla spårning
 settings-osc-vmc-mirror_tracking-description = Spegla spårning horisontellt.
 settings-osc-vmc-mirror_tracking-label = Spegla spårning
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = Avancerad
@@ -861,7 +858,7 @@ onboarding-reset_tutorial-skip = Hoppa över steg
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tryck { $taps } gånger på den markerade trackern för att utlösa yaw reset.
-
+    
     Detta gör att spårarna vänds i samma riktning som ditt headset (HMD).
 
 ## Setup start
@@ -927,7 +924,6 @@ onboarding-connect_tracker-next = Jag har anslutit alla mina spårare
 
 onboarding-calibration_tutorial = Handledning för IMU-kalibrering
 onboarding-calibration_tutorial-subtitle = Detta kommer att bidra till att minska spårarens drift!
-onboarding-calibration_tutorial-description = Varje gång du slår på dina trackers måste de vila en stund på en plan yta för att kalibreras. Låt oss göra samma sak genom att klicka på knappen "{ onboarding-calibration_tutorial-calibrate }", <b>rör dem inte!</b>
 onboarding-calibration_tutorial-calibrate = Jag placerade mina trackers på bordet
 onboarding-calibration_tutorial-status-waiting = Väntar på dig
 onboarding-calibration_tutorial-status-calibrating = Kalibrering
@@ -1165,9 +1161,6 @@ firmware_tool-flashing_step-exit = Stäng
 ## firmware tool build status
 
 firmware_tool-build-CREATING_BUILD_FOLDER = Skapar bygges-filen
-firmware_tool-build-DOWNLOADING_FIRMWARE = Laddar ner mjukvaran
-firmware_tool-build-EXTRACTING_FIRMWARE = Extraherar mjukvaran
-firmware_tool-build-SETTING_UP_DEFINES = Konfigurerar definitionerna.
 firmware_tool-build-BUILDING = Bygger mjukvaran.
 firmware_tool-build-SAVING = Sparar bygget.
 firmware_tool-build-DONE = Byggning färdig
@@ -1253,7 +1246,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Armspann
 error_collection_modal-title = Kan vi samla errors?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-
+    
     Du kan ändra denna inställningen senare i beteende-sektionen av inställnings-sidan
 error_collection_modal-confirm = Jag tillåter.
 error_collection_modal-cancel = Jag vill inte

@@ -84,7 +84,7 @@ export const InputInside = forwardRef<
 
   return (
     <label className="flex flex-col gap-1">
-      <Typography>{label}</Typography>
+      {label && <Typography>{label}</Typography>}
       <div className="relative w-full">
         <input
           type={forceText ? 'text' : type}

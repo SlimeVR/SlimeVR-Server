@@ -1,6 +1,7 @@
 package dev.slimevr.protocol.datafeed
 
 import com.google.flatbuffers.FlatBufferBuilder
+import dev.slimevr.guards.ServerGuards
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.processor.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracking.processor.stayaligned.trackers.RestDetector
@@ -39,4 +40,6 @@ object DataFeedBuilderKotlin {
 
 		return StayAlignedTracker.endStayAlignedTracker(fbb)
 	}
+
+	fun createServerGuard(fbb: FlatBufferBuilder, serverGuards: ServerGuards): Int = solarxr_protocol.data_feed.server.ServerGuards.createServerGuards(fbb, serverGuards.canDoMounting, serverGuards.canDoYawReset)
 }

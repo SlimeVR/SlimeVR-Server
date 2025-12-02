@@ -1,6 +1,7 @@
 package dev.slimevr.protocol.datafeed;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import dev.slimevr.protocol.DataFeed;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.ProtocolHandler;
@@ -9,12 +10,12 @@ import io.eiren.util.logging.LogManager;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.data_feed.*;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 
 public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
-
 	private final ProtocolAPI api;
 
 	public DataFeedHandler(ProtocolAPI api) {
@@ -32,14 +33,16 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 			return;
 		int dataFeeds = req.dataFeedsLength();
 
-		conn.getContext().clearDataFeeds();
-		for (int i = 0; i < dataFeeds; i++) {
-			// Using the object api here because we need to copy from the buffer
-			// anyway so
-			// let's do it from here and send the reference to an arraylist
-			DataFeedConfigT config = req.dataFeeds(i).unpack();
-			conn.getContext().getDataFeedConfigList().add(config);
-			conn.getContext().getDataFeedTimers().add(System.currentTimeMillis());
+		List<DataFeed> feedList = conn.getContext().getDataFeedList();
+		synchronized (feedList) {
+			feedList.clear();
+			for (int i = 0; i < dataFeeds; i++) {
+				// Using the object api here because we
+				// need to copy from the buffer, anyway let's
+				// do it from here and send the reference to an arraylist
+				DataFeedConfigT config = req.dataFeeds(i).unpack();
+				feedList.add(new DataFeed(config));
+			}
 		}
 	}
 
@@ -104,6 +107,12 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				.createStayAlignedPose(fbb, this.api.server.humanPoseManager.skeleton);
 		}
 
+		int serverGuardsOffset = 0;
+		if (config.getServerGuardsMask()) {
+			serverGuardsOffset = DataFeedBuilderKotlin.INSTANCE
+				.createServerGuard(fbb, this.api.server.getServerGuards());
+		}
+
 		return DataFeedUpdate
 			.createDataFeedUpdate(
 				fbb,
@@ -111,7 +120,8 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				trackersOffset,
 				bonesOffset,
 				stayAlignedPoseOffset,
-				index
+				index,
+				serverGuardsOffset
 			);
 	}
 
@@ -121,31 +131,35 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 		this.api.getAPIServers().forEach((server) -> server.getAPIConnections().forEach((conn) -> {
 			FlatBufferBuilder fbb = null;
 
-			int configsCount = conn.getContext().getDataFeedConfigList().size();
+			List<DataFeed> feedList = conn.getContext().getDataFeedList();
+			synchronized (feedList) {
+				int configsCount = feedList.size();
 
-			int[] data = new int[configsCount];
+				int[] data = new int[configsCount];
 
-			for (int index = 0; index < configsCount; index++) {
-				Long lastTimeSent = conn.getContext().getDataFeedTimers().get(index);
-				DataFeedConfigT configT = conn.getContext().getDataFeedConfigList().get(index);
-				if (currTime - lastTimeSent > configT.getMinimumTimeSinceLast()) {
-					if (fbb == null) {
-						// That way we create a buffer only when needed
-						fbb = new FlatBufferBuilder(300);
+				for (int index = 0; index < configsCount; index++) {
+					DataFeed feed = feedList.get(index);
+					Long lastTimeSent = feed.getTimeLastSent();
+					DataFeedConfigT configT = feed.getConfig();
+					if (currTime - lastTimeSent > configT.getMinimumTimeSinceLast()) {
+						if (fbb == null) {
+							// That way we create a buffer only when needed
+							fbb = new FlatBufferBuilder(300);
+						}
+
+						int messageOffset = this.buildDatafeed(fbb, configT, index);
+
+						DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
+						DataFeedMessageHeader.addMessage(fbb, messageOffset);
+						DataFeedMessageHeader.addMessageType(fbb, DataFeedMessage.DataFeedUpdate);
+						data[index] = DataFeedMessageHeader.endDataFeedMessageHeader(fbb);
+
+						feed.setTimeLastSent(currTime);
+						int messages = MessageBundle.createDataFeedMsgsVector(fbb, data);
+						int packet = createMessage(fbb, messages);
+						fbb.finish(packet);
+						conn.send(fbb.dataBuffer());
 					}
-
-					int messageOffset = this.buildDatafeed(fbb, configT, index);
-
-					DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
-					DataFeedMessageHeader.addMessage(fbb, messageOffset);
-					DataFeedMessageHeader.addMessageType(fbb, DataFeedMessage.DataFeedUpdate);
-					data[index] = DataFeedMessageHeader.endDataFeedMessageHeader(fbb);
-
-					conn.getContext().getDataFeedTimers().set(index, currTime);
-					int messages = MessageBundle.createDataFeedMsgsVector(fbb, data);
-					int packet = createMessage(fbb, messages);
-					fbb.finish(packet);
-					conn.send(fbb.dataBuffer());
 				}
 			}
 		}));

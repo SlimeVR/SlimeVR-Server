@@ -8,7 +8,7 @@ export interface FirmwareRelease {
   name: string;
   version: string;
   changelog: string;
-  firmwareFiles: Partial<Record<BoardType, string>>;
+  firmwareFiles: Partial<Record<BoardType, { url: string; digest: string }>>;
   userCanUpdate: boolean;
 }
 
@@ -36,7 +36,6 @@ const todaysRange = (deployData: [number, Date][]): number => {
 };
 
 const checkUserCanUpdate = async (url: string, fwVersion: string) => {
-  if (!url) return true;
   const deployDataJson = JSON.parse(
     (await cacheWrap(
       `firmware-${fwVersion}-deploy`,
@@ -47,7 +46,7 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
       60 * 60 * 1000
     )) || 'null'
   );
-  if (!deployDataJson) return true;
+  if (!deployDataJson) return false;
 
   const deployData = (
     Object.entries(deployDataJson).map(([key, val]) => {
@@ -90,7 +89,13 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
   for (const release of releases) {
     const fwAsset = firstAsset(release.assets, 'BOARD_SLIMEVR-firmware.bin');
     const fw12Asset = firstAsset(release.assets, 'BOARD_SLIMEVR_V1_2-firmware.bin');
-    if (!release.assets || (!fwAsset && !fw12Asset) /* || release.prerelease */)
+    const deployAsset = firstAsset(release.assets, 'deploy.json');
+    if (
+      !release.assets ||
+      !deployAsset ||
+      (!fwAsset && !fw12Asset) ||
+      release.prerelease
+    )
       continue;
 
     let version = release.tag_name;
@@ -98,9 +103,8 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       version = version.substring(1);
     }
 
-    const deployAsset = firstAsset(release.assets, 'deploy.json');
     const userCanUpdate = await checkUserCanUpdate(
-      deployAsset?.browser_download_url,
+      deployAsset.browser_download_url,
       version
     );
     processedReleses.push({
@@ -108,8 +112,14 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       version,
       changelog: release.body,
       firmwareFiles: {
-        [BoardType.SLIMEVR]: fwAsset.browser_download_url,
-        [BoardType.SLIMEVR_V1_2]: fw12Asset.browser_download_url,
+        [BoardType.SLIMEVR]: {
+          url: fwAsset.browser_download_url,
+          digest: fwAsset.digest,
+        },
+        [BoardType.SLIMEVR_V1_2]: {
+          url: fw12Asset.browser_download_url,
+          digest: fw12Asset.digest,
+        },
       },
       userCanUpdate,
     });

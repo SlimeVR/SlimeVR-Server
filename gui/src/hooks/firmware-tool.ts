@@ -122,6 +122,7 @@ export const getFlashingRequests = (
         const part = new FirmwarePartT();
         part.offset = 0;
         part.url = firmware.filePath;
+        part.digest = firmware.digest;
 
         const method = new OTAFirmwareUpdateT();
         method.deviceId = dId;
@@ -147,10 +148,11 @@ export const getFlashingRequests = (
         method.needManualReboot =
           defaultConfig?.flashingRules.needManualReboot ?? false;
 
-        method.firmwarePart = firmwareFiles.map(({ offset, filePath }) => {
+        method.firmwarePart = firmwareFiles.map(({ offset, filePath, digest }) => {
           const part = new FirmwarePartT();
           part.offset = offset;
           part.url = filePath;
+          part.digest = digest;
           return part;
         });
 

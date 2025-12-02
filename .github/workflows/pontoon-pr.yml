@@ -3,22 +3,19 @@ on:
   push:
     branches:
       - pontoon
-
 jobs:
   pull_request:
     if: ${{ github.repository == 'SlimeVR/SlimeVR-Server' }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
-      - uses: repo-sync/pull-request@v2
-        with:
-          destination_branch: "main"
-          pr_title: "New Pontoon translations"
-          pr_body: "Please don't squash me 🥺"
-          pr_label: "Area: Translation"
-          github_token: ${{ secrets.PONTOON_BOT_KEY }}
+      - name: pull-request
+        env:
+          GH_TOKEN: ${{ secrets.PONTOON_BOT_KEY }}
+        run: |
+          gh_pr_up() { gh pr create "$@" --label "Area: Translation" --base main || gh pr edit "$@"; }
+          gh_pr_up --title "New Pontoon translations" --body "Please don't squash me 🥺"

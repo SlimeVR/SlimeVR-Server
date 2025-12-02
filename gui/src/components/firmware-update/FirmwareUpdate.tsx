@@ -222,7 +222,8 @@ export function FirmwareUpdate() {
           {
             isFirmware: true,
             firmwareId: '',
-            filePath: firmwareFile,
+            filePath: firmwareFile.url,
+            digest: firmwareFile.digest,
             offset: 0,
           },
         ],

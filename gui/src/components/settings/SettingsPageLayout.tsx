@@ -64,7 +64,7 @@ export function SettingsPagePaneLayout({
       {...props}
     >
       <div className="flex mobile:absolute mobile:right-4">
-        <div className=" w-10 h-10 bg-accent-background-40 flex justify-center items-center rounded-full fill-background-10">
+        <div className="w-10 h-10 bg-accent-background-40 flex justify-center items-center rounded-full fill-background-10">
           {icon}
         </div>
       </div>
