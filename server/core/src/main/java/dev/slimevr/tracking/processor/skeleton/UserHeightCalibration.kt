@@ -186,13 +186,13 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 			return
 		}
 
-//		if (!isControllerPointingDown(lowestTracker, CONTROLLER_ANGLE_THRESHOLD)) {
-//			status = UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
-//			floorStableStartTime = null
-//			floorPositionSamples.clear()
-//			sendStatusUpdate()
-//			return
-//		}
+		if (!isControllerPointingDown(lowestTracker, CONTROLLER_ANGLE_THRESHOLD)) {
+			status = UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
+			floorStableStartTime = null
+			floorPositionSamples.clear()
+			sendStatusUpdate()
+			return
+		}
 
 		floorPositionSamples.add(currentLowestPos)
 		currentFloorLevel = minOf(currentFloorLevel, currentLowestPos.y)
