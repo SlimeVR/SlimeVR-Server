@@ -95,7 +95,7 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
-board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_DEV = บอร์ดพัฒนา SlimeVR
 board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
@@ -107,15 +107,15 @@ board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
 board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
-board_type-GLOVE_IMU_SLIMEVR_DEV = ถุงมือ SlimeVR Dev IMU
+board_type-GLOVE_IMU_SLIMEVR_DEV = บอร์ดพัฒนาถุงมือ IMU SlimeVR
 
 ## Proportions
 
 skeleton_bone-NONE = ไม่มี
 skeleton_bone-HEAD = การเลื่อนศีรษะ
 skeleton_bone-HEAD-desc =
-    นี่เป็นระยะห่างจากแว่น VR ของคุณถึงบริเวณกลางศีรษะ 
-    ปรับด้วยการส่ายหัวจากซ้ายไปขวาเหมือนคุณกำลังส่ายหน้าปฏิเสธ 
+    นี่เป็นระยะห่างจากแว่น VR ของคุณถึงบริเวณกลางศีรษะ
+    ปรับด้วยการส่ายหัวจากซ้ายไปขวาเหมือนคุณกำลังส่ายหน้าปฏิเสธ
     และปรับค่าจนกว่าการเคลื่อนไหวในแทร็กเกอร์อื่นๆ จะน้อยจนไม่สังเกตเห็น
 skeleton_bone-NECK = ความยาวขอ
 skeleton_bone-NECK-desc =
@@ -124,7 +124,7 @@ skeleton_bone-NECK-desc =
     และปรับค่าจนกว่าการเคลื่อนไหวในแทร็กเกอร์อื่นๆ จะน้อยจนไม่สังเกตเห็น
 skeleton_bone-torso_group = ความยาวลําตัว
 skeleton_bone-torso_group-desc =
-    นี่เป็นระยะห่างจากฐานคอถึงสะโพก
+    นี่เป็นระยะห่างรวมจากฐานคอถึงสะโพก
     ปรับด้วยการยืนตรงและปรับค่านี้กระทั่งสะโพกเสมือนของคุณนั้นตรงกับสะโพกจริง
 skeleton_bone-UPPER_CHEST = ความยาวหน้าอกส่วนบน
 skeleton_bone-UPPER_CHEST-desc =
