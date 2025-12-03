@@ -995,30 +995,30 @@ onboarding-done-close = ปิดการตั้งค่า
 
 onboarding-connect_tracker-back = กลับไปหน้าข้อมูล Wi-Fi
 onboarding-connect_tracker-title = เชื่อมต่อแทร็กเกอร์
-onboarding-connect_tracker-description-p0-v1 = เอาล่ะ ได้เวลาเชื่อมต่อกับแทร็กเกอร์แล้ว!
-onboarding-connect_tracker-description-p1-v1 = ต่อแทร็กเกอร์แต่ละตัวผ่านสาย USB
-onboarding-connect_tracker-issue-serial = ฉันเจอปัญหาการเชื่อมต่อ!
+onboarding-connect_tracker-description-p0-v1 = มาถึงส่วนที่สนุกแล้ว การเชื่อมต่อแทร็กเกอร์!
+onboarding-connect_tracker-description-p1-v1 = เชื่อมต่อแทร็กเกอร์ทีละตัวผ่านพอร์ต USB
+onboarding-connect_tracker-issue-serial = ฉันมีปัญหาในการเชื่อมต่อ!
 onboarding-connect_tracker-usb = USB แทร็กเกอร์
 onboarding-connect_tracker-connection_status-none = กำลังมองหาแทร็กเกอร์...
-onboarding-connect_tracker-connection_status-serial_init = กำลังเชื่อมต่อกับ serial device
-onboarding-connect_tracker-connection_status-obtaining_mac_address = กำลังรับ mac address ของแทร็กเกอร์
+onboarding-connect_tracker-connection_status-serial_init = กำลังเชื่อมต่อกับอุปกรณ์ Serial
+onboarding-connect_tracker-connection_status-obtaining_mac_address = กำลังรับ MAC address ของแทร็กเกอร์
 onboarding-connect_tracker-connection_status-provisioning = กำลังส่งข้อมูล Wi-Fi
-onboarding-connect_tracker-connection_status-connecting = กำลังพยายามต่อกับ Wi-Fi
-onboarding-connect_tracker-connection_status-looking_for_server = กําลังหาเซิร์ฟเวอร์
-onboarding-connect_tracker-connection_status-connection_error = ไม่สามารถเชื่อมต่อกับ Wi-Fi ได้
+onboarding-connect_tracker-connection_status-connecting = กำลังพยายามเชื่อมต่อ Wi-Fi
+onboarding-connect_tracker-connection_status-looking_for_server = กําลังหาเซิร์ฟเวอร์กำลังค้นหาเซิร์ฟเวอร์
+onboarding-connect_tracker-connection_status-connection_error = ไม่สามารถเชื่อมต่อกับ Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = ไม่พบเซิร์ฟเวอร์
 onboarding-connect_tracker-connection_status-done = เชื่อมต่อกับเซิร์ฟเวอร์แล้ว
 onboarding-connect_tracker-connection_status-no_serial_log = ไม่สามารถรับบันทึกจากแทร็กเกอร์ได้
-onboarding-connect_tracker-connection_status-no_serial_device_found = ไม่สามารถหาแทร็กเกอร์จาก USB ได้
-onboarding-connect_serial-error-modal-no_serial_log = แทร็กเกอร์ของคุณเปิดอยู่หรือเปล่า?
+onboarding-connect_tracker-connection_status-no_serial_device_found = ไม่สามารถหาแทร็กเกอร์จาก USB
+onboarding-connect_serial-error-modal-no_serial_log = แทร็กเกอร์คุณเปิดอยู่หรือเปล่า?
 onboarding-connect_serial-error-modal-no_serial_log-desc = ตรวจสอบให้แน่ใจว่าแทร็กเกอร์นั้นเปิดอยู่และเชื่อมต่อกับคอมพิวเตอร์ของคุณ
 onboarding-connect_serial-error-modal-no_serial_device_found = ไม่พบแทรคเกอร์
 onboarding-connect_serial-error-modal-no_serial_device_found-desc =
-    กรุณาต่อแทร็กเกอร์กับสาย USB ที่แถมไปให้กับคอมพิวเตอร์ แล้วเปิดแทร็กเกอร์
-    หากว่าใช้ไม่ได้:
-      - ลองใช้สาย USB เส้นอื่นดู
-      - ลองใช้ช่องเสียบ USB ช่องอื่น
-      - ลองลงโปรแกรม SlimeVR ฆerver ใหม่และเลือก "USB Drivers" ในหน้า components ตอนลงโปรแกรม
+    โปรดเชื่อมต่อแทร็กเกอร์ด้วยสาย USB เข้ากับคอมพิวเตอร์ของคุณและเปิดแทร็กเกอร์
+    หากยังไม่ได้ผล:
+      - ลองใช้สาย USB อื่น
+      - ลองใช้พอร์ต USB อื่น
+      - ลองติดตั้ง SlimeVR Server ใหม่และเลือก "USB Drivers" ในส่วน Components
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1027,26 +1027,26 @@ onboarding-connect_serial-error-modal-no_serial_device_found-desc =
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
         [0] ไม่มีแทร็กเกอร์เชื่อมต่ออยู่
-       *[other] มีแทร็กเกอร์เชื่อมต่ออยู่ { $amount } ตัว
+       *[other] แทร็กเกอร์เชื่อมต่ออยู่ { $amount } ตัว
     }
 onboarding-connect_tracker-next = ฉันเชื่อมต่อแทร็กเกอร์ทั้งหมดแล้ว
 
 ## Tracker calibration tutorial
 
 onboarding-calibration_tutorial = บทเรียนการปรับเทียบ IMU
-onboarding-calibration_tutorial-subtitle = นี่จะเป็นการช่วยลดค่าดริฟท์ของแทร็กเกอร์
-onboarding-calibration_tutorial-description-v1 = หลังจากเปิดแทร็กเกอร์ของคุณแล้ว วางมันลงบนพื้นที่เรียบสักครู่ แล้วให้แทร็กเกอร์ปรับเทียบตัวเอง การปรับเทียบสามารถทำได้ตลอดเวลาหลังจากเปิดแทร็กเกอร์ขึ้นมา — หน้านี้เป็นเพียงแค่ให้คำแนะนำเท่านั้น หากจะเริ่มต้น คลิกที่ปุ่ม "{ onboarding-calibration_tutorial-calibrate }" แล้ว <b>อย่าขยับแทร็กเกอร์ของคุณ!</b>
-onboarding-calibration_tutorial-calibrate = ฉันได้วางแทร็กเกอร์ไว้บนโต๊ะแล้ว
-onboarding-calibration_tutorial-status-waiting = เรารอคุณอยู่
+onboarding-calibration_tutorial-subtitle = นี่จะช่วยลดค่าดริฟท์ของแทร็กเกอร์!
+onboarding-calibration_tutorial-description-v1 = หลังจากเปิดแทร็กเกอร์แล้ว ให้วางไว้บนพื้นผิวที่มั่นคงสักครู่เพื่อทำการปรับเทียบ การปรับเทียบสามารถทำได้ตลอดเวลาหลังจากเปิดแทร็กเกอร์—หน้าจอนี้เพียงแค่ให้บทช่วยสอน หากต้องการเริ่ม ให้คลิกปุ่ม "{ onboarding-calibration_tutorial-calibrate }" จากนั้น <b>อย่าขยับแทร็กเกอร์ของคุณ!</b>
+onboarding-calibration_tutorial-calibrate = ฉันวางแทร็กเกอร์บนโต๊ะแล้ว
+onboarding-calibration_tutorial-status-waiting = กำลังรอคุณอยู่
 onboarding-calibration_tutorial-status-calibrating = กำลังปรับเทียบ
 onboarding-calibration_tutorial-status-success = เยี่ยม!
 onboarding-calibration_tutorial-status-error = แทร็กเกอร์มีการเคลื่อนไหว!
-onboarding-calibration_tutorial-skip = ข้ามการสอนนี้
+onboarding-calibration_tutorial-skip = ข้ามบทช่วยสอน
 
 ## Tracker assignment tutorial
 
-onboarding-assignment_tutorial = วิธีการเตรียม Slime Tracker ก่อนจะสวมใส่และใช้งาน
-onboarding-assignment_tutorial-first_step = 1. แปะสติกเกอร์บอกส่วนของร่างกาย (หากมี) บนแทร็กเกอร์ตามตำแหน่งที่คุณต้องการกำหนดให้มัน
+onboarding-assignment_tutorial = วิธีเตรียมแทร็กเกอร์ Slime ก่อนสวมใส่
+onboarding-assignment_tutorial-first_step = 1. ติดสติกเกอร์ส่วนของร่างกาย (หากคุณมี) บนแทร็กเกอร์ตามที่คุณเลือก
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = สติ๊กเกอร์
 onboarding-assignment_tutorial-second_step-v2 = 2. ใส่สายรัดเข้าในแทร็กเกอร์ของคุณ โดยให้ฝั่งหนามเตยออกมาทางฝั่งเดียวกับด้านหน้าแทร็กเกอร์ของคุณ
