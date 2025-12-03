@@ -447,13 +447,13 @@ export function ManualProportionsPage() {
       <div className="flex w-full h-full gap-2 bg-background-70 p-2">
         <div className="flex flex-col flex-grow gap-2">
           <div className="flex gap-2">
-            <ArrowLink
-              direction="left"
-              to="/onboarding/body-proportions/scaled"
-              state={{ alonePage: state.alonePage }}
-            >
-              Back to Body Proportions
-            </ArrowLink>
+            <Localized id="onboarding-manual_proportions-back-scaled">
+              <ArrowLink
+                direction="left"
+                to="/onboarding/body-proportions/scaled"
+                state={{ alonePage: state.alonePage }}
+              >LINK</ArrowLink>
+            </Localized>
           </div>
           <ButtonsControl control={control} />
           <div className="bg-background-60 h-20 rounded-md flex-grow overflow-y-auto">
