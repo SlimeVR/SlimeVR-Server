@@ -813,30 +813,29 @@ settings-osc-router-network-address-placeholder = ที่อยู่ IPV4
 settings-osc-vrchat = แทร็กเกอร์ OSC VRChat
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
-    เปลี่ยนการตั้งค่าเฉพาะสำหรับแทร็กเกอร์ OSC ที่ใช้ในการส่ง
-    ติดตามข้อมูลไปยังแอปพลิเคชันที่ไม่มี SteamVR (เช่น Quest Standalone)
-    ตรวจสอบให้แน่ใจว่าได้เปิดใช้งาน OSC ใน VRChat ผ่านเมนูใต้ ตัวเลือก>OSC>เปิดใช้งานแล้ว
+    เปลี่ยนการตั้งค่าเฉพาะสำหรับมาตรฐานตัวติดตาม OSC ที่ใช้ในการส่งข้อมูลการติดตาม
+    ไปยังแอปพลิเคชันที่ไม่ได้ใช้ SteamVR (เช่นอุปกรณ์ VR แบบเดี่ยว)
+    ตรวจสอบให้แน่ใจว่าได้เปิดใช้งาน OSC ใน VRChat ผ่านเมนู Action Menu แล้วไปที่ ตัวเลือก>OSC > เปิดใช้งาน
 settings-osc-vrchat-enable = เปิดใช้งาน
 settings-osc-vrchat-enable-description = เปิดการรับและส่งข้อมูล
 settings-osc-vrchat-enable-label = เปิดใช้งาน
 settings-osc-vrchat-oscqueryEnabled = เปิดใช้งาน OSCQuery
 settings-osc-vrchat-oscqueryEnabled-description =
-    OSCQuery จะตรวจจับอินสแตนซ์ของ VRChat ที่กําลังทํางานอยู่และส่งข้อมูลให้โดยอัตโนมัติ
-    นอกจากนี้ยังเปิดตัวเองรับข้อมูลจาก HMD และคอนโทรเลอร์
-    หากต้องการอนุญาตให้รับข้อมูล HMD และคอนโทรลเลอร์จาก VRChat ให้ไปที่การตั้งค่าเมนูหลักของคุณ
-    ภายใต้ "แทร็กกิ้ง & IK" และเปิดใช้งาน "อนุญาติให้ส่งข้อมูลการติดตามศีรษะและข้อมือ VR ผ่าน OSC"
+    OSCQuery จะตรวจจับอินสแตนซ์ของ VRChat ที่กำลังทำงานโดยอัตโนมัติ และส่งข้อมูลไปให้
+    และยังสามารถประกาศตัวเองเพื่อให้ได้รับข้อมูลจาก HMD และของคอนโทรเลอร์จาก VRChat ได้อีกด้วย
+    หากต้องการอนุญาตให้รับข้อมูล HMD และตัวควบคุมจาก VRChat ให้ไปที่การตั้งค่าเมนูหลัก ใต้ "การติดตาม & IK" และเปิดใช้งาน "อนุญาติให้ส่งข้อมูลการติดตามศรีษะและข้อมือ VR ผ่าน OSC"
 settings-osc-vrchat-oscqueryEnabled-label = เปิดใช้งาน OSCQuery
 settings-osc-vrchat-network = พอร์ตเครือข่าย
-settings-osc-vrchat-network-description-v1 = ตั้งค่าพอร์ตสำหรับรับและส่งข้อมูล ไม่ต้องตั้งค่าเพิ่มหากใช้สำหรับ VRchat
+settings-osc-vrchat-network-description-v1 = ตั้งค่าพอร์ตสำหรับการรับฟังและการส่งข้อมูล สามารถปล่อยว่างไว้สำหรับ VRChat
 settings-osc-vrchat-network-port_in =
-    .label = Port In
-    .placeholder = Port In (ค่าเริ่มต้น: 9001)
+    .label = พอร์ตขาเข้า
+    .placeholder = พอร์ตขาเข้า (ค่าเริ่มต้น: 9001)
 settings-osc-vrchat-network-port_out =
-    .label = Port out
-    .placeholder = Port out (ค่าเริ่มต้น: 9000)
+    .label = พอร์ตขาออก
+    .placeholder = พอร์ตขาออก (ค่าเริ่มต้น: 9000)
 settings-osc-vrchat-network-address = ที่อยู่เครือข่าย
-settings-osc-vrchat-network-address-description-v1 = เลื่อกที่อยู่เครือข่ายที่จะส่งข้อมูล ไม่ต้องตั้งค่าเพิ่มหากใช้สำหรับ VRChat
-settings-osc-vrchat-network-address-placeholder = VRChat ip address
+settings-osc-vrchat-network-address-description-v1 = เลือกที่อยู่ที่จะส่งข้อมูลออกไป สามารถปล่อยว่างไว้สำหรับ VRChat
+settings-osc-vrchat-network-address-placeholder = ที่อยู่ IP VRChat
 settings-osc-vrchat-network-trackers = แทร็กเกอร์
 settings-osc-vrchat-network-trackers-description = เปิดใช้ตำแหน่งแทร็กเกอร์ที่จะใช้ผ่าน OSC
 settings-osc-vrchat-network-trackers-chest = หน้าอก
@@ -850,19 +849,19 @@ settings-osc-vrchat-network-trackers-elbows = ข้อศอก
 settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
-    เปลี่ยนการตั้งค่าเฉพาะสําหรับ VMC (Virtual Motion Capture)
-    เพื่อส่งข้อมูลกระดูกของ SlimeVR และรับข้อมูลกระดูกจากแอปอื่น
+    เปลี่ยนการตั้งค่าเฉพาะสำหรับโปรโตคอล VMC (Virtual Motion Capture)
+    เพื่อส่งข้อมูลกระดูกของ SlimeVR และรับข้อมูลกระดูกจากแอปพลิเคชันอื่น
 settings-osc-vmc-enable = เปิดใช้งาน
 settings-osc-vmc-enable-description = เปิดการรับและส่งข้อมูล OSC
 settings-osc-vmc-enable-label = เปิดใช้งาน
 settings-osc-vmc-network = พอร์ตเครือข่าย
 settings-osc-vmc-network-description = ตั้งพอร์ตสำหรับส่งและรับข้อมูลผ่าน VMC
 settings-osc-vmc-network-port_in =
-    .label = Port in
-    .placeholder = Port in (ค่าเริ่มต้น: 39540)
+    .label = พอร์ตขาเข้า
+    .placeholder = พอร์ตขาเข้า (ค่าเริ่มต้น: 39540)
 settings-osc-vmc-network-port_out =
-    .label = Port out
-    .placeholder = Port out (ค่าเริ่มต้น: 39539)
+    .label = พอร์ตขาออก
+    .placeholder = พอร์ตขาออก (ค่าเริ่มต้น: 39539)
 settings-osc-vmc-network-address = ที่อยู่เครือข่าย
 settings-osc-vmc-network-address-description = เลื่อกที่อยู่เครือข่ายที่จะส่งข้อมูลผ่าน VMC
 settings-osc-vmc-network-address-placeholder = ที่อยู่ IPV4
