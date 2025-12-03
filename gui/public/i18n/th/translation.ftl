@@ -1545,3 +1545,4 @@ preview-mocap_mode_soon = โหมด Mocap (เร็ว ๆ นี้™)
 toolbar-mounting_calibration = การปรับเทียบการติดตั้ง
 toolbar-mounting_calibration-feet = เท้า
 toolbar-mounting_calibration-fingers = นิ้ว
+toolbar-drift_reset = การแก้ไขการคลาดเคลื่อน
