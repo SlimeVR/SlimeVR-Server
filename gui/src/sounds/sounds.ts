@@ -117,6 +117,7 @@ export function handleResetSounds(
 ) {
   if (!resetSounds) throw 'sounds not loaded';
   const sounds = resetSounds[resetType];
+  if (!sounds) throw 'reset type does not have a reset sound: ' + resetType
 
   if (status === ResetStatus.STARTED) {
     if (progress === 0) {

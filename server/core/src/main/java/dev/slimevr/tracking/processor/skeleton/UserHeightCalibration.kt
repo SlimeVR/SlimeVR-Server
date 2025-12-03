@@ -77,13 +77,13 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 	var currentHeight = 0f
 	var currentFloorLevel = 0f
 
-	var startTime = 0f
+	var startTime = 0L
 
 	private val hmdPositionSamples: CircularFifoQueue<Vector3> = CircularFifoQueue(MAX_SAMPLES)
-	private var heightStableStartTime: Float? = null
+	private var heightStableStartTime: Long? = null
 
 	private val floorPositionSamples: CircularFifoQueue<Vector3> = CircularFifoQueue(MAX_SAMPLES)
-	private var floorStableStartTime: Float? = null
+	private var floorStableStartTime: Long? = null
 
 	private val listeners: MutableList<UserHeightCalibrationListener> = CopyOnWriteArrayList()
 	private var hmd: Tracker? = null
@@ -98,7 +98,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 			return
 		}
 
-		startTime = System.nanoTime().toFloat()
+		startTime = System.nanoTime()
 
 		status = UserHeightCalibrationStatus.RECORDING_FLOOR
 		currentFloorLevel = Float.MAX_VALUE
@@ -113,7 +113,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		heightStableStartTime = null
 		floorStableStartTime = null
 		currentHeight = 0f
-		startTime = 0f
+		startTime = 0L
 	}
 
 	init {
@@ -160,9 +160,9 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 	}
 
 	fun tick() {
-		if (startTime == 0f) return
+		if (startTime == 0L) return
 
-		val currentTime = System.nanoTime().toFloat()
+		val currentTime = System.nanoTime()
 		if (active && currentTime - startTime > TIMEOUT_TIME) {
 			status = UserHeightCalibrationStatus.ERROR_TIMEOUT
 			sendStatusUpdate()
@@ -175,7 +175,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		}
 	}
 
-	private fun recordFloor(currentTime: Float) {
+	private fun recordFloor(currentTime: Long) {
 		val lowestTracker = handTrackers.minByOrNull { it.position.y }
 		val currentLowestPos = lowestTracker?.position ?: return
 
@@ -215,7 +215,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		}
 	}
 
-	private fun recordHeight(currentTime: Float) {
+	private fun recordHeight(currentTime: Long) {
 		val localHmd = hmd ?: return
 
 		val currentPos = localHmd.position
