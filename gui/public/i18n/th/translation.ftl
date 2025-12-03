@@ -589,41 +589,39 @@ settings-stay_aligned-description = Stay Aligned จะลดดริฟท์�
 settings-stay_aligned-setup-label = ตั้งค่า Stay Aligned
 settings-stay_aligned-setup-description = คุณต้องทำ "ตั้งค่า Stay Aligned" ให้เสร็จสมบูรณ์เพื่อเปิดใช้งาน Stay Aligned
 settings-stay_aligned-warnings-drift_compensation = ⚠ โปรดปิด การชดเชยค่าดริฟท์! เพราะมันจะขัดแย้งกับการทำงานของ Stay Aligned
-settings-stay_aligned-enabled-label = ปรับแทร็กเกอร์ของคุณ
-settings-stay_aligned-hide_yaw_correction-label = ซ่อนการปรับแต่ง(เพื่อเปรียบเทียบกับไม่ได้เปิดใช้ Stay Aligned)
-settings-stay_aligned-general-label = การตั้งค่าทั่วไป
-settings-stay_aligned-relaxed_poses-label = ท่าผ่อนคลาย
-settings-stay_aligned-relaxed_poses-description = Stay Aligned ใช้ตำแหน่งจากท่าผ่อนคลายของคุณในการปรับให้แทร็กเกอร์ตรงกัน เปิดใช้ "ตั้งค่า Stay Aligned" เพื่ออัพเดทท่า
-settings-stay_aligned-relaxed_poses-standing = ปรับตัวแทร็กเกอร์ขณะยืน
-settings-stay_aligned-relaxed_poses-sitting = ปรับตัวแทร็กเกอร์ขณะนั่งบ่นเก้าอี้
-settings-stay_aligned-relaxed_poses-flat = ปรับตัวแทร็กเกอร์ขณะนั่งบนพื้น หรือนอนหงาย
-settings-stay_aligned-relaxed_poses-save_pose = บันทึกท่า
-settings-stay_aligned-relaxed_poses-reset_pose = รีเซ็ตท่า
+settings-stay_aligned-enabled-label = เปิดใช้งาน
+settings-stay_aligned-hide_yaw_correction-label = ซ่อนการปรับแต่ง (เพื่อเปรียบเทียบกับแบบไม่มี Stay Aligned)
+settings-stay_aligned-general-label = ทั่วไป
+settings-stay_aligned-relaxed_poses-label = ท่าทางผ่อนคลาย
+settings-stay_aligned-relaxed_poses-description = Stay Aligned ใช้ท่าทางผ่อนคลายของคุณเพื่อให้แทร็กเกอร์อยู่ในแนวที่ถูกต้อง ใช้ "ตั้งค่า Stay Aligned" เพื่ออัพเดทท่าทางเหล่านี้
+settings-stay_aligned-relaxed_poses-standing = ปรับแทร็กเกอร์ขณะยืน
+settings-stay_aligned-relaxed_poses-sitting = ปรับแทร็กเกอร์ขณะนั่งเก้าอี้
+settings-stay_aligned-relaxed_poses-flat = ปรับแทร็กเกอร์ขณะนั่งบนพื้น หรือนอนหงาย
+settings-stay_aligned-relaxed_poses-save_pose = บันทึกท่าทาง
+settings-stay_aligned-relaxed_poses-reset_pose = รีเซ็ตท่าทาง
 settings-stay_aligned-relaxed_poses-close = ปิด
-settings-stay_aligned-debug-label = แจ้งปัญหา
-settings-stay_aligned-debug-description = กรุณาระบุการตั้งค่าของคุณเมื่อแจ้งปัญหาเกี่ยวกับ Stay Aligned ด้วย
+settings-stay_aligned-debug-label = การดีบัก
+settings-stay_aligned-debug-description = กรุณาระบุการตั้งค่าของคุณเมื่อรายงานปัญหาเกี่ยวกับ Stay Aligned ด้วย
 settings-stay_aligned-debug-copy-label = คัดลอกการตั้งค่าไปยังคลิปบอร์ด
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = การตั้งค่าแทร็กเกอร์
+settings-general-fk_settings = การตั้งค่าการติดตาม
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
-settings-general-fk_settings-leg_tweak-floor_clip = กันทะลุพื้น
+settings-general-fk_settings-leg_tweak-floor_clip = ล็อคระดับพื้น
 # Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
-settings-general-fk_settings-leg_tweak-skating_correction = แก้การสไลด์
-settings-general-fk_settings-leg_tweak-toe_snap = เดาหมุนของเท้า
+settings-general-fk_settings-leg_tweak-skating_correction = การแก้ไขการไถล
+settings-general-fk_settings-leg_tweak-toe_snap = เดาการหมุนเท้า
 settings-general-fk_settings-leg_tweak-foot_plant = ปรับสมดุลเท้า
-settings-general-fk_settings-leg_tweak-skating_correction-amount = ระดับการแก้ไข
-settings-general-fk_settings-leg_tweak-skating_correction-description =
-    เปิดแก้ไขการสไลด์ เพื่อแก้อาการที่เท้าสไลด์ไปกับพื้น แต่จะลดความแม่นยำการจับตำแหน่งในบางท่าทาง เมื่อเปิดใช้งานอย่าลืมกดรีเซ็ตแทร็กเกอร์ทั้งหมด
-    และปรับเทียบตำแหน่งในเกมใหม่
-settings-general-fk_settings-leg_tweak-floor_clip-description = เปิดกันทะลุพื้นจะลดการที่ขาในโลกเสมือนจมลงไปในพื้น เมื่อเปิดใช้งานอย่าลืมรีเซ็ตแทร็กเกอร์ทั้งหมด และปรับเทียบตำแหน่งในเกมใหม่
-settings-general-fk_settings-leg_tweak-toe_snap-description = เปิดเดาการหมุนของเท้าเพื่อคาดเดาการหมุนของเท้าในกรณีที่คุณไม่ได้ใส่แทร็กเกอร์ที่เท้า
+settings-general-fk_settings-leg_tweak-skating_correction-amount = ปริมาณการแก้ไขการไถล
+settings-general-fk_settings-leg_tweak-skating_correction-description = การแก้ไขการไถล จะแก้ไขปัญหาที่เท่้าสไลด์เหมือนเล่นสเก็ตน้ำแข็ง แต่สามารถลดความแม่นยำในการเคลื่อนไหวบางรูปแบบ เมื่อเปิดใช้งานแล้วต้องทำการรีเซ็ตแทร็กเกอร์ทั้งหมด และปรับเทียบใหม่ในเกม
+settings-general-fk_settings-leg_tweak-floor_clip-description = การล๊อกระดับพื้นสามารถลดหรือกำจัดการทะลุผ่านพื้นได้ เมื่อเปิดใช้งานแล้วต้องทำการรีเซ็ตแทร็กเกอร์ทั้งหมด และปรับเทียบใหม่ในเกม
+settings-general-fk_settings-leg_tweak-toe_snap-description = การเดาการหมุนของเท้า จะพยายามคาดเดาการหมุนของเท้า หากไม่ได้ใช้แทร็กเกอร์เท้า
 settings-general-fk_settings-leg_tweak-foot_plant-description = เปิดปรับสมดุลเท้าเพื่อให้เท้าคุณอยู่ในระนาบเดียวกับพื้นเมื่อเท้าอยู่บนพื้น
 settings-general-fk_settings-leg_fk = การจับตำแหน่งขา
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = บังคับใช้การรีเซ็ตการติดตั้งของแทร็กเกอร์เท้าเมื่อทำการรีเซ็ตการติดตั้ง
