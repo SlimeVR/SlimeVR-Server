@@ -395,9 +395,11 @@ tracker-settings-update-incompatible = Cannot update. Incompatible board
 tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
 tracker-settings-update-blocked = Update not available. No other releases available
-tracker-settings-update-available = { $versionName } is now available
 tracker-settings-update = Update now
 tracker-settings-update-title = Firmware version
+tracker-settings-current-version = Current
+tracker-settings-latest-version = Latest
+
 
 ## Tracker part card info
 tracker-part_card-no_name = No name
@@ -1404,9 +1406,9 @@ firmware_tool-flashbtn_step = Press the boot btn
 firmware_tool-flashbtn_step-description = Before going to the next step, there are a few things you need to do
 
 firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect the USB cable to your computer, then follow the appropriate steps for your SlimeVR board revision:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller.
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller.
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board.
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Turn on the tracker while pushing in the FLASH button on the top side of the board. The tracker LED should do a short blink.
 
 firmware_tool-flashbtn_step-board_OTHER = Before flashing, you will probably need to put the tracker into bootloader mode.
     Most of the time, this means pressing the boot button on the board before the flashing process starts.
