@@ -1677,7 +1677,6 @@ class HumanSkeleton(
 			leftAbductorDigitiMinimiTracker,
 			rightAbductorHallucisTracker,
 			rightDigitorumBrevisTracker,
-			rightDigitorumBrevisTracker,
 			rightAbductorDigitiMinimiTracker
 		)
 
