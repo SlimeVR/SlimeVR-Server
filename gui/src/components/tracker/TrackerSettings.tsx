@@ -1,4 +1,4 @@
-import { Localized, useLocalization } from '@fluent/react';
+import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num';
 import { useEffect, useMemo, useState } from 'react';
