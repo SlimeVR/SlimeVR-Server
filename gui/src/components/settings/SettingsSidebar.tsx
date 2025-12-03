@@ -132,16 +132,16 @@ export function SettingsSidebar() {
               to="/settings/firmware-tool"
               id="settings-sidebar-firmware-tool"
             />
-          </div>
-          {vrcConfigState?.isSupported && (
-            <div className="flex flex-col gap-2">
+            <SettingsLink
+              to="/onboarding/home"
+              id="navbar-onboarding"
+            />
+            {vrcConfigState?.isSupported && (
               <SettingsLink
                 to="/vrc-warnings"
                 id="settings-sidebar-vrc_warnings"
               />
-            </div>
-          )}
-          <div className="flex flex-col gap-2">
+            )}
             <SettingsLink
               to="/settings/advanced"
               id="settings-sidebar-advanced"

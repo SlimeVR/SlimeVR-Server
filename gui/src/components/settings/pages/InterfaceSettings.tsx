@@ -25,7 +25,6 @@ import { DeveloperModeWidget } from '@/components/widgets/DeveloperModeWidget';
 interface InterfaceSettingsForm {
   appearance: {
     theme: string;
-    showNavbarOnboarding: boolean;
     textSize: number;
     fonts: string;
     decorations: boolean;
@@ -53,8 +52,6 @@ export function InterfaceSettings() {
     defaultValues: {
       appearance: {
         theme: config?.theme ?? defaultConfig.theme,
-        showNavbarOnboarding:
-          config?.showNavbarOnboarding ?? defaultConfig.showNavbarOnboarding,
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
         decorations: config?.decorations ?? defaultConfig.decorations,
@@ -112,7 +109,6 @@ export function InterfaceSettings() {
       connectedTrackersWarning: values.notifications.connectedTrackersWarning,
 
       theme: values.appearance.theme,
-      showNavbarOnboarding: values.appearance.showNavbarOnboarding,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
       decorations: values.appearance.decorations,
@@ -469,30 +465,6 @@ export function InterfaceSettings() {
                   colors="!bg-asexual-flag"
                 />
               </div>
-            </div>
-
-            <Typography variant="section-title">
-              {l10n.getString(
-                'settings-general-interface-show-navbar-onboarding'
-              )}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography>
-                {l10n.getString(
-                  'settings-general-interface-show-navbar-onboarding-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="appearance.showNavbarOnboarding"
-                label={l10n.getString(
-                  'settings-general-interface-show-navbar-onboarding-label'
-                )}
-              />
             </div>
 
             <Typography variant="section-title">

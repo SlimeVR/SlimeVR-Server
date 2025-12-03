@@ -22,7 +22,6 @@ import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
 import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
 import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
-import { EnterVRPage } from './components/onboarding/pages/EnterVR';
 import { HomePage } from './components/onboarding/pages/Home';
 import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
@@ -156,7 +155,6 @@ function Layout() {
             <Route path="wifi-creds" element={<WifiCredsPage />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
-            <Route path="enter-vr" element={<EnterVRPage />} />
             <Route path="mounting/choose" element={<MountingChoose />} />
             <Route path="mounting/auto" element={<AutomaticMountingPage />} />
             <Route path="mounting/manual" element={<ManualMountingPage />} />

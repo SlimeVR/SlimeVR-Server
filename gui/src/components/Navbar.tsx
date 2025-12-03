@@ -5,11 +5,10 @@ import { NavLink, useMatch } from 'react-router-dom';
 import { GearIcon } from './commons/icon/GearIcon';
 import { HumanIcon } from './commons/icon/HumanIcon';
 import { RulerIcon } from './commons/icon/RulerIcon';
-import { SparkleIcon } from './commons/icon/SparkleIcon';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { useConfig } from '@/hooks/config';
 import { HomeIcon } from './commons/icon/HomeIcon';
 import { SkiIcon } from './commons/icon/SkiIcon';
+import { WifiIcon } from './commons/icon/WifiIcon';
 
 export function NavButton({
   to,
@@ -65,7 +64,6 @@ export function NavButton({
 }
 
 export function MainLinks() {
-  const { config } = useConfig();
   const { l10n } = useLocalization();
 
   return (
@@ -96,11 +94,12 @@ export function MainLinks() {
       >
         {l10n.getString('navbar-body_proportions')}
       </NavButton>
-      {config?.showNavbarOnboarding && (
-        <NavButton to="/onboarding/home" icon={<SparkleIcon />}>
-          {l10n.getString('navbar-onboarding')}
-        </NavButton>
-      )}
+      <NavButton
+        to="/onboarding/connect-trackers"
+        icon={<WifiIcon value={1} disabled/>}
+      >
+        {l10n.getString('onboarding-connect_tracker-title')}
+      </NavButton>
     </>
   );
 }
