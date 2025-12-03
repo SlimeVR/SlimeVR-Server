@@ -481,6 +481,7 @@ mounting_selection_menu-close = Cerrar
 
 settings-sidebar-title = Ajustes
 settings-sidebar-general = General
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mecánicas del sensor
 settings-sidebar-stay_aligned = Mantente Alineado
 settings-sidebar-fk_settings = Ajustes de FK
@@ -488,6 +489,7 @@ settings-sidebar-gesture_control = Control de gestos
 settings-sidebar-interface = Interfaz
 settings-sidebar-osc_router = Router OSC
 settings-sidebar-osc_trackers = Sensores OSC de VRChat
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
 settings-sidebar-appearance = Apariencia
@@ -1383,6 +1385,7 @@ onboarding-stay_aligned-done = Hecho
 ## Home
 
 home-no_trackers = No hay sensores detectados o asignados
+home-settings-close = Cerrar
 
 ## Trackers Still On notification
 
@@ -1590,3 +1593,9 @@ error_collection_modal-description_v2 =
     Tu puedes cambiar esta configuración más tarde en la sección de comportamiento de la pagina de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero
+tracking_checklist-settings-close = Cerrar
+tracking_checklist-STEAMVR_DISCONNECTED-open = Abrir SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Calibra tus trackers
+tracking_checklist-ignore = Ignorar
+toolbar-assigned_trackers = { $count } trackers asignados
+toolbar-unassigned_trackers = { $count } trackers sin asignar
