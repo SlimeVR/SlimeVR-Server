@@ -495,6 +495,8 @@ settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = เครื่องมือ
 settings-sidebar-serial = Serial Console
 settings-sidebar-appearance = รูปแบบ
+settings-sidebar-home = หน้าหลัก
+settings-sidebar-checklist = รายการเตรียมพร้อมแทร็กเกอร์
 settings-sidebar-notifications = การแจ้งเตือน
 settings-sidebar-behavior = พฤติกรรมการทำงาน
 settings-sidebar-firmware-tool = เครื่องมือเฟิร์มแวร์ DIY
@@ -510,8 +512,8 @@ settings-general-steamvr-subtitle = แทร็กเกอร์ SteamVR
 # The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
 # This one is one of this cases that cares about multilines
 settings-general-steamvr-description =
-    เปิดหรือปิดใช้งานแทร็คเกอร์บางตัวของ SteamVR
-    มีประโยชน์กับเกมหรือแอพที่รองรับเฉพาะแทร็กเกอร์บางตำแหน่ง
+    เปิดหรือปิดแทร็กเกอร์ SteamVR บางตัว
+    มีประโยชน์สำหรับเกมหรือแอปที่รองรับแทร็กเกอร์เพียงบางส่วน
 settings-general-steamvr-trackers-waist = เอว
 settings-general-steamvr-trackers-chest = หน้าอก
 settings-general-steamvr-trackers-left_foot = เท้าซ้าย
@@ -522,12 +524,12 @@ settings-general-steamvr-trackers-left_elbow = ข้อศอกซ้าย
 settings-general-steamvr-trackers-right_elbow = ข้อศอกขวา
 settings-general-steamvr-trackers-left_hand = มือซ้าย
 settings-general-steamvr-trackers-right_hand = มือขวา
-settings-general-steamvr-trackers-tracker_toggling = ระบุตำแหน่งแทร็คเกอร์อัตโนมัติ
-settings-general-steamvr-trackers-tracker_toggling-description = จัดการการเปิดหรือปิดใช้งานแทร็กเกอร์ของแอพ SteamVR โดยอัตโนมัติตามตำแหน่งของแทร็กเกอร์ที่ถูกกำหนด
-settings-general-steamvr-trackers-tracker_toggling-label = กำหนดตำแหน่งโดยอัตโนมัติ
+settings-general-steamvr-trackers-tracker_toggling = กำหนดแทร็กเกอร์อัตโนมัติ
+settings-general-steamvr-trackers-tracker_toggling-description = จัดการการเปิดหรือปิดแทร็กเกอร์ SteamVR โดยอัตโนมัติตามการกำหนดแทร็กเกอร์ปัจจุบันของคุณ
+settings-general-steamvr-trackers-tracker_toggling-label = กำหนดแทร็กเกอร์อัตโนมัติ
 settings-general-steamvr-trackers-hands-warning =
-    <b>คําเตือน:</b> แทร็กเกอร์ที่มือจะแทนที่คอนโทรลเลอร์ของคุณ
-    แน่ใจหรือไม่?
+    <b>คำเตือน:</b> แทร็กเกอร์มือจะแทนที่คอนโทรลเลอร์ของคุณ
+    คุณแน่ใจหรือไม่?
 settings-general-steamvr-trackers-hands-warning-cancel = ยกเลิก
 settings-general-steamvr-trackers-hands-warning-done = ตกลง
 
