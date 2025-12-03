@@ -146,12 +146,13 @@ export function HeightSelectionInput({
     const newFull = oldFull + incrementInMeters;
     const newEye = newFull * EYE_HEIGHT_TO_HEIGHT_RATIO;
 
-    return newEye;
+    return round4Digit(newEye);
   };
 
   const increment = (unit: 'inch' | 'cm' | 'foot', value: number) => {
     const newEye = incrementMath(unit, value);
-    setHmdHeight(round4Digit(newEye));
+    console.log(newEye)
+    setHmdHeight(newEye);
   };
 
   const canIcrement = (
