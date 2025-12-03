@@ -910,9 +910,15 @@ settings-utils-advanced-open_logs-label = เปิดโฟลเดอร์
 
 ## Home Screen
 
+settings-home-list-layout = รูปแบบการแสดงรายการตัวติดตาม
+settings-home-list-layout-desc = เลือกรูปแบบการจัดวางที่ต้องการสำหรับหน้าหลัก
+settings-home-list-layout-grid = ตาราง
+settings-home-list-layout-table = รายการ
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = ขั้นตอนที่กำลังใช้งาน
+settings-tracking_checklist-active_steps-desc = รายการขั้นตอนทั้งหมดในรายการตรวจสอบการติดตาม คุณสามารถเลือกที่จะปิดใช้งานขั้นตอนใดขั้นตอนหนึ่งได้
 
 ## Setup/onboarding menu
 
@@ -947,9 +953,8 @@ onboarding-wifi_creds-password =
 ## Mounting setup
 
 onboarding-reset_tutorial-back = กลับไปยังการปรับเทียบตำแหน่งแทร็กเกอร์
-onboarding-reset_tutorial-explanation =
-    ขณะที่คุณใช้แทรคเกอร์ อาจเกิดการคลาดเคลื่อนเนื่องจากการดริฟท์ของ  IMU หรือแทร็กเกอร์ของคุณนขยับออกจากตำแหน่ง
-    คุณสามารถแก้ไขปัญหานี้ได้ดังนี้
+onboarding-reset_tutorial = บทช่วยสอนการรีเซ็ต
+onboarding-reset_tutorial-explanation = ขณะใช้งานแทร็กเกอร์ของคุณอาจคลาดเคลื่อนเนื่องจากการดริฟท์ของแกนตั้งของ IMU หรือจากการเคลื่อนที่ทางกายภาพของตัวแทร็กเกอร์เอง คุณมีวิธีการแก้ไขหลายวิธี
 onboarding-reset_tutorial-skip = ข้ามขั้นตอนนี้
 # Cares about multiline
 onboarding-reset_tutorial-0 =
@@ -988,7 +993,7 @@ onboarding-done-close = ปิดการตั้งค่า
 
 ## Tracker connection setup
 
-onboarding-connect_tracker-back = กลับไปยังหน้าการตั้งค่า Wi-Fi
+onboarding-connect_tracker-back = กลับไปหน้าข้อมูล Wi-Fi
 onboarding-connect_tracker-title = เชื่อมต่อแทร็กเกอร์
 onboarding-connect_tracker-description-p0-v1 = เอาล่ะ ได้เวลาเชื่อมต่อกับแทร็กเกอร์แล้ว!
 onboarding-connect_tracker-description-p1-v1 = ต่อแทร็กเกอร์แต่ละตัวผ่านสาย USB
