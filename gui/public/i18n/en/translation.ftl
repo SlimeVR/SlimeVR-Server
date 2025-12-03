@@ -1301,10 +1301,10 @@ onboarding-scaled_proportions-done-title = Body proportions set
 onboarding-scaled_proportions-done-description = Your body proportions should now be configured based on your height.
 
 ## User height calibration
-onboarding-user_height-title = What is your Height?
-onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR Calculate it or input your height manually
-onboarding-user_height-need_head_tracker = An HMD (or Head tracker) and positional controllers are required to perform the calibration
-onboarding-user_height-calculate = Calculate my height Automatically
+onboarding-user_height-title = What is your height?
+onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR calculate it, or input your height manually.
+onboarding-user_height-need_head_tracker = An HMD (or Head tracker) and controllers with positional tracking are required to perform the calibration.
+onboarding-user_height-calculate = Calculate my height automatically
 onboarding-user_height-next_step = Continue and save
 onboarding-user_height-manual-proportions = Manual Proportions
 onboarding-user_height-calibration-title = Calibration Progress
@@ -1316,12 +1316,12 @@ onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Do not look at the 
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Do not look too high up
 onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Make sure the controller is pointing down
 onboarding-user_height-calibration-RECORDING_HEIGHT = Stand still!
-onboarding-user_height-calibration-DONE = Calibration Success
-onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timmed out. Try again
-onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high. Try again
-onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Try again
+onboarding-user_height-calibration-DONE = Success!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timed out, try again.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high, try again.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small, try again.
 onboarding-user_height-calibration-error = Calibration Failed
-onboarding-user_height-manual-tip = While adjusting your height, move your body around. Try to sit and see how the sekeleton match your body
+onboarding-user_height-manual-tip = While adjusting your height, try different poses and see how the skeleton matches your body.
 
 ## Stay Aligned setup
 onboarding-stay_aligned-title = Stay Aligned
