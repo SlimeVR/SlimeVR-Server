@@ -1310,19 +1310,19 @@ onboarding-scaled_proportions-manual_height-height-v2 = ความสูงจ
 onboarding-scaled_proportions-manual_height-estimated_height = ความสูงโดยประมาณของ HMD คือ:
 onboarding-scaled_proportions-manual_height-next_step = ดําเนินการต่อและบันทึก
 onboarding-scaled_proportions-manual_height-warning =
-    คุณกําลังใช้การตั้งค่าสัดส่วนแบบปรับขนาดด้วยตนเอง!
-    <b>แนะนําให้ใช้โหมดนี้เฉพาะเมื่อคุณไม่ได้ใช้ HMD(แว่นVR) กับ SlimeVR</b>
+    ขณะนี้คุณกำลังใช้การตั้งค่าสัดส่วนแบบปรับด้วยตนเอง!
+    <b>โหมดนี้แนะนำให้ใช้เฉพาะในกรณีที่คุณไม่ได้ใช้อุปกรณ์สวมศีรษะ (HMD) ร่วมกับ SlimeVR</b>
     
-    หากคุณต้องการใช้ตั้งค่าสัดส่วนแบบปรับขนาดอัตโนมัติรบกวน:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = เชื่อมต่อแว่น VR
-onboarding-scaled_proportions-manual_height-warning-no_controllers = ตรวจสอบว่าคอนโทลเลอร์ของคุณนั้นเชื่อมต่ออยู่ และถูกกำหนดที่ตำแหน่งมือของคุณ
+    หากต้องการใช้การตั้งค่าสัดส่วนแบบอัตโนมัติ โปรด:
+onboarding-scaled_proportions-manual_height-warning-no_hmd = เชื่อมต่ออุปกรณ์ VR สวมศีรษะ
+onboarding-scaled_proportions-manual_height-warning-no_controllers = ตรวจสอบให้แน่ใจว่าได้เชื่อมต่อคอนโทรลเลอร์และกำหนดตำแหน่งให้กับมือของคุณอย่างถูกต้อง
 
 ## Tracker scaled proportions reset
 
 onboarding-scaled_proportions-reset_proportion-title = รีเซ็ตสัดส่วนร่างกายของคุณ
-onboarding-scaled_proportions-reset_proportion-description = ในการตั้งค่าสัดส่วนร่างกายตามความสูงของคุณ จะต้องเริ่มจากการล้างค่าสัดส่วนเดิมก่อนด้วยการรีเซ็ตสัดส่วนร่างกาย การดําเนินการนี้จะล้างสัดส่วนใดๆ ที่คุณกําหนดค่าไว้และให้การกําหนดค่าพื้นฐาน
-onboarding-scaled_proportions-done-title = ตั้งค่าสัดส่วนแล้ว
-onboarding-scaled_proportions-done-description = สัดส่วนของร่างกายคุณถูกกำหนดตามความสูงของคุณแล้ว
+onboarding-scaled_proportions-reset_proportion-description = ในการกำหนดสัดส่วนร่างกายตามความสูงของคุณ คุณต้องทำการรีเซ็ตสัดส่วนทั้งหมดในตอนนี้ ซึ่งจะล้างสัดส่วนที่คุณเคยตั้งค่าไว้ และกำหนดการตั้งค่าพื้นฐานให้ใหม่
+onboarding-scaled_proportions-done-title = ตั้งค่าสัดส่วนร่างกายแล้ว
+onboarding-scaled_proportions-done-description = ตอนนี้สัดส่วนร่างกายของคุณควรได้รับการกำหนดค่าโดยอ้างอิงจากความสูงของคุณแล้ว
 
 ## Stay Aligned setup
 
