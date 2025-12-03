@@ -203,6 +203,9 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			api.server.humanPoseManager.saveConfig()
 			api.server.configManager.saveConfig()
 
+			api.server.trackingChecklistManager.resetMountingCompleted = false
+			api.server.trackingChecklistManager.feetResetMountingCompleted = false
+
 			// might not be a good idea maybe let the client ask again
 			val fbb = FlatBufferBuilder(300)
 			val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
