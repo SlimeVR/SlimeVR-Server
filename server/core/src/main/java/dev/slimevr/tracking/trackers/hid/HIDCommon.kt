@@ -27,6 +27,7 @@ class HIDCommon {
 	companion object {
 		const val HID_TRACKER_RECEIVER_VID = 0x1209
 		const val HID_TRACKER_RECEIVER_PID = 0x7690
+		const val HID_TRACKER_PID = 0x7692
 
 		const val PACKET_SIZE = 16
 
