@@ -1277,28 +1277,6 @@ onboarding-automatic_proportions-smol_warning =
     <b>Please redo the measurements and ensure they are correct.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Go back
 
-## Tracker scaled proportions setup
-onboarding-scaled_proportions-title = Scaled proportions
-onboarding-scaled_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This will use an average proportion and scale it based on your height.
-onboarding-scaled_proportions-manual_height-title = Configure your height
-onboarding-scaled_proportions-manual_height-description-v2 = This height will be used as a baseline for your body proportions.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not currently connected to SlimeVR, so measurements can't be based on your headset. <b>Proceed at your own risk or check the docs!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Your full height is
-onboarding-scaled_proportions-manual_height-estimated_height = Your estimated headset height is:
-onboarding-scaled_proportions-manual_height-next_step = Continue and save
-onboarding-scaled_proportions-manual_height-warning =
-    You are currently using the manual way of setting up scaled proportions!
-    <b>This mode is recommended only if you do not use an HMD with SlimeVR.</b>
-
-    To be able to use the automatic scaled proportions please:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR Headset
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Make sure your controllers are connected and correctly assigned to your hands
-
-## Tracker scaled proportions reset
-onboarding-scaled_proportions-reset_proportion-title = Reset your body proportions
-onboarding-scaled_proportions-reset_proportion-description = To set your body proportions based on your height, you need to now reset all of your proportions. This will clear any proportions you have configured and provide a baseline configuration.
-onboarding-scaled_proportions-done-title = Body proportions set
-onboarding-scaled_proportions-done-description = Your body proportions should now be configured based on your height.
 
 ## User height calibration
 onboarding-user_height-title = What is your height?
@@ -1322,6 +1300,10 @@ onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is 
 onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small, try again.
 onboarding-user_height-calibration-error = Calibration Failed
 onboarding-user_height-manual-tip = While adjusting your height, try different poses and see how the skeleton matches your body.
+onboarding-user_height-reset-warning = You already had proportions set using the manual proportions page.
+    Continuing will reset these proportions to use only your height.
+
+    Do you want to continue?
 
 ## Stay Aligned setup
 onboarding-stay_aligned-title = Stay Aligned

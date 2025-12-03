@@ -163,7 +163,6 @@ export function HeightSelectionInput({
     return value < 0 ? newEye >= max : newEye < max;
   };
 
-  // Snap height to displayed precision when unit changes
   const handleUnitChange = (newUnit: 'meter' | 'foot') => {
     if (!hmdHeight || newUnit === unit) return;
 

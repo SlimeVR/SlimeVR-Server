@@ -1,6 +1,5 @@
 import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
-import { DEFAULT_FULL_HEIGHT } from '@/hooks/height';
 import { Button } from '@/components/commons/Button';
 import { useAtomValue } from 'jotai';
 import { serverGuardsAtom } from '@/store/app-store';
@@ -27,7 +26,7 @@ import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualize
 import { Vector3 } from 'three';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
-import { playTapSetupSound, restartAndPlay, scaledProportionsClick } from '@/sounds/sounds';
+import { restartAndPlay, scaledProportionsClick } from '@/sounds/sounds';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
 import { TipBox } from '@/components/commons/TipBox';
 import { Localized } from '@fluent/react';
@@ -35,6 +34,7 @@ import { ResetButton } from '@/components/home/ResetButton';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useConfig } from '@/hooks/config';
+import { ProportionsResetModal } from './ProportionsResetModal';
 
 const statusSteps = [
   // Order matters be carefull
@@ -236,7 +236,8 @@ function UserHeightStatus({
 
 export function ScaledProportionsPage() {
   const [hmdHeight, setHmdHeight] = useState(0);
-  const { config } = useConfig()
+  const [tmpHeight, setTmpHeight] = useState(0);
+  const { config, setConfig } = useConfig()
   const { applyProgress, state } = useOnboarding();
 
   const serverGuards = useAtomValue(serverGuardsAtom);
@@ -244,6 +245,7 @@ export function ScaledProportionsPage() {
   const [status, setState] = useState<UserHeightRecordingStatusResponseT>();
   const [auto, setAuto] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const [resetModal, setResetModal] = useState<null | 'manual' | 'auto'>(null);
 
   applyProgress(0.9);
 
@@ -264,7 +266,7 @@ export function ScaledProportionsPage() {
   // Makes it so you dont get spammed by sounds if multiple status complete at once
   useDebouncedEffect(
     () => {
-      if (!config) return;
+      if (!config || config.feedbackSound) return;
       if (
         !status ||
         errorSteps.includes(status.status) ||
@@ -294,6 +296,7 @@ export function ScaledProportionsPage() {
       RpcMessage.SkeletonResetAllRequest,
       new SkeletonResetAllRequestT()
     );
+    setConfig({ lastUsedProportions: 'scaled' })
   };
 
   useRPCPacket(
@@ -305,12 +308,9 @@ export function ScaledProportionsPage() {
 
       setState(res);
       setHmdHeight(res.hmdHeight);
-      if (res.status === UserHeightCalibrationStatus.DONE) {
-        applyHeight(res.hmdHeight);
-      }
 
-      if (errorSteps.includes(res.status) && res.hmdHeight == 0) {
-        applyHeight(DEFAULT_FULL_HEIGHT);
+      if (res.status === UserHeightCalibrationStatus.DONE) {
+        setConfig({ lastUsedProportions: 'scaled' })
       }
     }
   );
@@ -332,6 +332,7 @@ export function ScaledProportionsPage() {
       cancel();
     };
   }, []);
+
 
   useEffect(() => {
     const checkNotAuto = (status: UserHeightCalibrationStatus) =>
@@ -357,6 +358,16 @@ export function ScaledProportionsPage() {
     }
   }, [status]);
 
+  const acceptHeight = () => {
+    if (resetModal === 'manual') {
+      applyHeight(tmpHeight);
+    } else if (resetModal === 'auto') {
+      start()
+    }
+
+    setResetModal(null);
+  }
+
   return (
     <div
       className={classNames(
@@ -367,6 +378,7 @@ export function ScaledProportionsPage() {
         }
       )}
     >
+      <ProportionsResetModal isOpen={resetModal !== null} onClose={() => setResetModal(null)} accept={acceptHeight} />
       <div className="h-full max-w-2xl w-full flex flex-col justify-end xs:py-2 z-10 xs:gap-2 pointer-events-none">
         {!auto && (
           <div className="p-0 xs:p-2">
@@ -397,7 +409,11 @@ export function ScaledProportionsPage() {
           <HeightSelectionInput
             hmdHeight={hmdHeight}
             setHmdHeight={(height) => {
-              applyHeight(height);
+              if (config?.lastUsedProportions != null && config.lastUsedProportions !== 'scaled') {
+                setTmpHeight(height)
+                setResetModal('manual')
+              }
+              else setHmdHeight(height);
               setAuto(false);
             }}
           />
@@ -411,7 +427,13 @@ export function ScaledProportionsPage() {
             <Button
               variant="primary"
               disabled={!serverGuards?.canDoUserHeightCalibration}
-              onClick={start}
+              onClick={() => {
+                if (config?.lastUsedProportions != null && config.lastUsedProportions !== 'scaled') {
+                  setResetModal('auto')
+                } else {
+                  start()
+                }
+              }}
               id="onboarding-user_height-calculate"
             />
           </Tooltip>

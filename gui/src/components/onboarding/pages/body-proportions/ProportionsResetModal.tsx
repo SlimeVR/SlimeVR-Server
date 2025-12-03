@@ -10,6 +10,7 @@ import {
   SettingsRequestT,
   SettingsResponseT,
 } from 'solarxr-protocol';
+import { useConfig } from '@/hooks/config';
 
 export function ProportionsResetModal({
   isOpen = true,
@@ -31,16 +32,6 @@ export function ProportionsResetModal({
   accept: () => void;
 } & ReactModal.Props) {
   const { l10n } = useLocalization();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const [usingDefaultHeight, setUsingDefaultHeight] = useState(true);
-
-  useEffect(
-    () => sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT()),
-    []
-  );
-  useRPCPacket(RpcMessage.SettingsResponse, (res: SettingsResponseT) =>
-    setUsingDefaultHeight(!res.modelSettings?.skeletonHeight?.hmdHeight)
-  );
 
   return (
     <BaseModal
@@ -53,18 +44,11 @@ export function ProportionsResetModal({
       <div className="flex w-full h-full flex-col ">
         <div className="flex flex-col flex-grow items-center gap-3">
           <Localized
-            id={
-              usingDefaultHeight
-                ? 'reset-reset_all_warning_default-v2'
-                : 'reset-reset_all_warning-v2'
-            }
+            id={'onboarding-user_height-reset-warning'}
             elems={{ b: <b /> }}
           >
             <WarningBox>
-              <b>Warning:</b> This will reset your proportions to being just
-              based on your height.
-              <br />
-              Are you sure you want to do this?
+              WARNING
             </WarningBox>
           </Localized>
 
