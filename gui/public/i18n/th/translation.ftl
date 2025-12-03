@@ -414,10 +414,10 @@ tracker-settings-forget-label = ลืมแทร็กเกอร์
 tracker-settings-update-unavailable-v2 = ไม่พบเวอร์ชันที่เผยแพร่
 tracker-settings-update-low-battery = ไม่สามารถอัพเดทได้ แบตเตอรี่ต่ำกว่า 50%
 tracker-settings-update-up_to_date = เป็นเวอร์ชันล่าสุดแล้ว
-tracker-settings-update-blocked = ไม่สามารถอัพเดทได้ ไม่มีเวอร์ชั่นอื่นที่พร้อมอัพเดท
+tracker-settings-update-blocked = ไม่มีอัปเดต ไม่มีเวอร์ชันอื่นให้ใช้งาน
 tracker-settings-update-available = { $versionName } พร้อมใช้งานแล้ว
-tracker-settings-update = อัพเดตเดี๋ยวนี้
-tracker-settings-update-title = เวอร์ชั่นเฟิร์มแวร์
+tracker-settings-update = อัพเดททันที
+tracker-settings-update-title = เวอร์ชันเฟิร์มแวร์
 
 ## Tracker part card info
 
@@ -426,11 +426,11 @@ tracker-part_card-unassigned = ไม่ได้กำหนด
 
 ## Body assignment menu
 
-body_assignment_menu = คุณต้องการให้แทร็กเกอร์นี้อยู่ตำแหน่งไหน?
-body_assignment_menu-description = ระบุตำแหน่งที่คุณต้องการจะกำหนดแทร็กเกอร์ลงไป หรือคุณสามารถที่จะกำหนดตำแหน่งแทร็กเกอร์ทั้งหมดแทนการกำหนดทีละตัว
-body_assignment_menu-show_advanced_locations = แสดงตำแหน่งกำหนดแทร็กเกอร์ขั้นสูง
+body_assignment_menu = คุณต้องการกำหนดแทร็กเกอร์นี้ไปที่ส่วนใด?
+body_assignment_menu-description = เลือกตำแหน่งที่คุณต้องการกำหนดแทร็กเกอร์นี้ หรือคุณอาจเลือกจัดการแทร็กเกอร์ทั้งหมดพร้อมกัน แทนที่จะเลือกทีละตัว
+body_assignment_menu-show_advanced_locations = แสดงตำแหน่งการกำหนดขั้นสูง
 body_assignment_menu-manage_trackers = จัดการแทร็กเกอร์ทั้งหมด
-body_assignment_menu-unassign_tracker = ยกเลิกการกำหนด
+body_assignment_menu-unassign_tracker = ยกเลิกการกำหนดแทร็กเกอร์
 
 ## Tracker assignment menu
 
@@ -439,24 +439,24 @@ body_assignment_menu-unassign_tracker = ยกเลิกการกำหน�
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = แทร็กเกอร์ตัวไหนที่คุณต้องการจะติดตั้งบน
-tracker_selection_menu-NONE = ต้องการเอาแทร็กเกอร์ตัวไหนออกจากตำแหน่ง?
+-tracker_selection-part = คุณต้องการกำหนดแทร็กเกอร์นี้ไปที่
+tracker_selection_menu-NONE = คุณต้องการยกเลิกกำหนดตำแหน่งแทร็กเกอร์ตัวไหน?
 tracker_selection_menu-HEAD = { -tracker_selection-part } หัว?
 tracker_selection_menu-NECK = { -tracker_selection-part } คอ?
 tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } ไหล่ขวา?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } ต้นแขนขวาบน?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } แขนล่างขวา?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } แขนขวาส่วนบน?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } แขนขวาส่วนล่าง?
 tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } มือขวา?
 tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } ต้นขาขวา?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } ข้อเท้าขวา?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } เท้าขวา?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } ตัวควบคุมด้านขวา?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } คอนโทรเลอร์ด้านขวา?
 tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } หน้าอกส่วนบน?
 tracker_selection_menu-CHEST = { -tracker_selection-part } อก?
 tracker_selection_menu-WAIST = { -tracker_selection-part } เอว?
 tracker_selection_menu-HIP = { -tracker_selection-part } สะโพก?
 tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } หัวไหลซ้าย?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } ต้นแขนซ้าย?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } แขนซ้ายส่วนบน?
 tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } แขนขวาส่วนล่าง?
 tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } มือซ้าย?
 tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } ต้นขาซ้าย?
@@ -469,36 +469,36 @@ tracker_selection_menu-dont_assign = ยกเลิกการกำหนด
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
-    <b>คำเตือน:</b>แทร์กเกอร์ที่คออาจอันตรายถึงชีวิตได้หากปรับแน่นเกินไป
-    สายรัดสามารถตัดการไหลเวียนไปที่ศีรษะของคุณได้!
+    <b>คำเตือน:</b> การรัดแทร็กเกอร์คอแน่นเกินไปอาจเป็นอันตรายถึงชีวิตได้
+    สายรัดอาจขัดขวางการไหลเวียนโลหิตไปยังศีรษะ!
 tracker_selection_menu-neck_warning-done = ฉันเข้าใจในความเสี่ยง
 tracker_selection_menu-neck_warning-cancel = ยกเลิก
 
 ## Mounting menu
 
-mounting_selection_menu = คุณต้องการให้แทร็กเกอร์ตัวนี้อยู่ที่ไหน?
+mounting_selection_menu = คุณต้องการกำหนดแทร็กเกอร์นี้ไปที่ส่วนใด?
 mounting_selection_menu-close = ปิด
 
 ## Sidebar settings
 
 settings-sidebar-title = การตั้งค่า
-settings-sidebar-general = การตั้งค่าทั่วไป
+settings-sidebar-general = ทั่วไป
 settings-sidebar-steamvr = SteamVR
-settings-sidebar-tracker_mechanics = การทำงานแทร็กเกอร์
+settings-sidebar-tracker_mechanics = กลไกแทร็กเกอร์
 settings-sidebar-stay_aligned = Stay Aligned
-settings-sidebar-fk_settings = การตั้งค่าแทร็กเกอร์
-settings-sidebar-gesture_control = ควบคุมผ่านท่าทาง
+settings-sidebar-fk_settings = การตั้งค่าการติดตาม
+settings-sidebar-gesture_control = การควบคุมด้วยท่าทาง
 settings-sidebar-interface = อินเทอร์เฟซ
 settings-sidebar-osc_router = เราเตอร์ OSC
-settings-sidebar-osc_trackers = แทร็กเกอร์ OSC ใน VRChat
+settings-sidebar-osc_trackers = แทร็กเกอร์ VRChat OSC
 settings-sidebar-osc_vmc = VMC
-settings-sidebar-utils = ยูทิลิตี้
-settings-sidebar-serial = ซีเรียลคอนโซล
-settings-sidebar-appearance = รูปลักษณ์
+settings-sidebar-utils = เครื่องมือ
+settings-sidebar-serial = Serial Console
+settings-sidebar-appearance = รูปแบบ
 settings-sidebar-notifications = การแจ้งเตือน
-settings-sidebar-behavior = พฤติกรรม
-settings-sidebar-firmware-tool = เครื่องมือสำหรับเฟิร์มแวร์ DIY
-settings-sidebar-vrc_warnings = การตั้งค่าของ VRChat ที่แนะนำ
+settings-sidebar-behavior = พฤติกรรมการทำงาน
+settings-sidebar-firmware-tool = เครื่องมือเฟิร์มแวร์ DIY
+settings-sidebar-vrc_warnings = คำเตือนการตั้งค่า VRChat
 settings-sidebar-advanced = ขั้นสูง
 
 ## SteamVR settings
