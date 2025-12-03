@@ -248,8 +248,8 @@ reset-mounting = รีเซ็ตปรับเทียบการติด
 reset-mounting-feet = รีเซ็ตทิศทางติดตั้งเท้า
 reset-mounting-fingers = รีเซ็ตการติดตั้งนิ้วมือ
 reset-yaw = รีเซ็ตแกนตั้ง
-reset-error-no_feet_tracker = ไม่ได้กําหนดตัวแทร็กเกอร์เท้า
-reset-error-no_fingers_tracker = ไม่ได้กําหนดตัวแทร็กเกอร์นิ้ว
+reset-error-no_feet_tracker = ไม่ได้กําหนดแทร็กเกอร์เท้า
+reset-error-no_fingers_tracker = ไม่ได้กําหนดแทร็กเกอร์นิ้ว
 reset-error-mounting-need_full_reset = ต้องรีเซ็ตแทร็กเกอร์ทั้งหมดก่อนการปรับเทียบการติดตั้ง
 reset-error-yaw-need_full_reset = ต้องรีเซ็ตแทร็กเกอร์ทั้งหมดก่อนรีเซ็ตแกนตั้ง
 
@@ -292,18 +292,18 @@ widget-overlay-is_mirrored_label = สะท้อนการแสดงโอ
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = ล้างการชดเชยค่าดริฟท์
+widget-drift_compensation-clear = ล้างการชดเชยดริฟท์
 
 ## Widget: Clear Mounting calibration
 
-widget-clear_mounting = ล้างค้าการติดตั้ง
+widget-clear_mounting = ล้างการปรับเทียบการติดตั้ง
 
 ## Widget: Developer settings
 
 widget-developer_mode = โหมดนักพัฒนา
-widget-developer_mode-high_contrast = โหมดสีคมชัด
+widget-developer_mode-high_contrast = สีคอนทราสต์สูง
 widget-developer_mode-precise_rotation = ค่าหมุนแบบแม่นยำ
-widget-developer_mode-fast_data_feed = ฟีดข้อมูลเร็ว
+widget-developer_mode-fast_data_feed = ฟีดข้อมูลความเร็วสูง
 widget-developer_mode-filter_slimes_and_hmd = แยก Slime ออกจาก HMD
 widget-developer_mode-sort_by_name = เรียงตามชื่อ
 widget-developer_mode-raw_slime_rotation = ค่าการหมุนแบบดิบ
@@ -315,14 +315,14 @@ widget-imu_visualizer = ข้อมูลแทร็กเกอร์
 widget-imu_visualizer-preview = ดูตัวอย่าง
 widget-imu_visualizer-hide = ซ่อน
 widget-imu_visualizer-rotation_raw = ค่าการหมุนดิบ
-widget-imu_visualizer-rotation_preview = ค่าหมุนตัวอย่าง
+widget-imu_visualizer-rotation_preview = ดูตัวอย่างการหมุน
 widget-imu_visualizer-acceleration = ความเร่ง
 widget-imu_visualizer-position = ตำแหน่ง
 widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 
-widget-skeleton_visualizer-preview = ตัวอย่างโครงกระดูก
+widget-skeleton_visualizer-preview = ดูตัวอย่างโครงกระดูก
 widget-skeleton_visualizer-hide = ซ่อน
 
 ## Tracker status
@@ -331,7 +331,7 @@ tracker-status-none = ไม่มีสถานะ
 tracker-status-busy = ไม่ว่าง
 tracker-status-error = มีปัญหา
 tracker-status-disconnected = ขาดการเชื่อมต่อ
-tracker-status-occluded = ติดขัด
+tracker-status-occluded = ถูกบดบัง
 tracker-status-ok = OK
 tracker-status-timed_out = หมดเวลาเชื่อมต่อ
 
@@ -343,7 +343,7 @@ tracker-table-column-battery = แบตเตอรี่
 tracker-table-column-ping = Ping
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = อุณหภูมิ °C
-tracker-table-column-linear-acceleration = อัตราเร่ง X/Y/Z
+tracker-table-column-linear-acceleration = ความเร่ง X/Y/Z
 tracker-table-column-rotation = การหมุน X/Y/Z
 tracker-table-column-position = ตําแหน่ง X/Y/Z
 tracker-table-column-stay_aligned = Stay Aligned
@@ -360,22 +360,22 @@ tracker-rotation-back = หลัง
 tracker-rotation-back_left = หลังซ้าย
 tracker-rotation-back_right = หลังขวา
 tracker-rotation-custom = กำหนดเอง
-tracker-rotation-overriden = (ถูกแทนที่ด้วยการรีเซ็ตการติดตั้ง)
+tracker-rotation-overriden = (ถูกแทนที่ด้วยการปรับเทียบการติดตั้ง)
 
 ## Tracker information
 
 tracker-infos-manufacturer = ผู้ผลิต
-tracker-infos-display_name = ชื่อที่ใช้
+tracker-infos-display_name = ชื่อที่แสดง
 tracker-infos-custom_name = ชื่อที่ตั้งเอง
 tracker-infos-url = URL แทร็กเกอร์
-tracker-infos-version = เวอร์ชั่นของเฟิร์มแวร์
-tracker-infos-hardware_rev = รุ่นฮาร์ดแวร์
-tracker-infos-hardware_identifier = รหัสฮาร์ดแวร์
-tracker-infos-data_support = ข้อมูลแท็รคเกอร์
+tracker-infos-version = เวอร์ชันเฟิร์มแวร์
+tracker-infos-hardware_rev = เวอร์ชันฮาร์ดแวร์
+tracker-infos-hardware_identifier = ID ฮาร์ดแวร์
+tracker-infos-data_support = การรองรับข้อมูล
 tracker-infos-imu = เซ็นเซอร์ IMU
 tracker-infos-board_type = เมนบอร์ด
 tracker-infos-network_version = เวอร์ชันโปรโตคอล
-tracker-infos-magnetometer = ตัววัดสนามแม่เหล็ก
+tracker-infos-magnetometer = เซนเซอร์สนามแม่เหล็ก
 tracker-infos-magnetometer-status-v1 =
     { $status ->
         [DISABLED] ปิดการใช้งาน
@@ -385,7 +385,7 @@ tracker-infos-magnetometer-status-v1 =
 
 ## Tracker settings
 
-tracker-settings-back = กลับไปยังรายการแทร็กเกอร์
+tracker-settings-back = กลับไปที่รายการแทร็กเกอร์
 tracker-settings-title = การตั้งค่าแทร็กเกอร์
 tracker-settings-assignment_section = กำหนดแทร็กเกอร์
 tracker-settings-assignment_section-description = ต้องการให้แทร็กเกอร์นี้อยู่ส่วนไหนของร่างกาย
