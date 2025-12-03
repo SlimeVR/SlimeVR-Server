@@ -203,8 +203,8 @@ function UserHeightStatus({
         )}
         {status.status ===
           UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH && (
-          <div className="h-full w-full flex p-2 max-h-[950px]">
-            <div className="flex tall:grid grid-cols-2 h-full w-full gap-3">
+          <div className="h-full w-full flex p-2">
+            <div className="flex tall:grid grid-cols-2 grid-rows-2 h-full w-full gap-3 max-h-[950px]">
               <div className="bg-background-70 rounded-md flex gap-4 justify-between items-end px-4 relative  overflow-clip">
                 <CheckIcon className="sm:w-9 w-5 h-auto absolute top-2 left-2 justify-center fill-status-success" />
                 <img
@@ -327,6 +327,9 @@ export function ScaledProportionsPage() {
       RpcMessage.SkeletonConfigRequest,
       new SkeletonConfigRequestT()
     );
+
+    setAuto(true);
+    setState(Object.assign(new UserHeightRecordingStatusResponseT(), { status: UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH, hmdHeight: 1 }))
 
     return () => {
       cancel();
