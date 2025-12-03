@@ -59,8 +59,8 @@ fun isHmdLeveled(hmd: Tracker, threshold: Double): Boolean {
 }
 
 fun isControllerPointingDown(controller: Tracker, threshold: Double): Boolean {
-	val q = controller.getRotation()
-	val controllerForwardWorld = q.sandwich(Vector3.POS_Z)
+	val q = controller.getRawRotation()
+	val controllerForwardWorld = q.sandwich(Vector3.NEG_Z)
 	val worldDown = Vector3.NEG_Y
 	val dotProduct = controllerForwardWorld.dot(worldDown)
 
