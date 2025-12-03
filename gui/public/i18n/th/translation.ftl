@@ -1605,6 +1605,6 @@ toolbar-mounting_calibration = ปรับเทียบการติดต�
 toolbar-mounting_calibration-default = ร่างกาย
 toolbar-mounting_calibration-feet = เท้า
 toolbar-mounting_calibration-fingers = นิ้ว
-toolbar-drift_reset = การแก้ไขการดริฟท์
+toolbar-drift_reset = แก้ไขการดริฟท์
 toolbar-assigned_trackers = แทร็กเกอร์ถูกกำหนดแล้ว { $count } ตัว
 toolbar-unassigned_trackers = แทร็กเกอร์ยังไม่ถูกกำหนด { $count } ตัว
