@@ -31,6 +31,7 @@ public class TapDetectionManager {
 	private TapDetection yawResetDetector;
 	private TapDetection fullResetDetector;
 	private TapDetection mountingResetDetector;
+	private TapDetection toeMountingResetDetector;
 
 	private ArrayList<TapDetection> tapDetectors;
 
@@ -38,6 +39,7 @@ public class TapDetectionManager {
 	private int yawResetTaps = 2;
 	private int fullResetTaps = 3;
 	private int mountingResetTaps = 3;
+	private int toeMountingResetTaps = 3;
 
 	// delay
 	private static final float NS_CONVERTER = 1.0e9f;
@@ -79,7 +81,7 @@ public class TapDetectionManager {
 		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
 		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
-
+        toeMountingResetDetector = new TapDetection(skeleton, getTrackerToWatchToeMountingReset());
 		if (trackers != null) {
 			tapDetectors = new ArrayList<>();
 			for (Tracker tracker : trackers) {
@@ -96,15 +98,18 @@ public class TapDetectionManager {
 		this.yawResetDelayNs = config.getYawResetDelay() * NS_CONVERTER;
 		this.fullResetDelayNs = config.getFullResetDelay() * NS_CONVERTER;
 		this.mountingResetDelayNs = config.getMountingResetDelay() * NS_CONVERTER;
+
 		yawResetDetector.enabled = config.getYawResetEnabled();
 		fullResetDetector.enabled = config.getFullResetEnabled();
 		mountingResetDetector.enabled = config.getMountingResetEnabled();
+		toeMountingResetDetector.enabled = config.getMountingResetEnabled();
 		yawResetTaps = config.getYawResetTaps();
 		fullResetTaps = config.getFullResetTaps();
 		mountingResetTaps = config.getMountingResetTaps();
 		yawResetDetector.setMaxTaps(yawResetTaps);
 		fullResetDetector.setMaxTaps(fullResetTaps);
 		mountingResetDetector.setMaxTaps(mountingResetTaps);
+		toeMountingResetDetector.setMaxTaps(mountingResetTaps);
 		yawResetDetector
 			.setNumberTrackersOverThreshold(
 				config.getNumberTrackersOverThreshold()
@@ -117,6 +122,10 @@ public class TapDetectionManager {
 			.setNumberTrackersOverThreshold(
 				config.getNumberTrackersOverThreshold()
 			);
+		toeMountingResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
 	}
 
 	public void update() {
@@ -124,6 +133,7 @@ public class TapDetectionManager {
 			yawResetDetector == null
 				|| fullResetDetector == null
 				|| mountingResetDetector == null
+				|| toeMountingResetDetector == null
 				|| tapDetectors == null
 				|| config == null
 		)
@@ -144,11 +154,13 @@ public class TapDetectionManager {
 			yawResetDetector.update();
 			fullResetDetector.update();
 			mountingResetDetector.update();
+			toeMountingResetDetector.update();
 
 			// check if any tap detectors have detected taps
 			checkYawReset();
 			checkFullReset();
 			checkMountingReset();
+			checkToeMountingReset();
 		}
 	}
 
@@ -233,6 +245,43 @@ public class TapDetectionManager {
 		}
 	}
 
+	private void checkToeMountingReset() {
+		// Don't allow mounting if tracker needs reset
+		VRServer server = humanPoseManager.getServer();
+		if (server != null && server.statusSystem.hasStatusType(StatusData.StatusTrackerReset)) {
+			toeMountingResetDetector.resetDetector();
+			return;
+		}
+
+		boolean tapped = (mountingResetTaps <= toeMountingResetDetector.getTaps());
+
+		if (tapped && mountingResetAllowPlaySound) {
+			this.resetHandler.sendStarted(ResetType.Mounting);
+			mountingResetAllowPlaySound = false;
+		}
+
+		if (
+			tapped
+				&& System.nanoTime() - toeMountingResetDetector.getDetectionTime()
+				> mountingResetDelayNs
+		) {
+			// This will ask the skeleton for a mounting reset on every tracker
+			// except fingers.
+			// However, feet being reset or not will end up being decided on a
+			// per-tracker basis
+			// due to the setting being in ResetsConfig.kt
+			skeleton
+				.resetTrackersMounting(
+					resetSourceName,
+					TrackerUtils.INSTANCE.getAllToes()
+				);
+
+			toeMountingResetDetector.resetDetector();
+			mountingResetAllowPlaySound = true;
+			this.resetHandler.sendFinished(ResetType.Mounting);
+		}
+	}
+
 
 	// returns either the chest tracker, hip tracker, or waist tracker depending
 	// on which one is available
@@ -263,6 +312,14 @@ public class TapDetectionManager {
 			return skeleton.getRightUpperLegTracker();
 		else if (skeleton.getRightLowerLegTracker() != null)
 			return skeleton.getRightLowerLegTracker();
+		return null;
+	}
+
+	private Tracker getTrackerToWatchToeMountingReset() {
+		if (skeleton.getRightAbductorHallucisTracker() != null)
+			return skeleton.getRightAbductorHallucisTracker();
+		else if (skeleton.getRightAbductorHallucisTracker() != null)
+			return skeleton.getRightAbductorHallucisTracker();
 		return null;
 	}
 
