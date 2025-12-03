@@ -11,6 +11,7 @@ const tones: ValidNote[][] = [
 
 const xylophone = new Xylophone();
 const mew = createAudio('/sounds/mew.ogg');
+export const scaledProportionsClick = createAudio('/sounds/full-reset/full-click-1.ogg');
 const resetSounds: Record<
   ResetType,
   {
@@ -83,6 +84,7 @@ export async function playTapSetupSound(volume = 1) {
     lastTap = 0;
   }
 }
+
 
 function createAudio(path: string): HTMLAudioElement {
   const audio = new Audio(path);

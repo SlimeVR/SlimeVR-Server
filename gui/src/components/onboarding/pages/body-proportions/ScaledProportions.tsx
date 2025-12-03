@@ -27,13 +27,14 @@ import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualize
 import { Vector3 } from 'three';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
-import { playTapSetupSound } from '@/sounds/sounds';
+import { playTapSetupSound, restartAndPlay, scaledProportionsClick } from '@/sounds/sounds';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
 import { TipBox } from '@/components/commons/TipBox';
 import { Localized } from '@fluent/react';
 import { ResetButton } from '@/components/home/ResetButton';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { useConfig } from '@/hooks/config';
 
 const statusSteps = [
   // Order matters be carefull
@@ -235,6 +236,7 @@ function UserHeightStatus({
 
 export function ScaledProportionsPage() {
   const [hmdHeight, setHmdHeight] = useState(0);
+  const { config } = useConfig()
   const { applyProgress, state } = useOnboarding();
 
   const serverGuards = useAtomValue(serverGuardsAtom);
@@ -262,6 +264,7 @@ export function ScaledProportionsPage() {
   // Makes it so you dont get spammed by sounds if multiple status complete at once
   useDebouncedEffect(
     () => {
+      if (!config) return;
       if (
         !status ||
         errorSteps.includes(status.status) ||
@@ -271,7 +274,7 @@ export function ScaledProportionsPage() {
           UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
       )
         return;
-      playTapSetupSound();
+      restartAndPlay(scaledProportionsClick, config.feedbackSoundVolume);
     },
     [status?.status],
     300
