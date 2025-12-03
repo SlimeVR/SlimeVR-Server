@@ -412,6 +412,7 @@ tracker-settings-forget = ลืมแทร็กเกอร์
 tracker-settings-forget-description = ลบแทร็กเกอร์ออกจากเซิร์ฟเวอร์ SlimeVR และป้องกันไม่ให้เชื่อมต่อจนกว่าจะรีสตาร์ทเซิร์ฟเวอร์ การตั้งค่าของแทร็กเกอร์จะไม่สูญหาย
 tracker-settings-forget-label = ลืมแทร็กเกอร์
 tracker-settings-update-unavailable-v2 = ไม่พบเวอร์ชันที่เผยแพร่
+tracker-settings-update-incompatible = ไม่สามารถอัปเดตได้ บอร์ดไม่รองรับ
 tracker-settings-update-low-battery = ไม่สามารถอัพเดทได้ แบตเตอรี่ต่ำกว่า 50%
 tracker-settings-update-up_to_date = เป็นเวอร์ชันล่าสุดแล้ว
 tracker-settings-update-blocked = ไม่มีอัปเดต ไม่มีเวอร์ชันอื่นให้ใช้งาน
@@ -536,28 +537,28 @@ settings-general-steamvr-trackers-hands-warning-done = ตกลง
 ## Tracker mechanics
 
 settings-general-tracker_mechanics = การทำงานแทร็กเกอร์
-settings-general-tracker_mechanics-filtering = การกรอง
+settings-general-tracker_mechanics-filtering = การกรองข้อมูล
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
-    การเลือกประเภทการกรองสัญญาณรบกวนสำหรับแทร็กเกอร์
-    หากใช้การคาดเดาจะเป็นการคาดการณ์การเคลื่อนไหว ส่วนปรับเรียบจะะทำให้การเคลื่อนไหวเรียบเนียนขึ้น
-settings-general-tracker_mechanics-filtering-type = ประเภทการกรอง
-settings-general-tracker_mechanics-filtering-type-none = ไม่ใช้การกรอง
-settings-general-tracker_mechanics-filtering-type-none-description = ใช้ค่าการหมุนตามจริง ไม่ใช้การกรองใดๆ
-settings-general-tracker_mechanics-filtering-type-smoothing = ปรับเรียบ
-settings-general-tracker_mechanics-filtering-type-smoothing-description = ทําให้การเคลื่อนไหวเนียนขึ้น แต่อาจเพิ่มดีเลย์
+    เลือกประเภทการกรองสัญญาณรบกวนสำหรับแทร็กเกอร์
+    หากใช้การ การคาดการณ์ จะคาดการณ์การเคลื่อนไหว ในขณะที่ การทำให้ราบรื่น จะทำให้การเคลื่อนไหวราบรื่นขึ้น
+settings-general-tracker_mechanics-filtering-type = ประเภทการกรองสัญญาณ
+settings-general-tracker_mechanics-filtering-type-none = ไม่มีการกรอง
+settings-general-tracker_mechanics-filtering-type-none-description = ใช้ค่าการหมุนตามจริง จะไม่มีการกรองข้อมูลใดๆ
+settings-general-tracker_mechanics-filtering-type-smoothing = ทำให้ราบรื่น
+settings-general-tracker_mechanics-filtering-type-smoothing-description = ทำให้การเคลื่อนไหวราบรื่นขึ้น แต่จะเพิ่มความหน่วง
 settings-general-tracker_mechanics-filtering-type-prediction = คาดการณ์
-settings-general-tracker_mechanics-filtering-type-prediction-description = ลดดีเลย์และทำให้การเคลื่อนไหวกระชับขึ้น แต่อาจเพิ่มการกระตุก
-settings-general-tracker_mechanics-filtering-amount = ระดับ
-settings-general-tracker_mechanics-yaw-reset-smooth-time = เวลาในการรีเซ็ตแกนตั้งแบบเรียบเนียน(ตั้งที่ 0 วินาทีเพื่อปิดการใช้)
+settings-general-tracker_mechanics-filtering-type-prediction-description = ลดความหน่วง และทำให้การเคลื่อนไหวฉับไวขึ้น แต่อาจเพิ่มการกระตุก
+settings-general-tracker_mechanics-filtering-amount = ปริมาณ
+settings-general-tracker_mechanics-yaw-reset-smooth-time = เวลาหน่วงการรีเซ็ตแกนตั้ง(ตั้งที่ 0 วินาทีเพื่อปิดการใช้)
 settings-general-tracker_mechanics-drift_compensation = การชดเชยค่าดริฟท์
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    ชดเชยความคลาดเคลื่อนแกนตั้งของ IMU โดยเพิ่มค่าชดเชยในทิศทางตรงข้าม
-    ปรับปริมาณการชดเชยโดยนำค่าการรีเซ็ตแต่ละครั้ง และจำนวนครั้งรีเซ็ตที่นำมาใช้
-    ควรใช้เฉพาะในกรณีที่คุณต้องรีเซ็ตบ่อยครั้งมากๆ เท่านั้น
+    ชดเชยความคลาดเคลื่อนแกนตั้งของ IMU โดยหมุนชดเชยในทิศทางตรงข้าม
+    โดยนำปริมาณการรีเซ็ตและจำนวนครั้งในการรีเซ็ตมาพิจารณา
+    ควรใช้เฉพาะในกรณีที่คุณต้องรีเซ็ตบ่อยครั้งมากเท่านั้น!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = การชดเชยค่าดริฟท์
-settings-general-tracker_mechanics-drift_compensation-prediction = คาดการ์ณการชดเชยค่าดริฟท์
+settings-general-tracker_mechanics-drift_compensation-prediction = การคาดการณ์การชดเชยค่าดริฟท์
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
     คาดเดาค่าดริฟท์ของแกนตั้งให้มากกว่าที่วัดได้
