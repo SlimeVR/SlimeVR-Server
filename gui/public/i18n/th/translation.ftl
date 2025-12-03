@@ -497,7 +497,7 @@ settings-sidebar-utils = เครื่องมือ
 settings-sidebar-serial = Serial Console
 settings-sidebar-appearance = รูปแบบ
 settings-sidebar-home = หน้าหลัก
-settings-sidebar-checklist = รายการเตรียมพร้อมแทร็กเกอร์
+settings-sidebar-checklist = รายการเตรียมความพร้อมแทร็กเกอร์
 settings-sidebar-notifications = การแจ้งเตือน
 settings-sidebar-behavior = พฤติกรรมการทำงาน
 settings-sidebar-firmware-tool = เครื่องมือเฟิร์มแวร์ DIY
@@ -910,15 +910,15 @@ settings-utils-advanced-open_logs-label = เปิดโฟลเดอร์
 
 ## Home Screen
 
-settings-home-list-layout = รูปแบบการแสดงรายการตัวติดตาม
+settings-home-list-layout = รูปแบบการแสดงรายการแทร็กเกอร์
 settings-home-list-layout-desc = เลือกรูปแบบการจัดวางที่ต้องการสำหรับหน้าหลัก
-settings-home-list-layout-grid = ตาราง
-settings-home-list-layout-table = รายการ
+settings-home-list-layout-grid = แบบตาราง
+settings-home-list-layout-table = แบบรายการ
 
 ## Tracking Checlist
 
 settings-tracking_checklist-active_steps = ขั้นตอนที่กำลังใช้งาน
-settings-tracking_checklist-active_steps-desc = รายการขั้นตอนทั้งหมดในรายการตรวจสอบการติดตาม คุณสามารถเลือกที่จะปิดใช้งานขั้นตอนใดขั้นตอนหนึ่งได้
+settings-tracking_checklist-active_steps-desc = รายการขั้นตอนทั้งหมดในการเตรียมพร้อมแทร็กเกอร์ของคุณ สามารถเลือกที่จะปิดคำแนะนำขั้นตอนใดขั้นตอนหนึ่งได้
 
 ## Setup/onboarding menu
 
@@ -1361,6 +1361,8 @@ onboarding-stay_aligned-done = เสร็จแล้ว
 ## Home
 
 home-no_trackers = ไม่พบแทร็กเกอร์หรือยังไม่ได้ถูกกำหนด
+home-settings = การตั้งค่าหน้าหลัก
+home-settings-close = ปิด
 
 ## Trackers Still On notification
 
@@ -1539,6 +1541,8 @@ error_collection_modal-description_v2 =
     คุณสามารถเปลี่ยนการตั้งค่านี้ในภายหลังได้ในแถบ พฤติกรรมการทำงาน ภายในหน้าการตั้งค่า
 error_collection_modal-confirm = ฉันตกลง
 error_collection_modal-cancel = ฉันไม่ต้องการ
+tracking_checklist = รายการเตรียมความพร้อมแทร็กเกอร์
+tracking_checklist-settings = การตั้งค่ารายการเตรียมความพร้อมแทร็กเกอร์
 tracking_checklist-status-complete = คุณพร้อมที่จะใช้ SlimeVR แล้ว!
 tracking_checklist-STEAMVR_DISCONNECTED-open = เปิด SteamVR
 preview-mocap_mode_soon = โหมด Mocap (เร็ว ๆ นี้™)
