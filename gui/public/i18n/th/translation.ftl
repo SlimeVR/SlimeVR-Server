@@ -673,44 +673,44 @@ settings-general-gesture_control-subtitle = การรีเซ็ตด้ว
 settings-general-gesture_control-description = เปิดใช้การรีเซ็ตด้วยการแตะแทร็กเกอร์ แทร็กเกอร์ที่อยู่สูงที่สุดบนลำตัวจะใช้สำหรับการรีเซ็ตแกนตั้ง แทร็กเกอร์ที่อยู่สูงที่สุดบนขาซ้ายใช้สำหรับรีเซ็ตแทร็กเกอร์ทั้งหมด และแทร็กเกอร์ที่อยู่สูงที่สุดบนขาขวาใช้สำหรับรีเซ็ตปรับเทียบการติดตั้ง โดยการแตะจะต้องเกิดขึ้นภายในเวลา 0.3 วินาทีคูณด้วยจำนวนครั้งของการแตะเพื่อให้ระบบรับรู้
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
-settings-general-gesture_control-taps = แตะ{ $amount }ครั้ง
+settings-general-gesture_control-taps = { $amount } ครั้ง
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
-settings-general-gesture_control-trackers = แทร็กเกอร์ { $amount } ตัว
-settings-general-gesture_control-yawResetEnabled = เปิดใช้การแตะเพื่อรีเซ็ตแกนตั้ง
-settings-general-gesture_control-yawResetDelay = ดีเลย์ก่อนรีเซ็ตแกนตั้ง
-settings-general-gesture_control-yawResetTaps = แตะเพื่อรีเซ็ตแกนตั้งกี่ครั้ง
-settings-general-gesture_control-fullResetEnabled = เปิดใช้การแตะเพื่อรีแทร็กเกอร์ทั้งหมด
-settings-general-gesture_control-fullResetDelay = ดีเลย์ก่อนรีเซ็ตแทร็คทั้งหมด
-settings-general-gesture_control-fullResetTaps = แต่เพื่อรีเซ็ตแทร็กทั้งหมดกี่ครั้ง
-settings-general-gesture_control-mountingResetEnabled = เปิดใช้การแตะเพื่อรีเซ็ตตำแหน่ง
-settings-general-gesture_control-mountingResetDelay = ดีเลย์ก่อนทำการรีเซ็ตตำแหน่ง
-settings-general-gesture_control-mountingResetTaps = แตะเพื่อรีเซ็ตตำแหน่งกี่ครั้ง
+settings-general-gesture_control-trackers = { $amount } ตัว
+settings-general-gesture_control-yawResetEnabled = ใช้การแตะเพื่อรีเซ็ตแกนตั้ง
+settings-general-gesture_control-yawResetDelay = เวลาหน่วงก่อนรีเซ็ตแกนตั้ง
+settings-general-gesture_control-yawResetTaps = แตะเพื่อรีเซ็ตแกนตั้ง
+settings-general-gesture_control-fullResetEnabled = ใช้การแตะเพื่อรีเซ็ตแทร็กเกอร์ทั้งหมด
+settings-general-gesture_control-fullResetDelay = เวลาหน่วงก่อนรีเซ็ตทั้งหมด
+settings-general-gesture_control-fullResetTaps = แตะเพื่อรีเซ็ตทั้งหมด
+settings-general-gesture_control-mountingResetEnabled = ใช้การแตะเพื่อรีเซ็ตการปรับเทียบการติดตั้ง
+settings-general-gesture_control-mountingResetDelay = เวลาหน่วงก่อนทำการรีเซ็ตการติดตั้ง
+settings-general-gesture_control-mountingResetTaps = แตะเพื่อรีเซ็ตการติดตั้ง
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = จำนวนแทรคเกอร์ที่เกินเกณฑ์
-settings-general-gesture_control-numberTrackersOverThreshold-description = เพิ่มค่านี้หากการตรวจจับการแตะไม่ได้ แต่ควรเพิ่มจนใช้การตรวจจับการแตะได้เท่านั้น เพื่อหลีกเลี่ยงการตรวจจับการแตะที่ที่ผิดพลาด
+settings-general-gesture_control-numberTrackersOverThreshold-description = ให้เพิ่มค่านี้หากแทร็กเกอร์ไม่ตอบสนองกับการแตะ ไม่ควรเพิ่มค่าเกินความจำเป็น เพราะอาจทำให้เกิดการตรวจจับที่ผิดพลาดได้มากขึ้น
 
 ## Appearance settings
 
-settings-interface-appearance = รูปลักษณ์
+settings-interface-appearance = รูปแบบ
 settings-general-interface-dev_mode = โหมดนักพัฒนา
 settings-general-interface-dev_mode-description = โหมดนี้มีประโยชน์เมื่อคุณต้องการข้อมูลเชิงลึกกับแทร็กเกอร์ หรือปรัปแต่งในขั้นสูง
 settings-general-interface-dev_mode-label = โหมดนักพัฒนา
-settings-general-interface-theme = สีธีมของแอพ
-settings-general-interface-show-navbar-onboarding = แสดง "{ navbar-onboarding }" บนแถบนําทาง
-settings-general-interface-show-navbar-onboarding-description = สำหรับการซ่อนหรือแสดง { navbar-onboarding } บนแถบนำทาง
+settings-general-interface-theme = ธีมสี
+settings-general-interface-show-navbar-onboarding = แสดง "{ navbar-onboarding }" บนแถบนำทาง
+settings-general-interface-show-navbar-onboarding-description = ตัวเลือกนี้เปลี่ยนว่าจะแสดงปุ่ม "{ navbar-onboarding }" บนแถบนำทางหรือไม่
 settings-general-interface-show-navbar-onboarding-label = แสดง "{ navbar-onboarding }"
 settings-general-interface-lang = เลือกภาษา
-settings-general-interface-lang-description = เลือกภาษาตั้งต้นที่คุณต้องการใช้
-settings-general-interface-lang-placeholder = เลือกภาษาที่ใช้
+settings-general-interface-lang-description = เปลี่ยนภาษาเริ่มต้น
+settings-general-interface-lang-placeholder = เลือกภาษาที่จะใช้
 # Keep the font name untranslated
 settings-interface-appearance-font = ฟอนต์ของ GUI
-settings-interface-appearance-font-description = นี่จะเป็นการเปลี่ยนฟอนต์ของอินเตอร์เฟส
+settings-interface-appearance-font-description = ตัวเลือกนี้เปลี่ยนฟอนต์ที่ใช้อินเทอร์เฟซ
 settings-interface-appearance-font-placeholder = ฟอนต์เริ่มต้น
 settings-interface-appearance-font-os_font = ฟอนต์ของ OS
 settings-interface-appearance-font-slime_font = Font เริ่มต้น
-settings-interface-appearance-font_size = ขนาดฟอนต์ตั้งต้น
-settings-interface-appearance-font_size-description = นี่จะส่งผลกับขนาดฟอนต์ทั้งหมด เว้นแต่ในแผงการตั้งค่า
+settings-interface-appearance-font_size = ขนาดฟอนต์พื้นฐาน
+settings-interface-appearance-font_size-description = ตัวเลือกนี้ส่งผลต่อขนาดฟอนต์ของอินเทอร์เฟซทั้งหมด ยกเว้นแผงการตั้งค่านี้
 settings-interface-appearance-decorations = ใช้แทบอินเทอร์เฟสตามระบบปฎิบัติการ
 settings-interface-appearance-decorations-description = การตั้งค่านี้จะไม่แสดงแถบด้านบนของอินเทอร์เฟซ และจะใช้ของระบบปฏิบัติการแทน
 settings-interface-appearance-decorations-label = ใช้แทบด้านบนตามระบบปฎิบัติการ
