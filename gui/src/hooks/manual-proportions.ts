@@ -57,10 +57,11 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
   changeBoneValue: (params: UpdateBoneParams) => void;
 } {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const { setConfig } = useConfig()
-  const [skeleton, setSkeleton] = useState<Omit<SkeletonConfigResponseT, 'pack'> | null>(
-    null
-  );
+  const { setConfig } = useConfig();
+  const [skeleton, setSkeleton] = useState<Omit<
+    SkeletonConfigResponseT,
+    'pack'
+  > | null>(null);
   const bodyPartsGrouped: Label[] = useMemo(() => {
     if (!skeleton) return [];
     if (type === 'linear') {
@@ -191,7 +192,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
         );
       }
       sendRPCPacket(RpcMessage.SkeletonConfigRequest, new SkeletonConfigRequestT());
-      setConfig({ lastUsedProportions: 'manual' })
+      setConfig({ lastUsedProportions: 'manual' });
     },
   };
 }

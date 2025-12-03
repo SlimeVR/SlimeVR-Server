@@ -452,7 +452,9 @@ export function ManualProportionsPage() {
                 direction="left"
                 to="/onboarding/body-proportions/scaled"
                 state={{ alonePage: state.alonePage }}
-              >LINK</ArrowLink>
+              >
+                LINK
+              </ArrowLink>
             </Localized>
           </div>
           <ButtonsControl control={control} />

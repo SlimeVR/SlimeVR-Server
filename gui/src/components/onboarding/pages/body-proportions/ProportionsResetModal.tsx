@@ -3,14 +3,6 @@ import { WarningBox } from '@/components/commons/TipBox';
 import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import ReactModal from 'react-modal';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useEffect, useState } from 'react';
-import {
-  RpcMessage,
-  SettingsRequestT,
-  SettingsResponseT,
-} from 'solarxr-protocol';
-import { useConfig } from '@/hooks/config';
 
 export function ProportionsResetModal({
   isOpen = true,
@@ -47,9 +39,7 @@ export function ProportionsResetModal({
             id={'onboarding-user_height-reset-warning'}
             elems={{ b: <b /> }}
           >
-            <WarningBox>
-              WARNING
-            </WarningBox>
+            <WarningBox>WARNING</WarningBox>
           </Localized>
 
           <div className="flex flex-row gap-3 pt-5 place-content-center">

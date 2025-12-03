@@ -237,7 +237,7 @@ function UserHeightStatus({
 export function ScaledProportionsPage() {
   const [hmdHeight, setHmdHeight] = useState(0);
   const [tmpHeight, setTmpHeight] = useState(0);
-  const { config, setConfig } = useConfig()
+  const { config, setConfig } = useConfig();
   const { applyProgress, state } = useOnboarding();
 
   const serverGuards = useAtomValue(serverGuardsAtom);
@@ -296,7 +296,7 @@ export function ScaledProportionsPage() {
       RpcMessage.SkeletonResetAllRequest,
       new SkeletonResetAllRequestT()
     );
-    setConfig({ lastUsedProportions: 'scaled' })
+    setConfig({ lastUsedProportions: 'scaled' });
   };
 
   useRPCPacket(
@@ -310,7 +310,7 @@ export function ScaledProportionsPage() {
       setHmdHeight(res.hmdHeight);
 
       if (res.status === UserHeightCalibrationStatus.DONE) {
-        setConfig({ lastUsedProportions: 'scaled' })
+        setConfig({ lastUsedProportions: 'scaled' });
       }
     }
   );
@@ -329,13 +329,17 @@ export function ScaledProportionsPage() {
     );
 
     setAuto(true);
-    setState(Object.assign(new UserHeightRecordingStatusResponseT(), { status: UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH, hmdHeight: 1 }))
+    setState(
+      Object.assign(new UserHeightRecordingStatusResponseT(), {
+        status: UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH,
+        hmdHeight: 1,
+      })
+    );
 
     return () => {
       cancel();
     };
   }, []);
-
 
   useEffect(() => {
     const checkNotAuto = (status: UserHeightCalibrationStatus) =>
@@ -365,11 +369,11 @@ export function ScaledProportionsPage() {
     if (resetModal === 'manual') {
       applyHeight(tmpHeight);
     } else if (resetModal === 'auto') {
-      start()
+      start();
     }
 
     setResetModal(null);
-  }
+  };
 
   return (
     <div
@@ -381,7 +385,11 @@ export function ScaledProportionsPage() {
         }
       )}
     >
-      <ProportionsResetModal isOpen={resetModal !== null} onClose={() => setResetModal(null)} accept={acceptHeight} />
+      <ProportionsResetModal
+        isOpen={resetModal !== null}
+        onClose={() => setResetModal(null)}
+        accept={acceptHeight}
+      />
       <div className="h-full max-w-2xl w-full flex flex-col justify-end xs:py-2 z-10 xs:gap-2 pointer-events-none">
         {!auto && (
           <div className="p-0 xs:p-2">
@@ -412,11 +420,13 @@ export function ScaledProportionsPage() {
           <HeightSelectionInput
             hmdHeight={hmdHeight}
             setHmdHeight={(height) => {
-              if (config?.lastUsedProportions != null && config.lastUsedProportions !== 'scaled') {
-                setTmpHeight(height)
-                setResetModal('manual')
-              }
-              else setHmdHeight(height);
+              if (
+                config?.lastUsedProportions != null &&
+                config.lastUsedProportions !== 'scaled'
+              ) {
+                setTmpHeight(height);
+                setResetModal('manual');
+              } else setHmdHeight(height);
               setAuto(false);
             }}
           />
@@ -431,10 +441,13 @@ export function ScaledProportionsPage() {
               variant="primary"
               disabled={!serverGuards?.canDoUserHeightCalibration}
               onClick={() => {
-                if (config?.lastUsedProportions != null && config.lastUsedProportions !== 'scaled') {
-                  setResetModal('auto')
+                if (
+                  config?.lastUsedProportions != null &&
+                  config.lastUsedProportions !== 'scaled'
+                ) {
+                  setResetModal('auto');
                 } else {
-                  start()
+                  start();
                 }
               }}
               id="onboarding-user_height-calculate"

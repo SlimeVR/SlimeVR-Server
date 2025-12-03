@@ -4,7 +4,7 @@ import { EYE_HEIGHT_TO_HEIGHT_RATIO } from '@/hooks/height';
 import { useLocaleConfig } from '@/i18n/config';
 import classNames from 'classnames';
 import convert from 'convert';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 function IncrementButton({
   value,
@@ -179,7 +179,9 @@ export function HeightSelectionInput({
       snappedHeight = convert(totalCm, 'cm').to('meter');
     }
 
-    const newEyeHeight = round4Digit(snappedHeight * EYE_HEIGHT_TO_HEIGHT_RATIO);
+    const newEyeHeight = round4Digit(
+      snappedHeight * EYE_HEIGHT_TO_HEIGHT_RATIO
+    );
     setHmdHeight(newEyeHeight);
     setUnit(newUnit);
   };

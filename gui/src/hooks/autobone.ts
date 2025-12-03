@@ -32,7 +32,7 @@ export interface AutoboneContext {
 }
 
 export function useProvideAutobone(): AutoboneContext {
-  const { setConfig } = useConfig()
+  const { setConfig } = useConfig();
   const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [hasRecording, setHasRecording] = useState(ProcessStatus.PENDING);
@@ -80,7 +80,7 @@ export function useProvideAutobone(): AutoboneContext {
 
   const applyProcessing = () => {
     sendRPCPacket(RpcMessage.AutoBoneApplyRequest, new AutoBoneApplyRequestT());
-    setConfig({ lastUsedProportions: 'autobone' })
+    setConfig({ lastUsedProportions: 'autobone' });
   };
 
   useRPCPacket(
