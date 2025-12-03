@@ -315,7 +315,7 @@ widget-imu_visualizer = ข้อมูลแทร็กเกอร์
 widget-imu_visualizer-preview = ดูตัวอย่าง
 widget-imu_visualizer-hide = ซ่อน
 widget-imu_visualizer-rotation_raw = ค่าการหมุนดิบ
-widget-imu_visualizer-rotation_preview = ดูตัวอย่างการหมุน
+widget-imu_visualizer-rotation_preview = ค่าตัวอย่างการหมุน
 widget-imu_visualizer-acceleration = ความเร่ง
 widget-imu_visualizer-position = ตำแหน่ง
 widget-imu_visualizer-stay_aligned = Stay Aligned
@@ -731,7 +731,7 @@ settings-general-interface-connected_trackers_warning-label = เตือนแ
 
 ## Behavior settings
 
-settings-interface-behavior = พฤติกรรม
+settings-interface-behavior = พฤติกรรมการทำงาน
 settings-general-interface-use_tray = ย่อไปที่ถาดระบบ
 settings-general-interface-use_tray-description = ช่วยให้คุณสามารถปิดหน้าต่างโดยไม่ต้องปิด SlimeVR Server คุณจึงสามารถใช้งานต่อได้โดยไม่มี GUI รบกวน
 settings-general-interface-use_tray-label = ย่อไปที่ถาดระบบ
@@ -1153,29 +1153,29 @@ onboarding-assign_trackers-warning-WAIST =
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting = คุณจะใช้การปรับเทียบการติดตั้งแบบไหน?
+onboarding-choose_mounting = ต้องการใช้วิธีการปรับเทียบการติดตั้งแบบใด?
 # Multiline text
-onboarding-choose_mounting-description = การวางตำแหน่งของแทร็กเกอร์ นั้นช่วยแก้ไขทิศทางของแทร็กเกอร์เมื่อวางบนตัวของคุณ
-onboarding-choose_mounting-auto_mounting = ปรับเทียบตำแหน่งอัตโนมัติ
+onboarding-choose_mounting-description = การปรับเทียบการติดตั้งจะแก้ไขการวางแนวของตัวติดตามบนร่างกายของคุณ
+onboarding-choose_mounting-auto_mounting = ปรับเทียบการติดตั้งอัตโนมัติ
 # Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = แนะนำ
-onboarding-choose_mounting-auto_mounting-description = นี่จะเป็นการปรับเทียบตำแหน่งแทร็กเกอร์ทั้งหมดโดยอัตโนมัติจาก 2 ท่าทางของคุณ
-onboarding-choose_mounting-manual_mounting = ปรับเทียบตำแหน่งด้วยตัวเอง
+onboarding-choose_mounting-auto_mounting-description = ะบบจะตรวจจับการวางแนวการติดตั้งของแทร็กเกอร์ทั้งหมดของคุณโดยอัตโนมัติ จากท่าทาง 2 ท่า
+onboarding-choose_mounting-manual_mounting = ปรับเทียบการติดตั้งด้วยตัวเอง
 # Italicized text
-onboarding-choose_mounting-manual_mounting-label-v2 = อาจไม่แม่นยําพอ
-onboarding-choose_mounting-manual_mounting-description = นี่จะให้คุณกำหนดทิศทางของแทร็กเกอร์แต่ละตัวได้
+onboarding-choose_mounting-manual_mounting-label-v2 = อาจมีความแม่นยำไม่เพียงพอ
+onboarding-choose_mounting-manual_mounting-description = คุณสามารถเลือกการวางแนวการติดตั้งด้วยตนเองสำหรับแทร็กเกอร์แต่ละตัว
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
-    คุณแน่ใจหรือไม่ว่าต้องการจะ
-    ปรับเทียบตำแหน่งแทร็กเกอร์แบบอัตโนมัติ?
-onboarding-choose_mounting-manual_modal-description = <b>เราแนะนำให้ใช้การปรับเทียบตำแหน่งด้วยตนเองสำหรับผู้ใช้ใหม่</b> เพราะว่าท่าทางในการปรับเทียบอัตโนมัติอาจยากในการทำให้ถูกต้องในครั้งเดียว และอาจจะต้องใช้การฝึกฝน
+    คุณแน่ใจหรือไม่ว่าต้องการ
+    ทำการปรับเทียบการติดตั้งแบบอัตโนมัติ?
+onboarding-choose_mounting-manual_modal-description = <b>แนะนำให้ผู้ใช้ใหม่ใช้การปรับเทียบการติดตั้งด้วยตนเอง</b> เนื่องจากท่าทางสำหรับการปรับเทียบแบบอัตโนมัตินั้นอาจทำได้ยากในช่วงแรกและอาจต้องอาศัยการฝึกฝน
 onboarding-choose_mounting-manual_modal-confirm = ฉันรู้ว่าฉันกําลังทําอะไรอยู่
 onboarding-choose_mounting-manual_modal-cancel = ยกเลิก
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = กลับไปยังเข้าสู่ VR
-onboarding-manual_mounting = ปรับเทียบตำแหน่งแบบกำหนดเอง
+onboarding-manual_mounting = ปรับเทียบตำแหน่งด้วยตนเอง
 onboarding-manual_mounting-description = คลิกบนแทร็กเกอร์ทุกตัว และดูทิศทางของแทร็กเกอร์ที่ถูกติดตั้ง
 onboarding-manual_mounting-auto_mounting = ปรับเทียบตำแหน่งแบบอัตโนมัติ
 onboarding-manual_mounting-next = ขั้นตอนถัดไป
@@ -1536,7 +1536,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = ช่วงแขน
 error_collection_modal-title = อนุญาติให้เราเก็บข้อมูลขอผิดพลาดหรือไม่?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    คุณสามารถเปลี่ยนการตั้งค่านี้ในภายหลังได้ในแถบ พฤติกรรม ภายในหน้าการตั้งค่า
+    คุณสามารถเปลี่ยนการตั้งค่านี้ในภายหลังได้ในแถบ พฤติกรรมการทำงาน ภายในหน้าการตั้งค่า
 error_collection_modal-confirm = ฉันตกลง
 error_collection_modal-cancel = ฉันไม่ต้องการ
 tracking_checklist-status-complete = คุณพร้อมที่จะใช้ SlimeVR แล้ว!
