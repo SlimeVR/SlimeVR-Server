@@ -112,7 +112,10 @@ export function ManualMountingPage() {
                 {l10n.getString('onboarding-previous_step')}
               </Button>
               {!state.alonePage && (
-                <Button variant="primary" to="/onboarding/body-proportions/scaled">
+                <Button
+                  variant="primary"
+                  to="/onboarding/body-proportions/scaled"
+                >
                   {l10n.getString('onboarding-manual_mounting-next')}
                 </Button>
               )}

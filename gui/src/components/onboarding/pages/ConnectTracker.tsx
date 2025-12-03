@@ -320,11 +320,7 @@ export function ConnectTrackersPage() {
             </Button>
             <Button
               variant="primary"
-              to={
-                state.alonePage
-                  ? '/'
-                  : '/onboarding/trackers-assign'
-              }
+              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
               className="ml-auto"
             >
               {l10n.getString('onboarding-connect_tracker-next')}

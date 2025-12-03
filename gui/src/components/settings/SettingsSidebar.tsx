@@ -132,10 +132,7 @@ export function SettingsSidebar() {
               to="/settings/firmware-tool"
               id="settings-sidebar-firmware-tool"
             />
-            <SettingsLink
-              to="/onboarding/home"
-              id="navbar-onboarding"
-            />
+            <SettingsLink to="/onboarding/home" id="navbar-onboarding" />
             {vrcConfigState?.isSupported && (
               <SettingsLink
                 to="/vrc-warnings"

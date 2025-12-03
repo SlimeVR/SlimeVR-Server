@@ -96,7 +96,7 @@ export function MainLinks() {
       </NavButton>
       <NavButton
         to="/onboarding/connect-trackers"
-        icon={<WifiIcon value={1} disabled/>}
+        icon={<WifiIcon value={1} disabled />}
       >
         {l10n.getString('onboarding-connect_tracker-title')}
       </NavButton>
