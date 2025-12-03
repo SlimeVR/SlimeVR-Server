@@ -1542,6 +1542,6 @@ error_collection_modal-cancel = ฉันไม่ต้องการ
 tracking_checklist-status-complete = คุณพร้อมที่จะใช้ SlimeVR แล้ว!
 tracking_checklist-STEAMVR_DISCONNECTED-open = เปิด SteamVR
 preview-mocap_mode_soon = โหมด Mocap (เร็ว ๆ นี้™)
-toolbar-mounting_calibration-default = ตัว
+toolbar-mounting_calibration = การปรับเทียบการติดตั้ง
 toolbar-mounting_calibration-feet = เท้า
 toolbar-mounting_calibration-fingers = นิ้ว
