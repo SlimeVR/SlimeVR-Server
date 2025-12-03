@@ -4,7 +4,7 @@ import { EYE_HEIGHT_TO_HEIGHT_RATIO } from '@/hooks/height';
 import { useLocaleConfig } from '@/i18n/config';
 import classNames from 'classnames';
 import convert from 'convert';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 function IncrementButton({
   value,
@@ -151,7 +151,6 @@ export function HeightSelectionInput({
 
   const increment = (unit: 'inch' | 'cm' | 'foot', value: number) => {
     const newEye = incrementMath(unit, value);
-    console.log(newEye)
     setHmdHeight(newEye);
   };
 
@@ -162,6 +161,28 @@ export function HeightSelectionInput({
   ) => {
     const newEye = incrementMath(unit, value);
     return value < 0 ? newEye >= max : newEye < max;
+  };
+
+  // Snap height to displayed precision when unit changes
+  const handleUnitChange = (newUnit: 'meter' | 'foot') => {
+    if (!hmdHeight || newUnit === unit) return;
+
+    const fullHeight = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
+    let snappedHeight;
+
+    if (newUnit === 'foot') {
+      // Snap to nearest inch
+      const totalInches = Math.round(convert(fullHeight, 'meter').to('inch'));
+      snappedHeight = convert(totalInches, 'inch').to('meter');
+    } else {
+      // Snap to nearest centimeter
+      const totalCm = Math.round(convert(fullHeight, 'meter').to('cm'));
+      snappedHeight = convert(totalCm, 'cm').to('meter');
+    }
+
+    const newEyeHeight = round4Digit(snappedHeight * EYE_HEIGHT_TO_HEIGHT_RATIO);
+    setHmdHeight(newEyeHeight);
+    setUnit(newUnit);
   };
 
   return (
@@ -208,12 +229,12 @@ export function HeightSelectionInput({
           <UnitSelector
             active={unit === 'meter'}
             name={isXs ? 'unit-meter' : 'unit-cm'}
-            onClick={() => setUnit('meter')}
+            onClick={() => handleUnitChange('meter')}
           />
           <UnitSelector
             active={unit === 'foot'}
             name="unit-foot"
-            onClick={() => setUnit('foot')}
+            onClick={() => handleUnitChange('foot')}
           />
         </div>
       </div>
