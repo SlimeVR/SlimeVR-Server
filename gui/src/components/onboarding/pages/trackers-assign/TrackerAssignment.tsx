@@ -321,7 +321,7 @@ export function TrackersAssignPage() {
                   <>
                     <Button
                       variant="secondary"
-                      to="/onboarding/assign-tutorial"
+                      to="/onboarding/wifi-creds"
                     >
                       {l10n.getString('onboarding-previous_step')}
                     </Button>
