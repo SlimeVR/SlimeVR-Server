@@ -19,7 +19,7 @@ websocket-error-logs = เปิดโฟลเดอร์ไฟล์บัน
 
 version_update-title = มีเวอร์ชั่นใหม่พร้อมแล้ว: { $version }
 version_update-description = คลิกที่ "{ version_update-update }" เพื่อดาวน์โหลดตัวติดตั้ง SlimeVR ให้คุณ
-version_update-update = อัพเดท
+version_update-update = อัพเดต
 version_update-close = ปิด
 
 ## Tips
@@ -117,12 +117,12 @@ skeleton_bone-HEAD-desc =
     นี่เป็นระยะห่างจากแว่น VR ของคุณถึงบริเวณกลางศีรษะ
     ปรับด้วยการส่ายหัวจากซ้ายไปขวาเหมือนคุณกำลังส่ายหน้าปฏิเสธ
     และปรับค่าจนกว่าการเคลื่อนไหวในแทร็กเกอร์อื่นๆ จะน้อยจนไม่สังเกตเห็น
-skeleton_bone-NECK = ความยาวขอ
+skeleton_bone-NECK = ความยาวคอ
 skeleton_bone-NECK-desc =
     นี่เป็นระยะห่างจากบริเวณกลางศีรษะไปยังโคนคอ
     ปรับด้วยการพยักหน้าหรือการเอียงคอไปทางซ้ายและขวา
     และปรับค่าจนกว่าการเคลื่อนไหวในแทร็กเกอร์อื่นๆ จะน้อยจนไม่สังเกตเห็น
-skeleton_bone-torso_group = ความยาวลําตัว
+skeleton_bone-torso_group = ความยาวลำตัว
 skeleton_bone-torso_group-desc =
     นี่เป็นระยะห่างรวมจากฐานคอถึงสะโพก
     ปรับด้วยการยืนตรงและปรับค่านี้กระทั่งสะโพกเสมือนของคุณนั้นตรงกับสะโพกจริง
@@ -413,11 +413,11 @@ tracker-settings-forget-description = ลบแทร็กเกอร์ออ
 tracker-settings-forget-label = ลืมแทร็กเกอร์
 tracker-settings-update-unavailable-v2 = ไม่พบเวอร์ชันที่เผยแพร่
 tracker-settings-update-incompatible = ไม่สามารถอัปเดตได้ บอร์ดไม่รองรับ
-tracker-settings-update-low-battery = ไม่สามารถอัพเดทได้ แบตเตอรี่ต่ำกว่า 50%
+tracker-settings-update-low-battery = ไม่สามารถอัพเดตได้ แบตเตอรี่ต่ำกว่า 50%
 tracker-settings-update-up_to_date = เป็นเวอร์ชันล่าสุดแล้ว
 tracker-settings-update-blocked = ไม่มีอัปเดต ไม่มีเวอร์ชันอื่นให้ใช้งาน
 tracker-settings-update-available = { $versionName } พร้อมใช้งานแล้ว
-tracker-settings-update = อัพเดททันที
+tracker-settings-update = อัพเดตทันที
 tracker-settings-update-title = เวอร์ชันเฟิร์มแวร์
 
 ## Tracker part card info
@@ -569,7 +569,7 @@ settings-general-tracker_mechanics-drift_compensation_warning =
     บ่อยครั้งมากเท่านั้น (ทุก ~5-10 นาที)
     
     IMU บางตัวที่มีแนวโน้มที่จะต้องรีเซ็ตบ่อย ได้แก่:
-    Joy-Cons, owoTrack, และ MPU (หากเฟิร์มแวร์ไม่ได้รับการอัพเดท)
+    Joy-Cons, owoTrack, และ MPU (หากเฟิร์มแวร์ไม่ได้รับการอัพเดต)
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = ยกเลิก
 settings-general-tracker_mechanics-drift_compensation_warning-done = ฉันเข้าใจแล้ว
 settings-general-tracker_mechanics-drift_compensation-amount-label = ปริมาณการชดเชย
@@ -593,7 +593,7 @@ settings-stay_aligned-enabled-label = เปิดใช้งาน
 settings-stay_aligned-hide_yaw_correction-label = ซ่อนการปรับแต่ง (เพื่อเปรียบเทียบกับแบบไม่มี Stay Aligned)
 settings-stay_aligned-general-label = ทั่วไป
 settings-stay_aligned-relaxed_poses-label = ท่าทางผ่อนคลาย
-settings-stay_aligned-relaxed_poses-description = Stay Aligned ใช้ท่าทางผ่อนคลายของคุณเพื่อให้แทร็กเกอร์อยู่ในแนวที่ถูกต้อง ใช้ "ตั้งค่า Stay Aligned" เพื่ออัพเดทท่าทางเหล่านี้
+settings-stay_aligned-relaxed_poses-description = Stay Aligned ใช้ท่าทางผ่อนคลายของคุณเพื่อให้แทร็กเกอร์อยู่ในแนวที่ถูกต้อง ใช้ "ตั้งค่า Stay Aligned" เพื่ออัพเดตท่าทางเหล่านี้
 settings-stay_aligned-relaxed_poses-standing = ปรับแทร็กเกอร์ขณะยืน
 settings-stay_aligned-relaxed_poses-sitting = ปรับแทร็กเกอร์ขณะนั่งเก้าอี้
 settings-stay_aligned-relaxed_poses-flat = ปรับแทร็กเกอร์ขณะนั่งบนพื้น หรือนอนหงาย
@@ -1438,7 +1438,7 @@ firmware_tool-flashbtn_step-board_OTHER =
     โปรดดูคำแนะนำการแฟลชของบอร์ดของคุณเพื่อทราบวิธีเปิดโหมดบูตโหลดเดอร์
 firmware_tool-flash_method_ota-title = กำลังแฟลชผ่าน Wi-Fi
 firmware_tool-flash_method_ota-devices = พบอุปกรณ์ OTA:
-firmware_tool-flash_method_ota-no_devices = ไม่พบบอร์ดที่เราสามารถอัพเดทได้ผ่าน OTA กรุณาตรวจสอบว่าคุณได้เลือกชนิตของบอร์ดที่ถูกต้อง
+firmware_tool-flash_method_ota-no_devices = ไม่พบบอร์ดที่เราสามารถอัพเดตได้ผ่าน OTA กรุณาตรวจสอบว่าคุณได้เลือกชนิตของบอร์ดที่ถูกต้อง
 firmware_tool-flash_method_serial-title = กำลังแฟลชผ่าน USB
 firmware_tool-flash_method_serial-wifi = ข้อมูล Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = พบอุปกรณ์ซีเรียล:
@@ -1472,26 +1472,26 @@ firmware_update-status-UPLOADING = กำลังอัพโหลด Firmware
 firmware_update-status-SYNCING_WITH_MCU = กำลังซิงโครไนซ์กับ MCU
 firmware_update-status-REBOOTING = กำลังดำเนินการอัปเดต
 firmware_update-status-PROVISIONING = ตั้งค่าข้อมูลการเชื่อมต่อ Wi-Fi
-firmware_update-status-DONE = อัพเดทสำเร็จ!
+firmware_update-status-DONE = อัพเดตสำเร็จ!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = ไม่สามารถหาตัวอุปกรณ์ได้
 firmware_update-status-ERROR_TIMEOUT = กระบวนการอัปเดตหมดเวลาการเชื่อมต่อ
 firmware_update-status-ERROR_DOWNLOAD_FAILED = ไม่สามารถดาวน์โหลด Firmware ได้
 firmware_update-status-ERROR_AUTHENTICATION_FAILED = ไม่สามารถยืนยันตัวตนหรือเชื่อมต่อกับ MCU ได้
 firmware_update-status-ERROR_UPLOAD_FAILED = ไม่สามารถอัพโหลด Firmware ได้
 firmware_update-status-ERROR_PROVISIONING_FAILED = ไม่สามารถตั้งข้อมูลการเชื่อมต่อ Wi-FI ได้
-firmware_update-status-ERROR_UNSUPPORTED_METHOD = ยังไม่รองรับวิธีการอัพเดทนี้
+firmware_update-status-ERROR_UNSUPPORTED_METHOD = ยังไม่รองรับวิธีการอัพเดตนี้
 firmware_update-status-ERROR_UNKNOWN = เกิดข้อผิดพลาดที่ไม่รู้จัก
 
 ## Dedicated Firmware Update Page
 
-firmware_update-title = อัพเดท Firmware
+firmware_update-title = อัพเดตเฟิร์มแวร์
 firmware_update-devices = อุปกรณ์ที่พร้อมใช้งาน
 firmware_update-devices-description = โปรดเลือกตัวแทร็กเกอร์ที่คุณต้องการอัปเดตเป็น Firmware SlimeVR เวอร์ชันล่าสุด
 firmware_update-no_devices = กรุณาตรวจสอบว่าแทร็กเกอร์ที่คุณต้องการจะ Update นั้น เปิดอยู่ และ ต่อเข้ากับ Wi-Fi!
 firmware_update-changelog-title = กําลังอัปเดตเป็น { $version }
-firmware_update-looking_for_devices = กำลังมองหาอุปกรณ์เพื่ออัพเดท...
+firmware_update-looking_for_devices = กำลังมองหาอุปกรณ์เพื่ออัพเดต...
 firmware_update-retry = ลองอีกครั้ง
-firmware_update-update = อัพเดทแทร็กเกอร์ที่เลือก
+firmware_update-update = อัพเดตแทร็กเกอร์ที่เลือก
 firmware_update-exit = ออก
 
 ## Tray Menu
