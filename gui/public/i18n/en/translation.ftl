@@ -1173,7 +1173,7 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 onboarding-automatic_mounting-return-home = Done
 
 ## Tracker manual proportions setupa
-onboarding-manual_proportions-back = Go Back to Reset tutorial
+onboarding-manual_proportions-back-scaled = Go back to Scaled Proportions
 onboarding-manual_proportions-title = Manual Body Proportions
 onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning

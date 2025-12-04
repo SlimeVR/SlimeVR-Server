@@ -328,14 +328,6 @@ export function ScaledProportionsPage() {
       new SkeletonConfigRequestT()
     );
 
-    setAuto(true);
-    setState(
-      Object.assign(new UserHeightRecordingStatusResponseT(), {
-        status: UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH,
-        hmdHeight: 1,
-      })
-    );
-
     return () => {
       cancel();
     };
