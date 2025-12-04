@@ -1402,7 +1402,7 @@ firmware_tool-flash_method_step-serial-v2 =
     .description = Use a USB cable to update your tracker.
 
 
-firmware_tool-flashbtn_step = Press the boot btn
+firmware_tool-flashbtn_step = Press the boot button
 firmware_tool-flashbtn_step-description = Before going to the next step, there are a few things you need to do
 
 firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect the USB cable to your computer, then follow the appropriate steps for your SlimeVR board revision:
