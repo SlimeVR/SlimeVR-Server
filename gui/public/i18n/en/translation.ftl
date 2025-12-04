@@ -348,7 +348,7 @@ tracker-rotation-back = Back
 tracker-rotation-back_left = Back-Left
 tracker-rotation-back_right = Back-Right
 tracker-rotation-custom = Custom
-tracker-rotation-overriden = (overridden by mounting reset)
+tracker-rotation-overriden = (overridden by mounting calibration)
 
 ## Tracker information
 tracker-infos-manufacturer = Manufacturer
@@ -554,11 +554,11 @@ settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancel
 settings-general-tracker_mechanics-drift_compensation_warning-done = I understand
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
-settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting reset calibration
+settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting calibration
 settings-general-tracker_mechanics-save_mounting_reset-description =
-    Saves the automatic mounting reset calibrations for the trackers between restarts. Useful
+    Saves the automatic mounting calibration for the trackers between restarts. Useful
     when wearing a suit where trackers don't move between sessions. <b>Not recommended for normal users!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting reset
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting calibration
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Use magnetometer on all IMU trackers that support it
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
@@ -605,8 +605,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can r
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if foot trackers are not in use.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
 settings-general-fk_settings-leg_fk = Leg tracking
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting reset during general mounting resets.
-settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting reset
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting calibration during body mounting calibration.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting calibration
 settings-general-fk_settings-enforce_joint_constraints = Skeletal Limits
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Enforce constraints
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit
@@ -621,13 +621,13 @@ settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-reset_settings = Reset settings
 settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Reset the HMD's pitch (vertical rotation) upon doing a full reset. Useful if wearing an HMD on the forehead for VTubing or mocap. Do not enable for VR.
 settings-general-fk_settings-reset_settings-reset_hmd_pitch = Reset HMD pitch
-settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for mounting reset.
+settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for mounting calibration.
 settings-general-fk_settings-arm_fk-back = Back
 settings-general-fk_settings-arm_fk-back-description = The default mode, with the upper arms going back and lower arms going forward.
 settings-general-fk_settings-arm_fk-tpose_up = T-pose (up)
-settings-general-fk_settings-arm_fk-tpose_up-description = Expects your arms to be down at your sides during Full Reset, and 90 degrees up to the sides during Mounting Reset.
+settings-general-fk_settings-arm_fk-tpose_up-description = Expects your arms to be down at your sides during Full Reset, and 90 degrees up to the sides during Mounting Calibration.
 settings-general-fk_settings-arm_fk-tpose_down = T-pose (down)
-settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down at your sides during Mounting Reset.
+settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down at your sides during Mounting Calibration.
 settings-general-fk_settings-arm_fk-forward = Forward
 settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be raised forward at 90 degrees. Useful for VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Skeleton toggles
@@ -651,7 +651,7 @@ settings-general-fk_settings-self_localization-description = Mocap Mode allows t
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Tap based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Reset. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
+settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Calibration. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
@@ -670,9 +670,9 @@ settings-general-gesture_control-yawResetTaps = Taps for yaw reset
 settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
 settings-general-gesture_control-fullResetDelay = Full reset delay
 settings-general-gesture_control-fullResetTaps = Taps for full reset
-settings-general-gesture_control-mountingResetEnabled = Enable tap to mounting calibration
-settings-general-gesture_control-mountingResetDelay = Mounting reset delay
-settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
+settings-general-gesture_control-mountingResetEnabled = Enable tap to perform mounting calibration
+settings-general-gesture_control-mountingResetDelay = Mounting calibration delay
+settings-general-gesture_control-mountingResetTaps = Taps for mounting calibration
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over threshold
 settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make tap detection work as it would cause more false positives.
@@ -903,7 +903,7 @@ settings-home-list-layout-table = Table
 
 ## Tracking Checlist
 settings-tracking_checklist-active_steps = Active Steps
-settings-tracking_checklist-active_steps-desc = List all the steps that will show in the tracking checklist. You can either disable or enable ignorable steps
+settings-tracking_checklist-active_steps-desc = List of all the steps in the tracking checklist. You can choose to disable specific steps.
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
@@ -948,9 +948,9 @@ onboarding-reset_tutorial-1 = Tap the highlighted tracker { $taps } times to tri
     You need to be standing for this (i-pose). There is a 3 seconds delay (configurable) before it actually happens.
     This fully resets the position and rotation of all your trackers. It should fix most issues.
 # Cares about multiline
-onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to trigger a mounting reset.
+onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to trigger mounting calibration.
 
-    Mounting reset adjusts for how trackers are placed on your body. If they've moved or rotated significantly, this helps recalibrate their orientation.
+    Mounting calibration adjusts for how trackers are placed on your body. If they've moved or rotated significantly, this helps recalibrate their orientation.
 
     You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
 
@@ -1156,11 +1156,11 @@ onboarding-automatic_mounting-prev_step = Previous step
 onboarding-automatic_mounting-done-title = Mounting orientations calibrated.
 onboarding-automatic_mounting-done-description = Your mounting calibration is complete!
 onboarding-automatic_mounting-done-restart = Try again
-onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
+onboarding-automatic_mounting-mounting_reset-title = Mounting Calibration
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Mounting calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 
-onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes with both feet pointing forward. Alternatively you can do it siting on a chair.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes with both feet pointing forward. Alternatively you can do it sitting on a chair.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Press the "Feet calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 
 onboarding-automatic_mounting-preparation-title = Preparation
@@ -1312,7 +1312,7 @@ onboarding-stay_aligned-put_trackers_on-title = Put on your trackers
 onboarding-stay_aligned-put_trackers_on-description = To save your resting poses, we'll use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-stay_aligned-put_trackers_on-trackers_warning = You have fewer than 5 trackers currently connected and assigned! This is the minimum amount of trackers required for Stay Aligned to function properly.
 onboarding-stay_aligned-put_trackers_on-next = I have all my trackers on
-onboarding-stay_aligned-verify_mounting-title = Mounting Reset
+onboarding-stay_aligned-verify_mounting-title = Mounting Calibration
 onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned requires good mounting. Otherwise, you won't get a good experience with Stay Aligned.
 onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
 onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
@@ -1572,19 +1572,19 @@ tracking_checklist-status-partial = {$count ->
 tracking_checklist-status-complete = You are prepared to use SlimeVR!
 tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
-tracking_checklist-FULL_RESET = Perform a full Reset
-tracking_checklist-FULL_RESET-desc = Some Trackers need a reset to be performed
+tracking_checklist-FULL_RESET = Perform a full reset
+tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR not running
-tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for vr?
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
-tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your Slimes (highlighted in yellow) rest on a stable surface for a few secconds.
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few secconds.
 tracking_checklist-TRACKER_ERROR = Trackers with Errors
-tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the tracker.
+tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the trackers highlighted in yellow.
 tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings
-tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRchat Settings! This can impact your tracking experience.
+tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRChat settings! This can negatively impact your tracking.
 tracking_checklist-VRCHAT_SETTINGS-open = Go to VRChat Warnings
-tracking_checklist-UNASSIGNED_HMD = VR Headset not assigned to Head
+tracking_checklist-UNASSIGNED_HMD = VR headset not assigned to Head
 tracking_checklist-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Change your network profile
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = {$count ->
@@ -1598,7 +1598,7 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = {$count ->
 }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
-tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses for an improved imu drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses to reduce drift
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
 
 tracking_checklist-ignore = Ignore
