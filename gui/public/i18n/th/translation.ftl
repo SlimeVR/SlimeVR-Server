@@ -664,7 +664,7 @@ settings-general-fk_settings-skeleton_settings-interp_hip_legs = เฉลี่
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = เฉลี่ยค่าแกนตั้งและแกนยาวของตัวแทร็กเกอร์เข่าร่วมกับข้อเท้า
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = เฉลี่ยค่าแกนตั้งและแกนยาวของเข่าร่วมกับข้อเท้า
 settings-general-fk_settings-self_localization-title = โหมด Mocap
-settings-general-fk_settings-self_localization-description = โหมด Mocap ช่วยให้โมเดลโครงกระดูกสามารถติดตามตำแหน่งโดยประมาณได้ โดยไม่ต้องใช้อุปกรณ์สวมศีรษะ (แว่น VR ) หรือตัวติดตามอื่น ๆ โปรดทราบว่าฟังก์ชันนี้ต้องใช้แทร็กเกอร์ที่เท้าและศีรษะจึงจะทำงานได้ และยังอยู่ในช่วงทดลอง
+settings-general-fk_settings-self_localization-description = โหมด Mocap ช่วยให้โมเดลโครงกระดูกสามารถติดตามตำแหน่งโดยประมาณได้ โดยไม่ต้องใช้อุปกรณ์เฮดเซต (แว่น VR ) หรือตัวติดตามอื่น ๆ โปรดทราบว่าฟังก์ชันนี้ต้องใช้แทร็กเกอร์ที่เท้าและศีรษะจึงจะทำงานได้ และยังอยู่ในช่วงทดลอง
 
 ## Gesture control settings (tracker tapping)
 
