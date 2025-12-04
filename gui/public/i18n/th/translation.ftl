@@ -988,7 +988,7 @@ onboarding-enter_vr-ready = ฉันพร้อมแล้ว
 ## Setup done
 
 onboarding-done-title = คุณพร้อมแล้ว!
-onboarding-done-description = ขอให้คุณสนุกกับประสบการณ์แบบ Full-body
+onboarding-done-description = ขอให้คุณสนุกกับประสบการณ์ขยับได้แบบฟูลบอดี้~!
 onboarding-done-close = ปิดการตั้งค่า
 
 ## Tracker connection setup
