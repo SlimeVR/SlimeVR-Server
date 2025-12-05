@@ -33,6 +33,10 @@ tips-failed_webgl = Échec de l'initialisation de WebGL.
 
 ## Units
 
+unit-meter = Metre
+unit-foot = Pied
+unit-inch = Pouce
+unit-cm = cm
 
 ## Body parts
 
@@ -252,6 +256,9 @@ reset-mounting = Réinitialiser l'alignement
 reset-mounting-feet = Réinitialiser l'alignement des pieds
 reset-mounting-fingers = Réinitialiser l'alignement des doigts
 reset-yaw = Réinitialisation horizontale
+reset-error-no_feet_tracker = Aucun traqueur de pieds n’est assigné
+reset-error-no_fingers_tracker = Aucun traqueur de doigts n'est assigné
+reset-error-mounting-need_full_reset = Nécessite une réinitialisation complète avant de le monter
 
 ## Serial detection stuff
 
@@ -275,6 +282,7 @@ navbar-settings = Réglages
 ## Biovision hierarchy recording
 
 bvh-start_recording = Enregistrer BVH
+bvh-stop_recording = Sauvegarder l’enregistrement BVH
 bvh-recording = Enregistrement...
 bvh-save_title = Sauvegarder l’enregistrement BVH
 
@@ -484,6 +492,7 @@ mounting_selection_menu-close = Fermer
 
 settings-sidebar-title = Réglages
 settings-sidebar-general = Général
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Paramètres des capteurs
 settings-sidebar-stay_aligned = Garder Aligné
 settings-sidebar-fk_settings = Paramètres de la capture
@@ -491,9 +500,11 @@ settings-sidebar-gesture_control = Contrôle gestuel
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = Routeur OSC
 settings-sidebar-osc_trackers = Capteurs OSC VRChat
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
+settings-sidebar-home = Ecran d'accueil
 settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Comportement
 settings-sidebar-firmware-tool = Outil de micrologiciel DIY
@@ -921,9 +932,11 @@ settings-utils-advanced-open_logs-label = Ouvrir le dossier
 
 ## Home Screen
 
+settings-home-list-layout-desc = Sélectionnez l'une des dispositions possibles de l'écran d'accueil
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Etapes actives
 
 ## Setup/onboarding menu
 
@@ -1320,6 +1333,10 @@ onboarding-automatic_proportions-smol_warning-cancel = Retour
 
 ## User height calibration
 
+onboarding-user_height-title = Quelle est votre taille ?
+onboarding-user_height-need_head_tracker = Un casque VR (ou capteur de tête) et des manettes à position absolue sont nécessaires pour calculer votre taille.
+onboarding-user_height-calculate = Calculer ma taille automatiquement
+onboarding-user_height-next_step = Continuer et enregistrer
 
 ## Stay Aligned setup
 
