@@ -307,7 +307,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		private const val CONTROLLER_STABILITY_DURATION = 300_000_000f
 
 		private const val MAX_FLOOR_Y = 0.10f
-		private const val HMD_RISE_THRESHOLD = 1.0f
+		private const val HMD_RISE_THRESHOLD = 1.2f
 
 		val HEAD_ANGLE_THRESHOLD = cos((PI / 180f) * 15f)
 		val CONTROLLER_ANGLE_THRESHOLD = cos((PI / 180f) * 45f)
