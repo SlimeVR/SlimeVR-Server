@@ -215,6 +215,7 @@ class HumanSkeleton(
 	var tapDetectionManager: TapDetectionManager? = null
 	var localizer = Localizer(this)
 	var ikSolver = IKSolver(headBone)
+	var userHeightCalibration: UserHeightCalibration? = null
 
 	// Stay Aligned
 	var trackerSkeleton = TrackerSkeleton(this)
@@ -236,6 +237,7 @@ class HumanSkeleton(
 			this,
 			humanPoseManager,
 		)
+		userHeightCalibration = UserHeightCalibration(server, humanPoseManager)
 		legTweaks.setConfig(server.configManager.vrConfig.legTweaks)
 		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION))
 		stayAlignedConfig = server.configManager.vrConfig.stayAlignedConfig
@@ -474,6 +476,8 @@ class HumanSkeleton(
 		// Update tap detection's trackers
 		tapDetectionManager?.refresh()
 
+		userHeightCalibration?.checkTrackers()
+
 		// Rebuild Ik Solver
 		ikSolver.buildChains(trackers)
 
@@ -537,6 +541,7 @@ class HumanSkeleton(
 	@VRServerThread
 	fun updatePose() {
 		tapDetectionManager?.update()
+		userHeightCalibration?.tick()
 
 		StayAligned.adjustNextTracker(trackerSkeleton, stayAlignedConfig)
 

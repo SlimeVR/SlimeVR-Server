@@ -36,6 +36,7 @@ import { useLocaleConfig } from '@/i18n/config';
 import { useNavigate } from 'react-router-dom';
 import { ResetButton } from '@/components/home/ResetButton';
 import { Vector3 } from 'three';
+import { ArrowLink } from '@/components/commons/ArrowLink';
 
 function IconButton({
   onClick,
@@ -445,6 +446,17 @@ export function ManualProportionsPage() {
     <>
       <div className="flex w-full h-full gap-2 bg-background-70 p-2">
         <div className="flex flex-col flex-grow gap-2">
+          <div className="flex gap-2">
+            <Localized id="onboarding-manual_proportions-back-scaled">
+              <ArrowLink
+                direction="left"
+                to="/onboarding/body-proportions/scaled"
+                state={{ alonePage: state.alonePage }}
+              >
+                LINK
+              </ArrowLink>
+            </Localized>
+          </div>
           <ButtonsControl control={control} />
           <div className="bg-background-60 h-20 rounded-md flex-grow overflow-y-auto">
             <BodyProportions

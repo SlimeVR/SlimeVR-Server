@@ -11,6 +11,9 @@ const tones: ValidNote[][] = [
 
 const xylophone = new Xylophone();
 const mew = createAudio('/sounds/mew.ogg');
+export const scaledProportionsClick = createAudio(
+  '/sounds/full-reset/full-click-1.ogg'
+);
 const resetSounds: Record<
   ResetType,
   {
@@ -115,6 +118,7 @@ export function handleResetSounds(
 ) {
   if (!resetSounds) throw 'sounds not loaded';
   const sounds = resetSounds[resetType];
+  if (!sounds) throw 'reset type does not have a reset sound: ' + resetType;
 
   if (status === ResetStatus.STARTED) {
     if (progress === 0) {
