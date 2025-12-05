@@ -118,7 +118,6 @@ export function handleResetSounds(
 
   if (status === ResetStatus.STARTED) {
     if (progress === 0) {
-      performance.mark('sound_start');
       restartAndPlay(sounds.initial, volume);
     }
 
@@ -143,9 +142,6 @@ export function handleResetSounds(
   }
 
   if (status === ResetStatus.FINISHED) {
-    performance.mark('sound_end');
-    console.log(performance.measure('sound', 'sound_start', 'sound_end'));
-
     restartAndPlay(sounds.end, volume);
     restartAndPlay(sounds.mew, volume);
   }
