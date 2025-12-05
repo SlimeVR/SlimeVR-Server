@@ -3,14 +3,13 @@ package dev.slimevr.tracking.processor.skeleton
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
-import java.util.concurrent.CopyOnWriteArrayList
 
 class TapDetectionManager(
 	val server: VRServer,
 	val skeleton: HumanSkeleton,
 	val humanPoseManager: HumanPoseManager,
 ) {
-	private var tapDetectors: MutableList<TapDetection> = CopyOnWriteArrayList()
+	private var tapDetectors: ArrayList<TapDetection> = arrayListOf()
 	var yawResetDetector: TapDetection? = null
 	var fullResetDetector: TapDetection? = null
 	var mountingResetDetector: TapDetection? = null

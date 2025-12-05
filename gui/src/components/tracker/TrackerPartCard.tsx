@@ -78,7 +78,7 @@ export function TrackerPartCard({
     (showCard && (
       <div
         className={classNames(
-          'flex flex-col gap-1 control xs:w-32 hover:bg-background-50 cursor-pointer px-2 py-1 rounded-md relative transition-[box-shadow] duration-200 ease-linear',
+          'flex flex-col gap-1 control xs:w-32 hover:bg-background-50 px-2 py-1 rounded-md relative transition-[box-shadow] duration-200 ease-linear',
           direction === 'left' ? 'items-start' : 'items-end'
         )}
         id={BodyPart[role]}
@@ -99,7 +99,7 @@ export function TrackerPartCard({
             <WarningIcon />
           </div>
         )}
-        <Typography variant="section-title" whitespace='whitespace-nowrap'>
+        <Typography variant="section-title">
           {l10n.getString('body_part-' + BodyPart[role])}
         </Typography>
         {td?.map(({ tracker }, index) => (

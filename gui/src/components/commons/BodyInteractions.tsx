@@ -9,6 +9,7 @@ export function BodyInteractions({
   rightControls,
   highlightedRoles,
   assignedRoles,
+  width = 248,
   dotsSize = 15,
   variant = 'tracker-select',
   mirror,
@@ -98,11 +99,11 @@ export function BodyInteractions({
     const slotsPos = getSlotsPos();
     const controlsPos = getControlsPos();
 
-    canvasRefRef.current.width = canvasRefRef.current.clientWidth;
-    canvasRefRef.current.height = canvasRefRef.current.clientHeight;
+    canvasRefRef.current.width = canvasRefRef.current.offsetWidth;
+    canvasRefRef.current.height = canvasRefRef.current.offsetHeight;
 
     ctx.strokeStyle = '#608AAB';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
 
     const canvasBox = canvasRefRef.current.getBoundingClientRect();
     const personBox = personRef.current.getBoundingClientRect();
@@ -191,27 +192,30 @@ export function BodyInteractions({
   }, []);
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative">
       <canvas
         ref={canvasRefRef}
         className="absolute w-full h-full top-0 z-10"
         width="100%"
         height="100%"
       />
-      <div className="flex w-full h-full">
+      <div className="flex">
         <div ref={leftContainerRef} className="z-10">
           {leftControls}
         </div>
         <div
           ref={personRef}
-          className={classNames('relative flex justify-center flex-grow')}
+          className={classNames(
+            'relative w-full flex justify-center',
+            variant === 'tracker-select' && 'mobile:mx-0 xs:mx-10'
+          )}
         >
-          <PersonFrontIcon mirror={mirror} />
+          <PersonFrontIcon width={width} mirror={mirror} />
           {slotsButtonsPos.map(
             ({ top, left, height, width, id, hidden, buttonOffset }) => (
               <div
                 key={id}
-                className={classNames('absolute z-10')}
+                className={classNames('absolute z-10', hidden && 'hidden')}
                 onClick={() => onSelectRole((BodyPart as any)[id])}
                 style={{
                   top: top + height / 2 - dotsSize / 2 + buttonOffset.top,
@@ -222,7 +226,7 @@ export function BodyInteractions({
                   {highlightedRoles.includes((BodyPart as any)[id]) && (
                     <div
                       className={classNames(
-                        'absolute rounded-full bg-status-warning',
+                        'absolute rounded-full outline outline-2 outline-status-warning',
                         'transition-opacity opacity-100 animate-ping'
                       )}
                       style={{
@@ -234,17 +238,16 @@ export function BodyInteractions({
                   )}
                   <div
                     className={classNames(
-                      'absolute rounded-full outline-background-90 transition-opacity',
+                      'absolute rounded-full outline outline-2 outline-background-20 transition-opacity',
                       'hover:bg-accent-background-40',
-                      assignedRoles.includes((BodyPart as any)[id])
-                        ? 'bg-status-success'
-                        : 'bg-background-10',
-                      hidden ? 'opacity-0' : 'opacity-100'
+                      (assignedRoles.includes((BodyPart as any)[id]) &&
+                        'bg-background-70') ||
+                        'bg-background-10',
+                      (hidden && 'opacity-0') || 'opacity-100'
                     )}
                     style={{
                       width: dotsSize,
                       height: dotsSize,
-                      boxShadow: '0px 0px 4px black'
                     }}
                   />
                 </div>
