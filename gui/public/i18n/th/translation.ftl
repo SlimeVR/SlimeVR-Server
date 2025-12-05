@@ -1303,6 +1303,11 @@ onboarding-automatic_proportions-smol_warning-cancel = ย้อนกลับ
 
 ## User height calibration
 
+onboarding-user_height-title = ความสูงของคุณคือเท่าไหร่?
+onboarding-user_height-next_step = ดำเนินการต่อและบันทึก
+onboarding-user_height-manual-proportions = ปรับสัดส่วนด้วยตัวเอง
+onboarding-user_height-calibration-DONE = สําเร็จ!
+onboarding-user_height-calibration-error = ตั้งศูนย์ไม่สำเร็จ
 
 ## Stay Aligned setup
 
