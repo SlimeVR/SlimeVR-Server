@@ -603,13 +603,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = Tere tulemast SlimeVR-i
 onboarding-home-start = Hakkame sättima!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Minge tagasi jälgijate määramisse
-onboarding-enter_vr-title = Aeg minna VR-i!
-onboarding-enter_vr-description = Pange selga kõik jälgijad ja VR prillid.
-onboarding-enter_vr-ready = Olen valmis
-
 ## Setup done
 
 onboarding-done-title = Kõik on valmis!

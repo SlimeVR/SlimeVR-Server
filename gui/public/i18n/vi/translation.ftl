@@ -696,13 +696,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = Chào mừng bạn đến với SlimeVR!
 onboarding-home-start = Bắt đầu thiết lập!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Quay lại gán tracker
-onboarding-enter_vr-title = Chuẩn bị cho việc cân chỉnh trong VR
-onboarding-enter_vr-description = Đeo tất cả tracker và vào VR trước khi tiếp tục
-onboarding-enter_vr-ready = Sẵn sàng
-
 ## Setup done
 
 onboarding-done-title = Hoàn thành!

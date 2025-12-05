@@ -980,13 +980,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = ยินดีต้อนรับสู่ SlimeVR!
 onboarding-home-start = มาเริ่มการใช้งานกันเลย!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = กลับไปยังการกำหนดแทร็กเกอร์
-onboarding-enter_vr-title = ได้เวลาเข้าสู่โลก VR!
-onboarding-enter_vr-description = ใส่แทร็กเกอร์ของคุณแล้วเข้าสู่โลก VR เลย!
-onboarding-enter_vr-ready = ฉันพร้อมแล้ว
-
 ## Setup done
 
 onboarding-done-title = คุณพร้อมแล้ว!

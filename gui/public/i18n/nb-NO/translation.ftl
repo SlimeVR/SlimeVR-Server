@@ -522,13 +522,6 @@ onboarding-reset_tutorial-skip = Hopp over trinn
 onboarding-home = Velkommen til SlimeVR
 onboarding-home-start = La oss sette i gang!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Gå tilbake til Tracker tilordning
-onboarding-enter_vr-title = På tide å tre inn i VR!
-onboarding-enter_vr-description = Putt på alle trackerne dine og tre inn i VR!
-onboarding-enter_vr-ready = Jeg er klar!
-
 ## Setup done
 
 onboarding-done-title = Nå er alt klart!

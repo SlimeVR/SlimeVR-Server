@@ -602,13 +602,6 @@ onboarding-reset_tutorial-skip = ステップをスキップする
 onboarding-home = SlimeVRへようこそ
 onboarding-home-start = セットアップ開始！
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = トラッカー割り当てに戻る
-onboarding-enter_vr-title = VRに入る時間だ！
-onboarding-enter_vr-description = トラッカーを全部つけて、VRに突入せよ！
-onboarding-enter_vr-ready = 準備完了
-
 ## Setup done
 
 onboarding-done-title = 準備完了です！

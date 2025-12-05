@@ -302,9 +302,6 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Setup start
 
 
-## Enter VR part of setup
-
-
 ## Setup done
 
 

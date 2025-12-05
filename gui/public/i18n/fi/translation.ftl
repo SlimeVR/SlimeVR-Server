@@ -636,13 +636,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = Tervetuloa SlimeVR:ään
 onboarding-home-start = Mennään asentamaan!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Palaa jäljittimien määritykseen
-onboarding-enter_vr-title = Aika astua VR:ään!
-onboarding-enter_vr-description = Laita kaikki jäljittimet päälle ja astu VR:ään!
-onboarding-enter_vr-ready = Olen valmis
-
 ## Setup done
 
 onboarding-done-title = Olet valmis!

@@ -300,9 +300,6 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 ## Setup start
 
 
-## Enter VR part of setup
-
-
 ## Setup done
 
 

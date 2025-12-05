@@ -989,13 +989,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = Bienvenido a SlimeVR
 onboarding-home-start = ¡Comencemos!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Volver a la asignación de sensores
-onboarding-enter_vr-title = ¡Es hora de entrar a la RV!
-onboarding-enter_vr-description = ¡Ponte todos tus sensores y luego entra a la RV!
-onboarding-enter_vr-ready = Estoy listo
-
 ## Setup done
 
 onboarding-done-title = ¡Estás listo!

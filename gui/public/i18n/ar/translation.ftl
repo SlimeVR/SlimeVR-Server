@@ -859,13 +859,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = مرحبا بكم في سلايم في ار
 onboarding-home-start = هيا نتجهز!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = العودة إلى تعيين أجهزة التعقب
-onboarding-enter_vr-title = حان وقت دخول في ار!
-onboarding-enter_vr-description = ضع كل أجهزة التعقب ثم أدخل في ار!
-onboarding-enter_vr-ready = أنا جاهز
-
 ## Setup done
 
 onboarding-done-title = أنت جاهز تمامًا!

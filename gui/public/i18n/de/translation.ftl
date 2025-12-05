@@ -870,13 +870,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = Willkommen zu SlimeVR
 onboarding-home-start = Los geht’s!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Zurück zur Trackerzuweisung
-onboarding-enter_vr-title = Zeit für VR!
-onboarding-enter_vr-description = Ziehen Sie alle Tracker an und betreten Sie dann VR!
-onboarding-enter_vr-ready = Ich bin bereit!
-
 ## Setup done
 
 onboarding-done-title = Alles eingerichtet!

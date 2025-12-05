@@ -787,13 +787,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = wewcome to SwimeVR
 onboarding-home-start = wets get set up!
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = gaww bawwk to twacker assignyment
-onboarding-enter_vr-title = time to entew vr!
-onboarding-enter_vr-description = put on awe yoaww twackaws and then entew vr!
-onboarding-enter_vr-ready = iym weady
-
 ## Setup done
 
 onboarding-done-title = yaww awe awe set!

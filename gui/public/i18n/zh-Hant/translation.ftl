@@ -985,13 +985,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = 歡迎來到 SlimeVR
 onboarding-home-start = 來開始設定吧！
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = 返回到追蹤器分配
-onboarding-enter_vr-title = 該是進入 VR 的時候了！
-onboarding-enter_vr-description = 穿戴好所有的追蹤器，開始快樂 VR 吧！
-onboarding-enter_vr-ready = 我準備好了
-
 ## Setup done
 
 onboarding-done-title = 都搞定啦！

@@ -300,9 +300,6 @@ settings-osc-vrchat-network-trackers-elbows = מרפקים
 ## Setup start
 
 
-## Enter VR part of setup
-
-
 ## Setup done
 
 

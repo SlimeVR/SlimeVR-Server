@@ -618,9 +618,6 @@ settings-general-gesture_control-trackers =
 ## Setup start
 
 
-## Enter VR part of setup
-
-
 ## Setup done
 
 
