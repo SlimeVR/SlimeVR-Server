@@ -43,9 +43,7 @@ export function PutTrackersOnStep({
           <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
             <BodyDisplay
               trackers={trackers}
-              width={120}
               dotsSize={15}
-              variant="dots"
               hideUnassigned={true}
             />
           </div>
@@ -72,9 +70,7 @@ export function PutTrackersOnStep({
         <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
           <BodyDisplay
             trackers={trackers}
-            width={150}
             dotsSize={15}
-            variant="dots"
             hideUnassigned={true}
           />
         </div>

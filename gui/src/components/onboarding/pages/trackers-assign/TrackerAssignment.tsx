@@ -52,7 +52,7 @@ interface FlatDeviceTrackerDummy {
 }
 
 export function TrackersAssignPage() {
-  const { isMobile } = useBreakpoint('mobile');
+  const { isMd } = useBreakpoint('md');
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
   const { applyProgress, state } = useOnboarding();
@@ -252,6 +252,15 @@ export function TrackersAssignPage() {
     }
   );
 
+  const unassignAll = () => {
+    assignedTrackers.forEach((td) => {
+      const assignreq = new AssignTrackerRequestT();
+      assignreq.bodyPosition = BodyPart.NONE;
+      assignreq.trackerId = td.tracker.trackerId;
+      sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+    });
+  };
+
   applyProgress(0.5);
 
   const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
@@ -277,45 +286,46 @@ export function TrackersAssignPage() {
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
       />
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
-        <div className="flex flex-col w-full overflow-y-auto px-4 xs:items-center">
-          <div className="flex mobile:flex-col md:gap-8 mobile:gap-4 mobile:pb-4">
-            <div className="flex flex-col xs:max-w-sm gap-3">
-              <Typography variant="main-title" color="accent">
-                {l10n.getString('onboarding-assign_trackers-title')}
-              </Typography>
-              <Typography>
-                {l10n.getString('onboarding-assign_trackers-description')}
-              </Typography>
-              <div className="flex gap-1">
-                <Typography>
-                  {l10n.getString('onboarding-assign_trackers-assigned', {
-                    assigned: assignedTrackers.length,
-                    trackers: trackers.length,
-                  })}
-                </Typography>
-              </div>
-              <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-              {!!firstError && (
-                <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
-                  <div className="flex flex-col gap-1 whitespace-normal">
-                    <span>{firstError.label}</span>
-                  </div>
+      <div className="w-full h-full xs:p-4 p-2 flex justify-center">
+        <div className="flex xs:gap-4 w-full max-w-screen-xl flex-col md:flex-row">
+          <div className="flex flex-col xs:gap-3 gap-2 w-full md:max-w-md">
+            <Typography variant="main-title" color="accent">
+              {l10n.getString('onboarding-assign_trackers-title')}
+            </Typography>
+            <Typography>
+              {l10n.getString('onboarding-assign_trackers-description')}
+            </Typography>
+            <Typography>
+              {l10n.getString('onboarding-assign_trackers-assigned', {
+                assigned: assignedTrackers.length,
+                trackers: trackers.length,
+              })}
+            </Typography>
+            <TipBox className="xs:p-4 w-full">
+              {l10n.getString('tips-find_tracker')}
+            </TipBox>
+            {!!firstError && (
+              <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
+                <div className="flex flex-col gap-1 whitespace-normal">
+                  <span>{firstError.label}</span>
                 </div>
-              )}
-              <div className="flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4">
-                <TrackerAssignOptions
-                  variant={isMobile ? 'dropdown' : 'radio'}
-                />
-                <CheckBox
-                  control={control}
-                  label={l10n.getString(
-                    'onboarding-assign_trackers-mirror_view'
-                  )}
-                  name="mirrorView"
-                  variant="toggle"
-                />
               </div>
+            )}
+            <div className="flex flex-col gap-2">
+              <TrackerAssignOptions variant={!isMd ? 'dropdown' : 'radio'} />
+              <CheckBox
+                control={control}
+                label={l10n.getString('onboarding-assign_trackers-mirror_view')}
+                name="mirrorView"
+                variant="toggle"
+              />
+              {state.alonePage && (
+                <Button
+                  variant="secondary"
+                  onClick={unassignAll}
+                  id="onboarding-assign_trackers-unassign_all"
+                />
+              )}
               <div className="flex flex-row">
                 {!state.alonePage && (
                   <>
@@ -330,16 +340,17 @@ export function TrackersAssignPage() {
                       }
                       className="ml-auto"
                     >
-                      {l10n.getString('onboarding-enter_vr-ready')}
+                      {l10n.getString('onboarding-continue')}
                     </Button>
                   </>
                 )}
               </div>
             </div>
-            <div className="flex flex-col rounded-xl fill-background-50 pt-1">
+          </div>
+          <div className="flex fill-background-50 items-center justify-center flex-grow">
+            <div className="md:w-full md:h-full h-full max-w-[770px] flex flex-col overflow-y-clip tall:py-10">
               <BodyAssignment
-                width={isMobile ? 150 : undefined}
-                dotSize={isMobile ? 10 : undefined}
+                dotSize={15}
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}

@@ -40,14 +40,14 @@ export function PutTrackersOnStep({
         </div>
 
         {isMobile && (
-          <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
-            <BodyDisplay
-              trackers={trackers}
-              width={150}
-              dotsSize={15}
-              variant="dots"
-              hideUnassigned={true}
-            />
+          <div className="flex flex-col pt-1 items-center fill-background-50 justify-center">
+            <div className="max-h-[400px]">
+              <BodyDisplay
+                trackers={trackers}
+                dotsSize={15}
+                hideUnassigned={true}
+              />
+            </div>
           </div>
         )}
 
@@ -72,9 +72,7 @@ export function PutTrackersOnStep({
         <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
           <BodyDisplay
             trackers={trackers}
-            width={150}
             dotsSize={15}
-            variant="dots"
             hideUnassigned={true}
           />
         </div>

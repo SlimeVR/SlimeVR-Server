@@ -9,7 +9,6 @@ export function BodyInteractions({
   rightControls,
   highlightedRoles,
   assignedRoles,
-  width = 248,
   dotsSize = 15,
   variant = 'tracker-select',
   mirror,
@@ -99,11 +98,11 @@ export function BodyInteractions({
     const slotsPos = getSlotsPos();
     const controlsPos = getControlsPos();
 
-    canvasRefRef.current.width = canvasRefRef.current.offsetWidth;
-    canvasRefRef.current.height = canvasRefRef.current.offsetHeight;
+    canvasRefRef.current.width = canvasRefRef.current.clientWidth;
+    canvasRefRef.current.height = canvasRefRef.current.clientHeight;
 
     ctx.strokeStyle = '#608AAB';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
 
     const canvasBox = canvasRefRef.current.getBoundingClientRect();
     const personBox = personRef.current.getBoundingClientRect();
@@ -192,30 +191,27 @@ export function BodyInteractions({
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative w-full h-full">
       <canvas
         ref={canvasRefRef}
         className="absolute w-full h-full top-0 z-10"
         width="100%"
         height="100%"
       />
-      <div className="flex">
+      <div className="flex w-full h-full gap-5">
         <div ref={leftContainerRef} className="z-10">
           {leftControls}
         </div>
         <div
           ref={personRef}
-          className={classNames(
-            'relative w-full flex justify-center',
-            variant === 'tracker-select' && 'mobile:mx-0 xs:mx-10'
-          )}
+          className={classNames('relative flex justify-center flex-grow')}
         >
-          <PersonFrontIcon width={width} mirror={mirror} />
+          <PersonFrontIcon mirror={mirror} />
           {slotsButtonsPos.map(
             ({ top, left, height, width, id, hidden, buttonOffset }) => (
               <div
                 key={id}
-                className={classNames('absolute z-10', hidden && 'hidden')}
+                className={classNames('absolute z-10')}
                 onClick={() => onSelectRole((BodyPart as any)[id])}
                 style={{
                   top: top + height / 2 - dotsSize / 2 + buttonOffset.top,
@@ -223,31 +219,33 @@ export function BodyInteractions({
                 }}
               >
                 <div className="relative">
-                  {highlightedRoles.includes((BodyPart as any)[id]) && (
-                    <div
-                      className={classNames(
-                        'absolute rounded-full outline outline-2 outline-status-warning',
-                        'transition-opacity opacity-100 animate-ping'
-                      )}
-                      style={{
-                        width: dotsSize,
-                        height: dotsSize,
-                        animationDuration: '1.5s',
-                      }}
-                    />
-                  )}
+                  {!hidden &&
+                    highlightedRoles.includes((BodyPart as any)[id]) && (
+                      <div
+                        className={classNames(
+                          'absolute rounded-full bg-status-warning',
+                          'transition-opacity opacity-100 animate-ping'
+                        )}
+                        style={{
+                          width: dotsSize,
+                          height: dotsSize,
+                          animationDuration: '1.5s',
+                        }}
+                      />
+                    )}
                   <div
                     className={classNames(
-                      'absolute rounded-full outline outline-2 outline-background-20 transition-opacity',
+                      'absolute rounded-full outline-background-90 transition-opacity',
                       'hover:bg-accent-background-40',
-                      (assignedRoles.includes((BodyPart as any)[id]) &&
-                        'bg-background-70') ||
-                        'bg-background-10',
-                      (hidden && 'opacity-0') || 'opacity-100'
+                      assignedRoles.includes((BodyPart as any)[id])
+                        ? 'bg-status-success'
+                        : 'bg-background-10',
+                      hidden ? 'opacity-0' : 'opacity-100'
                     )}
                     style={{
                       width: dotsSize,
                       height: dotsSize,
+                      boxShadow: '0px 0px 4px black',
                     }}
                   />
                 </div>

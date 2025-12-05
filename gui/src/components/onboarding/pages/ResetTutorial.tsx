@@ -15,13 +15,11 @@ import {
 import { BodyDisplay } from '@/components/commons/BodyDisplay';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import classNames from 'classnames';
-import { useBreakpoint } from '@/hooks/breakpoint';
 import { log } from '@/utils/logging';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom } from '@/store/app-store';
 
 export function ResetTutorialPage() {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress } = useOnboarding();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
@@ -167,11 +165,7 @@ export function ResetTutorialPage() {
           </div>
         </div>
         <div className="flex flex-row justify-center">
-          <BodyDisplay
-            width={isMobile ? 160 : undefined}
-            trackers={[order[curIndex]]}
-            hideUnassigned={true}
-          />
+          <BodyDisplay trackers={[order[curIndex]]} hideUnassigned={true} />
           <div
             className={classNames(
               'self-center w-72 md-max:hidden',

@@ -961,11 +961,6 @@ onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to tri
 onboarding-home = Welcome to SlimeVR
 onboarding-home-start = Let's get set up!
 
-## Enter VR part of setup
-onboarding-enter_vr-back = Go Back to Tracker assignment
-onboarding-enter_vr-title = Time to enter VR!
-onboarding-enter_vr-description = Put on all your trackers and then enter VR!
-onboarding-enter_vr-ready = I'm ready
 
 ## Setup done
 onboarding-done-title = You're all set!
@@ -1035,6 +1030,7 @@ onboarding-assignment_tutorial-done = I put stickers and straps!
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials
 onboarding-assign_trackers-title = Assign trackers
 onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker
+onboarding-assign_trackers-unassign_all = Unassign all trackers
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server

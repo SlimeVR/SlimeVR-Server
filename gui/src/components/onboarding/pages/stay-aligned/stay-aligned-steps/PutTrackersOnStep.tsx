@@ -36,13 +36,13 @@ export function PutTrackersOnStep({ nextStep }: VerticalStepComponentProps) {
           )}
         </div>
         <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
-          <BodyDisplay
-            trackers={assignedTrackers}
-            width={150}
-            dotsSize={15}
-            variant="dots"
-            hideUnassigned={true}
-          />
+          <div className="h-[500px]">
+            <BodyDisplay
+              trackers={assignedTrackers}
+              dotsSize={15}
+              hideUnassigned={true}
+            />
+          </div>
         </div>
         <div className="flex flex-col gap-3">
           <div className="flex gap-3 justify-end">
