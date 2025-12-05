@@ -51,6 +51,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCFirmwareUpdateHandler(this, api)
 		RPCVRChatHandler(this, api)
 		RPCTrackingChecklistHandler(this, api)
+		RPCUserHeightCalibration(this, api)
 
 		registerPacketListener(
 			RpcMessage.AssignTrackerRequest,
@@ -197,16 +198,21 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			return
 		}
 
-		api.server.humanPoseManager.resetOffsets()
-		api.server.humanPoseManager.saveConfig()
-		api.server.configManager.saveConfig()
+		api.server.queueTask {
+			api.server.humanPoseManager.resetOffsets()
+			api.server.humanPoseManager.saveConfig()
+			api.server.configManager.saveConfig()
 
-		// might not be a good idea maybe let the client ask again
-		val fbb = FlatBufferBuilder(300)
-		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
-		fbb.finish(outbound)
-		conn.send(fbb.dataBuffer())
+			api.server.trackingChecklistManager.resetMountingCompleted = false
+			api.server.trackingChecklistManager.feetResetMountingCompleted = false
+
+			// might not be a good idea maybe let the client ask again
+			val fbb = FlatBufferBuilder(300)
+			val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
+			val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
+			fbb.finish(outbound)
+			conn.send(fbb.dataBuffer())
+		}
 	}
 
 	fun onSkeletonConfigRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {

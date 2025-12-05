@@ -12,7 +12,7 @@ export function ArrowLink({
 }: {
   to: string;
   children: ReactNode;
-  state?: { SerialPort?: string };
+  state?: any;
   direction?: 'left' | 'right';
   variant?: 'flat' | 'boxed' | 'boxed-2';
 }) {

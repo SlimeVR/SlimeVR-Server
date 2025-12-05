@@ -326,25 +326,25 @@ export function TrackersAssignPage() {
                   id="onboarding-assign_trackers-unassign_all"
                 />
               )}
-            </div>
-            <div className="flex flex-row">
-              {!state.alonePage && (
-                <>
-                  <Button variant="secondary" to="/onboarding/assign-tutorial">
-                    {l10n.getString('onboarding-previous_step')}
-                  </Button>
-                  <Button
-                    variant="primary"
-                    to="/onboarding/mounting/choose"
-                    disabled={
-                      assignedTrackers.length === 0 && trackers.length > 0
-                    }
-                    className="ml-auto"
-                  >
-                    {l10n.getString('onboarding-enter_vr-ready')}
-                  </Button>
-                </>
-              )}
+              <div className="flex flex-row">
+                {!state.alonePage && (
+                  <>
+                    <Button variant="secondary" to="/onboarding/wifi-creds">
+                      {l10n.getString('onboarding-previous_step')}
+                    </Button>
+                    <Button
+                      variant="primary"
+                      to="/onboarding/mounting/choose"
+                      disabled={
+                        assignedTrackers.length === 0 && trackers.length > 0
+                      }
+                      className="ml-auto"
+                    >
+                      {l10n.getString('onboarding-continue')}
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex fill-background-50 items-center justify-center flex-grow">

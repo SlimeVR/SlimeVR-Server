@@ -43,11 +43,11 @@ export interface Config {
   discordPresence: boolean;
   errorTracking: boolean | null;
   decorations: boolean;
-  showNavbarOnboarding: boolean;
   vrcMutedWarnings: string[];
   bvhDirectory: string | null;
   homeLayout: 'default' | 'table';
   skeletonPreview: boolean;
+  lastUsedProportions: 'manual' | 'autobone' | 'scaled' | null;
 }
 
 export interface ConfigContext {
@@ -73,12 +73,12 @@ export const defaultConfig: Config = {
   discordPresence: false,
   errorTracking: null,
   decorations: false,
-  showNavbarOnboarding: true,
   vrcMutedWarnings: [],
   devSettings: defaultDevSettings,
   bvhDirectory: null,
   homeLayout: 'default',
   skeletonPreview: true,
+  lastUsedProportions: null,
 };
 
 interface CrossStorage {

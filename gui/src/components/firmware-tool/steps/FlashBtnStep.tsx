@@ -21,7 +21,7 @@ export function FlashBtnStep({
           {selectedSource?.source.board === 'BOARD_SLIMEVR' ||
           selectedSource?.source.board === 'BOARD_SLIMEVR_V1_2' ? (
             <>
-              <Typography variant="standard" whitespace="whitespace-pre">
+              <Typography variant="standard" whitespace="whitespace-pre-wrap">
                 {l10n.getString('firmware_tool-flashbtn_step-board_SLIMEVR')}
               </Typography>
               <div className="gap-2 grid lg:grid-cols-3 md:grid-cols-2 mobile:grid-cols-1">
@@ -29,7 +29,7 @@ export function FlashBtnStep({
                   <Typography variant="main-title">R11</Typography>
                   <Typography variant="standard">
                     {l10n.getString(
-                      'firmware_tool-flashbtn_step-board_SLIMEVR-r11'
+                      'firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2'
                     )}
                   </Typography>
                   <img src="/images/R11_board_reset.webp" />
@@ -38,7 +38,7 @@ export function FlashBtnStep({
                   <Typography variant="main-title">R12</Typography>
                   <Typography variant="standard">
                     {l10n.getString(
-                      'firmware_tool-flashbtn_step-board_SLIMEVR-r12'
+                      'firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2'
                     )}
                   </Typography>
                   <img src="/images/R12_board_reset.webp" />
@@ -48,7 +48,7 @@ export function FlashBtnStep({
                   <Typography variant="main-title">R14</Typography>
                   <Typography variant="standard">
                     {l10n.getString(
-                      'firmware_tool-flashbtn_step-board_SLIMEVR-r14'
+                      'firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2'
                     )}
                   </Typography>
                   <img src="/images/R14_board_reset_sw.webp" />

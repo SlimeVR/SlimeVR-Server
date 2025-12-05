@@ -27,6 +27,13 @@ tips-tap_setup = You can slowly tap your tracker 2 times to choose it instead of
 tips-turn_on_tracker = Using official SlimeVR trackers? Don't forget to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
+## Units
+unit-meter = Meter
+unit-foot = Foot
+unit-inch = Inch
+unit-cm = cm
+
+
 ## Body parts
 body_part-NONE = Unassigned
 body_part-HEAD = Head
@@ -263,6 +270,7 @@ navbar-trackers_assign = Tracker Assignment
 navbar-mounting = Mounting Calibration
 navbar-onboarding = Setup Wizard
 navbar-settings = Settings
+navbar-connect_trackers = Connect Trackers
 
 ## Biovision hierarchy recording
 bvh-start_recording = Record BVH
@@ -395,9 +403,11 @@ tracker-settings-update-incompatible = Cannot update. Incompatible board
 tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
 tracker-settings-update-blocked = Update not available. No other releases available
-tracker-settings-update-available = { $versionName } is now available
 tracker-settings-update = Update now
 tracker-settings-update-title = Firmware version
+tracker-settings-current-version = Current
+tracker-settings-latest-version = Latest
+
 
 ## Tracker part card info
 tracker-part_card-no_name = No name
@@ -951,11 +961,6 @@ onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to tri
 onboarding-home = Welcome to SlimeVR
 onboarding-home-start = Let's get set up!
 
-## Enter VR part of setup
-onboarding-enter_vr-back = Go Back to Tracker assignment
-onboarding-enter_vr-title = Time to enter VR!
-onboarding-enter_vr-description = Put on all your trackers and then enter VR!
-onboarding-enter_vr-ready = I'm ready
 
 ## Setup done
 onboarding-done-title = You're all set!
@@ -1167,7 +1172,7 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 onboarding-automatic_mounting-return-home = Done
 
 ## Tracker manual proportions setupa
-onboarding-manual_proportions-back = Go Back to Reset tutorial
+onboarding-manual_proportions-back-scaled = Go back to Scaled Proportions
 onboarding-manual_proportions-title = Manual Body Proportions
 onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
@@ -1271,28 +1276,33 @@ onboarding-automatic_proportions-smol_warning =
     <b>Please redo the measurements and ensure they are correct.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Go back
 
-## Tracker scaled proportions setup
-onboarding-scaled_proportions-title = Scaled proportions
-onboarding-scaled_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This will use an average proportion and scale it based on your height.
-onboarding-scaled_proportions-manual_height-title = Configure your height
-onboarding-scaled_proportions-manual_height-description-v2 = This height will be used as a baseline for your body proportions.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not currently connected to SlimeVR, so measurements can't be based on your headset. <b>Proceed at your own risk or check the docs!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Your full height is
-onboarding-scaled_proportions-manual_height-estimated_height = Your estimated headset height is:
-onboarding-scaled_proportions-manual_height-next_step = Continue and save
-onboarding-scaled_proportions-manual_height-warning =
-    You are currently using the manual way of setting up scaled proportions!
-    <b>This mode is recommended only if you do not use an HMD with SlimeVR.</b>
 
-    To be able to use the automatic scaled proportions please:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR headset
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Make sure your controllers are connected and correctly assigned to your hands
+## User height calibration
+onboarding-user_height-title = What is your height?
+onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR calculate it, or input your height manually.
+onboarding-user_height-need_head_tracker = An HMD (or Head tracker) and controllers with positional tracking are required to perform the calibration.
+onboarding-user_height-calculate = Calculate my height automatically
+onboarding-user_height-next_step = Continue and save
+onboarding-user_height-manual-proportions = Manual Proportions
+onboarding-user_height-calibration-title = Calibration Progress
+onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
+onboarding-user_height-calibration-WAITING_FOR_RISE = Stand back up
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stand back up and look forward
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Make sure your head is leveled
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Do not look at the floor
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Do not look too high up
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Make sure the controller is pointing down
+onboarding-user_height-calibration-RECORDING_HEIGHT = Stand back up and stand still!
+onboarding-user_height-calibration-DONE = Success!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timed out, try again.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high, Try again.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Make sure to sand fully up during the process.
+onboarding-user_height-calibration-error = Calibration Failed
+onboarding-user_height-manual-tip = While adjusting your height, try different poses and see how the skeleton matches your body.
+onboarding-user_height-reset-warning = You already had proportions set using the manual proportions page.
+    Continuing will reset these proportions to use only your height.
 
-## Tracker scaled proportions reset
-onboarding-scaled_proportions-reset_proportion-title = Reset your body proportions
-onboarding-scaled_proportions-reset_proportion-description = To set your body proportions based on your height, you need to now reset all of your proportions. This will clear any proportions you have configured and provide a baseline configuration.
-onboarding-scaled_proportions-done-title = Body proportions set
-onboarding-scaled_proportions-done-description = Your body proportions should now be configured based on your height.
+    Do you want to continue?
 
 ## Stay Aligned setup
 onboarding-stay_aligned-title = Stay Aligned
@@ -1401,13 +1411,13 @@ firmware_tool-flash_method_step-serial-v2 =
     .description = Use a USB cable to update your tracker.
 
 
-firmware_tool-flashbtn_step = Press the boot btn
+firmware_tool-flashbtn_step = Press the boot button
 firmware_tool-flashbtn_step-description = Before going to the next step, there are a few things you need to do
 
 firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect the USB cable to your computer, then follow the appropriate steps for your SlimeVR board revision:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller.
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller.
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board.
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller. The tracker LED should do a short blink.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Turn on the tracker while pushing in the FLASH button on the top side of the board. The tracker LED should do a short blink.
 
 firmware_tool-flashbtn_step-board_OTHER = Before flashing, you will probably need to put the tracker into bootloader mode.
     Most of the time, this means pressing the boot button on the board before the flashing process starts.

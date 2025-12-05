@@ -34,7 +34,7 @@ export function DoneStep({
         </Button>
 
         {variant === 'onboarding' && (
-          <Button variant="primary" to="/onboarding/reset-tutorial">
+          <Button variant="primary" to="/onboarding/body-proportions/scaled">
             {l10n.getString('onboarding-automatic_mounting-next')}
           </Button>
         )}

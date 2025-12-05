@@ -1,4 +1,4 @@
-import { Localized, useLocalization } from '@fluent/react';
+import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num';
 import { useEffect, useMemo, useState } from 'react';
@@ -39,6 +39,7 @@ import { MagnetometerToggleSetting } from '@/components/settings/pages/Magnetome
 import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
+import { Tooltip } from '@/components/commons/Tooltip';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -200,75 +201,84 @@ export function TrackerSettingsPage() {
           )}
           {
             <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
-              <Localized id="tracker-settings-update-title">
-                <Typography variant="section-title">
-                  Firmware version
-                </Typography>
-              </Localized>
-              <div className="flex gap-2">
-                <Typography>
-                  v{tracker?.device?.hardwareInfo?.firmwareVersion}
-                </Typography>
-                <Typography>-</Typography>
-                {updateUnavailable && (
-                  <Localized id="tracker-settings-update-unavailable-v2">
-                    <Typography>No releases found</Typography>
-                  </Localized>
-                )}
-                {!updateUnavailable && (
-                  <>
-                    {needUpdate === 'unavailable' && (
-                      <Localized id="tracker-settings-update-incompatible">
-                        <Typography>
-                          Cannot be updated, Incompatible board
+              <Typography
+                variant="section-title"
+                id="tracker-settings-update-title"
+              >
+                Firmware version
+              </Typography>
+              <div className="flex gap-2 flex-col">
+                <div className="flex justify-between gap-2">
+                  <Typography id="tracker-settings-current-version" />
+                  <Typography
+                    whitespace="whitespace-pre-wrap"
+                    textAlign="text-end"
+                  >
+                    v{tracker?.device?.hardwareInfo?.firmwareVersion}
+                  </Typography>
+                </div>
+                <div className="flex justify-between gap-2">
+                  <Typography id="tracker-settings-latest-version" />
+                  {!updateUnavailable && (
+                    <>
+                      {currentFirmwareRelease && (
+                        <Typography
+                          color={
+                            needUpdate === 'updated'
+                              ? undefined
+                              : 'text-accent-background-10'
+                          }
+                          textAlign="text-end"
+                          whitespace="whitespace-pre-wrap"
+                        >
+                          {currentFirmwareRelease.name}
                         </Typography>
-                      </Localized>
-                    )}
-                    {needUpdate === 'blocked' && (
-                      // This happens only if no update is available and or the user is not in the current stagged
-                      <Localized id="tracker-settings-update-blocked">
-                        <Typography>
-                          Update not available. No other releases available
-                        </Typography>
-                      </Localized>
-                    )}
-                    {needUpdate === 'updated' && (
-                      <Localized id="tracker-settings-update-up_to_date">
-                        <Typography>Up to date</Typography>
-                      </Localized>
-                    )}
-                    {needUpdate === 'can-update' && currentFirmwareRelease && (
-                      <Localized
-                        id="tracker-settings-update-available"
-                        vars={{ versionName: currentFirmwareRelease.name }}
-                      >
-                        <Typography color="text-accent-background-10">
-                          New version available
-                        </Typography>
-                      </Localized>
-                    )}
-                    {needUpdate === 'low-battery' && currentFirmwareRelease && (
-                      <Localized
-                        id="tracker-settings-update-low-battery"
-                        vars={{ versionName: currentFirmwareRelease.name }}
-                      >
-                        <Typography color="text-status-critical" />
-                      </Localized>
-                    )}
-                  </>
-                )}
+                      )}
+                    </>
+                  )}
+                  {updateUnavailable && (
+                    <Typography id="tracker-settings-update-unavailable-v2">
+                      No releases found
+                    </Typography>
+                  )}
+                </div>
               </div>
-              <Localized id="tracker-settings-update">
-                <Button
-                  variant={
-                    needUpdate === 'can-update' ? 'primary' : 'secondary'
+              {!updateUnavailable && (
+                <Tooltip
+                  preferedDirection="top"
+                  disabled={
+                    needUpdate === 'can-update' || needUpdate === 'updated'
                   }
-                  disabled={needUpdate !== 'can-update'}
-                  to="/firmware-update"
+                  content={
+                    <>
+                      {needUpdate === 'unavailable' && (
+                        <Typography id="tracker-settings-update-unavailable-v2" />
+                      )}
+                      {needUpdate === 'blocked' && (
+                        // This happens only if no update is available and or the user is not in the current stagged
+                        <Typography id="tracker-settings-update-blocked" />
+                      )}
+                      {needUpdate === 'low-battery' &&
+                        currentFirmwareRelease && (
+                          <Typography id="tracker-settings-update-low-battery" />
+                        )}
+                    </>
+                  }
                 >
-                  Update now
-                </Button>
-              </Localized>
+                  <Button
+                    variant={
+                      needUpdate === 'can-update' ? 'primary' : 'secondary'
+                    }
+                    disabled={needUpdate !== 'can-update'}
+                    to="/firmware-update"
+                    id={
+                      needUpdate === 'updated'
+                        ? 'tracker-settings-update-up_to_date'
+                        : 'tracker-settings-update'
+                    }
+                  />
+                </Tooltip>
+              )}
             </div>
           }
 

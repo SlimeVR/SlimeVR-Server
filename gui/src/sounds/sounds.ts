@@ -11,6 +11,9 @@ const tones: ValidNote[][] = [
 
 const xylophone = new Xylophone();
 const mew = createAudio('/sounds/mew.ogg');
+export const scaledProportionsClick = createAudio(
+  '/sounds/full-reset/full-click-1.ogg'
+);
 const resetSounds: Record<
   ResetType,
   {
@@ -115,15 +118,27 @@ export function handleResetSounds(
 ) {
   if (!resetSounds) throw 'sounds not loaded';
   const sounds = resetSounds[resetType];
+  if (!sounds) throw 'reset type does not have a reset sound: ' + resetType;
 
   if (status === ResetStatus.STARTED) {
     if (progress === 0) {
-      performance.mark('sound_start');
       restartAndPlay(sounds.initial, volume);
     }
 
     if (sounds.tick) {
-      const tickIndex = (progress / 1000) % sounds.tick.length;
+      const arrayLength = sounds.tick.length;
+
+      const cycleLength = arrayLength * 2 - 2;
+      const positionInCycle = Math.floor(progress / 1000) % cycleLength;
+
+      let tickIndex;
+
+      if (positionInCycle < arrayLength) {
+        tickIndex = positionInCycle;
+      } else {
+        tickIndex = cycleLength - positionInCycle;
+      }
+
       if (progress >= 1000 && sounds.tick[tickIndex]) {
         restartAndPlay(sounds.tick[tickIndex], volume);
       }
@@ -131,9 +146,6 @@ export function handleResetSounds(
   }
 
   if (status === ResetStatus.FINISHED) {
-    performance.mark('sound_end');
-    console.log(performance.measure('sound', 'sound_start', 'sound_end'));
-
     restartAndPlay(sounds.end, volume);
     restartAndPlay(sounds.mew, volume);
   }
