@@ -31,6 +31,9 @@ tips-tap_setup = Bạn có thể từ từ nhấn vào 2 lần trình theo dõi 
 tips-turn_on_tracker = Sử dụng thiết bị SlimeVR chính thức? Hãy nhớ <b><em>bật trình theo dõi của bạn</em></b> sau khi kết nối thiết bị với máy tính!
 tips-failed_webgl = Không thể khởi tạo WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Chưa được gán
@@ -908,7 +911,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Quay lại cân chỉnh hướng gắn
 onboarding-manual_proportions-title = Đo kích thước cơ thể thủ công
 
 ## Tracker automatic proportions setup
@@ -967,10 +969,7 @@ onboarding-automatic_proportions-done-title = Đã lưu chỉ số đo
 onboarding-automatic_proportions-done-description = Quá trình đo đã hoàn tất
 onboarding-automatic_proportions-error_modal-confirm = Đã hiểu!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

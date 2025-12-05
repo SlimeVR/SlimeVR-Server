@@ -24,6 +24,9 @@ tips-do_not_move_heels = Veenduge, et teie kannad ei liigu salvestamise ajal!
 tips-file_select = Pukseerige failid kasutamiseks, või <u>sirvi</u>.
 tips-tap_setup = Saate jälgija valimiseks menüüst valimise asemel aeglaselt oma jälgijat 2 korda puudutada.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Määramata
@@ -715,7 +718,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad kül
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Mine tagasi lähtestamise õppetusse
 onboarding-manual_proportions-title = Käsitsi keha proportsioonid
 
 ## Tracker automatic proportions setup
@@ -764,10 +766,7 @@ onboarding-automatic_proportions-done-title = Kere mõõdetud ja salvestatud.
 onboarding-automatic_proportions-done-description = Teie keha proportsioonid kalibreerimine on valmis!
 onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

@@ -31,6 +31,9 @@ tips-tap_setup = Du kan forsiktig trykke på din tracker 2 ganger sammenhengende
 tips-turn_on_tracker = Bruker du offisielle SlimeVR trackere? Husk å <b><em>skru dem på</em></b> etter å ha koblet dem til PCen din!
 tips-failed_webgl = Feil ved initialisering av WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Ikke tildelt
@@ -610,7 +613,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere 
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Gå tilbake til Nullstillings opplæring
 onboarding-manual_proportions-title = Manuelle kropps-proporsjoner
 
 ## Tracker automatic proportions setup
@@ -645,10 +647,7 @@ onboarding-automatic_proportions-verify_results-confirm = De er riktige
 onboarding-automatic_proportions-done-title = Kropp målt og lagret.
 onboarding-automatic_proportions-done-description = Din kropps-proposisjons kalibrering er fullført!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

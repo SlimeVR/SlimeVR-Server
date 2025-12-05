@@ -31,6 +31,9 @@ tips-tap_setup = Pro výběr trackeru na něj můžete dvakrát pomalu poklepat,
 tips-turn_on_tracker = Máte oficiální SlimeVR trackery? <b><em>Po připojení k PC je nezapomeňte zapnout!</em></b>
 tips-failed_webgl = Načtení WebGL selhalo.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Nepřiřazeno
@@ -991,7 +994,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Mám nasazené všechny tra
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Zpět na tutoriál
 onboarding-manual_proportions-title = Manuální proporce těla
 onboarding-manual_proportions-fine_tuning_button = Automatické jemné doladění proporcí
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Pro použití automatického jemného lazení, prosím připojte VR headset
@@ -1090,30 +1092,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Proveďte prosím přeměření a ujistěte se, že jsou hodnoty správné.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Jít zpět
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Škálované proporce
-onboarding-scaled_proportions-description = Aby trackery SlimeVR fungovaly, potřebujeme znát délku vašich kostí. Tímto se použije průměrný poměr a měřítko na základě vaší výšky.
-onboarding-scaled_proportions-manual_height-title = Nakonfigurovat vaší výšku
-onboarding-scaled_proportions-manual_height-description-v2 = Tato výška bude použita jak zaklad pro vaše tělesné proporce.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR není momentálně připojen k SlimeVR, takže měření nemůže být založeno na vašem headsetu. <b>Pokračujte na vlastní nebezpečí nebo se podívejte do dokumentace!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Vaše celková výška je
-onboarding-scaled_proportions-manual_height-estimated_height = Vaše odhadovaná výška headsetu je:
-onboarding-scaled_proportions-manual_height-next_step = Uložit a pokračovat
-onboarding-scaled_proportions-manual_height-warning =
-    Právě používáte manuální způsob nastavení škálování proporcí!
-    <b>Tento režim je doporučen pouze pokud nepoužíváte HMD s SlimeVR</b>
-    
-    Abyste mohli používat automatcky škálované proporce, prosím:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Připojte VR headset
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Ujistěte se, že jsou vaše ovladače připojeny a správně přirazeny k vaším rukám
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Obnovení proporcí vašeho těla
-onboarding-scaled_proportions-reset_proportion-description = Chcete-li nastavit tělesné proporce podle vaší výšky, předem musíte obnovit všechny vaše proporce. Tato operace obnoví všechny proporce, které jste nakonfigurovali. a následně se obnoví výchozí konfigurace.
-onboarding-scaled_proportions-done-title = Proporce těla byla nastavena
-onboarding-scaled_proportions-done-description = Vaše proporce těla by teď měli být nakonfigurovány na základě vaší výšky.
 
 ## Stay Aligned setup
 

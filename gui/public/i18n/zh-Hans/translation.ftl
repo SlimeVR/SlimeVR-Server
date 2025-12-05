@@ -31,6 +31,9 @@ tips-tap_setup = 你可以缓慢地敲击2次追踪器来选中它，而不是�
 tips-turn_on_tracker = 如果使用的是 SlimeVR 官方的追踪器，请在将追踪器连接到电脑后再<b><em>打开追踪器的电源</em></b>！
 tips-failed_webgl = WebGL初始化失败
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 未分配
@@ -1191,7 +1194,6 @@ onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = 返回重置教程
 onboarding-manual_proportions-title = 手动调整身体比例
 onboarding-manual_proportions-fine_tuning_button = 自动微调身体比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 请连接 VR头戴显示器 以使用自动微调
@@ -1285,30 +1287,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>请重新进行测量并确保测量结果是正确的。</b>
 onboarding-automatic_proportions-smol_warning-cancel = 返回
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = 标准身体比例
-onboarding-scaled_proportions-description = 为了让 SlimeVR 追踪器正常使用，我们需要知道你的骨头的长度。将会使用人体平均骨骼比例，并缩放至您的身高。
-onboarding-scaled_proportions-manual_height-title = 配置您的身高
-onboarding-scaled_proportions-manual_height-description-v2 = 此身高将用作您身体比例的基准。
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 当前未连接到 SlimeVR，因此不能基于您的头戴显示器进行测量。 <b>请连接后再继续操作或查看文档！</b>
-onboarding-scaled_proportions-manual_height-height-v2 = 您的身高为
-onboarding-scaled_proportions-manual_height-estimated_height = 估计您的头显高度为：
-onboarding-scaled_proportions-manual_height-next_step = 保存并继续
-onboarding-scaled_proportions-manual_height-warning =
-    您当前正在手动设置缩放身体比例！
-    <b>建议只在您不使用头戴显示器时使用此模式</b>
-    
-    为了能够使用自动缩放身体比例，请：
-onboarding-scaled_proportions-manual_height-warning-no_hmd = 连接 VR 头戴显示器
-onboarding-scaled_proportions-manual_height-warning-no_controllers = 确保您的控制器已连接并正确分配到手部
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = 重置您的身体比例
-onboarding-scaled_proportions-reset_proportion-description = 为了根据您的身高设置身体比例，您现在需要重置所有身体比例。这将清除您先前配置的所有身体比例并提供一个基础设置。
-onboarding-scaled_proportions-done-title = 身体比例已设置
-onboarding-scaled_proportions-done-description = 身体比例已根据您的身高进行设置。
 
 ## Stay Aligned setup
 

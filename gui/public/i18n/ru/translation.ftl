@@ -31,6 +31,9 @@ tips-tap_setup = Вы можете медленно нажать 2 раза на
 tips-turn_on_tracker = Используете официальные трекеры SlimeVR? Не забудьте <b><em>включить трекер</em></b> после его подключения к ПК!
 tips-failed_webgl = Не удалось инициализировать WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Не привязано
@@ -1202,7 +1205,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Я включил и над
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Вернутся к началу обучения
 onboarding-manual_proportions-title = Ручные пропорции тела
 onboarding-manual_proportions-fine_tuning_button = Автоматически точно настроить пропорции
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Пожалуйста, подключите VR-гарнитуру для использования автоматической тонкой настройки
@@ -1300,30 +1302,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Пожалуйста, повторите измерения и убедитесь, что они верны.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Вернуться
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Масштабированные пропорции
-onboarding-scaled_proportions-description = Чтобы трекеры SlimeVR работали, нам необходимо знать длину ваших костей. Данный способ будет использовать средние пропорции и промасштабирует их, исходя из вашего роста.
-onboarding-scaled_proportions-manual_height-title = Укажите ваш рост
-onboarding-scaled_proportions-manual_height-description-v2 = Эта высота будет использована в качестве основы для пропорций вашего тела.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR в настоящее время не подключен к SlimeVR, поэтому измерения не могут быть основаны на данных вашей гарнитуры. <b>Действуйте на свой страх и риск или проверьте документацию!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Ваш полный рост:
-onboarding-scaled_proportions-manual_height-estimated_height = Предполагаемая высота гарнитуры составляет:
-onboarding-scaled_proportions-manual_height-next_step = Продолжить и сохранить
-onboarding-scaled_proportions-manual_height-warning =
-    В настоящее время вы используете ручной способ настройки масштабированных пропорций!
-    <b>Этот режим рекомендуется только в том случае, если вы не используете шлем виртуальной реальности со SlimeVR</b>
-    
-    Чтобы получить возможность использовать автоматическое масштабирование пропорций, необходимо:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Подключить VR-гарнитуру
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Убедитесь, что контроллеры подключены и правильно назначены к вашим рукам
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Сбросить пропорции тела
-onboarding-scaled_proportions-reset_proportion-description = Чтобы установить пропорции тела на основе вашего роста, вам необходимо сбросить все свои пропорции. Это очистит все ранее настроенные пропорции и предоставит базовую конфигурацию.
-onboarding-scaled_proportions-done-title = Пропорции тела установлены
-onboarding-scaled_proportions-done-description = Теперь пропорции вашего тела должны быть настроены на основании вашего роста.
 
 ## Stay Aligned setup
 

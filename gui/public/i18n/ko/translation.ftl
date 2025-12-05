@@ -31,6 +31,9 @@ tips-tap_setup = 목록에서 트래커를 선택하는 대신 트래커를 천�
 tips-turn_on_tracker = 공식 SlimeVR 트래커를 사용 중이신가요? 트래커를 <b><em>PC에 연결</em></b>하고 <b><em>전원을 키셔야</em></b> 해요.
 tips-failed_webgl = WebGL 초기화에 실패했습니다.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 할당되지 않음
@@ -995,7 +998,6 @@ onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용�
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = 정렬 튜토리얼로 돌아가기
 onboarding-manual_proportions-title = 수동 신체 비율 설정
 onboarding-manual_proportions-fine_tuning_button = 신체 비율을 자동으로 조정
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 신체 비율 자동 조정 기능을 이용하려면 VR 헤드셋을 연결해 주세요
@@ -1087,23 +1089,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>측정을 다시 수행하고 측정값들이 올바른지 확인해 주세요.</b>
 onboarding-automatic_proportions-smol_warning-cancel = 돌아가기
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = 키를 사용하여 추산한 신체 비율
-onboarding-scaled_proportions-description = SlimeVR 트래커들이 작동하기 위해서는 사용자의 뼈 길이를 알아야 합니다. 이 옵션은 뼈 길이를 측정된 키에 비례하는 평균치로 설정합니다.
-onboarding-scaled_proportions-manual_height-title = 키 설정하기
-onboarding-scaled_proportions-manual_height-description-v2 = 설정된 키는 신체 비율의 기준치로 사용됩니다.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR이 SlimeVR에 연결되어 있지 않으므로 헤드셋을 이용해 값을 측정할 수 있어요. <b>위험을 감수하고 계속 진행하거나, 사용 설명서 및 도움말을 참조하세요!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = 사용자의 키:
-onboarding-scaled_proportions-manual_height-estimated_height = 사용자의 추산된 헤드셋 높이:
-onboarding-scaled_proportions-manual_height-next_step = 계속하고 저장하기
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = 신체 비율 초기화
-onboarding-scaled_proportions-reset_proportion-description = 키에 따라 신체 비율을 설정하려면, 현재 설정된 신체 비율을 모두 초기화해야 합니다. 이 작업은 기존에 설정된 신체 비율을 초기화하고 신체 비율을 기본 설정으로 되돌립니다.
-onboarding-scaled_proportions-done-title = 신체 비율 설정됨
-onboarding-scaled_proportions-done-description = 이제 사용자의 키에 비례한 신체 비율이 사용됩니다.
 
 ## Stay Aligned setup
 

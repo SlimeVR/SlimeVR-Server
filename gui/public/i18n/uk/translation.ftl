@@ -26,6 +26,9 @@ tips-tap_setup = Ви можете повільно постукати 2 раз�
 tips-turn_on_tracker = Використовуєте офіційні трекери SlimeVR? Не забудьте <b><em>увімкнути трекер</em></b> після підключення до ПК!
 tips-failed_webgl = Не вдалося ініціалізувати WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Не призначено
@@ -809,10 +812,7 @@ onboarding-automatic_proportions-recording-timer =
 onboarding-automatic_proportions-verify_results-title = Перевірити результати
 onboarding-automatic_proportions-verify_results-processing = Обробка результату
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

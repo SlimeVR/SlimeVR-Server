@@ -31,6 +31,9 @@ tips-tap_setup = Pode tocar lentamente 2 vezes no seu tracker para o escolher em
 tips-turn_on_tracker = Está usando trackers oficiais do SlimeVR? Lembre-se de <b><em> ligar o seu tracker </em></b> após conecta-lo ao computador!
 tips-failed_webgl = Falha ao inicializar o WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Não atribuído
@@ -1041,7 +1044,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trac
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Voltar para o tutorial de reset
 onboarding-manual_proportions-title = Proporções de corpo manuais
 onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as proporções
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte seu headset VR para utilizar a melhoria automatica
@@ -1134,23 +1136,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Por favor refaça as medidas e tenha certeza que estão corretas.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Voltar
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Proporções escalonadas
-onboarding-scaled_proportions-description = Para os trackers SlimeVR funcionarem, precisamos saber as medidas de seus ossos. Isso usará uma proporção média e a dimensionará com base em sua altura.
-onboarding-scaled_proportions-manual_height-title = Configure sua altura
-onboarding-scaled_proportions-manual_height-description-v2 = Essa altura será usada como referência para as proporções de seu corpo.
-onboarding-scaled_proportions-manual_height-missing_steamvr = No momento, o SteamVR não está conectado ao SlimeVR, portanto as medições não podem ser baseadas no seu headset. <b>Prossiga por sua conta e risco ou consulte a documentação!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = A sua altura total é
-onboarding-scaled_proportions-manual_height-estimated_height = A altura estimada do seu headset é:
-onboarding-scaled_proportions-manual_height-next_step = Continue e salve
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Redefinir as proporções de seu corpo
-onboarding-scaled_proportions-reset_proportion-description = Para definir as proporções do corpo com base na sua altura, agora é necessário redefinir todas as proporções. Isso limpará todas as proporções que você configurou e fornecerá uma configuração de referência.
-onboarding-scaled_proportions-done-title = Proporções do corpo definidas
-onboarding-scaled_proportions-done-description = As proporções do seu corpo agora devem ser configuradas com base em sua altura.
 
 ## Stay Aligned setup
 

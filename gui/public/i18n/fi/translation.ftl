@@ -24,6 +24,9 @@ tips-do_not_move_heels = Varmista, että kantapääsi ei liiku tallennuksen aika
 tips-file_select = Vedä ja pudota käytettäviä tiedostoja tai <u>selaa</u>.
 tips-tap_setup = Voit hitaasti napauttaa 2 kertaa jäljitintä valitaksesi sen, sen sijaan, että valitsisit sen valikosta.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Ei määritetty
@@ -859,10 +862,7 @@ onboarding-automatic_proportions-done-title = Keho mitattu ja tallennettu.
 onboarding-automatic_proportions-done-description = Kehosi mittasuhteiden kalibrointi on valmis!
 onboarding-automatic_proportions-error_modal-confirm = Ymmäretty!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

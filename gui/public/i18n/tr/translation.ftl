@@ -21,6 +21,9 @@ version_update-close = Kapat
 tips-find_tracker = Hangi takipçi hangisi emin değil misin? Takipçilerden birini hareket ettirerek belirleyebilirsin.
 tips-do_not_move_heels = Kayıt sırasında ayaklarınızın hareket etmediğinden emin olun!
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Atanmamış
@@ -335,10 +338,7 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Tracker automatic proportions setup
 
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

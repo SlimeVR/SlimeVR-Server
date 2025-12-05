@@ -31,6 +31,9 @@ tips-tap_setup = Du kan långsamt trycka 2 gånger på din spårare för att vä
 tips-turn_on_tracker = Använder du officiella SlimeVR spårare? Glöm inte att <b> <em>sätta på din spårare</em></b> efter du ansluter den till datorn!
 tips-failed_webgl = Misslyckades att initiera WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Ej tilldelad
@@ -1100,7 +1103,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Jag har på mig alla tracke
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Gå tillbaka till återställnings-introduktionen
 onboarding-manual_proportions-title = Manuella kropps-dimensioner
 onboarding-manual_proportions-fine_tuning_button = Finjustera automatiskt proportioner
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Var vänlig anslut ett VR-headset för att använda automatisk finjustering
@@ -1127,10 +1129,7 @@ onboarding-automatic_proportions-check_height-guardian_tip =
     boundary aktiverad så att din höjd är korrekt!
 onboarding-automatic_proportions-start_recording-description = Vi kommer nu att spela in några specifika poser och rörelser. Dessa kommer att visas på nästa skärm. Var redo att starta när du trycker på knappen!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

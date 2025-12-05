@@ -31,6 +31,9 @@ tips-tap_setup = Vietoj pasirinkimo iš meniu, galite du kartus švelniai bakste
 tips-turn_on_tracker = Naudojate oficialius SlimeVR sekiklius? Nepamirškite <b><em>įjungti juos</em></b> po prijungimo prie kompiuterio!
 tips-failed_webgl = Įvyko techninė klaida inicijuojant WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Nepriskirta
@@ -652,10 +655,7 @@ settings-general-gesture_control-trackers =
 ## Tracker automatic proportions setup
 
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

@@ -24,6 +24,9 @@ tips-do_not_move_heels = Sørg for, at dine hæle ikke bevæger sig under optage
 tips-file_select = Træk og slip filer for at bruge, eller <u>gennemse</u>.
 tips-tap_setup = Du kan trykke langsomt 2 gange på din tracker for at vælge den i stedet for at vælge den i menuen.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Ikke tildelt
@@ -618,10 +621,7 @@ onboarding-automatic_proportions-verify_results-redo = prøv igen
 onboarding-automatic_proportions-done-title = Krop målt og gemt.
 onboarding-automatic_proportions-done-description = Kalibreringen af dine kropsproportioner er fuldført!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

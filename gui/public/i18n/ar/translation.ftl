@@ -31,6 +31,9 @@ tips-tap_setup = يمكنك النقر ببطء مرتين على جهاز ال�
 tips-turn_on_tracker = هل تستخدم أجهزة تعقب SlimeVR الرسمية؟ تذكر  <b><em> أن تشغل أجهزة التعقب </em></b> بعد توصيلها بالكمبيوتر!
 tips-failed_webgl = فشل تهيئة WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = غير محدد
@@ -1089,7 +1092,6 @@ onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أج�
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = العودة إلى برنامج تعليم إعادة التعيين
 onboarding-manual_proportions-title = نسب الجسم اليدوية
 onboarding-manual_proportions-fine_tuning_button = ضبط النسب تلقائيا
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = يرجى توصيل سماعة رأس VR لاستخدام الضبط الدقيق التلقائي
@@ -1186,25 +1188,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>يرجى إعادة القياسات والتأكد من صحتها.</b>
 onboarding-automatic_proportions-smol_warning-cancel = الرجوع
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = النسب المقاسة
-onboarding-scaled_proportions-description = لكي تعمل أجهزة التعقب SlimeVR ، نحتاج إلى معرفة طول عظامك. ستستخدم نسبة متوسطة وقياسها بناء على طولك.
-onboarding-scaled_proportions-manual_height-title = تكوين طولك
-onboarding-scaled_proportions-manual_height-description-v2 = سيتم استخدام هذا الطول كخط أساس لنسب جسمك.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR غير متصل حاليا ب SlimeVR ، لذلك لا يمكن أن تستند القياسات إلى سماعة الرأس الخاصة بك. <b>تابع على مسؤوليتك الخاصة أو تحقق من المستندات!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = طولك الكامل هو
-onboarding-scaled_proportions-manual_height-estimated_height = الارتفاع المقدر لسماعة الرأس هو:
-onboarding-scaled_proportions-manual_height-next_step = المتابعة والحفظ
-onboarding-scaled_proportions-manual_height-warning-no_hmd = وصّل سماعة رأس VR
-onboarding-scaled_proportions-manual_height-warning-no_controllers = تأكد من توصيل وحدات التحكم الخاصة بك وتخصيصها بشكل صحيح ليديك
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = إعادة ضبط نسب جسمك
-onboarding-scaled_proportions-reset_proportion-description = لتعيين نسب جسمك بناء على طولك ، تحتاج إلى إعادة تعيين جميع نسبك. سيؤدي ذلك إلى مسح أي نسب قمت بتكوينها وتوفير تكوين أساسي.
-onboarding-scaled_proportions-done-title = مجموعة نسب الجسم
-onboarding-scaled_proportions-done-description = قد تم الآن تكوين نسب جسمك بناء على طولك.
 
 ## Stay Aligned setup
 

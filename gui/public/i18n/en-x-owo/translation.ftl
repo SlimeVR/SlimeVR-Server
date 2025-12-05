@@ -31,6 +31,9 @@ tips-tap_setup = u can swowly tap youw twackew 2 times to choose it insted of se
 tips-turn_on_tracker = erm.. are u using offishal SlaiemVR twackews??! rember to <b><em>tuwn on yuor twackew</em></b> aftwew coneccting it to teh PC!
 tips-failed_webgl = oh nooooo :( faiwled to initiawizwe WebGL...
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = unassyigned
@@ -1005,7 +1008,6 @@ onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = go bawck to weset tutowiaw
 onboarding-manual_proportions-title = manyuaw bodee pwopowtiesions
 onboarding-manual_proportions-fine_tuning_button = automaticawwy fine tuwune propowtions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = pwease connect a vr headset to use automatic fine tuwuning
@@ -1095,23 +1097,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>pwease wedo da measuwments and ensuwe dey r cowwect.</b>
 onboarding-automatic_proportions-smol_warning-cancel = go bak
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = scawed pwopowtions
-onboarding-scaled_proportions-description = fow swimevr twackews to wowk, we need to kno teh bigness of youw bowones. dis wiww use an avewage pwopowtion and scawe it based on youw heit.
-onboarding-scaled_proportions-manual_height-title = configuwe youw heit
-onboarding-scaled_proportions-manual_height-description-v2 = dis heit wiww be used az a basewine fow youw body pwopowtions.
-onboarding-scaled_proportions-manual_height-missing_steamvr = steawmvr is nawt cuwwentwy cowonnected to da swimevr, so measuwements cant be based on youw hedset ono... <b>pwoceed at youw owon wisk ow chek da docs!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = youw fuww heit is
-onboarding-scaled_proportions-manual_height-estimated_height = youw estimated hedset heit is:
-onboarding-scaled_proportions-manual_height-next_step = keep goin an saiv
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = weset youw body pwopowtions
-onboarding-scaled_proportions-reset_proportion-description = to set youw pwopowtions based on youw heit, u gotsa weset aww of youw pwopowtions. dis wiww cweaw any pwopowtions u hav configuwed and pwovide a basewine configuwation.
-onboarding-scaled_proportions-done-title = body pwopowtions set
-onboarding-scaled_proportions-done-description = youw body pwopowtions shuld nao be configuwed based on youw heit :3
 
 ## Stay Aligned setup
 

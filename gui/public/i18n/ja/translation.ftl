@@ -26,6 +26,9 @@ tips-tap_setup = 追跡装置をゆっくり2回軽くタップして選択す�
 tips-turn_on_tracker = SlimeVRの公式トラッカーを使っていますか？トラッカーをPCに接続した後は<b><em>必ず電源を入れて</em></b>ください!
 tips-failed_webgl = WebGLの初期化に失敗しました。
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 未設定
@@ -702,7 +705,6 @@ onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカー
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = チュートリアルをリセットする
 onboarding-manual_proportions-title = マニュアルボディプロポーション
 
 ## Tracker automatic proportions setup
@@ -742,10 +744,7 @@ onboarding-automatic_proportions-done-title = 体を測定して保存
 onboarding-automatic_proportions-done-description = ボディプロポーションのキャリブレーションが完了しました！
 onboarding-automatic_proportions-error_modal-confirm = 了解!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

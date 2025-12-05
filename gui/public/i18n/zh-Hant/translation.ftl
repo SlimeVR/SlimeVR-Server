@@ -31,6 +31,9 @@ tips-tap_setup = 除了從列表挑選追蹤器以外，你也可以慢慢敲擊
 tips-turn_on_tracker = 你使用的是官方的 SlimeVR 追蹤器嗎？記得要在連接到電腦以後<b><em>打開追蹤器的電源</em></b>喔！
 tips-failed_webgl = 初始化 WebGL 失敗。
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 未分配
@@ -1210,7 +1213,6 @@ onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = 返回重置教學
 onboarding-manual_proportions-title = 手動調整軀幹比例
 onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR 頭戴顯示器以使用此功能
@@ -1304,30 +1306,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>請重新進行測量，並確保數值是正確的。</b>
 onboarding-automatic_proportions-smol_warning-cancel = 返回
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = 縮放型軀幹比例
-onboarding-scaled_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨骼長度。本流程會使用人體的平均軀幹比例並依照你的身高縮放調整。
-onboarding-scaled_proportions-manual_height-title = 設定你的身高
-onboarding-scaled_proportions-manual_height-description-v2 = 身高會當作軀幹比例設定的基礎。
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 目前尚未連接到 SlimeVR，因此無法根據頭戴顯示器測量身高。<b>請查閱說明文件，繼續操作請自行承擔風險！</b>
-onboarding-scaled_proportions-manual_height-height-v2 = 你的身高全長為
-onboarding-scaled_proportions-manual_height-estimated_height = 頭戴顯示器估計高度為：
-onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
-onboarding-scaled_proportions-manual_height-warning =
-    你現在正在手動設定縮放型軀幹比例，<b>這個方法僅在你使用 SlimeVR
-    不使用頭戴顯示器時推薦使用。</b>
-    
-    若要能自動設定縮放型軀幹比例，請按照以下步驟：
-onboarding-scaled_proportions-manual_height-warning-no_hmd = 連接 VR 頭戴顯示器
-onboarding-scaled_proportions-manual_height-warning-no_controllers = 檢查 VR 控制器是否正常連接，並在 SlimeVR 介面中分配到你的雙手
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = 重置軀幹比例
-onboarding-scaled_proportions-reset_proportion-description = 要依照身高設定軀幹比例，你現在需要重置相關設定。本按鈕會清除以前所設定的軀幹比例並提供基本配置。
-onboarding-scaled_proportions-done-title = 軀幹比例已設定
-onboarding-scaled_proportions-done-description = 軀幹比例現在已經依照你的身高設定。
 
 ## Stay Aligned setup
 

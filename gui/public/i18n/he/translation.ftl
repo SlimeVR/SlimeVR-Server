@@ -18,6 +18,9 @@ websocket-connection_lost = החיבור לשרת אבד. מנסה להתחבר 
 tips-find_tracker = לא בטוח איזה חיישן אתה מחזיק? נער את החיישן והתוכנה תסמן לך אותו.
 tips-do_not_move_heels = אנא וודא שהעקבים שלך לא זזות בזמן הקלטה
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = לא שויך
@@ -342,10 +345,7 @@ onboarding-automatic_proportions-verify_results-confirm = הם נכונים
 onboarding-automatic_proportions-done-title = הגוף שלך נמדד ונשמר
 onboarding-automatic_proportions-done-description = תהליך כיול פרופורציות הגוף שלך הושלם!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

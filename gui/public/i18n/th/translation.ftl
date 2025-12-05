@@ -31,6 +31,9 @@ tips-tap_setup = คุณสามารถแตะที่แทร็กเ
 tips-turn_on_tracker = คุณใช้แทร็กเกอร์ SlimeVR Official หรือไม่?<b><em>หากใช้ อย่าลืมเปิดแทร็กเกอร์หลังจากเชื่อมต่อกับ PC!</em></b>
 tips-failed_webgl = ไม่สามารถเริ่มต้น WebGL ได้
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = ไม่ได้กำหนด
@@ -1207,7 +1210,6 @@ onboarding-automatic_mounting-return-home = เสร็จแล้ว
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = กลับไปยังบทการสอนการรีเซ็ต
 onboarding-manual_proportions-title = ปรับสัดส่วนร่างกายด้วยตนเอง
 onboarding-manual_proportions-fine_tuning_button = ปรับค่าสัดส่วนร่างกายโดยอัตโนมัติ
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = กรุณาเชื่อมแว่น VR ของคุณเพื่อใช้งานการปรับค่าโดยอัตโนมัติ
@@ -1299,30 +1301,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>โปรดทำการวัดซ้ำและตรวจสอบให้แน่ใจว่าค่าที่ได้นั้นถูกต้อง</b>
 onboarding-automatic_proportions-smol_warning-cancel = ย้อนกลับ
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = สัดส่วนแบบปรับขนาด
-onboarding-scaled_proportions-description = เพื่อให้แทร็กเกอร์ SlimeVR ทำงานได้ เราจำเป็นต้องทราบความยาวของกระดูกของคุณ ซึ่งระบบจะใช้สัดส่วนเฉลี่ยและปรับขนาดโดยอ้างอิงจากความสูงของคุณ
-onboarding-scaled_proportions-manual_height-title = กำหนดความสูงของคุณ
-onboarding-scaled_proportions-manual_height-description-v2 = ความสูงนี้จะถูกใช้เป็นพื้นฐานสำหรับการคำนวณสัดส่วนร่างกายของคุณ
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR ไม่ได้เชื่อมต่อกับ SlimeVR อยู่ในขณะนี้ ดังนั้นการวัดจึงไม่สามารถอ้างอิงจากเฮดเซ็ทของคุณได้ <b>ดำเนินการต่อด้วยความเสี่ยงของคุณเอง หรือตรวจสอบเอกสาร!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = ความสูงจริงของคุณคือ
-onboarding-scaled_proportions-manual_height-estimated_height = ความสูงโดยประมาณของ HMD คือ:
-onboarding-scaled_proportions-manual_height-next_step = ดำเนินการต่อและบันทึก
-onboarding-scaled_proportions-manual_height-warning =
-    ขณะนี้คุณกำลังใช้การตั้งค่าสัดส่วนแบบปรับด้วยตนเอง!
-    <b>โหมดนี้แนะนำให้ใช้เฉพาะในกรณีที่คุณไม่ได้ใช้อุปกรณ์ HMD ร่วมกับ SlimeVR</b>
-    
-    หากต้องการใช้การตั้งค่าสัดส่วนแบบอัตโนมัติ โปรด:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = เชื่อมต่ออุปกรณ์แว่น VR
-onboarding-scaled_proportions-manual_height-warning-no_controllers = ตรวจสอบให้แน่ใจว่าได้เชื่อมต่อคอนโทรลเลอร์และกำหนดตำแหน่งให้กับมือของคุณอย่างถูกต้อง
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = รีเซ็ตสัดส่วนร่างกายของคุณ
-onboarding-scaled_proportions-reset_proportion-description = ในการกำหนดสัดส่วนร่างกายตามความสูงของคุณ คุณต้องทำการรีเซ็ตสัดส่วนทั้งหมดในตอนนี้ ซึ่งจะล้างสัดส่วนที่คุณเคยตั้งค่าไว้ และกำหนดการตั้งค่าพื้นฐานให้ใหม่
-onboarding-scaled_proportions-done-title = ตั้งค่าสัดส่วนร่างกายแล้ว
-onboarding-scaled_proportions-done-description = ตอนนี้สัดส่วนร่างกายของคุณควรได้รับการกำหนดค่าโดยอ้างอิงจากความสูงของคุณแล้ว
 
 ## Stay Aligned setup
 

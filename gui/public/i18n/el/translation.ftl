@@ -18,6 +18,9 @@ websocket-connection_lost = Η σύνδεση μεταξύ του διακομι
 tips-find_tracker = Δεν είστε σίγουροι ποιος ανιχνευτής είναι ποιος; Κουνήστε έναν ανιχνευτή και θα επισημάνει το αντίστοιχο στοιχείο.
 tips-do_not_move_heels = Βεβαιωθείτε ότι οι φτέρνες σας δεν κινούνται κατά την εγγραφή!
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Μη εκχωρημένο
@@ -333,10 +336,7 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 ## Tracker automatic proportions setup
 
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup
