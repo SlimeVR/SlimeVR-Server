@@ -98,7 +98,7 @@ export function MainLinks() {
         to="/onboarding/connect-trackers"
         icon={<WifiIcon value={1} disabled />}
       >
-        {l10n.getString('onboarding-connect_tracker-title')}
+        {l10n.getString('navbar-connect_trackers')}
       </NavButton>
     </>
   );
