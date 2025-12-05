@@ -320,9 +320,11 @@ export function TrackersAssignPage() {
                 variant="toggle"
               />
               {state.alonePage && (
-                <Button variant="secondary" onClick={unassignAll}>
-                  Unassign All Trackers
-                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={unassignAll}
+                  id="onboarding-assign_trackers-unassign_all"
+                />
               )}
             </div>
             <div className="flex flex-row">
