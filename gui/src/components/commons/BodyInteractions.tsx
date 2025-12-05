@@ -198,7 +198,7 @@ export function BodyInteractions({
         width="100%"
         height="100%"
       />
-      <div className="flex w-full h-full">
+      <div className="flex w-full h-full gap-5">
         <div ref={leftContainerRef} className="z-10">
           {leftControls}
         </div>
