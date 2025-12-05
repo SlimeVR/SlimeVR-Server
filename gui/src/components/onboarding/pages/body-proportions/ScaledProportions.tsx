@@ -266,7 +266,7 @@ export function ScaledProportionsPage() {
   // Makes it so you dont get spammed by sounds if multiple status complete at once
   useDebouncedEffect(
     () => {
-      if (!config || config.feedbackSound) return;
+      if (!config || !config.feedbackSound) return;
       if (
         !status ||
         errorSteps.includes(status.status) ||
