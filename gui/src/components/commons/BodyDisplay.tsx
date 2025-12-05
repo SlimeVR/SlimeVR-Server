@@ -1,12 +1,5 @@
 import classNames from 'classnames';
-import {
-  ReactNode,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
 import { useTracker } from '@/hooks/tracker';
 import { PersonFrontIcon } from './PersonFrontIcon';
@@ -107,23 +100,18 @@ function Dot({
 }
 
 export function BodyDisplay({
-  leftControls,
-  rightControls,
   trackers,
-  width = 228,
   dotsSize = 20,
-  variant = 'tracker-select',
   hideUnassigned = false,
 }: {
-  leftControls?: ReactNode;
-  rightControls?: ReactNode;
-  width?: number;
   dotsSize?: number;
-  variant?: 'dots' | 'tracker-select';
   trackers: FlatDeviceTracker[];
   hideUnassigned: boolean;
 }) {
   const personRef = useRef<HTMLDivElement | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver>(
+    new ResizeObserver(() => updateSlots())
+  );
   const [slotsButtonsPos, setSlotsButtonPos] = useState<SlotDot[]>([]);
 
   const getSlotsPos = () => {
@@ -145,7 +133,7 @@ export function BodyDisplay({
     };
   };
 
-  useLayoutEffect(() => {
+  const updateSlots = () => {
     if (!personRef.current) return;
 
     const slotsPos = getSlotsPos();
@@ -162,7 +150,20 @@ export function BodyDisplay({
       };
     });
     setSlotsButtonPos(slots);
-  }, [leftControls, rightControls, variant]);
+  };
+
+  useEffect(() => {
+    if (!personRef.current) return;
+
+    resizeObserverRef.current.observe(personRef.current);
+
+    updateSlots();
+
+    return () => {
+      if (!personRef.current) return;
+      resizeObserverRef.current.unobserve(personRef.current);
+    };
+  }, []);
 
   const trackerPartGrouped = useMemo(
     () =>
@@ -179,15 +180,12 @@ export function BodyDisplay({
   );
 
   return (
-    <div className="flex">
+    <div className="flex w-full h-full">
       <div
         ref={personRef}
-        className={classNames(
-          'relative w-full flex justify-center',
-          variant === 'tracker-select' && 'mx-10'
-        )}
+        className={classNames('relative w-full h-full flex justify-center')}
       >
-        <PersonFrontIcon width={width} />
+        <PersonFrontIcon />
         {slotsButtonsPos.map((dotData) => (
           <Dot
             {...dotData}

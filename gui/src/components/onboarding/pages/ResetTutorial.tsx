@@ -168,7 +168,6 @@ export function ResetTutorialPage() {
         </div>
         <div className="flex flex-row justify-center">
           <BodyDisplay
-            width={isMobile ? 160 : undefined}
             trackers={[order[curIndex]]}
             hideUnassigned={true}
           />
