@@ -95,7 +95,7 @@ export function MainLinks() {
         {l10n.getString('navbar-body_proportions')}
       </NavButton>
       <NavButton
-        to="/onboarding/connect-trackers"
+        to="/onboarding/wifi-creds"
         icon={<WifiIcon value={1} disabled />}
         state={{ alonePage: true }}
       >
