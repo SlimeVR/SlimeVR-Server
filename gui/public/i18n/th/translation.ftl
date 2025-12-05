@@ -33,6 +33,10 @@ tips-failed_webgl = ไม่สามารถเริ่มต้น WebGL �
 
 ## Units
 
+unit-meter = เมตร
+unit-foot = ฟุต
+unit-inch = นิ้ว
+unit-cm = ซม.
 
 ## Body parts
 
@@ -274,6 +278,7 @@ navbar-trackers_assign = กำหนดแทร็กเกอร์
 navbar-mounting = ตั้งศูนย์การติดตั้ง
 navbar-onboarding = ตัวช่วยการตั้งค่า
 navbar-settings = ตั้งค่า
+navbar-connect_trackers = เชื่อมต่อแทร็กเกอร์
 
 ## Biovision hierarchy recording
 
@@ -421,6 +426,8 @@ tracker-settings-update-up_to_date = เป็นเวอร์ชันล่�
 tracker-settings-update-blocked = ไม่มีอัปเดต ไม่มีเวอร์ชันอื่นให้ใช้งาน
 tracker-settings-update = อัพเดตทันที
 tracker-settings-update-title = เวอร์ชันเฟิร์มแวร์
+tracker-settings-current-version = ปัจจุบัน
+tracker-settings-latest-version = ล่าสุด
 
 ## Tracker part card info
 
@@ -1053,6 +1060,7 @@ onboarding-assignment_tutorial-done = ฉันแปะสติกเกอร
 onboarding-assign_trackers-back = กลับไปยังการตั้งค่า Wi-Fi
 onboarding-assign_trackers-title = กำหนดตำแหน่งแทร็กเกอร์
 onboarding-assign_trackers-description = มาเลือกกันเลยว่าแทร็กเกอร์ไหนจะไปอยู่ตรงไหน คลิกที่ตำแหน่งที่คุณต้องการกำหนดแทร็กเกอร์
+onboarding-assign_trackers-unassign_all = ยกเลิกการกำหนดแทร็กเกอร์ทั้งหมด
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
