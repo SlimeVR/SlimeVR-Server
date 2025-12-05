@@ -122,12 +122,23 @@ export function handleResetSounds(
 
   if (status === ResetStatus.STARTED) {
     if (progress === 0) {
-      performance.mark('sound_start');
       restartAndPlay(sounds.initial, volume);
     }
 
     if (sounds.tick) {
-      const tickIndex = (progress / 1000) % sounds.tick.length;
+      const arrayLength = sounds.tick.length;
+
+      const cycleLength = arrayLength * 2 - 2;
+      const positionInCycle = Math.floor(progress / 1000) % cycleLength;
+
+      let tickIndex;
+
+      if (positionInCycle < arrayLength) {
+        tickIndex = positionInCycle;
+      } else {
+        tickIndex = cycleLength - positionInCycle;
+      }
+
       if (progress >= 1000 && sounds.tick[tickIndex]) {
         restartAndPlay(sounds.tick[tickIndex], volume);
       }
@@ -135,9 +146,6 @@ export function handleResetSounds(
   }
 
   if (status === ResetStatus.FINISHED) {
-    performance.mark('sound_end');
-    console.log(performance.measure('sound', 'sound_start', 'sound_end'));
-
     restartAndPlay(sounds.end, volume);
     restartAndPlay(sounds.mew, volume);
   }
