@@ -424,7 +424,6 @@ tracker-settings-update-incompatible = Mise à jour impossible. Carte incompatib
 tracker-settings-update-low-battery = Mise à jour impossible. Batterie inférieure à 50 %
 tracker-settings-update-up_to_date = À jour
 tracker-settings-update-blocked = Mise à jour non disponible. Aucune autre version disponible
-tracker-settings-update-available = { $versionName } est maintenant disponible
 tracker-settings-update = Mettre à jour maintenant
 tracker-settings-update-title = Version du micrologiciel
 
@@ -1440,9 +1439,6 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = Appuyez sur le bouton boot
 firmware_tool-flashbtn_step-description = Avant de passer à l'étape suivante, il y a quelques choses que vous devez faire
 firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s'il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l'une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Allumez le capteur tout en court-circuitant le deuxième pad FLASH rectangulaire à partir du bord sur la face supérieure de la carte et du bouclier métallique du microcontrôleur
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Allumez le tracker tout en court-circuitant le pad FLASH circulaire sur le côté supérieur de la carte et le bouclier métallique du microcontrôleur
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Allumez le tracker tout en appuyant sur le bouton FLASH situé sur la partie supérieure de la carte
 firmware_tool-flashbtn_step-board_OTHER =
     Avant de flash le capteur, vous devrez probablement le mettre en mode bootloader.
     La plupart du temps, il s'agit d'appuyer sur le bouton boot de la carte avant que le processus de flash ne commence.

@@ -384,7 +384,6 @@ tracker-settings-forget-label = Olvidar tracker
 tracker-settings-update-low-battery = No se puede actualizar. Batería inferior al 50%
 tracker-settings-update-up_to_date = Actualizado
 tracker-settings-update-blocked = Actualización no disponible. No hay otras versiones disponibles
-tracker-settings-update-available = { $versionName } ya esta disponible
 tracker-settings-update = Actualizar ahora
 tracker-settings-update-title = Versión del firmware
 
@@ -1357,9 +1356,6 @@ firmware_tool-flash_method_step-description = Seleccione el método de flasheado
 firmware_tool-flashbtn_step = Pulse el botón de boot
 firmware_tool-flashbtn_step-description = Antes de pasar al siguiente paso, hay algunas cosas que debe hacer
 firmware_tool-flashbtn_step-board_SLIMEVR = Apague el tracker, retire la carcasa (si la hay), conecte un cable USB a este ordenador y, a continuación, realice uno de los siguientes pasos de acuerdo con la revisión de la placa SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Encienda el tracker mientras puentea el segundo pad FLASH rectangular desde el borde en la parte superior de la placa y el protector metálico del microcontrolador
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Encienda el tracker mientras puentea el pad circular FLASH en la parte superior de la placa y el protector metálico del microcontrolador
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Encienda el rastreador mientras presiona el botón FLASH en la parte superior de la placa
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de flashear, probablemente tendrá que poner el tracker en modo bootloader.
     La mayoría de las veces significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo.

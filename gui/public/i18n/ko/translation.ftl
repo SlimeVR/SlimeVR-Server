@@ -279,7 +279,6 @@ tracker-settings-forget = 트래커 삭제
 tracker-settings-forget-description = SlimeVR 서버에서 트래커를 제거하고 서버를 다시 시작할 때까지 자동으로 연결하지 않아요. 트래커의 설정은 지워지지 않아요.
 tracker-settings-forget-label = 트래커 삭제
 tracker-settings-update-up_to_date = 최신 버전
-tracker-settings-update-available = { $versionName } 사용 가능
 tracker-settings-update = 지금 업데이트
 tracker-settings-update-title = 펌웨어 버전
 
@@ -1136,9 +1135,6 @@ firmware_tool-flash_method_step-description = 펌웨어를 트래커에 플래�
 firmware_tool-flashbtn_step = BOOT 버튼 누르기
 firmware_tool-flashbtn_step-description = 다음 단계로 진행하기 전 몇 가지 작업을 해야 해요
 firmware_tool-flashbtn_step-board_SLIMEVR = 트래커를 끄고, 케이스를 제거하고 (만약 있다면), 이 컴퓨터에 USB 케이블을 연결한 후 SlimeVR 보드 버전에 따라 해당하는 작업을 수행해 주세요:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = 보드 상단 가장자리에 위치한 두 번째 직사각형 FLASH 패드와 MCU의 금속 덮개를 단락시키며 트래커 전원을 켜기
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = 보드 상단에 위치한 원형 FLASH 패드와 MCU의 금속 덮개를 단락시키며 트래커 전원을 켜기
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = 보드 상단의 FLASH 버튼을 누른 채로 트래커 전원을 켜기
 firmware_tool-flashbtn_step-board_OTHER =
     펌웨어를 쓰기 전에 트래커를 부트로더 모드에 진입시켜야 해요.
     대부분의 경우 이는 펌웨어 쓰기 작업이 시작되기 전 보드에 있는 BOOT 버튼을 누르면 가능합니다.

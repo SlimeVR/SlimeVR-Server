@@ -290,7 +290,6 @@ tracker-settings-forget-description = Odebere tracker z SlimeVR Serveru a zabrá
 tracker-settings-forget-label = Zapomenout tracker
 tracker-settings-update-low-battery = Nelze provést aktualizaci. Baterie má méně než 50%
 tracker-settings-update-up_to_date = Aktuální
-tracker-settings-update-available = { $versionName } je nyní dostupný
 tracker-settings-update = Aktualizovat nyní
 tracker-settings-update-title = Verze Firmwareu
 
@@ -1155,9 +1154,6 @@ firmware_tool-flash_method_step-description = Prosím zvolte metodu flashování
 firmware_tool-flashbtn_step = Stiskněte tlačítko bootu btn
 firmware_tool-flashbtn_step-description = Než přejdeme na další krok, je tady pár věcí které musíte udělat
 firmware_tool-flashbtn_step-board_SLIMEVR = Vypněte tracker, vyndejte z obalu (jestli v nějakém je), Připojte USB kabel k tomuto počítači a poté následujte jeden z kroků revize odpovídající k vaší verzi desky trackeru SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Zapněte tracker při tom co spojujete (zkratujete) obdelníkovou podložku FLASH z okraje na vrchní straně desky trackeru, a kovového obalu microkontroleru
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Zapněte tracker při spojování (zkratování) kruhové FLASH podložky na vrchní straně desky trackeru, a kovového štítu microkontrolleru
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Zapněte tracker při držení tlačítka FLASH na vrchní straně desky trackeru
 firmware_tool-flashbtn_step-board_OTHER =
     Před flashováním, pravděpodobně budete muset přepnout tracker do bootloader režimu.
     Ve většině případů to znamená stisknutí boot tlačítka na desce trakeru před tím než začne proces flashování.

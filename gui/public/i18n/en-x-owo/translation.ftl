@@ -304,7 +304,6 @@ tracker-settings-forget = *forgors the tracker*
 tracker-settings-forget-description = remooves teh twackew fwom da SwimeVR sewvew n pwevent it frum conecting to it til fhe sewvew iz westawtied. the cowonfigyuwatsin of da twackew woant b wost.
 tracker-settings-forget-label = *forgors the tracker*
 tracker-settings-update-up_to_date = up to dayte!! ^w^
-tracker-settings-update-available = { $versionName } is naow awailabwe
 tracker-settings-update = uwupdate meow!
 
 ## Tracker part card info
@@ -1146,9 +1145,6 @@ firmware_tool-flash_method_step-description = pwease sewect teh fwashin mefod u 
 firmware_tool-flashbtn_step = pwess da buwut buddon
 firmware_tool-flashbtn_step-description = befow goin into da next step thewe's stuff u gotta do
 firmware_tool-flashbtn_step-board_SLIMEVR = tuwn awf da twackew, wemove da case if u got wun, conecc an usb cabwe to dis compooper, den do wun of da fowwowin steps dependin on wat swimevr boawd u got:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = tuwn on da twackew whiwe showtin teh secund wectanguwaw FWASH!! pad fwom da edge on teh top side of teh boawd and da metaw shiewd of da micwocontwowwew
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = tuwn on da twackew whiwe showtin teh ciwcuwaw FWASH!! pad on teh top side of teh boawd and teh metaw shiewd of da micwocontwowwew
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = tuwn on da twackew whiwe pushin in da FWASH!! buddon on da top side of da boawd
 firmware_tool-flashbtn_step-board_OTHER =
     befow fwashin u prob need 2 put da twackew into buwutwoadew mowd :3
     mowst of da time it meens pressin da buwut buddon on da boawd befow da fwashin pwocess stawts.

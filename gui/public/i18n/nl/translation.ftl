@@ -408,7 +408,6 @@ tracker-settings-forget-label = Vergeet tracker
 tracker-settings-update-low-battery = Kan niet worden bijgewerkt. Batterij lager dan 50%
 tracker-settings-update-up_to_date = Up to date.
 tracker-settings-update-blocked = Update is niet beschikbaar. Er zijn geen andere versies beschikbaar.
-tracker-settings-update-available = { $versionName } is nu beschikbaar
 tracker-settings-update = Werk nu bij.
 tracker-settings-update-title = Firmware versie
 
@@ -1368,9 +1367,6 @@ firmware_tool-flash_method_step-description = Kies de flashingsmethode die je wi
 firmware_tool-flashbtn_step = Druk op de bootknop
 firmware_tool-flashbtn_step-description = Voordat u naar de volgende stap gaat, zijn er een paar dingen die u moet doen.
 firmware_tool-flashbtn_step-board_SLIMEVR = Zet de tracker uit, verwijder de behuizing (indien aanwezig), verbind een USB-kabel met deze computer en voer vervolgens een van de volgende stappen uit, afhankelijk van de revisie van uw SlimeVR-board:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Zet de tracker aan terwijl u het tweede rechthoekige FLASH-pad vanaf de rand aan de bovenkant van het board kortsluit, en het metalen schild van de microcontroller.
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Zet de tracker aan terwijl u het ronde FLASH-pad aan de bovenkant van het board kortsluit, en het metalen schild van de microcontroller.
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Zet de tracker aan terwijl u de FLASH-knop aan de bovenkant van het board indrukt.
 firmware_tool-flashbtn_step-board_OTHER =
     Voordat u gaat flashen, moet de tracker waarschijnlijk in de bootloader-modus worden gezet.
     Meestal betekent dit het indrukken van de bootknop op het board voordat het flashproces begint.

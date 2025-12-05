@@ -360,7 +360,6 @@ tracker-settings-forget-description = Tai pašalins sekiklį iš SlimeVR serveri
 tracker-settings-forget-label = Pamiršti sekiklį
 tracker-settings-update-low-battery = Negalima atnaujinti, baterijos lygis žemesnis nei 50%
 tracker-settings-update-up_to_date = Atnaujinta
-tracker-settings-update-available = Prieinamas atnaujinimas: { $versionName }
 tracker-settings-update = Atnaujinti dabar
 tracker-settings-update-title = Programinės įrangos versija
 

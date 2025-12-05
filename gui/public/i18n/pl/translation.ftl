@@ -411,7 +411,6 @@ tracker-settings-forget-label = Zapomnij o trackerze
 tracker-settings-update-low-battery = Nie można zaktualizować. Bateria poniżej 50%
 tracker-settings-update-up_to_date = Aktualny
 tracker-settings-update-blocked = Aktualizacja niedostępna. Brak innych wersji
-tracker-settings-update-available = Wersja { $versionName } jest już dostępna
 tracker-settings-update = Zaktualizuj teraz
 tracker-settings-update-title = Wersja oprogramowania
 
@@ -1399,9 +1398,6 @@ firmware_tool-flashbtn_step-board_SLIMEVR =
     Naciśnij przycisk flash na płytce drukowanej przed włożeniem, aby włączyć tracker.¶
     Jeśli tracker był już włączony, po prostu go wyłącz i włącz ponownie, naciskając przycisk lub zwierając podkładki flash.¶
     Oto kilka zdjęć, jak to zrobić, zgodnie z różnymi wersjami trackera SlimeVR
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Włącz tracker zwierając drugi prostokątny pad FLASH od krawędzi na górnej stronie płytki, a metalową osłonę mikrokontrolera
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Włącz tracker zwierając okrągłą podkładkę FLASH na górze płytki i metalową osłonę mikrokontrolera
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Włącz tracker, naciskając przycisk FLASH na górze płytki
 firmware_tool-flashbtn_step-board_OTHER =
     Przed flashowaniem prawdopodobnie będziesz musiał przełączyć moduł śledzący w tryb bootloadera.¶
     W większości przypadków oznacza to naciśnięcie przycisku rozruchu na płycie przed rozpoczęciem procesu flashowania.¶

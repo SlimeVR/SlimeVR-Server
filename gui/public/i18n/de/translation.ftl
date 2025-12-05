@@ -330,7 +330,6 @@ tracker-settings-forget-label = Tracker Vergessen
 tracker-settings-update-incompatible = Update nicht möglich. Board inkompatibel
 tracker-settings-update-low-battery = Aktualisierung nicht möglich. Akku unter 50 %
 tracker-settings-update-up_to_date = Auf dem neusten Stand
-tracker-settings-update-available = { $versionName } ist jetzt Verfügbar
 tracker-settings-update = Jetzt aktualisieren
 tracker-settings-update-title = Firmware-Version
 
@@ -1244,9 +1243,6 @@ firmware_tool-flash_method_step-description = Bitte wählen Sie die Flash-Method
 firmware_tool-flashbtn_step = Drücken Sie den Boot-Button
 firmware_tool-flashbtn_step-description = Bevor Sie mit dem nächsten Schritt fortfahren, gibt es ein paar Dinge, die Sie erledigen müssen.
 firmware_tool-flashbtn_step-board_SLIMEVR = Schalten Sie den Tracker aus, entfernen Sie das Gehäuse (falls vorhanden), verbinden Sie ein USB-Kabel mit diesem Computer und führen Sie dann einen der folgenden Schritte entsprechend Ihrer SlimeVR-Board-Revision aus:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Schalten Sie den Tracker ein, während Sie das zweite rechteckige FLASH-Pad von der Kante auf der Oberseite des Boards und den Metallschild des Mikrocontrollers kurzschließen.
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Schalten Sie den Tracker ein, während Sie das kreisförmige FLASH-Pad auf der Oberseite des Boards und den Metallschild des Mikrocontrollers kurzschließen.
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Schalten Sie den Tracker ein, während Sie den FLASH-Button auf der Oberseite des Boards drücken.
 firmware_tool-flashbtn_step-board_OTHER =
     Bevor Sie den Tracker flashen, müssen Sie ihn wahrscheinlich in den Bootloader-Modus versetzen.
     In den meisten Fällen bedeutet das, dass Sie die Boot-Taste auf dem Board drücken müssen, bevor der Flash-Vorgang beginnt.

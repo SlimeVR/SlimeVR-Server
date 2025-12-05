@@ -416,7 +416,6 @@ tracker-settings-update-incompatible = 電路板不相容，無法更新。
 tracker-settings-update-low-battery = 無法更新，電池電量低於 50%
 tracker-settings-update-up_to_date = 已為最新版本
 tracker-settings-update-blocked = 無法更新，沒有其他可用版本。
-tracker-settings-update-available = 版本 { $versionName } 可供更新
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 韌體版本
 
@@ -1413,9 +1412,6 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = 進入燒錄模式
 firmware_tool-flashbtn_step-description = 在進入下一步前，請先進行以下操作
 firmware_tool-flashbtn_step-board_SLIMEVR = 關閉追蹤器電源，移除外殼（若有的話），並用 USB 線連接到這台電腦上，然後根據你持有的 SlimeVR 追蹤器主板的版本，進行下述操作：
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = 將追蹤器上方第二個 FLASH 方形接點與微控制器的金屬遮罩短路，同時開啟追蹤器開關
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = 將追蹤器上方的 FLASH 圓形接點與微控制器的金屬遮罩短路，同時開啟追蹤器開關
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = 按住追蹤器上方的 FLASH 按鈕，同時開啟追蹤器開關
 firmware_tool-flashbtn_step-board_OTHER =
     在燒錄前，你可能需要將追蹤器切換進 Bootloader（開機載入程式）。
     多數狀況下，在燒錄開始前按下 BOOT 按鈕即可開始燒錄。

@@ -401,7 +401,6 @@ tracker-settings-forget-description = Rimuove il tracker dal SlimeVR server e im
 tracker-settings-forget-label = Dimentica il tracker
 tracker-settings-update-low-battery = Non è possibile aggiornare. Batteria inferiore al 50%
 tracker-settings-update-up_to_date = Aggiornata
-tracker-settings-update-available = { $versionName } è ora disponibile
 tracker-settings-update = Aggiorna
 tracker-settings-update-title = Versione firmware
 
@@ -1369,9 +1368,6 @@ firmware_tool-flash_method_step-description = Seleziona il metodo di flashing ch
 firmware_tool-flashbtn_step = Premi il pulsante di avvio
 firmware_tool-flashbtn_step-description = Prima di passare al passaggio successivo, ci sono alcune cose che devi fare
 firmware_tool-flashbtn_step-board_SLIMEVR = Spegni il tracker, rimuovi la custodia (se presente), collega un cavo USB a questo computer, quindi esegui uno dei seguenti passaggi in base alla revisione della tua scheda SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Accendi il tracker mentre cortocircuiti il pad rettangolare FLASH, il secondo pad contando dal bordo superiore della scheda, e lo shield metallico del microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Accendi il tracker mentre cortocircuiti il pad circolare FLASH, il pad vicino al bordo superiore della scheda, e lo shield metallico del microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Accendi il tracker mentre premi il pulsante FLASH sul lato superiore della scheda
 firmware_tool-flashbtn_step-board_OTHER =
     Prima di eseguire il flashing, sarà probabilmente necessario mettere il tracker in modalità bootloader.
     La maggior parte delle volte significa premere il pulsante di avvio sulla scheda prima che inizi il processo di flashing.

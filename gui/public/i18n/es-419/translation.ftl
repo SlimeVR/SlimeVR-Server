@@ -416,7 +416,6 @@ tracker-settings-update-incompatible = No se puede actualizar. Placa incompatibl
 tracker-settings-update-low-battery = No se puede actualizar. Batería por debajo del 50%
 tracker-settings-update-up_to_date = Actualizado
 tracker-settings-update-blocked = Actualización no disponible. No hay otras versiones disponibles
-tracker-settings-update-available = { $versionName } ya está disponible
 tracker-settings-update = Actualizar ahora
 tracker-settings-update-title = Versión del firmware
 
@@ -1430,9 +1429,6 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = Presione el botón de boot
 firmware_tool-flashbtn_step-description = Antes de pasar al siguiente paso, hay algunas cosas que debe hacer
 firmware_tool-flashbtn_step-board_SLIMEVR = Apague el sensor, retire la carcasa (si la hay), conecte un cable USB a esta computadora y, a continuación, realice uno de los siguientes pasos de acuerdo con la revisión de la placa SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Encienda el sensor mientras cortocircuita el segundo FLASH pad rectangular desde el borde en la parte superior de la placa y el protector metálico del microcontrolador.
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Encienda el sensor mientras cortocircuita el FLASH pad circular en la parte superior de la placa y el escudo metálico del microcontrolador.
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Encienda el sensor mientras presiona el botón FLASH en la parte superior de la placa
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de flashear, probablemente tendrá que poner el sensor en modo bootloader.
     La mayoría de las veces, esto significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo. Si el proceso de flasheo se agota al comienzo, probablemente significa que el sensor no estaba en modo bootloader. 

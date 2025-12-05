@@ -393,7 +393,6 @@ tracker-settings-forget-description = Tar bort trackern från SlimeVR-servern oc
 tracker-settings-forget-label = Glöm spårning
 tracker-settings-update-low-battery = Kan ej uppdatera. Batteriet är under 50%
 tracker-settings-update-up_to_date = Uppdaterad
-tracker-settings-update-available = { $versionName } är nu tillgänlig
 tracker-settings-update = Uppdatera nu
 tracker-settings-update-title = Mjukvaroversion
 

@@ -405,7 +405,6 @@ tracker-settings-update-incompatible = 电路板不兼容，无法升级。
 tracker-settings-update-low-battery = 无法更新。当前电池电量低于 50%
 tracker-settings-update-up_to_date = 已是最新
 tracker-settings-update-blocked = 更新不可用。没有其他可用版本
-tracker-settings-update-available = { $versionName } 现在可用
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 固件版本
 
@@ -1390,9 +1389,6 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = 按下启动/Boot按钮
 firmware_tool-flashbtn_step-description = 在进入下一步之前，您需要做几件事情。
 firmware_tool-flashbtn_step-board_SLIMEVR = 关闭追踪器，拆下外壳（如果有的话），使用 USB 数据线连接到计算机，然后根据您的 SlimeVR 电路板版本执行以下步骤之一：
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = 在短接电路板正面边缘第二个矩形 FLASH 焊盘和单片机模块的金属屏蔽罩的时候，打开追踪器电源。
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = 在短接电路板正面圆形 FLASH 焊盘和单片机模块的金属屏蔽罩的时候，打开追踪器电源。
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = 在按住电路板正面的 FLASH 按钮的时候，打开追踪器的电源。
 firmware_tool-flashbtn_step-board_OTHER =
     在烧录固件之前，您可能需要将追踪器置于bootloader模式。
     通常这意味着在开始固件烧录过程之前，按下板上的引导/boot按钮。
