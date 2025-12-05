@@ -1210,6 +1210,7 @@ onboarding-automatic_mounting-return-home = เสร็จแล้ว
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = กลับไปที่สัดส่วนที่อ้างอิงขนาด
 onboarding-manual_proportions-title = ปรับสัดส่วนร่างกายด้วยตนเอง
 onboarding-manual_proportions-fine_tuning_button = ปรับค่าสัดส่วนร่างกายโดยอัตโนมัติ
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = กรุณาเชื่อมแว่น VR ของคุณเพื่อใช้งานการปรับค่าโดยอัตโนมัติ
@@ -1304,10 +1305,27 @@ onboarding-automatic_proportions-smol_warning-cancel = ย้อนกลับ
 ## User height calibration
 
 onboarding-user_height-title = ความสูงของคุณคือเท่าไหร่?
+onboarding-user_height-description = เราต้องการความสูงของคุณเพื่อคำนวณสัดส่วนร่างกายและแสดงการเคลื่อนไหวของคุณอย่างแม่นยำ คุณสามารถให้ SlimeVR คำนวณให้ หรือป้อนความสูงเองด้วยตนเอง
+onboarding-user_height-need_head_tracker = จำเป็นต้องใช้เฮดเซ็ต (หรือแทร็กเกอร์ส่วนหัว) และคอนโทรลเลอร์ที่มีการติดตามตำแหน่งเพื่อทำการตั้งศูนย์
+onboarding-user_height-calculate = คำนวณความสูงของฉันโดยอัตโนมัติ
 onboarding-user_height-next_step = ดำเนินการต่อและบันทึก
 onboarding-user_height-manual-proportions = ปรับสัดส่วนด้วยตัวเอง
+onboarding-user_height-calibration-title = ความคืบหน้าการตั้งศูนย์
+onboarding-user_height-calibration-RECORDING_FLOOR = แตะพื้นด้วยปลายคอนโทรลเลอร์ของคุณ
+onboarding-user_height-calibration-WAITING_FOR_RISE = ยืนขึ้นอีกครั้ง
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = ยืนขึ้นอีกครั้งและมองตรงไปข้างหน้า
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = ตรวจสอบให้แน่ใจว่าหัวของคุณอยู่ในแนวระนาบ
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = อย่ามองที่พื้น
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = อย่าเงยหน้าสูงเกินไป
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = ตรวจสอบให้แน่ใจว่าคอนโทรลเลอร์ชี้ลง
+onboarding-user_height-calibration-RECORDING_HEIGHT = ยืนขึ้นอีกครั้งแล้วยืนนิ่งๆ!
 onboarding-user_height-calibration-DONE = สําเร็จ!
+onboarding-user_height-calibration-ERROR_TIMEOUT = การตั้งศูนย์หมดเวลา ลองใหม่อีกครั้ง
+onboarding-user_height-calibration-ERROR_TOO_HIGH = ความสูงของผู้ใช้ที่ตรวจพบสูงเกินไป ลองใหม่อีกครั้ง
+onboarding-user_height-calibration-ERROR_TOO_SMALL = ความสูงของผู้ใช้ที่ตรวจพบเตี้ยเกินไป ตรวจสอบให้แน่ใจว่ายืนตัวตรงเต็มที่ระหว่างกระบวนการ
 onboarding-user_height-calibration-error = ตั้งศูนย์ไม่สำเร็จ
+onboarding-user_height-manual-tip = ขณะปรับความสูงของคุณ ให้ลองทำท่าทางต่างๆ และดูว่าโครงกระดูกตรงกับร่างกายของคุณอย่างไร
+onboarding-user_height-reset-warning = คุณได้ตั้งค่าสัดส่วนไว้แล้วโดยใช้หน้าสัดส่วนแบบปรับเอง การดำเนินการต่อจะเป็นการรีเซ็ตสัดส่วนเหล่านี้เพื่อใช้เฉพาะความสูงของคุณเท่านั้น คุณต้องการดำเนินการต่อหรือไม่?
 
 ## Stay Aligned setup
 
@@ -1413,6 +1431,9 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = กรุณากดปุ่ม Boot
 firmware_tool-flashbtn_step-description = มีสิ่งที่คุณควรจะรับทราบก่อนจะไปยังขั้นตอนถัดไป
 firmware_tool-flashbtn_step-board_SLIMEVR = ปิดแทร็กเกอร์ของคุณ ถอดอุปกรณ์ออกจากเคสพลาสติก(ถ้ามี) แล้วต่อสาย USB จากแทร็กเกอร์เข้าสู่คอมพิวเตอร์ จากนั้นทำตามขั้นตอนตามชนิดบอร์ดของ SlimeVR ของคุณ
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = เปิดตัวติดตามขณะทำการลัดวงจรแพด FLASH สี่เหลี่ยมอันที่สองจากขอบด้านบนของบอร์ดเข้ากับฝาโลหะของไมโครคอนโทรลเลอร์ ไฟ LED ของตัวติดตามควรกะพริบสั้นๆ
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = เปิดตัวติดตามขณะทำการลัดวงจรแพด FLASH วงกลมที่ด้านบนของบอร์ดเข้ากับฝาครอบโลหะของไมโครคอนโทรลเลอร์ ไฟ LED ของตัวติดตามควรกะพริบสั้นๆ
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = เปิดตัวติดตามขณะกดปุ่ม FLASH ที่ด้านบนของบอร์ดค้างไว้ ไฟ LED ของตัวติดตามควรกะพริบสั้นๆ
 firmware_tool-flashbtn_step-board_OTHER =
     ก่อนการแฟลช คุณอาจต้องตั้งค่าแทร็กเกอร์ให้อยู่ในโหมดบูตโหลดเดอร์ก่อน
     โดยส่วนใหญ่ คุณจะต้องกดปุ่มบูตบนบอร์ดก่อนที่กระบวนการแฟลชจะเริ่มต้น
