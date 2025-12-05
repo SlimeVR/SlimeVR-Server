@@ -252,7 +252,7 @@ export function TrackerSettingsPage() {
                   content={
                     <>
                       {needUpdate === 'unavailable' && (
-                        <Typography id="tracker-settings-update-unavailable-v2" />
+                        <Typography id="tracker-settings-update-incompatible" />
                       )}
                       {needUpdate === 'blocked' && (
                         // This happens only if no update is available and or the user is not in the current stagged
