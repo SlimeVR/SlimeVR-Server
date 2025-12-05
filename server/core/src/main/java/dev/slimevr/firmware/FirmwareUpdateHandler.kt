@@ -222,22 +222,35 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				LogManager.info("[FirmwareUpdateHandler] Device is already updating, skipping")
 			}
 
-			onStatusChange(
-				UpdateStatusEvent(
+			val udpDevice: UDPDevice? =
+				(server.deviceManager.devices.find { device -> device is UDPDevice && device.id == deviceId.id }) as UDPDevice?
+			if (udpDevice === null) {
+				error("invalid state - device does not exist")
+			}
+
+			if (udpDevice.protocolVersion <= 20) {
+				onStatusChange(
+					UpdateStatusEvent(
+						deviceId,
+						FirmwareUpdateStatus.NEED_MANUAL_REBOOT,
+					),
+				)
+				watchRestartQueue.add(
+					Pair(deviceId) {
+						mainScope.launch {
+							startFirmwareUpdateJob(
+								request,
+								deviceId,
+							)
+						}
+					},
+				)
+			} else {
+				startFirmwareUpdateJob(
+					request,
 					deviceId,
-					FirmwareUpdateStatus.NEED_MANUAL_REBOOT,
-				),
-			)
-			watchRestartQueue.add(
-				Pair(deviceId) {
-					mainScope.launch {
-						startFirmwareUpdateJob(
-							request,
-							deviceId,
-						)
-					}
-				},
-			)
+				)
+			}
 		} else {
 			if (updatingDevicesStatus[deviceId] != null) {
 				LogManager.info("[FirmwareUpdateHandler] Device is already updating, skipping")
