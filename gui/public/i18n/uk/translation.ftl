@@ -26,6 +26,9 @@ tips-tap_setup = Ви можете повільно постукати 2 раз�
 tips-turn_on_tracker = Використовуєте офіційні трекери SlimeVR? Не забудьте <b><em>увімкнути трекер</em></b> після підключення до ПК!
 tips-failed_webgl = Не вдалося ініціалізувати WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Не призначено
@@ -127,7 +130,7 @@ widget-overlay-is_mirrored_label = Відображення накладання
 
 widget-drift_compensation-clear = Очистити компенсацію дрейфу
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Очистити скидання положення
 
@@ -591,6 +594,12 @@ settings-osc-vmc-mirror_tracking-label = Дзеркальний трекінг
 ## Advanced settings
 
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Пропустити налаштування
@@ -649,13 +658,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Ласкаво просимо до SlimeVR
 onboarding-home-start = Давайте налаштуємося!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Повернутися до Прив'язки трекерів
-onboarding-enter_vr-title = Час вступати у VR!
-onboarding-enter_vr-description = Увімкніть усі свої трекери, а потім вступіть у VR!
-onboarding-enter_vr-ready = Я готовий
 
 ## Setup done
 
@@ -803,10 +805,7 @@ onboarding-automatic_proportions-recording-timer =
 onboarding-automatic_proportions-verify_results-title = Перевірити результати
 onboarding-automatic_proportions-verify_results-processing = Обробка результату
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

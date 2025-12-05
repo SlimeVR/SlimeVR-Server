@@ -31,6 +31,9 @@ tips-tap_setup = Du kan långsamt trycka 2 gånger på din spårare för att vä
 tips-turn_on_tracker = Använder du officiella SlimeVR spårare? Glöm inte att <b> <em>sätta på din spårare</em></b> efter du ansluter den till datorn!
 tips-failed_webgl = Misslyckades att initiera WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Ej tilldelad
@@ -270,7 +273,7 @@ widget-overlay-is_mirrored_label = Visa överlägg som spegel
 
 widget-drift_compensation-clear = Kompensation för clear drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Montage med tydlig återställning
 
@@ -390,7 +393,6 @@ tracker-settings-forget-description = Tar bort trackern från SlimeVR-servern oc
 tracker-settings-forget-label = Glöm spårning
 tracker-settings-update-low-battery = Kan ej uppdatera. Batteriet är under 50%
 tracker-settings-update-up_to_date = Uppdaterad
-tracker-settings-update-available = { $versionName } är nu tillgänlig
 tracker-settings-update = Uppdatera nu
 tracker-settings-update-title = Mjukvaroversion
 
@@ -819,6 +821,12 @@ settings-utils-advanced-open_logs = Logg-mapp
 settings-utils-advanced-open_logs-description = Öppna SlimeVR's config mapp i filutforskaren, som innehåller appens loggar
 settings-utils-advanced-open_logs-label = Öppna mapp
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Hoppa över inställning
@@ -865,13 +873,6 @@ onboarding-reset_tutorial-0 =
 
 onboarding-home = Välkommen till SlimeVR
 onboarding-home-start = Låt oss komma igång!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Gå tillbaka till Tracker assignent
-onboarding-enter_vr-title = Dags att gå in i VR!
-onboarding-enter_vr-description = Ta på dig alla dina trackers och gå sedan in i VR!
-onboarding-enter_vr-ready = Jag är redo
 
 ## Setup done
 
@@ -1094,7 +1095,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Jag har på mig alla tracke
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Gå tillbaka till återställnings-introduktionen
 onboarding-manual_proportions-title = Manuella kropps-dimensioner
 onboarding-manual_proportions-fine_tuning_button = Finjustera automatiskt proportioner
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Var vänlig anslut ett VR-headset för att använda automatisk finjustering
@@ -1121,10 +1121,7 @@ onboarding-automatic_proportions-check_height-guardian_tip =
     boundary aktiverad så att din höjd är korrekt!
 onboarding-automatic_proportions-start_recording-description = Vi kommer nu att spela in några specifika poser och rörelser. Dessa kommer att visas på nästa skärm. Var redo att starta när du trycker på knappen!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

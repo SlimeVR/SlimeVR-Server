@@ -31,6 +31,9 @@ tips-tap_setup = Du kan forsiktig trykke på din tracker 2 ganger sammenhengende
 tips-turn_on_tracker = Bruker du offisielle SlimeVR trackere? Husk å <b><em>skru dem på</em></b> etter å ha koblet dem til PCen din!
 tips-failed_webgl = Feil ved initialisering av WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Ikke tildelt
@@ -147,7 +150,7 @@ widget-overlay-is_mirrored_label = Vis overlegg som speil
 ## Widget: Drift compensation
 
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
@@ -479,6 +482,12 @@ settings-osc-vrchat-network-trackers-elbows = Albuer
 ## Advanced settings
 
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Hopp over oppsett
@@ -512,13 +521,6 @@ onboarding-reset_tutorial-skip = Hopp over trinn
 
 onboarding-home = Velkommen til SlimeVR
 onboarding-home-start = La oss sette i gang!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Gå tilbake til Tracker tilordning
-onboarding-enter_vr-title = På tide å tre inn i VR!
-onboarding-enter_vr-description = Putt på alle trackerne dine og tre inn i VR!
-onboarding-enter_vr-ready = Jeg er klar!
 
 ## Setup done
 
@@ -604,7 +606,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere 
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Gå tilbake til Nullstillings opplæring
 onboarding-manual_proportions-title = Manuelle kropps-proporsjoner
 
 ## Tracker automatic proportions setup
@@ -639,10 +640,7 @@ onboarding-automatic_proportions-verify_results-confirm = De er riktige
 onboarding-automatic_proportions-done-title = Kropp målt og lagret.
 onboarding-automatic_proportions-done-description = Din kropps-proposisjons kalibrering er fullført!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

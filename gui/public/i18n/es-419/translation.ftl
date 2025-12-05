@@ -31,6 +31,9 @@ tips-tap_setup = Puedes tocar lentamente 2 veces el sensor para seleccionarlo en
 tips-turn_on_tracker = ¿Estas usando trackers de SlimeVR oficiales? ¡Recuerda <b><em>encender tus trackers<em><b> después de conectarlos al PC!
 tips-failed_webgl = Fallo al inicializar WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Sin asignar
@@ -183,7 +186,7 @@ skeleton_bone-FOOT_SHIFT = Desplazamiento de pies
 skeleton_bone-FOOT_SHIFT-desc =
     Este valor es la distancia horizontal entre tu rodilla hacia tu tobillo.
     Toma en cuenta las piernas bajas yendo hacia atrás cuando te paras recto.
-    Para ajustarlo, pon el largo de los pies en 0, inicia un reinicia completo y modifícalo hasta que tus pies
+    Para ajustarlo, pon el largo de los pies en 0, inicia un reinicio completo y modifícalo hasta que tus pies
     virtuales se alineen con el medio de tus tobillos.
 skeleton_bone-SKELETON_OFFSET = Desplazamiento del esqueleto
 skeleton_bone-SKELETON_OFFSET-desc =
@@ -290,7 +293,7 @@ widget-overlay-is_mirrored_label = Mostrar interfaz reflejada
 
 widget-drift_compensation-clear = Olvidar compensación de drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Olvidar reinicio de montura
 
@@ -413,7 +416,6 @@ tracker-settings-update-incompatible = No se puede actualizar. Placa incompatibl
 tracker-settings-update-low-battery = No se puede actualizar. Batería por debajo del 50%
 tracker-settings-update-up_to_date = Actualizado
 tracker-settings-update-blocked = Actualización no disponible. No hay otras versiones disponibles
-tracker-settings-update-available = { $versionName } ya está disponible
 tracker-settings-update = Actualizar ahora
 tracker-settings-update-title = Versión del firmware
 
@@ -481,6 +483,7 @@ mounting_selection_menu-close = Cerrar
 
 settings-sidebar-title = Ajustes
 settings-sidebar-general = General
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mecánicas del sensor
 settings-sidebar-stay_aligned = Mantente Alineado
 settings-sidebar-fk_settings = Ajustes de FK
@@ -488,6 +491,7 @@ settings-sidebar-gesture_control = Control de gestos
 settings-sidebar-interface = Interfaz
 settings-sidebar-osc_router = Router OSC
 settings-sidebar-osc_trackers = Sensores OSC de VRChat
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
 settings-sidebar-appearance = Apariencia
@@ -623,6 +627,9 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Imp
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Corregir con las limitaciones
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Corregir las rotaciones de las articulaciones cuando superan su límite
+settings-general-fk_settings-ik = Datos de posición
+settings-general-fk_settings-ik-use_position = Usar datos de posición
+settings-general-fk_settings-ik-use_position-description = Permite el uso de los datos de posición de los trackers que lo proveen. Cuando actives esto asegúrate de hacer un reinicio completo y recalibrar en el juego.
 settings-general-fk_settings-arm_fk = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
@@ -776,7 +783,9 @@ settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
 settings-serial-file_type = Texto sin formato
 settings-serial-save_logs = Guardar en archivo
+settings-serial-send_command = Enviar
 settings-serial-send_command-placeholder = Comando...
+settings-serial-send_command-warning = <b>Peligro:</b> Ejecutar comandos seriales puede causar perdida de datos o romper los trackers.
 settings-serial-send_command-warning-ok = Sé lo que estoy haciendo
 settings-serial-send_command-warning-cancel = Cancelar
 
@@ -914,6 +923,12 @@ settings-utils-advanced-open_logs = Carpeta de registros
 settings-utils-advanced-open_logs-description = Abre la carpeta de registros de SlimeVR en el explorador de archivos, que contiene los registros de la aplicación
 settings-utils-advanced-open_logs-label = Abrir carpeta
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Saltar configuración
@@ -973,13 +988,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Bienvenido a SlimeVR
 onboarding-home-start = ¡Comencemos!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Volver a la asignación de sensores
-onboarding-enter_vr-title = ¡Es hora de entrar a la RV!
-onboarding-enter_vr-description = ¡Ponte todos tus sensores y luego entra a la RV!
-onboarding-enter_vr-ready = Estoy listo
 
 ## Setup done
 
@@ -1211,7 +1219,6 @@ onboarding-automatic_mounting-return-home = Hecho
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Volver al tutorial de reinicio
 onboarding-manual_proportions-title = Proporciones de cuerpo manuales
 onboarding-manual_proportions-fine_tuning_button = Ajustar automáticamente las proporciones
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor conecte un visor VR para utilizar el ajuste automático
@@ -1309,31 +1316,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Por favor vuelva a hacer las mediciones y asegúrese de que sean correctas.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Volver
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Proporciones escaladas
-onboarding-scaled_proportions-description = Para que los trackers SlimeVR funcionen, necesitamos saber el largo de sus huesos. Esto usará una proporción promedia y la escalará en función a su altura.
-onboarding-scaled_proportions-manual_height-title = Ajuste su altura
-onboarding-scaled_proportions-manual_height-description-v2 = Esta altura se utilizará como referencia para las proporciones de su cuerpo.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR no está conectado actualmente a SlimeVR, por lo que las mediciones no se pueden basar en su casco. <b>¡Proceda bajo su propio riesgo o consulte la documentación!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Su altura total es
-onboarding-scaled_proportions-manual_height-estimated_height = La altura estimada de su visor es:
-onboarding-scaled_proportions-manual_height-next_step = Continuar y guardar
-onboarding-scaled_proportions-manual_height-warning =
-    Actualmente estás utilizando la manera manual para configurar las proporciones escaladas!
-    
-    <b>Este modo solo es recomendado si no utilizas un HMD con SlimeVR</b>
-    
-    Para poder utilizar las proporciones escaladas automáticas, por favor:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Conecta un visor VR
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Asegurate de que tus mandos están conectados y correctamente asignados a tus manos
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Reestablecer las proporciones de su cuerpo
-onboarding-scaled_proportions-reset_proportion-description = Para establecer las proporciones de su cuerpo en función a su altura, ahora debe restablecer todas sus proporciones. Esto borrará las proporciones que haya configurado y proporcionará una configuración de referencia.
-onboarding-scaled_proportions-done-title = Proporciones corporales guardadas
-onboarding-scaled_proportions-done-description = Las proporciones de su cuerpo ahora deberían estar configuradas en función de su altura.
 
 ## Stay Aligned setup
 
@@ -1372,6 +1356,7 @@ onboarding-stay_aligned-done = Hecho
 ## Home
 
 home-no_trackers = No hay sensores detectados o asignados
+home-settings-close = Cerrar
 
 ## Trackers Still On notification
 
@@ -1408,6 +1393,8 @@ firmware_tool = Herramienta de firmware DIY
 firmware_tool-description = Le permite configurar y actualizar sus sensores construidos por usted
 firmware_tool-not_available = Vaya, la herramienta de firmware no está disponible en este momento. ¡Vuelva más tarde!
 firmware_tool-not_compatible = La herramienta de firmware no es compatible con esta versión del servidor. ¡Por favor, actualice la app!
+firmware_tool-select_source = Selecciona el firmware para flashear
+firmware_tool-select_source-description = Selecciona el firmware que quieres flashear en tu placa
 firmware_tool-select_source-error = Incapaz de cargar fuentes
 firmware_tool-select_source-board_type = Tipo de placa
 firmware_tool-select_source-firmware = Fuente del Firmware
@@ -1415,7 +1402,10 @@ firmware_tool-select_source-version = Versión del Firmware
 firmware_tool-select_source-official = Oficial
 firmware_tool-select_source-dev = Desarrollo
 firmware_tool-board_defaults = Configura tu placa
+firmware_tool-board_defaults-description = Establece los pines o ajustes relativos a tu hardware
 firmware_tool-board_defaults-add = Añadir
+firmware_tool-board_defaults-reset = Reestablecer a predeterminado
+firmware_tool-board_defaults-error-required = Campo requerido
 firmware_tool-board_defaults-error-format = Formato inválido
 firmware_tool-board_defaults-error-format-number = No es un número
 firmware_tool-flash_method_step = Método de flasheo
@@ -1423,21 +1413,23 @@ firmware_tool-flash_method_step-description = Por favor seleccione el método de
 firmware_tool-flash_method_step-ota-v2 =
     .label = Wi-Fi
     .description = Utilizar el método sobre-el-aire. Tu tracker utilizará Wi-Fi para actualizar su firmware. Solo funciona en trackers que han sido configurados.
+firmware_tool-flash_method_step-ota-info =
+    Utilizamos tus credenciales de wifi para flashear el tracker y confirmar que todo funcionó correctamente.
+    <b>¡Nosotros no guardamos tus credenciales wifi!</b>
 firmware_tool-flash_method_step-serial-v2 =
     .label = USB
     .description = Utilizar un cable USB para actualizar tu tracker.
 firmware_tool-flashbtn_step = Presione el botón de boot
 firmware_tool-flashbtn_step-description = Antes de pasar al siguiente paso, hay algunas cosas que debe hacer
 firmware_tool-flashbtn_step-board_SLIMEVR = Apague el sensor, retire la carcasa (si la hay), conecte un cable USB a esta computadora y, a continuación, realice uno de los siguientes pasos de acuerdo con la revisión de la placa SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Encienda el sensor mientras cortocircuita el segundo FLASH pad rectangular desde el borde en la parte superior de la placa y el protector metálico del microcontrolador.
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Encienda el sensor mientras cortocircuita el FLASH pad circular en la parte superior de la placa y el escudo metálico del microcontrolador.
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Encienda el sensor mientras presiona el botón FLASH en la parte superior de la placa
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de flashear, probablemente tendrá que poner el sensor en modo bootloader.
     La mayoría de las veces, esto significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo. Si el proceso de flasheo se agota al comienzo, probablemente significa que el sensor no estaba en modo bootloader. 
     Por favor, consulte las instrucciones de flasheo de su placa para saber cómo activar el modo bootloader.
+firmware_tool-flash_method_ota-title = Flashear por Wi-Fi
 firmware_tool-flash_method_ota-devices = Dispositivos OTA detectados:
 firmware_tool-flash_method_ota-no_devices = No hay placas que se puedan actualizar mediante OTA, asegúrese de seleccionar el tipo de placa correcto
+firmware_tool-flash_method_serial-title = Flashear por USB
 firmware_tool-flash_method_serial-wifi = Credenciales del Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Dispositivos serial detectados:
 firmware_tool-flash_method_serial-devices-placeholder = Seleccione un dispositivo serial
@@ -1452,6 +1444,7 @@ firmware_tool-flashing_step-exit = Salir
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Esperando a construir....
 firmware_tool-build-CREATING_BUILD_FOLDER = Creando la carpeta de compilación
 firmware_tool-build-DOWNLOADING_SOURCE = Descargando el código fuente
 firmware_tool-build-EXTRACTING_SOURCE = Extrayendo el código fuente
@@ -1568,3 +1561,9 @@ error_collection_modal-description_v2 =
     Tu puedes cambiar esta configuración más tarde en la sección de comportamiento de la pagina de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero
+tracking_checklist-settings-close = Cerrar
+tracking_checklist-STEAMVR_DISCONNECTED-open = Abrir SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Calibra tus trackers
+tracking_checklist-ignore = Ignorar
+toolbar-assigned_trackers = { $count } trackers asignados
+toolbar-unassigned_trackers = { $count } trackers sin asignar

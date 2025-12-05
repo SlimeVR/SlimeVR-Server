@@ -31,6 +31,9 @@ tips-tap_setup = Je kan langzaam 2 keer op je tracker tikken om deze te kiezen i
 tips-turn_on_tracker = Gebruik je officiële SlimeVR-trackers? Vergeet niet om <b><em>je tracker aan te zetten</em></b> nadat je deze op de pc hebt aangesloten!
 tips-failed_webgl = WebGL initialiseren is gefaald.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Niet toegewezen
@@ -285,7 +288,7 @@ widget-overlay-is_mirrored_label = Overlay weergeven als spiegel
 
 widget-drift_compensation-clear = Reset huidige drift compensatie
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Reset montage legen
 
@@ -405,7 +408,6 @@ tracker-settings-forget-label = Vergeet tracker
 tracker-settings-update-low-battery = Kan niet worden bijgewerkt. Batterij lager dan 50%
 tracker-settings-update-up_to_date = Up to date.
 tracker-settings-update-blocked = Update is niet beschikbaar. Er zijn geen andere versies beschikbaar.
-tracker-settings-update-available = { $versionName } is nu beschikbaar
 tracker-settings-update = Werk nu bij.
 tracker-settings-update-title = Firmware versie
 
@@ -891,6 +893,12 @@ settings-utils-advanced-open_logs = logboeken
 settings-utils-advanced-open_logs-description = Open de logmap van SlimeVR in de bestandsverkenner, met de logboeken van de app
 settings-utils-advanced-open_logs-label = Map openen
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Setupgids overslaan
@@ -950,13 +958,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Welkom bij SlimeVR
 onboarding-home-start = Laten we beginnen!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Ga terug naar de sectie voor toewijzing van trackers
-onboarding-enter_vr-title = Tijd om VR in te gaan!
-onboarding-enter_vr-description = Doe al je trackers aan en ga dan in VR!
-onboarding-enter_vr-ready = Gereed!
 
 ## Setup done
 
@@ -1184,7 +1185,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Ga terug naar de reset tutorial
 onboarding-manual_proportions-title = Handmatige lichaamsverhoudingen
 onboarding-manual_proportions-fine_tuning_button = Automatisch afstemmen van verhoudingen
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Sluit een VR-headset aan om automatische fijnafstelling te gebruiken
@@ -1275,34 +1275,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Voer de metingen opnieuw uit en controleer of ze correct zijn.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Ga terug
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Geschaalde proporties
-onboarding-scaled_proportions-description =
-    Voor een correcte werking van de SlimeVR-trackers hebben we de lengte van uw botten nodig.
-    We gebruiken hiervoor een gemiddelde lichaamsverhouding, geschaald op basis van uw lengte.
-onboarding-scaled_proportions-manual_height-title = Configureer uw lengte
-onboarding-scaled_proportions-manual_height-description-v2 = Deze lengte wordt gebruikt als basis voor je lichaamsverhoudingen.
-onboarding-scaled_proportions-manual_height-missing_steamvr =
-    SteamVR is momenteel niet verbonden met SlimeVR, dus metingen kunnen niet worden gebaseerd op je headset.
-    <b>Ga verder op eigen risico of raadpleeg de documentatie!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Uw volledige lengte is
-onboarding-scaled_proportions-manual_height-estimated_height = De geschatte hoogte van uw headset is:
-onboarding-scaled_proportions-manual_height-next_step = Opslaan en doorgaan
-onboarding-scaled_proportions-manual_height-warning =
-    Je gebruikt momenteel de handmatige manier om geschaalde verhoudingen in te stellen!
-    <b>Deze modus wordt alleen aanbevolen als je geen HMD met SlimeVR gebruikt.</b>
-    
-    Om de automatische geschaalde verhoudingen te kunnen gebruiken, doe het volgende:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Sluit een VR-headset aan
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Zorg ervoor dat je controllers zijn verbonden en correct aan je handen zijn toegewezen
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Reset je lichaamsverhoudingen
-onboarding-scaled_proportions-reset_proportion-description = Om je lichaamsverhoudingen op basis van je lengte in te stellen, moet je nu al je verhoudingen resetten. Dit zal alle verhoudingen die je hebt ingesteld wissen en een basisconfiguratie bieden.
-onboarding-scaled_proportions-done-title = Lichaamsverhoudingen ingesteld
-onboarding-scaled_proportions-done-description = Je lichaamsverhoudingen zouden nu gebaseerd moeten zijn op je lengte
 
 ## Stay Aligned setup
 
@@ -1386,9 +1360,6 @@ firmware_tool-flash_method_step-description = Kies de flashingsmethode die je wi
 firmware_tool-flashbtn_step = Druk op de bootknop
 firmware_tool-flashbtn_step-description = Voordat u naar de volgende stap gaat, zijn er een paar dingen die u moet doen.
 firmware_tool-flashbtn_step-board_SLIMEVR = Zet de tracker uit, verwijder de behuizing (indien aanwezig), verbind een USB-kabel met deze computer en voer vervolgens een van de volgende stappen uit, afhankelijk van de revisie van uw SlimeVR-board:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Zet de tracker aan terwijl u het tweede rechthoekige FLASH-pad vanaf de rand aan de bovenkant van het board kortsluit, en het metalen schild van de microcontroller.
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Zet de tracker aan terwijl u het ronde FLASH-pad aan de bovenkant van het board kortsluit, en het metalen schild van de microcontroller.
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Zet de tracker aan terwijl u de FLASH-knop aan de bovenkant van het board indrukt.
 firmware_tool-flashbtn_step-board_OTHER =
     Voordat u gaat flashen, moet de tracker waarschijnlijk in de bootloader-modus worden gezet.
     Meestal betekent dit het indrukken van de bootknop op het board voordat het flashproces begint.

@@ -31,6 +31,9 @@ tips-tap_setup = 你可以缓慢地敲击2次追踪器来选中它，而不是�
 tips-turn_on_tracker = 如果使用的是 SlimeVR 官方的追踪器，请在将追踪器连接到电脑后再<b><em>打开追踪器的电源</em></b>！
 tips-failed_webgl = WebGL初始化失败
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 未分配
@@ -279,7 +282,7 @@ widget-overlay-is_mirrored_label = 镜像显示覆盖层
 
 widget-drift_compensation-clear = 清除漂移补偿数据
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = 清除重置佩戴
 
@@ -402,7 +405,6 @@ tracker-settings-update-incompatible = 电路板不兼容，无法升级。
 tracker-settings-update-low-battery = 无法更新。当前电池电量低于 50%
 tracker-settings-update-up_to_date = 已是最新
 tracker-settings-update-blocked = 更新不可用。没有其他可用版本
-tracker-settings-update-available = { $versionName } 现在可用
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 固件版本
 
@@ -900,6 +902,12 @@ settings-utils-advanced-open_logs = 日志文件夹
 settings-utils-advanced-open_logs-description = 在文件管理器中打开SlimeVR的日志文件夹，查看SlimeVR的日志文件。
 settings-utils-advanced-open_logs-label = 打开文件夹
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = 跳过设置
@@ -959,13 +967,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = 欢迎来到 SlimeVR
 onboarding-home-start = 我准备好了！
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = 返回到追踪器分配
-onboarding-enter_vr-title = VR 时间到！
-onboarding-enter_vr-description = 穿戴好所有的追踪器，开始快乐 VR 吧！
-onboarding-enter_vr-ready = 我准备好了
 
 ## Setup done
 
@@ -1185,7 +1186,6 @@ onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = 返回重置教程
 onboarding-manual_proportions-title = 手动调整身体比例
 onboarding-manual_proportions-fine_tuning_button = 自动微调身体比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 请连接 VR头戴显示器 以使用自动微调
@@ -1279,30 +1279,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>请重新进行测量并确保测量结果是正确的。</b>
 onboarding-automatic_proportions-smol_warning-cancel = 返回
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = 标准身体比例
-onboarding-scaled_proportions-description = 为了让 SlimeVR 追踪器正常使用，我们需要知道你的骨头的长度。将会使用人体平均骨骼比例，并缩放至您的身高。
-onboarding-scaled_proportions-manual_height-title = 配置您的身高
-onboarding-scaled_proportions-manual_height-description-v2 = 此身高将用作您身体比例的基准。
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 当前未连接到 SlimeVR，因此不能基于您的头戴显示器进行测量。 <b>请连接后再继续操作或查看文档！</b>
-onboarding-scaled_proportions-manual_height-height-v2 = 您的身高为
-onboarding-scaled_proportions-manual_height-estimated_height = 估计您的头显高度为：
-onboarding-scaled_proportions-manual_height-next_step = 保存并继续
-onboarding-scaled_proportions-manual_height-warning =
-    您当前正在手动设置缩放身体比例！
-    <b>建议只在您不使用头戴显示器时使用此模式</b>
-    
-    为了能够使用自动缩放身体比例，请：
-onboarding-scaled_proportions-manual_height-warning-no_hmd = 连接 VR 头戴显示器
-onboarding-scaled_proportions-manual_height-warning-no_controllers = 确保您的控制器已连接并正确分配到手部
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = 重置您的身体比例
-onboarding-scaled_proportions-reset_proportion-description = 为了根据您的身高设置身体比例，您现在需要重置所有身体比例。这将清除您先前配置的所有身体比例并提供一个基础设置。
-onboarding-scaled_proportions-done-title = 身体比例已设置
-onboarding-scaled_proportions-done-description = 身体比例已根据您的身高进行设置。
 
 ## Stay Aligned setup
 
@@ -1404,9 +1382,6 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = 按下启动/Boot按钮
 firmware_tool-flashbtn_step-description = 在进入下一步之前，您需要做几件事情。
 firmware_tool-flashbtn_step-board_SLIMEVR = 关闭追踪器，拆下外壳（如果有的话），使用 USB 数据线连接到计算机，然后根据您的 SlimeVR 电路板版本执行以下步骤之一：
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = 在短接电路板正面边缘第二个矩形 FLASH 焊盘和单片机模块的金属屏蔽罩的时候，打开追踪器电源。
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = 在短接电路板正面圆形 FLASH 焊盘和单片机模块的金属屏蔽罩的时候，打开追踪器电源。
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = 在按住电路板正面的 FLASH 按钮的时候，打开追踪器的电源。
 firmware_tool-flashbtn_step-board_OTHER =
     在烧录固件之前，您可能需要将追踪器置于bootloader模式。
     通常这意味着在开始固件烧录过程之前，按下板上的引导/boot按钮。

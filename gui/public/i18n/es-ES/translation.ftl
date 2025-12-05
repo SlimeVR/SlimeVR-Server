@@ -31,6 +31,9 @@ tips-tap_setup = Haz clic en el menú o golpea suavemente el tracker 2 veces par
 tips-turn_on_tracker = ¿Estás usando trackers oficiales de SlimeVR? Recuerda <b><em>encender el tracker</em></b> antes de conectarlo a la PC!
 tips-failed_webgl = No se pudo iniciar WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Sin asignar
@@ -95,6 +98,7 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -259,7 +263,7 @@ widget-overlay-is_mirrored_label = Mostrar overlay como espejo
 
 widget-drift_compensation-clear = Eliminar compensacion del drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Limpiar reinicio de montura
 
@@ -380,7 +384,6 @@ tracker-settings-forget-label = Olvidar tracker
 tracker-settings-update-low-battery = No se puede actualizar. Batería inferior al 50%
 tracker-settings-update-up_to_date = Actualizado
 tracker-settings-update-blocked = Actualización no disponible. No hay otras versiones disponibles
-tracker-settings-update-available = { $versionName } ya esta disponible
 tracker-settings-update = Actualizar ahora
 tracker-settings-update-title = Versión del firmware
 
@@ -742,6 +745,8 @@ settings-serial-auto_dropdown_item = Automático
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
 settings-serial-file_type = Texto sin formato
 settings-serial-save_logs = Guardar en archivo
+settings-serial-send_command = Enviar
+settings-serial-send_command-warning-cancel = Cancelar
 
 ## OSC router settings
 
@@ -873,6 +878,12 @@ settings-utils-advanced-open_logs = Carpeta de registros
 settings-utils-advanced-open_logs-description = Abra la carpeta de registros de SlimeVR en el explorador de archivos, que contiene los registros de la aplicación
 settings-utils-advanced-open_logs-label = Abrir carpeta
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Omitir configuración
@@ -932,13 +943,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Bienvenido a SlimeVR
 onboarding-home-start = ¡Vamos a prepararnos!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Volver a la asignación del tracker
-onboarding-enter_vr-title = ¡Hora de entrar en VR!
-onboarding-enter_vr-description = ¡Ponte todos tus trackers y luego entra a la realidad virtual!
-onboarding-enter_vr-ready = Estoy listo
 
 ## Setup done
 
@@ -1168,7 +1172,6 @@ onboarding-automatic_mounting-return-home = Hecho
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Volver al tutorial de reinicios
 onboarding-manual_proportions-title = Proporciones físicas manuales
 onboarding-manual_proportions-fine_tuning_button = Ajuste automático de las proporciones
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Conecte el visor RV para usar el ajuste automatico
@@ -1266,30 +1269,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Vuelva a hacer las mediciones y asegúrese de que sean correctas.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Volver
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Proporciones escaladas
-onboarding-scaled_proportions-description = Para que los trackers de SlimeVR funcionen, necesitamos saber la longitud de sus huesos. Esto usará una proporción promedio y la escalará en función de su altura.
-onboarding-scaled_proportions-manual_height-title = Configure su altura
-onboarding-scaled_proportions-manual_height-description-v2 = Esta altura se utilizará como base para las proporciones de tu cuerpo.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR no está conectado actualmente a SlimeVR, por lo que las mediciones no se pueden basar con tu visor. <b>¡Proceda bajo su propio riesgo o consulte la documentación!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Su altura total es
-onboarding-scaled_proportions-manual_height-estimated_height = La altura estimada del visor es:
-onboarding-scaled_proportions-manual_height-next_step = Continuar y guardar
-onboarding-scaled_proportions-manual_height-warning =
-    ¡Actualmente está utilizando la forma manual de configurar proporciones escaladas!
-    <b>Este modo solo se recomienda si no se utiliza un HMD con SlimeVR</b>
-    
-    Para poder utilizar las proporciones escaladas automáticamente, por favor:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Conecte un visor de RV
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Asegúrese de que sus controladores estén conectados y asignados correctamente a sus manos
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Restablecer las proporciones del cuerpo
-onboarding-scaled_proportions-reset_proportion-description = Para establecer las proporciones de su cuerpo en función de su altura, ahora debe restablecer todas sus proporciones. Esto borrará las proporciones que haya configurado y proporcionará una configuración de referencia.
-onboarding-scaled_proportions-done-title = Proporciones del cuerpo guardadas
-onboarding-scaled_proportions-done-description = Las proporciones de tu cuerpo ahora deberían configurarse en función de tu altura.
 
 ## Stay Aligned setup
 
@@ -1368,9 +1349,6 @@ firmware_tool-flash_method_step-description = Seleccione el método de flasheado
 firmware_tool-flashbtn_step = Pulse el botón de boot
 firmware_tool-flashbtn_step-description = Antes de pasar al siguiente paso, hay algunas cosas que debe hacer
 firmware_tool-flashbtn_step-board_SLIMEVR = Apague el tracker, retire la carcasa (si la hay), conecte un cable USB a este ordenador y, a continuación, realice uno de los siguientes pasos de acuerdo con la revisión de la placa SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Encienda el tracker mientras puentea el segundo pad FLASH rectangular desde el borde en la parte superior de la placa y el protector metálico del microcontrolador
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Encienda el tracker mientras puentea el pad circular FLASH en la parte superior de la placa y el protector metálico del microcontrolador
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Encienda el rastreador mientras presiona el botón FLASH en la parte superior de la placa
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de flashear, probablemente tendrá que poner el tracker en modo bootloader.
     La mayoría de las veces significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo.

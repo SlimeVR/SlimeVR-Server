@@ -31,6 +31,9 @@ tips-tap_setup = Bạn có thể từ từ nhấn vào 2 lần trình theo dõi 
 tips-turn_on_tracker = Sử dụng thiết bị SlimeVR chính thức? Hãy nhớ <b><em>bật trình theo dõi của bạn</em></b> sau khi kết nối thiết bị với máy tính!
 tips-failed_webgl = Không thể khởi tạo WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Chưa được gán
@@ -136,7 +139,7 @@ widget-overlay-is_mirrored_label = Xem overlay trong gương
 
 widget-drift_compensation-clear = Xóa sai số
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Đặt lại hướng gắn tracker
 
@@ -628,6 +631,12 @@ settings-utils-advanced-reset_warning-reset = Đặt lại cài đặt
 settings-utils-advanced-reset_warning-cancel = Hủy
 settings-utils-advanced-open_data-label = Mở thư mục
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Bỏ qua cài đặt
@@ -686,13 +695,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Chào mừng bạn đến với SlimeVR!
 onboarding-home-start = Bắt đầu thiết lập!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Quay lại gán tracker
-onboarding-enter_vr-title = Chuẩn bị cho việc cân chỉnh trong VR
-onboarding-enter_vr-description = Đeo tất cả tracker và vào VR trước khi tiếp tục
-onboarding-enter_vr-ready = Sẵn sàng
 
 ## Setup done
 
@@ -902,7 +904,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Quay lại cân chỉnh hướng gắn
 onboarding-manual_proportions-title = Đo kích thước cơ thể thủ công
 
 ## Tracker automatic proportions setup
@@ -961,10 +962,7 @@ onboarding-automatic_proportions-done-title = Đã lưu chỉ số đo
 onboarding-automatic_proportions-done-description = Quá trình đo đã hoàn tất
 onboarding-automatic_proportions-error_modal-confirm = Đã hiểu!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

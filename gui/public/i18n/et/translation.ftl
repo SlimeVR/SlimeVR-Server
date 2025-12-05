@@ -24,6 +24,9 @@ tips-do_not_move_heels = Veenduge, et teie kannad ei liigu salvestamise ajal!
 tips-file_select = Pukseerige failid kasutamiseks, või <u>sirvi</u>.
 tips-tap_setup = Saate jälgija valimiseks menüüst valimise asemel aeglaselt oma jälgijat 2 korda puudutada.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Määramata
@@ -125,7 +128,7 @@ widget-overlay-is_mirrored_label = Näita Ülekatet Peeglina
 
 widget-drift_compensation-clear = Selgem triivi kompenseerimine
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Lähtesta paigaldusasend
 
@@ -535,6 +538,12 @@ settings-osc-vmc-anchor_hip-label = Ankurda puusadel
 ## Advanced settings
 
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Jäta seadistamine vahele
@@ -593,13 +602,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Tere tulemast SlimeVR-i
 onboarding-home-start = Hakkame sättima!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Minge tagasi jälgijate määramisse
-onboarding-enter_vr-title = Aeg minna VR-i!
-onboarding-enter_vr-description = Pange selga kõik jälgijad ja VR prillid.
-onboarding-enter_vr-ready = Olen valmis
 
 ## Setup done
 
@@ -709,7 +711,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad kül
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Mine tagasi lähtestamise õppetusse
 onboarding-manual_proportions-title = Käsitsi keha proportsioonid
 
 ## Tracker automatic proportions setup
@@ -758,10 +759,7 @@ onboarding-automatic_proportions-done-title = Kere mõõdetud ja salvestatud.
 onboarding-automatic_proportions-done-description = Teie keha proportsioonid kalibreerimine on valmis!
 onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

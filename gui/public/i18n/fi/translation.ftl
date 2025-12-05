@@ -24,6 +24,9 @@ tips-do_not_move_heels = Varmista, että kantapääsi ei liiku tallennuksen aika
 tips-file_select = Vedä ja pudota käytettäviä tiedostoja tai <u>selaa</u>.
 tips-tap_setup = Voit hitaasti napauttaa 2 kertaa jäljitintä valitaksesi sen, sen sijaan, että valitsisit sen valikosta.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Ei määritetty
@@ -125,7 +128,7 @@ widget-overlay-is_mirrored_label = Näytä Overlay Peilinä
 
 widget-drift_compensation-clear = Tyhjennä ajautumakompensaatio
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Tyhjennä asennuksen nollaus
 
@@ -568,6 +571,12 @@ settings-osc-vmc-anchor_hip-label = Ankkuroi lonkalle
 ## Advanced settings
 
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Ohita asennus
@@ -626,13 +635,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Tervetuloa SlimeVR:ään
 onboarding-home-start = Mennään asentamaan!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Palaa jäljittimien määritykseen
-onboarding-enter_vr-title = Aika astua VR:ään!
-onboarding-enter_vr-description = Laita kaikki jäljittimet päälle ja astu VR:ään!
-onboarding-enter_vr-ready = Olen valmis
 
 ## Setup done
 
@@ -853,10 +855,7 @@ onboarding-automatic_proportions-done-title = Keho mitattu ja tallennettu.
 onboarding-automatic_proportions-done-description = Kehosi mittasuhteiden kalibrointi on valmis!
 onboarding-automatic_proportions-error_modal-confirm = Ymmäretty!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

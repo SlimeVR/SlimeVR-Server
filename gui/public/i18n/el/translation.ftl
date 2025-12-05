@@ -18,6 +18,9 @@ websocket-connection_lost = Η σύνδεση μεταξύ του διακομι
 tips-find_tracker = Δεν είστε σίγουροι ποιος ανιχνευτής είναι ποιος; Κουνήστε έναν ανιχνευτή και θα επισημάνει το αντίστοιχο στοιχείο.
 tips-do_not_move_heels = Βεβαιωθείτε ότι οι φτέρνες σας δεν κινούνται κατά την εγγραφή!
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Μη εκχωρημένο
@@ -109,7 +112,7 @@ widget-overlay-is_mirrored_label = Εμφάνιση υπέρθεσης ως κα
 
 widget-drift_compensation-clear = Επαναφορά αντιστάθμισης drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
@@ -279,6 +282,12 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 ## Advanced settings
 
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 
@@ -289,9 +298,6 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 
 
 ## Setup start
-
-
-## Enter VR part of setup
 
 
 ## Setup done
@@ -327,10 +333,7 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 ## Tracker automatic proportions setup
 
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

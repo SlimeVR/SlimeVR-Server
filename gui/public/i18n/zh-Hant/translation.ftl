@@ -31,6 +31,9 @@ tips-tap_setup = 除了從列表挑選追蹤器以外，你也可以慢慢敲擊
 tips-turn_on_tracker = 你使用的是官方的 SlimeVR 追蹤器嗎？記得要在連接到電腦以後<b><em>打開追蹤器的電源</em></b>喔！
 tips-failed_webgl = 初始化 WebGL 失敗。
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 未分配
@@ -95,6 +98,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR 開發板
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -242,14 +247,18 @@ reset-mounting = 配戴重置
 reset-mounting-feet = 重置腳部配戴
 reset-mounting-fingers = 重置手指配戴
 reset-yaw = 左右偏擺重置
+reset-error-no_feet_tracker = 未分配腳部追蹤器
+reset-error-no_fingers_tracker = 未分配手指追蹤器
+reset-error-mounting-need_full_reset = 配戴校正前需要完整重置
+reset-error-yaw-need_full_reset = 左右偏擺重置前需要完整重置
 
 ## Serial detection stuff
 
-serial_detection-new_device-p0 = 偵測到了新的串列埠裝置！
+serial_detection-new_device-p0 = 偵測到了新的序列埠裝置！
 serial_detection-new_device-p1 = 輸入你的 Wi-Fi 認證資訊！
 serial_detection-new_device-p2 = 請選擇你想對它做什麼
 serial_detection-open_wifi = 連線到 Wi-Fi
-serial_detection-open_serial = 開啟串列埠終端
+serial_detection-open_serial = 開啟序列埠終端
 serial_detection-submit = 送出！
 serial_detection-close = 關閉
 
@@ -265,6 +274,7 @@ navbar-settings = 詳細設定
 ## Biovision hierarchy recording
 
 bvh-start_recording = 錄製 BVH 檔案
+bvh-stop_recording = 儲存 BVH 紀錄
 bvh-recording = 錄製中…
 bvh-save_title = 儲存 BVH 紀錄
 
@@ -283,7 +293,7 @@ widget-overlay-is_mirrored_label = 鏡像顯示內嵌介面
 
 widget-drift_compensation-clear = 清除偏移補償數據
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = 清除配戴重置
 
@@ -401,10 +411,11 @@ tracker-settings-name_section-label = 追蹤器名稱
 tracker-settings-forget = 忘記追蹤器
 tracker-settings-forget-description = 從 SlimeVR 伺服器程式中移除該追蹤器，且直到重新啟動伺服器前不會再次連接。該追蹤器的設定不會遺失。
 tracker-settings-forget-label = 忘記追蹤器
+tracker-settings-update-unavailable-v2 = 未找到可用版本
+tracker-settings-update-incompatible = 電路板不相容，無法更新。
 tracker-settings-update-low-battery = 無法更新，電池電量低於 50%
 tracker-settings-update-up_to_date = 已為最新版本
 tracker-settings-update-blocked = 無法更新，沒有其他可用版本。
-tracker-settings-update-available = 版本 { $versionName } 可供更新
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 韌體版本
 
@@ -472,6 +483,7 @@ mounting_selection_menu-close = 關閉
 
 settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = 追蹤機制
 settings-sidebar-stay_aligned = 持續校正
 settings-sidebar-fk_settings = 追蹤設定
@@ -479,9 +491,12 @@ settings-sidebar-gesture_control = 手勢控制
 settings-sidebar-interface = 使用者介面
 settings-sidebar-osc_router = OSC 路由
 settings-sidebar-osc_trackers = VRChat OSC 追蹤器
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = 工具
-settings-sidebar-serial = 串列埠終端
+settings-sidebar-serial = 序列埠終端
 settings-sidebar-appearance = 外觀
+settings-sidebar-home = 主畫面
+settings-sidebar-checklist = 追蹤清單
 settings-sidebar-notifications = 通知
 settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
@@ -614,6 +629,9 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 約
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免關節旋轉超出極限
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = 以約束修正關節旋轉
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = 若關節旋轉角度超出極限時，修正旋轉角度
+settings-general-fk_settings-ik = 定位資料
+settings-general-fk_settings-ik-use_position = 使用定位資料
+settings-general-fk_settings-ik-use_position-description = 若追蹤器支援定位，使用來自追蹤器的定位資料。啟用後請再次進行完整重置並在遊戲中重新校正追蹤器。
 settings-general-fk_settings-arm_fk = 手臂追蹤
 settings-general-fk_settings-arm_fk-description = 強制透過頭戴顯示器來追蹤手臂，即使有手部的定位資料。
 settings-general-fk_settings-arm_fk-force_arms = 強制從頭戴顯示器進行手臂追蹤
@@ -701,9 +719,9 @@ settings-interface-appearance-decorations-label = 使用原生的視窗邊框
 ## Notification settings
 
 settings-interface-notifications = 通知
-settings-general-interface-serial_detection = 串列埠裝置檢測
-settings-general-interface-serial_detection-description = 每次插入新串列埠的裝置（可能是追蹤器）時，此選項會顯示一個彈出視窗。這有助於改進追蹤器的設定流程。
-settings-general-interface-serial_detection-label = 串列埠裝置檢測
+settings-general-interface-serial_detection = 序列埠裝置檢測
+settings-general-interface-serial_detection-description = 每次插入新序列埠的裝置（可能是追蹤器）時，此選項會顯示一個彈出視窗。這有助於改進追蹤器的設定流程。
+settings-general-interface-serial_detection-label = 序列埠裝置檢測
 settings-general-interface-feedback_sound = 聲音回饋
 settings-general-interface-feedback_sound-description = 啟用本選項後，觸發重置時會發出提示音。
 settings-general-interface-feedback_sound-label = 聲音回饋
@@ -740,10 +758,10 @@ settings-interface-behavior-bvh_directory-label = 存放 BVH 紀錄的目錄
 
 ## Serial settings
 
-settings-serial = 串列埠終端
+settings-serial = 序列埠終端
 # This cares about multilines
-settings-serial-description = 這裡用於顯示串列埠的即時資訊，可能有助於瞭解韌體是否發生問題。
-settings-serial-connection_lost = 串列埠連線中斷，正在重新連線……
+settings-serial-description = 這裡用於顯示序列埠的即時資訊，可能有助於瞭解韌體是否發生問題。
+settings-serial-connection_lost = 序列埠連線中斷，正在重新連線……
 settings-serial-reboot = 重新啟動
 settings-serial-factory_reset = 恢復出廠設定
 # This cares about multilines
@@ -751,13 +769,18 @@ settings-serial-factory_reset = 恢復出廠設定
 settings-serial-factory_reset-warning =
     <b>警告：</b>本選項會將該追蹤器恢復出廠設定，
     亦即其 Wi-Fi 與追蹤器校正的設定<b>將會全部刪除</b>。
-settings-serial-factory_reset-warning-ok = 我確實要執行出廠設定
+settings-serial-factory_reset-warning-ok = 我已瞭解以上風險
 settings-serial-factory_reset-warning-cancel = 取消
-settings-serial-serial_select = 選擇串列埠
+settings-serial-serial_select = 選擇序列埠
 settings-serial-auto_dropdown_item = 自動
 settings-serial-get_wifi_scan = 取得 Wi-Fi 掃描
 settings-serial-file_type = 純文字格式
 settings-serial-save_logs = 儲存到檔案
+settings-serial-send_command = 傳送
+settings-serial-send_command-placeholder = 輸入指令…
+settings-serial-send_command-warning = <b>警告：</b>執行序列埠指令可能會導致資料遺失或追蹤器變磚。
+settings-serial-send_command-warning-ok = 我已瞭解以上風險
+settings-serial-send_command-warning-cancel = 取消
 
 ## OSC router settings
 
@@ -854,6 +877,8 @@ settings-osc-vmc-mirror_tracking-label = 鏡像追蹤
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = OSC 路由的輸入埠與輸出埠不能相同！
+settings-osc-common-network-port_banned_error = 無法使用 { $port } 連接埠！
 
 ## Advanced settings
 
@@ -887,6 +912,18 @@ settings-utils-advanced-open_data-label = 打開資料夾
 settings-utils-advanced-open_logs = 紀錄檔資料夾
 settings-utils-advanced-open_logs-description = 在檔案管理器中開啟 SlimeVR 的紀錄檔資料夾，該資料夾包含程式的紀錄檔。
 settings-utils-advanced-open_logs-label = 打開資料夾
+
+## Home Screen
+
+settings-home-list-layout = 追蹤器清單檢視方式
+settings-home-list-layout-desc = 請從以下選項選擇一個主畫面的檢視方式
+settings-home-list-layout-grid = 格狀
+settings-home-list-layout-table = 表格
+
+## Tracking Checlist
+
+settings-tracking_checklist-active_steps = 列出的追蹤清單項目
+settings-tracking_checklist-active_steps-desc = 列出所有會在追蹤清單中顯示的步驟，你可以停用或啟用可忽略的步驟。
 
 ## Setup/onboarding menu
 
@@ -948,13 +985,6 @@ onboarding-reset_tutorial-2 =
 onboarding-home = 歡迎來到 SlimeVR
 onboarding-home-start = 來開始設定吧！
 
-## Enter VR part of setup
-
-onboarding-enter_vr-back = 返回到追蹤器分配
-onboarding-enter_vr-title = 該是進入 VR 的時候了！
-onboarding-enter_vr-description = 穿戴好所有的追蹤器，開始快樂 VR 吧！
-onboarding-enter_vr-ready = 我準備好了
-
 ## Setup done
 
 onboarding-done-title = 都搞定啦！
@@ -970,7 +1000,7 @@ onboarding-connect_tracker-description-p1-v1 = 透過 USB 埠，一次連接一�
 onboarding-connect_tracker-issue-serial = 我在連接時碰到問題了！
 onboarding-connect_tracker-usb = USB 追蹤器
 onboarding-connect_tracker-connection_status-none = 正在尋找追蹤器
-onboarding-connect_tracker-connection_status-serial_init = 正在連線到串列埠裝置
+onboarding-connect_tracker-connection_status-serial_init = 正在連線到序列埠裝置
 onboarding-connect_tracker-connection_status-obtaining_mac_address = 正在取得追蹤器的 MAC 位址
 onboarding-connect_tracker-connection_status-provisioning = 正在傳送 Wi-Fi 認證資訊
 onboarding-connect_tracker-connection_status-connecting = 正在傳送 Wi-Fi 資訊
@@ -1162,6 +1192,8 @@ onboarding-automatic_mounting-done-restart = 再試一次
 onboarding-automatic_mounting-mounting_reset-title = 配戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 雙腿彎曲以滑雪的姿勢蹲下，上身向前傾斜，手臂彎曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. 按下「配戴重置」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. 以腳尖站立，雙腳朝前。你也能坐在椅子上進行。
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. 按下「腳部校正」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
 onboarding-automatic_mounting-preparation-title = 準備
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. 請按下「完整重置」按鈕。
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直，雙臂放在身體兩側，確保向前直視。
@@ -1173,7 +1205,6 @@ onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = 返回重置教學
 onboarding-manual_proportions-title = 手動調整軀幹比例
 onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR 頭戴顯示器以使用此功能
@@ -1267,30 +1298,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>請重新進行測量，並確保數值是正確的。</b>
 onboarding-automatic_proportions-smol_warning-cancel = 返回
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = 縮放型軀幹比例
-onboarding-scaled_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨骼長度。本流程會使用人體的平均軀幹比例並依照你的身高縮放調整。
-onboarding-scaled_proportions-manual_height-title = 設定你的身高
-onboarding-scaled_proportions-manual_height-description-v2 = 身高會當作軀幹比例設定的基礎。
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 目前尚未連接到 SlimeVR，因此無法根據頭戴顯示器測量身高。<b>請查閱說明文件，繼續操作請自行承擔風險！</b>
-onboarding-scaled_proportions-manual_height-height-v2 = 你的身高全長為
-onboarding-scaled_proportions-manual_height-estimated_height = 頭戴顯示器估計高度為：
-onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
-onboarding-scaled_proportions-manual_height-warning =
-    你現在正在手動設定縮放型軀幹比例，<b>這個方法僅在你使用 SlimeVR
-    不使用頭戴顯示器時推薦使用。</b>
-    
-    若要能自動設定縮放型軀幹比例，請按照以下步驟：
-onboarding-scaled_proportions-manual_height-warning-no_hmd = 連接 VR 頭戴顯示器
-onboarding-scaled_proportions-manual_height-warning-no_controllers = 檢查 VR 控制器是否正常連接，並在 SlimeVR 介面中分配到你的雙手
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = 重置軀幹比例
-onboarding-scaled_proportions-reset_proportion-description = 要依照身高設定軀幹比例，你現在需要重置相關設定。本按鈕會清除以前所設定的軀幹比例並提供基本配置。
-onboarding-scaled_proportions-done-title = 軀幹比例已設定
-onboarding-scaled_proportions-done-description = 軀幹比例現在已經依照你的身高設定。
 
 ## Stay Aligned setup
 
@@ -1329,6 +1338,8 @@ onboarding-stay_aligned-done = 完成
 ## Home
 
 home-no_trackers = 未偵測到或未分配追蹤器
+home-settings = 主畫面設定
+home-settings-close = 關閉
 
 ## Trackers Still On notification
 
@@ -1365,25 +1376,48 @@ firmware_tool = DIY 韌體工具
 firmware_tool-description = 本工具可以配置與燒錄 DIY 追蹤器
 firmware_tool-not_available = 唉呀，現在韌體工具無法使用。請稍後再來！
 firmware_tool-not_compatible = 韌體工具與這個版本的伺服器不相容。請更新伺服器！
+firmware_tool-select_source = 選擇要燒錄的韌體
+firmware_tool-select_source-description = 選擇要在電路板上燒錄的韌體
+firmware_tool-select_source-error = 無法載入韌體來源
+firmware_tool-select_source-board_type = 電路板類型
+firmware_tool-select_source-firmware = 韌體來源
+firmware_tool-select_source-version = 韌體版本
+firmware_tool-select_source-official = 正式版
+firmware_tool-select_source-dev = 開發版
+firmware_tool-board_defaults = 設定電路板
+firmware_tool-board_defaults-description = 設定與硬體相關的腳位或配置
+firmware_tool-board_defaults-add = 新增
+firmware_tool-board_defaults-reset = 恢復預設值
+firmware_tool-board_defaults-error-required = 必填欄位
+firmware_tool-board_defaults-error-format = 格式無效
+firmware_tool-board_defaults-error-format-number = 不是數字
 firmware_tool-flash_method_step = 燒錄方法
 firmware_tool-flash_method_step-description = 選擇要使用的燒錄方法
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = 使用 OTA 線上更新。你的追蹤器會透過 Wi-Fi 來更新韌體，只支援已經設定好的追蹤器。
+firmware_tool-flash_method_step-ota-info =
+    即將使用你的 Wi-Fi 憑證來燒錄韌體，並確保一切正常。
+    <b>我們不會儲存你的 Wi-Fi 憑證！</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = 使用 USB 來更新追蹤器。
 firmware_tool-flashbtn_step = 進入燒錄模式
 firmware_tool-flashbtn_step-description = 在進入下一步前，請先進行以下操作
 firmware_tool-flashbtn_step-board_SLIMEVR = 關閉追蹤器電源，移除外殼（若有的話），並用 USB 線連接到這台電腦上，然後根據你持有的 SlimeVR 追蹤器主板的版本，進行下述操作：
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = 將追蹤器上方第二個 FLASH 方形接點與微控制器的金屬遮罩短路，同時開啟追蹤器開關
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = 將追蹤器上方的 FLASH 圓形接點與微控制器的金屬遮罩短路，同時開啟追蹤器開關
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = 按住追蹤器上方的 FLASH 按鈕，同時開啟追蹤器開關
 firmware_tool-flashbtn_step-board_OTHER =
     在燒錄前，你可能需要將追蹤器切換進 Bootloader（開機載入程式）。
     多數狀況下，在燒錄開始前按下 BOOT 按鈕即可開始燒錄。
     如果燒錄進度開始時就已逾時，表示追蹤器未能進入 Bootloader 模式，
     請參考追蹤器主板燒錄韌體的說明文件，以得知進入 Bootloader 模式的方法。
+firmware_tool-flash_method_ota-title = 透過 Wi-Fi 燒錄
 firmware_tool-flash_method_ota-devices = 偵測到的 OTA 裝置：
 firmware_tool-flash_method_ota-no_devices = 找不到可以使用 OTA 更新的主板，請確認所選擇的主板類型
+firmware_tool-flash_method_serial-title = 透過 USB 燒錄
 firmware_tool-flash_method_serial-wifi = Wi-Fi 認證資訊：
-firmware_tool-flash_method_serial-devices-label = 偵測到的串列埠裝置：
-firmware_tool-flash_method_serial-devices-placeholder = 選擇一個串列埠裝置
-firmware_tool-flash_method_serial-no_devices = 偵測不到相容的串列埠裝置，請確認追蹤器已連接
+firmware_tool-flash_method_serial-devices-label = 偵測到的序列埠裝置：
+firmware_tool-flash_method_serial-devices-placeholder = 選擇一個序列埠裝置
+firmware_tool-flash_method_serial-no_devices = 偵測不到相容的序列埠裝置，請確認追蹤器已連接
 firmware_tool-build_step = 建置中
 firmware_tool-build_step-description = 韌體正在建置中，請稍後
 firmware_tool-flashing_step = 燒錄中
@@ -1394,7 +1428,10 @@ firmware_tool-flashing_step-exit = 離開
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = 正在等待建置…
 firmware_tool-build-CREATING_BUILD_FOLDER = 正在建立建置資料夾
+firmware_tool-build-DOWNLOADING_SOURCE = 正在下載原始碼
+firmware_tool-build-EXTRACTING_SOURCE = 正在解壓縮原始碼
 firmware_tool-build-BUILDING = 正在建置韌體
 firmware_tool-build-SAVING = 正在儲存建置
 firmware_tool-build-DONE = 建置完成
@@ -1508,3 +1545,42 @@ error_collection_modal-description_v2 =
     若之後要變更此設定，可以在「詳細設定」頁面中的「行為」來變更。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 我不想要
+tracking_checklist = 追蹤清單
+tracking_checklist-settings = 追蹤清單設定
+tracking_checklist-settings-close = 關閉
+tracking_checklist-status-incomplete = 還沒做完 SlimeVR 使用前的準備！
+tracking_checklist-status-partial = 你有 { $count } 項警告！
+tracking_checklist-status-complete = 已經準備好使用 SlimeVR 了！
+tracking_checklist-MOUNTING_CALIBRATION = 進行配戴校正
+tracking_checklist-FEET_MOUNTING_CALIBRATION = 進行腳部的配戴校正
+tracking_checklist-FULL_RESET = 進行完整重置
+tracking_checklist-FULL_RESET-desc = 有追蹤器需要進行重置
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR 未執行
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR 未執行，你要把追蹤器用在 VR 上嗎？
+tracking_checklist-STEAMVR_DISCONNECTED-open = 啟動 SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = 校正追蹤器
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = 追蹤器尚未進行校正。請將以黃色標記的追蹤器放置在平面上幾秒鐘。
+tracking_checklist-TRACKER_ERROR = 追蹤器出現錯誤
+tracking_checklist-TRACKER_ERROR-desc = 有追蹤器發生錯誤，請重啟黃色標記的追蹤器。
+tracking_checklist-VRCHAT_SETTINGS = 調整 VRChat 設定
+tracking_checklist-VRCHAT_SETTINGS-desc = VRChat 的設定有問題，這會影響到在 VRChat 使用 SlimeVR 的體驗。
+tracking_checklist-VRCHAT_SETTINGS-open = 前往 VRChat 警告
+tracking_checklist-UNASSIGNED_HMD = VR 頭戴裝置尚未分配給頭部
+tracking_checklist-UNASSIGNED_HMD-desc = VR 頭戴顯示器應被分配為頭部追蹤器。
+tracking_checklist-NETWORK_PROFILE_PUBLIC = 變更網路設定檔
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = 你的網路設定檔目前設為「公開」，SlimeVR 為了能正常運作，不建議如此設定。 <PublicFixLink>此處提供修正的方法。</PublicFixLink>
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = 開啟控制台
+tracking_checklist-STAY_ALIGNED_CONFIGURED = 調整持續校正設定
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = 記錄持續校正所使用的姿勢以減緩飄移現象
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = 開啟持續校正設定
+tracking_checklist-ignore = 忽略
+preview-mocap_mode_soon = 動作捕捉模式（即將推出™）
+preview-disable_render = 停用預覽
+preview-disabled_render = 預覽已停用
+toolbar-mounting_calibration = 配戴校正
+toolbar-mounting_calibration-default = 身體
+toolbar-mounting_calibration-feet = 腳部
+toolbar-mounting_calibration-fingers = 手指
+toolbar-drift_reset = 漂移重置
+toolbar-assigned_trackers = { $count } 個追蹤器已分配
+toolbar-unassigned_trackers = { $count } 個追蹤器尚未分配

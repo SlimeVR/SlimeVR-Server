@@ -31,6 +31,9 @@ tips-tap_setup = يمكنك النقر ببطء مرتين على جهاز ال�
 tips-turn_on_tracker = هل تستخدم أجهزة تعقب SlimeVR الرسمية؟ تذكر  <b><em> أن تشغل أجهزة التعقب </em></b> بعد توصيلها بالكمبيوتر!
 tips-failed_webgl = فشل تهيئة WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = غير محدد
@@ -197,7 +200,7 @@ widget-overlay-is_mirrored_label = عكس تراكب الشاشة
 
 widget-drift_compensation-clear = حذف تعويض الانجراف
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = مسح إعادة تعيين التركيب
 
@@ -314,7 +317,6 @@ tracker-settings-forget = انسي جهاز التعقب
 tracker-settings-forget-description = يزيل جهاز التعقب من خادم SlimeVR ويمنعه من الاتصال به حتى يتم إعادة تشغيل الخادم. لن تضيع تكوين جهاز التعقب.
 tracker-settings-forget-label = ننسى جهاز التعقب
 tracker-settings-update-up_to_date = حديث
-tracker-settings-update-available = { $versionName } متاح الآن
 tracker-settings-update = التحديث الآن
 tracker-settings-update-title = إصدار البرنامج الثابت
 
@@ -791,6 +793,12 @@ settings-utils-advanced-open_logs = مجلد السجلات
 settings-utils-advanced-open_logs-description = افتح مجلد سجلات SlimeVR في مستكشف الملفات ، والذي يحتوي على سجلات التطبيق
 settings-utils-advanced-open_logs-label = فتح المجلد
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = تخطى الإعداد
@@ -850,13 +858,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = مرحبا بكم في سلايم في ار
 onboarding-home-start = هيا نتجهز!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = العودة إلى تعيين أجهزة التعقب
-onboarding-enter_vr-title = حان وقت دخول في ار!
-onboarding-enter_vr-description = ضع كل أجهزة التعقب ثم أدخل في ار!
-onboarding-enter_vr-ready = أنا جاهز
 
 ## Setup done
 
@@ -1083,7 +1084,6 @@ onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أج�
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = العودة إلى برنامج تعليم إعادة التعيين
 onboarding-manual_proportions-title = نسب الجسم اليدوية
 onboarding-manual_proportions-fine_tuning_button = ضبط النسب تلقائيا
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = يرجى توصيل سماعة رأس VR لاستخدام الضبط الدقيق التلقائي
@@ -1180,25 +1180,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>يرجى إعادة القياسات والتأكد من صحتها.</b>
 onboarding-automatic_proportions-smol_warning-cancel = الرجوع
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = النسب المقاسة
-onboarding-scaled_proportions-description = لكي تعمل أجهزة التعقب SlimeVR ، نحتاج إلى معرفة طول عظامك. ستستخدم نسبة متوسطة وقياسها بناء على طولك.
-onboarding-scaled_proportions-manual_height-title = تكوين طولك
-onboarding-scaled_proportions-manual_height-description-v2 = سيتم استخدام هذا الطول كخط أساس لنسب جسمك.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR غير متصل حاليا ب SlimeVR ، لذلك لا يمكن أن تستند القياسات إلى سماعة الرأس الخاصة بك. <b>تابع على مسؤوليتك الخاصة أو تحقق من المستندات!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = طولك الكامل هو
-onboarding-scaled_proportions-manual_height-estimated_height = الارتفاع المقدر لسماعة الرأس هو:
-onboarding-scaled_proportions-manual_height-next_step = المتابعة والحفظ
-onboarding-scaled_proportions-manual_height-warning-no_hmd = وصّل سماعة رأس VR
-onboarding-scaled_proportions-manual_height-warning-no_controllers = تأكد من توصيل وحدات التحكم الخاصة بك وتخصيصها بشكل صحيح ليديك
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = إعادة ضبط نسب جسمك
-onboarding-scaled_proportions-reset_proportion-description = لتعيين نسب جسمك بناء على طولك ، تحتاج إلى إعادة تعيين جميع نسبك. سيؤدي ذلك إلى مسح أي نسب قمت بتكوينها وتوفير تكوين أساسي.
-onboarding-scaled_proportions-done-title = مجموعة نسب الجسم
-onboarding-scaled_proportions-done-description = قد تم الآن تكوين نسب جسمك بناء على طولك.
 
 ## Stay Aligned setup
 
@@ -1246,8 +1229,6 @@ firmware_tool-flash_method_step-description = الرجاء حدد طريقة ا�
 firmware_tool-flashbtn_step = اضغط على زر التمهيد
 firmware_tool-flashbtn_step-description = قبل الانتقال إل الخطوة التالية، هناك بعض الأشياء التي عليك القيام بها
 firmware_tool-flashbtn_step-board_SLIMEVR = أوقف تشغيل جهاز التعقب، قم بإزالة العلبة (إن وجدت)، وقم بتوصيل كابل USB بهذا الكمبيوتر ، ثم قم بإحدى الخطوات التالية وفقا لمراجعة لوحة SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = قم بتشغيل جهاز التعقب أثناء تقصير دائرة لوحة FLASH المستطيلة الثانية من الحافة الموجودة على الجانب العلوي من اللوحة ، والدرع المعدني للمتحكم الدقيق
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = قم بتشغيل جهاز التعقب أثناء تقصير دائرة لوحة FLASH الدائرية على الجانب العلوي من اللوحة ، والدرع المعدني للمتحكم الدقيق
 
 ## firmware tool build status
 

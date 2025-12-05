@@ -21,6 +21,9 @@ version_update-close = Kapat
 tips-find_tracker = Hangi takipçi hangisi emin değil misin? Takipçilerden birini hareket ettirerek belirleyebilirsin.
 tips-do_not_move_heels = Kayıt sırasında ayaklarınızın hareket etmediğinden emin olun!
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Atanmamış
@@ -111,7 +114,7 @@ tracking-unpaused = Takibi duraklat
 ## Widget: Drift compensation
 
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
@@ -281,6 +284,12 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Advanced settings
 
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 
@@ -291,9 +300,6 @@ settings-osc-vrchat-network-address = Ağ adresi
 
 
 ## Setup start
-
-
-## Enter VR part of setup
 
 
 ## Setup done
@@ -329,10 +335,7 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Tracker automatic proportions setup
 
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

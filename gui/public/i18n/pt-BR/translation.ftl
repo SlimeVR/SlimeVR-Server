@@ -31,6 +31,9 @@ tips-tap_setup = Pode tocar lentamente 2 vezes no seu tracker para o escolher em
 tips-turn_on_tracker = Está usando trackers oficiais do SlimeVR? Lembre-se de <b><em> ligar o seu tracker </em></b> após conecta-lo ao computador!
 tips-failed_webgl = Falha ao inicializar o WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Não atribuído
@@ -165,7 +168,7 @@ widget-overlay-is_mirrored_label = Mostrar Overlay como espelho
 
 widget-drift_compensation-clear = Refazer compensação de drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Limpar reset de posição
 
@@ -283,7 +286,6 @@ tracker-settings-forget-description = Remove o tracker do servidor SlimeVR e imp
 tracker-settings-forget-label = Esquecer o tracker
 tracker-settings-update-low-battery = Não é possível atualizar. Bateria abaixo de 50%
 tracker-settings-update-up_to_date = Atualizado
-tracker-settings-update-available = { $versionName } está disponível
 tracker-settings-update = Atualizar agora
 tracker-settings-update-title = Versão do firmware
 
@@ -755,6 +757,12 @@ settings-utils-advanced-open_logs = Pasta de logs
 settings-utils-advanced-open_logs-description = Abre a pasta de logs do SlimeVR no explorador de arquivos, contendo os logs do aplicativo
 settings-utils-advanced-open_logs-label = Abrir pasta
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Pular configurações
@@ -814,13 +822,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Bem vindo ao SlimeVR
 onboarding-home-start = Vamos configurar!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Voltar para atribuição de Trackers
-onboarding-enter_vr-title = Hora de entrar no VR!
-onboarding-enter_vr-description = Coloque todos os seus trackers e entre no VR!
-onboarding-enter_vr-ready = Estou pronto
 
 ## Setup done
 
@@ -1035,7 +1036,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trac
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Voltar para o tutorial de reset
 onboarding-manual_proportions-title = Proporções de corpo manuais
 onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as proporções
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte seu headset VR para utilizar a melhoria automatica
@@ -1128,23 +1128,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Por favor refaça as medidas e tenha certeza que estão corretas.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Voltar
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Proporções escalonadas
-onboarding-scaled_proportions-description = Para os trackers SlimeVR funcionarem, precisamos saber as medidas de seus ossos. Isso usará uma proporção média e a dimensionará com base em sua altura.
-onboarding-scaled_proportions-manual_height-title = Configure sua altura
-onboarding-scaled_proportions-manual_height-description-v2 = Essa altura será usada como referência para as proporções de seu corpo.
-onboarding-scaled_proportions-manual_height-missing_steamvr = No momento, o SteamVR não está conectado ao SlimeVR, portanto as medições não podem ser baseadas no seu headset. <b>Prossiga por sua conta e risco ou consulte a documentação!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = A sua altura total é
-onboarding-scaled_proportions-manual_height-estimated_height = A altura estimada do seu headset é:
-onboarding-scaled_proportions-manual_height-next_step = Continue e salve
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Redefinir as proporções de seu corpo
-onboarding-scaled_proportions-reset_proportion-description = Para definir as proporções do corpo com base na sua altura, agora é necessário redefinir todas as proporções. Isso limpará todas as proporções que você configurou e fornecerá uma configuração de referência.
-onboarding-scaled_proportions-done-title = Proporções do corpo definidas
-onboarding-scaled_proportions-done-description = As proporções do seu corpo agora devem ser configuradas com base em sua altura.
 
 ## Stay Aligned setup
 
@@ -1193,9 +1178,6 @@ firmware_tool-flash_method_step-description = Por favor, selecione o método de 
 firmware_tool-flashbtn_step = Pressione o botão de boot
 firmware_tool-flashbtn_step-description = Antes de ir para o próximo passo, aqui estão algumas etapas que você necessita fazer
 firmware_tool-flashbtn_step-board_SLIMEVR = Deslige o tracker, tire de case (se tiver), conecte o cabo USB nesse computador, e tente seguir os seguintes passos de acordo com a revisão de sua placa SlimeVR
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Ligue o tracker enquanto faz curto no segundo pad retângular FLASH, no canto superior da placa, e o escudo de metal do microcontrolador
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Ligue o tracker enquanto faz curto no pad circular FLASH na parte superior da placa, e o escudo de metal do microcontrolador
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Ligue o tracker enquanto segura o botão FLASH na parte superior da placa
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de fazer a atualização, você provavelmente precisará colocar o tracker no modo bootloader.
     Na maioria das vezes, isso significa pressionar o botão de boot na placa antes do iniciar o processo de atualização.

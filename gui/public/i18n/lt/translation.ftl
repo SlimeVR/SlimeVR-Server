@@ -31,6 +31,9 @@ tips-tap_setup = Vietoj pasirinkimo iš meniu, galite du kartus švelniai bakste
 tips-turn_on_tracker = Naudojate oficialius SlimeVR sekiklius? Nepamirškite <b><em>įjungti juos</em></b> po prijungimo prie kompiuterio!
 tips-failed_webgl = Įvyko techninė klaida inicijuojant WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Nepriskirta
@@ -239,7 +242,7 @@ widget-overlay-is_mirrored_label = Rodyti perdangą kaip veidrodį
 
 widget-drift_compensation-clear = Išvalyti dreifo kompensavimą
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Išvalyti tvirtinimo atstatymą
 
@@ -357,7 +360,6 @@ tracker-settings-forget-description = Tai pašalins sekiklį iš SlimeVR serveri
 tracker-settings-forget-label = Pamiršti sekiklį
 tracker-settings-update-low-battery = Negalima atnaujinti, baterijos lygis žemesnis nei 50%
 tracker-settings-update-up_to_date = Atnaujinta
-tracker-settings-update-available = Prieinamas atnaujinimas: { $versionName }
 tracker-settings-update = Atnaujinti dabar
 tracker-settings-update-title = Programinės įrangos versija
 
@@ -598,6 +600,12 @@ settings-general-gesture_control-trackers =
 ## Advanced settings
 
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 
@@ -608,9 +616,6 @@ settings-general-gesture_control-trackers =
 
 
 ## Setup start
-
-
-## Enter VR part of setup
 
 
 ## Setup done
@@ -646,10 +651,7 @@ settings-general-gesture_control-trackers =
 ## Tracker automatic proportions setup
 
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

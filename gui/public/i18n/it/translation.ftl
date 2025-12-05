@@ -31,6 +31,9 @@ tips-tap_setup = Puoi toccare lentamente 2 volte il tracker per sceglierlo invec
 tips-turn_on_tracker = Stai utilizzando i tracker ufficiali di SlimeVR? Ricordati di <b><em>accendere il tuo tracker</em></b> dopo averlo collegato al PC!
 tips-failed_webgl = Inizializzazione WebGL fallita.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Non assegnato
@@ -278,7 +281,7 @@ widget-overlay-is_mirrored_label = Mostra Overlay come specchio
 
 widget-drift_compensation-clear = Rimuovi compensazione per il drift
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Cancella tutti i ripristini del posizionamento
 
@@ -398,7 +401,6 @@ tracker-settings-forget-description = Rimuove il tracker dal SlimeVR server e im
 tracker-settings-forget-label = Dimentica il tracker
 tracker-settings-update-low-battery = Non è possibile aggiornare. Batteria inferiore al 50%
 tracker-settings-update-up_to_date = Aggiornata
-tracker-settings-update-available = { $versionName } è ora disponibile
 tracker-settings-update = Aggiorna
 tracker-settings-update-title = Versione firmware
 
@@ -887,6 +889,12 @@ settings-utils-advanced-open_logs = Cartella dei Log
 settings-utils-advanced-open_logs-description = Apri la cartella dei log di SlimeVR in Esplora Risorse, contenente i log dell'app
 settings-utils-advanced-open_logs-label = Apri cartella
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Salta la configurazione
@@ -946,13 +954,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Benvenuti a SlimeVR
 onboarding-home-start = Prepariamoci!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Torna all'assegnazione dei tracker
-onboarding-enter_vr-title = È ora di entrare in VR!
-onboarding-enter_vr-description = Indossa tutti i tuoi tracker e entra in VR!
-onboarding-enter_vr-ready = Sono prontə!
 
 ## Setup done
 
@@ -1181,7 +1182,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Sto indossando tutti i miei
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Torna al tutorial di ripristino
 onboarding-manual_proportions-title = Impostazione manuale delle proporzioni del corpo
 onboarding-manual_proportions-fine_tuning_button = Regola automaticamente le proporzioni
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Per piacer collega un visore VR per utilizzare la regolazione automatica
@@ -1280,30 +1280,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Si prega di ripetere le misurazioni e assicurarsi che siano corrette.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Indietro
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Proporzioni in scala
-onboarding-scaled_proportions-description = Affinché i tracker di SlimeVR funzionino, dobbiamo conoscere la lunghezza dei tuoi arti. Questo utilizzerà delle proporzioni nella media e la scalerà in base alla tua altezza.
-onboarding-scaled_proportions-manual_height-title = Configura la tua altezza
-onboarding-scaled_proportions-manual_height-description-v2 = Questa altezza verrà utilizzata come punto di riferimento per calcolare le proporzioni del tuo corpo.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR non è attualmente connesso a SlimeVR, quindi le misurazioni non possono essere basate sul visore. <b>Procedi a tua discrezione o controlla la documentazione!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = La tua altezza totale è
-onboarding-scaled_proportions-manual_height-estimated_height = La altezza del tuo visore stimata è:
-onboarding-scaled_proportions-manual_height-next_step = Continua e salva
-onboarding-scaled_proportions-manual_height-warning =
-    Al momento stai utilizzando il metodo manuale per impostare le proporzioni in scala!
-    <b>Questa modalità è consigliata solo se non si utilizza un Visore con SlimeVR</b>
-    
-    Per poter utilizzare le proporzioni in scala automatica, si prega di:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Collegare un visore VR
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Assicurarsi che i controller siano collegati e assegnati correttamente alle mani
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Ripristina le proporzioni del corpo
-onboarding-scaled_proportions-reset_proportion-description = Per impostare le proporzioni del tuo corpo in base alla tua altezza, ora devi ripristinare tutte le tue proporzioni. In questo modo verranno cancellate tutte le proporzioni configurate e verrà fornita una configurazione di base.
-onboarding-scaled_proportions-done-title = Proporzioni del corpo configurate
-onboarding-scaled_proportions-done-description = Le proporzioni del tuo corpo dovrebbero ora essere configurate in base alla tua altezza.
 
 ## Stay Aligned setup
 
@@ -1383,9 +1361,6 @@ firmware_tool-flash_method_step-description = Seleziona il metodo di flashing ch
 firmware_tool-flashbtn_step = Premi il pulsante di avvio
 firmware_tool-flashbtn_step-description = Prima di passare al passaggio successivo, ci sono alcune cose che devi fare
 firmware_tool-flashbtn_step-board_SLIMEVR = Spegni il tracker, rimuovi la custodia (se presente), collega un cavo USB a questo computer, quindi esegui uno dei seguenti passaggi in base alla revisione della tua scheda SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Accendi il tracker mentre cortocircuiti il pad rettangolare FLASH, il secondo pad contando dal bordo superiore della scheda, e lo shield metallico del microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Accendi il tracker mentre cortocircuiti il pad circolare FLASH, il pad vicino al bordo superiore della scheda, e lo shield metallico del microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Accendi il tracker mentre premi il pulsante FLASH sul lato superiore della scheda
 firmware_tool-flashbtn_step-board_OTHER =
     Prima di eseguire il flashing, sarà probabilmente necessario mettere il tracker in modalità bootloader.
     La maggior parte delle volte significa premere il pulsante di avvio sulla scheda prima che inizi il processo di flashing.

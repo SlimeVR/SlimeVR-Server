@@ -31,6 +31,9 @@ tips-tap_setup = u can swowly tap youw twackew 2 times to choose it insted of se
 tips-turn_on_tracker = erm.. are u using offishal SlaiemVR twackews??! rember to <b><em>tuwn on yuor twackew</em></b> aftwew coneccting it to teh PC!
 tips-failed_webgl = oh nooooo :( faiwled to initiawizwe WebGL...
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = unassyigned
@@ -189,7 +192,7 @@ widget-overlay-is_mirrored_label = dispway owovelay as miwwow
 
 widget-drift_compensation-clear = cwear dwift compensation
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = cweaw weset meownting
 
@@ -301,7 +304,6 @@ tracker-settings-forget = *forgors the tracker*
 tracker-settings-forget-description = remooves teh twackew fwom da SwimeVR sewvew n pwevent it frum conecting to it til fhe sewvew iz westawtied. the cowonfigyuwatsin of da twackew woant b wost.
 tracker-settings-forget-label = *forgors the tracker*
 tracker-settings-update-up_to_date = up to dayte!! ^w^
-tracker-settings-update-available = { $versionName } is naow awailabwe
 tracker-settings-update = uwupdate meow!
 
 ## Tracker part card info
@@ -719,6 +721,12 @@ settings-utils-advanced-open_logs = logs fowdew
 settings-utils-advanced-open_logs-description = open swimevr's logs fowdew in da fiwe explowew, containing teh logs of da app
 settings-utils-advanced-open_logs-label = open fowdew
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = skipy setup
@@ -778,13 +786,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = wewcome to SwimeVR
 onboarding-home-start = wets get set up!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = gaww bawwk to twacker assignyment
-onboarding-enter_vr-title = time to entew vr!
-onboarding-enter_vr-description = put on awe yoaww twackaws and then entew vr!
-onboarding-enter_vr-ready = iym weady
 
 ## Setup done
 
@@ -999,7 +1000,6 @@ onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = go bawck to weset tutowiaw
 onboarding-manual_proportions-title = manyuaw bodee pwopowtiesions
 onboarding-manual_proportions-fine_tuning_button = automaticawwy fine tuwune propowtions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = pwease connect a vr headset to use automatic fine tuwuning
@@ -1089,23 +1089,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>pwease wedo da measuwments and ensuwe dey r cowwect.</b>
 onboarding-automatic_proportions-smol_warning-cancel = go bak
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = scawed pwopowtions
-onboarding-scaled_proportions-description = fow swimevr twackews to wowk, we need to kno teh bigness of youw bowones. dis wiww use an avewage pwopowtion and scawe it based on youw heit.
-onboarding-scaled_proportions-manual_height-title = configuwe youw heit
-onboarding-scaled_proportions-manual_height-description-v2 = dis heit wiww be used az a basewine fow youw body pwopowtions.
-onboarding-scaled_proportions-manual_height-missing_steamvr = steawmvr is nawt cuwwentwy cowonnected to da swimevr, so measuwements cant be based on youw hedset ono... <b>pwoceed at youw owon wisk ow chek da docs!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = youw fuww heit is
-onboarding-scaled_proportions-manual_height-estimated_height = youw estimated hedset heit is:
-onboarding-scaled_proportions-manual_height-next_step = keep goin an saiv
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = weset youw body pwopowtions
-onboarding-scaled_proportions-reset_proportion-description = to set youw pwopowtions based on youw heit, u gotsa weset aww of youw pwopowtions. dis wiww cweaw any pwopowtions u hav configuwed and pwovide a basewine configuwation.
-onboarding-scaled_proportions-done-title = body pwopowtions set
-onboarding-scaled_proportions-done-description = youw body pwopowtions shuld nao be configuwed based on youw heit :3
 
 ## Stay Aligned setup
 
@@ -1153,9 +1138,6 @@ firmware_tool-flash_method_step-description = pwease sewect teh fwashin mefod u 
 firmware_tool-flashbtn_step = pwess da buwut buddon
 firmware_tool-flashbtn_step-description = befow goin into da next step thewe's stuff u gotta do
 firmware_tool-flashbtn_step-board_SLIMEVR = tuwn awf da twackew, wemove da case if u got wun, conecc an usb cabwe to dis compooper, den do wun of da fowwowin steps dependin on wat swimevr boawd u got:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = tuwn on da twackew whiwe showtin teh secund wectanguwaw FWASH!! pad fwom da edge on teh top side of teh boawd and da metaw shiewd of da micwocontwowwew
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = tuwn on da twackew whiwe showtin teh ciwcuwaw FWASH!! pad on teh top side of teh boawd and teh metaw shiewd of da micwocontwowwew
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = tuwn on da twackew whiwe pushin in da FWASH!! buddon on da top side of da boawd
 firmware_tool-flashbtn_step-board_OTHER =
     befow fwashin u prob need 2 put da twackew into buwutwoadew mowd :3
     mowst of da time it meens pressin da buwut buddon on da boawd befow da fwashin pwocess stawts.

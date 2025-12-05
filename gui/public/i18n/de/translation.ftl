@@ -31,6 +31,9 @@ tips-tap_setup = Sie können langsam 2 Mal auf Ihren Tracker tippen, um ihn ausz
 tips-turn_on_tracker = Verwenden Sie offizielle SlimeVR-Tracker? Vergessen Sie nicht den <b><em>Tracker einzuschalten</em></b>, nachdem Sie ihn an den PC angeschlossen haben!
 tips-failed_webgl = Fehler beim Initialisieren von WebGL.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Nicht zugewiesen
@@ -95,6 +98,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -185,7 +190,9 @@ navbar-settings = Einstellungen
 ## Biovision hierarchy recording
 
 bvh-start_recording = BVH aufnehmen
+bvh-stop_recording = BVH-Aufnahme speichern
 bvh-recording = Aufnahme läuft...
+bvh-save_title = BVH-Aufnahme speichern
 
 ## Tracking pause
 
@@ -202,7 +209,7 @@ widget-overlay-is_mirrored_label = Visualisierung spiegeln
 
 widget-drift_compensation-clear = Driftkompensation zurücksetzen
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Befestigungs-Reset zurücksetzen
 
@@ -226,6 +233,7 @@ widget-imu_visualizer-rotation_raw = Rohe Drehung
 widget-imu_visualizer-rotation_preview = Vorschau
 widget-imu_visualizer-acceleration = Beschleunigung
 widget-imu_visualizer-position = Position
+widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 
@@ -253,6 +261,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Beschleunigung X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
+tracker-table-column-stay_aligned = Stay Aligned
 tracker-table-column-url = Adresse
 
 ## Tracker rotation
@@ -318,9 +327,9 @@ tracker-settings-name_section-label = Trackername
 tracker-settings-forget = Tracker Vergessen
 tracker-settings-forget-description = Entfernt den Tracker vom SlimeVR Server und verhindert, dass er sich wieder verbindet, bis der Server neu gestartet wurde. Die Konfiguration des Trackers geht nicht verloren.
 tracker-settings-forget-label = Tracker Vergessen
+tracker-settings-update-incompatible = Update nicht möglich. Board inkompatibel
 tracker-settings-update-low-battery = Aktualisierung nicht möglich. Akku unter 50 %
 tracker-settings-update-up_to_date = Auf dem neusten Stand
-tracker-settings-update-available = { $versionName } ist jetzt Verfügbar
 tracker-settings-update = Jetzt aktualisieren
 tracker-settings-update-title = Firmware-Version
 
@@ -388,12 +397,15 @@ mounting_selection_menu-close = Schließen
 
 settings-sidebar-title = Einstellungen
 settings-sidebar-general = Allgemein
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Tracker-Mechanik
+settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = FK-Einstellungen
 settings-sidebar-gesture_control = Gestensteuerung
 settings-sidebar-interface = Bedienoberfläche
 settings-sidebar-osc_router = OSC-Router
 settings-sidebar-osc_trackers = VRChat OSC-Tracker
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
 settings-sidebar-appearance = Erscheinungsbild
@@ -793,6 +805,12 @@ settings-utils-advanced-open_logs = Logs-Ordner
 settings-utils-advanced-open_logs-description = Öffnet den Logs-Ordner von SlimeVR im Explorer, der die Protokolle der App enthält.
 settings-utils-advanced-open_logs-label = Ordner öffnen
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Einrichtung überspringen
@@ -851,13 +869,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = Willkommen zu SlimeVR
 onboarding-home-start = Los geht’s!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Zurück zur Trackerzuweisung
-onboarding-enter_vr-title = Zeit für VR!
-onboarding-enter_vr-description = Ziehen Sie alle Tracker an und betreten Sie dann VR!
-onboarding-enter_vr-ready = Ich bin bereit!
 
 ## Setup done
 
@@ -1075,7 +1086,6 @@ onboarding-automatic_mounting-return-home = Fertig
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Gehen Sie zurück zum Reset-Tutorial
 onboarding-manual_proportions-title = Manuelle Körperproportionen
 onboarding-manual_proportions-fine_tuning_button = Automatische Feinabstimmung der Proportionen
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Bitte schließen Sie ein VR-Headset an, um die automatische Feinabstimmung zu nutzen
@@ -1168,36 +1178,17 @@ onboarding-automatic_proportions-smol_warning =
     <b>Bitte wiederholen Sie die Messungen und stellen Sie sicher, dass sie korrekt sind.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Zurück
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Skalierte Proportionen
-onboarding-scaled_proportions-description = Damit die SlimeVR-Tracker funktionieren, müssen wir die Länge Ihrer Knochen kennen. Dafür wird ein durchschnittliches Proportionsverhältnis verwendet und basierend auf Ihrer Körpergröße skaliert.
-onboarding-scaled_proportions-manual_height-title = Konfigurieren Sie Ihre Körpergröße
-onboarding-scaled_proportions-manual_height-description-v2 = Diese Größe wird als Grundlage für Ihre Körperproportionen verwendet.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR ist derzeit nicht mit SlimeVR verbunden, daher können die Messungen nicht auf Ihrem Headset basieren. <b>Fahren Sie auf eigene Gefahr fort oder lesen Sie die Dokumentation!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Ihre Körpergröße ist
-onboarding-scaled_proportions-manual_height-estimated_height = Die geschätzte Höhe des Headsets beträgt:
-onboarding-scaled_proportions-manual_height-next_step = Fortfahren und speichern
-onboarding-scaled_proportions-manual_height-warning =
-    Sie verwenden derzeit die manuelle Methode zur Einrichtung skalierter Proportionen!
-    <b>Dieser Modus wird nur empfohlen, wenn Sie kein VR-Headset mit SlimeVR verwenden.</b>
-    
-    Um die automatische Skalierung der Proportionen nutzen zu können, bitte:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Schließen Sie ein VR-Headset an
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Stellen Sie sicher, dass Ihre Controller verbunden und korrekt den Händen zugewiesen sind
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Zurücksetzen Ihrer Körperproportionen
-onboarding-scaled_proportions-reset_proportion-description = Um Ihre Körperproportionen basierend auf Ihrer Größe festzulegen, müssen nun alle Ihre Proportionen zurückgesetzt werden. Dies wird alle konfigurierten Proportionen löschen und eine Basiskonfiguration bereitstellen.
-onboarding-scaled_proportions-done-title = Körperproportionen festgelegt
-onboarding-scaled_proportions-done-description = Ihre Körperproportionen sollten nun basierend auf Ihrer Größe konfiguriert sein.
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Stay Aligned
 onboarding-stay_aligned-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-stay_aligned-preparation-title = Vorbereitung
 onboarding-stay_aligned-relaxed_poses-skip_step = Überspringen
+onboarding-stay_aligned-previous_step = Zurück
+onboarding-stay_aligned-next_step = Weiter
 onboarding-stay_aligned-done = Fertig
 
 ## Home
@@ -1238,14 +1229,13 @@ firmware_tool = DIY Firmware-Tool
 firmware_tool-description = Erlaubt ihnen das Konfigurieren und Flashen von DIY Trackern
 firmware_tool-not_available = Das Firmware Tool ist im Moment nicht verfügbar. Versuche sie später erneut!
 firmware_tool-not_compatible = Das Firmware Tool ist nicht mit dieser Version des Servers kompatibel. Bitte den Server aktualisieren!
+firmware_tool-select_source-board_type = Boardtyp
+firmware_tool-select_source-firmware = Firmware-Quelle
 firmware_tool-flash_method_step = Flash-Methode
 firmware_tool-flash_method_step-description = Bitte wählen Sie die Flash-Methode aus, die Sie verwenden möchten.
 firmware_tool-flashbtn_step = Drücken Sie den Boot-Button
 firmware_tool-flashbtn_step-description = Bevor Sie mit dem nächsten Schritt fortfahren, gibt es ein paar Dinge, die Sie erledigen müssen.
 firmware_tool-flashbtn_step-board_SLIMEVR = Schalten Sie den Tracker aus, entfernen Sie das Gehäuse (falls vorhanden), verbinden Sie ein USB-Kabel mit diesem Computer und führen Sie dann einen der folgenden Schritte entsprechend Ihrer SlimeVR-Board-Revision aus:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Schalten Sie den Tracker ein, während Sie das zweite rechteckige FLASH-Pad von der Kante auf der Oberseite des Boards und den Metallschild des Mikrocontrollers kurzschließen.
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Schalten Sie den Tracker ein, während Sie das kreisförmige FLASH-Pad auf der Oberseite des Boards und den Metallschild des Mikrocontrollers kurzschließen.
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Schalten Sie den Tracker ein, während Sie den FLASH-Button auf der Oberseite des Boards drücken.
 firmware_tool-flashbtn_step-board_OTHER =
     Bevor Sie den Tracker flashen, müssen Sie ihn wahrscheinlich in den Bootloader-Modus versetzen.
     In den meisten Fällen bedeutet das, dass Sie die Boot-Taste auf dem Board drücken müssen, bevor der Flash-Vorgang beginnt.
@@ -1344,6 +1334,7 @@ vrc_config-mute = Warnung stummschalten
 vrc_config-mute-btn = Stummschalten
 vrc_config-unmute-btn = Stummschaltung aufheben
 vrc_config-user_height = Echte Benutzergröße
+vrc_config-spine_mode-UNKNOWN = Unbekannt
 vrc_config-tracker_model-UNKNOWN = Unbekannt
 vrc_config-tracker_model-AXIS = Achse
 

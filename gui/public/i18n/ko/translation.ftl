@@ -31,6 +31,9 @@ tips-tap_setup = 목록에서 트래커를 선택하는 대신 트래커를 천�
 tips-turn_on_tracker = 공식 SlimeVR 트래커를 사용 중이신가요? 트래커를 <b><em>PC에 연결</em></b>하고 <b><em>전원을 키셔야</em></b> 해요.
 tips-failed_webgl = WebGL 초기화에 실패했습니다.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 할당되지 않음
@@ -159,7 +162,7 @@ widget-overlay-is_mirrored_label = 오버레이 반전
 
 widget-drift_compensation-clear = 틀어짐 보정 초기화
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = 착용 방향 정렬 초기화
 
@@ -276,7 +279,6 @@ tracker-settings-forget = 트래커 삭제
 tracker-settings-forget-description = SlimeVR 서버에서 트래커를 제거하고 서버를 다시 시작할 때까지 자동으로 연결하지 않아요. 트래커의 설정은 지워지지 않아요.
 tracker-settings-forget-label = 트래커 삭제
 tracker-settings-update-up_to_date = 최신 버전
-tracker-settings-update-available = { $versionName } 사용 가능
 tracker-settings-update = 지금 업데이트
 tracker-settings-update-title = 펌웨어 버전
 
@@ -720,6 +722,12 @@ settings-utils-advanced-open_data-label = 폴더 열기
 settings-utils-advanced-open_logs = 로그 폴더
 settings-utils-advanced-open_logs-label = 폴더 열기
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = 설정 건너뛰기
@@ -779,13 +787,6 @@ onboarding-reset_tutorial-2 =
 
 onboarding-home = SlimeVR에 어서오세요!
 onboarding-home-start = 설정하러 가보죠!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = 트래커 위치 지정으로 돌아가기
-onboarding-enter_vr-title = VR에 들어갈 시간이에요!
-onboarding-enter_vr-description = 모든 트래커를 착용하고 VR에 입장하세요!
-onboarding-enter_vr-ready = 준비됐어요!
 
 ## Setup done
 
@@ -989,7 +990,6 @@ onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용�
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = 정렬 튜토리얼로 돌아가기
 onboarding-manual_proportions-title = 수동 신체 비율 설정
 onboarding-manual_proportions-fine_tuning_button = 신체 비율을 자동으로 조정
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 신체 비율 자동 조정 기능을 이용하려면 VR 헤드셋을 연결해 주세요
@@ -1081,23 +1081,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>측정을 다시 수행하고 측정값들이 올바른지 확인해 주세요.</b>
 onboarding-automatic_proportions-smol_warning-cancel = 돌아가기
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = 키를 사용하여 추산한 신체 비율
-onboarding-scaled_proportions-description = SlimeVR 트래커들이 작동하기 위해서는 사용자의 뼈 길이를 알아야 합니다. 이 옵션은 뼈 길이를 측정된 키에 비례하는 평균치로 설정합니다.
-onboarding-scaled_proportions-manual_height-title = 키 설정하기
-onboarding-scaled_proportions-manual_height-description-v2 = 설정된 키는 신체 비율의 기준치로 사용됩니다.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR이 SlimeVR에 연결되어 있지 않으므로 헤드셋을 이용해 값을 측정할 수 있어요. <b>위험을 감수하고 계속 진행하거나, 사용 설명서 및 도움말을 참조하세요!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = 사용자의 키:
-onboarding-scaled_proportions-manual_height-estimated_height = 사용자의 추산된 헤드셋 높이:
-onboarding-scaled_proportions-manual_height-next_step = 계속하고 저장하기
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = 신체 비율 초기화
-onboarding-scaled_proportions-reset_proportion-description = 키에 따라 신체 비율을 설정하려면, 현재 설정된 신체 비율을 모두 초기화해야 합니다. 이 작업은 기존에 설정된 신체 비율을 초기화하고 신체 비율을 기본 설정으로 되돌립니다.
-onboarding-scaled_proportions-done-title = 신체 비율 설정됨
-onboarding-scaled_proportions-done-description = 이제 사용자의 키에 비례한 신체 비율이 사용됩니다.
 
 ## Stay Aligned setup
 
@@ -1143,9 +1128,6 @@ firmware_tool-flash_method_step-description = 펌웨어를 트래커에 플래�
 firmware_tool-flashbtn_step = BOOT 버튼 누르기
 firmware_tool-flashbtn_step-description = 다음 단계로 진행하기 전 몇 가지 작업을 해야 해요
 firmware_tool-flashbtn_step-board_SLIMEVR = 트래커를 끄고, 케이스를 제거하고 (만약 있다면), 이 컴퓨터에 USB 케이블을 연결한 후 SlimeVR 보드 버전에 따라 해당하는 작업을 수행해 주세요:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = 보드 상단 가장자리에 위치한 두 번째 직사각형 FLASH 패드와 MCU의 금속 덮개를 단락시키며 트래커 전원을 켜기
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = 보드 상단에 위치한 원형 FLASH 패드와 MCU의 금속 덮개를 단락시키며 트래커 전원을 켜기
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = 보드 상단의 FLASH 버튼을 누른 채로 트래커 전원을 켜기
 firmware_tool-flashbtn_step-board_OTHER =
     펌웨어를 쓰기 전에 트래커를 부트로더 모드에 진입시켜야 해요.
     대부분의 경우 이는 펌웨어 쓰기 작업이 시작되기 전 보드에 있는 BOOT 버튼을 누르면 가능합니다.

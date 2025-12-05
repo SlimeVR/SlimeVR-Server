@@ -31,6 +31,9 @@ tips-tap_setup = Pro výběr trackeru na něj můžete dvakrát pomalu poklepat,
 tips-turn_on_tracker = Máte oficiální SlimeVR trackery? <b><em>Po připojení k PC je nezapomeňte zapnout!</em></b>
 tips-failed_webgl = Načtení WebGL selhalo.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Nepřiřazeno
@@ -167,7 +170,7 @@ widget-overlay-is_mirrored_label = Zobrazit překrytí jako zrcadlo
 
 widget-drift_compensation-clear = Vymazat kompenzaci driftu
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = Vymazat reset nasazení
 
@@ -287,7 +290,6 @@ tracker-settings-forget-description = Odebere tracker z SlimeVR Serveru a zabrá
 tracker-settings-forget-label = Zapomenout tracker
 tracker-settings-update-low-battery = Nelze provést aktualizaci. Baterie má méně než 50%
 tracker-settings-update-up_to_date = Aktuální
-tracker-settings-update-available = { $versionName } je nyní dostupný
 tracker-settings-update = Aktualizovat nyní
 tracker-settings-update-title = Verze Firmwareu
 
@@ -761,6 +763,12 @@ settings-utils-advanced-open_logs = Složka s záznamy protokolů
 settings-utils-advanced-open_logs-description = Otevřít složku s konfiguračními soubory pro SlimeVR v průzkumníku souborů?
 settings-utils-advanced-open_logs-label = Otevřít složku
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Přeskočit nastavení
@@ -813,13 +821,6 @@ onboarding-reset_tutorial-1 =
 
 onboarding-home = Vítejte k SlimeVR
 onboarding-home-start = Pusťme se do toho!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Zpět na přiřazení trackerů
-onboarding-enter_vr-title = Čas vstoupit do VR!
-onboarding-enter_vr-description = Nasaďte si všechny trackery a pak vstupte do VR!
-onboarding-enter_vr-ready = Jsem připraven
 
 ## Setup done
 
@@ -985,7 +986,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Mám nasazené všechny tra
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = Zpět na tutoriál
 onboarding-manual_proportions-title = Manuální proporce těla
 onboarding-manual_proportions-fine_tuning_button = Automatické jemné doladění proporcí
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Pro použití automatického jemného lazení, prosím připojte VR headset
@@ -1084,30 +1084,8 @@ onboarding-automatic_proportions-smol_warning =
     <b>Proveďte prosím přeměření a ujistěte se, že jsou hodnoty správné.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Jít zpět
 
-## Tracker scaled proportions setup
+## User height calibration
 
-onboarding-scaled_proportions-title = Škálované proporce
-onboarding-scaled_proportions-description = Aby trackery SlimeVR fungovaly, potřebujeme znát délku vašich kostí. Tímto se použije průměrný poměr a měřítko na základě vaší výšky.
-onboarding-scaled_proportions-manual_height-title = Nakonfigurovat vaší výšku
-onboarding-scaled_proportions-manual_height-description-v2 = Tato výška bude použita jak zaklad pro vaše tělesné proporce.
-onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR není momentálně připojen k SlimeVR, takže měření nemůže být založeno na vašem headsetu. <b>Pokračujte na vlastní nebezpečí nebo se podívejte do dokumentace!</b>
-onboarding-scaled_proportions-manual_height-height-v2 = Vaše celková výška je
-onboarding-scaled_proportions-manual_height-estimated_height = Vaše odhadovaná výška headsetu je:
-onboarding-scaled_proportions-manual_height-next_step = Uložit a pokračovat
-onboarding-scaled_proportions-manual_height-warning =
-    Právě používáte manuální způsob nastavení škálování proporcí!
-    <b>Tento režim je doporučen pouze pokud nepoužíváte HMD s SlimeVR</b>
-    
-    Abyste mohli používat automatcky škálované proporce, prosím:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Připojte VR headset
-onboarding-scaled_proportions-manual_height-warning-no_controllers = Ujistěte se, že jsou vaše ovladače připojeny a správně přirazeny k vaším rukám
-
-## Tracker scaled proportions reset
-
-onboarding-scaled_proportions-reset_proportion-title = Obnovení proporcí vašeho těla
-onboarding-scaled_proportions-reset_proportion-description = Chcete-li nastavit tělesné proporce podle vaší výšky, předem musíte obnovit všechny vaše proporce. Tato operace obnoví všechny proporce, které jste nakonfigurovali. a následně se obnoví výchozí konfigurace.
-onboarding-scaled_proportions-done-title = Proporce těla byla nastavena
-onboarding-scaled_proportions-done-description = Vaše proporce těla by teď měli být nakonfigurovány na základě vaší výšky.
 
 ## Stay Aligned setup
 
@@ -1169,9 +1147,6 @@ firmware_tool-flash_method_step-description = Prosím zvolte metodu flashování
 firmware_tool-flashbtn_step = Stiskněte tlačítko bootu btn
 firmware_tool-flashbtn_step-description = Než přejdeme na další krok, je tady pár věcí které musíte udělat
 firmware_tool-flashbtn_step-board_SLIMEVR = Vypněte tracker, vyndejte z obalu (jestli v nějakém je), Připojte USB kabel k tomuto počítači a poté následujte jeden z kroků revize odpovídající k vaší verzi desky trackeru SlimeVR:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Zapněte tracker při tom co spojujete (zkratujete) obdelníkovou podložku FLASH z okraje na vrchní straně desky trackeru, a kovového obalu microkontroleru
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Zapněte tracker při spojování (zkratování) kruhové FLASH podložky na vrchní straně desky trackeru, a kovového štítu microkontrolleru
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Zapněte tracker při držení tlačítka FLASH na vrchní straně desky trackeru
 firmware_tool-flashbtn_step-board_OTHER =
     Před flashováním, pravděpodobně budete muset přepnout tracker do bootloader režimu.
     Ve většině případů to znamená stisknutí boot tlačítka na desce trakeru před tím než začne proces flashování.

@@ -24,6 +24,9 @@ tips-do_not_move_heels = Sørg for, at dine hæle ikke bevæger sig under optage
 tips-file_select = Træk og slip filer for at bruge, eller <u>gennemse</u>.
 tips-tap_setup = Du kan trykke langsomt 2 gange på din tracker for at vælge den i stedet for at vælge den i menuen.
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = Ikke tildelt
@@ -121,7 +124,7 @@ widget-overlay-is_mirrored_label = Vis Overlejring som Spejl
 
 widget-drift_compensation-clear = Klar afdriftskompensation
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 
 ## Widget: Developer settings
@@ -460,6 +463,12 @@ settings-osc-vmc-vrm-file_select = Træk og slip en model, du vil bruge, eller <
 ## Advanced settings
 
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = Spring opsætning over
@@ -497,13 +506,6 @@ onboarding-reset_tutorial = Start forfra
 
 onboarding-home = Velkommen til SlimeVR
 onboarding-home-start = Lad os komme i gang!
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = Gå tilbage til Tracker-tildeler
-onboarding-enter_vr-title = Tid til at gå ind i VR!
-onboarding-enter_vr-description = Tag alle dine trackere på, og gå derefter på VR!
-onboarding-enter_vr-ready = Jeg er klar
 
 ## Setup done
 
@@ -612,10 +614,7 @@ onboarding-automatic_proportions-verify_results-redo = prøv igen
 onboarding-automatic_proportions-done-title = Krop målt og gemt.
 onboarding-automatic_proportions-done-description = Kalibreringen af dine kropsproportioner er fuldført!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup

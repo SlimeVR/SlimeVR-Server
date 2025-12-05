@@ -26,6 +26,9 @@ tips-tap_setup = 追跡装置をゆっくり2回軽くタップして選択す�
 tips-turn_on_tracker = SlimeVRの公式トラッカーを使っていますか？トラッカーをPCに接続した後は<b><em>必ず電源を入れて</em></b>ください!
 tips-failed_webgl = WebGLの初期化に失敗しました。
 
+## Units
+
+
 ## Body parts
 
 body_part-NONE = 未設定
@@ -155,7 +158,7 @@ widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示
 
 widget-drift_compensation-clear = ドリフト補正をクリアする
 
-## Widget: Clear Reset Mounting
+## Widget: Clear Mounting calibration
 
 widget-clear_mounting = リセットマウンティングをクリア
 
@@ -557,6 +560,12 @@ settings-osc-vmc-vrm = VRMモデル
 ## Advanced settings
 
 
+## Home Screen
+
+
+## Tracking Checlist
+
+
 ## Setup/onboarding menu
 
 onboarding-skip = 設定をスキップする
@@ -592,13 +601,6 @@ onboarding-reset_tutorial-skip = ステップをスキップする
 
 onboarding-home = SlimeVRへようこそ
 onboarding-home-start = セットアップ開始！
-
-## Enter VR part of setup
-
-onboarding-enter_vr-back = トラッカー割り当てに戻る
-onboarding-enter_vr-title = VRに入る時間だ！
-onboarding-enter_vr-description = トラッカーを全部つけて、VRに突入せよ！
-onboarding-enter_vr-ready = 準備完了
 
 ## Setup done
 
@@ -696,7 +698,6 @@ onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカー
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back = チュートリアルをリセットする
 onboarding-manual_proportions-title = マニュアルボディプロポーション
 
 ## Tracker automatic proportions setup
@@ -736,10 +737,7 @@ onboarding-automatic_proportions-done-title = 体を測定して保存
 onboarding-automatic_proportions-done-description = ボディプロポーションのキャリブレーションが完了しました！
 onboarding-automatic_proportions-error_modal-confirm = 了解!
 
-## Tracker scaled proportions setup
-
-
-## Tracker scaled proportions reset
+## User height calibration
 
 
 ## Stay Aligned setup
