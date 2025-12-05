@@ -35,9 +35,9 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 	var feetResetMountingCompleted = false
 
 	init {
+		createSteps()
 		vrServer.vrcConfigManager.addListener(this)
 
-		createSteps()
 		updateTrackingChecklistTimer.scheduleAtFixedRate(
 			timerTask {
 				updateChecklist()
@@ -162,6 +162,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			TrackingChecklistStepT().apply {
 				id = TrackingChecklistStepId.VRCHAT_SETTINGS
 				enabled = vrServer.vrcConfigManager.isSupported
+				valid = true
 				optional = true
 				ignorable = true
 				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
@@ -200,6 +201,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		// or if you have trackers that need reset after re-assigning
 		val needFullReset = (!resetMountingCompleted && !vrServer.serverGuards.canDoMounting) || trackerRequireReset.isNotEmpty()
 		updateValidity(TrackingChecklistStepId.FULL_RESET, !needFullReset) {
+			it.enabled = imuTrackers.isNotEmpty()
 			if (trackerRequireReset.isNotEmpty()) {
 				it.extraData = TrackingChecklistExtraDataUnion().apply {
 					type = TrackingChecklistExtraData.TrackingChecklistTrackerReset
@@ -293,7 +295,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		}
 
 		updateValidity(TrackingChecklistStepId.MOUNTING_CALIBRATION, resetMountingCompleted) {
-			it.enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC
+			it.enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC && imuTrackers.isNotEmpty()
 		}
 
 		updateValidity(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION, feetResetMountingCompleted) {
@@ -312,7 +314,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		require(id != TrackingChecklistStepId.UNKNOWN) {
 			"id is unknown"
 		}
-		val step = steps.find { it.id == id } ?: return
+		val step = steps.find { it.id == id } ?: error("step does not exists")
 		step.valid = valid
 		if (beforeUpdate != null) {
 			beforeUpdate(step)

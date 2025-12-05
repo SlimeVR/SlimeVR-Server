@@ -88,6 +88,7 @@ export function WifiCredsPage() {
               <Button
                 variant="secondary"
                 className={state.alonePage ? 'opacity-0' : ''}
+                state={{ alonePage: state.alonePage }}
                 to={'/onboarding/trackers-assign'}
               >
                 {l10n.getString('onboarding-wifi_creds-skip')}

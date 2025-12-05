@@ -327,7 +327,7 @@ export function ConnectTrackersPage() {
             </Button>
           </div>
         </div>
-        <div style={{ gridArea: 't' }} className="flex items-center px-5">
+        <div style={{ gridArea: 't' }} className="flex items-center px-5 pt-5">
           <Typography bold>
             {l10n.getString('onboarding-connect_tracker-connected_trackers', {
               amount: connectedIMUTrackers.length,

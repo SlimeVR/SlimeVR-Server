@@ -399,7 +399,7 @@ tracker-settings-forget = Forget tracker
 tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevents it from connecting until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
 tracker-settings-update-unavailable-v2 = No releases found
-tracker-settings-update-incompatible = Cannot update. Incompatible board
+tracker-settings-update-incompatible = Cannot update. Incompatible board or firmware version
 tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
 tracker-settings-update-blocked = Update not available. No other releases available
@@ -920,7 +920,7 @@ onboarding-setup_warning-skip = Skip setup
 onboarding-setup_warning-cancel = Continue setup
 
 ## Wi-Fi setup
-onboarding-wifi_creds-back = Go Back to introduction
+onboarding-wifi_creds-back = Go back to introduction
 onboarding-wifi_creds = Input Wi-Fi credentials
 # This cares about multilines
 onboarding-wifi_creds-description =
@@ -937,7 +937,7 @@ onboarding-wifi_creds-password =
     .placeholder = Enter password
 
 ## Mounting setup
-onboarding-reset_tutorial-back = Go Back to Mounting calibration
+onboarding-reset_tutorial-back = Go back to Mounting calibration
 onboarding-reset_tutorial = Reset tutorial
 onboarding-reset_tutorial-explanation = While you use your trackers, they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
 onboarding-reset_tutorial-skip = Skip step
@@ -968,7 +968,7 @@ onboarding-done-description = Enjoy your full-body experience
 onboarding-done-close = Close setup
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = Go Back to Wi-Fi credentials
+onboarding-connect_tracker-back = Go back to Wi-Fi credentials
 onboarding-connect_tracker-title = Connect trackers
 onboarding-connect_tracker-description-p0-v1 = Now onto the fun part, connecting trackers!
 onboarding-connect_tracker-description-p1-v1 = Connect each tracker one at a time through a USB port.
@@ -1027,7 +1027,7 @@ onboarding-assignment_tutorial-second_step-continuation-v2 = The velcro side for
 onboarding-assignment_tutorial-done = I put stickers and straps!
 
 ## Tracker assignment setup
-onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials
+onboarding-assign_trackers-back = Go back to Wi-Fi credentials
 onboarding-assign_trackers-title = Assign trackers
 onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker
 onboarding-assign_trackers-unassign_all = Unassign all trackers
@@ -1139,14 +1139,14 @@ onboarding-choose_mounting-manual_modal-confirm = I'm sure of what I'm doing
 onboarding-choose_mounting-manual_modal-cancel = Cancel
 
 ## Tracker manual mounting setup
-onboarding-manual_mounting-back = Go Back to Enter VR
+onboarding-manual_mounting-back = Go back to Enter VR
 onboarding-manual_mounting = Manual Mounting
 onboarding-manual_mounting-description = Click on every tracker and select which way they are mounted
 onboarding-manual_mounting-auto_mounting = Automatic mounting
 onboarding-manual_mounting-next = Next step
 
 ## Tracker automatic mounting setup
-onboarding-automatic_mounting-back = Go Back to Enter VR
+onboarding-automatic_mounting-back = Go back to Enter VR
 onboarding-automatic_mounting-title = Mounting Calibration
 onboarding-automatic_mounting-description = For SlimeVR trackers to work, we need to assign a mounting orientation to your trackers to align them with your physical tracker mounting.
 onboarding-automatic_mounting-manual_mounting = Manual mounting
@@ -1186,7 +1186,7 @@ onboarding-manual_proportions-all_proportions = All proportions
 onboarding-manual_proportions-estimated_height = Estimated user height
 
 ## Tracker automatic proportions setup
-onboarding-automatic_proportions-back = Go Back to Manual Proportions
+onboarding-automatic_proportions-back = Go back to Manual Proportions
 onboarding-automatic_proportions-title = Measure your body
 onboarding-automatic_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.
 onboarding-automatic_proportions-manual = Manual proportions
@@ -1280,7 +1280,7 @@ onboarding-automatic_proportions-smol_warning-cancel = Go back
 ## User height calibration
 onboarding-user_height-title = What is your height?
 onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR calculate it, or input your height manually.
-onboarding-user_height-need_head_tracker = An HMD (or Head tracker) and controllers with positional tracking are required to perform the calibration.
+onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
 onboarding-user_height-calculate = Calculate my height automatically
 onboarding-user_height-next_step = Continue and save
 onboarding-user_height-manual-proportions = Manual Proportions
@@ -1295,14 +1295,12 @@ onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Make sure the 
 onboarding-user_height-calibration-RECORDING_HEIGHT = Stand back up and stand still!
 onboarding-user_height-calibration-DONE = Success!
 onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timed out, try again.
-onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high, Try again.
-onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Make sure to sand fully up during the process.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high, try again.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Make sure to stand straight and look forward at the end of the calibration.
 onboarding-user_height-calibration-error = Calibration Failed
 onboarding-user_height-manual-tip = While adjusting your height, try different poses and see how the skeleton matches your body.
-onboarding-user_height-reset-warning = You already had proportions set using the manual proportions page.
-    Continuing will reset these proportions to use only your height.
-
-    Do you want to continue?
+onboarding-user_height-reset-warning = <b>Warning:</b> This will reset your proportions to be based on your height.
+    Are you sure you want to do this?
 
 ## Stay Aligned setup
 onboarding-stay_aligned-title = Stay Aligned
