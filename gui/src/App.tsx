@@ -213,14 +213,11 @@ export default function App() {
         .then((res) => res.json())
         .then((json: any[]) => json.filter((rl) => rl?.prerelease === false));
 
-      if (typeof releases[0].tag_name !== 'string') return
+      if (typeof releases[0].tag_name !== 'string') return;
 
-      const version = semver.coerce(releases[0].tag_name)
+      const version = semver.coerce(releases[0].tag_name);
 
-      if (
-        version &&
-        semver.gt(version, __VERSION_TAG__)
-      ) {
+      if (version && semver.gt(version, __VERSION_TAG__)) {
         setUpdateFound(releases[0].tag_name);
       }
     }
