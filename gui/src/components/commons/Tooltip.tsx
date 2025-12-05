@@ -1,4 +1,3 @@
-import { useBreakpoint } from '@/hooks/breakpoint';
 import classNames from 'classnames';
 import {
   ReactNode,
@@ -462,11 +461,11 @@ export function Tooltip({
   spacing = 10,
 }: TooltipProps) {
   const childRef = useRef<HTMLElement | null>(null);
-  const { isMobile } = useBreakpoint('mobile');
+  const isAndroid = window.__ANDROID__?.isThere();
 
   let portal = null;
   if (variant === 'auto') {
-    portal = isMobile ? (
+    portal = isAndroid ? (
       <DrawerTooltip childRef={childRef}>{content}</DrawerTooltip>
     ) : (
       <FloatingTooltip

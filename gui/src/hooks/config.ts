@@ -48,6 +48,7 @@ export interface Config {
   bvhDirectory: string | null;
   homeLayout: 'default' | 'table';
   skeletonPreview: boolean;
+  lastUsedProportions: 'manual' | 'autobone' | 'scaled' | null;
 }
 
 export interface ConfigContext {
@@ -79,6 +80,7 @@ export const defaultConfig: Config = {
   bvhDirectory: null,
   homeLayout: 'default',
   skeletonPreview: true,
+  lastUsedProportions: null,
 };
 
 interface CrossStorage {

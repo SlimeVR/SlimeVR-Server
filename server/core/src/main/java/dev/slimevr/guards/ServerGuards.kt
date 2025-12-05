@@ -8,6 +8,7 @@ class ServerGuards {
 
 	var canDoMounting: Boolean = false
 	var canDoYawReset: Boolean = false
+	var canDoUserHeightCalibration: Boolean = false
 
 	private val timer = Timer()
 	private var mountingTimeoutTask: TimerTask? = null

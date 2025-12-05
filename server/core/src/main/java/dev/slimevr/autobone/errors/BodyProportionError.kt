@@ -3,7 +3,6 @@ package dev.slimevr.autobone.errors
 import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.autobone.PoseFrameStep
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter
-import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
@@ -33,11 +32,23 @@ class BodyProportionError : IAutoBoneError {
 		@JvmField
 		var eyeHeightToHeightRatio = 0.936f
 
-		private val defaultHeight = SkeletonConfigManager.HEIGHT_OFFSETS.sumOf { it.defaultValue.toDouble() }.toFloat()
-		private fun makeLimiter(offset: SkeletonConfigOffsets, range: Float): RangeProportionLimiter = RangeProportionLimiter(
-			offset.defaultValue / defaultHeight,
+		val defaultHeight = SkeletonConfigManager.HEIGHT_OFFSETS.sumOf {
+			it.defaultValue.toDouble()
+		}.toFloat()
+
+		private fun makeLimiter(
+			offset: SkeletonConfigOffsets,
+			range: Float,
+			scaleByHeight: Boolean = true,
+		) = ProportionLimiter(
+			if (scaleByHeight) {
+				offset.defaultValue / defaultHeight
+			} else {
+				offset.defaultValue
+			},
 			offset,
 			range,
+			scaleByHeight,
 		)
 
 		// "Expected" are values from Drillis and Contini (1966)
@@ -51,6 +62,7 @@ class BodyProportionError : IAutoBoneError {
 			makeLimiter(
 				SkeletonConfigOffsets.HEAD,
 				0.01f,
+				scaleByHeight = false,
 			),
 			// Expected: 0.052
 			makeLimiter(
@@ -60,6 +72,7 @@ class BodyProportionError : IAutoBoneError {
 			makeLimiter(
 				SkeletonConfigOffsets.SHOULDERS_WIDTH,
 				0.04f,
+				scaleByHeight = false,
 			),
 			makeLimiter(
 				SkeletonConfigOffsets.UPPER_ARM,
@@ -89,6 +102,7 @@ class BodyProportionError : IAutoBoneError {
 			makeLimiter(
 				SkeletonConfigOffsets.HIPS_WIDTH,
 				0.04f,
+				scaleByHeight = false,
 			),
 			// Expected: 0.245
 			makeLimiter(

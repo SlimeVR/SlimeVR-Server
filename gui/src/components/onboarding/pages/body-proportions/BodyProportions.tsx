@@ -1,4 +1,4 @@
-import { Localized, useLocalization } from '@fluent/react';
+import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { MouseEventHandler, ReactNode, useMemo, useState } from 'react';
 import {
@@ -13,6 +13,7 @@ import {
   ArrowUpIcon,
 } from '@/components/commons/icon/ArrowIcons';
 import { Tooltip } from '@/components/commons/Tooltip';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 function IncrementButton({
   children,
@@ -35,6 +36,35 @@ function IncrementButton({
       <Typography variant="vr-accessible" bold>
         {children}
       </Typography>
+    </div>
+  );
+}
+
+function OpenGroupButton({
+  part,
+  open,
+  toggleOpen,
+}: {
+  part: Label;
+  open: boolean;
+  toggleOpen: () => void;
+}) {
+  const { isXs } = useBreakpoint('xs');
+
+  return (
+    <div
+      className={classNames(
+        'flex items-center fill-background-20',
+        part.type === 'bone' && 'opacity-50 cursor-not-allowed',
+        part.type !== 'bone' && 'hover:scale-110'
+      )}
+      onClick={toggleOpen}
+    >
+      {open ? (
+        <ArrowUpIcon size={isXs ? 50 : 30} />
+      ) : (
+        <ArrowDownIcon size={isXs ? 50 : 30} />
+      )}
     </div>
   );
 }
@@ -119,38 +149,46 @@ function ProportionItem({
         key={part.label}
         itemID={part.label}
         className={classNames(
-          'flex justify-center gap-6 mobile:gap-2 p-2 mobile:px-2 px-4',
-          part.type === 'group-part'
-            ? 'bg-background-50 group/child-buttons'
-            : 'bg-background-70 group/buttons'
+          'flex justify-center gap-6 mobile:gap-2 p-2 mobile:pt-0 mobile:px-2 px-4',
+          part.type === 'group-part' ? 'bg-background-50' : 'bg-background-70'
         )}
       >
         <div
           className={classNames(
-            'h-16 rounded-lg flex w-full items-center mobile:items-start transition-colors mobile:flex-col mobile:gap-2 mobile:py-2 mobile:h-auto',
+            'xs:h-16 rounded-lg flex w-full items-center mobile:items-start transition-colors mobile:flex-col mobile:gap-2 mobile:py-2',
             'duration-300'
           )}
         >
-          <div className="flex flex-grow" onClick={toggleOpen}>
+          <div
+            className="flex flex-grow w-full xs:w-auto items-center"
+            onClick={toggleOpen}
+          >
             <Typography variant="section-title" bold>
               {l10n.getString(part.label)}
             </Typography>
             <Tooltip
               content={
-                <Localized id={`${part.label}-desc`}>
-                  <Typography
-                    variant="standard"
-                    whitespace="whitespace-pre-wrap"
-                  />
-                </Localized>
+                <Typography
+                  variant="standard"
+                  whitespace="whitespace-pre-wrap"
+                  id={`${part.label}-desc`}
+                />
               }
               preferedDirection="bottom"
-              mode="corner"
             >
               <div className="hover:opacity-100 opacity-65 ml-1 scale-[0.65] border-2 border-solid text-xs w-5 h-5 flex justify-center items-center rounded-full cursor-help">
                 i
               </div>
             </Tooltip>
+            <div className="xs:hidden flex flex-grow justify-end">
+              {type === 'ratio' && part.type !== 'group-part' && (
+                <OpenGroupButton
+                  open={open}
+                  toggleOpen={() => {}}
+                  part={part}
+                />
+              )}
+            </div>
           </div>
 
           <div className="flex gap-4 items-center mobile:justify-center mobile:w-full">
@@ -219,18 +257,11 @@ function ProportionItem({
             </div>
           </div>
         </div>
-        {type === 'ratio' && part.type !== 'group-part' && (
-          <div
-            className={classNames(
-              'flex items-center fill-background-20',
-              part.type === 'bone' && 'opacity-50 cursor-not-allowed',
-              part.type !== 'bone' && 'hover:scale-110'
-            )}
-            onClick={toggleOpen}
-          >
-            {open ? <ArrowUpIcon size={50} /> : <ArrowDownIcon size={50} />}
-          </div>
-        )}
+        <div className="hidden xs:flex">
+          {type === 'ratio' && part.type !== 'group-part' && (
+            <OpenGroupButton open={open} toggleOpen={toggleOpen} part={part} />
+          )}
+        </div>
       </div>
       {part.type === 'group' && (
         <div

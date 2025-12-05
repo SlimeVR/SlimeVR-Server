@@ -426,7 +426,13 @@ export function SkeletonVisualizerWidget({
         )}
       >
         <div
-          className="bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center hover:bg-background-60 cursor-pointer"
+          className={classNames(
+            'bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center',
+            {
+              'hover:bg-background-60 cursor-pointer': !!toggleDisabled,
+              'cursor-not-allowed': !toggleDisabled,
+            }
+          )}
           onClick={() => toggleDisabled?.()}
         >
           <EyeIcon closed width={20} />
