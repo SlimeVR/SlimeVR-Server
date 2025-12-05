@@ -200,6 +200,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		// or if you have trackers that need reset after re-assigning
 		val needFullReset = (!resetMountingCompleted && !vrServer.serverGuards.canDoMounting) || trackerRequireReset.isNotEmpty()
 		updateValidity(TrackingChecklistStepId.FULL_RESET, !needFullReset) {
+			it.enabled = imuTrackers.isNotEmpty()
 			if (trackerRequireReset.isNotEmpty()) {
 				it.extraData = TrackingChecklistExtraDataUnion().apply {
 					type = TrackingChecklistExtraData.TrackingChecklistTrackerReset
@@ -293,7 +294,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		}
 
 		updateValidity(TrackingChecklistStepId.MOUNTING_CALIBRATION, resetMountingCompleted) {
-			it.enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC
+			it.enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC && imuTrackers.isNotEmpty()
 		}
 
 		updateValidity(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION, feetResetMountingCompleted) {
