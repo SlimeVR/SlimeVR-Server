@@ -176,6 +176,10 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 
 	fun addListener(listener: VRCConfigListener) {
 		listeners.add(listener)
+		val values = currentValues ?: return
+		val recommended = recommendedValues()
+		val validity = checkValidity(values, recommended)
+		listener.onChange(validity, values, recommended, server.configManager.vrConfig.vrcConfig.mutedWarnings)
 	}
 
 	fun removeListener(listener: VRCConfigListener) {
