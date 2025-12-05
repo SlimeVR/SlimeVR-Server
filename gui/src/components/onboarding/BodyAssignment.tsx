@@ -8,10 +8,7 @@ import { SIDES } from '@/components/commons/PersonFrontIcon';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom, FlatDeviceTracker } from '@/store/app-store';
 
-const HANDS_PARTS = new Set([
-  BodyPart.LEFT_HAND,
-  BodyPart.RIGHT_HAND,
-])
+const HANDS_PARTS = new Set([BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND]);
 export const ARMS_PARTS = new Set([
   BodyPart.LEFT_UPPER_ARM,
   BodyPart.RIGHT_UPPER_ARM,
@@ -58,7 +55,7 @@ export const ASSIGNMENT_RULES: Partial<
   //  Also don't warn if no legs.
 };
 
-const COMMONS = [BodyPart.HEAD, ...HANDS_PARTS]
+const COMMONS = [BodyPart.HEAD, ...HANDS_PARTS];
 
 export const ASSIGNMENT_MODES: Record<AssignMode, BodyPart[]> = {
   //  x5
@@ -285,27 +282,27 @@ export function BodyAssignment({
       rightControls={
         <div className="flex flex-col justify-between h-full">
           <div className="flex flex-col gap-2">
-          {hasBodyPart(BodyPart.UPPER_CHEST) && (
-            <TrackerPartCard
-              onlyAssigned={onlyAssigned}
-              roleError={rolesWithErrors[BodyPart.UPPER_CHEST]?.label}
-              td={trackerPartGrouped[BodyPart.UPPER_CHEST]}
-              role={BodyPart.UPPER_CHEST}
-              onClick={() => onRoleSelected(BodyPart.UPPER_CHEST)}
-              direction="left"
-            />
-          )}
+            {hasBodyPart(BodyPart.UPPER_CHEST) && (
+              <TrackerPartCard
+                onlyAssigned={onlyAssigned}
+                roleError={rolesWithErrors[BodyPart.UPPER_CHEST]?.label}
+                td={trackerPartGrouped[BodyPart.UPPER_CHEST]}
+                role={BodyPart.UPPER_CHEST}
+                onClick={() => onRoleSelected(BodyPart.UPPER_CHEST)}
+                direction="left"
+              />
+            )}
 
-          {hasBodyPart(BodyPart.CHEST) && (
-            <TrackerPartCard
-              onlyAssigned={onlyAssigned}
-              roleError={rolesWithErrors[BodyPart.CHEST]?.label}
-              td={trackerPartGrouped[BodyPart.CHEST]}
-              role={BodyPart.CHEST}
-              onClick={() => onRoleSelected(BodyPart.CHEST)}
-              direction="left"
-            />
-          )}
+            {hasBodyPart(BodyPart.CHEST) && (
+              <TrackerPartCard
+                onlyAssigned={onlyAssigned}
+                roleError={rolesWithErrors[BodyPart.CHEST]?.label}
+                td={trackerPartGrouped[BodyPart.CHEST]}
+                role={BodyPart.CHEST}
+                onClick={() => onRoleSelected(BodyPart.CHEST)}
+                direction="left"
+              />
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -332,7 +329,6 @@ export function BodyAssignment({
             )}
           </div>
 
-
           <div className="flex flex-col gap-2">
             {hasBodyPart(SIDES[right].lowerArm) && (
               <TrackerPartCard
@@ -356,7 +352,7 @@ export function BodyAssignment({
               />
             )}
           </div>
-           <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             {hasBodyPart(BodyPart.WAIST) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}

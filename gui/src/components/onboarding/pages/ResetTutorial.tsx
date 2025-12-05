@@ -165,10 +165,7 @@ export function ResetTutorialPage() {
           </div>
         </div>
         <div className="flex flex-row justify-center">
-          <BodyDisplay
-            trackers={[order[curIndex]]}
-            hideUnassigned={true}
-          />
+          <BodyDisplay trackers={[order[curIndex]]} hideUnassigned={true} />
           <div
             className={classNames(
               'self-center w-72 md-max:hidden',

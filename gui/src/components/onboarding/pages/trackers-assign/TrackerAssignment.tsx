@@ -258,8 +258,8 @@ export function TrackersAssignPage() {
       assignreq.bodyPosition = BodyPart.NONE;
       assignreq.trackerId = td.tracker.trackerId;
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
-    })
-  }
+    });
+  };
 
   applyProgress(0.5);
 
@@ -320,7 +320,9 @@ export function TrackersAssignPage() {
                 variant="toggle"
               />
               {state.alonePage && (
-                <Button variant="secondary" onClick={unassignAll}>Unassign All Trackers</Button>
+                <Button variant="secondary" onClick={unassignAll}>
+                  Unassign All Trackers
+                </Button>
               )}
             </div>
             <div className="flex flex-row">

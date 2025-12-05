@@ -99,7 +99,7 @@ export function TrackerPartCard({
             <WarningIcon />
           </div>
         )}
-        <Typography variant="section-title" whitespace='whitespace-nowrap'>
+        <Typography variant="section-title" whitespace="whitespace-nowrap">
           {l10n.getString('body_part-' + BodyPart[role])}
         </Typography>
         {td?.map(({ tracker }, index) => (

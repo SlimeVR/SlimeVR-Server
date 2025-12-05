@@ -219,19 +219,20 @@ export function BodyInteractions({
                 }}
               >
                 <div className="relative">
-                  {highlightedRoles.includes((BodyPart as any)[id]) && (
-                    <div
-                      className={classNames(
-                        'absolute rounded-full bg-status-warning',
-                        'transition-opacity opacity-100 animate-ping'
-                      )}
-                      style={{
-                        width: dotsSize,
-                        height: dotsSize,
-                        animationDuration: '1.5s',
-                      }}
-                    />
-                  )}
+                  {!hidden &&
+                    highlightedRoles.includes((BodyPart as any)[id]) && (
+                      <div
+                        className={classNames(
+                          'absolute rounded-full bg-status-warning',
+                          'transition-opacity opacity-100 animate-ping'
+                        )}
+                        style={{
+                          width: dotsSize,
+                          height: dotsSize,
+                          animationDuration: '1.5s',
+                        }}
+                      />
+                    )}
                   <div
                     className={classNames(
                       'absolute rounded-full outline-background-90 transition-opacity',
@@ -244,7 +245,7 @@ export function BodyInteractions({
                     style={{
                       width: dotsSize,
                       height: dotsSize,
-                      boxShadow: '0px 0px 4px black'
+                      boxShadow: '0px 0px 4px black',
                     }}
                   />
                 </div>
