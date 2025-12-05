@@ -58,6 +58,10 @@ export function SettingSelectorMobile() {
         label: l10n.getString('settings-sidebar-advanced'),
         value: { url: '/settings/advanced' },
       },
+      {
+        label: l10n.getString('navbar-onboarding'),
+        value: { url: '/onboarding/home' },
+      },
     ];
 
   const { control, watch, handleSubmit, setValue } = useForm<{

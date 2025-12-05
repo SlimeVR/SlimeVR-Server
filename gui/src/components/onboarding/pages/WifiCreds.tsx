@@ -5,19 +5,13 @@ import { Button } from '@/components/commons/Button';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
-import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
-import { useAtomValue } from 'jotai';
-import { connectedIMUTrackersAtom } from '@/store/app-store';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
-  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
 
   applyProgress(0.2);
-
-  const isRestCalibration = useIsRestCalibrationTrackers(connectedIMUTrackers);
 
   return (
     <form
@@ -94,11 +88,7 @@ export function WifiCredsPage() {
               <Button
                 variant="secondary"
                 className={state.alonePage ? 'opacity-0' : ''}
-                to={
-                  isRestCalibration
-                    ? '/onboarding/calibration-tutorial'
-                    : '/onboarding/assign-tutorial'
-                }
+                to={'/onboarding/trackers-assign'}
               >
                 {l10n.getString('onboarding-wifi_creds-skip')}
               </Button>

@@ -20,7 +20,6 @@ import { ProgressBar } from '@/components/commons/ProgressBar';
 import { TipBox, WarningBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
-import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
 import './ConnectTracker.scss';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
@@ -113,8 +112,6 @@ export function ConnectTrackersPage() {
   const [ignoreError, setIgnoreError] = useState(false);
 
   applyProgress(0.4);
-
-  const bnoExists = useIsRestCalibrationTrackers(connectedIMUTrackers);
 
   useEffect(() => {
     if (!state.wifi) {
@@ -323,13 +320,7 @@ export function ConnectTrackersPage() {
             </Button>
             <Button
               variant="primary"
-              to={
-                state.alonePage
-                  ? '/'
-                  : bnoExists
-                    ? '/onboarding/calibration-tutorial'
-                    : '/onboarding/assign-tutorial'
-              }
+              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
               className="ml-auto"
             >
               {l10n.getString('onboarding-connect_tracker-next')}

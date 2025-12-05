@@ -270,6 +270,7 @@ navbar-trackers_assign = Tracker Assignment
 navbar-mounting = Mounting Calibration
 navbar-onboarding = Setup Wizard
 navbar-settings = Settings
+navbar-connect_trackers = Connect Trackers
 
 ## Biovision hierarchy recording
 bvh-start_recording = Record BVH

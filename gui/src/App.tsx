@@ -22,12 +22,9 @@ import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
 import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
 import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
-import { DonePage } from './components/onboarding/pages/Done';
-import { EnterVRPage } from './components/onboarding/pages/EnterVR';
 import { HomePage } from './components/onboarding/pages/Home';
 import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
-import { ResetTutorialPage } from './components/onboarding/pages/ResetTutorial';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
 import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
@@ -40,8 +37,6 @@ import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
-import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
-import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
 import { openUrl } from '@tauri-apps/plugin-opener';
 import semver from 'semver';
 import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
@@ -159,20 +154,10 @@ function Layout() {
             <Route path="home" element={<HomePage />} />
             <Route path="wifi-creds" element={<WifiCredsPage />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />
-            <Route
-              path="calibration-tutorial"
-              element={<CalibrationTutorialPage />}
-            />
-            <Route
-              path="assign-tutorial"
-              element={<AssignmentTutorialPage />}
-            />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
-            <Route path="enter-vr" element={<EnterVRPage />} />
             <Route path="mounting/choose" element={<MountingChoose />} />
             <Route path="mounting/auto" element={<AutomaticMountingPage />} />
             <Route path="mounting/manual" element={<ManualMountingPage />} />
-            <Route path="reset-tutorial" element={<ResetTutorialPage />} />
             <Route
               path="body-proportions/auto"
               element={<AutomaticProportionsPage />}
@@ -186,7 +171,6 @@ function Layout() {
               element={<ScaledProportionsPage />}
             />
             <Route path="stay-aligned" element={<StayAlignedSetup />} />
-            <Route path="done" element={<DonePage />} />
           </Route>
           <Route path="*" element={<TopBar />} />
         </Route>
