@@ -33,6 +33,10 @@ tips-failed_webgl = 初始化 WebGL 失敗。
 
 ## Units
 
+unit-meter = 公尺
+unit-foot = 英尺
+unit-inch = 英吋
+unit-cm = 公分
 
 ## Body parts
 
@@ -270,6 +274,7 @@ navbar-trackers_assign = 追蹤器分配
 navbar-mounting = 配戴校正
 navbar-onboarding = 快速設定
 navbar-settings = 詳細設定
+navbar-connect_trackers = 連接追蹤器
 
 ## Biovision hierarchy recording
 
@@ -418,6 +423,8 @@ tracker-settings-update-up_to_date = 已為最新版本
 tracker-settings-update-blocked = 無法更新，沒有其他可用版本。
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 韌體版本
+tracker-settings-current-version = 目前版本
+tracker-settings-latest-version = 最新版本
 
 ## Tracker part card info
 
@@ -1058,6 +1065,7 @@ onboarding-assignment_tutorial-done = 我把貼紙跟綁帶都弄上了
 onboarding-assign_trackers-back = 返回到 Wi-Fi 認證資訊設定
 onboarding-assign_trackers-title = 分配追蹤器
 onboarding-assign_trackers-description = 這些追蹤器要放在身上的哪個部位呢？請點選要放置追蹤器的部位
+onboarding-assign_trackers-unassign_all = 解除全部分配
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1205,6 +1213,7 @@ onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = 改回縮放比例
 onboarding-manual_proportions-title = 手動調整軀幹比例
 onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR 頭戴顯示器以使用此功能
@@ -1300,6 +1309,7 @@ onboarding-automatic_proportions-smol_warning-cancel = 返回
 
 ## User height calibration
 
+onboarding-user_height-title = 你的身高是多少？
 
 ## Stay Aligned setup
 
