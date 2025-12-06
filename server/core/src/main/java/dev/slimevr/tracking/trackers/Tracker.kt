@@ -482,6 +482,13 @@ class Tracker @JvmOverloads constructor(
 					lastSamples.add(sample)
 				}
 			}
+
+			if (System.currentTimeMillis() - startTime > 5000) {
+				LogManager.warning("[Accel] Tracker $id (${trackerPosition?.designation}) has been recording for longer than 5 seconds! Aborting.")
+				accelMountInProgress = false
+				curTimeline = null
+				lastSamples.clear()
+			}
 		}
 	}
 
