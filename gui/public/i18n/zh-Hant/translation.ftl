@@ -1327,6 +1327,12 @@ onboarding-user_height-calibration-RECORDING_HEIGHT = 維持站姿並站直！
 onboarding-user_height-calibration-DONE = 完成！
 onboarding-user_height-calibration-ERROR_TIMEOUT = 校正逾時，請再試一次。
 onboarding-user_height-calibration-ERROR_TOO_HIGH = 偵測到的使用者身高太高，請再試一次。
+onboarding-user_height-calibration-ERROR_TOO_SMALL = 偵測到的使用者身高太低，請確保在校正結尾時維持站直並向前看的姿勢。
+onboarding-user_height-calibration-error = 校正失敗
+onboarding-user_height-manual-tip = 調整身高時，請嘗試使用不同的姿勢來確保骨架與你的身體吻合。
+onboarding-user_height-reset-warning =
+    <b>警告：</b> 這會將軀幹比例重置為僅基於身高的比例。
+    你確定要執行此操作嗎？
 
 ## Stay Aligned setup
 
@@ -1432,6 +1438,9 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = 進入燒錄模式
 firmware_tool-flashbtn_step-description = 在進入下一步前，請先進行以下操作
 firmware_tool-flashbtn_step-board_SLIMEVR = 關閉追蹤器電源，移除外殼（若有的話），並用 USB 線連接到這台電腦上，然後根據你持有的 SlimeVR 追蹤器主板的版本，進行下述操作：
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = 將追蹤器上方第二個 FLASH 方形接點與微控制器的金屬遮罩短路，同時開啟追蹤器開關。追蹤器指示燈應該會短暫閃爍並熄滅。
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = 將追蹤器上方的 FLASH 圓形接點與微控制器的金屬遮罩短路，同時開啟追蹤器開關。追蹤器指示燈應該會短暫閃爍並熄滅。
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = 按住追蹤器上方的 FLASH 按鈕，同時開啟追蹤器開關。追蹤器指示燈應該會短暫閃爍並熄滅。
 firmware_tool-flashbtn_step-board_OTHER =
     在燒錄前，你可能需要將追蹤器切換進 Bootloader（開機載入程式）。
     多數狀況下，在燒錄開始前按下 BOOT 按鈕即可開始燒錄。
