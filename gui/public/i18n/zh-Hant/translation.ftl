@@ -1310,6 +1310,23 @@ onboarding-automatic_proportions-smol_warning-cancel = 返回
 ## User height calibration
 
 onboarding-user_height-title = 你的身高是多少？
+onboarding-user_height-description = 我們需要使用你的身高來計算軀幹比例，以準確呈現你的動作。你可以讓 SlimeVR 自動求得身高，也可以手動輸入。
+onboarding-user_height-need_head_tracker = 進行校正需要具備定位功能的頭戴顯示器與控制器。
+onboarding-user_height-calculate = 自動計算我的身高
+onboarding-user_height-next_step = 繼續並儲存
+onboarding-user_height-manual-proportions = 手動軀幹比例校正
+onboarding-user_height-calibration-title = 校正進度
+onboarding-user_height-calibration-RECORDING_FLOOR = 以控制器前端碰觸地面
+onboarding-user_height-calibration-WAITING_FOR_RISE = 回到站姿
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = 回到站姿並向前看
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = 確保你的頭部保持水平
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = 不要朝地板看
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = 不要朝高處看
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = 確保控制器朝下
+onboarding-user_height-calibration-RECORDING_HEIGHT = 維持站姿並站直！
+onboarding-user_height-calibration-DONE = 完成！
+onboarding-user_height-calibration-ERROR_TIMEOUT = 校正逾時，請再試一次。
+onboarding-user_height-calibration-ERROR_TOO_HIGH = 偵測到的使用者身高太高，請再試一次。
 
 ## Stay Aligned setup
 
