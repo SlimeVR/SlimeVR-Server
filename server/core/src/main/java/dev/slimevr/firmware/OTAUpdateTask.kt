@@ -3,6 +3,8 @@ package dev.slimevr.firmware
 import io.eiren.util.logging.LogManager
 import java.io.DataInputStream
 import java.io.DataOutputStream
+import java.io.EOFException
+import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -130,7 +132,13 @@ class OTAUpdateTask(
 				// so we simply skip it.
 				// The reason those bytes are skipped here is to not have to skip all of them when checking
 				// for the OK response. Saving time
-				dis.skipNBytes(4)
+				val bytesSkipped = dis.skipBytes(4)
+				// Replicate behaviour of .skipNBytes()
+				if (bytesSkipped == 0) {
+					throw EOFException("Unexpected EOF")
+				} else if (bytesSkipped != 4) {
+					throw IOException("Unexpected number of bytes skipped: $bytesSkipped")
+				}
 			}
 			if (canceled) return false
 
@@ -138,7 +146,7 @@ class OTAUpdateTask(
 			// We set the timeout of the connection bigger as it can take some time for the MCU
 			// to confirm that everything is ok
 			connection.setSoTimeout(10000)
-			val responseBytes = dis.readAllBytes()
+			val responseBytes = dis.readBytes()
 			val response = String(responseBytes)
 
 			return response.contains("OK")
