@@ -22,6 +22,7 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import io.ktor.server.plugins.cachingheaders.CachingHeaders
 import io.ktor.server.routing.routing
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.time.ZonedDateTime
 import kotlin.concurrent.thread
@@ -32,6 +33,8 @@ lateinit var webServer: EmbeddedServer<NettyApplicationEngine, NettyApplicationE
 
 val webServerInitialized: Boolean
 	get() = ::webServer.isInitialized
+
+var webServerPort = 0
 
 lateinit var vrServer: VRServer
 	private set
@@ -50,6 +53,7 @@ fun startWebServer() {
 			staticResources("/", "web-gui", "index.html")
 		}
 	}.start(wait = false)
+	webServerPort = runBlocking { webServer.engine.resolvedConnectors().first().port }
 }
 
 fun startVRServer(activity: AppCompatActivity) {

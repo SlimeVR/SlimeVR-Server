@@ -72,8 +72,7 @@ class MainActivity : AppCompatActivity() {
 		guiWebView.clearCache(true)
 
 		// Load GUI page
-		val port = runBlocking { webServer.engine.resolvedConnectors().first().port }
-		guiWebView.loadUrl("http://127.0.0.1:$port/")
+		guiWebView.loadUrl("http://127.0.0.1:$webServerPort/")
 		LogManager.info("[MainActivity] GUI WebView has been initialized and loaded.")
 
 		// Start a foreground service to notify the user the SlimeVR Server is running
