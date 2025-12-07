@@ -145,8 +145,9 @@ android {
 		/*	By default, Android Studio configures the release build type to enable code
 			shrinking, using minifyEnabled, and specifies the default ProGuard rules file. */
 
-		getByName("release") {
+		release {
 			isMinifyEnabled = true // Enables code shrinking for the release build type.
+			isShrinkResources = true // Enables resource shrinking.
 			proguardFiles(
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro",
@@ -158,6 +159,7 @@ android {
 		sourceCompatibility = JavaVersion.VERSION_17
 		targetCompatibility = JavaVersion.VERSION_17
 	}
+
 	kotlinOptions {
 		jvmTarget = "17"
 	}
