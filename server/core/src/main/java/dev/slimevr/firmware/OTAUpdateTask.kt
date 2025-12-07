@@ -135,9 +135,7 @@ class OTAUpdateTask(
 				// for the OK response. Saving time
 				val bytesSkipped = dis.skipBytes(4)
 				// Replicate behaviour of .skipNBytes()
-				if (bytesSkipped == 0) {
-					throw EOFException("Unexpected EOF")
-				} else if (bytesSkipped != 4) {
+				if (bytesSkipped != 4) {
 					throw IOException("Unexpected number of bytes skipped: $bytesSkipped")
 				}
 			}
