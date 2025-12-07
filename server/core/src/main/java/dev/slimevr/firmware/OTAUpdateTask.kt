@@ -101,11 +101,12 @@ class OTAUpdateTask(
 	}
 
 	private fun upload(serverSocket: ServerSocket): Boolean {
+		var connection: Socket? = null
 		try {
 			LogManager.info("[OTAUpdate] Starting on: ${serverSocket.localPort}")
 			LogManager.info("[OTAUpdate] Waiting for device...")
 
-			val connection = serverSocket.accept()
+			connection = serverSocket.accept()
 			this.uploadSocket = connection
 			connection.setSoTimeout(1000)
 			val dos = DataOutputStream(connection.getOutputStream())
@@ -153,6 +154,8 @@ class OTAUpdateTask(
 		} catch (e: Exception) {
 			LogManager.severe("Unable to upload the firmware using ota", e)
 			return false
+		} finally {
+			connection?.close()
 		}
 	}
 
