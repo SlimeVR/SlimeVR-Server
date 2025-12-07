@@ -40,7 +40,7 @@ val vrServerInitialized: Boolean
 
 fun startWebServer() {
 	// Host the web GUI server
-	webServer = embeddedServer(Netty, port = 34536) {
+	webServer = embeddedServer(Netty, port = 0) {
 		routing {
 			install(CachingHeaders) {
 				options { _, _ ->
