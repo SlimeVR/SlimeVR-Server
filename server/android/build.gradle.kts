@@ -13,7 +13,7 @@ plugins {
 	kotlin("plugin.serialization")
 	id("com.github.gmazzo.buildconfig")
 
-	id("com.android.application") version "8.6.1"
+	id("com.android.application") version "8.13.1"
 	id("org.ajoberstar.grgit")
 }
 
@@ -70,17 +70,17 @@ dependencies {
 	implementation("org.apache.commons:commons-lang3:3.15.0")
 
 	// Android stuff
-	implementation("androidx.appcompat:appcompat:1.7.0")
-	implementation("androidx.core:core-ktx:1.13.1")
-	implementation("com.google.android.material:material:1.12.0")
-	implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+	implementation("androidx.appcompat:appcompat:1.7.1")
+	implementation("androidx.core:core-ktx:1.17.0")
+	implementation("com.google.android.material:material:1.13.0")
+	implementation("androidx.constraintlayout:constraintlayout:2.2.1")
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-	androidTestImplementation("androidx.test.ext:junit:1.2.1")
-	androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+	androidTestImplementation("androidx.test.ext:junit:1.3.0")
+	androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 	// For hosting web GUI
-	implementation("io.ktor:ktor-server-core:2.3.12")
-	implementation("io.ktor:ktor-server-netty:2.3.10")
-	implementation("io.ktor:ktor-server-caching-headers:2.3.12")
+	implementation("io.ktor:ktor-server-core:3.3.3")
+	implementation("io.ktor:ktor-server-netty:3.3.3")
+	implementation("io.ktor:ktor-server-caching-headers:3.3.3")
 
 	// Serial
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
@@ -100,7 +100,7 @@ android {
 		compile your app. This means your app can use the API features included in
 		this API level and lower. */
 
-	compileSdk = 35
+	compileSdk = 36
 
 	/* The defaultConfig block encapsulates default settings and entries for all
 		build variants and can override some attributes in main/AndroidManifest.xml
@@ -120,7 +120,7 @@ android {
 		minSdk = 26
 
 		// Specifies the API level used to test the app.
-		targetSdk = 35
+		targetSdk = 36
 
 		// adds an offset of the version code as we might do apk releases in the middle of actual
 		// releases if we failed on bundling or stuff
@@ -148,7 +148,7 @@ android {
 		getByName("release") {
 			isMinifyEnabled = true // Enables code shrinking for the release build type.
 			proguardFiles(
-				getDefaultProguardFile("proguard-android.txt"),
+				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro",
 			)
 		}
