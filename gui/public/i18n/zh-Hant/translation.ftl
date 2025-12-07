@@ -1213,7 +1213,7 @@ onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back-scaled = 改回縮放比例
+onboarding-manual_proportions-back-scaled = 返回使用縮放比例
 onboarding-manual_proportions-title = 手動調整軀幹比例
 onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR 頭戴顯示器以使用此功能
@@ -1231,7 +1231,7 @@ onboarding-manual_proportions-estimated_height = 預估的使用者身高
 onboarding-automatic_proportions-back = 返回重置教學
 onboarding-automatic_proportions-title = 測量你的身體比例
 onboarding-automatic_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨頭長度。這個簡短的流程將會進行這方面的測量。
-onboarding-automatic_proportions-manual = 進行手動校正
+onboarding-automatic_proportions-manual = 手動調整軀幹比例
 onboarding-automatic_proportions-prev_step = 上一步
 onboarding-automatic_proportions-put_trackers_on-title = 請戴好追蹤器
 onboarding-automatic_proportions-put_trackers_on-description = 為了校準你的軀幹比例，我們將使用你剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
@@ -1314,7 +1314,7 @@ onboarding-user_height-description = 我們需要使用你的身高來計算軀�
 onboarding-user_height-need_head_tracker = 進行校正需要具備定位功能的頭戴顯示器與控制器。
 onboarding-user_height-calculate = 自動計算我的身高
 onboarding-user_height-next_step = 繼續並儲存
-onboarding-user_height-manual-proportions = 手動軀幹比例校正
+onboarding-user_height-manual-proportions = 手動調整軀幹比例
 onboarding-user_height-calibration-title = 校正進度
 onboarding-user_height-calibration-RECORDING_FLOOR = 以控制器前端碰觸地面
 onboarding-user_height-calibration-WAITING_FOR_RISE = 回到站姿
