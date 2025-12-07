@@ -7,6 +7,8 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import io.eiren.util.logging.LogManager
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 class AndroidJsObject {
 	@JavascriptInterface
@@ -25,12 +27,22 @@ class MainActivity : AppCompatActivity() {
 			e1.printStackTrace()
 		}
 
-		// Start the server if it isn't already running
-		if (!vrServerInitialized) {
-			LogManager.info("[MainActivity] VRServer isn't running yet, starting it...")
-			main(this)
-		} else {
-			LogManager.info("[MainActivity] VRServer is already running, skipping initialization.")
+		initLock.withLock {
+			// Start the GUI if it isn't already running
+			if (!webServerInitialized) {
+				LogManager.info("[MainActivity] WebServer isn't running yet, starting it...")
+				startWebServer()
+			} else {
+				LogManager.info("[MainActivity] WebServer is already running, skipping initialization.")
+			}
+
+			// Start the server if it isn't already running
+			if (!vrServerInitialized) {
+				LogManager.info("[MainActivity] VRServer isn't running yet, starting it...")
+				startVRServer(this)
+			} else {
+				LogManager.info("[MainActivity] VRServer is already running, skipping initialization.")
+			}
 		}
 
 		// Load the web GUI web page
@@ -66,5 +78,9 @@ class MainActivity : AppCompatActivity() {
 		// This also helps prevent Android from ejecting the process unexpectedly
 		val serviceIntent = Intent(this, ForegroundService::class.java)
 		startForegroundService(serviceIntent)
+	}
+
+	companion object {
+		val initLock = ReentrantLock()
 	}
 }

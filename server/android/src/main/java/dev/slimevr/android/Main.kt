@@ -14,11 +14,12 @@ import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.logging.LogManager
 import io.ktor.http.CacheControl
 import io.ktor.http.CacheControl.Visibility
-import io.ktor.server.application.install
+import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.CachingOptions
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
+import io.ktor.server.netty.NettyApplicationEngine
 import io.ktor.server.plugins.cachingheaders.CachingHeaders
 import io.ktor.server.routing.routing
 import java.io.File
@@ -26,14 +27,20 @@ import java.time.ZonedDateTime
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
+lateinit var webServer: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>
+	private set
+
+val webServerInitialized: Boolean
+	get() = ::webServer.isInitialized
+
 lateinit var vrServer: VRServer
 	private set
 val vrServerInitialized: Boolean
 	get() = ::vrServer.isInitialized
 
-fun main(activity: AppCompatActivity) {
+fun startWebServer() {
 	// Host the web GUI server
-	embeddedServer(Netty, port = 34536) {
+	webServer = embeddedServer(Netty, port = 34536) {
 		routing {
 			install(CachingHeaders) {
 				options { _, _ ->
@@ -43,7 +50,9 @@ fun main(activity: AppCompatActivity) {
 			staticResources("/", "web-gui", "index.html")
 		}
 	}.start(wait = false)
+}
 
+fun startVRServer(activity: AppCompatActivity) {
 	thread(start = true, name = "Main VRServer Thread") {
 		try {
 			LogManager.initialize(activity.filesDir)
