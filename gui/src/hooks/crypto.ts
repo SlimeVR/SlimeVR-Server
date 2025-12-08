@@ -7,4 +7,4 @@ export function hash(str: string) {
 
   // Convert to unsigned 32-bit integer and normalize (0, 1)
   return (hash >>> 0) / 2 ** 32;
-};
+}

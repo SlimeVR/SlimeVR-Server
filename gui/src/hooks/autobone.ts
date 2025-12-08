@@ -13,7 +13,7 @@ import { useWebsocketAPI } from './websocket-api';
 import { useLocalization } from '@fluent/react';
 import { log } from '@/utils/logging';
 import { useConfig } from './config';
-import * as Sentry from '@sentry/react'
+import * as Sentry from '@sentry/react';
 
 export enum ProcessStatus {
   PENDING,

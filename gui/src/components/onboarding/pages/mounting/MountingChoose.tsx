@@ -5,7 +5,7 @@ import { SkipSetupWarningModal } from '@/components/onboarding/SkipSetupWarningM
 import classNames from 'classnames';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
-import * as Sentry from '@sentry/react'
+import * as Sentry from '@sentry/react';
 
 export function MountingChoose() {
   const { l10n } = useLocalization();
@@ -68,7 +68,9 @@ export function MountingChoose() {
                   to={'/onboarding/mounting/auto'}
                   className="self-start mt-auto"
                   onClick={() => {
-                    Sentry.metrics.count('mounting_choose', 1, { attributes: { choose: 'auto' } })
+                    Sentry.metrics.count('mounting_choose', 1, {
+                      attributes: { choose: 'auto' },
+                    });
                   }}
                   state={{ alonePage: state.alonePage }}
                 >
@@ -116,7 +118,9 @@ export function MountingChoose() {
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
                   onClick={() => {
-                    Sentry.metrics.count('mounting_choose', 1, { attributes: { choose: 'manual' } })
+                    Sentry.metrics.count('mounting_choose', 1, {
+                      attributes: { choose: 'manual' },
+                    });
                   }}
                 >
                   {l10n.getString(

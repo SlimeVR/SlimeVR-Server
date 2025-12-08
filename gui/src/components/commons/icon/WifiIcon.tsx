@@ -23,8 +23,7 @@ export function WifiIcon({
   const y = useMemo(() => (1 - percent) * 13, [percent]);
 
   const col = useMemo(() => {
-    if (variant === 'navbar')
-      return 'fill-inherit';
+    if (variant === 'navbar') return 'fill-inherit';
 
     const colorsMap: { [key: number]: string } = {
       0.4: 'fill-status-success',

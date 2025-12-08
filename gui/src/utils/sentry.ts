@@ -64,8 +64,8 @@ export function getSentryOrCompute(enabled = false) {
   }
 
   getUserID().then((id) => {
-    Sentry.setUser({ id })
-  })
+    Sentry.setUser({ id });
+  });
 
   return newClient;
 }

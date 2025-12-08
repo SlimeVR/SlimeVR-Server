@@ -96,7 +96,7 @@ export function MainLinks() {
       </NavButton>
       <NavButton
         to="/onboarding/wifi-creds"
-        icon={<WifiIcon value={1} disabled variant='navbar'/>}
+        icon={<WifiIcon value={1} disabled variant="navbar" />}
         state={{ alonePage: true }}
       >
         {l10n.getString('navbar-connect_trackers')}

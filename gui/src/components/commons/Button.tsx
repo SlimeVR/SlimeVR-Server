@@ -109,11 +109,10 @@ export function Button({
       state={state}
       onClick={(ev) => {
         if (disabled) {
-          ev.preventDefault()
+          ev.preventDefault();
           return;
         }
-        if (props.onClick)
-          return props.onClick(ev as any)
+        if (props.onClick) return props.onClick(ev as any);
       }}
     >
       <ButtonContent icon={icon} loading={loading}>

@@ -1,4 +1,4 @@
-import { locale, hostname, platform, version  } from '@tauri-apps/plugin-os';
+import { locale, hostname, platform, version } from '@tauri-apps/plugin-os';
 import { hash } from './crypto';
 
 export async function getUserID() {
