@@ -938,9 +938,15 @@ settings-utils-advanced-open_logs-label = Otwórz folder
 
 ## Home Screen
 
+settings-home-list-layout = Układ listy urządzeń
+settings-home-list-layout-desc = Wybierz jeden z możliwych układów ekranu głównego
+settings-home-list-layout-grid = Siatka
+settings-home-list-layout-table = Tabela
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Aktywne Kroki
+settings-tracking_checklist-active_steps-desc = Lista wszystkich kroków kontrolnych. Możesz wyłączyć konkretne punkty.
 
 ## Setup/onboarding menu
 
@@ -1225,6 +1231,8 @@ onboarding-automatic_mounting-done-restart = Cofnij się na początek
 onboarding-automatic_mounting-mounting_reset-title = Kalibracja Pozycji
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Zrób pozycje "na Małysza" z wygiętymi nogami, tułowiem pochylonym do przodu z wygiętymi rękami.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Naciśnij "Zresetuj Położenie" i poczekaj 3 sekundy zanim trackery się zresetują.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stań na palcach z obiema stopami skierowanymi do przodu. Alternatywnie możesz to zrobić siedząc na krześle.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Naciśnij "Kalibracja Stóp" i poczekaj 3 sekundy zanim zresetuje pozycje.
 onboarding-automatic_mounting-preparation-title = Przygotowania
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Naciśnij przycisk "Pełny reset".
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stań prosto z rękami po bokach. Upewnij się, że patrzysz przed siebie.
@@ -1232,9 +1240,11 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Utrzymaj pozycję, aż 
 onboarding-automatic_mounting-put_trackers_on-title = Załóż trackery
 onboarding-automatic_mounting-put_trackers_on-description = Aby skalibrować rotacje, użyjemy trackerów które przypisano przed chwilą. Załóż wszystkie trackery, możesz je odróznić na postaci po prawej.
 onboarding-automatic_mounting-put_trackers_on-next = Wszystkie trackery założone
+onboarding-automatic_mounting-return-home = Gotowe
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Wróć do skalowania proporcji
 onboarding-manual_proportions-title = Manualne Proporcje Ciała
 onboarding-manual_proportions-fine_tuning_button = Automatyczne dostrajanie proporcji
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Podłącz gogle VR, aby korzystać z automatycznego dostrajania
@@ -1336,6 +1346,13 @@ onboarding-automatic_proportions-smol_warning-cancel = Przejdź wstecz
 
 ## User height calibration
 
+onboarding-user_height-title = Jaki masz wzrost?
+onboarding-user_height-description = Potrzebujemy twojego wzrostu, aby obliczyć proporcje ciała i dokładnie oddać twoje ruchy. Możesz pozwolić SlimeVR to obliczyć albo wpisać swój wzrost ręcznie.
+onboarding-user_height-need_head_tracker = Do kalibracji wymaganę są gogle vr z kontrolerami.
+onboarding-user_height-calculate = Automatycznie oblicz mój wzrost
+onboarding-user_height-next_step = Kontynuuj i zapisz
+onboarding-user_height-manual-proportions = Manualne Proporcje Ciała
+onboarding-user_height-calibration-title = Postęp kalibracji
 
 ## Stay Aligned setup
 
@@ -1415,6 +1432,12 @@ firmware_tool = Narzędzie do oprogramowania sprzętowego DIY
 firmware_tool-description = Umożliwia konfigurowanie i flashowanie trackerów DIY
 firmware_tool-not_available = Ups, narzędzie do oprogramowania sprzętowego nie jest obecnie dostępne. Wróć później!
 firmware_tool-not_compatible = Narzędzie oprogramowania układowego nie jest kompatybilne z tą wersją serwera. Proszę zaktualizować swój serwer!
+firmware_tool-select_source-board_type = Typ urządzenia
+firmware_tool-select_source-firmware = Źródło oprogramowania
+firmware_tool-select_source-version = Wersja oprogramowania
+firmware_tool-select_source-official = Oficjalny
+firmware_tool-select_source-dev = Deweloperski
+firmware_tool-board_defaults = Skonfiguruj swoje urządzenie
 firmware_tool-flash_method_step = Metoda flashowania
 firmware_tool-flash_method_step-description = Wybierz metodę flashowania, której chcesz użyć
 firmware_tool-flashbtn_step = Naciśnij przycisk zasilania
