@@ -942,7 +942,7 @@ onboarding-wifi_creds-dongle-title = Trackers using a dongle
 onboarding-wifi_creds-dongle-description =
     If your trackers came with a dongle.
     Plug it into your computer and you should be good to go!
-onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page will be made to manage the trackers that connect via dongle
+onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page will be made to manage the trackers that connect via a dongle soon
 onboarding-wifi_creds-dongle-continue = Continue with a dongle
 
 ## Mounting setup
