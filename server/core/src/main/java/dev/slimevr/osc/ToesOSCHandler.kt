@@ -127,9 +127,6 @@ public class ToesOSCHandler(
 
 		val pitch = euler.z
  		val yaw = euler.y
-if(toeNumber == 4){
-	val debug = true
-}
 		val tipToe = pitch < -14f
 		val bending = pitch > 15f && !tipToe
 		val splayed = when (splayDirection) {
@@ -140,7 +137,7 @@ if(toeNumber == 4){
 		setTipToeValueBool(side, tipToe)
 		setToeBentValueBool(toeNumber, side, bending)
 		setToeSplayValueBool(toeNumber, side, splayed);
-		setToeValueFloat(toeNumber, side, clamp(pitch / 30f, -1f, 1f))
+		setToeValueFloat(toeNumber, side, clamp(pitch / 90f, -1f, 1f))
 	}
 
 	fun setToeBentValueBool(toeNumber: Int, footSide: FootSide, value: Boolean) {
