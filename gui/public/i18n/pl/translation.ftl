@@ -33,6 +33,10 @@ tips-failed_webgl = Nie udało się zainicjalizować WebGL.
 
 ## Units
 
+unit-meter = Metr
+unit-foot = Stopa
+unit-inch = Cal
+unit-cm = cm
 
 ## Body parts
 
@@ -98,6 +102,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = Podstawa T TTGO
 board_type-ESP01 = Zobacz materiał ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Płytka Deweloperska
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -249,6 +255,10 @@ reset-mounting = Zresetuj położenie
 reset-mounting-feet = Zresetuj mocowanie stóp
 reset-mounting-fingers = Zresetuj mocowanie palców
 reset-yaw = Reset odchylenia
+reset-error-no_feet_tracker = Nie przypisano urządzenia śledzenia stóp
+reset-error-no_fingers_tracker = Nie przypisano urządzenia śledzenia palcy
+reset-error-mounting-need_full_reset = Potrzebny jest pełny reset przed montażem
+reset-error-yaw-need_full_reset = Potrzebny jest pełny reset przed resetem obrotu
 
 ## Serial detection stuff
 
@@ -268,10 +278,12 @@ navbar-trackers_assign = Przydzielenie Trackerów
 navbar-mounting = Kalibracja Pozycji
 navbar-onboarding = Wstępna konfiguracja
 navbar-settings = Ustawienia
+navbar-connect_trackers = Połącz Urządzenia
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Nagraj BVH
+bvh-stop_recording = Zapisz nagranie BVH
 bvh-recording = Nagrywanie...
 bvh-save_title = Zapisz nagranie BVH
 
@@ -408,11 +420,15 @@ tracker-settings-name_section-label = Nazwa Urządzenia
 tracker-settings-forget = Zapomnij o trackerze
 tracker-settings-forget-description = Usuwa moduł śledzący z serwera SlimeVR i uniemożliwia mu połączenie się z nim do czasu ponownego uruchomienia serwera. Konfiguracja modułu śledzącego nie zostanie utracona.
 tracker-settings-forget-label = Zapomnij o trackerze
+tracker-settings-update-unavailable-v2 = Nie znaleziono aktualizacji
+tracker-settings-update-incompatible = Nie można zaktualizować. Niekompatybilne urządzenie lub wersja oprogramowania.
 tracker-settings-update-low-battery = Nie można zaktualizować. Bateria poniżej 50%
 tracker-settings-update-up_to_date = Aktualny
 tracker-settings-update-blocked = Aktualizacja niedostępna. Brak innych wersji
 tracker-settings-update = Zaktualizuj teraz
 tracker-settings-update-title = Wersja oprogramowania
+tracker-settings-current-version = Aktualny
+tracker-settings-latest-version = Najnowszy
 
 ## Tracker part card info
 
@@ -478,6 +494,7 @@ mounting_selection_menu-close = Zamknij
 
 settings-sidebar-title = Ustawienia
 settings-sidebar-general = Ogólne
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mechanika trackerów
 settings-sidebar-stay_aligned = Wyrównywanie
 settings-sidebar-fk_settings = Ustawienia śledzenia
@@ -485,9 +502,11 @@ settings-sidebar-gesture_control = Sterowanie gestami
 settings-sidebar-interface = Interfejs
 settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = Śledzenie VRChat OSC
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Narzędzia
 settings-sidebar-serial = Konsola szeregowa
 settings-sidebar-appearance = Wygląd
+settings-sidebar-home = Strona Główna
 settings-sidebar-notifications = Powiadomienia
 settings-sidebar-behavior = Zachowanie
 settings-sidebar-firmware-tool = Narzędzie do oprogramowania sprzętowego DIY
