@@ -33,7 +33,7 @@ export function NavButton({
       state={state}
       className={classnames(
         'flex flex-col justify-center xs:gap-4 mobile:gap-2',
-        'xs:w-[85px] mobile:w-[65px] mobile:h-[65px]',
+        'mobile:w-[65px] mobile:h-[65px]',
         'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
         {
           'bg-accent-background-50 fill-accent-background-20': doesMatch,
@@ -96,7 +96,7 @@ export function MainLinks() {
       </NavButton>
       <NavButton
         to="/onboarding/wifi-creds"
-        icon={<WifiIcon value={1} disabled />}
+        icon={<WifiIcon value={1} disabled variant='navbar'/>}
         state={{ alonePage: true }}
       >
         {l10n.getString('navbar-connect_trackers')}

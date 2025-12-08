@@ -18,8 +18,8 @@ export function WifiCredsPage() {
       className="flex flex-col w-full h-full"
       onSubmit={handleSubmit(submitWifiCreds)}
     >
-      <div className="flex flex-col w-full h-full xs:justify-center items-center relative ">
-        <div className="flex mobile:flex-col xs:gap-10 px-4">
+      <div className="flex flex-col w-full h-full justify-center items-center relative">
+        <div className="flex mobile:flex-col xs:gap-10 gap-4 px-4">
           <div className="flex flex-col max-w-sm">
             <Typography variant="main-title">
               {l10n.getString('onboarding-wifi_creds')}

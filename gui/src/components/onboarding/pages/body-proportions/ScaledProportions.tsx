@@ -418,7 +418,9 @@ export function ScaledProportionsPage() {
               ) {
                 setTmpHeight(height);
                 setResetModal('manual');
-              } else setHmdHeight(height);
+              } else {
+                applyHeight(height)
+              }
               setAuto(false);
             }}
           />
