@@ -146,7 +146,7 @@ class HIDCommon {
 			var button: Int? = null
 			// var imu_id: Int? = null
 			// var mag_id: Int? = null
-			var fw_date: Int? = null
+			// var fw_date: Int? = null
 			var fw_major: Int? = null
 			var fw_minor: Int? = null
 			var fw_patch: Int? = null
@@ -165,7 +165,7 @@ class HIDCommon {
 					// imu_id = dataReceived[i + 8].toUByte().toInt()
 					// mag_id = dataReceived[i + 9].toUByte().toInt()
 					// ushort little endian
-					fw_date = dataReceived[i + 11].toUByte().toInt() shl 8 or dataReceived[i + 10].toUByte().toInt()
+					// fw_date = dataReceived[i + 11].toUByte().toInt() shl 8 or dataReceived[i + 10].toUByte().toInt()
 					fw_major = dataReceived[i + 12].toUByte().toInt()
 					fw_minor = dataReceived[i + 13].toUByte().toInt()
 					fw_patch = dataReceived[i + 14].toUByte().toInt()
@@ -280,12 +280,14 @@ class HIDCommon {
 					// Nothing to do now..
 				}
 			}
-			if (fw_date != null && fw_major != null && fw_minor != null && fw_patch != null) {
-				val firmwareYear = 2020 + (fw_date shr 9 and 127)
-				val firmwareMonth = fw_date shr 5 and 15
-				val firmwareDay = fw_date and 31
-				val firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
-				device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch (Build $firmwareDate)"
+			// if (fw_date != null) {
+				// val firmwareYear = 2020 + (fw_date shr 9 and 127)
+				// val firmwareMonth = fw_date shr 5 and 15
+				// val firmwareDay = fw_date and 31
+				// val firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
+			// }
+			if (fw_major != null && fw_minor != null && fw_patch != null) {
+				device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch"
 			}
 			if (svr_status != null) {
 				val status = TrackerStatus.getById(svr_status)
