@@ -1438,8 +1438,23 @@ firmware_tool-select_source-version = Wersja oprogramowania
 firmware_tool-select_source-official = Oficjalny
 firmware_tool-select_source-dev = Deweloperski
 firmware_tool-board_defaults = Skonfiguruj swoje urządzenie
+firmware_tool-board_defaults-description = Ustaw piny lub ustawienia do twojego urządzenia
+firmware_tool-board_defaults-add = Dodaj
+firmware_tool-board_defaults-reset = Zresetuj do domyślnych ustawień
+firmware_tool-board_defaults-error-required = Wymagane pole
+firmware_tool-board_defaults-error-format = Nieprawidłowy format
+firmware_tool-board_defaults-error-format-number = To nie liczba
 firmware_tool-flash_method_step = Metoda flashowania
 firmware_tool-flash_method_step-description = Wybierz metodę flashowania, której chcesz użyć
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = Użyj metody bezprzewodowej. Twoje urządzenie będzie aktualizować się przez Wi-Fi. Działa tylko z skonfigurowanymi urządzeniami.
+firmware_tool-flash_method_step-ota-info =
+    Używamy Twoich danych wi-fi, aby wgrać tracker i potwierdzić, że wszystko działa poprawnie.
+    <b>Nie przechowujemy Twoich danych wifi!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Użyj kabla usb, aby aktualizować urządzenie.
 firmware_tool-flashbtn_step = Naciśnij przycisk zasilania
 firmware_tool-flashbtn_step-description = Zanim przejdziesz do następnego kroku, musisz zrobić kilka rzeczy
 firmware_tool-flashbtn_step-board_SLIMEVR =
@@ -1451,8 +1466,10 @@ firmware_tool-flashbtn_step-board_OTHER =
     W większości przypadków oznacza to naciśnięcie przycisku rozruchu na płycie przed rozpoczęciem procesu flashowania.¶
     Jeśli na początku flashowania upłynie limit czasu procesu flashowania, prawdopodobnie oznacza to, że moduł śledzący nie był w trybie bootloadera¶
     Aby dowiedzieć się, jak włączyć tryb ładowarki łodzi, zapoznaj się z instrukcjami flashowania swojej tablicy
+firmware_tool-flash_method_ota-title = Wgrywanie przez Wi-Fi
 firmware_tool-flash_method_ota-devices = Wykryte urządzenia OTA:
 firmware_tool-flash_method_ota-no_devices = Nie ma tablic, które można zaktualizować za pomocą OTA, upewnij się, że wybrałeś właściwy typ płyty
+firmware_tool-flash_method_serial-title = Wgrywanie przez USB
 firmware_tool-flash_method_serial-wifi = Dane uwierzytelniające Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Wykryte urządzenia szeregowe:
 firmware_tool-flash_method_serial-devices-placeholder = Wybierz urządzenie szeregowe
@@ -1467,7 +1484,9 @@ firmware_tool-flashing_step-exit = Wyjście
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Budowanie....
 firmware_tool-build-CREATING_BUILD_FOLDER = Tworzenie folderu kompilacji
+firmware_tool-build-DOWNLOADING_SOURCE = Pobieranie kodu źródłowego
 firmware_tool-build-BUILDING = Budowa oprogramowania sprzętowego
 firmware_tool-build-SAVING = Zapisywanie kompilacji
 firmware_tool-build-DONE = Budowa ukończona
