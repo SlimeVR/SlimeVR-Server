@@ -507,6 +507,7 @@ settings-sidebar-utils = Narzędzia
 settings-sidebar-serial = Konsola szeregowa
 settings-sidebar-appearance = Wygląd
 settings-sidebar-home = Strona Główna
+settings-sidebar-checklist = Lista kontrolna
 settings-sidebar-notifications = Powiadomienia
 settings-sidebar-behavior = Zachowanie
 settings-sidebar-firmware-tool = Narzędzie do oprogramowania sprzętowego DIY
@@ -632,11 +633,16 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip może
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap próbuje odgadnąć obrót twoich stóp, jeśli trackery stóp nie są używane.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obraca stopy, aby były równoległe do podłoża podczas kontaktu.
 settings-general-fk_settings-leg_fk = Śledzenie nóg
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Wymuś kalibracje montażu stóp podczas kalibracji pozycji.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Wymuś kalibracje mocowania stóp
 settings-general-fk_settings-enforce_joint_constraints = Limity szkieletowe
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Wymuszanie ograniczeń
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zapobiega obracaniu się stawów poza ich limit
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Korygowanie za pomocą ograniczeń
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Koryguj rotacje stawów, gdy przekraczają swój limit
+settings-general-fk_settings-ik = Dane pozycji
+settings-general-fk_settings-ik-use_position = Użyj danych o pozycji
+settings-general-fk_settings-ik-use_position-description = Umożliwia wykorzystanie danych o pozycji z urządzeń, które je wspierają. Włączając to, upewnij się, że dokonałeś reset w aplikacji i skalibrowałeś położenie w grze.
 settings-general-fk_settings-arm_fk = Śledzenie ramienia
 settings-general-fk_settings-arm_fk-description = Zmień sposób śledzenia ramion.
 settings-general-fk_settings-arm_fk-force_arms = Śledź ramiona z gogli VR
@@ -794,6 +800,11 @@ settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skanuj sieci WiFi
 settings-serial-file_type = Zwykły tekst
 settings-serial-save_logs = Zapisz do pliku
+settings-serial-send_command = Wyślij
+settings-serial-send_command-placeholder = Polecenie...
+settings-serial-send_command-warning = <b>Ostrzeżenie:</b> Wysyłanie poleceń szeregowych może prowadzić do utraty danych lub zablokowania urządzenia.
+settings-serial-send_command-warning-ok = Wiem co robię
+settings-serial-send_command-warning-cancel = Anuluj
 
 ## OSC router settings
 
@@ -893,6 +904,8 @@ settings-osc-vmc-mirror_tracking-label = Odbicie lustrzane śledzenia
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = Porty wejściowe i wyjściowe routera OSC nie mogą być takie same!
+settings-osc-common-network-port_banned_error = Port { $port } nie może zostać użyty!
 
 ## Advanced settings
 
