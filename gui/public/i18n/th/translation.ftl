@@ -1448,7 +1448,7 @@ firmware_tool-flash_method_serial-devices-label = พบอุปกรณ์ซ
 firmware_tool-flash_method_serial-devices-placeholder = เลือกอุปกรณ์ซีเรียลของคุณ
 firmware_tool-flash_method_serial-no_devices = ไม่พบอุปกรณ์ซีเรียลที่เข้ากันได้ กรุณาตรวจสอบว่าแทร็กเกอร์ของคุณเสียบอยู่
 firmware_tool-build_step = สร้างเฟิร์มแวร์
-firmware_tool-build_step-description = กำลังสร้างเฟิร์มแวร์ โปรดรอสักครู่
+firmware_tool-build_step-description = เฟิร์มแวร์กำลังสร้าง โปรดรอสักครู่
 firmware_tool-flashing_step = ติดตั้งเฟิร์มแวร์
 firmware_tool-flashing_step-description = กำลังติดตั้งเฟิร์มแวร์ให้แทร็กเกอร์ของคุณ กรุณาทำตามคำแนะนำบนหน้าจอ
 firmware_tool-flashing_step-warning-v2 = อย่าถอดสาย หรือปิดแทร็กเกอร์ในระหว่างกระบวนการอัพโหลด เว้นแต่จะได้รับคำแนะนำ ไม่อย่างนั้นอาจทำให้บอร์ดของคุณใช้งานไม่ได้
@@ -1458,28 +1458,28 @@ firmware_tool-flashing_step-exit = ออก
 ## firmware tool build status
 
 firmware_tool-build-QUEUED = กำลังรอการสร้าง...
-firmware_tool-build-CREATING_BUILD_FOLDER = กำลังสร้าง Build folder
+firmware_tool-build-CREATING_BUILD_FOLDER = กำลังสร้างโฟลเดอร์บิลด์
 firmware_tool-build-DOWNLOADING_SOURCE = กำลังดาวน์โหลดซอร์สโค้ด
 firmware_tool-build-EXTRACTING_SOURCE = กำลังแตกไฟล์ซอร์สโค้ด
-firmware_tool-build-BUILDING = กำลังสร้างตัว Firmware
-firmware_tool-build-SAVING = บันทึกค่าที่สร้างไว้
-firmware_tool-build-DONE = การสร้างเสร็จสมบูรณ์
-firmware_tool-build-ERROR = ไม่สามารถสร้าง Firmware ได้
+firmware_tool-build-BUILDING = กำลังสร้างเฟิร์มแวร์
+firmware_tool-build-SAVING = กำลังบันทึกไฟล์บิลด์
+firmware_tool-build-DONE = สร้างเสร็จสมบูรณ์
+firmware_tool-build-ERROR = ไม่สามารถสร้างเฟิร์มแวร์ได้
 
 ## Firmware update status
 
-firmware_update-status-DOWNLOADING = กำลังโหลด Firmware
-firmware_update-status-NEED_MANUAL_REBOOT-v2 = กรุณปิดและเปิดแทร็กเกอร์ของคุณใหม่อีกครั้ง
+firmware_update-status-DOWNLOADING = กำลังดาวน์โหลดเฟิร์มแวร์
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = โปรดปิดและเปิดแทร็กเกอร์ของคุณอีกครั้ง
 firmware_update-status-AUTHENTICATING = กำลังยืนยันตัวตนกับ MCU
 firmware_update-status-UPLOADING = กำลังอัพโหลดเฟิร์มแวร์
-firmware_update-status-SYNCING_WITH_MCU = กำลังซิงโครไนซ์กับ MCU
-firmware_update-status-REBOOTING = กำลังดำเนินการอัปเดต
+firmware_update-status-SYNCING_WITH_MCU = กำลังซิงค์กับ MCU
+firmware_update-status-REBOOTING = กำลังใช้การอัพเดท
 firmware_update-status-PROVISIONING = ตั้งค่าข้อมูลประจำตัว Wi-Fi
 firmware_update-status-DONE = อัพเดตสำเร็จ!
-firmware_update-status-ERROR_DEVICE_NOT_FOUND = ไม่สามารถหาตัวอุปกรณ์ได้
-firmware_update-status-ERROR_TIMEOUT = กระบวนการอัปเดตหมดเวลาการเชื่อมต่อ
-firmware_update-status-ERROR_DOWNLOAD_FAILED = ไม่สามารถดาวน์โหลด Firmware ได้
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = ไม่สามารถยืนยันตัวตนหรือเชื่อมต่อกับ MCU ได้
+firmware_update-status-ERROR_DEVICE_NOT_FOUND = ไม่พบอุปกรณ์
+firmware_update-status-ERROR_TIMEOUT = กระบวนการอัพเดทหมดเวลา
+firmware_update-status-ERROR_DOWNLOAD_FAILED = ไม่สามารถดาวน์โหลดเฟิร์มแวร์
+firmware_update-status-ERROR_AUTHENTICATION_FAILED = ไม่สามารถยืนยันตัวตนกับ MCU
 firmware_update-status-ERROR_UPLOAD_FAILED = ไม่สามารถอัพโหลดเฟิร์มแวร์
 firmware_update-status-ERROR_PROVISIONING_FAILED = ไม่สามารถตั้งค่าข้อมูลประจำตัว Wi-Fi
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = ยังไม่รองรับวิธีการอัพเดตนี้
