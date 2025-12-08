@@ -27,13 +27,13 @@ export function WifiCredsPage() {
             <Typography
               variant="main-title"
               id="onboarding-wifi_creds-dongle-title"
-             />
+            />
           </div>
           <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
             <Typography
               whitespace="whitespace-pre-wrap"
               id="onboarding-wifi_creds-dongle-description"
-             />
+            />
             <Localized id="onboarding-wifi_creds-dongle-wip">
               <WarningBox whitespace>WANING</WarningBox>
             </Localized>
@@ -43,7 +43,7 @@ export function WifiCredsPage() {
               variant="primary"
               to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
               id="onboarding-wifi_creds-dongle-continue"
-             />
+            />
           </div>
         </div>
         <form
@@ -54,7 +54,7 @@ export function WifiCredsPage() {
             <div className="bg-accent-background-30 rounded-full p-2 fill-background-10">
               <WifiIcon variant="navbar" value={1} size={24} />
             </div>
-            <Typography variant="main-title" id="onboarding-wifi_creds-v2"/>
+            <Typography variant="main-title" id="onboarding-wifi_creds-v2" />
           </div>
 
           <div className="flex flex-col gap-2 w-full h-full p-2">
