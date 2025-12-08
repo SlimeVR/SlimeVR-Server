@@ -317,6 +317,32 @@ body {
   --default-color: 255, 255, 255;
 }
 
+:root[data-theme='snep'] {
+  --background-10: 255, 255, 255;
+  --background-20: 240, 222, 236;
+  --background-30: 210, 198, 203;
+  --background-40: 155, 140, 147;
+  --background-50: 97, 77, 86;
+  --background-60: 72, 54, 62;
+  --background-70: 55, 40, 47;
+  --background-80: 38, 27, 32;
+  --background-90: 0, 0, 0;
+
+  --accent-background-10: 255, 204, 229;
+  --accent-background-20: 234, 115, 176;
+  --accent-background-30: 184, 70, 127;
+  --accent-background-40: 143, 54, 98;
+  --accent-background-50: 91, 27, 58;
+
+  --success: 139, 223, 35;
+  --warning: 255, 187, 62;
+  --critical: 223, 54, 84;
+  --special: 230, 0, 230;
+  --window-icon-stroke: 234, 134, 185;
+
+  --default-color: 255, 255, 255;
+}
+
 #root {
   height: 100%;
 }
