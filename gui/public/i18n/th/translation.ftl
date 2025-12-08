@@ -266,7 +266,7 @@ serial_detection-new_device-p0 = ตรวจพบอุปกรณ์ Serial 
 serial_detection-new_device-p1 = ใส่ข้อมูลเครือข่าย Wi-Fi ของคุณ!
 serial_detection-new_device-p2 = กรุณาเลือกสิ่งที่คุณต้องการทำกับอุปกรณ์
 serial_detection-open_wifi = เชื่อมต่อกับ Wi-Fi
-serial_detection-open_serial = เปิดหน้าซีเรียลคอนโซล
+serial_detection-open_serial = เปิดหน้า Serial console
 serial_detection-submit = ยืนยัน!
 serial_detection-close = ปิด
 
@@ -401,9 +401,9 @@ tracker-settings-assignment_section-edit = แก้ไขการกำหน�
 tracker-settings-mounting_section = ทิศทางการติดตั้ง
 tracker-settings-mounting_section-description = แทร็กเกอร์นี้อยู่ด้านไหนของคุณ?
 tracker-settings-mounting_section-edit = แก้ไขการติดตั้ง
-tracker-settings-drift_compensation_section = เปิดใช้การชดเชยค่าดริฟท์
-tracker-settings-drift_compensation_section-description = ให้แทร็กเกอร์ตัวนี้ชดเชยค่าดริฟท์เมื่อมีการเปิดใช้งานการชดเชยค่าดริฟท์หรือไม่?
-tracker-settings-drift_compensation_section-edit = ใช้การชดเชยค่าดริฟท์
+tracker-settings-drift_compensation_section = เปิดใช้การชดเชยการดริฟท์
+tracker-settings-drift_compensation_section-description = ให้แทร็กเกอร์ตัวนี้ชดเชยการดริฟท์เมื่อมีการเปิดใช้งานการชดเชยการดริฟท์หรือไม่?
+tracker-settings-drift_compensation_section-edit = ใช้การชดเชยการดริฟท์
 tracker-settings-use_mag = เปิดใช้งานเซ็นเซอร์สนามแม่เหล็กสำหรับแทร็กเกอร์ตัวนี้
 # Multiline!
 tracker-settings-use_mag-description =
@@ -503,7 +503,7 @@ settings-sidebar-osc_router = เราเตอร์ OSC
 settings-sidebar-osc_trackers = แทร็กเกอร์ VRChat OSC
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = เครื่องมือ
-settings-sidebar-serial = ซีเรียลคอนโซล
+settings-sidebar-serial = Serial Console
 settings-sidebar-appearance = รูปแบบ
 settings-sidebar-home = หน้าหลัก
 settings-sidebar-checklist = รายการเตรียมความพร้อมแทร็กเกอร์
@@ -560,19 +560,19 @@ settings-general-tracker_mechanics-filtering-type-prediction = คาดกา�
 settings-general-tracker_mechanics-filtering-type-prediction-description = ลดความหน่วง และทำให้การเคลื่อนไหวฉับไวขึ้น แต่อาจเพิ่มการกระตุก
 settings-general-tracker_mechanics-filtering-amount = ปริมาณ
 settings-general-tracker_mechanics-yaw-reset-smooth-time = เวลาหน่วงการรีเซ็ตแกนตั้ง(ตั้งที่ 0 วินาทีเพื่อปิดการใช้)
-settings-general-tracker_mechanics-drift_compensation = การชดเชยค่าดริฟท์
+settings-general-tracker_mechanics-drift_compensation = การชดเชยการดริฟท์
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
     ชดเชยความคลาดเคลื่อนแกนตั้งของ IMU โดยหมุนชดเชยในทิศทางตรงข้าม
     โดยนำปริมาณการรีเซ็ตและจำนวนครั้งในการรีเซ็ตมาพิจารณา
     ควรใช้เฉพาะในกรณีที่คุณต้องรีเซ็ตบ่อยครั้งมากเท่านั้น!
-settings-general-tracker_mechanics-drift_compensation-enabled-label = การชดเชยค่าดริฟท์
-settings-general-tracker_mechanics-drift_compensation-prediction = การคาดการณ์การชดเชยค่าดริฟท์
+settings-general-tracker_mechanics-drift_compensation-enabled-label = การชดเชยการดริฟท์
+settings-general-tracker_mechanics-drift_compensation-prediction = การคาดการณ์การชดเชยการดริฟท์
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    คาดการณ์การชดเชยค่าดริฟท์ของแกนตั้งนอกเหนือจากช่วงที่เคยถูกวัดไว้
+    คาดการณ์การชดเชยการดริฟท์ของแกนตั้งนอกเหนือจากช่วงที่เคยถูกวัดไว้
     เปิดใช้งานหากแทร็กเกอร์ของคุณหมุนรอบแกนตั้งอย่างต่อเนื่อง
-settings-general-tracker_mechanics-drift_compensation-prediction-label = คาดการณ์การชดเชยค่าดริฟท์
+settings-general-tracker_mechanics-drift_compensation-prediction-label = คาดการณ์การชดเชยการดริฟท์
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>คำเตือน:</b> ควรใช้การชดเชยดริฟท์เฉพาะในกรณีที่คุณต้องรีเซ็ต
     บ่อยครั้งมากเท่านั้น (ทุก ~5-10 นาที)
@@ -597,7 +597,7 @@ settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned จะลดดริฟท์โดยค่อยๆ ปรับแทร็กเกอร์ให้เข้ากับท่าทางผ่อนคลายของคุณ
 settings-stay_aligned-setup-label = ตั้งค่า Stay Aligned
 settings-stay_aligned-setup-description = คุณต้องทำ "ตั้งค่า Stay Aligned" ให้เสร็จสมบูรณ์เพื่อเปิดใช้งาน Stay Aligned
-settings-stay_aligned-warnings-drift_compensation = ⚠ โปรดปิด การชดเชยค่าดริฟท์! เพราะมันจะขัดแย้งกับการทำงานของ Stay Aligned
+settings-stay_aligned-warnings-drift_compensation = ⚠ โปรดปิด การชดเชยการดริฟท์! เพราะมันจะขัดแย้งกับการทำงานของ Stay Aligned
 settings-stay_aligned-enabled-label = เปิดใช้งาน
 settings-stay_aligned-hide_yaw_correction-label = ซ่อนการปรับแต่ง (เพื่อเปรียบเทียบกับแบบไม่มี Stay Aligned)
 settings-stay_aligned-general-label = ทั่วไป
@@ -729,7 +729,7 @@ settings-interface-appearance-decorations-label = ใช้แถบด้าน
 settings-interface-notifications = การแจ้งเตือน
 settings-general-interface-serial_detection = การตรวจจับอุปกรณ์ Serial
 settings-general-interface-serial_detection-description = ตัวเลือกนี้จะแสดงหน้าต่างป๊อปอัพทุกครั้งที่คุณเสียบอุปกรณ์ Serial ใหม่ที่อาจเป็นแทร็กเกอร์ ช่วยลดขั้นตอนการตั้งค่าแทร็กเกอร์
-settings-general-interface-serial_detection-label = ใช้การตรวจจับอุปกรณ์ซีเรียล
+settings-general-interface-serial_detection-label = ใช้การตรวจจับอุปกรณ์ Serial
 settings-general-interface-feedback_sound = การแจ้งเตือนด้วยเสียง
 settings-general-interface-feedback_sound-description = ตัวเลือกนี้จะเล่นเสียงเมื่อมีการใช้การรีเซ็ต
 settings-general-interface-feedback_sound-label = แจ้งเตือนด้วยเสียง
@@ -766,12 +766,12 @@ settings-interface-behavior-bvh_directory-label = ไดเร็กทอรี
 
 ## Serial settings
 
-settings-serial = ซีเรียลคอนโซล
+settings-serial = Serial Console
 # This cares about multilines
 settings-serial-description =
     นี่คือฟีดข้อมูลสดสำหรับการสื่อสารแบบ Serial
     อาจมีประโยชน์สำหรับการดีบักเฟิร์มแวร์หรือปัญหาฮาร์ดแวร์
-settings-serial-connection_lost = เชื่อมต่อกับซีเรียลล้มเหลว, กำลังเชื่อมต่อใหม่...
+settings-serial-connection_lost = การเชื่อมต่อ Serial ขาดหาย กำลังเชื่อมต่อใหม่...
 settings-serial-reboot = เริ่มการทำงานใหม่
 settings-serial-factory_reset = รีเซ็ตเป็นค่าโรงงาน
 # This cares about multilines
@@ -1447,9 +1447,9 @@ firmware_tool-flash_method_ota-devices = พบอุปกรณ์ OTA:
 firmware_tool-flash_method_ota-no_devices = ไม่พบบอร์ดที่สามารถอัปเดตโดยใช้ OTA ได้ ตรวจสอบให้แน่ใจว่าคุณเลือกประเภทบอร์ดได้ถูกต้อง
 firmware_tool-flash_method_serial-title = กำลังลงเฟิร์มแวร์ผ่าน USB
 firmware_tool-flash_method_serial-wifi = ข้อมูลเครือข่าย Wi-Fi:
-firmware_tool-flash_method_serial-devices-label = พบอุปกรณ์ซีเรียล:
-firmware_tool-flash_method_serial-devices-placeholder = เลือกอุปกรณ์ซีเรียลของคุณ
-firmware_tool-flash_method_serial-no_devices = ไม่พบอุปกรณ์ซีเรียลที่เข้ากันได้ ตรวจสอบให้แน่ใจว่าได้เสียบแทร็กเกอร์แล้ว
+firmware_tool-flash_method_serial-devices-label = พบอุปกรณ์ Serial:
+firmware_tool-flash_method_serial-devices-placeholder = เลือกอุปกรณ์ Serial ของคุณ
+firmware_tool-flash_method_serial-no_devices = ไม่พบอุปกรณ์ Serial ที่เข้ากันได้ ตรวจสอบให้แน่ใจว่าได้เสียบแทร็กเกอร์แล้ว
 firmware_tool-build_step = สร้างเฟิร์มแวร์
 firmware_tool-build_step-description = เฟิร์มแวร์กำลังสร้าง โปรดรอสักครู่
 firmware_tool-flashing_step = ลงเฟิร์มแวร์
@@ -1604,7 +1604,7 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
     <PublicFixLink>ดูวิธีการแก้ไขได้ที่นี่</PublicFixLink>
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = เปิด Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = ตั้งค่า Stay Aligned
-tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = บันทึกท่าท่างใน Stay Aligned เพื่อลดค่าดริฟท์
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = บันทึกท่าท่างใน Stay Aligned เพื่อลดการดริฟท์
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = เปิดตัวช่วยการตั้งค่า Stay Aligned
 tracking_checklist-ignore = ละเว้น
 preview-mocap_mode_soon = โหมด Mocap (เร็ว ๆ นี้™)

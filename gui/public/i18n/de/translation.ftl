@@ -1185,6 +1185,7 @@ onboarding-automatic_proportions-smol_warning-cancel = Zurück
 
 onboarding-stay_aligned-title = Stay Aligned
 onboarding-stay_aligned-put_trackers_on-title = Legen Sie Ihre Tracker an
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Sie haben derzeit weniger als 5 Tracker verbunden und zugewiesen! Dies ist die Mindestanzahl an Trackern, die erforderlich sind, damit Stay Aligned richtig funktioniert.
 onboarding-stay_aligned-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-stay_aligned-preparation-title = Vorbereitung
 onboarding-stay_aligned-relaxed_poses-skip_step = Überspringen
