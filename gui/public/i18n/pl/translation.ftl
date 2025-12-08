@@ -1084,6 +1084,7 @@ onboarding-assignment_tutorial-done = Umieszczam naklejki i paski!
 onboarding-assign_trackers-back = Cofnij się do ustawień Wi-Fi
 onboarding-assign_trackers-title = Przydziel Trackery
 onboarding-assign_trackers-description = Wybierzmy gdzie idzie jaki tracker. Naciśnij gdzie chcesz go przydzielić
+onboarding-assign_trackers-unassign_all = Usuń przydzielenie wszystkich urządzeń
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1353,6 +1354,16 @@ onboarding-user_height-calculate = Automatycznie oblicz mój wzrost
 onboarding-user_height-next_step = Kontynuuj i zapisz
 onboarding-user_height-manual-proportions = Manualne Proporcje Ciała
 onboarding-user_height-calibration-title = Postęp kalibracji
+onboarding-user_height-calibration-RECORDING_FLOOR = Dotknij podłogi górną częścią kontrolera
+onboarding-user_height-calibration-WAITING_FOR_RISE = Wstań
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Wstań i spójrz przed siebie
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Upewnij się, że masz głowę poziomo
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Nie patrz w podłogę
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Nie patrz za wysoko
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Upewnij się, że kontroler jest skierowany w dół
+onboarding-user_height-calibration-RECORDING_HEIGHT = Wstań i nie ruszaj się!
+onboarding-user_height-calibration-DONE = Sukces!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Kalibracja zakończona niepomyślnie, spróbuj ponownie.
 onboarding-user_height-calibration-ERROR_TOO_HIGH = Wykryty wzrost użytkownika jest zbyt wysoki, spróbuj ponownie.
 onboarding-user_height-calibration-ERROR_TOO_SMALL = Wykryty wzrost użytkownika jest zbyt mały. Upewnij się, że stoisz prosto i patrzysz przed siebie pod koniec kalibracji.
 onboarding-user_height-calibration-error = Kalibracja nieudana
@@ -1502,6 +1513,7 @@ firmware_tool-flashing_step-exit = Wyjście
 firmware_tool-build-QUEUED = Budowanie....
 firmware_tool-build-CREATING_BUILD_FOLDER = Tworzenie folderu kompilacji
 firmware_tool-build-DOWNLOADING_SOURCE = Pobieranie kodu źródłowego
+firmware_tool-build-EXTRACTING_SOURCE = Ekstrakcja kodu źródłowego
 firmware_tool-build-BUILDING = Budowa oprogramowania sprzętowego
 firmware_tool-build-SAVING = Zapisywanie kompilacji
 firmware_tool-build-DONE = Budowa ukończona
@@ -1610,7 +1622,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Rozpiętość ramion
 
 error_collection_modal-title = Czy możemy zbierać błędy?
 error_collection_modal-description_v2 =
-    { ustawienia-interfejsu-zachowanie-error_tracking-description_v2 }
+    { settings-interface-behavior-error_tracking-description_v2 }
     
     To ustawienie można zmienić później w sekcji Zachowanie na stronie ustawień.
 error_collection_modal-confirm = Zgadzam się
@@ -1643,7 +1655,36 @@ tracking_checklist-VRCHAT_SETTINGS-open = Przejdź do ostrzeżeń VRChat
 tracking_checklist-UNASSIGNED_HMD = Zestaw VR nieprzypisany do Głowy
 tracking_checklist-UNASSIGNED_HMD-desc = Zestaw VR powinien być przypisany jako śledzenie głowy.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Zmień profil sieciowy
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Jeden z Twoich adapterów sieciowych jest ustawiony na publiczny:
+            { $adapters }
+            Nie zaleca się tego, aby SlimeVR działał poprawnie.
+            <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
+        [few]
+            Niektóre z Twoich adapterów sieciowych są ustawione na publiczne:
+            { $adapters }
+            Nie zaleca się tego, aby SlimeVR działał poprawnie.
+            <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
+       *[many]
+            Niektóre z Twoich adapterów sieciowych są ustawione na publiczne:
+            { $adapters }
+            Nie zaleca się tego, aby SlimeVR działał poprawnie.
+            <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
+    }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otwórz panel sterowania
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Konfiguruj Opcje Wyrównywania
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Zapisz pozycje wyrównywania, aby zmniejszyć poślizg
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Otwórz Konfiguracje Wyrównywania
+tracking_checklist-ignore = Ignoruj
+preview-mocap_mode_soon = Tryb mocap (wkrótce™)
+preview-disable_render = Wyłącz renderowanie
+preview-disabled_render = Renderowanie wyłączone
+toolbar-mounting_calibration = Kalibracja Pozycji
+toolbar-mounting_calibration-default = Ciało
 toolbar-mounting_calibration-feet = Stopy
 toolbar-mounting_calibration-fingers = Palce
 toolbar-drift_reset = Reset Poślizgu
+toolbar-assigned_trackers = { $count } Przydzielonych urządzeń
+toolbar-unassigned_trackers = { $count } Nieprzydzielonych urządzeń
