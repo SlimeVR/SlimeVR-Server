@@ -78,7 +78,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		steps.add(
 			TrackingChecklistStepT().apply {
 				id = TrackingChecklistStepId.STEAMVR_DISCONNECTED
-				enabled = true
+				enabled = false
 				optional = false
 				ignorable = true
 				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
@@ -266,6 +266,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 				TrackingChecklistStepId.STEAMVR_DISCONNECTED,
 				steamvrConnected,
 			) {
+				it.enabled = true
 				if (!steamvrConnected) {
 					it.extraData = TrackingChecklistExtraDataUnion().apply {
 						type = TrackingChecklistExtraData.TrackingChecklistSteamVRDisconnected
