@@ -35,7 +35,7 @@ export function WifiCredsPage() {
               id="onboarding-wifi_creds-dongle-description"
             />
             <Localized id="onboarding-wifi_creds-dongle-wip">
-              <WarningBox whitespace>WANING</WarningBox>
+              <WarningBox whitespace>WARNING</WarningBox>
             </Localized>
           </div>
           <div className="flex px-2 p-6">
