@@ -1347,3 +1347,5 @@ error_collection_modal-description_v2 =
     Sie können diese Einstellung später im Abschnitt Verhalten auf der Einstellungsseite ändern.
 error_collection_modal-confirm = Ich stimme zu
 error_collection_modal-cancel = Ich will nicht
+toolbar-assigned_trackers = { $count } Tracker zugewiesen
+toolbar-unassigned_trackers = { $count } Tracker nicht zugewiesen

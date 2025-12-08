@@ -17,7 +17,7 @@ websocket-error-logs = เปิดโฟลเดอร์ไฟล์บัน
 
 ## Update notification
 
-version_update-title = มีเวอร์ชั่นใหม่พร้อมแล้ว: { $version }
+version_update-title = มีเวอร์ชันใหม่พร้อมแล้ว: { $version }
 version_update-description = คลิกที่ "{ version_update-update }" เพื่อดาวน์โหลดตัวติดตั้ง SlimeVR ให้คุณ
 version_update-update = อัปเดต
 version_update-close = ปิด
@@ -1410,7 +1410,7 @@ firmware_tool-select_source-description = เลือกเฟิร์มแ�
 firmware_tool-select_source-error = ไม่สามารถโหลดแหล่งที่มาได้
 firmware_tool-select_source-board_type = ชนิดของบอร์ด
 firmware_tool-select_source-firmware = แหล่งที่มาของเฟิร์มแวร์
-firmware_tool-select_source-version = เวอร์ชั่นของเฟิร์มแวร์
+firmware_tool-select_source-version = เวอร์ชันของเฟิร์มแวร์
 firmware_tool-select_source-official = ทางการ
 firmware_tool-select_source-dev = รุ่นพัฒนา
 firmware_tool-board_defaults = กำหนดค่าบอร์ดของคุณ
