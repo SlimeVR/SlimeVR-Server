@@ -1356,6 +1356,10 @@ onboarding-user_height-calibration-title = Postęp kalibracji
 onboarding-user_height-calibration-ERROR_TOO_HIGH = Wykryty wzrost użytkownika jest zbyt wysoki, spróbuj ponownie.
 onboarding-user_height-calibration-ERROR_TOO_SMALL = Wykryty wzrost użytkownika jest zbyt mały. Upewnij się, że stoisz prosto i patrzysz przed siebie pod koniec kalibracji.
 onboarding-user_height-calibration-error = Kalibracja nieudana
+onboarding-user_height-manual-tip = Podczas regulacji wzrostu wypróbuj różne pozy i zobacz, czy szkielet odzwierciedla twoje ruchy.
+onboarding-user_height-reset-warning =
+    <b>Ostrzeżenie:</b> Spowoduje to zresetowanie wszystkich ustawień proporcji do wartości domyślnych.
+    Czy na pewno chcesz to zrobić?
 
 ## Stay Aligned setup
 
@@ -1394,6 +1398,8 @@ onboarding-stay_aligned-done = Gotowy
 ## Home
 
 home-no_trackers = Nie wykryto ani nie przypisano żadnych trackerów
+home-settings = Ustawienia strony głównej
+home-settings-close = Zamknij
 
 ## Trackers Still On notification
 
@@ -1435,6 +1441,9 @@ firmware_tool = Narzędzie do oprogramowania sprzętowego DIY
 firmware_tool-description = Umożliwia konfigurowanie i flashowanie trackerów DIY
 firmware_tool-not_available = Ups, narzędzie do oprogramowania sprzętowego nie jest obecnie dostępne. Wróć później!
 firmware_tool-not_compatible = Narzędzie oprogramowania układowego nie jest kompatybilne z tą wersją serwera. Proszę zaktualizować swój serwer!
+firmware_tool-select_source = Wybierz oprogramowanie do wgrania
+firmware_tool-select_source-description = Wybierz oprogramowanie, które chcesz wgrać na urządzenie
+firmware_tool-select_source-error = Nie można załadować oprogramowania
 firmware_tool-select_source-board_type = Typ urządzenia
 firmware_tool-select_source-firmware = Źródło oprogramowania
 firmware_tool-select_source-version = Wersja oprogramowania
@@ -1464,6 +1473,9 @@ firmware_tool-flashbtn_step-board_SLIMEVR =
     Naciśnij przycisk flash na płytce drukowanej przed włożeniem, aby włączyć tracker.¶
     Jeśli tracker był już włączony, po prostu go wyłącz i włącz ponownie, naciskając przycisk lub zwierając podkładki flash.¶
     Oto kilka zdjęć, jak to zrobić, zgodnie z różnymi wersjami trackera SlimeVR
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Włącz tracker zwierając drugi prostokątny pad FLASH od krawędzi na górnej stronie płytki, a metalową osłonę mikrokontrolera
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Włącz tracker zwierając drugi prostokątny pad FLASH od krawędzi na górnej stronie płytki, a metalową osłonę mikrokontrolera
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Włącz tracker, naciskając przycisk FLASH na górnej stronie płytki. Dioda LED powinna krótko mrógnąć.
 firmware_tool-flashbtn_step-board_OTHER =
     Przed flashowaniem prawdopodobnie będziesz musiał przełączyć moduł śledzący w tryb bootloadera.¶
     W większości przypadków oznacza to naciśnięcie przycisku rozruchu na płycie przed rozpoczęciem procesu flashowania.¶
@@ -1603,3 +1615,35 @@ error_collection_modal-description_v2 =
     To ustawienie można zmienić później w sekcji Zachowanie na stronie ustawień.
 error_collection_modal-confirm = Zgadzam się
 error_collection_modal-cancel = Nie chcę
+tracking_checklist = Lista Kontrolna
+tracking_checklist-settings = Ustawienia Listy Kontrolnej
+tracking_checklist-settings-close = Zamknij
+tracking_checklist-status-incomplete = Nie jesteś przygotowany aby korzystać ze SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] Masz { $count } ostrzeżenie!
+        [few] Masz { $count } ostrzeżeń!
+       *[many] Masz { $count } ostrzeżeń!
+    }
+tracking_checklist-status-complete = Jesteś gotowy korzystać ze SlimeVR!
+tracking_checklist-MOUNTING_CALIBRATION = Wykonaj kalibrację montażu
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Wykonaj kalibrację montażu stóp
+tracking_checklist-FULL_RESET = Wykonaj pełny reset
+tracking_checklist-FULL_RESET-desc = Niektóre urządzenia wymagają resetu.
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR nie jest uruchomiony
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR nie jest uruchomiony. Czy twoje gogle są podłączone?
+tracking_checklist-STEAMVR_DISCONNECTED-open = Uruchom SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Skalibruj swoje urządzenia
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Nie wykonałeś kalibracji urządzenia. Proszę, pozwól swoim urządzeniom (podświetlonym na żółto) odpocząć na stabilnej powierzchni przez kilka sekund.
+tracking_checklist-TRACKER_ERROR = Urządzenia z błędami
+tracking_checklist-TRACKER_ERROR-desc = Niektóre z Twoich urządzeń mają błędy. Proszę ponownie uruchomić urządzenia podświetlone na żółto.
+tracking_checklist-VRCHAT_SETTINGS = Konfiguruj ustawienia do VRChat'a
+tracking_checklist-VRCHAT_SETTINGS-desc = Źle ustawiłeś ustawienia VRChat'a! Może to negatywnie wpłynąć na twoje śledzenie.
+tracking_checklist-VRCHAT_SETTINGS-open = Przejdź do ostrzeżeń VRChat
+tracking_checklist-UNASSIGNED_HMD = Zestaw VR nieprzypisany do Głowy
+tracking_checklist-UNASSIGNED_HMD-desc = Zestaw VR powinien być przypisany jako śledzenie głowy.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Zmień profil sieciowy
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otwórz panel sterowania
+toolbar-mounting_calibration-feet = Stopy
+toolbar-mounting_calibration-fingers = Palce
+toolbar-drift_reset = Reset Poślizgu
