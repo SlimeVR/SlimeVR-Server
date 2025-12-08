@@ -4,10 +4,12 @@ import { useMemo } from 'react';
 export function WifiIcon({
   variant = 'progress',
   value,
+  size = 16,
   disabled = false,
 }: {
   variant?: 'progress' | 'navbar';
   value: number | null;
+  size?: number;
   disabled?: boolean;
 }) {
   const percent = useMemo(
@@ -41,8 +43,8 @@ export function WifiIcon({
 
   return (
     <svg
-      width="16"
-      height="13"
+      width={size}
+      height={size}
       viewBox="0 0 16 13"
       xmlns="http://www.w3.org/2000/svg"
     >
