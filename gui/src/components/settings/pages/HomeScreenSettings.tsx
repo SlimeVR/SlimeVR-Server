@@ -16,6 +16,7 @@ import classNames from 'classnames';
 import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { TrackingChecklistStepId } from 'solarxr-protocol';
+import * as Sentry from '@sentry/react'
 
 type StepsForm = { steps: Record<TrackingChecklistStepId, boolean> };
 export function TrackingChecklistSettings({
@@ -133,8 +134,10 @@ export function LayoutSelector({
 export function HomeLayoutSettings() {
   const { config, setConfig } = useConfig();
 
-  const setLayout = (layout: Config['homeLayout']) =>
+  const setLayout = (layout: Config['homeLayout']) => {
     setConfig({ homeLayout: layout });
+    Sentry.metrics.count('change_layout', 1, { attributes: { layout } })
+  }
 
   return (
     <div className="flex flex-col gap-2">

@@ -107,7 +107,14 @@ export function Button({
       to={to}
       className={classes}
       state={state}
-      onClick={(ev) => disabled && ev.preventDefault()}
+      onClick={(ev) => {
+        if (disabled) {
+          ev.preventDefault()
+          return;
+        }
+        if (props.onClick)
+          return props.onClick(ev as any)
+      }}
     >
       <ButtonContent icon={icon} loading={loading}>
         {id && (
