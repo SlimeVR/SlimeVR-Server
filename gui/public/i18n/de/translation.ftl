@@ -1184,6 +1184,7 @@ onboarding-automatic_proportions-smol_warning-cancel = Zurück
 ## Stay Aligned setup
 
 onboarding-stay_aligned-title = Stay Aligned
+onboarding-stay_aligned-put_trackers_on-title = Legen Sie Ihre Tracker an
 onboarding-stay_aligned-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-stay_aligned-preparation-title = Vorbereitung
 onboarding-stay_aligned-relaxed_poses-skip_step = Überspringen
@@ -1347,5 +1348,13 @@ error_collection_modal-description_v2 =
     Sie können diese Einstellung später im Abschnitt Verhalten auf der Einstellungsseite ändern.
 error_collection_modal-confirm = Ich stimme zu
 error_collection_modal-cancel = Ich will nicht
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR läuft nicht. Nutzen sie es für VR?
+tracking_checklist-STEAMVR_DISCONNECTED-open = SteamVR starten
+tracking_checklist-ignore = Ignorieren
+preview-disable_render = Vorschau deaktivieren
+preview-disabled_render = Vorschau deaktiviert
+toolbar-mounting_calibration-default = Körper
+toolbar-mounting_calibration-feet = Füße
+toolbar-mounting_calibration-fingers = Finger
 toolbar-assigned_trackers = { $count } Tracker zugewiesen
 toolbar-unassigned_trackers = { $count } Tracker nicht zugewiesen
