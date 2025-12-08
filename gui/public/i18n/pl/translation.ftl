@@ -1353,6 +1353,9 @@ onboarding-user_height-calculate = Automatycznie oblicz mój wzrost
 onboarding-user_height-next_step = Kontynuuj i zapisz
 onboarding-user_height-manual-proportions = Manualne Proporcje Ciała
 onboarding-user_height-calibration-title = Postęp kalibracji
+onboarding-user_height-calibration-ERROR_TOO_HIGH = Wykryty wzrost użytkownika jest zbyt wysoki, spróbuj ponownie.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = Wykryty wzrost użytkownika jest zbyt mały. Upewnij się, że stoisz prosto i patrzysz przed siebie pod koniec kalibracji.
+onboarding-user_height-calibration-error = Kalibracja nieudana
 
 ## Stay Aligned setup
 
