@@ -925,7 +925,7 @@ onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
     Trackers such as Official Slimes 1.0 and 1.2 use Wi-Fi to operate.
-    Please use the credentials that you are currently connected to with your computer.
+    Please use the credentials of the Wi-Fi network that your computer is currently connected to.
 
     Make sure to use a 2.4Ghz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Skip Wi-Fi settings
