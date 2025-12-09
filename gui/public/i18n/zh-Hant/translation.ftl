@@ -33,6 +33,10 @@ tips-failed_webgl = 初始化 WebGL 失敗。
 
 ## Units
 
+unit-meter = 公尺
+unit-foot = 英尺
+unit-inch = 英吋
+unit-cm = 公分
 
 ## Body parts
 
@@ -270,6 +274,7 @@ navbar-trackers_assign = 追蹤器分配
 navbar-mounting = 配戴校正
 navbar-onboarding = 快速設定
 navbar-settings = 詳細設定
+navbar-connect_trackers = 連接追蹤器
 
 ## Biovision hierarchy recording
 
@@ -418,6 +423,8 @@ tracker-settings-update-up_to_date = 已為最新版本
 tracker-settings-update-blocked = 無法更新，沒有其他可用版本。
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 韌體版本
+tracker-settings-current-version = 目前版本
+tracker-settings-latest-version = 最新版本
 
 ## Tracker part card info
 
@@ -1058,6 +1065,7 @@ onboarding-assignment_tutorial-done = 我把貼紙跟綁帶都弄上了
 onboarding-assign_trackers-back = 返回到 Wi-Fi 認證資訊設定
 onboarding-assign_trackers-title = 分配追蹤器
 onboarding-assign_trackers-description = 這些追蹤器要放在身上的哪個部位呢？請點選要放置追蹤器的部位
+onboarding-assign_trackers-unassign_all = 解除全部分配
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1205,6 +1213,7 @@ onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = 返回使用縮放比例
 onboarding-manual_proportions-title = 手動調整軀幹比例
 onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR 頭戴顯示器以使用此功能
@@ -1222,7 +1231,7 @@ onboarding-manual_proportions-estimated_height = 預估的使用者身高
 onboarding-automatic_proportions-back = 返回重置教學
 onboarding-automatic_proportions-title = 測量你的身體比例
 onboarding-automatic_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨頭長度。這個簡短的流程將會進行這方面的測量。
-onboarding-automatic_proportions-manual = 進行手動校正
+onboarding-automatic_proportions-manual = 手動調整軀幹比例
 onboarding-automatic_proportions-prev_step = 上一步
 onboarding-automatic_proportions-put_trackers_on-title = 請戴好追蹤器
 onboarding-automatic_proportions-put_trackers_on-description = 為了校準你的軀幹比例，我們將使用你剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
@@ -1300,6 +1309,30 @@ onboarding-automatic_proportions-smol_warning-cancel = 返回
 
 ## User height calibration
 
+onboarding-user_height-title = 你的身高是多少？
+onboarding-user_height-description = 我們需要使用你的身高來計算軀幹比例，以準確呈現你的動作。你可以讓 SlimeVR 自動求得身高，也可以手動輸入。
+onboarding-user_height-need_head_tracker = 進行校正需要具備定位功能的頭戴顯示器與控制器。
+onboarding-user_height-calculate = 自動計算我的身高
+onboarding-user_height-next_step = 繼續並儲存
+onboarding-user_height-manual-proportions = 手動調整軀幹比例
+onboarding-user_height-calibration-title = 校正進度
+onboarding-user_height-calibration-RECORDING_FLOOR = 以控制器前端碰觸地面
+onboarding-user_height-calibration-WAITING_FOR_RISE = 回到站姿
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = 回到站姿並向前看
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = 確保你的頭部保持水平
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = 不要朝地板看
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = 不要朝高處看
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = 確保控制器朝下
+onboarding-user_height-calibration-RECORDING_HEIGHT = 維持站姿並站直！
+onboarding-user_height-calibration-DONE = 完成！
+onboarding-user_height-calibration-ERROR_TIMEOUT = 校正逾時，請再試一次。
+onboarding-user_height-calibration-ERROR_TOO_HIGH = 偵測到的使用者身高太高，請再試一次。
+onboarding-user_height-calibration-ERROR_TOO_SMALL = 偵測到的使用者身高太低，請確保在校正結尾時維持站直並向前看的姿勢。
+onboarding-user_height-calibration-error = 校正失敗
+onboarding-user_height-manual-tip = 調整身高時，請嘗試使用不同的姿勢來確保骨架與你的身體吻合。
+onboarding-user_height-reset-warning =
+    <b>警告：</b> 這會將軀幹比例重置為僅基於身高的比例。
+    你確定要執行此操作嗎？
 
 ## Stay Aligned setup
 
@@ -1405,6 +1438,9 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = 進入燒錄模式
 firmware_tool-flashbtn_step-description = 在進入下一步前，請先進行以下操作
 firmware_tool-flashbtn_step-board_SLIMEVR = 關閉追蹤器電源，移除外殼（若有的話），並用 USB 線連接到這台電腦上，然後根據你持有的 SlimeVR 追蹤器主板的版本，進行下述操作：
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = 將追蹤器上方第二個 FLASH 方形接點與微控制器的金屬遮罩短路，同時開啟追蹤器開關。追蹤器指示燈應該會短暫閃爍並熄滅。
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = 將追蹤器上方的 FLASH 圓形接點與微控制器的金屬遮罩短路，同時開啟追蹤器開關。追蹤器指示燈應該會短暫閃爍並熄滅。
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = 按住追蹤器上方的 FLASH 按鈕，同時開啟追蹤器開關。追蹤器指示燈應該會短暫閃爍並熄滅。
 firmware_tool-flashbtn_step-board_OTHER =
     在燒錄前，你可能需要將追蹤器切換進 Bootloader（開機載入程式）。
     多數狀況下，在燒錄開始前按下 BOOT 按鈕即可開始燒錄。

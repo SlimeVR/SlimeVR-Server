@@ -2,10 +2,14 @@ import classNames from 'classnames';
 import { useMemo } from 'react';
 
 export function WifiIcon({
+  variant = 'progress',
   value,
+  size = 16,
   disabled = false,
 }: {
+  variant?: 'progress' | 'navbar';
   value: number | null;
+  size?: number;
   disabled?: boolean;
 }) {
   const percent = useMemo(
@@ -21,6 +25,8 @@ export function WifiIcon({
   const y = useMemo(() => (1 - percent) * 13, [percent]);
 
   const col = useMemo(() => {
+    if (variant === 'navbar') return 'fill-inherit';
+
     const colorsMap: { [key: number]: string } = {
       0.4: 'fill-status-success',
       0.2: 'fill-status-warning',
@@ -33,12 +39,12 @@ export function WifiIcon({
     return disabled
       ? 'fill-background-40'
       : colorsMap[+val] || 'fill-background-10';
-  }, [percent, disabled]);
+  }, [percent, disabled, variant]);
 
   return (
     <svg
-      width="16"
-      height="13"
+      width={size}
+      height={size}
       viewBox="0 0 16 13"
       xmlns="http://www.w3.org/2000/svg"
     >

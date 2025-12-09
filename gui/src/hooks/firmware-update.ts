@@ -2,7 +2,8 @@ import { BoardType, DeviceDataT } from 'solarxr-protocol';
 import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import { cacheWrap } from './cache';
 import semver from 'semver';
-import { hostname, locale, platform, version } from '@tauri-apps/plugin-os';
+import { hash } from './crypto';
+import { getUserID } from './user';
 
 export interface FirmwareRelease {
   name: string;
@@ -11,18 +12,6 @@ export interface FirmwareRelease {
   firmwareFiles: Partial<Record<BoardType, { url: string; digest: string }>>;
   userCanUpdate: boolean;
 }
-
-// implemetation of https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
-const hash = (str: string) => {
-  let hash = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i);
-    hash = Math.imul(hash, 16777619); // FNV prime
-  }
-
-  // Convert to unsigned 32-bit integer and normalize (0, 1)
-  return (hash >>> 0) / 2 ** 32;
-};
 
 const firstAsset = (assets: any[], name: string) =>
   assets.find((asset: any) => asset.name === name && asset.browser_download_url);
@@ -67,7 +56,7 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
   const todayUpdateRange = todaysRange(deployData);
   if (!todayUpdateRange) return false;
 
-  const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${version()}`;
+  const uniqueUserKey = await getUserID();
   // Make it so the hash change every version. Prevent the same user from getting the same delay
   return hash(`${uniqueUserKey}-${fwVersion}`) <= todayUpdateRange;
 };

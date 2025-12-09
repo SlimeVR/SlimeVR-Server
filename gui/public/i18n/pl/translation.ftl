@@ -33,6 +33,10 @@ tips-failed_webgl = Nie udało się zainicjalizować WebGL.
 
 ## Units
 
+unit-meter = Metr
+unit-foot = Stopa
+unit-inch = Cal
+unit-cm = cm
 
 ## Body parts
 
@@ -98,6 +102,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = Podstawa T TTGO
 board_type-ESP01 = Zobacz materiał ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Płytka Deweloperska
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -249,6 +255,10 @@ reset-mounting = Zresetuj położenie
 reset-mounting-feet = Zresetuj mocowanie stóp
 reset-mounting-fingers = Zresetuj mocowanie palców
 reset-yaw = Reset odchylenia
+reset-error-no_feet_tracker = Nie przypisano urządzenia śledzenia stóp
+reset-error-no_fingers_tracker = Nie przypisano urządzenia śledzenia palcy
+reset-error-mounting-need_full_reset = Potrzebny jest pełny reset przed montażem
+reset-error-yaw-need_full_reset = Potrzebny jest pełny reset przed resetem obrotu
 
 ## Serial detection stuff
 
@@ -268,10 +278,12 @@ navbar-trackers_assign = Przydzielenie Trackerów
 navbar-mounting = Kalibracja Pozycji
 navbar-onboarding = Wstępna konfiguracja
 navbar-settings = Ustawienia
+navbar-connect_trackers = Połącz Urządzenia
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Nagraj BVH
+bvh-stop_recording = Zapisz nagranie BVH
 bvh-recording = Nagrywanie...
 bvh-save_title = Zapisz nagranie BVH
 
@@ -408,11 +420,15 @@ tracker-settings-name_section-label = Nazwa Urządzenia
 tracker-settings-forget = Zapomnij o trackerze
 tracker-settings-forget-description = Usuwa moduł śledzący z serwera SlimeVR i uniemożliwia mu połączenie się z nim do czasu ponownego uruchomienia serwera. Konfiguracja modułu śledzącego nie zostanie utracona.
 tracker-settings-forget-label = Zapomnij o trackerze
+tracker-settings-update-unavailable-v2 = Nie znaleziono aktualizacji
+tracker-settings-update-incompatible = Nie można zaktualizować. Niekompatybilne urządzenie lub wersja oprogramowania.
 tracker-settings-update-low-battery = Nie można zaktualizować. Bateria poniżej 50%
 tracker-settings-update-up_to_date = Aktualny
 tracker-settings-update-blocked = Aktualizacja niedostępna. Brak innych wersji
 tracker-settings-update = Zaktualizuj teraz
 tracker-settings-update-title = Wersja oprogramowania
+tracker-settings-current-version = Aktualny
+tracker-settings-latest-version = Najnowszy
 
 ## Tracker part card info
 
@@ -478,6 +494,7 @@ mounting_selection_menu-close = Zamknij
 
 settings-sidebar-title = Ustawienia
 settings-sidebar-general = Ogólne
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mechanika trackerów
 settings-sidebar-stay_aligned = Wyrównywanie
 settings-sidebar-fk_settings = Ustawienia śledzenia
@@ -485,9 +502,12 @@ settings-sidebar-gesture_control = Sterowanie gestami
 settings-sidebar-interface = Interfejs
 settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = Śledzenie VRChat OSC
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Narzędzia
 settings-sidebar-serial = Konsola szeregowa
 settings-sidebar-appearance = Wygląd
+settings-sidebar-home = Strona Główna
+settings-sidebar-checklist = Lista kontrolna
 settings-sidebar-notifications = Powiadomienia
 settings-sidebar-behavior = Zachowanie
 settings-sidebar-firmware-tool = Narzędzie do oprogramowania sprzętowego DIY
@@ -613,11 +633,16 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip może
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap próbuje odgadnąć obrót twoich stóp, jeśli trackery stóp nie są używane.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obraca stopy, aby były równoległe do podłoża podczas kontaktu.
 settings-general-fk_settings-leg_fk = Śledzenie nóg
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Wymuś kalibracje montażu stóp podczas kalibracji pozycji.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Wymuś kalibracje mocowania stóp
 settings-general-fk_settings-enforce_joint_constraints = Limity szkieletowe
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Wymuszanie ograniczeń
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zapobiega obracaniu się stawów poza ich limit
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Korygowanie za pomocą ograniczeń
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Koryguj rotacje stawów, gdy przekraczają swój limit
+settings-general-fk_settings-ik = Dane pozycji
+settings-general-fk_settings-ik-use_position = Użyj danych o pozycji
+settings-general-fk_settings-ik-use_position-description = Umożliwia wykorzystanie danych o pozycji z urządzeń, które je wspierają. Włączając to, upewnij się, że dokonałeś reset w aplikacji i skalibrowałeś położenie w grze.
 settings-general-fk_settings-arm_fk = Śledzenie ramienia
 settings-general-fk_settings-arm_fk-description = Zmień sposób śledzenia ramion.
 settings-general-fk_settings-arm_fk-force_arms = Śledź ramiona z gogli VR
@@ -775,6 +800,11 @@ settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skanuj sieci WiFi
 settings-serial-file_type = Zwykły tekst
 settings-serial-save_logs = Zapisz do pliku
+settings-serial-send_command = Wyślij
+settings-serial-send_command-placeholder = Polecenie...
+settings-serial-send_command-warning = <b>Ostrzeżenie:</b> Wysyłanie poleceń szeregowych może prowadzić do utraty danych lub zablokowania urządzenia.
+settings-serial-send_command-warning-ok = Wiem co robię
+settings-serial-send_command-warning-cancel = Anuluj
 
 ## OSC router settings
 
@@ -874,6 +904,8 @@ settings-osc-vmc-mirror_tracking-label = Odbicie lustrzane śledzenia
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = Porty wejściowe i wyjściowe routera OSC nie mogą być takie same!
+settings-osc-common-network-port_banned_error = Port { $port } nie może zostać użyty!
 
 ## Advanced settings
 
@@ -906,9 +938,15 @@ settings-utils-advanced-open_logs-label = Otwórz folder
 
 ## Home Screen
 
+settings-home-list-layout = Układ listy urządzeń
+settings-home-list-layout-desc = Wybierz jeden z możliwych układów ekranu głównego
+settings-home-list-layout-grid = Siatka
+settings-home-list-layout-table = Tabela
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Aktywne Kroki
+settings-tracking_checklist-active_steps-desc = Lista wszystkich kroków kontrolnych. Możesz wyłączyć konkretne punkty.
 
 ## Setup/onboarding menu
 
@@ -1046,6 +1084,7 @@ onboarding-assignment_tutorial-done = Umieszczam naklejki i paski!
 onboarding-assign_trackers-back = Cofnij się do ustawień Wi-Fi
 onboarding-assign_trackers-title = Przydziel Trackery
 onboarding-assign_trackers-description = Wybierzmy gdzie idzie jaki tracker. Naciśnij gdzie chcesz go przydzielić
+onboarding-assign_trackers-unassign_all = Usuń przydzielenie wszystkich urządzeń
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1193,6 +1232,8 @@ onboarding-automatic_mounting-done-restart = Cofnij się na początek
 onboarding-automatic_mounting-mounting_reset-title = Kalibracja Pozycji
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Zrób pozycje "na Małysza" z wygiętymi nogami, tułowiem pochylonym do przodu z wygiętymi rękami.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Naciśnij "Zresetuj Położenie" i poczekaj 3 sekundy zanim trackery się zresetują.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stań na palcach z obiema stopami skierowanymi do przodu. Alternatywnie możesz to zrobić siedząc na krześle.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Naciśnij "Kalibracja Stóp" i poczekaj 3 sekundy zanim zresetuje pozycje.
 onboarding-automatic_mounting-preparation-title = Przygotowania
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Naciśnij przycisk "Pełny reset".
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stań prosto z rękami po bokach. Upewnij się, że patrzysz przed siebie.
@@ -1200,9 +1241,11 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Utrzymaj pozycję, aż 
 onboarding-automatic_mounting-put_trackers_on-title = Załóż trackery
 onboarding-automatic_mounting-put_trackers_on-description = Aby skalibrować rotacje, użyjemy trackerów które przypisano przed chwilą. Załóż wszystkie trackery, możesz je odróznić na postaci po prawej.
 onboarding-automatic_mounting-put_trackers_on-next = Wszystkie trackery założone
+onboarding-automatic_mounting-return-home = Gotowe
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Wróć do skalowania proporcji
 onboarding-manual_proportions-title = Manualne Proporcje Ciała
 onboarding-manual_proportions-fine_tuning_button = Automatyczne dostrajanie proporcji
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Podłącz gogle VR, aby korzystać z automatycznego dostrajania
@@ -1304,6 +1347,30 @@ onboarding-automatic_proportions-smol_warning-cancel = Przejdź wstecz
 
 ## User height calibration
 
+onboarding-user_height-title = Jaki masz wzrost?
+onboarding-user_height-description = Potrzebujemy twojego wzrostu, aby obliczyć proporcje ciała i dokładnie oddać twoje ruchy. Możesz pozwolić SlimeVR to obliczyć albo wpisać swój wzrost ręcznie.
+onboarding-user_height-need_head_tracker = Do kalibracji wymaganę są gogle vr z kontrolerami.
+onboarding-user_height-calculate = Automatycznie oblicz mój wzrost
+onboarding-user_height-next_step = Kontynuuj i zapisz
+onboarding-user_height-manual-proportions = Manualne Proporcje Ciała
+onboarding-user_height-calibration-title = Postęp kalibracji
+onboarding-user_height-calibration-RECORDING_FLOOR = Dotknij podłogi górną częścią kontrolera
+onboarding-user_height-calibration-WAITING_FOR_RISE = Wstań
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Wstań i spójrz przed siebie
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Upewnij się, że masz głowę poziomo
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Nie patrz w podłogę
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Nie patrz za wysoko
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Upewnij się, że kontroler jest skierowany w dół
+onboarding-user_height-calibration-RECORDING_HEIGHT = Wstań i nie ruszaj się!
+onboarding-user_height-calibration-DONE = Sukces!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Kalibracja zakończona niepomyślnie, spróbuj ponownie.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = Wykryty wzrost użytkownika jest zbyt wysoki, spróbuj ponownie.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = Wykryty wzrost użytkownika jest zbyt mały. Upewnij się, że stoisz prosto i patrzysz przed siebie pod koniec kalibracji.
+onboarding-user_height-calibration-error = Kalibracja nieudana
+onboarding-user_height-manual-tip = Podczas regulacji wzrostu wypróbuj różne pozy i zobacz, czy szkielet odzwierciedla twoje ruchy.
+onboarding-user_height-reset-warning =
+    <b>Ostrzeżenie:</b> Spowoduje to zresetowanie wszystkich ustawień proporcji do wartości domyślnych.
+    Czy na pewno chcesz to zrobić?
 
 ## Stay Aligned setup
 
@@ -1342,6 +1409,8 @@ onboarding-stay_aligned-done = Gotowy
 ## Home
 
 home-no_trackers = Nie wykryto ani nie przypisano żadnych trackerów
+home-settings = Ustawienia strony głównej
+home-settings-close = Zamknij
 
 ## Trackers Still On notification
 
@@ -1383,21 +1452,50 @@ firmware_tool = Narzędzie do oprogramowania sprzętowego DIY
 firmware_tool-description = Umożliwia konfigurowanie i flashowanie trackerów DIY
 firmware_tool-not_available = Ups, narzędzie do oprogramowania sprzętowego nie jest obecnie dostępne. Wróć później!
 firmware_tool-not_compatible = Narzędzie oprogramowania układowego nie jest kompatybilne z tą wersją serwera. Proszę zaktualizować swój serwer!
+firmware_tool-select_source = Wybierz oprogramowanie do wgrania
+firmware_tool-select_source-description = Wybierz oprogramowanie, które chcesz wgrać na urządzenie
+firmware_tool-select_source-error = Nie można załadować oprogramowania
+firmware_tool-select_source-board_type = Typ urządzenia
+firmware_tool-select_source-firmware = Źródło oprogramowania
+firmware_tool-select_source-version = Wersja oprogramowania
+firmware_tool-select_source-official = Oficjalny
+firmware_tool-select_source-dev = Deweloperski
+firmware_tool-board_defaults = Skonfiguruj swoje urządzenie
+firmware_tool-board_defaults-description = Ustaw piny lub ustawienia do twojego urządzenia
+firmware_tool-board_defaults-add = Dodaj
+firmware_tool-board_defaults-reset = Zresetuj do domyślnych ustawień
+firmware_tool-board_defaults-error-required = Wymagane pole
+firmware_tool-board_defaults-error-format = Nieprawidłowy format
+firmware_tool-board_defaults-error-format-number = To nie liczba
 firmware_tool-flash_method_step = Metoda flashowania
 firmware_tool-flash_method_step-description = Wybierz metodę flashowania, której chcesz użyć
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = Użyj metody bezprzewodowej. Twoje urządzenie będzie aktualizować się przez Wi-Fi. Działa tylko z skonfigurowanymi urządzeniami.
+firmware_tool-flash_method_step-ota-info =
+    Używamy Twoich danych wi-fi, aby wgrać tracker i potwierdzić, że wszystko działa poprawnie.
+    <b>Nie przechowujemy Twoich danych wifi!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Użyj kabla usb, aby aktualizować urządzenie.
 firmware_tool-flashbtn_step = Naciśnij przycisk zasilania
 firmware_tool-flashbtn_step-description = Zanim przejdziesz do następnego kroku, musisz zrobić kilka rzeczy
 firmware_tool-flashbtn_step-board_SLIMEVR =
     Naciśnij przycisk flash na płytce drukowanej przed włożeniem, aby włączyć tracker.¶
     Jeśli tracker był już włączony, po prostu go wyłącz i włącz ponownie, naciskając przycisk lub zwierając podkładki flash.¶
     Oto kilka zdjęć, jak to zrobić, zgodnie z różnymi wersjami trackera SlimeVR
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Włącz tracker zwierając drugi prostokątny pad FLASH od krawędzi na górnej stronie płytki, a metalową osłonę mikrokontrolera
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Włącz tracker zwierając drugi prostokątny pad FLASH od krawędzi na górnej stronie płytki, a metalową osłonę mikrokontrolera
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Włącz tracker, naciskając przycisk FLASH na górnej stronie płytki. Dioda LED powinna krótko mrógnąć.
 firmware_tool-flashbtn_step-board_OTHER =
     Przed flashowaniem prawdopodobnie będziesz musiał przełączyć moduł śledzący w tryb bootloadera.¶
     W większości przypadków oznacza to naciśnięcie przycisku rozruchu na płycie przed rozpoczęciem procesu flashowania.¶
     Jeśli na początku flashowania upłynie limit czasu procesu flashowania, prawdopodobnie oznacza to, że moduł śledzący nie był w trybie bootloadera¶
     Aby dowiedzieć się, jak włączyć tryb ładowarki łodzi, zapoznaj się z instrukcjami flashowania swojej tablicy
+firmware_tool-flash_method_ota-title = Wgrywanie przez Wi-Fi
 firmware_tool-flash_method_ota-devices = Wykryte urządzenia OTA:
 firmware_tool-flash_method_ota-no_devices = Nie ma tablic, które można zaktualizować za pomocą OTA, upewnij się, że wybrałeś właściwy typ płyty
+firmware_tool-flash_method_serial-title = Wgrywanie przez USB
 firmware_tool-flash_method_serial-wifi = Dane uwierzytelniające Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Wykryte urządzenia szeregowe:
 firmware_tool-flash_method_serial-devices-placeholder = Wybierz urządzenie szeregowe
@@ -1412,7 +1510,10 @@ firmware_tool-flashing_step-exit = Wyjście
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Budowanie....
 firmware_tool-build-CREATING_BUILD_FOLDER = Tworzenie folderu kompilacji
+firmware_tool-build-DOWNLOADING_SOURCE = Pobieranie kodu źródłowego
+firmware_tool-build-EXTRACTING_SOURCE = Ekstrakcja kodu źródłowego
 firmware_tool-build-BUILDING = Budowa oprogramowania sprzętowego
 firmware_tool-build-SAVING = Zapisywanie kompilacji
 firmware_tool-build-DONE = Budowa ukończona
@@ -1521,8 +1622,69 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Rozpiętość ramion
 
 error_collection_modal-title = Czy możemy zbierać błędy?
 error_collection_modal-description_v2 =
-    { ustawienia-interfejsu-zachowanie-error_tracking-description_v2 }
+    { settings-interface-behavior-error_tracking-description_v2 }
     
     To ustawienie można zmienić później w sekcji Zachowanie na stronie ustawień.
 error_collection_modal-confirm = Zgadzam się
 error_collection_modal-cancel = Nie chcę
+tracking_checklist = Lista Kontrolna
+tracking_checklist-settings = Ustawienia Listy Kontrolnej
+tracking_checklist-settings-close = Zamknij
+tracking_checklist-status-incomplete = Nie jesteś przygotowany aby korzystać ze SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] Masz { $count } ostrzeżenie!
+        [few] Masz { $count } ostrzeżeń!
+       *[many] Masz { $count } ostrzeżeń!
+    }
+tracking_checklist-status-complete = Jesteś gotowy korzystać ze SlimeVR!
+tracking_checklist-MOUNTING_CALIBRATION = Wykonaj kalibrację montażu
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Wykonaj kalibrację montażu stóp
+tracking_checklist-FULL_RESET = Wykonaj pełny reset
+tracking_checklist-FULL_RESET-desc = Niektóre urządzenia wymagają resetu.
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR nie jest uruchomiony
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR nie jest uruchomiony. Czy twoje gogle są podłączone?
+tracking_checklist-STEAMVR_DISCONNECTED-open = Uruchom SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Skalibruj swoje urządzenia
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Nie wykonałeś kalibracji urządzenia. Proszę, pozwól swoim urządzeniom (podświetlonym na żółto) odpocząć na stabilnej powierzchni przez kilka sekund.
+tracking_checklist-TRACKER_ERROR = Urządzenia z błędami
+tracking_checklist-TRACKER_ERROR-desc = Niektóre z Twoich urządzeń mają błędy. Proszę ponownie uruchomić urządzenia podświetlone na żółto.
+tracking_checklist-VRCHAT_SETTINGS = Konfiguruj ustawienia do VRChat'a
+tracking_checklist-VRCHAT_SETTINGS-desc = Źle ustawiłeś ustawienia VRChat'a! Może to negatywnie wpłynąć na twoje śledzenie.
+tracking_checklist-VRCHAT_SETTINGS-open = Przejdź do ostrzeżeń VRChat
+tracking_checklist-UNASSIGNED_HMD = Zestaw VR nieprzypisany do Głowy
+tracking_checklist-UNASSIGNED_HMD-desc = Zestaw VR powinien być przypisany jako śledzenie głowy.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Zmień profil sieciowy
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Jeden z Twoich adapterów sieciowych jest ustawiony na publiczny:
+            { $adapters }
+            Nie zaleca się tego, aby SlimeVR działał poprawnie.
+            <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
+        [few]
+            Niektóre z Twoich adapterów sieciowych są ustawione na publiczne:
+            { $adapters }
+            Nie zaleca się tego, aby SlimeVR działał poprawnie.
+            <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
+       *[many]
+            Niektóre z Twoich adapterów sieciowych są ustawione na publiczne:
+            { $adapters }
+            Nie zaleca się tego, aby SlimeVR działał poprawnie.
+            <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
+    }
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otwórz panel sterowania
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Konfiguruj Opcje Wyrównywania
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Zapisz pozycje wyrównywania, aby zmniejszyć poślizg
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Otwórz Konfiguracje Wyrównywania
+tracking_checklist-ignore = Ignoruj
+preview-mocap_mode_soon = Tryb mocap (wkrótce™)
+preview-disable_render = Wyłącz renderowanie
+preview-disabled_render = Renderowanie wyłączone
+toolbar-mounting_calibration = Kalibracja Pozycji
+toolbar-mounting_calibration-default = Ciało
+toolbar-mounting_calibration-feet = Stopy
+toolbar-mounting_calibration-fingers = Palce
+toolbar-drift_reset = Reset Poślizgu
+toolbar-assigned_trackers = { $count } Przydzielonych urządzeń
+toolbar-unassigned_trackers = { $count } Nieprzydzielonych urządzeń

@@ -16,6 +16,7 @@ import classNames from 'classnames';
 import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { TrackingChecklistStepId } from 'solarxr-protocol';
+import * as Sentry from '@sentry/react';
 
 type StepsForm = { steps: Record<TrackingChecklistStepId, boolean> };
 export function TrackingChecklistSettings({
@@ -54,10 +55,16 @@ export function TrackingChecklistSettings({
       // that prevent sending a packet for steps that didnt change
       if (!value && !ignoredSteps.includes(stepId)) {
         ignoreStep(stepId, true);
+        Sentry.metrics.count('mute_checklist_step', 1, {
+          attributes: { step: TrackingChecklistStepId[stepId] },
+        });
       }
 
       if (value && ignoredSteps.includes(stepId)) {
         ignoreStep(stepId, false);
+        Sentry.metrics.count('unmute_checklist_step', 1, {
+          attributes: { step: TrackingChecklistStepId[stepId] },
+        });
       }
     }
   };
@@ -130,11 +137,19 @@ export function LayoutSelector({
   );
 }
 
-export function HomeLayoutSettings() {
+export function HomeLayoutSettings({
+  variant,
+}: {
+  variant: 'settings' | 'modal';
+}) {
   const { config, setConfig } = useConfig();
 
-  const setLayout = (layout: Config['homeLayout']) =>
+  const setLayout = (layout: Config['homeLayout']) => {
     setConfig({ homeLayout: layout });
+    Sentry.metrics.count('change_layout', 1, {
+      attributes: { layout, from: variant },
+    });
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -178,7 +193,7 @@ export function HomeScreenSettings() {
       <div className="flex flex-col gap-2">
         <SettingsPagePaneLayout icon={<HomeIcon />}>
           <Typography variant="main-title" id="home-settings" />
-          <HomeLayoutSettings />
+          <HomeLayoutSettings variant="settings" />
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout icon={<CheckIcon size={18} />}>
           <Typography variant="main-title" id="tracking_checklist" />

@@ -12,6 +12,7 @@ import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom, serverGuardsAtom } from '@/store/app-store';
 import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from './body-parts';
 import { useLocaleConfig } from '@/i18n/config';
+import * as Sentry from '@sentry/react';
 
 export type ResetBtnStatus = 'idle' | 'counting' | 'finished';
 
@@ -45,6 +46,8 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
     req.resetType = options.type;
     req.bodyParts = parts;
     sendRPCPacket(RpcMessage.ResetRequest, req);
+
+    Sentry.metrics.count('reset_click', 1, { attributes: options });
   };
 
   const onResetFinished = () => {
