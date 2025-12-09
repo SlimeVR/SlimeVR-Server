@@ -37,8 +37,17 @@ tasks.register<Copy>("copyGuiAssets") {
 		throw GradleException("You need to run \"pnpm run build\" on the gui folder first!")
 	}
 }
+tasks.register("validateKeyStore") {
+	val storeFile = android.buildTypes.getByName("release").signingConfig?.storeFile
+	// Only warn for now since this is run even when irrelevant
+	if (storeFile?.isFile != true) {
+		logger.error("Android KeyStore file does not exist or is not a file: ${storeFile?.path}")
+	} else if (storeFile.length() <= 0) {
+		logger.error("Android KeyStore file is empty: ${storeFile.path}")
+	}
+}
 tasks.preBuild {
-	dependsOn(":server:android:copyGuiAssets")
+	dependsOn(":server:android:copyGuiAssets", ":server:android:validateKeyStore")
 }
 
 tasks.withType<KotlinCompile> {
@@ -134,6 +143,15 @@ android {
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
 
+	signingConfigs {
+		create("release") {
+			storeFile = file("./secrets/keystore.jks")
+			storePassword = System.getenv("ANDROID_STORE_PASSWD")
+			keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+			keyPassword = System.getenv("ANDROID_KEY_PASSWD")
+		}
+	}
+
 	/*	The buildTypes block is where you can configure multiple build types.
 		By default, the build system defines two build types: debug and release. The
 		debug build type is not explicitly shown in the default build configuration,
@@ -152,6 +170,7 @@ android {
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro",
 			)
+			signingConfig = signingConfigs.getByName("release")
 		}
 	}
 

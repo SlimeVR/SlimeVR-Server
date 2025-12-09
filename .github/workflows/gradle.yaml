@@ -65,7 +65,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Build with Gradle
-        run: ./gradlew shadowJar
+        run: ./gradlew :server:desktop:shadowJar
 
       - name: Upload the Server JAR as a Build Artifact
         uses: actions/upload-artifact@v5
@@ -113,13 +113,24 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Build
+      - name: Build GUI
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: cd gui && pnpm run build
 
+      - name: Decode keystore secret to file
+        env:
+          ANDROID_STORE_FILE: ${{ secrets.ANDROID_STORE_FILE }}
+        run: |
+          mkdir -p server/android/secrets/
+          echo $ANDROID_STORE_FILE | base64 --decode > server/android/secrets/keystore.jks
+
       - name: Build with Gradle
-        run: ./gradlew :server:android:assembleDebug
+        run: ./gradlew :server:android:build
+        env:
+          ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_STORE_PASSWD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
 
       - name: Upload the Android Build Artifact
         uses: actions/upload-artifact@v5
@@ -132,7 +143,7 @@ jobs:
       - name: Prepare for release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          cp server/android/build/outputs/apk/debug/android-debug.apk ./SlimeVR-android.apk
+          cp server/android/build/outputs/apk/release/android-release.apk ./SlimeVR-android.apk
 
       - name: Upload to draft release
         uses: softprops/action-gh-release@v2
