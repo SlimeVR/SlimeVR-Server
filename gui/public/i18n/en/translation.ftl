@@ -924,10 +924,10 @@ onboarding-wifi_creds-back = Go back to introduction
 onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
-    Trackers such as Official Slimes 1.0 and 1.2 use Wi-Fi to operate.
-    Please use the credentials of the Wi-Fi network that your computer is currently connected to.
+    Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
+    Please use the credentials of the Wi-Fi network your device is currently connected to.
 
-    Make sure to use a 2.4Ghz Wi-Fi connection for your trackers!
+    Make sure to use a 2.4GHz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Skip Wi-Fi settings
 onboarding-wifi_creds-submit = Submit!
 onboarding-wifi_creds-ssid =
@@ -940,9 +940,8 @@ onboarding-wifi_creds-password =
 
 onboarding-wifi_creds-dongle-title = Trackers using a dongle
 onboarding-wifi_creds-dongle-description =
-    If your trackers came with a dongle.
-    Plug it into your computer and you should be good to go!
-onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page will be made to manage the trackers that connect via a dongle soon
+    If your trackers came with a dongle, plug it into your device and you should be good to go!
+onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page to manage trackers that connect via a dongle will be made soon.
 onboarding-wifi_creds-dongle-continue = Continue with a dongle
 
 ## Mounting setup
