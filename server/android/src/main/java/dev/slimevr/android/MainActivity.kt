@@ -7,7 +7,6 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import io.eiren.util.logging.LogManager
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
