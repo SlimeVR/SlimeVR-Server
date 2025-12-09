@@ -266,7 +266,7 @@ serial_detection-new_device-p0 = ตรวจพบอุปกรณ์ Serial 
 serial_detection-new_device-p1 = ใส่ข้อมูลเครือข่าย Wi-Fi ของคุณ!
 serial_detection-new_device-p2 = กรุณาเลือกสิ่งที่คุณต้องการทำกับอุปกรณ์
 serial_detection-open_wifi = เชื่อมต่อกับ Wi-Fi
-serial_detection-open_serial = เปิดหน้า Serial console
+serial_detection-open_serial = เปิดหน้าคอนโซล Serial
 serial_detection-submit = ยืนยัน!
 serial_detection-close = ปิด
 
@@ -503,7 +503,7 @@ settings-sidebar-osc_router = เราเตอร์ OSC
 settings-sidebar-osc_trackers = แทร็กเกอร์ VRChat OSC
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = เครื่องมือ
-settings-sidebar-serial = Serial Console
+settings-sidebar-serial = คอนโซล Serial
 settings-sidebar-appearance = รูปแบบ
 settings-sidebar-home = หน้าหลัก
 settings-sidebar-checklist = รายการเตรียมความพร้อมแทร็กเกอร์
@@ -585,7 +585,7 @@ settings-general-tracker_mechanics-drift_compensation-amount-label = ปริ�
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = ใช้ค่าจากการรีเซ็ต X ครั้ง
 settings-general-tracker_mechanics-save_mounting_reset = บันทึกค่าการตั้งศูนย์การติดตั้งโดยอัตโนมัติ
 settings-general-tracker_mechanics-save_mounting_reset-description =
-    บันทึกการตั้งศูนย์การติดตั้งแทร็กเกอร์อัตโนมัติเพื่อใช้ซ้ำเมื่อรีสตาร์ท
+    บันทึกการตั้งศูนย์การติดตั้งแทร็กเกอร์อัตโนมัติ เพื่อใช้ซ้ำเมื่อรีสตาร์ท
     มีประโยชน์เมื่อสวมชุดที่ตำแหน่งแทร็กเกอร์ไม่เปลี่ยนแปลงระหว่างการใช้งาน <b>ไม่แนะนำสำหรับผู้ใช้ทั่วไป!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = บันทึกการรีเซ็ตการติดตั้ง
 settings-general-tracker_mechanics-use_mag_on_all_trackers = ใช้เซ็นเซอร์สนามแม่เหล็กบนแทร็กเกอร์ที่ IMU รองรับ
@@ -766,7 +766,7 @@ settings-interface-behavior-bvh_directory-label = ไดเร็กทอรี
 
 ## Serial settings
 
-settings-serial = Serial Console
+settings-serial = คอนโซล Serial
 # This cares about multilines
 settings-serial-description =
     นี่คือฟีดข้อมูลสดสำหรับการสื่อสารแบบ Serial
