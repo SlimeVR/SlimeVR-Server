@@ -39,6 +39,14 @@ tasks.register<Copy>("copyGuiAssets") {
 }
 tasks.preBuild {
 	dependsOn(":server:android:copyGuiAssets")
+
+	// Validate release keystore
+	val storeFile = android.buildTypes.getByName("release").signingConfig?.storeFile
+	if (storeFile?.isFile != true) {
+		throw GradleException("KeyStore file does not exist or is not a file: ${storeFile?.path}")
+	} else if (storeFile.length() <= 0) {
+		throw GradleException("KeyStore file is empty: ${storeFile.path}")
+	}
 }
 
 tasks.withType<KotlinCompile> {
