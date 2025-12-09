@@ -615,11 +615,6 @@ onboarding-setup_warning-cancel = Продовжити налаштування
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Повернутися до вступу
-onboarding-wifi_creds = Введіть дані Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Трекери використовуватимуть ці дані для бездротового підключення.
-    Будь ласка, використовуйте дані, до яких ви зараз підключені.
 onboarding-wifi_creds-skip = Пропустити налаштування Wi-Fi
 onboarding-wifi_creds-submit = Підтвердити!
 onboarding-wifi_creds-ssid =
@@ -855,4 +850,7 @@ unknown_device-modal-confirm = Звісно!
 unknown_device-modal-forget = Ігнорувати
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

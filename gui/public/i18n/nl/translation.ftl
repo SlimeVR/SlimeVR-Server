@@ -914,11 +914,6 @@ onboarding-setup_warning-cancel = Doorgaan met setupgids
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Ga terug naar de introductie
-onboarding-wifi_creds = Voer de WiFi-inloggegevens in
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Deze gegevens worden gebruikt om de trackers draadloos te verbinden met de server.
-    Gelieve de gegevens te gebruiken van het netwerk waarmee je momenteel bent verbonden.
 onboarding-wifi_creds-skip = WiFi-instellingen overslaan
 onboarding-wifi_creds-submit = Verzenden!
 onboarding-wifi_creds-ssid =
@@ -1493,3 +1488,6 @@ error_collection_modal-description_v2 =
     U kunt deze instelling later wijzigen in de sectie Gedrag van de instellingenpagina.
 error_collection_modal-confirm = Ik ben akkoord
 error_collection_modal-cancel = Ik wil het niet
+
+## Tracking checklist section
+

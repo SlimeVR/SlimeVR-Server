@@ -947,11 +947,6 @@ onboarding-setup_warning-cancel = 繼續設定
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = 返回簡介
-onboarding-wifi_creds = 輸入 Wi-Fi 認證資訊
-# This cares about multilines
-onboarding-wifi_creds-description =
-    追蹤器將使用該認證資訊以進行無線連接，
-    請使用目前連接中的認證資訊。
 onboarding-wifi_creds-skip = 跳過 Wi-Fi 設定
 onboarding-wifi_creds-submit = 送出！
 onboarding-wifi_creds-ssid =
@@ -1581,6 +1576,9 @@ error_collection_modal-description_v2 =
     若之後要變更此設定，可以在「詳細設定」頁面中的「行為」來變更。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 我不想要
+
+## Tracking checklist section
+
 tracking_checklist = 追蹤清單
 tracking_checklist-settings = 追蹤清單設定
 tracking_checklist-settings-close = 關閉

@@ -824,12 +824,6 @@ onboarding-setup_warning-cancel = Einrichtung fortsetzen
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Zurück zur Einführung
-onboarding-wifi_creds = WLAN-Zugangsdaten eingeben
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Die Tracker nutzen diese Zugangsdaten, um sich mit dem WLAN zu verbinden.
-    Bitte verwenden Sie die Zugangsdaten, mit denen ihr PC gerade verbunden sind.
-    Dieses WLAN-Netzwerk muss ein 2.4 GHz-Netzwerk sein.
 onboarding-wifi_creds-skip = WLAN-Zugangsdaten überspringen
 onboarding-wifi_creds-submit = Weiter!
 onboarding-wifi_creds-ssid =
@@ -1349,6 +1343,9 @@ error_collection_modal-description_v2 =
     Sie können diese Einstellung später im Abschnitt Verhalten auf der Einstellungsseite ändern.
 error_collection_modal-confirm = Ich stimme zu
 error_collection_modal-cancel = Ich will nicht
+
+## Tracking checklist section
+
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR läuft nicht. Nutzen sie es für VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = SteamVR starten
 tracking_checklist-ignore = Ignorieren

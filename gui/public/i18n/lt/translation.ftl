@@ -694,3 +694,6 @@ settings-general-gesture_control-trackers =
 
 error_collection_modal-confirm = Sutinku
 error_collection_modal-cancel = Nesutinku
+
+## Tracking checklist section
+

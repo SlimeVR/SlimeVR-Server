@@ -376,3 +376,6 @@ settings-osc-vrchat-network-address = Ağ adresi
 
 ## Error collection consent modal
 
+
+## Tracking checklist section
+

@@ -384,3 +384,6 @@ home-no_trackers = לא זוהו או הוקצו חיישנים
 
 ## Error collection consent modal
 
+
+## Tracking checklist section
+

@@ -577,11 +577,6 @@ onboarding-setup_warning-cancel = セットアップを続行する
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = 戻る
-onboarding-wifi_creds = Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    トラッカーはこれらの認証情報を使ってWi-Fiに接続します。
-    現在接続している認証情報を使用してください。
 onboarding-wifi_creds-skip = Wi-Fi設定をスキップする
 onboarding-wifi_creds-submit = 実行！
 onboarding-wifi_creds-ssid =
@@ -794,4 +789,7 @@ unknown_device-modal-confirm = もちろん!
 unknown_device-modal-forget = 無視する
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

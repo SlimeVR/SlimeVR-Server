@@ -742,11 +742,6 @@ onboarding-setup_warning-cancel = continu setup
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = gaww bawwk to intwoduction
-onboarding-wifi_creds = input wi-fi cwedentials
-# This cares about multilines
-onboarding-wifi_creds-description =
-    teh twawckaws will use these cwedentials to connect wirelessly
-    pwease use teh cwedentials that yaww awe cwowently cownyected to
 onboarding-wifi_creds-skip = skipy wi-fi settiwyngs
 onboarding-wifi_creds-submit = suwbmyt!
 onboarding-wifi_creds-ssid =
@@ -1223,4 +1218,7 @@ unknown_device-modal-confirm = sure!!
 unknown_device-modal-forget = ignowe it
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

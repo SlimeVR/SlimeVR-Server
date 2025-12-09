@@ -497,11 +497,6 @@ onboarding-wip = Arbeid pågår
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Gå tilbake til introduksjonen
-onboarding-wifi_creds = Tast inn Wi-Fi legitimasjon
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Trackerne bruker denne legitimasjonen for å koble til trådløst.
-    Vennligst bruk legitimasjonen til nettet du er koblet til nå.
 onboarding-wifi_creds-skip = Hopp over Wi-Fi innstillinger
 onboarding-wifi_creds-submit = Send inn!
 onboarding-wifi_creds-ssid =
@@ -682,4 +677,7 @@ tray_or_exit_modal-cancel = Avbryt
 
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

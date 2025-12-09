@@ -952,11 +952,6 @@ onboarding-setup_warning-cancel = Continuer la configuration
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Retour à l'introduction
-onboarding-wifi_creds = Saisir les identifiants Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Les capteurs utiliseront ces informations d'identification pour se connecter au réseau.
-    Veuillez utiliser les identifiants avec lesquels vous êtes actuellement connecté.
 onboarding-wifi_creds-skip = Passer configuration Wi-Fi
 onboarding-wifi_creds-submit = Valider
 onboarding-wifi_creds-ssid =
@@ -1571,3 +1566,6 @@ error_collection_modal-description_v2 =
     Vous pouvez modifier ce paramètre ultérieurement dans la section "Comportement" des paramètres.
 error_collection_modal-confirm = Je suis d'accord
 error_collection_modal-cancel = Je ne veux pas
+
+## Tracking checklist section
+

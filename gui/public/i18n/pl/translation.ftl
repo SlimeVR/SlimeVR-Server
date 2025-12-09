@@ -963,11 +963,6 @@ onboarding-setup_warning-cancel = Kontynuuj konfigurację
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Cofnij się do początku
-onboarding-wifi_creds = Wpisz dane Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Trackery będą używać tej sieci do łączenia się z serwerem
-    proszę używać sieci do której jest się połączonym
 onboarding-wifi_creds-skip = Pomiń ustawienia Wi-Fi
 onboarding-wifi_creds-submit = Potwierdź!
 onboarding-wifi_creds-ssid =
@@ -1627,6 +1622,9 @@ error_collection_modal-description_v2 =
     To ustawienie można zmienić później w sekcji Zachowanie na stronie ustawień.
 error_collection_modal-confirm = Zgadzam się
 error_collection_modal-cancel = Nie chcę
+
+## Tracking checklist section
+
 tracking_checklist = Lista Kontrolna
 tracking_checklist-settings = Ustawienia Listy Kontrolnej
 tracking_checklist-settings-close = Zamknij

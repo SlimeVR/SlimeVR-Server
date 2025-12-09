@@ -784,11 +784,6 @@ onboarding-setup_warning-cancel = Pokračovat v nastavení
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Zpět na úvod
-onboarding-wifi_creds = Zadání přihlašovacích údajů k Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Sledovací zařízení budou tato přihlašovací údaje používat k připojení.
-    Použijte prosím přihlašovací údaje, ke kterým jste aktuálně připojeni.
 onboarding-wifi_creds-skip = Přeskočit nastavení Wi-Fi
 onboarding-wifi_creds-submit = Odeslat!
 onboarding-wifi_creds-ssid =
@@ -1274,3 +1269,6 @@ error_collection_modal-description_v2 =
     Tohle lze později změnit v sekci Chování v nastavení.
 error_collection_modal-confirm = Souhlasím
 error_collection_modal-cancel = Nesouhlasím
+
+## Tracking checklist section
+

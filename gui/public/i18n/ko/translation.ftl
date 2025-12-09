@@ -743,11 +743,6 @@ onboarding-setup_warning-cancel = 설정 계속하기
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = 처음으로 돌아가기
-onboarding-wifi_creds = Wi-Fi 자격 증명을 입력하세요
-# This cares about multilines
-onboarding-wifi_creds-description =
-    트래커는 이 자격 증명을 사용하여 무선으로 연결해요
-    지금 연결되어 있는 자격 증명을 사용해주세요
 onboarding-wifi_creds-skip = Wi-Fi 설정 건너뛰기
 onboarding-wifi_creds-submit = 저장!
 onboarding-wifi_creds-ssid =
@@ -1216,3 +1211,6 @@ unknown_device-modal-forget = 무시할게요
 
 error_collection_modal-title = 오류를 수집해도 될까요?
 error_collection_modal-confirm = 동의해요
+
+## Tracking checklist section
+

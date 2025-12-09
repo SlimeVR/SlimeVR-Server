@@ -814,11 +814,6 @@ onboarding-setup_warning-cancel = متابعة الإعداد
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = العودة إلى المقدمة
-onboarding-wifi_creds = إدخل بيانات اعتماد واي فاي
-# This cares about multilines
-onboarding-wifi_creds-description =
-    ستستخدم أجهزة التعقب بيانات الاعتماد هذه للاتصال لاسلكيًا.
-    الرجاء استخدام بيانات الاعتماد التي تتصل بها حاليًا.
 onboarding-wifi_creds-skip = تخطى إعدادات واي فاي
 onboarding-wifi_creds-submit = إرسال!
 onboarding-wifi_creds-ssid =
@@ -1268,4 +1263,7 @@ unknown_device-modal-confirm = أكيد
 unknown_device-modal-forget = تجاهلها
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 
