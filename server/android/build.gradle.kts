@@ -134,6 +134,15 @@ android {
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
 
+	signingConfigs {
+		create("release") {
+			storeFile = file("./secrets/keystore.jks")
+			storePassword = System.getenv("ANDROID_STORE_PASSWD")
+			keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+			keyPassword = System.getenv("ANDROID_KEY_PASSWD")
+		}
+	}
+
 	/*	The buildTypes block is where you can configure multiple build types.
 		By default, the build system defines two build types: debug and release. The
 		debug build type is not explicitly shown in the default build configuration,
@@ -151,6 +160,7 @@ android {
 				getDefaultProguardFile("proguard-android.txt"),
 				"proguard-rules.pro",
 			)
+			signingConfig = signingConfigs.getByName("release")
 		}
 	}
 
