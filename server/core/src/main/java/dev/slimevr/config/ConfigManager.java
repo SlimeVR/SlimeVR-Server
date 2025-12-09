@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -122,7 +123,10 @@ public class ConfigManager {
 			var cfgFileMaybeFolder = cfgFile.toFile();
 			if (cfgFileMaybeFolder.isDirectory()) {
 				try (Stream<Path> pathStream = Files.walk(cfgFile)) {
-					var list = pathStream.sorted(Comparator.reverseOrder()).toList();
+					// Can't use .toList() on Android
+					var list = pathStream
+						.sorted(Comparator.reverseOrder())
+						.collect(Collectors.toList());
 					for (var path : list) {
 						Files.delete(path);
 					}

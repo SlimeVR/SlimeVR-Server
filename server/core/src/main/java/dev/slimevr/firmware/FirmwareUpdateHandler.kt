@@ -24,6 +24,7 @@ import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.stream.Collectors
 import kotlin.concurrent.scheduleAtFixedRate
 
 data class DownloadedFirmwarePart(
@@ -119,7 +120,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		ssid: String,
 		password: String,
 	) {
-		val serialPort = this.server.serialHandler.knownPorts.toList()
+		// Can't use .toList() on Android
+		val serialPort = this.server.serialHandler.knownPorts.collect(Collectors.toList())
 			.find { port -> deviceId.id == port.portLocation }
 
 		if (serialPort == null) {

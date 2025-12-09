@@ -3,6 +3,8 @@ package dev.slimevr.firmware
 import io.eiren.util.logging.LogManager
 import java.io.DataInputStream
 import java.io.DataOutputStream
+import java.io.EOFException
+import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -99,11 +101,12 @@ class OTAUpdateTask(
 	}
 
 	private fun upload(serverSocket: ServerSocket): Boolean {
+		var connection: Socket? = null
 		try {
 			LogManager.info("[OTAUpdate] Starting on: ${serverSocket.localPort}")
 			LogManager.info("[OTAUpdate] Waiting for device...")
 
-			val connection = serverSocket.accept()
+			connection = serverSocket.accept()
 			this.uploadSocket = connection
 			connection.setSoTimeout(1000)
 			val dos = DataOutputStream(connection.getOutputStream())
@@ -130,7 +133,11 @@ class OTAUpdateTask(
 				// so we simply skip it.
 				// The reason those bytes are skipped here is to not have to skip all of them when checking
 				// for the OK response. Saving time
-				dis.skipNBytes(4)
+				val bytesSkipped = dis.skipBytes(4)
+				// Replicate behaviour of .skipNBytes()
+				if (bytesSkipped != 4) {
+					throw IOException("Unexpected number of bytes skipped: $bytesSkipped")
+				}
 			}
 			if (canceled) return false
 
@@ -138,13 +145,15 @@ class OTAUpdateTask(
 			// We set the timeout of the connection bigger as it can take some time for the MCU
 			// to confirm that everything is ok
 			connection.setSoTimeout(10000)
-			val responseBytes = dis.readAllBytes()
+			val responseBytes = dis.readBytes()
 			val response = String(responseBytes)
 
 			return response.contains("OK")
 		} catch (e: Exception) {
 			LogManager.severe("Unable to upload the firmware using ota", e)
 			return false
+		} finally {
+			connection?.close()
 		}
 	}
 
