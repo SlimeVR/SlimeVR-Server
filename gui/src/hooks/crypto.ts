@@ -1,3 +1,4 @@
+// implemetation of https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
 export function hash(str: string) {
   let hash = 2166136261;
   for (let i = 0; i < str.length; i++) {
