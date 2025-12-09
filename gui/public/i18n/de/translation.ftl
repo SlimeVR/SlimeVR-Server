@@ -33,6 +33,10 @@ tips-failed_webgl = Fehler beim Initialisieren von WebGL.
 
 ## Units
 
+unit-meter = Meter
+unit-foot = Fuß
+unit-inch = Zoll
+unit-cm = Zentimeter
 
 ## Body parts
 
@@ -116,6 +120,9 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev-IMU-Handschuh
 
 skeleton_bone-NONE = Keine
 skeleton_bone-HEAD = Kopfverschiebung
+skeleton_bone-HEAD-desc =
+    Dies ist der Abstand von Ihrem Headset zur Mitte Ihres Kopfes.
+    Um ihn anzupassen, bewegen Sie den Kopf von links nach rechts, als würden Sie „nein“ sagen. Ändern Sie den Wert so lange, bis sich die anderen Tracker nicht mehr mitbewegen.
 skeleton_bone-NECK = Halslänge
 skeleton_bone-NECK-desc =
     Dies ist der Abstand von der Mitte Ihres Kopfes bis zum Ansatz Ihres Nackens.
@@ -133,6 +140,9 @@ skeleton_bone-CHEST_OFFSET-desc =
     Dies kann angepasst werden, um Ihren virtuellen Brust-Tracker nach oben oder unten zu verschieben, um
     die Kalibrierung in bestimmten Spielen oder Anwendungen zu unterstützen, die möglicherweise einen höheren oder niedrigeren Wert erwarten.
 skeleton_bone-CHEST = Brustabstand
+skeleton_bone-CHEST-desc =
+    Dies ist der Abstand vom Ansatz der Brust bis zur Mitte Ihrer Wirbelsäule.
+    Passen Sie zunächst Ihre Rumpflänge korrekt an und verändern Sie dann diesen Wert in verschiedenen Positionen (z.B. im Sitzen, beim Bücken oder Liegen), bis Ihre virtuelle Wirbelsäule mit Ihrer echten übereinstimmt.
 skeleton_bone-WAIST = Taillenabstand
 skeleton_bone-HIP = Hüftlänge
 skeleton_bone-HIP_OFFSET = Hüftversatz
@@ -166,7 +176,10 @@ reset-reset_all_warning_default-v2 =
 reset-full = Reset
 reset-mounting = Befestigungs-Reset
 reset-mounting-feet = Fuß-Befestigungs-Reset
+reset-mounting-fingers = Fingerkalibrierung
 reset-yaw = Horizontaler Reset
+reset-error-no_feet_tracker = Kein Fußtracker zugewiesen
+reset-error-no_fingers_tracker = Kein Fingertracker zugewiesen
 
 ## Serial detection stuff
 
@@ -211,7 +224,7 @@ widget-drift_compensation-clear = Driftkompensation zurücksetzen
 
 ## Widget: Clear Mounting calibration
 
-widget-clear_mounting = Befestigungs-Reset zurücksetzen
+widget-clear_mounting = Tracker-Ausrichtung zurücksetzen
 
 ## Widget: Developer settings
 
@@ -275,7 +288,7 @@ tracker-rotation-back = Hinten
 tracker-rotation-back_left = Hinten-Links
 tracker-rotation-back_right = Hinten-Rechts
 tracker-rotation-custom = Benutzerdefiniert
-tracker-rotation-overriden = (von Befestigungs-Reset überschrieben)
+tracker-rotation-overriden = (von der Tracker-Ausrichtung überschrieben)
 
 ## Tracker information
 
@@ -327,9 +340,11 @@ tracker-settings-name_section-label = Trackername
 tracker-settings-forget = Tracker Vergessen
 tracker-settings-forget-description = Entfernt den Tracker vom SlimeVR Server und verhindert, dass er sich wieder verbindet, bis der Server neu gestartet wurde. Die Konfiguration des Trackers geht nicht verloren.
 tracker-settings-forget-label = Tracker Vergessen
+tracker-settings-update-unavailable-v2 = Keine Veröffentlichungen gefunden
 tracker-settings-update-incompatible = Update nicht möglich. Board inkompatibel
 tracker-settings-update-low-battery = Aktualisierung nicht möglich. Akku unter 50 %
 tracker-settings-update-up_to_date = Auf dem neusten Stand
+tracker-settings-update-blocked = Update nicht verfügbar. Weitere Veröffentlichungen sind nicht verfügbar.
 tracker-settings-update = Jetzt aktualisieren
 tracker-settings-update-title = Firmware-Version
 
@@ -409,6 +424,8 @@ settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
 settings-sidebar-appearance = Erscheinungsbild
+settings-sidebar-home = Startbildschirm
+settings-sidebar-checklist = Tracking-Checkliste
 settings-sidebar-notifications = Benachrichtigungen
 settings-sidebar-behavior = Verhalten
 settings-sidebar-firmware-tool = DIY Firmware-Tool
@@ -484,20 +501,29 @@ settings-general-tracker_mechanics-drift_compensation_warning-cancel = Abbrechen
 settings-general-tracker_mechanics-drift_compensation_warning-done = Ich verstehe
 settings-general-tracker_mechanics-drift_compensation-amount-label = Kompensierungsmenge
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nutze die letzten x Resets
-settings-general-tracker_mechanics-save_mounting_reset = Automatische Befestigungs-Reset Kalibrierung speichern
+settings-general-tracker_mechanics-save_mounting_reset = Automatische Tracker-Ausrichtung speichern
 settings-general-tracker_mechanics-save_mounting_reset-description =
-    Speichert die automatische Befestigungs-Reset Kalibrierung für die Tracker zwischen den Neustarts. Nützlich
+    Speichert die automatische Tracker-Ausrichtung für die Tracker zwischen den Neustarts. Nützlich
     wenn Sie einen Anzug tragen, bei dem sich die Tracker zwischen den Sitzungen nicht bewegen. <b>Für normale Benutzer nicht zu empfehlen!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Befestigungs-Reset speichern
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Tracker-Ausrichtung speichern
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Verwende das Magnetometer auf allen IMU-Trackern, die dies unterstützen.
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Verwendet das Magnetometer auf allen Trackern, die über eine kompatible Firmware verfügen, um den Drift in stabilen magnetischen Umgebungen zu reduzieren.
     Kann pro Tracker in den Einstellungen des Trackers deaktiviert werden. <b>Bitte schalten Sie keinen der Tracker aus, während Sie dies umschalten!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Magnetometer auf Trackern verwenden
 settings-stay_aligned = Stay Aligned
+settings-stay_aligned-description = Stay Aligned reduziert Drift, indem es deine Tracker schrittweise an deine entspannten Posen anpasst.
+settings-stay_aligned-setup-label = Stay Aligned einrichten
+settings-stay_aligned-setup-description = Sie müssen Stay Aligned einrichten, um es zu aktivieren.
+settings-stay_aligned-warnings-drift_compensation = ⚠ Bitte schalten Sie die Driftkompensation aus! Diese steht in Konflikt mit Stay Aligned.
+settings-stay_aligned-enabled-label = Tracker anpassen
+settings-stay_aligned-general-label = Allgemein
+settings-stay_aligned-relaxed_poses-label = Entspannte Posen
 settings-stay_aligned-relaxed_poses-save_pose = Pose speichern
 settings-stay_aligned-relaxed_poses-reset_pose = Pose zurücksetzen
 settings-stay_aligned-relaxed_poses-close = Schließen
+settings-stay_aligned-debug-label = Debuggen
+settings-stay_aligned-debug-description = Bitte geben Sie Ihre Einstellungen mit an, wenn Sie Probleme mit Stay Aligned melden.
 settings-stay_aligned-debug-copy-label = Einstellungen in die Zwischenablage kopieren
 
 ## FK/Tracking settings
@@ -525,17 +551,19 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Gre
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Verhindert, dass sich Gelenke über ihre Grenzen hinaus drehen
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Mit Grenzen korrigieren
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Korrigiert Gelenkrotationen, wenn diese über ihre Grenzen hinausgehen
+settings-general-fk_settings-ik = Positionsdaten
+settings-general-fk_settings-ik-use_position = Positionsdaten verwenden
 settings-general-fk_settings-arm_fk = Arm-Tracking
 settings-general-fk_settings-arm_fk-description = Ändern Sie die Art und Weise, wie die Arme berechnet werden.
 settings-general-fk_settings-arm_fk-force_arms = Arme vom VR-Headset erzwingen
 settings-general-fk_settings-reset_settings = Einstellungen zurücksetzen
 settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Setzen Sie die Neigung (vertikale Drehung) Ihres Headsets zurück, wenn Sie einen vollständigen Reset durchführen. Nützlich, wenn Sie ein Headset auf der Stirn für VTubing oder Mocap tragen. Nicht für VR aktivieren.
 settings-general-fk_settings-reset_settings-reset_hmd_pitch = Headset-Nick (vertikale Drehung) zurücksetzen
-settings-general-fk_settings-arm_fk-reset_mode-description = Ändern Sie, welche Armhaltung für den Befestigungs-Reset erwartet wird.
+settings-general-fk_settings-arm_fk-reset_mode-description = Ändern Sie, welche Armhaltung für den Reset der Tracker-Ausrichtung erwartet wird.
 settings-general-fk_settings-arm_fk-back = nach Hinten
 settings-general-fk_settings-arm_fk-back-description = Der Standardmodus, bei dem die Oberarme nach hinten und die Unterarme nach vorne gehen.
 settings-general-fk_settings-arm_fk-tpose_up = T-Pose (oben)
-settings-general-fk_settings-arm_fk-tpose_up-description = Erwartet, dass deine Arme während des vollständigen Zurücksetzens seitlich nach unten gerichtet sind und während des Befestigungs-Reset um 90 Grad nach außen gerichtet sind.
+settings-general-fk_settings-arm_fk-tpose_up-description = Erwartet, dass deine Arme während des vollständigen Zurücksetzens seitlich nach unten gerichtet sind und während des Reset der Tracker-Ausrichtung um 90 Grad nach außen gerichtet sind.
 settings-general-fk_settings-arm_fk-tpose_down = T-Pose (unten)
 settings-general-fk_settings-arm_fk-tpose_down-description = Erwartet, dass deine Arme während des vollständigen Zurücksetzens um 90 Grad nach außen gerichtet sind und während des Befestigungs-Reset seitlich nach unten.
 settings-general-fk_settings-arm_fk-forward = Vorwärts
@@ -561,7 +589,7 @@ settings-general-fk_settings-self_localization-description = Der Motion-Capture-
 
 settings-general-gesture_control = Gestensteuerung
 settings-general-gesture_control-subtitle = Reset durch Antippen
-settings-general-gesture_control-description = Erlaubt Reset durch das Antippen eines Trackers auszulösen. Der höchste Tracker auf dem Oberkörper wird für schnelle Resets genutzt, der höchste Tracker auf dem linken Bein wird für Reset genutzt und der höchste Tracker auf dem rechten Bein wird für Befestigungs-Reset genutzt. Das Antippen muss innerhalb von 0.5 Sekunden erfolgen, um erkannt zu werden.
+settings-general-gesture_control-description = Erlaubt Reset durch das Antippen eines Trackers auszulösen. Der höchste Tracker auf dem Oberkörper wird für schnelle Resets genutzt, der höchste Tracker auf dem linken Bein wird für Reset genutzt und der höchste Tracker auf dem rechten Bein wird für Reset der Tracker-Ausrichtung genutzt. Das Antippen muss innerhalb von 0.5 Sekunden erfolgen, um erkannt zu werden.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -582,8 +610,8 @@ settings-general-gesture_control-yawResetTaps = Antipp-Anzahl für einen horizon
 settings-general-gesture_control-fullResetEnabled = Vollständiger Reset durch Antippen
 settings-general-gesture_control-fullResetDelay = Verzögerung für einen vollständigen Reset
 settings-general-gesture_control-fullResetTaps = Antipp-Anzahl für einen vollständigen Reset
-settings-general-gesture_control-mountingResetEnabled = Antippen für Befestigungs-Reset
-settings-general-gesture_control-mountingResetDelay = Befestigungs-Reset-Verzögerung
+settings-general-gesture_control-mountingResetEnabled = Aktivieren von Antippen für Reset der Tracker-Ausrichtung
+settings-general-gesture_control-mountingResetDelay = Verzögerung von Reset der Tracker-Ausrichtung
 settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs-Reset
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Tracker über Schwellwert
@@ -651,6 +679,8 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     Um die bestmögliche Benutzererfahrung zu bieten, erfassen wir anonymisierte Fehlerberichte, Leistungsmetriken und Informationen zum Betriebssystem. Dies hilft uns, Fehler und Probleme mit SlimeVR zu erkennen. Diese Metriken werden über Sentry.io erfasst.
 settings-interface-behavior-error_tracking-label = Fehler an Entwickler senden
+settings-interface-behavior-bvh_directory = Verzeichnis zum Speichern von BVH-Aufnahmen
+settings-interface-behavior-bvh_directory-label = Verzeichnis für BVH-Aufnahmen
 
 ## Serial settings
 
@@ -666,7 +696,7 @@ settings-serial-factory_reset = Werkseinstellungen zurücksetzen
 # <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
     <b>Warnung:</b> Dadurch wird der Tracker auf die Werkseinstellungen zurückgesetzt.
-    Das bedeutet, dass Wi-Fi- und Kalibrierungseinstellungen <b>verloren gehen!</b>
+    Das bedeutet, dass die WLAN- und Kalibrierungseinstellungen <b>verloren gehen!</b>
 settings-serial-factory_reset-warning-ok = Ich weiß, was ich tue
 settings-serial-factory_reset-warning-cancel = Abbruch
 settings-serial-serial_select = Wählen Sie einen seriellen Anschluss
