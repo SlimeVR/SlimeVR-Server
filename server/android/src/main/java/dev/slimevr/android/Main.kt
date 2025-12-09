@@ -14,7 +14,7 @@ import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.logging.LogManager
 import io.ktor.http.CacheControl
 import io.ktor.http.CacheControl.Visibility
-import io.ktor.server.engine.EmbeddedServer
+import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.CachingOptions
 import io.ktor.server.http.content.staticResources
@@ -28,7 +28,7 @@ import java.time.ZonedDateTime
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
-lateinit var webServer: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>
+lateinit var webServer: NettyApplicationEngine
 	private set
 
 val webServerInitialized: Boolean
@@ -53,7 +53,7 @@ fun startWebServer() {
 			staticResources("/", "web-gui", "index.html")
 		}
 	}.start(wait = false)
-	webServerPort = runBlocking { webServer.engine.resolvedConnectors().first().port }
+	webServerPort = runBlocking { webServer.resolvedConnectors().first().port }
 }
 
 fun startVRServer(activity: AppCompatActivity) {

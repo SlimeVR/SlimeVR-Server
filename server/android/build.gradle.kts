@@ -78,9 +78,9 @@ dependencies {
 	androidTestImplementation("androidx.test.ext:junit:1.3.0")
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 	// For hosting web GUI
-	implementation("io.ktor:ktor-server-core:3.3.3")
-	implementation("io.ktor:ktor-server-netty:3.3.3")
-	implementation("io.ktor:ktor-server-caching-headers:3.3.3")
+	implementation("io.ktor:ktor-server-core:2.3.12")
+	implementation("io.ktor:ktor-server-netty:2.3.10")
+	implementation("io.ktor:ktor-server-caching-headers:2.3.12")
 
 	// Serial
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
