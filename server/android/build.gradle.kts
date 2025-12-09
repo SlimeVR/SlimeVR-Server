@@ -37,16 +37,17 @@ tasks.register<Copy>("copyGuiAssets") {
 		throw GradleException("You need to run \"pnpm run build\" on the gui folder first!")
 	}
 }
-tasks.preBuild {
-	dependsOn(":server:android:copyGuiAssets")
-
-	// Validate release keystore
+tasks.register("validateKeyStore") {
 	val storeFile = android.buildTypes.getByName("release").signingConfig?.storeFile
+	// Only warn for now since this is run even when irrelevant
 	if (storeFile?.isFile != true) {
-		throw GradleException("Android KeyStore file does not exist or is not a file: ${storeFile?.path}")
+		logger.error("Android KeyStore file does not exist or is not a file: ${storeFile?.path}")
 	} else if (storeFile.length() <= 0) {
-		throw GradleException("Android KeyStore file is empty: ${storeFile.path}")
+		logger.error("Android KeyStore file is empty: ${storeFile.path}")
 	}
+}
+tasks.preBuild {
+	dependsOn(":server:android:copyGuiAssets", ":server:android:validateKeyStore")
 }
 
 tasks.withType<KotlinCompile> {

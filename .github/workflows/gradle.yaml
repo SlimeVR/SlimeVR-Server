@@ -42,7 +42,7 @@ jobs:
         run: ./gradlew spotlessCheck
 
       - name: Test with Gradle
-        run: ./gradlew :server:core:test :server:desktop:test
+        run: ./gradlew test
 
   build:
     runs-on: ubuntu-latest
