@@ -6,6 +6,7 @@ import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { FlatDeviceTracker } from '@/store/app-store';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 function Tracker({
   tracker,
@@ -46,6 +47,7 @@ export function TrackerPartCard({
   direction: 'left' | 'right';
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) {
+  const { isXs } = useBreakpoint('xs');
   const { l10n } = useLocalization();
   const [velocities, setVelocities] = useState<number[]>([]);
 
@@ -78,7 +80,7 @@ export function TrackerPartCard({
     (showCard && (
       <div
         className={classNames(
-          'flex flex-col gap-1 control xs:w-32 hover:bg-background-50 cursor-pointer px-2 py-1 rounded-md relative transition-[box-shadow] duration-200 ease-linear',
+          'flex flex-col gap-1 control xs:w-auto hover:bg-background-50 cursor-pointer px-2 py-1 rounded-md relative transition-[box-shadow] duration-200 ease-linear',
           direction === 'left' ? 'items-start' : 'items-end'
         )}
         id={BodyPart[role]}
@@ -99,7 +101,10 @@ export function TrackerPartCard({
             <WarningIcon />
           </div>
         )}
-        <Typography variant="section-title" whitespace="whitespace-nowrap">
+        <Typography
+          variant={isXs ? 'section-title' : 'standard'}
+          whitespace={isXs ? 'whitespace-nowrap' : undefined}
+        >
           {l10n.getString('body_part-' + BodyPart[role])}
         </Typography>
         {td?.map(({ tracker }, index) => (

@@ -8,6 +8,7 @@ import {
   useNavigationType,
 } from 'react-router-dom';
 import { DeviceDataT } from 'solarxr-protocol';
+import { getUserID } from '@/hooks/user';
 
 export function getSentryOrCompute(enabled = false) {
   // if sentry is already initialized - SKIP
@@ -61,6 +62,10 @@ export function getSentryOrCompute(enabled = false) {
   } else {
     log('Initialized the Sentry client');
   }
+
+  getUserID().then((id) => {
+    Sentry.setUser({ id });
+  });
 
   return newClient;
 }

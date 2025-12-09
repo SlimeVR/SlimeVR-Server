@@ -18,6 +18,7 @@ import { Quaternion } from 'three';
 import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 import { assignedTrackersAtom, FlatDeviceTracker } from '@/store/app-store';
 import { useAtomValue } from 'jotai';
+import * as Sentry from '@sentry/react';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
@@ -59,6 +60,12 @@ export function ManualMountingPage() {
       assignreq.allowDriftCompensation = false;
 
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+      Sentry.metrics.count('manual_mounting_set', 1, {
+        attributes: {
+          part: BodyPart[assignreq.bodyPosition],
+          direction: assignreq.mountingOrientation,
+        },
+      });
     });
 
     setSelectRole(BodyPart.NONE);

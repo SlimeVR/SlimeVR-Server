@@ -921,11 +921,13 @@ onboarding-setup_warning-cancel = Continue setup
 
 ## Wi-Fi setup
 onboarding-wifi_creds-back = Go back to introduction
-onboarding-wifi_creds = Input Wi-Fi credentials
+onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 # This cares about multilines
-onboarding-wifi_creds-description =
-    The Trackers will use these credentials to connect wirelessly.
-    Please use the credentials that you are currently connected to.
+onboarding-wifi_creds-description-v2 =
+    Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
+    Please use the credentials of the Wi-Fi network your device is currently connected to.
+
+    Make sure to use a 2.4GHz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Skip Wi-Fi settings
 onboarding-wifi_creds-submit = Submit!
 onboarding-wifi_creds-ssid =
@@ -935,6 +937,12 @@ onboarding-wifi_creds-ssid-required = Wi-Fi name is required
 onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
+
+onboarding-wifi_creds-dongle-title = Trackers using a dongle
+onboarding-wifi_creds-dongle-description =
+    If your trackers came with a dongle, plug it into your device and you should be good to go!
+onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page to manage trackers that connect via a dongle will be made soon.
+onboarding-wifi_creds-dongle-continue = Continue with a dongle
 
 ## Mounting setup
 onboarding-reset_tutorial-back = Go back to Mounting calibration
@@ -1557,7 +1565,7 @@ error_collection_modal-description_v2 = { settings-interface-behavior-error_trac
 error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
 
-
+## Tracking checklist section
 tracking_checklist = Tracking Checklist
 tracking_checklist-settings = Tracking Checklist Settings
 tracking_checklist-settings-close = Close

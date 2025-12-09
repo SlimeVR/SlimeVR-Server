@@ -438,7 +438,7 @@ export function DrawerTooltip({
             </button>
           </div>
           <div
-            className="p-2 overflow-y-auto"
+            className="p-4 overflow-y-auto"
             style={{ maxHeight: 'calc(100vh - 49px - 44px)' }}
           >
             {children}
