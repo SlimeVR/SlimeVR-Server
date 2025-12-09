@@ -19,21 +19,31 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.CachingOptions
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
+import io.ktor.server.netty.NettyApplicationEngine
 import io.ktor.server.plugins.cachingheaders.CachingHeaders
 import io.ktor.server.routing.routing
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.time.ZonedDateTime
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
+
+lateinit var webServer: NettyApplicationEngine
+	private set
+
+val webServerInitialized: Boolean
+	get() = ::webServer.isInitialized
+
+var webServerPort = 0
 
 lateinit var vrServer: VRServer
 	private set
 val vrServerInitialized: Boolean
 	get() = ::vrServer.isInitialized
 
-fun main(activity: AppCompatActivity) {
+fun startWebServer() {
 	// Host the web GUI server
-	embeddedServer(Netty, port = 34536) {
+	webServer = embeddedServer(Netty, port = 0) {
 		routing {
 			install(CachingHeaders) {
 				options { _, _ ->
@@ -43,7 +53,10 @@ fun main(activity: AppCompatActivity) {
 			staticResources("/", "web-gui", "index.html")
 		}
 	}.start(wait = false)
+	webServerPort = runBlocking { webServer.resolvedConnectors().first().port }
+}
 
+fun startVRServer(activity: AppCompatActivity) {
 	thread(start = true, name = "Main VRServer Thread") {
 		try {
 			LogManager.initialize(activity.filesDir)
