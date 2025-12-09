@@ -704,6 +704,11 @@ settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = WLAN-Scan
 settings-serial-file_type = Klartext
 settings-serial-save_logs = In Datei speichern
+settings-serial-send_command = Senden
+settings-serial-send_command-placeholder = Befehl...
+settings-serial-send_command-warning = <b>Warnung:</b> Das Ausführen serieller Befehle kann zu Datenverlust führen oder die Tracker unbrauchbar machen.
+settings-serial-send_command-warning-ok = Ich weiß, was ich tue
+settings-serial-send_command-warning-cancel = Abbruch
 
 ## OSC router settings
 
@@ -800,6 +805,7 @@ settings-osc-vmc-mirror_tracking-label = Tracking spiegeln
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = Die Ein- und Ausgänge des OSC-Routers können nicht gleich sein!
 settings-osc-common-network-port_banned_error = Der Port { $port } kann nicht verwendet werden!
 
 ## Advanced settings
@@ -837,6 +843,9 @@ settings-utils-advanced-open_logs-label = Ordner öffnen
 
 ## Home Screen
 
+settings-home-list-layout = Layout der Tracker-Liste
+settings-home-list-layout-desc = Wählen Sie eines der möglichen Startbildschirm-Layouts aus
+settings-home-list-layout-table = Tabelle
 
 ## Tracking Checlist
 
@@ -866,7 +875,7 @@ onboarding-wifi_creds-password =
 
 ## Mounting setup
 
-onboarding-reset_tutorial-back = Zurück zur Trackerausrichtung
+onboarding-reset_tutorial-back = Zurück zur Tracker-Ausrichtung
 onboarding-reset_tutorial = Tutorial neustarten
 onboarding-reset_tutorial-explanation = Während Sie Ihre Tracker verwenden, können sie aufgrund der IMU-Gierdrift oder weil Sie sie physisch bewegt haben, aus der Ausrichtung geraten. Sie haben mehrere Möglichkeiten, dies zu beheben.
 onboarding-reset_tutorial-skip = Schritt überspringen
@@ -883,11 +892,11 @@ onboarding-reset_tutorial-1 =
     Dadurch werden die Position und Rotation aller Ihrer Tracker vollständig zurückgesetzt. Dies sollte die meisten Probleme beheben.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
-    Tippen Sie { $taps } mal auf den markierten Tracker um einen Befestigungs-Reset auszulösen.
+    Tippen Sie { $taps } mal auf den markierten Tracker um einen Reset der Tracker-Ausrichtung auszulösen.
     
-    Ein Befestigungs-Reset hilft dabei, die Tracker neu auszurichten, so wie diese tatsächlich an Ihnen angebracht sind. Zum Beispiel, wenn Sie ein Tracker versehentlich verschoben haben und dessen Orientierung sich stark verändert hat.
+    Ein Reset der Tracker-Ausrichtung hilft dabei, die Tracker neu auszurichten, so wie diese tatsächlich an Ihnen angebracht sind. Zum Beispiel, wenn Sie ein Tracker versehentlich verschoben haben und dessen Orientierung sich stark verändert hat.
     
-    Sie müssen sich in einer "Skifahren"-Pose, wie im Befestigungs-Assistenten gezeigt wird, befinden. Nach dem Auslösen wird der Reset nach 3 Sekunden (konfigurierbar) durchgeführt.
+    Sie müssen sich in einer "Skifahren"-Pose, wie im Tracker-Ausrichtung-Assistenten gezeigt wird, befinden. Nach dem Auslösen wird der Reset nach 3 Sekunden (konfigurierbar) durchgeführt.
 
 ## Setup start
 
@@ -917,7 +926,10 @@ onboarding-connect_tracker-connection_status-looking_for_server = Suche nach Ser
 onboarding-connect_tracker-connection_status-connection_error = Es kann keine WLAN-Verbindung hergestellt werden
 onboarding-connect_tracker-connection_status-could_not_find_server = Server konnte nicht gefunden werden
 onboarding-connect_tracker-connection_status-done = Verbindung zum Server hergestellt.
+onboarding-connect_tracker-connection_status-no_serial_log = Konnte keine Logs vom Tracker abrufen
+onboarding-connect_tracker-connection_status-no_serial_device_found = Konnte keinen Tracker über USB finden
 onboarding-connect_serial-error-modal-no_serial_log = Ist der Tracker eingeschaltet?
+onboarding-connect_serial-error-modal-no_serial_log-desc = Stellen Sie sicher, dass der Tracker eingeschaltet und mit Ihrem Computer verbunden ist.
 onboarding-connect_serial-error-modal-no_serial_device_found = Keine Tracker erkannt
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
@@ -1204,22 +1216,35 @@ onboarding-automatic_proportions-smol_warning-cancel = Zurück
 
 ## User height calibration
 
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Schauen sie nicht auf den Boden
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Schauen sie nicht zu hoch nach oben
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Achten sie darauf, dass der Controller nach unten zeigt
+onboarding-user_height-calibration-DONE = Erfolg!
 
 ## Stay Aligned setup
 
 onboarding-stay_aligned-title = Stay Aligned
+onboarding-stay_aligned-description = Konfigurieren Sie Stay Aligned, um Ihre Tracker ausgerichtet zu halten.
 onboarding-stay_aligned-put_trackers_on-title = Legen Sie Ihre Tracker an
+onboarding-stay_aligned-put_trackers_on-description = Um Ihre Ruheposen zu speichern, verwenden wir die Tracker, die Sie gerade zugewiesenen haben. Legen Sie all Ihre Tracker an. In der Abbildung rechts können Sie sehen, welcher welcher ist.
 onboarding-stay_aligned-put_trackers_on-trackers_warning = Sie haben derzeit weniger als 5 Tracker verbunden und zugewiesen! Dies ist die Mindestanzahl an Trackern, die erforderlich sind, damit Stay Aligned richtig funktioniert.
 onboarding-stay_aligned-put_trackers_on-next = Ich habe alle meine Tracker angelegt
+onboarding-stay_aligned-verify_mounting-title = Tracker-Ausrichtung
+onboarding-stay_aligned-verify_mounting-redo_mounting = Tracker-Ausrichtungskalibrierung wiederholen
 onboarding-stay_aligned-preparation-title = Vorbereitung
+onboarding-stay_aligned-preparation-tip = Achten Sie darauf, aufrecht zu stehen. Schauen Sie nach vorne und lassen Sie die Arme an den Seiten hängen.
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Nehmen Sie eine bequeme Haltung ein. Entspannen Sie sich!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Drücken Sie die Taste „Pose speichern“.
 onboarding-stay_aligned-relaxed_poses-skip_step = Überspringen
 onboarding-stay_aligned-previous_step = Zurück
 onboarding-stay_aligned-next_step = Weiter
+onboarding-stay_aligned-restart = Neu starten
 onboarding-stay_aligned-done = Fertig
 
 ## Home
 
 home-no_trackers = Keine Tracker erkannt oder zugewiesen
+home-settings-close = Schließen
 
 ## Trackers Still On notification
 
@@ -1257,8 +1282,26 @@ firmware_tool-not_available = Das Firmware Tool ist im Moment nicht verfügbar. 
 firmware_tool-not_compatible = Das Firmware Tool ist nicht mit dieser Version des Servers kompatibel. Bitte den Server aktualisieren!
 firmware_tool-select_source-board_type = Boardtyp
 firmware_tool-select_source-firmware = Firmware-Quelle
+firmware_tool-select_source-version = Firmware-Version
+firmware_tool-select_source-official = Offiziell
+firmware_tool-select_source-dev = Dev
+firmware_tool-board_defaults = Konfigurieren Sie Ihr Board
+firmware_tool-board_defaults-add = Hinzufügen
+firmware_tool-board_defaults-reset = Auf Standard zurücksetzen
+firmware_tool-board_defaults-error-required = Erforderliches Feld
+firmware_tool-board_defaults-error-format = Ungültiges Format
+firmware_tool-board_defaults-error-format-number = Keine Zahl
 firmware_tool-flash_method_step = Flash-Methode
 firmware_tool-flash_method_step-description = Bitte wählen Sie die Flash-Methode aus, die Sie verwenden möchten.
+firmware_tool-flash_method_step-ota-v2 =
+    .label = WLAN
+    .description = Verwenden Sie die Over-the-Air-Methode. Ihr Tracker wird seine Firmware über WLAN aktualisieren. Funktioniert nur bei Trackern, die bereits eingerichtet wurden.
+firmware_tool-flash_method_step-ota-info =
+    Wir nutzen Ihre WLAN-Zugangsdaten, um den Tracker zu flashen und zu bestätigen, dass alles korrekt funktioniert hat.
+    <b>Wir speichern Ihre WLAN-Zugangsdaten nicht!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Verwenden Sie ein USB-Kabel, um Ihren Tracker zu aktualisieren.
 firmware_tool-flashbtn_step = Drücken Sie den Boot-Button
 firmware_tool-flashbtn_step-description = Bevor Sie mit dem nächsten Schritt fortfahren, gibt es ein paar Dinge, die Sie erledigen müssen.
 firmware_tool-flashbtn_step-board_SLIMEVR = Schalten Sie den Tracker aus, entfernen Sie das Gehäuse (falls vorhanden), verbinden Sie ein USB-Kabel mit diesem Computer und führen Sie dann einen der folgenden Schritte entsprechend Ihrer SlimeVR-Board-Revision aus:
@@ -1267,8 +1310,10 @@ firmware_tool-flashbtn_step-board_OTHER =
     In den meisten Fällen bedeutet das, dass Sie die Boot-Taste auf dem Board drücken müssen, bevor der Flash-Vorgang beginnt.
     Wenn der Flash-Vorgang zu Beginn aufgrund eines Timeouts fehlschlägt, bedeutet das wahrscheinlich, dass der Tracker nicht im Bootloader-Modus war.
     Bitte beziehen Sie sich auf die Flash-Anweisungen Ihres Boards, um zu erfahren, wie Sie den Bootloader-Modus aktivieren.
+firmware_tool-flash_method_ota-title = Flashen über WLAN
 firmware_tool-flash_method_ota-devices = Erkannte OTA-Geräte:
 firmware_tool-flash_method_ota-no_devices = Es sind keine Boards vorhanden, die über OTA aktualisiert werden können. Stellen Sie sicher, dass Sie den richtigen Board-Typ ausgewählt haben.
+firmware_tool-flash_method_serial-title = Über USB flashen
 firmware_tool-flash_method_serial-wifi = WLAN-Zugangsdaten:
 firmware_tool-flash_method_serial-devices-label = Erkannte serielle Geräte:
 firmware_tool-flash_method_serial-devices-placeholder = Wählen Sie ein serielles Gerät aus
@@ -1283,7 +1328,10 @@ firmware_tool-flashing_step-exit = Schließen
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Warte darauf, zu bauen....
 firmware_tool-build-CREATING_BUILD_FOLDER = Erstelle den Build-Ordner
+firmware_tool-build-DOWNLOADING_SOURCE = Lade den Quellcode herunter
+firmware_tool-build-EXTRACTING_SOURCE = Entpacken des Quellcode
 firmware_tool-build-BUILDING = Erstellen der Firmware
 firmware_tool-build-SAVING = Speichern des Builds
 firmware_tool-build-DONE = Erstellen abgeschlossen
@@ -1349,6 +1397,8 @@ unknown_device-modal-confirm = Sicher!
 unknown_device-modal-forget = Ignorieren
 # VRChat config warnings
 vrc_config-page-title = VRChat Konfigurations-Warnungen
+vrc_config-page-desc = Diese Seite zeigt den Zustand deiner VRChat-Einstellungen und zeigt, welche Einstellungen mit SlimeVR inkompatibel sind. Es wird dringend empfohlen, alle hier angezeigten Warnungen zu beheben, um das beste Nutzererlebnis mit SlimeVR zu gewährleisten.
+vrc_config-page-help-desc = Schauen Sie sich unsere <a>Dokumentation zu diesem Thema</a> an!
 vrc_config-on = An
 vrc_config-off = Aus
 vrc_config-invalid = Sie haben falsch konfigurierte VRChat-Einstellungen!
@@ -1359,10 +1409,17 @@ vrc_config-current_value = Aktueller Wert
 vrc_config-mute = Warnung stummschalten
 vrc_config-mute-btn = Stummschalten
 vrc_config-unmute-btn = Stummschaltung aufheben
+vrc_config-disable_shoulder_tracking = Schultertracking deaktivieren
 vrc_config-user_height = Echte Benutzergröße
 vrc_config-spine_mode-UNKNOWN = Unbekannt
+vrc_config-spine_mode-LOCK_HEAD = Kopf sperren
+vrc_config-spine_mode-LOCK_HIP = Hüfte sperren
 vrc_config-tracker_model-UNKNOWN = Unbekannt
 vrc_config-tracker_model-AXIS = Achse
+vrc_config-tracker_model-SYSTEM = System
+vrc_config-avatar_measurement_type-UNKNOWN = Unbekannt
+vrc_config-avatar_measurement_type-HEIGHT = Höhe
+vrc_config-avatar_measurement_type-ARM_SPAN = Armspannweite
 
 ## Error collection consent modal
 
@@ -1376,11 +1433,28 @@ error_collection_modal-cancel = Ich will nicht
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Schließen
+tracking_checklist-status-partial =
+    { $count ->
+        [one] Sie haben 1 Warnung!
+       *[other] Sie haben { $count } Warnungen!
+    }
+tracking_checklist-MOUNTING_CALIBRATION = Tracker-Ausrichtung durchführen
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR läuft nicht
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR läuft nicht. Nutzen sie es für VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = SteamVR starten
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Sie haben keine Tracker-Kalibrierung durchgeführt. Bitte lassen Sie Ihre Tracker (gelb markiert) für einige Sekunden auf einer stabilen Oberfläche ruhen.
+tracking_checklist-TRACKER_ERROR = Tracker mit Fehlern
+tracking_checklist-VRCHAT_SETTINGS = VRChat-Einstellungen konfigurieren
+tracking_checklist-VRCHAT_SETTINGS-open = Gehen sie zu den VRChat-Warnungen
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Kontrollpanel öffnen
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Stay Aligned konfigurieren
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Öffne den Stay Aligned Assistent
 tracking_checklist-ignore = Ignorieren
+preview-mocap_mode_soon = Mocap-Modus (Bald™)
 preview-disable_render = Vorschau deaktivieren
 preview-disabled_render = Vorschau deaktiviert
+toolbar-mounting_calibration = Tracker-Ausrichtung
 toolbar-mounting_calibration-default = Körper
 toolbar-mounting_calibration-feet = Füße
 toolbar-mounting_calibration-fingers = Finger
