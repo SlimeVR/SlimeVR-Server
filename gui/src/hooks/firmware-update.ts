@@ -2,8 +2,7 @@ import { BoardType, DeviceDataT } from 'solarxr-protocol';
 import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import { cacheWrap } from './cache';
 import semver from 'semver';
-import { hash } from './crypto';
-import { getUserID } from './user';
+import { normalizedHash } from './crypto';
 
 export interface FirmwareRelease {
   name: string;
@@ -24,7 +23,7 @@ const todaysRange = (deployData: [number, Date][]): number => {
   return maxRange;
 };
 
-const checkUserCanUpdate = async (url: string, fwVersion: string) => {
+const checkUserCanUpdate = async (uuid: string, url: string, fwVersion: string) => {
   const deployDataJson = JSON.parse(
     (await cacheWrap(
       `firmware-${fwVersion}-deploy`,
@@ -56,12 +55,11 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
   const todayUpdateRange = todaysRange(deployData);
   if (!todayUpdateRange) return false;
 
-  const uniqueUserKey = await getUserID();
   // Make it so the hash change every version. Prevent the same user from getting the same delay
-  return hash(`${uniqueUserKey}-${fwVersion}`) <= todayUpdateRange;
+  return normalizedHash(`${uuid}-${fwVersion}`) <= todayUpdateRange;
 };
 
-export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | null> {
+export async function fetchCurrentFirmwareRelease(uuid: string): Promise<FirmwareRelease | null> {
   const releases: any[] | null = JSON.parse(
     (await cacheWrap(
       'firmware-releases',
@@ -93,6 +91,7 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
     }
 
     const userCanUpdate = await checkUserCanUpdate(
+      uuid,
       deployAsset.browser_download_url,
       version
     );
