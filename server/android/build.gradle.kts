@@ -29,7 +29,7 @@ java {
 }
 
 tasks.register<Copy>("copyGuiAssets") {
-	val target = layout.projectDirectory.dir("src/main/resources/web-gui")
+	val target = layout.projectDirectory.dir("src/main/assets/web-gui")
 	delete(target)
 	from(rootProject.layout.projectDirectory.dir("gui/dist"))
 	into(target)
@@ -86,10 +86,6 @@ dependencies {
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 	androidTestImplementation("androidx.test.ext:junit:1.3.0")
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
-	// For hosting web GUI
-	implementation("io.ktor:ktor-server-core:2.3.13")
-	implementation("io.ktor:ktor-server-netty:2.3.13")
-	implementation("io.ktor:ktor-server-caching-headers:2.3.13")
 
 	// Serial
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
