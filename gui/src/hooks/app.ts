@@ -63,9 +63,7 @@ export function useProvideAppContext(): AppContext {
     if (!config) return;
 
     const interval = setInterval(() => {
-      fetchCurrentFirmwareRelease(config.uuid).then((res) =>
-        setCurrentFirmwareRelease(res)
-      );
+      fetchCurrentFirmwareRelease(config.uuid).then(setCurrentFirmwareRelease);
     }, 1000);
     return () => {
       clearInterval(interval);
