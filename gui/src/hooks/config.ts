@@ -50,6 +50,7 @@ export interface Config {
   homeLayout: 'default' | 'table';
   skeletonPreview: boolean;
   lastUsedProportions: 'manual' | 'autobone' | 'scaled' | null;
+  customHue: number;
 }
 
 export interface ConfigContext {
@@ -82,6 +83,7 @@ export const defaultConfig: Config = {
   homeLayout: 'default',
   skeletonPreview: true,
   lastUsedProportions: null,
+  customHue: 0.8,
 };
 
 interface CrossStorage {
