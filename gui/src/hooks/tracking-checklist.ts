@@ -166,7 +166,7 @@ export function provideTrackingChecklist() {
     res.stepId = step;
     res.ignore = ignore;
     sendRPCPacket(RpcMessage.IgnoreTrackingChecklistStepRequest, res);
-    Sentry.metrics.count('mute_checklist_step', 1, {
+    Sentry.metrics.count(ignore ? 'mute_checklist_step' : 'unmute_checklist_step', 1, {
       attributes: { step: TrackingChecklistStepId[step] },
     });
   };
