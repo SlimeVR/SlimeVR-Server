@@ -133,12 +133,14 @@ android {
 
 		// adds an offset of the version code as we might do apk releases in the middle of actual
 		// releases if we failed on bundling or stuff
-		val versionCodeOffset = 2
+		val versionCodeOffset = 4
 		// Defines the version number of your app.
 		versionCode = (extra["gitVersionCode"] as? Int)?.plus(versionCodeOffset) ?: 0
 
 		// Defines a user-friendly version name for your app.
 		versionName = extra["gitVersionName"] as? String ?: "v0.0.0"
+
+		logger.lifecycle("Configured for SlimeVR Android version $versionName ($versionCode)")
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
