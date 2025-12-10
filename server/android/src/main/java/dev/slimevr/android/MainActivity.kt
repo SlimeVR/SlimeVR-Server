@@ -9,10 +9,10 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import io.eiren.util.logging.LogManager
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 import java.io.IOException
 import java.net.URLConnection
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 class AndroidJsObject {
 	@JavascriptInterface
