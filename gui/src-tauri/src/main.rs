@@ -274,12 +274,7 @@ fn setup_tauri(
 
 			app.manage(Mutex::new(window_state));
 
-			if cli.no_start_server {
-				log::info!("Skipping server start.");
-				return Ok(());
-			}
-
-			if server_running() {
+			if cli.skip_server_start_if_running && server_running() {
 				log::info!("Skipping server start: server is already running.");
 				return Ok(());
 			}
