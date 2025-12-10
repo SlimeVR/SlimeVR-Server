@@ -592,11 +592,6 @@ onboarding-setup_warning-cancel = Jatka asennusta
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Palaa esittelyyn
-onboarding-wifi_creds = Syötä Wi-Fi-tunnistetiedot
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Jäljittimet käyttävät näitä tunnistetietoja langattomaan yhteyden muodostamiseen.
-    Käytä tunnistetietoja, joihin olet tällä hetkellä yhteydessä.
 onboarding-wifi_creds-skip = Ohita Wi-Fi-asetukset
 onboarding-wifi_creds-submit = Lähetä!
 onboarding-wifi_creds-ssid =
@@ -909,4 +904,7 @@ status_system-StatusTrackerError = { $trackerName } jäljittimessä on virhe
 
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

@@ -923,11 +923,6 @@ onboarding-setup_warning-cancel = 继续设置
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = 返回简介
-onboarding-wifi_creds = 输入 Wi-Fi 凭据
-# This cares about multilines
-onboarding-wifi_creds-description =
-    追踪器将使用这些凭据连接到 Wi-Fi
-    请使用当前连接到 Wi-Fi 的凭据
 onboarding-wifi_creds-skip = 跳过 Wi-Fi 设置
 onboarding-wifi_creds-submit = 提交！
 onboarding-wifi_creds-ssid =
@@ -1521,3 +1516,6 @@ error_collection_modal-description_v2 =
     您可以稍后在设置页面的行为部分中更改此设置。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 还是算了
+
+## Tracking checklist section
+

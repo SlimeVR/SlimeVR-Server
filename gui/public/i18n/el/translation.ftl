@@ -374,3 +374,6 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 
 ## Error collection consent modal
 
+
+## Tracking checklist section
+

@@ -483,11 +483,6 @@ onboarding-setup_warning-cancel = Fortsæt konfigurationen
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Gå tilbage til introduktion
-onboarding-wifi_creds = Indtast Wi-Fi-oplysninger
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Trackerne bruger disse oplysninger til at oprette forbindelse trådløst.
-    Brug de oplysninger, du i øjeblikket har forbindelse til.
 onboarding-wifi_creds-skip = Spring Wi-Fi-indstillinger over
 onboarding-wifi_creds-submit = Færdig!
 onboarding-wifi_creds-ssid =
@@ -655,4 +650,7 @@ home-no_trackers = Ingen trackere registreret eller tildelt
 
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

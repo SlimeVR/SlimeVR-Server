@@ -652,11 +652,6 @@ onboarding-setup_warning-cancel = Tiếp tục thiết lập
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Quay lại giới thiệu
-onboarding-wifi_creds = Nhập thông tin Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Tracker sẽ sử dụng thông tin này để kết nối đến mạng
-    Hãy nhập thông tin mạng Wi-Fi bạn đang dùng
 onboarding-wifi_creds-skip = Bỏ qua cài đặt Wi-Fi
 onboarding-wifi_creds-submit = Gửi
 onboarding-wifi_creds-ssid =
@@ -1036,4 +1031,7 @@ unknown_device-modal-confirm = Chắc!
 unknown_device-modal-forget = Bỏ qua
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 

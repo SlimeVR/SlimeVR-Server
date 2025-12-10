@@ -899,11 +899,6 @@ onboarding-setup_warning-cancel = Continuar con la configuración
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Volver a la introducción
-onboarding-wifi_creds = Introduce credenciales de Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Los trackers utilizarán estas credenciales para conectarse de forma inalámbrica.
-    Por favor, utiliza las credenciales a las que está conectado actualmente.
 onboarding-wifi_creds-skip = Omitir configuración Wi-Fi
 onboarding-wifi_creds-submit = ¡Enviar!
 onboarding-wifi_creds-ssid =
@@ -1484,3 +1479,6 @@ error_collection_modal-description_v2 =
     Puede cambiar esta configuración más adelante en la sección Comportamiento de la página de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero
+
+## Tracking checklist section
+

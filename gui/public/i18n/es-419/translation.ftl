@@ -944,11 +944,6 @@ onboarding-setup_warning-cancel = Continuar configuración
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Volver a la introducción
-onboarding-wifi_creds = Ingresar credenciales del Wi-Fi
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Los sensores utilizarán estas credenciales para conectarse inalámbricamente.
-    Por favor usa las credenciales del Wi-Fi al cuál estás conectado actualmente.
 onboarding-wifi_creds-skip = Saltar ajustes de Wi-Fi
 onboarding-wifi_creds-submit = ¡Enviar!
 onboarding-wifi_creds-ssid =
@@ -1561,6 +1556,9 @@ error_collection_modal-description_v2 =
     Tu puedes cambiar esta configuración más tarde en la sección de comportamiento de la pagina de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero
+
+## Tracking checklist section
+
 tracking_checklist-settings-close = Cerrar
 tracking_checklist-STEAMVR_DISCONNECTED-open = Abrir SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibra tus trackers

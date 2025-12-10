@@ -842,11 +842,6 @@ onboarding-setup_warning-cancel = Fortsätt inställning
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Gå tillbaka till introduktion
-onboarding-wifi_creds = Skriv in Wi-Fi information
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Trackers kommer att använda dessa uppgifter för att ansluta trådlöst.
-    Använd de autentiseringsuppgifter som du för närvarande är ansluten till.
 onboarding-wifi_creds-skip = Hoppa över Wi-Fi inställningar.
 onboarding-wifi_creds-submit = Överlämna!
 onboarding-wifi_creds-ssid =
@@ -1247,3 +1242,6 @@ error_collection_modal-description_v2 =
     Du kan ändra denna inställningen senare i beteende-sektionen av inställnings-sidan
 error_collection_modal-confirm = Jag tillåter.
 error_collection_modal-cancel = Jag vill inte
+
+## Tracking checklist section
+

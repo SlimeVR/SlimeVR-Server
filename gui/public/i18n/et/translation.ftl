@@ -559,11 +559,6 @@ onboarding-setup_warning-cancel = Jätka seadistamist
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Mine tagasi juhistele
-onboarding-wifi_creds = Sisestage enda Wi-Fi andmed!
-# This cares about multilines
-onboarding-wifi_creds-description =
-    Jälgijad kasutavad neid andmeid, et ühendada juhtmevabalt.
-    Palun kasutage neid Wi-Fi andmeid, millega te praegu olete ühendatud.
 onboarding-wifi_creds-skip = Jätke Wi-Fi seaded vahele.
 onboarding-wifi_creds-submit = Jätka!
 onboarding-wifi_creds-ssid =
@@ -806,4 +801,7 @@ status_system-StatusTrackerError = Jälgijal { $trackerName } on tõrge.
 
 
 ## Error collection consent modal
+
+
+## Tracking checklist section
 
