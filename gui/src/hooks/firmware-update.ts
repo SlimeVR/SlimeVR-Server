@@ -59,7 +59,9 @@ const checkUserCanUpdate = async (uuid: string, url: string, fwVersion: string) 
   return normalizedHash(`${uuid}-${fwVersion}`) <= todayUpdateRange;
 };
 
-export async function fetchCurrentFirmwareRelease(uuid: string): Promise<FirmwareRelease | null> {
+export async function fetchCurrentFirmwareRelease(
+  uuid: string
+): Promise<FirmwareRelease | null> {
   const releases: any[] | null = JSON.parse(
     (await cacheWrap(
       'firmware-releases',

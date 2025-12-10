@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import {
   defaultValues as defaultDevSettings,
   DeveloperModeWidgetForm,
@@ -9,7 +9,7 @@ import { load, Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 import { isTauri } from '@tauri-apps/api/core';
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid';
 
 export interface WindowConfig {
   width: number;
@@ -121,9 +121,10 @@ export const loadConfig = async () => {
 
     const loadedConfig = fallbackToDefaults(JSON.parse(json));
 
-    if (!loadedConfig.uuid) { // Make sure the config always has a uuid
+    if (!loadedConfig.uuid) {
+      // Make sure the config always has a uuid
       loadedConfig.uuid = uuidv4();
-      await store.set('config.json', JSON.stringify(loadedConfig))
+      await store.set('config.json', JSON.stringify(loadedConfig));
     }
 
     return loadedConfig;
