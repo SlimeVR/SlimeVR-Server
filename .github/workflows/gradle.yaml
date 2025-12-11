@@ -118,21 +118,15 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: cd gui && pnpm run build
 
-      - name: Decode keystore secret to file
-        env:
-          ANDROID_STORE_FILE: ${{ secrets.ANDROID_STORE_FILE }}
-        run: |
-          mkdir -p server/android/secrets/
-          echo $ANDROID_STORE_FILE | base64 --decode > server/android/secrets/keystore.jks
-
       - name: Build with Gradle
         run: ./gradlew :server:android:build
         env:
+          ANDROID_STORE_FILE: ${{ secrets.ANDROID_STORE_FILE }}
           ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_STORE_PASSWD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
 
-      - name: Upload the Android Build Artifact
+      - name: Upload the Android build artifact
         uses: actions/upload-artifact@v5
         with:
           # Artifact name
@@ -153,6 +147,24 @@ jobs:
           generate_release_notes: true
           files: |
             ./SlimeVR-android.apk
+
+      - name: Build Google Play release bundle
+        if: startsWith(github.ref, 'refs/tags/')
+        run: ./gradlew :server:android:bundleRelease
+        env:
+          ANDROID_STORE_FILE: ${{ secrets.ANDROID_GPLAY_STORE_FILE }}
+          ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_GPLAY_STORE_PASSWD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_GPLAY_KEY_ALIAS }}
+          ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_GPLAY_KEY_PASSWD }}
+
+      - name: Upload the Google Play artifact
+        uses: actions/upload-artifact@v5
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          # Artifact name
+          name: 'SlimeVR-Android-GPDev' # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path: server/android/build/outputs/bundle/release/*
 
   bundle-linux:
     strategy:
