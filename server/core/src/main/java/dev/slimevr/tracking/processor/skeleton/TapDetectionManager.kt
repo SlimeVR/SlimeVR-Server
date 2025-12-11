@@ -93,6 +93,13 @@ class TapDetectionManager(
 			).firstNotNullOfOrNull { it }
 		}
 
+	private val toeMountingResetTracker: Tracker?
+		get() {
+			return arrayOf(
+				skeleton.rightAbductorHallucisTracker,
+			).firstNotNullOfOrNull { it }
+		}
+
 	private val fullResetTracker: Tracker?
 		get() {
 			return arrayOf(
