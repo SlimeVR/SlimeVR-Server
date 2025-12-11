@@ -41,7 +41,7 @@ export interface Config {
   fonts: string[];
   useTray: boolean | null;
   mirrorView: boolean;
-  assignMode: AssignMode;
+  assignMode: AssignMode | null;
   discordPresence: boolean;
   errorTracking: boolean | null;
   decorations: boolean;
@@ -72,7 +72,7 @@ export const defaultConfig: Config = {
   fonts: ['poppins'],
   useTray: null,
   mirrorView: true,
-  assignMode: AssignMode.Core,
+  assignMode: null,
   discordPresence: false,
   errorTracking: null,
   decorations: false,

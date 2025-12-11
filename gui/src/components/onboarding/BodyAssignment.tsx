@@ -105,7 +105,7 @@ export function BodyAssignment({
   onlyAssigned = false,
   dotSize,
 }: {
-  assignMode: AssignMode;
+  assignMode: AssignMode | null;
   mirror: boolean;
   onlyAssigned?: boolean;
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
@@ -148,8 +148,7 @@ export function BodyAssignment({
   const hasBodyPart = useCallback(
     (part: BodyPart) =>
       COMMONS.includes(part) ||
-      assignMode === AssignMode.All ||
-      ASSIGNMENT_MODES[assignMode].includes(part),
+      (assignMode && ASSIGNMENT_MODES[assignMode].includes(part)),
     [assignMode]
   );
 

@@ -1,6 +1,6 @@
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
-import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
+import { AssignMode, useConfig } from '@/hooks/config';
 import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
 import { useForm } from 'react-hook-form';
@@ -61,11 +61,20 @@ export function TrackerAssignOptions({
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
 
   const { config, setConfig } = useConfig();
-  const { control, watch, setValue } = useForm<{
+
+  const getPreferredSet = () => {
+    return (
+      (Object.entries(ASSIGN_MODE_OPTIONS).find(
+        ([_, count]) => count >= connectedIMUTrackers.length
+      )?.[0] as AssignMode) ?? AssignMode.All
+    );
+  };
+
+  const { control, watch } = useForm<{
     assignMode: AssignMode;
   }>({
     defaultValues: {
-      assignMode: config?.assignMode ?? defaultConfig.assignMode,
+      assignMode: config?.assignMode || getPreferredSet(),
     },
   });
   const { assignMode } = watch();
@@ -73,19 +82,6 @@ export function TrackerAssignOptions({
   useEffect(() => {
     setConfig({ assignMode });
   }, [assignMode]);
-
-  useEffect(() => {
-    if (connectedIMUTrackers.length <= ASSIGN_MODE_OPTIONS[assignMode]) return;
-
-    const selectedAssignMode =
-      (Object.entries(ASSIGN_MODE_OPTIONS).find(
-        ([_, count]) => count >= connectedIMUTrackers.length
-      )?.[0] as AssignMode) ?? AssignMode.All;
-
-    if (assignMode !== selectedAssignMode) {
-      setValue('assignMode', selectedAssignMode);
-    }
-  }, [connectedIMUTrackers, assignMode]);
 
   if (variant == 'dropdown')
     return (
