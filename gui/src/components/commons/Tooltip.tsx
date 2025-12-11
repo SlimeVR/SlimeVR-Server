@@ -359,13 +359,10 @@ export function DrawerTooltip({
     }
   };
 
-  const touchEnd = (e: MouseEvent | TouchEvent) => {
-    if (Date.now() - touchTimestamp.current > TOOLTIP_DELAY) {
-      // open drawer
-      e.preventDefault(); // cancel the click event
+  const touchEnd = () => {
+    if (Date.now() - touchTimestamp.current < TOOLTIP_DELAY) {
       clearTimeout(touchTimeout.current);
-
-      open();
+      close();
     }
   };
 
@@ -394,12 +391,14 @@ export function DrawerTooltip({
 
       elem.addEventListener('touchstart', touchStart);
       elem.addEventListener('touchend', touchEnd);
+      elem.addEventListener('touchcancel', touchEnd);
 
       return () => {
         elem.removeEventListener('scroll', scroll);
 
         elem.removeEventListener('touchstart', touchStart);
         elem.removeEventListener('touchend', touchEnd);
+        elem.removeEventListener('touchcancel', touchEnd);
         clearTimeout(touchTimeout.current);
       };
     }
