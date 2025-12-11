@@ -63,10 +63,12 @@ export function TrackerAssignOptions({
   const { config, setConfig } = useConfig();
 
   const getPreferredSet = () => {
-    return (Object.entries(ASSIGN_MODE_OPTIONS).find(
+    return (
+      (Object.entries(ASSIGN_MODE_OPTIONS).find(
         ([_, count]) => count >= connectedIMUTrackers.length
       )?.[0] as AssignMode) ?? AssignMode.All
-  }
+    );
+  };
 
   const { control, watch } = useForm<{
     assignMode: AssignMode;
