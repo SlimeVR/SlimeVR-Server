@@ -104,7 +104,6 @@ export function TrackerRotCell({
 
 function Header({
   name,
-  className,
   first = false,
   last = false,
   show = true,
@@ -116,17 +115,15 @@ function Header({
   show?: boolean;
 }) {
   return (
-    <th
-      className={classNames('text-start px-2', {
+    <div
+      className={classNames('text-start px-2 flex items-center', {
         hidden: !show,
         'pl-4': first,
         'pr-4': last,
       })}
     >
-      <div className={className}>
-        <Typography id={name} whitespace="whitespace-nowrap" />
-      </div>
-    </th>
+      <Typography id={name} whitespace="whitespace-nowrap" />
+    </div>
   );
 }
 
@@ -147,7 +144,9 @@ function Cell({
   const velocity = useVelocity();
 
   return (
-    <td className={classNames('py-2 group overflow-hidden', { hidden: !show })}>
+    <div
+      className={classNames('py-2 group overflow-hidden', { hidden: !show })}
+    >
       <div
         style={{
           boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
@@ -161,7 +160,7 @@ function Cell({
       >
         {children}
       </div>
-    </td>
+    </div>
   );
 }
 
@@ -171,10 +170,12 @@ function Row({
   data,
   highlightedTrackers,
   clickedTracker,
+  gridTemplateColumns,
 }: {
   data: FlatDeviceTracker;
   highlightedTrackers: highlightedTrackers | undefined;
   clickedTracker: (tracker: TrackerDataT) => void;
+  gridTemplateColumns: string;
 }) {
   const { config } = useConfig();
   const fontColor = config?.devSettings?.highContrast ? 'primary' : 'secondary';
@@ -191,6 +192,11 @@ function Row({
 
   return (
     <TrackerRowProvider.Provider value={data}>
+      <div className="relative z-10">
+        <div className="absolute top-2 left-5">
+          <FirmwareIcon tracker={tracker} device={device} />
+        </div>
+      </div>
       <Tooltip
         disabled={!warning}
         preferedDirection="top"
@@ -202,16 +208,14 @@ function Row({
             </div>
           )
         }
-        tag="tr"
         spacing={-5}
       >
         <>
-          <div className="relative z-10">
-            <div className="absolute top-2 left-5">
-              <FirmwareIcon tracker={tracker} device={device} />
-            </div>
-          </div>
-          <tr className="group" onClick={() => clickedTracker(tracker)}>
+          <div
+            className="group grid items-center"
+            style={{ gridTemplateColumns }}
+            onClick={() => clickedTracker(tracker)}
+          >
             <Cell first>
               <TrackerNameCell tracker={tracker} warning={warning} />
             </Cell>
@@ -287,7 +291,7 @@ function Row({
                 ).toString()}
               </Typography>
             </Cell>
-          </tr>
+          </div>
         </>
       </Tooltip>
     </TrackerRowProvider.Provider>
@@ -307,7 +311,7 @@ export function TrackersTable({
   const filteringEnabled =
     config?.debug && config?.devSettings?.filterSlimesAndHMD;
   const sortingEnabled = config?.debug && config?.devSettings?.sortByName;
-  // TODO: fix memo
+
   const filteredSortedTrackers = useMemo(() => {
     const list = filteringEnabled
       ? flatTrackers.filter((t) => isHMD(t) || isSlime(t))
@@ -321,49 +325,62 @@ export function TrackersTable({
 
   const moreInfo = config?.devSettings?.moreInfo;
 
+  const gridTemplateColumns = useMemo(() => {
+    const cols = [
+      'minmax(150px, 1.5fr)', // Name
+      'minmax(100px, 1fr)', // Type
+      'minmax(60px, 1fr)', // Battery
+      '6rem', // Ping (w-24)
+      'minmax(60px, 1fr)', // TPS
+      config?.devSettings?.preciseRotation ? '11rem' : '8rem', // Rotation
+      'minmax(60px, 1fr)', // Temp
+    ];
+
+    if (moreInfo) {
+      cols.push('9rem'); // Linear Acc
+      cols.push('9rem'); // Position
+      cols.push('9rem'); // Stay Aligned
+      cols.push('minmax(150px, 1fr)'); // URL
+    }
+
+    return cols.join(' ');
+  }, [config?.devSettings?.preciseRotation, moreInfo]);
+
   return (
     <div className="w-full overflow-x-auto py-2 px-2">
-      <table className="w-full" cellPadding={0} cellSpacing={0}>
-        <tr>
+      <div className="min-w-fit">
+        <div className="grid items-center mb-1" style={{ gridTemplateColumns }}>
           <Header name={'tracker-table-column-name'} first />
           <Header name={'tracker-table-column-type'} />
           <Header name={'tracker-table-column-battery'} />
-          <Header name={'tracker-table-column-ping'} className="w-24" />
+          <Header name={'tracker-table-column-ping'} />
           <Header name={'tracker-table-column-tps'} />
-          <Header
-            name={'tracker-table-column-rotation'}
-            className={classNames({
-              'w-44': config?.devSettings?.preciseRotation,
-              'w-32': !config?.devSettings?.preciseRotation,
-            })}
-          />
+          <Header name={'tracker-table-column-rotation'} />
           <Header name={'tracker-table-column-temperature'} last={!moreInfo} />
           <Header
             name={'tracker-table-column-linear-acceleration'}
-            className="w-36"
             show={moreInfo}
           />
+          <Header name={'tracker-table-column-position'} show={moreInfo} />
+          <Header name={'tracker-table-column-stay_aligned'} show={moreInfo} />
           <Header
-            name={'tracker-table-column-position'}
-            className="w-36"
-            show={moreInfo}
-          />
-          <Header
-            name={'tracker-table-column-stay_aligned'}
-            className="w-36"
+            name={'tracker-table-column-url'}
             show={moreInfo}
             last={moreInfo}
           />
-          <Header name={'tracker-table-column-url'} show={moreInfo} />
-        </tr>
-        {filteredSortedTrackers.map((data) => (
-          <Row
-            clickedTracker={clickedTracker}
-            data={data}
-            highlightedTrackers={highlightedTrackers}
-          />
-        ))}
-      </table>
+        </div>
+        <div className="flex flex-col gap-y-0">
+          {filteredSortedTrackers.map((data) => (
+            <Row
+              key={data.tracker.trackerId?.trackerNum}
+              clickedTracker={clickedTracker}
+              data={data}
+              highlightedTrackers={highlightedTrackers}
+              gridTemplateColumns={gridTemplateColumns}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
