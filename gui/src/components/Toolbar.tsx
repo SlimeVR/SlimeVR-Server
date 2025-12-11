@@ -85,7 +85,9 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
       spacing={5}
       preferedDirection={error ? 'bottom' : 'top'}
     >
-      <div
+      <button
+        type="button"
+        disabled={disabled}
         className={classNames(
           MAINBUTTON_CLASSES({ disabled }),
           'rounded-lg',
@@ -135,7 +137,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
             {timer}
           </Typography>
         </div>
-      </div>
+      </button>
     </Tooltip>
   );
 }

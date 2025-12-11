@@ -24,6 +24,7 @@ interface TooltipProps {
   disabled?: boolean;
   tag?: string;
   spacing?: number;
+  bindTo?: string;
 }
 
 interface TooltipPos {
@@ -468,10 +469,15 @@ export function Tooltip({
   variant = 'auto',
   disabled = false,
   tag = 'div',
+  bindTo,
   spacing = 10,
 }: TooltipProps) {
   const childRef = useRef<HTMLElement | null>(null);
   const isAndroid = window.__ANDROID__?.isThere();
+
+  if (bindTo) {
+    childRef.current = document.querySelector(bindTo);
+  }
 
   let portal = null;
   if (variant === 'auto') {
@@ -508,7 +514,13 @@ export function Tooltip({
 
   return (
     <>
-      {createElement(tag, { className: 'contents', ref: childRef }, children)}
+      {bindTo
+        ? children
+        : createElement(
+            tag,
+            { className: 'contents', ref: childRef },
+            children
+          )}
       {!disabled && createPortal(portal, document.body)}
     </>
   );
