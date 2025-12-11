@@ -59,7 +59,7 @@ function DropdownItem({
     secondary:
       'text-background-20 checked-hover:text-background-10 checked-hover:bg-background-60 focus:text-background-10 focus:bg-background-60',
     tertiary:
-      'bg-accent-background-30 checked-hover:bg-accent-background-20 focus:bg-accent-background-20',
+      'bg-accent-background-30 checked-hover:bg-accent-background-20 focus:bg-accent-background-20 text-background-10',
   };
 
   const ref = useRef<HTMLDivElement>(null);
