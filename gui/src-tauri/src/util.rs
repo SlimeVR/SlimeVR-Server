@@ -48,7 +48,7 @@ pub struct Cli {
 	#[clap(long)]
 	pub launch_from_path: Option<PathBuf>,
 	#[clap(long)]
-	pub no_start_server: bool,
+	pub skip_server_start_if_running: bool,
 	#[clap(flatten)]
 	verbose: clap_verbosity_flag::Verbosity,
 }
