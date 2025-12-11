@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {
   DataFeedMessage,
   DataFeedUpdateT,
@@ -12,8 +12,9 @@ import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bonesAtom, datafeedAtom, devicesAtom } from '@/store/app-store';
-import { updateSentryContext } from '@/utils/sentry';
+import { getSentryOrCompute, updateSentryContext } from '@/utils/sentry';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
+import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
 export interface AppContext {
   currentFirmwareRelease: FirmwareRelease | null;
@@ -22,6 +23,7 @@ export interface AppContext {
 export function useProvideAppContext(): AppContext {
   const { useRPCPacket, sendDataFeedPacket, useDataFeedPacket, isConnected } =
     useWebsocketAPI();
+  const { changeLocales } = useContext(LangContext);
   const { config } = useConfig();
   const { dataFeedConfig } = useDataFeedConfig();
   const bonesDataFeedConfig = useBonesDataFeedConfig();
@@ -58,13 +60,29 @@ export function useProvideAppContext(): AppContext {
   });
 
   useEffect(() => {
+    if (!config) return;
+
     const interval = setInterval(() => {
-      fetchCurrentFirmwareRelease().then((res) => setCurrentFirmwareRelease(res));
+      fetchCurrentFirmwareRelease(config.uuid).then(setCurrentFirmwareRelease);
     }, 1000);
     return () => {
       clearInterval(interval);
     };
+  }, [config?.uuid]);
+
+  useLayoutEffect(() => {
+    changeLocales([config?.lang || DEFAULT_LOCALE]);
   }, []);
+
+  useLayoutEffect(() => {
+    if (!config) return;
+    if (config.errorTracking !== undefined) {
+      console.log('change');
+      // Alows for sentry to refresh if user change the setting once the gui
+      // is initialized
+      getSentryOrCompute(config.errorTracking ?? false, config.uuid);
+    }
+  }, [config]);
 
   return {
     currentFirmwareRelease,

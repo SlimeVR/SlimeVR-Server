@@ -10,6 +10,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import * as Sentry from '@sentry/react';
 
 export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string> = {
   [TrackingChecklistStepId.UNKNOWN]: '',
@@ -165,6 +166,9 @@ export function provideTrackingChecklist() {
     res.stepId = step;
     res.ignore = ignore;
     sendRPCPacket(RpcMessage.IgnoreTrackingChecklistStepRequest, res);
+    Sentry.metrics.count(ignore ? 'mute_checklist_step' : 'unmute_checklist_step', 1, {
+      attributes: { step: TrackingChecklistStepId[step] },
+    });
   };
 
   return {

@@ -9,6 +9,7 @@ import { load, Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 import { isTauri } from '@tauri-apps/api/core';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface WindowConfig {
   width: number;
@@ -26,6 +27,7 @@ export enum AssignMode {
 }
 
 export interface Config {
+  uuid: string;
   debug: boolean;
   lang: string;
   doneOnboarding: boolean;
@@ -57,6 +59,7 @@ export interface ConfigContext {
 }
 
 export const defaultConfig: Config = {
+  uuid: uuidv4(),
   lang: 'en',
   debug: false,
   doneOnboarding: false,
@@ -117,13 +120,16 @@ export const loadConfig = async () => {
     if (!json) throw new Error('Config has ceased existing for some reason');
 
     const loadedConfig = fallbackToDefaults(JSON.parse(json));
-    // set(loadedConfig);
-    // setLoading(false);
+
+    if (!loadedConfig.uuid) {
+      // Make sure the config always has a uuid
+      loadedConfig.uuid = uuidv4();
+      await store.set('config.json', JSON.stringify(loadedConfig));
+    }
+
     return loadedConfig;
   } catch (e) {
     error(e);
-    // setConfig(defaultConfig);
-    // setLoading(false);
     return null;
   }
 };

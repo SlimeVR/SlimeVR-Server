@@ -47,7 +47,12 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
     req.bodyParts = parts;
     sendRPCPacket(RpcMessage.ResetRequest, req);
 
-    Sentry.metrics.count('reset_click', 1, { attributes: options });
+    Sentry.metrics.count('reset_click', 1, {
+      attributes: {
+        resetType: ResetType[options.type],
+        group: options.type === ResetType.Mounting ? options.group : undefined,
+      },
+    });
   };
 
   const onResetFinished = () => {

@@ -327,6 +327,14 @@ export function ScaledProportionsPage() {
   );
 
   useEffect(() => {
+    if (lastUsed !== null) {
+      Sentry.metrics.count('scaled_proportions', 1, {
+        attributes: { calibration: lastUsed },
+      });
+    }
+  }, [lastUsed]);
+
+  useEffect(() => {
     sendRPCPacket(
       RpcMessage.SkeletonConfigRequest,
       new SkeletonConfigRequestT()
@@ -334,11 +342,6 @@ export function ScaledProportionsPage() {
 
     return () => {
       cancel();
-      if (lastUsed !== null) {
-        Sentry.metrics.count('scaled_proportions', 1, {
-          attributes: { calibration: lastUsed },
-        });
-      }
     };
   }, []);
 
