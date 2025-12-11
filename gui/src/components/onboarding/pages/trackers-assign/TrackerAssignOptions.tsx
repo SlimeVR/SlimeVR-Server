@@ -72,7 +72,7 @@ export function TrackerAssignOptions({
     assignMode: AssignMode;
   }>({
     defaultValues: {
-      assignMode: config?.assignMode || getPreferedSet(),
+      assignMode: config?.assignMode || getPreferredSet(),
     },
   });
   const { assignMode } = watch();
