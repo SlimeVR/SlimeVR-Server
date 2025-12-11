@@ -174,7 +174,7 @@ android {
 
 	signingConfigs {
 		val inputKeyStore: File? = if (envKeyStore != null) {
-			logger.lifecycle("i: \"ANDROID_STORE_FILE\" environment variable found, using for temporary KeyStore file.")
+			logger.lifecycle("i: \"ANDROID_STORE_FILE\" environment variable found, using for signing config.")
 			tempKeyStore
 		} else {
 			file("secrets/keystore.jks").takeIf { it.canRead() && it.length() > 0 }
