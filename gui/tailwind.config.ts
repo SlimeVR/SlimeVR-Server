@@ -158,6 +158,11 @@ const colors = {
     300: '#FFFFFF',
     400: '#800080',
   },
+  snep: {
+    100: '#261B20',
+    200: '#5B1B3A',
+    300: '#FFCCE5',
+  },
 };
 
 const config = {
@@ -289,6 +294,7 @@ const config = {
         light: `linear-gradient(135deg, ${colors['light-accent'][100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
         'asexual-flag': `linear-gradient(135deg, ${colors['asexual'][100]} 30%, ${colors['asexual'][200]} 30% 50%, ${colors['asexual'][300]} 50% 70%, ${colors['asexual'][400]} 70% 100%)`,
+        'snep': `linear-gradient(135deg, ${colors['snep'][100]} 40%, ${colors['snep'][200]} 40% 70%, ${colors['snep'][300]} 70% 100%)`,
       },
       animation: {
         'spin-ccw': 'spin-ccw 1s linear infinite',

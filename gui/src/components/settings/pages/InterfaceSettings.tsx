@@ -464,6 +464,12 @@ export function InterfaceSettings() {
                   value={'asexual'}
                   colors="!bg-asexual-flag"
                 />
+                <ThemeSelector
+                  control={control}
+                  name="appearance.theme"
+                  value={'snep'}
+                  colors="!bg-snep"
+                />
               </div>
             </div>
 
