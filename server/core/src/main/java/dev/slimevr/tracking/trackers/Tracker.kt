@@ -316,7 +316,7 @@ class Tracker @JvmOverloads constructor(
 		rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
 
 		// Reset if needed and is not computed and internal
-		return if (needReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
+		return if (allowReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
 			resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		} else {
