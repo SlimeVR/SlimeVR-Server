@@ -354,7 +354,7 @@ export function TrackersAssignPage() {
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
-                assignMode={config?.assignMode ?? defaultConfig.assignMode}
+                assignMode={config?.assignMode ?? null}
                 mirror={mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
               />

@@ -61,11 +61,18 @@ export function TrackerAssignOptions({
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
 
   const { config, setConfig } = useConfig();
-  const { control, watch, setValue } = useForm<{
+
+  const getPreferedSet = () => {
+    return (Object.entries(ASSIGN_MODE_OPTIONS).find(
+        ([_, count]) => count >= connectedIMUTrackers.length
+      )?.[0] as AssignMode) ?? AssignMode.All
+  }
+
+  const { control, watch } = useForm<{
     assignMode: AssignMode;
   }>({
     defaultValues: {
-      assignMode: config?.assignMode ?? defaultConfig.assignMode,
+      assignMode: config?.assignMode || getPreferedSet(),
     },
   });
   const { assignMode } = watch();
@@ -73,19 +80,6 @@ export function TrackerAssignOptions({
   useEffect(() => {
     setConfig({ assignMode });
   }, [assignMode]);
-
-  useEffect(() => {
-    const preferedAssignMode =
-      (Object.entries(ASSIGN_MODE_OPTIONS).find(
-        ([_, count]) => count >= connectedIMUTrackers.length
-      )?.[0] as AssignMode) ?? AssignMode.All;
-
-    if (
-      ASSIGN_MODE_OPTIONS[preferedAssignMode] >= ASSIGN_MODE_OPTIONS[assignMode]
-    ) {
-      setValue('assignMode', preferedAssignMode);
-    }
-  }, []);
 
   if (variant == 'dropdown')
     return (
