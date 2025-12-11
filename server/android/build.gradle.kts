@@ -5,8 +5,11 @@
  * For more details take a look at the Java Libraries chapter in the Gradle
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
+import com.android.build.gradle.tasks.PackageApplication
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.Base64
 
 plugins {
 	kotlin("android")
@@ -28,7 +31,7 @@ java {
 	}
 }
 
-tasks.register<Copy>("copyGuiAssets") {
+val copyGuiAssets = tasks.register<Copy>("copyGuiAssets") {
 	val target = layout.projectDirectory.dir("src/main/assets/web-gui")
 	delete(target)
 	from(rootProject.layout.projectDirectory.dir("gui/dist"))
@@ -37,17 +40,45 @@ tasks.register<Copy>("copyGuiAssets") {
 		throw GradleException("You need to run \"pnpm run build\" on the gui folder first!")
 	}
 }
-tasks.register("validateKeyStore") {
-	val storeFile = android.buildTypes.getByName("release").signingConfig?.storeFile
-	// Only warn for now since this is run even when irrelevant
-	if (storeFile?.isFile != true) {
-		logger.error("Android KeyStore file does not exist or is not a file: ${storeFile?.path}")
-	} else if (storeFile.length() <= 0) {
-		logger.error("Android KeyStore file is empty: ${storeFile.path}")
+tasks.preBuild {
+	dependsOn(copyGuiAssets)
+}
+
+// Set up signing pre/post tasks
+val preSign = tasks.register("preSign") {
+	dependsOn(writeTempKeyStore)
+}
+val postSign = tasks.register("postSign") {
+	finalizedBy(deleteTempKeyStore)
+}
+tasks.withType<PackageApplication> {
+	dependsOn(preSign)
+	finalizedBy(postSign)
+}
+
+// Handle GitHub secret Android KeyStore files
+val envKeyStore: String? = System.getenv("ANDROID_STORE_FILE")?.takeIf { it.isNotBlank() }
+val tempKeyStore = project.layout.buildDirectory.file("tmp/keystore.tmp.jks").get().asFile
+val writeTempKeyStore = tasks.register("writeTempKeyStore") {
+	if (envKeyStore != null) {
+		doLast {
+			tempKeyStore.apply {
+				ensureParentDirsCreated()
+				tempKeyStore.writeBytes(Base64.getDecoder().decode(envKeyStore))
+				tempKeyStore.deleteOnExit()
+			}
+		}
+		finalizedBy(deleteTempKeyStore)
+	} else {
+		enabled = false
 	}
 }
-tasks.preBuild {
-	dependsOn(":server:android:copyGuiAssets", ":server:android:validateKeyStore")
+val deleteTempKeyStore = tasks.register<Delete>("deleteTempKeyStore") {
+	if (envKeyStore != null) {
+		delete(tempKeyStore)
+	} else {
+		enabled = false
+	}
 }
 
 tasks.withType<KotlinCompile> {
@@ -136,17 +167,30 @@ android {
 		// Defines a user-friendly version name for your app.
 		versionName = extra["gitVersionName"] as? String ?: "v0.0.0"
 
-		logger.lifecycle("Configured for SlimeVR Android version $versionName ($versionCode)")
+		logger.lifecycle("i: Configured for SlimeVR Android version \"$versionName\" ($versionCode).")
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
 
 	signingConfigs {
-		create("release") {
-			storeFile = file("./secrets/keystore.jks")
-			storePassword = System.getenv("ANDROID_STORE_PASSWD")
-			keyAlias = System.getenv("ANDROID_KEY_ALIAS")
-			keyPassword = System.getenv("ANDROID_KEY_PASSWD")
+		val inputKeyStore: File? = if (envKeyStore != null) {
+			logger.lifecycle("i: \"ANDROID_STORE_FILE\" environment variable found, using for temporary KeyStore file.")
+			tempKeyStore
+		} else {
+			file("secrets/keystore.jks").takeIf { it.canRead() && it.length() > 0 }
+		}
+
+		if (inputKeyStore != null) {
+			logger.info("i: Configuring signing for Android KeyStore file: \"${inputKeyStore.path}\".")
+
+			create("release") {
+				storeFile = inputKeyStore
+				storePassword = System.getenv("ANDROID_STORE_PASSWD")
+				keyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: "key0"
+				keyPassword = System.getenv("ANDROID_KEY_PASSWD")
+			}
+		} else {
+			logger.warn("w: Android KeyStore file is not valid or not found, skipping signing.")
 		}
 	}
 
@@ -168,7 +212,7 @@ android {
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro",
 			)
-			signingConfig = signingConfigs.getByName("release")
+			signingConfig = signingConfigs.findByName("release")
 		}
 	}
 

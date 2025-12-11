@@ -118,16 +118,10 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: cd gui && pnpm run build
 
-      - name: Decode keystore secret to file
-        env:
-          ANDROID_STORE_FILE: ${{ secrets.ANDROID_STORE_FILE }}
-        run: |
-          mkdir -p server/android/secrets/
-          echo $ANDROID_STORE_FILE | base64 --decode > server/android/secrets/keystore.jks
-
       - name: Build with Gradle
         run: ./gradlew :server:android:build
         env:
+          ANDROID_STORE_FILE: ${{ secrets.ANDROID_STORE_FILE }}
           ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_STORE_PASSWD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
