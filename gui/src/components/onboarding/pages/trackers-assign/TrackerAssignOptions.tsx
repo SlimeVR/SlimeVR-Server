@@ -75,17 +75,17 @@ export function TrackerAssignOptions({
   }, [assignMode]);
 
   useEffect(() => {
-    if (connectedIMUTrackers.length <= ASSIGN_MODE_OPTIONS[assignMode]) return;
-
-    const selectedAssignMode =
+    const preferedAssignMode =
       (Object.entries(ASSIGN_MODE_OPTIONS).find(
         ([_, count]) => count >= connectedIMUTrackers.length
       )?.[0] as AssignMode) ?? AssignMode.All;
 
-    if (assignMode !== selectedAssignMode) {
-      setValue('assignMode', selectedAssignMode);
+    if (
+      ASSIGN_MODE_OPTIONS[preferedAssignMode] >= ASSIGN_MODE_OPTIONS[assignMode]
+    ) {
+      setValue('assignMode', preferedAssignMode);
     }
-  }, [connectedIMUTrackers, assignMode]);
+  }, []);
 
   if (variant == 'dropdown')
     return (
