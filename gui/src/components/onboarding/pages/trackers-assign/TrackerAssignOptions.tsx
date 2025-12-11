@@ -1,6 +1,6 @@
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
-import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
+import { AssignMode, useConfig } from '@/hooks/config';
 import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
 import { useForm } from 'react-hook-form';
