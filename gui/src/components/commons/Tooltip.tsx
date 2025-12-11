@@ -364,9 +364,12 @@ export function DrawerTooltip({
   };
 
   const touchEnd = (e: MouseEvent | TouchEvent) => {
-    if (e.currentTarget instanceof HTMLButtonElement && e.currentTarget.hasAttribute('disabled')) {
-      e.preventDefault()
-      return
+    if (
+      e.currentTarget instanceof HTMLButtonElement &&
+      e.currentTarget.hasAttribute('disabled')
+    ) {
+      e.preventDefault();
+      return;
     }
     if (Date.now() - touchTimestamp.current < TOOLTIP_DELAY) {
       clearTimeout(touchTimeout.current);
