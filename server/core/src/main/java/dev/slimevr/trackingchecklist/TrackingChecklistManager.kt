@@ -151,7 +151,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		steps.add(
 			TrackingChecklistStepT().apply {
 				id = TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED
-				enabled = true
+				enabled = false
 				optional = true
 				ignorable = true
 				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
