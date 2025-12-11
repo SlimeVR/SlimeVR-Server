@@ -126,7 +126,7 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
 
-      - name: Upload the Android Build Artifact
+      - name: Upload the Android build artifact
         uses: actions/upload-artifact@v5
         with:
           # Artifact name
@@ -147,6 +147,24 @@ jobs:
           generate_release_notes: true
           files: |
             ./SlimeVR-android.apk
+
+      - name: Build Google Play release bundle
+        if: startsWith(github.ref, 'refs/tags/')
+        run: ./gradlew :server:android:bundleRelease
+        env:
+          ANDROID_STORE_FILE: ${{ secrets.ANDROID_GPLAY_STORE_FILE }}
+          ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_GPLAY_STORE_PASSWD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_GPLAY_KEY_ALIAS }}
+          ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_GPLAY_KEY_PASSWD }}
+
+      - name: Upload the Google Play artifact
+        uses: actions/upload-artifact@v5
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          # Artifact name
+          name: 'SlimeVR-Google-Play-Upload' # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path: server/android/build/outputs/bundle/release/*
 
   bundle-linux:
     strategy:

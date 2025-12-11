@@ -5,7 +5,7 @@
  * For more details take a look at the Java Libraries chapter in the Gradle
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
-import com.android.build.gradle.tasks.PackageApplication
+import com.android.build.gradle.internal.tasks.BaseTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.internal.ensureParentDirsCreated
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -51,7 +51,7 @@ val preSign = tasks.register("preSign") {
 val postSign = tasks.register("postSign") {
 	finalizedBy(deleteTempKeyStore)
 }
-tasks.withType<PackageApplication> {
+tasks.withType<BaseTask> {
 	dependsOn(preSign)
 	finalizedBy(postSign)
 }
