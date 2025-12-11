@@ -33,3 +33,6 @@
 -dontwarn io.netty.**
 -dontwarn com.typesafe.**
 -dontwarn org.slf4j.**
+
+# Obfuscation is fine but it makes crash logs unreadable, we don't really need it for our app
+-dontobfuscate
