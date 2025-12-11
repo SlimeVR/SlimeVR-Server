@@ -344,9 +344,13 @@ export function DrawerTooltip({
       elem.classList.add(classNames('animate-pulse'));
       elem.classList.add(classNames('scale-[110%]'));
       elem.classList.add(classNames('duration-500'));
-      touchTimeout.current = setTimeout(() => {
+      if (elem.hasAttribute('disabled')) {
         open();
-      }, TOOLTIP_DELAY) as unknown as number;
+      } else {
+        touchTimeout.current = setTimeout(() => {
+          open();
+        }, TOOLTIP_DELAY) as unknown as number;
+      }
     }
   };
 
@@ -359,7 +363,11 @@ export function DrawerTooltip({
     }
   };
 
-  const touchEnd = () => {
+  const touchEnd = (e: MouseEvent | TouchEvent) => {
+    if (e.currentTarget instanceof HTMLButtonElement && e.currentTarget.hasAttribute('disabled')) {
+      e.preventDefault()
+      return
+    }
     if (Date.now() - touchTimestamp.current < TOOLTIP_DELAY) {
       clearTimeout(touchTimeout.current);
       close();
