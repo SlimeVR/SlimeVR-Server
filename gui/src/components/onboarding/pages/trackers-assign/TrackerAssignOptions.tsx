@@ -62,7 +62,7 @@ export function TrackerAssignOptions({
 
   const { config, setConfig } = useConfig();
 
-  const getPreferedSet = () => {
+  const getPreferredSet = () => {
     return (Object.entries(ASSIGN_MODE_OPTIONS).find(
         ([_, count]) => count >= connectedIMUTrackers.length
       )?.[0] as AssignMode) ?? AssignMode.All
