@@ -81,7 +81,7 @@ export function FirmwareIcon({
       {showUpdate &&
         showUpdate !== 'unavailable' &&
         showUpdate !== 'updated' &&
-        showUpdate !== 'blocked' && <UpdateIcon showUpdate={'can-update'} />}
+        showUpdate !== 'blocked' && <UpdateIcon showUpdate={showUpdate} />}
     </div>
   );
 }
