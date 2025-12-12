@@ -965,6 +965,8 @@ onboarding-wifi_creds-password =
     .placeholder = 輸入密碼
 onboarding-wifi_creds-dongle-title = 透過接收器連接
 onboarding-wifi_creds-dongle-description = 如果你的追蹤器有接收器，將其插入你的裝置即可開始使用。
+onboarding-wifi_creds-dongle-wip = 本部分目前仍在開發階段，將來會推出管理接收器連接追蹤器的專屬頁面。
+onboarding-wifi_creds-dongle-continue = 使用接收器繼續
 
 ## Mounting setup
 
