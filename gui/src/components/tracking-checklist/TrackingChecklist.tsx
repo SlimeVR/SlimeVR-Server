@@ -109,7 +109,7 @@ const stepContentLookup: Record<
     context: TrackingChecklistContext
   ) => JSX.Element
 > = {
-  [TrackingChecklistStepId.TRACKERS_REST_CALIBRATION]: (step, { toggle }) => {
+  [TrackingChecklistStepId.TRACKERS_REST_CALIBRATION]: (step, { toggleSession }) => {
     return (
       <div className="space-y-2.5">
         <Typography id="tracking_checklist-TRACKERS_REST_CALIBRATION-desc" />
@@ -118,7 +118,7 @@ const stepContentLookup: Record<
             <Button
               id="tracking_checklist-ignore"
               variant="secondary"
-              onClick={() => toggle(step.id)}
+              onClick={() => toggleSession(step.id)}
             />
           )}
         </div>
@@ -166,7 +166,7 @@ const stepContentLookup: Record<
       </div>
     );
   },
-  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]: (step, { toggle }) => {
+  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]: (step, { toggleSession }) => {
     return (
       <>
         <div className="space-y-2.5">
@@ -181,7 +181,7 @@ const stepContentLookup: Record<
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
-                onClick={() => toggle(step.id)}
+                onClick={() => toggleSession(step.id)}
               />
             )}
           </div>
@@ -195,7 +195,7 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.UNASSIGNED_HMD]: () => {
     return <Typography id="tracking_checklist-UNASSIGNED_HMD-desc" />;
   },
-  [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (step, { toggle }) => {
+  [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (step, { toggleSession }) => {
     const data = step.extraData as TrackingChecklistPublicNetworksT | null;
     return (
       <>
@@ -226,7 +226,7 @@ const stepContentLookup: Record<
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
-                onClick={() => toggle(step.id)}
+                onClick={() => toggleSession(step.id)}
               />
             )}
           </div>
@@ -234,7 +234,7 @@ const stepContentLookup: Record<
       </>
     );
   },
-  [TrackingChecklistStepId.VRCHAT_SETTINGS]: (step, { toggle }) => {
+  [TrackingChecklistStepId.VRCHAT_SETTINGS]: (step, { toggleSession }) => {
     return (
       <>
         <div className="space-y-2.5">
@@ -249,7 +249,7 @@ const stepContentLookup: Record<
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
-                onClick={() => toggle(step.id)}
+                onClick={() => toggleSession(step.id)}
               />
             )}
           </div>
@@ -257,7 +257,7 @@ const stepContentLookup: Record<
       </>
     );
   },
-  [TrackingChecklistStepId.MOUNTING_CALIBRATION]: (step, { toggle }) => {
+  [TrackingChecklistStepId.MOUNTING_CALIBRATION]: (step, { toggleSession }) => {
     return (
       <div className="space-y-2.5">
         <Typography id="onboarding-automatic_mounting-mounting_reset-step-0" />
@@ -275,14 +275,14 @@ const stepContentLookup: Record<
             <Button
               id="tracking_checklist-ignore"
               variant="secondary"
-              onClick={() => toggle(step.id)}
+              onClick={() => toggleSession(step.id)}
             />
           )}
         </div>
       </div>
     );
   },
-  [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]: (step, { toggle }) => {
+  [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]: (step, { toggleSession }) => {
     return (
       <div className="space-y-2.5">
         <Typography id="onboarding-automatic_mounting-mounting_reset-feet-step-0" />
@@ -309,14 +309,14 @@ const stepContentLookup: Record<
             <Button
               id="tracking_checklist-ignore"
               variant="secondary"
-              onClick={() => toggle(step.id)}
+              onClick={() => toggleSession(step.id)}
             />
           )}
         </div>
       </div>
     );
   },
-  [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]: (step, { toggle }) => {
+  [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]: (step, { toggleSession }) => {
     return (
       <>
         <div className="space-y-2.5">
@@ -332,7 +332,7 @@ const stepContentLookup: Record<
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
-                onClick={() => toggle(step.id)}
+                onClick={() => toggleSession(step.id)}
               />
             )}
           </div>

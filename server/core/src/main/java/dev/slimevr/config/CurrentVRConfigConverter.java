@@ -339,6 +339,12 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					}
 				}
 			}
+
+			if (version < 15) {
+				ObjectNode checklistNode = (ObjectNode) modelData.get("trackingChecklist");
+				ArrayNode ignoredStepsArray = (ArrayNode) checklistNode.get("ignoredStepsIds");
+				ignoredStepsArray.removeAll();
+			}
 		} catch (Exception e) {
 			LogManager.severe("Error during config migration: " + e);
 		}
