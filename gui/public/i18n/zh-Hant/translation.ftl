@@ -947,6 +947,13 @@ onboarding-setup_warning-cancel = 繼續設定
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = 返回簡介
+onboarding-wifi_creds-v2 = 透過 Wi-Fi 連接
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    大多數的追蹤器（例如官方的 SlimeVR 追蹤器）使用 Wi-Fi 連接伺服器程式。
+    請輸入目前設備連接的網路的 Wi-Fi 憑證。
+    
+    請確保輸入的是 2.4 GHz 頻道的 Wi-Fi 憑證。
 onboarding-wifi_creds-skip = 跳過 Wi-Fi 設定
 onboarding-wifi_creds-submit = 送出！
 onboarding-wifi_creds-ssid =
@@ -956,6 +963,8 @@ onboarding-wifi_creds-ssid-required = 必須填寫 Wi-Fi 名稱
 onboarding-wifi_creds-password =
     .label = 密碼
     .placeholder = 輸入密碼
+onboarding-wifi_creds-dongle-title = 透過接收器連接
+onboarding-wifi_creds-dongle-description = 如果你的追蹤器有接收器，將其插入你的裝置即可開始使用。
 
 ## Mounting setup
 
