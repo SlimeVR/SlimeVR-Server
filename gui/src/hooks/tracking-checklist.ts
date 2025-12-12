@@ -174,12 +174,6 @@ export function provideTrackingChecklist() {
     ignore: boolean,
     session = true
   ) => {
-    if (!session) {
-      const res = new IgnoreTrackingChecklistStepRequestT();
-      res.stepId = step;
-      res.ignore = ignore;
-      sendRPCPacket(RpcMessage.IgnoreTrackingChecklistStepRequest, res);
-    }
     setSessionIgnoredSteps((curr) => {
       if (ignore && !curr.includes(step)) return [...curr, step];
       if (!ignore && curr.includes(step)) {
@@ -198,6 +192,11 @@ export function provideTrackingChecklist() {
         RpcMessage.TrackingChecklistRequest,
         new TrackingChecklistRequestT()
       );
+    } else {
+      const res = new IgnoreTrackingChecklistStepRequestT();
+      res.stepId = step;
+      res.ignore = ignore;
+      sendRPCPacket(RpcMessage.IgnoreTrackingChecklistStepRequest, res);
     }
   };
 
