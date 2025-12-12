@@ -109,7 +109,10 @@ const stepContentLookup: Record<
     context: TrackingChecklistContext
   ) => JSX.Element
 > = {
-  [TrackingChecklistStepId.TRACKERS_REST_CALIBRATION]: (step, { toggleSession }) => {
+  [TrackingChecklistStepId.TRACKERS_REST_CALIBRATION]: (
+    step,
+    { toggleSession }
+  ) => {
     return (
       <div className="space-y-2.5">
         <Typography id="tracking_checklist-TRACKERS_REST_CALIBRATION-desc" />
@@ -195,7 +198,10 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.UNASSIGNED_HMD]: () => {
     return <Typography id="tracking_checklist-UNASSIGNED_HMD-desc" />;
   },
-  [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (step, { toggleSession }) => {
+  [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (
+    step,
+    { toggleSession }
+  ) => {
     const data = step.extraData as TrackingChecklistPublicNetworksT | null;
     return (
       <>
@@ -282,7 +288,10 @@ const stepContentLookup: Record<
       </div>
     );
   },
-  [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]: (step, { toggleSession }) => {
+  [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]: (
+    step,
+    { toggleSession }
+  ) => {
     return (
       <div className="space-y-2.5">
         <Typography id="onboarding-automatic_mounting-mounting_reset-feet-step-0" />
@@ -316,7 +325,10 @@ const stepContentLookup: Record<
       </div>
     );
   },
-  [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]: (step, { toggleSession }) => {
+  [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]: (
+    step,
+    { toggleSession }
+  ) => {
     return (
       <>
         <div className="space-y-2.5">

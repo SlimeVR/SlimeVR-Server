@@ -194,7 +194,10 @@ export function provideTrackingChecklist() {
     if (session) {
       // Force refresh of the flightlist when ignoring a step as the filtering
       // is done only in one place to simplify the data flow
-      sendRPCPacket(RpcMessage.TrackingChecklistRequest, new TrackingChecklistRequestT());
+      sendRPCPacket(
+        RpcMessage.TrackingChecklistRequest,
+        new TrackingChecklistRequestT()
+      );
     }
   };
 
