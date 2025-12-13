@@ -489,9 +489,7 @@ export function InterfaceSettings() {
             </div>
 
             <div className="pb-4">
-              <Typography variant="section-title">
-                {'Hue'}
-              </Typography>
+              <Typography variant="section-title">{'Hue'}</Typography>
             </div>
             <div className="grid sm:grid-cols-2 pb-4">
               <Range
@@ -505,7 +503,10 @@ export function InterfaceSettings() {
                   { value: 0.5, label: '180%' },
                   { value: 1, label: '360%' },
                 ]}
-                disabled={config?.theme != "custom-bright" && config?.theme != "custom-dark"}
+                disabled={
+                  config?.theme != 'custom-bright' &&
+                  config?.theme != 'custom-dark'
+                }
               />
             </div>
 
