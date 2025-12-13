@@ -283,14 +283,20 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		lastResetQuaternion = oldRot
 
 		// Adjust raw rotation to mountingOrientation
-		val mountingAdjustedRotation = tracker.getRawRotation() * mountingOrientation
+		val rotation = tracker.getRawRotation()
 
 		// Gyrofix
 		if (tracker.allowMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
 			gyroFix = if (tracker.isComputed) {
 				fixGyroscope(tracker.getRawRotation())
 			} else {
-				fixGyroscope(mountingAdjustedRotation * tposeDownFix)
+				if (tracker.trackerPosition.isFoot() || tracker.trackerPosition.isToe()) {
+					// Feet and Toes are rotated by 90 deg pitch, this means we're relying on IMU rotation
+					//  to be set correctly here.
+					fixGyroscope(rotation * tposeDownFix * QuarterPitch)
+				} else {
+					fixGyroscope(rotation * tposeDownFix)
+				}
 			}
 		}
 

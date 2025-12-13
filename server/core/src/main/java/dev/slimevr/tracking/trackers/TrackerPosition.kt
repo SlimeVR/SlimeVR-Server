@@ -58,6 +58,16 @@ fun TrackerPosition?.isFoot(): Boolean {
 	return false
 }
 
+fun TrackerPosition?.isToe(): Boolean {
+	this?.let {
+		return it == LEFT_TOES_ABDUCTOR_HALLUCIS || it == LEFT_TOES_DIGITORUM_BREVIS ||
+			it == TrackerPosition.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI ||
+		    it == TrackerPosition.RIGHT_TOES_ABDUCTOR_HALLUCIS || it == TrackerPosition.RIGHT_TOES_DIGITORUM_BREVIS ||
+			it == TrackerPosition.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI
+	}
+	return false
+}
+
 fun TrackerPosition?.isLeftFinger(): Boolean {
 	this?.let {
 		return it == LEFT_THUMB_METACARPAL ||
