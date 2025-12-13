@@ -489,7 +489,9 @@ export function InterfaceSettings() {
             </div>
 
             <div className="pb-4">
-              <Typography variant="section-title">{l10n.getString('settings-interface-appearance-hue')}</Typography>
+              <Typography variant="section-title">
+                {l10n.getString('settings-interface-appearance-hue')}
+              </Typography>
             </div>
             <div className="grid sm:grid-cols-2 pb-4">
               <Range
