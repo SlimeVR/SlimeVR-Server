@@ -499,9 +499,9 @@ export function InterfaceSettings() {
                 max={1}
                 step={0.01}
                 values={[
-                  { value: 0, label: '0%' },
-                  { value: 0.5, label: '180%' },
-                  { value: 1, label: '360%' },
+                  { value: 0, label: '0°' },
+                  { value: 0.5, label: '180°' },
+                  { value: 1, label: '360°' },
                 ]}
                 disabled={
                   config?.theme != 'custom-bright' &&
