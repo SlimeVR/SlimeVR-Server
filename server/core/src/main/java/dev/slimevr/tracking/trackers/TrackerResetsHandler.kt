@@ -272,8 +272,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			if (tracker.isComputed) {
 				fixGyroscope(rotation)
 			} else {
-				if (tracker.trackerPosition.isFoot()) {
-					// Feet are rotated by 90 deg pitch, this means we're relying on IMU rotation
+				if (tracker.trackerPosition.isFoot() || tracker.trackerPosition.isToe()) {
+					// Feet and Toes are rotated by 90 deg pitch, this means we're relying on IMU rotation
 					//  to be set correctly here.
 					fixGyroscope(rotation * tposeDownFix * QuarterPitch)
 				} else {
