@@ -214,7 +214,7 @@ export function TrackerSettingsPage() {
                     whitespace="whitespace-pre-wrap"
                     textAlign="text-end"
                   >
-                    {tracker?.device?.hardwareInfo?.firmwareDate}
+                    {tracker?.device?.hardwareInfo?.firmwareDate || '--'}
                   </Typography>
                 </div>
                 <div className="flex justify-between gap-2">
