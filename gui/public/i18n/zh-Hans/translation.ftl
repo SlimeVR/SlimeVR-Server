@@ -262,7 +262,7 @@ serial_detection-close = 关闭
 
 ## Navigation bar
 
-navbar-home = 主页
+navbar-home = 主界面
 navbar-body_proportions = 身体比例
 navbar-trackers_assign = 追踪器分配
 navbar-mounting = 佩戴校准
@@ -275,7 +275,7 @@ navbar-connect_trackers = 连接追踪器
 bvh-start_recording = 录制 BVH 文件
 bvh-stop_recording = 保存 BVH 记录
 bvh-recording = 录制中...
-bvh-save_title = 保存BVH记录
+bvh-save_title = 保存 BVH 记录
 
 ## Tracking pause
 
@@ -526,7 +526,7 @@ settings-general-steamvr-trackers-right_elbow = 右手肘
 settings-general-steamvr-trackers-left_hand = 左手
 settings-general-steamvr-trackers-right_hand = 右手
 settings-general-steamvr-trackers-tracker_toggling = 自动开关追踪器
-settings-general-steamvr-trackers-tracker_toggling-description = 根据当前已分配的追踪器，自动选择可用的SteamVR虚拟追踪器
+settings-general-steamvr-trackers-tracker_toggling-description = 根据当前已分配的追踪器，自动选择可用的 SteamVR 虚拟追踪器
 settings-general-steamvr-trackers-tracker_toggling-label = 自动开关追踪器
 settings-general-steamvr-trackers-hands-warning =
     <b>警告：</b>开启手部虚拟追踪器将覆盖手柄的追踪信息。
@@ -753,9 +753,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     为了提供最佳用户体验，我们会收集匿名错误报告、性能指标和操作系统信息。这有助于我们检测 SlimeVR 的错误和问题。这些指标将通过 Sentry.io 收集。
 settings-interface-behavior-error_tracking-label = 向开发人员发送错误信息
-settings-interface-behavior-bvh_directory = BVH记录保存目录
-settings-interface-behavior-bvh_directory-description = 选择保存BVH记录文件的目录
-settings-interface-behavior-bvh_directory-label = BVH记录保存目录
+settings-interface-behavior-bvh_directory = BVH 记录保存目录
+settings-interface-behavior-bvh_directory-description = 选择保存 BVH 记录文件的目录
+settings-interface-behavior-bvh_directory-label = BVH 记录保存目录
 
 ## Serial settings
 
