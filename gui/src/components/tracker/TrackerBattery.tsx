@@ -8,6 +8,7 @@ export function TrackerBattery({
   voltage,
   runtime,
   disabled,
+  moreInfo = false,
   textColor = 'primary',
 }: {
   /**
@@ -17,6 +18,7 @@ export function TrackerBattery({
   voltage?: number | null;
   runtime?: bigint | null;
   disabled?: boolean;
+  moreInfo?: boolean;
   textColor?: string;
 }) {
   const { currentLocales } = useLocaleConfig();
@@ -30,7 +32,8 @@ export function TrackerBattery({
   });
 
   const charging = (voltage || 0) > 4.3;
-  const showVoltage = voltage && config?.debug;
+  const debug = config?.debug || config?.devSettings.moreInfo;
+  const showVoltage = moreInfo && voltage && debug;
 
   return (
     <div className="flex gap-2">
@@ -47,7 +50,7 @@ export function TrackerBattery({
                 'min'}
             </Typography>
           )}
-          {!charging && (!runtime || showVoltage) && (
+          {!charging && (!runtime || debug) && (
             <Typography color={textColor}>
               {percentFormatter.format(value)}
             </Typography>

@@ -53,6 +53,7 @@ function TrackerBig({
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 runtime={device.hardwareStatus.batteryRuntimeEstimate}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                moreInfo={true}
               />
             )}
             <div className="flex gap-2">
