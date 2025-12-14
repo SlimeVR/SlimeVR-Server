@@ -115,6 +115,7 @@ class Tracker @JvmOverloads constructor(
 	var ping: Int? = null
 	var signalStrength: Int? = null
 	var temperature: Float? = null
+	var button: Int? = null
 	var customName: String? = null
 	var magStatus: MagnetometerStatus = magStatus
 		private set
