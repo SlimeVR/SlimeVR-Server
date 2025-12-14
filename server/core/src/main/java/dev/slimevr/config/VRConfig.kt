@@ -42,6 +42,8 @@ class VRConfig {
 
 	val stayAlignedConfig = StayAlignedConfig()
 
+	val hidConfig = HIDConfig()
+
 	@JsonDeserialize(using = TrackerConfigMapDeserializer::class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
 	private val trackers: MutableMap<String, TrackerConfig> = HashMap()

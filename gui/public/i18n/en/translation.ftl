@@ -567,6 +567,10 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
     Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
+settings-general-tracker_mechanics-trackers_over_usb = Trackers over USB
+settings-general-tracker_mechanics-trackers_over_usb-description =
+    Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
 
 settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.

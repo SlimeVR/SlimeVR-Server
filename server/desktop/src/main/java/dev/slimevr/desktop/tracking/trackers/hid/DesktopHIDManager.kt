@@ -1,5 +1,7 @@
 package dev.slimevr.desktop.tracking.trackers.hid
 
+import dev.slimevr.VRServer
+import dev.slimevr.config.config
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -211,9 +213,14 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	private fun deviceEnumerate() {
 		var rootReceivers: HidDeviceInfoStructure? = null
 		var rootTrackers: HidDeviceInfoStructure? = null
+		val trackersOverHID: Boolean = VRServer.instance.configManager.vrConfig.hidConfig.trackersOverHID
 		try {
 			rootReceivers = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_RECEIVER_PID) // TODO: Use list of ids
-			rootTrackers = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_PID) // TODO: Use list of ids
+			rootTrackers = if (trackersOverHID) {
+				HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_PID)
+			} else {
+				null
+			} // TODO: Use list of ids
 		} catch (e: Throwable) {
 			LogManager.severe("[TrackerServer] Couldn't enumerate HID devices", e)
 		}
