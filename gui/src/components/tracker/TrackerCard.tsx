@@ -51,6 +51,7 @@ function TrackerBig({
               <TrackerBattery
                 voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
+                runtime={device.hardwareStatus.batteryRuntimeEstimate}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
             )}
@@ -119,6 +120,7 @@ function TrackerSmol({
               <TrackerBattery
                 voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
+                runtime={device.hardwareStatus.batteryRuntimeEstimate}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
             )}

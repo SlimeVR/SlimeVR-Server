@@ -6,6 +6,7 @@ import { Typography } from '@/components/commons/Typography';
 export function TrackerBattery({
   value,
   voltage,
+  runtime,
   disabled,
   textColor = 'primary',
 }: {
@@ -14,6 +15,7 @@ export function TrackerBattery({
    */
   value: number;
   voltage?: number | null;
+  runtime?: BigInt | null
   disabled?: boolean;
   textColor?: string;
 }) {
@@ -33,11 +35,27 @@ export function TrackerBattery({
   return (
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
-        <BatteryIcon value={value} disabled={disabled} charging={charging} />
+        <BatteryIcon value={value} disabled={disabled} charging={charging}/>
       </div>
       {((!charging || showVoltage) && (
-        <div className="w-10">
-          {!charging && (
+        <div className="w-15">
+          {!charging && runtime && (
+            <Typography color={textColor}>
+              {((
+                    runtime.valueOf() /
+                    BigInt(3600000000)
+                  ).toString() +
+                    'h ' +
+                    (
+                      (runtime.valueOf() %
+                        BigInt(3600000000)) /
+                      BigInt(60000000)
+                    ).toString() +
+                    'min') ||
+                  'N/A'}
+            </Typography>
+          )}
+          {!charging && (!runtime || showVoltage) && (
             <Typography color={textColor}>
               {percentFormatter.format(value)}
             </Typography>
@@ -49,7 +67,7 @@ export function TrackerBattery({
           )}
         </div>
       )) || (
-        <div className="flex flex-col justify-center w-10">
+        <div className="flex flex-col justify-center w-15">
           <div className="w-5 h-1 bg-background-30 rounded-full" />
         </div>
       )}
