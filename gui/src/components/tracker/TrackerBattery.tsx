@@ -39,14 +39,11 @@ export function TrackerBattery({
       </div>
       {((!charging || showVoltage) && (
         <div className="w-15">
-          {!charging && runtime && (
+          {!charging && runtime != null && (
             <Typography color={textColor}>
-              {(runtime.valueOf() / BigInt(3600000000)).toString() +
+              {(runtime / BigInt(3600000000)).toString() +
                 'h ' +
-                (
-                  (runtime.valueOf() % BigInt(3600000000)) /
-                  BigInt(60000000)
-                ).toString() +
+                ((runtime % BigInt(3600000000)) / BigInt(60000000)).toString() +
                 'min' || 'N/A'}
             </Typography>
           )}
