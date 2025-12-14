@@ -13,6 +13,7 @@ open class Device(val magSupport: Boolean = false) {
 	open val id: Int = nextLocalDeviceId.incrementAndGet()
 	open var name: String? = null
 	open var firmwareVersion: String? = null
+	open var firmwareDate: String? = null
 	open var manufacturer: String? = null
 	open val trackers: MutableMap<Int, Tracker> = ConcurrentHashMap()
 

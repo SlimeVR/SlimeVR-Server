@@ -138,6 +138,7 @@ class HIDCommon {
 			}
 
 			// Packet data
+			var runtime: Long? = null
 			var batt: Int? = null
 			var batt_v: Int? = null
 			var temp: Int? = null
@@ -220,11 +221,19 @@ class HIDCommon {
 					}
 				}
 
+				5 -> { // runtime
+					// ulong as little endian
+					runtime = (dataReceived[i + 9].toUByte().toLong() shl 56) or (dataReceived[i + 8].toUByte().toLong() shl 48) or (dataReceived[i + 7].toUByte().toLong() shl 40) or (dataReceived[i + 6].toUByte().toLong() shl 32) or (dataReceived[i + 5].toUByte().toLong() shl 24) or (dataReceived[i + 4].toUByte().toLong() shl 16) or (dataReceived[i + 3].toUByte().toLong() shl 8) or dataReceived[i + 2].toUByte().toLong()
+				}
+
 				else -> {
 				}
 			}
 
 			// Assign data
+			if (runtime != null) {
+				tracker.batteryRemainingRuntime = runtime
+			}
 			if (batt != null) {
 				tracker.batteryLevel = if (batt == 128) 1f else (batt and 127).toFloat()
 			}
@@ -248,12 +257,14 @@ class HIDCommon {
 					device.mcuType = mcuType!!
 				}
 			}
-			if (fw_date != null && fw_major != null && fw_minor != null && fw_patch != null) {
+			if (fw_date != null) {
 				val firmwareYear = 2020 + (fw_date shr 9 and 127)
 				val firmwareMonth = fw_date shr 5 and 15
 				val firmwareDay = fw_date and 31
-				val firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
-				device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch (Build $firmwareDate)"
+				device.firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
+			}
+			if (fw_major != null && fw_minor != null && fw_patch != null) {
+				device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch"
 			}
 			if (svr_status != null) {
 				val status = TrackerStatus.getById(svr_status)
