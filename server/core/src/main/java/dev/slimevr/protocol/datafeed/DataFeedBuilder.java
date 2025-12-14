@@ -317,6 +317,9 @@ public class DataFeedBuilder {
 			HardwareStatus.addRssi(fbb, (short) tracker.getSignalStrength().floatValue());
 		}
 
+		if (tracker.getBatteryRemainingRuntime() != null) {
+			HardwareStatus.addBatteryRuntimeEstimate(fbb, tracker.getBatteryRemainingRuntime());
+		}
 
 		int hardwareDataOffset = HardwareStatus.endHardwareStatus(fbb);
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);

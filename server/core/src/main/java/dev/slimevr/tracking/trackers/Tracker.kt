@@ -112,6 +112,7 @@ class Tracker @JvmOverloads constructor(
 	val trackerFlexHandler: TrackerFlexHandler = TrackerFlexHandler(this)
 	var batteryVoltage: Float? = null
 	var batteryLevel: Float? = null
+	var batteryRemainingRuntime: Long? = null
 	var ping: Int? = null
 	var signalStrength: Int? = null
 	var temperature: Float? = null
