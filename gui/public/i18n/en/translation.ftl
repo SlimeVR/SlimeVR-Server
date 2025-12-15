@@ -85,7 +85,15 @@ body_part-RIGHT_RING_INTERMEDIATE = Right ring intermediate
 body_part-RIGHT_RING_DISTAL = Right ring distal
 body_part-RIGHT_LITTLE_PROXIMAL = Right little proximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = Right little intermediate
-body_part-RIGHT_LITTLE_DISTAL = Right little distal
+body_part-RIGHT_LITTLE_DISTAL = Right little
+body_part-LEFT_TOES = Left Toes
+body_part-LEFT_TOES_ABDUCTOR_HALLUCIS = Left Big Toe
+body_part-LEFT_TOES_DIGITORUM_BREVIS = Left Middle Toes
+body_part-LEFT_TOES_ABDUCTOR_DIGITI_MINIMI = Left Pinky
+body_part-RIGHT_TOES = Right Toes
+body_part-RIGHT_TOES_ABDUCTOR_HALLUCIS = Right Big Toe
+body_part-RIGHT_TOES_DIGITORUM_BREVIS = Right Middle Toes
+body_part-RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI = Right Pinky
 
 ## BoardType
 board_type-UNKNOWN = Unknown
@@ -833,6 +841,7 @@ settings-osc-vrchat-network-trackers-hip = Hip
 settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
+settings-osc-vrchat-network-trackers-toes = Toes
 
 ## VMC OSC settings
 settings-osc-vmc = Virtual Motion Capture
@@ -1126,7 +1135,29 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
     [0] the chest
     *[unknown] Unknown unassigned body part
 } to also be assigned!
-
+onboarding-assign_trackers-warning-LEFT_TOES_ABDUCTOR_HALLUCIS = Left Big Toe is assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-LEFT_TOES_DIGITORUM_BREVIS = Left Middle Toes are assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-LEFT_TOES_ABDUCTOR_DIGITI_MINIMI = Left  Pinky Toe is assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_TOES_ABDUCTOR_HALLUCIS = Right Big Toe is assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_TOES_DIGITORUM_BREVIS = Right Middle Toes are assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI = Right Pinky Toe is assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
 ## Tracker mounting method choose
 onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text

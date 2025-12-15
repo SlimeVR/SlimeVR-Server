@@ -34,12 +34,7 @@ export const mapPart: Record<
   [BodyPart.HIP]: ({ width }) => <HipIcon width={width} />,
   [BodyPart.LEFT_HIP]: ({ width }) => <HipIcon width={width} />, // Unused
   [BodyPart.RIGHT_HIP]: ({ width }) => <HipIcon width={width} />, // Unused
-  [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon />
-    ) : (
-      <FootIcon width={width} />
-    ),
+  [BodyPart.LEFT_FOOT]: renderFootLeft,
   [BodyPart.LEFT_HAND]: ({ width }) => <ControllerIcon width={width} />,
   [BodyPart.LEFT_LOWER_ARM]: ({ width }) => <LowerArmIcon width={width} />,
   [BodyPart.LEFT_LOWER_LEG]: ({ width }) => <AnkleIcon width={width} />,
@@ -48,84 +43,65 @@ export const mapPart: Record<
   [BodyPart.LEFT_UPPER_LEG]: ({ width }) => <UpperLegIcon width={width} />,
   [BodyPart.NECK]: ({ width }) => <NeckIcon width={width} />,
   [BodyPart.NONE]: ({ width }) => <SlimeVRIcon width={width} />,
-  [BodyPart.RIGHT_FOOT]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon />
-    ) : (
-      <FootIcon width={width} flipped />
-    ),
-  [BodyPart.RIGHT_HAND]: ({ width }) => (
-    <ControllerIcon width={width} flipped />
-  ),
-  [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => (
-    <LowerArmIcon width={width} flipped />
-  ),
-  [BodyPart.RIGHT_LOWER_LEG]: ({ width }) => (
-    <AnkleIcon width={width} flipped />
-  ),
+  [BodyPart.RIGHT_FOOT]: renderFootRight,
+  [BodyPart.RIGHT_HAND]: ({ width }) => <ControllerIcon width={width} flipped />,
+  [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => <LowerArmIcon width={width} flipped />,
+  [BodyPart.RIGHT_LOWER_LEG]: ({ width }) => <AnkleIcon width={width} flipped />,
   [BodyPart.RIGHT_SHOULDER]: ({ width }) => <ShoulderIcon width={width} />,
-  [BodyPart.RIGHT_UPPER_ARM]: ({ width }) => (
-    <UpperArmIcon width={width} flipped />
-  ),
-  [BodyPart.RIGHT_UPPER_LEG]: ({ width }) => (
-    <UpperLegIcon width={width} flipped />
-  ),
+  [BodyPart.RIGHT_UPPER_ARM]: ({ width }) => <UpperArmIcon width={width} flipped />,
+  [BodyPart.RIGHT_UPPER_LEG]: ({ width }) => <UpperLegIcon width={width} flipped />,
   [BodyPart.WAIST]: ({ width }) => <WaistIcon width={width} />,
-  [BodyPart.LEFT_THUMB_METACARPAL]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
+  [BodyPart.LEFT_THUMB_METACARPAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_THUMB_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_INDEX_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_INDEX_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
+  [BodyPart.LEFT_INDEX_INTERMEDIATE]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_INDEX_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_MIDDLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_MIDDLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
+  [BodyPart.LEFT_MIDDLE_INTERMEDIATE]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_MIDDLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_RING_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_RING_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
+  [BodyPart.LEFT_RING_INTERMEDIATE]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_RING_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_LITTLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_LITTLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
+  [BodyPart.LEFT_LITTLE_INTERMEDIATE]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_THUMB_METACARPAL]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
+  [BodyPart.RIGHT_THUMB_METACARPAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_THUMB_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_INDEX_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_INDEX_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
+  [BodyPart.RIGHT_INDEX_INTERMEDIATE]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_INDEX_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_MIDDLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_MIDDLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
+  [BodyPart.RIGHT_MIDDLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_MIDDLE_INTERMEDIATE]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_MIDDLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_RING_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_RING_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
+  [BodyPart.RIGHT_RING_INTERMEDIATE]: ({ width }) =>  <FingersIcon width={width} />,
   [BodyPart.RIGHT_RING_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_LITTLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_LITTLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width}></FingersIcon>,
+  [BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS]: renderFootLeft,
+  [BodyPart.LEFT_TOES_DIGITORUM_BREVIS]: renderFootLeft,
+  [BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderFootLeft,
+  [BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS]: renderFootRight,
+  [BodyPart.RIGHT_TOES_DIGITORUM_BREVIS]: renderFootRight,
+  [BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderFootRight,
 };
+
+function renderFootLeft({ width, currentLocales }) {
+  if (currentLocales.includes('en-x-owo')) {
+    return <PawIcon />;
+  }
+  return <FootIcon width={width} />;
+}
+
+function renderFootRight({ width, currentLocales }) {
+  if (currentLocales.includes('en-x-owo')) {
+    return <PawIcon />;
+  }
+  return <FootIcon width={width} flipped />;
+}
 
 export function BodyPartIcon({
   bodyPart = BodyPart.NONE,

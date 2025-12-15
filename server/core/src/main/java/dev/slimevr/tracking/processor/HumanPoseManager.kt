@@ -221,6 +221,55 @@ class HumanPoseManager(val server: VRServer?) {
 					TrackerPosition.RIGHT_HAND,
 				),
 			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://LEFT_TOES_ABDUCTOR_HALLUCIS",
+					"Computed left abductor hallucis",
+					TrackerPosition.LEFT_TOES_ABDUCTOR_HALLUCIS,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://LEFT_TOES_DIGITORUM_BREVIS",
+					"Computed left digitorum brevis",
+					TrackerPosition.LEFT_TOES_DIGITORUM_BREVIS,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://LEFT_TOES_ABDUCTOR_DIGITI_MINIMI",
+					"Computed left abductor digiti minimi",
+					TrackerPosition.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://RIGHT_TOES_ABDUCTOR_HALLUCIS",
+					"Computed right abductor hallucis",
+					TrackerPosition.RIGHT_TOES_ABDUCTOR_HALLUCIS,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://RIGHT_TOES_DIGITORUM_BREVIS",
+					"Computed right digitorum brevis",
+					TrackerPosition.RIGHT_TOES_DIGITORUM_BREVIS,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI",
+					"Computed right abductor digiti minimi",
+					TrackerPosition.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI,
+				),
+			)
+
 
 		connectComputedHumanPoseTrackers()
 	}

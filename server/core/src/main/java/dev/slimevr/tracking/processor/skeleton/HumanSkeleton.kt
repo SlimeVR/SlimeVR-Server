@@ -100,6 +100,14 @@ class HumanSkeleton(
 	val rightLittleIntermediateBone = Bone(BoneType.RIGHT_LITTLE_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
 	val rightLittleDistalBone = Bone(BoneType.RIGHT_LITTLE_DISTAL, Constraint(ConstraintType.COMPLETE))
 
+	// Toe bones
+	val leftAbductorHallucisBone = Bone(BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS, Constraint(ConstraintType.COMPLETE))
+	val leftDigitorumBrevisBone = Bone(BoneType.LEFT_TOES_DIGITORUM_BREVIS, Constraint(ConstraintType.COMPLETE))
+	val leftAbductorDigitiMinimiBone = Bone(BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI, Constraint(ConstraintType.COMPLETE))
+	val rightAbductorHallucisBone = Bone(BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS, Constraint(ConstraintType.COMPLETE))
+	val rightDigitorumBrevisBone = Bone(BoneType.RIGHT_TOES_DIGITORUM_BREVIS, Constraint(ConstraintType.COMPLETE))
+	val rightAbductorDigitiMinimiBone = Bone(BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI, Constraint(ConstraintType.COMPLETE))
+
 	// Tracker bones
 	val headTrackerBone = Bone(BoneType.HEAD_TRACKER, Constraint(ConstraintType.COMPLETE))
 	val chestTrackerBone = Bone(BoneType.CHEST_TRACKER, Constraint(ConstraintType.COMPLETE))
@@ -112,6 +120,12 @@ class HumanSkeleton(
 	val rightElbowTrackerBone = Bone(BoneType.RIGHT_ELBOW_TRACKER, Constraint(ConstraintType.COMPLETE))
 	val leftHandTrackerBone = Bone(BoneType.LEFT_HAND_TRACKER, Constraint(ConstraintType.COMPLETE))
 	val rightHandTrackerBone = Bone(BoneType.RIGHT_HAND_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftAbductorHallucisTrackerBone = Bone(BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftDigitorumBrevisTrackerBone = Bone(BoneType.LEFT_TOES_DIGITORUM_BREVIS_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftAbductorDigitiMinimiTrackerBone = Bone(BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightAbductorHallucisTrackerBone = Bone(BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightDigitorumBrevisTrackerBone = Bone(BoneType.RIGHT_TOES_DIGITORUM_BREVIS_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightAbductorDigitiMinimiTrackerBone = Bone(BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI_TRACKER, Constraint(ConstraintType.COMPLETE))
 
 	// Buffers
 	var hasSpineTracker = false
@@ -176,6 +190,12 @@ class HumanSkeleton(
 	var rightLittleProximalTracker: Tracker? = null
 	var rightLittleIntermediateTracker: Tracker? = null
 	var rightLittleDistalTracker: Tracker? = null
+	var leftAbductorHallucisTracker: Tracker? = null
+	var leftDigitorumBrevisTracker: Tracker? = null
+	var leftAbductorDigitiMinimiTracker: Tracker? = null
+	var rightAbductorHallucisTracker: Tracker? = null
+	var rightDigitorumBrevisTracker: Tracker? = null
+	var rightAbductorDigitiMinimiTracker: Tracker? = null
 
 	// Output trackers
 	var computedHeadTracker: Tracker? = null
@@ -189,6 +209,13 @@ class HumanSkeleton(
 	var computedRightElbowTracker: Tracker? = null
 	var computedLeftHandTracker: Tracker? = null
 	var computedRightHandTracker: Tracker? = null
+
+	var computedLeftAbductorHallucisTracker: Tracker? = null
+	var computedLeftDigitorumBrevisTracker: Tracker? = null
+	var computedLeftAbductorDigitiMinimiTracker: Tracker? = null
+	var computedRightAbductorHallucisTracker: Tracker? = null
+	var computedRightDigitorumBrevisTracker: Tracker? = null
+	var computedRightAbductorDigitiMinimiTracker: Tracker? = null
 
 	// Toggles
 	private var extendedSpineModel = false
@@ -284,6 +311,15 @@ class HumanSkeleton(
 		rightUpperLegBone.attachChild(rightKneeTrackerBone)
 		leftFootBone.attachChild(leftFootTrackerBone)
 		rightFootBone.attachChild(rightFootTrackerBone)
+
+		// Attach toe bones
+		leftFootBone.attachChild(leftAbductorHallucisBone);
+		leftFootBone.attachChild(leftDigitorumBrevisBone);
+		leftFootBone.attachChild(leftAbductorDigitiMinimiBone);
+
+		rightFootBone.attachChild(rightAbductorHallucisBone);
+		rightFootBone.attachChild(rightDigitorumBrevisBone);
+		rightFootBone.attachChild(rightAbductorDigitiMinimiBone);
 
 		// Attach arms
 		assembleSkeletonArms(false)
@@ -385,9 +421,16 @@ class HumanSkeleton(
 		leftUpperLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_UPPER_LEG)
 		leftLowerLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_LOWER_LEG)
 		leftFootTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_FOOT)
+		leftAbductorHallucisTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_TOES_ABDUCTOR_HALLUCIS)
+		leftDigitorumBrevisTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_TOES_DIGITORUM_BREVIS)
+		leftAbductorDigitiMinimiTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI)
+
 		rightUpperLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_UPPER_LEG)
 		rightLowerLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_LOWER_LEG)
 		rightFootTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_FOOT)
+		rightAbductorHallucisTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_TOES_ABDUCTOR_HALLUCIS)
+		rightDigitorumBrevisTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_TOES_DIGITORUM_BREVIS)
+		rightAbductorDigitiMinimiTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI)
 
 		// Arms
 		leftLowerArmTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_LOWER_ARM)
@@ -513,6 +556,12 @@ class HumanSkeleton(
 			TrackerPosition.RIGHT_UPPER_ARM -> computedRightElbowTracker = tracker
 			TrackerPosition.LEFT_HAND -> computedLeftHandTracker = tracker
 			TrackerPosition.RIGHT_HAND -> computedRightHandTracker = tracker
+			TrackerPosition.LEFT_TOES_ABDUCTOR_HALLUCIS -> computedLeftAbductorHallucisTracker = tracker
+			TrackerPosition.LEFT_TOES_DIGITORUM_BREVIS -> computedLeftDigitorumBrevisTracker = tracker
+			TrackerPosition.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI -> computedLeftAbductorDigitiMinimiTracker = tracker
+			TrackerPosition.RIGHT_TOES_ABDUCTOR_HALLUCIS -> computedRightAbductorHallucisTracker = tracker
+			TrackerPosition.RIGHT_TOES_DIGITORUM_BREVIS -> computedRightDigitorumBrevisTracker = tracker
+			TrackerPosition.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI -> computedRightAbductorDigitiMinimiTracker = tracker
 			else -> {}
 		}
 	}
@@ -532,6 +581,13 @@ class HumanSkeleton(
 		TrackerRole.RIGHT_ELBOW -> computedRightElbowTracker!!
 		TrackerRole.LEFT_HAND -> computedLeftHandTracker!!
 		TrackerRole.RIGHT_HAND -> computedRightHandTracker!!
+		TrackerRole.LEFT_TOES_ABDUCTOR_HALLUCIS -> computedLeftAbductorHallucisTracker!!
+		TrackerRole.LEFT_TOES_DIGITORUM_BREVIS -> computedLeftDigitorumBrevisTracker!!
+		TrackerRole.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI -> computedLeftAbductorDigitiMinimiTracker!!
+		TrackerRole.RIGHT_TOES_ABDUCTOR_HALLUCIS -> computedRightAbductorHallucisTracker!!
+		TrackerRole.RIGHT_TOES_DIGITORUM_BREVIS -> computedRightDigitorumBrevisTracker!!
+		TrackerRole.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI -> computedRightAbductorDigitiMinimiTracker!!
+
 		else -> throw IllegalArgumentException("Unsupported computed tracker's TrackerRole in HumanSkeleton")
 	}
 
@@ -600,9 +656,18 @@ class HumanSkeleton(
 			leftLowerLegBone,
 			leftFootBone,
 			leftFootTrackerBone,
+			leftAbductorHallucisBone,
+			leftAbductorHallucisTrackerBone,
+			leftDigitorumBrevisBone,
+			leftDigitorumBrevisTrackerBone,
+			leftAbductorDigitiMinimiBone,
+			leftAbductorDigitiMinimiTrackerBone,
 			leftUpperLegTracker,
 			leftLowerLegTracker,
 			leftFootTracker,
+			leftAbductorHallucisTracker,
+			leftDigitorumBrevisTracker,
+			leftAbductorDigitiMinimiTracker
 		)
 
 		// Right leg
@@ -612,9 +677,18 @@ class HumanSkeleton(
 			rightLowerLegBone,
 			rightFootBone,
 			rightFootTrackerBone,
+			rightAbductorHallucisBone,
+			rightAbductorHallucisTrackerBone,
+			rightDigitorumBrevisBone,
+			rightDigitorumBrevisTrackerBone,
+			rightAbductorDigitiMinimiBone,
+			rightAbductorDigitiMinimiTrackerBone,
 			rightUpperLegTracker,
 			rightLowerLegTracker,
 			rightFootTracker,
+			rightAbductorHallucisTracker,
+			rightDigitorumBrevisTracker,
+			rightAbductorDigitiMinimiTracker
 		)
 
 		// Left arm
@@ -932,9 +1006,18 @@ class HumanSkeleton(
 		lowerLegBone: Bone,
 		footBone: Bone,
 		footTrackerBone: Bone,
+		abductorHallucisBone: Bone,
+		abductorHallucisTrackerBone: Bone,
+		digitorumBrevisBone: Bone,
+		digitorumBrevisTrackerBone: Bone,
+		abductorDigitiMinimiBone: Bone,
+		abductorDigitiMinimiTrackerBone: Bone,
 		upperLegTracker: Tracker?,
 		lowerLegTracker: Tracker?,
 		footTracker: Tracker?,
+		abductorHallucisTracker: Tracker?,
+		digitorumBrevisTracker: Tracker?,
+		abductorDigitiMinimiTracker: Tracker?,
 	) {
 		var legRot = IDENTITY
 
@@ -964,6 +1047,18 @@ class HumanSkeleton(
 		// Set foot rotation
 		footBone.setRotation(legRot)
 		footTrackerBone.setRotation(legRot)
+
+		abductorHallucisTracker?.let { legRot = it.getRotation() }
+		abductorHallucisBone.setRotation(legRot)
+		abductorHallucisTrackerBone.setRotation(legRot)
+
+		digitorumBrevisTracker?.let { legRot = it.getRotation() }
+		digitorumBrevisBone.setRotation(legRot)
+		digitorumBrevisTrackerBone.setRotation(legRot)
+
+		abductorDigitiMinimiTracker?.let { legRot = it.getRotation() }
+		abductorDigitiMinimiBone.setRotation(legRot)
+		abductorDigitiMinimiTrackerBone.setRotation(legRot)
 
 		// Extended knee model
 		if (extendedKneeModel) {
@@ -1164,6 +1259,12 @@ class HumanSkeleton(
 		updateComputedTracker(computedRightElbowTracker, rightElbowTrackerBone)
 		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone)
 		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone)
+		updateComputedTracker(computedLeftAbductorHallucisTracker, leftAbductorHallucisTrackerBone)
+		updateComputedTracker(computedLeftDigitorumBrevisTracker, leftDigitorumBrevisTrackerBone)
+		updateComputedTracker(computedLeftAbductorDigitiMinimiTracker, leftAbductorDigitiMinimiTrackerBone)
+		updateComputedTracker(computedRightAbductorHallucisTracker, rightAbductorHallucisTrackerBone)
+		updateComputedTracker(computedRightDigitorumBrevisTracker, rightDigitorumBrevisTrackerBone)
+		updateComputedTracker(computedRightAbductorDigitiMinimiTracker, rightAbductorDigitiMinimiTrackerBone)
 	}
 
 	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone) {
@@ -1330,6 +1431,18 @@ class HumanSkeleton(
 		BoneType.RIGHT_LITTLE_PROXIMAL -> rightLittleProximalBone
 		BoneType.RIGHT_LITTLE_INTERMEDIATE -> rightLittleIntermediateBone
 		BoneType.RIGHT_LITTLE_DISTAL -> rightLittleDistalBone
+		BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS -> leftAbductorHallucisBone
+		BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS_TRACKER -> leftAbductorHallucisTrackerBone
+		BoneType.LEFT_TOES_DIGITORUM_BREVIS -> leftDigitorumBrevisBone
+		BoneType.LEFT_TOES_DIGITORUM_BREVIS_TRACKER -> leftDigitorumBrevisTrackerBone
+		BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI -> leftAbductorDigitiMinimiBone
+		BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI_TRACKER -> leftAbductorDigitiMinimiTrackerBone
+		BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS -> rightAbductorHallucisBone
+		BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS_TRACKER -> rightAbductorHallucisTrackerBone
+		BoneType.RIGHT_TOES_DIGITORUM_BREVIS -> rightDigitorumBrevisBone
+		BoneType.RIGHT_TOES_DIGITORUM_BREVIS_TRACKER -> rightDigitorumBrevisTrackerBone
+		BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI -> rightAbductorDigitiMinimiBone
+		BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI_TRACKER -> rightAbductorDigitiMinimiTrackerBone
 	}
 
 	private fun getTrackerForBone(bone: BoneType?): Tracker? = when (bone) {
@@ -1353,6 +1466,12 @@ class HumanSkeleton(
 		BoneType.RIGHT_LOWER_ARM -> rightLowerArmTracker
 		BoneType.LEFT_HAND -> leftHandTracker
 		BoneType.RIGHT_HAND -> rightHandTracker
+		BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS -> leftAbductorHallucisTracker
+		BoneType.LEFT_TOES_DIGITORUM_BREVIS -> leftDigitorumBrevisTracker
+		BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI -> leftAbductorDigitiMinimiTracker
+		BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS -> rightAbductorHallucisTracker
+		BoneType.RIGHT_TOES_DIGITORUM_BREVIS -> rightDigitorumBrevisTracker
+		BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI -> rightAbductorDigitiMinimiTracker
 		else -> null
 	}
 
@@ -1415,6 +1534,14 @@ class HumanSkeleton(
 			rightLittleProximalBone,
 			rightLittleIntermediateBone,
 			rightLittleDistalBone,
+
+			leftAbductorHallucisBone,
+			leftDigitorumBrevisBone,
+			leftAbductorDigitiMinimiBone,
+
+			rightAbductorHallucisBone,
+			rightDigitorumBrevisBone,
+			rightAbductorDigitiMinimiBone,
 		)
 
 	/**
@@ -1466,6 +1593,7 @@ class HumanSkeleton(
 			rightLittleProximalBone,
 			rightLittleIntermediateBone,
 			rightLittleDistalBone,
+
 		)
 
 	val hmdHeight: Float
@@ -1542,6 +1670,12 @@ class HumanSkeleton(
 			rightLittleProximalTracker,
 			rightLittleIntermediateTracker,
 			rightLittleDistalTracker,
+			leftAbductorHallucisTracker,
+			leftDigitorumBrevisTracker,
+			leftAbductorDigitiMinimiTracker,
+			rightAbductorHallucisTracker,
+			rightDigitorumBrevisTracker,
+			rightAbductorDigitiMinimiTracker
 		)
 
 	@JvmOverloads

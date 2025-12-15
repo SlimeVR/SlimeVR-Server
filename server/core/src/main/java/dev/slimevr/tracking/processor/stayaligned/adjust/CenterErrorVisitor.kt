@@ -89,4 +89,19 @@ class CenterErrorVisitor(
 	) {
 		errors.add(centerYaw + extraYaw(side, relaxedPose.foot) - trackerYaw(tracker))
 	}
+	override fun visitToeTracker(
+		side: Side,
+		tracker: Tracker,
+		aboveFoot: Tracker?,
+		oppositeToe: Tracker?,
+		toeNumber: Int
+	) {
+		val extraToeYaw = when (toeNumber) {
+			1 -> extraYaw(side, relaxedPose.abductorHallucis)
+			2 -> extraYaw(side, relaxedPose.digitorumBrevis)
+			3 -> extraYaw(side, relaxedPose.abductorDigitiMinimi)
+			else -> extraYaw(side, relaxedPose.abductorHallucis)
+		}
+		errors.add(centerYaw + extraToeYaw - trackerYaw(tracker))
+	}
 }

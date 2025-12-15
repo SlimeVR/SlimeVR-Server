@@ -37,6 +37,7 @@ interface VRCOSCSettingsForm {
       knees: boolean;
       hands: boolean;
       waist: boolean;
+      toes: boolean;
     };
     oscqueryEnabled: boolean;
   };
@@ -58,6 +59,7 @@ const defaultValues = {
       knees: false,
       hands: false,
       waist: false,
+      toes: false
     },
     oscqueryEnabled: true,
   },
@@ -317,6 +319,15 @@ export function VRCOSCSettings() {
                 name="vrchat.trackers.elbows"
                 label={l10n.getString(
                   'settings-osc-vrchat-network-trackers-elbows'
+                )}
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="vrchat.trackers.toes"
+                label={l10n.getString(
+                  'settings-osc-vrchat-network-trackers-toes'
                 )}
               />
             </div>
