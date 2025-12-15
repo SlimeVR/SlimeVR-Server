@@ -181,7 +181,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: 'SlimeVR-Server'
           path: server/desktop/build/libs/
@@ -279,7 +279,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: 'SlimeVR-Server'
           path: server/desktop/build/libs/
@@ -359,7 +359,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: 'SlimeVR-Server'
           path: server/desktop/build/libs/
