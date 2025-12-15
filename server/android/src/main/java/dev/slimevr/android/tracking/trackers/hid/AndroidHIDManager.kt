@@ -8,6 +8,8 @@ import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import androidx.core.content.ContextCompat
+import dev.slimevr.VRServer
+import dev.slimevr.config.config
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -200,8 +202,9 @@ class AndroidHIDManager(
 	}
 
 	private fun deviceEnumerate(requestPermission: Boolean = false) {
+		val trackersOverHID: Boolean = VRServer.instance.configManager.vrConfig.hidConfig.trackersOverHID
 		val hidDeviceList: MutableList<UsbDevice> = usbManager.deviceList.values.filter {
-			it.vendorId == HID_TRACKER_RECEIVER_VID && (it.productId == HID_TRACKER_RECEIVER_PID || it.productId == HID_TRACKER_PID)
+			it.vendorId == HID_TRACKER_RECEIVER_VID && (it.productId == HID_TRACKER_RECEIVER_PID || (trackersOverHID && it.productId == HID_TRACKER_PID))
 		}.toMutableList()
 		synchronized(devicesByHID) {
 			// Work on devicesByHid and add/remove as necessary
