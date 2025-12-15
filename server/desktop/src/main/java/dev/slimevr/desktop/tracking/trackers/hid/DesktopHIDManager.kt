@@ -56,11 +56,14 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
 		if (hidDevice.vendorId == HID_TRACKER_RECEIVER_VID && hidDevice.productId == HID_TRACKER_RECEIVER_PID) { // TODO: Use correct ids
+			val serial = hidDevice.serialNumber ?: "Unknown HID Device"
 			if (hidDevice.isClosed) {
-				check(hidDevice.open()) { "Unable to open device" }
+				if (!hidDevice.open()) {
+					LogManager.warning("[TrackerServer] Unable to open device: $serial")
+					return
+				}
 			}
 			// TODO: Configure the device here
-			val serial = hidDevice.serialNumber ?: "Unknown HID Device"
 			// val product = hidDevice.product
 			// val manufacturer = hidDevice.manufacturer
 			this.devicesBySerial[serial]?.let {
