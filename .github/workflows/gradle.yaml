@@ -68,7 +68,7 @@ jobs:
         run: ./gradlew :server:desktop:shadowJar
 
       - name: Upload the Server JAR as a Build Artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           # Artifact name
           name: 'SlimeVR-Server' # optional, default is artifact
@@ -127,7 +127,7 @@ jobs:
           ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
 
       - name: Upload the Android build artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           # Artifact name
           name: 'SlimeVR-Android' # optional, default is artifact
@@ -158,7 +158,7 @@ jobs:
           ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_GPLAY_KEY_PASSWD }}
 
       - name: Upload the Google Play artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: startsWith(github.ref, 'refs/tags/')
         with:
           # Artifact name
@@ -230,23 +230,23 @@ jobs:
         run: |
           tar czf slimevr-gui-dist.tar.gz -C gui/dist/ .
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         if: matrix.os == 'ubuntu-latest'
         with:
           name: SlimeVR-GUI-Dist
           path: ./slimevr-gui-dist.tar.gz
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-Deb-{0}', env.BUILD_ARCH) }}
           path: target/release/bundle/deb/slimevr*.deb
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-AppImage-{0}', env.BUILD_ARCH) }}
           path: target/release/bundle/appimage/slimevr*.AppImage
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-RPM-{0}', env.BUILD_ARCH) }}
           path: target/release/bundle/rpm/slimevr*.rpm
@@ -320,12 +320,12 @@ jobs:
           --volicon ../macos/SlimeVR.app/Contents/Resources/icon.icns --skip-jenkins \
           --eula ../../../../../LICENSE-MIT slimevr.dmg ../macos/SlimeVR.app
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: SlimeVR-GUI-MacApp
           path: target/universal-apple-darwin/release/bundle/macos/SlimeVR*.app
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: SlimeVR-GUI-MacDmg
           path: target/universal-apple-darwin/release/bundle/dmg/slimevr.dmg
@@ -399,7 +399,7 @@ jobs:
           cp target/release/slimevr.exe ./SlimeVR/
           7z a -tzip "SlimeVR-$BUILD_ARCH.zip" ./SlimeVR/
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-Windows-{0}', env.BUILD_ARCH) }}
           path: ./SlimeVR*.zip
