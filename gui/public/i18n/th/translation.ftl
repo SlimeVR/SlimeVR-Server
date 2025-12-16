@@ -276,7 +276,7 @@ navbar-home = หน้าหลัก
 navbar-body_proportions = สัดส่วนร่างกาย
 navbar-trackers_assign = กำหนดแทร็กเกอร์
 navbar-mounting = ตั้งศูนย์การติดตั้ง
-navbar-onboarding = ตัวช่วยตั้งค่าโปรแกรม
+navbar-onboarding = ตัวช่วยการตั้งค่า
 navbar-settings = ตั้งค่า
 navbar-connect_trackers = เชื่อมต่อแทร็กเกอร์
 
