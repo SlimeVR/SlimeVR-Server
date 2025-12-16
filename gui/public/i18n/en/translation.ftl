@@ -331,6 +331,7 @@ tracker-table-column-name = Name
 tracker-table-column-type = Type
 tracker-table-column-battery = Battery
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Packet Loss
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
@@ -369,6 +370,10 @@ tracker-infos-magnetometer-status-v1 = { $status ->
     [DISABLED] Disabled
     [ENABLED] Enabled
 }
+
+tracker-infos-packet_loss = Packet Loss
+tracker-infos-packets_lost = Packets Lost
+tracker-infos-packets_received = Packets Received
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list

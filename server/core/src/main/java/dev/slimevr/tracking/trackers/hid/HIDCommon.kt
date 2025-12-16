@@ -304,7 +304,7 @@ class HIDCommon {
 			if (rssi != null) {
 				tracker.signalStrength = -rssi
 			}
-			if(packets_received != null && packets_received != 0 && packets_lost != null) {
+			if (packets_received != null && packets_received != 0 && packets_lost != null) {
 				tracker.packetsReceived = packets_received
 				tracker.packetsLost = packets_lost
 				tracker.packetLoss = packets_lost.toFloat() / (packets_received + packets_lost).toFloat()
