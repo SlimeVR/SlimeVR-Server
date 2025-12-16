@@ -307,7 +307,7 @@ class HIDCommon {
 			if (packets_received != null && packets_lost != null) {
 				tracker.packetsReceived = packets_received
 				tracker.packetsLost = packets_lost
-				tracker.packetLoss = if(packets_lost == 0) 0.0f else packets_lost.toFloat() / (packets_received + packets_lost).toFloat()
+				tracker.packetLoss = if (packets_lost == 0) 0.0f else packets_lost.toFloat() / (packets_received + packets_lost).toFloat()
 			}
 
 			// Assign rotation and acceleration
