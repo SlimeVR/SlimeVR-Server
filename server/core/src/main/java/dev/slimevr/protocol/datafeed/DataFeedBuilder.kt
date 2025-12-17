@@ -89,8 +89,8 @@ object DataFeedBuilder {
             .createVec3f(
                 fbb,
                 vec.x,
-                vec.x,
-                vec.x
+                vec.y,
+                vec.z
             )
     }
 
@@ -99,8 +99,8 @@ object DataFeedBuilder {
             .createQuat(
                 fbb,
                 quaternion.x,
-                quaternion.x,
-                quaternion.x,
+                quaternion.y,
+                quaternion.z,
                 quaternion.w
             )
     }
@@ -381,7 +381,7 @@ object DataFeedBuilder {
             val rotGOffset = createQuat(fbb, rotG)
             solarxr_protocol.data_feed.Bone.addRotationG(fbb, rotGOffset)
             val headPosGOffset = Vec3f
-                .createVec3f(fbb, headPosG.x, headPosG.x, headPosG.x)
+                .createVec3f(fbb, headPosG.x, headPosG.y, headPosG.z)
             solarxr_protocol.data_feed.Bone.addHeadPositionG(fbb, headPosGOffset)
             solarxr_protocol.data_feed.Bone.addBodyPart(fbb, bi.boneType.bodyPart)
             solarxr_protocol.data_feed.Bone.addBoneLength(fbb, length)

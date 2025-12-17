@@ -107,7 +107,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 
         this.forAllListeners(Consumer { conn: GenericConnection ->
             conn.send(fbb.dataBuffer())
-            conn.context.setUseSerial(false)
+            conn.context.useSerial = false
         })
     }
 
@@ -265,7 +265,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		val req =
 			messageHeader.message(OpenSerialRequest()) as OpenSerialRequest? ?: return
 
-		conn.context.setUseSerial(true)
+		conn.context.useSerial = true
 
         this.api.server.queueTask {
 			try {
@@ -297,7 +297,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
             .message(CloseSerialRequest()) as CloseSerialRequest?
         if (req == null) return
 
-        conn.context.setUseSerial(false)
+        conn.context.useSerial = false
 
         this.api.server.serialHandler.closeSerial()
 
@@ -317,7 +317,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
                 Consumer { server: ProtocolAPIServer? ->
                     server!!
                         .apiConnections
-                        .filter { conn: GenericConnection -> conn.context.useSerial() }
+                        .filter { conn: GenericConnection -> conn.context.useSerial }
                         .forEach(action)
                 }
             )
