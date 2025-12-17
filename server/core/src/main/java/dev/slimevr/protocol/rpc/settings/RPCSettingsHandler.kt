@@ -18,7 +18,7 @@ import kotlin.math.*
 
 class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	init {
-		rpcHandler.registerPacketListener(RpcMessage.SettingsRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
+		rpcHandler.registerPacketListener(RpcMessage.SettingsRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onSettingsRequest(
 				conn,
 				messageHeader,
@@ -27,24 +27,25 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		rpcHandler
 			.registerPacketListener(
 				RpcMessage.ChangeSettingsRequest,
-			) { conn: GenericConnection?, messageHeader: RpcMessageHeader ->
+			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onChangeSettingsRequest(
 					conn,
 					messageHeader,
 				)
 			}
-		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
+		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onSettingsResetRequest(conn, messageHeader)
 		}
 	}
 
-	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		rpcHandler.sendSettingsChangedResponse(conn, messageHeader)
 	}
 
-	fun onChangeSettingsRequest(conn: GenericConnection?, messageHeader: RpcMessageHeader) {
+	fun onChangeSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader
-			.message(ChangeSettingsRequest()) as? ChangeSettingsRequest ?: return
+			.message(ChangeSettingsRequest()) as ChangeSettingsRequest?
+			?: return
 
 		if (req.steamVrTrackers() != null) {
 			val bridge = api.server
@@ -372,7 +373,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		api.server.configManager.saveConfig()
 	}
 
-	fun onSettingsResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+	fun onSettingsResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		api.server.configManager.resetConfig()
 	}
 
