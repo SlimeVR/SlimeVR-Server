@@ -12,74 +12,74 @@ import solarxr_protocol.rpc.*
 import java.util.function.Consumer
 
 class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ProvisioningListener {
-    init {
-        rpcHandler
-            .registerPacketListener(
-                RpcMessage.StartWifiProvisioningRequest
+	init {
+		rpcHandler
+			.registerPacketListener(
+				RpcMessage.StartWifiProvisioningRequest,
 			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onStartWifiProvisioningRequest(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 		rpcHandler
-            .registerPacketListener(
-                RpcMessage.StopWifiProvisioningRequest
+			.registerPacketListener(
+				RpcMessage.StopWifiProvisioningRequest,
 			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onStopWifiProvisioningRequest(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 
 		this.api.server.provisioningHandler.addListener(this)
-    }
+	}
 
-    fun onStartWifiProvisioningRequest(
-        conn: GenericConnection,
-        messageHeader: RpcMessageHeader
-    ) {
-        val req = messageHeader
-            .message(StartWifiProvisioningRequest()) as StartWifiProvisioningRequest?
-        if (req == null) return
-        this.api.server.provisioningHandler.start(req.ssid(), req.password(), req.port())
-        conn.context.useProvisioning = true
-    }
+	fun onStartWifiProvisioningRequest(
+		conn: GenericConnection,
+		messageHeader: RpcMessageHeader,
+	) {
+		val req = messageHeader
+			.message(StartWifiProvisioningRequest()) as StartWifiProvisioningRequest?
+		if (req == null) return
+		this.api.server.provisioningHandler.start(req.ssid(), req.password(), req.port())
+		conn.context.useProvisioning = true
+	}
 
-    fun onStopWifiProvisioningRequest(
-        conn: GenericConnection,
-        messageHeader: RpcMessageHeader
-    ) {
-        val req = messageHeader
-            .message(StopWifiProvisioningRequest()) as StopWifiProvisioningRequest?
-        if (req == null) return
-        conn.context.useProvisioning = false
-        this.api.server.provisioningHandler.stop()
-    }
+	fun onStopWifiProvisioningRequest(
+		conn: GenericConnection,
+		messageHeader: RpcMessageHeader,
+	) {
+		val req = messageHeader
+			.message(StopWifiProvisioningRequest()) as StopWifiProvisioningRequest?
+		if (req == null) return
+		conn.context.useProvisioning = false
+		this.api.server.provisioningHandler.stop()
+	}
 
-    override fun onProvisioningStatusChange(status: ProvisioningStatus, port: SerialPort?) {
-        val fbb = FlatBufferBuilder(32)
+	override fun onProvisioningStatusChange(status: ProvisioningStatus, port: SerialPort?) {
+		val fbb = FlatBufferBuilder(32)
 
-        WifiProvisioningStatusResponse.startWifiProvisioningStatusResponse(fbb)
-        WifiProvisioningStatusResponse.addStatus(fbb, status.id)
-        val update = WifiProvisioningStatusResponse.endWifiProvisioningStatusResponse(fbb)
-        val outbound = rpcHandler
-            .createRPCMessage(fbb, RpcMessage.WifiProvisioningStatusResponse, update)
-        fbb.finish(outbound)
+		WifiProvisioningStatusResponse.startWifiProvisioningStatusResponse(fbb)
+		WifiProvisioningStatusResponse.addStatus(fbb, status.id)
+		val update = WifiProvisioningStatusResponse.endWifiProvisioningStatusResponse(fbb)
+		val outbound = rpcHandler
+			.createRPCMessage(fbb, RpcMessage.WifiProvisioningStatusResponse, update)
+		fbb.finish(outbound)
 
-        this.forAllListeners(Consumer { conn: GenericConnection -> conn.send(fbb.dataBuffer()) })
-    }
+		this.forAllListeners(Consumer { conn: GenericConnection -> conn.send(fbb.dataBuffer()) })
+	}
 
-    private fun forAllListeners(action: Consumer<in GenericConnection?>?) {
-        this.api
-            .apiServers
-            .forEach(
-                Consumer { server: ProtocolAPIServer? ->
-                    server!!
-                        .apiConnections
-                        .filter { conn: GenericConnection -> conn.context.useProvisioning }
-                        .forEach(action)
-                }
-            )
-    }
+	private fun forAllListeners(action: Consumer<in GenericConnection?>?) {
+		this.api
+			.apiServers
+			.forEach(
+				Consumer { server: ProtocolAPIServer? ->
+					server!!
+						.apiConnections
+						.filter { conn: GenericConnection -> conn.context.useProvisioning }
+						.forEach(action)
+				},
+			)
+	}
 }

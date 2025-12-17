@@ -13,261 +13,266 @@ import java.util.*
 import java.util.function.Consumer
 
 class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : SerialListener {
-    init {
-        rpcHandler
-            .registerPacketListener(
-                RpcMessage.SerialTrackerRebootRequest
+	init {
+		rpcHandler
+			.registerPacketListener(
+				RpcMessage.SerialTrackerRebootRequest,
 			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onSerialTrackerRebootRequest(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 		rpcHandler
-            .registerPacketListener(
-                RpcMessage.SerialTrackerGetInfoRequest
+			.registerPacketListener(
+				RpcMessage.SerialTrackerGetInfoRequest,
 			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onSerialTrackerGetInfoRequest(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 		rpcHandler
-            .registerPacketListener(
-                RpcMessage.SerialTrackerFactoryResetRequest
+			.registerPacketListener(
+				RpcMessage.SerialTrackerFactoryResetRequest,
 			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onSerialTrackerFactoryResetRequest(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 		rpcHandler
-            .registerPacketListener(
-                RpcMessage.SerialTrackerGetWifiScanRequest
+			.registerPacketListener(
+				RpcMessage.SerialTrackerGetWifiScanRequest,
 			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onSerialTrackerGetWifiScanRequest(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 		rpcHandler
-            .registerPacketListener(
-                RpcMessage.SerialTrackerCustomCommandRequest
+			.registerPacketListener(
+				RpcMessage.SerialTrackerCustomCommandRequest,
 			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onSerialTrackerCustomCommandRequest(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 		rpcHandler.registerPacketListener(
-            RpcMessage.SetWifiRequest
+			RpcMessage.SetWifiRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onSetWifiRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 		rpcHandler.registerPacketListener(
-            RpcMessage.OpenSerialRequest
+			RpcMessage.OpenSerialRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onOpenSerialRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 		rpcHandler
-            .registerPacketListener(
-                RpcMessage.CloseSerialRequest
+			.registerPacketListener(
+				RpcMessage.CloseSerialRequest,
 			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onCloseSerialRequest(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 		rpcHandler
-            .registerPacketListener(
-                RpcMessage.SerialDevicesRequest
+			.registerPacketListener(
+				RpcMessage.SerialDevicesRequest,
 			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 				this.onRequestSerialDevices(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 		this.api.server.serialHandler.addListener(this)
-    }
+	}
 
-    override fun onSerialDisconnected() {
-        val fbb = FlatBufferBuilder(32)
+	override fun onSerialDisconnected() {
+		val fbb = FlatBufferBuilder(32)
 
-        SerialUpdateResponse.startSerialUpdateResponse(fbb)
-        SerialUpdateResponse.addClosed(fbb, true)
-        val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
-        val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
-        fbb.finish(outbound)
+		SerialUpdateResponse.startSerialUpdateResponse(fbb)
+		SerialUpdateResponse.addClosed(fbb, true)
+		val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
+		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
+		fbb.finish(outbound)
 
-        this.forAllListeners(Consumer { conn: GenericConnection ->
-            conn.send(fbb.dataBuffer())
-            conn.context.useSerial = false
-        })
-    }
+		this.forAllListeners(
+			Consumer { conn: GenericConnection ->
+				conn.send(fbb.dataBuffer())
+				conn.context.useSerial = false
+			},
+		)
+	}
 
-    override fun onSerialLog(str: String, server: Boolean) {
-        val fbb = FlatBufferBuilder(32)
+	override fun onSerialLog(str: String, server: Boolean) {
+		val fbb = FlatBufferBuilder(32)
 
-        val logOffset = fbb.createString(str)
+		val logOffset = fbb.createString(str)
 
-        SerialUpdateResponse.startSerialUpdateResponse(fbb)
-        SerialUpdateResponse.addLog(fbb, logOffset)
-        val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
-        val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
-        fbb.finish(outbound)
+		SerialUpdateResponse.startSerialUpdateResponse(fbb)
+		SerialUpdateResponse.addLog(fbb, logOffset)
+		val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
+		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
+		fbb.finish(outbound)
 
-        this.forAllListeners(Consumer { conn: GenericConnection ->
-            conn.send(fbb.dataBuffer())
-        })
-    }
+		this.forAllListeners(
+			Consumer { conn: GenericConnection ->
+				conn.send(fbb.dataBuffer())
+			},
+		)
+	}
 
-    override fun onNewSerialDevice(port: SerialPort) {
-        val fbb = FlatBufferBuilder(32)
+	override fun onNewSerialDevice(port: SerialPort) {
+		val fbb = FlatBufferBuilder(32)
 
-        val portOffset = fbb.createString(port.portLocation)
-        val nameOffset = fbb.createString(port.descriptivePortName)
-        val deviceOffset = SerialDevice.createSerialDevice(fbb, portOffset, nameOffset)
-        val newSerialOffset = NewSerialDeviceResponse
-            .createNewSerialDeviceResponse(fbb, deviceOffset)
-        val outbound = rpcHandler
-            .createRPCMessage(fbb, RpcMessage.NewSerialDeviceResponse, newSerialOffset)
-        fbb.finish(outbound)
+		val portOffset = fbb.createString(port.portLocation)
+		val nameOffset = fbb.createString(port.descriptivePortName)
+		val deviceOffset = SerialDevice.createSerialDevice(fbb, portOffset, nameOffset)
+		val newSerialOffset = NewSerialDeviceResponse
+			.createNewSerialDeviceResponse(fbb, deviceOffset)
+		val outbound = rpcHandler
+			.createRPCMessage(fbb, RpcMessage.NewSerialDeviceResponse, newSerialOffset)
+		fbb.finish(outbound)
 
+		this.api
+			.apiServers
+			.forEach(
+				Consumer { server: ProtocolAPIServer? ->
+					server!!
+						.apiConnections
+						.forEach { conn: GenericConnection ->
+							conn.send(fbb.dataBuffer())
+						}
+				},
+			)
+	}
 
-        this.api
-            .apiServers
-            .forEach(
-                Consumer { server: ProtocolAPIServer? ->
-                    server!!
-                        .apiConnections
-                        .forEach { conn: GenericConnection ->
-                            conn.send(fbb.dataBuffer())
-                        }
-                }
-            )
-    }
+	override fun onSerialConnected(port: SerialPort) {
+		val fbb = FlatBufferBuilder(32)
 
-    override fun onSerialConnected(port: SerialPort) {
-        val fbb = FlatBufferBuilder(32)
+		SerialUpdateResponse.startSerialUpdateResponse(fbb)
+		SerialUpdateResponse.addClosed(fbb, false)
+		val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
+		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
+		fbb.finish(outbound)
 
-        SerialUpdateResponse.startSerialUpdateResponse(fbb)
-        SerialUpdateResponse.addClosed(fbb, false)
-        val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
-        val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
-        fbb.finish(outbound)
+		this.forAllListeners(
+			Consumer { conn: GenericConnection ->
+				conn.send(fbb.dataBuffer())
+			},
+		)
+	}
 
-        this.forAllListeners(Consumer { conn: GenericConnection ->
-            conn.send(fbb.dataBuffer())
-        })
-    }
+	fun onSerialTrackerRebootRequest(
+		conn: GenericConnection,
+		messageHeader: RpcMessageHeader,
+	) {
+		val req = messageHeader
+			.message(SerialTrackerRebootRequest()) as SerialTrackerRebootRequest?
+		if (req == null) return
 
-    fun onSerialTrackerRebootRequest(
-        conn: GenericConnection,
-        messageHeader: RpcMessageHeader
-    ) {
-        val req = messageHeader
-            .message(SerialTrackerRebootRequest()) as SerialTrackerRebootRequest?
-        if (req == null) return
+		this.api.server.serialHandler.rebootRequest()
+	}
 
-        this.api.server.serialHandler.rebootRequest()
-    }
+	fun onSerialTrackerGetInfoRequest(
+		conn: GenericConnection,
+		messageHeader: RpcMessageHeader,
+	) {
+		val req = messageHeader
+			.message(SerialTrackerGetInfoRequest()) as SerialTrackerGetInfoRequest?
+		if (req == null) return
 
-    fun onSerialTrackerGetInfoRequest(
-        conn: GenericConnection,
-        messageHeader: RpcMessageHeader
-    ) {
-        val req = messageHeader
-            .message(SerialTrackerGetInfoRequest()) as SerialTrackerGetInfoRequest?
-        if (req == null) return
+		this.api.server.serialHandler.infoRequest()
+	}
 
-        this.api.server.serialHandler.infoRequest()
-    }
+	fun onSerialTrackerFactoryResetRequest(
+		conn: GenericConnection,
+		messageHeader: RpcMessageHeader,
+	) {
+		val req = messageHeader
+			.message(SerialTrackerFactoryResetRequest()) as SerialTrackerFactoryResetRequest?
+		if (req == null) return
 
-    fun onSerialTrackerFactoryResetRequest(
-        conn: GenericConnection,
-        messageHeader: RpcMessageHeader
-    ) {
-        val req = messageHeader
-            .message(SerialTrackerFactoryResetRequest()) as SerialTrackerFactoryResetRequest?
-        if (req == null) return
+		this.api.server.serialHandler.factoryResetRequest()
+	}
 
-        this.api.server.serialHandler.factoryResetRequest()
-    }
+	fun onSerialTrackerGetWifiScanRequest(
+		conn: GenericConnection,
+		messageHeader: RpcMessageHeader,
+	) {
+		val req = messageHeader
+			.message(SerialTrackerGetWifiScanRequest()) as SerialTrackerGetWifiScanRequest?
+		if (req == null) return
 
-    fun onSerialTrackerGetWifiScanRequest(
-        conn: GenericConnection,
-        messageHeader: RpcMessageHeader
-    ) {
-        val req = messageHeader
-            .message(SerialTrackerGetWifiScanRequest()) as SerialTrackerGetWifiScanRequest?
-        if (req == null) return
+		this.api.server.serialHandler.wifiScanRequest()
+	}
 
-        this.api.server.serialHandler.wifiScanRequest()
-    }
+	fun onSerialTrackerCustomCommandRequest(
+		conn: GenericConnection,
+		messageHeader: RpcMessageHeader,
+	) {
+		val req = messageHeader
+			.message(SerialTrackerCustomCommandRequest()) as SerialTrackerCustomCommandRequest?
 
-    fun onSerialTrackerCustomCommandRequest(
-        conn: GenericConnection,
-        messageHeader: RpcMessageHeader
-    ) {
-        val req = messageHeader
-            .message(SerialTrackerCustomCommandRequest()) as SerialTrackerCustomCommandRequest?
+		if (req == null || req.command() == null) return
 
-        if (req == null || req.command() == null) return
+		this.api.server.serialHandler.customCommandRequest(Objects.requireNonNull(req.command()))
+	}
 
-        this.api.server.serialHandler.customCommandRequest(Objects.requireNonNull(req.command()))
-    }
+	private fun onRequestSerialDevices(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val req = messageHeader
+			.message(SerialDevicesRequest()) as SerialDevicesRequest?
+		if (req == null) return
 
-    private fun onRequestSerialDevices(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-        val req = messageHeader
-            .message(SerialDevicesRequest()) as SerialDevicesRequest?
-        if (req == null) return
+		val fbb = FlatBufferBuilder(32)
 
-        val fbb = FlatBufferBuilder(32)
+		val devicesOffsets: MutableList<Int> = ArrayList()
 
+		try {
+			this.api.server.serialHandler.knownPorts.forEach { port: SerialPort ->
+				val portOffset = fbb.createString(port.portLocation)
+				val nameOffset = fbb.createString(port.descriptivePortName)
+				devicesOffsets.add(SerialDevice.createSerialDevice(fbb, portOffset, nameOffset))
+			}
+		} catch (e: Throwable) {
+			LogManager.severe("Using serial ports is not supported on this platform", e)
+		}
 
-        val devicesOffsets: MutableList<Int> = ArrayList()
+		SerialDevicesResponse.startDevicesVector(fbb, devicesOffsets.size)
+		devicesOffsets.forEach(Consumer { offset: Int -> SerialDevicesResponse.addDevices(fbb, offset) })
+		val devices = fbb.endVector()
+		val serialDeviceOffsets = SerialDevicesResponse.createSerialDevicesResponse(fbb, devices)
+		val outbound = rpcHandler
+			.createRPCMessage(fbb, RpcMessage.SerialDevicesResponse, serialDeviceOffsets)
+		fbb.finish(outbound)
+		conn.send(fbb.dataBuffer())
+	}
 
-        try {
-            this.api.server.serialHandler.knownPorts.forEach { port: SerialPort ->
-                val portOffset = fbb.createString(port.portLocation)
-                val nameOffset = fbb.createString(port.descriptivePortName)
-                devicesOffsets.add(SerialDevice.createSerialDevice(fbb, portOffset, nameOffset))
-            }
-        } catch (e: Throwable) {
-            LogManager.severe("Using serial ports is not supported on this platform", e)
-        }
-
-        SerialDevicesResponse.startDevicesVector(fbb, devicesOffsets.size)
-        devicesOffsets.forEach(Consumer { offset: Int -> SerialDevicesResponse.addDevices(fbb, offset) })
-        val devices = fbb.endVector()
-        val serialDeviceOffsets = SerialDevicesResponse.createSerialDevicesResponse(fbb, devices)
-        val outbound = rpcHandler
-            .createRPCMessage(fbb, RpcMessage.SerialDevicesResponse, serialDeviceOffsets)
-        fbb.finish(outbound)
-        conn.send(fbb.dataBuffer())
-    }
-
-    fun onSetWifiRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+	fun onSetWifiRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader.message(SetWifiRequest()) as SetWifiRequest? ?: return
 
-		if (req.password() == null || req.ssid() == null || !this.api.server.serialHandler.isConnected
-        ) return
-        this.api.server.serialHandler.setWifi(req.ssid(), req.password())
-    }
+		if (req.password() == null || req.ssid() == null || !this.api.server.serialHandler.isConnected) {
+			return
+		}
+		this.api.server.serialHandler.setWifi(req.ssid(), req.password())
+	}
 
-    fun onOpenSerialRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+	fun onOpenSerialRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req =
 			messageHeader.message(OpenSerialRequest()) as OpenSerialRequest? ?: return
 
 		conn.context.useSerial = true
 
-        this.api.server.queueTask {
+		this.api.server.queueTask {
 			try {
 				this.api.server.serialHandler.openSerial(req.port(), req.auto())
 			} catch (e: Exception) {
@@ -275,14 +280,14 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 			} catch (e: Throwable) {
 				LogManager.severe(
 					"Using serial ports is not supported on this platform",
-					e
+					e,
 				)
 			}
 			val fbb = FlatBufferBuilder(32)
 			SerialUpdateResponse.startSerialUpdateResponse(fbb)
 			SerialUpdateResponse.addClosed(
 				fbb,
-				!this.api.server.serialHandler.isConnected
+				!this.api.server.serialHandler.isConnected,
 			)
 			val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
 			val outbound = rpcHandler
@@ -292,37 +297,37 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		}
 	}
 
-    fun onCloseSerialRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-        val req = messageHeader
-            .message(CloseSerialRequest()) as CloseSerialRequest?
-        if (req == null) return
+	fun onCloseSerialRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val req = messageHeader
+			.message(CloseSerialRequest()) as CloseSerialRequest?
+		if (req == null) return
 
-        conn.context.useSerial = false
+		conn.context.useSerial = false
 
-        this.api.server.serialHandler.closeSerial()
+		this.api.server.serialHandler.closeSerial()
 
-        val fbb = FlatBufferBuilder(32)
-        SerialUpdateResponse.startSerialUpdateResponse(fbb)
-        SerialUpdateResponse.addClosed(fbb, !this.api.server.serialHandler.isConnected)
-        val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
-        val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
-        fbb.finish(outbound)
-        conn.send(fbb.dataBuffer())
-    }
+		val fbb = FlatBufferBuilder(32)
+		SerialUpdateResponse.startSerialUpdateResponse(fbb)
+		SerialUpdateResponse.addClosed(fbb, !this.api.server.serialHandler.isConnected)
+		val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
+		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
+		fbb.finish(outbound)
+		conn.send(fbb.dataBuffer())
+	}
 
-    fun forAllListeners(action: Consumer<in GenericConnection?>?) {
-        this.api
-            .apiServers
-            .forEach(
-                Consumer { server: ProtocolAPIServer? ->
-                    server!!
-                        .apiConnections
-                        .filter { conn: GenericConnection -> conn.context.useSerial }
-                        .forEach(action)
-                }
-            )
-    }
+	fun forAllListeners(action: Consumer<in GenericConnection?>?) {
+		this.api
+			.apiServers
+			.forEach(
+				Consumer { server: ProtocolAPIServer? ->
+					server!!
+						.apiConnections
+						.filter { conn: GenericConnection -> conn.context.useSerial }
+						.forEach(action)
+				},
+			)
+	}
 
-    override fun onSerialDeviceDeleted(port: SerialPort) {
-    }
+	override fun onSerialDeviceDeleted(port: SerialPort) {
+	}
 }
