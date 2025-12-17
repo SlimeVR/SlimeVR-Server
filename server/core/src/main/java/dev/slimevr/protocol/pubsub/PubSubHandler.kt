@@ -76,13 +76,13 @@ class PubSubHandler(private val api: ProtocolAPI) : ProtocolHandler<PubSubHeader
 
         val finalSubHandle = subHandle
         val first = conn
-            .getContext()
+            .context
             .subscribedTopics
             .stream()
             .filter { handle: Int -> handle == finalSubHandle }
             .findFirst()
         if (!first.isPresent) {
-            conn.getContext().subscribedTopics.add(finalSubHandle)
+            conn.context.subscribedTopics.add(finalSubHandle)
         }
 
 
@@ -135,11 +135,11 @@ class PubSubHandler(private val api: ProtocolAPI) : ProtocolHandler<PubSubHeader
 
         val finalSubHandle = subHandle
 
-        this.api.apiServers.forEach(Consumer { server: ProtocolAPIServer ->
-            server.getAPIConnections().forEach { conn: GenericConnection ->
+        this.api.apiServers.forEach(Consumer { server: ProtocolAPIServer? ->
+            server!!.apiConnections.forEach { conn: GenericConnection ->
                 // Make sure that we are not sending a message to ourselves
                 // And check that the receiver has subscribed to the topic
-                if (conn.getConnectionId() != c.getConnectionId() && conn.getContext().subscribedTopics
+                if (conn.connectionId != c.connectionId && conn.context.subscribedTopics
                         .contains(finalSubHandle)
                 ) {
                     val fbb = FlatBufferBuilder(32)

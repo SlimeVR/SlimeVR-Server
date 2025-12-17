@@ -43,7 +43,7 @@ class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) :
             .message(StartWifiProvisioningRequest()) as StartWifiProvisioningRequest?
         if (req == null) return
         this.api.server.provisioningHandler.start(req.ssid(), req.password(), req.port())
-        conn.getContext().setUseProvisioning(true)
+        conn.context.setUseProvisioning(true)
     }
 
     fun onStopWifiProvisioningRequest(
@@ -53,7 +53,7 @@ class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) :
         val req = messageHeader
             .message(StopWifiProvisioningRequest()) as StopWifiProvisioningRequest?
         if (req == null) return
-        conn.getContext().setUseProvisioning(false)
+        conn.context.setUseProvisioning(false)
         this.api.server.provisioningHandler.stop()
     }
 
@@ -70,14 +70,14 @@ class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) :
         this.forAllListeners(Consumer { conn: GenericConnection -> conn.send(fbb.dataBuffer()) })
     }
 
-    private fun forAllListeners(action: Consumer<in GenericConnection>) {
+    private fun forAllListeners(action: Consumer<in GenericConnection?>?) {
         this.api
             .apiServers
             .forEach(
-                Consumer { server: ProtocolAPIServer ->
-                    server
-                        .getAPIConnections()
-                        .filter { conn: GenericConnection -> conn.getContext().useProvisioning() }
+                Consumer { server: ProtocolAPIServer? ->
+                    server!!
+                        .apiConnections
+                        .filter { conn: GenericConnection -> conn.context.useProvisioning() }
                         .forEach(action)
                 }
             )

@@ -39,7 +39,7 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 		val req = header.message(StartDataFeed()) as StartDataFeed? ?: return
 		val dataFeeds = req.dataFeedsLength()
 
-        val feedList = conn.getContext().dataFeedList
+        val feedList = conn.context.dataFeedList
         synchronized(feedList) {
             feedList.clear()
             for (i in 0..<dataFeeds) {
@@ -127,10 +127,10 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
     fun sendDataFeedUpdate() {
         val currTime = System.currentTimeMillis()
 
-        this.api.apiServers.forEach(Consumer { server: ProtocolAPIServer ->
-            server.getAPIConnections().forEach { conn: GenericConnection ->
+        this.api.apiServers.forEach(Consumer { server: ProtocolAPIServer? ->
+            server!!.apiConnections.forEach { conn: GenericConnection ->
                 var fbb: FlatBufferBuilder? = null
-                val feedList = conn.getContext().dataFeedList
+                val feedList = conn.context.dataFeedList
                 synchronized(feedList) {
                     val configsCount = feedList.size
                     val data = IntArray(configsCount)

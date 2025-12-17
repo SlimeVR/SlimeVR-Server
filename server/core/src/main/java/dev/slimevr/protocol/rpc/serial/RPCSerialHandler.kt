@@ -107,7 +107,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 
         this.forAllListeners(Consumer { conn: GenericConnection ->
             conn.send(fbb.dataBuffer())
-            conn.getContext().setUseSerial(false)
+            conn.context.setUseSerial(false)
         })
     }
 
@@ -143,9 +143,9 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
         this.api
             .apiServers
             .forEach(
-                Consumer { server: ProtocolAPIServer ->
-                    server
-                        .getAPIConnections()
+                Consumer { server: ProtocolAPIServer? ->
+                    server!!
+                        .apiConnections
                         .forEach { conn: GenericConnection ->
                             conn.send(fbb.dataBuffer())
                         }
@@ -265,7 +265,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		val req =
 			messageHeader.message(OpenSerialRequest()) as OpenSerialRequest? ?: return
 
-		conn.getContext().setUseSerial(true)
+		conn.context.setUseSerial(true)
 
         this.api.server.queueTask {
 			try {
@@ -297,7 +297,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
             .message(CloseSerialRequest()) as CloseSerialRequest?
         if (req == null) return
 
-        conn.getContext().setUseSerial(false)
+        conn.context.setUseSerial(false)
 
         this.api.server.serialHandler.closeSerial()
 
@@ -310,14 +310,14 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
         conn.send(fbb.dataBuffer())
     }
 
-    fun forAllListeners(action: Consumer<in GenericConnection>) {
+    fun forAllListeners(action: Consumer<in GenericConnection?>?) {
         this.api
             .apiServers
             .forEach(
-                Consumer { server: ProtocolAPIServer ->
-                    server
-                        .getAPIConnections()
-                        .filter { conn: GenericConnection -> conn.getContext().useSerial() }
+                Consumer { server: ProtocolAPIServer? ->
+                    server!!
+                        .apiConnections
+                        .filter { conn: GenericConnection -> conn.context.useSerial() }
                         .forEach(action)
                 }
             )
