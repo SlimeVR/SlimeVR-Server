@@ -229,7 +229,9 @@ function Row({
                 <TrackerBattery
                   value={device.hardwareStatus.batteryPctEstimate / 100}
                   voltage={device.hardwareStatus.batteryVoltage}
+                  runtime={device.hardwareStatus.batteryRuntimeEstimate}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                  moreInfo={config?.devSettings.moreInfo}
                   textColor={fontColor}
                 />
               )}
