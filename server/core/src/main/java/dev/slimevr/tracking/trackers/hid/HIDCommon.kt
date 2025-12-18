@@ -138,6 +138,7 @@ class HIDCommon {
 			}
 
 			// Packet data
+			var runtime: Long? = null
 			var batt: Int? = null
 			var batt_v: Int? = null
 			var temp: Int? = null
@@ -221,6 +222,11 @@ class HIDCommon {
 					}
 				}
 
+				5 -> { // runtime
+					// ulong as little endian
+					runtime = (dataReceived[i + 9].toUByte().toLong() shl 56) or (dataReceived[i + 8].toUByte().toLong() shl 48) or (dataReceived[i + 7].toUByte().toLong() shl 40) or (dataReceived[i + 6].toUByte().toLong() shl 32) or (dataReceived[i + 5].toUByte().toLong() shl 24) or (dataReceived[i + 4].toUByte().toLong() shl 16) or (dataReceived[i + 3].toUByte().toLong() shl 8) or dataReceived[i + 2].toUByte().toLong()
+				}
+
 				6 -> { // data
 					button = dataReceived[i + 2].toUByte().toInt()
 					rssi = dataReceived[i + 15].toUByte().toInt()
@@ -248,6 +254,9 @@ class HIDCommon {
 			}
 
 			// Assign data
+			if (runtime != null) {
+				tracker.batteryRemainingRuntime = runtime
+			}
 			if (batt != null) {
 				tracker.batteryLevel = if (batt == 128) 1f else (batt and 127).toFloat()
 			}

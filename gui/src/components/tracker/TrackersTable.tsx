@@ -229,7 +229,9 @@ function Row({
                 <TrackerBattery
                   value={device.hardwareStatus.batteryPctEstimate / 100}
                   voltage={device.hardwareStatus.batteryVoltage}
+                  runtime={device.hardwareStatus.batteryRuntimeEstimate}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                  moreInfo={config?.devSettings.moreInfo}
                   textColor={fontColor}
                 />
               )}
@@ -329,7 +331,7 @@ export function TrackersTable({
     const cols = [
       'minmax(150px, 1.5fr)', // Name
       'minmax(100px, 1fr)', // Type
-      'minmax(60px, 1fr)', // Battery
+      'minmax(110px, 1fr)', // Battery
       '6rem', // Ping (w-24)
       'minmax(60px, 1fr)', // TPS
       config?.devSettings?.preciseRotation ? '11rem' : '8rem', // Rotation
