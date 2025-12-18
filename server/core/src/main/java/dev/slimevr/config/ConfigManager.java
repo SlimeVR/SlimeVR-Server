@@ -1,4 +1,3 @@
-
 package dev.slimevr.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
