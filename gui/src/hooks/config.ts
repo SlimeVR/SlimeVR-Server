@@ -50,7 +50,6 @@ export interface Config {
   homeLayout: 'default' | 'table';
   skeletonPreview: boolean;
   lastUsedProportions: 'manual' | 'autobone' | 'scaled' | null;
-  trackerHID: boolean;
 }
 
 export interface ConfigContext {
@@ -83,7 +82,6 @@ export const defaultConfig: Config = {
   homeLayout: 'default',
   skeletonPreview: true,
   lastUsedProportions: null,
-  trackerHID: false,
 };
 
 interface CrossStorage {
