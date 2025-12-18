@@ -6,10 +6,6 @@ import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.ProtocolAPIServer
 import dev.slimevr.protocol.ProtocolHandler
-import dev.slimevr.protocol.datafeed.DataFeedBuilder.createDevicesData
-import dev.slimevr.protocol.datafeed.DataFeedBuilder.createServerGuard
-import dev.slimevr.protocol.datafeed.DataFeedBuilder.createStayAlignedPose
-import dev.slimevr.protocol.datafeed.DataFeedBuilder.createSyntheticTrackersData
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.MessageBundle
@@ -89,8 +85,8 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 		)
 
 		val h = this.api.server.humanPoseManager
-		val bonesOffset = DataFeedBuilder
-			.createBonesData(
+		val bonesOffset =
+			createBonesData(
 				fbb,
 				config.boneMask,
 				h.allBones.toMutableList(),
