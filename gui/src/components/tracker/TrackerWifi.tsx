@@ -48,7 +48,7 @@ export function TrackerWifi({
               <Typography
                 color={textColor}
                 whitespace="whitespace-nowrap"
-              >{`${+(packetLoss?.toFixed(2) ?? 0) * 100}% (${packetsLost ?? 0} / ${packetsReceived})`}</Typography>
+              >{`${((packetLoss ?? 0) * 100).toFixed(0)}% (${packetsLost ?? 0} / ${packetsReceived})`}</Typography>
             </Tooltip>
           )}
         </div>
