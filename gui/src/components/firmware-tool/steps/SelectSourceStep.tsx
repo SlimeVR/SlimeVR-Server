@@ -101,13 +101,10 @@ export function SelectSourceSetep({
               curr.push({
                 name: source.source,
                 official: source.official,
-                disabled:
-                  !partialBoard?.board ||
-                  !source.availableBoards.includes(partialBoard.board),
               });
             return curr;
           },
-          [] as { name: string; official: boolean; disabled: boolean }[]
+          [] as { name: string; official: boolean }[]
         )
         .sort((a, b) => {
           if (a.official !== b.official) return a.official ? -1 : 1;
@@ -115,6 +112,7 @@ export function SelectSourceSetep({
         }),
       possibleBoards: sources
         ?.reduce((curr, source) => {
+          if (source.source !== partialBoard?.source) return curr;
           const unknownBoards = source.availableBoards.filter(
             (b) => !curr.includes(b)
           );
@@ -136,6 +134,7 @@ export function SelectSourceSetep({
       possibleVersions: sources
         ?.reduce(
           (curr, source) => {
+            if (source.source !== partialBoard?.source) return curr;
             if (!curr.find(({ name }) => source.version === name))
               curr.push({
                 disabled:
@@ -194,6 +193,25 @@ export function SelectSourceSetep({
             <div className="flex flex-col gap-2">
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="flex flex-col gap-1 w-full">
+                  <Localized id="firmware_tool-select_source-firmware">
+                    <Typography variant="section-title" />
+                  </Localized>
+                  <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
+                    {sourcesGroupped?.map(({ name, official }) => (
+                      <Selector
+                        active={partialBoard?.source === name}
+                        key={`${name}`}
+                        tag={official ? 'official' : undefined}
+                        onClick={() => {
+                          if (partialBoard?.source !== name)
+                            setPartialBoard({ source: name });
+                        }}
+                        text={formatSource(name, official)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1 w-full">
                   <Localized id="firmware_tool-select_source-board_type">
                     <Typography variant="section-title" />
                   </Localized>
@@ -203,7 +221,7 @@ export function SelectSourceSetep({
                         active={partialBoard?.board === board}
                         key={`${board}`}
                         onClick={() => {
-                          setPartialBoard({ board });
+                          setPartialBoard((curr) => ({ ...curr, board }));
                         }}
                         tag={
                           board.startsWith('BOARD_SLIMEVR')
@@ -219,30 +237,19 @@ export function SelectSourceSetep({
                         }
                       />
                     ))}
+                    {partialBoard?.source && possibleBoards?.length === 0 && (
+                      <>
+                        <Typography>
+                          No available boards for this source
+                        </Typography>
+                      </>
+                    )}
+                    {!partialBoard?.source && (
+                      <Typography>No source selected</Typography>
+                    )}
                   </div>
                 </div>
-                <div className="flex flex-col gap-1 w-full">
-                  <Localized id="firmware_tool-select_source-firmware">
-                    <Typography variant="section-title" />
-                  </Localized>
-                  <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
-                    {sourcesGroupped?.map(({ name, official, disabled }) => (
-                      <Selector
-                        active={partialBoard?.source === name}
-                        disabled={disabled}
-                        key={`${name}`}
-                        tag={official ? 'official' : undefined}
-                        onClick={() => {
-                          setPartialBoard((curr) => ({
-                            ...curr,
-                            source: name,
-                          }));
-                        }}
-                        text={formatSource(name, official)}
-                      />
-                    ))}
-                  </div>
-                </div>
+
                 <div className="flex flex-col gap-1 w-full">
                   <Localized id="firmware_tool-select_source-version">
                     <Typography variant="section-title" />
@@ -268,6 +275,14 @@ export function SelectSourceSetep({
                         text={name}
                       />
                     ))}
+                    {partialBoard?.source && possibleVersions?.length === 0 && (
+                      <Typography>
+                        No available versions for this source
+                      </Typography>
+                    )}
+                    {!partialBoard?.source && (
+                      <Typography>No source selected</Typography>
+                    )}
                   </div>
                 </div>
               </div>
