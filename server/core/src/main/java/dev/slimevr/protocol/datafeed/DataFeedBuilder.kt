@@ -45,10 +45,17 @@ fun createHardwareInfo(fbb: FlatBufferBuilder, device: Device): Int {
 		0
 	}
 
+	val firmwareDateOffset = if (device.firmwareDate != null) {
+		fbb.createString(device.firmwareDate)
+	} else {
+		0
+	}
+
 	val hardwareIdentifierOffset = fbb.createString(device.hardwareIdentifier)
 
 	HardwareInfo.startHardwareInfo(fbb)
 	HardwareInfo.addFirmwareVersion(fbb, nameOffset)
+	HardwareInfo.addFirmwareDate(fbb, firmwareDateOffset)
 	HardwareInfo.addManufacturer(fbb, manufacturerOffset)
 	HardwareInfo.addHardwareIdentifier(fbb, hardwareIdentifierOffset)
 
