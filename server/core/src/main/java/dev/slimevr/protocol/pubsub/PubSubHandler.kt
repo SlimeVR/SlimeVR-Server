@@ -28,30 +28,9 @@ class PubSubHandler(private val api: ProtocolAPI) : ProtocolHandler<PubSubHeader
 	var nextLocalHandle: AtomicInteger = AtomicInteger()
 
 	init {
-		registerPacketListener(
-			PubSubUnion.SubscriptionRequest,
-		) { conn: GenericConnection?, messageHeader: PubSubHeader? ->
-			this.onSubscriptionRequest(
-				conn!!,
-				messageHeader!!,
-			)
-		}
-		registerPacketListener(
-			PubSubUnion.TopicHandleRequest,
-		) { conn: GenericConnection?, messageHeader: PubSubHeader? ->
-			this.onTopicHandleRequest(
-				conn!!,
-				messageHeader!!,
-			)
-		}
-		registerPacketListener(
-			PubSubUnion.Message,
-		) { c: GenericConnection?, messageHeader: PubSubHeader? ->
-			this.onTopicMessage(
-				c!!,
-				messageHeader!!,
-			)
-		}
+		registerPacketListener(PubSubUnion.SubscriptionRequest, ::onSubscriptionRequest)
+		registerPacketListener(PubSubUnion.TopicHandleRequest, ::onTopicHandleRequest)
+		registerPacketListener(PubSubUnion.Message, ::onTopicMessage)
 	}
 
 	private fun getTopicHandle(topicIdT: TopicIdT): Int {

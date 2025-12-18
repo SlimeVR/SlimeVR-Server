@@ -14,85 +14,15 @@ import java.util.function.Consumer
 
 class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : SerialListener {
 	init {
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.SerialTrackerRebootRequest,
-			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-				this.onSerialTrackerRebootRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.SerialTrackerGetInfoRequest,
-			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-				this.onSerialTrackerGetInfoRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.SerialTrackerFactoryResetRequest,
-			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-				this.onSerialTrackerFactoryResetRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.SerialTrackerGetWifiScanRequest,
-			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-				this.onSerialTrackerGetWifiScanRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.SerialTrackerCustomCommandRequest,
-			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-				this.onSerialTrackerCustomCommandRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler.registerPacketListener(
-			RpcMessage.SetWifiRequest,
-		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-			this.onSetWifiRequest(
-				conn,
-				messageHeader,
-			)
-		}
-		rpcHandler.registerPacketListener(
-			RpcMessage.OpenSerialRequest,
-		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-			this.onOpenSerialRequest(
-				conn,
-				messageHeader,
-			)
-		}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.CloseSerialRequest,
-			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-				this.onCloseSerialRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.SerialDevicesRequest,
-			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-				this.onRequestSerialDevices(
-					conn,
-					messageHeader,
-				)
-			}
+		rpcHandler.registerPacketListener(RpcMessage.SerialTrackerRebootRequest, ::onSerialTrackerRebootRequest)
+		rpcHandler.registerPacketListener(RpcMessage.SerialTrackerGetInfoRequest, ::onSerialTrackerGetInfoRequest)
+		rpcHandler.registerPacketListener(RpcMessage.SerialTrackerFactoryResetRequest, ::onSerialTrackerFactoryResetRequest)
+		rpcHandler.registerPacketListener(RpcMessage.SerialTrackerGetWifiScanRequest, ::onSerialTrackerGetWifiScanRequest)
+		rpcHandler.registerPacketListener(RpcMessage.SerialTrackerCustomCommandRequest, ::onSerialTrackerCustomCommandRequest)
+		rpcHandler.registerPacketListener(RpcMessage.SetWifiRequest, ::onSetWifiRequest)
+		rpcHandler.registerPacketListener(RpcMessage.OpenSerialRequest, ::onOpenSerialRequest)
+		rpcHandler.registerPacketListener(RpcMessage.CloseSerialRequest, ::onCloseSerialRequest)
+		rpcHandler.registerPacketListener(RpcMessage.SerialDevicesRequest, ::onRequestSerialDevices)
 		this.api.server.serialHandler.addListener(this)
 	}
 

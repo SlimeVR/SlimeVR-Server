@@ -13,25 +13,8 @@ import java.util.function.Consumer
 
 class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ProvisioningListener {
 	init {
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.StartWifiProvisioningRequest,
-			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-				this.onStartWifiProvisioningRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.StopWifiProvisioningRequest,
-			) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-				this.onStopWifiProvisioningRequest(
-					conn,
-					messageHeader,
-				)
-			}
-
+		rpcHandler.registerPacketListener(RpcMessage.StartWifiProvisioningRequest, ::onStartWifiProvisioningRequest)
+		rpcHandler.registerPacketListener(RpcMessage.StopWifiProvisioningRequest, ::onStopWifiProvisioningRequest)
 		this.api.server.provisioningHandler.addListener(this)
 	}
 

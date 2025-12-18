@@ -18,24 +18,9 @@ import kotlin.math.*
 
 class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	init {
-		rpcHandler.registerPacketListener(RpcMessage.SettingsRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
-			this.onSettingsRequest(
-				conn,
-				messageHeader,
-			)
-		}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.ChangeSettingsRequest,
-			) { conn: GenericConnection?, messageHeader: RpcMessageHeader ->
-				this.onChangeSettingsRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
-			this.onSettingsResetRequest(conn, messageHeader)
-		}
+		rpcHandler.registerPacketListener(RpcMessage.SettingsRequest, ::onSettingsRequest)
+		rpcHandler.registerPacketListener(RpcMessage.ChangeSettingsRequest, ::onChangeSettingsRequest)
+		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest, ::onSettingsResetRequest)
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {

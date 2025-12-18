@@ -24,23 +24,8 @@ import java.util.stream.Collectors
 
 class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMessageHeader>() {
 	init {
-		registerPacketListener(
-			DataFeedMessage.StartDataFeed,
-		) { conn: GenericConnection?, header: DataFeedMessageHeader? ->
-			this.onStartDataFeed(
-				conn!!,
-				header!!,
-			)
-		}
-		registerPacketListener(
-			DataFeedMessage.PollDataFeed,
-		) { conn: GenericConnection?, messageHeader: DataFeedMessageHeader? ->
-			this.onPollDataFeedRequest(
-				conn!!,
-				messageHeader!!,
-			)
-		}
-
+		registerPacketListener(DataFeedMessage.StartDataFeed, ::onStartDataFeed)
+		registerPacketListener(DataFeedMessage.PollDataFeed, ::onPollDataFeedRequest)
 		this.api.server.addOnTick { this.sendDataFeedUpdate() }
 	}
 
