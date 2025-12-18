@@ -310,6 +310,17 @@ public class DataFeedBuilder {
 			HardwareStatus.addRssi(fbb, (short) tracker.getSignalStrength().floatValue());
 		}
 
+		if (tracker.getPacketLoss() != null) {
+			HardwareStatus.addPacketLoss(fbb, tracker.getPacketLoss());
+		}
+
+		if (tracker.getPacketsLost() != null) {
+			HardwareStatus.addPacketsLost(fbb, tracker.getPacketsLost());
+		}
+
+		if (tracker.getPacketsReceived() != null) {
+			HardwareStatus.addPacketsReceived(fbb, tracker.getPacketsReceived());
+		}
 
 		int hardwareDataOffset = HardwareStatus.endHardwareStatus(fbb);
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);
