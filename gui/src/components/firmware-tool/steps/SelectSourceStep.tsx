@@ -238,14 +238,10 @@ export function SelectSourceSetep({
                       />
                     ))}
                     {partialBoard?.source && possibleBoards?.length === 0 && (
-                      <>
-                        <Typography>
-                          No available boards for this source
-                        </Typography>
-                      </>
+                      <Typography id="firmware_tool-select_source-no_boards" />
                     )}
                     {!partialBoard?.source && (
-                      <Typography>No source selected</Typography>
+                      <Typography id="firmware_tool-select_source-not_selected" />
                     )}
                   </div>
                 </div>
@@ -276,12 +272,10 @@ export function SelectSourceSetep({
                       />
                     ))}
                     {partialBoard?.source && possibleVersions?.length === 0 && (
-                      <Typography>
-                        No available versions for this source
-                      </Typography>
+                      <Typography id="firmware_tool-select_source-no_versions" />
                     )}
                     {!partialBoard?.source && (
-                      <Typography>No source selected</Typography>
+                      <Typography id="firmware_tool-select_source-not_selected" />
                     )}
                   </div>
                 </div>
