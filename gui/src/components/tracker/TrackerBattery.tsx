@@ -40,11 +40,7 @@ export function TrackerBattery({
     <Tooltip
       disabled={!charging && (!runtime || debug)}
       preferedDirection="left"
-      content={
-        <div className="flex gap-1 items-center">
-          <Typography>{percentFormatter.format(value)}</Typography>
-        </div>
-      }
+      content=<Typography>{percentFormatter.format(value)}</Typography>
     >
       <div className="flex gap-2">
         <div className="flex flex-col justify-around">
