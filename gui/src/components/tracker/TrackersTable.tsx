@@ -329,20 +329,20 @@ export function TrackersTable({
 
   const gridTemplateColumns = useMemo(() => {
     const cols = [
-      'minmax(150px, 1.5fr)', // Name
-      'minmax(100px, 1fr)', // Type
-      'minmax(110px, 1fr)', // Battery
-      '6rem', // Ping (w-24)
-      'minmax(60px, 1fr)', // TPS
-      config?.devSettings?.preciseRotation ? '11rem' : '8rem', // Rotation
-      'minmax(60px, 1fr)', // Temp
+      'minmax(15rem, 1.5fr)', // Name
+      '9rem', // Type
+      '9rem', // Battery
+      '9rem', // Ping (w-24)
+      '5rem', // TPS
+      config?.devSettings?.preciseRotation ? '11rem' : '9rem', // Rotation
+      '9rem', // Temp
     ];
 
     if (moreInfo) {
       cols.push('9rem'); // Linear Acc
       cols.push('9rem'); // Position
       cols.push('9rem'); // Stay Aligned
-      cols.push('minmax(150px, 1fr)'); // URL
+      cols.push('11rem'); // URL
     }
 
     return cols.join(' ');
