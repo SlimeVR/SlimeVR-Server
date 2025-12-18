@@ -407,6 +407,7 @@ tracker-settings-update = Update now
 tracker-settings-update-title = Firmware version
 tracker-settings-current-version = Current
 tracker-settings-latest-version = Latest
+tracker-settings-build-date = Build Date
 
 
 ## Tracker part card info

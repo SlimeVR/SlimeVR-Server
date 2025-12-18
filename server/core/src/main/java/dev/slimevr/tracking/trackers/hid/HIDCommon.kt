@@ -289,12 +289,14 @@ class HIDCommon {
 					// Nothing to do now..
 				}
 			}
-			if (fw_date != null && fw_major != null && fw_minor != null && fw_patch != null) {
+			if (fw_date != null) {
 				val firmwareYear = 2020 + (fw_date shr 9 and 127)
 				val firmwareMonth = fw_date shr 5 and 15
 				val firmwareDay = fw_date and 31
-				val firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
-				device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch (Build $firmwareDate)"
+				device.firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
+			}
+			if (fw_major != null && fw_minor != null && fw_patch != null) {
+				device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch"
 			}
 			if (svr_status != null) {
 				val status = TrackerStatus.getById(svr_status)
