@@ -242,7 +242,7 @@ fun createModelSettings(
 
 fun createAutoBoneSettings(
 	fbb: FlatBufferBuilder,
-	autoBoneConfig: AutoBoneConfig
+	autoBoneConfig: AutoBoneConfig,
 ): Int = AutoBoneSettings
 	.createAutoBoneSettings(
 		fbb,
