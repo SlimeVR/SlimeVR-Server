@@ -23,6 +23,7 @@ export function ResetButtonIcon(options: UseResetOptions) {
   if (options.type === ResetType.Mounting) {
     if (options.group === 'default') return <SkiIcon />;
     if (options.group === 'feet') return <FootIcon />;
+    if (options.group === 'toes') return <FootIcon />;
     if (options.group === 'fingers') return <FingersIcon width={16} />;
   }
 }
