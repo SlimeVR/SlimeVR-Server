@@ -200,6 +200,11 @@ export function Toolbar() {
                 group={'feet'}
                 customName="toolbar-mounting_calibration-feet"
               />
+              <BasicResetButton
+                type={ResetType.Mounting}
+                group={'toes'}
+                customName="toolbar-mounting_calibration-toes"
+              />
               {groupVisibility['fingers'] && (
                 <BasicResetButton
                   type={ResetType.Mounting}
