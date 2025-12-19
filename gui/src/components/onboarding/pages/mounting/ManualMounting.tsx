@@ -142,3 +142,109 @@ export function ManualMountingPage() {
     </>
   );
 }
+
+export function ManualMountingPageStayAlligned() {
+  const { isMobile } = useBreakpoint('mobile');
+  const { l10n } = useLocalization();
+  const { applyProgress, state } = useOnboarding();
+  const { sendRPCPacket } = useWebsocketAPI();
+  const { config } = useConfig();
+
+  const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
+
+  applyProgress(0.7);
+
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
+
+  const trackerPartGrouped = useMemo(
+    () =>
+      assignedTrackers.reduce<{ [key: number]: FlatDeviceTracker[] }>(
+        (curr, td) => {
+          const key = td.tracker.info?.bodyPart || BodyPart.NONE;
+          return {
+            ...curr,
+            [key]: [...(curr[key] || []), td],
+          };
+        },
+        {}
+      ),
+    [assignedTrackers]
+  );
+
+  const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
+    (trackerPartGrouped[selectedRole] || []).forEach((td) => {
+      const assignreq = new AssignTrackerRequestT();
+
+      assignreq.bodyPosition = td.tracker.info?.bodyPart || BodyPart.NONE;
+      assignreq.mountingOrientation = MountingOrientationDegreesToQuatT(
+        mountingOrientationDegrees
+      );
+      assignreq.trackerId = td.tracker.trackerId;
+      assignreq.allowDriftCompensation = false;
+
+      sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+      Sentry.metrics.count('manual_mounting_set', 1, {
+        attributes: {
+          part: BodyPart[assignreq.bodyPosition],
+          direction: assignreq.mountingOrientation,
+        },
+      });
+    });
+
+    setSelectRole(BodyPart.NONE);
+  };
+
+  const getCurrRotation = useCallback(
+    (role: BodyPart) => {
+      if (role === BodyPart.NONE) return undefined;
+
+      const trackers = trackerPartGrouped[role] || [];
+      const [mountingOrientation, ...orientation] = trackers
+        .map((td) => td.tracker.info?.mountingOrientation)
+        .filter((orientation) => !!orientation)
+        .map((orientation) => QuaternionFromQuatT(orientation));
+
+      const identicalOrientations =
+        mountingOrientation !== undefined &&
+        orientation.every((quat) =>
+          similarQuaternions(quat, mountingOrientation)
+        );
+      return identicalOrientations ? mountingOrientation : undefined;
+    },
+    [trackerPartGrouped]
+  );
+
+  return (
+    <>
+      <MountingSelectionMenu
+        bodyPart={selectedRole}
+        currRotation={getCurrRotation(selectedRole)}
+        isOpen={selectedRole !== BodyPart.NONE}
+        onClose={() => setSelectRole(BodyPart.NONE)}
+        onDirectionSelected={onDirectionSelected}
+      />
+      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto">
+        <div className="flex xs:flex-row mobile:flex-col h-full px-8 xs:w-full xs:justify-center mobile:px-4 items-center">
+          <div className="flex flex-col w-full xs:max-w-sm gap-3">
+            <Typography variant="main-title">
+              {l10n.getString('onboarding-manual_mounting')}
+            </Typography>
+            <Typography>
+              {l10n.getString('onboarding-manual_mounting-description')}
+            </Typography>
+            <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+          </div>
+          <div className="flex flex-row justify-center">
+            <BodyAssignment
+              width={isMobile ? 160 : undefined}
+              mirror={config?.mirrorView ?? defaultConfig.mirrorView}
+              onlyAssigned={true}
+              assignMode={AssignMode.All}
+              onRoleSelected={setSelectRole}
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
