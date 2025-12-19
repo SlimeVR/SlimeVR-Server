@@ -254,9 +254,10 @@ class HIDCommon {
 			}
 
 			// Assign data
-			if (runtime != null) {
+			if (runtime != null && runtime >= 0) {
 				tracker.batteryRemainingRuntime = runtime
 			}
+			// -1: Not known (e.g. not yet calculated after wake up, reusing known value is okay), 0: N/A (e.g. charging)
 			if (batt != null) {
 				tracker.batteryLevel = if (batt == 128) 1f else (batt and 127).toFloat()
 			}
