@@ -12,7 +12,7 @@ import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
 import { MountingSelectionMenu } from './MountingSelectionMenu';
-import { useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
 import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
@@ -22,7 +22,6 @@ import * as Sentry from '@sentry/react';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
-  const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
   const { config } = useConfig();
@@ -103,28 +102,26 @@ export function ManualMountingPage() {
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto">
         <div className="flex xs:flex-row mobile:flex-col h-full px-8 xs:w-full xs:justify-center mobile:px-4 items-center">
           <div className="flex flex-col w-full xs:max-w-sm gap-3">
-            <Typography variant="main-title">
-              {l10n.getString('onboarding-manual_mounting')}
-            </Typography>
-            <Typography>
-              {l10n.getString('onboarding-manual_mounting-description')}
-            </Typography>
-            <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+            <Typography variant="main-title" id="onboarding-manual_mounting" />
+            <Typography id="onboarding-manual_mounting-description" />
+            <Typography id="tips-find_tracker" />
+            <Localized id="tips-find_tracker">
+              <TipBox />
+            </Localized>
+
             <div className="flex flex-row gap-3 mt-auto">
               <Button
                 variant="secondary"
                 to="/onboarding/mounting/choose"
                 state={state}
-              >
-                {l10n.getString('onboarding-previous_step')}
-              </Button>
+                id="onboarding-previous_step"
+              />
               {!state.alonePage && (
                 <Button
                   variant="primary"
                   to="/onboarding/body-proportions/scaled"
-                >
-                  {l10n.getString('onboarding-manual_mounting-next')}
-                </Button>
+                  id="onboarding-manual_mounting-next"
+                />
               )}
             </div>
           </div>
@@ -145,7 +142,6 @@ export function ManualMountingPage() {
 
 export function ManualMountingPageStayAlligned() {
   const { isMobile } = useBreakpoint('mobile');
-  const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
   const { config } = useConfig();
@@ -226,13 +222,12 @@ export function ManualMountingPageStayAlligned() {
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto">
         <div className="flex xs:flex-row mobile:flex-col h-full px-8 xs:w-full xs:justify-center mobile:px-4 items-center">
           <div className="flex flex-col w-full xs:max-w-sm gap-3">
-            <Typography variant="main-title">
-              {l10n.getString('onboarding-manual_mounting')}
-            </Typography>
-            <Typography>
-              {l10n.getString('onboarding-manual_mounting-description')}
-            </Typography>
-            <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+            <Typography variant="main-title" id="onboarding-manual_mounting" />
+            <Typography id="onboarding-manual_mounting-description" />
+            <Typography id="tips-find_tracker" />
+            <Localized id="tips-find_tracker">
+              <TipBox />
+            </Localized>
           </div>
           <div className="flex flex-row justify-center">
             <BodyAssignment
@@ -248,3 +243,5 @@ export function ManualMountingPageStayAlligned() {
     </>
   );
 }
+
+//251

@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { ResetType } from 'solarxr-protocol';
 import { ResetButton } from '@/components/home/ResetButton';
-import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
 import { BaseModal } from '@/components/commons/BaseModal';
@@ -13,7 +12,6 @@ export function VerifyMountingStep({
   prevStep,
 }: VerticalStepComponentProps) {
   const { isMobile } = useBreakpoint('mobile');
-  const { l10n } = useLocalization();
   const [isOpen, setOpen] = useState(false);
 
   function setOpenFunc() {
@@ -29,16 +27,8 @@ export function VerifyMountingStep({
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <div className="flex flex-col gap-2">
-            <Typography>
-              {l10n.getString(
-                'onboarding-automatic_mounting-mounting_reset-step-0'
-              )}
-            </Typography>
-            <Typography>
-              {l10n.getString(
-                'onboarding-automatic_mounting-mounting_reset-step-1'
-              )}
-            </Typography>
+            <Typography id="onboarding-automatic_mounting-mounting_reset-step-0" />
+            <Typography id="onboarding-automatic_mounting-mounting_reset-step-1" />
           </div>
         </div>
 
@@ -62,17 +52,17 @@ export function VerifyMountingStep({
           </div>
         )}
         <div className="flex gap-3 justify-between">
-          <Button variant={'secondary'} onClick={prevStep}>
-            {l10n.getString('onboarding-automatic_mounting-prev_step')}
-          </Button>
+          <Button
+            variant={'secondary'}
+            onClick={prevStep}
+            id="onboarding-automatic_mounting-prev_step"
+          />
           <Button
             variant={'secondary'}
             className="self-start mt-auto"
             onClick={setOpenFunc}
-          >
-            {l10n.getString('onboarding-automatic_mounting-manual_mounting')}
-          </Button>
-
+            id="onboarding-automatic_mounting-manual_mounting"
+          />
           <BaseModal isOpen={isOpen}>
             <ManualMountingPageStayAlligned />
 
@@ -80,9 +70,8 @@ export function VerifyMountingStep({
               variant="primary"
               className="-top-44 left-8"
               onClick={setCloseFunc}
-            >
-              {l10n.getString('onboarding-stay_aligned-manual_mounting-done')}
-            </Button>
+              id="onboarding-stay_aligned-manual_mounting-done"
+            />
           </BaseModal>
           <ResetButton
             type={ResetType.Mounting}
