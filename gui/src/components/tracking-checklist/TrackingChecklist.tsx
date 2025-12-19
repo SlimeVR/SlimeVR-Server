@@ -316,6 +316,40 @@ const stepContentLookup: Record<
       </div>
     );
   },
+    [TrackingChecklistStepId.TOE_MOUNTING_CALIBRATION]: (step, { toggle }) => {
+    return (
+      <div className="space-y-2.5">
+        <Typography id="onboarding-automatic_mounting-mounting_reset-feet-step-0" />
+        <Typography id="onboarding-automatic_mounting-mounting_reset-feet-step-1" />
+        <div className="flex w-full gap-2">
+          <div className="flex flex-col bg-background-80 rounded-md w-full">
+            <img
+              src="/images/mounting/MountingFeets.webp"
+              className="h-44 object-contain"
+              alt="mounting reset ski pose"
+            />
+          </div>
+          <div className="flex flex-col bg-background-80 rounded-md w-full">
+            <img
+              src="/images/mounting/MountingFeetsSide.webp"
+              className="h-44 object-contain"
+              alt="mounting reset ski pose"
+            />
+          </div>
+        </div>
+        <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
+          <ResetButton type={ResetType.Mounting} group="toes" />
+          {step.ignorable && (
+            <Button
+              id="tracking_checklist-ignore"
+              variant="secondary"
+              onClick={() => toggle(step.id)}
+            />
+          )}
+        </div>
+      </div>
+    );
+  },
   [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]: (step, { toggle }) => {
     return (
       <>

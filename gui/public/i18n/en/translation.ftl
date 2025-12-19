@@ -1646,6 +1646,7 @@ preview-disabled_render = Rendering disabled
 toolbar-mounting_calibration = Mounting Calibration
 toolbar-mounting_calibration-default = Body
 toolbar-mounting_calibration-feet = Feet
+toolbar-mounting_calibration-toes = Toes
 toolbar-mounting_calibration-fingers = Fingers
 toolbar-drift_reset = Drift Reset
 toolbar-assigned_trackers = {$count} trackers assigned
