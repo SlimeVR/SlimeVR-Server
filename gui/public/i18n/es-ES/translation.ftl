@@ -33,6 +33,10 @@ tips-failed_webgl = No se pudo iniciar WebGL.
 
 ## Units
 
+unit-meter = Metro
+unit-foot = Pie
+unit-inch = Pulgada
+unit-cm = cm
 
 ## Body parts
 
@@ -245,6 +249,7 @@ navbar-settings = Configuración
 ## Biovision hierarchy recording
 
 bvh-start_recording = Grabar BVH
+bvh-stop_recording = Guardar grabación BVH
 bvh-recording = Grabando...
 bvh-save_title = Guardar grabación BVH
 
