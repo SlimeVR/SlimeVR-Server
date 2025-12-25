@@ -1474,6 +1474,9 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = Presione el botón de boot
 firmware_tool-flashbtn_step-description = Antes de pasar al siguiente paso, hay algunas cosas que debe hacer
 firmware_tool-flashbtn_step-board_SLIMEVR = Apague el sensor, retire la carcasa (si la hay), conecte un cable USB a esta computadora y, a continuación, realice uno de los siguientes pasos de acuerdo con la revisión de la placa SlimeVR:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Enciende el tracker mientras haces corto en el segundo pad rectangular de FLASH desde el borde en la parte superior de la placa con el protector metálico del microcontrolador. El LED del tracker debería hacer un parpadeo breve.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Enciende el tracker mientras haces corto en pad circular de FLASH en la parte superior de la placa con el protector metálico del microcontrolador. El LED del tracker debería hacer un parpadeo breve.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Enciende el tracker mientras pulsas el botón FLASH en la parte superior de la placa. El LED del tracker deberia hacer un parpadeo breve.
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de flashear, probablemente tendrá que poner el sensor en modo bootloader.
     La mayoría de las veces, esto significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo. Si el proceso de flasheo se agota al comienzo, probablemente significa que el sensor no estaba en modo bootloader. 
@@ -1617,8 +1620,25 @@ error_collection_modal-cancel = No quiero
 ## Tracking checklist section
 
 tracking_checklist-settings-close = Cerrar
+tracking_checklist-status-incomplete = ¡No estás listo para usar SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] ¡Tienes 1 advertencia!
+        [many] ¡Tienes { $count } advertencias!
+       *[other] { "" }
+    }
+tracking_checklist-status-complete = ¡Estás listo para usar SlimeVR!
+tracking_checklist-MOUNTING_CALIBRATION = Realizar una calibración de montura
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Realizar una calibración de montura de los pies
+tracking_checklist-FULL_RESET = Realizar un reinicio completo
+tracking_checklist-FULL_RESET-desc = Algunos trackers necesitan realizar un reinicio.
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR no se está ejecutando
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR no se esta ejecutando. ¿Lo estas usando para VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Abrir SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibra tus trackers
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = No realizaste una calibración para los trackers. Por favor deja reposar tus trackers (resaltados en amarillo) en una superficie estable por unos segundos.
+tracking_checklist-TRACKER_ERROR = Trackers con Errores
+tracking_checklist-TRACKER_ERROR-desc = Algunos de tus trackers tienen un error. Por favor reinicia el tracker resaltado en amarillo.
 tracking_checklist-ignore = Ignorar
 toolbar-mounting_calibration-feet = Pies
 toolbar-mounting_calibration-fingers = Dedos
