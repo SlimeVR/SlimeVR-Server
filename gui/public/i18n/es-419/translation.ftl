@@ -1347,6 +1347,28 @@ onboarding-automatic_proportions-smol_warning-cancel = Volver
 
 onboarding-user_height-title = ¿Cuál es tu altura?
 onboarding-user_height-description = Necesitamos tu altura para calcular tus proporciones corporales y representar tus movimientos de manera precisa. Puedes dejar que SlimeVR lo calcule, o puedes ingresar tu altura manualmente.
+onboarding-user_height-need_head_tracker = Un casco y controles con rastreo posicional son requeridos para realizar la calibración.
+onboarding-user_height-calculate = Calcular mi altura automáticamente
+onboarding-user_height-next_step = Continuar y guardar
+onboarding-user_height-manual-proportions = Proporciones Manuales
+onboarding-user_height-calibration-title = Progreso de Calibración
+onboarding-user_height-calibration-RECORDING_FLOOR = Toca el suelo con la punta de tu control
+onboarding-user_height-calibration-WAITING_FOR_RISE = Vuelve a pararte
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Vuelve a pararte y mira hacia adelante
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Asegúrate de que tu cabeza este derecha
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = No mires al suelo
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = No mires demasiado arriba
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Asegúrate que el control este apuntando hacia abajo
+onboarding-user_height-calibration-RECORDING_HEIGHT = ¡Vuelve a pararte y no te muevas!
+onboarding-user_height-calibration-DONE = ¡Éxito!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Calibración agotada, inténtalo de nuevo.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = La altura del usuario detectada es demasiado alta, inténtalo de nuevo.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = La altura del usuario detectada es demasiado baja. Asegúrate de pararte derecho y mirar hacia el frente al final de la calibración.
+onboarding-user_height-calibration-error = Calibración Fallida
+onboarding-user_height-manual-tip = Mientras ajustas tu altura, intenta poses distintas y ve como el esqueleto se ajusta a tu cuerpo.
+onboarding-user_height-reset-warning =
+    <b>Peligro:</b> Esto reiniciará tus proporciones para ser basadas en tu altura.
+    ¿Seguro quieres hacer esto?
 
 ## Stay Aligned setup
 
@@ -1385,6 +1407,7 @@ onboarding-stay_aligned-done = Hecho
 ## Home
 
 home-no_trackers = No hay sensores detectados o asignados
+home-settings = Ajustes de la Página de Inicio
 home-settings-close = Cerrar
 
 ## Trackers Still On notification
@@ -1597,5 +1620,8 @@ tracking_checklist-settings-close = Cerrar
 tracking_checklist-STEAMVR_DISCONNECTED-open = Abrir SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibra tus trackers
 tracking_checklist-ignore = Ignorar
+toolbar-mounting_calibration-feet = Pies
+toolbar-mounting_calibration-fingers = Dedos
+toolbar-drift_reset = Reinicio de Desviación
 toolbar-assigned_trackers = { $count } trackers asignados
 toolbar-unassigned_trackers = { $count } trackers sin asignar
