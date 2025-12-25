@@ -256,6 +256,10 @@ reset-mounting = Reinicio de montura
 reset-mounting-feet = Restablecer montura de los pies
 reset-mounting-fingers = Restablecer montura de los dedos
 reset-yaw = Reinicio horizontal
+reset-error-no_feet_tracker = Tracker de pie sin asignar
+reset-error-no_fingers_tracker = Tracker de dedos sin asignar
+reset-error-mounting-need_full_reset = Es necesario un reinicio completo antes de montar
+reset-error-yaw-need_full_reset = Es necesario un reinicio completo antes del reinicio horizontal
 
 ## Serial detection stuff
 
@@ -275,10 +279,12 @@ navbar-trackers_assign = Asignación de sensores
 navbar-mounting = Calibración de montura
 navbar-onboarding = Asistente de configuración
 navbar-settings = Ajustes
+navbar-connect_trackers = Conectar Trackers
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Grabar BVH
+bvh-stop_recording = Guardar grabación BVH
 bvh-recording = Grabando...
 bvh-save_title = Guardar grabación BVH
 
@@ -422,6 +428,8 @@ tracker-settings-update-up_to_date = Actualizado
 tracker-settings-update-blocked = Actualización no disponible. No hay otras versiones disponibles
 tracker-settings-update = Actualizar ahora
 tracker-settings-update-title = Versión del firmware
+tracker-settings-current-version = Actual
+tracker-settings-latest-version = Último
 
 ## Tracker part card info
 
@@ -499,6 +507,8 @@ settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
 settings-sidebar-appearance = Apariencia
+settings-sidebar-home = Pantalla de Inicio
+settings-sidebar-checklist = Lista de Tracking
 settings-sidebar-notifications = Notificaciones
 settings-sidebar-behavior = Comportamiento
 settings-sidebar-firmware-tool = Herramienta de firmware DIY
@@ -929,9 +939,12 @@ settings-utils-advanced-open_logs-label = Abrir carpeta
 
 ## Home Screen
 
+settings-home-list-layout-desc = Selecciona uno de los posibles diseños de la pantalla de inicio
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Pasos Activos
+settings-tracking_checklist-active_steps-desc = Lista de todos los pasos en la lista de tracking. Puedes elegir desactivar pasos específicos.
 
 ## Setup/onboarding menu
 
@@ -948,6 +961,13 @@ onboarding-setup_warning-cancel = Continuar configuración
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Volver a la introducción
+onboarding-wifi_creds-v2 = Trackers utilizando Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    La mayoría de trackers (como los trackers oficiales de SlimeVR) utilizan Wi-Fi para conectar al servidor.
+    Por favor utiliza las credenciales de la red Wi-Fi donde tu dispositivo esta actualmente conectado.
+    
+    ¡Asegúrate de utilizar una conexión Wi-Fi 2.4Ghz para tus trackers!
 onboarding-wifi_creds-skip = Saltar ajustes de Wi-Fi
 onboarding-wifi_creds-submit = ¡Enviar!
 onboarding-wifi_creds-ssid =
@@ -957,6 +977,10 @@ onboarding-wifi_creds-ssid-required = Se requiere el nombre del Wi-Fi
 onboarding-wifi_creds-password =
     .label = Contraseña
     .placeholder = Ingresa la contraseña
+onboarding-wifi_creds-dongle-title = Trackers utilizando un dongle
+onboarding-wifi_creds-dongle-description = ¡Si tus trackers llegaron con un dongle, conéctalo a tu dispositivo y deberías estar listo para usar!
+onboarding-wifi_creds-dongle-wip = Esta sección es un trabajo en progreso. Una página dedicada para administrar trackers que se conectan via dongle sera hecha pronto.
+onboarding-wifi_creds-dongle-continue = Continuar con un dongle
 
 ## Mounting setup
 
@@ -1062,6 +1086,7 @@ onboarding-assignment_tutorial-done = ¡Puse las correas y stickers!
 onboarding-assign_trackers-back = Volver a las credenciales Wi-Fi
 onboarding-assign_trackers-title = Asignación de sensores
 onboarding-assign_trackers-description = Debes escoger dónde van los sensores. Has clic en la ubicación donde quieras colocar un sensor
+onboarding-assign_trackers-unassign_all = Des-asignar todos los trackers
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1207,6 +1232,8 @@ onboarding-automatic_mounting-done-restart = Volver al inicio
 onboarding-automatic_mounting-mounting_reset-title = Reinicio de montura
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Arrodíllate en una posición de «esquiar» con tus piernas dobladas, la parte superior de tu cuerpo inclinada hacia adelante, y tus brazos doblados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Presiona el botón «Reinicio de montura» y espera 3 segundos hasta que se reinicie la montura.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Párate de puntillas con ambos pies apuntando hacia el frente. Alternativamente puedes hacerlo sentándote en una silla.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Presiona el botón "Calibración de pies" y espera por 3 segundos hasta que la orientación de los trackers se reinicie.
 onboarding-automatic_mounting-preparation-title = Preparación
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Presiona el botón «Reinicio completo».
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Párate recto con los brazos a tus lados. Asegúrate de mirar hacia adelante.
@@ -1218,6 +1245,7 @@ onboarding-automatic_mounting-return-home = Hecho
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Regresar a Proporciones Escaladas
 onboarding-manual_proportions-title = Proporciones de cuerpo manuales
 onboarding-manual_proportions-fine_tuning_button = Ajustar automáticamente las proporciones
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor conecte un visor VR para utilizar el ajuste automático
@@ -1317,6 +1345,8 @@ onboarding-automatic_proportions-smol_warning-cancel = Volver
 
 ## User height calibration
 
+onboarding-user_height-title = ¿Cuál es tu altura?
+onboarding-user_height-description = Necesitamos tu altura para calcular tus proporciones corporales y representar tus movimientos de manera precisa. Puedes dejar que SlimeVR lo calcule, o puedes ingresar tu altura manualmente.
 
 ## Stay Aligned setup
 
