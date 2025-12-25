@@ -1639,7 +1639,35 @@ tracking_checklist-TRACKERS_REST_CALIBRATION = Calibra tus trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = No realizaste una calibración para los trackers. Por favor deja reposar tus trackers (resaltados en amarillo) en una superficie estable por unos segundos.
 tracking_checklist-TRACKER_ERROR = Trackers con Errores
 tracking_checklist-TRACKER_ERROR-desc = Algunos de tus trackers tienen un error. Por favor reinicia el tracker resaltado en amarillo.
+tracking_checklist-VRCHAT_SETTINGS = Configurar ajustes de VRChat
+tracking_checklist-VRCHAT_SETTINGS-desc = ¡Tienes ajustes mal puestos en VRChat! Esto puede impactar negativamente tu tracking.
+tracking_checklist-VRCHAT_SETTINGS-open = Ir a Advertencias de VRChat
+tracking_checklist-UNASSIGNED_HMD = Casco VR sin asignar a Cabeza
+tracking_checklist-UNASSIGNED_HMD-desc = El casco VR debería estar asignado como un tracker de cabeza.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Cambia tu perfil de red
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Tu perfil de red esta actualmente configurado como Público ({ $adapters }).
+            Esto no es recomendado para el correcto funcionamiento de SlimeVR.
+            <PublicFixLink>Ve como arreglarlo aquí</PublicFixLink>
+        [many]
+            Algunos de tus adaptadores de red están configurados como públicos:
+            { $adapters }
+            Esto no es recomendado para el correcto funcionamiento de SlimeVR.
+            <PublicFixLink>Ve como arreglarlo aquí</PublicFixLink>
+       *[other] { "" }
+    }
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Abrir Panel de Control
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurar Stay Aligned
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Graba las poses de Stay Aligned para reducir el desvío
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Abrir el ayudante de Stay Aligned
 tracking_checklist-ignore = Ignorar
+preview-mocap_mode_soon = Modo Mocap (Pronto™)
+preview-disable_render = Desactivar renderizado
+preview-disabled_render = Renderizado desactivado
+toolbar-mounting_calibration = Calibración de montura
+toolbar-mounting_calibration-default = Cuerpo
 toolbar-mounting_calibration-feet = Pies
 toolbar-mounting_calibration-fingers = Dedos
 toolbar-drift_reset = Reinicio de Desviación
