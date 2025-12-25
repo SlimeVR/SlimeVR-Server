@@ -33,6 +33,10 @@ tips-failed_webgl = Fallo al inicializar WebGL.
 
 ## Units
 
+unit-meter = Metro
+unit-foot = Pie
+unit-inch = Pulgada
+unit-cm = cm
 
 ## Body parts
 
