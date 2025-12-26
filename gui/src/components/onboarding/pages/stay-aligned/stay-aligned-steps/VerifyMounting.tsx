@@ -17,11 +17,11 @@ export function VerifyMountingStep({
   function OpenFunc() {
     setOpen(true);
   }
-  function CloseFunc() {
+  function ProgressFunc() {
     setOpen(false);
     nextStep();
   }
-  function ProgressManualFunc() {
+  function CloseFunc() {
     setOpen(false);
   }
 
@@ -69,20 +69,20 @@ export function VerifyMountingStep({
           <BaseModal
             isOpen={isOpen}
             closeable={true}
-            onRequestClose={ProgressManualFunc}
+            onRequestClose={CloseFunc}
           >
             <ManualMountingPageStayAlligned />
             <Button
               variant="primary"
               className="-top-44 left-8"
-              onClick={CloseFunc}
+              onClick={ProgressFunc}
               id="onboarding-stay_aligned-manual_mounting-done"
             />
           </BaseModal>
           <ResetButton
             type={ResetType.Mounting}
             group="default"
-            onReseted={CloseFunc}
+            onReseted={ProgressFunc}
           />
         </div>
       </div>
