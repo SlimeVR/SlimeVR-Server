@@ -397,7 +397,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		} catch (e: Exception) {
 			e.printStackTrace()
 		} finally {
-			Util.close(socket)
+			if (::socket.isInitialized) {
+				Util.close(socket)
+			}
 		}
 	}
 
