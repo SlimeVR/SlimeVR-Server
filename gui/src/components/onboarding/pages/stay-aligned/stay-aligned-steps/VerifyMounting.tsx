@@ -13,16 +13,16 @@ export function VerifyMountingStep({
 }: VerticalStepComponentProps) {
   const { isMobile } = useBreakpoint('mobile');
   const [isOpen, setOpen] = useState(false);
-  const [closeable, setCloseable] = useState(false);
 
-  function setOpenFunc() {
-    setCloseable(false);
+  function OpenFunc() {
     setOpen(true);
   }
-  function setCloseFunc() {
-    setCloseable(true);
+  function CloseFunc() {
     setOpen(false);
     nextStep();
+  }
+  function ProgressManualFunc() {
+    setOpen(false);
   }
 
   return (
@@ -63,23 +63,26 @@ export function VerifyMountingStep({
           <Button
             variant={'secondary'}
             className="self-start mt-auto"
-            onClick={setOpenFunc}
+            onClick={OpenFunc}
             id="onboarding-automatic_mounting-manual_mounting"
           />
-          <BaseModal isOpen={isOpen} closeable={closeable}>
+          <BaseModal
+            isOpen={isOpen}
+            closeable={true}
+            onRequestClose={ProgressManualFunc}
+          >
             <ManualMountingPageStayAlligned />
-
             <Button
               variant="primary"
               className="-top-44 left-8"
-              onClick={setCloseFunc}
+              onClick={CloseFunc}
               id="onboarding-stay_aligned-manual_mounting-done"
             />
           </BaseModal>
           <ResetButton
             type={ResetType.Mounting}
             group="default"
-            onReseted={setCloseFunc}
+            onReseted={CloseFunc}
           />
         </div>
       </div>
