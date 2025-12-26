@@ -14,6 +14,7 @@ import {
   SettingsResponseT,
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
+  HIDSettingsT,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -101,6 +102,9 @@ export type SettingsForm = {
   };
   resetsSettings: ResetSettingsForm;
   stayAligned: StayAlignedSettingsForm;
+  hidSettings: {
+    trackersOverHID: boolean;
+  };
 };
 
 const defaultValues: SettingsForm = {
@@ -156,6 +160,7 @@ const defaultValues: SettingsForm = {
   legTweaks: { correctionStrength: 0.3 },
   resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
+  hidSettings: { trackersOverHID: false },
 };
 
 export function GeneralSettings() {
@@ -277,6 +282,10 @@ export function GeneralSettings() {
 
     settings.stayAligned = serializeStayAlignedSettings(values.stayAligned);
 
+    const hidSettings = new HIDSettingsT();
+    hidSettings.trackersOverHid = values.hidSettings.trackersOverHID;
+    settings.hidSettings = hidSettings;
+
     if (values.resetsSettings) {
       settings.resetsSettings = loadResetSettings(values.resetsSettings);
     }
@@ -390,6 +399,12 @@ export function GeneralSettings() {
       formData.stayAligned = deserializeStayAlignedSettings(
         settings.stayAligned
       );
+    }
+
+    if (settings.hidSettings) {
+      formData.hidSettings = {
+        trackersOverHID: settings.hidSettings.trackersOverHid,
+      };
     }
 
     reset({ ...getValues(), ...formData });
@@ -688,6 +703,28 @@ export function GeneralSettings() {
             <MagnetometerToggleSetting
               settingType="general"
               id="mechanics-magnetometer"
+            />
+            <div className="flex flex-col pt-5 pb-3">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-trackers_over_usb'
+                )}
+              </Typography>
+              <Localized
+                id="settings-general-tracker_mechanics-trackers_over_usb-description"
+                elems={{ b: <b /> }}
+              >
+                <Typography />
+              </Localized>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="hidSettings.trackersOverHID"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-trackers_over_usb-enabled-label'
+              )}
             />
           </>
         </SettingsPagePaneLayout>
