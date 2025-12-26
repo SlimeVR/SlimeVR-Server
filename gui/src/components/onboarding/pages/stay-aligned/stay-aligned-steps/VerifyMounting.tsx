@@ -66,11 +66,7 @@ export function VerifyMountingStep({
             onClick={OpenFunc}
             id="onboarding-automatic_mounting-manual_mounting"
           />
-          <BaseModal
-            isOpen={isOpen}
-            closeable={true}
-            onRequestClose={CloseFunc}
-          >
+          <BaseModal isOpen={isOpen} onRequestClose={CloseFunc}>
             <ManualMountingPageStayAlligned />
             <Button
               variant="primary"
