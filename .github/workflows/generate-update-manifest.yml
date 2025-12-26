@@ -20,7 +20,7 @@ jobs:
         run: |
           npx @slimevr/update-manifest-generator@latest
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: "update-manifest.json"
           path: ./update-manifest.json

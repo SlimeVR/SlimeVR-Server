@@ -39,12 +39,18 @@ public class DataFeedBuilder {
 			? fbb.createString(device.getManufacturer())
 			: 0;
 
+		int firmwareDateOffset = device.getFirmwareDate() != null
+			? fbb.createString(device.getFirmwareDate())
+			: 0;
+
 		int hardwareIdentifierOffset = fbb.createString(device.getHardwareIdentifier());
 
 		HardwareInfo.startHardwareInfo(fbb);
 		HardwareInfo.addFirmwareVersion(fbb, nameOffset);
 		HardwareInfo.addManufacturer(fbb, manufacturerOffset);
 		HardwareInfo.addHardwareIdentifier(fbb, hardwareIdentifierOffset);
+
+		HardwareInfo.addFirmwareDate(fbb, firmwareDateOffset);
 
 		if (device instanceof UDPDevice udpDevice) {
 			var address = udpDevice.getIpAddress().getAddress();
@@ -68,6 +74,7 @@ public class DataFeedBuilder {
 
 		HardwareInfo.addMcuId(fbb, device.getMcuType().getSolarType());
 		HardwareInfo.addOfficialBoardType(fbb, device.getBoardType().getSolarType());
+
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
 
@@ -310,6 +317,9 @@ public class DataFeedBuilder {
 			HardwareStatus.addRssi(fbb, (short) tracker.getSignalStrength().floatValue());
 		}
 
+		if (tracker.getBatteryRemainingRuntime() != null) {
+			HardwareStatus.addBatteryRuntimeEstimate(fbb, tracker.getBatteryRemainingRuntime());
+		}
 
 		int hardwareDataOffset = HardwareStatus.endHardwareStatus(fbb);
 		int hardwareInfoOffset = DataFeedBuilder.createHardwareInfo(fbb, device);

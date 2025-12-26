@@ -103,7 +103,7 @@ jobs:
 
       - if: startsWith(matrix.os, 'windows')
         name: Upload a Build Artifact (Windows)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           # Artifact name
           name: ${{ format('SlimeVR-GUI-Windows-{0}', env.BUILD_ARCH) }}
@@ -112,7 +112,7 @@ jobs:
 
       - if: startsWith(matrix.os, 'ubuntu')
         name: Upload a Build Artifact (Linux)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           # Artifact name
           name: ${{ format('SlimeVR-GUI-Linux-{0}', env.BUILD_ARCH) }}
@@ -121,7 +121,7 @@ jobs:
 
       - if: matrix.os == 'macos-latest'
         name: Upload a Build Artifact (macOS)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           # Artifact name
           name: SlimeVR-GUI-macOS
