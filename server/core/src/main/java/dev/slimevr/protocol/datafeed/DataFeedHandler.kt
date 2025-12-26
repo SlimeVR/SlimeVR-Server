@@ -118,8 +118,8 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 		val currTime = System.currentTimeMillis()
 
 		this.api.apiServers.forEach(
-			Consumer { server: ProtocolAPIServer? ->
-				server!!.apiConnections.forEach { conn: GenericConnection ->
+			Consumer { server: ProtocolAPIServer ->
+				server.apiConnections.forEach { conn: GenericConnection ->
 					var fbb: FlatBufferBuilder? = null
 					val feedList = conn.context.dataFeedList
 					synchronized(feedList) {

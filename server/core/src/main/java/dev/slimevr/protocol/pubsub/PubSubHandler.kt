@@ -122,8 +122,8 @@ class PubSubHandler(private val api: ProtocolAPI) : ProtocolHandler<PubSubHeader
 		val finalSubHandle = subHandle
 
 		this.api.apiServers.forEach(
-			Consumer { server: ProtocolAPIServer? ->
-				server!!.apiConnections.forEach { conn: GenericConnection ->
+			Consumer { server: ProtocolAPIServer ->
+				server.apiConnections.forEach { conn: GenericConnection ->
 					// Make sure that we are not sending a message to ourselves
 					// And check that the receiver has subscribed to the topic
 					if (conn.connectionId != c.connectionId &&

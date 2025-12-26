@@ -110,8 +110,8 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		this.api
 			.apiServers
 			.forEach(
-				Consumer { server: ProtocolAPIServer? ->
-					server!!
+				Consumer { server: ProtocolAPIServer ->
+					server
 						.apiConnections
 						.forEach(action)
 				},

@@ -76,8 +76,8 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		this.api
 			.apiServers
 			.forEach(
-				Consumer { server: ProtocolAPIServer? ->
-					server!!
+				Consumer { server: ProtocolAPIServer ->
+					server
 						.apiConnections
 						.forEach { conn: GenericConnection ->
 							conn.send(fbb.dataBuffer())
@@ -249,8 +249,8 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		this.api
 			.apiServers
 			.forEach(
-				Consumer { server: ProtocolAPIServer? ->
-					server!!
+				Consumer { server: ProtocolAPIServer ->
+					server
 						.apiConnections
 						.filter { conn: GenericConnection -> conn.context.useSerial }
 						.forEach(action)

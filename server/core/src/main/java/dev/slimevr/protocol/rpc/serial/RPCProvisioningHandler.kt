@@ -57,8 +57,8 @@ class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) :
 		this.api
 			.apiServers
 			.forEach(
-				Consumer { server: ProtocolAPIServer? ->
-					server!!
+				Consumer { server: ProtocolAPIServer ->
+					server
 						.apiConnections
 						.filter { conn: GenericConnection -> conn.context.useProvisioning }
 						.forEach(action)
