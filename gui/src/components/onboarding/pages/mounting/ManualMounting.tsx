@@ -142,13 +142,10 @@ export function ManualMountingPage() {
 
 export function ManualMountingPageStayAlligned() {
   const { isMobile } = useBreakpoint('mobile');
-  const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
   const { config } = useConfig();
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
-
-  applyProgress(0.7);
 
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
@@ -243,5 +240,3 @@ export function ManualMountingPageStayAlligned() {
     </>
   );
 }
-
-//251

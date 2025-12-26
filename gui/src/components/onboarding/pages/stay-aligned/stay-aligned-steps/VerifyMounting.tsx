@@ -6,7 +6,7 @@ import { ResetButton } from '@/components/home/ResetButton';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
 import { BaseModal } from '@/components/commons/BaseModal';
-import { ManualMountingPageStayAlligned } from '../../mounting/ManualMounting';
+import { ManualMountingPageStayAlligned } from '@/components/onboarding/pages/mounting/ManualMounting';
 export function VerifyMountingStep({
   nextStep,
   prevStep,
