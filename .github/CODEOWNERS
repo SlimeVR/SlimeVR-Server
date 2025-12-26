@@ -10,7 +10,7 @@
 /pnpm-workspace.yaml @loucass003
 
 # loucass003 and Erimel responsible for i18n
-/gui/public/i18n/ @loucass003 @Erimelowo
+/gui/public/i18n/ @loucass003 @Erimelowo @ImSapphire
 /gui/src/i18n/ @loucass003 @Erimelowo
 /l10n.toml @loucass003 @Erimelowo
 
