@@ -141,7 +141,7 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 	}
 
 	@Override
-	public java.util.stream.Stream<GenericConnection> getAPIConnections() {
+	public java.util.stream.Stream<GenericConnection> getApiConnections() {
 		return this.selector
 			.keys()
 			.stream()

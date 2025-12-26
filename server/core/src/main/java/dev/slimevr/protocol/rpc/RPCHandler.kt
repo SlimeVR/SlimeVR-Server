@@ -6,15 +6,15 @@ import dev.slimevr.config.config
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.ProtocolHandler
-import dev.slimevr.protocol.datafeed.DataFeedBuilder
+import dev.slimevr.protocol.datafeed.createTrackerId
 import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler
 import dev.slimevr.protocol.rpc.firmware.RPCFirmwareUpdateHandler
 import dev.slimevr.protocol.rpc.games.vrchat.RPCVRChatHandler
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler
-import dev.slimevr.protocol.rpc.settings.RPCSettingsBuilder
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
+import dev.slimevr.protocol.rpc.settings.createSettingsResponse
 import dev.slimevr.protocol.rpc.setup.RPCHandshakeHandler
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler
 import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
@@ -460,7 +460,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		}
 
 		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
-		val trackerId = DataFeedBuilder.createTrackerId(fbb, tracker)
+		val trackerId = createTrackerId(fbb, tracker)
 		val response = MagToggleResponse.createMagToggleResponse(
 			fbb,
 			trackerId,
@@ -499,7 +499,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		// Don't apply magnetometer setting if use magnetometer global setting is not enabled
 		if (!api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers) {
 			val fbb = FlatBufferBuilder(32)
-			val trackerId = DataFeedBuilder.createTrackerId(fbb, tracker)
+			val trackerId = createTrackerId(fbb, tracker)
 			val response = MagToggleResponse.createMagToggleResponse(
 				fbb,
 				trackerId,
@@ -516,7 +516,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			}
 
 			val fbb = FlatBufferBuilder(32)
-			val trackerId = DataFeedBuilder.createTrackerId(fbb, tracker)
+			val trackerId = createTrackerId(fbb, tracker)
 			val response = MagToggleResponse.createMagToggleResponse(
 				fbb,
 				trackerId,
@@ -607,7 +607,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 	fun sendSettingsChangedResponse(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		val fbb = FlatBufferBuilder(32)
-		val settings = RPCSettingsBuilder.createSettingsResponse(fbb, api.server)
+		val settings = createSettingsResponse(fbb, api.server)
 		val outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())

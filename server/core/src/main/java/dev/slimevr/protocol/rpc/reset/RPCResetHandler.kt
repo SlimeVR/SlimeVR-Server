@@ -108,11 +108,11 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 
 	fun forAllListeners(action: Consumer<in GenericConnection?>?) {
 		this.api
-			.getAPIServers()
+			.apiServers
 			.forEach(
-				Consumer { server: ProtocolAPIServer? ->
-					server!!
-						.getAPIConnections()
+				Consumer { server: ProtocolAPIServer ->
+					server
+						.apiConnections
 						.forEach(action)
 				},
 			)
