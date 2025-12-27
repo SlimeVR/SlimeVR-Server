@@ -669,7 +669,7 @@ settings-general-fk_settings-skeleton_settings-extended_spine_model = Modelo ext
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Modelo extendido del pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Modelo extendido de la rodilla
 settings-general-fk_settings-skeleton_settings-ratios = Radios del esqueleto
-settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de los ajustes del esqueleto. Podes llegar a necesitar reajustar tus proporciones después de cambiar estos valores.
+settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de los ajustes del esqueleto. Podrías llegar a necesitar reajustar tus proporciones después de cambiar estos valores.
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Imputar de la cintura al pecho hasta la cadera
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Imputar de la cintura al pecho hasta las piernas
 settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Imputar de la cadera al pecho hasta las piernas
@@ -993,7 +993,7 @@ onboarding-wifi_creds-dongle-continue = Continuar con un dongle
 
 onboarding-reset_tutorial-back = Volver a la calibración de montura
 onboarding-reset_tutorial = Reiniciar tutorial
-onboarding-reset_tutorial-explanation = Mientras estés usando tus trackers, estos pueden empezar a desalinearse por el drift horizontal del IMU, o porque los moviste físicamente. Hay varias formas de arreglar este tipo de problemas.
+onboarding-reset_tutorial-explanation = Mientras estés usando tus trackers, estos pueden empezar a desalinearse por el desvío horizontal del IMU, o porque los moviste físicamente. Hay varias formas de arreglar este tipo de problemas.
 onboarding-reset_tutorial-skip = Saltar paso
 # Cares about multiline
 onboarding-reset_tutorial-0 =
@@ -1004,8 +1004,8 @@ onboarding-reset_tutorial-0 =
 onboarding-reset_tutorial-1 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio completo.
     
-    Se requiere que estas de forma parada (pose en i). Esto tiene un delay de 3 segundos (configurable) antes de que actualmente suceda.
-    Esto reinicia completamente la posición y rotación de todos tus sensores, debería de arreglar la mayoría de tus problemas.
+    Se requiere que estés de pie (pose en i). Esto tiene una demora de 3 segundos (configurable) antes de que realmente suceda.
+    Esto reinicia completamente la posición y rotación de todos tus trackers. Debería de arreglar la mayoría de los problemas.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio de montura.
@@ -1499,7 +1499,7 @@ firmware_tool-flash_method_serial-no_devices = No se han detectado dispositivos 
 firmware_tool-build_step = Compilando
 firmware_tool-build_step-description = El firmware se está compilando, por favor espere
 firmware_tool-flashing_step = Flasheando
-firmware_tool-flashing_step-description = Sus sensores se están flasheando, por favor siga las instrucciones en la pantalla
+firmware_tool-flashing_step-description = Sus trackers se están flasheando, por favor siga las instrucciones en la pantalla
 firmware_tool-flashing_step-warning-v2 = No desconectes o apagues el tracker durante el proceso de subida a menos que se te indique, puede causar que tu placa quede inutilizable.
 firmware_tool-flashing_step-flash_more = Flashear más sensores
 firmware_tool-flashing_step-exit = Salir
