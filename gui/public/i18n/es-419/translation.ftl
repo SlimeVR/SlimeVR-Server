@@ -10,7 +10,7 @@
 websocket-connecting = Cargando...
 websocket-connection_lost = ¡El servidor falló!
 websocket-connection_lost-desc = Parece que el servidor de SlimeVR ha dejado de funcionar. Revise los registros y reinicie el programa.
-websocket-timedout = No se ha podido conectar al servidor.
+websocket-timedout = No se ha podido conectar al servidor
 websocket-timedout-desc = Parece que el servidor de SlimeVR ha dejado de funcionar o se agotó el tiempo de espera de la conexión. Revise los registros y reinicie el programa
 websocket-error-close = Salir de SlimeVR
 websocket-error-logs = Abrir la carpeta de registros
@@ -118,6 +118,8 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = Guante SlimeVR Dev IMU
 board_type-GESTURES = Gestos
 board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = nRF Genérico
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
