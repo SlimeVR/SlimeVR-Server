@@ -115,6 +115,9 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = Guante SlimeVR Dev IMU
+board_type-GESTURES = Gestos
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = nRF Genérico
 
 ## Proportions
 
@@ -430,6 +433,7 @@ tracker-settings-update = Actualizar ahora
 tracker-settings-update-title = Versión del firmware
 tracker-settings-current-version = Actual
 tracker-settings-latest-version = Último
+tracker-settings-build-date = Fecha de fabricación
 
 ## Tracker part card info
 
@@ -940,6 +944,8 @@ settings-utils-advanced-open_logs-label = Abrir carpeta
 ## Home Screen
 
 settings-home-list-layout-desc = Selecciona uno de los posibles diseños de la pantalla de inicio
+settings-home-list-layout-grid = Cuadrícula
+settings-home-list-layout-table = Tabla
 
 ## Tracking Checlist
 
@@ -1619,6 +1625,8 @@ error_collection_modal-cancel = No quiero
 
 ## Tracking checklist section
 
+tracking_checklist = Lista de Tracking
+tracking_checklist-settings = Ajustes de la Lista de Tracking
 tracking_checklist-settings-close = Cerrar
 tracking_checklist-status-incomplete = ¡No estás listo para usar SlimeVR!
 tracking_checklist-status-partial =
