@@ -943,6 +943,7 @@ settings-utils-advanced-open_logs-label = Abrir carpeta
 
 ## Home Screen
 
+settings-home-list-layout = Diseño de la lista de Trackers
 settings-home-list-layout-desc = Selecciona uno de los posibles diseños de la pantalla de inicio
 settings-home-list-layout-grid = Cuadrícula
 settings-home-list-layout-table = Tabla
