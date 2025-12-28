@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -140,7 +140,11 @@ export function ManualMountingPage() {
   );
 }
 
-export function ManualMountingPageStayAlligned() {
+export function ManualMountingPageStayAlligned({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const { isMobile } = useBreakpoint('mobile');
   const { sendRPCPacket } = useWebsocketAPI();
   const { config } = useConfig();
@@ -225,6 +229,7 @@ export function ManualMountingPageStayAlligned() {
             <Localized id="tips-find_tracker">
               <TipBox />
             </Localized>
+            {children}
           </div>
           <div className="flex flex-row justify-center">
             <BodyAssignment

@@ -67,14 +67,17 @@ export function VerifyMountingStep({
             id="onboarding-automatic_mounting-manual_mounting"
           />
           <BaseModal isOpen={isOpen} onRequestClose={CloseFunc}>
-            <ManualMountingPageStayAlligned />
-            <Button
-              variant="primary"
-              className="-top-44 left-8"
-              onClick={ProgressFunc}
-              id="onboarding-stay_aligned-manual_mounting-done"
-            />
+            <ManualMountingPageStayAlligned>
+              <div className="flex flex-row gap-3 mt-auto">
+                <Button
+                  variant="primary"
+                  onClick={ProgressFunc}
+                  id="onboarding-stay_aligned-manual_mounting-done"
+                />
+              </div>
+            </ManualMountingPageStayAlligned>
           </BaseModal>
+
           <ResetButton
             type={ResetType.Mounting}
             group="default"
