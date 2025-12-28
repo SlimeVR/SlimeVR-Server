@@ -238,7 +238,7 @@ export function MountingSelectionMenu({
       shouldCloseOnEsc
       onRequestClose={onClose}
       overlayClassName={classNames(
-        'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full bg-background-90 bg-opacity-90 z-20'
+        'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full bg-background-90 bg-opacity-90 z-50'
       )}
       className={classNames(
         'focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent outline-none mt-20 z-10'
