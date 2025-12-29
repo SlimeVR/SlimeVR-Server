@@ -60,7 +60,7 @@ export function VerifyMountingStep({
             onClick={() => setOpen(true)}
             id="onboarding-automatic_mounting-manual_mounting"
           />
-          <BaseModal isOpen={isOpen} onRequestClose={CloseFunc}>
+          <BaseModal isOpen={isOpen} onRequestClose={() => setOpen(false)}>
             <ManualMountingPageStayAligned>
               <div className="flex flex-row gap-3 mt-auto">
                 <Button
