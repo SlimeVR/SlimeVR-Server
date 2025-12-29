@@ -75,7 +75,7 @@ export function VerifyMountingStep({
           <ResetButton
             type={ResetType.Mounting}
             group="default"
-            onReseted={ProgressFunc}
+            onReseted={goNextStep}
           />
         </div>
       </div>
