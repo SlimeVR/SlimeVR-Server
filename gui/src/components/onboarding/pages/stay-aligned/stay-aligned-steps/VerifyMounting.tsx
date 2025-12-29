@@ -13,8 +13,10 @@ export function VerifyMountingStep({
 }: VerticalStepComponentProps) {
   const { isMobile } = useBreakpoint('mobile');
   const [isOpen, setOpen] = useState(false);
+  const [disableMounting, setDisableMounting] = useState(false);
 
   const goNextStep = () => {
+    setDisableMounting(false);
     setOpen(false);
     nextStep();
   };
@@ -55,6 +57,7 @@ export function VerifyMountingStep({
             id="onboarding-automatic_mounting-prev_step"
           />
           <Button
+            disabled={disableMounting}
             variant={'secondary'}
             className="self-start mt-auto"
             onClick={() => setOpen(true)}
@@ -73,6 +76,7 @@ export function VerifyMountingStep({
           </BaseModal>
 
           <ResetButton
+            onClick={() => setDisableMounting(true)}
             type={ResetType.Mounting}
             group="default"
             onReseted={goNextStep}
