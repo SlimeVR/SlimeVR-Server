@@ -65,7 +65,7 @@ export function VerifyMountingStep({
               <div className="flex flex-row gap-3 mt-auto">
                 <Button
                   variant="primary"
-                  onClick={ProgressFunc}
+                  onClick={goNextStep}
                   id="onboarding-stay_aligned-manual_mounting-done"
                 />
               </div>
