@@ -67,7 +67,7 @@ export function VerifyMountingStep({
             id="onboarding-automatic_mounting-manual_mounting"
           />
           <BaseModal isOpen={isOpen} onRequestClose={CloseFunc}>
-            <ManualMountingPageStayAlligned>
+            <ManualMountingPageStayAligned>
               <div className="flex flex-row gap-3 mt-auto">
                 <Button
                   variant="primary"
@@ -75,7 +75,7 @@ export function VerifyMountingStep({
                   id="onboarding-stay_aligned-manual_mounting-done"
                 />
               </div>
-            </ManualMountingPageStayAlligned>
+            </ManualMountingPageStayAligned>
           </BaseModal>
 
           <ResetButton
