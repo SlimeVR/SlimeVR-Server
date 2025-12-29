@@ -14,16 +14,10 @@ export function VerifyMountingStep({
   const { isMobile } = useBreakpoint('mobile');
   const [isOpen, setOpen] = useState(false);
 
-  function OpenFunc() {
-    setOpen(true);
-  }
-  function ProgressFunc() {
+  const goNextStep = () => {
     setOpen(false);
     nextStep();
-  }
-  function CloseFunc() {
-    setOpen(false);
-  }
+  };
 
   return (
     <div className="flex flex-col flex-grow justify-between py-2 gap-2">
