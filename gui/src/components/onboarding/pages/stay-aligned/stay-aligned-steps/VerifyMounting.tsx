@@ -57,7 +57,7 @@ export function VerifyMountingStep({
           <Button
             variant={'secondary'}
             className="self-start mt-auto"
-            onClick={OpenFunc}
+            onClick={() => setOpen(true)}
             id="onboarding-automatic_mounting-manual_mounting"
           />
           <BaseModal isOpen={isOpen} onRequestClose={CloseFunc}>
