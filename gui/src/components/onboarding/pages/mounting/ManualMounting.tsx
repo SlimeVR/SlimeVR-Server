@@ -140,7 +140,7 @@ export function ManualMountingPage() {
   );
 }
 
-export function ManualMountingPageStayAlligned({
+export function ManualMountingPageStayAligned({
   children,
 }: {
   children: ReactNode;
