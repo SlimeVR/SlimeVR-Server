@@ -144,42 +144,46 @@ class VRCOSCHandler(
 		}
 	}
 
-	override fun updateOscReceiver(portIn: Int, args: Array<String>) {
-		// Stop listening
-		val wasListening = oscReceiver != null && oscReceiver!!.isListening
-		if (wasListening) {
-			oscReceiver!!.stopListening()
+	override fun updateOscReceiver(portIn: Int, oscAddresses: Array<String>) {
+		// If disabled, ensure the receiver is closed
+		if (!config.enabled) {
+			oscReceiver?.close()
+			oscReceiver = null
+			return
 		}
 
-		if (config.enabled) {
-			// Instantiates the OSC receiver
-			try {
-				oscReceiver = OSCPortIn(portIn)
-				if (oscPortIn != portIn || !wasListening) {
-					LogManager.info("[VRCOSCHandler] Listening to port $portIn")
-				}
-				oscPortIn = portIn
-				vrcOscQueryHandler?.updateOSCQuery(portIn.toUShort())
-			} catch (e: IOException) {
-				LogManager
-					.severe(
-						"[VRCOSCHandler] Error listening to the port $portIn: $e",
-					)
+		// If already configured and listening, nothing needs to be configured
+		if (oscPortIn == portIn && oscReceiver?.isListening == true) return
+
+		// Initialize a new OSC receiver
+		try {
+			// Ensure any existing OSC receiver is closed first
+			oscReceiver?.close()
+
+			// Instantiate the new OSC receiver
+			LogManager.info("[VRCOSCHandler] Listening to port $portIn")
+			val newOscReceiver = OSCPortIn(portIn)
+			oscReceiver = newOscReceiver
+			oscPortIn = portIn
+
+			// Advertise our receiving port over OSCQuery
+			vrcOscQueryHandler?.updateOSCQuery(portIn.toUShort())
+
+			// Add our listener on the receiver for each OSC address
+			val listener = OSCMessageListener { event: OSCMessageEvent ->
+				handleReceivedMessage(event)
+			}
+			for (address in oscAddresses) {
+				newOscReceiver.dispatcher.addListener(
+					OSCPatternAddressMessageSelector(address),
+					listener,
+				)
 			}
 
-			// Starts listening for VRC or OSCTrackers messages
-			oscReceiver?.let {
-				val listener = OSCMessageListener { event: OSCMessageEvent ->
-					handleReceivedMessage(event)
-				}
-				for (address in args) {
-					it.dispatcher.addListener(
-						OSCPatternAddressMessageSelector(address),
-						listener,
-					)
-				}
-				it.startListening()
-			}
+			// Start the receiver
+			newOscReceiver.startListening()
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error listening to the port $portIn: $e")
 		}
 	}
 
