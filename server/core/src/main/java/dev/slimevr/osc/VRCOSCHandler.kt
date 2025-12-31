@@ -121,6 +121,8 @@ class VRCOSCHandler(
 		if (oscPortOut != portOut || (oscIP != address.hostName && !(oscIP == localIp && address.hostName == loopbackIp))) {
 			try {
 				oscQuerySender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
+				// Not necessary for UDP, but avoids additional security checks
+				// No need to check isConnected, as it gives no useful information
 				oscQuerySender?.connect()
 				LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
 			} catch (e: IOException) {
@@ -187,7 +189,7 @@ class VRCOSCHandler(
 
 	override fun updateOscSender(portOut: Int, ip: String) {
 		// Stop sending
-		val wasConnected = oscSender != null && oscSender!!.isConnected
+		val wasConnected = oscSender != null
 		if (wasConnected) {
 			try {
 				oscSender!!.close()
@@ -206,6 +208,8 @@ class VRCOSCHandler(
 				}
 				oscPortOut = portOut
 				oscIp = addr
+				// Not necessary for UDP, but avoids additional security checks
+				// No need to check isConnected, as it gives no useful information
 				oscSender?.connect()
 			} catch (e: IOException) {
 				LogManager
@@ -422,7 +426,7 @@ class VRCOSCHandler(
 		val currentTime = System.currentTimeMillis().toFloat()
 
 		// Send OSC data
-		if (oscSender != null && oscSender!!.isConnected) {
+		if (oscSender != null) {
 			// Create new bundle
 			val bundle = OSCBundle()
 
@@ -527,7 +531,7 @@ class VRCOSCHandler(
 	 * Sends the expected HMD rotation upon reset to align the trackers in VRC
 	 */
 	fun yawAlign(headRot: Quaternion) {
-		if (oscSender != null && oscSender!!.isConnected) {
+		if (oscSender != null) {
 			val (_, _, y, _) = headRot.toEulerAngles(EulerOrder.YXZ)
 			oscArgs.clear()
 			oscArgs.add(0f)
