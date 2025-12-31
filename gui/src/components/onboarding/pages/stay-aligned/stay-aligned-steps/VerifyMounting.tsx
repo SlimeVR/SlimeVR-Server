@@ -80,6 +80,7 @@ export function VerifyMountingStep({
             type={ResetType.Mounting}
             group="default"
             onReseted={goNextStep}
+            onFailed={() => setDisableMounting(false)}
           />
         </div>
       </div>

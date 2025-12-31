@@ -2,7 +2,7 @@ import { Localized } from '@fluent/react';
 import { ResetType } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import classNames from 'classnames';
-import { useReset, UseResetOptions } from '@/hooks/reset';
+import { ResetBtnStatus, useReset, UseResetOptions } from '@/hooks/reset';
 import {
   FullResetIcon,
   YawResetIcon,
@@ -13,6 +13,7 @@ import { FootIcon } from '@/components/commons/icon/FootIcon';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
+import { stat } from 'fs';
 
 export function ResetButtonIcon(options: UseResetOptions) {
   if (options.type === ResetType.Mounting && !options.group)
@@ -32,16 +33,24 @@ export function ResetButton({
   className,
   onReseted,
   children,
+  onFailed,
   ...options
 }: {
   onClick?: () => void;
   className?: string;
   children?: ReactNode;
   onReseted?: () => void;
+  onFailed?: () => void;
 } & UseResetOptions) {
   function triggerResetInstant() {
     if (onClick) onClick();
     triggerReset();
+
+    new Promise((res) => setTimeout(res, 3.1)); //number bigger than 3 as to check after the rest finnishes
+
+    if (status !== 'finished') {
+      if (onFailed) onFailed();
+    }
   }
   const { triggerReset, status, timer, disabled, name, error } = useReset(
     options,
