@@ -37,7 +37,6 @@ export function useReset(
   const serverGuards = useAtomValue(serverGuardsAtom);
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-
   const finishedTimeoutRef = useRef<NodeJS.Timeout>();
   const [status, setStatus] = useState<ResetBtnStatus>('idle');
   const [progress, setProgress] = useState(0);
