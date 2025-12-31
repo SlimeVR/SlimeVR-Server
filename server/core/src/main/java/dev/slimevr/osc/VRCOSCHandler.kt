@@ -60,9 +60,9 @@ class VRCOSCHandler(
 	private var oscPortIn = 0
 	private var oscPortOut = 0
 	private var oscIp: InetAddress? = null
-	private var oscQuerySenderState = false
 	private var oscQueryPortOut = 0
-	private var oscQueryIp: String? = null
+	private var oscQueryIp: InetAddress? = null
+	private var oscQueryIpMatch = false
 	private var timeAtLastError: Long = 0
 	private var receivingPositionOffset = Vector3.NULL
 	private var postReceivingPositionOffset = Vector3.NULL
@@ -94,13 +94,15 @@ class VRCOSCHandler(
 		updateOscReceiver(config.portIn, vrsystemTrackersAddresses + oscTrackersAddresses)
 		updateOscSender(config.portOut, config.address)
 
-		if (vrcOscQueryHandler == null && config.enabled && config.oscqueryEnabled) {
-			try {
-				vrcOscQueryHandler = VRCOSCQueryHandler(this)
-			} catch (e: Throwable) {
-				LogManager.severe("Unable to initialize OSCQuery: $e", e)
+		if (config.enabled && config.oscqueryEnabled) {
+			if (vrcOscQueryHandler == null) {
+				try {
+					vrcOscQueryHandler = VRCOSCQueryHandler(this)
+				} catch (e: Throwable) {
+					LogManager.severe("Unable to initialize OSCQuery: $e", e)
+				}
 			}
-		} else if (vrcOscQueryHandler != null && (!config.enabled || !config.oscqueryEnabled)) {
+		} else {
 			vrcOscQueryHandler?.close()
 			vrcOscQueryHandler = null
 		}
@@ -110,30 +112,70 @@ class VRCOSCHandler(
 		}
 	}
 
+	fun ipEquals(a: InetAddress?, b: InetAddress?): Boolean = a == b ||
+		a != null &&
+		b != null &&
+		(a.address.contentEquals(b.address) || a.hostName == b.hostName)
+
 	/**
 	 * Adds an OSC Sender from OSCQuery
 	 */
 	fun addOSCQuerySender(oscPortOut: Int, oscIP: String) {
-		val addr = InetAddress.getByName(oscIP)
-		oscQuerySenderState = true
-		oscQueryIp = oscIP
-		oscQueryPortOut = oscPortOut
-		if (oscPortOut != portOut || (oscIP != address.hostName && !(oscIP == localIp && address.hostName == loopbackIp))) {
-			try {
-				oscQuerySender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
-				// Avoids additional security checks, but not necessary for UDP, therefore
-				//  isConnected doesn't really indicate that we are actively "connected"
-				oscQuerySender?.connect()
-				LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
-			} catch (e: IOException) {
-				LogManager.severe("[VRCOSCHandler] Error connecting to port $oscPortOut at the address $oscIP: $e")
-				closeOscQuerySender(false)
+		if (!config.enabled) {
+			closeOscQuerySender()
+			return
+		}
+
+		try {
+			// If we already have the best matching client
+			if (oscQuerySender != null && oscQueryIpMatch) {
+				return
 			}
+
+			val addr = InetAddress.getByName(oscIP)
+			val ipMatch = ipEquals(addr, this.oscIp)
+
+			// If we already have an OSC sender
+			if (oscQuerySender != null) {
+				val portMatch = oscPortOut == this.oscPortOut
+				// Original IP will be matching because of the check done earlier
+				val origPortMatch = oscQueryPortOut == this.oscPortOut
+
+				// If the IP doesn't match and (the port doesn't match or the original
+				//  port did match), ignore this client
+				if (!ipMatch && (!portMatch || origPortMatch)) {
+					return
+				}
+
+				// If this is the same address as what we're already sending to, keep
+				//  using the same OSC sender
+				if (ipEquals(addr, oscQueryIp)) {
+					return
+				}
+
+				// So if the IP matches or the port matches and the original one didn't,
+				//  we will select this new address for OSC
+			}
+
+			closeOscQuerySender()
+
+			LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
+			oscQuerySender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
+			oscQueryIp = addr
+			oscQueryIpMatch = ipMatch
+			oscQueryPortOut = oscPortOut
+
+			// Avoids additional security checks, but not necessary for UDP, therefore
+			//  isConnected doesn't really indicate that we are actively "connected"
+			oscQuerySender?.connect()
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error connecting OSCQuery sender to port $oscPortOut at the address $oscIP: $e")
+			closeOscQuerySender()
 		}
 	}
 
 	/**
-	 * Close/remove the osc query sender
+	 * Close/remove the OSC sender
 	 */
 	fun closeOscSender() {
 		try {
@@ -144,16 +186,21 @@ class VRCOSCHandler(
 		}
 	}
 
-	fun closeOscQuerySender(newState: Boolean) {
+	/**
+	 * Close/remove the OSCQuery sender
+	 */
+	fun closeOscQuerySender() {
 		try {
 			oscQuerySender?.close()
 			oscQuerySender = null
-			oscQuerySenderState = newState
 		} catch (e: IOException) {
 			LogManager.severe("[VRCOSCHandler] Error closing the OSCQuery sender: $e")
 		}
 	}
 
+	/**
+	 * Close/remove the OSC receiver
+	 */
 	fun closeOscReceiver() {
 		try {
 			oscReceiver?.close()
@@ -209,10 +256,19 @@ class VRCOSCHandler(
 
 		try {
 			// If already configured, nothing new needs to be configured
-			// Technically we are fine if `isConnected` is false, but we can just
-			//  assume we're always gonna be connected
 			val addr = InetAddress.getByName(ip)
-			if (oscIp == addr && oscPortOut == portOut && oscSender?.isConnected == true) return
+			val resetQuery = if (ipEquals(addr, oscIp) && oscPortOut == portOut) {
+				// Technically we are fine if `isConnected` is false, but we can just
+				//  assume we're always gonna be connected
+				if (oscSender?.isConnected == true) {
+					return
+				}
+				false
+			} else {
+				// If the new IP doesn't match the current OSCQuery IP, close the
+				//  OSCQuery sender after updating the config variables
+				!ipEquals(addr, oscQueryIp)
+			}
 
 			closeOscSender()
 
@@ -225,6 +281,10 @@ class VRCOSCHandler(
 			// Avoids additional security checks, but not necessary for UDP, therefore
 			//  isConnected doesn't really indicate that we are actively "connected"
 			newOscSender.connect()
+
+			if (resetQuery) {
+				closeOscQuerySender()
+			}
 		} catch (e: IOException) {
 			LogManager
 				.severe(
@@ -233,19 +293,11 @@ class VRCOSCHandler(
 			closeOscSender()
 			return
 		}
-
-		if (oscQueryPortOut == portOut && (oscQueryIp == ip || (oscQueryIp == localIp && ip == loopbackIp))) {
-			if (oscQuerySender != null) {
-				// Close the oscQuerySender if it has the same port/ip
-				closeOscQuerySender(true)
-			}
-		} else if (oscQuerySender == null && oscQuerySenderState) {
-			// Instantiate the oscQuerySender if it could not be instantiated.
-			addOSCQuerySender(oscQueryPortOut, oscQueryIp!!)
-		}
 	}
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
+		// TODO: Track the IP who sent this, we can list them as a send target and
+		//  resolve the VRChat IP/port without scanning OSCQuery
 		if (vrsystemTrackersAddresses.contains(event.message.address)) {
 			// Receiving Head and Wrist pose data thanks to OSCQuery
 			// Create device if it doesn't exist

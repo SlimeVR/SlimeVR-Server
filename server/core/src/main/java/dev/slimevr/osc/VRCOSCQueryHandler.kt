@@ -78,7 +78,7 @@ class VRCOSCQueryHandler(
 	 * Closes the OSCQueryServer and the associated OSC sender.
 	 */
 	fun close() {
-		vrcOscHandler.closeOscQuerySender(false)
+		vrcOscHandler.closeOscQuerySender()
 		thread(start = true) {
 			oscQueryServer.close()
 		}
