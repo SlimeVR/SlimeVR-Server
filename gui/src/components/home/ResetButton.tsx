@@ -44,19 +44,12 @@ export function ResetButton({
   function triggerResetInstant() {
     if (onClick) onClick();
     triggerReset();
-
-    if (options.type === ResetType.Full) {
-      new Promise((res) => setTimeout(res, 3.1)); //number bigger than 3 as to check after the rest finnishes
-
-      if (status !== 'finished') {
-        if (onFailed) onFailed();
-      }
+    if (canceled === true) {
+      if (onFailed) onFailed();
     }
   }
-  const { triggerReset, status, timer, disabled, name, error } = useReset(
-    options,
-    onReseted
-  );
+  const { triggerReset, status, timer, disabled, name, error, canceled } =
+    useReset(options, onReseted);
 
   return (
     <Tooltip
