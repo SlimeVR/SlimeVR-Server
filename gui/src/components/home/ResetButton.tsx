@@ -2,7 +2,7 @@ import { Localized } from '@fluent/react';
 import { ResetType } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import classNames from 'classnames';
-import { ResetBtnStatus, useReset, UseResetOptions } from '@/hooks/reset';
+import { useReset, UseResetOptions } from '@/hooks/reset';
 import {
   FullResetIcon,
   YawResetIcon,
@@ -13,7 +13,6 @@ import { FootIcon } from '@/components/commons/icon/FootIcon';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
-import { stat } from 'fs';
 
 export function ResetButtonIcon(options: UseResetOptions) {
   if (options.type === ResetType.Mounting && !options.group)
