@@ -44,12 +44,12 @@ export function ResetButton({
   function triggerResetInstant() {
     if (onClick) onClick();
     triggerReset();
-    if (canceled === true) {
-      if (onFailed) onFailed();
-    }
   }
-  const { triggerReset, status, timer, disabled, name, error, canceled } =
-    useReset(options, onReseted);
+  const { triggerReset, status, timer, disabled, name, error } = useReset(
+    options,
+    onReseted,
+    onFailed
+  );
 
   return (
     <Tooltip
