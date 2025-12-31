@@ -127,6 +127,7 @@ class VRCOSCHandler(
 				LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
 			} catch (e: IOException) {
 				LogManager.severe("[VRCOSCHandler] Error connecting to port $oscPortOut at the address $oscIP: $e")
+				closeOscQuerySender(false)
 			}
 		}
 	}
@@ -152,12 +153,10 @@ class VRCOSCHandler(
 			return
 		}
 
-		// If already configured and listening, nothing needs to be configured
+		// If already configured and listening, nothing new needs to be configured
 		if (oscPortIn == portIn && oscReceiver?.isListening == true) return
 
-		// Initialize a new OSC receiver
 		try {
-			// Ensure any existing OSC receiver is closed first
 			oscReceiver?.close()
 
 			// Instantiate the new OSC receiver
@@ -166,10 +165,6 @@ class VRCOSCHandler(
 			oscReceiver = newOscReceiver
 			oscPortIn = portIn
 
-			// Advertise our receiving port over OSCQuery
-			vrcOscQueryHandler?.updateOSCQuery(portIn.toUShort())
-
-			// Add our listener on the receiver for each OSC address
 			val listener = OSCMessageListener { event: OSCMessageEvent ->
 				handleReceivedMessage(event)
 			}
@@ -180,10 +175,14 @@ class VRCOSCHandler(
 				)
 			}
 
-			// Start the receiver
 			newOscReceiver.startListening()
+
+			// Advertise our new receiving port over OSCQuery
+			vrcOscQueryHandler?.updateOSCQuery(portIn.toUShort())
 		} catch (e: IOException) {
 			LogManager.severe("[VRCOSCHandler] Error listening to the port $portIn: $e")
+			oscReceiver?.close()
+			oscReceiver = null
 		}
 	}
 
@@ -216,6 +215,8 @@ class VRCOSCHandler(
 					.severe(
 						"[VRCOSCHandler] Error connecting to port $portOut at the address $ip: $e",
 					)
+				oscSender?.close()
+				oscSender = null
 				return
 			}
 
