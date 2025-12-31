@@ -46,10 +46,12 @@ export function ResetButton({
     if (onClick) onClick();
     triggerReset();
 
-    new Promise((res) => setTimeout(res, 3.1)); //number bigger than 3 as to check after the rest finnishes
+    if (options.type === ResetType.Full) {
+      new Promise((res) => setTimeout(res, 3.1)); //number bigger than 3 as to check after the rest finnishes
 
-    if (status !== 'finished') {
-      if (onFailed) onFailed();
+      if (status !== 'finished') {
+        if (onFailed) onFailed();
+      }
     }
   }
   const { triggerReset, status, timer, disabled, name, error } = useReset(
