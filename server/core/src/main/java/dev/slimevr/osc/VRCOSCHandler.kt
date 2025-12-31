@@ -427,6 +427,10 @@ class VRCOSCHandler(
 	}
 
 	override fun update() {
+		if (!config.enabled) {
+			return
+		}
+
 		// Gets timer from vrServer
 		if (fpsTimer == null) {
 			fpsTimer = VRServer.instance.fpsTimer
@@ -440,7 +444,7 @@ class VRCOSCHandler(
 		val currentTime = System.currentTimeMillis().toFloat()
 
 		// Send OSC data
-		if (oscSender != null) {
+		if (oscSender != null || oscQuerySender != null) {
 			// Create new bundle
 			val bundle = OSCBundle()
 
@@ -502,8 +506,12 @@ class VRCOSCHandler(
 			}
 
 			try {
-				oscSender?.send(bundle)
-				oscQuerySender?.send(bundle)
+				// Prioritize OSCQuery since we can't validate oscSender
+				if (oscQuerySender != null) {
+					oscQuerySender?.send(bundle)
+				} else {
+					oscSender?.send(bundle)
+				}
 			} catch (e: IOException) {
 				// Avoid spamming AsynchronousCloseException too many
 				// times per second
@@ -545,7 +553,7 @@ class VRCOSCHandler(
 	 * Sends the expected HMD rotation upon reset to align the trackers in VRC
 	 */
 	fun yawAlign(headRot: Quaternion) {
-		if (oscSender != null) {
+		if (oscSender != null || oscQuerySender != null) {
 			val (_, _, y, _) = headRot.toEulerAngles(EulerOrder.YXZ)
 			oscArgs.clear()
 			oscArgs.add(0f)
@@ -556,8 +564,12 @@ class VRCOSCHandler(
 				oscArgs,
 			)
 			try {
-				oscSender?.send(oscMessage)
-				oscQuerySender?.send(oscMessage)
+				// Prioritize OSCQuery since we can't validate oscSender
+				if (oscQuerySender != null) {
+					oscQuerySender?.send(oscMessage)
+				} else {
+					oscSender?.send(oscMessage)
+				}
 			} catch (e: IOException) {
 				LogManager
 					.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
