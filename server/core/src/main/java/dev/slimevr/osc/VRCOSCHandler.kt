@@ -120,6 +120,7 @@ class VRCOSCHandler(
 	/**
 	 * Adds an OSC Sender from OSCQuery
 	 */
+	@Synchronized
 	fun addOSCQuerySender(oscPortOut: Int, oscIP: String) {
 		if (!config.enabled) {
 			closeOscQuerySender()
