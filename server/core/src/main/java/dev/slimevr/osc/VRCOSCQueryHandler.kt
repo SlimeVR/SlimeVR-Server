@@ -3,6 +3,7 @@ package dev.slimevr.osc
 import OSCQueryNode
 import OSCQueryServer
 import ServiceInfo
+import dev.slimevr.VRServer
 import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.logging.LogManager
 import randomFreePort
@@ -17,6 +18,7 @@ private const val queryPath = "/tracking/vrsystem"
  * https://github.com/SlimeVR/oscquery-kt
  */
 class VRCOSCQueryHandler(
+	private val server: VRServer,
 	private val vrcOscHandler: VRCOSCHandler,
 ) {
 	private val oscQueryServer: OSCQueryServer
@@ -71,7 +73,9 @@ class VRCOSCQueryHandler(
 		val port = info.port
 
 		// create a new OSCHandler for this service
-		vrcOscHandler.addOSCQuerySender(port, ip)
+		server.queueTask {
+			vrcOscHandler.addOSCQuerySender(port, ip)
+		}
 	}
 
 	/**

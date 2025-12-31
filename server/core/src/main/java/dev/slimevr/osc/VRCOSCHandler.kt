@@ -96,7 +96,7 @@ class VRCOSCHandler(
 		if (config.enabled && config.oscqueryEnabled) {
 			if (vrcOscQueryHandler == null) {
 				try {
-					vrcOscQueryHandler = VRCOSCQueryHandler(this)
+					vrcOscQueryHandler = VRCOSCQueryHandler(server, this)
 				} catch (e: Throwable) {
 					LogManager.severe("Unable to initialize OSCQuery: $e", e)
 				}
@@ -139,7 +139,6 @@ class VRCOSCHandler(
 	/**
 	 * Adds an OSC Sender from OSCQuery
 	 */
-	@Synchronized
 	fun addOSCQuerySender(oscPortOut: Int, oscIP: String) {
 		if (!config.enabled) {
 			closeOscQuerySender()
