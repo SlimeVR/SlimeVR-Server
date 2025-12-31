@@ -12,7 +12,6 @@ import com.jme3.math.FastMath
 import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import dev.slimevr.config.VRCOSCConfig
-import dev.slimevr.protocol.rpc.setup.RPCUtil
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
@@ -26,6 +25,8 @@ import io.github.axisangles.ktmath.Vector3
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.net.NetworkInterface
+import kotlin.collections.iterator
 
 private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
 
@@ -37,8 +38,6 @@ class VRCOSCHandler(
 	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
-	private val localIp = RPCUtil.getLocalIp()
-	private val loopbackIp = InetAddress.getLoopbackAddress().hostAddress
 	private val vrsystemTrackersAddresses = arrayOf(
 		"/tracking/vrsystem/head/pose",
 		"/tracking/vrsystem/leftwrist/pose",
@@ -112,10 +111,30 @@ class VRCOSCHandler(
 		}
 	}
 
+	fun ipIsLocal(a: InetAddress): Boolean {
+		if (a.isLoopbackAddress) {
+			return true
+		}
+		for (netInt in NetworkInterface.getNetworkInterfaces()) {
+			if (netInt.isUp && !netInt.isLoopback && !netInt.isVirtual) {
+				for (netAddr in netInt.interfaceAddresses) {
+					if (a == netAddr.address || a.address.contentEquals(netAddr.address.address) || a.hostName == netAddr.address.hostName) {
+						return true
+					}
+				}
+			}
+		}
+		return false
+	}
+
 	fun ipEquals(a: InetAddress?, b: InetAddress?): Boolean = a == b ||
 		a != null &&
 		b != null &&
-		(a.address.contentEquals(b.address) || a.hostName == b.hostName)
+		(
+			a.address.contentEquals(b.address) ||
+				a.hostName == b.hostName ||
+				(ipIsLocal(a) && ipIsLocal(b))
+			)
 
 	/**
 	 * Adds an OSC Sender from OSCQuery
@@ -160,7 +179,11 @@ class VRCOSCHandler(
 
 			closeOscQuerySender()
 
-			LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
+			if (ipMatch) {
+				LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP (matches configured address)")
+			} else {
+				LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
+			}
 			oscQuerySender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
 			oscQueryIp = addr
 			oscQueryIpMatch = ipMatch
