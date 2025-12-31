@@ -121,8 +121,8 @@ class VRCOSCHandler(
 		if (oscPortOut != portOut || (oscIP != address.hostName && !(oscIP == localIp && address.hostName == loopbackIp))) {
 			try {
 				oscQuerySender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
-				// Not necessary for UDP, but avoids additional security checks
-				// No need to check isConnected, as it gives no useful information
+				// Avoids additional security checks, but not necessary for UDP, therefore
+				//  isConnected doesn't really indicate that we are actively "connected"
 				oscQuerySender?.connect()
 				LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
 			} catch (e: IOException) {
@@ -135,21 +135,37 @@ class VRCOSCHandler(
 	/**
 	 * Close/remove the osc query sender
 	 */
+	fun closeOscSender() {
+		try {
+			oscSender?.close()
+			oscSender = null
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
+		}
+	}
+
 	fun closeOscQuerySender(newState: Boolean) {
 		try {
 			oscQuerySender?.close()
 			oscQuerySender = null
 			oscQuerySenderState = newState
 		} catch (e: IOException) {
-			LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
+			LogManager.severe("[VRCOSCHandler] Error closing the OSCQuery sender: $e")
+		}
+	}
+
+	fun closeOscReceiver() {
+		try {
+			oscReceiver?.close()
+			oscReceiver = null
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error closing the OSC receiver: $e")
 		}
 	}
 
 	override fun updateOscReceiver(portIn: Int, oscAddresses: Array<String>) {
-		// If disabled, ensure the receiver is closed
 		if (!config.enabled) {
-			oscReceiver?.close()
-			oscReceiver = null
+			closeOscReceiver()
 			return
 		}
 
@@ -157,7 +173,7 @@ class VRCOSCHandler(
 		if (oscPortIn == portIn && oscReceiver?.isListening == true) return
 
 		try {
-			oscReceiver?.close()
+			closeOscReceiver()
 
 			// Instantiate the new OSC receiver
 			LogManager.info("[VRCOSCHandler] Listening to port $portIn")
@@ -181,54 +197,51 @@ class VRCOSCHandler(
 			vrcOscQueryHandler?.updateOSCQuery(portIn.toUShort())
 		} catch (e: IOException) {
 			LogManager.severe("[VRCOSCHandler] Error listening to the port $portIn: $e")
-			oscReceiver?.close()
-			oscReceiver = null
+			closeOscReceiver()
 		}
 	}
 
 	override fun updateOscSender(portOut: Int, ip: String) {
-		// Stop sending
-		val wasConnected = oscSender != null
-		if (wasConnected) {
-			try {
-				oscSender!!.close()
-			} catch (e: IOException) {
-				LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
-			}
+		if (!config.enabled) {
+			closeOscSender()
+			return
 		}
 
-		if (config.enabled) {
-			// Instantiate the OSC sender
-			try {
-				val addr = InetAddress.getByName(ip)
-				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
-				if (oscPortOut != portOut && oscIp != addr || !wasConnected) {
-					LogManager.info("[VRCOSCHandler] Sending to port $portOut at address $ip")
-				}
-				oscPortOut = portOut
-				oscIp = addr
-				// Not necessary for UDP, but avoids additional security checks
-				// No need to check isConnected, as it gives no useful information
-				oscSender?.connect()
-			} catch (e: IOException) {
-				LogManager
-					.severe(
-						"[VRCOSCHandler] Error connecting to port $portOut at the address $ip: $e",
-					)
-				oscSender?.close()
-				oscSender = null
-				return
-			}
+		try {
+			// If already configured, nothing new needs to be configured
+			// Technically we are fine if `isConnected` is false, but we can just
+			//  assume we're always gonna be connected
+			val addr = InetAddress.getByName(ip)
+			if (oscIp == addr && oscPortOut == portOut && oscSender?.isConnected == true) return
 
-			if (oscQueryPortOut == portOut && (oscQueryIp == ip || (oscQueryIp == localIp && ip == loopbackIp))) {
-				if (oscQuerySender != null) {
-					// Close the oscQuerySender if it has the same port/ip
-					closeOscQuerySender(true)
-				}
-			} else if (oscQuerySender == null && oscQuerySenderState) {
-				// Instantiate the oscQuerySender if it could not be instantiated.
-				addOSCQuerySender(oscQueryPortOut, oscQueryIp!!)
+			closeOscSender()
+
+			LogManager.info("[VRCOSCHandler] Sending to port $portOut at address $ip")
+			val newOscSender = OSCPortOut(InetSocketAddress(addr, portOut))
+			oscSender = newOscSender
+			oscIp = addr
+			oscPortOut = portOut
+
+			// Avoids additional security checks, but not necessary for UDP, therefore
+			//  isConnected doesn't really indicate that we are actively "connected"
+			newOscSender.connect()
+		} catch (e: IOException) {
+			LogManager
+				.severe(
+					"[VRCOSCHandler] Error connecting to port $portOut at the address $ip: $e",
+				)
+			closeOscSender()
+			return
+		}
+
+		if (oscQueryPortOut == portOut && (oscQueryIp == ip || (oscQueryIp == localIp && ip == loopbackIp))) {
+			if (oscQuerySender != null) {
+				// Close the oscQuerySender if it has the same port/ip
+				closeOscQuerySender(true)
 			}
+		} else if (oscQuerySender == null && oscQuerySenderState) {
+			// Instantiate the oscQuerySender if it could not be instantiated.
+			addOSCQuerySender(oscQueryPortOut, oscQueryIp!!)
 		}
 	}
 
