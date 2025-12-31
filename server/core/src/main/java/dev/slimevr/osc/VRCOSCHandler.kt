@@ -133,14 +133,12 @@ class VRCOSCHandler(
 	 * Close/remove the osc query sender
 	 */
 	fun closeOscQuerySender(newState: Boolean) {
-		oscQuerySender?.let {
-			try {
-				it.close()
-				oscQuerySender = null
-				oscQuerySenderState = newState
-			} catch (e: IOException) {
-				LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
-			}
+		try {
+			oscQuerySender?.close()
+			oscQuerySender = null
+			oscQuerySenderState = newState
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
 		}
 	}
 
