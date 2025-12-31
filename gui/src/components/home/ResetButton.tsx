@@ -41,10 +41,6 @@ export function ResetButton({
   onReseted?: () => void;
   onFailed?: () => void;
 } & UseResetOptions) {
-  function triggerResetInstant() {
-    if (onClick) onClick();
-    triggerReset();
-  }
   const { triggerReset, status, timer, disabled, name, error } = useReset(
     options,
     onReseted,
@@ -69,7 +65,10 @@ export function ResetButton({
     >
       <Button
         icon={<ResetButtonIcon {...options} />}
-        onClick={triggerResetInstant}
+        onClick={() => {
+          if (onClick) onClick();
+          triggerReset();
+        }}
         className={classNames(
           'border-2 py-[5px]',
           status === 'finished'
