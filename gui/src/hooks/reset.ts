@@ -27,7 +27,11 @@ export const BODY_PARTS_GROUPS: Record<MountingResetGroup, BodyPart[]> = {
   fingers: FINGER_BODY_PARTS,
 };
 
-export function useReset(options: UseResetOptions, onReseted?: () => void, onFailed?: () => void) {
+export function useReset(
+  options: UseResetOptions,
+  onReseted?: () => void,
+  onFailed?: () => void
+) {
   if (options.type === ResetType.Mounting && !options.group) options.group = 'default';
 
   const serverGuards = useAtomValue(serverGuardsAtom);
@@ -38,7 +42,6 @@ export function useReset(options: UseResetOptions, onReseted?: () => void, onFai
   const [status, setStatus] = useState<ResetBtnStatus>('idle');
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-
 
   const parts = BODY_PARTS_GROUPS['group' in options ? options.group : 'default'];
 
