@@ -3,6 +3,7 @@ package dev.slimevr.tracking.processor.skeleton
 import dev.slimevr.VRServer
 import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.StayAlignedConfig
+import dev.slimevr.reset.accel.AccelResetHandler
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.Constraint
@@ -216,6 +217,8 @@ class HumanSkeleton(
 	var localizer = Localizer(this)
 	var ikSolver = IKSolver(headBone)
 	var userHeightCalibration: UserHeightCalibration? = null
+
+	val accelResetHandler = AccelResetHandler()
 
 	// Stay Aligned
 	var trackerSkeleton = TrackerSkeleton(this)
@@ -1616,6 +1619,29 @@ class HumanSkeleton(
 		// as it requires a full reset first
 		if (humanPoseManager.server != null && trackersToReset.any { it != null && it.needReset }) {
 			LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName) failed, reset required")
+			return
+		}
+
+		// TODO: Make this not dumb
+		if (headTracker?.resetsHandler?.stepMounting == true ||
+			trackersToReset.any { it?.resetsHandler?.stepMounting == true }
+		) {
+			headTracker?.let { hmd ->
+				// Make sure we have HMD position
+				if (!hmd.hasPosition) {
+					return@let
+				}
+
+				// Start step mounting
+				accelResetHandler.start(
+					hmd,
+					trackersToReset.filterNotNull().filter {
+						it.allowMounting && (bodyParts.isEmpty() || bodyParts.contains(it.trackerPosition?.bodyPart))
+					},
+				)
+				return
+			}
+			LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName) failed, HMD is not available")
 			return
 		}
 

@@ -397,11 +397,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			return
 		}
 
-		if (stepMounting) {
-			tracker.startMounting()
-			return
-		}
-
 		constraintFix = Quaternion.IDENTITY
 
 		// Get the current calibrated rotation
