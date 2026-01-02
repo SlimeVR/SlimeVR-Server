@@ -1,4 +1,4 @@
-package dev.slimevr.tracking.trackers
+package dev.slimevr.util
 
 import com.jme3.system.NanoTimer
 import io.github.axisangles.ktmath.Vector3
