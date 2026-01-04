@@ -5,7 +5,6 @@ build
 */bin/
 
 MagnetoLib.dll
-vrconfig.yml
 
 # BVH
 BVH Recordings
