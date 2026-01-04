@@ -3,7 +3,6 @@ package dev.slimevr.tracking.trackers
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
 import dev.slimevr.config.ArmsResetModes
-import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
@@ -107,23 +106,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * This is a global offset in rotation and affects the axes of rotation.
 	 */
 	private var tposeDownFix = Quaternion.IDENTITY
-
-	/**
-	 * Reads/loads drift compensation settings from given config
-	 */
-	fun readDriftCompensationConfig(config: DriftCompensationConfig) {
-		compensateDrift = false
-		driftPrediction = config.prediction
-		driftAmount = config.amount
-		val maxResets = config.maxResets
-
-		if (compensateDrift && maxResets != driftQuats.capacity()) {
-			driftQuats = CircularArrayList<Quaternion>(maxResets)
-			driftTimes = CircularArrayList<Long>(maxResets)
-		}
-
-		refreshDriftCompensationEnabled()
-	}
 
 	/**
 	 * Clears drift compensation data

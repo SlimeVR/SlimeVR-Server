@@ -605,7 +605,7 @@ class HumanPoseManager(val server: VRServer?) {
 			server.configManager
 				.vrConfig
 				.skeleton
-				.getToggles()[SkeletonConfigToggles.FLOOR_CLIP.configKey] = value
+				.toggles[SkeletonConfigToggles.FLOOR_CLIP.configKey] = value
 			server.configManager.saveConfig()
 		}
 	}
@@ -617,7 +617,7 @@ class HumanPoseManager(val server: VRServer?) {
 			server.configManager
 				.vrConfig
 				.skeleton
-				.getToggles()[SkeletonConfigToggles.SKATING_CORRECTION.configKey] = value
+				.toggles[SkeletonConfigToggles.SKATING_CORRECTION.configKey] = value
 			server.configManager.saveConfig()
 		}
 	}

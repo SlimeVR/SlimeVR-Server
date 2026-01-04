@@ -1,7 +1,5 @@
 package dev.slimevr.websocketapi
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.ObjectNode
 import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.VRServer.Companion.instance
@@ -13,20 +11,68 @@ import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.float
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
+
+// --- Data Models for Serialization ---
+
+@Serializable
+data class OutgoingConfigMessage(
+	val type: String = "config",
+	@SerialName("tracker_id") val trackerId: String,
+	val location: String?,
+	@SerialName("tracker_type") val trackerType: String?,
+)
+
+@Serializable
+data class OutgoingPositionMessage(
+	val type: String = "pos",
+	val src: String = "full",
+	@SerialName("tracker_id") val trackerId: String,
+	val x: Float,
+	val y: Float,
+	val z: Float,
+	val qx: Float,
+	val qy: Float,
+	val qz: Float,
+	val qw: Float,
+)
+
+@Serializable
+data class IncomingActionMessage(
+	val name: String,
+)
+
+// --- Bridge Implementation ---
 
 class WebSocketVRBridge(
 	computedTrackers: List<Tracker>,
 	server: VRServer,
 ) : WebsocketAPI(server, server.protocolAPI),
 	Bridge {
+
 	private val computedTrackers: List<Tracker> = FastList(computedTrackers)
 	private val internalTrackers: MutableList<Tracker> = FastList(computedTrackers.size)
 	private val newHMDData = AtomicBoolean(false)
-	private val mapper = ObjectMapper()
+
+	// Global Json configuration
+	private val json = Json {
+		ignoreUnknownKeys = true
+		encodeDefaults = true
+	}
+
 	private val internalHMDTracker = Tracker(
 		null,
 		0,
@@ -61,9 +107,7 @@ class WebSocketVRBridge(
 	override fun dataRead() {
 		if (newHMDData.compareAndSet(true, false)) {
 			if (hmdTracker == null) {
-				// Create HMD for websocket
-				val hmdDevice = server.deviceManager
-					.createDevice("WebSocketVRBridge", null, null)
+				val hmdDevice = server.deviceManager.createDevice("WebSocketVRBridge", null, null)
 				hmdTracker = Tracker(
 					null,
 					getNextLocalTrackerId(),
@@ -97,112 +141,76 @@ class WebSocketVRBridge(
 
 	override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {
 		super.onOpen(conn, handshake)
-		// Register trackers
 		for (i in internalTrackers.indices) {
-			val message = mapper.nodeFactory.objectNode()
-			message.put("type", "config")
-			message.put("tracker_id", "SlimeVR Tracker " + (i + 1))
-			message
-				.put(
-					"location",
-					computedTrackers[i]
-						.trackerPosition
-						?.trackerRole
-						?.name
-						?.lowercase(Locale.getDefault()),
-				)
-			message.put("tracker_type", message["location"].asText())
-			conn.send(message.toString())
+			val loc = computedTrackers[i].trackerPosition?.trackerRole?.name?.lowercase(Locale.getDefault())
+			val message = OutgoingConfigMessage(
+				trackerId = "SlimeVR Tracker ${i + 1}",
+				location = loc,
+				trackerType = loc,
+			)
+			conn.send(json.encodeToString(message))
 		}
 	}
 
 	override fun onMessage(conn: WebSocket, message: String) {
-		// LogManager.info(message);
 		try {
-			val json = mapper.readTree(message) as ObjectNode
-			if (json.has("type")) {
-				when (json["type"].asText()) {
-					"pos" -> {
-						parsePosition(json, conn)
-						return
-					}
+			val root = json.parseToJsonElement(message).jsonObject
+			val type = root["type"]?.jsonPrimitive?.content ?: return
 
-					"action" -> {
-						parseAction(json, conn)
-						return
-					}
-
-					// TODO Ignore it for now, it should only register HMD in our test case with id 0
-					"config" -> {
-						LogManager.info("[WebSocket] Config received: $json")
-						return
-					}
-				}
+			when (type) {
+				"pos" -> parsePosition(root, conn)
+				"action" -> parseAction(root)
+				"config" -> LogManager.info("[WebSocket] Config received: $message")
+				else -> LogManager.warning("[WebSocket] Unrecognized message: $message")
 			}
-			LogManager
-				.warning(
-					"[WebSocket] Unrecognized message from " +
-						conn.remoteSocketAddress.address.hostAddress +
-						": " +
-						message,
-				)
 		} catch (e: Exception) {
-			LogManager
-				.severe(
-					"[WebSocket] Exception parsing message from " +
-						conn.remoteSocketAddress.address.hostAddress +
-						". Message: " +
-						message,
-					e,
-				)
+			LogManager.severe("[WebSocket] Exception parsing message: $message", e)
 		}
 	}
 
-	private fun parsePosition(json: ObjectNode, conn: WebSocket) {
-		if (json["tracker_id"].asInt() == 0) {
-			// Read HMD information
-			internalHMDTracker
-				.position = Vector3(
-				json["x"].asDouble().toFloat(),
-				json["y"].asDouble().toFloat() + 0.2f,
-				json["z"].asDouble().toFloat(),
+	private fun parsePosition(jsonObj: JsonObject, conn: WebSocket) {
+		// HMD usually sends tracker_id as 0 (number)
+		val trackerId = jsonObj["tracker_id"]?.jsonPrimitive?.intOrNull ?: -1
+
+		if (trackerId == 0) {
+			internalHMDTracker.position = Vector3(
+				jsonObj["x"]?.jsonPrimitive?.float ?: 0f,
+				(jsonObj["y"]?.jsonPrimitive?.float ?: 0f) + 0.2f,
+				jsonObj["z"]?.jsonPrimitive?.float ?: 0f,
 			)
-			// TODO Wtf is this hack? VRWorkout issue?
-			internalHMDTracker
-				.setRotation(
-					Quaternion(
-						json["qw"].asDouble().toFloat(),
-						json["qx"].asDouble().toFloat(),
-						json["qy"].asDouble().toFloat(),
-						json["qz"].asDouble().toFloat(),
-					),
-				)
+			internalHMDTracker.setRotation(
+				Quaternion(
+					jsonObj["qw"]?.jsonPrimitive?.float ?: 1f,
+					jsonObj["qx"]?.jsonPrimitive?.float ?: 0f,
+					jsonObj["qy"]?.jsonPrimitive?.float ?: 0f,
+					jsonObj["qz"]?.jsonPrimitive?.float ?: 0f,
+				),
+			)
 			internalHMDTracker.dataTick()
 			newHMDData.set(true)
 
 			// Send tracker info in reply
 			for (i in internalTrackers.indices) {
-				val message = mapper.nodeFactory.objectNode()
-				message.put("type", "pos")
-				message.put("src", "full")
-				message.put("tracker_id", "SlimeVR Tracker ${i + 1}")
-
 				val t = internalTrackers[i]
-				message.put("x", t.position.x)
-				message.put("y", t.position.y)
-				message.put("z", t.position.z)
-				message.put("qx", t.getRotation().x)
-				message.put("qy", t.getRotation().y)
-				message.put("qz", t.getRotation().z)
-				message.put("qw", t.getRotation().w)
-
-				conn.send(message.toString())
+				val rot = t.getRotation()
+				val reply = OutgoingPositionMessage(
+					trackerId = "SlimeVR Tracker ${i + 1}",
+					x = t.position.x,
+					y = t.position.y,
+					z = t.position.z,
+					qx = rot.x,
+					qy = rot.y,
+					qz = rot.z,
+					qw = rot.w,
+				)
+				conn.send(json.encodeToString(reply))
 			}
 		}
 	}
 
-	private fun parseAction(json: ObjectNode, conn: WebSocket) {
-		when (json["name"].asText()) {
+	private fun parseAction(jsonObj: JsonObject) {
+		val action = json.decodeFromJsonElement<IncomingActionMessage>(jsonObj)
+		when (action.name) {
 			"calibrate" -> instance.resetTrackersYaw(RESET_SOURCE_NAME)
 			"full_calibrate" -> instance.resetTrackersFull(RESET_SOURCE_NAME)
 			"mounting_calibrate" -> instance.resetTrackersMounting(RESET_SOURCE_NAME)
@@ -213,25 +221,13 @@ class WebSocketVRBridge(
 
 	override fun onStart() {
 		LogManager.info("[WebSocket] Web Socket VR Bridge started on port $port")
-		connectionLostTimeout = 0
 		connectionLostTimeout = 1
-		// This has to be removed for Android
-		// (keepalive did not work for me @mgschwan)
 	}
 
-	override fun addSharedTracker(tracker: Tracker?) {
-		// TODO Auto-generated method stub
-	}
-
-	override fun removeSharedTracker(tracker: Tracker?) {
-		// TODO Auto-generated method stub
-	}
-
-	override fun startBridge() {
-		start()
-	}
-
-	override fun isConnected(): Boolean = super.getConnections().isNotEmpty()
+	override fun addSharedTracker(tracker: Tracker?) {}
+	override fun removeSharedTracker(tracker: Tracker?) {}
+	override fun startBridge() = start()
+	override fun isConnected(): Boolean = connections.isNotEmpty()
 
 	companion object {
 		private const val RESET_SOURCE_NAME = "WebSocketVRBridge"

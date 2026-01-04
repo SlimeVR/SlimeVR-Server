@@ -1,5 +1,8 @@
 package dev.slimevr.config
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class VMCConfig : OSCConfig() {
 
 	// Anchor the tracking at the hip?
@@ -10,4 +13,9 @@ class VMCConfig : OSCConfig() {
 
 	// Mirror the tracking before sending it (turn left <=> turn right, left leg <=> right leg)
 	var mirrorTracking = false
+
+	init {
+		portIn = 39540
+		portOut = 39539
+	}
 }

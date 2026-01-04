@@ -5,10 +5,9 @@ import com.melloware.jintellitype.JIntellitype
 import dev.slimevr.config.KeybindingsConfig
 import io.eiren.util.OperatingSystem
 import io.eiren.util.OperatingSystem.Companion.currentPlatform
-import io.eiren.util.ann.AWTThread
 import io.eiren.util.logging.LogManager
 
-class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
+class Keybinding(val server: VRServer) : HotkeyListener {
 	val config: KeybindingsConfig = server.configManager.vrConfig.keybindings
 
 	init {
@@ -51,7 +50,6 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 		}
 	}
 
-	@AWTThread
 	override fun onHotKey(identifier: Int) {
 		when (identifier) {
 			FULL_RESET -> server.scheduleResetTrackersFull(RESET_SOURCE_NAME, config.fullResetDelay)

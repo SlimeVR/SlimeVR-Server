@@ -113,20 +113,6 @@ public class RPCSettingsBuilder {
 			);
 	}
 
-	public static int createDriftCompensationSettings(
-		FlatBufferBuilder fbb,
-		DriftCompensationConfig driftCompensationConfig
-	) {
-		return DriftCompensationSettings
-			.createDriftCompensationSettings(
-				fbb,
-				driftCompensationConfig.getEnabled(),
-				driftCompensationConfig.getPrediction(),
-				driftCompensationConfig.getAmount(),
-				driftCompensationConfig.getMaxResets()
-			);
-	}
-
 	public static int createTapDetectionSettings(
 		FlatBufferBuilder fbb,
 		TapDetectionConfig tapDetectionConfig
@@ -212,8 +198,8 @@ public class RPCSettingsBuilder {
 		int skeletonConfigOffset = SkeletonHeight
 			.createSkeletonHeight(
 				fbb,
-				skeletonConfig.getHmdHeight(),
-				skeletonConfig.getFloorHeight()
+				skeletonConfig.hmdHeight,
+				skeletonConfig.floorHeight
 			);
 		return ModelSettings
 			.createModelSettings(
@@ -366,11 +352,7 @@ public class RPCSettingsBuilder {
 						fbb,
 						server.configManager.getVrConfig().getFilters()
 					),
-				RPCSettingsBuilder
-					.createDriftCompensationSettings(
-						fbb,
-						server.configManager.getVrConfig().getDriftCompensation()
-					),
+				0,
 				RPCSettingsBuilder
 					.createOSCRouterSettings(
 						fbb,
@@ -384,7 +366,7 @@ public class RPCSettingsBuilder {
 				RPCSettingsBuilder
 					.createVMCOSCSettings(
 						fbb,
-						server.configManager.getVrConfig().getVMC()
+						server.configManager.getVrConfig().getVmc()
 					),
 				RPCSettingsBuilder
 					.createModelSettings(
