@@ -5,9 +5,10 @@ import com.melloware.jintellitype.JIntellitype
 import dev.slimevr.config.KeybindingsConfig
 import io.eiren.util.OperatingSystem
 import io.eiren.util.OperatingSystem.Companion.currentPlatform
+import io.eiren.util.ann.AWTThread
 import io.eiren.util.logging.LogManager
 
-class Keybinding(val server: VRServer) : HotkeyListener {
+class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 	val config: KeybindingsConfig = server.configManager.vrConfig.keybindings
 
 	init {
