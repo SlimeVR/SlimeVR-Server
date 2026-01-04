@@ -41,7 +41,7 @@ class VRConfig {
 
 	val vrcConfig: VRCConfig = VRCConfig()
 
-	val modelVersion: String = "14"
+	val modelVersion: String = CONFIG_VERSION.toString()
 
 	fun getTracker(tracker: Tracker): TrackerConfig {
 		var config = trackers[tracker.name]
@@ -89,4 +89,8 @@ class VRConfig {
 	fun addKnownDevice(mac: String): Boolean = knownDevices.add(mac)
 
 	fun forgetKnownDevice(mac: String): Boolean = knownDevices.remove(mac)
+
+	companion object {
+		const val CONFIG_VERSION = 14
+	}
 }

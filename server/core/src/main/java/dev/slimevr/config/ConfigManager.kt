@@ -16,8 +16,8 @@ import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.util.stream.Collectors
 
-//The yaml object api is very primitive as it is normally supposed to be only used by kotlinx.serialization
-//ive added some extensions to make our lives easier
+// The yaml object api is very primitive as it is normally supposed to be only used by kotlinx.serialization
+// ive added some extensions to make our lives easier
 private fun YamlMap.toMutable() = this.entries.associate { it.key to it.value }.toMutableMap()
 
 private operator fun Map<YamlElement, YamlElement>.get(key: String): YamlElement? = this[YamlLiteral(key)]
@@ -41,9 +41,8 @@ private fun MutableMap<YamlElement, YamlElement>.updateMap(key: String, block: M
 	this[YamlLiteral(key)] = YamlMap(nestedMap)
 }
 
-fun migrateYamlConfig(modelData: YamlMap, modelVersion: String): YamlMap {
+fun migrateYamlConfig(modelData: YamlMap, version: Int): YamlMap {
 	val config = modelData.toMutable()
-	val version = modelVersion.toIntOrNull() ?: 0
 
 	try {
 		if (version < 7) error("Config version $version is too old to be migrated.")
@@ -56,7 +55,7 @@ fun migrateYamlConfig(modelData: YamlMap, modelVersion: String): YamlMap {
 					"resetMountingBinding" to "mountingResetBinding",
 					"resetDelay" to "fullResetDelay",
 					"quickResetDelay" to "yawResetDelay",
-					"resetMountingDelay" to "mountingResetDelay"
+					"resetMountingDelay" to "mountingResetDelay",
 				)
 				renaming.forEach { (old, new) ->
 					this[old]?.let { value ->
@@ -73,7 +72,7 @@ fun migrateYamlConfig(modelData: YamlMap, modelVersion: String): YamlMap {
 					"quickResetEnabled" to "yawResetEnabled",
 					"resetEnabled" to "fullResetEnabled",
 					"quickResetTaps" to "yawResetTaps",
-					"resetTaps" to "fullResetTaps"
+					"resetTaps" to "fullResetTaps",
 				).forEach { (old, new) ->
 					this[old]?.let { this[new] = it }
 				}
@@ -113,8 +112,7 @@ fun migrateYamlConfig(modelData: YamlMap, modelVersion: String): YamlMap {
 			}
 		}
 
-		config["modelVersion"] = "14"
-
+		config["modelVersion"] = VRConfig.CONFIG_VERSION.toString()
 	} catch (e: Exception) {
 		println("Migration error: ${e.message}")
 	}
@@ -137,6 +135,9 @@ class ConfigManager(private val configPath: String) {
 	lateinit var vrConfig: VRConfig
 		private set
 
+	val tmpCfgFile = Paths.get("$configPath.tmp")!!
+	val cfgFile = Paths.get(configPath)!!
+
 	fun handleMigrations() {
 		val configString = FileSystem.SYSTEM.read(configPath.toPath()) {
 			readUtf8()
@@ -147,8 +148,26 @@ class ConfigManager(private val configPath: String) {
 		val quotedYaml = fixTrackerKeys(cleanedYaml)
 		val configRoot = Yaml.decodeYamlFromString(quotedYaml) as YamlMap
 
-		val migratedElement = migrateYamlConfig(configRoot, configRoot["modelVersion"].toString())
-		println(migratedElement)
+		val currentVersion = configRoot["modelVersion"].toString().toIntOrNull() ?: error("unable to get config version")
+		if (currentVersion < VRConfig.CONFIG_VERSION) {
+			backupConfig(".v$currentVersion")
+
+			LogManager.info("Migrating config from version \"$currentVersion\" to \"${VRConfig.CONFIG_VERSION}\"")
+			val migratedElement = migrateYamlConfig(configRoot, currentVersion)
+			val configStr = Yaml.encodeToString(migratedElement)
+			println("$migratedElement, $configStr")
+
+			writeToTmp(configStr)
+
+			try {
+				atomicMove(tmpCfgFile, cfgFile)
+			} catch (e: IOException) {
+				error(
+					"Unable to move migrated config from \"$tmpCfgFile\" to \"$cfgFile\", reason: ${e.message}",
+				)
+			}
+			LogManager.info("VRConfig migrated to the latest version \"${VRConfig.CONFIG_VERSION}\"")
+		}
 	}
 
 	fun loadConfig() {
@@ -177,10 +196,9 @@ class ConfigManager(private val configPath: String) {
 		}
 	}
 
-	fun backupConfig() {
-		val cfgFile = Paths.get(configPath)
-		val tmpBakCfgFile = Paths.get("$configPath.bak.tmp")
-		val bakCfgFile = Paths.get("$configPath.bak")
+	fun backupConfig(suffix: String = "") {
+		val tmpBakCfgFile = Paths.get("$configPath$suffix.bak.tmp")
+		val bakCfgFile = Paths.get("$configPath$suffix.bak")
 
 		try {
 			Files
@@ -211,44 +229,26 @@ class ConfigManager(private val configPath: String) {
 		}
 	}
 
+	private fun writeToTmp(config: String) {
+		try {
+			val cfgFolder = cfgFile.toAbsolutePath().parent.toFile()
+			if (!cfgFolder.exists() && !cfgFolder.mkdirs()) {
+				error("Unable to create folders for config on path \"$cfgFile\"")
+			}
+			tmpCfgFile.toFile().writeText(config)
+		} catch (e: IOException) {
+			error("Unable to write serialized config to \"$tmpCfgFile\", reason: ${e.message}")
+		}
+	}
+
 	@ThreadSafe
 	@Synchronized
 	fun saveConfig() {
-		val tmpCfgFile = Paths.get("$configPath.tmp")
-		val cfgFile = Paths.get(configPath)
-
 		// Serialize config
 		try {
-			// delete accidental folder caused by PR
-			// https://github.com/SlimeVR/SlimeVR-Server/pull/1176
-			val cfgFileMaybeFolder = cfgFile.toFile()
-			if (cfgFileMaybeFolder.isDirectory()) {
-				try {
-					Files.walk(cfgFile).use { pathStream ->
-						// Can't use .toList() on Android
-						val list = pathStream
-							.sorted(Comparator.reverseOrder())
-							.collect(Collectors.toList())
-						for (path in list) {
-							Files.delete(path)
-						}
-					}
-				} catch (e: IOException) {
-					LogManager
-						.severe(
-							"Unable to delete folder that has same name as the config file on path \"$cfgFile\"",
-						)
-					return
-				}
-			}
-			val cfgFolder = cfgFile.toAbsolutePath().getParent().toFile()
-			if (!cfgFolder.exists() && !cfgFolder.mkdirs()) {
-				LogManager
-					.severe("Unable to create folders for config on path \"$cfgFile\"")
-				return
-			}
-			tmpCfgFile.toFile().writeText(Yaml.encodeToString(VRConfig.serializer(), this.vrConfig))
-		} catch (e: IOException) {
+			val configStr = Yaml.encodeToString(VRConfig.serializer(), this.vrConfig)
+			writeToTmp(configStr)
+		} catch (e: Exception) {
 			LogManager.severe("Unable to write serialized config to \"$tmpCfgFile\"", e)
 			return // Abort write
 		}
