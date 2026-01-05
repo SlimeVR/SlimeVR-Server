@@ -1399,6 +1399,9 @@ firmware_tool-select_source-firmware = Firmware Source
 firmware_tool-select_source-version = Firmware Version
 firmware_tool-select_source-official = Official
 firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-not_selected = No source selected
+firmware_tool-select_source-no_boards = No available boards for this source
+firmware_tool-select_source-no_versions = No available versions for this source
 
 firmware_tool-board_defaults = Configure your board
 firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware
