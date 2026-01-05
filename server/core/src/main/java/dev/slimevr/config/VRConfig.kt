@@ -91,6 +91,6 @@ class VRConfig {
 	fun forgetKnownDevice(mac: String): Boolean = knownDevices.remove(mac)
 
 	companion object {
-		const val CONFIG_VERSION = 14
+		const val CONFIG_VERSION = 15
 	}
 }

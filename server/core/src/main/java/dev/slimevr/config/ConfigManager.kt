@@ -4,17 +4,16 @@ import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.logging.LogManager
 import net.mamoe.yamlkt.Yaml
 import net.mamoe.yamlkt.YamlElement
+import net.mamoe.yamlkt.YamlList
 import net.mamoe.yamlkt.YamlLiteral
 import net.mamoe.yamlkt.YamlMap
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import java.io.IOException
-import java.nio.file.AtomicMoveNotSupportedException
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
-import java.util.stream.Collectors
+import java.nio.file.*
+import kotlin.io.FileAlreadyExistsException
+import kotlin.io.println
+import kotlin.io.writeText
 
 // The yaml object api is very primitive as it is normally supposed to be only used by kotlinx.serialization
 // ive added some extensions to make our lives easier
@@ -23,10 +22,14 @@ private fun YamlMap.toMutable() = this.entries.associate { it.key to it.value }.
 private operator fun Map<YamlElement, YamlElement>.get(key: String): YamlElement? = this[YamlLiteral(key)]
 
 private operator fun MutableMap<YamlElement, YamlElement>.set(key: String, value: Any?) {
+	if (value == null) {
+		this.remove(key)
+		return
+	}
 	this[YamlLiteral(key)] = when (value) {
 		is YamlElement -> value
 		is Number, is Boolean -> YamlLiteral(value.toString())
-		else -> YamlLiteral(value?.toString() ?: "")
+		else -> YamlLiteral(value.toString())
 	}
 }
 
@@ -112,9 +115,15 @@ fun migrateYamlConfig(modelData: YamlMap, version: Int): YamlMap {
 			}
 		}
 
+		if (version < 15) {
+			config.updateMap("trackingChecklist") {
+				this["ignoredStepsIds"] = null
+			}
+		}
+
 		config["modelVersion"] = VRConfig.CONFIG_VERSION.toString()
 	} catch (e: Exception) {
-		println("Migration error: ${e.message}")
+		error("Migration error: ${e.message}")
 	}
 
 	return YamlMap(config)
@@ -155,8 +164,6 @@ class ConfigManager(private val configPath: String) {
 			LogManager.info("Migrating config from version \"$currentVersion\" to \"${VRConfig.CONFIG_VERSION}\"")
 			val migratedElement = migrateYamlConfig(configRoot, currentVersion)
 			val configStr = Yaml.encodeToString(migratedElement)
-			println("$migratedElement, $configStr")
-
 			writeToTmp(configStr)
 
 			try {
