@@ -191,6 +191,7 @@ const config = {
           warning: 'rgb(var(--warning), <alpha-value>)',
           critical: 'rgb(var(--critical), <alpha-value>)',
           special: 'rgb(var(--special), <alpha-value>)',
+          recording: 'rgb(var(--recording), <alpha-value>)',
         },
         window: {
           icon: 'rgb(var(--window-icon-stroke), <alpha-value>)',

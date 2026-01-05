@@ -420,6 +420,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					// If sensorOffset was applied to accel correctly, the axes will already
 					//  be correct for SlimeVR
 					tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
+					tracker.accelDataTick()
 				}
 				tracker.dataTick()
 			}
@@ -454,6 +455,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				// If sensorOffset was applied to accel correctly, the axes will already
 				//  be correct for SlimeVR
 				tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
+				tracker.accelDataTick()
 			}
 
 			is UDPPacket10PingPong -> {

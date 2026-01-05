@@ -14,6 +14,7 @@ export interface ResetSettingsForm {
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
   resetHmdPitch: boolean;
+  stepMounting: boolean;
 }
 
 export const defaultResetSettings = {
@@ -22,6 +23,7 @@ export const defaultResetSettings = {
   yawResetSmoothTime: 0.0,
   saveMountingReset: false,
   resetHmdPitch: false,
+  stepMounting: false,
 };
 
 export function loadResetSettings(resetSettingsForm: ResetSettingsForm) {
@@ -31,6 +33,7 @@ export function loadResetSettings(resetSettingsForm: ResetSettingsForm) {
   resetsSettings.yawResetSmoothTime = resetSettingsForm.yawResetSmoothTime;
   resetsSettings.saveMountingReset = resetSettingsForm.saveMountingReset;
   resetsSettings.resetHmdPitch = resetSettingsForm.resetHmdPitch;
+  resetsSettings.stepMounting = resetSettingsForm.stepMounting;
 
   return resetsSettings;
 }

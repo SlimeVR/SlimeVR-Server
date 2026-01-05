@@ -170,6 +170,11 @@ class Tracker @JvmOverloads constructor(
 	val stayAligned = StayAlignedTrackerState(this)
 	val yawResetSmoothing = InterpolationHandler()
 
+	// Currently only used for accel resets, to add anything else, consider using a
+	//  subscribable event listener instead
+	var accelTickCallback: ((tracker: Tracker) -> Unit)? = null
+	var accelMountInProgress = false
+
 	init {
 		// IMPORTANT: Look here for the required states of inputs
 		require(!allowReset || (hasRotation && allowReset)) {
@@ -274,6 +279,13 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.dataTick(getAdjustedRotation())
 		}
 	}
+
+	/**
+	 * Tells the tracker that it received new accel data
+	 * Accel may be (and usually is) desynced from rotation data, so if we want the
+	 * latest, we need to process it here
+	 */
+	fun accelDataTick() = accelTickCallback?.invoke(this)
 
 	/**
 	 * A way to delay the timeout of the tracker
