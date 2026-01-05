@@ -54,11 +54,11 @@ export function TrackingChecklistSettings({
       // doing it this way prevents calling ignore step for every step.
       // that prevent sending a packet for steps that didnt change
       if (!value && !ignoredSteps.includes(stepId)) {
-        ignoreStep(stepId, true);
+        ignoreStep(stepId, true, false);
       }
 
       if (value && ignoredSteps.includes(stepId)) {
-        ignoreStep(stepId, false);
+        ignoreStep(stepId, false, false);
       }
     }
   };
