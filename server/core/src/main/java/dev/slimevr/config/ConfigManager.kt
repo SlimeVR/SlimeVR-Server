@@ -4,6 +4,7 @@ import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.logging.LogManager
 import net.mamoe.yamlkt.Yaml
 import net.mamoe.yamlkt.YamlElement
+import net.mamoe.yamlkt.YamlList
 import net.mamoe.yamlkt.YamlLiteral
 import net.mamoe.yamlkt.YamlMap
 import okio.FileSystem
@@ -14,8 +15,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import java.util.regex.Pattern
 import kotlin.io.FileAlreadyExistsException
-import kotlin.io.writeText
 
 // The yaml object api is very primitive as it is normally supposed to be only used by kotlinx.serialization
 // ive added some extensions to make our lives easier
@@ -84,11 +85,58 @@ fun migrateYamlConfig(modelData: YamlMap, version: Int): YamlMap {
 			}
 		}
 
+		if (version < 9) {
+			config.updateMap("skeleton") {
+				this.updateMap("offsets") {
+					this["chestLength"] = this["chestLength"].asFloat() / 2f
+					this["upperChestLength"] = this["chestLength"].asFloat() / 2f
+				}
+			}
+		}
+
+		if (version < 10) {
+			// Change default AutoBone recording length from 20 to 30
+			// seconds
+			config.updateMap("autoBone") {
+				if (this["sampleCount"].asInt() == 1000) {
+					this["sampleCount"] = 1500
+				}
+			}
+		}
+
 		if (version < 11) {
 			config.updateMap("trackers") {
 				updateMap("HMD") {
 					this["designation"] = "body:head"
 				}
+			}
+		}
+
+		if (version < 12) {
+			// Update AutoBone defaults
+			config.updateMap("autoBone") {
+				if (this["offsetSlideErrorFactor"].asFloat() == 2.0f) {
+					this["offsetSlideErrorFactor"] = 1f
+				}
+				if (this["bodyProportionErrorFactor"].asFloat() == 0.825f) {
+					this["bodyProportionErrorFactor"] = 0.25f
+				}
+			}
+		}
+
+		if (version < 13) {
+			config.updateMap("trackers") {
+				val macAddressRegex = "udp://((?:[a-zA-Z\\d]{2}:){5}[a-zA-Z\\d]{2})/0"
+				val pattern: Pattern = Pattern.compile(macAddressRegex)
+				val devices = (config["knownDevices"] as? YamlList)?.toMutableList() ?: ArrayList()
+				this.keys.forEach {
+					val trackerId = it.toString()
+					val matcher = pattern.matcher(trackerId)
+					if (matcher.find()) {
+						devices.add(YamlLiteral(matcher.group(1)))
+					}
+				}
+				config["knownDevices"] = YamlList(devices)
 			}
 		}
 
@@ -122,11 +170,11 @@ fun migrateYamlConfig(modelData: YamlMap, version: Int): YamlMap {
 				this["ignoredStepsIds"] = null
 			}
 		}
-
-		config["modelVersion"] = VRConfig.CONFIG_VERSION.toString()
 	} catch (e: Exception) {
 		error("Migration error: ${e.message}")
 	}
+
+	config["modelVersion"] = VRConfig.CONFIG_VERSION.toString()
 
 	return YamlMap(config)
 }
