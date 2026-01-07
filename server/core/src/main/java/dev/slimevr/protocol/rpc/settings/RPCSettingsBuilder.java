@@ -113,20 +113,6 @@ public class RPCSettingsBuilder {
 			);
 	}
 
-	public static int createDriftCompensationSettings(
-		FlatBufferBuilder fbb,
-		DriftCompensationConfig driftCompensationConfig
-	) {
-		return DriftCompensationSettings
-			.createDriftCompensationSettings(
-				fbb,
-				driftCompensationConfig.getEnabled(),
-				driftCompensationConfig.getPrediction(),
-				driftCompensationConfig.getAmount(),
-				driftCompensationConfig.getMaxResets()
-			);
-	}
-
 	public static int createTapDetectionSettings(
 		FlatBufferBuilder fbb,
 		TapDetectionConfig tapDetectionConfig
@@ -366,11 +352,7 @@ public class RPCSettingsBuilder {
 						fbb,
 						server.configManager.getVrConfig().getFilters()
 					),
-				RPCSettingsBuilder
-					.createDriftCompensationSettings(
-						fbb,
-						server.configManager.getVrConfig().getDriftCompensation()
-					),
+				0,
 				RPCSettingsBuilder
 					.createOSCRouterSettings(
 						fbb,

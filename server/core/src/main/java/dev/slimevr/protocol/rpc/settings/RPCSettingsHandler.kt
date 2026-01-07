@@ -77,17 +77,6 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			}
 		}
 
-		if (req.driftCompensation() != null) {
-			val driftCompensationConfig = api.server.configManager
-				.vrConfig
-				.driftCompensation
-			driftCompensationConfig.enabled = req.driftCompensation().enabled()
-			driftCompensationConfig.prediction = req.driftCompensation().prediction()
-			driftCompensationConfig.amount = req.driftCompensation().amount()
-			driftCompensationConfig.maxResets = req.driftCompensation().maxResets()
-			driftCompensationConfig.updateTrackersDriftCompensation()
-		}
-
 		if (req.oscRouter() != null) {
 			val oscRouterConfig = api.server.configManager
 				.vrConfig

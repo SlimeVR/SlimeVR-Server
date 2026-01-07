@@ -141,7 +141,6 @@ class Tracker @JvmOverloads constructor(
 			// the VRServer to recreate the skeleton, as it may need to
 			// assign or un-assign the tracker to a body part
 			VRServer.instance.updateSkeletonModel()
-			VRServer.instance.refreshTrackersDriftCompensationEnabled()
 			VRServer.instance.trackerStatusChanged(this, old, new)
 		}
 	}
@@ -200,16 +199,6 @@ class Tracker @JvmOverloads constructor(
 			// Load manual mounting
 			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it.toValue() }
 		}
-		if (this.isImu() && config.allowDriftCompensation == null) {
-			// If value didn't exist, default to true and save
-			resetsHandler.allowDriftCompensation = true
-			VRServer.instance.configManager.vrConfig.getTracker(this).allowDriftCompensation = true
-			VRServer.instance.configManager.saveConfig()
-		} else {
-			config.allowDriftCompensation?.let {
-				resetsHandler.allowDriftCompensation = it
-			}
-		}
 	}
 
 	/**
@@ -221,9 +210,6 @@ class Tracker @JvmOverloads constructor(
 		if (allowMounting) {
 			// Save manual mounting
 			config.mountingOrientation = resetsHandler.mountingOrientation.toObject()
-		}
-		if (this.isImu()) {
-			config.allowDriftCompensation = resetsHandler.allowDriftCompensation
 		}
 	}
 
@@ -300,7 +286,7 @@ class Tracker @JvmOverloads constructor(
 		// Reset if needed and is not computed and internal
 		return if (allowReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
-			resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
+			resetsHandler.getReferenceAdjustedRotationFrom(rot)
 		} else {
 			rot
 		}
@@ -320,7 +306,7 @@ class Tracker @JvmOverloads constructor(
 		// Reset if needed and is not computed and internal
 		return if (allowReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
-			resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
+			resetsHandler.getReferenceAdjustedRotationFrom(rot)
 		} else {
 			rot
 		}
@@ -342,7 +328,7 @@ class Tracker @JvmOverloads constructor(
 		// Reset if needed or is a computed tracker besides head
 		return if (allowReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset and mounting
-			resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
+			resetsHandler.getIdentityAdjustedRotationFrom(rot)
 		} else {
 			rot
 		}
