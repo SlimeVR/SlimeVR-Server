@@ -10,7 +10,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.*
 
-/** Class taking care of full reset, yaw reset, mounting reset, and drift compensation logic. */
+/** Class taking care of full reset, yaw reset, and mounting reset logic. */
 class TrackerResetsHandler(val tracker: Tracker) {
 
 	private val HalfHorizontal = EulerAngles(
@@ -187,9 +187,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			Quaternion.IDENTITY
 		}
 
-		// Old rot for drift compensation
-		val oldRot = adjustToReference(tracker.getRawRotation())
-		lastResetQuaternion = oldRot
+		// Old rot for drift logging
+		lastResetQuaternion = adjustToReference(tracker.getRawRotation())
 
 		// Adjust raw rotation to mountingOrientation
 		val rotation = tracker.getRawRotation()
@@ -280,9 +279,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			return
 		}
 
-		// Old rot for drift compensation
-		val oldRot = adjustToReference(tracker.getRawRotation())
-		lastResetQuaternion = oldRot
+		// Old rot for drift logging
+		lastResetQuaternion = adjustToReference(tracker.getRawRotation())
 
 		val yawFixOld = yawFix
 		yawFix = fixYaw(tracker.getRawRotation(), reference)

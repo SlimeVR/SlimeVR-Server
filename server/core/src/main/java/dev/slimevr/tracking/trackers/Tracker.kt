@@ -270,7 +270,7 @@ class Tracker @JvmOverloads constructor(
 
 	/**
 	 * Gets the adjusted tracker rotation after the resetsHandler's corrections
-	 * (reset, mounting and drift compensation).
+	 * (reset and mounting).
 	 * This is the rotation that is applied on the SlimeVR skeleton bones.
 	 * Warning: This performs several Quaternion multiplications, so calling
 	 * it too much should be avoided for performance reasons.
@@ -285,7 +285,7 @@ class Tracker @JvmOverloads constructor(
 
 		// Reset if needed and is not computed and internal
 		return if (allowReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
-			// Adjust to reset, mounting and drift compensation
+			// Adjust to reset and mounting
 			resetsHandler.getReferenceAdjustedRotationFrom(rot)
 		} else {
 			rot
@@ -305,7 +305,7 @@ class Tracker @JvmOverloads constructor(
 
 		// Reset if needed and is not computed and internal
 		return if (allowReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
-			// Adjust to reset, mounting and drift compensation
+			// Adjust to reset and mounting
 			resetsHandler.getReferenceAdjustedRotationFrom(rot)
 		} else {
 			rot
@@ -314,7 +314,7 @@ class Tracker @JvmOverloads constructor(
 
 	/**
 	 * Gets the identity-adjusted tracker rotation after the resetsHandler's corrections
-	 * (identity reset, drift and identity mounting).
+	 * (identity reset and identity mounting).
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
