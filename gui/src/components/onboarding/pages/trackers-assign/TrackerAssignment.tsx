@@ -216,7 +216,6 @@ export function TrackersAssignPage() {
       assignreq.bodyPosition = role;
       assignreq.mountingOrientation = rotation;
       assignreq.trackerId = trackerId;
-      assignreq.allowDriftCompensation = false;
 
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     };
