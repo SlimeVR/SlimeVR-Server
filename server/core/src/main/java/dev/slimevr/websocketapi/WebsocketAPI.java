@@ -9,6 +9,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -101,7 +102,7 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 	}
 
 	@Override
-	public Stream<GenericConnection> getAPIConnections() {
+	public @NotNull Stream<GenericConnection> getApiConnections() {
 		return this.getConnections().stream().map(conn -> {
 			var c = conn.<WebsocketConnection>getAttachment();
 			return (GenericConnection) c;
