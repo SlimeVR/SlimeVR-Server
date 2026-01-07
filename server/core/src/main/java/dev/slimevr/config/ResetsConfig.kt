@@ -1,6 +1,7 @@
 package dev.slimevr.config
 
 import dev.slimevr.VRServer
+import kotlinx.serialization.Serializable
 
 enum class ArmsResetModes(val id: Int) {
 	// Upper arm going back and forearm going forward
@@ -47,6 +48,7 @@ enum class MountingMethods(val id: Int) {
 	}
 }
 
+@Serializable
 class ResetsConfig {
 
 	// Always reset mounting for feet

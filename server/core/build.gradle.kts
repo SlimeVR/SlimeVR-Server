@@ -64,10 +64,7 @@ dependencies {
 	// and not exposed to consumers on their own compile classpath.
 	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
 	implementation("commons-cli:commons-cli:1.8.0")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.15.1")
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.1")
 
-	implementation("com.github.jonpeterson:jackson-module-model-versioning:1.2.2")
 	implementation("org.apache.commons:commons-math3:3.6.1")
 	implementation("org.apache.commons:commons-lang3:3.15.0")
 	implementation("org.apache.commons:commons-collections4:4.4")
@@ -75,7 +72,11 @@ dependencies {
 	implementation("com.illposed.osc:javaosc-core:0.8")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
+
+	implementation("com.squareup.okio:okio:3.10.2")
+	implementation("net.mamoe.yamlkt:yamlkt:0.13.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 	implementation("com.mayakapps.kache:kache:2.1.0")
 

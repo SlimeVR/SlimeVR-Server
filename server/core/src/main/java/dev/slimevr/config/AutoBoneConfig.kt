@@ -1,5 +1,8 @@
 package dev.slimevr.config
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class AutoBoneConfig {
 	var cursorIncrement = 2
 	var minDataDistance = 1

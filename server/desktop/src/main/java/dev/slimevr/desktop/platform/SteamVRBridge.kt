@@ -31,7 +31,7 @@ abstract class SteamVRBridge(
 	@VRServerThread
 	override fun startBridge() {
 		for (tr in shareableTrackers) {
-			val role = tr.trackerPosition?.trackerRole
+			val role = tr.trackerPosition?.trackerRole ?: error("invalid state")
 			changeShareSettings(
 				role,
 				config.getBridgeTrackerRole(role, false),

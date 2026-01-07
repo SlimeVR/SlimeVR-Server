@@ -1,7 +1,8 @@
 package dev.slimevr.config
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+@Serializable
 class StayAlignedConfig {
 
 	/**
@@ -19,7 +20,7 @@ class StayAlignedConfig {
 	 *
 	 * Do not serialize to config so that when the server restarts, it is always false.
 	 */
-	@JsonIgnore
+	@Transient
 	var hideYawCorrection = false
 
 	/**

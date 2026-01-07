@@ -51,7 +51,6 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 		}
 	}
 
-	@AWTThread
 	override fun onHotKey(identifier: Int) {
 		when (identifier) {
 			FULL_RESET -> server.scheduleResetTrackersFull(RESET_SOURCE_NAME, config.fullResetDelay)

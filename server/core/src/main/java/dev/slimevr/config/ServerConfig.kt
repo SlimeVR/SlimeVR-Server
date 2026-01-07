@@ -6,13 +6,17 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+@Serializable
 class ServerConfig {
 	val trackerPort: Int = 6969
 
 	var useMagnetometerOnAllTrackers: Boolean = false
 		private set
 
+	@Transient
 	private val magMutex = Mutex()
 	suspend fun defineMagOnAllTrackers(state: Boolean) = coroutineScope {
 		magMutex.lock()

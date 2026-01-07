@@ -3,7 +3,7 @@ package dev.slimevr.config
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LegTweaksConfig {
-	var correctionStrength = 0.3f
-	var alwaysUseFloorclip = false
+class OverlayConfig {
+	var isMirrored: Boolean = false
+	var isVisible: Boolean = false
 }

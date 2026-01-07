@@ -422,7 +422,7 @@ class SkeletonConfigManager(
 				instance.configManager
 					.vrConfig
 					.skeleton
-					.getToggles()
+					.toggles
 					.remove(value.configKey)
 			}
 		}
@@ -445,7 +445,7 @@ class SkeletonConfigManager(
 				instance.configManager
 					.vrConfig
 					.skeleton
-					.getValues()
+					.values
 					.remove(value.configKey)
 			}
 		}
@@ -479,7 +479,7 @@ class SkeletonConfigManager(
 		val skeletonConfig = configManager.vrConfig.skeleton
 
 		// Load offsets
-		val offsets = skeletonConfig.getOffsets()
+		val offsets = skeletonConfig.offsets
 		for (configValue in SkeletonConfigOffsets.values) {
 			val offset = offsets[configValue.configKey]
 			if (offset != null) {
@@ -490,7 +490,7 @@ class SkeletonConfigManager(
 		}
 
 		// Load toggles
-		val toggles = skeletonConfig.getToggles()
+		val toggles = skeletonConfig.toggles
 		for (configValue in SkeletonConfigToggles.values) {
 			val toggle = toggles[configValue.configKey]
 			if (toggle != null) {
@@ -501,7 +501,7 @@ class SkeletonConfigManager(
 		}
 
 		// Load values
-		val values = skeletonConfig.getValues()
+		val values = skeletonConfig.values
 		for (configValue in SkeletonConfigValues.values) {
 			val value = values[configValue.configKey]
 			if (value != null) {
@@ -526,17 +526,17 @@ class SkeletonConfigManager(
 
 		// Write all possible values to keep consistent even if defaults changed
 		for (value in SkeletonConfigOffsets.values) {
-			skeletonConfig.getOffsets()[value.configKey] = getOffset(value)
+			skeletonConfig.offsets[value.configKey] = getOffset(value)
 		}
 
 		// Only write changed values to keep using defaults if not changed
 		for (value in SkeletonConfigToggles.values) {
-			if (changedToggles[value.ordinal]) skeletonConfig.getToggles()[value.configKey] = getToggle(value)
+			if (changedToggles[value.ordinal]) skeletonConfig.toggles[value.configKey] = getToggle(value)
 		}
 
 		// Only write changed values to keep using defaults if not changed
 		for (value in SkeletonConfigValues.values) {
-			if (changedValues[value.ordinal]) skeletonConfig.getValues()[value.configKey] = getValue(value)
+			if (changedValues[value.ordinal]) skeletonConfig.values[value.configKey] = getValue(value)
 		}
 	}
 
