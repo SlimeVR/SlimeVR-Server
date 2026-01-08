@@ -136,17 +136,7 @@ public class DataFeedBuilder {
 
 		// TODO need support: TrackerInfo.addPollRate(fbb, tracker.);
 
-		if (tracker.isImu()) {
-			TrackerInfo.addIsImu(fbb, true);
-			TrackerInfo
-				.addAllowDriftCompensation(
-					fbb,
-					tracker.getResetsHandler().getAllowDriftCompensation()
-				);
-		} else {
-			TrackerInfo.addIsImu(fbb, false);
-			TrackerInfo.addAllowDriftCompensation(fbb, false);
-		}
+		TrackerInfo.addIsImu(fbb, tracker.isImu());
 
 		if (tracker.getAllowMounting()) {
 			Quaternion quaternion = tracker.getResetsHandler().getMountingOrientation();

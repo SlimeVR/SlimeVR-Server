@@ -59,11 +59,6 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		)
 
 		registerPacketListener(
-			RpcMessage.ClearDriftCompensationRequest,
-			::onClearDriftCompensationRequest,
-		)
-
-		registerPacketListener(
 			RpcMessage.RecordBVHRequest,
 			::onRecordBVHRequest,
 		)
@@ -312,24 +307,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			tracker.customName = req.displayName()
 		}
 
-		if (tracker.isImu()) {
-			tracker.resetsHandler.allowDriftCompensation = req.allowDriftCompensation()
-		}
-
 		api.server.trackerUpdated(tracker)
-	}
-
-	fun onClearDriftCompensationRequest(
-		conn: GenericConnection,
-		messageHeader: RpcMessageHeader,
-	) {
-		if (messageHeader
-				.message(ClearDriftCompensationRequest()) !is ClearDriftCompensationRequest
-		) {
-			return
-		}
-
-		api.server.clearTrackersDriftCompensation()
 	}
 
 	fun onLegTweaksTmpChange(

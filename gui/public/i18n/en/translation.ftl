@@ -292,9 +292,6 @@ widget-overlay = Overlay
 widget-overlay-is_visible_label = Show Overlay in SteamVR
 widget-overlay-is_mirrored_label = Display Overlay as Mirror
 
-## Widget: Drift compensation
-widget-drift_compensation-clear = Clear drift compensation
-
 ## Widget: Clear Mounting calibration
 widget-clear_mounting = Clear mounting calibration
 
@@ -384,9 +381,6 @@ tracker-settings-assignment_section-edit = Edit assignment
 tracker-settings-mounting_section = Mounting orientation
 tracker-settings-mounting_section-description = Where is the tracker mounted?
 tracker-settings-mounting_section-edit = Edit mounting
-tracker-settings-drift_compensation_section = Allow drift compensation
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
-tracker-settings-drift_compensation_section-edit = Allow drift compensation
 tracker-settings-use_mag = Allow magnetometer on this tracker
 # Multiline!
 tracker-settings-use_mag-description =
@@ -540,29 +534,6 @@ settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-filtering-amount = Amount
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time (0s disables smoothing)
-settings-general-tracker_mechanics-drift_compensation = Drift compensation
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates for IMU yaw drift by applying an inverse rotation.
-    Change the amount of compensation and the number of resets taken into account.
-    This should only be used if you need to reset very often!
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-prediction = Drift compensation prediction
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    Predicts yaw drift compensation beyond previously measured range.
-    Enable this if your trackers are continuously spinning on the yaw axis.
-settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift compensation prediction
-settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>Warning:</b> Only use drift compensation if you need to reset
-    very often (every ~5-10 minutes).
-
-    Some IMUs prone to frequent resets include:
-    Joy-Cons, owoTrack, and MPUs (without recent firmware).
-settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancel
-settings-general-tracker_mechanics-drift_compensation_warning-done = I understand
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting calibration
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Saves the automatic mounting calibration for the trackers between restarts. Useful
@@ -582,7 +553,6 @@ settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
 settings-stay_aligned-setup-label = Setup Stay Aligned
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
-settings-stay_aligned-warnings-drift_compensation = ⚠ Please turn off Drift Compensation! Drift Compensation will conflict with Stay Aligned.
 settings-stay_aligned-enabled-label = Adjust trackers
 settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare with no Stay Aligned)
 settings-stay_aligned-general-label = General

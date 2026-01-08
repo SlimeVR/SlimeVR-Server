@@ -15,7 +15,6 @@ class TrackerConfig {
 	var adjustment: ObjectQuaternion? = null
 	var mountingOrientation: ObjectQuaternion? = null
 	var mountingResetOrientation: ObjectQuaternion? = null
-	var allowDriftCompensation: Boolean? = null
 
 	/**
 	 * Only checked if [ServerConfig.useMagnetometerOnAllTrackers] enabled
@@ -27,7 +26,6 @@ class TrackerConfig {
 	constructor(tracker: Tracker) {
 		this.designation = if (tracker.trackerPosition != null) tracker.trackerPosition!!.designation else null
 		this.customName = tracker.customName
-		allowDriftCompensation = tracker.isImu()
 		shouldHaveMagEnabled = tracker.isImu()
 	}
 
