@@ -28,18 +28,23 @@ export function ResetButtonIcon(options: UseResetOptions) {
 }
 
 export function ResetButton({
+  onClick,
   className,
   onReseted,
   children,
+  onFailed,
   ...options
 }: {
+  onClick?: () => void;
   className?: string;
   children?: ReactNode;
   onReseted?: () => void;
+  onFailed?: () => void;
 } & UseResetOptions) {
   const { triggerReset, status, timer, disabled, name, error } = useReset(
     options,
-    onReseted
+    onReseted,
+    onFailed
   );
 
   return (
@@ -60,7 +65,10 @@ export function ResetButton({
     >
       <Button
         icon={<ResetButtonIcon {...options} />}
-        onClick={triggerReset}
+        onClick={() => {
+          if (onClick) onClick();
+          triggerReset();
+        }}
         className={classNames(
           'border-2 py-[5px]',
           status === 'finished'

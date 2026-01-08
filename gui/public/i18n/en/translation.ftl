@@ -1352,6 +1352,7 @@ onboarding-stay_aligned-previous_step = Previous
 onboarding-stay_aligned-next_step = Next
 onboarding-stay_aligned-restart = Restart
 onboarding-stay_aligned-done = Done
+onboarding-stay_aligned-manual_mounting-done = Done
 
 ## Home
 home-no_trackers = No trackers detected or assigned
