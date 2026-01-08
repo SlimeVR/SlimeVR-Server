@@ -112,7 +112,6 @@ export function TrackersAssignPage() {
         null,
         null,
         null,
-        null,
         newTapSettings
       )
     );
@@ -122,7 +121,6 @@ export function TrackersAssignPage() {
       sendRPCPacket(
         RpcMessage.ChangeSettingsRequest,
         new ChangeSettingsRequestT(
-          null,
           null,
           null,
           null,
