@@ -352,7 +352,6 @@ public class RPCSettingsBuilder {
 						fbb,
 						server.configManager.getVrConfig().getFilters()
 					),
-				0,
 				RPCSettingsBuilder
 					.createOSCRouterSettings(
 						fbb,
