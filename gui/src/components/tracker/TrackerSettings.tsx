@@ -383,7 +383,10 @@ export function TrackerSettingsPage() {
                     {l10n.getString('tracker-infos-packet_loss')}
                   </Typography>
                   <Typography>
-                    {((tracker?.device?.hardwareStatus?.packetLoss ?? 0) * 100).toFixed(0)}%
+                    {(
+                      (tracker?.device?.hardwareStatus?.packetLoss ?? 0) * 100
+                    ).toFixed(0)}
+                    %
                   </Typography>
                 </div>
                 <div className="flex justify-between">
