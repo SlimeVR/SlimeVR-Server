@@ -112,7 +112,6 @@ export function TrackersAssignPage() {
         null,
         null,
         null,
-        null,
         newTapSettings
       )
     );
@@ -122,7 +121,6 @@ export function TrackersAssignPage() {
       sendRPCPacket(
         RpcMessage.ChangeSettingsRequest,
         new ChangeSettingsRequestT(
-          null,
           null,
           null,
           null,
@@ -216,7 +214,6 @@ export function TrackersAssignPage() {
       assignreq.bodyPosition = role;
       assignreq.mountingOrientation = rotation;
       assignreq.trackerId = trackerId;
-      assignreq.allowDriftCompensation = false;
 
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     };

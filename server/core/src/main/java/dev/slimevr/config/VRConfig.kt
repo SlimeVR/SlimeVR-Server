@@ -19,8 +19,6 @@ class VRConfig {
 
 	val filters: FiltersConfig = FiltersConfig()
 
-	val driftCompensation: DriftCompensationConfig = DriftCompensationConfig()
-
 	val oscRouter: OSCConfig = OSCConfig()
 
 	val vrcOSC: VRCOSCConfig = VRCOSCConfig()
@@ -108,7 +106,6 @@ class VRConfig {
 		if (tracker.userEditable) {
 			val config = getTracker(tracker)
 			tracker.readConfig(config)
-			if (tracker.isImu()) tracker.resetsHandler.readDriftCompensationConfig(driftCompensation)
 			tracker.resetsHandler.readResetConfig(resetsConfig)
 			if (tracker.allowReset) {
 				tracker.saveMountingResetOrientation(config)

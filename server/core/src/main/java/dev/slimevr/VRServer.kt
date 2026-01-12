@@ -223,7 +223,6 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.trackerUpdated(tracker)
 			updateSkeletonModel()
-			refreshTrackersDriftCompensationEnabled()
 			configManager.vrConfig.writeTrackerConfig(tracker)
 			configManager.saveConfig()
 		}
@@ -281,7 +280,6 @@ class VRServer @JvmOverloads constructor(
 		if (tracker.isComputed) {
 			vMCHandler.addComputedTracker(tracker)
 		}
-		refreshTrackersDriftCompensationEnabled()
 	}
 
 	@ThreadSecure
@@ -439,22 +437,6 @@ class VRServer @JvmOverloads constructor(
 			}
 		}
 		return null
-	}
-
-	fun clearTrackersDriftCompensation() {
-		for (t in allTrackers) {
-			if (t.isImu()) {
-				t.resetsHandler.clearDriftCompensation()
-			}
-		}
-	}
-
-	fun refreshTrackersDriftCompensationEnabled() {
-		for (t in allTrackers) {
-			if (t.isImu()) {
-				t.resetsHandler.refreshDriftCompensationEnabled()
-			}
-		}
 	}
 
 	fun trackerStatusChanged(tracker: Tracker, oldStatus: TrackerStatus, newStatus: TrackerStatus) {
