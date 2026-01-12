@@ -27,6 +27,7 @@ class HIDCommon {
 	companion object {
 		const val HID_TRACKER_RECEIVER_VID = 0x1209
 		const val HID_TRACKER_RECEIVER_PID = 0x7690
+		const val HID_TRACKER_PID = 0x7692
 
 		const val PACKET_SIZE = 16
 
@@ -154,6 +155,10 @@ class HIDCommon {
 			var svr_status: Int? = null
 			// var status: Int? = null // raw status from tracker
 			var rssi: Int? = null
+			var packets_received: Int? = null
+			var packets_lost: Int? = null
+			var windows_hit: Int? = null
+			var windows_missed: Int? = null
 
 			// Tracker packets
 			when (packetType) {
@@ -208,6 +213,10 @@ class HIDCommon {
 				3 -> { // status
 					svr_status = dataReceived[i + 2].toUByte().toInt()
 					// status = dataReceived[i + 3].toUByte().toInt()
+					packets_received = dataReceived[i + 4].toUByte().toInt()
+					packets_lost = dataReceived[i + 5].toUByte().toInt()
+					windows_hit = dataReceived[i + 6].toUByte().toInt()
+					windows_missed = dataReceived[i + 7].toUByte().toInt()
 					rssi = dataReceived[i + 15].toUByte().toInt()
 				}
 
@@ -307,6 +316,11 @@ class HIDCommon {
 			}
 			if (rssi != null) {
 				tracker.signalStrength = -rssi
+			}
+			if (packets_received != null && packets_lost != null) {
+				tracker.packetsReceived = packets_received
+				tracker.packetsLost = packets_lost
+				tracker.packetLoss = if (packets_lost == 0) 0.0f else packets_lost.toFloat() / (packets_received + packets_lost).toFloat()
 			}
 
 			// Assign rotation and acceleration

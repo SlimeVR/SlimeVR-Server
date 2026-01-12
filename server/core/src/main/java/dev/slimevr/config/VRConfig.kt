@@ -30,6 +30,8 @@ class VRConfig {
 
 	val stayAlignedConfig = StayAlignedConfig()
 
+	val hidConfig = HIDConfig()
+
 	private val trackers: MutableMap<String, TrackerConfig> = HashMap()
 
 	private val bridges: MutableMap<String, BridgeConfig> = HashMap()

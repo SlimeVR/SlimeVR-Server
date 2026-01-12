@@ -10,7 +10,7 @@ export function TipBox({
   whitespace = false,
   className,
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   hideIcon?: boolean;
   whitespace?: boolean;
   className?: string;

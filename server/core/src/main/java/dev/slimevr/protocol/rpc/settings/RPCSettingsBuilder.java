@@ -394,6 +394,11 @@ public class RPCSettingsBuilder {
 					.createStayAlignedSettings(
 						fbb,
 						server.configManager.getVrConfig().getStayAlignedConfig()
+					),
+				RPCSettingsBuilderKotlin.INSTANCE
+					.createHIDSettings(
+						fbb,
+						server.configManager.getVrConfig().getHidConfig()
 					)
 			);
 	}

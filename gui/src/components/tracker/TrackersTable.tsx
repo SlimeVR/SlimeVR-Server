@@ -245,6 +245,10 @@ function Row({
                   ping={device?.hardwareStatus?.ping}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
                   textColor={fontColor}
+                  showPacketLoss
+                  packetLoss={device.hardwareStatus.packetLoss}
+                  packetsLost={device.hardwareStatus.packetsLost}
+                  packetsReceived={device.hardwareStatus.packetsReceived}
                 />
               )}
             </Cell>
@@ -356,6 +360,7 @@ export function TrackersTable({
           <Header name={'tracker-table-column-type'} />
           <Header name={'tracker-table-column-battery'} />
           <Header name={'tracker-table-column-ping'} />
+          <Header name={'tracker-table-column-packet_loss'} />
           <Header name={'tracker-table-column-tps'} />
           <Header name={'tracker-table-column-rotation'} />
           <Header name={'tracker-table-column-temperature'} last={!moreInfo} />
