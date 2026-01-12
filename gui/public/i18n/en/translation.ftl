@@ -109,6 +109,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
+board_type-GESTURES = Gestures
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generic nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 skeleton_bone-NONE = None
@@ -412,6 +417,7 @@ tracker-settings-update = Update now
 tracker-settings-update-title = Firmware version
 tracker-settings-current-version = Current
 tracker-settings-latest-version = Latest
+tracker-settings-build-date = Build Date
 
 
 ## Tracker part card info
@@ -572,6 +578,10 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
     Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
+settings-general-tracker_mechanics-trackers_over_usb = Trackers over USB
+settings-general-tracker_mechanics-trackers_over_usb-description =
+    Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
 
 settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
@@ -1347,6 +1357,7 @@ onboarding-stay_aligned-previous_step = Previous
 onboarding-stay_aligned-next_step = Next
 onboarding-stay_aligned-restart = Restart
 onboarding-stay_aligned-done = Done
+onboarding-stay_aligned-manual_mounting-done = Done
 
 ## Home
 home-no_trackers = No trackers detected or assigned
@@ -1398,6 +1409,9 @@ firmware_tool-select_source-firmware = Firmware Source
 firmware_tool-select_source-version = Firmware Version
 firmware_tool-select_source-official = Official
 firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-not_selected = No source selected
+firmware_tool-select_source-no_boards = No available boards for this source
+firmware_tool-select_source-no_versions = No available versions for this source
 
 firmware_tool-board_defaults = Configure your board
 firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware

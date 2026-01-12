@@ -10,8 +10,8 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 
 @JsonVersionedModel(
-	currentVersion = "14",
-	defaultDeserializeToVersion = "14",
+	currentVersion = "15",
+	defaultDeserializeToVersion = "15",
 	toCurrentConverterClass = CurrentVRConfigConverter::class,
 )
 class VRConfig {
@@ -41,6 +41,8 @@ class VRConfig {
 	val resetsConfig: ResetsConfig = ResetsConfig()
 
 	val stayAlignedConfig = StayAlignedConfig()
+
+	val hidConfig = HIDConfig()
 
 	@JsonDeserialize(using = TrackerConfigMapDeserializer::class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)

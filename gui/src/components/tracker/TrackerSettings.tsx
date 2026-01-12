@@ -209,6 +209,15 @@ export function TrackerSettingsPage() {
               </Typography>
               <div className="flex gap-2 flex-col">
                 <div className="flex justify-between gap-2">
+                  <Typography id="tracker-settings-build-date" />
+                  <Typography
+                    whitespace="whitespace-pre-wrap"
+                    textAlign="text-end"
+                  >
+                    {tracker?.device?.hardwareInfo?.firmwareDate || '--'}
+                  </Typography>
+                </div>
+                <div className="flex justify-between gap-2">
                   <Typography id="tracker-settings-current-version" />
                   <Typography
                     whitespace="whitespace-pre-wrap"

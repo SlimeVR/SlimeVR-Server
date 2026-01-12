@@ -397,7 +397,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		} catch (e: Exception) {
 			e.printStackTrace()
 		} finally {
-			Util.close(socket)
+			if (::socket.isInitialized) {
+				Util.close(socket)
+			}
 		}
 	}
 
@@ -415,9 +417,13 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				if (tracker == null) return
 				tracker.setRotation(rot)
 				if (packet is UDPPacket23RotationAndAcceleration) {
-					// If sensorOffset was applied to accel correctly, the axes will already
-					//  be correct for SlimeVR
-					tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
+					// sensorOffset is applied correctly since protocol 22
+					// See: https://github.com/SlimeVR/SlimeVR-Tracker-ESP/pull/480
+					if (connection.protocolVersion >= 22) {
+						tracker.setAcceleration(packet.acceleration)
+					} else {
+						tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
+					}
 				}
 				tracker.dataTick()
 			}
@@ -449,9 +455,13 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			is UDPPacket4Acceleration -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				// If sensorOffset was applied to accel correctly, the axes will already
-				//  be correct for SlimeVR
-				tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
+				// sensorOffset is applied correctly since protocol 22
+				// See: https://github.com/SlimeVR/SlimeVR-Tracker-ESP/pull/480
+				if (connection.protocolVersion >= 22) {
+					tracker.setAcceleration(packet.acceleration)
+				} else {
+					tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
+				}
 			}
 
 			is UDPPacket10PingPong -> {

@@ -1,7 +1,9 @@
 package dev.slimevr.protocol.rpc.settings
 
 import com.google.flatbuffers.FlatBufferBuilder
+import dev.slimevr.config.HIDConfig
 import dev.slimevr.config.StayAlignedConfig
+import solarxr_protocol.rpc.HIDSettings
 import solarxr_protocol.rpc.StayAlignedSettings
 
 object RPCSettingsBuilderKotlin {
@@ -28,5 +30,14 @@ object RPCSettingsBuilderKotlin {
 			config.flatRelaxedPose.lowerLegAngleInDeg,
 			config.flatRelaxedPose.footAngleInDeg,
 			config.setupComplete,
+		)
+
+	fun createHIDSettings(
+		fbb: FlatBufferBuilder,
+		config: HIDConfig,
+	): Int = HIDSettings
+		.createHIDSettings(
+			fbb,
+			config.trackersOverHID,
 		)
 }
