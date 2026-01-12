@@ -571,7 +571,7 @@ class HumanPoseManager(val server: VRServer?) {
 	@JvmOverloads
 	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>? = null) {
 		val finalBodyParts = bodyParts
-			?: if (server?.configManager?.vrConfig?.resetsConfig?.resetMountingFeet == true) {
+			?: if (server?.configManager?.config?.resetsConfig?.resetMountingFeet == true) {
 				TrackerUtils.allBodyPartsButFingers
 			} else {
 				TrackerUtils.allBodyPartsButFingersAndFeets

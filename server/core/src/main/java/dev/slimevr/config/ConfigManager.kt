@@ -15,7 +15,10 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import java.util.concurrent.locks.ReentrantReadWriteLock
 import java.util.regex.Pattern
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 import kotlin.io.FileAlreadyExistsException
 
 // The yaml object api is very primitive as it is normally supposed to be only used by kotlinx.serialization
@@ -191,8 +194,22 @@ fun fixTrackerKeys(input: String): String {
 }
 
 class ConfigManager(private val configPath: String) {
-	lateinit var vrConfig: VRConfig
-		private set
+	private lateinit var vrConfig: VRConfig
+
+	private val lock = ReentrantReadWriteLock()
+
+	fun get(block: (VRConfig) -> Unit) {
+		lock.read {
+			return block(vrConfig)
+		}
+	}
+
+	fun mutate(block: (VRConfig) -> Unit) {
+		lock.write {
+			block(vrConfig)
+		}
+	}
+
 
 	val tmpCfgFile = Paths.get("$configPath.tmp")!!
 	val cfgFile = Paths.get(configPath)!!

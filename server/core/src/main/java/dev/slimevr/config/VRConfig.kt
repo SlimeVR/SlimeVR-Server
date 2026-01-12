@@ -2,6 +2,7 @@ package dev.slimevr.config
 
 import dev.slimevr.tracking.trackers.Tracker
 import kotlinx.serialization.Serializable
+import kotlin.concurrent.write
 
 @Serializable
 class VRConfig {
