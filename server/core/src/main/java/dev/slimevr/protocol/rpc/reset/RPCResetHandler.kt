@@ -40,23 +40,23 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 
 		if (req.resetType() == ResetType.Yaw) {
 			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (resetsConfig.yawResetDelay * 1000).toLong())
+				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, ((req.delay() ?: resetsConfig.yawResetDelay) * 1000).toLong())
 			} else {
-				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (resetsConfig.yawResetDelay * 1000).toLong(), bodyParts.toList())
+				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, ((req.delay() ?: resetsConfig.yawResetDelay) * 1000).toLong(), bodyParts.toList())
 			}
 		}
 		if (req.resetType() == ResetType.Full) {
 			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (resetsConfig.fullResetDelay * 1000).toLong())
+				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, ((req.delay() ?: resetsConfig.fullResetDelay) * 1000).toLong())
 			} else {
-				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (resetsConfig.fullResetDelay * 1000).toLong(), bodyParts.toList())
+				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, ((req.delay() ?: resetsConfig.fullResetDelay) * 1000).toLong(), bodyParts.toList())
 			}
 		}
 		if (req.resetType() == ResetType.Mounting) {
 			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (resetsConfig.mountingResetDelay * 1000).toLong())
+				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, ((req.delay() ?: resetsConfig.mountingResetDelay) * 1000).toLong())
 			} else {
-				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (resetsConfig.mountingResetDelay * 1000).toLong(), bodyParts.toList())
+				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, ((req.delay() ?: resetsConfig.mountingResetDelay) * 1000).toLong(), bodyParts.toList())
 			}
 		}
 	}
