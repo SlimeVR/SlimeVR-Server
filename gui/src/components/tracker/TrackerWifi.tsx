@@ -1,15 +1,24 @@
 import { WifiIcon } from '@/components/commons/icon/WifiIcon';
 import { Typography } from '@/components/commons/Typography';
+import { Tooltip } from '@/components/commons/Tooltip';
 
 export function TrackerWifi({
   rssi,
   ping,
   rssiShowNumeric,
   disabled,
+  packetLoss,
+  packetsLost,
+  packetsReceived,
+  showPacketLoss = false,
   textColor = 'primary',
 }: {
   rssi: number | null;
   ping: number | null;
+  packetLoss?: number | null;
+  packetsLost?: number | null;
+  packetsReceived?: number | null;
+  showPacketLoss?: boolean;
   rssiShowNumeric?: boolean;
   disabled?: boolean;
   textColor?: string;
@@ -30,6 +39,17 @@ export function TrackerWifi({
             <Typography color={textColor} whitespace="whitespace-nowrap">
               {rssi} dBm
             </Typography>
+          )}
+          {showPacketLoss && packetsReceived != null && (
+            <Tooltip
+              preferedDirection="top"
+              content={<Typography id="tracker-infos-packet_loss" />}
+            >
+              <Typography
+                color={textColor}
+                whitespace="whitespace-nowrap"
+              >{`${((packetLoss ?? 0) * 100).toFixed(0)}% (${packetsLost ?? 0} / ${packetsReceived})`}</Typography>
+            </Tooltip>
           )}
         </div>
       )) || (

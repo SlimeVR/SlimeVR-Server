@@ -1,32 +1,33 @@
+import { useState } from 'react';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { ResetType } from 'solarxr-protocol';
 import { ResetButton } from '@/components/home/ResetButton';
-import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
-
+import { BaseModal } from '@/components/commons/BaseModal';
+import { ManualMountingPageStayAligned } from '@/components/onboarding/pages/mounting/ManualMounting';
 export function VerifyMountingStep({
   nextStep,
   prevStep,
 }: VerticalStepComponentProps) {
   const { isMobile } = useBreakpoint('mobile');
-  const { l10n } = useLocalization();
+  const [isOpen, setOpen] = useState(false);
+  const [disableMounting, setDisableMounting] = useState(false);
+
+  const goNextStep = () => {
+    setDisableMounting(false);
+    setOpen(false);
+    nextStep();
+  };
+
   return (
     <div className="flex flex-col flex-grow justify-between py-2 gap-2">
       <div className="flex flex-col flex-grow">
         <div className="flex flex-grow flex-col gap-4 max-w-sm">
           <div className="flex flex-col gap-2">
-            <Typography>
-              {l10n.getString(
-                'onboarding-automatic_mounting-mounting_reset-step-0'
-              )}
-            </Typography>
-            <Typography>
-              {l10n.getString(
-                'onboarding-automatic_mounting-mounting_reset-step-1'
-              )}
-            </Typography>
+            <Typography id="onboarding-automatic_mounting-mounting_reset-step-0" />
+            <Typography id="onboarding-automatic_mounting-mounting_reset-step-1" />
           </div>
         </div>
 
@@ -50,13 +51,36 @@ export function VerifyMountingStep({
           </div>
         )}
         <div className="flex gap-3 justify-between">
-          <Button variant={'secondary'} onClick={prevStep}>
-            {l10n.getString('onboarding-automatic_mounting-prev_step')}
-          </Button>
+          <Button
+            variant={'secondary'}
+            onClick={prevStep}
+            id="onboarding-automatic_mounting-prev_step"
+          />
+          <Button
+            disabled={disableMounting}
+            variant={'secondary'}
+            className="self-start mt-auto"
+            onClick={() => setOpen(true)}
+            id="onboarding-automatic_mounting-manual_mounting"
+          />
+          <BaseModal isOpen={isOpen} onRequestClose={() => setOpen(false)}>
+            <ManualMountingPageStayAligned>
+              <div className="flex flex-row gap-3 mt-auto">
+                <Button
+                  variant="primary"
+                  onClick={goNextStep}
+                  id="onboarding-stay_aligned-manual_mounting-done"
+                />
+              </div>
+            </ManualMountingPageStayAligned>
+          </BaseModal>
+
           <ResetButton
+            onClick={() => setDisableMounting(true)}
             type={ResetType.Mounting}
             group="default"
-            onReseted={nextStep}
+            onReseted={goNextStep}
+            onFailed={() => setDisableMounting(false)}
           />
         </div>
       </div>

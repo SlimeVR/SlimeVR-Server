@@ -354,6 +354,12 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			config.flatRelaxedPose.footAngleInDeg = requestConfig.flatFootAngle()
 		}
 
+		if (req.hidSettings() != null) {
+			val config = api.server.configManager.vrConfig.hidConfig
+			val requestConfig = req.hidSettings()
+			config.trackersOverHID = requestConfig.trackersOverHid()
+		}
+
 		api.server.configManager.saveConfig()
 	}
 
