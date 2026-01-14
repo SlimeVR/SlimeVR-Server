@@ -340,6 +340,15 @@ fun createDeviceData(
 	if (tracker.signalStrength != null) {
 		HardwareStatus.addRssi(fbb, tracker.signalStrength!!.toShort())
 	}
+	if (tracker.packetLoss != null) {
+		HardwareStatus.addPacketLoss(fbb, tracker.packetLoss!!)
+	}
+	if (tracker.packetsLost != null) {
+		HardwareStatus.addPacketsLost(fbb, tracker.packetsLost!!)
+	}
+	if (tracker.packetsReceived != null) {
+		HardwareStatus.addPacketsReceived(fbb, tracker.packetsReceived!!)
+	}
 
 	val hardwareDataOffset = HardwareStatus.endHardwareStatus(fbb)
 	val hardwareInfoOffset = createHardwareInfo(fbb, device)
