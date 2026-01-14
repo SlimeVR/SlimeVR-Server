@@ -3,7 +3,7 @@ package dev.slimevr.protocol.rpc.setup
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
-import dev.slimevr.protocol.datafeed.DataFeedBuilder
+import dev.slimevr.protocol.datafeed.createTrackerId
 import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.setup.TapSetupListener
 import dev.slimevr.tracking.trackers.Tracker
@@ -20,7 +20,7 @@ class RPCTapSetupHandler(
 
 	override fun onStarted(tracker: Tracker) {
 		val fbb = FlatBufferBuilder(32)
-		val idOffset = DataFeedBuilder.createTrackerId(fbb, tracker)
+		val idOffset = createTrackerId(fbb, tracker)
 		val update = TapDetectionSetupNotification.createTapDetectionSetupNotification(fbb, idOffset)
 		val outbound =
 			rpcHandler.createRPCMessage(fbb, RpcMessage.TapDetectionSetupNotification, update)
