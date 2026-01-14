@@ -14,7 +14,6 @@ export function Keybind({
     label,
     name
 }: KeybindProps) {
-  const [key, setKey] = useState('');
   const [recordedKeybind, setRecordedKeybind] = useState<string[]>([]);
   const keyCountRef = useRef(0);
   const ref = useRef<HTMLInputElement>(null);
@@ -22,7 +21,6 @@ export function Keybind({
   const handleKeyDown = (event: any) => {
     console.log("HEY")
     if (keyCountRef.current < 3) {
-      setKey(event.key);
       setRecordedKeybind((curr) => [...curr, event.key]);
       keyCountRef.current++;
     }
@@ -42,7 +40,7 @@ export function Keybind({
   return (
     <label className="flex flex-col gap-1">
         {label}
-      <div className="relative w-full flex gap-2 items-center hover:border-purple-400" onClick={setFocus}>
+      <div className="relative w-full flex gap-2 items-center" onClick={setFocus}>
         <input
           className="opacity-0 absolute"
           onKeyDown={handleKeyDown}
