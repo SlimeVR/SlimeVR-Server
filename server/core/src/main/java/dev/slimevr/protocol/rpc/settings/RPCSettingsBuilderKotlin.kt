@@ -2,8 +2,10 @@ package dev.slimevr.protocol.rpc.settings
 
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.config.HIDConfig
+import dev.slimevr.config.KeybindingsConfig
 import dev.slimevr.config.StayAlignedConfig
 import solarxr_protocol.rpc.HIDSettings
+import solarxr_protocol.rpc.KeybindSettings
 import solarxr_protocol.rpc.StayAlignedSettings
 
 object RPCSettingsBuilderKotlin {
@@ -40,4 +42,14 @@ object RPCSettingsBuilderKotlin {
 			fbb,
 			config.trackersOverHID,
 		)
+
+	fun createKeybindSettings(
+		fbb: FlatBufferBuilder,
+		config: KeybindingsConfig,
+	): Int = KeybindSettings
+		.createKeybindSettings(
+		fbb,
+			config.
+
+	)
 }

@@ -417,6 +417,11 @@ public class RPCSettingsBuilder {
 					.createHIDSettings(
 						fbb,
 						server.configManager.getVrConfig().getHidConfig()
+					),
+				RPCSettingsBuilderKotlin.INSTANCE
+					.createKeybindSettings(
+						fbb,
+						server.configManager.getVrConfig().getKeybindings()
 					)
 			);
 	}

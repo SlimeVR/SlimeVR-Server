@@ -1,5 +1,12 @@
 package dev.slimevr.config;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.util.CompactStringObjectMap;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class KeybindingsConfig {
 
 	private String fullResetBinding = "CTRL+ALT+SHIFT+Y";
@@ -18,10 +25,13 @@ public class KeybindingsConfig {
 
 	private long pauseTrackingDelay = 0L;
 
+	public Map<String, String> keybinds = new HashMap<>();
 
 	public KeybindingsConfig() {
 	}
 
+	public Map<String, String> getKeybindings() { return keybinds; }
+	
 	public String getFullResetBinding() {
 		return fullResetBinding;
 	}

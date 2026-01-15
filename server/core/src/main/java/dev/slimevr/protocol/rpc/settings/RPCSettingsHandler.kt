@@ -375,6 +375,12 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			config.trackersOverHID = requestConfig.trackersOverHid()
 		}
 
+		if (req.keybindSettings() != null) {
+			println("got keybind settings request")
+			var config = api.server.configManager.vrConfig.keybindings
+			println(config)
+		}
+
 		api.server.configManager.saveConfig()
 	}
 
@@ -391,7 +397,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)

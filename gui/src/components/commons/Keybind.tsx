@@ -1,5 +1,6 @@
 import { useState, useRef, forwardRef, useEffect } from 'react';
 import { FieldError } from 'react-hook-form';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from './Button';
 import { ClearIcon } from './icon/ClearIcon';
 
@@ -17,6 +18,7 @@ export function Keybind({
   const [recordedKeybind, setRecordedKeybind] = useState<string[]>([]);
   const keyCountRef = useRef(0);
   const ref = useRef<HTMLInputElement>(null);
+  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const handleKeyDown = (event: any) => {
     console.log("HEY")
