@@ -42,15 +42,15 @@ object RPCSettingsBuilderKotlin {
 			fbb,
 			config.trackersOverHID,
 		)
-	/*
+
 	fun createKeybindSettings(
 		fbb: FlatBufferBuilder,
-		config: KeybindingsConfig,
+		config: KeybindingsConfig
 	): Int = KeybindSettings
 		.createKeybindSettings(
-		fbb,
-			config.
-
-	)
-	 */
+			fbb,
+			config.keybind,
+			fbb.createString(config.getKeybindValue()),
+			config.yawResetDelay
+		)
 }

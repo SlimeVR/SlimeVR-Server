@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class KeybindingsConfig {
 
+	private Keybind keybind;
+
 	private String fullResetBinding = "CTRL+ALT+SHIFT+Y";
 
 	private String yawResetBinding = "CTRL+ALT+SHIFT+U";
@@ -25,27 +27,64 @@ public class KeybindingsConfig {
 
 	private long pauseTrackingDelay = 0L;
 
-	public Map<String, String> keybinds = new HashMap<>();
+	public KeybindingsConfig() {}
 
-	public KeybindingsConfig() {
+	/*
+	public Int getKeybindId() {
+		return keybind;
+	}
+	 */
+
+	public String getKeybindValue() {
+		return switch (keybind) {
+			case FullResetBinding -> fullResetBinding;
+			case YawResetBinding -> yawResetBinding;
+			case MountingResetBinding -> mountingResetBinding;
+			case PauseTrackingBinding -> pauseTrackingBinding;
+			default -> "";
+		};
 	}
 
-	public Map<String, String> getKeybindings() { return keybinds; }
-	
+	public Long getDelay() {
+		return switch (keybind) {
+			case FullResetBinding -> fullResetDelay;
+			case YawResetBinding -> yawResetDelay;
+			case MountingResetBinding -> mountingResetDelay;
+			case PauseTrackingBinding -> pauseTrackingDelay;
+			default -> 0L;
+		};
+	}
+
 	public String getFullResetBinding() {
 		return fullResetBinding;
+	}
+
+	public void setFullResetBinding(String fullResetBinding) {
+		this.fullResetBinding = fullResetBinding;
 	}
 
 	public String getYawResetBinding() {
 		return yawResetBinding;
 	}
 
+	public void setYawResetBinding(String yawResetBinding) {
+		this.yawResetBinding = yawResetBinding;
+	}
+
 	public String getMountingResetBinding() {
 		return mountingResetBinding;
 	}
 
+	public void setMountingResetBinding(String mountingResetBinding) {
+		this.mountingResetBinding = mountingResetBinding;
+	}
+
 	public String getPauseTrackingBinding() {
 		return pauseTrackingBinding;
+	}
+
+	public void setPauseTrackingBinding(String pauseTrackingBinding) {
+		this.pauseTrackingBinding = pauseTrackingBinding;
 	}
 
 	public long getFullResetDelay() {
@@ -78,5 +117,12 @@ public class KeybindingsConfig {
 
 	public void setPauseTrackingDelay(long delay) {
 		pauseTrackingDelay = delay;
+	}
+
+	public enum Keybind {
+		FullResetBinding,
+		YawResetBinding,
+		MountingResetBinding,
+		PauseTrackingBinding
 	}
 }

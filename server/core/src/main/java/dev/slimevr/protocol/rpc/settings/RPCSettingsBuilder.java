@@ -354,6 +354,17 @@ public class RPCSettingsBuilder {
 			);
 	}
 
+	public static int createKeybindSettings(
+		FlatBufferBuilder fbb,
+		KeybindingsConfig keybindingsConfig
+	) {
+		return KeybindSettings
+			.createKeybindSettings(
+				fbb,
+				keybindingsConfig.
+			)
+	}
+
 	public static int createSettingsResponse(FlatBufferBuilder fbb, VRServer server) {
 		ISteamVRBridge bridge = server.getVRBridge(ISteamVRBridge.class);
 
@@ -417,11 +428,6 @@ public class RPCSettingsBuilder {
 					.createHIDSettings(
 						fbb,
 						server.configManager.getVrConfig().getHidConfig()
-					),
-				RPCSettingsBuilderKotlin.INSTANCE
-					.createKeybindSettings(
-						fbb,
-						server.configManager.getVrConfig().getKeybindings()
 					)
 			);
 	}
