@@ -42,7 +42,7 @@ object RPCSettingsBuilderKotlin {
 			fbb,
 			config.trackersOverHID,
 		)
-
+	/*
 	fun createKeybindSettings(
 		fbb: FlatBufferBuilder,
 		config: KeybindingsConfig,
@@ -52,4 +52,5 @@ object RPCSettingsBuilderKotlin {
 			config.
 
 	)
+	 */
 }
