@@ -8,12 +8,16 @@ import solarxr_protocol.rpc.KeybindT
 import java.util.concurrent.CopyOnWriteArrayList
 
 
-class KeybindHandler(private val vrServer: VRServer) {
+class KeybindHandler(val vrServer: VRServer) {
+	private val listeners: MutableList<KeybindListener> = CopyOnWriteArrayList()
+	val keybinds: MutableList<KeybindT> = mutableListOf()
 
-	private val listeners = CopyOnWriteArrayList<KeybindListener>()
+	init {
+		createKeybinds()
+	}
 
-	fun sendKeybinds() {
-		this.listeners.forEach { listener: KeybindListener -> listener.sendKeybind()}
+	fun sendKeybinds(KeybindName: String) {
+		this.listeners.forEach { it.sendKeybind()}
 	}
 
 	fun addListener(listener: KeybindListener) {
@@ -24,42 +28,34 @@ class KeybindHandler(private val vrServer: VRServer) {
 		listeners.removeIf { listener == it }
 	}
 
-	/*
-	private fun getKeybinds() {
+	private fun createKeybinds() {
 		keybinds.add(
 			KeybindT().apply {
 				keybindName = KeybindName.FULL_RESET
-				value = vrServer.configManager.vrConfig.keybindings.fullResetBinding
-				delay = vrServer.configManager.vrConfig.keybindings.fullResetDelay
-			}
+				keybindValue = vrServer.configManager.vrConfig.keybindings.fullResetBinding
+				keybindDelay = vrServer.configManager.vrConfig.keybindings.fullResetDelay
+			},
 		)
-
 		keybinds.add(
 			KeybindT().apply {
 				keybindName = KeybindName.YAW_RESET
-				value = vrServer.configManager.vrConfig.keybindings.yawResetBinding
-				delay = vrServer.configManager.vrConfig.keybindings.yawResetDelay
-			}
+				keybindValue = vrServer.configManager.vrConfig.keybindings.yawResetBinding
+				keybindDelay = vrServer.configManager.vrConfig.keybindings.yawResetDelay
+			},
 		)
-
 		keybinds.add(
 			KeybindT().apply {
 				keybindName = KeybindName.MOUNTING_RESET
-				value = vrServer.configManager.vrConfig.keybindings.mountingResetBinding
-				delay = vrServer.configManager.vrConfig.keybindings.mountingResetDelay
-			}
+				keybindValue = vrServer.configManager.vrConfig.keybindings.mountingResetBinding
+				keybindDelay = vrServer.configManager.vrConfig.keybindings.mountingResetDelay
+			},
 		)
-
 		keybinds.add(
 			KeybindT().apply {
 				keybindName = KeybindName.PAUSE_TRACKING
-				value = vrServer.configManager.vrConfig.keybindings.pauseTrackingBinding
-				delay = vrServer.configManager.vrConfig.keybindings.pauseTrackingDelay
-			}
+				keybindValue = vrServer.configManager.vrConfig.keybindings.pauseTrackingBinding
+				keybindDelay = vrServer.configManager.vrConfig.keybindings.pauseTrackingDelay
+			},
 		)
 	}
-
-	 */
-
-
 }

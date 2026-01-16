@@ -53,7 +53,13 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCVRChatHandler(this, api)
 		RPCTrackingChecklistHandler(this, api)
 		RPCUserHeightCalibration(this, api)
-		RPCKeybindHandler(this, api)
+		try {
+			RPCKeybindHandler(this, api)
+		} catch (e: Exception) {
+			e.printStackTrace()
+		} catch (t: Throwable) {
+			t.printStackTrace()
+		}
 
 		registerPacketListener(
 			RpcMessage.AssignTrackerRequest,

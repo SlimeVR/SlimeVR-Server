@@ -45,7 +45,7 @@ export function KeybindSettings() {
     const { control } = useKeybindsForm();
     const { sendRPCPacket, useRPCPacket} = useWebsocketAPI();
 
-    const [requestedKeybinds, setRequestedKeybinds] = useState<KeybindT[]>();
+    const [requestedKeybinds, setRequestedKeybinds] = useState<KeybindT | null>();
 
     useEffect(() => {
         sendRPCPacket(
@@ -57,8 +57,8 @@ export function KeybindSettings() {
 
     useRPCPacket(
         RpcMessage.KeybindResponse,
-        ({ keybinds }: KeybindResponseT) => {
-        setRequestedKeybinds(keybinds)
+        ({ keybind }: KeybindResponseT) => {
+        setRequestedKeybinds(keybind)
         }
     )
 

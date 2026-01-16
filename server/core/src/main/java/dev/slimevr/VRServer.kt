@@ -144,8 +144,8 @@ class VRServer @JvmOverloads constructor(
 		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
 		networkProfileChecker = networkProfileProvider(this)
 		trackingChecklistManager = TrackingChecklistManager(this)
-		protocolAPI = ProtocolAPI(this)
 		keybindHandler = KeybindHandler(this)
+		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
 		// Start server for SlimeVR trackers

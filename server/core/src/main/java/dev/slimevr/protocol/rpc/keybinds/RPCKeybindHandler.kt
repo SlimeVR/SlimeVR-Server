@@ -1,11 +1,14 @@
 package dev.slimevr.protocol.rpc.keybinds
 
 import com.google.flatbuffers.FlatBufferBuilder
+import dev.slimevr.Keybinding
 import dev.slimevr.keybind.KeybindListener
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.protocol.ProtocolAPI
+import jdk.internal.joptsimple.internal.Messages.message
 import solarxr_protocol.rpc.KeybindName
+import solarxr_protocol.rpc.KeybindRequest
 import solarxr_protocol.rpc.KeybindResponse
 import solarxr_protocol.rpc.KeybindResponseT
 import solarxr_protocol.rpc.KeybindT
@@ -13,20 +16,22 @@ import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
 
 class RPCKeybindHandler(
-	private var rpcHandler: RPCHandler,
+	var rpcHandler: RPCHandler,
 	var api: ProtocolAPI
 ) : KeybindListener {
 
+	val keybindingsconfig = api.server.configManager.vrConfig.keybindings
+
 	init {
-		api.server.keybindHandler.addListener(this)
+		this.api.server.keybindHandler.addListener(this)
 
 		rpcHandler.registerPacketListener(RpcMessage.KeybindRequest, ::onKeybindRequest)
 	}
 
-	fun buildKeybindResponse(fbb: FlatBufferBuilder) : Int = KeybindResponse.pack(
+	private fun buildKeybindResponse(fbb: FlatBufferBuilder) : Int = KeybindResponse.pack(
 		fbb,
 		KeybindResponseT().apply {
-			//keybinds = api.server.keybindHandler.keybinds.toTypedArray()
+			keybind = api.server.keybindHandler.keybinds.toTypedArray()
 		}
 	)
 
@@ -37,14 +42,15 @@ class RPCKeybindHandler(
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.KeybindResponse,
-			response
+			response,
 		)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
-
 	}
 
+
 	override fun onKeybindUpdate() {
+		/*
 		val fbb = FlatBufferBuilder(32)
 		val response = buildKeybindResponse(fbb)
 		val outbound = rpcHandler.createRPCMessage(
@@ -53,9 +59,20 @@ class RPCKeybindHandler(
 			response
 		)
 		fbb.finish(outbound)
+
+		 */
 	}
+
+
 
 	override fun sendKeybind() {
 
+	}
+
+	companion object {
+		const val FULL_RESET = KeybindName.FULL_RESET
+		const val YAW_RESET = KeybindName.YAW_RESET
+		const val MOUNTING_RESET = KeybindName.MOUNTING_RESET
+		const val PAUSE_TRACKING = KeybindName.PAUSE_TRACKING
 	}
 }
