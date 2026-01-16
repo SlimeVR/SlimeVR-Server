@@ -45,7 +45,7 @@ export function KeybindSettings() {
     const { control } = useKeybindsForm();
     const { sendRPCPacket, useRPCPacket} = useWebsocketAPI();
 
-    const [requestedKeybinds, setRequestedKeybinds] = useState<KeybindT | null>();
+    const [requestedKeybinds, setRequestedKeybinds] = useState<KeybindT[] | null>();
 
     useEffect(() => {
         sendRPCPacket(
@@ -62,10 +62,21 @@ export function KeybindSettings() {
         }
     )
 
+    const keybindElements = requestedKeybinds?.map(requestedKeybind => {
+        <KeybindInput 
+            name=""
+            label={requestedKeybind.keybindName.toString()}
+            value={
+                requestedKeybind.keybindValue != null ?
+                    requestedKeybind.keybindValue.toString()
+                    : ""
+            }
+            delay={requestedKeybind.keybindDelay}
+            />
+        }
+    )
+
     console.log(requestedKeybinds)
-
-
-
 
     return (
         <SettingsPageLayout>
@@ -85,6 +96,7 @@ export function KeybindSettings() {
                                     <Typography key={i}>{line}</Typography>
                                 ))}
                         </div>
+                        {/*
                         <KeybindInput 
                             name="keybinds.fullResetBinding"
                             label="Full Reset"
@@ -103,7 +115,8 @@ export function KeybindSettings() {
                         <KeybindInput                            
                             name="keybinds.pauseTrackingBinding"
                             label="Pause Tracking"
-                        />                            
+                        />  
+                        */}                          
                     </>
                 </SettingsPagePaneLayout>
             </form>

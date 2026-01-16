@@ -7,14 +7,18 @@ import { ClearIcon } from './icon/ClearIcon';
 
 
 interface KeybindProps {
-    label?: string;
-    name: string;
+    name?: string;
+    label: string;
+    value: string;
+    delay: BigInt;
 }
 
 
 export function KeybindInput({
+    name,
     label,
-    name
+    value,
+    delay
 }: KeybindProps) {
   const [recordedKeybind, setRecordedKeybind] = useState<string[]>([]);
   const keyCountRef = useRef(0);
