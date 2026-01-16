@@ -5,13 +5,14 @@ import { Button } from './Button';
 import { ClearIcon } from './icon/ClearIcon';
 
 
+
 interface KeybindProps {
     label?: string;
     name: string;
 }
 
 
-export function Keybind({
+export function KeybindInput({
     label,
     name
 }: KeybindProps) {
@@ -21,7 +22,6 @@ export function Keybind({
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const handleKeyDown = (event: any) => {
-    console.log("HEY")
     if (keyCountRef.current < 3) {
       setRecordedKeybind((curr) => [...curr, event.key]);
       keyCountRef.current++;

@@ -10,6 +10,7 @@ import dev.slimevr.protocol.datafeed.DataFeedBuilder
 import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler
 import dev.slimevr.protocol.rpc.firmware.RPCFirmwareUpdateHandler
 import dev.slimevr.protocol.rpc.games.vrchat.RPCVRChatHandler
+import dev.slimevr.protocol.rpc.keybinds.RPCKeybindHandler
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler
@@ -52,6 +53,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCVRChatHandler(this, api)
 		RPCTrackingChecklistHandler(this, api)
 		RPCUserHeightCalibration(this, api)
+		RPCKeybindHandler(this, api)
 
 		registerPacketListener(
 			RpcMessage.AssignTrackerRequest,
@@ -149,7 +151,10 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			RpcMessage.ResetStayAlignedRelaxedPoseRequest,
 			::onResetStayAlignedRelaxedPoseRequest,
 		)
+
 	}
+
+
 
 	private fun onServerInfosRequest(
 		conn: GenericConnection,

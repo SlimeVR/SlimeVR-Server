@@ -1,15 +1,10 @@
 package dev.slimevr.config;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.util.CompactStringObjectMap;
-
-import java.util.HashMap;
-import java.util.Map;
+import dev.slimevr.Keybinding.KeybindName;
 
 public class KeybindingsConfig {
 
-	private Keybind keybind;
+	private KeybindName keybindName;
 
 	private String fullResetBinding = "CTRL+ALT+SHIFT+Y";
 
@@ -29,30 +24,10 @@ public class KeybindingsConfig {
 
 	public KeybindingsConfig() {}
 
-	/*
-	public Int getKeybindId() {
-		return keybind;
-	}
-	 */
+	public KeybindName getKeybindName() { return keybindName; }
 
-	public String getKeybindValue() {
-		return switch (keybind) {
-			case FullResetBinding -> fullResetBinding;
-			case YawResetBinding -> yawResetBinding;
-			case MountingResetBinding -> mountingResetBinding;
-			case PauseTrackingBinding -> pauseTrackingBinding;
-			default -> "";
-		};
-	}
-
-	public Long getDelay() {
-		return switch (keybind) {
-			case FullResetBinding -> fullResetDelay;
-			case YawResetBinding -> yawResetDelay;
-			case MountingResetBinding -> mountingResetDelay;
-			case PauseTrackingBinding -> pauseTrackingDelay;
-			default -> 0L;
-		};
+	public void setKeybindName(KeybindName keybindName) {
+		this.keybindName = keybindName;
 	}
 
 	public String getFullResetBinding() {
@@ -117,12 +92,5 @@ public class KeybindingsConfig {
 
 	public void setPauseTrackingDelay(long delay) {
 		pauseTrackingDelay = delay;
-	}
-
-	public enum Keybind {
-		FullResetBinding,
-		YawResetBinding,
-		MountingResetBinding,
-		PauseTrackingBinding
 	}
 }

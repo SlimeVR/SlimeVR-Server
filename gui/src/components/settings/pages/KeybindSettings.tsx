@@ -1,12 +1,12 @@
 import { WrenchIcon } from "@/components/commons/icon/WrenchIcons";
 import { SettingsPageLayout, SettingsPagePaneLayout } from "../SettingsPageLayout";
 import { Typography } from "@/components/commons/Typography"; 
-import { Localized, useLocalization } from "@fluent/react";
-import { Input } from "@/components/commons/Input";
+import { useLocalization } from "@fluent/react";
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
-import { RecordBVHRequest } from "solarxr-protocol";
-import { Keybind } from "@/components/commons/Keybind";
+import { KeybindInput } from "@/components/commons/Keybind";
+import { useWebsocketAPI } from "@/hooks/websocket-api";
+import { KeybindRequestT, KeybindResponseT, RpcMessage, Keybind, KeybindT } from 'solarxr-protocol';
 
 
 export type KeybindsForm = {
@@ -43,22 +43,30 @@ export function useKeybindsForm() {
 export function KeybindSettings() {
     const { l10n } = useLocalization();
     const { control } = useKeybindsForm();
+    const { sendRPCPacket, useRPCPacket} = useWebsocketAPI();
 
-    const [key, setKey] = useState("");
-    const [recordedKeybind, setRecordedKeybind] = useState("");
-    const keyCountRef = useRef(0);
-    const ref = useRef();
+    const [requestedKeybinds, setRequestedKeybinds] = useState<KeybindT[]>();
+
+    useEffect(() => {
+        sendRPCPacket(
+            RpcMessage.KeybindRequest,
+            new KeybindRequestT()
+        );
+    }, []);
 
 
-    const handleKeyDown = (event: any) => {
-        if (keyCountRef.current < 3) {
-            setKey(event.key);
-            setRecordedKeybind(recordedKeybind + "+" + key);
-            keyCountRef.current++;
+    useRPCPacket(
+        RpcMessage.KeybindResponse,
+        ({ keybinds }: KeybindResponseT) => {
+        setRequestedKeybinds(keybinds)
         }
-    }
+    )
 
-    
+    console.log(requestedKeybinds)
+
+
+
+
     return (
         <SettingsPageLayout>
             <form className="flex flex-col gap-2 w-full">
@@ -77,22 +85,22 @@ export function KeybindSettings() {
                                     <Typography key={i}>{line}</Typography>
                                 ))}
                         </div>
-                        <Keybind 
+                        <KeybindInput 
                             name="keybinds.fullResetBinding"
                             label="Full Reset"
                         />
                         <div className="flex flex-col pt-4" />
-                        <Keybind
+                        <KeybindInput
                             name="keybinds.yawResetBinding"
                             label="Yaw Reset"
                         />
                         <div className="flex flex-col pt-4" />
-                        <Keybind
+                        <KeybindInput
                             name="keybinds.mountingResetBinding"
                             label="Mounting Reset"
                         />
                         <div className="flex flex-col pt-4" />
-                        <Keybind                            
+                        <KeybindInput                            
                             name="keybinds.pauseTrackingBinding"
                             label="Pause Tracking"
                         />                            

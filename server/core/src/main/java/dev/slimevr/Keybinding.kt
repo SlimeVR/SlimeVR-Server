@@ -4,7 +4,6 @@ import com.melloware.jintellitype.HotkeyListener
 import com.melloware.jintellitype.JIntellitype
 import dev.slimevr.config.KeybindingsConfig
 import io.eiren.util.OperatingSystem
-import io.eiren.util.OperatingSystem.Companion.currentPlatform
 import io.eiren.util.ann.AWTThread
 import io.eiren.util.logging.LogManager
 
@@ -12,7 +11,7 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 	val config: KeybindingsConfig = server.configManager.vrConfig.keybindings
 
 	init {
-		if (currentPlatform != OperatingSystem.WINDOWS) {
+		if (OperatingSystem.Companion.currentPlatform != OperatingSystem.WINDOWS) {
 			LogManager
 				.info(
 					"[Keybinding] Currently only supported on Windows. Keybindings will be disabled.",
@@ -72,6 +71,13 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 		}
 	}
 
+	enum class KeybindName {
+		FULL_RESET,
+		YAW_RESET,
+		MOUNTING_RESET,
+		PAUSE_TRACKING
+	}
+
 	companion object {
 		private const val RESET_SOURCE_NAME = "Keybinding"
 
@@ -80,4 +86,5 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 		private const val MOUNTING_RESET = 3
 		private const val PAUSE_TRACKING = 4
 	}
+
 }
