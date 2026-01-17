@@ -153,7 +153,80 @@ data class UDPPacket4Acceleration(var acceleration: Vector3 = Vector3.NULL) :
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		acceleration = Vector3(UDPUtils.getSafeBufferFloat(buf), UDPUtils.getSafeBufferFloat(buf), UDPUtils.getSafeBufferFloat(buf))
+		sensorId = try {
+			buf.get().toInt() and 0xFF
+		} catch (e: BufferUnderflowException) {
+			// for owo track app
+			0
+		}
+	}
+}
 
+data class UDPPacket66ControllerButton(var type: Int = 0) :
+	UDPPacket(66),
+	SensorSpecificPacket {
+	override var sensorId = 0
+	override fun readData(buf: ByteBuffer) {
+		type = try {
+			buf.get().toInt() and 0xFF
+		} catch (e: BufferUnderflowException) {
+			0
+		}
+		sensorId = try {
+			buf.get().toInt() and 0xFF
+		} catch (e: BufferUnderflowException) {
+			// for owo track app
+			0
+		}
+	}
+	companion object {
+		const val BUTTON_1_HELD = 1
+		const val BUTTON_1_UNHELD = 2
+		const val BUTTON_2_HELD = 3
+		const val BUTTON_2_UNHELD = 4
+		const val MENU_RECENTER_HELD = 5
+		const val MENU_RECENTER_UNHELD = 6
+		const val STICK_CLICK_HELD = 7
+		const val STICK_CLICK_UNHELD = 8
+	}
+}
+
+data class UDPPacket67Thumbstick(var analogueThumbstick: Vector3 = Vector3.NULL) :
+	UDPPacket(67),
+	SensorSpecificPacket {
+	override var sensorId = 0
+	override fun readData(buf: ByteBuffer) {
+		analogueThumbstick = Vector3(UDPUtils.getSafeBufferFloat(buf), UDPUtils.getSafeBufferFloat(buf), 0f)
+		sensorId = try {
+			buf.get().toInt() and 0xFF
+		} catch (e: BufferUnderflowException) {
+			// for owo track app
+			0
+		}
+	}
+}
+
+data class UDPPacket68Trigger(var trigger: Float = 0f) :
+	UDPPacket(68),
+	SensorSpecificPacket {
+	override var sensorId = 0
+	override fun readData(buf: ByteBuffer) {
+		trigger	 = UDPUtils.getSafeBufferFloat(buf)
+		sensorId = try {
+			buf.get().toInt() and 0xFF
+		} catch (e: BufferUnderflowException) {
+			// for owo track app
+			0
+		}
+	}
+}
+
+data class UDPPacket69Grip(var grip: Float = 0f) :
+	UDPPacket(69),
+	SensorSpecificPacket {
+	override var sensorId = 0
+	override fun readData(buf: ByteBuffer) {
+		grip = UDPUtils.getSafeBufferFloat(buf)
 		sensorId = try {
 			buf.get().toInt() and 0xFF
 		} catch (e: BufferUnderflowException) {
