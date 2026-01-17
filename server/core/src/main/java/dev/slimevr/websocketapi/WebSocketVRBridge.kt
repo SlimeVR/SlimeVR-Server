@@ -27,6 +27,8 @@ class WebSocketVRBridge(
 	private val internalTrackers: MutableList<Tracker> = FastList(computedTrackers.size)
 	private val newHMDData = AtomicBoolean(false)
 	private val mapper = ObjectMapper()
+	private val leftTapPressed : Boolean = false
+	private val rightTapPressed : Boolean = false
 	private val internalHMDTracker = Tracker(
 		null,
 		0,
@@ -195,6 +197,12 @@ class WebSocketVRBridge(
 				message.put("qy", t.getRotation().y)
 				message.put("qz", t.getRotation().z)
 				message.put("qw", t.getRotation().w)
+
+				// Add button states
+				val buttonsNode = mapper.nodeFactory.objectNode()
+				buttonsNode.put("left_tap", t.leftTapPressed)
+				buttonsNode.put("right_tap", t.rightTapPressed)
+				message.set<ObjectNode>("buttons", buttonsNode)
 
 				conn.send(message.toString())
 			}
