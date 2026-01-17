@@ -41,7 +41,7 @@ class Tracker @JvmOverloads constructor(
 	trackerNum: Int? = null,
 	val hasPosition: Boolean = false,
 	val hasRotation: Boolean = false,
-	val hasControls: Boolean = false,
+	var hasControls: Boolean = false,
 	val hasAcceleration: Boolean = false,
 	/**
 	 * User can change TrackerPosition, mounting...
@@ -480,6 +480,7 @@ class Tracker @JvmOverloads constructor(
 	 * Sets the first button of the tracker.
 	 */
 	fun setButton1(button1: Boolean) {
+		this.hasControls = true;
 		this._button1 = button1
 	}
 	fun getButton1(): Boolean {
@@ -489,15 +490,18 @@ class Tracker @JvmOverloads constructor(
 	 * Sets the second button of the tracker.
 	 */
 	fun setButton2(button2: Boolean) {
+		this.hasControls = true;
 		this._button2 = button2
 	}
 	fun getButton2(): Boolean {
+		this.hasControls = true;
 		return this._button2
 	}
 	/**
 	 * Sets the menu/recenter button of the tracker.
 	 */
 	fun setMenuRecenterButton(menuRecenterButton: Boolean) {
+		this.hasControls = true;
 		this._menuRecenterButton = menuRecenterButton
 	}
 	fun getMenuRecenterButton(): Boolean {
@@ -508,6 +512,7 @@ class Tracker @JvmOverloads constructor(
 	 * Sets the stick click button of the tracker.
 	 */
 	fun setStickClickButton(stickClickButton: Boolean) {
+		this.hasControls = true;
 		this._stickClickButton = stickClickButton
 	}
 	fun getStickClickButton(): Boolean {
@@ -518,6 +523,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun setGrip(grip: Float) {
 		this._grip = grip
+		this.hasControls = true;
 	}
 	fun getGrip(): Float {
 		return this._grip
@@ -526,6 +532,7 @@ class Tracker @JvmOverloads constructor(
 	 * Sets the grip of the tracker.
 	 */
 	fun setTrigger(trigger: Float) {
+		this.hasControls = true;
 		this._trigger = trigger
 	}
 	fun getTrigger(): Float {
@@ -535,6 +542,7 @@ class Tracker @JvmOverloads constructor(
 	 * Sets the thumbstick the tracker.
 	 */
 	fun setThumbstick(analogueThumbstick: Vector3) {
+		this.hasControls = true;
 		this._analogueThumbstick = analogueThumbstick
 	}
 	fun getThumbstick(): Vector3 {
