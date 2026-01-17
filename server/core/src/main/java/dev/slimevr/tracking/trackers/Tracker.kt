@@ -41,6 +41,7 @@ class Tracker @JvmOverloads constructor(
 	trackerNum: Int? = null,
 	val hasPosition: Boolean = false,
 	val hasRotation: Boolean = false,
+	val hasControls: Boolean = false,
 	val hasAcceleration: Boolean = false,
 	/**
 	 * User can change TrackerPosition, mounting...
@@ -106,6 +107,13 @@ class Tracker @JvmOverloads constructor(
 	// SlimeVR: +z backward, +x right, +y up
 	private var _acceleration = Vector3.NULL
 	private var _magVector = Vector3.NULL
+	private var _analogueThumbstick = Vector3.NULL
+	private var _button1 = false
+	private var _button2 = false
+	private var _menuRecenterButton = false
+	private var _stickClickButton = false
+	private var _trigger = 0f
+	private var _grip = 0f
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -446,5 +454,69 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun resetFilteringQuats(reference: Quaternion) {
 		filteringHandler.resetMovingAverage(getAdjustedRotation(), reference)
+	}
+	/**
+	 * Sets the first button of the tracker.
+	 */
+	fun setButton1(button1: Boolean) {
+		this._button1 = button1
+	}
+	fun getButton1(): Boolean {
+		return this._button1
+	}
+	/**
+	 * Sets the second button of the tracker.
+	 */
+	fun setButton2(button2: Boolean) {
+		this._button2 = button2
+	}
+	fun getButton2(): Boolean {
+		return this._button2
+	}
+	/**
+	 * Sets the menu/recenter button of the tracker.
+	 */
+	fun setMenuRecenterButton(menuRecenterButton: Boolean) {
+		this._menuRecenterButton = menuRecenterButton
+	}
+	fun getMenuRecenterButton(): Boolean {
+		return this._menuRecenterButton
+	}
+
+	/**
+	 * Sets the stick click button of the tracker.
+	 */
+	fun setStickClickButton(stickClickButton: Boolean) {
+		this._stickClickButton = stickClickButton
+	}
+	fun getStickClickButton(): Boolean {
+		return this._stickClickButton
+	}
+	/**
+	 * Sets the grip of the tracker.
+	 */
+	fun setGrip(grip: Float) {
+		this._grip = grip
+	}
+	fun getGrip(): Float {
+		return this._grip
+	}
+	/**
+	 * Sets the grip of the tracker.
+	 */
+	fun setTrigger(trigger: Float) {
+		this._trigger = trigger
+	}
+	fun getTrigger(): Float {
+		return this._trigger
+	}
+	/**
+	 * Sets the thumbstick the tracker.
+	 */
+	fun setThumbstick(analogueThumbstick: Vector3) {
+		this._analogueThumbstick = analogueThumbstick
+	}
+	fun getThumbstick(): Vector3 {
+		return this._analogueThumbstick
 	}
 }
