@@ -11,6 +11,9 @@ export function BatteryIcon({
   charging: boolean;
 }) {
   const col = useMemo(() => {
+    if (disabled) return 'fill-background-40';
+    else if (charging) return 'fill-status-success';
+
     const colorsMap: { [key: number]: string } = {
       0.4: 'fill-status-success',
       0.2: 'fill-status-warning',
@@ -20,10 +23,8 @@ export function BatteryIcon({
     const val = Object.keys(colorsMap)
       .filter((key) => +key < value)
       .sort((a, b) => +b - +a)[0];
-    return disabled
-      ? 'fill-background-40'
-      : colorsMap[+val] || 'fill-background-10';
-  }, [value, disabled]);
+    return colorsMap[+val] || 'fill-background-10';
+  }, [value, disabled, charging]);
 
   return (
     <svg
@@ -59,7 +60,7 @@ export function BatteryIcon({
         />
       </mask>
       <g mask="url(#mask0_4_39)" className={classNames(col, 'opacity-100')}>
-        <rect width={value * 18} height="9" />
+        <rect width={charging ? 18 : value * 18} height="9" />
       </g>
       {charging && (
         <path
