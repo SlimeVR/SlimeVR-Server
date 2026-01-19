@@ -120,6 +120,7 @@ class UDPProtocolParser {
 		PACKET_PROTOCOL_CHANGE -> UDPPacket200ProtocolChange()
 		PACKET_CONTROLLER_BUTTON -> UDPPacket66ControllerButton()
 		PACKET_THUMBSTICK -> UDPPacket67Thumbstick()
+		PACKET_TRACKPAD -> UDPPacket70Trackpad()
 		PACKET_TRIGGER -> UDPPacket68Trigger()
 		PACKET_GRIP -> UDPPacket69Grip()
 		else -> null
@@ -165,6 +166,7 @@ class UDPProtocolParser {
 		const val PACKET_THUMBSTICK = 67
 		const val PACKET_TRIGGER = 68
 		const val PACKET_GRIP = 69
+		const val PACKET_TRACKPAD = 70
 		private val HANDSHAKE_BUFFER = ByteArray(64)
 		private val bundlePackets = ArrayList<UDPPacket>(128)
 
