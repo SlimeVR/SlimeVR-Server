@@ -3786,40 +3786,58 @@ public final class ProtobufMessages {
     float getThumbstickY();
 
     /**
-     * <code>float trigger = 4;</code>
+     * <code>float trackpad_x = 4;</code>
+     * @return The trackpadX.
+     */
+    float getTrackpadX();
+
+    /**
+     * <code>float trackpad_y = 5;</code>
+     * @return The trackpadY.
+     */
+    float getTrackpadY();
+
+    /**
+     * <code>float trigger = 6;</code>
      * @return The trigger.
      */
     float getTrigger();
 
     /**
-     * <code>float grip = 5;</code>
+     * <code>float grip = 7;</code>
      * @return The grip.
      */
     float getGrip();
 
     /**
-     * <code>bool button_1 = 6;</code>
+     * <code>bool button_1 = 8;</code>
      * @return The button1.
      */
     boolean getButton1();
 
     /**
-     * <code>bool button_2 = 7;</code>
+     * <code>bool button_2 = 9;</code>
      * @return The button2.
      */
     boolean getButton2();
 
     /**
-     * <code>bool menu_recenter = 8;</code>
+     * <code>bool menu_recenter = 10;</code>
      * @return The menuRecenter.
      */
     boolean getMenuRecenter();
 
     /**
-     * <code>bool stick_click = 9;</code>
+     * <code>bool stick_click = 11;</code>
      * @return The stickClick.
      */
     boolean getStickClick();
+
+    /**
+     * <code>bool trackpad_click = 12;</code>
+     * @return The trackpadClick.
+     */
+    boolean getTrackpadClick();
   }
   /**
    * Protobuf type {@code messages.ControllerInput}
@@ -3891,10 +3909,32 @@ public final class ProtobufMessages {
       return thumbstickY_;
     }
 
-    public static final int TRIGGER_FIELD_NUMBER = 4;
+    public static final int TRACKPAD_X_FIELD_NUMBER = 4;
+    private float trackpadX_ = 0F;
+    /**
+     * <code>float trackpad_x = 4;</code>
+     * @return The trackpadX.
+     */
+    @java.lang.Override
+    public float getTrackpadX() {
+      return trackpadX_;
+    }
+
+    public static final int TRACKPAD_Y_FIELD_NUMBER = 5;
+    private float trackpadY_ = 0F;
+    /**
+     * <code>float trackpad_y = 5;</code>
+     * @return The trackpadY.
+     */
+    @java.lang.Override
+    public float getTrackpadY() {
+      return trackpadY_;
+    }
+
+    public static final int TRIGGER_FIELD_NUMBER = 6;
     private float trigger_ = 0F;
     /**
-     * <code>float trigger = 4;</code>
+     * <code>float trigger = 6;</code>
      * @return The trigger.
      */
     @java.lang.Override
@@ -3902,10 +3942,10 @@ public final class ProtobufMessages {
       return trigger_;
     }
 
-    public static final int GRIP_FIELD_NUMBER = 5;
+    public static final int GRIP_FIELD_NUMBER = 7;
     private float grip_ = 0F;
     /**
-     * <code>float grip = 5;</code>
+     * <code>float grip = 7;</code>
      * @return The grip.
      */
     @java.lang.Override
@@ -3913,10 +3953,10 @@ public final class ProtobufMessages {
       return grip_;
     }
 
-    public static final int BUTTON_1_FIELD_NUMBER = 6;
+    public static final int BUTTON_1_FIELD_NUMBER = 8;
     private boolean button1_ = false;
     /**
-     * <code>bool button_1 = 6;</code>
+     * <code>bool button_1 = 8;</code>
      * @return The button1.
      */
     @java.lang.Override
@@ -3924,10 +3964,10 @@ public final class ProtobufMessages {
       return button1_;
     }
 
-    public static final int BUTTON_2_FIELD_NUMBER = 7;
+    public static final int BUTTON_2_FIELD_NUMBER = 9;
     private boolean button2_ = false;
     /**
-     * <code>bool button_2 = 7;</code>
+     * <code>bool button_2 = 9;</code>
      * @return The button2.
      */
     @java.lang.Override
@@ -3935,10 +3975,10 @@ public final class ProtobufMessages {
       return button2_;
     }
 
-    public static final int MENU_RECENTER_FIELD_NUMBER = 8;
+    public static final int MENU_RECENTER_FIELD_NUMBER = 10;
     private boolean menuRecenter_ = false;
     /**
-     * <code>bool menu_recenter = 8;</code>
+     * <code>bool menu_recenter = 10;</code>
      * @return The menuRecenter.
      */
     @java.lang.Override
@@ -3946,15 +3986,26 @@ public final class ProtobufMessages {
       return menuRecenter_;
     }
 
-    public static final int STICK_CLICK_FIELD_NUMBER = 9;
+    public static final int STICK_CLICK_FIELD_NUMBER = 11;
     private boolean stickClick_ = false;
     /**
-     * <code>bool stick_click = 9;</code>
+     * <code>bool stick_click = 11;</code>
      * @return The stickClick.
      */
     @java.lang.Override
     public boolean getStickClick() {
       return stickClick_;
+    }
+
+    public static final int TRACKPAD_CLICK_FIELD_NUMBER = 12;
+    private boolean trackpadClick_ = false;
+    /**
+     * <code>bool trackpad_click = 12;</code>
+     * @return The trackpadClick.
+     */
+    @java.lang.Override
+    public boolean getTrackpadClick() {
+      return trackpadClick_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3980,23 +4031,32 @@ public final class ProtobufMessages {
       if (java.lang.Float.floatToRawIntBits(thumbstickY_) != 0) {
         output.writeFloat(3, thumbstickY_);
       }
+      if (java.lang.Float.floatToRawIntBits(trackpadX_) != 0) {
+        output.writeFloat(4, trackpadX_);
+      }
+      if (java.lang.Float.floatToRawIntBits(trackpadY_) != 0) {
+        output.writeFloat(5, trackpadY_);
+      }
       if (java.lang.Float.floatToRawIntBits(trigger_) != 0) {
-        output.writeFloat(4, trigger_);
+        output.writeFloat(6, trigger_);
       }
       if (java.lang.Float.floatToRawIntBits(grip_) != 0) {
-        output.writeFloat(5, grip_);
+        output.writeFloat(7, grip_);
       }
       if (button1_ != false) {
-        output.writeBool(6, button1_);
+        output.writeBool(8, button1_);
       }
       if (button2_ != false) {
-        output.writeBool(7, button2_);
+        output.writeBool(9, button2_);
       }
       if (menuRecenter_ != false) {
-        output.writeBool(8, menuRecenter_);
+        output.writeBool(10, menuRecenter_);
       }
       if (stickClick_ != false) {
-        output.writeBool(9, stickClick_);
+        output.writeBool(11, stickClick_);
+      }
+      if (trackpadClick_ != false) {
+        output.writeBool(12, trackpadClick_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4019,29 +4079,41 @@ public final class ProtobufMessages {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(3, thumbstickY_);
       }
+      if (java.lang.Float.floatToRawIntBits(trackpadX_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(4, trackpadX_);
+      }
+      if (java.lang.Float.floatToRawIntBits(trackpadY_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(5, trackpadY_);
+      }
       if (java.lang.Float.floatToRawIntBits(trigger_) != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(4, trigger_);
+          .computeFloatSize(6, trigger_);
       }
       if (java.lang.Float.floatToRawIntBits(grip_) != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(5, grip_);
+          .computeFloatSize(7, grip_);
       }
       if (button1_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(6, button1_);
+          .computeBoolSize(8, button1_);
       }
       if (button2_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(7, button2_);
+          .computeBoolSize(9, button2_);
       }
       if (menuRecenter_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(8, menuRecenter_);
+          .computeBoolSize(10, menuRecenter_);
       }
       if (stickClick_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(9, stickClick_);
+          .computeBoolSize(11, stickClick_);
+      }
+      if (trackpadClick_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(12, trackpadClick_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4066,6 +4138,12 @@ public final class ProtobufMessages {
       if (java.lang.Float.floatToIntBits(getThumbstickY())
           != java.lang.Float.floatToIntBits(
               other.getThumbstickY())) return false;
+      if (java.lang.Float.floatToIntBits(getTrackpadX())
+          != java.lang.Float.floatToIntBits(
+              other.getTrackpadX())) return false;
+      if (java.lang.Float.floatToIntBits(getTrackpadY())
+          != java.lang.Float.floatToIntBits(
+              other.getTrackpadY())) return false;
       if (java.lang.Float.floatToIntBits(getTrigger())
           != java.lang.Float.floatToIntBits(
               other.getTrigger())) return false;
@@ -4080,6 +4158,8 @@ public final class ProtobufMessages {
           != other.getMenuRecenter()) return false;
       if (getStickClick()
           != other.getStickClick()) return false;
+      if (getTrackpadClick()
+          != other.getTrackpadClick()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -4099,6 +4179,12 @@ public final class ProtobufMessages {
       hash = (37 * hash) + THUMBSTICK_Y_FIELD_NUMBER;
       hash = (53 * hash) + java.lang.Float.floatToIntBits(
           getThumbstickY());
+      hash = (37 * hash) + TRACKPAD_X_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getTrackpadX());
+      hash = (37 * hash) + TRACKPAD_Y_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getTrackpadY());
       hash = (37 * hash) + TRIGGER_FIELD_NUMBER;
       hash = (53 * hash) + java.lang.Float.floatToIntBits(
           getTrigger());
@@ -4117,6 +4203,9 @@ public final class ProtobufMessages {
       hash = (37 * hash) + STICK_CLICK_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getStickClick());
+      hash = (37 * hash) + TRACKPAD_CLICK_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getTrackpadClick());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4251,12 +4340,15 @@ public final class ProtobufMessages {
         trackerId_ = 0;
         thumbstickX_ = 0F;
         thumbstickY_ = 0F;
+        trackpadX_ = 0F;
+        trackpadY_ = 0F;
         trigger_ = 0F;
         grip_ = 0F;
         button1_ = false;
         button2_ = false;
         menuRecenter_ = false;
         stickClick_ = false;
+        trackpadClick_ = false;
         return this;
       }
 
@@ -4300,22 +4392,31 @@ public final class ProtobufMessages {
           result.thumbstickY_ = thumbstickY_;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.trigger_ = trigger_;
+          result.trackpadX_ = trackpadX_;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.grip_ = grip_;
+          result.trackpadY_ = trackpadY_;
         }
         if (((from_bitField0_ & 0x00000020) != 0)) {
-          result.button1_ = button1_;
+          result.trigger_ = trigger_;
         }
         if (((from_bitField0_ & 0x00000040) != 0)) {
-          result.button2_ = button2_;
+          result.grip_ = grip_;
         }
         if (((from_bitField0_ & 0x00000080) != 0)) {
-          result.menuRecenter_ = menuRecenter_;
+          result.button1_ = button1_;
         }
         if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.button2_ = button2_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.menuRecenter_ = menuRecenter_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
           result.stickClick_ = stickClick_;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.trackpadClick_ = trackpadClick_;
         }
       }
 
@@ -4340,6 +4441,12 @@ public final class ProtobufMessages {
         if (java.lang.Float.floatToRawIntBits(other.getThumbstickY()) != 0) {
           setThumbstickY(other.getThumbstickY());
         }
+        if (java.lang.Float.floatToRawIntBits(other.getTrackpadX()) != 0) {
+          setTrackpadX(other.getTrackpadX());
+        }
+        if (java.lang.Float.floatToRawIntBits(other.getTrackpadY()) != 0) {
+          setTrackpadY(other.getTrackpadY());
+        }
         if (java.lang.Float.floatToRawIntBits(other.getTrigger()) != 0) {
           setTrigger(other.getTrigger());
         }
@@ -4357,6 +4464,9 @@ public final class ProtobufMessages {
         }
         if (other.getStickClick() != false) {
           setStickClick(other.getStickClick());
+        }
+        if (other.getTrackpadClick() != false) {
+          setTrackpadClick(other.getTrackpadClick());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -4400,35 +4510,50 @@ public final class ProtobufMessages {
                 break;
               } // case 29
               case 37: {
-                trigger_ = input.readFloat();
+                trackpadX_ = input.readFloat();
                 bitField0_ |= 0x00000008;
                 break;
               } // case 37
               case 45: {
-                grip_ = input.readFloat();
+                trackpadY_ = input.readFloat();
                 bitField0_ |= 0x00000010;
                 break;
               } // case 45
-              case 48: {
-                button1_ = input.readBool();
+              case 53: {
+                trigger_ = input.readFloat();
                 bitField0_ |= 0x00000020;
                 break;
-              } // case 48
-              case 56: {
-                button2_ = input.readBool();
+              } // case 53
+              case 61: {
+                grip_ = input.readFloat();
                 bitField0_ |= 0x00000040;
                 break;
-              } // case 56
+              } // case 61
               case 64: {
-                menuRecenter_ = input.readBool();
+                button1_ = input.readBool();
                 bitField0_ |= 0x00000080;
                 break;
               } // case 64
               case 72: {
-                stickClick_ = input.readBool();
+                button2_ = input.readBool();
                 bitField0_ |= 0x00000100;
                 break;
               } // case 72
+              case 80: {
+                menuRecenter_ = input.readBool();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              case 88: {
+                stickClick_ = input.readBool();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
+              case 96: {
+                trackpadClick_ = input.readBool();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -4542,9 +4667,73 @@ public final class ProtobufMessages {
         return this;
       }
 
+      private float trackpadX_ ;
+      /**
+       * <code>float trackpad_x = 4;</code>
+       * @return The trackpadX.
+       */
+      @java.lang.Override
+      public float getTrackpadX() {
+        return trackpadX_;
+      }
+      /**
+       * <code>float trackpad_x = 4;</code>
+       * @param value The trackpadX to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTrackpadX(float value) {
+
+        trackpadX_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float trackpad_x = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTrackpadX() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        trackpadX_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float trackpadY_ ;
+      /**
+       * <code>float trackpad_y = 5;</code>
+       * @return The trackpadY.
+       */
+      @java.lang.Override
+      public float getTrackpadY() {
+        return trackpadY_;
+      }
+      /**
+       * <code>float trackpad_y = 5;</code>
+       * @param value The trackpadY to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTrackpadY(float value) {
+
+        trackpadY_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float trackpad_y = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTrackpadY() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        trackpadY_ = 0F;
+        onChanged();
+        return this;
+      }
+
       private float trigger_ ;
       /**
-       * <code>float trigger = 4;</code>
+       * <code>float trigger = 6;</code>
        * @return The trigger.
        */
       @java.lang.Override
@@ -4552,23 +4741,23 @@ public final class ProtobufMessages {
         return trigger_;
       }
       /**
-       * <code>float trigger = 4;</code>
+       * <code>float trigger = 6;</code>
        * @param value The trigger to set.
        * @return This builder for chaining.
        */
       public Builder setTrigger(float value) {
 
         trigger_ = value;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
       /**
-       * <code>float trigger = 4;</code>
+       * <code>float trigger = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearTrigger() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000020);
         trigger_ = 0F;
         onChanged();
         return this;
@@ -4576,7 +4765,7 @@ public final class ProtobufMessages {
 
       private float grip_ ;
       /**
-       * <code>float grip = 5;</code>
+       * <code>float grip = 7;</code>
        * @return The grip.
        */
       @java.lang.Override
@@ -4584,23 +4773,23 @@ public final class ProtobufMessages {
         return grip_;
       }
       /**
-       * <code>float grip = 5;</code>
+       * <code>float grip = 7;</code>
        * @param value The grip to set.
        * @return This builder for chaining.
        */
       public Builder setGrip(float value) {
 
         grip_ = value;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000040;
         onChanged();
         return this;
       }
       /**
-       * <code>float grip = 5;</code>
+       * <code>float grip = 7;</code>
        * @return This builder for chaining.
        */
       public Builder clearGrip() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000040);
         grip_ = 0F;
         onChanged();
         return this;
@@ -4608,7 +4797,7 @@ public final class ProtobufMessages {
 
       private boolean button1_ ;
       /**
-       * <code>bool button_1 = 6;</code>
+       * <code>bool button_1 = 8;</code>
        * @return The button1.
        */
       @java.lang.Override
@@ -4616,23 +4805,23 @@ public final class ProtobufMessages {
         return button1_;
       }
       /**
-       * <code>bool button_1 = 6;</code>
+       * <code>bool button_1 = 8;</code>
        * @param value The button1 to set.
        * @return This builder for chaining.
        */
       public Builder setButton1(boolean value) {
 
         button1_ = value;
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000080;
         onChanged();
         return this;
       }
       /**
-       * <code>bool button_1 = 6;</code>
+       * <code>bool button_1 = 8;</code>
        * @return This builder for chaining.
        */
       public Builder clearButton1() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000080);
         button1_ = false;
         onChanged();
         return this;
@@ -4640,7 +4829,7 @@ public final class ProtobufMessages {
 
       private boolean button2_ ;
       /**
-       * <code>bool button_2 = 7;</code>
+       * <code>bool button_2 = 9;</code>
        * @return The button2.
        */
       @java.lang.Override
@@ -4648,23 +4837,23 @@ public final class ProtobufMessages {
         return button2_;
       }
       /**
-       * <code>bool button_2 = 7;</code>
+       * <code>bool button_2 = 9;</code>
        * @param value The button2 to set.
        * @return This builder for chaining.
        */
       public Builder setButton2(boolean value) {
 
         button2_ = value;
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000100;
         onChanged();
         return this;
       }
       /**
-       * <code>bool button_2 = 7;</code>
+       * <code>bool button_2 = 9;</code>
        * @return This builder for chaining.
        */
       public Builder clearButton2() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000100);
         button2_ = false;
         onChanged();
         return this;
@@ -4672,7 +4861,7 @@ public final class ProtobufMessages {
 
       private boolean menuRecenter_ ;
       /**
-       * <code>bool menu_recenter = 8;</code>
+       * <code>bool menu_recenter = 10;</code>
        * @return The menuRecenter.
        */
       @java.lang.Override
@@ -4680,23 +4869,23 @@ public final class ProtobufMessages {
         return menuRecenter_;
       }
       /**
-       * <code>bool menu_recenter = 8;</code>
+       * <code>bool menu_recenter = 10;</code>
        * @param value The menuRecenter to set.
        * @return This builder for chaining.
        */
       public Builder setMenuRecenter(boolean value) {
 
         menuRecenter_ = value;
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000200;
         onChanged();
         return this;
       }
       /**
-       * <code>bool menu_recenter = 8;</code>
+       * <code>bool menu_recenter = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearMenuRecenter() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000200);
         menuRecenter_ = false;
         onChanged();
         return this;
@@ -4704,7 +4893,7 @@ public final class ProtobufMessages {
 
       private boolean stickClick_ ;
       /**
-       * <code>bool stick_click = 9;</code>
+       * <code>bool stick_click = 11;</code>
        * @return The stickClick.
        */
       @java.lang.Override
@@ -4712,24 +4901,56 @@ public final class ProtobufMessages {
         return stickClick_;
       }
       /**
-       * <code>bool stick_click = 9;</code>
+       * <code>bool stick_click = 11;</code>
        * @param value The stickClick to set.
        * @return This builder for chaining.
        */
       public Builder setStickClick(boolean value) {
 
         stickClick_ = value;
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000400;
         onChanged();
         return this;
       }
       /**
-       * <code>bool stick_click = 9;</code>
+       * <code>bool stick_click = 11;</code>
        * @return This builder for chaining.
        */
       public Builder clearStickClick() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000400);
         stickClick_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean trackpadClick_ ;
+      /**
+       * <code>bool trackpad_click = 12;</code>
+       * @return The trackpadClick.
+       */
+      @java.lang.Override
+      public boolean getTrackpadClick() {
+        return trackpadClick_;
+      }
+      /**
+       * <code>bool trackpad_click = 12;</code>
+       * @param value The trackpadClick to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTrackpadClick(boolean value) {
+
+        trackpadClick_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool trackpad_click = 12;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTrackpadClick() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        trackpadClick_ = false;
         onChanged();
         return this;
       }
@@ -10352,40 +10573,41 @@ java.lang.String defaultValue) {
       "(\0162\035.messages.Position.DataSourceH\003\210\001\001\"8" +
       "\n\nDataSource\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRECI" +
       "SION\020\002\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014_d" +
-      "ata_source\"\300\001\n\017ControllerInput\022\022\n\ntracke" +
+      "ata_source\"\200\002\n\017ControllerInput\022\022\n\ntracke" +
       "r_id\030\001 \001(\005\022\024\n\014thumbstick_x\030\002 \001(\002\022\024\n\014thum" +
-      "bstick_y\030\003 \001(\002\022\017\n\007trigger\030\004 \001(\002\022\014\n\004grip\030" +
-      "\005 \001(\002\022\020\n\010button_1\030\006 \001(\010\022\020\n\010button_2\030\007 \001(" +
-      "\010\022\025\n\rmenu_recenter\030\010 \001(\010\022\023\n\013stick_click\030" +
-      "\t \001(\010\"\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020ac" +
-      "tion_arguments\030\002 \003(\0132).messages.UserActi" +
-      "on.ActionArgumentsEntry\0326\n\024ActionArgumen" +
-      "tsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"" +
-      "f\n\014TrackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016t" +
-      "racker_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(" +
-      "\t\022\024\n\014tracker_role\030\004 \001(\005\"\374\002\n\rTrackerStatu" +
-      "s\022\022\n\ntracker_id\030\001 \001(\005\022.\n\006status\030\002 \001(\0162\036." +
-      "messages.TrackerStatus.Status\0221\n\005extra\030\003" +
-      " \003(\0132\".messages.TrackerStatus.ExtraEntry" +
-      "\022;\n\nconfidence\030\004 \001(\0162\".messages.TrackerS" +
-      "tatus.ConfidenceH\000\210\001\001\032,\n\nExtraEntry\022\013\n\003k" +
-      "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n" +
-      "\014DISCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERR" +
-      "OR\020\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfidence\022\006\n\002NO\020\000" +
-      "\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_conf" +
-      "idence\"I\n\007Battery\022\022\n\ntracker_id\030\001 \001(\005\022\025\n" +
-      "\rbattery_level\030\002 \001(\002\022\023\n\013is_charging\030\003 \001(" +
-      "\010\"\330\002\n\017ProtobufMessage\022&\n\010position\030\001 \001(\0132" +
-      "\022.messages.PositionH\000\022+\n\013user_action\030\002 \001" +
-      "(\0132\024.messages.UserActionH\000\022/\n\rtracker_ad" +
-      "ded\030\003 \001(\0132\026.messages.TrackerAddedH\000\0221\n\016t" +
-      "racker_status\030\004 \001(\0132\027.messages.TrackerSt" +
-      "atusH\000\022$\n\007battery\030\005 \001(\0132\021.messages.Batte" +
-      "ryH\000\022$\n\007version\030\006 \001(\0132\021.messages.Version" +
-      "H\000\0225\n\020controller_input\030\007 \001(\0132\031.messages." +
-      "ControllerInputH\000B\t\n\007messageB2\n\034dev.slim" +
-      "evr.desktop.platformB\020ProtobufMessagesH\003" +
-      "b\006proto3"
+      "bstick_y\030\003 \001(\002\022\022\n\ntrackpad_x\030\004 \001(\002\022\022\n\ntr" +
+      "ackpad_y\030\005 \001(\002\022\017\n\007trigger\030\006 \001(\002\022\014\n\004grip\030" +
+      "\007 \001(\002\022\020\n\010button_1\030\010 \001(\010\022\020\n\010button_2\030\t \001(" +
+      "\010\022\025\n\rmenu_recenter\030\n \001(\010\022\023\n\013stick_click\030" +
+      "\013 \001(\010\022\026\n\016trackpad_click\030\014 \001(\010\"\227\001\n\nUserAc" +
+      "tion\022\014\n\004name\030\001 \001(\t\022C\n\020action_arguments\030\002" +
+      " \003(\0132).messages.UserAction.ActionArgumen" +
+      "tsEntry\0326\n\024ActionArgumentsEntry\022\013\n\003key\030\001" +
+      " \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"f\n\014TrackerAdded\022" +
+      "\022\n\ntracker_id\030\001 \001(\005\022\026\n\016tracker_serial\030\002 " +
+      "\001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024\n\014tracker_rol" +
+      "e\030\004 \001(\005\"\374\002\n\rTrackerStatus\022\022\n\ntracker_id\030" +
+      "\001 \001(\005\022.\n\006status\030\002 \001(\0162\036.messages.Tracker" +
+      "Status.Status\0221\n\005extra\030\003 \003(\0132\".messages." +
+      "TrackerStatus.ExtraEntry\022;\n\nconfidence\030\004" +
+      " \001(\0162\".messages.TrackerStatus.Confidence" +
+      "H\000\210\001\001\032,\n\nExtraEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005valu" +
+      "e\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n\014DISCONNECTED\020\000\022" +
+      "\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED" +
+      "\020\004\"3\n\nConfidence\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MED" +
+      "IUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_confidence\"I\n\007Batter" +
+      "y\022\022\n\ntracker_id\030\001 \001(\005\022\025\n\rbattery_level\030\002" +
+      " \001(\002\022\023\n\013is_charging\030\003 \001(\010\"\330\002\n\017ProtobufMe" +
+      "ssage\022&\n\010position\030\001 \001(\0132\022.messages.Posit" +
+      "ionH\000\022+\n\013user_action\030\002 \001(\0132\024.messages.Us" +
+      "erActionH\000\022/\n\rtracker_added\030\003 \001(\0132\026.mess" +
+      "ages.TrackerAddedH\000\0221\n\016tracker_status\030\004 " +
+      "\001(\0132\027.messages.TrackerStatusH\000\022$\n\007batter" +
+      "y\030\005 \001(\0132\021.messages.BatteryH\000\022$\n\007version\030" +
+      "\006 \001(\0132\021.messages.VersionH\000\0225\n\020controller" +
+      "_input\030\007 \001(\0132\031.messages.ControllerInputH" +
+      "\000B\t\n\007messageB2\n\034dev.slimevr.desktop.plat" +
+      "formB\020ProtobufMessagesH\003b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10426,7 +10648,7 @@ java.lang.String defaultValue) {
     internal_static_messages_ControllerInput_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_ControllerInput_descriptor,
-        new java.lang.String[] { "TrackerId", "ThumbstickX", "ThumbstickY", "Trigger", "Grip", "Button1", "Button2", "MenuRecenter", "StickClick", });
+        new java.lang.String[] { "TrackerId", "ThumbstickX", "ThumbstickY", "TrackpadX", "TrackpadY", "Trigger", "Grip", "Button1", "Button2", "MenuRecenter", "StickClick", "TrackpadClick", });
     internal_static_messages_UserAction_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_messages_UserAction_fieldAccessorTable = new

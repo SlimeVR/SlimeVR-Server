@@ -397,9 +397,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		} catch (e: Exception) {
 			e.printStackTrace()
 		} finally {
-			if (::socket.isInitialized) {
-				Util.close(socket)
-			}
+			Util.close(socket)
 		}
 	}
 
@@ -417,13 +415,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				if (tracker == null) return
 				tracker.setRotation(rot)
 				if (packet is UDPPacket23RotationAndAcceleration) {
-					// sensorOffset is applied correctly since protocol 22
-					// See: https://github.com/SlimeVR/SlimeVR-Tracker-ESP/pull/480
-					if (connection.protocolVersion >= 22) {
-						tracker.setAcceleration(packet.acceleration)
-					} else {
-						tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
-					}
+					// If sensorOffset was applied to accel correctly, the axes will already
+					//  be correct for SlimeVR
+					tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
 				}
 				tracker.dataTick()
 			}
@@ -455,13 +449,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			is UDPPacket4Acceleration -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				// sensorOffset is applied correctly since protocol 22
-				// See: https://github.com/SlimeVR/SlimeVR-Tracker-ESP/pull/480
-				if (connection.protocolVersion >= 22) {
-					tracker.setAcceleration(packet.acceleration)
-				} else {
-					tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
-				}
+				// If sensorOffset was applied to accel correctly, the axes will already
+				//  be correct for SlimeVR
+				tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
 			}
 
 			is UDPPacket10PingPong -> {
@@ -485,18 +475,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 			is UDPPacket12BatteryLevel -> connection?.trackers?.values?.forEach {
 				it.batteryVoltage = packet.voltage
-				// Firmware does not verify the voltage level at all
-				// Instead guess if a battery is present or not
-				// Too low or high voltage should mean there is no battery or there is a measurement error
-				// Some ESP can run at 2.3V, set a limit at 2V
-				// Below this the tracker is definitely dead if everything is working properly
-				if (packet.voltage > 2f && packet.voltage < 6f) {
-					// Assuming floor when converting to int
-					it.batteryLevel = if (packet.level < 0.01f) -1f else packet.level * 100
-				} else {
-					it.batteryLevel = 0f
-				}
-				// Server displays 0% if received 255 or -1, otherwise 0 will hide battery icon
+				it.batteryLevel = packet.level * 100
 			}
 
 			is UDPPacket13Tap -> {
@@ -631,67 +610,6 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			}
 
 			is UDPPacket66ControllerButton -> {
-				if (connection == null) return
-				var name = ""
-				tracker = connection?.getTracker(packet.sensorId)
-				if (tracker == null) return
-				// If sensorOffset was applied to accel correctly, the axes will already
-				//  be correct for SlimeVR
-
-				when (packet.type) {
-					UDPPacket66ControllerButton.BUTTON_1_HELD -> {
-						name = "Button 1 Pressed"
-						tracker.setButton1(true)
-					}
-					UDPPacket66ControllerButton.BUTTON_1_UNHELD -> {
-						name = "Button 1 Unpressed"
-						tracker.setButton1(false)
-					}
-					UDPPacket66ControllerButton.BUTTON_2_HELD -> {
-						name = "Button 2 Pressed"
-						tracker.setButton2(true)
-					}
-					UDPPacket66ControllerButton.BUTTON_2_UNHELD -> {
-						name = "Button 2 Unpressed"
-						tracker.setButton2(false)
-					}
-					UDPPacket66ControllerButton.MENU_RECENTER_HELD -> {
-						name = "Menu/Recenter Pressed"
-						tracker.setMenuRecenterButton(true)
-					}
-					UDPPacket66ControllerButton.MENU_RECENTER_UNHELD -> {
-						name = "Menu/Recenter Unpressed"
-						tracker.setMenuRecenterButton(false)
-					}
-					UDPPacket66ControllerButton.STICK_CLICK_HELD -> {
-						name = "Stick Click Pressed"
-						tracker.setStickClickButton(true)
-					}
-					UDPPacket66ControllerButton.STICK_CLICK_UNHELD -> {
-						name = "Stick Click Unpressed"
-						tracker.setStickClickButton(false)
-					}
-				}
-
-				LogManager.info(
-					"[TrackerServer] User action from ${connection.descriptiveName} received. $name performed.",
-				)
-			}
-			is UDPPacket67Thumbstick -> {
-				tracker = connection?.getTracker(packet.sensorId)
-				if(tracker == null) return
-				tracker.setThumbstick(packet.analogueThumbstick);
-			}
-			is UDPPacket68Trigger -> {
-				tracker = connection?.getTracker(packet.sensorId)
-				if(tracker == null) return
-				tracker.setTrigger(packet.trigger);
-			}
-			is UDPPacket69Grip -> {
-				tracker = connection?.getTracker(packet.sensorId)
-				if(tracker == null) return
-				tracker.setTrigger(packet.grip);
-			}
 				var name = ""
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
@@ -801,10 +719,12 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		private val SENSOR_OFFSET_CORRECTION = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 		private const val RESET_SOURCE_NAME = "TrackerServer"
 
+		@ExperimentalStdlibApi
 		private val hexFormat = HexFormat {
 			bytes.byteSeparator = ","
 		}
 
+		@OptIn(ExperimentalStdlibApi::class)
 		private fun packetToString(packet: DatagramPacket?): String {
 			val sb = StringBuilder()
 			sb.append("DatagramPacket{")
