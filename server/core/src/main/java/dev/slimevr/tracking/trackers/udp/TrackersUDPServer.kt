@@ -610,7 +610,6 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			}
 
 			is UDPPacket66ControllerButton -> {
-				if (connection == null) return
 				var name = ""
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
@@ -650,6 +649,14 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						name = "Stick Click Unpressed"
 						tracker.setStickClickButton(false)
 					}
+					UDPPacket66ControllerButton.TRACKPAD_CLICK_HELD -> {
+						name = "Trackpad Click Pressed"
+						tracker.setTrackpadClickButton(true)
+					}
+					UDPPacket66ControllerButton.TRACKPAD_CLICK_UNHELD -> {
+						name = "Trackpad Click Unpressed"
+						tracker.setTrackpadClickButton(false)
+					}
 				}
 
 				LogManager.info(
@@ -670,6 +677,11 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				tracker = connection?.getTracker(packet.sensorId)
 				if(tracker == null) return
 				tracker.setTrigger(packet.grip);
+			}
+			is UDPPacket70Trackpad -> {
+				tracker = connection?.getTracker(packet.sensorId)
+				if(tracker == null) return
+				tracker.setThumbstick(packet.analogueTrackpad);
 			}
 			is UDPPacket200ProtocolChange -> {}
 		}

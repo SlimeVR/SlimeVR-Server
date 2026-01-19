@@ -188,6 +188,8 @@ data class UDPPacket66ControllerButton(var type: Int = 0) :
 		const val MENU_RECENTER_UNHELD = 6
 		const val STICK_CLICK_HELD = 7
 		const val STICK_CLICK_UNHELD = 8
+		const val TRACKPAD_CLICK_HELD = 9
+		const val TRACKPAD_CLICK_UNHELD = 10
 	}
 }
 
@@ -197,6 +199,21 @@ data class UDPPacket67Thumbstick(var analogueThumbstick: Vector3 = Vector3.NULL)
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		analogueThumbstick = Vector3(UDPUtils.getSafeBufferFloat(buf), UDPUtils.getSafeBufferFloat(buf), 0f)
+		sensorId = try {
+			buf.get().toInt() and 0xFF
+		} catch (e: BufferUnderflowException) {
+			// for owo track app
+			0
+		}
+	}
+}
+
+data class UDPPacket70Trackpad(var analogueTrackpad: Vector3 = Vector3.NULL) :
+	UDPPacket(70),
+	SensorSpecificPacket {
+	override var sensorId = 0
+	override fun readData(buf: ByteBuffer) {
+		analogueTrackpad = Vector3(UDPUtils.getSafeBufferFloat(buf), UDPUtils.getSafeBufferFloat(buf), 0f)
 		sensorId = try {
 			buf.get().toInt() and 0xFF
 		} catch (e: BufferUnderflowException) {

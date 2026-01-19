@@ -129,10 +129,13 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			val thumbstick = localTracker.getThumbstick()
 			builder.setThumbstickX(thumbstick.x)
 			builder.setThumbstickY(thumbstick.y)
+			builder.setTrackpadX(thumbstick.x)
+			builder.setTrackpadY(thumbstick.y)
 			builder.setButton1(localTracker.getButton1())
 			builder.setButton2(localTracker.getButton2())
 			builder.setMenuRecenter(localTracker.getMenuRecenterButton())
 			builder.setStickClick(localTracker.getStickClickButton())
+			builder.setTrackpadClick(localTracker.getTrackpadClickButton())
 			builder.setTrigger(localTracker.getTrigger())
 			builder.setGrip(localTracker.getGrip())
 		}
