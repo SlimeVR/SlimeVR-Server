@@ -10,17 +10,17 @@ import { KeybindRequestT, KeybindResponseT, RpcMessage, Keybind, KeybindT } from
 
 
 export type KeybindsForm = {
-    fullResetBinding: string;
-    yawResetBinding: string;
-    mountingResetBinding: string;
-    pauseTrackingBinding: string;
+    fullResetBinding: string[];
+    yawResetBinding: string[];
+    mountingResetBinding: string[];
+    pauseTrackingBinding: string[];
 }
 
 const defaultValues: KeybindsForm = {
-    fullResetBinding: "CTRL+ALT+SHIFT+Y",
-    yawResetBinding: "CTRL+ALT+SHIFT+U",
-    mountingResetBinding: "CTRL+ALT+SHIFT+I",
-    pauseTrackingBinding: "CTRL+ALT+SHIFT+O"
+    fullResetBinding: ["CTRL", "ALT", "SHIFT", "Y"],
+    yawResetBinding: ["CTRL", "ALT", "SHIFT", "U"],
+    mountingResetBinding: ["CTRL", "ALT", "SHIFT", "I"],
+    pauseTrackingBinding: ["CTRL", "ALT", "SHIFT", "O"]
 }
 
 export function useKeybindsForm() {
@@ -58,10 +58,16 @@ export function KeybindSettings() {
     useRPCPacket(
         RpcMessage.KeybindResponse,
         ({ keybind }: KeybindResponseT) => {
-        setRequestedKeybinds(keybind)
+            setRequestedKeybinds(keybind)
+
+            const keybindValues: KeybindsForm = {
+                fullResetBinding: keybind[0].keybindValue.split("+"),
+
+            }
         }
     )
 
+    /*
     const keybindElements = requestedKeybinds?.map(requestedKeybind => {
         <KeybindInput 
             name=""
@@ -75,6 +81,7 @@ export function KeybindSettings() {
             />
         }
     )
+        */
 
     console.log(requestedKeybinds)
 
@@ -96,27 +103,34 @@ export function KeybindSettings() {
                                     <Typography key={i}>{line}</Typography>
                                 ))}
                         </div>
-                        {/*
-                        <KeybindInput 
-                            name="keybinds.fullResetBinding"
-                            label="Full Reset"
-                        />
-                        <div className="flex flex-col pt-4" />
-                        <KeybindInput
-                            name="keybinds.yawResetBinding"
-                            label="Yaw Reset"
-                        />
-                        <div className="flex flex-col pt-4" />
-                        <KeybindInput
-                            name="keybinds.mountingResetBinding"
-                            label="Mounting Reset"
-                        />
-                        <div className="flex flex-col pt-4" />
-                        <KeybindInput                            
-                            name="keybinds.pauseTrackingBinding"
-                            label="Pause Tracking"
-                        />  
-                        */}                          
+                        {
+                            <>
+                                <KeybindInput 
+                                    name="keybinds.fullResetBinding"
+                                    label="Full Reset"
+                                    control={control}
+                                    delay={2.0}
+                                />
+                                <div className="flex flex-col pt-4" />
+                                {/*}
+                                <KeybindInput
+                                    name="keybinds.yawResetBinding"
+                                    label="Yaw Reset"
+                                />
+                                <div className="flex flex-col pt-4" />
+                                <KeybindInput
+                                    name="keybinds.mountingResetBinding"
+                                    label="Mounting Reset"
+                                />
+                                <div className="flex flex-col pt-4" />
+                                <KeybindInput                            
+                                    name="keybinds.pauseTrackingBinding"
+                                    label="Pause Tracking"
+                                    />  
+                                    */
+                                }
+                            </>
+                        }                          
                     </>
                 </SettingsPagePaneLayout>
             </form>
