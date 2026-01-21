@@ -41,7 +41,7 @@ class Tracker @JvmOverloads constructor(
 	trackerNum: Int? = null,
 	val hasPosition: Boolean = false,
 	val hasRotation: Boolean = false,
-	var hasControls: Boolean = true,
+	var hasControls: Boolean = false,
 	val hasAcceleration: Boolean = false,
 	/**
 	 * User can change TrackerPosition, mounting...

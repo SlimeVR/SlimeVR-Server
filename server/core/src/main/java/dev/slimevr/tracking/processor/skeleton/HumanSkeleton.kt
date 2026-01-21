@@ -1162,15 +1162,26 @@ class HumanSkeleton(
 		updateComputedTracker(computedRightFootTracker, rightFootTrackerBone)
 		updateComputedTracker(computedLeftElbowTracker, leftElbowTrackerBone)
 		updateComputedTracker(computedRightElbowTracker, rightElbowTrackerBone)
-		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone)
-		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone)
+		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone,leftHandTracker)
+		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone, rightHandTracker)
 	}
 
-	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone) {
+	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone, originalTracker: Tracker? = null) {
 		computedTracker?.let {
 			it.position = trackerBone.getTailPosition()
 			it.setRotation(trackerBone.getGlobalRotation() * trackerBone.rotationOffset.inv())
-			it.dataTick()
+			if(originalTracker != null) {
+				it.setButton1(originalTracker.getButton1())
+				it.setButton2(originalTracker.getButton2())
+				it.setMenuRecenterButton(originalTracker.getMenuRecenterButton())
+				it.setStickClickButton(originalTracker.getStickClickButton());
+				it.setTrackpadClickButton(originalTracker.getTrackpadClickButton());
+				it.setThumbstick(originalTracker.getThumbstick());
+				it.setTrigger(originalTracker.getTrigger());
+				it.setGrip(originalTracker.getGrip());
+				it.hasControls = originalTracker.hasControls;
+				it.dataTick()
+			}
 		}
 	}
 
