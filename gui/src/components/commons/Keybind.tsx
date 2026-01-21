@@ -14,7 +14,6 @@ export const KeybindInputInternal = forwardRef<
     label: string;
     keys: string[];
     delay: number;
-    resetField: UseFormResetField<any>;
     onKeysChange: (v: string[]) => void;
     onDelayChange: (v: number) => void;
   } & Partial<React.HTMLProps<HTMLInputElement>>
@@ -23,20 +22,24 @@ export const KeybindInputInternal = forwardRef<
       label,
       keys,
       delay,
-      resetField,
       onKeysChange,
       onDelayChange,
     },
     ref
   ) {
     //TODO: This is probably bad code but it fixes a bug where after loading you can add more than 4 keys
-    const keyCountRef = useRef(keys.length);
     const [isRecordingKeybind, setIsRecordingKeybind] = useState(false)
 
+    useEffect(() => {
+      console.log(`[Keybind ${label}]`, {
+    keys,
+    keysLength: keys.length,
+    isRecordingKeybind,
+    });
+    }, [keys, isRecordingKeybind]);
+
     const classNames = "max-h-[32px] placeholder:text-background-10 placeholder:italic bg-background-60 border-background-60 w-full focus:ring-transparent focus:ring-offset-transparent min-h-[42px] z-10 focus:outline-transparent rounded-md focus:border-accent-background-40 text-standard text-background-10 relative transition-colors"
-    console.log(`Hello from ${label}`)
-    console.log(keys)
-    console.log(delay)
+
     return (
         <label className="flex flex-col gap-1">
           {label}
@@ -45,33 +48,37 @@ export const KeybindInputInternal = forwardRef<
             <div className='flex flex-grow h-full hover:ring-4 rounded-lg bg-background-80 '>
               <input
                 className="opacity-0 absolute cursor-pointer h-full"
+                name="keybindInput"
                 ref={ref}
+                onFocus={() => {
+                  if (keys.length < 4) {
+                    setIsRecordingKeybind(true)
+                  }
+                }}
+                onBlur={() => setIsRecordingKeybind(false)}
                 onKeyDown={(event) => {
-                  if (keyCountRef.current < 4) {
-
-                    const newKeys = [...keys, event.key];
-                    keyCountRef.current++;
+                  if (keys.length < 4) {
+                    const newKeys = [...keys, event.key.toUpperCase()];
                     onKeysChange(newKeys);
+                  } else {
+                    setIsRecordingKeybind(false)
                   }
                 }}
               />
 
               <div className="flex flex-grow h-full gap-1 min-h-[42px] items-center">
-                {keys.map((key) => (
-                  <div key={key} className="bg-red-500 p-2 rounded-md text-center max-h-[42px]">
+                {keys.map((key, index) => (
+                  <div key={index} className="bg-red-500 p-2 rounded-md text-center max-h-[42px]">
                     {key}
                   </div>
                 ))}
               </div>
-
-              <Button
-                variant="primary"
-                  onClick={() => {
-                  setIsRecordingKeybind(!isRecordingKeybind);
-                }}
-              >
-                {isRecordingKeybind ? "Recording Keybind" : "Record Keybind"}
-              </Button>
+              
+              {isRecordingKeybind && (
+                <div className="bsolute right-2 text-red-accent-500 text-sm flex items-center gap-1">
+                  Recording keybind...
+                </div>
+              )}
             </div>
 
             <label className="flex flex-col gap-1">
@@ -96,7 +103,6 @@ export const KeybindInputInternal = forwardRef<
 
             <Button
               onClick={() => {
-                keyCountRef.current = 0;
                 onKeysChange([]);
               }}
               variant="primary"
@@ -113,13 +119,11 @@ export const KeybindInputInternal = forwardRef<
 export function KeybindInput({
     label,
     control,
-    resetField,
     bindingName,
     delayName
 }: {
   label: string;
   control: Control<any>;
-  resetField: UseFormResetField<any>;
   bindingName: string;
   delayName: string;
 }) {
@@ -136,7 +140,6 @@ export function KeybindInput({
               label={label}
               keys={keys}
               delay={delay}
-              resetField={resetField}
               onKeysChange={onKeysChange}
               onDelayChange={onDelayChange}
               ref={ref}

@@ -11,6 +11,7 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 	val config: KeybindingsConfig = server.configManager.vrConfig.keybindings
 
 	init {
+
 		if (OperatingSystem.Companion.currentPlatform != OperatingSystem.WINDOWS) {
 			LogManager
 				.info(

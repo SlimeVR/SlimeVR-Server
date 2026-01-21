@@ -5,26 +5,55 @@ import { useLocalization } from "@fluent/react";
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { KeybindInput } from "@/components/commons/Keybind";
+import { Button } from "@/components/commons/Button";
 import { useWebsocketAPI } from "@/hooks/websocket-api";
-import { KeybindRequestT, KeybindResponseT, RpcMessage, Keybind, KeybindT } from 'solarxr-protocol';
+import { KeybindRequestT, KeybindResponseT, RpcMessage, Keybind, KeybindT, KeybindName, ChangeKeybindRequestT } from 'solarxr-protocol';
 
 
 export type KeybindsForm = {
-    fullResetBinding: string[];
-    yawResetBinding: string[];
-    mountingResetBinding: string[];
-    pauseTrackingBinding: string[];
+    names: {
+        fullResetName: KeybindName;
+        yawResetName: KeybindName;
+        mountingResetName: KeybindName;
+        pauseTrackingName: KeybindName;
+    }
+    bindings: {
+        fullResetBinding: string[];
+        yawResetBinding: string[];
+        mountingResetBinding: string[];
+        pauseTrackingBinding: string[];
+    };
+    delays: {
+        fullResetDelay: bigint;
+        yawResetDelay: bigint;
+        mountingResetDelay: bigint;
+        pauseTrackingDelay: bigint;
+    }
 }
 
 const defaultValues: KeybindsForm = {
-    fullResetBinding: ["CTRL", "ALT", "SHIFT", "Y"],
-    yawResetBinding: ["CTRL", "ALT", "SHIFT", "U"],
-    mountingResetBinding: ["CTRL", "ALT", "SHIFT", "I"],
-    pauseTrackingBinding: ["CTRL", "ALT", "SHIFT", "O"]
+    names: {
+        fullResetName: KeybindName.FULL_RESET,
+        yawResetName: KeybindName.YAW_RESET,
+        mountingResetName: KeybindName.MOUNTING_RESET,
+        pauseTrackingName: KeybindName.PAUSE_TRACKING
+    },
+    bindings: {
+        fullResetBinding: ["CTRL", "ALT", "SHIFT", "Y"],
+        yawResetBinding: ["CTRL", "ALT", "SHIFT", "U"],
+        mountingResetBinding: ["CTRL", "ALT", "SHIFT", "I"],
+        pauseTrackingBinding: ["CTRL", "ALT", "SHIFT", "O"]
+    },
+    delays: {
+        fullResetDelay: 0n,
+        yawResetDelay: 0n,
+        mountingResetDelay: 0n,
+        pauseTrackingDelay: 0n
+    }
 }
 
 export function useKeybindsForm() {
-    const { register, reset, handleSubmit, formState, control } =
+    const { register, reset, handleSubmit, formState, control, getValues, watch } =
     useForm<KeybindsForm>({
         defaultValues,
         reValidateMode: 'onSubmit',
@@ -35,17 +64,17 @@ export function useKeybindsForm() {
         register,
         reset,
         handleSubmit,
-        formState
+        formState,
+        getValues,
+        watch
     };
 }
 
-
 export function KeybindSettings() {
     const { l10n } = useLocalization();
-    const { control } = useKeybindsForm();
+    const { control, reset, handleSubmit, watch } = useKeybindsForm();
     const { sendRPCPacket, useRPCPacket} = useWebsocketAPI();
-
-    const [requestedKeybinds, setRequestedKeybinds] = useState<KeybindT[] | null>();
+    const [originalKeybinds, setOriginalKeybinds] = useState<KeybindT[] | null>(null);
 
     useEffect(() => {
         sendRPCPacket(
@@ -54,36 +83,97 @@ export function KeybindSettings() {
         );
     }, []);
 
+    useEffect(() => {
+        const subscription = watch(() => handleSubmit(onSubmit)())
+        return () => subscription.unsubscribe()
+    })
 
     useRPCPacket(
         RpcMessage.KeybindResponse,
         ({ keybind }: KeybindResponseT) => {
-            setRequestedKeybinds(keybind)
+            if (!keybind) return;
+
+            setOriginalKeybinds(keybind);
+    
 
             const keybindValues: KeybindsForm = {
-                fullResetBinding: keybind[0].keybindValue.split("+"),
+                names: {
+                    fullResetName: KeybindName.FULL_RESET,
+                    yawResetName: KeybindName.YAW_RESET,
+                    mountingResetName: KeybindName.MOUNTING_RESET,
+                    pauseTrackingName: KeybindName.PAUSE_TRACKING,
+                },
+                bindings: {
+                    fullResetBinding:
+                    (typeof keybind[0].keybindValue === "string"
+                        ? keybind[0].keybindValue
+                        : ""
+                    ).split("+"),
 
+                    yawResetBinding:
+                    (typeof keybind[1].keybindValue === "string"
+                        ? keybind[1].keybindValue
+                        : ""
+                    ).split("+"),
+
+                    mountingResetBinding:
+                    (typeof keybind[2].keybindValue === "string"
+                        ? keybind[2].keybindValue
+                        : ""
+                    ).split("+"),
+
+                    pauseTrackingBinding:
+                    (typeof keybind[3].keybindValue === "string"
+                        ? keybind[3].keybindValue
+                        : ""
+                    ).split("+"),
+                },
+                delays: {
+                    fullResetDelay: keybind[0].keybindDelay ?? 0n,
+                    yawResetDelay: keybind[1].keybindDelay ?? 0n,
+                    mountingResetDelay: keybind[2].keybindDelay ?? 0n,
+                    pauseTrackingDelay: keybind[3].keybindDelay ?? 0n,
+                },
             }
         }
     )
 
-    /*
-    const keybindElements = requestedKeybinds?.map(requestedKeybind => {
-        <KeybindInput 
-            name=""
-            label={requestedKeybind.keybindName.toString()}
-            value={
-                requestedKeybind.keybindValue != null ?
-                    requestedKeybind.keybindValue.toString()
-                    : ""
-            }
-            delay={requestedKeybind.keybindDelay}
-            />
-        }
-    )
-        */
+    const onSubmit = (values: KeybindsForm) => {
+        const keybinds = new ChangeKeybindRequestT();
 
-    console.log(requestedKeybinds)
+        const fullResetKeybind = new KeybindT();
+        fullResetKeybind.keybindName = values.names.fullResetName;
+        fullResetKeybind.keybindValue = values.bindings.fullResetBinding.join("+");
+        fullResetKeybind.keybindDelay = values.delays.fullResetDelay;
+        keybinds.keybind.push(fullResetKeybind);
+
+        const yawResetKeybind = new KeybindT();
+        yawResetKeybind.keybindName = values.names.yawResetName;
+        yawResetKeybind.keybindValue = values.bindings.yawResetBinding.join("+");
+        yawResetKeybind.keybindDelay = values.delays.yawResetDelay;
+        keybinds.keybind.push(yawResetKeybind);
+
+        const mountingResetKeybind = new KeybindT();
+        mountingResetKeybind.keybindName = values.names.mountingResetName;
+        mountingResetKeybind.keybindValue = values.bindings.mountingResetBinding.join("+");
+        mountingResetKeybind.keybindDelay = values.delays.mountingResetDelay;
+        keybinds.keybind.push(mountingResetKeybind);
+
+        const pauseTrackingKeybind = new KeybindT();
+        pauseTrackingKeybind.keybindName = values.names.pauseTrackingName;
+        pauseTrackingKeybind.keybindValue = values.bindings.pauseTrackingBinding.join("+");
+        pauseTrackingKeybind.keybindDelay = values.delays.pauseTrackingDelay;
+        keybinds.keybind.push(pauseTrackingKeybind);
+
+        console.log(keybinds.keybind)
+
+        sendRPCPacket(RpcMessage.ChangeKeybindRequest, keybinds);
+    }
+
+
+    const handleResetButton = () => {
+        reset(defaultValues)
+    }
 
     return (
         <SettingsPageLayout>
@@ -106,31 +196,43 @@ export function KeybindSettings() {
                         {
                             <>
                                 <KeybindInput 
-                                    name="keybinds.fullResetBinding"
                                     label="Full Reset"
                                     control={control}
-                                    delay={2.0}
+                                    bindingName="bindings.fullResetBinding"
+                                    delayName="delays.fullResetDelay"
                                 />
                                 <div className="flex flex-col pt-4" />
-                                {/*}
+                                
                                 <KeybindInput
-                                    name="keybinds.yawResetBinding"
+                                    bindingName="bindings.yawResetBinding"
+                                    delayName="delays.yawResetDelay"
                                     label="Yaw Reset"
+                                    control={control}
                                 />
                                 <div className="flex flex-col pt-4" />
                                 <KeybindInput
-                                    name="keybinds.mountingResetBinding"
+                                    bindingName="bindings.mountingResetBinding"
+                                    delayName="delays.mountingResetDelay"
                                     label="Mounting Reset"
+                                    control={control}
                                 />
                                 <div className="flex flex-col pt-4" />
                                 <KeybindInput                            
-                                    name="keybinds.pauseTrackingBinding"
+                                    bindingName="bindings.pauseTrackingBinding"
+                                    delayName="delays.pauseTrackingDelay"
                                     label="Pause Tracking"
+                                    control={control}
                                     />  
-                                    */
-                                }
+                                    
                             </>
-                        }                          
+                        }
+                        <div className="flex flex-col pt-4" />                     
+                        <Button
+                            className="flex flex-col"
+                            onClick={handleResetButton}
+                            variant='primary'
+                            >Reset all
+                        </Button>       
                     </>
                 </SettingsPagePaneLayout>
             </form>

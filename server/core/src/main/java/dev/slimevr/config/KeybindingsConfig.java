@@ -4,8 +4,6 @@ import dev.slimevr.Keybinding.KeybindName;
 
 public class KeybindingsConfig {
 
-	private KeybindName keybindName;
-
 	private String fullResetBinding = "CTRL+ALT+SHIFT+Y";
 
 	private String yawResetBinding = "CTRL+ALT+SHIFT+U";
@@ -23,12 +21,6 @@ public class KeybindingsConfig {
 	private long pauseTrackingDelay = 0L;
 
 	public KeybindingsConfig() {}
-
-	public KeybindName getKeybindName() { return keybindName; }
-
-	public void setKeybindName(KeybindName keybindName) {
-		this.keybindName = keybindName;
-	}
 
 	public String getFullResetBinding() {
 		return fullResetBinding;

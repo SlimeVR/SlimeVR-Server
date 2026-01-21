@@ -7,6 +7,7 @@ import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.protocol.ProtocolAPI
 import jdk.internal.joptsimple.internal.Messages.message
+import solarxr_protocol.rpc.ChangeKeybindRequest
 import solarxr_protocol.rpc.KeybindName
 import solarxr_protocol.rpc.KeybindRequest
 import solarxr_protocol.rpc.KeybindResponse
@@ -26,6 +27,7 @@ class RPCKeybindHandler(
 		this.api.server.keybindHandler.addListener(this)
 
 		rpcHandler.registerPacketListener(RpcMessage.KeybindRequest, ::onKeybindRequest)
+		rpcHandler.registerPacketListener(RpcMessage.ChangeKeybindRequest, ::onChangeKeybindRequest)
 	}
 
 	private fun buildKeybindResponse(fbb: FlatBufferBuilder) : Int = KeybindResponse.pack(
@@ -48,7 +50,29 @@ class RPCKeybindHandler(
 		conn.send(fbb.dataBuffer())
 	}
 
+	private fun onChangeKeybindRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val req = (messageHeader.message(ChangeKeybindRequest()) as ChangeKeybindRequest).unpack()
 
+		for (element in req.keybind) {
+			println(element.keybindName)
+			println(element.keybindValue)
+			println(element.keybindDelay)
+		}
+
+		keybindingsconfig.fullResetBinding = req.keybind[0].keybindValue
+		keybindingsconfig.fullResetDelay = req.keybind[0].keybindDelay
+
+		keybindingsconfig.yawResetBinding = req.keybind[1].keybindValue
+		keybindingsconfig.yawResetDelay = req.keybind[1].keybindDelay
+
+		keybindingsconfig.mountingResetBinding = req.keybind[2].keybindValue
+		keybindingsconfig.mountingResetDelay = req.keybind[2].keybindDelay
+
+		keybindingsconfig.pauseTrackingBinding = req.keybind[3].keybindValue
+		keybindingsconfig.pauseTrackingDelay = req.keybind[3].keybindDelay
+
+		api.server.configManager.saveConfig()
+	}
 	override fun onKeybindUpdate() {
 		/*
 		val fbb = FlatBufferBuilder(32)
