@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class KeybindHandler(val vrServer: VRServer) {
 	private val listeners: MutableList<KeybindListener> = CopyOnWriteArrayList()
-	val keybinds: MutableList<KeybindT> = mutableListOf()
+	var keybinds: MutableList<KeybindT> = mutableListOf()
 
 	init {
 		createKeybinds()
@@ -29,6 +29,7 @@ class KeybindHandler(val vrServer: VRServer) {
 	}
 
 	private fun createKeybinds() {
+		keybinds.clear()
 		keybinds.add(
 			KeybindT().apply {
 				keybindName = KeybindName.FULL_RESET
@@ -57,5 +58,9 @@ class KeybindHandler(val vrServer: VRServer) {
 				keybindDelay = vrServer.configManager.vrConfig.keybindings.pauseTrackingDelay
 			},
 		)
+	}
+	//TODO: Maybe recreating all the keybinds isn't the best idea?
+	fun updateKeybinds() {
+		createKeybinds()
 	}
 }

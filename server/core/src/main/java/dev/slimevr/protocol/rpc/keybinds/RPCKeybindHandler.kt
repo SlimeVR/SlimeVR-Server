@@ -35,10 +35,6 @@ class RPCKeybindHandler(
 		fbb,
 		KeybindResponseT().apply {
 			keybind = api.server.keybindHandler.keybinds.toTypedArray()
-			println("KeybindResponse")
-			println(keybind[0].keybindName)
-			println(keybind[0].keybindValue)
-			println(keybind[0].keybindDelay)
 		}
 	)
 
@@ -59,23 +55,20 @@ class RPCKeybindHandler(
 		val req = (messageHeader.message(ChangeKeybindRequest()) as ChangeKeybindRequest).unpack()
 
 		//TODO: Find a way to not use magic numbers here
-		keybindingsconfig.fullResetBinding = req.keybind[0].keybindValue
-		keybindingsconfig.fullResetDelay = req.keybind[0].keybindDelay
+		keybindingsconfig.fullResetBinding = req.keybind[KeybindName.FULL_RESET].keybindValue
+		keybindingsconfig.fullResetDelay = req.keybind[KeybindName.FULL_RESET].keybindDelay
 
-		keybindingsconfig.yawResetBinding = req.keybind[1].keybindValue
-		keybindingsconfig.yawResetDelay = req.keybind[1].keybindDelay
+		keybindingsconfig.yawResetBinding = req.keybind[KeybindName.YAW_RESET].keybindValue
+		keybindingsconfig.yawResetDelay = req.keybind[KeybindName.YAW_RESET].keybindDelay
 
-		keybindingsconfig.mountingResetBinding = req.keybind[2].keybindValue
-		keybindingsconfig.mountingResetDelay = req.keybind[2].keybindDelay
+		keybindingsconfig.mountingResetBinding = req.keybind[KeybindName.MOUNTING_RESET].keybindValue
+		keybindingsconfig.mountingResetDelay = req.keybind[KeybindName.MOUNTING_RESET].keybindDelay
 
-		keybindingsconfig.pauseTrackingBinding = req.keybind[3].keybindValue
-		keybindingsconfig.pauseTrackingDelay = req.keybind[3].keybindDelay
+		keybindingsconfig.pauseTrackingBinding = req.keybind[KeybindName.PAUSE_TRACKING].keybindValue
+		keybindingsconfig.pauseTrackingDelay = req.keybind[KeybindName.PAUSE_TRACKING].keybindDelay
 
-		println("ChangeKeybind Request called")
-		println(req.keybind[0].keybindName)
-		println(req.keybind[0].keybindValue)
-		println(req.keybind[0].keybindDelay)
 		api.server.configManager.saveConfig()
+		api.server.keybindHandler.updateKeybinds()
 	}
 	override fun onKeybindUpdate() {
 		/*
