@@ -8,6 +8,7 @@ import { KeybindInput } from "@/components/commons/Keybind";
 import { Button } from "@/components/commons/Button";
 import { useWebsocketAPI } from "@/hooks/websocket-api";
 import { KeybindRequestT, KeybindResponseT, RpcMessage, Keybind, KeybindT, KeybindName, ChangeKeybindRequestT } from 'solarxr-protocol';
+import { ResetButtonIcon } from "@/components/home/ResetButton";
 
 
 export type KeybindsForm = {
@@ -100,9 +101,6 @@ export function KeybindSettings() {
         pauseTrackingKeybind.keybindValue = values.bindings.pauseTrackingBinding.join("+");
         pauseTrackingKeybind.keybindDelay = values.delays.pauseTrackingDelay;
         keybinds.keybind.push(pauseTrackingKeybind);
-
-        console.log(`Sending Packet`)
-        console.log(keybinds)
 
         sendRPCPacket(RpcMessage.ChangeKeybindRequest, keybinds);
     };
