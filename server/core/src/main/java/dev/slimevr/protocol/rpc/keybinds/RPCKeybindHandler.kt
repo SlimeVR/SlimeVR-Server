@@ -30,10 +30,15 @@ class RPCKeybindHandler(
 		rpcHandler.registerPacketListener(RpcMessage.ChangeKeybindRequest, ::onChangeKeybindRequest)
 	}
 
+	//TODO: Figure out a way to "refresh" the keybind array here.
 	private fun buildKeybindResponse(fbb: FlatBufferBuilder) : Int = KeybindResponse.pack(
 		fbb,
 		KeybindResponseT().apply {
 			keybind = api.server.keybindHandler.keybinds.toTypedArray()
+			println("KeybindResponse")
+			println(keybind[0].keybindName)
+			println(keybind[0].keybindValue)
+			println(keybind[0].keybindDelay)
 		}
 	)
 
@@ -53,12 +58,7 @@ class RPCKeybindHandler(
 	private fun onChangeKeybindRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = (messageHeader.message(ChangeKeybindRequest()) as ChangeKeybindRequest).unpack()
 
-		for (element in req.keybind) {
-			println(element.keybindName)
-			println(element.keybindValue)
-			println(element.keybindDelay)
-		}
-
+		//TODO: Find a way to not use magic numbers here
 		keybindingsconfig.fullResetBinding = req.keybind[0].keybindValue
 		keybindingsconfig.fullResetDelay = req.keybind[0].keybindDelay
 
@@ -71,6 +71,10 @@ class RPCKeybindHandler(
 		keybindingsconfig.pauseTrackingBinding = req.keybind[3].keybindValue
 		keybindingsconfig.pauseTrackingDelay = req.keybind[3].keybindDelay
 
+		println("ChangeKeybind Request called")
+		println(req.keybind[0].keybindName)
+		println(req.keybind[0].keybindValue)
+		println(req.keybind[0].keybindDelay)
 		api.server.configManager.saveConfig()
 	}
 	override fun onKeybindUpdate() {

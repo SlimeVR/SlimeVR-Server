@@ -2,7 +2,7 @@ import { WrenchIcon } from "@/components/commons/icon/WrenchIcons";
 import { SettingsPageLayout, SettingsPagePaneLayout } from "../SettingsPageLayout";
 import { Typography } from "@/components/commons/Typography"; 
 import { useLocalization } from "@fluent/react";
-import { useForm } from "react-hook-form";
+import { DefaultValues, useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { KeybindInput } from "@/components/commons/Keybind";
 import { Button } from "@/components/commons/Button";
@@ -56,7 +56,6 @@ export function useKeybindsForm() {
     const { register, reset, handleSubmit, formState, control, getValues, watch } =
     useForm<KeybindsForm>({
         defaultValues,
-        reValidateMode: 'onSubmit',
     });
 
     return {
@@ -72,9 +71,46 @@ export function useKeybindsForm() {
 
 export function KeybindSettings() {
     const { l10n } = useLocalization();
-    const { control, reset, handleSubmit, watch } = useKeybindsForm();
+    const { control, reset, handleSubmit, watch, getValues } = useKeybindsForm();
     const { sendRPCPacket, useRPCPacket} = useWebsocketAPI();
-    const [originalKeybinds, setOriginalKeybinds] = useState<KeybindT[] | null>(null);
+
+    const onSubmit = (values: KeybindsForm) => {
+        const keybinds = new ChangeKeybindRequestT();
+
+        const fullResetKeybind = new KeybindT();
+        fullResetKeybind.keybindName = values.names.fullResetName;
+        fullResetKeybind.keybindValue = values.bindings.fullResetBinding.join("+");
+        fullResetKeybind.keybindDelay = values.delays.fullResetDelay;
+        keybinds.keybind.push(fullResetKeybind);
+
+        const yawResetKeybind = new KeybindT();
+        yawResetKeybind.keybindName = values.names.yawResetName;
+        yawResetKeybind.keybindValue = values.bindings.yawResetBinding.join("+");
+        yawResetKeybind.keybindDelay = values.delays.yawResetDelay;
+        keybinds.keybind.push(yawResetKeybind);
+
+        const mountingResetKeybind = new KeybindT();
+        mountingResetKeybind.keybindName = values.names.mountingResetName;
+        mountingResetKeybind.keybindValue = values.bindings.mountingResetBinding.join("+");
+        mountingResetKeybind.keybindDelay = values.delays.mountingResetDelay;
+        keybinds.keybind.push(mountingResetKeybind);
+
+        const pauseTrackingKeybind = new KeybindT();
+        pauseTrackingKeybind.keybindName = values.names.pauseTrackingName;
+        pauseTrackingKeybind.keybindValue = values.bindings.pauseTrackingBinding.join("+");
+        pauseTrackingKeybind.keybindDelay = values.delays.pauseTrackingDelay;
+        keybinds.keybind.push(pauseTrackingKeybind);
+
+        console.log(`Sending Packet`)
+        console.log(keybinds)
+
+        sendRPCPacket(RpcMessage.ChangeKeybindRequest, keybinds);
+    };
+
+    useEffect(() => {
+        const subscription = watch(() => handleSubmit(onSubmit)())
+        return () => subscription.unsubscribe()
+    }, [])
 
     useEffect(() => {
         sendRPCPacket(
@@ -83,19 +119,15 @@ export function KeybindSettings() {
         );
     }, []);
 
-    useEffect(() => {
-        const subscription = watch(() => handleSubmit(onSubmit)())
-        return () => subscription.unsubscribe()
-    })
 
     useRPCPacket(
         RpcMessage.KeybindResponse,
         ({ keybind }: KeybindResponseT) => {
             if (!keybind) return;
 
-            setOriginalKeybinds(keybind);
-    
-
+            console.log(`Keybind Name ${keybind[0].keybindName}`)
+            console.log(`Keybind value ${keybind[0].keybindValue}`)
+            console.log(`Keybind Delay ${keybind[0].keybindDelay}`)
             const keybindValues: KeybindsForm = {
                 names: {
                     fullResetName: KeybindName.FULL_RESET,
@@ -135,40 +167,12 @@ export function KeybindSettings() {
                     pauseTrackingDelay: keybind[3].keybindDelay ?? 0n,
                 },
             }
+            console.log(keybindValues)
+            //Is this the correct syntax for setting the form with received data?
+            reset({ ...getValues(), ...keybindValues });
         }
     )
 
-    const onSubmit = (values: KeybindsForm) => {
-        const keybinds = new ChangeKeybindRequestT();
-
-        const fullResetKeybind = new KeybindT();
-        fullResetKeybind.keybindName = values.names.fullResetName;
-        fullResetKeybind.keybindValue = values.bindings.fullResetBinding.join("+");
-        fullResetKeybind.keybindDelay = values.delays.fullResetDelay;
-        keybinds.keybind.push(fullResetKeybind);
-
-        const yawResetKeybind = new KeybindT();
-        yawResetKeybind.keybindName = values.names.yawResetName;
-        yawResetKeybind.keybindValue = values.bindings.yawResetBinding.join("+");
-        yawResetKeybind.keybindDelay = values.delays.yawResetDelay;
-        keybinds.keybind.push(yawResetKeybind);
-
-        const mountingResetKeybind = new KeybindT();
-        mountingResetKeybind.keybindName = values.names.mountingResetName;
-        mountingResetKeybind.keybindValue = values.bindings.mountingResetBinding.join("+");
-        mountingResetKeybind.keybindDelay = values.delays.mountingResetDelay;
-        keybinds.keybind.push(mountingResetKeybind);
-
-        const pauseTrackingKeybind = new KeybindT();
-        pauseTrackingKeybind.keybindName = values.names.pauseTrackingName;
-        pauseTrackingKeybind.keybindValue = values.bindings.pauseTrackingBinding.join("+");
-        pauseTrackingKeybind.keybindDelay = values.delays.pauseTrackingDelay;
-        keybinds.keybind.push(pauseTrackingKeybind);
-
-        console.log(keybinds.keybind)
-
-        sendRPCPacket(RpcMessage.ChangeKeybindRequest, keybinds);
-    }
 
 
     const handleResetButton = () => {
