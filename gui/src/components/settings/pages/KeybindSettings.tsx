@@ -17,6 +17,7 @@ import {
   KeybindT,
   KeybindName,
   ChangeKeybindRequestT,
+  Keybind,
 } from 'solarxr-protocol';
 
 export type KeybindsForm = {
@@ -71,6 +72,7 @@ export function useKeybindsForm() {
     control,
     getValues,
     setValue,
+    resetField,
     watch,
   } = useForm<KeybindsForm>({
     defaultValues,
@@ -84,13 +86,14 @@ export function useKeybindsForm() {
     formState,
     getValues,
     setValue,
+    resetField,
     watch,
   };
 }
 
 export function KeybindSettings() {
   const { l10n } = useLocalization();
-  const { control, reset, handleSubmit, watch, getValues, setValue } = useKeybindsForm();
+  const { control, reset, handleSubmit, watch, getValues, setValue, resetField } = useKeybindsForm();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const onSubmit = (values: KeybindsForm) => {
@@ -137,9 +140,6 @@ export function KeybindSettings() {
   useRPCPacket(RpcMessage.KeybindResponse, ({ keybind }: KeybindResponseT) => {
     if (!keybind) return;
 
-    console.log(`Keybind Name ${keybind[0].keybindName}`);
-    console.log(`Keybind value ${keybind[0].keybindValue}`);
-    console.log(`Keybind Delay ${keybind[0].keybindDelay}`);
     const keybindValues: KeybindsForm = {
       names: {
         fullResetName: KeybindName.FULL_RESET,
@@ -148,31 +148,31 @@ export function KeybindSettings() {
         pauseTrackingName: KeybindName.PAUSE_TRACKING,
       },
       bindings: {
-        fullResetBinding: (typeof keybind[0].keybindValue === 'string'
-          ? keybind[0].keybindValue
+        fullResetBinding: (typeof keybind[KeybindName.FULL_RESET].keybindValue === 'string'
+          ? keybind[KeybindName.FULL_RESET].keybindValue
           : ''
         ).split('+'),
 
-        yawResetBinding: (typeof keybind[1].keybindValue === 'string'
-          ? keybind[1].keybindValue
+        yawResetBinding: (typeof keybind[KeybindName.YAW_RESET].keybindValue === 'string'
+          ? keybind[KeybindName.YAW_RESET].keybindValue
           : ''
         ).split('+'),
 
-        mountingResetBinding: (typeof keybind[2].keybindValue === 'string'
-          ? keybind[2].keybindValue
+        mountingResetBinding: (typeof keybind[KeybindName.MOUNTING_RESET].keybindValue === 'string'
+          ? keybind[KeybindName.MOUNTING_RESET].keybindValue
           : ''
         ).split('+'),
 
-        pauseTrackingBinding: (typeof keybind[3].keybindValue === 'string'
-          ? keybind[3].keybindValue
+        pauseTrackingBinding: (typeof keybind[KeybindName.PAUSE_TRACKING].keybindValue === 'string'
+          ? keybind[KeybindName.PAUSE_TRACKING].keybindValue
           : ''
         ).split('+'),
       },
       delays: {
-        fullResetDelay: Number(keybind[0].keybindDelay) ?? 0,
-        yawResetDelay: Number(keybind[1].keybindDelay) ?? 0,
-        mountingResetDelay: Number(keybind[2].keybindDelay) ?? 0,
-        pauseTrackingDelay: Number(keybind[3].keybindDelay) ?? 0,
+        fullResetDelay: Number(keybind[KeybindName.FULL_RESET].keybindDelay) ?? 0,
+        yawResetDelay: Number(keybind[KeybindName.YAW_RESET].keybindDelay) ?? 0,
+        mountingResetDelay: Number(keybind[KeybindName.MOUNTING_RESET].keybindDelay) ?? 0,
+        pauseTrackingDelay: Number(keybind[KeybindName.PAUSE_TRACKING].keybindDelay) ?? 0,
       },
     };
     console.log(keybindValues);
@@ -241,6 +241,7 @@ export function KeybindSettings() {
                   label="Full Reset"
                   control={control}
                   setValue={setValue}
+                  resetField={resetField}
                   bindingName="bindings.fullResetBinding"
                   delayName="delays.fullResetDelay"
                 />
@@ -248,6 +249,7 @@ export function KeybindSettings() {
                   label="Yaw Reset"
                   control={control}
                   setValue={setValue}
+                  resetField={resetField}
                   bindingName="bindings.yawResetBinding"
                   delayName="delays.yawResetDelay"
                 />
@@ -255,6 +257,7 @@ export function KeybindSettings() {
                   label="Mounting Reset"
                   control={control}
                   setValue={setValue}
+                  resetField={resetField}
                   bindingName="bindings.mountingResetBinding"
                   delayName="delays.mountingResetDelay"
                 />
@@ -262,6 +265,7 @@ export function KeybindSettings() {
                   label="Pause Tracking"
                   control={control}
                   setValue={setValue}
+                  resetField={resetField}
                   bindingName="bindings.pauseTrackingBinding"
                   delayName="delays.pauseTrackingDelay"
                 />

@@ -1,4 +1,4 @@
-import { Controller, Control, UseFormSetValue } from 'react-hook-form';
+import { Controller, Control, UseFormSetValue, UseFormResetField } from 'react-hook-form';
 import { Button } from './Button';
 import { ClearIcon } from './icon/ClearIcon';
 import { NumberSelector } from './NumberSelector';
@@ -8,12 +8,14 @@ export function KeybindRow({
   label,
   control,
   setValue,
+  resetField,
   bindingName,
   delayName,
 }: {
   label: string;
   control: Control<any>;
   setValue: UseFormSetValue<any>;
+  resetField: UseFormResetField<any>;
   bindingName: string;
   delayName: string;
 }) {
@@ -47,20 +49,19 @@ export function KeybindRow({
         />
       </td>
 
-      <td>
+      <td className="pr-4 flex gap-2 justify-center">
         <Button
           variant="primary"
           onClick={() => setValue(bindingName, [])}
         >
           <ClearIcon size={12} />
         </Button>
-
         <Button
           variant="primary"
-          onClick={}
+          onClick={() => resetField(bindingName)}
           >
             Reset
-          </Button>
+        </Button>
       </td>
     </tr>
   );
