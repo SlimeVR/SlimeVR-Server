@@ -3,6 +3,7 @@ import { Button } from './Button';
 import { ClearIcon } from './icon/ClearIcon';
 import { NumberSelector } from './NumberSelector';
 import { KeybindRecorder } from './KeybindRecorder';
+import { ResetSettingIcon } from './icon/ResetSettingIcon';
 
 export function KeybindRow({
   label,
@@ -60,7 +61,7 @@ export function KeybindRow({
           variant="primary"
           onClick={() => resetField(bindingName)}
           >
-            Reset
+            <ResetSettingIcon size={16} />
         </Button>
       </td>
     </tr>
