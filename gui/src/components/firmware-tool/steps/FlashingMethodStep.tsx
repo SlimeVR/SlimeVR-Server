@@ -231,7 +231,10 @@ function OTADevicesList({
   const allDevices = useAtomValue(devicesAtom);
 
   const devices =
-    allDevices.filter(({ trackers }) => {
+    allDevices.filter(({ hardwareInfo, trackers }) => {
+      // filter out devices we can't update
+      if (!hardwareInfo?.officialBoardType) return false;
+
       // if the device has no trackers it is prob misconfigured so we skip for safety
       if (trackers.length <= 0) return false;
 
