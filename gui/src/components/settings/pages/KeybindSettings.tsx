@@ -206,7 +206,7 @@ export function KeybindSettings() {
                     <Localized id={'keybind_config-keybind_delay'}>
                         <Typography />
                     </Localized>
-                        Delay before trigger
+                        Delay before trigger (S)
                     </th>
                     <th scope="col" className="px-6 py-3 text-middle">
                     <Localized id={'keybind_config-kybind_actions'}>

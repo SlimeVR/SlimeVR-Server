@@ -21,13 +21,13 @@ export function KeybindRow({
   delayName: string;
 }) {
   return (
-    <tr className="border-b border-background-60">
-      <td className="px-6 py-4">
+    <tr className="border-b border-background-60 h-20">
+      <td className="px-6 py-4 pr-4">
         <label className="text-sm font-medium text-background-10">
           {label}
         </label>
       </td>
-      <td className="pr-4">
+      <td className="px-4">
         <Controller
           control={control}
           name={bindingName}
@@ -40,18 +40,18 @@ export function KeybindRow({
           )}
         />
       </td>
-      <td className="pr-4">
+      <td className="px-4">
           <NumberSelector
             control={control}
             name={delayName}
             min={0}
             max={10}
-            step={0.5}
+            step={1.0}
           />
       </td>
 
-      <td className="pr-4">
-        <div className="flex gap-2 justify-center">
+      <td className="px-2">
+        <div className="flex gap-2 justify-center px-4">
           <Button
             variant="primary"
             onClick={() => setValue(bindingName, [])}
