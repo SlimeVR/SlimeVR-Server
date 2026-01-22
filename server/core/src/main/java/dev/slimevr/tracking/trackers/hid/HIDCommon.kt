@@ -321,6 +321,8 @@ class HIDCommon {
 				tracker.packetsReceived = packets_received
 				tracker.packetsLost = packets_lost
 				tracker.packetLoss = if (packets_lost == 0) 0.0f else packets_lost.toFloat() / (packets_received + packets_lost).toFloat()
+				tracker.windowsHit = windows_hit
+				tracker.windowsMiss = windows_missed
 			}
 
 			// Assign rotation and acceleration

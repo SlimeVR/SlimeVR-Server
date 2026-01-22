@@ -32,6 +32,7 @@ import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.*
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.trackingchecklist.TrackingChecklistManager
+import dev.slimevr.util.TrackerLogger
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
 import io.eiren.util.ann.ThreadSafe
@@ -125,6 +126,8 @@ class VRServer @JvmOverloads constructor(
 
 	val serverGuards = ServerGuards()
 
+	val trackerLogger = TrackerLogger()
+
 	init {
 		// UwU
 		deviceManager = DeviceManager(this)
@@ -178,6 +181,8 @@ class VRServer @JvmOverloads constructor(
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)
 		}
+
+		addNewTrackerConsumer(trackerLogger)
 
 		instance = this
 	}
@@ -259,6 +264,7 @@ class VRServer @JvmOverloads constructor(
 			}
 			vrcOSCHandler.update()
 			vMCHandler.update()
+			trackerLogger.update()
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				sleep(1) // 1000Hz

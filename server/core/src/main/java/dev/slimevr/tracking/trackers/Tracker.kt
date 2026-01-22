@@ -120,6 +120,8 @@ class Tracker @JvmOverloads constructor(
 	var packetsReceived: Int? = null
 	var packetsLost: Int? = null
 	var packetLoss: Float? = null
+	var windowsHit: Int? = null
+	var windowsMiss: Int? = null
 	var customName: String? = null
 	var magStatus: MagnetometerStatus = magStatus
 		private set
