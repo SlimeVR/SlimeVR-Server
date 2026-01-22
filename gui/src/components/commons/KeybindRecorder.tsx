@@ -37,15 +37,15 @@ export const KeybindRecorder = forwardRef<
           {keys.map((key, i) => (
             <div
               key={i}
-              className="bg-accent-background-40 px-3 py-1 rounded-md text-sm"
+              className="bg-accent-background-50 px-3 py-1 rounded-md text-sm"
             >
               {key}
             </div>
           ))}
         </div>
 
-        <div className="text-accent-background-40 text-sm font-medium">
-          {isRecording ? 'Recording…' : 'Click to record'}
+        <div className="text-accent-background-10 text-sm font-medium">
+          {(keys.length < 4 && isRecording) ? 'Recording…' : 'Click to record'}
         </div>
       </div>
     </div>

@@ -196,23 +196,23 @@ export function KeybindSettings() {
                     </Localized>
                         Keybind
                     </th>
-                    <th scope="col" className="px-6 py-3 text-center">
+                    <th scope="col" className="px-6 py-3 text-middle">
                     <Localized id={'keybind_config-keybind_value'}>
                         <Typography />
                     </Localized>
                         Combination
                     </th>
-                    <th scope="col" className="px-6 py-3 text-center">
+                    <th scope="col" className="px-6 py-3 text-middle">
                     <Localized id={'keybind_config-keybind_delay'}>
                         <Typography />
                     </Localized>
                         Delay before trigger
                     </th>
-                    <th scope="col" className="px-6 py-3 text-center">
+                    <th scope="col" className="px-6 py-3 text-middle">
                     <Localized id={'keybind_config-kybind_actions'}>
                         <Typography />
                     </Localized>
-                    Actions
+                      Actions
                     </th>
                 </tr>
             </thead>
@@ -271,13 +271,13 @@ export function KeybindSettings() {
                   delayName="delays.pauseTrackingDelay"
                 />
             </Table>
-            <div className="flex flex-col pt-4" />
+            <div className="flex flex-col pt-4"/>
             <Button
               className="flex flex-col"
               onClick={handleResetButton}
               variant="primary"
             >
-              <ResetSettingIcon size={16} />
+              Reset All
             </Button>
           </>
         </SettingsPagePaneLayout>

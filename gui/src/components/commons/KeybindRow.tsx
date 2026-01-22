@@ -41,28 +41,30 @@ export function KeybindRow({
         />
       </td>
       <td className="pr-4">
-        <NumberSelector
-          control={control}
-          name={delayName}
-          min={0}
-          max={10}
-          step={0.5}
-        />
+          <NumberSelector
+            control={control}
+            name={delayName}
+            min={0}
+            max={10}
+            step={0.5}
+          />
       </td>
 
-      <td className="pr-4 flex gap-2 justify-center">
-        <Button
-          variant="primary"
-          onClick={() => setValue(bindingName, [])}
-        >
-          <ClearIcon size={12} />
-        </Button>
-        <Button
-          variant="primary"
-          onClick={() => resetField(bindingName)}
+      <td className="pr-4">
+        <div className="flex gap-2 justify-center">
+          <Button
+            variant="primary"
+            onClick={() => setValue(bindingName, [])}
           >
-            <ResetSettingIcon size={16} />
-        </Button>
+            Clear
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => resetField(bindingName)}
+            >
+              Reset
+          </Button>
+        </div>
       </td>
     </tr>
   );
