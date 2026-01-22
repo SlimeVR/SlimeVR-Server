@@ -54,7 +54,6 @@ class RPCKeybindHandler(
 	private fun onChangeKeybindRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = (messageHeader.message(ChangeKeybindRequest()) as ChangeKeybindRequest).unpack()
 
-		//TODO: Find a way to not use magic numbers here
 		keybindingsconfig.fullResetBinding = req.keybind[KeybindName.FULL_RESET].keybindValue
 		keybindingsconfig.fullResetDelay = req.keybind[KeybindName.FULL_RESET].keybindDelay
 

@@ -19,6 +19,7 @@ import {
   ChangeKeybindRequestT,
   Keybind,
 } from 'solarxr-protocol';
+import { ResetSettingIcon } from '@/components/commons/icon/ResetSettingIcon';
 
 export type KeybindsForm = {
   names: {
@@ -276,7 +277,7 @@ export function KeybindSettings() {
               onClick={handleResetButton}
               variant="primary"
             >
-              Reset all
+              <ResetSettingIcon size={16} />
             </Button>
           </>
         </SettingsPagePaneLayout>
