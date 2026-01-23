@@ -226,31 +226,33 @@ export function TrackerSettingsPage() {
                     v{tracker?.device?.hardwareInfo?.firmwareVersion}
                   </Typography>
                 </div>
-                <div className="flex justify-between gap-2">
-                  <Typography id="tracker-settings-latest-version" />
-                  {!updateUnavailable && (
-                    <>
-                      {currentFirmwareRelease && (
-                        <Typography
-                          color={
-                            needUpdate === 'updated'
-                              ? undefined
-                              : 'text-accent-background-10'
-                          }
-                          textAlign="text-end"
-                          whitespace="whitespace-pre-wrap"
-                        >
-                          {currentFirmwareRelease.name}
-                        </Typography>
-                      )}
-                    </>
-                  )}
-                  {updateUnavailable && (
-                    <Typography id="tracker-settings-update-unavailable-v2">
-                      No releases found
-                    </Typography>
-                  )}
-                </div>
+                {!!tracker?.device?.hardwareInfo?.officialBoardType && (
+                  <div className="flex justify-between gap-2">
+                    <Typography id="tracker-settings-latest-version" />
+                    {!updateUnavailable && (
+                      <>
+                        {currentFirmwareRelease && (
+                          <Typography
+                            color={
+                              needUpdate === 'updated'
+                                ? undefined
+                                : 'text-accent-background-10'
+                            }
+                            textAlign="text-end"
+                            whitespace="whitespace-pre-wrap"
+                          >
+                            {currentFirmwareRelease.name}
+                          </Typography>
+                        )}
+                      </>
+                    )}
+                    {updateUnavailable && (
+                      <Typography id="tracker-settings-update-unavailable-v2">
+                        No releases found
+                      </Typography>
+                    )}
+                  </div>
+                )}
               </div>
               {!updateUnavailable && (
                 <Tooltip
