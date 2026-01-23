@@ -8,11 +8,10 @@ import solarxr_protocol.MessageBundle
 import java.nio.ByteBuffer
 
 class ProtocolAPI(val server: VRServer) {
-	val rpcHandler: RPCHandler = RPCHandler(this)
+	val apiServers: MutableList<ProtocolAPIServer> = ArrayList()
 	val dataFeedHandler: DataFeedHandler = DataFeedHandler(this)
 	val pubSubHandler: PubSubHandler = PubSubHandler(this)
-
-	val apiServers: MutableList<ProtocolAPIServer> = ArrayList()
+	val rpcHandler: RPCHandler = RPCHandler(this)
 
 	fun onMessage(conn: GenericConnection, message: ByteBuffer) {
 		val messageBundle = MessageBundle.getRootAsMessageBundle(message)
