@@ -199,7 +199,7 @@ export function TrackerSettingsPage() {
               shakeHighlight={false}
             />
           )}
-          {
+          {tracker?.device?.hardwareInfo?.hardwareIdentifier != 'Unknown' && (
             <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
               <Typography
                 variant="section-title"
@@ -289,7 +289,7 @@ export function TrackerSettingsPage() {
                 </Tooltip>
               )}
             </div>
-          }
+          )}
 
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2 overflow-x-auto">
             <div className="flex justify-between">
