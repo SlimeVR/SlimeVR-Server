@@ -54,12 +54,6 @@ export function KeybindRow({
         <div className="flex gap-2 justify-center px-4">
           <Button
             variant="primary"
-            onClick={() => setValue(bindingName, [])}
-          >
-            Clear
-          </Button>
-          <Button
-            variant="primary"
             onClick={() => resetField(bindingName)}
             >
               Reset
