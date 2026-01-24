@@ -216,7 +216,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			}
 		}
 		val hmd =
-			assignedTrackers.firstOrNull { it.isHmd && !it.isInternal && it.status.sendData }
+			vrServer.allTrackers.firstOrNull { it.status != TrackerStatus.DISCONNECTED && it.isHmd && !it.isInternal && it.status.sendData }
 		val assignedHmd = hmd == null || vrServer.humanPoseManager.skeleton.headTracker != null
 		updateValidity(TrackingChecklistStepId.UNASSIGNED_HMD, assignedHmd) {
 			if (!assignedHmd) {
