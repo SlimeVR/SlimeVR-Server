@@ -199,7 +199,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		}
 		// We ask for a full reset if you need to do mounting calibration but cant because you haven't done full reset in a while
 		// or if you have trackers that need reset after re-assigning
-		val needFullReset = (!resetMountingCompleted && !vrServer.serverGuards.canDoMounting) || trackerRequireReset.isNotEmpty()
+		val needFullReset = (vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC && !resetMountingCompleted && !vrServer.serverGuards.canDoMounting) || trackerRequireReset.isNotEmpty()
 		updateValidity(TrackingChecklistStepId.FULL_RESET, !needFullReset) {
 			it.enabled = imuTrackers.isNotEmpty()
 			if (trackerRequireReset.isNotEmpty()) {
