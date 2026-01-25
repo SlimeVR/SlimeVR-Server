@@ -156,6 +156,15 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				flasher.addBin(part.firmware, part.offset.toInt())
 			}
 
+// TODO:
+//  - Check if FW is able to use flashmode
+//  - Add check if the flashmode was successfully set to surpress the request
+//    for manual flashmode setting prompt in gui
+
+			server.serialHandler.openSerial(deviceId.id, false)
+			server.serialHandler.write("SET FLASHMODE\r\n".toByteArray())
+			server.serialHandler.closeSerial()
+
 			flasher.addProgressListener(object : FlashingProgressListener {
 				override fun progress(progress: Float) {
 					onStatusChange(
