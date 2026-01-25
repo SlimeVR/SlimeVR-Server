@@ -14,6 +14,8 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
 import java.util.function.Consumer
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
 import kotlin.math.min
 
 class OTAUpdateTask(
@@ -21,8 +23,9 @@ class OTAUpdateTask(
 	private val deviceId: UpdateDeviceId<Int>,
 	private val deviceIp: InetAddress,
 	private val statusCallback: Consumer<UpdateStatusEvent<Int>>,
+	private val port: Int = 8266,
 ) {
-	private val receiveBuffer: ByteArray = ByteArray(38)
+	private val receiveBuffer: ByteArray = ByteArray(69)
 	var socketServer: ServerSocket? = null
 	var uploadSocket: Socket? = null
 	var authSocket: DatagramSocket? = null
@@ -40,17 +43,35 @@ class OTAUpdateTask(
 		return md5str.toString()
 	}
 
+	@Throws(NoSuchAlgorithmException::class)
+	private fun bytesToSha256(bytes: ByteArray): String {
+		val sha256 = MessageDigest.getInstance("SHA-256")
+		sha256.update(bytes)
+		val digest = sha256.digest()
+		val sha256str = StringBuilder()
+		for (b in digest) {
+			sha256str.append(String.format("%02x", b))
+		}
+		return sha256str.toString()
+	}
+
+	fun pbkdf2Hmac(password: String, salt: ByteArray, iterations: Int, keyLength: Int): ByteArray {
+		val spec = PBEKeySpec(password.toCharArray(), salt, iterations, keyLength * 8)
+		val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+		return factory.generateSecret(spec).encoded
+	}
+
 	private fun authenticate(localPort: Int): Boolean {
 		try {
 			DatagramSocket().use { socket ->
 				authSocket = socket
 				statusCallback.accept(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.AUTHENTICATING))
-				LogManager.info("[OTAUpdate] Sending OTA invitation to: $deviceIp")
+				LogManager.info("[OTAUpdate] Sending OTA invitation to: $deviceIp:$port")
 
 				val fileMd5 = bytesToMd5(firmware)
 				val message = "$FLASH $localPort ${firmware.size} $fileMd5\n"
 
-				socket.send(DatagramPacket(message.toByteArray(), message.length, deviceIp, PORT))
+				socket.send(DatagramPacket(message.toByteArray(), message.length, deviceIp, port))
 				socket.soTimeout = 10000
 
 				val authPacket = DatagramPacket(receiveBuffer, receiveBuffer.size)
@@ -68,13 +89,26 @@ class OTAUpdateTask(
 				if (args.size != 2 || args[0] != "AUTH") return false
 
 				LogManager.info("[OTAUpdate] Authenticating...")
+				var payload = ""
+				var signature = ""
 
 				val authToken = args[1]
-				val signature = bytesToMd5(UUID.randomUUID().toString().toByteArray())
-				val hashedPassword = bytesToMd5(PASSWORD.toByteArray())
-				val resultText = "$hashedPassword:$authToken:$signature"
-				val payload = bytesToMd5(resultText.toByteArray())
-
+				if (authToken.length == 32) {
+					signature =
+						bytesToMd5(UUID.randomUUID().toString().toByteArray())
+					val hashedPassword = bytesToMd5(PASSWORD.toByteArray())
+					val resultText = "$hashedPassword:$authToken:$signature"
+					payload = bytesToMd5(resultText.toByteArray())
+				} else if (authToken.length == 64) {
+					signature =
+						bytesToSha256(UUID.randomUUID().toString().toByteArray())
+					val salt = "$authToken:$signature"
+					val hashedPassword = bytesToSha256(PASSWORD.toByteArray())
+					val derivedkey = pbkdf2Hmac(hashedPassword, salt.toByteArray(), 10000, 32)
+					val derivedkeyHex = derivedkey.joinToString("") { "%02x".format(it) }
+					val challenge = "$derivedkeyHex:$authToken:$signature"
+					payload = bytesToSha256(challenge.toByteArray())
+				}
 				val authMessage = "$AUTH $signature $payload\n"
 
 				socket.soTimeout = 10000
@@ -83,7 +117,7 @@ class OTAUpdateTask(
 						authMessage.toByteArray(),
 						authMessage.length,
 						deviceIp,
-						PORT,
+						port,
 					),
 				)
 
@@ -198,7 +232,6 @@ class OTAUpdateTask(
 
 	companion object {
 		private const val FLASH = 0
-		private const val PORT = 8266
 		private const val PASSWORD = "SlimeVR-OTA"
 		private const val AUTH = 200
 	}
