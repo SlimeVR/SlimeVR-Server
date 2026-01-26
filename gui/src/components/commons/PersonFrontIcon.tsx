@@ -59,14 +59,14 @@ export function PersonFrontIcon({ mirror = true }: { mirror?: boolean }) {
       />
       <circle
         className="body-part-circle"
-        cx="81.5"
+        cx="82"
         cy="80"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.NECK]}
       />
       <circle
         className="body-part-circle"
-        cx="81.5"
+        cx="82"
         cy="35"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.HEAD]}

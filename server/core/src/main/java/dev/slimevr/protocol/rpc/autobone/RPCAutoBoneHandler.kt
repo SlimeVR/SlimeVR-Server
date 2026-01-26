@@ -50,8 +50,8 @@ class RPCAutoBoneHandler(
 	) {
 		val req = messageHeader
 			.message(AutoBoneProcessRequest()) as AutoBoneProcessRequest
-		if (conn.context.useAutoBone()) return
-		conn.context.setUseAutoBone(true)
+		if (conn.context.useAutoBone) return
+		conn.context.useAutoBone = true
 		api.server
 			.autoBoneHandler
 			.startProcessByType(getById(req.processType()))
@@ -67,7 +67,7 @@ class RPCAutoBoneHandler(
 		success: Boolean,
 	) {
 		forAllListeners { conn ->
-			if (!conn.context.useAutoBone()) {
+			if (!conn.context.useAutoBone) {
 				return@forAllListeners
 			}
 
@@ -95,7 +95,7 @@ class RPCAutoBoneHandler(
 			fbb.finish(outbound)
 			conn.send(fbb.dataBuffer())
 			if (completed) {
-				conn.context.setUseAutoBone(false)
+				conn.context.useAutoBone = false
 			}
 		}
 	}
@@ -106,7 +106,7 @@ class RPCAutoBoneHandler(
 
 	override fun onAutoBoneEpoch(epoch: Epoch) {
 		forAllListeners { conn ->
-			if (!conn.context.useAutoBone()) {
+			if (!conn.context.useAutoBone) {
 				return@forAllListeners
 			}
 

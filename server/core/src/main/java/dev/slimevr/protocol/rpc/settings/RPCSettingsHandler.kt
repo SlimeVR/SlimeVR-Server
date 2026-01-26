@@ -18,24 +18,9 @@ import kotlin.math.*
 
 class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	init {
-		rpcHandler.registerPacketListener(RpcMessage.SettingsRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
-			this.onSettingsRequest(
-				conn,
-				messageHeader,
-			)
-		}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.ChangeSettingsRequest,
-			) { conn: GenericConnection?, messageHeader: RpcMessageHeader ->
-				this.onChangeSettingsRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
-			this.onSettingsResetRequest(conn, messageHeader)
-		}
+		rpcHandler.registerPacketListener(RpcMessage.SettingsRequest, ::onSettingsRequest)
+		rpcHandler.registerPacketListener(RpcMessage.ChangeSettingsRequest, ::onChangeSettingsRequest)
+		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest, ::onSettingsResetRequest)
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
@@ -331,7 +316,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				.vrConfig
 				.autoBone
 
-			RPCSettingsBuilder.readAutoBoneSettings(autoBoneSettings, autoBoneConfig)
+			readAutoBoneSettings(autoBoneSettings, autoBoneConfig)
 		}
 
 		if (req.resetsSettings() != null) {
@@ -391,7 +376,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)

@@ -3,6 +3,7 @@ package dev.slimevr
 import com.melloware.jintellitype.HotkeyListener
 import com.melloware.jintellitype.JIntellitype
 import dev.slimevr.config.KeybindingsConfig
+import dev.slimevr.tracking.trackers.TrackerUtils
 import io.eiren.util.OperatingSystem
 import io.eiren.util.ann.AWTThread
 import io.eiren.util.logging.LogManager
@@ -37,6 +38,11 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 						.registerHotKey(MOUNTING_RESET, mountingResetBinding)
 					LogManager.info("[Keybinding] Bound reset mounting to $mountingResetBinding")
 
+					val feetMountingResetBinding = config.feetMountingResetBinding
+					JIntellitype.getInstance()
+						.registerHotKey(FEET_MOUNTING_RESET, feetMountingResetBinding)
+					LogManager.info("[Keybinding] Bound feet reset mounting to $feetMountingResetBinding")
+
 					val pauseTrackingBinding = config.pauseTrackingBinding
 					JIntellitype.getInstance()
 						.registerHotKey(PAUSE_TRACKING, pauseTrackingBinding)
@@ -63,6 +69,12 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 				config.mountingResetDelay,
 			)
 
+			FEET_MOUNTING_RESET -> server.scheduleResetTrackersMounting(
+				RESET_SOURCE_NAME,
+				config.feetMountingResetDelay,
+				TrackerUtils.feetsBodyParts,
+			)
+
 			PAUSE_TRACKING ->
 				server
 					.scheduleTogglePauseTracking(
@@ -85,7 +97,8 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 		private const val FULL_RESET = 1
 		private const val YAW_RESET = 2
 		private const val MOUNTING_RESET = 3
-		private const val PAUSE_TRACKING = 4
+		private const val FEET_MOUNTING_RESET = 4
+		private const val PAUSE_TRACKING = 5
 	}
 
 }

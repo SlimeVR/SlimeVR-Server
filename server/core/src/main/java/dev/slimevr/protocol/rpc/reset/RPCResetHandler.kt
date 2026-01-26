@@ -39,24 +39,39 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		}
 
 		if (req.resetType() == ResetType.Yaw) {
-			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (resetsConfig.yawResetDelay * 1000).toLong())
+			val delay = if (req.hasDelay()) {
+				req.delay()
 			} else {
-				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (resetsConfig.yawResetDelay * 1000).toLong(), bodyParts.toList())
+				resetsConfig.yawResetDelay
+			}
+			if (bodyParts.isEmpty()) {
+				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong())
+			} else {
+				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
 			}
 		}
 		if (req.resetType() == ResetType.Full) {
-			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (resetsConfig.fullResetDelay * 1000).toLong())
+			val delay = if (req.hasDelay()) {
+				req.delay()
 			} else {
-				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (resetsConfig.fullResetDelay * 1000).toLong(), bodyParts.toList())
+				resetsConfig.fullResetDelay
+			}
+			if (bodyParts.isEmpty()) {
+				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong())
+			} else {
+				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
 			}
 		}
 		if (req.resetType() == ResetType.Mounting) {
-			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (resetsConfig.mountingResetDelay * 1000).toLong())
+			val delay = if (req.hasDelay()) {
+				req.delay()
 			} else {
-				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (resetsConfig.mountingResetDelay * 1000).toLong(), bodyParts.toList())
+				resetsConfig.mountingResetDelay
+			}
+			if (bodyParts.isEmpty()) {
+				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong())
+			} else {
+				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
 			}
 		}
 	}
@@ -108,11 +123,11 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 
 	fun forAllListeners(action: Consumer<in GenericConnection?>?) {
 		this.api
-			.getAPIServers()
+			.apiServers
 			.forEach(
-				Consumer { server: ProtocolAPIServer? ->
-					server!!
-						.getAPIConnections()
+				Consumer { server: ProtocolAPIServer ->
+					server
+						.apiConnections
 						.forEach(action)
 				},
 			)
