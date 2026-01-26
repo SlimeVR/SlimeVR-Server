@@ -27,18 +27,21 @@ export type KeybindsForm = {
     yawResetName: KeybindName;
     mountingResetName: KeybindName;
     pauseTrackingName: KeybindName;
+    feetResetName: KeybindName;
   };
   bindings: {
     fullResetBinding: string[];
     yawResetBinding: string[];
     mountingResetBinding: string[];
     pauseTrackingBinding: string[];
+    feetResetBinding: string[];
   };
   delays: {
     fullResetDelay: number;
     yawResetDelay: number;
     mountingResetDelay: number;
     pauseTrackingDelay: number;
+    feetResetDelay: number;
   };
 };
 
@@ -48,18 +51,21 @@ const defaultValues: KeybindsForm = {
     yawResetName: KeybindName.YAW_RESET,
     mountingResetName: KeybindName.MOUNTING_RESET,
     pauseTrackingName: KeybindName.PAUSE_TRACKING,
+    feetResetName: KeybindName.FEET_MOUNTING_RESET,
   },
   bindings: {
     fullResetBinding: ['CTRL', 'ALT', 'SHIFT', 'Y'],
     yawResetBinding: ['CTRL', 'ALT', 'SHIFT', 'U'],
     mountingResetBinding: ['CTRL', 'ALT', 'SHIFT', 'I'],
     pauseTrackingBinding: ['CTRL', 'ALT', 'SHIFT', 'O'],
+    feetResetBinding: ['CTRL', 'ALT', 'SHIFT', 'P']
   },
   delays: {
     fullResetDelay: 0,
     yawResetDelay: 0,
     mountingResetDelay: 0,
     pauseTrackingDelay: 0,
+    feetResetDelay: 0
   },
 };
 
@@ -126,6 +132,13 @@ export function KeybindSettings() {
     pauseTrackingKeybind.keybindDelay = BigInt(values.delays.pauseTrackingDelay);
     keybinds.keybind.push(pauseTrackingKeybind);
 
+    const feetResetKeybind = new KeybindT();
+    feetResetKeybind.keybindName = values.names.feetResetName;
+    feetResetKeybind.keybindValue =
+      values.bindings.feetResetBinding.join('+');
+    feetResetKeybind.keybindDelay = BigInt(values.delays.pauseTrackingDelay);
+    keybinds.keybind.push(feetResetKeybind);
+
     sendRPCPacket(RpcMessage.ChangeKeybindRequest, keybinds);
   };
 
@@ -147,6 +160,7 @@ export function KeybindSettings() {
         yawResetName: KeybindName.YAW_RESET,
         mountingResetName: KeybindName.MOUNTING_RESET,
         pauseTrackingName: KeybindName.PAUSE_TRACKING,
+        feetResetName: KeybindName.FEET_MOUNTING_RESET
       },
       bindings: {
         fullResetBinding: (typeof keybind[KeybindName.FULL_RESET].keybindValue === 'string'
@@ -168,12 +182,18 @@ export function KeybindSettings() {
           ? keybind[KeybindName.PAUSE_TRACKING].keybindValue
           : ''
         ).split('+'),
+
+        feetResetBinding: (typeof keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue === 'string'
+          ? keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue
+          : ''
+        ).split('+'),
       },
       delays: {
         fullResetDelay: Number(keybind[KeybindName.FULL_RESET].keybindDelay) ?? 0,
         yawResetDelay: Number(keybind[KeybindName.YAW_RESET].keybindDelay) ?? 0,
         mountingResetDelay: Number(keybind[KeybindName.MOUNTING_RESET].keybindDelay) ?? 0,
         pauseTrackingDelay: Number(keybind[KeybindName.PAUSE_TRACKING].keybindDelay) ?? 0,
+        feetResetDelay: Number(keybind[KeybindName.FEET_MOUNTING_RESET].keybindDelay) ?? 0,
       },
     };
     console.log(keybindValues);
@@ -207,12 +227,6 @@ export function KeybindSettings() {
                         <Typography />
                     </Localized>
                         Delay before trigger (S)
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-middle">
-                    <Localized id={'keybind_config-kybind_actions'}>
-                        <Typography />
-                    </Localized>
-                      Actions
                     </th>
                 </tr>
             </thead>
@@ -261,6 +275,14 @@ export function KeybindSettings() {
                   resetField={resetField}
                   bindingName="bindings.mountingResetBinding"
                   delayName="delays.mountingResetDelay"
+                />
+                <KeybindRow
+                  label="Feet Mounting Reset"
+                  control={control}
+                  setValue={setValue}
+                  resetField={resetField}
+                  bindingName="bindings.feetResetBinding"
+                  delayName="delays.feetResetDelay"
                 />
                 <KeybindRow
                   label="Pause Tracking"

@@ -21,7 +21,7 @@ class RPCKeybindHandler(
 	var api: ProtocolAPI
 ) : KeybindListener {
 
-	val keybindingsconfig = api.server.configManager.vrConfig.keybindings
+	val keybindingConfig = api.server.configManager.vrConfig.keybindings
 
 	init {
 		this.api.server.keybindHandler.addListener(this)
@@ -54,17 +54,20 @@ class RPCKeybindHandler(
 	private fun onChangeKeybindRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = (messageHeader.message(ChangeKeybindRequest()) as ChangeKeybindRequest).unpack()
 
-		keybindingsconfig.fullResetBinding = req.keybind[KeybindName.FULL_RESET].keybindValue
-		keybindingsconfig.fullResetDelay = req.keybind[KeybindName.FULL_RESET].keybindDelay
+		keybindingConfig.fullResetBinding = req.keybind[KeybindName.FULL_RESET].keybindValue
+		keybindingConfig.fullResetDelay = req.keybind[KeybindName.FULL_RESET].keybindDelay
 
-		keybindingsconfig.yawResetBinding = req.keybind[KeybindName.YAW_RESET].keybindValue
-		keybindingsconfig.yawResetDelay = req.keybind[KeybindName.YAW_RESET].keybindDelay
+		keybindingConfig.yawResetBinding = req.keybind[KeybindName.YAW_RESET].keybindValue
+		keybindingConfig.yawResetDelay = req.keybind[KeybindName.YAW_RESET].keybindDelay
 
-		keybindingsconfig.mountingResetBinding = req.keybind[KeybindName.MOUNTING_RESET].keybindValue
-		keybindingsconfig.mountingResetDelay = req.keybind[KeybindName.MOUNTING_RESET].keybindDelay
+		keybindingConfig.mountingResetBinding = req.keybind[KeybindName.MOUNTING_RESET].keybindValue
+		keybindingConfig.mountingResetDelay = req.keybind[KeybindName.MOUNTING_RESET].keybindDelay
 
-		keybindingsconfig.pauseTrackingBinding = req.keybind[KeybindName.PAUSE_TRACKING].keybindValue
-		keybindingsconfig.pauseTrackingDelay = req.keybind[KeybindName.PAUSE_TRACKING].keybindDelay
+		keybindingConfig.pauseTrackingBinding = req.keybind[KeybindName.PAUSE_TRACKING].keybindValue
+		keybindingConfig.pauseTrackingDelay = req.keybind[KeybindName.PAUSE_TRACKING].keybindDelay
+
+		keybindingConfig.feetMountingResetBinding = req.keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue
+		keybindingConfig.feetMountingResetDelay = req.keybind[KeybindName.FEET_MOUNTING_RESET].keybindDelay
 
 		api.server.configManager.saveConfig()
 		api.server.keybindHandler.updateKeybinds()
@@ -94,5 +97,6 @@ class RPCKeybindHandler(
 		const val YAW_RESET = KeybindName.YAW_RESET
 		const val MOUNTING_RESET = KeybindName.MOUNTING_RESET
 		const val PAUSE_TRACKING = KeybindName.PAUSE_TRACKING
+		const val FEET_MOUNTING_RESET = KeybindName.FEET_MOUNTING_RESET
 	}
 }

@@ -58,6 +58,13 @@ class KeybindHandler(val vrServer: VRServer) {
 				keybindDelay = vrServer.configManager.vrConfig.keybindings.pauseTrackingDelay
 			},
 		)
+		keybinds.add(
+			KeybindT().apply {
+				keybindName = KeybindName.PAUSE_TRACKING
+				keybindValue = vrServer.configManager.vrConfig.keybindings.feetMountingResetBinding
+				keybindDelay = vrServer.configManager.vrConfig.keybindings.feetMountingResetDelay
+			}
+		)
 	}
 	//TODO: Maybe recreating all the keybinds isn't the best idea?
 	fun updateKeybinds() {

@@ -48,9 +48,14 @@ public class KeybindingsConfig {
 
 	public void setMountingResetBinding(String mountingResetBinding) {
 		this.mountingResetBinding = mountingResetBinding;
-		
+	}
+
 	public String getFeetMountingResetBinding() {
 		return feetMountingResetBinding;
+	}
+
+	public void setFeetMountingResetBinding(String feetMountingResetBinding) {
+		this.feetMountingResetBinding = feetMountingResetBinding;
 	}
 
 	public String getPauseTrackingBinding() {
