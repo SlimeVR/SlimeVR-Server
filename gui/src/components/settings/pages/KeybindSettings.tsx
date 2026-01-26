@@ -241,7 +241,7 @@ export function KeybindSettings() {
         <SettingsPagePaneLayout icon={<WrenchIcon />} id="keybinds">
           <>
             <Typography variant="main-title">
-              {l10n.getString('settings-general-keybinds')}
+              {l10n.getString('settings-keybinds')}
             </Typography>
             <div className="flex flex-col pt-2 pb-4">
               {l10n

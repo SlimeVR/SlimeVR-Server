@@ -603,6 +603,9 @@ settings-stay_aligned-debug-label = Debugging
 settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
 settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 
+settings-keybinds = Keybind settings
+settings-keybinds-description = Change keybinds for various shortcuts
+settings-sidebar-keybinds = Keybinds
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
 
