@@ -38,6 +38,8 @@ abstract class SerialHandler {
 			// / Espressif
 			// ESP32-C3
 			Pair(0x303A, 0x1001),
+			// ESP32-S2
+			Pair(0x303A, 0x0002),
 			// / FTDI
 			// FT232BM/L/Q, FT245BM/L/Q
 			// FT232RL/Q, FT245RL/Q
