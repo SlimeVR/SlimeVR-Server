@@ -148,7 +148,7 @@ abstract class SteamVRBridge(
 			.createDevice(
 				trackerAdded.trackerName,
 				null,
-				"OpenVR", // TODO : We need the manufacturer
+				trackerAdded.manufacturer.ifEmpty { "OpenVR" },
 			)
 
 		// Display name, needsReset and isHmd
