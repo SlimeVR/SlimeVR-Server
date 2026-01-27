@@ -18,7 +18,6 @@ import {
   KeybindName,
   ChangeKeybindRequestT,
 } from 'solarxr-protocol';
-import def from 'ajv/dist/vocabularies/discriminator';
 
 export type KeybindsForm = {
   names: {
@@ -106,25 +105,27 @@ export function KeybindSettings() {
     const fullResetKeybind = new KeybindT();
     fullResetKeybind.keybindName = values.names.fullResetName;
     fullResetKeybind.keybindValue = values.bindings.fullResetBinding.join('+');
-    fullResetKeybind.keybindDelay = values.delays.fullResetDelay
+    fullResetKeybind.keybindDelay = values.delays.fullResetDelay;
     keybinds.keybind.push(fullResetKeybind);
 
     const yawResetKeybind = new KeybindT();
     yawResetKeybind.keybindName = values.names.yawResetName;
     yawResetKeybind.keybindValue = values.bindings.yawResetBinding.join('+');
-    yawResetKeybind.keybindDelay = values.delays.yawResetDelay
+    yawResetKeybind.keybindDelay = values.delays.yawResetDelay;
     keybinds.keybind.push(yawResetKeybind);
 
     const mountingResetKeybind = new KeybindT();
     mountingResetKeybind.keybindName = values.names.mountingResetName;
-    mountingResetKeybind.keybindValue = values.bindings.mountingResetBinding.join('+');
+    mountingResetKeybind.keybindValue =
+      values.bindings.mountingResetBinding.join('+');
     mountingResetKeybind.keybindDelay = values.delays.mountingResetDelay;
     keybinds.keybind.push(mountingResetKeybind);
 
     const pauseTrackingKeybind = new KeybindT();
     pauseTrackingKeybind.keybindName = values.names.pauseTrackingName;
-    pauseTrackingKeybind.keybindValue = values.bindings.pauseTrackingBinding.join('+');
-    pauseTrackingKeybind.keybindDelay = values.delays.pauseTrackingDelay
+    pauseTrackingKeybind.keybindValue =
+      values.bindings.pauseTrackingBinding.join('+');
+    pauseTrackingKeybind.keybindDelay = values.delays.pauseTrackingDelay;
     keybinds.keybind.push(pauseTrackingKeybind);
 
     const feetResetKeybind = new KeybindT();
@@ -133,7 +134,7 @@ export function KeybindSettings() {
     feetResetKeybind.keybindDelay = values.delays.pauseTrackingDelay;
     keybinds.keybind.push(feetResetKeybind);
 
-    console.log(`Delay ${Number(fullResetKeybind.keybindDelay)}`)
+    console.log(`Delay ${Number(fullResetKeybind.keybindDelay)}`);
     sendRPCPacket(RpcMessage.ChangeKeybindRequest, keybinds);
   };
 
@@ -158,55 +159,51 @@ export function KeybindSettings() {
         feetResetName: KeybindName.FEET_MOUNTING_RESET,
       },
       bindings: {
-        fullResetBinding: (typeof keybind[KeybindName.FULL_RESET]
-          .keybindValue === 'string'
-          ? keybind[KeybindName.FULL_RESET].keybindValue
-          : ''
-          ).split('+') ||
-          defaultValues.bindings.fullResetBinding,
+        fullResetBinding:
+          (typeof keybind[KeybindName.FULL_RESET].keybindValue === 'string'
+            ? keybind[KeybindName.FULL_RESET].keybindValue
+            : ''
+          ).split('+') || defaultValues.bindings.fullResetBinding,
 
-        yawResetBinding: (typeof keybind[KeybindName.YAW_RESET].keybindValue ===
-        'string'
-          ? keybind[KeybindName.YAW_RESET].keybindValue
-          : ''
-          ).split('+') ||
-          defaultValues.bindings.yawResetBinding,
+        yawResetBinding:
+          (typeof keybind[KeybindName.YAW_RESET].keybindValue === 'string'
+            ? keybind[KeybindName.YAW_RESET].keybindValue
+            : ''
+          ).split('+') || defaultValues.bindings.yawResetBinding,
 
-        mountingResetBinding: (typeof keybind[KeybindName.MOUNTING_RESET]
-          .keybindValue === 'string'
-          ? keybind[KeybindName.MOUNTING_RESET].keybindValue
-          : ''
-          ).split('+') ||
-          defaultValues.bindings.mountingResetBinding,
+        mountingResetBinding:
+          (typeof keybind[KeybindName.MOUNTING_RESET].keybindValue === 'string'
+            ? keybind[KeybindName.MOUNTING_RESET].keybindValue
+            : ''
+          ).split('+') || defaultValues.bindings.mountingResetBinding,
 
-        pauseTrackingBinding: (typeof keybind[KeybindName.PAUSE_TRACKING]
-          .keybindValue === 'string'
-          ? keybind[KeybindName.PAUSE_TRACKING].keybindValue
-          : ''
-          ).split('+') ||
-          defaultValues.bindings.pauseTrackingBinding,
+        pauseTrackingBinding:
+          (typeof keybind[KeybindName.PAUSE_TRACKING].keybindValue === 'string'
+            ? keybind[KeybindName.PAUSE_TRACKING].keybindValue
+            : ''
+          ).split('+') || defaultValues.bindings.pauseTrackingBinding,
 
-        feetResetBinding: (typeof keybind[KeybindName.FEET_MOUNTING_RESET]
-          .keybindValue === 'string'
-          ? keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue
-          : ''
-          ).split('+') ||
-          defaultValues.bindings.feetResetBinding,
+        feetResetBinding:
+          (typeof keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue ===
+          'string'
+            ? keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue
+            : ''
+          ).split('+') || defaultValues.bindings.feetResetBinding,
       },
       delays: {
-        fullResetDelay: 
+        fullResetDelay:
           keybind[KeybindName.FULL_RESET].keybindDelay ||
           defaultValues.delays.fullResetDelay,
-        yawResetDelay: 
+        yawResetDelay:
           keybind[KeybindName.YAW_RESET].keybindDelay ||
           defaultValues.delays.yawResetDelay,
-        mountingResetDelay: 
+        mountingResetDelay:
           keybind[KeybindName.MOUNTING_RESET].keybindDelay ||
           defaultValues.delays.mountingResetDelay,
-        pauseTrackingDelay: 
+        pauseTrackingDelay:
           keybind[KeybindName.PAUSE_TRACKING].keybindDelay ||
           defaultValues.delays.mountingResetDelay,
-        feetResetDelay: 
+        feetResetDelay:
           keybind[KeybindName.FEET_MOUNTING_RESET].keybindDelay ||
           defaultValues.delays.feetResetDelay,
       },

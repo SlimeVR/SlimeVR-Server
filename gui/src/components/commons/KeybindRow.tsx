@@ -4,7 +4,6 @@ import { NumberSelector } from './NumberSelector';
 import { KeybindRecorder } from './KeybindRecorder';
 import { useLocaleConfig } from '@/i18n/config';
 
-
 export function KeybindRow({
   label,
   control,
@@ -58,11 +57,13 @@ export function KeybindRow({
 
       <td className="px-2">
         <div className="flex gap-2 justify-center px-4">
-          <Button variant="primary" onClick={() => 
-            {
-              resetField(bindingName)
-              resetField(delayName)
-            }}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              resetField(bindingName);
+              resetField(delayName);
+            }}
+          >
             Reset
           </Button>
         </div>
