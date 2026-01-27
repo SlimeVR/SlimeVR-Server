@@ -147,7 +147,7 @@ abstract class SteamVRBridge(
 		val device = instance.deviceManager
 			.createDevice(
 				trackerAdded.trackerName,
-				trackerAdded.trackerSerial,
+				null,
 				"OpenVR", // TODO : We need the manufacturer
 			)
 
