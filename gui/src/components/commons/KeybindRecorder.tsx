@@ -45,7 +45,7 @@ export const KeybindRecorder = forwardRef<
         </div>
 
         <div className="text-accent-background-10 text-sm font-medium">
-          {(keys.length < 4 && isRecording) ? 'Recording…' : 'Click to record'}
+          {keys.length < 4 && isRecording ? 'Recording…' : 'Click to record'}
         </div>
       </div>
     </div>

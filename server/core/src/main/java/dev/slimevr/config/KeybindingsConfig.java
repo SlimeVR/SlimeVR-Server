@@ -14,15 +14,15 @@ public class KeybindingsConfig {
 
 	private String pauseTrackingBinding = "CTRL+ALT+SHIFT+O";
 
-	private long fullResetDelay = 0L;
+	private float fullResetDelay = 0L;
 
-	private long yawResetDelay = 0L;
+	private float yawResetDelay = 0L;
 
-	private long mountingResetDelay = 0L;
+	private float mountingResetDelay = 0L;
 
-	private long feetMountingResetDelay = 0L;
+	private float feetMountingResetDelay = 0L;
 
-	private long pauseTrackingDelay = 0L;
+	private float pauseTrackingDelay = 0L;
 
 	public KeybindingsConfig() {}
 
@@ -66,43 +66,43 @@ public class KeybindingsConfig {
 		this.pauseTrackingBinding = pauseTrackingBinding;
 	}
 
-	public long getFullResetDelay() {
+	public float getFullResetDelay() {
 		return fullResetDelay;
 	}
 
-	public void setFullResetDelay(long delay) {
+	public void setFullResetDelay(float delay) {
 		fullResetDelay = delay;
 	}
 
-	public long getYawResetDelay() {
+	public float getYawResetDelay() {
 		return yawResetDelay;
 	}
 
-	public void setYawResetDelay(long delay) {
+	public void setYawResetDelay(float delay) {
 		yawResetDelay = delay;
 	}
 
-	public long getMountingResetDelay() {
+	public float getMountingResetDelay() {
 		return mountingResetDelay;
 	}
 
-	public void setMountingResetDelay(long delay) {
+	public void setMountingResetDelay(float delay) {
 		mountingResetDelay = delay;
 	}
 
-	public long getFeetMountingResetDelay() {
+	public float getFeetMountingResetDelay() {
 		return feetMountingResetDelay;
 	}
 
-	public void setFeetMountingResetDelay(long delay) {
+	public void setFeetMountingResetDelay(float delay) {
 		feetMountingResetDelay = delay;
 	}
 
-	public long getPauseTrackingDelay() {
+	public float getPauseTrackingDelay() {
 		return pauseTrackingDelay;
 	}
 
-	public void setPauseTrackingDelay(long delay) {
+	public void setPauseTrackingDelay(float delay) {
 		pauseTrackingDelay = delay;
 	}
 }

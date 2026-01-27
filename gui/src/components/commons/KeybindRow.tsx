@@ -1,25 +1,30 @@
-import { Controller, Control, UseFormSetValue, UseFormResetField } from 'react-hook-form';
+import { Controller, Control, UseFormResetField } from 'react-hook-form';
 import { Button } from './Button';
-import { ClearIcon } from './icon/ClearIcon';
 import { NumberSelector } from './NumberSelector';
 import { KeybindRecorder } from './KeybindRecorder';
-import { ResetSettingIcon } from './icon/ResetSettingIcon';
+import { useLocaleConfig } from '@/i18n/config';
+
 
 export function KeybindRow({
   label,
   control,
-  setValue,
   resetField,
   bindingName,
   delayName,
 }: {
   label: string;
   control: Control<any>;
-  setValue: UseFormSetValue<any>;
   resetField: UseFormResetField<any>;
   bindingName: string;
   delayName: string;
 }) {
+  const { currentLocales } = useLocaleConfig();
+  const secondsFormat = new Intl.NumberFormat(currentLocales, {
+    style: 'unit',
+    unit: 'second',
+    unitDisplay: 'narrow',
+    maximumFractionDigits: 2,
+  });
   return (
     <tr className="border-b border-background-60 h-20">
       <td className="px-6 py-4 pr-4">
@@ -41,22 +46,24 @@ export function KeybindRow({
         />
       </td>
       <td className="px-4">
-          <NumberSelector
-            control={control}
-            name={delayName}
-            min={0}
-            max={10}
-            step={1.0}
-          />
+        <NumberSelector
+          control={control}
+          name={delayName}
+          valueLabelFormat={(value) => secondsFormat.format(value)}
+          min={0}
+          max={10}
+          step={0.2}
+        />
       </td>
 
       <td className="px-2">
         <div className="flex gap-2 justify-center px-4">
-          <Button
-            variant="primary"
-            onClick={() => resetField(bindingName)}
-            >
-              Reset
+          <Button variant="primary" onClick={() => 
+            {
+              resetField(bindingName)
+              resetField(delayName)
+            }}>
+            Reset
           </Button>
         </div>
       </td>
