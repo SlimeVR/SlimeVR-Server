@@ -38,7 +38,7 @@ export function TrackerBattery({
 
   return (
     <Tooltip
-      disabled={!charging && (!runtime || debug)}
+      disabled={charging || !runtime || debug}
       preferedDirection="left"
       content=<Typography>{percentFormatter.format(value)}</Typography>
     >
