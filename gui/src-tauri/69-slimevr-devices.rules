@@ -18,6 +18,8 @@ SUBSYSTEMS=="usb", ATTRS{idVendor}=="1A86", ATTRS{idProduct}=="7522", MODE="0660
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="1A86", ATTRS{idProduct}=="7523", MODE="0660", TAG+="uaccess"
 # CH341
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="1A86", ATTRS{idProduct}=="5523", MODE="0660", TAG+="uaccess"
+# CH343
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1A86", ATTRS{idProduct}=="55D3", MODE="0660", TAG+="uaccess"
 # CH9102x
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="1A86", ATTRS{idProduct}=="55D4", MODE="0660", TAG+="uaccess"
 
