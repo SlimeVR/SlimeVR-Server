@@ -349,6 +349,9 @@ fun createDeviceData(
 	if (tracker.packetsReceived != null) {
 		HardwareStatus.addPacketsReceived(fbb, tracker.packetsReceived!!)
 	}
+	if (tracker.batteryRemainingRuntime != null) {
+		HardwareStatus.addBatteryRuntimeEstimate(fbb, tracker.batteryRemainingRuntime!!)
+	}
 
 	val hardwareDataOffset = HardwareStatus.endHardwareStatus(fbb)
 	val hardwareInfoOffset = createHardwareInfo(fbb, device)
