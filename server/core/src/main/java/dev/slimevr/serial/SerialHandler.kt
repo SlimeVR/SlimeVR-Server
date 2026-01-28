@@ -36,7 +36,7 @@ abstract class SerialHandler {
 			// CP210x
 			Pair(0x10C4, 0xEA60),
 			// / Espressif
-			// ESP32-C3
+			// ESP32-S3 / ESP32-C3 / ESP32-C5 / ESP32-C6 / ESP32-C61 / ESP32-H2 / ESP32-P4
 			Pair(0x303A, 0x1001),
 			// ESP32-S2
 			Pair(0x303A, 0x0002),
