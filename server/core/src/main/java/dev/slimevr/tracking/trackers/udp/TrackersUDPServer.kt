@@ -567,6 +567,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						name = "Pause tracking toggle"
 						VRServer.instance.togglePauseTracking(RESET_SOURCE_NAME)
 					}
+
 				}
 
 				LogManager.info(
@@ -618,6 +619,80 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				// dont call dataTick here as this is just position update
 			}
 
+			is UDPPacket66ControllerButton -> {
+				var name = ""
+				tracker = connection?.getTracker(packet.sensorId)
+				if (tracker == null) return
+				// If sensorOffset was applied to accel correctly, the axes will already
+				//  be correct for SlimeVR
+
+				when (packet.type) {
+					UDPPacket66ControllerButton.BUTTON_1_HELD -> {
+						name = "Button 1 Pressed"
+						tracker.setButton1(true)
+					}
+					UDPPacket66ControllerButton.BUTTON_1_UNHELD -> {
+						name = "Button 1 Unpressed"
+						tracker.setButton1(false)
+					}
+					UDPPacket66ControllerButton.BUTTON_2_HELD -> {
+						name = "Button 2 Pressed"
+						tracker.setButton2(true)
+					}
+					UDPPacket66ControllerButton.BUTTON_2_UNHELD -> {
+						name = "Button 2 Unpressed"
+						tracker.setButton2(false)
+					}
+					UDPPacket66ControllerButton.MENU_RECENTER_HELD -> {
+						name = "Menu/Recenter Pressed"
+						tracker.setMenuRecenterButton(true)
+					}
+					UDPPacket66ControllerButton.MENU_RECENTER_UNHELD -> {
+						name = "Menu/Recenter Unpressed"
+						tracker.setMenuRecenterButton(false)
+					}
+					UDPPacket66ControllerButton.STICK_CLICK_HELD -> {
+						name = "Stick Click Pressed"
+						tracker.setStickClickButton(true)
+					}
+					UDPPacket66ControllerButton.STICK_CLICK_UNHELD -> {
+						name = "Stick Click Unpressed"
+						tracker.setStickClickButton(false)
+					}
+					UDPPacket66ControllerButton.TRACKPAD_CLICK_HELD -> {
+						name = "Trackpad Click Pressed"
+						tracker.setTrackpadClickButton(true)
+					}
+					UDPPacket66ControllerButton.TRACKPAD_CLICK_UNHELD -> {
+						name = "Trackpad Click Unpressed"
+						tracker.setTrackpadClickButton(false)
+					}
+				}
+
+				LogManager.info(
+					"[TrackerServer] User action from ${connection.descriptiveName} received. $name performed.",
+				)
+			}
+			is UDPPacket67Thumbstick -> {
+				tracker = connection?.getTracker(packet.sensorId)
+				if(tracker == null) return
+				tracker.setThumbstick(packet.analogueThumbstick);
+			}
+			is UDPPacket68Trigger -> {
+				tracker = connection?.getTracker(packet.sensorId)
+				if(tracker == null) return
+				tracker.setTrigger(packet.trigger);
+			}
+			is UDPPacket69Grip -> {
+				tracker = connection?.getTracker(packet.sensorId)
+				if(tracker == null) return
+				tracker.setTrigger(packet.grip);
+			}
+			is UDPPacket70Trackpad -> {
+				tracker = connection?.getTracker(packet.sensorId)
+				if(tracker == null) return
+				tracker.setThumbstick(packet.analogueTrackpad);
+			}
 			is UDPPacket200ProtocolChange -> {}
 		}
 	}

@@ -97,6 +97,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 		for (tracker in sharedTrackers) {
 			writeTrackerUpdate(tracker)
 			writeBatteryUpdate(tracker)
+			writeControllerInputUpdate(tracker)
 		}
 	}
 
@@ -119,6 +120,26 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			builder.setQw(rot.w)
 		}
 		sendMessage(ProtobufMessage.newBuilder().setPosition(builder).build())
+	}
+	protected fun writeControllerInputUpdate(localTracker: Tracker?) {
+		val builder = ProtobufMessages.ControllerInput.newBuilder().setTrackerId(
+			localTracker!!.id,
+		)
+		if (localTracker.hasControls) {
+			val thumbstick = localTracker.getThumbstick()
+			builder.setThumbstickX(thumbstick.x)
+			builder.setThumbstickY(thumbstick.y)
+			builder.setTrackpadX(thumbstick.x)
+			builder.setTrackpadY(thumbstick.y)
+			builder.setButton1(localTracker.getButton1())
+			builder.setButton2(localTracker.getButton2())
+			builder.setMenuRecenter(localTracker.getMenuRecenterButton())
+			builder.setStickClick(localTracker.getStickClickButton())
+			builder.setTrackpadClick(localTracker.getTrackpadClickButton())
+			builder.setTrigger(localTracker.getTrigger())
+			builder.setGrip(localTracker.getGrip())
+		}
+		sendMessage(ProtobufMessage.newBuilder().setControllerInput(builder).build())
 	}
 
 	@VRServerThread
