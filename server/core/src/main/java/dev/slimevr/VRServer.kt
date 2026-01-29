@@ -26,7 +26,6 @@ import dev.slimevr.serial.SerialHandler
 import dev.slimevr.serial.SerialHandlerStub
 import dev.slimevr.setup.HandshakeHandler
 import dev.slimevr.setup.TapSetupHandler
-import dev.slimevr.status.StatusSystem
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.*
@@ -112,9 +111,6 @@ class VRServer @JvmOverloads constructor(
 
 	@JvmField
 	val resetHandler: ResetHandler
-
-	@JvmField
-	val statusSystem = StatusSystem()
 
 	@JvmField
 	val handshakeHandler = HandshakeHandler()

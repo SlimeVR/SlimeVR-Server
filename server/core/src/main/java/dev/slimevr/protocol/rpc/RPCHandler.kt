@@ -18,7 +18,6 @@ import dev.slimevr.protocol.rpc.settings.createSettingsResponse
 import dev.slimevr.protocol.rpc.setup.RPCHandshakeHandler
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler
 import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
-import dev.slimevr.protocol.rpc.status.RPCStatusHandler
 import dev.slimevr.protocol.rpc.trackingchecklist.RPCTrackingChecklistHandler
 import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
@@ -44,7 +43,6 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCProvisioningHandler(this, api)
 		RPCSettingsHandler(this, api)
 		RPCTapSetupHandler(this, api)
-		RPCStatusHandler(this, api)
 		RPCAutoBoneHandler(this, api)
 		RPCHandshakeHandler(this, api)
 		RPCTrackingPause(this, api)
@@ -108,11 +106,6 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		registerPacketListener(
 			RpcMessage.LegTweaksTmpClear,
 			::onLegTweaksTmpClear,
-		)
-
-		registerPacketListener(
-			RpcMessage.StatusSystemRequest,
-			::onStatusSystemRequest,
 		)
 
 		registerPacketListener(
@@ -394,23 +387,6 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	}
 
 	override fun messagesCount(): Int = RpcMessage.names.size
-
-	fun onStatusSystemRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-		val req = messageHeader
-			.message(StatusSystemRequest()) as? StatusSystemRequest ?: return
-
-		val statuses = api.server.statusSystem.getStatuses()
-
-		val fbb = FlatBufferBuilder(
-			statuses.size * RPCStatusHandler.STATUS_EXPECTED_SIZE,
-		)
-		val response = StatusSystemResponseT()
-		response.currentStatuses = statuses
-		val offset = StatusSystemResponse.pack(fbb, response)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.StatusSystemResponse, offset, messageHeader)
-		fbb.finish(outbound)
-		conn.send(fbb.dataBuffer())
-	}
 
 	fun onSetPauseTrackingRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader
