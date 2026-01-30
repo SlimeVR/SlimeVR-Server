@@ -197,7 +197,7 @@ enum class TrackerPosition(
 
 	companion object {
 		/** Indexed by `BodyPart` int value. EFFICIENCY FTW  */
-		private val byBodyPart: Array<out TrackerPosition?> = arrayOfNulls<TrackerPosition>(BodyPart.names.size).apply {
+		private val byBodyPart: Array<out TrackerPosition?> = arrayOfNulls<TrackerPosition>(BodyPart.RIGHT_LITTLE_DISTAL.toInt() + 1).apply {
 			for (position in entries) {
 				this[position.bodyPart.toInt()] = position
 			}

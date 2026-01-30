@@ -1,5 +1,6 @@
 package dev.slimevr.trackingchecklist
 
+import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.MountingMethods
@@ -251,7 +252,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		if (vrServer.networkProfileChecker.isSupported) {
 			updateValidity(TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC, vrServer.networkProfileChecker.publicNetworks.isEmpty()) {
 				if (vrServer.networkProfileChecker.publicNetworks.isNotEmpty()) {
-					it.extraData = PublicNetworksData(vrServer.networkProfileChecker.publicNetworks.map { it.name }.toTypedArray())
+					it.extraData = PublicNetworksData(vrServer.networkProfileChecker.publicNetworks.filter { it.name != null }.map { it.name!! }.toList())
 				} else {
 					it.extraData = null
 				}

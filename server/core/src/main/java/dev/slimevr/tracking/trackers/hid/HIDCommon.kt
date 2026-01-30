@@ -125,7 +125,7 @@ class HIDCommon {
 			if (packetType == 0) { // Tracker register packet (device info)
 				val imu_id = dataReceived[i + 8].toUByte().toInt()
 				val mag_id = dataReceived[i + 9].toUByte().toInt()
-				val sensorType = IMUType.getById(imu_id.toUInt())
+				val sensorType = IMUType.getById(imu_id.toUShort())
 				// only able to register magnetometer status, not magnetometer type
 				val magStatus = MagnetometerStatus.getById(mag_id.toUByte())
 				if (sensorType != null && magStatus != null) {
@@ -279,13 +279,13 @@ class HIDCommon {
 			}
 			// Range 1 - 255 -> -38.5 - +88.5 C
 			if (brd_id != null) {
-				val boardType = BoardType.getById(brd_id.toUInt())
+				val boardType = BoardType.getById(brd_id.toUShort())
 				if (boardType != null) {
 					device.boardType = boardType!!
 				}
 			}
 			if (mcu_id != null) {
-				val mcuType = MCUType.getById(mcu_id.toUInt())
+				val mcuType = MCUType.getById(mcu_id.toUShort())
 				if (mcuType != null) {
 					device.mcuType = mcuType!!
 				}
@@ -309,7 +309,7 @@ class HIDCommon {
 				device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch"
 			}
 			if (svr_status != null) {
-				val status = TrackerStatus.getById(svr_status)
+				val status = TrackerStatus.getById(svr_status.toUByte())
 				if (status != null) {
 					tracker.status = status!!
 				}
