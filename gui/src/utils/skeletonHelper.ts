@@ -2,7 +2,8 @@ import { Bone, Color, Matrix4, Object3D, Vector2, Vector3 } from 'three';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
-import { BodyPart, BoneT } from 'solarxr-protocol';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import { BoneT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 

@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BodyPart, TrackerDataT } from 'solarxr-protocol';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import { TrackerDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/tracker';
 import { useTracker } from '@/hooks/tracker';
 import { PersonFrontIcon } from './PersonFrontIcon';
 import { FlatDeviceTracker } from '@/store/app-store';

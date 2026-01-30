@@ -3,17 +3,19 @@ import classNames from 'classnames';
 import { useMemo, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  AssignTrackerRequestT,
   BodyPart,
-  QuatT,
-  RpcMessage,
   TrackerIdT,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import { QuatT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes/math';
+import {
+  AssignTrackerRequestT,
+  RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
   TapDetectionSettingsT,
   ChangeSettingsRequestT,
   TapDetectionSetupNotificationT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useChokerWarning } from '@/hooks/choker-warning';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';

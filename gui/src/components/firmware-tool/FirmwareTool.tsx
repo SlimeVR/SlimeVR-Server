@@ -19,7 +19,7 @@ import { SelectSourceSetep } from './steps/SelectSourceStep';
 import { BoardDefaultsStep } from './steps/BoardDefaultsStep';
 import { BuildStep } from './steps/BuildStep';
 import { FlashingMethodStep } from './steps/FlashingMethodStep';
-import { FirmwareUpdateMethod } from 'solarxr-protocol';
+import { FirmwareUpdateMethod } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { FlashBtnStep } from './steps/FlashBtnStep';
 import { FlashingStep } from './steps/FlashingStep';
 

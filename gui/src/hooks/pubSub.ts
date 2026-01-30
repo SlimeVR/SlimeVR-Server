@@ -8,7 +8,7 @@ import {
   TopicHandleT,
   TopicIdT,
   TopicMappingT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub';
 import { useWebsocketAPI } from './websocket-api';
 
 export type PayloadData = MessageT['payload'];
