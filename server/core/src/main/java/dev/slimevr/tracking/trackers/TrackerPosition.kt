@@ -109,7 +109,7 @@ fun TrackerPosition?.isRightFinger(): Boolean {
 enum class TrackerPosition(
 	val designation: String,
 	val trackerRole: TrackerRole?,
-	val bodyPart: Int,
+	val bodyPart: UByte,
 	val id: Int,
 ) {
 	// If updating BodyPart of a TrackerRole,
@@ -199,7 +199,7 @@ enum class TrackerPosition(
 		/** Indexed by `BodyPart` int value. EFFICIENCY FTW  */
 		private val byBodyPart: Array<out TrackerPosition?> = arrayOfNulls<TrackerPosition>(BodyPart.names.size).apply {
 			for (position in entries) {
-				this[position.bodyPart] = position
+				this[position.bodyPart.toInt()] = position
 			}
 		}
 		private val byId = entries.associateBy { it.id }
@@ -228,7 +228,7 @@ enum class TrackerPosition(
 		}
 
 		@JvmStatic
-		fun getByBodyPart(bodyPart: Int): TrackerPosition? = byBodyPart[bodyPart]
+		fun getByBodyPart(bodyPart: UByte): TrackerPosition? = byBodyPart[bodyPart.toInt()]
 
 		@JvmStatic
 		fun getById(id: Int): TrackerPosition? = byId[id]

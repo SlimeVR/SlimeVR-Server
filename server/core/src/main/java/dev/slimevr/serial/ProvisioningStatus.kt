@@ -2,7 +2,7 @@ package dev.slimevr.serial
 
 import solarxr_protocol.rpc.WifiProvisioningStatus
 
-enum class ProvisioningStatus(@JvmField val id: Int, val isError: Boolean, val timeout: Int = 10_000) {
+enum class ProvisioningStatus(val id: UByte, val isError: Boolean, val timeout: Int = 10_000) {
 	NONE(WifiProvisioningStatus.NONE, false, 3_000),
 	SERIAL_INIT(WifiProvisioningStatus.SERIAL_INIT, false, 3_000),
 	PROVISIONING(WifiProvisioningStatus.PROVISIONING, false),

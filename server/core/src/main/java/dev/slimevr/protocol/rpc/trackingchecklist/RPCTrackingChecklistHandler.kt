@@ -19,13 +19,16 @@ class RPCTrackingChecklistHandler(
 		rpcHandler.registerPacketListener(RpcMessage.IgnoreTrackingChecklistStepRequest, ::onToggleTrackingChecklistRequest)
 	}
 
-	fun buildTrackingChecklistResponse(fbb: FlatBufferBuilder): Int = TrackingChecklistResponse.pack(
-		fbb,
-		TrackingChecklistResponseT().apply {
-			steps = api.server.trackingChecklistManager.steps.toTypedArray()
-			ignoredSteps = api.server.configManager.vrConfig.trackingChecklist.ignoredStepsIds.toIntArray()
-		},
-	)
+	fun buildTrackingChecklistResponse(fbb: FlatBufferBuilder): Int {
+		val stepsOffset = TrackingChecklistResponse.createStepsVector(fbb, api.server.trackingChecklistManager.steps.toTypedArray())
+		TrackingChecklistResponse.pack(
+			fbb,
+			TrackingChecklistResponseT().apply {
+				steps = api.server.trackingChecklistManager.steps.toTypedArray()
+				ignoredSteps = api.server.configManager.vrConfig.trackingChecklist.ignoredStepsIds.toIntArray()
+			},
+		)
+	}
 
 	private fun onTrackingChecklistRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val fbb = FlatBufferBuilder(32)

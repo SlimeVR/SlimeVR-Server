@@ -50,9 +50,8 @@ class RPCVRChatHandler(
 	}
 
 	private fun onToggleMuteRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-		val req = messageHeader.message(VRCConfigSettingToggleMute()) as VRCConfigSettingToggleMute?
-			?: return
-		api.server.vrcConfigManager.toggleMuteWarning(req.key())
+		val req = messageHeader.message(VRCConfigSettingToggleMute()) as VRCConfigSettingToggleMute
+		api.server.vrcConfigManager.toggleMuteWarning(req.key ?: return)
 	}
 
 	override fun onChange(validity: VRCConfigValidity, values: VRCConfigValues, recommended: VRCConfigRecommendedValues, muted: List<String>) {

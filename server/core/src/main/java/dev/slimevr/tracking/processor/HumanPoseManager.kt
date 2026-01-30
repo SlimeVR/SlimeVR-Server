@@ -476,7 +476,7 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	@JvmOverloads
-	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
+	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<UByte> = ArrayList()) {
 		skeleton.resetTrackersFull(resetSourceName, bodyParts)
 		if (server != null) {
 			if (skeleton.headTracker == null && skeleton.neckTracker == null) {
@@ -493,7 +493,7 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	@JvmOverloads
-	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<UByte> = TrackerUtils.allBodyPartsButFingers) {
 		skeleton.resetTrackersYaw(resetSourceName, bodyParts)
 		if (server != null) {
 			if (skeleton.headTracker == null && skeleton.neckTracker == null) {
@@ -569,7 +569,7 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	@JvmOverloads
-	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>? = null) {
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<UByte>? = null) {
 		val finalBodyParts = bodyParts
 			?: if (server?.configManager?.vrConfig?.resetsConfig?.resetMountingFeet == true) {
 				TrackerUtils.allBodyPartsButFingers

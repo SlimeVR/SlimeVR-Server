@@ -31,11 +31,12 @@ fun buildVRCConfigValidity(fbb: FlatBufferBuilder, validity: dev.slimevr.games.v
 	return VRCConfigValidity.endVRCConfigValidity(fbb)
 }
 
+@OptIn(ExperimentalUnsignedTypes::class)
 fun buildVRCConfigRecommendedValues(fbb: FlatBufferBuilder, values: dev.slimevr.games.vrchat.VRCConfigRecommendedValues): Int {
 	val spineModeOffset = VRCConfigRecommendedValues
 		.createSpineModeVector(
 			fbb,
-			values.spineMode.map { it.id.toByte() }.toByteArray(),
+			values.spineMode.map { it.id }.toUByteArray(),
 		)
 
 	VRCConfigRecommendedValues.startVRCConfigRecommendedValues(fbb)

@@ -2,10 +2,10 @@ package dev.slimevr.filtering
 
 import java.util.*
 
-enum class TrackerFilters(val id: Int, val configKey: String) {
-	NONE(0, "none"),
-	SMOOTHING(1, "smoothing"),
-	PREDICTION(2, "prediction"),
+enum class TrackerFilters(val id: UByte, val configKey: String) {
+	NONE(0u, "none"),
+	SMOOTHING(1u, "smoothing"),
+	PREDICTION(2u, "prediction"),
 	;
 
 	companion object {
@@ -21,7 +21,7 @@ enum class TrackerFilters(val id: Int, val configKey: String) {
 		val values = values()
 
 		@JvmStatic
-		fun fromId(id: Int): TrackerFilters? {
+		fun fromId(id: UByte): TrackerFilters? {
 			for (filter in values) {
 				if (filter.id == id) return filter
 			}

@@ -1,13 +1,13 @@
 package dev.slimevr.tracking.trackers
 
-enum class TrackerStatus(val id: Int, val sendData: Boolean, val reset: Boolean) {
+enum class TrackerStatus(val id: UByte, val sendData: Boolean, val reset: Boolean) {
 
-	DISCONNECTED(0, false, true),
-	OK(1, true, false),
-	BUSY(2, true, false),
-	ERROR(3, false, true),
-	OCCLUDED(4, false, false),
-	TIMED_OUT(5, false, false),
+	DISCONNECTED(0u, false, true),
+	OK(1u, true, false),
+	BUSY(2u, true, false),
+	ERROR(3u, false, true),
+	OCCLUDED(4u, false, false),
+	TIMED_OUT(5u, false, false),
 	;
 
 	companion object {
@@ -15,6 +15,6 @@ enum class TrackerStatus(val id: Int, val sendData: Boolean, val reset: Boolean)
 		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
-		fun getById(id: Int): TrackerStatus? = byId[id]
+		fun getById(id: UByte): TrackerStatus? = byId[id]
 	}
 }

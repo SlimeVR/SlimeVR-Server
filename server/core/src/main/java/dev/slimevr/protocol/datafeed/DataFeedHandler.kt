@@ -9,7 +9,7 @@ import dev.slimevr.protocol.ProtocolHandler
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.MessageBundle
-import solarxr_protocol.data_feed.DataFeedConfigT
+import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.data_feed.DataFeedUpdate
@@ -27,7 +27,7 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 
 	private fun onStartDataFeed(conn: GenericConnection, header: DataFeedMessageHeader) {
 		val req = header.message(StartDataFeed()) as StartDataFeed? ?: return
-		val dataFeeds = req.dataFeedsLength()
+		val dataFeeds = req.dataFeedsLength
 
 		val feedList = conn.context.dataFeedList
 		synchronized(feedList) {
@@ -36,8 +36,9 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 				// Using the object api here because we
 				// need to copy from the buffer, anyway let's
 				// do it from here and send the reference to an arraylist
-				val config = req.dataFeeds(i).unpack()
-				feedList.add(DataFeed(config))
+				req.dataFeeds(i)?.let {
+					feedList.add(DataFeed(it))
+				}
 			}
 		}
 	}
@@ -50,7 +51,7 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 
 		val fbb = FlatBufferBuilder(300)
 
-		val messageOffset = this.buildDatafeed(fbb, req.config().unpack(), 0)
+		val messageOffset = this.buildDatafeed(fbb, req.config ?: return, 0u)
 
 		DataFeedMessageHeader.startDataFeedMessageHeader(fbb)
 		DataFeedMessageHeader.addMessage(fbb, messageOffset)
@@ -66,7 +67,7 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 		conn.send(fbb.dataBuffer())
 	}
 
-	fun buildDatafeed(fbb: FlatBufferBuilder, config: DataFeedConfigT, index: Int): Int {
+	fun buildDatafeed(fbb: FlatBufferBuilder, config: DataFeedConfig, index: UByte): Int {
 		val devicesOffset = createDevicesData(
 			fbb,
 			config.dataMask,
@@ -129,13 +130,13 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 							val feed = feedList[index]
 							val lastTimeSent = feed.timeLastSent
 							val configT = feed.config
-							if (currTime - lastTimeSent > configT.minimumTimeSinceLast) {
+							if (currTime - lastTimeSent > configT.minimumTimeSinceLast.toLong()) {
 								if (fbb == null) {
 									// That way we create a buffer only when needed
 									fbb = FlatBufferBuilder(300)
 								}
 
-								val messageOffset = this.buildDatafeed(fbb, configT, index)
+								val messageOffset = this.buildDatafeed(fbb, configT, index.toUByte())
 
 								DataFeedMessageHeader.startDataFeedMessageHeader(fbb)
 								DataFeedMessageHeader.addMessage(fbb, messageOffset)
@@ -156,18 +157,18 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 	}
 
 	override fun onMessage(conn: GenericConnection, message: DataFeedMessageHeader) {
-		val consumer = this.handlers[message.messageType().toInt()]
+		val consumer = this.handlers[message.messageType.toInt()]
 		if (consumer != null) {
 			consumer.accept(conn, message)
 		} else {
 			LogManager
 				.info(
-					"[ProtocolAPI] Unhandled Datafeed packet received id: " + message.messageType(),
+					"[ProtocolAPI] Unhandled Datafeed packet received id: " + message.messageType,
 				)
 		}
 	}
 
-	override fun messagesCount(): Int = DataFeedMessage.names.size
+	override fun messagesCount(): Int = (DataFeedMessage.DataFeedConfig + 1u).toInt()
 
 	fun createMessage(fbb: FlatBufferBuilder, datafeedMessagesOffset: Int): Int {
 		MessageBundle.startMessageBundle(fbb)

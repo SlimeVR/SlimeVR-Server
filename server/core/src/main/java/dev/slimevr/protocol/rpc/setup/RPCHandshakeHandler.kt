@@ -61,7 +61,7 @@ class RPCHandshakeHandler(
 				?: return
 
 		this.api.server.configManager.vrConfig.addKnownDevice(
-			req.macAddress() ?: return,
+			req.macAddress ?: return,
 		)
 		this.api.server.configManager.saveConfig()
 	}
@@ -74,10 +74,10 @@ class RPCHandshakeHandler(
 			?: return
 
 		this.api.server.configManager.vrConfig.forgetKnownDevice(
-			req.macAddress() ?: return,
+			req.macAddress ?: return,
 		)
 		val device =
-			this.api.server.deviceManager.devices.find { it.hardwareIdentifier == req.macAddress() }
+			this.api.server.deviceManager.devices.find { it.hardwareIdentifier == req.macAddress }
 		if (device != null && device is UDPDevice) {
 			this.api.server.trackersServer.disconnectDevice(device)
 		}

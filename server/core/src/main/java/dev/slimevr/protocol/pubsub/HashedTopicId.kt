@@ -1,11 +1,11 @@
 package dev.slimevr.protocol.pubsub
 
-import solarxr_protocol.pub_sub.TopicIdT
+import solarxr_protocol.pub_sub.TopicId
 
 // This class is so the HashMap referencing the TopicId as key works
 // it needs a unique hashcode based on the topicId and also an equals function
 // because equals hashcode does not mean equals strings
-class HashedTopicId(val inner: TopicIdT) {
+class HashedTopicId(val inner: TopicId) {
 	private val hashcode: Int = (
 		(
 			inner.appName +

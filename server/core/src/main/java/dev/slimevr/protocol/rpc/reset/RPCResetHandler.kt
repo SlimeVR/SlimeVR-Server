@@ -30,44 +30,32 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 
 		// Get the list of bodyparts we want to reset
 		// If empty, check in HumanSkeleton will reset all
-		val bodyParts = mutableListOf<Int>()
-		if (req.bodyPartsLength() > 0) {
-			val buffer = req.bodyPartsAsByteBuffer()
+		val bodyParts = mutableListOf<UByte>()
+		if (req.bodyPartsLength > 0) {
+			val buffer = req.bodyPartsAsByteBuffer ?: return
 			while (buffer.hasRemaining()) {
-				bodyParts.add(buffer.get().toInt())
+				bodyParts.add(buffer.get().toUByte())
 			}
 		}
 
-		if (req.resetType() == ResetType.Yaw) {
-			val delay = if (req.hasDelay()) {
-				req.delay()
-			} else {
-				resetsConfig.yawResetDelay
-			}
+		if (req.resetType == ResetType.Yaw) {
+			val delay = req.delay ?: resetsConfig.yawResetDelay
 			if (bodyParts.isEmpty()) {
 				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong())
 			} else {
 				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
 			}
 		}
-		if (req.resetType() == ResetType.Full) {
-			val delay = if (req.hasDelay()) {
-				req.delay()
-			} else {
-				resetsConfig.fullResetDelay
-			}
+		if (req.resetType == ResetType.Full) {
+			val delay = req.delay ?: resetsConfig.fullResetDelay
 			if (bodyParts.isEmpty()) {
 				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong())
 			} else {
 				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
 			}
 		}
-		if (req.resetType() == ResetType.Mounting) {
-			val delay = if (req.hasDelay()) {
-				req.delay()
-			} else {
-				resetsConfig.mountingResetDelay
-			}
+		if (req.resetType == ResetType.Mounting) {
+			val delay = req.delay ?: resetsConfig.mountingResetDelay
 			if (bodyParts.isEmpty()) {
 				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong())
 			} else {
@@ -76,10 +64,11 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		}
 	}
 
-	fun sendResetStatusResponse(resetType: Int, status: Int, bodyParts: List<Int>? = null, progress: Int = 0, duration: Int = 0) {
+	@OptIn(ExperimentalUnsignedTypes::class)
+	fun sendResetStatusResponse(resetType: UByte, status: UByte, bodyParts: List<UByte>? = null, progress: Int = 0, duration: Int = 0) {
 		val fbb = FlatBufferBuilder(32)
 
-		val bodyPartsOffset = if (bodyParts != null) ResetResponse.createBodyPartsVector(fbb, bodyParts.map { it.toByte() }.toByteArray()) else 0
+		val bodyPartsOffset = if (bodyParts != null) ResetResponse.createBodyPartsVector(fbb, bodyParts.toUByteArray()) else 0
 
 		ResetResponse.startResetResponse(fbb)
 		ResetResponse.addResetType(fbb, resetType)
@@ -113,11 +102,11 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		api.server.clearTrackersMounting(RESET_SOURCE_NAME)
 	}
 
-	override fun onStarted(resetType: Int, bodyParts: List<Int>?, progress: Int, duration: Int) {
+	override fun onStarted(resetType: UByte, bodyParts: List<UByte>?, progress: Int, duration: Int) {
 		sendResetStatusResponse(resetType, ResetStatus.STARTED, bodyParts, progress, duration)
 	}
 
-	override fun onFinished(resetType: Int, bodyParts: List<Int>?, duration: Int) {
+	override fun onFinished(resetType: UByte, bodyParts: List<UByte>?, duration: Int) {
 		sendResetStatusResponse(resetType, ResetStatus.FINISHED, bodyParts, duration, duration)
 	}
 

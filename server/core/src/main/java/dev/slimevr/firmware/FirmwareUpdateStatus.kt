@@ -1,6 +1,6 @@
 package dev.slimevr.firmware
 
-enum class FirmwareUpdateStatus(val id: Int) {
+enum class FirmwareUpdateStatus(val id: UByte) {
 	DOWNLOADING(solarxr_protocol.rpc.FirmwareUpdateStatus.DOWNLOADING),
 	AUTHENTICATING(solarxr_protocol.rpc.FirmwareUpdateStatus.AUTHENTICATING),
 	UPLOADING(solarxr_protocol.rpc.FirmwareUpdateStatus.UPLOADING),
@@ -22,7 +22,7 @@ enum class FirmwareUpdateStatus(val id: Int) {
 	fun isError(): Boolean = id in ERROR_DEVICE_NOT_FOUND.id..ERROR_UNKNOWN.id
 
 	companion object {
-		fun getById(id: Int): FirmwareUpdateStatus? = byId[id]
+		fun getById(id: UByte): FirmwareUpdateStatus? = byId[id]
 	}
 }
 

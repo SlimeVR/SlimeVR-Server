@@ -1,6 +1,6 @@
 package dev.slimevr.tracking.trackers.udp
 
-enum class IMUType(val id: UInt) {
+enum class IMUType(val id: UShort) {
 	UNKNOWN(0u),
 	MPU9250(1u),
 	MPU6500(2u),
@@ -23,17 +23,17 @@ enum class IMUType(val id: UInt) {
 	DEV_RESERVED(250u),
 	;
 
-	fun getSolarType(): Int = this.id.toInt()
+	fun getSolarType(): UShort = this.id
 
 	companion object {
 		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
-		fun getById(id: UInt): IMUType? = byId[id]
+		fun getById(id: UShort): IMUType? = byId[id]
 	}
 }
 
-enum class BoardType(val id: UInt) {
+enum class BoardType(val id: UShort) {
 	UNKNOWN(0u),
 	SLIMEVR_LEGACY(1u),
 	SLIMEVR_DEV(2u),
@@ -64,7 +64,7 @@ enum class BoardType(val id: UInt) {
 	DEV_RESERVED(250u),
 	;
 
-	fun getSolarType(): Int = this.id.toInt()
+	fun getSolarType(): UShort = this.id
 
 	override fun toString(): String = when (this) {
 		UNKNOWN -> "Unknown"
@@ -101,11 +101,11 @@ enum class BoardType(val id: UInt) {
 		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
-		fun getById(id: UInt): BoardType? = byId[id]
+		fun getById(id: UShort): BoardType? = byId[id]
 	}
 }
 
-enum class MCUType(val id: UInt) {
+enum class MCUType(val id: UShort) {
 	UNKNOWN(0u),
 	ESP8266(1u),
 	ESP32(2u),
@@ -120,29 +120,29 @@ enum class MCUType(val id: UInt) {
 	DEV_RESERVED(250u),
 	;
 
-	fun getSolarType(): Int = this.id.toInt()
+	fun getSolarType(): UShort = this.id
 
 	companion object {
 		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
-		fun getById(id: UInt): MCUType? = byId[id]
+		fun getById(id: UShort): MCUType? = byId[id]
 	}
 }
 
-enum class TrackerDataType(val id: UInt) {
+enum class TrackerDataType(val id: UByte) {
 	ROTATION(0u),
 	FLEX_RESISTANCE(1u),
 	FLEX_ANGLE(2u),
 	;
 
-	fun getSolarType(): Int = this.id.toInt()
+	fun getSolarType(): UByte = this.id
 
 	companion object {
 		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
-		fun getById(id: UInt): TrackerDataType? = byId[id]
+		fun getById(id: UByte): TrackerDataType? = byId[id]
 	}
 }
 
@@ -155,7 +155,7 @@ enum class MagnetometerStatus {
 	ENABLED,
 	;
 
-	fun getSolarType(): Int = this.ordinal
+	fun getSolarType(): UByte = this.ordinal.toUByte()
 
 	companion object {
 		private val byId = entries.associateBy { it.ordinal.toUByte() }

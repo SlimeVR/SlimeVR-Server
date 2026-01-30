@@ -14,7 +14,7 @@ abstract class ProtocolHandler<H> {
 
 	abstract fun messagesCount(): Int
 
-	fun registerPacketListener(packetType: Byte, consumer: BiConsumer<GenericConnection, H>) {
+	fun registerPacketListener(packetType: UByte, consumer: BiConsumer<GenericConnection, H>) {
 		val packetInt = packetType.toInt()
 		if (handlers[packetInt] != null) {
 			handlers[packetInt] = handlers[packetInt]!!.andThen(consumer)

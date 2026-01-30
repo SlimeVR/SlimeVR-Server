@@ -54,7 +54,7 @@ class RPCAutoBoneHandler(
 		conn.context.useAutoBone = true
 		api.server
 			.autoBoneHandler
-			.startProcessByType(getById(req.processType()))
+			.startProcessByType(getById(req.processType))
 	}
 
 	override fun onAutoBoneProcessStatus(
@@ -79,8 +79,8 @@ class RPCAutoBoneHandler(
 				processType.id,
 			)
 
-			AutoBoneProcessStatusResponse.addCurrent(fbb, current)
-			AutoBoneProcessStatusResponse.addTotal(fbb, total)
+			AutoBoneProcessStatusResponse.addCurrent(fbb, current.toUInt())
+			AutoBoneProcessStatusResponse.addTotal(fbb, total.toUInt())
 			AutoBoneProcessStatusResponse.addEta(fbb, eta)
 			AutoBoneProcessStatusResponse.addCompleted(fbb, completed)
 			AutoBoneProcessStatusResponse.addSuccess(fbb, success)
@@ -116,14 +116,14 @@ class RPCAutoBoneHandler(
 				.createAdjustedSkeletonPartsVector(
 					fbb,
 					epoch.configValues.map { (key, value) ->
-						SkeletonPart.createSkeletonPart(fbb, key.id, value)
+						SkeletonPart.createSkeletonPart(fbb, key.id.toUByte(), value)
 					}.toIntArray(),
 				)
 			val update = AutoBoneEpochResponse
 				.createAutoBoneEpochResponse(
 					fbb,
-					epoch.epoch.toLong(),
-					epoch.totalEpochs.toLong(),
+					epoch.epoch.toUInt(),
+					epoch.totalEpochs.toUInt(),
 					epoch.epochError.mean,
 					skeletonPartsOffset,
 				)

@@ -17,19 +17,22 @@ class ProtocolAPI(val server: VRServer) {
 		val messageBundle = MessageBundle.getRootAsMessageBundle(message)
 
 		try {
-			for (index in 0..<messageBundle.dataFeedMsgsLength()) {
-				val header = messageBundle.dataFeedMsgsVector().get(index)
-				this.dataFeedHandler.onMessage(conn, header)
+			for (index in 0..<messageBundle.dataFeedMsgsLength) {
+				messageBundle.dataFeedMsgs(index)?.let {
+					this.dataFeedHandler.onMessage(conn, it)
+				}
 			}
 
-			for (index in 0..<messageBundle.rpcMsgsLength()) {
-				val header = messageBundle.rpcMsgsVector().get(index)
-				this.rpcHandler.onMessage(conn, header)
+			for (index in 0..<messageBundle.rpcMsgsLength) {
+				messageBundle.rpcMsgs(index)?.let {
+					this.rpcHandler.onMessage(conn, it)
+				}
 			}
 
-			for (index in 0..<messageBundle.pubSubMsgsLength()) {
-				val header = messageBundle.pubSubMsgsVector().get(index)
-				this.pubSubHandler.onMessage(conn, header)
+			for (index in 0..<messageBundle.pubSubMsgsLength) {
+				messageBundle.pubSubMsgs(index)?.let{
+					this.pubSubHandler.onMessage(conn, it)
+				}
 			}
 		} catch (e: AssertionError) {
 			// Catch flatbuffer errors

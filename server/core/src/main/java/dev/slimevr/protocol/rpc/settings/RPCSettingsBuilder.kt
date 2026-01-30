@@ -50,8 +50,8 @@ fun createOSCRouterSettings(
 		.createOSCSettings(
 			fbb,
 			config.enabled,
-			config.portIn,
-			config.portOut,
+			config.portIn.toUShort(),
+			config.portOut.toUShort(),
 			addressStringOffset,
 		)
 
@@ -70,8 +70,8 @@ fun createVRCOSCSettings(
 		.createOSCSettings(
 			fbb,
 			config.enabled,
-			config.portIn,
-			config.portOut,
+			config.portIn.toUShort(),
+			config.portOut.toUShort(),
 			addressStringOffset,
 		)
 	val oscSettingOffset = OSCTrackersSetting
@@ -106,8 +106,8 @@ fun createVMCOSCSettings(
 		.createOSCSettings(
 			fbb,
 			config.enabled,
-			config.portIn,
-			config.portOut,
+			config.portIn.toUShort(),
+			config.portOut.toUShort(),
 			addressStringOffset,
 		)
 
@@ -143,7 +143,7 @@ fun createDriftCompensationSettings(
 		driftCompensationConfig.enabled,
 		driftCompensationConfig.prediction,
 		driftCompensationConfig.amount,
-		driftCompensationConfig.maxResets,
+		driftCompensationConfig.maxResets.toUShort(),
 	)
 
 fun createTapDetectionSettings(
@@ -154,15 +154,15 @@ fun createTapDetectionSettings(
 		fbb,
 		tapDetectionConfig.fullResetDelay,
 		tapDetectionConfig.fullResetEnabled,
-		tapDetectionConfig.fullResetTaps,
+		tapDetectionConfig.fullResetTaps.toUByte(),
 		tapDetectionConfig.yawResetDelay,
 		tapDetectionConfig.yawResetEnabled,
-		tapDetectionConfig.yawResetTaps,
+		tapDetectionConfig.yawResetTaps.toUByte(),
 		tapDetectionConfig.mountingResetDelay,
 		tapDetectionConfig.mountingResetEnabled,
-		tapDetectionConfig.mountingResetTaps,
+		tapDetectionConfig.mountingResetTaps.toUByte(),
 		tapDetectionConfig.setupMode,
-		tapDetectionConfig.numberTrackersOverThreshold,
+		tapDetectionConfig.numberTrackersOverThreshold.toUByte(),
 	)
 
 fun createSteamVRSettings(fbb: FlatBufferBuilder, bridge: ISteamVRBridge?): Int {
@@ -283,76 +283,71 @@ fun readAutoBoneSettings(
 	autoBoneSettings: AutoBoneSettings,
 	autoBoneConfig: AutoBoneConfig,
 ): AutoBoneConfig {
-	if (autoBoneSettings.hasCursorIncrement()) {
-		autoBoneConfig.cursorIncrement = autoBoneSettings.cursorIncrement()
+	autoBoneSettings.cursorIncrement?.let {
+		autoBoneConfig.cursorIncrement = it
 	}
-	if (autoBoneSettings.hasMinDataDistance()) {
-		autoBoneConfig.minDataDistance = autoBoneSettings.minDataDistance()
+	autoBoneSettings.minDataDistance?.let {
+		autoBoneConfig.minDataDistance = it
 	}
-	if (autoBoneSettings.hasMaxDataDistance()) {
-		autoBoneConfig.maxDataDistance = autoBoneSettings.maxDataDistance()
+	autoBoneSettings.maxDataDistance?.let {
+		autoBoneConfig.maxDataDistance = it
 	}
-	if (autoBoneSettings.hasNumEpochs()) {
-		autoBoneConfig.numEpochs = autoBoneSettings.numEpochs()
+	autoBoneSettings.numEpochs?.let {
+		autoBoneConfig.numEpochs = it
 	}
-	if (autoBoneSettings.hasPrintEveryNumEpochs()) {
-		autoBoneConfig.printEveryNumEpochs = autoBoneSettings.printEveryNumEpochs()
+	autoBoneSettings.printEveryNumEpochs?.let {
+		autoBoneConfig.printEveryNumEpochs = it
 	}
-	if (autoBoneSettings.hasInitialAdjustRate()) {
-		autoBoneConfig.initialAdjustRate = autoBoneSettings.initialAdjustRate()
+	autoBoneSettings.initialAdjustRate?.let {
+		autoBoneConfig.initialAdjustRate = it
 	}
-	if (autoBoneSettings.hasAdjustRateDecay()) {
-		autoBoneConfig.adjustRateDecay = autoBoneSettings.adjustRateDecay()
+	autoBoneSettings.adjustRateDecay?.let {
+		autoBoneConfig.adjustRateDecay = it
 	}
-	if (autoBoneSettings.hasSlideErrorFactor()) {
-		autoBoneConfig.slideErrorFactor = autoBoneSettings.slideErrorFactor()
+	autoBoneSettings.slideErrorFactor?.let {
+		autoBoneConfig.slideErrorFactor = it
 	}
-	if (autoBoneSettings.hasOffsetSlideErrorFactor()) {
-		autoBoneConfig.offsetSlideErrorFactor =
-			autoBoneSettings.offsetSlideErrorFactor()
+	autoBoneSettings.offsetSlideErrorFactor?.let {
+		autoBoneConfig.offsetSlideErrorFactor = it
 	}
-	if (autoBoneSettings.hasFootHeightOffsetErrorFactor()) {
-		autoBoneConfig
-			.footHeightOffsetErrorFactor =
-			autoBoneSettings.footHeightOffsetErrorFactor()
+	autoBoneSettings.footHeightOffsetErrorFactor?.let {
+		autoBoneConfig.footHeightOffsetErrorFactor = it
 	}
-	if (autoBoneSettings.hasBodyProportionErrorFactor()) {
-		autoBoneConfig
-			.bodyProportionErrorFactor = autoBoneSettings.bodyProportionErrorFactor()
+	autoBoneSettings.bodyProportionErrorFactor?.let {
+		autoBoneConfig.bodyProportionErrorFactor = it
 	}
-	if (autoBoneSettings.hasHeightErrorFactor()) {
-		autoBoneConfig.heightErrorFactor = autoBoneSettings.heightErrorFactor()
+	autoBoneSettings.heightErrorFactor?.let {
+		autoBoneConfig.heightErrorFactor = it
 	}
-	if (autoBoneSettings.hasPositionErrorFactor()) {
-		autoBoneConfig.positionErrorFactor = autoBoneSettings.positionErrorFactor()
+	autoBoneSettings.positionErrorFactor?.let {
+		autoBoneConfig.positionErrorFactor = it
 	}
-	if (autoBoneSettings.hasPositionOffsetErrorFactor()) {
-		autoBoneConfig
-			.positionOffsetErrorFactor = autoBoneSettings.positionOffsetErrorFactor()
+	autoBoneSettings.positionOffsetErrorFactor?.let {
+		autoBoneConfig.positionOffsetErrorFactor = it
 	}
-	if (autoBoneSettings.hasCalcInitError()) {
-		autoBoneConfig.calcInitError = autoBoneSettings.calcInitError()
+	autoBoneSettings.calcInitError?.let {
+		autoBoneConfig.calcInitError = it
 	}
-	if (autoBoneSettings.hasRandomizeFrameOrder()) {
-		autoBoneConfig.randomizeFrameOrder = autoBoneSettings.randomizeFrameOrder()
+	autoBoneSettings.randomizeFrameOrder?.let {
+		autoBoneConfig.randomizeFrameOrder = it
 	}
-	if (autoBoneSettings.hasScaleEachStep()) {
-		autoBoneConfig.scaleEachStep = autoBoneSettings.scaleEachStep()
+	autoBoneSettings.scaleEachStep?.let {
+		autoBoneConfig.scaleEachStep = it
 	}
-	if (autoBoneSettings.hasSampleCount()) {
-		autoBoneConfig.sampleCount = autoBoneSettings.sampleCount()
+	autoBoneSettings.sampleCount?.let {
+		autoBoneConfig.sampleCount = it
 	}
-	if (autoBoneSettings.hasSampleRateMs()) {
-		autoBoneConfig.sampleRateMs = autoBoneSettings.sampleRateMs()
+	autoBoneSettings.sampleRateMs?.let {
+		autoBoneConfig.sampleRateMs = it
 	}
-	if (autoBoneSettings.hasSaveRecordings()) {
-		autoBoneConfig.saveRecordings = autoBoneSettings.saveRecordings()
+	autoBoneSettings.saveRecordings?.let {
+		autoBoneConfig.saveRecordings = it
 	}
-	if (autoBoneSettings.hasUseSkeletonHeight()) {
-		autoBoneConfig.useSkeletonHeight = autoBoneSettings.useSkeletonHeight()
+	autoBoneSettings.useSkeletonHeight?.let {
+		autoBoneConfig.useSkeletonHeight = it
 	}
-	if (autoBoneSettings.hasRandSeed()) {
-		autoBoneConfig.randSeed = autoBoneSettings.randSeed()
+	autoBoneSettings.randSeed?.let {
+		autoBoneConfig.randSeed = it
 	}
 
 	return autoBoneConfig

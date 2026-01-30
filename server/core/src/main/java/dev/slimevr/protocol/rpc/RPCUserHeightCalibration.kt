@@ -7,7 +7,6 @@ import dev.slimevr.tracking.processor.skeleton.UserHeightCalibrationListener
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
 import solarxr_protocol.rpc.UserHeightRecordingStatusResponse
-import solarxr_protocol.rpc.UserHeightRecordingStatusResponseT
 
 class RPCUserHeightCalibration(var rpcHandler: RPCHandler, var api: ProtocolAPI) : UserHeightCalibrationListener {
 	val userHeightCal = this.api.server.humanPoseManager.skeleton.userHeightCalibration
@@ -43,10 +42,10 @@ class RPCUserHeightCalibration(var rpcHandler: RPCHandler, var api: ProtocolAPI)
 		userHeightCal?.start()
 	}
 
-	override fun onStatusChange(status: UserHeightRecordingStatusResponseT) {
+	override fun onStatusChange(hmdHeight: Float, status: UByte) {
 		val fbb = FlatBufferBuilder(32)
 
-		val res = UserHeightRecordingStatusResponse.pack(fbb, status)
+		val res = UserHeightRecordingStatusResponse.createUserHeightRecordingStatusResponse(fbb, hmdHeight, status)
 
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,

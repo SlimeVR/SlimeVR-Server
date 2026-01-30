@@ -153,9 +153,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		val req = messageHeader
 			.message(SerialTrackerCustomCommandRequest()) as SerialTrackerCustomCommandRequest?
 
-		if (req == null || req.command() == null) return
-
-		this.api.server.serialHandler.customCommandRequest(Objects.requireNonNull(req.command()))
+		this.api.server.serialHandler.customCommandRequest(req?.command ?: return)
 	}
 
 	private fun onRequestSerialDevices(conn: GenericConnection, messageHeader: RpcMessageHeader) {
@@ -190,10 +188,8 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 	fun onSetWifiRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader.message(SetWifiRequest()) as SetWifiRequest? ?: return
 
-		if (req.password() == null || req.ssid() == null || !this.api.server.serialHandler.isConnected) {
-			return
-		}
-		this.api.server.serialHandler.setWifi(req.ssid(), req.password())
+		if (!this.api.server.serialHandler.isConnected) return
+		this.api.server.serialHandler.setWifi(req.ssid ?: return, req.password ?: return)
 	}
 
 	fun onOpenSerialRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
@@ -204,7 +200,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 
 		this.api.server.queueTask {
 			try {
-				this.api.server.serialHandler.openSerial(req.port(), req.auto())
+				this.api.server.serialHandler.openSerial(req.port, req.auto)
 			} catch (e: Exception) {
 				LogManager.severe("Unable to open serial port", e)
 			} catch (e: Throwable) {

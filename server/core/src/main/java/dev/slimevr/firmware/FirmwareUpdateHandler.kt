@@ -14,8 +14,10 @@ import dev.slimevr.tracking.trackers.TrackerStatusListener
 import dev.slimevr.tracking.trackers.udp.UDPDevice
 import io.eiren.util.logging.LogManager
 import kotlinx.coroutines.*
-import solarxr_protocol.rpc.FirmwarePartT
-import solarxr_protocol.rpc.FirmwareUpdateRequestT
+import solarxr_protocol.rpc.FirmwarePart
+import solarxr_protocol.rpc.FirmwareUpdateRequest
+import solarxr_protocol.rpc.OTAFirmwareUpdate
+import solarxr_protocol.rpc.SerialFirmwareUpdate
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -213,10 +215,10 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	}
 
 	fun queueFirmwareUpdate(
-		request: FirmwareUpdateRequestT,
+		request: FirmwareUpdateRequest,
 		deviceId: UpdateDeviceId<*>,
 	) = mainScope.launch {
-		val method = FirmwareUpdateMethod.getById(request.method.type) ?: error("Unknown method")
+		val method = FirmwareUpdateMethod.getById(request.methodType) ?: error("Unknown method")
 
 		clearJob?.await()
 		if (method == FirmwareUpdateMethod.OTA) {
@@ -277,18 +279,20 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		}
 	}
 
-	private fun getFirmwareParts(request: FirmwareUpdateRequestT): ArrayList<FirmwarePartT> {
-		val parts = ArrayList<FirmwarePartT>()
-		val method = FirmwareUpdateMethod.getById(request.method.type) ?: error("Unknown method")
+	private fun getFirmwareParts(request: FirmwareUpdateRequest): ArrayList<FirmwarePart> {
+		val parts = ArrayList<FirmwarePart>()
+		val method = FirmwareUpdateMethod.getById(request.methodType) ?: error("Unknown method")
 		when (method) {
 			FirmwareUpdateMethod.OTA -> {
-				val updateReq = request.method.asOTAFirmwareUpdate()
-				parts.add(updateReq.firmwarePart)
+				val updateReq = request.method(OTAFirmwareUpdate()) as OTAFirmwareUpdate
+				updateReq.firmwarePart?.let { parts.add(it) }
 			}
 
 			FirmwareUpdateMethod.SERIAL -> {
-				val updateReq = request.method.asSerialFirmwareUpdate()
-				parts.addAll(updateReq.firmwarePart)
+				val updateReq = request.method(SerialFirmwareUpdate()) as SerialFirmwareUpdate
+				for (i in 0..updateReq.firmwarePartLength) {
+					updateReq.firmwarePart(i)?.let { parts.add(it) }
+				}
 			}
 
 			FirmwareUpdateMethod.NONE -> error("Method should not be NONE")
@@ -297,7 +301,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	}
 
 	private suspend fun startFirmwareUpdateJob(
-		request: FirmwareUpdateRequestT,
+		request: FirmwareUpdateRequest,
 		deviceId: UpdateDeviceId<*>,
 	) = coroutineScope {
 		onStatusChange(
@@ -312,10 +316,10 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			val firmwareParts = try {
 				withTimeoutOrNull(30_000) {
 					toDownloadParts.map {
-						val firmware = downloadFirmware(it.url, it.digest)
+						val firmware = downloadFirmware(it.url ?: error("missing url"), it.digest ?: error("missing digest"))
 						DownloadedFirmwarePart(
 							firmware,
-							it.offset,
+							it.offset.toLong(),
 						)
 					}.toTypedArray()
 				}
@@ -342,7 +346,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 						return@withTimeout
 					}
 
-					val method = FirmwareUpdateMethod.getById(request.method.type) ?: error("Unknown method")
+					val method = FirmwareUpdateMethod.getById(request.methodType) ?: error("Unknown method")
 					when (method) {
 						FirmwareUpdateMethod.NONE -> error("unsupported method")
 
@@ -363,7 +367,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 						}
 
 						FirmwareUpdateMethod.SERIAL -> {
-							val req = request.method.asSerialFirmwareUpdate()
+							val req = request.method(SerialFirmwareUpdate()) as SerialFirmwareUpdate
 							if (deviceId.id !is String) {
 								error("invalid state, the device id is not a string")
 							}
@@ -374,8 +378,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 									deviceId.id,
 								),
 								req.needManualReboot,
-								req.ssid,
-								req.password,
+								req.ssid ?: error("missing ssid"),
+								req.password ?: error("missing password"),
 							)
 						}
 					}
@@ -421,13 +425,14 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		listeners.forEach { l -> l.onUpdateStatusChange(event) }
 	}
 
+	@OptIn(ExperimentalUnsignedTypes::class)
 	private fun checkUpdateTimeout() {
 		updatingDevicesStatus.forEach { (id, device) ->
 			// if more than 30s between two events, consider the update as stuck
 			// We do not timeout on the Downloading step as it has it own timeout
 			// We do not timeout on the Done step as it is the end of the update process
 			if (!device.status.isError() &&
-				!intArrayOf(FirmwareUpdateStatus.DONE.id, FirmwareUpdateStatus.DOWNLOADING.id).contains(device.status.id) &&
+				!ubyteArrayOf(FirmwareUpdateStatus.DONE.id, FirmwareUpdateStatus.DOWNLOADING.id).contains(device.status.id) &&
 				System.currentTimeMillis() - device.time > 30 * 1000
 			) {
 				onStatusChange(
