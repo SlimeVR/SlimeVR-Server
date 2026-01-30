@@ -77,7 +77,7 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 		// or the upper chest tracker.
 		if (rotationConstraint.constraintType != ConstraintType.HINGE &&
 			rotationConstraint.constraintType != ConstraintType.LOOSE_HINGE &&
-			boneType.bodyPart != BodyPart.UPPER_CHEST
+			boneType.bodyPart != BodyPart.UPPER_CHEST.toInt()
 		) {
 			val deltaRot = newRot * initialRot.inv()
 			val angle = deltaRot.angleR()

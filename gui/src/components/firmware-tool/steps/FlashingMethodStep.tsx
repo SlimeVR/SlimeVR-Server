@@ -7,16 +7,16 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { DeviceDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/device-data';
+import { TrackerStatus } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import {
-  DeviceDataT,
   FirmwareUpdateMethod,
   NewSerialDeviceResponseT,
   RpcMessage,
   SerialDeviceT,
   SerialDevicesRequestT,
   SerialDevicesResponseT,
-  TrackerStatus,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { Button } from '@/components/commons/Button';
 import { Input } from '@/components/commons/Input';
 import { Dropdown } from '@/components/commons/Dropdown';

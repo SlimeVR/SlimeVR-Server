@@ -25,7 +25,7 @@ class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) :
 		val req = messageHeader
 			.message(StartWifiProvisioningRequest()) as StartWifiProvisioningRequest?
 		if (req == null) return
-		this.api.server.provisioningHandler.start(req.ssid(), req.password(), req.port())
+		this.api.server.provisioningHandler.start(req.ssid, req.password, req.port)
 		conn.context.useProvisioning = true
 	}
 

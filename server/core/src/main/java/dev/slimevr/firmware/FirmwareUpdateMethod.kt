@@ -1,13 +1,13 @@
 package dev.slimevr.firmware
 
-enum class FirmwareUpdateMethod(val id: Byte) {
+enum class FirmwareUpdateMethod(val id: UByte) {
 	NONE(solarxr_protocol.rpc.FirmwareUpdateMethod.NONE),
 	OTA(solarxr_protocol.rpc.FirmwareUpdateMethod.OTAFirmwareUpdate),
 	SERIAL(solarxr_protocol.rpc.FirmwareUpdateMethod.SerialFirmwareUpdate),
 	;
 
 	companion object {
-		fun getById(id: Byte): FirmwareUpdateMethod? = byId[id]
+		fun getById(id: UByte): FirmwareUpdateMethod? = byId[id]
 	}
 }
 

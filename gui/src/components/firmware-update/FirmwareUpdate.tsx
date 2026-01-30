@@ -2,17 +2,19 @@ import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { getTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
+import { BoardType } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes/hardware-info';
+import { DeviceDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/device-data';
 import {
-  BoardType,
-  DeviceDataT,
   DeviceIdTableT,
+  TrackerStatus,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import {
   FirmwareUpdateMethod,
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
   FirmwareUpdateStopQueuesRequestT,
   RpcMessage,
-  TrackerStatus,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import classNames from 'classnames';
 import { Button } from '@/components/commons/Button';
 import Markdown from 'react-markdown';

@@ -8,7 +8,7 @@ import dev.slimevr.tracking.trackers.TrackerStatus
 import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.collections4.queue.CircularFifoQueue
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
-import solarxr_protocol.rpc.UserHeightRecordingStatusResponseT
+import solarxr_protocol.rpc.UserHeightRecordingStatusResponse
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.math.PI
 import kotlin.math.cos
@@ -68,7 +68,7 @@ fun isControllerPointingDown(controller: Tracker, threshold: Double): Boolean {
 }
 
 interface UserHeightCalibrationListener {
-	fun onStatusChange(status: UserHeightRecordingStatusResponseT)
+	fun onStatusChange(hmdHeight: Float, status: UByte)
 }
 
 class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPoseManager) {
@@ -285,11 +285,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 	}
 
 	fun sendStatusUpdate() {
-		val res = UserHeightRecordingStatusResponseT().apply {
-			this.status = this@UserHeightCalibration.status
-			this.hmdHeight = this@UserHeightCalibration.currentHeight
-		}
-		listeners.forEach { it.onStatusChange(res) }
+		listeners.forEach { it.onStatusChange(this.currentHeight, this.status) }
 	}
 
 	val active: Boolean

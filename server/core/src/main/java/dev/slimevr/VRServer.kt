@@ -26,7 +26,6 @@ import dev.slimevr.serial.SerialHandler
 import dev.slimevr.serial.SerialHandlerStub
 import dev.slimevr.setup.HandshakeHandler
 import dev.slimevr.setup.TapSetupHandler
-import dev.slimevr.status.StatusSystem
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.*
@@ -38,7 +37,7 @@ import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.ann.ThreadSecure
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
-import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.rpc.ResetType
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
@@ -112,9 +111,6 @@ class VRServer @JvmOverloads constructor(
 
 	@JvmField
 	val resetHandler: ResetHandler
-
-	@JvmField
-	val statusSystem = StatusSystem()
 
 	@JvmField
 	val handshakeHandler = HandshakeHandler()
@@ -307,15 +303,15 @@ class VRServer @JvmOverloads constructor(
 		}
 	}
 
-	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
+	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<UByte> = ArrayList()) {
 		queueTask { humanPoseManager.resetTrackersFull(resetSourceName, bodyParts) }
 	}
 
-	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<UByte> = TrackerUtils.allBodyPartsButFingers) {
 		queueTask { humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts) }
 	}
 
-	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>? = null) {
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<UByte>? = null) {
 		queueTask { humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts) }
 	}
 
@@ -345,7 +341,7 @@ class VRServer @JvmOverloads constructor(
 		}
 	}
 
-	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList()) {
+	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<UByte> = ArrayList()) {
 		resetTimer(
 			resetTimerManager,
 			delay,
@@ -361,7 +357,7 @@ class VRServer @JvmOverloads constructor(
 		)
 	}
 
-	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<UByte> = TrackerUtils.allBodyPartsButFingers) {
 		resetTimer(
 			resetTimerManager,
 			delay,
@@ -377,7 +373,7 @@ class VRServer @JvmOverloads constructor(
 		)
 	}
 
-	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<Int>? = null) {
+	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<UByte>? = null) {
 		resetTimer(
 			resetTimerManager,
 			delay,
@@ -422,9 +418,9 @@ class VRServer @JvmOverloads constructor(
 	val allTrackers: List<Tracker>
 		get() = FastList(trackers)
 
-	fun getTrackerById(id: TrackerIdT): Tracker? {
+	fun getTrackerById(id: TrackerId): Tracker? {
 		for (tracker in trackers) {
-			if (tracker.trackerNum != id.trackerNum) {
+			if (tracker.trackerNum != id.trackerNum.toInt()) {
 				continue
 			}
 
@@ -432,7 +428,7 @@ class VRServer @JvmOverloads constructor(
 			if (id.deviceId == null && tracker.device == null) {
 				return tracker
 			}
-			if (tracker.device != null && id.deviceId != null && id.deviceId.id == tracker.device.id) {
+			if (tracker.device != null && id.deviceId != null && id.deviceId!!.id.toInt() == tracker.device.id) {
 				// This is a physical tracker, and both device id and the
 				// tracker num match
 				return tracker

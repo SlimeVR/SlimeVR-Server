@@ -18,7 +18,6 @@ import dev.slimevr.protocol.rpc.settings.createSettingsResponse
 import dev.slimevr.protocol.rpc.setup.RPCHandshakeHandler
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler
 import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
-import dev.slimevr.protocol.rpc.status.RPCStatusHandler
 import dev.slimevr.protocol.rpc.trackingchecklist.RPCTrackingChecklistHandler
 import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
@@ -44,7 +43,6 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCProvisioningHandler(this, api)
 		RPCSettingsHandler(this, api)
 		RPCTapSetupHandler(this, api)
-		RPCStatusHandler(this, api)
 		RPCAutoBoneHandler(this, api)
 		RPCHandshakeHandler(this, api)
 		RPCTrackingPause(this, api)
@@ -108,11 +106,6 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		registerPacketListener(
 			RpcMessage.LegTweaksTmpClear,
 			::onLegTweaksTmpClear,
-		)
-
-		registerPacketListener(
-			RpcMessage.StatusSystemRequest,
-			::onStatusSystemRequest,
 		)
 
 		registerPacketListener(
@@ -185,8 +178,8 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val req = messageHeader
 			.message(OverlayDisplayModeChangeRequest()) as? OverlayDisplayModeChangeRequest ?: return
 		val config = api.server.configManager.vrConfig.overlay
-		config.isMirrored = req.isMirrored
-		config.isVisible = req.isVisible
+		config.isMirrored = req.isMirrored ?: false
+		config.isVisible = req.isVisible ?: false
 
 		api.server.configManager.saveConfig()
 	}
@@ -236,9 +229,9 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val req = messageHeader
 			.message(ChangeSkeletonConfigRequest()) as? ChangeSkeletonConfigRequest ?: return
 
-		val joint = SkeletonConfigOffsets.getById(req.bone())
+		val joint = SkeletonConfigOffsets.getById(req.bone.toInt())
 
-		api.server.humanPoseManager.setOffset(joint, req.value())
+		api.server.humanPoseManager.setOffset(joint, req.value)
 		api.server.humanPoseManager.saveConfig()
 		api.server.configManager.saveConfig()
 	}
@@ -246,13 +239,13 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	fun onRecordBVHRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader.message(RecordBVHRequest()) as? RecordBVHRequest ?: return
 
-		if (req.stop()) {
+		if (req.stop) {
 			if (api.server.bvhRecorder.isRecording) {
 				api.server.bvhRecorder.endRecording()
 			}
 		} else {
 			if (!api.server.bvhRecorder.isRecording) {
-				api.server.bvhRecorder.startRecording(Path(req.path()))
+				api.server.bvhRecorder.startRecording(Path(req.path ?: return))
 			}
 		}
 
@@ -279,9 +272,9 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val req = messageHeader
 			.message(AssignTrackerRequest()) as? AssignTrackerRequest ?: return
 
-		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
+		val tracker = req.trackerId?.let { api.server.getTrackerById(it) } ?: return
 
-		val pos = getByBodyPart(req.bodyPosition())
+		val pos = getByBodyPart(req.bodyPosition)
 		val previousTracker = if (pos != null) {
 			getTrackerForSkeleton(api.server.allTrackers, pos)
 		} else {
@@ -293,27 +286,27 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		}
 		tracker.trackerPosition = pos
 
-		if (req.mountingOrientation() != null) {
+		req.mountingOrientation?.let {
 			if (tracker.allowMounting) {
 				tracker
 					.resetsHandler
 					.mountingOrientation = Quaternion(
-					req.mountingOrientation().w(),
-					req.mountingOrientation().x(),
-					req.mountingOrientation().y(),
-					req.mountingOrientation().z(),
+					it.w,
+					it.x,
+					it.y,
+					it.z,
 				)
 				api.server.configManager.vrConfig.resetsConfig.lastMountingMethod =
 					MountingMethods.MANUAL
 			}
 		}
 
-		if (req.displayName() != null) {
-			tracker.customName = req.displayName()
+		req.displayName?.let {
+			tracker.customName = it
 		}
 
 		if (tracker.isImu()) {
-			tracker.resetsHandler.allowDriftCompensation = req.allowDriftCompensation()
+			tracker.resetsHandler.allowDriftCompensation = req.allowDriftCompensation
 		}
 
 		api.server.trackerUpdated(tracker)
@@ -341,10 +334,10 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		api.server.humanPoseManager
 			.setLegTweaksStateTemp(
-				req.skatingCorrection(),
-				req.floorClip(),
-				req.toeSnap(),
-				req.footPlant(),
+				req.skatingCorrection ?: false,
+				req.floorClip ?: false,
+				req.toeSnap ?: false,
+				req.footPlant ?: false,
 			)
 	}
 
@@ -357,32 +350,32 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		api.server.humanPoseManager
 			.clearLegTweaksStateTemp(
-				req.skatingCorrection(),
-				req.floorClip(),
-				req.toeSnap(),
-				req.footPlant(),
+				req.skatingCorrection,
+				req.floorClip,
+				req.toeSnap,
+				req.footPlant,
 			)
 	}
 
 	override fun onMessage(conn: GenericConnection, message: RpcMessageHeader) {
-		val consumer = handlers[message.messageType().toInt()]
+		val consumer = handlers[message.messageType.toInt()]
 		if (consumer != null) {
 			consumer.accept(conn, message)
 		} else {
 			LogManager
-				.info("[ProtocolAPI] Unhandled RPC packet received id: ${message.messageType()}")
+				.info("[ProtocolAPI] Unhandled RPC packet received id: ${message.messageType}")
 		}
 	}
 
 	@JvmOverloads
-	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int, respondTo: RpcMessageHeader? = null): Int {
+	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: UByte, messageOffset: Int, respondTo: RpcMessageHeader? = null): Int {
 		val data = IntArray(1)
 
 		RpcMessageHeader.startRpcMessageHeader(fbb)
 		RpcMessageHeader.addMessage(fbb, messageOffset)
 		RpcMessageHeader.addMessageType(fbb, messageType)
-		respondTo?.txId()?.let { txId ->
-			RpcMessageHeader.addTxId(fbb, TransactionId.createTransactionId(fbb, txId.id()))
+		respondTo?.txId?.let { txId ->
+			RpcMessageHeader.addTxId(fbb, TransactionId.createTransactionId(fbb, txId.id))
 		}
 		data[0] = RpcMessageHeader.endRpcMessageHeader(fbb)
 
@@ -393,30 +386,15 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		return MessageBundle.endMessageBundle(fbb)
 	}
 
-	override fun messagesCount(): Int = RpcMessage.names.size
-
-	fun onStatusSystemRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-		val req = messageHeader
-			.message(StatusSystemRequest()) as? StatusSystemRequest ?: return
-
-		val statuses = api.server.statusSystem.getStatuses()
-
-		val fbb = FlatBufferBuilder(
-			statuses.size * RPCStatusHandler.STATUS_EXPECTED_SIZE,
-		)
-		val response = StatusSystemResponseT()
-		response.currentStatuses = statuses
-		val offset = StatusSystemResponse.pack(fbb, response)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.StatusSystemResponse, offset, messageHeader)
-		fbb.finish(outbound)
-		conn.send(fbb.dataBuffer())
-	}
+	// FIXME: Flatbuffers does not generate actual enums for enum types in the schema,
+	// this should be the last value in the 'enum' + 1
+	override fun messagesCount(): Int = (RpcMessage.UserHeightRecordingStatusResponse + 1u).toInt()
 
 	fun onSetPauseTrackingRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader
 			.message(SetPauseTrackingRequest()) as? SetPauseTrackingRequest ?: return
 
-		api.server.setPauseTracking(req.pauseTracking(), RPCResetHandler.RESET_SOURCE_NAME)
+		api.server.setPauseTracking(req.pauseTracking, RPCResetHandler.RESET_SOURCE_NAME)
 	}
 
 	fun onHeightRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
@@ -448,7 +426,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			.message(MagToggleRequest()) as? MagToggleRequest ?: return
 		val fbb = FlatBufferBuilder(32)
 
-		if (req.trackerId() == null) {
+		if (req.trackerId == null) {
 			val response = MagToggleResponse.createMagToggleResponse(
 				fbb,
 				0,
@@ -459,7 +437,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			return
 		}
 
-		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
+		val tracker = req.trackerId?.let { api.server.getTrackerById(it) } ?: return
 		val trackerId = createTrackerId(fbb, tracker)
 		val response = MagToggleResponse.createMagToggleResponse(
 			fbb,
@@ -474,10 +452,10 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val req = messageHeader
 			.message(ChangeMagToggleRequest()) as? ChangeMagToggleRequest ?: return
 
-		if (req.trackerId() == null) {
+		if (req.trackerId == null) {
 			mainScope.launch {
 				withTimeoutOrNull(MAG_TIMEOUT) {
-					api.server.configManager.vrConfig.server.defineMagOnAllTrackers(req.enable())
+					api.server.configManager.vrConfig.server.defineMagOnAllTrackers(req.enable)
 				}
 
 				val fbb = FlatBufferBuilder(32)
@@ -492,9 +470,9 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			return
 		}
 
-		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
-		if (tracker.device == null || tracker.config.shouldHaveMagEnabled == req.enable()) return
-		val state = req.enable()
+		val tracker = req.trackerId?.let { api.server.getTrackerById(it) } ?: return
+		if (tracker.device == null || tracker.config.shouldHaveMagEnabled == req.enable) return
+		val state = req.enable
 		tracker.config.shouldHaveMagEnabled = state
 		// Don't apply magnetometer setting if use magnetometer global setting is not enabled
 		if (!api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers) {
@@ -535,8 +513,8 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val configManager = api.server.configManager
 
 		val config = configManager.vrConfig.stayAlignedConfig
-		config.enabled = request.enable()
-		if (request.enable()) {
+		config.enabled = request.enable
+		if (request.enable) {
 			config.setupComplete = true
 		}
 
@@ -553,7 +531,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val configManager = api.server.configManager
 		val config = configManager.vrConfig.stayAlignedConfig
 
-		val pose = request.pose()
+		val pose = request.pose
 
 		val poseConfig =
 			when (pose) {
@@ -585,7 +563,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val configManager = api.server.configManager
 		val config = configManager.vrConfig.stayAlignedConfig
 
-		val pose = request.pose()
+		val pose = request.pose
 
 		val poseConfig =
 			when (pose) {

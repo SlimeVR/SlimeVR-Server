@@ -7,7 +7,7 @@ import dev.slimevr.tracking.trackers.TrackerUtils
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.math.*
 
-enum class VRCTrackerModel(val value: Int, val id: Int) {
+enum class VRCTrackerModel(val value: Int, val id: UByte) {
 	UNKNOWN(-1, solarxr_protocol.rpc.VRCTrackerModel.UNKNOWN),
 	SPHERE(0, solarxr_protocol.rpc.VRCTrackerModel.SPHERE),
 	SYSTEM(1, solarxr_protocol.rpc.VRCTrackerModel.SYSTEM),
@@ -22,7 +22,7 @@ enum class VRCTrackerModel(val value: Int, val id: Int) {
 	}
 }
 
-enum class VRCSpineMode(val value: Int, val id: Int) {
+enum class VRCSpineMode(val value: Int, val id: UByte) {
 	UNKNOWN(-1, solarxr_protocol.rpc.VRCSpineMode.UNKNOWN),
 	LOCK_HIP(0, solarxr_protocol.rpc.VRCSpineMode.LOCK_HIP),
 	LOCK_HEAD(1, solarxr_protocol.rpc.VRCSpineMode.LOCK_HEAD),
@@ -36,7 +36,7 @@ enum class VRCSpineMode(val value: Int, val id: Int) {
 	}
 }
 
-enum class VRCAvatarMeasurementType(val value: Int, val id: Int) {
+enum class VRCAvatarMeasurementType(val value: Int, val id: UByte) {
 	UNKNOWN(-1, solarxr_protocol.rpc.VRCAvatarMeasurementType.UNKNOWN),
 	ARM_SPAN(0, solarxr_protocol.rpc.VRCAvatarMeasurementType.ARM_SPAN),
 	HEIGHT(1, solarxr_protocol.rpc.VRCAvatarMeasurementType.HEIGHT),

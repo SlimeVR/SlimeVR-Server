@@ -1,10 +1,10 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import {
+  RpcMessage,
   RecordBVHRequestT,
   RecordBVHStatusT,
-  RpcMessage,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { RecordIcon } from './commons/icon/RecordIcon';

@@ -1,4 +1,4 @@
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import { useLocaleConfig } from '@/i18n/config';
 import { AnkleIcon } from './icon/AnkleIcon';
 import { ChestIcon } from './icon/ChestIcon';

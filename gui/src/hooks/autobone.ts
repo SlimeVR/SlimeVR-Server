@@ -8,7 +8,7 @@ import {
   RpcMessage,
   SkeletonBone,
   SkeletonPartT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from './websocket-api';
 import { useLocalization } from '@fluent/react';
 import { log } from '@/utils/logging';

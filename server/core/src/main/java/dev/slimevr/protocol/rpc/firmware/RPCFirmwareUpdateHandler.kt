@@ -8,16 +8,16 @@ import dev.slimevr.firmware.UpdateStatusEvent
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
-import solarxr_protocol.datatypes.DeviceIdT
-import solarxr_protocol.datatypes.DeviceIdTableT
+import solarxr_protocol.datatypes.DeviceId
+import solarxr_protocol.datatypes.DeviceIdTable
 import solarxr_protocol.rpc.FirmwareUpdateDeviceId
-import solarxr_protocol.rpc.FirmwareUpdateDeviceIdUnion
 import solarxr_protocol.rpc.FirmwareUpdateRequest
-import solarxr_protocol.rpc.FirmwareUpdateRequestT
 import solarxr_protocol.rpc.FirmwareUpdateStatusResponse
+import solarxr_protocol.rpc.OTAFirmwareUpdate
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
-import solarxr_protocol.rpc.SerialDevicePortT
+import solarxr_protocol.rpc.SerialDevicePort
+import solarxr_protocol.rpc.SerialFirmwareUpdate
 
 class RPCFirmwareUpdateHandler(
 	private val rpcHandler: RPCHandler,
@@ -47,8 +47,7 @@ class RPCFirmwareUpdateHandler(
 		conn: GenericConnection,
 		messageHeader: RpcMessageHeader,
 	) {
-		val req =
-			(messageHeader.message(FirmwareUpdateRequest()) as FirmwareUpdateRequest).unpack()
+		val req = messageHeader.message(FirmwareUpdateRequest()) as FirmwareUpdateRequest
 		val updateDeviceId = buildUpdateDeviceId(req) ?: return
 
 		api.server.firmwareUpdateHandler.queueFirmwareUpdate(
@@ -60,16 +59,10 @@ class RPCFirmwareUpdateHandler(
 	override fun onUpdateStatusChange(event: UpdateStatusEvent<*>) {
 		val fbb = FlatBufferBuilder(32)
 
-		val dataUnion = FirmwareUpdateDeviceIdUnion()
-		dataUnion.type = event.deviceId.type.id
-		dataUnion.value = createUpdateDeviceId(event.deviceId)
-
-		val deviceIdOffset = FirmwareUpdateDeviceIdUnion.pack(fbb, dataUnion)
-
 		FirmwareUpdateStatusResponse.startFirmwareUpdateStatusResponse(fbb)
 		FirmwareUpdateStatusResponse.addStatus(fbb, event.status.id)
-		FirmwareUpdateStatusResponse.addDeviceIdType(fbb, dataUnion.type)
-		FirmwareUpdateStatusResponse.addDeviceId(fbb, deviceIdOffset)
+		FirmwareUpdateStatusResponse.addDeviceIdType(fbb, event.deviceId.type.id)
+		FirmwareUpdateStatusResponse.addDeviceId(fbb, createUpdateDeviceId(fbb, event.deviceId))
 		FirmwareUpdateStatusResponse.addProgress(fbb, event.progress.toByte())
 
 		val update = FirmwareUpdateStatusResponse.endFirmwareUpdateStatusResponse(fbb)
@@ -88,46 +81,44 @@ class RPCFirmwareUpdateHandler(
 			}
 	}
 
-	private fun buildUpdateDeviceId(req: FirmwareUpdateRequestT): UpdateDeviceId<Any>? {
-		when (req.method.type) {
+	private fun buildUpdateDeviceId(req: FirmwareUpdateRequest): UpdateDeviceId<Any>? {
+		when (req.methodType) {
 			FirmwareUpdateDeviceId.solarxr_protocol_datatypes_DeviceIdTable -> {
 				return UpdateDeviceId(
 					FirmwareUpdateMethod.OTA,
-					req.method.asOTAFirmwareUpdate().deviceId.id,
+					(req.method(OTAFirmwareUpdate()) as OTAFirmwareUpdate).deviceId?.id?.toInt() ?: error("whar"),
 				)
 			}
 
 			FirmwareUpdateDeviceId.SerialDevicePort -> {
 				return UpdateDeviceId(
 					FirmwareUpdateMethod.SERIAL,
-					req.method.asSerialFirmwareUpdate().deviceId.port,
+					(req.method(SerialFirmwareUpdate()) as SerialFirmwareUpdate).deviceId?.port ?: error("whar"),
 				)
 			}
 		}
 		return null
 	}
 
-	private fun createUpdateDeviceId(data: UpdateDeviceId<*>): Any = when (data.type) {
+	private fun createUpdateDeviceId(fbb: FlatBufferBuilder, data: UpdateDeviceId<*>): Int = when (data.type) {
 		FirmwareUpdateMethod.NONE -> error("Unsupported method")
 
 		FirmwareUpdateMethod.OTA -> {
 			if (data.id !is Int) {
 				error("Invalid state, the id type should be Int")
 			}
-			DeviceIdTableT().apply {
-				id = DeviceIdT().apply {
-					id = data.id
-				}
-			}
+			DeviceIdTable.startDeviceIdTable(fbb)
+			DeviceIdTable.addId(fbb, DeviceId.createDeviceId(fbb, data.id.toUByte()))
+			DeviceIdTable.endDeviceIdTable(fbb)
 		}
 
 		FirmwareUpdateMethod.SERIAL -> {
 			if (data.id !is String) {
 				error("Invalid state, the id type should be String")
 			}
-			SerialDevicePortT().apply {
-				port = data.id
-			}
+
+			val portOffset = fbb.createString(data.id)
+			SerialDevicePort.createSerialDevicePort(fbb, portOffset)
 		}
 	}
 }

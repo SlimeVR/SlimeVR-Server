@@ -15,11 +15,11 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.data_feed.DataFeedUpdate
 import solarxr_protocol.data_feed.device_data.DeviceData
-import solarxr_protocol.data_feed.device_data.DeviceDataMaskT
+import solarxr_protocol.data_feed.device_data.DeviceDataMask
 import solarxr_protocol.data_feed.stay_aligned.StayAlignedPose
 import solarxr_protocol.data_feed.stay_aligned.StayAlignedTracker
 import solarxr_protocol.data_feed.tracker.TrackerData
-import solarxr_protocol.data_feed.tracker.TrackerDataMaskT
+import solarxr_protocol.data_feed.tracker.TrackerDataMask
 import solarxr_protocol.data_feed.tracker.TrackerInfo
 import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.Ipv4Address
@@ -67,11 +67,11 @@ fun createHardwareInfo(fbb: FlatBufferBuilder, device: Device): Int {
 				Ipv4Address
 					.createIpv4Address(
 						fbb,
-						ByteBuffer.wrap(address).getInt().toLong(),
+						ByteBuffer.wrap(address).getInt().toUInt()
 					),
 			)
 
-		HardwareInfo.addNetworkProtocolVersion(fbb, device.protocolVersion)
+		HardwareInfo.addNetworkProtocolVersion(fbb, device.protocolVersion.toUShort())
 	}
 
 	// BRUH MOMENT
@@ -86,11 +86,11 @@ fun createHardwareInfo(fbb: FlatBufferBuilder, device: Device): Int {
 fun createTrackerId(fbb: FlatBufferBuilder, tracker: Tracker): Int {
 	TrackerId.startTrackerId(fbb)
 
-	TrackerId.addTrackerNum(fbb, tracker.trackerNum)
+	TrackerId.addTrackerNum(fbb, tracker.trackerNum.toUByte())
 	if (tracker.device != null) {
 		TrackerId.addDeviceId(
 			fbb,
-			DeviceId.createDeviceId(fbb, tracker.device.id),
+			DeviceId.createDeviceId(fbb, tracker.device.id.toUByte()),
 		)
 	}
 
@@ -186,7 +186,7 @@ fun createTrackerTemperature(fbb: FlatBufferBuilder, tracker: Tracker): Int {
 
 fun createTrackerData(
 	fbb: FlatBufferBuilder,
-	mask: TrackerDataMaskT,
+	mask: TrackerDataMask,
 	tracker: Tracker,
 ): Int {
 	val trackerInfosOffset = createTrackerInfos(fbb, mask.info, tracker)
@@ -203,7 +203,7 @@ fun createTrackerData(
 	TrackerData.addTrackerId(fbb, trackerIdOffset)
 
 	if (trackerInfosOffset != 0) TrackerData.addInfo(fbb, trackerInfosOffset)
-	if (mask.status) TrackerData.addStatus(fbb, tracker.status.id + 1)
+	if (mask.status) TrackerData.addStatus(fbb, (tracker.status.id + 1u).toUByte())
 	if (mask.position && tracker.hasPosition) {
 		TrackerData.addPosition(
 			fbb,
@@ -264,7 +264,7 @@ fun createTrackerData(
 		}
 	}
 	if (mask.tps) {
-		TrackerData.addTps(fbb, tracker.tps.toInt())
+		TrackerData.addTps(fbb, tracker.tps.toUInt().toUShort())
 	}
 	if (mask.rawMagneticVector && tracker.magStatus == MagnetometerStatus.ENABLED) {
 		TrackerData.addRawMagneticVector(
@@ -281,7 +281,7 @@ fun createTrackerData(
 
 fun createTrackersData(
 	fbb: FlatBufferBuilder,
-	mask: DeviceDataMaskT,
+	mask: DeviceDataMask,
 	device: Device,
 ): Int {
 	if (mask.trackerData == null) return 0
@@ -292,7 +292,7 @@ fun createTrackersData(
 		.trackers
 		.forEach { (_: Int, value: Tracker) ->
 			trackersOffsets
-				.add(createTrackerData(fbb, mask.trackerData, value))
+				.add(createTrackerData(fbb, mask.trackerData!!, value))
 		}
 
 	DeviceData.startTrackersVector(fbb, trackersOffsets.size)
@@ -309,8 +309,8 @@ fun createTrackersData(
 
 fun createDeviceData(
 	fbb: FlatBufferBuilder,
-	id: Int,
-	mask: DeviceDataMaskT,
+	id: UByte,
+	mask: DeviceDataMask,
 	device: Device,
 ): Int {
 	if (!mask.deviceData) return 0
@@ -332,10 +332,10 @@ fun createDeviceData(
 		HardwareStatus.addBatteryVoltage(fbb, tracker.batteryVoltage!!)
 	}
 	if (tracker.batteryLevel != null) {
-		HardwareStatus.addBatteryPctEstimate(fbb, tracker.batteryLevel!!.toInt())
+		HardwareStatus.addBatteryPctEstimate(fbb, tracker.batteryLevel!!.toUInt().toUByte())
 	}
 	if (tracker.ping != null) {
-		HardwareStatus.addPing(fbb, tracker.ping!!)
+		HardwareStatus.addPing(fbb, tracker.ping!!.toUShort())
 	}
 	if (tracker.signalStrength != null) {
 		HardwareStatus.addRssi(fbb, tracker.signalStrength!!.toShort())
@@ -375,10 +375,10 @@ fun createDeviceData(
 
 fun createSyntheticTrackersData(
 	fbb: FlatBufferBuilder,
-	trackerDataMaskT: TrackerDataMaskT?,
+	trackerDataMask: TrackerDataMask?,
 	trackers: MutableList<Tracker>,
 ): Int {
-	if (trackerDataMaskT == null) return 0
+	if (trackerDataMask == null) return 0
 
 	val trackerOffsets: MutableList<Int> = ArrayList()
 
@@ -386,7 +386,7 @@ fun createSyntheticTrackersData(
 		.forEach(
 			Consumer { tracker: Tracker ->
 				trackerOffsets
-					.add(createTrackerData(fbb, trackerDataMaskT, tracker))
+					.add(createTrackerData(fbb, trackerDataMask, tracker))
 			},
 		)
 
@@ -406,16 +406,16 @@ fun createSyntheticTrackersData(
 
 fun createDevicesData(
 	fbb: FlatBufferBuilder,
-	deviceDataMaskT: DeviceDataMaskT?,
+	deviceDataMask: DeviceDataMask?,
 	devices: MutableList<Device>,
 ): Int {
-	if (deviceDataMaskT == null) return 0
+	if (deviceDataMask == null) return 0
 
 	val devicesDataOffsets = IntArray(devices.size)
 	for (i in devices.indices) {
 		val device = devices[i]
 		devicesDataOffsets[i] =
-			createDeviceData(fbb, device.id, deviceDataMaskT, device)
+			createDeviceData(fbb, device.id.toUByte(), deviceDataMask, device)
 	}
 
 	return DataFeedUpdate.createDevicesVector(fbb, devicesDataOffsets)
@@ -447,7 +447,7 @@ fun createBonesData(
 		val headPosGOffset = Vec3f
 			.createVec3f(fbb, headPosG.x, headPosG.y, headPosG.z)
 		solarxr_protocol.data_feed.Bone.addHeadPositionG(fbb, headPosGOffset)
-		solarxr_protocol.data_feed.Bone.addBodyPart(fbb, bi.boneType.bodyPart)
+		solarxr_protocol.data_feed.Bone.addBodyPart(fbb, bi.boneType.bodyPart.toUByte())
 		solarxr_protocol.data_feed.Bone.addBoneLength(fbb, length)
 
 		boneOffsets[i] = solarxr_protocol.data_feed.Bone.endBone(fbb)

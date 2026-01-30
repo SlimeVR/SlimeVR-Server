@@ -1545,7 +1545,7 @@ class HumanSkeleton(
 		)
 
 	@JvmOverloads
-	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
+	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<UByte> = ArrayList()) {
 		humanPoseManager.server?.serverGuards?.onFullReset()
 
 		var referenceRotation = IDENTITY
@@ -1578,7 +1578,7 @@ class HumanSkeleton(
 
 	@VRServerThread
 	@JvmOverloads
-	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<UByte> = TrackerUtils.allBodyPartsButFingers) {
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
@@ -1606,7 +1606,7 @@ class HumanSkeleton(
 	 */
 	@VRServerThread
 	@JvmOverloads
-	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>) {
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<UByte>) {
 		val trackersToReset = trackersToReset
 
 		// TODO: PLEASE rewrite this handling at some point in the future... This is so

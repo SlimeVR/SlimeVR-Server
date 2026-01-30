@@ -2,25 +2,25 @@ package dev.slimevr.config
 
 import dev.slimevr.VRServer
 
-enum class ArmsResetModes(val id: Int) {
+enum class ArmsResetModes(val id: UByte) {
 	// Upper arm going back and forearm going forward
-	BACK(0),
+	BACK(0u),
 
 	// Arms going forward
-	FORWARD(1),
+	FORWARD(1u),
 
 	// Arms going up to the sides into a tpose
-	TPOSE_UP(2),
+	TPOSE_UP(2u),
 
 	// Arms going down to the sides from a tpose
-	TPOSE_DOWN(3),
+	TPOSE_DOWN(3u),
 	;
 
 	companion object {
 		val values = entries.toTypedArray()
 
 		@JvmStatic
-		fun fromId(id: Int): ArmsResetModes? {
+		fun fromId(id: UByte): ArmsResetModes? {
 			for (filter in values) {
 				if (filter.id == id) return filter
 			}

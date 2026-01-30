@@ -4,7 +4,7 @@ import {
   RpcMessage,
   SettingsResetRequestT,
   SettingsResponseT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from './websocket-api';
 import { useEffect, useState } from 'react';
 

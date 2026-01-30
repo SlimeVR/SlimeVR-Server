@@ -10,7 +10,7 @@ import {
   TrackingChecklistStepId,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { ArrowLink } from '@/components/commons/ArrowLink';

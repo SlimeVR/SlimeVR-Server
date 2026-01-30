@@ -103,13 +103,13 @@ data class UDPPacket3Handshake(
 	override fun readData(buf: ByteBuffer) {
 		if (buf.remaining() == 0) return
 		if (buf.remaining() > 3) {
-			boardType = BoardType.getById(buf.int.toUInt()) ?: BoardType.UNKNOWN
+			boardType = BoardType.getById(buf.int.toUShort()) ?: BoardType.UNKNOWN
 		}
 		if (buf.remaining() > 3) {
-			imuType = IMUType.getById(buf.int.toUInt()) ?: IMUType.UNKNOWN
+			imuType = IMUType.getById(buf.int.toUShort()) ?: IMUType.UNKNOWN
 		}
 		if (buf.remaining() > 3) {
-			mcuType = MCUType.getById(buf.int.toUInt()) ?: MCUType.UNKNOWN
+			mcuType = MCUType.getById(buf.int.toUShort()) ?: MCUType.UNKNOWN
 		} // MCU TYPE
 		if (buf.remaining() > 11) {
 			buf.int
@@ -235,14 +235,14 @@ data class UDPPacket15SensorInfo(
 		sensorId = buf.get().toInt() and 0xFF
 		sensorStatus = buf.get().toInt() and 0xFF
 		if (buf.remaining() > 0) {
-			sensorType = IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
+			sensorType = IMUType.getById(buf.get().toUShort() and 0xFFu) ?: IMUType.UNKNOWN
 		}
 		if (buf.remaining() > 1) {
 			sensorConfig = SensorConfig(buf.getShort().toUShort())
 		}
 		if (buf.remaining() > 0) hasCompletedRestCalibration = buf.get().toInt() and 0xFF != 0
 		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt() and 0xFF)
-		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.get().toUInt() and 0xFFu) ?: TrackerDataType.ROTATION
+		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.get().toUByte() and 0xFFu) ?: TrackerDataType.ROTATION
 	}
 
 	companion object {

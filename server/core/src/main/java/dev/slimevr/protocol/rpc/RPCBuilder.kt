@@ -15,7 +15,7 @@ fun createSkeletonConfig(
 	for (index in SkeletonConfigOffsets.entries.toTypedArray().indices) {
 		val `val` = SkeletonConfigOffsets.values[index]
 		val part = SkeletonPart
-			.createSkeletonPart(fbb, `val`.id, humanPoseManager.getOffset(`val`))
+			.createSkeletonPart(fbb, `val`.id.toUByte(), humanPoseManager.getOffset(`val`))
 		partsOffsets[index] = part
 	}
 

@@ -228,7 +228,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	protected fun trackerStatusReceived(trackerStatus: ProtobufMessages.TrackerStatus) {
 		val tracker = getInternalRemoteTrackerById(trackerStatus.trackerId)
 		if (tracker != null) {
-			tracker.status = getById(trackerStatus.statusValue)!!
+			tracker.status = getById(trackerStatus.statusValue.toUByte())!!
 		}
 	}
 
