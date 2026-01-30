@@ -9,7 +9,7 @@ import {
   ResetType,
   TrackingChecklistPublicNetworksT,
   TrackingChecklistStepId,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { openUrl } from '@tauri-apps/plugin-opener';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';

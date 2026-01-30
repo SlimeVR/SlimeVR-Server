@@ -5,7 +5,7 @@ import {
   LegTweaksTmpClearT,
   RpcMessage,
   SettingsRequestT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
 import { useWebsocketAPI } from '@/hooks/websocket-api';

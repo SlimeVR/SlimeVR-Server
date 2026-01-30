@@ -7,7 +7,7 @@ import {
   useLocation,
   useNavigationType,
 } from 'react-router-dom';
-import { DeviceDataT } from 'solarxr-protocol';
+import { DeviceDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/device-data';
 
 export function getSentryOrCompute(enabled = false, uuid: string) {
   Sentry.setUser({ id: uuid });

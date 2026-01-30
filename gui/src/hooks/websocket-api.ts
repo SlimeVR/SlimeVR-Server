@@ -1,15 +1,21 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 import {
-  DataFeedMessage,
-  DataFeedMessageHeaderT,
   MessageBundle,
   MessageBundleT,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol';
+import {
+  DataFeedMessage,
+  DataFeedMessageHeaderT,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed';
+import {
   PubSubHeaderT,
   PubSubUnion,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub';
+import {
   RpcMessage,
   RpcMessageHeaderT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 
 import { Builder, ByteBuffer } from 'flatbuffers';
 import { useInterval, useTimeout } from './timeout';

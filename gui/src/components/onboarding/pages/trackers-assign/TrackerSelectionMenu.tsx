@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import ReactModal from 'react-modal';
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';

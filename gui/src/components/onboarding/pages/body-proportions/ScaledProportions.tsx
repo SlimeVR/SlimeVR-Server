@@ -6,19 +6,21 @@ import { serverGuardsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useEffect, useState } from 'react';
 import {
+  ModelSettingsT,
+  SkeletonHeightT,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc/settings';
+import {
   CancelUserHeightCalibrationT,
   ChangeSettingsRequestT,
-  ModelSettingsT,
   ResetType,
   RpcMessage,
   SkeletonConfigRequestT,
   SkeletonConfigResponseT,
-  SkeletonHeightT,
   SkeletonResetAllRequestT,
   StartUserHeightCalibrationT,
   UserHeightCalibrationStatus,
   UserHeightRecordingStatusResponseT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { HeightSelectionInput } from './HeightInput';
 import { Tooltip } from '@/components/commons/Tooltip';
 import classNames from 'classnames';

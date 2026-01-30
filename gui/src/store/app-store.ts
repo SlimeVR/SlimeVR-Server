@@ -1,12 +1,8 @@
 import { atom } from 'jotai';
-import {
-  BodyPart,
-  BoneT,
-  DataFeedUpdateT,
-  DeviceDataT,
-  TrackerDataT,
-  TrackerStatus,
-} from 'solarxr-protocol';
+import { BodyPart, TrackerStatus } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import { BoneT, DataFeedUpdateT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed';
+import { DeviceDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/device-data';
+import { TrackerDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/tracker';
 import { selectAtom } from 'jotai/utils';
 import { isEqual } from '@react-hookz/deep-equal';
 import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from '@/hooks/body-parts';

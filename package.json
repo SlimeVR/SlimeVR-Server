@@ -5,6 +5,7 @@
   "packageManager": "pnpm@9.12.2",
   "workspaces": [
     "solarxr-protocol",
+    "solarxr-protocol/lib/flatbuffers",
     "gui"
   ],
   "scripts": {
@@ -12,7 +13,7 @@
     "tauri": "cd gui && pnpm run tauri",
     "skipbundler": "cd gui && pnpm run skipbundler",
     "build": "pnpm run tauri build",
-    "update-solarxr": "cd solarxr-protocol && pnpm run build",
+    "update-solarxr": "cd solarxr-protocol && pnpm i",
     "prepare": "husky && pnpm run update-solarxr",
     "preinstall": "npx only-allow pnpm"
   },

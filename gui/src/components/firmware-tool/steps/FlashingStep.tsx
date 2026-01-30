@@ -8,14 +8,14 @@ import {
 } from '@/hooks/firmware-tool';
 import { useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { DeviceIdTableT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import {
-  DeviceIdTableT,
   FirmwareUpdateMethod,
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
   FirmwareUpdateStopQueuesRequestT,
   RpcMessage,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useOnboarding } from '@/hooks/onboarding';
 import { WarningBox } from '@/components/commons/TipBox';
 import { Button } from '@/components/commons/Button';

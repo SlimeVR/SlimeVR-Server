@@ -5,7 +5,7 @@ import {
   ResetRelaxedPoseButton,
 } from '@/components/stay-aligned/RelaxedPose';
 import { useLocalization } from '@fluent/react';
-import { StayAlignedRelaxedPose } from 'solarxr-protocol';
+import { StayAlignedRelaxedPose } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { enableStayAligned } from '@/components/onboarding/pages/stay-aligned/StayAlignedSetup';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';

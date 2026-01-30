@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import {
-  BodyPart,
   ResetRequestT,
   ResetResponseT,
   ResetStatus,
   ResetType,
   RpcMessage,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from './websocket-api';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom, serverGuardsAtom } from '@/store/app-store';

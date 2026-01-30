@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { TrackerDataT } from 'solarxr-protocol';
+import { TrackerDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/tracker';
 import { useConfig } from '@/hooks/config';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';

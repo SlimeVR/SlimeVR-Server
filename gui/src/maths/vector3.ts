@@ -1,4 +1,4 @@
-import { Vec3fT } from 'solarxr-protocol';
+import { Vec3fT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes/math';
 import { Vector3 } from 'three';
 
 export type Vector3Object = { x: number; y: number; z: number };
