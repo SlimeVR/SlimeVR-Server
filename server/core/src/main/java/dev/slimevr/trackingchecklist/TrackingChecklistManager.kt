@@ -305,10 +305,10 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 	fun ignoreStep(step: TrackingChecklistStep, ignore: Boolean) {
 		if (!step.ignorable) return
 		val ignoredSteps = vrServer.configManager.vrConfig.trackingChecklist.ignoredStepsIds
-		if (ignore && !ignoredSteps.contains(step.id)) {
-			ignoredSteps.add(step.id)
+		if (ignore && !ignoredSteps.contains(step.id.toInt())) {
+			ignoredSteps.add(step.id.toInt())
 		} else if (!ignore) {
-			ignoredSteps.remove(step.id)
+			ignoredSteps.remove(step.id.toInt())
 		}
 		vrServer.configManager.saveConfig()
 	}

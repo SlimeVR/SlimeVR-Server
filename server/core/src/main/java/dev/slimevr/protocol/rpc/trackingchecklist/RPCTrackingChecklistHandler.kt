@@ -91,7 +91,7 @@ class RPCTrackingChecklistHandler(
 		}.toIntArray()
 
 		val stepsOffset = TrackingChecklistResponse.createStepsVector(fbb, stepsOffsets)
-		val ignoredStepsOffset = TrackingChecklistResponse.createIgnoredStepsVector(fbb, api.server.configManager.vrConfig.trackingChecklist.ignoredStepsIds.toUByteArray())
+		val ignoredStepsOffset = TrackingChecklistResponse.createIgnoredStepsVector(fbb, api.server.configManager.vrConfig.trackingChecklist.ignoredStepsIds.map { it.toUByte() }.toUByteArray())
 		return TrackingChecklistResponse.createTrackingChecklistResponse(
 			fbb,
 			stepsOffset,
