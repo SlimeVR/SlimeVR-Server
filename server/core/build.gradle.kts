@@ -57,19 +57,12 @@ allprojects {
 	}
 }
 
-sourceSets {
-	create("flatbuffersJava") {
-		java.srcDir("../../solarxr-protocol/lib/flatbuffers/java/src/main/java")
-	}
-}
-
 dependencies {
-	implementation(project(":solarxr-protocol"))
+	api(project(":solarxr-protocol"))
 
 	// This dependency is used internally,
 	// and not exposed to consumers on their own compile classpath.
 	// implementation("com.google.flatbuffers:flatbuffers-java:25.12.19")
-	implementation(sourceSets.getByName("flatbuffersJava").output)
 
 	implementation("commons-cli:commons-cli:1.8.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.15.1")
