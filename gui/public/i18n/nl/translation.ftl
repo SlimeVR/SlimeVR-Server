@@ -115,6 +115,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Handschoen
+board_type-GESTURES = Gebaren
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generic nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -276,6 +281,7 @@ navbar-trackers_assign = Tracker-toewijzing
 navbar-mounting = Montage-kalibratie
 navbar-onboarding = Installatiewizard
 navbar-settings = Instellingen
+navbar-connect_trackers = Verbind Trackers
 
 ## Biovision hierarchy recording
 
@@ -423,6 +429,9 @@ tracker-settings-update-up_to_date = Up to date.
 tracker-settings-update-blocked = Update is niet beschikbaar. Er zijn geen andere versies beschikbaar.
 tracker-settings-update = Werk nu bij.
 tracker-settings-update-title = Firmware versie
+tracker-settings-current-version = Actueel
+tracker-settings-latest-version = Nieuwste
+tracker-settings-build-date = Creatiedatum
 
 ## Tracker part card info
 
@@ -949,6 +958,13 @@ onboarding-setup_warning-cancel = Doorgaan met setupgids
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Ga terug naar de introductie
+onboarding-wifi_creds-v2 = Trackers die Wi-Fi gebruiken
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    De meeste trackers (zoals de officiële SlimeVR-trackers) gebruiken Wi-Fi om verbinding te maken met de server.
+    Gebruik de inloggegevens van het Wi-Fi-netwerk waarmee uw apparaat momenteel is verbonden.
+    
+    Zorg ervoor dat u een 2,4GHz-Wi-Fi-verbinding gebruikt voor uw trackers!
 onboarding-wifi_creds-skip = WiFi-instellingen overslaan
 onboarding-wifi_creds-submit = Verzenden!
 onboarding-wifi_creds-ssid =
@@ -958,6 +974,10 @@ onboarding-wifi_creds-ssid-required = Wi-Fi-naam is vereist
 onboarding-wifi_creds-password =
     .label = Paswoord
     .placeholder = Vul paswoord in
+onboarding-wifi_creds-dongle-title = Trackers met een dongle
+onboarding-wifi_creds-dongle-description = Als uw trackers met een dongle zijn geleverd, steek die dan in uw apparaat en u bent klaar om te beginnen!
+onboarding-wifi_creds-dongle-wip = Dit gedeelte is nog in ontwikkeling. Er komt binnenkort een aparte pagina om trackers te beheren die via een dongle verbinden.
+onboarding-wifi_creds-dongle-continue = Ga verder met een dongle
 
 ## Mounting setup
 
@@ -1317,6 +1337,25 @@ onboarding-user_height-description = We hebben je lengte nodig om je lichaamspro
 onboarding-user_height-need_head_tracker = Voor de kalibratie zijn een headset en controllers met positionele tracking vereist.
 onboarding-user_height-calculate = Bereken mijn lengte automatisch
 onboarding-user_height-next_step = Doorgaan en opslaan
+onboarding-user_height-manual-proportions = Handmatige lichaamsverhoudingen
+onboarding-user_height-calibration-title = Vooruitgang van de kalibratie
+onboarding-user_height-calibration-RECORDING_FLOOR = Raak de vloer aan met de punt van je controller
+onboarding-user_height-calibration-WAITING_FOR_RISE = Sta weer op
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Sta weer op en kijk vooruit
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Zorg dat je hoofd vlak staat
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Kijk niet naar de vloer
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Kijk niet te veel omhoog
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Zorg dat de controller naar beneden wijst
+onboarding-user_height-calibration-RECORDING_HEIGHT = Sta weer op en blijf stilstaan!
+onboarding-user_height-calibration-DONE = Gelukt!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Kalibratie sessie is verlopen, probeer het opnieuw.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = De gedetecteerde gebruikershoogte is te hoog, probeer het opnieuw.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = De gedetecteerde gebruikerslengte is te klein. Zorg dat u voor het einde van de kalibratie rechtop staat en naar voren kijkt.
+onboarding-user_height-calibration-error = Kalibratie mislukt
+onboarding-user_height-manual-tip = Tijdens het aanpassen van uw lengte kunt u verschillende poses proberen en kijken hoe het skelet met uw lichaam overeenkomt.
+onboarding-user_height-reset-warning =
+    <b>Waarschuwing:</b> Dit zet uw verhoudingen terug op basis van uw lengte.
+    Weet u zeker dat u dit wilt doen?
 
 ## Stay Aligned setup
 
@@ -1399,6 +1438,14 @@ firmware_tool-not_available = Oeps, de firmwaretool is momenteel niet beschikbaa
 firmware_tool-not_compatible = De firmwaretool is niet compatibel met deze versie van de server. Gelieve te updaten!
 firmware_tool-select_source = Selecteer de firmware die u wilt flashen
 firmware_tool-select_source-description = Selecteer de firmware die u op uw bord wilt flashen
+firmware_tool-select_source-error = Kan bronnen niet laden
+firmware_tool-select_source-board_type = Type bord
+firmware_tool-select_source-firmware = Firmware-bron
+firmware_tool-select_source-version = Firmware versie
+firmware_tool-select_source-official = Officieel
+firmware_tool-select_source-dev = Ontwikkelaar
+firmware_tool-board_defaults = Configureer uw bord
+firmware_tool-board_defaults-description = Stel de pinnen of instellingen in ten opzichte van uw hardware
 firmware_tool-flash_method_step = Flashing methode
 firmware_tool-flash_method_step-description = Kies de flashingsmethode die je wilt gebruiken
 firmware_tool-flashbtn_step = Druk op de bootknop
