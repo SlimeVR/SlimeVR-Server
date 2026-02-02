@@ -223,7 +223,9 @@ export function TrackerSettingsPage() {
                     whitespace="whitespace-pre-wrap"
                     textAlign="text-end"
                   >
-                    v{tracker?.device?.hardwareInfo?.firmwareVersion}
+                    {tracker?.device?.hardwareInfo?.firmwareVersion
+                      ? `v${tracker?.device?.hardwareInfo?.firmwareVersion}`
+                      : '--'}
                   </Typography>
                 </div>
                 <div className="flex justify-between gap-2">
@@ -317,10 +319,11 @@ export function TrackerSettingsPage() {
             <div className="flex justify-between">
               <Typography>{l10n.getString('tracker-infos-url')}</Typography>
               <Typography>
-                udp://
-                {IPv4.fromNumber(
-                  tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
-                ).toString()}
+                {tracker?.device?.hardwareInfo?.ipAddress?.addr
+                  ? `udp://${IPv4.fromNumber(
+                      tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
+                    ).toString()}`
+                  : '--'}
               </Typography>
             </div>
             <div className="flex justify-between">
