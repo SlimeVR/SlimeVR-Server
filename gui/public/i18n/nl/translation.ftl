@@ -352,6 +352,7 @@ tracker-table-column-name = Naam
 tracker-table-column-type = Type
 tracker-table-column-battery = Batterij
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Pakketverlies
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
@@ -393,6 +394,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Ingeschakeld
        *[NOT_SUPPORTED] Niet ondersteund
     }
+tracker-infos-packet_loss = Pakketverlies
+tracker-infos-packets_lost = Verloren pakketten
+tracker-infos-packets_received = Ontvangen pakketten
 
 ## Tracker settings
 
@@ -592,6 +596,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Gebruikt magnetometer op alle trackers die er een compatibele firmware voor hebben, waardoor drift in stabiele magnetische omgevingen wordt verminderd.
     Je kan dit per individuele tracker uit zetten in de instellingen van de tracker. <b>Sluit geen van de trackers af terwijl u dit in- en uitschakelt!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Gebruik magnetometer op de trackers
+settings-general-tracker_mechanics-trackers_over_usb = Trackers via USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Maakt het mogelijk om HID-trackergegevens via USB te ontvangen. Zorg ervoor dat verbonden trackers <b>"verbinding over HID"</b> hebben ingeschakeld!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Laat HID-trackers direct via USB verbinden
 settings-stay_aligned = Blijf in lijn
 settings-stay_aligned-description = Blijf in lijn vermindert drift door je trackers geleidelijk aan te passen zodat ze overeenkomen met je ontspannen houdingen.
 settings-stay_aligned-setup-label = Blijf in lijn instellen
@@ -1390,6 +1397,7 @@ onboarding-stay_aligned-previous_step = Vorige
 onboarding-stay_aligned-next_step = Volgende
 onboarding-stay_aligned-restart = Herstarten
 onboarding-stay_aligned-done = Klaar
+onboarding-stay_aligned-manual_mounting-done = Klaar
 
 ## Home
 
@@ -1444,20 +1452,42 @@ firmware_tool-select_source-firmware = Firmware-bron
 firmware_tool-select_source-version = Firmware versie
 firmware_tool-select_source-official = Officieel
 firmware_tool-select_source-dev = Ontwikkelaar
+firmware_tool-select_source-not_selected = Geen bron geselecteerd
+firmware_tool-select_source-no_boards = Geen beschikbare borden voor deze bron
+firmware_tool-select_source-no_versions = Geen beschikbare versies voor deze bron
 firmware_tool-board_defaults = Configureer uw bord
 firmware_tool-board_defaults-description = Stel de pinnen of instellingen in ten opzichte van uw hardware
+firmware_tool-board_defaults-add = Toevoegen
+firmware_tool-board_defaults-reset = Reset naar standaard
+firmware_tool-board_defaults-error-required = Verplicht veld
+firmware_tool-board_defaults-error-format = Ongeldig formaat
+firmware_tool-board_defaults-error-format-number = Is geen nummer
 firmware_tool-flash_method_step = Flashing methode
 firmware_tool-flash_method_step-description = Kies de flashingsmethode die je wilt gebruiken
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = Gebruik de over-the-air methode. Uw tracker zal via wifi de firmware bijwerken. Werkt alleen op trackers die al zijn ingesteld.
+firmware_tool-flash_method_step-ota-info =
+    We gebruiken uw wifi-inloggegevens om de tracker te flashen en te bevestigen dat alles correct werkte.
+    <b>We slaan uw wifi-gegevens niet op!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Gebruik een USB kabel om uw tracker up te daten.
 firmware_tool-flashbtn_step = Druk op de bootknop
 firmware_tool-flashbtn_step-description = Voordat u naar de volgende stap gaat, zijn er een paar dingen die u moet doen.
 firmware_tool-flashbtn_step-board_SLIMEVR = Zet de tracker uit, verwijder de behuizing (indien aanwezig), verbind een USB-kabel met deze computer en voer vervolgens een van de volgende stappen uit, afhankelijk van de revisie van uw SlimeVR-board:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Zet de tracker aan terwijl u het tweede rechthoekige FLASH-contact vlak bij de rand aan de bovenkant van de printplaat kortsluit tot het metalen schild van de microcontroller. De LED van de tracker zou kort moeten knipperen.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Zet de tracker aan terwijl u het ronde FLASH-contact aan de bovenkant van de printplaat kortsluit tot het metalen schild van de microcontroller. De LED van de tracker zou kort moeten knipperen.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Zet de tracker aan terwijl u de FLASH-knop aan de bovenkant van de printplaat ingedrukt houdt. De LED van de tracker zou kort moeten knipperen.
 firmware_tool-flashbtn_step-board_OTHER =
     Voordat u gaat flashen, moet de tracker waarschijnlijk in de bootloader-modus worden gezet.
     Meestal betekent dit het indrukken van de bootknop op het board voordat het flashproces begint.
     Als het flashproces time-out bij het begin van het flashen, betekent dit waarschijnlijk dat de tracker niet in de bootloader-modus stond.
     Raadpleeg de flitsinstructies van uw board om te weten hoe u de bootloader-modus inschakelt.
+firmware_tool-flash_method_ota-title = Flashen over Wi-Fi
 firmware_tool-flash_method_ota-devices = Gedetecteerde OTA-apparaten:
 firmware_tool-flash_method_ota-no_devices = Er zijn geen boards die via OTA bijgewerkt kunnen worden, zorg ervoor dat u het juiste boardtype heeft geselecteerd.
+firmware_tool-flash_method_serial-title = Flashen over USB
 firmware_tool-flash_method_serial-wifi = Wi-Fi-gegevens:
 firmware_tool-flash_method_serial-devices-label = Gedetecteerde serial apparaten:
 firmware_tool-flash_method_serial-devices-placeholder = Selecteer een serieel apparaat
@@ -1472,7 +1502,10 @@ firmware_tool-flashing_step-exit = Sluit
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Wachten om te maken....
 firmware_tool-build-CREATING_BUILD_FOLDER = De buildmap maken
+firmware_tool-build-DOWNLOADING_SOURCE = Broncode wordt gedownload
+firmware_tool-build-EXTRACTING_SOURCE = Broncode wordt uitgepakt
 firmware_tool-build-BUILDING = Firmware wordt gebouwd
 firmware_tool-build-SAVING = De build opslaan
 firmware_tool-build-DONE = Build voltooid
@@ -1587,6 +1620,31 @@ error_collection_modal-cancel = Ik wil het niet
 
 ## Tracking checklist section
 
+tracking_checklist = Tracking Checklist
+tracking_checklist-settings = Instellingen voor trackingchecklists
+tracking_checklist-settings-close = Sluiten
+tracking_checklist-status-incomplete = U bent niet voorbereid om SlimeVR te gebruiken!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] U heeft 1 waarschuwing!
+       *[other] U heeft { $count } waarschuwingen!
+    }
+tracking_checklist-status-complete = U bent klaar om SlimeVR te gebruiken!
+tracking_checklist-MOUNTING_CALIBRATION = Voer een montagekalibratie uit
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Voer een voetmontage-kalibratie uit
+tracking_checklist-FULL_RESET = Voer een volledige reset uit
+tracking_checklist-FULL_RESET-desc = Sommige trackers hebben een reset nodig
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR draait niet
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR draait niet. Gebruikt u het voor VR?
+tracking_checklist-STEAMVR_DISCONNECTED-open = Open SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibreer je trackers
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = U heeft geen tracker kalibratie uitgevoerd. Laat uw Slimes (gemarkeerd met geel) rusten op een stabiele ondergrond voor een paar secondes.
+tracking_checklist-TRACKER_ERROR = Trackers met fouten
+tracking_checklist-TRACKER_ERROR-desc = Sommige van uw trackers hebben een fout. Herstart de tracker die in het geel zijn gemarkeerd aub.
+tracking_checklist-VRCHAT_SETTINGS = Configureer VRChat-instellingen
+tracking_checklist-VRCHAT_SETTINGS-desc = U heeft de VRchat-instellingen verkeerd geconfigureerd! Dit kan uw trackingervaring negatief beïnvloeden.
+tracking_checklist-VRCHAT_SETTINGS-open = Ga naar VRChat Waarschuwingen
+tracking_checklist-UNASSIGNED_HMD = VR-headset niet toegewezen aan Hoofd
 tracking_checklist-UNASSIGNED_HMD-desc = De VR-headset moet worden toegewezen als hoofdtracker.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Verander je netwerkprofiel
 tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
