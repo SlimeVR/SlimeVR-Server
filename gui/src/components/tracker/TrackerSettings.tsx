@@ -199,7 +199,7 @@ export function TrackerSettingsPage() {
               shakeHighlight={false}
             />
           )}
-          {
+          {tracker?.device?.hardwareInfo?.hardwareIdentifier != 'Unknown' && (
             <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
               <Typography
                 variant="section-title"
@@ -228,31 +228,33 @@ export function TrackerSettingsPage() {
                       : '--'}
                   </Typography>
                 </div>
-                <div className="flex justify-between gap-2">
-                  <Typography id="tracker-settings-latest-version" />
-                  {!updateUnavailable && (
-                    <>
-                      {currentFirmwareRelease && (
-                        <Typography
-                          color={
-                            needUpdate === 'updated'
-                              ? undefined
-                              : 'text-accent-background-10'
-                          }
-                          textAlign="text-end"
-                          whitespace="whitespace-pre-wrap"
-                        >
-                          {currentFirmwareRelease.name}
-                        </Typography>
-                      )}
-                    </>
-                  )}
-                  {updateUnavailable && (
-                    <Typography id="tracker-settings-update-unavailable-v2">
-                      No releases found
-                    </Typography>
-                  )}
-                </div>
+                {!!tracker?.device?.hardwareInfo?.officialBoardType && (
+                  <div className="flex justify-between gap-2">
+                    <Typography id="tracker-settings-latest-version" />
+                    {!updateUnavailable && (
+                      <>
+                        {currentFirmwareRelease && (
+                          <Typography
+                            color={
+                              needUpdate === 'updated'
+                                ? undefined
+                                : 'text-accent-background-10'
+                            }
+                            textAlign="text-end"
+                            whitespace="whitespace-pre-wrap"
+                          >
+                            {currentFirmwareRelease.name}
+                          </Typography>
+                        )}
+                      </>
+                    )}
+                    {updateUnavailable && (
+                      <Typography id="tracker-settings-update-unavailable-v2">
+                        No releases found
+                      </Typography>
+                    )}
+                  </div>
+                )}
               </div>
               {!updateUnavailable && (
                 <Tooltip
@@ -291,7 +293,7 @@ export function TrackerSettingsPage() {
                 </Tooltip>
               )}
             </div>
-          }
+          )}
 
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2 overflow-x-auto">
             <div className="flex justify-between">
