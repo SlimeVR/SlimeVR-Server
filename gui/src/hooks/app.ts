@@ -1,11 +1,9 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { DataFeedMessage, DataFeedUpdateT, StartDataFeedT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed';
 import {
-  DataFeedMessage,
-  DataFeedUpdateT,
   ResetResponseT,
   RpcMessage,
-  StartDataFeedT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { handleResetSounds } from '@/sounds/sounds';
 import { useConfig } from './config';
 import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';

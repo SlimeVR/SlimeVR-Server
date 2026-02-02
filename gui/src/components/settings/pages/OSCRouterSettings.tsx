@@ -8,7 +8,7 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { RouterIcon } from '@/components/commons/icon/RouterIcon';

@@ -1,11 +1,11 @@
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
+import { TrackerStatus } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import {
   RpcMessage,
   ServerInfosRequestT,
   ServerInfosResponseT,
-  TrackerStatus,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CloseIcon } from './commons/icon/CloseIcon';
 import { MaximiseIcon } from './commons/icon/MaximiseIcon';

@@ -1,5 +1,9 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react';
-import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import {
+  AssignTrackerRequestT,
+  RpcMessage,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {

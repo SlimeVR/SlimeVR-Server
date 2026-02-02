@@ -1,4 +1,5 @@
-import { BoardType, DeviceDataT } from 'solarxr-protocol';
+import { BoardType } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes/hardware-info';
+import { DeviceDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/device-data';
 import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import { cacheWrap } from './cache';
 import semver from 'semver';

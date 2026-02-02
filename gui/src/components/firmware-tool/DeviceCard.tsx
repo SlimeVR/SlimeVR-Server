@@ -8,10 +8,8 @@ import {
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { Control, Controller } from 'react-hook-form';
-import {
-  FirmwareUpdateStatus,
-  TrackerStatus as TrackerStatusEnum,
-} from 'solarxr-protocol';
+import { FirmwareUpdateStatus } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
+import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import { TrackerStatus } from '@/components/tracker/TrackerStatus';
 import { useMemo } from 'react';
 

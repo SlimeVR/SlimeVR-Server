@@ -5,7 +5,7 @@ import {
   NewSerialDeviceResponseT,
   RpcMessage,
   SerialDeviceT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useWifiForm, WifiFormData } from '@/hooks/wifi-form';

@@ -10,7 +10,7 @@ import {
   RpcMessage,
   SkeletonConfigRequestT,
   SkeletonConfigResponseT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { Tooltip } from './commons/Tooltip';
 import { Vector3 } from 'three';
 import { RecordIcon } from './commons/icon/RecordIcon';

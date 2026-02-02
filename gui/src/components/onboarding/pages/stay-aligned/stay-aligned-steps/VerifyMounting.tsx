@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { ResetType } from 'solarxr-protocol';
+import { ResetType } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { ResetButton } from '@/components/home/ResetButton';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';

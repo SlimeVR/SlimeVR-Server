@@ -1,4 +1,8 @@
-import { ResetResponseT, ResetStatus, ResetType } from 'solarxr-protocol';
+import {
+  ResetResponseT,
+  ResetStatus,
+  ResetType,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import Xylophone, { ValidNote } from './xylophone';
 
 const tones: ValidNote[][] = [

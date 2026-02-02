@@ -5,15 +5,19 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import {
-  AssignTrackerRequestT,
   BoardType,
-  BodyPart,
-  ForgetDeviceRequestT,
   ImuType,
-  MagnetometerStatus,
-  RpcMessage,
   TrackerDataType,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes/hardware-info';
+import {
+  BodyPart,
+  MagnetometerStatus,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import {
+  AssignTrackerRequestT,
+  ForgetDeviceRequestT,
+  RpcMessage,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { useTrackerFromId } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';

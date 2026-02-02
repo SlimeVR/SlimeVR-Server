@@ -1,6 +1,6 @@
 import { Typography } from '@/components/commons/Typography';
 import { useLocaleConfig } from '@/i18n/config';
-import { TrackerDataT } from 'solarxr-protocol';
+import { TrackerDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/tracker';
 
 export function StayAlignedInfo({
   color,

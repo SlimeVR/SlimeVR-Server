@@ -9,7 +9,7 @@ import {
   AddUnknownDeviceRequestT,
   RpcMessage,
   UnknownDeviceHandshakeNotificationT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { useAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
