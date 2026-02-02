@@ -773,7 +773,7 @@ settings-interface-behavior-error_tracking = Foutverzameling via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Geeft u toestemming voor het verzamelen van geanonimiseerde foutgegevens?</h1>
     
-    <b>We verzamelen geen persoonlijke informatie</b> zoals uw IP-adres of draadloze inloggegevens. SlimeVR hecht veel waarde aan uw privacy!
+    <b>We verzamelen geen persoonlijke informatie</b> zoals jouw IP-adres of draadloze inloggegevens. SlimeVR hecht veel waarde aan je privacy!
     
     Om de beste gebruikerservaring te bieden, verzamelen we geanonimiseerde foutrapporten, prestatiestatistieken en informatie over het besturingssysteem. Dit helpt ons bij het detecteren van fouten en problemen met SlimeVR. Deze statistieken worden verzameld via Sentry.io.
 settings-interface-behavior-error_tracking-label = Stuur fouten naar de ontwikkelaars
@@ -923,11 +923,11 @@ settings-utils-advanced-reset_warning =
             <b>Waarschuwing</b>Hiermee worden al uw GUI instellingen teruggezet naar de standaardinstellingen.
             Weet u zeker dat u dit wilt doen?
         [server]
-            <b>Waarschuwing</b>Hiermee worden al uw tracking instellingen teruggezet naar de standaardinstellingen.
-            Weet u zeker dat u dit wilt doen?
+            <b>Waarschuwing</b>Hiermee worden al je tracking instellingen teruggezet naar de standaardinstellingen.
+            Weet je zeker dat je dit wilt doen?
        *[all]
-            <b>Waarschuwing:</b> Hiermee worden al uw instellingen teruggezet naar de standaardinstellingen.
-            Weet u zeker dat u dit wilt doen?
+            <b>Waarschuwing:</b> Hiermee worden al je instellingen teruggezet naar de standaardinstellingen.
+            Weet je zeker dat je dit wilt doen?
     }
 settings-utils-advanced-reset_warning-reset = Instellingen resetten
 settings-utils-advanced-reset_warning-cancel = Annuleren
@@ -969,9 +969,9 @@ onboarding-wifi_creds-v2 = Trackers die Wi-Fi gebruiken
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
     De meeste trackers (zoals de officiële SlimeVR-trackers) gebruiken Wi-Fi om verbinding te maken met de server.
-    Gebruik de inloggegevens van het Wi-Fi-netwerk waarmee uw apparaat momenteel is verbonden.
+    Gebruik de inloggegevens van het Wi-Fi-netwerk waarmee je apparaat momenteel is verbonden.
     
-    Zorg ervoor dat u een 2,4GHz-Wi-Fi-verbinding gebruikt voor uw trackers!
+    Zorg ervoor dat je een 2,4GHz-Wi-Fi-verbinding gebruikt voor jouw trackers!
 onboarding-wifi_creds-skip = WiFi-instellingen overslaan
 onboarding-wifi_creds-submit = Verzenden!
 onboarding-wifi_creds-ssid =
@@ -982,7 +982,7 @@ onboarding-wifi_creds-password =
     .label = Paswoord
     .placeholder = Vul paswoord in
 onboarding-wifi_creds-dongle-title = Trackers met een dongle
-onboarding-wifi_creds-dongle-description = Als uw trackers met een dongle zijn geleverd, steek die dan in uw apparaat en u bent klaar om te beginnen!
+onboarding-wifi_creds-dongle-description = Als je trackers met een dongle zijn geleverd, steek die dan in je apparaat en je bent klaar om te beginnen!
 onboarding-wifi_creds-dongle-wip = Dit gedeelte is nog in ontwikkeling. Er komt binnenkort een aparte pagina om trackers te beheren die via een dongle verbinden.
 onboarding-wifi_creds-dongle-continue = Ga verder met een dongle
 
@@ -1233,7 +1233,7 @@ onboarding-automatic_mounting-done-restart = Terug naar start
 onboarding-automatic_mounting-mounting_reset-title = Montage-reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ga staan in een "skie"-houding met gebogen benen, je bovenlichaam naar voren gekanteld en armen gebogen.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Druk op de knop "Reset montage" en wacht 3 seconden voordat de montagerichtingen van de trackers opnieuw worden ingesteld.
-onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Sta op uw tenen met beide voeten naar voren gericht. u kunt het ook zittend op een stoel doen.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Sta op je tenen met beide voeten naar voren gericht. Je kunt het ook zittend op een stoel doen.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Druk op de knop "Voetkalibratie" en wacht 3 seconden voordat de montageoriëntaties van de trackers gereset worden.
 onboarding-automatic_mounting-preparation-title = Voorbereiding
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Druk op de knop "Volledige reset".
@@ -1273,26 +1273,26 @@ onboarding-automatic_proportions-requirements-title = Vereisten
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-descriptionv2 = Je hebt voldaan aan de minimale vereisten om je voeten te tracken (over het algemeen 5 trackers). Je hebt je trackers en headset aan en draagt ze. Je trackers en headset zijn verbonden met de SlimeVR server en werken naar behoren (zonder haperingen, loskoppelingen etc.). Je headset stuurt positiedata naar de SlimeVR server (dit vereist doorgaans dat SteamVR draait en verbonden is met SlimeVR via de SlimeVR SteamVR-driver). De tracking werkt en registreert je bewegingen nauwkeurig (je hebt bijvoorbeeld een volledige reset uitgevoerd en de trackers bewegen in de juiste richting bij schoppen, bukken, zitten etc.).
 onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
-onboarding-automatic_proportions-check_height-title-v3 = Meet de hoogte van uw headset
-onboarding-automatic_proportions-check_height-description-v2 = De hoogte van uw headset (HMD) moet iets minder zijn dan uw volledige lengte, aangezien headsets uw ooghoogte meten. Deze meting wordt gebruikt als basis voor uw lichaamsverhoudingen.
+onboarding-automatic_proportions-check_height-title-v3 = Meet de hoogte van je headset
+onboarding-automatic_proportions-check_height-description-v2 = De hoogte van je headset (HMD) moet iets minder zijn dan uw volledige lengte, aangezien headsets je ooghoogte meten. Deze meting wordt gebruikt als basis voor je lichaamsverhoudingen.
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning-v3 = Begin met meten terwijl je <u>rechtop</u> staat om je lengte te meten. Let erop dat je je handen niet hoger dan je headset tilt, want dat kan de meting beïnvloeden!
 onboarding-automatic_proportions-check_height-guardian_tip = Als je een losse VR-bril gebruikt, zorg er dan voor dat je guardian/veilige zone is ingeschakeld zodat je lengte correct is gekalibreerd!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Onbekend
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height2 = De hoogte van uw headset is:
+onboarding-automatic_proportions-check_height-hmd_height2 = De hoogte van je headset is:
 onboarding-automatic_proportions-check_height-measure-start = Begin met meten
 onboarding-automatic_proportions-check_height-measure-stop = Stoppen met meten
 onboarding-automatic_proportions-check_height-measure-reset = Probeer opnieuw te meten
 onboarding-automatic_proportions-check_height-next_step = Ze zijn goed
-onboarding-automatic_proportions-check_floor_height-title = Meet uw vloerhoogte (optioneel)
-onboarding-automatic_proportions-check_floor_height-description = In sommige gevallen wordt uw vloerhoogte mogelijk niet correct ingesteld door uw headset, waardoor de hoogte van de headset hoger wordt gemeten dan zou moeten. U kunt de "hoogte" van uw vloer meten om de hoogte van uw headset te corrigeren.
+onboarding-automatic_proportions-check_floor_height-title = Meet je vloerhoogte (optioneel)
+onboarding-automatic_proportions-check_floor_height-description = In sommige gevallen wordt uw vloerhoogte mogelijk niet correct ingesteld door uw headset, waardoor de hoogte van de headset hoger wordt gemeten dan zou moeten. Je kunt de "hoogte" van je vloer meten om de hoogte van je headset te corrigeren.
 # All the text is in bold!
 onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Begin met meten en zet een controller op je vloer om de hoogte te meten. Als je zeker weet dat je vloerhoogte klopt, kun je deze stap overslaan.
 # Shows an element below it
-onboarding-automatic_proportions-check_floor_height-floor_height = Uw vloerhoogte is:
-onboarding-automatic_proportions-check_floor_height-full_height = Uw geschatte volledige lengte is:
+onboarding-automatic_proportions-check_floor_height-floor_height = Je vloerhoogte is:
+onboarding-automatic_proportions-check_floor_height-full_height = Je geschatte volledige lengte is:
 onboarding-automatic_proportions-check_floor_height-measure-start = Begin met meten
 onboarding-automatic_proportions-check_floor_height-measure-stop = Stoppen met meten
 onboarding-automatic_proportions-check_floor_height-measure-reset = Probeer opnieuw te meten
@@ -1333,7 +1333,7 @@ onboarding-automatic_proportions-error_modal-v2 =
      <docs>Bekijk de documentatie</docs> of word lid van onze <discord>Discord</discord> voor hulp ^_^
 onboarding-automatic_proportions-error_modal-confirm = Begrepen!
 onboarding-automatic_proportions-smol_warning =
-    Uw ingestelde lengte van { $height } is lager dan de toegestane minimumlengte van { $minHeight }.
+    Jouw ingestelde lengte van { $height } is lager dan de toegestane minimumlengte van { $minHeight }.
     <b>Voer de metingen opnieuw uit en controleer of ze correct zijn.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Ga terug
 
@@ -1359,10 +1359,10 @@ onboarding-user_height-calibration-ERROR_TIMEOUT = Kalibratie sessie is verlopen
 onboarding-user_height-calibration-ERROR_TOO_HIGH = De gedetecteerde gebruikershoogte is te hoog, probeer het opnieuw.
 onboarding-user_height-calibration-ERROR_TOO_SMALL = De gedetecteerde gebruikerslengte is te klein. Zorg dat u voor het einde van de kalibratie rechtop staat en naar voren kijkt.
 onboarding-user_height-calibration-error = Kalibratie mislukt
-onboarding-user_height-manual-tip = Tijdens het aanpassen van uw lengte kunt u verschillende poses proberen en kijken hoe het skelet met uw lichaam overeenkomt.
+onboarding-user_height-manual-tip = Tijdens het aanpassen van je lengte kan je verschillende poses proberen en kijken hoe het skelet met jouw lichaam overeenkomt.
 onboarding-user_height-reset-warning =
-    <b>Waarschuwing:</b> Dit zet uw verhoudingen terug op basis van uw lengte.
-    Weet u zeker dat u dit wilt doen?
+    <b>Waarschuwing:</b> Dit zet je verhoudingen terug op basis van jouw lengte.
+    Weet je zeker dat je dit wilt doen?
 
 ## Stay Aligned setup
 
@@ -1445,7 +1445,7 @@ firmware_tool-description = Hiermee kan je uw DIY-trackers configureren en flash
 firmware_tool-not_available = Oeps, de firmwaretool is momenteel niet beschikbaar. Kom later terug!
 firmware_tool-not_compatible = De firmwaretool is niet compatibel met deze versie van de server. Gelieve te updaten!
 firmware_tool-select_source = Selecteer de firmware die u wilt flashen
-firmware_tool-select_source-description = Selecteer de firmware die u op uw bord wilt flashen
+firmware_tool-select_source-description = Selecteer de firmware die je op jouw bord wilt flashen
 firmware_tool-select_source-error = Kan bronnen niet laden
 firmware_tool-select_source-board_type = Type bord
 firmware_tool-select_source-firmware = Firmware-bron
@@ -1455,8 +1455,8 @@ firmware_tool-select_source-dev = Ontwikkelaar
 firmware_tool-select_source-not_selected = Geen bron geselecteerd
 firmware_tool-select_source-no_boards = Geen beschikbare borden voor deze bron
 firmware_tool-select_source-no_versions = Geen beschikbare versies voor deze bron
-firmware_tool-board_defaults = Configureer uw bord
-firmware_tool-board_defaults-description = Stel de pinnen of instellingen in ten opzichte van uw hardware
+firmware_tool-board_defaults = Configureer je bord
+firmware_tool-board_defaults-description = Stel de pinnen of instellingen in ten opzichte van jouw hardware
 firmware_tool-board_defaults-add = Toevoegen
 firmware_tool-board_defaults-reset = Reset naar standaard
 firmware_tool-board_defaults-error-required = Verplicht veld
@@ -1466,16 +1466,16 @@ firmware_tool-flash_method_step = Flashing methode
 firmware_tool-flash_method_step-description = Kies de flashingsmethode die je wilt gebruiken
 firmware_tool-flash_method_step-ota-v2 =
     .label = Wi-Fi
-    .description = Gebruik de over-the-air methode. Uw tracker zal via wifi de firmware bijwerken. Werkt alleen op trackers die al zijn ingesteld.
+    .description = Gebruik de over-the-air methode. Jouw tracker zal via wifi de firmware bijwerken. Werkt alleen op trackers die al zijn ingesteld.
 firmware_tool-flash_method_step-ota-info =
-    We gebruiken uw wifi-inloggegevens om de tracker te flashen en te bevestigen dat alles correct werkte.
-    <b>We slaan uw wifi-gegevens niet op!</b>
+    We gebruiken jouw wifi-inloggegevens om de tracker te flashen en te bevestigen dat alles correct werkte.
+    <b>We slaan je wifi-gegevens niet op!</b>
 firmware_tool-flash_method_step-serial-v2 =
     .label = USB
-    .description = Gebruik een USB kabel om uw tracker up te daten.
+    .description = Gebruik een USB kabel om jouw tracker up te daten.
 firmware_tool-flashbtn_step = Druk op de bootknop
 firmware_tool-flashbtn_step-description = Voordat u naar de volgende stap gaat, zijn er een paar dingen die u moet doen.
-firmware_tool-flashbtn_step-board_SLIMEVR = Zet de tracker uit, verwijder de behuizing (indien aanwezig), verbind een USB-kabel met deze computer en voer vervolgens een van de volgende stappen uit, afhankelijk van de revisie van uw SlimeVR-board:
+firmware_tool-flashbtn_step-board_SLIMEVR = Zet de tracker uit, verwijder de behuizing (indien aanwezig), verbind een USB-kabel met deze computer en voer vervolgens een van de volgende stappen uit, afhankelijk van de revisie van je SlimeVR-bord:
 firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Zet de tracker aan terwijl u het tweede rechthoekige FLASH-contact vlak bij de rand aan de bovenkant van de printplaat kortsluit tot het metalen schild van de microcontroller. De LED van de tracker zou kort moeten knipperen.
 firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Zet de tracker aan terwijl u het ronde FLASH-contact aan de bovenkant van de printplaat kortsluit tot het metalen schild van de microcontroller. De LED van de tracker zou kort moeten knipperen.
 firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Zet de tracker aan terwijl u de FLASH-knop aan de bovenkant van de printplaat ingedrukt houdt. De LED van de tracker zou kort moeten knipperen.
