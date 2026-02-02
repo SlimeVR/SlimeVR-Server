@@ -719,6 +719,8 @@ settings-interface-appearance-decorations = Use the system native decorations
 settings-interface-appearance-decorations-description = This will not render the top bar of the interface and will use the operating system's instead.
 settings-interface-appearance-decorations-label = Use native decorations
 
+settings-interface-appearance-hue = Hue
+
 ## Notification settings
 settings-interface-notifications = Notifications
 settings-general-interface-serial_detection = Serial device detection
