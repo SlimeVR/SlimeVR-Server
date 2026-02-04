@@ -7,6 +7,7 @@ class InstallWindows {
 
 	fun DoWindowsCheck() {
 		CheckIfUSBDriversInstalled()
+		RegisterSteamDriver()
 	}
 
 
@@ -25,31 +26,29 @@ class InstallWindows {
 
 	fun CheckIfUSBDriversInstalled() {
 		val installedDriversList = executeShellCommand("powershell.exe  pnputil /enum-drivers")
-		//println(installedDriversList)
 		val ch341ser = installedDriversList.contains("ch341ser.inf")
 		val ch343ser = installedDriversList.contains("ch343ser.inf")
 		val silabser = installedDriversList.contains("silabser.inf")
 		val path = Paths.get("").toAbsolutePath().toString()
 
-		if (!(ch341ser && ch343ser && silabser)) {
+		if (ch341ser && ch343ser && silabser) {
 			println("drivers already installed!")
 		} else {
 			println("Cannot find one of the drivers, installing drivers")
-			val driverinstallOutput = executeShellCommand(path + "\\installusbdrivers.bat")
+			val driverinstallOutput = executeShellCommand("$path\\installusbdrivers.bat")
 			println(driverinstallOutput)
 
 		}
 	}
 
-	fun InstallUSBDrivers() {
-
-	}
 
 	fun CheckIfSteamVRDriversInstalled() {
 
 	}
 
 	fun RegisterSteamDriver() {
-
+		val path = Paths.get("").toAbsolutePath().toString()
+		val driverInstallOutput = executeShellCommand("powershell.exe $path\\steamvr.ps1")
+		println(driverInstallOutput)
 	}
 }
