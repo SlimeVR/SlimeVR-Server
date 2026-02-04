@@ -14,12 +14,23 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
 class Updater {
-
+	//Windows URL's
 	val WindowsSteamVRDriverURL = "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip"
 	val WindowsSteamVRDriverName = "slimevr-openvr-driver-win64.zip"
 	val WindowsSteamVRDriverDirectory = "slimevr-openvr-driver-win64"
 	val WindowsFeederURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-win64.zip"
-	val WindowsFeederName = "SlimeVR-Feeder-App-latest.zip"
+	val WindowsFeederName = "SlimeVR-Feeder-App-win64.zip"
+
+	//Linux URL's
+	val LinuxSteamVRDriverURL = "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
+	val LinuxSteamVRDriverName = "slimevr-openvr-driver-x64-linux.zip"
+	val LinuxSteamVRDriverDirectory = "slimevr-openvr-driver-x64-linux"
+	val LinuxFeederURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-linux64.zip"
+	val LinuxFeederName = "SlimeVR-Feeder-App-linux64.zip"
+	val LinuxFeederDirectory = "SlimeVR-Feeder-App-linux64"
+
+	//MacOS URL's
+
 
 	val os = System.getProperty("os.name").lowercase()
 
@@ -29,7 +40,7 @@ class Updater {
 			"linux" -> {
 				println("Running linux updater")
 				updateLinux()
-				checkForInstalledUsbDriverWindows()
+				updateWindows()
 			}
 			"windows" -> {
 				println("Running windows updater")
@@ -74,7 +85,7 @@ class Updater {
 			println("Error downloading file, ${e.message}")
 		}
 	}
-
+	//Guard against zip slip
 	fun newFile(destinationPath: File, zipEntry: ZipEntry): File {
 		val destFile = File(destinationPath, zipEntry.name)
 
@@ -96,17 +107,17 @@ class Updater {
 			var zipEntry = zis.nextEntry
 
 			while (zipEntry != null) {
-				var file = newFile(zipFile, zipEntry)
+				val file = newFile(zipFile, zipEntry)
 				if (zipEntry.isDirectory) {
 					if (!file.isDirectory && !file.mkdirs()) {
 						throw IOException("Failed to create directory: $file")
 					} else {
-						var parent = file.parentFile
+						val parent = file.parentFile
 						if (!parent.isDirectory && !parent.mkdirs()) {
 							throw IOException("Failed to create directory: $parent")
 						}
 					}
-
+				} else {
 					val fileOutputStream = FileOutputStream(file)
 					var len = zis.read(dataBuffer, 0, 1024)
 					while (len > 0) {
@@ -131,7 +142,8 @@ class Updater {
 	}
 
 	fun updateLinux() {
-
+		downloadFile(URL(LinuxSteamVRDriverURL), LinuxSteamVRDriverName)
+		unzip(LinuxSteamVRDriverName, LinuxSteamVRDriverDirectory)
 	}
 
 
