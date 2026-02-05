@@ -13,34 +13,18 @@ import java.nio.file.StandardCopyOption
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
+
+
 class Updater {
-	//Windows URL's
-	val WindowsSteamVRDriverURL = "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip"
-	val WindowsSteamVRDriverName = "slimevr-openvr-driver-win64.zip"
-	val WindowsSteamVRDriverDirectory = "slimevr-openvr-driver-win64"
-	val WindowsFeederURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-win64.zip"
-	val WindowsFeederName = "SlimeVR-Feeder-App-win64.zip"
-
-	//Linux URL's
-	val LinuxSteamVRDriverURL = "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
-	val LinuxSteamVRDriverName = "slimevr-openvr-driver-x64-linux.zip"
-	val LinuxSteamVRDriverDirectory = "slimevr-openvr-driver-x64-linux"
-	val LinuxFeederURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-linux64.zip"
-	val LinuxFeederName = "SlimeVR-Feeder-App-linux64.zip"
-	val LinuxFeederDirectory = "SlimeVR-Feeder-App-linux64"
-
-	//MacOS URL's
-
 
 	val os = System.getProperty("os.name").lowercase()
 
-	fun RunUpdate() {
+	fun runUpdater() {
 
 		when (os) {
 			"linux" -> {
 				println("Running linux updater")
 				updateLinux()
-				updateWindows()
 			}
 			"windows" -> {
 				println("Running windows updater")
@@ -64,7 +48,7 @@ class Updater {
 				process.waitFor()
 			}
 		} catch (e: IOException) {
-			"Error executing command: ${e.message}"
+			"Error executing shell command: ${e.message}"
 		}
 	}
 
@@ -72,7 +56,7 @@ class Updater {
 		println("Downloading $filename from $url")
 		try {
 			val bufferedInputStream = BufferedInputStream(url.openStream())
-			val fileOutputStream = FileOutputStream(WindowsSteamVRDriverName)
+			val fileOutputStream = FileOutputStream(WINDOWSSTEAMVRDRIVERNAME)
 			val dataBuffer = ByteArray(1024)
 			var bytesRead = bufferedInputStream.read(dataBuffer, 0, 1024)
 			while (bytesRead != -1) {
@@ -142,8 +126,7 @@ class Updater {
 	}
 
 	fun updateLinux() {
-		downloadFile(URL(LinuxSteamVRDriverURL), LinuxSteamVRDriverName)
-		unzip(LinuxSteamVRDriverName, LinuxSteamVRDriverDirectory)
+		updateLinuxSteamVRDriver()
 	}
 
 
@@ -154,8 +137,8 @@ class Updater {
 		val silabser = installedDriversList.contains("silabser.inf")
 		val path = Paths.get("").toAbsolutePath().toString()
 
-		downloadFile(URL(WindowsSteamVRDriverURL), WindowsSteamVRDriverName)
-		unzip(WindowsSteamVRDriverName, WindowsSteamVRDriverDirectory)
+		downloadFile(URL(WINDOWSSTEAMVRDRIVERURL), WINDOWSSTEAMVRDRIVERNAME)
+		unzip(WINDOWSSTEAMVRDRIVERNAME, WINDOWSSTEAMVRDRIVERDIRECTORY)
 
 		if (ch341ser && ch343ser && silabser) {
 			println("drivers already installed!")
@@ -192,10 +175,42 @@ class Updater {
 	}
 
 	fun updateLinuxSteamVRDriver() {
-
+		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
+		val isDriverRegistered = vrPathRegContents.contains("slimevr-openvr-driver-x64-linux")
+		if (!isDriverRegistered) {
+			println("Downloading driver")
+			downloadFile(URL(LINUXSTEAMVRDRIVERURL), LINUXSTEAMVRDRIVERNAME)
+			unzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
+			println("Driver downloaded")
+			println("Registering driver with steamvr")
+					executeShellCommand(
+						"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh adddriver ${
+							Paths.get(
+								""
+							).toAbsolutePath()
+						}/${LINUXSTEAMVRDRIVERDIRECTORY}"
+					)
+		} else {
+			println("steamVR driver is already registered. Skipping...")
+		}
 	}
 
+	companion object {
+		//Windows URL's
+		private const val WINDOWSSTEAMVRDRIVERURL = "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip"
+		private const val WINDOWSSTEAMVRDRIVERNAME = "slimevr-openvr-driver-win64.zip"
+		private const val WINDOWSSTEAMVRDRIVERDIRECTORY = "slimevr-openvr-driver-win64"
+		private const val WINDOWSFEEDERURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-win64.zip"
+		private const val WINDOWSFEEDERNAME = "SlimeVR-Feeder-App-win64.zip"
 
+		//Linux URL's
+		private const val LINUXSTEAMVRDRIVERURL = "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
+		private const val LINUXSTEAMVRDRIVERNAME = "slimevr-openvr-driver-x64-linux.zip"
+		private const val LINUXSTEAMVRDRIVERDIRECTORY = "slimevr-openvr-driver-x64-linux"
+		private const val LINUXFEEDERURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-linux64.zip"
+		private const val LINUXFEEDERNAME = "SlimeVR-Feeder-App-linux64.zip"
+		private const val LINUXFEEDERDIRECTORY = "SlimeVR-Feeder-App-linux64"
 
-
+		//MacOS URL's
+	}
 }

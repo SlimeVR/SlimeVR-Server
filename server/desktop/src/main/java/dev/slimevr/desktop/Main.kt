@@ -13,7 +13,6 @@ import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
-import dev.slimevr.desktop.platform.windows.InstallWindows
 import dev.slimevr.desktop.serial.DesktopSerialHandler
 import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDManager
 import dev.slimevr.tracking.trackers.Tracker
@@ -51,7 +50,7 @@ fun main(args: Array<String>) {
 	//Check if first boot
 	// Run install if first boot
 	val updater = Updater()
-	updater.RunUpdate()
+	updater.runUpdater()
 
 
 	val parser: CommandLineParser = DefaultParser()
