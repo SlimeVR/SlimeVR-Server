@@ -115,6 +115,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = บอร์ดพัฒนาถุงมือ IMU SlimeVR
+board_type-GESTURES = ท่าทางสัมผัส
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = บอร์ด NRF ทั่วไป
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -349,6 +354,7 @@ tracker-table-column-name = ชื่อ
 tracker-table-column-type = ชนิด
 tracker-table-column-battery = แบตเตอรี่
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = สูญเสียแพ็คเก็ต
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = อุณหภูมิ °C
 tracker-table-column-linear-acceleration = ความเร่ง X/Y/Z
@@ -390,6 +396,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] เปิดใช้งาน
        *[NOT_SUPPORTED] ไม่รองรับ
     }
+tracker-infos-packet_loss = สูญเสียแพ็คเก็ต
+tracker-infos-packets_lost = สูญเสียแพ็คเก็ต
+tracker-infos-packets_received = ได้รับแพ็คเก็ต
 
 ## Tracker settings
 
@@ -428,6 +437,7 @@ tracker-settings-update = อัปเดตทันที
 tracker-settings-update-title = เวอร์ชันเฟิร์มแวร์
 tracker-settings-current-version = ปัจจุบัน
 tracker-settings-latest-version = ล่าสุด
+tracker-settings-build-date = วันที่สร้าง
 
 ## Tracker part card info
 
@@ -593,6 +603,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     ใช้เซ็นเซอร์สนามแม่เหล็กบนแทร็กเกอร์ทั้งหมดที่มีเฟิร์มแวร์ที่เข้ากันได้ ซึ่งช่วยลดดริฟท์ในสภาพแวดล้อมที่มีสนามแม่เหล็กคงที่
     สามารถปิดการใช้งานสำหรับแทร็กเกอร์แต่ละตัวได้ในการตั้งค่าของแทร็กเกอร์ <b>โปรดอย่าปิดแทร็กเกอร์ ในขณะที่กำลังสลับการตั้งค่านี้!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = ใช้เซ็นเซอร์สนามแม่เหล็กกับแทร็กเกอร์
+settings-general-tracker_mechanics-trackers_over_usb = ต่อแทร็กเกอร์ผ่าน USB
+settings-general-tracker_mechanics-trackers_over_usb-description = เปิดใช้งานการรับข้อมูลแทร็กเกอร์แบบ HID ผ่านสาย USB ตรวจสอบว่าแทร็กเกอร์ของคุณได้เปิด <b>การเชื่อมต่อผ่าน HID</b> เอาไว้!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = เปิดให้แทร็กเกอร์แบบ HID ต่อโดยตรงผ่านสาย USB
 settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned จะลดดริฟท์โดยค่อยๆ ปรับแทร็กเกอร์ให้เข้ากับท่าทางผ่อนคลายของคุณ
 settings-stay_aligned-setup-label = ตั้งค่า Stay Aligned
@@ -1368,6 +1381,7 @@ onboarding-stay_aligned-previous_step = ก่อนหน้า
 onboarding-stay_aligned-next_step = ต่อไป
 onboarding-stay_aligned-restart = เริ่มใหม่
 onboarding-stay_aligned-done = เสร็จแล้ว
+onboarding-stay_aligned-manual_mounting-done = เสร็จแล้ว
 
 ## Home
 
@@ -1418,6 +1432,9 @@ firmware_tool-select_source-firmware = แหล่งที่มาของ�
 firmware_tool-select_source-version = เวอร์ชันของเฟิร์มแวร์
 firmware_tool-select_source-official = ทางการ
 firmware_tool-select_source-dev = รุ่นพัฒนา
+firmware_tool-select_source-not_selected = ยังไม่ได้กำหนดแหล่งเฟิร์มแวร์
+firmware_tool-select_source-no_boards = ไม่มีเฟิร์มแวร์บอร์ดสำหรับแหล่งนี้
+firmware_tool-select_source-no_versions = ไม่มีเวอร์ชั่นที่ใช้ได้สำหรับแหล่งนี้
 firmware_tool-board_defaults = กำหนดค่าบอร์ดของคุณ
 firmware_tool-board_defaults-description = ตั้งค่า Pin หรือการตั้งค่าที่เกี่ยวข้องกับฮาร์ดแวร์ของคุณ
 firmware_tool-board_defaults-add = เพิ่ม
