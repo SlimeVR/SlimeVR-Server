@@ -7,7 +7,8 @@ import {
   BasedSkeletonHelper,
 } from '@/utils/skeletonHelper';
 import * as THREE from 'three';
-import { BodyPart, BoneT } from 'solarxr-protocol';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import { BoneT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed';
 import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';

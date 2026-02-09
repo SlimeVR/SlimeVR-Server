@@ -3,15 +3,15 @@ import { useOnboarding } from '@/hooks/onboarding';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { useState, useMemo, useEffect } from 'react';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import {
-  BodyPart,
   ResetResponseT,
   ResetStatus,
   ResetType,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { BodyDisplay } from '@/components/commons/BodyDisplay';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import classNames from 'classnames';

@@ -1,4 +1,4 @@
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 
 export const ALL_BODY_PARTS = [
   BodyPart.NONE,

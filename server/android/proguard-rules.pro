@@ -55,6 +55,8 @@
 # Don't mess with SlimeVR config, the class structure is essential for serialization
 -keep class dev.slimevr.config.** { *; }
 
+-keep class com.google.flatbuffers.** { *; }
+
 # Obfuscation is fine but it makes crash logs unreadable, we don't really need it for our app
 -dontobfuscate
 

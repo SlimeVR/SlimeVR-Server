@@ -1,5 +1,5 @@
 import { Localized } from '@fluent/react';
-import { ResetType } from 'solarxr-protocol';
+import { ResetType } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { Button } from '@/components/commons/Button';
 import classNames from 'classnames';
 import { useReset, UseResetOptions } from '@/hooks/reset';

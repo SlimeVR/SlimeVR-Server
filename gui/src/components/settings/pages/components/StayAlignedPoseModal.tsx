@@ -7,7 +7,7 @@ import {
 } from '@/components/stay-aligned/RelaxedPose';
 import { useLocalization } from '@fluent/react';
 import { Dispatch, ReactNode, SetStateAction } from 'react';
-import { StayAlignedRelaxedPose } from 'solarxr-protocol';
+import { StayAlignedRelaxedPose } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 
 function StaAlignedPoseModal({
   open,

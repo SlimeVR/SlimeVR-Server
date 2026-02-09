@@ -15,7 +15,7 @@ import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { TrackingChecklistStepId } from 'solarxr-protocol';
+import { TrackingChecklistStepId } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import * as Sentry from '@sentry/react';
 
 type StepsForm = { steps: Record<TrackingChecklistStepId, boolean> };

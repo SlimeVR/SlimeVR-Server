@@ -1,5 +1,5 @@
 import { Control } from 'react-hook-form';
-import { StayAlignedSettingsT } from 'solarxr-protocol';
+import { StayAlignedSettingsT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { SettingsForm } from '@/components/settings/pages/GeneralSettings';
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';

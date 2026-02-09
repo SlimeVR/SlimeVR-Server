@@ -1,7 +1,12 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { KeyValuesT, MessageT, Payload, Topic } from 'solarxr-protocol';
+import {
+  KeyValuesT,
+  MessageT,
+  Payload,
+  Topic,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/pub-sub';
 import {
   OVERLAY_DISPLAY_SETTINGS_TOPIC,
   PayloadData,

@@ -1,11 +1,9 @@
 import { useConfig } from '@/hooks/config';
 import { MouseEventHandler } from 'react';
-import {
-  DeviceDataT,
-  TrackerDataT,
-  TrackerStatus as TrackerStatusEnum,
-  TrackingChecklistStepT,
-} from 'solarxr-protocol';
+import { DeviceDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/device-data';
+import { TrackerDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/tracker';
+import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import { TrackingChecklistStepT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerWifi } from './TrackerWifi';

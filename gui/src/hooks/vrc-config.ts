@@ -8,7 +8,7 @@ import {
   VRCConfigStateRequestT,
   VRCSpineMode,
   VRCTrackerModel,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 
 type NonNull<T> = {
   [P in keyof T]: NonNullable<T[P]>;

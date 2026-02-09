@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { TrackerDataT } from 'solarxr-protocol';
+import { TrackerDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/tracker';
 import { useTracker } from '@/hooks/tracker';
 import { Typography } from '@/components/commons/Typography';
 import { formatVector3 } from '@/utils/formatting';

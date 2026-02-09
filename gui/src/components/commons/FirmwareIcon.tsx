@@ -1,8 +1,6 @@
-import {
-  DeviceDataT,
-  TrackerDataT,
-  TrackerStatus as TrackerStatusEnum,
-} from 'solarxr-protocol';
+import { DeviceDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/device-data';
+import { TrackerDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/tracker';
+import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import { Typography } from './Typography';
 import classNames from 'classnames';
 import { DownloadIcon } from './icon/DownloadIcon';

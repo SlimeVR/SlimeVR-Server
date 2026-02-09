@@ -12,7 +12,10 @@ import { SettingsResetModal } from '@/components/settings/SettingsResetModal';
 import { error } from '@/utils/logging';
 import { defaultConfig as defaultGUIConfig, useConfig } from '@/hooks/config';
 import { defaultValues as defaultDevConfig } from '@/components/widgets/DeveloperModeWidget';
-import { RpcMessage, SettingsResetRequestT } from 'solarxr-protocol';
+import {
+  RpcMessage,
+  SettingsResetRequestT,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { invoke } from '@tauri-apps/api/core';
 
