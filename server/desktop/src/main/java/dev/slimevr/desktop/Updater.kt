@@ -20,28 +20,26 @@ class Updater {
 	val os = System.getProperty("os.name").lowercase()
 
 	fun runUpdater() {
-
-		when (os) {
-			"linux" -> {
-				println("Running linux updater")
-				updateLinux()
-			}
-			"windows" -> {
-				println("Running windows updater")
-				updateWindows()
-			}
-			"macos" -> {
-				println("I dunno")
-			}
-			else -> {
-				println("guess I'll die")
-			}
+		if (os.contains("linux")) {
+			println("Running linux updater")
+			updateLinux()
 		}
+		else if (os.contains("windows")) {
+			println("Running windows updater")
+			updateWindows()
+		}
+		else if (os.contains("darwin")) {
+			println("I dunno")
+		}
+		else {
+			println("guess I'll die")
+		}
+		println("Done Updating")
 	}
 
-	fun executeShellCommand(command: String): String {
+	fun executeShellCommand(vararg command: String): String {
 		return try {
-			val process = ProcessBuilder(*command.split(" ").toTypedArray())
+			val process = ProcessBuilder(*command)
 				.redirectErrorStream(true)
 				.start()
 			process.inputStream.bufferedReader().readText().also {
@@ -123,6 +121,7 @@ class Updater {
 	fun updateWindows() {
 		//First check if everything is already installed. Install it if it isn't
 		checkForInstalledUsbDriverWindows()
+		updateWindowsSteamVRDriver()
 	}
 
 	fun updateLinux() {
@@ -131,7 +130,7 @@ class Updater {
 
 
 	fun checkForInstalledUsbDriverWindows() {
-		val installedDriversList = executeShellCommand("powershell.exe  pnputil /enum-drivers")
+		val installedDriversList = executeShellCommand("powershell.exe",  "pnputil /enum-drivers")
 		val ch341ser = installedDriversList.contains("ch341ser.inf")
 		val ch343ser = installedDriversList.contains("ch343ser.inf")
 		val silabser = installedDriversList.contains("silabser.inf")
@@ -162,13 +161,15 @@ class Updater {
 	}
 
 	fun updateWindowsSteamVRDriver() {
-		val steamVRLocation = executeShellCommand("(Get-ItemProperty \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820\").InstallLocation")
-		if (steamVRLocation == "") {
+		val steamVRLocation = executeShellCommand("powershell.exe", "-Command",  "(Get-ItemProperty \'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820\').InstallLocation").trim()
+		if (!steamVRLocation.contains("SteamVR")) {
 			println("SteamVR not installed, cannot install SlimeVR Steam driver.")
 			return;
 		}
-		val vrPathRegContents = executeShellCommand("${steamVRLocation}\\Vrpathreg.exe")
+		val vrPathRegContents = executeShellCommand("${steamVRLocation}\\bin\\win64\\vrpathreg.exe", "finddriver", "slimevr")
+		println(vrPathRegContents)
 		val isDriverRegistered = vrPathRegContents.contains("WINDOWSSTEAMVRDRIVERDIRECTORY")
+		println(isDriverRegistered)
 		if (isDriverRegistered) {
 			println("steamVR driver is already registered. Skipping...")
 			return
@@ -180,11 +181,11 @@ class Updater {
 		println("Driver downloaded")
 		println("Registering driver with steamvr")
 		executeShellCommand(
-			"${steamVRLocation}\\Vrpathreg.exe adddriver ${
+			"${steamVRLocation}\\bin\\win64\\vrpathreg.exe", "adddriver", "${
 				Paths.get(
 					""
 				).toAbsolutePath()
-			}/${WINDOWSSTEAMVRDRIVERDIRECTORY}"
+			}\\${WINDOWSSTEAMVRDRIVERDIRECTORY}\\slimevr"
 		)
 	}
 
@@ -210,7 +211,7 @@ class Updater {
 					Paths.get(
 						""
 					).toAbsolutePath()
-				}/${LINUXSTEAMVRDRIVERDIRECTORY}"
+				}/${LINUXSTEAMVRDRIVERDIRECTORY}/slimevr"
 			)
 		} else {
 			println("steamVR driver is already registered. Skipping...")
