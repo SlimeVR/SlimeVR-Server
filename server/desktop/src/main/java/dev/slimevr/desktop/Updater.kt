@@ -137,8 +137,6 @@ class Updater {
 		val silabser = installedDriversList.contains("silabser.inf")
 		val path = Paths.get("").toAbsolutePath().toString()
 
-		downloadFile(URL(WINDOWSSTEAMVRDRIVERURL), WINDOWSSTEAMVRDRIVERNAME)
-		unzip(WINDOWSSTEAMVRDRIVERNAME, WINDOWSSTEAMVRDRIVERDIRECTORY)
 
 		if (ch341ser && ch343ser && silabser) {
 			println("drivers already installed!")
@@ -149,6 +147,7 @@ class Updater {
 		val driverinstallOutput = executeShellCommand("$path\\installusbdrivers.bat")
 		println(driverinstallOutput)
 	}
+
 
 	fun checkForUpdates() {
 
@@ -163,7 +162,30 @@ class Updater {
 	}
 
 	fun updateWindowsSteamVRDriver() {
-
+		val steamVRLocation = executeShellCommand("(Get-ItemProperty \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820\").InstallLocation")
+		if (steamVRLocation == "") {
+			println("SteamVR not installed, cannot install SlimeVR Steam driver.")
+			return;
+		}
+		val vrPathRegContents = executeShellCommand("${steamVRLocation}\\Vrpathreg.exe")
+		val isDriverRegistered = vrPathRegContents.contains("WINDOWSSTEAMVRDRIVERDIRECTORY")
+		if (isDriverRegistered) {
+			println("steamVR driver is already registered. Skipping...")
+			return
+		}
+		println("Installing SteamVR Driver")
+		println("Downloading SteamVR driver")
+		downloadFile(URL(WINDOWSSTEAMVRDRIVERURL), WINDOWSSTEAMVRDRIVERNAME)
+		unzip(WINDOWSSTEAMVRDRIVERNAME, WINDOWSSTEAMVRDRIVERDIRECTORY)
+		println("Driver downloaded")
+		println("Registering driver with steamvr")
+		executeShellCommand(
+			"${steamVRLocation}\\Vrpathreg.exe adddriver ${
+				Paths.get(
+					""
+				).toAbsolutePath()
+			}/${WINDOWSSTEAMVRDRIVERDIRECTORY}"
+		)
 	}
 
 	fun updateLinuxServer() {
@@ -176,20 +198,20 @@ class Updater {
 
 	fun updateLinuxSteamVRDriver() {
 		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
-		val isDriverRegistered = vrPathRegContents.contains("slimevr-openvr-driver-x64-linux")
+		val isDriverRegistered = vrPathRegContents.contains("LINUXSTEAMVRDRIVERDIRECTORY")
 		if (!isDriverRegistered) {
 			println("Downloading driver")
 			downloadFile(URL(LINUXSTEAMVRDRIVERURL), LINUXSTEAMVRDRIVERNAME)
 			unzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
 			println("Driver downloaded")
 			println("Registering driver with steamvr")
-					executeShellCommand(
-						"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh adddriver ${
-							Paths.get(
-								""
-							).toAbsolutePath()
-						}/${LINUXSTEAMVRDRIVERDIRECTORY}"
-					)
+			executeShellCommand(
+				"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh adddriver ${
+					Paths.get(
+						""
+					).toAbsolutePath()
+				}/${LINUXSTEAMVRDRIVERDIRECTORY}"
+			)
 		} else {
 			println("steamVR driver is already registered. Skipping...")
 		}
