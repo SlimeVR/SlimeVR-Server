@@ -11,6 +11,7 @@ import dev.slimevr.games.vrchat.VRCConfigHandler
 import dev.slimevr.games.vrchat.VRCConfigHandlerStub
 import dev.slimevr.games.vrchat.VRChatConfigManager
 import dev.slimevr.guards.ServerGuards
+import dev.slimevr.keybind.KeybindHandler
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
@@ -123,7 +124,10 @@ class VRServer @JvmOverloads constructor(
 
 	val networkProfileChecker: NetworkProfileChecker
 
+	val keybindHandler: KeybindHandler
+
 	val serverGuards = ServerGuards()
+
 
 	init {
 		// UwU
@@ -140,6 +144,7 @@ class VRServer @JvmOverloads constructor(
 		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
 		networkProfileChecker = networkProfileProvider(this)
 		trackingChecklistManager = TrackingChecklistManager(this)
+		keybindHandler = KeybindHandler(this)
 		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 

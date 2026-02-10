@@ -1,0 +1,58 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solarxr-protocol", "solarxr-protocol", "{D2BA29CC-4E32-9914-C788-2487335F485F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{14112BA2-6B61-185E-FA3B-BBA04EC69D71}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "flatbuffers", "flatbuffers", "{8338A523-5303-4D5D-E1DD-291792CC5800}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net", "net", "{3696A2D9-9D4F-20AD-9FBF-1E3A042EF026}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FlatBuffers", "FlatBuffers", "{383CA28D-60BC-1E09-8533-A4EC3A4E9D27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.FlatBuffers", "solarxr-protocol\lib\flatbuffers\net\FlatBuffers\Google.FlatBuffers.csproj", "{7DCCF1EE-FF55-7593-D206-A2BB4FEFCC2D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DB17BF73-048E-8E2E-34E2-1366CF5405FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBuffers.Benchmarks", "solarxr-protocol\lib\flatbuffers\tests\FlatBuffers.Benchmarks\FlatBuffers.Benchmarks.csproj", "{D5FED821-E13D-072F-201B-A18CCAB7AC54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlatBuffers.Test", "solarxr-protocol\lib\flatbuffers\tests\FlatBuffers.Test\FlatBuffers.Test.csproj", "{ECE36BCD-852C-448A-8EFC-5928050F9D1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7DCCF1EE-FF55-7593-D206-A2BB4FEFCC2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DCCF1EE-FF55-7593-D206-A2BB4FEFCC2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DCCF1EE-FF55-7593-D206-A2BB4FEFCC2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DCCF1EE-FF55-7593-D206-A2BB4FEFCC2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5FED821-E13D-072F-201B-A18CCAB7AC54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5FED821-E13D-072F-201B-A18CCAB7AC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5FED821-E13D-072F-201B-A18CCAB7AC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5FED821-E13D-072F-201B-A18CCAB7AC54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECE36BCD-852C-448A-8EFC-5928050F9D1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECE36BCD-852C-448A-8EFC-5928050F9D1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECE36BCD-852C-448A-8EFC-5928050F9D1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECE36BCD-852C-448A-8EFC-5928050F9D1A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{14112BA2-6B61-185E-FA3B-BBA04EC69D71} = {D2BA29CC-4E32-9914-C788-2487335F485F}
+		{8338A523-5303-4D5D-E1DD-291792CC5800} = {14112BA2-6B61-185E-FA3B-BBA04EC69D71}
+		{3696A2D9-9D4F-20AD-9FBF-1E3A042EF026} = {8338A523-5303-4D5D-E1DD-291792CC5800}
+		{383CA28D-60BC-1E09-8533-A4EC3A4E9D27} = {3696A2D9-9D4F-20AD-9FBF-1E3A042EF026}
+		{7DCCF1EE-FF55-7593-D206-A2BB4FEFCC2D} = {383CA28D-60BC-1E09-8533-A4EC3A4E9D27}
+		{DB17BF73-048E-8E2E-34E2-1366CF5405FE} = {8338A523-5303-4D5D-E1DD-291792CC5800}
+		{D5FED821-E13D-072F-201B-A18CCAB7AC54} = {DB17BF73-048E-8E2E-34E2-1366CF5405FE}
+		{ECE36BCD-852C-448A-8EFC-5928050F9D1A} = {DB17BF73-048E-8E2E-34E2-1366CF5405FE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B95917B1-9E9F-44B1-AC9C-8FF2D103B85B}
+	EndGlobalSection
+EndGlobal
