@@ -1,5 +1,13 @@
 package dev.slimevr.desktop.updater
 
+import dev.slimevr.desktop.updater.Updater.GHResponse
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileInputStream
@@ -26,8 +34,10 @@ fun executeShellCommand(vararg command: String): String {
 	}
 }
 
-fun downloadFile(url: URL, filename: String) {
-	println("Downloading $filename from $url")
+//TODO: This function is really really slow, make it faster, also give feedback
+fun downloadFile(fileUrl: String, filename: String) {
+	println("Downloading $filename from $fileUrl")
+	val url = URL(fileUrl)
 	try {
 		val bufferedInputStream = BufferedInputStream(url.openStream())
 		val fileOutputStream = FileOutputStream(filename)
@@ -43,6 +53,7 @@ fun downloadFile(url: URL, filename: String) {
 		println("Error downloading file, ${e.message}")
 	}
 }
+
 //Guard against zip slip
 fun newFile(destinationPath: File, zipEntry: ZipEntry): File {
 	val destFile = File(destinationPath, zipEntry.name)
@@ -92,4 +103,39 @@ fun unzip(file: String, destDir: String) {
 	} catch (e: Exception) {
 		println("Error during unzip: ${e.message}")
 	}
+}
+
+suspend fun shouldUpdate(): Boolean {
+	println("Current version ${VERSION}")
+	//We're running from a git branch don't update
+	if (VERSION.contains("dirty")) {
+		return false
+	}
+	val client = HttpClient(CIO) {
+		install(ContentNegotiation) {
+			json(Json {
+				ignoreUnknownKeys = true
+			})
+		}
+	}
+	try {
+		val response: GHResponse = client.get("https://api.github.com/repos/slimevr/slimevr-server/releases/latest").body()
+		client.close()
+		//Replace this if versioning ever changes
+		val githubVersionArr = response.tag_name.replace("v", "").split(".")
+		val localVersionArr = VERSION.replace("v", "").split(".")
+		//Cursed?
+		return if (githubVersionArr[0] > localVersionArr[0]) {
+			true
+		} else if (githubVersionArr[0] < localVersionArr[0] && githubVersionArr[1] > localVersionArr[1]) {
+			true
+		} else if (githubVersionArr[0] < localVersionArr[0] && githubVersionArr[1] < localVersionArr[1] && githubVersionArr[2] > localVersionArr[2]) {
+			true
+		} else {
+			false
+		}
+	} catch(e: Exception) {
+		println("Error getting github release info: ${e.message}")
+	}
+	return false
 }

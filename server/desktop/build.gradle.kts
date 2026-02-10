@@ -55,7 +55,6 @@ allprojects {
 	}
 }
 
-val ktor_version: String by project
 
 dependencies {
 	implementation(project(":server:core"))
@@ -70,10 +69,10 @@ dependencies {
 		exclude(group = "com.fazecast", module = "android")
 	}
 	implementation("org.hid4java:hid4java:0.8.0")
-	implementation("io.ktor:ktor-client-core:${ktor_version}")
-	implementation("io.ktor:ktor-client-cio:${ktor_version}")
-	implementation("io.ktor:ktor-client-content-negotiation:${ktor_version}")
-	implementation("io.ktor:ktor-serialization-kotlinx-json:${ktor_version}")
+	implementation("io.ktor:ktor-client-core:3.0.3")
+	implementation("io.ktor:ktor-client-cio:3.0.3")
+	implementation("io.ktor:ktor-client-content-negotiation:3.0.3")
+	implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.3")
 }
 
 tasks.shadowJar {

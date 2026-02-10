@@ -17,7 +17,7 @@ class Linux {
 		val isDriverRegistered = vrPathRegContents.contains("LINUXSTEAMVRDRIVERDIRECTORY")
 		if (!isDriverRegistered) {
 			println("Downloading driver")
-			downloadFile(URL(LINUXSTEAMVRDRIVERURL), LINUXSTEAMVRDRIVERNAME)
+			downloadFile(LINUXSTEAMVRDRIVERURL, LINUXSTEAMVRDRIVERNAME)
 			unzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
 			println("Driver downloaded")
 			println("Registering driver with steamvr")

@@ -15,16 +15,17 @@ class Updater {
 	@Serializable
 	data class GHResponse(val tag_name: String)
 
-	val os = System.getProperty("os.name").lowercase()
+	//val os = System.getProperty("os.name").lowercase()
+	val os = "windows"
 
 	suspend fun runUpdater() {
 
 		val shouldUpdate: Boolean = shouldUpdate()
-		println(shouldUpdate)
+		println("Should update $shouldUpdate")
 
-		if (!shouldUpdate) {
-			return
-		}
+		//if (!shouldUpdate) {
+		//	return
+		//}
 
 		if (os.contains("linux")) {
 			println("Running linux updater")
@@ -46,39 +47,4 @@ class Updater {
 		println("Done Updating")
 	}
 
-
-
-	suspend fun shouldUpdate(): Boolean {
-		//We're running from a git branch don't update
-		if (VERSION.contains("isDirty")) {
-			return false
-		}
-		val client = HttpClient(CIO) {
-			install(ContentNegotiation) {
-				json(Json {
-					ignoreUnknownKeys = true
-				})
-			}
-		}
-		try {
-			val response: GHResponse = client.get("https://api.github.com/repos/slimevr/slimevr-server/releases/latest").body()
-			client.close()
-			//Replace this if versioning ever changes
-			val githubVersionArr = response.tag_name.replace("v", "").split(".")
-			val localVersionArr = VERSION.replace("v", "").split(".")
-			//Cursed?
-			return if (githubVersionArr[0] > localVersionArr[0]) {
-				true
-			} else if (githubVersionArr[0] < localVersionArr[0] && githubVersionArr[1] > localVersionArr[1]) {
-				true
-			} else if (githubVersionArr[0] < localVersionArr[0] && githubVersionArr[1] < localVersionArr[1] && githubVersionArr[2] > localVersionArr[2]) {
-				true
-			} else {
-				false
-			}
-		} catch(e: Exception) {
-			println("Error getting github release info: ${e.message}")
-		}
-		return false
-	}
 }

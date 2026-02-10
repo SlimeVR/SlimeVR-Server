@@ -1,8 +1,5 @@
 package dev.slimevr.desktop.updater
 
-import dev.slimevr.desktop.updater.downloadFile
-import dev.slimevr.desktop.updater.executeShellCommand
-import dev.slimevr.desktop.updater.unzip
 import java.net.URL
 import java.nio.file.Paths
 
@@ -11,13 +8,12 @@ class Windows {
 
 	fun updateWindows() {
 		//First check if everything is already installed. Install it if it isn't
-		checkForInstalledUsbDriverWindows()
-		updateWindowsGui()
-		updateWindowsServer()
-		updateWindowsSteamVRDriver()
+		usbDrivers()
+		slimeServer()
+		steamVRDriver()
 	}
 
-	fun checkForInstalledUsbDriverWindows() {
+	fun usbDrivers() {
 		val installedDriversList =
 			executeShellCommand("powershell.exe", "pnputil /enum-drivers")
 		val ch341ser = installedDriversList.contains("ch341ser.inf")
@@ -36,7 +32,15 @@ class Windows {
 		println(driverinstallOutput)
 	}
 
-	fun updateWindowsSteamVRDriver() {
+	fun slimeServer() {
+		//downloading slime server
+		downloadFile(WINDOWSSERVERURL, WINDOWSSERVERNAME)
+		println("extracting")
+		Paths.get()
+		unzip(WINDOWSSERVERNAME, WINDOWSSERERDIRECTORY)
+	}
+
+	fun steamVRDriver() {
 		val steamVRLocation = executeShellCommand("powershell.exe", "-Command",  "(Get-ItemProperty \'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820\').InstallLocation").trim()
 		if (!steamVRLocation.contains("SteamVR")) {
 			println("SteamVR not installed, cannot install SlimeVR Steam driver.")
@@ -52,7 +56,7 @@ class Windows {
 		}
 		println("Installing SteamVR Driver")
 		println("Downloading SteamVR driver")
-		downloadFile(URL(WINDOWSSTEAMVRDRIVERURL), WINDOWSSTEAMVRDRIVERNAME)
+		downloadFile(WINDOWSSTEAMVRDRIVERURL, WINDOWSSTEAMVRDRIVERNAME)
 		unzip(WINDOWSSTEAMVRDRIVERNAME, WINDOWSSTEAMVRDRIVERDIRECTORY)
 		println("Driver downloaded")
 		println("Registering driver with steamvr")
@@ -65,10 +69,6 @@ class Windows {
 		)
 	}
 
-	fun updateWindowsServer() {
-
-	}
-
 	fun updateWindowsGui() {
 
 	}
@@ -79,5 +79,8 @@ class Windows {
 		private const val WINDOWSSTEAMVRDRIVERDIRECTORY = "slimevr-openvr-driver-win64"
 		private const val WINDOWSFEEDERURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-win64.zip"
 		private const val WINDOWSFEEDERNAME = "SlimeVR-Feeder-App-win64.zip"
+		private const val WINDOWSSERVERURL = "https://github.com/SlimeVR/SlimeVR-Server/releases/latest/download/SlimeVR-win64.zip"
+		private const val WINDOWSSERVERNAME = "slimevr-win64.zip"
+		private const val WINDOWSSERERDIRECTORY = "slimevr-win64"
 	}
 }
