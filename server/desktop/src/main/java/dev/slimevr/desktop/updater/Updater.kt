@@ -1,36 +1,30 @@
 package dev.slimevr.desktop.updater
 
-import java.io.BufferedInputStream
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 
 class Updater {
+
+	@Serializable
+	data class GHResponse(val tag_name: String)
 
 	val os = System.getProperty("os.name").lowercase()
 
 	suspend fun runUpdater() {
 
-		val latestVersion: Int = queryLatestVersion()
-		val currentVersion = VERSION
+		val shouldUpdate: Boolean = shouldUpdate()
+		println(shouldUpdate)
 
-
-		//Compare versions
+		if (!shouldUpdate) {
+			return
+		}
 
 		if (os.contains("linux")) {
 			println("Running linux updater")
@@ -54,14 +48,37 @@ class Updater {
 
 
 
-	suspend fun queryLatestVersion(): Int {
-		val client = HttpClient(CIO)
-		val response: HttpResponse = client.get("https://api.github.com/repos/slimevr/slimevr-server/releases/latest")
-		println(response)
-		client.close()
-		return 0
+	suspend fun shouldUpdate(): Boolean {
+		//We're running from a git branch don't update
+		if (VERSION.contains("isDirty")) {
+			return false
+		}
+		val client = HttpClient(CIO) {
+			install(ContentNegotiation) {
+				json(Json {
+					ignoreUnknownKeys = true
+				})
+			}
+		}
+		try {
+			val response: GHResponse = client.get("https://api.github.com/repos/slimevr/slimevr-server/releases/latest").body()
+			client.close()
+			//Replace this if versioning ever changes
+			val githubVersionArr = response.tag_name.replace("v", "").split(".")
+			val localVersionArr = VERSION.replace("v", "").split(".")
+			//Cursed?
+			return if (githubVersionArr[0] > localVersionArr[0]) {
+				true
+			} else if (githubVersionArr[0] < localVersionArr[0] && githubVersionArr[1] > localVersionArr[1]) {
+				true
+			} else if (githubVersionArr[0] < localVersionArr[0] && githubVersionArr[1] < localVersionArr[1] && githubVersionArr[2] > localVersionArr[2]) {
+				true
+			} else {
+				false
+			}
+		} catch(e: Exception) {
+			println("Error getting github release info: ${e.message}")
+		}
+		return false
 	}
-
-
-
 }

@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm")
+	kotlin("plugin.serialization") version "2.3.10"
 	application
 	id("com.gradleup.shadow")
 	id("com.github.gmazzo.buildconfig")
@@ -71,6 +72,8 @@ dependencies {
 	implementation("org.hid4java:hid4java:0.8.0")
 	implementation("io.ktor:ktor-client-core:${ktor_version}")
 	implementation("io.ktor:ktor-client-cio:${ktor_version}")
+	implementation("io.ktor:ktor-client-content-negotiation:${ktor_version}")
+	implementation("io.ktor:ktor-serialization-kotlinx-json:${ktor_version}")
 }
 
 tasks.shadowJar {
