@@ -54,6 +54,8 @@ allprojects {
 	}
 }
 
+val ktor_version: String by project
+
 dependencies {
 	implementation(project(":server:core"))
 	implementation(project(":solarxr-protocol"))
@@ -67,6 +69,8 @@ dependencies {
 		exclude(group = "com.fazecast", module = "android")
 	}
 	implementation("org.hid4java:hid4java:0.8.0")
+	implementation("io.ktor:ktor-client-core:${ktor_version}")
+	implementation("io.ktor:ktor-client-cio:${ktor_version}")
 }
 
 tasks.shadowJar {

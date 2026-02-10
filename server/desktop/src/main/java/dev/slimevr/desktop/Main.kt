@@ -15,6 +15,7 @@ import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
 import dev.slimevr.desktop.serial.DesktopSerialHandler
 import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDManager
+import dev.slimevr.desktop.updater.Updater
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
@@ -46,11 +47,6 @@ val VERSION =
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
 	System.setProperty("swing.aatext", "true")
-
-	//Check if first boot
-	// Run install if first boot
-	val updater = Updater()
-	updater.runUpdater()
 
 
 	val parser: CommandLineParser = DefaultParser()
