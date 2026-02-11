@@ -4,7 +4,6 @@ import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.VRServer.Companion.instanceInitialized
 import dev.slimevr.autobone.AutoBone
 import dev.slimevr.autobone.errors.BodyProportionError.Companion.proportionLimitMap
-import dev.slimevr.config.ConfigManager
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import io.github.axisangles.ktmath.Vector3
@@ -475,8 +474,8 @@ class SkeletonConfigManager(
 		}
 	}
 
-	fun loadFromConfig(configManager: ConfigManager) {
-		val skeletonConfig = configManager.vrConfig.skeleton
+	fun loadFromConfig(configProfileHandler: ConfigProfileHandler) {
+		val skeletonConfig = configProfileHandler.vrConfig.skeleton
 
 		// Load offsets
 		val offsets = skeletonConfig.offsets

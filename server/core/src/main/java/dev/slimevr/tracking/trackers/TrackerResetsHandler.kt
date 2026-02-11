@@ -2,7 +2,7 @@ package dev.slimevr.tracking.trackers
 
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
-import dev.slimevr.config.ArmsResetModes
+import dev.slimevr.config.ArmsResetMode
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
@@ -36,7 +36,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var compensateDrift = false
 	private var driftPrediction = false
 	private var driftCompensationEnabled = false
-	private var armsResetMode = ArmsResetModes.BACK
+	private var armsResetMode = ArmsResetMode.BACK
 	private var yawResetSmoothTime = 0.0f
 	var saveMountingReset = false
 	var resetHmdPitch = false
@@ -234,9 +234,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		// Adjust for T-Pose (down)
-		tposeDownFix = if (((tracker.trackerPosition.isLeftArm() || tracker.trackerPosition.isLeftFinger()) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
+		tposeDownFix = if (((tracker.trackerPosition.isLeftArm() || tracker.trackerPosition.isLeftFinger()) && armsResetMode == ArmsResetMode.TPOSE_DOWN)) {
 			EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
-		} else if (((tracker.trackerPosition.isRightArm() || tracker.trackerPosition.isRightFinger()) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
+		} else if (((tracker.trackerPosition.isRightArm() || tracker.trackerPosition.isRightFinger()) && armsResetMode == ArmsResetMode.TPOSE_DOWN)) {
 			EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
 		} else {
 			Quaternion.IDENTITY
@@ -396,15 +396,15 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var yawAngle = atan2(rotVector.x, rotVector.z)
 
 		// Adjust for T-Pose and fingers
-		if ((tracker.trackerPosition.isLeftArm() && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
-			(tracker.trackerPosition.isRightArm() && armsResetMode == ArmsResetModes.TPOSE_UP) ||
+		if ((tracker.trackerPosition.isLeftArm() && armsResetMode == ArmsResetMode.TPOSE_DOWN) ||
+			(tracker.trackerPosition.isRightArm() && armsResetMode == ArmsResetMode.TPOSE_UP) ||
 			tracker.trackerPosition.isLeftFinger()
 		) {
 			// Tracker goes right
 			yawAngle -= FastMath.HALF_PI
 		}
-		if ((tracker.trackerPosition.isLeftArm() && armsResetMode == ArmsResetModes.TPOSE_UP) ||
-			(tracker.trackerPosition.isRightArm() && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
+		if ((tracker.trackerPosition.isLeftArm() && armsResetMode == ArmsResetMode.TPOSE_UP) ||
+			(tracker.trackerPosition.isRightArm() && armsResetMode == ArmsResetMode.TPOSE_DOWN) ||
 			tracker.trackerPosition.isRightFinger()
 		) {
 			// Tracker goes left
@@ -412,8 +412,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		// Adjust for forward/back arms and thighs
-		val isLowerArmBack = armsResetMode == ArmsResetModes.BACK && (tracker.trackerPosition.isLeftLowerArm() || tracker.trackerPosition.isRightLowerArm())
-		val isArmForward = armsResetMode == ArmsResetModes.FORWARD && (tracker.trackerPosition.isLeftArm() || tracker.trackerPosition.isRightArm())
+		val isLowerArmBack = armsResetMode == ArmsResetMode.BACK && (tracker.trackerPosition.isLeftLowerArm() || tracker.trackerPosition.isRightLowerArm())
+		val isArmForward = armsResetMode == ArmsResetMode.FORWARD && (tracker.trackerPosition.isLeftArm() || tracker.trackerPosition.isRightArm())
 		if (!tracker.trackerPosition.isThigh() && !isArmForward && !isLowerArmBack) {
 			// Tracker goes back
 			yawAngle -= FastMath.PI

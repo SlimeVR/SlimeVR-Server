@@ -4,7 +4,9 @@ import com.illposed.osc.*;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.OSCPortOut;
+import dev.slimevr.config.ConfigFileHandler;
 import dev.slimevr.config.OSCConfig;
+import dev.slimevr.config.SettingsConfig;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
@@ -17,7 +19,7 @@ import java.net.UnknownHostException;
 public class OSCRouter {
 	private OSCPortIn oscReceiver;
 	private OSCPortOut oscSender;
-	private final OSCConfig config;
+	private final ConfigFileHandler<SettingsConfig> settings;
 	private final FastList<OSCHandler> oscHandlers;
 	private int lastPortIn;
 	private int lastPortOut;
@@ -25,16 +27,18 @@ public class OSCRouter {
 	private long timeAtLastError;
 
 	public OSCRouter(
-		OSCConfig oscConfig,
+		ConfigFileHandler<SettingsConfig> settings,
 		FastList<OSCHandler> oscHandlers
 	) {
-		this.config = oscConfig;
+		this.settings = settings;
 		this.oscHandlers = oscHandlers;
 
 		refreshSettings(false);
 	}
 
 	public void refreshSettings(boolean refreshHandlersSettings) {
+		OSCConfig config = settings.get().getOscRouter();
+
 		if (refreshHandlersSettings) {
 			for (OSCHandler oscHandler : oscHandlers) {
 				oscHandler.refreshSettings(false);

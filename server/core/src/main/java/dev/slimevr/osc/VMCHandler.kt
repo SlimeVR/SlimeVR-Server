@@ -41,7 +41,6 @@ import java.net.InetSocketAddress
 class VMCHandler(
 	private val server: VRServer,
 	private val humanPoseManager: HumanPoseManager,
-	private val config: VMCConfig,
 ) : OSCHandler {
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
@@ -67,6 +66,9 @@ class VMCHandler(
 	}
 
 	override fun refreshSettings(refreshRouterSettings: Boolean) {
+		val settings = server.configManager.settings.get()
+		val config = settings.vmc
+
 		anchorHip = config.anchorHip
 		mirrorTracking = config.mirrorTracking
 
@@ -117,6 +119,8 @@ class VMCHandler(
 	}
 
 	override fun updateOscReceiver(portIn: Int, args: Array<String>) {
+		val settings = server.configManager.settings.get()
+		val config = settings.vmc
 		// Stops listening and closes OSC port
 		val wasListening = oscReceiver != null && oscReceiver!!.isListening
 		if (wasListening) {
@@ -154,6 +158,9 @@ class VMCHandler(
 	}
 
 	override fun updateOscSender(portOut: Int, ip: String) {
+		val settings = server.configManager.settings.get()
+		val config = settings.vmc
+		
 		// Stop sending
 		val wasConnected = oscSender != null && oscSender!!.isConnected
 		if (wasConnected) {

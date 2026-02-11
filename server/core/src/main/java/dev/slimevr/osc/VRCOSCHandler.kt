@@ -34,7 +34,6 @@ private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
  */
 class VRCOSCHandler(
 	private val server: VRServer,
-	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
 	private val localIp = RPCUtil.getLocalIp()
@@ -78,6 +77,8 @@ class VRCOSCHandler(
 	}
 
 	override fun refreshSettings(refreshRouterSettings: Boolean) {
+		val settings = server.configManager.settings.get()
+		val config = settings.vrcOSC
 		// Sets which trackers are enabled and force head and hands to false
 		for (i in computedTrackers.indices) {
 			if (computedTrackers[i].trackerPosition != TrackerPosition.HEAD || computedTrackers[i].trackerPosition != TrackerPosition.LEFT_HAND || computedTrackers[i].trackerPosition != TrackerPosition.RIGHT_HAND) {
@@ -145,6 +146,9 @@ class VRCOSCHandler(
 	}
 
 	override fun updateOscReceiver(portIn: Int, args: Array<String>) {
+		val settings = server.configManager.settings.get()
+		val config = settings.vrcOSC
+
 		// Stop listening
 		val wasListening = oscReceiver != null && oscReceiver!!.isListening
 		if (wasListening) {
@@ -184,6 +188,9 @@ class VRCOSCHandler(
 	}
 
 	override fun updateOscSender(portOut: Int, ip: String) {
+		val settings = server.configManager.settings.get()
+		val config = settings.vrcOSC
+
 		// Stop sending
 		val wasConnected = oscSender != null && oscSender!!.isConnected
 		if (wasConnected) {

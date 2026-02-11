@@ -25,7 +25,8 @@ abstract class SteamVRBridge(
 ) : ProtobufBridge(bridgeName),
 	Runnable {
 	protected val runnerThread: Thread = Thread(this, threadName)
-	protected val config: BridgeConfig = server.configManager.vrConfig.getBridge(bridgeSettingsKey)
+//	protected val config: BridgeConfig?
+//		get() = server.configManager.settings.get().bridges[bridgeSettingsKey]
 	var connected: Boolean = false
 
 	@VRServerThread

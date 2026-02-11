@@ -1,5 +1,7 @@
 package dev.slimevr.tracking.trackers
 
+import java.util.Locale
+
 /**
  * The tracker role classifies the position and the role of a tracker on user's
  * body or playspace (like CAMERA or BEACON). Tracker roles are hints for
@@ -34,9 +36,12 @@ enum class TrackerRole(val id: Int, val roleHint: String, val viveRole: String) 
 	;
 
 	companion object {
-		private val byId = values().associateBy { it.id }
+		private val byId = TrackerRole.entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: Int): TrackerRole? = byId[id]
 	}
 }
+
+val TrackerRole.toKey: String
+	get() = name.lowercase(Locale.getDefault())

@@ -10,61 +10,62 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-class ServerConfig {
-	val trackerPort: Int = 6969
-
-	var useMagnetometerOnAllTrackers: Boolean = false
-		private set
-
-	@Transient
-	private val magMutex = Mutex()
-	suspend fun defineMagOnAllTrackers(state: Boolean) = coroutineScope {
-		magMutex.lock()
-		try {
-			if (useMagnetometerOnAllTrackers == state) return@coroutineScope
-
-			VRServer.instance.deviceManager.devices.filter { it.magSupport }.map {
-				async {
-					// Not using 255 as it sometimes could make one of the sensors go into
-					// error mode (if there is more than one sensor inside the device)
-					if (!state) {
-						val trackers = it.trackers.filterValues {
-							it.magStatus != MagnetometerStatus.NOT_SUPPORTED
-						}
-// 						if(trackers.size == it.trackers.size) {
-// 							it.setMag(false)
-// 						} else {
-						trackers.map { (_, t) ->
-							async { it.setMag(false, t.trackerNum) }
-						}.awaitAll()
+data class ServerConfig(
+	val trackerPort: Int = 6969,
+	val useMagnetometerOnAllTrackers: Boolean = false,
+) {
+// 	var useMagnetometerOnAllTrackers: Boolean = false
+// 		private set
+//
+// 	@Transient
+// 	private val magMutex = Mutex()
+// 	suspend fun defineMagOnAllTrackers(state: Boolean) = coroutineScope {
+// 		magMutex.lock()
+// 		try {
+// 			if (useMagnetometerOnAllTrackers == state) return@coroutineScope
+//
+// 			VRServer.instance.deviceManager.devices.filter { it.magSupport }.map {
+// 				async {
+// 					// Not using 255 as it sometimes could make one of the sensors go into
+// 					// error mode (if there is more than one sensor inside the device)
+// 					if (!state) {
+// 						val trackers = it.trackers.filterValues {
+// 							it.magStatus != MagnetometerStatus.NOT_SUPPORTED
 // 						}
-						return@async
-					}
-
-// 					val every = it.trackers.all { (_, t) -> t.config.shouldHaveMagEnabled == true
-// 						&& t.magStatus != MagnetometerStatus.NOT_SUPPORTED }
-// 					if (every) {
-// 						it.setMag(true)
+// // 						if(trackers.size == it.trackers.size) {
+// // 							it.setMag(false)
+// // 						} else {
+// 						trackers.map { (_, t) ->
+// 							async { it.setMag(false, t.trackerNum) }
+// 						}.awaitAll()
+// // 						}
 // 						return@async
 // 					}
-
-					it.trackers.filterValues {
-						it.config.shouldHaveMagEnabled == true &&
-							it.magStatus != MagnetometerStatus.NOT_SUPPORTED
-					}
-						.map { (_, t) ->
-							async {
-								// FIXME: Tracker gets restarted after each setMag, what will happen for devices with 3 trackers?
-								it.setMag(true, t.trackerNum)
-							}
-						}.awaitAll()
-				}
-			}.awaitAll()
-
-			useMagnetometerOnAllTrackers = state
-			VRServer.instance.configManager.saveConfig()
-		} finally {
-			magMutex.unlock()
-		}
-	}
+//
+// // 					val every = it.trackers.all { (_, t) -> t.config.shouldHaveMagEnabled == true
+// // 						&& t.magStatus != MagnetometerStatus.NOT_SUPPORTED }
+// // 					if (every) {
+// // 						it.setMag(true)
+// // 						return@async
+// // 					}
+//
+// 					it.trackers.filterValues {
+// 						it.config.shouldHaveMagEnabled == true &&
+// 							it.magStatus != MagnetometerStatus.NOT_SUPPORTED
+// 					}
+// 						.map { (_, t) ->
+// 							async {
+// 								// FIXME: Tracker gets restarted after each setMag, what will happen for devices with 3 trackers?
+// 								it.setMag(true, t.trackerNum)
+// 							}
+// 						}.awaitAll()
+// 				}
+// 			}.awaitAll()
+//
+// 			useMagnetometerOnAllTrackers = state
+// 			VRServer.instance.configManager.saveConfig()
+// 		} finally {
+// 			magMutex.unlock()
+// 		}
+// 	}
 }

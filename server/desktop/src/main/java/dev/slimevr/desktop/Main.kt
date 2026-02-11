@@ -6,7 +6,6 @@ import dev.slimevr.Keybinding
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.Bridge
-import dev.slimevr.config.ConfigManager
 import dev.slimevr.desktop.firmware.DesktopSerialFlashingHandler
 import dev.slimevr.desktop.games.vrchat.DesktopVRCConfigHandler
 import dev.slimevr.desktop.platform.SteamVRBridge
@@ -102,14 +101,14 @@ fun main(args: Array<String>) {
 	val configDir = resolveConfig()
 	LogManager.info("Using config dir: $configDir")
 
-	val configManager = ConfigManager(configDir)
-	configManager.loadConfig()
+	val configProfileHandler = ConfigProfileHandler(configDir)
+	configProfileHandler.loadConfig()
 
 	try {
-		DatagramSocket(configManager.vrConfig.server.trackerPort).close()
+		DatagramSocket(configProfileHandler.vrConfig.server.trackerPort).close()
 		ServerSocket(21110).close()
 	} catch (e: IOException) {
-		val message = "SlimeVR start-up error! A required port (${configManager.vrConfig.server.trackerPort} and 21110) is busy. " +
+		val message = "SlimeVR start-up error! A required port (${configProfileHandler.vrConfig.server.trackerPort} and 21110) is busy. " +
 			"Make sure there is no other instance of SlimeVR Server running."
 		LogManager
 			.severe(message)
@@ -130,7 +129,7 @@ fun main(args: Array<String>) {
 			{ _ -> DesktopSerialFlashingHandler() },
 			{ _ -> DesktopVRCConfigHandler() },
 			{ server -> DesktopNetworkProfileChecker(server) },
-			configManager = configManager,
+			configManager = configProfileHandler,
 		)
 		vrServer.start()
 

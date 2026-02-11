@@ -7,25 +7,16 @@ import kotlinx.serialization.Serializable
 // this involves the number of taps, the delay, and whether or not the feature is enabled
 // for each reset type
 @Serializable
-class TapDetectionConfig {
-	var yawResetDelay = 0.2f
-	var fullResetDelay = 1.0f
-	var mountingResetDelay = 1.0f
-	var yawResetEnabled = true
-	var fullResetEnabled = true
-	var mountingResetEnabled = true
-	var setupMode = false
-	var yawResetTaps = 2
-		set(yawResetTaps) {
-			field = yawResetTaps.coerceIn(2, 10)
-		}
-	var fullResetTaps = 3
-		set(fullResetTaps) {
-			field = fullResetTaps.coerceIn(2, 10)
-		}
-	var mountingResetTaps = 3
-		set(mountingResetTaps) {
-			field = mountingResetTaps.coerceIn(2, 10)
-		}
-	var numberTrackersOverThreshold = 1
-}
+data class TapDetectionConfig(
+	val yawResetDelay: Float = 0.2f,
+	val fullResetDelay: Float = 1.0f,
+	val mountingResetDelay: Float = 1.0f,
+	val yawResetEnabled: Boolean = true,
+	val fullResetEnabled: Boolean = true,
+	val setupMode: Boolean = false,
+	val mountingResetEnabled: Boolean = true,
+	val yawResetTaps: Int = 2,
+	val fullResetTaps: Int = 3,
+	val mountingResetTaps: Int = 3,
+	val numberTrackersOverThreshold: Int = 1,
+)

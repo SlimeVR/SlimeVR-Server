@@ -6,6 +6,9 @@ import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
+import { useEffect, useState } from 'react';
+import { ChangeSettingsRequestT, ModelSettingsT, ModelTogglesT, RpcMessage, SettingsRequestT, SettingsResponseT } from 'solarxr-protocol';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 
 export function PutTrackersOnStep({
   nextStep,
@@ -17,6 +20,7 @@ export function PutTrackersOnStep({
   const { isMobile } = useBreakpoint('mobile');
   const trackers = useAtomValue(flatTrackersAtom);
   const { l10n } = useLocalization();
+
 
   return (
     <div className="flex mobile:flex-col items-center w-full">

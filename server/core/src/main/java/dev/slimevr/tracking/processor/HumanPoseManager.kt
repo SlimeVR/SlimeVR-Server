@@ -4,7 +4,6 @@ import com.jme3.math.FastMath
 import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.autobone.errors.BodyProportionError
-import dev.slimevr.config.ConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
@@ -225,8 +224,8 @@ class HumanPoseManager(val server: VRServer?) {
 		connectComputedHumanPoseTrackers()
 	}
 
-	fun loadFromConfig(configManager: ConfigManager) {
-		skeletonConfigManager.loadFromConfig(configManager)
+	fun loadFromConfig(configProfileHandler: ConfigProfileHandler) {
+		skeletonConfigManager.loadFromConfig(configProfileHandler)
 	}
 
 	@VRServerThread

@@ -144,7 +144,7 @@ class VRServer @JvmOverloads constructor(
 		val computedTrackers = humanPoseManager.computedTrackers
 
 		// Start server for SlimeVR trackers
-		val trackerPort = configManager.vrConfig.server.trackerPort
+		val trackerPort = configManager.settings.get().server.trackerPort
 		LogManager.info("Starting the tracker server on port $trackerPort...")
 		trackersServer = TrackersUDPServer(
 			trackerPort,
@@ -160,20 +160,18 @@ class VRServer @JvmOverloads constructor(
 		// Initialize OSC handlers
 		vrcOSCHandler = VRCOSCHandler(
 			this,
-			configManager.vrConfig.vrcOSC,
 			computedTrackers,
 		)
 		vMCHandler = VMCHandler(
 			this,
 			humanPoseManager,
-			configManager.vrConfig.vmc,
 		)
 
 		// Initialize OSC router
 		val oscHandlers = FastList<OSCHandler>()
 		oscHandlers.add(vrcOSCHandler)
 		oscHandlers.add(vMCHandler)
-		oSCRouter = OSCRouter(configManager.vrConfig.oscRouter, oscHandlers)
+		oSCRouter = OSCRouter(configManager.settings, oscHandlers)
 		bvhRecorder = BVHRecorder(this)
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)

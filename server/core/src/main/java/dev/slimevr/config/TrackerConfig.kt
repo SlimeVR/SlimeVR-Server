@@ -16,7 +16,6 @@ class TrackerConfig {
 
 	@Serializable(with = QuaternionSerializer::class)
 	var mountingResetOrientation: ObjectQuaternion? = null
-	var allowDriftCompensation: Boolean? = null
 
 	/**
 	 * Only checked if [ServerConfig.useMagnetometerOnAllTrackers] enabled
@@ -26,10 +25,9 @@ class TrackerConfig {
 	constructor(tracker: Tracker) {
 		this.designation = if (tracker.trackerPosition != null) tracker.trackerPosition!!.designation else null
 		this.customName = tracker.customName
-		allowDriftCompensation = tracker.isImu()
 		shouldHaveMagEnabled = tracker.isImu()
 	}
 }
 
-val Tracker.config: TrackerConfig
-	get() = VRServer.instance.configManager.vrConfig.getTracker(this)
+// val Tracker.config: TrackerConfig
+// 	get() = VRServer.instance.configManager.vrConfig.getTracker(this)

@@ -12,7 +12,6 @@ import solarxr_protocol.rpc.UserHeightRecordingStatusResponseT
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.math.PI
 import kotlin.math.cos
-import kotlin.math.max
 import kotlin.math.sqrt
 
 /**

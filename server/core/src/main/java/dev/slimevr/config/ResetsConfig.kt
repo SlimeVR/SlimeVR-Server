@@ -1,9 +1,8 @@
 package dev.slimevr.config
 
-import dev.slimevr.VRServer
 import kotlinx.serialization.Serializable
 
-enum class ArmsResetModes(val id: Int) {
+enum class ArmsResetMode(val id: Int) {
 	// Upper arm going back and forearm going forward
 	BACK(0),
 
@@ -21,7 +20,7 @@ enum class ArmsResetModes(val id: Int) {
 		val values = entries.toTypedArray()
 
 		@JvmStatic
-		fun fromId(id: Int): ArmsResetModes? {
+		fun fromId(id: Int): ArmsResetMode? {
 			for (filter in values) {
 				if (filter.id == id) return filter
 			}
@@ -30,16 +29,16 @@ enum class ArmsResetModes(val id: Int) {
 	}
 }
 
-enum class MountingMethods(val id: Int) {
+enum class MountingMethod(val id: Int) {
 	MANUAL(0),
 	AUTOMATIC(1),
 	;
 
 	companion object {
-		val values = MountingMethods.entries.toTypedArray()
+		val values = MountingMethod.entries.toTypedArray()
 
 		@JvmStatic
-		fun fromId(id: Int): MountingMethods? {
+		fun fromId(id: Int): MountingMethod? {
 			for (filter in values) {
 				if (filter.id == id) return filter
 			}
@@ -49,32 +48,31 @@ enum class MountingMethods(val id: Int) {
 }
 
 @Serializable
-class ResetsConfig {
-
+data class ResetsConfig(
 	// Always reset mounting for feet
-	var resetMountingFeet = false
+	val resetMountingFeet: Boolean = false,
 
 	// Reset mode used for the arms
-	var mode = ArmsResetModes.BACK
+	val mode: ArmsResetMode = ArmsResetMode.BACK,
 
 	// Yaw reset smoothing time in seconds
-	var yawResetSmoothTime = 0.0f
+	val yawResetSmoothTime: Float = 0.0f,
 
 	// Save automatic mounting reset calibration
-	var saveMountingReset = false
+	val saveMountingReset: Boolean = false,
 
 	// Reset the HMD's pitch upon full reset
-	var resetHmdPitch = false
+	val resetHmdPitch: Boolean = false,
 
-	var lastMountingMethod = MountingMethods.AUTOMATIC
+	val lastMountingMethod: MountingMethod = MountingMethod.AUTOMATIC,
 
-	var yawResetDelay = 0.0f
-	var fullResetDelay = 3.0f
-	var mountingResetDelay = 3.0f
-
-	fun updateTrackersResetsSettings() {
-		for (t in VRServer.instance.allTrackers) {
-			t.resetsHandler.readResetConfig(this)
-		}
-	}
+	val yawResetDelay: Float = 0.0f,
+	val fullResetDelay: Float = 3.0f,
+	val mountingResetDelay: Float = 3.0f,
+) {
+// 	fun updateTrackersResetsSettings() {
+// 		for (t in VRServer.instance.allTrackers) {
+// 			t.resetsHandler.readResetConfig(this)
+// 		}
+// 	}
 }

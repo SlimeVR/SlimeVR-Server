@@ -1,7 +1,7 @@
 package dev.slimevr.protocol.rpc
 
 import com.google.flatbuffers.FlatBufferBuilder
-import dev.slimevr.config.MountingMethods
+import dev.slimevr.config.MountingMethod
 import dev.slimevr.config.config
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
@@ -170,7 +170,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		messageHeader: RpcMessageHeader,
 	) {
 		val fbb = FlatBufferBuilder(32)
-		val config = api.server.configManager.vrConfig.overlay
+		val config = api.server.configManager.settings.get().overlay
 		val response = OverlayDisplayModeResponse
 			.createOverlayDisplayModeResponse(fbb, config.isVisible, config.isMirrored)
 		val outbound = this.createRPCMessage(fbb, RpcMessage.OverlayDisplayModeResponse, response, messageHeader)
@@ -184,11 +184,14 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	) {
 		val req = messageHeader
 			.message(OverlayDisplayModeChangeRequest()) as? OverlayDisplayModeChangeRequest ?: return
-		val config = api.server.configManager.vrConfig.overlay
-		config.isMirrored = req.isMirrored
-		config.isVisible = req.isVisible
-
-		api.server.configManager.saveConfig()
+		api.server.configManager.settings.updateAndSave {
+			it.copy(
+				overlay = it.overlay.copy(
+					isMirrored = req.isMirrored,
+					isVisible = req.isVisible,
+				),
+			)
+		}
 	}
 
 	fun onSkeletonResetAllRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
@@ -304,7 +307,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 					req.mountingOrientation().z(),
 				)
 				api.server.configManager.vrConfig.resetsConfig.lastMountingMethod =
-					MountingMethods.MANUAL
+					MountingMethod.MANUAL
 			}
 		}
 
@@ -452,7 +455,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			val response = MagToggleResponse.createMagToggleResponse(
 				fbb,
 				0,
-				api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers,
+				api.server.configManager.settings.get().server.useMagnetometerOnAllTrackers,
 			)
 			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response, messageHeader))
 			conn.send(fbb.dataBuffer())
@@ -532,15 +535,14 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			messageHeader.message(EnableStayAlignedRequest()) as? EnableStayAlignedRequest
 				?: return
 
-		val configManager = api.server.configManager
-
-		val config = configManager.vrConfig.stayAlignedConfig
-		config.enabled = request.enable()
-		if (request.enable()) {
-			config.setupComplete = true
+		api.server.configManager.settings.updateAndSave {
+			it.copy(
+				stayAlignedConfig = it.stayAlignedConfig.copy(
+					enabled = request.enable(),
+					setupComplete = if (request.enable()) true else it.stayAlignedConfig.setupComplete,
+				),
+			)
 		}
-
-		configManager.saveConfig()
 
 		sendSettingsChangedResponse(conn, messageHeader)
 	}
@@ -551,28 +553,46 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				?: return
 
 		val configManager = api.server.configManager
-		val config = configManager.vrConfig.stayAlignedConfig
 
-		val pose = request.pose()
+		configManager.settings.updateAndSave {
+			val relaxedPose = RelaxedPose.fromTrackers(api.server.humanPoseManager.skeleton)
+			val pose = request.pose()
 
-		val poseConfig =
-			when (pose) {
-				StayAlignedRelaxedPose.STANDING -> config.standingRelaxedPose
-				StayAlignedRelaxedPose.SITTING -> config.sittingRelaxedPose
-				StayAlignedRelaxedPose.FLAT -> config.flatRelaxedPose
-				else -> return
-			}
+			LogManager.info("[detectStayAlignedRelaxedPose] pose=$pose $relaxedPose")
 
-		val relaxedPose = RelaxedPose.fromTrackers(api.server.humanPoseManager.skeleton)
+			it.copy(
+				stayAlignedConfig = when (pose) {
+					StayAlignedRelaxedPose.STANDING -> it.stayAlignedConfig.copy(
+						standingRelaxedPose = it.stayAlignedConfig.standingRelaxedPose.copy(
+							enabled = true,
+							upperLegAngleInDeg = relaxedPose.upperLeg.toDeg(),
+							lowerLegAngleInDeg = relaxedPose.lowerLeg.toDeg(),
+							footAngleInDeg = relaxedPose.foot.toDeg(),
+						),
+					)
 
-		poseConfig.enabled = true
-		poseConfig.upperLegAngleInDeg = relaxedPose.upperLeg.toDeg()
-		poseConfig.lowerLegAngleInDeg = relaxedPose.lowerLeg.toDeg()
-		poseConfig.footAngleInDeg = relaxedPose.foot.toDeg()
+					StayAlignedRelaxedPose.SITTING -> it.stayAlignedConfig.copy(
+						sittingRelaxedPose = it.stayAlignedConfig.sittingRelaxedPose.copy(
+							enabled = true,
+							upperLegAngleInDeg = relaxedPose.upperLeg.toDeg(),
+							lowerLegAngleInDeg = relaxedPose.lowerLeg.toDeg(),
+							footAngleInDeg = relaxedPose.foot.toDeg(),
+						),
+					)
 
-		configManager.saveConfig()
+					StayAlignedRelaxedPose.FLAT -> it.stayAlignedConfig.copy(
+						flatRelaxedPose = it.stayAlignedConfig.flatRelaxedPose.copy(
+							enabled = true,
+							upperLegAngleInDeg = relaxedPose.upperLeg.toDeg(),
+							lowerLegAngleInDeg = relaxedPose.lowerLeg.toDeg(),
+							footAngleInDeg = relaxedPose.foot.toDeg(),
+						),
+					)
 
-		LogManager.info("[detectStayAlignedRelaxedPose] pose=$pose $relaxedPose")
+					else -> error("unknown pose")
+				},
+			)
+		}
 
 		sendSettingsChangedResponse(conn, messageHeader)
 	}
@@ -583,24 +603,45 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				?: return
 
 		val configManager = api.server.configManager
-		val config = configManager.vrConfig.stayAlignedConfig
+		configManager.settings.updateAndSave {
+			val relaxedPose =
+				RelaxedPose.fromTrackers(api.server.humanPoseManager.skeleton)
+			val pose = request.pose()
 
-		val pose = request.pose()
+			LogManager.info("[detectStayAlignedRelaxedPose] pose=$pose $relaxedPose")
+			it.copy(
+				stayAlignedConfig = when (pose) {
+					StayAlignedRelaxedPose.STANDING -> it.stayAlignedConfig.copy(
+						standingRelaxedPose = it.stayAlignedConfig.standingRelaxedPose.copy(
+							enabled = false,
+							upperLegAngleInDeg = 0f,
+							lowerLegAngleInDeg = 0f,
+							footAngleInDeg = 0f,
+						),
+					)
 
-		val poseConfig =
-			when (pose) {
-				StayAlignedRelaxedPose.STANDING -> config.standingRelaxedPose
-				StayAlignedRelaxedPose.SITTING -> config.sittingRelaxedPose
-				StayAlignedRelaxedPose.FLAT -> config.flatRelaxedPose
-				else -> return
-			}
+					StayAlignedRelaxedPose.SITTING -> it.stayAlignedConfig.copy(
+						sittingRelaxedPose = it.stayAlignedConfig.sittingRelaxedPose.copy(
+							enabled = false,
+							upperLegAngleInDeg = 0f,
+							lowerLegAngleInDeg = 0f,
+							footAngleInDeg = 0f,
+						),
+					)
 
-		poseConfig.enabled = false
-		poseConfig.upperLegAngleInDeg = 0.0f
-		poseConfig.lowerLegAngleInDeg = 0.0f
-		poseConfig.footAngleInDeg = 0.0f
+					StayAlignedRelaxedPose.FLAT -> it.stayAlignedConfig.copy(
+						flatRelaxedPose = it.stayAlignedConfig.flatRelaxedPose.copy(
+							enabled = false,
+							upperLegAngleInDeg = 0f,
+							lowerLegAngleInDeg = 0f,
+							footAngleInDeg = 0f,
+						),
+					)
 
-		LogManager.info("[resetStayAlignedRelaxedPose] pose=$pose")
+					else -> error("unknown pose")
+				},
+			)
+		}
 
 		sendSettingsChangedResponse(conn, messageHeader)
 	}

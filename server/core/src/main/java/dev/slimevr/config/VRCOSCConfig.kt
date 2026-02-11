@@ -1,40 +1,22 @@
 package dev.slimevr.config
 
-import dev.slimevr.tracking.trackers.TrackerRole
 import kotlinx.serialization.Serializable
-import java.util.*
 
 @Serializable
-class VRCOSCConfig : OSCConfig() {
+data class VRCOSCConfig(
+	// Are the OSC receiver and sender enabled?
+	val enabled: Boolean = false,
 
-	// Which trackers' data to send
-// 	@JsonDeserialize(using = BooleanMapDeserializer::class)
-// 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
-	var trackers: MutableMap<String, Boolean> = HashMap()
+	// Port to receive OSC messages from
+	val portIn: Int = 9001,
 
-	var oscqueryEnabled: Boolean = true
+	// Port to send out OSC messages at
+	val portOut: Int = 9000,
 
-	fun getOSCTrackerRole(role: TrackerRole, def: Boolean): Boolean = trackers.getOrDefault(role.name.lowercase(Locale.getDefault()), def)
+	// Address to send out OSC messages at
+	val address: String = "127.0.0.1",
 
-	fun setOSCTrackerRole(role: TrackerRole, value: Boolean) {
-		trackers[role.name.lowercase(Locale.getDefault())] = value
-	}
+	val trackers: MutableMap<String, Boolean> = HashMap(),
 
-	init {
-		portIn = 9001
-		portOut = 9000
-
-		setOSCTrackerRole(
-			TrackerRole.WAIST,
-			getOSCTrackerRole(TrackerRole.WAIST, true),
-		)
-		setOSCTrackerRole(
-			TrackerRole.LEFT_FOOT,
-			getOSCTrackerRole(TrackerRole.WAIST, true),
-		)
-		setOSCTrackerRole(
-			TrackerRole.RIGHT_FOOT,
-			getOSCTrackerRole(TrackerRole.WAIST, true),
-		)
-	}
-}
+	val oscqueryEnabled: Boolean = true,
+)

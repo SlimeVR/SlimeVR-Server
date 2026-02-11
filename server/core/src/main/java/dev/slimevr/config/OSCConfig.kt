@@ -3,17 +3,13 @@ package dev.slimevr.config
 import kotlinx.serialization.Serializable
 
 @Serializable
-open class OSCConfig {
-
+data class OSCConfig(
 	// Are the OSC receiver and sender enabled?
-	var enabled = false
-
+	val enabled: Boolean = false,
 	// Port to receive OSC messages from
-	var portIn = 9002
-
+	val portIn: Int = 9002,
 	// Port to send out OSC messages at
-	var portOut = 9000
-
+	val portOut: Int = 9000,
 	// Address to send out OSC messages at
-	var address = "127.0.0.1"
-}
+	val address: String = "127.0.0.1",
+)

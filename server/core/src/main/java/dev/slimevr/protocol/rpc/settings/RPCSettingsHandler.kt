@@ -2,7 +2,11 @@ package dev.slimevr.protocol.rpc.settings
 
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.bridge.ISteamVRBridge
-import dev.slimevr.config.ArmsResetModes
+import dev.slimevr.config.ArmsResetMode
+import dev.slimevr.config.OSCConfig
+import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.config.VMCConfig
+import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.filtering.TrackerFilters
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
@@ -10,6 +14,7 @@ import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
 import dev.slimevr.tracking.trackers.TrackerRole
+import dev.slimevr.tracking.trackers.toKey
 import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
@@ -68,132 +73,120 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		if (req.filtering() != null) {
 			val type = TrackerFilters.fromId(req.filtering().type())
 			if (type != null) {
-				val filtersConfig = api.server.configManager
-					.vrConfig
-					.filters
-				filtersConfig.type = type.configKey
-				filtersConfig.amount = req.filtering().amount()
-				filtersConfig.updateTrackersFilters()
+				api.server.configManager.settings.update {
+					it.copy(
+						filters = it.filters.copy(
+							type = type.configKey,
+							amount = req.filtering().amount(),
+						),
+					)
+				}
+				filtersConfig.updateTrackersFilters() // FIXME: move this outside of the config file
 			}
 		}
 
 		if (req.oscRouter() != null) {
-			val oscRouterConfig = api.server.configManager
-				.vrConfig
-				.oscRouter
 			val oscRouter = api.server.oSCRouter
 			val osc = req.oscRouter().oscSettings()
-			if (osc != null) {
-				oscRouterConfig.enabled = osc.enabled()
-				oscRouterConfig.portIn = osc.portIn()
-				oscRouterConfig.portOut = osc.portOut()
-				oscRouterConfig.address = osc.address()
+			api.server.configManager.settings.update {
+				it.copy(
+					oscRouter = if (osc != null) {
+						OSCConfig(
+							enabled = osc.enabled(),
+							portIn = osc.portIn(),
+							portOut = osc.portOut(),
+							address = osc.address(),
+						)
+					} else {
+						it.oscRouter
+					},
+				)
 			}
-
 			oscRouter.refreshSettings(true)
 		}
 
 		if (req.vrcOsc() != null) {
-			val vrcOSCConfig = api.server.configManager
-				.vrConfig
-				.vrcOSC
-			val vrcOscHandler = api.server.vrcOSCHandler
 			val osc = req.vrcOsc().oscSettings()
 			val trackers = req.vrcOsc().trackers()
-
-			if (osc != null) {
-				vrcOSCConfig.enabled = osc.enabled()
-				vrcOSCConfig.portIn = osc.portIn()
-				vrcOSCConfig.portOut = osc.portOut()
-				vrcOSCConfig.address = osc.address()
+			api.server.configManager.settings.update {
+				it.copy(
+					vrcOSC = if (osc != null) {
+						VRCOSCConfig(
+							enabled = osc.enabled(),
+							portIn = osc.portIn(),
+							portOut = osc.portOut(),
+							address = osc.address(),
+							oscqueryEnabled = req.vrcOsc().oscqueryEnabled(),
+							trackers = if (trackers != null) {
+								mutableMapOf(
+									TrackerRole.HEAD.toKey to trackers.head(),
+									TrackerRole.CHEST.toKey to trackers.chest(),
+									TrackerRole.WAIST.toKey to trackers.waist(),
+									TrackerRole.LEFT_KNEE.toKey to trackers.knees(),
+									TrackerRole.RIGHT_KNEE.toKey to trackers.knees(),
+									TrackerRole.LEFT_FOOT.toKey to trackers.feet(),
+									TrackerRole.RIGHT_FOOT.toKey to trackers.feet(),
+									TrackerRole.LEFT_ELBOW.toKey to trackers.elbows(),
+									TrackerRole.RIGHT_ELBOW.toKey to trackers.elbows(),
+									TrackerRole.LEFT_HAND.toKey to trackers.hands(),
+									TrackerRole.RIGHT_HAND.toKey to trackers.hands(),
+								)
+							} else {
+								it.vrcOSC.trackers
+							},
+						)
+					} else {
+						it.vrcOSC
+					},
+				)
 			}
-			if (trackers != null) {
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands())
-			}
-			vrcOSCConfig.oscqueryEnabled = req.vrcOsc().oscqueryEnabled()
-
+			val vrcOscHandler = api.server.vrcOSCHandler
 			vrcOscHandler.refreshSettings(true)
 		}
 
 		if (req.vmcOsc() != null) {
-			val vmcConfig = api.server.configManager
-				.vrConfig
-				.vmc
 			val vmcHandler = api.server.vMCHandler
 			val osc = req.vmcOsc().oscSettings()
-
-			if (osc != null) {
-				vmcConfig.enabled = osc.enabled()
-				vmcConfig.portIn = osc.portIn()
-				vmcConfig.portOut = osc.portOut()
-				vmcConfig.address = osc.address()
+			api.server.configManager.settings.update {
+				it.copy(
+					vmc = if (osc != null) {
+						VMCConfig(
+							enabled = osc.enabled(),
+							portIn = osc.portIn(),
+							portOut = osc.portOut(),
+							address = osc.address(),
+							vrmJson = if (req.vmcOsc().vrmJson() != null) req.vmcOsc().vrmJson().ifEmpty { null } else it.vmc.vrmJson,
+							anchorHip = req.vmcOsc().anchorHip(),
+							mirrorTracking = req.vmcOsc().mirrorTracking(),
+						)
+					} else {
+						it.vmc
+					},
+				)
 			}
-			if (req.vmcOsc().vrmJson() != null) {
-				vmcConfig.vrmJson = req.vmcOsc().vrmJson().ifEmpty { null }
-			}
-			vmcConfig.anchorHip = req.vmcOsc().anchorHip()
-			vmcConfig.mirrorTracking = req.vmcOsc().mirrorTracking()
-
 			vmcHandler.refreshSettings(true)
 		}
 
 		if (req.tapDetectionSettings() != null) {
-			val tapDetectionConfig = api.server.configManager
-				.vrConfig
-				.tapDetection
 			val tapDetectionSettings = req.tapDetectionSettings()
-
 			if (tapDetectionSettings != null) {
-				// enable/disable tap detection
-				tapDetectionConfig.yawResetEnabled = tapDetectionSettings.yawResetEnabled()
-				tapDetectionConfig.fullResetEnabled = tapDetectionSettings.fullResetEnabled()
-				tapDetectionConfig
-					.mountingResetEnabled = tapDetectionSettings.mountingResetEnabled()
-				tapDetectionConfig.setupMode = tapDetectionSettings.setupMode()
-
-				// set number of trackers that can have high accel before taps
-				// are rejected
-				if (tapDetectionSettings.hasNumberTrackersOverThreshold()) {
-					tapDetectionConfig
-						.numberTrackersOverThreshold = tapDetectionSettings.numberTrackersOverThreshold()
+				api.server.configManager.settings.update {
+					it.copy(
+						tapDetection = TapDetectionConfig(
+							yawResetEnabled = tapDetectionSettings.yawResetEnabled(),
+							fullResetEnabled = tapDetectionSettings.fullResetEnabled(),
+							mountingResetEnabled = tapDetectionSettings.mountingResetEnabled(),
+							setupMode = tapDetectionSettings.setupMode(),
+							numberTrackersOverThreshold = tapDetectionSettings.numberTrackersOverThreshold(),
+							yawResetDelay = tapDetectionSettings.yawResetDelay(),
+							fullResetDelay = tapDetectionSettings.fullResetDelay(),
+							mountingResetDelay = tapDetectionSettings.mountingResetDelay(),
+							yawResetTaps = tapDetectionSettings.yawResetTaps(),
+							fullResetTaps = tapDetectionSettings.fullResetTaps(),
+							mountingResetTaps = tapDetectionSettings.mountingResetTaps(),
+						)
+					)
 				}
-
-				// set tap detection delays
-				if (tapDetectionSettings.hasYawResetDelay()) {
-					tapDetectionConfig.yawResetDelay = tapDetectionSettings.yawResetDelay()
-				}
-				if (tapDetectionSettings.hasFullResetDelay()) {
-					tapDetectionConfig.fullResetDelay = tapDetectionSettings.fullResetDelay()
-				}
-				if (tapDetectionSettings.hasMountingResetDelay()) {
-					tapDetectionConfig
-						.mountingResetDelay = tapDetectionSettings.mountingResetDelay()
-				}
-
-				// set the number of taps required for each action
-				if (tapDetectionSettings.hasYawResetTaps()) {
-					tapDetectionConfig
-						.yawResetTaps = tapDetectionSettings.yawResetTaps()
-				}
-				if (tapDetectionSettings.hasFullResetTaps()) {
-					tapDetectionConfig
-						.fullResetTaps = tapDetectionSettings.fullResetTaps()
-				}
-				if (tapDetectionSettings.hasMountingResetTaps()) {
-					tapDetectionConfig
-						.mountingResetTaps = tapDetectionSettings.mountingResetTaps()
-				}
-
 				api.server.humanPoseManager.updateTapDetectionConfig()
 			}
 		}
@@ -201,7 +194,6 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		val modelSettings = req.modelSettings()
 		if (modelSettings != null) {
 			val hpm = api.server.humanPoseManager
-			val legTweaksConfig = api.server.configManager.vrConfig.legTweaks
 			val toggles = modelSettings.toggles()
 			val ratios = modelSettings.ratios()
 			val legTweaks = modelSettings.legTweaks()
@@ -299,16 +291,27 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				}
 			}
 
+
 			if (legTweaks != null) {
 				if (legTweaks.hasCorrectionStrength()) {
-					legTweaksConfig.correctionStrength = legTweaks.correctionStrength()
+					api.server.configManager.settings.update {
+						it.copy(legTweaks = it.legTweaks.copy(
+							correctionStrength = legTweaks.correctionStrength()
+						))
+					}
+					api.server.humanPoseManager.updateLegTweaksConfig()
 				}
-				api.server.humanPoseManager.updateLegTweaksConfig()
 			}
 
-			modelSettings.skeletonHeight()?.let {
-				api.server.configManager.vrConfig.skeleton.hmdHeight = it.hmdHeight()
-				api.server.configManager.vrConfig.skeleton.floorHeight = it.floorHeight()
+			modelSettings.skeletonHeight()?.let { skeletonHeight ->
+				api.server.configManager.user.update {
+					it.copy(
+						skeleton = it.skeleton.copy(
+							hmdHeight = skeletonHeight.hmdHeight(),
+							floorHeight = skeletonHeight.floorHeight()
+						)
+					)
+				}
 			}
 
 			hpm.saveConfig()
@@ -327,7 +330,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val resetsConfig = api.server.configManager
 				.vrConfig
 				.resetsConfig
-			val mode = ArmsResetModes
+			val mode = ArmsResetMode
 				.fromId(max(req.resetsSettings().armsMountingResetMode(), 0))
 			if (mode != null) {
 				resetsConfig.mode = mode
@@ -364,7 +367,8 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			config.trackersOverHID = requestConfig.trackersOverHid()
 		}
 
-		api.server.configManager.saveConfig()
+		api.server.configManager.settings.save()
+		api.server.configManager.user.save()
 	}
 
 	fun onSettingsResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {

@@ -1,7 +1,7 @@
 package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.VRServer
-import dev.slimevr.config.MountingMethods
+import dev.slimevr.config.MountingMethod
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
@@ -1642,7 +1642,7 @@ class HumanSkeleton(
 
 		if (humanPoseManager.server != null) {
 			humanPoseManager.server.configManager.vrConfig.resetsConfig.lastMountingMethod =
-				MountingMethods.AUTOMATIC
+				MountingMethod.AUTOMATIC
 			if (!humanPoseManager.server.trackingChecklistManager.resetMountingCompleted) {
 				humanPoseManager.server.trackingChecklistManager.resetMountingCompleted = bodyParts.any { it ->
 					val defaultParts = if (humanPoseManager.server.configManager.vrConfig.resetsConfig.resetMountingFeet) {

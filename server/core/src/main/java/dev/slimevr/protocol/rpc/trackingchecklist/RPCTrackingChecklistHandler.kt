@@ -23,7 +23,7 @@ class RPCTrackingChecklistHandler(
 		fbb,
 		TrackingChecklistResponseT().apply {
 			steps = api.server.trackingChecklistManager.steps.toTypedArray()
-			ignoredSteps = api.server.configManager.vrConfig.trackingChecklist.ignoredStepsIds.toIntArray()
+			ignoredSteps = api.server.configManager.settings.get().trackingChecklist.ignoredStepsIds.toIntArray()
 		},
 	)
 

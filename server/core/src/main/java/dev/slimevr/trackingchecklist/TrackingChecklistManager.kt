@@ -2,7 +2,7 @@ package dev.slimevr.trackingchecklist
 
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.ISteamVRBridge
-import dev.slimevr.config.MountingMethods
+import dev.slimevr.config.MountingMethod
 import dev.slimevr.games.vrchat.VRCConfigListener
 import dev.slimevr.games.vrchat.VRCConfigRecommendedValues
 import dev.slimevr.games.vrchat.VRCConfigValidity
@@ -120,7 +120,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			TrackingChecklistStepT().apply {
 				id = TrackingChecklistStepId.MOUNTING_CALIBRATION
 				valid = false
-				enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC
+				enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethod.AUTOMATIC
 				optional = false
 				ignorable = true
 				visibility = TrackingChecklistStepVisibility.ALWAYS
@@ -296,12 +296,12 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		}
 
 		updateValidity(TrackingChecklistStepId.MOUNTING_CALIBRATION, resetMountingCompleted) {
-			it.enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC && imuTrackers.isNotEmpty()
+			it.enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethod.AUTOMATIC && imuTrackers.isNotEmpty()
 		}
 
 		updateValidity(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION, feetResetMountingCompleted) {
 			it.enabled =
-				vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC &&
+				vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethod.AUTOMATIC &&
 				!vrServer.configManager.vrConfig.resetsConfig.resetMountingFeet &&
 				imuTrackers.any { t -> TrackerUtils.feetsBodyParts.contains(t.trackerPosition?.bodyPart) }
 		}
