@@ -115,6 +115,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR开发版IMU手套
+board_type-GESTURES = 手势
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = nRF系列
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR蝴蝶 开发版
+board_type-SLIMEVR_BUTTERFLY = SlimeVR蝴蝶
 
 ## Proportions
 
@@ -339,6 +344,7 @@ tracker-table-column-name = 名字
 tracker-table-column-type = 类型
 tracker-table-column-battery = 电量
 tracker-table-column-ping = 延迟
+tracker-table-column-packet_loss = 丢包
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = 温度 °C
 tracker-table-column-linear-acceleration = 加速度 X/Y/Z
@@ -380,6 +386,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] 已启用
        *[NOT_SUPPORTED] 不支持
     }
+tracker-infos-packet_loss = 丢包
+tracker-infos-packets_lost = 包丢失
+tracker-infos-packets_received = 包已接收
 
 ## Tracker settings
 
@@ -419,6 +428,7 @@ tracker-settings-update = 立即更新
 tracker-settings-update-title = 固件版本
 tracker-settings-current-version = 当前版本
 tracker-settings-latest-version = 最新版本
+tracker-settings-build-date = 生成日期
 
 ## Tracker part card info
 
@@ -583,6 +593,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     在所有有固件支持的追踪器上启用磁力计，在磁场稳定的环境中可以减轻飘移。
     可以在个别追踪器上禁用本功能。<b>切换此选项时请勿关闭任何一个追踪器的电源！</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追踪器上启用磁力计
+settings-general-tracker_mechanics-trackers_over_usb = 通过USB连接的追踪器
+settings-general-tracker_mechanics-trackers_over_usb-description = 通过USB接收HID追踪器数据。清确保连接的追踪器启用了 <b>通过HID连接</b> 功能！
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = 允许HID追踪器通过USB直接连接
 settings-stay_aligned = 持续校准
 settings-stay_aligned-description = 持续校准会逐渐将追踪器对齐到设置的放松姿势，减少追踪器漂移的影响
 settings-stay_aligned-setup-label = 配置持续校准
@@ -1371,6 +1384,7 @@ onboarding-stay_aligned-previous_step = 上一步
 onboarding-stay_aligned-next_step = 下一步
 onboarding-stay_aligned-restart = 重新开始
 onboarding-stay_aligned-done = 完成
+onboarding-stay_aligned-manual_mounting-done = 完成
 
 ## Home
 
@@ -1421,6 +1435,9 @@ firmware_tool-select_source-firmware = 固件来源
 firmware_tool-select_source-version = 固件版本
 firmware_tool-select_source-official = 官方
 firmware_tool-select_source-dev = 开发版
+firmware_tool-select_source-not_selected = 未选择来源
+firmware_tool-select_source-no_boards = 此来源无可用的开发板
+firmware_tool-select_source-no_versions = 此来源无可用的版本
 firmware_tool-board_defaults = 配置电路板
 firmware_tool-board_defaults-description = 设置引脚与其他和硬件相关的配置
 firmware_tool-board_defaults-add = 新增
