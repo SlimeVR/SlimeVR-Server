@@ -2546,6 +2546,54 @@ public final class ProtobufMessages {
      * @return The dataSource.
      */
     dev.slimevr.desktop.platform.ProtobufMessages.Position.DataSource getDataSource();
+
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> 
+        getFingerBoneRotationsList();
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation getFingerBoneRotations(int index);
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    int getFingerBoneRotationsCount();
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> 
+        getFingerBoneRotationsOrBuilderList();
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder getFingerBoneRotationsOrBuilder(
+        int index);
+
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> 
+        getInputList();
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    dev.slimevr.desktop.platform.ProtobufMessages.Input getInput(int index);
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    int getInputCount();
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> 
+        getInputOrBuilderList();
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder getInputOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code messages.Position}
@@ -2570,6 +2618,8 @@ public final class ProtobufMessages {
     }
     private Position() {
       dataSource_ = 0;
+      fingerBoneRotations_ = java.util.Collections.emptyList();
+      input_ = java.util.Collections.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -2858,6 +2908,88 @@ public final class ProtobufMessages {
       return result == null ? dev.slimevr.desktop.platform.ProtobufMessages.Position.DataSource.UNRECOGNIZED : result;
     }
 
+    public static final int FINGER_BONE_ROTATIONS_FIELD_NUMBER = 10;
+    @SuppressWarnings("serial")
+    private java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> fingerBoneRotations_;
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    @java.lang.Override
+    public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> getFingerBoneRotationsList() {
+      return fingerBoneRotations_;
+    }
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> 
+        getFingerBoneRotationsOrBuilderList() {
+      return fingerBoneRotations_;
+    }
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    @java.lang.Override
+    public int getFingerBoneRotationsCount() {
+      return fingerBoneRotations_.size();
+    }
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    @java.lang.Override
+    public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation getFingerBoneRotations(int index) {
+      return fingerBoneRotations_.get(index);
+    }
+    /**
+     * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+     */
+    @java.lang.Override
+    public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder getFingerBoneRotationsOrBuilder(
+        int index) {
+      return fingerBoneRotations_.get(index);
+    }
+
+    public static final int INPUT_FIELD_NUMBER = 11;
+    @SuppressWarnings("serial")
+    private java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> input_;
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    @java.lang.Override
+    public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> getInputList() {
+      return input_;
+    }
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> 
+        getInputOrBuilderList() {
+      return input_;
+    }
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    @java.lang.Override
+    public int getInputCount() {
+      return input_.size();
+    }
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    @java.lang.Override
+    public dev.slimevr.desktop.platform.ProtobufMessages.Input getInput(int index) {
+      return input_.get(index);
+    }
+    /**
+     * <code>repeated .messages.Input input = 11;</code>
+     */
+    @java.lang.Override
+    public dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder getInputOrBuilder(
+        int index) {
+      return input_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2898,6 +3030,12 @@ public final class ProtobufMessages {
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         output.writeEnum(9, dataSource_);
+      }
+      for (int i = 0; i < fingerBoneRotations_.size(); i++) {
+        output.writeMessage(10, fingerBoneRotations_.get(i));
+      }
+      for (int i = 0; i < input_.size(); i++) {
+        output.writeMessage(11, input_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -2943,6 +3081,14 @@ public final class ProtobufMessages {
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(9, dataSource_);
+      }
+      for (int i = 0; i < fingerBoneRotations_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(10, fingerBoneRotations_.get(i));
+      }
+      for (int i = 0; i < input_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(11, input_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -2995,6 +3141,10 @@ public final class ProtobufMessages {
       if (hasDataSource()) {
         if (dataSource_ != other.dataSource_) return false;
       }
+      if (!getFingerBoneRotationsList()
+          .equals(other.getFingerBoneRotationsList())) return false;
+      if (!getInputList()
+          .equals(other.getInputList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3038,6 +3188,14 @@ public final class ProtobufMessages {
       if (hasDataSource()) {
         hash = (37 * hash) + DATA_SOURCE_FIELD_NUMBER;
         hash = (53 * hash) + dataSource_;
+      }
+      if (getFingerBoneRotationsCount() > 0) {
+        hash = (37 * hash) + FINGER_BONE_ROTATIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getFingerBoneRotationsList().hashCode();
+      }
+      if (getInputCount() > 0) {
+        hash = (37 * hash) + INPUT_FIELD_NUMBER;
+        hash = (53 * hash) + getInputList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -3179,6 +3337,20 @@ public final class ProtobufMessages {
         qz_ = 0F;
         qw_ = 0F;
         dataSource_ = 0;
+        if (fingerBoneRotationsBuilder_ == null) {
+          fingerBoneRotations_ = java.util.Collections.emptyList();
+        } else {
+          fingerBoneRotations_ = null;
+          fingerBoneRotationsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000200);
+        if (inputBuilder_ == null) {
+          input_ = java.util.Collections.emptyList();
+        } else {
+          input_ = null;
+          inputBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
 
@@ -3205,9 +3377,31 @@ public final class ProtobufMessages {
       @java.lang.Override
       public dev.slimevr.desktop.platform.ProtobufMessages.Position buildPartial() {
         dev.slimevr.desktop.platform.ProtobufMessages.Position result = new dev.slimevr.desktop.platform.ProtobufMessages.Position(this);
+        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartialRepeatedFields(dev.slimevr.desktop.platform.ProtobufMessages.Position result) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          if (((bitField0_ & 0x00000200) != 0)) {
+            fingerBoneRotations_ = java.util.Collections.unmodifiableList(fingerBoneRotations_);
+            bitField0_ = (bitField0_ & ~0x00000200);
+          }
+          result.fingerBoneRotations_ = fingerBoneRotations_;
+        } else {
+          result.fingerBoneRotations_ = fingerBoneRotationsBuilder_.build();
+        }
+        if (inputBuilder_ == null) {
+          if (((bitField0_ & 0x00000400) != 0)) {
+            input_ = java.util.Collections.unmodifiableList(input_);
+            bitField0_ = (bitField0_ & ~0x00000400);
+          }
+          result.input_ = input_;
+        } else {
+          result.input_ = inputBuilder_.build();
+        }
       }
 
       private void buildPartial0(dev.slimevr.desktop.platform.ProtobufMessages.Position result) {
@@ -3286,6 +3480,58 @@ public final class ProtobufMessages {
         if (other.hasDataSource()) {
           setDataSourceValue(other.getDataSourceValue());
         }
+        if (fingerBoneRotationsBuilder_ == null) {
+          if (!other.fingerBoneRotations_.isEmpty()) {
+            if (fingerBoneRotations_.isEmpty()) {
+              fingerBoneRotations_ = other.fingerBoneRotations_;
+              bitField0_ = (bitField0_ & ~0x00000200);
+            } else {
+              ensureFingerBoneRotationsIsMutable();
+              fingerBoneRotations_.addAll(other.fingerBoneRotations_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.fingerBoneRotations_.isEmpty()) {
+            if (fingerBoneRotationsBuilder_.isEmpty()) {
+              fingerBoneRotationsBuilder_.dispose();
+              fingerBoneRotationsBuilder_ = null;
+              fingerBoneRotations_ = other.fingerBoneRotations_;
+              bitField0_ = (bitField0_ & ~0x00000200);
+              fingerBoneRotationsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetFingerBoneRotationsFieldBuilder() : null;
+            } else {
+              fingerBoneRotationsBuilder_.addAllMessages(other.fingerBoneRotations_);
+            }
+          }
+        }
+        if (inputBuilder_ == null) {
+          if (!other.input_.isEmpty()) {
+            if (input_.isEmpty()) {
+              input_ = other.input_;
+              bitField0_ = (bitField0_ & ~0x00000400);
+            } else {
+              ensureInputIsMutable();
+              input_.addAll(other.input_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.input_.isEmpty()) {
+            if (inputBuilder_.isEmpty()) {
+              inputBuilder_.dispose();
+              inputBuilder_ = null;
+              input_ = other.input_;
+              bitField0_ = (bitField0_ & ~0x00000400);
+              inputBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetInputFieldBuilder() : null;
+            } else {
+              inputBuilder_.addAllMessages(other.input_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -3357,6 +3603,32 @@ public final class ProtobufMessages {
                 bitField0_ |= 0x00000100;
                 break;
               } // case 72
+              case 82: {
+                dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation m =
+                    input.readMessage(
+                        dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.parser(),
+                        extensionRegistry);
+                if (fingerBoneRotationsBuilder_ == null) {
+                  ensureFingerBoneRotationsIsMutable();
+                  fingerBoneRotations_.add(m);
+                } else {
+                  fingerBoneRotationsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 82
+              case 90: {
+                dev.slimevr.desktop.platform.ProtobufMessages.Input m =
+                    input.readMessage(
+                        dev.slimevr.desktop.platform.ProtobufMessages.Input.parser(),
+                        extensionRegistry);
+                if (inputBuilder_ == null) {
+                  ensureInputIsMutable();
+                  input_.add(m);
+                } else {
+                  inputBuilder_.addMessage(m);
+                }
+                break;
+              } // case 90
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -3710,6 +3982,486 @@ public final class ProtobufMessages {
         dataSource_ = 0;
         onChanged();
         return this;
+      }
+
+      private java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> fingerBoneRotations_ =
+        java.util.Collections.emptyList();
+      private void ensureFingerBoneRotationsIsMutable() {
+        if (!((bitField0_ & 0x00000200) != 0)) {
+          fingerBoneRotations_ = new java.util.ArrayList<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation>(fingerBoneRotations_);
+          bitField0_ |= 0x00000200;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> fingerBoneRotationsBuilder_;
+
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> getFingerBoneRotationsList() {
+        if (fingerBoneRotationsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(fingerBoneRotations_);
+        } else {
+          return fingerBoneRotationsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public int getFingerBoneRotationsCount() {
+        if (fingerBoneRotationsBuilder_ == null) {
+          return fingerBoneRotations_.size();
+        } else {
+          return fingerBoneRotationsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation getFingerBoneRotations(int index) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          return fingerBoneRotations_.get(index);
+        } else {
+          return fingerBoneRotationsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public Builder setFingerBoneRotations(
+          int index, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation value) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFingerBoneRotationsIsMutable();
+          fingerBoneRotations_.set(index, value);
+          onChanged();
+        } else {
+          fingerBoneRotationsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public Builder setFingerBoneRotations(
+          int index, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder builderForValue) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          ensureFingerBoneRotationsIsMutable();
+          fingerBoneRotations_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          fingerBoneRotationsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public Builder addFingerBoneRotations(dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation value) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFingerBoneRotationsIsMutable();
+          fingerBoneRotations_.add(value);
+          onChanged();
+        } else {
+          fingerBoneRotationsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public Builder addFingerBoneRotations(
+          int index, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation value) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFingerBoneRotationsIsMutable();
+          fingerBoneRotations_.add(index, value);
+          onChanged();
+        } else {
+          fingerBoneRotationsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public Builder addFingerBoneRotations(
+          dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder builderForValue) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          ensureFingerBoneRotationsIsMutable();
+          fingerBoneRotations_.add(builderForValue.build());
+          onChanged();
+        } else {
+          fingerBoneRotationsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public Builder addFingerBoneRotations(
+          int index, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder builderForValue) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          ensureFingerBoneRotationsIsMutable();
+          fingerBoneRotations_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          fingerBoneRotationsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public Builder addAllFingerBoneRotations(
+          java.lang.Iterable<? extends dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> values) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          ensureFingerBoneRotationsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, fingerBoneRotations_);
+          onChanged();
+        } else {
+          fingerBoneRotationsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public Builder clearFingerBoneRotations() {
+        if (fingerBoneRotationsBuilder_ == null) {
+          fingerBoneRotations_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000200);
+          onChanged();
+        } else {
+          fingerBoneRotationsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public Builder removeFingerBoneRotations(int index) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          ensureFingerBoneRotationsIsMutable();
+          fingerBoneRotations_.remove(index);
+          onChanged();
+        } else {
+          fingerBoneRotationsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder getFingerBoneRotationsBuilder(
+          int index) {
+        return internalGetFingerBoneRotationsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder getFingerBoneRotationsOrBuilder(
+          int index) {
+        if (fingerBoneRotationsBuilder_ == null) {
+          return fingerBoneRotations_.get(index);  } else {
+          return fingerBoneRotationsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> 
+           getFingerBoneRotationsOrBuilderList() {
+        if (fingerBoneRotationsBuilder_ != null) {
+          return fingerBoneRotationsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(fingerBoneRotations_);
+        }
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder addFingerBoneRotationsBuilder() {
+        return internalGetFingerBoneRotationsFieldBuilder().addBuilder(
+            dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder addFingerBoneRotationsBuilder(
+          int index) {
+        return internalGetFingerBoneRotationsFieldBuilder().addBuilder(
+            index, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+       */
+      public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder> 
+           getFingerBoneRotationsBuilderList() {
+        return internalGetFingerBoneRotationsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> 
+          internalGetFingerBoneRotationsFieldBuilder() {
+        if (fingerBoneRotationsBuilder_ == null) {
+          fingerBoneRotationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder>(
+                  fingerBoneRotations_,
+                  ((bitField0_ & 0x00000200) != 0),
+                  getParentForChildren(),
+                  isClean());
+          fingerBoneRotations_ = null;
+        }
+        return fingerBoneRotationsBuilder_;
+      }
+
+      private java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> input_ =
+        java.util.Collections.emptyList();
+      private void ensureInputIsMutable() {
+        if (!((bitField0_ & 0x00000400) != 0)) {
+          input_ = new java.util.ArrayList<dev.slimevr.desktop.platform.ProtobufMessages.Input>(input_);
+          bitField0_ |= 0x00000400;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          dev.slimevr.desktop.platform.ProtobufMessages.Input, dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder, dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> inputBuilder_;
+
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> getInputList() {
+        if (inputBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(input_);
+        } else {
+          return inputBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public int getInputCount() {
+        if (inputBuilder_ == null) {
+          return input_.size();
+        } else {
+          return inputBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.Input getInput(int index) {
+        if (inputBuilder_ == null) {
+          return input_.get(index);
+        } else {
+          return inputBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public Builder setInput(
+          int index, dev.slimevr.desktop.platform.ProtobufMessages.Input value) {
+        if (inputBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureInputIsMutable();
+          input_.set(index, value);
+          onChanged();
+        } else {
+          inputBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public Builder setInput(
+          int index, dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder builderForValue) {
+        if (inputBuilder_ == null) {
+          ensureInputIsMutable();
+          input_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          inputBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public Builder addInput(dev.slimevr.desktop.platform.ProtobufMessages.Input value) {
+        if (inputBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureInputIsMutable();
+          input_.add(value);
+          onChanged();
+        } else {
+          inputBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public Builder addInput(
+          int index, dev.slimevr.desktop.platform.ProtobufMessages.Input value) {
+        if (inputBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureInputIsMutable();
+          input_.add(index, value);
+          onChanged();
+        } else {
+          inputBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public Builder addInput(
+          dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder builderForValue) {
+        if (inputBuilder_ == null) {
+          ensureInputIsMutable();
+          input_.add(builderForValue.build());
+          onChanged();
+        } else {
+          inputBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public Builder addInput(
+          int index, dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder builderForValue) {
+        if (inputBuilder_ == null) {
+          ensureInputIsMutable();
+          input_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          inputBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public Builder addAllInput(
+          java.lang.Iterable<? extends dev.slimevr.desktop.platform.ProtobufMessages.Input> values) {
+        if (inputBuilder_ == null) {
+          ensureInputIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, input_);
+          onChanged();
+        } else {
+          inputBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public Builder clearInput() {
+        if (inputBuilder_ == null) {
+          input_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000400);
+          onChanged();
+        } else {
+          inputBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public Builder removeInput(int index) {
+        if (inputBuilder_ == null) {
+          ensureInputIsMutable();
+          input_.remove(index);
+          onChanged();
+        } else {
+          inputBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder getInputBuilder(
+          int index) {
+        return internalGetInputFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder getInputOrBuilder(
+          int index) {
+        if (inputBuilder_ == null) {
+          return input_.get(index);  } else {
+          return inputBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> 
+           getInputOrBuilderList() {
+        if (inputBuilder_ != null) {
+          return inputBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(input_);
+        }
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder addInputBuilder() {
+        return internalGetInputFieldBuilder().addBuilder(
+            dev.slimevr.desktop.platform.ProtobufMessages.Input.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder addInputBuilder(
+          int index) {
+        return internalGetInputFieldBuilder().addBuilder(
+            index, dev.slimevr.desktop.platform.ProtobufMessages.Input.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .messages.Input input = 11;</code>
+       */
+      public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder> 
+           getInputBuilderList() {
+        return internalGetInputFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          dev.slimevr.desktop.platform.ProtobufMessages.Input, dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder, dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> 
+          internalGetInputFieldBuilder() {
+        if (inputBuilder_ == null) {
+          inputBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              dev.slimevr.desktop.platform.ProtobufMessages.Input, dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder, dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder>(
+                  input_,
+                  ((bitField0_ & 0x00000400) != 0),
+                  getParentForChildren(),
+                  isClean());
+          input_ = null;
+        }
+        return inputBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:messages.Position)
@@ -10566,48 +11318,51 @@ java.lang.String defaultValue) {
       "BUTTON_2_HELD\020\004\022\023\n\017BUTTON_2_UNHELD\020\005\022\026\n\022" +
       "MENU_RECENTER_HELD\020\006\022\030\n\024MENU_RECENTER_UN" +
       "HELD\020\007\022\024\n\020STICK_CLICK_HELD\020\t\022\026\n\022STICK_CL" +
-      "ICK_UNHELD\020\n\"\223\002\n\010Position\022\022\n\ntracker_id\030" +
+      "ICK_UNHELD\020\n\"\360\002\n\010Position\022\022\n\ntracker_id\030" +
       "\001 \001(\005\022\016\n\001x\030\002 \001(\002H\000\210\001\001\022\016\n\001y\030\003 \001(\002H\001\210\001\001\022\016\n" +
       "\001z\030\004 \001(\002H\002\210\001\001\022\n\n\002qx\030\005 \001(\002\022\n\n\002qy\030\006 \001(\002\022\n\n" +
       "\002qz\030\007 \001(\002\022\n\n\002qw\030\010 \001(\002\0227\n\013data_source\030\t \001" +
-      "(\0162\035.messages.Position.DataSourceH\003\210\001\001\"8" +
-      "\n\nDataSource\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRECI" +
-      "SION\020\002\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014_d" +
-      "ata_source\"\200\002\n\017ControllerInput\022\022\n\ntracke" +
-      "r_id\030\001 \001(\005\022\024\n\014thumbstick_x\030\002 \001(\002\022\024\n\014thum" +
-      "bstick_y\030\003 \001(\002\022\022\n\ntrackpad_x\030\004 \001(\002\022\022\n\ntr" +
-      "ackpad_y\030\005 \001(\002\022\017\n\007trigger\030\006 \001(\002\022\014\n\004grip\030" +
-      "\007 \001(\002\022\020\n\010button_1\030\010 \001(\010\022\020\n\010button_2\030\t \001(" +
-      "\010\022\025\n\rmenu_recenter\030\n \001(\010\022\023\n\013stick_click\030" +
-      "\013 \001(\010\022\026\n\016trackpad_click\030\014 \001(\010\"\227\001\n\nUserAc" +
-      "tion\022\014\n\004name\030\001 \001(\t\022C\n\020action_arguments\030\002" +
-      " \003(\0132).messages.UserAction.ActionArgumen" +
-      "tsEntry\0326\n\024ActionArgumentsEntry\022\013\n\003key\030\001" +
-      " \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"f\n\014TrackerAdded\022" +
-      "\022\n\ntracker_id\030\001 \001(\005\022\026\n\016tracker_serial\030\002 " +
-      "\001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024\n\014tracker_rol" +
-      "e\030\004 \001(\005\"\374\002\n\rTrackerStatus\022\022\n\ntracker_id\030" +
-      "\001 \001(\005\022.\n\006status\030\002 \001(\0162\036.messages.Tracker" +
-      "Status.Status\0221\n\005extra\030\003 \003(\0132\".messages." +
-      "TrackerStatus.ExtraEntry\022;\n\nconfidence\030\004" +
-      " \001(\0162\".messages.TrackerStatus.Confidence" +
-      "H\000\210\001\001\032,\n\nExtraEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005valu" +
-      "e\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n\014DISCONNECTED\020\000\022" +
-      "\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED" +
-      "\020\004\"3\n\nConfidence\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MED" +
-      "IUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_confidence\"I\n\007Batter" +
-      "y\022\022\n\ntracker_id\030\001 \001(\005\022\025\n\rbattery_level\030\002" +
-      " \001(\002\022\023\n\013is_charging\030\003 \001(\010\"\330\002\n\017ProtobufMe" +
-      "ssage\022&\n\010position\030\001 \001(\0132\022.messages.Posit" +
-      "ionH\000\022+\n\013user_action\030\002 \001(\0132\024.messages.Us" +
-      "erActionH\000\022/\n\rtracker_added\030\003 \001(\0132\026.mess" +
-      "ages.TrackerAddedH\000\0221\n\016tracker_status\030\004 " +
-      "\001(\0132\027.messages.TrackerStatusH\000\022$\n\007batter" +
-      "y\030\005 \001(\0132\021.messages.BatteryH\000\022$\n\007version\030" +
-      "\006 \001(\0132\021.messages.VersionH\000\0225\n\020controller" +
-      "_input\030\007 \001(\0132\031.messages.ControllerInputH" +
-      "\000B\t\n\007messageB2\n\034dev.slimevr.desktop.plat" +
-      "formB\020ProtobufMessagesH\003b\006proto3"
+      "(\0162\035.messages.Position.DataSourceH\003\210\001\001\022;" +
+      "\n\025finger_bone_rotations\030\n \003(\0132\034.messages" +
+      ".FingerBoneRotation\022\036\n\005input\030\013 \003(\0132\017.mes" +
+      "sages.Input\"8\n\nDataSource\022\010\n\004NONE\020\000\022\007\n\003I" +
+      "MU\020\001\022\r\n\tPRECISION\020\002\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_" +
+      "yB\004\n\002_zB\016\n\014_data_source\"\200\002\n\017ControllerIn" +
+      "put\022\022\n\ntracker_id\030\001 \001(\005\022\024\n\014thumbstick_x\030" +
+      "\002 \001(\002\022\024\n\014thumbstick_y\030\003 \001(\002\022\022\n\ntrackpad_" +
+      "x\030\004 \001(\002\022\022\n\ntrackpad_y\030\005 \001(\002\022\017\n\007trigger\030\006" +
+      " \001(\002\022\014\n\004grip\030\007 \001(\002\022\020\n\010button_1\030\010 \001(\010\022\020\n\010" +
+      "button_2\030\t \001(\010\022\025\n\rmenu_recenter\030\n \001(\010\022\023\n" +
+      "\013stick_click\030\013 \001(\010\022\026\n\016trackpad_click\030\014 \001" +
+      "(\010\"\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020actio" +
+      "n_arguments\030\002 \003(\0132).messages.UserAction." +
+      "ActionArgumentsEntry\0326\n\024ActionArgumentsE" +
+      "ntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"f\n\014" +
+      "TrackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016trac" +
+      "ker_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024" +
+      "\n\014tracker_role\030\004 \001(\005\"\374\002\n\rTrackerStatus\022\022" +
+      "\n\ntracker_id\030\001 \001(\005\022.\n\006status\030\002 \001(\0162\036.mes" +
+      "sages.TrackerStatus.Status\0221\n\005extra\030\003 \003(" +
+      "\0132\".messages.TrackerStatus.ExtraEntry\022;\n" +
+      "\nconfidence\030\004 \001(\0162\".messages.TrackerStat" +
+      "us.ConfidenceH\000\210\001\001\032,\n\nExtraEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n\014DI" +
+      "SCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020" +
+      "\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfidence\022\006\n\002NO\020\000\022\007\n" +
+      "\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_confide" +
+      "nce\"I\n\007Battery\022\022\n\ntracker_id\030\001 \001(\005\022\025\n\rba" +
+      "ttery_level\030\002 \001(\002\022\023\n\013is_charging\030\003 \001(\010\"\330" +
+      "\002\n\017ProtobufMessage\022&\n\010position\030\001 \001(\0132\022.m" +
+      "essages.PositionH\000\022+\n\013user_action\030\002 \001(\0132" +
+      "\024.messages.UserActionH\000\022/\n\rtracker_added" +
+      "\030\003 \001(\0132\026.messages.TrackerAddedH\000\0221\n\016trac" +
+      "ker_status\030\004 \001(\0132\027.messages.TrackerStatu" +
+      "sH\000\022$\n\007battery\030\005 \001(\0132\021.messages.BatteryH" +
+      "\000\022$\n\007version\030\006 \001(\0132\021.messages.VersionH\000\022" +
+      "5\n\020controller_input\030\007 \001(\0132\031.messages.Con" +
+      "trollerInputH\000B\t\n\007messageB2\n\034dev.slimevr" +
+      ".desktop.platformB\020ProtobufMessagesH\003b\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10642,7 +11397,7 @@ java.lang.String defaultValue) {
     internal_static_messages_Position_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_Position_descriptor,
-        new java.lang.String[] { "TrackerId", "X", "Y", "Z", "Qx", "Qy", "Qz", "Qw", "DataSource", });
+        new java.lang.String[] { "TrackerId", "X", "Y", "Z", "Qx", "Qy", "Qz", "Qw", "DataSource", "FingerBoneRotations", "Input", });
     internal_static_messages_ControllerInput_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_messages_ControllerInput_fieldAccessorTable = new
