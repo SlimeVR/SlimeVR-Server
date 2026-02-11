@@ -281,9 +281,8 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
-		val encoder = java.util.Base64.getEncoder()
-		val b64ssid = encoder.encodeToString(ssid.toByteArray(StandardCharsets.UTF_8))
-		val b64passwd = encoder.encodeToString(passwd.toByteArray(StandardCharsets.UTF_8))
+		val b64ssid = Base64.Default.encode(ssid.encodeToByteArray())
+		val b64passwd = Base64.Default.encode(passwd.encodeToByteArray())
 		writeSerial("SET BWIFI $b64ssid $b64passwd")
 		addLog("-> SET BWIFI $b64ssid ${b64passwd.replace(".".toRegex(), "*")}\n")
 	}
