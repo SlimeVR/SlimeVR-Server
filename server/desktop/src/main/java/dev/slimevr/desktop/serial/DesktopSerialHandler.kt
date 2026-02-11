@@ -203,7 +203,7 @@ class DesktopSerialHandler :
 			val b64passwd = Base64.Default.encode(passwd.encodeToByteArray())
 			writer.append("SET BWIFI ").append(b64ssid).append(" ").append(b64passwd).append("\n")
 			writer.flush()
-			addLog("-> SET BWIFI $b64ssid ${b64passwd.replace(".".toRegex(), "*")}\n")
+			addLog("-> SET BWIFI $b64ssid ${StringUtils.repeat('*', b64passwd.length)}\n")
 		} catch (e: IOException) {
 			addLog("$e\n")
 			LogManager.warning("[SerialHandler] Serial port write error", e)
