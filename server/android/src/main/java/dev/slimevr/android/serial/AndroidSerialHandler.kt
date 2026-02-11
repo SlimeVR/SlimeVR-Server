@@ -284,7 +284,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		val b64ssid = Base64.Default.encode(ssid.encodeToByteArray())
 		val b64passwd = Base64.Default.encode(passwd.encodeToByteArray())
 		writeSerial("SET BWIFI $b64ssid $b64passwd")
-		addLog("-> SET BWIFI $b64ssid ${b64passwd.replace(".".toRegex(), "*")}\n")
+		addLog("-> SET BWIFI $b64ssid ${"*".repeat(b64passwd.length)}\n")
 	}
 
 	override fun getCurrentPort(): SlimeSerialPort? = this.currentPort
