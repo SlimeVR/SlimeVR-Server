@@ -1,13 +1,11 @@
-package dev.slimevr.desktop.updater
+package dev.slimevr.updater
 
-import java.net.URL
 import java.nio.file.Paths
 
 class Windows {
 
-
 	fun updateWindows() {
-		//First check if everything is already installed. Install it if it isn't
+		// First check if everything is already installed. Install it if it isn't
 		usbDrivers()
 		slimeServer()
 		steamVRDriver()
@@ -21,7 +19,6 @@ class Windows {
 		val silabser = installedDriversList.contains("silabser.inf")
 		val path = Paths.get("").toAbsolutePath().toString()
 
-
 		if (ch341ser && ch343ser && silabser) {
 			println("drivers already installed!")
 			return
@@ -33,18 +30,17 @@ class Windows {
 	}
 
 	fun slimeServer() {
-		//downloading slime server
+		// downloading slime server
 		downloadFile(WINDOWSSERVERURL, WINDOWSSERVERNAME)
 		println("extracting")
-		Paths.get()
 		unzip(WINDOWSSERVERNAME, WINDOWSSERERDIRECTORY)
 	}
 
 	fun steamVRDriver() {
-		val steamVRLocation = executeShellCommand("powershell.exe", "-Command",  "(Get-ItemProperty \'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820\').InstallLocation").trim()
+		val steamVRLocation = executeShellCommand("powershell.exe", "-Command", "(Get-ItemProperty \'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820\').InstallLocation").trim()
 		if (!steamVRLocation.contains("SteamVR")) {
 			println("SteamVR not installed, cannot install SlimeVR Steam driver.")
-			return;
+			return
 		}
 		val vrPathRegContents = executeShellCommand("${steamVRLocation}\\bin\\win64\\vrpathreg.exe", "finddriver", "slimevr")
 		println(vrPathRegContents)
@@ -61,16 +57,17 @@ class Windows {
 		println("Driver downloaded")
 		println("Registering driver with steamvr")
 		executeShellCommand(
-			"${steamVRLocation}\\bin\\win64\\vrpathreg.exe", "adddriver", "${
+			"${steamVRLocation}\\bin\\win64\\vrpathreg.exe",
+			"adddriver",
+			"${
 				Paths.get(
-					""
+					"",
 				).toAbsolutePath()
-			}\\${WINDOWSSTEAMVRDRIVERDIRECTORY}\\slimevr"
+			}\\${WINDOWSSTEAMVRDRIVERDIRECTORY}\\slimevr",
 		)
 	}
 
 	fun updateWindowsGui() {
-
 	}
 
 	companion object {

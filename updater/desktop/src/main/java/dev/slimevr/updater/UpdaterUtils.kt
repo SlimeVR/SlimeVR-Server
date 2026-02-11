@@ -1,6 +1,6 @@
-package dev.slimevr.desktop.updater
+package dev.slimevr.updater
 
-import dev.slimevr.desktop.updater.Updater.GHResponse
+import dev.slimevr.updater.Updater.GHResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -13,6 +13,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Exception
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -20,21 +21,18 @@ import java.nio.file.StandardCopyOption
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
-
-fun executeShellCommand(vararg command: String): String {
-	return try {
-		val process = ProcessBuilder(*command)
-			.redirectErrorStream(true)
-			.start()
-		process.inputStream.bufferedReader().readText().also {
-			process.waitFor()
-		}
-	} catch (e: IOException) {
-		"Error executing shell command: ${e.message}"
+fun executeShellCommand(vararg command: String): String = try {
+	val process = ProcessBuilder(*command)
+		.redirectErrorStream(true)
+		.start()
+	process.inputStream.bufferedReader().readText().also {
+		process.waitFor()
 	}
+} catch (e: IOException) {
+	"Error executing shell command: ${e.message}"
 }
 
-//TODO: This function is really really slow, make it faster, also give feedback
+// TODO: This function is really really slow, make it faster, also give feedback
 fun downloadFile(fileUrl: String, filename: String) {
 	println("Downloading $filename from $fileUrl")
 	val url = URL(fileUrl)
@@ -49,12 +47,12 @@ fun downloadFile(fileUrl: String, filename: String) {
 		}
 		val inputStream = url.openStream()
 		Files.copy(inputStream, Paths.get(filename), StandardCopyOption.REPLACE_EXISTING)
-	} catch ( e: IOException) {
+	} catch (e: IOException) {
 		println("Error downloading file, ${e.message}")
 	}
 }
 
-//Guard against zip slip
+// Guard against zip slip
 fun newFile(destinationPath: File, zipEntry: ZipEntry): File {
 	val destFile = File(destinationPath, zipEntry.name)
 
@@ -106,25 +104,27 @@ fun unzip(file: String, destDir: String) {
 }
 
 suspend fun shouldUpdate(): Boolean {
-	println("Current version ${VERSION}")
-	//We're running from a git branch don't update
+	println("Current version $VERSION")
+	// We're running from a git branch don't update
 	if (VERSION.contains("dirty")) {
 		return false
 	}
 	val client = HttpClient(CIO) {
 		install(ContentNegotiation) {
-			json(Json {
-				ignoreUnknownKeys = true
-			})
+			json(
+				Json {
+					ignoreUnknownKeys = true
+				},
+			)
 		}
 	}
 	try {
-		val response: GHResponse = client.get("https://api.github.com/repos/slimevr/slimevr-server/releases/latest").body()
+		val response: Updater.GHResponse = client.get("https://api.github.com/repos/slimevr/slimevr-server/releases/latest").body()
 		client.close()
-		//Replace this if versioning ever changes
+		// Replace this if versioning ever changes
 		val githubVersionArr = response.tag_name.replace("v", "").split(".")
 		val localVersionArr = VERSION.replace("v", "").split(".")
-		//Cursed?
+		// Cursed?
 		return if (githubVersionArr[0] > localVersionArr[0]) {
 			true
 		} else if (githubVersionArr[0] < localVersionArr[0] && githubVersionArr[1] > localVersionArr[1]) {
@@ -134,7 +134,7 @@ suspend fun shouldUpdate(): Boolean {
 		} else {
 			false
 		}
-	} catch(e: Exception) {
+	} catch (e: Exception) {
 		println("Error getting github release info: ${e.message}")
 	}
 	return false

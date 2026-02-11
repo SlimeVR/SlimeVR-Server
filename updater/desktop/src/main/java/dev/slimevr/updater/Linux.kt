@@ -1,9 +1,5 @@
-package dev.slimevr.desktop.updater
+package dev.slimevr.updater
 
-import dev.slimevr.desktop.updater.downloadFile
-import dev.slimevr.desktop.updater.executeShellCommand
-import dev.slimevr.desktop.updater.unzip
-import java.net.URL
 import java.nio.file.Paths
 
 class Linux {
@@ -24,9 +20,9 @@ class Linux {
 			executeShellCommand(
 				"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh adddriver ${
 					Paths.get(
-						""
+						"",
 					).toAbsolutePath()
-				}/${LINUXSTEAMVRDRIVERDIRECTORY}/slimevr"
+				}/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr",
 			)
 		} else {
 			println("steamVR driver is already registered. Skipping...")
@@ -34,15 +30,13 @@ class Linux {
 	}
 
 	fun updateLinuxServer() {
-
 	}
 
 	fun updateUdev() {
-
 	}
 
 	companion object {
-		//Linux URL's
+		// Linux URL's
 		private const val LINUXSTEAMVRDRIVERURL = "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
 		private const val LINUXSTEAMVRDRIVERNAME = "slimevr-openvr-driver-x64-linux.zip"
 		private const val LINUXSTEAMVRDRIVERDIRECTORY = "slimevr-openvr-driver-x64-linux"

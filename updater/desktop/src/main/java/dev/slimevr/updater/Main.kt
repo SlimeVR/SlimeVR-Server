@@ -1,8 +1,10 @@
-package dev.slimevr.desktop.updater
+@file:JvmName("Main")
 
-import dev.slimevr.desktop.GIT_CLEAN
-import dev.slimevr.desktop.GIT_COMMIT_HASH
-import dev.slimevr.desktop.GIT_VERSION_TAG
+package dev.slimevr.updater
+
+import dev.slimevr.updater.GIT_CLEAN
+import dev.slimevr.updater.GIT_COMMIT_HASH
+import dev.slimevr.updater.GIT_VERSION_TAG
 import kotlin.text.ifEmpty
 
 val VERSION =
@@ -10,7 +12,6 @@ val VERSION =
 		if (GIT_CLEAN) "" else "-dirty"
 
 suspend fun main(args: Array<String>) {
-
 	println("Running updater")
 	val updater = Updater()
 	updater.runUpdater()
