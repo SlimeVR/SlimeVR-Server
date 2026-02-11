@@ -281,8 +281,11 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
-		writeSerial("SET WIFI \"${ssid}\" \"${passwd}\"")
-		addLog("-> SET WIFI \"$ssid\" \"${passwd.replace(".".toRegex(), "*")}\"\n")
+		val encoder = java.util.Base64.getEncoder()
+		val b64ssid = encoder.encodeToString(ssid.toByteArray(StandardCharsets.UTF_8))
+		val b64passwd = encoder.encodeToString(passwd.toByteArray(StandardCharsets.UTF_8))
+		writeSerial("SET BWIFI $b64ssid $b64passwd")
+		addLog("-> SET BWIFI $b64ssid ${b64passwd.replace(".".toRegex(), "*")}\n")
 	}
 
 	override fun getCurrentPort(): SlimeSerialPort? = this.currentPort

@@ -199,9 +199,12 @@ class DesktopSerialHandler :
 		val os = currentPort?.outputStream ?: return
 		val writer = OutputStreamWriter(os)
 		try {
-			writer.append("SET WIFI \"").append(ssid).append("\" \"").append(passwd).append("\"\n")
+			val encoder = java.util.Base64.getEncoder()
+			val b64ssid = encoder.encodeToString(ssid.toByteArray(StandardCharsets.UTF_8))
+			val b64passwd = encoder.encodeToString(passwd.toByteArray(StandardCharsets.UTF_8))
+			writer.append("SET BWIFI ").append(b64ssid).append(" ").append(b64passwd).append("\n")
 			writer.flush()
-			addLog("-> SET WIFI \"$ssid\" \"${passwd.replace(".".toRegex(), "*")}\"\n")
+			addLog("-> SET BWIFI $b64ssid ${b64passwd.replace(".".toRegex(), "*")}\n")
 		} catch (e: IOException) {
 			addLog("$e\n")
 			LogManager.warning("[SerialHandler] Serial port write error", e)
