@@ -5,47 +5,20 @@ import { Button } from '@/components/commons/Button';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
-import { USBIcon } from '@/components/commons/icon/UsbIcon';
 import { WifiIcon } from '@/components/commons/icon/WifiIcon';
-import { WarningBox } from '@/components/commons/TipBox';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
-  const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
+  const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm("");
 
   applyProgress(0.2);
 
   return (
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
-      <div className="grid xs:grid-cols-2 gap-4 max-w-6xl p-4">
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2 items-center">
-            <div className="bg-accent-background-30 rounded-full p-2 fill-background-10">
-              <USBIcon size={24} />
-            </div>
-            <Typography
-              variant="main-title"
-              id="onboarding-wifi_creds-dongle-title"
-            />
-          </div>
-          <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
-            <Typography
-              whitespace="whitespace-pre-wrap"
-              id="onboarding-wifi_creds-dongle-description"
-            />
-            <Localized id="onboarding-wifi_creds-dongle-wip">
-              <WarningBox whitespace>WARNING</WarningBox>
-            </Localized>
-          </div>
-          <div className="flex px-2 p-6">
-            <Button
-              variant="primary"
-              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
-              id="onboarding-wifi_creds-dongle-continue"
-            />
-          </div>
-        </div>
+      <div className={classNames(
+        state.alonePage && "grid xs:grid-cols-2 gap-4 max-w-6xl p-4",
+        )}>
         <form
           className="flex flex-col gap-2"
           onSubmit={handleSubmit(submitWifiCreds)}

@@ -934,6 +934,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Skip setup
 onboarding-setup_warning-cancel = Continue setup
 
+## Quiz
+onboarding-quiz-q1-title = Tracker Type
+onboarding-quiz-q1-description = Are you using an official regular slime or a Butterfly tracker
+ (If you have third party trackers and are not sure, ask your seller)
+
 ## Wi-Fi setup
 onboarding-wifi_creds-back = Go back to introduction
 onboarding-wifi_creds-v2 = Trackers using Wi-Fi
