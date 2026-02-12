@@ -1,0 +1,42 @@
+appId: dev.slimevr.SlimeVR
+productName: SlimeVR
+# These help fill the missing metadata requirements
+directories:
+  output: dist/artifacts
+
+# The 'files' key determines what goes INSIDE the app.asar
+files:
+  - out/**/* # This captures the built JS/CSS/Assets from Vite
+  - index.html      # Ensure your entry point is included
+  - package.json
+
+# Include the JAR next to the EXE
+extraFiles:
+  - from: "../../server/desktop/build/libs/slimevr.jar"
+    to: "."
+  - from: "./69-slimevr-devices.rules"
+    to: "."
+
+linux:
+  category: Game
+  target:
+    - target: AppImage
+    # - target: deb
+    # - target: rpm
+    # - target: zip
+
+# Target-specific dependencies (Fixes the 'unknown property' error)
+deb:
+  depends:
+    - openjdk-17-jre-headless
+    - udev
+rpm:
+  depends:
+    - java-latest-openjdk
+    - udev
+
+# If you ever build for Windows/Mac later
+win:
+  target: portable
+mac:
+  target: zip

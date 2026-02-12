@@ -6,7 +6,7 @@ export default defineConfig({
   main: {
     build: {
       rollupOptions: {
-        input: resolve(__dirname, 'electron/main/index.ts')
+        input: resolve(__dirname, 'electron/main/index.ts'),
       }
     }
   },
@@ -21,13 +21,17 @@ export default defineConfig({
       }
     }
   },
-  renderer: {
-    // 1. Spread your existing React config (plugins, resolve, etc.)
+ renderer: {
     ...rendererConfig,
-
-    // 2. Ensure the root and input are correct for the Electron build
     root: '.',
     build: {
+      commonjsOptions: {
+        // Force Rollup to treat the protocol directory as CommonJS
+        // even though it's not in node_modules
+        include: [/solarxr-protocol/, /node_modules/],
+        // Required for Flatbuffers/Generated code interop
+        transformMixedEsModules: true,
+      },
       rollupOptions: {
         input: resolve(__dirname, 'index.html')
       }

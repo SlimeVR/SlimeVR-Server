@@ -39,4 +39,3 @@ electron.vite.config.*.mjs
 
 # electron
 out/
-.bin/

@@ -9,10 +9,11 @@ import {
   Tray,
 } from 'electron';
 import { IPC_CHANNELS } from '../shared';
-import path, { join } from 'node:path';
+import path, { dirname, join } from 'node:path';
 import open from 'open';
 import trayIcon from '../ressources/icons/icon.png?asset';
 import appleTrayIcon from '../ressources/icons/appleTrayIcon.png?asset';
+import javaVersionFile from '../ressources/java-version/JavaVersion.jar?asset';
 import { readFile, stat } from 'fs/promises';
 import { getPlatform, handleIpc } from './utils';
 import {
@@ -305,7 +306,7 @@ app.on('before-quit', () => {
 const checkEnvironmentVariables = () => {
   const to_check = ['_JAVA_OPTIONS', 'JAVA_TOOL_OPTIONS'];
 
-  const set = to_check.filter((env) => !process.env[env]);
+  const set = to_check.filter((env) => !!process.env[env]);
   if (set.length > 0) {
     dialog.showErrorBox(
       'SlimeVR',
@@ -316,23 +317,55 @@ const checkEnvironmentVariables = () => {
   }
 };
 
-const findServer = () => {
-
+const findServerJar = () => {
   const paths = [
     options.path,
-    //TODO: appimage appdir,
+		// AppImage passes the fakeroot in `APPDIR` env var.
+    process.env['APPDIR']
+      ? path.resolve(join(process.env['APPDIR'], 'usr/share/slimevr/'))
+      : undefined,
     path.resolve(__dirname),
 
     // For flatpack container
-    path.resolve("/app/share/slimevr/"),
-    path.resolve("/usr/share/slimevr/")
-  ]
-  return paths.map((p) => join(p, 'slimevr.jar')).find((p) => existsSync(p));
+    path.resolve('/app/share/slimevr/'),
+    path.resolve('/usr/share/slimevr/'),
+  ];
+  return paths
+    .filter((p) => !!p)
+    .map((p) => join(p, 'slimevr.jar'))
+    .find((p) => existsSync(p));
+};
+
+const validJavaPaths = () => {
 }
 
-const spawnServer = () => {};
+const findJavaBin = (sharedDir: string) => {
+  const javaBin = getPlatform() === 'windows' ? 'java.exe' : 'java';
+  const jre = join(sharedDir, 'jre/bin', javaBin);
+  if (!existsSync(jre)) {
+    return validJavaPaths();
+  }
+
+
+
+}
+
+const spawnServer = () => {
+
+  const serverJar = findServerJar()
+  if (!serverJar) {
+    return false;
+  }
+  const sharedDir = dirname(serverJar);
+  const javaBin = findJavaBin(sharedDir);
+
+  logger.info({ serverJar }, 'found server jar');
+
+};
 
 app.whenReady().then(() => {
+  console.log(javaVersionFile);
+
   checkEnvironmentVariables();
 
   spawnServer();
