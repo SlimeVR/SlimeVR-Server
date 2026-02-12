@@ -114,7 +114,7 @@ export function BodyPartIcon({
   return (
     <svg width={width} height={width}>
       <rect width={width} height={width} rx="2" fill="#56407B" />
-      {mapPart[bodyPart]({ width, currentLocales })}
+      {mapPart[bodyPart]?.({ width, currentLocales })}
     </svg>
   );
 }
