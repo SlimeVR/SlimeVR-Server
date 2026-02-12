@@ -63,21 +63,21 @@ dependencies {
 	// This dependency is used internally,
 	// and not exposed to consumers on their own compile classpath.
 	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
-	implementation("commons-cli:commons-cli:1.8.0")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.15.1")
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.1")
+	implementation("commons-cli:commons-cli:1.11.0")
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.21.0")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.0")
 
 	implementation("com.github.jonpeterson:jackson-module-model-versioning:1.2.2")
 	implementation("org.apache.commons:commons-math3:3.6.1")
-	implementation("org.apache.commons:commons-lang3:3.15.0")
-	implementation("org.apache.commons:commons-collections4:4.4")
+	implementation("org.apache.commons:commons-lang3:3.20.0")
+	implementation("org.apache.commons:commons-collections4:4.5.0")
 
-	implementation("com.illposed.osc:javaosc-core:0.8")
+	implementation("com.illposed.osc:javaosc-core:0.9")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
-	implementation("com.mayakapps.kache:kache:2.1.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+	implementation("com.mayakapps.kache:kache:2.1.1")
 
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")
 
@@ -89,7 +89,7 @@ dependencies {
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
-	testImplementation(platform("org.junit:junit-bom:5.10.3"))
+	testImplementation(platform("org.junit:junit-bom:6.0.2"))
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.junit.platform:junit-platform-launcher")
 }
