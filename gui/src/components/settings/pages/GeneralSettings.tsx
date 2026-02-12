@@ -190,6 +190,156 @@ const defaultValues: SettingsForm = {
   },
 };
 
+// Helper component to clamp scale values when upscaling is disabled
+function UpscalingClampEffect({
+  watch,
+  setValue,
+  getValues,
+}: {
+  watch: any;
+  setValue: any;
+  getValues: any;
+}) {
+  const enableUpscaling = watch('velocity.enableUpscaling');
+
+  useEffect(() => {
+    // If upscaling is disabled, clamp all values above 1.0
+    if (!enableUpscaling) {
+      const currentX = getValues('velocity.scaleX');
+      const currentY = getValues('velocity.scaleY');
+      const currentZ = getValues('velocity.scaleZ');
+
+      if (currentX > 1.0) setValue('velocity.scaleX', 1.0);
+      if (currentY > 1.0) setValue('velocity.scaleY', 1.0);
+      if (currentZ > 1.0) setValue('velocity.scaleZ', 1.0);
+    }
+  }, [enableUpscaling, setValue, getValues]);
+
+  return null;
+}
+
+// Helper component for bitmask checkbox
+function BitmaskCheckbox({
+  value,
+  bitPosition,
+  label,
+  onChange,
+}: {
+  value: number;
+  bitPosition: number;
+  label: string;
+  onChange: (newValue: number) => void;
+}) {
+  return (
+    <CheckboxInternal
+      variant="toggle"
+      outlined
+      name={`velocity.enabledGroups.${label.toLowerCase()}`}
+      checked={(value & (1 << bitPosition)) !== 0}
+      onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << bitPosition) : value & ~(1 << bitPosition))}
+      label={label}
+    />
+  );
+}
+
+// Helper component to sync Y and Z values to X when entering unified scaling mode
+function UnifiedScaleSyncEffect({
+  watch,
+  setValue,
+  scalingPreset,
+}: {
+  watch: any;
+  setValue: any;
+  scalingPreset: number;
+}) {
+  const scaleX = watch('velocity.scaleX');
+  const prevPresetRef = useRef(scalingPreset);
+
+  useEffect(() => {
+    // Only sync when transitioning INTO unified mode (not already in it)
+    if (
+      scalingPreset === VelocityScalingPreset.CUSTOM_UNIFIED &&
+      prevPresetRef.current !== VelocityScalingPreset.CUSTOM_UNIFIED
+    ) {
+      setValue('velocity.scaleY', scaleX);
+      setValue('velocity.scaleZ', scaleX);
+    }
+    prevPresetRef.current = scalingPreset;
+  }, [scalingPreset, scaleX, setValue]);
+
+  return null;
+}
+
+// Reusable slider component for velocity scaling
+function VelocityScaleSlider({
+  control,
+  name,
+  label,
+  maxScale,
+  onChange: onChangeCallback,
+}: {
+  control: any;
+  name: string;
+  label: string;
+  maxScale: number;
+  onChange?: (value: number) => void;
+}) {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field: { onChange, value } }) => {
+        const [localValue, setLocalValue] = useState(value);
+        useEffect(() => setLocalValue(value), [value]);
+
+        const handleChange = (newValue: number) => {
+          onChange(newValue);
+          if (onChangeCallback) {
+            onChangeCallback(newValue);
+          }
+        };
+
+        return (
+          <div className="flex flex-col gap-1">
+            <Typography bold>{label}</Typography>
+            <div className="flex gap-2 items-center bg-background-60 p-2 rounded-lg">
+              <Button
+                variant="tertiary"
+                rounded
+                onClick={() => handleChange(Math.max(0.01, +(value - 0.01).toFixed(2)))}
+              >
+                -
+              </Button>
+              <input
+                type="range"
+                className="flex-grow accent-accent-background-30"
+                min={0.01}
+                max={maxScale}
+                step={0.01}
+                value={localValue}
+                onChange={(e) => setLocalValue(+e.target.value)}
+                onMouseUp={(e) => handleChange(+(e.target as HTMLInputElement).value)}
+                onTouchEnd={(e) => handleChange(+(e.target as HTMLInputElement).value)}
+                onBlur={(e) => handleChange(+(e.target as HTMLInputElement).value)}
+              />
+              <Button
+                variant="tertiary"
+                rounded
+                onClick={() => handleChange(Math.min(maxScale, +(value + 0.01).toFixed(2)))}
+              >
+                +
+              </Button>
+              <div className="min-w-[60px] text-center">
+                {localValue.toFixed(2)}x
+              </div>
+            </div>
+          </div>
+        );
+      }}
+    />
+  );
+}
+
 export function GeneralSettings() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
@@ -1249,10 +1399,12 @@ export function GeneralSettings() {
               label="Enable Velocity Tracking"
             />
 
-            <div className="flex flex-col pt-4 pb-2">
-              <Typography variant="section-title">
-                Velocity Tracking Preset
-              </Typography>
+            {watch('velocity.sendDerivedVelocity') && (
+              <>
+                <div className="flex flex-col pt-4 pb-2">
+                  <Typography variant="section-title">
+                    Velocity Tracking Preset
+                  </Typography>
               <Typography color="secondary">
                 Choose which trackers send velocity data. HYBRID is recommended for VRChat.
               </Typography>
@@ -1281,7 +1433,7 @@ export function GeneralSettings() {
               />
             </div>
 
-            {watch('velocity.preset') === VelocityPreset.CUSTOM && (
+            {Number(watch('velocity.preset')) === VelocityPreset.CUSTOM && (
               <div className="flex flex-col pt-3 pb-2 gap-2">
                 <Typography variant="section-title">
                   Custom Tracker Groups
@@ -1294,54 +1446,12 @@ export function GeneralSettings() {
                   name="velocity.enabledGroups"
                   render={({ field: { onChange, value } }) => (
                     <div className="grid grid-cols-2 gap-3 pt-2">
-                      <CheckboxInternal
-                        variant="toggle"
-                        outlined
-                        name="velocity.enabledGroups.feet"
-                        checked={(value & (1 << 0)) !== 0}
-                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 0) : value & ~(1 << 0))}
-                        label="Feet"
-                      />
-                      <CheckboxInternal
-                        variant="toggle"
-                        outlined
-                        name="velocity.enabledGroups.ankles"
-                        checked={(value & (1 << 1)) !== 0}
-                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 1) : value & ~(1 << 1))}
-                        label="Ankles"
-                      />
-                      <CheckboxInternal
-                        variant="toggle"
-                        outlined
-                        name="velocity.enabledGroups.knees"
-                        checked={(value & (1 << 2)) !== 0}
-                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 2) : value & ~(1 << 2))}
-                        label="Knees"
-                      />
-                      <CheckboxInternal
-                        variant="toggle"
-                        outlined
-                        name="velocity.enabledGroups.chest"
-                        checked={(value & (1 << 3)) !== 0}
-                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 3) : value & ~(1 << 3))}
-                        label="Chest"
-                      />
-                      <CheckboxInternal
-                        variant="toggle"
-                        outlined
-                        name="velocity.enabledGroups.waist"
-                        checked={(value & (1 << 4)) !== 0}
-                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 4) : value & ~(1 << 4))}
-                        label="Waist"
-                      />
-                      <CheckboxInternal
-                        variant="toggle"
-                        outlined
-                        name="velocity.enabledGroups.elbows"
-                        checked={(value & (1 << 5)) !== 0}
-                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 5) : value & ~(1 << 5))}
-                        label="Elbows"
-                      />
+                      <BitmaskCheckbox value={value} bitPosition={0} label="Feet" onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={1} label="Ankles" onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={2} label="Knees" onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={3} label="Chest" onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={4} label="Waist" onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={5} label="Elbows" onChange={onChange} />
                     </div>
                   )}
                 />
@@ -1364,7 +1474,9 @@ export function GeneralSettings() {
               label="Override Scaling Preset"
             />
 
-            <div className="flex gap-3 pt-2 flex-col">
+            {watch('velocity.overrideScalingPreset') && (
+              <>
+                <div className="flex gap-3 pt-2 flex-col">
               <Radio
                 control={control}
                 name="velocity.scalingPreset"
@@ -1395,159 +1507,78 @@ export function GeneralSettings() {
               />
             </div>
 
-            <div className="flex flex-col pt-4 pb-2">
-              <Typography variant="section-title">
-                Advanced Scaling
-              </Typography>
-              <Typography color="secondary">
-                WARNING: Enabling upscaling may break full-body tracking position prediction.
-              </Typography>
-            </div>
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="velocity.enableUpscaling"
-              label="Allow Upscaling (>1.0x)"
+            {(Number(watch('velocity.scalingPreset')) === VelocityScalingPreset.CUSTOM_UNIFIED ||
+              Number(watch('velocity.scalingPreset')) === VelocityScalingPreset.CUSTOM_PER_AXIS) && (
+              <>
+                <div className="flex flex-col pt-4 pb-2">
+                  <Typography variant="section-title">
+                    Advanced Scaling
+                  </Typography>
+                  <Typography color="secondary">
+                    WARNING: Enabling upscaling may break full-body tracking position prediction.
+                  </Typography>
+                </div>
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  control={control}
+                  name="velocity.enableUpscaling"
+                  label="Allow Upscaling (>1.0x)"
+                />
+                <UpscalingClampEffect
+                  watch={watch}
+                  setValue={setValue}
+                  getValues={getValues}
+                />
+              </>
+            )}
+
+            {Number(watch('velocity.scalingPreset')) === VelocityScalingPreset.CUSTOM_UNIFIED && (
+              <div className="flex flex-col gap-3 pt-4 pb-3">
+                <VelocityScaleSlider
+                  control={control}
+                  name="velocity.scaleX"
+                  label="Unified Scale (All Axes)"
+                  maxScale={watch('velocity.enableUpscaling') ? 5.0 : 1.0}
+                  onChange={(newValue) => {
+                    setValue('velocity.scaleY', newValue);
+                    setValue('velocity.scaleZ', newValue);
+                  }}
+                />
+              </div>
+            )}
+            <UnifiedScaleSyncEffect
+              watch={watch}
+              setValue={setValue}
+              scalingPreset={Number(watch('velocity.scalingPreset'))}
             />
 
+            {Number(watch('velocity.scalingPreset')) === VelocityScalingPreset.CUSTOM_PER_AXIS && (
             <div className="flex flex-col gap-3 pt-4 pb-3">
-              <Controller
+              <VelocityScaleSlider
                 control={control}
                 name="velocity.scaleX"
-                render={({ field: { onChange, value } }) => {
-                  const [localValue, setLocalValue] = useState(value);
-                  useEffect(() => setLocalValue(value), [value]);
-
-                  return (
-                    <div className="flex flex-col gap-1">
-                      <Typography bold>Scale X</Typography>
-                      <div className="flex gap-2 items-center bg-background-60 p-2 rounded-lg">
-                        <Button
-                          variant="tertiary"
-                          rounded
-                          onClick={() => onChange(Math.max(0.0, +(value - 0.01).toFixed(2)))}
-                        >
-                          -
-                        </Button>
-                        <input
-                          type="range"
-                          className="flex-grow"
-                          min={0.0}
-                          max={5.0}
-                          step={0.01}
-                          value={localValue}
-                          onChange={(e) => setLocalValue(+e.target.value)}
-                          onMouseUp={(e) => onChange(+(e.target as HTMLInputElement).value)}
-                          onTouchEnd={(e) => onChange(+(e.target as HTMLInputElement).value)}
-                          onBlur={(e) => onChange(+(e.target as HTMLInputElement).value)}
-                        />
-                        <Button
-                          variant="tertiary"
-                          rounded
-                          onClick={() => onChange(Math.min(5.0, +(value + 0.01).toFixed(2)))}
-                        >
-                          +
-                        </Button>
-                        <div className="min-w-[60px] text-center">
-                          {localValue.toFixed(2)}x
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }}
+                label="Scale X"
+                maxScale={watch('velocity.enableUpscaling') ? 5.0 : 1.0}
               />
-              <Controller
+              <VelocityScaleSlider
                 control={control}
                 name="velocity.scaleY"
-                render={({ field: { onChange, value } }) => {
-                  const [localValue, setLocalValue] = useState(value);
-                  useEffect(() => setLocalValue(value), [value]);
-
-                  return (
-                    <div className="flex flex-col gap-1">
-                      <Typography bold>Scale Y</Typography>
-                      <div className="flex gap-2 items-center bg-background-60 p-2 rounded-lg">
-                        <Button
-                          variant="tertiary"
-                          rounded
-                          onClick={() => onChange(Math.max(0.0, +(value - 0.01).toFixed(2)))}
-                        >
-                          -
-                        </Button>
-                        <input
-                          type="range"
-                          className="flex-grow"
-                          min={0.0}
-                          max={5.0}
-                          step={0.01}
-                          value={localValue}
-                          onChange={(e) => setLocalValue(+e.target.value)}
-                          onMouseUp={(e) => onChange(+(e.target as HTMLInputElement).value)}
-                          onTouchEnd={(e) => onChange(+(e.target as HTMLInputElement).value)}
-                          onBlur={(e) => onChange(+(e.target as HTMLInputElement).value)}
-                        />
-                        <Button
-                          variant="tertiary"
-                          rounded
-                          onClick={() => onChange(Math.min(5.0, +(value + 0.01).toFixed(2)))}
-                        >
-                          +
-                        </Button>
-                        <div className="min-w-[60px] text-center">
-                          {localValue.toFixed(2)}x
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }}
+                label="Scale Y"
+                maxScale={watch('velocity.enableUpscaling') ? 5.0 : 1.0}
               />
-              <Controller
+              <VelocityScaleSlider
                 control={control}
                 name="velocity.scaleZ"
-                render={({ field: { onChange, value } }) => {
-                  const [localValue, setLocalValue] = useState(value);
-                  useEffect(() => setLocalValue(value), [value]);
-
-                  return (
-                    <div className="flex flex-col gap-1">
-                      <Typography bold>Scale Z</Typography>
-                      <div className="flex gap-2 items-center bg-background-60 p-2 rounded-lg">
-                        <Button
-                          variant="tertiary"
-                          rounded
-                          onClick={() => onChange(Math.max(0.0, +(value - 0.01).toFixed(2)))}
-                        >
-                          -
-                        </Button>
-                        <input
-                          type="range"
-                          className="flex-grow"
-                          min={0.0}
-                          max={5.0}
-                          step={0.01}
-                          value={localValue}
-                          onChange={(e) => setLocalValue(+e.target.value)}
-                          onMouseUp={(e) => onChange(+(e.target as HTMLInputElement).value)}
-                          onTouchEnd={(e) => onChange(+(e.target as HTMLInputElement).value)}
-                          onBlur={(e) => onChange(+(e.target as HTMLInputElement).value)}
-                        />
-                        <Button
-                          variant="tertiary"
-                          rounded
-                          onClick={() => onChange(Math.min(5.0, +(value + 0.01).toFixed(2)))}
-                        >
-                          +
-                        </Button>
-                        <div className="min-w-[60px] text-center">
-                          {localValue.toFixed(2)}x
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }}
+                label="Scale Z"
+                maxScale={watch('velocity.enableUpscaling') ? 5.0 : 1.0}
               />
             </div>
+            )}
+              </>
+            )}
+              </>
+            )}
           </>
         </SettingsPagePaneLayout>
 
