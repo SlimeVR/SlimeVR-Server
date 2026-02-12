@@ -1,6 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { useEffect, useState } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { DefaultValues, useForm, Controller } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
   FilteringSettingsT,
@@ -15,11 +15,16 @@ import {
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
   HIDSettingsT,
+  VelocitySettingsT,
+  VelocityPreset,
+  VelocityScalingPreset,
+  ScalingValuesT,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocaleConfig } from '@/i18n/config';
-import { CheckBox } from '@/components/commons/Checkbox';
+import { CheckBox, CheckboxInternal } from '@/components/commons/Checkbox';
+import { Button } from '@/components/commons/Button';
 import { SteamIcon } from '@/components/commons/icon/SteamIcon';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { NumberSelector } from '@/components/commons/NumberSelector';
@@ -105,6 +110,17 @@ export type SettingsForm = {
   hidSettings: {
     trackersOverHID: boolean;
   };
+  velocity: {
+    sendDerivedVelocity: boolean;
+    preset: number;
+    enabledGroups: number; // Bitmask
+    overrideScalingPreset: boolean;
+    scalingPreset: number;
+    enableUpscaling: boolean;
+    scaleX: number;
+    scaleY: number;
+    scaleZ: number;
+  };
 };
 
 const defaultValues: SettingsForm = {
@@ -161,6 +177,17 @@ const defaultValues: SettingsForm = {
   resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
   hidSettings: { trackersOverHID: false },
+  velocity: {
+    sendDerivedVelocity: false,
+    preset: VelocityPreset.HYBRID,
+    enabledGroups: 0,
+    overrideScalingPreset: false,
+    scalingPreset: VelocityScalingPreset.UNSCALED,
+    enableUpscaling: false,
+    scaleX: 1.0,
+    scaleY: 1.0,
+    scaleZ: 1.0,
+  },
 };
 
 export function GeneralSettings() {
@@ -192,7 +219,8 @@ export function GeneralSettings() {
     },
   } = watch();
 
-  const onSubmit = (values: SettingsForm) => {
+  const onSubmit = useCallback((values: SettingsForm) => {
+    console.log('[GeneralSettings] onSubmit called with velocity:', values.velocity);
     const settings = new ChangeSettingsRequestT();
 
     if (values.trackers) {
@@ -290,8 +318,27 @@ export function GeneralSettings() {
       settings.resetsSettings = loadResetSettings(values.resetsSettings);
     }
 
+    if (values.velocity) {
+      const velocity = new VelocitySettingsT();
+      velocity.sendDerivedVelocity = values.velocity.sendDerivedVelocity;
+      velocity.preset = values.velocity.preset;
+      velocity.enabledGroups = values.velocity.enabledGroups;
+      velocity.overrideScalingPreset = values.velocity.overrideScalingPreset;
+      velocity.scalingPreset = values.velocity.scalingPreset;
+      velocity.enableUpscaling = values.velocity.enableUpscaling;
+
+      const scale = new ScalingValuesT();
+      scale.scaleX = values.velocity.scaleX;
+      scale.scaleY = values.velocity.scaleY;
+      scale.scaleZ = values.velocity.scaleZ;
+      velocity.scale = scale;
+
+      settings.velocitySettings = velocity;
+    }
+
+    console.log('[GeneralSettings] Sending ChangeSettingsRequest, velocitySettings:', settings.velocitySettings);
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
-  };
+  }, [sendRPCPacket]);
 
   useEffect(() => {
     const subscription = watch(() => handleSubmit(onSubmit)());
@@ -404,6 +451,20 @@ export function GeneralSettings() {
     if (settings.hidSettings) {
       formData.hidSettings = {
         trackersOverHID: settings.hidSettings.trackersOverHid,
+      };
+    }
+
+    if (settings.velocitySettings) {
+      formData.velocity = {
+        sendDerivedVelocity: settings.velocitySettings.sendDerivedVelocity ?? defaultValues.velocity.sendDerivedVelocity,
+        preset: settings.velocitySettings.preset ?? defaultValues.velocity.preset,
+        enabledGroups: settings.velocitySettings.enabledGroups ?? defaultValues.velocity.enabledGroups,
+        overrideScalingPreset: settings.velocitySettings.overrideScalingPreset ?? defaultValues.velocity.overrideScalingPreset,
+        scalingPreset: settings.velocitySettings.scalingPreset ?? defaultValues.velocity.scalingPreset,
+        enableUpscaling: settings.velocitySettings.enableUpscaling ?? defaultValues.velocity.enableUpscaling,
+        scaleX: settings.velocitySettings.scale?.scaleX ?? defaultValues.velocity.scaleX,
+        scaleY: settings.velocitySettings.scale?.scaleY ?? defaultValues.velocity.scaleY,
+        scaleZ: settings.velocitySettings.scale?.scaleZ ?? defaultValues.velocity.scaleZ,
       };
     }
 
@@ -1170,6 +1231,323 @@ export function GeneralSettings() {
                 </div>
               </>
             )}
+
+            <div className="flex flex-col pt-5 pb-2">
+              <Typography variant="section-title">
+                Tracker Velocity Settings
+              </Typography>
+              <Typography>
+                Enables derived velocity tracking for Natural Locomotion and similar systems.
+                This may cause jitter in some VR titles when moving your upper body.
+              </Typography>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="velocity.sendDerivedVelocity"
+              label="Enable Velocity Tracking"
+            />
+
+            <div className="flex flex-col pt-4 pb-2">
+              <Typography variant="section-title">
+                Velocity Tracking Preset
+              </Typography>
+              <Typography color="secondary">
+                Choose which trackers send velocity data. HYBRID is recommended for VRChat.
+              </Typography>
+            </div>
+            <div className="flex gap-3 pt-2 flex-col">
+              <Radio
+                control={control}
+                name="velocity.preset"
+                label="All Trackers"
+                description="All trackers with position data will send velocity"
+                value={VelocityPreset.ALL.toString()}
+              />
+              <Radio
+                control={control}
+                name="velocity.preset"
+                label="Hybrid (Feet + Ankles)"
+                description="Only feet and ankle trackers send velocity (recommended for VRChat)"
+                value={VelocityPreset.HYBRID.toString()}
+              />
+              <Radio
+                control={control}
+                name="velocity.preset"
+                label="Custom"
+                description="Manually select which tracker groups send velocity"
+                value={VelocityPreset.CUSTOM.toString()}
+              />
+            </div>
+
+            {watch('velocity.preset') === VelocityPreset.CUSTOM && (
+              <div className="flex flex-col pt-3 pb-2 gap-2">
+                <Typography variant="section-title">
+                  Custom Tracker Groups
+                </Typography>
+                <Typography color="secondary">
+                  Select which tracker role groups should send velocity data
+                </Typography>
+                <Controller
+                  control={control}
+                  name="velocity.enabledGroups"
+                  render={({ field: { onChange, value } }) => (
+                    <div className="grid grid-cols-2 gap-3 pt-2">
+                      <CheckboxInternal
+                        variant="toggle"
+                        outlined
+                        name="velocity.enabledGroups.feet"
+                        checked={(value & (1 << 0)) !== 0}
+                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 0) : value & ~(1 << 0))}
+                        label="Feet"
+                      />
+                      <CheckboxInternal
+                        variant="toggle"
+                        outlined
+                        name="velocity.enabledGroups.ankles"
+                        checked={(value & (1 << 1)) !== 0}
+                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 1) : value & ~(1 << 1))}
+                        label="Ankles"
+                      />
+                      <CheckboxInternal
+                        variant="toggle"
+                        outlined
+                        name="velocity.enabledGroups.knees"
+                        checked={(value & (1 << 2)) !== 0}
+                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 2) : value & ~(1 << 2))}
+                        label="Knees"
+                      />
+                      <CheckboxInternal
+                        variant="toggle"
+                        outlined
+                        name="velocity.enabledGroups.chest"
+                        checked={(value & (1 << 3)) !== 0}
+                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 3) : value & ~(1 << 3))}
+                        label="Chest"
+                      />
+                      <CheckboxInternal
+                        variant="toggle"
+                        outlined
+                        name="velocity.enabledGroups.waist"
+                        checked={(value & (1 << 4)) !== 0}
+                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 4) : value & ~(1 << 4))}
+                        label="Waist"
+                      />
+                      <CheckboxInternal
+                        variant="toggle"
+                        outlined
+                        name="velocity.enabledGroups.elbows"
+                        checked={(value & (1 << 5)) !== 0}
+                        onChange={(e) => onChange((e.target as HTMLInputElement).checked ? value | (1 << 5) : value & ~(1 << 5))}
+                        label="Elbows"
+                      />
+                    </div>
+                  )}
+                />
+              </div>
+            )}
+
+            <div className="flex flex-col pt-4 pb-2">
+              <Typography variant="section-title">
+                Velocity Scaling
+              </Typography>
+              <Typography color="secondary">
+                Scale velocity values. Use UNSCALED unless experiencing locomotion issues.
+              </Typography>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="velocity.overrideScalingPreset"
+              label="Override Scaling Preset"
+            />
+
+            <div className="flex gap-3 pt-2 flex-col">
+              <Radio
+                control={control}
+                name="velocity.scalingPreset"
+                label="Unscaled"
+                description="No scaling applied (1.0x)"
+                value={VelocityScalingPreset.UNSCALED.toString()}
+              />
+              <Radio
+                control={control}
+                name="velocity.scalingPreset"
+                label="Hybrid/NaLo"
+                description="0.25x scaling for hybrid locomotion"
+                value={VelocityScalingPreset.HYBRID.toString()}
+              />
+              <Radio
+                control={control}
+                name="velocity.scalingPreset"
+                label="Custom Unified"
+                description="Single scaling value for all axes"
+                value={VelocityScalingPreset.CUSTOM_UNIFIED.toString()}
+              />
+              <Radio
+                control={control}
+                name="velocity.scalingPreset"
+                label="Custom Per-Axis"
+                description="Individual scaling per axis (X, Y, Z)"
+                value={VelocityScalingPreset.CUSTOM_PER_AXIS.toString()}
+              />
+            </div>
+
+            <div className="flex flex-col pt-4 pb-2">
+              <Typography variant="section-title">
+                Advanced Scaling
+              </Typography>
+              <Typography color="secondary">
+                WARNING: Enabling upscaling may break full-body tracking position prediction.
+              </Typography>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="velocity.enableUpscaling"
+              label="Allow Upscaling (>1.0x)"
+            />
+
+            <div className="flex flex-col gap-3 pt-4 pb-3">
+              <Controller
+                control={control}
+                name="velocity.scaleX"
+                render={({ field: { onChange, value } }) => {
+                  const [localValue, setLocalValue] = useState(value);
+                  useEffect(() => setLocalValue(value), [value]);
+
+                  return (
+                    <div className="flex flex-col gap-1">
+                      <Typography bold>Scale X</Typography>
+                      <div className="flex gap-2 items-center bg-background-60 p-2 rounded-lg">
+                        <Button
+                          variant="tertiary"
+                          rounded
+                          onClick={() => onChange(Math.max(0.0, +(value - 0.01).toFixed(2)))}
+                        >
+                          -
+                        </Button>
+                        <input
+                          type="range"
+                          className="flex-grow"
+                          min={0.0}
+                          max={5.0}
+                          step={0.01}
+                          value={localValue}
+                          onChange={(e) => setLocalValue(+e.target.value)}
+                          onMouseUp={(e) => onChange(+(e.target as HTMLInputElement).value)}
+                          onTouchEnd={(e) => onChange(+(e.target as HTMLInputElement).value)}
+                          onBlur={(e) => onChange(+(e.target as HTMLInputElement).value)}
+                        />
+                        <Button
+                          variant="tertiary"
+                          rounded
+                          onClick={() => onChange(Math.min(5.0, +(value + 0.01).toFixed(2)))}
+                        >
+                          +
+                        </Button>
+                        <div className="min-w-[60px] text-center">
+                          {localValue.toFixed(2)}x
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+              <Controller
+                control={control}
+                name="velocity.scaleY"
+                render={({ field: { onChange, value } }) => {
+                  const [localValue, setLocalValue] = useState(value);
+                  useEffect(() => setLocalValue(value), [value]);
+
+                  return (
+                    <div className="flex flex-col gap-1">
+                      <Typography bold>Scale Y</Typography>
+                      <div className="flex gap-2 items-center bg-background-60 p-2 rounded-lg">
+                        <Button
+                          variant="tertiary"
+                          rounded
+                          onClick={() => onChange(Math.max(0.0, +(value - 0.01).toFixed(2)))}
+                        >
+                          -
+                        </Button>
+                        <input
+                          type="range"
+                          className="flex-grow"
+                          min={0.0}
+                          max={5.0}
+                          step={0.01}
+                          value={localValue}
+                          onChange={(e) => setLocalValue(+e.target.value)}
+                          onMouseUp={(e) => onChange(+(e.target as HTMLInputElement).value)}
+                          onTouchEnd={(e) => onChange(+(e.target as HTMLInputElement).value)}
+                          onBlur={(e) => onChange(+(e.target as HTMLInputElement).value)}
+                        />
+                        <Button
+                          variant="tertiary"
+                          rounded
+                          onClick={() => onChange(Math.min(5.0, +(value + 0.01).toFixed(2)))}
+                        >
+                          +
+                        </Button>
+                        <div className="min-w-[60px] text-center">
+                          {localValue.toFixed(2)}x
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+              <Controller
+                control={control}
+                name="velocity.scaleZ"
+                render={({ field: { onChange, value } }) => {
+                  const [localValue, setLocalValue] = useState(value);
+                  useEffect(() => setLocalValue(value), [value]);
+
+                  return (
+                    <div className="flex flex-col gap-1">
+                      <Typography bold>Scale Z</Typography>
+                      <div className="flex gap-2 items-center bg-background-60 p-2 rounded-lg">
+                        <Button
+                          variant="tertiary"
+                          rounded
+                          onClick={() => onChange(Math.max(0.0, +(value - 0.01).toFixed(2)))}
+                        >
+                          -
+                        </Button>
+                        <input
+                          type="range"
+                          className="flex-grow"
+                          min={0.0}
+                          max={5.0}
+                          step={0.01}
+                          value={localValue}
+                          onChange={(e) => setLocalValue(+e.target.value)}
+                          onMouseUp={(e) => onChange(+(e.target as HTMLInputElement).value)}
+                          onTouchEnd={(e) => onChange(+(e.target as HTMLInputElement).value)}
+                          onBlur={(e) => onChange(+(e.target as HTMLInputElement).value)}
+                        />
+                        <Button
+                          variant="tertiary"
+                          rounded
+                          onClick={() => onChange(Math.min(5.0, +(value + 0.01).toFixed(2)))}
+                        >
+                          +
+                        </Button>
+                        <div className="min-w-[60px] text-center">
+                          {localValue.toFixed(2)}x
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+            </div>
           </>
         </SettingsPagePaneLayout>
 
