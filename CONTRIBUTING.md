@@ -7,8 +7,6 @@ This document describes essential knowledge required to contribute to the SlimeV
 - [Git](https://git-scm.com/downloads)
 - [Java v17+](https://adoptium.net/temurin/releases/)
 - [Node.js v16.9+](https://nodejs.org) (We recommend the use of `nvm` instead of installing Node.js directly)
-- [Microsoft Edge WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section) or `webkit2gtk` for Linux
-- [Rust](https://rustup.rs)
 
 ## Cloning the code
 First, clone the codebase using git in a terminal in the folder you want.
@@ -32,13 +30,12 @@ be at `server/build/libs/slimevr.jar` (you can ignore `server.jar`).
 
 (Note: Your IDE may be able to do all of the above for you.)
 
-### Tauri (gui)
+### Electron (gui)
 
 - Activate corepack (included with Node.JS) via `corepack enable` (might require administrator permissions)
 - Run `pnpm i` in your IDE's terminal to download and install dependencies.
 - To launch the GUI in dev mode, run `pnpm gui`.
-- Finally, to compile for production, run `pnpm run tauri build`. The result
-will be at `target/release/slimevr.exe`.
+- Finally, to compile for production, run `pnpm build`. The result
 
 ## Code style
 
