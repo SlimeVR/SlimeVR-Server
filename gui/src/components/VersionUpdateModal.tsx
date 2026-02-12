@@ -3,12 +3,14 @@ import { useContext, useState } from 'react';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { Typography } from './commons/Typography';
-import { openUrl } from '@tauri-apps/plugin-opener';
 import semver from 'semver';
 import { GH_REPO, VersionContext } from '@/App';
 import { error } from '@/utils/logging';
+import { useElectron } from '@/hooks/electron';
+import { openUrl } from '@/hooks/crossplatform';
 
 export function VersionUpdateModal() {
+  const electron = useElectron()
   const { l10n } = useLocalization();
   const newVersion = useContext(VersionContext);
   const [forceClose, setForceClose] = useState(false);
@@ -51,10 +53,10 @@ export function VersionUpdateModal() {
           <Button
             variant="primary"
             onClick={async () => {
-              const url = document.body.classList.contains('windows')
+              const url =  electron.isElectron && electron.data().os.type === 'windows'
                 ? 'https://slimevr.dev/download'
                 : `https://github.com/${GH_REPO}/releases/latest`;
-              await openUrl(url).catch(() => window.open(url, '_blank'));
+              await openUrl(url)
               closeModal();
             }}
           >

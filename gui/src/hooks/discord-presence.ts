@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useConfig } from './config';
 import { useInterval } from './timeout';
-import { invoke } from '@tauri-apps/api/core';
+// import { invoke } from '@tauri-apps/api/core';
 import { warn } from '@/utils/logging';
 import { useLocalization } from '@fluent/react';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
@@ -53,23 +53,24 @@ export function useDiscordPresence() {
   }, [config?.discordPresence]);
 }
 
-export function checkDiscordClient(): Promise<boolean> {
-  return invoke('discord_client_exists');
+export async function checkDiscordClient(): Promise<boolean> {
+  // return invoke('discord_client_exists');
+  return false;
 }
 
-export function createDiscordClient(): Promise<void> {
-  return invoke('create_discord_client');
+export async function createDiscordClient(): Promise<void> {
+  // return invoke('create_discord_client');
 }
 
-export function clearDiscordPresence(): Promise<void> {
-  return invoke('clear_presence');
+export async function clearDiscordPresence(): Promise<void> {
+  // return invoke('clear_presence');
 }
 
-export function updateDiscordPresence(obj: {
+export async function updateDiscordPresence(obj: {
   details: string;
   state?: string;
   small_icon?: [string, string];
   button?: { label: string; url: string };
 }): Promise<void> {
-  return invoke('update_presence', obj);
+  // return invoke('update_presence', obj);
 }

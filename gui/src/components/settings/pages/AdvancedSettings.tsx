@@ -14,7 +14,7 @@ import { defaultConfig as defaultGUIConfig, useConfig } from '@/hooks/config';
 import { defaultValues as defaultDevConfig } from '@/components/widgets/DeveloperModeWidget';
 import { RpcMessage, SettingsResetRequestT } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { invoke } from '@tauri-apps/api/core';
+import { useElectron } from '@/hooks/electron';
 
 function guiDefaults() {
   // Destructure the properties to exclude "lang"
@@ -27,6 +27,7 @@ function guiDefaults() {
 }
 
 export function AdvancedSettings() {
+  const electron = useElectron();
   const { l10n } = useLocalization();
   const { setConfig } = useConfig();
 
@@ -36,16 +37,18 @@ export function AdvancedSettings() {
   const { sendRPCPacket } = useWebsocketAPI();
 
   const openConfigFolder = async () => {
+    if (!electron.isElectron) throw 'invalid state - no electron';
     try {
-      await invoke<string | null>('open_config_folder');
+      await electron.api.openConfigFolder();
     } catch (err) {
       error('Failed to open config folder:', err);
     }
   };
 
   const openLogsFolder = async () => {
+    if (!electron.isElectron) throw 'invalid state - no electron';
     try {
-      await invoke<string | null>('open_logs_folder');
+      await electron.api.openLogsFolder();
     } catch (err) {
       error('Failed to open config folder:', err);
     }
@@ -165,46 +168,55 @@ export function AdvancedSettings() {
                   />
                 </div>
               </div>
-
-              <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
-                <div>
-                  <Typography variant="section-title">
-                    {l10n.getString('settings-utils-advanced-open_data-v1')}
-                  </Typography>
-                  <div className="flex flex-col">
-                    <Typography>
-                      {l10n.getString(
-                        'settings-utils-advanced-open_data-description-v1'
-                      )}
-                    </Typography>
+              {electron.isElectron && (
+                <>
+                  <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
+                    <div>
+                      <Typography variant="section-title">
+                        {l10n.getString('settings-utils-advanced-open_data-v1')}
+                      </Typography>
+                      <div className="flex flex-col">
+                        <Typography>
+                          {l10n.getString(
+                            'settings-utils-advanced-open_data-description-v1'
+                          )}
+                        </Typography>
+                      </div>
+                    </div>
+                    <div className="flex flex-col nsm:pt-2">
+                      <Button variant="secondary" onClick={openConfigFolder}>
+                        {l10n.getString(
+                          'settings-utils-advanced-open_data-label'
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col nsm:pt-2">
-                  <Button variant="secondary" onClick={openConfigFolder}>
-                    {l10n.getString('settings-utils-advanced-open_data-label')}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
-                <div>
-                  <Typography variant="section-title">
-                    {l10n.getString('settings-utils-advanced-open_logs')}
-                  </Typography>
-                  <div className="flex flex-col">
-                    <Typography>
-                      {l10n.getString(
-                        'settings-utils-advanced-open_logs-description'
-                      )}
-                    </Typography>
+                  <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
+                    <div>
+                      <Typography variant="section-title">
+                        {l10n.getString('settings-utils-advanced-open_logs')}
+                      </Typography>
+                      <div className="flex flex-col">
+                        <Typography>
+                          {l10n.getString(
+                            'settings-utils-advanced-open_logs-description'
+                          )}
+                        </Typography>
+                      </div>
+                    </div>
+                    <div className="flex flex-col nsm:pt-2">
+                      <Button
+                        variant="secondary"
+                        onClick={openLogsFolder}
+                      >
+                        {l10n.getString(
+                          'settings-utils-advanced-open_logs-label'
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col nsm:pt-2">
-                  <Button variant="secondary" onClick={openLogsFolder}>
-                    {l10n.getString('settings-utils-advanced-open_logs-label')}
-                  </Button>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </>
         </SettingsPagePaneLayout>

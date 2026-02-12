@@ -2,30 +2,29 @@ import { Button } from '@/components/commons/Button';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { Typography } from '@/components/commons/Typography';
 import { EmptyLayout } from '@/components/EmptyLayout';
-import { useIsTauri } from '@/hooks/breakpoint';
 import { useConfig } from '@/hooks/config';
+import { useElectron } from '@/hooks/electron';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { error } from '@/utils/logging';
 import { Localized } from '@fluent/react';
-import { invoke } from '@tauri-apps/api/core';
-import { getCurrentWindow } from '@tauri-apps/api/window';
 
 function Error({ title, desc }: { title: string; desc: string }) {
-  const isTauri = useIsTauri();
+  const electron = useElectron();
   const { saveConfig } = useConfig();
 
   const openLogsFolder = async () => {
+    if (!electron.isElectron) throw 'invalid state - electron should be here'
     try {
-      await invoke<string | null>('open_logs_folder');
+      electron.api.openLogsFolder()
     } catch (err) {
       error('Failed to open logs folder:', err);
     }
   };
 
   const closeApp = async () => {
+    if (!electron.isElectron) throw 'invalid state - electron should be here'
     await saveConfig();
-    await invoke('update_window_state');
-    await getCurrentWindow().destroy();
+    electron.api.close()
   };
 
   return (
@@ -38,7 +37,7 @@ function Error({ title, desc }: { title: string; desc: string }) {
         <Localized id={desc}>
           <Typography variant="standard" />
         </Localized>
-        {isTauri && (
+        {electron.isElectron && (
           <div className="flex gap-2 justify-center mt-4">
             <Localized id="websocket-error-close">
               <Button variant="primary" onClick={closeApp} />

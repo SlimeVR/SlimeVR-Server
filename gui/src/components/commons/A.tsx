@@ -1,4 +1,4 @@
-import { open } from '@tauri-apps/plugin-shell';
+import { openUrl } from '@/hooks/crossplatform';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 
@@ -12,14 +12,13 @@ export function A({
   className?: string;
 }) {
   return (
-    <a
-      href="javascript:void(0)"
+    <span
       onClick={() =>
-        href && open(href).catch(() => window.open(href, '_blank'))
+        href && openUrl(href)
       }
       className={classNames(className, 'underline', 'cursor-pointer')}
     >
       {children}
-    </a>
+    </span>
   );
 }

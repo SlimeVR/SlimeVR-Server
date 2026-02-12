@@ -6,7 +6,6 @@ declare const __VERSION_TAG__: string;
 declare const __GIT_CLEAN__: boolean;
 
 interface Window {
-  readonly isTauri: boolean;
   readonly __ANDROID__:
     | {
         isThere: () => boolean;
