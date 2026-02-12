@@ -2,6 +2,7 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
+import dev.slimevr.tracking.trackers.VelocityRolePolicy.getScalingValues
 import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerState
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
@@ -75,6 +76,11 @@ class Tracker @JvmOverloads constructor(
 	 */
 	val allowMounting: Boolean = false,
 
+	/**
+	 * If true, the tracker will send Derived Velocity.
+	 */
+	var allowVelocity: Boolean = false,
+
 	val isHmd: Boolean = false,
 
 	/**
@@ -105,7 +111,20 @@ class Tracker @JvmOverloads constructor(
 	// IMU: +z forward, +x left, +y up
 	// SlimeVR: +z backward, +x right, +y up
 	private var _acceleration = Vector3.NULL
+	private var _velocity = Vector3.NULL
+	private var _rawVelocity = Vector3.NULL
 	private var _magVector = Vector3.NULL
+
+	/**
+	 * Velocity state server-side differentiation based on sent poses
+	 */
+	private data class VelocityState(
+		var prevTimeNs: Long = 0L,
+		var prevPos: Vector3 = Vector3(0f, 0f, 0f)
+	)
+
+	private var velocityState: VelocityState? = null
+
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -330,6 +349,54 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
+	 * Updates the derived velocity of the tracker by differentiating position over time.
+	 *
+	 * This method enforces the [allowVelocity] policy and checks for valid position data before
+	 * proceeding. If conditions are met, it calculates velocity based on the displacement since the
+	 * last update, applying a sanity check on the time delta to filter out noise and ensure data stability.
+	 *
+	 * After calculation, velocity is scaled based on the effective scaling preset from runtime config.
+	 */
+	fun updateDerivedVelocity(nowNs: Long) {
+		if (!allowVelocity || !hasPosition) {
+			velocityState = null
+			_velocity = Vector3.NULL
+			_rawVelocity = Vector3.NULL
+			return
+		}
+
+		val pos = position
+		val state = velocityState ?: VelocityState().also {
+			velocityState = it
+		}
+
+		if (state.prevTimeNs != 0L) {
+			val dt = (nowNs - state.prevTimeNs) * 1e-9
+			if (dt in 1e-4..0.25) {
+				_rawVelocity = Vector3(
+					((pos.x - state.prevPos.x) / dt).toFloat(),
+					((pos.y - state.prevPos.y) / dt).toFloat(),
+					((pos.z - state.prevPos.z) / dt).toFloat()
+				)
+
+				// Apply scaling based on effective preset from runtime config
+				val configManager = VRServer.instance.configManager
+				val scaling = getScalingValues(configManager.vrConfig.velocityConfig)
+				_velocity = Vector3(
+					_rawVelocity.x * scaling.scaleX,
+					_rawVelocity.y * scaling.scaleY,
+					_rawVelocity.z * scaling.scaleZ
+				)
+			} else {
+				_velocity = Vector3.NULL
+				_rawVelocity = Vector3.NULL
+			}
+		}
+		state.prevTimeNs = nowNs
+		state.prevPos = pos
+	}
+
+	/**
 	 * Gets the identity-adjusted tracker rotation after the resetsHandler's corrections
 	 * (identity reset, drift and identity mounting).
 	 * This is used for debugging/visualizing tracker data
@@ -404,6 +471,29 @@ class Tracker @JvmOverloads constructor(
 	fun setAcceleration(vec: Vector3) {
 		this._acceleration = vec
 	}
+
+	/**
+	 * Sets the derived velocity of the tracker.
+	 */
+	fun setVelocity(vec: Vector3) {
+		this._velocity = if (allowVelocity) vec else Vector3.NULL
+	}
+
+	/**
+	 * Gets the derived velocity of the tracker.
+	 */
+	fun getVelocity(): Vector3 = _velocity
+
+	/**
+	 * Gets the raw (unscaled) derived velocity of the tracker.
+	 */
+	fun getRawVelocity(): Vector3 = _rawVelocity
+
+	/**
+	 * True if the tracker has valid velocity data.
+	 */
+	val hasVelocity: Boolean
+		get() = allowVelocity && _velocity != Vector3.NULL
 
 	/**
 	 * True if the raw rotation is coming directly from an IMU (no cameras or lighthouses)
