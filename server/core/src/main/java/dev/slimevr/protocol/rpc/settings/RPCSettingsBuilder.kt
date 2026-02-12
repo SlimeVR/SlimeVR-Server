@@ -13,6 +13,7 @@ import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.SkeletonConfig
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.config.VelocityConfig
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.filtering.TrackerFilters.Companion.getByConfigkey
@@ -416,12 +417,13 @@ fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
 				fbb,
 				server.configManager.vrConfig.resetsConfig,
 			),
-			createStayAlignedSettings(
-				fbb,
-				server.configManager.vrConfig.stayAlignedConfig,
-			),
-			createHIDSettings(fbb, server.configManager.vrConfig.hidConfig),
-		)
+		createStayAlignedSettings(
+			fbb,
+			server.configManager.vrConfig.stayAlignedConfig,
+		),
+		createHIDSettings(fbb, server.configManager.vrConfig.hidConfig),
+		createVelocitySettings(fbb, server.configManager.vrConfig.velocityConfig),
+	)
 }
 
 fun createStayAlignedSettings(
@@ -456,3 +458,48 @@ fun createHIDSettings(
 		fbb,
 		config.trackersOverHID,
 	)
+
+fun createVelocitySettings(
+	fbb: FlatBufferBuilder,
+	velocityConfig: VelocityConfig,
+): Int {
+	// Create ScalingValues
+	val scaleOffset = solarxr_protocol.rpc.settings.ScalingValues.createScalingValues(
+		fbb,
+		velocityConfig.scale.scaleX,
+		velocityConfig.scale.scaleY,
+		velocityConfig.scale.scaleZ
+	)
+
+	// Map Kotlin enums to FlatBuffers enum values
+	val presetValue = when (velocityConfig.preset) {
+		dev.slimevr.config.VelocityPreset.ALL -> solarxr_protocol.rpc.settings.VelocityPreset.ALL
+		dev.slimevr.config.VelocityPreset.HYBRID -> solarxr_protocol.rpc.settings.VelocityPreset.HYBRID
+		dev.slimevr.config.VelocityPreset.CUSTOM -> solarxr_protocol.rpc.settings.VelocityPreset.CUSTOM
+	}
+
+	val scalingPresetValue = when (velocityConfig.scalingPreset) {
+		dev.slimevr.config.VelocityScalingPreset.UNSCALED -> solarxr_protocol.rpc.settings.VelocityScalingPreset.UNSCALED
+		dev.slimevr.config.VelocityScalingPreset.HYBRID -> solarxr_protocol.rpc.settings.VelocityScalingPreset.HYBRID
+		dev.slimevr.config.VelocityScalingPreset.CUSTOM_UNIFIED -> solarxr_protocol.rpc.settings.VelocityScalingPreset.CUSTOM_UNIFIED
+		dev.slimevr.config.VelocityScalingPreset.CUSTOM_PER_AXIS -> solarxr_protocol.rpc.settings.VelocityScalingPreset.CUSTOM_PER_AXIS
+	}
+
+	// Convert EnumSet to bitmask
+	var enabledGroupsBitmask = 0
+	velocityConfig.enabledGroups.forEach { group ->
+		enabledGroupsBitmask = enabledGroupsBitmask or (1 shl group.ordinal)
+	}
+
+	return solarxr_protocol.rpc.settings.VelocitySettings.createVelocitySettings(
+		fbb,
+		velocityConfig.sendDerivedVelocity,
+		presetValue,
+		enabledGroupsBitmask,
+		velocityConfig.overrideScalingPreset,
+		scalingPresetValue,
+		velocityConfig.enableUpscaling,
+		scaleOffset
+	)
+}
+

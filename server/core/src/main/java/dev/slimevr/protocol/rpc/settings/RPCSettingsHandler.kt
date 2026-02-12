@@ -3,6 +3,9 @@ package dev.slimevr.protocol.rpc.settings
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ArmsResetModes
+import dev.slimevr.config.VelocityPreset
+import dev.slimevr.config.VelocityScalingPreset
+import dev.slimevr.config.VelocityRoleGroup
 import dev.slimevr.filtering.TrackerFilters
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
@@ -13,7 +16,6 @@ import dev.slimevr.tracking.trackers.TrackerRole
 import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
-import solarxr_protocol.rpc.SettingsResponse
 import kotlin.math.*
 
 class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
@@ -360,6 +362,42 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			config.trackersOverHID = requestConfig.trackersOverHid()
 		}
 
+		if (req.velocitySettings() != null) {
+			val velocityConfig = api.server.configManager.vrConfig.velocityConfig
+			val velocitySettings = req.velocitySettings()
+			velocityConfig.sendDerivedVelocity = velocitySettings.sendDerivedVelocity()
+
+			// Convert preset ID to enum
+			val presetValues = VelocityPreset.values()
+			if (velocitySettings.preset() >= 0 && velocitySettings.preset() < presetValues.size) {
+				velocityConfig.preset = presetValues[velocitySettings.preset()]
+			}
+
+			// Convert bitmask to EnumSet
+			velocityConfig.enabledGroups.clear()
+			val enabledGroupsMask = velocitySettings.enabledGroups()
+			VelocityRoleGroup.values().forEachIndexed { index, group ->
+				if ((enabledGroupsMask and (1 shl index)) != 0) {
+					velocityConfig.enabledGroups.add(group)
+				}
+			}
+
+			velocityConfig.overrideScalingPreset = velocitySettings.overrideScalingPreset()
+
+			// Convert scaling preset ID to enum
+			val scalingPresetValues = VelocityScalingPreset.values()
+			if (velocitySettings.scalingPreset() >= 0 && velocitySettings.scalingPreset() < scalingPresetValues.size) {
+				velocityConfig.scalingPreset = scalingPresetValues[velocitySettings.scalingPreset()]
+			}
+
+			velocityConfig.enableUpscaling = velocitySettings.enableUpscaling()
+			if (velocitySettings.scale() != null) {
+				velocityConfig.scale.scaleX = velocitySettings.scale().scaleX()
+				velocityConfig.scale.scaleY = velocitySettings.scale().scaleY()
+				velocityConfig.scale.scaleZ = velocitySettings.scale().scaleZ()
+			}
+		}
+
 		api.server.configManager.saveConfig()
 	}
 
@@ -370,14 +408,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	companion object {
 		fun sendSteamVRUpdatedSettings(api: ProtocolAPI, rpcHandler: RPCHandler) {
 			val fbb = FlatBufferBuilder(32)
-			val bridge: ISteamVRBridge =
-				api.server.getVRBridge(ISteamVRBridge::class.java) ?: return
-
-			val settings = SettingsResponse
-				.createSettingsResponse(
-					fbb,
-					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-				)
+			val settings = createSettingsResponse(fbb, api.server)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
 			fbb.finish(outbound)
