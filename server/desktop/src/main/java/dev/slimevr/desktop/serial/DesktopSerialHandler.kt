@@ -14,6 +14,8 @@ import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
 import kotlin.concurrent.timerTask
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.streams.asSequence
 import kotlin.streams.asStream
 import dev.slimevr.serial.SerialPort as SlimeSerialPort
@@ -194,13 +196,14 @@ class DesktopSerialHandler :
 		currentPort?.outputStream?.write(buff)
 	}
 
+	@OptIn(ExperimentalEncodingApi::class)
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
 		val os = currentPort?.outputStream ?: return
 		val writer = OutputStreamWriter(os)
 		try {
-			val b64ssid = Base64.Default.encode(ssid.encodeToByteArray())
-			val b64passwd = Base64.Default.encode(passwd.encodeToByteArray())
+			val b64ssid = Base64.encode(ssid.encodeToByteArray())
+			val b64passwd = Base64.encode(passwd.encodeToByteArray())
 			writer.append("SET BWIFI ").append(b64ssid).append(" ").append(b64passwd).append("\n")
 			writer.flush()
 			addLog("-> SET BWIFI $b64ssid ${"*".repeat(b64passwd.length)}\n")

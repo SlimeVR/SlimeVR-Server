@@ -20,6 +20,8 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.streams.asSequence
 import kotlin.streams.asStream
 import dev.slimevr.serial.SerialPort as SlimeSerialPort
@@ -279,10 +281,11 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		currentPort?.port?.write(buff, 0)
 	}
 
+	@OptIn(ExperimentalEncodingApi::class)
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
-		val b64ssid = Base64.Default.encode(ssid.encodeToByteArray())
-		val b64passwd = Base64.Default.encode(passwd.encodeToByteArray())
+		val b64ssid = Base64.encode(ssid.encodeToByteArray())
+		val b64passwd = Base64.encode(passwd.encodeToByteArray())
 		writeSerial("SET BWIFI $b64ssid $b64passwd")
 		addLog("-> SET BWIFI $b64ssid ${"*".repeat(b64passwd.length)}\n")
 	}
