@@ -8,6 +8,7 @@ import dev.slimevr.config.serializers.BridgeConfigMapDeserializer
 import dev.slimevr.config.serializers.TrackerConfigMapDeserializer
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
+import dev.slimevr.tracking.trackers.VelocityRolePolicy.isVelocityAllowed
 
 @JsonVersionedModel(
 	currentVersion = "15",
@@ -58,6 +59,8 @@ class VRConfig {
 
 	val trackingChecklist: TrackingChecklistConfig = TrackingChecklistConfig()
 
+	var velocityConfig: VelocityConfig = VelocityConfig()
+
 	val vrcConfig: VRCConfig = VRCConfig()
 
 	init {
@@ -104,6 +107,19 @@ class VRConfig {
 		return config
 	}
 
+	/**
+	 * Applies the velocity policy to the given [Tracker].
+	 *
+	 * This method determines whether the tracker—be it a physical sensor or a computed virtual device—is
+	 * permitted to calculate and broadcast velocity data. It resolves the tracker's effective designation
+	 * (configured or default) and checks it against the active [VelocityConfig], updating [Tracker.allowVelocity] accordingly.
+	 */
+	fun applyVelocityPolicy(tracker: Tracker) {
+		val config = getTracker(tracker)
+		tracker.allowVelocity =
+			isVelocityAllowed(config.designation ?: tracker.trackerPosition?.designation, velocityConfig)
+	}
+
 	fun readTrackerConfig(tracker: Tracker) {
 		if (tracker.userEditable) {
 			val config = getTracker(tracker)
@@ -119,6 +135,7 @@ class VRConfig {
 					.readFilteringConfig(filters, tracker.getRotation())
 			}
 		}
+		applyVelocityPolicy(tracker)
 	}
 
 	fun writeTrackerConfig(tracker: Tracker?) {
