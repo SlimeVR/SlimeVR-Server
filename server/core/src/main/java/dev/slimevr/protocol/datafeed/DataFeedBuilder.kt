@@ -275,6 +275,12 @@ fun createTrackerData(
 	if (mask.stayAligned) {
 		TrackerData.addStayAligned(fbb, stayAlignedOffset)
 	}
+	if (mask.rawVelocity && tracker.hasVelocity) {
+		TrackerData.addRawVelocity(fbb, createVec3(fbb, tracker.getRawVelocity()))
+	}
+	if (mask.scaledVelocity && tracker.hasVelocity) {
+		TrackerData.addScaledVelocity(fbb, createVec3(fbb, tracker.getVelocity()))
+	}
 
 	return TrackerData.endTrackerData(fbb)
 }
