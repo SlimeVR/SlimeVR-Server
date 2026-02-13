@@ -8,8 +8,7 @@ class Updater {
 	@Serializable
 	data class GHResponse(val tag_name: String)
 
-	//val os = System.getProperty("os.name").lowercase()
-	val os = "windows"
+	val os = System.getProperty("os.name").lowercase()
 
 	suspend fun runUpdater() {
 
