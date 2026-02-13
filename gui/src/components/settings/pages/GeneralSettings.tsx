@@ -1384,51 +1384,66 @@ export function GeneralSettings() {
 
             <div className="flex flex-col pt-5 pb-2">
               <Typography variant="section-title">
-                Tracker Velocity Settings
+                {l10n.getString('settings-general-tracker_velocity')}
               </Typography>
-              <Typography>
-                Enables derived velocity tracking for Natural Locomotion and similar systems.
-                This may cause jitter in some VR titles when moving your upper body.
+              <Typography color="secondary">
+                {l10n.getString('settings-general-tracker_velocity-description')}
               </Typography>
+              <Localized
+                id="settings-general-tracker_velocity-warning"
+                elems={{ b: <b className="text-yellow-500 font-bold" /> }}
+              >
+                <Typography color="secondary" className="pt-2">
+                  <b className="text-yellow-500 font-bold">⚠️ WARNING:</b> Any tracker exposing velocity may cause jitter if desynced or overpredicting.
+                </Typography>
+              </Localized>
             </div>
             <CheckBox
               variant="toggle"
               outlined
               control={control}
               name="velocity.sendDerivedVelocity"
-              label="Enable Velocity Tracking"
+              label={l10n.getString('settings-general-tracker_velocity-enable')}
             />
 
             {watch('velocity.sendDerivedVelocity') && (
               <>
                 <div className="flex flex-col pt-4 pb-2">
                   <Typography variant="section-title">
-                    Velocity Tracking Preset
+                    {l10n.getString('settings-general-tracker_velocity-preset')}
                   </Typography>
               <Typography color="secondary">
-                Choose which trackers send velocity data. HYBRID is recommended for VRChat.
+                {l10n.getString('settings-general-tracker_velocity-preset-description')}
               </Typography>
+              <Localized
+                id="settings-general-tracker_velocity-preset-recommended"
+                elems={{ b: <b className="text-green-500 font-bold" /> }}
+              >
+                <Typography color="secondary" className="pt-1">
+                  <b className="text-green-500 font-bold">HYBRID</b> is recommended for full-body tracking users who also use Natural Locomotion (e.g., VRChat).
+                </Typography>
+              </Localized>
             </div>
             <div className="flex gap-3 pt-2 flex-col">
               <Radio
                 control={control}
                 name="velocity.preset"
-                label="All Trackers"
-                description="All trackers with position data will send velocity"
+                label={l10n.getString('settings-general-tracker_velocity-preset-all')}
+                description={l10n.getString('settings-general-tracker_velocity-preset-all-description')}
                 value={VelocityPreset.ALL.toString()}
               />
               <Radio
                 control={control}
                 name="velocity.preset"
-                label="Hybrid (Feet + Ankles)"
-                description="Only feet and ankle trackers send velocity (recommended for VRChat)"
+                label={l10n.getString('settings-general-tracker_velocity-preset-hybrid')}
+                description={l10n.getString('settings-general-tracker_velocity-preset-hybrid-description')}
                 value={VelocityPreset.HYBRID.toString()}
               />
               <Radio
                 control={control}
                 name="velocity.preset"
-                label="Custom"
-                description="Manually select which tracker groups send velocity"
+                label={l10n.getString('settings-general-tracker_velocity-preset-custom')}
+                description={l10n.getString('settings-general-tracker_velocity-preset-custom-description')}
                 value={VelocityPreset.CUSTOM.toString()}
               />
             </div>
@@ -1436,22 +1451,22 @@ export function GeneralSettings() {
             {Number(watch('velocity.preset')) === VelocityPreset.CUSTOM && (
               <div className="flex flex-col pt-3 pb-2 gap-2">
                 <Typography variant="section-title">
-                  Custom Tracker Groups
+                  {l10n.getString('settings-general-tracker_velocity-custom_groups')}
                 </Typography>
                 <Typography color="secondary">
-                  Select which tracker role groups should send velocity data
+                  {l10n.getString('settings-general-tracker_velocity-custom_groups-description')}
                 </Typography>
                 <Controller
                   control={control}
                   name="velocity.enabledGroups"
                   render={({ field: { onChange, value } }) => (
                     <div className="grid grid-cols-2 gap-3 pt-2">
-                      <BitmaskCheckbox value={value} bitPosition={0} label="Feet" onChange={onChange} />
-                      <BitmaskCheckbox value={value} bitPosition={1} label="Ankles" onChange={onChange} />
-                      <BitmaskCheckbox value={value} bitPosition={2} label="Knees" onChange={onChange} />
-                      <BitmaskCheckbox value={value} bitPosition={3} label="Chest" onChange={onChange} />
-                      <BitmaskCheckbox value={value} bitPosition={4} label="Waist" onChange={onChange} />
-                      <BitmaskCheckbox value={value} bitPosition={5} label="Elbows" onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={0} label={l10n.getString('settings-general-tracker_velocity-custom_groups-feet')} onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={1} label={l10n.getString('settings-general-tracker_velocity-custom_groups-ankles')} onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={2} label={l10n.getString('settings-general-tracker_velocity-custom_groups-knees')} onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={3} label={l10n.getString('settings-general-tracker_velocity-custom_groups-chest')} onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={4} label={l10n.getString('settings-general-tracker_velocity-custom_groups-waist')} onChange={onChange} />
+                      <BitmaskCheckbox value={value} bitPosition={5} label={l10n.getString('settings-general-tracker_velocity-custom_groups-elbows')} onChange={onChange} />
                     </div>
                   )}
                 />
@@ -1460,10 +1475,13 @@ export function GeneralSettings() {
 
             <div className="flex flex-col pt-4 pb-2">
               <Typography variant="section-title">
-                Velocity Scaling
+                {l10n.getString('settings-general-tracker_velocity-scaling')}
               </Typography>
               <Typography color="secondary">
-                Scale velocity values. Use UNSCALED unless experiencing locomotion issues.
+                {l10n.getString('settings-general-tracker_velocity-scaling-description')}
+              </Typography>
+              <Typography color="secondary" className="pt-1">
+                {l10n.getString('settings-general-tracker_velocity-scaling-recommendation')}
               </Typography>
             </div>
             <CheckBox
@@ -1471,7 +1489,7 @@ export function GeneralSettings() {
               outlined
               control={control}
               name="velocity.overrideScalingPreset"
-              label="Override Scaling Preset"
+              label={l10n.getString('settings-general-tracker_velocity-scaling-override')}
             />
 
             {watch('velocity.overrideScalingPreset') && (
@@ -1480,29 +1498,29 @@ export function GeneralSettings() {
               <Radio
                 control={control}
                 name="velocity.scalingPreset"
-                label="Unscaled"
-                description="No scaling applied (1.0x)"
+                label={l10n.getString('settings-general-tracker_velocity-scaling-preset-unscaled')}
+                description={l10n.getString('settings-general-tracker_velocity-scaling-preset-unscaled-description')}
                 value={VelocityScalingPreset.UNSCALED.toString()}
               />
               <Radio
                 control={control}
                 name="velocity.scalingPreset"
-                label="Hybrid/NaLo"
-                description="0.25x scaling for hybrid locomotion"
+                label={l10n.getString('settings-general-tracker_velocity-scaling-preset-hybrid')}
+                description={l10n.getString('settings-general-tracker_velocity-scaling-preset-hybrid-description')}
                 value={VelocityScalingPreset.HYBRID.toString()}
               />
               <Radio
                 control={control}
                 name="velocity.scalingPreset"
-                label="Custom Unified"
-                description="Single scaling value for all axes"
+                label={l10n.getString('settings-general-tracker_velocity-scaling-preset-custom_unified')}
+                description={l10n.getString('settings-general-tracker_velocity-scaling-preset-custom_unified-description')}
                 value={VelocityScalingPreset.CUSTOM_UNIFIED.toString()}
               />
               <Radio
                 control={control}
                 name="velocity.scalingPreset"
-                label="Custom Per-Axis"
-                description="Individual scaling per axis (X, Y, Z)"
+                label={l10n.getString('settings-general-tracker_velocity-scaling-preset-custom_per_axis')}
+                description={l10n.getString('settings-general-tracker_velocity-scaling-preset-custom_per_axis-description')}
                 value={VelocityScalingPreset.CUSTOM_PER_AXIS.toString()}
               />
             </div>
@@ -1512,10 +1530,10 @@ export function GeneralSettings() {
               <>
                 <div className="flex flex-col pt-4 pb-2">
                   <Typography variant="section-title">
-                    Advanced Scaling
+                    {l10n.getString('settings-general-tracker_velocity-advanced')}
                   </Typography>
                   <Typography color="secondary">
-                    WARNING: Enabling upscaling may break full-body tracking position prediction.
+                    {l10n.getString('settings-general-tracker_velocity-advanced-description')}
                   </Typography>
                 </div>
                 <CheckBox
@@ -1523,8 +1541,21 @@ export function GeneralSettings() {
                   outlined
                   control={control}
                   name="velocity.enableUpscaling"
-                  label="Allow Upscaling (>1.0x)"
+                  label={l10n.getString('settings-general-tracker_velocity-advanced-enable_upscaling')}
                 />
+                <div className="flex flex-col pt-2 pb-2">
+                  <Typography color="secondary" className="text-sm italic">
+                    {l10n.getString('settings-general-tracker_velocity-advanced-upscaling_accessibility')}
+                  </Typography>
+                  <Localized
+                    id="settings-general-tracker_velocity-advanced-upscaling_warning"
+                    elems={{ b: <b className="text-yellow-500 font-bold" /> }}
+                  >
+                    <Typography color="secondary" className="pt-2">
+                      <b className="text-yellow-500 font-bold">⚠️ WARNING:</b> May severely disrupt full-body tracking. Intended primarily for Natural Locomotion users without FBT.
+                    </Typography>
+                  </Localized>
+                </div>
                 <UpscalingClampEffect
                   watch={watch}
                   setValue={setValue}
@@ -1538,7 +1569,7 @@ export function GeneralSettings() {
                 <VelocityScaleSlider
                   control={control}
                   name="velocity.scaleX"
-                  label="Unified Scale (All Axes)"
+                  label={l10n.getString('settings-general-tracker_velocity-scale-unified')}
                   maxScale={watch('velocity.enableUpscaling') ? 5.0 : 1.0}
                   onChange={(newValue) => {
                     setValue('velocity.scaleY', newValue);
@@ -1558,19 +1589,19 @@ export function GeneralSettings() {
               <VelocityScaleSlider
                 control={control}
                 name="velocity.scaleX"
-                label="Scale X"
+                label={l10n.getString('settings-general-tracker_velocity-scale-x')}
                 maxScale={watch('velocity.enableUpscaling') ? 5.0 : 1.0}
               />
               <VelocityScaleSlider
                 control={control}
                 name="velocity.scaleY"
-                label="Scale Y"
+                label={l10n.getString('settings-general-tracker_velocity-scale-y')}
                 maxScale={watch('velocity.enableUpscaling') ? 5.0 : 1.0}
               />
               <VelocityScaleSlider
                 control={control}
                 name="velocity.scaleZ"
-                label="Scale Z"
+                label={l10n.getString('settings-general-tracker_velocity-scale-z')}
                 maxScale={watch('velocity.enableUpscaling') ? 5.0 : 1.0}
               />
             </div>

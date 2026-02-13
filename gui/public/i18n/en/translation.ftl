@@ -666,6 +666,56 @@ settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Average the k
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
 
+## Tracker velocity settings
+settings-general-tracker_velocity = Tracker Velocity Settings
+settings-general-tracker_velocity-description = Enables derived velocity tracking for Natural Locomotion and similar systems.
+settings-general-tracker_velocity-warning = <b>⚠️ WARNING:</b> Any tracker exposing velocity may cause jitter if desynced or overpredicting.
+settings-general-tracker_velocity-enable = Enable Velocity Tracking
+
+settings-general-tracker_velocity-preset = Velocity Tracking Preset
+settings-general-tracker_velocity-preset-description = Choose which trackers send velocity data.
+settings-general-tracker_velocity-preset-recommended = <b>HYBRID</b> is recommended for full-body tracking users who also use Natural Locomotion (e.g., VRChat).
+settings-general-tracker_velocity-preset-all = All Trackers
+settings-general-tracker_velocity-preset-all-description = All supported trackers send velocity (excludes HMD, controllers, and skeleton-constrained trackers)
+settings-general-tracker_velocity-preset-hybrid = Hybrid
+settings-general-tracker_velocity-preset-hybrid-description = Lower body + waist trackers (recommended for FBT users with Natural Locomotion)
+settings-general-tracker_velocity-preset-custom = Custom
+settings-general-tracker_velocity-preset-custom-description = Manually select which tracker groups send velocity
+
+settings-general-tracker_velocity-custom_groups = Custom Tracker Groups
+settings-general-tracker_velocity-custom_groups-description = Select which tracker role groups should send velocity data
+settings-general-tracker_velocity-custom_groups-feet = Feet
+settings-general-tracker_velocity-custom_groups-ankles = Ankles
+settings-general-tracker_velocity-custom_groups-knees = Knees
+settings-general-tracker_velocity-custom_groups-chest = Chest
+settings-general-tracker_velocity-custom_groups-waist = Waist
+settings-general-tracker_velocity-custom_groups-elbows = Elbows
+
+settings-general-tracker_velocity-scaling = Velocity Scaling
+settings-general-tracker_velocity-scaling-description = Scale velocity values.
+settings-general-tracker_velocity-scaling-recommendation = Keep disabled for default behavior. Enable if Natural Locomotion or similar systems feel too sensitive or unresponsive.
+settings-general-tracker_velocity-scaling-override = Override Scaling Preset
+
+settings-general-tracker_velocity-scaling-preset-unscaled = Unscaled
+settings-general-tracker_velocity-scaling-preset-unscaled-description = No scaling applied (1.0x)
+settings-general-tracker_velocity-scaling-preset-hybrid = Hybrid
+settings-general-tracker_velocity-scaling-preset-hybrid-description = Fine-tuned downscaling used for Hybrid role groups. Recommended for Natural Locomotion.
+settings-general-tracker_velocity-scaling-preset-custom_unified = Custom Unified
+settings-general-tracker_velocity-scaling-preset-custom_unified-description = Single scaling value for all axes
+settings-general-tracker_velocity-scaling-preset-custom_per_axis = Custom Per-Axis
+settings-general-tracker_velocity-scaling-preset-custom_per_axis-description = Individual scaling per axis (X, Y, Z)
+
+settings-general-tracker_velocity-advanced = Advanced Scaling
+settings-general-tracker_velocity-advanced-description = Fine-tune velocity scaling with custom values within or beyond the standard 0.0-1.0 range.
+settings-general-tracker_velocity-advanced-enable_upscaling = Allow Upscaling (>1.0x)
+settings-general-tracker_velocity-advanced-upscaling_accessibility = This experimental feature allows boosting velocity input sensitivity and may assist users with limited mobility in achieving better Natural Locomotion response.
+settings-general-tracker_velocity-advanced-upscaling_warning = <b>⚠️ WARNING:</b> May severely disrupt full-body tracking. Intended primarily for Natural Locomotion users without FBT.
+
+settings-general-tracker_velocity-scale-unified = Unified Scale (All Axes)
+settings-general-tracker_velocity-scale-x = Scale X
+settings-general-tracker_velocity-scale-y = Scale Y
+settings-general-tracker_velocity-scale-z = Scale Z
+
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Tap based resets
