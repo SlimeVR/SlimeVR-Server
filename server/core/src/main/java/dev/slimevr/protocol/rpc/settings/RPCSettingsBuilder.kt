@@ -423,6 +423,7 @@ fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
 		),
 		createHIDSettings(fbb, server.configManager.vrConfig.hidConfig),
 		createVelocitySettings(fbb, server.configManager.vrConfig.velocityConfig),
+		createTrackerBodyPartMappings(fbb),
 	)
 }
 
@@ -503,3 +504,22 @@ fun createVelocitySettings(
 	)
 }
 
+fun createTrackerBodyPartMappings(fbb: FlatBufferBuilder): Int {
+	// Currently returns empty mappings - GUI implements fallback logic for edge cases:
+	// - CHEST (3) → UPPER_CHEST (22)
+	// - WAIST (4) → HIP (5)
+	// - LEFT_LOWER_LEG (8) → LEFT_FOOT (10)
+	// - RIGHT_LOWER_LEG (9) → RIGHT_FOOT (11)
+	//
+	// Future enhancement: Server could provide authoritative mappings by iterating
+	// TrackerPosition.values() and mapping based on trackerRole → synthetic bodyPart.
+	// This would override GUI fallbacks and centralize mapping logic.
+	val mappings = emptyList<Int>()
+
+	val mappingsVector = solarxr_protocol.datatypes.TrackerBodyPartMappings.createMappingsVector(fbb, mappings.toIntArray())
+
+	return solarxr_protocol.datatypes.TrackerBodyPartMappings.createTrackerBodyPartMappings(
+		fbb,
+		mappingsVector
+	)
+}

@@ -367,10 +367,12 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val velocitySettings = req.velocitySettings()
 			velocityConfig.sendDerivedVelocity = velocitySettings.sendDerivedVelocity()
 
-			// Convert preset ID to enum
-			val presetValues = VelocityPreset.values()
-			if (velocitySettings.preset() >= 0 && velocitySettings.preset() < presetValues.size) {
-				velocityConfig.preset = presetValues[velocitySettings.preset()]
+			// Convert FlatBuffers enum (1-based) to Kotlin enum (0-based)
+			velocityConfig.preset = when (velocitySettings.preset()) {
+				solarxr_protocol.rpc.settings.VelocityPreset.ALL -> VelocityPreset.ALL
+				solarxr_protocol.rpc.settings.VelocityPreset.HYBRID -> VelocityPreset.HYBRID
+				solarxr_protocol.rpc.settings.VelocityPreset.CUSTOM -> VelocityPreset.CUSTOM
+				else -> VelocityPreset.HYBRID // fallback
 			}
 
 			// Convert bitmask to EnumSet
@@ -384,10 +386,13 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 
 			velocityConfig.overrideScalingPreset = velocitySettings.overrideScalingPreset()
 
-			// Convert scaling preset ID to enum
-			val scalingPresetValues = VelocityScalingPreset.values()
-			if (velocitySettings.scalingPreset() >= 0 && velocitySettings.scalingPreset() < scalingPresetValues.size) {
-				velocityConfig.scalingPreset = scalingPresetValues[velocitySettings.scalingPreset()]
+			// Convert FlatBuffers enum (1-based) to Kotlin enum (0-based)
+			velocityConfig.scalingPreset = when (velocitySettings.scalingPreset()) {
+				solarxr_protocol.rpc.settings.VelocityScalingPreset.UNSCALED -> VelocityScalingPreset.UNSCALED
+				solarxr_protocol.rpc.settings.VelocityScalingPreset.HYBRID -> VelocityScalingPreset.HYBRID
+				solarxr_protocol.rpc.settings.VelocityScalingPreset.CUSTOM_UNIFIED -> VelocityScalingPreset.CUSTOM_UNIFIED
+				solarxr_protocol.rpc.settings.VelocityScalingPreset.CUSTOM_PER_AXIS -> VelocityScalingPreset.CUSTOM_PER_AXIS
+				else -> VelocityScalingPreset.UNSCALED // fallback
 			}
 
 			velocityConfig.enableUpscaling = velocitySettings.enableUpscaling()
@@ -395,6 +400,11 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				velocityConfig.scale.scaleX = velocitySettings.scale().scaleX()
 				velocityConfig.scale.scaleY = velocitySettings.scale().scaleY()
 				velocityConfig.scale.scaleZ = velocitySettings.scale().scaleZ()
+			}
+
+			// Re-apply velocity policy to all trackers so their allowVelocity flag is updated
+			api.server.allTrackers.forEach { tracker ->
+				api.server.configManager.vrConfig.applyVelocityPolicy(tracker)
 			}
 		}
 
