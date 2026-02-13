@@ -19,6 +19,8 @@ export function useDataFeedConfig() {
   trackerData.tps = true;
   trackerData.rawMagneticVector = true;
   trackerData.stayAligned = true;
+  trackerData.rawVelocity = true;
+  trackerData.scaledVelocity = true;
 
   const dataMask = new DeviceDataMaskT();
   dataMask.deviceData = true;

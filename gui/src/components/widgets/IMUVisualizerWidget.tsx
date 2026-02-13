@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { TrackerDataT } from 'solarxr-protocol';
-import { useTracker } from '@/hooks/tracker';
+import { useTracker, useSyntheticTrackerForBodyPart, isBodyPartAllowedVelocity } from '@/hooks/tracker';
+import { useVelocitySettings } from '@/hooks/velocity-settings';
 import { Typography } from '@/components/commons/Typography';
+import { Tooltip } from '@/components/commons/Tooltip';
 import { formatVector3 } from '@/utils/formatting';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -15,8 +17,35 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
 
 const groundColor = '#4444aa';
-
 const scale = 6.5;
+
+/**
+ * Maps body parts to their velocity role groups (from VelocityRolePolicy.ROLE_TO_GROUPS).
+ * Used to determine if a tracker's role group is enabled based on velocity preset.
+ */
+const BODY_PART_TO_ROLE_GROUP: Record<number, number> = {
+  10: 0, // LEFT_FOOT → FEET
+  11: 0, // RIGHT_FOOT → FEET
+  8: 1,  // LEFT_LOWER_LEG → ANKLES
+  9: 1,  // RIGHT_LOWER_LEG → ANKLES
+  6: 2,  // LEFT_UPPER_LEG → KNEES
+  7: 2,  // RIGHT_UPPER_LEG → KNEES
+  3: 3,  // CHEST → CHEST
+  22: 3, // UPPER_CHEST → CHEST
+  4: 4,  // WAIST → WAIST
+  5: 4,  // HIP → WAIST
+  16: 5, // LEFT_UPPER_ARM → ELBOWS
+  17: 5, // RIGHT_UPPER_ARM → ELBOWS
+};
+
+/**
+ * Velocity preset enum values (from VelocityPreset in schema)
+ */
+const VelocityPreset = {
+  ALL: 1,
+  HYBRID: 2,
+  CUSTOM: 3,
+} as const;
 
 export function TrackerModel({ model }: { model: string }) {
   return (
@@ -110,6 +139,59 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
 
   const rotationRaw = useRawRotationEulerDegrees();
   const rotationIdent = useIdentAdjRotationEulerDegrees() || rotationRaw;
+
+  // Get velocity from the synthetic tracker that matches this physical tracker's body part
+  const syntheticTracker = useSyntheticTrackerForBodyPart(tracker.info?.bodyPart);
+  const rawVelocity = syntheticTracker?.rawVelocity;
+  const scaledVelocity = syntheticTracker?.scaledVelocity;
+
+  // Check velocity config to determine if velocity should be enabled for this tracker
+  const { velocitySettings } = useVelocitySettings();
+  const syntheticBodyPart = syntheticTracker?.info?.bodyPart;
+  const isInAllowedList = syntheticBodyPart !== undefined && isBodyPartAllowedVelocity(syntheticBodyPart);
+
+  // Check if this tracker's role group is enabled based on preset
+  let isRoleGroupEnabled = false;
+  if (velocitySettings && syntheticBodyPart !== undefined) {
+    const roleGroup = BODY_PART_TO_ROLE_GROUP[syntheticBodyPart];
+
+    if (roleGroup !== undefined) {
+      if (velocitySettings.preset === VelocityPreset.ALL) {
+        isRoleGroupEnabled = true;
+      } else if (velocitySettings.preset === VelocityPreset.HYBRID) {
+        // HYBRID enables: FEET, ANKLES, KNEES, WAIST (groups 0,1,2,4)
+        isRoleGroupEnabled = roleGroup === 0 || roleGroup === 1 || roleGroup === 2 || roleGroup === 4;
+      } else if (velocitySettings.preset === VelocityPreset.CUSTOM) {
+        // Check bitmask
+        const bitmask = velocitySettings.enabledGroups ?? 0;
+        isRoleGroupEnabled = (bitmask & (1 << roleGroup)) !== 0;
+      }
+    }
+  }
+
+  // Determine if velocity is enabled based on config flags, not data presence
+  const isVelocityEnabledInConfig = velocitySettings?.sendDerivedVelocity && isInAllowedList && isRoleGroupEnabled;
+
+  // Determine why velocity is not available
+  let velocityUnavailableReason = null;
+
+  if (!isVelocityEnabledInConfig) {
+    const physicalBodyPart = tracker.info?.bodyPart;
+
+    // HEAD (1) and HANDS (18, 19) have special message
+    if (physicalBodyPart === 1 || physicalBodyPart === 18 || physicalBodyPart === 19) {
+      velocityUnavailableReason = "Supplied by HMD and its controllers";
+    }
+    // Synthetic tracker exists and is in allowed list, but velocity disabled in config
+    else if (syntheticTracker && isInAllowedList) {
+      velocityUnavailableReason = "Velocity is disabled in Settings → General → Tracker Settings";
+    }
+    // Everything else: no synthetic tracker OR synthetic exists but is blacklisted
+    else {
+      velocityUnavailableReason = "This tracker's movement is captured by other body parts to reduce noise in calculations";
+    }
+  }
+
   const quat =
     tracker?.rotationIdentityAdjusted ||
     tracker?.rotation ||
@@ -156,6 +238,38 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
           </Typography>
           <Typography>
             {formatVector3(tracker.linearAcceleration, 1)}
+          </Typography>
+        </div>
+      )}
+
+      {velocityUnavailableReason ? (
+        <Tooltip content={velocityUnavailableReason}>
+          <div className="flex justify-between opacity-50">
+            <Typography color="secondary">Velocity</Typography>
+            <Typography color="secondary">- - -</Typography>
+          </div>
+        </Tooltip>
+      ) : (
+        <div className="flex justify-between">
+          <Typography>Velocity</Typography>
+          <Typography>
+            {rawVelocity ? formatVector3(rawVelocity, 2) : '- - -'}
+          </Typography>
+        </div>
+      )}
+
+      {velocityUnavailableReason ? (
+        <Tooltip content={velocityUnavailableReason}>
+          <div className="flex justify-between opacity-50">
+            <Typography color="secondary">Scaled Velocity</Typography>
+            <Typography color="secondary">- - -</Typography>
+          </div>
+        </Tooltip>
+      ) : (
+        <div className="flex justify-between">
+          <Typography>Scaled Velocity</Typography>
+          <Typography>
+            {scaledVelocity ? formatVector3(scaledVelocity, 2) : '- - -'}
           </Typography>
         </div>
       )}
