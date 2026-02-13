@@ -69,6 +69,7 @@
   },
   "devDependencies": {
     "@dword-design/eslint-plugin-import-alias": "^4.0.9",
+    "@electron/asar": "^4.0.1",
     "@openapi-codegen/cli": "^3.1.0",
     "@openapi-codegen/typescript": "^8.0.2",
     "@stylistic/eslint-plugin": "^5.5.0",

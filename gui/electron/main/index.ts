@@ -4,6 +4,8 @@ import {
   dialog,
   Menu,
   nativeImage,
+  net,
+  protocol,
   screen,
   shell,
   Tray,
@@ -37,6 +39,19 @@ program
 
 program.parse(process.argv);
 const options = program.opts();
+
+// Register custom protocol to handle asset paths with leading slashes
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'app',
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true,
+      corsEnabled: true
+    }
+  }
+]);
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -215,7 +230,7 @@ function createWindow() {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
+    mainWindow.loadURL('app://./index.html');
   }
 
   mainWindow.on('closed', () => {
@@ -365,6 +380,13 @@ const spawnServer = () => {
 
 app.whenReady().then(() => {
   console.log(javaVersionFile);
+
+  // Register protocol handler for app:// scheme to handle assets with leading slashes
+  protocol.handle('app', (request) => {
+    const url = request.url.slice('app://'.length);
+    const filePath = path.normalize(join(__dirname, '../renderer', url));
+    return net.fetch('file://' + filePath);
+  });
 
   checkEnvironmentVariables();
 

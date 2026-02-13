@@ -27,8 +27,127 @@
             rpm
             desktop-file-utils # Required for mksquashfs validation
           ];
+
+          electronLibs = with pkgs; [
+            alsa-lib
+            at-spi2-atk
+            at-spi2-core
+            cairo
+            cups
+            dbus
+            expat
+            gdk-pixbuf
+            glib
+            gtk3
+            libdrm
+            libgbm
+            libglvnd  # Provides libEGL.so.1, libGL.so.1, etc.
+            libnotify
+            libxkbcommon
+            mesa
+            nspr
+            nss
+            pango
+            systemd
+            vulkan-loader
+            wayland
+            xorg.libX11
+            xorg.libXcomposite
+            xorg.libXdamage
+            xorg.libXext
+            xorg.libXfixes
+            xorg.libXrandr
+            xorg.libxcb
+            xorg.libxshmfence
+          ];
+
+          # Shared patching logic
+          patchLogic = ''
+            echo "Patching SlimeVR binary for NixOS..."
+
+            # Patch the main binary with correct interpreter and RPATH
+            ${pkgs.patchelf}/bin/patchelf \
+              --set-interpreter ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 \
+              --set-rpath "\$ORIGIN:${pkgs.lib.makeLibraryPath (electronLibs ++ hw_deps)}" \
+              "$UNPACKED_DIR/slimevr"
+
+            # Patch chrome-sandbox
+            if [ -f "$UNPACKED_DIR/chrome-sandbox" ]; then
+              ${pkgs.patchelf}/bin/patchelf \
+                --set-interpreter ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 \
+                "$UNPACKED_DIR/chrome-sandbox"
+            fi
+
+            # Patch bundled shared libraries
+            for lib in "$UNPACKED_DIR"/*.so; do
+              if [ -f "$lib" ]; then
+                echo "Patching $(basename "$lib")..."
+                ${pkgs.patchelf}/bin/patchelf \
+                  --set-rpath "\$ORIGIN:${pkgs.lib.makeLibraryPath electronLibs}" \
+                  "$lib" 2>/dev/null || true
+              fi
+            done
+
+            echo "✓ Binary patched successfully!"
+          '';
+
+          patchScript = pkgs.writeShellScriptBin "patch-slimevr" ''
+            set -e
+            cd "$(git rev-parse --show-toplevel)"
+            UNPACKED_DIR="./gui/dist/artifacts/linux-unpacked"
+
+            if [ ! -d "$UNPACKED_DIR" ]; then
+              echo "Error: Build artifacts not found at $UNPACKED_DIR"
+              echo "Please run 'pnpm run package' first"
+              exit 1
+            fi
+
+            ${patchLogic}
+            echo ""
+            echo "You can now run: cd $UNPACKED_DIR && ./slimevr"
+          '';
+
+          buildAndPatchScript = pkgs.writeShellScriptBin "build-and-patch-slimevr" ''
+            set -e
+            cd "$(git rev-parse --show-toplevel)/gui"
+
+            echo "Building Electron app..."
+            ${pkgs.pnpm}/bin/pnpm run package
+
+            cd ..
+            UNPACKED_DIR="./gui/dist/artifacts/linux-unpacked"
+
+            ${patchLogic}
+            echo ""
+            echo "You can now run: cd $UNPACKED_DIR && ./slimevr"
+          '';
+
+          buildPatchAndRunScript = pkgs.writeShellScriptBin "build-patch-run-slimevr" ''
+            set -e
+            cd "$(git rev-parse --show-toplevel)/gui"
+
+            echo "Building Electron app..."
+            ${pkgs.pnpm}/bin/pnpm run package
+
+            cd ..
+            UNPACKED_DIR="./gui/dist/artifacts/linux-unpacked"
+
+            ${patchLogic}
+            echo ""
+            echo "Launching SlimeVR..."
+            cd "$UNPACKED_DIR"
+            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (electronLibs ++ hw_deps)}:$LD_LIBRARY_PATH"
+            exec ./slimevr
+          '';
         in
         {
+          packages = {
+            patch-script = patchScript;
+            build-and-patch = buildAndPatchScript;
+            build-patch-run = buildPatchAndRunScript;
+            default = patchScript;
+          };
+
           devShells.default = pkgs.mkShell {
             name = "slimevr-electron";
 
