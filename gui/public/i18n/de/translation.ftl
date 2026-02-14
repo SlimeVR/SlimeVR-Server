@@ -115,6 +115,8 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev-IMU-Handschuh
+board_type-GESTURES = Gesten
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -199,6 +201,7 @@ navbar-trackers_assign = Tracker-Zuordnung
 navbar-mounting = Tracker-Ausrichtung
 navbar-onboarding = Einrichtungs-Assistent
 navbar-settings = Einstellungen
+navbar-connect_trackers = Tracker verbinden
 
 ## Biovision hierarchy recording
 
@@ -269,6 +272,7 @@ tracker-table-column-name = Name
 tracker-table-column-type = Typ
 tracker-table-column-battery = Batterie
 tracker-table-column-ping = Latenz
+tracker-table-column-packet_loss = Paketverlust
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Beschleunigung X/Y/Z
@@ -310,6 +314,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Angeschalten
        *[NOT_SUPPORTED] Nicht unterstützt
     }
+tracker-infos-packet_loss = Paketverlust
+tracker-infos-packets_lost = Pakete verloren
+tracker-infos-packets_received = Pakete empfangen
 
 ## Tracker settings
 
@@ -347,6 +354,9 @@ tracker-settings-update-up_to_date = Auf dem neusten Stand
 tracker-settings-update-blocked = Update nicht verfügbar. Weitere Veröffentlichungen sind nicht verfügbar.
 tracker-settings-update = Jetzt aktualisieren
 tracker-settings-update-title = Firmware-Version
+tracker-settings-current-version = Aktuelle
+tracker-settings-latest-version = Aktuelleste
+tracker-settings-build-date = Herstellungsdatum
 
 ## Tracker part card info
 
@@ -511,12 +521,14 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Verwendet das Magnetometer auf allen Trackern, die über eine kompatible Firmware verfügen, um den Drift in stabilen magnetischen Umgebungen zu reduzieren.
     Kann pro Tracker in den Einstellungen des Trackers deaktiviert werden. <b>Bitte schalten Sie keinen der Tracker aus, während Sie dies umschalten!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Magnetometer auf Trackern verwenden
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Erlaube HID-Tracker eine USB-Direktverbindung
 settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduziert Drift, indem es deine Tracker schrittweise an deine entspannten Posen anpasst.
 settings-stay_aligned-setup-label = Stay Aligned einrichten
 settings-stay_aligned-setup-description = Sie müssen Stay Aligned einrichten, um es zu aktivieren.
 settings-stay_aligned-warnings-drift_compensation = ⚠ Bitte schalten Sie die Driftkompensation aus! Diese steht in Konflikt mit Stay Aligned.
 settings-stay_aligned-enabled-label = Tracker anpassen
+settings-stay_aligned-hide_yaw_correction-label = Anpassung ausblenden (zum Vergleich ohne Stay Aligned)
 settings-stay_aligned-general-label = Allgemein
 settings-stay_aligned-relaxed_poses-label = Entspannte Posen
 settings-stay_aligned-relaxed_poses-save_pose = Pose speichern
@@ -546,6 +558,7 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Bodenclip kann d
 settings-general-fk_settings-leg_tweak-toe_snap-description = Zehen-Ausrichtung versucht, die Rotation Ihrer Füße zu erraten, wenn keine Fuß-Tracker verwendet werden.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fußkorrektur richtet Ihre Füße parallel zum Boden aus, wenn sie den Boden berühren.
 settings-general-fk_settings-leg_fk = Beintracking
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Fuß-Ausrichtung kalibrieren
 settings-general-fk_settings-enforce_joint_constraints = Gelenkgrenzen
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Grenzen erzwingen
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Verhindert, dass sich Gelenke über ihre Grenzen hinaus drehen
@@ -845,10 +858,12 @@ settings-utils-advanced-open_logs-label = Ordner öffnen
 
 settings-home-list-layout = Layout der Tracker-Liste
 settings-home-list-layout-desc = Wählen Sie eines der möglichen Startbildschirm-Layouts aus
+settings-home-list-layout-grid = Raster
 settings-home-list-layout-table = Tabelle
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Aktive Schritte
 
 ## Setup/onboarding menu
 
@@ -970,6 +985,7 @@ onboarding-assignment_tutorial-done = Ich habe Aufkleber und Bänder angebracht!
 onboarding-assign_trackers-back = Zurück zu den WLAN-Zugangsdaten
 onboarding-assign_trackers-title = Tracker zuweisen
 onboarding-assign_trackers-description = Wählen Sie nun aus, welcher Tracker wo befestigt ist. Klicken Sie auf einen Ort, an dem der Tracker platziert ist.
+onboarding-assign_trackers-unassign_all = Alle Trackerzuweisungen aufheben
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1216,10 +1232,15 @@ onboarding-automatic_proportions-smol_warning-cancel = Zurück
 
 ## User height calibration
 
+onboarding-user_height-manual-proportions = Manuelle Körperproportionen
+onboarding-user_height-calibration-title = Kalibrierungsfortschritt
+onboarding-user_height-calibration-WAITING_FOR_RISE = Steh wieder auf
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Steh wieder auf und schau nach vorne
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Schauen sie nicht auf den Boden
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Schauen sie nicht zu hoch nach oben
 onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Achten sie darauf, dass der Controller nach unten zeigt
 onboarding-user_height-calibration-DONE = Erfolg!
+onboarding-user_height-calibration-error = Kalibrierung fehlgeschlagen
 
 ## Stay Aligned setup
 
@@ -1233,17 +1254,21 @@ onboarding-stay_aligned-verify_mounting-title = Tracker-Ausrichtung
 onboarding-stay_aligned-verify_mounting-redo_mounting = Tracker-Ausrichtungskalibrierung wiederholen
 onboarding-stay_aligned-preparation-title = Vorbereitung
 onboarding-stay_aligned-preparation-tip = Achten Sie darauf, aufrecht zu stehen. Schauen Sie nach vorne und lassen Sie die Arme an den Seiten hängen.
+onboarding-stay_aligned-relaxed_poses-standing-title = Entspannte Stehpose
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Nehmen Sie eine bequeme Haltung ein. Entspannen Sie sich!
 onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Drücken Sie die Taste „Pose speichern“.
 onboarding-stay_aligned-relaxed_poses-skip_step = Überspringen
+onboarding-stay_aligned-done-title = Stay aligned aktiviert!
 onboarding-stay_aligned-previous_step = Zurück
 onboarding-stay_aligned-next_step = Weiter
 onboarding-stay_aligned-restart = Neu starten
 onboarding-stay_aligned-done = Fertig
+onboarding-stay_aligned-manual_mounting-done = Fertig
 
 ## Home
 
 home-no_trackers = Keine Tracker erkannt oder zugewiesen
+home-settings = Startseiten-Einstellungen
 home-settings-close = Schließen
 
 ## Trackers Still On notification
@@ -1280,12 +1305,16 @@ firmware_tool = DIY Firmware-Tool
 firmware_tool-description = Erlaubt ihnen das Konfigurieren und Flashen von DIY Trackern
 firmware_tool-not_available = Das Firmware Tool ist im Moment nicht verfügbar. Versuche sie später erneut!
 firmware_tool-not_compatible = Das Firmware Tool ist nicht mit dieser Version des Servers kompatibel. Bitte den Server aktualisieren!
+firmware_tool-select_source = Wähle die Firmware zum Flashen aus
+firmware_tool-select_source-description = Wähle die Firmware aus, die du auf deinem Board flashen möchtest
+firmware_tool-select_source-error = Quellen konnten nicht geladen werden
 firmware_tool-select_source-board_type = Boardtyp
 firmware_tool-select_source-firmware = Firmware-Quelle
 firmware_tool-select_source-version = Firmware-Version
 firmware_tool-select_source-official = Offiziell
 firmware_tool-select_source-dev = Dev
 firmware_tool-board_defaults = Konfigurieren Sie Ihr Board
+firmware_tool-board_defaults-description = Stelle die Pins oder Einstellungen relativ zu deiner Hardware ein
 firmware_tool-board_defaults-add = Hinzufügen
 firmware_tool-board_defaults-reset = Auf Standard zurücksetzen
 firmware_tool-board_defaults-error-required = Erforderliches Feld
@@ -1416,6 +1445,7 @@ vrc_config-spine_mode-LOCK_HEAD = Kopf sperren
 vrc_config-spine_mode-LOCK_HIP = Hüfte sperren
 vrc_config-tracker_model-UNKNOWN = Unbekannt
 vrc_config-tracker_model-AXIS = Achse
+vrc_config-tracker_model-SPHERE = Sphäre
 vrc_config-tracker_model-SYSTEM = System
 vrc_config-avatar_measurement_type-UNKNOWN = Unbekannt
 vrc_config-avatar_measurement_type-HEIGHT = Höhe
@@ -1433,12 +1463,16 @@ error_collection_modal-cancel = Ich will nicht
 
 ## Tracking checklist section
 
+tracking_checklist = Tracking-Checkliste
+tracking_checklist-settings = Einstellungen der Tracking-Checkliste
 tracking_checklist-settings-close = Schließen
+tracking_checklist-status-incomplete = Du bist nicht darauf vorbereitet, SlimeVR zu benutzen!
 tracking_checklist-status-partial =
     { $count ->
         [one] Sie haben 1 Warnung!
        *[other] Sie haben { $count } Warnungen!
     }
+tracking_checklist-status-complete = Du bist bereit, SlimeVR zu nutzen!
 tracking_checklist-MOUNTING_CALIBRATION = Tracker-Ausrichtung durchführen
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR läuft nicht
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR läuft nicht. Nutzen sie es für VR?
