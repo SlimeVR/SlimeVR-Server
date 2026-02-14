@@ -22,6 +22,3 @@ export function useBreakpoint<K extends BreakpointKey>(breakpointKey: K) {
   } as Record<Key, boolean>;
 }
 
-export function useIsTauri() {
-  return window.isTauri;
-}

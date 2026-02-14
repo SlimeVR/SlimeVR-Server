@@ -1,17 +1,14 @@
-import { isTauri } from '@tauri-apps/api/core';
-import { warn as tauriWarn, error as tauriError, info } from '@tauri-apps/plugin-log';
-
 export function log(...msgs: any[]) {
   console.log(...msgs);
-  if (isTauri()) info(msgs.join());
+  if (window.electronAPI) window.electronAPI.log('info', ...msgs);
 }
 
 export function error(...msgs: any[]) {
   console.error(...msgs);
-  if (isTauri()) tauriError(msgs.join());
+  if (window.electronAPI) window.electronAPI.log('error', ...msgs);
 }
 
 export function warn(...msgs: any[]) {
   console.warn(...msgs);
-  if (isTauri()) tauriWarn(msgs.join());
+  if (window.electronAPI) window.electronAPI.log('warn', ...msgs);
 }

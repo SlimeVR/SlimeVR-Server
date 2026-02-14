@@ -1,11 +1,4 @@
-import { isTauri } from '@tauri-apps/api/core';
-import { LazyStore } from '@tauri-apps/plugin-store';
-
-interface CrossStorage {
-  set(key: string, value: unknown): Promise<void>;
-  get<T>(key: string): Promise<T | undefined>;
-  delete(key: string): Promise<boolean>;
-}
+import { CrossStorage } from 'electron/preload/interface';
 
 const localStore: CrossStorage = {
   get: async <T>(key: string) =>
@@ -16,10 +9,11 @@ const localStore: CrossStorage = {
     localStorage.removeItem(`slimevr-cache/${key}`);
     return true;
   },
+  save: async () => true
 };
 
-const store: CrossStorage = isTauri()
-  ? new LazyStore('gui-cache.dat', { autoSave: 100, defaults: {} })
+const store: CrossStorage = window.electronAPI
+  ? await window.electronAPI.getStorage('cache')
   : localStore;
 
 export async function cacheGet(key: string): Promise<string | null> {

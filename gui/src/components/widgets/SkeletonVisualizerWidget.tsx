@@ -6,7 +6,7 @@ import {
   createChildren,
   BasedSkeletonHelper,
 } from '@/utils/skeletonHelper';
-import * as THREE from 'three';
+import { Bone, GridHelper, Group, PerspectiveCamera, Quaternion, Scene, Vector2, Vector3, WebGLRenderer } from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
 import classNames from 'classnames';
@@ -37,36 +37,36 @@ export type SkeletonPreviewView = {
   bottom: number;
   width: number;
   height: number;
-  camera: THREE.PerspectiveCamera;
+  camera: PerspectiveCamera;
   controls: OrbitControls;
   hidden: boolean;
-  tween: Tween<THREE.Vector3>;
+  tween: Tween<Vector3>;
   onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
 };
 
 function initializePreview(
   canvas: HTMLCanvasElement,
-  skeleton: (BoneKind | THREE.Bone)[]
+  skeleton: (BoneKind | Bone)[]
 ) {
   let lastRenderTimeRef = 0;
   let frameInterval = 0;
 
   const views: SkeletonPreviewView[] = [];
 
-  const resolution = new THREE.Vector2(canvas.clientWidth, canvas.clientHeight);
-  const scene = new THREE.Scene();
-  let renderer: THREE.WebGLRenderer | null = new THREE.WebGLRenderer({
+  const resolution = new Vector2(canvas.clientWidth, canvas.clientHeight);
+  const scene = new Scene();
+  let renderer: WebGLRenderer | null = new WebGLRenderer({
     canvas,
     alpha: true,
     antialias: true,
   });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-  const grid = new THREE.GridHelper(10, 50, GROUND_COLOR, GROUND_COLOR);
+  const grid = new GridHelper(10, 50, GROUND_COLOR, GROUND_COLOR);
   grid.position.set(0, 0, 0);
   scene.add(grid);
 
-  const skeletonGroup = new THREE.Group();
+  const skeletonGroup = new Group();
   let skeletonHelper = new BasedSkeletonHelper(skeleton[0]);
   skeletonHelper.resolution.copy(resolution);
   skeletonGroup.add(skeletonHelper);
@@ -78,7 +78,7 @@ function initializePreview(
   let skeletonOffset = 0;
 
   const rebuildSkeleton = (
-    newSkeleton: (BoneKind | THREE.Bone)[],
+    newSkeleton: (BoneKind | Bone)[],
     bones: Map<BodyPart, BoneT>
   ) => {
     skeletonGroup.remove(skeletonHelper);
@@ -100,11 +100,11 @@ function initializePreview(
       : QuaternionFromQuatT(hmd?.rotationG).normalize().invert();
 
     // Project quat to (0x, 1y, 0z)
-    const VEC_Y = new THREE.Vector3(0, 1, 0);
+    const VEC_Y = new Vector3(0, 1, 0);
     const vec = VEC_Y.multiplyScalar(
-      new THREE.Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
+      new Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
     );
-    const yawReset = new THREE.Quaternion(
+    const yawReset = new Quaternion(
       vec.x,
       vec.y,
       vec.z,
@@ -241,13 +241,13 @@ function initializePreview(
       bottom: number;
       width: number;
       height: number;
-      position: THREE.Vector3;
+      position: Vector3;
       hidden?: boolean;
       onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
     }) => {
       if (!renderer) return;
 
-      const camera = new THREE.PerspectiveCamera(
+      const camera = new PerspectiveCamera(
         20,
         resolution.width / resolution.height,
         0.1,
@@ -390,7 +390,7 @@ export function SkeletonVisualizerWidget({
       bottom: 0,
       width: 1,
       height: 1,
-      position: new THREE.Vector3(3, 2.5, -3),
+      position: new Vector3(3, 2.5, -3),
       onHeightChange(v, newHeight) {
         v.controls.target.set(0, newHeight / 2, 0);
         const scale = Math.max(1, newHeight) / 1.5;
