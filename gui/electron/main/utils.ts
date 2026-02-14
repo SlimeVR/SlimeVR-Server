@@ -25,6 +25,7 @@ export function handleIpc<K extends keyof IpcInvokeMap>(
   ) => ReturnType<IpcInvokeMap[K]>
 ) {
   ipcMain.handle(channel, (event, ...args) => {
-    return handler(event, ...args);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return handler(event, ...args as any);
   });
 }

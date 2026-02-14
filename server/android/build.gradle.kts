@@ -34,7 +34,7 @@ java {
 val copyGuiAssets = tasks.register<Copy>("copyGuiAssets") {
 	val target = layout.projectDirectory.dir("src/main/assets/web-gui")
 	delete(target)
-	from(rootProject.layout.projectDirectory.dir("gui/dist"))
+	from(rootProject.layout.projectDirectory.dir("gui/out/renderer"))
 	into(target)
 	if (inputs.sourceFiles.isEmpty) {
 		throw GradleException("You need to run \"pnpm run build\" on the gui folder first!")

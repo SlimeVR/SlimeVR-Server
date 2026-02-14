@@ -63,17 +63,17 @@ jobs:
         with:
           submodules: recursive
 
-      - if: startsWith(matrix.os, 'ubuntu')
-        name: Set up Linux dependencies
-        uses: awalsh128/cache-apt-pkgs-action@v1.6.0
-        with:
-          packages: libgtk-3-dev libappindicator3-dev librsvg2-dev patchelf
-          # Increment to invalidate the cache
-          version: ${{ format('v1.1-{0}', env.BUILD_ARCH) }}
-          # Enables a workaround to attempt to run pre and post install scripts
-          execute_install_scripts: true
-          # Disables uploading logs as a build artifact
-          debug: false
+      # - if: startsWith(matrix.os, 'ubuntu')
+      #   name: Set up Linux dependencies
+      #   uses: awalsh128/cache-apt-pkgs-action@v1.6.0
+      #   with:
+      #     packages: libgtk-3-dev libappindicator3-dev librsvg2-dev patchelf
+      #     # Increment to invalidate the cache
+      #     version: ${{ format('v2-{0}', env.BUILD_ARCH) }}
+      #     # Enables a workaround to attempt to run pre and post install scripts
+      #     execute_install_scripts: true
+      #     # Disables uploading logs as a build artifact
+      #     debug: false
 
       - uses: pnpm/action-setup@v4
       - name: Use Node.js

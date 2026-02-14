@@ -14,3 +14,8 @@ interface Window {
 }
 
 declare module 'tailwind-gradient-mask-image';
+
+declare module '*?asset' {
+  const content: string;
+  export default content;
+}
