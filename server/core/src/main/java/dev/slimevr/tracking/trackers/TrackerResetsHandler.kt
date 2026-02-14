@@ -202,27 +202,22 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
-		// Align heading axis with bone space (order invariant with other yaw-only
-		//  operations, but should generally be done alongside attitude alignment)
+		// Align heading axis with bone space
 		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
 			rot *= mountingOrientation
 		}
-		// IMU space heading correction assuming manual orientation is correct
+		// Heading correction assuming manual orientation is correct
 		rot = gyroFix * rot
 		// Align attitude axes with bone space
 		rot *= attachmentFix
-		// Secondary heading axis alignment with bone space for automatic mounting,
-		//  this comes after attitude axes' alignment so it may be changed later without
-		//  also changing the attitude axes' alignment quaternion
-		// Note: Prepare for unforeseen consequences when applying an inverse amount of
-		//  heading correction corresponding to the axis alignment quaternion
+		// Secondary heading axis alignment with bone space for automatic mounting
+		// Note: Applying an inverse amount of heading correction corresponding to the
+		//  axis alignment quaternion will leave the correction to another variable
 		rot = mountRotFix.inv() * (rot * mountRotFix)
 		// More attitude axes alignment specifically for the t-pose configuration, this
 		//  probably shouldn't be a separate variable from attachmentFix?
 		rot *= tposeDownFix
-		// More IMU heading correction, but in bone space now? This is really weird and
-		//  bad, don't do this in the future
-		// TODO: Make this in IMU space, where drift actually occurs - Butterscotch
+		// More heading correction
 		rot = yawFix * rot
 		rot = constraintFix * rot
 		return rot
