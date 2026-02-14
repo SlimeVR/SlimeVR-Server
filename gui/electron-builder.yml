@@ -4,11 +4,25 @@ productName: SlimeVR
 directories:
   output: dist/artifacts
 
+# Optimize Electron bundle size
+asar: true
+
+# Only include English Chromium locale (saves ~44MB)
+electronLanguages:
+  - en-US
+
 # The 'files' key determines what goes INSIDE the app.asar
 files:
-  - out/**/* # This captures the built JS/CSS/Assets from Vite
-  - index.html      # Ensure your entry point is included
+  - out/**/*
+  - index.html
   - package.json
+  - node_modules/**
+  # Exclude unnecessary files from node_modules to reduce size
+  - "!node_modules/*/{README,readme,README.md,readme.md,CHANGELOG,CHANGELOG.md,changelog.md}"
+  - "!node_modules/*/{test,tests,__tests__,docs,doc,example,examples}"
+  - "!node_modules/*/.{git,github,vscode,editorconfig,eslintrc,prettierrc}"
+  - "!node_modules/**/*.{map,ts,tsx,d.ts}"
+  - "!**/.DS_Store"
 
 # Include the JAR next to the EXE
 extraFiles:
@@ -21,9 +35,8 @@ linux:
   category: Game
   target:
     - target: AppImage
-    # - target: deb
-    # - target: rpm
-    # - target: zip
+    - target: deb
+    - target: rpm
 
 # Target-specific dependencies (Fixes the 'unknown property' error)
 deb:
@@ -39,4 +52,4 @@ rpm:
 win:
   target: portable
 mac:
-  target: zip
+  target: dmg

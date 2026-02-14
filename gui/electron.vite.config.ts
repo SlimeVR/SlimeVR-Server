@@ -7,6 +7,13 @@ export default defineConfig({
     build: {
       rollupOptions: {
         input: resolve(__dirname, 'electron/main/index.ts'),
+        external: [
+          'pino',
+          'pino-pretty',
+          'pino-roll',
+          'commander',
+          'open'
+        ]
       }
     }
   },
