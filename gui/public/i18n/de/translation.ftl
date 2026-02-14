@@ -116,6 +116,9 @@ board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev-IMU-Handschuh
 board_type-GESTURES = Gesten
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generisches nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
 board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
@@ -521,6 +524,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Verwendet das Magnetometer auf allen Trackern, die über eine kompatible Firmware verfügen, um den Drift in stabilen magnetischen Umgebungen zu reduzieren.
     Kann pro Tracker in den Einstellungen des Trackers deaktiviert werden. <b>Bitte schalten Sie keinen der Tracker aus, während Sie dies umschalten!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Magnetometer auf Trackern verwenden
+settings-general-tracker_mechanics-trackers_over_usb = Tracker über USB
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Erlaube HID-Tracker eine USB-Direktverbindung
 settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduziert Drift, indem es deine Tracker schrittweise an deine entspannten Posen anpasst.
@@ -531,6 +535,8 @@ settings-stay_aligned-enabled-label = Tracker anpassen
 settings-stay_aligned-hide_yaw_correction-label = Anpassung ausblenden (zum Vergleich ohne Stay Aligned)
 settings-stay_aligned-general-label = Allgemein
 settings-stay_aligned-relaxed_poses-label = Entspannte Posen
+settings-stay_aligned-relaxed_poses-standing = Tracker im Stehen anpassen
+settings-stay_aligned-relaxed_poses-sitting = Tracker anpassen, während du auf einem Stuhl sitzt
 settings-stay_aligned-relaxed_poses-save_pose = Pose speichern
 settings-stay_aligned-relaxed_poses-reset_pose = Pose zurücksetzen
 settings-stay_aligned-relaxed_poses-close = Schließen
@@ -878,6 +884,7 @@ onboarding-setup_warning-cancel = Einrichtung fortsetzen
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Zurück zur Einführung
+onboarding-wifi_creds-v2 = Tracker mit WLAN
 onboarding-wifi_creds-skip = WLAN-Zugangsdaten überspringen
 onboarding-wifi_creds-submit = Weiter!
 onboarding-wifi_creds-ssid =
@@ -887,6 +894,8 @@ onboarding-wifi_creds-ssid-required = WLAN-Name ist erforderlich
 onboarding-wifi_creds-password =
     .label = Passwort
     .placeholder = Passwort eingeben
+onboarding-wifi_creds-dongle-title = Tracker mit einem Dongle
+onboarding-wifi_creds-dongle-continue = Fahre mit einem Dongle fort
 
 ## Mounting setup
 
@@ -1131,6 +1140,7 @@ onboarding-automatic_mounting-mounting_reset-title = Befestigungs-Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Beugen Sie sich in die "Skifahren"-Pose mit gebeugten Beinen, geneigtem Oberkörper und gebeugten Armen.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Drücken Sie die Schaltfläche "Befestigungs-Reset" und warten Sie 3 Sekunden, bevor die Drehungen der Tracker gesetzt werden.
 onboarding-automatic_mounting-preparation-title = Vorbereitung
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. Drücke den Knopf "Kompletter Reset".
 onboarding-automatic_mounting-put_trackers_on-title = Legen Sie Ihre Tracker an
 onboarding-automatic_mounting-put_trackers_on-description = Um die Drehung der Tracker zu kalibrieren, werden die Tracker verwendet, welche Sie gerade zugewiesen haben. Ziehen Sie alle Ihre Tracker an, in der Abbildung rechts können sie sehen um welchen Tracker es sich handelt.
 onboarding-automatic_mounting-put_trackers_on-next = Ich habe alle meine Tracker angelegt
@@ -1144,6 +1154,7 @@ onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Bitte schlie
 onboarding-manual_proportions-export = Proportionen exportieren
 onboarding-manual_proportions-import = Proportionen importieren
 onboarding-manual_proportions-file_type = Körperproportions-Datei
+onboarding-manual_proportions-grouped_proportions = Gruppierte Proportionen
 onboarding-manual_proportions-all_proportions = Alle Proportionen
 onboarding-manual_proportions-estimated_height = Geschätzte Benutzergröße
 
@@ -1232,14 +1243,21 @@ onboarding-automatic_proportions-smol_warning-cancel = Zurück
 
 ## User height calibration
 
+onboarding-user_height-title = Wie groß bist du?
+onboarding-user_height-description = Wir brauchen deine Größe, um deine Körperproportionen zu berechnen und deine Bewegungen genau darzustellen. Du kannst dies entweder SlimeVR berechnen lassen oder deine Höhe manuell eingeben.
+onboarding-user_height-calculate = Berechne meine Körpergröße automatisch
+onboarding-user_height-next_step = Fortfahren und speichern
 onboarding-user_height-manual-proportions = Manuelle Körperproportionen
 onboarding-user_height-calibration-title = Kalibrierungsfortschritt
 onboarding-user_height-calibration-WAITING_FOR_RISE = Steh wieder auf
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Steh wieder auf und schau nach vorne
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Achte darauf, dass dein Kopf waagerecht ist
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Schauen sie nicht auf den Boden
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Schauen sie nicht zu hoch nach oben
 onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Achten sie darauf, dass der Controller nach unten zeigt
+onboarding-user_height-calibration-RECORDING_HEIGHT = Steh wieder auf und steh still!
 onboarding-user_height-calibration-DONE = Erfolg!
+onboarding-user_height-calibration-ERROR_TOO_HIGH = Die erkannte Benutzerhöhe ist zu hoch, versuche es erneut.
 onboarding-user_height-calibration-error = Kalibrierung fehlgeschlagen
 
 ## Stay Aligned setup
@@ -1257,8 +1275,12 @@ onboarding-stay_aligned-preparation-tip = Achten Sie darauf, aufrecht zu stehen.
 onboarding-stay_aligned-relaxed_poses-standing-title = Entspannte Stehpose
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Nehmen Sie eine bequeme Haltung ein. Entspannen Sie sich!
 onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Drücken Sie die Taste „Pose speichern“.
+onboarding-stay_aligned-relaxed_poses-sitting-title = Entspannte Im-Stuhl-sitzen-Pose
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Setz dich mit den Beinen nach vorne auf den Boden. Entspann dich!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Drücke die Taste „Pose speichern“.
 onboarding-stay_aligned-relaxed_poses-skip_step = Überspringen
 onboarding-stay_aligned-done-title = Stay aligned aktiviert!
+onboarding-stay_aligned-done-description = Dein Stay Aligned-Setup ist komplett!
 onboarding-stay_aligned-previous_step = Zurück
 onboarding-stay_aligned-next_step = Weiter
 onboarding-stay_aligned-restart = Neu starten
@@ -1313,6 +1335,9 @@ firmware_tool-select_source-firmware = Firmware-Quelle
 firmware_tool-select_source-version = Firmware-Version
 firmware_tool-select_source-official = Offiziell
 firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-not_selected = Keine Quelle ausgewählt
+firmware_tool-select_source-no_boards = Keine verfügbaren Boards für diese Quelle
+firmware_tool-select_source-no_versions = Keine verfügbaren Versionen für diese Quelle
 firmware_tool-board_defaults = Konfigurieren Sie Ihr Board
 firmware_tool-board_defaults-description = Stelle die Pins oder Einstellungen relativ zu deiner Hardware ein
 firmware_tool-board_defaults-add = Hinzufügen
@@ -1427,7 +1452,10 @@ unknown_device-modal-forget = Ignorieren
 # VRChat config warnings
 vrc_config-page-title = VRChat Konfigurations-Warnungen
 vrc_config-page-desc = Diese Seite zeigt den Zustand deiner VRChat-Einstellungen und zeigt, welche Einstellungen mit SlimeVR inkompatibel sind. Es wird dringend empfohlen, alle hier angezeigten Warnungen zu beheben, um das beste Nutzererlebnis mit SlimeVR zu gewährleisten.
+vrc_config-page-help = Kannst du die Einstellungen nicht finden?
 vrc_config-page-help-desc = Schauen Sie sich unsere <a>Dokumentation zu diesem Thema</a> an!
+vrc_config-page-big_menu = Tracking & IK (Großes Menü)
+vrc_config-page-wrist_menu = Tracking & IK (Handgelenkmenü)
 vrc_config-on = An
 vrc_config-off = Aus
 vrc_config-invalid = Sie haben falsch konfigurierte VRChat-Einstellungen!
@@ -1438,13 +1466,21 @@ vrc_config-current_value = Aktueller Wert
 vrc_config-mute = Warnung stummschalten
 vrc_config-mute-btn = Stummschalten
 vrc_config-unmute-btn = Stummschaltung aufheben
+vrc_config-legacy_mode = Verwende Legacy IK Solving
 vrc_config-disable_shoulder_tracking = Schultertracking deaktivieren
+vrc_config-shoulder_width_compensation = Schulterbreitenkompensation
+vrc_config-spine_mode = FBT-Wirbelsäulenmodus
+vrc_config-tracker_model = FBT-Trackermodell
+vrc_config-avatar_measurement_type = Avatar-Messung
+vrc_config-calibration_range = Kalibrierungsbereich
 vrc_config-user_height = Echte Benutzergröße
 vrc_config-spine_mode-UNKNOWN = Unbekannt
+vrc_config-spine_mode-LOCK_BOTH = Beide sperren
 vrc_config-spine_mode-LOCK_HEAD = Kopf sperren
 vrc_config-spine_mode-LOCK_HIP = Hüfte sperren
 vrc_config-tracker_model-UNKNOWN = Unbekannt
 vrc_config-tracker_model-AXIS = Achse
+vrc_config-tracker_model-BOX = Box
 vrc_config-tracker_model-SPHERE = Sphäre
 vrc_config-tracker_model-SYSTEM = System
 vrc_config-avatar_measurement_type-UNKNOWN = Unbekannt
@@ -1474,13 +1510,20 @@ tracking_checklist-status-partial =
     }
 tracking_checklist-status-complete = Du bist bereit, SlimeVR zu nutzen!
 tracking_checklist-MOUNTING_CALIBRATION = Tracker-Ausrichtung durchführen
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Führe eine Fußmontage-Kalibrierung durch
+tracking_checklist-FULL_RESET = Führe einen vollständigen Reset durch
+tracking_checklist-FULL_RESET-desc = Manche Tracker benötigen eine erneute Kalibrierung.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR läuft nicht
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR läuft nicht. Nutzen sie es für VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = SteamVR starten
+tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibriere deine Tracker
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Sie haben keine Tracker-Kalibrierung durchgeführt. Bitte lassen Sie Ihre Tracker (gelb markiert) für einige Sekunden auf einer stabilen Oberfläche ruhen.
 tracking_checklist-TRACKER_ERROR = Tracker mit Fehlern
 tracking_checklist-VRCHAT_SETTINGS = VRChat-Einstellungen konfigurieren
 tracking_checklist-VRCHAT_SETTINGS-open = Gehen sie zu den VRChat-Warnungen
+tracking_checklist-UNASSIGNED_HMD = VR-Headset nicht dem Kopf zugewiesen
+tracking_checklist-UNASSIGNED_HMD-desc = Das VR-Headset sollte als Kopf-Tracker zugewiesen sein.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Ändere dein Netzwerkprofil
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Kontrollpanel öffnen
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Stay Aligned konfigurieren
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Öffne den Stay Aligned Assistent
@@ -1492,5 +1535,6 @@ toolbar-mounting_calibration = Tracker-Ausrichtung
 toolbar-mounting_calibration-default = Körper
 toolbar-mounting_calibration-feet = Füße
 toolbar-mounting_calibration-fingers = Finger
+toolbar-drift_reset = Drift-Reset
 toolbar-assigned_trackers = { $count } Tracker zugewiesen
 toolbar-unassigned_trackers = { $count } Tracker nicht zugewiesen
