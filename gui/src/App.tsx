@@ -27,7 +27,11 @@ import { AutomaticMountingPage } from './components/onboarding/pages/mounting/Au
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
 import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
-import { QuizPage } from './components/onboarding/pages/Quiz';
+import { QuizPage1 } from './components/onboarding/pages/Quiz/QuizSteps/Question1';
+import { QuizPage2 } from './components/onboarding/pages/Quiz/QuizSteps/Question2';
+import { QuizPage3 } from './components/onboarding/pages/Quiz/QuizSteps/Question3';
+import { QuizPage4 } from './components/onboarding/pages/Quiz/QuizSteps/Question4';
+import { UpdateQuestion } from './components/onboarding/pages/Quiz/QuizSteps/UpdateQuestion';
 import { DonglePage } from './components/onboarding/pages/Dongle';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
 import { SerialDetectionModal } from './components/SerialDetectionModal';
@@ -63,6 +67,14 @@ import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
+export const QuizContext = createContext(({
+  SlimeSet: "regular-slime",
+  Usage: "vrchat",
+  Update: "Yes",
+  setSlimeSet: (value: string) => {},
+  setUsage: (value: string) => {},
+  setUpdate: (value: string) => {},
+  }))
 export const DOCS_SITE = 'https://docs.slimevr.dev';
 export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
 
@@ -155,8 +167,13 @@ function Layout() {
           >
             <Route path="home" element={<HomePage />} />
             <Route path="wifi-creds" element={<WifiCredsPage />} />
-            <Route path="quiz" element={<QuizPage />} />
+              <Route path="quiz/Q1" element={<QuizPage1 />} />
+              <Route path="quiz/Q2" element={<QuizPage2 />} />
+              <Route path="quiz/Q3" element={<QuizPage3 />} />
+              <Route path="quiz/Q4" element={<QuizPage4 />} />
+              <Route path="quiz/Update?" element={<UpdateQuestion />} />
             <Route path="dongle" element={<DonglePage />} />
+            <Route path="firmware-tool" element={<FirmwareToolSettings />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="mounting/choose" element={<MountingChoose />} />
@@ -186,6 +203,9 @@ function Layout() {
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
   const [updateFound, setUpdateFound] = useState('');
+  const [SlimeSet, setSlimeSet] = useState('');
+  const [Usage, setUsage] = useState('');
+  const [Update, setUpdate] = useState('');
   const isTauri = useIsTauri();
 
   useEffect(() => {
@@ -298,11 +318,13 @@ export default function App() {
             <OnboardingContextProvider>
               <TrackingChecklistProvider>
                 <VersionContext.Provider value={updateFound}>
-                  <div className="h-full w-full text-standard bg-background-80 text-background-10">
-                    <Preload />
-                    {!websocketAPI.isConnected && <ConnectionLost />}
-                    {websocketAPI.isConnected && <Layout />}
-                  </div>
+                  <QuizContext.Provider value={{SlimeSet, Usage, Update, setSlimeSet, setUsage, setUpdate }}>
+                    <div className="h-full w-full text-standard bg-background-80 text-background-10">
+                      <Preload />
+                      {!websocketAPI.isConnected && <ConnectionLost />}
+                      {websocketAPI.isConnected && <Layout />}
+                    </div>
+                  </QuizContext.Provider>
                 </VersionContext.Provider>
               </TrackingChecklistProvider>
             </OnboardingContextProvider>

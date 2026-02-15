@@ -19,7 +19,7 @@ export function HomePage() {
           <Typography variant="mobile-title">
             {l10n.getString('onboarding-home')}
           </Typography>
-          <Button variant="primary" to="/onboarding/quiz">
+          <Button variant="primary" to="/onboarding/quiz/Q1">
             {l10n.getString('onboarding-home-start')}
           </Button>
         </div>

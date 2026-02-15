@@ -22,6 +22,8 @@ import { Button } from '@/components/commons/Button';
 import { useNavigate } from 'react-router-dom';
 import { firmwareToolS3BaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
+import { stat } from 'fs';
+import classNames from 'classnames';
 
 export function FlashingStep({
   goTo,
@@ -36,7 +38,7 @@ export function FlashingStep({
   const { l10n } = useLocalization();
   const { selectedDevices, selectDevices, files, selectedDefault } =
     useFirmwareTool();
-  const { state: onboardingState } = useOnboarding();
+  const { state: onboardingState, state} = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [status, setStatus] = useState<{
     [key: string]: {
@@ -203,15 +205,28 @@ export function FlashingStep({
                 onClick={() => goTo('FlashingMethod')}
               />
             </Localized>
-            <Localized id="firmware_tool-flashing_step-exit">
-              <Button
-                variant="primary"
-                onClick={() => {
-                  clear();
-                  nav('/');
-                }}
-              />
-            </Localized>
+            {state.alonePage && (
+              <Localized id="firmware_tool-flashing_step-exit">
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    clear();
+                    nav('/');
+                  }}
+                />
+              </Localized>
+            )}
+            {!state.alonePage && (
+              <Localized id="firmware_tool-flashing_step-onboarding_continue">
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    clear();
+                    nav('/onboarding/wifi-creds');
+                  }}
+                />
+              </Localized>
+            )}
           </div>
         </div>
       </div>
