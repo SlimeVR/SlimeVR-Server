@@ -35,6 +35,7 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
+import { VelocityInstructionsModal } from '@/components/settings/VelocityInstructionsModal';
 import { MagnetometerToggleSetting } from './MagnetometerToggleSetting';
 import {
   defaultStayAlignedSettings,
@@ -370,7 +371,6 @@ export function GeneralSettings() {
   } = watch();
 
   const onSubmit = useCallback((values: SettingsForm) => {
-    console.log('[GeneralSettings] onSubmit called with velocity:', values.velocity);
     const settings = new ChangeSettingsRequestT();
 
     if (values.trackers) {
@@ -486,7 +486,6 @@ export function GeneralSettings() {
       settings.velocitySettings = velocity;
     }
 
-    console.log('[GeneralSettings] Sending ChangeSettingsRequest, velocitySettings:', settings.velocitySettings);
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
   }, [sendRPCPacket]);
 
@@ -502,6 +501,7 @@ export function GeneralSettings() {
   // If null, we still haven't shown the hands warning
   // if false then initially the hands warning was disabled
   const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
+  const [isVelocityInstructionsOpen, setIsVelocityInstructionsOpen] = useState(false);
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: DefaultValues<SettingsForm> = {};
 
@@ -1404,6 +1404,27 @@ export function GeneralSettings() {
               control={control}
               name="velocity.sendDerivedVelocity"
               label={l10n.getString('settings-general-tracker_velocity-enable')}
+            />
+
+            {watch('velocity.sendDerivedVelocity') && (
+              <div className="mt-3 p-3 bg-background-50 rounded-lg border border-background-40">
+                <div className="flex items-center justify-between gap-3">
+                  <Typography color="primary" className="text-sm">
+                    {l10n.getString('settings-general-tracker_velocity-info-box')}
+                  </Typography>
+                  <Button
+                    variant="quaternary"
+                    onClick={() => setIsVelocityInstructionsOpen(true)}
+                  >
+                    {l10n.getString('settings-general-tracker_velocity-info-button')}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <VelocityInstructionsModal
+              isOpen={isVelocityInstructionsOpen}
+              onClose={() => setIsVelocityInstructionsOpen(false)}
             />
 
             {watch('velocity.sendDerivedVelocity') && (

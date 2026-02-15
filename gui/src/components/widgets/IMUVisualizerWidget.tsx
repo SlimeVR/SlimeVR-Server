@@ -180,15 +180,15 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
 
     // HEAD (1) and HANDS (18, 19) have special message
     if (physicalBodyPart === 1 || physicalBodyPart === 18 || physicalBodyPart === 19) {
-      velocityUnavailableReason = "Supplied by HMD and its controllers";
+      velocityUnavailableReason = l10n.getString('widget-imu_visualizer-velocity_disabled_hmd');
     }
     // Synthetic tracker exists and is in allowed list, but velocity disabled in config
     else if (syntheticTracker && isInAllowedList) {
-      velocityUnavailableReason = "Velocity is disabled in Settings → General → Tracker Settings";
+      velocityUnavailableReason = l10n.getString('widget-imu_visualizer-velocity_disabled_settings');
     }
     // Everything else: no synthetic tracker OR synthetic exists but is blacklisted
     else {
-      velocityUnavailableReason = "This tracker's movement is captured by other body parts to reduce noise in calculations";
+      velocityUnavailableReason = l10n.getString('widget-imu_visualizer-velocity_disabled_captured');
     }
   }
 
@@ -245,13 +245,13 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
       {velocityUnavailableReason ? (
         <Tooltip content={velocityUnavailableReason}>
           <div className="flex justify-between opacity-50">
-            <Typography color="secondary">Velocity</Typography>
+            <Typography color="secondary">{l10n.getString('widget-imu_visualizer-velocity')}</Typography>
             <Typography color="secondary">- - -</Typography>
           </div>
         </Tooltip>
       ) : (
         <div className="flex justify-between">
-          <Typography>Velocity</Typography>
+          <Typography>{l10n.getString('widget-imu_visualizer-velocity')}</Typography>
           <Typography>
             {rawVelocity ? formatVector3(rawVelocity, 2) : '- - -'}
           </Typography>
@@ -261,13 +261,13 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
       {velocityUnavailableReason ? (
         <Tooltip content={velocityUnavailableReason}>
           <div className="flex justify-between opacity-50">
-            <Typography color="secondary">Scaled Velocity</Typography>
+            <Typography color="secondary">{l10n.getString('widget-imu_visualizer-velocity_scaled')}</Typography>
             <Typography color="secondary">- - -</Typography>
           </div>
         </Tooltip>
       ) : (
         <div className="flex justify-between">
-          <Typography>Scaled Velocity</Typography>
+          <Typography>{l10n.getString('widget-imu_visualizer-velocity_scaled')}</Typography>
           <Typography>
             {scaledVelocity ? formatVector3(scaledVelocity, 2) : '- - -'}
           </Typography>

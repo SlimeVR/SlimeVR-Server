@@ -315,6 +315,11 @@ widget-imu_visualizer-hide = Hide
 widget-imu_visualizer-rotation_raw = Raw rotation
 widget-imu_visualizer-rotation_preview = Preview rotation
 widget-imu_visualizer-acceleration = Acceleration
+widget-imu_visualizer-velocity = Velocity
+widget-imu_visualizer-velocity_scaled = Scaled Velocity
+widget-imu_visualizer-velocity_disabled_hmd = Supplied by HMD and its controllers
+widget-imu_visualizer-velocity_disabled_settings = Velocity is disabled in Settings → General → Tracker Settings
+widget-imu_visualizer-velocity_disabled_captured = This tracker's movement is captured by other body parts to reduce noise in calculations
 widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Stay Aligned
 
@@ -715,6 +720,43 @@ settings-general-tracker_velocity-scale-unified = Unified Scale (All Axes)
 settings-general-tracker_velocity-scale-x = Scale X
 settings-general-tracker_velocity-scale-y = Scale Y
 settings-general-tracker_velocity-scale-z = Scale Z
+
+settings-general-tracker_velocity-info-box = Make sure to read setup instructions and familiarize yourself with common issues before using velocity
+settings-general-tracker_velocity-info-button = Instructions
+
+settings-general-tracker_velocity-instructions-title = Velocity Tracking Setup & Instructions
+settings-general-tracker_velocity-instructions-close = OK
+
+settings-general-tracker_velocity-instructions-section1-title = Before you start:
+settings-general-tracker_velocity-instructions-section1-content = 1. Make sure your HMD has a proper room-scale boundary set up.
+  2. Ensure your floor level is accurately aligned with the actual floor.
+  3. It's recommended to use automated height detection from your HMD.
+  4. Perform a full SlimeVR calibration (Reset + Mounting).
+
+settings-general-tracker_velocity-instructions-section2-title = Recommended settings for Natural Locomotion:
+settings-general-tracker_velocity-instructions-section2-content = For games that support both FBT and NaLo:
+  • In Natural Locomotion: "Common Settings" > "When pressing armswing buttons:" set to "Enable walk-in-place"
+  • In the game's profile: "Configure buttons" > select your desired action to enable locomotion
+  Note: This setup is necessary because NaLo interprets any leg movement as "walking", which would trigger constant walking with full-body tracking enabled.
+  For games without FBT support:
+  • Feel free to experiment and find settings that are comfortable for you personally
+  • You can use the default game profiles provided within NaLo if they work well for you
+
+settings-general-tracker_velocity-instructions-section3-title = Common Issues:
+settings-general-tracker_velocity-instructions-section3-content = Occasional jitter in FBT avatars (VRChat, Beat Saber):
+  • Occurs when SteamVR overshoots position prediction based on velocity data
+  • Can be mitigated by downscaling velocity (makes prediction less aggressive)
+  • Note: Downscaling will impact NaLo's sensitivity, but can be compensated within NaLo's own settings
+  • The Hybrid preset is designed to balance jitter mitigation with Natural Locomotion functionality
+  • If not using Natural Locomotion, it's recommended to disable velocity tracking entirely
+  Feet trackers "disconnecting" or appearing only when moved in NaLo:
+  • Usually caused by improperly configured HMD Virtual Space
+  • Check: HMD height is set correctly
+  • Check: Floor level is not set above the actual floor (trackers fall out of virtual space)
+  • Check: Boundary is properly set up (not relying on dynamic safe space generation)
+  • Solution: Manually configure floor level and boundaries to a fixed state in your HMD settings
+  Body tracker not being found by NaLo or not moving:
+  • This is unusual but normal behavior and doesn't impact functionality
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control

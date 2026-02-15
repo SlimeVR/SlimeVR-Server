@@ -13,7 +13,7 @@ object VelocityRolePolicy {
 	 * Default scaling values for the HYBRID preset.
 	 * These values are used when the HYBRID scaling preset is active.
 	 */
-	val HYBRID_DEFAULT_SCALE = ScalingValues(0.25f, 0.25f, 0.25f)
+	val HYBRID_DEFAULT_SCALE = ScalingValues(0.10f, 0.75f, 0.10f)
 
 	/**
 	 * Maps SlimeVR tracker designation to velocity groups.
