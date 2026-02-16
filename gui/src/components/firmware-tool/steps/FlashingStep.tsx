@@ -36,7 +36,7 @@ export function FlashingStep({
   const { l10n } = useLocalization();
   const { selectedDevices, selectDevices, files, selectedDefault } =
     useFirmwareTool();
-  const { state: onboardingState, state} = useOnboarding();
+  const { state: onboardingState, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [status, setStatus] = useState<{
     [key: string]: {

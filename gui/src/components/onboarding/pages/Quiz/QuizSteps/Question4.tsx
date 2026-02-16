@@ -9,151 +9,150 @@ import { useContext } from 'react';
 import { QuizContext } from '@/App';
 import { Localized } from '@fluent/react';
 import {
-    RpcMessage,
-    SettingsResponseT,
-    ChangeSettingsRequestT,
-    ModelSettingsT,
-    SettingsRequestT,
-    ResetsSettingsT,
-    ModelTogglesT,
+  RpcMessage,
+  SettingsResponseT,
+  ChangeSettingsRequestT,
+  ModelSettingsT,
+  SettingsRequestT,
+  ResetsSettingsT,
+  ModelTogglesT,
 } from 'solarxr-protocol';
-
 export const LevelContext = createContext(1);
 
-export function QuizPage4() { 
+export function QuizPage4() {
+  const { applyProgress } = useOnboarding();
+  const [outline, setOutline] = useState<'Forehead' | 'Face'>();
+  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const [settings, setSettings] = useState<SettingsResponseT>();
+  const { Usage, SlimeSet, Update } = useContext(QuizContext);
+  const [to, setTo] = useState('');
+  const [disabled, setDisabled] = useState(true);
 
-    const { applyProgress} = useOnboarding();
-    const [outline, setOutline] = useState<'Forehead' | 'Face'>()
-    const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-    const [settings, setSettings] = useState<SettingsResponseT>();
-    const { Usage, SlimeSet, Update } = useContext(QuizContext);
-    const [to, setTo] = useState("")
-    const [ disabled, setDisabled ] = useState(true)
+  applyProgress(0.2);
 
-    applyProgress(0.2);
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+  }, []);
 
-    useEffect(() => {
-        sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT())
-    }, []);
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    setSettings(settings);
+  });
 
-    useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-        setSettings(settings);
-    })
+  // useEffect(() => {
+  //     const subscription = watch(() => handleSubmit(onSubmit)());
+  //     return () => subscription.unsubscribe();
+  // }, []);
 
-    // useEffect(() => {
-    //     const subscription = watch(() => handleSubmit(onSubmit)());
-    //     return () => subscription.unsubscribe();
-    // }, []);
+  // const onSubmit = (answers: OnboardingQuestions ) => {
+  //     console.log(answers);
+  //     setContinueButton(false);
+  //     setAnswers(answers);
+  // }
 
-    // const onSubmit = (answers: OnboardingQuestions ) => {
-    //     console.log(answers);
-    //     setContinueButton(false);
-    //     setAnswers(answers);
-    // }
+  const updateTo = () => {
+    if (SlimeSet === 'butterfly') {
+      setTo('/onboarding/dongle');
+    } else {
+      if (Update === 'Yes') {
+        setTo('/onboarding/firmware-tool');
+      } else {
+        setTo('/onboarding/wifi-creds');
+      }
+    }
+  };
 
-    const updateTo = () => {
-        if (SlimeSet === 'butterfly') {
-            setTo("/onboarding/dongle");
-        } else {
-            if (Update === 'Yes') {
-                setTo("/onboarding/firmware-tool");
+  const applySettings = () => {
+    if (!settings?.modelSettings || !settings?.vrcOsc)
+      throw 'settings should be set';
+    const req = new ChangeSettingsRequestT();
+    const modelSettings = new ModelSettingsT();
+    const resetSettings = new ResetsSettingsT();
 
-            } else {setTo("/onboarding/wifi-creds");}
-        }
+    if (Usage === 'mocap') {
+      const toggles = Object.assign(
+        new ModelTogglesT(),
+        settings.modelSettings.toggles
+      );
+      toggles.selfLocalization = true;
+      modelSettings.toggles = toggles;
+      req.modelSettings = modelSettings;
+
+      if (outline === 'Forehead') {
+        const resets = Object.assign(resetSettings, settings.resetsSettings);
+        resets.resetHmdPitch = true;
+        req.resetsSettings = resets;
+      }
     }
 
-    const applySettings = () => {
-        if (!settings?.modelSettings || !settings?.vrcOsc) throw 'settings should be set';
-        const req = new ChangeSettingsRequestT()
-        const modelSettings = new ModelSettingsT();
-        const resetSettings = new ResetsSettingsT();
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
+  };
 
-        if (Usage === 'mocap') {
-            const toggles = Object.assign(new ModelTogglesT(), settings.modelSettings.toggles);
-            toggles.selfLocalization = true;
-            modelSettings.toggles = toggles;
-            req.modelSettings = modelSettings;
+  applyProgress(0.2);
 
-            if (outline === 'Forehead') {
-                const resets = Object.assign(resetSettings, settings.resetsSettings);
-                resets.resetHmdPitch = true;
-                req.resetsSettings = resets;
-            }
-        }
-
-        sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
-    }
-
-    applyProgress(0.2);
-
-        return (
-            <div className="flex flex-col w-full h-full xs:justify-center items-center">
-
-                    <div className="flex flex-col gap-2">
-                        <div className="flex gap-2 items-center">
-                            <Typography
-                            variant="main-title"
-                            id="onboarding-quiz-q4-title"
-                            />
-                        </div>
-                        <div className=''>
-                            <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
-                                <Typography
-                                whitespace="whitespace-pre-wrap"
-                                id="onboarding-quiz-q4-description"
-                                />
-                            </div>
-                            <div className="flex gap-2 px-2 p-6">
-                                    <div
-                                        onClick={() => {
-                                            setOutline('Forehead'); 
-                                            updateTo();
-                                            setDisabled(false);
-                                        }}
-                                        className={classNames(
-                                            'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                                            outline==='Forehead' && 'outline outline-3 outline-accent-background-40',
-                                        )}
-                                    >
-                                        <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
-                                            <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                                                <Typography id="onboarding-quiz-q4-answer-1"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        onClick={() =>  {
-                                            setOutline('Face'); 
-                                            updateTo();
-                                            setDisabled(false);
-                                        
-                                        }}
-                                        className={classNames(
-                                            'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                                            outline==='Face' && 'outline outline-3 outline-accent-background-40',
-                                        )}
-                                    >
-                                        <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
-                                            <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                                                <Typography id="onboarding-quiz-q4-answer-2"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                            </div>
-                        </div>
-                        <div className="flex px-2 p-6">
-                            <Localized id="onboarding-quiz_continue">
-                                <Button
-                                to={to}
-                                children="Continue"
-                                variant="primary"
-                                onClick={applySettings}
-                                disabled={disabled}
-                                />
-                            </Localized>
-                        </div>
-                    </div>
+  return (
+    <div className="flex flex-col w-full h-full xs:justify-center items-center">
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-2 items-center">
+          <Typography variant="main-title" id="onboarding-quiz-q4-title" />
+        </div>
+        <div className="">
+          <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
+            <Typography
+              whitespace="whitespace-pre-wrap"
+              id="onboarding-quiz-q4-description"
+            />
+          </div>
+          <div className="flex gap-2 px-2 p-6">
+            <div
+              onClick={() => {
+                setOutline('Forehead');
+                updateTo();
+                setDisabled(false);
+              }}
+              className={classNames(
+                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
+                outline === 'Forehead' &&
+                  'outline outline-3 outline-accent-background-40'
+              )}
+            >
+              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
+                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
+                  <Typography id="onboarding-quiz-q4-answer-1" />
+                </div>
+              </div>
             </div>
-        );
-    }
+            <div
+              onClick={() => {
+                setOutline('Face');
+                updateTo();
+                setDisabled(false);
+              }}
+              className={classNames(
+                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
+                outline === 'Face' &&
+                  'outline outline-3 outline-accent-background-40'
+              )}
+            >
+              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
+                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
+                  <Typography id="onboarding-quiz-q4-answer-2" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex px-2 p-6">
+          <Localized id="onboarding-quiz_continue">
+            <Button
+              to={to}
+              children="Continue"
+              variant="primary"
+              onClick={applySettings}
+              disabled={disabled}
+            />
+          </Localized>
+        </div>
+      </div>
+    </div>
+  );
+}

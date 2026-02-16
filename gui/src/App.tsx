@@ -67,14 +67,14 @@ import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
-export const QuizContext = createContext(({
-  SlimeSet: "regular-slime",
-  Usage: "vrchat",
-  Update: "Yes",
+export const QuizContext = createContext({
+  SlimeSet: 'regular-slime',
+  Usage: 'vrchat',
+  Update: 'Yes',
   setSlimeSet: (value: string) => {},
   setUsage: (value: string) => {},
   setUpdate: (value: string) => {},
-  }))
+});
 export const DOCS_SITE = 'https://docs.slimevr.dev';
 export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
 
@@ -167,11 +167,11 @@ function Layout() {
           >
             <Route path="home" element={<HomePage />} />
             <Route path="wifi-creds" element={<WifiCredsPage />} />
-              <Route path="quiz/Q1" element={<QuizPage1 />} />
-              <Route path="quiz/Q2" element={<QuizPage2 />} />
-              <Route path="quiz/Q3" element={<QuizPage3 />} />
-              <Route path="quiz/Q4" element={<QuizPage4 />} />
-              <Route path="quiz/Update?" element={<UpdateQuestion />} />
+            <Route path="quiz/Q1" element={<QuizPage1 />} />
+            <Route path="quiz/Q2" element={<QuizPage2 />} />
+            <Route path="quiz/Q3" element={<QuizPage3 />} />
+            <Route path="quiz/Q4" element={<QuizPage4 />} />
+            <Route path="quiz/Update?" element={<UpdateQuestion />} />
             <Route path="dongle" element={<DonglePage />} />
             <Route path="firmware-tool" element={<FirmwareToolSettings />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />
@@ -318,7 +318,16 @@ export default function App() {
             <OnboardingContextProvider>
               <TrackingChecklistProvider>
                 <VersionContext.Provider value={updateFound}>
-                  <QuizContext.Provider value={{SlimeSet, Usage, Update, setSlimeSet, setUsage, setUpdate }}>
+                  <QuizContext.Provider
+                    value={{
+                      SlimeSet,
+                      Usage,
+                      Update,
+                      setSlimeSet,
+                      setUsage,
+                      setUpdate,
+                    }}
+                  >
                     <div className="h-full w-full text-standard bg-background-80 text-background-10">
                       <Preload />
                       {!websocketAPI.isConnected && <ConnectionLost />}
