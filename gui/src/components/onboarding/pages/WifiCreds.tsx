@@ -10,15 +10,17 @@ import { WifiIcon } from '@/components/commons/icon/WifiIcon';
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
-  const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm("");
+  const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm('');
 
   applyProgress(0.2);
 
   return (
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
-      <div className={classNames(
-        state.alonePage && "grid xs:grid-cols-2 gap-4 max-w-6xl p-4",
-        )}>
+      <div
+        className={classNames(
+          state.alonePage && 'grid xs:grid-cols-2 gap-4 max-w-6xl p-4'
+        )}
+      >
         <form
           className="flex flex-col gap-2"
           onSubmit={handleSubmit(submitWifiCreds)}

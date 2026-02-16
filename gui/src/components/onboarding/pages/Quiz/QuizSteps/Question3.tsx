@@ -1,11 +1,9 @@
 import { useOnboarding } from '@/hooks/onboarding';
 import classNames from 'classnames';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
-import { createContext } from 'react';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useContext } from 'react';
 import { QuizContext } from '@/App';
 import { Localized } from '@fluent/react';
 import {

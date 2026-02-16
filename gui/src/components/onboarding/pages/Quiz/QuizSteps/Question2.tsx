@@ -1,9 +1,8 @@
 import { useOnboarding } from '@/hooks/onboarding';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
-import { useContext } from 'react';
 import { QuizContext } from '@/App';
 import { Localized } from '@fluent/react';
 
