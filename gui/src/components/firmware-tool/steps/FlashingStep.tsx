@@ -22,8 +22,6 @@ import { Button } from '@/components/commons/Button';
 import { useNavigate } from 'react-router-dom';
 import { firmwareToolS3BaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
-import { stat } from 'fs';
-import classNames from 'classnames';
 
 export function FlashingStep({
   goTo,
