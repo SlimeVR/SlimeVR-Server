@@ -158,6 +158,7 @@
               pnpm
               pkg-config
               targetElectron
+              wine
             ] ++ hw_deps
               ++ build_tools;
 

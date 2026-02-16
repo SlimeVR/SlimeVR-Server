@@ -1,17 +1,13 @@
 appId: dev.slimevr.SlimeVR
 productName: SlimeVR
-# These help fill the missing metadata requirements
 directories:
   output: dist/artifacts
 
-# Optimize Electron bundle size
 asar: true
 
-# Only include English Chromium locale (saves ~44MB)
 electronLanguages:
   - en-US
 
-# The 'files' key determines what goes INSIDE the app.asar
 files:
   - out/**/*
   - index.html
@@ -24,7 +20,6 @@ files:
   - "!node_modules/**/*.{map,ts,tsx,d.ts}"
   - "!**/.DS_Store"
 
-# Include the JAR next to the EXE
 extraFiles:
   - from: "../../server/desktop/build/libs/slimevr.jar"
     to: "."
@@ -38,7 +33,6 @@ linux:
     - target: deb
     - target: rpm
 
-# Target-specific dependencies (Fixes the 'unknown property' error)
 deb:
   depends:
     - openjdk-17-jre-headless
@@ -48,8 +42,9 @@ rpm:
     - java-latest-openjdk
     - udev
 
-# If you ever build for Windows/Mac later
 win:
-  target: portable
+  target:
+    - target: portable
+
 mac:
   target: dmg

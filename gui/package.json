@@ -15,7 +15,7 @@
     "start": "vite --force",
     "dev": "electron-vite dev --config electron.vite.config.ts --watch",
     "build": "electron-vite build --config electron.vite.config.ts",
-    "package": "pnpm run build && electron-builder --linux",
+    "package": "pnpm run build && electron-builder",
     "preview": "electron-vite preview --config electron.vite.config.ts",
     "skipbundler": "vite build",
     "lint": "tsc --noEmit && eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && prettier --check \"src/**/*.{js,jsx,ts,tsx,css,scss,md,json}\"",
