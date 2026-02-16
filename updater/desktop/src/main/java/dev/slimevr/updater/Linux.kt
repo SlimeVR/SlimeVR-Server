@@ -1,6 +1,8 @@
 package dev.slimevr.updater
 
 import java.nio.file.Paths
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 class Linux {
 
@@ -8,9 +10,14 @@ class Linux {
 
 	fun updateLinux() {
 		updateLinuxSteamVRDriver()
-		//feeder()
+		feeder()
 		updateUdev()
 		//updateServer()
+	}
+
+	fun updateFrame() {
+		println("Running Updater for frame")
+		updateLinuxSteamVRDriver()
 	}
 
 	//TODO: tell user in gui to add steamvr launch arguments
@@ -60,8 +67,13 @@ class Linux {
 		downloadFile(LINUXSERVERURL, LINUXSERVERNAME)
 	}
 
-	//TODO: Probably best to just ask the user in the ui to update udev if i can't access usb devices. Also does the steam frame have udev?
+	//TODO: Find a way to do version checking on udev rules
 	fun updateUdev() {
+		val file = Path("/etc/udev/rules.d/69-slimevr-devices.rules")
+		if (file.exists()) {
+			println("Udev rules already installed")
+			return
+		}
 		val res = executeShellCommand("pkexec", "cp", "${path}/69-slimevr-devices.rules", "/etc/udev/rules.d/69-slimevr-devices.rules")
 		if (res.contains("Error")) {
 			println("Error installing udev rules")
@@ -72,11 +84,11 @@ class Linux {
 	}
 
 	companion object {
-		// Linux URL's
+		// Linux URLs
 		private const val LINUXSTEAMVRDRIVERURL = "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
 		private const val LINUXSTEAMVRDRIVERNAME = "slimevr-openvr-driver-x64-linux.zip"
 		private const val LINUXSTEAMVRDRIVERDIRECTORY = "slimevr-openvr-driver-x64-linux"
-		private const val LINUXFEEDERURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-linux.zip"
+		private const val LINUXFEEDERURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-Linux.zip"
 		private const val LINUXFEEDERNAME = "SlimeVR-Feeder-App-Linux.zip"
 		private const val LINUXFEEDERDIRECTORY = "SlimeVR-Feeder-App-Linux"
 		private const val LINUXSERVERURL = "https://github.com/SlimeVR/SlimeVR-Server/releases/latest/download/SlimeVR-amd64.appimage"

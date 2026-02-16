@@ -10,7 +10,7 @@ class Windows {
 		// First check if everything is already installed. Install it if it isn't
 		usbDrivers()
 		steamVRDriver()
-		//feeder()
+		feeder()
 		//Turn off updater stuff not needed for the steam release
 		//slimeServer()
 	}

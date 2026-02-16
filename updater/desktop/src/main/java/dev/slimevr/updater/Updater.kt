@@ -18,11 +18,19 @@ class Updater {
 		//if (!shouldUpdate) {
 		//	return
 		//}
-		println(os)
+
 		if (os.contains("linux")) {
 			println("Running linux updater")
 			val linuxUpdater = Linux()
-			linuxUpdater.updateLinux()
+			val linuxFlavour = executeShellCommand("uname", "-n")
+
+			//Skip some install stuff if running on frame
+			if (linuxFlavour.contains("amos")) {
+				linuxUpdater.updateFrame()
+			}
+			else {
+				linuxUpdater.updateLinux()
+			}
 		}
 		else if (os.contains("windows")) {
 			println("Running windows updater")
