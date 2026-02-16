@@ -4,11 +4,15 @@ import java.nio.file.Paths
 
 class Windows {
 
+	val path = Paths.get("").toAbsolutePath().toString()
+
 	fun updateWindows() {
 		// First check if everything is already installed. Install it if it isn't
 		usbDrivers()
-		slimeServer()
 		steamVRDriver()
+		//feeder()
+		//Turn off updater stuff not needed for the steam release
+		//slimeServer()
 	}
 
 	fun usbDrivers() {
@@ -17,7 +21,6 @@ class Windows {
 		val ch341ser = installedDriversList.contains("ch341ser.inf")
 		val ch343ser = installedDriversList.contains("ch343ser.inf")
 		val silabser = installedDriversList.contains("silabser.inf")
-		val path = Paths.get("").toAbsolutePath().toString()
 
 		if (ch341ser && ch343ser && silabser) {
 			println("drivers already installed!")
@@ -33,7 +36,15 @@ class Windows {
 		// downloading slime server
 		downloadFile(WINDOWSSERVERURL, WINDOWSSERVERNAME)
 		println("extracting")
-		unzip(WINDOWSSERVERNAME, WINDOWSSERERDIRECTORY)
+		unzip(WINDOWSSERVERNAME, WINDOWSSERVERDIRECTORY)
+	}
+
+	fun feeder() {
+		println("Downloading feeder")
+		downloadFile(WINDOWSFEEDERURL, WINDOWSFEEDERNAME)
+		println("Unzipping feeder")
+		unzip(WINDOWSFEEDERNAME, WINDOWSFEEDERDIRECTORY)
+		executeShellCommand("${path}\\${WINDOWSFEEDERDIRECTORY}\\SlimeVR-Feeder-App.exe",  "--install")
 	}
 
 	fun steamVRDriver() {
@@ -68,6 +79,7 @@ class Windows {
 	}
 
 	fun updateWindowsGui() {
+
 	}
 
 	companion object {
@@ -76,8 +88,9 @@ class Windows {
 		private const val WINDOWSSTEAMVRDRIVERDIRECTORY = "slimevr-openvr-driver-win64"
 		private const val WINDOWSFEEDERURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-win64.zip"
 		private const val WINDOWSFEEDERNAME = "SlimeVR-Feeder-App-win64.zip"
+		private const val WINDOWSFEEDERDIRECTORY = "SlimeVR-Feeder-App-win64"
 		private const val WINDOWSSERVERURL = "https://github.com/SlimeVR/SlimeVR-Server/releases/latest/download/SlimeVR-win64.zip"
 		private const val WINDOWSSERVERNAME = "slimevr-win64.zip"
-		private const val WINDOWSSERERDIRECTORY = "slimevr-win64"
+		private const val WINDOWSSERVERDIRECTORY = "slimevr-win64"
 	}
 }

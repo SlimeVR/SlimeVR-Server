@@ -18,7 +18,7 @@ class Updater {
 		//if (!shouldUpdate) {
 		//	return
 		//}
-
+		println(os)
 		if (os.contains("linux")) {
 			println("Running linux updater")
 			val linuxUpdater = Linux()
