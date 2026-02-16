@@ -35,7 +35,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
-      - run: mkdir ./gui/dist && touch ./gui/dist/somefile
+      - run: mkdir ./gui/out/renderer && touch ./gui/out/renderer/somefile
         shell: bash
 
       - name: Check code formatting
