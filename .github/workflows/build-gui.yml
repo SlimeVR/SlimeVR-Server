@@ -54,7 +54,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      # Don't mark warnings as errors
       CI: false
       BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}
 
@@ -62,18 +61,6 @@ jobs:
       - uses: actions/checkout@v6
         with:
           submodules: recursive
-
-      # - if: startsWith(matrix.os, 'ubuntu')
-      #   name: Set up Linux dependencies
-      #   uses: awalsh128/cache-apt-pkgs-action@v1.6.0
-      #   with:
-      #     packages: libgtk-3-dev libappindicator3-dev librsvg2-dev patchelf
-      #     # Increment to invalidate the cache
-      #     version: ${{ format('v2-{0}', env.BUILD_ARCH) }}
-      #     # Enables a workaround to attempt to run pre and post install scripts
-      #     execute_install_scripts: true
-      #     # Disables uploading logs as a build artifact
-      #     debug: false
 
       - uses: pnpm/action-setup@v4
       - name: Use Node.js
@@ -98,18 +85,18 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-Windows-{0}', env.BUILD_ARCH) }}
-          path: gui/out/**/*
+          path: gui/out/renderer/**/*
 
       - if: startsWith(matrix.os, 'ubuntu')
         name: Upload a Build Artifact (Linux)
         uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-Linux-{0}', env.BUILD_ARCH) }}
-          path: gui/out/**/*
+          path: gui/out/renderer/**/*
 
       - if: matrix.os == 'macos-latest'
         name: Upload a Build Artifact (macOS)
         uses: actions/upload-artifact@v6
         with:
           name: SlimeVR-GUI-macOS
-          path: gui/out/**/*
+          path: gui/out/renderer/**/*
