@@ -81,7 +81,6 @@ export const defaultConfig: Config = {
   lastUsedProportions: null,
 };
 
-
 const localStore: CrossStorage = {
   get: async <T>(key: string) => (localStorage.getItem(key) as T) ?? undefined,
   set: async (key, value) => localStorage.setItem(key, value as string),
@@ -136,7 +135,7 @@ export function useConfigProvider(initialConfig: Config | null): ConfigContext {
   const [currConfig, set] = useState<Config | null>(
     initialConfig || (defaultConfig as Config)
   );
-  const electron = useElectron()
+  const electron = useElectron();
 
   useDebouncedEffect(
     () => {

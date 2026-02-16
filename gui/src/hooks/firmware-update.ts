@@ -1,5 +1,4 @@
 import { BoardType, DeviceDataT } from 'solarxr-protocol';
-// import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import { cacheWrap } from './cache';
 import semver from 'semver';
 import { normalizedHash } from './crypto';
@@ -24,13 +23,14 @@ const todaysRange = (deployData: [number, Date][]): number => {
 };
 
 const checkUserCanUpdate = async (uuid: string, url: string, fwVersion: string) => {
+  console.log(url);
   const deployDataJson = JSON.parse(
     (await cacheWrap(
       `firmware-${fwVersion}-deploy`,
-      () =>
-        tauriFetch(url)
-          .then((res) => res.text())
-          .catch(() => null),
+      async () =>
+        JSON.stringify(
+          await window.electronAPI.ghGet({ type: 'asset', url }).catch(() => null)
+        ),
       60 * 60 * 1000
     )) || 'null'
   );
@@ -62,13 +62,15 @@ const checkUserCanUpdate = async (uuid: string, url: string, fwVersion: string) 
 export async function fetchCurrentFirmwareRelease(
   uuid: string
 ): Promise<FirmwareRelease | null> {
+  if (!window.electronAPI) return null;
+
   const releases: any[] | null = JSON.parse(
     (await cacheWrap(
       'firmware-releases',
-      () =>
-        fetch('https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases')
-          .then((res) => res.text())
-          .catch(() => null),
+      async () =>
+        JSON.stringify(
+          await window.electronAPI.ghGet({ type: 'fw-releases' }).catch(() => null)
+        ),
       60 * 60 * 1000
     )) || 'null'
   );

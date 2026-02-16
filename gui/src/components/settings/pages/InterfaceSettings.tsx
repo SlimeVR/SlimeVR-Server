@@ -43,7 +43,7 @@ interface InterfaceSettingsForm {
 }
 
 export function InterfaceSettings() {
-  const electron = useElectron()
+  const electron = useElectron();
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();

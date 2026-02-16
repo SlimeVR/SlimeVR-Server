@@ -205,10 +205,7 @@ export function AdvancedSettings() {
                       </div>
                     </div>
                     <div className="flex flex-col nsm:pt-2">
-                      <Button
-                        variant="secondary"
-                        onClick={openLogsFolder}
-                      >
+                      <Button variant="secondary" onClick={openLogsFolder}>
                         {l10n.getString(
                           'settings-utils-advanced-open_logs-label'
                         )}

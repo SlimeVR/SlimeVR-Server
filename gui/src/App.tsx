@@ -1,10 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import {
-  HashRouter as Router,
-  Outlet,
-  Route,
-  Routes,
-} from 'react-router-dom';
+import { HashRouter as Router, Outlet, Route, Routes } from 'react-router-dom';
 import { Home } from './components/home/Home';
 import { MainLayout } from './components/MainLayout';
 import { AppContextProvider } from './components/providers/AppContext';
@@ -55,10 +50,7 @@ import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/Sta
 import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
 import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
 import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist';
-import {
-  ElectronContextC,
-  provideElectron,
-} from './hooks/electron';
+import { ElectronContextC, provideElectron } from './hooks/electron';
 import { AppLocalizationProvider } from './i18n/config';
 import { openUrl } from './hooks/crossplatform';
 

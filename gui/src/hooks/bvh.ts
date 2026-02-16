@@ -6,7 +6,7 @@ import { useConfig } from './config';
 import { useElectron } from './electron';
 
 export function useBHV() {
-  const electron = useElectron()
+  const electron = useElectron();
   const { config } = useConfig();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [state, setState] = useState<'idle' | 'recording' | 'saving'>('idle');
@@ -33,7 +33,7 @@ export function useBHV() {
             },
           ],
           defaultPath: 'bvh-recording.bvh',
-        })
+        });
         record.path = open.filePath;
         setState('idle');
       }

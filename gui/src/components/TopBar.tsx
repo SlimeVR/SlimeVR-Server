@@ -22,7 +22,6 @@ import { GearIcon } from './commons/icon/GearIcon';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { TrayOrExitModal } from './TrayOrExitModal';
-import { useDoubleTap } from 'use-double-tap';
 import { ErrorConsentModal } from './ErrorConsentModal';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
@@ -94,7 +93,6 @@ export function TopBar({
       await closeApp();
     }
   };
-
 
   // useEffect(() => {
   //   if (!electron.isElectron) return;

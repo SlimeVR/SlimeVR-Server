@@ -21,4 +21,3 @@ export function useBreakpoint<K extends BreakpointKey>(breakpointKey: K) {
     [`is${capitalizedKey}`]: bool,
   } as Record<Key, boolean>;
 }
-

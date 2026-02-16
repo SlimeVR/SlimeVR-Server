@@ -9,7 +9,7 @@ const localStore: CrossStorage = {
     localStorage.removeItem(`slimevr-cache/${key}`);
     return true;
   },
-  save: async () => true
+  save: async () => true,
 };
 
 const store: CrossStorage = window.electronAPI

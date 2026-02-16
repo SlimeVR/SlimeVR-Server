@@ -48,12 +48,30 @@ protocol.registerSchemesAsPrivileged([
       standard: true,
       secure: true,
       supportFetchAPI: true,
-      corsEnabled: true
-    }
-  }
+      corsEnabled: true,
+    },
+  },
 ]);
 
 let mainWindow: BrowserWindow | null = null;
+
+handleIpc(IPC_CHANNELS.GH_FETCH, async (e, options) => {
+  console.log(options)
+  if (options.type === 'fw-releases') {
+    return fetch(
+      'https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases'
+    ).then((res) => res.json());
+  }
+  if (options.type === 'asset') {
+    if (
+      !options.url.startsWith(
+        'https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download'
+      )
+    )
+      return null;
+    return fetch(options.url).then((res) => res.json());
+  }
+});
 
 handleIpc(IPC_CHANNELS.OS_STATS, async () => {
   return {
@@ -335,7 +353,7 @@ const checkEnvironmentVariables = () => {
 const findServerJar = () => {
   const paths = [
     options.path,
-		// AppImage passes the fakeroot in `APPDIR` env var.
+    // AppImage passes the fakeroot in `APPDIR` env var.
     process.env['APPDIR']
       ? path.resolve(join(process.env['APPDIR'], 'usr/share/slimevr/'))
       : undefined,
@@ -351,8 +369,7 @@ const findServerJar = () => {
     .find((p) => existsSync(p));
 };
 
-const validJavaPaths = () => {
-}
+const validJavaPaths = () => {};
 
 const findJavaBin = (sharedDir: string) => {
   const javaBin = getPlatform() === 'windows' ? 'java.exe' : 'java';
@@ -360,14 +377,10 @@ const findJavaBin = (sharedDir: string) => {
   if (!existsSync(jre)) {
     return validJavaPaths();
   }
-
-
-
-}
+};
 
 const spawnServer = () => {
-
-  const serverJar = findServerJar()
+  const serverJar = findServerJar();
   if (!serverJar) {
     return false;
   }
@@ -375,7 +388,6 @@ const spawnServer = () => {
   const javaBin = findJavaBin(sharedDir);
 
   logger.info({ serverJar }, 'found server jar');
-
 };
 
 app.whenReady().then(() => {

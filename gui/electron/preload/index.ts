@@ -1,7 +1,6 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { IElectronAPI, ServerStatusEvent } from './interface';
 import { IPC_CHANNELS } from '../shared';
-// import { getGuiDataFolder, getLogsFolder } from 'electron/main/paths';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   onServerStatus: (callback) => {
@@ -34,5 +33,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveDialog: (options) => ipcRenderer.invoke(IPC_CHANNELS.SAVE_DIALOG, options),
   openConfigFolder: async () => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, await ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'config')),
   openLogsFolder: async () => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, await ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'logs')),
-  openFile: (path) => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, path)
+  openFile: (path) => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, path),
+  ghGet: (req) => ipcRenderer.invoke(IPC_CHANNELS.GH_FETCH, req),
 } satisfies IElectronAPI);

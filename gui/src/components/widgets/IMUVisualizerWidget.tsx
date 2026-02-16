@@ -220,7 +220,11 @@ function IMUVisualizerCanvas({
     <canvas
       ref={canvasRef}
       className="container"
-      style={{ width: '100%', height: CANVAS_HEIGHT, background: 'transparent' }}
+      style={{
+        width: '100%',
+        height: CANVAS_HEIGHT,
+        background: 'transparent',
+      }}
     />
   );
 }

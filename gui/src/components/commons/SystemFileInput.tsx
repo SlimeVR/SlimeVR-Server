@@ -36,10 +36,7 @@ export function InnerSytemFileInput({
   };
 
   return (
-    <div
-      ref={ref}
-      onClick={handleClick}
-    >
+    <div ref={ref} onClick={handleClick}>
       {value !== null
         ? FileInputContentFile({
             directory,

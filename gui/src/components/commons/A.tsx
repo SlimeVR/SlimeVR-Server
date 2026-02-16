@@ -13,9 +13,7 @@ export function A({
 }) {
   return (
     <span
-      onClick={() =>
-        href && openUrl(href)
-      }
+      onClick={() => href && openUrl(href)}
       className={classNames(className, 'underline', 'cursor-pointer')}
     >
       {children}

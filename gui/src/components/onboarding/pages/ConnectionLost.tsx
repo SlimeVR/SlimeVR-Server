@@ -13,18 +13,18 @@ function Error({ title, desc }: { title: string; desc: string }) {
   const { saveConfig } = useConfig();
 
   const openLogsFolder = async () => {
-    if (!electron.isElectron) throw 'invalid state - electron should be here'
+    if (!electron.isElectron) throw 'invalid state - electron should be here';
     try {
-      electron.api.openLogsFolder()
+      electron.api.openLogsFolder();
     } catch (err) {
       error('Failed to open logs folder:', err);
     }
   };
 
   const closeApp = async () => {
-    if (!electron.isElectron) throw 'invalid state - electron should be here'
+    if (!electron.isElectron) throw 'invalid state - electron should be here';
     await saveConfig();
-    electron.api.close()
+    electron.api.close();
   };
 
   return (

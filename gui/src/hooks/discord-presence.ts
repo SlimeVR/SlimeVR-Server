@@ -72,5 +72,6 @@ export async function updateDiscordPresence(obj: {
   small_icon?: [string, string];
   button?: { label: string; url: string };
 }): Promise<void> {
+  console.log(obj);
   // return invoke('update_presence', obj);
 }

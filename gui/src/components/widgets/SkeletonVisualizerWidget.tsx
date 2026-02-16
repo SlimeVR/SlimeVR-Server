@@ -6,7 +6,17 @@ import {
   createChildren,
   BasedSkeletonHelper,
 } from '@/utils/skeletonHelper';
-import { Bone, GridHelper, Group, PerspectiveCamera, Quaternion, Scene, Vector2, Vector3, WebGLRenderer } from 'three';
+import {
+  Bone,
+  GridHelper,
+  Group,
+  PerspectiveCamera,
+  Quaternion,
+  Scene,
+  Vector2,
+  Vector3,
+  WebGLRenderer,
+} from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
 import classNames from 'classnames';
@@ -104,12 +114,7 @@ function initializePreview(
     const vec = VEC_Y.multiplyScalar(
       new Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
     );
-    const yawReset = new Quaternion(
-      vec.x,
-      vec.y,
-      vec.z,
-      quat.w
-    ).normalize();
+    const yawReset = new Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
 
     skeletonGroup.rotation.setFromQuaternion(yawReset);
   };

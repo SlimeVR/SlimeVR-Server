@@ -152,6 +152,8 @@
             name = "slimevr-electron";
 
             buildInputs = with pkgs; [
+              jdk17
+              kotlin
               nodejs_22
               pnpm
               pkg-config
