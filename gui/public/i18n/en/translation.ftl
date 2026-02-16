@@ -939,8 +939,8 @@ onboarding-quiz_continue= Continue
 onboarding-quiz-q1-title = Tracker Type
 onboarding-quiz-q1-description = Are you using an official regular slime or a Butterfly tracker
  (If you have third party trackers and are not sure, ask your seller)
-onboarding-quiz-q1-answer-1 = Butterfly
-onboarding-quiz-q1-answer-2 = Regular Slime
+onboarding-quiz-q1-answer-1 = Regular Slime
+onboarding-quiz-q1-answer-2 = Butterfly
 
 onboarding-quiz-q2-title = Use Case
 onboarding-quiz-q2-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, dont worry, you can change the according settings later.
@@ -955,10 +955,10 @@ onboarding-quiz-q3-answer-1 = SteamVR
 onboarding-quiz-q3-answer-2 = Standalone
 
 onboarding-quiz-q4-title = Mocap Head Tracker
-onboarding-quiz-q5-description = If you are using a head tracker such as a Vive tracker or SlimeVR tracker on your forehead, then select forehead, if you are wearing a VR Headset for example then
+onboarding-quiz-q4-description = If you are using a head tracker such as a Vive tracker or SlimeVR tracker on your forehead, then select forehead, if you are wearing a VR Headset for example then
  you should select Face, since the tracking point is on your face.
-onboarding-quiz-q3-answer-1 = Forehead
-onboarding-quiz-q3-answer-2 = Face
+onboarding-quiz-q4-answer-1 = Forehead
+onboarding-quiz-q4-answer-2 = Face
 
 onboarding-quiz-Update-title = Tracker Update
 onboarding-quiz-Update-description = Would you like to update your trackers to make sure they have the most up to date firmware?

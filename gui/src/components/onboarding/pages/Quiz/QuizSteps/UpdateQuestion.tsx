@@ -74,7 +74,7 @@ export function UpdateQuestion() {
                         <div className="flex px-2 p-6">
                             <Localized id="onboarding-quiz_continue">
                                 <Button
-                                to='/onboarding/quiz/Q3'
+                                to='/onboarding/quiz/Q2'
                                 variant="primary"
                                 disabled={disabled}
                                 />
