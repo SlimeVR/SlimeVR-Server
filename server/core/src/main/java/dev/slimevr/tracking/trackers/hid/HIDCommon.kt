@@ -268,9 +268,9 @@ class HIDCommon {
 			}
 			// -1: Not known (e.g. not yet calculated after wake up, reusing known value is okay), 0: N/A (e.g. charging)
 			if (batt != null) {
-				tracker.batteryLevel = if (batt == 128) 1f else (batt and 127).toFloat()
+				tracker.batteryLevel = if (batt == 128) -1f else (batt and 127).toFloat()
 			}
-			// Server still won't display battery at 0% at all
+			// Server displays 0% if received 255 or -1, otherwise 0 will hide battery icon
 			if (batt_v != null) {
 				tracker.batteryVoltage = (batt_v.toFloat() + 245f) / 100f
 			}
