@@ -116,6 +116,10 @@ board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU 手套
 board_type-GESTURES = litten Yº by Gestures
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = 通用 nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -346,6 +350,7 @@ tracker-table-column-name = 名稱
 tracker-table-column-type = 類型
 tracker-table-column-battery = 電量
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = 封包遺失
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = 溫度 ℃
 tracker-table-column-linear-acceleration = 加速度 X/Y/Z
@@ -387,6 +392,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] 已啟用
        *[NOT_SUPPORTED] 不支援
     }
+tracker-infos-packet_loss = 封包遺失
+tracker-infos-packets_lost = 已遺失封包
+tracker-infos-packets_received = 已接收封包
 
 ## Tracker settings
 
@@ -426,6 +434,7 @@ tracker-settings-update = 立即更新
 tracker-settings-update-title = 韌體版本
 tracker-settings-current-version = 目前版本
 tracker-settings-latest-version = 最新版本
+tracker-settings-build-date = 建置日期
 
 ## Tracker part card info
 
@@ -590,6 +599,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     在所有有韌體支援的追蹤器上使用磁力計，在磁場穩定的環境中可以減緩偏移。
     開啟此選項後，可以個別在追蹤器選項內停用磁力計。<b>切換此選項時請勿關閉任何一個追蹤器的電源！</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追蹤器上啟用磁力計
+settings-general-tracker_mechanics-trackers_over_usb = 透過 USB 連接的追蹤器
+settings-general-tracker_mechanics-trackers_over_usb-description = 透過 USB 接收 HID 追蹤器的資料，請確保連接的追蹤器已啟用<b>「透過 HID 連接」</b>的功能。
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = 允許 HID 追蹤器透過 USB 直接連接
 settings-stay_aligned = 持續校正
 settings-stay_aligned-description = 持續校正功能會逐漸調整追蹤器以對齊到設定的放鬆姿態，進而減少追蹤器偏移的影響。
 settings-stay_aligned-setup-label = 設定持續校正
@@ -1374,6 +1386,7 @@ onboarding-stay_aligned-previous_step = 上一步
 onboarding-stay_aligned-next_step = 下一步
 onboarding-stay_aligned-restart = 重新開始
 onboarding-stay_aligned-done = 完成
+onboarding-stay_aligned-manual_mounting-done = 完成
 
 ## Home
 
