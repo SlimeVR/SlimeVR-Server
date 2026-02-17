@@ -944,7 +944,7 @@ onboarding-quiz-slimeset-answer-regular = Regular Slime
 onboarding-quiz-slimeset-answer-butterfly = Butterfly
 
 onboarding-quiz-usage-title = Use Case
-onboarding-quiz-usage-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, dont worry, you can change the according settings later.
+onboarding-quiz-usage-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
 onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
 onboarding-quiz-usage-answer-mocap = Mocap (Motion Capture)
 onboarding-quiz-usage-answer-vtubing = VTubing
