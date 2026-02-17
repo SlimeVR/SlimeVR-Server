@@ -955,9 +955,8 @@ onboarding-quiz-runtime-description = Are you using SlimeVR on SteamVR or on a S
 onboarding-quiz-runtime-answer-steamvr = SteamVR
 onboarding-quiz-runtime-answer-standalone = Standalone
 
-onboarding-quiz-mocap-pos-title = Mocap Head Tracker
-onboarding-quiz-mocap-pos-description = If you are using a head tracker such as a Vive tracker or SlimeVR tracker on your forehead, then select forehead, if you are wearing a VR Headset for example then
- you should select Face, since the tracking point is on your face.
+onboarding-quiz-mocap-pos-title = Head Tracker Position
+onboarding-quiz-mocap-pos-description = Where is the head tracker positioned on your head?
 onboarding-quiz-mocap-pos-answer-forehead = Forehead
 onboarding-quiz-mocap-pos-answer-face = Face
 
