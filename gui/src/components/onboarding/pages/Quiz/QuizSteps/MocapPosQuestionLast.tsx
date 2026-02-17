@@ -17,7 +17,7 @@ import {
 export const LevelContext = createContext(1);
 
 export function QuizMocapPosQuestion() {
-  const { applyProgress, setMocapPos, usage, slimeSet, update, mocapPos } =
+  const { applyProgress, setMocapPos, usage, slimeSet, mocapPos } =
     useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [settings, setSettings] = useState<SettingsResponseT>();

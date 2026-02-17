@@ -10,7 +10,7 @@ export interface WifiFormData {
 
 export function useWifiForm(nextPage?: string) {
   const navigate = useNavigate();
-  const { state, setWifiCredentials, update } = useOnboarding();
+  const { state, setWifiCredentials } = useOnboarding();
   const { register, reset, handleSubmit, formState, control } =
     useForm<WifiFormData>({
       defaultValues: {},

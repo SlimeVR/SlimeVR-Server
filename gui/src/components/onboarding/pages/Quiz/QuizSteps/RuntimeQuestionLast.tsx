@@ -14,8 +14,7 @@ import {
 } from 'solarxr-protocol';
 
 export function QuizRuntimeQuestion() {
-  const { applyProgress, setRuntime, slimeSet, update, runtime } =
-    useOnboarding();
+  const { applyProgress, setRuntime, slimeSet, runtime } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [settings, setSettings] = useState<SettingsResponseT>();
   const [to, setTo] = useState('');
