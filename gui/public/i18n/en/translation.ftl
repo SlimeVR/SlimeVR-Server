@@ -952,8 +952,7 @@ onboarding-quiz-usage-answer-mocap = Mocap (Motion Capture)
 onboarding-quiz-usage-answer-vtubing = VTubing
 
 onboarding-quiz-runtime-title = Runtime
-onboarding-quiz-runtime-description = Are you using SlimeVR on SteamVR or on a Standalone headset such as the meta quest or Pico heaset, if you are using Quest link or Virtual desktop, you should
- select SteamVR
+onboarding-quiz-runtime-description = Do you play VRChat on a PC via SteamVR (including with Virtual Desktop, Steam Link, ALVR, etc.), or on a standalone headset such as a Meta Quest or Pico?
 onboarding-quiz-runtime-answer-steamvr = SteamVR
 onboarding-quiz-runtime-answer-standalone = Standalone
 
