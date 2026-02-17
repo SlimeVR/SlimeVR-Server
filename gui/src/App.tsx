@@ -197,16 +197,25 @@ export default function App() {
 
   useEffect(() => {
     // don't show update stuff when on android
-    if (window.__ANDROID__?.isThere()) {
-      setUpdateFound('');
+    if (window.__ANDROID__?.isThere()) return;
+
+    if (!semver.valid(__VERSION_TAG__)) {
+      log(
+        { version: __VERSION_TAG__ || 'development' },
+        'Non semver version, skipping the server update check'
+      );
       return;
     }
+
     async function fetchReleases() {
       const releases = await fetch(
         `https://api.github.com/repos/${GH_REPO}/releases`
       )
         .then((res) => res.json())
+        .catch(() => null)
         .then((json: any[]) => json.filter((rl) => rl?.prerelease === false));
+
+      if (!releases) return;
 
       if (typeof releases[0].tag_name !== 'string') return;
 
@@ -216,7 +225,7 @@ export default function App() {
         setUpdateFound(releases[0].tag_name);
       }
     }
-    fetchReleases().catch(() => error('failed to fetch releases'));
+    fetchReleases().catch((e) => error(e, 'failed to fetch releases'));
   }, []);
 
   if (electron.isElectron) {

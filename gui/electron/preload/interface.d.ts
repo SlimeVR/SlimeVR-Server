@@ -34,6 +34,8 @@ export type GHReturn = {
     | null;
 };
 
+export type DiscordPresence = { enable: false } | { enable: true, activity: string }
+
 export interface IElectronAPI {
   onServerStatus: (cb: (data: ServerStatusEvent) => void) => () => void;
   openUrl: (url: string) => Promise<void>;
@@ -52,6 +54,7 @@ export interface IElectronAPI {
   log: (type: 'info' | 'error' | 'warn', ...args: unknown[]) => void;
   openFile: (path: string) => void;
   ghGet: <T extends GHGet>(options: T) => Promise<GHReturn[T['type']]>;
+  setPresence: (options: DiscordPresence) => void;
 }
 
 declare global {

@@ -2,6 +2,7 @@ import {
   app,
   BrowserWindow,
   dialog,
+  ipcMain,
   Menu,
   nativeImage,
   net,
@@ -11,14 +12,15 @@ import {
   Tray,
 } from 'electron';
 import { IPC_CHANNELS } from '../shared';
-import path, { dirname, join } from 'node:path';
+import path, { dirname, join } from 'path';
 import open from 'open';
 import trayIcon from '../ressources/icons/icon.png?asset';
 import appleTrayIcon from '../ressources/icons/appleTrayIcon.png?asset';
-import javaVersionFile from '../ressources/java-version/JavaVersion.jar?asset';
 import { readFile, stat } from 'fs/promises';
-import { getPlatform, handleIpc } from './utils';
+import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
+  findServerJar,
+  findSystemJRE,
   getGuiDataFolder,
   getLogsFolder,
   getServerDataFolder,
@@ -26,19 +28,12 @@ import {
 } from './paths';
 import { stores } from './store';
 import { logger } from './logger';
-import { existsSync, writeFileSync } from 'node:fs';
-import { program } from 'commander';
+import { writeFileSync } from 'node:fs';
 
-program
-  .option('-p --path <path>', 'set launch path')
-  .option(
-    '--skip-server-if-running',
-    'gui will not launch the server if it is already running'
-  )
-  .allowUnknownOption();
-
-program.parse(process.argv);
-const options = program.opts();
+import { spawn } from 'node:child_process';
+import { discordPresence } from './presence';
+import { options } from './cli';
+import { ServerStatusEvent } from 'electron/preload/interface';
 
 // Register custom protocol to handle asset paths with leading slashes
 protocol.registerSchemesAsPrivileged([
@@ -56,7 +51,6 @@ protocol.registerSchemesAsPrivileged([
 let mainWindow: BrowserWindow | null = null;
 
 handleIpc(IPC_CHANNELS.GH_FETCH, async (e, options) => {
-  console.log(options)
   if (options.type === 'fw-releases') {
     return fetch(
       'https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases'
@@ -145,6 +139,15 @@ handleIpc(IPC_CHANNELS.STORAGE, async (e, { type, method, key, value }) => {
   }
 });
 
+handleIpc(IPC_CHANNELS.DISCORD_PRESENCE, async (e, options) => {
+  if (options.enable && !discordPresence.state.ready) {
+    await discordPresence.connect();
+    discordPresence.updateActivity(options.activity);
+  } else if (!options.enable && discordPresence.state.ready) {
+    discordPresence.destroy();
+  }
+});
+
 handleIpc(IPC_CHANNELS.OPEN_FILE, (e, folder) => {
   const requestedPath = path.resolve(folder);
 
@@ -152,7 +155,7 @@ handleIpc(IPC_CHANNELS.OPEN_FILE, (e, folder) => {
     (parent) => {
       const absoluteParent = path.resolve(parent);
       const relative = path.relative(absoluteParent, requestedPath);
-      return !relative.startsWith('..') && !path.isAbsolute(relative);
+      return !relative.includes('..') && !path.isAbsolute(relative);
     }
   );
 
@@ -316,26 +319,6 @@ function createWindow() {
   mainWindow.on('maximize', updateWindowState);
 }
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
-
-app.on('before-quit', () => {
-  logger.info('App quitting, saving...');
-  stores.settings.save();
-  stores.cache.save();
-
-  writeFileSync(getWindowStateFile(), JSON.stringify(windowState));
-});
-
 const checkEnvironmentVariables = () => {
   const to_check = ['_JAVA_OPTIONS', 'JAVA_TOOL_OPTIONS'];
 
@@ -350,49 +333,58 @@ const checkEnvironmentVariables = () => {
   }
 };
 
-const findServerJar = () => {
-  const paths = [
-    options.path,
-    // AppImage passes the fakeroot in `APPDIR` env var.
-    process.env['APPDIR']
-      ? path.resolve(join(process.env['APPDIR'], 'usr/share/slimevr/'))
-      : undefined,
-    path.resolve(__dirname),
+const isServerRunning = async () => !await isPortAvailable(21110)
 
-    // For flatpack container
-    path.resolve('/app/share/slimevr/'),
-    path.resolve('/usr/share/slimevr/'),
-  ];
-  return paths
-    .filter((p) => !!p)
-    .map((p) => join(p, 'slimevr.jar'))
-    .find((p) => existsSync(p));
-};
-
-const validJavaPaths = () => {};
-
-const findJavaBin = (sharedDir: string) => {
-  const javaBin = getPlatform() === 'windows' ? 'java.exe' : 'java';
-  const jre = join(sharedDir, 'jre/bin', javaBin);
-  if (!existsSync(jre)) {
-    return validJavaPaths();
+const spawnServer = async () => {
+  if (options.skipServerIfRunning && await isServerRunning()) {
+    logger.info({ skipServerIfRunning: options.skipServerIfRunning }, 'Server alredy running, skipping');
+    return;
   }
-};
 
-const spawnServer = () => {
+
   const serverJar = findServerJar();
   if (!serverJar) {
-    return false;
+    logger.info('server jar not found, skipping');
+    return;
   }
   const sharedDir = dirname(serverJar);
-  const javaBin = findJavaBin(sharedDir);
+  const javaBin = await findSystemJRE(sharedDir);
+  if (!javaBin) {
+    dialog.showErrorBox(
+      'SlimeVR',
+      `Couldn't find a compatible Java version, please download Java 17 or higher`
+    );
+    app.exit(0);
+    return;
+  }
 
   logger.info({ serverJar }, 'found server jar');
+
+  const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run']);
+
+  process.stdout?.on('data', (message) => {
+    mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
+      message: message.toString(),
+      type: 'stdout'
+    } satisfies ServerStatusEvent)
+  });
+
+  process.stderr?.on('data', (message) => {
+    mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
+      message: message.toString(),
+      type: 'stderr'
+    } satisfies ServerStatusEvent)
+  });
+
+  return {
+    process: process,
+    close: () => {
+      process.kill('SIGTERM');
+    },
+  };
 };
 
-app.whenReady().then(() => {
-  console.log(javaVersionFile);
-
+app.whenReady().then(async () => {
   // Register protocol handler for app:// scheme to handle assets with leading slashes
   protocol.handle('app', (request) => {
     const url = request.url.slice('app://'.length);
@@ -401,10 +393,31 @@ app.whenReady().then(() => {
   });
 
   checkEnvironmentVariables();
-
-  spawnServer();
+  console.log()
+  const server = await spawnServer();
 
   createWindow();
 
   logger.info('SlimeVR started!');
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+
+  process.on('exit', () => {
+    server?.close();
+  })
+
+  app.on('before-quit', () => {
+    logger.info('App quitting, saving...');
+    server?.close();
+    stores.settings.save();
+    stores.cache.save();
+
+    discordPresence.destroy();
+
+    writeFileSync(getWindowStateFile(), JSON.stringify(windowState));
+  });
 });

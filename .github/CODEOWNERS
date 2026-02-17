@@ -1,0 +1,38 @@
+# Global code owner
+* @Eirenliel
+
+# Make everyone be able to approve SolarXR submodule changes
+/solarxr-protocol @ButterscotchV @Erimelowo @loucass003
+
+# Make Loucass the owner of all GUI stuff
+/gui/ @loucass003
+/pnpm-lock.yaml @loucass003
+/pnpm-workspace.yaml @loucass003
+
+# loucass003 and Erimel responsible for i18n
+/gui/public/i18n/ @loucass003 @Erimelowo @ImSapphire
+/gui/src/i18n/ @loucass003 @Erimelowo
+/l10n.toml @loucass003 @Erimelowo
+
+/gui/src/components/settings/ @Erimelowo @loucass003
+
+# Rust part of the GUI
+/gui/src-tauri/ @loucass003
+/Cargo.lock @loucass003
+
+# Some server code~
+/server/ @ButterscotchV @Eirenliel @Erimelowo
+
+/server/src/main/java/dev/slimevr/autobone/ @ButterscotchV
+/server/src/main/java/dev/slimevr/poserecorder/ @ButterscotchV
+/server/src/main/java/dev/slimevr/posestreamer/ @ButterscotchV
+
+/server/src/main/java/dev/slimevr/osc/ @Erimelowo
+/server/src/main/java/dev/slimevr/tracking/processor/ @Erimelowo
+/server/src/main/java/dev/slimevr/filtering/ @Erimelowo
+
+# Linux files
+*.nix @loucass003
+/flake.lock @loucass003
+/dev.slimevr.SlimeVR.metainfo.xml @loucass003
+/.envrc @loucass003

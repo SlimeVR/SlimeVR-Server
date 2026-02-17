@@ -2,6 +2,7 @@ import os from 'os'
 import { OSStats } from "../preload/interface";
 import { ipcMain, IpcMainInvokeEvent } from 'electron';
 import { IpcInvokeMap } from '../shared';
+import net from 'net'
 
 export const getPlatform = (): OSStats['type'] => {
   switch (os.platform()) {
@@ -16,6 +17,24 @@ export const getPlatform = (): OSStats['type'] => {
   }
 };
 
+export const isPortAvailable = (port: number) => {
+  return new Promise((resolve) => {
+        const s = net.createServer();
+        s.once('error', (err) => {
+            s.close();
+            if ("code" in err && err["code"] == "EADDRINUSE") {
+                resolve(false);
+            } else {
+                resolve(false);
+            }
+        });
+        s.once('listening', () => {
+            resolve(true);
+            s.close();
+        });
+        s.listen(port);
+    });
+};
 
 export function handleIpc<K extends keyof IpcInvokeMap>(
   channel: K,

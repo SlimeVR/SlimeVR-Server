@@ -16,7 +16,6 @@ export class CustomStore {
     this.load();
   }
 
-  /** Load data from disk into memory */
   private load() {
     try {
       if (existsSync(this.filePath)) {

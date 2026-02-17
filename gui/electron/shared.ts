@@ -4,7 +4,7 @@ import {
   SaveDialogOptions,
   SaveDialogReturnValue,
 } from 'electron';
-import { GHGet, GHReturn, OSStats, ServerStatusEvent } from './preload/interface';
+import { DiscordPresence, GHGet, GHReturn, OSStats, ServerStatusEvent } from './preload/interface';
 
 export const IPC_CHANNELS = {
   SERVER_STATUS: 'server-status',
@@ -19,6 +19,7 @@ export const IPC_CHANNELS = {
   OPEN_FILE: 'open-file',
   GET_FOLDER: 'get-folder',
   GH_FETCH: 'gh-fetch',
+  DISCORD_PRESENCE: 'discord-presence'
 } as const;
 
 export interface IpcInvokeMap {
@@ -44,6 +45,7 @@ export interface IpcInvokeMap {
   [IPC_CHANNELS.GH_FETCH]: <T extends GHGet>(
     options: T
   ) => Promise<GHReturn[T['type']]>;
+  [IPC_CHANNELS.DISCORD_PRESENCE]: (options: DiscordPresence) => void;
 }
 
 /**

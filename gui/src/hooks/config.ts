@@ -103,15 +103,6 @@ function fallbackToDefaults(loadedConfig: any): Config {
 // allows to load everything before the first render
 export const loadConfig = async () => {
   try {
-    const migrated = await store.get<string>('configMigratedToTauri');
-    if (!migrated) {
-      const oldConfig = localStorage.getItem('config.json');
-
-      if (oldConfig) await store.set('config.json', oldConfig);
-
-      store.set('configMigratedToTauri', 'true');
-    }
-
     const json = await store.get<string>('config.json');
 
     if (!json) throw new Error('Config has ceased existing for some reason');
