@@ -485,7 +485,18 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 			is UDPPacket12BatteryLevel -> connection?.trackers?.values?.forEach {
 				it.batteryVoltage = packet.voltage
-				it.batteryLevel = packet.level * 100
+				// Firmware does not verify the voltage level at all
+				// Instead guess if a battery is present or not
+				// Too low or high voltage should mean there is no battery or there is a measurement error
+				// Some ESP can run at 2.3V, set a limit at 2V
+				// Below this the tracker is definitely dead if everything is working properly
+				if (it.batteryVoltage > 2f && it.batteryVoltage < 6f) {
+					// Assuming floor when converting to int
+					it.batteryLevel = if (packet.level < 0.01f) -1f else packet.level * 100
+				} else {
+					it.batteryLevel = 0f
+				}
+				// Server displays 0% if received 255 or -1, otherwise 0 will hide battery icon
 			}
 
 			is UDPPacket13Tap -> {
