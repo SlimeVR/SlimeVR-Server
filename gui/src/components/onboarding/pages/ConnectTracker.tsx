@@ -104,7 +104,7 @@ export function ConnectTrackersPage() {
   const { visibleSteps } = useTrackingChecklist();
 
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
-  const { applyProgress, state } = useOnboarding();
+  const { applyProgress, state, update } = useOnboarding();
   const navigate = useNavigate();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [provisioningStatus, setProvisioningStatus] =
@@ -320,7 +320,13 @@ export function ConnectTrackersPage() {
             </Button>
             <Button
               variant="primary"
-              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
+              to={
+                state.alonePage
+                  ? '/'
+                  : update === true
+                    ? '/onboarding/firmware-tool'
+                    : '/onboarding/trackers-assign'
+              }
               className="ml-auto"
             >
               {l10n.getString('onboarding-connect_tracker-next')}

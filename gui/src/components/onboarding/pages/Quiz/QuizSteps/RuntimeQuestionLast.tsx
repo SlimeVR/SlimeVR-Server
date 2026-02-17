@@ -35,11 +35,7 @@ export function QuizRuntimeQuestion() {
     if (slimeSet === 'butterfly') {
       setTo('/onboarding/dongle');
     } else {
-      if (update === true) {
-        setTo('/onboarding/firmware-tool');
-      } else {
-        setTo('/onboarding/wifi-creds');
-      }
+      setTo('/onboarding/wifi-creds');
     }
   };
 

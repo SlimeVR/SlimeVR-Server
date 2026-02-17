@@ -24,7 +24,7 @@ export interface OnboardingContext {
   state: OnboardingState;
   slimeSet: 'butterfly' | 'regular-slime' | undefined;
   usage: 'vrchat' | 'mocap' | 'vtubing' | undefined;
-  update: true | false;
+  update: true | false | undefined;
   runtime: 'steamvr' | 'standalone' | undefined;
   mocapPos: 'forehead' | 'face' | undefined;
   applyProgress: (value: number) => void;
@@ -36,7 +36,7 @@ export interface OnboardingContext {
   setUsage: React.Dispatch<
     React.SetStateAction<'vrchat' | 'mocap' | 'vtubing' | undefined>
   >;
-  setUpdate: React.Dispatch<React.SetStateAction<true | false>>;
+  setUpdate: React.Dispatch<React.SetStateAction<true | false | undefined>>;
   setRuntime: React.Dispatch<
     React.SetStateAction<'steamvr' | 'standalone' | undefined>
   >;
@@ -73,7 +73,7 @@ export function useProvideOnboarding(): OnboardingContext {
   const [usage, setUsage] = useState<'vrchat' | 'mocap' | 'vtubing' | undefined>(
     undefined
   );
-  const [update, setUpdate] = useState(true || false);
+  const [update, setUpdate] = useState<true | false | undefined>(undefined);
   const [runtime, setRuntime] = useState<'steamvr' | 'standalone' | undefined>(
     undefined
   );

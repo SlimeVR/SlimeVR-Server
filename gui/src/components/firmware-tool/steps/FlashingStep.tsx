@@ -220,7 +220,7 @@ export function FlashingStep({
                   variant="primary"
                   onClick={() => {
                     clear();
-                    nav('/onboarding/wifi-creds');
+                    nav('/onboarding/trackers-assign');
                   }}
                 />
               </Localized>
