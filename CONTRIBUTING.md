@@ -81,7 +81,7 @@ Import the formatting settings defined in `spotless.xml`, like this:
 Eclipse will only do a subset of the checks in `spotless`, so you may still want to do
 `./gradlew spotlessApply` if you ever see an error from spotless.
 
-### Tauri (gui)
+### Electron (gui)
 
 We use ESLint and Prettier to format GUI code.
 - First, go into the GUI's directory with your terminal by running `cd gui`.

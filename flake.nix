@@ -41,7 +41,7 @@
             gtk3
             libdrm
             libgbm
-            libglvnd  # Provides libEGL.so.1, libGL.so.1, etc.
+            libglvnd
             libnotify
             libxkbcommon
             mesa
