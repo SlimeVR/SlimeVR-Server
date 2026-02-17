@@ -16,6 +16,7 @@ class Windows {
 	}
 
 	fun usbDrivers() {
+		mainProgressBar.string = "Updating usb drivers"
 		val installedDriversList =
 			executeShellCommand("powershell.exe", "pnputil /enum-drivers")
 		val ch341ser = installedDriversList.contains("ch341ser.inf")
@@ -30,6 +31,7 @@ class Windows {
 		println("Cannot find one of the drivers, installing drivers")
 		val driverinstallOutput = executeShellCommand("$path\\installusbdrivers.bat")
 		println(driverinstallOutput)
+		mainProgressBar.value = (100 / 3)
 	}
 
 	fun slimeServer() {
@@ -40,14 +42,17 @@ class Windows {
 	}
 
 	fun feeder() {
+		mainProgressBar.string = "Updating feeder"
 		println("Downloading feeder")
 		downloadFile(WINDOWSFEEDERURL, WINDOWSFEEDERNAME)
 		println("Unzipping feeder")
 		unzip(WINDOWSFEEDERNAME, WINDOWSFEEDERDIRECTORY)
 		executeShellCommand("${path}\\${WINDOWSFEEDERDIRECTORY}\\SlimeVR-Feeder-App.exe",  "--install")
+		mainProgressBar.value = (100 / 3 * 3)
 	}
 
 	fun steamVRDriver() {
+		mainProgressBar.string = "Updating SteamVR Driver"
 		val steamVRLocation = executeShellCommand("powershell.exe", "-Command", "(Get-ItemProperty \'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820\').InstallLocation").trim()
 		if (!steamVRLocation.contains("SteamVR")) {
 			println("SteamVR not installed, cannot install SlimeVR Steam driver.")
@@ -76,6 +81,7 @@ class Windows {
 				).toAbsolutePath()
 			}\\${WINDOWSSTEAMVRDRIVERDIRECTORY}\\slimevr",
 		)
+		mainProgressBar.value = (100 / 3 * 2)
 	}
 
 	fun updateWindowsGui() {

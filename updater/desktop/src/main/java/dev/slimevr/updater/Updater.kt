@@ -20,7 +20,6 @@ class Updater {
 		//}
 
 		if (os.contains("linux")) {
-			println("Running linux updater")
 			val linuxUpdater = Linux()
 			val linuxFlavour = executeShellCommand("uname", "-n")
 
