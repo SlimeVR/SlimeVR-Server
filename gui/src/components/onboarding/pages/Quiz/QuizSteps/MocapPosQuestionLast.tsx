@@ -76,14 +76,14 @@ export function QuizMocapPosQuestion() {
         <div className="flex gap-2 items-center">
           <Typography
             variant="main-title"
-            id="onboarding-quiz-mocapPos-title"
+            id="onboarding-quiz-mocap-pos-title"
           />
         </div>
         <div className="">
           <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
             <Typography
               whitespace="whitespace-pre-wrap"
-              id="onboarding-quiz-mocapPos-description"
+              id="onboarding-quiz-mocap-pos-description"
             />
           </div>
           <div className="flex gap-2 px-2 p-6">
@@ -101,7 +101,7 @@ export function QuizMocapPosQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-mocapPos-answer-forehead" />
+                  <Typography id="onboarding-quiz-mocap-pos-answer-forehead" />
                 </div>
               </div>
             </div>
@@ -119,7 +119,7 @@ export function QuizMocapPosQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-mocapPos-answer-face" />
+                  <Typography id="onboarding-quiz-mocap-pos-answer-face" />
                 </div>
               </div>
             </div>

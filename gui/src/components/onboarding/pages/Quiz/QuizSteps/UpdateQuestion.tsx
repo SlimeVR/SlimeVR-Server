@@ -15,13 +15,13 @@ export function UpdateQuestion() {
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-center">
-          <Typography variant="main-title" id="onboarding-quiz-Update-title" />
+          <Typography variant="main-title" id="onboarding-quiz-update-title" />
         </div>
         <div className="">
           <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
             <Typography
               whitespace="whitespace-pre-wrap"
-              id="onboarding-quiz-Update-description"
+              id="onboarding-quiz-update-description"
             />
           </div>
           <div className="flex gap-2 px-2 p-6">
@@ -38,7 +38,7 @@ export function UpdateQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-Update-answer-yes" />
+                  <Typography id="onboarding-quiz-update-answer-yes" />
                 </div>
               </div>
             </div>
@@ -55,7 +55,7 @@ export function UpdateQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-Update-answer-no" />
+                  <Typography id="onboarding-quiz-update-answer-no" />
                 </div>
               </div>
             </div>

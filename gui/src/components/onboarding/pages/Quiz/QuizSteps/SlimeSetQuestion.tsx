@@ -18,14 +18,14 @@ export function QuizSlimeSetQuestion() {
         <div className="flex gap-2 items-center">
           <Typography
             variant="main-title"
-            id="onboarding-quiz-slimeSet-title"
+            id="onboarding-quiz-slimeset-title"
           />
         </div>
         <div className="">
           <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
             <Typography
               whitespace="whitespace-pre-wrap"
-              id="onboarding-quiz-slimeSet-description"
+              id="onboarding-quiz-slimeset-description"
             />
           </div>
           <div className="flex gap-2 px-2 p-6">
@@ -43,7 +43,7 @@ export function QuizSlimeSetQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-slimeSet-answer-Regular" />
+                  <Typography id="onboarding-quiz-slimeset-answer-regular" />
                 </div>
               </div>
             </div>
@@ -61,7 +61,7 @@ export function QuizSlimeSetQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-slimeSet-answer-Butterfly" />
+                  <Typography id="onboarding-quiz-slimeset-answer-butterfly" />
                 </div>
               </div>
             </div>
