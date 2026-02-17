@@ -1,4 +1,4 @@
-import { Localized, useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
@@ -7,39 +7,39 @@ import { USBIcon } from '@/components/commons/icon/UsbIcon';
 import { WarningBox } from '@/components/commons/TipBox';
 
 export function DonglePage() {
-    const { applyProgress, state } = useOnboarding();
+  const { applyProgress, state } = useOnboarding();
 
-    applyProgress(0.2);
+  applyProgress(0.2);
 
-    return (
-        <div className="flex flex-col w-full h-full xs:justify-center items-center">
-            <div className="flex flex-col gap-2">
-            <div className="flex gap-2 items-center">
-                <div className="bg-accent-background-30 rounded-full p-2 fill-background-10">
-                <USBIcon size={24} />
-                </div>
-                <Typography
-                variant="main-title"
-                id="onboarding-wifi_creds-dongle-title"
-                />
-            </div>
-            <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
-                <Typography
-                whitespace="whitespace-pre-wrap"
-                id="onboarding-wifi_creds-dongle-description"
-                />
-                <Localized id="onboarding-wifi_creds-dongle-wip">
-                <WarningBox whitespace>WARNING</WarningBox>
-                </Localized>
-            </div>
-            <div className="flex px-2 p-6">
-                <Button
-                variant="primary"
-                to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
-                id="onboarding-wifi_creds-dongle-continue"
-                />
-            </div>
-            </div>
+  return (
+    <div className="flex flex-col w-full h-full xs:justify-center items-center">
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-2 items-center">
+          <div className="bg-accent-background-30 rounded-full p-2 fill-background-10">
+            <USBIcon size={24} />
+          </div>
+          <Typography
+            variant="main-title"
+            id="onboarding-wifi_creds-dongle-title"
+          />
         </div>
-    )
+        <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
+          <Typography
+            whitespace="whitespace-pre-wrap"
+            id="onboarding-wifi_creds-dongle-description"
+          />
+          <Localized id="onboarding-wifi_creds-dongle-wip">
+            <WarningBox whitespace>WARNING</WarningBox>
+          </Localized>
+        </div>
+        <div className="flex px-2 p-6">
+          <Button
+            variant="primary"
+            to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
+            id="onboarding-wifi_creds-dongle-continue"
+          />
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -1,4 +1,11 @@
-import { createContext, Reducer, useContext, useLayoutEffect, useReducer } from 'react';
+import {
+  createContext,
+  Reducer,
+  useContext,
+  useLayoutEffect,
+  useReducer,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import { useConfig } from './config';
 
@@ -15,9 +22,19 @@ interface OnboardingState {
 
 export interface OnboardingContext {
   state: OnboardingState;
+  slimeSet: string;
+  usage: string;
+  update: string;
+  runtime: string;
+  mocapPos: string;
   applyProgress: (value: number) => void;
   setWifiCredentials: (ssid: string, password?: string) => void;
   skipSetup: () => void;
+  setSlimeSet: React.Dispatch<React.SetStateAction<string>>;
+  setUsage: React.Dispatch<React.SetStateAction<string>>;
+  setUpdate: React.Dispatch<React.SetStateAction<string>>;
+  setRuntime: React.Dispatch<React.SetStateAction<string>>;
+  setMocapPos: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function reducer(state: OnboardingState, action: OnboardingAction) {
@@ -44,6 +61,11 @@ export function reducer(state: OnboardingState, action: OnboardingAction) {
 
 export function useProvideOnboarding(): OnboardingContext {
   const { setConfig } = useConfig();
+  const [slimeSet, setSlimeSet] = useState('');
+  const [usage, setUsage] = useState('');
+  const [update, setUpdate] = useState('');
+  const [runtime, setRuntime] = useState('');
+  const [mocapPos, setMocapPos] = useState('');
   const [state, dispatch] = useReducer<Reducer<OnboardingState, OnboardingAction>>(
     reducer,
     {
@@ -63,6 +85,11 @@ export function useProvideOnboarding(): OnboardingContext {
 
   return {
     state,
+    slimeSet,
+    usage,
+    update,
+    runtime,
+    mocapPos,
     applyProgress: (value: number) => {
       useLayoutEffect(() => {
         dispatch({ type: 'progress', value });
@@ -74,6 +101,11 @@ export function useProvideOnboarding(): OnboardingContext {
     skipSetup: () => {
       setConfig({ doneOnboarding: true });
     },
+    setSlimeSet,
+    setUsage,
+    setUpdate,
+    setRuntime,
+    setMocapPos,
   };
 }
 

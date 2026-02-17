@@ -5,57 +5,59 @@ import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
 import { Localized } from '@fluent/react';
 
-export function UpdateQuestion() {
-  const { applyProgress, setUpdate, update } = useOnboarding();
+export function QuizSlimeSetQuestion() {
+  const { applyProgress, setSlimeSet, slimeSet } = useOnboarding();
+  const [to, setTo] = useState('');
   const [disabled, setDisabled] = useState(true);
-
   applyProgress(0.2);
 
   return (
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-center">
-          <Typography variant="main-title" id="onboarding-quiz-Update-title" />
+          <Typography variant="main-title" id="onboarding-quiz-q1-title" />
         </div>
         <div className="">
           <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
             <Typography
               whitespace="whitespace-pre-wrap"
-              id="onboarding-quiz-Update-description"
+              id="onboarding-quiz-q1-description"
             />
           </div>
           <div className="flex gap-2 px-2 p-6">
             <div
               onClick={() => {
-                setUpdate('Yes');
+                setSlimeSet('regular-slime');
+                setTo('/onboarding/quiz/Update?');
                 setDisabled(false);
               }}
               className={classNames(
                 'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                update === 'Yes' &&
+                slimeSet === 'regular-slime' &&
                   'outline outline-3 outline-accent-background-40'
               )}
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-Update-answer-1" />
+                  <Typography id="onboarding-quiz-q1-answer-1" />
                 </div>
               </div>
             </div>
             <div
               onClick={() => {
-                setUpdate('No');
+                setSlimeSet('butterfly');
+                setTo('/onboarding/quiz/Q2');
                 setDisabled(false);
               }}
               className={classNames(
                 'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                update === 'No' &&
+                slimeSet === 'butterfly' &&
                   'outline outline-3 outline-accent-background-40'
               )}
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-Update-answer-2" />
+                  <Typography id="onboarding-quiz-q1-answer-2" />
                 </div>
               </div>
             </div>
@@ -64,7 +66,8 @@ export function UpdateQuestion() {
         <div className="flex px-2 p-6">
           <Localized id="onboarding-quiz_continue">
             <Button
-              to="/onboarding/quiz/Q2"
+              to={to}
+              children="Continue"
               variant="primary"
               disabled={disabled}
             />
