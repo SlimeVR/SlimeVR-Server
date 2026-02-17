@@ -2,8 +2,8 @@ import { app } from 'electron';
 import path, { join } from 'node:path';
 import { getPlatform } from './utils';
 import { glob } from 'glob';
-import { exec } from 'node:child_process';
-import javaVersionJar from '../ressources/java-version/JavaVersion.jar?asset';
+import { exec, spawn } from 'node:child_process';
+import javaVersionJar from '../ressources/java-version/JavaVersion.jar?asset&asarUnpack';
 import { existsSync } from 'node:fs';
 import { options } from './cli'
 
@@ -68,11 +68,14 @@ export const findSystemJRE = async (sharedDir: string) => {
     javaHomeBin(),
     ...(await glob('/usr/lib/jvm/*/bin/' + javaBin)),
     ...(await glob('/Library/Java/JavaVirtualMachines/*/Contents/Home/bin/' + javaBin)),
-  ].filter((p) => !!p);
-
+  ]
+  console.log(paths);
   for (const path of paths) {
+    if (!path) continue;
+
     const version = await new Promise<number | null>((resolve) => {
-      const process = exec(`${path} -jar ${javaVersionJar}`);
+      console.log(`${path} -jar ${javaVersionJar}`)
+      const process = spawn(path, ['-jar', javaVersionJar]);
 
       let version: number | null = null;
 

@@ -4,6 +4,8 @@ directories:
   output: dist/artifacts
 
 asar: true
+asarUnpack:
+  - out/main/chunks/*.jar
 
 electronLanguages:
   - en-US
@@ -30,8 +32,8 @@ linux:
   category: Game
   target:
     - target: AppImage
-    - target: deb
-    - target: rpm
+    # - target: deb
+    # - target: rpm
 
 deb:
   depends:

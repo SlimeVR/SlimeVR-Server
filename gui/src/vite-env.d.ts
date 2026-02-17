@@ -19,3 +19,9 @@ declare module '*?asset' {
   const content: string;
   export default content;
 }
+
+
+declare module '*?asset&asarUnpack' {
+  const content: string;
+  export default content;
+}
