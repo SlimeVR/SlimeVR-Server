@@ -42,7 +42,7 @@ suspend fun main(args: Array<String>) {
 	frame.add(subProgressPanel)
 	frame.setSize(250, 300)
 	frame.layout = null
-	frame.isVisible = true
+
 
 
 	val updater = Updater()

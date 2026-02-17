@@ -27,7 +27,7 @@ class Linux {
 		subProgressBar.value = 0
 		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
-		if (isDriverRegistered) {
+		if (!isDriverRegistered) {
 			subProgressBar.string = "Downloading SteamVR Driver"
 			subProgressBar.value = 25
 			downloadFile(LINUXSTEAMVRDRIVERURL, LINUXSTEAMVRDRIVERNAME)

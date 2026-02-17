@@ -21,6 +21,7 @@ import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
   findServerJar,
   findSystemJRE,
+  findUpdaterJar,
   getGuiDataFolder,
   getLogsFolder,
   getServerDataFolder,
@@ -345,6 +346,12 @@ const spawnServer = async () => {
   }
 
 
+  const updaterJar = findUpdaterJar();
+  if (!updaterJar) {
+    logger.info('updater jar not found, skippin');
+    return;
+  }
+  
   const serverJar = findServerJar();
   if (!serverJar) {
     logger.info('server jar not found, skipping');
@@ -361,7 +368,24 @@ const spawnServer = async () => {
     return;
   }
 
+  logger.info({ updaterJar }, 'found updater jar');
   logger.info({ serverJar }, 'found server jar');
+
+  const updater = spawn(javaBin, ['-Xmx128M', '-jar', updaterJar, 'run']);
+
+    updater.stdout?.on('data', (message) => {
+    mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
+      message: message.toString(),
+      type: 'stdout'
+    } satisfies ServerStatusEvent)
+  });
+
+  updater.stderr?.on('data', (message) => {
+    mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
+      message: message.toString(),
+      type: 'stderr'
+    } satisfies ServerStatusEvent)
+  });
 
   const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run']);
 

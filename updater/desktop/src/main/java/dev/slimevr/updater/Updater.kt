@@ -16,8 +16,11 @@ class Updater {
 		println("Should update $shouldUpdate")
 
 		//if (!shouldUpdate) {
+		//		println("Updater didn't find any new version")
 		//	return
 		//}
+
+		frame.isVisible = true
 
 		if (os.contains("linux")) {
 			val linuxUpdater = Linux()
