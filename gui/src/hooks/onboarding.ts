@@ -30,17 +30,11 @@ export interface OnboardingContext {
   applyProgress: (value: number) => void;
   setWifiCredentials: (ssid: string, password?: string) => void;
   skipSetup: () => void;
-  setSlimeSet: React.Dispatch<
-    React.SetStateAction<'butterfly' | 'regular-slime' | undefined>
-  >;
-  setUsage: React.Dispatch<
-    React.SetStateAction<'vrchat' | 'mocap' | 'vtubing' | undefined>
-  >;
-  setUpdate: React.Dispatch<React.SetStateAction<true | false | undefined>>;
-  setRuntime: React.Dispatch<
-    React.SetStateAction<'steamvr' | 'standalone' | undefined>
-  >;
-  setMocapPos: React.Dispatch<React.SetStateAction<'forehead' | 'face' | undefined>>;
+  setSlimeSet: React.Dispatch<React.SetStateAction<OnboardingContext['slimeSet']>>;
+  setUsage: React.Dispatch<React.SetStateAction<OnboardingContext['usage']>>;
+  setUpdate: React.Dispatch<React.SetStateAction<OnboardingContext['update']>>;
+  setRuntime: React.Dispatch<React.SetStateAction<OnboardingContext['runtime']>>;
+  setMocapPos: React.Dispatch<React.SetStateAction<OnboardingContext['mocapPos']>>;
 }
 
 export function reducer(state: OnboardingState, action: OnboardingAction) {
@@ -67,17 +61,11 @@ export function reducer(state: OnboardingState, action: OnboardingAction) {
 
 export function useProvideOnboarding(): OnboardingContext {
   const { setConfig } = useConfig();
-  const [slimeSet, setSlimeSet] = useState<'butterfly' | 'regular-slime' | undefined>(
-    undefined
-  );
-  const [usage, setUsage] = useState<'vrchat' | 'mocap' | 'vtubing' | undefined>(
-    undefined
-  );
-  const [update, setUpdate] = useState<true | false | undefined>(undefined);
-  const [runtime, setRuntime] = useState<'steamvr' | 'standalone' | undefined>(
-    undefined
-  );
-  const [mocapPos, setMocapPos] = useState<'forehead' | 'face' | undefined>(undefined);
+  const [slimeSet, setSlimeSet] = useState<OnboardingContext['slimeSet']>(undefined);
+  const [usage, setUsage] = useState<OnboardingContext['usage']>(undefined);
+  const [update, setUpdate] = useState<OnboardingContext['update']>(undefined);
+  const [runtime, setRuntime] = useState<OnboardingContext['runtime']>(undefined);
+  const [mocapPos, setMocapPos] = useState<OnboardingContext['mocapPos']>(undefined);
   const [state, dispatch] = useReducer<Reducer<OnboardingState, OnboardingAction>>(
     reducer,
     {
