@@ -65,6 +65,42 @@ export function QuizSlimeSetQuestion() {
                 </div>
               </div>
             </div>
+            <div
+              onClick={() => {
+                setSlimeSet('wifi-slime');
+                setTo('/onboarding/quiz/Update?');
+                setDisabled(false);
+              }}
+              className={classNames(
+                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
+                slimeSet === 'wifi-slime' &&
+                  'outline outline-3 outline-accent-background-40'
+              )}
+            >
+              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
+                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
+                  <Typography id="onboarding-quiz-slimeset-answer-wifi" />
+                </div>
+              </div>
+            </div>
+            <div
+              onClick={() => {
+                setSlimeSet('dongle-slime');
+                setTo('/onboarding/quiz/usage');
+                setDisabled(false);
+              }}
+              className={classNames(
+                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
+                slimeSet === 'dongle-slime' &&
+                  'outline outline-3 outline-accent-background-40'
+              )}
+            >
+              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
+                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
+                  <Typography id="onboarding-quiz-slimeset-answer-dongle" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex px-2 p-6">

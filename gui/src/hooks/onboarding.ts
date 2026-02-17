@@ -22,7 +22,7 @@ interface OnboardingState {
 
 export interface OnboardingContext {
   state: OnboardingState;
-  slimeSet: 'butterfly' | 'regular-slime' | undefined;
+  slimeSet: 'butterfly' | 'regular-slime' | 'dongle-slime' | 'wifi-slime' | undefined;
   usage: 'vrchat' | 'mocap' | 'vtubing' | undefined;
   update: true | false | undefined;
   runtime: 'steamvr' | 'standalone' | undefined;

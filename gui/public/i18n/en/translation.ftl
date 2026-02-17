@@ -938,10 +938,12 @@ onboarding-setup_warning-cancel = Continue setup
 onboarding-quiz_continue= Continue
 
 onboarding-quiz-slimeset-title = Tracker Type
-onboarding-quiz-slimeset-description = Are you using an official regular slime or a Butterfly tracker
+onboarding-quiz-slimeset-description = Which tracker type are you using?
  (If you have third party trackers and are not sure, ask your seller)
 onboarding-quiz-slimeset-answer-regular = Regular Slime
 onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = Wifi Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle Slime
 
 onboarding-quiz-usage-title = Use Case
 onboarding-quiz-usage-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
