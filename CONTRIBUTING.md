@@ -116,3 +116,9 @@ licensed under `GPL-v3`.
 ## Discord
 We use discord *a lot* to coordinate and discuss development. Come join us at
 https://discord.gg/SlimeVR!
+
+## Use of AI
+We DO NOT accept contributions that are generated with AI (for example, "vibe-coding").
+
+If you do use AI, and you believe your usage of AI is reasonable, you must clearly disclose
+how you used AI in your submission.
