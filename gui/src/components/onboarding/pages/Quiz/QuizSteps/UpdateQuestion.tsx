@@ -27,35 +27,35 @@ export function UpdateQuestion() {
           <div className="flex gap-2 px-2 p-6">
             <div
               onClick={() => {
-                setUpdate('Yes');
+                setUpdate(true);
                 setDisabled(false);
               }}
               className={classNames(
                 'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                update === 'Yes' &&
+                update === true &&
                   'outline outline-3 outline-accent-background-40'
               )}
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-Update-answer-1" />
+                  <Typography id="onboarding-quiz-Update-answer-yes" />
                 </div>
               </div>
             </div>
             <div
               onClick={() => {
-                setUpdate('No');
+                setUpdate(false);
                 setDisabled(false);
               }}
               className={classNames(
                 'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                update === 'No' &&
+                update === false &&
                   'outline outline-3 outline-accent-background-40'
               )}
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-Update-answer-2" />
+                  <Typography id="onboarding-quiz-Update-answer-no" />
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@ export function UpdateQuestion() {
         <div className="flex px-2 p-6">
           <Localized id="onboarding-quiz_continue">
             <Button
-              to="/onboarding/quiz/Q2"
+              to="/onboarding/quiz/usage"
               variant="primary"
               disabled={disabled}
             />

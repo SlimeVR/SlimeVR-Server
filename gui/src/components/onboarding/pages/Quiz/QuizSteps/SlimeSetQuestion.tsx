@@ -9,19 +9,23 @@ export function QuizSlimeSetQuestion() {
   const { applyProgress, setSlimeSet, slimeSet } = useOnboarding();
   const [to, setTo] = useState('');
   const [disabled, setDisabled] = useState(true);
+
   applyProgress(0.2);
 
   return (
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-center">
-          <Typography variant="main-title" id="onboarding-quiz-q1-title" />
+          <Typography
+            variant="main-title"
+            id="onboarding-quiz-slimeSet-title"
+          />
         </div>
         <div className="">
           <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
             <Typography
               whitespace="whitespace-pre-wrap"
-              id="onboarding-quiz-q1-description"
+              id="onboarding-quiz-slimeSet-description"
             />
           </div>
           <div className="flex gap-2 px-2 p-6">
@@ -39,14 +43,14 @@ export function QuizSlimeSetQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-q1-answer-1" />
+                  <Typography id="onboarding-quiz-slimeSet-answer-Regular" />
                 </div>
               </div>
             </div>
             <div
               onClick={() => {
                 setSlimeSet('butterfly');
-                setTo('/onboarding/quiz/Q2');
+                setTo('/onboarding/quiz/usage');
                 setDisabled(false);
               }}
               className={classNames(
@@ -57,7 +61,7 @@ export function QuizSlimeSetQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-q1-answer-2" />
+                  <Typography id="onboarding-quiz-slimeSet-answer-Butterfly" />
                 </div>
               </div>
             </div>

@@ -936,34 +936,35 @@ onboarding-setup_warning-cancel = Continue setup
 
 ## Quiz
 onboarding-quiz_continue= Continue
-onboarding-quiz-q1-title = Tracker Type
-onboarding-quiz-q1-description = Are you using an official regular slime or a Butterfly tracker
+
+onboarding-quiz-slimeSet-title = Tracker Type
+onboarding-quiz-slimeSet-description = Are you using an official regular slime or a Butterfly tracker
  (If you have third party trackers and are not sure, ask your seller)
-onboarding-quiz-q1-answer-1 = Regular Slime
-onboarding-quiz-q1-answer-2 = Butterfly
+onboarding-quiz-slimeSet-answer-Regular = Regular Slime
+onboarding-quiz-slimeSet-answer-Butterfly = Butterfly
 
-onboarding-quiz-q2-title = Use Case
-onboarding-quiz-q2-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, dont worry, you can change the according settings later.
-onboarding-quiz-q2-answer-1 = VR Gaming (e.g. VRChat)
-onboarding-quiz-q2-answer-2 = Mocap (Motion Capture)
-onboarding-quiz-q2-answer-3 = VTubing
+onboarding-quiz-Usage-title = Use Case
+onboarding-quiz-Usage-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, dont worry, you can change the according settings later.
+onboarding-quiz-Usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-Usage-answer-mocap = Mocap (Motion Capture)
+onboarding-quiz-Usage-answer-vtubing = VTubing
 
-onboarding-quiz-q3-title = Runtime
-onboarding-quiz-q3-description = Are you using SlimeVR on SteamVR or on a Standalone headset such as the meta quest or Pico heaset, if you are using Quest link or Virtual desktop, you should
+onboarding-quiz-runtime-title = Runtime
+onboarding-quiz-runtime-description = Are you using SlimeVR on SteamVR or on a Standalone headset such as the meta quest or Pico heaset, if you are using Quest link or Virtual desktop, you should
  select SteamVR
-onboarding-quiz-q3-answer-1 = SteamVR
-onboarding-quiz-q3-answer-2 = Standalone
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
 
-onboarding-quiz-q4-title = Mocap Head Tracker
-onboarding-quiz-q4-description = If you are using a head tracker such as a Vive tracker or SlimeVR tracker on your forehead, then select forehead, if you are wearing a VR Headset for example then
+onboarding-quiz-mocapPos-title = Mocap Head Tracker
+onboarding-quiz-mocapPos-description = If you are using a head tracker such as a Vive tracker or SlimeVR tracker on your forehead, then select forehead, if you are wearing a VR Headset for example then
  you should select Face, since the tracking point is on your face.
-onboarding-quiz-q4-answer-1 = Forehead
-onboarding-quiz-q4-answer-2 = Face
+onboarding-quiz-mocapPos-answer-forehead = Forehead
+onboarding-quiz-mocapPos-answer-face = Face
 
 onboarding-quiz-Update-title = Tracker Update
 onboarding-quiz-Update-description = Would you like to update your trackers to make sure they have the most up to date firmware?
-onboarding-quiz-Update-answer-1 = Yes
-onboarding-quiz-Update-answer-2 = No
+onboarding-quiz-Update-answer-yes = Yes
+onboarding-quiz-Update-answer-no = No
 
 ## Wi-Fi setup
 onboarding-wifi_creds-back = Go back to introduction

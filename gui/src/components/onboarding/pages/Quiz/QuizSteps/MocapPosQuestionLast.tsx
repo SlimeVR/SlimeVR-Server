@@ -24,7 +24,7 @@ export function QuizMocapPosQuestion() {
   const [to, setTo] = useState('');
   const [disabled, setDisabled] = useState(true);
 
-  applyProgress(0.2);
+  applyProgress(0.4);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
@@ -38,7 +38,7 @@ export function QuizMocapPosQuestion() {
     if (slimeSet === 'butterfly') {
       setTo('/onboarding/dongle');
     } else {
-      if (update === 'Yes') {
+      if (update === true) {
         setTo('/onboarding/firmware-tool');
       } else {
         setTo('/onboarding/wifi-creds');
@@ -62,7 +62,7 @@ export function QuizMocapPosQuestion() {
       modelSettings.toggles = toggles;
       req.modelSettings = modelSettings;
 
-      if (mocapPos === 'Forehead') {
+      if (mocapPos === 'forehead') {
         const resets = Object.assign(resetSettings, settings.resetsSettings);
         resets.resetHmdPitch = true;
         req.resetsSettings = resets;
@@ -78,49 +78,52 @@ export function QuizMocapPosQuestion() {
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-center">
-          <Typography variant="main-title" id="onboarding-quiz-q4-title" />
+          <Typography
+            variant="main-title"
+            id="onboarding-quiz-mocapPos-title"
+          />
         </div>
         <div className="">
           <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
             <Typography
               whitespace="whitespace-pre-wrap"
-              id="onboarding-quiz-q4-description"
+              id="onboarding-quiz-mocapPos-description"
             />
           </div>
           <div className="flex gap-2 px-2 p-6">
             <div
               onClick={() => {
-                setMocapPos('Forehead');
+                setMocapPos('forehead');
                 updateTo();
                 setDisabled(false);
               }}
               className={classNames(
                 'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                mocapPos === 'Forehead' &&
+                mocapPos === 'forehead' &&
                   'outline outline-3 outline-accent-background-40'
               )}
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-q4-answer-1" />
+                  <Typography id="onboarding-quiz-mocapPos-answer-forehead" />
                 </div>
               </div>
             </div>
             <div
               onClick={() => {
-                setMocapPos('Face');
+                setMocapPos('face');
                 updateTo();
                 setDisabled(false);
               }}
               className={classNames(
                 'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                mocapPos === 'Face' &&
+                mocapPos === 'face' &&
                   'outline outline-3 outline-accent-background-40'
               )}
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-q4-answer-2" />
+                  <Typography id="onboarding-quiz-mocapPos-answer-face" />
                 </div>
               </div>
             </div>

@@ -10,26 +10,26 @@ export function QuizUsageQuestion() {
   const [to, setTo] = useState('');
   const [disabled, setDisabled] = useState(true);
 
-  applyProgress(0.2);
+  applyProgress(0.3);
 
   return (
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-center">
-          <Typography variant="main-title" id="onboarding-quiz-q2-title" />
+          <Typography variant="main-title" id="onboarding-quiz-Usage-title" />
         </div>
         <div className="">
           <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
             <Typography
               whitespace="whitespace-pre-wrap"
-              id="onboarding-quiz-q2-description"
+              id="onboarding-quiz-Usage-description"
             />
           </div>
           <div className="flex gap-2 px-2 p-6">
             <div
               onClick={() => {
                 setUsage('vrchat');
-                setTo('/onboarding/quiz/Q3');
+                setTo('/onboarding/quiz/runtime');
                 setDisabled(false);
               }}
               className={classNames(
@@ -40,14 +40,14 @@ export function QuizUsageQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-q2-answer-1" />
+                  <Typography id="onboarding-quiz-Usage-answer-VRC" />
                 </div>
               </div>
             </div>
             <div
               onClick={() => {
                 setUsage('mocap');
-                setTo('/onboarding/quiz/Q4');
+                setTo('/onboarding/quiz/mocap-pos');
                 setDisabled(false);
               }}
               className={classNames(
@@ -58,14 +58,14 @@ export function QuizUsageQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-q2-answer-2" />
+                  <Typography id="onboarding-quiz-Usage-answer-mocap" />
                 </div>
               </div>
             </div>
             <div
               onClick={() => {
                 setUsage('vtubing');
-                setTo('/onboarding/quiz/Q4');
+                setTo('/onboarding/quiz/mocap-pos');
                 setDisabled(false);
               }}
               className={classNames(
@@ -76,7 +76,7 @@ export function QuizUsageQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-q2-answer-3" />
+                  <Typography id="onboarding-quiz-Usage-answer-vtubing" />
                 </div>
               </div>
             </div>

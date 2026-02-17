@@ -159,11 +159,11 @@ function Layout() {
           >
             <Route path="home" element={<HomePage />} />
             <Route path="wifi-creds" element={<WifiCredsPage />} />
-            <Route path="quiz/Q1" element={<QuizSlimeSetQuestion />} />
-            <Route path="quiz/Q2" element={<QuizUsageQuestion />} />
-            <Route path="quiz/Q3" element={<QuizRuntimeQuestion />} />
-            <Route path="quiz/Q4" element={<QuizMocapPosQuestion />} />
-            <Route path="quiz/Update?" element={<UpdateQuestion />} />
+            <Route path="quiz/slime-set" element={<QuizSlimeSetQuestion />} />
+            <Route path="quiz/usage" element={<QuizUsageQuestion />} />
+            <Route path="quiz/runtime" element={<QuizRuntimeQuestion />} />
+            <Route path="quiz/mocap-pos" element={<QuizMocapPosQuestion />} />
+            <Route path="quiz/update?" element={<UpdateQuestion />} />
             <Route path="dongle" element={<DonglePage />} />
             <Route path="firmware-tool" element={<FirmwareToolSettings />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />

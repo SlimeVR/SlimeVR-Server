@@ -22,19 +22,25 @@ interface OnboardingState {
 
 export interface OnboardingContext {
   state: OnboardingState;
-  slimeSet: string;
-  usage: string;
-  update: string;
-  runtime: string;
-  mocapPos: string;
+  slimeSet: 'butterfly' | 'regular-slime' | undefined;
+  usage: 'vrchat' | 'mocap' | 'vtubing' | undefined;
+  update: true | false;
+  runtime: 'steamvr' | 'standalone' | undefined;
+  mocapPos: 'forehead' | 'face' | undefined;
   applyProgress: (value: number) => void;
   setWifiCredentials: (ssid: string, password?: string) => void;
   skipSetup: () => void;
-  setSlimeSet: React.Dispatch<React.SetStateAction<string>>;
-  setUsage: React.Dispatch<React.SetStateAction<string>>;
-  setUpdate: React.Dispatch<React.SetStateAction<string>>;
-  setRuntime: React.Dispatch<React.SetStateAction<string>>;
-  setMocapPos: React.Dispatch<React.SetStateAction<string>>;
+  setSlimeSet: React.Dispatch<
+    React.SetStateAction<'butterfly' | 'regular-slime' | undefined>
+  >;
+  setUsage: React.Dispatch<
+    React.SetStateAction<'vrchat' | 'mocap' | 'vtubing' | undefined>
+  >;
+  setUpdate: React.Dispatch<React.SetStateAction<true | false>>;
+  setRuntime: React.Dispatch<
+    React.SetStateAction<'steamvr' | 'standalone' | undefined>
+  >;
+  setMocapPos: React.Dispatch<React.SetStateAction<'forehead' | 'face' | undefined>>;
 }
 
 export function reducer(state: OnboardingState, action: OnboardingAction) {
@@ -61,11 +67,17 @@ export function reducer(state: OnboardingState, action: OnboardingAction) {
 
 export function useProvideOnboarding(): OnboardingContext {
   const { setConfig } = useConfig();
-  const [slimeSet, setSlimeSet] = useState('');
-  const [usage, setUsage] = useState('');
-  const [update, setUpdate] = useState('');
-  const [runtime, setRuntime] = useState('');
-  const [mocapPos, setMocapPos] = useState('');
+  const [slimeSet, setSlimeSet] = useState<'butterfly' | 'regular-slime' | undefined>(
+    undefined
+  );
+  const [usage, setUsage] = useState<'vrchat' | 'mocap' | 'vtubing' | undefined>(
+    undefined
+  );
+  const [update, setUpdate] = useState(true || false);
+  const [runtime, setRuntime] = useState<'steamvr' | 'standalone' | undefined>(
+    undefined
+  );
+  const [mocapPos, setMocapPos] = useState<'forehead' | 'face' | undefined>(undefined);
   const [state, dispatch] = useReducer<Reducer<OnboardingState, OnboardingAction>>(
     reducer,
     {
@@ -87,9 +99,9 @@ export function useProvideOnboarding(): OnboardingContext {
     state,
     slimeSet,
     usage,
-    update,
     runtime,
     mocapPos,
+    update,
     applyProgress: (value: number) => {
       useLayoutEffect(() => {
         dispatch({ type: 'progress', value });

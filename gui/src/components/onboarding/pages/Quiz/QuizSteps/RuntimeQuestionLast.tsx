@@ -21,7 +21,7 @@ export function QuizRuntimeQuestion() {
   const [to, setTo] = useState('');
   const [disabled, setDisabled] = useState(true);
 
-  applyProgress(0.2);
+  applyProgress(0.4);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
@@ -35,7 +35,7 @@ export function QuizRuntimeQuestion() {
     if (slimeSet === 'butterfly') {
       setTo('/onboarding/dongle');
     } else {
-      if (update === 'Yes') {
+      if (update === true) {
         setTo('/onboarding/firmware-tool');
       } else {
         setTo('/onboarding/wifi-creds');
@@ -59,19 +59,17 @@ export function QuizRuntimeQuestion() {
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
   };
 
-  applyProgress(0.2);
-
   return (
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-center">
-          <Typography variant="main-title" id="onboarding-quiz-q3-title" />
+          <Typography variant="main-title" id="onboarding-quiz-runtime-title" />
         </div>
         <div className="">
           <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
             <Typography
               whitespace="whitespace-pre-wrap"
-              id="onboarding-quiz-q3-description"
+              id="onboarding-quiz-runtime-description"
             />
           </div>
           <div className="flex gap-2 px-2 p-6">
@@ -89,7 +87,7 @@ export function QuizRuntimeQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-q3-answer-1" />
+                  <Typography id="onboarding-quiz-runtime-answer-steamvr" />
                 </div>
               </div>
             </div>
@@ -107,7 +105,7 @@ export function QuizRuntimeQuestion() {
             >
               <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
                 <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-q3-answer-2" />
+                  <Typography id="onboarding-quiz-runtime-answer-standalone" />
                 </div>
               </div>
             </div>

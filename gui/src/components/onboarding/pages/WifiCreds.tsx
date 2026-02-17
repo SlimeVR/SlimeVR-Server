@@ -12,7 +12,7 @@ export function WifiCredsPage() {
   const { applyProgress, state } = useOnboarding();
   const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm('');
 
-  applyProgress(0.2);
+  applyProgress(0.5);
 
   return (
     <div className="flex flex-col w-full h-full xs:justify-center items-center">

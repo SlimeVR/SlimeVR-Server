@@ -9,7 +9,7 @@ import { WarningBox } from '@/components/commons/TipBox';
 export function DonglePage() {
   const { applyProgress, state } = useOnboarding();
 
-  applyProgress(0.2);
+  applyProgress(0.5);
 
   return (
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
