@@ -11,7 +11,6 @@ import {
   TrackingChecklistStepId,
 } from 'solarxr-protocol';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { openUrl } from '@tauri-apps/plugin-opener';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
@@ -29,6 +28,7 @@ import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { TrackingChecklistModal } from './TrackingChecklistModal';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { openUrl } from '@/hooks/crossplatform';
 
 function Step({
   step: { status, id, optional, firstRequired },

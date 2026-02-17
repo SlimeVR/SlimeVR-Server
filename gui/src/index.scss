@@ -421,3 +421,7 @@ button,
 div {
   hyphens: auto;
 }
+
+[data-electron-drag-region='true'] {
+  -webkit-app-region: drag;
+}

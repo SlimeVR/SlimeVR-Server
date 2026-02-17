@@ -17,17 +17,15 @@ import { BellIcon } from '@/components/commons/icon/BellIcon';
 import { Range } from '@/components/commons/Range';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { ArrowRightLeftIcon } from '@/components/commons/icon/ArrowIcons';
-import { isTrayAvailable } from '@/utils/tauri';
-import { isTauri } from '@tauri-apps/api/core';
-import { TauriFileInput } from '@/components/commons/TauriFileInput';
+import { SystemFileInput } from '@/components/commons/SystemFileInput';
 import { DeveloperModeWidget } from '@/components/widgets/DeveloperModeWidget';
+import { useElectron } from '@/hooks/electron';
 
 interface InterfaceSettingsForm {
   appearance: {
     theme: string;
     textSize: number;
     fonts: string;
-    decorations: boolean;
   };
   behavior: {
     devmode: boolean;
@@ -45,6 +43,7 @@ interface InterfaceSettingsForm {
 }
 
 export function InterfaceSettings() {
+  const electron = useElectron();
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
@@ -54,7 +53,6 @@ export function InterfaceSettings() {
         theme: config?.theme ?? defaultConfig.theme,
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
-        decorations: config?.decorations ?? defaultConfig.decorations,
       },
       notifications: {
         watchNewDevices:
@@ -111,7 +109,6 @@ export function InterfaceSettings() {
       theme: values.appearance.theme,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
-      decorations: values.appearance.decorations,
 
       useTray: values.behavior.useTray,
       discordPresence: values.behavior.discordPresence,
@@ -243,7 +240,7 @@ export function InterfaceSettings() {
               {l10n.getString('settings-interface-behavior')}
             </Typography>
             <div className="pt-2">
-              {isTrayAvailable && (
+              {electron.isElectron && (
                 <>
                   <Typography variant="section-title">
                     {l10n.getString('settings-general-interface-use_tray')}
@@ -343,7 +340,7 @@ export function InterfaceSettings() {
                 />
               </div>
 
-              {isTauri() && (
+              {electron.isElectron && (
                 <>
                   <Typography variant="section-title">
                     {l10n.getString(
@@ -360,7 +357,7 @@ export function InterfaceSettings() {
                     </Localized>
                   </div>
                   <div className="grid gap-3 pb-5">
-                    <TauriFileInput
+                    <SystemFileInput
                       name="behavior.bvhDirectory"
                       rules={{
                         required: false,
@@ -381,29 +378,6 @@ export function InterfaceSettings() {
             <Typography variant="main-title">
               {l10n.getString('settings-interface-appearance')}
             </Typography>
-            <div className="pt-2">
-              <Typography variant="section-title">
-                {l10n.getString('settings-interface-appearance-decorations')}
-              </Typography>
-            </div>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography>
-                {l10n.getString(
-                  'settings-interface-appearance-decorations-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="appearance.decorations"
-                label={l10n.getString(
-                  'settings-interface-appearance-decorations-label'
-                )}
-              />
-            </div>
 
             <div className="pb-4">
               <Typography variant="section-title">

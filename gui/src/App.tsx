@@ -1,10 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import {
-  BrowserRouter as Router,
-  Outlet,
-  Route,
-  Routes,
-} from 'react-router-dom';
+import { HashRouter as Router, Outlet, Route, Routes } from 'react-router-dom';
 import { Home } from './components/home/Home';
 import { MainLayout } from './components/MainLayout';
 import { AppContextProvider } from './components/providers/AppContext';
@@ -16,7 +11,6 @@ import {
   WebSocketApiContext,
 } from './hooks/websocket-api';
 
-import { Event, listen } from '@tauri-apps/api/event';
 import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
@@ -33,13 +27,11 @@ import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
-import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
-import { openUrl } from '@tauri-apps/plugin-opener';
 import semver from 'semver';
-import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
+import { useBreakpoint } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
 import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
 import { error, log } from './utils/logging';
@@ -58,6 +50,9 @@ import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/Sta
 import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
 import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
 import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist';
+import { ElectronContextC, provideElectron } from './hooks/electron';
+import { AppLocalizationProvider } from './i18n/config';
+import { openUrl } from './hooks/crossplatform';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -182,7 +177,7 @@ function Layout() {
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
   const [updateFound, setUpdateFound] = useState('');
-  const isTauri = useIsTauri();
+  const electron = provideElectron();
 
   useEffect(() => {
     const onKeydown: (arg0: KeyboardEvent) => void = function (event) {
@@ -202,16 +197,25 @@ export default function App() {
 
   useEffect(() => {
     // don't show update stuff when on android
-    if (window.__ANDROID__?.isThere()) {
-      setUpdateFound('');
+    if (window.__ANDROID__?.isThere()) return;
+
+    if (!semver.valid(__VERSION_TAG__)) {
+      log(
+        { version: __VERSION_TAG__ || 'development' },
+        'Non semver version, skipping the server update check'
+      );
       return;
     }
+
     async function fetchReleases() {
       const releases = await fetch(
         `https://api.github.com/repos/${GH_REPO}/releases`
       )
         .then((res) => res.json())
+        .catch(() => null)
         .then((json: any[]) => json.filter((rl) => rl?.prerelease === false));
+
+      if (!releases) return;
 
       if (typeof releases[0].tag_name !== 'string') return;
 
@@ -221,56 +225,44 @@ export default function App() {
         setUpdateFound(releases[0].tag_name);
       }
     }
-    fetchReleases().catch(() => error('failed to fetch releases'));
+    fetchReleases().catch((e) => error(e, 'failed to fetch releases'));
   }, []);
 
-  if (isTauri) {
+  if (electron.isElectron) {
     useEffect(() => {
-      const type = os.type();
-      document.body.classList.add(type.toLowerCase());
-
-      return () => document.body.classList.remove(type.toLowerCase());
-    }, []);
-  }
-
-  if (isTauri) {
-    useEffect(() => {
-      const unlisten = listen(
-        'server-status',
-        (event: Event<[string, string]>) => {
-          const [eventType, s] = event.payload;
-          if ('stderr' === eventType) {
-            // This strange invocation is what lets us lose the line information in the console
-            // See more here: https://stackoverflow.com/a/48994308
-            // These two are fine to keep with console.log, they are server logs
-            setTimeout(
-              console.log.bind(
-                console,
-                `%c[SERVER] %c${s}`,
-                'color:cyan',
-                'color:red'
-              )
-            );
-          } else if (eventType === 'stdout') {
-            setTimeout(
-              console.log.bind(
-                console,
-                `%c[SERVER] %c${s}`,
-                'color:cyan',
-                'color:green'
-              )
-            );
-          } else if (eventType === 'error') {
-            error('Error: %s', s);
-          } else if (eventType === 'terminated') {
-            error('Server Process Terminated: %s', s);
-          } else if (eventType === 'other') {
-            log('Other process event: %s', s);
-          }
+      const unlisten = electron.api.onServerStatus(({ type, message }) => {
+        if (type === 'stderr') {
+          // This strange invocation is what lets us lose the line information in the console
+          // See more here: https://stackoverflow.com/a/48994308
+          // These two are fine to keep with console.log, they are server logs
+          setTimeout(
+            console.log.bind(
+              console,
+              `%c[SERVER] %c${message}`,
+              'color:cyan',
+              'color:red'
+            )
+          );
+        } else if (type === 'stdout') {
+          setTimeout(
+            console.log.bind(
+              console,
+              `%c[SERVER] %c${message}`,
+              'color:cyan',
+              'color:green'
+            )
+          );
+        } else if (type === 'error') {
+          error('Error: %s', message);
+        } else if (type === 'terminated') {
+          error('Server Process Terminated: %s', message);
+        } else if (type === 'other') {
+          log('Other process event: %s', message);
         }
-      );
+      });
+
       return () => {
-        unlisten.then((fn) => fn());
+        unlisten();
       };
     }, []);
   }
@@ -278,7 +270,7 @@ export default function App() {
   useEffect(() => {
     function onKeyboard(ev: KeyboardEvent) {
       if (ev.key === 'F1') {
-        return openUrl(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
+        return openUrl(DOCS_SITE);
       }
     }
 
@@ -287,24 +279,28 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
-      <ConfigContextProvider>
-        <WebSocketApiContext.Provider value={websocketAPI}>
-          <AppContextProvider>
-            <OnboardingContextProvider>
-              <TrackingChecklistProvider>
-                <VersionContext.Provider value={updateFound}>
-                  <div className="h-full w-full text-standard bg-background-80 text-background-10">
-                    <Preload />
-                    {!websocketAPI.isConnected && <ConnectionLost />}
-                    {websocketAPI.isConnected && <Layout />}
-                  </div>
-                </VersionContext.Provider>
-              </TrackingChecklistProvider>
-            </OnboardingContextProvider>
-          </AppContextProvider>
-        </WebSocketApiContext.Provider>
-      </ConfigContextProvider>
-    </Router>
+    <ElectronContextC.Provider value={electron}>
+      <AppLocalizationProvider>
+        <Router>
+          <ConfigContextProvider>
+            <WebSocketApiContext.Provider value={websocketAPI}>
+              <AppContextProvider>
+                <OnboardingContextProvider>
+                  <TrackingChecklistProvider>
+                    <VersionContext.Provider value={updateFound}>
+                      <div className="h-full w-full text-standard bg-background-80 text-background-10">
+                        <Preload />
+                        {!websocketAPI.isConnected && <ConnectionLost />}
+                        {websocketAPI.isConnected && <Layout />}
+                      </div>
+                    </VersionContext.Provider>
+                  </TrackingChecklistProvider>
+                </OnboardingContextProvider>
+              </AppContextProvider>
+            </WebSocketApiContext.Provider>
+          </ConfigContextProvider>
+        </Router>
+      </AppLocalizationProvider>
+    </ElectronContextC.Provider>
   );
 }

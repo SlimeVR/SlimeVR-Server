@@ -36,7 +36,7 @@ public class ProvisioningHandler implements SerialListener {
 		this.provisioningTickTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				if (!isRunning)
+				if (!isRunning || provisioningStatus == ProvisioningStatus.DONE)
 					return;
 				provisioningTick();
 			}

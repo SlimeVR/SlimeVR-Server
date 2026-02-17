@@ -5,9 +5,9 @@ import {
   UseControllerProps,
 } from 'react-hook-form';
 import { FileInputContentBlank, FileInputContentFile } from './FileInput';
-import { open } from '@tauri-apps/plugin-dialog';
+import { useElectron } from '@/hooks/electron';
 
-export function InnerTauriFileInput({
+export function InnerSytemFileInput({
   label,
   value,
   onChange,
@@ -20,8 +20,23 @@ export function InnerTauriFileInput({
   directory: boolean;
   ref: RefCallBack;
 }) {
+  const electron = useElectron();
+
+  const handleClick = async () => {
+    if (!electron.isElectron) return;
+
+    const open = await electron.api.openDialog({
+      properties: ['openDirectory'],
+    });
+    if (open.canceled) {
+      onChange(null);
+      return;
+    }
+    onChange(open.filePaths[0]);
+  };
+
   return (
-    <div ref={ref} onClick={async () => onChange(await open({ directory }))}>
+    <div ref={ref} onClick={handleClick}>
       {value !== null
         ? FileInputContentFile({
             directory,
@@ -33,7 +48,7 @@ export function InnerTauriFileInput({
   );
 }
 
-export function TauriFileInput({
+export function SystemFileInput({
   control,
   rules,
   name,
@@ -56,7 +71,7 @@ export function TauriFileInput({
       name={name}
       control={control}
       render={({ field: { onChange, value, ref } }) => (
-        <InnerTauriFileInput
+        <InnerSytemFileInput
           label={label}
           value={value}
           onChange={onChange}
