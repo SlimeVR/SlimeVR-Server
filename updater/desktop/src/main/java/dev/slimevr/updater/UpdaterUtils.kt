@@ -14,13 +14,11 @@ import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
-import java.util.zip.ZipInputStream
 import kotlin.time.Duration.Companion.minutes
 
 fun executeShellCommand(vararg command: String): String = try {
@@ -33,28 +31,6 @@ fun executeShellCommand(vararg command: String): String = try {
 } catch (e: IOException) {
 	"Error executing shell command: ${e.message}"
 }
-
-/*
-// TODO: This function is really really slow, make it faster, also give feedback
-fun downloadFile(fileUrl: String, filename: String) {
-	println("Downloading $filename from $fileUrl")
-	val url = URL(fileUrl)
-	try {
-		val bufferedInputStream = BufferedInputStream(url.openStream())
-		val fileOutputStream = FileOutputStream(filename)
-		val dataBuffer = ByteArray(1024)
-		var bytesRead = bufferedInputStream.read(dataBuffer, 0, 1024)
-		while (bytesRead != -1) {
-			fileOutputStream.write(dataBuffer, 0, bytesRead)
-			bytesRead = bufferedInputStream.read(dataBuffer, 0, 1024)
-		}
-		val inputStream = url.openStream()
-		Files.copy(inputStream, Paths.get(filename), StandardCopyOption.REPLACE_EXISTING)
-	} catch (e: IOException) {
-		println("Error downloading file, ${e.message}")
-	}
-}
- */
 
 val sendProgress: (Float) -> Unit = { progress ->  subProgressBar.value = progress.toInt() }
 
@@ -153,22 +129,21 @@ fun unzip(
 
  */
 
-fun newAndCoolUnzip(
+fun unzip(
 	file: String,
 	destDir: String,
 	onProgress: (Float) -> Unit = sendProgress) {
 	try {
-		val file = File(file)
+		val destFile = File(destDir)
 		val zipFile = ZipFile(file)
 		val dataBuffer = ByteArray(1024)
 		val zipEntries = zipFile.entries()
 		val zipSize = zipFile.size()
 		var currentEntryCount = 0
 		while (zipEntries.hasMoreElements()) {
-			println(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
 			val currentEntry = zipEntries.nextElement()
 			val inputStream = zipFile.getInputStream(currentEntry)
-			val file = newFile(file, currentEntry)
+			val file = newFile(destFile, currentEntry)
 			if (currentEntry.isDirectory) {
 				if (!file.isDirectory && !file.mkdirs()) {
 					throw IOException("Failed to create directory: $file")
@@ -189,7 +164,6 @@ fun newAndCoolUnzip(
 			}
 			onProgress(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
 			currentEntryCount++
-			println(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
 		}
 	} catch (e: Exception) {
 		println("Error during unzip: ${e.message}")
