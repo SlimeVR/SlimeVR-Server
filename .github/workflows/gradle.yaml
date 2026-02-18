@@ -359,7 +359,7 @@ jobs:
         run: |
           mkdir SlimeVR
           cp gui/dist/artifacts/*.exe ./SlimeVR/slimevr.exe
-          cp gui/electron/ressources/icons/icon.ico ./SlimeVR/run.ico
+          cp gui/electron/resources/icons/icon.ico ./SlimeVR/run.ico
           cp server/desktop/build/libs/slimevr.jar ./SlimeVR/slimevr.jar
           cp server/core/resources/* ./SlimeVR/
           7z a -tzip "SlimeVR-$BUILD_ARCH.zip" ./SlimeVR/
