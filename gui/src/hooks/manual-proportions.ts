@@ -4,7 +4,7 @@ import {
   RpcMessage,
   SkeletonConfigRequestT,
   ChangeSkeletonConfigRequestT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from './websocket-api';
 import { useEffect, useMemo, useState } from 'react';
 import { useConfig } from './config';

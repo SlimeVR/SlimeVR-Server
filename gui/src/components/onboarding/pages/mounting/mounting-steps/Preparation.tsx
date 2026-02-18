@@ -1,4 +1,4 @@
-import { ResetType } from 'solarxr-protocol';
+import { ResetType } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { ResetButton } from '@/components/home/ResetButton';

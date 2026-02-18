@@ -1,5 +1,5 @@
 import { Euler, Quaternion } from 'three';
-import { QuatT } from 'solarxr-protocol';
+import { QuatT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes/math';
 
 export const rotationToQuatMap = {
   FRONT: new Quaternion(0, 1, 0, 0),

@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { BodyPart } from 'solarxr-protocol';
+import { BodyPart } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import { AssignMode } from '@/hooks/config';
 import { BodyInteractions } from '@/components/commons/BodyInteractions';
 import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
-import { RpcMessage, SettingsRequestT, SettingsResponseT } from 'solarxr-protocol';
+import { RpcMessage, SettingsRequestT, SettingsResponseT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { MIN_HEIGHT } from './manual-proportions';
 
 export interface HeightContext {

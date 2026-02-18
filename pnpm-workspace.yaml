@@ -1,4 +1,4 @@
 packages:
+  - "solarxr-protocol/lib/flatbuffers"
   - "solarxr-protocol"
   - "gui"
-  - "!solarxr-protocol/lib/flatbuffers/**"

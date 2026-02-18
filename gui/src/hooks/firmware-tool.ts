@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState } from 'react';
+import { DeviceIdT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import {
-  DeviceIdT,
   FirmwarePartT,
   FirmwareUpdateMethod,
   FirmwareUpdateRequestT,
@@ -8,7 +8,7 @@ import {
   OTAFirmwareUpdateT,
   SerialDevicePortT,
   SerialFirmwareUpdateT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { OnboardingContext } from './onboarding';
 import {
   BoardDefaults,

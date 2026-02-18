@@ -6,7 +6,7 @@ import { Typography } from '@/components/commons/Typography';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
 import { ResetButton } from '@/components/home/ResetButton';
 import { Localized } from '@fluent/react';
-import { ResetType } from 'solarxr-protocol';
+import { ResetType } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 
 export function PreparationStep({
   nextStep,

@@ -6,8 +6,8 @@ import {
   TrackingChecklistStepVisibility,
   IgnoreTrackingChecklistStepRequestT,
   RpcMessage,
-  TrackerIdT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
+import { TrackerIdT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import { useWebsocketAPI } from './websocket-api';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import * as Sentry from '@sentry/react';

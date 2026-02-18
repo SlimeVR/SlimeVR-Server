@@ -5,7 +5,7 @@ import {
   SetPauseTrackingRequestT,
   TrackingPauseStateRequestT,
   TrackingPauseStateResponseT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { restartAndPlay, trackingPauseSound, trackingPlaySound } from '@/sounds/sounds';
 import { useConfig } from './config';
 

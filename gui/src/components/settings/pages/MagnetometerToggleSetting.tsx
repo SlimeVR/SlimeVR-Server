@@ -5,13 +5,15 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  ChangeMagToggleRequestT,
   DeviceIdT,
+  TrackerIdT,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import {
+  ChangeMagToggleRequestT,
   MagToggleRequestT,
   MagToggleResponseT,
   RpcMessage,
-  TrackerIdT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { Link } from 'react-router-dom';
 
 interface MagnetometerToggleForm {

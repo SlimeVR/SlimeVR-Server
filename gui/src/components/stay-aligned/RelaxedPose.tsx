@@ -3,7 +3,7 @@ import {
   DetectStayAlignedRelaxedPoseRequestT,
   RpcMessage,
   StayAlignedRelaxedPose,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { MouseEventHandler } from 'react';
 import { Button, ButtonProps } from '@/components/commons/Button';
