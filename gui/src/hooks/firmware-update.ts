@@ -23,7 +23,6 @@ const todaysRange = (deployData: [number, Date][]): number => {
 };
 
 const checkUserCanUpdate = async (uuid: string, url: string, fwVersion: string) => {
-  console.log(url);
   const deployDataJson = JSON.parse(
     (await cacheWrap(
       `firmware-${fwVersion}-deploy`,
