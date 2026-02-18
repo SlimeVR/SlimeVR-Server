@@ -2,7 +2,6 @@ import {
   app,
   BrowserWindow,
   dialog,
-  ipcMain,
   Menu,
   nativeImage,
   net,
@@ -14,8 +13,8 @@ import {
 import { IPC_CHANNELS } from '../shared';
 import path, { dirname, join } from 'path';
 import open from 'open';
-import trayIcon from '../ressources/icons/icon.png?asset';
-import appleTrayIcon from '../ressources/icons/appleTrayIcon.png?asset';
+import trayIcon from '../resources/icons/icon.png?asset';
+import appleTrayIcon from '../resources/icons/appleTrayIcon.png?asset';
 import { readFile, stat } from 'fs/promises';
 import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
@@ -35,9 +34,6 @@ import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
 import { ServerStatusEvent } from 'electron/preload/interface';
-
-app.disableHardwareAcceleration()
-
 
 // Register custom protocol to handle asset paths with leading slashes
 protocol.registerSchemesAsPrivileged([

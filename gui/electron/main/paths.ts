@@ -2,8 +2,8 @@ import { app } from 'electron';
 import path, { join } from 'node:path';
 import { getPlatform } from './utils';
 import { glob } from 'glob';
-import { exec, spawn } from 'node:child_process';
-import javaVersionJar from '../ressources/java-version/JavaVersion.jar?asset&asarUnpack';
+import { spawn } from 'node:child_process';
+import javaVersionJar from '../resources/java-version/JavaVersion.jar?asset&asarUnpack';
 import { existsSync } from 'node:fs';
 import { options } from './cli'
 
@@ -16,6 +16,8 @@ export const getGuiDataFolder = () => {
 
   switch (platform) {
     case 'linux':
+      if (process.env['XDG_DATA_HOME'])
+        return join(process.env['XDG_DATA_HOME'], CONFIG_IDENTIFIER);
       return join(app.getPath('home'), '.local/share', CONFIG_IDENTIFIER);
     case 'windows':
       return join(app.getPath('appData'), CONFIG_IDENTIFIER);

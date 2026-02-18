@@ -22,18 +22,18 @@ files:
   - "!node_modules/**/*.{map,ts,tsx,d.ts}"
   - "!**/.DS_Store"
 
-extraFiles:
-  - from: "../../server/desktop/build/libs/slimevr.jar"
-    to: "."
-  - from: "./69-slimevr-devices.rules"
-    to: "."
-
 linux:
   category: Game
   target:
     - target: AppImage
-    # - target: deb
-    # - target: rpm
+    - target: deb
+    - target: rpm
+  extraFiles:
+    - from: "../server/desktop/build/libs/slimevr.jar"
+      to: "."
+    - from: "./electron/resources/69-slimevr-devices.rules"
+      to: "."
+  icon: "./electron/resources/icons"
 
 deb:
   depends:
@@ -47,6 +47,11 @@ rpm:
 win:
   target:
     - target: portable
+  icon: "./electron/resources/icons/icon.ico"
 
 mac:
   target: dmg
+  extraFiles:
+    - from: "../server/desktop/build/libs/slimevr.jar"
+      to: "."
+  icon: "./electron/resources/icons/icon.icns"

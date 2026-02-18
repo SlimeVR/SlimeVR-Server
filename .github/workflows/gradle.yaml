@@ -172,7 +172,7 @@ jobs:
         os: [ubuntu-latest, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     needs: [build, test]
-    # if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
+    if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
 
     env:
       BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}
@@ -263,7 +263,7 @@ jobs:
   bundle-mac:
     runs-on: macos-latest
     needs: [build, test]
-    # if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
+    if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
       - uses: actions/checkout@v6
         with:
@@ -319,7 +319,7 @@ jobs:
         os: [windows-latest, windows-11-arm]
     runs-on: ${{ matrix.os }}
     needs: [build, test]
-    # if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
+    if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
 
     env:
       BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'win-aarch64' || 'win64' }}
@@ -359,7 +359,7 @@ jobs:
         run: |
           mkdir SlimeVR
           cp gui/dist/artifacts/*.exe ./SlimeVR/slimevr.exe
-          cp gui/electron/ressources/icons/icon.ico ./SlimeVR/run.ico
+          cp gui/electron/resources/icons/icon.ico ./SlimeVR/run.ico
           cp server/desktop/build/libs/slimevr.jar ./SlimeVR/slimevr.jar
           cp server/core/resources/* ./SlimeVR/
           7z a -tzip "SlimeVR-$BUILD_ARCH.zip" ./SlimeVR/

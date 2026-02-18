@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "vite --force",
-    "dev": "electron-vite dev --config electron.vite.config.ts --watch",
+    "gui": "electron-vite dev --config electron.vite.config.ts --watch",
     "build": "electron-vite build --config electron.vite.config.ts",
     "package": "pnpm run build && electron-builder",
     "preview": "electron-vite preview --config electron.vite.config.ts",
@@ -25,8 +25,8 @@
     "lint": "tsc --noEmit && eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && prettier --check \"src/**/*.{js,jsx,ts,tsx,css,scss,md,json}\"",
     "lint:fix": "tsc --noEmit && eslint --fix --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && pnpm run format",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,scss,md,json}\"",
-    "javaversion-build": "cd electron/ressources/java-version/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class",
-    "gen:javaversion": "cd electron/ressources/java-version/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class",
+    "javaversion-build": "cd electron/resources/java-version/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class",
+    "gen:javaversion": "cd electron/resources/java-version/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class",
     "gen:firmware-tool": "openapi-codegen gen firmwareTool"
   },
   "devDependencies": {

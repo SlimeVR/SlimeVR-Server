@@ -7,7 +7,7 @@ import {
 import { FileInputContentBlank, FileInputContentFile } from './FileInput';
 import { useElectron } from '@/hooks/electron';
 
-export function InnerSytemFileInput({
+export function InnerSystemFileInput({
   label,
   value,
   onChange,
@@ -71,7 +71,7 @@ export function SystemFileInput({
       name={name}
       control={control}
       render={({ field: { onChange, value, ref } }) => (
-        <InnerSytemFileInput
+        <InnerSystemFileInput
           label={label}
           value={value}
           onChange={onChange}
