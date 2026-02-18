@@ -64,7 +64,6 @@ class Linux {
 	fun feeder() {
 		mainProgressBar.string = "Updating Feeder app"
 		subProgressBar.string = "Downloading Feeder App"
-		println("Downloading feeder")
 		downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
 		subProgressBar.string = "Unzipping Feeder App"
 		unzip(LINUXFEEDERNAME, LINUXFEEDERDIRECTORY)
