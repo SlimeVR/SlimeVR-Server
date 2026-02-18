@@ -1,25 +1,27 @@
 package dev.slimevr.updater
 
-import dev.slimevr.updater.Updater.GHResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.onDownload
+import io.ktor.client.plugins.timeout
 import io.ktor.client.request.get
+import io.ktor.client.request.prepareGet
+import io.ktor.client.statement.bodyAsChannel
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.jvm.javaio.copyTo
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
-import java.net.URL
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
+import kotlin.time.Duration.Companion.minutes
 
 fun executeShellCommand(vararg command: String): String = try {
 	val process = ProcessBuilder(*command)
@@ -32,6 +34,7 @@ fun executeShellCommand(vararg command: String): String = try {
 	"Error executing shell command: ${e.message}"
 }
 
+/*
 // TODO: This function is really really slow, make it faster, also give feedback
 fun downloadFile(fileUrl: String, filename: String) {
 	println("Downloading $filename from $fileUrl")
@@ -51,6 +54,41 @@ fun downloadFile(fileUrl: String, filename: String) {
 		println("Error downloading file, ${e.message}")
 	}
 }
+ */
+
+val sendProgress: (Float) -> Unit = { progress ->  subProgressBar.value = progress.toInt() }
+
+fun downloadFile(
+	fileUrl: String,
+	fileName: String,
+	onProgress: (Float) -> Unit = sendProgress
+) {
+	val client = HttpClient(CIO)
+	val outputStream = FileOutputStream(fileName)
+
+	runBlocking {
+		client.prepareGet(
+			fileUrl,
+			block = {
+				val timeout = 30.minutes.inWholeMilliseconds
+				timeout {
+					requestTimeoutMillis = timeout
+					connectTimeoutMillis = timeout
+					socketTimeoutMillis = timeout
+				}
+				onDownload { bytesSentTotal, contentLength ->
+					val progress = (bytesSentTotal.toFloat() / (((contentLength?.toFloat()
+						?: 1F))))
+					onProgress(progress * 100)
+				}
+			}).execute { httpResponse ->
+				if (httpResponse.status.value in 200..299) {
+					val byteReadChannel = httpResponse.bodyAsChannel()
+					byteReadChannel.copyTo(outputStream)
+				}
+		}
+	}
+}
 
 // Guard against zip slip
 fun newFile(destinationPath: File, zipEntry: ZipEntry): File {
@@ -66,15 +104,23 @@ fun newFile(destinationPath: File, zipEntry: ZipEntry): File {
 	return destFile
 }
 
-fun unzip(file: String, destDir: String) {
+/*
+fun unzip(
+	file: String,
+	destDir: String,
+	onProgress: (Float) -> Unit = sendProgress) {
 	try {
-		val zipFile = File(destDir)
+		val destFile = File(destDir)
+		val zipFile = ZipFile(File(file))
 		val dataBuffer = ByteArray(1024)
-		val zis = ZipInputStream(FileInputStream(file))
+		val zis = ZipInputStream(zipFile.getInputStream())
+		var currentEntryCount = 0
+		val zipSize = zipFile.size()
+
 		var zipEntry = zis.nextEntry
 
 		while (zipEntry != null) {
-			val file = newFile(zipFile, zipEntry)
+			val file = newFile(destFile, zipEntry)
 			if (zipEntry.isDirectory) {
 				if (!file.isDirectory && !file.mkdirs()) {
 					throw IOException("Failed to create directory: $file")
@@ -93,11 +139,58 @@ fun unzip(file: String, destDir: String) {
 				}
 				fileOutputStream.close()
 			}
+			onProgress(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
+			currentEntryCount++
 			zipEntry = zis.nextEntry
 		}
 
 		zis.closeEntry()
 		zis.close()
+	} catch (e: Exception) {
+		println("Error during unzip: ${e.message}")
+	}
+}
+
+ */
+
+fun newAndCoolUnzip(
+	file: String,
+	destDir: String,
+	onProgress: (Float) -> Unit = sendProgress) {
+	try {
+		val file = File(file)
+		val zipFile = ZipFile(file)
+		val dataBuffer = ByteArray(1024)
+		val zipEntries = zipFile.entries()
+		val zipSize = zipFile.size()
+		var currentEntryCount = 0
+		while (zipEntries.hasMoreElements()) {
+			println(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
+			val currentEntry = zipEntries.nextElement()
+			val inputStream = zipFile.getInputStream(currentEntry)
+			val file = newFile(file, currentEntry)
+			if (currentEntry.isDirectory) {
+				if (!file.isDirectory && !file.mkdirs()) {
+					throw IOException("Failed to create directory: $file")
+				} else {
+					val parent = file.parentFile
+					if (!parent.isDirectory && !parent.mkdirs()) {
+						throw IOException("Failed to create directory: $parent")
+					}
+				}
+			} else {
+				val fileOutputStream = FileOutputStream(file)
+				var len = inputStream.read(dataBuffer, 0, 1024)
+				while (len > 0) {
+					fileOutputStream.write(dataBuffer, 0, len)
+					len = inputStream.read(dataBuffer, 0, len)
+				}
+				fileOutputStream.close()
+			}
+			onProgress(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
+			currentEntryCount++
+			println(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
+		}
 	} catch (e: Exception) {
 		println("Error during unzip: ${e.message}")
 	}

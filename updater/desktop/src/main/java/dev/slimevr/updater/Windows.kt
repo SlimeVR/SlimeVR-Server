@@ -38,7 +38,7 @@ class Windows {
 		// downloading slime server
 		downloadFile(WINDOWSSERVERURL, WINDOWSSERVERNAME)
 		println("extracting")
-		unzip(WINDOWSSERVERNAME, WINDOWSSERVERDIRECTORY)
+		newAndCoolUnzip(WINDOWSSERVERNAME, WINDOWSSERVERDIRECTORY)
 	}
 
 	fun feeder() {
@@ -46,7 +46,7 @@ class Windows {
 		println("Downloading feeder")
 		downloadFile(WINDOWSFEEDERURL, WINDOWSFEEDERNAME)
 		println("Unzipping feeder")
-		unzip(WINDOWSFEEDERNAME, WINDOWSFEEDERDIRECTORY)
+		newAndCoolUnzip(WINDOWSFEEDERNAME, WINDOWSFEEDERDIRECTORY)
 		executeShellCommand("${path}\\${WINDOWSFEEDERDIRECTORY}\\SlimeVR-Feeder-App.exe",  "--install")
 		mainProgressBar.value = (100 / 3 * 3)
 	}
@@ -69,7 +69,7 @@ class Windows {
 		println("Installing SteamVR Driver")
 		println("Downloading SteamVR driver")
 		downloadFile(WINDOWSSTEAMVRDRIVERURL, WINDOWSSTEAMVRDRIVERNAME)
-		unzip(WINDOWSSTEAMVRDRIVERNAME, WINDOWSSTEAMVRDRIVERDIRECTORY)
+		newAndCoolUnzip(WINDOWSSTEAMVRDRIVERNAME, WINDOWSSTEAMVRDRIVERDIRECTORY)
 		println("Driver downloaded")
 		println("Registering driver with steamvr")
 		executeShellCommand(

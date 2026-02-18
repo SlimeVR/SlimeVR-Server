@@ -27,13 +27,11 @@ class Linux {
 		subProgressBar.value = 0
 		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
-		if (!isDriverRegistered) {
+		if (isDriverRegistered) {
 			subProgressBar.string = "Downloading SteamVR Driver"
-			subProgressBar.value = 25
 			downloadFile(LINUXSTEAMVRDRIVERURL, LINUXSTEAMVRDRIVERNAME)
 			subProgressBar.string = "Unzipping SteamVR Driver"
-			subProgressBar.value = 50
-			unzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
+			newAndCoolUnzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
 			println("Driver downloaded")
 			println("Registering driver with steamvr")
 			println("${Paths.get("").toAbsolutePath()}/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr")
@@ -71,7 +69,7 @@ class Linux {
 		downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
 		subProgressBar.value = 50
 		subProgressBar.string = "Unzipping Feeder App"
-		unzip(LINUXFEEDERNAME, LINUXFEEDERDIRECTORY)
+		newAndCoolUnzip(LINUXFEEDERNAME, LINUXFEEDERDIRECTORY)
 		subProgressBar.value = 75
 		subProgressBar.string = "Registering Feeder App"
 		executeShellCommand("${path}/${LINUXFEEDERDIRECTORY}/SlimeVR-Feeder-App",  "--install")

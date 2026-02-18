@@ -58,6 +58,7 @@ dependencies {
 	implementation("io.ktor:ktor-client-cio:3.0.3")
 	implementation("io.ktor:ktor-client-content-negotiation:3.0.3")
 	implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.3")
+	implementation("org.apache.commons:commons-lang3:3.20.0")
 }
 
 tasks.shadowJar {
