@@ -24,6 +24,7 @@ import java.security.MessageDigest
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 fun executeShellCommand(vararg command: String): String = try {
 	val process = ProcessBuilder(*command)
@@ -36,12 +37,12 @@ fun executeShellCommand(vararg command: String): String = try {
 	"Error executing shell command: ${e.message}"
 }
 
-val sendProgress: (Float) -> Unit = { progress ->  subProgressBar.value = progress.toInt() }
+val sendProgress: (Float) -> Unit = { progress -> subProgressBar.value = progress.toInt() }
 
 fun downloadFile(
 	fileUrl: String,
 	fileName: String,
-	onProgress: (Float) -> Unit = sendProgress
+	onProgress: (Float) -> Unit = sendProgress,
 ) {
 	onProgress(0f)
 	val client = HttpClient(CIO)
@@ -51,22 +52,32 @@ fun downloadFile(
 		client.prepareGet(
 			fileUrl,
 			block = {
-				val timeout = 30.minutes.inWholeMilliseconds
+				val timeout = 30.seconds.inWholeMilliseconds
 				timeout {
 					requestTimeoutMillis = timeout
 					connectTimeoutMillis = timeout
 					socketTimeoutMillis = timeout
 				}
 				onDownload { bytesSentTotal, contentLength ->
-					val progress = (bytesSentTotal.toFloat() / (((contentLength?.toFloat()
-						?: 1F))))
+					val progress = (
+						bytesSentTotal.toFloat() /
+							(
+								(
+									(
+										contentLength?.toFloat()
+											?: 1F
+										)
+									)
+								)
+						)
 					onProgress(progress * 100)
 				}
-			}).execute { httpResponse ->
-				if (httpResponse.status.value in 200..299) {
-					val byteReadChannel = httpResponse.bodyAsChannel()
-					byteReadChannel.copyTo(outputStream)
-				}
+			},
+		).execute { httpResponse ->
+			if (httpResponse.status.value in 200..299) {
+				val byteReadChannel = httpResponse.bodyAsChannel()
+				byteReadChannel.copyTo(outputStream)
+			}
 		}
 	}
 	checksum(fileName)
@@ -89,7 +100,8 @@ fun newFile(destinationPath: File, zipEntry: ZipEntry): File {
 fun unzip(
 	file: String,
 	destDir: String,
-	onProgress: (Float) -> Unit = sendProgress) {
+	onProgress: (Float) -> Unit = sendProgress,
+) {
 	onProgress(0f)
 	val destFile = File(destDir)
 	val zipFile = ZipFile(file)
@@ -121,13 +133,13 @@ fun unzip(
 				fileOutputStream.close()
 			}
 			onProgress(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
-			println(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
 			currentEntryCount++
 		}
 
 		deleteFile(destFile)
 	} catch (e: Exception) {
 		println("Error during unzip: ${e.message}")
+		label.text = "An error occurred: ${e.message}"
 		deleteFile(destFile)
 	}
 }
@@ -178,6 +190,7 @@ suspend fun shouldUpdate(): Boolean {
 		}
 	} catch (e: Exception) {
 		println("Error getting github release info: ${e.message}")
+		label.text = "An error occurred: ${e.message}"
 	}
 	return false
 }

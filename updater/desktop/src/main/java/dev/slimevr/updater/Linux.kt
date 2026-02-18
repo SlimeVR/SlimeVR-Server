@@ -10,17 +10,15 @@ class Linux {
 
 	fun updateLinux() {
 		updateLinuxSteamVRDriver()
-		//updateUdev()
+		updateUdev()
 		feeder()
-		//updateServer()
 	}
 
 	fun updateFrame() {
-		println("Running Updater for frame")
 		updateLinuxSteamVRDriver()
 	}
 
-	//TODO: tell user in gui to add steamvr launch arguments
+	// TODO: tell user in gui to add steamvr launch arguments
 	fun updateLinuxSteamVRDriver() {
 		mainProgressBar.string = "updating SteamVR Driver"
 		subProgressBar.isVisible = true
@@ -34,9 +32,10 @@ class Linux {
 			println("Driver downloaded")
 			println("Registering driver with steamvr")
 			println("${Paths.get("").toAbsolutePath()}/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr")
-			executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
+			executeShellCommand(
+				"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
 				"adddriver",
-				"${path}/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr"
+				"$path/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr",
 			)
 		} else {
 			println("steamVR driver is already registered. Skipping...")
@@ -50,9 +49,10 @@ class Linux {
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
 		if (isDriverRegistered) {
 			println("Removing driver from steamvr")
-			executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
+			executeShellCommand(
+				"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
 				"removedriver",
-				"${path}/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr"
+				"$path/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr",
 			)
 		} else {
 			println("steamVR driver isn't registered. Skipping...")
@@ -63,21 +63,16 @@ class Linux {
 		mainProgressBar.string = "Updating Feeder app"
 		subProgressBar.string = "Downloading Feeder App"
 		subProgressBar.isVisible = true
-		//downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
+		// downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
 		subProgressBar.string = "Unzipping Feeder App"
 		unzip(LINUXFEEDERNAME, LINUXFEEDERDIRECTORY)
 		subProgressBar.string = "Registering Feeder App"
-		executeShellCommand("${path}/${LINUXFEEDERDIRECTORY}/SlimeVR-Feeder-App",  "--install")
+		executeShellCommand("$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App", "--install")
 		mainProgressBar.value = (100 / 3 * 3)
 		subProgressBar.string = "Feeder app done"
 	}
 
-	fun updateServer() {
-		println("Downloading Server")
-		downloadFile(LINUXSERVERURL, LINUXSERVERNAME)
-	}
-
-	//TODO: Find a way to do version checking on udev rules
+	// TODO: Find a way to do version checking on udev rules
 	fun updateUdev() {
 		mainProgressBar.string = "Setting udev"
 		val file = Path("/etc/udev/rules.d/69-slimevr-devices.rules")
@@ -87,18 +82,16 @@ class Linux {
 			return
 		}
 		subProgressBar.string = "Asking for privileges"
-		val res = executeShellCommand("pkexec", "cp", "${path}/69-slimevr-devices.rules", "/etc/udev/rules.d/69-slimevr-devices.rules")
+		val res = executeShellCommand("pkexec", "cp", "$path/69-slimevr-devices.rules", "/etc/udev/rules.d/69-slimevr-devices.rules")
 		if (res.contains("Error")) {
 			println("Error installing udev rules")
-		}
-		else {
+		} else {
 			println("Successfully installed udev rules")
 		}
 		mainProgressBar.value = (100 / 3 * 2)
 		subProgressBar.value = 100
 		subProgressBar.string = "Udev done"
 	}
-
 
 	companion object {
 		// Linux URLs

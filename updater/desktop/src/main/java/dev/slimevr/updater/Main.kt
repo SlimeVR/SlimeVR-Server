@@ -2,7 +2,7 @@
 
 package dev.slimevr.updater
 
-import java.awt.*
+import java.awt.Label
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.JProgressBar
@@ -14,16 +14,13 @@ val mainProgressPanel = JPanel()
 val mainProgressBar = JProgressBar()
 val subProgressPanel = JPanel()
 val subProgressBar = JProgressBar()
-
-val width = 250
-val height = 300
+val isUpdateSuccessFull = false
 
 val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
 
 suspend fun main(args: Array<String>) {
-
 	label.setBounds(0, 0, 250, 50)
 
 	mainProgressBar.value = 0
@@ -43,13 +40,18 @@ suspend fun main(args: Array<String>) {
 	frame.setSize(250, 300)
 	frame.layout = null
 
-
-
 	val updater = Updater()
 	updater.runUpdater()
 
 	mainProgressBar.value = 100
 	mainProgressBar.string = "Done updating"
 	subProgressBar.isVisible = false
+
+	if (isUpdateSuccessFull) {
 	frame.dispose()
+	}
+	else {
+		label.text = "The update was not successfull!"
+		subProgressBar.string = ""
+	}
 }

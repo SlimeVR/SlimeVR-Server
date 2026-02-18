@@ -11,8 +11,6 @@ class Windows {
 		usbDrivers()
 		steamVRDriver()
 		feeder()
-		//Turn off updater stuff not needed for the steam release
-		//slimeServer()
 	}
 
 	fun usbDrivers() {
@@ -47,7 +45,7 @@ class Windows {
 		downloadFile(WINDOWSFEEDERURL, WINDOWSFEEDERNAME)
 		println("Unzipping feeder")
 		unzip(WINDOWSFEEDERNAME, WINDOWSFEEDERDIRECTORY)
-		executeShellCommand("${path}\\${WINDOWSFEEDERDIRECTORY}\\SlimeVR-Feeder-App.exe",  "--install")
+		executeShellCommand("${path}\\${WINDOWSFEEDERDIRECTORY}\\SlimeVR-Feeder-App.exe", "--install")
 		mainProgressBar.value = (100 / 3 * 3)
 	}
 
@@ -82,10 +80,6 @@ class Windows {
 			}\\${WINDOWSSTEAMVRDRIVERDIRECTORY}\\slimevr",
 		)
 		mainProgressBar.value = (100 / 3 * 2)
-	}
-
-	fun updateWindowsGui() {
-
 	}
 
 	companion object {
