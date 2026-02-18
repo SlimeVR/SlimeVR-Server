@@ -10,8 +10,8 @@ class Linux {
 
 	fun updateLinux() {
 		updateLinuxSteamVRDriver()
-		feeder()
 		updateUdev()
+		feeder()
 		//updateServer()
 	}
 
@@ -75,7 +75,7 @@ class Linux {
 		subProgressBar.value = 75
 		subProgressBar.string = "Registering Feeder App"
 		executeShellCommand("${path}/${LINUXFEEDERDIRECTORY}/SlimeVR-Feeder-App",  "--install")
-		mainProgressBar.value = (100 / 3 * 2)
+		mainProgressBar.value = (100 / 3 * 3)
 		subProgressBar.string = "Feeder app done"
 		subProgressBar.value = 100
 	}
@@ -105,7 +105,7 @@ class Linux {
 		else {
 			println("Successfully installed udev rules")
 		}
-		mainProgressBar.value = (100 / 3 * 3)
+		mainProgressBar.value = (100 / 3 * 2)
 		subProgressBar.value = 100
 		subProgressBar.string = "Udev done"
 	}
