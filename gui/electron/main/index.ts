@@ -34,9 +34,6 @@ import { discordPresence } from './presence';
 import { options } from './cli';
 import { ServerStatusEvent } from 'electron/preload/interface';
 
-app.disableHardwareAcceleration()
-
-
 // Register custom protocol to handle asset paths with leading slashes
 protocol.registerSchemesAsPrivileged([
   {
