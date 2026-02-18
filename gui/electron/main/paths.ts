@@ -2,8 +2,8 @@ import { app } from 'electron';
 import path, { join } from 'node:path';
 import { getPlatform } from './utils';
 import { glob } from 'glob';
-import { exec, spawn } from 'node:child_process';
-import javaVersionJar from '../ressources/java-version/JavaVersion.jar?asset&asarUnpack';
+import { spawn } from 'node:child_process';
+import javaVersionJar from '../resources/java-version/JavaVersion.jar?asset&asarUnpack';
 import { existsSync } from 'node:fs';
 import { options } from './cli'
 
