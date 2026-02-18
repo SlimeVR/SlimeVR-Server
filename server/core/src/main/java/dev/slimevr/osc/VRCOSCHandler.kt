@@ -199,7 +199,7 @@ class VRCOSCHandler(
 			try {
 				val addr = InetAddress.getByName(ip)
 				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
-				if (oscPortOut != portOut && oscIp != addr || !wasConnected) {
+				if ((oscPortOut != portOut && oscIp != addr) || !wasConnected) {
 					LogManager.info("[VRCOSCHandler] Sending to port $portOut at address $ip")
 				}
 				oscPortOut = portOut
