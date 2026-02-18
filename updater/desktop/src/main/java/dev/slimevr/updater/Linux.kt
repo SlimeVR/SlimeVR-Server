@@ -10,7 +10,7 @@ class Linux {
 
 	fun updateLinux() {
 		updateLinuxSteamVRDriver()
-		updateUdev()
+		//updateUdev()
 		feeder()
 		//updateServer()
 	}
@@ -24,7 +24,6 @@ class Linux {
 	fun updateLinuxSteamVRDriver() {
 		mainProgressBar.string = "updating SteamVR Driver"
 		subProgressBar.isVisible = true
-		subProgressBar.value = 0
 		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
 		if (isDriverRegistered) {
@@ -43,7 +42,6 @@ class Linux {
 			println("steamVR driver is already registered. Skipping...")
 		}
 		subProgressBar.string = "SteamVR Driver done"
-		subProgressBar.value = 100
 		mainProgressBar.value = (100 / 3)
 	}
 
@@ -64,7 +62,8 @@ class Linux {
 	fun feeder() {
 		mainProgressBar.string = "Updating Feeder app"
 		subProgressBar.string = "Downloading Feeder App"
-		downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
+		subProgressBar.isVisible = true
+		//downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
 		subProgressBar.string = "Unzipping Feeder App"
 		unzip(LINUXFEEDERNAME, LINUXFEEDERDIRECTORY)
 		subProgressBar.string = "Registering Feeder App"
@@ -99,6 +98,7 @@ class Linux {
 		subProgressBar.value = 100
 		subProgressBar.string = "Udev done"
 	}
+
 
 	companion object {
 		// Linux URLs

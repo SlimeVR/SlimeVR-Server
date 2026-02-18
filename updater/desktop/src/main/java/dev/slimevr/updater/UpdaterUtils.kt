@@ -17,6 +17,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
+import java.math.BigInteger
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.security.MessageDigest
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import kotlin.time.Duration.Companion.minutes
@@ -39,6 +43,7 @@ fun downloadFile(
 	fileName: String,
 	onProgress: (Float) -> Unit = sendProgress
 ) {
+	onProgress(0f)
 	val client = HttpClient(CIO)
 	val outputStream = FileOutputStream(fileName)
 
@@ -64,6 +69,7 @@ fun downloadFile(
 				}
 		}
 	}
+	checksum(fileName)
 }
 
 // Guard against zip slip
@@ -80,63 +86,15 @@ fun newFile(destinationPath: File, zipEntry: ZipEntry): File {
 	return destFile
 }
 
-/*
 fun unzip(
 	file: String,
 	destDir: String,
 	onProgress: (Float) -> Unit = sendProgress) {
+	onProgress(0f)
+	val destFile = File(destDir)
+	val zipFile = ZipFile(file)
+	val dataBuffer = ByteArray(1024)
 	try {
-		val destFile = File(destDir)
-		val zipFile = ZipFile(File(file))
-		val dataBuffer = ByteArray(1024)
-		val zis = ZipInputStream(zipFile.getInputStream())
-		var currentEntryCount = 0
-		val zipSize = zipFile.size()
-
-		var zipEntry = zis.nextEntry
-
-		while (zipEntry != null) {
-			val file = newFile(destFile, zipEntry)
-			if (zipEntry.isDirectory) {
-				if (!file.isDirectory && !file.mkdirs()) {
-					throw IOException("Failed to create directory: $file")
-				} else {
-					val parent = file.parentFile
-					if (!parent.isDirectory && !parent.mkdirs()) {
-						throw IOException("Failed to create directory: $parent")
-					}
-				}
-			} else {
-				val fileOutputStream = FileOutputStream(file)
-				var len = zis.read(dataBuffer, 0, 1024)
-				while (len > 0) {
-					fileOutputStream.write(dataBuffer, 0, len)
-					len = zis.read(dataBuffer, 0, len)
-				}
-				fileOutputStream.close()
-			}
-			onProgress(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
-			currentEntryCount++
-			zipEntry = zis.nextEntry
-		}
-
-		zis.closeEntry()
-		zis.close()
-	} catch (e: Exception) {
-		println("Error during unzip: ${e.message}")
-	}
-}
-
- */
-
-fun unzip(
-	file: String,
-	destDir: String,
-	onProgress: (Float) -> Unit = sendProgress) {
-	try {
-		val destFile = File(destDir)
-		val zipFile = ZipFile(file)
-		val dataBuffer = ByteArray(1024)
 		val zipEntries = zipFile.entries()
 		val zipSize = zipFile.size()
 		var currentEntryCount = 0
@@ -163,11 +121,28 @@ fun unzip(
 				fileOutputStream.close()
 			}
 			onProgress(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
+			println(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
 			currentEntryCount++
 		}
+
+		deleteFile(destFile)
 	} catch (e: Exception) {
 		println("Error during unzip: ${e.message}")
+		deleteFile(destFile)
 	}
+}
+
+fun deleteFile(file: File) {
+	if (file.exists() && file.isFile) {
+		file.delete()
+	}
+}
+
+fun checksum(file: String) {
+	val data = Files.readAllBytes(Paths.get(file))
+	val hash = MessageDigest.getInstance("SHA-256").digest(data)
+	val checksum = BigInteger(1, hash).toString(16)
+	println(checksum)
 }
 
 suspend fun shouldUpdate(): Boolean {
