@@ -47,10 +47,3 @@ export interface IpcInvokeMap {
   ) => Promise<GHReturn[T['type']]>;
   [IPC_CHANNELS.DISCORD_PRESENCE]: (options: DiscordPresence) => void;
 }
-
-/**
- * Mapping for Events (Main -> Renderer)
- */
-export interface IpcEventMap {
-  [IPC_CHANNELS.SERVER_STATUS]: ServerStatusEvent;
-}
