@@ -16,6 +16,8 @@ export const getGuiDataFolder = () => {
 
   switch (platform) {
     case 'linux':
+      if (process.env['XDG_DATA_HOME'])
+        return join(process.env['XDG_DATA_HOME'], CONFIG_IDENTIFIER);
       return join(app.getPath('home'), '.local/share', CONFIG_IDENTIFIER);
     case 'windows':
       return join(app.getPath('appData'), CONFIG_IDENTIFIER);
