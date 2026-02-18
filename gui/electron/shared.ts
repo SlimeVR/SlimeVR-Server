@@ -4,7 +4,7 @@ import {
   SaveDialogOptions,
   SaveDialogReturnValue,
 } from 'electron';
-import { DiscordPresence, GHGet, GHReturn, OSStats, ServerStatusEvent } from './preload/interface';
+import { DiscordPresence, GHGet, GHReturn, OSStats } from './preload/interface';
 
 export const IPC_CHANNELS = {
   SERVER_STATUS: 'server-status',
