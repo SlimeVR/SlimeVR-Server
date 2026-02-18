@@ -7,7 +7,7 @@ import {
 import { FileInputContentBlank, FileInputContentFile } from './FileInput';
 import { useElectron } from '@/hooks/electron';
 
-export function InnerSytemFileInput({
+export function InnerSystemFileInput({
   label,
   value,
   onChange,
