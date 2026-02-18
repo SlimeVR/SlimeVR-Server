@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "vite --force",
-    "dev": "electron-vite dev --config electron.vite.config.ts --watch",
+    "gui": "electron-vite dev --config electron.vite.config.ts --watch",
     "build": "electron-vite build --config electron.vite.config.ts",
     "package": "pnpm run build && electron-builder",
     "preview": "electron-vite preview --config electron.vite.config.ts",
