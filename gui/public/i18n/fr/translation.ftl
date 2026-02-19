@@ -439,6 +439,7 @@ tracker-settings-update = Mettre à jour maintenant
 tracker-settings-update-title = Version du micrologiciel
 tracker-settings-current-version = Actuel
 tracker-settings-latest-version = Dernière version
+tracker-settings-build-date = Date de build
 
 ## Tracker part card info
 
@@ -517,6 +518,7 @@ settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
 settings-sidebar-home = Ecran d'accueil
+settings-sidebar-checklist = Checklist de suivi
 settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Comportement
 settings-sidebar-firmware-tool = Outil de micrologiciel DIY
@@ -602,6 +604,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utilise le magnétomètre sur tous les capteurs dotés d'un micrologiciel compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
     Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le magnétomètre sur les capteurs
+settings-general-tracker_mechanics-trackers_over_usb = Capteurs via USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Permet de recevoir des données de suivi HID via USB. Assurez-vous que les capteurs connectés ont <b>la connexion via HID</b> activée !
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Permettre aux capteurs HID de se connecter directement via USB
 settings-stay_aligned = Garder Aligné
 settings-stay_aligned-description = Garder Aligné réduit la dérive en ajustant progressivement vos capteurs pour qu’ils correspondent à vos postures détendues.
 settings-stay_aligned-setup-label = Configurer Garder Aligné
@@ -864,7 +869,7 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Adresse réseau
 settings-osc-vrchat-network-address-description-v1 = Choisissez l'adresse à laquelle envoyer des données. Peut être laissé intact pour VRChat.
 settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
-settings-osc-vrchat-network-trackers = capteurs
+settings-osc-vrchat-network-trackers = Capteurs
 settings-osc-vrchat-network-trackers-description = Sélectionner quels capteurs envoyer via OSC.
 settings-osc-vrchat-network-trackers-chest = Poitrine
 settings-osc-vrchat-network-trackers-hip = Hanche
@@ -944,11 +949,15 @@ settings-utils-advanced-open_logs-label = Ouvrir le dossier
 
 ## Home Screen
 
+settings-home-list-layout = Disposition de la liste des capteurs
 settings-home-list-layout-desc = Sélectionnez l'une des dispositions possibles de l'écran d'accueil
+settings-home-list-layout-grid = Grille
+settings-home-list-layout-table = Tableau
 
 ## Tracking Checlist
 
 settings-tracking_checklist-active_steps = Etapes actives
+settings-tracking_checklist-active_steps-desc = Liste de toutes les étapes de la checklist de suivi. Vous pouvez choisir de désactiver certaines étapes.
 
 ## Setup/onboarding menu
 
@@ -965,6 +974,13 @@ onboarding-setup_warning-cancel = Continuer la configuration
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Retour à l'introduction
+onboarding-wifi_creds-v2 = Capteurs utilisant le Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    La plupart des capteurs (comme les capteurs officiels SlimeVR) utilisent le Wi-Fi pour se connecter au serveur.
+    Veuillez utiliser les identifiants du réseau Wi-Fi auquel votre appareil est actuellement connecté.
+    
+    Assurez-vous d’utiliser une connexion Wi-Fi 2,4 GHz pour vos capteurs !
 onboarding-wifi_creds-skip = Passer configuration Wi-Fi
 onboarding-wifi_creds-submit = Valider
 onboarding-wifi_creds-ssid =
@@ -974,6 +990,10 @@ onboarding-wifi_creds-ssid-required = Le nom du Wi-Fi est requis
 onboarding-wifi_creds-password =
     .label = Mot de passe du Wi-Fi
     .placeholder = Mot de passe
+onboarding-wifi_creds-dongle-title = Capteurs utilisant un dongle
+onboarding-wifi_creds-dongle-description = Si vos capteurs ont été livrés avec un dongle, branchez-le à votre appareil et vous devriez être prêt !
+onboarding-wifi_creds-dongle-wip = Cette section est en cours de développement. Une page dédiée à la gestion des capteurs connectés via un dongle sera bientôt créée.
+onboarding-wifi_creds-dongle-continue = Continuer avec un dongle
 
 ## Mounting setup
 
@@ -1079,6 +1099,7 @@ onboarding-assignment_tutorial-done = J'ai mis les autocollants et les sangles !
 onboarding-assign_trackers-back = Revenir aux identifiants Wi-Fi
 onboarding-assign_trackers-title = Attribuer des capteurs
 onboarding-assign_trackers-description = Choisissons où mettre chaque capteur.
+onboarding-assign_trackers-unassign_all = Désattribuer tout les capteurs
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1223,6 +1244,8 @@ onboarding-automatic_mounting-done-restart = Retourner au début
 onboarding-automatic_mounting-mounting_reset-title = Réinitialisation de l'alignement
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une pose de "ski" avec les jambes pliées, le haut du corps incliné vers l'avant et les bras pliés.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l'alignement" et attendez 3 secondes avant que l'alignement des capteurs se calibre.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Mettez-vous sur la pointe des pieds, les deux pieds pointés vers l’avant. Vous pouvez aussi le faire assis sur une chaise.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Appuyez sur le bouton « Calibration des pieds » et attendez 3 secondes avant que l’orientation de l'alignement des capteurs ne se réinitialise.
 onboarding-automatic_mounting-preparation-title = Préparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Appuyez sur le bouton « Réinitialisation complète ».
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Tenez-vous droit debout, les bras le long du corps. Assurez-vous de regarder vers l’avant.
@@ -1234,6 +1257,7 @@ onboarding-automatic_mounting-return-home = Terminé
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Retour aux proportions mises à l'échelle
 onboarding-manual_proportions-title = Proportions manuelles du corps
 onboarding-manual_proportions-fine_tuning_button = Automatiquement ajuster les proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Veuillez connecter un casque VR pour utiliser l'ajustement automatique
@@ -1334,9 +1358,21 @@ onboarding-automatic_proportions-smol_warning-cancel = Retour
 ## User height calibration
 
 onboarding-user_height-title = Quelle est votre taille ?
+onboarding-user_height-description = Nous avons besoin de votre taille pour calculer les proportions de votre corps ainsi que pour représenter précisément vos mouvements. Vous pouvez laisser SlimeVR la calculer ou entrer votre taille manuellement.
 onboarding-user_height-need_head_tracker = Un casque VR (ou capteur de tête) et des manettes à position absolue sont nécessaires pour calculer votre taille.
 onboarding-user_height-calculate = Calculer ma taille automatiquement
 onboarding-user_height-next_step = Continuer et enregistrer
+onboarding-user_height-manual-proportions = Proportions manuelles
+onboarding-user_height-calibration-title = Progression de la calibration
+onboarding-user_height-calibration-RECORDING_FLOOR = Touchez le sol avec l'extrémité de votre contrôleur
+onboarding-user_height-calibration-WAITING_FOR_RISE = Relevez-vous
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Relevez-vous et regardez droit devant vous
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Assurez-vous que votre tête est bien droite
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Ne regardez pas vers le sol
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Ne regardez pas trop haut
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Assurez-vous que votre manette pointe vers le bas
+onboarding-user_height-calibration-RECORDING_HEIGHT = Relevez-vous et restez immobile !
+onboarding-user_height-calibration-DONE = Succès !
 
 ## Stay Aligned setup
 
@@ -1582,3 +1618,17 @@ error_collection_modal-cancel = Je ne veux pas
 
 ## Tracking checklist section
 
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurer Garder Aligné
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Enregistrez les poses Garder Aligné pour réduire la dérive
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Ouvrir l'assistant de Garder Aligné
+tracking_checklist-ignore = Ignorer
+preview-mocap_mode_soon = Mode Mocap (Bientôt™)
+preview-disable_render = Désactiver le rendu
+preview-disabled_render = Rendu désactivé
+toolbar-mounting_calibration = Calibration de l'alignement
+toolbar-mounting_calibration-default = Corps
+toolbar-mounting_calibration-feet = Pieds
+toolbar-mounting_calibration-fingers = Doigts
+toolbar-drift_reset = Réinitialisation de la dérive
+toolbar-assigned_trackers = { $count } capteurs assignés
+toolbar-unassigned_trackers = { $count } capteurs non assignés
