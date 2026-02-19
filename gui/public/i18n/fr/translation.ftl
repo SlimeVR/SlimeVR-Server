@@ -1373,6 +1373,11 @@ onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Ne regardez pas tr
 onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Assurez-vous que votre manette pointe vers le bas
 onboarding-user_height-calibration-RECORDING_HEIGHT = Relevez-vous et restez immobile !
 onboarding-user_height-calibration-DONE = Succès !
+onboarding-user_height-calibration-ERROR_TIMEOUT = Délais de calibration expiré, veuillez réessayer.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = La taille détectée est trop grande, veuillez réessayez.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = La taille détectée est trop petite. Veuillez rester droit et regardez devant vous à la fin de la calibration.
+onboarding-user_height-calibration-error = Calibration échouée
+onboarding-user_height-manual-tip = En ajustant votre taille, essayez différentes poses et regardez comment le squelette suit vos mouvements.
 
 ## Stay Aligned setup
 
@@ -1407,10 +1412,12 @@ onboarding-stay_aligned-previous_step = Précédent
 onboarding-stay_aligned-next_step = Prochain
 onboarding-stay_aligned-restart = Recommencer
 onboarding-stay_aligned-done = Fait
+onboarding-stay_aligned-manual_mounting-done = Terminé
 
 ## Home
 
 home-no_trackers = Aucun capteur détecté ou attribué
+home-settings-close = Fermer
 
 ## Trackers Still On notification
 
@@ -1455,6 +1462,7 @@ firmware_tool-select_source-firmware = Source du micrologiciel
 firmware_tool-select_source-version = Version du micrologiciel
 firmware_tool-select_source-official = Officiel
 firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-not_selected = Aucune source sélectionnée
 firmware_tool-board_defaults = Configurez votre carte
 firmware_tool-board_defaults-description = Réglez les broches ou réglages pour votre matériel
 firmware_tool-board_defaults-add = Ajouter
