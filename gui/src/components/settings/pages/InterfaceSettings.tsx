@@ -79,7 +79,7 @@ export function InterfaceSettings() {
     {
       label: l10n.getString('settings-interface-appearance-font-slime_font'),
       value: 'poppins',
-      fontName: 'poppins, Noto Sans CJK',
+      fontName: 'poppins, Noto Sans',
     },
     {
       label: 'OpenDyslexic',
@@ -89,9 +89,9 @@ export function InterfaceSettings() {
     { label: 'Lexend', value: 'Lexend', fontName: 'Lexend' },
     { label: 'Ubuntu', value: 'Ubuntu', fontName: 'Ubuntu' },
     {
-      label: 'Noto Sans (CJK)',
-      value: 'Noto Sans CJK',
-      fontName: 'Noto Sans CJK',
+      label: 'Noto Sans',
+      value: 'Noto Sans',
+      fontName: 'Noto Sans',
     },
     {
       label: l10n.getString('settings-interface-appearance-font-os_font'),

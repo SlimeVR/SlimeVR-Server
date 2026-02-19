@@ -11,7 +11,7 @@
     "gui": "pnpm run update-solarxr && cd gui && pnpm run gui",
     "lint:fix": "cd gui && pnpm lint:fix",
     "skipbundler": "cd gui && pnpm run skipbundler",
-    "build": "echo \"Prob should do something about that\"",
+    "build": "cd gui && pnpm build",
     "update-solarxr": "cd solarxr-protocol && pnpm run build",
     "prepare": "husky && pnpm run update-solarxr",
     "preinstall": "npx only-allow pnpm"
