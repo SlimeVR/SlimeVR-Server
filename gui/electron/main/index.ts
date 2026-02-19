@@ -369,20 +369,6 @@ const spawnServer = async () => {
 
   const updater = spawn(javaBin, ['-Xmx128M', '-jar', updaterJar, 'run']);
 
-    updater.stdout?.on('data', (message) => {
-    mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
-      message: message.toString(),
-      type: 'stdout'
-    } satisfies ServerStatusEvent)
-  });
-
-  updater.stderr?.on('data', (message) => {
-    mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
-      message: message.toString(),
-      type: 'stderr'
-    } satisfies ServerStatusEvent)
-  });
-
   const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run']);
 
   process.stdout?.on('data', (message) => {
