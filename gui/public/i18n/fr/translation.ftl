@@ -7,7 +7,7 @@
 
 ## Websocket (server) status
 
-websocket-connecting = Connexion au serveur
+websocket-connecting = Chargement...
 websocket-connection_lost = Connexion avec le serveur perdue. Reconnexion...
 websocket-connection_lost-desc = Il semble que le serveur SlimeVR ait planté. Vérifiez les logs et redémarrez le programme.
 websocket-timedout = Impossible de se connecter au serveur
@@ -33,7 +33,7 @@ tips-failed_webgl = Échec de l'initialisation de WebGL.
 
 ## Units
 
-unit-meter = Metre
+unit-meter = Mètre
 unit-foot = Pied
 unit-inch = Pouce
 unit-cm = cm
@@ -115,6 +115,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
+board_type-GESTURES = Gestes
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = nRF Générique
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -225,7 +230,7 @@ skeleton_bone-LOWER_ARM-desc =
 skeleton_bone-HAND_Y = Distance Y des mains
 skeleton_bone-HAND_Y-desc =
     Ceci est la distance verticale entre vos poignets et le milieu de vos main.
-    Pour l’ajuster pour la capture de mouvement, ajustez correctement la longueur des bras et modifiez-la jusqu’à ce que votre
+    Pour l’ajuster pour la capture de mouvement, ajustez correctement la longueur des bras et modifiez-la jusqu’à ce que vos
     capteurs de main soient alignés verticalement avec le milieu de vos mains.
     Pour l’ajuster pour le suivi des coudes à partir de vos manettes, réglez la longueur des bras à 0 et
     modifiez-la jusqu’à ce que vos capteurs de coude soient alignés verticalement avec vos poignets.
@@ -256,9 +261,10 @@ reset-mounting = Réinitialiser l'alignement
 reset-mounting-feet = Réinitialiser l'alignement des pieds
 reset-mounting-fingers = Réinitialiser l'alignement des doigts
 reset-yaw = Réinitialisation horizontale
-reset-error-no_feet_tracker = Aucun traqueur de pieds n’est assigné
-reset-error-no_fingers_tracker = Aucun traqueur de doigts n'est assigné
+reset-error-no_feet_tracker = Aucun capteur de pieds n’est assigné
+reset-error-no_fingers_tracker = Aucun capteur de doigts n'est assigné
 reset-error-mounting-need_full_reset = Nécessite une réinitialisation complète avant de le monter
+reset-error-yaw-need_full_reset = Nécessite une réinitialisation complète avant une réinitialisation horizontale
 
 ## Serial detection stuff
 
@@ -278,6 +284,7 @@ navbar-trackers_assign = Attribution des capteurs
 navbar-mounting = Alignement des capteurs
 navbar-onboarding = Assistant de configuration
 navbar-settings = Réglages
+navbar-connect_trackers = Connecter les capteurs
 
 ## Biovision hierarchy recording
 
@@ -348,6 +355,7 @@ tracker-table-column-name = Nom
 tracker-table-column-type = Type
 tracker-table-column-battery = Batterie
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Pertes de paquets
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accél. X/Y/Z
@@ -389,6 +397,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Activé
        *[NOT_SUPPORTED] Non pris en charge
     }
+tracker-infos-packet_loss = Pertes de paquets
+tracker-infos-packets_lost = Paquets perdus
+tracker-infos-packets_received = Paquets reçus
 
 ## Tracker settings
 
@@ -426,6 +437,8 @@ tracker-settings-update-up_to_date = À jour
 tracker-settings-update-blocked = Mise à jour non disponible. Aucune autre version disponible
 tracker-settings-update = Mettre à jour maintenant
 tracker-settings-update-title = Version du micrologiciel
+tracker-settings-current-version = Actuel
+tracker-settings-latest-version = Dernière version
 
 ## Tracker part card info
 
