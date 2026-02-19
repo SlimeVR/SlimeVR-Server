@@ -14,7 +14,7 @@ val mainProgressPanel = JPanel()
 val mainProgressBar = JProgressBar()
 val subProgressPanel = JPanel()
 val subProgressBar = JProgressBar()
-val isUpdateSuccessFull = false
+val isUpdateSuccessFull = true
 
 val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +

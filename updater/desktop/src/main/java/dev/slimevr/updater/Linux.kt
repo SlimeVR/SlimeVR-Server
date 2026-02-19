@@ -8,7 +8,12 @@ class Linux {
 
 	val path = Paths.get("").toAbsolutePath().toString()
 
+	var steamVRDriverSuccess = false
+	var udevSuccess = false
+	var feederSuccess = false
+
 	fun updateLinux() {
+		removeLinuxSteamVRDriver()
 		updateLinuxSteamVRDriver()
 		updateUdev()
 		feeder()
@@ -24,7 +29,7 @@ class Linux {
 		subProgressBar.isVisible = true
 		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
-		if (isDriverRegistered) {
+		if (!isDriverRegistered) {
 			subProgressBar.string = "Downloading SteamVR Driver"
 			downloadFile(LINUXSTEAMVRDRIVERURL, LINUXSTEAMVRDRIVERNAME)
 			subProgressBar.string = "Unzipping SteamVR Driver"
@@ -42,6 +47,7 @@ class Linux {
 		}
 		subProgressBar.string = "SteamVR Driver done"
 		mainProgressBar.value = (100 / 3)
+		steamVRDriverSuccess = true
 	}
 
 	fun removeLinuxSteamVRDriver() {
@@ -63,13 +69,15 @@ class Linux {
 		mainProgressBar.string = "Updating Feeder app"
 		subProgressBar.string = "Downloading Feeder App"
 		subProgressBar.isVisible = true
-		// downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
+		downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
 		subProgressBar.string = "Unzipping Feeder App"
 		unzip(LINUXFEEDERNAME, LINUXFEEDERDIRECTORY)
 		subProgressBar.string = "Registering Feeder App"
-		executeShellCommand("$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App", "--install")
+		println(executeShellCommand("chmod", "+x", "$path/$LINUXFEEDERDIRECTORY/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App"))
+		println(executeShellCommand("$path/$LINUXFEEDERDIRECTORY/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App", "--install"))
 		mainProgressBar.value = (100 / 3 * 3)
 		subProgressBar.string = "Feeder app done"
+		feederSuccess = true
 	}
 
 	// TODO: Find a way to do version checking on udev rules
@@ -91,6 +99,7 @@ class Linux {
 		mainProgressBar.value = (100 / 3 * 2)
 		subProgressBar.value = 100
 		subProgressBar.string = "Udev done"
+		udevSuccess = true
 	}
 
 	companion object {
