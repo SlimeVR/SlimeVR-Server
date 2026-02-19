@@ -71,12 +71,11 @@ export const findSystemJRE = async (sharedDir: string) => {
     ...(await glob('/usr/lib/jvm/*/bin/' + javaBin)),
     ...(await glob('/Library/Java/JavaVirtualMachines/*/Contents/Home/bin/' + javaBin)),
   ]
-  console.log(paths);
+
   for (const path of paths) {
     if (!path) continue;
 
     const version = await new Promise<number | null>((resolve) => {
-      console.log(`${path} -jar ${javaVersionJar}`)
       const process = spawn(path, ['-jar', javaVersionJar]);
 
       let version: number | null = null;
@@ -113,7 +112,6 @@ export const findServerJar = () => {
     path.resolve('/app/share/slimevr/'),
     path.resolve('/usr/share/slimevr/'),
   ];
-  console.log(paths)
   return paths
     .filter((p) => !!p)
     .map((p) => join(p!, 'slimevr.jar'))
