@@ -2,23 +2,13 @@
 
 package dev.slimevr.updater
 
-import java.awt.Label
-import javax.swing.JFrame
-import javax.swing.JPanel
-import javax.swing.JProgressBar
+import java.awt.Color
 import kotlin.text.ifEmpty
-
-val frame = JFrame("SlimeVR Updater")
-val label = Label("Running Updater")
-val mainProgressPanel = JPanel()
-val mainProgressBar = JProgressBar()
-val subProgressPanel = JPanel()
-val subProgressBar = JProgressBar()
-val isUpdateSuccessFull = false
 
 val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
+val updaterGui = UpdaterGui()
 
 suspend fun main(args: Array<String>) {
 	label.setBounds(0, 0, 250, 50)
@@ -34,6 +24,9 @@ suspend fun main(args: Array<String>) {
 	subProgressBar.isVisible = false
 	subProgressPanel.setBounds(0, 100, 250, 50)
 
+	frame.background = Color(187, 138, 229)
+	frame.setLocationRelativeTo(null)
+	frame.isUndecorated = true
 	frame.add(label)
 	frame.add(mainProgressPanel)
 	frame.add(subProgressPanel)
@@ -48,10 +41,9 @@ suspend fun main(args: Array<String>) {
 	subProgressBar.isVisible = false
 
 	if (isUpdateSuccessFull) {
-	frame.dispose()
-	}
-	else {
-		label.text = "The update was not successfull!"
+		frame.dispose()
+	} else {
+		label.text = "The update was not successful!"
 		subProgressBar.string = ""
 	}
 }

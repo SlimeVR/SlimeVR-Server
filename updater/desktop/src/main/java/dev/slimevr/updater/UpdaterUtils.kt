@@ -23,7 +23,6 @@ import java.nio.file.Paths
 import java.security.MessageDigest
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 fun executeShellCommand(vararg command: String): String = try {
@@ -37,12 +36,12 @@ fun executeShellCommand(vararg command: String): String = try {
 	"Error executing shell command: ${e.message}"
 }
 
-val sendProgress: (Float) -> Unit = { progress -> subProgressBar.value = progress.toInt() }
+val sendSubProgress: (Float) -> Unit = { progress -> updaterGui.subProgressBar.setProgress(progress.toInt()) }
 
 fun downloadFile(
 	fileUrl: String,
 	fileName: String,
-	onProgress: (Float) -> Unit = sendProgress,
+	onProgress: (Float) -> Unit = sendSubProgress,
 ) {
 	onProgress(0f)
 	val client = HttpClient(CIO)
@@ -70,6 +69,7 @@ fun downloadFile(
 									)
 								)
 						)
+					println("Progress ${progress * 100}")
 					onProgress(progress * 100)
 				}
 			},
@@ -100,7 +100,7 @@ fun newFile(destinationPath: File, zipEntry: ZipEntry): File {
 fun unzip(
 	file: String,
 	destDir: String,
-	onProgress: (Float) -> Unit = sendProgress,
+	onProgress: (Float) -> Unit = sendSubProgress,
 ) {
 	onProgress(0f)
 	val destFile = File(destDir)
