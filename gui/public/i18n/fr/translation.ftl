@@ -1491,6 +1491,8 @@ firmware_tool-flashbtn_step = Appuyez sur le bouton boot
 firmware_tool-flashbtn_step-description = Avant de passer à l'étape suivante, il y a quelques choses que vous devez faire
 firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s'il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l'une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
 firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Allumez le capteur tout en court-circuitant le second pad FLASH rectangulaire à partir du bord en haut de la carte jusqu’à la protection métallique du microcontrôleur. La LED du capteur devrait faire un clignotement rapide.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Allumez le capteur tout en court-circuitant le pad FLASH circulaire sur le dessus de la carte à la protection métallique du microcontrôleur. La LED du capteur devrait faire un clignotement rapide.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Allumez le capteur tout en appuyant sur le bouton FLASH sur le dessus de la carte. La LED du capteur devrait faire un clignotement brièvement.
 firmware_tool-flashbtn_step-board_OTHER =
     Avant de flash le capteur, vous devrez probablement le mettre en mode bootloader.
     La plupart du temps, il s'agit d'appuyer sur le bouton boot de la carte avant que le processus de flash ne commence.
@@ -1633,6 +1635,15 @@ error_collection_modal-cancel = Je ne veux pas
 
 ## Tracking checklist section
 
+tracking_checklist = Checklist de suivi
+tracking_checklist-settings = Paramètres de lachecklist de suivi
+tracking_checklist-settings-close = Fermer
+tracking_checklist-status-incomplete = Vous n’êtes pas prêt à utiliser SlimeVR !
+tracking_checklist-status-partial =
+    { $count ->
+        [one] Vous avez 1 avertissement !
+       *[other] Vous avez { $count } avertissements !
+    }
 tracking_checklist-status-complete = Vous êtes prêt à utiliser SlimeVR !
 tracking_checklist-MOUNTING_CALIBRATION = Effectuer une calibration de l'alignement
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Effectuer une calibration de l'alignement des pieds
