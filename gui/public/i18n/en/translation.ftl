@@ -934,6 +934,38 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Skip setup
 onboarding-setup_warning-cancel = Continue setup
 
+## Quiz
+onboarding-quiz_continue= Continue
+
+onboarding-quiz-slimeset-title = Tracker Type
+onboarding-quiz-slimeset-description = Which tracker type are you using?
+ (If you have third party trackers and are not sure, ask your seller)
+onboarding-quiz-slimeset-answer-regular = Regular Slime
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = Wifi Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle Slime
+
+onboarding-quiz-usage-title = Use Case
+onboarding-quiz-usage-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-usage-answer-mocap = Mocap (Motion Capture)
+onboarding-quiz-usage-answer-vtubing = VTubing
+
+onboarding-quiz-runtime-title = Runtime
+onboarding-quiz-runtime-description = Do you play VRChat on a PC via SteamVR (including with Virtual Desktop, Steam Link, ALVR, etc.), or on a standalone headset such as a Meta Quest or Pico?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+
+onboarding-quiz-mocap-pos-title = Head Tracker Position
+onboarding-quiz-mocap-pos-description = Where is the head tracker positioned on your head?
+onboarding-quiz-mocap-pos-answer-forehead = Forehead
+onboarding-quiz-mocap-pos-answer-face = Face
+
+onboarding-quiz-update-title = Tracker Update
+onboarding-quiz-update-description = Would you like to update your trackers to make sure they have the most up to date firmware?
+onboarding-quiz-update-answer-yes = Yes
+onboarding-quiz-update-answer-no = No
+
 ## Wi-Fi setup
 onboarding-wifi_creds-back = Go back to introduction
 onboarding-wifi_creds-v2 = Trackers using Wi-Fi
@@ -1468,6 +1500,7 @@ firmware_tool-flashing_step-description =
 firmware_tool-flashing_step-warning-v2 = Do not unplug or turn off the tracker during the upload process unless told to, it may make your board unusable
 firmware_tool-flashing_step-flash_more = Flash more trackers
 firmware_tool-flashing_step-exit = Exit
+firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 firmware_tool-build-QUEUED = Waiting to build....

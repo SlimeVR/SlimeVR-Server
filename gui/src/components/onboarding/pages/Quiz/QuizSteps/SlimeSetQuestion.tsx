@@ -1,0 +1,119 @@
+import { useOnboarding } from '@/hooks/onboarding';
+import classNames from 'classnames';
+import { useState } from 'react';
+import { Typography } from '@/components/commons/Typography';
+import { Button } from '@/components/commons/Button';
+import { Localized } from '@fluent/react';
+
+export function QuizSlimeSetQuestion() {
+  const { applyProgress, setSlimeSet, slimeSet } = useOnboarding();
+  const [to, setTo] = useState('');
+  const [disabled, setDisabled] = useState(true);
+
+  applyProgress(0.2);
+
+  return (
+    <div className="flex flex-col w-full h-full xs:justify-center items-center">
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-2 items-center">
+          <Typography
+            variant="main-title"
+            id="onboarding-quiz-slimeset-title"
+          />
+        </div>
+        <div className="">
+          <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
+            <Typography
+              whitespace="whitespace-pre-wrap"
+              id="onboarding-quiz-slimeset-description"
+            />
+          </div>
+          <div className="flex gap-2 px-2 p-6">
+            <div
+              onClick={() => {
+                setSlimeSet('regular-slime');
+                setTo('/onboarding/quiz/Update?');
+                setDisabled(false);
+              }}
+              className={classNames(
+                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
+                slimeSet === 'regular-slime' &&
+                  'outline outline-3 outline-accent-background-40'
+              )}
+            >
+              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
+                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
+                  <Typography id="onboarding-quiz-slimeset-answer-regular" />
+                </div>
+              </div>
+            </div>
+            <div
+              onClick={() => {
+                setSlimeSet('butterfly');
+                setTo('/onboarding/quiz/usage');
+                setDisabled(false);
+              }}
+              className={classNames(
+                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
+                slimeSet === 'butterfly' &&
+                  'outline outline-3 outline-accent-background-40'
+              )}
+            >
+              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
+                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
+                  <Typography id="onboarding-quiz-slimeset-answer-butterfly" />
+                </div>
+              </div>
+            </div>
+            <div
+              onClick={() => {
+                setSlimeSet('wifi-slime');
+                setTo('/onboarding/quiz/Update?');
+                setDisabled(false);
+              }}
+              className={classNames(
+                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
+                slimeSet === 'wifi-slime' &&
+                  'outline outline-3 outline-accent-background-40'
+              )}
+            >
+              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
+                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
+                  <Typography id="onboarding-quiz-slimeset-answer-wifi" />
+                </div>
+              </div>
+            </div>
+            <div
+              onClick={() => {
+                setSlimeSet('dongle-slime');
+                setTo('/onboarding/quiz/usage');
+                setDisabled(false);
+              }}
+              className={classNames(
+                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
+                slimeSet === 'dongle-slime' &&
+                  'outline outline-3 outline-accent-background-40'
+              )}
+            >
+              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
+                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
+                  <Typography id="onboarding-quiz-slimeset-answer-dongle" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex px-2 p-6">
+          <Localized id="onboarding-quiz_continue">
+            <Button
+              to={to}
+              children="Continue"
+              variant="primary"
+              disabled={disabled}
+            />
+          </Localized>
+        </div>
+      </div>
+    </div>
+  );
+}
