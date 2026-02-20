@@ -1378,6 +1378,9 @@ onboarding-user_height-calibration-ERROR_TOO_HIGH = La taille détectée est tro
 onboarding-user_height-calibration-ERROR_TOO_SMALL = La taille détectée est trop petite. Veuillez rester droit et regardez devant vous à la fin de la calibration.
 onboarding-user_height-calibration-error = Calibration échouée
 onboarding-user_height-manual-tip = En ajustant votre taille, essayez différentes poses et regardez comment le squelette suit vos mouvements.
+onboarding-user_height-reset-warning =
+    <b>Attention :</b> Cette action réinitialisera vos proportions pour être basées sur votre taille. 
+    Êtes-vous sûr de vouloir continuer ?
 
 ## Stay Aligned setup
 
@@ -1417,6 +1420,7 @@ onboarding-stay_aligned-manual_mounting-done = Terminé
 ## Home
 
 home-no_trackers = Aucun capteur détecté ou attribué
+home-settings = Paramètres de la page d'accueil
 home-settings-close = Fermer
 
 ## Trackers Still On notification
@@ -1463,6 +1467,8 @@ firmware_tool-select_source-version = Version du micrologiciel
 firmware_tool-select_source-official = Officiel
 firmware_tool-select_source-dev = Dev
 firmware_tool-select_source-not_selected = Aucune source sélectionnée
+firmware_tool-select_source-no_boards = Aucune carte disponible pour cette source
+firmware_tool-select_source-no_versions = Aucune version disponible pour cette source
 firmware_tool-board_defaults = Configurez votre carte
 firmware_tool-board_defaults-description = Réglez les broches ou réglages pour votre matériel
 firmware_tool-board_defaults-add = Ajouter
@@ -1484,6 +1490,7 @@ firmware_tool-flash_method_step-serial-v2 =
 firmware_tool-flashbtn_step = Appuyez sur le bouton boot
 firmware_tool-flashbtn_step-description = Avant de passer à l'étape suivante, il y a quelques choses que vous devez faire
 firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s'il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l'une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Allumez le capteur tout en court-circuitant le second pad FLASH rectangulaire à partir du bord en haut de la carte jusqu’à la protection métallique du microcontrôleur. La LED du capteur devrait faire un clignotement rapide.
 firmware_tool-flashbtn_step-board_OTHER =
     Avant de flash le capteur, vous devrez probablement le mettre en mode bootloader.
     La plupart du temps, il s'agit d'appuyer sur le bouton boot de la carte avant que le processus de flash ne commence.
@@ -1626,6 +1633,34 @@ error_collection_modal-cancel = Je ne veux pas
 
 ## Tracking checklist section
 
+tracking_checklist-status-complete = Vous êtes prêt à utiliser SlimeVR !
+tracking_checklist-MOUNTING_CALIBRATION = Effectuer une calibration de l'alignement
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Effectuer une calibration de l'alignement des pieds
+tracking_checklist-FULL_RESET = Faire une réinitialisation complète
+tracking_checklist-FULL_RESET-desc = Certains capteurs nécessitent une réinitialisation.
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR n'est pas lancé
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR n'est pas lancé. L’utilisez-vous pour la VR ?
+tracking_checklist-STEAMVR_DISCONNECTED-open = Lancer SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrer vos capteurs
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Vous n’avez pas fait de calibration de capteur. Veuillez laisser vos capteurs (surlignés en jaune) reposer sur une surface stable pendant quelques seconds.
+tracking_checklist-TRACKER_ERROR = Capteurs avec erreur
+tracking_checklist-TRACKER_ERROR-desc = Certains de vos capteurs ont une erreur. Veuillez redémarrer les capteurs surlignés en jaune.
+tracking_checklist-VRCHAT_SETTINGS = Configurez les paramètres de VRChat
+tracking_checklist-VRCHAT_SETTINGS-desc = Vous avez mal configuré les paramètres de VRChat ! Cela peut dégrader votre suivi.
+tracking_checklist-VRCHAT_SETTINGS-open = Aller sur les avertissements de VRChat
+tracking_checklist-UNASSIGNED_HMD = Casque VR non attribué à la tête
+tracking_checklist-UNASSIGNED_HMD-desc = Le casque VR devrait être attribué en tant que capteur de la tête.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Modifier votre profil de réseau
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one] Votre profil de réseau est actuellement défini comme étant public. Ce n’est pas recommandé pour le fonctionnement correct de SlimeVR. <PublicFixLink>Voyez comment y remédier ici.</PublicFixLink>
+       *[other]
+            Certains de vos adaptateurs réseau sont réglés sur public :
+            { $adapters }
+            Ce n’est pas recommandé pour que SlimeVR fonctionne correctement.
+            <PublicFixLink>Voyez comment y remédier ici.</PublicFixLink>
+    }
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Ouvrir le panneau de configuration
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurer Garder Aligné
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Enregistrez les poses Garder Aligné pour réduire la dérive
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Ouvrir l'assistant de Garder Aligné
