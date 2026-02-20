@@ -9,18 +9,18 @@ class Linux {
 	val sendMainProgress: (Int) -> Unit = { progress -> updaterGui.mainProgressBar.setProgress(progress) }
 	val path = Paths.get("").toAbsolutePath().toString()
 
-	fun updateLinux() {
+	suspend fun updateLinux() {
 		updateLinuxSteamVRDriver()
 		updateUdev()
 		feeder()
 	}
 
-	fun updateFrame() {
+	suspend fun updateFrame() {
 		updateLinuxSteamVRDriver()
 	}
 
 	// TODO: tell user in gui to add steamvr launch arguments
-	fun updateLinuxSteamVRDriver() {
+	suspend fun updateLinuxSteamVRDriver() {
 		updaterGui.subLabel.text = "Updating SteamVR Driver"
 		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
@@ -57,7 +57,7 @@ class Linux {
 		}
 	}
 
-	fun feeder() {
+	suspend fun feeder() {
 		updaterGui.subLabel.text = "Downloading Feeder App"
 		downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
 		updaterGui.subLabel.text = "Unzipping Feeder App"

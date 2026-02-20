@@ -7,7 +7,7 @@ class Windows {
 	val sendMainProgress: (Int) -> Unit = { progress -> updaterGui.mainProgressBar.setProgress(progress) }
 	val path = Paths.get("").toAbsolutePath().toString()
 
-	fun updateWindows() {
+	suspend fun updateWindows() {
 		// First check if everything is already installed. Install it if it isn't
 		usbDrivers()
 		steamVRDriver()
@@ -34,14 +34,8 @@ class Windows {
 		sendMainProgress(33)
 	}
 
-	fun slimeServer() {
-		// downloading slime server
-		downloadFile(WINDOWSSERVERURL, WINDOWSSERVERNAME)
-		println("extracting")
-		unzip(WINDOWSSERVERNAME, WINDOWSSERVERDIRECTORY)
-	}
 
-	fun feeder() {
+	suspend fun feeder() {
 		updaterGui.subLabel.text = "Downloading Feeder App"
 		downloadFile(WINDOWSFEEDERURL, WINDOWSFEEDERNAME)
 		updaterGui.subLabel.text = "Unzipping Feeder App"
@@ -52,7 +46,7 @@ class Windows {
 		updaterGui.subLabel.text = "Feeder App Done"
 	}
 
-	fun steamVRDriver() {
+	suspend fun steamVRDriver() {
 		updaterGui.subLabel.text = "Updating SteamVR Driver"
 		val steamVRLocation = executeShellCommand("powershell.exe", "-Command", "(Get-ItemProperty \'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820\').InstallLocation").trim()
 		if (!steamVRLocation.contains("SteamVR")) {

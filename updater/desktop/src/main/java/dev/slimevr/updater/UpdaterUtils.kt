@@ -97,7 +97,7 @@ fun resolveSaveFile(destinationPath: File, zipEntry: ZipEntry): File {
 	return destFile
 }
 
-fun unzip(
+suspend fun unzip(
 	file: String,
 	destDir: String,
 	onProgress: (Float) -> Unit = sendSubProgress,
