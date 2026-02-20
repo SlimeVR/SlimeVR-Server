@@ -20,8 +20,6 @@ class Updater {
 		// 	return
 		// }
 
-		frame.isVisible = false
-
 		if (os.contains("linux")) {
 			val linuxUpdater = Linux()
 			val linuxFlavour = executeShellCommand("uname", "-n")

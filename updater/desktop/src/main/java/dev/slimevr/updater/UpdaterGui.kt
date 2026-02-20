@@ -5,17 +5,10 @@ import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.JProgressBar
 
-val frame = JFrame("SlimeVR Updater")
-val label = Label("Running Updater")
-val mainProgressPanel = JPanel()
-val mainProgressBar = JProgressBar()
-val subProgressPanel = JPanel()
-val subProgressBar = JProgressBar()
-val isUpdateSuccessFull = false
 
 class UpdaterGui : Frame() {
 
-	val mainLabel = Label("Updating SlimeVR", Label.CENTER)
+	val mainLabel = Label("Installing SlimeVR Drivers", Label.CENTER)
 	val subLabel = Label("", Label.CENTER)
 	val mainProgressBar: ProgressBar = ProgressBar()
 	val subProgressBar: ProgressBar = ProgressBar()
@@ -125,10 +118,7 @@ class ProgressBar() : Canvas() {
 	val progressBarWidth = 200
 
 	fun setProgress(newProgress: Int) {
-		println(newProgress)
-		println(((newProgress) * (progressBarWidth / 100)))
 		currentProgress = ((newProgress) * (progressBarWidth) / 100)
-		println("Current progress = $currentProgress")
 		repaint()
 	}
 	init {
@@ -136,11 +126,11 @@ class ProgressBar() : Canvas() {
 	}
 
 	override fun paint(g: Graphics) {
-		// Background of bar
+		// Background
 		g.color = Color(8, 30, 48)
 		g.fillRoundRect(0, 0, progressBarWidth, 10, 5, 5)
 
-		// The "Progress" (Discord Blurple)
+		// Progress
 		g.color = Color(101, 69, 154)
 		g.fillRoundRect(0, 0, currentProgress, 10, 5, 5) // Static 60% for now
 	}

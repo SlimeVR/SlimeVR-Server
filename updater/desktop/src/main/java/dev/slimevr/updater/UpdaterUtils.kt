@@ -9,6 +9,7 @@ import io.ktor.client.plugins.timeout
 import io.ktor.client.request.get
 import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.bodyAsChannel
+import io.ktor.http.contentLength
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.runBlocking
@@ -36,14 +37,14 @@ fun executeShellCommand(vararg command: String): String = try {
 	"Error executing shell command: ${e.message}"
 }
 
-val sendSubProgress: (Float) -> Unit = { progress -> updaterGui.subProgressBar.setProgress(progress.toInt()) }
+val sendSubProgress: (Int) -> Unit = { progress -> updaterGui.subProgressBar.setProgress(progress) }
 
 fun downloadFile(
 	fileUrl: String,
 	fileName: String,
-	onProgress: (Float) -> Unit = sendSubProgress,
+	onProgress: (Int) -> Unit = sendSubProgress,
 ) {
-	onProgress(0f)
+	onProgress(0)
 	val client = HttpClient(CIO)
 	val outputStream = FileOutputStream(fileName)
 
@@ -63,14 +64,13 @@ fun downloadFile(
 							(
 								(
 									(
-										contentLength?.toFloat()
-											?: 1F
+										contentLength?.toInt()
+											?: 1
 										)
 									)
 								)
 						)
-					println("Progress ${progress * 100}")
-					onProgress(progress * 100)
+					onProgress(progress.toInt() * 100)
 				}
 			},
 		).execute { httpResponse ->
@@ -100,9 +100,9 @@ fun resolveSaveFile(destinationPath: File, zipEntry: ZipEntry): File {
 fun unzip(
 	file: String,
 	destDir: String,
-	onProgress: (Float) -> Unit = sendSubProgress,
+	onProgress: (Int) -> Unit = sendSubProgress,
 ) {
-	onProgress(0f)
+	onProgress(0)
 	val destFolder = File(destDir)
 	if (!destFolder.exists()) {
 		destFolder.mkdirs()
@@ -136,12 +136,11 @@ fun unzip(
 				}
 				fileOutputStream.close()
 			}
-			onProgress(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
+			onProgress(currentEntryCount / zipSize * 100)
 			currentEntryCount++
 		}
 	} catch (e: Exception) {
 		println("Error during unzip: ${e.message}")
-		label.text = "An error occurred: ${e.message}"
 	}
 }
 
@@ -155,7 +154,6 @@ fun checksum(file: String) {
 	val data = Files.readAllBytes(Paths.get(file))
 	val hash = MessageDigest.getInstance("SHA-256").digest(data)
 	val checksum = BigInteger(1, hash).toString(16)
-	println(checksum)
 }
 
 suspend fun shouldUpdate(): Boolean {
@@ -191,7 +189,6 @@ suspend fun shouldUpdate(): Boolean {
 		}
 	} catch (e: Exception) {
 		println("Error getting github release info: ${e.message}")
-		label.text = "An error occurred: ${e.message}"
 	}
 	return false
 }

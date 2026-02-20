@@ -29,8 +29,6 @@ class Linux {
 			downloadFile(LINUXSTEAMVRDRIVERURL, LINUXSTEAMVRDRIVERNAME)
 			updaterGui.subLabel.text = "Unzipping SteamVR Driver"
 			unzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
-			println("Driver downloaded")
-			println("Registering driver with steamvr")
 			println("${Paths.get("").toAbsolutePath()}/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr")
 			executeShellCommand(
 				"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
@@ -76,7 +74,7 @@ class Linux {
 		updaterGui.subLabel.text = "Setting udev"
 		val file = Path("/etc/udev/rules.d/69-slimevr-devices.rules")
 		if (file.exists()) {
-			subProgressBar.string = "Udev rules already installed"
+			updaterGui.subLabel.text = "Udev rules already installed"
 			return
 		}
 		updaterGui.subLabel.text = "Asking for privileges"
