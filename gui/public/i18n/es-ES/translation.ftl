@@ -33,6 +33,10 @@ tips-failed_webgl = No se pudo iniciar WebGL.
 
 ## Units
 
+unit-meter = Metro
+unit-foot = Pie
+unit-inch = Pulgada
+unit-cm = cm
 
 ## Body parts
 
@@ -241,10 +245,12 @@ navbar-trackers_assign = Asignación de trackers
 navbar-mounting = Calibración de montura
 navbar-onboarding = Asistente de Configuración
 navbar-settings = Configuración
+navbar-connect_trackers = Conectar Trackers
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Grabar BVH
+bvh-stop_recording = Guardar grabación BVH
 bvh-recording = Grabando...
 bvh-save_title = Guardar grabación BVH
 
@@ -381,6 +387,7 @@ tracker-settings-name_section-label = Nombre del tracker
 tracker-settings-forget = Olvidar tracker
 tracker-settings-forget-description = Elimina el tracker del servidor SlimeVR y evita que se conecte a él hasta que se reinicie el servidor. La configuración del tracker no se perderá.
 tracker-settings-forget-label = Olvidar tracker
+tracker-settings-update-incompatible = No se puede actualizar. Versión de placa o firmware incompatible
 tracker-settings-update-low-battery = No se puede actualizar. Batería inferior al 50%
 tracker-settings-update-up_to_date = Actualizado
 tracker-settings-update-blocked = Actualización no disponible. No hay otras versiones disponibles
@@ -451,6 +458,7 @@ mounting_selection_menu-close = Cerrar
 
 settings-sidebar-title = Configuración
 settings-sidebar-general = General
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mecánicas del tracker
 settings-sidebar-stay_aligned = Mantener Alineado
 settings-sidebar-fk_settings = Configuración del tracking
