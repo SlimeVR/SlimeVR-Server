@@ -15,6 +15,8 @@ import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -113,9 +115,12 @@ suspend fun unzip(
 	withContext(Dispatchers.IO) {
 		val zipFile = ZipFile(file)
 		var progress = 0f
+		val semaphore = Semaphore(4)
 		for (entry in zipFile.entries()) {
 			this.launch() {
-				unzipWorker(zipFile, entry, destDir, onProgress)
+				semaphore.withPermit {
+					unzipWorker(zipFile, entry, destDir, onProgress)
+				}
 			}
 			onProgress(progress / zipFile.size() * 100)
 			progress++
@@ -125,48 +130,34 @@ suspend fun unzip(
 }
 
 suspend fun unzipWorker(zipFile: ZipFile, zipEntry: ZipEntry, destDir: String, onProgress: (Float) -> Unit = sendSubProgress) {
-	val dataBuffer = ByteArray(1024)
 	val destFolder = File(destDir)
-	try {
-		val inputStream =
-			withContext(Dispatchers.IO) {
-				zipFile.getInputStream(zipEntry)
-			}
-		val file = resolveSaveFile(destFolder, zipEntry)
-		if (zipEntry.isDirectory) {
-			if (!file.isDirectory && !file.mkdirs()) {
-				throw IOException("Failed to create directory: $file")
+	val targetFile = File(destFolder, zipEntry.name)
+	if (!targetFile.canonicalPath.startsWith(destFolder.canonicalPath)) {
+		throw IOException("Entry is outside of the target dir: ${zipEntry.name}")
+	}
+
+	withContext(Dispatchers.IO) {
+		try {
+			if (zipEntry.isDirectory) {
+				if (!targetFile.exists() && !targetFile.mkdirs()) {
+					throw IOException("Failed to create directory: $targetFile")
+				}
 			} else {
-				val parent = file.parentFile
-				if (!parent.isDirectory && !parent.mkdirs()) {
-					throw IOException("Failed to create directory: $parent")
-				}
-			}
-		} else {
-			file.parentFile?.mkdirs()
-			val fileOutputStream =
-				withContext(Dispatchers.IO) {
-					FileOutputStream(file)
-				}
-			var len =
-				withContext(Dispatchers.IO) {
-					inputStream.read(dataBuffer, 0, 1024)
-				}
-			while (len > 0) {
-				withContext(Dispatchers.IO) {
-					fileOutputStream.write(dataBuffer, 0, len)
-				}
-				len =
-					withContext(Dispatchers.IO) {
-						inputStream.read(dataBuffer, 0, len)
+				targetFile.parentFile?.let { parent ->
+					if (!parent.exists() && !parent.mkdirs() && !parent.exists()) {
+						throw IOException("Failed to create parent directory: $parent")
 					}
+				}
+
+				zipFile.getInputStream(zipEntry).use { input ->
+					FileOutputStream(targetFile).use { output ->
+						input.copyTo(output, bufferSize = 8192)
+					}
+				}
 			}
-			withContext(Dispatchers.IO) {
-				fileOutputStream.close()
-			}
+		} catch (e: Exception) {
+			println("Error during unzip of ${zipEntry.name}: ${e.message}")
 		}
-	} catch (e: Exception) {
-		println("Error during unzip: ${e.message}")
 	}
 }
 
