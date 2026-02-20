@@ -37,14 +37,14 @@ fun executeShellCommand(vararg command: String): String = try {
 	"Error executing shell command: ${e.message}"
 }
 
-val sendSubProgress: (Int) -> Unit = { progress -> updaterGui.subProgressBar.setProgress(progress) }
+val sendSubProgress: (Float) -> Unit = { progress -> updaterGui.subProgressBar.setProgress(progress.toInt()) }
 
 fun downloadFile(
 	fileUrl: String,
 	fileName: String,
-	onProgress: (Int) -> Unit = sendSubProgress,
+	onProgress: (Float) -> Unit = sendSubProgress,
 ) {
-	onProgress(0)
+	onProgress(0f)
 	val client = HttpClient(CIO)
 	val outputStream = FileOutputStream(fileName)
 
@@ -64,13 +64,13 @@ fun downloadFile(
 							(
 								(
 									(
-										contentLength?.toInt()
-											?: 1
+										contentLength?.toFloat()
+											?: 1f
 										)
 									)
 								)
 						)
-					onProgress(progress.toInt() * 100)
+					onProgress(progress * 100)
 				}
 			},
 		).execute { httpResponse ->
@@ -100,9 +100,9 @@ fun resolveSaveFile(destinationPath: File, zipEntry: ZipEntry): File {
 fun unzip(
 	file: String,
 	destDir: String,
-	onProgress: (Int) -> Unit = sendSubProgress,
+	onProgress: (Float) -> Unit = sendSubProgress,
 ) {
-	onProgress(0)
+	onProgress(0f)
 	val destFolder = File(destDir)
 	if (!destFolder.exists()) {
 		destFolder.mkdirs()
@@ -136,7 +136,7 @@ fun unzip(
 				}
 				fileOutputStream.close()
 			}
-			onProgress(currentEntryCount / zipSize * 100)
+			onProgress(currentEntryCount.toFloat() / zipSize * 100)
 			currentEntryCount++
 		}
 	} catch (e: Exception) {

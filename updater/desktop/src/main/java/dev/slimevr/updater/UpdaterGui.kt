@@ -1,9 +1,8 @@
 package dev.slimevr.updater
 
 import java.awt.*
-import javax.swing.JFrame
-import javax.swing.JPanel
-import javax.swing.JProgressBar
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 
 
 class UpdaterGui : Frame() {
@@ -15,6 +14,13 @@ class UpdaterGui : Frame() {
 
 	init {
 		isUndecorated = true
+
+		val frameDragListener: FrameDragListener = FrameDragListener(this)
+		addMouseListener(frameDragListener)
+		addMouseMotionListener(frameDragListener)
+		pack()
+		setLocationRelativeTo(null)
+
 		setBackground(Color(17, 45, 67))
 		setSize(300, 350)
 
@@ -25,7 +31,7 @@ class UpdaterGui : Frame() {
 		)
 
 		mainLabel.foreground = Color.WHITE
-		mainLabel.setFont(Font("Serif", Font.PLAIN, 16))
+		mainLabel.setFont(Font("Poppins", Font.PLAIN, 16))
 		subLabel.foreground = Color.WHITE
 
 		setLayout(GridBagLayout())
@@ -36,7 +42,7 @@ class UpdaterGui : Frame() {
 		val gifLabel = Label("Loading Animation...", Label.CENTER)
 		gifLabel.setForeground(Color.WHITE)
 
-		val animatedGif = GifCanvas("curious-slime.gif")
+		val animatedGif = GifCanvas("jumping-slime.gif")
 
 		gbc.gridy = 0
 		add(mainLabel, gbc)
@@ -51,6 +57,26 @@ class UpdaterGui : Frame() {
 		add(subProgressBar, gbc)
 
 		isVisible = true
+	}
+}
+
+class FrameDragListener(private val frame: UpdaterGui) : MouseAdapter() {
+	private var mouseDownCompCoords: Point? = null
+
+	override fun mouseReleased(e: MouseEvent?) {
+		mouseDownCompCoords = null
+	}
+
+	override fun mousePressed(e: MouseEvent) {
+		mouseDownCompCoords = e.getPoint()
+	}
+
+	override fun mouseDragged(e: MouseEvent) {
+		val currCoords: Point = e.locationOnScreen
+		frame.setLocation(
+			currCoords.x - mouseDownCompCoords!!.x,
+			currCoords.y - mouseDownCompCoords!!.y
+		)
 	}
 }
 

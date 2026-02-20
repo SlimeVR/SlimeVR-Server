@@ -40,6 +40,10 @@ class Updater {
 		} else {
 			println("guess I'll die")
 		}
-		println("Done Updating")
+		updaterGui.mainLabel.text = "Done Installing"
+		updaterGui.mainLabel.isVisible = false
+
+		Thread.sleep(1000)
+		return
 	}
 }
