@@ -182,6 +182,21 @@ class VRServer @JvmOverloads constructor(
 		instance = this
 	}
 
+	/**
+	 * TODO: The design of this method is chosen for future expandability in case we want to have more complex velocity policies that depend on tracker properties or other config values.
+	 * Initiates the velocity policy application process for the specified [Tracker] (or all trackers if null).
+	 *
+	 * This method serves as the initiator.
+	 * The actual policy logic is not handled here,
+	 * but is delegated to [dev.slimevr.config.VRConfig.applyVelocityPolicy].
+	 */
+	private fun applyVelocityPolicyTo(tracker: Tracker?) {
+		val targets = tracker?.let { listOf(it) } ?: trackers
+		for (t in targets) {
+			configManager.vrConfig.applyVelocityPolicy(t)
+		}
+	}
+
 	fun hasBridge(bridgeClass: Class<out Bridge?>): Boolean {
 		for (bridge in bridges) {
 			if (bridgeClass.isAssignableFrom(bridge.javaClass)) {
@@ -226,6 +241,9 @@ class VRServer @JvmOverloads constructor(
 			refreshTrackersDriftCompensationEnabled()
 			configManager.vrConfig.writeTrackerConfig(tracker)
 			configManager.saveConfig()
+
+			// Requires a fresh TrackerConfig on Update, so executed after we save a new state.
+			applyVelocityPolicyTo(tracker)
 		}
 	}
 
