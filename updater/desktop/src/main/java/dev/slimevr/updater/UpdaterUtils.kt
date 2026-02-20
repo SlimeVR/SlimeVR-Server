@@ -119,7 +119,7 @@ suspend fun unzip(
 		for (entry in zipFile.entries()) {
 			this.launch() {
 				semaphore.withPermit {
-					unzipWorker(zipFile, entry, destDir, onProgress)
+					unzipWorker(zipFile, entry, destDir)
 				}
 			}
 			onProgress(progress / zipFile.size() * 100)
@@ -129,7 +129,7 @@ suspend fun unzip(
 	onProgress(100f)
 }
 
-suspend fun unzipWorker(zipFile: ZipFile, zipEntry: ZipEntry, destDir: String, onProgress: (Float) -> Unit = sendSubProgress) {
+suspend fun unzipWorker(zipFile: ZipFile, zipEntry: ZipEntry, destDir: String) {
 	val destFolder = File(destDir)
 	val targetFile = File(destFolder, zipEntry.name)
 	if (!targetFile.canonicalPath.startsWith(destFolder.canonicalPath)) {
