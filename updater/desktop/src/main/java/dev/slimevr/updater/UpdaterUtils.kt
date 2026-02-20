@@ -84,7 +84,7 @@ fun downloadFile(
 }
 
 // Guard against zip slip
-fun newFile(destinationPath: File, zipEntry: ZipEntry): File {
+fun resolveSaveFile(destinationPath: File, zipEntry: ZipEntry): File {
 	val destFile = File(destinationPath, zipEntry.name)
 
 	val destinationDirPath = destinationPath.getCanonicalPath()
@@ -103,7 +103,10 @@ fun unzip(
 	onProgress: (Float) -> Unit = sendSubProgress,
 ) {
 	onProgress(0f)
-	val destFile = File(destDir)
+	val destFolder = File(destDir)
+	if (!destFolder.exists()) {
+		destFolder.mkdirs()
+	}
 	val zipFile = ZipFile(file)
 	val dataBuffer = ByteArray(1024)
 	try {
@@ -113,7 +116,7 @@ fun unzip(
 		while (zipEntries.hasMoreElements()) {
 			val currentEntry = zipEntries.nextElement()
 			val inputStream = zipFile.getInputStream(currentEntry)
-			val file = newFile(destFile, currentEntry)
+			val file = resolveSaveFile(destFolder, currentEntry)
 			if (currentEntry.isDirectory) {
 				if (!file.isDirectory && !file.mkdirs()) {
 					throw IOException("Failed to create directory: $file")
@@ -124,6 +127,7 @@ fun unzip(
 					}
 				}
 			} else {
+				file.parentFile?.mkdirs()
 				val fileOutputStream = FileOutputStream(file)
 				var len = inputStream.read(dataBuffer, 0, 1024)
 				while (len > 0) {
@@ -135,12 +139,9 @@ fun unzip(
 			onProgress(currentEntryCount.toFloat() / zipSize.toFloat() * 100)
 			currentEntryCount++
 		}
-
-		deleteFile(destFile)
 	} catch (e: Exception) {
 		println("Error during unzip: ${e.message}")
 		label.text = "An error occurred: ${e.message}"
-		deleteFile(destFile)
 	}
 }
 
