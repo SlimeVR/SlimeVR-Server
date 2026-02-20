@@ -12,7 +12,10 @@ import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.contentLength
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.jvm.javaio.copyTo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileOutputStream
@@ -102,42 +105,65 @@ suspend fun unzip(
 	destDir: String,
 	onProgress: (Float) -> Unit = sendSubProgress,
 ) {
-	onProgress(0f)
 	val destFolder = File(destDir)
 	if (!destFolder.exists()) {
 		destFolder.mkdirs()
 	}
-	val zipFile = ZipFile(file)
+	onProgress(0f)
+	withContext(Dispatchers.IO) {
+		val zipFile = ZipFile(file)
+		var progress = 0f
+		for (entry in zipFile.entries()) {
+			this.launch() {
+				unzipWorker(zipFile, entry, destDir, onProgress)
+			}
+			onProgress(progress / zipFile.size() * 100)
+			progress++
+		}
+	}
+	onProgress(100f)
+}
+
+suspend fun unzipWorker(zipFile: ZipFile, zipEntry: ZipEntry, destDir: String, onProgress: (Float) -> Unit = sendSubProgress) {
 	val dataBuffer = ByteArray(1024)
+	val destFolder = File(destDir)
 	try {
-		val zipEntries = zipFile.entries()
-		val zipSize = zipFile.size()
-		var currentEntryCount = 0
-		while (zipEntries.hasMoreElements()) {
-			val currentEntry = zipEntries.nextElement()
-			val inputStream = zipFile.getInputStream(currentEntry)
-			val file = resolveSaveFile(destFolder, currentEntry)
-			if (currentEntry.isDirectory) {
-				if (!file.isDirectory && !file.mkdirs()) {
-					throw IOException("Failed to create directory: $file")
-				} else {
-					val parent = file.parentFile
-					if (!parent.isDirectory && !parent.mkdirs()) {
-						throw IOException("Failed to create directory: $parent")
-					}
-				}
+		val inputStream =
+			withContext(Dispatchers.IO) {
+				zipFile.getInputStream(zipEntry)
+			}
+		val file = resolveSaveFile(destFolder, zipEntry)
+		if (zipEntry.isDirectory) {
+			if (!file.isDirectory && !file.mkdirs()) {
+				throw IOException("Failed to create directory: $file")
 			} else {
-				file.parentFile?.mkdirs()
-				val fileOutputStream = FileOutputStream(file)
-				var len = inputStream.read(dataBuffer, 0, 1024)
-				while (len > 0) {
-					fileOutputStream.write(dataBuffer, 0, len)
-					len = inputStream.read(dataBuffer, 0, len)
+				val parent = file.parentFile
+				if (!parent.isDirectory && !parent.mkdirs()) {
+					throw IOException("Failed to create directory: $parent")
 				}
+			}
+		} else {
+			file.parentFile?.mkdirs()
+			val fileOutputStream =
+				withContext(Dispatchers.IO) {
+					FileOutputStream(file)
+				}
+			var len =
+				withContext(Dispatchers.IO) {
+					inputStream.read(dataBuffer, 0, 1024)
+				}
+			while (len > 0) {
+				withContext(Dispatchers.IO) {
+					fileOutputStream.write(dataBuffer, 0, len)
+				}
+				len =
+					withContext(Dispatchers.IO) {
+						inputStream.read(dataBuffer, 0, len)
+					}
+			}
+			withContext(Dispatchers.IO) {
 				fileOutputStream.close()
 			}
-			onProgress(currentEntryCount.toFloat() / zipSize * 100)
-			currentEntryCount++
 		}
 	} catch (e: Exception) {
 		println("Error during unzip: ${e.message}")
