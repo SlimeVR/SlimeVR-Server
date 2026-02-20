@@ -20,7 +20,8 @@
             libxkbcommon mesa nspr nss pango systemd vulkan-loader
             wayland xorg.libX11 xorg.libXcomposite xorg.libXdamage
             xorg.libXext xorg.libXfixes xorg.libXrandr xorg.libxcb
-            xorg.libxshmfence libusb1 udev
+            xorg.libxshmfence libusb1 udev libxcrypt-legacy
+            rpm fpm
 
             wine
             zlib squashfsTools fakeroot libarchive icu
@@ -32,8 +33,11 @@
             targetPkgs = runtimeLibs;
             profile = ''
               export JAVA_HOME=${pkgs.jdk17}
-              # Ensures Gradle and other tools find the right Java binary
               export PATH="${pkgs.jdk17}/bin:$PATH"
+
+              # Tell electron-builder to use system tools instead of downloading them
+              export USE_SYSTEM_FPM=true
+              export USE_SYSTEM_MKSQUASHFS=true
             '';
             runScript = "bash";
           };
