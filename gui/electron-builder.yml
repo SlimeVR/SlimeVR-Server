@@ -1,0 +1,57 @@
+appId: dev.slimevr.SlimeVR
+productName: SlimeVR
+directories:
+  output: dist/artifacts
+
+asar: true
+asarUnpack:
+  - out/main/chunks/*.jar
+
+electronLanguages:
+  - en-US
+
+files:
+  - out/**/*
+  - index.html
+  - package.json
+  - node_modules/**
+  # Exclude unnecessary files from node_modules to reduce size
+  - "!node_modules/*/{README,readme,README.md,readme.md,CHANGELOG,CHANGELOG.md,changelog.md}"
+  - "!node_modules/*/{test,tests,__tests__,docs,doc,example,examples}"
+  - "!node_modules/*/.{git,github,vscode,editorconfig,eslintrc,prettierrc}"
+  - "!node_modules/**/*.{map,ts,tsx,d.ts}"
+  - "!**/.DS_Store"
+
+linux:
+  category: Game
+  target:
+    - target: AppImage
+    - target: deb
+    - target: rpm
+  extraFiles:
+    - from: "../server/desktop/build/libs/slimevr.jar"
+      to: "."
+    - from: "./electron/resources/69-slimevr-devices.rules"
+      to: "."
+  icon: "./electron/resources/icons"
+
+deb:
+  depends:
+    - openjdk-17-jre-headless
+    - udev
+rpm:
+  depends:
+    - java-latest-openjdk
+    - udev
+
+win:
+  target:
+    - target: portable
+  icon: "./electron/resources/icons/icon.ico"
+
+mac:
+  target: dmg
+  extraFiles:
+    - from: "../server/desktop/build/libs/slimevr.jar"
+      to: "."
+  icon: "./electron/resources/icons/icon.icns"

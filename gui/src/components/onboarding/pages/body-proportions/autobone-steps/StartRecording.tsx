@@ -6,7 +6,6 @@ import { useLocalization } from '@fluent/react';
 import { useEffect, useRef, useState } from 'react';
 import { PlayCircleIcon } from '@/components/commons/icon/PlayIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
-import { AUTOBONE_VIDEO } from '@/utils/tauri';
 
 export function StartRecording({
   nextStep,
@@ -99,7 +98,7 @@ export function StartRecording({
             <video
               preload="auto"
               ref={videoRef}
-              src={AUTOBONE_VIDEO}
+              src={'/videos/autobone.webm'}
               className="min-w-[12rem] w-[12rem]"
               muted
               loop

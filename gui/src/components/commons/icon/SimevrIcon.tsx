@@ -10,7 +10,7 @@ export function SlimeVRIcon({ drag }: { drag?: boolean }) {
         viewBox="-4 -2 49 33"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        data-tauri-drag-region={drag}
+        data-electron-drag-region={drag}
       >
         <path
           d="m 1.6647024,15.257308 4.84329,-5.8061114 5.1394996,4.7526114"
@@ -53,7 +53,7 @@ export function SlimeVRIcon({ drag }: { drag?: boolean }) {
       viewBox="0 0 49 29"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      data-tauri-drag-region={drag}
+      data-electron-drag-region={drag}
     >
       <path
         d="M2 26.996C10.44 25.59 29.16 23.1571 46.509 26.9091C46.509 26.9091 48.89 -0.199966 35.761 2.14503"
