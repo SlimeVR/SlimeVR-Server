@@ -15,7 +15,7 @@ export function TrackerBattery({
   /**
    * Normally [0, 1] value range
    * Values >1 indicate fully charged
-   * Values <0 also indicate 0%
+   * Values <0 or >2 (Byte was cast to UByte, so -1 -> 255) also indicate 0%
    */
   value: number;
   voltage?: number | null;
@@ -38,7 +38,7 @@ export function TrackerBattery({
   const debug = config?.debug || config?.devSettings.moreInfo;
   const showVoltage = moreInfo && voltage && debug;
 
-  const pct = Math.min(Math.max(value, 0), 1);
+  const pct = value > 2 ? 0 : Math.min(Math.max(value, 0), 1);
 
   return (
     <Tooltip
