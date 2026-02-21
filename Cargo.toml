@@ -13,4 +13,5 @@ rust-version = "1.82" # Tauri's MSRV
 repository = "https://github.com/SlimeVR/SlimeVR-Server"
 
 [profile.release]
-lto = "thin"
+lto = true
+strip = true
