@@ -490,7 +490,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				// Too low or high voltage should mean there is no battery or there is a measurement error
 				// Some ESP can run at 2.3V, set a limit at 2V
 				// Below this the tracker is definitely dead if everything is working properly
-				if (it.batteryVoltage > 2f && it.batteryVoltage < 6f) {
+				if (packet.voltage > 2f && packet.voltage < 6f) {
 					// Assuming floor when converting to int
 					it.batteryLevel = if (packet.level < 0.01f) -1f else packet.level * 100
 				} else {
