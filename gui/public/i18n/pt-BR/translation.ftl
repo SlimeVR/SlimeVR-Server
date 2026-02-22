@@ -232,7 +232,7 @@ reset-reset_all_warning_default-v2 =
     <b>Aviso:</b> Sua altura não foi configurada, suas proporções serão redefinidas para os padrões com a altura padrão.
     Tem certeza que quer fazer isso?
 reset-full = Redefinir Tudo
-reset-mounting = Calibração da Montagem
+reset-mounting = Calibração de Montagem
 reset-mounting-feet = Calibração dos Pés
 reset-mounting-fingers = Calibração dos Dedos
 reset-yaw = Refedinir Guinada
@@ -256,7 +256,7 @@ serial_detection-close = Fechar
 navbar-home = Início
 navbar-body_proportions = Proporções do Corpo
 navbar-trackers_assign = Atribuição de Tracker
-navbar-mounting = Calibração da Montagem
+navbar-mounting = Calibração de Montagem
 navbar-onboarding = Assistente de Configuração
 navbar-settings = Opções
 navbar-connect_trackers = Conectar Trackers
@@ -380,7 +380,7 @@ tracker-settings-title = Opções dos trackers
 tracker-settings-assignment_section = Atribuição
 tracker-settings-assignment_section-description = A qual parte do corpo o tracker está atribuído.
 tracker-settings-assignment_section-edit = Editar atribuição
-tracker-settings-mounting_section = Orientação da montagem
+tracker-settings-mounting_section = Orientação de montagem
 tracker-settings-mounting_section-description = Aonde o tracker está posicionado?
 tracker-settings-mounting_section-edit = Editar montagem
 tracker-settings-drift_compensation_section = Ligar a compensação de drift
@@ -555,7 +555,7 @@ settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancelar
 settings-general-tracker_mechanics-drift_compensation_warning-done = Eu entedi
 settings-general-tracker_mechanics-drift_compensation-amount-label = Quantidade de compensação
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use até x últimos resets
-settings-general-tracker_mechanics-save_mounting_reset = Salvar calibração automática da montagem
+settings-general-tracker_mechanics-save_mounting_reset = Salvar calibração automática de montagem
 settings-general-tracker_mechanics-save_mounting_reset-description = Salva a calibração automática de montagem dos trackers entre reinicializações. Útil ao usar um traje em que os trackers não se movem entre as sessões. <b>Não recomendado para usuários normais!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Salvar calibração de montagem
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Usar o magnetômetro em todos os trackers IMUs compatíveis
@@ -1114,37 +1114,38 @@ onboarding-choose_mounting-manual_mounting-label-v2 = Pode não ser precisa o su
 onboarding-choose_mounting-manual_mounting-description = Isso permitirá que você escolha manualmente a orientação de montagem de cada tracker.
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
-    Você tem certeza de que deseja fazer
-    a calibração automática de posição?
-onboarding-choose_mounting-manual_modal-description = <b>A calibração manual de posição é recomendada para novos usuários</b>, pois as poses da calibração automática podem ser difíceis de acertar no início e podem exigir certa prática.
+    Tem certeza de que deseja realizar 
+    a calibração automática de montagem?
+onboarding-choose_mounting-manual_modal-description = <b>A calibração manual de montagem é recomendada para novos usuários</b>, pois as poses da calibração automática de montagem podem ser difíceis de acertar no início e podem exigir um pouco de prática.
 onboarding-choose_mounting-manual_modal-confirm = Estou certo do que estou fazendo.
 onboarding-choose_mounting-manual_modal-cancel = Cancelar
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = Voltar para entrar no VR
-onboarding-manual_mounting = Posicionamento Manual
+onboarding-manual_mounting = Montagem manual
 onboarding-manual_mounting-description = Clique em cada tracker e selecione de que maneira estão posicionados
-onboarding-manual_mounting-auto_mounting = Posicionamento automática
+onboarding-manual_mounting-auto_mounting = Montagem automática
 onboarding-manual_mounting-next = Próximo passo
 
 ## Tracker automatic mounting setup
 
 onboarding-automatic_mounting-back = Voltar para entrar no VR
-onboarding-automatic_mounting-title = Calibragem de Posicionamento
-onboarding-automatic_mounting-description = Para os trackers do SlimeVR funcionar, nós precisamos atribuir a rotação de posicionamento dos seus trackers para alinhar com a posição física de seus trackers.
-onboarding-automatic_mounting-manual_mounting = Definir manualmente a posição
+onboarding-automatic_mounting-title = Calibração de Montagem
+onboarding-automatic_mounting-description = Para que os trackers SlimeVR funcionem, precisamos atribuir uma orientação de montagem aos seus trackers para alinhá-los com a forma como estão fixados fisicamente no seu corpo.
+onboarding-automatic_mounting-manual_mounting = Montagem manual
 onboarding-automatic_mounting-next = Próximo passo
 onboarding-automatic_mounting-prev_step = Passo anterior
-onboarding-automatic_mounting-done-title = Rotações de posição calibradas.
-onboarding-automatic_mounting-done-description = Sua calibragem de posicionamento está completa!
+onboarding-automatic_mounting-done-title = Orientações de montagem calibradas.
+onboarding-automatic_mounting-done-description = Sua calibração de montagem está concluída!
 onboarding-automatic_mounting-done-restart = Voltar ao início
-onboarding-automatic_mounting-mounting_reset-title = Reset de Posição
+onboarding-automatic_mounting-mounting_reset-title = Calibração de Montagem
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Agache-se em uma pose de "esqui" com as pernas dobradas, a parte superior do corpo inclinada para a frente e os braços dobrados.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Resetar Posição" e aguarde 3 segundos antes que as rotações de posição dos trackers sejam redefinidas.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Calibração de Montagem" e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Pressione o botão “Calibração dos pés” e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
 onboarding-automatic_mounting-preparation-title = Preparação
 onboarding-automatic_mounting-put_trackers_on-title = Coloque seus trackers
-onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as rotações de posicionamento, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver qual é qual na figura na direita.
+onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as orientações de montagem, vamos usar os trackers que você acabou de atribuir. Coloque todos os seus trackers; você pode ver qual é qual na figura à direita.
 onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trackers
 
 ## Tracker manual proportions setupa
@@ -1232,9 +1233,9 @@ onboarding-automatic_proportions-verify_results-confirm = Eles estão corretos
 onboarding-automatic_proportions-done-title = Corpo medido e salvo.
 onboarding-automatic_proportions-done-description = Sua calibragem de proporção de corpo está completa!
 onboarding-automatic_proportions-error_modal-v2 =
-    <b>Aviso:</b> Ocorreu um erro ao calcular as proporções!
-    Isso provavelmente é um problema da calibragem de posição. Verifique se o rastreamento está funcionando corretamente antes de tentar novamente.
-    Por favor, <docs>verifique a  documentação</docs> ou entre em nosso <discord> Discord</discord> para obter ajuda ^_^
+    <b>Aviso:</b> Ocorreu um erro ao estimar as proporções!
+    Isso provavelmente é um problema na calibração de montagem. Certifique-se de que o rastreamento está funcionando corretamente antes de tentar novamente.
+    Por favor, <docs>consulte a documentação</docs> ou entre no nosso <discord>Discord</discord> para obter ajuda ^_^
 onboarding-automatic_proportions-error_modal-confirm = Entendido!
 onboarding-automatic_proportions-smol_warning =
     A sua altura configurada de: { $height } é menor que a altura mínima aceita de: { $minHeight }.
@@ -1247,6 +1248,10 @@ onboarding-automatic_proportions-smol_warning-cancel = Voltar
 ## Stay Aligned setup
 
 onboarding-stay_aligned-put_trackers_on-next = Todos meus trackers estão ligados
+onboarding-stay_aligned-verify_mounting-title = Calibração de Montagem
+onboarding-stay_aligned-verify_mounting-step-0 = O Manter Alinhado requer uma boa montagem. Caso contrário, você não terá uma boa experiência com o Manter Alinhado.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. Se seus trackers não estiverem na orientação correta, pressione “Refazer Calibração de Montagem”.
+onboarding-stay_aligned-verify_mounting-redo_mounting = Refazer Calibração de Montagem
 
 ## Home
 
@@ -1383,3 +1388,6 @@ error_collection_modal-cancel = Eu não quero
 
 ## Tracking checklist section
 
+tracking_checklist-MOUNTING_CALIBRATION = Realize uma calibração de montagem
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Realize uma calibração de montagem dos pés
+toolbar-mounting_calibration = Calibração de Montagem
