@@ -231,9 +231,15 @@ reset-reset_all_warning-cancel = Cancelar
 reset-reset_all_warning_default-v2 =
     <b>Aviso:</b> Sua altura não foi configurada, suas proporções serão redefinidas para os padrões com a altura padrão.
     Tem certeza que quer fazer isso?
-reset-full = Reset Completo
-reset-mounting = Reset de Posição
-reset-yaw = Reset de guinada (yaw)
+reset-full = Redefinir Tudo
+reset-mounting = Calibração da Montagem
+reset-mounting-feet = Calibração dos Pés
+reset-mounting-fingers = Calibração dos Dedos
+reset-yaw = Refedinir Guinada
+reset-error-no_feet_tracker = Nenhum tracker de pés atribuído
+reset-error-no_fingers_tracker = Nenhum tracker de dedos atribuído
+reset-error-mounting-need_full_reset = É necessário fazer uma redefinição completa antes da montagem
+reset-error-yaw-need_full_reset = É necessário fazer uma redefinição completa antes da redefinição da guinada.
 
 ## Serial detection stuff
 
@@ -248,16 +254,19 @@ serial_detection-close = Fechar
 ## Navigation bar
 
 navbar-home = Início
-navbar-body_proportions = Proporções do corpo
+navbar-body_proportions = Proporções do Corpo
 navbar-trackers_assign = Atribuição de Tracker
 navbar-mounting = Calibragem de Posição
 navbar-onboarding = Assistente de Configuração
 navbar-settings = Opções
+navbar-connect_trackers = Conectar Trackers
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Gravar BVH
+bvh-stop_recording = Salvar gravação BVH
 bvh-recording = Gravando...
+bvh-save_title = Salvar gravação BVH
 
 ## Tracking pause
 
@@ -266,38 +275,39 @@ tracking-paused = Retomar rastreamento
 
 ## Widget: Overlay settings
 
-widget-overlay = Overlay
-widget-overlay-is_visible_label = Mostrar Overlay na SteamVR
-widget-overlay-is_mirrored_label = Mostrar Overlay como espelho
+widget-overlay = Sobreposição
+widget-overlay-is_visible_label = Mostrar Sobreposição no SteamVR
+widget-overlay-is_mirrored_label = Mostrar Sobreposição como Espelho
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = Refazer compensação de drift
+widget-drift_compensation-clear = Limpar a compensação de drift
 
 ## Widget: Clear Mounting calibration
 
-widget-clear_mounting = Limpar reset de posição
+widget-clear_mounting = Limpar calibragem de posição
 
 ## Widget: Developer settings
 
-widget-developer_mode = Modo de desenvolvedor
-widget-developer_mode-high_contrast = High contrast
-widget-developer_mode-precise_rotation = Precise rotation
-widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
-widget-developer_mode-sort_by_name = Sort by name
+widget-developer_mode = Modo de Desenvolvedor
+widget-developer_mode-high_contrast = Alto contraste
+widget-developer_mode-precise_rotation = Rotação precisa
+widget-developer_mode-fast_data_feed = Fluxo de dados rápido
+widget-developer_mode-filter_slimes_and_hmd = Filtrar Slimes e HMD
+widget-developer_mode-sort_by_name = Ordenar por nome
 widget-developer_mode-raw_slime_rotation = Rotação bruta
-widget-developer_mode-more_info = More info
+widget-developer_mode-more_info = Mais informações
 
 ## Widget: IMU Visualizer
 
-widget-imu_visualizer = Rotação do tracker
+widget-imu_visualizer = Dados de rastreamento
 widget-imu_visualizer-preview = Pré-visualização
 widget-imu_visualizer-hide = Esconder
-widget-imu_visualizer-rotation_raw = Bruta
+widget-imu_visualizer-rotation_raw = Rotação bruta
 widget-imu_visualizer-rotation_preview = Pré-visualizar rotação
 widget-imu_visualizer-acceleration = Aceleração
 widget-imu_visualizer-position = Posição
+widget-imu_visualizer-stay_aligned = Manter Alinhado
 
 ## Widget: Skeleton Visualizer
 
@@ -325,18 +335,19 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Aceleração. X/Y/Z
 tracker-table-column-rotation = Rotação X/Y/Z
 tracker-table-column-position = Posição X/Y/Z
+tracker-table-column-stay_aligned = Manter Alinhado
 tracker-table-column-url = URL
 
 ## Tracker rotation
 
 tracker-rotation-front = Frente
 tracker-rotation-front_left = Frente-Esquerda
-tracker-rotation-front_right = Frente-direita
+tracker-rotation-front_right = Frente-Direita
 tracker-rotation-left = Esquerda
 tracker-rotation-right = Direita
 tracker-rotation-back = Atrás
-tracker-rotation-back_left = Trás-esquerda
-tracker-rotation-back_right = Trás-direita
+tracker-rotation-back_left = Trás-Esquerda
+tracker-rotation-back_right = Trás-Direita
 tracker-rotation-custom = Personalizado
 tracker-rotation-overriden = (substituído pelo reset de posição)
 
