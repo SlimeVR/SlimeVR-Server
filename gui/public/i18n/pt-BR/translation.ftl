@@ -91,6 +91,10 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = nRF genérico
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -101,16 +105,58 @@ skeleton_bone-HEAD-desc =
     Para ajustá-la, balance a cabeça da esquerda para a direita, como se estivesse discordando, 
     e modifique o valor até que qualquer movimento nos outros trackers seja insignificante.
 skeleton_bone-NECK = Comprimento do Pescoço
-skeleton_bone-torso_group = Tamanho do Tronco
+skeleton_bone-NECK-desc =
+    Esta é a distância do centro da sua cabeça até a base do seu pescoço.
+    Para ajustá-la, mova a cabeça para cima e para baixo, como se estivesse assentindo, 
+    ou incline a cabeça para a esquerda e para a direita, ajustando o valor até que qualquer movimento nos outros trackers seja insignificante.
+skeleton_bone-torso_group = Comprimento do Tronco
+skeleton_bone-torso_group-desc =
+    Esta é a distância da base do seu pescoço até os seus quadris.
+    Para ajustá-la, fique em pé com a postura ereta e modifique o valor até 
+    que seus quadris virtuais se alinhem com os reais.
 skeleton_bone-UPPER_CHEST = Tamanho do Peito Superior
+skeleton_bone-UPPER_CHEST-desc =
+    Esta é a distância da base do seu pescoço até o meio do seu peito.
+    Para ajustá-la, configure corretamente o Comprimento do Tronco e faça ajustes em várias posições
+    (sentado, curvado, deitado, etc.) até que sua coluna virtual coincida com a real.
 skeleton_bone-CHEST_OFFSET = Chest Offset
-skeleton_bone-CHEST = Chest Length
-skeleton_bone-WAIST = Waist Length
-skeleton_bone-HIP = Hip Length
+skeleton_bone-CHEST_OFFSET-desc =
+    Isso pode ser ajustado para mover o tracker virtual do peito para cima ou para baixo, 
+    a fim de auxiliar na calibração em determinados jogos ou aplicativos que podem esperar que ele esteja mais alto ou mais baixo.
+skeleton_bone-CHEST = Comprimento do Peito
+skeleton_bone-CHEST-desc =
+    Esta é a distância do meio do seu peito até o meio da sua coluna.
+    Para ajustá-la, ajuste corretamente o Comprimento do Tronco e modifique o valor em várias posições 
+    (sentado, inclinado para frente, deitado, etc.) até que sua coluna virtual corresponda à sua coluna real.
+skeleton_bone-WAIST = Comprimento da Cintura
+skeleton_bone-WAIST-desc =
+    Esta é a distância do meio da sua coluna até o seu umbigo.
+    Para ajustá-la, ajuste corretamente o Comprimento do Tronco e modifique o valor em várias posições 
+    (sentado, inclinado para frente, deitado, etc.) até que sua coluna virtual corresponda à sua coluna real.
+skeleton_bone-HIP = Comprimento do Quadril
+skeleton_bone-HIP-desc =
+    Esta é a distância do seu umbigo até os seus quadris.
+    Para ajustá-la, configure corretamente o Comprimento do Tronco e modifique o valor em várias posições 
+    (sentado, inclinado para frente, deitado, etc.) até que sua coluna virtual corresponda à sua coluna real.
 skeleton_bone-HIP_OFFSET = Compensação do Quadril
+skeleton_bone-HIP_OFFSET-desc =
+    Isso pode ser ajustado para mover o tracker virtual do quadril para cima ou para baixo, 
+    a fim de auxiliar na calibração em determinados jogos ou aplicativos que podem esperar que ele esteja na sua cintura.
 skeleton_bone-HIPS_WIDTH = Largura do Quadril
-skeleton_bone-leg_group = Tamanho da Perna
-skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-HIPS_WIDTH-desc =
+    Esta é a distância entre o início das suas pernas.
+    Para ajustá-la, faça uma redefinição completa com as pernas retas e ajuste até que
+    suas pernas virtuais se alinhem horizontalmente com as reais.
+skeleton_bone-leg_group = Comprimento da Perna
+skeleton_bone-leg_group-desc =
+    Esta é a distância dos seus quadris até os seus pés.
+    Para ajustá-la, configure corretamente o Comprimento do Tronco e faça ajustes
+    até que seus pés virtuais fiquem no mesmo nível dos reais.
+skeleton_bone-UPPER_LEG = Comprimento da Coxa
+skeleton_bone-UPPER_LEG-desc =
+    Esta é a distância dos seus quadris até os seus joelhos.
+    Para ajustá-la, configure corretamente o Comprimento das Pernas e faça ajustes
+    até que seus joelhos virtuais fiquem no mesmo nível dos reais.
 skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = Tamanho do Pé
 skeleton_bone-FOOT_SHIFT = Compensação do Pé
