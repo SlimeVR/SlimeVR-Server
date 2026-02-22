@@ -605,7 +605,7 @@ settings-general-fk_settings-arm_fk-back-description = O modo padrão, com os br
 settings-general-fk_settings-arm_fk-tpose_up = T-pose (cima)
 settings-general-fk_settings-arm_fk-tpose_up-description = Espera que seus braços estejam abaixados ao lado do corpo durante a Redefinção Completa (Redefinir Tudo), e levantados a 90 graus para os lados durante a Calibração de Montagem.
 settings-general-fk_settings-arm_fk-tpose_down = T-pose (baixo)
-settings-general-fk_settings-arm_fk-tpose_down-description = Espera que seus braços fiquem 90 graus para os lados durante o reset completo e para baixo nas laterais durante o reset de posição.
+settings-general-fk_settings-arm_fk-tpose_down-description = Espera que seus braços estejam levantados a 90 graus para os lados durante o Redefinição Completa (Redefinir Tudo), e abaixados ao lado do corpo durante a Calibração de Montagem.
 settings-general-fk_settings-arm_fk-forward = Frente
 settings-general-fk_settings-arm_fk-forward-description = Espera que seus braços estejam 90 graus à frente. Útil para VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Opções do esqueleto
@@ -629,7 +629,7 @@ settings-general-fk_settings-self_localization-description = O modo mocap permit
 
 settings-general-gesture_control = Controle de gestos
 settings-general-gesture_control-subtitle = Resets baseados em toques
-settings-general-gesture_control-description = Faz com oque os resets sejam ativados tocando um tracker. O Tracker mais alto no seu torso é usado para o Reset Rápido, o tracker mais alto na sua perna esquerda é usado para o Reset, e o tracker mais alto na sua perna direita é usado para o Reset de Posição. Os toques devem ocorrer dentro de 0.6 segundos para serem registrados.
+settings-general-gesture_control-description = Permite que redefinições sejam acionadas ao tocar em um tracker. O tracker mais alto no seu tronco é usado para Redefinir Guinada (Direção), o tracker mais alto na sua perna esquerda é usado para Redefinir Tudo, e o tracker mais alto na sua perna direita é usado para a Calibração de Montagem. Os toques devem ocorrer dentro do limite de 0,3 segundos multiplicado pelo número de toques para serem reconhecidos.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -651,9 +651,9 @@ settings-general-gesture_control-yawResetTaps = Toques para reset de guinada
 settings-general-gesture_control-fullResetEnabled = Habilitar toque para reset completo
 settings-general-gesture_control-fullResetDelay = Atraso no reset completo
 settings-general-gesture_control-fullResetTaps = Toques para reset completo
-settings-general-gesture_control-mountingResetEnabled = Toques para o reset de posição
-settings-general-gesture_control-mountingResetDelay = Delay do reset de posição
-settings-general-gesture_control-mountingResetTaps = Toques para o reset de posição
+settings-general-gesture_control-mountingResetEnabled = Ativar toque para realizar a calibração de montagem
+settings-general-gesture_control-mountingResetDelay = Atraso da calibração da montagem
+settings-general-gesture_control-mountingResetTaps = Toques para calibração de montagem
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers acima do limite
 settings-general-gesture_control-numberTrackersOverThreshold-description = Aumente esse valor se a detecção de toque não estiver funcionando. Não aumente o valor acima do necessário para que a detecção de toque funcione, pois isso causaria mais falsos positivos.
@@ -908,7 +908,7 @@ onboarding-wifi_creds-password =
 
 ## Mounting setup
 
-onboarding-reset_tutorial-back = Voltar para a Calibragem de Posição
+onboarding-reset_tutorial-back = Voltar para a calibração de montagem
 onboarding-reset_tutorial = Resetar Tutorial
 onboarding-reset_tutorial-explanation = Enquanto você usa os trackers, eles podem ficar desalinhados devido ao drift de guinada (yaw) da IMU ou porque você pode ter movido os trackers fisicamente. Há várias maneiras de corrigir isso.
 onboarding-reset_tutorial-skip = Pular passo
@@ -925,11 +925,11 @@ onboarding-reset_tutorial-1 =
     Isso reseta completamente a posição e rotação de todos os seus trackers. Deve corrigir a maioria dos problemas.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
-    Toque { $taps } vezes no tracker destacado para acionar o reset de posição.
+    Toque no tracker destacado { $taps } vezes para acionar a calibração de montagem.
     
-    O reset de posição ajuda a ajustar como os trackers estão realmente colocados em você, então, se você os moveu acidentalmente e alterou significativamente a orientação, isso ajudará.
+    A calibração de montagem ajusta conforme os trackers estão fixados no seu corpo. Se eles tiverem se movido ou girado significativamente, isso ajuda a recalibrar a orientação deles.
     
-    Você precisa estar em uma pose como se estivesse esquiando, como é mostrado no Assistente de Posição Automática, e há um atraso de 3 segundos (configurável) antes que seja acionado.
+    Você precisa estar em uma pose como se estivesse esquiando, conforme mostrado no assistente de montagem automática, e há um atraso de 3 segundos (configurável) antes que ela seja acionada.
 
 ## Setup start
 
@@ -1101,17 +1101,17 @@ onboarding-assign_trackers-warning-WAIST =
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting = Qual método de calibração de posição você deseja usar?
+onboarding-choose_mounting = Qual método de calibração de montagem usar?
 # Multiline text
-onboarding-choose_mounting-description = A orientação de posição corrige a colocação dos trackers no seu corpo.
-onboarding-choose_mounting-auto_mounting = Posição automática
+onboarding-choose_mounting-description = A orientação de montagem corrige a forma como os trackers estão fixados no seu corpo.
+onboarding-choose_mounting-auto_mounting = Montagem automática
 # Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = Recomendado
-onboarding-choose_mounting-auto_mounting-description = Isso detectará automaticamente as direções de posição para todos os seus trackers a partir de 2 poses
-onboarding-choose_mounting-manual_mounting = Posição manual
+onboarding-choose_mounting-auto_mounting-description = Isso detectará automaticamente as orientações de montagem de todos os seus trackers a partir de duas poses.
+onboarding-choose_mounting-manual_mounting = Montagem manual
 # Italicized text
 onboarding-choose_mounting-manual_mounting-label-v2 = Pode não ser precisa o suficiente
-onboarding-choose_mounting-manual_mounting-description = Isso permitirá que você escolha manualmente a direção de posição para cada tracker
+onboarding-choose_mounting-manual_mounting-description = Isso permitirá que você escolha manualmente a orientação de montagem de cada tracker.
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
     Você tem certeza de que deseja fazer
