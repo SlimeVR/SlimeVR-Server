@@ -119,7 +119,7 @@ skeleton_bone-UPPER_CHEST-desc =
     Esta é a distância da base do seu pescoço até o meio do seu peito.
     Para ajustá-la, configure corretamente o Comprimento do Tronco e faça ajustes em várias posições
     (sentado, curvado, deitado, etc.) até que sua coluna virtual coincida com a real.
-skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST_OFFSET = Compensação do Peito
 skeleton_bone-CHEST_OFFSET-desc =
     Isso pode ser ajustado para mover o tracker virtual do peito para cima ou para baixo, 
     a fim de auxiliar na calibração em determinados jogos ou aplicativos que podem esperar que ele esteja mais alto ou mais baixo.
@@ -173,14 +173,52 @@ skeleton_bone-FOOT_SHIFT-desc =
     Para ajustá-lo, defina o Comprimento do Pé como 0, faça uma redefinição completa e ajuste até que
     seus pés virtuais se alinhem com o centro dos seus tornozelos.
 skeleton_bone-SKELETON_OFFSET = Compensação do Esqueleto
+skeleton_bone-SKELETON_OFFSET-desc =
+    Isso pode ser ajustado para deslocar todos os seus trackers para frente ou para trás.
+    Pode ser usado para ajudar na calibração em determinados jogos ou aplicativos
+    que podem esperar que seus trackers estejam mais à frente.
 skeleton_bone-SHOULDERS_DISTANCE = Distância dos Ombros
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    Esta é a distância vertical da base do seu pescoço até os seus ombros.
+    Para ajustá-la, defina o Comprimento do Braço Superior como 0 e faça ajustes até que
+    seus trackers virtuais de cotovelo se alinhem verticalmente com os seus ombros reais.
 skeleton_bone-SHOULDERS_WIDTH = Largura dos Ombros
-skeleton_bone-arm_group = Tamanho do Braço
-skeleton_bone-UPPER_ARM = Tamanho do Braço Superior
-skeleton_bone-LOWER_ARM = Distância do Antebraço
-skeleton_bone-HAND_Y = Distância da mão Y
-skeleton_bone-HAND_Z = Distância da mão Z
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    Esta é a distância horizontal da base do seu pescoço até os seus ombros.
+    Para ajustá-la, defina o Comprimento do Braço Superior como 0 e faça ajustes até que
+    seus trackers virtuais de cotovelo se alinhem horizontalmente com os seus ombros reais.
+skeleton_bone-arm_group = Comprimento do Braço
+skeleton_bone-arm_group-desc =
+    Esta é a distância dos seus ombros até os seus punhos.
+    Para ajustá-la, configure corretamente a Distância dos Ombros, defina Hand Distance Y
+     como 0 e faça ajustes até que seus trackers de mão se alinhem com os seus punhos.
+skeleton_bone-UPPER_ARM = Comprimento do Braço Superior
+skeleton_bone-UPPER_ARM-desc =
+    Esta é a distância dos seus ombros até os seus cotovelos.
+    Para ajustá-la, configure corretamente o Comprimento do Braço e faça ajustes até que
+    seus trackers de cotovelo se alinhem com os seus cotovelos reais.
+skeleton_bone-LOWER_ARM = Comprimento do Antebraço
+skeleton_bone-LOWER_ARM-desc =
+    Esta é a distância entre seus cotovelos e seus pulsos.
+    Para ajustá-la, ajuste corretamente o Comprimento do braço e modifique-o até 
+    que os trackers de cotovelo se alinhem com seus cotovelos reais.
+skeleton_bone-HAND_Y = Distância da Mão Y
+skeleton_bone-HAND_Y-desc =
+    Esta é a distância vertical dos seus punhos até o meio da sua mão.
+    Para ajustá-la para captura de movimento, configure corretamente o Comprimento do Braço e faça ajustes
+    até que seus trackers de mão se alinhem verticalmente com o meio das suas mãos.
+    Para ajustá-la para rastreamento de cotovelo a partir dos controladores, defina o Comprimento do Braço como 0
+    e faça ajustes até que seus trackers de cotovelo se alinhem verticalmente com os seus punhos.
+skeleton_bone-HAND_Z = Distância da Mão Z
+skeleton_bone-HAND_Z-desc =
+    Esta é a distância horizontal dos seus punhos até o meio da sua mão.
+    Para ajustá-la para captura de movimento, defina este valor como 0.
+    Para ajustá-la para rastreamento de cotovelo a partir dos controladores, defina o Comprimento do Braço como 0 e
+    faça ajustes até que seus trackers de cotovelo se alinhem horizontalmente com os seus punhos.
 skeleton_bone-ELBOW_OFFSET = Compensação do Cotovelo
+skeleton_bone-ELBOW_OFFSET-desc =
+    Isso pode ser ajustado para mover seus trackers virtuais de cotovelo para cima ou para baixo, 
+    a fim de ajudar a evitar que o VRChat vincule acidentalmente um tracker de cotovelo ao peito.
 
 ## Tracker reset buttons
 
@@ -188,7 +226,7 @@ reset-reset_all = Redefinir todas as proporções
 reset-reset_all_warning-v2 =
     <b>Aviso:</b> Suas proporções serão redefinidas para o padrão baseado na sua altura configurada.
     Tem certeza que deseja fazer isso?
-reset-reset_all_warning-reset = Resetar proporções
+reset-reset_all_warning-reset = Redefinir proporções
 reset-reset_all_warning-cancel = Cancelar
 reset-reset_all_warning_default-v2 =
     <b>Aviso:</b> Sua altura não foi configurada, suas proporções serão redefinidas para os padrões com a altura padrão.
@@ -883,7 +921,7 @@ onboarding-reset_tutorial-2 =
 
 ## Setup start
 
-onboarding-home = Bem vindo ao SlimeVR
+onboarding-home = Bem-vindo ao SlimeVR
 onboarding-home-start = Vamos configurar!
 
 ## Setup done
