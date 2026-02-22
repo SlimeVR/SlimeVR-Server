@@ -188,9 +188,8 @@ skeleton_bone-SHOULDERS_WIDTH-desc =
     seus trackers virtuais de cotovelo se alinhem horizontalmente com os seus ombros reais.
 skeleton_bone-arm_group = Comprimento do Braço
 skeleton_bone-arm_group-desc =
-    Esta é a distância dos seus ombros até os seus punhos.
-    Para ajustá-la, configure corretamente a Distância dos Ombros, defina Hand Distance Y
-     como 0 e faça ajustes até que seus trackers de mão se alinhem com os seus punhos.
+    Esta é a distância entre seus ombros e seus pulsos.
+    Para ajustá-la, ajuste corretamente a Distância dos ombros, defina Distância das Mãos Y como 0 e modifique-a até que os trackers das mãos se alinhem com seus pulsos.
 skeleton_bone-UPPER_ARM = Comprimento do Braço Superior
 skeleton_bone-UPPER_ARM-desc =
     Esta é a distância dos seus ombros até os seus cotovelos.
@@ -374,13 +373,13 @@ tracker-infos-magnetometer-status-v1 =
 
 ## Tracker settings
 
-tracker-settings-back = Voltar para lista de trackers
+tracker-settings-back = Voltar para a lista de trackers
 tracker-settings-title = Opções dos trackers
 tracker-settings-assignment_section = Atribuição
 tracker-settings-assignment_section-description = A qual parte do corpo o tracker está atribuído.
 tracker-settings-assignment_section-edit = Editar atribuição
 tracker-settings-mounting_section = Orientação de montagem
-tracker-settings-mounting_section-description = Aonde o tracker está posicionado?
+tracker-settings-mounting_section-description = Onde o tracker está posicionado?
 tracker-settings-mounting_section-edit = Editar montagem
 tracker-settings-drift_compensation_section = Ligar a compensação de drift
 tracker-settings-drift_compensation_section-description = Esse tracker deverá compensar pelo drift quando a compensação de drift estiver ligado?
