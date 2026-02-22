@@ -157,9 +157,21 @@ skeleton_bone-UPPER_LEG-desc =
     Esta é a distância dos seus quadris até os seus joelhos.
     Para ajustá-la, configure corretamente o Comprimento das Pernas e faça ajustes
     até que seus joelhos virtuais fiquem no mesmo nível dos reais.
-skeleton_bone-LOWER_LEG = Lower Leg Length
-skeleton_bone-FOOT_LENGTH = Tamanho do Pé
-skeleton_bone-FOOT_SHIFT = Compensação do Pé
+skeleton_bone-LOWER_LEG = Comprimento da Parte Inferior da Perna
+skeleton_bone-LOWER_LEG-desc =
+    Esta é a distância dos seus joelhos até os seus tornozelos.
+    Para ajustá-la, configure corretamente o Comprimento das Pernas e faça ajustes
+    até que seus joelhos virtuais fiquem no mesmo nível dos reais.
+skeleton_bone-FOOT_LENGTH = Comprimento do Pé
+skeleton_bone-FOOT_LENGTH-desc =
+    Esta é a distância dos seus tornozelos até os seus dedos dos pés.
+    Para ajustá-la, fique na ponta dos pés e faça ajustes até que seus pés virtuais permaneçam no lugar.
+skeleton_bone-FOOT_SHIFT = Deslocamento do Pé
+skeleton_bone-FOOT_SHIFT-desc =
+    Este valor é a distância horizontal do seu joelho até o seu tornozelo.
+    Ele leva em consideração que a parte inferior das pernas se projeta para trás quando você fica em pé.
+    Para ajustá-lo, defina o Comprimento do Pé como 0, faça uma redefinição completa e ajuste até que
+    seus pés virtuais se alinhem com o centro dos seus tornozelos.
 skeleton_bone-SKELETON_OFFSET = Compensação do Esqueleto
 skeleton_bone-SHOULDERS_DISTANCE = Distância dos Ombros
 skeleton_bone-SHOULDERS_WIDTH = Largura dos Ombros
