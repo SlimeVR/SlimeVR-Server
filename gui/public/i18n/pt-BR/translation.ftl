@@ -370,6 +370,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Ativado
        *[NOT_SUPPORTED] Não Suportado
     }
+tracker-infos-packet_loss = Perda de Pacotes
+tracker-infos-packets_lost = Perda de Pacotes
+tracker-infos-packets_received = Pacotes Recebidos
 
 ## Tracker settings
 
@@ -400,8 +403,11 @@ tracker-settings-name_section-label = Nome do tracker
 tracker-settings-forget = Esquecer o tracker
 tracker-settings-forget-description = Remove o tracker do servidor SlimeVR e impede que ele se conecte a ele até que o servidor seja reiniciado. A configuração do tracker não será perdida.
 tracker-settings-forget-label = Esquecer o tracker
+tracker-settings-update-unavailable-v2 = Nenhuma versão nova encontrada
+tracker-settings-update-incompatible = Não é possível atualizar. Placa ou versão de firmware incompatível
 tracker-settings-update-low-battery = Não é possível atualizar. Bateria abaixo de 50%
 tracker-settings-update-up_to_date = Atualizado
+tracker-settings-update-blocked = Atualização não disponível. Não há outras novas versões disponíveis
 tracker-settings-update = Atualizar agora
 tracker-settings-update-title = Versão do firmware
 
