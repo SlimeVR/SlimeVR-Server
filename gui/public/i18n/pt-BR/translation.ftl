@@ -145,8 +145,7 @@ skeleton_bone-HIP_OFFSET-desc =
 skeleton_bone-HIPS_WIDTH = Largura do Quadril
 skeleton_bone-HIPS_WIDTH-desc =
     Esta é a distância entre o início das suas pernas.
-    Para ajustá-la, faça uma redefinição completa com as pernas retas e ajuste até que
-    suas pernas virtuais se alinhem horizontalmente com as reais.
+    Para ajustá-la, execute "Redefinir Tudo" com as pernas retas e modifique-a até que suas pernas virtuais se alinhem horizontalmente com as pernas reais.
 skeleton_bone-leg_group = Comprimento da Perna
 skeleton_bone-leg_group-desc =
     Esta é a distância dos seus quadris até os seus pés.
@@ -170,8 +169,8 @@ skeleton_bone-FOOT_SHIFT = Deslocamento do Pé
 skeleton_bone-FOOT_SHIFT-desc =
     Este valor é a distância horizontal do seu joelho até o seu tornozelo.
     Ele leva em consideração que a parte inferior das pernas se projeta para trás quando você fica em pé.
-    Para ajustá-lo, defina o Comprimento do Pé como 0, faça uma redefinição completa e ajuste até que
-    seus pés virtuais se alinhem com o centro dos seus tornozelos.
+    Para ajustá-lo, defina o Comprimento do Pé como 0, execute "Redefinir Tudo" e ajuste até 
+    que seus pés virtuais se alinhem com o meio dos seus tornozelos.
 skeleton_bone-SKELETON_OFFSET = Compensação do Esqueleto
 skeleton_bone-SKELETON_OFFSET-desc =
     Isso pode ser ajustado para deslocar todos os seus trackers para frente ou para trás.
@@ -581,8 +580,8 @@ settings-general-fk_settings-leg_tweak-skating_correction = Correção de desliz
 settings-general-fk_settings-leg_tweak-toe_snap = Encaixar os dedos do pé
 settings-general-fk_settings-leg_tweak-foot_plant = Pé plantado
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Força da correção de deslize
-settings-general-fk_settings-leg_tweak-skating_correction-description = A correção de deslize corrige o efeito de patinar, mas pode diminuir a precisão em certos padrões de movimento. Ativando essa correção, certifique-se de redefinir totalmente e recalibrar no jogo.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Clipping de chão pode reduzir e até eliminar o clipping através do chão. Ao ativar isso, certifique-se de redefinir completamente e recalibrar no jogo.
+settings-general-fk_settings-leg_tweak-skating_correction-description = A correção de deslizamento corrige o efeito de “patinação”, mas pode reduzir a precisão em certos padrões de movimento. Ao ativá-la, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
+settings-general-fk_settings-leg_tweak-floor_clip-description = O corte de chão pode reduzir ou eliminar a penetração no chão. Ao ativá-lo, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Encaixar os dedos do pé, tenta adivinhar a rotação dos seus pés se os trackers dos pés não estiverem em uso.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Pé plantado gira os pés para ficarem paralelos ao chão quando em contato.
 settings-general-fk_settings-leg_fk = Tracking de pernas
@@ -593,19 +592,20 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Imp
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que as articulações rotacionem além de seu limite
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Corrigir com limites
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Corrija as rotações das articulações quando elas ultrapassarem seus limites
+settings-general-fk_settings-ik-use_position-description = Ativa o uso de dados de posição dos trackers que os fornecem. Ao ativar isso, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
 settings-general-fk_settings-arm_fk = Opções do Braço
 settings-general-fk_settings-arm_fk-description = Muda o jeito que os braços são rastreados.
 settings-general-fk_settings-arm_fk-force_arms = Forçar braços do HMD
 settings-general-fk_settings-reset_settings = Redefinir configurações
-settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Redefine a inclinação (rotação vertical) do HMD ao fazer um reset completo. Útil se estiver usando um HMD na testa para VTubing ou captura de movimento. Não ative para VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Redefine a inclinação (rotação vertical) do HMD ao executar "Redefinir Tudo". Útil ao usar um HMD na testa para VTubing ou captura de movimento. Não ative para VR.
 settings-general-fk_settings-reset_settings-reset_hmd_pitch = Redefinir a inclinação do HMD
 settings-general-fk_settings-arm_fk-reset_mode-description = Altera qual pose de braço é esperada para a calibração de montagem.
 settings-general-fk_settings-arm_fk-back = Atrás
 settings-general-fk_settings-arm_fk-back-description = O modo padrão, com os braços voltados para trás e os antebraços para frente.
 settings-general-fk_settings-arm_fk-tpose_up = T-pose (cima)
-settings-general-fk_settings-arm_fk-tpose_up-description = Espera que seus braços estejam abaixados ao lado do corpo durante a Redefinção Completa (Redefinir Tudo), e levantados a 90 graus para os lados durante a Calibração de Montagem.
+settings-general-fk_settings-arm_fk-tpose_up-description = Espera que seus braços estejam abaixados ao lado do corpo durante "Redefinir Tudo" e levantados a 90 graus para os lados durante a "Calibração de Montagem".
 settings-general-fk_settings-arm_fk-tpose_down = T-pose (baixo)
-settings-general-fk_settings-arm_fk-tpose_down-description = Espera que seus braços estejam levantados a 90 graus para os lados durante o Redefinição Completa (Redefinir Tudo), e abaixados ao lado do corpo durante a Calibração de Montagem.
+settings-general-fk_settings-arm_fk-tpose_down-description = Mantenha os braços levantados a 90 graus para os lados durante "Redefinir Tudo" e abaixados ao lado do corpo durante a "Calibração de Montagem".
 settings-general-fk_settings-arm_fk-forward = Frente
 settings-general-fk_settings-arm_fk-forward-description = Espera que seus braços estejam 90 graus à frente. Útil para VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Opções do esqueleto
@@ -629,7 +629,7 @@ settings-general-fk_settings-self_localization-description = O modo mocap permit
 
 settings-general-gesture_control = Controle de gestos
 settings-general-gesture_control-subtitle = Resets baseados em toques
-settings-general-gesture_control-description = Permite que redefinições sejam acionadas ao tocar em um tracker. O tracker mais alto no seu tronco é usado para Redefinir Guinada (Direção), o tracker mais alto na sua perna esquerda é usado para Redefinir Tudo, e o tracker mais alto na sua perna direita é usado para a Calibração de Montagem. Os toques devem ocorrer dentro do limite de 0,3 segundos multiplicado pelo número de toques para serem reconhecidos.
+settings-general-gesture_control-description = Permite que redefinições sejam acionadas ao tocar em um tracker. O tracker mais alto no tronco é usado para "Redefinir direção", o tracker mais alto na perna esquerda é usado para executar "Redefinir Tudo", e o tracker mais alto na perna direita é usado para a "Calibração de Montagem". Os toques devem ocorrer dentro do limite de 0,3 segundos multiplicado pelo número de toques para serem reconhecidos.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -648,9 +648,9 @@ settings-general-gesture_control-trackers =
 settings-general-gesture_control-yawResetEnabled = Ativar toque para reset de guinada
 settings-general-gesture_control-yawResetDelay = Atraso do reset de guinada
 settings-general-gesture_control-yawResetTaps = Toques para reset de guinada
-settings-general-gesture_control-fullResetEnabled = Habilitar toque para reset completo
-settings-general-gesture_control-fullResetDelay = Atraso no reset completo
-settings-general-gesture_control-fullResetTaps = Toques para reset completo
+settings-general-gesture_control-fullResetEnabled = Ativar toque para executar "Redefinir Tudo"
+settings-general-gesture_control-fullResetDelay = Atraso do "Redefinir Tudo"
+settings-general-gesture_control-fullResetTaps = Toques para executar "Redefinir Tudo"
 settings-general-gesture_control-mountingResetEnabled = Ativar toque para realizar a calibração de montagem
 settings-general-gesture_control-mountingResetDelay = Atraso da calibração da montagem
 settings-general-gesture_control-mountingResetTaps = Toques para calibração de montagem
@@ -919,10 +919,9 @@ onboarding-reset_tutorial-0 =
     Isso fará com que os trackers fiquem na mesma direção que o seu headset (HMD).
 # Cares about multiline
 onboarding-reset_tutorial-1 =
-    Toque { $taps } vezes no tracker destacado para acionar o reset completo.
+    Toque no tracker destacado { $taps } vezes para executar "Redefinir Tudo".
     
-    Você precisa estar em pé para isso (pose-i). Há um atraso de 3 segundos (configurável) antes que realmente aconteça.
-    Isso reseta completamente a posição e rotação de todos os seus trackers. Deve corrigir a maioria dos problemas.
+    Você precisa estar em pé para isso (pose em I). Há um atraso de 3 segundos (configurável) antes que isso aconteça. Isso redefine completamente a posição e a rotação de todos os seus trackers. Isso deve corrigir a maioria dos problemas.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Toque no tracker destacado { $taps } vezes para acionar a calibração de montagem.
@@ -1144,6 +1143,7 @@ onboarding-automatic_mounting-mounting_reset-step-0 = 1. Agache-se em uma pose d
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Calibração de Montagem" e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Pressione o botão “Calibração dos pés” e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
 onboarding-automatic_mounting-preparation-title = Preparação
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. Pressione o botão “Redefinir Completamente"
 onboarding-automatic_mounting-put_trackers_on-title = Coloque seus trackers
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as orientações de montagem, vamos usar os trackers que você acabou de atribuir. Coloque todos os seus trackers; você pode ver qual é qual na figura à direita.
 onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trackers
