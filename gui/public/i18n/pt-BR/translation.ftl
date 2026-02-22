@@ -238,7 +238,7 @@ reset-yaw = Refedinir Guinada
 reset-error-no_feet_tracker = Nenhum tracker de pés atribuído
 reset-error-no_fingers_tracker = Nenhum tracker de dedos atribuído
 reset-error-mounting-need_full_reset = É necessário fazer uma redefinição completa antes da montagem
-reset-error-yaw-need_full_reset = É necessário fazer uma redefinição completa antes da redefinição da guinada.
+reset-error-yaw-need_full_reset = É necessário executar "Redefinir Tudo" antes de "Redefinir Guinada"
 
 ## Serial detection stuff
 
@@ -531,12 +531,13 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviz
 settings-general-tracker_mechanics-filtering-type-prediction = Predição
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
 settings-general-tracker_mechanics-filtering-amount = Quantidade
-settings-general-tracker_mechanics-yaw-reset-smooth-time = Suavisação do reset de guinada (yaw). (0s desativa a suavização)
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Tempo de suavização do "Redefinir Guinada" (0s desativa a suavização)
 settings-general-tracker_mechanics-drift_compensation = Compensação de drift
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compensa o drift de guinada (yaw) aplicando uma rotação inversa.
-    Mudar a quantidade de compensação e até quantos resets vão ser levados em conta.
+    Compensa o drift de guinada do IMU aplicando uma rotação inversa.
+    Altere a quantidade de compensação e o número de redefinições consideradas.
+    Isso só deve ser usado se você precisar executar "Redefinir Tudo" com muita frequência!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensação de drift
 settings-general-tracker_mechanics-drift_compensation-prediction = Predição de compensação de drift
 # This cares about multilines
@@ -645,9 +646,9 @@ settings-general-gesture_control-trackers =
         [many] trackers
        *[other] trackers
     }
-settings-general-gesture_control-yawResetEnabled = Ativar toque para reset de guinada
-settings-general-gesture_control-yawResetDelay = Atraso do reset de guinada
-settings-general-gesture_control-yawResetTaps = Toques para reset de guinada
+settings-general-gesture_control-yawResetEnabled = Ativar toque para executar "Redefinir Guinada"
+settings-general-gesture_control-yawResetDelay = Atraso para executar "Redefinir Guinada"
+settings-general-gesture_control-yawResetTaps = Toques para executar "Redefinir Guinada"
 settings-general-gesture_control-fullResetEnabled = Ativar toque para executar "Redefinir Tudo"
 settings-general-gesture_control-fullResetDelay = Atraso do "Redefinir Tudo"
 settings-general-gesture_control-fullResetTaps = Toques para executar "Redefinir Tudo"
@@ -914,9 +915,9 @@ onboarding-reset_tutorial-explanation = Enquanto você usa os trackers, eles pod
 onboarding-reset_tutorial-skip = Pular passo
 # Cares about multiline
 onboarding-reset_tutorial-0 =
-    Toque { $taps } vezes no tracker destacado para acionar o reset de guinada.
+    Toque no tracker destacado { $taps } vezes para executar "Redefinir Guinada".
     
-    Isso fará com que os trackers fiquem na mesma direção que o seu headset (HMD).
+    Isso fará com que os trackers fiquem voltados para a mesma direção que o seu headset (HMD).
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Toque no tracker destacado { $taps } vezes para executar "Redefinir Tudo".
@@ -1170,11 +1171,11 @@ onboarding-automatic_proportions-put_trackers_on-next = Coloquei todos os meus t
 onboarding-automatic_proportions-requirements-title = Requisitos
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-descriptionv2 =
-    Você possui pelo menos trackers suficientes para rastrear seus pés (geralmente 5 trackers).
-    Você está com os trackers e o headset ligados, e os está usando.
-    Seus trackers e o headset estão conectados ao servidor SlimeVR e estão funcionando corretamente (sem travamentos, desconexões, etc.).
-    Seu headset está enviando dados de posição para o servidor SlimeVR (isso geralmente significa ter o SteamVR em execução e conectado ao SlimeVR usando o driver SteamVR do SlimeVR).
-    Seu rastreamento está funcionando e representa com precisão seus movimentos (por exemplo, você realizou uma reinicialização completa e eles se movem na direção certa ao chutar, se inclinar, sentar, etc.).
+    Você tem trackers suficientes para rastrear seus pés (geralmente 5 trackers).
+    Você está com seus trackers e headset colocados e os vestindo corretamente.
+    Seus trackers e headset estão conectados ao servidor do SlimeVR e funcionando corretamente (ex.: sem travamentos, desconexões, etc.).
+    Seu headset está enviando dados de posição para o servidor do SlimeVR (isso geralmente significa que o SteamVR está em execução e conectado ao SlimeVR usando o driver do SteamVR do SlimeVR).
+    Seu rastreamento está funcionando e representando seus movimentos com precisão (ex.: você já executou "Redefinir Tudo" e eles se movem na direção correta ao chutar, se inclinar, sentar, etc.).
 onboarding-automatic_proportions-requirements-next = Eu li os requisitos.
 onboarding-automatic_proportions-check_height-title-v3 = Meça a altura do seu headset
 onboarding-automatic_proportions-check_height-description-v2 = A altura do seu headset (HMD) deve ser um pouco menor que sua altura total, já que o headset mede a altura do olho. Essa medida será usada como base para as proporções do seu corpo
@@ -1268,7 +1269,7 @@ trackers_still_on-modal-cancel = Aguarde...
 
 ## Status system
 
-status_system-StatusTrackerReset = É recomendado realizar um reset completo, pois um ou mais trackers estão desajustados.
+status_system-StatusTrackerReset = Recomenda-se executar "Redefinir Tudo", pois um ou mais trackers não estão ajustados.
 status_system-StatusSteamVRDisconnected =
     { $type ->
         [steamvr_feeder] Atualmente não conectado ao aplicativo SlimeVR Feeder.
@@ -1390,4 +1391,5 @@ error_collection_modal-cancel = Eu não quero
 
 tracking_checklist-MOUNTING_CALIBRATION = Realize uma calibração de montagem
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Realize uma calibração de montagem dos pés
+tracking_checklist-FULL_RESET = Execute "Redefinir Tudo"
 toolbar-mounting_calibration = Calibração de Montagem
