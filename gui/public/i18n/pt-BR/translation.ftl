@@ -7,11 +7,11 @@
 
 ## Websocket (server) status
 
-websocket-connecting = Conectando ao servidor
-websocket-connection_lost = Conexão perdida com o servidor. Reconectando...
-websocket-connection_lost-desc = Parece que o servidor do SlimeVR crashou. Verifique as logs e reinicie o programa
+websocket-connecting = Carregando...
+websocket-connection_lost = O servidor parou de funcionar!
+websocket-connection_lost-desc = Parece que o servidor do SlimeVR parou de funcionar. Verifique os logs e reinicie o programa.
 websocket-timedout = Não foi possível conectar-se ao servidor
-websocket-timedout-desc = Parece que o SlimeVR server crashou ou parou de responder. Verifique as logs e reinicie o programa
+websocket-timedout-desc = Parece que o servidor do SlimeVR parou de funcionar ou atingiu o tempo limite. Verifique os logs e reinicie o programa.
 websocket-error-close = Sair do SlimeVR
 websocket-error-logs = Abrir a pasta de logs
 
@@ -33,6 +33,10 @@ tips-failed_webgl = Falha ao inicializar o WebGL.
 
 ## Units
 
+unit-meter = Metros
+unit-foot = Pés
+unit-inch = Polegadas
+unit-cm = cm
 
 ## Body parts
 
@@ -74,6 +78,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = Placa do SlimeVR Dev
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -90,7 +96,11 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 
 skeleton_bone-NONE = Nada
 skeleton_bone-HEAD = Deslocamento da Cabeça
-skeleton_bone-NECK = Tamanho do Pescoço
+skeleton_bone-HEAD-desc =
+    Esta é a distância do seu headset até o centro da sua cabeça.
+    Para ajustá-la, balance a cabeça da esquerda para a direita, como se estivesse discordando, 
+    e modifique o valor até que qualquer movimento nos outros trackers seja insignificante.
+skeleton_bone-NECK = Comprimento do Pescoço
 skeleton_bone-torso_group = Tamanho do Tronco
 skeleton_bone-UPPER_CHEST = Tamanho do Peito Superior
 skeleton_bone-CHEST_OFFSET = Chest Offset
