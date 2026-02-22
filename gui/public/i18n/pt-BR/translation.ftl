@@ -256,7 +256,7 @@ serial_detection-close = Fechar
 navbar-home = Início
 navbar-body_proportions = Proporções do Corpo
 navbar-trackers_assign = Atribuição de Tracker
-navbar-mounting = Calibragem de Posição
+navbar-mounting = Calibração da Montagem
 navbar-onboarding = Assistente de Configuração
 navbar-settings = Opções
 navbar-connect_trackers = Conectar Trackers
@@ -330,6 +330,7 @@ tracker-table-column-name = Nome
 tracker-table-column-type = Tipo
 tracker-table-column-battery = Bateria
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Perda de Pacotes
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Aceleração. X/Y/Z
@@ -349,13 +350,13 @@ tracker-rotation-back = Atrás
 tracker-rotation-back_left = Trás-Esquerda
 tracker-rotation-back_right = Trás-Direita
 tracker-rotation-custom = Personalizado
-tracker-rotation-overriden = (substituído pelo reset de posição)
+tracker-rotation-overriden = (substituído pela calibração de montagem)
 
 ## Tracker information
 
 tracker-infos-manufacturer = Fabricante
-tracker-infos-display_name = Nome de exibição
-tracker-infos-custom_name = Nome personalizado
+tracker-infos-display_name = Nome de Exibição
+tracker-infos-custom_name = Nome Personalizado
 tracker-infos-url = URL do Tracker
 tracker-infos-version = Versão do firmware
 tracker-infos-hardware_rev = Revisão do hardware
@@ -367,9 +368,9 @@ tracker-infos-network_version = Versão do protocolo
 tracker-infos-magnetometer = Magnetômetro
 tracker-infos-magnetometer-status-v1 =
     { $status ->
-        [DISABLED] Desabilitado
-        [ENABLED] Habilitado
-       *[NOT_SUPPORTED] Incompatível
+        [DISABLED] Desativado
+        [ENABLED] Ativado
+       *[NOT_SUPPORTED] Não Suportado
     }
 
 ## Tracker settings
@@ -377,11 +378,11 @@ tracker-infos-magnetometer-status-v1 =
 tracker-settings-back = Voltar para lista de trackers
 tracker-settings-title = Opções dos trackers
 tracker-settings-assignment_section = Atribuição
-tracker-settings-assignment_section-description = Qual parte do seu corpo o tracker está atribuído para.
+tracker-settings-assignment_section-description = A qual parte do corpo o tracker está atribuído.
 tracker-settings-assignment_section-edit = Editar atribuição
-tracker-settings-mounting_section = Posicionamento
+tracker-settings-mounting_section = Orientação da montagem
 tracker-settings-mounting_section-description = Aonde o tracker está posicionado?
-tracker-settings-mounting_section-edit = Editar posição
+tracker-settings-mounting_section-edit = Editar montagem
 tracker-settings-drift_compensation_section = Ligar a compensação de drift
 tracker-settings-drift_compensation_section-description = Esse tracker deverá compensar pelo drift quando a compensação de drift estiver ligado?
 tracker-settings-drift_compensation_section-edit = Ligar a compensação de drift
@@ -554,11 +555,9 @@ settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancelar
 settings-general-tracker_mechanics-drift_compensation_warning-done = Eu entedi
 settings-general-tracker_mechanics-drift_compensation-amount-label = Quantidade de compensação
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use até x últimos resets
-settings-general-tracker_mechanics-save_mounting_reset = Salvar a calibragem automática de posição
-settings-general-tracker_mechanics-save_mounting_reset-description =
-    Salva as calibrações automáticas de reset de posição para os trackers entre as reinicializações. Útil
-    ao usar uma roupa em que os trackers não se movem entre as sessões. <b>Não recomendado para usuários normais!</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Salvar reset de Posição
+settings-general-tracker_mechanics-save_mounting_reset = Salvar calibração automática da montagem
+settings-general-tracker_mechanics-save_mounting_reset-description = Salva a calibração automática de montagem dos trackers entre reinicializações. Útil ao usar um traje em que os trackers não se movem entre as sessões. <b>Não recomendado para usuários normais!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Salvar calibração de montagem
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Usar o magnetômetro em todos os trackers IMUs compatíveis
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Usa o magnetômetro em todos os trackers com firmware compatível, reduzindo o drift em ambientes magneticamente estáveis.
@@ -587,6 +586,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Clipping de chã
 settings-general-fk_settings-leg_tweak-toe_snap-description = Encaixar os dedos do pé, tenta adivinhar a rotação dos seus pés se os trackers dos pés não estiverem em uso.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Pé plantado gira os pés para ficarem paralelos ao chão quando em contato.
 settings-general-fk_settings-leg_fk = Tracking de pernas
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forçar a calibração de montagem dos pés durante a calibração de montagem do corpo.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forçar a calibração de montagem dos pés
 settings-general-fk_settings-enforce_joint_constraints = Limites do esqueleto
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Impor limites
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que as articulações rotacionem além de seu limite
