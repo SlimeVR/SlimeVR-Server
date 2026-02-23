@@ -67,6 +67,8 @@ body_part-LEFT_THUMB_DISTAL = Distal do polegar esquerdo
 body_part-LEFT_INDEX_PROXIMAL = Indicador esquerdo proximal
 body_part-LEFT_INDEX_INTERMEDIATE = Indicador esquerdo intermediário
 body_part-LEFT_INDEX_DISTAL = Indicador esquerdo distal
+body_part-LEFT_MIDDLE_PROXIMAL = Médio esquerdo proximal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Médio esquerdo intermediário
 
 ## BoardType
 
