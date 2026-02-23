@@ -572,6 +572,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Usa o magnetômetro em todos os trackers com firmware compatível, reduzindo o drift em ambientes magneticamente estáveis.
     Essa opção pode ser desativada indivualmente nas configurações de cada tracker. <b>Não desligue nenhum dos trackers enquanto altera esta opção!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar o magnetômetro nos trackers
+settings-general-tracker_mechanics-trackers_over_usb = Trackers via USB
 settings-stay_aligned = Manter Alinhado
 settings-stay_aligned-description = O Manter Alinhado reduz o drift ao ajustar gradualmente seus trackers para corresponder às suas poses relaxadas
 settings-stay_aligned-setup-label = Configurar o Manter Alinhado
@@ -595,6 +596,10 @@ settings-stay_aligned-debug-copy-label = Copiar configurações para a área de 
 ## FK/Tracking settings
 
 settings-general-fk_settings = Opções de Tracker
+# Floor clip:
+# why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
+# definition - Prevents the foot trackers from going lower than they where when a reset was performed
+settings-general-fk_settings-leg_tweak-floor_clip = Limite de chão
 # Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
@@ -604,7 +609,7 @@ settings-general-fk_settings-leg_tweak-toe_snap = Encaixar os dedos do pé
 settings-general-fk_settings-leg_tweak-foot_plant = Pé plantado
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Força da correção de deslize
 settings-general-fk_settings-leg_tweak-skating_correction-description = A correção de deslizamento corrige o efeito de “patinação”, mas pode reduzir a precisão em certos padrões de movimento. Ao ativá-la, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
-settings-general-fk_settings-leg_tweak-floor_clip-description = O recorte no chão pode reduzir ou eliminar a interseção com o chão. Ao ativar esta opção, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Limite de chão pode reduzir ou eliminar o atravessamento do chão. Ao ativá-lo, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Encaixar os dedos do pé, tenta adivinhar a rotação dos seus pés se os trackers dos pés não estiverem em uso.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Pé plantado gira os pés para ficarem paralelos ao chão quando em contato.
 settings-general-fk_settings-leg_fk = Tracking de pernas
