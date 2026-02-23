@@ -20,7 +20,6 @@ import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
   findServerJar,
   findSystemJRE,
-  findUpdaterJar,
   getGuiDataFolder,
   getLogsFolder,
   getServerDataFolder,
@@ -340,13 +339,6 @@ const spawnServer = async () => {
     logger.info({ skipServerIfRunning: options.skipServerIfRunning }, 'Server alredy running, skipping');
     return;
   }
-
-
-  const updaterJar = findUpdaterJar();
-  if (!updaterJar) {
-    logger.info('updater jar not found, skippin');
-    return;
-  }
   
   const serverJar = findServerJar();
   if (!serverJar) {
@@ -364,10 +356,8 @@ const spawnServer = async () => {
     return;
   }
 
-  logger.info({ updaterJar }, 'found updater jar');
   logger.info({ serverJar }, 'found server jar');
 
-  const updater = spawn(javaBin, ['-Xmx128M', '-jar', updaterJar, 'run']);
 
   const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run']);
 
