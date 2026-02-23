@@ -475,15 +475,19 @@ mounting_selection_menu-close = Fechar
 
 settings-sidebar-title = Opções
 settings-sidebar-general = Geral
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mecânicas do Tracker
+settings-sidebar-stay_aligned = Manter Alinhado
 settings-sidebar-fk_settings = Opções dos trackers
 settings-sidebar-gesture_control = Controle de Gestos
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = Roteador OSC
 settings-sidebar-osc_trackers = Trackers OSC do VRChat
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Console Serial
 settings-sidebar-appearance = Aparência
+settings-sidebar-home = Tela Inicial
 settings-sidebar-notifications = Notificações
 settings-sidebar-behavior = Comportamento
 settings-sidebar-firmware-tool = Ferramenta de firmware DIY
@@ -568,7 +572,15 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Usa o magnetômetro em todos os trackers com firmware compatível, reduzindo o drift em ambientes magneticamente estáveis.
     Essa opção pode ser desativada indivualmente nas configurações de cada tracker. <b>Não desligue nenhum dos trackers enquanto altera esta opção!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar o magnetômetro nos trackers
+settings-stay_aligned = Manter Alinhado
+settings-stay_aligned-description = O Manter Alinhado reduz o drift ao ajustar gradualmente seus trackers para corresponder às suas poses relaxadas
+settings-stay_aligned-setup-label = Configurar o Manter Alinhado
+settings-stay_aligned-setup-description = É necessário concluir “Configurar o Manter Alinhado” para ativar o Manter Alinhado.
+settings-stay_aligned-warnings-drift_compensation = ⚠ Por favor, desative o Compensação de Drift! A Compensação de Drift entrará em conflito com o Manter Alinhado.
+settings-stay_aligned-enabled-label = Ajustar trackers
+settings-stay_aligned-hide_yaw_correction-label = Ocultar ajuste (para comparar sem o Manter Alinhado)
 settings-stay_aligned-general-label = Geral
+settings-stay_aligned-relaxed_poses-label = Poses Relaxadas
 settings-stay_aligned-relaxed_poses-close = Fechar
 
 ## FK/Tracking settings
