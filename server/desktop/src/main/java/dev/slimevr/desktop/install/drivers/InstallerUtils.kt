@@ -1,5 +1,6 @@
 package dev.slimevr.desktop.install.drivers
 
+import io.eiren.util.logging.LogManager
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -41,5 +42,6 @@ fun executeShellCommand(vararg command: String): String = try {
 		process.waitFor()
 	}
 } catch (e: IOException) {
+	LogManager.warning("Error executing shell command: ${e.message}")
 	"Error executing shell command: ${e.message}"
 }
