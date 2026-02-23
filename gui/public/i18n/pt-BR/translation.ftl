@@ -660,14 +660,14 @@ settings-general-fk_settings-self_localization-description = O modo mocap permit
 ## Gesture control settings (tracker tapping)
 
 settings-general-gesture_control = Controle de gestos
-settings-general-gesture_control-subtitle = Resets baseados em toques
+settings-general-gesture_control-subtitle = Redefinições baseadas em toque
 settings-general-gesture_control-description = Permite que redefinições sejam acionadas ao tocar em um tracker. O tracker mais alto no tronco é usado para "Redefinir direção", o tracker mais alto na perna esquerda é usado para executar "Redefinir Tudo", e o tracker mais alto na perna direita é usado para a "Calibração de Montagem". Os toques devem ocorrer dentro do limite de 0,3 segundos multiplicado pelo número de toques para serem reconhecidos.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
     { $amount ->
-        [one] 1 tap
-       *[other] { $amount } taps
+        [one] 1 toque
+       *[other] { $amount } toques
     }
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
@@ -1243,12 +1243,12 @@ onboarding-automatic_proportions-recording-description-p0 = Gravação em progre
 onboarding-automatic_proportions-recording-description-p1 = Faça os movimentos apresentados abaixo:
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
-    Fique em pé, gire sua cabeça em um círculo.
-    Incline as costas para a frente e agache. Enquanto agacha, olhe para a esquerda e depois para a direita.
-    Gire o tronco para a esquerda (sentido anti-horário) e incline-se em direção ao chão.
-    Gire o tronco para a direita (sentido horário) e incline-se em direção ao chão.
-    Gire os quadris em um movimento circular como se estivesse usando um bambolê.
-    Se houver tempo restante na gravação, você pode repetir esses passos até que termine.
+    Fique em pé com a postura reta e faça um movimento circular com a cabeça.
+    Incline o tronco para frente e agache-se. Enquanto estiver agachado, olhe para a esquerda e depois para a direita.
+    Gire a parte superior do corpo para a esquerda (sentido anti-horário) e, em seguida, incline-se em direção ao chão.
+    Gire a parte superior do corpo para a direita (sentido horário) e, em seguida, incline-se em direção ao chão.
+    Faça um movimento circular com o quadril, como se estivesse usando um bambolê.
+    Se ainda houver tempo na gravação, você pode repetir esses passos até que ela termine.
 onboarding-automatic_proportions-recording-processing = Processando o resultado
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
