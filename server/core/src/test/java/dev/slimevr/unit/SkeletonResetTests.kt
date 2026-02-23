@@ -93,13 +93,13 @@ class SkeletonResetTests {
 				TrackerPosition.HIP,
 				TrackerPosition.LEFT_LOWER_LEG,
 				TrackerPosition.RIGHT_LOWER_LEG,
-				-> mountRot
+				-> mountRot * Quaternion.SLIMEVR.FRONT
 
 				TrackerPosition.LEFT_UPPER_LEG,
 				TrackerPosition.RIGHT_UPPER_LEG,
-				-> mountRot * Quaternion.SLIMEVR.FRONT
+				-> mountRot
 
-				else -> mountRot * Quaternion.SLIMEVR.FRONT
+				else -> mountRot
 			}
 			val actualMounting = tracker.resetsHandler.mountRotFix
 
