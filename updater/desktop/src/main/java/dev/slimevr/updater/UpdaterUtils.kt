@@ -18,7 +18,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -191,6 +193,14 @@ suspend fun shouldUpdate(): Boolean {
 	try {
 		val response: Updater.GHResponse = client.get("https://api.github.com/repos/slimevr/slimevr-server/releases/latest").body()
 		client.close()
+		println(response.assets.toString())
+		val json = Json {
+			ignoreUnknownKeys = true
+		}
+		val releaseInfos = json.decodeFromString<Array<Updater.ReleaseInfo>>(response.assets.toString())
+		for (releaseInfo in releaseInfos) {
+			println(releaseInfo.toString())
+		}
 		// Replace this if versioning ever changes
 		val githubVersionArr = response.tag_name.replace("v", "").split(".")
 		val localVersionArr = VERSION.replace("v", "").split(".")

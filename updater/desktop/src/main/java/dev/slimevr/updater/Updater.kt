@@ -1,13 +1,24 @@
 package dev.slimevr.updater
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
 
 class Updater {
 
 	@Serializable
 	data class GHResponse(
 		val tag_name: String,
+		val assets: JsonArray
 	)
+
+	@Serializable
+	data class ReleaseInfo(
+		val url: String,
+		val id: Long,
+		val name: String,
+		val digest: String
+	)
+
 
 	val os = System.getProperty("os.name").lowercase()
 
@@ -15,10 +26,10 @@ class Updater {
 		val shouldUpdate: Boolean = shouldUpdate()
 		println("Should update $shouldUpdate")
 
-		// if (!shouldUpdate) {
-		// 		println("Updater didn't find any new version")
-		// 	return
-		// }
+		if (!shouldUpdate) {
+		 		println("Updater didn't find any new version")
+		 	return
+		}
 
 		if (os.contains("linux")) {
 			val linuxUpdater = Linux()
