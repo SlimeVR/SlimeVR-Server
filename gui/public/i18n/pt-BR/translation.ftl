@@ -651,9 +651,9 @@ settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Imp
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Estimar a cintura com base no peito e nas pernas
 settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Estimar o quadril com base no peito e nas pernas
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Estimar o quadril com base na cintura e nas pernas
-settings-general-fk_settings-skeleton_settings-interp_hip_legs = Calcular a média da guinada e rolamento do quadril com as pernas
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Calcular a média da guinada e rolamento dos trackers dos joelhos com os tornozelos
-settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Calcular a média da guinada e rolamento do joelho com os tornozelos
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Calcular a média da guinada e da rolagem do quadril com as das pernas
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Calcular a média da guinada e da rolagem dos trackers de joelho com as dos tornozelos.
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Calcular a média da guinada e rolagem do joelho com os tornozelos
 settings-general-fk_settings-self_localization-title = Modo mocap
 settings-general-fk_settings-self_localization-description = O modo mocap permite que o esqueleto rastreie aproximadamente sua própria posição sem um headset ou outros trackers. Observe que isso requer trackers de pés e cabeça para funcionar e ainda é experimental.
 
