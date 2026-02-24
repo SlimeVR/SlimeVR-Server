@@ -142,7 +142,7 @@ export function useProvideOnboarding() {
     setPreviousPath(pathname);
 
     if (!pathname.startsWith('/onboarding') && previousPath.startsWith('/onboarding')) {
-      onboadingEnded();
+      onboardingEnded();
     }
     if (pathname.startsWith('/onboarding') && !previousPath.startsWith('/onboarding')) {
       onboardingStarted();
