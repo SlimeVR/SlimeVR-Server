@@ -1322,6 +1322,10 @@ onboarding-user_height-title = Qual é a sua altura?
 onboarding-user_height-description = Precisamos da sua altura para calcular as proporções do seu corpo e representar seus movimentos com precisão. Você pode deixar o SlimeVR calculá-la automaticamente ou inserir sua altura manualmente.
 onboarding-user_height-need_head_tracker = É necessário um headset e controles com rastreamento posicional para realizar a calibração.
 onboarding-user_height-calculate = Calcular minha altura automaticamente
+onboarding-user_height-next_step = Continuar e salvar
+onboarding-user_height-manual-proportions = Proporções Manuais
+onboarding-user_height-calibration-title = Progresso da Calibração
+onboarding-user_height-calibration-RECORDING_FLOOR = Toque o chão com a ponta do seu controle
 
 ## Stay Aligned setup
 
@@ -1336,6 +1340,10 @@ onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sente-se em uma posiç
 onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = Pressione o botão "Salvar Pose".
 onboarding-stay_aligned-relaxed_poses-flat-title = Pose Sentada e Relaxada no Chão
 onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sente-se no chão com as pernas à frente. Relaxe!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Pressione o botão "Salvar Pose".
+onboarding-stay_aligned-relaxed_poses-skip_step = Pular
+onboarding-stay_aligned-done-title = Manter Alinhado ativado!
+onboarding-stay_aligned-done-description = A configuração do Manter Alinhado foi concluída!
 
 ## Home
 
