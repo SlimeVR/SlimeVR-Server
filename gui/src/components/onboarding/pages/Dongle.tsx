@@ -5,6 +5,7 @@ import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
 import { USBIcon } from '@/components/commons/icon/UsbIcon';
 import { WarningBox } from '@/components/commons/TipBox';
+import { MoreSetsConfirm } from './Quiz/QuizSteps/MoreSetsConfirm';
 
 export function DongleSectionContent() {
   const { state } = useOnboarding();
@@ -30,16 +31,14 @@ export function DongleSectionContent() {
         </Localized>
       </div>
       <div className="flex px-2 p-6">
-        <Button
-          variant="primary"
-          to={state.alonePage ? '/' : '/onboarding/quiz/slime-set'}
-          state={
-            state.alonePage
-              ? undefined
-              : { firstSet: false, from: '/onboarding/dongle' }
-          }
-          id="onboarding-wifi_creds-dongle-continue"
-        />
+        {state.alonePage && (
+          <Button
+            variant="primary"
+            to={'/'}
+            id="onboarding-wifi_creds-dongle-continue"
+          />
+        )}
+        {!state.alonePage && <MoreSetsConfirm />}
       </div>
     </div>
   );

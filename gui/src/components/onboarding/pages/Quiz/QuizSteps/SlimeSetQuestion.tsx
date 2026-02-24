@@ -3,8 +3,7 @@ import { ReactNode } from 'react';
 import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
 import { USBIcon } from '@/components/commons/icon/UsbIcon';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/commons/Button';
+import { useNavigate } from 'react-router-dom';
 
 export function QuizButton({
   name,
@@ -38,9 +37,6 @@ export function QuizButton({
 export function QuizSlimeSetQuestion() {
   const { applyProgress, setSlimeSet, slimeSet } = useOnboarding();
   const nav = useNavigate();
-  const { state } = useLocation();
-  const firstSet: boolean = state.firstSet ?? true;
-  const from: string = state.from;
 
   applyProgress(0.2);
 
@@ -61,24 +57,13 @@ export function QuizSlimeSetQuestion() {
   return (
     <div className="grid w-full h-full justify-center items-center">
       <div className="flex flex-col gap-8 max-w-xl p-2">
-        {firstSet && (
-          <div className="flex flex-col gap-2">
-            <Typography
-              variant="main-title"
-              id="onboarding-quiz-slimeset-title"
-            />
-            <Typography id="onboarding-quiz-slimeset-description" />
-          </div>
-        )}
-        {!firstSet && (
-          <div className="flex flex-col gap-2">
-            <Typography
-              variant="main-title"
-              id="onboarding-quiz-slimeset-title-2"
-            />
-            <Typography id="onboarding-quiz-slimeset-description-2" />
-          </div>
-        )}
+        <div className="flex flex-col gap-2">
+          <Typography
+            variant="main-title"
+            id="onboarding-quiz-slimeset-title"
+          />
+          <Typography id="onboarding-quiz-slimeset-description" />
+        </div>
 
         <div className="flex flex-col gap-6">
           <div className="flex gap-2 flex-col">
@@ -145,17 +130,6 @@ export function QuizSlimeSetQuestion() {
             </div>
           </div>
         </div>
-
-        {!firstSet && (
-          <div className="flex justify-between">
-            <Button variant="secondary" id="onboarding-quiz_back" to={from} />
-            <Button
-              variant="primary"
-              to="/onboarding/trackers-assign"
-              id="onboarding-quiz-slimeset-no_other_set"
-            />
-          </div>
-        )}
       </div>
     </div>
   );

@@ -938,10 +938,13 @@ onboarding-setup_warning-cancel = Continue setup
 onboarding-quiz_continue = Continue
 onboarding-quiz_back = Back
 
+onboarding-quiz-more_sets_modal-title = Did you configure all your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have multiple sets of different models we can configure these right now! Or you can proceed with the rest of the onboarding.
+onboarding-quiz-more_sets_modal-confirm = I have configured all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to configure more trackers
+
 onboarding-quiz-slimeset-title = What trackers are you configuring?
 onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
-onboarding-quiz-slimeset-title-2 = Do you have another set of trackers?
-onboarding-quiz-slimeset-description-2 = Pick the next set of trackers to setup
 onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
 onboarding-quiz-slimeset-thirdparty-sets = Third-party Trackers (or DIY)
 onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
