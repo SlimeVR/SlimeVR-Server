@@ -948,7 +948,7 @@ onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
 onboarding-quiz-slimeset-answer-butterfly = Butterfly
 onboarding-quiz-slimeset-answer-wifi = Generic Wi-Fi Slime
 onboarding-quiz-slimeset-answer-dongle = Generic Dongle Slime
-onboarding-quiz-slimeset-no_other_set = Generic Dongle Slime
+onboarding-quiz-slimeset-no_other_set = I don't have another set
 
 onboarding-quiz-usage-title = Are you playing Games in standalone mode?
 onboarding-quiz-usage-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
