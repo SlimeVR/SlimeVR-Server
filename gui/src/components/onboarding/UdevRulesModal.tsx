@@ -77,8 +77,12 @@ KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct
 
   useEffect(() => {
     if (electron.isElectron) {
+      console.log(electron.data().os.type === "linux")
       if (electron.data().os.type === "linux" && !udevInstalledResponse) {
         setShowUdevWarning(true)
+      }
+      else {
+        setShowUdevWarning(false)
       }
     }
   }, [udevInstalledResponse])
@@ -90,7 +94,8 @@ KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct
   useRPCPacket(
     RpcMessage.InstalledInfoResponse,
     ({ isUdevInstalled }: InstalledInfoResponseT) => {
-      if (!isUdevInstalled) setUdevInstalledResponse(false)
+      setUdevInstalledResponse(isUdevInstalled)
+      console.log(isUdevInstalled)
     }
   );
 
