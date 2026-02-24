@@ -332,7 +332,7 @@ tracker-status-error = Erro
 tracker-status-disconnected = Desconectado
 tracker-status-occluded = Ocluso
 tracker-status-ok = Conectado
-tracker-status-timed_out = Tempo esgotado
+tracker-status-timed_out = Tempo limite atingido
 
 ## Tracker status columns
 
@@ -1326,6 +1326,15 @@ onboarding-user_height-next_step = Continuar e salvar
 onboarding-user_height-manual-proportions = Proporções Manuais
 onboarding-user_height-calibration-title = Progresso da Calibração
 onboarding-user_height-calibration-RECORDING_FLOOR = Toque o chão com a ponta do seu controle
+onboarding-user_height-calibration-WAITING_FOR_RISE = Levante-se novamente
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Levante-se novamente e olhe para a frente
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Certifique-se de que sua cabeça esteja nivelada
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Não olhe para o chão
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Não olhe muito para cima
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Certifique-se de que o controlador esteja apontando para baixo
+onboarding-user_height-calibration-RECORDING_HEIGHT = Levante-se novamente e fique parado!
+onboarding-user_height-calibration-DONE = Sucesso!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Tempo limite da calibração atingido, tente novamente.
 
 ## Stay Aligned setup
 
@@ -1344,6 +1353,11 @@ onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Pressione o botão "Sa
 onboarding-stay_aligned-relaxed_poses-skip_step = Pular
 onboarding-stay_aligned-done-title = Manter Alinhado ativado!
 onboarding-stay_aligned-done-description = A configuração do Manter Alinhado foi concluída!
+onboarding-stay_aligned-done-description-2 = A configuração foi concluída! Você pode reiniciar o processo se quiser recalibrar as poses.
+onboarding-stay_aligned-previous_step = Anterior
+onboarding-stay_aligned-next_step = Próximo
+onboarding-stay_aligned-restart = Reiniciar
+onboarding-stay_aligned-done = Concluído
 
 ## Home
 
@@ -1424,7 +1438,7 @@ firmware_update-status-REBOOTING = Aplicando a atualização
 firmware_update-status-PROVISIONING = Configurando as credenciais do Wi-Fi
 firmware_update-status-DONE = Atualização concluída!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Não foi possível localizar o dispositivo
-firmware_update-status-ERROR_TIMEOUT = O processo de atualização expirou o tempo limite
+firmware_update-status-ERROR_TIMEOUT = O processo de atualização atingiu o tempo limite
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Não foi possível baixar o firmware
 firmware_update-status-ERROR_AUTHENTICATION_FAILED = Não foi possível autenticar com o mcu
 firmware_update-status-ERROR_UPLOAD_FAILED = Não foi possível fazer o upload do firmware
