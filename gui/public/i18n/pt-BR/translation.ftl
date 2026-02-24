@@ -69,6 +69,15 @@ body_part-LEFT_INDEX_INTERMEDIATE = Indicador esquerdo intermediário
 body_part-LEFT_INDEX_DISTAL = Indicador esquerdo distal
 body_part-LEFT_MIDDLE_PROXIMAL = Médio esquerdo proximal
 body_part-LEFT_MIDDLE_INTERMEDIATE = Médio esquerdo intermediário
+body_part-LEFT_MIDDLE_DISTAL = Médio distal esquerdo
+body_part-LEFT_RING_PROXIMAL = Anelar esquerdo proximal
+body_part-LEFT_RING_INTERMEDIATE = Anelar esquerdo intermediário
+body_part-LEFT_RING_DISTAL = Anelar esquerdo distal
+body_part-LEFT_LITTLE_PROXIMAL = Mindinho esquerdo proximal
+body_part-LEFT_LITTLE_INTERMEDIATE = Mindinho esquerdo Intermediário
+body_part-LEFT_LITTLE_DISTAL = Mindinho esquerdo distal
+body_part-RIGHT_THUMB_METACARPAL = Metacarpo do polegar direito
+body_part-RIGHT_THUMB_PROXIMAL = Polegar direito proximal
 
 ## BoardType
 
@@ -93,6 +102,7 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
+board_type-GESTURES = Gestos
 board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = nRF genérico
 board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
@@ -412,6 +422,9 @@ tracker-settings-update-up_to_date = Atualizado
 tracker-settings-update-blocked = Atualização não disponível. Não há outras novas versões disponíveis
 tracker-settings-update = Atualizar agora
 tracker-settings-update-title = Versão do firmware
+tracker-settings-current-version = Atual
+tracker-settings-latest-version = Último
+tracker-settings-build-date = Data da Compilação
 
 ## Tracker part card info
 
@@ -490,6 +503,7 @@ settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Console Serial
 settings-sidebar-appearance = Aparência
 settings-sidebar-home = Tela Inicial
+settings-sidebar-checklist = Checklist de tracking
 settings-sidebar-notifications = Notificações
 settings-sidebar-behavior = Comportamento
 settings-sidebar-firmware-tool = Ferramenta de firmware DIY
@@ -754,6 +768,7 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     Traduzido com a versão gratuita do tradutor - DeepL.com
 settings-interface-behavior-error_tracking-label = Enviar erros para os desenvolvedores
+settings-interface-behavior-bvh_directory = Diretório para salvar gravações BVH
 
 ## Serial settings
 
