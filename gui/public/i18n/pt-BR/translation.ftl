@@ -769,6 +769,8 @@ settings-interface-behavior-error_tracking-description_v2 =
     Traduzido com a versão gratuita do tradutor - DeepL.com
 settings-interface-behavior-error_tracking-label = Enviar erros para os desenvolvedores
 settings-interface-behavior-bvh_directory = Diretório para salvar gravações BVH
+settings-interface-behavior-bvh_directory-description = Escolha um diretório para salvar suas gravações BVH, em vez de precisar escolher onde salvá-las a cada vez.
+settings-interface-behavior-bvh_directory-label = Diretório para gravações BVH
 
 ## Serial settings
 
@@ -792,6 +794,11 @@ settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Obter varredura WiFi
 settings-serial-file_type = Texto simples
 settings-serial-save_logs = Salvar em arquivo
+settings-serial-send_command = Enviar
+settings-serial-send_command-placeholder = Comando...
+settings-serial-send_command-warning = <b>Aviso:</b> executar comandos seriais pode causar perda de dados ou inutilizar os trackers.
+settings-serial-send_command-warning-ok = Eu sei o que estou fazendo
+settings-serial-send_command-warning-cancel = Cancelar
 
 ## OSC router settings
 
@@ -890,6 +897,8 @@ settings-osc-vmc-mirror_tracking-label = Espelhar rastreamento
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = As portas de entrada e saída do OSC Router não podem ser as mesmas!
+settings-osc-common-network-port_banned_error = A porta { $port } não pode ser usada!
 
 ## Advanced settings
 
@@ -926,9 +935,15 @@ settings-utils-advanced-open_logs-label = Abrir pasta
 
 ## Home Screen
 
+settings-home-list-layout = Layout da lista de trackers
+settings-home-list-layout-desc = Selecione um dos layouts possíveis da tela inicial.
+settings-home-list-layout-grid = Grade
+settings-home-list-layout-table = Tabela
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Etapas Ativas
+settings-tracking_checklist-active_steps-desc = Lista de todas as etapas do checklist de tracking. Você pode optar por desativar etapas específicas.
 
 ## Setup/onboarding menu
 
@@ -945,6 +960,7 @@ onboarding-setup_warning-cancel = Continuar configurações
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Voltar para introdução
+onboarding-wifi_creds-v2 = Trackers conectados via Wi-Fi
 onboarding-wifi_creds-skip = Pular as configurações de Wi-Fi
 onboarding-wifi_creds-submit = Enviar!
 onboarding-wifi_creds-ssid =
