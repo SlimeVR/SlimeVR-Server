@@ -1232,9 +1232,12 @@ onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Cal
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Pressione o botão “Calibração dos pés” e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
 onboarding-automatic_mounting-preparation-title = Preparação
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Pressione o botão “Redefinir Completamente"
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. Fique em pé, com os braços ao lado do corpo. Certifique-se de olhar para a frente.
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Mantenha a posição até que o temporizador de 3 segundos termine.
 onboarding-automatic_mounting-put_trackers_on-title = Coloque seus trackers
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as orientações de montagem, vamos usar os trackers que você acabou de atribuir. Coloque todos os seus trackers; você pode ver qual é qual na figura à direita.
 onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trackers
+onboarding-automatic_mounting-return-home = Feito
 
 ## Tracker manual proportions setupa
 
@@ -1244,6 +1247,9 @@ onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, c
 onboarding-manual_proportions-export = Exportar proporções
 onboarding-manual_proportions-import = Importar proporções
 onboarding-manual_proportions-file_type = Arquivo de proporções do corpo
+onboarding-manual_proportions-normal_increment = Incremento normal
+onboarding-manual_proportions-precise_increment = Incremento preciso
+onboarding-manual_proportions-grouped_proportions = Proporções agrupadas
 
 ## Tracker automatic proportions setup
 
