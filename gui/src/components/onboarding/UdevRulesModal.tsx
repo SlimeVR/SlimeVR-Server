@@ -1,29 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/commons/Button';
-import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '@/components/commons/BaseModal';
-import { useNavigate } from 'react-router-dom';
-import { CheckBox, CheckboxInternal } from '@/components/commons/Checkbox';
-import { Typography } from '../commons/Typography';
+import { CheckboxInternal } from '@/components/commons/Checkbox';
+import { Typography } from '@/components/commons/Typography';
 import { useElectron } from '@/hooks/electron';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { 
-  RpcMessage,
-  InstalledInfoResponseT, 
-  InstalledInfoRequest
-} from 'solarxr-protocol';
+import { RpcMessage, InstalledInfoResponseT } from 'solarxr-protocol';
 
-export function UdevRulesModal({}: {
-}) {
-  const { l10n } = useLocalization();
+export function UdevRulesModal() {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const electron = useElectron();
   const [udevContent, setUdevContent] = useState('');
   const [udevInstalledResponse, setUdevInstalledResponse] = useState(false);
   const [showUdevWarning, setShowUdevWarning] = useState(false);
 
-  
-useEffect(() => {
+  useEffect(() => {
     setUdevContent(`sudo echo '
 # Copyright 2025 Eiren Rain and SlimeVR Contributors
 #
@@ -77,38 +68,37 @@ KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct
 
   useEffect(() => {
     if (electron.isElectron) {
-      console.log(electron.data().os.type === "linux")
-      if (electron.data().os.type === "linux" && !udevInstalledResponse) {
-        setShowUdevWarning(true)
-      }
-      else {
-        setShowUdevWarning(false)
+      console.log(electron.data().os.type === 'linux');
+      if (electron.data().os.type === 'linux' && !udevInstalledResponse) {
+        setShowUdevWarning(true);
+      } else {
+        setShowUdevWarning(false);
       }
     }
-  }, [udevInstalledResponse])
+  }, [udevInstalledResponse]);
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.InstalledInfoRequest, new InstalledInfoResponseT());
+    sendRPCPacket(
+      RpcMessage.InstalledInfoRequest,
+      new InstalledInfoResponseT()
+    );
   }, []);
 
   useRPCPacket(
     RpcMessage.InstalledInfoResponse,
     ({ isUdevInstalled }: InstalledInfoResponseT) => {
-      setUdevInstalledResponse(isUdevInstalled)
-      console.log(isUdevInstalled)
+      setUdevInstalledResponse(isUdevInstalled);
+      console.log(isUdevInstalled);
     }
   );
 
   return (
-    <BaseModal
-      isOpen={showUdevWarning}
-      appendClasses={'w-full max-w-2xl'}
-    >
+    <BaseModal isOpen={showUdevWarning} appendClasses={'w-full max-w-2xl'}>
       <div className="flex w-full h-full flex-col gap-4">
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2">
-            <Typography variant="main-title" id="UDEV Rules not found"></Typography>
-            <Typography id="Please make sure your udev rules are setup correctly. So you can connect trackers and dongle to USB"></Typography>
+            <Typography variant="main-title" id="UDEV Rules not found" />
+            <Typography id="Please make sure your udev rules are setup correctly. So you can connect trackers and dongle to USB" />
           </div>
 
           <div className="relative w-full max-w-2xl">
