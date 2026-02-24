@@ -961,6 +961,12 @@ onboarding-setup_warning-cancel = Continuar configurações
 
 onboarding-wifi_creds-back = Voltar para introdução
 onboarding-wifi_creds-v2 = Trackers conectados via Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    A maioria dos trackers (como os trackers oficiais do SlimeVR) utiliza Wi-Fi para se conectar ao servidor.
+    Use as credenciais da rede Wi-Fi à qual seu dispositivo está conectado no momento.
+    
+    Certifique-se de usar uma conexão Wi-Fi de 2,4 GHz para os seus trackers!
 onboarding-wifi_creds-skip = Pular as configurações de Wi-Fi
 onboarding-wifi_creds-submit = Enviar!
 onboarding-wifi_creds-ssid =
@@ -970,6 +976,7 @@ onboarding-wifi_creds-ssid-required = Nome do Wi-Fi é obrgiatório
 onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
+onboarding-wifi_creds-dongle-title = Trackers conectados via dongle
 
 ## Mounting setup
 
@@ -1023,6 +1030,8 @@ onboarding-connect_tracker-connection_status-looking_for_server = Procurando ser
 onboarding-connect_tracker-connection_status-connection_error = Não é possível conectar ao Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Não foi possível conectar ao servidor
 onboarding-connect_tracker-connection_status-done = Conectado ao servidor
+onboarding-connect_tracker-connection_status-no_serial_log = Não foi possível coletar os logs do tracker
+onboarding-connect_tracker-connection_status-no_serial_device_found = Não foi possível encontrar um tracker via USB
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1309,6 +1318,10 @@ onboarding-automatic_proportions-smol_warning-cancel = Voltar
 
 ## User height calibration
 
+onboarding-user_height-title = Qual é a sua altura?
+onboarding-user_height-description = Precisamos da sua altura para calcular as proporções do seu corpo e representar seus movimentos com precisão. Você pode deixar o SlimeVR calculá-la automaticamente ou inserir sua altura manualmente.
+onboarding-user_height-need_head_tracker = É necessário um headset e controles com rastreamento posicional para realizar a calibração.
+onboarding-user_height-calculate = Calcular minha altura automaticamente
 
 ## Stay Aligned setup
 
@@ -1317,6 +1330,12 @@ onboarding-stay_aligned-verify_mounting-title = Calibração de Montagem
 onboarding-stay_aligned-verify_mounting-step-0 = O Manter Alinhado requer uma boa montagem. Caso contrário, você não terá uma boa experiência com o Manter Alinhado.
 onboarding-stay_aligned-verify_mounting-step-3 = 3. Se seus trackers não estiverem na orientação correta, pressione “Refazer Calibração de Montagem”.
 onboarding-stay_aligned-verify_mounting-redo_mounting = Refazer Calibração de Montagem
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Pressione o botão "Salvar Pose".
+onboarding-stay_aligned-relaxed_poses-sitting-title = Pose Sentada e Relaxada na Cadeira
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sente-se em uma posição confortável. Relaxe!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = Pressione o botão "Salvar Pose".
+onboarding-stay_aligned-relaxed_poses-flat-title = Pose Sentada e Relaxada no Chão
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sente-se no chão com as pernas à frente. Relaxe!
 
 ## Home
 
