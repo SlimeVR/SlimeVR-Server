@@ -1,4 +1,4 @@
-import { Localized, useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWifiForm } from '@/hooks/wifi-form';
 import { Button } from '@/components/commons/Button';
@@ -6,21 +6,22 @@ import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
 import { WifiIcon } from '@/components/commons/icon/WifiIcon';
+import { DongleSectionContent } from './Dongle';
 
 export function WifiCredsPage() {
-  const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
-  const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm('');
+  const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
 
-  applyProgress(0.5);
+  applyProgress(0.2);
 
   return (
     <div className="flex flex-col w-full h-full xs:justify-center items-center">
       <div
-        className={classNames(
-          state.alonePage && 'grid xs:grid-cols-2 gap-4 max-w-6xl p-4'
-        )}
+        className={classNames('grid gap-4 max-w-6xl p-4', {
+          'xs:grid-cols-2': state.alonePage,
+        })}
       >
+        {state.alonePage && <DongleSectionContent />}
         <form
           className="flex flex-col gap-2"
           onSubmit={handleSubmit(submitWifiCreds)}
@@ -80,21 +81,22 @@ export function WifiCredsPage() {
                 />
               </Localized>
               <div className="flex flex-row gap-3 justify-between">
-                <Button
-                  variant="secondary"
-                  className={state.alonePage ? 'opacity-0' : ''}
-                  state={{ alonePage: state.alonePage }}
-                  to={'/onboarding/trackers-assign'}
-                >
-                  {l10n.getString('onboarding-wifi_creds-skip')}
-                </Button>
+                {!state.alonePage ? (
+                  <Button
+                    variant="secondary"
+                    state={{ alonePage: state.alonePage }}
+                    to={'/onboarding/quiz/slime-set'}
+                    id="onboarding-wifi_creds-back-v2"
+                  />
+                ) : (
+                  <div />
+                )}
                 <Button
                   type="submit"
                   variant="primary"
                   disabled={!formState.isValid}
-                >
-                  {l10n.getString('onboarding-wifi_creds-submit')}
-                </Button>
+                  id="onboarding-wifi_creds-submit"
+                />
               </div>
             </div>
           </div>

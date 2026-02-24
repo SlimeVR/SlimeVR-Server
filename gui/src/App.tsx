@@ -29,9 +29,8 @@ import { TrackersAssignPage } from './components/onboarding/pages/trackers-assig
 import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
 import { QuizSlimeSetQuestion } from './components/onboarding/pages/Quiz/QuizSteps/SlimeSetQuestion';
 import { QuizUsageQuestion } from './components/onboarding/pages/Quiz/QuizSteps/UsageQuestion';
-import { QuizRuntimeQuestion } from './components/onboarding/pages/Quiz/QuizSteps/RuntimeQuestionLast';
-import { QuizMocapPosQuestion } from './components/onboarding/pages/Quiz/QuizSteps/MocapPosQuestionLast';
-import { UpdateQuestion } from './components/onboarding/pages/Quiz/QuizSteps/UpdateQuestion';
+import { QuizRuntimeQuestion } from './components/onboarding/pages/Quiz/QuizSteps/RuntimeQuestion';
+import { QuizMocapPosQuestion } from './components/onboarding/pages/Quiz/QuizSteps/MocapPreferencesQuestions';
 import { DonglePage } from './components/onboarding/pages/Dongle';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
 import { SerialDetectionModal } from './components/SerialDetectionModal';
@@ -163,7 +162,6 @@ function Layout() {
             <Route path="quiz/usage" element={<QuizUsageQuestion />} />
             <Route path="quiz/runtime" element={<QuizRuntimeQuestion />} />
             <Route path="quiz/mocap-pos" element={<QuizMocapPosQuestion />} />
-            <Route path="quiz/update?" element={<UpdateQuestion />} />
             <Route path="dongle" element={<DonglePage />} />
             <Route path="firmware-tool" element={<FirmwareToolSettings />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />

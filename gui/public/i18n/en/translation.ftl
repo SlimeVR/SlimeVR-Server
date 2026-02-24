@@ -935,39 +935,47 @@ onboarding-setup_warning-skip = Skip setup
 onboarding-setup_warning-cancel = Continue setup
 
 ## Quiz
-onboarding-quiz_continue= Continue
+onboarding-quiz_continue = Continue
+onboarding-quiz_back = Back
 
-onboarding-quiz-slimeset-title = Tracker Type
-onboarding-quiz-slimeset-description = Which tracker type are you using?
- (If you have third party trackers and are not sure, ask your seller)
-onboarding-quiz-slimeset-answer-regular = Regular Slime
+onboarding-quiz-slimeset-title = What trackers are you configuring?
+onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
+onboarding-quiz-slimeset-title-2 = Do you have another set of trackers?
+onboarding-quiz-slimeset-description-2 = Pick the next set of trackers to setup
+onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Third-party Trackers (or DIY)
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
 onboarding-quiz-slimeset-answer-butterfly = Butterfly
-onboarding-quiz-slimeset-answer-wifi = Wifi Slime
-onboarding-quiz-slimeset-answer-dongle = Dongle Slime
+onboarding-quiz-slimeset-answer-wifi = Generic Wi-Fi Slime
+onboarding-quiz-slimeset-answer-dongle = Generic Dongle Slime
+onboarding-quiz-slimeset-no_other_set = Generic Dongle Slime
 
-onboarding-quiz-usage-title = Use Case
+onboarding-quiz-usage-title = Are you playing Games in standalone mode?
 onboarding-quiz-usage-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
 onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
-onboarding-quiz-usage-answer-mocap = Mocap (Motion Capture)
-onboarding-quiz-usage-answer-vtubing = VTubing
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
 
 onboarding-quiz-runtime-title = Runtime
-onboarding-quiz-runtime-description = Do you play VRChat on a PC via SteamVR (including with Virtual Desktop, Steam Link, ALVR, etc.), or on a standalone headset such as a Meta Quest or Pico?
 onboarding-quiz-runtime-answer-steamvr = SteamVR
 onboarding-quiz-runtime-answer-standalone = Standalone
 
-onboarding-quiz-mocap-pos-title = Head Tracker Position
-onboarding-quiz-mocap-pos-description = Where is the head tracker positioned on your head?
-onboarding-quiz-mocap-pos-answer-forehead = Forehead
-onboarding-quiz-mocap-pos-answer-face = Face
-
-onboarding-quiz-update-title = Tracker Update
-onboarding-quiz-update-description = Would you like to update your trackers to make sure they have the most up to date firmware?
-onboarding-quiz-update-answer-yes = Yes
-onboarding-quiz-update-answer-no = No
+onboarding-quiz-mocap_preferences-title = Mocap Preferences
+onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
+onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
+onboarding-quiz-mocap_preferences-playspace-desc = This affects how your model will move in mocap mode
+onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
+onboarding-quiz-mocap_preferences-playspace-standing = Standing
+onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM Model? (Optional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = If you have a model, you can specify it here, this will help compatibility with your VMC compatible software.
+onboarding-quiz-mocap_preferences-head_tracker-title = Are you using a tracker, or VR Headset, on your head?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
 ## Wi-Fi setup
-onboarding-wifi_creds-back = Go back to introduction
+onboarding-wifi_creds-back-v2 = Go Back
 onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =

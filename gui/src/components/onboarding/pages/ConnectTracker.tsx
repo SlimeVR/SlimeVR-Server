@@ -104,7 +104,7 @@ export function ConnectTrackersPage() {
   const { visibleSteps } = useTrackingChecklist();
 
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
-  const { applyProgress, state, update } = useOnboarding();
+  const { applyProgress, state } = useOnboarding();
   const navigate = useNavigate();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [provisioningStatus, setProvisioningStatus] =
@@ -320,12 +320,11 @@ export function ConnectTrackersPage() {
             </Button>
             <Button
               variant="primary"
-              to={
+              to={state.alonePage ? '/' : '/onboarding/quiz/slime-set'}
+              state={
                 state.alonePage
-                  ? '/'
-                  : update === true
-                    ? '/onboarding/firmware-tool'
-                    : '/onboarding/trackers-assign'
+                  ? undefined
+                  : { firstSet: false, from: '/onboarding/wifi-creds' }
               }
               className="ml-auto"
             >

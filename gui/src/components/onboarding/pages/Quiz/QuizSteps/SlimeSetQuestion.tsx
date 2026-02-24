@@ -1,118 +1,161 @@
 import { useOnboarding } from '@/hooks/onboarding';
-import classNames from 'classnames';
-import { useState } from 'react';
+import { ReactNode } from 'react';
 import { Typography } from '@/components/commons/Typography';
+import classNames from 'classnames';
+import { USBIcon } from '@/components/commons/icon/UsbIcon';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/commons/Button';
-import { Localized } from '@fluent/react';
+
+export function QuizButton({
+  name,
+  active,
+  icon,
+  onClick,
+}: {
+  active?: boolean;
+  name: string;
+  icon: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className={classNames(
+        'flex rounded-lg bg-background-60 hover:bg-background-50 cursor-pointer',
+        'p-4 outline outline-2 flex-col gap-4 items-center justify-between fill-background-20',
+        {
+          'outline-accent-background-30': active,
+          'outline-transparent': !active,
+        }
+      )}
+    >
+      {icon}
+      <Typography id={name} variant="section-title" />
+    </div>
+  );
+}
 
 export function QuizSlimeSetQuestion() {
   const { applyProgress, setSlimeSet, slimeSet } = useOnboarding();
-  const [to, setTo] = useState('');
-  const [disabled, setDisabled] = useState(true);
+  const nav = useNavigate();
+  const { state } = useLocation();
+  const firstSet: boolean = state.firstSet ?? true;
+  const from: string = state.from;
 
   applyProgress(0.2);
 
+  const next = (type: typeof slimeSet) => {
+    setSlimeSet(type);
+    switch (type) {
+      case 'butterfly':
+      case 'dongle-slime':
+        nav('/onboarding/dongle');
+        break;
+      case 'slime-v1':
+      case 'wifi-slime':
+        nav('/onboarding/wifi-creds');
+        break;
+    }
+  };
+
   return (
-    <div className="flex flex-col w-full h-full xs:justify-center items-center">
-      <div className="flex flex-col gap-2">
-        <div className="flex gap-2 items-center">
-          <Typography
-            variant="main-title"
-            id="onboarding-quiz-slimeset-title"
-          />
-        </div>
-        <div className="">
-          <div className={classNames('flex flex-col gap-2 flex-grow p-2')}>
+    <div className="flex flex-col w-full h-full items-center justify-center">
+      <div className="flex flex-col gap-12 max-w-2xl p-2">
+        {firstSet && (
+          <div className="flex flex-col gap-2">
             <Typography
-              whitespace="whitespace-pre-wrap"
-              id="onboarding-quiz-slimeset-description"
+              variant="main-title"
+              id="onboarding-quiz-slimeset-title"
             />
+            <Typography id="onboarding-quiz-slimeset-description" />
           </div>
-          <div className="flex gap-2 px-2 p-6">
-            <div
-              onClick={() => {
-                setSlimeSet('regular-slime');
-                setTo('/onboarding/quiz/Update?');
-                setDisabled(false);
-              }}
-              className={classNames(
-                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                slimeSet === 'regular-slime' &&
-                  'outline outline-3 outline-accent-background-40'
-              )}
-            >
-              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
-                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-slimeset-answer-regular" />
-                </div>
-              </div>
+        )}
+        {!firstSet && (
+          <div className="flex flex-col gap-2">
+            <Typography
+              variant="main-title"
+              id="onboarding-quiz-slimeset-title-2"
+            />
+            <Typography id="onboarding-quiz-slimeset-description-2" />
+          </div>
+        )}
+
+        <div className="flex flex-col gap-6">
+          <div className="flex gap-2 flex-col">
+            <Typography
+              variant="section-title"
+              id="onboarding-quiz-slimeset-official-sets"
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <QuizButton
+                active={slimeSet === 'slime-v1'}
+                onClick={() => next('slime-v1')}
+                icon={
+                  <img
+                    src="/images/trackers/v1_2_slime.webp"
+                    className="w-60"
+                  />
+                }
+                name="onboarding-quiz-slimeset-answer-regular"
+              />
+              <QuizButton
+                active={slimeSet === 'butterfly'}
+                onClick={() => next('butterfly')}
+                icon={
+                  <img
+                    src="/images/trackers/butterfly_slime.webp"
+                    className="w-60"
+                  />
+                }
+                name="onboarding-quiz-slimeset-answer-butterfly"
+              />
             </div>
-            <div
-              onClick={() => {
-                setSlimeSet('butterfly');
-                setTo('/onboarding/quiz/usage');
-                setDisabled(false);
-              }}
-              className={classNames(
-                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                slimeSet === 'butterfly' &&
-                  'outline outline-3 outline-accent-background-40'
-              )}
-            >
-              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
-                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-slimeset-answer-butterfly" />
-                </div>
-              </div>
-            </div>
-            <div
-              onClick={() => {
-                setSlimeSet('wifi-slime');
-                setTo('/onboarding/quiz/Update?');
-                setDisabled(false);
-              }}
-              className={classNames(
-                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                slimeSet === 'wifi-slime' &&
-                  'outline outline-3 outline-accent-background-40'
-              )}
-            >
-              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
-                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-slimeset-answer-wifi" />
-                </div>
-              </div>
-            </div>
-            <div
-              onClick={() => {
-                setSlimeSet('dongle-slime');
-                setTo('/onboarding/quiz/usage');
-                setDisabled(false);
-              }}
-              className={classNames(
-                'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear hover:bg-background-50 cursor-pointer bg-background-60',
-                slimeSet === 'dongle-slime' &&
-                  'outline outline-3 outline-accent-background-40'
-              )}
-            >
-              <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border">
-                <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
-                  <Typography id="onboarding-quiz-slimeset-answer-dongle" />
-                </div>
-              </div>
+          </div>
+          <div className="flex gap-2 flex-col">
+            <Typography
+              variant="section-title"
+              id="onboarding-quiz-slimeset-thirdparty-sets"
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <QuizButton
+                onClick={() => next('wifi-slime')}
+                icon={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="50"
+                    viewBox="0 0 24 24"
+                    width="50"
+                    className="fill-background-20"
+                  >
+                    <path d="M0 0h24v24H0z" fill="none" />
+                    <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" />
+                  </svg>
+                }
+                name="onboarding-quiz-slimeset-answer-wifi"
+              />
+              <QuizButton
+                onClick={() => next('dongle-slime')}
+                icon={
+                  <div className="fill-background-20">
+                    <USBIcon size={50} />
+                  </div>
+                }
+                name="onboarding-quiz-slimeset-answer-dongle"
+              />
             </div>
           </div>
         </div>
-        <div className="flex px-2 p-6">
-          <Localized id="onboarding-quiz_continue">
+
+        {!firstSet && (
+          <div className="flex justify-between">
+            <Button variant="secondary" id="onboarding-quiz_back" to={from} />
             <Button
-              to={to}
-              children="Continue"
               variant="primary"
-              disabled={disabled}
+              to="/onboarding/trackers-assign"
+              id="onboarding-quiz-slimeset-no_other_set"
             />
-          </Localized>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
