@@ -1038,6 +1038,12 @@ onboarding-connect_tracker-connection_status-no_serial_device_found = Não foi p
 onboarding-connect_serial-error-modal-no_serial_log = O tracker está ligado?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Certifique-se de que o tracker esteja ligado e conectado ao seu computador.
 onboarding-connect_serial-error-modal-no_serial_device_found = Nenhum tracker detectado
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    Conecte um tracker ao seu computador usando o cabo USB fornecido e ligue o tracker.
+    Se isso não funcionar:
+     — tente usar um cabo USB diferente
+     — tente usar uma porta USB diferente
+     — tente reinstalar o servidor do SlimeVR e selecione “Drivers USB” na seção de componentes
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1055,6 +1061,7 @@ onboarding-connect_tracker-next = Eu conectei todos os meus trackers
 
 onboarding-calibration_tutorial = Tutorial de Calibração IMU.
 onboarding-calibration_tutorial-subtitle = Isso ajudará a reduzir o drift dos trackers!
+onboarding-calibration_tutorial-description-v1 = Depois de ligar seus trackers, coloque-os sobre uma superfície estável por um momento para permitir a calibração. A calibração pode ser realizada a qualquer momento após os trackers serem ligados — esta página apenas fornece um tutorial. Para começar, clique no botão "{ onboarding-calibration_tutorial-calibrate }" e, em seguida, <b>não mova seus trackers!</b>
 onboarding-calibration_tutorial-calibrate = Eu coloquei meus trackers na mesa
 onboarding-calibration_tutorial-status-waiting = Esperando por você
 onboarding-calibration_tutorial-status-calibrating = Calibrando
@@ -1077,6 +1084,7 @@ onboarding-assignment_tutorial-done = Eu coloquei os adesivos e as straps!
 onboarding-assign_trackers-back = Voltar para as credenciais de Wi-Fi
 onboarding-assign_trackers-title = Atribuir trackers
 onboarding-assign_trackers-description = Vamos escolher onde cada tracker vai. Clique no local onde você quer colocar o tracker
+onboarding-assign_trackers-unassign_all = Desatribuir todos os trackers
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
