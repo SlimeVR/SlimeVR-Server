@@ -1335,6 +1335,13 @@ onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Certifique-se 
 onboarding-user_height-calibration-RECORDING_HEIGHT = Levante-se novamente e fique parado!
 onboarding-user_height-calibration-DONE = Sucesso!
 onboarding-user_height-calibration-ERROR_TIMEOUT = Tempo limite da calibração atingido, tente novamente.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = A altura detectada do usuário está muito alta, tente novamente.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = A altura detectada do usuário está muito baixa. Certifique-se de ficar em pé, com o corpo ereto, e olhar para a frente ao final da calibração.
+onboarding-user_height-calibration-error = Calibração Falhou
+onboarding-user_height-manual-tip = Ao ajustar sua altura, experimente diferentes poses e veja como o esqueleto se ajusta ao seu corpo.
+onboarding-user_height-reset-warning =
+    <b>Aviso:</b> Isso redefinirá suas proporções com base na sua altura.
+    Tem certeza de que deseja fazer isso?
 
 ## Stay Aligned setup
 
@@ -1362,6 +1369,8 @@ onboarding-stay_aligned-done = Concluído
 ## Home
 
 home-no_trackers = Nenhum tracker detectado ou atribuído
+home-settings = Configurações da Página Inicial
+home-settings-close = Fechar
 
 ## Trackers Still On notification
 
@@ -1382,6 +1391,11 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = O tracker { $trackerName } tem um erro.
 status_system-StatusUnassignedHMD = O headset (HMD) deve ser designado como o tracker da cabeça.
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Seu perfil de rede está atualmente definido como Público ({ $adapters }). Isso não é recomendado para que o SlimeVR funcione corretamente. <PublicFixLink>Veja aqui como corrigir.</PublicFixLink>
+       *[other] Alguns dos seus adaptadores de rede estão definidos como Públicos: { $adapters }. Isso não é recomendado para que o SlimeVR funcione corretamente. <PublicFixLink>Veja aqui como corrigir.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
@@ -1397,8 +1411,26 @@ firmware_tool = Ferramenta de Firmware DIY
 firmware_tool-description = Permite você configurar e fazer upload do firmware em seu tracker DIY
 firmware_tool-not_available = Oops, a ferramenta de firmware não está disponível no momento. Volte novamente mais tarde!
 firmware_tool-not_compatible = A ferramenta de firmware não é compativel com essa versão do servidor. Por favor, atualize o seu servidor!
+firmware_tool-select_source = Selecione o firmware para gravar
+firmware_tool-select_source-description = Selecione o firmware que você deseja gravar na sua placa
+firmware_tool-select_source-error = Não foi possível carregar as Fontes
+firmware_tool-select_source-board_type = Tipo de Placa
+firmware_tool-select_source-firmware = Fonte do Firmware
+firmware_tool-select_source-version = Versão do Firmware
+firmware_tool-select_source-official = Oficial
+firmware_tool-select_source-dev = Dev
+firmware_tool-board_defaults = Configure sua placa
+firmware_tool-board_defaults-description = Defina os pinos ou as configurações de acordo com o seu hardware
+firmware_tool-board_defaults-add = Adicionar
+firmware_tool-board_defaults-reset = Redefinir para o Padrão
+firmware_tool-board_defaults-error-required = Campo obrigatório
+firmware_tool-board_defaults-error-format = Formato inválido
+firmware_tool-board_defaults-error-format-number = Não é um número
 firmware_tool-flash_method_step = Método de upload
 firmware_tool-flash_method_step-description = Por favor, selecione o método de upload que deseja utilizar
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = Use o método over-the-air. Seu tracker usará Wi-Fi para atualizar o firmware. Funciona apenas em trackers que já foram configurados.
 firmware_tool-flashbtn_step = Pressione o botão de boot
 firmware_tool-flashbtn_step-description = Antes de ir para o próximo passo, aqui estão algumas etapas que você necessita fazer
 firmware_tool-flashbtn_step-board_SLIMEVR = Deslige o tracker, tire de case (se tiver), conecte o cabo USB nesse computador, e tente seguir os seguintes passos de acordo com a revisão de sua placa SlimeVR
