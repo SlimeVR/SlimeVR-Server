@@ -977,6 +977,9 @@ onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
 onboarding-wifi_creds-dongle-title = Trackers conectados via dongle
+onboarding-wifi_creds-dongle-description = Se seus trackers vieram com um dongle, conecte-o ao seu dispositivo e você estará pronto para usar!
+onboarding-wifi_creds-dongle-wip = Esta seção ainda está em desenvolvimento. Uma página dedicada para gerenciar trackers que se conectam via dongle será criada em breve.
+onboarding-wifi_creds-dongle-continue = Continuar com um dongle
 
 ## Mounting setup
 
@@ -1032,6 +1035,9 @@ onboarding-connect_tracker-connection_status-could_not_find_server = Não foi po
 onboarding-connect_tracker-connection_status-done = Conectado ao servidor
 onboarding-connect_tracker-connection_status-no_serial_log = Não foi possível coletar os logs do tracker
 onboarding-connect_tracker-connection_status-no_serial_device_found = Não foi possível encontrar um tracker via USB
+onboarding-connect_serial-error-modal-no_serial_log = O tracker está ligado?
+onboarding-connect_serial-error-modal-no_serial_log-desc = Certifique-se de que o tracker esteja ligado e conectado ao seu computador.
+onboarding-connect_serial-error-modal-no_serial_device_found = Nenhum tracker detectado
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1365,6 +1371,7 @@ onboarding-stay_aligned-previous_step = Anterior
 onboarding-stay_aligned-next_step = Próximo
 onboarding-stay_aligned-restart = Reiniciar
 onboarding-stay_aligned-done = Concluído
+onboarding-stay_aligned-manual_mounting-done = Concluído
 
 ## Home
 
@@ -1419,6 +1426,9 @@ firmware_tool-select_source-firmware = Fonte do Firmware
 firmware_tool-select_source-version = Versão do Firmware
 firmware_tool-select_source-official = Oficial
 firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-not_selected = Nenhuma fonte selecionada
+firmware_tool-select_source-no_boards = Nenhuma placa disponível para esta fonte
+firmware_tool-select_source-no_versions = Nenhuma versão disponível para esta fonte
 firmware_tool-board_defaults = Configure sua placa
 firmware_tool-board_defaults-description = Defina os pinos ou as configurações de acordo com o seu hardware
 firmware_tool-board_defaults-add = Adicionar
@@ -1431,16 +1441,27 @@ firmware_tool-flash_method_step-description = Por favor, selecione o método de 
 firmware_tool-flash_method_step-ota-v2 =
     .label = Wi-Fi
     .description = Use o método over-the-air. Seu tracker usará Wi-Fi para atualizar o firmware. Funciona apenas em trackers que já foram configurados.
+firmware_tool-flash_method_step-ota-info =
+    Usamos as credenciais do seu Wi-Fi para gravar o firmware no tracker e confirmar que tudo funcionou corretamente.
+    <b>Nós não armazenamos suas credenciais do Wi-Fi!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Use um cabo USB para atualizar seu tracker.
 firmware_tool-flashbtn_step = Pressione o botão de boot
 firmware_tool-flashbtn_step-description = Antes de ir para o próximo passo, aqui estão algumas etapas que você necessita fazer
 firmware_tool-flashbtn_step-board_SLIMEVR = Deslige o tracker, tire de case (se tiver), conecte o cabo USB nesse computador, e tente seguir os seguintes passos de acordo com a revisão de sua placa SlimeVR
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Ligue o tracker enquanto faz um curto entre o segundo pad retangular FLASH a partir da borda, no lado superior da placa, e o escudo metálico do microcontrolador. O LED do tracker deve piscar rapidamente.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Ligue o tracker enquanto faz um curto entre o pad circular FLASH, no lado superior da placa, e o escudo metálico do microcontrolador. O LED do tracker deve piscar rapidamente.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Ligue o tracker enquanto pressiona o botão FLASH, no lado superior da placa. O LED do tracker deve piscar rapidamente.
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de fazer a atualização, você provavelmente precisará colocar o tracker no modo bootloader.
     Na maioria das vezes, isso significa pressionar o botão de boot na placa antes do iniciar o processo de atualização.
     Se o processo de atualização expirar no começo da atualização, isso provavelmente significa que o tracker não estava no modo de bootloader
     Consulte as instruções de atualização da sua placa para saber como ativar o modo boatloader
+firmware_tool-flash_method_ota-title = Gravação via Wi-Fi
 firmware_tool-flash_method_ota-devices = Dispositivos OTA detectados:
 firmware_tool-flash_method_ota-no_devices = Não há placas que possam ser atualizadas por meio de OTA. Verifique se você selecionou o tipo correto de placa
+firmware_tool-flash_method_serial-title = Gravação via USB
 firmware_tool-flash_method_serial-wifi = Credenciais de Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Dispositivos seriais detectados:
 firmware_tool-flash_method_serial-devices-placeholder = Selecione um dispositivo serial
@@ -1449,12 +1470,16 @@ firmware_tool-build_step = Compilando
 firmware_tool-build_step-description = O firmware está sendo compilado, aguarde
 firmware_tool-flashing_step = Atualizando
 firmware_tool-flashing_step-description = Seus trackers estão atualizando, por favor, siga as instruções na tela
+firmware_tool-flashing_step-warning-v2 = Não desconecte nem desligue o tracker durante o processo de envio, a menos que seja instruído a fazê-lo, pois isso pode tornar sua placa inutilizável
 firmware_tool-flashing_step-flash_more = Atualizar mais trackers
 firmware_tool-flashing_step-exit = Sair
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Aguardando a compilação....
 firmware_tool-build-CREATING_BUILD_FOLDER = Criando a pasta de compilação
+firmware_tool-build-DOWNLOADING_SOURCE = Baixando o código-fonte
+firmware_tool-build-EXTRACTING_SOURCE = Extraindo o código-fonte
 firmware_tool-build-BUILDING = Compilando o firmware
 firmware_tool-build-SAVING = Salvando a compilação
 firmware_tool-build-DONE = Compilação concluída
@@ -1463,6 +1488,7 @@ firmware_tool-build-ERROR = Não foi possível compilar o firmware
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Baixando o firmware
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Por favor, desligue e ligue seu tracker novamente
 firmware_update-status-AUTHENTICATING = Autenticando com o mcu
 firmware_update-status-UPLOADING = Fazendo upload do firmware
 firmware_update-status-SYNCING_WITH_MCU = Sincronizando com o mcu
@@ -1517,6 +1543,13 @@ unknown_device-modal-description =
     Deseja conectá-lo ao SlimeVR?
 unknown_device-modal-confirm = Claro!
 unknown_device-modal-forget = Ignore-o
+# VRChat config warnings
+vrc_config-page-title = Alerta de configuração do VRChat
+vrc_config-page-desc = Esta página mostra o estado das suas configurações do VRChat e indica quais configurações são incompatíveis com o SlimeVR. É altamente recomendável corrigir quaisquer avisos exibidos aqui para obter a melhor experiência de uso com o SlimeVR.
+vrc_config-page-help = Não consegue encontrar as configurações?
+vrc_config-spine_mode-LOCK_BOTH = Travar Ambos
+vrc_config-spine_mode-LOCK_HEAD = Travar Cabeça
+vrc_config-spine_mode-LOCK_HIP = Travar Quadril
 
 ## Error collection consent modal
 
@@ -1529,4 +1562,31 @@ error_collection_modal-cancel = Eu não quero
 tracking_checklist-MOUNTING_CALIBRATION = Realize uma calibração de montagem
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Realize uma calibração de montagem dos pés
 tracking_checklist-FULL_RESET = Execute "Redefinir Tudo"
+tracking_checklist-VRCHAT_SETTINGS-desc = As configurações do VRChat estão configuradas incorretamente! Isso pode afetar negativamente o rastreamento.
+tracking_checklist-VRCHAT_SETTINGS-open = Ir para os aletas do VRChat
+tracking_checklist-UNASSIGNED_HMD = Headset de VR não atribuído à Cabeça
+tracking_checklist-UNASSIGNED_HMD-desc = O headset de VR deve ser atribuído como tracker de cabeça.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Altere seu perfil de rede
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one] Seu perfil de rede está atualmente definido como Público ({ $adapters }). Isso não é recomendado para que o SlimeVR funcione corretamente. <PublicFixLink>Veja como corrigir isso aqui.</PublicFixLink>
+       *[other]
+            Alguns dos seus adaptadores de rede estão definidos como Público:
+            { $adapters }
+            Isso não é recomendado para o funcionamento adequado do SlimeVR. <PublicFixLink>Veja como corrigir aqui.</PublicFixLink>
+    }
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Abrir o Painel de Controle
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurar o Manter Alinhado
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Grave as poses da função Manter Alinhado para reduzir o drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Abrir o Assistente do Manter Alinhado
+tracking_checklist-ignore = Ignorar
+preview-mocap_mode_soon = Modo Mocap (Em Breve™)
+preview-disable_render = Desativar renderização
+preview-disabled_render = Renderização desativada
 toolbar-mounting_calibration = Calibração de Montagem
+toolbar-mounting_calibration-default = Corpo
+toolbar-mounting_calibration-feet = Pés
+toolbar-mounting_calibration-fingers = Dedos
+toolbar-drift_reset = Redefinir Drift
+toolbar-assigned_trackers = { $count } trackers atribuídos
+toolbar-unassigned_trackers = { $count } trackers desatribuídos
