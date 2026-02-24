@@ -19,7 +19,7 @@ export function QuizMocapPosQuestion() {
   const canContinue = (!headTracker || mocapPos) && playspace;
 
   return (
-    <div className="flex flex-col w-full h-full items-center justify-center">
+    <div className="grid w-full h-full justify-center items-center">
       <div className="flex flex-col gap-8 max-w-xl p-2">
         <div className="flex flex-col gap-2">
           <Typography
@@ -132,7 +132,7 @@ export function QuizMocapPosQuestion() {
           </div>
         )}
 
-        <div className="flex justify-between">
+        <div className="flex justify-between pb-4">
           <Button
             variant="secondary"
             id="onboarding-quiz_back"
