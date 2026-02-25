@@ -129,9 +129,6 @@ export function checkForUpdate(
 
   if (
     !device.hardwareInfo?.officialBoardType ||
-    ![BoardType.SLIMEVR, BoardType.SLIMEVR_V1_2].includes(
-      device.hardwareInfo.officialBoardType
-    ) ||
     !semver.valid(currentFirmwareRelease.version) ||
     !semver.valid(device.hardwareInfo.firmwareVersion?.toString() ?? 'none')
   ) {
@@ -142,6 +139,14 @@ export function checkForUpdate(
     device.hardwareInfo.firmwareVersion?.toString() ?? 'none',
     currentFirmwareRelease.version
   );
+
+  if (
+    ![BoardType.SLIMEVR, BoardType.SLIMEVR_V1_2].includes(
+      device.hardwareInfo.officialBoardType
+    )
+  ) {
+    return canUpdate ? 'unavailable' : 'updated';
+  }
 
   if (
     canUpdate &&
