@@ -46,7 +46,7 @@ body_part-NECK = Pescoço
 body_part-RIGHT_SHOULDER = Ombro direito
 body_part-RIGHT_UPPER_ARM = Braço superior direito
 body_part-RIGHT_LOWER_ARM = Antebraço direito
-body_part-RIGHT_HAND = Mão Direita
+body_part-RIGHT_HAND = Mão direita
 body_part-RIGHT_UPPER_LEG = Coxa direita
 body_part-RIGHT_LOWER_LEG = Tornozelo direito
 body_part-RIGHT_FOOT = Pé direito
@@ -434,7 +434,7 @@ tracker-part_card-unassigned = Não atribuído
 ## Body assignment menu
 
 body_assignment_menu = Aonde você quer que esse tracker fique?
-body_assignment_menu-description = Escolha um local onde você quer que esse tracker seja atribuído. Alternativamente você pode escolher arrumar todos os tracker de uma vez, ao invés de um por um.
+body_assignment_menu-description = Escolha a parte do corpo à qual deseja atribuir este tracker. Você também pode gerenciar todos os trackers de uma vez, em vez de configurá-los individualmente.
 body_assignment_menu-show_advanced_locations = Mostrar locais de atribuição avançados
 body_assignment_menu-manage_trackers = Arrumar todos os trackers
 body_assignment_menu-unassign_tracker = Desatribuir tracker
@@ -448,31 +448,31 @@ body_assignment_menu-unassign_tracker = Desatribuir tracker
 # maybe your language does.
 -tracker_selection-part = Which tracker to assign to your
 tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
+tracker_selection_menu-HEAD = { -tracker_selection-part } cabeça?
+tracker_selection_menu-NECK = { -tracker_selection-part } pescoço?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } ombro direito?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } braço superior direito?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } antebraço direito?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } mão direita?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } coxa direita?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } tornozelo direito?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } pé direito?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } controle direito?
 tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } peito superior?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
-tracker_selection_menu-unassigned = Trackers não atribuídos
-tracker_selection_menu-assigned = Trackers atribuídos
-tracker_selection_menu-dont_assign = Não atribuir
+tracker_selection_menu-CHEST = { -tracker_selection-part } peito?
+tracker_selection_menu-WAIST = { -tracker_selection-part } cintura?
+tracker_selection_menu-HIP = { -tracker_selection-part } quadril?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } ombro esquerdo?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } braço superior esquerdo?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } antebraço esquerdo?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } mão esquerda?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } coxa esquerda?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } tornozelo esquerdo?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } pé esquerdo?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } controle esquerdo?
+tracker_selection_menu-unassigned = Trackers Não Atribuídos
+tracker_selection_menu-assigned = Trackers Atribuídos
+tracker_selection_menu-dont_assign = Não Atribuir
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -483,7 +483,7 @@ tracker_selection_menu-neck_warning-cancel = Cancelar
 
 ## Mounting menu
 
-mounting_selection_menu = Aonde você quer que esse tracker fique?
+mounting_selection_menu = Onde você quer que esse tracker fique?
 mounting_selection_menu-close = Fechar
 
 ## Sidebar settings
@@ -519,8 +519,8 @@ settings-general-steamvr-subtitle = Trackers do SteamVR
 # The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
 # This one is one of this cases that cares about multilines
 settings-general-steamvr-description =
-    Ativar ou desativar partes específicas do tracking.
-    Útil se você quer mais controle do que o SlimeVR faz.
+    Ativa ou desativa trackers específicos do SteamVR.
+    Útil para jogos ou aplicativos que suportam apenas determinados trackers.
 settings-general-steamvr-trackers-waist = Cintura
 settings-general-steamvr-trackers-chest = Peito
 settings-general-steamvr-trackers-left_foot = Pé esquerdo
@@ -546,8 +546,8 @@ settings-general-tracker_mechanics = Mecânicas do Tracker
 settings-general-tracker_mechanics-filtering = Filtros
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
-    Escolha o tipo de filtro para seus trackers.
-    Predição prediz movimentação enquanto suavização suaviza o movimento.
+    Escolha o tipo de filtragem para seus trackers.
+    A predição antecipa o movimento, enquanto a suavização reduz as variações do movimento.
 settings-general-tracker_mechanics-filtering-type = Tipo de filtro
 settings-general-tracker_mechanics-filtering-type-none = Sem filtro
 settings-general-tracker_mechanics-filtering-type-none-description = Utiliza as rotações como registradas. Sem qualquer tipo de filtro.
@@ -1090,11 +1090,11 @@ onboarding-assign_trackers-unassign_all = Desatribuir todos os trackers
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
     { $trackers ->
-        [one] { $assigned } of 1 tracker assigned
-       *[other] { $assigned } of { $trackers } trackers assigned
+        [one] { $assigned } de 1 tracker atribuído
+       *[other] { $assigned } de { $trackers } trackers atribuídos
     }
 onboarding-assign_trackers-advanced = Mostrar locais de atribuição avançados
-onboarding-assign_trackers-next = Atribui todos os trackers
+onboarding-assign_trackers-next = Eu atribuí todos os trackers
 onboarding-assign_trackers-mirror_view = Inverter visão
 onboarding-assign_trackers-option-amount =
     { $trackersCount ->
