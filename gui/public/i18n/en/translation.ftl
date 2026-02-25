@@ -938,42 +938,42 @@ onboarding-setup_warning-cancel = Continue setup
 onboarding-quiz_continue = Continue
 onboarding-quiz_back = Back
 
-onboarding-quiz-more_sets_modal-title = Did you configure all your trackers?
-onboarding-quiz-more_sets_modal-desc = If you have multiple sets of different models we can configure these right now! Or you can proceed with the rest of the onboarding.
-onboarding-quiz-more_sets_modal-confirm = I have configured all my trackers
-onboarding-quiz-more_sets_modal-cancel = I want to configure more trackers
+onboarding-quiz-more_sets_modal-title = Have you connected all of your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have sets of different models, we can connect them right now!
+onboarding-quiz-more_sets_modal-confirm = I have connected all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to connect more trackers
 
-onboarding-quiz-slimeset-title = What trackers are you configuring?
+onboarding-quiz-slimeset-title = What type of trackers are you connecting?
 onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
 onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
-onboarding-quiz-slimeset-thirdparty-sets = Third-party Trackers (or DIY)
+onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
 onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
 onboarding-quiz-slimeset-answer-butterfly = Butterfly
 onboarding-quiz-slimeset-answer-wifi = Generic Wi-Fi Slime
 onboarding-quiz-slimeset-answer-dongle = Generic Dongle Slime
 onboarding-quiz-slimeset-no_other_set = I don't have another set
 
-onboarding-quiz-usage-title = Are you playing Games in standalone mode?
-onboarding-quiz-usage-description = What are you using your trackers for? If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-title = What are you using your trackers for?
+onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
 onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
 onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
 
-onboarding-quiz-runtime-title = Runtime
+onboarding-quiz-runtime-title = Do you run games via SteamVR, or on the headset itself (standalone)?
 onboarding-quiz-runtime-answer-steamvr = SteamVR
 onboarding-quiz-runtime-answer-standalone = Standalone
 
 onboarding-quiz-mocap_preferences-title = Mocap Preferences
 onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
 onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
-onboarding-quiz-mocap_preferences-playspace-desc = This affects how your model will move in mocap mode
+onboarding-quiz-mocap_preferences-playspace-desc = If standing, SlimeVR will try to track walking movement instead of anchoring you in one spot.
 onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
 onboarding-quiz-mocap_preferences-playspace-standing = Standing
 onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM Model? (Optional)
-onboarding-quiz-mocap_preferences-vrm_model-desc = If you have a model, you can specify it here, this will help compatibility with your VMC compatible software.
+onboarding-quiz-mocap_preferences-vrm_model-desc = Loading a VRM model will improve tracking quality and compatibility with applications that use VMC.
 onboarding-quiz-mocap_preferences-head_tracker-title = Are you using a tracker, or VR Headset, on your head?
 onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
 onboarding-quiz-mocap_preferences-head_tracker-no = No
-onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your head tracker located?
 onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
 onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
