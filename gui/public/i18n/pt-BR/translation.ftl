@@ -1013,8 +1013,8 @@ onboarding-home-start = Vamos configurar!
 ## Setup done
 
 onboarding-done-title = Está tudo pronto!
-onboarding-done-description = Aproveite sua experiência com full body
-onboarding-done-close = Fechar o guia
+onboarding-done-description = Aproveite sua experiência de rastreamento corporal completo
+onboarding-done-close = Fechar configuração
 
 ## Tracker connection setup
 
@@ -1028,7 +1028,7 @@ onboarding-connect_tracker-connection_status-none = Procurando por trackers
 onboarding-connect_tracker-connection_status-serial_init = Conectando ao dispositivo serial
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtendo o endereço MAC do tracker
 onboarding-connect_tracker-connection_status-provisioning = Enviando credenciais de Wi-Fi
-onboarding-connect_tracker-connection_status-connecting = Enviando credenciais de Wi-Fi
+onboarding-connect_tracker-connection_status-connecting = Tentando conectar à rede Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Procurando servidor
 onboarding-connect_tracker-connection_status-connection_error = Não é possível conectar ao Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Não foi possível conectar ao servidor
@@ -1051,9 +1051,9 @@ onboarding-connect_serial-error-modal-no_serial_device_found-desc =
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] No trackers connected
-        [one] 1 tracker connected
-       *[other] { $amount } trackers connected
+        [0] Nenhum tracker conectado
+        [one] 1 tracker conectado
+       *[other] { $amount } trackers conectados
     }
 onboarding-connect_tracker-next = Eu conectei todos os meus trackers
 
@@ -1083,7 +1083,7 @@ onboarding-assignment_tutorial-done = Eu coloquei os adesivos e as straps!
 
 onboarding-assign_trackers-back = Voltar para as credenciais de Wi-Fi
 onboarding-assign_trackers-title = Atribuir trackers
-onboarding-assign_trackers-description = Vamos escolher onde cada tracker vai. Clique no local onde você quer colocar o tracker
+onboarding-assign_trackers-description = Vamos escolher qual tracker vai em cada lugar. Clique em um local onde deseja colocar um tracker.
 onboarding-assign_trackers-unassign_all = Desatribuir todos os trackers
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
@@ -1209,15 +1209,15 @@ onboarding-choose_mounting-manual_modal-cancel = Cancelar
 
 ## Tracker manual mounting setup
 
-onboarding-manual_mounting-back = Voltar para entrar no VR
+onboarding-manual_mounting-back = Entrar no VR
 onboarding-manual_mounting = Montagem manual
-onboarding-manual_mounting-description = Clique em cada tracker e selecione de que maneira estão posicionados
+onboarding-manual_mounting-description = Clique em cada tracker e selecione de que forma ele está montado
 onboarding-manual_mounting-auto_mounting = Montagem automática
 onboarding-manual_mounting-next = Próximo passo
 
 ## Tracker automatic mounting setup
 
-onboarding-automatic_mounting-back = Voltar para entrar no VR
+onboarding-automatic_mounting-back = Entrar no VR
 onboarding-automatic_mounting-title = Calibração de Montagem
 onboarding-automatic_mounting-description = Para que os trackers SlimeVR funcionem, precisamos atribuir uma orientação de montagem aos seus trackers para alinhá-los com a forma como estão fixados fisicamente no seu corpo.
 onboarding-automatic_mounting-manual_mounting = Montagem manual
@@ -1227,7 +1227,7 @@ onboarding-automatic_mounting-done-title = Orientações de montagem calibradas.
 onboarding-automatic_mounting-done-description = Sua calibração de montagem está concluída!
 onboarding-automatic_mounting-done-restart = Voltar ao início
 onboarding-automatic_mounting-mounting_reset-title = Calibração de Montagem
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Agache-se em uma pose de "esqui" com as pernas dobradas, a parte superior do corpo inclinada para a frente e os braços dobrados.
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. Agache-se em uma pose de “esqui”, com as pernas dobradas, o tronco inclinado para frente e os braços flexionados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Calibração de Montagem" e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Fique na ponta dos pés, com ambos os pés apontados para a frente. Alternativamente, você pode fazer isso sentado em uma cadeira.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Pressione o botão “Calibração dos pés” e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
@@ -1243,7 +1243,7 @@ onboarding-automatic_mounting-return-home = Feito
 ## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back-scaled = Voltar para Proporções Escalonadas
-onboarding-manual_proportions-title = Proporções de corpo manuais
+onboarding-manual_proportions-title = Ajuste Manual das Proporções Corporais
 onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as proporções
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte seu headset VR para utilizar a melhoria automatica
 onboarding-manual_proportions-export = Exportar proporções
@@ -1257,9 +1257,9 @@ onboarding-manual_proportions-estimated_height = Altura estimada do usuário
 
 ## Tracker automatic proportions setup
 
-onboarding-automatic_proportions-back = Voltar para o tutorial de reset
+onboarding-automatic_proportions-back = Voltar para Proporções Manuais
 onboarding-automatic_proportions-title = Meça seu corpo
-onboarding-automatic_proportions-description = Para os trackers SlimeVR funcionarem, precisamos saber o tamanho dos seus ossos. Essa curta calibragem vai medir isso para você.
+onboarding-automatic_proportions-description = Para que os trackers SlimeVR funcionem corretamente, precisamos do comprimento dos seus ossos. Esta calibração rápida medirá isso automaticamente para você.
 onboarding-automatic_proportions-manual = Calibragem manual
 onboarding-automatic_proportions-prev_step = Passo anterior
 onboarding-automatic_proportions-put_trackers_on-title = Coloque seus trackers
@@ -1299,9 +1299,9 @@ onboarding-automatic_proportions-check_floor_height-full_height = A sua altura t
 onboarding-automatic_proportions-check_floor_height-measure-start = Comece a medir
 onboarding-automatic_proportions-check_floor_height-measure-stop = Parar de medir
 onboarding-automatic_proportions-check_floor_height-measure-reset = Refazer medição
-onboarding-automatic_proportions-check_floor_height-skip_step = Pular etapa e salvar
+onboarding-automatic_proportions-check_floor_height-skip_step = Pular este passo e salvar
 onboarding-automatic_proportions-check_floor_height-next_step = Usar a altura do chão e salvar
-onboarding-automatic_proportions-start_recording-title = Esteja preparado para se mexer
+onboarding-automatic_proportions-start_recording-title = Prepare-se para se mover
 onboarding-automatic_proportions-start_recording-description = Começaremos a gravar algumas poses e movimentos específicos. Estes serão solicitados na próxima tela. Esteja preparado para começar quando o botão for pressionado!
 onboarding-automatic_proportions-start_recording-next = Começar Gravação
 onboarding-automatic_proportions-recording-title = GRAVAR
@@ -1319,8 +1319,8 @@ onboarding-automatic_proportions-recording-processing = Processando o resultado
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
-        [one] 1 second left
-       *[other] { $time } seconds left
+        [one] 1 segundo restante
+       *[other] { $time } segundos restantes
     }
 onboarding-automatic_proportions-verify_results-title = Verificar os resultados
 onboarding-automatic_proportions-verify_results-description = Verifique os resultados abaixo, parecem corretos?
@@ -1435,8 +1435,8 @@ status_system-StatusPublicNetwork =
 
 ## Firmware tool globals
 
-firmware_tool-next_step = Próxima etapa
-firmware_tool-previous_step = Etapa anterior
+firmware_tool-next_step = Próximo passo
+firmware_tool-previous_step = Passo anterior
 firmware_tool-ok = Parece bom
 firmware_tool-retry = Tentar novamente
 firmware_tool-loading = Carregando...
