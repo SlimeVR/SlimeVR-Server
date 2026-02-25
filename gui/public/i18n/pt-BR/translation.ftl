@@ -550,11 +550,11 @@ settings-general-tracker_mechanics-filtering-description =
     A predição antecipa o movimento, enquanto a suavização reduz as variações do movimento.
 settings-general-tracker_mechanics-filtering-type = Tipo de filtro
 settings-general-tracker_mechanics-filtering-type-none = Sem filtro
-settings-general-tracker_mechanics-filtering-type-none-description = Utiliza as rotações como registradas. Sem qualquer tipo de filtro.
+settings-general-tracker_mechanics-filtering-type-none-description = Usa as rotações como estão. Não aplicará nenhuma filtragem.
 settings-general-tracker_mechanics-filtering-type-smoothing = Suavização
-settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza o movimento porém introduz um pouco de latência.
+settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviza os movimentos, mas adiciona um pouco de latência.
 settings-general-tracker_mechanics-filtering-type-prediction = Predição
-settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz latência e torna os movimentos mais responsivos, porém aumenta tremulação (Jitter).
+settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz a latência e torna os movimentos mais responsivos, mas pode aumentar a oscilação.
 settings-general-tracker_mechanics-filtering-amount = Quantidade
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tempo de suavização do "Redefinir Guinada" (0s desativa a suavização)
 settings-general-tracker_mechanics-drift_compensation = Compensação de drift
@@ -675,7 +675,7 @@ settings-general-fk_settings-self_localization-description = O modo mocap permit
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = Controle de gestos
+settings-general-gesture_control = Controle por gestos
 settings-general-gesture_control-subtitle = Redefinições baseadas em toque
 settings-general-gesture_control-description = Permite que redefinições sejam acionadas ao tocar em um tracker. O tracker mais alto no tronco é usado para "Redefinir direção", o tracker mais alto na perna esquerda é usado para executar "Redefinir Tudo", e o tracker mais alto na perna direita é usado para a "Calibração de Montagem". Os toques devem ocorrer dentro do limite de 0,3 segundos multiplicado pelo número de toques para serem reconhecidos.
 # This is a unit: 3 taps, 2 taps, 1 tap
@@ -711,7 +711,7 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 settings-interface-appearance = Aparência
 settings-general-interface-dev_mode = Modo de desenvolvedor
 settings-general-interface-dev_mode-description = Este modo pode ser útil se precisar de dados específicos ou para interagir com trackers conectados a um nível mais avançado
-settings-general-interface-dev_mode-label = Modo de desenvolvedor
+settings-general-interface-dev_mode-label = Modo de Desenvolvedor
 settings-general-interface-theme = Cor do tema
 settings-general-interface-show-navbar-onboarding = Mostrar "{ navbar-onboarding }" na barra de navegação
 settings-general-interface-show-navbar-onboarding-description = Isso muda se o botão "{ navbar-onboarding }" for exibido na barra de navegação.
@@ -777,11 +777,11 @@ settings-interface-behavior-bvh_directory-label = Diretório para gravações BV
 settings-serial = Console Serial
 # This cares about multilines
 settings-serial-description =
-    Este é um feed de informações ao vivo para comunicação serial.
-    Pode ser útil se você precisar saber se o firmware está tendo problemas.
-settings-serial-connection_lost = Conexão com o serial perdida, Reconectando...
+    Este é um feed de informações em tempo real para comunicação serial.
+    Pode ser útil para depurar problemas de firmware ou hardware.
+settings-serial-connection_lost = Conexão com o serial perdida, reconectando...
 settings-serial-reboot = Reiniciar
-settings-serial-factory_reset = Restaurar para o padrão de fábrica
+settings-serial-factory_reset = Redefinição de Fábrica
 # This cares about multilines
 # <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
@@ -816,13 +816,13 @@ settings-osc-router-network-description =
     Defina as portas para receber e enviar dados
     Esses podem ser as mesmas portas usadas no servidor do SlimeVR
 settings-osc-router-network-port_in =
-    .label = Porta de entrada
+    .label = Porta de Entrada
     .placeholder = Porta de entrada (padrão: 9002)
 settings-osc-router-network-port_out =
-    .label = Porta de saída
+    .label = Porta de Saída
     .placeholder = Porta de saída (padrão: 9000)
 settings-osc-router-network-address = Endereço de rede
-settings-osc-router-network-address-description = Defina o endereço para mandar dados
+settings-osc-router-network-address-description = Defina o endereço para o qual os dados serão enviados.
 settings-osc-router-network-address-placeholder = Endereço IPV4
 
 ## OSC VRChat settings
@@ -847,16 +847,16 @@ settings-osc-vrchat-oscqueryEnabled-label = Ativar OSCQuery
 settings-osc-vrchat-network = Portas de rede
 settings-osc-vrchat-network-description-v1 = Define as portas para receber e enviar dados. Pode ser deixado como está para o VRChat.
 settings-osc-vrchat-network-port_in =
-    .label = Porta de entrada
+    .label = Porta de Entrada
     .placeholder = Porta de entrada (padrão: 9001)
 settings-osc-vrchat-network-port_out =
-    .label = Porta de saída
+    .label = Porta de Saída
     .placeholder = Porta de saída (padrão: 9000)
 settings-osc-vrchat-network-address = Endereço de rede
 settings-osc-vrchat-network-address-description-v1 = Escolha o endereço para enviar os dados. Pode ser deixado como está para o VRChat.
 settings-osc-vrchat-network-address-placeholder = Endereço de ip do VRChat
 settings-osc-vrchat-network-trackers = Trackers
-settings-osc-vrchat-network-trackers-description = Ligar ou desligar o envio e recepção de dados.
+settings-osc-vrchat-network-trackers-description = Liga ou desliga o envio de trackers específicos via OSC.
 settings-osc-vrchat-network-trackers-chest = Peito
 settings-osc-vrchat-network-trackers-hip = Quadril
 settings-osc-vrchat-network-trackers-knees = Joelhos
@@ -904,7 +904,7 @@ settings-osc-common-network-port_banned_error = A porta { $port } não pode ser 
 
 settings-utils-advanced = Avançado
 settings-utils-advanced-reset-gui = Resetar configurações da interface
-settings-utils-advanced-reset-gui-description = Restaura a interface para as configurações iniciais.
+settings-utils-advanced-reset-gui-description = Restaurar as configurações padrão da interface.
 settings-utils-advanced-reset-gui-label = Resetar interface
 settings-utils-advanced-reset-server = Resetar configuraçõse de tracking
 settings-utils-advanced-reset-server-description = Restaura as configurações de tracking para as configurações iniciais.
@@ -949,7 +949,7 @@ settings-tracking_checklist-active_steps-desc = Lista de todas as etapas do chec
 
 onboarding-skip = Pular configurações
 onboarding-continue = Continuar
-onboarding-wip = Trabalho em progresso
+onboarding-wip = Em desenvolvimento
 onboarding-previous_step = Passo anterior
 onboarding-setup_warning =
     <b>Aviso:</b> A configuração inicial é necessária para um rastreamento adequado,
@@ -970,12 +970,12 @@ onboarding-wifi_creds-description-v2 =
 onboarding-wifi_creds-skip = Pular as configurações de Wi-Fi
 onboarding-wifi_creds-submit = Enviar!
 onboarding-wifi_creds-ssid =
-    .label = SSID
-    .placeholder = Enter SSID
+    .label = Nome da rede Wi-Fi
+    .placeholder = Digite o nome da rede Wi-Fi
 onboarding-wifi_creds-ssid-required = Nome do Wi-Fi é obrgiatório
 onboarding-wifi_creds-password =
-    .label = Password
-    .placeholder = Enter password
+    .label = Senha
+    .placeholder = Digite a senha
 onboarding-wifi_creds-dongle-title = Trackers conectados via dongle
 onboarding-wifi_creds-dongle-description = Se seus trackers vieram com um dongle, conecte-o ao seu dispositivo e você estará pronto para usar!
 onboarding-wifi_creds-dongle-wip = Esta seção ainda está em desenvolvimento. Uma página dedicada para gerenciar trackers que se conectam via dongle será criada em breve.
@@ -984,7 +984,7 @@ onboarding-wifi_creds-dongle-continue = Continuar com um dongle
 ## Mounting setup
 
 onboarding-reset_tutorial-back = Voltar para a calibração de montagem
-onboarding-reset_tutorial = Resetar Tutorial
+onboarding-reset_tutorial = Reiniciar tutorial
 onboarding-reset_tutorial-explanation = Enquanto você usa os trackers, eles podem ficar desalinhados devido ao drift de guinada (yaw) da IMU ou porque você pode ter movido os trackers fisicamente. Há várias maneiras de corrigir isso.
 onboarding-reset_tutorial-skip = Pular passo
 # Cares about multiline
