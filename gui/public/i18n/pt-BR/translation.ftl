@@ -1328,8 +1328,8 @@ onboarding-automatic_proportions-verify_results-results = Gravando os resultados
 onboarding-automatic_proportions-verify_results-processing = Processando o resultado
 onboarding-automatic_proportions-verify_results-redo = Refazer a gravação
 onboarding-automatic_proportions-verify_results-confirm = Eles estão corretos
-onboarding-automatic_proportions-done-title = Corpo medido e salvo.
-onboarding-automatic_proportions-done-description = Sua calibragem de proporção de corpo está completa!
+onboarding-automatic_proportions-done-title = Medição do corpo concluída e salva.
+onboarding-automatic_proportions-done-description = A calibração das proporções do seu corpo está concluída!
 onboarding-automatic_proportions-error_modal-v2 =
     <b>Aviso:</b> Ocorreu um erro ao estimar as proporções!
     Isso provavelmente é um problema na calibração de montagem. Certifique-se de que o rastreamento está funcionando corretamente antes de tentar novamente.
@@ -1423,7 +1423,7 @@ status_system-StatusTrackerReset = Recomenda-se executar "Redefinir Tudo", pois 
 status_system-StatusSteamVRDisconnected =
     { $type ->
         [steamvr_feeder] Atualmente não conectado ao aplicativo SlimeVR Feeder.
-       *[other] Atualmente não conectado ao SteamVR via driver SlimeVR.
+       *[other] Atualmente não conectado ao SteamVR via driver do SlimeVR.
     }
 status_system-StatusTrackerError = O tracker { $trackerName } tem um erro.
 status_system-StatusUnassignedHMD = O headset (HMD) deve ser designado como o tracker da cabeça.
