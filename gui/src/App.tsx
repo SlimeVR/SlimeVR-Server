@@ -15,7 +15,6 @@ import {
   useProvideWebsocketApi,
   WebSocketApiContext,
 } from './hooks/websocket-api';
-
 import { Event, listen } from '@tauri-apps/api/event';
 import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
@@ -27,6 +26,7 @@ import { AutomaticMountingPage } from './components/onboarding/pages/mounting/Au
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
 import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
+import { DonglePage } from './components/onboarding/pages/Dongle';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
 import { SerialDetectionModal } from './components/SerialDetectionModal';
 import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
@@ -58,6 +58,10 @@ import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/Sta
 import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
 import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
 import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist';
+import { QuizSlimeSetQuestion } from './components/onboarding/pages/quiz/SlimeSetQuestion';
+import { QuizUsageQuestion } from './components/onboarding/pages/quiz/UsageQuestion';
+import { QuizRuntimeQuestion } from './components/onboarding/pages/quiz/RuntimeQuestion';
+import { QuizMocapPosQuestion } from './components/onboarding/pages/quiz/MocapPreferencesQuestions';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -153,6 +157,12 @@ function Layout() {
           >
             <Route path="home" element={<HomePage />} />
             <Route path="wifi-creds" element={<WifiCredsPage />} />
+            <Route path="quiz/slime-set" element={<QuizSlimeSetQuestion />} />
+            <Route path="quiz/usage" element={<QuizUsageQuestion />} />
+            <Route path="quiz/runtime" element={<QuizRuntimeQuestion />} />
+            <Route path="quiz/mocap-pos" element={<QuizMocapPosQuestion />} />
+            <Route path="dongle" element={<DonglePage />} />
+            <Route path="firmware-tool" element={<FirmwareToolSettings />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="mounting/choose" element={<MountingChoose />} />
