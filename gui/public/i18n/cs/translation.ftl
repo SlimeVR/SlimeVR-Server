@@ -153,6 +153,7 @@ navbar-settings = Nastavení
 ## Biovision hierarchy recording
 
 bvh-start_recording = Nahrát BVH
+bvh-stop_recording = Uložit BVH záznam
 bvh-recording = Nahrávání...
 
 ## Tracking pause
