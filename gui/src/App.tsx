@@ -27,10 +27,6 @@ import { AutomaticMountingPage } from './components/onboarding/pages/mounting/Au
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
 import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
-import { QuizSlimeSetQuestion } from './components/onboarding/pages/Quiz/QuizSteps/SlimeSetQuestion';
-import { QuizUsageQuestion } from './components/onboarding/pages/Quiz/QuizSteps/UsageQuestion';
-import { QuizRuntimeQuestion } from './components/onboarding/pages/Quiz/QuizSteps/RuntimeQuestion';
-import { QuizMocapPosQuestion } from './components/onboarding/pages/Quiz/QuizSteps/MocapPreferencesQuestions';
 import { DonglePage } from './components/onboarding/pages/Dongle';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
 import { SerialDetectionModal } from './components/SerialDetectionModal';
@@ -63,6 +59,10 @@ import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/Sta
 import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
 import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
 import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist';
+import { QuizSlimeSetQuestion } from './components/onboarding/pages/quiz/SlimeSetQuestion';
+import { QuizUsageQuestion } from './components/onboarding/pages/quiz/UsageQuestion';
+import { QuizRuntimeQuestion } from './components/onboarding/pages/quiz/RuntimeQuestion';
+import { QuizMocapPosQuestion } from './components/onboarding/pages/quiz/MocapPreferencesQuestions';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');

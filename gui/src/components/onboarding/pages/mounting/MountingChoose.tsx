@@ -13,7 +13,7 @@ export function MountingChoose() {
   const [animated, setAnimated] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
 
-  applyProgress(0.65);
+  applyProgress(0.55);
 
   return (
     <>

@@ -5,7 +5,7 @@ import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
 import { USBIcon } from '@/components/commons/icon/UsbIcon';
 import { WarningBox } from '@/components/commons/TipBox';
-import { MoreSetsConfirm } from './Quiz/QuizSteps/MoreSetsConfirm';
+import { MoreSetsConfirm } from './quiz/MoreSetsConfirm';
 
 export function DongleSectionContent() {
   const { state } = useOnboarding();

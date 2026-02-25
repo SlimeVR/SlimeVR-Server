@@ -951,7 +951,6 @@ onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
 onboarding-quiz-slimeset-answer-butterfly = Butterfly
 onboarding-quiz-slimeset-answer-wifi = Generic Wi-Fi Slime
 onboarding-quiz-slimeset-answer-dongle = Generic Dongle Slime
-onboarding-quiz-slimeset-no_other_set = I don't have another set
 
 onboarding-quiz-usage-title = What are you using your trackers for?
 onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
@@ -1349,6 +1348,7 @@ onboarding-user_height-description = We need your height to calculate your body 
 onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
 onboarding-user_height-calculate = Calculate my height automatically
 onboarding-user_height-next_step = Continue and save
+onboarding-user_height-prev_step = Back
 onboarding-user_height-manual-proportions = Manual Proportions
 onboarding-user_height-calibration-title = Calibration Progress
 onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller

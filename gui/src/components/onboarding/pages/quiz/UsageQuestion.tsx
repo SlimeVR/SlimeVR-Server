@@ -10,7 +10,7 @@ export function QuizUsageQuestion() {
   const { applyProgress, setUsage, usage } = useOnboarding();
   const nav = useNavigate();
 
-  applyProgress(0.3);
+  applyProgress(0.8);
 
   const next = (type: typeof usage) => {
     setUsage(type);

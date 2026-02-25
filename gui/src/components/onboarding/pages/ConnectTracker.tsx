@@ -27,7 +27,7 @@ import { BaseModal } from '@/components/commons/BaseModal';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
-import { MoreSetsConfirm } from './Quiz/QuizSteps/MoreSetsConfirm';
+import { MoreSetsConfirm } from './quiz/MoreSetsConfirm';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
