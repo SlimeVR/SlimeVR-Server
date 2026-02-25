@@ -17,6 +17,7 @@ import { AutomaticProportionsPage } from './components/onboarding/pages/body-pro
 import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
 import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
 import { HomePage } from './components/onboarding/pages/Home';
+import { ErrorCollectingConsentPage } from './components/onboarding/pages/ErrorCollectingConstent'
 import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
@@ -147,6 +148,7 @@ function Layout() {
             }
           >
             <Route path="home" element={<HomePage />} />
+            <Route path="error-collecting-consent" element={<ErrorCollectingConsentPage />} />
             <Route path="wifi-creds" element={<WifiCredsPage />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />

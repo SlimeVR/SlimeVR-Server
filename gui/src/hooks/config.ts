@@ -80,7 +80,7 @@ export const defaultConfig: Config = {
   homeLayout: 'default',
   skeletonPreview: true,
   lastUsedProportions: null,
-    dontShowUdevModal: false,
+  dontShowUdevModal: false,
 };
 
 const localStore: CrossStorage = {

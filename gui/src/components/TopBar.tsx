@@ -288,7 +288,7 @@ export function TopBar({
         }}
       />
       <ErrorConsentModal
-        isOpen={config?.errorTracking === null}
+        isOpen={config?.errorTracking === false}
         accept={() => setConfig({ errorTracking: true })}
         cancel={() => setConfig({ errorTracking: false })}
       />
