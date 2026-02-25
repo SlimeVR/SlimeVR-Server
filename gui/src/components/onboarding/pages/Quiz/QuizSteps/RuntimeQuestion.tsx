@@ -21,7 +21,7 @@ export function QuizRuntimeQuestion() {
     <div className="grid w-full h-full justify-center items-center">
       <div className="flex flex-col gap-8 max-w-xl p-2">
         <div className="flex flex-col gap-2">
-          <Typography variant="main-title" id="onboarding-quiz-usage-title" />
+          <Typography variant="main-title" id="onboarding-quiz-runtime-title" />
         </div>
 
         <div className="flex flex-col gap-6">
