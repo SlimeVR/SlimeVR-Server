@@ -338,7 +338,8 @@ export function TrackersAssignPage() {
                       <Button
                         variant="secondary"
                         to={
-                          slimeSet && ['butterfly', 'dongle-slime'].includes(slimeSet)
+                          slimeSet &&
+                          ['butterfly', 'dongle-slime'].includes(slimeSet)
                             ? '/onboarding/dongle'
                             : '/onboarding/wifi-creds'
                         }

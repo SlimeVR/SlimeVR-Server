@@ -15,7 +15,6 @@ import {
   useProvideWebsocketApi,
   WebSocketApiContext,
 } from './hooks/websocket-api';
-
 import { Event, listen } from '@tauri-apps/api/event';
 import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';

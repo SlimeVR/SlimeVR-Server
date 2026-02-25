@@ -249,7 +249,7 @@ export function ScaledProportionsPage() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [resetModal, setResetModal] = useState<null | 'manual' | 'auto'>(null);
 
-  applyProgress(0.7);
+  applyProgress(0.9);
 
   const start = () => {
     sendRPCPacket(
@@ -460,13 +460,6 @@ export function ScaledProportionsPage() {
             />
           </Tooltip>
           <div className="w-full flex gap-2 justify-between">
-            {!state.alonePage && (
-              <Button
-                variant="primary"
-                id="onboarding-user_height-prev_step"
-                to="/onboarding/mounting/choose"
-              />
-            )}
             {state.alonePage && (
               <>
                 <Button
