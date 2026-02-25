@@ -1229,6 +1229,7 @@ onboarding-automatic_mounting-done-restart = Voltar ao início
 onboarding-automatic_mounting-mounting_reset-title = Calibração de Montagem
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Agache-se em uma pose de "esqui" com as pernas dobradas, a parte superior do corpo inclinada para a frente e os braços dobrados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Calibração de Montagem" e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Fique na ponta dos pés, com ambos os pés apontados para a frente. Alternativamente, você pode fazer isso sentado em uma cadeira.
 onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Pressione o botão “Calibração dos pés” e aguarde 3 segundos até que as orientações de montagem dos trackers sejam redefinidas.
 onboarding-automatic_mounting-preparation-title = Preparação
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Pressione o botão “Redefinir Completamente"
@@ -1241,6 +1242,7 @@ onboarding-automatic_mounting-return-home = Feito
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Voltar para Proporções Escalonadas
 onboarding-manual_proportions-title = Proporções de corpo manuais
 onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as proporções
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte seu headset VR para utilizar a melhoria automatica
@@ -1250,6 +1252,8 @@ onboarding-manual_proportions-file_type = Arquivo de proporções do corpo
 onboarding-manual_proportions-normal_increment = Incremento normal
 onboarding-manual_proportions-precise_increment = Incremento preciso
 onboarding-manual_proportions-grouped_proportions = Proporções agrupadas
+onboarding-manual_proportions-all_proportions = Todas as proporções
+onboarding-manual_proportions-estimated_height = Altura estimada do usuário
 
 ## Tracker automatic proportions setup
 
@@ -1365,11 +1369,22 @@ onboarding-user_height-reset-warning =
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Manter Alinhado
+onboarding-stay_aligned-description = Configure o Manter Alinhado para manter seus trackers alinhados.
+onboarding-stay_aligned-put_trackers_on-title = Coloque seus trackers
+onboarding-stay_aligned-put_trackers_on-description = Para salvar suas poses de descanso, usaremos os trackers que você acabou de atribuir. Coloque todos os seus trackers, você pode ver qual é qual na figura à direita.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Você tem menos de 5 trackers conectados e atribuídos no momento! Essa é a quantidade mínima de trackers necessária para que o Manter Alinhado funcione corretamente.
 onboarding-stay_aligned-put_trackers_on-next = Todos meus trackers estão ligados
 onboarding-stay_aligned-verify_mounting-title = Calibração de Montagem
 onboarding-stay_aligned-verify_mounting-step-0 = O Manter Alinhado requer uma boa montagem. Caso contrário, você não terá uma boa experiência com o Manter Alinhado.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Movimente-se enquanto estiver em pé.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Sente-se e movimente as pernas e os pés.
 onboarding-stay_aligned-verify_mounting-step-3 = 3. Se seus trackers não estiverem na orientação correta, pressione “Refazer Calibração de Montagem”.
 onboarding-stay_aligned-verify_mounting-redo_mounting = Refazer Calibração de Montagem
+onboarding-stay_aligned-preparation-title = Preparação
+onboarding-stay_aligned-preparation-tip = Certifique-se de ficar em pé, com o corpo ereto. Mantenha o olhar para a frente, com os braços abaixados junto ao corpo.
+onboarding-stay_aligned-relaxed_poses-standing-title = Postura em Pé Relaxada
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Fique em uma posição confortável. Relaxe!
 onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Pressione o botão "Salvar Pose".
 onboarding-stay_aligned-relaxed_poses-sitting-title = Pose Sentada e Relaxada na Cadeira
 onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sente-se em uma posição confortável. Relaxe!
@@ -1561,6 +1576,19 @@ unknown_device-modal-forget = Ignore-o
 vrc_config-page-title = Alerta de configuração do VRChat
 vrc_config-page-desc = Esta página mostra o estado das suas configurações do VRChat e indica quais configurações são incompatíveis com o SlimeVR. É altamente recomendável corrigir quaisquer avisos exibidos aqui para obter a melhor experiência de uso com o SlimeVR.
 vrc_config-page-help = Não consegue encontrar as configurações?
+vrc_config-page-help-desc = Confira nossa <a>documentação sobre este assunto!</a>
+vrc_config-page-big_menu = Rastreamento e IK (Menu Grande)
+vrc_config-page-big_menu-desc = Configurações relacionadas ao IK no menu grande de configurações
+vrc_config-page-wrist_menu = Rastreamento e IK (Menu Rápido)
+vrc_config-page-wrist_menu-desc = Configurações relacionadas ao IK no menu pequeno de configurações (menu rápido)
+vrc_config-on = Ativado
+vrc_config-off = Desativado
+vrc_config-invalid = As configurações do VRChat estão incorretas!
+vrc_config-show_more = Mostrar mais
+vrc_config-setting_name = Nome da Configuração do VRChat
+vrc_config-recommended_value = Valor Recomendado
+vrc_config-current_value = Valor Atual
+vrc_config-mute-btn = Silenciar
 vrc_config-spine_mode-LOCK_BOTH = Travar Ambos
 vrc_config-spine_mode-LOCK_HEAD = Travar Cabeça
 vrc_config-spine_mode-LOCK_HIP = Travar Quadril
