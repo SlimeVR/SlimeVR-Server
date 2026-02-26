@@ -34,9 +34,6 @@
 # ignore gradle build folder
 build/
 
-# Rust build artifacts
-/target
-
 # direnv has been claimed for Nix usage
 .direnv/
 .devenv
@@ -46,3 +43,7 @@ local.properties
 
 # Ignore temporary config
 vrconfig.yml.tmp
+
+
+# Nixos
+.bin/

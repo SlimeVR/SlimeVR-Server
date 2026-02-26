@@ -35,7 +35,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
-      - run: mkdir ./gui/dist && touch ./gui/dist/somefile
+      - run: mkdir -p ./gui/out/renderer && touch ./gui/out/renderer/somefile
         shell: bash
 
       - name: Check code formatting
@@ -190,26 +190,13 @@ jobs:
         uses: awalsh128/cache-apt-pkgs-action@v1.6.0
         with:
           packages: |
-            build-essential curl wget file libssl-dev libgtk-3-dev libappindicator3-dev librsvg2-dev xdg-utils
+            build-essential curl wget file libssl-dev libgtk-3-dev libappindicator3-dev librsvg2-dev xdg-utils patchelf
           # Increment to invalidate the cache
-          version: ${{ format('v1.0-{0}', env.BUILD_ARCH) }}
+          version: ${{ format('v2.0-electron-{0}', env.BUILD_ARCH) }}
           # Enables a workaround to attempt to run pre and post install scripts
           execute_install_scripts: true
           # Disables uploading logs as a build artifact
           debug: false
-
-      - name: Set up specific Linux versioned dependencies
-        run: |
-          sudo apt-get update && sudo apt-get install -y \
-            libwebkit2gtk-4.1-0=2.44.0-2 \
-            libwebkit2gtk-4.1-dev=2.44.0-2 \
-            libjavascriptcoregtk-4.1-0=2.44.0-2 \
-            libjavascriptcoregtk-4.1-dev=2.44.0-2 \
-            gir1.2-javascriptcoregtk-4.1=2.44.0-2 \
-            gir1.2-webkit2-4.1=2.44.0-2;
-
-      - name: Cache cargo dependencies
-        uses: Swatinem/rust-cache@v2
 
       - uses: pnpm/action-setup@v4
       - name: Use Node.js
@@ -224,11 +211,14 @@ jobs:
       - name: Build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        run: pnpm run tauri build --config $( ./gui/scripts/gitversion.mjs )
+        run: |
+          cd gui
+          pnpm run build
+          pnpm exec electron-builder --linux --publish never
 
       - name: Make GUI tarball
         run: |
-          tar czf slimevr-gui-dist.tar.gz -C gui/dist/ .
+          tar czf slimevr-gui-dist.tar.gz -C gui/out/renderer/ .
 
       - uses: actions/upload-artifact@v6
         if: matrix.os == 'ubuntu-latest'
@@ -239,24 +229,24 @@ jobs:
       - uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-Deb-{0}', env.BUILD_ARCH) }}
-          path: target/release/bundle/deb/slimevr*.deb
+          path: gui/dist/artifacts/*.deb
 
       - uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-AppImage-{0}', env.BUILD_ARCH) }}
-          path: target/release/bundle/appimage/slimevr*.AppImage
+          path: gui/dist/artifacts/*.AppImage
 
       - uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-RPM-{0}', env.BUILD_ARCH) }}
-          path: target/release/bundle/rpm/slimevr*.rpm
+          path: gui/dist/artifacts/*.rpm
 
       - name: Prepare for release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          cp target/release/bundle/appimage/slimevr*.AppImage "./SlimeVR-$BUILD_ARCH.appimage"
-          cp target/release/bundle/deb/slimevr*.deb "./SlimeVR-$BUILD_ARCH.deb"
-          cp target/release/bundle/rpm/slimevr*.rpm "./SlimeVR-$BUILD_ARCH.rpm"
+          cp gui/dist/artifacts/*.AppImage "./SlimeVR-$BUILD_ARCH.appimage"
+          cp gui/dist/artifacts/*.deb "./SlimeVR-$BUILD_ARCH.deb"
+          cp gui/dist/artifacts/*.rpm "./SlimeVR-$BUILD_ARCH.rpm"
 
       - name: Upload to draft release
         uses: softprops/action-gh-release@v2
@@ -284,9 +274,6 @@ jobs:
           name: 'SlimeVR-Server'
           path: server/desktop/build/libs/
 
-      - name: Cache cargo dependencies
-        uses: Swatinem/rust-cache@v2
-
       - uses: pnpm/action-setup@v4
       - name: Use Node.js
         uses: actions/setup-node@v6
@@ -296,44 +283,26 @@ jobs:
 
       - name: Install dependencies
         run: |
-          rustup target add x86_64-apple-darwin
           pnpm i
 
       - name: Build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=4096
-        run: pnpm run tauri build --target universal-apple-darwin --config $( ./gui/scripts/gitversion.mjs )
-
-      - name: Modify Application
         run: |
-          cd target/universal-apple-darwin/release/bundle/macos/slimevr.app/Contents/MacOS
-          cp $( git rev-parse --show-toplevel )/server/desktop/build/libs/slimevr.jar ./
-          cd ../../../
-          /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName SlimeVR" slimevr.app/Contents/Info.plist
-          /usr/libexec/PlistBuddy -c "Set :CFBundleName SlimeVR" slimevr.app/Contents/Info.plist
-          codesign --sign - --deep --force slimevr.app
-          mv slimevr.app SlimeVR.app
-          cd ../dmg/
-          ./bundle_dmg.sh --volname SlimeVR --icon slimevr 180 170 --app-drop-link 480 170 \
-          --window-size 660 400 --hide-extension ../macos/SlimeVR.app \
-          --volicon ../macos/SlimeVR.app/Contents/Resources/icon.icns --skip-jenkins \
-          --eula ../../../../../LICENSE-MIT slimevr.dmg ../macos/SlimeVR.app
-
-      - uses: actions/upload-artifact@v6
-        with:
-          name: SlimeVR-GUI-MacApp
-          path: target/universal-apple-darwin/release/bundle/macos/SlimeVR*.app
+          cd gui
+          pnpm run build
+          pnpm exec electron-builder --mac --universal --publish never
 
       - uses: actions/upload-artifact@v6
         with:
           name: SlimeVR-GUI-MacDmg
-          path: target/universal-apple-darwin/release/bundle/dmg/slimevr.dmg
+          path: gui/dist/artifacts/*.dmg
 
       - name: Prepare for release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          cp target/universal-apple-darwin/release/bundle/dmg/slimevr.dmg ./SlimeVR-mac.dmg
+          cp gui/dist/artifacts/*.dmg ./SlimeVR-mac.dmg
 
       - name: Upload to draft release
         uses: softprops/action-gh-release@v2
@@ -364,13 +333,6 @@ jobs:
           name: 'SlimeVR-Server'
           path: server/desktop/build/libs/
 
-      - if: matrix.os == 'windows-11-arm'
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          cache: false
-
-      - name: Cache cargo dependencies
-        uses: Swatinem/rust-cache@v2
 
       - uses: pnpm/action-setup@v4
       - name: Use Node.js
@@ -387,16 +349,19 @@ jobs:
         shell: bash
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        run: pnpm run skipbundler --config $( ./gui/scripts/gitversion.mjs )
+        run: |
+          cd gui
+          pnpm run build
+          pnpm exec electron-builder --win portable --publish never
 
       - name: Bundle to zips
         shell: bash
         run: |
           mkdir SlimeVR
-          cp gui/src-tauri/icons/icon.ico ./SlimeVR/run.ico
+          cp gui/dist/artifacts/*.exe ./SlimeVR/slimevr.exe
+          cp gui/electron/resources/icons/icon.ico ./SlimeVR/run.ico
           cp server/desktop/build/libs/slimevr.jar ./SlimeVR/slimevr.jar
           cp server/core/resources/* ./SlimeVR/
-          cp target/release/slimevr.exe ./SlimeVR/
           7z a -tzip "SlimeVR-$BUILD_ARCH.zip" ./SlimeVR/
 
       - uses: actions/upload-artifact@v6

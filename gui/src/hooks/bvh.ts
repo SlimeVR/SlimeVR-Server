@@ -1,12 +1,12 @@
 import { useLocalization } from '@fluent/react';
-import { isTauri } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 import { RecordBVHRequestT, RecordBVHStatusT, RpcMessage } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useConfig } from './config';
-import { save } from '@tauri-apps/plugin-dialog';
+import { useElectron } from './electron';
 
 export function useBHV() {
+  const electron = useElectron();
   const { config } = useConfig();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [state, setState] = useState<'idle' | 'recording' | 'saving'>('idle');
@@ -19,12 +19,12 @@ export function useBHV() {
   const toggle = async () => {
     const record = new RecordBVHRequestT(state === 'recording');
 
-    if (isTauri() && state === 'idle') {
+    if (electron.isElectron && state === 'idle') {
       if (config?.bvhDirectory) {
         record.path = config.bvhDirectory;
       } else {
         setState('saving');
-        record.path = await save({
+        const open = await electron.api.saveDialog({
           title: l10n.getString('bvh-save_title'),
           filters: [
             {
@@ -34,6 +34,7 @@ export function useBHV() {
           ],
           defaultPath: 'bvh-recording.bvh',
         });
+        record.path = open.filePath;
         setState('idle');
       }
     }

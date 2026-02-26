@@ -77,7 +77,6 @@ export function useProvideAppContext(): AppContext {
   useLayoutEffect(() => {
     if (!config) return;
     if (config.errorTracking !== undefined) {
-      console.log('change');
       // Alows for sentry to refresh if user change the setting once the gui
       // is initialized
       getSentryOrCompute(config.errorTracking ?? false, config.uuid);

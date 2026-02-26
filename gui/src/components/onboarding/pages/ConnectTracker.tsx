@@ -25,7 +25,6 @@ import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { A } from '@/components/commons/A';
-import { CONNECT_TRACKER } from '@/utils/tauri';
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 
 const statusLabelMap = {
@@ -224,7 +223,7 @@ export function ConnectTrackersPage() {
             />
           </Localized>
           <video
-            src={CONNECT_TRACKER}
+            src={'/videos/turn-on-tracker.webm'}
             loop
             autoPlay
             className="w-full aspect-video rounded-md mt-2"

@@ -132,7 +132,6 @@ function SerialDevicesList({
   useEffect(() => {
     if (isActive) {
       const id = setInterval(() => {
-        console.log('request');
         sendRPCPacket(
           RpcMessage.SerialDevicesRequest,
           new SerialDevicesRequestT()
@@ -378,12 +377,6 @@ export function FlashingMethodStep({
   });
 
   const flashingMethod = watch('flashingMethod');
-
-  console.log(
-    !isValid,
-    selectedDevices === null,
-    selectedDevices?.length === 0
-  );
 
   return (
     <>

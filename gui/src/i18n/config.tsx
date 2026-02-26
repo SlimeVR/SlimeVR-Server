@@ -13,22 +13,12 @@ import {
   createContext,
   useContext,
 } from 'react';
-import { exists, readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
-import { invoke } from '@tauri-apps/api/core';
-import { isTrayAvailable } from '@/utils/tauri';
 import { langs } from './names';
+import { useElectron } from '@/hooks/electron';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
-const OVERRIDE_FILENAME = 'override.ftl';
-
-// AppConfig path: https://docs.rs/tauri/1.2.4/tauri/api/path/fn.config_dir.html
-// We doing this only once, don't want an override check to be done on runtime,
-// only on launch :P
-const overrideLangExists = exists(OVERRIDE_FILENAME, {
-  baseDir: BaseDirectory.AppConfig,
-}).catch(() => false);
 
 // Fetch translation file
 async function fetchMessages(locale: string): Promise<[string, string]> {
@@ -70,6 +60,7 @@ const TRAY_MENU_KEYS = ['tray_menu-show', 'tray_menu-hide', 'tray_menu-quit'];
 
 export const LangContext = createContext<i18n>(undefined as never);
 export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
+  const electron = useElectron();
   const [currentLocales, setCurrentLocales] = useState([DEFAULT_LOCALE]);
   const [l10n, setL10n] = useState<ReactLocalization | null>(null);
 
@@ -81,13 +72,11 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     );
     setCurrentLocales([currentLocale]);
 
-    const currentLocaleFile: [string, string] = (await overrideLangExists)
-      ? [
-          currentLocale,
-          await readTextFile(OVERRIDE_FILENAME, {
-            baseDir: BaseDirectory.AppConfig,
-          }),
-        ]
+    const overrideFile =
+      electron.isElectron && (await electron.api.i18nOverride());
+
+    const currentLocaleFile: [string, string] = overrideFile
+      ? [currentLocale, overrideFile]
       : await fetchMessages(currentLocale);
 
     const fetchedMessages = [
@@ -113,16 +102,13 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
   }, []);
 
   useEffect(() => {
-    if (l10n === null || !isTrayAvailable) return;
+    if (l10n === null || !electron.isElectron) return;
 
     const newI18n: Record<string, string> = {};
     TRAY_MENU_KEYS.forEach((key) => {
       newI18n[key] = l10n.getString(key);
     });
-    const promise = invoke('update_translations', { newI18n });
-    return () => {
-      promise.then(() => {});
-    };
+    electron.api.setTranslations(newI18n);
   }, [l10n]);
 
   if (l10n === null) {

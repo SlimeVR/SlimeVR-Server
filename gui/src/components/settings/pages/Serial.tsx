@@ -22,11 +22,7 @@ import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { WarningBox } from '@/components/commons/TipBox';
-import { useIsTauri } from '@/hooks/breakpoint';
 import { fileSave } from 'browser-fs-access';
-import { save } from '@tauri-apps/plugin-dialog';
-import { writeTextFile } from '@tauri-apps/plugin-fs';
-import { error } from '@/utils/logging';
 import { waitUntil } from '@/utils/a11y';
 import { Input } from '@/components/commons/Input';
 import { PauseIcon } from '@/components/commons/icon/PauseIcon';
@@ -213,7 +209,6 @@ export function Serial() {
     setValue('customCommand', '');
   };
 
-  const isTauri = useIsTauri();
   const consoleContentRef = useRef(consoleContent);
   useLayoutEffect(() => {
     consoleContentRef.current = consoleContent;
@@ -230,31 +225,13 @@ export function Serial() {
       );
     }
 
-    if (isTauri) {
-      save({
-        filters: [
-          {
-            name: l10n.getString('settings-serial-file_type'),
-            extensions: ['txt'],
-          },
-        ],
-        defaultPath: 'serial-logs.txt',
-      })
-        .then((path) =>
-          path ? writeTextFile(path, consoleContentRef.current) : undefined
-        )
-        .catch((err) => {
-          error(err);
-        });
-    } else {
-      const blob = new Blob([consoleContentRef.current], {
-        type: 'text/plain',
-      });
-      fileSave(blob, {
-        fileName: 'serial-logs.txt',
-        extensions: ['.txt'],
-      });
-    }
+    const blob = new Blob([consoleContentRef.current], {
+      type: 'text/plain',
+    });
+    fileSave(blob, {
+      fileName: 'serial-logs.txt',
+      extensions: ['.txt'],
+    });
   };
 
   const pauseScroll = () => {
