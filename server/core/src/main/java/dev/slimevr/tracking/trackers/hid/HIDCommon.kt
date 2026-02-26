@@ -291,13 +291,20 @@ class HIDCommon {
 				}
 			}
 			if (button != null) {
+				// TODO: May support multiple buttons in the future? For now, mask first 2 bits
+				// Tracker sends button state once button has been released and double press/hold timeout elapsed
+				// The received state represents the action to be performed, only if it has changed
 				if (tracker.button == null) {
 					tracker.button = 0
 				}
-				if (button != tracker.button) {
-					button = button and tracker.button!!.inv()
-					// Nothing to do now..
+				val changed: Int = button and tracker.button!!.inv()
+				if (changed shr 0 and 3 != 0) {
+					// 0: reset, 1: single press, 2: double press, 3: N/A (held, not available on shared button)
+					// TODO: For now, just send a tap for any action
+					val action: Int = button shr 0 and 3
+					VRServer.instance.tapSetupHandler.sendTap(tracker)
 				}
+				tracker.button = button
 			}
 			if (fw_date != null) {
 				val firmwareYear = 2020 + (fw_date shr 9 and 127)
