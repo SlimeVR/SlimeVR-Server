@@ -6,7 +6,10 @@ import {
   SittingRelaxedPoseStep,
   StandingRelaxedPoseStep,
 } from './stay-aligned-steps/RelaxedPoseSteps';
-import { EnableStayAlignedRequestT, RpcMessage } from 'solarxr-protocol';
+import {
+  EnableStayAlignedRequestT,
+  RpcMessage,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { RPCPacketType, useWebsocketAPI } from '@/hooks/websocket-api';
 import { useEffect, useRef } from 'react';
 import VerticalStepper from '@/components/commons/VerticalStepper';

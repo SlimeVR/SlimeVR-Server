@@ -1,21 +1,23 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
+import { FilteringType } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import {
-  ChangeSettingsRequestT,
-  FilteringSettingsT,
-  FilteringType,
   LegTweaksSettingsT,
   ModelRatiosT,
   ModelSettingsT,
   ModelTogglesT,
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc/settings';
+import {
+  ChangeSettingsRequestT,
+  FilteringSettingsT,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
   HIDSettingsT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocaleConfig } from '@/i18n/config';

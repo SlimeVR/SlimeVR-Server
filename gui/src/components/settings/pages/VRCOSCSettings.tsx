@@ -9,7 +9,7 @@ import {
   SettingsRequestT,
   SettingsResponseT,
   VRCOSCSettingsT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { VRCIcon } from '@/components/commons/icon/VRCIcon';

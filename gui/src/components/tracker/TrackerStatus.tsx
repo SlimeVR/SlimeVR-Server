@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
-import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol';
+import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 

@@ -1,7 +1,7 @@
 import { useLocalization } from '@fluent/react';
 import { isTauri } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
-import { RecordBVHRequestT, RecordBVHStatusT, RpcMessage } from 'solarxr-protocol';
+import { RecordBVHRequestT, RecordBVHStatusT, RpcMessage } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from './websocket-api';
 import { useConfig } from './config';
 import { save } from '@tauri-apps/plugin-dialog';

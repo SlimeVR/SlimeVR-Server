@@ -58,11 +58,12 @@ allprojects {
 }
 
 dependencies {
-	implementation(project(":solarxr-protocol"))
+	api(project(":solarxr-protocol"))
 
 	// This dependency is used internally,
 	// and not exposed to consumers on their own compile classpath.
-	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
+	// implementation("com.google.flatbuffers:flatbuffers-java:25.12.19")
+
 	implementation("commons-cli:commons-cli:1.8.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.15.1")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.1")

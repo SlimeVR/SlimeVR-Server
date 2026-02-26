@@ -1,6 +1,6 @@
 import { Typography } from './commons/Typography';
 import classNames from 'classnames';
-import { ResetType } from 'solarxr-protocol';
+import { ResetType } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import {
   BODY_PARTS_GROUPS,
   MountingResetGroup,

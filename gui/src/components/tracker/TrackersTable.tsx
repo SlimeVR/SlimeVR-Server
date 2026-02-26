@@ -16,10 +16,10 @@ import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
 import {
   BodyPart,
-  TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
-  TrackingChecklistStepT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/datatypes';
+import { TrackerDataT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/data-feed/tracker';
+import { TrackingChecklistStepT } from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import {
   highlightedTrackers,
   trackingchecklistIdtoLabel,

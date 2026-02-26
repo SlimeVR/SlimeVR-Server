@@ -14,7 +14,7 @@ import {
   SerialUpdateResponseT,
   SerialTrackerGetWifiScanRequestT,
   SerialTrackerCustomCommandRequestT,
-} from 'solarxr-protocol';
+} from 'solarxr-protocol/protocol/typescript/dist/solarxr-protocol/rpc';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { Dropdown } from '@/components/commons/Dropdown';
