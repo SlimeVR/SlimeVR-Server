@@ -95,6 +95,7 @@ class HIDCommon {
 					allowMounting = true,
 					usesTimeout = false,
 					magStatus = magStatus,
+					usesSleep = true,
 				)
 				// usesTimeout false because HID trackers aren't "Disconnected" unless receiver is physically removed probably
 				// TODO: Could tracker maybe use "Timed out" status without marking as disconnecting?
@@ -138,8 +139,16 @@ class HIDCommon {
 				return
 			}
 
+			if (tracker.status == TrackerStatus.TIMED_OUT) {
+				// If tracker was previously sleeping/shutdown, reset the sleep time and status
+				// If there is some other error, the relevant packet should set it a little later
+				tracker.setSleepTime(MAX_VALUE)
+				tracker.status = TrackerStatus.OK
+			}
+
 			// Packet data
 			var runtime: Long? = null
+			var timeout: Int? = null
 			var batt: Int? = null
 			var batt_v: Int? = null
 			var temp: Int? = null
@@ -238,11 +247,13 @@ class HIDCommon {
 
 				6 -> { // data
 					button = dataReceived[i + 2].toUByte().toInt()
+					timeout = dataReceived[i + 3].toUByte().toInt() shl 8 or dataReceived[i + 4].toUByte().toInt()
 					rssi = dataReceived[i + 15].toUByte().toInt()
 				}
 
 				7 -> { // reduced precision quat and accel with data
 					button = dataReceived[i + 2].toUByte().toInt()
+					timeout = dataReceived[i + 3].toUByte().toInt() shl 8 or dataReceived[i + 4].toUByte().toInt()
 					// quaternion is quantized as exponential map
 					// X = 10 bits, Y/Z = 11 bits
 					val buffer = ByteBuffer.wrap(dataReceived, i + 5, 4)
@@ -264,9 +275,17 @@ class HIDCommon {
 
 			// Assign data
 			if (runtime != null && runtime >= 0) {
+				// -1: Not known (e.g. not yet calculated after wake up, reusing known value is okay), 0: N/A (e.g. charging)
 				tracker.batteryRemainingRuntime = runtime
 			}
-			// -1: Not known (e.g. not yet calculated after wake up, reusing known value is okay), 0: N/A (e.g. charging)
+			if (timeout != null && timeout != 0) {
+				// 0 or 65535: disable timeout
+				if (timeout == 65535) {
+					tracker.setSleepTime(MAX_VALUE)
+				} else {
+					tracker.setSleepTime(System.currentTimeMillis() + timeout)
+				}
+			}
 			if (batt != null) {
 				tracker.batteryLevel = if (batt == 128) 1f else (batt and 127).toFloat()
 			}
@@ -275,9 +294,9 @@ class HIDCommon {
 				tracker.batteryVoltage = (batt_v.toFloat() + 245f) / 100f
 			}
 			if (temp != null) {
+				// Range 1 - 255 -> -38.5 - +88.5 C
 				tracker.temperature = if (temp > 0) temp.toFloat() / 2f - 39f else null
 			}
-			// Range 1 - 255 -> -38.5 - +88.5 C
 			if (brd_id != null) {
 				val boardType = BoardType.getById(brd_id.toUInt())
 				if (boardType != null) {
@@ -377,6 +396,8 @@ class HIDCommon {
 			}
 			if (packetType == 1 || packetType == 2 || packetType == 4 || packetType == 7) {
 				tracker.dataTick() // only data tick if there is rotation data
+			} else {
+				tracker.heartbeat() // else, something received
 			}
 		}
 	}

@@ -97,9 +97,15 @@ class Tracker @JvmOverloads constructor(
 	 * NOT the same as hasRotation (other data types emulate rotation)
 	 */
 	val trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
+
+	/**
+	 * Set status when tracker is sleeping
+	 */
+	val usesSleep: Boolean = false,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
+	private var timeScheduledSleep: Long = MAX_VALUE
 	private var _rotation = Quaternion.IDENTITY
 
 	// IMU: +z forward, +x left, +y up
@@ -257,6 +263,16 @@ class Tracker @JvmOverloads constructor(
 			if (System.currentTimeMillis() - timeAtLastUpdate > DISCONNECT_MS) {
 				status = TrackerStatus.DISCONNECTED
 			} else if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
+				status = TrackerStatus.TIMED_OUT
+			}
+		}
+
+		if (usesSleep && status != TrackerStatus.DISCONNECTED) {
+			if (System.currentTimeMillis() > timeScheduledSleep) {
+				status = TrackerStatus.TIMED_OUT
+			}
+			// Want to also use timeout but without following disconnect
+			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
 				status = TrackerStatus.TIMED_OUT
 			}
 		}
@@ -449,5 +465,12 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun resetFilteringQuats(reference: Quaternion) {
 		filteringHandler.resetMovingAverage(getAdjustedRotation(), reference)
+	}
+
+	/**
+	 * Sets time in future if a tracker is expected to sleep
+	 */
+	fun setSleepTime(time: Long) {
+		this.timeScheduledSleep = time
 	}
 }
