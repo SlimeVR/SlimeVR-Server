@@ -58,8 +58,8 @@ dependencies {
 	implementation(project(":server:core"))
 	implementation(project(":solarxr-protocol"))
 
-	implementation("commons-cli:commons-cli:1.8.0")
-	implementation("org.apache.commons:commons-lang3:3.15.0")
+	implementation("commons-cli:commons-cli:1.11.0")
+	implementation("org.apache.commons:commons-lang3:3.20.0")
 	implementation("com.google.protobuf:protobuf-java:4.31.1")
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")

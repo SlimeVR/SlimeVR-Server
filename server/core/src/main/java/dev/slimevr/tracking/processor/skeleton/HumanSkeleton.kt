@@ -1230,8 +1230,10 @@ class HumanSkeleton(
 		}
 		// If trackingArmFromController, reverse
 		if (((boneType == BoneType.LEFT_LOWER_ARM || boneType == BoneType.LEFT_HAND) && isTrackingLeftArmFromController) ||
-			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) &&
-			isTrackingRightArmFromController
+			(
+				(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) &&
+					isTrackingRightArmFromController
+				)
 		) {
 			transOffset = -transOffset
 		}

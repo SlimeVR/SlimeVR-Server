@@ -654,12 +654,10 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		private val SENSOR_OFFSET_CORRECTION = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 		private const val RESET_SOURCE_NAME = "TrackerServer"
 
-		@ExperimentalStdlibApi
 		private val hexFormat = HexFormat {
 			bytes.byteSeparator = ","
 		}
 
-		@OptIn(ExperimentalStdlibApi::class)
 		private fun packetToString(packet: DatagramPacket?): String {
 			val sb = StringBuilder()
 			sb.append("DatagramPacket{")

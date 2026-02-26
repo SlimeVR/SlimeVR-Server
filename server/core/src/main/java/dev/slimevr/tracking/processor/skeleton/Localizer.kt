@@ -386,7 +386,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		if (rightKnee.y * SITTING_KNEE_THRESHOLD < rightKnee.x + rightKnee.z) {
 			right = true
 		}
-		return !bufCur.isStanding || left && right
+		return !bufCur.isStanding || (left && right)
 	}
 
 	// get the combined accel of the Torso trackers
