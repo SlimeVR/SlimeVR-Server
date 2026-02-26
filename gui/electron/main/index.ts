@@ -111,15 +111,15 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
 });
 
 handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => {
-  const allowsd_urls = [
+  const allowed_urls = [
     /steam:\/\/.*/,
     /ms-settings:network$/,
     /https:\/\/.*\.slimevr\.dev.*/,
     /https:\/\/github\.com\/.*/,
     /https:\/\/discord\.gg\/slimevr$/,
   ];
-  if (allowsd_urls.find((a) => url.match(a))) open(url);
-  else logger.error({ url }, 'trying to open non allowed url');
+  if (allowed_urls.find((a) => url.match(a))) open(url);
+  else logger.error({ url }, 'attempted to open non-whitelisted URL');
 });
 
 handleIpc(IPC_CHANNELS.STORAGE, async (e, { type, method, key, value }) => {
@@ -336,7 +336,7 @@ const isServerRunning = async () => !await isPortAvailable(21110)
 
 const spawnServer = async () => {
   if (options.skipServerIfRunning && await isServerRunning()) {
-    logger.info({ skipServerIfRunning: options.skipServerIfRunning }, 'Server alredy running, skipping');
+    logger.info({ skipServerIfRunning: options.skipServerIfRunning }, 'Server is already running, skipping server start');
     return;
   }
 
@@ -357,7 +357,7 @@ const spawnServer = async () => {
     return;
   }
 
-  logger.info({ serverJar }, 'found server jar');
+  logger.info({ javaBin, serverJar }, 'Found Java and server jar');
 
   const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run']);
 
