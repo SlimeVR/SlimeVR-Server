@@ -140,6 +140,7 @@ class HIDCommon {
 
 			// Packet data
 			var runtime: Long? = null
+			var timeout: Int? = null
 			var batt: Int? = null
 			var batt_v: Int? = null
 			var temp: Int? = null
@@ -238,11 +239,13 @@ class HIDCommon {
 
 				6 -> { // data
 					button = dataReceived[i + 2].toUByte().toInt()
+					timeout = dataReceived[i + 3].toUByte().toInt() shl 8 or dataReceived[i + 4].toUByte().toInt()
 					rssi = dataReceived[i + 15].toUByte().toInt()
 				}
 
 				7 -> { // reduced precision quat and accel with data
 					button = dataReceived[i + 2].toUByte().toInt()
+					timeout = dataReceived[i + 3].toUByte().toInt() shl 8 or dataReceived[i + 4].toUByte().toInt()
 					// quaternion is quantized as exponential map
 					// X = 10 bits, Y/Z = 11 bits
 					val buffer = ByteBuffer.wrap(dataReceived, i + 5, 4)
@@ -264,9 +267,16 @@ class HIDCommon {
 
 			// Assign data
 			if (runtime != null && runtime >= 0) {
+				// -1: Not known (e.g. not yet calculated after wake up, reusing known value is okay), 0: N/A (e.g. charging)
 				tracker.batteryRemainingRuntime = runtime
 			}
-			// -1: Not known (e.g. not yet calculated after wake up, reusing known value is okay), 0: N/A (e.g. charging)
+			if (timeout != null && timeout != 0) {
+				// 0 or 65535: disable timeout
+				// need to schedule some time in the future to change status! this should also persist between receiver disconnect
+				// so it cannot rely only on status
+				// maybe set a time in the future that defaults to int max, when status is being read, then send appropriate status
+				// also, since trackers are always sending data, implement a basic timeout for this too?
+			}
 			if (batt != null) {
 				tracker.batteryLevel = if (batt == 128) 1f else (batt and 127).toFloat()
 			}
@@ -275,9 +285,9 @@ class HIDCommon {
 				tracker.batteryVoltage = (batt_v.toFloat() + 245f) / 100f
 			}
 			if (temp != null) {
+				// Range 1 - 255 -> -38.5 - +88.5 C
 				tracker.temperature = if (temp > 0) temp.toFloat() / 2f - 39f else null
 			}
-			// Range 1 - 255 -> -38.5 - +88.5 C
 			if (brd_id != null) {
 				val boardType = BoardType.getById(brd_id.toUInt())
 				if (boardType != null) {
