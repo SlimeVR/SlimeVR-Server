@@ -386,7 +386,7 @@ settings-sidebar-title = Nastavení
 settings-sidebar-general = Obecné
 settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mechanika trackerů
-settings-sidebar-stay_aligned = Zůstaň Srovaný (Stay Aligned)
+settings-sidebar-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 settings-sidebar-fk_settings = Nastavení trackování
 settings-sidebar-gesture_control = Ovládání gesty
 settings-sidebar-interface = Rozhraní
@@ -495,10 +495,12 @@ settings-stay_aligned-relaxed_poses-label = Relaxovací Póza
 settings-stay_aligned-relaxed_poses-description = Zůstaň Srovnaný používá vaše uvolněné pózy k udržení srovnání trackerů. K aktualizaci těchto póz použijte "Nastavte Zůstaň Srovnaný".
 settings-stay_aligned-relaxed_poses-standing = Upravit trackery při stoje
 settings-stay_aligned-relaxed_poses-sitting = Upravit pozici trackerů při sezení na židli
+settings-stay_aligned-relaxed_poses-flat = Upravte pozici trackerů při sezení na zemi, nebo ležení na zádech
 settings-stay_aligned-relaxed_poses-save_pose = Uložit pózu
 settings-stay_aligned-relaxed_poses-reset_pose = Obnovit pózu
 settings-stay_aligned-relaxed_poses-close = Zavřít
 settings-stay_aligned-debug-label = Ladění
+settings-stay_aligned-debug-description = Při nahlašování problémů s Zůstaň Srovnaný, prosím zahrňte vaše nastavení.
 settings-stay_aligned-debug-copy-label = Zkopírovat nastavení do schránky
 
 ## FK/Tracking settings
@@ -863,7 +865,7 @@ onboarding-reset_tutorial-1 =
 
 ## Setup start
 
-onboarding-home = Vítejte k SlimeVR
+onboarding-home = Vítejte ve SlimeVR
 onboarding-home-start = Pusťme se do toho!
 
 ## Setup done
@@ -982,7 +984,7 @@ onboarding-assign_trackers-warning-LEFT_FOOT =
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting = Jakou metodu nasazení trackerů použít?
+onboarding-choose_mounting = Jakou metodu nasazení trackerů chcete použít?
 # Multiline text
 onboarding-choose_mounting-description = Správná orientace nasazení zajistí přesné sledování trackerů na těle.
 onboarding-choose_mounting-auto_mounting = Automatická detekce nasazení
@@ -1136,6 +1138,8 @@ onboarding-automatic_proportions-smol_warning-cancel = Jít zpět
 onboarding-user_height-title = Jaká je vaše výška?
 onboarding-user_height-next_step = Uložit a pokračovat
 onboarding-user_height-manual-proportions = Manuální Proporce
+onboarding-user_height-calibration-WAITING_FOR_RISE = Postavte se zpátky
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Nedívejte se na podlahu
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Nedívej se příliš vysoko
 onboarding-user_height-calibration-DONE = Úspěch!
 onboarding-user_height-calibration-error = Kalibrace selhala
@@ -1143,8 +1147,9 @@ onboarding-user_height-calibration-error = Kalibrace selhala
 ## Stay Aligned setup
 
 onboarding-stay_aligned-title = Zůstaň Srovaný!
-onboarding-stay_aligned-description = Nakonfigurujte Zustaň Srovnaný, aby byly vaše trackery srovnáný.
+onboarding-stay_aligned-description = Nakonfigurujte Zůstaň Srovnaný, aby byly vaše trackery srovnány.
 onboarding-stay_aligned-put_trackers_on-title = Nasaďte si trackery
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Aktuálně máte méně než 5 připojených a přiřazených trackerů! Toto je minimální počet trackerů potřebné pro správné fungování funkce Zůstaň Srovnaný.
 onboarding-stay_aligned-put_trackers_on-next = Mám nasazené všechny trackery
 onboarding-stay_aligned-verify_mounting-title = Zkotrolujte nasazení
 onboarding-stay_aligned-verify_mounting-step-1 = 1. Pohybujte se ve stoje.
@@ -1158,7 +1163,7 @@ onboarding-stay_aligned-relaxed_poses-sitting-title = Uvolněná póza při seze
 onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Posaďte se do pohodlné pozice, Relaxujte!
 onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
 onboarding-stay_aligned-relaxed_poses-skip_step = Přeskočit
-onboarding-stay_aligned-done-title = Zustaň Srovnaný zapnuto!
+onboarding-stay_aligned-done-title = Zůstaň Srovnaný zapnuto!
 onboarding-stay_aligned-done-description = Váš nastavení Zůstaň Srovnaný je dokončeno!
 onboarding-stay_aligned-done-description-2 = Vaše nastavení je dokončeno! Pokud chcete vaše pózy znovu zkalibrovat, můžete proces zopakovat.
 onboarding-stay_aligned-previous_step = Předchozí
@@ -1238,6 +1243,7 @@ firmware_tool-build_step = Sestavování
 firmware_tool-build_step-description = Firmwere se sestavuje, čekejte prosím
 firmware_tool-flashing_step = Flashování
 firmware_tool-flashing_step-description = Probíhá flashování vašich trackerů, prosím postupujte dle instrukcí na obrazovce
+firmware_tool-flashing_step-warning-v2 = Během procesu nahrávání prosíme NEVYPÍNEJTE ani NEODPOJUJTE vaše trackery pokud k tomu nejste vyzváni, učiněním můžete způsobit že deska trackeru se stane nefunkční.
 firmware_tool-flashing_step-flash_more = Flashnout více trackerů
 firmware_tool-flashing_step-exit = Odejít
 
@@ -1252,6 +1258,7 @@ firmware_tool-build-ERROR = Nepodařilo se sestavit firmwere
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Stahování firmwaru
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Vypněte a znovu zapněte tracker prosím
 firmware_update-status-AUTHENTICATING = Autentifikování s mcu
 firmware_update-status-UPLOADING = Nahrávání firmwaru
 firmware_update-status-SYNCING_WITH_MCU = Synchronizace s MCU
@@ -1325,6 +1332,7 @@ vrc_config-mute-btn = Ztlumení
 vrc_config-unmute-btn = Zrušit ztlumení
 vrc_config-legacy_mode = Použít starší řešení IK
 vrc_config-disable_shoulder_tracking = Vypnout sledování ramen
+vrc_config-shoulder_width_compensation = Kompenzace Šířky Ramen
 vrc_config-spine_mode = Režim páteře FTB
 vrc_config-tracker_model = Model FBT trackeru
 vrc_config-avatar_measurement_type = Meření avataru
