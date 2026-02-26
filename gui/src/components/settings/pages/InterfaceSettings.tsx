@@ -28,6 +28,7 @@ interface InterfaceSettingsForm {
     textSize: number;
     fonts: string;
     decorations: boolean;
+    customHue: number;
   };
   behavior: {
     devmode: boolean;
@@ -55,6 +56,7 @@ export function InterfaceSettings() {
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
         decorations: config?.decorations ?? defaultConfig.decorations,
+        customHue: config?.customHue ?? defaultConfig.customHue,
       },
       notifications: {
         watchNewDevices:
@@ -112,6 +114,7 @@ export function InterfaceSettings() {
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
       decorations: values.appearance.decorations,
+      customHue: values.appearance.customHue,
 
       useTray: values.behavior.useTray,
       discordPresence: values.behavior.discordPresence,
@@ -470,7 +473,43 @@ export function InterfaceSettings() {
                   value={'snep'}
                   colors="!bg-snep"
                 />
+                <ThemeSelector
+                  control={control}
+                  name="appearance.theme"
+                  value={'custom-bright'}
+                  colors="!bg-custom-bright"
+                />
+                <ThemeSelector
+                  control={control}
+                  name="appearance.theme"
+                  value={'custom-dark'}
+                  colors="!bg-custom-dark"
+                />
               </div>
+            </div>
+
+            <div className="pb-4">
+              <Typography variant="section-title">
+                {l10n.getString('settings-interface-appearance-hue')}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <Range
+                control={control}
+                name="appearance.customHue"
+                min={0}
+                max={1}
+                step={0.01}
+                values={[
+                  { value: 0, label: '0°' },
+                  { value: 0.5, label: '180°' },
+                  { value: 1, label: '360°' },
+                ]}
+                disabled={
+                  config?.theme != 'custom-bright' &&
+                  config?.theme != 'custom-dark'
+                }
+              />
             </div>
 
             <Typography variant="section-title">

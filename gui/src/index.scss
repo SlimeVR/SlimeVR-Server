@@ -343,6 +343,37 @@ body {
   --default-color: 255, 255, 255;
 }
 
+:root[data-theme='custom-bright'] {
+  --background-10: 255, 255, 255;
+  --background-90: 0, 0, 0;
+
+  --success: 139, 223, 35;
+  --warning: 255, 187, 62;
+  --critical: 223, 54, 84;
+  --special: 230, 0, 230;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='custom-dark'] {
+  --background-10: 255, 255, 255;
+  --background-20: 230, 230, 230;
+  --background-30: 200, 200, 200;
+  --background-40: 120, 120, 120;
+  --background-50: 90, 90, 90;
+  --background-60: 60, 60, 60;
+  --background-70: 30, 30, 30;
+  --background-80: 15, 15, 15;
+  --background-90: 0, 0, 0;
+
+  --success: 139, 223, 35;
+  --warning: 255, 187, 62;
+  --critical: 223, 54, 84;
+  --special: 230, 0, 230;
+
+  --default-color: 255, 255, 255;
+}
+
 #root {
   height: 100%;
 }

@@ -295,6 +295,8 @@ const config = {
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
         'asexual-flag': `linear-gradient(135deg, ${colors['asexual'][100]} 30%, ${colors['asexual'][200]} 30% 50%, ${colors['asexual'][300]} 50% 70%, ${colors['asexual'][400]} 70% 100%)`,
         'snep': `linear-gradient(135deg, ${colors['snep'][100]} 40%, ${colors['snep'][200]} 40% 70%, ${colors['snep'][300]} 70% 100%)`,
+        'custom-bright': `linear-gradient(135deg, ${colors['red-accent'][100]} 30%, ${colors['orange-accent'][100]} 30% 43.3%, ${colors['yellow-accent'][100]} 43.3% 56.7%, ${colors['green-accent'][100]} 56.7% 70%, ${colors['blue-gray'][300]} 70% 100%)`,
+        'custom-dark': `linear-gradient(135deg, ${colors['red-accent'][700]} 30%, ${colors['orange-accent'][700]} 30% 43.3%, ${colors['yellow-accent'][700]} 43.3% 56.7%, ${colors['green-accent'][700]} 56.7% 70%, ${colors['blue-gray'][700]} 70% 100%)`,
       },
       animation: {
         'spin-ccw': 'spin-ccw 1s linear infinite',
