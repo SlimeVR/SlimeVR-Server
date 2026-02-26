@@ -95,6 +95,7 @@ class HIDCommon {
 					allowMounting = true,
 					usesTimeout = false,
 					magStatus = magStatus,
+					usesSleep = true,
 				)
 				// usesTimeout false because HID trackers aren't "Disconnected" unless receiver is physically removed probably
 				// TODO: Could tracker maybe use "Timed out" status without marking as disconnecting?
@@ -136,6 +137,13 @@ class HIDCommon {
 			val tracker: Tracker? = device.getTracker(trackerId)
 			if (tracker == null) { // not registered yet
 				return
+			}
+
+			if (tracker.status == TrackerStatus.TIMED_OUT) {
+				// If tracker was previously sleeping/shutdown, reset the sleep time and status
+				// If there is some other error, the relevant packet should set it a little later
+				tracker.setSleepTime(MAX_VALUE)
+				tracker.status = TrackerStatus.OK
 			}
 
 			// Packet data
@@ -272,10 +280,11 @@ class HIDCommon {
 			}
 			if (timeout != null && timeout != 0) {
 				// 0 or 65535: disable timeout
-				// need to schedule some time in the future to change status! this should also persist between receiver disconnect
-				// so it cannot rely only on status
-				// maybe set a time in the future that defaults to int max, when status is being read, then send appropriate status
-				// also, since trackers are always sending data, implement a basic timeout for this too?
+				if (timeout == 65535) {
+					tracker.setSleepTime(MAX_VALUE)
+				} else {
+					tracker.setSleepTime(System.currentTimeMillis() + timeout)
+				}
 			}
 			if (batt != null) {
 				tracker.batteryLevel = if (batt == 128) 1f else (batt and 127).toFloat()
@@ -387,6 +396,8 @@ class HIDCommon {
 			}
 			if (packetType == 1 || packetType == 2 || packetType == 4 || packetType == 7) {
 				tracker.dataTick() // only data tick if there is rotation data
+			} else {
+				tracker.heartbeat() // else, something received
 			}
 		}
 	}
