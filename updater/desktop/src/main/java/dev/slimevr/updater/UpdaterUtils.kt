@@ -66,17 +66,7 @@ fun downloadFile(
 					socketTimeoutMillis = timeout
 				}
 				onDownload { bytesSentTotal, contentLength ->
-					val progress = (
-						bytesSentTotal.toFloat() /
-							(
-								(
-									(
-										contentLength?.toFloat()
-											?: 1f
-										)
-									)
-								)
-						)
+					val progress = bytesSentTotal.toFloat() / (contentLength?.toFloat() ?: 1f)
 					onProgress(progress * 100)
 				}
 			},
