@@ -302,8 +302,7 @@ class HIDCommon {
 					// 0: reset, 1: single press, 2: double press, 3: N/A (held, not available on shared button)
 					// TODO: For now, just send a tap for any action
 					val action: Int = button shr 0 and 3
-					if (action != 0)
-					{
+					if (action != 0) {
 						VRServer.instance.tapSetupHandler.sendTap(tracker)
 					}
 				}
