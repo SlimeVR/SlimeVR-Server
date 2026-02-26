@@ -12,7 +12,6 @@ import com.jme3.math.FastMath
 import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import dev.slimevr.config.VRCOSCConfig
-import dev.slimevr.protocol.rpc.setup.RPCUtil
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
@@ -26,6 +25,8 @@ import io.github.axisangles.ktmath.Vector3
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.net.NetworkInterface
+import kotlin.collections.iterator
 
 private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
 
@@ -37,8 +38,6 @@ class VRCOSCHandler(
 	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
-	private val localIp = RPCUtil.getLocalIp()
-	private val loopbackIp = InetAddress.getLoopbackAddress().hostAddress
 	private val vrsystemTrackersAddresses = arrayOf(
 		"/tracking/vrsystem/head/pose",
 		"/tracking/vrsystem/leftwrist/pose",
@@ -60,9 +59,9 @@ class VRCOSCHandler(
 	private var oscPortIn = 0
 	private var oscPortOut = 0
 	private var oscIp: InetAddress? = null
-	private var oscQuerySenderState = false
 	private var oscQueryPortOut = 0
-	private var oscQueryIp: String? = null
+	private var oscQueryIp: InetAddress? = null
+	private var oscQueryIpMatch = false
 	private var timeAtLastError: Long = 0
 	private var receivingPositionOffset = Vector3.NULL
 	private var postReceivingPositionOffset = Vector3.NULL
@@ -94,13 +93,15 @@ class VRCOSCHandler(
 		updateOscReceiver(config.portIn, vrsystemTrackersAddresses + oscTrackersAddresses)
 		updateOscSender(config.portOut, config.address)
 
-		if (vrcOscQueryHandler == null && config.enabled && config.oscqueryEnabled) {
-			try {
-				vrcOscQueryHandler = VRCOSCQueryHandler(this)
-			} catch (e: Throwable) {
-				LogManager.severe("Unable to initialize OSCQuery: $e", e)
+		if (config.enabled && config.oscqueryEnabled) {
+			if (vrcOscQueryHandler == null) {
+				try {
+					vrcOscQueryHandler = VRCOSCQueryHandler(server, this)
+				} catch (e: Throwable) {
+					LogManager.severe("Unable to initialize OSCQuery: $e", e)
+				}
 			}
-		} else if (vrcOscQueryHandler != null && (!config.enabled || !config.oscqueryEnabled)) {
+		} else {
 			vrcOscQueryHandler?.close()
 			vrcOscQueryHandler = null
 		}
@@ -110,122 +111,216 @@ class VRCOSCHandler(
 		}
 	}
 
+	fun ipIsLocal(a: InetAddress): Boolean {
+		if (a.isLoopbackAddress) {
+			return true
+		}
+		for (netInt in NetworkInterface.getNetworkInterfaces()) {
+			if (netInt.isUp && !netInt.isLoopback && !netInt.isVirtual) {
+				for (netAddr in netInt.interfaceAddresses) {
+					if (a == netAddr.address || a.address.contentEquals(netAddr.address.address) || a.hostName == netAddr.address.hostName) {
+						return true
+					}
+				}
+			}
+		}
+		return false
+	}
+
+	fun ipEquals(a: InetAddress?, b: InetAddress?): Boolean = a == b ||
+		a != null &&
+		b != null &&
+		(
+			a.address.contentEquals(b.address) ||
+				a.hostName == b.hostName ||
+				(ipIsLocal(a) && ipIsLocal(b))
+			)
+
 	/**
 	 * Adds an OSC Sender from OSCQuery
 	 */
 	fun addOSCQuerySender(oscPortOut: Int, oscIP: String) {
-		val addr = InetAddress.getByName(oscIP)
-		oscQuerySenderState = true
-		oscQueryIp = oscIP
-		oscQueryPortOut = oscPortOut
-		if (oscPortOut != portOut || (oscIP != address.hostName && !(oscIP == localIp && address.hostName == loopbackIp))) {
-			try {
-				oscQuerySender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
-				oscQuerySender?.connect()
-				LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
-			} catch (e: IOException) {
-				LogManager.severe("[VRCOSCHandler] Error connecting to port $oscPortOut at the address $oscIP: $e")
+		if (!config.enabled) {
+			closeOscQuerySender()
+			return
+		}
+
+		try {
+			// If we already have the best matching client
+			if (oscQuerySender != null && oscQueryIpMatch) {
+				return
 			}
+
+			val addr = InetAddress.getByName(oscIP)
+			val ipMatch = ipEquals(addr, this.oscIp)
+
+			// If we already have an OSC sender
+			if (oscQuerySender != null) {
+				val portMatch = oscPortOut == this.oscPortOut
+				// Original IP will be matching because of the check done earlier
+				val origPortMatch = oscQueryPortOut == this.oscPortOut
+
+				// If the IP doesn't match and (the port doesn't match or the original
+				//  port did match), ignore this client
+				if (!ipMatch && (!portMatch || origPortMatch)) {
+					return
+				}
+
+				// If this is the same address as what we're already sending to, keep
+				//  using the same OSC sender
+				if (ipEquals(addr, oscQueryIp)) {
+					return
+				}
+
+				// So if the IP matches or the port matches and the original one didn't,
+				//  we will select this new address for OSC
+			}
+
+			closeOscQuerySender()
+
+			if (ipMatch) {
+				LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP (matches configured address)")
+			} else {
+				LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
+			}
+			oscQuerySender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
+			oscQueryIp = addr
+			oscQueryIpMatch = ipMatch
+			oscQueryPortOut = oscPortOut
+
+			// Avoids additional security checks, but not necessary for UDP, therefore
+			//  isConnected doesn't really indicate that we are actively "connected"
+			oscQuerySender?.connect()
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error connecting OSCQuery sender to port $oscPortOut at the address $oscIP: $e")
+			closeOscQuerySender()
 		}
 	}
 
 	/**
-	 * Close/remove the osc query sender
+	 * Close/remove the OSC sender
 	 */
-	fun closeOscQuerySender(newState: Boolean) {
-		oscQuerySender?.let {
-			try {
-				it.close()
-				oscQuerySender = null
-				oscQuerySenderState = newState
-			} catch (e: IOException) {
-				LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
-			}
+	fun closeOscSender() {
+		try {
+			oscSender?.close()
+			oscSender = null
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
 		}
 	}
 
-	override fun updateOscReceiver(portIn: Int, args: Array<String>) {
-		// Stop listening
-		val wasListening = oscReceiver != null && oscReceiver!!.isListening
-		if (wasListening) {
-			oscReceiver!!.stopListening()
+	/**
+	 * Close/remove the OSCQuery sender
+	 */
+	fun closeOscQuerySender() {
+		try {
+			oscQuerySender?.close()
+			oscQuerySender = null
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error closing the OSCQuery sender: $e")
+		}
+	}
+
+	/**
+	 * Close/remove the OSC receiver
+	 */
+	fun closeOscReceiver() {
+		try {
+			oscReceiver?.close()
+			oscReceiver = null
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error closing the OSC receiver: $e")
+		}
+	}
+
+	override fun updateOscReceiver(portIn: Int, oscAddresses: Array<String>) {
+		if (!config.enabled) {
+			closeOscReceiver()
+			return
 		}
 
-		if (config.enabled) {
-			// Instantiates the OSC receiver
-			try {
-				oscReceiver = OSCPortIn(portIn)
-				if (oscPortIn != portIn || !wasListening) {
-					LogManager.info("[VRCOSCHandler] Listening to port $portIn")
-				}
-				oscPortIn = portIn
-				vrcOscQueryHandler?.updateOSCQuery(portIn.toUShort())
-			} catch (e: IOException) {
-				LogManager
-					.severe(
-						"[VRCOSCHandler] Error listening to the port $portIn: $e",
-					)
+		// If already configured and listening, nothing new needs to be configured
+		if (oscPortIn == portIn && oscReceiver?.isListening == true) return
+
+		try {
+			closeOscReceiver()
+
+			// Instantiate the new OSC receiver
+			LogManager.info("[VRCOSCHandler] Listening to port $portIn")
+			val newOscReceiver = OSCPortIn(portIn)
+			oscReceiver = newOscReceiver
+			oscPortIn = portIn
+
+			val listener = OSCMessageListener { event: OSCMessageEvent ->
+				handleReceivedMessage(event)
+			}
+			for (address in oscAddresses) {
+				newOscReceiver.dispatcher.addListener(
+					OSCPatternAddressMessageSelector(address),
+					listener,
+				)
 			}
 
-			// Starts listening for VRC or OSCTrackers messages
-			oscReceiver?.let {
-				val listener = OSCMessageListener { event: OSCMessageEvent ->
-					handleReceivedMessage(event)
-				}
-				for (address in args) {
-					it.dispatcher.addListener(
-						OSCPatternAddressMessageSelector(address),
-						listener,
-					)
-				}
-				it.startListening()
-			}
+			newOscReceiver.startListening()
+
+			// Advertise our new receiving port over OSCQuery
+			vrcOscQueryHandler?.updateOSCQuery(portIn.toUShort())
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error listening to the port $portIn: $e")
+			closeOscReceiver()
 		}
 	}
 
 	override fun updateOscSender(portOut: Int, ip: String) {
-		// Stop sending
-		val wasConnected = oscSender != null && oscSender!!.isConnected
-		if (wasConnected) {
-			try {
-				oscSender!!.close()
-			} catch (e: IOException) {
-				LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
-			}
+		if (!config.enabled) {
+			closeOscSender()
+			return
 		}
 
-		if (config.enabled) {
-			// Instantiate the OSC sender
-			try {
-				val addr = InetAddress.getByName(ip)
-				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
-				if (oscPortOut != portOut && oscIp != addr || !wasConnected) {
-					LogManager.info("[VRCOSCHandler] Sending to port $portOut at address $ip")
+		try {
+			// If already configured, nothing new needs to be configured
+			val addr = InetAddress.getByName(ip)
+			val resetQuery = if (ipEquals(addr, oscIp) && oscPortOut == portOut) {
+				// Technically we are fine if `isConnected` is false, but we can just
+				//  assume we're always gonna be connected
+				if (oscSender?.isConnected == true) {
+					return
 				}
-				oscPortOut = portOut
-				oscIp = addr
-				oscSender?.connect()
-			} catch (e: IOException) {
-				LogManager
-					.severe(
-						"[VRCOSCHandler] Error connecting to port $portOut at the address $ip: $e",
-					)
-				return
+				false
+			} else {
+				// If the new IP doesn't match the current OSCQuery IP, close the
+				//  OSCQuery sender after updating the config variables
+				!ipEquals(addr, oscQueryIp)
 			}
 
-			if (oscQueryPortOut == portOut && (oscQueryIp == ip || (oscQueryIp == localIp && ip == loopbackIp))) {
-				if (oscQuerySender != null) {
-					// Close the oscQuerySender if it has the same port/ip
-					closeOscQuerySender(true)
-				}
-			} else if (oscQuerySender == null && oscQuerySenderState) {
-				// Instantiate the oscQuerySender if it could not be instantiated.
-				addOSCQuerySender(oscQueryPortOut, oscQueryIp!!)
+			closeOscSender()
+
+			LogManager.info("[VRCOSCHandler] Sending to port $portOut at address $ip")
+			val newOscSender = OSCPortOut(InetSocketAddress(addr, portOut))
+			oscSender = newOscSender
+			oscIp = addr
+			oscPortOut = portOut
+
+			// Avoids additional security checks, but not necessary for UDP, therefore
+			//  isConnected doesn't really indicate that we are actively "connected"
+			newOscSender.connect()
+
+			if (resetQuery) {
+				closeOscQuerySender()
 			}
+		} catch (e: IOException) {
+			LogManager
+				.severe(
+					"[VRCOSCHandler] Error connecting to port $portOut at the address $ip: $e",
+				)
+			closeOscSender()
+			return
 		}
 	}
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
+		// TODO: Track the IP who sent this, we can list them as a send target and
+		//  resolve the VRChat IP/port without scanning OSCQuery
 		if (vrsystemTrackersAddresses.contains(event.message.address)) {
 			// Receiving Head and Wrist pose data thanks to OSCQuery
 			// Create device if it doesn't exist
@@ -407,6 +502,10 @@ class VRCOSCHandler(
 	}
 
 	override fun update() {
+		if (!config.enabled) {
+			return
+		}
+
 		// Gets timer from vrServer
 		if (fpsTimer == null) {
 			fpsTimer = VRServer.instance.fpsTimer
@@ -420,7 +519,7 @@ class VRCOSCHandler(
 		val currentTime = System.currentTimeMillis().toFloat()
 
 		// Send OSC data
-		if (oscSender != null && oscSender!!.isConnected) {
+		if (oscSender != null || oscQuerySender != null) {
 			// Create new bundle
 			val bundle = OSCBundle()
 
@@ -482,8 +581,12 @@ class VRCOSCHandler(
 			}
 
 			try {
-				oscSender?.send(bundle)
-				oscQuerySender?.send(bundle)
+				// Prioritize OSCQuery since we can't validate oscSender
+				if (oscQuerySender != null) {
+					oscQuerySender?.send(bundle)
+				} else {
+					oscSender?.send(bundle)
+				}
 			} catch (e: IOException) {
 				// Avoid spamming AsynchronousCloseException too many
 				// times per second
@@ -525,7 +628,7 @@ class VRCOSCHandler(
 	 * Sends the expected HMD rotation upon reset to align the trackers in VRC
 	 */
 	fun yawAlign(headRot: Quaternion) {
-		if (oscSender != null && oscSender!!.isConnected) {
+		if (oscSender != null || oscQuerySender != null) {
 			val (_, _, y, _) = headRot.toEulerAngles(EulerOrder.YXZ)
 			oscArgs.clear()
 			oscArgs.add(0f)
@@ -536,8 +639,12 @@ class VRCOSCHandler(
 				oscArgs,
 			)
 			try {
-				oscSender?.send(oscMessage)
-				oscQuerySender?.send(oscMessage)
+				// Prioritize OSCQuery since we can't validate oscSender
+				if (oscQuerySender != null) {
+					oscQuerySender?.send(oscMessage)
+				} else {
+					oscSender?.send(oscMessage)
+				}
 			} catch (e: IOException) {
 				LogManager
 					.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
