@@ -5,7 +5,6 @@ import com.melloware.jintellitype.JIntellitype
 import dev.slimevr.config.KeybindingsConfig
 import dev.slimevr.tracking.trackers.TrackerUtils
 import io.eiren.util.OperatingSystem
-import io.eiren.util.OperatingSystem.Companion.currentPlatform
 import io.eiren.util.ann.AWTThread
 import io.eiren.util.logging.LogManager
 
@@ -13,7 +12,8 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 	val config: KeybindingsConfig = server.configManager.vrConfig.keybindings
 
 	init {
-		if (currentPlatform != OperatingSystem.WINDOWS) {
+
+		if (OperatingSystem.Companion.currentPlatform != OperatingSystem.WINDOWS) {
 			LogManager
 				.info(
 					"[Keybinding] Currently only supported on Windows. Keybindings will be disabled.",
@@ -60,18 +60,24 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 	@AWTThread
 	override fun onHotKey(identifier: Int) {
 		when (identifier) {
-			FULL_RESET -> server.scheduleResetTrackersFull(RESET_SOURCE_NAME, config.fullResetDelay)
+			FULL_RESET -> server.scheduleResetTrackersFull(
+				RESET_SOURCE_NAME,
+				(config.fullResetDelay * 1000).toLong()
+			)
 
-			YAW_RESET -> server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, config.yawResetDelay)
+			YAW_RESET -> server.scheduleResetTrackersYaw(
+				RESET_SOURCE_NAME,
+				(config.yawResetDelay * 1000).toLong()
+			)
 
 			MOUNTING_RESET -> server.scheduleResetTrackersMounting(
 				RESET_SOURCE_NAME,
-				config.mountingResetDelay,
+			(config.mountingResetDelay * 1000).toLong(),
 			)
 
 			FEET_MOUNTING_RESET -> server.scheduleResetTrackersMounting(
 				RESET_SOURCE_NAME,
-				config.feetMountingResetDelay,
+				(config.feetMountingResetDelay * 1000).toLong(),
 				TrackerUtils.feetsBodyParts,
 			)
 
@@ -79,9 +85,16 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 				server
 					.scheduleTogglePauseTracking(
 						RESET_SOURCE_NAME,
-						config.pauseTrackingDelay,
+						(config.pauseTrackingDelay * 1000).toLong(),
 					)
 		}
+	}
+
+	enum class KeybindName {
+		FULL_RESET,
+		YAW_RESET,
+		MOUNTING_RESET,
+		PAUSE_TRACKING
 	}
 
 	companion object {
@@ -93,4 +106,5 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 		private const val FEET_MOUNTING_RESET = 4
 		private const val PAUSE_TRACKING = 5
 	}
+
 }
