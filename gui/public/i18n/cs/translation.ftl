@@ -651,6 +651,8 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     Aby jsme mohli poskytnout nejlepší zážitek uživatelům, schromažďujeme proto anonymizované zprávy o chybých, metriky výkon a informace o operačním systém. To nám pomáhá zjištovat chyby a problémy s SlimeVR. Tyto matriky jsou schromažďovány prostřednictvím Sentry.io.
 settings-interface-behavior-error_tracking-label = Odeslat chyby vývojářům
+settings-interface-behavior-bvh_directory = Cesta pro uložení BVH záznamů
+settings-interface-behavior-bvh_directory-label = Lokace pro BVH nahrávky
 
 ## Serial settings
 
@@ -675,6 +677,7 @@ settings-serial-get_wifi_scan = Skenovat WiFi
 settings-serial-file_type = Prostý text
 settings-serial-save_logs = Uložit jako soubor
 settings-serial-send_command = Odeslat
+settings-serial-send_command-placeholder = Příkaz...
 settings-serial-send_command-warning-ok = Vím, co dělám!
 settings-serial-send_command-warning-cancel = Zrušit
 
