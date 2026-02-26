@@ -10,7 +10,7 @@
 websocket-connecting = Připojování k serveru
 websocket-connection_lost = Ztraceno spojení se serverem. Pokouším se znovu připojit...
 websocket-connection_lost-desc = Vypadá to že SlimeVR server spadl. Zkontrolujte záznamy protokolů a restartuje aplikaci
-websocket-timedout = Nelze se připojit k serveru
+websocket-timedout = Nepodařilo se připojit k serveru
 websocket-timedout-desc = Vypadá to že buď vypršel časový limit SlimeVR serveru, a nebo došlo k zhroucení. Zkontrolujte záznamy protokolů a restartuje aplikaci
 websocket-error-close = Ukončit SlimeVR
 websocket-error-logs = Otevření složku s záznamy protokolů
@@ -144,6 +144,7 @@ reset-mounting-feet = Obnovit pozice nasazení nohou
 reset-mounting-fingers = Obnovit pozice nasazení prstů
 reset-yaw = Rychlý reset
 reset-error-no_feet_tracker = Žádný tracker nohou nebyl přiřazen
+reset-error-no_fingers_tracker = Žádné trackery prstů nebyly přiřazeny
 
 ## Serial detection stuff
 
@@ -509,7 +510,7 @@ settings-general-fk_settings = Nastavení trackování
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
-settings-general-fk_settings-leg_tweak-floor_clip = Podlahovej clip
+settings-general-fk_settings-leg_tweak-floor_clip = Clip podlahy
 # Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
