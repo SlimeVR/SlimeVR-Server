@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.5
 Categories=Game;GTK;
-Exec={{exec}}
+Exec=/usr/bin/env WEBKIT_DISABLE_DMABUF_RENDERER=1 {{exec}}
 Icon={{icon}}
 
 Name=SlimeVR

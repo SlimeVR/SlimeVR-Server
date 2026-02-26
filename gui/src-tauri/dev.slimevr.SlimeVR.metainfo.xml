@@ -53,7 +53,6 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   </description>
 
   <launchable type="desktop-id">dev.slimevr.SlimeVR.desktop</launchable>
-  <launchable type="desktop-id">safe-mode.dev.slimevr.SlimeVR.desktop</launchable>
   <screenshots>
     <screenshot type="default" xml:lang="en">
       <caption>The onboarding for the GUI</caption>
