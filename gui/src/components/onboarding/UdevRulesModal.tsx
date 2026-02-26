@@ -17,25 +17,29 @@ export function UdevRulesModal() {
   const [udevInstalledResponse, setUdevInstalledResponse] = useState(true);
   const [showUdevWarning, setShowUdevWarning] = useState(false);
   const [dontShowThisSession, setDontShowThisSession] = useState(false);
+  const [exeDir, setExeDir] = useState('');
 
 
   useEffect(() => {
     if (electron.isElectron) {
-      const exeDir = getWorkingDir();
-      const workDir = `${exeDir}/69-slimevr-devices.rules`;
-      console.log(workDir);
-      setUdevContent(`cat ${workDir} | sudo tee /etc/udev/rules.d/69-slimevr-devices.rules >/dev.null`);
+      getWorkingDir().then((dir) => {
+        setExeDir(dir);
+        const rulesDir = `${exeDir}/69-slimevr-devices.rules`;
+        console.log(rulesDir);
+        setUdevContent(`cat ${rulesDir} | sudo tee /etc/udev/rules.d/69-slimevr-devices.rules >/dev/null`);
+      });
     }
-  }, []);
+  }, [exeDir]);
 
   const getWorkingDir = async () => {
     if (!electron.isElectron) throw 'invalid state - no electron';
     try {
       const res = electron.api.getInstallDir();
-      return res.then(value =>  {return value});
+      return await res;
     } catch (err) {
       error('Failed to open config folder:', err);
     }
+    return '';
   };
 
   useEffect(() => {
