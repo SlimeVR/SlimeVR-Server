@@ -13,7 +13,9 @@ export function TrackerBattery({
   textColor = 'primary',
 }: {
   /**
-   * a [0, 1] value range is expected
+   * Normally [0, 1] value range
+   * Values >1 indicate fully charged
+   * Values <0 or >2 (Byte was cast to UByte, so -1 -> 255) also indicate 0%
    */
   value: number;
   voltage?: number | null;
@@ -36,11 +38,13 @@ export function TrackerBattery({
   const debug = config?.debug || config?.devSettings.moreInfo;
   const showVoltage = moreInfo && voltage && debug;
 
+  const pct = value > 2 ? 0 : Math.min(Math.max(value, 0), 1);
+
   return (
     <Tooltip
       disabled={charging || !runtime || debug}
       preferedDirection="left"
-      content=<Typography>{percentFormatter.format(value)}</Typography>
+      content=<Typography>{percentFormatter.format(pct)}</Typography>
     >
       <div className="flex gap-2">
         <div className="flex flex-col justify-around">
@@ -61,7 +65,7 @@ export function TrackerBattery({
             )}
             {!charging && (!runtime || debug) && (
               <Typography color={textColor}>
-                {percentFormatter.format(value)}
+                {percentFormatter.format(pct)}
               </Typography>
             )}
             {showVoltage && (
