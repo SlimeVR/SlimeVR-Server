@@ -22,6 +22,7 @@ import {
   findSystemJRE,
   getGuiDataFolder,
   getLogsFolder,
+  getExeFolder,
   getServerDataFolder,
   getWindowStateFile,
 } from './paths';
@@ -171,6 +172,8 @@ handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
       return getGuiDataFolder();
     case 'logs':
       return getLogsFolder();
+    case 'exe':
+      return getExeFolder();
   }
 });
 
@@ -339,7 +342,7 @@ const spawnServer = async () => {
     logger.info({ skipServerIfRunning: options.skipServerIfRunning }, 'Server alredy running, skipping');
     return;
   }
-  
+
   const serverJar = findServerJar();
   if (!serverJar) {
     logger.info('server jar not found, skipping');

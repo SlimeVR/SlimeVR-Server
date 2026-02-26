@@ -48,6 +48,11 @@ export const getLogsFolder = () => {
   return join(getGuiDataFolder(), 'logs');
 };
 
+export const getExeFolder = () => {
+  console.log(app.getPath('exe'));
+  return join(app.getPath('exe'));
+}
+
 export const getWindowStateFile = () =>
   join(getServerDataFolder(), '.window-state.json');
 

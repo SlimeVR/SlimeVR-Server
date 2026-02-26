@@ -7,28 +7,39 @@ import { useElectron } from '@/hooks/electron';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { RpcMessage, InstalledInfoResponseT } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
-import { Localized } from '@fluent/react';
+import { error } from '@/utils/logging';
 
 export function UdevRulesModal() {
   const { config } = useConfig();
-  const { app } = require('electron')
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const electron = useElectron();
   const [udevContent, setUdevContent] = useState('');
   const [udevInstalledResponse, setUdevInstalledResponse] = useState(true);
   const [showUdevWarning, setShowUdevWarning] = useState(false);
-  const [dontShowThisSession, setDontShowThisSession] = useState(false)
+  const [dontShowThisSession, setDontShowThisSession] = useState(false);
+
 
   useEffect(() => {
     if (electron.isElectron) {
-      const workDir = `${app.getPath('exe')}/69-slimevr-devices.rules`;
+      const exeDir = getWorkingDir();
+      const workDir = `${exeDir}/69-slimevr-devices.rules`;
       console.log(workDir);
       setUdevContent(`cat ${workDir} | sudo tee /etc/udev/rules.d/69-slimevr-devices.rules >/dev.null`);
     }
   }, []);
 
+  const getWorkingDir = async () => {
+    if (!electron.isElectron) throw 'invalid state - no electron';
+    try {
+      const res = electron.api.getInstallDir();
+      return res.then(value =>  {return value});
+    } catch (err) {
+      error('Failed to open config folder:', err);
+    }
+  };
+
   useEffect(() => {
-    if (!config) throw "Invalid state!"
+    if (!config) throw 'Invalid state!'
     if (electron.isElectron) {
       console.log(electron.data().os.type === 'linux' && !udevInstalledResponse)
       if (electron.data().os.type === 'linux' && !udevInstalledResponse && !config.dontShowUdevModal && !dontShowThisSession) {
@@ -64,7 +75,7 @@ export function UdevRulesModal() {
   }
 
   const setConfig = (checked:boolean) => {
-    if (!config) throw "invalid state!"
+    if (!config) throw 'invalid state!'
     config.dontShowUdevModal = checked
   }
 
