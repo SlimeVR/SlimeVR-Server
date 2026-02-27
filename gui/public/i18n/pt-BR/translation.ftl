@@ -532,7 +532,7 @@ settings-general-steamvr-trackers-right_elbow = Cotovelo direito
 settings-general-steamvr-trackers-left_hand = Mão esquerda
 settings-general-steamvr-trackers-right_hand = Mão direita
 settings-general-steamvr-trackers-tracker_toggling = Atribuição automática de trackers
-settings-general-steamvr-trackers-tracker_toggling-description = Liga ou desliga automaticamente os trackers SteamVR dependendo das suas configurações atuais dos trackers
+settings-general-steamvr-trackers-tracker_toggling-description = Liga ou desliga automaticamente os trackers do SteamVR com base nas atribuições atuais dos trackers.
 settings-general-steamvr-trackers-tracker_toggling-label = Atribuição automática de trackers
 settings-general-steamvr-trackers-hands-warning =
     <b>Aviso:</b> os trackers de mão substituirão seus controles.
@@ -633,7 +633,7 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = Pé plantado gir
 settings-general-fk_settings-leg_fk = Tracking de pernas
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forçar a calibração de montagem dos pés durante a calibração de montagem do corpo.
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forçar a calibração de montagem dos pés
-settings-general-fk_settings-enforce_joint_constraints = Limites Esqueléticos
+settings-general-fk_settings-enforce_joint_constraints = Limites esqueléticos
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Impor limites
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que as articulações rotacionem além de seu limite
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Corrigir com limites
@@ -699,7 +699,7 @@ settings-general-gesture_control-yawResetTaps = Toques para executar "Redefinir 
 settings-general-gesture_control-fullResetEnabled = Ativar toque para executar "Redefinir Tudo"
 settings-general-gesture_control-fullResetDelay = Atraso do "Redefinir Tudo"
 settings-general-gesture_control-fullResetTaps = Toques para executar "Redefinir Tudo"
-settings-general-gesture_control-mountingResetEnabled = Ativar toque para realizar a calibração de montagem
+settings-general-gesture_control-mountingResetEnabled = Ativar toque para realizar a "Calibração de Montagem"
 settings-general-gesture_control-mountingResetDelay = Atraso da calibração da montagem
 settings-general-gesture_control-mountingResetTaps = Toques para calibração de montagem
 # The number of trackers that can have higher acceleration before a tap is rejected
