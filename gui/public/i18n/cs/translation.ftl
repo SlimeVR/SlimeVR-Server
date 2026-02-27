@@ -398,6 +398,7 @@ settings-sidebar-utils = Nástroje
 settings-sidebar-serial = Sériová konzole
 settings-sidebar-appearance = Vzhled
 settings-sidebar-home = Domovská obrazovka
+settings-sidebar-checklist = Přehled trackování
 settings-sidebar-notifications = Notifikace
 settings-sidebar-behavior = Chování
 settings-sidebar-firmware-tool = Nástroj pro DIY firmware
@@ -524,6 +525,7 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Připnutí k pod
 settings-general-fk_settings-leg_tweak-toe_snap-description = Přichycení špiček se pokouší odhadnout rotaci vašich chodidel v případě, že nepoužíváte trackery chodidel.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Narovnání chodidla při dotyku narovnává chodidla tak, aby byla rovnoběžně se zemí.
 settings-general-fk_settings-leg_fk = Sledování nohou
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Vynutit kalibraci nasazení pro trackery nohou
 settings-general-fk_settings-enforce_joint_constraints = Limity kostry
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Prosazování omezení
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zabránit rotaci kloubům za jejich limit
@@ -655,6 +657,7 @@ settings-interface-behavior-error_tracking-description_v2 =
     Aby jsme mohli poskytnout nejlepší zážitek uživatelům, schromažďujeme proto anonymizované zprávy o chybých, metriky výkon a informace o operačním systém. To nám pomáhá zjištovat chyby a problémy s SlimeVR. Tyto matriky jsou schromažďovány prostřednictvím Sentry.io.
 settings-interface-behavior-error_tracking-label = Odeslat chyby vývojářům
 settings-interface-behavior-bvh_directory = Cesta pro uložení BVH záznamů
+settings-interface-behavior-bvh_directory-description = Vyberte cestu k uložení záznamů BHV. namísto toho, abyste pokaždé vybírali, kam je uložit.
 settings-interface-behavior-bvh_directory-label = Lokace pro BVH nahrávky
 
 ## Serial settings
@@ -666,7 +669,7 @@ settings-serial-description =
     Může být užitečné, pokud potřebujete zjistit, zda se firmware chová špatně.
 settings-serial-connection_lost = Ztráta připojení k seriálu, Připojení se obnovuje...
 settings-serial-reboot = Restartovat
-settings-serial-factory_reset = Obnovení továrního nastavení
+settings-serial-factory_reset = Obnovení do továrního nastavení
 # This cares about multilines
 # <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
@@ -811,6 +814,8 @@ settings-utils-advanced-open_logs-label = Otevřít složku
 
 ## Home Screen
 
+settings-home-list-layout = Uspořádání seznamu trackerů
+settings-home-list-layout-desc = Vyberte jedno z možných uspořádání domovské obrazovky.
 settings-home-list-layout-grid = Mřížka
 settings-home-list-layout-table = Tabulka
 
@@ -1036,6 +1041,7 @@ onboarding-automatic_mounting-return-home = Hotovo
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Jít zpět na Škálování Proporcí
 onboarding-manual_proportions-title = Manuální proporce těla
 onboarding-manual_proportions-fine_tuning_button = Automatické jemné doladění proporcí
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Pro použití automatického jemného lazení, prosím připojte VR headset
@@ -1137,13 +1143,17 @@ onboarding-automatic_proportions-smol_warning-cancel = Jít zpět
 ## User height calibration
 
 onboarding-user_height-title = Jaká je vaše výška?
+onboarding-user_height-calculate = Vypočítejte mou výšku automaticky
 onboarding-user_height-next_step = Uložit a pokračovat
 onboarding-user_height-manual-proportions = Manuální Proporce
 onboarding-user_height-calibration-title = Průběh kalibrace
 onboarding-user_height-calibration-WAITING_FOR_RISE = Postavte se zpátky
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Ujistěte se, že je vaše hlava ve vodorovné pozici
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Nedívejte se na podlahu
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Nedívej se příliš vysoko
+onboarding-user_height-calibration-RECORDING_HEIGHT = Znovu se postavte a nehýbejte se!
 onboarding-user_height-calibration-DONE = Úspěch!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Časový limit kalibrace vypršel, zkuste to znovu.
 onboarding-user_height-calibration-error = Kalibrace selhala
 
 ## Stay Aligned setup
@@ -1215,12 +1225,18 @@ firmware_tool = Nástroj pro DIY firmwere
 firmware_tool-description = Umožní vám konfigurovat a flashovat vaše DIY trackery
 firmware_tool-not_available = Jejda, nástroj pro firmware není v momentální chvíli k dispozici, Vraťte se později!
 firmware_tool-not_compatible = Nástroj pro firmware není kompatibilní s touhle verzí serveru. Aktualizujte prosím svůj server.
+firmware_tool-select_source = Vyberte firmware k flashování
+firmware_tool-select_source-board_type = Typ desky
 firmware_tool-select_source-firmware = Zdrojový kód firmwaru
 firmware_tool-select_source-version = Verze firmwaru
 firmware_tool-select_source-official = Oficiální
 firmware_tool-select_source-dev = Vývojářské
+firmware_tool-board_defaults = Nekonfigurujte vaší desku
 firmware_tool-board_defaults-add = Přidat
 firmware_tool-board_defaults-reset = Restartovat do výchozího nastavení
+firmware_tool-board_defaults-error-required = Povinné pole
+firmware_tool-board_defaults-error-format = Neplatný formát
+firmware_tool-board_defaults-error-format-number = Není číslo
 firmware_tool-flash_method_step = Metoda flashování
 firmware_tool-flash_method_step-description = Prosím zvolte metodu flashování, kterou chcete použít
 firmware_tool-flash_method_step-ota-v2 =
@@ -1237,8 +1253,10 @@ firmware_tool-flashbtn_step-board_OTHER =
     Ve většině případů to znamená stisknutí boot tlačítka na desce trakeru před tím než začne proces flashování.
     Pokud procesu flashování vyprší čas hned na začátku flashování, to nejspíš znamená že tracker nebyl v řežimu bootloaderu
     Podívejte se prosím na instrukce procesu flashování pro desku vašeho zařízení, aby jste zjistili jak se dostat do režimu bootloaderu
+firmware_tool-flash_method_ota-title = Flashování přes Wi-Fi
 firmware_tool-flash_method_ota-devices = Byla detekována zařízení s OTA:
 firmware_tool-flash_method_ota-no_devices = Nebyly nalezeny žádné zákadní desky které by mohly být aktualizované pomocí OTA, prosím ujistěte se že jste zvolily správný typ základní desky
+firmware_tool-flash_method_serial-title = Flashování přes USB
 firmware_tool-flash_method_serial-wifi = Přihlašovací údaje Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Detekována Sériová Zařízení:
 firmware_tool-flash_method_serial-devices-placeholder = Vyberte sériové zařízení
