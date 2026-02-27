@@ -1231,6 +1231,7 @@ firmware_tool-select_source-firmware = Zdrojový kód firmwaru
 firmware_tool-select_source-version = Verze firmwaru
 firmware_tool-select_source-official = Oficiální
 firmware_tool-select_source-dev = Vývojářské
+firmware_tool-select_source-not_selected = Nebyl vybrán žádný zdroj
 firmware_tool-board_defaults = Nekonfigurujte vaší desku
 firmware_tool-board_defaults-add = Přidat
 firmware_tool-board_defaults-reset = Restartovat do výchozího nastavení
@@ -1271,7 +1272,10 @@ firmware_tool-flashing_step-exit = Odejít
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Čekání na sestavení...
 firmware_tool-build-CREATING_BUILD_FOLDER = Vytváření složky pro sestavení
+firmware_tool-build-DOWNLOADING_SOURCE = Stahování zdrojového kódu
+firmware_tool-build-EXTRACTING_SOURCE = Extrahování zdrojového kódu
 firmware_tool-build-BUILDING = Sestavování firmweru
 firmware_tool-build-SAVING = Ukládání sestavení
 firmware_tool-build-DONE = Sestavení dokončeno
@@ -1305,7 +1309,7 @@ firmware_update-no_devices = Prosím ujistěte se, že tracker který chcete akt
 firmware_update-changelog-title = Aktualizování na { $version }
 firmware_update-looking_for_devices = Hledání zařízení pro aktualizaci
 firmware_update-retry = Opakovat
-firmware_update-update = Aktualizovat Zvolený/é Tracker/y
+firmware_update-update = Aktualizovat Zvolené Trackery
 firmware_update-exit = Odejít
 
 ## Tray Menu
@@ -1337,6 +1341,7 @@ unknown_device-modal-confirm = Jasně!
 unknown_device-modal-forget = Ignoruj
 # VRChat config warnings
 vrc_config-page-title = Varování VRChat konfigurace
+vrc_config-page-desc = Tato stránka slouží k zobrazení vašeho aktuálního stavu nastavení ve VRChat. přesněji, nástavní které jsou nekompatibilní s SlimeVR. Je silně doporučeno poupravit všechny chybné nastavení které jsou zde zobrazeny pro nejlepší zážitek s SlimeVR.
 vrc_config-page-help = Nemůžete najít specifické nastavení?
 vrc_config-page-help-desc = Podívejte se na naší <a>dokumentaci k tomuto tématu!</a>
 vrc_config-page-big_menu = Sledování & IK (Velké Menu)
@@ -1389,10 +1394,22 @@ error_collection_modal-cancel = Nesouhlasím
 
 tracking_checklist-settings-close = Zavřít
 tracking_checklist-status-incomplete = Nejste připraveni používat SlimeVR!
+tracking_checklist-status-complete = Jste připravení k použití SlimeVR
+tracking_checklist-FULL_RESET = Proveďte plné obnovení
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR není zapnut
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR není zapnut. Používáte ho pro VR?
+tracking_checklist-STEAMVR_DISCONNECTED-open = Spusťte SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrujte vaše trackery
+tracking_checklist-TRACKER_ERROR = Trackery s chybami
+tracking_checklist-VRCHAT_SETTINGS = Nakonfigurujte nastavení VRChat
+tracking_checklist-VRCHAT_SETTINGS-open = Přejít k varování ve VRChat
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Změňte profil sítě
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otevřete Ovládací Panel
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Nakonfigurujte Zůstaň Srovnaný
 tracking_checklist-ignore = Ignorovat
+preview-mocap_mode_soon = Režim Mocap (brzy™)
 toolbar-mounting_calibration = Kalibrace nasazení
+toolbar-mounting_calibration-default = Tělo
+toolbar-mounting_calibration-feet = Chodidla
+toolbar-mounting_calibration-fingers = Prsty
 toolbar-drift_reset = Restartování driftu
