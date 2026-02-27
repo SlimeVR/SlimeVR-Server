@@ -55,6 +55,7 @@ export interface IElectronAPI {
   openFile: (path: string) => void;
   ghGet: <T extends GHGet>(options: T) => Promise<GHReturn[T['type']]>;
   setPresence: (options: DiscordPresence) => void;
+  getInstallDir: () => Promise<string>;
 }
 
 declare global {

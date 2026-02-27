@@ -48,6 +48,10 @@ export const getLogsFolder = () => {
   return join(getGuiDataFolder(), 'logs');
 };
 
+export const getExeFolder = () => {
+  return path.dirname(app.getPath('exe'));
+}
+
 export const getWindowStateFile = () =>
   join(getServerDataFolder(), '.window-state.json');
 
@@ -60,6 +64,7 @@ const javaHomeBin = () => {
   const javaHome = process.env['JAVA_HOME'];
   if (!javaHome) return null;
   const javaHomeJre = join(javaHome, 'bin', javaBin);
+  console.log(javaHomeJre);
   return javaHomeJre;
 };
 
