@@ -3558,20 +3558,6 @@ public final class ProtobufMessages {
 		 * @return The trackerRole.
 		 */
 		int getTrackerRole();
-
-		/**
-		 * <code>string manufacturer = 5;</code>
-		 * 
-		 * @return The manufacturer.
-		 */
-		java.lang.String getManufacturer();
-
-		/**
-		 * <code>string manufacturer = 5;</code>
-		 * 
-		 * @return The bytes for manufacturer.
-		 */
-		com.google.protobuf.ByteString getManufacturerBytes();
 	}
 
 	/**
@@ -3602,7 +3588,6 @@ public final class ProtobufMessages {
 		private TrackerAdded() {
 			trackerSerial_ = "";
 			trackerName_ = "";
-			manufacturer_ = "";
 		}
 
 		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
@@ -3728,48 +3713,6 @@ public final class ProtobufMessages {
 			return trackerRole_;
 		}
 
-		public static final int MANUFACTURER_FIELD_NUMBER = 5;
-		@SuppressWarnings("serial")
-		private volatile java.lang.Object manufacturer_ = "";
-
-		/**
-		 * <code>string manufacturer = 5;</code>
-		 * 
-		 * @return The manufacturer.
-		 */
-		@java.lang.Override
-		public java.lang.String getManufacturer() {
-			java.lang.Object ref = manufacturer_;
-			if (ref instanceof java.lang.String) {
-				return (java.lang.String) ref;
-			} else {
-				com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
-				java.lang.String s = bs.toStringUtf8();
-				manufacturer_ = s;
-				return s;
-			}
-		}
-
-		/**
-		 * <code>string manufacturer = 5;</code>
-		 * 
-		 * @return The bytes for manufacturer.
-		 */
-		@java.lang.Override
-		public com.google.protobuf.ByteString getManufacturerBytes() {
-			java.lang.Object ref = manufacturer_;
-			if (ref instanceof java.lang.String) {
-				com.google.protobuf.ByteString b = com.google.protobuf.ByteString
-					.copyFromUtf8(
-						(java.lang.String) ref
-					);
-				manufacturer_ = b;
-				return b;
-			} else {
-				return (com.google.protobuf.ByteString) ref;
-			}
-		}
-
 		private byte memoizedIsInitialized = -1;
 
 		@java.lang.Override
@@ -3799,9 +3742,6 @@ public final class ProtobufMessages {
 			if (trackerRole_ != 0) {
 				output.writeInt32(4, trackerRole_);
 			}
-			if (!com.google.protobuf.GeneratedMessage.isStringEmpty(manufacturer_)) {
-				com.google.protobuf.GeneratedMessage.writeString(output, 5, manufacturer_);
-			}
 			getUnknownFields().writeTo(output);
 		}
 
@@ -3825,9 +3765,6 @@ public final class ProtobufMessages {
 			if (trackerRole_ != 0) {
 				size += com.google.protobuf.CodedOutputStream
 					.computeInt32Size(4, trackerRole_);
-			}
-			if (!com.google.protobuf.GeneratedMessage.isStringEmpty(manufacturer_)) {
-				size += com.google.protobuf.GeneratedMessage.computeStringSize(5, manufacturer_);
 			}
 			size += getUnknownFields().getSerializedSize();
 			memoizedSize = size;
@@ -3864,11 +3801,6 @@ public final class ProtobufMessages {
 					!= other.getTrackerRole()
 			)
 				return false;
-			if (
-				!getManufacturer()
-					.equals(other.getManufacturer())
-			)
-				return false;
 			if (!getUnknownFields().equals(other.getUnknownFields()))
 				return false;
 			return true;
@@ -3889,8 +3821,6 @@ public final class ProtobufMessages {
 			hash = (53 * hash) + getTrackerName().hashCode();
 			hash = (37 * hash) + TRACKER_ROLE_FIELD_NUMBER;
 			hash = (53 * hash) + getTrackerRole();
-			hash = (37 * hash) + MANUFACTURER_FIELD_NUMBER;
-			hash = (53 * hash) + getManufacturer().hashCode();
 			hash = (29 * hash) + getUnknownFields().hashCode();
 			memoizedHashCode = hash;
 			return hash;
@@ -4063,7 +3993,6 @@ public final class ProtobufMessages {
 				trackerSerial_ = "";
 				trackerName_ = "";
 				trackerRole_ = 0;
-				manufacturer_ = "";
 				return this;
 			}
 
@@ -4115,9 +4044,6 @@ public final class ProtobufMessages {
 				if (((from_bitField0_ & 0x00000008) != 0)) {
 					result.trackerRole_ = trackerRole_;
 				}
-				if (((from_bitField0_ & 0x00000010) != 0)) {
-					result.manufacturer_ = manufacturer_;
-				}
 			}
 
 			@java.lang.Override
@@ -4156,11 +4082,6 @@ public final class ProtobufMessages {
 				}
 				if (other.getTrackerRole() != 0) {
 					setTrackerRole(other.getTrackerRole());
-				}
-				if (!other.getManufacturer().isEmpty()) {
-					manufacturer_ = other.manufacturer_;
-					bitField0_ |= 0x00000010;
-					onChanged();
 				}
 				this.mergeUnknownFields(other.getUnknownFields());
 				onChanged();
@@ -4209,11 +4130,6 @@ public final class ProtobufMessages {
 								bitField0_ |= 0x00000008;
 								break;
 							} // case 32
-							case 42: {
-								manufacturer_ = input.readStringRequireUtf8();
-								bitField0_ |= 0x00000010;
-								break;
-							} // case 42
 							default: {
 								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
 									done = true; // was an endgroup tag
@@ -4478,93 +4394,6 @@ public final class ProtobufMessages {
 			public Builder clearTrackerRole() {
 				bitField0_ = (bitField0_ & ~0x00000008);
 				trackerRole_ = 0;
-				onChanged();
-				return this;
-			}
-
-			private java.lang.Object manufacturer_ = "";
-
-			/**
-			 * <code>string manufacturer = 5;</code>
-			 * 
-			 * @return The manufacturer.
-			 */
-			public java.lang.String getManufacturer() {
-				java.lang.Object ref = manufacturer_;
-				if (!(ref instanceof java.lang.String)) {
-					com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
-					java.lang.String s = bs.toStringUtf8();
-					manufacturer_ = s;
-					return s;
-				} else {
-					return (java.lang.String) ref;
-				}
-			}
-
-			/**
-			 * <code>string manufacturer = 5;</code>
-			 * 
-			 * @return The bytes for manufacturer.
-			 */
-			public com.google.protobuf.ByteString getManufacturerBytes() {
-				java.lang.Object ref = manufacturer_;
-				if (ref instanceof String) {
-					com.google.protobuf.ByteString b = com.google.protobuf.ByteString
-						.copyFromUtf8(
-							(java.lang.String) ref
-						);
-					manufacturer_ = b;
-					return b;
-				} else {
-					return (com.google.protobuf.ByteString) ref;
-				}
-			}
-
-			/**
-			 * <code>string manufacturer = 5;</code>
-			 * 
-			 * @param value The manufacturer to set.
-			 * @return This builder for chaining.
-			 */
-			public Builder setManufacturer(
-				java.lang.String value
-			) {
-				if (value == null) {
-					throw new NullPointerException();
-				}
-				manufacturer_ = value;
-				bitField0_ |= 0x00000010;
-				onChanged();
-				return this;
-			}
-
-			/**
-			 * <code>string manufacturer = 5;</code>
-			 * 
-			 * @return This builder for chaining.
-			 */
-			public Builder clearManufacturer() {
-				manufacturer_ = getDefaultInstance().getManufacturer();
-				bitField0_ = (bitField0_ & ~0x00000010);
-				onChanged();
-				return this;
-			}
-
-			/**
-			 * <code>string manufacturer = 5;</code>
-			 * 
-			 * @param value The bytes for manufacturer to set.
-			 * @return This builder for chaining.
-			 */
-			public Builder setManufacturerBytes(
-				com.google.protobuf.ByteString value
-			) {
-				if (value == null) {
-					throw new NullPointerException();
-				}
-				checkByteStringIsUtf8(value);
-				manufacturer_ = value;
-				bitField0_ |= 0x00000010;
 				onChanged();
 				return this;
 			}
@@ -9043,55 +8872,53 @@ public final class ProtobufMessages {
 				+
 				"ctionArgumentsEntry\0326\n\024ActionArgumentsEn"
 				+
-				"try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"|\n\014T"
+				"try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"f\n\014T"
 				+
 				"rackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016track"
 				+
 				"er_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024\n"
 				+
-				"\014tracker_role\030\004 \001(\005\022\024\n\014manufacturer\030\005 \001("
+				"\014tracker_role\030\004 \001(\005\"\374\002\n\rTrackerStatus\022\022\n"
 				+
-				"\t\"\374\002\n\rTrackerStatus\022\022\n\ntracker_id\030\001 \001(\005\022"
+				"\ntracker_id\030\001 \001(\005\022.\n\006status\030\002 \001(\0162\036.mess"
 				+
-				".\n\006status\030\002 \001(\0162\036.messages.TrackerStatus"
+				"ages.TrackerStatus.Status\0221\n\005extra\030\003 \003(\013"
 				+
-				".Status\0221\n\005extra\030\003 \003(\0132\".messages.Tracke"
+				"2\".messages.TrackerStatus.ExtraEntry\022;\n\n"
 				+
-				"rStatus.ExtraEntry\022;\n\nconfidence\030\004 \001(\0162\""
+				"confidence\030\004 \001(\0162\".messages.TrackerStatu"
 				+
-				".messages.TrackerStatus.ConfidenceH\000\210\001\001\032"
+				"s.ConfidenceH\000\210\001\001\032,\n\nExtraEntry\022\013\n\003key\030\001"
 				+
-				",\n\nExtraEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001("
+				" \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n\014DIS"
 				+
-				"\t:\0028\001\"E\n\006Status\022\020\n\014DISCONNECTED\020\000\022\006\n\002OK\020"
+				"CONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020\003"
 				+
-				"\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED\020\004\"3\n\n"
+				"\022\014\n\010OCCLUDED\020\004\"3\n\nConfidence\022\006\n\002NO\020\000\022\007\n\003"
 				+
-				"Confidence\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022"
+				"LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_confiden"
 				+
-				"\010\n\004HIGH\020\nB\r\n\013_confidence\"I\n\007Battery\022\022\n\nt"
+				"ce\"I\n\007Battery\022\022\n\ntracker_id\030\001 \001(\005\022\025\n\rbat"
 				+
-				"racker_id\030\001 \001(\005\022\025\n\rbattery_level\030\002 \001(\002\022\023"
+				"tery_level\030\002 \001(\002\022\023\n\013is_charging\030\003 \001(\010\"\241\002"
 				+
-				"\n\013is_charging\030\003 \001(\010\"\241\002\n\017ProtobufMessage\022"
+				"\n\017ProtobufMessage\022&\n\010position\030\001 \001(\0132\022.me"
 				+
-				"&\n\010position\030\001 \001(\0132\022.messages.PositionH\000\022"
+				"ssages.PositionH\000\022+\n\013user_action\030\002 \001(\0132\024"
 				+
-				"+\n\013user_action\030\002 \001(\0132\024.messages.UserActi"
+				".messages.UserActionH\000\022/\n\rtracker_added\030"
 				+
-				"onH\000\022/\n\rtracker_added\030\003 \001(\0132\026.messages.T"
+				"\003 \001(\0132\026.messages.TrackerAddedH\000\0221\n\016track"
 				+
-				"rackerAddedH\000\0221\n\016tracker_status\030\004 \001(\0132\027."
+				"er_status\030\004 \001(\0132\027.messages.TrackerStatus"
 				+
-				"messages.TrackerStatusH\000\022$\n\007battery\030\005 \001("
+				"H\000\022$\n\007battery\030\005 \001(\0132\021.messages.BatteryH\000"
 				+
-				"\0132\021.messages.BatteryH\000\022$\n\007version\030\006 \001(\0132"
+				"\022$\n\007version\030\006 \001(\0132\021.messages.VersionH\000B\t"
 				+
-				"\021.messages.VersionH\000B\t\n\007messageB2\n\034dev.s"
+				"\n\007messageB2\n\034dev.slimevr.desktop.platfor"
 				+
-				"limevr.desktop.platformB\020ProtobufMessage"
-				+
-				"sH\003b\006proto3"
+				"mB\020ProtobufMessagesH\003b\006proto3"
 		};
 		descriptor = com.google.protobuf.Descriptors.FileDescriptor
 			.internalBuildGeneratedFileFrom(
@@ -9130,8 +8957,7 @@ public final class ProtobufMessages {
 		internal_static_messages_TrackerAdded_descriptor = getDescriptor().getMessageTypes().get(4);
 		internal_static_messages_TrackerAdded_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_TrackerAdded_descriptor,
-			new java.lang.String[] { "TrackerId", "TrackerSerial", "TrackerName", "TrackerRole",
-				"Manufacturer", }
+			new java.lang.String[] { "TrackerId", "TrackerSerial", "TrackerName", "TrackerRole", }
 		);
 		internal_static_messages_TrackerStatus_descriptor = getDescriptor()
 			.getMessageTypes()

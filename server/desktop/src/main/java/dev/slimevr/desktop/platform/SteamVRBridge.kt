@@ -147,13 +147,23 @@ abstract class SteamVRBridge(
 		val device = instance.deviceManager
 			.createDevice(
 				trackerAdded.trackerName,
-				null,
-				trackerAdded.manufacturer.ifEmpty { "OpenVR" },
+				trackerAdded.trackerSerial,
+				"OpenVR", // TODO : We need the manufacturer
 			)
 
 		// Display name, needsReset and isHmd
-		val displayName: String = trackerAdded.trackerName
-		val isHmd = trackerAdded.trackerId == 0
+		val displayName: String
+		val isHmd = if (trackerAdded.trackerId == 0) {
+			displayName = if (trackerAdded.trackerName == "HMD") {
+				"SteamVR Driver HMD"
+			} else {
+				"Feeder App HMD"
+			}
+			true
+		} else {
+			displayName = trackerAdded.trackerName
+			false
+		}
 
 		// trackerPosition
 		val role = getById(trackerAdded.trackerRole)

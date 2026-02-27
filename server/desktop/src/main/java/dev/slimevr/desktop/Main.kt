@@ -9,6 +9,7 @@ import dev.slimevr.bridge.Bridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.desktop.firmware.DesktopSerialFlashingHandler
 import dev.slimevr.desktop.games.vrchat.DesktopVRCConfigHandler
+import dev.slimevr.desktop.install.drivers.InstallDrivers
 import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
@@ -98,6 +99,9 @@ fun main(args: Array<String>) {
 		LogManager.closeLogger()
 		return
 	}
+
+	val installDrivers = InstallDrivers()
+	installDrivers.runUpdater()
 
 	val configDir = resolveConfig()
 	LogManager.info("Using config dir: $configDir")
