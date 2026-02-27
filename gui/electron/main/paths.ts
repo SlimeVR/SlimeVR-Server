@@ -49,12 +49,11 @@ export const getLogsFolder = () => {
 };
 
 export const getExeFolder = () => {
-  console.log(app.getPath('exe'));
-  return join(app.getPath('exe'));
+  return path.dirname(app.getPath('exe'));
 }
 
 export const getWindowStateFile = () =>
-  join(getServerDataFolder(), '.window-state.json');
+  join(getGuiDataFolder(), '.window-state.json');
 
 const localJavaBin = (sharedDir: string) => {
   const jre = join(sharedDir, 'jre/bin', javaBin);

@@ -395,6 +395,7 @@ app.whenReady().then(async () => {
   });
 
   checkEnvironmentVariables();
+
   const server = await spawnServer();
 
   createWindow();

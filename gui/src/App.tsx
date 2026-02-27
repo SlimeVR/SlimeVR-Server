@@ -54,6 +54,7 @@ import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist
 import { ElectronContextC, provideElectron } from './hooks/electron';
 import { AppLocalizationProvider } from './i18n/config';
 import { openUrl } from './hooks/crossplatform';
+import { UdevRulesModal } from './components/onboarding/UdevRulesModal';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -71,6 +72,7 @@ function Layout() {
       <SerialDetectionModal />
       <VersionUpdateModal />
       <UnknownDeviceModal />
+      <UdevRulesModal />
       <SentryRoutes>
         <Route element={<AppLayout />}>
           <Route

@@ -137,6 +137,7 @@ export function TopBar({
     }
   );
 
+
   return (
     <>
       <div className="flex gap-0 flex-col">
@@ -287,12 +288,6 @@ export function TopBar({
           setConnectedTrackerWarning(false);
         }}
       />
-      <ErrorConsentModal
-        isOpen={config?.errorTracking === false}
-        accept={() => setConfig({ errorTracking: true })}
-        cancel={() => setConfig({ errorTracking: false })}
-      />
-      <UdevRulesModal />
     </>
   );
 }
