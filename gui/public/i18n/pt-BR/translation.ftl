@@ -1598,13 +1598,26 @@ vrc_config-spine_mode = Modo Coluna FBT
 vrc_config-tracker_model = Modelo dos Rastreadores(Trackers) FBT
 vrc_config-avatar_measurement_type = Medidas do Avatar
 vrc_config-calibration_range = Alcance da Calibração
+vrc_config-spine_mode-UNKNOWN = Desconhecido
 vrc_config-spine_mode-LOCK_BOTH = Travar Ambos
 vrc_config-spine_mode-LOCK_HEAD = Travar Cabeça
 vrc_config-spine_mode-LOCK_HIP = Travar Quadril
+vrc_config-tracker_model-UNKNOWN = Desconhecido
+vrc_config-tracker_model-AXIS = Eixo
+vrc_config-tracker_model-BOX = Caixa
+vrc_config-tracker_model-SPHERE = Esfera
+vrc_config-tracker_model-SYSTEM = Sistema
+vrc_config-avatar_measurement_type-UNKNOWN = Desconhecido
+vrc_config-avatar_measurement_type-HEIGHT = Altura
+vrc_config-avatar_measurement_type-ARM_SPAN = Envergadura dos Braços
 
 ## Error collection consent modal
 
 error_collection_modal-title = Podemos coletar erros?
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
+    
+    Você pode alterar essa configuração mais tarde na seção Comportamento da página de configurações.
 error_collection_modal-confirm = Eu concordo
 error_collection_modal-cancel = Eu não quero
 
