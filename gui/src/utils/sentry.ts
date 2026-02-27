@@ -14,7 +14,7 @@ export function getSentryOrCompute(enabled = false, uuid: string) {
 
   // if sentry is already initialized - SKIP
   if (enabled && Sentry.isInitialized()) {
-    log('Sentry already enabled, skipping initialization')
+    log('Sentry already enabled, skipping initialization');
     return;
   }
 

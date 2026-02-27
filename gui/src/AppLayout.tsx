@@ -4,7 +4,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 export function AppLayout() {
   const { config } = useConfig();
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
   useLayoutEffect(() => {
@@ -29,7 +29,11 @@ export function AppLayout() {
   }, [config]);
 
   useLayoutEffect(() => {
-    if (config && !config.doneOnboarding && !pathname.startsWith('/onboarding/')) {
+    if (
+      config &&
+      !config.doneOnboarding &&
+      !pathname.startsWith('/onboarding/')
+    ) {
       navigate('/onboarding/home');
     }
   }, [config]);

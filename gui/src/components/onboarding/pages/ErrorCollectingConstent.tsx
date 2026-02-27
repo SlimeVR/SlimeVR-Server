@@ -29,7 +29,6 @@ export function ErrorCollectingConsentPage() {
           >
             <Typography variant="standard" whitespace="whitespace-pre-line" />
           </Localized>
-
         </div>
         <div className={'flex flex-row gap-2 justify-between'}>
           <Button
