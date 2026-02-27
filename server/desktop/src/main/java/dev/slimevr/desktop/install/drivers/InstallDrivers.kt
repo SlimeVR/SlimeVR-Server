@@ -1,5 +1,7 @@
 package dev.slimevr.desktop.install.drivers
 
+import io.eiren.util.logging.LogManager
+
 class InstallDrivers {
 
 	val os = System.getProperty("os.name").lowercase()
@@ -11,13 +13,11 @@ class InstallDrivers {
 			val linuxFlavour = executeShellCommand("uname", "-n")
 			linuxUpdater.updateLinux()
 		} else if (os.contains("windows")) {
-			println("Running windows updater")
+			LogManager.info("Running windows updater")
 			val windowsUpdater = Windows()
 			windowsUpdater.updateWindows()
-		} else if (os.contains("darwin")) {
-			println("I dunno")
 		} else {
-			println("guess I'll die")
+			println("Unsupported Operating System")
 		}
 		return
 	}
