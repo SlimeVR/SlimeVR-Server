@@ -24,7 +24,7 @@ version_update-close = Fechar
 
 ## Tips
 
-tips-find_tracker = Não tem certeza qual tracker é qual? Balance o tracker e ele destacará o item correspondente.
+tips-find_tracker = Não tem certeza de qual tracker é qual? Sacuda um tracker e o item correspondente será destacado.
 tips-do_not_move_heels = Tenha certeza de não mexer seus calcanhares durante a gravação!
 tips-file_select = Arraste e solte arquivos para usar, ou <u>pesquise</u>.
 tips-tap_setup = Pode tocar lentamente 2 vezes no seu tracker para o escolher em vez de o selecionar no menu.
@@ -389,7 +389,7 @@ tracker-infos-packets_received = Pacotes Recebidos
 ## Tracker settings
 
 tracker-settings-back = Voltar para a lista de trackers
-tracker-settings-title = Opções dos trackers
+tracker-settings-title = Opções dos Trackers
 tracker-settings-assignment_section = Atribuição
 tracker-settings-assignment_section-description = A qual parte do corpo o tracker está atribuído.
 tracker-settings-assignment_section-edit = Editar atribuição
@@ -493,7 +493,7 @@ settings-sidebar-general = Geral
 settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mecânicas do Tracker
 settings-sidebar-stay_aligned = Manter Alinhado
-settings-sidebar-fk_settings = Opções dos trackers
+settings-sidebar-fk_settings = Opções dos Trackers
 settings-sidebar-gesture_control = Controle de Gestos
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = Roteador OSC
@@ -503,7 +503,7 @@ settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Console Serial
 settings-sidebar-appearance = Aparência
 settings-sidebar-home = Tela Inicial
-settings-sidebar-checklist = Checklist de tracking
+settings-sidebar-checklist = Checklist do Rastreamento
 settings-sidebar-notifications = Notificações
 settings-sidebar-behavior = Comportamento
 settings-sidebar-firmware-tool = Ferramenta de firmware DIY
@@ -675,7 +675,7 @@ settings-general-fk_settings-self_localization-description = O modo mocap permit
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = Controle por gestos
+settings-general-gesture_control = Controle por Gestos
 settings-general-gesture_control-subtitle = Redefinições baseadas em toque
 settings-general-gesture_control-description = Permite que redefinições sejam acionadas ao tocar em um tracker. O tracker mais alto no tronco é usado para "Redefinir direção", o tracker mais alto na perna esquerda é usado para executar "Redefinir Tudo", e o tracker mais alto na perna direita é usado para a "Calibração de Montagem". Os toques devem ocorrer dentro do limite de 0,3 segundos multiplicado pelo número de toques para serem reconhecidos.
 # This is a unit: 3 taps, 2 taps, 1 tap
@@ -728,7 +728,7 @@ settings-interface-appearance-font-slime_font = Fonte padrão
 settings-interface-appearance-font_size = Escala da fonte
 settings-interface-appearance-font_size-description = Isso afeta o tamanho da fonte de toda a interface, exceto neste painel de configurações.
 settings-interface-appearance-decorations = Use as decorações nativas do sistema
-settings-interface-appearance-decorations-description = Quando essa opção estiver ativada, a barra de título do SlimeVR não será exibida, mas será substituída pela barra de título nativa do sistema.
+settings-interface-appearance-decorations-description = Isso não renderizará a barra superior da interface e usará a do sistema operacional no lugar.
 settings-interface-appearance-decorations-label = Usar a barra de título nativa do sistema
 
 ## Notification settings
@@ -762,11 +762,11 @@ settings-general-interface-discord_presence-message =
     }
 settings-interface-behavior-error_tracking = Coleta de erros via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Você <h1>concorda com a coleta de dados de erro anônimos?</h1><b></h1> <b>Não coletamos informações pessoais</b></b>, como seu endereço IP ou credenciais de rede sem fio. A SlimeVR valoriza sua privacidade!
+    <h1>Você consente com a coleta de dados de erro anonimizados?</h1>
     
-    Para oferecer a melhor experiência ao usuário, coletamos relatórios de erros anônimos, métricas de desempenho e informações do sistema operacional. Isso nos ajuda a detectar bugs e problemas com o SlimeVR. Essas métricas são coletadas pelo Sentry.io.
+    <b>Não coletamos informações pessoais</b>, como seu endereço IP ou credenciais de rede sem fio. O SlimeVR valoriza sua privacidade!
     
-    Traduzido com a versão gratuita do tradutor - DeepL.com
+    Para oferecer a melhor experiência possível, coletamos relatórios de erro anonimizados, métricas de desempenho e informações sobre o sistema operacional. Isso nos ajuda a identificar bugs e problemas no SlimeVR. Essas métricas são coletadas por meio do Sentry.io.
 settings-interface-behavior-error_tracking-label = Enviar erros para os desenvolvedores
 settings-interface-behavior-bvh_directory = Diretório para salvar gravações BVH
 settings-interface-behavior-bvh_directory-description = Escolha um diretório para salvar suas gravações BVH, em vez de precisar escolher onde salvá-las a cada vez.
@@ -805,16 +805,16 @@ settings-serial-send_command-warning-cancel = Cancelar
 settings-osc-router = Roteador OSC
 # This cares about multilines
 settings-osc-router-description =
-    Encaminhar mensagens OSC de outro programa.
-    Útil para usar outro programa OSC com VRChat, por exemplo.
+    Encaminha mensagens OSC de outro programa.
+    Útil para usar outro programa OSC com o VRChat, por exemplo.
 settings-osc-router-enable = Ativar
-settings-osc-router-enable-description = Ligar ou desligar o encaminhamento de mensagens
+settings-osc-router-enable-description = Liga ou desliga o encaminhamento de mensagens.
 settings-osc-router-enable-label = Ativar
 settings-osc-router-network = Portas de rede
 # This cares about multilines
 settings-osc-router-network-description =
-    Defina as portas para receber e enviar dados
-    Esses podem ser as mesmas portas usadas no servidor do SlimeVR
+    Defina as portas para receber e enviar dados.
+    Elas podem ser as mesmas portas usadas no servidor do SlimeVR.
 settings-osc-router-network-port_in =
     .label = Porta de Entrada
     .placeholder = Porta de entrada (padrão: 9002)
@@ -943,7 +943,7 @@ settings-home-list-layout-table = Tabela
 ## Tracking Checlist
 
 settings-tracking_checklist-active_steps = Etapas Ativas
-settings-tracking_checklist-active_steps-desc = Lista de todas as etapas do checklist de tracking. Você pode optar por desativar etapas específicas.
+settings-tracking_checklist-active_steps-desc = Lista de todas as etapas do checklist do rastreamento. Você pode optar por desativar etapas específicas.
 
 ## Setup/onboarding menu
 
@@ -1105,9 +1105,9 @@ onboarding-assign_trackers-option-label =
     { $mode ->
         [lower-body] Conjunto Lower-Body
         [core] Conjunto Core
-        [enhanced-core] Conjunto Enhanced
+        [enhanced-core] Conjunto Enhanced Core
         [full-body] Conjunto Full-Body
-       *[all] Todos os trackers
+       *[all] Todos os Trackers
     }
 onboarding-assign_trackers-option-description =
     { $mode ->
@@ -1598,6 +1598,8 @@ vrc_config-spine_mode = Modo Coluna FBT
 vrc_config-tracker_model = Modelo dos Rastreadores(Trackers) FBT
 vrc_config-avatar_measurement_type = Medidas do Avatar
 vrc_config-calibration_range = Alcance da Calibração
+vrc_config-calibration_visuals = Exibir Visuais de Calibração
+vrc_config-user_height = Altura Real do Usuário
 vrc_config-spine_mode-UNKNOWN = Desconhecido
 vrc_config-spine_mode-LOCK_BOTH = Travar Ambos
 vrc_config-spine_mode-LOCK_HEAD = Travar Cabeça
@@ -1623,9 +1625,24 @@ error_collection_modal-cancel = Eu não quero
 
 ## Tracking checklist section
 
+tracking_checklist = Checklist do Rastreamento
+tracking_checklist-settings = Configurações do Checklist do Rastreamento
+tracking_checklist-settings-close = Fechar
+tracking_checklist-status-incomplete = Você ainda não está pronto para usar o SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] Você tem 1 aviso!
+       *[other] Você tem { $count } avisos!
+    }
+tracking_checklist-status-complete = Você está pronto para usar o SlimeVR!
 tracking_checklist-MOUNTING_CALIBRATION = Realize uma calibração de montagem
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Realize uma calibração de montagem dos pés
 tracking_checklist-FULL_RESET = Execute "Redefinir Tudo"
+tracking_checklist-FULL_RESET-desc = Alguns trackers precisam que uma redefinição seja realizada.
+tracking_checklist-STEAMVR_DISCONNECTED = O SteamVR não está em execução
+tracking_checklist-STEAMVR_DISCONNECTED-desc = O SteamVR não está em execução. Você está usando ele para VR?
+tracking_checklist-STEAMVR_DISCONNECTED-open = Iniciar o SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Calibre seus trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Você não realizou a calibração dos trackers. Por favor, deixe os trackers (destacados em amarelo) repousarem sobre uma superfície estável por alguns segundos.
 tracking_checklist-TRACKER_ERROR = Trackers com Erros
 tracking_checklist-TRACKER_ERROR-desc = Alguns trackers estão com erro. Reinicie os trackers em amarelo.
