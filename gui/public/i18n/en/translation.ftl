@@ -980,6 +980,10 @@ onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to tri
 
     You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
 
+## Install info
+install-info_udev-rules_modal_title = UDEV Rules not found
+install-info_udev-rules_warning = Please make sure your udev rules are setup correctly. So you can connect trackers and dongle to USB
+install-info_udev-rules_modal_button = Close
 ## Setup start
 onboarding-home = Welcome to SlimeVR
 onboarding-home-start = Let's get set up!

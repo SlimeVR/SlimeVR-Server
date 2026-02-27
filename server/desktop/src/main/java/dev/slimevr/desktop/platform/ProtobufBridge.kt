@@ -7,7 +7,6 @@ import dev.slimevr.desktop.platform.ProtobufMessages.*
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerStatus.Companion.getById
-import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.ann.Synchronize
 import io.eiren.util.ann.ThreadSafe
@@ -218,11 +217,6 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			"fast_reset" -> instance.resetTrackersYaw(resetSourceName)
 
 			"mounting_reset" -> instance.resetTrackersMounting(resetSourceName)
-
-			"feet_mounting_reset" -> instance.resetTrackersMounting(
-				resetSourceName,
-				TrackerUtils.feetsBodyParts,
-			)
 
 			"pause_tracking" ->
 				instance

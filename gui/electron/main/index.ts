@@ -22,6 +22,7 @@ import {
   findSystemJRE,
   getGuiDataFolder,
   getLogsFolder,
+  getExeFolder,
   getServerDataFolder,
   getWindowStateFile,
 } from './paths';
@@ -111,15 +112,15 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
 });
 
 handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => {
-  const allowed_urls = [
+  const allowsd_urls = [
     /steam:\/\/.*/,
     /ms-settings:network$/,
     /https:\/\/.*\.slimevr\.dev.*/,
     /https:\/\/github\.com\/.*/,
     /https:\/\/discord\.gg\/slimevr$/,
   ];
-  if (allowed_urls.find((a) => url.match(a))) open(url);
-  else logger.error({ url }, 'attempted to open non-whitelisted URL');
+  if (allowsd_urls.find((a) => url.match(a))) open(url);
+  else logger.error({ url }, 'trying to open non allowed url');
 });
 
 handleIpc(IPC_CHANNELS.STORAGE, async (e, { type, method, key, value }) => {
@@ -171,6 +172,8 @@ handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
       return getGuiDataFolder();
     case 'logs':
       return getLogsFolder();
+    case 'exe':
+      return getExeFolder();
   }
 });
 
@@ -336,10 +339,9 @@ const isServerRunning = async () => !await isPortAvailable(21110)
 
 const spawnServer = async () => {
   if (options.skipServerIfRunning && await isServerRunning()) {
-    logger.info({ skipServerIfRunning: options.skipServerIfRunning }, 'Server is already running, skipping server start');
+    logger.info({ skipServerIfRunning: options.skipServerIfRunning }, 'Server alredy running, skipping');
     return;
   }
-
 
   const serverJar = findServerJar();
   if (!serverJar) {
@@ -357,7 +359,8 @@ const spawnServer = async () => {
     return;
   }
 
-  logger.info({ javaBin, serverJar }, 'Found Java and server jar');
+  logger.info({ serverJar }, 'found server jar');
+
 
   const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run']);
 
@@ -392,6 +395,7 @@ app.whenReady().then(async () => {
   });
 
   checkEnvironmentVariables();
+
   const server = await spawnServer();
 
   createWindow();

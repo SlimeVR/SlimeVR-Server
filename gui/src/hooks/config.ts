@@ -48,6 +48,7 @@ export interface Config {
   homeLayout: 'default' | 'table';
   skeletonPreview: boolean;
   lastUsedProportions: 'manual' | 'autobone' | 'scaled' | null;
+  dontShowUdevModal: boolean;
 }
 
 export interface ConfigContext {
@@ -79,6 +80,7 @@ export const defaultConfig: Config = {
   homeLayout: 'default',
   skeletonPreview: true,
   lastUsedProportions: null,
+  dontShowUdevModal: false,
 };
 
 const localStore: CrossStorage = {
