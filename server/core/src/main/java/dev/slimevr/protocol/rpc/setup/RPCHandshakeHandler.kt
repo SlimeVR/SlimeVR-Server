@@ -56,9 +56,7 @@ class RPCHandshakeHandler(
 		conn: GenericConnection,
 		messageHeader: RpcMessageHeader,
 	) {
-		val req =
-			messageHeader.message(AddUnknownDeviceRequest()) as AddUnknownDeviceRequest?
-				?: return
+		val req = messageHeader.message(AddUnknownDeviceRequest()) as AddUnknownDeviceRequest
 
 		this.api.server.configManager.vrConfig.addKnownDevice(
 			req.macAddress() ?: return,
@@ -70,8 +68,7 @@ class RPCHandshakeHandler(
 		conn: GenericConnection,
 		messageHeader: RpcMessageHeader,
 	) {
-		val req = messageHeader.message(ForgetDeviceRequest()) as ForgetDeviceRequest?
-			?: return
+		val req = messageHeader.message(ForgetDeviceRequest()) as ForgetDeviceRequest
 
 		this.api.server.configManager.vrConfig.forgetKnownDevice(
 			req.macAddress() ?: return,

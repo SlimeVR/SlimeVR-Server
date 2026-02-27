@@ -60,9 +60,6 @@ class AutoBone(private val server: VRServer) {
 	var positionOffsetError = PositionOffsetError()
 	// #endregion
 
-	val globalConfig: AutoBoneConfig = server.configManager.vrConfig.autoBone
-	val globalSkeletonConfig: SkeletonConfig = server.configManager.vrConfig.skeleton
-
 	init {
 		loadConfigValues()
 	}
@@ -112,7 +109,7 @@ class AutoBone(private val server: VRServer) {
 
 	fun calcTargetHmdHeight(
 		frames: PoseFrames,
-		config: AutoBoneConfig = globalConfig,
+		config: AutoBoneConfig,
 	): Float {
 		val targetHeight: Float
 		// Get the current skeleton from the server
@@ -214,12 +211,15 @@ class AutoBone(private val server: VRServer) {
 	@Throws(AutoBoneException::class)
 	fun processFrames(
 		frames: PoseFrames,
-		config: AutoBoneConfig = globalConfig,
-		skeletonConfig: SkeletonConfig = globalSkeletonConfig,
+//		config: AutoBoneConfig = globalConfig,
+//		skeletonConfig: SkeletonConfig = globalSkeletonConfig,
 		epochCallback: Consumer<Epoch>? = null,
 	): AutoBoneResults {
 		check(frames.frameHolders.isNotEmpty()) { "Recording has no trackers." }
 		check(frames.maxFrameCount > 0) { "Recording has no frames." }
+
+		val config = server.configManager.settings.get().autoBone
+		val skeletonConfig = server.configManager.user.get().skeleton
 
 		// Load current values for adjustable configs
 		loadConfigValues()

@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ArmsResetMode
 import dev.slimevr.config.OSCConfig
+import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.TapDetectionConfig
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.config.VRCOSCConfig
@@ -319,52 +320,63 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 
 		val autoBoneSettings = req.autoBoneSettings()
 		if (autoBoneSettings != null) {
-			val autoBoneConfig = api.server.configManager
-				.vrConfig
-				.autoBone
-
+			val autoBoneConfig = api.server.configManager.settings.get().autoBone
 			RPCSettingsBuilder.readAutoBoneSettings(autoBoneSettings, autoBoneConfig)
 		}
 
 		if (req.resetsSettings() != null) {
-			val resetsConfig = api.server.configManager
-				.vrConfig
-				.resetsConfig
-			val mode = ArmsResetMode
-				.fromId(max(req.resetsSettings().armsMountingResetMode(), 0))
-			if (mode != null) {
-				resetsConfig.mode = mode
+			api.server.configManager.settings.update {
+				it.copy(
+					resetsConfig = ResetsConfig(
+						mode = ArmsResetMode.fromId(max(req.resetsSettings().armsMountingResetMode(), 0)) ?: ArmsResetMode.BACK,
+						resetMountingFeet = req.resetsSettings().resetMountingFeet(),
+						saveMountingReset = req.resetsSettings().saveMountingReset(),
+						yawResetSmoothTime = req.resetsSettings().yawResetSmoothTime(),
+						resetHmdPitch = req.resetsSettings().resetHmdPitch(),
+					)
+				)
 			}
-			resetsConfig.resetMountingFeet = req.resetsSettings().resetMountingFeet()
-			resetsConfig.saveMountingReset = req.resetsSettings().saveMountingReset()
-			resetsConfig.yawResetSmoothTime = req.resetsSettings().yawResetSmoothTime()
-			resetsConfig.resetHmdPitch = req.resetsSettings().resetHmdPitch()
+
 			resetsConfig.updateTrackersResetsSettings()
 		}
 
 		if (req.stayAligned() != null) {
-			val config = api.server.configManager.vrConfig.stayAlignedConfig
 			val requestConfig = req.stayAligned()
-			config.enabled = requestConfig.enabled()
-			config.hideYawCorrection = requestConfig.hideYawCorrection()
-			config.standingRelaxedPose.enabled = requestConfig.standingEnabled()
-			config.standingRelaxedPose.upperLegAngleInDeg = requestConfig.standingUpperLegAngle()
-			config.standingRelaxedPose.lowerLegAngleInDeg = requestConfig.standingLowerLegAngle()
-			config.standingRelaxedPose.footAngleInDeg = requestConfig.standingFootAngle()
-			config.sittingRelaxedPose.enabled = requestConfig.sittingEnabled()
-			config.sittingRelaxedPose.upperLegAngleInDeg = requestConfig.sittingUpperLegAngle()
-			config.sittingRelaxedPose.lowerLegAngleInDeg = requestConfig.sittingLowerLegAngle()
-			config.sittingRelaxedPose.footAngleInDeg = requestConfig.sittingFootAngle()
-			config.flatRelaxedPose.enabled = requestConfig.flatEnabled()
-			config.flatRelaxedPose.upperLegAngleInDeg = requestConfig.flatUpperLegAngle()
-			config.flatRelaxedPose.lowerLegAngleInDeg = requestConfig.flatLowerLegAngle()
-			config.flatRelaxedPose.footAngleInDeg = requestConfig.flatFootAngle()
+			api.server.configManager.settings.update {
+				it.copy(
+					stayAlignedConfig = it.stayAlignedConfig.copy(
+						enabled = requestConfig.enabled(),
+						hideYawCorrection = requestConfig.hideYawCorrection(),
+						standingRelaxedPose = it.stayAlignedConfig.standingRelaxedPose.copy(
+							enabled = requestConfig.standingEnabled(),
+							upperLegAngleInDeg = requestConfig.standingUpperLegAngle(),
+							lowerLegAngleInDeg = requestConfig.standingLowerLegAngle(),
+							footAngleInDeg = requestConfig.standingFootAngle(),
+						),
+						sittingRelaxedPose = it.stayAlignedConfig.sittingRelaxedPose.copy(
+							enabled = requestConfig.sittingEnabled(),
+							upperLegAngleInDeg = requestConfig.sittingUpperLegAngle(),
+							lowerLegAngleInDeg = requestConfig.sittingLowerLegAngle(),
+							footAngleInDeg = requestConfig.sittingFootAngle(),
+						),
+						flatRelaxedPose = it.stayAlignedConfig.flatRelaxedPose.copy(
+							enabled = requestConfig.flatEnabled(),
+							upperLegAngleInDeg = requestConfig.flatUpperLegAngle(),
+							lowerLegAngleInDeg = requestConfig.flatLowerLegAngle(),
+							footAngleInDeg = requestConfig.flatFootAngle(),
+						),
+					)
+				)
+			}
 		}
 
 		if (req.hidSettings() != null) {
-			val config = api.server.configManager.vrConfig.hidConfig
 			val requestConfig = req.hidSettings()
-			config.trackersOverHID = requestConfig.trackersOverHid()
+			api.server.configManager.settings.update {
+				it.copy(hidConfig = it.hidConfig.copy(
+					trackersOverHID = requestConfig.trackersOverHid()
+				))
+			}
 		}
 
 		api.server.configManager.settings.save()

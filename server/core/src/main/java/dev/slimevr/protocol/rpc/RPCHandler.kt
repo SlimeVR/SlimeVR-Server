@@ -2,7 +2,6 @@ package dev.slimevr.protocol.rpc
 
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.config.MountingMethod
-import dev.slimevr.config.config
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.ProtocolHandler
@@ -306,8 +305,11 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 					req.mountingOrientation().y(),
 					req.mountingOrientation().z(),
 				)
-				api.server.configManager.vrConfig.resetsConfig.lastMountingMethod =
-					MountingMethod.MANUAL
+				api.server.configManager.settings.updateAndSave {
+					it.copy(resetsConfig = it.resetsConfig.copy(
+						lastMountingMethod = MountingMethod.MANUAL
+					))
+				}
 			}
 		}
 

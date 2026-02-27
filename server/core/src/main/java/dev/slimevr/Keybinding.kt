@@ -9,8 +9,6 @@ import io.eiren.util.ann.AWTThread
 import io.eiren.util.logging.LogManager
 
 class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
-	val config: KeybindingsConfig = server.configManager.vrConfig.keybindings
-
 	init {
 		if (currentPlatform != OperatingSystem.WINDOWS) {
 			LogManager
@@ -18,6 +16,7 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 					"[Keybinding] Currently only supported on Windows. Keybindings will be disabled.",
 				)
 		} else {
+			val config = server.configManager.settings.get().keybindings
 			try {
 				if (JIntellitype.getInstance() != null) {
 					JIntellitype.getInstance().addHotKeyListener(this)
@@ -52,6 +51,7 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 	}
 
 	override fun onHotKey(identifier: Int) {
+		val config = server.configManager.settings.get().keybindings
 		when (identifier) {
 			FULL_RESET -> server.scheduleResetTrackersFull(RESET_SOURCE_NAME, config.fullResetDelay)
 

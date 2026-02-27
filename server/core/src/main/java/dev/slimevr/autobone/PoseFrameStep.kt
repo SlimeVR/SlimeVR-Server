@@ -1,6 +1,7 @@
 package dev.slimevr.autobone
 
 import dev.slimevr.config.AutoBoneConfig
+import dev.slimevr.config.ConfigManager
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.poseframeformat.player.TrackerFramesPlayer
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -10,7 +11,7 @@ import kotlin.random.Random
 class PoseFrameStep<T>(
 	val config: AutoBoneConfig,
 	/** The config to initialize skeletons. */
-	serverConfig: ConfigProfileHandler? = null,
+	serverConfig: ConfigManager? = null,
 	val frames: PoseFrames,
 	/** The consumer run before each epoch. */
 	val preEpoch: Consumer<PoseFrameStep<T>>? = null,

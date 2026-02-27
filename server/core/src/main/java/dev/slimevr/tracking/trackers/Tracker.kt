@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.trackers
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.ConfigManager
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerState
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
@@ -192,7 +193,11 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Reads/loads from the given config
 	 */
-	fun readConfig(config: TrackerConfig) {
+	fun readConfig(configManager: ConfigManager) {
+		val settings = configManager.settings.get();
+		val config = configManager.user.get().trackers[name] ?: TrackerConfig(this)
+
+		if (!userEditable) return;
 		config.customName?.let {
 			customName = it
 		}
@@ -212,6 +217,13 @@ class Tracker @JvmOverloads constructor(
 			config.allowDriftCompensation?.let {
 				resetsHandler.allowDriftCompensation = it
 			}
+		}
+		resetsHandler.readResetConfig(settings.resetsConfig)
+		if (allowReset) {
+			saveMountingResetOrientation(config)
+		}
+		if (allowFiltering) {
+			filteringHandler.readFilteringConfig(settings.filters, getRotation())
 		}
 	}
 

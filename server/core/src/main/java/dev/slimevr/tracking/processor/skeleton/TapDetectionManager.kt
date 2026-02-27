@@ -15,13 +15,12 @@ class TapDetectionManager(
 	var fullResetDetector: TapDetection? = null
 	var mountingResetDetector: TapDetection? = null
 
-	var config = server.configManager.vrConfig.tapDetection
-
 	init {
 		refresh()
 	}
 
 	fun registerSingleTapDetectors() {
+		val config = server.configManager.settings.get().tapDetection
 		for (tracker in server.allTrackers) {
 			tapDetectors.add(
 				TapDetection(skeleton, tracker, config.numberTrackersOverThreshold, 2) {
@@ -32,6 +31,7 @@ class TapDetectionManager(
 	}
 
 	fun registerResetsDetectors() {
+		val config = server.configManager.settings.get().tapDetection
 		val yawTracker = yawResetTracker
 		yawResetDetector = if (yawTracker != null && config.yawResetEnabled) {
 			TapDetection(skeleton, yawTracker, config.numberTrackersOverThreshold, config.yawResetTaps) {
@@ -72,6 +72,8 @@ class TapDetectionManager(
 	}
 
 	fun update() {
+		val config = server.configManager.settings.get().tapDetection
+
 		// We disable the resets detectors during the assignment phase so you cant
 		// trigger a reset while assigning
 		if (config.setupMode) {

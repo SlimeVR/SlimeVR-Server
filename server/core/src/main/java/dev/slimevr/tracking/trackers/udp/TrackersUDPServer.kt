@@ -3,7 +3,6 @@ package dev.slimevr.tracking.trackers.udp
 import com.jme3.math.FastMath
 import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
-import dev.slimevr.config.config
 import dev.slimevr.protocol.rpc.MAG_TIMEOUT
 import dev.slimevr.tracking.trackers.*
 import io.eiren.util.Util
@@ -540,18 +539,19 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			is UDPPacket21UserAction -> {
 				if (connection == null) return
 				var name = ""
+				val resetsConfig = VRServer.instance.configManager.settings.get().resetsConfig;
 				when (packet.type) {
 					UDPPacket21UserAction.RESET_FULL -> {
 						name = "Full reset"
 						VRServer.instance.scheduleResetTrackersFull(
 							RESET_SOURCE_NAME,
-							(VRServer.instance.configManager.vrConfig.resetsConfig.fullResetDelay * 1000).toLong(),
+							(resetsConfig.fullResetDelay * 1000).toLong(),
 						)
 					}
 
 					UDPPacket21UserAction.RESET_YAW -> {
 						name = "Yaw reset"
-						VRServer.instance.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (VRServer.instance.configManager.vrConfig.resetsConfig.yawResetDelay * 1000).toLong())
+						VRServer.instance.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (resetsConfig.yawResetDelay * 1000).toLong())
 					}
 
 					UDPPacket21UserAction.RESET_MOUNTING -> {
@@ -560,7 +560,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							.instance
 							.resetHandler
 							.sendStarted(ResetType.Mounting)
-						VRServer.instance.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (VRServer.instance.configManager.vrConfig.resetsConfig.mountingResetDelay * 1000).toLong())
+						VRServer.instance.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (resetsConfig.mountingResetDelay * 1000).toLong())
 					}
 
 					UDPPacket21UserAction.PAUSE_TRACKING -> {

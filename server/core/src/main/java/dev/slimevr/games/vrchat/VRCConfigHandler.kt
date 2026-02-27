@@ -106,6 +106,8 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 	private val listeners: MutableList<VRCConfigListener> = CopyOnWriteArrayList()
 	var currentValues: VRCConfigValues? = null
 	var currentValidity: VRCConfigValidity? = null
+	val mutedWarnings
+		get() = server.configManager.settings.get().vrcConfig.mutedWarnings
 
 	val isSupported: Boolean
 		get() = handler.isSupported
@@ -118,13 +120,19 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		val keys = VRCConfigValidity::class.java.declaredFields.asSequence().map { p -> p.name }
 		if (!keys.contains(key)) return
 
-		if (!server.configManager.vrConfig.vrcConfig.mutedWarnings.contains(key)) {
-			server.configManager.vrConfig.vrcConfig.mutedWarnings.add(key)
-		} else {
-			server.configManager.vrConfig.vrcConfig.mutedWarnings.remove(key)
-		}
+		server.configManager.settings.updateAndSave {
+			if (!mutedWarnings.contains(key)) {
+				mutedWarnings.add(key)
+			} else {
+				mutedWarnings.remove(key)
+			}
 
-		server.configManager.saveConfig()
+			it.copy(
+				vrcConfig = it.vrcConfig.copy(
+					mutedWarnings = mutedWarnings
+				)
+			)
+		}
 
 		val recommended = recommendedValues()
 		val validity = currentValidity ?: return
@@ -134,7 +142,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 				validity,
 				values,
 				recommended,
-				server.configManager.vrConfig.vrcConfig.mutedWarnings,
+				mutedWarnings,
 			)
 		}
 	}
@@ -179,7 +187,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		val values = currentValues ?: return
 		val recommended = recommendedValues()
 		val validity = checkValidity(values, recommended)
-		listener.onChange(validity, values, recommended, server.configManager.vrConfig.vrcConfig.mutedWarnings)
+		listener.onChange(validity, values, recommended, mutedWarnings)
 	}
 
 	fun removeListener(listener: VRCConfigListener) {
@@ -211,7 +219,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		currentValidity = validity
 		currentValues = values
 		listeners.forEach {
-			it.onChange(validity, values, recommended, server.configManager.vrConfig.vrcConfig.mutedWarnings)
+			it.onChange(validity, values, recommended, mutedWarnings)
 		}
 	}
 }

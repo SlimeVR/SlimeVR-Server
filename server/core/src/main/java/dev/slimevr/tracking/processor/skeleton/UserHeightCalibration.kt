@@ -147,8 +147,15 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 	}
 
 	fun applyCalibration() {
-		server.configManager.vrConfig.skeleton.hmdHeight = currentHeight
-		server.configManager.vrConfig.skeleton.floorHeight = 0f
+
+		server.configManager.user.update {
+			it.copy(
+				skeleton = it.skeleton.copy(
+					hmdHeight = currentHeight,
+					floorHeight = 0f
+				)
+			)
+		}
 
 		server.humanPoseManager.resetOffsets()
 		server.humanPoseManager.saveConfig()

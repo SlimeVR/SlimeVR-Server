@@ -16,7 +16,6 @@ import solarxr_protocol.rpc.RpcMessageHeader
 import java.util.function.Consumer
 
 class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetListener {
-	val resetsConfig = api.server.configManager.vrConfig.resetsConfig
 
 	init {
 		this.api.server.resetHandler.addListener(this)
@@ -37,6 +36,8 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 				bodyParts.add(buffer.get().toInt())
 			}
 		}
+
+		val resetsConfig = api.server.configManager.settings.get().resetsConfig
 
 		if (req.resetType() == ResetType.Yaw) {
 			if (bodyParts.isEmpty()) {
@@ -108,7 +109,7 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 
 	fun forAllListeners(action: Consumer<in GenericConnection?>?) {
 		this.api
-			.getAPIServers()
+			.apiServers
 			.forEach(
 				Consumer { server: ProtocolAPIServer? ->
 					server!!

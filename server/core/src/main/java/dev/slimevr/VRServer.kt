@@ -217,13 +217,12 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	@ThreadSafe
-	fun trackerUpdated(tracker: Tracker?) {
+	fun trackerUpdated(tracker: Tracker) {
 		queueTask {
 			humanPoseManager.trackerUpdated(tracker)
 			updateSkeletonModel()
 			refreshTrackersDriftCompensationEnabled()
-			configManager.vrConfig.writeTrackerConfig(tracker)
-			configManager.saveConfig()
+			tracker.readConfig(configManager)
 		}
 	}
 
@@ -284,8 +283,8 @@ class VRServer @JvmOverloads constructor(
 
 	@ThreadSecure
 	fun registerTracker(tracker: Tracker) {
-		configManager.vrConfig.readTrackerConfig(tracker)
 		queueTask {
+			tracker.readConfig(configManager)
 			trackers.add(tracker)
 			trackerAdded(tracker)
 			for (tc in newTrackersConsumers) {

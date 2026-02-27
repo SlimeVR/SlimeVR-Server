@@ -29,15 +29,15 @@ class RPCVRChatHandler(
 		val values = configManager.currentValues
 		val recommended = configManager.recommendedValues()
 		// FUCKING KOTLIN BRING ME BACK MY FUCKING TERNARY OPERATORS!!!!!!!!!!!!!!!!! - With love <3 Futura
-		val validity = if (values !== null) configManager.checkValidity(values, recommended) else null
+		val validity = if (values != null) configManager.checkValidity(values, recommended) else null
 
 		val response = buildVRCConfigStateResponse(
 			fbb,
-			isSupported = api.server.vrcConfigManager.isSupported,
+			isSupported = configManager.isSupported,
 			validity = validity,
 			values = values,
-			recommended = api.server.vrcConfigManager.recommendedValues(),
-			muted = api.server.configManager.vrConfig.vrcConfig.mutedWarnings,
+			recommended = configManager.recommendedValues(),
+			muted = configManager.mutedWarnings,
 		)
 
 		val outbound = rpcHandler.createRPCMessage(
@@ -50,8 +50,7 @@ class RPCVRChatHandler(
 	}
 
 	private fun onToggleMuteRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-		val req = messageHeader.message(VRCConfigSettingToggleMute()) as VRCConfigSettingToggleMute?
-			?: return
+		val req = messageHeader.message(VRCConfigSettingToggleMute()) as VRCConfigSettingToggleMute
 		api.server.vrcConfigManager.toggleMuteWarning(req.key())
 	}
 

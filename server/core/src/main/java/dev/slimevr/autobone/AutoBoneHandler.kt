@@ -100,9 +100,10 @@ class AutoBoneHandler(private val server: VRServer) {
 			if (poseRecorder.isReadyToRecord) {
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Recording...")
 
+				val config = server.configManager.settings.get().autoBone
 				// ex. 1000 samples at 20 ms per sample is 20 seconds
-				val sampleCount = autoBone.globalConfig.sampleCount
-				val sampleRate = autoBone.globalConfig.sampleRateMs / 1000f
+				val sampleCount = config.sampleCount
+				val sampleRate = config.sampleRateMs / 1000f
 				// Calculate total time in seconds
 				val totalTime: Float = sampleCount * sampleRate
 
@@ -124,7 +125,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				// Save a recurring recording for users to send as debug info
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...")
 				autoBone.saveRecording(frames, "LastABRecording.pfs")
-				if (autoBone.globalConfig.saveRecordings) {
+				if (config.saveRecordings) {
 					announceProcessStatus(
 						AutoBoneProcessType.RECORD,
 						"Saving recording (from config option)...",
