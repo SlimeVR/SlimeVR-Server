@@ -25,9 +25,9 @@ version_update-close = Fechar
 ## Tips
 
 tips-find_tracker = Não tem certeza de qual tracker é qual? Sacuda um tracker e o item correspondente será destacado.
-tips-do_not_move_heels = Tenha certeza de não mexer seus calcanhares durante a gravação!
+tips-do_not_move_heels = Certifique-se de manter os calcanhares imóveis durante a gravação!
 tips-file_select = Arraste e solte arquivos para usar, ou <u>pesquise</u>.
-tips-tap_setup = Pode tocar lentamente 2 vezes no seu tracker para o escolher em vez de o selecionar no menu.
+tips-tap_setup = Você pode tocar lentamente no seu tracker 2 vezes para selecioná-lo, em vez de escolhê-lo pelo menu.
 tips-turn_on_tracker = Está usando trackers oficiais do SlimeVR? Lembre-se de <b><em> ligar o seu tracker </em></b> após conecta-lo ao computador!
 tips-failed_webgl = Falha ao inicializar o WebGL.
 
@@ -50,7 +50,7 @@ body_part-RIGHT_HAND = Mão direita
 body_part-RIGHT_UPPER_LEG = Coxa direita
 body_part-RIGHT_LOWER_LEG = Tornozelo direito
 body_part-RIGHT_FOOT = Pé direito
-body_part-UPPER_CHEST = Peito Superior
+body_part-UPPER_CHEST = Peito superior
 body_part-CHEST = Peito
 body_part-WAIST = Cintura
 body_part-HIP = Quadril
@@ -78,6 +78,19 @@ body_part-LEFT_LITTLE_INTERMEDIATE = Mindinho esquerdo Intermediário
 body_part-LEFT_LITTLE_DISTAL = Mindinho esquerdo distal
 body_part-RIGHT_THUMB_METACARPAL = Metacarpo do polegar direito
 body_part-RIGHT_THUMB_PROXIMAL = Polegar direito proximal
+body_part-RIGHT_THUMB_DISTAL = Distal do polegar direito
+body_part-RIGHT_INDEX_PROXIMAL = Porção proximal do dedo indicador direito
+body_part-RIGHT_INDEX_INTERMEDIATE = Porção intermediária do dedo indicador direito
+body_part-RIGHT_INDEX_DISTAL = Porção distal do dedo indicador direito
+body_part-RIGHT_MIDDLE_PROXIMAL = Porção proximal do dedo médio direito
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Porção intermediária do dedo médio direito
+body_part-RIGHT_MIDDLE_DISTAL = Porção distal do dedo médio direito
+body_part-RIGHT_RING_PROXIMAL = Porção proximal do dedo anelar direito
+body_part-RIGHT_RING_INTERMEDIATE = Porção intermediária do dedo anelar direito
+body_part-RIGHT_RING_DISTAL = Porção distal do dedo anelar direito
+body_part-RIGHT_LITTLE_PROXIMAL = Porção proximal do dedo mínimo direito
+body_part-RIGHT_LITTLE_INTERMEDIATE = Porção intermediária do dedo mínimo direito
+body_part-RIGHT_LITTLE_DISTAL = Porção distal do dedo mínimo direito
 
 ## BoardType
 
@@ -126,7 +139,7 @@ skeleton_bone-torso_group-desc =
     Esta é a distância da base do seu pescoço até os seus quadris.
     Para ajustá-la, fique em pé com a postura ereta e modifique o valor até 
     que seus quadris virtuais se alinhem com os reais.
-skeleton_bone-UPPER_CHEST = Tamanho do Peito Superior
+skeleton_bone-UPPER_CHEST = Comprimento do Peito Superior
 skeleton_bone-UPPER_CHEST-desc =
     Esta é a distância da base do seu pescoço até o meio do seu peito.
     Para ajustá-la, configure corretamente o Comprimento do Tronco e faça ajustes em várias posições
@@ -433,7 +446,7 @@ tracker-part_card-unassigned = Não atribuído
 
 ## Body assignment menu
 
-body_assignment_menu = Aonde você quer que esse tracker fique?
+body_assignment_menu = Onde você quer que esse tracker fique?
 body_assignment_menu-description = Escolha a parte do corpo à qual deseja atribuir este tracker. Você também pode gerenciar todos os trackers de uma vez, em vez de configurá-los individualmente.
 body_assignment_menu-show_advanced_locations = Mostrar locais de atribuição avançados
 body_assignment_menu-manage_trackers = Arrumar todos os trackers
@@ -446,7 +459,7 @@ body_assignment_menu-unassign_tracker = Desatribuir tracker
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
+-tracker_selection-part = Qual tracker atribuir ao(à) seu(sua)
 tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
 tracker_selection_menu-HEAD = { -tracker_selection-part } cabeça?
 tracker_selection_menu-NECK = { -tracker_selection-part } pescoço?
@@ -876,10 +889,10 @@ settings-osc-vmc-enable-label = Ativar
 settings-osc-vmc-network = Portas de rede
 settings-osc-vmc-network-description = Defina as portas para escutar e enviar dados via VMC (Virtual Motion Capture).
 settings-osc-vmc-network-port_in =
-    .label = Porta de entrada
+    .label = Porta de Entrada
     .placeholder = Porta de entrada (padrão: 39540)
 settings-osc-vmc-network-port_out =
-    .label = Porta de saída
+    .label = Porta de Saída
     .placeholder = Porta de saída (padrão: 39539)
 settings-osc-vmc-network-address = Endereço de rede
 settings-osc-vmc-network-address-description = Escolha o endereço para envio de dados via VMC (Virtual Motion Capture).
@@ -903,15 +916,15 @@ settings-osc-common-network-port_banned_error = A porta { $port } não pode ser 
 ## Advanced settings
 
 settings-utils-advanced = Avançado
-settings-utils-advanced-reset-gui = Resetar configurações da interface
+settings-utils-advanced-reset-gui = Redefinir configurações da interface
 settings-utils-advanced-reset-gui-description = Restaurar as configurações padrão da interface.
-settings-utils-advanced-reset-gui-label = Resetar interface
-settings-utils-advanced-reset-server = Resetar configuraçõse de tracking
-settings-utils-advanced-reset-server-description = Restaura as configurações de tracking para as configurações iniciais.
-settings-utils-advanced-reset-server-label = Resetar tracking
+settings-utils-advanced-reset-gui-label = Redefinir interface
+settings-utils-advanced-reset-server = Redefinir configuraçõse de rastreamento
+settings-utils-advanced-reset-server-description = Restaura as configurações padrão do rastreamento.
+settings-utils-advanced-reset-server-label = Redefinir rastreamento
 settings-utils-advanced-reset-all = Resetar todas as configurações
 settings-utils-advanced-reset-all-description = Restaura a configuração da interface e de tracking para as configurações iniciais.
-settings-utils-advanced-reset-all-label = Resetar todas as configurações
+settings-utils-advanced-reset-all-label = Redefinir todas
 settings-utils-advanced-reset_warning =
     { $type ->
         [gui]
@@ -1032,7 +1045,7 @@ onboarding-connect_tracker-connection_status-connecting = Tentando conectar à r
 onboarding-connect_tracker-connection_status-looking_for_server = Procurando servidor
 onboarding-connect_tracker-connection_status-connection_error = Não é possível conectar ao Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Não foi possível conectar ao servidor
-onboarding-connect_tracker-connection_status-done = Conectado ao servidor
+onboarding-connect_tracker-connection_status-done = Conectado ao Servidor
 onboarding-connect_tracker-connection_status-no_serial_log = Não foi possível coletar os logs do tracker
 onboarding-connect_tracker-connection_status-no_serial_device_found = Não foi possível encontrar um tracker via USB
 onboarding-connect_serial-error-modal-no_serial_log = O tracker está ligado?
@@ -1260,7 +1273,7 @@ onboarding-manual_proportions-estimated_height = Altura estimada do usuário
 onboarding-automatic_proportions-back = Voltar para Proporções Manuais
 onboarding-automatic_proportions-title = Meça seu corpo
 onboarding-automatic_proportions-description = Para que os trackers SlimeVR funcionem corretamente, precisamos do comprimento dos seus ossos. Esta calibração rápida medirá isso automaticamente para você.
-onboarding-automatic_proportions-manual = Calibragem manual
+onboarding-automatic_proportions-manual = Proporções Manuais
 onboarding-automatic_proportions-prev_step = Passo anterior
 onboarding-automatic_proportions-put_trackers_on-title = Coloque seus trackers
 onboarding-automatic_proportions-put_trackers_on-description = Para calibrar suas proporções, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver quais são quais na figura à direita.
