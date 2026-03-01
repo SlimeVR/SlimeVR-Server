@@ -10,7 +10,7 @@
 websocket-connecting = Připojování k serveru
 websocket-connection_lost = Ztraceno spojení se serverem. Pokouším se znovu připojit...
 websocket-connection_lost-desc = Vypadá to že SlimeVR server spadl. Zkontrolujte záznamy protokolů a restartuje aplikaci
-websocket-timedout = Nelze se připojit k serveru
+websocket-timedout = Nepodařilo se připojit k serveru
 websocket-timedout-desc = Vypadá to že buď vypršel časový limit SlimeVR serveru, a nebo došlo k zhroucení. Zkontrolujte záznamy protokolů a restartuje aplikaci
 websocket-error-close = Ukončit SlimeVR
 websocket-error-logs = Otevření složku s záznamy protokolů
@@ -33,6 +33,10 @@ tips-failed_webgl = Načtení WebGL selhalo.
 
 ## Units
 
+unit-meter = Metr
+unit-foot = Foot
+unit-inch = Palec
+unit-cm = cm
 
 ## Body parts
 
@@ -73,6 +77,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -84,6 +90,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR vývojářská IMU rukavice
+board_type-GESTURES = Gesta
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Obecné nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -129,7 +140,11 @@ reset-reset_all_warning_default-v2 =
     Jste si jistí že to chcete udělat?
 reset-full = Plný Reset
 reset-mounting = Znovu nastavit nasazení
+reset-mounting-feet = Obnovit pozice nasazení nohou
+reset-mounting-fingers = Obnovit pozice nasazení prstů
 reset-yaw = Rychlý reset
+reset-error-no_feet_tracker = Žádný tracker nohou nebyl přiřazen
+reset-error-no_fingers_tracker = Žádné trackery prstů nebyly přiřazeny
 
 ## Serial detection stuff
 
@@ -149,11 +164,14 @@ navbar-trackers_assign = Přiřazení trackerů
 navbar-mounting = Kalibrace nasazení
 navbar-onboarding = Průvodce nastavením
 navbar-settings = Nastavení
+navbar-connect_trackers = Připojte Trackery
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Nahrát BVH
+bvh-stop_recording = Uložit BVH záznam
 bvh-recording = Nahrávání...
+bvh-save_title = Uložit BVH záznam
 
 ## Tracking pause
 
@@ -194,7 +212,7 @@ widget-imu_visualizer-rotation_raw = Nezpracované
 widget-imu_visualizer-rotation_preview = Náhled
 widget-imu_visualizer-acceleration = Akcelerace
 widget-imu_visualizer-position = Pozice
-widget-imu_visualizer-stay_aligned = Zůstaň Srovaný (Stay Aligned)
+widget-imu_visualizer-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 
 ## Widget: Skeleton Visualizer
 
@@ -217,12 +235,13 @@ tracker-table-column-name = Název
 tracker-table-column-type = Typ
 tracker-table-column-battery = Baterie
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Ztráta Paketů
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Teplota °C
 tracker-table-column-linear-acceleration = Akcel. X/Y/Z
 tracker-table-column-rotation = Rotace X/Y/Z
 tracker-table-column-position = Pozice X/Y/Z
-tracker-table-column-stay_aligned = Zůstaň Srovaný (Stay Aligned)
+tracker-table-column-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -258,6 +277,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Povoleno
        *[NOT_SUPPORTED] Není podporováno
     }
+tracker-infos-packet_loss = Ztráta Paketů
+tracker-infos-packets_lost = Pakety Ztraceny
+tracker-infos-packets_received = Pakety Přijaty
 
 ## Tracker settings
 
@@ -288,10 +310,16 @@ tracker-settings-name_section-label = Název trackeru
 tracker-settings-forget = Zapomenout tracker
 tracker-settings-forget-description = Odebere tracker z SlimeVR Serveru a zabrání jeho opětovnému připojení do té doby, dokud nebude server restarován. Konfigurace trackeru nebude ztracena.
 tracker-settings-forget-label = Zapomenout tracker
+tracker-settings-update-unavailable-v2 = Žádné vydání nebyla nalezena
+tracker-settings-update-incompatible = Nelze aktualizovat. Nekompatibilní deska nebo verze firmwaru
 tracker-settings-update-low-battery = Nelze provést aktualizaci. Baterie má méně než 50%
 tracker-settings-update-up_to_date = Aktuální
+tracker-settings-update-blocked = Není dostupná aktualizace. Žádná jiná verze není k dispozici
 tracker-settings-update = Aktualizovat nyní
 tracker-settings-update-title = Verze Firmwareu
+tracker-settings-current-version = Současný
+tracker-settings-latest-version = Nejnovější
+tracker-settings-build-date = Datum sestavení
 
 ## Tracker part card info
 
@@ -357,16 +385,20 @@ mounting_selection_menu-close = Zavřít
 
 settings-sidebar-title = Nastavení
 settings-sidebar-general = Obecné
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mechanika trackerů
-settings-sidebar-stay_aligned = Zůstaň Srovaný (Stay Aligned)
+settings-sidebar-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
 settings-sidebar-fk_settings = Nastavení trackování
 settings-sidebar-gesture_control = Ovládání gesty
 settings-sidebar-interface = Rozhraní
 settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = VRChat OSC tracker
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Nástroje
 settings-sidebar-serial = Sériová konzole
 settings-sidebar-appearance = Vzhled
+settings-sidebar-home = Domovská obrazovka
+settings-sidebar-checklist = Přehled trackování
 settings-sidebar-notifications = Notifikace
 settings-sidebar-behavior = Chování
 settings-sidebar-firmware-tool = Nástroj pro DIY firmware
@@ -452,18 +484,25 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Použití magnetometr na všech trackerech které pro to mají kompatibilní firmware, snížení drifutu v stailních magnetických prostředích.
     Může být vypnuto pro jednotivé trackery v jejich nastaveních. <b> Prosíme nevypínejte žádný z trackerů při přepínání tohoto nastavení! </b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Použít magnetometru na trackerech
-settings-stay_aligned = Zůstaň Srovaný (Stay Aligned)
-settings-stay_aligned-description = Zůstaň Srovaný redukuje drift pomocí postupného upravování vašich trackerů do vaší relaxůjící pózy.
-settings-stay_aligned-setup-label = Nastavte Zůstaň Sronaný
-settings-stay_aligned-setup-description = Musíte dokončit "Nastvení Zůstaň Srovaný" pro zapnutí Zůstaň Srovnaný.
+settings-general-tracker_mechanics-trackers_over_usb = Trackery přes USB
+settings-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
+settings-stay_aligned-description = Zůstaň Srovnaný (Stay Aligned) redukuje drift pomocí postupného upravování vašich trackerů do vaší relaxůjící pózy.
+settings-stay_aligned-setup-label = Nastavte Zůstaň Srovnaný (Stay Aligned)
+settings-stay_aligned-setup-description = Musíte dokončit "Nastavení Zůstaň Srovnaný" pro zapnutí Zůstaň Srovnaný.
 settings-stay_aligned-warnings-drift_compensation = ⚠ Prosím vypněte Kompenzaci Driftu! Kompenzace driftu bude narušovat funkčnost Zůstaň Srovnaný.
 settings-stay_aligned-enabled-label = Upravit trackery
+settings-stay_aligned-hide_yaw_correction-label = Skrýt ladění (pro srovnání s vypnutým Zůstaň Srovnaný)
 settings-stay_aligned-general-label = Obecné
 settings-stay_aligned-relaxed_poses-label = Relaxovací Póza
+settings-stay_aligned-relaxed_poses-description = Zůstaň Srovnaný používá vaše uvolněné pózy k udržení srovnání trackerů. K aktualizaci těchto póz použijte "Nastavte Zůstaň Srovnaný".
 settings-stay_aligned-relaxed_poses-standing = Upravit trackery při stoje
+settings-stay_aligned-relaxed_poses-sitting = Upravit pozici trackerů při sezení na židli
+settings-stay_aligned-relaxed_poses-flat = Upravte pozici trackerů při sezení na zemi, nebo ležení na zádech
+settings-stay_aligned-relaxed_poses-save_pose = Uložit pózu
 settings-stay_aligned-relaxed_poses-reset_pose = Obnovit pózu
 settings-stay_aligned-relaxed_poses-close = Zavřít
 settings-stay_aligned-debug-label = Ladění
+settings-stay_aligned-debug-description = Při nahlašování problémů s Zůstaň Srovnaný, prosím zahrňte vaše nastavení.
 settings-stay_aligned-debug-copy-label = Zkopírovat nastavení do schránky
 
 ## FK/Tracking settings
@@ -472,7 +511,7 @@ settings-general-fk_settings = Nastavení trackování
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
-settings-general-fk_settings-leg_tweak-floor_clip = Podlahovej clip
+settings-general-fk_settings-leg_tweak-floor_clip = Clip podlahy
 # Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
@@ -486,11 +525,14 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Připnutí k pod
 settings-general-fk_settings-leg_tweak-toe_snap-description = Přichycení špiček se pokouší odhadnout rotaci vašich chodidel v případě, že nepoužíváte trackery chodidel.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Narovnání chodidla při dotyku narovnává chodidla tak, aby byla rovnoběžně se zemí.
 settings-general-fk_settings-leg_fk = Sledování nohou
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Vynutit kalibraci nasazení pro trackery nohou
 settings-general-fk_settings-enforce_joint_constraints = Limity kostry
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Prosazování omezení
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zabránit rotaci kloubům za jejich limit
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Opravit pomocí omezení
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Opravit rotaci kloubů, když překročí svůj limit
+settings-general-fk_settings-ik = Data pozice
+settings-general-fk_settings-ik-use_position = Použít Data pozice
 settings-general-fk_settings-arm_fk = Trackování ramen
 settings-general-fk_settings-arm_fk-description = Vynutit sledování rukou z VR headsetu, i když jsou k dispozici údaje o poloze rukou z trackerů.
 settings-general-fk_settings-arm_fk-force_arms = Vynutit ruce z VR Headsetu
@@ -614,6 +656,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     Aby jsme mohli poskytnout nejlepší zážitek uživatelům, schromažďujeme proto anonymizované zprávy o chybých, metriky výkon a informace o operačním systém. To nám pomáhá zjištovat chyby a problémy s SlimeVR. Tyto matriky jsou schromažďovány prostřednictvím Sentry.io.
 settings-interface-behavior-error_tracking-label = Odeslat chyby vývojářům
+settings-interface-behavior-bvh_directory = Cesta pro uložení BVH záznamů
+settings-interface-behavior-bvh_directory-description = Vyberte cestu k uložení záznamů BHV. namísto toho, abyste pokaždé vybírali, kam je uložit.
+settings-interface-behavior-bvh_directory-label = Lokace pro BVH nahrávky
 
 ## Serial settings
 
@@ -624,7 +669,7 @@ settings-serial-description =
     Může být užitečné, pokud potřebujete zjistit, zda se firmware chová špatně.
 settings-serial-connection_lost = Ztráta připojení k seriálu, Připojení se obnovuje...
 settings-serial-reboot = Restartovat
-settings-serial-factory_reset = Obnovení továrního nastavení
+settings-serial-factory_reset = Obnovení do továrního nastavení
 # This cares about multilines
 # <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
@@ -637,6 +682,10 @@ settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skenovat WiFi
 settings-serial-file_type = Prostý text
 settings-serial-save_logs = Uložit jako soubor
+settings-serial-send_command = Odeslat
+settings-serial-send_command-placeholder = Příkaz...
+settings-serial-send_command-warning-ok = Vím, co dělám!
+settings-serial-send_command-warning-cancel = Zrušit
 
 ## OSC router settings
 
@@ -765,9 +814,14 @@ settings-utils-advanced-open_logs-label = Otevřít složku
 
 ## Home Screen
 
+settings-home-list-layout = Uspořádání seznamu trackerů
+settings-home-list-layout-desc = Vyberte jedno z možných uspořádání domovské obrazovky.
+settings-home-list-layout-grid = Mřížka
+settings-home-list-layout-table = Tabulka
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Aktivní kroky
 
 ## Setup/onboarding menu
 
@@ -784,6 +838,7 @@ onboarding-setup_warning-cancel = Pokračovat v nastavení
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Zpět na úvod
+onboarding-wifi_creds-v2 = Trackey používající Wi-Fi
 onboarding-wifi_creds-skip = Přeskočit nastavení Wi-Fi
 onboarding-wifi_creds-submit = Odeslat!
 onboarding-wifi_creds-ssid =
@@ -793,6 +848,8 @@ onboarding-wifi_creds-ssid-required = Je vyžadován název sítě Wi-Fi
 onboarding-wifi_creds-password =
     .label = Heslo
     .placeholder = Zadejte heslo
+onboarding-wifi_creds-dongle-title = Trackery používající dongle
+onboarding-wifi_creds-dongle-continue = Pokračovat s donglem
 
 ## Mounting setup
 
@@ -814,7 +871,7 @@ onboarding-reset_tutorial-1 =
 
 ## Setup start
 
-onboarding-home = Vítejte k SlimeVR
+onboarding-home = Vítejte ve SlimeVR
 onboarding-home-start = Pusťme se do toho!
 
 ## Setup done
@@ -885,6 +942,7 @@ onboarding-assignment_tutorial-done = Nachystal jsem samolepky a pásky!
 onboarding-assign_trackers-back = Zpět na přihlašovací údaje Wi-Fi
 onboarding-assign_trackers-title = Přiřazení trackerů
 onboarding-assign_trackers-description = Vyberte, na jakou končetinu každý tracker patří. Klikněte na místo, kam chcete umístit tracker
+onboarding-assign_trackers-unassign_all = Zrušit přiřazení všech trackerů
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -932,7 +990,7 @@ onboarding-assign_trackers-warning-LEFT_FOOT =
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting = Jakou metodu nasazení trackerů použít?
+onboarding-choose_mounting = Jakou metodu nasazení trackerů chcete použít?
 # Multiline text
 onboarding-choose_mounting-description = Správná orientace nasazení zajistí přesné sledování trackerů na těle.
 onboarding-choose_mounting-auto_mounting = Automatická detekce nasazení
@@ -975,12 +1033,15 @@ onboarding-automatic_mounting-mounting_reset-step-0 = 1. Dřepněte si, jako př
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Stiskněte tlačítko "Resetovat nasazení trackerů" a  vyčkejte 3 sekundy. Orientace nasazení trackerů se nastaví na základní hodnoty.
 onboarding-automatic_mounting-preparation-title = Příprava
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Stiskněte tlačítko pro "Plný Reset"
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Zůstaňte v pozici, dokud 3s časovač neskončí.
 onboarding-automatic_mounting-put_trackers_on-title = Nasaďte si trackery
 onboarding-automatic_mounting-put_trackers_on-description = Pro kalibraci směru nasazení použijeme právě přiřazené trackery. Nasaďte si prosím všechny trackery. Můžete zkontrolovat jejich umístění na obrázku vpravo.
 onboarding-automatic_mounting-put_trackers_on-next = Mám nasazené všechny trackery
+onboarding-automatic_mounting-return-home = Hotovo
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Jít zpět na Škálování Proporcí
 onboarding-manual_proportions-title = Manuální proporce těla
 onboarding-manual_proportions-fine_tuning_button = Automatické jemné doladění proporcí
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Pro použití automatického jemného lazení, prosím připojte VR headset
@@ -1081,27 +1142,54 @@ onboarding-automatic_proportions-smol_warning-cancel = Jít zpět
 
 ## User height calibration
 
+onboarding-user_height-title = Jaká je vaše výška?
+onboarding-user_height-calculate = Vypočítejte mou výšku automaticky
+onboarding-user_height-next_step = Uložit a pokračovat
+onboarding-user_height-manual-proportions = Manuální Proporce
+onboarding-user_height-calibration-title = Průběh kalibrace
+onboarding-user_height-calibration-WAITING_FOR_RISE = Postavte se zpátky
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Ujistěte se, že je vaše hlava ve vodorovné pozici
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Nedívejte se na podlahu
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Nedívej se příliš vysoko
+onboarding-user_height-calibration-RECORDING_HEIGHT = Znovu se postavte a nehýbejte se!
+onboarding-user_height-calibration-DONE = Úspěch!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Časový limit kalibrace vypršel, zkuste to znovu.
+onboarding-user_height-calibration-error = Kalibrace selhala
 
 ## Stay Aligned setup
 
-onboarding-stay_aligned-title = Zůstaň Srovaný!
-onboarding-stay_aligned-description = Nakonfigurujte Zustaň Srovnaný, aby byly vaše trackery srovnáný.
+onboarding-stay_aligned-title = Zůstaň Srovnaný!
+onboarding-stay_aligned-description = Nakonfigurujte Zůstaň Srovnaný, aby byly vaše trackery srovnány.
 onboarding-stay_aligned-put_trackers_on-title = Nasaďte si trackery
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Aktuálně máte méně než 5 připojených a přiřazených trackerů! Toto je minimální počet trackerů potřebné pro správné fungování funkce Zůstaň Srovnaný.
 onboarding-stay_aligned-put_trackers_on-next = Mám nasazené všechny trackery
 onboarding-stay_aligned-verify_mounting-title = Zkotrolujte nasazení
 onboarding-stay_aligned-verify_mounting-step-1 = 1. Pohybujte se ve stoje.
 onboarding-stay_aligned-verify_mounting-step-2 = 2. Posaďte se a pohybujte nohama a chodidly.
+onboarding-stay_aligned-verify_mounting-redo_mounting = Předělat kalibraci nasazení
+onboarding-stay_aligned-preparation-title = Příprava
+onboarding-stay_aligned-preparation-tip = Ujistěte se, že stojíte vzpřímeně. koukáte vpřed a máte ruce podél těla.
+onboarding-stay_aligned-relaxed_poses-standing-title = Uvolněná pozice ve stoje
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stůjte v pohodlné pozici. Relaxujte!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
+onboarding-stay_aligned-relaxed_poses-sitting-title = Uvolněná póza při sezení v židli
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Posaďte se do pohodlné pozice, Relaxujte!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
+onboarding-stay_aligned-relaxed_poses-flat-title = Uvolněná pozice při sezení na zemi
 onboarding-stay_aligned-relaxed_poses-skip_step = Přeskočit
-onboarding-stay_aligned-done-title = Zustaň Srovnaný zapnuto!
+onboarding-stay_aligned-done-title = Zůstaň Srovnaný zapnuto!
+onboarding-stay_aligned-done-description = Váš nastavení Zůstaň Srovnaný je dokončeno!
+onboarding-stay_aligned-done-description-2 = Vaše nastavení je dokončeno! Pokud chcete vaše pózy znovu zkalibrovat, můžete proces zopakovat.
 onboarding-stay_aligned-previous_step = Předchozí
 onboarding-stay_aligned-next_step = Další
 onboarding-stay_aligned-restart = Restart
 onboarding-stay_aligned-done = Hotovo
+onboarding-stay_aligned-manual_mounting-done = Hotovo
 
 ## Home
 
 home-no_trackers = Nebyly zjištěny ani přiřazeny žádné trackery
+home-settings-close = Zavřít
 
 ## Trackers Still On notification
 
@@ -1137,8 +1225,27 @@ firmware_tool = Nástroj pro DIY firmwere
 firmware_tool-description = Umožní vám konfigurovat a flashovat vaše DIY trackery
 firmware_tool-not_available = Jejda, nástroj pro firmware není v momentální chvíli k dispozici, Vraťte se později!
 firmware_tool-not_compatible = Nástroj pro firmware není kompatibilní s touhle verzí serveru. Aktualizujte prosím svůj server.
+firmware_tool-select_source = Vyberte firmware k flashování
+firmware_tool-select_source-board_type = Typ desky
+firmware_tool-select_source-firmware = Zdrojový kód firmwaru
+firmware_tool-select_source-version = Verze firmwaru
+firmware_tool-select_source-official = Oficiální
+firmware_tool-select_source-dev = Vývojářské
+firmware_tool-select_source-not_selected = Nebyl vybrán žádný zdroj
+firmware_tool-board_defaults = Nekonfigurujte vaší desku
+firmware_tool-board_defaults-add = Přidat
+firmware_tool-board_defaults-reset = Restartovat do výchozího nastavení
+firmware_tool-board_defaults-error-required = Povinné pole
+firmware_tool-board_defaults-error-format = Neplatný formát
+firmware_tool-board_defaults-error-format-number = Není číslo
 firmware_tool-flash_method_step = Metoda flashování
 firmware_tool-flash_method_step-description = Prosím zvolte metodu flashování, kterou chcete použít
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = Použijte "wireless" metodu. Vaše trackery budou používát Wi-Fi pro aktualizování jejich firmweru. Funguje pouze u trackerů, které již byly nastaveny.
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Použíjte USB kabel k aktualizování vaších trackerů
 firmware_tool-flashbtn_step = Stiskněte tlačítko bootu btn
 firmware_tool-flashbtn_step-description = Než přejdeme na další krok, je tady pár věcí které musíte udělat
 firmware_tool-flashbtn_step-board_SLIMEVR = Vypněte tracker, vyndejte z obalu (jestli v nějakém je), Připojte USB kabel k tomuto počítači a poté následujte jeden z kroků revize odpovídající k vaší verzi desky trackeru SlimeVR:
@@ -1147,8 +1254,10 @@ firmware_tool-flashbtn_step-board_OTHER =
     Ve většině případů to znamená stisknutí boot tlačítka na desce trakeru před tím než začne proces flashování.
     Pokud procesu flashování vyprší čas hned na začátku flashování, to nejspíš znamená že tracker nebyl v řežimu bootloaderu
     Podívejte se prosím na instrukce procesu flashování pro desku vašeho zařízení, aby jste zjistili jak se dostat do režimu bootloaderu
+firmware_tool-flash_method_ota-title = Flashování přes Wi-Fi
 firmware_tool-flash_method_ota-devices = Byla detekována zařízení s OTA:
 firmware_tool-flash_method_ota-no_devices = Nebyly nalezeny žádné zákadní desky které by mohly být aktualizované pomocí OTA, prosím ujistěte se že jste zvolily správný typ základní desky
+firmware_tool-flash_method_serial-title = Flashování přes USB
 firmware_tool-flash_method_serial-wifi = Přihlašovací údaje Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Detekována Sériová Zařízení:
 firmware_tool-flash_method_serial-devices-placeholder = Vyberte sériové zařízení
@@ -1157,12 +1266,16 @@ firmware_tool-build_step = Sestavování
 firmware_tool-build_step-description = Firmwere se sestavuje, čekejte prosím
 firmware_tool-flashing_step = Flashování
 firmware_tool-flashing_step-description = Probíhá flashování vašich trackerů, prosím postupujte dle instrukcí na obrazovce
+firmware_tool-flashing_step-warning-v2 = Během procesu nahrávání prosíme NEVYPÍNEJTE ani NEODPOJUJTE vaše trackery pokud k tomu nejste vyzváni, učiněním můžete způsobit že deska trackeru se stane nefunkční.
 firmware_tool-flashing_step-flash_more = Flashnout více trackerů
 firmware_tool-flashing_step-exit = Odejít
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Čekání na sestavení...
 firmware_tool-build-CREATING_BUILD_FOLDER = Vytváření složky pro sestavení
+firmware_tool-build-DOWNLOADING_SOURCE = Stahování zdrojového kódu
+firmware_tool-build-EXTRACTING_SOURCE = Extrahování zdrojového kódu
 firmware_tool-build-BUILDING = Sestavování firmweru
 firmware_tool-build-SAVING = Ukládání sestavení
 firmware_tool-build-DONE = Sestavení dokončeno
@@ -1171,6 +1284,7 @@ firmware_tool-build-ERROR = Nepodařilo se sestavit firmwere
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Stahování firmwaru
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Vypněte a znovu zapněte tracker prosím
 firmware_update-status-AUTHENTICATING = Autentifikování s mcu
 firmware_update-status-UPLOADING = Nahrávání firmwaru
 firmware_update-status-SYNCING_WITH_MCU = Synchronizace s MCU
@@ -1195,7 +1309,7 @@ firmware_update-no_devices = Prosím ujistěte se, že tracker který chcete akt
 firmware_update-changelog-title = Aktualizování na { $version }
 firmware_update-looking_for_devices = Hledání zařízení pro aktualizaci
 firmware_update-retry = Opakovat
-firmware_update-update = Aktualizovat Zvolený/é Tracker/y
+firmware_update-update = Aktualizovat Zvolené Trackery
 firmware_update-exit = Odejít
 
 ## Tray Menu
@@ -1225,10 +1339,15 @@ unknown_device-modal-description =
     Chcete jej připojit k SlimeVR?
 unknown_device-modal-confirm = Jasně!
 unknown_device-modal-forget = Ignoruj
+# VRChat config warnings
+vrc_config-page-title = Varování VRChat konfigurace
+vrc_config-page-desc = Tato stránka slouží k zobrazení vašeho aktuálního stavu nastavení ve VRChat. přesněji, nástavní které jsou nekompatibilní s SlimeVR. Je silně doporučeno poupravit všechny chybné nastavení které jsou zde zobrazeny pro nejlepší zážitek s SlimeVR.
 vrc_config-page-help = Nemůžete najít specifické nastavení?
+vrc_config-page-help-desc = Podívejte se na naší <a>dokumentaci k tomuto tématu!</a>
 vrc_config-page-big_menu = Sledování & IK (Velké Menu)
 vrc_config-page-big_menu-desc = Nastavení souvicející s IK ve velké nabídce nastavení
 vrc_config-page-wrist_menu = Sledování & IK (Zápěstní menu)
+vrc_config-page-wrist_menu-desc = Nastavení související s IK najdete v malém (zápěstním) menu
 vrc_config-on = Zapnuto
 vrc_config-off = Vypnuto
 vrc_config-invalid = Máte špatně nakonfigurované VRChat nastavení!
@@ -1241,6 +1360,7 @@ vrc_config-mute-btn = Ztlumení
 vrc_config-unmute-btn = Zrušit ztlumení
 vrc_config-legacy_mode = Použít starší řešení IK
 vrc_config-disable_shoulder_tracking = Vypnout sledování ramen
+vrc_config-shoulder_width_compensation = Kompenzace Šířky Ramen
 vrc_config-spine_mode = Režim páteře FTB
 vrc_config-tracker_model = Model FBT trackeru
 vrc_config-avatar_measurement_type = Meření avataru
@@ -1272,3 +1392,24 @@ error_collection_modal-cancel = Nesouhlasím
 
 ## Tracking checklist section
 
+tracking_checklist-settings-close = Zavřít
+tracking_checklist-status-incomplete = Nejste připraveni používat SlimeVR!
+tracking_checklist-status-complete = Jste připravení k použití SlimeVR
+tracking_checklist-FULL_RESET = Proveďte plné obnovení
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR není zapnut
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR není zapnut. Používáte ho pro VR?
+tracking_checklist-STEAMVR_DISCONNECTED-open = Spusťte SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrujte vaše trackery
+tracking_checklist-TRACKER_ERROR = Trackery s chybami
+tracking_checklist-VRCHAT_SETTINGS = Nakonfigurujte nastavení VRChat
+tracking_checklist-VRCHAT_SETTINGS-open = Přejít k varování ve VRChat
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Změňte profil sítě
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otevřete Ovládací Panel
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Nakonfigurujte Zůstaň Srovnaný
+tracking_checklist-ignore = Ignorovat
+preview-mocap_mode_soon = Režim Mocap (brzy™)
+toolbar-mounting_calibration = Kalibrace nasazení
+toolbar-mounting_calibration-default = Tělo
+toolbar-mounting_calibration-feet = Chodidla
+toolbar-mounting_calibration-fingers = Prsty
+toolbar-drift_reset = Restartování driftu
