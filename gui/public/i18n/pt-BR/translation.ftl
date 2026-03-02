@@ -343,7 +343,7 @@ tracker-status-none = Sem Status
 tracker-status-busy = Ocupado
 tracker-status-error = Erro
 tracker-status-disconnected = Desconectado
-tracker-status-occluded = Ocluso
+tracker-status-occluded = Ocluído
 tracker-status-ok = Conectado
 tracker-status-timed_out = Tempo limite atingido
 
