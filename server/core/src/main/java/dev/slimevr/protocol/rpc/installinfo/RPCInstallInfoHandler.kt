@@ -10,21 +10,14 @@ import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
 import java.io.IOException
 
-class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI){
+class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	init {
 		rpcHandler.registerPacketListener(RpcMessage.InstalledInfoRequest, ::onInstalledInfoRequest)
 	}
 
 	fun onInstalledInfoRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		val udevResponse = executeShellCommand("udevadm", "cat")
-		var response = false
-		if (udevResponse.contains("slime")) {
-			response = true
-		}
-		else {
-			response = false
-		}
-
+		val response = udevResponse.contains("slime")
 		val fbb = FlatBufferBuilder(1024)
 		val outbound = this.rpcHandler.createRPCMessage(
 			fbb,
@@ -34,8 +27,6 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI){
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
-
-
 
 	private fun executeShellCommand(vararg command: String): String = try {
 		val process = ProcessBuilder(*command)

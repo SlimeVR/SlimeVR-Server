@@ -8,14 +8,12 @@ class Windows {
 	val path = Paths.get("").toAbsolutePath().toString()
 
 	fun updateWindows() {
-		// First check if everything is already installed. Install it if it isn't
 		usbDrivers()
 		steamVRDriver()
 		feeder()
 	}
 
 	fun usbDrivers() {
-
 		val installedDriversList = executeShellCommand("powershell.exe", "pnputil /enum-drivers")
 		val ch341ser = installedDriversList.contains("ch341ser.inf")
 		val ch343ser = installedDriversList.contains("ch343ser.inf")
@@ -26,13 +24,17 @@ class Windows {
 			return
 		}
 		LogManager.info("Cannot find one of the drivers, installing drivers")
-		val driverinstallOutput = executeShellCommand("$path\\installusbdrivers.bat")
-		LogManager.info(driverinstallOutput)
+		val driverInstallOutput = executeShellCommand("$path\\installusbdrivers.bat")
+		LogManager.info(driverInstallOutput)
 	}
 
-
 	fun feeder() {
-		executeShellCommand("${path}\\${WINDOWSFEEDERDIRECTORY}\\SlimeVR-Feeder-App.exe", "--install")
+		val feederOutput = executeShellCommand("${path}\\${WINDOWSFEEDERDIRECTORY}\\SlimeVR-Feeder-App.exe", "--install")
+		if (feederOutput.lowercase().contains("manifest is not installed")) {
+			LogManager.warning("Could not install feeder application")
+		} else {
+			LogManager.info("Successfully installed feeder application")
+		}
 	}
 
 	fun steamVRDriver() {
@@ -61,6 +63,5 @@ class Windows {
 	companion object {
 		private const val WINDOWSSTEAMVRDRIVERDIRECTORY = "slimevr-openvr-driver-win64"
 		private const val WINDOWSFEEDERDIRECTORY = "SlimeVR-Feeder-App-win64"
-
 	}
 }
