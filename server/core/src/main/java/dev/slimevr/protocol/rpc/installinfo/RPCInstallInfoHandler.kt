@@ -37,6 +37,6 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		}
 	} catch (e: IOException) {
 		LogManager.warning("Error executing shell command: ${e.message}")
-		"Error executing shell command: ${e.message}"
+		""
 	}
 }
