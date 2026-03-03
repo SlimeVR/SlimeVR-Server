@@ -14,7 +14,7 @@ class Windows {
 	}
 
 	fun usbDrivers() {
-		val installedDriversList = executeShellCommand("powershell.exe", "pnputil /enum-drivers")
+		val installedDriversList = executeShellCommand("powershell.exe", "pnputil", "/enum-drivers")
 		val ch341ser = installedDriversList.contains("ch341ser.inf")
 		val ch343ser = installedDriversList.contains("ch343ser.inf")
 		val silabser = installedDriversList.contains("silabser.inf")
@@ -23,7 +23,7 @@ class Windows {
 			LogManager.info("drivers already installed!")
 			return
 		}
-		LogManager.info("Cannot find one of the drivers, installing drivers")
+		LogManager.info("USB drivers not found, installing")
 		val driverInstallOutput = executeShellCommand("$path\\installusbdrivers.bat")
 		LogManager.info(driverInstallOutput)
 	}

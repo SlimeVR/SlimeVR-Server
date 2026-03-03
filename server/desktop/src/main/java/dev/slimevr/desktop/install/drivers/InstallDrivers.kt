@@ -6,7 +6,7 @@ class InstallDrivers {
 
 	val os = System.getProperty("os.name").lowercase()
 
-	fun runUpdater() {
+	fun runInstaller() {
 		if (os.contains("linux")) {
 			val linuxUpdater = Linux()
 			val linuxFlavour = executeShellCommand("cat", "/proc/version")

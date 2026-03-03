@@ -100,8 +100,13 @@ fun main(args: Array<String>) {
 		return
 	}
 
-	val installDrivers = InstallDrivers()
-	installDrivers.runUpdater()
+	// Only install automate install of drivers when running in steam
+	val path = System.getProperty("user.dir").lowercase()
+	LogManager.info(path)
+	if (path.contains("steam")) {
+		val installDrivers = InstallDrivers()
+		installDrivers.runInstaller()
+	}
 
 	val configDir = resolveConfig()
 	LogManager.info("Using config dir: $configDir")
