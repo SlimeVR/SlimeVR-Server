@@ -17,6 +17,10 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 
 	fun onInstalledInfoRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		val udevResponse = executeShellCommand("udevadm", "cat")
+		if (udevResponse == null) {
+			LogManager.info("Server couldn't verify if udev is installed")
+			return
+		}
 		val response = udevResponse.contains("slime")
 		val fbb = FlatBufferBuilder(1024)
 		val outbound = this.rpcHandler.createRPCMessage(
@@ -28,7 +32,7 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		conn.send(fbb.dataBuffer())
 	}
 
-	private fun executeShellCommand(vararg command: String): String = try {
+	private fun executeShellCommand(vararg command: String): String? = try {
 		val process = ProcessBuilder(*command)
 			.redirectErrorStream(true)
 			.start()
@@ -37,6 +41,6 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		}
 	} catch (e: IOException) {
 		LogManager.warning("Error executing shell command: ${e.message}")
-		""
+		null
 	}
 }

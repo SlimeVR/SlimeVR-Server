@@ -1,13 +1,12 @@
 package dev.slimevr.desktop.install.drivers
 
 import io.eiren.util.logging.LogManager
-import java.nio.file.Paths
 import kotlin.io.path.Path
 import kotlin.io.path.exists
 
 class Linux {
 
-	val path = Paths.get("").toAbsolutePath().toString()
+	val path: String? = System.getProperty("user.dir")
 
 	fun updateLinux() {
 		updateLinuxSteamVRDriver()
@@ -22,6 +21,10 @@ class Linux {
 
 	fun updateLinuxSteamVRDriver() {
 		var vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
+		if (vrPathRegContents == null) {
+			LogManager.warning("Error installing SteamVR driver.")
+			return
+		}
 		var isDriverRegistered = vrPathRegContents.contains("slimevr")
 		if (isDriverRegistered) {
 			LogManager.info("steamVR driver is already registered. Skipping...")
@@ -30,10 +33,14 @@ class Linux {
 		executeShellCommand(
 			"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
 			"adddriver",
-			"$path/${LINUXSTEAMDRIVERDIRECTORY}",
+			"$path/${LINUX_STEAM_DRIVER_DIRECTORY}",
 		)
 
 		vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
+		if (vrPathRegContents == null) {
+			LogManager.warning("Error installing SteamVR driver.")
+			return
+		}
 		isDriverRegistered = vrPathRegContents.contains("slimevr")
 		if (!isDriverRegistered) {
 			LogManager.warning("Server couldn't install SlimeVR driver.")
@@ -43,8 +50,12 @@ class Linux {
 	}
 
 	fun feeder() {
-		executeShellCommand("chmod", "+x", "$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App")
-		val feederOutput = executeShellCommand("$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App", "--install")
+		executeShellCommand("chmod", "+x", "$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App")
+		val feederOutput = executeShellCommand("$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App", "--install")
+		if (feederOutput == null) {
+			LogManager.warning("Error installing feeder")
+			return
+		}
 		LogManager.info(feederOutput)
 		if (feederOutput.lowercase().contains("manifest is not installed")) {
 			LogManager.warning("Could not install feeder application")
@@ -61,6 +72,10 @@ class Linux {
 		}
 		val res = executeShellCommand("pkexec", "cp", "$path/69-slimevr-devices.rules", "/etc/udev/rules.d/69-slimevr-devices.rules")
 		LogManager.info(res)
+		if (res == null) {
+			LogManager.warning("Error during udev step")
+			return
+		}
 		if (res.contains("Error")) {
 			LogManager.warning("Error installing udev rules")
 		} else {
@@ -69,7 +84,7 @@ class Linux {
 	}
 
 	companion object {
-		private const val LINUXSTEAMDRIVERDIRECTORY = "slimevr-openvr-driver-x64-linux"
-		private const val LINUXFEEDERDIRECTORY = "SlimeVR-Feeder-App-Linux"
+		private const val LINUX_STEAM_DRIVER_DIRECTORY = "slimevr-openvr-driver-x64-linux"
+		private const val LINUX_FEEDER_DIRECTORY = "SlimeVR-Feeder-App-Linux"
 	}
 }

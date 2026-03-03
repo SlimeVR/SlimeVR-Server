@@ -1,4 +1,4 @@
-import { Localized, useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
 import { useConfig } from '@/hooks/config';
@@ -14,7 +14,6 @@ export function ErrorCollectingConsentPage() {
     setConfig({ errorTracking: false });
   };
 
-  const { l10n } = useLocalization();
   return (
     <div className="flex items-center justify-center h-full flex-col gap-3 p-4">
       <div className="max-w-2xl flex flex-col gap-4">
@@ -41,9 +40,8 @@ export function ErrorCollectingConsentPage() {
             variant="primary"
             to="/onboarding/wifi-creds"
             onClick={accept}
-          >
-            {l10n.getString('error_collection_modal-confirm')}
-          </Button>
+            id="error_collection_modal-confirm"
+          />
         </div>
       </div>
     </div>

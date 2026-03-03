@@ -100,10 +100,9 @@ fun main(args: Array<String>) {
 		return
 	}
 
-	// Only install automate install of drivers when running in steam
+	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER").toInt()
 	val path = System.getProperty("user.dir").lowercase()
-	LogManager.info(path)
-	if (path.contains("steam")) {
+	if (path.contains("steam") || isInstallDisabled != 1) {
 		val installDrivers = InstallDrivers()
 		installDrivers.runInstaller()
 	}
