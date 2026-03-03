@@ -209,6 +209,7 @@ fun createModelSettings(
 			humanPoseManager.getToggle(SkeletonConfigToggles.USE_POSITION),
 			humanPoseManager.getToggle(SkeletonConfigToggles.ENFORCE_CONSTRAINTS),
 			humanPoseManager.getToggle(SkeletonConfigToggles.CORRECT_CONSTRAINTS),
+			humanPoseManager.getToggle(SkeletonConfigToggles.FINGERS_MITTEN),
 		)
 	val ratiosOffset = ModelRatios
 		.createModelRatios(

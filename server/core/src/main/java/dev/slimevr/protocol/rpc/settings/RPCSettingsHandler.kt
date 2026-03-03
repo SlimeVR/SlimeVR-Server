@@ -241,6 +241,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				hpm.setToggle(SkeletonConfigToggles.USE_POSITION, toggles.usePosition())
 				hpm.setToggle(SkeletonConfigToggles.ENFORCE_CONSTRAINTS, toggles.enforceConstraints())
 				hpm.setToggle(SkeletonConfigToggles.CORRECT_CONSTRAINTS, toggles.correctConstraints())
+				hpm.setToggle(SkeletonConfigToggles.FINGERS_MITTEN, toggles.fingersMitten())
 			}
 
 			if (ratios != null) {

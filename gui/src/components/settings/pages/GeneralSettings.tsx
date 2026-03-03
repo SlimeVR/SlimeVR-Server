@@ -75,6 +75,7 @@ export type SettingsForm = {
     usePosition: boolean;
     enforceConstraints: boolean;
     correctConstraints: boolean;
+    fingersMitten: boolean;
   };
   ratios: {
     imputeWaistFromChestHip: number;
@@ -134,6 +135,7 @@ const defaultValues: SettingsForm = {
     usePosition: true,
     enforceConstraints: true,
     correctConstraints: true,
+    fingersMitten: false,
   },
   ratios: {
     imputeWaistFromChestHip: 0.3,
@@ -231,6 +233,7 @@ export function GeneralSettings() {
       toggles.usePosition = values.toggles.usePosition;
       toggles.enforceConstraints = values.toggles.enforceConstraints;
       toggles.correctConstraints = values.toggles.correctConstraints;
+      toggles.fingersMitten = values.toggles.fingersMitten;
       modelSettings.toggles = toggles;
     }
 
@@ -1034,6 +1037,15 @@ export function GeneralSettings() {
                     name="toggles.extendedKnee"
                     label={l10n.getString(
                       'settings-general-fk_settings-skeleton_settings-extended_knees_model'
+                    )}
+                  />
+                  <CheckBox
+                    variant="toggle"
+                    outlined
+                    control={control}
+                    name="toggles.fingersMitten"
+                    label={l10n.getString(
+                      'settings-general-fk_settings-skeleton_settings-fingers_mitten'
                     )}
                   />
                 </div>

@@ -197,6 +197,7 @@ class HumanSkeleton(
 	private var forceArmsFromHMD = true
 	private var enforceConstraints = true
 	private var correctConstraints = true
+	private var fingersMitten = true
 
 	// Ratios
 	private var waistFromChestHipAveraging = 0f
@@ -1204,6 +1205,8 @@ class HumanSkeleton(
 			SkeletonConfigToggles.ENFORCE_CONSTRAINTS -> enforceConstraints = newValue
 
 			SkeletonConfigToggles.CORRECT_CONSTRAINTS -> correctConstraints = newValue
+
+			SkeletonConfigToggles.FINGERS_MITTEN -> fingersMitten = newValue
 		}
 	}
 
