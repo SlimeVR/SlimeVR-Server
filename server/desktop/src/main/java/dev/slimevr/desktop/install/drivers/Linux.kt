@@ -21,17 +21,25 @@ class Linux {
 	}
 
 	fun updateLinuxSteamVRDriver() {
-		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
-		val isDriverRegistered = vrPathRegContents.contains("slimevr")
-		if (!isDriverRegistered) {
-			executeShellCommand(
-				"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
-				"adddriver",
-				"$path/$LINUXSTEAMDRIVERDIRECTORY/slimevr",
-			)
-		} else {
+		var vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
+		var isDriverRegistered = vrPathRegContents.contains("slimevr")
+		if (isDriverRegistered) {
 			LogManager.info("steamVR driver is already registered. Skipping...")
+			return
 		}
+		executeShellCommand(
+			"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
+			"adddriver",
+			"$path/${LINUXSTEAMDRIVERDIRECTORY}",
+		)
+
+		vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
+		isDriverRegistered = vrPathRegContents.contains("slimevr")
+		if (!isDriverRegistered) {
+			LogManager.warning("Server couldn't install SlimeVR driver.")
+			return
+		}
+		LogManager.info("SteamVR driver successfully installed.")
 	}
 
 	fun feeder() {

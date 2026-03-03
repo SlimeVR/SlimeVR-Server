@@ -14,16 +14,16 @@ class Windows {
 	}
 
 	fun usbDrivers() {
-		val installedDriversList = executeShellCommand("powershell.exe", "pnputil /enum-drivers")
+		val installedDriversList = executeShellCommand("powershell.exe", "pnputil", "/enum-drivers")
 		val ch341ser = installedDriversList.contains("ch341ser.inf")
 		val ch343ser = installedDriversList.contains("ch343ser.inf")
 		val silabser = installedDriversList.contains("silabser.inf")
 
 		if (ch341ser && ch343ser && silabser) {
-			LogManager.info("drivers already installed!")
+			LogManager.info("USB drivers already installed!")
 			return
 		}
-		LogManager.info("Cannot find one of the drivers, installing drivers")
+		LogManager.info("USB drivers not found, installing")
 		val driverInstallOutput = executeShellCommand("$path\\installusbdrivers.bat")
 		LogManager.info(driverInstallOutput)
 	}
@@ -43,12 +43,13 @@ class Windows {
 			LogManager.warning("SteamVR not installed, cannot install SlimeVR Steam driver.")
 			return
 		}
-		val vrPathRegContents = executeShellCommand("${steamVRLocation}\\bin\\win64\\vrpathreg.exe", "finddriver", "slimevr")
-		val isDriverRegistered = vrPathRegContents.contains("WINDOWSSTEAMVRDRIVERDIRECTORY")
+		var vrPathRegContents = executeShellCommand("${steamVRLocation}\\bin\\win64\\vrpathreg.exe", "finddriver", "slimevr")
+		var isDriverRegistered = vrPathRegContents.contains("slimevr")
 		if (isDriverRegistered) {
 			LogManager.info("steamVR driver is already registered. Skipping...")
 			return
 		}
+		LogManager.info("Installing SteamVR Driver")
 		executeShellCommand(
 			"${steamVRLocation}\\bin\\win64\\vrpathreg.exe",
 			"adddriver",
@@ -56,8 +57,15 @@ class Windows {
 				Paths.get(
 					"",
 				).toAbsolutePath()
-			}\\${WINDOWSSTEAMVRDRIVERDIRECTORY}\\slimevr",
+			}\\${WINDOWSSTEAMVRDRIVERDIRECTORY}",
 		)
+		vrPathRegContents = executeShellCommand("${steamVRLocation}\\bin\\win64\\vrpathreg.exe", "finddriver", "slimevr")
+		isDriverRegistered = vrPathRegContents.contains("slimevr")
+		if (!isDriverRegistered) {
+			LogManager.warning("Server couldn't install SlimeVR driver.")
+			return
+		}
+		LogManager.info("SteamVR driver successfully installed.")
 	}
 
 	companion object {
