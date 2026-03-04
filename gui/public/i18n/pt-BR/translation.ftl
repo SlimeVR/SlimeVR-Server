@@ -924,7 +924,7 @@ settings-utils-advanced-reset-server-description = Restaura as configurações p
 settings-utils-advanced-reset-server-label = Redefinir rastreamento
 settings-utils-advanced-reset-all = Resetar todas as configurações
 settings-utils-advanced-reset-all-description = Restaura a configuração da interface e de tracking para as configurações iniciais.
-settings-utils-advanced-reset-all-label = Redefinir todas
+settings-utils-advanced-reset-all-label = Redefinir todas as configurações
 settings-utils-advanced-reset_warning =
     { $type ->
         [gui]
