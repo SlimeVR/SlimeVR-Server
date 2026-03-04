@@ -262,13 +262,13 @@ reset-yaw = Redefinir Rápido (Guinada)
 reset-error-no_feet_tracker = Nenhum tracker de pés atribuído
 reset-error-no_fingers_tracker = Nenhum tracker de dedos atribuído
 reset-error-mounting-need_full_reset = É necessário fazer uma redefinição completa antes da montagem
-reset-error-yaw-need_full_reset = É necessário executar "Redefinir Tudo" antes de "Redefinir Guinada"
+reset-error-yaw-need_full_reset = É necessário executar "Redefinir Tudo" antes de "Redefinir Rápido (Guinada)"
 
 ## Serial detection stuff
 
 serial_detection-new_device-p0 = Novo dispositivo de serial detectado!
 serial_detection-new_device-p1 = Insira suas credenciais de Wi-Fi!
-serial_detection-new_device-p2 = Selecione o que quer fazer com ele
+serial_detection-new_device-p2 = Selecione o que deseja fazer com ele
 serial_detection-open_wifi = Conectar ao Wi-Fi
 serial_detection-open_serial = Abrir o Console Serial
 serial_detection-submit = Enviar!
@@ -569,7 +569,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Suaviz
 settings-general-tracker_mechanics-filtering-type-prediction = Predição
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduz a latência e torna os movimentos mais responsivos, mas pode aumentar a oscilação.
 settings-general-tracker_mechanics-filtering-amount = Quantidade
-settings-general-tracker_mechanics-yaw-reset-smooth-time = Tempo de suavização do "Redefinir Guinada" (0s desativa a suavização)
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Tempo de suavização do "Redefinir Rápido (Guinada)" (0s desativa a suavização)
 settings-general-tracker_mechanics-drift_compensation = Compensação de drift
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -706,9 +706,9 @@ settings-general-gesture_control-trackers =
         [many] trackers
        *[other] trackers
     }
-settings-general-gesture_control-yawResetEnabled = Ativar toque para executar "Redefinir Guinada"
-settings-general-gesture_control-yawResetDelay = Atraso para executar "Redefinir Guinada"
-settings-general-gesture_control-yawResetTaps = Toques para executar "Redefinir Guinada"
+settings-general-gesture_control-yawResetEnabled = Ativar toque para executar "Redefinir Rápido (Guinada)"
+settings-general-gesture_control-yawResetDelay = Atraso para executar "Redefinir Rápido (Guinada)"
+settings-general-gesture_control-yawResetTaps = Toques para executar "Redefinir Rápido (Guinada)"
 settings-general-gesture_control-fullResetEnabled = Ativar toque para executar "Redefinir Tudo"
 settings-general-gesture_control-fullResetDelay = Atraso do "Redefinir Tudo"
 settings-general-gesture_control-fullResetTaps = Toques para executar "Redefinir Tudo"
@@ -798,8 +798,8 @@ settings-serial-factory_reset = Redefinição de Fábrica
 # This cares about multilines
 # <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
-    <b>Atenção:</b> Isso vai restaurar o tracker para o padrão de fábrica.
-    Que significa que as opções de Wi-Fi e calibrações <b>vão ser todos perdidos!</b>
+    <b>Aviso:</b> Isso redefinirá o tracker para as configurações de fábrica.
+    Isso significa que as configurações de Wi-Fi e de calibração <b>serão todas perdidas!</b>
 settings-serial-factory_reset-warning-ok = Eu sei o que estou fazendo
 settings-serial-factory_reset-warning-cancel = Cancelar
 settings-serial-serial_select = Selecione uma porta serial
@@ -1002,7 +1002,7 @@ onboarding-reset_tutorial-explanation = Enquanto você usa os trackers, eles pod
 onboarding-reset_tutorial-skip = Pular passo
 # Cares about multiline
 onboarding-reset_tutorial-0 =
-    Toque no tracker destacado { $taps } vezes para executar "Redefinir Guinada".
+    Toque no tracker destacado { $taps } vezes para executar "Redefinir Rápido (Guinada)".
     
     Isso fará com que os trackers fiquem voltados para a mesma direção que o seu headset (HMD).
 # Cares about multiline
@@ -1491,15 +1491,15 @@ firmware_tool-flash_method_step-serial-v2 =
     .description = Use um cabo USB para atualizar seu tracker.
 firmware_tool-flashbtn_step = Pressione o botão de boot
 firmware_tool-flashbtn_step-description = Antes de ir para o próximo passo, aqui estão algumas etapas que você necessita fazer
-firmware_tool-flashbtn_step-board_SLIMEVR = Deslige o tracker, tire de case (se tiver), conecte o cabo USB nesse computador, e tente seguir os seguintes passos de acordo com a revisão de sua placa SlimeVR
+firmware_tool-flashbtn_step-board_SLIMEVR = Desligue o tracker, tire de case (se tiver), conecte o cabo USB nesse computador, e tente seguir os seguintes passos de acordo com a revisão de sua placa SlimeVR
 firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Ligue o tracker enquanto faz um curto entre o segundo pad retangular FLASH a partir da borda, no lado superior da placa, e o escudo metálico do microcontrolador. O LED do tracker deve piscar rapidamente.
 firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Ligue o tracker enquanto faz um curto entre o pad circular FLASH, no lado superior da placa, e o escudo metálico do microcontrolador. O LED do tracker deve piscar rapidamente.
 firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Ligue o tracker enquanto pressiona o botão FLASH, no lado superior da placa. O LED do tracker deve piscar rapidamente.
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de fazer a atualização, você provavelmente precisará colocar o tracker no modo bootloader.
-    Na maioria das vezes, isso significa pressionar o botão de boot na placa antes do iniciar o processo de atualização.
-    Se o processo de atualização expirar no começo da atualização, isso provavelmente significa que o tracker não estava no modo de bootloader
-    Consulte as instruções de atualização da sua placa para saber como ativar o modo boatloader
+    Na maioria das vezes, isso significa pressionar o botão de boot na placa antes de iniciar o processo de atualização.
+    Se o processo de gravação exceder o tempo limite logo no início, provavelmente significa que o tracker não estava no modo bootloader.
+    Consulte as instruções de atualização da sua placa para saber como ativar o modo bootloader.
 firmware_tool-flash_method_ota-title = Gravação via Wi-Fi
 firmware_tool-flash_method_ota-devices = Dispositivos OTA detectados:
 firmware_tool-flash_method_ota-no_devices = Não há placas que possam ser atualizadas por meio de OTA. Verifique se você selecionou o tipo correto de placa
@@ -1661,7 +1661,7 @@ tracking_checklist-TRACKER_ERROR = Trackers com Erros
 tracking_checklist-TRACKER_ERROR-desc = Alguns trackers estão com erro. Reinicie os trackers em amarelo.
 tracking_checklist-VRCHAT_SETTINGS = Configurar as configurações do VRChat
 tracking_checklist-VRCHAT_SETTINGS-desc = As configurações do VRChat estão configuradas incorretamente! Isso pode afetar negativamente o rastreamento.
-tracking_checklist-VRCHAT_SETTINGS-open = Ir para os aletas do VRChat
+tracking_checklist-VRCHAT_SETTINGS-open = Ir para os alertas do VRChat
 tracking_checklist-UNASSIGNED_HMD = Headset de VR não atribuído à Cabeça
 tracking_checklist-UNASSIGNED_HMD-desc = O headset de VR deve ser atribuído como tracker de cabeça.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Altere seu perfil de rede
