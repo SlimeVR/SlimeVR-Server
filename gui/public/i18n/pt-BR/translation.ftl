@@ -28,7 +28,7 @@ tips-find_tracker = Não tem certeza de qual tracker é qual? Sacuda um tracker 
 tips-do_not_move_heels = Certifique-se de manter os calcanhares imóveis durante a gravação!
 tips-file_select = Arraste e solte arquivos para usar, ou <u>pesquise</u>.
 tips-tap_setup = Você pode tocar lentamente no seu tracker 2 vezes para selecioná-lo, em vez de escolhê-lo pelo menu.
-tips-turn_on_tracker = Está usando trackers oficiais do SlimeVR? Lembre-se de <b><em> ligar o seu tracker </em></b> após conecta-lo ao computador!
+tips-turn_on_tracker = Está usando trackers oficiais do SlimeVR? Lembre-se de <b><em> ligar o seu tracker </em></b> após conectá-lo ao computador!
 tips-failed_webgl = Falha ao inicializar o WebGL.
 
 ## Units
@@ -74,7 +74,7 @@ body_part-LEFT_RING_PROXIMAL = Anelar esquerdo proximal
 body_part-LEFT_RING_INTERMEDIATE = Anelar esquerdo intermediário
 body_part-LEFT_RING_DISTAL = Anelar esquerdo distal
 body_part-LEFT_LITTLE_PROXIMAL = Mindinho esquerdo proximal
-body_part-LEFT_LITTLE_INTERMEDIATE = Mindinho esquerdo Intermediário
+body_part-LEFT_LITTLE_INTERMEDIATE = Mindinho esquerdo intermediário
 body_part-LEFT_LITTLE_DISTAL = Mindinho esquerdo distal
 body_part-RIGHT_THUMB_METACARPAL = Metacarpo do polegar direito
 body_part-RIGHT_THUMB_PROXIMAL = Polegar direito proximal
@@ -223,7 +223,7 @@ skeleton_bone-UPPER_ARM-desc =
 skeleton_bone-LOWER_ARM = Comprimento do Antebraço
 skeleton_bone-LOWER_ARM-desc =
     Esta é a distância entre seus cotovelos e seus pulsos.
-    Para ajustá-la, ajuste corretamente o Comprimento do braço e modifique-o até 
+    Para ajustá-la, ajuste corretamente o Comprimento do Braço e modifique-o até 
     que os trackers de cotovelo se alinhem com seus cotovelos reais.
 skeleton_bone-HAND_Y = Distância da Mão Y
 skeleton_bone-HAND_Y-desc =
@@ -590,7 +590,7 @@ settings-general-tracker_mechanics-drift_compensation_warning =
     Algumas IMUs sujeitas a resets mais frequentes incluem:
     Joy-Cons, owoTrack e MPUs (sem firmware recente).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancelar
-settings-general-tracker_mechanics-drift_compensation_warning-done = Eu entedi
+settings-general-tracker_mechanics-drift_compensation_warning-done = Eu entendi
 settings-general-tracker_mechanics-drift_compensation-amount-label = Quantidade de compensação
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use até x últimos resets
 settings-general-tracker_mechanics-save_mounting_reset = Salvar calibração automática de montagem
@@ -599,7 +599,7 @@ settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Salvar ca
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Usar o magnetômetro em todos os trackers IMUs compatíveis
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Usa o magnetômetro em todos os trackers com firmware compatível, reduzindo o drift em ambientes magneticamente estáveis.
-    Essa opção pode ser desativada indivualmente nas configurações de cada tracker. <b>Não desligue nenhum dos trackers enquanto altera esta opção!</b>
+    Essa opção pode ser desativada individualmente nas configurações de cada tracker. <b>Não desligue nenhum dos trackers enquanto altera esta opção!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar o magnetômetro nos trackers
 settings-general-tracker_mechanics-trackers_over_usb = Trackers via USB
 settings-general-tracker_mechanics-trackers_over_usb-description = Ativa o recebimento de dados de trackers HID via USB. Certifique-se de que os trackers conectados tenham a opção <b>conexão via HID</b> ativada!
@@ -919,7 +919,7 @@ settings-utils-advanced = Avançado
 settings-utils-advanced-reset-gui = Redefinir configurações da interface
 settings-utils-advanced-reset-gui-description = Restaurar as configurações padrão da interface.
 settings-utils-advanced-reset-gui-label = Redefinir interface
-settings-utils-advanced-reset-server = Redefinir configuraçõse de rastreamento
+settings-utils-advanced-reset-server = Redefinir configurações de rastreamento
 settings-utils-advanced-reset-server-description = Restaura as configurações padrão do rastreamento.
 settings-utils-advanced-reset-server-label = Redefinir rastreamento
 settings-utils-advanced-reset-all = Resetar todas as configurações
@@ -985,7 +985,7 @@ onboarding-wifi_creds-submit = Enviar!
 onboarding-wifi_creds-ssid =
     .label = Nome da rede Wi-Fi
     .placeholder = Digite o nome da rede Wi-Fi
-onboarding-wifi_creds-ssid-required = Nome do Wi-Fi é obrgiatório
+onboarding-wifi_creds-ssid-required = Nome do Wi-Fi é obrigatório
 onboarding-wifi_creds-password =
     .label = Senha
     .placeholder = Digite a senha
@@ -1258,7 +1258,7 @@ onboarding-automatic_mounting-return-home = Feito
 onboarding-manual_proportions-back-scaled = Voltar para Proporções Escalonadas
 onboarding-manual_proportions-title = Ajuste Manual das Proporções Corporais
 onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as proporções
-onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte seu headset VR para utilizar a melhoria automatica
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte um headset de VR para utilizar o ajuste fino automático
 onboarding-manual_proportions-export = Exportar proporções
 onboarding-manual_proportions-import = Importar proporções
 onboarding-manual_proportions-file_type = Arquivo de proporções do corpo
@@ -1459,7 +1459,7 @@ firmware_tool-loading = Carregando...
 firmware_tool = Ferramenta de Firmware DIY
 firmware_tool-description = Permite você configurar e fazer upload do firmware em seu tracker DIY
 firmware_tool-not_available = Oops, a ferramenta de firmware não está disponível no momento. Volte novamente mais tarde!
-firmware_tool-not_compatible = A ferramenta de firmware não é compativel com essa versão do servidor. Por favor, atualize o seu servidor!
+firmware_tool-not_compatible = A ferramenta de firmware não é compatível com essa versão do servidor. Por favor, atualize o seu servidor!
 firmware_tool-select_source = Selecione o firmware para gravar
 firmware_tool-select_source-description = Selecione o firmware que você deseja gravar na sua placa
 firmware_tool-select_source-error = Não foi possível carregar as Fontes
