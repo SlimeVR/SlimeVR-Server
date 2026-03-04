@@ -18,7 +18,7 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	fun onInstalledInfoRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		val udevResponse = executeShellCommand("udevadm", "cat")
 		if (udevResponse == null) {
-			LogManager.info("Server couldn't verify if udev is installed")
+			LogManager.warning("Server couldn't verify if udev is installed")
 			return
 		}
 		val response = udevResponse.contains("slime")

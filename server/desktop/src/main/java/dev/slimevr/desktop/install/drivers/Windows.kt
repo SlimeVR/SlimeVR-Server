@@ -1,6 +1,7 @@
 package dev.slimevr.desktop.install.drivers
 
 import io.eiren.util.logging.LogManager
+import java.io.File
 
 class Windows {
 
@@ -27,8 +28,13 @@ class Windows {
 			return
 		}
 		LogManager.info("USB drivers not found, installing")
-		val driverInstallOutput = executeShellCommand("$path\\installusbdrivers.bat")
-		LogManager.info(driverInstallOutput)
+		executeShellCommand("$path\\installusbdrivers.bat")
+		try {
+			val usbDriversLog = File("driver_install.log").readText()
+			LogManager.info(usbDriversLog)
+		} catch (e: Error) {
+			LogManager.warning("Error reading driver installation log, $e")
+		}
 	}
 
 	fun feeder() {

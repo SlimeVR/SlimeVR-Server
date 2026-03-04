@@ -25,7 +25,7 @@ export function UdevRulesModal() {
       setExeDir(dir);
       const rulesDir = `${exeDir}/69-slimevr-devices.rules`;
       setUdevContent(
-        `cat ${rulesDir} | sudo tee /etc/udev/rules.d/69-slimevr-devices.rules pn>/dev/null`
+        `cat ${rulesDir} | sudo tee /etc/udev/rules.d/69-slimevr-devices.rules >/dev/null`
       );
     }
   };
@@ -43,11 +43,7 @@ export function UdevRulesModal() {
       const notHiddenThisSession = !dontShowThisSession;
       const shouldShow =
         isLinux && udevMissing && notHiddenGlobally && notHiddenThisSession;
-      if (shouldShow) {
-        setShowUdevWarning(true);
-      } else {
-        setShowUdevWarning(false);
-      }
+      setShowUdevWarning(shouldShow);
     }
   }, [config, isUdevInstalledResponse, dontShowThisSession]);
 
@@ -65,7 +61,7 @@ export function UdevRulesModal() {
     }
   );
 
-  const handleModalCose = () => {
+  const handleModalClose = () => {
     if (!config) throw 'Invalid State!';
     setConfig({ dontShowUdevModal: dontShowAgain });
     setDontShowThisSession(true);
@@ -99,16 +95,16 @@ export function UdevRulesModal() {
         </div>
         <div className="flex justify-between gap-2">
           <CheckboxInternal
-            label="Don't show this again"
+            id="install-info_udev-rules_modal-dont-show-again_checkbox"
             outlined={false}
-            name={'dismiss-udev-rules-checkbox'}
+            name="dismiss-udev-rules-checkbox"
             loading={false}
             disabled={false}
             onChange={(e) => setDontShowAgain(e.currentTarget.checked)}
           />
           <Button
             variant="primary"
-            onClick={handleModalCose}
+            onClick={handleModalClose}
             id="install-info_udev-rules_modal_button"
           />
         </div>
