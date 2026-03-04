@@ -5,6 +5,7 @@ import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.lang3.StringUtils
 import java.io.BufferedWriter
 import java.io.File
@@ -44,36 +45,91 @@ class BVHFileStream : PoseDataStream {
 
 	private fun internalNavigateSkeleton(
 		bone: Bone,
-		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) -> Unit,
+		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, invertOffset: Boolean, zeroOffset: Boolean) -> Unit,
 		footer: (distance: Int) -> Unit,
 		lastBone: Bone? = null,
 		invertParentRot: Quaternion = Quaternion.IDENTITY,
 		distance: Int = 0,
-		isParent: Boolean = false,
+		invertOffset: Boolean = false,
+		zeroOffset: Boolean = false,
 	) {
+		val isRoot = lastBone == null
+		val isInverse = bone === lastBone?.parent
 		val parent = bone.parent
+
 		// If we're visiting the parents or at root, continue to the next parent
-		val visitParent = (isParent || lastBone == null) && parent != null
+		val visitParent = (isInverse || isRoot) && parent != null
 
-		val children = bone.children
-		val childCount = children.size - (if (isParent) 1 else 0)
+		// We are navigating inversely; this bone's node is at the head rather than
+		//  the tail, so we let our origin child take our children, and we take our
+		//  parent's children in turn
+		// Root is a special condition where it is both states simultaneously
+		val invChildren = if (visitParent) {
+			parent.children
+		} else {
+			emptyList()
+		}
+		val children = if (!isInverse) {
+			bone.children
+		} else {
+			emptyList()
+		}
 
-		val hasBranch = visitParent || childCount > 0
+		val hasBranch = visitParent || children.isNotEmpty()
 
-		header(bone, lastBone, invertParentRot, distance, hasBranch, isParent)
+		header(
+			bone,
+			lastBone,
+			invertParentRot,
+			distance,
+			hasBranch,
+			invertOffset,
+			zeroOffset,
+		)
 
 		if (hasBranch) {
 			// Cache this inverted rotation to reduce computation for each branch
-			val thisInvertRot = bone.getGlobalRotation().inv()
+			val thisInvertRot = bone.rotationOffset * bone.getGlobalRotation().inv()
 
 			if (visitParent) {
-				internalNavigateSkeleton(parent, header, footer, bone, thisInvertRot, distance + 1, true)
+				internalNavigateSkeleton(
+					parent,
+					header,
+					footer,
+					bone,
+					thisInvertRot,
+					distance + 1,
+					invertOffset || isInverse,
+					false,
+				)
+			}
+
+			for (child in invChildren) {
+				// Ignore our own bone (from parent's children)
+				if (child == bone) continue
+				internalNavigateSkeleton(
+					child,
+					header,
+					footer,
+					bone,
+					thisInvertRot,
+					distance + 1,
+					true,
+					!invertOffset,
+				)
 			}
 
 			for (child in children) {
-				// If we're a parent, ignore the child
-				if (isParent && child == lastBone) continue
-				internalNavigateSkeleton(child, header, footer, bone, thisInvertRot, distance + 1, false)
+				internalNavigateSkeleton(
+					child,
+					header,
+					footer,
+					bone,
+					thisInvertRot,
+					distance + 1,
+					false,
+					invertOffset,
+				)
 			}
 		}
 
@@ -82,13 +138,17 @@ class BVHFileStream : PoseDataStream {
 
 	private fun navigateSkeleton(
 		root: Bone,
-		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) -> Unit,
+		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, invertOffset: Boolean, zeroOffset: Boolean) -> Unit,
 		footer: (distance: Int) -> Unit = {},
+		// Default true if the root isn't the true root (usually hip)
+		tailRoot: Boolean = root.parent != null,
 	) {
-		internalNavigateSkeleton(root, header, footer)
+		// Root is treated as a parent if we want to target the tail as the root node
+		internalNavigateSkeleton(root, header, footer, invertOffset = tailRoot)
 	}
 
-	private fun writeBoneDefHeader(bone: Bone?, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) {
+	private fun writeBoneDefHeader(bone: Bone?, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, invertOffset: Boolean, zeroOffset: Boolean) {
+		val isRoot = lastBone == null
 		val indentLevel = StringUtils.repeat("\t", distance)
 		val nextIndentLevel = indentLevel + "\t"
 
@@ -96,24 +156,23 @@ class BVHFileStream : PoseDataStream {
 		if (bone == null) {
 			writer.write("${indentLevel}End Site\n")
 		} else {
-			writer
-				.write("${indentLevel}${if (distance > 0) "JOINT" else "ROOT"} ${bone.boneType}\n")
+			writer.write("${indentLevel}${if (!isRoot) "JOINT" else "ROOT"} ${bone.boneType}\n")
 		}
 		writer.write("$indentLevel{\n")
 
+		// "OFFSET": Defines the parent bone's local tail position
 		// Ignore the root and endpoint offsets
-		if (bone != null && lastBone != null) {
-			writer.write(
-				"${nextIndentLevel}OFFSET 0.0 ${(if (isParent) lastBone.length else -lastBone.length) * bvhSettings.offsetScale} 0.0\n",
-			)
+		val offset = if (zeroOffset || isRoot) {
+			Vector3.NULL
 		} else {
-			writer.write("${nextIndentLevel}OFFSET 0.0 0.0 0.0\n")
+			lastBone.rotationOffset.sandwichUnitY() * ((if (invertOffset) 1 else -1) * lastBone.length * bvhSettings.offsetScale)
 		}
+		writer.write("${nextIndentLevel}OFFSET ${offset.x} ${offset.y} ${offset.z}\n")
 
 		// Define channels
 		if (bone != null) {
 			// Only give position for root
-			if (lastBone != null) {
+			if (!isRoot) {
 				writer.write("${nextIndentLevel}CHANNELS 3 Zrotation Xrotation Yrotation\n")
 			} else {
 				writer.write(
@@ -125,7 +184,15 @@ class BVHFileStream : PoseDataStream {
 			// We use null for convenience and treat it as an end node (no bone)
 			if (!hasBranch) {
 				val endDistance = distance + 1
-				writeBoneDefHeader(null, bone, Quaternion.IDENTITY, endDistance, false, false)
+				writeBoneDefHeader(
+					null,
+					bone,
+					Quaternion.IDENTITY,
+					endDistance,
+					hasBranch = false,
+					invertOffset = false,
+					zeroOffset = false,
+				)
 				writeBoneDefFooter(endDistance)
 			}
 		}
@@ -161,9 +228,21 @@ class BVHFileStream : PoseDataStream {
 		writer.write("Frame Time: ${streamer.frameInterval}\n")
 	}
 
-	private fun writeBoneRot(bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) {
-		val rot = invertParentRot * bone.getGlobalRotation()
+	private fun writeBoneRot(bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, invertOffset: Boolean, zeroOffset: Boolean) {
+		val rot = bone.rotationOffset.inv() * invertParentRot * bone.getGlobalRotation()
 		val angles = rot.toEulerAngles(EulerOrder.ZXY)
+
+		// We're the root, so write position
+		if (lastBone == null) {
+			val rootPos = if (invertOffset) {
+				bone.getTailPosition()
+			} else {
+				bone.getPosition()
+			}
+			// Write root position
+			val positionScale = bvhSettings.positionScale
+			writer.write("${rootPos.x * positionScale} ${rootPos.y * positionScale} ${rootPos.z * positionScale}")
+		}
 
 		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
 		// Assume spacing is needed at the start (we start with position with no following space)
@@ -174,14 +253,6 @@ class BVHFileStream : PoseDataStream {
 	@Throws(IOException::class)
 	override fun writeFrame(skeleton: HumanSkeleton) {
 		val rootBone = skeleton.getBone(bvhSettings.rootBone)
-
-		val rootPos = rootBone.getPosition()
-
-		// Write root position
-		val positionScale = bvhSettings.positionScale
-		writer
-			.write("${rootPos.x * positionScale} ${rootPos.y * positionScale} ${rootPos.z * positionScale}")
-
 		navigateSkeleton(rootBone, ::writeBoneRot)
 		writer.newLine()
 
