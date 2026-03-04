@@ -60,18 +60,18 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 	@AWTThread
 	override fun onHotKey(identifier: Int) {
 		when (identifier) {
-			FULL_RESET -> server.scheduleResetTrackersFull(RESET_SOURCE_NAME, config.fullResetDelay)
+			FULL_RESET -> server.scheduleResetTrackersFull(RESET_SOURCE_NAME, config.fullResetDelay.toLong())
 
-			YAW_RESET -> server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, config.yawResetDelay)
+			YAW_RESET -> server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, config.yawResetDelay.toLong())
 
 			MOUNTING_RESET -> server.scheduleResetTrackersMounting(
 				RESET_SOURCE_NAME,
-				config.mountingResetDelay,
+				config.mountingResetDelay.toLong(),
 			)
 
 			FEET_MOUNTING_RESET -> server.scheduleResetTrackersMounting(
 				RESET_SOURCE_NAME,
-				config.feetMountingResetDelay,
+				config.feetMountingResetDelay.toLong(),
 				TrackerUtils.feetsBodyParts,
 			)
 
@@ -79,7 +79,7 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 				server
 					.scheduleTogglePauseTracking(
 						RESET_SOURCE_NAME,
-						config.pauseTrackingDelay,
+						config.pauseTrackingDelay.toLong(),
 					)
 		}
 	}

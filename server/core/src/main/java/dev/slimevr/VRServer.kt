@@ -350,7 +350,7 @@ class VRServer @JvmOverloads constructor(
 		}
 	}
 
-	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Float, bodyParts: List<Int> = ArrayList()) {
+	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList()) {
 		resetTimer(
 			resetTimerManager,
 			delay,
