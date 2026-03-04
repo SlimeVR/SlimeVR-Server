@@ -199,7 +199,7 @@ export function TrackerSettingsPage() {
               shakeHighlight={false}
             />
           )}
-          {tracker?.device?.hardwareInfo?.hardwareIdentifier != 'Unknown' && (
+          {
             <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
               <Typography
                 variant="section-title"
@@ -223,38 +223,34 @@ export function TrackerSettingsPage() {
                     whitespace="whitespace-pre-wrap"
                     textAlign="text-end"
                   >
-                    {tracker?.device?.hardwareInfo?.firmwareVersion
-                      ? `v${tracker?.device?.hardwareInfo?.firmwareVersion}`
-                      : '--'}
+                    v{tracker?.device?.hardwareInfo?.firmwareVersion}
                   </Typography>
                 </div>
-                {!!tracker?.device?.hardwareInfo?.officialBoardType && (
-                  <div className="flex justify-between gap-2">
-                    <Typography id="tracker-settings-latest-version" />
-                    {!updateUnavailable && (
-                      <>
-                        {currentFirmwareRelease && (
-                          <Typography
-                            color={
-                              needUpdate === 'updated'
-                                ? undefined
-                                : 'text-accent-background-10'
-                            }
-                            textAlign="text-end"
-                            whitespace="whitespace-pre-wrap"
-                          >
-                            {currentFirmwareRelease.name}
-                          </Typography>
-                        )}
-                      </>
-                    )}
-                    {updateUnavailable && (
-                      <Typography id="tracker-settings-update-unavailable-v2">
-                        No releases found
-                      </Typography>
-                    )}
-                  </div>
-                )}
+                <div className="flex justify-between gap-2">
+                  <Typography id="tracker-settings-latest-version" />
+                  {!updateUnavailable && (
+                    <>
+                      {currentFirmwareRelease && (
+                        <Typography
+                          color={
+                            needUpdate === 'updated'
+                              ? undefined
+                              : 'text-accent-background-10'
+                          }
+                          textAlign="text-end"
+                          whitespace="whitespace-pre-wrap"
+                        >
+                          {currentFirmwareRelease.name}
+                        </Typography>
+                      )}
+                    </>
+                  )}
+                  {updateUnavailable && (
+                    <Typography id="tracker-settings-update-unavailable-v2">
+                      No releases found
+                    </Typography>
+                  )}
+                </div>
               </div>
               {!updateUnavailable && (
                 <Tooltip
@@ -293,7 +289,7 @@ export function TrackerSettingsPage() {
                 </Tooltip>
               )}
             </div>
-          )}
+          }
 
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2 overflow-x-auto">
             <div className="flex justify-between">
@@ -321,11 +317,10 @@ export function TrackerSettingsPage() {
             <div className="flex justify-between">
               <Typography>{l10n.getString('tracker-infos-url')}</Typography>
               <Typography>
-                {tracker?.device?.hardwareInfo?.ipAddress?.addr
-                  ? `udp://${IPv4.fromNumber(
-                      tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
-                    ).toString()}`
-                  : '--'}
+                udp://
+                {IPv4.fromNumber(
+                  tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
+                ).toString()}
               </Typography>
             </div>
             <div className="flex justify-between">

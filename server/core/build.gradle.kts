@@ -87,6 +87,9 @@ dependencies {
 	// Jitpack
 	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
 
+	implementation("com.github.hypfvieh:dbus-java-core:5.2.0")
+	implementation("com.github.hypfvieh:dbus-java-transport-jnr-unixsocket:5.2.0")
+
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
 	testImplementation(platform("org.junit:junit-bom:5.10.3"))
