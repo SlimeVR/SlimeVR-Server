@@ -10,18 +10,13 @@ class InstallDrivers {
 	fun runInstaller() {
 		if (os.contains("linux")) {
 			val linuxUpdater = Linux()
-			var linuxFlavour: String?
-			try {
-				linuxFlavour = File("/etc/os-release").readText().lowercase()
+			val linuxFlavour = try {
+				File("/etc/os-release").readText()
 			} catch (e: Exception) {
-				LogManager.warning("Couldn't get linux release info: $e")
-				linuxFlavour = null
-			}
-			if (linuxFlavour == null) {
-				LogManager.warning("Unable to determine OS distribution")
+				LogManager.warning("Couldn't determine OS distribution: $e")
 				return
 			}
-			if (linuxFlavour.contains("nix")) {
+			if (linuxFlavour.contains("ID=nixos") || linuxFlavour.contains("ID_LIKE=nixos")) {
 				LogManager.warning("Running on NixOS, server will not install itself.")
 				return
 			} else {
