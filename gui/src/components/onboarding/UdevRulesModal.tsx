@@ -7,6 +7,7 @@ import { useElectron } from '@/hooks/electron';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { RpcMessage, InstalledInfoResponseT } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
+import { useLocalization } from '@fluent/react';
 
 export function UdevRulesModal() {
   const { config, setConfig } = useConfig();
@@ -18,6 +19,8 @@ export function UdevRulesModal() {
   const [dontShowThisSession, setDontShowThisSession] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [exeDir, setExeDir] = useState('');
+
+  const { l10n } = useLocalization();
 
   const handleUdevContent = async () => {
     if (electron.isElectron) {
