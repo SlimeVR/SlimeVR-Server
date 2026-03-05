@@ -20,6 +20,7 @@ import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
   findServerJar,
   findSystemJRE,
+  getExeFolder,
   getGuiDataFolder,
   getLogsFolder,
   getServerDataFolder,
@@ -171,6 +172,8 @@ handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
       return getGuiDataFolder();
     case 'logs':
       return getLogsFolder();
+    case 'exe':
+      return getExeFolder();
   }
 });
 

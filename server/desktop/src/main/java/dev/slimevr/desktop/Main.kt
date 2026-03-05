@@ -9,6 +9,7 @@ import dev.slimevr.bridge.Bridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.desktop.firmware.DesktopSerialFlashingHandler
 import dev.slimevr.desktop.games.vrchat.DesktopVRCConfigHandler
+import dev.slimevr.desktop.install.drivers.InstallDrivers
 import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
@@ -97,6 +98,13 @@ fun main(args: Array<String>) {
 			)
 		LogManager.closeLogger()
 		return
+	}
+
+	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toInt()
+	val path = System.getProperty("user.dir").lowercase()
+	if (path.contains("steam") && isInstallDisabled != 1) {
+		val installDrivers = InstallDrivers()
+		installDrivers.runInstaller()
 	}
 
 	val configDir = resolveConfig()
