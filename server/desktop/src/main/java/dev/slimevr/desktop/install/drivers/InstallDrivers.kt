@@ -12,7 +12,7 @@ class InstallDrivers {
 			val linuxUpdater = Linux()
 			val linuxFlavour = executeShellCommand("cat", "/proc/version")
 			if (linuxFlavour == null) {
-				LogManager.warning("Error running driver isntaller")
+				LogManager.warning("Unable to determine OS distribution")
 				return
 			}
 			if (linuxFlavour.lowercase().contains("nix")) {
@@ -30,7 +30,7 @@ class InstallDrivers {
 			val windowsUpdater = Windows()
 			windowsUpdater.updateWindows()
 		} else {
-			LogManager.info("Unsupported Operating System")
+			LogManager.warning("Updater doesn't support operating system '$os'")
 		}
 		return
 	}

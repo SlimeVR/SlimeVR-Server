@@ -25,7 +25,7 @@ export function UdevRulesModal() {
       setExeDir(dir);
       const rulesDir = `${exeDir}/69-slimevr-devices.rules`;
       setUdevContent(
-        `cat ${rulesDir} | sudo tee /etc/udev/rules.d/69-slimevr-devices.rules >/dev/null`
+        `cat ${rulesDir} | sudo sh -c 'tee /etc/udev/rules.d/69-slimevr-devices.rules >/dev/null && udevadm control --reload-rules && udevadm trigger'`
       );
     }
   };
@@ -95,11 +95,10 @@ export function UdevRulesModal() {
         </div>
         <div className="flex justify-between gap-2">
           <CheckboxInternal
-            id="install-info_udev-rules_modal-dont-show-again_checkbox"
-            outlined={false}
+            label={l10n.getString(
+              'install-info_udev-rules_modal-dont-show-again_checkbox'
+            )}
             name="dismiss-udev-rules-checkbox"
-            loading={false}
-            disabled={false}
             onChange={(e) => setDontShowAgain(e.currentTarget.checked)}
           />
           <Button
