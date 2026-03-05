@@ -2,10 +2,12 @@ package dev.slimevr.desktop.install.drivers
 
 import io.eiren.util.logging.LogManager
 import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 class Windows {
 
-	val path = System.getProperty("user.dir")
+	val path: String? = System.getProperty("user.dir")
 
 	fun updateWindows() {
 		usbDrivers()
@@ -28,11 +30,18 @@ class Windows {
 			return
 		}
 		LogManager.info("USB drivers not found, installing")
-		executeShellCommand("$path\\installusbdrivers.bat")
+
+		//My masterpiece
+		executeShellCommand(
+			"powershell.exe",
+			"-Command",
+			"Start-Process -FilePath cmd.exe -ArgumentList '/c cd /d \" $path \" && pnputil /add-driver \"*.inf\" /subdirs /install > \" $path  \\driver_install.log\" 2>&1' -Verb RunAs -WindowStyle Hidden -Wait"
+		)
+
 		try {
 			val usbDriversLog = File("driver_install.log").readText()
 			LogManager.info(usbDriversLog)
-		} catch (e: Error) {
+		} catch (e: Exception) {
 			LogManager.warning("Error reading driver installation log, $e")
 		}
 	}

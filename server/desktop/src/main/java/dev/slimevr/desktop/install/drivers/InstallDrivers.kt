@@ -1,16 +1,22 @@
 package dev.slimevr.desktop.install.drivers
 
 import io.eiren.util.logging.LogManager
+import java.io.File
 
 class InstallDrivers {
-	// TODO: Add enviroment variable to bypass driver install
 
 	val os = System.getProperty("os.name").lowercase()
 
 	fun runInstaller() {
 		if (os.contains("linux")) {
 			val linuxUpdater = Linux()
-			val linuxFlavour = executeShellCommand("cat", "/proc/version")
+			var linuxFlavour: String? = null
+			try {
+				linuxFlavour = File("/etc/os-release").readText().lowercase()
+			} catch (e: Exception) {
+				LogManager.warning("Couldn't get linux release info: $e")
+				linuxFlavour = null
+			}
 			if (linuxFlavour == null) {
 				LogManager.warning("Unable to determine OS distribution")
 				return
