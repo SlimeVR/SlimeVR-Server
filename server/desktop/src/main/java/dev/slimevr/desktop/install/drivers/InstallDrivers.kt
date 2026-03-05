@@ -29,6 +29,5 @@ class InstallDrivers {
 		} else {
 			LogManager.warning("Updater doesn't support operating system '$os'")
 		}
-		return
 	}
 }
