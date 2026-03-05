@@ -8,28 +8,48 @@ import io.eiren.util.logging.LogManager
 import solarxr_protocol.rpc.InstalledInfoResponse.createInstalledInfoResponse
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
+import java.io.File
 import java.io.IOException
 
 class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
+
+	val os = System.getProperty("os.name").lowercase()
+
 	init {
 		rpcHandler.registerPacketListener(RpcMessage.InstalledInfoRequest, ::onInstalledInfoRequest)
 	}
 
 	fun onInstalledInfoRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
-		val udevResponse = executeShellCommand("udevadm", "cat")
-		if (udevResponse == null) {
-			LogManager.warning("Server couldn't verify if udev is installed")
-			return
+		if (os.contains("linux")) {
+			var linuxFlavour: String?
+			try {
+				linuxFlavour = File("/etc/os-release").readText().lowercase()
+			} catch (e: Exception) {
+				LogManager.warning("Couldn't get linux release info: $e")
+				linuxFlavour = null
+			}
+			if (linuxFlavour == null) {
+				LogManager.warning("Unable to determine OS distribution")
+				return
+			}
+			if (linuxFlavour.contains("steam") || linuxFlavour.contains("nix")) {
+				return
+			}
+			val udevResponse = executeShellCommand("udevadm", "cat")
+			if (udevResponse == null) {
+				LogManager.warning("Server couldn't verify if udev is installed")
+				return
+			}
+			val response = udevResponse.contains("slime")
+			val fbb = FlatBufferBuilder(1024)
+			val outbound = this.rpcHandler.createRPCMessage(
+				fbb,
+				RpcMessage.InstalledInfoResponse,
+				createInstalledInfoResponse(fbb, response),
+			)
+			fbb.finish(outbound)
+			conn.send(fbb.dataBuffer())
 		}
-		val response = udevResponse.contains("slime")
-		val fbb = FlatBufferBuilder(1024)
-		val outbound = this.rpcHandler.createRPCMessage(
-			fbb,
-			RpcMessage.InstalledInfoResponse,
-			createInstalledInfoResponse(fbb, response),
-		)
-		fbb.finish(outbound)
-		conn.send(fbb.dataBuffer())
 	}
 
 	private fun executeShellCommand(vararg command: String): String? = try {

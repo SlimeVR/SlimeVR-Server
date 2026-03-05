@@ -10,7 +10,7 @@ class InstallDrivers {
 	fun runInstaller() {
 		if (os.contains("linux")) {
 			val linuxUpdater = Linux()
-			var linuxFlavour: String? = null
+			var linuxFlavour: String?
 			try {
 				linuxFlavour = File("/etc/os-release").readText().lowercase()
 			} catch (e: Exception) {
@@ -21,13 +21,9 @@ class InstallDrivers {
 				LogManager.warning("Unable to determine OS distribution")
 				return
 			}
-			if (linuxFlavour.lowercase().contains("nix")) {
+			if (linuxFlavour.contains("nix")) {
 				LogManager.warning("Running on NixOS, server will not install itself.")
 				return
-			}
-			if (linuxFlavour.lowercase().contains("steam")) {
-				LogManager.info("Running on steamos, skipping installation of udev rules")
-				linuxUpdater.updateSteamOS()
 			} else {
 				linuxUpdater.updateLinux()
 			}

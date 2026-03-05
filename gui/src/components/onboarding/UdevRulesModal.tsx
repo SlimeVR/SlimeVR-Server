@@ -14,7 +14,7 @@ export function UdevRulesModal() {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const electron = useElectron();
   const [udevContent, setUdevContent] = useState('');
-  const [isUdevInstalledResponse, setIsUdevInstalledResponse] = useState(false);
+  const [isUdevInstalledResponse, setIsUdevInstalledResponse] = useState(true);
   const [showUdevWarning, setShowUdevWarning] = useState(false);
   const [dontShowThisSession, setDontShowThisSession] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
@@ -26,16 +26,16 @@ export function UdevRulesModal() {
     if (electron.isElectron) {
       const dir = await electron.api.getInstallDir();
       setExeDir(dir);
-      const rulesDir = `${exeDir}/69-slimevr-devices.rules`;
+      const rulesPath = `${exeDir}/69-slimevr-devices.rules`;
       setUdevContent(
-        `cat ${rulesDir} | sudo sh -c 'tee /etc/udev/rules.d/69-slimevr-devices.rules >/dev/null && udevadm control --reload-rules && udevadm trigger'`
+        `cat ${rulesPath} | sudo sh -c 'tee /etc/udev/rules.d/69-slimevr-devices.rules >/dev/null && udevadm control --reload-rules && udevadm trigger'`
       );
     }
   };
 
   useEffect(() => {
     handleUdevContent();
-  }, [exeDir]);
+  }, []);
 
   useEffect(() => {
     if (!config) throw 'Invalid state!';

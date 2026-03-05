@@ -1,20 +1,12 @@
 package dev.slimevr.desktop.install.drivers
 
 import io.eiren.util.logging.LogManager
-import kotlin.io.path.Path
-import kotlin.io.path.exists
 
 class Linux {
 
 	val path: String? = System.getProperty("user.dir")
 
 	fun updateLinux() {
-		updateLinuxSteamVRDriver()
-		feeder()
-		updateUdev()
-	}
-
-	fun updateSteamOS() {
 		updateLinuxSteamVRDriver()
 		feeder()
 	}
@@ -61,25 +53,6 @@ class Linux {
 			LogManager.warning("Could not install feeder application")
 		} else {
 			LogManager.info("Successfully installed feeder application")
-		}
-	}
-
-	fun updateUdev() {
-		val file = Path("/etc/udev/rules.d/69-slimevr-devices.rules")
-		if (file.exists()) {
-			LogManager.info("Udev rules already exist")
-			return
-		}
-		val res = executeShellCommand("pkexec", "cp", "$path/69-slimevr-devices.rules", "/etc/udev/rules.d/69-slimevr-devices.rules")
-		LogManager.info(res)
-		if (res == null) {
-			LogManager.warning("Error during udev step")
-			return
-		}
-		if (res.contains("Error")) {
-			LogManager.warning("Error installing udev rules")
-		} else {
-			LogManager.info("Successfully installed udev rules")
 		}
 	}
 

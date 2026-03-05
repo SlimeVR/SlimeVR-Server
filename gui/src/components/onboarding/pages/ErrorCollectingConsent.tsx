@@ -20,7 +20,7 @@ export function ErrorCollectingConsentPage() {
         <div className="flex flex-col w-full gap-4">
           <Typography variant="main-title" id="error_collection_modal-title" />
           <Localized
-            id={'error_collection_modal-description_v2'}
+            id="error_collection_modal-description_v2"
             elems={{
               b: <b />,
               h1: <span className="text-md font-bold" />,
@@ -29,7 +29,7 @@ export function ErrorCollectingConsentPage() {
             <Typography variant="standard" whitespace="whitespace-pre-line" />
           </Localized>
         </div>
-        <div className={'flex flex-row gap-2 justify-between'}>
+        <div className="flex flex-row gap-2 justify-between">
           <Button
             variant="tertiary"
             to="/onboarding/wifi-creds"
