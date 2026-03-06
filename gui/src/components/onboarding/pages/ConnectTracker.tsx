@@ -27,6 +27,7 @@ import { BaseModal } from '@/components/commons/BaseModal';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
+import { MoreSetsConfirm } from './quiz/MoreSetsConfirm';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
@@ -318,13 +319,15 @@ export function ConnectTrackersPage() {
                 ? l10n.getString('onboarding-connect_tracker-back')
                 : l10n.getString('onboarding-previous_step')}
             </Button>
-            <Button
-              variant="primary"
-              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
-              className="ml-auto"
-            >
-              {l10n.getString('onboarding-connect_tracker-next')}
-            </Button>
+            {state.alonePage && (
+              <Button
+                variant="primary"
+                to={'/'}
+                className="ml-auto"
+                id="onboarding-connect_tracker-next"
+              />
+            )}
+            {!state.alonePage && <MoreSetsConfirm />}
           </div>
         </div>
         <div style={{ gridArea: 't' }} className="flex items-center px-5 pt-5">
