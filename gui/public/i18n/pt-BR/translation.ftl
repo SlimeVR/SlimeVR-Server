@@ -256,8 +256,8 @@ reset-reset_all_warning_default-v2 =
     Tem certeza que quer fazer isso?
 reset-full = Redefinir Tudo
 reset-mounting = Calibração de Montagem
-reset-mounting-feet = Calibração dos Pés
-reset-mounting-fingers = Calibração dos Dedos
+reset-mounting-feet = Calibrar Pés
+reset-mounting-fingers = Calibrar Dedos
 reset-yaw = Redefinir Rápido (Guinada)
 reset-error-no_feet_tracker = Nenhum tracker de pés atribuído
 reset-error-no_fingers_tracker = Nenhum tracker de dedos atribuído
