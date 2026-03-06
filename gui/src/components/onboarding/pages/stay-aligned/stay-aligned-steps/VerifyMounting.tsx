@@ -10,6 +10,7 @@ import { ManualMountingPageStayAligned } from '@/components/onboarding/pages/mou
 export function VerifyMountingStep({
   nextStep,
   prevStep,
+  isActive,
 }: VerticalStepComponentProps) {
   const { isMobile } = useBreakpoint('mobile');
   const [isOpen, setOpen] = useState(false);
@@ -79,7 +80,11 @@ export function VerifyMountingStep({
             onClick={() => setDisableMounting(true)}
             type={ResetType.Mounting}
             group="default"
-            onReseted={goNextStep}
+            onReseted={() => {
+              if (isActive) {
+                nextStep();
+              }
+            }}
             onFailed={() => setDisableMounting(false)}
           />
         </div>
