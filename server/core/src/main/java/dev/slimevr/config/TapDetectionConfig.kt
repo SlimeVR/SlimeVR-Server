@@ -12,6 +12,9 @@ class TapDetectionConfig {
 	var yawResetEnabled = true
 	var fullResetEnabled = true
 	var mountingResetEnabled = true
+	var yawResetTracker = "Default"
+	var mountingResetTracker = skeleton.waistTracker
+	var fullResetTracker = "Default"
 	var setupMode = false
 	var yawResetTaps = 2
 		set(yawResetTaps) {

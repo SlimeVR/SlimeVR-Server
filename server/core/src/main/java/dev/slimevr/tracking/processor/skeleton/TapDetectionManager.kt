@@ -88,26 +88,40 @@ class TapDetectionManager(
 	private val mountingResetTracker: Tracker?
 		get() {
 			return arrayOf(
+				if (config.mountingResetTracker === "Default") {
 				skeleton.rightUpperLegTracker,
 				skeleton.rightLowerLegTracker,
+				} else {
+					config.mountingResetTracker
+				}
 			).firstNotNullOfOrNull { it }
 		}
 
 	private val fullResetTracker: Tracker?
 		get() {
 			return arrayOf(
-				skeleton.leftUpperLegTracker,
-				skeleton.leftLowerLegTracker,
+				if (config.mountingResetTracker === "Default") {
+
+					skeleton.leftUpperLegTracker,
+					skeleton.leftLowerLegTracker,
+				} else if (config.mountingResetTracker === "hup"){
+					skeleton.hipTracker
+				}
+
 			).firstNotNullOfOrNull { it }
 		}
 
 	private val yawResetTracker: Tracker?
 		get() {
 			return arrayOf(
-				skeleton.upperChestTracker,
-				skeleton.chestTracker,
-				skeleton.hipTracker,
-				skeleton.waistTracker,
+				if (config.yawResetTracker === "Default") {
+					skeleton.upperChestTracker,
+					skeleton.chestTracker,
+					skeleton.hipTracker,
+					skeleton.waistTracker,
+				} else {
+					TrackerUtils.getTrackerForSkeleton(vrServer.allTrackers, config.yawResetTracker)
+				}
 			).firstNotNullOfOrNull { it }
 		}
 

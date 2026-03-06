@@ -15,6 +15,7 @@ import {
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
   HIDSettingsT,
+  BodyPart,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -46,6 +47,7 @@ import {
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
+import { Dropdown } from '@/components/commons/Dropdown';
 
 export type SettingsForm = {
   trackers: {
@@ -99,6 +101,9 @@ export type SettingsForm = {
     fullResetTaps: number;
     mountingResetTaps: number;
     numberTrackersOverThreshold: number;
+    yawResetTracker: string;
+    mountingResetTracker: string;
+    fullResetTracker: string;
   };
   legTweaks: {
     correctionStrength: number;
@@ -159,6 +164,9 @@ const defaultValues: SettingsForm = {
     fullResetTaps: 3,
     mountingResetTaps: 3,
     numberTrackersOverThreshold: 1,
+    yawResetTracker: 'Default',
+    mountingResetTracker: 'Default',
+    fullResetTracker: 'Default',
   },
   legTweaks: { correctionStrength: 0.3 },
   resetsSettings: defaultResetSettings,
@@ -179,6 +187,45 @@ export function GeneralSettings() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const { currentLocales } = useLocaleConfig();
+
+  const BodyParts: { value: BodyPart; label: string }[] = [
+    {
+      value: BodyPart.CHEST,
+      label: l10n.getString('body_part-CHEST'),
+    },
+    {
+      value: BodyPart.WAIST,
+      label: l10n.getString('body_part-WAIST'),
+    },
+    {
+      value: BodyPart.HIP,
+      label: l10n.getString('body_part-HIP'),
+    },
+    {
+      value: BodyPart.RIGHT_UPPER_LEG,
+      label: l10n.getString('body_part-RIGHT_UPPER_LEG'),
+    },
+    {
+      value: BodyPart.RIGHT_LOWER_LEG,
+      label: l10n.getString('body_part-RIGHT_LOWER_LEG'),
+    },
+    {
+      value: BodyPart.RIGHT_FOOT,
+      label: l10n.getString('body_part-RIGHT_FOOT'),
+    },
+    {
+      value: BodyPart.LEFT_UPPER_LEG,
+      label: l10n.getString('body_part-LEFT_UPPER_LEG'),
+    },
+    {
+      value: BodyPart.LEFT_LOWER_LEG,
+      label: l10n.getString('body_part-LEFT_LOWER_LEG'),
+    },
+    {
+      value: BodyPart.LEFT_FOOT,
+      label: l10n.getString('body_part-LEFT_FOOT'),
+    },
+  ];
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
@@ -281,6 +328,13 @@ export function GeneralSettings() {
     tapDetection.yawResetDelay = values.tapDetection.yawResetDelay;
     tapDetection.yawResetEnabled = values.tapDetection.yawResetEnabled;
     tapDetection.yawResetTaps = values.tapDetection.yawResetTaps;
+    tapDetection.yawResetTracker = Number(values.tapDetection.yawResetTracker);
+    tapDetection.mountingResetTracker = Number(
+      values.tapDetection.mountingResetTracker
+    );
+    tapDetection.fullResetTracker = Number(
+      values.tapDetection.fullResetTracker
+    );
     tapDetection.mountingResetEnabled =
       values.tapDetection.mountingResetEnabled;
     tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
@@ -1193,34 +1247,78 @@ export function GeneralSettings() {
                 {l10n.getString('settings-general-gesture_control-description')}
               </Typography>
             </div>
-            <div className="grid sm:grid-cols-3 gap-5 pb-2">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="tapDetection.yawResetEnabled"
-                label={l10n.getString(
-                  'settings-general-gesture_control-yawResetEnabled'
-                )}
-              />
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="tapDetection.fullResetEnabled"
-                label={l10n.getString(
-                  'settings-general-gesture_control-fullResetEnabled'
-                )}
-              />
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="tapDetection.mountingResetEnabled"
-                label={l10n.getString(
-                  'settings-general-gesture_control-mountingResetEnabled'
-                )}
-              />
+            <div>
+              <div className="grid sm:grid-cols-3 gap-5 pb-2">
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  control={control}
+                  name="tapDetection.yawResetEnabled"
+                  label={l10n.getString(
+                    'settings-general-gesture_control-yawResetEnabled'
+                  )}
+                />
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  control={control}
+                  name="tapDetection.fullResetEnabled"
+                  label={l10n.getString(
+                    'settings-general-gesture_control-fullResetEnabled'
+                  )}
+                />
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  control={control}
+                  name="tapDetection.mountingResetEnabled"
+                  label={l10n.getString(
+                    'settings-general-gesture_control-mountingResetEnabled'
+                  )}
+                />
+              </div>
+              <div className="grid sm:grid-cols-3 gap-5 pb-2">
+                <div>
+                  Choose Which tracker location you want to use this reset with!
+                  Defaults are Chest, Upper chest, Hip and waist
+                  <Dropdown
+                    control={control}
+                    placeholder="Default"
+                    name="tapDetection.yawResetTracker"
+                    items={BodyParts.map(({ label, value }) => ({
+                      label: label,
+                      value: String(value),
+                    }))}
+                  />
+                </div>
+
+                <div>
+                  Choose Which tracker location you want to use this reset with!
+                  Defaults are right thigh and right ankle
+                  <Dropdown
+                    control={control}
+                    placeholder=""
+                    name="tapDetection.mountingResetTracker"
+                    items={BodyParts.map(({ label, value }) => ({
+                      label: label,
+                      value: String(value),
+                    }))}
+                  />
+                </div>
+                <div>
+                  Choose Which tracker location you want to use this reset with!
+                  Defaults are left thigh and left ankle
+                  <Dropdown
+                    control={control}
+                    placeholder="Default"
+                    name="tapDetection.fullResetTracker"
+                    items={BodyParts.map(({ label, value }) => ({
+                      label: label,
+                      value: String(value),
+                    }))}
+                  />
+                </div>
+              </div>
             </div>
             <div className="grid sm:grid-cols-3 gap-5 pb-2">
               <NumberSelector
