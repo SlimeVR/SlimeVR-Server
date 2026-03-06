@@ -2,10 +2,12 @@ package dev.slimevr.util
 
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.time.DurationUnit
+import kotlin.time.TimeSource
 
 fun smoothingFactor(tE: Double, cutoff: Double): Double {
-	val r = 2 * PI * cutoff * tE
-	return r / (r + 1)
+	val r = 2.0 * PI * cutoff * tE
+	return r / (r + 1.0)
 }
 
 fun exponentialSmoothing(a: Double, x: Double, xPrev: Double): Double = a * x + (1 - a) * xPrev
@@ -19,21 +21,23 @@ class OneEuroFilter(
 ) {
 	private var xPrev: Double = x0
 	private var dxPrev: Double = dx0
-	private var tPrev: Long = System.nanoTime()
+	private var tPrev = TimeSource.Monotonic.markNow()
 
 	operator fun invoke(x: Double): Double {
-		val t = System.nanoTime()
-		val tE = (t - tPrev) / 1_000_000_000.0 // Convert nanoseconds to seconds
+		val t = TimeSource.Monotonic.markNow()
+		val tE = t - tPrev
 
-		return if (tE != 0.0) {
+		return if (tE.isPositive()) {
+			val tES = tE.toDouble(DurationUnit.SECONDS)
+
 			// The filtered derivative of the signal
-			val aD = smoothingFactor(tE, dCutoff)
-			val dx = (x - xPrev) / tE
+			val aD = smoothingFactor(tES, dCutoff)
+			val dx = (x - xPrev) / tES
 			val dxHat = exponentialSmoothing(aD, dx, dxPrev)
 
 			// The filtered signal
 			val cutoff = minCutoff + beta * abs(dxHat)
-			val a = smoothingFactor(tE, cutoff)
+			val a = smoothingFactor(tES, cutoff)
 			val xHat = exponentialSmoothing(a, x, xPrev)
 
 			// Memorize the previous values
@@ -51,6 +55,6 @@ class OneEuroFilter(
 	fun reset(x0: Double, dx0: Double = 0.0) {
 		xPrev = x0
 		dxPrev = dx0
-		tPrev = System.nanoTime()
+		tPrev = TimeSource.Monotonic.markNow()
 	}
 }
