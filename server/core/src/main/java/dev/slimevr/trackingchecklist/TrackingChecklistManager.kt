@@ -8,6 +8,8 @@ import dev.slimevr.games.vrchat.VRCConfigRecommendedValues
 import dev.slimevr.games.vrchat.VRCConfigValidity
 import dev.slimevr.games.vrchat.VRCConfigValues
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
@@ -82,6 +84,16 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 				enabled = false
 				optional = false
 				ignorable = true
+				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
+			},
+		)
+
+		steps.add(
+			TrackingChecklistStepT().apply {
+				id = TrackingChecklistStepId.STEAMVR_HANDS_ENABLED
+				enabled = false
+				optional = false
+				ignorable = false
 				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
 			},
 		)
@@ -279,6 +291,17 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 				} else {
 					it.extraData = null
 				}
+			}
+
+			val handsEnabled = steamVRBridge.getShareSetting(TrackerRole.LEFT_HAND) || steamVRBridge.getShareSetting(TrackerRole.RIGHT_HAND)
+			val hasControllers = vrServer.allTrackers.any {
+				(it.trackerPosition == TrackerPosition.LEFT_HAND || it.trackerPosition == TrackerPosition.RIGHT_HAND) && it.isComputed && !it.isInternal
+			}
+			val hasHandTrackers = vrServer.allTrackers.any {
+				(it.trackerPosition == TrackerPosition.LEFT_HAND || it.trackerPosition == TrackerPosition.RIGHT_HAND) && !it.isComputed
+			}
+			updateValidity(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED, !steamvrConnected || !handsEnabled || (!hasControllers && hasHandTrackers)) {
+				it.enabled = true
 			}
 		}
 
