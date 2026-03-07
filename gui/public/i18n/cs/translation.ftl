@@ -115,7 +115,7 @@ skeleton_bone-LOWER_LEG = Délka dolní části nohy
 skeleton_bone-FOOT_LENGTH = Délka chodidla
 skeleton_bone-FOOT_LENGTH-desc =
     Toto je vzdálenost mezi vaši kotníky a prsty na nohou.
-    Pro upravení, Chodtě po špičkách dokud vaše virtuální nohy nezůstanou na místě.
+    Pro upravení, Choďte po špičkách dokud vaše virtuální nohy nezůstanou na místě.
 skeleton_bone-FOOT_SHIFT = Odsazení chodidla
 skeleton_bone-SKELETON_OFFSET = Odsazení kostry
 skeleton_bone-SHOULDERS_DISTANCE = Vzdálenost ramen
@@ -778,6 +778,7 @@ settings-osc-vmc-mirror_tracking-label = Zrcadlení trackování
 
 ## Common OSC settings
 
+settings-osc-common-network-port_banned_error = Port { $port } nelze použít!
 
 ## Advanced settings
 
@@ -1164,6 +1165,7 @@ onboarding-stay_aligned-put_trackers_on-title = Nasaďte si trackery
 onboarding-stay_aligned-put_trackers_on-trackers_warning = Aktuálně máte méně než 5 připojených a přiřazených trackerů! Toto je minimální počet trackerů potřebné pro správné fungování funkce Zůstaň Srovnaný.
 onboarding-stay_aligned-put_trackers_on-next = Mám nasazené všechny trackery
 onboarding-stay_aligned-verify_mounting-title = Zkotrolujte nasazení
+onboarding-stay_aligned-verify_mounting-step-0 = Zůstaň Srovnaný vyžaduje dobré nasazení. V opačném případě nebudete mít nejlepší zážitek s Zůstaň Srovnaný.
 onboarding-stay_aligned-verify_mounting-step-1 = 1. Pohybujte se ve stoje.
 onboarding-stay_aligned-verify_mounting-step-2 = 2. Posaďte se a pohybujte nohama a chodidly.
 onboarding-stay_aligned-verify_mounting-redo_mounting = Předělat kalibraci nasazení
@@ -1176,6 +1178,7 @@ onboarding-stay_aligned-relaxed_poses-sitting-title = Uvolněná póza při seze
 onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Posaďte se do pohodlné pozice, Relaxujte!
 onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
 onboarding-stay_aligned-relaxed_poses-flat-title = Uvolněná pozice při sezení na zemi
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Zmáčkněte tlačítko "Uložit pózu"
 onboarding-stay_aligned-relaxed_poses-skip_step = Přeskočit
 onboarding-stay_aligned-done-title = Zůstaň Srovnaný zapnuto!
 onboarding-stay_aligned-done-description = Váš nastavení Zůstaň Srovnaný je dokončeno!
@@ -1189,6 +1192,7 @@ onboarding-stay_aligned-manual_mounting-done = Hotovo
 ## Home
 
 home-no_trackers = Nebyly zjištěny ani přiřazeny žádné trackery
+home-settings = Nastavení domovské stránky
 home-settings-close = Zavřít
 
 ## Trackers Still On notification
@@ -1226,6 +1230,7 @@ firmware_tool-description = Umožní vám konfigurovat a flashovat vaše DIY tra
 firmware_tool-not_available = Jejda, nástroj pro firmware není v momentální chvíli k dispozici, Vraťte se později!
 firmware_tool-not_compatible = Nástroj pro firmware není kompatibilní s touhle verzí serveru. Aktualizujte prosím svůj server.
 firmware_tool-select_source = Vyberte firmware k flashování
+firmware_tool-select_source-error = Nelze načíst Zdroje
 firmware_tool-select_source-board_type = Typ desky
 firmware_tool-select_source-firmware = Zdrojový kód firmwaru
 firmware_tool-select_source-version = Verze firmwaru
@@ -1408,8 +1413,12 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otevřete Ovládací Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Nakonfigurujte Zůstaň Srovnaný
 tracking_checklist-ignore = Ignorovat
 preview-mocap_mode_soon = Režim Mocap (brzy™)
+preview-disable_render = Vypnout vykreslování
+preview-disabled_render = Vykreslování vypnuto
 toolbar-mounting_calibration = Kalibrace nasazení
 toolbar-mounting_calibration-default = Tělo
 toolbar-mounting_calibration-feet = Chodidla
 toolbar-mounting_calibration-fingers = Prsty
 toolbar-drift_reset = Restartování driftu
+toolbar-assigned_trackers = { $count } trackery/ů přiřazeno
+toolbar-unassigned_trackers = { $count } trackey/ů nepřiřazeno
