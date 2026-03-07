@@ -6,7 +6,12 @@ import {
 } from '@/hooks/tracking-checklist';
 import classNames from 'classnames';
 import {
+  ChangeSettingsRequestT,
   ResetType,
+  RpcMessage,
+  SettingsRequestT,
+  SettingsResponseT,
+  SteamVRTrackersSettingT,
   TrackingChecklistPublicNetworksT,
   TrackingChecklistStepId,
 } from 'solarxr-protocol';
@@ -29,6 +34,7 @@ import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { TrackingChecklistModal } from './TrackingChecklistModal';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 
 function Step({
   step: { status, id, optional, firstRequired },
@@ -98,6 +104,55 @@ function Step({
       {(firstRequired || open) && children && (
         <div className="pt-2 pl-5">{children}</div>
       )}
+    </div>
+  );
+}
+
+function SteamVRHandsEnabled() {
+  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const [steamVrTrackers, setSteamVrTrackers] = useState<Omit<
+    SteamVRTrackersSettingT,
+    'pack'
+  > | null>(null);
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+  }, []);
+
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    if (settings.steamVrTrackers) {
+      setSteamVrTrackers(settings.steamVrTrackers);
+    }
+  });
+
+  const disableHandTrackers = () => {
+    const settings = new ChangeSettingsRequestT();
+    settings.steamVrTrackers = new SteamVRTrackersSettingT(
+      steamVrTrackers?.waist,
+      steamVrTrackers?.chest,
+      steamVrTrackers?.automaticTrackerToggle,
+      steamVrTrackers?.leftFoot,
+      steamVrTrackers?.rightFoot,
+      steamVrTrackers?.leftKnee,
+      steamVrTrackers?.rightKnee,
+      steamVrTrackers?.leftElbow,
+      steamVrTrackers?.rightElbow,
+      false,
+      false
+    );
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
+  };
+
+  return (
+    <div className="space-y-2.5">
+      <Typography id="tracking_checklist-STEAMVR_HANDS_ENABLED-desc" />
+      <div className="flex">
+        <Button
+          id="tracking_checklist-STEAMVR_HANDS_ENABLED-go"
+          variant="primary"
+          onClick={disableHandTrackers}
+        />
+      </div>
     </div>
   );
 }
@@ -351,6 +406,9 @@ const stepContentLookup: Record<
         </div>
       </>
     );
+  },
+  [TrackingChecklistStepId.STEAMVR_HANDS_ENABLED]: () => {
+    return <SteamVRHandsEnabled />;
   },
 };
 
