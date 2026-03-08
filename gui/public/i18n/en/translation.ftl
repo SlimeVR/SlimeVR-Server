@@ -524,8 +524,10 @@ settings-general-steamvr-trackers-right_hand = Right hand
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
 settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments.
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
-settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers.
-    Are you sure?
+settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> Enabling the SteamVR hand trackers will disable inputs from real controllers.
+    This should only be enabled if you are using SlimeVR for hand tracking.
+
+    Are you sure you want to do this?
 settings-general-steamvr-trackers-hands-warning-cancel = Cancel
 settings-general-steamvr-trackers-hands-warning-done = Yes
 
