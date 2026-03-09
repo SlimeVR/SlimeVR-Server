@@ -198,11 +198,11 @@ jobs:
           name: 'SlimeVR-Android'
           path: server/android/build/outputs/apk/release/*.apk
       - name: Prepare Release APK
-        if: startsWith(github.ref, 'refs/tags/')
+        # if: startsWith(github.ref, 'refs/tags/')
         run: cp server/android/build/outputs/apk/release/*.apk ./SlimeVR-android.apk
       - name: Upload Android Release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+        # if: startsWith(github.ref, 'refs/tags/')
         with:
           draft: true
           generate_release_notes: true
