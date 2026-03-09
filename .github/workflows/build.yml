@@ -159,7 +159,7 @@ jobs:
             cp "$SRC_DIR"/mac/*.dmg "$DEST_DIR/SlimeVR-mac.dmg"
           fi
 
-          echo "Finalized artifacts for ${{ matrix.platform }}:"
+          echo "Collected files:"
           ls -lh "$DEST_DIR"
       - name: Upload For Release
         uses: actions/upload-artifact@v6
