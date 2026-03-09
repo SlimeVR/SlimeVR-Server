@@ -1,7 +1,5 @@
 appId: dev.slimevr.SlimeVR
 productName: SlimeVR
-directories:
-  output: dist/artifacts
 
 asar: true
 asarUnpack:
@@ -9,6 +7,10 @@ asarUnpack:
 
 electronLanguages:
   - en-US
+
+directories:
+  output: dist/artifacts/${os}
+artifactName: "${productName}-${version}-${os}-${arch}.${ext}"
 
 files:
   - out/**/*
