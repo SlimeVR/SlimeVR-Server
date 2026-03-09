@@ -9,7 +9,7 @@ electronLanguages:
   - en-US
 
 directories:
-  output: dist/artifacts/${os}/${ext}
+  output: dist/artifacts/${os}
 artifactName: "${productName}-${version}-${os}-${arch}.${ext}"
 
 files:
@@ -26,6 +26,7 @@ files:
 
 linux:
   category: Game
+  artifactName: "${ext}/${productName}-${version}-${os}-${arch}.${ext}"
   target:
     - target: AppImage
     - target: deb
