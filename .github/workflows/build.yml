@@ -83,7 +83,7 @@ jobs:
 
   package-desktop:
     name: Package Desktop (${{ matrix.platform }} - ${{ matrix.os }})
-    needs: [checks, build-server-jar, build-gui-frontend]
+    needs: [build-server-jar, build-gui-frontend]
     strategy:
       fail-fast: false
       matrix:
@@ -96,8 +96,8 @@ jobs:
             platform: windows
           - os: windows-11-arm
             platform: windows
-          - os: macos-latest
-            platform: macos
+          # - os: macos-latest
+          #   platform: macos
     runs-on: ${{ matrix.os }}
     env:
       BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}
