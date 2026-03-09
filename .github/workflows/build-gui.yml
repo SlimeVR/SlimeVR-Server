@@ -100,6 +100,13 @@ jobs:
           name: gui-dist-out
           path: gui/out/
 
+      - name: Prepare Output Directories
+        shell: bash
+        run: |
+          mkdir -p gui/dist/artifacts/linux/AppImage
+          mkdir -p gui/dist/artifacts/linux/deb
+          mkdir -p gui/dist/artifacts/linux/rpm
+
       - name: Package
         shell: bash
         env:
