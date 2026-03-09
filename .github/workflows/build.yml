@@ -149,14 +149,9 @@ jobs:
 
           elif [ "${{ matrix.platform }}" == "linux" ]; then
             for f in "$SRC_DIR"/linux/*; do
-              # Skip directories (like linux-unpacked)
               [ -d "$f" ] && continue
-
-              # Get filename only
               BASE=$(basename "$f")
-              # Normalize: x86_64 -> amd64, arm64 -> aarch64
               NEW_NAME=$(echo "$BASE" | sed -e 's/x86_64/amd64/g' -e 's/arm64/aarch64/g')
-
               cp "$f" "$DEST_DIR/$NEW_NAME"
             done
 
