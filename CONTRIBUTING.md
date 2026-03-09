@@ -35,7 +35,8 @@ be at `server/build/libs/slimevr.jar` (you can ignore `server.jar`).
 - Activate corepack (included with Node.JS) via `corepack enable` (might require administrator permissions)
 - Run `pnpm i` in your IDE's terminal to download and install dependencies.
 - To launch the GUI in dev mode, run `pnpm gui`.
-- Finally, to compile for production, run `pnpm build`. The result
+- Finally, to compile for production, run `pnpm package:build`. The result
+will be at `dist/artifacts/` content will change depending of the platform.
 
 ## Code style
 
