@@ -146,14 +146,21 @@ jobs:
           mkdir -p release-out
           if [ "${{ matrix.platform }}" == "windows" ]; then
             ARCH_NAME=$([[ "${{ matrix.os }}" == *"arm"* ]] && echo "win-aarch64" || echo "win64")
+            # Pulls from gui/dist/artifacts/win/
             cp gui/dist/artifacts/win/*.exe release-out/SlimeVR-$ARCH_NAME.zip
           elif [ "${{ matrix.platform }}" == "linux" ]; then
-            cp gui/dist/artifacts/linux/AppImage/*.AppImage release-out/ || true
-            cp gui/dist/artifacts/linux/deb/*.deb release-out/ || true
-            cp gui/dist/artifacts/linux/rpm/*.rpm release-out/ || true
+            # electron-builder places these in subfolders by default:
+            # gui/dist/artifacts/linux/ (AppImage, deb, rpm)
+            cp gui/dist/artifacts/linux/*.AppImage release-out/ || true
+            cp gui/dist/artifacts/linux/*.deb release-out/ || true
+            cp gui/dist/artifacts/linux/*.rpm release-out/ || true
           elif [ "${{ matrix.platform }}" == "macos" ]; then
+            # Universal build goes to gui/dist/artifacts/mac/
             cp gui/dist/artifacts/mac/*.dmg release-out/SlimeVR-mac.dmg
           fi
+
+          # This verifies the files are actually there before the upload step runs
+          ls -lh release-out/
       - name: Upload For Release
         uses: actions/upload-artifact@v6
         with:
