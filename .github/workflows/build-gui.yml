@@ -19,26 +19,47 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v6
         with:
           submodules: recursive
-
       - uses: pnpm/action-setup@v4
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
-
-      - name: Build
+      - name: Lint
         run: |
           pnpm i
           cd gui
           pnpm run lint
 
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - uses: pnpm/action-setup@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+      - name: Build JS
+        run: |
+          pnpm i
+          cd gui
+          pnpm run build
+      - name: Upload Built Assets
+        uses: actions/upload-artifact@v6
+        with:
+          name: gui-dist-out
+          path: gui/out/
+
   build:
+    needs: [lint, build-frontend]
     strategy:
       fail-fast: false
       matrix:
@@ -73,19 +94,27 @@ jobs:
         shell: bash
         run: pnpm i
 
-      - name: Build
+      - name: Download Built Assets
+        uses: actions/download-artifact@v6
+        with:
+          name: gui-dist-out
+          path: gui/out/
+
+      - name: Package
         shell: bash
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           NODE_OPTIONS: ${{ matrix.os == 'macos-latest' && '--max-old-space-size=4096' || '' }}
-        run: cd gui && pnpm run package
+        run: |
+          cd gui
+          pnpm exec electron-builder --publish never
 
       - if: startsWith(matrix.os, 'windows')
         name: Upload a Build Artifact (Windows)
         uses: actions/upload-artifact@v6
         with:
           name: ${{ format('SlimeVR-GUI-Windows-{0}', env.BUILD_ARCH) }}
-          path: gui/dist/artifacts/win/**/**
+          path: gui/dist/artifacts/win/**/*
 
       - if: startsWith(matrix.os, 'ubuntu')
         name: Upload a Build Artifact (Linux)
@@ -99,4 +128,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: SlimeVR-GUI-macOS
-          path: ggui/dist/artifacts/mac/**/*
+          path: gui/dist/artifacts/mac/**/*
