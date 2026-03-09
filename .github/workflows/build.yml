@@ -17,20 +17,14 @@ jobs:
       - id: set-matrix
         shell: bash
         run: |
-          # 1. Define your platform lists (easy to edit here)
           BASE='[{"os":"ubuntu-22.04","platform":"linux"},{"os":"windows-latest","platform":"windows"},{"os":"macos-latest","platform":"macos"}]'
           EXTRA='[{"os":"ubuntu-22.04-arm","platform":"linux"},{"os":"windows-11-arm","platform":"windows"}]'
 
-          # 2. Decide logic
           if [[ "${{ github.ref }}" == refs/tags/v* || "${{ github.ref }}" == refs/heads/main || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            # Merge both arrays into one compact string
             RESULT=$(echo "$BASE $EXTRA" | jq -c -s 'add')
           else
-            # Use only the base set, made compact
             RESULT=$(echo "$BASE" | jq -c '.')
           fi
-
-          # 3. Output the single-line string
           echo "matrix={\"include\":$RESULT}" >> "$GITHUB_OUTPUT"
           fi
 
