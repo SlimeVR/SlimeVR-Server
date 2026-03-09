@@ -140,36 +140,41 @@ jobs:
       - name: Collect and Rename Artifacts
         shell: bash
         run: |
-          mkdir -p release-out
+          # Create the output dir at the workspace root
+          mkdir -p "$GITHUB_WORKSPACE/release-out"
 
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            # Map Windows Arch
             if [[ "${{ matrix.os }}" == *"arm"* ]]; then
               FINAL_NAME="SlimeVR-win-aarch64.zip"
             else
               FINAL_NAME="SlimeVR-win64.zip"
             fi
-            cp gui/dist/artifacts/win/*.exe release-out/$FINAL_NAME
+            # Use a wildcard to find the exe and copy it to the root release-out
+            cp gui/dist/artifacts/win/*.exe "$GITHUB_WORKSPACE/release-out/$FINAL_NAME"
 
           elif [ "${{ matrix.platform }}" == "linux" ]; then
-            # Move files and rename based on arch patterns
+            # Navigate to where electron-builder put the files
             cd gui/dist/artifacts/linux
             for f in *; do
+              # Skip directories if any exist
+              [ -d "$f" ] && continue
+
               NEW_NAME=$f
-              # Normalize x86_64 to amd64
+              # Normalize x86_64 -> amd64 and arm64 -> aarch64
               NEW_NAME=${NEW_NAME//x86_64/amd64}
-              # Normalize arm64 to aarch64
               NEW_NAME=${NEW_NAME//arm64/aarch64}
-              cp "$f" "../../../release-out/$NEW_NAME"
+
+              # Copy using the absolute path to the root release-out
+              cp "$f" "$GITHUB_WORKSPACE/release-out/$NEW_NAME"
             done
-            cd ../../../
+            cd "$GITHUB_WORKSPACE"
 
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            cp gui/dist/artifacts/mac/*.dmg release-out/SlimeVR-mac.dmg
+            cp gui/dist/artifacts/mac/*.dmg "$GITHUB_WORKSPACE/release-out/SlimeVR-mac.dmg"
           fi
 
           echo "Final artifacts for ${{ matrix.platform }}:"
-          ls -lh release-out/
+          ls -lh "$GITHUB_WORKSPACE/release-out/"
       - name: Upload For Release
         uses: actions/upload-artifact@v6
         with:
