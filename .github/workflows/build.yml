@@ -141,20 +141,34 @@ jobs:
         shell: bash
         run: |
           mkdir -p release-out
+
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            ARCH_NAME=$([[ "${{ matrix.os }}" == *"arm"* ]] && echo "win-aarch64" || echo "win64")
-            # Pulls from gui/dist/artifacts/win/
-            cp gui/dist/artifacts/win/*.exe release-out/SlimeVR-$ARCH_NAME.zip
+            # Map Windows Arch
+            if [[ "${{ matrix.os }}" == *"arm"* ]]; then
+              FINAL_NAME="SlimeVR-win-aarch64.zip"
+            else
+              FINAL_NAME="SlimeVR-win64.zip"
+            fi
+            cp gui/dist/artifacts/win/*.exe release-out/$FINAL_NAME
+
           elif [ "${{ matrix.platform }}" == "linux" ]; then
-            cp gui/dist/artifacts/linux/*.AppImage release-out/ || true
-            cp gui/dist/artifacts/linux/*.deb release-out/ || true
-            cp gui/dist/artifacts/linux/*.rpm release-out/ || true
+            # Move files and rename based on arch patterns
+            cd gui/dist/artifacts/linux
+            for f in *; do
+              NEW_NAME=$f
+              # Normalize x86_64 to amd64
+              NEW_NAME=${NEW_NAME//x86_64/amd64}
+              # Normalize arm64 to aarch64
+              NEW_NAME=${NEW_NAME//arm64/aarch64}
+              cp "$f" "../../../release-out/$NEW_NAME"
+            done
+            cd ../../../
+
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            # Universal build goes to gui/dist/artifacts/mac/
             cp gui/dist/artifacts/mac/*.dmg release-out/SlimeVR-mac.dmg
           fi
 
-          # This verifies the files are actually there before the upload step runs
+          echo "Final artifacts for ${{ matrix.platform }}:"
           ls -lh release-out/
       - name: Upload For Release
         uses: actions/upload-artifact@v6
