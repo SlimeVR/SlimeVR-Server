@@ -1,5 +1,10 @@
 appId: dev.slimevr.SlimeVR
 productName: SlimeVR
+# Global naming pattern
+artifactName: "${productName}-${version}-${os}-${arch}.${ext}"
+
+directories:
+  output: dist/artifacts/${os}
 
 asar: true
 asarUnpack:
@@ -8,16 +13,11 @@ asarUnpack:
 electronLanguages:
   - en-US
 
-directories:
-  output: dist/artifacts/${os}
-artifactName: "${productName}-${version}-${os}-${arch}.${ext}"
-
 files:
   - out/**/*
   - index.html
   - package.json
   - node_modules/**
-  # Exclude unnecessary files from node_modules to reduce size
   - "!node_modules/*/{README,readme,README.md,readme.md,CHANGELOG,CHANGELOG.md,changelog.md}"
   - "!node_modules/*/{test,tests,__tests__,docs,doc,example,examples}"
   - "!node_modules/*/.{git,github,vscode,editorconfig,eslintrc,prettierrc}"
@@ -39,17 +39,12 @@ linux:
   icon: "./electron/resources/icons"
 
 deb:
-  depends:
-    - openjdk-17-jre-headless
-    - udev
+  depends: [openjdk-17-jre-headless, udev]
 rpm:
-  depends:
-    - java-latest-openjdk
-    - udev
+  depends: [java-latest-openjdk, udev]
 
 win:
-  target:
-    - target: portable
+  target: [target: portable]
   icon: "./electron/resources/icons/icon.ico"
 
 mac:
