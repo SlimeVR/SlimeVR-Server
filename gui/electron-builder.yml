@@ -26,7 +26,7 @@ files:
 
 linux:
   category: Game
-  artifactName: "${ext}/${productName}-${version}-${os}-${arch}.${ext}"
+  artifactName: "${productName}-${arch}.${ext}"
   target:
     - target: AppImage
     - target: deb
@@ -44,11 +44,13 @@ rpm:
   depends: [java-latest-openjdk, udev]
 
 win:
+  artifactName: "${productName}-${os}-${arch}.${ext}"
   target: [target: portable]
   icon: "./electron/resources/icons/icon.ico"
 
 mac:
   target: dmg
+  artifactName: "${productName}-mac.${ext}"
   extraFiles:
     - from: "../server/desktop/build/libs/slimevr.jar"
       to: "."

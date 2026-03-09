@@ -98,8 +98,8 @@ jobs:
             platform: windows
           - os: windows-11-arm
             platform: windows
-          - os: macos-latest
-            platform: macos
+          # - os: macos-latest
+          #   platform: macos
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -123,14 +123,20 @@ jobs:
         with:
           name: gui-dist
       - name: Extract GUI for Electron
+        # Using bash shell explicitly for cross-platform compatibility
+        shell: bash
         run: mkdir -p gui/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/out
-      - name: Ensure Output Directories Exist
-        run: mkdir -p gui/dist/artifacts/linux/AppImage gui/dist/artifacts/linux/deb gui/dist/artifacts/linux/rpm gui/dist/artifacts/win gui/dist/artifacts/mac
       - name: Run Electron Builder
         shell: bash
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
+          # Create directories using bash syntax inside the bash shell
+          mkdir -p gui/dist/artifacts/linux/AppImage \
+                   gui/dist/artifacts/linux/deb \
+                   gui/dist/artifacts/linux/rpm \
+                   gui/dist/artifacts/win \
+                   gui/dist/artifacts/mac
           cd gui
           pnpm i
           pnpm exec electron-builder --${{ matrix.platform }} ${{ matrix.platform == 'macos' && '--universal' || '' }} --publish never
@@ -153,7 +159,6 @@ jobs:
         with:
           name: release-${{ matrix.platform }}-${{ matrix.os }}
           path: release-out/*
-
   bundle-android:
     name: Build Android APK
     needs: [build-gui-frontend]
