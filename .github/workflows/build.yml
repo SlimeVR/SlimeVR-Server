@@ -75,15 +75,17 @@ jobs:
           cache: 'pnpm'
       - name: Build JS
         run: pnpm i && cd gui && pnpm run build
-      - name: Upload GUI Assets
+      - name: Tar GUI Dist
+        run: tar -czf slimevr-gui-dist.tar.gz -C gui/out .
+      - name: Upload GUI Dist
         uses: actions/upload-artifact@v6
         with:
-          name: gui-assets
-          path: gui/out/
+          name: gui-dist
+          path: slimevr-gui-dist.tar.gz
 
   package-desktop:
     name: Package Desktop (${{ matrix.platform }} - ${{ matrix.os }})
-    needs: [build-server-jar, build-gui-frontend]
+    needs: [checks, build-server-jar, build-gui-frontend]
     strategy:
       fail-fast: false
       matrix:
@@ -96,12 +98,9 @@ jobs:
             platform: windows
           - os: windows-11-arm
             platform: windows
-          # - os: macos-latest
-          #   platform: macos
+          - os: macos-latest
+            platform: macos
     runs-on: ${{ matrix.os }}
-    env:
-      BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}
-      FINAL_ZIP: SlimeVR-${{ matrix.platform }}-${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}.zip
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -119,48 +118,39 @@ jobs:
         with:
           name: server-jar
           path: server/desktop/build/libs/
-      - name: Download GUI Assets
+      - name: Download GUI Dist
         uses: actions/download-artifact@v6
         with:
-          name: gui-assets
-          path: gui/out/
-      - name: Install Dependencies
-        run: pnpm i
-      - name: Prepare Linux Directories
-        if: matrix.platform == 'linux'
-        run: mkdir -p gui/dist/artifacts/linux/{AppImage,deb,rpm}
+          name: gui-dist
+      - name: Extract GUI for Electron
+        run: mkdir -p gui/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/out
       - name: Run Electron Builder
         shell: bash
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          NODE_OPTIONS: ${{ matrix.os == 'macos-latest' && '--max-old-space-size=4096' || '' }}
         run: |
           cd gui
+          pnpm i
           pnpm exec electron-builder --${{ matrix.platform }} ${{ matrix.platform == 'macos' && '--universal' || '' }} --publish never
-      - name: Bundle and Zip
+      - name: Collect and Rename Artifacts
         shell: bash
         run: |
-          mkdir -p staging
+          mkdir -p release-out
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            cp gui/dist/artifacts/win/*.exe staging/slimevr.exe
-            cp gui/electron/resources/icons/icon.ico staging/run.ico
+            ARCH_NAME=$([[ "${{ matrix.os }}" == *"arm"* ]] && echo "win-aarch64" || echo "win64")
+            cp gui/dist/artifacts/win/*.exe release-out/SlimeVR-$ARCH_NAME.zip
           elif [ "${{ matrix.platform }}" == "linux" ]; then
-            cp gui/dist/artifacts/linux/AppImage/*.AppImage staging/
-            cp gui/dist/artifacts/linux/deb/*.deb staging/
-            cp gui/dist/artifacts/linux/rpm/*.rpm staging/
+            cp gui/dist/artifacts/linux/AppImage/*.AppImage release-out/ || true
+            cp gui/dist/artifacts/linux/deb/*.deb release-out/ || true
+            cp gui/dist/artifacts/linux/rpm/*.rpm release-out/ || true
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            cp gui/dist/artifacts/mac/*.dmg staging/
+            cp gui/dist/artifacts/mac/*.dmg release-out/SlimeVR-mac.dmg
           fi
-          cp server/desktop/build/libs/slimevr.jar staging/
-          if [ -d "server/core/resources" ]; then
-            cp -r server/core/resources/* staging/ || true
-          fi
-          7z a -tzip "${{ env.FINAL_ZIP }}" ./staging/*
-      - name: Upload Platform Artifact
+      - name: Upload For Release
         uses: actions/upload-artifact@v6
         with:
-          name: SlimeVR-${{ matrix.platform }}-${{ env.BUILD_ARCH }}
-          path: ${{ env.FINAL_ZIP }}
+          name: release-${{ matrix.platform }}-${{ matrix.os }}
+          path: release-out/*
 
   bundle-android:
     name: Build Android APK
@@ -171,8 +161,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           submodules: recursive
-      - name: Fetch Tags
-        run: git fetch --tags origin --recurse-submodules=no --force
       - name: Set up JDK 17
         uses: actions/setup-java@v5
         with:
@@ -180,11 +168,12 @@ jobs:
           distribution: 'adopt'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-      - name: Download GUI Assets
+      - name: Download GUI Dist
         uses: actions/download-artifact@v6
         with:
-          name: gui-assets
-          path: gui/out/
+          name: gui-dist
+      - name: Extract GUI for Android
+        run: mkdir -p gui/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/out
       - name: Build APK
         run: ./gradlew :server:android:build --build-cache
         env:
@@ -192,38 +181,45 @@ jobs:
           ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_STORE_PASSWD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
-      - name: Upload APK Artifact
+      - name: Prepare APK
+        run: cp server/android/build/outputs/apk/release/*.apk ./SlimeVR-android.apk
+      - name: Upload APK
         uses: actions/upload-artifact@v6
         with:
-          name: 'SlimeVR-Android'
-          path: server/android/build/outputs/apk/release/*.apk
-      - name: Prepare Release APK
-        # if: startsWith(github.ref, 'refs/tags/')
-        run: cp server/android/build/outputs/apk/release/*.apk ./SlimeVR-android.apk
-      - name: Upload Android Release
-        uses: softprops/action-gh-release@v2
-        # if: startsWith(github.ref, 'refs/tags/')
-        with:
-          draft: true
-          tag_name: electron-test
-          generate_release_notes: true
-          files: ./SlimeVR-android.apk
+          name: release-android
+          path: SlimeVR-android.apk
 
   create-release:
-    name: Release Draft
-    needs: [package-desktop]
-    # if: startsWith(github.ref, 'refs/tags/')
+    name: Finalize Release Draft
+    needs: [package-desktop, bundle-android, build-server-jar, build-gui-frontend]
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - name: Download All Desktop Zips
+      - name: Download All Release Artifacts
         uses: actions/download-artifact@v6
         with:
-          path: release-assets
+          pattern: release-*
           merge-multiple: true
+      - name: Download Server Jar
+        uses: actions/download-artifact@v6
+        with:
+          name: server-jar
+      - name: Download GUI Dist
+        uses: actions/download-artifact@v6
+        with:
+          name: gui-dist
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           draft: true
           tag_name: electron-test
           generate_release_notes: true
-          files: release-assets/*.zip
+          files: |
+            *.appimage
+            *.deb
+            *.rpm
+            *.apk
+            *.dmg
+            *.zip
+            *.jar
+            *.tar.gz
