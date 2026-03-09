@@ -26,8 +26,6 @@ jobs:
             RESULT=$(echo "$BASE" | jq -c '.')
           fi
           echo "matrix={\"include\":$RESULT}" >> "$GITHUB_OUTPUT"
-          fi
-
   checks:
     name: Lint and Java Checks
     runs-on: ubuntu-latest
