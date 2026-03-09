@@ -206,7 +206,7 @@ jobs:
   create-release:
     name: Finalize Release Draft
     needs: [package-desktop, bundle-android, build-server-jar, build-gui-frontend]
-    if: startsWith(github.ref, 'refs/tags/')
+    # if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Download All Release Artifacts
