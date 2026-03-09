@@ -9,7 +9,7 @@ electronLanguages:
   - en-US
 
 directories:
-  output: dist/artifacts/${os}
+  output: dist/artifacts/${os}/${ext}
 artifactName: "${productName}-${version}-${os}-${arch}.${ext}"
 
 files:
