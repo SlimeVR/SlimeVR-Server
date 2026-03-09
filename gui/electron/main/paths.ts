@@ -60,7 +60,6 @@ const javaHomeBin = () => {
   const javaHome = process.env['JAVA_HOME'];
   if (!javaHome) return null;
   const javaHomeJre = join(javaHome, 'bin', javaBin);
-  console.log(javaHomeJre);
   return javaHomeJre;
 };
 
