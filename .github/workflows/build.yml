@@ -22,7 +22,7 @@ jobs:
       - name: GUI Lint
         run: pnpm i && cd gui && pnpm run lint
       - name: Java Spotless Check
-        run: ./gradlew spotlessCheck
+        run: ./gradlew spotlessCheck --build-cache
 
   build-server-jar:
     runs-on: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:
           distribution: 'adopt'
       - uses: gradle/actions/setup-gradle@v5
       - name: Build ShadowJar
-        run: ./gradlew :server:desktop:shadowJar
+        run: ./gradlew :server:desktop:shadowJar --build-cache
       - uses: actions/upload-artifact@v6
         with:
           name: server-jar
@@ -79,6 +79,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}
+      FINAL_ZIP: SlimeVR-${{ matrix.platform }}-${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}.zip
+
     steps:
       - uses: actions/checkout@v6
         with:
@@ -114,63 +116,90 @@ jobs:
           cd gui
           pnpm exec electron-builder --${{ matrix.platform }} ${{ matrix.platform == 'macos' && '--universal' || '' }} --publish never
 
-      - name: Create Windows Zip
-        if: matrix.platform == 'windows'
+      - name: Bundle and Zip
         shell: bash
         run: |
-          mkdir SlimeVR-Bundle
-          cp gui/dist/artifacts/win/portable/*.exe ./SlimeVR-Bundle/slimevr.exe
-          cp gui/electron/resources/icons/icon.ico ./SlimeVR-Bundle/run.ico
-          cp server/desktop/build/libs/slimevr.jar ./SlimeVR-Bundle/
-          cp server/core/resources/* ./SlimeVR-Bundle/ || true
-          7z a -tzip "SlimeVR-Windows-${{ env.BUILD_ARCH }}.zip" ./SlimeVR-Bundle/
-
-      - name: Create Linux Tarball
-        if: matrix.platform == 'linux' && !endsWith(matrix.os, 'arm')
-        run: tar czf slimevr-gui-dist.tar.gz -C gui/out/ .
+          mkdir -p staging
+          if [ "${{ matrix.platform }}" == "windows" ]; then
+            cp gui/dist/artifacts/win/*.exe staging/slimevr.exe
+            cp gui/electron/resources/icons/icon.ico staging/run.ico
+          elif [ "${{ matrix.platform }}" == "linux" ]; then
+            cp gui/dist/artifacts/linux/AppImage/*.AppImage staging/
+            cp gui/dist/artifacts/linux/deb/*.deb staging/
+            cp gui/dist/artifacts/linux/rpm/*.rpm staging/
+            cp gui/electron/resources/69-slimevr-devices.rules staging/ || true
+          elif [ "${{ matrix.platform }}" == "macos" ]; then
+            cp gui/dist/artifacts/mac/*.dmg staging/
+          fi
+          cp server/desktop/build/libs/slimevr.jar staging/
+          if [ -d "server/core/resources" ]; then
+            cp -r server/core/resources/* staging/ || true
+          fi
+          7z a -tzip "${{ env.FINAL_ZIP }}" ./staging/*
 
       - uses: actions/upload-artifact@v6
         with:
-          name: SlimeVR-Desktop-${{ matrix.os }}
-          path: |
-            *.zip
-            *.tar.gz
-            gui/dist/artifacts/**/*
+          name: SlimeVR-${{ matrix.platform }}-${{ env.BUILD_ARCH }}
+          path: ${{ env.FINAL_ZIP }}
 
-  build-android:
+  bundle-android:
     needs: [build-gui-frontend]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
           submodules: recursive
-      - uses: actions/setup-java@v5
+      - name: Get tags
+        run: git fetch --tags origin --recurse-submodules=no --force
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'adopt'
-      - uses: gradle/actions/setup-gradle@v5
-      - uses: actions/download-artifact@v6
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - uses: pnpm/action-setup@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm i
+      - name: Download Pre-built GUI Assets
+        uses: actions/download-artifact@v6
         with:
           name: gui-assets
           path: gui/out/
-      - name: Build Android APK
-        run: ./gradlew :server:android:build
+      - name: Build with Gradle
+        run: ./gradlew :server:android:build --build-cache
         env:
           ANDROID_STORE_FILE: ${{ secrets.ANDROID_STORE_FILE }}
           ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_STORE_PASSWD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
-      - uses: actions/upload-artifact@v6
+      - name: Upload Android Build
+        uses: actions/upload-artifact@v6
         with:
-          name: SlimeVR-Android
+          name: 'SlimeVR-Android'
           path: server/android/build/outputs/apk/release/*.apk
+      - name: Prepare for release
+        if: startsWith(github.ref, 'refs/tags/')
+        run: cp server/android/build/outputs/apk/release/android-release.apk ./SlimeVR-android.apk
+      - name: Upload to draft release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          generate_release_notes: true
+          files: ./SlimeVR-android.apk
 
   create-release:
-    needs: [package-desktop, build-android]
+    needs: [package-desktop]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - name: Download All Artifacts
+      - name: Download Desktop Zips
         uses: actions/download-artifact@v6
         with:
           path: release-assets
@@ -180,4 +209,4 @@ jobs:
         with:
           draft: true
           generate_release_notes: true
-          files: release-assets/**/*
+          files: release-assets/*.zip
