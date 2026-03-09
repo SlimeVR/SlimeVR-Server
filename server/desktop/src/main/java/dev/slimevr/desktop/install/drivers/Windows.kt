@@ -1,5 +1,8 @@
 package dev.slimevr.desktop.install.drivers
 
+import com.sun.jna.platform.win32.WinReg
+import dev.slimevr.desktop.games.vrchat.AbstractRegEdit
+import dev.slimevr.desktop.games.vrchat.RegEditWindows
 import io.eiren.util.logging.LogManager
 import java.io.File
 
@@ -58,7 +61,10 @@ class Windows {
 	}
 
 	fun steamVRDriver() {
-		val steamVRLocation = executeShellCommand("powershell.exe", "-Command", "(Get-ItemProperty \'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820\').InstallLocation")?.trim()
+		val regEdit = RegEditWindows()
+		val regQuery = regEdit.getKeyByPath(WinReg.HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820")
+		val steamVRLocation = regQuery["InstallLocation"]
+		println(steamVRLocation)
 		if (steamVRLocation == null) {
 			LogManager.warning("Error installing SteamVR driver.")
 			return

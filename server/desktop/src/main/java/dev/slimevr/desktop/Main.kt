@@ -102,7 +102,7 @@ fun main(args: Array<String>) {
 
 	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toInt()
 	val path = System.getProperty("user.dir").lowercase()
-	if (path.contains("steam") && isInstallDisabled != 1) {
+	if (path.contains("steam") && isInstallDisabled != 1 || true) {
 		val installDrivers = InstallDrivers()
 		installDrivers.runInstaller()
 	}
