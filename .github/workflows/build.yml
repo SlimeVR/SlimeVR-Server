@@ -9,13 +9,24 @@ on:
 
 jobs:
   checks:
+    name: Lint and Java Checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
           submodules: recursive
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
@@ -25,42 +36,53 @@ jobs:
         run: ./gradlew spotlessCheck --build-cache
 
   build-server-jar:
+    name: Build Server ShadowJar
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
           submodules: recursive
-      - uses: actions/setup-java@v5
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'adopt'
-      - uses: gradle/actions/setup-gradle@v5
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
       - name: Build ShadowJar
         run: ./gradlew :server:desktop:shadowJar --build-cache
-      - uses: actions/upload-artifact@v6
+      - name: Upload Server Jar
+        uses: actions/upload-artifact@v6
         with:
           name: server-jar
           path: server/desktop/build/libs/slimevr.jar
 
   build-gui-frontend:
+    name: Build GUI Assets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
           submodules: recursive
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
       - name: Build JS
         run: pnpm i && cd gui && pnpm run build
-      - uses: actions/upload-artifact@v6
+      - name: Upload GUI Assets
+        uses: actions/upload-artifact@v6
         with:
           name: gui-assets
           path: gui/out/
 
   package-desktop:
+    name: Package Desktop (${{ matrix.platform }} - ${{ matrix.os }})
     needs: [checks, build-server-jar, build-gui-frontend]
     strategy:
       fail-fast: false
@@ -80,33 +102,33 @@ jobs:
     env:
       BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}
       FINAL_ZIP: SlimeVR-${{ matrix.platform }}-${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}.zip
-
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
           submodules: recursive
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
-
-      - uses: actions/download-artifact@v6
+      - name: Download Server Jar
+        uses: actions/download-artifact@v6
         with:
           name: server-jar
           path: server/desktop/build/libs/
-      - uses: actions/download-artifact@v6
+      - name: Download GUI Assets
+        uses: actions/download-artifact@v6
         with:
           name: gui-assets
           path: gui/out/
-
       - name: Install Dependencies
         run: pnpm i
-
-      - name: Prepare Linux Dirs
+      - name: Prepare Linux Directories
         if: matrix.platform == 'linux'
         run: mkdir -p gui/dist/artifacts/linux/{AppImage,deb,rpm}
-
       - name: Run Electron Builder
         shell: bash
         env:
@@ -115,7 +137,6 @@ jobs:
         run: |
           cd gui
           pnpm exec electron-builder --${{ matrix.platform }} ${{ matrix.platform == 'macos' && '--universal' || '' }} --publish never
-
       - name: Bundle and Zip
         shell: bash
         run: |
@@ -127,7 +148,6 @@ jobs:
             cp gui/dist/artifacts/linux/AppImage/*.AppImage staging/
             cp gui/dist/artifacts/linux/deb/*.deb staging/
             cp gui/dist/artifacts/linux/rpm/*.rpm staging/
-            cp gui/electron/resources/69-slimevr-devices.rules staging/ || true
           elif [ "${{ matrix.platform }}" == "macos" ]; then
             cp gui/dist/artifacts/mac/*.dmg staging/
           fi
@@ -136,20 +156,22 @@ jobs:
             cp -r server/core/resources/* staging/ || true
           fi
           7z a -tzip "${{ env.FINAL_ZIP }}" ./staging/*
-
-      - uses: actions/upload-artifact@v6
+      - name: Upload Platform Artifact
+        uses: actions/upload-artifact@v6
         with:
           name: SlimeVR-${{ matrix.platform }}-${{ env.BUILD_ARCH }}
           path: ${{ env.FINAL_ZIP }}
 
   bundle-android:
+    name: Build Android APK
     needs: [build-gui-frontend]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
           submodules: recursive
-      - name: Get tags
+      - name: Fetch Tags
         run: git fetch --tags origin --recurse-submodules=no --force
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -158,35 +180,27 @@ jobs:
           distribution: 'adopt'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-      - uses: pnpm/action-setup@v4
-      - name: Use Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm i
-      - name: Download Pre-built GUI Assets
+      - name: Download GUI Assets
         uses: actions/download-artifact@v6
         with:
           name: gui-assets
           path: gui/out/
-      - name: Build with Gradle
+      - name: Build APK
         run: ./gradlew :server:android:build --build-cache
         env:
           ANDROID_STORE_FILE: ${{ secrets.ANDROID_STORE_FILE }}
           ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_STORE_PASSWD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
-      - name: Upload Android Build
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v6
         with:
           name: 'SlimeVR-Android'
           path: server/android/build/outputs/apk/release/*.apk
-      - name: Prepare for release
+      - name: Prepare Release APK
         if: startsWith(github.ref, 'refs/tags/')
-        run: cp server/android/build/outputs/apk/release/android-release.apk ./SlimeVR-android.apk
-      - name: Upload to draft release
+        run: cp server/android/build/outputs/apk/release/*.apk ./SlimeVR-android.apk
+      - name: Upload Android Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -195,16 +209,17 @@ jobs:
           files: ./SlimeVR-android.apk
 
   create-release:
+    name: Release Draft
     needs: [package-desktop]
-    if: startsWith(github.ref, 'refs/tags/')
+    # if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - name: Download Desktop Zips
+      - name: Download All Desktop Zips
         uses: actions/download-artifact@v6
         with:
           path: release-assets
           merge-multiple: true
-      - name: Draft Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           draft: true
