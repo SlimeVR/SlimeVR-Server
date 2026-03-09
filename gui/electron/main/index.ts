@@ -34,6 +34,7 @@ import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
 import { ServerStatusEvent } from 'electron/preload/interface';
+import { mkdir } from 'node:fs/promises';
 
 // Register custom protocol to handle asset paths with leading slashes
 protocol.registerSchemesAsPrivileged([
@@ -186,13 +187,11 @@ const defaultWindowState: {
   height: number;
   x?: number;
   y?: number;
-  minimized: boolean;
 } = {
   width: 1289.0,
   height: 709.0,
   x: undefined,
   y: undefined,
-  minimized: false,
 };
 const windowState = windowStateFile ? JSON.parse(windowStateFile) : defaultWindowState;
 
@@ -225,6 +224,11 @@ function validateWindowState(state: typeof defaultWindowState) {
   return state;
 }
 
+const saveWindowState = async () => {
+  await mkdir(dirname(getWindowStateFile()), { recursive: true });
+  writeFileSync(getWindowStateFile(), JSON.stringify(windowState));
+};
+
 function createWindow() {
   const validatedState = validateWindowState(windowState);
 
@@ -244,10 +248,6 @@ function createWindow() {
       contextIsolation: true,
     },
   });
-
-  if (windowState.minimized) {
-    mainWindow.minimize();
-  }
 
   if (process.env.ELECTRON_RENDERER_URL) {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
@@ -331,18 +331,19 @@ const checkEnvironmentVariables = () => {
       `You have environment variables ${set.join(', ')} set, which may cause the SlimeVR Server to fail to launch properly.`
     );
     app.exit(0);
-    return;
   }
 };
 
-const isServerRunning = async () => !await isPortAvailable(21110)
+const isServerRunning = async () => !(await isPortAvailable(21110));
 
 const spawnServer = async () => {
-  if (options.skipServerIfRunning && await isServerRunning()) {
-    logger.info({ skipServerIfRunning: options.skipServerIfRunning }, 'Server is already running, skipping server start');
+  if (options.skipServerIfRunning && (await isServerRunning())) {
+    logger.info(
+      { skipServerIfRunning: options.skipServerIfRunning },
+      'Server is already running, skipping server start'
+    );
     return;
   }
-
 
   const serverJar = findServerJar();
   if (!serverJar) {
@@ -367,15 +368,15 @@ const spawnServer = async () => {
   process.stdout?.on('data', (message) => {
     mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
       message: message.toString(),
-      type: 'stdout'
-    } satisfies ServerStatusEvent)
+      type: 'stdout',
+    } satisfies ServerStatusEvent);
   });
 
   process.stderr?.on('data', (message) => {
     mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
       message: message.toString(),
-      type: 'stderr'
-    } satisfies ServerStatusEvent)
+      type: 'stderr',
+    } satisfies ServerStatusEvent);
   });
 
   return {
@@ -409,9 +410,9 @@ app.whenReady().then(async () => {
 
   process.on('exit', () => {
     server?.close();
-  })
+  });
 
-  app.on('before-quit', () => {
+  app.on('before-quit', async () => {
     logger.info('App quitting, saving...');
     server?.close();
     stores.settings.save();
@@ -419,6 +420,6 @@ app.whenReady().then(async () => {
 
     discordPresence.destroy();
 
-    writeFileSync(getWindowStateFile(), JSON.stringify(windowState));
+    await saveWindowState()
   });
 });
