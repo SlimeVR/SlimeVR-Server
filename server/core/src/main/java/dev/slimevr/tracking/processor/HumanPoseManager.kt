@@ -603,11 +603,15 @@ class HumanPoseManager(val server: VRServer?) {
 	fun setFloorClipEnabled(value: Boolean) {
 		skeleton.setFloorclipEnabled(value)
 		if (server != null) {
-			server.configManager
-				.vrConfig
-				.skeleton
-				.toggles[SkeletonConfigToggles.FLOOR_CLIP.configKey] = value
-			server.configManager.saveConfig()
+			server.configManager.user.update {
+				// TODO: NEED TO CHECK IF THAT ACTCHUALY WORK
+				it.skeleton.toggles[SkeletonConfigToggles.FLOR_CLIP.configKey] = value
+				it.copy(
+					skeleton = it.skeleton.copy(
+						toggles = it.skeleton.toggles
+					)
+				)
+			}
 		}
 	}
 
@@ -615,11 +619,15 @@ class HumanPoseManager(val server: VRServer?) {
 	fun setSkatingCorrectionEnabled(value: Boolean) {
 		skeleton.setSkatingCorrectionEnabled(value)
 		if (server != null) {
-			server.configManager
-				.vrConfig
-				.skeleton
-				.toggles[SkeletonConfigToggles.SKATING_CORRECTION.configKey] = value
-			server.configManager.saveConfig()
+			server.configManager.user.update {
+				// TODO: NEED TO CHECK IF THAT ACTCHUALY WORK
+				it.skeleton.toggles[SkeletonConfigToggles.SKATING_CORRECTION.configKey] = value
+				it.copy(
+					skeleton = it.skeleton.copy(
+						toggles = it.skeleton.toggles
+					)
+				)
+			}
 		}
 	}
 

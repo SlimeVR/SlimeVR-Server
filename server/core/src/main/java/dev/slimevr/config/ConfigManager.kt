@@ -78,12 +78,6 @@ class ConfigManager {
 	fun switchSettingsProfile(newProfile: String) {
 		global.updateAndSave { it.copy(settingsProfile = newProfile) }
 		loadCurrentSettingProfile()
-
-		settings.updateAndSave {
-			it.copy(
-				keybindings = it.keybindings.copy(fullResetBinding = "CTRL+J"),
-			)
-		}
 	}
 
 	val global: ConfigFileHandler<GlobalConfig>

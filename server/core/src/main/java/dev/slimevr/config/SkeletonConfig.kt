@@ -10,7 +10,7 @@ data class SkeletonConfig(
 	@JvmField val hmdHeight: Float = 0f,
 	@JvmField val floorHeight: Float = 0f,
 ) {
-	@Transient
+    @Transient
 	val userHeight: Float
 		get() = hmdHeight - floorHeight
 }

@@ -11,11 +11,11 @@ import com.illposed.osc.transport.OSCPortOut
 import com.jme3.math.FastMath
 import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
-import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.protocol.rpc.setup.RPCUtil
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -26,6 +26,7 @@ import io.github.axisangles.ktmath.Vector3
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.util.Locale
 
 private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
 
@@ -72,8 +73,25 @@ class VRCOSCHandler(
 	private var fpsTimer: NanoTimer? = null
 	private var vrcOscQueryHandler: VRCOSCQueryHandler? = null
 
+	private val configTrackers
+		get() = server.configManager.settings.get().vrcOSC.trackers
+
 	init {
 		refreshSettings(false)
+	}
+
+	fun getOSCTrackerRole(role: TrackerRole, def: Boolean): Boolean = configTrackers.getOrDefault(role.name.lowercase(
+		Locale.getDefault()), def)
+
+	fun setOSCTrackerRole(role: TrackerRole, value: Boolean) {
+		server.configManager.settings.update {
+			configTrackers[role.name.lowercase(Locale.getDefault())] = value;
+			it.copy(
+				vrcOSC = it.vrcOSC.copy(
+					trackers = configTrackers
+				)
+			)
+		}
 	}
 
 	override fun refreshSettings(refreshRouterSettings: Boolean) {
@@ -82,8 +100,8 @@ class VRCOSCHandler(
 		// Sets which trackers are enabled and force head and hands to false
 		for (i in computedTrackers.indices) {
 			if (computedTrackers[i].trackerPosition != TrackerPosition.HEAD || computedTrackers[i].trackerPosition != TrackerPosition.LEFT_HAND || computedTrackers[i].trackerPosition != TrackerPosition.RIGHT_HAND) {
-				trackersEnabled[i] = config
-					.getOSCTrackerRole(
+				// FIXME: possible data race? if the settings are getting refreshed at the same time the config profile gets changed
+				trackersEnabled[i] = getOSCTrackerRole(
 						computedTrackers[i].trackerPosition!!.trackerRole!!,
 						false,
 					)

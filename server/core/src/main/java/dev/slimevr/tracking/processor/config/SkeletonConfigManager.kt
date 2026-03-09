@@ -457,7 +457,7 @@ class SkeletonConfigManager(
 	}
 
 	fun resetOffset(config: SkeletonConfigOffsets) {
-		val height = humanPoseManager?.server?.configManager?.vrConfig?.skeleton?.userHeight ?: -1f
+		val height = humanPoseManager?.server?.configManager?.user?.get()?.skeleton?.userHeight ?: -1f
 		// Only scale if the height is within range
 		if (height > AutoBone.MIN_HEIGHT) {
 			val proportionLimiter = proportionLimitMap[config]
@@ -519,23 +519,25 @@ class SkeletonConfigManager(
 	fun save() {
 		require(instanceInitialized) { "VRServer instance is not initialized, config cannot be saved." }
 
-		val skeletonConfig = instance.configManager
-			.vrConfig
-			.skeleton
+		instance.configManager.user.update {
+			val skeletonConfig = it.skeleton.copy()
 
-		// Write all possible values to keep consistent even if defaults changed
-		for (value in SkeletonConfigOffsets.values) {
-			skeletonConfig.offsets[value.configKey] = getOffset(value)
-		}
+			// Write all possible values to keep consistent even if defaults changed
+			for (value in SkeletonConfigOffsets.values) {
+				skeletonConfig.offsets[value.configKey] = getOffset(value)
+			}
 
-		// Only write changed values to keep using defaults if not changed
-		for (value in SkeletonConfigToggles.values) {
-			if (changedToggles[value.ordinal]) skeletonConfig.toggles[value.configKey] = getToggle(value)
-		}
+			// Only write changed values to keep using defaults if not changed
+			for (value in SkeletonConfigToggles.values) {
+				if (changedToggles[value.ordinal]) skeletonConfig.toggles[value.configKey] = getToggle(value)
+			}
 
-		// Only write changed values to keep using defaults if not changed
-		for (value in SkeletonConfigValues.values) {
-			if (changedValues[value.ordinal]) skeletonConfig.values[value.configKey] = getValue(value)
+			// Only write changed values to keep using defaults if not changed
+			for (value in SkeletonConfigValues.values) {
+				if (changedValues[value.ordinal]) skeletonConfig.values[value.configKey] = getValue(value)
+			}
+
+			it.copy(skeleton = skeletonConfig)
 		}
 	}
 

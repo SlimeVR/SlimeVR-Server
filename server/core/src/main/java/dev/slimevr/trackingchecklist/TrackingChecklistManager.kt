@@ -120,7 +120,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			TrackingChecklistStepT().apply {
 				id = TrackingChecklistStepId.MOUNTING_CALIBRATION
 				valid = false
-				enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethod.AUTOMATIC
+				enabled = false
 				optional = false
 				ignorable = true
 				visibility = TrackingChecklistStepVisibility.ALWAYS
@@ -171,6 +171,9 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 	}
 
 	fun updateChecklist() {
+
+		val settings = vrServer.configManager.settings.get();
+
 		val assignedTrackers =
 			vrServer.allTrackers.filter { it.trackerPosition != null && it.status != TrackerStatus.DISCONNECTED }
 		val imuTrackers =
@@ -296,17 +299,17 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		}
 
 		updateValidity(TrackingChecklistStepId.MOUNTING_CALIBRATION, resetMountingCompleted) {
-			it.enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethod.AUTOMATIC && imuTrackers.isNotEmpty()
+			it.enabled = settings.resetsConfig.lastMountingMethod == MountingMethod.AUTOMATIC && imuTrackers.isNotEmpty()
 		}
 
 		updateValidity(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION, feetResetMountingCompleted) {
 			it.enabled =
-				vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethod.AUTOMATIC &&
-				!vrServer.configManager.vrConfig.resetsConfig.resetMountingFeet &&
+				settings.resetsConfig.lastMountingMethod == MountingMethod.AUTOMATIC &&
+				!settings.resetsConfig.resetMountingFeet &&
 				imuTrackers.any { t -> TrackerUtils.feetsBodyParts.contains(t.trackerPosition?.bodyPart) }
 		}
 
-		updateValidity(TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED, vrServer.configManager.vrConfig.stayAlignedConfig.enabled)
+		updateValidity(TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED, settings.stayAlignedConfig.enabled)
 
 		listeners.forEach { it.onStepsUpdate() }
 	}
@@ -340,12 +343,20 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 
 	fun ignoreStep(step: TrackingChecklistStepT, ignore: Boolean) {
 		if (!step.ignorable) return
-		val ignoredSteps = vrServer.configManager.vrConfig.trackingChecklist.ignoredStepsIds
-		if (ignore && !ignoredSteps.contains(step.id)) {
-			ignoredSteps.add(step.id)
-		} else if (!ignore) {
-			ignoredSteps.remove(step.id)
+
+		vrServer.configManager.settings.update {
+			val ignoredSteps = it.trackingChecklist.ignoredStepsIds.toMutableList()
+			if (ignore && !ignoredSteps.contains(step.id)) {
+				ignoredSteps.add(step.id)
+			} else if (!ignore) {
+				ignoredSteps.remove(step.id)
+			}
+
+			it.copy(
+				trackingChecklist = it.trackingChecklist.copy(
+					ignoredStepsIds = ignoredSteps
+				)
+			)
 		}
-		vrServer.configManager.saveConfig()
 	}
 }
