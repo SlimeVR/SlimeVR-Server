@@ -157,8 +157,9 @@ class RegEditLinux : AbstractRegEdit() {
 		return keysMap
 	}
 
+	//This function should never run on Linux.
 	override fun getKeyByPath(hkey: WinReg.HKEY, path: String): Map<String, String> {
-		TODO("Not yet implemented")
+		return mutableMapOf<String, String>()
 	}
 
 	companion object {

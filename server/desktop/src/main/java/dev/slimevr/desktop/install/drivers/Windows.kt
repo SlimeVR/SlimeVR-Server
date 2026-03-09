@@ -1,14 +1,13 @@
 package dev.slimevr.desktop.install.drivers
 
 import com.sun.jna.platform.win32.WinReg
-import dev.slimevr.desktop.games.vrchat.AbstractRegEdit
 import dev.slimevr.desktop.games.vrchat.RegEditWindows
 import io.eiren.util.logging.LogManager
 import java.io.File
 
 class Windows {
 
-	val path: String? = System.getProperty("user.dir")
+	val path: String = System.getProperty("user.dir")
 
 	fun updateWindows() {
 		usbDrivers()
