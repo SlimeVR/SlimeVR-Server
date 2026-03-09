@@ -51,11 +51,8 @@ win:
 mac:
   target: dmg
   artifactName: "SlimeVR-mac.${ext}"
-  # This tells the universal merger to stop panicking about this specific file
-  universalOptions:
-    x64ArchFiles: "**/register-protocol-handler.node"
+  x64ArchFiles: "**/register-protocol-handler.node"
   icon: "./electron/resources/icons/icon.icns"
-  # Optional: ensure the server jar is bundled inside the app
   extraFiles:
     - from: "../server/desktop/build/libs/slimevr.jar"
       to: "Resources/slimevr.jar"
