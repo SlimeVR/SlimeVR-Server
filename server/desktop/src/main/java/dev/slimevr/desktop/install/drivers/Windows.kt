@@ -35,7 +35,7 @@ class Windows {
 		executeShellCommand(
 			"powershell.exe",
 			"-Command",
-			"Start-Process -FilePath cmd.exe -ArgumentList '/c cd /d \" $path \" && pnputil /add-driver \"*.inf\" /subdirs /install > \" $path  \\driver_install.log\" 2>&1' -Verb RunAs -WindowStyle Hidden -Wait",
+			"Start-Process -FilePath cmd.exe -ArgumentList '/c cd /d \"$path\" && pnputil /add-driver \"*.inf\" /subdirs /install > \"$path\\driver_install.log\" 2>&1' -Verb RunAs -WindowStyle Hidden -Wait",
 		)
 
 		try {

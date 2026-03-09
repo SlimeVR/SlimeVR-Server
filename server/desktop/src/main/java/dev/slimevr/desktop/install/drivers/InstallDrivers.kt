@@ -9,7 +9,6 @@ class InstallDrivers {
 
 	fun runInstaller() {
 		if (os.contains("linux")) {
-			val linuxUpdater = Linux()
 			val linuxFlavour = try {
 				File("/etc/os-release").readText()
 			} catch (e: Exception) {
@@ -19,11 +18,11 @@ class InstallDrivers {
 			if (linuxFlavour.contains("ID=nixos") || linuxFlavour.contains("ID_LIKE=nixos")) {
 				LogManager.warning("Running on NixOS, server will not install itself.")
 				return
-			} else {
-				linuxUpdater.updateLinux()
 			}
+
+			val linuxUpdater = Linux()
+			linuxUpdater.updateLinux()
 		} else if (os.contains("windows")) {
-			LogManager.info("Running windows updater")
 			val windowsUpdater = Windows()
 			windowsUpdater.updateWindows()
 		} else {

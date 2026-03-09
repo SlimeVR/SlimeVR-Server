@@ -18,15 +18,12 @@ export function UdevRulesModal() {
   const [showUdevWarning, setShowUdevWarning] = useState(false);
   const [dontShowThisSession, setDontShowThisSession] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
-  const [exeDir, setExeDir] = useState('');
-
   const { l10n } = useLocalization();
 
   const handleUdevContent = async () => {
     if (electron.isElectron) {
       const dir = await electron.api.getInstallDir();
-      setExeDir(dir);
-      const rulesPath = `${exeDir}/69-slimevr-devices.rules`;
+      const rulesPath = `${dir}/69-slimevr-devices.rules`;
       setUdevContent(
         `cat ${rulesPath} | sudo sh -c 'tee /etc/udev/rules.d/69-slimevr-devices.rules >/dev/null && udevadm control --reload-rules && udevadm trigger'`
       );

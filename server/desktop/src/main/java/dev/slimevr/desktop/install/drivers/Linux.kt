@@ -4,7 +4,7 @@ import io.eiren.util.logging.LogManager
 
 class Linux {
 
-	val path: String? = System.getProperty("user.dir")
+	val path: String = System.getProperty("user.dir")
 
 	fun updateLinux() {
 		updateLinuxSteamVRDriver()
@@ -12,33 +12,23 @@ class Linux {
 	}
 
 	fun updateLinuxSteamVRDriver() {
-		var vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
+		val pathRegPath = "${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh"
+		val vrPathRegContents = executeShellCommand(pathRegPath)
 		if (vrPathRegContents == null) {
-			LogManager.warning("Error installing SteamVR driver.")
+			LogManager.warning("SteamVR driver installation failed")
 			return
 		}
-		var isDriverRegistered = vrPathRegContents.contains("slimevr")
-		if (isDriverRegistered) {
-			LogManager.info("steamVR driver is already registered. Skipping...")
+		if (vrPathRegContents.contains("slimevr")) {
 			return
 		}
-		executeShellCommand(
-			"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
-			"adddriver",
-			"$path/${LINUX_STEAM_DRIVER_DIRECTORY}",
-		)
 
-		vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
-		if (vrPathRegContents == null) {
-			LogManager.warning("Error installing SteamVR driver.")
+		executeShellCommand(pathRegPath, "adddriver", "$path/$LINUX_STEAM_DRIVER_DIRECTORY")
+
+		if (executeShellCommand(pathRegPath)?.contains("slimevr") != true) {
+			LogManager.warning("Failed to install SlimeVR driver")
 			return
 		}
-		isDriverRegistered = vrPathRegContents.contains("slimevr")
-		if (!isDriverRegistered) {
-			LogManager.warning("Server couldn't install SlimeVR driver.")
-			return
-		}
-		LogManager.info("SteamVR driver successfully installed.")
+		LogManager.info("SteamVR driver successfully installed")
 	}
 
 	fun feeder() {

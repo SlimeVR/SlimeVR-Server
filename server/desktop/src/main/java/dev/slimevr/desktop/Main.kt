@@ -44,6 +44,8 @@ val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
 
+var IS_STEAM = false
+
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
 	System.setProperty("swing.aatext", "true")
@@ -53,6 +55,8 @@ fun main(args: Array<String>) {
 	val options = Options()
 	options.addOption("h", "help", false, "Show help")
 	options.addOption("V", "version", false, "Show version")
+	options.addOption("i", "install", false, "Run the driver install")
+	options.addOption("S", "steam", false, "Run the server in steam mode")
 	val cmd: CommandLine = try {
 		parser.parse(options, args, true)
 	} catch (e: org.apache.commons.cli.ParseException) {
@@ -67,6 +71,15 @@ fun main(args: Array<String>) {
 	if (cmd.hasOption("version")) {
 		println("SlimeVR Server $VERSION")
 		exitProcess(0)
+	}
+	if (cmd.hasOption("install")) {
+		LogManager.info("Driver install")
+		val installDrivers = InstallDrivers()
+		installDrivers.runInstaller()
+	}
+	if (cmd.hasOption("steam")) {
+		LogManager.info("Running in steam")
+		IS_STEAM = true
 	}
 
 	if (cmd.args.isEmpty()) {
@@ -101,8 +114,7 @@ fun main(args: Array<String>) {
 	}
 
 	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toInt()
-	val path = System.getProperty("user.dir").lowercase()
-	if (path.contains("steam") && isInstallDisabled != 1 || true) {
+	if (IS_STEAM && isInstallDisabled != 1) {
 		val installDrivers = InstallDrivers()
 		installDrivers.runInstaller()
 	}

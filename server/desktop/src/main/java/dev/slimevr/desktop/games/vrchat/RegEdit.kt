@@ -157,10 +157,8 @@ class RegEditLinux : AbstractRegEdit() {
 		return keysMap
 	}
 
-	//This function should never run on Linux.
-	override fun getKeyByPath(hkey: WinReg.HKEY, path: String): Map<String, String> {
-		return mutableMapOf<String, String>()
-	}
+	// This function should never run on Linux.
+	override fun getKeyByPath(hkey: WinReg.HKEY, path: String): Map<String, String> = mutableMapOf<String, String>()
 
 	companion object {
 		const val USER_REG_SUBPATH = "steamapps/compatdata/438100/pfx/user.reg"
