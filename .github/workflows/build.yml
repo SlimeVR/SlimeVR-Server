@@ -131,10 +131,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          # Create directories using bash syntax inside the bash shell
-          mkdir -p gui/dist/artifacts/linux/AppImage \
-                   gui/dist/artifacts/linux/deb \
-                   gui/dist/artifacts/linux/rpm \
+          mkdir -p gui/dist/artifacts/linux/ \
                    gui/dist/artifacts/win \
                    gui/dist/artifacts/mac
           cd gui
@@ -149,8 +146,6 @@ jobs:
             # Pulls from gui/dist/artifacts/win/
             cp gui/dist/artifacts/win/*.exe release-out/SlimeVR-$ARCH_NAME.zip
           elif [ "${{ matrix.platform }}" == "linux" ]; then
-            # electron-builder places these in subfolders by default:
-            # gui/dist/artifacts/linux/ (AppImage, deb, rpm)
             cp gui/dist/artifacts/linux/*.AppImage release-out/ || true
             cp gui/dist/artifacts/linux/*.deb release-out/ || true
             cp gui/dist/artifacts/linux/*.rpm release-out/ || true
@@ -229,7 +224,7 @@ jobs:
           tag_name: electron-test
           generate_release_notes: true
           files: |
-            *.appimage
+            *.AppImage
             *.deb
             *.rpm
             *.apk
