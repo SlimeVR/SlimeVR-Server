@@ -19,6 +19,7 @@ import dev.slimevr.filtering.TrackerFilters.Companion.getByConfigkey
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
+import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
 import solarxr_protocol.rpc.AutoBoneSettings
 import solarxr_protocol.rpc.DriftCompensationSettings
@@ -163,9 +164,15 @@ fun createTapDetectionSettings(
 		tapDetectionConfig.mountingResetTaps,
 		tapDetectionConfig.setupMode,
 		tapDetectionConfig.numberTrackersOverThreshold,
-		0,
-		0,
-		0,
+		tapDetectionConfig.yawResetDesignation?.let {
+			TrackerPosition.getByDesignation(it)
+		}?.bodyPart ?: 0,
+		tapDetectionConfig.fullResetDesignation?.let {
+			TrackerPosition.getByDesignation(it)
+		}?.bodyPart ?: 0,
+		tapDetectionConfig.mountingResetDesignation?.let {
+			TrackerPosition.getByDesignation(it)
+		}?.bodyPart ?: 0
 	)
 
 fun createSteamVRSettings(fbb: FlatBufferBuilder, bridge: ISteamVRBridge?): Int {

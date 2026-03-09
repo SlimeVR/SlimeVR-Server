@@ -1,6 +1,13 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useRef, useState } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  DefaultValues,
+  FieldPath,
+  FieldValues,
+  useForm,
+} from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
   FilteringSettingsT,
@@ -15,8 +22,9 @@ import {
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
   HIDSettingsT,
+  BodyPart,
 } from 'solarxr-protocol';
-import { useConfig } from '@/hooks/config';
+import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocaleConfig } from '@/i18n/config';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -46,6 +54,100 @@ import {
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
+import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
+import { Button } from '@/components/commons/Button';
+import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
+import { useBreakpoint } from '@/hooks/breakpoint';
+import ReactModal from 'react-modal';
+
+function TapResetPartSelector<T extends FieldValues = FieldValues>({
+  id,
+  control,
+  name,
+}: {
+  id: string;
+  control: Control<T>;
+  name: FieldPath<T>;
+}) {
+  const { isMobile } = useBreakpoint('mobile');
+  const { config } = useConfig();
+  const [bodyPartSelectorOpen, setBodyPartSelectorOpen] = useState(false);
+
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field: { onChange, value } }) => (
+        <>
+          <div className="flex flex-col gap-1 w-full">
+            <Typography bold id={id} />
+            <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
+              <div className="flex gap-3 items-center fill-background-10">
+                <BodyPartIcon bodyPart={value} />
+                <Typography
+                  id={
+                    value === BodyPart.NONE
+                      ? 'settings-general-gesture_control-part_select-no_preference'
+                      : 'body_part-' + BodyPart[value]
+                  }
+                />
+              </div>
+              <div className="flex">
+                <Button
+                  variant="secondary"
+                  onClick={() => setBodyPartSelectorOpen(true)}
+                  id="settings-general-gesture_control-part_select-edit"
+                />
+              </div>
+            </div>
+          </div>
+          <ReactModal
+            isOpen={bodyPartSelectorOpen}
+            shouldCloseOnOverlayClick
+            shouldCloseOnEsc
+            onRequestClose={() => setBodyPartSelectorOpen(false)}
+            overlayClassName="fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-background-90 bg-opacity-90 z-20"
+            className="focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent outline-none mt-12 z-10 overflow-y-auto"
+          >
+            <div className="flex w-full h-full flex-col gap-10 px-3">
+              <div className="flex xs:flex-row h-full xs:gap-8 mobile:flex-col  xs:justify-center items-center">
+                <div className="flex flex-col xs:flex-grow gap-3 rounded-xl fill-background-50 py-2">
+                  <div className="flex flex-col xs:max-w-sm gap-3">
+                    <Typography
+                      variant="mobile-title"
+                      bold
+                      id="settings-general-gesture_control-part_select"
+                    />
+                  </div>
+                  <BodyAssignment
+                    mirror={config?.mirrorView ?? defaultConfig.mirrorView}
+                    width={isMobile ? 160 : undefined}
+                    assignMode={AssignMode.All}
+                    showAssignedTracker={false}
+                    onRoleSelected={(part) => {
+                      onChange(part);
+                      setBodyPartSelectorOpen(false);
+                    }}
+                  />
+                  <div className="flex justify-center">
+                    <Button
+                      variant="secondary"
+                      id="settings-general-gesture_control-part_select-reset"
+                      onClick={() => {
+                        onChange(BodyPart.NONE);
+                        setBodyPartSelectorOpen(false);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ReactModal>
+        </>
+      )}
+    />
+  );
+}
 
 export type SettingsForm = {
   trackers: {
@@ -89,15 +191,18 @@ export type SettingsForm = {
     interpKneeAnkle: number;
   };
   tapDetection: {
-    mountingResetEnabled: boolean;
     yawResetEnabled: boolean;
     fullResetEnabled: boolean;
+    mountingResetEnabled: boolean;
     yawResetDelay: number;
     fullResetDelay: number;
     mountingResetDelay: number;
     yawResetTaps: number;
     fullResetTaps: number;
     mountingResetTaps: number;
+    yawResetTracker: BodyPart;
+    fullResetTracker: BodyPart;
+    mountingResetTracker: BodyPart;
     numberTrackersOverThreshold: number;
   };
   legTweaks: {
@@ -149,15 +254,18 @@ const defaultValues: SettingsForm = {
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   tapDetection: {
-    mountingResetEnabled: false,
     yawResetEnabled: false,
     fullResetEnabled: false,
+    mountingResetEnabled: false,
     yawResetDelay: 0.2,
     fullResetDelay: 1.0,
     mountingResetDelay: 1.0,
     yawResetTaps: 2,
     fullResetTaps: 3,
     mountingResetTaps: 3,
+    yawResetTracker: BodyPart.NONE,
+    fullResetTracker: BodyPart.NONE,
+    mountingResetTracker: BodyPart.NONE,
     numberTrackersOverThreshold: 1,
   },
   legTweaks: { correctionStrength: 0.3 },
@@ -302,13 +410,17 @@ export function GeneralSettings() {
     tapDetection.fullResetDelay = values.tapDetection.fullResetDelay;
     tapDetection.fullResetEnabled = values.tapDetection.fullResetEnabled;
     tapDetection.fullResetTaps = values.tapDetection.fullResetTaps;
+    tapDetection.fullResetTracker = values.tapDetection.fullResetTracker;
     tapDetection.yawResetDelay = values.tapDetection.yawResetDelay;
     tapDetection.yawResetEnabled = values.tapDetection.yawResetEnabled;
     tapDetection.yawResetTaps = values.tapDetection.yawResetTaps;
+    tapDetection.yawResetTracker = values.tapDetection.yawResetTracker;
     tapDetection.mountingResetEnabled =
       values.tapDetection.mountingResetEnabled;
     tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
     tapDetection.mountingResetTaps = values.tapDetection.mountingResetTaps;
+    tapDetection.mountingResetTracker =
+      values.tapDetection.mountingResetTracker;
     tapDetection.numberTrackersOverThreshold =
       values.tapDetection.numberTrackersOverThreshold;
     tapDetection.setupMode = false;
@@ -416,6 +528,15 @@ export function GeneralSettings() {
         mountingResetTaps:
           settings.tapDetectionSettings.mountingResetTaps ||
           defaultValues.tapDetection.mountingResetTaps,
+        yawResetTracker:
+          settings.tapDetectionSettings.yawResetTracker ||
+          defaultValues.tapDetection.yawResetTracker,
+        fullResetTracker:
+          settings.tapDetectionSettings.fullResetTracker ||
+          defaultValues.tapDetection.fullResetTracker,
+        mountingResetTracker:
+          settings.tapDetectionSettings.mountingResetTracker ||
+          defaultValues.tapDetection.mountingResetTracker,
         numberTrackersOverThreshold:
           settings.tapDetectionSettings.numberTrackersOverThreshold ||
           defaultValues.tapDetection.numberTrackersOverThreshold,
@@ -1235,6 +1356,23 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-mountingResetEnabled'
                 )}
+              />
+            </div>
+            <div className="grid sm:grid-cols-3 gap-5 pb-2">
+              <TapResetPartSelector
+                control={control}
+                name="tapDetection.yawResetTracker"
+                id="settings-general-gesture_control-yawResetPart"
+              />
+              <TapResetPartSelector
+                control={control}
+                name="tapDetection.fullResetTracker"
+                id="settings-general-gesture_control-fullResetPart"
+              />
+              <TapResetPartSelector
+                control={control}
+                name="tapDetection.mountingResetTracker"
+                id="settings-general-gesture_control-mountingResetPart"
               />
             </div>
             <div className="grid sm:grid-cols-3 gap-5 pb-2">

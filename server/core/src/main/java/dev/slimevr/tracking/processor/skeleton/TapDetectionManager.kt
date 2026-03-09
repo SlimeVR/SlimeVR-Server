@@ -3,6 +3,8 @@ package dev.slimevr.tracking.processor.skeleton
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerUtils
 import java.util.concurrent.CopyOnWriteArrayList
 
 class TapDetectionManager(
@@ -87,7 +89,14 @@ class TapDetectionManager(
 
 	private val mountingResetTracker: Tracker?
 		get() {
+			val selectedTracker = config.mountingResetDesignation?.let {
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers,
+					TrackerPosition.getByDesignation(it)
+						?: error("unknown designation '$it'")
+				)
+			}
 			return arrayOf(
+				selectedTracker,
 				skeleton.rightUpperLegTracker,
 				skeleton.rightLowerLegTracker,
 			).firstNotNullOfOrNull { it }
@@ -95,7 +104,14 @@ class TapDetectionManager(
 
 	private val fullResetTracker: Tracker?
 		get() {
+			val selectedTracker = config.fullResetDesignation?.let {
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers,
+					TrackerPosition.getByDesignation(it)
+						?: error("unknown designation '$it'")
+				)
+			}
 			return arrayOf(
+				selectedTracker,
 				skeleton.leftUpperLegTracker,
 				skeleton.leftLowerLegTracker,
 			).firstNotNullOfOrNull { it }
@@ -103,7 +119,14 @@ class TapDetectionManager(
 
 	private val yawResetTracker: Tracker?
 		get() {
+			val selectedTracker = config.yawResetDesignation?.let {
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers,
+					TrackerPosition.getByDesignation(it)
+						?: error("unknown designation '$it'")
+				)
+			}
 			return arrayOf(
+				selectedTracker,
 				skeleton.upperChestTracker,
 				skeleton.chestTracker,
 				skeleton.hipTracker,

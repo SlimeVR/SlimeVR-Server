@@ -38,12 +38,14 @@ export function TrackerPartCard({
   direction,
   roleError,
   onlyAssigned,
+  showAssignedTracker,
   onClick,
 }: {
   td: FlatDeviceTracker[];
   role: BodyPart;
   roleError: string | undefined;
   onlyAssigned: boolean;
+  showAssignedTracker: boolean;
   direction: 'left' | 'right';
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) {
@@ -107,17 +109,21 @@ export function TrackerPartCard({
         >
           {l10n.getString('body_part-' + BodyPart[role])}
         </Typography>
-        {td?.map(({ tracker }, index) => (
-          <Tracker
-            tracker={tracker}
-            key={index}
-            updateVelocity={(vel) => updateVelocity(vel)}
-          />
-        ))}
-        {!td && (
-          <Typography color="text-background-30">
-            {l10n.getString('tracker-part_card-unassigned')}
-          </Typography>
+        {showAssignedTracker && (
+          <>
+            {td?.map(({ tracker }, index) => (
+              <Tracker
+                tracker={tracker}
+                key={index}
+                updateVelocity={(vel) => updateVelocity(vel)}
+              />
+            ))}
+            {!td && (
+              <Typography color="text-background-30">
+                {l10n.getString('tracker-part_card-unassigned')}
+              </Typography>
+            )}
+          </>
         )}
       </div>
     )) || <></>

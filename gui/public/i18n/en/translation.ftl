@@ -671,7 +671,7 @@ settings-general-fk_settings-self_localization-description = Mocap Mode allows t
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Tap based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Calibration. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
+settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. If the preferred body part is unset, or the preferred body part is not assigned to a connected tracker, the tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Calibration. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
@@ -684,13 +684,20 @@ settings-general-gesture_control-trackers = { $amount ->
     [one] 1 tracker
     *[other] { $amount } trackers
 }
+settings-general-gesture_control-part_select = Which tracker do you want to tap to trigger the reset?
+settings-general-gesture_control-part_select-edit = Edit
+settings-general-gesture_control-part_select-reset = Reset preference
+settings-general-gesture_control-part_select-no_preference = No preference
 settings-general-gesture_control-yawResetEnabled = Enable tap to yaw reset
+settings-general-gesture_control-yawResetPart = Preferred tracker for yaw reset taps
 settings-general-gesture_control-yawResetDelay = Yaw reset delay
 settings-general-gesture_control-yawResetTaps = Taps for yaw reset
 settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
+settings-general-gesture_control-fullResetPart = Preferred tracker for full reset taps
 settings-general-gesture_control-fullResetDelay = Full reset delay
 settings-general-gesture_control-fullResetTaps = Taps for full reset
 settings-general-gesture_control-mountingResetEnabled = Enable tap to perform mounting calibration
+settings-general-gesture_control-mountingResetPart = Preferred tracker for mounting calibration taps
 settings-general-gesture_control-mountingResetDelay = Mounting calibration delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting calibration
 # The number of trackers that can have higher acceleration before a tap is rejected

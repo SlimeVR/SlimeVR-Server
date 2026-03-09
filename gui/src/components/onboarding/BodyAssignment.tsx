@@ -103,11 +103,13 @@ export function BodyAssignment({
   rolesWithErrors = {},
   highlightedRoles = [],
   onlyAssigned = false,
+  showAssignedTracker = true,
   dotSize,
 }: {
   assignMode: AssignMode | null;
   mirror: boolean;
   onlyAssigned?: boolean;
+  showAssignedTracker?: boolean;
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
   highlightedRoles?: BodyPart[];
   onRoleSelected: (role: BodyPart) => void;
@@ -165,6 +167,7 @@ export function BodyAssignment({
             {hasBodyPart(BodyPart.HEAD) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[BodyPart.HEAD]?.label}
                 td={trackerPartGrouped[BodyPart.HEAD]}
                 role={BodyPart.HEAD}
@@ -176,6 +179,7 @@ export function BodyAssignment({
             {hasBodyPart(BodyPart.NECK) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[BodyPart.NECK]?.label}
                 td={trackerPartGrouped[BodyPart.NECK]}
                 role={BodyPart.NECK}
@@ -188,6 +192,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[left].shoulder) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[left].shoulder]?.label}
                 td={trackerPartGrouped[SIDES[left].shoulder]}
                 role={SIDES[left].shoulder}
@@ -199,6 +204,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[left].upperArm) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[left].upperArm]?.label}
                 td={trackerPartGrouped[SIDES[left].upperArm]}
                 role={SIDES[left].upperArm}
@@ -211,6 +217,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[left].lowerArm) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[left].lowerArm]?.label}
                 td={trackerPartGrouped[SIDES[left].lowerArm]}
                 role={SIDES[left].lowerArm}
@@ -222,6 +229,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[left].hand) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[left].hand]?.label}
                 td={trackerPartGrouped[SIDES[left].hand]}
                 role={SIDES[left].hand}
@@ -234,6 +242,7 @@ export function BodyAssignment({
             {hasBodyPart(BodyPart.HIP) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[BodyPart.HIP]?.label}
                 td={trackerPartGrouped[BodyPart.HIP]}
                 onClick={() => onRoleSelected(BodyPart.HIP)}
@@ -246,6 +255,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[left].upperLeg) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[left].upperLeg]?.label}
                 td={trackerPartGrouped[SIDES[left].upperLeg]}
                 role={SIDES[left].upperLeg}
@@ -257,6 +267,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[left].lowerLeg) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[left].lowerLeg]?.label}
                 td={trackerPartGrouped[SIDES[left].lowerLeg]}
                 role={SIDES[left].lowerLeg}
@@ -268,6 +279,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[left].foot) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[left].foot]?.label}
                 td={trackerPartGrouped[SIDES[left].foot]}
                 role={SIDES[left].foot}
@@ -284,6 +296,7 @@ export function BodyAssignment({
             {hasBodyPart(BodyPart.UPPER_CHEST) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[BodyPart.UPPER_CHEST]?.label}
                 td={trackerPartGrouped[BodyPart.UPPER_CHEST]}
                 role={BodyPart.UPPER_CHEST}
@@ -295,6 +308,7 @@ export function BodyAssignment({
             {hasBodyPart(BodyPart.CHEST) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[BodyPart.CHEST]?.label}
                 td={trackerPartGrouped[BodyPart.CHEST]}
                 role={BodyPart.CHEST}
@@ -308,6 +322,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[right].shoulder) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[right].shoulder]?.label}
                 td={trackerPartGrouped[SIDES[right].shoulder]}
                 role={SIDES[right].shoulder}
@@ -319,6 +334,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[right].upperArm) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[right].upperArm]?.label}
                 td={trackerPartGrouped[SIDES[right].upperArm]}
                 role={SIDES[right].upperArm}
@@ -332,6 +348,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[right].lowerArm) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[right].lowerArm]?.label}
                 td={trackerPartGrouped[SIDES[right].lowerArm]}
                 role={SIDES[right].lowerArm}
@@ -343,6 +360,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[right].hand) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[right].hand]?.label}
                 td={trackerPartGrouped[SIDES[right].hand]}
                 onClick={() => onRoleSelected(SIDES[right].hand)}
@@ -355,6 +373,7 @@ export function BodyAssignment({
             {hasBodyPart(BodyPart.WAIST) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[BodyPart.WAIST]?.label}
                 td={trackerPartGrouped[BodyPart.WAIST]}
                 onClick={() => onRoleSelected(BodyPart.WAIST)}
@@ -367,6 +386,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[right].upperLeg) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[right].upperLeg]?.label}
                 td={trackerPartGrouped[SIDES[right].upperLeg]}
                 role={SIDES[right].upperLeg}
@@ -378,6 +398,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[right].lowerLeg) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[right].lowerLeg]?.label}
                 td={trackerPartGrouped[SIDES[right].lowerLeg]}
                 role={SIDES[right].lowerLeg}
@@ -389,6 +410,7 @@ export function BodyAssignment({
             {hasBodyPart(SIDES[right].foot) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
+                showAssignedTracker={showAssignedTracker}
                 roleError={rolesWithErrors[SIDES[right].foot]?.label}
                 td={trackerPartGrouped[SIDES[right].foot]}
                 role={SIDES[right].foot}

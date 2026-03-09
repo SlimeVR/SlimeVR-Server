@@ -9,6 +9,7 @@ import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
+import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
 import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.RpcMessage
@@ -191,6 +192,10 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 					tapDetectionConfig
 						.mountingResetTaps = tapDetectionSettings.mountingResetTaps()
 				}
+
+				tapDetectionConfig.yawResetDesignation = TrackerPosition.getByBodyPart(tapDetectionSettings.yawResetTracker())?.designation
+				tapDetectionConfig.fullResetDesignation = TrackerPosition.getByBodyPart(tapDetectionSettings.fullResetTracker())?.designation
+				tapDetectionConfig.mountingResetDesignation = TrackerPosition.getByBodyPart(tapDetectionSettings.mountingResetTracker())?.designation
 
 				api.server.humanPoseManager.updateTapDetectionConfig()
 			}
