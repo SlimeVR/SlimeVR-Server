@@ -1,26 +1,27 @@
 #!/bin/bash
 
 SRC="/opt/SlimeVR/69-slimevr-devices.rules"
-DESTS=("/lib/udev/rules.d" "/usr/lib/udev/rules.d")
+DESTDIRS=("/lib" "/usr/lib")
 
-if [ -f "$SRC" ]; then
-    echo "Configuring SlimeVR udev rules..."
+if [[ ! -f "$SRC" ]; then
+    echo "SlimeVR udev rules not found, serial console and dongles may not work" >&2
+    exit 1
+fi
 
-    for DIR in "${DESTS[@]}"; do
-        if [ -d "$DIR" ]; then
-            echo "Copying rules to $DIR"
-            cp "$SRC" "$DIR/69-slimevr-devices.rules"
-            chmod 644 "$DIR/69-slimevr-devices.rules"
-            FOUND_DIR=true
-        fi
-    done
+echo "Configuring SlimeVR udev rules..."
 
-    if [ "$FOUND_DIR" = true ]; then
+for DIR in "${DESTDIRS[@]}"; do
+    if [[ -d "$DIR" && ! -h "$DIR" ]]; then
+        echo "Copying rules to $DIR"
+        install -Dm644 "$SRC" "$DIR/udev/rules.d/69-slimevr-devices.rules"
+
         if command -v udevadm >/dev/null 2>&1; then
             udevadm control --reload-rules
             udevadm trigger
         fi
-    else
-        echo "Warning: No udev rules directory found. Hardware may require manual configuration."
+        exit 0
     fi
-fi
+done
+
+echo "Couldn't copy SlimeVR udev rules, serial console and dongles may not work" >&2
+exit 1
