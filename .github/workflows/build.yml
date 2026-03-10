@@ -26,8 +26,26 @@ jobs:
             RESULT=$(echo "$BASE" | jq -c '.')
           fi
           echo "matrix={\"include\":$RESULT}" >> "$GITHUB_OUTPUT"
-  checks:
-    name: Lint and Java Checks
+  gui-checks:
+    name: Gui Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+      - name: GUI Lint
+        run: pnpm i && cd gui && pnpm run lint
+
+  java-checks:
+    name: Java Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -41,20 +59,12 @@ jobs:
           distribution: 'adopt'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v4
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-      - name: GUI Lint
-        run: pnpm i && cd gui && pnpm run lint
       - name: Java Spotless Check
         run: ./gradlew spotlessCheck --build-cache
 
+
   build-server-jar:
-    name: Build Server ShadowJar
+    name: Build Desktop Server
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -70,6 +80,8 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
       - name: Build ShadowJar
         run: ./gradlew :server:desktop:shadowJar --build-cache
+      - name: Test with Gradle
+        run: ./gradlew :server:desktop:test
       - name: Upload Server Jar
         uses: actions/upload-artifact@v6
         with:
@@ -205,6 +217,8 @@ jobs:
           ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_STORE_PASSWD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
+      - name: Test with Gradle
+        run: ./gradlew test
       - name: Prepare APK
         run: cp server/android/build/outputs/apk/release/*.apk ./SlimeVR-android.apk
       - name: Upload APK
