@@ -83,7 +83,7 @@ jobs:
       - name: Test with Gradle
         run: ./gradlew :server:desktop:test
       - name: Upload Server Jar
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: server-jar
           path: server/desktop/build/libs/slimevr.jar
@@ -110,7 +110,7 @@ jobs:
       - name: Tar GUI Dist
         run: tar -czf slimevr-gui-dist.tar.gz -C gui/out .
       - name: Upload GUI Dist
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: gui-dist
           path: slimevr-gui-dist.tar.gz
@@ -183,7 +183,7 @@ jobs:
           echo "Collected files:"
           ls -lh "$DEST_DIR"
       - name: Upload For Release
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: release-${{ matrix.platform }}-${{ matrix.os }}
           path: release-out/*
@@ -222,7 +222,7 @@ jobs:
       - name: Prepare APK
         run: cp server/android/build/outputs/apk/release/*.apk ./SlimeVR-android.apk
       - name: Upload APK
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: release-android
           path: SlimeVR-android.apk
