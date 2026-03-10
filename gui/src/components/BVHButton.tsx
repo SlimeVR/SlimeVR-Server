@@ -9,11 +9,11 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { RecordIcon } from './commons/icon/RecordIcon';
 import classNames from 'classnames';
-import { isTauri } from '@tauri-apps/api/core';
-import { save } from '@tauri-apps/plugin-dialog';
 import { useConfig } from '@/hooks/config';
+import { useElectron } from '@/hooks/electron';
 
 export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
+  const electron = useElectron();
   const { config } = useConfig();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
@@ -27,12 +27,12 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   const toggleBVH = async () => {
     const record = new RecordBVHRequestT(recording);
 
-    if (isTauri() && !recording) {
+    if (electron.isElectron && !recording) {
       if (config?.bvhDirectory) {
         record.path = config.bvhDirectory;
       } else {
         setSaving(true);
-        record.path = await save({
+        const save = await electron.api.saveDialog({
           title: l10n.getString('bvh-save_title'),
           filters: [
             {
@@ -42,6 +42,7 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
           ],
           defaultPath: 'bvh-recording.bvh',
         });
+        record.path = save.filePath;
         setSaving(false);
       }
     }

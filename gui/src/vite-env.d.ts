@@ -6,7 +6,6 @@ declare const __VERSION_TAG__: string;
 declare const __GIT_CLEAN__: boolean;
 
 interface Window {
-  readonly isTauri: boolean;
   readonly __ANDROID__:
     | {
         isThere: () => boolean;
@@ -15,3 +14,13 @@ interface Window {
 }
 
 declare module 'tailwind-gradient-mask-image';
+
+declare module '*?asset' {
+  const content: string;
+  export default content;
+}
+
+declare module '*?asset&asarUnpack' {
+  const content: string;
+  export default content;
+}
