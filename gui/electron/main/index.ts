@@ -365,9 +365,17 @@ const spawnServer = async () => {
 
   logger.info(options)
 
-  logger.info(`Java start command: ${['-Xmx128M', '-jar', serverJar, (options.steam ? [`--steam=${options.steam}`] : [undefined]), ...(options.install ? [`--install=${options.install}`] : []), ...(options.noUdev ? [`--no-udev`] : []), 'run']}`)
+  const serverArgs = ['-Xmx128M', '-jar', serverJar]
 
-  const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, ...(options.steam ? [`--steam=${options.steam}`] : []), ...(options.install ? [`--install=${options.install}`] : []), ...(options.noUdev ? ['--no-udev'] : []), 'run']);
+  if (options.steam) serverArgs.push(`--steam=${options.steam}`)
+  if (options.install) serverArgs.push(`--install=${options.install}`)
+  if (options.noUdev) serverArgs.push(`--no-udev=${options.noUdev}`)
+
+  serverArgs.push('run')
+
+
+  logger.info(`Java start command: ${serverArgs.join(' ')})`)
+  const process = spawn(javaBin, serverArgs)
 
   process.stdout?.on('data', (message) => {
     mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {

@@ -45,11 +45,11 @@ val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
 
-val featureFlags = FeatureFlags()
 
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
 	System.setProperty("swing.aatext", "true")
+	val featureFlags = FeatureFlags()
 
 	val parser: CommandLineParser = DefaultParser()
 	val formatter = HelpFormatter()

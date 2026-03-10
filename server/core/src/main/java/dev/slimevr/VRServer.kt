@@ -85,7 +85,6 @@ class VRServer @JvmOverloads constructor(
 	val deviceManager: DeviceManager
 
 	// UwU
-	@JvmField
 	val featureFlags: FeatureFlags = featureFlagsProvider(this)
 
 	@JvmField
