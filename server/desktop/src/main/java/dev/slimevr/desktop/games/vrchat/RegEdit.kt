@@ -86,7 +86,6 @@ class RegEditLinux : AbstractRegEdit() {
 	}
 	lateinit var registry: Map<String, String>
 
-	@OptIn(ExperimentalStdlibApi::class)
 	override fun getQwordValue(path: String, key: String): Double? {
 		val value = registry[key] ?: return null
 		if (!value.startsWith("hex(4):")) {
@@ -152,7 +151,6 @@ class RegEditLinux : AbstractRegEdit() {
 			}
 		val KEY_VALUE_PATTERN = Regex(""""(.+)"=(.+)""")
 
-		@OptIn(ExperimentalStdlibApi::class)
 		val HEX_FORMAT = HexFormat {
 			upperCase = false
 			bytes.byteSeparator = ","
