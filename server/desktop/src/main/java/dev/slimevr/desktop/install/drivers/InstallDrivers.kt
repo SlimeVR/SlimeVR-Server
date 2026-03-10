@@ -1,7 +1,6 @@
 package dev.slimevr.desktop.install.drivers
 
 import io.eiren.util.logging.LogManager
-import java.io.File
 
 class InstallDrivers {
 
@@ -9,17 +8,6 @@ class InstallDrivers {
 
 	fun runInstaller() {
 		if (os.contains("linux")) {
-			val linuxFlavour = try {
-				File("/etc/os-release").readText()
-			} catch (e: Exception) {
-				LogManager.warning("Couldn't determine OS distribution: $e")
-				return
-			}
-			if (linuxFlavour.contains("ID=nixos") || linuxFlavour.contains("ID_LIKE=nixos")) {
-				LogManager.warning("Running on NixOS, server will not install itself.")
-				return
-			}
-
 			val linuxUpdater = Linux()
 			linuxUpdater.updateLinux()
 		} else if (os.contains("windows")) {

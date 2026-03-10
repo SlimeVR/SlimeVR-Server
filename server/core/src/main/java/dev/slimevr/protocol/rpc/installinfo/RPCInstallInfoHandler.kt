@@ -8,7 +8,6 @@ import io.eiren.util.logging.LogManager
 import solarxr_protocol.rpc.InstalledInfoResponse.createInstalledInfoResponse
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
-
 import java.io.IOException
 
 class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {

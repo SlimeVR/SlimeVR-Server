@@ -77,9 +77,9 @@ fun main(args: Array<String>) {
 	if (cmd.hasOption("install")) {
 		featureFlags.installer = true
 		featureFlags.installerArgs = cmd.getOptionValue("install")
-		LogManager.info("Driver install")
 		val installDrivers = InstallDrivers()
 		installDrivers.runInstaller()
+		exitProcess(0)
 	}
 	if (cmd.hasOption("steam")) {
 		featureFlags.steam = true
@@ -107,9 +107,6 @@ fun main(args: Array<String>) {
 	}
 	LogManager.info("Using log folder: $dir")
 	LogManager.info("Running version $VERSION")
-	LogManager.info("Running in steam ${featureFlags.steam} with arg ${featureFlags.steamArgs}")
-	LogManager.info("Do we need to check udev rules ${featureFlags.skipCheckUdev}")
-	LogManager.info("Running installer ${featureFlags.installer} with arg ${featureFlags.installerArgs}")
 	if (!SystemUtils.isJavaVersionAtLeast(org.apache.commons.lang3.JavaVersion.JAVA_17)) {
 		LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.")
 		JOptionPane
