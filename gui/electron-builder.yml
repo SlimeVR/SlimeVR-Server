@@ -24,6 +24,7 @@ files:
   - "!node_modules/**/*.{map,ts,tsx,d.ts}"
   - "!**/.DS_Store"
 
+
 linux:
   category: Game
   artifactName: "${productName}-${arch}.${ext}"
@@ -40,8 +41,13 @@ linux:
 
 deb:
   depends: [openjdk-17-jre-headless, udev]
+  afterInstall: "./electron/resources/scripts/postinstall.sh"
+  afterRemove: "./electron/resources/scripts/postremove.sh"
+
 rpm:
   depends: [java-latest-openjdk, udev]
+  afterInstall: "./electron/resources/scripts/postinstall.sh"
+  afterRemove: "./electron/resources/scripts/postremove.sh"
 
 win:
   artifactName: "${productName}-${os}-${arch}.${ext}"
@@ -55,4 +61,4 @@ mac:
   icon: "./electron/resources/icons/icon.icns"
   extraFiles:
     - from: "../server/desktop/build/libs/slimevr.jar"
-      to: "Resources/slimevr.jar"
+      to: "."
