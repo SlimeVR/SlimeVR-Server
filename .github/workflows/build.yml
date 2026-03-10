@@ -52,6 +52,8 @@ jobs:
         run: pnpm i && cd gui && pnpm run lint
       - name: Java Spotless Check
         run: ./gradlew spotlessCheck --build-cache
+      - name: Test with Gradle
+        run: ./gradlew test
 
   build-server-jar:
     name: Build Server ShadowJar

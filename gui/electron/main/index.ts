@@ -34,6 +34,7 @@ import { discordPresence } from './presence';
 import { options } from './cli';
 import { ServerStatusEvent } from 'electron/preload/interface';
 import { mkdir } from 'node:fs/promises';
+import { MenuItem } from 'electron/main';
 
 // Register custom protocol to handle asset paths with leading slashes
 protocol.registerSchemesAsPrivileged([
@@ -243,6 +244,7 @@ function createWindow() {
       preload: join(__dirname, '../preload/index.js'),
       nodeIntegration: false,
       contextIsolation: true,
+      devTools: true,
     },
   });
 
@@ -316,6 +318,26 @@ function createWindow() {
   mainWindow.on('resize', updateWindowState);
   mainWindow.on('minimize', updateWindowState);
   mainWindow.on('maximize', updateWindowState);
+
+  mainWindow.webContents.on('context-menu', (event, params) => {
+    const menu = new Menu();
+
+    menu.append(
+      new MenuItem({
+        label: 'Inspect Element',
+        click: () => {
+          mainWindow?.webContents.inspectElement(params.x, params.y);
+        },
+      })
+    );
+
+    menu.append(new MenuItem({ type: 'separator' }));
+    menu.append(new MenuItem({ label: 'Copy', role: 'copy' }));
+    menu.append(new MenuItem({ label: 'Paste', role: 'paste' }));
+
+    if (mainWindow)
+      menu.popup({ window: mainWindow });
+  });
 }
 
 const checkEnvironmentVariables = () => {
@@ -417,6 +439,6 @@ app.whenReady().then(async () => {
 
     discordPresence.destroy();
 
-    await saveWindowState()
+    await saveWindowState();
   });
 });
