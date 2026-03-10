@@ -61,4 +61,4 @@ mac:
   icon: "./electron/resources/icons/icon.icns"
   extraFiles:
     - from: "../server/desktop/build/libs/slimevr.jar"
-      to: "."
+      to: "Resources/slimevr.jar"
