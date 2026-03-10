@@ -86,7 +86,7 @@ fun main(args: Array<String>) {
 		featureFlags.steamArgs = cmd.getOptionValue("steam")
 	}
 	if (cmd.hasOption("no-udev")) {
-		featureFlags.noUdev = true
+		featureFlags.skipCheckUdev = true
 	}
 
 	if (cmd.args.isEmpty()) {
@@ -108,7 +108,7 @@ fun main(args: Array<String>) {
 	LogManager.info("Using log folder: $dir")
 	LogManager.info("Running version $VERSION")
 	LogManager.info("Running in steam ${featureFlags.steam} with arg ${featureFlags.steamArgs}")
-	LogManager.info("Do we need to check udev rules ${featureFlags.noUdev}")
+	LogManager.info("Do we need to check udev rules ${featureFlags.skipCheckUdev}")
 	LogManager.info("Running installer ${featureFlags.installer} with arg ${featureFlags.installerArgs}")
 	if (!SystemUtils.isJavaVersionAtLeast(org.apache.commons.lang3.JavaVersion.JAVA_17)) {
 		LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.")
@@ -156,7 +156,7 @@ fun main(args: Array<String>) {
 	try {
 		val vrServer = VRServer(
 			::provideBridges,
-			{ _ -> FeatureFlags() },
+			{ _ -> featureFlags },
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
 			{ _ -> DesktopVRCConfigHandler() },
@@ -164,7 +164,7 @@ fun main(args: Array<String>) {
 			configManager = configManager,
 		)
 		vrServer.start()
-		LogManager.info("udev ${featureFlags.noUdev}, steam ${featureFlags.steam}")
+		LogManager.info("udev ${featureFlags.skipCheckUdev}, steam ${featureFlags.steam}")
 		// Start service for USB HID trackers
 		DesktopHIDManager(
 			"Sensors HID service",

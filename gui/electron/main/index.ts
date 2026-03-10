@@ -363,12 +363,11 @@ const spawnServer = async () => {
 
   logger.info({ javaBin, serverJar }, 'Found Java and server jar');
 
-  if (options.steam)
-    logger.info('launching in steam mode');
+  logger.info(options)
 
-  logger.info(`Java start command: ${['-Xmx128M', '-jar', serverJar, (options.steam ? [`--steam=${options.steam}`] : [undefined]), ...(options.install ? [`--install=${options.install}`] : []), 'run']}`)
+  logger.info(`Java start command: ${['-Xmx128M', '-jar', serverJar, (options.steam ? [`--steam=${options.steam}`] : [undefined]), ...(options.install ? [`--install=${options.install}`] : []), ...(options.noUdev ? [`--no-udev`] : []), 'run']}`)
 
-  const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, ...(options.steam ? [`--steam=${options.steam}`] : []), ...(options.install ? [`--install=${options.install}`] : []), 'run']);
+  const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, ...(options.steam ? [`--steam=${options.steam}`] : []), ...(options.install ? [`--install=${options.install}`] : []), ...(options.noUdev ? ['--no-udev'] : []), 'run']);
 
   process.stdout?.on('data', (message) => {
     mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {

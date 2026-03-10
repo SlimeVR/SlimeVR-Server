@@ -8,17 +8,18 @@ import io.eiren.util.logging.LogManager
 import solarxr_protocol.rpc.InstalledInfoResponse.createInstalledInfoResponse
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
-import java.io.File
+
 import java.io.IOException
 
 class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 
 	init {
 		rpcHandler.registerPacketListener(RpcMessage.InstalledInfoRequest, ::onInstalledInfoRequest)
+		LogManager.info("Should we skip checking udev ${api.server.featureFlags.skipCheckUdev}")
 	}
 
 	fun onInstalledInfoRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
-		if (!api.server.featureFlags.noUdev) {
+		if (!api.server.featureFlags.skipCheckUdev) {
 			val udevResponse = executeShellCommand("udevadm", "cat")
 			if (udevResponse == null) {
 				LogManager.warning("Server couldn't verify if udev is installed")

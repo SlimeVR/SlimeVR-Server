@@ -5,5 +5,5 @@ data class FeatureFlags(
 	var steamArgs: String = "",
 	var installer: Boolean = false,
 	var installerArgs: String = "",
-	var noUdev: Boolean = false,
+	var skipCheckUdev: Boolean = false,
 )

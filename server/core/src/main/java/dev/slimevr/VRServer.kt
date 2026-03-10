@@ -84,8 +84,9 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val deviceManager: DeviceManager
 
+	// UwU
 	@JvmField
-	val featureFlags: FeatureFlags
+	val featureFlags: FeatureFlags = featureFlagsProvider(this)
 
 	@JvmField
 	val bvhRecorder: BVHRecorder
@@ -130,8 +131,6 @@ class VRServer @JvmOverloads constructor(
 	val serverGuards = ServerGuards()
 
 	init {
-		// UwU
-		featureFlags = featureFlagsProvider(this)
 		deviceManager = DeviceManager(this)
 		serialHandler = serialHandlerProvider(this)
 		serialFlashingHandler = flashingHandlerProvider(this)
