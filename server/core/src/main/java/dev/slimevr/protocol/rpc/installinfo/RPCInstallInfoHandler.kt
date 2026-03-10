@@ -21,22 +21,22 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		if (api.server.featureFlags.skipCheckUdev) {
 			return
 		}
-			val udevResponse = executeShellCommand("udevadm", "cat")
-			if (udevResponse == null) {
-				LogManager.warning("Server couldn't verify if udev is installed")
-				return
-			}
-			val response = udevResponse.contains("slime")
-			val fbb = FlatBufferBuilder(1024)
-			val outbound = this.rpcHandler.createRPCMessage(
-				fbb,
-				RpcMessage.InstalledInfoResponse,
-				createInstalledInfoResponse(fbb, response),
-			)
-			fbb.finish(outbound)
-			conn.send(fbb.dataBuffer())
+		val udevResponse = executeShellCommand("udevadm", "cat")
+		if (udevResponse == null) {
+			LogManager.warning("Server couldn't verify if udev is installed")
+			return
 		}
+		val response = udevResponse.contains("slime")
+		val fbb = FlatBufferBuilder(1024)
+		val outbound = this.rpcHandler.createRPCMessage(
+			fbb,
+			RpcMessage.InstalledInfoResponse,
+			createInstalledInfoResponse(fbb, response),
+		)
+		fbb.finish(outbound)
+		conn.send(fbb.dataBuffer())
 	}
+}
 
 private fun executeShellCommand(vararg command: String): String? = try {
 	val process = ProcessBuilder(*command)
