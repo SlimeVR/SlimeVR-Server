@@ -64,7 +64,7 @@ jobs:
 
 
   build-server-jar:
-    name: Build Server ShadowJar
+    name: Build Desktop Server
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -81,7 +81,7 @@ jobs:
       - name: Build ShadowJar
         run: ./gradlew :server:desktop:shadowJar --build-cache
       - name: Test with Gradle
-        run: ./gradlew test
+        run: ./gradlew :server:desktop:test
       - name: Upload Server Jar
         uses: actions/upload-artifact@v6
         with:
