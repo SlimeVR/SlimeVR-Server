@@ -13,23 +13,12 @@ import java.io.IOException
 
 class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 
-	val os = System.getProperty("os.name").lowercase()
-
 	init {
 		rpcHandler.registerPacketListener(RpcMessage.InstalledInfoRequest, ::onInstalledInfoRequest)
 	}
 
 	fun onInstalledInfoRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
-		if (os.contains("linux")) {
-			val linuxFlavour = try {
-				File("/etc/os-release").readText()
-			} catch (e: Exception) {
-				LogManager.warning("Couldn't determine OS distribution: $e")
-				return
-			}
-			if (linuxFlavour.contains("ID=steamos") || linuxFlavour.contains("ID=nixos") || linuxFlavour.contains("ID_LIKE=nixos")) {
-				return
-			}
+		if (!api.server.featureFlags.noUdev) {
 			val udevResponse = executeShellCommand("udevadm", "cat")
 			if (udevResponse == null) {
 				LogManager.warning("Server couldn't verify if udev is installed")
@@ -46,16 +35,16 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			conn.send(fbb.dataBuffer())
 		}
 	}
+}
 
-	private fun executeShellCommand(vararg command: String): String? = try {
-		val process = ProcessBuilder(*command)
-			.redirectErrorStream(true)
-			.start()
-		process.inputStream.bufferedReader().readText().also {
-			process.waitFor()
-		}
-	} catch (e: IOException) {
-		LogManager.warning("Error executing shell command: ${e.message}")
-		null
+private fun executeShellCommand(vararg command: String): String? = try {
+	val process = ProcessBuilder(*command)
+		.redirectErrorStream(true)
+		.start()
+	process.inputStream.bufferedReader().readText().also {
+		process.waitFor()
 	}
+} catch (e: IOException) {
+	LogManager.warning("Error executing shell command: ${e.message}")
+	null
 }

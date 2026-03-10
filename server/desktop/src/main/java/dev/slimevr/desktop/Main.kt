@@ -2,6 +2,7 @@
 
 package dev.slimevr.desktop
 
+import dev.slimevr.FeatureFlags
 import dev.slimevr.Keybinding
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
@@ -44,7 +45,7 @@ val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
 
-var IS_STEAM = false
+val featureFlags = FeatureFlags()
 
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
@@ -55,15 +56,16 @@ fun main(args: Array<String>) {
 	val options = Options()
 	options.addOption("h", "help", false, "Show help")
 	options.addOption("V", "version", false, "Show version")
-	options.addOption("i", "install", false, "Run the driver install")
-	options.addOption("S", "steam", false, "Run the server in steam mode")
+	options.addOption("i", "install", true, "Run the driver install")
+	options.addOption("s", "steam", true, "Run the server in steam mode")
+	options.addOption("u", "no-udev", false, "Skip the checking of installed udev rules")
 	val cmd: CommandLine = try {
 		parser.parse(options, args, true)
 	} catch (e: org.apache.commons.cli.ParseException) {
 		formatter.printHelp("slimevr.jar", options)
 		exitProcess(1)
 	}
-
+	LogManager.info("Parsing options")
 	if (cmd.hasOption("help")) {
 		formatter.printHelp("slimevr.jar", options)
 		exitProcess(0)
@@ -73,13 +75,18 @@ fun main(args: Array<String>) {
 		exitProcess(0)
 	}
 	if (cmd.hasOption("install")) {
+		featureFlags.installer = true
+		featureFlags.installerArgs = cmd.getOptionValue("install")
 		LogManager.info("Driver install")
 		val installDrivers = InstallDrivers()
 		installDrivers.runInstaller()
 	}
 	if (cmd.hasOption("steam")) {
-		LogManager.info("Running in steam")
-		IS_STEAM = true
+		featureFlags.steam = true
+		featureFlags.steamArgs = cmd.getOptionValue("steam")
+	}
+	if (cmd.hasOption("no-udev")) {
+		featureFlags.noUdev = true
 	}
 
 	if (cmd.args.isEmpty()) {
@@ -100,6 +107,9 @@ fun main(args: Array<String>) {
 	}
 	LogManager.info("Using log folder: $dir")
 	LogManager.info("Running version $VERSION")
+	LogManager.info("Running in steam ${featureFlags.steam} with arg ${featureFlags.steamArgs}")
+	LogManager.info("Do we need to check udev rules ${featureFlags.noUdev}")
+	LogManager.info("Running installer ${featureFlags.installer} with arg ${featureFlags.installerArgs}")
 	if (!SystemUtils.isJavaVersionAtLeast(org.apache.commons.lang3.JavaVersion.JAVA_17)) {
 		LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.")
 		JOptionPane
@@ -114,7 +124,7 @@ fun main(args: Array<String>) {
 	}
 
 	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toInt()
-	if (IS_STEAM && isInstallDisabled != 1) {
+	if (featureFlags.steam && isInstallDisabled != 1) {
 		val installDrivers = InstallDrivers()
 		installDrivers.runInstaller()
 	}
@@ -146,6 +156,7 @@ fun main(args: Array<String>) {
 	try {
 		val vrServer = VRServer(
 			::provideBridges,
+			{ _ -> FeatureFlags() },
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
 			{ _ -> DesktopVRCConfigHandler() },
@@ -153,7 +164,7 @@ fun main(args: Array<String>) {
 			configManager = configManager,
 		)
 		vrServer.start()
-
+		LogManager.info("udev ${featureFlags.noUdev}, steam ${featureFlags.steam}")
 		// Start service for USB HID trackers
 		DesktopHIDManager(
 			"Sensors HID service",
