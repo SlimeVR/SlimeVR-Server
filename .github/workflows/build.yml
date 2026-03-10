@@ -8,6 +8,24 @@ on:
   workflow_dispatch:
 
 jobs:
+  setup-matrix:
+    name: Configure Build Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        shell: bash
+        run: |
+          BASE='[{"os":"ubuntu-22.04","platform":"linux"},{"os":"windows-latest","platform":"windows"},{"os":"macos-latest","platform":"macos"}]'
+          EXTRA='[{"os":"ubuntu-22.04-arm","platform":"linux"},{"os":"windows-11-arm","platform":"windows"}]'
+
+          if [[ "${{ github.ref }}" == refs/tags/v* || "${{ github.ref }}" == refs/heads/main || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            RESULT=$(echo "$BASE $EXTRA" | jq -c -s 'add')
+          else
+            RESULT=$(echo "$BASE" | jq -c '.')
+          fi
+          echo "matrix={\"include\":$RESULT}" >> "$GITHUB_OUTPUT"
   checks:
     name: Lint and Java Checks
     runs-on: ubuntu-latest
@@ -74,6 +92,8 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
       - name: Build JS
+        env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: pnpm i && cd gui && pnpm run build
       - name: Tar GUI Dist
         run: tar -czf slimevr-gui-dist.tar.gz -C gui/out .
@@ -85,21 +105,10 @@ jobs:
 
   package-desktop:
     name: Package Desktop (${{ matrix.platform }} - ${{ matrix.os }})
-    needs: [build-server-jar, build-gui-frontend]
+    needs: [setup-matrix, build-server-jar, build-gui-frontend]
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-22.04
-            platform: linux
-          - os: ubuntu-22.04-arm
-            platform: linux
-          - os: windows-latest
-            platform: windows
-          - os: windows-11-arm
-            platform: windows
-          # - os: macos-latest
-          #   platform: macos
+      matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix) }}
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -123,7 +132,6 @@ jobs:
         with:
           name: gui-dist
       - name: Extract GUI for Electron
-        # Using bash shell explicitly for cross-platform compatibility
         shell: bash
         run: mkdir -p gui/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/out
       - name: Run Electron Builder
@@ -140,41 +148,34 @@ jobs:
       - name: Collect and Rename Artifacts
         shell: bash
         run: |
-          mkdir -p release-out
+          SRC_DIR="${{ github.workspace }}/gui/dist/artifacts"
+          DEST_DIR="${{ github.workspace }}/release-out"
+          mkdir -p "$DEST_DIR"
 
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            # Map Windows Arch
-            if [[ "${{ matrix.os }}" == *"arm"* ]]; then
-              FINAL_NAME="SlimeVR-win-aarch64.zip"
-            else
-              FINAL_NAME="SlimeVR-win64.zip"
-            fi
-            cp gui/dist/artifacts/win/*.exe release-out/$FINAL_NAME
+            [[ "${{ matrix.os }}" == *"arm"* ]] && SUFFIX="win-aarch64" || SUFFIX="win64"
+            cp "$SRC_DIR"/win/*.exe "$DEST_DIR/SlimeVR-$SUFFIX.zip"
 
           elif [ "${{ matrix.platform }}" == "linux" ]; then
-            # Move files and rename based on arch patterns
-            cd gui/dist/artifacts/linux
-            for f in *; do
-              NEW_NAME=$f
-              # Normalize x86_64 to amd64
-              NEW_NAME=${NEW_NAME//x86_64/amd64}
-              # Normalize arm64 to aarch64
-              NEW_NAME=${NEW_NAME//arm64/aarch64}
-              cp "$f" "../../../release-out/$NEW_NAME"
+            for f in "$SRC_DIR"/linux/*; do
+              [ -d "$f" ] && continue
+              BASE=$(basename "$f")
+              NEW_NAME=$(echo "$BASE" | sed -e 's/x86_64/amd64/g' -e 's/arm64/aarch64/g')
+              cp "$f" "$DEST_DIR/$NEW_NAME"
             done
-            cd ../../../
 
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            cp gui/dist/artifacts/mac/*.dmg release-out/SlimeVR-mac.dmg
+            cp "$SRC_DIR"/mac/*.dmg "$DEST_DIR/SlimeVR-mac.dmg"
           fi
 
-          echo "Final artifacts for ${{ matrix.platform }}:"
-          ls -lh release-out/
+          echo "Collected files:"
+          ls -lh "$DEST_DIR"
       - name: Upload For Release
         uses: actions/upload-artifact@v6
         with:
           name: release-${{ matrix.platform }}-${{ matrix.os }}
           path: release-out/*
+
   bundle-android:
     name: Build Android APK
     needs: [build-gui-frontend]
@@ -215,7 +216,7 @@ jobs:
   create-release:
     name: Finalize Release Draft
     needs: [package-desktop, bundle-android, build-server-jar, build-gui-frontend]
-    # if: startsWith(github.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Download All Release Artifacts
@@ -235,14 +236,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           draft: true
-          tag_name: electron-test
           generate_release_notes: true
           files: |
-            *.AppImage
-            *.deb
-            *.rpm
-            *.apk
-            *.dmg
-            *.zip
-            *.jar
-            *.tar.gz
+            release-out/*
+            server/desktop/build/libs/slimevr.jar
+            slimevr-gui-dist.tar.gz

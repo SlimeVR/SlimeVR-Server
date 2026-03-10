@@ -26,6 +26,7 @@
             wine
             zlib squashfsTools fakeroot libarchive icu
             nodejs_22 pnpm pkg-config python3 gcc gnumake binutils git
+            pkgs.nodePackages.node-gyp-build
           ]);
 
           slimeShell = pkgs.buildFHSEnv {
