@@ -70,7 +70,7 @@ fun main(args: Array<String>) {
 		exitProcess(0)
 	}
 	if (cmd.hasOption("version")) {
-		println("SlimeVR Server $VERSION")
+		LogManager.info("SlimeVR Server $VERSION")
 		exitProcess(0)
 	}
 	if (cmd.hasOption("install")) {

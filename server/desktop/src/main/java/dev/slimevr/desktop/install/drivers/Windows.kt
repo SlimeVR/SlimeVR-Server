@@ -63,7 +63,6 @@ class Windows {
 		val regEdit = RegEditWindows()
 		val regQuery = regEdit.getKeyByPath(WinReg.HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820")
 		val steamVRLocation = regQuery["InstallLocation"]
-		println(steamVRLocation)
 		if (steamVRLocation == null) {
 			LogManager.warning("Error installing SteamVR driver.")
 			return

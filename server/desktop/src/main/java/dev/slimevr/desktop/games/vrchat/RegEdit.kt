@@ -85,7 +85,6 @@ class RegEditWindows : AbstractRegEdit() {
 			}
 		} catch (e: Exception) {
 			LogManager.severe("[RegEdit] Error reading Values from registry: ${e.message}")
-			println("$hkey $path")
 		}
 		return keysMap
 	}
