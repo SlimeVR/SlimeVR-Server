@@ -156,7 +156,10 @@ jobs:
                    gui/dist/artifacts/mac
           cd gui
           pnpm i
-          pnpm exec electron-builder --${{ matrix.platform }} ${{ matrix.platform == 'macos' && '--universal' || '' }} --publish never
+          pnpm exec electron-builder --${{ matrix.platform }} \
+            ${{ matrix.platform == 'macos' && '--universal' || '' }} \
+            ${{ matrix.platform == 'windows' && '-c.win.target=zip' || '' }} \
+            --publish never
       - name: Collect and Rename Artifacts
         shell: bash
         run: |
