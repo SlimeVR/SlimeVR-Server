@@ -23,7 +23,7 @@
             xorg.libxshmfence libusb1 udev libxcrypt-legacy
             rpm fpm
 
-            wine
+            wineWow64Packages.stable
             zlib squashfsTools fakeroot libarchive icu
             nodejs_22 pnpm pkg-config python3 gcc gnumake binutils git
             pkgs.nodePackages.node-gyp-build
