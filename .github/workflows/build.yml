@@ -232,7 +232,7 @@ jobs:
   create-release:
     name: Finalize Release Draft
     needs: [package-desktop, bundle-android, build-server-jar, build-gui-frontend]
-    # if: startsWith(github.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Download All Release Artifacts
@@ -253,7 +253,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           draft: true
-          tag_name: electron_test
           generate_release_notes: true
           files: |
             release-out/*
