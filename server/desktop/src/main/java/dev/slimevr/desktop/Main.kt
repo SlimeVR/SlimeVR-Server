@@ -52,17 +52,14 @@ fun main(args: Array<String>) {
 	val parser: CommandLineParser = DefaultParser()
 	val formatter = HelpFormatter()
 	val options = Options()
+	val isLinux = System.getProperty("os.name").lowercase().contains("linux")
+	val featureFlags = FeatureFlags()
 	options.addOption("h", "help", false, "Show help")
 	options.addOption("V", "version", false, "Show version")
 	options.addOption("i", "install", true, "Run the driver install")
 	options.addOption("s", "steam", true, "Run the server in steam mode")
-
-	val isLinux = System.getProperty("os.name").lowercase().contains("linux")
-	val featureFlags = FeatureFlags()
 	if (isLinux) {
-		options.addOption("u", "no-udev", false, "Skip the checking of installed udev rules")
-	} else {
-		featureFlags.skipCheckUdev = true
+		options.addOption("u", "no-udev", false, "Skip checking if udev rules are installed")
 	}
 
 	val cmd: CommandLine = try {
@@ -71,7 +68,6 @@ fun main(args: Array<String>) {
 		formatter.printHelp("slimevr.jar", options)
 		exitProcess(1)
 	}
-	LogManager.info("Parsing options")
 	if (cmd.hasOption("help")) {
 		formatter.printHelp("slimevr.jar", options)
 		exitProcess(0)
@@ -81,8 +77,6 @@ fun main(args: Array<String>) {
 		exitProcess(0)
 	}
 	if (cmd.hasOption("install")) {
-		featureFlags.installer = true
-		featureFlags.installerArgs = cmd.getOptionValue("install")
 		val installDrivers = InstallDrivers()
 		installDrivers.runInstaller()
 		exitProcess(0)
@@ -91,11 +85,7 @@ fun main(args: Array<String>) {
 		featureFlags.steam = true
 		featureFlags.steamArgs = cmd.getOptionValue("steam")
 	}
-	if (isLinux) {
-		if (cmd.hasOption("no-udev")) {
-			featureFlags.skipCheckUdev = true
-		}
-	}
+	featureFlags.skipCheckUdev = !isLinux || cmd.hasOption("no-udev")
 
 	if (cmd.args.isEmpty()) {
 		System.err.println("No command specified, expected 'run'")
@@ -169,7 +159,6 @@ fun main(args: Array<String>) {
 			configManager = configManager,
 		)
 		vrServer.start()
-		LogManager.info("udev ${featureFlags.skipCheckUdev}, steam ${featureFlags.steam}")
 		// Start service for USB HID trackers
 		DesktopHIDManager(
 			"Sensors HID service",

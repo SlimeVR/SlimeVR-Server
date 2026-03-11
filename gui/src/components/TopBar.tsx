@@ -38,7 +38,6 @@ export function VersionTag() {
       onClick={() => {
         const url = `https://github.com/${GH_REPO}/releases`;
         openUrl(url);
-        openUrl(url);
       }}
     >
       {(__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty')}
@@ -95,8 +94,6 @@ export function TopBar({
     }
   };
 
-  // useEffect(() => {
-  //   if (!electron.isElectron) return;
   // useEffect(() => {
   //   if (!electron.isElectron) return;
 
