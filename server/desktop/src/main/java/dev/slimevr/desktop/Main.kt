@@ -48,8 +48,6 @@ val VERSION =
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
 	System.setProperty("swing.aatext", "true")
-	val featureFlags = FeatureFlags()
-	if (!System.getProperty("os.name").contains("Linux")) featureFlags.skipCheckUdev = true
 
 	val parser: CommandLineParser = DefaultParser()
 	val formatter = HelpFormatter()
@@ -58,7 +56,15 @@ fun main(args: Array<String>) {
 	options.addOption("V", "version", false, "Show version")
 	options.addOption("i", "install", true, "Run the driver install")
 	options.addOption("s", "steam", true, "Run the server in steam mode")
-	options.addOption("u", "no-udev", false, "Skip the checking of installed udev rules")
+
+	val isLinux = System.getProperty("os.name").lowercase().contains("linux")
+	val featureFlags = FeatureFlags()
+	if (isLinux) {
+		options.addOption("u", "no-udev", false, "Skip the checking of installed udev rules")
+	} else {
+		featureFlags.skipCheckUdev = true
+	}
+
 	val cmd: CommandLine = try {
 		parser.parse(options, args, true)
 	} catch (e: org.apache.commons.cli.ParseException) {
@@ -85,8 +91,10 @@ fun main(args: Array<String>) {
 		featureFlags.steam = true
 		featureFlags.steamArgs = cmd.getOptionValue("steam")
 	}
-	if (cmd.hasOption("no-udev")) {
-		featureFlags.skipCheckUdev = true
+	if (isLinux) {
+		if (cmd.hasOption("no-udev")) {
+			featureFlags.skipCheckUdev = true
+		}
 	}
 
 	if (cmd.args.isEmpty()) {
