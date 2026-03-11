@@ -157,6 +157,8 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 					hidDevice.readAll(0) // multiples 64 bytes
 				} catch (e: NegativeArraySizeException) {
 					continue // Skip devices with read error (Maybe disconnected)
+				} catch (e: IllegalStateException) {
+					continue // Skip devices with open error (Maybe disconnected)
 				}
 				devicesPresent = true // Even if the device has no data
 				if (dataReceived.isNotEmpty()) {
