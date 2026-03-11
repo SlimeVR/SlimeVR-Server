@@ -14,7 +14,6 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 
 	init {
 		rpcHandler.registerPacketListener(RpcMessage.InstalledInfoRequest, ::onInstalledInfoRequest)
-		LogManager.info("Should we skip checking udev ${api.server.featureFlags.skipCheckUdev}")
 	}
 
 	fun onInstalledInfoRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {

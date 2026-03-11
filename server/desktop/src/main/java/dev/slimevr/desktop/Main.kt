@@ -49,6 +49,7 @@ fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
 	System.setProperty("swing.aatext", "true")
 	val featureFlags = FeatureFlags()
+	if (!System.getProperty("os.name").contains("Linux")) featureFlags.skipCheckUdev = true
 
 	val parser: CommandLineParser = DefaultParser()
 	val formatter = HelpFormatter()
