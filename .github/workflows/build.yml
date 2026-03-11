@@ -158,7 +158,6 @@ jobs:
           pnpm i
           pnpm exec electron-builder --${{ matrix.platform }} \
             ${{ matrix.platform == 'macos' && '--universal' || '' }} \
-            ${{ matrix.platform == 'windows' && '-c.win.target=zip' || '' }} \
             --publish never
       - name: Collect and Rename Artifacts
         shell: bash
@@ -169,7 +168,7 @@ jobs:
 
           if [ "${{ matrix.platform }}" == "windows" ]; then
             [[ "${{ matrix.os }}" == *"arm"* ]] && SUFFIX="win-aarch64" || SUFFIX="win64"
-            cp "$SRC_DIR"/win/*.exe "$DEST_DIR/SlimeVR-$SUFFIX.zip"
+            cp "$SRC_DIR"/win/*.zip" "$DEST_DIR/SlimeVR-$SUFFIX.zip"
 
           elif [ "${{ matrix.platform }}" == "linux" ]; then
             for f in "$SRC_DIR"/linux/*; do
@@ -233,7 +232,7 @@ jobs:
   create-release:
     name: Finalize Release Draft
     needs: [package-desktop, bundle-android, build-server-jar, build-gui-frontend]
-    if: startsWith(github.ref, 'refs/tags/')
+    # if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Download All Release Artifacts
@@ -254,6 +253,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           draft: true
+          tag_name: electron_test
           generate_release_notes: true
           files: |
             release-out/*

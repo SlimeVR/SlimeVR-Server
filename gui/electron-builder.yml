@@ -51,7 +51,7 @@ rpm:
 
 win:
   artifactName: "${productName}-${os}-${arch}.${ext}"
-  target: [target: portable]
+  target: zip
   icon: "./electron/resources/icons/icon.ico"
 
 mac:
