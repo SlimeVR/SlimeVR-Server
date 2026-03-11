@@ -237,6 +237,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           pattern: release-*
+          path: release-out
           merge-multiple: true
       - name: Download Server Jar
         uses: actions/download-artifact@v6
