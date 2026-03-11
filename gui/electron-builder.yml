@@ -23,8 +23,7 @@ files:
   - "!node_modules/*/.{git,github,vscode,editorconfig,eslintrc,prettierrc}"
   - "!node_modules/**/*.{map,ts,tsx,d.ts}"
   - "!**/.DS_Store"
-  - from: "../server/desktop/build/libs/slimevr.jar"
-    to: "."
+
 
 linux:
   category: Game
@@ -34,6 +33,8 @@ linux:
     - target: deb
     - target: rpm
   extraFiles:
+    - from: "../server/desktop/build/libs/slimevr.jar"
+      to: "."
     - from: "./electron/resources/69-slimevr-devices.rules"
       to: "."
   icon: "./electron/resources/icons"
@@ -52,6 +53,9 @@ win:
   artifactName: "${productName}-${os}-${arch}.${ext}"
   target: zip
   icon: "./electron/resources/icons/icon.ico"
+  extraFiles:
+    - from: "../server/desktop/build/libs/slimevr.jar"
+      to: "."
 
 mac:
   target: dmg
