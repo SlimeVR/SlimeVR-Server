@@ -142,7 +142,7 @@ class HIDCommon {
 			if (tracker.status == TrackerStatus.TIMED_OUT) {
 				// If tracker was previously sleeping/shutdown, reset the sleep time and status
 				// If there is some other error, the relevant packet should set it a little later
-				tracker.setSleepTime(MAX_VALUE)
+				tracker.setSleepTime(Long.MAX_VALUE)
 				tracker.status = TrackerStatus.OK
 			}
 
@@ -281,7 +281,7 @@ class HIDCommon {
 			if (timeout != null && timeout != 0) {
 				// 0 or 65535: disable timeout
 				if (timeout == 65535) {
-					tracker.setSleepTime(MAX_VALUE)
+					tracker.setSleepTime(Long.MAX_VALUE)
 				} else {
 					tracker.setSleepTime(System.currentTimeMillis() + timeout)
 				}

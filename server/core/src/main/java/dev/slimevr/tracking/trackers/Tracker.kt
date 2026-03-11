@@ -105,7 +105,7 @@ class Tracker @JvmOverloads constructor(
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
-	private var timeScheduledSleep: Long = MAX_VALUE
+	private var timeScheduledSleep: Long = Long.MAX_VALUE
 	private var _rotation = Quaternion.IDENTITY
 
 	// IMU: +z forward, +x left, +y up
