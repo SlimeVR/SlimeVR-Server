@@ -246,9 +246,6 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: server-jar
-          path: server
-      - name: check folder
-        run: ls -R server
       - name: Download GUI Dist
         uses: actions/download-artifact@v6
         with:
@@ -261,6 +258,5 @@ jobs:
           generate_release_notes: true
           files: |
             release-out/*
-            server/slimevr.jar
-            server/resources/*
+            server/desktop/build/libs/slimevr.jar
             slimevr-gui-dist.tar.gz
