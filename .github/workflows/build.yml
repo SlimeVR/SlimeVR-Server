@@ -247,6 +247,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: server-jar
+          path: server
       - name: Download GUI Dist
         uses: actions/download-artifact@v6
         with:
