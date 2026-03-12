@@ -20,7 +20,14 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		if (api.server.featureFlags.skipCheckUdev) {
 			return
 		}
-		val udevResponse = executeShellCommand("udevadm", "cat")
+
+		val command = if (api.server.featureFlags.steam) {
+			arrayOf("steam-runtime-launch-client", "--alongside-steam", "--", "udevadm", "cat")
+		} else {
+			arrayOf("udevadm", "cat")
+		}
+		val udevResponse = executeShellCommand(*command)
+
 		if (udevResponse == null) {
 			LogManager.warning("Server couldn't verify if udev is installed")
 			return
