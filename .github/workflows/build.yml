@@ -140,6 +140,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: server-jar
+          path: server
       - name: Check
         run: ls -R
       - name: Download GUI Dist
