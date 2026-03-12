@@ -3,47 +3,14 @@ package dev.slimevr.desktop.install.drivers
 import com.sun.jna.platform.win32.WinReg
 import dev.slimevr.desktop.games.vrchat.RegEditWindows
 import io.eiren.util.logging.LogManager
-import java.io.File
 
 class Windows {
 
 	val path: String = System.getProperty("user.dir")
 
 	fun updateWindows() {
-		usbDrivers()
 		steamVRDriver()
 		feeder()
-	}
-
-	fun usbDrivers() {
-		val installedDriversList = executeShellCommand("powershell.exe", "pnputil", "/enum-drivers")
-		if (installedDriversList == null) {
-			LogManager.warning("Error installing usb drivers")
-			return
-		}
-		val ch341ser = installedDriversList.contains("ch341ser.inf")
-		val ch343ser = installedDriversList.contains("ch343ser.inf")
-		val silabser = installedDriversList.contains("silabser.inf")
-
-		if (ch341ser && ch343ser && silabser) {
-			LogManager.info("USB drivers already installed!")
-			return
-		}
-		LogManager.info("USB drivers not found, installing")
-
-		// My masterpiece
-		executeShellCommand(
-			"powershell.exe",
-			"-Command",
-			"Start-Process -FilePath cmd.exe -ArgumentList '/c cd /d \"$path\" && pnputil /add-driver \"*.inf\" /subdirs /install > \"$path\\driver_install.log\" 2>&1' -Verb RunAs -WindowStyle Hidden -Wait",
-		)
-
-		try {
-			val usbDriversLog = File("driver_install.log").readText()
-			LogManager.info(usbDriversLog)
-		} catch (e: Exception) {
-			LogManager.warning("Error reading driver installation log, $e")
-		}
 	}
 
 	fun feeder() {
