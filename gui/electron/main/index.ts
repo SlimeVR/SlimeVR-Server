@@ -36,11 +36,16 @@ import { ServerStatusEvent } from 'electron/preload/interface';
 import { mkdir } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 
+// Fixes colors looking washed on linux
+// Might affect hdr
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('disable-features', 'WaylandWpColorManagerV1');
+  app.commandLine.appendSwitch('force-color-profile', 'srgb');
+}
 
-app.setPath('userData', getGuiDataFolder())
-app.setPath('sessionData', join(getGuiDataFolder(), 'electron'))
+app.setPath('userData', getGuiDataFolder());
+app.setPath('sessionData', join(getGuiDataFolder(), 'electron'));
 
-// Register custom protocol to handle asset paths with leading slashes
 protocol.registerSchemesAsPrivileged([
   {
     scheme: 'app',
@@ -339,8 +344,7 @@ function createWindow() {
     menu.append(new MenuItem({ label: 'Copy', role: 'copy' }));
     menu.append(new MenuItem({ label: 'Paste', role: 'paste' }));
 
-    if (mainWindow)
-      menu.popup({ window: mainWindow });
+    if (mainWindow) menu.popup({ window: mainWindow });
   });
 }
 
@@ -385,17 +389,29 @@ const spawnServer = async () => {
   }
 
   logger.info({ javaBin, serverJar }, 'Found Java and server jar');
+  const platform = getPlatform();
+  const serverWorkdir = getServerDataFolder()
+  const serverProcess = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run'], {
+    cwd: serverWorkdir,
+    shell: false,
+    env:
+      platform === 'windows'
+        ? {
+            ...process.env,
+            APPDATA: app.getPath('appData'),
+            LOCALAPPDATA: process.env['USERPROFILE'] ? path.join(process.env['USERPROFILE'], 'AppData', 'Local') : undefined,
+          }
+        : undefined,
+  });
 
-  const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run']);
-
-  process.stdout?.on('data', (message) => {
+  serverProcess.stdout?.on('data', (message) => {
     mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
       message: message.toString(),
       type: 'stdout',
     } satisfies ServerStatusEvent);
   });
 
-  process.stderr?.on('data', (message) => {
+  serverProcess.stderr?.on('data', (message) => {
     mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
       message: message.toString(),
       type: 'stderr',
@@ -403,9 +419,9 @@ const spawnServer = async () => {
   });
 
   return {
-    process: process,
+    process: serverProcess,
     close: () => {
-      process.kill('SIGTERM');
+      serverProcess.kill('SIGTERM');
     },
   };
 };
