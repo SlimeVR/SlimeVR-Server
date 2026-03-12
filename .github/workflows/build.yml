@@ -86,7 +86,9 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: server-jar
-          path: server/desktop/build/libs/slimevr.jar
+          path: |
+              server/desktop/build/libs/slimevr.jar
+              server/core/resources
 
   build-gui-frontend:
     name: Build GUI Assets
@@ -138,7 +140,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: server-jar
-          path: server/desktop/build/libs/
+          path: server
       - name: Download GUI Dist
         uses: actions/download-artifact@v6
         with:
@@ -256,5 +258,5 @@ jobs:
           generate_release_notes: true
           files: |
             release-out/*
-            slimevr.jar
+            server/desktop/build/libs/slimevr.jar
             slimevr-gui-dist.tar.gz

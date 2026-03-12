@@ -56,6 +56,9 @@ win:
   extraFiles:
     - from: "../server/desktop/build/libs/slimevr.jar"
       to: "."
+    - from: "../server/core/resources"
+      to: "."
+      filter: ["**/*"]
 
 mac:
   target: dmg
