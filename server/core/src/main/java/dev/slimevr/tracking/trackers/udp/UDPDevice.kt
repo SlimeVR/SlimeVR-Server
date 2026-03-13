@@ -1,6 +1,5 @@
 package dev.slimevr.tracking.trackers.udp
 
-import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
