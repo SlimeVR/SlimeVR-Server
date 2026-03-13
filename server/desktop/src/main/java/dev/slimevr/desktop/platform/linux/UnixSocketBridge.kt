@@ -112,10 +112,10 @@ class UnixSocketBridge(
 	}
 
 	@BridgeThread
-	override fun sendMessageReal(message: ProtobufMessage?): Boolean {
+	override fun sendMessageReal(message: ProtobufMessage): Boolean {
 		channel?.let { channel ->
 			try {
-				val size = message!!.getSerializedSize() + 4
+				val size = message.getSerializedSize() + 4
 				src.putInt(size)
 				val serialized = message.toByteArray()
 				src.put(serialized)
