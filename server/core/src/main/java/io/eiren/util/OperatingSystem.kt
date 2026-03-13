@@ -38,8 +38,8 @@ enum class OperatingSystem(
 				var dir = System.getenv("SLIMEVR_SOCKET_DIR")
 				if (dir != null) return dir
 				if (currentPlatform == LINUX) {
-					dir = System.getenv("XDG_RUNTIME_DIR")
-					if (dir != null) return dir
+					dir = "/tmp/"
+					return dir
 				}
 				return System.getProperty("java.io.tmpdir")
 			}

@@ -45,6 +45,8 @@ val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
 
+val featureFlags = FeatureFlags()
+
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
 	System.setProperty("swing.aatext", "true")
@@ -53,7 +55,6 @@ fun main(args: Array<String>) {
 	val formatter = HelpFormatter()
 	val options = Options()
 	val isLinux = System.getProperty("os.name").lowercase().contains("linux")
-	val featureFlags = FeatureFlags()
 	options.addOption("h", "help", false, "Show help")
 	options.addOption("V", "version", false, "Show version")
 	options.addOption("i", "install", true, "Run the driver install")
@@ -243,7 +244,7 @@ fun provideBridges(
 				)
 				yield(linuxBridge)
 			}
-
+			LogManager.info("Socket Dir ${OperatingSystem.socketDirectory}")
 			yield(
 				UnixSocketBridge(
 					server,

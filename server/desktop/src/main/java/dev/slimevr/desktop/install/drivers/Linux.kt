@@ -1,5 +1,6 @@
 package dev.slimevr.desktop.install.drivers
 
+import dev.slimevr.desktop.featureFlags
 import io.eiren.util.logging.LogManager
 
 class Linux {
@@ -33,6 +34,13 @@ class Linux {
 
 	fun feeder() {
 		executeShellCommand("chmod", "+x", "$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App")
+
+		val command = if (featureFlags.steam) {
+			arrayOf("steam-runtime-launch-client", "--alongside-steam", "--", "udevadm", "cat")
+		} else {
+			arrayOf("udevadm", "cat")
+		}
+		val udevResponse = executeShellCommand(*command)
 		val feederOutput = executeShellCommand("$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App", "--install")
 		if (feederOutput == null) {
 			LogManager.warning("Error installing feeder")
