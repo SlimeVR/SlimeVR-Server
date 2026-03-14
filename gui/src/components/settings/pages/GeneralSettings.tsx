@@ -108,7 +108,7 @@ export type SettingsForm = {
     trackersOverHID: boolean;
   };
   timeout: {
-    duration: number
+    duration: number;
   };
 };
 
@@ -166,7 +166,7 @@ const defaultValues: SettingsForm = {
   resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
   hidSettings: { trackersOverHID: false },
-  timeout: { duration:  3.0 },
+  timeout: { duration: 3.0 },
 };
 
 export function GeneralSettings() {
@@ -747,7 +747,9 @@ export function GeneralSettings() {
             />
             <div className="flex flex-col pt-5 pb-3">
               <Typography variant="section-title">
-                {l10n.getString('settings-general-tracker_mechanics-timeout_duration')}
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-timeout_duration'
+                )}
               </Typography>
               <div className="flex flex-col">
                 <Typography>

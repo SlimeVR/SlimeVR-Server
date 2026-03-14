@@ -17,7 +17,6 @@ class TimeoutConfig {
 		if (this.duration > 1000000000000000f) {
 			this.duration = 1000000000000000f
 		}
-		println("Updated timeout duration to ${this.duration} seconds")
 		Tracker.DISCONNECT_MS = (this.duration * 1000L).toLong() + Tracker.TIMEOUT_MS
 	}
 }

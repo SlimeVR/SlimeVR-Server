@@ -7,13 +7,13 @@ import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.FiltersConfig
 import dev.slimevr.config.HIDConfig
-import dev.slimevr.config.TimeoutConfig
 import dev.slimevr.config.LegTweaksConfig
 import dev.slimevr.config.OSCConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.SkeletonConfig
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.config.TimeoutConfig
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.filtering.TrackerFilters.Companion.getByConfigkey
@@ -25,7 +25,6 @@ import solarxr_protocol.rpc.AutoBoneSettings
 import solarxr_protocol.rpc.DriftCompensationSettings
 import solarxr_protocol.rpc.FilteringSettings
 import solarxr_protocol.rpc.HIDSettings
-import solarxr_protocol.rpc.TimeoutSettings
 import solarxr_protocol.rpc.OSCRouterSettings
 import solarxr_protocol.rpc.OSCSettings
 import solarxr_protocol.rpc.OSCTrackersSetting
@@ -34,6 +33,7 @@ import solarxr_protocol.rpc.SettingsResponse
 import solarxr_protocol.rpc.StayAlignedSettings
 import solarxr_protocol.rpc.SteamVRTrackersSetting
 import solarxr_protocol.rpc.TapDetectionSettings
+import solarxr_protocol.rpc.TimeoutSettings
 import solarxr_protocol.rpc.VMCOSCSettings
 import solarxr_protocol.rpc.VRCOSCSettings
 import solarxr_protocol.rpc.settings.LegTweaksSettings
