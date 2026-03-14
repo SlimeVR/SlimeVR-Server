@@ -26,6 +26,7 @@ import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
+import { DropdownItem } from '@/components/commons/Dropdown';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
@@ -101,9 +102,9 @@ export type SettingsForm = {
     fullResetTaps: number;
     mountingResetTaps: number;
     numberTrackersOverThreshold: number;
-    yawResetTracker: string;
-    mountingResetTracker: string;
-    fullResetTracker: string;
+    yawResetTracker: BodyPart;
+    mountingResetTracker: BodyPart;
+    fullResetTracker: BodyPart;
   };
   legTweaks: {
     correctionStrength: number;
@@ -164,9 +165,9 @@ const defaultValues: SettingsForm = {
     fullResetTaps: 3,
     mountingResetTaps: 3,
     numberTrackersOverThreshold: 1,
-    yawResetTracker: 'Default',
-    mountingResetTracker: 'Default',
-    fullResetTracker: 'Default',
+    yawResetTracker: BodyPart.CHEST,
+    mountingResetTracker: BodyPart.RIGHT_UPPER_LEG,
+    fullResetTracker: BodyPart.LEFT_UPPER_LEG,
   },
   legTweaks: { correctionStrength: 0.3 },
   resetsSettings: defaultResetSettings,

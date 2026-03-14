@@ -3,7 +3,9 @@ package dev.slimevr.tracking.processor.skeleton
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerPosition
 import java.util.concurrent.CopyOnWriteArrayList
+import dev.slimevr.tracking.trackers.TrackerUtils
 
 class TapDetectionManager(
 	val server: VRServer,
@@ -85,44 +87,30 @@ class TapDetectionManager(
 		}
 	}
 
+	lateinit var vrServer: VRServer
+
 	private val mountingResetTracker: Tracker?
 		get() {
-			return arrayOf(
-				if (config.mountingResetTracker === "Default") {
-				skeleton.rightUpperLegTracker,
-				skeleton.rightLowerLegTracker,
-				} else {
-					config.mountingResetTracker
-				}
-			).firstNotNullOfOrNull { it }
+			if (::vrServer.isInitialized) {
+				return TrackerUtils.getTrackerForSkeleton(vrServer.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.mountingResetTracker } ?: return null)
+			}
+			return null
 		}
 
 	private val fullResetTracker: Tracker?
 		get() {
-			return arrayOf(
-				if (config.mountingResetTracker === "Default") {
-
-					skeleton.leftUpperLegTracker,
-					skeleton.leftLowerLegTracker,
-				} else if (config.mountingResetTracker === "hup"){
-					skeleton.hipTracker
-				}
-
-			).firstNotNullOfOrNull { it }
+			if (::vrServer.isInitialized) {
+				return TrackerUtils.getTrackerForSkeleton(vrServer.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.fullResetTracker } ?: return null)
+			}
+			return null
 		}
 
 	private val yawResetTracker: Tracker?
 		get() {
-			return arrayOf(
-				if (config.yawResetTracker === "Default") {
-					skeleton.upperChestTracker,
-					skeleton.chestTracker,
-					skeleton.hipTracker,
-					skeleton.waistTracker,
-				} else {
-					TrackerUtils.getTrackerForSkeleton(vrServer.allTrackers, config.yawResetTracker)
-				}
-			).firstNotNullOfOrNull { it }
+			if (::vrServer.isInitialized) {
+				return TrackerUtils.getTrackerForSkeleton(vrServer.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.yawResetTracker } ?: return null)
+			}
+			return null
 		}
 
 	companion object {
