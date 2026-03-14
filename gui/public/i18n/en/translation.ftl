@@ -583,7 +583,7 @@ settings-general-tracker_mechanics-trackers_over_usb-description =
     Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
 settings-general-tracker_mechanics-timeout_duration = Timeout duration
-settings-general-tracker_mechanics-timeout_duration-description = How long in seconds should the tracker be considered timed out, instead of disconnected.
+settings-general-tracker_mechanics-timeout_duration-description = How long until a tracker is marked as 'disconnected' when the connection is lost.
 
 settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
