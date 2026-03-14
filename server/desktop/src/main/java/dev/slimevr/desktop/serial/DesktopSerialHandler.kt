@@ -104,10 +104,7 @@ class DesktopSerialHandler :
 		}
 		if (isConnected) {
 			if (SerialPortWrapper(newPort) != currentPort?.let { SerialPortWrapper(it) }) {
-				LogManager.info(
-					"[SerialHandler] Closing current serial port " +
-						currentPort!!.descriptivePortName,
-				)
+				LogManager.info("[SerialHandler] Closing current serial port ${currentPort!!.descriptivePortName}")
 				currentPort!!.removeDataListener()
 				currentPort!!.closePort()
 			} else {
@@ -117,18 +114,13 @@ class DesktopSerialHandler :
 			}
 		}
 		currentPort = newPort
-		LogManager.info(
-			"[SerialHandler] Trying to connect to new serial port " +
-				currentPort!!.descriptivePortName,
-		)
-		currentPort?.setBaudRate(115200)
+		LogManager.info("[SerialHandler] Trying to connect to new serial port ${currentPort!!.descriptivePortName}")
+		currentPort?.baudRate = 115200
 		currentPort?.clearRTS()
 		currentPort?.clearDTR()
 		if (currentPort?.openPort(1000) == false) {
-			LogManager.warning(
-				"[SerialHandler] Can't open serial port ${currentPort?.descriptivePortName}, last error: ${currentPort?.lastErrorCode}",
-
-			)
+			LogManager
+				.warning("[SerialHandler] Can't open serial port ${currentPort?.descriptivePortName}, last error: ${currentPort?.lastErrorCode}")
 			currentPort = null
 			return false
 		}
