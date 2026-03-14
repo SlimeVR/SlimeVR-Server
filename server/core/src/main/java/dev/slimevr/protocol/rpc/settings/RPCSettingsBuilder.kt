@@ -7,6 +7,7 @@ import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.FiltersConfig
 import dev.slimevr.config.HIDConfig
+import dev.slimevr.config.TimeoutConfig
 import dev.slimevr.config.LegTweaksConfig
 import dev.slimevr.config.OSCConfig
 import dev.slimevr.config.ResetsConfig
@@ -24,6 +25,7 @@ import solarxr_protocol.rpc.AutoBoneSettings
 import solarxr_protocol.rpc.DriftCompensationSettings
 import solarxr_protocol.rpc.FilteringSettings
 import solarxr_protocol.rpc.HIDSettings
+import solarxr_protocol.rpc.TimeoutSettings
 import solarxr_protocol.rpc.OSCRouterSettings
 import solarxr_protocol.rpc.OSCSettings
 import solarxr_protocol.rpc.OSCTrackersSetting
@@ -421,6 +423,10 @@ fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
 				server.configManager.vrConfig.stayAlignedConfig,
 			),
 			createHIDSettings(fbb, server.configManager.vrConfig.hidConfig),
+			createTimeoutSettings(
+				fbb,
+				server.configManager.vrConfig.timeout,
+			),
 		)
 }
 
@@ -455,4 +461,13 @@ fun createHIDSettings(
 	.createHIDSettings(
 		fbb,
 		config.trackersOverHID,
+	)
+
+fun createTimeoutSettings(
+	fbb: FlatBufferBuilder,
+	timeoutConfig: TimeoutConfig,
+): Int = TimeoutSettings
+	.createTimeoutSettings(
+		fbb,
+		timeoutConfig.duration,
 	)

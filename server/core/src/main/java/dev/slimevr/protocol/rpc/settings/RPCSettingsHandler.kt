@@ -360,6 +360,14 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			config.trackersOverHID = requestConfig.trackersOverHid()
 		}
 
+		if (req.timeout() != null) {
+			val timeoutConfig = api.server.configManager
+				.vrConfig
+				.timeout
+			timeoutConfig.duration = req.timeout().duration()
+			timeoutConfig.updateTimeoutDuration()
+		}
+
 		api.server.configManager.saveConfig()
 	}
 
@@ -376,7 +384,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)

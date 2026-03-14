@@ -35,6 +35,7 @@ export const InputInside = forwardRef<
     value,
     error,
     variant = 'primary',
+    ...props
   },
   ref
 ) {
@@ -98,6 +99,7 @@ export const InputInside = forwardRef<
           value={computedValue} // Do we want that behaviour ?
           disabled={disabled}
           ref={ref}
+          {...props}
         />
         {type === 'password' && (
           <div
@@ -127,6 +129,7 @@ export const Input = ({
   disabled,
   variant = 'primary',
   rules,
+  ...props
 }: {
   rules?: UseControllerProps<any>['rules'];
   control: Control<any>;
@@ -154,6 +157,7 @@ export const Input = ({
           onChange={onChange}
           ref={ref}
           name={name}
+          {...props}
         />
       )}
     />
