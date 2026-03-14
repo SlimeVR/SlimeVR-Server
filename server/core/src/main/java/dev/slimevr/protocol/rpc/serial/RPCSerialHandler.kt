@@ -43,7 +43,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		)
 	}
 
-	override fun onSerialLog(str: String, server: Boolean) {
+	override fun onSerialLog(str: String, fromServer: Boolean) {
 		val fbb = FlatBufferBuilder(32)
 
 		val logOffset = fbb.createString(str)

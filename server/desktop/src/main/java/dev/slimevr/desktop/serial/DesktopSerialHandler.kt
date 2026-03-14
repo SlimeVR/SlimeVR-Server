@@ -208,9 +208,9 @@ class DesktopSerialHandler :
 		}
 	}
 
-	fun addLog(str: String, server: Boolean = true) {
+	fun addLog(str: String, fromServer: Boolean = true) {
 		LogManager.info("[Serial] $str")
-		listeners.forEach { it.onSerialLog(str, server) }
+		listeners.forEach { it.onSerialLog(str, fromServer) }
 	}
 
 	override fun getListeningEvents(): Int = (
