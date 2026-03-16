@@ -1,0 +1,263 @@
+name: SlimeVR Full Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  setup-matrix:
+    name: Configure Build Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        shell: bash
+        run: |
+          BASE='[{"os":"ubuntu-22.04","platform":"linux"},{"os":"windows-latest","platform":"windows"},{"os":"macos-latest","platform":"macos"}]'
+          EXTRA='[{"os":"ubuntu-22.04-arm","platform":"linux"},{"os":"windows-11-arm","platform":"windows"}]'
+
+          if [[ "${{ github.ref }}" == refs/tags/v* || "${{ github.ref }}" == refs/heads/main || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            RESULT=$(echo "$BASE $EXTRA" | jq -c -s 'add')
+          else
+            RESULT=$(echo "$BASE" | jq -c '.')
+          fi
+          echo "matrix={\"include\":$RESULT}" >> "$GITHUB_OUTPUT"
+  gui-checks:
+    name: Gui Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+      - name: GUI Lint
+        run: pnpm i && cd gui && pnpm run lint
+
+  java-checks:
+    name: Java Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - name: Java Spotless Check
+        run: ./gradlew spotlessCheck --build-cache
+
+
+  build-server-jar:
+    name: Build Desktop Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - name: Build ShadowJar
+        run: ./gradlew :server:desktop:shadowJar --build-cache
+      - name: Test with Gradle
+        run: ./gradlew :server:desktop:test
+      - name: Upload Server Jar
+        uses: actions/upload-artifact@v6
+        with:
+          name: server-jar
+          path: |
+              server/desktop/build/libs/slimevr.jar
+              server/core/resources
+
+  build-gui-frontend:
+    name: Build GUI Assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+      - name: Build JS
+        env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: pnpm i && cd gui && pnpm run build
+      - name: Tar GUI Dist
+        run: tar -czf slimevr-gui-dist.tar.gz -C gui/out .
+      - name: Upload GUI Dist
+        uses: actions/upload-artifact@v6
+        with:
+          name: gui-dist
+          path: slimevr-gui-dist.tar.gz
+
+  package-desktop:
+    name: Package Desktop (${{ matrix.platform }} - ${{ matrix.os }})
+    needs: [setup-matrix, build-server-jar, build-gui-frontend]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+      - name: Download Server Jar
+        uses: actions/download-artifact@v6
+        with:
+          name: server-jar
+          path: server
+      - name: Download GUI Dist
+        uses: actions/download-artifact@v6
+        with:
+          name: gui-dist
+      - name: Extract GUI for Electron
+        shell: bash
+        run: mkdir -p gui/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/out
+      - name: Run Electron Builder
+        shell: bash
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          mkdir -p gui/dist/artifacts/linux/ \
+                   gui/dist/artifacts/win \
+                   gui/dist/artifacts/mac
+          cd gui
+          pnpm i
+          pnpm exec electron-builder --${{ matrix.platform }} \
+            ${{ matrix.platform == 'macos' && '--universal' || '' }} \
+            --publish never
+      - name: Collect and Rename Artifacts
+        shell: bash
+        run: |
+          SRC_DIR="${{ github.workspace }}/gui/dist/artifacts"
+          DEST_DIR="${{ github.workspace }}/release-out"
+          mkdir -p "$DEST_DIR"
+
+          if [ "${{ matrix.platform }}" == "windows" ]; then
+            [[ "${{ matrix.os }}" == *"arm"* ]] && SUFFIX="win-aarch64" || SUFFIX="win64"
+            cp "$SRC_DIR"/win/*.zip "$DEST_DIR/SlimeVR-$SUFFIX.zip"
+
+          elif [ "${{ matrix.platform }}" == "linux" ]; then
+            for f in "$SRC_DIR"/linux/*; do
+              [ -d "$f" ] && continue
+              BASE=$(basename "$f")
+              NEW_NAME=$(echo "$BASE" | sed -e 's/x86_64/amd64/g' -e 's/arm64/aarch64/g')
+              cp "$f" "$DEST_DIR/$NEW_NAME"
+            done
+
+          elif [ "${{ matrix.platform }}" == "macos" ]; then
+            cp "$SRC_DIR"/mac/*.dmg "$DEST_DIR/SlimeVR-mac.dmg"
+          fi
+
+          echo "Collected files:"
+          ls -lh "$DEST_DIR"
+      - name: Upload For Release
+        uses: actions/upload-artifact@v6
+        with:
+          name: release-${{ matrix.platform }}-${{ matrix.os }}
+          path: release-out/*
+
+  bundle-android:
+    name: Build Android APK
+    needs: [build-gui-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+      - name: Download GUI Dist
+        uses: actions/download-artifact@v6
+        with:
+          name: gui-dist
+      - name: Extract GUI for Android
+        run: mkdir -p gui/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/out
+      - name: Build APK
+        run: ./gradlew :server:android:build --build-cache
+        env:
+          ANDROID_STORE_FILE: ${{ secrets.ANDROID_STORE_FILE }}
+          ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_STORE_PASSWD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_KEY_PASSWD }}
+      - name: Test with Gradle
+        run: ./gradlew test
+      - name: Prepare APK
+        run: cp server/android/build/outputs/apk/release/*.apk ./SlimeVR-android.apk
+      - name: Upload APK
+        uses: actions/upload-artifact@v6
+        with:
+          name: release-android
+          path: SlimeVR-android.apk
+
+  create-release:
+    name: Finalize Release Draft
+    needs: [package-desktop, bundle-android, build-server-jar, build-gui-frontend]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download All Release Artifacts
+        uses: actions/download-artifact@v6
+        with:
+          pattern: release-*
+          path: release-out
+          merge-multiple: true
+      - name: Download Server Jar
+        uses: actions/download-artifact@v6
+        with:
+          name: server-jar
+          path: server
+      - name: Download GUI Dist
+        uses: actions/download-artifact@v6
+        with:
+          name: gui-dist
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            release-out/*
+            server/desktop/build/libs/slimevr.jar
+            slimevr-gui-dist.tar.gz

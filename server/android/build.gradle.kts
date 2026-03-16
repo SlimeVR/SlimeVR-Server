@@ -16,7 +16,7 @@ plugins {
 	kotlin("plugin.serialization")
 	id("com.github.gmazzo.buildconfig")
 
-	id("com.android.application") version "8.13.1"
+	id("com.android.application") version "8.13.2"
 	id("org.ajoberstar.grgit")
 }
 
@@ -34,7 +34,7 @@ java {
 val copyGuiAssets = tasks.register<Copy>("copyGuiAssets") {
 	val target = layout.projectDirectory.dir("src/main/assets/web-gui")
 	delete(target)
-	from(rootProject.layout.projectDirectory.dir("gui/dist"))
+	from(rootProject.layout.projectDirectory.dir("gui/out/renderer"))
 	into(target)
 	if (inputs.sourceFiles.isEmpty) {
 		throw GradleException("You need to run \"pnpm run build\" on the gui folder first!")
@@ -106,8 +106,8 @@ repositories {
 dependencies {
 	implementation(project(":server:core"))
 
-	implementation("commons-cli:commons-cli:1.8.0")
-	implementation("org.apache.commons:commons-lang3:3.15.0")
+	implementation("commons-cli:commons-cli:1.11.0")
+	implementation("org.apache.commons:commons-lang3:3.20.0")
 
 	// Android stuff
 	implementation("androidx.appcompat:appcompat:1.7.1")
@@ -219,9 +219,5 @@ android {
 	compileOptions {
 		sourceCompatibility = JavaVersion.VERSION_17
 		targetCompatibility = JavaVersion.VERSION_17
-	}
-
-	kotlinOptions {
-		jvmTarget = "17"
 	}
 }
