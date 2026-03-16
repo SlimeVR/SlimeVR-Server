@@ -54,7 +54,7 @@ fun main(args: Array<String>) {
 	val parser: CommandLineParser = DefaultParser()
 	val formatter = HelpFormatter()
 	val options = Options()
-	val isLinux = System.getProperty("os.name").lowercase().contains("linux")
+	val isLinux = OperatingSystem.currentPlatform == OperatingSystem.LINUX
 	options.addOption("h", "help", false, "Show help")
 	options.addOption("V", "version", false, "Show version")
 	options.addOption("i", "install", true, "Run the driver install")

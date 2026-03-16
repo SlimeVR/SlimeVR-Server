@@ -386,8 +386,8 @@ const spawnServer = async () => {
   logger.info({ javaBin, serverJar }, 'Found Java and server jar');
   const serverArgs = ['-Xmx128M', '-jar', serverJar]
 
-  if (options.steam) serverArgs.push(`--steam=${options.steam}`)
-  if (options.install) serverArgs.push(`--install=${options.install}`)
+  if (options.steam) serverArgs.push(`--steam`)
+  if (options.install) serverArgs.push(`--install`)
   if (options.noUdev) serverArgs.push(`--no-udev`)
 
   serverArgs.push('run')
