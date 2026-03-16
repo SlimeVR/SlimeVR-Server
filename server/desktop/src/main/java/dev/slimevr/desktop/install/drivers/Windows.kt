@@ -42,6 +42,7 @@ class Windows {
 			return
 		}
 		if (vrPathRegContents.contains("slimevr")) {
+			LogManager.info("SteamVR driver is already installed")
 			return
 		}
 

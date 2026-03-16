@@ -20,13 +20,14 @@ class Linux {
 			return
 		}
 		if (vrPathRegContents.contains("slimevr")) {
+			LogManager.info("SteamVR driver is already installed")
 			return
 		}
 
 		executeShellCommand(pathRegPath, "adddriver", "$path/$LINUX_STEAM_DRIVER_DIRECTORY")
 
 		if (executeShellCommand(pathRegPath)?.contains("slimevr") != true) {
-			LogManager.warning("Failed to install SlimeVR driver")
+			LogManager.warning("Failed to install SteamVR driver")
 			return
 		}
 		LogManager.info("SteamVR driver successfully installed")
@@ -36,17 +37,15 @@ class Linux {
 		executeShellCommand("chmod", "+x", "$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App")
 
 		val command = if (featureFlags.steam) {
-			arrayOf("steam-runtime-launch-client", "--alongside-steam", "--", "udevadm", "cat")
+			arrayOf("steam-runtime-launch-client", "--alongside-steam", "--", "$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App", "--install")
 		} else {
-			arrayOf("udevadm", "cat")
+			arrayOf("$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App", "--install")
 		}
-		val udevResponse = executeShellCommand(*command)
-		val feederOutput = executeShellCommand("$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App", "--install")
+		val feederOutput = executeShellCommand(*command)
 		if (feederOutput == null) {
 			LogManager.warning("Error installing feeder")
 			return
 		}
-		LogManager.info(feederOutput)
 		if (feederOutput.lowercase().contains("manifest is not installed")) {
 			LogManager.warning("Could not install feeder application")
 		} else {

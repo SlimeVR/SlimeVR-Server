@@ -39,18 +39,16 @@ enum class OperatingSystem(
 				if (dir != null) return dir
 				if (currentPlatform == LINUX) {
 					val isPressureVessel = System.getenv("PRESSURE_VESSEL_RUNTIME")?.isNotEmpty()
-					val dir = if (isPressureVessel == true) {
-						val user = System.getenv("USER")
-						"/home/$user/.local/share/dev.slimevr.SlimeVR"
+					if (isPressureVessel == true) {
+						System.getenv("HOME")?.let { Path(it, ".local", "share", "dev.slimevr.SlimeVR") }
 					} else {
 						val runtimeDir = System.getenv("XDG_RUNTIME_DIR")
-						if (!runtimeDir.isNullOrBlank()) {
+						return if (!runtimeDir.isNullOrBlank()) {
 							runtimeDir
 						} else {
 							System.getProperty("java.io.tmpdir")
 						}
 					}
-					return dir
 				}
 				return System.getProperty("java.io.tmpdir")
 			}

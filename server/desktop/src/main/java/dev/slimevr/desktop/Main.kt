@@ -84,7 +84,6 @@ fun main(args: Array<String>) {
 	}
 	if (cmd.hasOption("steam")) {
 		featureFlags.steam = true
-		featureFlags.steamArgs = cmd.getOptionValue("steam")
 	}
 	featureFlags.skipCheckUdev = !isLinux || cmd.hasOption("no-udev")
 
