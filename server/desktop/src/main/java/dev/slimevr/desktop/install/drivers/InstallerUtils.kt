@@ -11,6 +11,6 @@ fun executeShellCommand(vararg command: String): String? = try {
 		process.waitFor()
 	}
 } catch (e: IOException) {
-	LogManager.warning("Error executing shell command: ${e.message}")
+	LogManager.warning("Error executing shell command", e)
 	null
 }

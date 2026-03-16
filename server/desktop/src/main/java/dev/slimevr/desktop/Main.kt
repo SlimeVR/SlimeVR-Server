@@ -244,7 +244,6 @@ fun provideBridges(
 				)
 				yield(linuxBridge)
 			}
-			LogManager.info("Socket Dir ${OperatingSystem.socketDirectory}")
 			yield(
 				UnixSocketBridge(
 					server,

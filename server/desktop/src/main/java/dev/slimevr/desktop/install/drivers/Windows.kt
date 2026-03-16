@@ -30,41 +30,28 @@ class Windows {
 		val regEdit = RegEditWindows()
 		val regQuery = regEdit.getKeyByPath(WinReg.HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820")
 		val steamVRLocation = regQuery["InstallLocation"]
-		if (steamVRLocation == null) {
-			LogManager.warning("Error installing SteamVR driver.")
+		if (steamVRLocation == null || !steamVRLocation.contains("SteamVR")) {
+			LogManager.warning("Can't find SteamVR, unable to install SteamVR driver")
 			return
 		}
-		if (!steamVRLocation.contains("SteamVR")) {
-			LogManager.warning("SteamVR not installed, cannot install SlimeVR Steam driver.")
-			return
-		}
-		var vrPathRegContents = executeShellCommand("${steamVRLocation}\\bin\\win64\\vrpathreg.exe", "finddriver", "slimevr")
+
+		val pathRegPath = "${steamVRLocation}\\bin\\win64\\vrpathreg.exe"
+		val vrPathRegContents = executeShellCommand(pathRegPath, "finddriver", "slimevr")
 		if (vrPathRegContents == null) {
-			LogManager.warning("Error installing SteamVR driver.")
+			LogManager.warning("Error installing SteamVR driver")
 			return
 		}
-		var isDriverRegistered = vrPathRegContents.contains("slimevr")
-		if (isDriverRegistered) {
-			LogManager.info("steamVR driver is already registered. Skipping...")
+		if (vrPathRegContents.contains("slimevr")) {
 			return
 		}
-		LogManager.info("Installing SteamVR Driver")
-		executeShellCommand(
-			"${steamVRLocation}\\bin\\win64\\vrpathreg.exe",
-			"adddriver",
-			"${path}\\${WINDOWS_STEAMVR_DRIVER_DIRECTORY}",
-		)
-		vrPathRegContents = executeShellCommand("${steamVRLocation}\\bin\\win64\\vrpathreg.exe", "finddriver", "slimevr")
-		if (vrPathRegContents == null) {
-			LogManager.warning("Error installing SteamVR driver.")
+
+		executeShellCommand(pathRegPath, "adddriver", "${path}\\${WINDOWS_STEAMVR_DRIVER_DIRECTORY}")
+
+		if (executeShellCommand(pathRegPath, "finddriver", "slimevr")?.contains("slimevr") != true) {
+			LogManager.warning("Failed to install SlimeVR driver")
 			return
 		}
-		isDriverRegistered = vrPathRegContents.contains("slimevr")
-		if (!isDriverRegistered) {
-			LogManager.warning("Server couldn't install SlimeVR driver.")
-			return
-		}
-		LogManager.info("SteamVR driver successfully installed.")
+		LogManager.info("SteamVR driver successfully installed")
 	}
 
 	companion object {

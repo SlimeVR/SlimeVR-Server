@@ -84,7 +84,7 @@ class RegEditWindows : AbstractRegEdit() {
 				keysMap[it.key.replace("""_h\d+$""".toRegex(), "")] = it.value.toString()
 			}
 		} catch (e: Exception) {
-			LogManager.severe("[RegEdit] Error reading Values from registry: ${e.message}")
+			LogManager.severe("[RegEdit] Error reading values from registry", e)
 		}
 		return keysMap
 	}
