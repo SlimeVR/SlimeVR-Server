@@ -35,10 +35,21 @@ enum class OperatingSystem(
 
 		val socketDirectory: String
 			get() {
-				var dir = System.getenv("SLIMEVR_SOCKET_DIR")
+				val dir = System.getenv("SLIMEVR_SOCKET_DIR")
 				if (dir != null) return dir
 				if (currentPlatform == LINUX) {
-					dir = "/tmp/"
+					val isPressureVessel = System.getenv("PRESSURE_VESSEL_RUNTIME")?.isNotEmpty()
+					val dir = if (isPressureVessel == true) {
+						val user = System.getenv("USER")
+						"/home/$user/.local/share/dev.slimevr.SlimeVR"
+					} else {
+						val runtimeDir = System.getenv("XDG_RUNTIME_DIR")
+						if (!runtimeDir.isNullOrBlank()) {
+							runtimeDir
+						} else {
+							System.getProperty("java.io.tmpdir")
+						}
+					}
 					return dir
 				}
 				return System.getProperty("java.io.tmpdir")
