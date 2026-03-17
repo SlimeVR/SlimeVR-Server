@@ -20,6 +20,7 @@ import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
   findServerJar,
   findSystemJRE,
+  getExeFolder,
   getGuiDataFolder,
   getLogsFolder,
   getServerDataFolder,
@@ -177,6 +178,8 @@ handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
       return getGuiDataFolder();
     case 'logs':
       return getLogsFolder();
+    case 'exe':
+      return getExeFolder();
   }
 });
 
@@ -385,8 +388,17 @@ const spawnServer = async () => {
   }
 
   logger.info({ javaBin, serverJar }, 'Found Java and server jar');
+  const serverArgs = ['-Xmx128M', '-jar', serverJar]
 
-  const process = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run']);
+  if (options.steam) serverArgs.push(`--steam`)
+  if (options.install) serverArgs.push(`--install`)
+  if (options.noUdev) serverArgs.push(`--no-udev`)
+
+  serverArgs.push('run')
+
+  const process = spawn(javaBin, serverArgs)
+
+  logger.info(`Java start command: ${serverArgs.join(' ')})`)
 
   process.stdout?.on('data', (message) => {
     mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
