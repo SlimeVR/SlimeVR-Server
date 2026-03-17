@@ -13,7 +13,7 @@
       perSystem = { pkgs, ... }:
         let
           runtimeLibs = pkgs: (with pkgs; [
-            jdk17
+            jdk22
 
             alsa-lib at-spi2-atk at-spi2-core cairo cups dbus expat
             gdk-pixbuf glib gtk3 libdrm libgbm libglvnd libnotify
@@ -33,8 +33,8 @@
             name = "slimevr-env";
             targetPkgs = runtimeLibs;
             profile = ''
-              export JAVA_HOME=${pkgs.jdk17}
-              export PATH="${pkgs.jdk17}/bin:$PATH"
+              export JAVA_HOME=${pkgs.jdk22}
+              export PATH="${pkgs.jdk22}/bin:$PATH"
 
               # Tell electron-builder to use system tools instead of downloading them
               export USE_SYSTEM_FPM=true

@@ -14,20 +14,19 @@ plugins {
 	`java-library`
 }
 
-// FIXME: Please replace these to Java 11 as that's what they actually are
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(22))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(22))
 	}
 }
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_17)
+		jvmTarget.set(JvmTarget.JVM_22)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
@@ -60,17 +59,7 @@ allprojects {
 dependencies {
 	implementation(project(":solarxr-protocol"))
 
-	// This dependency is used internally,
-	// and not exposed to consumers on their own compile classpath.
 	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
-	implementation("commons-cli:commons-cli:1.11.0")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.21.0")
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.0")
-
-	implementation("com.github.jonpeterson:jackson-module-model-versioning:1.2.2")
-	implementation("org.apache.commons:commons-math3:3.6.1")
-	implementation("org.apache.commons:commons-lang3:3.20.0")
-	implementation("org.apache.commons:commons-collections4:4.5.0")
 
 	implementation("com.illposed.osc:javaosc-core:0.9")
 	implementation("org.java-websocket:Java-WebSocket:1.+")

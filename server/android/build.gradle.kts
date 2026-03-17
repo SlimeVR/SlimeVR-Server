@@ -22,12 +22,12 @@ plugins {
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(22))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(22))
 	}
 }
 
@@ -83,7 +83,7 @@ val deleteTempKeyStore = tasks.register<Delete>("deleteTempKeyStore") {
 
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_17)
+		jvmTarget.set(JvmTarget.JVM_22)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
@@ -217,7 +217,7 @@ android {
 	}
 
 	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_17
-		targetCompatibility = JavaVersion.VERSION_17
+		sourceCompatibility = JavaVersion.VERSION_22
+		targetCompatibility = JavaVersion.VERSION_22
 	}
 }
