@@ -16,17 +16,17 @@ plugins {
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(22))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(22))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_22)
+		jvmTarget.set(JvmTarget.JVM_24)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
@@ -67,6 +67,8 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 	implementation("com.mayakapps.kache:kache:2.1.1")
+	implementation("io.ktor:ktor-network:3.0.0")
+	implementation("io.ktor:ktor-utils:3.0.3")
 
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")
 

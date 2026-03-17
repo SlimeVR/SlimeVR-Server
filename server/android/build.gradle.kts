@@ -22,12 +22,12 @@ plugins {
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(22))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(22))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 
@@ -217,7 +217,7 @@ android {
 	}
 
 	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_22
-		targetCompatibility = JavaVersion.VERSION_22
+		sourceCompatibility = JavaVersion.VERSION_24
+		targetCompatibility = JavaVersion.VERSION_24
 	}
 }

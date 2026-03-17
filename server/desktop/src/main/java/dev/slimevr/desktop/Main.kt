@@ -2,6 +2,14 @@
 
 package dev.slimevr.desktop
 
-fun main(args: Array<String>) {
-	println("Hello world!")
+import dev.slimevr.config.createConfig
+import dev.slimevr.createVRServer
+import dev.slimevr.tracker.udp.createUDPTrackerServer
+import kotlinx.coroutines.runBlocking
+
+fun main(args: Array<String>) = runBlocking {
+	val config = createConfig(this)
+	val server = createVRServer(this)
+
+	val udpServer = createUDPTrackerServer(server, config)
 }

@@ -42,6 +42,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 				",dev.slimevr.tracking.trackers.*,dev.slimevr.desktop.platform.ProtobufMessages.*" +
 				",solarxr_protocol.rpc.*,kotlinx.coroutines.*,com.illposed.osc.*,android.app.*",
 			"ij_kotlin_allow_trailing_comma" to true,
+			"ktlint_standard_filename" to "disabled",
 		)
 	val ktlintVersion = "1.8.0"
 	kotlinGradle {

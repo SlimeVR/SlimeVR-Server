@@ -18,17 +18,17 @@ plugins {
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(22))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(22))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_22)
+		jvmTarget.set(JvmTarget.JVM_24)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
@@ -60,6 +60,7 @@ dependencies {
 
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 	implementation("com.fazecast:jSerialComm:2.11.3") {
 		exclude(group = "com.fazecast", module = "android")
 	}
