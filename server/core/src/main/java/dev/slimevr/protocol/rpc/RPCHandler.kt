@@ -27,6 +27,9 @@ import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByBodyPart
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
+import dev.slimevr.tracking.videocalibration.VideoCalibrationService
+import dev.slimevr.tracking.videocalibration.networking.MDNSRegistry
+import dev.slimevr.tracking.videocalibration.networking.WebRTCManager
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.*
@@ -34,9 +37,11 @@ import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.TransactionId
 import solarxr_protocol.rpc.*
 import kotlin.io.path.Path
+import kotlin.time.Duration.Companion.seconds
 
 class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeader>() {
 	private val mainScope = CoroutineScope(SupervisorJob())
+	private val ioScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
 	init {
 		RPCResetHandler(this, api)
@@ -148,6 +153,21 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		registerPacketListener(
 			RpcMessage.ResetStayAlignedRelaxedPoseRequest,
 			::onResetStayAlignedRelaxedPoseRequest,
+		)
+
+		registerPacketListener(
+			RpcMessage.ConnectToWebRTCRequest,
+			::onConnectToWebRTCRequest,
+		)
+
+		registerPacketListener(
+			RpcMessage.StartVideoTrackerCalibrationRequest,
+			::onStartVideoTrackerCalibrationRequest,
+		)
+
+		registerPacketListener(
+			RpcMessage.CancelVideoTrackerCalibrationRequest,
+			::onCancelVideoTrackerCalibrationRequest,
 		)
 	}
 
@@ -603,6 +623,115 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		LogManager.info("[resetStayAlignedRelaxedPose] pose=$pose")
 
 		sendSettingsChangedResponse(conn, messageHeader)
+	}
+
+	private fun onConnectToWebRTCRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val request =
+			messageHeader.message(ConnectToWebRTCRequest()) as? ConnectToWebRTCRequest
+				?: error("Unexpected request")
+
+		LogManager.info("Received ConnectToWebRTCRequest...")
+
+		val provider =
+			when (request.provider()) {
+				WebRTCVideoProvider.VIDEO_CALIBRATION -> WebRTCManager.VideoProvider.VIDEO_CALIBRATION
+
+				else -> {
+					LogManager.warning("ConnectToWebRTC is missing or has unknown WebRTC video provider: ${request.provider()}")
+					return
+				}
+			}
+
+		val offerSDP = request.offerSdp()
+		if (offerSDP.isNullOrEmpty()) {
+			LogManager.warning("ConnectToWebRTC request is missing offer SDP")
+		}
+
+		// TODO: Is GenericConnection thread safe?
+		ioScope.launch {
+			val answerSDP: String
+			try {
+				answerSDP = api.server.webRTCManager.connect(provider, offerSDP)
+			} catch (e: Exception) {
+				LogManager.warning("Failed to create WebRTC answer for client ${conn.connectionId}: $e", e)
+				sendConnectToWebRTCResponse(conn, e, messageHeader)
+				return@launch
+			}
+			LogManager.info("Sending WebRTC answer to client ${conn.connectionId}...")
+			sendConnectToWebRTCResponse(conn, answerSDP, messageHeader)
+		}
+	}
+
+	private fun sendConnectToWebRTCResponse(conn: GenericConnection, answerSDP: String, respondTo: RpcMessageHeader) {
+		val fbb = FlatBufferBuilder(512)
+		val answerSDPOffset = fbb.createString(answerSDP)
+		val responseOffset = ConnectToWebRTCResponse.createConnectToWebRTCResponse(fbb, answerSDPOffset, 0)
+		val messageOffset = createRPCMessage(fbb, RpcMessage.ConnectToWebRTCResponse, responseOffset, respondTo)
+		fbb.finish(messageOffset)
+		conn.send(fbb.dataBuffer())
+	}
+
+	private fun sendConnectToWebRTCResponse(conn: GenericConnection, error: Exception, respondTo: RpcMessageHeader) {
+		val fbb = FlatBufferBuilder(512)
+		val errorOffset = fbb.createString(error.message)
+		val responseOffset = ConnectToWebRTCResponse.createConnectToWebRTCResponse(fbb, 0, errorOffset)
+		val messageOffset = createRPCMessage(fbb, RpcMessage.ConnectToWebRTCResponse, responseOffset, respondTo)
+		fbb.finish(messageOffset)
+		conn.send(fbb.dataBuffer())
+	}
+
+	private fun onStartVideoTrackerCalibrationRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		LogManager.info("Received video calibration request...")
+
+		val webcamService = api.server.mdnsRegistry.findService(MDNSRegistry.ServiceType.WEBCAM)
+		if (webcamService == null) {
+			LogManager.warning("Webcam service is not available")
+			val fbb = FlatBufferBuilder(512)
+			val errorOffset = fbb.createString("Webcam service is not available")
+			val progressOffset =
+				VideoTrackerCalibrationProgressResponse.createVideoTrackerCalibrationProgressResponse(
+					fbb,
+					VideoTrackerCalibrationStatus.DONE,
+					0,
+					0,
+					0,
+					errorOffset,
+				)
+			val messageOffset = createRPCMessage(fbb, RpcMessage.VideoTrackerCalibrationProgressResponse, progressOffset)
+			fbb.finish(messageOffset)
+			conn.send(fbb.dataBuffer())
+			return
+		}
+
+		// TODO: Is this being run on the server thread?
+		val videoCalibrator: VideoCalibrationService
+		try {
+			videoCalibrator = VideoCalibrationService(api.server, webcamService, conn)
+		} catch (e: Exception) {
+			LogManager.warning("Failed to create video calibration service", e)
+			val fbb = FlatBufferBuilder(512)
+			val errorOffset = fbb.createString("Failed to create video calibration service: $e")
+			val progressOffset =
+				VideoTrackerCalibrationProgressResponse.createVideoTrackerCalibrationProgressResponse(
+					fbb,
+					VideoTrackerCalibrationStatus.DONE,
+					0,
+					0,
+					0,
+					errorOffset,
+				)
+			val messageOffset = createRPCMessage(fbb, RpcMessage.VideoTrackerCalibrationProgressResponse, progressOffset)
+			fbb.finish(messageOffset)
+			conn.send(fbb.dataBuffer())
+			return
+		}
+
+		videoCalibrator.start(120.seconds)
+	}
+
+	private fun onCancelVideoTrackerCalibrationRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		// TODO: Is this being run on the server thread?
+		api.server.videoCalibrationService?.requestStop()
 	}
 
 	fun sendSettingsChangedResponse(conn: GenericConnection, messageHeader: RpcMessageHeader?) {

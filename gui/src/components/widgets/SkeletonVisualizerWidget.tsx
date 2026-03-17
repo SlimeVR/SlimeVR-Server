@@ -50,13 +50,24 @@ export type SkeletonPreviewView = {
   camera: PerspectiveCamera;
   controls: OrbitControls;
   hidden: boolean;
+  interactive: boolean;
+  manualProjectionMatrix: boolean;
   tween: Tween<Vector3>;
   onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
 };
 
 function initializePreview(
   canvas: HTMLCanvasElement,
-  skeleton: (BoneKind | Bone)[]
+  skeleton: (BoneKind | Bone)[],
+  {
+    showGrid = true,
+    stabilizeSkeleton = true,
+    anchorToHmdPosition = false,
+  }: {
+    showGrid?: boolean;
+    stabilizeSkeleton?: boolean;
+    anchorToHmdPosition?: boolean;
+  } = {}
 ) {
   let lastRenderTimeRef = 0;
   let frameInterval = 0;
@@ -72,9 +83,11 @@ function initializePreview(
   });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-  const grid = new GridHelper(10, 50, GROUND_COLOR, GROUND_COLOR);
-  grid.position.set(0, 0, 0);
-  scene.add(grid);
+  if (showGrid) {
+    const grid = new GridHelper(10, 50, GROUND_COLOR, GROUND_COLOR);
+    grid.position.set(0, 0, 0);
+    scene.add(grid);
+  }
 
   const skeletonGroup = new Group();
   let skeletonHelper = new BasedSkeletonHelper(skeleton[0]);
@@ -102,21 +115,25 @@ function initializePreview(
     skeletonGroup.add(skeletonHelper);
     scene.add(newSkeleton[0]);
 
-    const hmd = bones.get(BodyPart.HEAD);
-    const chest = bones.get(BodyPart.UPPER_CHEST);
-    // Check if HMD is identity, if it's then use upper chest's rotation
-    const quat = isIdentity(hmd?.rotationG)
-      ? QuaternionFromQuatT(chest?.rotationG).normalize().invert()
-      : QuaternionFromQuatT(hmd?.rotationG).normalize().invert();
+    if (stabilizeSkeleton) {
+      const hmd = bones.get(BodyPart.HEAD);
+      const chest = bones.get(BodyPart.UPPER_CHEST);
+      // Check if HMD is identity, if it's then use upper chest's rotation
+      const quat = isIdentity(hmd?.rotationG)
+        ? QuaternionFromQuatT(chest?.rotationG).normalize().invert()
+        : QuaternionFromQuatT(hmd?.rotationG).normalize().invert();
 
-    // Project quat to (0x, 1y, 0z)
-    const VEC_Y = new Vector3(0, 1, 0);
-    const vec = VEC_Y.multiplyScalar(
-      new Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
-    );
-    const yawReset = new Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
+      // Project quat to (0x, 1y, 0z)
+      const VEC_Y = new Vector3(0, 1, 0);
+      const vec = VEC_Y.multiplyScalar(
+        new Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
+      );
+      const yawReset = new Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
 
-    skeletonGroup.rotation.setFromQuaternion(yawReset);
+      skeletonGroup.rotation.setFromQuaternion(yawReset);
+    } else {
+      skeletonGroup.rotation.set(0, 0, 0);
+    }
   };
 
   const computeUserHeight = (bones: Map<BodyPart, BoneT>) => {
@@ -146,7 +163,9 @@ function initializePreview(
   const render = (delta: number) => {
     views.forEach((v) => {
       if (v.hidden || !renderer) return;
-      v.controls.update(delta);
+      if (v.interactive) {
+        v.controls.update(delta);
+      }
 
       const left = Math.floor(resolution.x * v.left);
       const bottom = Math.floor(resolution.y * v.bottom);
@@ -159,8 +178,10 @@ function initializePreview(
 
       v.tween.update();
 
-      v.camera.aspect = width / height;
-      v.camera.updateProjectionMatrix();
+      if (!v.manualProjectionMatrix) {
+        v.camera.aspect = width / height;
+        v.camera.updateProjectionMatrix();
+      }
 
       renderer.render(scene, v.camera);
     });
@@ -185,6 +206,7 @@ function initializePreview(
     const y = 1 - event.offsetY / resolution.y;
     views.forEach((v) => {
       if (
+        v.interactive &&
         x >= v.left &&
         x <= v.left + v.width &&
         y >= v.bottom &&
@@ -212,6 +234,7 @@ function initializePreview(
       skeleton.forEach(
         (bone) => bone instanceof BoneKind && bone.updateData(bones)
       );
+      const hmd = bones.get(BodyPart.HEAD);
       const newHeight = computeUserHeight(bones);
       if (newHeight !== heightOffset) {
         heightOffset = newHeight;
@@ -220,10 +243,16 @@ function initializePreview(
         });
       }
 
-      const newSkeletinOffset = computeSkeletonOffset(bones);
-      if (newSkeletinOffset != skeletonOffset) {
-        skeletonOffset = newSkeletinOffset;
-        skeletonGroup.position.set(0, skeletonOffset, 0);
+      if (stabilizeSkeleton) {
+        const newSkeletinOffset = computeSkeletonOffset(bones);
+        if (newSkeletinOffset != skeletonOffset) {
+          skeletonOffset = newSkeletinOffset;
+          skeletonGroup.position.set(0, skeletonOffset, 0);
+        }
+      } else if (anchorToHmdPosition && hmd?.headPositionG) {
+        skeletonGroup.position.set(hmd.headPositionG.x, 0, hmd.headPositionG.z);
+      } else {
+        skeletonGroup.position.set(0, 0, 0);
       }
     },
     destroy: () => {
@@ -240,6 +269,8 @@ function initializePreview(
       height,
       position,
       hidden = false,
+      interactive = true,
+      manualProjectionMatrix = false,
       onHeightChange,
     }: {
       left: number;
@@ -248,6 +279,8 @@ function initializePreview(
       height: number;
       position: Vector3;
       hidden?: boolean;
+      interactive?: boolean;
+      manualProjectionMatrix?: boolean;
       onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
     }) => {
       if (!renderer) return;
@@ -282,6 +315,8 @@ function initializePreview(
         controls,
         tween,
         hidden,
+        interactive,
+        manualProjectionMatrix,
         onHeightChange,
       };
 
@@ -300,9 +335,15 @@ type PreviewContext = ReturnType<typeof initializePreview>;
 function SkeletonVisualizer({
   onInit,
   disabled = false,
+  showGrid = true,
+  stabilizeSkeleton = true,
+  anchorToHmdPosition = false,
 }: {
   onInit: (context: PreviewContext) => void;
   disabled?: boolean;
+  showGrid?: boolean;
+  stabilizeSkeleton?: boolean;
+  anchorToHmdPosition?: boolean;
 }) {
   const { config } = useConfig();
 
@@ -357,7 +398,8 @@ function SkeletonVisualizer({
 
     previewContext.current = initializePreview(
       canvasRef.current,
-      createChildren(bones, BoneKind.root)
+      createChildren(bones, BoneKind.root),
+      { showGrid, stabilizeSkeleton, anchorToHmdPosition }
     );
     if (!config?.devSettings.fastDataFeed)
       previewContext.current.setFrameInterval(1000 / LOW_FRAMERATE);
@@ -379,11 +421,17 @@ function SkeletonVisualizer({
       containerRef.current.removeEventListener('mouseenter', onEnter);
       containerRef.current.removeEventListener('mouseleave', onLeave);
     };
-  }, [disabled]);
+  }, [disabled, showGrid, stabilizeSkeleton, anchorToHmdPosition]);
 
   return (
-    <div ref={containerRef} className={classNames('w-full h-full')}>
-      <canvas ref={canvasRef} className="w-full h-full" />
+    <div
+      ref={containerRef}
+      className={classNames('relative h-full w-full overflow-hidden')}
+    >
+      <canvas
+        ref={canvasRef}
+        className="absolute left-0 top-0 block h-full w-full"
+      />
     </div>
   );
 }
@@ -405,28 +453,42 @@ export function SkeletonVisualizerWidget({
   },
   disabled = false,
   toggleDisabled,
+  showGrid = true,
+  stabilizeSkeleton = true,
+  anchorToHmdPosition = false,
+  className,
 }: {
   onInit?: (context: PreviewContext) => void;
   disabled?: boolean;
   toggleDisabled?: () => void;
+  showGrid?: boolean;
+  stabilizeSkeleton?: boolean;
+  anchorToHmdPosition?: boolean;
+  className?: string;
 }) {
   const { l10n } = useLocalization();
   const [error, setError] = useState(false);
 
   return (
-    <div className={classNames('w-full h-full relative')}>
+    <div className={classNames('relative h-full w-full', className)}>
       <div
-        className={classNames('w-full h-full transition-all', {
+        className={classNames('relative h-full w-full transition-all', {
           blur: disabled,
         })}
       >
         <ErrorBoundary onError={() => setError(true)} fallback={<></>}>
-          <SkeletonVisualizer onInit={onInit} disabled={disabled} />
+          <SkeletonVisualizer
+            onInit={onInit}
+            disabled={disabled}
+            showGrid={showGrid}
+            stabilizeSkeleton={stabilizeSkeleton}
+            anchorToHmdPosition={anchorToHmdPosition}
+          />
         </ErrorBoundary>
       </div>
       <div
         className={classNames(
-          'absolute h-full w-full top-0 flex items-center justify-center transition-opacity duration-300',
+          'absolute left-0 top-0 h-full w-full flex items-center justify-center transition-opacity duration-300',
           { 'opacity-0 pointer-events-none': !disabled || error }
         )}
       >
@@ -446,7 +508,7 @@ export function SkeletonVisualizerWidget({
       </div>
       <div
         className={classNames(
-          'absolute h-full w-full top-0 flex items-center justify-center transition-opacity duration-300',
+          'absolute left-0 top-0 h-full w-full flex items-center justify-center transition-opacity duration-300',
           { 'opacity-0 pointer-events-none': !error }
         )}
       >

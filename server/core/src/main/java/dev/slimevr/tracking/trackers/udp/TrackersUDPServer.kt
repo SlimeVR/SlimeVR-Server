@@ -297,6 +297,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		val serialBuffer2 = StringBuilder()
 		try {
 			socket = DatagramSocket(port)
+			socket.trafficClass = 0x10
 			var prevPacketTime = System.currentTimeMillis()
 			socket.soTimeout = 250
 			while (true) {

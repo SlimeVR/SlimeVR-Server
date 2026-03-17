@@ -1,0 +1,12 @@
+package dev.slimevr.tracking.videocalibration.steps
+
+enum class Step {
+	NOT_STARTED,
+	SOLVING_CAMERA,
+	CAPTURING_FORWARD_POSE,
+	CAPTURING_BENT_OVER_POSE,
+	SOLVING_UPPER_BODY,
+	SOLVING_NON_UPPER_BODY,
+	SOLVING_SKELETON_OFFSETS,
+	DONE,
+}

@@ -17,6 +17,13 @@
       / var(--navbar-w) calc(100% - var(--navbar-w) - var(--right-section-w)) var(--right-section-w);
   }
 
+  &.full.no-toolbar {
+    grid-template:
+      't t t' var(--topbar-h)
+      'n c s' calc(100% - var(--topbar-h))
+      / var(--navbar-w) calc(100% - var(--navbar-w) - var(--right-section-w)) var(--right-section-w);
+  }
+
   @screen nsm {
     --right-section-w: 40%;
   }
@@ -54,6 +61,15 @@
               --navbar-h
             )
         )
+        'n' calc(var(--navbar-h))
+        / 100%;
+    }
+
+    &.full.no-toolbar {
+      grid-template:
+        't' var(--topbar-h)
+        'l' var(--checklist-h)
+        'c' calc(100% - var(--topbar-h) - var(--checklist-h) - var(--navbar-h))
         'n' calc(var(--navbar-h))
         / 100%;
     }

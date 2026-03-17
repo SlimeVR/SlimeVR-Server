@@ -30,7 +30,7 @@ import kotlin.math.*
 class HumanPoseManager(val server: VRServer?) {
 	val computedTrackers: MutableList<Tracker> = FastList()
 	private val onSkeletonUpdated: MutableList<Consumer<HumanSkeleton>> = FastList()
-	private val skeletonConfigManager = SkeletonConfigManager(true, this)
+	val skeletonConfigManager = SkeletonConfigManager(true, this)
 
 	@get:ThreadSafe
 	lateinit var skeleton: HumanSkeleton

@@ -53,6 +53,7 @@ import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist
 import { ElectronContextC, provideElectron } from './hooks/electron';
 import { AppLocalizationProvider } from './i18n/config';
 import { openUrl } from './hooks/crossplatform';
+import { VideoCalibrationPage } from './components/video-calibration/VideoCalibrationPage';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -103,6 +104,10 @@ function Layout() {
                 <ChecklistPage />
               </MainLayout>
             }
+          />
+          <Route
+            path="/video-calibration"
+            element={<VideoCalibrationPage isMobile={isMobile} />}
           />
           <Route
             path="/tracker/:trackernum/:deviceid"

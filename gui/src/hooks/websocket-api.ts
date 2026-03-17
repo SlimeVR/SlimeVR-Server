@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   DataFeedMessage,
@@ -9,6 +16,7 @@ import {
   PubSubUnion,
   RpcMessage,
   RpcMessageHeaderT,
+  TransactionIdT,
 } from 'solarxr-protocol';
 
 import { Builder, ByteBuffer } from 'flatbuffers';
@@ -22,7 +30,7 @@ export interface WebSocketApi {
   reconnect: () => void;
   useRPCPacket: <T>(type: RpcMessage, callback: (packet: T) => void) => void;
   useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => void;
-  sendRPCPacket: (type: RpcMessage, data: RPCPacketType) => void;
+  sendRPCPacket: (type: RpcMessage, data: RPCPacketType, txId?: number) => void;
   sendDataFeedPacket: (type: DataFeedMessage, data: DataFeedPacketType) => void;
   usePubSubPacket: <T>(type: PubSubUnion, callback: (packet: T) => void) => void;
   sendPubSubPacket: (type: PubSubUnion, data: PubSubPacketType) => void;
@@ -77,9 +85,23 @@ export function useProvideWebsocketApi(): WebSocketApi {
     const message = MessageBundle.getRootAsMessageBundle(fbb).unpack();
 
     message.rpcMsgs.forEach((rpcHeader) => {
+      const detail =
+        rpcHeader.messageType === RpcMessage.ConnectToWebRTCResponse
+          ? {
+              message: rpcHeader.message,
+              txId: rpcHeader.txId?.id ?? null,
+            }
+          : rpcHeader.message;
+
+      if (rpcHeader.messageType === RpcMessage.ConnectToWebRTCResponse) {
+        console.log('[websocket-api]', 'incoming ConnectToWebRTCResponse', {
+          txId: rpcHeader.txId?.id ?? null,
+        });
+      }
+
       rpclistenerRef.current?.dispatchEvent(
         new CustomEvent(RpcMessage[rpcHeader.messageType], {
-          detail: rpcHeader.message,
+          detail,
         })
       );
     });
@@ -101,23 +123,45 @@ export function useProvideWebsocketApi(): WebSocketApi {
     });
   };
 
-  const sendRPCPacket = (type: RpcMessage, data: RPCPacketType): void => {
-    if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
-    const fbb = new Builder(1);
+  const sendRPCPacket = useCallback(
+    (type: RpcMessage, data: RPCPacketType, txId?: number): void => {
+      if (webSocketRef?.current?.readyState !== WebSocket.OPEN) {
+        if (type === RpcMessage.ConnectToWebRTCRequest) {
+          console.warn('[websocket-api]', 'sendRPCPacket skipped: WebSocket not OPEN', {
+            txId,
+          });
+        }
+        return;
+      }
+      const fbb = new Builder(1);
 
-    const message = new MessageBundleT();
+      const message = new MessageBundleT();
 
-    const rpcHeader = new RpcMessageHeaderT();
-    rpcHeader.messageType = type;
-    rpcHeader.message = data;
+      const rpcHeader = new RpcMessageHeaderT();
+      rpcHeader.messageType = type;
+      rpcHeader.message = data;
+      if (txId !== undefined) {
+        rpcHeader.txId = new TransactionIdT(txId >>> 0);
+      }
 
-    message.rpcMsgs = [rpcHeader];
-    fbb.finish(message.pack(fbb));
+      message.rpcMsgs = [rpcHeader];
+      fbb.finish(message.pack(fbb));
 
-    webSocketRef.current.send(fbb.asUint8Array());
+      const payload = fbb.asUint8Array();
+      webSocketRef.current!.send(payload);
 
-    rpcPacketCounterRef.current++;
-  };
+      if (type === RpcMessage.ConnectToWebRTCRequest) {
+        console.log('[websocket-api]', 'sendRPCPacket', {
+          type: 'ConnectToWebRTCRequest',
+          txId,
+          bytes: payload.byteLength,
+        });
+      }
+
+      rpcPacketCounterRef.current++;
+    },
+    []
+  );
 
   const sendDataFeedPacket = (
     type: DataFeedMessage,

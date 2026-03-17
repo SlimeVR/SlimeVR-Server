@@ -4,7 +4,14 @@ import {
   SaveDialogOptions,
   SaveDialogReturnValue,
 } from 'electron';
-import { DiscordPresence, GHGet, GHReturn, OSStats } from './preload/interface';
+import {
+  DiscordPresence,
+  GHGet,
+  GHReturn,
+  OSStats,
+  WebcamOfferRequest,
+  WebcamOfferResponse,
+} from './preload/interface';
 
 export const IPC_CHANNELS = {
   SERVER_STATUS: 'server-status',
@@ -19,7 +26,8 @@ export const IPC_CHANNELS = {
   OPEN_FILE: 'open-file',
   GET_FOLDER: 'get-folder',
   GH_FETCH: 'gh-fetch',
-  DISCORD_PRESENCE: 'discord-presence'
+  DISCORD_PRESENCE: 'discord-presence',
+  WEBCAM_OFFER: 'webcam-offer',
 } as const;
 
 export interface IpcInvokeMap {
@@ -46,4 +54,7 @@ export interface IpcInvokeMap {
     options: T
   ) => Promise<GHReturn[T['type']]>;
   [IPC_CHANNELS.DISCORD_PRESENCE]: (options: DiscordPresence) => void;
+  [IPC_CHANNELS.WEBCAM_OFFER]: (
+    request: WebcamOfferRequest
+  ) => Promise<WebcamOfferResponse>;
 }

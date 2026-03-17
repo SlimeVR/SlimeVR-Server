@@ -378,7 +378,7 @@ export function TrackersTable({
         <div className="flex flex-col gap-y-0">
           {filteredSortedTrackers.map((data) => (
             <Row
-              key={data.tracker.trackerId?.trackerNum}
+              key={data.tracker.trackerId?.deviceId?.id}
               clickedTracker={clickedTracker}
               data={data}
               highlightedTrackers={highlightedTrackers}

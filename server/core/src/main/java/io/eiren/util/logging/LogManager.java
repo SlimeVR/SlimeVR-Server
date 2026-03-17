@@ -120,7 +120,7 @@ public class LogManager {
 			handler = new ConsoleHandler();
 			global.addHandler(handler);
 		}
-		handler.setFormatter(new ShortConsoleLogFormatter());
+		handler.setFormatter(new PreciseConsoleLogFormatter());
 
 		System.setOut(new PrintStream(new LoggerOutputStream(log, Level.INFO), true));
 		System.setErr(new PrintStream(new LoggerOutputStream(log, Level.SEVERE), true));

@@ -53,6 +53,8 @@ const resetSounds: Record<
 
 export const trackingPauseSound = createAudio('/sounds/tracking/pause.ogg');
 export const trackingPlaySound = createAudio('/sounds/tracking/play.ogg');
+// Used as a short "reset chime" for UI feedback.
+export const resetChimeSound = createAudio('/sounds/yaw-reset/yaw-reset.ogg');
 
 let lastTap = 0;
 export async function playTapSetupSound(volume = 1) {

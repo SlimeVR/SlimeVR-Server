@@ -273,9 +273,43 @@ navbar-home = Home
 navbar-body_proportions = Body Proportions
 navbar-trackers_assign = Tracker Assignment
 navbar-mounting = Mounting Calibration
+navbar-video_calibration = Video Calibration
 navbar-onboarding = Setup Wizard
 navbar-settings = Settings
 navbar-connect_trackers = Connect Trackers
+
+## Video calibration
+video-calibration-loading = Looking for a webcam...
+video-calibration-connecting = Connecting to the webcam video stream...
+video-calibration-no_webcam = No webcam is currently available.
+video-calibration-error = Could not start the webcam video stream.
+video-calibration-sidebar-title = Video Calibration
+video-calibration-sidebar-description = Start calibration and monitor its progress here.
+video-calibration-sidebar-description-active = Current progress is shown under Status below.
+video-calibration-start = Start Calibration
+video-calibration-status-label = Status
+video-calibration-status-idle = Waiting to start calibration.
+video-calibration-status-starting = Waiting for calibration progress...
+video-calibration-status-calibrate_camera = Calibrating camera
+video-calibration-status-capture_forward_pose = Capture forward pose
+video-calibration-status-capture_bent_over_pose = Capture bent-over pose
+video-calibration-status-calibrate_trackers = Calibrating trackers
+video-calibration-status-calibrate_skeleton_offsets = Calibrating skeleton offsets
+video-calibration-status-done = Calibration complete
+video-calibration-instruction-calibrate_camera = Move your right controller in a ∞ loop
+video-calibration-instruction-capture_forward_pose = Stand straight and face forward
+video-calibration-instruction-capture_bent_over_pose = Carefully lean forward
+video-calibration-instruction-calibrate_trackers = Walk around in a small circle
+video-calibration-camera-label = Camera
+video-calibration-camera-available = Camera data available
+video-calibration-camera-unavailable = Camera data is not available yet.
+video-calibration-camera-resolution = Resolution
+video-calibration-camera-focal_length = Focal length
+video-calibration-camera-principal_point = Principal point
+video-calibration-done-trackers = Done trackers
+video-calibration-pending-trackers = Pending trackers
+video-calibration-none = None
+video-calibration-error-label = Error
 
 ## Biovision hierarchy recording
 bvh-start_recording = Record BVH

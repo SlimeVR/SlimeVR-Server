@@ -32,13 +32,12 @@ import { writeFileSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
-import { ServerStatusEvent } from 'electron/preload/interface';
+import { ServerStatusEvent, WebcamOfferRequest } from 'electron/preload/interface';
 import { mkdir } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 
-
-app.setPath('userData', getGuiDataFolder())
-app.setPath('sessionData', join(getGuiDataFolder(), 'electron'))
+app.setPath('userData', getGuiDataFolder());
+app.setPath('sessionData', join(getGuiDataFolder(), 'electron'));
 
 // Register custom protocol to handle asset paths with leading slashes
 protocol.registerSchemesAsPrivileged([
@@ -54,6 +53,13 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 let mainWindow: BrowserWindow | null = null;
+
+function buildWebcamOfferUrl(host: string, port: number) {
+  const normalizedHost =
+    host.includes(':') && !host.startsWith('[') ? `[${host}]` : host;
+
+  return `http://${normalizedHost}:${port}/offer`;
+}
 
 handleIpc(IPC_CHANNELS.GH_FETCH, async (e, options) => {
   if (options.type === 'fw-releases') {
@@ -151,6 +157,31 @@ handleIpc(IPC_CHANNELS.DISCORD_PRESENCE, async (e, options) => {
   } else if (!options.enable && discordPresence.state.ready) {
     discordPresence.destroy();
   }
+});
+
+handleIpc(IPC_CHANNELS.WEBCAM_OFFER, async (e, request: WebcamOfferRequest) => {
+  const response = await fetch(buildWebcamOfferUrl(request.host, request.port), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sdp: request.sdp,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Offer request failed with status ${response.status}`);
+  }
+
+  const body = (await response.json()) as { sdp?: unknown };
+  if (typeof body.sdp !== 'string' || body.sdp.length === 0) {
+    throw new Error('Webcam response did not contain an SDP answer');
+  }
+
+  return {
+    sdp: body.sdp,
+  };
 });
 
 handleIpc(IPC_CHANNELS.OPEN_FILE, (e, folder) => {
@@ -339,8 +370,7 @@ function createWindow() {
     menu.append(new MenuItem({ label: 'Copy', role: 'copy' }));
     menu.append(new MenuItem({ label: 'Paste', role: 'paste' }));
 
-    if (mainWindow)
-      menu.popup({ window: mainWindow });
+    if (mainWindow) menu.popup({ window: mainWindow });
   });
 }
 

@@ -9,6 +9,7 @@ import { useBreakpoint } from '@/hooks/breakpoint';
 import { HomeIcon } from './commons/icon/HomeIcon';
 import { SkiIcon } from './commons/icon/SkiIcon';
 import { WifiIcon } from './commons/icon/WifiIcon';
+import { EyeIcon } from './commons/icon/EyeIcon';
 
 export function NavButton({
   to,
@@ -93,6 +94,9 @@ export function MainLinks() {
         icon={<RulerIcon />}
       >
         {l10n.getString('navbar-body_proportions')}
+      </NavButton>
+      <NavButton to="/video-calibration" icon={<EyeIcon />}>
+        {l10n.getString('navbar-video_calibration')}
       </NavButton>
       <NavButton
         to="/onboarding/wifi-creds"

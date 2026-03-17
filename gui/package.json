@@ -17,6 +17,7 @@
   },
   "scripts": {
     "start": "vite --force",
+    "dev:clean": "rd /s /q \"node_modules/.vite\" && pnpm run gui",
     "gui": "electron-vite dev --config electron.vite.config.ts --watch",
     "build": "electron-vite build --config electron.vite.config.ts",
     "package": "electron-builder",

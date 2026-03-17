@@ -34,7 +34,15 @@ export type GHReturn = {
     | null;
 };
 
-export type DiscordPresence = { enable: false } | { enable: true, activity: string }
+export type DiscordPresence = { enable: false } | { enable: true; activity: string };
+export type WebcamOfferRequest = {
+  host: string;
+  port: number;
+  sdp: string;
+};
+export type WebcamOfferResponse = {
+  sdp: string;
+};
 
 export interface IElectronAPI {
   onServerStatus: (cb: (data: ServerStatusEvent) => void) => () => void;
@@ -55,6 +63,7 @@ export interface IElectronAPI {
   openFile: (path: string) => void;
   ghGet: <T extends GHGet>(options: T) => Promise<GHReturn[T['type']]>;
   setPresence: (options: DiscordPresence) => void;
+  webcamOffer: (request: WebcamOfferRequest) => Promise<WebcamOfferResponse>;
 }
 
 declare global {

@@ -20,12 +20,17 @@ export function MainLayout({
   background = true,
   full = false,
   isMobile = undefined,
+  rightSidebar,
+  showToolbar = true,
+  scrollContent = true,
 }: {
   children: ReactNode;
   background?: boolean;
   isMobile?: boolean;
-  showToolbarSettings?: boolean;
   full?: boolean;
+  rightSidebar?: ReactNode;
+  showToolbar?: boolean;
+  scrollContent?: boolean;
 }) {
   const { completion } = useTrackingChecklist();
   const { sendRPCPacket } = useWebsocketAPI();
@@ -65,6 +70,7 @@ export function MainLayout({
   return (
     <div
       className={classNames('main-layout w-full h-screen', full && 'full', {
+        'no-toolbar': full && !showToolbar,
         'checklist-ok': completion === 'complete',
       })}
     >
@@ -78,7 +84,8 @@ export function MainLayout({
       <div
         style={{ gridArea: 'c' }}
         className={classNames(
-          'overflow-y-auto mr-2 my-2 mobile:m-0',
+          scrollContent ? 'overflow-y-auto' : 'overflow-hidden',
+          'mr-2 my-2 mobile:m-0',
           'flex flex-col rounded-md',
           background && 'bg-background-70',
           { 'rounded-t-none': !isMobile && full }
@@ -89,14 +96,14 @@ export function MainLayout({
       {full && isMobile && completion !== 'complete' && (
         <TrackingChecklistMobile />
       )}
-      {full && (
+      {full && showToolbar && (
         <div style={{ gridArea: 'b' }}>
           <Toolbar />
         </div>
       )}
       {!isMobile && full && (
         <div style={{ gridArea: 's' }} className="mr-2">
-          <Sidebar />
+          {rightSidebar || <Sidebar />}
         </div>
       )}
     </div>

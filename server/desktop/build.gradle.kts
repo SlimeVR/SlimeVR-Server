@@ -74,6 +74,9 @@ tasks.shadowJar {
 		exclude(dependency("com.fazecast:jSerialComm:.*"))
 		exclude(dependency("net.java.dev.jna:.*:.*"))
 		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
+		exclude(dependency("dev.onvoid.webrtc:webrtc-java:.*"))
+		exclude(dependency("io.ktor:ktor-serialization-kotlinx-.*:.*"))
+		exclude(dependency("org.jetbrains.kotlinx:kotlinx-serialization-.*:.*"))
 
 		exclude(project(":solarxr-protocol"))
 	}

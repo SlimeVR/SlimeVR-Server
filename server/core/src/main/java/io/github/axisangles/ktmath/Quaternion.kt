@@ -493,6 +493,8 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	fun toEulerAngles(order: EulerOrder): EulerAngles = this.toMatrix().toEulerAnglesAssumingOrthonormal(order)
 
 	fun toObject() = ObjectQuaternion(w, x, y, z)
+
+	fun toDouble() = QuaternionD(w.toDouble(), x.toDouble(), y.toDouble(), z.toDouble())
 }
 
 data class ObjectQuaternion(val w: Float, val x: Float, val y: Float, val z: Float) {

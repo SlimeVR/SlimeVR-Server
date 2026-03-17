@@ -14,7 +14,7 @@ class SkeletonConfigManager(
 	private val autoUpdateOffsets: Boolean,
 	private val humanPoseManager: HumanPoseManager? = null,
 ) {
-	private val configOffsets: EnumMap<SkeletonConfigOffsets, Float> = EnumMap(
+	val configOffsets: EnumMap<SkeletonConfigOffsets, Float> = EnumMap(
 		SkeletonConfigOffsets::class.java,
 	)
 	private val configToggles: EnumMap<SkeletonConfigToggles, Boolean?> = EnumMap(

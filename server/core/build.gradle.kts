@@ -65,9 +65,13 @@ dependencies {
 	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
 	implementation("commons-cli:commons-cli:1.11.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.21.0")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.0")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.0")
 
-	implementation("com.github.jonpeterson:jackson-module-model-versioning:1.2.2")
+	implementation(
+		"com.github.jonpeterso" +
+			"n:jackson-module-model-versioning:1.2.2",
+	)
 	implementation("org.apache.commons:commons-math3:3.6.1")
 	implementation("org.apache.commons:commons-lang3:3.20.0")
 	implementation("org.apache.commons:commons-collections4:4.5.0")
@@ -78,6 +82,15 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 	implementation("com.mayakapps.kache:kache:2.1.1")
+
+	implementation("com.microsoft.onnxruntime:onnxruntime:1.24.3")
+	implementation("dev.onvoid.webrtc:webrtc-java:0.14.0")
+	implementation(group = "dev.onvoid.webrtc", name = "webrtc-java", version = "0.14.0", classifier = "windows-x86_64")
+	implementation("org.jmdns:jmdns:3.6.3")
+	implementation("io.ktor:ktor-client-core:3.4.1")
+	implementation("io.ktor:ktor-client-cio:3.4.1")
+	implementation("io.ktor:ktor-client-content-negotiation:3.4.1")
+	implementation("io.ktor:ktor-serialization-kotlinx-json:3.4.1")
 
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")
 

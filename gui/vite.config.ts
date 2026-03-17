@@ -34,6 +34,90 @@ export function i18nHotReload(): PluginOption {
   };
 }
 
+export function videoCalibrationProxy(): PluginOption {
+  function buildWebcamOfferUrl(host: string, port: number) {
+    const normalizedHost =
+      host.includes(':') && !host.startsWith('[') ? `[${host}]` : host;
+
+    return `http://${normalizedHost}:${port}/offer`;
+  }
+
+  async function handleRequest(req: NodeJS.ReadableStream) {
+    const chunks: Buffer[] = [];
+
+    for await (const chunk of req) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    }
+
+    const body = JSON.parse(Buffer.concat(chunks).toString('utf8')) as {
+      host?: unknown;
+      port?: unknown;
+      sdp?: unknown;
+    };
+
+    if (
+      typeof body.host !== 'string' ||
+      typeof body.port !== 'number' ||
+      typeof body.sdp !== 'string'
+    ) {
+      throw new Error('Invalid webcam offer payload');
+    }
+
+    const response = await fetch(buildWebcamOfferUrl(body.host, body.port), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sdp: body.sdp,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Offer request failed with status ${response.status}`);
+    }
+
+    const responseBody = (await response.json()) as { sdp?: unknown };
+    if (typeof responseBody.sdp !== 'string' || responseBody.sdp.length === 0) {
+      throw new Error('Webcam response did not contain an SDP answer');
+    }
+
+    return JSON.stringify({
+      sdp: responseBody.sdp,
+    });
+  }
+
+  return {
+    name: 'video-calibration-proxy',
+    configureServer(server) {
+      server.middlewares.use('/video-calibration-api/offer', async (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: 'Method not allowed' }));
+          return;
+        }
+
+        try {
+          const responseBody = await handleRequest(req);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(responseBody);
+        } catch (error) {
+          res.statusCode = 502;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(
+            JSON.stringify({
+              error:
+                error instanceof Error ? error.message : 'Unknown webcam proxy error',
+            })
+          );
+        }
+      });
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   define: {
@@ -44,6 +128,7 @@ export default defineConfig({
   plugins: [
     react({ babel: { plugins: [jotaiReactRefresh] } }),
     i18nHotReload(),
+    videoCalibrationProxy(),
     visualizer() as PluginOption,
     sentryVitePlugin({
       org: 'slimevr',

@@ -8,7 +8,7 @@
     "gui"
   ],
   "scripts": {
-    "gui": "pnpm run update-solarxr && cd gui && pnpm run gui",
+    "gui": "pnpm run update-solarxr && cd gui && pnpm run dev:clean",
     "lint:fix": "cd gui && pnpm lint:fix",
     "skipbundler": "cd gui && pnpm run skipbundler",
     "build": "cd gui && pnpm build",

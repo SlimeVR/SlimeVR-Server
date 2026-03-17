@@ -7,6 +7,7 @@ import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
+import dev.slimevr.tracking.videocalibration.data.TrackerResetOverride
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -116,6 +117,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private var tposeDownFix = Quaternion.IDENTITY
 
+	var trackerResetOverride: TrackerResetOverride? = null
+
 	/**
 	 * Reads/loads drift compensation settings from given config
 	 */
@@ -202,6 +205,12 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
+
+		val override = trackerResetOverride
+		if (override != null) {
+			return override.toBoneRotation(rot)
+		}
+
 		// Align heading axis with bone space
 		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
 			rot *= mountingOrientation
@@ -258,6 +267,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	fun resetFull(reference: Quaternion) {
+		trackerResetOverride = null
+
 		constraintFix = Quaternion.IDENTITY
 
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
@@ -339,7 +350,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		postProcessResetFull(reference)
 	}
 
-	private fun postProcessResetFull(reference: Quaternion) {
+	fun postProcessResetFull(reference: Quaternion) {
 		if (this.tracker.needReset) {
 			this.tracker.needReset = false
 		}
@@ -398,6 +409,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
 	fun resetMounting(reference: Quaternion) {
+		trackerResetOverride = null
+
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
 			tracker.trackerFlexHandler.resetMax()
 			tracker.resetFilteringQuats(reference)
