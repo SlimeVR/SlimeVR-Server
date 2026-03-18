@@ -14,7 +14,7 @@ import { IPC_CHANNELS } from '../shared';
 import path, { dirname, join } from 'path';
 import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
-import appleTrayIcon from '../resources/icons/appleTrayIcon.png?asset';
+// import appleTrayIcon from '../resources/icons/appleTrayIcon.png?asset';
 import { readFile, stat } from 'fs/promises';
 import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
@@ -286,7 +286,7 @@ function createWindow() {
   handleIpc('save-dialog', (e, options) => dialog.showSaveDialog(options));
 
   const icon = nativeImage.createFromPath(
-    getPlatform() === 'macos' ? appleTrayIcon : trayIcon
+    trayIcon
   );
   const tray = new Tray(icon);
   tray.setToolTip('SlimeVR');
