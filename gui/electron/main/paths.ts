@@ -113,6 +113,7 @@ export const findServerJar = () => {
     path.resolve('/app/share/slimevr/'),
     path.resolve('/usr/share/slimevr/'),
   ];
+  console.log(paths)
   return paths
     .filter((p) => !!p)
     .map((p) => join(p!, 'slimevr.jar'))
