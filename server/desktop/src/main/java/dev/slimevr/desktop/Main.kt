@@ -2,7 +2,7 @@
 
 package dev.slimevr.desktop
 
-import dev.slimevr.keybinding.Keybinding
+import dev.slimevr.Keybinding
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.Bridge

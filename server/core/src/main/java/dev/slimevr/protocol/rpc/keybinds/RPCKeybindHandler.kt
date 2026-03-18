@@ -1,7 +1,6 @@
 package dev.slimevr.protocol.rpc.keybinds
 
 import com.google.flatbuffers.FlatBufferBuilder
-import dev.slimevr.keybinding.Keybinding
 import dev.slimevr.keybind.KeybindListener
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.rpc.RPCHandler

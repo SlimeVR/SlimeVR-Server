@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { NavLink, useLocation, useMatch } from 'react-router-dom';
 import { Typography } from '@/components/commons/Typography';
 import { useVRCConfig } from '@/hooks/vrc-config';
-import { platform } from '@tauri-apps/plugin-os';
 
 export function SettingsLink({
   to,
@@ -42,7 +41,6 @@ export function SettingsLink({
 
 export function SettingsSidebar() {
   const { state: vrcConfigState } = useVRCConfig();
-  const currentPlatform = platform();
 
   return (
     <div className="flex flex-col px-5 py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg h-full">
@@ -76,12 +74,11 @@ export function SettingsSidebar() {
             id="settings-sidebar-gesture_control"
           />
           {
-          currentPlatform == 'windows' || currentPlatform == 'linux' ?
-            <SettingsLink
-              to="/settings/keybinds"
-              scrollTo="keybinds"
-              id="settings-sidebar-keybinds"
-            /> : <></>
+          <SettingsLink
+            to="/settings/keybinds"
+            scrollTo="keybinds"
+            id="settings-sidebar-keybinds"
+          />
           }
         </div>
       </div>
