@@ -1,7 +1,12 @@
 package dev.slimevr.tracker.udp
 
+import dev.slimevr.VRServer
+import dev.slimevr.VRServerActions
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
+import dev.slimevr.tracker.DeviceActions
+import dev.slimevr.tracker.DeviceOrigin
+import dev.slimevr.tracker.createDevice
 import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.Datagram
 import io.ktor.network.sockets.InetSocketAddress
@@ -20,29 +25,71 @@ data class LastPing(
 data class UDPConnectionState(
 	val id: String,
 	val lastPacket: Long,
-	val lastPacketNum: Int,
+	val lastPacketNum: Long,
 	val lastPing: LastPing,
 	val didHandshake: Boolean,
 	val address: String,
 	val port: Int,
+	val deviceId: Int?,
 )
 
 sealed interface UDPConnectionActions {
-	data class StartPing(val startTime: Long): UDPConnectionActions
-	data class ReceivedPong(val id: Int, val duration: Long): UDPConnectionActions
+	data class StartPing(val startTime: Long) : UDPConnectionActions
+	data class ReceivedPong(val id: Int, val duration: Long) : UDPConnectionActions
+	data class Handshake(val deviceId: Int) : UDPConnectionActions
+	data class LastPacket(val packetNum: Long? = null, val time: Long) : UDPConnectionActions
 }
 
 typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
 
 data class UDPConnection(
 	val context: UDPConnectionContext,
+	val serverContext: VRServer,
 	val packetEvents: PacketDispatcher,
-	val send: (Packet) -> Unit
+	val send: (Packet) -> Unit,
 )
 
 data class UDPConnectionModule(
 	val reducer: (UDPConnectionState, UDPConnectionActions) -> UDPConnectionState,
 	val observer: ((UDPConnection) -> Unit)? = null,
+)
+
+val PacketModule = UDPConnectionModule(
+	reducer = { s, a ->
+		when (a) {
+			is UDPConnectionActions.LastPacket -> {
+				var newState = s.copy(lastPacket = a.time)
+
+				if (a.packetNum != null) {
+					newState = newState.copy(lastPacketNum = a.packetNum)
+				}
+
+				newState
+			}
+
+			else -> s
+		}
+	},
+	observer = {
+		it.packetEvents.onAny { packet ->
+			val state = it.context.state.value
+
+			val now = System.currentTimeMillis()
+			if (now - state.lastPacket > 5000 && packet.packetNumber == 0L) {
+				it.context.scope.launch {
+					it.context.dispatch(UDPConnectionActions.LastPacket(packetNum = 0, time = now))
+					println("Reconnecting")
+				}
+			} else if (packet.packetNumber < state.lastPacketNum) {
+				println("WARN: Received packet with wrong packet number")
+				return@onAny
+			} else {
+				it.context.scope.launch {
+					it.context.dispatch(UDPConnectionActions.LastPacket(time = now))
+				}
+			}
+		}
+	},
 )
 
 val PingModule = UDPConnectionModule(
@@ -51,9 +98,11 @@ val PingModule = UDPConnectionModule(
 			is UDPConnectionActions.StartPing -> {
 				s.copy(lastPing = s.lastPing.copy(startTime = a.startTime))
 			}
+
 			is UDPConnectionActions.ReceivedPong -> {
 				s.copy(lastPing = s.lastPing.copy(duration = a.duration, id = a.id))
 			}
+
 			else -> s
 		}
 	},
@@ -64,41 +113,76 @@ val PingModule = UDPConnectionModule(
 				val state = it.context.state.value
 				if (state.didHandshake) {
 					it.context.dispatch(UDPConnectionActions.StartPing(startTime = System.currentTimeMillis()))
-					it.send(PingPong(state.lastPacketNum + 1))
+					it.send(PingPong(state.lastPing.id + 1))
 				}
 				delay(1000)
 			}
 		}
 
 		// listen for the pong
-		it.packetEvents.on<PingPong> { packet ->
+		it.packetEvents.on<PingPong> { paket ->
 			val state = it.context.state.value
-			if (packet.pingId != state.lastPing.id + 1) {
+			val deviceId = state.deviceId ?: return@on
+
+			if (paket.data.pingId != state.lastPing.id + 1) {
 				println("Ping ID does not match, ignoring")
 				return@on
 			}
 
-			val ping = System.currentTimeMillis() - state.lastPing.startTime;
+			val ping = System.currentTimeMillis() - state.lastPing.startTime
+
+			val device = it.serverContext.getDeviceContext(deviceId) ?: return@on
 
 			it.context.scope.launch {
-				it.context.dispatch(UDPConnectionActions.ReceivedPong(id = packet.pingId, duration = ping))
-
-				// TODO update the device ping delay
+				it.context.dispatch(UDPConnectionActions.ReceivedPong(id = paket.data.pingId, duration = ping))
+				device.context.dispatch(DeviceActions.SetPing(ping))
 			}
 		}
-	}
+	},
 )
 
+val HandshakeModule = UDPConnectionModule(
+	reducer = { s, a ->
+		when (a) {
+			is UDPConnectionActions.Handshake -> s.copy(didHandshake = true, deviceId = a.deviceId)
+			else -> s
+		}
+	},
+	observer = {
+		it.packetEvents.on<Handshake> { packet ->
+			val state = it.context.state.value
 
+			if (state.deviceId == null) {
+				val deviceId = it.serverContext.nextHandle()
+
+				val newDevice = createDevice(
+					id = deviceId,
+					scope = it.serverContext.context.scope,
+					address = packet.data.mac ?: error("no mac address?"),
+					origin = DeviceOrigin.UDP,
+					serverContext = it.serverContext,
+				)
+
+				it.context.scope.launch {
+					it.serverContext.context.dispatch(VRServerActions.NewDevice(deviceId = deviceId, context = newDevice))
+					it.context.dispatch(UDPConnectionActions.Handshake(deviceId))
+					it.send(HandshakeResponse())
+				}
+			} else {
+				it.send(HandshakeResponse())
+			}
+		}
+	},
+)
 
 fun createUDPConnectionContext(
 	id: String,
 	socket: BoundDatagramSocket,
 	remoteAddress: InetSocketAddress,
-	scope: CoroutineScope
+	serverContext: VRServer,
+	scope: CoroutineScope,
 ): UDPConnection {
-
-	val modules = listOf(PingModule)
+	val modules = listOf(PacketModule, HandshakeModule, PingModule)
 
 	val context = createContext(
 		initialState = UDPConnectionState(
@@ -109,17 +193,20 @@ fun createUDPConnectionContext(
 			didHandshake = false,
 			address = remoteAddress.hostname,
 			port = remoteAddress.port,
+			deviceId = null,
 		),
 		reducers = modules.map { it.reducer },
-		scope = scope
+		scope = scope,
 	)
 
 	val dispatcher = PacketDispatcher()
 
 	val sendFunc = { packet: Packet ->
 		scope.launch {
+			val packetNum = context.state.value.lastPacketNum + 1
+
 			val bytePacket = buildPacket {
-				writePacket(this, packet)
+				writePacket(this, packet, packetNum)
 			}
 			socket.send(Datagram(bytePacket, remoteAddress))
 		}
@@ -127,9 +214,10 @@ fun createUDPConnectionContext(
 	}
 
 	val conn = UDPConnection(
-		context,
+		context = context,
+		serverContext = serverContext,
 		dispatcher,
-		send = sendFunc
+		send = sendFunc,
 	)
 
 	modules.map { it.observer }.forEach { it?.invoke(conn) }

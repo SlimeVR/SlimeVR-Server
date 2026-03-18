@@ -1,7 +1,7 @@
 package dev.slimevr.config
 
-import dev.slimevr.context.Context
 import dev.slimevr.context.BasicModule
+import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
@@ -50,7 +50,6 @@ val ConfigModuleTest = ConfigModule(
 )
 
 suspend fun createConfig(scope: CoroutineScope): ConfigContext {
-
 	val modules = listOf(ConfigModuleTest)
 
 	val context = createContext(

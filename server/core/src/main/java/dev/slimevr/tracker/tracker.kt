@@ -1,7 +1,7 @@
 package dev.slimevr.tracker
 
-import dev.slimevr.context.Context
 import dev.slimevr.context.BasicModule
+import dev.slimevr.context.Context
 import io.github.axisangles.ktmath.Quaternion
 
 data class TrackerState(

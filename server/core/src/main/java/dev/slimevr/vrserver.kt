@@ -1,8 +1,9 @@
 package dev.slimevr
 
-import dev.slimevr.context.Context
 import dev.slimevr.context.BasicModule
+import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
+import dev.slimevr.tracker.Device
 import dev.slimevr.tracker.TrackerContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -10,11 +11,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 data class VRServerState(
+	val handleId: Int,
 	val trackers: Map<Int, TrackerContext>,
+	val devices: Map<Int, Device>,
 )
 
 sealed interface VRServerActions {
 	data class NewTracker(val trackerId: Int, val context: TrackerContext) : VRServerActions
+	data class NewDevice(val deviceId: Int, val context: Device) : VRServerActions
 }
 
 typealias VRServerContext = Context<VRServerState, VRServerActions>
@@ -25,6 +29,12 @@ val TestModule = VRServerModule(
 		when (a) {
 			is VRServerActions.NewTracker -> s.copy(
 				trackers = s.trackers + (a.trackerId to a.context),
+				handleId = a.trackerId,
+			)
+
+			is VRServerActions.NewDevice -> s.copy(
+				devices = s.devices + (a.deviceId to a.context),
+				handleId = a.deviceId,
 			)
 		}
 	},
@@ -35,20 +45,34 @@ val TestModule = VRServerModule(
 	},
 )
 
-fun createVRServer(scope: CoroutineScope): VRServerContext {
-	val server = VRServerState(
-		trackers = mapOf(),
-	)
+data class VRServer(
+	val context: VRServerContext,
+) {
+	fun nextHandle() = context.state.value.handleId + 1
+	fun getTrackerContext(id: Int) = context.state.value.trackers[id]
+	fun getDeviceContext(id: Int) = context.state.value.devices[id]
 
-	val modules = listOf(TestModule)
+	companion object {
+		fun create(scope: CoroutineScope): VRServer {
+			val server = VRServerState(
+				handleId = 0,
+				trackers = mapOf(),
+				devices = mapOf(),
+			)
 
-	val context = createContext(
-		initialState = server,
-		reducers = modules.map { it.reducer },
-		scope = scope,
-	)
+			val modules = listOf(TestModule)
 
-	modules.map { it.observer }.forEach { it?.invoke(context) }
+			val context = createContext(
+				initialState = server,
+				reducers = modules.map { it.reducer },
+				scope = scope,
+			)
 
-	return context
+			modules.map { it.observer }.forEach { it?.invoke(context) }
+
+			return VRServer(
+				context = context,
+			)
+		}
+	}
 }
