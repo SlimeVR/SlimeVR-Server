@@ -357,7 +357,7 @@ const checkEnvironmentVariables = () => {
       'SlimeVR',
       `You have environment variables ${set.join(', ')} set, which may cause the SlimeVR Server to fail to launch properly.`
     );
-    app.exit(0);
+    app.quit();
   }
 };
 
@@ -384,7 +384,7 @@ const spawnServer = async () => {
       'SlimeVR',
       `Couldn't find a compatible Java version, please download Java 17 or higher`
     );
-    app.exit(0);
+    app.quit()
     return;
   }
 
