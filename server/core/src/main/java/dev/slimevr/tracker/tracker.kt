@@ -55,7 +55,9 @@ data class Tracker(
 val TrackerInfosModule = TrackerModule(
 	reducer = { s, a -> if (a is TrackerActions.Update) a.transform(s) else s },
 	observer = {
-		it.state.onEach { state -> AppLogger.tracker.info("Tracker state changed {State}", state) }.launchIn(it.scope)
+		it.state.onEach { state ->
+//			AppLogger.tracker.info("Tracker state changed {State}", state)
+		}.launchIn(it.scope)
 	}
 )
 

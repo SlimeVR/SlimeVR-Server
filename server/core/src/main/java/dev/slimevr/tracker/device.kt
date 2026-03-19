@@ -37,7 +37,7 @@ val DeviceStatsModule = DeviceModule(
 	reducer = { s, a -> if (a is DeviceActions.Update) a.transform(s) else s },
 	observer = {
 		it.state.onEach { state ->
-			AppLogger.device.info("Device state changed {State}", state)
+//			AppLogger.device.info("Device state changed", state)
 		}.launchIn(it.scope)
 	}
 )

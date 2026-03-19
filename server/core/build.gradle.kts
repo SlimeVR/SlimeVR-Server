@@ -62,14 +62,20 @@ dependencies {
 	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
 
 	implementation("com.illposed.osc:javaosc-core:0.9")
-	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 	implementation("com.mayakapps.kache:kache:2.1.1")
-	implementation("io.ktor:ktor-network:3.0.0")
-	implementation("io.ktor:ktor-utils:3.0.3")
 	implementation("io.klogging:klogging:0.11.7")
+
+	val ktor_version = "3.4.1"
+	implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
+	implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
+	implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
+	implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
+	implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
+	implementation("io.ktor:ktor-utils:$ktor_version")
+
 
 
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")

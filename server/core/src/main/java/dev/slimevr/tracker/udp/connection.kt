@@ -55,7 +55,7 @@ data class UDPConnection(
 	val context: UDPConnectionContext,
 	val serverContext: VRServer,
 	val packetEvents: PacketDispatcher,
-	val send: (Packet) -> Unit,
+	val send: (UDPPacket) -> Unit,
 	val getDevice: () -> Device?,
 	val getTracker: (sensorId: Int) -> Tracker?,
 )
@@ -88,19 +88,15 @@ val PacketModule = UDPConnectionModule(
 
 			val now = System.currentTimeMillis()
 			if (now - state.lastPacket > 5000 && packet.packetNumber == 0L) {
-				it.context.scope.launch {
-					it.context.dispatch(
-						UDPConnectionActions.LastPacket(
-							packetNum = 0,
-							time = now
-						)
+				it.context.dispatch(
+					UDPConnectionActions.LastPacket(
+						packetNum = 0,
+						time = now
 					)
-					AppLogger.udp.info("Reconnecting")
-				}
+				)
+				AppLogger.udp.info("Reconnecting")
 			} else if (packet.packetNumber < state.lastPacketNum) {
-				it.context.scope.launch {
-					AppLogger.udp.warn("WARN: Received packet with wrong packet number")
-				}
+				AppLogger.udp.warn("WARN: Received packet with wrong packet number")
 				return@onAny
 			} else {
 				it.context.scope.launch {
@@ -139,14 +135,12 @@ val PingModule = UDPConnectionModule(
 		}
 
 		// listen for the pong
-		it.packetEvents.on<PingPong> { paket ->
+		it.packetEvents.on<PingPong> { packet ->
 			val state = it.context.state.value
 			val deviceId = state.deviceId ?: return@on
 
-			if (paket.data.pingId != state.lastPing.id + 1) {
-				it.context.scope.launch {
-					AppLogger.udp.warn("Ping ID does not match, ignoring ${paket.data.pingId} != ${state.lastPing.id + 1}")
-				}
+			if (packet.data.pingId != state.lastPing.id + 1) {
+				AppLogger.udp.warn("Ping ID does not match, ignoring ${packet.data.pingId} != ${state.lastPing.id + 1}")
 				return@on
 			}
 
@@ -154,17 +148,15 @@ val PingModule = UDPConnectionModule(
 
 			val device = it.serverContext.getDevice(deviceId) ?: return@on
 
-			it.context.scope.launch {
-				it.context.dispatch(
-					UDPConnectionActions.ReceivedPong(
-						id = paket.data.pingId,
-						duration = ping
-					)
+			it.context.dispatch(
+				UDPConnectionActions.ReceivedPong(
+					id = packet.data.pingId,
+					duration = ping
 				)
-				device.context.dispatch(DeviceActions.Update {
-					copy(ping = ping)
-				})
-			}
+			)
+			device.context.dispatch(DeviceActions.Update {
+				copy(ping = ping)
+			})
 		}
 	},
 )
@@ -195,16 +187,14 @@ val HandshakeModule = UDPConnectionModule(
 					serverContext = it.serverContext,
 				)
 
-				it.context.scope.launch {
-					it.serverContext.context.dispatch(
-						VRServerActions.NewDevice(
-							deviceId = deviceId,
-							context = newDevice
-						)
+				it.serverContext.context.dispatch(
+					VRServerActions.NewDevice(
+						deviceId = deviceId,
+						context = newDevice
 					)
-					it.context.dispatch(UDPConnectionActions.Handshake(deviceId))
-					it.send(Handshake())
-				}
+				)
+				it.context.dispatch(UDPConnectionActions.Handshake(deviceId))
+				it.send(Handshake())
 			} else {
 				it.send(Handshake())
 			}
@@ -217,24 +207,20 @@ val DeviceStatsModule = UDPConnectionModule(
 		it.packetEvents.on<BatteryLevel> { event ->
 			val device = it.getDevice() ?: return@on
 
-			device.context.scope.launch {
-				device.context.dispatch(DeviceActions.Update {
-					copy(
-						batteryLevel = event.data.level,
-						batteryVoltage = event.data.voltage
-					)
-				})
-			}
+			device.context.dispatch(DeviceActions.Update {
+				copy(
+					batteryLevel = event.data.level,
+					batteryVoltage = event.data.voltage
+				)
+			})
 		}
 
 		it.packetEvents.on<SignalStrength> { event ->
 			val device = it.getDevice() ?: return@on
 
-			device.context.scope.launch {
-				device.context.dispatch(DeviceActions.Update {
-					copy(signalStrength = event.data.signal)
-				})
-			}
+			device.context.dispatch(DeviceActions.Update {
+				copy(signalStrength = event.data.signal)
+			})
 		}
 	}
 )
@@ -249,9 +235,9 @@ val SensorInfoModule = UDPConnectionModule(
 			else -> s
 		}
 	},
-	observer = {
-		it.packetEvents.on<SensorInfo> { event ->
-			val tracker = it.getTracker(event.data.sensorId)
+	observer = { observerContext ->
+		observerContext.packetEvents.on<SensorInfo> { event ->
+			val tracker = observerContext.getTracker(event.data.sensorId)
 
 			val action = TrackerActions.Update {
 				copy(
@@ -261,41 +247,38 @@ val SensorInfoModule = UDPConnectionModule(
 			}
 
 			if (tracker != null) {
-				tracker.context.scope.launch {
-					tracker.context.dispatch(action)
-				}
+				tracker.context.dispatch(action)
 			} else {
-				val device = it.getDevice()
+
+				val device = observerContext.getDevice()
 					?: error("invalid state - a device should exist at this point")
 				val deviceState = device.context.state.value
-				val trackerId = it.serverContext.nextHandle()
+				val trackerId = observerContext.serverContext.nextHandle()
 				val newTracker = createTracker(
 					id = trackerId,
 					hardwareId = "${deviceState.address}:${event.data.sensorId}",
 					sensorType = event.data.imuType,
 					deviceId = deviceState.id,
 					origin = DeviceOrigin.UDP,
-					serverContext = it.serverContext,
-					scope = it.serverContext.context.scope
+					serverContext = observerContext.serverContext,
+					scope = observerContext.serverContext.context.scope
 				)
 
-				it.serverContext.context.scope.launch {
-					it.serverContext.context.dispatch(
-						VRServerActions.NewTracker(
-							trackerId = trackerId,
-							context = newTracker
+				observerContext.serverContext.context.dispatch(
+					VRServerActions.NewTracker(
+						trackerId = trackerId,
+						context = newTracker
+					)
+				)
+				observerContext.context.dispatch(
+					UDPConnectionActions.AssignTracker(
+						trackerId = TrackerIdNum(
+							id = trackerId,
+							trackerNum = event.data.sensorId
 						)
 					)
-					it.context.dispatch(
-						UDPConnectionActions.AssignTracker(
-							trackerId = TrackerIdNum(
-								id = trackerId,
-								trackerNum = event.data.sensorId
-							)
-						)
-					)
-					newTracker.context.dispatch(action)
-				}
+				)
+				newTracker.context.dispatch(action)
 			}
 
 		}
@@ -355,7 +338,7 @@ fun createUDPConnectionContext(
 		context = context,
 		serverContext = serverContext,
 		dispatcher,
-		send = { packet: Packet ->
+		send = { packet: UDPPacket ->
 			scope.launch {
 				val bytePacket = buildPacket {
 					writePacket(this, packet)

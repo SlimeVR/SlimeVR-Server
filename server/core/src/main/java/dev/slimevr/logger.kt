@@ -19,7 +19,6 @@ object AppLogger {
 				fromMinLevel(Level.INFO) {
 					toSink("stdout")
 				}
-
 			}
 		}
 	}

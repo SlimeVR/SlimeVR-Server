@@ -5,13 +5,15 @@ import dev.slimevr.tracker.TrackerStatus
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.core.remaining
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.io.Sink
 import kotlinx.io.Source
 import kotlinx.io.readByteArray
 import kotlinx.io.readFloat
 import kotlinx.io.readString
 import kotlinx.io.readUByte
-import kotlinx.io.writeFloat
 import kotlinx.io.writeUByte
 import kotlin.reflect.KClass
 
@@ -63,15 +65,15 @@ enum class PacketType(val id: Int) {
 	}
 }
 
-sealed interface Packet {
+sealed interface UDPPacket {
 	fun write(dst: Sink) {}
 }
 
-sealed interface SensorSpecificPacket : Packet {
+sealed interface SensorSpecificPacket : UDPPacket {
 	val sensorId: Int
 }
 
-data object Heartbeat : Packet
+data object Heartbeat : UDPPacket
 
 data class Handshake(
 	val boardType: Int = 0,
@@ -80,7 +82,7 @@ data class Handshake(
 	val protocolVersion: Int = 0,
 	val firmware: String? = null,
 	val macString: String? = null
-) : Packet {
+) : UDPPacket {
 	override fun write(dst: Sink) {
 		dst.writeByte(PacketType.HANDSHAKE.id.toByte())
 		dst.write("Hey OVR =D 5".toByteArray(Charsets.US_ASCII))
@@ -117,16 +119,16 @@ data class Accel(val acceleration: Vector3 = Vector3.NULL, override val sensorId
 	}
 }
 
-data class PingPong(val pingId: Int = 0) : Packet {
+data class PingPong(val pingId: Int = 0) : UDPPacket {
 	override fun write(dst: Sink) { dst.writeInt(pingId) }
 	companion object { fun read(src: Source) = PingPong(src.readInt()) }
 }
 
-data class Serial(val serial: String = "") : Packet {
+data class Serial(val serial: String = "") : UDPPacket {
 	companion object { fun read(src: Source) = Serial(src.readString(src.readInt().toLong())) }
 }
 
-data class BatteryLevel(val voltage: Float = 0f, val level: Float = 0f) : Packet {
+data class BatteryLevel(val voltage: Float = 0f, val level: Float = 0f) : UDPPacket {
 	companion object {
 		fun read(src: Source): BatteryLevel {
 			val f = src.readSafeFloat()
@@ -211,11 +213,11 @@ data class Temperature(override val sensorId: Int = 0, val temp: Float = 0f) : S
 	}
 }
 
-data class UserActionPacket(val type: Int = 0) : Packet {
+data class UserActionPacket(val type: Int = 0) : UDPPacket {
 	companion object { fun read(src: Source) = UserActionPacket(src.readU8()) }
 }
 
-data class FeatureFlags(val firmwareFeatures: ByteArray = byteArrayOf()) : Packet {
+data class FeatureFlags(val firmwareFeatures: ByteArray = byteArrayOf()) : UDPPacket {
 	companion object { fun read(src: Source) = FeatureFlags(src.readByteArray(src.remaining.toInt())) }
 }
 
@@ -261,7 +263,7 @@ data class PositionPacket(override val sensorId: Int = 0, val position: Vector3 
 	}
 }
 
-data class ProtocolChange(val targetProtocol: Int = 0, val targetVersion: Int = 0) : Packet {
+data class ProtocolChange(val targetProtocol: Int = 0, val targetVersion: Int = 0) : UDPPacket {
 	override fun write(dst: Sink) {
 		dst.writeUByte(targetProtocol.toUByte())
 		dst.writeUByte(targetVersion.toUByte())
@@ -269,7 +271,7 @@ data class ProtocolChange(val targetProtocol: Int = 0, val targetVersion: Int = 
 	companion object { fun read(src: Source) = ProtocolChange(src.readU8(), src.readU8()) }
 }
 
-fun readPacket(type: PacketType, src: Source): Packet = when (type) {
+fun readPacket(type: PacketType, src: Source): UDPPacket = when (type) {
 	PacketType.HEARTBEAT -> Heartbeat
 	PacketType.HANDSHAKE -> Handshake.read(src)
 	PacketType.ROTATION -> Rotation.read(src)
@@ -295,7 +297,7 @@ fun readPacket(type: PacketType, src: Source): Packet = when (type) {
 	PacketType.PROTOCOL_CHANGE -> ProtocolChange.read(src)
 }
 
-fun writePacket(dst: Sink, packet: Packet) {
+fun writePacket(dst: Sink, packet: UDPPacket) {
 	val type = when (packet) {
 		is Heartbeat -> PacketType.HEARTBEAT
 		is Handshake -> PacketType.HANDSHAKE
@@ -314,34 +316,38 @@ fun writePacket(dst: Sink, packet: Packet) {
 	packet.write(dst)
 }
 
-data class PacketEvent<out T : Packet>(
+data class PacketEvent<out T : UDPPacket>(
 	val data: T,
 	val packetNumber: Long,
 )
 
 class PacketDispatcher {
-	val listeners = mutableMapOf<KClass<out Packet>, MutableList<(PacketEvent<Packet>) -> Unit>>()
-	private val globalListeners = mutableListOf<(PacketEvent<Packet>) -> Unit>()
+	val listeners = mutableMapOf<KClass<out UDPPacket>, MutableList<suspend (PacketEvent<UDPPacket>) -> Unit>>()
+	val globalListeners = mutableListOf<suspend (PacketEvent<UDPPacket>) -> Unit>()
+	val mutex = Mutex()
 
 	@Suppress("UNCHECKED_CAST")
-	inline fun <reified T : Packet> on(crossinline callback: (PacketEvent<T>) -> Unit) {
-		val list = listeners.getOrPut(T::class) { mutableListOf() }
-		synchronized(list) {
-			list.add { callback(it as PacketEvent<T>) }
+	inline fun <reified T : UDPPacket> on(crossinline callback: suspend (PacketEvent<T>) -> Unit) {
+		runBlocking {
+			mutex.withLock {
+				val list = listeners.getOrPut(T::class) { mutableListOf() }
+				list.add { callback(it as PacketEvent<T>) }
+			}
 		}
 	}
 
-	fun onAny(callback: (PacketEvent<Packet>) -> Unit) {
-		synchronized(globalListeners) { globalListeners.add(callback) }
+	fun onAny(callback: suspend (PacketEvent<UDPPacket>) -> Unit) {
+		runBlocking {
+			mutex.withLock { globalListeners.add(callback) }
+		}
 	}
 
-	fun emit(event: PacketEvent<Packet>) {
-		synchronized(globalListeners) {
-			globalListeners.forEach { it(event) }
+	suspend fun emit(event: PacketEvent<UDPPacket>) {
+		val targets = mutex.withLock {
+			val specific = listeners[event.data::class]?.toList() ?: emptyList()
+			val global = globalListeners.toList()
+			global + specific
 		}
-		val list = listeners[event.data::class] ?: return
-		synchronized(list) {
-			list.forEach { it(event) }
-		}
+		targets.forEach { it(event) }
 	}
 }
