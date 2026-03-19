@@ -1,12 +1,11 @@
 package dev.slimevr.tracker
 
+import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.context.BasicModule
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -32,11 +31,13 @@ sealed interface DeviceActions {
 	data class Update(val transform: DeviceState.() -> DeviceState) : DeviceActions
 }
 
+
+
 val DeviceStatsModule = DeviceModule(
 	reducer = { s, a -> if (a is DeviceActions.Update) a.transform(s) else s },
 	observer = {
-		it.state.onEach {
-			println("Device state changed $it")
+		it.state.onEach { state ->
+			AppLogger.device.info("Device state changed {State}", state)
 		}.launchIn(it.scope)
 	}
 )

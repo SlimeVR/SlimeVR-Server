@@ -69,6 +69,8 @@ dependencies {
 	implementation("com.mayakapps.kache:kache:2.1.1")
 	implementation("io.ktor:ktor-network:3.0.0")
 	implementation("io.ktor:ktor-utils:3.0.3")
+	implementation("io.klogging:klogging:0.11.7")
+
 
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")
 

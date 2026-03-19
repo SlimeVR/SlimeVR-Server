@@ -1,5 +1,6 @@
 package dev.slimevr.tracker
 
+import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.context.BasicModule
 import dev.slimevr.context.Context
@@ -8,7 +9,6 @@ import dev.slimevr.skeleton.BodyPart
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 enum class TrackerStatus(val id: UByte) {
@@ -51,10 +51,11 @@ data class Tracker(
 	val context: TrackerContext
 )
 
+
 val TrackerInfosModule = TrackerModule(
 	reducer = { s, a -> if (a is TrackerActions.Update) a.transform(s) else s },
 	observer = {
-		it.state.onEach { println("Tracker $it") }.launchIn(it.scope)
+		it.state.onEach { state -> AppLogger.tracker.info("Tracker state changed {State}", state) }.launchIn(it.scope)
 	}
 )
 

@@ -1,5 +1,6 @@
 package dev.slimevr.tracker.udp
 
+import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Context
@@ -64,6 +65,7 @@ data class UDPConnectionModule(
 	val observer: ((UDPConnection) -> Unit)? = null,
 )
 
+
 val PacketModule = UDPConnectionModule(
 	reducer = { s, a ->
 		when (a) {
@@ -93,10 +95,12 @@ val PacketModule = UDPConnectionModule(
 							time = now
 						)
 					)
-					println("Reconnecting")
+					AppLogger.udp.info("Reconnecting")
 				}
 			} else if (packet.packetNumber < state.lastPacketNum) {
-				println("WARN: Received packet with wrong packet number")
+				it.context.scope.launch {
+					AppLogger.udp.warn("WARN: Received packet with wrong packet number")
+				}
 				return@onAny
 			} else {
 				it.context.scope.launch {
@@ -140,7 +144,9 @@ val PingModule = UDPConnectionModule(
 			val deviceId = state.deviceId ?: return@on
 
 			if (paket.data.pingId != state.lastPing.id + 1) {
-				println("Ping ID does not match, ignoring ${paket.data.pingId} != ${state.lastPing.id + 1}")
+				it.context.scope.launch {
+					AppLogger.udp.warn("Ping ID does not match, ignoring ${paket.data.pingId} != ${state.lastPing.id + 1}")
+				}
 				return@on
 			}
 
