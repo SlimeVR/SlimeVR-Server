@@ -21,18 +21,25 @@ data class DeviceState(
 	val id: Int,
 	val name: String,
 	val address: String,
-	val batteryLevel: Int,
-	val batteryVoltage: Int,
+	val batteryLevel: Float,
+	val batteryVoltage: Float,
 	val ping: Long?,
 	val signalStrength: Int?,
 	val origin: DeviceOrigin,
 )
 
 sealed interface DeviceActions {
-	data class SetBattery(val level: Int, val voltage: Int) : DeviceActions
-	data class SetPing(val ping: Long) : DeviceActions
-	data class SetSignalStrength(val signalStrength: Int) : DeviceActions
+	data class Update(val transform: DeviceState.() -> DeviceState) : DeviceActions
 }
+
+val DeviceStatsModule = DeviceModule(
+	reducer = { s, a -> if (a is DeviceActions.Update) a.transform(s) else s },
+	observer = {
+		it.state.onEach {
+			println("Device state changed $it")
+		}.launchIn(it.scope)
+	}
+)
 
 typealias DeviceContext = Context<DeviceState, DeviceActions>
 typealias DeviceModule = BasicModule<DeviceState, DeviceActions>
@@ -41,36 +48,19 @@ data class Device(
 	val context: DeviceContext,
 )
 
-val PingModule = DeviceModule(
-	reducer = { s, a ->
-		when (a) {
-			is DeviceActions.SetPing -> s.copy(ping = a.ping)
-			else -> s
-		}
-	},
-	observer = {
-		it.state
-			.distinctUntilChangedBy { device -> device.ping }
-			.filter { device -> device.ping != null }
-			.onEach { device ->
-				println("[${device.name}] ping change to ${device.ping}")
-			}.launchIn(it.scope)
-	},
-)
-
 fun createDevice(scope: CoroutineScope, id: Int, address: String, origin: DeviceOrigin, serverContext: VRServer): Device {
 	val deviceState = DeviceState(
 		id = id,
 		name = "Device $id",
-		batteryLevel = 0,
-		batteryVoltage = 0,
+		batteryLevel = 0f,
+		batteryVoltage = 0f,
 		origin = origin,
 		address = address,
 		ping = null,
 		signalStrength = null,
 	)
 
-	val modules = listOf(PingModule)
+	val modules = listOf(DeviceStatsModule)
 
 	val context = createContext(
 		initialState = deviceState,

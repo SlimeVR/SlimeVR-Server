@@ -19,8 +19,6 @@ data class UDPTrackerServerState(
 	val connections: MutableMap<String, UDPConnection>,
 )
 
-const val PACKET_WORKERS = 4
-
 suspend fun createUDPTrackerServer(
 	serverContext: VRServer,
 	configContext: ConfigContext,
@@ -33,46 +31,37 @@ suspend fun createUDPTrackerServer(
 	val selectorManager = SelectorManager(Dispatchers.IO)
 	val serverSocket =
 		aSocket(selectorManager).udp().bind(InetSocketAddress("0.0.0.0", state.port))
-	val packetChannel = Channel<Datagram>(capacity = Channel.BUFFERED)
 
 	supervisorScope {
 		launch(Dispatchers.IO) {
 			while (isActive) {
 				val datagram = serverSocket.receive()
-				packetChannel.send(datagram)
-			}
-		}
+				val packetId = datagram.packet.readInt()
+				val packetNumber = datagram.packet.readLong()
+				val type = PacketType.fromId(packetId) ?: continue
+				val packetData = readPacket(type, datagram.packet)
 
-		repeat(PACKET_WORKERS) { workerId ->
-			launch(Dispatchers.Default) {
-				for (datagram in packetChannel) {
-					val packetId = datagram.packet.readInt()
-					val packetNumber = datagram.packet.readLong()
-					val type = PacketType.fromId(packetId) ?: continue
-					val packetData = PacketCodec.read(type, datagram.packet)
+				val address = datagram.address as InetSocketAddress
+				val connContext = state.connections[address.hostname]
 
-					val address = datagram.address as InetSocketAddress
-					val connContext = state.connections[address.hostname]
+				val event = PacketEvent(
+					data = packetData,
+					packetNumber = packetNumber,
+				)
 
-					val event = PacketEvent(
-						data = packetData,
-						packetNumber = packetNumber,
+				if (connContext !== null) {
+					connContext.packetEvents.emit(event)
+				} else {
+					val newContext = createUDPConnectionContext(
+						id = address.hostname,
+						remoteAddress = address,
+						socket = serverSocket,
+						serverContext = serverContext,
+						scope = this,
 					)
 
-					if (connContext !== null) {
-						connContext.packetEvents.emit(event = event)
-					} else {
-						val newContext = createUDPConnectionContext(
-							id = address.hostname,
-							remoteAddress = address,
-							socket = serverSocket,
-							serverContext = serverContext,
-							scope = this,
-						)
-
-						state.connections[address.hostname] = newContext
-						newContext.packetEvents.emit(event = event)
-					}
+					state.connections[address.hostname] = newContext
+					newContext.packetEvents.emit(event)
 				}
 			}
 		}

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 data class BasicModule<S, A>(
-	val reducer: (S, A) -> S,
+	val reducer: ((S, A) -> S)? = null,
 	val observer: ((Context<S, A>) -> Unit)? = null,
 )
 
@@ -21,12 +21,12 @@ data class Context<S, in A>(
 fun <S, A> createContext(
 	initialState: S,
 	scope: CoroutineScope,
-	reducers: List<(S, A) -> S>,
+	reducers: List<((S, A) -> S)?>,
 ): Context<S, A> {
 	val mutableStateFlow = MutableStateFlow(initialState)
 
 	val applyAction: (S, A) -> S = { currentState, action ->
-		reducers.fold(currentState) { s, reducer -> reducer(s, action) }
+		reducers.filterNotNull().fold(currentState) { s, reducer -> reducer(s, action) }
 	}
 
 	val dispatch: suspend (A) -> Unit = { action ->

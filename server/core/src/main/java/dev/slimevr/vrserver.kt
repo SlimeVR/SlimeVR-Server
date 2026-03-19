@@ -4,7 +4,7 @@ import dev.slimevr.context.BasicModule
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
 import dev.slimevr.tracker.Device
-import dev.slimevr.tracker.TrackerContext
+import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
@@ -12,19 +12,19 @@ import kotlinx.coroutines.flow.onEach
 
 data class VRServerState(
 	val handleId: Int,
-	val trackers: Map<Int, TrackerContext>,
+	val trackers: Map<Int, Tracker>,
 	val devices: Map<Int, Device>,
 )
 
 sealed interface VRServerActions {
-	data class NewTracker(val trackerId: Int, val context: TrackerContext) : VRServerActions
+	data class NewTracker(val trackerId: Int, val context: Tracker) : VRServerActions
 	data class NewDevice(val deviceId: Int, val context: Device) : VRServerActions
 }
 
 typealias VRServerContext = Context<VRServerState, VRServerActions>
 typealias VRServerModule = BasicModule<VRServerState, VRServerActions>
 
-val TestModule = VRServerModule(
+val BaseModule = VRServerModule(
 	reducer = { s, a ->
 		when (a) {
 			is VRServerActions.NewTracker -> s.copy(
@@ -49,8 +49,8 @@ data class VRServer(
 	val context: VRServerContext,
 ) {
 	fun nextHandle() = context.state.value.handleId + 1
-	fun getTrackerContext(id: Int) = context.state.value.trackers[id]
-	fun getDeviceContext(id: Int) = context.state.value.devices[id]
+	fun getTracker(id: Int) = context.state.value.trackers[id]
+	fun getDevice(id: Int) = context.state.value.devices[id]
 
 	companion object {
 		fun create(scope: CoroutineScope): VRServer {
@@ -60,7 +60,7 @@ data class VRServer(
 				devices = mapOf(),
 			)
 
-			val modules = listOf(TestModule)
+			val modules = listOf(BaseModule)
 
 			val context = createContext(
 				initialState = server,

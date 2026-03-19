@@ -11,5 +11,7 @@ fun main(args: Array<String>) = runBlocking {
 	val config = createConfig(this)
 	val server = VRServer.create(this)
 
-	val udpServer = createUDPTrackerServer(server, config)
+	createUDPTrackerServer(server, config)
+
+	Unit
 }
