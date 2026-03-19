@@ -54,7 +54,6 @@ allprojects {
 		// You can declare any Maven/Ivy/file repository here.
 		mavenCentral()
 		maven(url = "https://jitpack.io")
-		mavenLocal()
 	}
 }
 
@@ -80,7 +79,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 	implementation("com.mayakapps.kache:kache:2.1.1")
 
-	implementation("com.github.HannahPadd:DbusGlobalShortcutsWayland:f1c203a7f0")
+	implementation("com.github.HannahPadd:DbusGlobalShortcutsWayland:5010e75bd4")
 
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")
 
@@ -89,9 +88,6 @@ dependencies {
 
 	// Jitpack
 	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
-
-	implementation("com.github.hypfvieh:dbus-java-core:5.2.0")
-	implementation("com.github.hypfvieh:dbus-java-transport-jnr-unixsocket:5.2.0")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework

@@ -14,7 +14,6 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-		mavenLocal()
     }
 
 	val kotlinVersion: String by settings

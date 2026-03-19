@@ -3,6 +3,7 @@ package dev.slimevr
 import com.melloware.jintellitype.HotkeyListener
 import com.melloware.jintellitype.JIntellitype
 import dev.hannah.portals.PortalManager
+import dev.hannah.portals.Shortcut
 import dev.hannah.portals.globalShortcuts.ShortcutTuple
 import dev.slimevr.config.KeybindingsConfig
 import dev.slimevr.tracking.trackers.TrackerUtils
@@ -10,7 +11,6 @@ import io.eiren.util.OperatingSystem
 import io.eiren.util.OperatingSystem.Companion.currentPlatform
 import io.eiren.util.ann.AWTThread
 import io.eiren.util.logging.LogManager
-import org.freedesktop.dbus.types.Variant
 
 class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 	val config: KeybindingsConfig = server.configManager.vrConfig.keybindings
@@ -55,12 +55,17 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 		}
 		if (currentPlatform == OperatingSystem.LINUX) {
 			val portalManager = PortalManager(SLIMEVR_IDENTIFIER)
+			val fullReset = Shortcut("Full Reset", "CTRL+ALT+SHIFT+Y")
+			val yawReset = Shortcut("Yaw Reset", "CTRL+ALT+SHIFT+U")
+			val mountingReset = Shortcut("Mounting Reset", "CTRL+ALT+SHIFT+I")
+			val feetMountingReset = Shortcut("Feet Mounting Reset","CTRL+ALT+SHIFT+P")
+			val pauseTracking = Shortcut("Pause Tracking", "CTRL+ALT+SHIFT+O")
 			val shortcutsList = mutableListOf(
-				ShortcutTuple("FULL_RESET", mapOf("description" to Variant("Full Reset"), "preferred_trigger" to Variant("CTRL+ALT+SHIFT+Y"))),
-				ShortcutTuple("YAW_RESET", mapOf("description" to Variant("Yaw Reset"), "preferred_trigger" to Variant("CTRL+ALT+SHIFT+U"))),
-				ShortcutTuple("MOUNTING_RESET", mapOf("description" to Variant("Mounting Reset"), "preferred_trigger" to Variant("CTRL+ALT+SHIFT+I"))),
-				ShortcutTuple("FEET_MOUNTING_RESET", mapOf("description" to Variant("Feet Mounting Reset"), "preferred_trigger" to Variant("CTRL+ALT+SHIFT+P"))),
-				ShortcutTuple("PAUSE_TRACKING", mapOf("description" to Variant("Pause Tracking"), "preferred_trigger" to Variant("CTRL+ALT+SHIFT+O"))))
+				ShortcutTuple("FULL_RESET", fullReset.shortcut),
+				ShortcutTuple("YAW_RESET", yawReset.shortcut),
+				ShortcutTuple("MOUNTING_RESET", mountingReset.shortcut),
+				ShortcutTuple("FEET_MOUNTING_RESET", feetMountingReset.shortcut),
+				ShortcutTuple("PAUSE_TRACKING", pauseTracking.shortcut))
 			val globalShortcutsHandler = portalManager.globalShortcutsRequest(shortcutsList)
 			Runtime.getRuntime().addShutdownHook(Thread {
 				println("Closing connection")

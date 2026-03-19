@@ -47,11 +47,9 @@ tasks.withType<Javadoc> {
 allprojects {
 	repositories {
 		// Use jcenter for resolving dependencies.
-		// You can declare any Maven/Ivy/file repository here.
 		mavenCentral()
 		maven(url = "https://jitpack.io")
 		maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
-		mavenLocal()
 	}
 }
 
@@ -75,6 +73,7 @@ tasks.shadowJar {
 		exclude(dependency("com.fazecast:jSerialComm:.*"))
 		exclude(dependency("net.java.dev.jna:.*:.*"))
 		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
+		exclude(dependency("com.github.HannahPadd:DbusGlobalShortcutsWayland:5010e75bd4"))
 
 		exclude(project(":solarxr-protocol"))
 	}
