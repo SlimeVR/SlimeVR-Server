@@ -17,7 +17,7 @@
     "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
-    "husky": "^9.1.6",
-    "lint-staged": "^15.2.10"
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2"
   }
 }

@@ -58,7 +58,7 @@ class VRConfig {
 
 	val trackingChecklist: TrackingChecklistConfig = TrackingChecklistConfig()
 
-	var velocityConfig: VelocityConfig = VelocityConfig()
+	val velocityConfig: VelocityConfig = VelocityConfig()
 
 	val vrcConfig: VRCConfig = VRCConfig()
 
@@ -106,13 +106,7 @@ class VRConfig {
 		return config
 	}
 
-	/**
-	 * Applies the velocity policy to the given [Tracker].
-	 *
-	 * This method determines whether the tracker—be it a physical sensor or a computed virtual device—is
-	 * permitted to calculate and broadcast velocity data.
-	 * It resolves the active [VelocityConfig] value, updating [Tracker.allowVelocity] accordingly.
-	 */
+	/** Resolves value from global config and applies to tracker. */
 	fun applyVelocityPolicy(tracker: Tracker) {
 		tracker.allowVelocity = velocityConfig.sendDerivedVelocity
 	}
