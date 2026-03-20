@@ -15,6 +15,7 @@ import {
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
   HIDSettingsT,
+  VelocitySettingsT,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -108,6 +109,9 @@ export type SettingsForm = {
   hidSettings: {
     trackersOverHID: boolean;
   };
+  velocitySettings: {
+    sendDerivedVelocity: boolean;
+  };
 };
 
 const defaultValues: SettingsForm = {
@@ -164,6 +168,7 @@ const defaultValues: SettingsForm = {
   resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
   hidSettings: { trackersOverHID: false },
+  velocitySettings: { sendDerivedVelocity: false },
 };
 
 const settingsAtom = atom(new SettingsResponseT());
@@ -325,6 +330,11 @@ export function GeneralSettings() {
     hidSettings.trackersOverHid = values.hidSettings.trackersOverHID;
     settingsReq.hidSettings = hidSettings;
 
+    const velocitySettings = new VelocitySettingsT();
+    velocitySettings.sendDerivedVelocity =
+      values.velocitySettings.sendDerivedVelocity;
+    settings.velocitySettings = velocitySettings;
+
     if (values.resetsSettings) {
       settingsReq.resetsSettings = loadResetSettings(values.resetsSettings);
     }
@@ -443,6 +453,12 @@ export function GeneralSettings() {
     if (settings.hidSettings) {
       formData.hidSettings = {
         trackersOverHID: settings.hidSettings.trackersOverHid,
+      };
+    }
+
+    if (settings.velocitySettings) {
+      formData.velocitySettings = {
+        sendDerivedVelocity: settings.velocitySettings.sendDerivedVelocity,
       };
     }
 
@@ -1012,6 +1028,32 @@ export function GeneralSettings() {
                 name="toggles.usePosition"
                 label={l10n.getString(
                   'settings-general-fk_settings-ik-use_position'
+                )}
+              />
+            </div>
+
+            <div className="flex flex-col pt-2 pb-1">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-fk_settings-velocity_settings'
+                )}
+              </Typography>
+              <div className="pt-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-general-fk_settings-velocity_settings-description'
+                  )}
+                </Typography>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-1 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="velocitySettings.sendDerivedVelocity"
+                label={l10n.getString(
+                  'settings-general-fk_settings-velocity_settings-send_derived_velocity'
                 )}
               />
             </div>
