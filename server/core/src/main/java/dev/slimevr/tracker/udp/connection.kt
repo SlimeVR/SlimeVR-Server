@@ -168,7 +168,6 @@ val HandshakeModule = UDPConnectionModule(
 				didHandshake = true,
 				deviceId = a.deviceId
 			)
-
 			else -> s
 		}
 	},

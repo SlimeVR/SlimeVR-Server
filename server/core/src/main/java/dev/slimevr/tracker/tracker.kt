@@ -1,29 +1,16 @@
 package dev.slimevr.tracker
 
-import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.context.BasicModule
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
-import dev.slimevr.skeleton.BodyPart
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-
-enum class TrackerStatus(val id: UByte) {
-	DISCONNECTED(solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED),
-	OK(solarxr_protocol.datatypes.TrackerStatus.OK),
-	BUSY(solarxr_protocol.datatypes.TrackerStatus.BUSY),
-	ERROR(solarxr_protocol.datatypes.TrackerStatus.ERROR),
-	OCCLUDED(solarxr_protocol.datatypes.TrackerStatus.OCCLUDED),
-	TIMEDOUT(solarxr_protocol.datatypes.TrackerStatus.TIMEDOUT);
-
-	companion object {
-		private val map = entries.associateBy { it.id }
-		fun fromId(id: UByte) = map[id]
-	}
-}
+import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.datatypes.hardware_info.ImuType
 
 data class TrackerIdNum(val id: Int, val trackerNum: Int)
 
@@ -31,7 +18,7 @@ data class TrackerState(
 	val id: Int,
 	val name: String,
 	val hardwareId: String,
-	val sensorType: IMUType,
+	val sensorType: ImuType,
 	val bodyPart: BodyPart?,
 	val status: TrackerStatus,
 	val customName: String?,
@@ -65,7 +52,7 @@ fun createTracker(
 	scope: CoroutineScope,
 	id: Int,
 	deviceId: Int,
-	sensorType: IMUType,
+	sensorType: ImuType,
 	hardwareId: String,
 	origin: DeviceOrigin,
 	serverContext: VRServer

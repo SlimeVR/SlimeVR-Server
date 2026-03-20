@@ -1,7 +1,5 @@
 package dev.slimevr.tracker.udp
 
-import dev.slimevr.tracker.IMUType
-import dev.slimevr.tracker.TrackerStatus
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.core.remaining
@@ -15,6 +13,8 @@ import kotlinx.io.readFloat
 import kotlinx.io.readString
 import kotlinx.io.readUByte
 import kotlinx.io.writeUByte
+import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.datatypes.hardware_info.ImuType
 import kotlin.reflect.KClass
 
 private fun Source.readU8(): Int = readByte().toInt() and 0xFF
@@ -148,7 +148,7 @@ data class ErrorPacket(override val sensorId: Int = 0, val errorNumber: Int = 0)
 data class SensorInfo(
 	override val sensorId: Int = 0,
 	val status: TrackerStatus = TrackerStatus.DISCONNECTED,
-	val imuType: IMUType = IMUType.UNKNOWN,
+	val imuType: ImuType = ImuType.Other,
 	val sensorConfig: UShort? = null,
 	val hasCompletedRestCalibration: Boolean? = null,
 	val trackerPosition: Int? = null,
@@ -157,8 +157,8 @@ data class SensorInfo(
 	companion object {
 		fun read(src: Source) = with(src) {
 			val id = readU8()
-			val stat = TrackerStatus.fromId((readUByte() + 1u).toUByte()) ?: TrackerStatus.DISCONNECTED
-			val imu = if (remaining > 0) IMUType.fromId(readUByte()) ?: IMUType.UNKNOWN else IMUType.UNKNOWN
+			val stat = TrackerStatus.fromValue((readUByte() + 1u).toUByte()) ?: TrackerStatus.DISCONNECTED
+			val imu = if (remaining > 0) ImuType.fromValue(readUByte().toUShort()) ?: ImuType.Other else ImuType.Other
 			val conf = if (remaining >= 2) readShort().toUShort() else null
 			val calib = if (remaining > 0) readU8() != 0 else null
 			val pos = if (remaining > 0) readU8() else null

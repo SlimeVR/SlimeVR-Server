@@ -10,6 +10,7 @@ object AppLogger {
 	val tracker = logger("Tracker")
 	val device = logger("Device")
 	val udp = logger("UDPConnection")
+	val solarxr = logger("SolarXR")
 
 
 	init {

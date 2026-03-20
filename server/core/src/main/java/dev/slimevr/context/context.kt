@@ -39,6 +39,5 @@ fun <S, A> createContext(
 		}
 	}
 	val context = Context(mutableStateFlow.asStateFlow(), dispatch, dispatchAll, scope)
-
 	return context
 }

@@ -17,7 +17,7 @@ fun main(args: Array<String>) = runBlocking {
 		createUDPTrackerServer(server, config)
 	}
 	launch {
-		createSolarXRWebsocketServer()
+		createSolarXRWebsocketServer(server)
 	}
 	Unit
 }
