@@ -985,6 +985,11 @@ onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to tri
 
     You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
 
+## Install info
+install-info_udev-rules_modal_title = Hardware udev access rules not found
+install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
+install-info_udev-rules_modal_button = Close
+install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 ## Setup start
 onboarding-home = Welcome to SlimeVR
 onboarding-home-start = Let's get set up!

@@ -22,7 +22,6 @@ import { GearIcon } from './commons/icon/GearIcon';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { TrayOrExitModal } from './TrayOrExitModal';
-import { ErrorConsentModal } from './ErrorConsentModal';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { useElectron } from '@/hooks/electron';
@@ -72,6 +71,7 @@ export function TopBar({
     await saveConfig();
     electron.api.close();
   };
+
   const tryCloseApp = async (dontTray = false) => {
     if (!electron.isElectron) throw 'no electron';
 
@@ -285,11 +285,6 @@ export function TopBar({
         cancel={() => {
           setConnectedTrackerWarning(false);
         }}
-      />
-      <ErrorConsentModal
-        isOpen={config?.errorTracking === null}
-        accept={() => setConfig({ errorTracking: true })}
-        cancel={() => setConfig({ errorTracking: false })}
       />
     </>
   );

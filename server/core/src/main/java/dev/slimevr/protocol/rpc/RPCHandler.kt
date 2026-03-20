@@ -10,6 +10,7 @@ import dev.slimevr.protocol.datafeed.createTrackerId
 import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler
 import dev.slimevr.protocol.rpc.firmware.RPCFirmwareUpdateHandler
 import dev.slimevr.protocol.rpc.games.vrchat.RPCVRChatHandler
+import dev.slimevr.protocol.rpc.installinfo.RPCInstallInfoHandler
 import dev.slimevr.protocol.rpc.keybinds.RPCKeybindHandler
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler

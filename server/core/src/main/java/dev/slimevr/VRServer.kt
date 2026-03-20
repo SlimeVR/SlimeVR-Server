@@ -57,6 +57,7 @@ const val SLIMEVR_IDENTIFIER = "dev.slimevr.SlimeVR"
 
 class VRServer @JvmOverloads constructor(
 	bridgeProvider: BridgeProvider = { _, _ -> sequence {} },
+	featureFlagsProvider: (VRServer) -> FeatureFlags = { _ -> FeatureFlags() },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
 	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
@@ -83,6 +84,9 @@ class VRServer @JvmOverloads constructor(
 
 	@JvmField
 	val deviceManager: DeviceManager
+
+	// UwU
+	val featureFlags: FeatureFlags = featureFlagsProvider(this)
 
 	@JvmField
 	val bvhRecorder: BVHRecorder
@@ -130,7 +134,6 @@ class VRServer @JvmOverloads constructor(
 
 
 	init {
-		// UwU
 		deviceManager = DeviceManager(this)
 		serialHandler = serialHandlerProvider(this)
 		serialFlashingHandler = flashingHandlerProvider(this)

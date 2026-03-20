@@ -19,9 +19,11 @@ export function HomePage() {
           <Typography variant="mobile-title">
             {l10n.getString('onboarding-home')}
           </Typography>
-          <Button variant="primary" to="/onboarding/wifi-creds">
-            {l10n.getString('onboarding-home-start')}
-          </Button>
+          <Button
+            variant="primary"
+            id="onboarding-home-start"
+            to="/onboarding/error-collecting-consent"
+          />
         </div>
         <div className="absolute right-4 bottom-4 z-50">
           <LangSelector />
