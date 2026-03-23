@@ -3,14 +3,16 @@
 package dev.slimevr.desktop
 
 import dev.slimevr.VRServer
-import dev.slimevr.config.createConfig
+import dev.slimevr.config.createAppConfig
 import dev.slimevr.solarxr.createSolarXRWebsocketServer
 import dev.slimevr.tracker.udp.createUDPTrackerServer
+import io.eiren.util.resolveConfigDirectory
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>) = runBlocking {
-	val config = createConfig(this)
+	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
+	val config = createAppConfig(this, configFolder = configFolder.toFile())
 	val server = VRServer.create(this)
 
 	launch {

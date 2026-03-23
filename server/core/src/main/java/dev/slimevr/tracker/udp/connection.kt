@@ -4,7 +4,11 @@ import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Context
+import dev.slimevr.context.CustomModule
 import dev.slimevr.context.createContext
+import dev.slimevr.solarxr.SolarXRConnection
+import dev.slimevr.solarxr.SolarXRConnectionActions
+import dev.slimevr.solarxr.SolarXRConnectionState
 import dev.slimevr.tracker.Device
 import dev.slimevr.tracker.DeviceActions
 import dev.slimevr.tracker.DeviceOrigin
@@ -50,6 +54,8 @@ sealed interface UDPConnectionActions {
 }
 
 typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
+typealias UDPConnectionModule = CustomModule<UDPConnectionState, UDPConnectionActions, UDPConnection>
+
 
 data class UDPConnection(
 	val context: UDPConnectionContext,
@@ -59,12 +65,6 @@ data class UDPConnection(
 	val getDevice: () -> Device?,
 	val getTracker: (sensorId: Int) -> Tracker?,
 )
-
-data class UDPConnectionModule(
-	val reducer: ((UDPConnectionState, UDPConnectionActions) -> UDPConnectionState)? = null,
-	val observer: ((UDPConnection) -> Unit)? = null,
-)
-
 
 val PacketModule = UDPConnectionModule(
 	reducer = { s, a ->

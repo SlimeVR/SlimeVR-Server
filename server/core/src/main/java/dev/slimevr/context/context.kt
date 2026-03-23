@@ -6,10 +6,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+interface Module<S, A, C> {
+	val reducer: ((S, A) -> S)?
+	val observer: ((C) -> Unit)?
+}
+
 data class BasicModule<S, A>(
-	val reducer: ((S, A) -> S)? = null,
-	val observer: ((Context<S, A>) -> Unit)? = null,
-)
+	override val reducer: ((S, A) -> S)? = null,
+	override val observer: ((Context<S, A>) -> Unit)? = null,
+) : Module<S, A, Context<S, A>>
+
+data class CustomModule<S, A, C>(
+	override val reducer: ((S, A) -> S)? = null,
+	override val observer: ((C) -> Unit)? = null,
+) : Module<S, A, C>
 
 data class Context<S, in A>(
 	val state: StateFlow<S>,
