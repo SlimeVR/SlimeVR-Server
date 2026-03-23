@@ -77,6 +77,7 @@ dependencies {
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+	implementation("io.ktor:ktor-network:3.1.0")
 	implementation("com.mayakapps.kache:kache:2.1.1")
 
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")

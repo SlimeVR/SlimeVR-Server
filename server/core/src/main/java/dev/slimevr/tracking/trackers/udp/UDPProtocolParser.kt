@@ -5,24 +5,14 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 
 class UDPProtocolParser {
+	data class ParseResult(val packetNumber: Long, val packets: List<UDPPacket>)
+
 	@Throws(IOException::class)
-	fun parse(buf: ByteBuffer, connection: UDPDevice?): Array<UDPPacket?> {
+	fun parse(buf: ByteBuffer): ParseResult {
 		val packetId = buf.int
 		val packetNumber = buf.long
-		if (connection != null) {
-			if (!connection.isNextPacket(packetNumber)) {
-				// Skip packet because it's not next
-				throw IOException(
-					"Out of order packet received: id $packetId, number $packetNumber, last ${connection.lastPacketNumber}, from $connection",
-				)
-			}
-			connection.lastPacket = System.currentTimeMillis()
-			connection.trackers.forEach { (_, tracker) ->
-				tracker.heartbeat()
-			}
-		}
+		val bundlePackets = ArrayList<UDPPacket>()
 		if (packetId == PACKET_BUNDLE) {
-			bundlePackets.clear()
 			while (buf.hasRemaining()) {
 				val bundlePacketLen = Math.min(buf.short.toInt(), buf.remaining())
 				if (bundlePacketLen == 0) continue
@@ -39,9 +29,8 @@ class UDPProtocolParser {
 
 				buf.position(bundlePacketStart + bundlePacketLen)
 			}
-			return bundlePackets.toTypedArray()
+			return ParseResult(packetNumber, bundlePackets)
 		} else if (packetId == PACKET_BUNDLE_COMPACT) {
-			bundlePackets.clear()
 			while (buf.hasRemaining()) {
 				val bundlePacketLen = Math.min(buf.get().toUByte().toInt(), buf.remaining()) // 1 byte
 				if (bundlePacketLen == 0) continue
@@ -58,37 +47,31 @@ class UDPProtocolParser {
 
 				buf.position(bundlePacketStart + bundlePacketLen)
 			}
-			return bundlePackets.toTypedArray()
+			return ParseResult(packetNumber, bundlePackets)
 		}
 
 		val newPacket = getNewPacket(packetId)
 		if (newPacket != null) {
 			newPacket.readData(buf)
-		} else {
-// 			LogManager.log.debug(
-// 				"[UDPProtocolParser] Skipped packet id " +
-// 					packetId + " from " + connection
-// 			)
 		}
-		return arrayOf(newPacket)
+		return ParseResult(packetNumber, if (newPacket != null) listOf(newPacket) else emptyList())
 	}
 
 	@Throws(IOException::class)
-	fun write(buf: ByteBuffer, connection: UDPDevice?, packet: UDPPacket) {
+	fun write(buf: ByteBuffer, packet: UDPPacket) {
 		buf.putInt(packet.packetId)
 		buf.putLong(0) // Packet number is always 0 when sending data to trackers
 		packet.writeData(buf)
 	}
 
 	@Throws(IOException::class)
-	fun writeHandshakeResponse(buf: ByteBuffer, connection: UDPDevice?) {
+	fun writeHandshakeResponse(buf: ByteBuffer) {
 		buf.put(HANDSHAKE_BUFFER)
 	}
 
 	@Throws(IOException::class)
 	fun writeSensorInfoResponse(
 		buf: ByteBuffer,
-		connection: UDPDevice?,
 		packet: UDPPacket15SensorInfo,
 	) {
 		buf.putInt(packet.packetId)
@@ -158,7 +141,6 @@ class UDPProtocolParser {
 		const val PACKET_BUNDLE_COMPACT = 101
 		const val PACKET_PROTOCOL_CHANGE = 200
 		private val HANDSHAKE_BUFFER = ByteArray(64)
-		private val bundlePackets = ArrayList<UDPPacket>(128)
 
 		init {
 			HANDSHAKE_BUFFER[0] = 3

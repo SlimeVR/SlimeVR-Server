@@ -4,8 +4,8 @@ import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
+import io.ktor.network.sockets.SocketAddress
 import java.net.InetAddress
-import java.net.SocketAddress
 import java.util.concurrent.ConcurrentHashMap
 
 class UDPDevice(
@@ -42,9 +42,6 @@ class UDPDevice(
 	var lastSerialUpdate: Long = 0
 
 	@JvmField
-	var lastPacketNumber: Long = -1
-
-	@JvmField
 	var protocol: NetworkProtocol? = null
 
 	@JvmField
@@ -66,12 +63,6 @@ class UDPDevice(
 	}
 
 	var firmwareFeatures = FirmwareFeatures()
-
-	fun isNextPacket(packetId: Long): Boolean {
-		if (packetId != 0L && packetId <= lastPacketNumber) return false
-		lastPacketNumber = packetId
-		return true
-	}
 
 	override fun toString(): String = "udp:/$ipAddress"
 
