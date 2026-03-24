@@ -403,16 +403,16 @@ tracker-infos-packets_received = Paquetes recibidos
 
 ## Tracker settings
 
-tracker-settings-back = Volver a la lista de sensores
-tracker-settings-title = Ajustes de los sensores
+tracker-settings-back = Volver a la lista de trackers
+tracker-settings-title = Ajustes de los trackers
 tracker-settings-assignment_section = Asignación
 tracker-settings-assignment_section-description = Parte del cuerpo asignado al sensor.
 tracker-settings-assignment_section-edit = Editar asignación
 tracker-settings-mounting_section = Posición de montura
-tracker-settings-mounting_section-description = ¿Dónde está montado el sensor?
+tracker-settings-mounting_section-description = ¿Dónde está montado el tracker?
 tracker-settings-mounting_section-edit = Editar montura
 tracker-settings-drift_compensation_section = Permitir compensación de desviación
-tracker-settings-drift_compensation_section-description = ¿Este sensor deberia compensar la desviación?
+tracker-settings-drift_compensation_section-description = ¿Este tracker debería compensar la desviación?
 tracker-settings-drift_compensation_section-edit = Permitir compensación de desviación
 tracker-settings-use_mag = Permitir el uso del magnetómetro en este tracker
 # Multiline!
@@ -423,10 +423,10 @@ tracker-settings-use_mag-description =
 tracker-settings-use_mag-label = Permitir el uso del magnetómetro
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
-tracker-settings-name_section = Nombre del sensor
+tracker-settings-name_section = Nombre del tracker
 tracker-settings-name_section-description = Dale un apodo bonito :)
 tracker-settings-name_section-placeholder = Pata izquierda de Manteca
-tracker-settings-name_section-label = Nombre del sensor
+tracker-settings-name_section-label = Nombre del tracker
 tracker-settings-forget = Olvidar tracker
 tracker-settings-forget-description = Remueve el tracker del servidor de SlimeVR y lo previene de conectarse hasta que el servidor se reinicie. La configuración del tracker no se perderá.
 tracker-settings-forget-label = Olvidar tracker
@@ -448,11 +448,11 @@ tracker-part_card-unassigned = Sin asignar
 
 ## Body assignment menu
 
-body_assignment_menu = ¿Dónde quieres que esté este sensor?
-body_assignment_menu-description = Selecciona la posición donde quieres asignar este sensor. También puedes escoger administrar todos los sensores al mismo tiempo en vez de uno por uno.
+body_assignment_menu = ¿Dónde quieres que esté este tracker?
+body_assignment_menu-description = Selecciona la posición donde quieres asignar este tracker. También puedes escoger administrar todos los trackers al mismo tiempo en vez de uno por uno.
 body_assignment_menu-show_advanced_locations = Mostrar posiciones de asignación avanzadas
-body_assignment_menu-manage_trackers = Administrar todos los sensores
-body_assignment_menu-unassign_tracker = Desasignar sensor
+body_assignment_menu-manage_trackers = Administrar todos los trackers
+body_assignment_menu-unassign_tracker = Desasignar tracker
 
 ## Tracker assignment menu
 
@@ -461,8 +461,8 @@ body_assignment_menu-unassign_tracker = Desasignar sensor
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = ¿Qué sensor asignar a tu
-tracker_selection_menu-NONE = ¿Qué sensor quieres que esté sin asignar?
+-tracker_selection-part = ¿Qué tracker asignar a tu
+tracker_selection_menu-NONE = ¿Qué tracker quieres que esté sin asignar?
 tracker_selection_menu-HEAD = { -tracker_selection-part } cabeza?
 tracker_selection_menu-NECK = { -tracker_selection-part } cuello?
 tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } hombro derecho?
@@ -485,8 +485,8 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } muslo izquie
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } tobillo izquiero?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } pie izquierdo?
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } mando izquierdo?
-tracker_selection_menu-unassigned = Sensores sin asignar
-tracker_selection_menu-assigned = Sensores asignados
+tracker_selection_menu-unassigned = Trackers sin asignar
+tracker_selection_menu-assigned = Trackers asignados
 tracker_selection_menu-dont_assign = No asignar
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
@@ -498,7 +498,7 @@ tracker_selection_menu-neck_warning-cancel = Cancelar
 
 ## Mounting menu
 
-mounting_selection_menu = ¿Dónde quieres colocar el sensor?
+mounting_selection_menu = ¿Dónde quieres colocar el tracker?
 mounting_selection_menu-close = Cerrar
 
 ## Sidebar settings
@@ -506,13 +506,13 @@ mounting_selection_menu-close = Cerrar
 settings-sidebar-title = Ajustes
 settings-sidebar-general = General
 settings-sidebar-steamvr = SteamVR
-settings-sidebar-tracker_mechanics = Mecánicas del sensor
+settings-sidebar-tracker_mechanics = Mecánicas del tracker
 settings-sidebar-stay_aligned = Mantente Alineado
 settings-sidebar-fk_settings = Ajustes de FK
 settings-sidebar-gesture_control = Control de gestos
 settings-sidebar-interface = Interfaz
 settings-sidebar-osc_router = Router OSC
-settings-sidebar-osc_trackers = Sensores OSC de VRChat
+settings-sidebar-osc_trackers = Trackers OSC de VRChat
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
@@ -582,7 +582,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction = Compensación
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
     Predice la desviación horizontal y compensa cuando esta mas allá del rango previamente medido.
-    Activa esto si el sensor esta girando continuamente en el eje horizontal.
+    Activa esto si el tracker esta girando continuamente en el eje horizontal.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Compensación mediante la predicción del desvío
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Advertencia:</b> Solo usa la compensación de desviación si necesitas reiniciar
