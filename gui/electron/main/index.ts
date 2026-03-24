@@ -418,10 +418,15 @@ const spawnServer = async () => {
     } satisfies ServerStatusEvent);
   });
 
+  serverProcess.on('error', (err) => {
+    logger.info({ err }, 'Error launching the java server');
+    app.quit()
+  })
+
   return {
     process: serverProcess,
     close: () => {
-      serverProcess.kill('SIGTERM');
+      serverProcess.kill();
     },
   };
 };
