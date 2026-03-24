@@ -1,7 +1,7 @@
 package dev.slimevr.tracker
 
 import dev.slimevr.VRServer
-import dev.slimevr.context.BasicModule
+import dev.slimevr.context.BasicBehaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
 import io.github.axisangles.ktmath.Quaternion
@@ -32,14 +32,14 @@ sealed interface TrackerActions {
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
-typealias TrackerModule = BasicModule<TrackerState, TrackerActions>
+typealias TrackerBehaviour = BasicBehaviour<TrackerState, TrackerActions>
 
 data class Tracker(
 	val context: TrackerContext
 )
 
 
-val TrackerInfosModule = TrackerModule(
+val TrackerInfosBehaviour = TrackerBehaviour(
 	reducer = { s, a -> if (a is TrackerActions.Update) a.transform(s) else s },
 	observer = {
 		it.state.onEach { state ->
@@ -70,15 +70,15 @@ fun createTracker(
 		sensorType = sensorType
 	)
 
-	val modules = listOf(TrackerInfosModule)
+	val behaviours = listOf(TrackerInfosBehaviour)
 
 	val context = createContext(
 		initialState = trackerState,
-		reducers = modules.map { it.reducer },
+		reducers = behaviours.map { it.reducer },
 		scope = scope,
 	)
 
-	modules.map { it.observer }.forEach { it?.invoke(context) }
+	behaviours.map { it.observer }.forEach { it?.invoke(context) }
 
 	return Tracker(
 		context = context,

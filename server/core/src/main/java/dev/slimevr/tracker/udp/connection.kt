@@ -4,7 +4,7 @@ import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Context
-import dev.slimevr.context.CustomModule
+import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
 import dev.slimevr.solarxr.SolarXRConnection
 import dev.slimevr.solarxr.SolarXRConnectionActions
@@ -54,7 +54,7 @@ sealed interface UDPConnectionActions {
 }
 
 typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
-typealias UDPConnectionModule = CustomModule<UDPConnectionState, UDPConnectionActions, UDPConnection>
+typealias UDPConnectionBehaviour = CustomBehaviour<UDPConnectionState, UDPConnectionActions, UDPConnection>
 
 
 data class UDPConnection(
@@ -66,7 +66,7 @@ data class UDPConnection(
 	val getTracker: (sensorId: Int) -> Tracker?,
 )
 
-val PacketModule = UDPConnectionModule(
+val PacketBehaviour = UDPConnectionBehaviour(
 	reducer = { s, a ->
 		when (a) {
 			is UDPConnectionActions.LastPacket -> {
@@ -107,7 +107,7 @@ val PacketModule = UDPConnectionModule(
 	},
 )
 
-val PingModule = UDPConnectionModule(
+val PingBehaviour = UDPConnectionBehaviour(
 	reducer = { s, a ->
 		when (a) {
 			is UDPConnectionActions.StartPing -> {
@@ -161,7 +161,7 @@ val PingModule = UDPConnectionModule(
 	},
 )
 
-val HandshakeModule = UDPConnectionModule(
+val HandshakeBehaviour = UDPConnectionBehaviour(
 	reducer = { s, a ->
 		when (a) {
 			is UDPConnectionActions.Handshake -> s.copy(
@@ -201,7 +201,7 @@ val HandshakeModule = UDPConnectionModule(
 	},
 )
 
-val DeviceStatsModule = UDPConnectionModule(
+val DeviceStatsBehaviour = UDPConnectionBehaviour(
 	observer = {
 		it.packetEvents.on<BatteryLevel> { event ->
 			val device = it.getDevice() ?: return@on
@@ -224,7 +224,7 @@ val DeviceStatsModule = UDPConnectionModule(
 	}
 )
 
-val SensorInfoModule = UDPConnectionModule(
+val SensorInfoBehaviour = UDPConnectionBehaviour(
 	reducer = { s, a ->
 		when (a) {
 			is UDPConnectionActions.AssignTracker -> {
@@ -284,7 +284,7 @@ val SensorInfoModule = UDPConnectionModule(
 	}
 )
 
-val SensorRotationModule = UDPConnectionModule(
+val SensorRotationBehaviour = UDPConnectionBehaviour(
 	observer = { context ->
 		context.packetEvents.on<RotationData> { event ->
 			val tracker = context.getTracker(event.data.sensorId) ?: return@on
@@ -306,13 +306,13 @@ fun createUDPConnectionContext(
 	serverContext: VRServer,
 	scope: CoroutineScope,
 ): UDPConnection {
-	val modules = listOf(
-		PacketModule,
-		HandshakeModule,
-		PingModule,
-		DeviceStatsModule,
-		SensorInfoModule,
-		SensorRotationModule
+	val behaviours = listOf(
+		PacketBehaviour,
+		HandshakeBehaviour,
+		PingBehaviour,
+		DeviceStatsBehaviour,
+		SensorInfoBehaviour,
+		SensorRotationBehaviour
 	)
 
 	val context = createContext(
@@ -327,7 +327,7 @@ fun createUDPConnectionContext(
 			deviceId = null,
 			trackerIds = listOf()
 		),
-		reducers = modules.map { it.reducer },
+		reducers = behaviours.map { it.reducer },
 		scope = scope,
 	)
 
@@ -357,7 +357,7 @@ fun createUDPConnectionContext(
 		}
 	)
 
-	modules.map { it.observer }.forEach { it?.invoke(conn) }
+	behaviours.map { it.observer }.forEach { it?.invoke(conn) }
 
 	return conn
 }

@@ -22,6 +22,8 @@ fun main(args: Array<String>) = runBlocking {
 	launch {
 		createSolarXRWebsocketServer(server)
 	}
-	createIpcServers(server)
+	launch {
+		createIpcServers(server)
+	}
 	Unit
 }

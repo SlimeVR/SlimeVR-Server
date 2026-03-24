@@ -82,7 +82,7 @@ fun createDatafeedFrame(
 }
 
 
-val DataFeedInitModule = SolarXRConnectionModule(
+val DataFeedInitBehaviour = SolarXRConnectionBehaviour(
 	observer = { context ->
 		context.dataFeedDispatcher.on<StartDataFeed> { event ->
 			val datafeeds = event.dataFeeds ?: return@on

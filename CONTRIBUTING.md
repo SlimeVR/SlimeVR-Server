@@ -22,6 +22,8 @@ Now you can open the codebase in [IDEA](https://www.jetbrains.com/idea/download/
 
 ### Java (server)
 
+Before contributing to the server, read [server/README.md](server/README.md) for an overview of its architecture and design guidelines.
+
 The Java code is built with `gradle`, a CLI tool that manages java projects and their
 dependencies.
 - You can run the server by running `./gradlew run` in your IDE's terminal.

@@ -2,7 +2,7 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.VRServer
 import dev.slimevr.context.Context
-import dev.slimevr.context.CustomModule
+import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -24,7 +24,7 @@ sealed interface SolarXRConnectionActions {
 }
 
 typealias SolarXRConnectionContext = Context<SolarXRConnectionState, SolarXRConnectionActions>
-typealias SolarXRConnectionModule = CustomModule<SolarXRConnectionState, SolarXRConnectionActions, SolarXRConnection>
+typealias SolarXRConnectionBehaviour = CustomBehaviour<SolarXRConnectionState, SolarXRConnectionActions, SolarXRConnection>
 
 
 class PacketDispatcher<T : Any> {
@@ -73,11 +73,11 @@ fun createSolarXRConnection(
 		datafeedTimers = listOf()
 	)
 
-	val modules = listOf(DataFeedInitModule)
+	val behaviours = listOf(DataFeedInitBehaviour)
 
 	val context = createContext(
 		initialState = state,
-		reducers = modules.map { it.reducer },
+		reducers = behaviours.map { it.reducer },
 		scope = scope,
 	)
 
@@ -89,7 +89,7 @@ fun createSolarXRConnection(
 		onSend,
 	)
 
-	modules.map { it.observer }.forEach { it?.invoke(conn) }
+	behaviours.map { it.observer }.forEach { it?.invoke(conn) }
 
 	return conn
 }

@@ -58,20 +58,18 @@ suspend fun handleDriverConnection(
 							),
 						),
 					)
-					launch {
-						tracker.context.state.collect { ts ->
-							sendMsg(
-								ProtobufMessage(
-									position = Position(
-										tracker_id = ts.id,
-										qx = ts.rawRotation.x,
-										qy = ts.rawRotation.y,
-										qz = ts.rawRotation.z,
-										qw = ts.rawRotation.w,
-									),
+					tracker.context.state.collect { ts ->
+						sendMsg(
+							ProtobufMessage(
+								position = Position(
+									tracker_id = ts.id,
+									qx = ts.rawRotation.x,
+									qy = ts.rawRotation.y,
+									qz = ts.rawRotation.z,
+									qw = ts.rawRotation.w,
 								),
-							)
-						}
+							),
+						)
 					}
 				}
 			}

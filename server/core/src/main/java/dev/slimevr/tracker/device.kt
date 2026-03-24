@@ -2,7 +2,7 @@ package dev.slimevr.tracker
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
-import dev.slimevr.context.BasicModule
+import dev.slimevr.context.BasicBehaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +33,7 @@ sealed interface DeviceActions {
 
 
 
-val DeviceStatsModule = DeviceModule(
+val DeviceStatsBehaviour = DeviceBehaviour(
 	reducer = { s, a -> if (a is DeviceActions.Update) a.transform(s) else s },
 	observer = {
 		it.state.onEach { state ->
@@ -43,7 +43,7 @@ val DeviceStatsModule = DeviceModule(
 )
 
 typealias DeviceContext = Context<DeviceState, DeviceActions>
-typealias DeviceModule = BasicModule<DeviceState, DeviceActions>
+typealias DeviceBehaviour = BasicBehaviour<DeviceState, DeviceActions>
 
 data class Device(
 	val context: DeviceContext,
@@ -61,15 +61,15 @@ fun createDevice(scope: CoroutineScope, id: Int, address: String, origin: Device
 		signalStrength = null,
 	)
 
-	val modules = listOf(DeviceStatsModule)
+	val behaviours = listOf(DeviceStatsBehaviour)
 
 	val context = createContext(
 		initialState = deviceState,
-		reducers = modules.map { it.reducer },
+		reducers = behaviours.map { it.reducer },
 		scope = scope,
 	)
 
-	modules.map { it.observer }.forEach { it?.invoke(context) }
+	behaviours.map { it.observer }.forEach { it?.invoke(context) }
 
 	return Device(
 		context = context,

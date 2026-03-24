@@ -1,6 +1,6 @@
 package dev.slimevr
 
-import dev.slimevr.context.BasicModule
+import dev.slimevr.context.BasicBehaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
 import dev.slimevr.tracker.Device
@@ -22,9 +22,9 @@ sealed interface VRServerActions {
 }
 
 typealias VRServerContext = Context<VRServerState, VRServerActions>
-typealias VRServerModule = BasicModule<VRServerState, VRServerActions>
+typealias VRServerBehaviour = BasicBehaviour<VRServerState, VRServerActions>
 
-val BaseModule = VRServerModule(
+val BaseBehaviour = VRServerBehaviour(
 	reducer = { s, a ->
 		when (a) {
 			is VRServerActions.NewTracker -> s.copy(trackers = s.trackers + (a.trackerId to a.context))
@@ -54,15 +54,15 @@ data class VRServer(
 				devices = mapOf(),
 			)
 
-			val modules = listOf(BaseModule)
+			val behaviours = listOf(BaseBehaviour)
 
 			val context = createContext(
 				initialState = server,
-				reducers = modules.map { it.reducer },
+				reducers = behaviours.map { it.reducer },
 				scope = scope,
 			)
 
-			modules.map { it.observer }.forEach { it?.invoke(context) }
+			behaviours.map { it.observer }.forEach { it?.invoke(context) }
 
 			return VRServer(
 				context = context,
