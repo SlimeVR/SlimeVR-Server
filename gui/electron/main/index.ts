@@ -423,6 +423,10 @@ const spawnServer = async () => {
     app.quit()
   })
 
+  serverProcess.on('exit', () => {
+    logger.info('Server process exiting');
+  })
+
   return {
     process: serverProcess,
     close: () => {
