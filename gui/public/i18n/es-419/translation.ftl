@@ -355,6 +355,7 @@ tracker-table-column-name = Nombre
 tracker-table-column-type = Tipo
 tracker-table-column-battery = Batería
 tracker-table-column-ping = Latencia
+tracker-table-column-packet_loss = Pérdida de paquetes
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
@@ -396,6 +397,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Habilitado
        *[NOT_SUPPORTED] No soportado
     }
+tracker-infos-packet_loss = Pérdida de paquetes
+tracker-infos-packets_lost = Paquetes perdidos
+tracker-infos-packets_received = Paquetes recibidos
 
 ## Tracker settings
 
@@ -600,6 +604,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Usa el magnetómetro en todos los trackers que tienen un firmware compatible, lo que reduce la desviación en entornos magnéticos estables.
     Se puede desactivar por sensor en la configuración del sensor. <b>¡Por favor, no apagues ninguno de los trackers mientras activas esta opción!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar magnetómetro en trackers
+settings-general-tracker_mechanics-trackers_over_usb = Trackers por USB
 settings-stay_aligned = Mantente Alineado
 settings-stay_aligned-description = Mantente Alineado reduce el desvío ajustando gradualmente tus trackers para calzar tus poses relajadas.
 settings-stay_aligned-setup-label = Configurar Mantente Alineado
@@ -1412,6 +1417,7 @@ onboarding-stay_aligned-previous_step = Atrás
 onboarding-stay_aligned-next_step = Siguiente
 onboarding-stay_aligned-restart = Reiniciar
 onboarding-stay_aligned-done = Hecho
+onboarding-stay_aligned-manual_mounting-done = Hecho
 
 ## Home
 
