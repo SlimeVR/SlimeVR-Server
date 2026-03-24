@@ -15,6 +15,9 @@ import dev.slimevr.tracker.createTracker
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -36,6 +39,8 @@ suspend fun handleDriverConnection(
 
 	sendMsg(ProtobufMessage(version = Version(protocol_version = PROTOCOL_VERSION)))
 
+	// Should be safe, only accessed inside state.collect below. StateFlow never delivers
+	// two emissions concurrently to the same collector.
 	val subscribedTrackers = mutableSetOf<Int>()
 
 	val observerJob = launch {
@@ -114,7 +119,7 @@ suspend fun handleFeederConnection(
 				scope = this,
 				id = trackerId,
 				deviceId = deviceId,
-				sensorType = ImuType.MPU9250,
+				sensorType = ImuType.MPU9250, // TODO: prob need to make sensor type optional
 				hardwareId = msg.tracker_added.tracker_serial,
 				origin = DeviceOrigin.FEEDER,
 				serverContext = server,
@@ -132,6 +137,7 @@ suspend fun handleFeederConnection(
 							y = msg.position.qy,
 							z = msg.position.qz,
 						),
+						// TODO: add position data
 					)
 				},
 			)

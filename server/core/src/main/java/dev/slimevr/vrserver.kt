@@ -9,9 +9,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import java.util.concurrent.atomic.AtomicInteger
 
 data class VRServerState(
-	val handleId: Int,
 	val trackers: Map<Int, Tracker>,
 	val devices: Map<Int, Device>,
 )
@@ -27,15 +27,8 @@ typealias VRServerModule = BasicModule<VRServerState, VRServerActions>
 val BaseModule = VRServerModule(
 	reducer = { s, a ->
 		when (a) {
-			is VRServerActions.NewTracker -> s.copy(
-				trackers = s.trackers + (a.trackerId to a.context),
-				handleId = a.trackerId,
-			)
-
-			is VRServerActions.NewDevice -> s.copy(
-				devices = s.devices + (a.deviceId to a.context),
-				handleId = a.deviceId,
-			)
+			is VRServerActions.NewTracker -> s.copy(trackers = s.trackers + (a.trackerId to a.context))
+			is VRServerActions.NewDevice -> s.copy(devices = s.devices + (a.deviceId to a.context))
 		}
 	},
 	observer = { context ->
@@ -47,15 +40,16 @@ val BaseModule = VRServerModule(
 
 data class VRServer(
 	val context: VRServerContext,
+	// Moved this outside of the context to make this faster and safer to use
+	private val handleCounter: AtomicInteger,
 ) {
-	fun nextHandle() = context.state.value.handleId + 1
+	fun nextHandle() = handleCounter.incrementAndGet()
 	fun getTracker(id: Int) = context.state.value.trackers[id]
 	fun getDevice(id: Int) = context.state.value.devices[id]
 
 	companion object {
 		fun create(scope: CoroutineScope): VRServer {
 			val server = VRServerState(
-				handleId = 0,
 				trackers = mapOf(),
 				devices = mapOf(),
 			)
@@ -72,6 +66,7 @@ data class VRServer(
 
 			return VRServer(
 				context = context,
+				handleCounter = AtomicInteger(0),
 			)
 		}
 	}

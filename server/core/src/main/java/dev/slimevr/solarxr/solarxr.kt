@@ -6,7 +6,6 @@ import dev.slimevr.context.CustomModule
 import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import solarxr_protocol.data_feed.DataFeedConfig
@@ -35,19 +34,14 @@ class PacketDispatcher<T : Any> {
 
 	@Suppress("UNCHECKED_CAST")
 	inline fun <reified P : T> on(crossinline callback: suspend (P) -> Unit) {
-		runBlocking {
-			mutex.withLock {
-				val list =
-					listeners.getOrPut(P::class as KClass<out T>) { mutableListOf() }
-				list.add { callback(it as P) }
-			}
+		synchronized(this) {
+			listeners.getOrPut(P::class as KClass<out T>) { mutableListOf() }
+				.add { callback(it as P) }
 		}
 	}
 
 	fun onAny(callback: suspend (T) -> Unit) {
-		runBlocking {
-			mutex.withLock { globalListeners.add(callback) }
-		}
+		synchronized(this) { globalListeners.add(callback) }
 	}
 
 	suspend fun emit(event: T) {
