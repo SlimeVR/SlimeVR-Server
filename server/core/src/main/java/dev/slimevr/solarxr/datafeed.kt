@@ -125,7 +125,9 @@ val DataFeedInitModule = SolarXRConnectionModule(
 				)
 			)
 
-			timers.joinAll()
+			context.context.scope.launch {
+				timers.joinAll()
+			}
 		}
 
 		context.dataFeedDispatcher.on<PollDataFeed> { event ->
