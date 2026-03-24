@@ -3,6 +3,7 @@ package dev.slimevr.config
 import dev.slimevr.context.Context
 import dev.slimevr.context.CustomModule
 import dev.slimevr.context.createContext
+import dev.slimevr.tracker.DeviceActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -57,6 +58,7 @@ data class UserConfig(
 val DefaultUserModule = UserConfigModule(
 	reducer = { s, a ->
 		when (a) {
+			is UserConfigActions.Update -> a.transform(s)
 			is UserConfigActions.LoadProfile -> a.newState
 			else -> s
 		}

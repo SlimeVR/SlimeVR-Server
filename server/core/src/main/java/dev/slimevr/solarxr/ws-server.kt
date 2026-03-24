@@ -8,13 +8,9 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.*
 import io.ktor.websocket.Frame
-import io.ktor.websocket.readBytes
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import solarxr_protocol.MessageBundle
+import solarxr_protocol.rpc.ResetRequest
 import java.nio.ByteBuffer
-import kotlin.reflect.KClass
 
 const val SOLARXR_PORT = 21110
 
@@ -27,10 +23,16 @@ suspend fun onSolarXRMessage(message: ByteBuffer, context: SolarXRConnection) {
 		context.dataFeedDispatcher.emit(msg)
 	}
 
+	// FIXME: temporary test
+	context.rpcDispatcher.on<ResetRequest> {
+		println("RESET $it")
+	}
+
 	messageBundle.rpcMsgs?.forEach {
 		val msg = it.message ?: return;
 		context.rpcDispatcher.emit(msg)
 	}
+
 }
 
 

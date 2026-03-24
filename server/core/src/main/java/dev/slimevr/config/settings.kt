@@ -41,6 +41,7 @@ data class SettingsState(
 )
 
 sealed interface SettingsActions {
+	data class Update(val transform: SettingsState.() -> SettingsState) : SettingsActions
 	data class LoadProfile(val newState: SettingsState) : SettingsActions
 }
 
@@ -56,7 +57,9 @@ data class Settings(
 val DefaultSettingsModule = SettingsModule(
 	reducer = { s, a ->
 		when (a) {
+			is SettingsActions.Update -> a.transform(s)
 			is SettingsActions.LoadProfile -> a.newState
+			else -> s
 		}
 	},
 )

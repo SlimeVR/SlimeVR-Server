@@ -14,6 +14,7 @@ plugins {
 	id("com.gradleup.shadow")
 	id("com.github.gmazzo.buildconfig")
 	id("org.ajoberstar.grgit")
+	id("com.squareup.wire")
 }
 
 kotlin {
@@ -52,6 +53,23 @@ allprojects {
 		maven(url = "https://jitpack.io")
 		maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
 	}
+}
+
+val downloadDriverProto by tasks.registering {
+	val protoFile = layout.buildDirectory.file("proto/ProtobufMessages.proto")
+	outputs.file(protoFile)
+	doLast {
+		val url = "https://raw.githubusercontent.com/SlimeVR/SlimeVR-OpenVR-Driver/main/src/bridge/ProtobufMessages.proto"
+		protoFile.get().asFile.parentFile.mkdirs()
+		uri(url).toURL().openStream().use { it.copyTo(protoFile.get().asFile.outputStream()) }
+	}
+}
+
+wire {
+	sourcePath {
+		srcDir(downloadDriverProto.map { layout.buildDirectory.dir("proto") })
+	}
+	kotlin { }
 }
 
 dependencies {

@@ -4,9 +4,10 @@ package dev.slimevr.desktop
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.createAppConfig
+import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.solarxr.createSolarXRWebsocketServer
 import dev.slimevr.tracker.udp.createUDPTrackerServer
-import io.eiren.util.resolveConfigDirectory
+import dev.slimevr.resolveConfigDirectory
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -21,5 +22,6 @@ fun main(args: Array<String>) = runBlocking {
 	launch {
 		createSolarXRWebsocketServer(server)
 	}
+	createIpcServers(server)
 	Unit
 }
