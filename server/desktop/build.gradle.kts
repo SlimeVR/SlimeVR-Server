@@ -73,8 +73,7 @@ tasks.shadowJar {
 		exclude(dependency("com.fazecast:jSerialComm:.*"))
 		exclude(dependency("net.java.dev.jna:.*:.*"))
 		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
-		exclude(dependency("com.github.HannahPadd:DbusGlobalShortcutsWayland:5010e75bd4"))
-
+		exclude(dependency("com.github.HannahPadd:DbusGlobalShortcutsWayland:v0.1.0"))
 		exclude(project(":solarxr-protocol"))
 	}
 	archiveBaseName.set("slimevr")

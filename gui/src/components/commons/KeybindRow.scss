@@ -1,0 +1,16 @@
+:root {
+  --row-h: 80px;
+}
+
+.keybind-row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  height: var(--row-h);
+  align-items: center;
+  gap: 20px;
+}
+
+  .number-selector::after {
+    gap: 0;
+  }

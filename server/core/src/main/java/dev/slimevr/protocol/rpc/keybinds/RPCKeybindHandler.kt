@@ -39,6 +39,7 @@ class RPCKeybindHandler(
 
 
 	private fun onKeybindRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		println("Received KeybindsRequest")
 		val fbb = FlatBufferBuilder(32)
 		val response = buildKeybindResponse(fbb)
 		val outbound = rpcHandler.createRPCMessage(
@@ -51,6 +52,7 @@ class RPCKeybindHandler(
 	}
 
 	private fun onChangeKeybindRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		println("Received Keybinds Change request")
 		val req = (messageHeader.message(ChangeKeybindRequest()) as ChangeKeybindRequest).unpack()
 
 		keybindingConfig.fullResetBinding = req.keybind[KeybindName.FULL_RESET].keybindValue

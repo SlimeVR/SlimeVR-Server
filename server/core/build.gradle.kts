@@ -79,7 +79,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 	implementation("com.mayakapps.kache:kache:2.1.1")
 
-	implementation("com.github.HannahPadd:DbusGlobalShortcutsWayland:5010e75bd4")
+	implementation("com.github.HannahPadd:DbusGlobalShortcutsWayland:v0.1.0")
 
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")
 

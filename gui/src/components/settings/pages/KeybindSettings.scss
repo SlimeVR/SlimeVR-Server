@@ -1,0 +1,22 @@
+:root {
+  --keybindrow-w: 1fr;
+  --top-row-h: 10px;
+  --keybindrow-h: 10px;
+  --buttonrow-h: 10px;
+}
+
+.keybind-settings {
+  display: grid;
+
+  grid-template:
+    'n v d e' auto
+    'k k k k' auto
+    'b . . .' auto
+    / 200px 1fr 120px auto;
+
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+
+  place-items: center;
+
+}

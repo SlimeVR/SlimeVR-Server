@@ -3,19 +3,22 @@ import { Button } from './Button';
 import { NumberSelector } from './NumberSelector';
 import { KeybindRecorder } from './KeybindRecorder';
 import { useLocaleConfig } from '@/i18n/config';
+import { Typography } from './Typography';
+import './KeybindRow.scss';
 
 export function KeybindRow({
-  label,
+  id,
   control,
   resetField,
-  bindingName,
-  delayName,
+  name,
+  delay,
 }: {
-  label: string;
+  id?: string;
+  label?: string;
   control: Control<any>;
   resetField: UseFormResetField<any>;
-  bindingName: string;
-  delayName: string;
+  name: string;
+  delay: string;
 }) {
   const { currentLocales } = useLocaleConfig();
   const secondsFormat = new Intl.NumberFormat(currentLocales, {
@@ -24,50 +27,41 @@ export function KeybindRow({
     unitDisplay: 'narrow',
     maximumFractionDigits: 2,
   });
+
   return (
-    <tr className="border-b border-background-60 h-20">
-      <td className="px-6 py-4 pr-4">
-        <label className="text-sm font-medium text-background-10">
-          {label}
-        </label>
-      </td>
-      <td className="px-4">
-        <Controller
-          control={control}
-          name={bindingName}
-          render={({ field }) => (
-            <KeybindRecorder
-              keys={field.value ?? []}
-              onKeysChange={field.onChange}
-              ref={field.ref}
-            />
-          )}
-        />
-      </td>
-      <td className="px-4">
+    <div className="keybind-row">
+      <label className="text-sm font-medium text-background-10">
+        <Typography id={id} />
+      </label>
+      <Controller
+        control={control}
+        name={name}
+        render={({ field }) => (
+          <KeybindRecorder
+            keys={field.value}
+            onKeysChange={field.onChange}
+            ref={field.ref}
+          />
+        )}
+      />
         <NumberSelector
           control={control}
-          name={delayName}
+          name={delay}
           valueLabelFormat={(value) => secondsFormat.format(value)}
           min={0}
           max={10}
           step={0.2}
         />
-      </td>
-
-      <td className="px-2">
-        <div className="flex gap-2 justify-center px-4">
-          <Button
-            variant="primary"
-            onClick={() => {
-              resetField(bindingName);
-              resetField(delayName);
-            }}
-          >
-            Reset
-          </Button>
-        </div>
-      </td>
-    </tr>
+      <div className='max-w-[45px]'>
+        <Button
+          id="settings-keybinds_reset-button"
+          variant="primary"
+          onClick={() => {
+            resetField(name);
+            resetField(delay);
+          }}
+        />
+      </div>
+    </div>
   );
 }

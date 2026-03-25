@@ -5,6 +5,7 @@ import {
   ResetResponseT,
   RpcMessage,
   StartDataFeedT,
+  InstalledInfoResponseT
 } from 'solarxr-protocol';
 import { handleResetSounds } from '@/sounds/sounds';
 import { useConfig } from './config';
@@ -18,10 +19,11 @@ import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
 export interface AppContext {
   currentFirmwareRelease: FirmwareRelease | null;
+  installInfo: InstalledInfoResponseT | null;
 }
 
 export function useProvideAppContext(): AppContext {
-  const { useRPCPacket, sendDataFeedPacket, useDataFeedPacket, isConnected } =
+  const { useRPCPacket, sendRPCPacket, sendDataFeedPacket, useDataFeedPacket, isConnected } =
     useWebsocketAPI();
   const { changeLocales } = useContext(LangContext);
   const { config } = useConfig();
@@ -33,6 +35,8 @@ export function useProvideAppContext(): AppContext {
 
   const [currentFirmwareRelease, setCurrentFirmwareRelease] =
     useState<FirmwareRelease | null>(null);
+
+  const [installInfo, setInstallInfo] = useState<InstalledInfoResponseT | null>(null)
 
   useEffect(() => {
     if (isConnected) {
@@ -49,6 +53,24 @@ export function useProvideAppContext(): AppContext {
       setBones(packet.bones);
     }
   });
+
+  useEffect(() => {
+    sendRPCPacket(
+      RpcMessage.InstalledInfoRequest,
+      new InstalledInfoResponseT()
+    );
+  }, []);
+
+  useRPCPacket(
+    RpcMessage.InstalledInfoResponse,
+    ({ isUdevInstalled, isWayland }: InstalledInfoResponseT) => {
+
+      setInstallInfo(new InstalledInfoResponseT(
+        isUdevInstalled,
+        isWayland
+      ));
+    }
+  );
 
   useEffect(() => {
     updateSentryContext(devices);
@@ -85,6 +107,7 @@ export function useProvideAppContext(): AppContext {
 
   return {
     currentFirmwareRelease,
+    installInfo
   };
 }
 

@@ -4,8 +4,9 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { Typography } from '@/components/commons/Typography';
-import { Localized, useLocalization } from '@fluent/react';
-import { useForm } from 'react-hook-form';
+import { useLocalization } from '@fluent/react';
+import { DefaultValues, useForm } from 'react-hook-form';
+import './KeybindSettings.scss';
 import { ReactNode, useEffect } from 'react';
 import { KeybindRow } from '@/components/commons/KeybindRow';
 import { Button } from '@/components/commons/Button';
@@ -17,7 +18,30 @@ import {
   KeybindT,
   KeybindName,
   ChangeKeybindRequestT,
+  OpenUriRequestT,
 } from 'solarxr-protocol';
+import { useAppContext } from '@/hooks/app';
+
+function Table({ children }: { children: ReactNode }) {
+  return (
+    <table className="min-w-full divide-y divide-background-50">
+      <thead>
+        <tr>
+          <th scope="col" className="px-6 py-3 text-start">
+            <Typography id="keybind_config-keybind_name" />
+          </th>
+          <th scope="col" className="px-6 py-3 text-middle">
+            <Typography id="keybind_config-keybind_value" />
+          </th>
+          <th scope="col" className="px-6 py-3 text-middle">
+            <Typography id="keybind_config-keybind_delay" />
+          </th>
+        </tr>
+      </thead>
+      <tbody>{children}</tbody>
+    </table>
+  );
+}
 
 export type KeybindsForm = {
   names: {
@@ -67,39 +91,17 @@ const defaultValues: KeybindsForm = {
   },
 };
 
-export function useKeybindsForm() {
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState,
-    control,
-    getValues,
-    resetField,
-    watch,
-  } = useForm<KeybindsForm>({
-    defaultValues,
-  });
-
-  return {
-    control,
-    register,
-    reset,
-    handleSubmit,
-    formState,
-    getValues,
-    resetField,
-    watch,
-  };
-}
-
 export function KeybindSettings() {
   const { l10n } = useLocalization();
-  const { control, reset, handleSubmit, watch, getValues, resetField } =
-    useKeybindsForm();
+  const { control, reset, handleSubmit, watch, resetField, getValues } =
+    useForm<KeybindsForm>({
+      defaultValues,
+    });
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { installInfo } = useAppContext();
 
   const onSubmit = (values: KeybindsForm) => {
+    console.log('Onsubmit in KeybindSettings');
     const keybinds = new ChangeKeybindRequestT();
 
     const fullResetKeybind = new KeybindT();
@@ -134,7 +136,6 @@ export function KeybindSettings() {
     feetResetKeybind.keybindDelay = values.delays.pauseTrackingDelay;
     keybinds.keybind.push(feetResetKeybind);
 
-    console.log(`Delay ${Number(fullResetKeybind.keybindDelay)}`);
     sendRPCPacket(RpcMessage.ChangeKeybindRequest, keybinds);
   };
 
@@ -150,162 +151,151 @@ export function KeybindSettings() {
   useRPCPacket(RpcMessage.KeybindResponse, ({ keybind }: KeybindResponseT) => {
     if (!keybind) return;
 
-    const keybindValues: KeybindsForm = {
-      names: {
-        fullResetName: KeybindName.FULL_RESET,
-        yawResetName: KeybindName.YAW_RESET,
-        mountingResetName: KeybindName.MOUNTING_RESET,
-        pauseTrackingName: KeybindName.PAUSE_TRACKING,
-        feetResetName: KeybindName.FEET_MOUNTING_RESET,
+    reset(
+      {
+        names: {
+          fullResetName: KeybindName.FULL_RESET,
+          yawResetName: KeybindName.YAW_RESET,
+          mountingResetName: KeybindName.MOUNTING_RESET,
+          pauseTrackingName: KeybindName.PAUSE_TRACKING,
+          feetResetName: KeybindName.FEET_MOUNTING_RESET,
+        },
+        bindings: {
+          fullResetBinding:
+            (typeof keybind[KeybindName.FULL_RESET].keybindValue === 'string'
+              ? keybind[KeybindName.FULL_RESET].keybindValue
+              : ''
+            ).split('+') || defaultValues.bindings.fullResetBinding,
+          yawResetBinding:
+            (typeof keybind[KeybindName.YAW_RESET].keybindValue === 'string'
+              ? keybind[KeybindName.YAW_RESET].keybindValue
+              : ''
+            ).split('+') || defaultValues.bindings.yawResetBinding,
+          mountingResetBinding:
+            (typeof keybind[KeybindName.MOUNTING_RESET].keybindValue ===
+            'string'
+              ? keybind[KeybindName.MOUNTING_RESET].keybindValue
+              : ''
+            ).split('+') || defaultValues.bindings.mountingResetBinding,
+          pauseTrackingBinding:
+            (typeof keybind[KeybindName.PAUSE_TRACKING].keybindValue ===
+            'string'
+              ? keybind[KeybindName.PAUSE_TRACKING].keybindValue
+              : ''
+            ).split('+') || defaultValues.bindings.pauseTrackingBinding,
+          feetResetBinding:
+            (typeof keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue ===
+            'string'
+              ? keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue
+              : ''
+            ).split('+') || defaultValues.bindings.feetResetBinding,
+        },
+        delays: {
+          fullResetDelay:
+            keybind[KeybindName.FULL_RESET].keybindDelay ||
+            defaultValues.delays.fullResetDelay,
+          yawResetDelay:
+            keybind[KeybindName.YAW_RESET].keybindDelay ||
+            defaultValues.delays.yawResetDelay,
+          mountingResetDelay:
+            keybind[KeybindName.MOUNTING_RESET].keybindDelay ||
+            defaultValues.delays.mountingResetDelay,
+          pauseTrackingDelay:
+            keybind[KeybindName.PAUSE_TRACKING].keybindDelay ||
+            defaultValues.delays.pauseTrackingDelay,
+          feetResetDelay:
+            keybind[KeybindName.FEET_MOUNTING_RESET].keybindDelay ||
+            defaultValues.delays.feetResetDelay,
+        },
       },
-      bindings: {
-        fullResetBinding:
-          (typeof keybind[KeybindName.FULL_RESET].keybindValue === 'string'
-            ? keybind[KeybindName.FULL_RESET].keybindValue
-            : ''
-          ).split('+') || defaultValues.bindings.fullResetBinding,
-
-        yawResetBinding:
-          (typeof keybind[KeybindName.YAW_RESET].keybindValue === 'string'
-            ? keybind[KeybindName.YAW_RESET].keybindValue
-            : ''
-          ).split('+') || defaultValues.bindings.yawResetBinding,
-
-        mountingResetBinding:
-          (typeof keybind[KeybindName.MOUNTING_RESET].keybindValue === 'string'
-            ? keybind[KeybindName.MOUNTING_RESET].keybindValue
-            : ''
-          ).split('+') || defaultValues.bindings.mountingResetBinding,
-
-        pauseTrackingBinding:
-          (typeof keybind[KeybindName.PAUSE_TRACKING].keybindValue === 'string'
-            ? keybind[KeybindName.PAUSE_TRACKING].keybindValue
-            : ''
-          ).split('+') || defaultValues.bindings.pauseTrackingBinding,
-
-        feetResetBinding:
-          (typeof keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue ===
-          'string'
-            ? keybind[KeybindName.FEET_MOUNTING_RESET].keybindValue
-            : ''
-          ).split('+') || defaultValues.bindings.feetResetBinding,
-      },
-      delays: {
-        fullResetDelay:
-          keybind[KeybindName.FULL_RESET].keybindDelay ||
-          defaultValues.delays.fullResetDelay,
-        yawResetDelay:
-          keybind[KeybindName.YAW_RESET].keybindDelay ||
-          defaultValues.delays.yawResetDelay,
-        mountingResetDelay:
-          keybind[KeybindName.MOUNTING_RESET].keybindDelay ||
-          defaultValues.delays.mountingResetDelay,
-        pauseTrackingDelay:
-          keybind[KeybindName.PAUSE_TRACKING].keybindDelay ||
-          defaultValues.delays.mountingResetDelay,
-        feetResetDelay:
-          keybind[KeybindName.FEET_MOUNTING_RESET].keybindDelay ||
-          defaultValues.delays.feetResetDelay,
-      },
-    };
-
-    reset({ ...getValues(), ...keybindValues });
+      {
+        keepDefaultValues: true,
+      }
+    );
   });
 
-  const handleResetButton = () => {
-    reset(defaultValues);
+  const handleOpenSystemSettingsButton = () => {
+    sendRPCPacket(RpcMessage.OpenUriRequest, new OpenUriRequestT());
   };
 
-  function Table({ children }: { children: ReactNode }) {
-    return (
-      <table className="min-w-full divide-y divide-background-50">
-        <thead>
-          <tr>
-            <th scope="col" className="px-6 py-3 text-start">
-              <Localized id={'keybind_config-keybind_name'}>
-                <Typography />
-              </Localized>
-              Keybind
-            </th>
-            <th scope="col" className="px-6 py-3 text-middle">
-              <Localized id={'keybind_config-keybind_value'}>
-                <Typography />
-              </Localized>
-              Combination
-            </th>
-            <th scope="col" className="px-6 py-3 text-middle">
-              <Localized id={'keybind_config-keybind_delay'}>
-                <Typography />
-              </Localized>
-              Delay before trigger (S)
-            </th>
-          </tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </table>
-    );
-  }
+  const handleResetAllButton = () => {
+    reset(defaultValues);
+  };
 
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
         <SettingsPagePaneLayout icon={<WrenchIcon />} id="keybinds">
-          <>
-            <Typography variant="main-title" id="settings-keybinds" />
-            <div className="flex flex-col pt-2 pb-4">
-              {l10n
-                .getString('settings-keybinds-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography key={i}>{line}</Typography>
-                ))}
+          <Typography variant="main-title" id="settings-keybinds" />
+          <div className="flex flex-col pt-2 pb-4">
+            {l10n
+              .getString('settings-keybinds-description')
+              .split('\n')
+              .map((line, i) => (
+                <Typography key={i}>{line}</Typography>
+              ))}
+          </div>
+          {!installInfo?.isWayland ? (
+            <div className="flex flex-col gap-4">
+              <Typography id="settings-keybinds-wayland-description" />
+              <div>
+                <Button
+                  id="settings-keybinds-wayland-open-system-settings-button"
+                  className="flex flex-col"
+                  onClick={handleOpenSystemSettingsButton}
+                  variant="primary"
+                />
+              </div>
             </div>
-            <Table>
-              <KeybindRow
-                label="Full Reset"
-                control={control}
-                resetField={resetField}
-                bindingName="bindings.fullResetBinding"
-                delayName="delays.fullResetDelay"
-              />
-              <KeybindRow
-                label="Yaw Reset"
-                control={control}
-                resetField={resetField}
-                bindingName="bindings.yawResetBinding"
-                delayName="delays.yawResetDelay"
-              />
-              <KeybindRow
-                label="Mounting Reset"
-                control={control}
-                resetField={resetField}
-                bindingName="bindings.mountingResetBinding"
-                delayName="delays.mountingResetDelay"
-              />
-              <KeybindRow
-                label="Feet Mounting Reset"
-                control={control}
-                resetField={resetField}
-                bindingName="bindings.feetResetBinding"
-                delayName="delays.feetResetDelay"
-              />
-              <KeybindRow
-                label="Pause Tracking"
-                control={control}
-                resetField={resetField}
-                bindingName="bindings.pauseTrackingBinding"
-                delayName="delays.pauseTrackingDelay"
-              />
-            </Table>
-            <div className="flex flex-col pt-4" />
-            <Button
-              className="flex flex-col"
-              onClick={handleResetButton}
-              variant="primary"
-            >
-              Reset All
-            </Button>
-          </>
+          ) : (
+            <div className="keybind-settings">
+                <Typography id="keybind_config-keybind_name" />
+                <Typography id="keybind_config-keybind_value" />
+                <Typography id="keybind_config-keybind_delay" />
+              <div />
+                <KeybindRow
+                  id="settings-keybinds_full-reset"
+                  control={control}
+                  resetField={resetField}
+                  name="bindings.fullResetBinding"
+                  delay="delays.fullResetDelay"
+                />
+                <KeybindRow
+                  id="settings-keybinds_yaw-reset"
+                  control={control}
+                  resetField={resetField}
+                  name="bindings.yawResetBinding"
+                  delay="delays.yawResetDelay"
+                />
+                <KeybindRow
+                  id="settings-keybinds_mounting-reset"
+                  control={control}
+                  resetField={resetField}
+                  name="bindings.mountingResetBinding"
+                  delay="delays.mountingResetDelay"
+                />
+                <KeybindRow
+                  id="settings-keybinds_feet-mounting-reset"
+                  control={control}
+                  resetField={resetField}
+                  name="bindings.feetResetBinding"
+                  delay="delays.feetResetDelay"
+                />
+                <KeybindRow
+                  id="settings-keybinds_pause-tracking"
+                  control={control}
+                  resetField={resetField}
+                  name="bindings.pauseTrackingBinding"
+                  delay="delays.pauseTrackingDelay"
+                />
+                <Button
+                  id="settings-keybinds_reset-all-button"
+                  className="justify-self-start"
+                  onClick={handleResetAllButton}
+                  variant="primary"
+                />
+            </div>
+          )}
         </SettingsPagePaneLayout>
       </form>
     </SettingsPageLayout>

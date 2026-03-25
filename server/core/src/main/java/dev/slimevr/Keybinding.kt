@@ -3,7 +3,7 @@ package dev.slimevr
 import com.melloware.jintellitype.HotkeyListener
 import com.melloware.jintellitype.JIntellitype
 import dev.hannah.portals.PortalManager
-import dev.hannah.portals.Shortcut
+import dev.hannah.portals.globalShortcuts.Shortcut
 import dev.hannah.portals.globalShortcuts.ShortcutTuple
 import dev.slimevr.config.KeybindingsConfig
 import dev.slimevr.tracking.trackers.TrackerUtils
