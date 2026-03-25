@@ -254,4 +254,5 @@ Each client runs in its own `launch` block. When the socket disconnects, the cor
 - Behaviours are top-level `val`s (or `object`s if they have no type parameters), not inner classes.
 - Factory functions are named `createX`, not `XBuilder` or `X.create` (though `companion object { fun create() }` is acceptable when scoping makes it clearer, as in `VRServer.create`).
 - State data classes use `copy(...)` inside reducers and `Update { copy(...) }` actions — never expose a `MutableStateFlow` directly.
+- **Never use `var` in a state data class** — state must be immutable, all fields `val`. Using `var` in any data class is almost certainly a design mistake; if you need mutable fields, prefer a plain class or rethink the structure.
 - Use `sealed interface` for action types, not `sealed class`, to avoid the extra constructor overhead.
