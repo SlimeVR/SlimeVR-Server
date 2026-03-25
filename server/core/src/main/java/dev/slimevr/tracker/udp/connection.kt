@@ -6,9 +6,6 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Context
 import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
-import dev.slimevr.solarxr.SolarXRConnection
-import dev.slimevr.solarxr.SolarXRConnectionActions
-import dev.slimevr.solarxr.SolarXRConnectionState
 import dev.slimevr.tracker.Device
 import dev.slimevr.tracker.DeviceActions
 import dev.slimevr.tracker.DeviceOrigin
@@ -41,21 +38,19 @@ data class UDPConnectionState(
 	val address: String,
 	val port: Int,
 	val deviceId: Int?,
-	val trackerIds: List<TrackerIdNum>
+	val trackerIds: List<TrackerIdNum>,
 )
 
 sealed interface UDPConnectionActions {
 	data class StartPing(val startTime: Long) : UDPConnectionActions
 	data class ReceivedPong(val id: Int, val duration: Long) : UDPConnectionActions
 	data class Handshake(val deviceId: Int) : UDPConnectionActions
-	data class LastPacket(val packetNum: Long? = null, val time: Long) :
-		UDPConnectionActions
+	data class LastPacket(val packetNum: Long? = null, val time: Long) : UDPConnectionActions
 	data class AssignTracker(val trackerId: TrackerIdNum) : UDPConnectionActions
 }
 
 typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
 typealias UDPConnectionBehaviour = CustomBehaviour<UDPConnectionState, UDPConnectionActions, UDPConnection>
-
 
 data class UDPConnection(
 	val context: UDPConnectionContext,
@@ -91,8 +86,8 @@ val PacketBehaviour = UDPConnectionBehaviour(
 				it.context.dispatch(
 					UDPConnectionActions.LastPacket(
 						packetNum = 0,
-						time = now
-					)
+						time = now,
+					),
 				)
 				AppLogger.udp.info("Reconnecting")
 			} else if (packet.packetNumber < state.lastPacketNum) {
@@ -151,12 +146,14 @@ val PingBehaviour = UDPConnectionBehaviour(
 			it.context.dispatch(
 				UDPConnectionActions.ReceivedPong(
 					id = packet.data.pingId,
-					duration = ping
-				)
+					duration = ping,
+				),
 			)
-			device.context.dispatch(DeviceActions.Update {
-				copy(ping = ping)
-			})
+			device.context.dispatch(
+				DeviceActions.Update {
+					copy(ping = ping)
+				},
+			)
 		}
 	},
 )
@@ -166,8 +163,9 @@ val HandshakeBehaviour = UDPConnectionBehaviour(
 		when (a) {
 			is UDPConnectionActions.Handshake -> s.copy(
 				didHandshake = true,
-				deviceId = a.deviceId
+				deviceId = a.deviceId,
 			)
+
 			else -> s
 		}
 	},
@@ -189,8 +187,8 @@ val HandshakeBehaviour = UDPConnectionBehaviour(
 				it.serverContext.context.dispatch(
 					VRServerActions.NewDevice(
 						deviceId = deviceId,
-						context = newDevice
-					)
+						context = newDevice,
+					),
 				)
 				it.context.dispatch(UDPConnectionActions.Handshake(deviceId))
 				it.send(Handshake())
@@ -206,22 +204,26 @@ val DeviceStatsBehaviour = UDPConnectionBehaviour(
 		it.packetEvents.on<BatteryLevel> { event ->
 			val device = it.getDevice() ?: return@on
 
-			device.context.dispatch(DeviceActions.Update {
-				copy(
-					batteryLevel = event.data.level,
-					batteryVoltage = event.data.voltage
-				)
-			})
+			device.context.dispatch(
+				DeviceActions.Update {
+					copy(
+						batteryLevel = event.data.level,
+						batteryVoltage = event.data.voltage,
+					)
+				},
+			)
 		}
 
 		it.packetEvents.on<SignalStrength> { event ->
 			val device = it.getDevice() ?: return@on
 
-			device.context.dispatch(DeviceActions.Update {
-				copy(signalStrength = event.data.signal)
-			})
+			device.context.dispatch(
+				DeviceActions.Update {
+					copy(signalStrength = event.data.signal)
+				},
+			)
 		}
-	}
+	},
 )
 
 val SensorInfoBehaviour = UDPConnectionBehaviour(
@@ -260,28 +262,27 @@ val SensorInfoBehaviour = UDPConnectionBehaviour(
 					deviceId = deviceState.id,
 					origin = DeviceOrigin.UDP,
 					serverContext = observerContext.serverContext,
-					scope = observerContext.serverContext.context.scope
+					scope = observerContext.serverContext.context.scope,
 				)
 
 				observerContext.serverContext.context.dispatch(
 					VRServerActions.NewTracker(
 						trackerId = trackerId,
-						context = newTracker
-					)
+						context = newTracker,
+					),
 				)
 				observerContext.context.dispatch(
 					UDPConnectionActions.AssignTracker(
 						trackerId = TrackerIdNum(
 							id = trackerId,
-							trackerNum = event.data.sensorId
-						)
-					)
+							trackerNum = event.data.sensorId,
+						),
+					),
 				)
 				newTracker.context.dispatch(action)
 			}
-
 		}
-	}
+	},
 )
 
 val SensorRotationBehaviour = UDPConnectionBehaviour(
@@ -292,14 +293,14 @@ val SensorRotationBehaviour = UDPConnectionBehaviour(
 				tracker.context.dispatch(
 					TrackerActions.Update {
 						copy(rawRotation = event.data.rotation)
-					}
+					},
 				)
 			}
 		}
-	}
+	},
 )
 
-fun createUDPConnectionContext(
+fun createUDPConnection(
 	id: String,
 	socket: BoundDatagramSocket,
 	remoteAddress: InetSocketAddress,
@@ -312,7 +313,7 @@ fun createUDPConnectionContext(
 		PingBehaviour,
 		DeviceStatsBehaviour,
 		SensorInfoBehaviour,
-		SensorRotationBehaviour
+		SensorRotationBehaviour,
 	)
 
 	val context = createContext(
@@ -325,7 +326,7 @@ fun createUDPConnectionContext(
 			address = remoteAddress.hostname,
 			port = remoteAddress.port,
 			deviceId = null,
-			trackerIds = listOf()
+			trackerIds = listOf(),
 		),
 		reducers = behaviours.map { it.reducer },
 		scope = scope,
@@ -347,14 +348,20 @@ fun createUDPConnectionContext(
 		},
 		getDevice = {
 			val deviceId = context.state.value.deviceId
-			if (deviceId != null) serverContext.getDevice(deviceId)
-			else null
+			if (deviceId != null) {
+				serverContext.getDevice(deviceId)
+			} else {
+				null
+			}
 		},
 		getTracker = { id ->
 			val trackerId = context.state.value.trackerIds.find { it.trackerNum == id }
-			if (trackerId != null) serverContext.getTracker(trackerId.id)
-			else null
-		}
+			if (trackerId != null) {
+				serverContext.getTracker(trackerId.id)
+			} else {
+				null
+			}
+		},
 	)
 
 	behaviours.map { it.observer }.forEach { it?.invoke(conn) }

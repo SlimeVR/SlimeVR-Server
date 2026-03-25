@@ -76,8 +76,6 @@ dependencies {
 	implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
 	implementation("io.ktor:ktor-utils:$ktor_version")
 
-
-
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")
 
 	// Allow the use of reflection

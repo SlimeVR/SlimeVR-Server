@@ -33,7 +33,6 @@ private fun Source.readSafeQuat(): Quaternion {
 	}
 }
 
-
 enum class PacketType(val id: Int) {
 	HEARTBEAT(0),
 	ROTATION(1),
@@ -57,7 +56,8 @@ enum class PacketType(val id: Int) {
 	SET_CONFIG_FLAG(25),
 	FLEX_DATA(26),
 	POSITION(27),
-	PROTOCOL_CHANGE(200);
+	PROTOCOL_CHANGE(200),
+	;
 
 	companion object {
 		private val map = entries.associateBy { it.id }
@@ -81,7 +81,7 @@ data class Handshake(
 	val mcuType: Int = 0,
 	val protocolVersion: Int = 0,
 	val firmware: String? = null,
-	val macString: String? = null
+	val macString: String? = null,
 ) : UDPPacket {
 	override fun write(dst: Sink) {
 		dst.writeByte(PacketType.HANDSHAKE.id.toByte())
@@ -94,38 +94,52 @@ data class Handshake(
 			val b = if (remaining >= 4) readInt() else 0
 			val i = if (remaining >= 4) readInt() else 0
 			val m = if (remaining >= 4) readInt() else 0
-			if (remaining >= 12) { readInt(); readInt(); readInt() }
+			if (remaining >= 12) {
+				readInt()
+				readInt()
+				readInt()
+			}
 			val p = if (remaining >= 4) readInt() else 0
 			val f = if (remaining >= 1) readString(readByte().toLong()) else null
 			val mac = if (remaining >= 6) {
 				val bytes = readByteArray(6)
 				bytes.joinToString(":") { "%02X".format(it) }.takeIf { it != "00:00:00:00:00:00" }
-			} else null
+			} else {
+				null
+			}
 			Handshake(b, i, m, p, f, mac)
 		}
 	}
 }
 
 data class Rotation(override val sensorId: Int = 0, val rotation: Quaternion = Quaternion.IDENTITY) : SensorSpecificPacket {
-	companion object { fun read(src: Source) = Rotation(0, src.readSafeQuat()) }
+	companion object {
+		fun read(src: Source) = Rotation(0, src.readSafeQuat())
+	}
 }
 
 data class Accel(val acceleration: Vector3 = Vector3.NULL, override val sensorId: Int = 0) : SensorSpecificPacket {
 	companion object {
 		fun read(src: Source) = Accel(
 			Vector3(src.readSafeFloat(), src.readSafeFloat(), src.readSafeFloat()),
-			if (src.remaining > 0) src.readU8() else 0
+			if (src.remaining > 0) src.readU8() else 0,
 		)
 	}
 }
 
 data class PingPong(val pingId: Int = 0) : UDPPacket {
-	override fun write(dst: Sink) { dst.writeInt(pingId) }
-	companion object { fun read(src: Source) = PingPong(src.readInt()) }
+	override fun write(dst: Sink) {
+		dst.writeInt(pingId)
+	}
+	companion object {
+		fun read(src: Source) = PingPong(src.readInt())
+	}
 }
 
 data class Serial(val serial: String = "") : UDPPacket {
-	companion object { fun read(src: Source) = Serial(src.readString(src.readInt().toLong())) }
+	companion object {
+		fun read(src: Source) = Serial(src.readString(src.readInt().toLong()))
+	}
 }
 
 data class BatteryLevel(val voltage: Float = 0f, val level: Float = 0f) : UDPPacket {
@@ -138,11 +152,15 @@ data class BatteryLevel(val voltage: Float = 0f, val level: Float = 0f) : UDPPac
 }
 
 data class Tap(override val sensorId: Int = 0, val tap: Int = 0) : SensorSpecificPacket {
-	companion object { fun read(src: Source) = Tap(src.readU8(), src.readU8()) }
+	companion object {
+		fun read(src: Source) = Tap(src.readU8(), src.readU8())
+	}
 }
 
 data class ErrorPacket(override val sensorId: Int = 0, val errorNumber: Int = 0) : SensorSpecificPacket {
-	companion object { fun read(src: Source) = ErrorPacket(src.readU8(), src.readU8()) }
+	companion object {
+		fun read(src: Source) = ErrorPacket(src.readU8(), src.readU8())
+	}
 }
 
 data class SensorInfo(
@@ -152,7 +170,7 @@ data class SensorInfo(
 	val sensorConfig: UShort? = null,
 	val hasCompletedRestCalibration: Boolean? = null,
 	val trackerPosition: Int? = null,
-	val trackerDataType: Int? = null
+	val trackerDataType: Int? = null,
 ) : SensorSpecificPacket {
 	companion object {
 		fun read(src: Source) = with(src) {
@@ -169,14 +187,16 @@ data class SensorInfo(
 }
 
 data class Rotation2(override val sensorId: Int = 1, val rotation: Quaternion = Quaternion.IDENTITY) : SensorSpecificPacket {
-	companion object { fun read(src: Source) = Rotation2(1, src.readSafeQuat()) }
+	companion object {
+		fun read(src: Source) = Rotation2(1, src.readSafeQuat())
+	}
 }
 
 data class RotationData(
 	override val sensorId: Int = 0,
 	val dataType: Int = 0,
 	val rotation: Quaternion = Quaternion.IDENTITY,
-	val calibrationInfo: Int = 0
+	val calibrationInfo: Int = 0,
 ) : SensorSpecificPacket {
 	companion object {
 		fun read(src: Source): RotationData = with(src) {
@@ -190,7 +210,9 @@ data class RotationData(
 }
 
 data class MagnetometerAccuracy(override val sensorId: Int = 0, val accuracy: Float = 0f) : SensorSpecificPacket {
-	companion object { fun read(src: Source) = MagnetometerAccuracy(src.readU8(), src.readSafeFloat()) }
+	companion object {
+		fun read(src: Source) = MagnetometerAccuracy(src.readU8(), src.readSafeFloat())
+	}
 }
 
 data class SignalStrength(override val sensorId: Int = 0, val signal: Int = 0) : SensorSpecificPacket {
@@ -214,17 +236,21 @@ data class Temperature(override val sensorId: Int = 0, val temp: Float = 0f) : S
 }
 
 data class UserActionPacket(val type: Int = 0) : UDPPacket {
-	companion object { fun read(src: Source) = UserActionPacket(src.readU8()) }
+	companion object {
+		fun read(src: Source) = UserActionPacket(src.readU8())
+	}
 }
 
 data class FeatureFlags(val firmwareFeatures: ByteArray = byteArrayOf()) : UDPPacket {
-	companion object { fun read(src: Source) = FeatureFlags(src.readByteArray(src.remaining.toInt())) }
+	companion object {
+		fun read(src: Source) = FeatureFlags(src.readByteArray(src.remaining.toInt()))
+	}
 }
 
 data class RotationAndAccel(
 	override val sensorId: Int = 0,
 	val rotation: Quaternion = Quaternion.IDENTITY,
-	val acceleration: Vector3 = Vector3.NULL
+	val acceleration: Vector3 = Vector3.NULL,
 ) : SensorSpecificPacket {
 	companion object {
 		fun read(src: Source): RotationAndAccel {
@@ -242,7 +268,9 @@ data class RotationAndAccel(
 }
 
 data class AckConfigChange(override val sensorId: Int = 0, val configType: UShort = 0u) : SensorSpecificPacket {
-	companion object { fun read(src: Source) = AckConfigChange(src.readU8(), src.readShort().toUShort()) }
+	companion object {
+		fun read(src: Source) = AckConfigChange(src.readU8(), src.readShort().toUShort())
+	}
 }
 
 data class SetConfigFlag(override val sensorId: Int = 255, val configType: UShort = 0u, val state: Boolean = false) : SensorSpecificPacket {
@@ -254,7 +282,9 @@ data class SetConfigFlag(override val sensorId: Int = 255, val configType: UShor
 }
 
 data class FlexData(override val sensorId: Int = 0, val flexData: Float = 0f) : SensorSpecificPacket {
-	companion object { fun read(src: Source) = FlexData(src.readU8(), src.readSafeFloat()) }
+	companion object {
+		fun read(src: Source) = FlexData(src.readU8(), src.readSafeFloat())
+	}
 }
 
 data class PositionPacket(override val sensorId: Int = 0, val position: Vector3 = Vector3.NULL) : SensorSpecificPacket {
@@ -268,32 +298,57 @@ data class ProtocolChange(val targetProtocol: Int = 0, val targetVersion: Int = 
 		dst.writeUByte(targetProtocol.toUByte())
 		dst.writeUByte(targetVersion.toUByte())
 	}
-	companion object { fun read(src: Source) = ProtocolChange(src.readU8(), src.readU8()) }
+	companion object {
+		fun read(src: Source) = ProtocolChange(src.readU8(), src.readU8())
+	}
 }
 
 fun readPacket(type: PacketType, src: Source): UDPPacket = when (type) {
 	PacketType.HEARTBEAT -> Heartbeat
+
 	PacketType.HANDSHAKE -> Handshake.read(src)
+
 	PacketType.ROTATION -> Rotation.read(src)
+
 	PacketType.ACCEL -> Accel.read(src)
+
 	PacketType.PING_PONG -> PingPong.read(src)
+
 	PacketType.SERIAL -> Serial.read(src)
+
 	PacketType.BATTERY_LEVEL -> BatteryLevel.read(src)
+
 	PacketType.TAP -> Tap.read(src)
+
 	PacketType.ERROR -> ErrorPacket.read(src)
+
 	PacketType.SENSOR_INFO -> SensorInfo.read(src)
+
 	PacketType.ROTATION_2 -> Rotation2.read(src)
+
 	PacketType.ROTATION_DATA -> RotationData.read(src)
+
 	PacketType.MAGNETOMETER_ACCURACY -> MagnetometerAccuracy.read(src)
+
 	PacketType.SIGNAL_STRENGTH -> SignalStrength.read(src)
+
 	PacketType.TEMPERATURE -> Temperature.read(src)
+
 	PacketType.USER_ACTION -> UserActionPacket.read(src)
+
 	PacketType.FEATURE_FLAGS -> FeatureFlags.read(src)
+
 	PacketType.ROTATION_AND_ACCEL -> RotationAndAccel.read(src)
+
 	PacketType.ACK_CONFIG_CHANGE -> AckConfigChange.read(src)
-	PacketType.SET_CONFIG_FLAG -> SetConfigFlag() // Usually outbound
+
+	PacketType.SET_CONFIG_FLAG -> SetConfigFlag()
+
+	// Usually outbound
 	PacketType.FLEX_DATA -> FlexData.read(src)
+
 	PacketType.POSITION -> PositionPacket.read(src)
+
 	PacketType.PROTOCOL_CHANGE -> ProtocolChange.read(src)
 }
 
@@ -307,7 +362,6 @@ fun writePacket(dst: Sink, packet: UDPPacket) {
 		is FeatureFlags -> PacketType.FEATURE_FLAGS
 		else -> error("Outbound support not implemented for ${packet::class.simpleName}")
 	}
-
 
 	if (type != PacketType.HANDSHAKE) {
 		dst.writeInt(type.id)

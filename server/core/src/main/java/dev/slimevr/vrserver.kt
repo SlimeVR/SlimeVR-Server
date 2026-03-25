@@ -1,15 +1,19 @@
 package dev.slimevr
 
-import dev.slimevr.context.BasicBehaviour
 import dev.slimevr.context.Context
+import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
+import dev.slimevr.firmware.FirmwareManager
+import dev.slimevr.serial.SerialServer
 import dev.slimevr.tracker.Device
 import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import java.util.concurrent.atomic.AtomicInteger
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.incrementAndFetch
 
 data class VRServerState(
 	val trackers: Map<Int, Tracker>,
@@ -22,7 +26,7 @@ sealed interface VRServerActions {
 }
 
 typealias VRServerContext = Context<VRServerState, VRServerActions>
-typealias VRServerBehaviour = BasicBehaviour<VRServerState, VRServerActions>
+typealias VRServerBehaviour = CustomBehaviour<VRServerState, VRServerActions, VRServer>
 
 val BaseBehaviour = VRServerBehaviour(
 	reducer = { s, a ->
@@ -32,24 +36,32 @@ val BaseBehaviour = VRServerBehaviour(
 		}
 	},
 	observer = { context ->
-		context.state.distinctUntilChangedBy { state -> state.trackers.size }.onEach {
+		context.context.state.distinctUntilChangedBy { state -> state.trackers.size }.onEach {
 			println("tracker list size changed")
-		}.launchIn(context.scope)
+		}.launchIn(context.context.scope)
+
+		context.serialServer.context.state.distinctUntilChangedBy { state -> state.availablePorts.size }.onEach {
+			println("Avalable ports $it")
+		}.launchIn(context.context.scope)
 	},
 )
 
+@OptIn(ExperimentalAtomicApi::class)
 data class VRServer(
 	val context: VRServerContext,
+	val serialServer: SerialServer,
+	val firmwareManager: FirmwareManager,
+
 	// Moved this outside of the context to make this faster and safer to use
-	private val handleCounter: AtomicInteger,
+	private val handleCounter: AtomicInt,
 ) {
-	fun nextHandle() = handleCounter.incrementAndGet()
+	fun nextHandle() = handleCounter.incrementAndFetch()
 	fun getTracker(id: Int) = context.state.value.trackers[id]
 	fun getDevice(id: Int) = context.state.value.devices[id]
 
 	companion object {
-		fun create(scope: CoroutineScope): VRServer {
-			val server = VRServerState(
+		fun create(scope: CoroutineScope, serialServer: SerialServer, firmwareManager: FirmwareManager): VRServer {
+			val state = VRServerState(
 				trackers = mapOf(),
 				devices = mapOf(),
 			)
@@ -57,17 +69,21 @@ data class VRServer(
 			val behaviours = listOf(BaseBehaviour)
 
 			val context = createContext(
-				initialState = server,
+				initialState = state,
 				reducers = behaviours.map { it.reducer },
 				scope = scope,
 			)
 
-			behaviours.map { it.observer }.forEach { it?.invoke(context) }
-
-			return VRServer(
+			val server = VRServer(
 				context = context,
-				handleCounter = AtomicInteger(0),
+				serialServer = serialServer,
+				firmwareManager = firmwareManager,
+				handleCounter = AtomicInt(0),
 			)
+
+			behaviours.map { it.observer }.forEach { it?.invoke(server) }
+
+			return server
 		}
 	}
 }

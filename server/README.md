@@ -21,10 +21,10 @@ The `Context<S, A>` type (`context/context.kt`) is the building block of every m
 
 ```kotlin
 data class Context<S, in A>(
-    val state: StateFlow<S>,        // current state, readable by anyone
-    val dispatch: suspend (A) -> Unit,
-    val dispatchAll: suspend (List<A>) -> Unit,
-    val scope: CoroutineScope,      // lifetime of this module
+	val state: StateFlow<S>,        // current state, readable by anyone
+	val dispatch: suspend (A) -> Unit,
+	val dispatchAll: suspend (List<A>) -> Unit,
+	val scope: CoroutineScope,      // lifetime of this module
 )
 ```
 
@@ -43,8 +43,8 @@ A `Behaviour` bundles two optional pieces:
 
 ```kotlin
 data class BasicBehaviour<S, A>(
-    val reducer: ((S, A) -> S)? = null,
-    val observer: ((Context<S, A>) -> Unit)? = null,
+	val reducer: ((S, A) -> S)? = null,
+	val observer: ((Context<S, A>) -> Unit)? = null,
 )
 ```
 
@@ -59,9 +59,9 @@ Every module follows the same construction pattern:
 val behaviours = listOf(BehaviourA, BehaviourB, BehaviourC)
 
 val context = createContext(
-    initialState = ...,
-    reducers = behaviours.map { it.reducer },
-    scope = scope,
+	initialState = ...,
+	reducers = behaviours.map { it.reducer },
+	scope = scope,
 )
 
 behaviours.map { it.observer }.forEach { it?.invoke(context) }
@@ -122,63 +122,63 @@ Rule of thumb: put data in state if **any other code needs to react to it changi
 To add a new major section of the server (say, a HID device connection):
 
 1. **Define the state**:
-   ```kotlin
-   data class HIDConnectionState(
-       val deviceId: Int?,
-       val connected: Boolean,
-   )
-   ```
+```kotlin
+data class HIDConnectionState(
+	val deviceId: Int?,
+	val connected: Boolean,
+)
+```
 
 2. **Define sealed actions**:
-   ```kotlin
-   sealed interface HIDConnectionActions {
-       data class Connected(val deviceId: Int) : HIDConnectionActions
-       data object Disconnected : HIDConnectionActions
-   }
-   ```
+```kotlin
+sealed interface HIDConnectionActions {
+	data class Connected(val deviceId: Int) : HIDConnectionActions
+	data object Disconnected : HIDConnectionActions
+}
+```
 
 3. **Create type aliases** (keeps signatures readable):
-   ```kotlin
-   typealias HIDConnectionContext = Context<HIDConnectionState, HIDConnectionActions>
-   typealias HIDConnectionBehaviour = CustomBehaviour<HIDConnectionState, HIDConnectionActions, HIDConnection>
-   ```
+```kotlin
+typealias HIDConnectionContext = Context<HIDConnectionState, HIDConnectionActions>
+typealias HIDConnectionBehaviour = CustomBehaviour<HIDConnectionState, HIDConnectionActions, HIDConnection>
+```
 
 4. **Define the module struct** (holds context + extra runtime state):
-   ```kotlin
-   data class HIDConnection(
-       val context: HIDConnectionContext,
-       val serverContext: VRServer,
-       val send: suspend (ByteArray) -> Unit,
-   )
-   ```
+```kotlin
+data class HIDConnection(
+	val context: HIDConnectionContext,
+	val serverContext: VRServer,
+	val send: suspend (ByteArray) -> Unit,
+)
+```
 
 5. **Write behaviours** as top-level `val`s (stateless, reusable):
-   ```kotlin
-   val HIDHandshakeBehaviour = HIDConnectionBehaviour(
-       reducer = { s, a -> when (a) {
-           is HIDConnectionActions.Connected -> s.copy(deviceId = a.deviceId, connected = true)
-           is HIDConnectionActions.Disconnected -> s.copy(connected = false)
-       }},
-       observer = { conn ->
-           // launch coroutines, subscribe to events, etc.
-       }
-   )
-   ```
+```kotlin
+val HIDHandshakeBehaviour = HIDConnectionBehaviour(
+	reducer = { s, a -> when (a) {
+		is HIDConnectionActions.Connected -> s.copy(deviceId = a.deviceId, connected = true)
+		is HIDConnectionActions.Disconnected -> s.copy(connected = false)
+	}},
+	observer = { conn ->
+		// launch coroutines, subscribe to events, etc.
+	}
+)
+```
 
 6. **Write a factory function**:
-   ```kotlin
-   fun createHIDConnection(
-       serverContext: VRServer,
-       scope: CoroutineScope,
-       send: suspend (ByteArray) -> Unit,
-   ): HIDConnection {
-       val behaviours = listOf(HIDHandshakeBehaviour, ...)
-       val context = createContext(initialState = ..., reducers = behaviours.map { it.reducer }, scope = scope)
-       val conn = HIDConnection(context, serverContext, send)
-       behaviours.map { it.observer }.forEach { it?.invoke(conn) }
-       return conn
-   }
-   ```
+```kotlin
+fun createHIDConnection(
+	serverContext: VRServer,
+	scope: CoroutineScope,
+	send: suspend (ByteArray) -> Unit,
+): HIDConnection {
+	val behaviours = listOf(HIDHandshakeBehaviour, ...)
+	val context = createContext(initialState = ..., reducers = behaviours.map { it.reducer }, scope = scope)
+	val conn = HIDConnection(context, serverContext, send)
+	behaviours.map { it.observer }.forEach { it?.invoke(conn) }
+	return conn
+}
+```
 
 ---
 
@@ -194,11 +194,11 @@ Example: adding battery tracking to a HID connection requires only adding a `HID
 
 1. Add the packet class and its `read` function in `tracker/udp/packets.kt`
 2. In the relevant behaviour's observer, register a listener:
-   ```kotlin
-   connection.packetEvents.on<MyNewPacket> { event ->
-       // handle it
-   }
-   ```
+```kotlin
+connection.packetEvents.on<MyNewPacket> { event ->
+	// handle it
+}
+```
 3. In `tracker/udp/server.kt`, route the new packet type to `emit`.
 
 ---
@@ -250,6 +250,7 @@ Each client runs in its own `launch` block. When the socket disconnects, the cor
 
 ## Style Conventions
 
+- **Limit OOP to strictly necessary cases.** Prefer plain functions, function types, and data classes. Avoid classes and inheritance unless there is a genuine need for encapsulated mutable state or polymorphism. A single-method interface should almost always be a function type instead (`() -> Unit`, `suspend (String) -> Unit`, etc.). When in doubt, write a function.
 - **Prefer plain functions over extension functions.** Only use extension functions when the receiver type is genuinely the primary subject and the function would be confusing without it.
 - Behaviours are top-level `val`s (or `object`s if they have no type parameters), not inner classes.
 - Factory functions are named `createX`, not `XBuilder` or `X.create` (though `companion object { fun create() }` is acceptable when scoping makes it clearer, as in `VRServer.create`).

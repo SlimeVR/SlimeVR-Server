@@ -1,8 +1,8 @@
 package dev.slimevr.desktop.ipc
 
-import dev.slimevr.VRServer
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
+import dev.slimevr.VRServer
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -21,11 +21,13 @@ suspend fun createIpcServers(server: VRServer) = coroutineScope {
 			launch { createUnixFeederSocket(server) }
 			launch { createUnixSolarXRSocket(server) }
 		}
+
 		Platform.WINDOWS -> {
 			launch { createWindowsDriverPipe(server) }
 			launch { createWindowsFeederPipe(server) }
 			launch { createWindowsSolarXRPipe(server) }
 		}
+
 		else -> Unit
 	}
 }

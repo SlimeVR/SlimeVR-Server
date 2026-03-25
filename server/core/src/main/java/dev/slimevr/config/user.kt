@@ -1,9 +1,8 @@
 package dev.slimevr.config
 
 import dev.slimevr.context.Context
-import dev.slimevr.context.CustomModule
+import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
-import dev.slimevr.tracker.DeviceActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -47,7 +46,7 @@ sealed interface UserConfigActions {
 }
 
 typealias UserConfigContext = Context<UserConfigState, UserConfigActions>
-typealias UserConfigModule = CustomModule<UserConfigState, UserConfigActions, UserConfig>
+typealias UserConfigBehaviour = CustomBehaviour<UserConfigState, UserConfigActions, UserConfig>
 
 data class UserConfig(
 	val context: UserConfigContext,
@@ -55,7 +54,7 @@ data class UserConfig(
 	val swap: suspend (String) -> Unit,
 )
 
-val DefaultUserModule = UserConfigModule(
+val DefaultUserBehaviour = UserConfigBehaviour(
 	reducer = { s, a ->
 		when (a) {
 			is UserConfigActions.Update -> a.transform(s)
@@ -73,11 +72,12 @@ suspend fun createUserConfig(scope: CoroutineScope, configDir: File, name: Strin
 	}
 	val initialState = UserConfigState(name = name, data = initialData)
 
-	val modules = listOf(DefaultUserModule)
+	val behaviours = listOf(DefaultUserBehaviour)
+
 	val context = createContext(
 		initialState = initialState,
-		reducers = modules.map { it.reducer },
-		scope = scope
+		reducers = behaviours.map { it.reducer },
+		scope = scope,
 	)
 
 	fun startAutosave() = launchAutosave(

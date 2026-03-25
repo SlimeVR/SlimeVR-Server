@@ -16,39 +16,38 @@ import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
 import kotlin.io.path.Path
 
-suspend fun createUnixDriverSocket(server: VRServer) =
-	acceptUnixClients(DRIVER_SOCKET_NAME) { channel ->
-		handleDriverConnection(
-			server = server,
-			messages = readFramedMessages(channel),
-			send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
-		)
-	}
+suspend fun createUnixDriverSocket(server: VRServer) = acceptUnixClients(DRIVER_SOCKET_NAME) { channel ->
+	handleDriverConnection(
+		server = server,
+		messages = readFramedMessages(channel),
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
+	)
+}
 
-suspend fun createUnixFeederSocket(server: VRServer) =
-	acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
-		handleFeederConnection(
-			server = server,
-			messages = readFramedMessages(channel),
-			send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
-		)
-	}
+suspend fun createUnixFeederSocket(server: VRServer) = acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
+	handleFeederConnection(
+		server = server,
+		messages = readFramedMessages(channel),
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
+	)
+}
 
-suspend fun createUnixSolarXRSocket(server: VRServer) =
-	acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
-		handleSolarXRConnection(
-			server = server,
-			messages = readFramedMessages(channel),
-			send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
-		)
-	}
+suspend fun createUnixSolarXRSocket(server: VRServer) = acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
+	handleSolarXRConnection(
+		server = server,
+		messages = readFramedMessages(channel),
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
+	)
+}
 
 private fun isSocketInUse(socketPath: String): Boolean = try {
 	SocketChannel.open(StandardProtocolFamily.UNIX).use {
 		it.connect(UnixDomainSocketAddress.of(socketPath))
 		true
 	}
-} catch (_: Exception) { false }
+} catch (_: Exception) {
+	false
+}
 
 // Length field is LE u32 and includes the 4-byte header itself
 private fun readFramedMessages(channel: SocketChannel) = flow {

@@ -2,47 +2,40 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
-import io.ktor.server.application.*
+import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
-import io.ktor.server.websocket.*
+import io.ktor.server.websocket.WebSockets
+import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
+import kotlinx.coroutines.awaitCancellation
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.rpc.ResetRequest
 import java.nio.ByteBuffer
 
 const val SOLARXR_PORT = 21110
 
-
 suspend fun onSolarXRMessage(message: ByteBuffer, context: SolarXRConnection) {
 	val messageBundle = MessageBundle.fromByteBuffer(message)
 
 	messageBundle.dataFeedMsgs?.forEach {
-		val msg = it.message ?: return;
+		val msg = it.message ?: return
 		context.dataFeedDispatcher.emit(msg)
 	}
 
-	// FIXME: temporary test
-	context.rpcDispatcher.on<ResetRequest> {
-		println("RESET $it")
-	}
-
 	messageBundle.rpcMsgs?.forEach {
-		val msg = it.message ?: return;
+		val msg = it.message ?: return
 		context.rpcDispatcher.emit(msg)
 	}
-
 }
 
-
-fun createSolarXRWebsocketServer(serverContext: VRServer) {
-	embeddedServer(Netty, port = SOLARXR_PORT) {
+suspend fun createSolarXRWebsocketServer(serverContext: VRServer) {
+	val engine = embeddedServer(Netty, port = SOLARXR_PORT) {
 		install(WebSockets)
 
 		routing {
 			webSocket {
-
 				val solarxrConnection =
 					createSolarXRConnection(serverContext, scope = this, onSend = {
 						send(Frame.Binary(fin = true, data = it))
@@ -52,7 +45,7 @@ fun createSolarXRWebsocketServer(serverContext: VRServer) {
 					when (frame) {
 						is Frame.Binary -> onSolarXRMessage(
 							frame.buffer,
-							solarxrConnection
+							solarxrConnection,
 						)
 
 						is Frame.Close -> {
@@ -61,10 +54,14 @@ fun createSolarXRWebsocketServer(serverContext: VRServer) {
 
 						else -> {}
 					}
-
 				}
 			}
 		}
-	}.start(wait = true)
+	}
+	engine.start(wait = false)
+	try {
+		awaitCancellation()
+	} finally {
+		engine.stop()
+	}
 }
-

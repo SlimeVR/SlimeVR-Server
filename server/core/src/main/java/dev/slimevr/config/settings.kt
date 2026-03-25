@@ -1,7 +1,7 @@
 package dev.slimevr.config
 
 import dev.slimevr.context.Context
-import dev.slimevr.context.CustomModule
+import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -46,7 +46,7 @@ sealed interface SettingsActions {
 }
 
 typealias SettingsContext = Context<SettingsState, SettingsActions>
-typealias SettingsModule = CustomModule<SettingsState, SettingsActions, Settings>
+typealias SettingsBehaviour = CustomBehaviour<SettingsState, SettingsActions, Settings>
 
 data class Settings(
 	val context: SettingsContext,
@@ -54,7 +54,7 @@ data class Settings(
 	val swap: suspend (String) -> Unit,
 )
 
-val DefaultSettingsModule = SettingsModule(
+val DefaultSettingsBehaviour = SettingsBehaviour(
 	reducer = { s, a ->
 		when (a) {
 			is SettingsActions.Update -> a.transform(s)
@@ -72,11 +72,12 @@ suspend fun createSettings(scope: CoroutineScope, configDir: File, name: String)
 	}
 	val initialState = SettingsState(name = name, data = initialData)
 
-	val modules = listOf(DefaultSettingsModule)
+	val behaviours = listOf(DefaultSettingsBehaviour)
+
 	val context = createContext(
 		initialState = initialState,
-		reducers = modules.map { it.reducer },
-		scope = scope
+		reducers = behaviours.map { it.reducer },
+		scope = scope,
 	)
 
 	fun startAutosave() = launchAutosave(

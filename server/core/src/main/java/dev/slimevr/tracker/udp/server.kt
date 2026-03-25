@@ -48,7 +48,7 @@ suspend fun createUDPTrackerServer(
 				if (connContext !== null) {
 					connContext.packetEvents.emit(event)
 				} else {
-					val newContext = createUDPConnectionContext(
+					val newContext = createUDPConnection(
 						id = address.hostname,
 						remoteAddress = address,
 						socket = serverSocket,

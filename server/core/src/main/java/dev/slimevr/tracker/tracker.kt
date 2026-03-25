@@ -24,7 +24,7 @@ data class TrackerState(
 	val customName: String?,
 	val rawRotation: Quaternion,
 	val deviceId: Int,
-	val origin: DeviceOrigin
+	val origin: DeviceOrigin,
 )
 
 sealed interface TrackerActions {
@@ -35,17 +35,16 @@ typealias TrackerContext = Context<TrackerState, TrackerActions>
 typealias TrackerBehaviour = BasicBehaviour<TrackerState, TrackerActions>
 
 data class Tracker(
-	val context: TrackerContext
+	val context: TrackerContext,
 )
-
 
 val TrackerInfosBehaviour = TrackerBehaviour(
 	reducer = { s, a -> if (a is TrackerActions.Update) a.transform(s) else s },
 	observer = {
 		it.state.onEach { state ->
-//			AppLogger.tracker.info("Tracker state changed {State}", state)
+// 			AppLogger.tracker.info("Tracker state changed {State}", state)
 		}.launchIn(it.scope)
-	}
+	},
 )
 
 fun createTracker(
@@ -55,7 +54,7 @@ fun createTracker(
 	sensorType: ImuType,
 	hardwareId: String,
 	origin: DeviceOrigin,
-	serverContext: VRServer
+	serverContext: VRServer,
 ): Tracker {
 	val trackerState = TrackerState(
 		id = id,
@@ -67,7 +66,7 @@ fun createTracker(
 		origin = origin,
 		deviceId = deviceId,
 		customName = null,
-		sensorType = sensorType
+		sensorType = sensorType,
 	)
 
 	val behaviours = listOf(TrackerInfosBehaviour)

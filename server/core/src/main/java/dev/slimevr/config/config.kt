@@ -1,18 +1,16 @@
 package dev.slimevr.config
 
-import dev.slimevr.context.BasicModule
+import dev.slimevr.context.BasicBehaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
-
 
 private const val GLOBAL_CONFIG_VERSION = 1
 
@@ -29,7 +27,7 @@ sealed interface GlobalConfigActions {
 }
 
 typealias GlobalConfigContext = Context<GlobalConfigState, GlobalConfigActions>
-typealias GlobalConfigModule = BasicModule<GlobalConfigState, GlobalConfigActions>
+typealias GlobalConfigBehaviour = BasicBehaviour<GlobalConfigState, GlobalConfigActions>
 
 private fun migrateGlobalConfig(json: JsonObject): JsonObject {
 	val version = json["version"]?.jsonPrimitive?.intOrNull ?: 0
@@ -44,7 +42,7 @@ private fun parseAndMigrateGlobalConfig(raw: String): GlobalConfigState {
 	return jsonConfig.decodeFromJsonElement(migrateGlobalConfig(json))
 }
 
-val DefaultGlobalConfigModule = GlobalConfigModule(
+val DefaultGlobalConfigBehaviour = GlobalConfigBehaviour(
 	reducer = { s, a ->
 		when (a) {
 			is GlobalConfigActions.SetUserProfile -> s.copy(selectedUserProfile = a.name)
@@ -66,9 +64,11 @@ suspend fun createAppConfig(scope: CoroutineScope, configFolder: File): AppConfi
 		parseAndMigrateGlobalConfig(it)
 	}
 
+	val behaviours = listOf(DefaultGlobalConfigBehaviour)
+
 	val globalContext = createContext(
 		initialState = initialGlobal,
-		reducers = listOf(DefaultGlobalConfigModule.reducer),
+		reducers = behaviours.map { it.reducer },
 		scope = scope,
 	)
 

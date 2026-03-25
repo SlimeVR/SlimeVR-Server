@@ -32,34 +32,33 @@ suspend fun atomicWriteFile(file: File, content: String) = withContext(Dispatche
 	Unit
 }
 
-suspend inline fun <reified T> loadFileWithBackup(file: File, default: T, crossinline deserialize: (String) -> T): T =
-	withContext(Dispatchers.IO) {
-		if (!file.exists()) {
-			atomicWriteFile(file, jsonConfig.encodeToString(default))
-			return@withContext default
-		}
-
-		try {
-			deserialize(file.readText())
-		} catch (e: Exception) {
-			System.err.println("Failed to load ${file.absolutePath}: ${e.message}")
-			if (file.exists()) {
-				try {
-					val bakTmp = File(file.parent, "${file.name}.bak.tmp")
-					file.copyTo(bakTmp, overwrite = true)
-					Files.move(
-						bakTmp.toPath(),
-						File(file.parent, "${file.name}.bak").toPath(),
-						StandardCopyOption.ATOMIC_MOVE,
-						StandardCopyOption.REPLACE_EXISTING
-					)
-				} catch (e2: Exception) {
-					System.err.println("Failed to back up corrupted file: ${e2.message}")
-				}
-			}
-			default
-		}
+suspend inline fun <reified T> loadFileWithBackup(file: File, default: T, crossinline deserialize: (String) -> T): T = withContext(Dispatchers.IO) {
+	if (!file.exists()) {
+		atomicWriteFile(file, jsonConfig.encodeToString(default))
+		return@withContext default
 	}
+
+	try {
+		deserialize(file.readText())
+	} catch (e: Exception) {
+		System.err.println("Failed to load ${file.absolutePath}: ${e.message}")
+		if (file.exists()) {
+			try {
+				val bakTmp = File(file.parent, "${file.name}.bak.tmp")
+				file.copyTo(bakTmp, overwrite = true)
+				Files.move(
+					bakTmp.toPath(),
+					File(file.parent, "${file.name}.bak").toPath(),
+					StandardCopyOption.ATOMIC_MOVE,
+					StandardCopyOption.REPLACE_EXISTING,
+				)
+			} catch (e2: Exception) {
+				System.err.println("Failed to back up corrupted file: ${e2.message}")
+			}
+		}
+		default
+	}
+}
 
 /**
  * Launches a debounced autosave coroutine. Skips the initial state (already on

@@ -19,32 +19,29 @@ import java.nio.ByteOrder
 private val k32 = Kernel32.INSTANCE
 private val adv32 = Advapi32.INSTANCE
 
-suspend fun createWindowsDriverPipe(server: VRServer) =
-	acceptWindowsClients(DRIVER_PIPE) { handle ->
-		handleDriverConnection(
-			server = server,
-			messages = readFramedMessages(handle),
-			send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
-		)
-	}
+suspend fun createWindowsDriverPipe(server: VRServer) = acceptWindowsClients(DRIVER_PIPE) { handle ->
+	handleDriverConnection(
+		server = server,
+		messages = readFramedMessages(handle),
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
+	)
+}
 
-suspend fun createWindowsFeederPipe(server: VRServer) =
-	acceptWindowsClients(FEEDER_PIPE) { handle ->
-		handleFeederConnection(
-			server = server,
-			messages = readFramedMessages(handle),
-			send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
-		)
-	}
+suspend fun createWindowsFeederPipe(server: VRServer) = acceptWindowsClients(FEEDER_PIPE) { handle ->
+	handleFeederConnection(
+		server = server,
+		messages = readFramedMessages(handle),
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
+	)
+}
 
-suspend fun createWindowsSolarXRPipe(server: VRServer) =
-	acceptWindowsClients(SOLARXR_PIPE) { handle ->
-		handleSolarXRConnection(
-			server = server,
-			messages = readFramedMessages(handle),
-			send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
-		)
-	}
+suspend fun createWindowsSolarXRPipe(server: VRServer) = acceptWindowsClients(SOLARXR_PIPE) { handle ->
+	handleSolarXRConnection(
+		server = server,
+		messages = readFramedMessages(handle),
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
+	)
+}
 
 // Length field is LE u32 and includes the 4-byte header itself
 private fun readFramedMessages(handle: WinNT.HANDLE) = flow {
@@ -92,7 +89,10 @@ private fun createSecurePipe(pipeName: String): WinNT.HANDLE {
 		WinBase.PIPE_ACCESS_DUPLEX,
 		WinBase.PIPE_TYPE_BYTE or WinBase.PIPE_READMODE_BYTE or WinBase.PIPE_WAIT,
 		WinBase.PIPE_UNLIMITED_INSTANCES,
-		65536, 65536, 0, attributes,
+		65536,
+		65536,
+		0,
+		attributes,
 	)
 	check(pipe != WinNT.INVALID_HANDLE_VALUE) {
 		"CreateNamedPipe failed for $pipeName: ${k32.GetLastError()}"

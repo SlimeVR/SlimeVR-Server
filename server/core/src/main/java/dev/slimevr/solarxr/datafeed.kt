@@ -27,27 +27,30 @@ import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.math.Quat
 import kotlin.time.measureTime
 
-private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask): TrackerData =
-	TrackerData(
-		trackerId = TrackerId(
-			trackerNum = tracker.id.toUByte(),
-			deviceId = DeviceId(device.id.toUByte())
-		),
-		status = if (trackerMask.status == true) tracker.status else null,
-		rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
-		info = if (trackerMask.info == true) TrackerInfo(
+private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask): TrackerData = TrackerData(
+	trackerId = TrackerId(
+		trackerNum = tracker.id.toUByte(),
+		deviceId = DeviceId(device.id.toUByte()),
+	),
+	status = if (trackerMask.status == true) tracker.status else null,
+	rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
+	info = if (trackerMask.info == true) {
+		TrackerInfo(
 			imuType = tracker.sensorType,
 			bodyPart = tracker.bodyPart,
 			displayName = tracker.name,
-		) else null
-	)
+		)
+	} else {
+		null
+	},
+)
 
 private fun createDevice(
 	device: DeviceState,
 	trackers: List<TrackerState>,
-	datafeedConfig: DataFeedConfig
+	datafeedConfig: DataFeedConfig,
 ): DeviceData {
-	val trackerMask = datafeedConfig.dataMask?.trackerData;
+	val trackerMask = datafeedConfig.dataMask?.trackerData
 
 	return DeviceData(
 		id = DeviceId(device.id.toUByte()),
@@ -55,18 +58,20 @@ private fun createDevice(
 			batteryVoltage = device.batteryVoltage,
 			batteryPctEstimate = device.batteryLevel.toUInt()
 				.toUByte(),
-			ping = device.ping?.toUShort()
+			ping = device.ping?.toUShort(),
 		),
-		trackers = if (trackerMask != null)
+		trackers = if (trackerMask != null) {
 			trackers.filter { it.deviceId == device.id }
 				.map { tracker -> createTracker(device, tracker, trackerMask) }
-		else null
+		} else {
+			null
+		},
 	)
 }
 
 fun createDatafeedFrame(
 	serverContext: VRServer,
-	datafeedConfig: DataFeedConfig
+	datafeedConfig: DataFeedConfig,
 ): DataFeedMessageHeader {
 	val serverState = serverContext.context.state.value
 	val trackers =
@@ -76,11 +81,10 @@ fun createDatafeedFrame(
 			.map { device -> createDevice(device, trackers, datafeedConfig) }
 	return DataFeedMessageHeader(
 		message = DataFeedUpdate(
-			devices = if (datafeedConfig.dataMask?.deviceData != null) devices else null
-		)
+			devices = if (datafeedConfig.dataMask?.deviceData != null) devices else null,
+		),
 	)
 }
-
 
 val DataFeedInitBehaviour = SolarXRConnectionBehaviour(
 	observer = { context ->
@@ -104,9 +108,9 @@ val DataFeedInitBehaviour = SolarXRConnectionBehaviour(
 							fbb.finish(
 								MessageBundle(
 									dataFeedMsgs = listOf(
-										createDatafeedFrame(serverContext = context.serverContext, datafeedConfig = config)
-									)
-								).encode(fbb)
+										createDatafeedFrame(serverContext = context.serverContext, datafeedConfig = config),
+									),
+								).encode(fbb),
 							)
 
 							context.send(fbb.dataBuffer().moveToByteArray())
@@ -121,8 +125,8 @@ val DataFeedInitBehaviour = SolarXRConnectionBehaviour(
 			context.context.dispatch(
 				SolarXRConnectionActions.SetConfig(
 					datafeeds,
-					timers = timers
-				)
+					timers = timers,
+				),
 			)
 
 			context.context.scope.launch {
@@ -137,11 +141,11 @@ val DataFeedInitBehaviour = SolarXRConnectionBehaviour(
 			fbb.finish(
 				MessageBundle(
 					dataFeedMsgs = listOf(
-						createDatafeedFrame(serverContext = context.serverContext, datafeedConfig = config)
-					)
-				).encode(fbb)
+						createDatafeedFrame(serverContext = context.serverContext, datafeedConfig = config),
+					),
+				).encode(fbb),
 			)
 			context.send(fbb.dataBuffer().moveToByteArray())
 		}
-	}
+	},
 )

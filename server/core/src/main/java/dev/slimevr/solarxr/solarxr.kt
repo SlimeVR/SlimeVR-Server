@@ -1,16 +1,20 @@
 package dev.slimevr.solarxr
 
+import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.VRServer
 import dev.slimevr.context.Context
 import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
+import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.rpc.RpcMessage
+import solarxr_protocol.rpc.RpcMessageHeader
 import kotlin.reflect.KClass
 
 data class SolarXRConnectionState(
@@ -19,13 +23,11 @@ data class SolarXRConnectionState(
 )
 
 sealed interface SolarXRConnectionActions {
-	data class SetConfig(val configs: List<DataFeedConfig>, val timers: List<Job>) :
-		SolarXRConnectionActions
+	data class SetConfig(val configs: List<DataFeedConfig>, val timers: List<Job>) : SolarXRConnectionActions
 }
 
 typealias SolarXRConnectionContext = Context<SolarXRConnectionState, SolarXRConnectionActions>
 typealias SolarXRConnectionBehaviour = CustomBehaviour<SolarXRConnectionState, SolarXRConnectionActions, SolarXRConnection>
-
 
 class PacketDispatcher<T : Any> {
 	val listeners = mutableMapOf<KClass<out T>, MutableList<suspend (T) -> Unit>>()
@@ -59,21 +61,21 @@ data class SolarXRConnection(
 	val serverContext: VRServer,
 	val dataFeedDispatcher: PacketDispatcher<DataFeedMessage>,
 	val rpcDispatcher: PacketDispatcher<RpcMessage>,
-	val send: suspend (ByteArray) -> Unit
+	val send: suspend (ByteArray) -> Unit,
+	val sendRpc: suspend (RpcMessage) -> Unit,
 )
 
 fun createSolarXRConnection(
 	serverContext: VRServer,
 	onSend: suspend (ByteArray) -> Unit,
-	scope: CoroutineScope
+	scope: CoroutineScope,
 ): SolarXRConnection {
-
 	val state = SolarXRConnectionState(
 		dataFeedConfigs = listOf(),
-		datafeedTimers = listOf()
+		datafeedTimers = listOf(),
 	)
 
-	val behaviours = listOf(DataFeedInitBehaviour)
+	val behaviours = listOf(DataFeedInitBehaviour, SerialConsoleBehaviour, FirmwareBehaviour)
 
 	val context = createContext(
 		initialState = state,
@@ -81,12 +83,21 @@ fun createSolarXRConnection(
 		scope = scope,
 	)
 
+	val sendRpc: suspend (RpcMessage) -> Unit = { message ->
+		val fbb = FlatBufferBuilder(256)
+		fbb.finish(
+			MessageBundle(rpcMsgs = listOf(RpcMessageHeader(message = message))).encode(fbb),
+		)
+		onSend(fbb.dataBuffer().moveToByteArray())
+	}
+
 	val conn = SolarXRConnection(
 		context = context,
 		serverContext = serverContext,
 		dataFeedDispatcher = PacketDispatcher(),
 		rpcDispatcher = PacketDispatcher(),
-		onSend,
+		send = onSend,
+		sendRpc = sendRpc,
 	)
 
 	behaviours.map { it.observer }.forEach { it?.invoke(conn) }

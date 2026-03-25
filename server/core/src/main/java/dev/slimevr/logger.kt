@@ -11,7 +11,7 @@ object AppLogger {
 	val device = logger("Device")
 	val udp = logger("UDPConnection")
 	val solarxr = logger("SolarXR")
-
+	val serial = logger("Serial")
 
 	init {
 		loggingConfiguration {

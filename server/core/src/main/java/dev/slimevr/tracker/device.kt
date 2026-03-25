@@ -14,6 +14,7 @@ enum class DeviceOrigin {
 	FEEDER,
 	UDP,
 	HID,
+	SERIAL,
 }
 
 data class DeviceState(
@@ -31,15 +32,13 @@ sealed interface DeviceActions {
 	data class Update(val transform: DeviceState.() -> DeviceState) : DeviceActions
 }
 
-
-
 val DeviceStatsBehaviour = DeviceBehaviour(
 	reducer = { s, a -> if (a is DeviceActions.Update) a.transform(s) else s },
 	observer = {
 		it.state.onEach { state ->
-//			AppLogger.device.info("Device state changed", state)
+// 			AppLogger.device.info("Device state changed", state)
 		}.launchIn(it.scope)
-	}
+	},
 )
 
 typealias DeviceContext = Context<DeviceState, DeviceActions>
