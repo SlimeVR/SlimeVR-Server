@@ -360,6 +360,12 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			config.trackersOverHID = requestConfig.trackersOverHid()
 		}
 
+		if (req.velocitySettings() != null) {
+			val velocityConfig = api.server.configManager.vrConfig.velocityConfig
+			velocityConfig.sendDerivedVelocity = req.velocitySettings().sendDerivedVelocity()
+			velocityConfig.updateTrackersVelocityPolicy()
+		}
+
 		api.server.configManager.saveConfig()
 	}
 
@@ -376,7 +382,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
