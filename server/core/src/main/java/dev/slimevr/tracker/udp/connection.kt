@@ -1,6 +1,8 @@
 package dev.slimevr.tracker.udp
 
+import dev.llelievr.espflashkotlin.Packet
 import dev.slimevr.AppLogger
+import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Context
@@ -14,14 +16,17 @@ import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerIdNum
 import dev.slimevr.tracker.createDevice
 import dev.slimevr.tracker.createTracker
-import io.ktor.network.sockets.BoundDatagramSocket
-import io.ktor.network.sockets.Datagram
-import io.ktor.network.sockets.InetSocketAddress
-import io.ktor.utils.io.core.buildPacket
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.io.Buffer
+import kotlinx.io.readByteArray
+import java.net.DatagramPacket
+import java.net.DatagramSocket
+import java.net.InetAddress
 
 data class LastPing(
 	val id: Int,
@@ -52,14 +57,7 @@ sealed interface UDPConnectionActions {
 typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
 typealias UDPConnectionBehaviour = CustomBehaviour<UDPConnectionState, UDPConnectionActions, UDPConnection>
 
-data class UDPConnection(
-	val context: UDPConnectionContext,
-	val serverContext: VRServer,
-	val packetEvents: PacketDispatcher,
-	val send: (UDPPacket) -> Unit,
-	val getDevice: () -> Device?,
-	val getTracker: (sensorId: Int) -> Tracker?,
-)
+
 
 val PacketBehaviour = UDPConnectionBehaviour(
 	reducer = { s, a ->
@@ -94,9 +92,7 @@ val PacketBehaviour = UDPConnectionBehaviour(
 				AppLogger.udp.warn("WARN: Received packet with wrong packet number")
 				return@onAny
 			} else {
-				it.context.scope.launch {
-					it.context.dispatch(UDPConnectionActions.LastPacket(time = now))
-				}
+				it.context.dispatch(UDPConnectionActions.LastPacket(time = now))
 			}
 		}
 	},
@@ -130,18 +126,18 @@ val PingBehaviour = UDPConnectionBehaviour(
 		}
 
 		// listen for the pong
-		it.packetEvents.on<PingPong> { packet ->
+		it.packetEvents.onPacket<PingPong> { packet ->
 			val state = it.context.state.value
-			val deviceId = state.deviceId ?: return@on
+			val deviceId = state.deviceId ?: return@onPacket
 
 			if (packet.data.pingId != state.lastPing.id + 1) {
 				AppLogger.udp.warn("Ping ID does not match, ignoring ${packet.data.pingId} != ${state.lastPing.id + 1}")
-				return@on
+				return@onPacket
 			}
 
 			val ping = System.currentTimeMillis() - state.lastPing.startTime
 
-			val device = it.serverContext.getDevice(deviceId) ?: return@on
+			val device = it.serverContext.getDevice(deviceId) ?: return@onPacket
 
 			it.context.dispatch(
 				UDPConnectionActions.ReceivedPong(
@@ -170,7 +166,7 @@ val HandshakeBehaviour = UDPConnectionBehaviour(
 		}
 	},
 	observer = {
-		it.packetEvents.on<Handshake> { packet ->
+		it.packetEvents.onPacket<Handshake> { packet ->
 			val state = it.context.state.value
 
 			if (state.deviceId == null) {
@@ -179,7 +175,12 @@ val HandshakeBehaviour = UDPConnectionBehaviour(
 				val newDevice = createDevice(
 					id = deviceId,
 					scope = it.serverContext.context.scope,
-					address = packet.data.macString ?: error("no mac address?"),
+                    address = it.context.state.value.address,
+					macAddress = packet.data.macString,
+					boardType = packet.data.boardType,
+					protocolVersion = packet.data.protocolVersion,
+					mcuType = packet.data.mcuType,
+					firmware = packet.data.firmware,
 					origin = DeviceOrigin.UDP,
 					serverContext = it.serverContext,
 				)
@@ -201,8 +202,8 @@ val HandshakeBehaviour = UDPConnectionBehaviour(
 
 val DeviceStatsBehaviour = UDPConnectionBehaviour(
 	observer = {
-		it.packetEvents.on<BatteryLevel> { event ->
-			val device = it.getDevice() ?: return@on
+		it.packetEvents.onPacket<BatteryLevel> { event ->
+			val device = it.getDevice() ?: return@onPacket
 
 			device.context.dispatch(
 				DeviceActions.Update {
@@ -214,8 +215,8 @@ val DeviceStatsBehaviour = UDPConnectionBehaviour(
 			)
 		}
 
-		it.packetEvents.on<SignalStrength> { event ->
-			val device = it.getDevice() ?: return@on
+		it.packetEvents.onPacket<SignalStrength> { event ->
+			val device = it.getDevice() ?: return@onPacket
 
 			device.context.dispatch(
 				DeviceActions.Update {
@@ -237,7 +238,7 @@ val SensorInfoBehaviour = UDPConnectionBehaviour(
 		}
 	},
 	observer = { observerContext ->
-		observerContext.packetEvents.on<SensorInfo> { event ->
+		observerContext.packetEvents.onPacket<SensorInfo> { event ->
 			val tracker = observerContext.getTracker(event.data.sensorId)
 
 			val action = TrackerActions.Update {
@@ -287,84 +288,108 @@ val SensorInfoBehaviour = UDPConnectionBehaviour(
 
 val SensorRotationBehaviour = UDPConnectionBehaviour(
 	observer = { context ->
-		context.packetEvents.on<RotationData> { event ->
-			val tracker = context.getTracker(event.data.sensorId) ?: return@on
-			tracker.context.scope.launch {
-				tracker.context.dispatch(
-					TrackerActions.Update {
-						copy(rawRotation = event.data.rotation)
-					},
-				)
-			}
+		context.packetEvents.onPacket<RotationData> { event ->
+			val tracker = context.getTracker(event.data.sensorId) ?: return@onPacket
+			tracker.context.dispatch(
+				TrackerActions.Update {
+					copy(rawRotation = event.data.rotation)
+				},
+			)
 		}
 	},
 )
 
-fun createUDPConnection(
-	id: String,
-	socket: BoundDatagramSocket,
-	remoteAddress: InetSocketAddress,
-	serverContext: VRServer,
-	scope: CoroutineScope,
-): UDPConnection {
-	val behaviours = listOf(
-		PacketBehaviour,
-		HandshakeBehaviour,
-		PingBehaviour,
-		DeviceStatsBehaviour,
-		SensorInfoBehaviour,
-		SensorRotationBehaviour,
-	)
 
-	val context = createContext(
-		initialState = UDPConnectionState(
-			id = id,
-			lastPacket = System.currentTimeMillis(),
-			lastPacketNum = 0,
-			lastPing = LastPing(id = 0, duration = 0, startTime = 0),
-			didHandshake = false,
-			address = remoteAddress.hostname,
-			port = remoteAddress.port,
-			deviceId = null,
-			trackerIds = listOf(),
-		),
-		reducers = behaviours.map { it.reducer },
-		scope = scope,
-	)
+data class UDPConnection(
+	val context: UDPConnectionContext,
+	val serverContext: VRServer,
+	val packetEvents: UDPPacketDispatcher,
+	val packetChannel: Channel<PacketEvent<UDPPacket>>,
+	val send: (UDPPacket) -> Unit
+) {
+	fun getDevice(): Device? {
+		val deviceId = context.state.value.deviceId
+		return if (deviceId != null) {
+			serverContext.getDevice(deviceId)
+		} else {
+			null
+		}
+	}
 
-	val dispatcher = PacketDispatcher()
+	fun getTracker(id: Int): Tracker? {
+		val trackerId = context.state.value.trackerIds.find { it.trackerNum == id }
+		return if (trackerId != null) {
+			serverContext.getTracker(trackerId.id)
+		} else {
+			null
+		}
+	}
 
-	val conn = UDPConnection(
-		context = context,
-		serverContext = serverContext,
-		dispatcher,
-		send = { packet: UDPPacket ->
+	companion object {
+		fun create(
+			id: String,
+			socket: DatagramSocket,
+			remoteIp: String,
+			remotePort: Int,
+			serverContext: VRServer,
+			scope: CoroutineScope,
+		): UDPConnection {
+			val behaviours = listOf(
+				PacketBehaviour,
+				HandshakeBehaviour,
+				PingBehaviour,
+				DeviceStatsBehaviour,
+				SensorInfoBehaviour,
+				SensorRotationBehaviour,
+			)
+
+			val context = createContext(
+				initialState = UDPConnectionState(
+					id = id,
+					lastPacket = System.currentTimeMillis(),
+					lastPacketNum = 0,
+					lastPing = LastPing(id = 0, duration = 0, startTime = 0),
+					didHandshake = false,
+					address = remoteIp,
+					port = remotePort,
+					deviceId = null,
+					trackerIds = listOf(),
+				),
+				reducers = behaviours.map { it.reducer },
+				scope = scope,
+			)
+
+			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>> { it.data::class }
+			val packetChannel = Channel<PacketEvent<UDPPacket>>(capacity = 256)
+			val remoteInetAddress = InetAddress.getByName(remoteIp)
+
+			val conn = UDPConnection(
+				context = context,
+				serverContext = serverContext,
+				dispatcher,
+				packetChannel = packetChannel,
+				send = { packet: UDPPacket ->
+					scope.launch(Dispatchers.IO) {
+						val buf = Buffer()
+						writePacket(buf, packet)
+						val bytes = buf.readByteArray()
+						socket.send(DatagramPacket(bytes, bytes.size, remoteInetAddress, remotePort))
+					}
+				},
+			)
+
+			behaviours.map { it.observer }.forEach { it?.invoke(conn) }
+
+			// Dedicated coroutine per connection so the receive loop is never blocked by packet processing
 			scope.launch {
-				val bytePacket = buildPacket {
-					writePacket(this, packet)
+				for (event in packetChannel) {
+					dispatcher.emit(event)
 				}
-				socket.send(Datagram(bytePacket, remoteAddress))
 			}
-		},
-		getDevice = {
-			val deviceId = context.state.value.deviceId
-			if (deviceId != null) {
-				serverContext.getDevice(deviceId)
-			} else {
-				null
-			}
-		},
-		getTracker = { id ->
-			val trackerId = context.state.value.trackerIds.find { it.trackerNum == id }
-			if (trackerId != null) {
-				serverContext.getTracker(trackerId.id)
-			} else {
-				null
-			}
-		},
-	)
 
-	behaviours.map { it.observer }.forEach { it?.invoke(conn) }
-
-	return conn
+			return conn
+		}
+	}
 }
+
+

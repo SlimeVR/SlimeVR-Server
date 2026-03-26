@@ -21,7 +21,9 @@ import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.datatypes.hardware_info.McuType
 import java.nio.ByteBuffer
 
 const val PROTOCOL_VERSION = 5
@@ -108,6 +110,11 @@ suspend fun handleFeederConnection(
 				id = deviceId,
 				address = msg.tracker_added.tracker_serial,
 				origin = DeviceOrigin.FEEDER,
+				boardType = BoardType.UNKNOWN,
+				firmware = msg.version.toString(),
+				protocolVersion = 0,
+				mcuType = McuType.Other,
+				macAddress = msg.tracker_added.tracker_serial, // FIXME: prob not correct
 				serverContext = server,
 			)
 			server.context.dispatch(VRServerActions.NewDevice(deviceId, device))

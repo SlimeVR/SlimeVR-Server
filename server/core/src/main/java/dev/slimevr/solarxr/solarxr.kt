@@ -5,17 +5,15 @@ import dev.slimevr.VRServer
 import dev.slimevr.context.Context
 import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
+import dev.slimevr.EventDispatcher
 import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
-import kotlin.reflect.KClass
 
 data class SolarXRConnectionState(
 	val dataFeedConfigs: List<DataFeedConfig>,
@@ -29,38 +27,12 @@ sealed interface SolarXRConnectionActions {
 typealias SolarXRConnectionContext = Context<SolarXRConnectionState, SolarXRConnectionActions>
 typealias SolarXRConnectionBehaviour = CustomBehaviour<SolarXRConnectionState, SolarXRConnectionActions, SolarXRConnection>
 
-class PacketDispatcher<T : Any> {
-	val listeners = mutableMapOf<KClass<out T>, MutableList<suspend (T) -> Unit>>()
-	val globalListeners = mutableListOf<suspend (T) -> Unit>()
-	val mutex = Mutex()
-
-	@Suppress("UNCHECKED_CAST")
-	inline fun <reified P : T> on(crossinline callback: suspend (P) -> Unit) {
-		synchronized(this) {
-			listeners.getOrPut(P::class as KClass<out T>) { mutableListOf() }
-				.add { callback(it as P) }
-		}
-	}
-
-	fun onAny(callback: suspend (T) -> Unit) {
-		synchronized(this) { globalListeners.add(callback) }
-	}
-
-	suspend fun emit(event: T) {
-		val targets = mutex.withLock {
-			val specific = listeners[event::class]?.toList() ?: emptyList()
-			val global = globalListeners.toList()
-			global + specific
-		}
-		targets.forEach { it(event) }
-	}
-}
 
 data class SolarXRConnection(
 	val context: SolarXRConnectionContext,
 	val serverContext: VRServer,
-	val dataFeedDispatcher: PacketDispatcher<DataFeedMessage>,
-	val rpcDispatcher: PacketDispatcher<RpcMessage>,
+	val dataFeedDispatcher: EventDispatcher<DataFeedMessage>,
+	val rpcDispatcher: EventDispatcher<RpcMessage>,
 	val send: suspend (ByteArray) -> Unit,
 	val sendRpc: suspend (RpcMessage) -> Unit,
 )
@@ -94,8 +66,8 @@ fun createSolarXRConnection(
 	val conn = SolarXRConnection(
 		context = context,
 		serverContext = serverContext,
-		dataFeedDispatcher = PacketDispatcher(),
-		rpcDispatcher = PacketDispatcher(),
+		dataFeedDispatcher = EventDispatcher(),
+		rpcDispatcher = EventDispatcher(),
 		send = onSend,
 		sendRpc = sendRpc,
 	)

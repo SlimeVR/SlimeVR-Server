@@ -24,13 +24,17 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import solarxr_protocol.datatypes.DeviceIdTable
 import solarxr_protocol.rpc.FirmwarePart
+import solarxr_protocol.rpc.FirmwareUpdateDeviceId
 import solarxr_protocol.rpc.FirmwareUpdateStatus
+import solarxr_protocol.rpc.SerialDevicePort
 
 private val MAC_REGEX = Regex("mac: (([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2})", RegexOption.IGNORE_CASE)
 
 data class FirmwareJobStatus(
 	val portLocation: String,
+	val firmwareDeviceId: FirmwareUpdateDeviceId,
 	val status: FirmwareUpdateStatus,
 	val progress: Int = 0,
 )
@@ -40,7 +44,12 @@ data class FirmwareManagerState(
 )
 
 sealed interface FirmwareManagerActions {
-	data class UpdateJob(val portLocation: String, val status: FirmwareUpdateStatus, val progress: Int = 0) : FirmwareManagerActions
+	data class UpdateJob(
+		val portLocation: String,
+		val firmwareDeviceId: FirmwareUpdateDeviceId,
+		val status: FirmwareUpdateStatus,
+		val progress: Int = 0,
+	) : FirmwareManagerActions
 
 	data class RemoveJob(val portLocation: String) : FirmwareManagerActions
 }
@@ -52,7 +61,12 @@ val FirmwareManagerBaseBehaviour = FirmwareManagerBehaviour(
 	reducer = { s, a ->
 		when (a) {
 			is FirmwareManagerActions.UpdateJob -> s.copy(
-				jobs = s.jobs + (a.portLocation to FirmwareJobStatus(a.portLocation, a.status, a.progress)),
+				jobs = s.jobs + (a.portLocation to FirmwareJobStatus(
+				portLocation = a.portLocation,
+				firmwareDeviceId = a.firmwareDeviceId,
+				status = a.status,
+				progress = a.progress,
+			)),
 			)
 
 			is FirmwareManagerActions.RemoveJob -> s.copy(jobs = s.jobs - a.portLocation)
@@ -64,6 +78,7 @@ val FirmwareManagerBaseBehaviour = FirmwareManagerBehaviour(
 data class FirmwareManager(
 	val context: FirmwareManagerContext,
 	val flash: suspend (portLocation: String, parts: List<FirmwarePart>, needManualReboot: Boolean, ssid: String?, password: String?, server: VRServer) -> Unit,
+	val otaFlash: suspend (deviceIp: String, firmwareDeviceId: FirmwareUpdateDeviceId, part: FirmwarePart, VRServer) -> Unit,
 	val cancelAll: suspend () -> Unit,
 )
 
@@ -229,7 +244,7 @@ internal suspend fun doSerialFlashPostFlash(
 	// wait for the tracker with that MAC to connect to the server via UDP
 	val connected = withTimeoutOrNull(60_000) {
 		server.context.state
-			.map { state -> state.devices.values.any { it.context.state.value.address.uppercase() == macAddress } }
+			.map { state -> state.devices.values.any { it.context.state.value.macAddress?.uppercase() == macAddress } }
 			.filter { it }
 			.first()
 	}
@@ -268,9 +283,36 @@ fun createFirmwareManager(
 				serialServer = serialServer,
 				server = server,
 				onStatus = { status, progress ->
-					context.dispatch(FirmwareManagerActions.UpdateJob(portLocation, status, progress))
+					context.dispatch(FirmwareManagerActions.UpdateJob(
+						portLocation = portLocation,
+						firmwareDeviceId = SerialDevicePort(port = portLocation),
+						status = status,
+						progress = progress,
+					))
 				},
 				scope = scope,
+			)
+		}
+	}
+
+	val otaFlash: suspend (String, FirmwareUpdateDeviceId, FirmwarePart, VRServer) -> Unit = { deviceIp, firmwareDeviceId, part, server ->
+		runningJobs[deviceIp]?.cancelAndJoin()
+		runningJobs[deviceIp] = scope.launch {
+			doOtaFlash(
+				deviceIp = deviceIp,
+				deviceId = (firmwareDeviceId as? DeviceIdTable)?.id ?: error("device id should exist"),
+				part = part,
+				server = server,
+				onStatus = { status, progress ->
+					context.dispatch(
+						FirmwareManagerActions.UpdateJob(
+							portLocation = deviceIp,
+							firmwareDeviceId = firmwareDeviceId,
+							status = status,
+							progress = progress,
+						),
+					)
+				},
 			)
 		}
 	}
@@ -283,6 +325,7 @@ fun createFirmwareManager(
 	val manager = FirmwareManager(
 		context = context,
 		flash = flash,
+		otaFlash = otaFlash,
 		cancelAll = cancelAll,
 	)
 

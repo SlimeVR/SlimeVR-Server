@@ -6,11 +6,20 @@ import dev.slimevr.firmware.FirmwareManagerBaseBehaviour
 import dev.slimevr.firmware.FirmwareManagerState
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.rpc.FirmwareUpdateStatus
+import solarxr_protocol.rpc.SerialDevicePort
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+
+private fun serialJob(port: String, status: FirmwareUpdateStatus, progress: Int = 0) =
+	FirmwareManagerActions.UpdateJob(
+		portLocation = port,
+		firmwareDeviceId = SerialDevicePort(port = port),
+		status = status,
+		progress = progress,
+	)
 
 class FirmwareManagerReducerTest {
 	private fun makeContext(scope: kotlinx.coroutines.CoroutineScope) = createContext(
@@ -23,7 +32,7 @@ class FirmwareManagerReducerTest {
 	fun `UpdateJob adds a new job`() = runTest {
 		val context = makeContext(this)
 
-		context.dispatch(FirmwareManagerActions.UpdateJob("COM1", FirmwareUpdateStatus.UPLOADING, 42))
+		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 42))
 
 		val job = context.state.value.jobs["COM1"]
 		assertNotNull(job)
@@ -35,8 +44,8 @@ class FirmwareManagerReducerTest {
 	fun `UpdateJob replaces an existing job`() = runTest {
 		val context = makeContext(this)
 
-		context.dispatch(FirmwareManagerActions.UpdateJob("COM1", FirmwareUpdateStatus.DOWNLOADING, 0))
-		context.dispatch(FirmwareManagerActions.UpdateJob("COM1", FirmwareUpdateStatus.UPLOADING, 75))
+		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.DOWNLOADING))
+		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 75))
 
 		val job = context.state.value.jobs["COM1"]
 		assertNotNull(job)
@@ -49,8 +58,8 @@ class FirmwareManagerReducerTest {
 	fun `UpdateJob tracks multiple ports independently`() = runTest {
 		val context = makeContext(this)
 
-		context.dispatch(FirmwareManagerActions.UpdateJob("COM1", FirmwareUpdateStatus.UPLOADING, 10))
-		context.dispatch(FirmwareManagerActions.UpdateJob("COM2", FirmwareUpdateStatus.DOWNLOADING, 0))
+		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 10))
+		context.dispatch(serialJob("COM2", FirmwareUpdateStatus.DOWNLOADING))
 
 		assertEquals(2, context.state.value.jobs.size)
 		assertEquals(FirmwareUpdateStatus.UPLOADING, context.state.value.jobs["COM1"]?.status)
@@ -61,7 +70,7 @@ class FirmwareManagerReducerTest {
 	fun `RemoveJob removes an existing job`() = runTest {
 		val context = makeContext(this)
 
-		context.dispatch(FirmwareManagerActions.UpdateJob("COM1", FirmwareUpdateStatus.UPLOADING, 50))
+		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 50))
 		context.dispatch(FirmwareManagerActions.RemoveJob("COM1"))
 
 		assertNull(context.state.value.jobs["COM1"])
@@ -72,7 +81,7 @@ class FirmwareManagerReducerTest {
 	fun `RemoveJob on unknown port is a no-op`() = runTest {
 		val context = makeContext(this)
 
-		context.dispatch(FirmwareManagerActions.UpdateJob("COM1", FirmwareUpdateStatus.UPLOADING, 50))
+		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 50))
 		context.dispatch(FirmwareManagerActions.RemoveJob("COM2"))
 
 		assertEquals(1, context.state.value.jobs.size)

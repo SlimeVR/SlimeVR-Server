@@ -1,11 +1,9 @@
 package dev.slimevr.tracker.udp
 
+import dev.slimevr.EventDispatcher
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.core.remaining
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.io.Sink
 import kotlinx.io.Source
 import kotlinx.io.readByteArray
@@ -14,8 +12,9 @@ import kotlinx.io.readString
 import kotlinx.io.readUByte
 import kotlinx.io.writeUByte
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.ImuType
-import kotlin.reflect.KClass
+import solarxr_protocol.datatypes.hardware_info.McuType
 
 private fun Source.readU8(): Int = readByte().toInt() and 0xFF
 
@@ -76,9 +75,9 @@ sealed interface SensorSpecificPacket : UDPPacket {
 data object Heartbeat : UDPPacket
 
 data class Handshake(
-	val boardType: Int = 0,
+	val boardType: BoardType = BoardType.UNKNOWN,
 	val imuType: Int = 0,
-	val mcuType: Int = 0,
+	val mcuType: McuType = McuType.Other,
 	val protocolVersion: Int = 0,
 	val firmware: String? = null,
 	val macString: String? = null,
@@ -91,9 +90,9 @@ data class Handshake(
 	companion object {
 		fun read(src: Source): Handshake = with(src) {
 			if (remaining == 0L) return Handshake()
-			val b = if (remaining >= 4) readInt() else 0
+			val b = if (remaining >= 4) BoardType.fromValue(readInt().toUShort()) ?: BoardType.UNKNOWN else  BoardType.UNKNOWN
 			val i = if (remaining >= 4) readInt() else 0
-			val m = if (remaining >= 4) readInt() else 0
+			val m = if (remaining >= 4) McuType.fromValue(readInt().toUShort()) ?: McuType.Other else McuType.Other
 			if (remaining >= 12) {
 				readInt()
 				readInt()
@@ -344,7 +343,6 @@ fun readPacket(type: PacketType, src: Source): UDPPacket = when (type) {
 
 	PacketType.SET_CONFIG_FLAG -> SetConfigFlag()
 
-	// Usually outbound
 	PacketType.FLEX_DATA -> FlexData.read(src)
 
 	PacketType.POSITION -> PositionPacket.read(src)
@@ -375,33 +373,9 @@ data class PacketEvent<out T : UDPPacket>(
 	val packetNumber: Long,
 )
 
-class PacketDispatcher {
-	val listeners = mutableMapOf<KClass<out UDPPacket>, MutableList<suspend (PacketEvent<UDPPacket>) -> Unit>>()
-	val globalListeners = mutableListOf<suspend (PacketEvent<UDPPacket>) -> Unit>()
-	val mutex = Mutex()
+typealias UDPPacketDispatcher = EventDispatcher<PacketEvent<UDPPacket>>
 
-	@Suppress("UNCHECKED_CAST")
-	inline fun <reified T : UDPPacket> on(crossinline callback: suspend (PacketEvent<T>) -> Unit) {
-		runBlocking {
-			mutex.withLock {
-				val list = listeners.getOrPut(T::class) { mutableListOf() }
-				list.add { callback(it as PacketEvent<T>) }
-			}
-		}
-	}
-
-	fun onAny(callback: suspend (PacketEvent<UDPPacket>) -> Unit) {
-		runBlocking {
-			mutex.withLock { globalListeners.add(callback) }
-		}
-	}
-
-	suspend fun emit(event: PacketEvent<UDPPacket>) {
-		val targets = mutex.withLock {
-			val specific = listeners[event.data::class]?.toList() ?: emptyList()
-			val global = globalListeners.toList()
-			global + specific
-		}
-		targets.forEach { it(event) }
-	}
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T : UDPPacket> UDPPacketDispatcher.onPacket(crossinline callback: suspend (PacketEvent<T>) -> Unit) {
+	register(T::class) { callback(it as PacketEvent<T>) }
 }

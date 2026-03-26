@@ -258,8 +258,6 @@ class DoSerialFlashTest {
 		launch {
 			delay(100)
 			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
-		}
-		launch {
 			delay(200)
 			server.onDataReceived("COM1", "looking for the server")
 		}
@@ -270,8 +268,6 @@ class DoSerialFlashTest {
 
 		assertEquals(FirmwareUpdateStatus.ERROR_TIMEOUT, statuses.last())
 	}
-
-	// ── Full success path ─────────────────────────────────────────────────
 
 	@OptIn(ExperimentalCoroutinesApi::class)
 	@Test
@@ -297,14 +293,10 @@ class DoSerialFlashTest {
 		launch {
 			delay(100)
 			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
-		}
-		launch {
 			delay(200)
 			server.onDataReceived("COM1", "looking for the server")
-		}
-		launch {
 			delay(300)
-			val device = createDevice(backgroundScope, vrServer.nextHandle(), "AA:BB:CC:DD:EE:FF", DeviceOrigin.UDP, vrServer)
+			val device = createDevice(backgroundScope, vrServer.nextHandle(), address = "192.168.1.100", macAddress = "AA:BB:CC:DD:EE:FF", DeviceOrigin.UDP, vrServer)
 			vrServer.context.dispatch(VRServerActions.NewDevice(device.context.state.value.id, device))
 		}
 

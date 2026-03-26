@@ -20,9 +20,13 @@ import solarxr_protocol.data_feed.tracker.TrackerData
 import solarxr_protocol.data_feed.tracker.TrackerDataMask
 import solarxr_protocol.data_feed.tracker.TrackerInfo
 import solarxr_protocol.datatypes.DeviceId
+import solarxr_protocol.datatypes.Ipv4Address
 import solarxr_protocol.datatypes.TrackerId
+import solarxr_protocol.datatypes.hardware_info.HardwareAddress
+import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.math.Quat
+import java.nio.ByteBuffer
 
 private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask): TrackerData = TrackerData(
 	trackerId = TrackerId(
@@ -56,6 +60,15 @@ private fun createDevice(
 			batteryPctEstimate = device.batteryLevel.toUInt()
 				.toUByte(),
 			ping = device.ping?.toUShort(),
+		),
+		hardwareInfo = HardwareInfo(
+			mcuId = device.mcuType,
+			manufacturer = "SlimeVR",
+			boardType = device.boardType.toString(),
+			officialBoardType = device.boardType,
+			model = device.mcuType.toString(),
+			firmwareVersion = device.firmware,
+			ipAddress = Ipv4Address(ByteBuffer.wrap(device.address.toByteArray()).getLong().toUInt()),
 		),
 		trackers = if (trackerMask != null) {
 			trackers.filter { it.deviceId == device.id }

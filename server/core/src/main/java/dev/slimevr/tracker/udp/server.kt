@@ -1,14 +1,17 @@
 package dev.slimevr.tracker.udp
 
+import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.config.AppConfig
-import io.ktor.network.selector.SelectorManager
-import io.ktor.network.sockets.InetSocketAddress
-import io.ktor.network.sockets.aSocket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.withContext
+import kotlinx.io.Buffer
+import java.net.DatagramPacket
+import java.net.DatagramSocket
+import kotlin.time.measureTime
 
 data class UDPTrackerServerState(
 	val port: Int,
@@ -24,41 +27,52 @@ suspend fun createUDPTrackerServer(
 		connections = mutableMapOf(),
 	)
 
-	val selectorManager = SelectorManager(Dispatchers.IO)
-	val serverSocket =
-		aSocket(selectorManager).udp().bind(InetSocketAddress("0.0.0.0", state.port))
+	val socket = withContext(Dispatchers.IO) {
+		DatagramSocket(state.port)
+	}
+	val recvBuffer = ByteArray(2048)
+	val recvPacket = DatagramPacket(recvBuffer, recvBuffer.size)
 
 	supervisorScope {
 		launch(Dispatchers.IO) {
 			while (isActive) {
-				val datagram = serverSocket.receive()
-				val packetId = datagram.packet.readInt()
-				val packetNumber = datagram.packet.readLong()
-				val type = PacketType.fromId(packetId) ?: continue
-				val packetData = readPacket(type, datagram.packet)
+				socket.receive(recvPacket)
+				val took = measureTime {
+					val src = Buffer()
+					src.write(recvBuffer, 0, recvPacket.length)
 
-				val address = datagram.address as InetSocketAddress
-				val connContext = state.connections[address.hostname]
+					val packetId = src.readInt()
+					val packetNumber = src.readLong()
+					val type = PacketType.fromId(packetId) ?: continue
+					val packetData = readPacket(type, src)
 
-				val event = PacketEvent(
-					data = packetData,
-					packetNumber = packetNumber,
-				)
+					val ip = recvPacket.address.hostAddress
+					val port = recvPacket.port
+					val connContext = state.connections[ip]
 
-				if (connContext !== null) {
-					connContext.packetEvents.emit(event)
-				} else {
-					val newContext = createUDPConnection(
-						id = address.hostname,
-						remoteAddress = address,
-						socket = serverSocket,
-						serverContext = serverContext,
-						scope = this,
+					val event = PacketEvent(
+						data = packetData,
+						packetNumber = packetNumber,
 					)
 
-					state.connections[address.hostname] = newContext
-					newContext.packetEvents.emit(event)
+					if (connContext !== null) {
+						connContext.packetChannel.trySend(event)
+					} else {
+						val newContext = UDPConnection.create(
+							id = ip,
+							remoteIp = ip,
+							remotePort = port,
+							socket = socket,
+							serverContext = serverContext,
+							scope = this,
+						)
+
+						state.connections[ip] = newContext
+						newContext.packetChannel.trySend(event)
+					}
 				}
+				if (took.inWholeMilliseconds > 2)
+					AppLogger.udp.warn("Packet processing took too long ${took.inWholeMilliseconds}")
 			}
 		}
 	}

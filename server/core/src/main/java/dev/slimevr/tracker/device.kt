@@ -5,9 +5,13 @@ import dev.slimevr.VRServer
 import dev.slimevr.context.BasicBehaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
+import io.ktor.http.HttpProtocolVersion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.hardware_info.BoardType
+import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.datatypes.hardware_info.McuType
 
 enum class DeviceOrigin {
 	DRIVER,
@@ -20,10 +24,15 @@ data class DeviceState(
 	val id: Int,
 	val name: String,
 	val address: String,
+	val macAddress: String?,
 	val batteryLevel: Float,
 	val batteryVoltage: Float,
 	val ping: Long?,
 	val signalStrength: Int?,
+	val firmware: String?,
+	val boardType: BoardType,
+	val mcuType: McuType,
+	val protocolVersion: Int,
 	val origin: DeviceOrigin,
 )
 
@@ -47,7 +56,18 @@ data class Device(
 	val context: DeviceContext,
 )
 
-fun createDevice(scope: CoroutineScope, id: Int, address: String, origin: DeviceOrigin, serverContext: VRServer): Device {
+fun createDevice(
+	scope: CoroutineScope,
+	id: Int,
+	address: String,
+	macAddress: String? = null,
+	origin: DeviceOrigin,
+	boardType: BoardType,
+	mcuType: McuType,
+	firmware: String? = null,
+	protocolVersion: Int,
+	serverContext: VRServer
+): Device {
 	val deviceState = DeviceState(
 		id = id,
 		name = "Device $id",
@@ -55,6 +75,11 @@ fun createDevice(scope: CoroutineScope, id: Int, address: String, origin: Device
 		batteryVoltage = 0f,
 		origin = origin,
 		address = address,
+		macAddress = macAddress,
+		boardType = boardType,
+		firmware = firmware,
+		mcuType = mcuType,
+		protocolVersion = protocolVersion,
 		ping = null,
 		signalStrength = null,
 	)
