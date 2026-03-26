@@ -183,8 +183,12 @@ internal suspend fun doSerialFlashPostFlash(
 	// wait for the tracker with that MAC to connect to the server via UDP
 	val connected = withTimeoutOrNull(60_000) {
 		server.context.state
-			.map { state -> state.devices.values.any { it.context.state.value.macAddress?.uppercase() == macAddress
-				&& it.context.state.value.status != TrackerStatus.DISCONNECTED } }
+			.map { state ->
+				state.devices.values.any {
+					it.context.state.value.macAddress?.uppercase() == macAddress &&
+						it.context.state.value.status != TrackerStatus.DISCONNECTED
+				}
+			}
 			.filter { it }
 			.first()
 	}

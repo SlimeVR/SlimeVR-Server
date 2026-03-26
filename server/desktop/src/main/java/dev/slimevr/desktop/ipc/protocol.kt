@@ -8,6 +8,7 @@ import dev.slimevr.desktop.platform.TrackerAdded
 import dev.slimevr.desktop.platform.Version
 import dev.slimevr.solarxr.createSolarXRConnection
 import dev.slimevr.solarxr.onSolarXRMessage
+import dev.slimevr.tracker.DeviceActions
 import dev.slimevr.tracker.DeviceOrigin
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.createDevice
@@ -21,9 +22,7 @@ import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.ImuType
-import solarxr_protocol.datatypes.hardware_info.McuType
 import java.nio.ByteBuffer
 
 const val PROTOCOL_VERSION = 5
@@ -104,32 +103,47 @@ suspend fun handleFeederConnection(
 		val msg = ProtobufMessage.ADAPTER.decode(bytes)
 
 		if (msg.tracker_added != null) {
-			val deviceId = server.nextHandle()
-			val device = createDevice(
-				scope = this,
-				id = deviceId,
-				address = msg.tracker_added.tracker_serial,
-				origin = DeviceOrigin.FEEDER,
-				boardType = BoardType.UNKNOWN,
-				firmware = msg.version.toString(),
-				protocolVersion = 0,
-				mcuType = McuType.Other,
-				macAddress = msg.tracker_added.tracker_serial, // FIXME: prob not correct
-				serverContext = server,
-			)
-			server.context.dispatch(VRServerActions.NewDevice(deviceId, device))
+			val serial = msg.tracker_added.tracker_serial
+			val protocolVersion = msg.version?.protocol_version ?: 0
+			val firmware = msg.version?.toString()
 
-			val trackerId = server.nextHandle()
-			val tracker = createTracker(
-				scope = this,
-				id = trackerId,
-				deviceId = deviceId,
-				sensorType = ImuType.MPU9250, // TODO: prob need to make sensor type optional
-				hardwareId = msg.tracker_added.tracker_serial,
-				origin = DeviceOrigin.FEEDER,
-				serverContext = server,
+			// Check for existing tracker with same hardwareId (reconnect case)
+			val existingTracker = server.context.state.value.trackers.values
+				.find { it.context.state.value.hardwareId == serial }
+
+			val device = if (existingTracker != null) {
+				server.getDevice(existingTracker.context.state.value.deviceId) ?: error("could not find existing device")
+			} else {
+				val deviceId = server.nextHandle()
+				val newDevice = createDevice(
+					scope = this,
+					id = deviceId,
+					address = serial,
+					macAddress = serial, // FIXME: prob not correct
+					origin = DeviceOrigin.FEEDER,
+					protocolVersion = protocolVersion,
+					serverContext = server,
+				)
+				server.context.dispatch(VRServerActions.NewDevice(deviceId, newDevice))
+
+				val trackerId = server.nextHandle()
+				val tracker = createTracker(
+					scope = this,
+					id = trackerId,
+					deviceId = deviceId,
+					sensorType = ImuType.MPU9250, // TODO: prob need to make sensor type optional
+					hardwareId = serial,
+					origin = DeviceOrigin.FEEDER,
+					serverContext = server,
+				)
+				server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
+
+				newDevice
+			}
+
+			device.context.dispatch(
+				DeviceActions.Update { copy(firmware = firmware, protocolVersion = protocolVersion) },
 			)
-			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 		}
 
 		if (msg.position != null) {

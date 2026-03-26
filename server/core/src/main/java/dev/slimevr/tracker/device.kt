@@ -64,9 +64,6 @@ fun createDevice(
 	address: String,
 	macAddress: String? = null,
 	origin: DeviceOrigin,
-	boardType: BoardType,
-	mcuType: McuType,
-	firmware: String? = null,
 	protocolVersion: Int,
 	serverContext: VRServer,
 ): Device {
@@ -78,13 +75,13 @@ fun createDevice(
 		origin = origin,
 		address = address,
 		macAddress = macAddress,
-		boardType = boardType,
-		firmware = firmware,
-		mcuType = mcuType,
 		protocolVersion = protocolVersion,
 		ping = null,
 		signalStrength = null,
 		status = TrackerStatus.DISCONNECTED,
+		mcuType = McuType.Other,
+		boardType = BoardType.UNKNOWN,
+		firmware = null
 	)
 
 	val behaviours = listOf(DeviceStatsBehaviour)

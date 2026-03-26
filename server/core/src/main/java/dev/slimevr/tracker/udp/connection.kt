@@ -24,6 +24,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.io.Buffer
 import kotlinx.io.readByteArray
+import solarxr_protocol.datatypes.TrackerStatus
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -52,10 +53,13 @@ sealed interface UDPConnectionActions {
 	data class Handshake(val deviceId: Int) : UDPConnectionActions
 	data class LastPacket(val packetNum: Long? = null, val time: Long) : UDPConnectionActions
 	data class AssignTracker(val trackerId: TrackerIdNum) : UDPConnectionActions
+	data object Disconnected : UDPConnectionActions
 }
 
 typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
 typealias UDPConnectionBehaviour = CustomBehaviour<UDPConnectionState, UDPConnectionActions, UDPConnection>
+
+private const val CONNECTION_TIMEOUT_MS = 5000L
 
 val PacketBehaviour = UDPConnectionBehaviour(
 	reducer = { s, a ->
@@ -78,7 +82,7 @@ val PacketBehaviour = UDPConnectionBehaviour(
 			val state = it.context.state.value
 
 			val now = System.currentTimeMillis()
-			if (now - state.lastPacket > 5000 && packet.packetNumber == 0L) {
+			if (now - state.lastPacket > CONNECTION_TIMEOUT_MS && packet.packetNumber == 0L) {
 				it.context.dispatch(
 					UDPConnectionActions.LastPacket(
 						packetNum = 0,
@@ -160,6 +164,10 @@ val HandshakeBehaviour = UDPConnectionBehaviour(
 				deviceId = a.deviceId,
 			)
 
+			is UDPConnectionActions.Disconnected -> s.copy(
+				didHandshake = false,
+			)
+
 			else -> s
 		}
 	},
@@ -167,32 +175,66 @@ val HandshakeBehaviour = UDPConnectionBehaviour(
 		it.packetEvents.onPacket<Handshake> { packet ->
 			val state = it.context.state.value
 
-			if (state.deviceId == null) {
+			val device = if (state.deviceId == null) {
 				val deviceId = it.serverContext.nextHandle()
-
 				val newDevice = createDevice(
 					id = deviceId,
 					scope = it.serverContext.context.scope,
-					address = it.context.state.value.address,
+					address = state.address,
 					macAddress = packet.data.macString,
-					boardType = packet.data.boardType,
-					protocolVersion = packet.data.protocolVersion,
-					mcuType = packet.data.mcuType,
-					firmware = packet.data.firmware,
 					origin = DeviceOrigin.UDP,
+					protocolVersion = packet.data.protocolVersion,
 					serverContext = it.serverContext,
 				)
-
-				it.serverContext.context.dispatch(
-					VRServerActions.NewDevice(
-						deviceId = deviceId,
-						context = newDevice,
-					),
-				)
+				it.serverContext.context.dispatch(VRServerActions.NewDevice(deviceId = deviceId, context = newDevice))
 				it.context.dispatch(UDPConnectionActions.Handshake(deviceId))
-				it.send(Handshake())
+				newDevice
 			} else {
-				it.send(Handshake())
+				it.context.dispatch(UDPConnectionActions.Handshake(state.deviceId))
+				it.getDevice() ?: run {
+					AppLogger.udp.warn("Reconnect handshake but device ${state.deviceId} not found")
+					it.send(Handshake())
+					return@onPacket
+				}
+			}
+
+			// Apply handshake fields to device, always, for both first connect and reconnect
+			device.context.dispatch(
+				DeviceActions.Update {
+					copy(
+						macAddress = packet.data.macString ?: macAddress,
+						boardType = packet.data.boardType,
+						mcuType = packet.data.mcuType,
+						firmware = packet.data.firmware ?: firmware,
+						protocolVersion = packet.data.protocolVersion,
+					)
+				},
+			)
+
+			it.send(Handshake())
+		}
+	},
+)
+
+val TimeoutBehaviour = UDPConnectionBehaviour(
+	observer = {
+		it.context.scope.launch {
+			while (isActive) {
+				val state = it.context.state.value
+				if (!state.didHandshake) {
+					delay(500)
+					continue
+				}
+				val timeUntilTimeout = CONNECTION_TIMEOUT_MS - (System.currentTimeMillis() - state.lastPacket)
+				if (timeUntilTimeout <= 0) {
+					AppLogger.udp.info("Connection timed out for ${state.id}")
+					it.context.dispatch(UDPConnectionActions.Disconnected)
+					it.getDevice()?.context?.dispatch(
+						DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
+					)
+				} else {
+					delay(timeUntilTimeout + 1)
+				}
 			}
 		}
 	},
@@ -251,7 +293,6 @@ val SensorInfoBehaviour = UDPConnectionBehaviour(
 			val action = TrackerActions.Update {
 				copy(
 					sensorType = event.data.imuType,
-					status = event.data.status,
 				)
 			}
 
@@ -340,6 +381,7 @@ data class UDPConnection(
 			val behaviours = listOf(
 				PacketBehaviour,
 				HandshakeBehaviour,
+				TimeoutBehaviour,
 				PingBehaviour,
 				DeviceStatsBehaviour,
 				SensorInfoBehaviour,
@@ -386,6 +428,12 @@ data class UDPConnection(
 			// Dedicated coroutine per connection so the receive loop is never blocked by packet processing
 			scope.launch {
 				for (event in packetChannel) {
+					// We skip any packet from the tracker that are not handshake packets
+					// if we didn't do a handshake with the server
+					// this prevents from receiving packets if the server does not know about the
+					// tracker yet. This usually happen when you restart the server with already
+					// connected trackers
+					if (!context.state.value.didHandshake && event.data !is PreHandshakePacket) continue
 					dispatcher.emit(event)
 				}
 			}

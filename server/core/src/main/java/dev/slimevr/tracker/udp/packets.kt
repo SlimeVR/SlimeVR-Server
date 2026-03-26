@@ -68,6 +68,9 @@ sealed interface UDPPacket {
 	fun write(dst: Sink) {}
 }
 
+/** Packets that are processed before the handshake is complete */
+sealed interface PreHandshakePacket : UDPPacket
+
 sealed interface SensorSpecificPacket : UDPPacket {
 	val sensorId: Int
 }
@@ -81,7 +84,7 @@ data class Handshake(
 	val protocolVersion: Int = 0,
 	val firmware: String? = null,
 	val macString: String? = null,
-) : UDPPacket {
+) : PreHandshakePacket {
 	override fun write(dst: Sink) {
 		dst.writeByte(PacketType.HANDSHAKE.id.toByte())
 		dst.write("Hey OVR =D 5".toByteArray(Charsets.US_ASCII))
@@ -126,7 +129,7 @@ data class Accel(val acceleration: Vector3 = Vector3.NULL, override val sensorId
 	}
 }
 
-data class PingPong(val pingId: Int = 0) : UDPPacket {
+data class PingPong(val pingId: Int = 0) : PreHandshakePacket {
 	override fun write(dst: Sink) {
 		dst.writeInt(pingId)
 	}
