@@ -17,6 +17,7 @@
   grid-template-columns: subgrid;
   grid-template-rows: subgrid;
 
-  place-items: center;
+  align-items: left;
+  gap: 20px;
 
 }
