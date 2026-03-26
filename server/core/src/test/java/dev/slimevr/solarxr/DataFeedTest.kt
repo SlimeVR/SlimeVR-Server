@@ -83,5 +83,5 @@ class DataFeedTest {
 		assertEquals(0, sendCount)
 	}
 
-	//TODO: need more tests for the content of a datafeed + check if the masks work
+	// TODO: need more tests for the content of a datafeed + check if the masks work
 }

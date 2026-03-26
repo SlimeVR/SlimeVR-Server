@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.datatypes.hardware_info.BoardType
+import solarxr_protocol.datatypes.hardware_info.McuType
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -296,7 +298,17 @@ class DoSerialFlashTest {
 			delay(200)
 			server.onDataReceived("COM1", "looking for the server")
 			delay(300)
-			val device = createDevice(backgroundScope, vrServer.nextHandle(), address = "192.168.1.100", macAddress = "AA:BB:CC:DD:EE:FF", DeviceOrigin.UDP, vrServer)
+			val device = createDevice(
+				backgroundScope,
+				id = vrServer.nextHandle(),
+				address = "192.168.1.100",
+				macAddress = "AA:BB:CC:DD:EE:FF",
+				origin = DeviceOrigin.UDP,
+				protocolVersion = 0,
+				serverContext = vrServer,
+				boardType = BoardType.SLIMEVR,
+				mcuType = McuType.ESP8266
+			)
 			vrServer.context.dispatch(VRServerActions.NewDevice(device.context.state.value.id, device))
 		}
 

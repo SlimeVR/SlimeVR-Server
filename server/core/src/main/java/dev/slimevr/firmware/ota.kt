@@ -31,11 +31,9 @@ private const val OTA_PORT = 8266
 private const val OTA_PASSWORD = "SlimeVR-OTA"
 private const val OTA_CHUNK_SIZE = 2048
 
-private fun bytesToMd5(bytes: ByteArray): String =
-	MessageDigest.getInstance("MD5").digest(bytes).joinToString("") { "%02x".format(it) }
+private fun bytesToMd5(bytes: ByteArray): String = MessageDigest.getInstance("MD5").digest(bytes).joinToString("") { "%02x".format(it) }
 
-private suspend fun sendDatagram(socket: BoundDatagramSocket, message: String, target: InetSocketAddress) =
-	socket.send(Datagram(buildPacket { writeFully(message.toByteArray()) }, target))
+private suspend fun sendDatagram(socket: BoundDatagramSocket, message: String, target: InetSocketAddress) = socket.send(Datagram(buildPacket { writeFully(message.toByteArray()) }, target))
 
 /**
  * Sends the OTA invitation over UDP and performs the optional AUTH challenge-response.
@@ -155,7 +153,7 @@ suspend fun doOtaFlash(
 
 	onStatus(FirmwareUpdateStatus.REBOOTING, 0)
 
-	// wait for the tracker with that MAC to connect to the server via UDP
+	// wait for the tracker with the correct id to come online
 	val connected = withTimeoutOrNull(60_000) {
 		server.context.state
 			.map { state -> state.devices.values.any { it.context.state.value.id.toUByte() == deviceId.id } }

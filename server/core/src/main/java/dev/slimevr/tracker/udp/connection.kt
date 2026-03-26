@@ -57,8 +57,6 @@ sealed interface UDPConnectionActions {
 typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
 typealias UDPConnectionBehaviour = CustomBehaviour<UDPConnectionState, UDPConnectionActions, UDPConnection>
 
-
-
 val PacketBehaviour = UDPConnectionBehaviour(
 	reducer = { s, a ->
 		when (a) {
@@ -175,7 +173,7 @@ val HandshakeBehaviour = UDPConnectionBehaviour(
 				val newDevice = createDevice(
 					id = deviceId,
 					scope = it.serverContext.context.scope,
-                    address = it.context.state.value.address,
+					address = it.context.state.value.address,
 					macAddress = packet.data.macString,
 					boardType = packet.data.boardType,
 					protocolVersion = packet.data.protocolVersion,
@@ -299,13 +297,12 @@ val SensorRotationBehaviour = UDPConnectionBehaviour(
 	},
 )
 
-
 data class UDPConnection(
 	val context: UDPConnectionContext,
 	val serverContext: VRServer,
 	val packetEvents: UDPPacketDispatcher,
 	val packetChannel: Channel<PacketEvent<UDPPacket>>,
-	val send: (UDPPacket) -> Unit
+	val send: (UDPPacket) -> Unit,
 ) {
 	fun getDevice(): Device? {
 		val deviceId = context.state.value.deviceId
@@ -391,5 +388,3 @@ data class UDPConnection(
 		}
 	}
 }
-
-

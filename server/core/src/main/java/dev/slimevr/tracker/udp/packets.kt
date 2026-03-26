@@ -90,7 +90,7 @@ data class Handshake(
 	companion object {
 		fun read(src: Source): Handshake = with(src) {
 			if (remaining == 0L) return Handshake()
-			val b = if (remaining >= 4) BoardType.fromValue(readInt().toUShort()) ?: BoardType.UNKNOWN else  BoardType.UNKNOWN
+			val b = if (remaining >= 4) BoardType.fromValue(readInt().toUShort()) ?: BoardType.UNKNOWN else BoardType.UNKNOWN
 			val i = if (remaining >= 4) readInt() else 0
 			val m = if (remaining >= 4) McuType.fromValue(readInt().toUShort()) ?: McuType.Other else McuType.Other
 			if (remaining >= 12) {
@@ -304,49 +304,27 @@ data class ProtocolChange(val targetProtocol: Int = 0, val targetVersion: Int = 
 
 fun readPacket(type: PacketType, src: Source): UDPPacket = when (type) {
 	PacketType.HEARTBEAT -> Heartbeat
-
 	PacketType.HANDSHAKE -> Handshake.read(src)
-
 	PacketType.ROTATION -> Rotation.read(src)
-
 	PacketType.ACCEL -> Accel.read(src)
-
 	PacketType.PING_PONG -> PingPong.read(src)
-
 	PacketType.SERIAL -> Serial.read(src)
-
 	PacketType.BATTERY_LEVEL -> BatteryLevel.read(src)
-
 	PacketType.TAP -> Tap.read(src)
-
 	PacketType.ERROR -> ErrorPacket.read(src)
-
 	PacketType.SENSOR_INFO -> SensorInfo.read(src)
-
 	PacketType.ROTATION_2 -> Rotation2.read(src)
-
 	PacketType.ROTATION_DATA -> RotationData.read(src)
-
 	PacketType.MAGNETOMETER_ACCURACY -> MagnetometerAccuracy.read(src)
-
 	PacketType.SIGNAL_STRENGTH -> SignalStrength.read(src)
-
 	PacketType.TEMPERATURE -> Temperature.read(src)
-
 	PacketType.USER_ACTION -> UserActionPacket.read(src)
-
 	PacketType.FEATURE_FLAGS -> FeatureFlags.read(src)
-
 	PacketType.ROTATION_AND_ACCEL -> RotationAndAccel.read(src)
-
 	PacketType.ACK_CONFIG_CHANGE -> AckConfigChange.read(src)
-
 	PacketType.SET_CONFIG_FLAG -> SetConfigFlag()
-
 	PacketType.FLEX_DATA -> FlexData.read(src)
-
 	PacketType.POSITION -> PositionPacket.read(src)
-
 	PacketType.PROTOCOL_CHANGE -> ProtocolChange.read(src)
 }
 

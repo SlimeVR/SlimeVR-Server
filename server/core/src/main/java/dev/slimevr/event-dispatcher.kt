@@ -4,6 +4,7 @@ import kotlin.reflect.KClass
 
 class EventDispatcher<T : Any>(private val keyOf: (T) -> KClass<*> = { it::class }) {
 	@Volatile var listeners: Map<KClass<*>, List<suspend (T) -> Unit>> = emptyMap()
+
 	@Volatile private var globalListeners: List<suspend (T) -> Unit> = emptyList()
 
 	fun register(key: KClass<*>, callback: suspend (T) -> Unit) {

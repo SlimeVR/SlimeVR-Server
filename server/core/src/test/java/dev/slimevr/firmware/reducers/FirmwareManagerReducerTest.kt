@@ -13,13 +13,12 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-private fun serialJob(port: String, status: FirmwareUpdateStatus, progress: Int = 0) =
-	FirmwareManagerActions.UpdateJob(
-		portLocation = port,
-		firmwareDeviceId = SerialDevicePort(port = port),
-		status = status,
-		progress = progress,
-	)
+private fun serialJob(port: String, status: FirmwareUpdateStatus, progress: Int = 0) = FirmwareManagerActions.UpdateJob(
+	portLocation = port,
+	firmwareDeviceId = SerialDevicePort(port = port),
+	status = status,
+	progress = progress,
+)
 
 class FirmwareManagerReducerTest {
 	private fun makeContext(scope: kotlinx.coroutines.CoroutineScope) = createContext(

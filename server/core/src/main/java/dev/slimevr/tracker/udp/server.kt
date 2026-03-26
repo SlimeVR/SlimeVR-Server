@@ -71,8 +71,9 @@ suspend fun createUDPTrackerServer(
 						newContext.packetChannel.trySend(event)
 					}
 				}
-				if (took.inWholeMilliseconds > 2)
+				if (took.inWholeMilliseconds > 2) {
 					AppLogger.udp.warn("Packet processing took too long ${took.inWholeMilliseconds}")
+				}
 			}
 		}
 	}

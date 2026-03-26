@@ -66,7 +66,7 @@ fun createDevice(
 	mcuType: McuType,
 	firmware: String? = null,
 	protocolVersion: Int,
-	serverContext: VRServer
+	serverContext: VRServer,
 ): Device {
 	val deviceState = DeviceState(
 		id = id,

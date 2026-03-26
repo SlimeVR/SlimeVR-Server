@@ -1,11 +1,11 @@
 package dev.slimevr.solarxr
 
 import com.google.flatbuffers.FlatBufferBuilder
+import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServer
 import dev.slimevr.context.Context
 import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
-import dev.slimevr.EventDispatcher
 import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -26,7 +26,6 @@ sealed interface SolarXRConnectionActions {
 
 typealias SolarXRConnectionContext = Context<SolarXRConnectionState, SolarXRConnectionActions>
 typealias SolarXRConnectionBehaviour = CustomBehaviour<SolarXRConnectionState, SolarXRConnectionActions, SolarXRConnection>
-
 
 data class SolarXRConnection(
 	val context: SolarXRConnectionContext,

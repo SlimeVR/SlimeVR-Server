@@ -36,10 +36,14 @@ suspend fun createSolarXRWebsocketServer(serverContext: VRServer) {
 
 		routing {
 			webSocket {
-				val solarxrConnection =
-					createSolarXRConnection(serverContext, scope = this, onSend = {
+				AppLogger.solarxr.info("[WS] New connection")
+				val solarxrConnection = createSolarXRConnection(
+					serverContext,
+					scope = this,
+					onSend = {
 						send(Frame.Binary(fin = true, data = it))
-					})
+					},
+				)
 
 				for (frame in incoming) {
 					when (frame) {
@@ -49,7 +53,7 @@ suspend fun createSolarXRWebsocketServer(serverContext: VRServer) {
 						)
 
 						is Frame.Close -> {
-							AppLogger.solarxr.info("Connection closed")
+							AppLogger.solarxr.info("[WS] Connection closed")
 						}
 
 						else -> {}
