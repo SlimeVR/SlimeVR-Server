@@ -12,6 +12,9 @@ import io.ktor.utils.io.core.writeFully
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
@@ -154,14 +157,15 @@ suspend fun doOtaFlash(
 
 	onStatus(FirmwareUpdateStatus.REBOOTING, 0)
 
-	// wait for the tracker with the correct id to come online
+	// Wait for the device to come back online after reboot.
+	// flatMapLatest switches to the matched device's own state flow so that
+	// status changes (which don't emit a new VRServerState) are also observed.
+	@OptIn(ExperimentalCoroutinesApi::class)
 	val connected = withTimeoutOrNull(60_000) {
 		server.context.state
-			.map { state ->
-				state.devices.values.any {
-					it.context.state.value.id.toUByte() == deviceId.id &&
-						it.context.state.value.status != TrackerStatus.DISCONNECTED
-				}
+			.flatMapLatest { state ->
+				val device = state.devices.values.find { it.context.state.value.id.toUByte() == deviceId.id }
+				device?.context?.state?.map { it.status != TrackerStatus.DISCONNECTED } ?: flowOf(false)
 			}
 			.filter { it }
 			.first()

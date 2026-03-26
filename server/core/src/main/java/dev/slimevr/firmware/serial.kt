@@ -10,6 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
@@ -181,13 +183,12 @@ internal suspend fun doSerialFlashPostFlash(
 	}
 
 	// wait for the tracker with that MAC to connect to the server via UDP
+	@OptIn(ExperimentalCoroutinesApi::class)
 	val connected = withTimeoutOrNull(60_000) {
 		server.context.state
-			.map { state ->
-				state.devices.values.any {
-					it.context.state.value.macAddress?.uppercase() == macAddress &&
-						it.context.state.value.status != TrackerStatus.DISCONNECTED
-				}
+			.flatMapLatest { state ->
+				val device = state.devices.values.find { it.context.state.value.macAddress?.uppercase() == macAddress }
+				device?.context?.state?.map { it.status != TrackerStatus.DISCONNECTED } ?: flowOf(false)
 			}
 			.filter { it }
 			.first()
