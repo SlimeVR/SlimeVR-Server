@@ -273,6 +273,9 @@ function createWindow() {
       case 'close':
         mainWindow?.close();
         break;
+      case 'hide':
+        mainWindow?.hide();
+        break;
       case 'minimize':
         mainWindow?.minimize();
         break;
