@@ -26,7 +26,7 @@ import {
   getWindowStateFile,
 } from './paths';
 import { stores } from './store';
-import { logger } from './logger';
+import { closeLogger, logger } from './logger';
 import { writeFileSync } from 'node:fs';
 
 import { spawn } from 'node:child_process';
@@ -404,36 +404,39 @@ const spawnServer = async () => {
         : undefined,
   });
 
+  const sendToWindow = (event: ServerStatusEvent) => {
+    if (mainWindow && !mainWindow.webContents.isDestroyed()) {
+      mainWindow.webContents.send(IPC_CHANNELS.SERVER_STATUS, event);
+    }
+  };
+
   serverProcess.stdout?.on('data', (message) => {
-    mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
-      message: message.toString(),
-      type: 'stdout',
-    } satisfies ServerStatusEvent);
+    sendToWindow({ message: message.toString(), type: 'stdout' });
   });
 
   serverProcess.stderr?.on('data', (message) => {
-    mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
-      message: message.toString(),
-      type: 'stderr',
-    } satisfies ServerStatusEvent);
+    sendToWindow({ message: message.toString(), type: 'stderr' });
   });
 
   serverProcess.on('error', (err) => {
     logger.info({ err }, 'Error launching the java server');
-    app.quit()
+    if (!isQuitting) app.quit();
   })
 
   serverProcess.on('exit', () => {
     logger.info('Server process exiting');
   })
 
+  const exited = new Promise<void>((resolve) => serverProcess.once('exit', resolve));
+
   return {
     process: serverProcess,
-    close: () => {
-      serverProcess.kill();
-    },
+    close: () => serverProcess.kill(),
+    waitForExit: () => exited,
   };
 };
+
+let isQuitting = false;
 
 app.whenReady().then(async () => {
   // Register protocol handler for app:// scheme to handle assets with leading slashes
@@ -456,18 +459,18 @@ app.whenReady().then(async () => {
     }
   });
 
-  process.on('exit', () => {
-    server?.close();
-  });
-
-  app.on('before-quit', async () => {
+  app.on('before-quit', async (event) => {
+    if (isQuitting) return;
+    isQuitting = true;
+    event.preventDefault();
     logger.info('App quitting, saving...');
     server?.close();
+    await server?.waitForExit();
     stores.settings.save();
     stores.cache.save();
-
     discordPresence.destroy();
-
     await saveWindowState();
+    await closeLogger();
+    app.exit(0);
   });
 });
