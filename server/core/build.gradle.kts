@@ -89,6 +89,7 @@ dependencies {
 	testImplementation(platform("org.junit:junit-bom:6.0.2"))
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 }
 
 tasks.test {

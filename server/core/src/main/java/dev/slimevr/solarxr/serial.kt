@@ -21,7 +21,6 @@ import solarxr_protocol.rpc.SerialTrackerGetWifiScanRequest
 import solarxr_protocol.rpc.SerialTrackerRebootRequest
 import solarxr_protocol.rpc.SerialUpdateResponse
 
-
 val SerialConsoleBehaviour = SolarXRConnectionBehaviour(
 	observer = { conn ->
 		val scope = conn.context.scope

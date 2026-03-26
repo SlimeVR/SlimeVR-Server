@@ -125,6 +125,34 @@ suspend fun doSerialFlash(
 		return
 	}
 
+	doSerialFlashPostFlash(
+		portLocation = portLocation,
+		needManualReboot = needManualReboot,
+		ssid = ssid,
+		password = password,
+		serialServer = serialServer,
+		server = server,
+		onStatus = onStatus,
+	)
+}
+
+/**
+ * Handles the post-flash provisioning phase: reconnects the serial console,
+ * reads the device MAC address, sends Wi-Fi credentials, and waits for the
+ * tracker to appear on the network.
+ *
+ * Separated from [doSerialFlash] so it can also be exercised independently for
+ * unit tests
+ */
+internal suspend fun doSerialFlashPostFlash(
+	portLocation: String,
+	needManualReboot: Boolean,
+	ssid: String?,
+	password: String?,
+	serialServer: SerialServer,
+	server: VRServer,
+	onStatus: suspend (FirmwareUpdateStatus, Int) -> Unit,
+) {
 	onStatus(
 		if (needManualReboot) {
 			FirmwareUpdateStatus.NEED_MANUAL_REBOOT

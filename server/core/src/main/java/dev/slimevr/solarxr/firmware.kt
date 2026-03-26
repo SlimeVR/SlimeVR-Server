@@ -47,7 +47,7 @@ val FirmwareBehaviour = SolarXRConnectionBehaviour(
 				method.needmanualreboot,
 				method.ssid,
 				method.password,
-				conn.serverContext
+				conn.serverContext,
 			)
 		}
 

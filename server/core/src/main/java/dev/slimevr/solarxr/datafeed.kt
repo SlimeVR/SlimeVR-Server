@@ -5,11 +5,9 @@ import dev.slimevr.VRServer
 import dev.slimevr.tracker.DeviceState
 import dev.slimevr.tracker.TrackerState
 import io.ktor.util.moveToByteArray
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
@@ -25,7 +23,6 @@ import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.math.Quat
-import kotlin.time.measureTime
 
 private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask): TrackerData = TrackerData(
 	trackerId = TrackerId(
@@ -72,6 +69,7 @@ private fun createDevice(
 fun createDatafeedFrame(
 	serverContext: VRServer,
 	datafeedConfig: DataFeedConfig,
+	index: Int = 0,
 ): DataFeedMessageHeader {
 	val serverState = serverContext.context.state.value
 	val trackers =
@@ -82,45 +80,44 @@ fun createDatafeedFrame(
 	return DataFeedMessageHeader(
 		message = DataFeedUpdate(
 			devices = if (datafeedConfig.dataMask?.deviceData != null) devices else null,
+			index = index.toUByte(),
 		),
 	)
 }
 
 val DataFeedInitBehaviour = SolarXRConnectionBehaviour(
+	reducer = { s, a ->
+		when (a) {
+			is SolarXRConnectionActions.SetConfig -> s.copy(
+				dataFeedConfigs = a.configs,
+				datafeedTimers = a.timers,
+			)
+		}
+	},
 	observer = { context ->
 		context.dataFeedDispatcher.on<StartDataFeed> { event ->
 			val datafeeds = event.dataFeeds ?: return@on
-			val state = context.context.state.value
 
-			state.datafeedTimers.forEach {
-				it.cancelAndJoin()
-			}
+			context.context.state.value.datafeedTimers.forEach { it.cancelAndJoin() }
 
-			val timers = datafeeds.map { config ->
-				val minTime = config.minimumTimeSinceLast ?: return@map null
-
-				return@map context.context.scope.launch(start = CoroutineStart.LAZY) {
+			val timers = datafeeds.mapIndexed { index, config ->
+				context.context.scope.launch {
 					val fbb = FlatBufferBuilder(1024)
+					val minTime = config.minimumTimeSinceLast.toLong()
 					while (isActive) {
-						val timeTaken = measureTime {
-							fbb.clear()
-
-							fbb.finish(
-								MessageBundle(
-									dataFeedMsgs = listOf(
-										createDatafeedFrame(serverContext = context.serverContext, datafeedConfig = config),
-									),
-								).encode(fbb),
-							)
-
-							context.send(fbb.dataBuffer().moveToByteArray())
-						}
-						val remainingDelay = (minTime.toLong() - timeTaken.inWholeMilliseconds)
-						assert(remainingDelay > 0)
-						delay(remainingDelay)
+						fbb.clear()
+						fbb.finish(
+							MessageBundle(
+								dataFeedMsgs = listOf(
+									createDatafeedFrame(context.serverContext, config, index),
+								),
+							).encode(fbb),
+						)
+						context.send(fbb.dataBuffer().moveToByteArray())
+						delay(minTime)
 					}
 				}
-			}.filterNotNull()
+			}
 
 			context.context.dispatch(
 				SolarXRConnectionActions.SetConfig(
@@ -128,10 +125,6 @@ val DataFeedInitBehaviour = SolarXRConnectionBehaviour(
 					timers = timers,
 				),
 			)
-
-			context.context.scope.launch {
-				timers.joinAll()
-			}
 		}
 
 		context.dataFeedDispatcher.on<PollDataFeed> { event ->

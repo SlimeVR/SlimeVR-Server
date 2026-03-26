@@ -14,7 +14,6 @@ enum class DeviceOrigin {
 	FEEDER,
 	UDP,
 	HID,
-	SERIAL,
 }
 
 data class DeviceState(
