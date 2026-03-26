@@ -307,7 +307,7 @@ class DoSerialFlashTest {
 				protocolVersion = 0,
 				serverContext = vrServer,
 				boardType = BoardType.SLIMEVR,
-				mcuType = McuType.ESP8266
+				mcuType = McuType.ESP8266,
 			)
 			vrServer.context.dispatch(VRServerActions.NewDevice(device.context.state.value.id, device))
 		}

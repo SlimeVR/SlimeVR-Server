@@ -33,7 +33,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 		trackerNum = tracker.id.toUByte(),
 		deviceId = DeviceId(device.id.toUByte()),
 	),
-	status = if (trackerMask.status == true) tracker.status else null,
+	status = if (trackerMask.status == true) device.status else null,
 	rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
 	info = if (trackerMask.info == true) {
 		TrackerInfo(

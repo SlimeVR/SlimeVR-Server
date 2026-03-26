@@ -237,6 +237,15 @@ val SensorInfoBehaviour = UDPConnectionBehaviour(
 	},
 	observer = { observerContext ->
 		observerContext.packetEvents.onPacket<SensorInfo> { event ->
+			val device = observerContext.getDevice()
+				?: error("invalid state - a device should exist at this point")
+
+			device.context.dispatch(
+				DeviceActions.Update {
+					copy(status = event.data.status)
+				},
+			)
+
 			val tracker = observerContext.getTracker(event.data.sensorId)
 
 			val action = TrackerActions.Update {
@@ -249,9 +258,6 @@ val SensorInfoBehaviour = UDPConnectionBehaviour(
 			if (tracker != null) {
 				tracker.context.dispatch(action)
 			} else {
-
-				val device = observerContext.getDevice()
-					?: error("invalid state - a device should exist at this point")
 				val deviceState = device.context.state.value
 				val trackerId = observerContext.serverContext.nextHandle()
 				val newTracker = createTracker(

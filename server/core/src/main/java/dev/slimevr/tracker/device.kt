@@ -9,6 +9,7 @@ import io.ktor.http.HttpProtocolVersion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.hardware_info.McuType
@@ -33,6 +34,7 @@ data class DeviceState(
 	val boardType: BoardType,
 	val mcuType: McuType,
 	val protocolVersion: Int,
+	val status: TrackerStatus,
 	val origin: DeviceOrigin,
 )
 
@@ -82,6 +84,7 @@ fun createDevice(
 		protocolVersion = protocolVersion,
 		ping = null,
 		signalStrength = null,
+		status = TrackerStatus.DISCONNECTED,
 	)
 
 	val behaviours = listOf(DeviceStatsBehaviour)

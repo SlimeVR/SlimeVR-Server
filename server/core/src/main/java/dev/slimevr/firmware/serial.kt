@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 
@@ -182,7 +183,8 @@ internal suspend fun doSerialFlashPostFlash(
 	// wait for the tracker with that MAC to connect to the server via UDP
 	val connected = withTimeoutOrNull(60_000) {
 		server.context.state
-			.map { state -> state.devices.values.any { it.context.state.value.macAddress?.uppercase() == macAddress } }
+			.map { state -> state.devices.values.any { it.context.state.value.macAddress?.uppercase() == macAddress
+				&& it.context.state.value.status != TrackerStatus.DISCONNECTED } }
 			.filter { it }
 			.first()
 	}

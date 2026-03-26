@@ -17,6 +17,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.datatypes.DeviceId
+import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 import java.io.DataInputStream
@@ -156,7 +157,12 @@ suspend fun doOtaFlash(
 	// wait for the tracker with the correct id to come online
 	val connected = withTimeoutOrNull(60_000) {
 		server.context.state
-			.map { state -> state.devices.values.any { it.context.state.value.id.toUByte() == deviceId.id } }
+			.map { state ->
+				state.devices.values.any {
+					it.context.state.value.id.toUByte() == deviceId.id &&
+						it.context.state.value.status != TrackerStatus.DISCONNECTED
+				}
+			}
 			.filter { it }
 			.first()
 	}
