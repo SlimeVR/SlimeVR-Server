@@ -1,4 +1,4 @@
-package dev.slimevr.tracker.udp
+package dev.slimevr.udp
 
 import dev.slimevr.EventDispatcher
 import io.github.axisangles.ktmath.Quaternion

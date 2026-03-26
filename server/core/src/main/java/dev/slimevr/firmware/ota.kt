@@ -12,7 +12,6 @@ import io.ktor.utils.io.core.writeFully
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -158,9 +157,9 @@ suspend fun doOtaFlash(
 	onStatus(FirmwareUpdateStatus.REBOOTING, 0)
 
 	// Wait for the device to come back online after reboot.
-	// flatMapLatest switches to the matched device's own state flow so that
-	// status changes (which don't emit a new VRServerState) are also observed.
-	@OptIn(ExperimentalCoroutinesApi::class)
+	// which don't emit a new VRServerState, are also observed.
+	// flatMapLatest switches to the matched device's own state flow so that status changes,
+	@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 	val connected = withTimeoutOrNull(60_000) {
 		server.context.state
 			.flatMapLatest { state ->

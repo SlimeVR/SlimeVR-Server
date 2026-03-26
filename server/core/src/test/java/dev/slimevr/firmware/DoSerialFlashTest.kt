@@ -6,8 +6,8 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.tracker.DeviceOrigin
-import dev.slimevr.tracker.createDevice
+import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.device.createDevice
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

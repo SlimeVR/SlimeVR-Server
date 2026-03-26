@@ -2,7 +2,7 @@ package dev.slimevr.solarxr
 
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.VRServer
-import dev.slimevr.tracker.DeviceState
+import dev.slimevr.device.DeviceState
 import dev.slimevr.tracker.TrackerState
 import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.cancelAndJoin
@@ -22,7 +22,6 @@ import solarxr_protocol.data_feed.tracker.TrackerInfo
 import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.Ipv4Address
 import solarxr_protocol.datatypes.TrackerId
-import solarxr_protocol.datatypes.hardware_info.HardwareAddress
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.math.Quat

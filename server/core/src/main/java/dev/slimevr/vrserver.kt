@@ -5,7 +5,7 @@ import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.tracker.Device
+import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChangedBy

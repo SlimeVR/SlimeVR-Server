@@ -4,12 +4,12 @@ import dev.slimevr.VRServer
 import dev.slimevr.context.BasicBehaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
+import dev.slimevr.device.DeviceOrigin
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
-import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
 data class TrackerIdNum(val id: Int, val trackerNum: Int)

@@ -1,4 +1,4 @@
-package dev.slimevr.tracker.udp
+package dev.slimevr.udp
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer

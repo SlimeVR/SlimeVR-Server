@@ -1,17 +1,14 @@
-package dev.slimevr.tracker
+package dev.slimevr.device
 
-import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.context.BasicBehaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.createContext
-import io.ktor.http.HttpProtocolVersion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
-import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.hardware_info.McuType
 
 enum class DeviceOrigin {

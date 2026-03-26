@@ -245,6 +245,7 @@ Each client runs in its own `launch` block. When the socket disconnects, the cor
 | `tracker/udp/` | Everything specific to the SlimeVR UDP wire protocol |
 | `solarxr/` | SolarXR WebSocket server + FlatBuffers message handling |
 | `config/` | JSON config read/write with autosave; no business logic |
+| `firmware/` | OTA update and serial flash logic; interacts with devices over the network, independent of the UDP tracker protocol |
 
 ---
 

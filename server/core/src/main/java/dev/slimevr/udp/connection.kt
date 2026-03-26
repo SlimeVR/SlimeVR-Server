@@ -1,6 +1,5 @@
-package dev.slimevr.tracker.udp
+package dev.slimevr.udp
 
-import dev.llelievr.espflashkotlin.Packet
 import dev.slimevr.AppLogger
 import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServer
@@ -8,13 +7,13 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Context
 import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
-import dev.slimevr.tracker.Device
-import dev.slimevr.tracker.DeviceActions
-import dev.slimevr.tracker.DeviceOrigin
+import dev.slimevr.device.Device
+import dev.slimevr.device.DeviceActions
+import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerIdNum
-import dev.slimevr.tracker.createDevice
+import dev.slimevr.device.createDevice
 import dev.slimevr.tracker.createTracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
