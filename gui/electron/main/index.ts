@@ -273,6 +273,9 @@ function createWindow() {
       case 'close':
         mainWindow?.close();
         break;
+      case 'hide':
+        mainWindow?.hide();
+        break;
       case 'minimize':
         mainWindow?.minimize();
         break;
@@ -454,9 +457,7 @@ app.whenReady().then(async () => {
   logger.info('SlimeVR started!');
 
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-      app.quit();
-    }
+    app.quit();
   });
 
   app.on('before-quit', async (event) => {
