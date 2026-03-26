@@ -19,6 +19,10 @@ class BVHRecorder(server: VRServer) {
 		val file = if (filePath.isDirectory()) {
 			getBvhFile(filePath) ?: return
 		} else {
+			if (filePath.extension != "bvh") {
+				LogManager.severe("[BVH] Invalid file extension for bvh file \"${filePath}\".")
+				return
+			}
 			filePath
 		}
 

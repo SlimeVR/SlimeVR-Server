@@ -231,6 +231,24 @@ jobs:
           name: release-android
           path: SlimeVR-android.apk
 
+      - name: Build Google Play release bundle
+        if: startsWith(github.ref, 'refs/tags/')
+        run: ./gradlew :server:android:bundleRelease
+        env:
+          ANDROID_STORE_FILE: ${{ secrets.ANDROID_GPLAY_STORE_FILE }}
+          ANDROID_STORE_PASSWD: ${{ secrets.ANDROID_GPLAY_STORE_PASSWD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_GPLAY_KEY_ALIAS }}
+          ANDROID_KEY_PASSWD: ${{ secrets.ANDROID_GPLAY_KEY_PASSWD }}
+
+      - name: Upload the Google Play artifact
+        uses: actions/upload-artifact@v6
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          # Artifact name
+          name: 'SlimeVR-Android-GPDev' # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path: server/android/build/outputs/bundle/release/*
+
   create-release:
     name: Finalize Release Draft
     needs: [package-desktop, bundle-android, build-server-jar, build-gui-frontend]
