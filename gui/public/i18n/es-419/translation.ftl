@@ -1468,6 +1468,7 @@ firmware_tool-select_source-firmware = Fuente del Firmware
 firmware_tool-select_source-version = Versión del Firmware
 firmware_tool-select_source-official = Oficial
 firmware_tool-select_source-dev = Desarrollo
+firmware_tool-select_source-not_selected = Ninguna fuente seleccionada
 firmware_tool-board_defaults = Configura tu placa
 firmware_tool-board_defaults-description = Establece los pines o ajustes relativos a tu hardware
 firmware_tool-board_defaults-add = Añadir
