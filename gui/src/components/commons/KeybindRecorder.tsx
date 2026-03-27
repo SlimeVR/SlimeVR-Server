@@ -19,9 +19,6 @@ export const KeybindRecorder = forwardRef<
   const [showError, setShowError] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const { l10n } = useLocalization();
-
   const displayKeys = isRecording ? localKeys : keys;
   const activeIndex = isRecording ? displayKeys.length : -1;
 
@@ -98,9 +95,10 @@ export const KeybindRecorder = forwardRef<
             const isActive = isRecording && i === activeIndex;
             const isInvalid = invalidSlot === i;
             return (
-              <div
-                key={i}
-                className={`
+              <div className="flex flex-row">
+                <div
+                  key={i}
+                  className={`
                  rounded-md min-w-[50px] min-h-[50px] text-lg flex items-center justify-center hover:ring-2 hover:ring-accent
                 ${key ? 'bg-background-90' : 'bg-background-80'}
                 ${
@@ -111,12 +109,17 @@ export const KeybindRecorder = forwardRef<
                       : 'ring-accent'
                 }
               `}
-              >
-                {key ?? ''}
+                >
+                  {key ?? ''}
+                </div>
+                <div className="flex justify-center items-center text-lg gap-2 pl-3">
+                  {i < maxKeybindLength - 1 ? '+' : ''}
+                </div>
               </div>
             );
           })}
         </div>
+
         {/*
         <div className="w-40 flex-shrink-0 text-accent-background-10 text-right text-sm font-medium">
           {displayKeys.length < maxKeybindLength && isRecording
