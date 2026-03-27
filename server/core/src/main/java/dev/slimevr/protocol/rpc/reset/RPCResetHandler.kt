@@ -38,6 +38,8 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 			}
 		}
 
+		val txId = messageHeader.txId()?.id()
+
 		if (req.resetType() == ResetType.Yaw) {
 			val delay = if (req.hasDelay()) {
 				req.delay()
@@ -45,9 +47,9 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 				resetsConfig.yawResetDelay
 			}
 			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong())
+				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong(), txId = txId)
 			} else {
-				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
+				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList(), txId = txId)
 			}
 		}
 		if (req.resetType() == ResetType.Full) {
@@ -57,9 +59,9 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 				resetsConfig.fullResetDelay
 			}
 			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong())
+				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong(), txId = txId)
 			} else {
-				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
+				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList(), txId = txId)
 			}
 		}
 		if (req.resetType() == ResetType.Mounting) {
@@ -69,14 +71,14 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 				resetsConfig.mountingResetDelay
 			}
 			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong())
+				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong(), txId = txId)
 			} else {
-				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
+				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList(), txId = txId)
 			}
 		}
 	}
 
-	fun sendResetStatusResponse(resetType: Int, status: Int, bodyParts: List<Int>? = null, progress: Int = 0, duration: Int = 0) {
+	fun sendResetStatusResponse(resetType: Int, status: Int, txId: Long? = null, bodyParts: List<Int>? = null, progress: Int = 0, duration: Int = 0) {
 		val fbb = FlatBufferBuilder(32)
 
 		val bodyPartsOffset = if (bodyParts != null) ResetResponse.createBodyPartsVector(fbb, bodyParts.map { it.toByte() }.toByteArray()) else 0
@@ -90,7 +92,7 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		ResetResponse.addProgress(fbb, progress)
 		ResetResponse.addDuration(fbb, duration)
 		val update = ResetResponse.endResetResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.ResetResponse, update)
+		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.ResetResponse, update, txId)
 		fbb.finish(outbound)
 
 		this.forAllListeners(
@@ -113,12 +115,12 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		api.server.clearTrackersMounting(RESET_SOURCE_NAME)
 	}
 
-	override fun onStarted(resetType: Int, bodyParts: List<Int>?, progress: Int, duration: Int) {
-		sendResetStatusResponse(resetType, ResetStatus.STARTED, bodyParts, progress, duration)
+	override fun onStarted(resetType: Int, txId: Long?, bodyParts: List<Int>?, progress: Int, duration: Int) {
+		sendResetStatusResponse(resetType, ResetStatus.STARTED, txId, bodyParts, progress, duration)
 	}
 
-	override fun onFinished(resetType: Int, bodyParts: List<Int>?, duration: Int) {
-		sendResetStatusResponse(resetType, ResetStatus.FINISHED, bodyParts, duration, duration)
+	override fun onFinished(resetType: Int, txId: Long?, bodyParts: List<Int>?, duration: Int) {
+		sendResetStatusResponse(resetType, ResetStatus.FINISHED, txId, bodyParts, duration, duration)
 	}
 
 	fun forAllListeners(action: Consumer<in GenericConnection?>?) {

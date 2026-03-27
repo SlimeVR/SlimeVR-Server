@@ -374,15 +374,14 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		}
 	}
 
-	@JvmOverloads
-	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int, respondTo: RpcMessageHeader? = null): Int {
+	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int, txId: Long?): Int {
 		val data = IntArray(1)
 
 		RpcMessageHeader.startRpcMessageHeader(fbb)
 		RpcMessageHeader.addMessage(fbb, messageOffset)
 		RpcMessageHeader.addMessageType(fbb, messageType)
-		respondTo?.txId()?.let { txId ->
-			RpcMessageHeader.addTxId(fbb, TransactionId.createTransactionId(fbb, txId.id()))
+		txId?.let { txId ->
+			RpcMessageHeader.addTxId(fbb, TransactionId.createTransactionId(fbb, txId))
 		}
 		data[0] = RpcMessageHeader.endRpcMessageHeader(fbb)
 
@@ -392,6 +391,10 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		MessageBundle.addRpcMsgs(fbb, messages)
 		return MessageBundle.endMessageBundle(fbb)
 	}
+
+	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int): Int = createRPCMessage(fbb, messageType, messageOffset, txId = null)
+
+	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int, respondTo: RpcMessageHeader?): Int = createRPCMessage(fbb, messageType, messageOffset, respondTo?.txId()?.id())
 
 	override fun messagesCount(): Int = RpcMessage.names.size
 

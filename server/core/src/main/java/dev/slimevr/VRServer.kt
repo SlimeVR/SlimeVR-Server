@@ -345,49 +345,49 @@ class VRServer @JvmOverloads constructor(
 		}
 	}
 
-	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList()) {
+	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList(), txId: Long? = null) {
 		resetTimer(
 			resetTimerManager,
 			delay,
 			onTick = { progress ->
-				resetHandler.sendStarted(ResetType.Full, bodyParts, progress, delay.toInt())
+				resetHandler.sendStarted(ResetType.Full, txId, bodyParts, progress, delay.toInt())
 			},
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersFull(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Full, bodyParts, delay.toInt())
+					resetHandler.sendFinished(ResetType.Full, txId, bodyParts, delay.toInt())
 				}
 			},
 		)
 	}
 
-	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers, txId: Long? = null) {
 		resetTimer(
 			resetTimerManager,
 			delay,
 			onTick = { progress ->
-				resetHandler.sendStarted(ResetType.Yaw, bodyParts, progress, delay.toInt())
+				resetHandler.sendStarted(ResetType.Yaw, txId, bodyParts, progress, delay.toInt())
 			},
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Yaw, bodyParts, delay.toInt())
+					resetHandler.sendFinished(ResetType.Yaw, txId, bodyParts, delay.toInt())
 				}
 			},
 		)
 	}
 
-	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<Int>? = null) {
+	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<Int>? = null, txId: Long? = null) {
 		resetTimer(
 			resetTimerManager,
 			delay,
 			onTick = { progress ->
-				resetHandler.sendStarted(ResetType.Mounting, bodyParts, progress, delay.toInt())
+				resetHandler.sendStarted(ResetType.Mounting, txId, bodyParts, progress, delay.toInt())
 			},
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Mounting, bodyParts, delay.toInt())
+					resetHandler.sendFinished(ResetType.Mounting, txId, bodyParts, delay.toInt())
 				}
 			},
 		)
