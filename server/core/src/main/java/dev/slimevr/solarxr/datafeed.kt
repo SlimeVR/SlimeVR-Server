@@ -84,11 +84,9 @@ fun createDatafeedFrame(
 	index: Int = 0,
 ): DataFeedMessageHeader {
 	val serverState = serverContext.context.state.value
-	val trackers =
-		serverState.trackers.values.map { it.context.state.value }
-	val devices =
-		serverState.devices.values.map { it.context.state.value }
-			.map { device -> createDevice(device, trackers, datafeedConfig) }
+	val trackers = serverState.trackers.values.map { it.context.state.value }
+	val devices = serverState.devices.values.map { it.context.state.value }
+		.map { device -> createDevice(device, trackers, datafeedConfig) }
 	return DataFeedMessageHeader(
 		message = DataFeedUpdate(
 			devices = if (datafeedConfig.dataMask?.deviceData != null) devices else null,
@@ -97,23 +95,22 @@ fun createDatafeedFrame(
 	)
 }
 
-val DataFeedInitBehaviour = SolarXRConnectionBehaviour(
-	reducer = { s, a ->
-		when (a) {
-			is SolarXRConnectionActions.SetConfig -> s.copy(
-				dataFeedConfigs = a.configs,
-				datafeedTimers = a.timers,
-			)
-		}
-	},
-	observer = { context ->
-		context.dataFeedDispatcher.on<StartDataFeed> { event ->
+object DataFeedInitBehaviour : SolarXRConnectionBehaviour {
+	override fun reduce(state: SolarXRConnectionState, action: SolarXRConnectionActions) = when (action) {
+		is SolarXRConnectionActions.SetConfig -> state.copy(
+			dataFeedConfigs = action.configs,
+			datafeedTimers = action.timers,
+		)
+	}
+
+	override fun observe(receiver: SolarXRConnection) {
+		receiver.dataFeedDispatcher.on<StartDataFeed> { event ->
 			val datafeeds = event.dataFeeds ?: return@on
 
-			context.context.state.value.datafeedTimers.forEach { it.cancelAndJoin() }
+			receiver.context.state.value.datafeedTimers.forEach { it.cancelAndJoin() }
 
 			val timers = datafeeds.mapIndexed { index, config ->
-				context.context.scope.launch {
+				receiver.context.scope.launch {
 					val fbb = FlatBufferBuilder(1024)
 					val minTime = config.minimumTimeSinceLast.toLong()
 					while (isActive) {
@@ -121,36 +118,33 @@ val DataFeedInitBehaviour = SolarXRConnectionBehaviour(
 						fbb.finish(
 							MessageBundle(
 								dataFeedMsgs = listOf(
-									createDatafeedFrame(context.serverContext, config, index),
+									createDatafeedFrame(receiver.serverContext, config, index),
 								),
 							).encode(fbb),
 						)
-						context.send(fbb.dataBuffer().moveToByteArray())
+						receiver.send(fbb.dataBuffer().moveToByteArray())
 						delay(minTime)
 					}
 				}
 			}
 
-			context.context.dispatch(
-				SolarXRConnectionActions.SetConfig(
-					datafeeds,
-					timers = timers,
-				),
+			receiver.context.dispatch(
+				SolarXRConnectionActions.SetConfig(datafeeds, timers = timers),
 			)
 		}
 
-		context.dataFeedDispatcher.on<PollDataFeed> { event ->
+		receiver.dataFeedDispatcher.on<PollDataFeed> { event ->
 			val config = event.config ?: return@on
 
 			val fbb = FlatBufferBuilder(1024)
 			fbb.finish(
 				MessageBundle(
 					dataFeedMsgs = listOf(
-						createDatafeedFrame(serverContext = context.serverContext, datafeedConfig = config),
+						createDatafeedFrame(serverContext = receiver.serverContext, datafeedConfig = config),
 					),
 				).encode(fbb),
 			)
-			context.send(fbb.dataBuffer().moveToByteArray())
+			receiver.send(fbb.dataBuffer().moveToByteArray())
 		}
-	},
-)
+	}
+}

@@ -1,12 +1,8 @@
 package dev.slimevr.device
 
-import dev.slimevr.VRServer
-import dev.slimevr.context.BasicBehaviour
+import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.McuType
@@ -39,59 +35,42 @@ sealed interface DeviceActions {
 	data class Update(val transform: DeviceState.() -> DeviceState) : DeviceActions
 }
 
-val DeviceStatsBehaviour = DeviceBehaviour(
-	reducer = { s, a -> if (a is DeviceActions.Update) a.transform(s) else s },
-	observer = {
-		it.state.onEach { state ->
-// 			AppLogger.device.info("Device state changed", state)
-		}.launchIn(it.scope)
-	},
-)
-
 typealias DeviceContext = Context<DeviceState, DeviceActions>
-typealias DeviceBehaviour = BasicBehaviour<DeviceState, DeviceActions>
+typealias DeviceBehaviour = Behaviour<DeviceState, DeviceActions, DeviceContext>
 
-data class Device(
+class Device(
 	val context: DeviceContext,
-)
+) {
+	companion object {
+		fun create(
+			scope: CoroutineScope,
+			id: Int,
+			address: String,
+			macAddress: String? = null,
+			origin: DeviceOrigin,
+			protocolVersion: Int,
+		): Device {
+			val deviceState = DeviceState(
+				id = id,
+				name = "Device $id",
+				batteryLevel = 0f,
+				batteryVoltage = 0f,
+				origin = origin,
+				address = address,
+				macAddress = macAddress,
+				protocolVersion = protocolVersion,
+				ping = null,
+				signalStrength = null,
+				status = TrackerStatus.DISCONNECTED,
+				mcuType = McuType.Other,
+				boardType = BoardType.UNKNOWN,
+				firmware = null,
+			)
 
-fun createDevice(
-	scope: CoroutineScope,
-	id: Int,
-	address: String,
-	macAddress: String? = null,
-	origin: DeviceOrigin,
-	protocolVersion: Int,
-	serverContext: VRServer,
-): Device {
-	val deviceState = DeviceState(
-		id = id,
-		name = "Device $id",
-		batteryLevel = 0f,
-		batteryVoltage = 0f,
-		origin = origin,
-		address = address,
-		macAddress = macAddress,
-		protocolVersion = protocolVersion,
-		ping = null,
-		signalStrength = null,
-		status = TrackerStatus.DISCONNECTED,
-		mcuType = McuType.Other,
-		boardType = BoardType.UNKNOWN,
-		firmware = null
-	)
-
-	val behaviours = listOf(DeviceStatsBehaviour)
-
-	val context = createContext(
-		initialState = deviceState,
-		reducers = behaviours.map { it.reducer },
-		scope = scope,
-	)
-
-	behaviours.map { it.observer }.forEach { it?.invoke(context) }
-
-	return Device(
-		context = context,
-	)
+			val behaviours = listOf(DeviceStatsBehaviour)
+			val context = Context.create(initialState = deviceState, scope = scope, behaviours = behaviours)
+			behaviours.forEach { it.observe(context) }
+			return Device(context = context)
+		}
+	}
 }

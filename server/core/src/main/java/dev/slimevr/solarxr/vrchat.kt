@@ -1,6 +1,7 @@
 package dev.slimevr.solarxr
 
 import dev.slimevr.vrchat.VRCConfigActions
+import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrchat.computeRecommendedValues
 import dev.slimevr.vrchat.computeValidity
 import kotlinx.coroutines.flow.drop
@@ -10,15 +11,16 @@ import solarxr_protocol.rpc.VRCConfigSettingToggleMute
 import solarxr_protocol.rpc.VRCConfigStateChangeResponse
 import solarxr_protocol.rpc.VRCConfigStateRequest
 
-val VRCBehaviour = SolarXRConnectionBehaviour(
-	observer = { conn ->
-		val vrcManager = conn.serverContext.vrcConfigManager
-
+class VrcBehaviour(
+	private val vrcManager: VRCConfigManager,
+	private val userHeight: () -> Double,
+) : SolarXRConnectionBehaviour {
+	override fun observe(receiver: SolarXRConnection) {
 		fun buildCurrentResponse(): VRCConfigStateChangeResponse {
 			val state = vrcManager.context.state.value
 			val values = state.currentValues
 			if (!state.isSupported || values == null) return VRCConfigStateChangeResponse(isSupported = false)
-			val recommended = computeRecommendedValues(conn.serverContext, vrcManager.userHeight())
+			val recommended = computeRecommendedValues(receiver.serverContext, userHeight())
 			return VRCConfigStateChangeResponse(
 				isSupported = true,
 				validity = computeValidity(values, recommended),
@@ -28,20 +30,18 @@ val VRCBehaviour = SolarXRConnectionBehaviour(
 			)
 		}
 
-		// Note here that we drop the first one here
-		// that is because we don't need the initial value
-		// we just want to send new response when the vrch config change
+		// Drop the initial value — we only want to push updates when the config changes
 		vrcManager.context.state.drop(1).onEach {
-			conn.sendRpc(buildCurrentResponse())
-		}.launchIn(conn.context.scope)
+			receiver.sendRpc(buildCurrentResponse())
+		}.launchIn(receiver.context.scope)
 
-		conn.rpcDispatcher.on<VRCConfigStateRequest> {
-			conn.sendRpc(buildCurrentResponse())
+		receiver.rpcDispatcher.on<VRCConfigStateRequest> {
+			receiver.sendRpc(buildCurrentResponse())
 		}
 
-		conn.rpcDispatcher.on<VRCConfigSettingToggleMute> { req ->
+		receiver.rpcDispatcher.on<VRCConfigSettingToggleMute> { req ->
 			val key = req.key ?: return@on
 			vrcManager.context.dispatch(VRCConfigActions.ToggleMutedWarning(key))
 		}
-	},
-)
+	}
+}

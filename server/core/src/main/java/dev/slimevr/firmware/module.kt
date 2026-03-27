@@ -1,9 +1,8 @@
 package dev.slimevr.firmware
 
 import dev.slimevr.VRServer
-import dev.slimevr.context.BasicBehaviour
+import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.context.createContext
 import dev.slimevr.serial.SerialServer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -38,51 +37,23 @@ sealed interface FirmwareManagerActions {
 }
 
 typealias FirmwareManagerContext = Context<FirmwareManagerState, FirmwareManagerActions>
-typealias FirmwareManagerBehaviour = BasicBehaviour<FirmwareManagerState, FirmwareManagerActions>
+typealias FirmwareManagerBehaviour = Behaviour<FirmwareManagerState, FirmwareManagerActions, FirmwareManagerContext>
 
-val FirmwareManagerBaseBehaviour = FirmwareManagerBehaviour(
-	reducer = { s, a ->
-		when (a) {
-			is FirmwareManagerActions.UpdateJob -> s.copy(
-				jobs = s.jobs +
-					(
-						a.portLocation to FirmwareJobStatus(
-							portLocation = a.portLocation,
-							firmwareDeviceId = a.firmwareDeviceId,
-							status = a.status,
-							progress = a.progress,
-						)
-						),
-			)
-
-			is FirmwareManagerActions.RemoveJob -> s.copy(jobs = s.jobs - a.portLocation)
-		}
-	},
-	observer = null,
-)
-
-data class FirmwareManager(
+class FirmwareManager(
 	val context: FirmwareManagerContext,
-	val flash: suspend (portLocation: String, parts: List<FirmwarePart>, needManualReboot: Boolean, ssid: String?, password: String?, server: VRServer) -> Unit,
-	val otaFlash: suspend (deviceIp: String, firmwareDeviceId: FirmwareUpdateDeviceId, part: FirmwarePart, VRServer) -> Unit,
-	val cancelAll: suspend () -> Unit,
-)
+	private val serialServer: SerialServer,
+	private val scope: CoroutineScope,
+) {
+	private val runningJobs = mutableMapOf<String, Job>()
 
-fun createFirmwareManager(
-	serialServer: SerialServer,
-	scope: CoroutineScope,
-): FirmwareManager {
-	val behaviours = listOf(FirmwareManagerBaseBehaviour)
-
-	val context = createContext(
-		initialState = FirmwareManagerState(jobs = mapOf()),
-		reducers = behaviours.map { it.reducer },
-		scope = scope,
-	)
-
-	val runningJobs = mutableMapOf<String, Job>()
-
-	val flash: suspend (String, List<FirmwarePart>, Boolean, String?, String?, VRServer) -> Unit = { portLocation, parts, needManualReboot, ssid, password, server ->
+	suspend fun flash(
+		portLocation: String,
+		parts: List<FirmwarePart>,
+		needManualReboot: Boolean,
+		ssid: String?,
+		password: String?,
+		server: VRServer,
+	) {
 		runningJobs[portLocation]?.cancelAndJoin()
 		runningJobs[portLocation] = scope.launch {
 			doSerialFlash(
@@ -108,7 +79,12 @@ fun createFirmwareManager(
 		}
 	}
 
-	val otaFlash: suspend (String, FirmwareUpdateDeviceId, FirmwarePart, VRServer) -> Unit = { deviceIp, firmwareDeviceId, part, server ->
+	suspend fun otaFlash(
+		deviceIp: String,
+		firmwareDeviceId: FirmwareUpdateDeviceId,
+		part: FirmwarePart,
+		server: VRServer,
+	) {
 		runningJobs[deviceIp]?.cancelAndJoin()
 		runningJobs[deviceIp] = scope.launch {
 			doOtaFlash(
@@ -130,18 +106,22 @@ fun createFirmwareManager(
 		}
 	}
 
-	val cancelAll: suspend () -> Unit = {
+	suspend fun cancelAll() {
 		runningJobs.values.forEach { it.cancelAndJoin() }
 		runningJobs.clear()
 	}
 
-	val manager = FirmwareManager(
-		context = context,
-		flash = flash,
-		otaFlash = otaFlash,
-		cancelAll = cancelAll,
-	)
-
-	behaviours.map { it.observer }.forEach { it?.invoke(context) }
-	return manager
+	companion object {
+		fun create(serialServer: SerialServer, scope: CoroutineScope): FirmwareManager {
+			val behaviours = listOf(FirmwareManagerBaseBehaviour)
+			val context = Context.create(
+				initialState = FirmwareManagerState(jobs = mapOf()),
+				scope = scope,
+				behaviours = behaviours,
+			)
+			val manager = FirmwareManager(context = context, serialServer = serialServer, scope = scope)
+			behaviours.forEach { it.observe(context) }
+			return manager
+		}
+	}
 }

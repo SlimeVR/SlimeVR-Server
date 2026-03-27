@@ -2,17 +2,10 @@ package dev.slimevr.vrchat
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.AppConfig
-import dev.slimevr.config.SettingsActions
-import dev.slimevr.context.BasicBehaviour
+import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.context.CustomBehaviour
-import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.VRCAvatarMeasurementType
@@ -47,34 +40,41 @@ sealed interface VRCConfigActions {
 }
 
 typealias VRCConfigContext = Context<VRCConfigState, VRCConfigActions>
-typealias VRCConfigBehaviour = CustomBehaviour<VRCConfigState, VRCConfigActions, VRCConfigManager>
+typealias VRCConfigBehaviour = Behaviour<VRCConfigState, VRCConfigActions, VRCConfigManager>
 
-data class VRCConfigManager(
+class VRCConfigManager(
 	val context: VRCConfigContext,
 	val config: AppConfig,
-	val userHeight: () -> Double,
-)
+) {
+	companion object {
+		fun create(
+			config: AppConfig,
+			scope: CoroutineScope,
+			isSupported: Boolean,
+			values: Flow<VRCConfigValues?>,
+		): VRCConfigManager {
+			val behaviours = listOf(DefaultVRCConfigBehaviour)
 
-val DefaultVRCConfigBehaviour = VRCConfigBehaviour(
-	reducer = { s, a ->
-		when (a) {
-			is VRCConfigActions.UpdateValues -> s.copy(currentValues = a.values)
-			is VRCConfigActions.ToggleMutedWarning -> {
-				if (a.key !in VRC_VALID_KEYS) s
-				else if (a.key in s.mutedWarnings) s.copy(mutedWarnings = s.mutedWarnings - a.key)
-				else s.copy(mutedWarnings = s.mutedWarnings + a.key)
+			val context = Context.create(
+				initialState = VRCConfigState(
+					currentValues = null,
+					isSupported = isSupported,
+					mutedWarnings = listOf(),
+				),
+				scope = scope,
+				behaviours = behaviours,
+			)
+
+			scope.launch {
+				values.collect { context.dispatch(VRCConfigActions.UpdateValues(it)) }
 			}
-		}
-	},
-	observer = { context ->
 
-		context.context.state.map { it.mutedWarnings }.distinctUntilChanged().onEach { warnings ->
-			context.config.settings.context.dispatch(SettingsActions.Update {
-				copy(mutedVRCWarnings = warnings)
-			})
-		}.launchIn(scope = context.context.scope)
+			val manager = VRCConfigManager(context = context, config = config)
+			behaviours.forEach { it.observe(manager) }
+			return manager
+		}
 	}
-)
+}
 
 fun computeRecommendedValues(server: VRServer, userHeight: Double): VRCConfigRecommendedValues {
 	val trackers = server.context.state.value.trackers.values
@@ -118,34 +118,3 @@ fun computeValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedVa
 		avatarMeasurementTypeOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
 		shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,
 	)
-
-fun createVRCConfigManager(
-	config: AppConfig,
-	scope: CoroutineScope,
-	userHeight: () -> Double,
-	isSupported: Boolean,
-	values: Flow<VRCConfigValues?>,
-): VRCConfigManager {
-	val modules = listOf(DefaultVRCConfigBehaviour)
-
-	val initialState = VRCConfigState(
-		currentValues = null,
-		isSupported = isSupported,
-		mutedWarnings = listOf(),
-	)
-
-	val context = createContext(
-		initialState = initialState,
-		reducers = modules.map { it.reducer },
-		scope = scope,
-	)
-
-	scope.launch {
-		values.collect { context.dispatch(VRCConfigActions.UpdateValues(it)) }
-	}
-
-	val manager =  VRCConfigManager(context = context, userHeight = userHeight, config = config)
-	modules.map { it.observer }.forEach { it?.invoke(manager) }
-
-	return manager
-}

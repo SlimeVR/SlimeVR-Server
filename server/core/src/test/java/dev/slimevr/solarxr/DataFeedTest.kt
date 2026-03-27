@@ -10,6 +10,14 @@ import solarxr_protocol.data_feed.StartDataFeed
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend: suspend (ByteArray) -> Unit) =
+	SolarXRConnection.create(
+		buildTestVrServer(backgroundScope),
+		onSend = onSend,
+		scope = backgroundScope,
+		behaviours = listOf(DataFeedInitBehaviour),
+	)
+
 private fun config(intervalMs: Int) = DataFeedConfig(minimumTimeSinceLast = intervalMs.toUShort())
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -18,7 +26,7 @@ class DataFeedTest {
 	@Test
 	fun `StartDataFeed sends frames at the configured interval`() = runTest {
 		var sendCount = 0
-		val conn = createSolarXRConnection(buildTestVrServer(backgroundScope), onSend = { sendCount++ }, scope = backgroundScope)
+		val conn = testConn(backgroundScope) { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
 
@@ -30,7 +38,7 @@ class DataFeedTest {
 	@Test
 	fun `StartDataFeed with multiple configs runs each at its own frequency`() = runTest {
 		var sendCount = 0
-		val conn = createSolarXRConnection(buildTestVrServer(backgroundScope), onSend = { sendCount++ }, scope = backgroundScope)
+		val conn = testConn(backgroundScope) { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100), config(200))))
 
@@ -43,7 +51,7 @@ class DataFeedTest {
 	@Test
 	fun `PollDataFeed sends exactly one frame without starting a repeating timer`() = runTest {
 		var sendCount = 0
-		val conn = createSolarXRConnection(buildTestVrServer(backgroundScope), onSend = { sendCount++ }, scope = backgroundScope)
+		val conn = testConn(backgroundScope) { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(PollDataFeed(config = config(100)))
 
@@ -54,7 +62,7 @@ class DataFeedTest {
 	@Test
 	fun `StartDataFeed cancels old timers when called a second time`() = runTest {
 		var sendCount = 0
-		val conn = createSolarXRConnection(buildTestVrServer(backgroundScope), onSend = { sendCount++ }, scope = backgroundScope)
+		val conn = testConn(backgroundScope) { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
 		advanceTimeBy(250)
@@ -70,7 +78,7 @@ class DataFeedTest {
 	@Test
 	fun `StartDataFeed with empty list stops all existing timers`() = runTest {
 		var sendCount = 0
-		val conn = createSolarXRConnection(buildTestVrServer(backgroundScope), onSend = { sendCount++ }, scope = backgroundScope)
+		val conn = testConn(backgroundScope) { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
 		advanceTimeBy(250)

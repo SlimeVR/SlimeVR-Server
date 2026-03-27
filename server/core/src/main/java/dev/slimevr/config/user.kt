@@ -1,8 +1,7 @@
 package dev.slimevr.config
 
+import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.context.CustomBehaviour
-import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -46,50 +45,24 @@ sealed interface UserConfigActions {
 }
 
 typealias UserConfigContext = Context<UserConfigState, UserConfigActions>
-typealias UserConfigBehaviour = CustomBehaviour<UserConfigState, UserConfigActions, UserConfig>
+typealias UserConfigBehaviour = Behaviour<UserConfigState, UserConfigActions, UserConfig>
 
-data class UserConfig(
+class UserConfig(
 	val context: UserConfigContext,
 	val configDir: String,
-	val swap: suspend (String) -> Unit,
-)
+	private val scope: CoroutineScope,
+	private val userConfigDir: File,
+) {
+	private var autosaveJob: Job = startAutosave()
 
-val DefaultUserBehaviour = UserConfigBehaviour(
-	reducer = { s, a ->
-		when (a) {
-			is UserConfigActions.Update -> s.copy(data = a.transform(s.data))
-			is UserConfigActions.LoadProfile -> a.newState
-			else -> s
-		}
-	},
-)
-
-suspend fun createUserConfig(scope: CoroutineScope, configDir: File, name: String): UserConfig {
-	val userConfigDir = File(configDir, "user")
-
-	val initialData = loadFileWithBackup(File(userConfigDir, "$name.json"), UserConfigData()) {
-		parseAndMigrateUserConfig(it)
-	}
-	val initialState = UserConfigState(name = name, data = initialData)
-
-	val behaviours = listOf(DefaultUserBehaviour)
-
-	val context = createContext(
-		initialState = initialState,
-		reducers = behaviours.map { it.reducer },
-		scope = scope,
-	)
-
-	fun startAutosave() = launchAutosave(
+	private fun startAutosave() = launchAutosave(
 		scope = scope,
 		state = context.state,
 		toFile = { state -> File(userConfigDir, "${state.name}.json") },
 		serialize = { state -> jsonConfig.encodeToString(state.data) },
 	)
 
-	var autosaveJob: Job = startAutosave()
-
-	val swap: suspend (String) -> Unit = { newName ->
+	suspend fun swap(newName: String) {
 		autosaveJob.cancelAndJoin()
 
 		val newData = loadFileWithBackup(File(userConfigDir, "$newName.json"), UserConfigData()) {
@@ -101,5 +74,20 @@ suspend fun createUserConfig(scope: CoroutineScope, configDir: File, name: Strin
 		autosaveJob = startAutosave()
 	}
 
-	return UserConfig(context, userConfigDir.toString(), swap)
+	companion object {
+		suspend fun create(scope: CoroutineScope, configDir: File, name: String): UserConfig {
+			val userConfigDir = File(configDir, "user")
+
+			val initialData = loadFileWithBackup(File(userConfigDir, "$name.json"), UserConfigData()) {
+				parseAndMigrateUserConfig(it)
+			}
+			val initialState = UserConfigState(name = name, data = initialData)
+
+			val behaviours = listOf(DefaultUserBehaviour)
+			val context = Context.create(initialState = initialState, scope = scope, behaviours = behaviours)
+			val userConfig = UserConfig(context, userConfigDir.toString(), scope = scope, userConfigDir = userConfigDir)
+			behaviours.forEach { it.observe(userConfig) }
+			return userConfig
+		}
+	}
 }

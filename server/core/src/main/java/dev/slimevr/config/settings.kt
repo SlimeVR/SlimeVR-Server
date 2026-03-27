@@ -1,8 +1,7 @@
 package dev.slimevr.config
 
+import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.context.CustomBehaviour
-import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -47,50 +46,24 @@ sealed interface SettingsActions {
 }
 
 typealias SettingsContext = Context<SettingsState, SettingsActions>
-typealias SettingsBehaviour = CustomBehaviour<SettingsState, SettingsActions, Settings>
+typealias SettingsBehaviour = Behaviour<SettingsState, SettingsActions, Settings>
 
-data class Settings(
+class Settings(
 	val context: SettingsContext,
 	val configDir: String,
-	val swap: suspend (String) -> Unit,
-)
+	private val scope: CoroutineScope,
+	private val settingsDir: File,
+) {
+	private var autosaveJob: Job = startAutosave()
 
-val DefaultSettingsBehaviour = SettingsBehaviour(
-	reducer = { s, a ->
-		when (a) {
-			is SettingsActions.Update -> s.copy(data = a.transform(s.data))
-			is SettingsActions.LoadProfile -> a.newState
-			else -> s
-		}
-	},
-)
-
-suspend fun createSettings(scope: CoroutineScope, configDir: File, name: String): Settings {
-	val settingsDir = File(configDir, "settings")
-
-	val initialData = loadFileWithBackup(File(settingsDir, "$name.json"), SettingsConfigState()) {
-		parseAndMigrateSettingsConfig(it)
-	}
-	val initialState = SettingsState(name = name, data = initialData)
-
-	val behaviours = listOf(DefaultSettingsBehaviour)
-
-	val context = createContext(
-		initialState = initialState,
-		reducers = behaviours.map { it.reducer },
-		scope = scope,
-	)
-
-	fun startAutosave() = launchAutosave(
+	private fun startAutosave() = launchAutosave(
 		scope = scope,
 		state = context.state,
 		toFile = { state -> File(settingsDir, "${state.name}.json") },
 		serialize = { state -> jsonConfig.encodeToString(state.data) },
 	)
 
-	var autosaveJob: Job = startAutosave()
-
-	val swap: suspend (String) -> Unit = { newName ->
+	suspend fun swap(newName: String) {
 		autosaveJob.cancelAndJoin()
 
 		val newData = loadFileWithBackup(File(settingsDir, "$newName.json"), SettingsConfigState()) {
@@ -102,5 +75,20 @@ suspend fun createSettings(scope: CoroutineScope, configDir: File, name: String)
 		autosaveJob = startAutosave()
 	}
 
-	return Settings(context, configDir = settingsDir.toString(), swap)
+	companion object {
+		suspend fun create(scope: CoroutineScope, configDir: File, name: String): Settings {
+			val settingsDir = File(configDir, "settings")
+
+			val initialData = loadFileWithBackup(File(settingsDir, "$name.json"), SettingsConfigState()) {
+				parseAndMigrateSettingsConfig(it)
+			}
+			val initialState = SettingsState(name = name, data = initialData)
+
+			val behaviours = listOf(DefaultSettingsBehaviour)
+			val context = Context.create(initialState = initialState, scope = scope, behaviours = behaviours)
+			val settings = Settings(context, configDir = settingsDir.toString(), scope = scope, settingsDir = settingsDir)
+			behaviours.forEach { it.observe(settings) }
+			return settings
+		}
+	}
 }

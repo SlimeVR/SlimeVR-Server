@@ -2,6 +2,7 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialPortInfo
+import dev.slimevr.serial.SerialServer
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -21,13 +22,11 @@ import solarxr_protocol.rpc.SerialTrackerGetWifiScanRequest
 import solarxr_protocol.rpc.SerialTrackerRebootRequest
 import solarxr_protocol.rpc.SerialUpdateResponse
 
-val SerialConsoleBehaviour = SolarXRConnectionBehaviour(
-	observer = { conn ->
-		val scope = conn.context.scope
-		val serialServer = conn.serverContext.serialServer
+class SerialBehaviour(private val serialServer: SerialServer) : SolarXRConnectionBehaviour {
+	override fun observe(receiver: SolarXRConnection) {
+		val scope = receiver.context.scope
 
-		// We assume that you can only subscribe to one serial console
-		// at a time
+		// We assume that you can only subscribe to one serial console at a time
 		var logSubscription: Job? = null
 		var activePortLocation: String? = null
 
@@ -40,14 +39,14 @@ val SerialConsoleBehaviour = SolarXRConnectionBehaviour(
 			.distinctUntilChanged()
 			.onEach { ports ->
 				(ports.keys - prevPortKeys).forEach { key ->
-					conn.sendRpc(NewSerialDeviceResponse(device = ports[key]!!.toSerialDevice()))
+					receiver.sendRpc(NewSerialDeviceResponse(device = ports[key]!!.toSerialDevice()))
 				}
 				prevPortKeys = ports.keys.toSet()
 			}
 			.launchIn(scope)
 
-		conn.rpcDispatcher.on<SerialDevicesRequest> {
-			conn.sendRpc(
+		receiver.rpcDispatcher.on<SerialDevicesRequest> {
+			receiver.sendRpc(
 				SerialDevicesResponse(
 					devices = serialServer.context.state.value.availablePorts.values
 						.map { it.toSerialDevice() },
@@ -55,7 +54,7 @@ val SerialConsoleBehaviour = SolarXRConnectionBehaviour(
 			)
 		}
 
-		conn.rpcDispatcher.on<OpenSerialRequest> { req ->
+		receiver.rpcDispatcher.on<OpenSerialRequest> { req ->
 			val portLocation = if (req.auto == true) {
 				serialServer.context.state.value.availablePorts.keys.firstOrNull()
 			} else {
@@ -80,54 +79,54 @@ val SerialConsoleBehaviour = SolarXRConnectionBehaviour(
 					if (disconnected) return@collect
 
 					connState.logLines.drop(lastSentCount).forEach { line ->
-						conn.sendRpc(SerialUpdateResponse(log = line + "\n"))
+						receiver.sendRpc(SerialUpdateResponse(log = line + "\n"))
 					}
 					lastSentCount = connState.logLines.size
 
 					if (!connState.connected) {
 						disconnected = true
 						activePortLocation = null
-						conn.sendRpc(SerialUpdateResponse(closed = true))
+						receiver.sendRpc(SerialUpdateResponse(closed = true))
 					}
 				}
 			}
 		}
 
-		conn.rpcDispatcher.on<CloseSerialRequest> {
+		receiver.rpcDispatcher.on<CloseSerialRequest> {
 			logSubscription?.cancel()
 			logSubscription = null
 			activePortLocation = null
 		}
 
-		conn.rpcDispatcher.on<SerialTrackerRebootRequest> {
+		receiver.rpcDispatcher.on<SerialTrackerRebootRequest> {
 			val portLocation = activePortLocation ?: return@on
 			val c = serialServer.context.state.value.connections[portLocation]
 			if (c is SerialConnection.Console) c.handle.writeCommand("REBOOT")
 		}
 
-		conn.rpcDispatcher.on<SerialTrackerGetInfoRequest> {
+		receiver.rpcDispatcher.on<SerialTrackerGetInfoRequest> {
 			val portLocation = activePortLocation ?: return@on
 			val c = serialServer.context.state.value.connections[portLocation]
 			if (c is SerialConnection.Console) c.handle.writeCommand("GET INFO")
 		}
 
-		conn.rpcDispatcher.on<SerialTrackerFactoryResetRequest> {
+		receiver.rpcDispatcher.on<SerialTrackerFactoryResetRequest> {
 			val portLocation = activePortLocation ?: return@on
 			val c = serialServer.context.state.value.connections[portLocation]
 			if (c is SerialConnection.Console) c.handle.writeCommand("FRST")
 		}
 
-		conn.rpcDispatcher.on<SerialTrackerGetWifiScanRequest> {
+		receiver.rpcDispatcher.on<SerialTrackerGetWifiScanRequest> {
 			val portLocation = activePortLocation ?: return@on
 			val c = serialServer.context.state.value.connections[portLocation]
 			if (c is SerialConnection.Console) c.handle.writeCommand("GET WIFISCAN")
 		}
 
-		conn.rpcDispatcher.on<SerialTrackerCustomCommandRequest> { req ->
+		receiver.rpcDispatcher.on<SerialTrackerCustomCommandRequest> { req ->
 			val portLocation = activePortLocation ?: return@on
 			val command = req.command ?: return@on
 			val c = serialServer.context.state.value.connections[portLocation]
 			if (c is SerialConnection.Console) c.handle.writeCommand(command)
 		}
-	},
-)
+	}
+}

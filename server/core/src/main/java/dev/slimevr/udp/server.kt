@@ -13,7 +13,7 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import kotlin.time.measureTime
 
-data class UDPTrackerServerState(
+class UDPTrackerServerState(
 	val port: Int,
 	val connections: MutableMap<String, UDPConnection>,
 )

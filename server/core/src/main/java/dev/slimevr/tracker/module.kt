@@ -1,14 +1,10 @@
 package dev.slimevr.tracker
 
-import dev.slimevr.VRServer
-import dev.slimevr.context.BasicBehaviour
+import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.context.createContext
 import dev.slimevr.device.DeviceOrigin
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
@@ -31,53 +27,36 @@ sealed interface TrackerActions {
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
-typealias TrackerBehaviour = BasicBehaviour<TrackerState, TrackerActions>
+typealias TrackerBehaviour = Behaviour<TrackerState, TrackerActions, TrackerContext>
 
-data class Tracker(
+class Tracker(
 	val context: TrackerContext,
-)
+) {
+	companion object {
+		fun create(
+			scope: CoroutineScope,
+			id: Int,
+			deviceId: Int,
+			sensorType: ImuType,
+			hardwareId: String,
+			origin: DeviceOrigin,
+		): Tracker {
+			val trackerState = TrackerState(
+				id = id,
+				hardwareId = hardwareId,
+				name = "Tracker #$id",
+				rawRotation = Quaternion.IDENTITY,
+				bodyPart = null,
+				origin = origin,
+				deviceId = deviceId,
+				customName = null,
+				sensorType = sensorType,
+			)
 
-val TrackerInfosBehaviour = TrackerBehaviour(
-	reducer = { s, a -> if (a is TrackerActions.Update) a.transform(s) else s },
-	observer = {
-		it.state.onEach { state ->
-// 			AppLogger.tracker.info("Tracker state changed {State}", state)
-		}.launchIn(it.scope)
-	},
-)
-
-fun createTracker(
-	scope: CoroutineScope,
-	id: Int,
-	deviceId: Int,
-	sensorType: ImuType,
-	hardwareId: String,
-	origin: DeviceOrigin,
-	serverContext: VRServer,
-): Tracker {
-	val trackerState = TrackerState(
-		id = id,
-		hardwareId = hardwareId,
-		name = "Tracker #$id",
-		rawRotation = Quaternion.IDENTITY,
-		bodyPart = null,
-		origin = origin,
-		deviceId = deviceId,
-		customName = null,
-		sensorType = sensorType,
-	)
-
-	val behaviours = listOf(TrackerInfosBehaviour)
-
-	val context = createContext(
-		initialState = trackerState,
-		reducers = behaviours.map { it.reducer },
-		scope = scope,
-	)
-
-	behaviours.map { it.observer }.forEach { it?.invoke(context) }
-
-	return Tracker(
-		context = context,
-	)
+			val behaviours = listOf(TrackerInfosBehaviour)
+			val context = Context.create(initialState = trackerState, scope = scope, behaviours = behaviours)
+			behaviours.forEach { it.observe(context) }
+			return Tracker(context = context)
+		}
+	}
 }

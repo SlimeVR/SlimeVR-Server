@@ -1,0 +1,15 @@
+package dev.slimevr.device
+
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+
+object DeviceStatsBehaviour : DeviceBehaviour {
+	override fun reduce(state: DeviceState, action: DeviceActions) =
+		if (action is DeviceActions.Update) action.transform(state) else state
+
+	override fun observe(receiver: DeviceContext) {
+		receiver.state.onEach {
+// 			AppLogger.device.info("Device state changed", it)
+		}.launchIn(receiver.scope)
+	}
+}

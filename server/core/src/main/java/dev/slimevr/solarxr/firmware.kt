@@ -1,6 +1,7 @@
 package dev.slimevr.solarxr
 
 import dev.slimevr.firmware.FirmwareJobStatus
+import dev.slimevr.firmware.FirmwareManager
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -12,10 +13,9 @@ import solarxr_protocol.rpc.FirmwareUpdateStopQueuesRequest
 import solarxr_protocol.rpc.OTAFirmwareUpdate
 import solarxr_protocol.rpc.SerialFirmwareUpdate
 
-val FirmwareBehaviour = SolarXRConnectionBehaviour(
-	observer = { conn ->
-		val scope = conn.context.scope
-		val firmwareManager = conn.serverContext.firmwareManager
+class FirmwareBehaviour(private val firmwareManager: FirmwareManager) : SolarXRConnectionBehaviour {
+	override fun observe(receiver: SolarXRConnection) {
+		val scope = receiver.context.scope
 
 		var prevJobs: Map<String, FirmwareJobStatus> = firmwareManager.context.state.value.jobs
 
@@ -25,7 +25,7 @@ val FirmwareBehaviour = SolarXRConnectionBehaviour(
 			.onEach { jobs ->
 				jobs.forEach { (portLocation, jobStatus) ->
 					if (prevJobs[portLocation] != jobStatus) {
-						conn.sendRpc(
+						receiver.sendRpc(
 							FirmwareUpdateStatusResponse(
 								deviceId = jobStatus.firmwareDeviceId,
 								status = jobStatus.status,
@@ -38,7 +38,7 @@ val FirmwareBehaviour = SolarXRConnectionBehaviour(
 			}
 			.launchIn(scope)
 
-		conn.rpcDispatcher.on<FirmwareUpdateRequest> { req ->
+		receiver.rpcDispatcher.on<FirmwareUpdateRequest> { req ->
 			when (val method = req.method) {
 				is SerialFirmwareUpdate -> {
 					val portLocation = method.deviceId?.port ?: return@on
@@ -49,24 +49,24 @@ val FirmwareBehaviour = SolarXRConnectionBehaviour(
 						method.needmanualreboot,
 						method.ssid,
 						method.password,
-						conn.serverContext,
+						receiver.serverContext,
 					)
 				}
 
 				is OTAFirmwareUpdate -> {
 					val deviceId = method.deviceId ?: return@on
 					val part = method.firmwarePart ?: return@on
-					val device = conn.serverContext.getDevice(deviceId.id.toInt()) ?: return@on
+					val device = receiver.serverContext.getDevice(deviceId.id.toInt()) ?: return@on
 					val deviceIp = device.context.state.value.address
-					firmwareManager.otaFlash(deviceIp, DeviceIdTable(id = deviceId), part, conn.serverContext)
+					firmwareManager.otaFlash(deviceIp, DeviceIdTable(id = deviceId), part, receiver.serverContext)
 				}
 
 				else -> return@on
 			}
 		}
 
-		conn.rpcDispatcher.on<FirmwareUpdateStopQueuesRequest> {
+		receiver.rpcDispatcher.on<FirmwareUpdateStopQueuesRequest> {
 			firmwareManager.cancelAll()
 		}
-	},
-)
+	}
+}

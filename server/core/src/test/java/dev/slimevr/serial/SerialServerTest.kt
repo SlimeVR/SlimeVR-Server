@@ -34,7 +34,7 @@ class SerialServerTest {
 	@Test
 	fun `openForFlashing registers Flashing connection`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)
@@ -49,7 +49,7 @@ class SerialServerTest {
 	@Test
 	fun `openForFlashing returns null when port has an existing connection`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)
@@ -64,7 +64,7 @@ class SerialServerTest {
 	@Test
 	fun `openForFlashing returns null for unknown port`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)
@@ -79,7 +79,7 @@ class SerialServerTest {
 	@Test
 	fun `closeSerial removes Flashing connection asynchronously`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)
@@ -100,7 +100,7 @@ class SerialServerTest {
 	@Test
 	fun `openConnection registers Console connection`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)
@@ -114,7 +114,7 @@ class SerialServerTest {
 	@Test
 	fun `onPortLost closes Console and removes connection`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)
@@ -130,7 +130,7 @@ class SerialServerTest {
 	@Test
 	fun `openConnection while flashing is a no-op`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)
@@ -147,7 +147,7 @@ class SerialServerTest {
 	@Test
 	fun `port can be flashed again after previous flash completes`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)
@@ -167,7 +167,7 @@ class SerialServerTest {
 	@Test
 	fun `openConnection succeeds after flash completes`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)
@@ -184,7 +184,7 @@ class SerialServerTest {
 	@Test
 	fun `onPortLost during flash removes Flashing connection`() = runTest {
 		val server = SerialServer.create(
-			openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
 			scope = this,
 		)

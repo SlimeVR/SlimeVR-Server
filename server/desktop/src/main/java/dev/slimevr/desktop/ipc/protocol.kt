@@ -6,13 +6,14 @@ import dev.slimevr.desktop.platform.Position
 import dev.slimevr.desktop.platform.ProtobufMessage
 import dev.slimevr.desktop.platform.TrackerAdded
 import dev.slimevr.desktop.platform.Version
-import dev.slimevr.solarxr.createSolarXRConnection
+import dev.slimevr.solarxr.SolarXRConnectionBehaviour
+import dev.slimevr.solarxr.SolarXRConnection
 import dev.slimevr.solarxr.onSolarXRMessage
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.TrackerActions
-import dev.slimevr.device.createDevice
-import dev.slimevr.tracker.createTracker
+import dev.slimevr.device.Device
+import dev.slimevr.tracker.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -112,26 +113,24 @@ suspend fun handleFeederConnection(
 				server.getDevice(existingTracker.context.state.value.deviceId) ?: error("could not find existing device")
 			} else {
 				val deviceId = server.nextHandle()
-				val newDevice = createDevice(
+				val newDevice = Device.create(
 					scope = this,
 					id = deviceId,
 					address = serial,
 					macAddress = serial, // FIXME: prob not correct
 					origin = DeviceOrigin.FEEDER,
 					protocolVersion = protocolVersion,
-					serverContext = server,
 				)
 				server.context.dispatch(VRServerActions.NewDevice(deviceId, newDevice))
 
 				val trackerId = server.nextHandle()
-				val tracker = createTracker(
+				val tracker = Tracker.create(
 					scope = this,
 					id = trackerId,
 					deviceId = deviceId,
 					sensorType = ImuType.MPU9250, // TODO: prob need to make sensor type optional
 					hardwareId = serial,
 					origin = DeviceOrigin.FEEDER,
-					serverContext = server,
 				)
 				server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 
@@ -165,11 +164,13 @@ suspend fun handleSolarXRConnection(
 	server: VRServer,
 	messages: Flow<ByteArray>,
 	send: suspend (ByteArray) -> Unit,
+	behaviours: List<SolarXRConnectionBehaviour>,
 ) = coroutineScope {
-	val connection = createSolarXRConnection(
+	val connection = SolarXRConnection.create(
 		serverContext = server,
 		scope = this,
 		onSend = send,
+		behaviours = behaviours,
 	)
 
 	messages.collect { bytes ->

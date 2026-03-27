@@ -30,19 +30,20 @@ suspend fun onSolarXRMessage(message: ByteBuffer, context: SolarXRConnection) {
 	}
 }
 
-suspend fun createSolarXRWebsocketServer(serverContext: VRServer) {
+suspend fun createSolarXRWebsocketServer(serverContext: VRServer, behaviours: List<SolarXRConnectionBehaviour>) {
 	val engine = embeddedServer(Netty, port = SOLARXR_PORT) {
 		install(WebSockets)
 
 		routing {
 			webSocket {
 				AppLogger.solarxr.info("[WS] New connection")
-				val solarxrConnection = createSolarXRConnection(
+				val solarxrConnection = SolarXRConnection.create(
 					serverContext,
 					scope = this,
 					onSend = {
 						send(Frame.Binary(fin = true, data = it))
 					},
+					behaviours = behaviours,
 				)
 
 				for (frame in incoming) {

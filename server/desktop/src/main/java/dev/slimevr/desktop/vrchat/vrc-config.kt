@@ -4,7 +4,6 @@ import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.config.AppConfig
 import dev.slimevr.vrchat.VRCConfigManager
-import dev.slimevr.vrchat.createVRCConfigManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.emptyFlow
 import solarxr_protocol.rpc.VRCAvatarMeasurementType
@@ -14,26 +13,23 @@ import solarxr_protocol.rpc.VRCTrackerModel
 
 internal const val VRC_REG_PATH = "Software\\VRChat\\VRChat"
 
-fun createDesktopVRCConfigManager(config: AppConfig, scope: CoroutineScope, userHeight: () -> Double): VRCConfigManager =
+fun createDesktopVRCConfigManager(config: AppConfig, scope: CoroutineScope): VRCConfigManager =
 	when (CURRENT_PLATFORM) {
-		Platform.WINDOWS -> createVRCConfigManager(
+		Platform.WINDOWS -> VRCConfigManager.create(
 			config = config,
 			scope = scope,
-			userHeight = userHeight,
 			isSupported = true,
 			values = windowsVRCConfigFlow(),
 		)
-		Platform.LINUX -> createVRCConfigManager(
+		Platform.LINUX -> VRCConfigManager.create(
 			config = config,
 			scope = scope,
-			userHeight = userHeight,
 			isSupported = true,
 			values = linuxVRCConfigFlow(),
 		)
-		else -> createVRCConfigManager(
+		else -> VRCConfigManager.create(
 			config = config,
 			scope = scope,
-			userHeight = userHeight,
 			isSupported = false,
 			values = emptyFlow(),
 		)

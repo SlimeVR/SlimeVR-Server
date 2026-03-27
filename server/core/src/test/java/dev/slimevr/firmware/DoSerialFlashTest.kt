@@ -8,8 +8,7 @@ import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.device.DeviceOrigin
-import dev.slimevr.device.createDevice
-import dev.slimevr.vrchat.createVRCConfigManager
+import dev.slimevr.device.Device
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -50,7 +49,7 @@ private fun buildSerialServer(
 	scope: kotlinx.coroutines.CoroutineScope,
 	flashHandler: () -> FlasherSerialInterface = ::failingFlashHandler,
 ) = SerialServer.create(
-	openPort = { loc, _, _, _ -> fakePortHandle(loc) },
+	openPort = { loc, _, _ -> fakePortHandle(loc) },
 	openFlashingPort = flashHandler,
 	scope = scope,
 )
@@ -59,18 +58,9 @@ private fun buildSerialServer(
 // backgroundScope lets those run on the test scheduler but doesn't cause
 // UncompletedCoroutinesError when the test ends.
 private fun buildVrServer(
-	mainScope: kotlinx.coroutines.CoroutineScope,
 	backgroundScope: kotlinx.coroutines.CoroutineScope,
-	serialServer: SerialServer,
 ): VRServer {
-	val firmwareManager = createFirmwareManager(serialServer, mainScope)
-	val vrcConfigManager = createVRCConfigManager(
-		scope = mainScope,
-		userHeight = { 1.6 },
-		isSupported = false,
-		values = kotlinx.coroutines.flow.emptyFlow(),
-	) // FIXME this is annoying. we need to find better
-	return VRServer.create(backgroundScope, serialServer, firmwareManager, vrcConfigManager)
+	return VRServer.create(backgroundScope)
 }
 
 class DoSerialFlashTest {
@@ -87,7 +77,7 @@ class DoSerialFlashTest {
 			ssid = null,
 			password = null,
 			serialServer = server,
-			server = buildVrServer(this, backgroundScope, server),
+			server = buildVrServer(backgroundScope),
 			onStatus = { s, _ -> statuses += s },
 			scope = this,
 		)
@@ -109,7 +99,7 @@ class DoSerialFlashTest {
 			ssid = null,
 			password = null,
 			serialServer = server,
-			server = buildVrServer(this, backgroundScope, server),
+			server = buildVrServer(backgroundScope),
 			onStatus = { s, _ -> statuses += s },
 			scope = this,
 		)
@@ -130,7 +120,7 @@ class DoSerialFlashTest {
 			ssid = null,
 			password = null,
 			serialServer = server,
-			server = buildVrServer(this, backgroundScope, server),
+			server = buildVrServer(backgroundScope),
 			onStatus = { s, _ -> statuses += s },
 			scope = this,
 		)
@@ -151,7 +141,7 @@ class DoSerialFlashTest {
 			ssid = "wifi",
 			password = "pass",
 			serialServer = server,
-			server = buildVrServer(this, backgroundScope, server),
+			server = buildVrServer(backgroundScope),
 			onStatus = { s, _ -> statuses += s },
 		)
 
@@ -173,7 +163,7 @@ class DoSerialFlashTest {
 				ssid = "wifi",
 				password = "pass",
 				serialServer = server,
-				server = buildVrServer(this, backgroundScope, server),
+				server = buildVrServer(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
 			)
 		}
@@ -199,7 +189,7 @@ class DoSerialFlashTest {
 				ssid = null,
 				password = null,
 				serialServer = server,
-				server = buildVrServer(this, backgroundScope, server),
+				server = buildVrServer(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
 			)
 		}
@@ -229,7 +219,7 @@ class DoSerialFlashTest {
 				ssid = "wifi",
 				password = "pass",
 				serialServer = server,
-				server = buildVrServer(this, backgroundScope, server),
+				server = buildVrServer(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
 			)
 		}
@@ -261,7 +251,7 @@ class DoSerialFlashTest {
 				ssid = "wifi",
 				password = "pass",
 				serialServer = server,
-				server = buildVrServer(this, backgroundScope, server),
+				server = buildVrServer(backgroundScope),
 				onStatus = { s, _ -> statuses += s },
 			)
 		}
@@ -286,7 +276,7 @@ class DoSerialFlashTest {
 		val server = buildSerialServer(this)
 		server.onPortDetected(fakePort())
 		server.openConnection("COM1")
-		val vrServer = buildVrServer(this, backgroundScope, server)
+		val vrServer = buildVrServer(backgroundScope)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
 		launch {
@@ -307,14 +297,13 @@ class DoSerialFlashTest {
 			delay(200)
 			server.onDataReceived("COM1", "looking for the server")
 			delay(300)
-			val device = createDevice(
+			val device = Device.create(
 				backgroundScope,
 				id = vrServer.nextHandle(),
 				address = "192.168.1.100",
 				macAddress = "AA:BB:CC:DD:EE:FF",
 				origin = DeviceOrigin.UDP,
 				protocolVersion = 0,
-				serverContext = vrServer,
 			)
 			vrServer.context.dispatch(VRServerActions.NewDevice(device.context.state.value.id, device))
 			device.context.dispatch(DeviceActions.Update { copy(status = TrackerStatus.OK) })

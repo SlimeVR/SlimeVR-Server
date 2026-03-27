@@ -7,47 +7,38 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 interface Behaviour<S, A, C> {
-	val reducer: ((S, A) -> S)?
-	val observer: ((C) -> Unit)?
+	fun reduce(state: S, action: A): S = state
+	fun observe(receiver: C) {}
 }
 
-data class BasicBehaviour<S, A>(
-	override val reducer: ((S, A) -> S)? = null,
-	override val observer: ((Context<S, A>) -> Unit)? = null,
-) : Behaviour<S, A, Context<S, A>>
-
-data class CustomBehaviour<S, A, C>(
-	override val reducer: ((S, A) -> S)? = null,
-	override val observer: ((C) -> Unit)? = null,
-) : Behaviour<S, A, C>
-
-data class Context<S, in A>(
-	val state: StateFlow<S>,
-	val dispatch: suspend (A) -> Unit,
-	val dispatchAll: suspend (List<A>) -> Unit,
+class Context<S, in A>(
+	private val mutableStateFlow: MutableStateFlow<S>,
+	private val applyAction: (S, A) -> S,
 	val scope: CoroutineScope,
-)
+) {
+	val state: StateFlow<S> = mutableStateFlow.asStateFlow()
 
-fun <S, A> createContext(
-	initialState: S,
-	scope: CoroutineScope,
-	reducers: List<((S, A) -> S)?>,
-): Context<S, A> {
-	val mutableStateFlow = MutableStateFlow(initialState)
-
-	val applyAction: (S, A) -> S = { currentState, action ->
-		reducers.filterNotNull().fold(currentState) { s, reducer -> reducer(s, action) }
-	}
-
-	val dispatch: suspend (A) -> Unit = { action ->
+	fun dispatch(action: A) {
 		mutableStateFlow.update { applyAction(it, action) }
 	}
 
-	val dispatchAll: suspend (List<A>) -> Unit = { actions ->
+	fun dispatchAll(actions: List<A>) {
 		mutableStateFlow.update { currentState ->
 			actions.fold(currentState) { s, action -> applyAction(s, action) }
 		}
 	}
-	val context = Context(mutableStateFlow.asStateFlow(), dispatch, dispatchAll, scope)
-	return context
+
+	companion object {
+		fun <S, A> create(
+			initialState: S,
+			scope: CoroutineScope,
+			behaviours: List<Behaviour<S, A, *>>,
+		): Context<S, A> {
+			val mutableStateFlow = MutableStateFlow(initialState)
+			val applyAction: (S, A) -> S = { currentState, action ->
+				behaviours.fold(currentState) { s, b -> b.reduce(s, action) }
+			}
+			return Context(mutableStateFlow, applyAction, scope)
+		}
+	}
 }

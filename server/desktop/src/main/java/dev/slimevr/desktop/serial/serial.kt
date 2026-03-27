@@ -104,7 +104,11 @@ private suspend fun runSerialPoller(server: SerialServer) {
 }
 
 fun createDesktopSerialServer(scope: CoroutineScope): SerialServer {
-	val server = SerialServer.create(openPort = ::openPort, openFlashingPort = { DesktopFlashingHandler() }, scope = scope)
+	val server = SerialServer.create(
+		openPort = { portLocation, onDataReceived, onPortDisconnected -> openPort(portLocation, scope, onDataReceived, onPortDisconnected) },
+		openFlashingPort = { DesktopFlashingHandler() },
+		scope = scope,
+	)
 	scope.launch { runSerialPoller(server) }
 	return server
 }

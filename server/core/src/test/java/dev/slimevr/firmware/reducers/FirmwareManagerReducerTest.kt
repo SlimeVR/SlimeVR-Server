@@ -1,6 +1,6 @@
 package dev.slimevr.firmware.reducers
 
-import dev.slimevr.context.createContext
+import dev.slimevr.context.Context
 import dev.slimevr.firmware.FirmwareManagerActions
 import dev.slimevr.firmware.FirmwareManagerBaseBehaviour
 import dev.slimevr.firmware.FirmwareManagerState
@@ -21,9 +21,9 @@ private fun serialJob(port: String, status: FirmwareUpdateStatus, progress: Int 
 )
 
 class FirmwareManagerReducerTest {
-	private fun makeContext(scope: kotlinx.coroutines.CoroutineScope) = createContext(
+	private fun makeContext(scope: kotlinx.coroutines.CoroutineScope) = Context.create(
 		initialState = FirmwareManagerState(jobs = mapOf()),
-		reducers = listOf(FirmwareManagerBaseBehaviour.reducer),
+		behaviours = listOf(FirmwareManagerBaseBehaviour),
 		scope = scope,
 	)
 

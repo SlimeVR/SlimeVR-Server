@@ -1,0 +1,228 @@
+package dev.slimevr.udp
+
+import dev.slimevr.AppLogger
+import dev.slimevr.VRServerActions
+import dev.slimevr.device.Device
+import dev.slimevr.device.DeviceActions
+import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.TrackerIdNum
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.TrackerStatus
+
+internal const val CONNECTION_TIMEOUT_MS = 5000L
+
+object PacketBehaviour : UDPConnectionBehaviour {
+	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
+		is UDPConnectionActions.LastPacket -> {
+			var newState = state.copy(lastPacket = action.time)
+			if (action.packetNum != null) newState = newState.copy(lastPacketNum = action.packetNum)
+			newState
+		}
+		else -> state
+	}
+
+	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onAny { packet ->
+			val state = receiver.context.state.value
+			val now = System.currentTimeMillis()
+			if (now - state.lastPacket > CONNECTION_TIMEOUT_MS && packet.packetNumber == 0L) {
+				receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = 0, time = now))
+				AppLogger.udp.info("Reconnecting")
+			} else if (packet.packetNumber < state.lastPacketNum) {
+				AppLogger.udp.warn("WARN: Received packet with wrong packet number")
+				return@onAny
+			} else {
+				receiver.context.dispatch(UDPConnectionActions.LastPacket(time = now))
+			}
+		}
+	}
+}
+
+object PingBehaviour : UDPConnectionBehaviour {
+	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
+		is UDPConnectionActions.StartPing -> state.copy(lastPing = state.lastPing.copy(startTime = action.startTime))
+		is UDPConnectionActions.ReceivedPong -> state.copy(lastPing = state.lastPing.copy(duration = action.duration, id = action.id))
+		else -> state
+	}
+
+	override fun observe(receiver: UDPConnection) {
+		// Send the ping every 1s
+		receiver.context.scope.launch {
+			while (isActive) {
+				val state = receiver.context.state.value
+				if (state.didHandshake) {
+					receiver.context.dispatch(UDPConnectionActions.StartPing(startTime = System.currentTimeMillis()))
+					receiver.send(PingPong(state.lastPing.id + 1))
+				}
+				delay(1000)
+			}
+		}
+
+		// listen for the pong
+		receiver.packetEvents.onPacket<PingPong> { packet ->
+			val state = receiver.context.state.value
+			val deviceId = state.deviceId ?: return@onPacket
+
+			if (packet.data.pingId != state.lastPing.id + 1) {
+				AppLogger.udp.warn("Ping ID does not match, ignoring ${packet.data.pingId} != ${state.lastPing.id + 1}")
+				return@onPacket
+			}
+
+			val ping = System.currentTimeMillis() - state.lastPing.startTime
+			val device = receiver.serverContext.getDevice(deviceId) ?: return@onPacket
+
+			receiver.context.dispatch(UDPConnectionActions.ReceivedPong(id = packet.data.pingId, duration = ping))
+			device.context.dispatch(DeviceActions.Update { copy(ping = ping) })
+		}
+	}
+}
+
+object HandshakeBehaviour : UDPConnectionBehaviour {
+	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
+		is UDPConnectionActions.Handshake -> state.copy(didHandshake = true, deviceId = action.deviceId)
+		is UDPConnectionActions.Disconnected -> state.copy(didHandshake = false)
+		else -> state
+	}
+
+	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<Handshake> { packet ->
+			val state = receiver.context.state.value
+
+			val device = if (state.deviceId == null) {
+				val deviceId = receiver.serverContext.nextHandle()
+				val newDevice = Device.create(
+					id = deviceId,
+					scope = receiver.serverContext.context.scope,
+					address = state.address,
+					macAddress = packet.data.macString,
+					origin = DeviceOrigin.UDP,
+					protocolVersion = packet.data.protocolVersion,
+				)
+				receiver.serverContext.context.dispatch(VRServerActions.NewDevice(deviceId = deviceId, context = newDevice))
+				receiver.context.dispatch(UDPConnectionActions.Handshake(deviceId))
+				newDevice
+			} else {
+				receiver.context.dispatch(UDPConnectionActions.Handshake(state.deviceId))
+				receiver.getDevice() ?: run {
+					AppLogger.udp.warn("Reconnect handshake but device ${state.deviceId} not found")
+					receiver.send(Handshake())
+					return@onPacket
+				}
+			}
+
+			// Apply handshake fields to device, always, for both first connect and reconnect
+			device.context.dispatch(
+				DeviceActions.Update {
+					copy(
+						macAddress = packet.data.macString ?: macAddress,
+						boardType = packet.data.boardType,
+						mcuType = packet.data.mcuType,
+						firmware = packet.data.firmware ?: firmware,
+						protocolVersion = packet.data.protocolVersion,
+					)
+				},
+			)
+
+			receiver.send(Handshake())
+		}
+	}
+}
+
+object TimeoutBehaviour : UDPConnectionBehaviour {
+	override fun observe(receiver: UDPConnection) {
+		receiver.context.scope.launch {
+			while (isActive) {
+				val state = receiver.context.state.value
+				if (!state.didHandshake) {
+					delay(500)
+					continue
+				}
+				val timeUntilTimeout = CONNECTION_TIMEOUT_MS - (System.currentTimeMillis() - state.lastPacket)
+				if (timeUntilTimeout <= 0) {
+					AppLogger.udp.info("Connection timed out for ${state.id}")
+					receiver.context.dispatch(UDPConnectionActions.Disconnected)
+					receiver.getDevice()?.context?.dispatch(
+						DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
+					)
+				} else {
+					delay(timeUntilTimeout + 1)
+				}
+			}
+		}
+	}
+}
+
+object DeviceStatsBehaviour : UDPConnectionBehaviour {
+	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<BatteryLevel> { event ->
+			val device = receiver.getDevice() ?: return@onPacket
+			device.context.dispatch(
+				DeviceActions.Update {
+					copy(batteryLevel = event.data.level, batteryVoltage = event.data.voltage)
+				},
+			)
+		}
+
+		receiver.packetEvents.onPacket<SignalStrength> { event ->
+			val device = receiver.getDevice() ?: return@onPacket
+			device.context.dispatch(DeviceActions.Update { copy(signalStrength = event.data.signal) })
+		}
+	}
+}
+
+object SensorInfoBehaviour : UDPConnectionBehaviour {
+	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
+		is UDPConnectionActions.AssignTracker -> state.copy(trackerIds = state.trackerIds + action.trackerId)
+		else -> state
+	}
+
+	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<SensorInfo> { event ->
+			val device = receiver.getDevice()
+				?: error("invalid state - a device should exist at this point")
+
+			device.context.dispatch(DeviceActions.Update { copy(status = event.data.status) })
+
+			val tracker = receiver.getTracker(event.data.sensorId)
+			val action = TrackerActions.Update { copy(sensorType = event.data.imuType) }
+
+			if (tracker != null) {
+				tracker.context.dispatch(action)
+			} else {
+				val deviceState = device.context.state.value
+				val trackerId = receiver.serverContext.nextHandle()
+				val newTracker = Tracker.create(
+					id = trackerId,
+					hardwareId = "${deviceState.address}:${event.data.sensorId}",
+					sensorType = event.data.imuType,
+					deviceId = deviceState.id,
+					origin = DeviceOrigin.UDP,
+					scope = receiver.serverContext.context.scope,
+				)
+
+				receiver.serverContext.context.dispatch(
+					VRServerActions.NewTracker(trackerId = trackerId, context = newTracker),
+				)
+				receiver.context.dispatch(
+					UDPConnectionActions.AssignTracker(
+						trackerId = TrackerIdNum(id = trackerId, trackerNum = event.data.sensorId),
+					),
+				)
+				newTracker.context.dispatch(action)
+			}
+		}
+	}
+}
+
+object SensorRotationBehaviour : UDPConnectionBehaviour {
+	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<RotationData> { event ->
+			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation) })
+		}
+	}
+}

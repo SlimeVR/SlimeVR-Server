@@ -1,15 +1,12 @@
 package dev.slimevr
 
 import dev.llelievr.espflashkotlin.FlasherSerialInterface
-import dev.slimevr.firmware.createFirmwareManager
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.vrchat.createVRCConfigManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.emptyFlow
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
-	openPort = { loc, _, _, _ -> SerialPortHandle(loc, "Fake $loc", {}, {}) },
+	openPort = { loc, _, _ -> SerialPortHandle(loc, "Fake $loc", {}, {}) },
 	openFlashingPort = {
 		object : FlasherSerialInterface {
 			override fun openSerial(port: Any) = Unit
@@ -27,14 +24,4 @@ fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
 	scope = scope,
 )
 
-fun buildTestVrServer(scope: CoroutineScope): VRServer {
-	val serialServer = buildTestSerialServer(scope)
-	return VRServer.create(scope, serialServer, createFirmwareManager(serialServer, scope),
-		createVRCConfigManager(
-			scope = scope,
-			userHeight = { 1.6 },
-			isSupported = false,
-			values = emptyFlow(),
-		)
-	)
-}
+fun buildTestVrServer(scope: CoroutineScope): VRServer = VRServer.create(scope)

@@ -6,7 +6,6 @@ import dev.slimevr.hid.HID_TRACKER_PID
 import dev.slimevr.hid.HID_TRACKER_RECEIVER_PID
 import dev.slimevr.hid.HID_TRACKER_RECEIVER_VID
 import dev.slimevr.hid.HIDReceiver
-import dev.slimevr.hid.createHIDReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -102,7 +101,7 @@ fun createDesktopHIDManager(serverContext: VRServer, scope: CoroutineScope) {
 					}
 				}
 
-				val receiver = createHIDReceiver(
+				val receiver = HIDReceiver.create(
 					serialNumber = serial,
 					data = dataFlow,
 					serverContext = serverContext,

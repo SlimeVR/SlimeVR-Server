@@ -7,6 +7,7 @@ import com.sun.jna.platform.win32.WinError
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.ptr.IntByReference
 import dev.slimevr.VRServer
+import dev.slimevr.solarxr.SolarXRConnectionBehaviour
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -35,11 +36,12 @@ suspend fun createWindowsFeederPipe(server: VRServer) = acceptWindowsClients(FEE
 	)
 }
 
-suspend fun createWindowsSolarXRPipe(server: VRServer) = acceptWindowsClients(SOLARXR_PIPE) { handle ->
+suspend fun createWindowsSolarXRPipe(server: VRServer, behaviours: List<SolarXRConnectionBehaviour>) = acceptWindowsClients(SOLARXR_PIPE) { handle ->
 	handleSolarXRConnection(
 		server = server,
 		messages = readFramedMessages(handle),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
+		behaviours = behaviours
 	)
 }
 

@@ -1,8 +1,7 @@
 package dev.slimevr.config
 
-import dev.slimevr.context.BasicBehaviour
+import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -27,7 +26,7 @@ sealed interface GlobalConfigActions {
 }
 
 typealias GlobalConfigContext = Context<GlobalConfigState, GlobalConfigActions>
-typealias GlobalConfigBehaviour = BasicBehaviour<GlobalConfigState, GlobalConfigActions>
+typealias GlobalConfigBehaviour = Behaviour<GlobalConfigState, GlobalConfigActions, GlobalConfigContext>
 
 private fun migrateGlobalConfig(json: JsonObject): JsonObject {
 	val version = json["version"]?.jsonPrimitive?.intOrNull ?: 0
@@ -42,61 +41,50 @@ private fun parseAndMigrateGlobalConfig(raw: String): GlobalConfigState {
 	return jsonConfig.decodeFromJsonElement(migrateGlobalConfig(json))
 }
 
-val DefaultGlobalConfigBehaviour = GlobalConfigBehaviour(
-	reducer = { s, a ->
-		when (a) {
-			is GlobalConfigActions.SetUserProfile -> s.copy(selectedUserProfile = a.name)
-			is GlobalConfigActions.SetSettingsProfile -> s.copy(selectedSettingsProfile = a.name)
-		}
-	},
-)
-
-data class AppConfig(
+class AppConfig(
 	val globalContext: GlobalConfigContext,
 	val userConfig: UserConfig,
 	val settings: Settings,
-	val switchUserProfile: suspend (String) -> Unit,
-	val switchSettingsProfile: suspend (String) -> Unit,
-)
-
-suspend fun createAppConfig(scope: CoroutineScope, configFolder: File): AppConfig {
-	val initialGlobal = loadFileWithBackup(File(configFolder, "global.json"), GlobalConfigState()) {
-		parseAndMigrateGlobalConfig(it)
-	}
-
-	val behaviours = listOf(DefaultGlobalConfigBehaviour)
-
-	val globalContext = createContext(
-		initialState = initialGlobal,
-		reducers = behaviours.map { it.reducer },
-		scope = scope,
-	)
-
-	launchAutosave(
-		scope = scope,
-		state = globalContext.state,
-		toFile = { File(configFolder, "global.json") },
-		serialize = { jsonConfig.encodeToString(it) },
-	)
-
-	val userConfig = createUserConfig(scope, configFolder, initialGlobal.selectedUserProfile)
-	val settings = createSettings(scope, configFolder, initialGlobal.selectedSettingsProfile)
-
-	val switchUserProfile: suspend (String) -> Unit = { name ->
+) {
+	suspend fun switchUserProfile(name: String) {
 		globalContext.dispatch(GlobalConfigActions.SetUserProfile(name))
 		userConfig.swap(name)
 	}
 
-	val switchSettingsProfile: suspend (String) -> Unit = { name ->
+	suspend fun switchSettingsProfile(name: String) {
 		globalContext.dispatch(GlobalConfigActions.SetSettingsProfile(name))
 		settings.swap(name)
 	}
 
-	return AppConfig(
-		globalContext = globalContext,
-		userConfig = userConfig,
-		settings = settings,
-		switchUserProfile = switchUserProfile,
-		switchSettingsProfile = switchSettingsProfile,
-	)
+	companion object {
+		suspend fun create(scope: CoroutineScope, configFolder: File): AppConfig {
+			val initialGlobal = loadFileWithBackup(File(configFolder, "global.json"), GlobalConfigState()) {
+				parseAndMigrateGlobalConfig(it)
+			}
+
+			val behaviours = listOf(DefaultGlobalConfigBehaviour)
+			val globalContext = Context.create(
+				initialState = initialGlobal,
+				scope = scope,
+				behaviours = behaviours,
+			)
+			behaviours.forEach { it.observe(globalContext) }
+
+			launchAutosave(
+				scope = scope,
+				state = globalContext.state,
+				toFile = { File(configFolder, "global.json") },
+				serialize = { jsonConfig.encodeToString(it) },
+			)
+
+			val userConfig = UserConfig.create(scope, configFolder, initialGlobal.selectedUserProfile)
+			val settings = Settings.create(scope, configFolder, initialGlobal.selectedSettingsProfile)
+
+			return AppConfig(
+				globalContext = globalContext,
+				userConfig = userConfig,
+				settings = settings,
+			)
+		}
+	}
 }

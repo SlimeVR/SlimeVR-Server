@@ -1,9 +1,8 @@
 package dev.slimevr.serial
 
 import dev.llelievr.espflashkotlin.FlasherSerialInterface
-import dev.slimevr.context.BasicBehaviour
+import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.SerialDevice
@@ -35,43 +34,23 @@ sealed interface SerialServerActions {
 }
 
 typealias SerialServerContext = Context<SerialServerState, SerialServerActions>
-typealias SerialServerBehaviour = BasicBehaviour<SerialServerState, SerialServerActions>
-
-val SerialServerBaseBehaviour = SerialServerBehaviour(
-	reducer = { s, a ->
-		when (a) {
-			is SerialServerActions.PortDetected ->
-				s.copy(availablePorts = s.availablePorts + (a.info.portLocation to a.info))
-
-			is SerialServerActions.PortLost ->
-				s.copy(availablePorts = s.availablePorts - a.portLocation)
-
-			is SerialServerActions.RegisterConnection ->
-				s.copy(connections = s.connections + (a.portLocation to a.connection))
-
-			is SerialServerActions.RemoveConnection ->
-				s.copy(connections = s.connections - a.portLocation)
-		}
-	},
-	observer = null,
-)
+typealias SerialServerBehaviour = Behaviour<SerialServerState, SerialServerActions, SerialServerContext>
 
 class SerialServer(
 	val context: SerialServerContext,
 	private val scope: CoroutineScope,
 	private val openPortFactory: (
 		portLocation: String,
-		scope: CoroutineScope,
-		onDataReceived: suspend (portLocation: String, line: String) -> Unit,
-		onPortDisconnected: suspend (portLocation: String) -> Unit,
+		onDataReceived: (portLocation: String, line: String) -> Unit,
+		onPortDisconnected: (portLocation: String) -> Unit,
 	) -> SerialPortHandle?,
 	private val openFlashingPortFactory: () -> FlashingHandler,
 ) {
-	suspend fun onPortDetected(info: SerialPortInfo) {
+	fun onPortDetected(info: SerialPortInfo) {
 		context.dispatch(SerialServerActions.PortDetected(info))
 	}
 
-	suspend fun onPortLost(portLocation: String) {
+	fun onPortLost(portLocation: String) {
 		val conn = context.state.value.connections[portLocation]
 		if (conn is SerialConnection.Console) {
 			conn.handle.close()
@@ -80,12 +59,12 @@ class SerialServer(
 		context.dispatch(SerialServerActions.PortLost(portLocation))
 	}
 
-	suspend fun onDataReceived(portLocation: String, line: String) {
+	fun onDataReceived(portLocation: String, line: String) {
 		val conn = context.state.value.connections[portLocation]
 		if (conn is SerialConnection.Console) conn.context.dispatch(SerialConnectionActions.LogLine(line))
 	}
 
-	suspend fun onPortDisconnected(portLocation: String) {
+	fun onPortDisconnected(portLocation: String) {
 		val conn = context.state.value.connections[portLocation]
 		if (conn !is SerialConnection.Console) return
 		conn.context.dispatch(SerialConnectionActions.Disconnected)
@@ -93,14 +72,14 @@ class SerialServer(
 		context.dispatch(SerialServerActions.RemoveConnection(portLocation))
 	}
 
-	suspend fun openConnection(portLocation: String) {
+	fun openConnection(portLocation: String) {
 		val state = context.state.value
 		if (!state.availablePorts.containsKey(portLocation) || state.connections.containsKey(portLocation)) return
-		val handle = openPortFactory(portLocation, scope, ::onDataReceived, ::onPortDisconnected) ?: return
-		context.dispatch(SerialServerActions.RegisterConnection(portLocation, createSerialConnection(handle, scope)))
+		val handle = openPortFactory(portLocation, ::onDataReceived, ::onPortDisconnected) ?: return
+		context.dispatch(SerialServerActions.RegisterConnection(portLocation, SerialConnection.Console.create(handle, scope)))
 	}
 
-	suspend fun closeConnection(portLocation: String) {
+	fun closeConnection(portLocation: String) {
 		val conn = context.state.value.connections[portLocation]
 		if (conn !is SerialConnection.Console) return
 		conn.context.dispatch(SerialConnectionActions.Disconnected)
@@ -108,7 +87,7 @@ class SerialServer(
 		context.dispatch(SerialServerActions.RemoveConnection(portLocation))
 	}
 
-	suspend fun openForFlashing(portLocation: String): FlashingHandler? {
+	fun openForFlashing(portLocation: String): FlashingHandler? {
 		val state = context.state.value
 		if (!state.availablePorts.containsKey(portLocation) || state.connections.containsKey(portLocation)) return null
 		closeConnection(portLocation)
@@ -124,20 +103,15 @@ class SerialServer(
 
 	companion object {
 		fun create(
-			openPort: (
-				portLocation: String,
-				scope: CoroutineScope,
-				onDataReceived: suspend (portLocation: String, line: String) -> Unit,
-				onPortDisconnected: suspend (portLocation: String) -> Unit,
-			) -> SerialPortHandle?,
+			openPort: (portLocation: String, onDataReceived: (String, String) -> Unit, onPortDisconnected: (String) -> Unit) -> SerialPortHandle?,
 			openFlashingPort: () -> FlashingHandler,
 			scope: CoroutineScope,
 		): SerialServer {
 			val behaviours = listOf(SerialServerBaseBehaviour)
-			val context = createContext(
+			val context = Context.create(
 				initialState = SerialServerState(availablePorts = mapOf(), connections = mapOf()),
-				reducers = behaviours.map { it.reducer },
 				scope = scope,
+				behaviours = behaviours,
 			)
 			val server = SerialServer(
 				context = context,
@@ -145,7 +119,7 @@ class SerialServer(
 				openPortFactory = openPort,
 				openFlashingPortFactory = openFlashingPort,
 			)
-			behaviours.map { it.observer }.forEach { it?.invoke(context) }
+			behaviours.forEach { it.observe(context) }
 			return server
 		}
 	}
