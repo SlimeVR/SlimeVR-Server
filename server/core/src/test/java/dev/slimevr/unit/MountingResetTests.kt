@@ -4,9 +4,10 @@ import com.jme3.math.FastMath
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.udp.IMUType
-import dev.slimevr.unit.TrackerTestUtils.assertAnglesApproxEqual
-import dev.slimevr.unit.TrackerTestUtils.deg
-import dev.slimevr.unit.TrackerTestUtils.yaw
+import dev.slimevr.unit.TrackerTestUtils.assertAngleEquals
+import dev.slimevr.unit.TrackerTestUtils.degYaw
+import dev.slimevr.unit.TrackerTestUtils.radToDeg
+import dev.slimevr.unit.TrackerTestUtils.radYaw
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -26,7 +27,7 @@ class MountingResetTests {
 	fun testResetAndMounting(): List<DynamicTest> = TrackerTestUtils.directions.flatMap { e ->
 		TrackerTestUtils.directions.map { m ->
 			DynamicTest.dynamicTest(
-				"Full and Mounting Reset Test of Tracker (Expected: ${deg(e)}, reference: ${deg(m)})",
+				"Full and Mounting Reset Test of Tracker (Expected: ${degYaw(e)}, reference: ${degYaw(m)})",
 			) {
 				checkResetMounting(e, m)
 			}
@@ -56,12 +57,12 @@ class MountingResetTests {
 		tracker.setRotation(trackerRot)
 		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY)
 
-		val expectedYaw = yaw(expected)
-		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)
-		assertAnglesApproxEqual(
+		val expectedYaw = radYaw(expected)
+		val resultYaw = radYaw(tracker.resetsHandler.mountRotFix)
+		assertAngleEquals(
 			expectedYaw,
 			resultYaw,
-			"Resulting mounting yaw after full reset is not equal to reference yaw (${deg(expectedYaw)} vs ${deg(resultYaw)})",
+			message = "Resulting mounting yaw after full reset is not equal to reference yaw (${radToDeg(expectedYaw)} vs ${radToDeg(resultYaw)})",
 		)
 
 		// Apply full reset and mounting plus offset
@@ -73,12 +74,12 @@ class MountingResetTests {
 		// it needs to be applied twice
 		tracker.resetsHandler.resetMounting(reference * reference)
 
-		val expectedYaw2 = yaw(expected)
-		val resultYaw2 = yaw(tracker.resetsHandler.mountRotFix)
-		assertAnglesApproxEqual(
+		val expectedYaw2 = radYaw(expected)
+		val resultYaw2 = radYaw(tracker.resetsHandler.mountRotFix)
+		assertAngleEquals(
 			expectedYaw2,
 			resultYaw2,
-			"Resulting mounting yaw after full reset with offset is not equal to reference yaw (${deg(expectedYaw2)} vs ${deg(resultYaw2)})",
+			message = "Resulting mounting yaw after full reset with offset is not equal to reference yaw (${radToDeg(expectedYaw2)} vs ${radToDeg(resultYaw2)})",
 		)
 
 		// Apply yaw reset and mounting
@@ -88,12 +89,12 @@ class MountingResetTests {
 		tracker.setRotation(trackerRot)
 		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY)
 
-		val expectedYaw3 = yaw(expected)
-		val resultYaw3 = yaw(tracker.resetsHandler.mountRotFix)
-		assertAnglesApproxEqual(
+		val expectedYaw3 = radYaw(expected)
+		val resultYaw3 = radYaw(tracker.resetsHandler.mountRotFix)
+		assertAngleEquals(
 			expectedYaw3,
 			resultYaw3,
-			"Resulting mounting yaw after yaw reset is not equal to reference yaw (${deg(expectedYaw3)} vs ${deg(resultYaw3)})",
+			message = "Resulting mounting yaw after yaw reset is not equal to reference yaw (${radToDeg(expectedYaw3)} vs ${radToDeg(resultYaw3)})",
 		)
 
 		// Apply yaw reset and mounting plus offset
@@ -106,12 +107,12 @@ class MountingResetTests {
 		// it needs to be applied twice
 		tracker.resetsHandler.resetMounting(reference * reference)
 
-		val expectedYaw4 = yaw(expected)
-		val resultYaw4 = yaw(tracker.resetsHandler.mountRotFix)
-		assertAnglesApproxEqual(
+		val expectedYaw4 = radYaw(expected)
+		val resultYaw4 = radYaw(tracker.resetsHandler.mountRotFix)
+		assertAngleEquals(
 			expectedYaw3,
 			resultYaw3,
-			"Resulting mounting yaw after yaw reset with offset is not equal to reference yaw (${deg(expectedYaw4)} vs ${deg(resultYaw4)})",
+			message = "Resulting mounting yaw after yaw reset with offset is not equal to reference yaw (${radToDeg(expectedYaw4)} vs ${radToDeg(resultYaw4)})",
 		)
 	}
 
@@ -141,23 +142,23 @@ class MountingResetTests {
 		tracker.setRotation(trackerRot)
 		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY)
 
-		val expectedYaw = yaw(expected)
-		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)
-		assertAnglesApproxEqual(
+		val expectedYaw = radYaw(expected)
+		val resultYaw = radYaw(tracker.resetsHandler.mountRotFix)
+		assertAngleEquals(
 			expectedYaw,
 			resultYaw,
-			"Resulting mounting yaw after full reset is not equal to reference yaw (${deg(expectedYaw)} vs ${deg(resultYaw)})",
+			message = "Resulting mounting yaw after full reset is not equal to reference yaw (${radToDeg(expectedYaw)} vs ${radToDeg(resultYaw)})",
 		)
 
 		tracker.setRotation(reference * reference)
 		tracker.resetsHandler.resetYaw(reference)
 
-		val expectedYaw2 = yaw(reference)
-		val resultYaw2 = yaw(tracker.getRotation())
-		assertAnglesApproxEqual(
+		val expectedYaw2 = radYaw(reference)
+		val resultYaw2 = radYaw(tracker.getRotation())
+		assertAngleEquals(
 			expectedYaw2,
 			resultYaw2,
-			"Resulting rotation after yaw reset is not equal to reference yaw (${deg(expectedYaw2)} vs ${deg(resultYaw2)})",
+			message = "Resulting rotation after yaw reset is not equal to reference yaw (${radToDeg(expectedYaw2)} vs ${radToDeg(resultYaw2)})",
 		)
 	}
 }
