@@ -171,6 +171,13 @@ class SkeletonConfigManager(
 		humanPoseManager?.updateNodeOffset(nodeOffset, offset)
 	}
 
+	// Divides total finger length over anatomical ratios
+	private fun phalanxLengthDivider(thirdOfTotal: Float, ratio: Float): Float {
+		val phalanxTotal = thirdOfTotal * 3f
+		val unit = phalanxTotal / PHALANX_SUM
+		return unit * ratio
+	}
+
 	fun computeNodeOffset(nodeOffset: BoneType) {
 		when (nodeOffset) {
 			BoneType.HEAD -> setNodeOffset(nodeOffset, 0f, 0f, getOffset(SkeletonConfigOffsets.HEAD))
@@ -303,50 +310,83 @@ class SkeletonConfigManager(
 				0f,
 			)
 
-			BoneType.LEFT_THUMB_METACARPAL, BoneType.LEFT_THUMB_PROXIMAL, BoneType.LEFT_THUMB_DISTAL,
-			BoneType.RIGHT_THUMB_METACARPAL, BoneType.RIGHT_THUMB_PROXIMAL, BoneType.RIGHT_THUMB_DISTAL,
-			-> setNodeOffset(
-				nodeOffset,
-				0f,
-				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f,
-				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.1f,
-			)
+			BoneType.LEFT_THUMB_METACARPAL, BoneType.RIGHT_THUMB_METACARPAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f
+				val segY = phalanxLengthDivider(thirdOfTotal, PROXIMAL_RATIO)
+				setNodeOffset(nodeOffset, 0f, -segY, -(segY * 0.5f))
+			}
 
-			BoneType.LEFT_INDEX_PROXIMAL, BoneType.LEFT_INDEX_INTERMEDIATE, BoneType.LEFT_INDEX_DISTAL,
-			BoneType.RIGHT_INDEX_PROXIMAL, BoneType.RIGHT_INDEX_INTERMEDIATE, BoneType.RIGHT_INDEX_DISTAL,
-			-> setNodeOffset(
-				nodeOffset,
-				0f,
-				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.25f,
-				0f,
-			)
+			BoneType.LEFT_THUMB_PROXIMAL, BoneType.RIGHT_THUMB_PROXIMAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f
+				val segY = phalanxLengthDivider(thirdOfTotal, INTERMEDIATE_RATIO)
+				setNodeOffset(nodeOffset, 0f, -segY, -(segY * 0.5f))
+			}
 
-			BoneType.LEFT_MIDDLE_PROXIMAL, BoneType.LEFT_MIDDLE_INTERMEDIATE, BoneType.LEFT_MIDDLE_DISTAL,
-			BoneType.RIGHT_MIDDLE_PROXIMAL, BoneType.RIGHT_MIDDLE_INTERMEDIATE, BoneType.RIGHT_MIDDLE_DISTAL,
-			-> setNodeOffset(
-				nodeOffset,
-				0f,
-				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.3f,
-				0f,
-			)
+			BoneType.LEFT_THUMB_DISTAL, BoneType.RIGHT_THUMB_DISTAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f
+				val segY = phalanxLengthDivider(thirdOfTotal, DISTAL_RATIO)
+				setNodeOffset(nodeOffset, 0f, -segY, -(segY * 0.5f))
+			}
 
-			BoneType.LEFT_RING_PROXIMAL, BoneType.LEFT_RING_INTERMEDIATE, BoneType.LEFT_RING_DISTAL,
-			BoneType.RIGHT_RING_PROXIMAL, BoneType.RIGHT_RING_INTERMEDIATE, BoneType.RIGHT_RING_DISTAL,
-			-> setNodeOffset(
-				nodeOffset,
-				0f,
-				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.28f,
-				0f,
-			)
+			BoneType.LEFT_INDEX_PROXIMAL, BoneType.RIGHT_INDEX_PROXIMAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.25f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, PROXIMAL_RATIO), 0f)
+			}
 
-			BoneType.LEFT_LITTLE_PROXIMAL, BoneType.LEFT_LITTLE_INTERMEDIATE, BoneType.LEFT_LITTLE_DISTAL,
-			BoneType.RIGHT_LITTLE_PROXIMAL, BoneType.RIGHT_LITTLE_INTERMEDIATE, BoneType.RIGHT_LITTLE_DISTAL,
-			-> setNodeOffset(
-				nodeOffset,
-				0f,
-				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f,
-				0f,
-			)
+			BoneType.LEFT_INDEX_INTERMEDIATE, BoneType.RIGHT_INDEX_INTERMEDIATE -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.25f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, INTERMEDIATE_RATIO), 0f)
+			}
+
+			BoneType.LEFT_INDEX_DISTAL, BoneType.RIGHT_INDEX_DISTAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.25f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, DISTAL_RATIO), 0f)
+			}
+
+			BoneType.LEFT_MIDDLE_PROXIMAL, BoneType.RIGHT_MIDDLE_PROXIMAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.3f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, PROXIMAL_RATIO), 0f)
+			}
+
+			BoneType.LEFT_MIDDLE_INTERMEDIATE, BoneType.RIGHT_MIDDLE_INTERMEDIATE -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.3f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, INTERMEDIATE_RATIO), 0f)
+			}
+
+			BoneType.LEFT_MIDDLE_DISTAL, BoneType.RIGHT_MIDDLE_DISTAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.3f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, DISTAL_RATIO), 0f)
+			}
+
+			BoneType.LEFT_RING_PROXIMAL, BoneType.RIGHT_RING_PROXIMAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.28f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, PROXIMAL_RATIO), 0f)
+			}
+
+			BoneType.LEFT_RING_INTERMEDIATE, BoneType.RIGHT_RING_INTERMEDIATE -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.28f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, INTERMEDIATE_RATIO), 0f)
+			}
+
+			BoneType.LEFT_RING_DISTAL, BoneType.RIGHT_RING_DISTAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.28f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, DISTAL_RATIO), 0f)
+			}
+
+			BoneType.LEFT_LITTLE_PROXIMAL, BoneType.RIGHT_LITTLE_PROXIMAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, PROXIMAL_RATIO), 0f)
+			}
+
+			BoneType.LEFT_LITTLE_INTERMEDIATE, BoneType.RIGHT_LITTLE_INTERMEDIATE -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, INTERMEDIATE_RATIO), 0f)
+			}
+
+			BoneType.LEFT_LITTLE_DISTAL, BoneType.RIGHT_LITTLE_DISTAL -> {
+				val thirdOfTotal = getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f
+				setNodeOffset(nodeOffset, 0f, -phalanxLengthDivider(thirdOfTotal, DISTAL_RATIO), 0f)
+			}
 
 			else -> {}
 		}
@@ -541,6 +581,11 @@ class SkeletonConfigManager(
 	}
 
 	companion object {
+		private const val PHALANX_SUM = 4.6f
+		private const val DISTAL_RATIO = 1.0f
+		private const val INTERMEDIATE_RATIO = 1.3f
+		private const val PROXIMAL_RATIO = 2.3f
+
 		val HEIGHT_OFFSETS: Array<SkeletonConfigOffsets> = arrayOf(
 			SkeletonConfigOffsets.NECK,
 			SkeletonConfigOffsets.UPPER_CHEST,
