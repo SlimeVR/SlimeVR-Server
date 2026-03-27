@@ -13,6 +13,7 @@ import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
+import java.nio.ByteBuffer
 
 data class SolarXRConnectionState(
 	val dataFeedConfigs: List<DataFeedConfig>,
@@ -25,6 +26,20 @@ sealed interface SolarXRConnectionActions {
 
 typealias SolarXRConnectionContext = Context<SolarXRConnectionState, SolarXRConnectionActions>
 typealias SolarXRConnectionBehaviour = Behaviour<SolarXRConnectionState, SolarXRConnectionActions, SolarXRConnection>
+
+suspend fun onSolarXRMessage(message: ByteBuffer, context: SolarXRConnection) {
+	val messageBundle = MessageBundle.fromByteBuffer(message)
+
+	messageBundle.dataFeedMsgs?.forEach {
+		val msg = it.message ?: return
+		context.dataFeedDispatcher.emit(msg)
+	}
+
+	messageBundle.rpcMsgs?.forEach {
+		val msg = it.message ?: return
+		context.rpcDispatcher.emit(msg)
+	}
+}
 
 class SolarXRConnection(
 	val context: SolarXRConnectionContext,

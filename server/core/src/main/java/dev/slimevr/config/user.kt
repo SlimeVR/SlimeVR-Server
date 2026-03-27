@@ -49,7 +49,6 @@ typealias UserConfigBehaviour = Behaviour<UserConfigState, UserConfigActions, Us
 
 class UserConfig(
 	val context: UserConfigContext,
-	val configDir: String,
 	private val scope: CoroutineScope,
 	private val userConfigDir: File,
 ) {
@@ -85,7 +84,7 @@ class UserConfig(
 
 			val behaviours = listOf(DefaultUserBehaviour)
 			val context = Context.create(initialState = initialState, scope = scope, behaviours = behaviours)
-			val userConfig = UserConfig(context, userConfigDir.toString(), scope = scope, userConfigDir = userConfigDir)
+			val userConfig = UserConfig(context, scope = scope, userConfigDir = userConfigDir)
 			behaviours.forEach { it.observe(userConfig) }
 			return userConfig
 		}

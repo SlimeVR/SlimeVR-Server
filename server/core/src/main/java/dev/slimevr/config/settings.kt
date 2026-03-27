@@ -50,7 +50,6 @@ typealias SettingsBehaviour = Behaviour<SettingsState, SettingsActions, Settings
 
 class Settings(
 	val context: SettingsContext,
-	val configDir: String,
 	private val scope: CoroutineScope,
 	private val settingsDir: File,
 ) {
@@ -86,7 +85,7 @@ class Settings(
 
 			val behaviours = listOf(DefaultSettingsBehaviour)
 			val context = Context.create(initialState = initialState, scope = scope, behaviours = behaviours)
-			val settings = Settings(context, configDir = settingsDir.toString(), scope = scope, settingsDir = settingsDir)
+			val settings = Settings(context, scope = scope, settingsDir = settingsDir)
 			behaviours.forEach { it.observe(settings) }
 			return settings
 		}

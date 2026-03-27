@@ -25,10 +25,9 @@ typealias VRServerBehaviour = Behaviour<VRServerState, VRServerActions, VRServer
 @OptIn(ExperimentalAtomicApi::class)
 class VRServer(
 	val context: VRServerContext,
-
-	// Moved this outside of the context to make this faster and safer to use
-	private val handleCounter: AtomicInt,
 ) {
+	private val handleCounter: AtomicInt = AtomicInt(0)
+
 	fun nextHandle() = handleCounter.incrementAndFetch()
 	fun getTracker(id: Int) = context.state.value.trackers[id]
 	fun getDevice(id: Int) = context.state.value.devices[id]
@@ -41,7 +40,7 @@ class VRServer(
 				scope = scope,
 				behaviours = behaviours,
 			)
-			val server = VRServer(context = context, handleCounter = AtomicInt(0))
+			val server = VRServer(context = context)
 			behaviours.forEach { it.observe(server) }
 			return server
 		}
