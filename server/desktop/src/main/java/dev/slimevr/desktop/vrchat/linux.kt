@@ -18,7 +18,10 @@ import kotlin.io.path.exists
 
 private const val USER_REG_SUBPATH = "steamapps/compatdata/438100/pfx/user.reg"
 private val KEY_VALUE_PATTERN = Regex(""""(.+)"=(.+)""")
-private val HEX_FORMAT = HexFormat { upperCase = false; bytes.byteSeparator = "," }
+private val HEX_FORMAT = HexFormat {
+	upperCase = false
+	bytes.byteSeparator = ","
+}
 
 internal val linuxUserRegPath = System.getenv("HOME")?.let { home ->
 	listOf(
@@ -70,8 +73,11 @@ internal suspend fun linuxGetQwordValue(registry: Map<String, String>, key: Stri
 
 internal suspend fun linuxGetDwordValue(registry: Map<String, String>, key: String): Int? = try {
 	val value = registry[key] ?: return null
-	if (value.startsWith("dword:")) value.substring(6).toInt(16)
-	else throw InvalidObjectException("Expected DWORD but got: $value")
+	if (value.startsWith("dword:")) {
+		value.substring(6).toInt(16)
+	} else {
+		throw InvalidObjectException("Expected DWORD but got: $value")
+	}
 } catch (e: CancellationException) {
 	throw e
 } catch (e: Exception) {
@@ -92,10 +98,12 @@ internal fun linuxVRCConfigFlow(): Flow<solarxr_protocol.rpc.VRCConfigValues?> =
 		if (keys.isEmpty()) {
 			emit(null)
 		} else {
-			emit(buildVRCConfigValues(
-				intValue = { key -> keys[key]?.let { linuxGetDwordValue(registry, it) } },
-				doubleValue = { key -> keys[key]?.let { linuxGetQwordValue(registry, it) } },
-			))
+			emit(
+				buildVRCConfigValues(
+					intValue = { key -> keys[key]?.let { linuxGetDwordValue(registry, it) } },
+					doubleValue = { key -> keys[key]?.let { linuxGetQwordValue(registry, it) } },
+				),
+			)
 		}
 		delay(3000)
 		// it seems that on linux, steam writes to the reg file is unpredictable.

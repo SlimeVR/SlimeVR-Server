@@ -41,7 +41,7 @@ suspend fun createWindowsSolarXRPipe(server: VRServer, behaviours: List<SolarXRC
 		server = server,
 		messages = readFramedMessages(handle),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
-		behaviours = behaviours
+		behaviours = behaviours,
 	)
 }
 

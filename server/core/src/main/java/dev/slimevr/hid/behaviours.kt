@@ -12,13 +12,17 @@ import solarxr_protocol.datatypes.TrackerStatus
 object HIDRegistrationBehaviour : HIDReceiverBehaviour {
 	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions) = when (action) {
 		is HIDReceiverActions.DeviceRegistered -> state.copy(
-			trackers = state.trackers + (action.hidId to HIDTrackerRecord(
-				hidId = action.hidId,
-				address = action.address,
-				deviceId = action.deviceId,
-				trackerId = null,
-			)),
+			trackers = state.trackers +
+				(
+					action.hidId to HIDTrackerRecord(
+						hidId = action.hidId,
+						address = action.address,
+						deviceId = action.deviceId,
+						trackerId = null,
+					)
+					),
 		)
+
 		else -> state
 	}
 
@@ -59,6 +63,7 @@ object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 			val existing = state.trackers[action.hidId] ?: return state
 			state.copy(trackers = state.trackers + (action.hidId to existing.copy(trackerId = action.trackerId)))
 		}
+
 		else -> state
 	}
 

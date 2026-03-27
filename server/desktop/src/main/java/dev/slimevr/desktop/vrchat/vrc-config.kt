@@ -13,27 +13,28 @@ import solarxr_protocol.rpc.VRCTrackerModel
 
 internal const val VRC_REG_PATH = "Software\\VRChat\\VRChat"
 
-fun createDesktopVRCConfigManager(config: AppConfig, scope: CoroutineScope): VRCConfigManager =
-	when (CURRENT_PLATFORM) {
-		Platform.WINDOWS -> VRCConfigManager.create(
-			config = config,
-			scope = scope,
-			isSupported = true,
-			values = windowsVRCConfigFlow(),
-		)
-		Platform.LINUX -> VRCConfigManager.create(
-			config = config,
-			scope = scope,
-			isSupported = true,
-			values = linuxVRCConfigFlow(),
-		)
-		else -> VRCConfigManager.create(
-			config = config,
-			scope = scope,
-			isSupported = false,
-			values = emptyFlow(),
-		)
-	}
+fun createDesktopVRCConfigManager(config: AppConfig, scope: CoroutineScope): VRCConfigManager = when (CURRENT_PLATFORM) {
+	Platform.WINDOWS -> VRCConfigManager.create(
+		config = config,
+		scope = scope,
+		isSupported = true,
+		values = windowsVRCConfigFlow(),
+	)
+
+	Platform.LINUX -> VRCConfigManager.create(
+		config = config,
+		scope = scope,
+		isSupported = true,
+		values = linuxVRCConfigFlow(),
+	)
+
+	else -> VRCConfigManager.create(
+		config = config,
+		scope = scope,
+		isSupported = false,
+		values = emptyFlow(),
+	)
+}
 
 internal suspend fun buildVRCConfigValues(
 	intValue: suspend (String) -> Int?,

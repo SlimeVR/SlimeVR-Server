@@ -3,12 +3,12 @@ package dev.slimevr.firmware
 import dev.llelievr.espflashkotlin.FlasherSerialInterface
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
+import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
+import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.device.DeviceOrigin
-import dev.slimevr.device.Device
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,9 +59,7 @@ private fun buildSerialServer(
 // UncompletedCoroutinesError when the test ends.
 private fun buildVrServer(
 	backgroundScope: kotlinx.coroutines.CoroutineScope,
-): VRServer {
-	return VRServer.create(backgroundScope)
-}
+): VRServer = VRServer.create(backgroundScope)
 
 class DoSerialFlashTest {
 

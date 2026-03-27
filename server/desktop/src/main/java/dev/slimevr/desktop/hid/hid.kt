@@ -2,10 +2,10 @@ package dev.slimevr.desktop.hid
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
+import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.HID_TRACKER_PID
 import dev.slimevr.hid.HID_TRACKER_RECEIVER_PID
 import dev.slimevr.hid.HID_TRACKER_RECEIVER_VID
-import dev.slimevr.hid.HIDReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,8 +23,7 @@ import org.hid4java.jna.HidDeviceInfoStructure
 
 private const val HID_POLL_INTERVAL_MS = 3000L
 
-private fun isCompatibleDevice(vid: Int, pid: Int) =
-	vid == HID_TRACKER_RECEIVER_VID && (pid == HID_TRACKER_RECEIVER_PID || pid == HID_TRACKER_PID)
+private fun isCompatibleDevice(vid: Int, pid: Int) = vid == HID_TRACKER_RECEIVER_VID && (pid == HID_TRACKER_RECEIVER_PID || pid == HID_TRACKER_PID)
 
 private val hidSpec = HidServicesSpecification().apply { isAutoStart = false }
 
@@ -32,7 +31,7 @@ private val hidSpec = HidServicesSpecification().apply { isAutoStart = false }
 private val hidServices by lazy { HidManager.getHidServices(hidSpec) }
 
 private fun enumerateCompatibleDevices(): Map<String, HidDevice> {
-	hidServices  // ensure native lib is loaded
+	hidServices // ensure native lib is loaded
 	val root = HidApi.enumerateDevices(0, 0) ?: return emptyMap()
 	val result = mutableMapOf<String, HidDevice>()
 	var info: HidDeviceInfoStructure? = root
@@ -56,7 +55,11 @@ fun createDesktopHIDManager(serverContext: VRServer, scope: CoroutineScope) {
 	scope.launch {
 		while (isActive) {
 			val found = withContext(Dispatchers.IO) {
-				try { enumerateCompatibleDevices() } catch (_: Exception) { emptyMap() }
+				try {
+					enumerateCompatibleDevices()
+				} catch (_: Exception) {
+					emptyMap()
+				}
 			}
 
 			// Devices no longer present + jobs that exited on their own (read error)
@@ -88,12 +91,19 @@ fun createDesktopHIDManager(serverContext: VRServer, scope: CoroutineScope) {
 					try {
 						while (isActive) {
 							val data = withContext(Dispatchers.IO) {
-								try { hidDevice.readAll(0) } catch (_: Exception) { null }
+								try {
+									hidDevice.readAll(0)
+								} catch (_: Exception) {
+									null
+								}
 							}
 							when {
-								data == null -> return@channelFlow  // read error, device gone
+								data == null -> return@channelFlow
+
+								// read error, device gone
 								data.isNotEmpty() -> send(data)
-								else -> delay(1)  // no data yet, yield without busy-spinning
+
+								else -> delay(1) // no data yet, yield without busy-spinning
 							}
 						}
 					} finally {

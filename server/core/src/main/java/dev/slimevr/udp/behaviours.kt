@@ -22,6 +22,7 @@ object PacketBehaviour : UDPConnectionBehaviour {
 			if (action.packetNum != null) newState = newState.copy(lastPacketNum = action.packetNum)
 			newState
 		}
+
 		else -> state
 	}
 

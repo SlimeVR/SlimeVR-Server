@@ -94,8 +94,8 @@ fun computeRecommendedValues(server: VRServer, userHeight: Double): VRCConfigRec
 	return VRCConfigRecommendedValues(
 		legacyMode = false,
 		shoulderTrackingDisabled =
-			(!hasLeftHandWithPosition || !hasRightHandWithPosition || isMissingAnArmTracker) &&
-				((hasLeftHandWithPosition && hasRightHandWithPosition) || isMissingAShoulderTracker),
+		(!hasLeftHandWithPosition || !hasRightHandWithPosition || isMissingAnArmTracker) &&
+			((hasLeftHandWithPosition && hasRightHandWithPosition) || isMissingAShoulderTracker),
 		userHeight = userHeight.toFloat(),
 		calibrationRange = 0.2f,
 		trackerModel = VRCTrackerModel.AXIS,
@@ -106,15 +106,14 @@ fun computeRecommendedValues(server: VRServer, userHeight: Double): VRCConfigRec
 	)
 }
 
-fun computeValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity =
-	VRCConfigValidity(
-		legacyModeOk = values.legacyMode == recommended.legacyMode,
-		shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
-		spineModeOk = recommended.spineMode?.contains(values.spineMode) == true,
-		trackerModelOk = values.trackerModel == recommended.trackerModel,
-		calibrationRangeOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1f,
-		userHeightOk = abs(recommended.userHeight - values.userHeight) < 0.1f,
-		calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
-		avatarMeasurementTypeOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
-		shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,
-	)
+fun computeValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity = VRCConfigValidity(
+	legacyModeOk = values.legacyMode == recommended.legacyMode,
+	shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
+	spineModeOk = recommended.spineMode?.contains(values.spineMode) == true,
+	trackerModelOk = values.trackerModel == recommended.trackerModel,
+	calibrationRangeOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1f,
+	userHeightOk = abs(recommended.userHeight - values.userHeight) < 0.1f,
+	calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
+	avatarMeasurementTypeOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
+	shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,
+)

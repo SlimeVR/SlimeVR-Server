@@ -77,8 +77,7 @@ data class HIDRotationButton(
 	val rssi: Int,
 ) : HIDPacket
 
-private fun readLE16Signed(data: ByteArray, offset: Int): Int =
-	data[offset + 1].toInt() shl 8 or data[offset].toUByte().toInt()
+private fun readLE16Signed(data: ByteArray, offset: Int): Int = data[offset + 1].toInt() shl 8 or data[offset].toUByte().toInt()
 
 private fun decodeQ15Quat(data: ByteArray, offset: Int): Quaternion {
 	val scale = 1f / 32768f

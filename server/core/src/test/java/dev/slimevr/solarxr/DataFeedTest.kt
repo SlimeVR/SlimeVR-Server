@@ -10,13 +10,12 @@ import solarxr_protocol.data_feed.StartDataFeed
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend: suspend (ByteArray) -> Unit) =
-	SolarXRConnection.create(
-		buildTestVrServer(backgroundScope),
-		onSend = onSend,
-		scope = backgroundScope,
-		behaviours = listOf(DataFeedInitBehaviour),
-	)
+private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend: suspend (ByteArray) -> Unit) = SolarXRConnection.create(
+	buildTestVrServer(backgroundScope),
+	onSend = onSend,
+	scope = backgroundScope,
+	behaviours = listOf(DataFeedInitBehaviour),
+)
 
 private fun config(intervalMs: Int) = DataFeedConfig(minimumTimeSinceLast = intervalMs.toUShort())
 

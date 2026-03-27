@@ -38,7 +38,7 @@ suspend fun createUnixSolarXRSocket(server: VRServer, behaviours: List<SolarXRCo
 		server = server,
 		messages = readFramedMessages(channel),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
-		behaviours = behaviours
+		behaviours = behaviours,
 	)
 }
 
