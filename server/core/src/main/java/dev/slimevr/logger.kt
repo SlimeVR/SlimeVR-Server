@@ -14,6 +14,7 @@ object AppLogger {
 	val hid = logger("HID")
 	val serial = logger("Serial")
 	val firmware = logger("Firmware")
+	val vrc = logger("VRChat")
 
 	init {
 		loggingConfiguration {

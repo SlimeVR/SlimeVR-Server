@@ -3,17 +3,20 @@ package dev.slimevr.firmware
 import dev.llelievr.espflashkotlin.FlasherSerialInterface
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
+import dev.slimevr.device.DeviceActions
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.device.createDevice
+import dev.slimevr.vrchat.createVRCConfigManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.McuType
 import solarxr_protocol.rpc.FirmwareUpdateStatus
@@ -61,7 +64,13 @@ private fun buildVrServer(
 	serialServer: SerialServer,
 ): VRServer {
 	val firmwareManager = createFirmwareManager(serialServer, mainScope)
-	return VRServer.create(backgroundScope, serialServer, firmwareManager)
+	val vrcConfigManager = createVRCConfigManager(
+		scope = mainScope,
+		userHeight = { 1.6 },
+		isSupported = false,
+		values = kotlinx.coroutines.flow.emptyFlow(),
+	) // FIXME this is annoying. we need to find better
+	return VRServer.create(backgroundScope, serialServer, firmwareManager, vrcConfigManager)
 }
 
 class DoSerialFlashTest {
@@ -306,10 +315,9 @@ class DoSerialFlashTest {
 				origin = DeviceOrigin.UDP,
 				protocolVersion = 0,
 				serverContext = vrServer,
-				boardType = BoardType.SLIMEVR,
-				mcuType = McuType.ESP8266,
 			)
 			vrServer.context.dispatch(VRServerActions.NewDevice(device.context.state.value.id, device))
+			device.context.dispatch(DeviceActions.Update { copy(status = TrackerStatus.OK) })
 		}
 
 		advanceUntilIdle()

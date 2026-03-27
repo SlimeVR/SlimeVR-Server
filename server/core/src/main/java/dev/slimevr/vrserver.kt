@@ -3,10 +3,11 @@ package dev.slimevr
 import dev.slimevr.context.Context
 import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
+import dev.slimevr.device.Device
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.vrchat.VRCConfigManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
@@ -51,6 +52,7 @@ data class VRServer(
 	val context: VRServerContext,
 	val serialServer: SerialServer,
 	val firmwareManager: FirmwareManager,
+	val vrcConfigManager: VRCConfigManager,
 
 	// Moved this outside of the context to make this faster and safer to use
 	private val handleCounter: AtomicInt,
@@ -60,7 +62,12 @@ data class VRServer(
 	fun getDevice(id: Int) = context.state.value.devices[id]
 
 	companion object {
-		fun create(scope: CoroutineScope, serialServer: SerialServer, firmwareManager: FirmwareManager): VRServer {
+		fun create(
+			scope: CoroutineScope,
+			serialServer: SerialServer,
+			firmwareManager: FirmwareManager,
+			vrcConfigManager: VRCConfigManager,
+		): VRServer {
 			val state = VRServerState(
 				trackers = mapOf(),
 				devices = mapOf(),
@@ -78,6 +85,7 @@ data class VRServer(
 				context = context,
 				serialServer = serialServer,
 				firmwareManager = firmwareManager,
+				vrcConfigManager = vrcConfigManager,
 				handleCounter = AtomicInt(0),
 			)
 

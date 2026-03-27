@@ -46,7 +46,7 @@ fun createSolarXRConnection(
 		datafeedTimers = listOf(),
 	)
 
-	val behaviours = listOf(DataFeedInitBehaviour, SerialConsoleBehaviour, FirmwareBehaviour)
+	val behaviours = listOf(DataFeedInitBehaviour, SerialConsoleBehaviour, FirmwareBehaviour, VRCBehaviour)
 
 	val context = createContext(
 		initialState = state,
