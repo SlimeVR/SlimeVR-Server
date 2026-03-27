@@ -96,7 +96,6 @@ internal fun linuxVRCConfigFlow(): Flow<solarxr_protocol.rpc.VRCConfigValues?> =
 				intValue = { key -> keys[key]?.let { linuxGetDwordValue(registry, it) } },
 				doubleValue = { key -> keys[key]?.let { linuxGetQwordValue(registry, it) } },
 			))
-			println("EMIT")
 		}
 		delay(3000)
 		// it seems that on linux, steam writes to the reg file is unpredictable.

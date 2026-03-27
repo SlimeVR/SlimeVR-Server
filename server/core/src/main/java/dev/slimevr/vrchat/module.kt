@@ -1,11 +1,18 @@
 package dev.slimevr.vrchat
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.AppConfig
+import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.BasicBehaviour
 import dev.slimevr.context.Context
+import dev.slimevr.context.CustomBehaviour
 import dev.slimevr.context.createContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.VRCAvatarMeasurementType
@@ -31,7 +38,7 @@ val VRC_VALID_KEYS = setOf(
 data class VRCConfigState(
 	val currentValues: VRCConfigValues?,
 	val isSupported: Boolean,
-	val mutedWarnings: Set<String>,
+	val mutedWarnings: List<String>,
 )
 
 sealed interface VRCConfigActions {
@@ -40,10 +47,11 @@ sealed interface VRCConfigActions {
 }
 
 typealias VRCConfigContext = Context<VRCConfigState, VRCConfigActions>
-typealias VRCConfigBehaviour = BasicBehaviour<VRCConfigState, VRCConfigActions>
+typealias VRCConfigBehaviour = CustomBehaviour<VRCConfigState, VRCConfigActions, VRCConfigManager>
 
 data class VRCConfigManager(
 	val context: VRCConfigContext,
+	val config: AppConfig,
 	val userHeight: () -> Double,
 )
 
@@ -58,6 +66,14 @@ val DefaultVRCConfigBehaviour = VRCConfigBehaviour(
 			}
 		}
 	},
+	observer = { context ->
+
+		context.context.state.map { it.mutedWarnings }.distinctUntilChanged().onEach { warnings ->
+			context.config.settings.context.dispatch(SettingsActions.Update {
+				copy(mutedVRCWarnings = warnings)
+			})
+		}.launchIn(scope = context.context.scope)
+	}
 )
 
 fun computeRecommendedValues(server: VRServer, userHeight: Double): VRCConfigRecommendedValues {
@@ -104,20 +120,23 @@ fun computeValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedVa
 	)
 
 fun createVRCConfigManager(
+	config: AppConfig,
 	scope: CoroutineScope,
 	userHeight: () -> Double,
 	isSupported: Boolean,
 	values: Flow<VRCConfigValues?>,
 ): VRCConfigManager {
+	val modules = listOf(DefaultVRCConfigBehaviour)
+
 	val initialState = VRCConfigState(
 		currentValues = null,
 		isSupported = isSupported,
-		mutedWarnings = emptySet(),
+		mutedWarnings = listOf(),
 	)
 
 	val context = createContext(
 		initialState = initialState,
-		reducers = listOf(DefaultVRCConfigBehaviour.reducer),
+		reducers = modules.map { it.reducer },
 		scope = scope,
 	)
 
@@ -125,5 +144,8 @@ fun createVRCConfigManager(
 		values.collect { context.dispatch(VRCConfigActions.UpdateValues(it)) }
 	}
 
-	return VRCConfigManager(context = context, userHeight = userHeight)
+	val manager =  VRCConfigManager(context = context, userHeight = userHeight, config = config)
+	modules.map { it.observer }.forEach { it?.invoke(manager) }
+
+	return manager
 }

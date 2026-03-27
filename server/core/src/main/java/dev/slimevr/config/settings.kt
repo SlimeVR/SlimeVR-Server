@@ -19,6 +19,7 @@ private const val SETTINGS_CONFIG_VERSION = 1
 @Serializable
 data class SettingsConfigState(
 	val trackerPort: Int = 6969,
+	val mutedVRCWarnings: List<String> = listOf(),
 	val version: Int = SETTINGS_CONFIG_VERSION,
 )
 
@@ -41,7 +42,7 @@ data class SettingsState(
 )
 
 sealed interface SettingsActions {
-	data class Update(val transform: SettingsState.() -> SettingsState) : SettingsActions
+	data class Update(val transform: SettingsConfigState.() -> SettingsConfigState) : SettingsActions
 	data class LoadProfile(val newState: SettingsState) : SettingsActions
 }
 
@@ -57,7 +58,7 @@ data class Settings(
 val DefaultSettingsBehaviour = SettingsBehaviour(
 	reducer = { s, a ->
 		when (a) {
-			is SettingsActions.Update -> a.transform(s)
+			is SettingsActions.Update -> s.copy(data = a.transform(s.data))
 			is SettingsActions.LoadProfile -> a.newState
 			else -> s
 		}

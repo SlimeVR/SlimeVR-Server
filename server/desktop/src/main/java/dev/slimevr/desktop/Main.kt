@@ -21,6 +21,7 @@ fun main(args: Array<String>) = runBlocking {
 	val serialServer = createDesktopSerialServer(this)
 	val firmwareManager = createFirmwareManager(serialServer = serialServer, scope = this)
 	val vrcConfigManager = createDesktopVRCConfigManager(
+		config = config,
 		scope = this,
 		userHeight = { config.userConfig.context.state.value.data.userHeight.toDouble() },
 	)

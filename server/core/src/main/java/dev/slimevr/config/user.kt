@@ -41,7 +41,7 @@ data class UserConfigState(
 )
 
 sealed interface UserConfigActions {
-	data class Update(val transform: UserConfigState.() -> UserConfigState) : UserConfigActions
+	data class Update(val transform: UserConfigData.() -> UserConfigData) : UserConfigActions
 	data class LoadProfile(val newState: UserConfigState) : UserConfigActions
 }
 
@@ -57,7 +57,7 @@ data class UserConfig(
 val DefaultUserBehaviour = UserConfigBehaviour(
 	reducer = { s, a ->
 		when (a) {
-			is UserConfigActions.Update -> a.transform(s)
+			is UserConfigActions.Update -> s.copy(data = a.transform(s.data))
 			is UserConfigActions.LoadProfile -> a.newState
 			else -> s
 		}
