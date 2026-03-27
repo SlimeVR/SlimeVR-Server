@@ -59,7 +59,7 @@ export function UdevRulesModal() {
   };
 
   return (
-    <BaseModal isOpen={showUdevWarning} appendClasses={'w-full max-w-2xl'}>
+    <BaseModal isOpen={showUdevWarning} appendClasses='w-full max-w-2xl'>
       <div className="flex w-full h-full flex-col gap-4">
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2">

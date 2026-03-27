@@ -2,12 +2,14 @@ import { Controller, Control, UseFormResetField } from 'react-hook-form';
 import { Button } from './Button';
 import { NumberSelector } from './NumberSelector';
 import { KeybindRecorder } from './KeybindRecorder';
+import { KeybindRecorderModal } from './KeybindRecorderModal';
 import { useLocaleConfig } from '@/i18n/config';
 import { Typography } from './Typography';
 import './KeybindRow.scss';
 
 export function KeybindRow({
   id,
+  label,
   control,
   resetField,
   name,
@@ -44,15 +46,24 @@ export function KeybindRow({
           />
         )}
       />
-        <NumberSelector
-          control={control}
-          name={delay}
-          valueLabelFormat={(value) => secondsFormat.format(value)}
-          min={0}
-          max={10}
-          step={0.2}
-        />
-      <div className='max-w-[45px]'>
+      <KeybindRecorderModal
+        id=""
+        label={label}
+        control={control}
+        resetField={resetField}
+        name={name}
+        delay={delay}
+        isVisisble={true}
+      />
+      <NumberSelector
+        control={control}
+        name={delay}
+        valueLabelFormat={(value) => secondsFormat.format(value)}
+        min={0}
+        max={10}
+        step={0.2}
+      />
+      <div className="max-w-[45px]">
         <Button
           id="settings-keybinds_reset-button"
           variant="primary"

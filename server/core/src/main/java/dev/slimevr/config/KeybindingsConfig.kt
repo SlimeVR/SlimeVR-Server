@@ -1,106 +1,59 @@
-package dev.slimevr.config;
+package dev.slimevr.config
 
-public class KeybindingsConfig {
+import solarxr_protocol.rpc.KeybindId
 
-	private String fullResetBinding = "CTRL+ALT+SHIFT+Y";
+class KeybindingsConfig {
+	val keybinds: MutableMap<Int, KeybindData> = mutableMapOf()
 
-	private String yawResetBinding = "CTRL+ALT+SHIFT+U";
-
-	private String mountingResetBinding = "CTRL+ALT+SHIFT+I";
-
-	private String feetMountingResetBinding = "CTRL+ALT+SHIFT+P";
-
-	private String pauseTrackingBinding = "CTRL+ALT+SHIFT+O";
-
-	private float fullResetDelay = 0L;
-
-	private float yawResetDelay = 0L;
-
-	private float mountingResetDelay = 0L;
-
-	private float feetMountingResetDelay = 0L;
-
-	private float pauseTrackingDelay = 0L;
-
-	public KeybindingsConfig() {}
-
-	public String getFullResetBinding() {
-		return fullResetBinding;
-	}
-
-	public void setFullResetBinding(String fullResetBinding) {
-		this.fullResetBinding = fullResetBinding;
-	}
-
-	public String getYawResetBinding() {
-		return yawResetBinding;
-	}
-
-	public void setYawResetBinding(String yawResetBinding) {
-		this.yawResetBinding = yawResetBinding;
-	}
-
-	public String getMountingResetBinding() {
-		return mountingResetBinding;
-	}
-
-	public void setMountingResetBinding(String mountingResetBinding) {
-		this.mountingResetBinding = mountingResetBinding;
-	}
-
-	public String getFeetMountingResetBinding() {
-		return feetMountingResetBinding;
-	}
-
-	public void setFeetMountingResetBinding(String feetMountingResetBinding) {
-		this.feetMountingResetBinding = feetMountingResetBinding;
-	}
-
-	public String getPauseTrackingBinding() {
-		return pauseTrackingBinding;
-	}
-
-	public void setPauseTrackingBinding(String pauseTrackingBinding) {
-		this.pauseTrackingBinding = pauseTrackingBinding;
-	}
-
-	public float getFullResetDelay() {
-		return fullResetDelay;
-	}
-
-	public void setFullResetDelay(float delay) {
-		fullResetDelay = delay;
-	}
-
-	public float getYawResetDelay() {
-		return yawResetDelay;
-	}
-
-	public void setYawResetDelay(float delay) {
-		yawResetDelay = delay;
-	}
-
-	public float getMountingResetDelay() {
-		return mountingResetDelay;
-	}
-
-	public void setMountingResetDelay(float delay) {
-		mountingResetDelay = delay;
-	}
-
-	public float getFeetMountingResetDelay() {
-		return feetMountingResetDelay;
-	}
-
-	public void setFeetMountingResetDelay(float delay) {
-		feetMountingResetDelay = delay;
-	}
-
-	public float getPauseTrackingDelay() {
-		return pauseTrackingDelay;
-	}
-
-	public void setPauseTrackingDelay(float delay) {
-		pauseTrackingDelay = delay;
+	init {
+		keybinds[KeybindId.FULL_RESET] =
+		KeybindData(
+			KeybindId.FULL_RESET,
+			"full-reset",
+			"CTRL+ALT+SHIFT+Y",
+			0f
+		)
+		keybinds[KeybindId.YAW_RESET] =
+			KeybindData(
+				KeybindId.YAW_RESET,
+				"yaw-reset",
+				"CTRL+ALT+SHIFT+U",
+				0f
+			)
+		keybinds[KeybindId.MOUNTING_RESET] =
+			KeybindData(
+				KeybindId.MOUNTING_RESET,
+				"mounting-reset",
+				"CTRL+ALT+SHIFT+I",
+				0f
+			)
+		keybinds[KeybindId.FEET_MOUNTING_RESET] =
+			KeybindData(
+				KeybindId.FEET_MOUNTING_RESET,
+				"feet-mounting-reset",
+				"CTRL+ALT+SHIFT+P",
+				0f
+			)
+		keybinds[KeybindId.PAUSE_TRACKING] =
+			KeybindData(
+				KeybindId.PAUSE_TRACKING,
+				"pause-tracking",
+				"CTRL+ALT+SHIFT+O",
+				0f
+			)
+		keybinds[KeybindId.TEST] =
+			KeybindData(
+				KeybindId.TEST,
+				"test",
+				"A+B+C+D",
+				2f
+			)
 	}
 }
+
+data class KeybindData(
+	var id: Int,
+	var name: String,
+	var binding: String,
+	var delay: Float
+)

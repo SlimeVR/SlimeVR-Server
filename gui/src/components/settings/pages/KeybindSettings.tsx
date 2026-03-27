@@ -255,6 +255,7 @@ export function KeybindSettings() {
               <div />
                 <KeybindRow
                   id="settings-keybinds_full-reset"
+                  label='Full Reset'
                   control={control}
                   resetField={resetField}
                   name="bindings.fullResetBinding"

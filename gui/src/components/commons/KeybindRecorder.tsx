@@ -2,8 +2,7 @@ import { useLocalization } from '@fluent/react';
 import { useState, forwardRef, useRef } from 'react';
 import { Typography } from './Typography';
 
-const excludedKeys = ['CONTROL', ' ', 'SPACE', 'ALT', 'META'];
-const keyOffset = 2;
+const excludedKeys = [' ', 'SPACE', 'META'];
 const maxKeybindLength = 4;
 
 export const KeybindRecorder = forwardRef<
@@ -62,14 +61,14 @@ export const KeybindRecorder = forwardRef<
     }
     setIsRecording(false);
     setShowError(false);
-    if (displayKeys.length == keyOffset) {
+    if (displayKeys.length === maxKeybindLength) {
       onKeysChange(oldKeys);
       setLocalKeys(oldKeys);
     }
   };
 
   const handleOnFocus = () => {
-    const initialKeys = ['CTRL', 'ALT'];
+    const initialKeys: string[] = [];
     setOldKeys(keys);
     setLocalKeys(initialKeys);
     onKeysChange(initialKeys);
@@ -92,8 +91,8 @@ export const KeybindRecorder = forwardRef<
         onBlur={handleOnBlur}
         onKeyDown={handleKeyDown}
       />
-      <div className="flex gap-2 min-h-[42px] items-center px-3 py-2 rounded-lg bg-background-80">
-        <div className="flex flex-grow gap-2 min-w-[180px]">
+      <div className="flex gap-2 min-h-[42px] items-center">
+        <div className="flex flex-grow gap-2 justify-center">
           {Array.from({ length: maxKeybindLength }).map((_, i) => {
             const key = displayKeys[i];
             const isActive = isRecording && i === activeIndex;
@@ -102,8 +101,8 @@ export const KeybindRecorder = forwardRef<
               <div
                 key={i}
                 className={`
-                px-2 py-1 rounded-md text-sm min-w-[32px] text-center
-                ${key ? 'bg-accent-background-50' : 'bg-accent-background-50/30'}
+                 rounded-md min-w-[50px] min-h-[50px] text-lg flex items-center justify-center hover:ring-2 hover:ring-accent
+                ${key ? 'bg-background-90' : 'bg-background-80'}
                 ${
                   isInvalid
                     ? 'keyslot-invalid ring-2 ring-red-600'
@@ -118,11 +117,13 @@ export const KeybindRecorder = forwardRef<
             );
           })}
         </div>
+        {/*
         <div className="w-40 flex-shrink-0 text-accent-background-10 text-right text-sm font-medium">
           {displayKeys.length < maxKeybindLength && isRecording
             ? l10n.getString('settings-keybinds_now-recording')
             : l10n.getString('settings-keybinds_record-keybind')}
         </div>
+        */}
       </div>
     </div>
   );
