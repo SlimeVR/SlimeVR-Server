@@ -44,7 +44,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	protected abstract fun signalSend()
 
 	@BridgeThread
-	protected abstract fun sendMessageReal(message: ProtobufMessage?): Boolean
+	protected abstract fun sendMessageReal(message: ProtobufMessage): Boolean
 
 	private var remoteProtocolVersion: Int = 0
 
@@ -63,7 +63,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	protected fun updateMessageQueue() {
 		var message: ProtobufMessage?
 		while ((outputQueue.poll().also { message = it }) != null) {
-			if (!sendMessageReal(message)) return
+			if (!sendMessageReal(message!!)) return
 		}
 	}
 
@@ -200,12 +200,12 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 		}
 		tracker = createNewTracker(trackerAdded)
 		synchronized(remoteTrackersBySerial) {
-			remoteTrackersBySerial.put(tracker!!.name, tracker)
+			remoteTrackersBySerial.put(tracker.name, tracker)
 		}
 		synchronized(remoteTrackersByTrackerId) {
-			remoteTrackersByTrackerId.put(tracker!!.trackerNum, tracker)
+			remoteTrackersByTrackerId.put(tracker.trackerNum, tracker)
 		}
-		instance.registerTracker(tracker!!)
+		instance.registerTracker(tracker)
 	}
 
 	@VRServerThread
