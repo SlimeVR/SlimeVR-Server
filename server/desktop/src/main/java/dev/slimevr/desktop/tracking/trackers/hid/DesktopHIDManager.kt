@@ -6,9 +6,6 @@ import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.hid.HIDCommon
-import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_PID
-import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_PID
-import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_VID
 import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.PACKET_SIZE
 import dev.slimevr.tracking.trackers.hid.HIDDevice
 import io.eiren.util.logging.LogManager
@@ -58,7 +55,7 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	}
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
-		if (hidDevice.vendorId == HID_TRACKER_RECEIVER_VID && (hidDevice.productId == HID_TRACKER_RECEIVER_PID || hidDevice.productId == HID_TRACKER_PID)) { // TODO: Use list of valid ids
+		if (HIDCommon.matchesReceiver(hidDevice.vendorId, hidDevice.productId) || HIDCommon.matchesTracker(hidDevice.vendorId, hidDevice.productId)) {
 			val serial = hidDevice.serialNumber ?: "Unknown HID Device"
 			if (hidDevice.isClosed) {
 				if (!hidDevice.open()) {
@@ -211,37 +208,29 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	}
 
 	private fun deviceEnumerate() {
-		var rootReceivers: HidDeviceInfoStructure? = null
-		var rootTrackers: HidDeviceInfoStructure? = null
 		val trackersOverHID: Boolean = VRServer.instance.configManager.vrConfig.hidConfig.trackersOverHID
-		try {
-			rootReceivers = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_RECEIVER_PID) // TODO: Use list of ids
-			rootTrackers = if (trackersOverHID) {
-				HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_PID)
-			} else {
-				null
-			} // TODO: Use list of ids
-		} catch (e: Throwable) {
-			LogManager.severe("[TrackerServer] Couldn't enumerate HID devices", e)
-		}
-		var root: HidDeviceInfoStructure? = rootReceivers
-		if (root == null) {
-			root = rootTrackers
-		} else {
-			var last: HidDeviceInfoStructure = root
-			while (last.hasNext()) {
-				last = last.next()
-			}
-			last.next = rootTrackers
-		}
 		val hidDeviceList: MutableList<HidDevice> = mutableListOf()
-		if (root != null) {
-			var hidDeviceInfoStructure: HidDeviceInfoStructure? = root
-			do {
-				hidDeviceList.add(HidDevice(hidDeviceInfoStructure, null, hidServicesSpecification))
-				hidDeviceInfoStructure = hidDeviceInfoStructure?.next()
-			} while (hidDeviceInfoStructure != null)
-			HidApi.freeEnumeration(root)
+		for (vendorId in HIDCommon.supportedVendorIds()) {
+			var root: HidDeviceInfoStructure? = null
+			try {
+				// Filter by vendor in hidapi, then apply product/mask matching in code.
+				root = HidApi.enumerateDevices(vendorId, 0)
+			} catch (e: Throwable) {
+				LogManager.severe("[TrackerServer] Couldn't enumerate HID devices for VID ${String.format("0x%04X", vendorId)}", e)
+			}
+			if (root != null) {
+				var hidDeviceInfoStructure: HidDeviceInfoStructure? = root
+				do {
+					val hidDevice = HidDevice(hidDeviceInfoStructure, null, hidServicesSpecification)
+					val isReceiver = HIDCommon.matchesReceiver(hidDevice.vendorId, hidDevice.productId)
+					val isTracker = HIDCommon.matchesTracker(hidDevice.vendorId, hidDevice.productId)
+					if (isReceiver || (trackersOverHID && isTracker)) {
+						hidDeviceList.add(hidDevice)
+					}
+					hidDeviceInfoStructure = hidDeviceInfoStructure?.next()
+				} while (hidDeviceInfoStructure != null)
+				HidApi.freeEnumeration(root)
+			}
 		}
 		synchronized(devicesByHID) {
 			// Work on devicesByHid and add/remove as necessary
