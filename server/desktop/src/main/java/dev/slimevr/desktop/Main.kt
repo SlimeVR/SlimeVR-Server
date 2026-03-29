@@ -9,9 +9,11 @@ import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.serial.createDesktopSerialServer
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
 import dev.slimevr.firmware.FirmwareManager
+import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.solarxr.DataFeedInitBehaviour
 import dev.slimevr.solarxr.FirmwareBehaviour
+import dev.slimevr.solarxr.HeightCalibrationBehaviour
 import dev.slimevr.solarxr.SerialBehaviour
 import dev.slimevr.solarxr.VrcBehaviour
 import dev.slimevr.solarxr.createSolarXRWebsocketServer
@@ -28,6 +30,7 @@ fun main(args: Array<String>) = runBlocking {
 	val firmwareManager = FirmwareManager.create(serialServer = serialServer, scope = this)
 
 	val vrcConfigManager = createDesktopVRCConfigManager(config = config, scope = this)
+	val heightCalibrationManager = HeightCalibrationManager.create(serverContext = server, scope = this)
 
 	launch {
 		createUDPTrackerServer(server, config)
@@ -41,6 +44,7 @@ fun main(args: Array<String>) = runBlocking {
 		SerialBehaviour(serialServer),
 		FirmwareBehaviour(firmwareManager),
 		VrcBehaviour(vrcConfigManager, userHeight = { config.userConfig.context.state.value.data.userHeight.toDouble() }),
+		HeightCalibrationBehaviour(heightCalibrationManager),
 	)
 	launch { createSolarXRWebsocketServer(server, solarXRBehaviours) }
 	launch { createIpcServers(server, solarXRBehaviours) }

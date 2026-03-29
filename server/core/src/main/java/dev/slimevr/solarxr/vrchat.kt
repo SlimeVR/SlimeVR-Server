@@ -30,7 +30,7 @@ class VrcBehaviour(
 			)
 		}
 
-		// Drop the initial value — we only want to push updates when the config changes
+		// Drop the initial value, we only want to push updates when the config changes
 		vrcManager.context.state.drop(1).onEach {
 			receiver.sendRpc(buildCurrentResponse())
 		}.launchIn(receiver.context.scope)
