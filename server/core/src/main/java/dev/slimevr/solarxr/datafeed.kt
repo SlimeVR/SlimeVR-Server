@@ -25,6 +25,7 @@ import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.math.Quat
+import solarxr_protocol.datatypes.math.Vec3f
 import java.nio.ByteBuffer
 
 private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask): TrackerData = TrackerData(
@@ -34,6 +35,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	),
 	status = if (trackerMask.status == true) device.status else null,
 	rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
+	position = if (trackerMask.position == true && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
 	info = if (trackerMask.info == true) {
 		TrackerInfo(
 			imuType = tracker.sensorType,
@@ -43,6 +45,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	} else {
 		null
 	},
+	tps = if (trackerMask.tps == true) tracker.tps else null,
 )
 
 private fun createDevice(
@@ -56,8 +59,7 @@ private fun createDevice(
 		id = DeviceId(device.id.toUByte()),
 		hardwareStatus = HardwareStatus(
 			batteryVoltage = device.batteryVoltage,
-			batteryPctEstimate = device.batteryLevel.toUInt()
-				.toUByte(),
+			batteryPctEstimate = (device.batteryLevel * 100).toUInt().toUByte(),
 			ping = device.ping?.toUShort(),
 		),
 		hardwareInfo = HardwareInfo(

@@ -21,7 +21,8 @@ data class TrackerState(
 	val rawRotation: Quaternion,
 	val deviceId: Int,
 	val origin: DeviceOrigin,
-	val position: Vector3?
+	val tps: UShort,
+	val position: Vector3?,
 )
 
 sealed interface TrackerActions {
@@ -53,10 +54,11 @@ class Tracker(
 				deviceId = deviceId,
 				customName = null,
 				sensorType = sensorType,
-				position = null
+				position = null,
+				tps = 0u,
 			)
 
-			val behaviours = listOf(TrackerInfosBehaviour)
+			val behaviours = listOf(TrackerBasicBehaviour, TrackerTPSBehaviour)
 			val context = Context.create(initialState = trackerState, scope = scope, behaviours = behaviours)
 			behaviours.forEach { it.observe(context) }
 			return Tracker(context = context)

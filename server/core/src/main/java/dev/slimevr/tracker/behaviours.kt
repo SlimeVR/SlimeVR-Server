@@ -1,14 +1,33 @@
 package dev.slimevr.tracker
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.incrementAndFetch
 
-object TrackerInfosBehaviour : TrackerBehaviour {
+object TrackerBasicBehaviour : TrackerBehaviour {
 	override fun reduce(state: TrackerState, action: TrackerActions) = if (action is TrackerActions.Update) action.transform(state) else state
+}
 
+object TrackerTPSBehaviour : TrackerBehaviour {
+	@OptIn(ExperimentalAtomicApi::class)
 	override fun observe(receiver: TrackerContext) {
-		receiver.state.onEach {
-// 			AppLogger.tracker.info("Tracker state changed {State}", it)
+		val count = AtomicInt(0)
+
+		receiver.state.distinctUntilChangedBy { it.rawRotation }.onEach {
+			count.incrementAndFetch()
 		}.launchIn(receiver.scope)
+
+		receiver.scope.launch {
+			while (isActive) {
+				delay(1000)
+				receiver.dispatch(TrackerActions.Update { copy(tps = count.exchange(0).toUShort()) })
+			}
+		}
 	}
 }
