@@ -35,6 +35,7 @@ class RPCKeybindHandler(
 		fbb,
 		KeybindResponseT().apply {
 			keybind = api.server.keybindHandler.keybinds.toTypedArray()
+			defaultKeybinds = api.server.keybindHandler.defaultKeybinds.toTypedArray()
 		}
 	)
 

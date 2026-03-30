@@ -18,87 +18,102 @@ import {
   KeybindT,
   RpcMessage,
 } from 'solarxr-protocol';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 export type KeybindForm = {
-  id: number;
-  name: string;
-  binding: string[];
-  delay: number;
+  keybinds: {
+    id: number;
+    name: string;
+    binding: string[];
+    delay: number;
+  }[];
 };
 
 export function NewKeybindSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [keybinds, setKeybinds] = useState<KeybindT[]>();
-  const [selectedKeybind, setSelectedKeybind] = useState<KeybindT | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [defaultKeybindsState, setDefaultKeybindsState] = useState<KeybindForm>(
+    {
+      keybinds: [],
+    }
+  );
 
-  const { control, resetField, reset, handleSubmit, watch } =
-    useForm<KeybindForm>({});
+  const { control, resetField, handleSubmit, reset, setValue, getValues } =
+    useForm<KeybindForm>({
+      defaultValues: defaultKeybindsState,
+    });
 
-  useEffect(() => {
-    const subscription = watch(() => handleSubmit(onSubmit)());
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const onSubmit = (value: KeybindForm) => {
-    const changeKeybindRequest = new ChangeKeybindRequestT();
-
-    const keybind = new KeybindT();
-    keybind.keybindId = value.id;
-    keybind.keybindNameId = value.name;
-    keybind.keybindValue = value.binding.join('+');
-    keybind.keybindDelay = value.delay;
-
-    changeKeybindRequest.keybind = keybind;
-
-    console.log(`Onsubmit: ${keybind.keybindValue}`);
-
-    sendRPCPacket(RpcMessage.ChangeKeybindRequest, changeKeybindRequest);
-  };
-
-  useRPCPacket(RpcMessage.KeybindResponse, ({ keybind }: KeybindResponseT) => {
-    if (!keybind) return;
-    setKeybinds(keybind);
+  const { fields } = useFieldArray({
+    control,
+    name: 'keybinds',
   });
 
-  const handleOnClick = () => {
-    console.log('pressed');
-  };
 
-  const handleOpenRecorderModal = (index: number) => {
-    if (keybinds == null) return;
-    console.log('Handle open recorder modal');
-    const kb = keybinds[index];
+  const onSubmit = (value: KeybindForm) => {
+    value.keybinds.forEach((kb) => {
+      const changeKeybindRequest = new ChangeKeybindRequestT();
 
-    setSelectedKeybind(kb);
-    setIsOpen(true);
+      const keybind = new KeybindT();
+      keybind.keybindId = kb.id;
+      keybind.keybindNameId = kb.name;
+      keybind.keybindValue = kb.binding.join('+');
+      keybind.keybindDelay = kb.delay;
 
-    reset({
-      id: kb.keybindId,
-      name: typeof kb.keybindNameId === 'string' ? kb.keybindNameId : '',
-      binding:
-        typeof kb.keybindValue === 'string' ? kb.keybindValue.split('+') : [],
-      delay: kb.keybindDelay,
+      changeKeybindRequest.keybind = keybind;
+
+      sendRPCPacket(RpcMessage.ChangeKeybindRequest, changeKeybindRequest);
     });
   };
 
+  useRPCPacket(
+    RpcMessage.KeybindResponse,
+    ({ keybind, defaultKeybinds }: KeybindResponseT) => {
+      if (!keybind) return;
+
+      const mappedDefaults = defaultKeybinds.map((kb) => ({
+        id: kb.keybindId,
+        name: typeof kb.keybindNameId === 'string' ? kb.keybindNameId : '',
+        binding:
+          typeof kb.keybindValue === 'string' ? kb.keybindValue.split('+') : [],
+        delay: kb.keybindDelay,
+      }));
+
+      setDefaultKeybindsState({ keybinds: mappedDefaults });
+
+      const mapped = keybind.map((kb) => ({
+        id: kb.keybindId,
+        name: typeof kb.keybindNameId === 'string' ? kb.keybindNameId : '',
+        binding:
+          typeof kb.keybindValue === 'string' ? kb.keybindValue.split('+') : [],
+        delay: kb.keybindDelay,
+      }));
+      reset({ keybinds: mappedDefaults });
+
+      mapped.forEach((keybind, index) => {
+        setValue(`keybinds.${index}.binding`, keybind.binding);
+        setValue(`keybinds.${index}.delay`, keybind.delay);
+      });
+    }
+  );
+
+  const handleOpenRecorderModal = (index: number) => {
+    console.log('Handle open recorder modal', index);
+    setSelectedIndex(index);
+    setIsOpen(true);
+  };
+
   const createKeybindRows = (): ReactNode => {
-    if (keybinds == null) return '';
-    return keybinds.map((key, i) => {
+    return fields.map((field, index) => {
       return (
-        <div className="keybind-row" onClick={() => handleOpenRecorderModal(i)}>
+        <div className="keybind-row">
           <NewKeybindsRow
-            key={i}
-            id={typeof key.keybindNameId === 'string' ? key.keybindNameId : ''}
-            keybind={
-              (typeof key.keybindValue === 'string'
-                ? key.keybindValue
-                : ''
-              ).split('+') || ''
-            }
-            delay={key.keybindDelay}
+            id={typeof field.name === 'string' ? field.name : ''}
+            control={control}
+            index={index}
+            getValue={getValues}
+            openKeybindRecorderModal={handleOpenRecorderModal}
           />
         </div>
       );
@@ -107,7 +122,7 @@ export function NewKeybindSettings() {
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.KeybindRequest, new KeybindRequestT());
-  }, [isOpen]);
+  }, []);
 
   return (
     <SettingsPageLayout>
@@ -122,33 +137,40 @@ export function NewKeybindSettings() {
             ))}
         </div>
         <div className="keybind-settings">
-          <Typography id="keybind_config-keybind_name" />
-          <Typography id="keybind_config-keybind_value" />
-          <Typography id="keybind_config-keybind_delay" />
+          <Typography
+            id="keybind_config-keybind_name"
+            variant="section-title"
+          />
+          <Typography
+            id="keybind_config-keybind_value"
+            variant="section-title"
+          />
+          <Typography
+            id="keybind_config-keybind_delay"
+            variant="section-title"
+          />
           {createKeybindRows()}
           <Button
             id="settings-keybinds_reset-all-button"
             className="justify-self-start"
-            onClick={handleOnClick}
+            onClick={() => reset(defaultKeybindsState)}
             variant="primary"
           />
         </div>
-        {selectedKeybind && (
+        {selectedIndex != null && (
           <KeybindRecorderModal
-            id={
-              typeof selectedKeybind.keybindNameId === 'string'
-                ? selectedKeybind.keybindNameId
-                : ''
-            }
+            id={fields[selectedIndex].name}
             control={control}
             resetField={resetField}
-            name="binding"
-            delay={selectedKeybind.keybindDelay.toString()}
+            name={`keybinds.${selectedIndex}.binding`}
             isVisisble={isOpen}
             onClose={() => {
-              console.log('onclose');
               setIsOpen(false);
-              setSelectedKeybind(null);
+              setSelectedIndex(null);
+              handleSubmit(onSubmit)()
+            }}
+            onUnbind={() => {
+              setValue(`keybinds.${selectedIndex}.binding`, []);
             }}
           />
         )}

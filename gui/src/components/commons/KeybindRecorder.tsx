@@ -1,6 +1,6 @@
-import { useLocalization } from '@fluent/react';
 import { useState, forwardRef, useRef } from 'react';
 import { Typography } from './Typography';
+import { RecordIcon } from './icon/RecordIcon';
 
 const excludedKeys = [' ', 'SPACE', 'META'];
 const maxKeybindLength = 4;
@@ -44,21 +44,17 @@ export const KeybindRecorder = forwardRef<
       setShowError(false);
       const updatedKeys = [...displayKeys, key];
       setLocalKeys(updatedKeys);
-      onKeysChange([...keys, key]);
-      if (updatedKeys.length === maxKeybindLength) {
-        handleOnBlur();
+      onKeysChange(updatedKeys);
+      if (updatedKeys.length == maxKeybindLength) {
+        inputRef.current?.blur();
       }
     }
   };
 
   const handleOnBlur = () => {
-    console.log(`onblur keys length ${keys.length}`);
-    if (inputRef != null && typeof inputRef !== 'function') {
-      inputRef.current?.blur();
-    }
     setIsRecording(false);
     setShowError(false);
-    if (displayKeys.length === maxKeybindLength) {
+    if (displayKeys.length < maxKeybindLength - 2) {
       onKeysChange(oldKeys);
       setLocalKeys(oldKeys);
     }
@@ -73,22 +69,23 @@ export const KeybindRecorder = forwardRef<
   };
 
   return (
-    <div className="relative w-full">
-      {!showError ? (
-        <div className="absolute bottom-">
-          <Typography>{errorText}</Typography>
+    <div className="relative w-full justify-center align-center">
+      {showError ? (
+        <div className="absolute bottom isInvalid keyslot-invalid text-red-600">
+          <Typography color="red-600">{errorText}</Typography>
         </div>
       ) : (
         ''
       )}
-      <input
-        ref={inputRef}
-        className="opacity-0 absolute inset-0 cursor-pointer"
-        onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
-        onKeyDown={handleKeyDown}
-      />
-      <div className="flex gap-2 min-h-[42px] items-center">
+      <div className="flex gap-2 my-5 min-h-[60px] w-full items-center bg-background-70 rounded-md">
+        <input
+          autoFocus
+          ref={inputRef}
+          className="opacity-0 absolute inset-0 cursor-pointer"
+          onFocus={handleOnFocus}
+          onBlur={handleOnBlur}
+          onKeyDown={handleKeyDown}
+        />
         <div className="flex flex-grow gap-2 justify-center">
           {Array.from({ length: maxKeybindLength }).map((_, i) => {
             const key = displayKeys[i];
@@ -99,8 +96,8 @@ export const KeybindRecorder = forwardRef<
                 <div
                   key={i}
                   className={`
-                 rounded-md min-w-[50px] min-h-[50px] text-lg flex items-center justify-center hover:ring-2 hover:ring-accent
-                ${key ? 'bg-background-90' : 'bg-background-80'}
+                 rounded-md m-2 min-w-[50px] min-h-[50px] text-lg flex items-center justify-center hover:ring-2 hover:ring-accent
+                ${key ? 'bg-background-90 p-2' : 'bg-background-80'}
                 ${
                   isInvalid
                     ? 'keyslot-invalid ring-2 ring-red-600'
@@ -119,14 +116,6 @@ export const KeybindRecorder = forwardRef<
             );
           })}
         </div>
-
-        {/*
-        <div className="w-40 flex-shrink-0 text-accent-background-10 text-right text-sm font-medium">
-          {displayKeys.length < maxKeybindLength && isRecording
-            ? l10n.getString('settings-keybinds_now-recording')
-            : l10n.getString('settings-keybinds_record-keybind')}
-        </div>
-        */}
       </div>
     </div>
   );

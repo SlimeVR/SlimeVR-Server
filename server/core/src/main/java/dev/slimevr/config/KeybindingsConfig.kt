@@ -41,13 +41,6 @@ class KeybindingsConfig {
 				"CTRL+ALT+SHIFT+O",
 				0f
 			)
-		keybinds[KeybindId.TEST] =
-			KeybindData(
-				KeybindId.TEST,
-				"test",
-				"A+B+C+D",
-				2f
-			)
 	}
 }
 

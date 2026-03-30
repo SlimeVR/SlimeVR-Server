@@ -55,14 +55,6 @@ export function KeybindRow({
         delay={delay}
         isVisisble={true}
       />
-      <NumberSelector
-        control={control}
-        name={delay}
-        valueLabelFormat={(value) => secondsFormat.format(value)}
-        min={0}
-        max={10}
-        step={0.2}
-      />
       <div className="max-w-[45px]">
         <Button
           id="settings-keybinds_reset-button"
