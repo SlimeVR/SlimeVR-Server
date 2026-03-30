@@ -20,7 +20,7 @@ object HIDRegistrationBehaviour : HIDReceiverBehaviour {
 						deviceId = action.deviceId,
 						trackerId = null,
 					)
-					),
+				),
 		)
 
 		else -> state
