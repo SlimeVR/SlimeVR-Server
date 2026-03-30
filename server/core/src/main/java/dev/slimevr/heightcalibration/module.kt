@@ -47,12 +47,11 @@ class HeightCalibrationManager(
 	val hmdUpdates: Flow<TrackerSnapshot> = serverContext.context.state
 		.flatMapLatest { state ->
 			val hmd = state.trackers.values
-				.find { it.context.state.value.bodyPart == BodyPart.HEAD } // TODO: Need to check for a head with position support
+				.find { it.context.state.value.bodyPart == BodyPart.HEAD && it.context.state.value.position != null }
 				?: return@flatMapLatest emptyFlow()
 			hmd.context.state.map { s ->
 				TrackerSnapshot(
-					// TODO: get HMD position from VR system once position is set in the tracker
-					position = Vector3.NULL,
+					position = s.position ?: error("head (or HMD) will always have a position in this case"),
 					rotation = s.rawRotation,
 				)
 			}
@@ -62,13 +61,12 @@ class HeightCalibrationManager(
 		.flatMapLatest { state ->
 			val controllers = state.trackers.values.filter {
 				val bodyPart = it.context.state.value.bodyPart
-				bodyPart == BodyPart.LEFT_HAND || bodyPart == BodyPart.RIGHT_HAND
+				(bodyPart == BodyPart.LEFT_HAND || bodyPart == BodyPart.RIGHT_HAND) && it.context.state.value.position != null
 			}
 			if (controllers.isEmpty()) return@flatMapLatest emptyFlow()
 			combine(controllers.map { controller ->
 				controller.context.state.map { s ->
-					// TODO: get controller position from tracker once position is set in the tracker
-					val position = Vector3.NULL
+					val position = s.position ?: error("hands (or Controller) will always have a position in this case")
 					TrackerSnapshot(position = position, rotation = s.rawRotation)
 				}
 			}) { snapshots -> snapshots.minByOrNull { it.position.y }!! }

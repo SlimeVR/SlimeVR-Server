@@ -4,6 +4,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.DeviceOrigin
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.hardware_info.ImuType
@@ -20,6 +21,7 @@ data class TrackerState(
 	val rawRotation: Quaternion,
 	val deviceId: Int,
 	val origin: DeviceOrigin,
+	val position: Vector3?
 )
 
 sealed interface TrackerActions {
@@ -51,6 +53,7 @@ class Tracker(
 				deviceId = deviceId,
 				customName = null,
 				sensorType = sensorType,
+				position = null
 			)
 
 			val behaviours = listOf(TrackerInfosBehaviour)
