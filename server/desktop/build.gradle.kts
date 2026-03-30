@@ -100,6 +100,7 @@ tasks.shadowJar {
 }
 application {
 	mainClass.set("dev.slimevr.desktop.Main")
+	applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
 }
 
 buildConfig {
@@ -116,5 +117,6 @@ buildConfig {
 
 tasks.run<JavaExec> {
 	standardInput = System.`in` // this is not working
+	jvmArgs("--enable-native-access=ALL-UNNAMED")
 	args = listOf("run")
 }

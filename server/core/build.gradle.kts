@@ -67,6 +67,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 	implementation("com.mayakapps.kache:kache:2.1.1")
 	implementation("io.klogging:klogging:0.11.7")
+	implementation("io.klogging:slf4j-klogging:0.11.7")
 
 	val ktor_version = "3.4.1"
 	implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
