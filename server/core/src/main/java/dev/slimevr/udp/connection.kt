@@ -20,7 +20,6 @@ import java.net.InetAddress
 data class LastPing(
 	val id: Int,
 	val startTime: Long,
-	val duration: Long,
 )
 
 data class UDPConnectionState(
@@ -36,8 +35,7 @@ data class UDPConnectionState(
 )
 
 sealed interface UDPConnectionActions {
-	data class StartPing(val startTime: Long) : UDPConnectionActions
-	data class ReceivedPong(val id: Int, val duration: Long) : UDPConnectionActions
+	data class StartPing(val startTime: Long, val pingId: Int) : UDPConnectionActions
 	data class Handshake(val deviceId: Int) : UDPConnectionActions
 	data class LastPacket(val packetNum: Long? = null, val time: Long) : UDPConnectionActions
 	data class AssignTracker(val trackerId: TrackerIdNum) : UDPConnectionActions
@@ -100,7 +98,7 @@ class UDPConnection(
 					id = id,
 					lastPacket = System.currentTimeMillis(),
 					lastPacketNum = 0,
-					lastPing = LastPing(id = 0, duration = 0, startTime = 0),
+					lastPing = LastPing(id = 0, startTime = 0),
 					didHandshake = false,
 					address = remoteIp,
 					port = remotePort,

@@ -12,6 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.TrackerStatus
+import kotlin.random.Random
 
 internal const val CONNECTION_TIMEOUT_MS = 5000L
 
@@ -32,9 +33,9 @@ object PacketBehaviour : UDPConnectionBehaviour {
 			val now = System.currentTimeMillis()
 			if (now - state.lastPacket > CONNECTION_TIMEOUT_MS && packet.packetNumber == 0L) {
 				receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = 0, time = now))
-				AppLogger.udp.info("Reconnecting")
+				AppLogger.udp.info("[${state.address}] Reconnecting")
 			} else if (packet.packetNumber < state.lastPacketNum) {
-				AppLogger.udp.warn("WARN: Received packet with wrong packet number")
+				AppLogger.udp.warn("[${state.address}] WARN: Received packet with wrong packet number")
 				return@onAny
 			} else {
 				receiver.context.dispatch(UDPConnectionActions.LastPacket(time = now))
@@ -45,8 +46,7 @@ object PacketBehaviour : UDPConnectionBehaviour {
 
 object PingBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
-		is UDPConnectionActions.StartPing -> state.copy(lastPing = state.lastPing.copy(startTime = action.startTime))
-		is UDPConnectionActions.ReceivedPong -> state.copy(lastPing = state.lastPing.copy(duration = action.duration, id = action.id))
+		is UDPConnectionActions.StartPing -> state.copy(lastPing = state.lastPing.copy(startTime = action.startTime, id = action.pingId))
 		else -> state
 	}
 
@@ -56,8 +56,9 @@ object PingBehaviour : UDPConnectionBehaviour {
 			while (isActive) {
 				val state = receiver.context.state.value
 				if (state.didHandshake) {
-					receiver.context.dispatch(UDPConnectionActions.StartPing(startTime = System.currentTimeMillis()))
-					receiver.send(PingPong(state.lastPing.id + 1))
+					val pingId = Random.nextInt()
+					receiver.context.dispatch(UDPConnectionActions.StartPing(startTime = System.currentTimeMillis(), pingId = pingId))
+					receiver.send(PingPong(pingId))
 				}
 				delay(1000)
 			}
@@ -68,15 +69,13 @@ object PingBehaviour : UDPConnectionBehaviour {
 			val state = receiver.context.state.value
 			val deviceId = state.deviceId ?: return@onPacket
 
-			if (packet.data.pingId != state.lastPing.id + 1) {
-				AppLogger.udp.warn("Ping ID does not match, ignoring ${packet.data.pingId} != ${state.lastPing.id + 1}")
+			if (packet.data.pingId != state.lastPing.id) {
+				AppLogger.udp.warn("[${state.address}] Ping ID does not match, ignoring ${packet.data.pingId} != ${state.lastPing.id}")
 				return@onPacket
 			}
 
 			val ping = System.currentTimeMillis() - state.lastPing.startTime
 			val device = receiver.serverContext.getDevice(deviceId) ?: return@onPacket
-
-			receiver.context.dispatch(UDPConnectionActions.ReceivedPong(id = packet.data.pingId, duration = ping))
 			device.context.dispatch(DeviceActions.Update { copy(ping = ping) })
 		}
 	}
@@ -109,7 +108,7 @@ object HandshakeBehaviour : UDPConnectionBehaviour {
 			} else {
 				receiver.context.dispatch(UDPConnectionActions.Handshake(state.deviceId))
 				receiver.getDevice() ?: run {
-					AppLogger.udp.warn("Reconnect handshake but device ${state.deviceId} not found")
+					AppLogger.udp.warn("[${state.address}] Reconnect handshake but device ${state.deviceId} not found")
 					receiver.send(Handshake())
 					return@onPacket
 				}
@@ -144,7 +143,7 @@ object TimeoutBehaviour : UDPConnectionBehaviour {
 				}
 				val timeUntilTimeout = CONNECTION_TIMEOUT_MS - (System.currentTimeMillis() - state.lastPacket)
 				if (timeUntilTimeout <= 0) {
-					AppLogger.udp.info("Connection timed out for ${state.id}")
+					AppLogger.udp.info("[${state.address}] Connection timed out for ${state.id}")
 					receiver.context.dispatch(UDPConnectionActions.Disconnected)
 					receiver.getDevice()?.context?.dispatch(
 						DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
