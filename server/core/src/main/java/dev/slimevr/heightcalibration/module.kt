@@ -64,12 +64,14 @@ class HeightCalibrationManager(
 				(bodyPart == BodyPart.LEFT_HAND || bodyPart == BodyPart.RIGHT_HAND) && it.context.state.value.position != null
 			}
 			if (controllers.isEmpty()) return@flatMapLatest emptyFlow()
-			combine(controllers.map { controller ->
-				controller.context.state.map { s ->
-					val position = s.position ?: error("hands (or Controller) will always have a position in this case")
-					TrackerSnapshot(position = position, rotation = s.rawRotation)
-				}
-			}) { snapshots -> snapshots.minByOrNull { it.position.y }!! }
+			combine(
+				controllers.map { controller ->
+					controller.context.state.map { s ->
+						val position = s.position ?: error("hands (or Controller) will always have a position in this case")
+						TrackerSnapshot(position = position, rotation = s.rawRotation)
+					}
+				},
+			) { snapshots -> snapshots.minByOrNull { it.position.y }!! }
 		}
 
 	fun start() {

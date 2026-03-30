@@ -21,11 +21,11 @@ The `Context<S, A>` type (`context/context.kt`) is the building block of every m
 
 ```kotlin
 class Context<S, in A>(
-    val state: StateFlow<S>,        // current state, readable by anyone
-    val scope: CoroutineScope,      // lifetime of this module
+	val state: StateFlow<S>,        // current state, readable by anyone
+	val scope: CoroutineScope,      // lifetime of this module
 ) {
-    fun dispatch(action: A)
-    fun dispatchAll(actions: List<A>)
+	fun dispatch(action: A)
+	fun dispatchAll(actions: List<A>)
 }
 ```
 
@@ -44,8 +44,8 @@ A `Behaviour` is an interface with two methods, both with no-op defaults:
 
 ```kotlin
 interface Behaviour<S, A, C> {
-    fun reduce(state: S, action: A): S = state
-    fun observe(receiver: C) {}
+	fun reduce(state: S, action: A): S = state
+	fun observe(receiver: C) {}
 }
 ```
 
@@ -68,9 +68,9 @@ Every module follows the same construction pattern:
 val behaviours = listOf(BehaviourA, BehaviourB, BehaviourC)
 
 val context = Context.create(
-    initialState = ...,
-    scope = scope,
-    behaviours = behaviours,
+	initialState = ...,
+	scope = scope,
+	behaviours = behaviours,
 )
 
 val module = MyModule(context, ...)
@@ -102,11 +102,11 @@ Group behaviours that share the same receiver type in a single file. Behaviours 
 
 ```kotlin
 object PacketBehaviour : UDPConnectionBehaviour {
-    override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
-        is UDPConnectionActions.LastPacket -> state.copy(...)
-        else -> state
-    }
-    override fun observe(receiver: UDPConnection) { ... }
+	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
+		is UDPConnectionActions.LastPacket -> state.copy(...)
+		else -> state
+	}
+	override fun observe(receiver: UDPConnection) { ... }
 }
 ```
 
@@ -114,14 +114,14 @@ object PacketBehaviour : UDPConnectionBehaviour {
 
 ```kotlin
 class FirmwareBehaviour(private val firmwareManager: FirmwareManager) : SolarXRConnectionBehaviour {
-    override fun observe(receiver: SolarXRConnection) { ... }
+	override fun observe(receiver: SolarXRConnection) { ... }
 }
 
 // At the call site:
 listOf(
-    DataFeedInitBehaviour,
-    FirmwareBehaviour(firmwareManager),
-    SerialBehaviour(serialServer),
+	DataFeedInitBehaviour,
+	FirmwareBehaviour(firmwareManager),
+	SerialBehaviour(serialServer),
 )
 ```
 
@@ -180,16 +180,16 @@ To add a new major section of the server (say, a HID device connection):
 1. **Define the state**:
 ```kotlin
 data class HIDConnectionState(
-    val deviceId: Int?,
-    val connected: Boolean,
+	val deviceId: Int?,
+	val connected: Boolean,
 )
 ```
 
 2. **Define sealed actions**:
 ```kotlin
 sealed interface HIDConnectionActions {
-    data class Connected(val deviceId: Int) : HIDConnectionActions
-    data object Disconnected : HIDConnectionActions
+	data class Connected(val deviceId: Int) : HIDConnectionActions
+	data object Disconnected : HIDConnectionActions
 }
 ```
 
@@ -202,37 +202,37 @@ typealias HIDConnectionBehaviour = Behaviour<HIDConnectionState, HIDConnectionAc
 4. **Define the module class** (holds context + extra runtime state):
 ```kotlin
 class HIDConnection(
-    val context: HIDConnectionContext,
-    val serverContext: VRServer,
-    private val onSend: suspend (ByteArray) -> Unit,
+	val context: HIDConnectionContext,
+	val serverContext: VRServer,
+	private val onSend: suspend (ByteArray) -> Unit,
 ) {
-    suspend fun send(bytes: ByteArray) = onSend(bytes)
+	suspend fun send(bytes: ByteArray) = onSend(bytes)
 }
 ```
 
 5. **Write behaviours** in a separate `behaviours.kt` file:
 ```kotlin
 object HIDHandshakeBehaviour : HIDConnectionBehaviour {
-    override fun reduce(state: HIDConnectionState, action: HIDConnectionActions) = when (action) {
-        is HIDConnectionActions.Connected -> state.copy(deviceId = action.deviceId, connected = true)
-        is HIDConnectionActions.Disconnected -> state.copy(connected = false)
-    }
-    override fun observe(receiver: HIDConnection) {
-        // launch coroutines, subscribe to events, etc.
-    }
+	override fun reduce(state: HIDConnectionState, action: HIDConnectionActions) = when (action) {
+		is HIDConnectionActions.Connected -> state.copy(deviceId = action.deviceId, connected = true)
+		is HIDConnectionActions.Disconnected -> state.copy(connected = false)
+	}
+	override fun observe(receiver: HIDConnection) {
+		// launch coroutines, subscribe to events, etc.
+	}
 }
 ```
 
 6. **Write a `companion object { fun create() }`**:
 ```kotlin
 companion object {
-    fun create(serverContext: VRServer, scope: CoroutineScope, send: suspend (ByteArray) -> Unit): HIDConnection {
-        val behaviours = listOf(HIDHandshakeBehaviour, ...)
-        val context = Context.create(initialState = ..., scope = scope, behaviours = behaviours)
-        val conn = HIDConnection(context, serverContext, send)
-        behaviours.forEach { it.observe(conn) }
-        return conn
-    }
+	fun create(serverContext: VRServer, scope: CoroutineScope, send: suspend (ByteArray) -> Unit): HIDConnection {
+		val behaviours = listOf(HIDHandshakeBehaviour, ...)
+		val context = Context.create(initialState = ..., scope = scope, behaviours = behaviours)
+		val conn = HIDConnection(context, serverContext, send)
+		behaviours.forEach { it.observe(conn) }
+		return conn
+	}
 }
 ```
 
@@ -252,7 +252,7 @@ Example: adding battery tracking to a HID connection requires only adding a `HID
 2. In a behaviour's `observe`, register a listener:
 ```kotlin
 receiver.packetEvents.on<MyNewPacket> { event ->
-    // handle it
+	// handle it
 }
 ```
 3. In `udp/server.kt`, route the new packet type to `emit`.

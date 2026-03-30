@@ -55,10 +55,12 @@ class SerialServer(
 		if (conn is SerialConnection.Console) {
 			conn.handle.close()
 		}
-		context.dispatchAll(listOf(
-			SerialServerActions.RemoveConnection(portLocation),
-			SerialServerActions.PortLost(portLocation)
-		))
+		context.dispatchAll(
+			listOf(
+				SerialServerActions.RemoveConnection(portLocation),
+				SerialServerActions.PortLost(portLocation),
+			),
+		)
 	}
 
 	fun onDataReceived(portLocation: String, line: String) {

@@ -25,6 +25,7 @@ private interface RegistryNotify : Library {
 		const val REG_NOTIFY_CHANGE_LAST_SET = 0x00000004
 	}
 
+	@Suppress("FunctionName")
 	fun RegNotifyChangeKeyValue(
 		hKey: WinReg.HKEY,
 		bWatchSubtree: Boolean,
@@ -86,15 +87,25 @@ internal fun windowsVRCConfigFlow(): Flow<VRCConfigValues?> = flow {
 		try {
 			if (hEvent != null) {
 				RegistryNotify.INSTANCE.RegNotifyChangeKeyValue(
-					phkResult.value, false, RegistryNotify.REG_NOTIFY_CHANGE_LAST_SET, hEvent, true,
+					phkResult.value,
+					false,
+					RegistryNotify.REG_NOTIFY_CHANGE_LAST_SET,
+					hEvent,
+					true,
 				)
 			}
 
 			val keys = windowsGetVRChatKeys(VRC_REG_PATH)
-			emit(if (keys.isEmpty()) null else buildVRCConfigValues(
-				intValue = { key -> keys[key]?.let { windowsGetDwordValue(VRC_REG_PATH, it) } },
-				doubleValue = { key -> keys[key]?.let { windowsGetQwordValue(VRC_REG_PATH, it) } },
-			))
+			emit(
+				if (keys.isEmpty()) {
+					null
+				} else {
+					buildVRCConfigValues(
+						intValue = { key -> keys[key]?.let { windowsGetDwordValue(VRC_REG_PATH, it) } },
+						doubleValue = { key -> keys[key]?.let { windowsGetQwordValue(VRC_REG_PATH, it) } },
+					)
+				},
+			)
 
 			if (hEvent != null) {
 				withContext(Dispatchers.IO) { Kernel32.INSTANCE.WaitForSingleObject(hEvent, WinBase.INFINITE) }

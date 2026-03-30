@@ -157,8 +157,8 @@ suspend fun doOtaFlash(
 	onStatus(FirmwareUpdateStatus.REBOOTING, 0)
 
 	// Wait for the device to come back online after reboot.
-	// which don't emit a new VRServerState, are also observed.
 	// flatMapLatest switches to the matched device's own state flow so that status changes,
+	// which don't emit a new VRServerState, are also observed.
 	@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 	val connected = withTimeoutOrNull(60_000) {
 		server.context.state

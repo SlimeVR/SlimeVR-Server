@@ -37,6 +37,7 @@ private fun UserHeightCalibrationStatus.isTerminal() = when (this) {
 	UserHeightCalibrationStatus.ERROR_TOO_HIGH,
 	UserHeightCalibrationStatus.ERROR_TOO_SMALL,
 	-> true
+
 	else -> false
 }
 
@@ -51,13 +52,12 @@ private fun isHmdLeveled(snapshot: TrackerSnapshot): Boolean {
 }
 
 object CalibrationBehaviour : HeightCalibrationBehaviourType {
-	override fun reduce(state: HeightCalibrationState, action: HeightCalibrationActions) =
-		when (action) {
-			is HeightCalibrationActions.Update -> state.copy(
-				status = action.status,
-				currentHeight = action.currentHeight,
-			)
-		}
+	override fun reduce(state: HeightCalibrationState, action: HeightCalibrationActions) = when (action) {
+		is HeightCalibrationActions.Update -> state.copy(
+			status = action.status,
+			currentHeight = action.currentHeight,
+		)
+	}
 }
 
 internal suspend fun runCalibrationSession(
@@ -84,7 +84,6 @@ internal suspend fun runCalibrationSession(
 	dispatch(UserHeightCalibrationStatus.RECORDING_FLOOR)
 
 	withTimeoutOrNull(TIMEOUT_MS) {
-
 		// Floor phase: collect controller updates until the floor level is locked in
 		controllerUpdates
 			.sample(SAMPLE_INTERVAL_MS)
