@@ -34,7 +34,9 @@ object PacketBehaviour : UDPConnectionBehaviour {
 			if (now - state.lastPacket > CONNECTION_TIMEOUT_MS && packet.packetNumber == 0L) {
 				receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = 0, time = now))
 				AppLogger.udp.info("[${state.address}] Reconnecting")
-			} else if (packet.packetNumber < state.lastPacketNum) {
+			} else if (packet.packetNumber != null && packet.packetNumber < state.lastPacketNum) {
+				// Note: Packet number is nullable for bundled packets, as only the bundle packet itself has the number
+				// the packets inside of it do not
 				AppLogger.udp.warn("[${state.address}] WARN: Received packet with wrong packet number")
 				return@onAny
 			} else {
@@ -74,7 +76,7 @@ object PingBehaviour : UDPConnectionBehaviour {
 				return@onPacket
 			}
 
-			val ping = System.currentTimeMillis() - state.lastPing.startTime
+			val ping = (System.currentTimeMillis() - state.lastPing.startTime) / 2
 			val device = receiver.serverContext.getDevice(deviceId) ?: return@onPacket
 			device.context.dispatch(DeviceActions.Update { copy(ping = ping) })
 		}
@@ -223,6 +225,48 @@ object SensorRotationBehaviour : UDPConnectionBehaviour {
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation) })
+		}
+	}
+}
+
+object BundledPacketBehaviour : UDPConnectionBehaviour {
+	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<PacketBundle> { event ->
+			for (packet in event.data.packets) {
+				if (!receiver.context.state.value.didHandshake && packet !is PreHandshakePacket) continue
+				// we set the packetNumber to null so we ignore the check
+				// it should be done by the parent packet
+				receiver.packetEvents.emit(PacketEvent(packet, packetNumber = null))
+			}
+		}
+
+		receiver.packetEvents.onPacket<PacketBundleCompact> { event ->
+			for (packet in event.data.packets) {
+				if (!receiver.context.state.value.didHandshake && packet !is PreHandshakePacket) continue
+				// we set the packetNumber to null so we ignore the check
+				// it should be done by the parent packet
+				receiver.packetEvents.emit(PacketEvent(packet, packetNumber = null))
+			}
+		}
+	}
+}
+
+object FlagsBehaviour : UDPConnectionBehaviour {
+	override fun reduce(
+		state: UDPConnectionState,
+		action: UDPConnectionActions
+	): UDPConnectionState {
+		return when (action) {
+			is UDPConnectionActions.FirmwareFeatures -> state.copy(features = action.features)
+			else -> state
+		}
+	}
+
+	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<FeatureFlags> { event ->
+			receiver.context.dispatch(UDPConnectionActions.FirmwareFeatures(event.data.firmwareFeatures))
+			// send back the server features
+			receiver.send(FeatureFlags())
 		}
 	}
 }

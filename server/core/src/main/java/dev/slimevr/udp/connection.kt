@@ -32,6 +32,7 @@ data class UDPConnectionState(
 	val port: Int,
 	val deviceId: Int?,
 	val trackerIds: List<TrackerIdNum>,
+	val features: FirmwareFeatures?,
 )
 
 sealed interface UDPConnectionActions {
@@ -39,6 +40,7 @@ sealed interface UDPConnectionActions {
 	data class Handshake(val deviceId: Int) : UDPConnectionActions
 	data class LastPacket(val packetNum: Long? = null, val time: Long) : UDPConnectionActions
 	data class AssignTracker(val trackerId: TrackerIdNum) : UDPConnectionActions
+	data class FirmwareFeatures(val features: dev.slimevr.udp.FirmwareFeatures) : UDPConnectionActions
 	data object Disconnected : UDPConnectionActions
 }
 
@@ -91,6 +93,8 @@ class UDPConnection(
 				DeviceStatsBehaviour,
 				SensorInfoBehaviour,
 				SensorRotationBehaviour,
+				BundledPacketBehaviour,
+				FlagsBehaviour
 			)
 
 			val context = Context.create(
@@ -104,6 +108,7 @@ class UDPConnection(
 					port = remotePort,
 					deviceId = null,
 					trackerIds = listOf(),
+					features = null
 				),
 				scope = scope,
 				behaviours = behaviours,

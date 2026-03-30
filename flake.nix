@@ -12,7 +12,7 @@
 
       perSystem = { pkgs, ... }:
         let
-          java = pkgs.jdk24;
+          java = pkgs.javaPackages.compiler.temurin-bin.jdk-24;
 
           runtimeLibs = pkgs: (with pkgs; [
             java

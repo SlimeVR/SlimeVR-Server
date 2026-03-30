@@ -3,6 +3,7 @@ package dev.slimevr.udp
 import dev.slimevr.EventDispatcher
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import io.ktor.utils.io.core.ByteReadPacket
 import io.ktor.utils.io.core.remaining
 import kotlinx.io.Sink
 import kotlinx.io.Source
@@ -10,11 +11,80 @@ import kotlinx.io.readByteArray
 import kotlinx.io.readFloat
 import kotlinx.io.readString
 import kotlinx.io.readUByte
+import kotlinx.io.readUShort
+import kotlinx.io.write
 import kotlinx.io.writeUByte
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.hardware_info.McuType
+import java.nio.ByteBuffer
+
+enum class ServerFeatureFlags {
+	/** Server can parse bundle packets: `PACKET_BUNDLE` = 100 (0x64). */
+	PROTOCOL_BUNDLE_SUPPORT,
+
+	/** Server can parse bundle packets with compact headers and packed IMU rotation/acceleration frames:
+	- `PACKET_BUNDLE_COMPACT` = 101 (0x65),
+	- `PACKET_ROTATION_AND_ACCELERATION` = 23 (0x17). */
+	PROTOCOL_BUNDLE_COMPACT_SUPPORT
+
+	;
+
+	companion object {
+		val flagsEnabled: Set<ServerFeatureFlags> = setOf(
+			PROTOCOL_BUNDLE_SUPPORT,
+			PROTOCOL_BUNDLE_COMPACT_SUPPORT
+		)
+
+		val packed: ByteArray by lazy {
+			val count = entries.size
+			val byteLength = if (count == 0) 0 else (count - 1) / 8 + 1
+			val tempPacked = ByteArray(byteLength)
+
+			for (flag in flagsEnabled) {
+				val bit = flag.ordinal
+				val byteIndex = bit / 8
+				val bitIndex = bit % 8
+				tempPacked[byteIndex] = (tempPacked[byteIndex].toInt() or (1 shl bitIndex)).toByte()
+			}
+			tempPacked
+		}
+	}
+}
+
+class FirmwareFeatures {
+	enum class FirmwareFeatureFlags {
+		REMOTE_COMMAND,
+		B64_WIFI_SCANNING,
+		SENSOR_CONFIG;
+
+		companion object {
+			// "Size + 7" ensures that 1-8 flags = 1 byte, 9-16 flags = 2 bytes, etc.
+			val byteCount = (entries.size + 7) / 8
+		}
+	}
+
+	private val flags = ByteArray(FirmwareFeatureFlags.byteCount)
+
+	fun has(flag: FirmwareFeatureFlags): Boolean {
+		val bit = flag.ordinal
+		val byteIndex = bit / 8
+		if (byteIndex >= flags.size) return false
+
+		return (flags[byteIndex].toInt() and (1 shl (bit % 8))) != 0
+	}
+
+	companion object {
+
+		fun from(received: ByteBuffer, length: Int): FirmwareFeatures {
+			val res = FirmwareFeatures()
+			val bytesToRead = res.flags.size.coerceAtMost(length)
+			received.get(res.flags, 0, bytesToRead)
+			return res
+		}
+	}
+}
 
 private fun Source.readU8(): Int = readByte().toInt() and 0xFF
 
@@ -55,6 +125,8 @@ enum class PacketType(val id: Int) {
 	SET_CONFIG_FLAG(25),
 	FLEX_DATA(26),
 	POSITION(27),
+	PACKET_BUNDLE(100),
+	PACKET_BUNDLE_COMPACT(101),
 	PROTOCOL_CHANGE(200),
 	;
 
@@ -110,6 +182,68 @@ data class Handshake(
 				null
 			}
 			Handshake(b, i, m, p, f, mac)
+		}
+	}
+}
+
+data class PacketBundle(
+	val packets: List<UDPPacket>,
+): PreHandshakePacket {
+	companion object {
+		fun read(src: Source): PacketBundle = with(src) {
+			val readPackets = mutableListOf<UDPPacket>()
+			while (remaining >= 2) {
+				val bundlePacketLen = readUShort().toInt()
+				if (bundlePacketLen <= 0) continue
+
+				val rawBytes = readByteArray(bundlePacketLen)
+				val subSrc = ByteReadPacket(rawBytes)
+
+				subSrc.use { subSrc ->
+					if (subSrc.remaining >= 4) {
+						val packetId = subSrc.readInt()
+						val type = PacketType.fromId(packetId)
+
+						if (type != null) {
+							// 4. Pass the isolated sub-source to your existing parser
+							val packetData = readPacket(type, subSrc)
+							readPackets.add(packetData)
+						}
+					}
+				}
+			}
+			return PacketBundle(packets = readPackets)
+		}
+	}
+}
+
+data class PacketBundleCompact(
+	val packets: List<UDPPacket>,
+): PreHandshakePacket {
+	companion object {
+		fun read(src: Source): PacketBundle = with(src) {
+			val readPackets = mutableListOf<UDPPacket>()
+			while (remaining >= 1) {
+				val bundlePacketLen = readUByte().toInt()
+				if (bundlePacketLen <= 0) continue
+
+				val rawBytes = readByteArray(bundlePacketLen)
+				val subSrc = ByteReadPacket(rawBytes)
+
+				subSrc.use { subSrc ->
+					if (subSrc.remaining >= 4) {
+						val packetId = subSrc.readUByte().toInt()
+						val type = PacketType.fromId(packetId)
+
+						if (type != null) {
+							// 4. Pass the isolated sub-source to your existing parser
+							val packetData = readPacket(type, subSrc)
+							readPackets.add(packetData)
+						}
+					}
+				}
+			}
+			return PacketBundle(packets = readPackets)
 		}
 	}
 }
@@ -243,9 +377,18 @@ data class UserActionPacket(val type: Int = 0) : UDPPacket {
 	}
 }
 
-data class FeatureFlags(val firmwareFeatures: ByteArray = byteArrayOf()) : UDPPacket {
+data class FeatureFlags(val firmwareFeatures: FirmwareFeatures = FirmwareFeatures()) : UDPPacket {
+	override fun write(dst: Sink) {
+		dst.write(ServerFeatureFlags.packed)
+	}
+
 	companion object {
-		fun read(src: Source) = FeatureFlags(src.readByteArray(src.remaining.toInt()))
+		fun read(src: Source) = FeatureFlags(
+			FirmwareFeatures.from(
+				length = src.remaining.toInt(),
+				received = ByteBuffer.wrap(src.readByteArray()),
+			)
+		)
 	}
 }
 
@@ -328,6 +471,8 @@ fun readPacket(type: PacketType, src: Source): UDPPacket = when (type) {
 	PacketType.SET_CONFIG_FLAG -> SetConfigFlag()
 	PacketType.FLEX_DATA -> FlexData.read(src)
 	PacketType.POSITION -> PositionPacket.read(src)
+	PacketType.PACKET_BUNDLE -> PacketBundle.read(src)
+	PacketType.PACKET_BUNDLE_COMPACT -> PacketBundleCompact.read(src)
 	PacketType.PROTOCOL_CHANGE -> ProtocolChange.read(src)
 }
 
@@ -351,7 +496,7 @@ fun writePacket(dst: Sink, packet: UDPPacket) {
 
 data class PacketEvent<out T : UDPPacket>(
 	val data: T,
-	val packetNumber: Long,
+	val packetNumber: Long?,
 )
 
 typealias UDPPacketDispatcher = EventDispatcher<PacketEvent<UDPPacket>>
