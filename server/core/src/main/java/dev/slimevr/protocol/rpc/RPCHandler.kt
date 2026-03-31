@@ -161,10 +161,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			RpcMessage.ResetStayAlignedRelaxedPoseRequest,
 			::onResetStayAlignedRelaxedPoseRequest,
 		)
-
 	}
-
-
 
 	private fun onServerInfosRequest(
 		conn: GenericConnection,

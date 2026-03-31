@@ -8,7 +8,7 @@ import { useLocaleConfig } from '@/i18n/config';
 const createKeybindDisplay = (keybind: string[]): ReactNode | null => {
   if (keybind.length <= 1) {
     return (
-      <div className="flex min-h-[50px] text-lg items-center justifiy-center">
+      <div className="flex min-h-[50px] h-full text-lg items-center justifiy-center">
         Click to edit keybind
       </div>
     );
@@ -16,10 +16,10 @@ const createKeybindDisplay = (keybind: string[]): ReactNode | null => {
   return keybind.map((key, i) => {
     return (
       <div key={i} className="flex flex-row">
-        <div className="flex p-2 rounded-xl min-w-[50px] min-h-[50px] text-lg justify-center items-center bg-background-70">
+        <div className="flex flex-wrap p-2 rounded-lg min-w-[50px] min-h-[50px] text-lg justify-center items-center bg-background-80 mobile:text-sm">
           {key ?? ''}
         </div>
-        <div className="flex justify-center items-center text-lg gap-2 pl-3">
+        <div className="flex justify-center items-center text-lg mobile:text-sm gap-2 pl-3">
           {i < keybind.length - 1 ? '+' : ''}
         </div>
       </div>
@@ -63,15 +63,15 @@ export function KeybindsRow({
   }, [binding]);
 
   return (
-    <div className="keybind-row bg-background-60 rounded-xl hover:ring-2 hover:ring-accent">
+    <div className="keybind-row bg-background-60 rounded-xl h-full hover:ring-2 hover:ring-accent mobile:flex mobile:flex-wrap mobile:justify-center mobile:items-center">
       <label className="text-sm font-medium text-background-10 p-2">
         <Typography id={`settings-keybinds_${id}`} />
       </label>
       <div
-        className="flex gap-2 min-h-[42px] items-center px-3 py-2 rounded-lg bg-background-80 hover:ring-2 hover:ring-purple-500"
+        className="flex gap-2 min-h-[42px] items-center m-2 rounded-lg bg-background-70 hover:bg-background-50"
         onClick={handleOpenModal}
       >
-        <div className="flex flex-grow gap-2 justify-center">
+        <div className="flex flex-grow gap-2 m-2 justify-center h-full">
           {keybindDisplay}
         </div>
       </div>

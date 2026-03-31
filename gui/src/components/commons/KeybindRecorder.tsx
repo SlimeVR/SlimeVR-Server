@@ -76,7 +76,7 @@ export const KeybindRecorder = forwardRef<
       ) : (
         ''
       )}
-      <div className="flex gap-2 my-5 min-h-[60px] w-full items-center bg-background-70 rounded-md">
+      <div className="flex gap-2 m-2 items-center rounded-lg">
         <input
           autoFocus
           ref={inputRef}
@@ -85,7 +85,7 @@ export const KeybindRecorder = forwardRef<
           onBlur={handleOnBlur}
           onKeyDown={handleKeyDown}
         />
-        <div className="flex flex-grow gap-2 justify-center">
+        <div className="flex flex-grow gap-2 justify-center h-full">
           {Array.from({ length: maxKeybindLength }).map((_, i) => {
             const key = displayKeys[i];
             const isActive = isRecording && i === activeIndex;
@@ -94,8 +94,7 @@ export const KeybindRecorder = forwardRef<
               <div key={i} className="flex flex-row">
                 <div
                   className={`
-                 rounded-md m-2 min-w-[50px] min-h-[50px] text-lg flex items-center justify-center hover:ring-2 hover:ring-accent
-                ${key ? 'bg-background-90 p-2' : 'bg-background-80'}
+                flex p-2 rounded-lg min-w-[50px] min-h-[50px] text-lg justify-center items-center bg-background-80 mobile:text-sm
                 ${
                   isInvalid
                     ? 'keyslot-invalid ring-2 ring-red-600'
@@ -107,7 +106,7 @@ export const KeybindRecorder = forwardRef<
                 >
                   {key ?? ''}
                 </div>
-                <div className="flex justify-center items-center text-lg gap-2 pl-3">
+                <div className="flex pl-2 text-lg justify-center items-center mobile:text-sm">
                   {i < maxKeybindLength - 1 ? '+' : ''}
                 </div>
               </div>

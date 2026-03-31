@@ -132,7 +132,6 @@ class VRServer @JvmOverloads constructor(
 
 	val serverGuards = ServerGuards()
 
-
 	init {
 		deviceManager = DeviceManager(this)
 		serialHandler = serialHandlerProvider(this)

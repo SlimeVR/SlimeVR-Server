@@ -29,7 +29,7 @@ export function KeybindRecorderModal({
   return (
     <BaseModal
       isOpen={isVisisble}
-      appendClasses="w-full max-w-xl h-full max-h-60"
+      appendClasses="w-full max-w-xl h-full max-h-52"
     >
       <div className="flex-col gap-4 w-full">
         <div className="flex flex-col w-full">

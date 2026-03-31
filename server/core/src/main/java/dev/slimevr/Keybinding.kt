@@ -39,19 +39,22 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 			val fullReset = Shortcut("Full Reset", "CTRL+ALT+SHIFT+Y")
 			val yawReset = Shortcut("Yaw Reset", "CTRL+ALT+SHIFT+U")
 			val mountingReset = Shortcut("Mounting Reset", "CTRL+ALT+SHIFT+I")
-			val feetMountingReset = Shortcut("Feet Mounting Reset","CTRL+ALT+SHIFT+P")
+			val feetMountingReset = Shortcut("Feet Mounting Reset", "CTRL+ALT+SHIFT+P")
 			val pauseTracking = Shortcut("Pause Tracking", "CTRL+ALT+SHIFT+O")
 			val shortcutsList = mutableListOf(
 				ShortcutTuple("FULL_RESET", fullReset.shortcut),
 				ShortcutTuple("YAW_RESET", yawReset.shortcut),
 				ShortcutTuple("MOUNTING_RESET", mountingReset.shortcut),
 				ShortcutTuple("FEET_MOUNTING_RESET", feetMountingReset.shortcut),
-				ShortcutTuple("PAUSE_TRACKING", pauseTracking.shortcut))
+				ShortcutTuple("PAUSE_TRACKING", pauseTracking.shortcut),
+			)
 			val globalShortcutsHandler = portalManager.globalShortcutsRequest(shortcutsList)
-			Runtime.getRuntime().addShutdownHook(Thread {
-				println("Closing connection")
-				globalShortcutsHandler.close()
-			})
+			Runtime.getRuntime().addShutdownHook(
+				Thread {
+					println("Closing connection")
+					globalShortcutsHandler.close()
+				},
+			)
 
 			globalShortcutsHandler.onShortcutActivated = { shortcutId ->
 				when (shortcutId) {
@@ -59,31 +62,35 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 						val delay = config.keybinds[KeybindId.FULL_RESET]?.delay?.toLong() ?: 0L
 						server.scheduleResetTrackersFull(RESET_SOURCE_NAME, delay)
 					}
+
 					"YAW_RESET" -> {
 						val delay = config.keybinds[KeybindId.YAW_RESET]?.delay?.toLong() ?: 0L
 						server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, delay)
 					}
+
 					"MOUNTING_RESET" -> {
 						val delay = config.keybinds[KeybindId.MOUNTING_RESET]?.delay?.toLong() ?: 0L
 						server.scheduleResetTrackersMounting(
 							RESET_SOURCE_NAME,
-							delay
+							delay,
 						)
 					}
+
 					"FEET_MOUNTING_RESET" -> {
-							val delay = config.keybinds[KeybindId.FEET_MOUNTING_RESET]?.delay?.toLong() ?: 0L
+						val delay = config.keybinds[KeybindId.FEET_MOUNTING_RESET]?.delay?.toLong() ?: 0L
 						server.scheduleResetTrackersMounting(
 							RESET_SOURCE_NAME,
 							delay,
 							TrackerUtils.feetsBodyParts,
 						)
 					}
+
 					"PAUSE_TRACKING" -> {
 						val delay = config.keybinds[KeybindId.PAUSE_TRACKING]?.delay?.toLong() ?: 0L
 						server.scheduleTogglePauseTracking(
-								RESET_SOURCE_NAME,
-								delay
-							)
+							RESET_SOURCE_NAME,
+							delay,
+						)
 					}
 				}
 			}
@@ -97,6 +104,7 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 				val delay = config.keybinds[KeybindId.FULL_RESET]?.delay?.toLong() ?: 0L
 				server.scheduleResetTrackersFull(RESET_SOURCE_NAME, delay)
 			}
+
 			YAW_RESET -> {
 				val delay = config.keybinds[KeybindId.YAW_RESET]?.delay?.toLong() ?: 0L
 				server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, delay)
@@ -124,7 +132,7 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 				val delay = config.keybinds[KeybindId.PAUSE_TRACKING]?.delay?.toLong() ?: 0L
 				server.scheduleTogglePauseTracking(
 					RESET_SOURCE_NAME,
-					delay
+					delay,
 				)
 			}
 		}

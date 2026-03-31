@@ -1,19 +1,15 @@
-:root {
-  --row-h: 80px;
-}
 
 .keybind-row {
   display: grid;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
-  height: var(--row-h);
+  height: auto;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 
-.number-selector::after {
-  gap: 0;
-}
+
+
 
 @keyframes keyslot {
   0%,

@@ -4,8 +4,8 @@ import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.config.KeybindData
 import dev.slimevr.keybind.KeybindListener
 import dev.slimevr.protocol.GenericConnection
-import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.protocol.ProtocolAPI
+import dev.slimevr.protocol.rpc.RPCHandler
 import jdk.internal.joptsimple.internal.Messages.message
 import solarxr_protocol.rpc.ChangeKeybindRequest
 import solarxr_protocol.rpc.KeybindId
@@ -18,7 +18,7 @@ import solarxr_protocol.rpc.RpcMessageHeader
 
 class RPCKeybindHandler(
 	var rpcHandler: RPCHandler,
-	var api: ProtocolAPI
+	var api: ProtocolAPI,
 ) : KeybindListener {
 
 	val keybindingConfig = api.server.configManager.vrConfig.keybindings
@@ -30,18 +30,16 @@ class RPCKeybindHandler(
 		rpcHandler.registerPacketListener(RpcMessage.ChangeKeybindRequest, ::onChangeKeybindRequest)
 	}
 
-	//TODO: Figure out a way to "refresh" the keybind array here.
-	private fun buildKeybindResponse(fbb: FlatBufferBuilder) : Int = KeybindResponse.pack(
+	// TODO: Figure out a way to "refresh" the keybind array here.
+	private fun buildKeybindResponse(fbb: FlatBufferBuilder): Int = KeybindResponse.pack(
 		fbb,
 		KeybindResponseT().apply {
 			keybind = api.server.keybindHandler.keybinds.toTypedArray()
 			defaultKeybinds = api.server.keybindHandler.defaultKeybinds.toTypedArray()
-		}
+		},
 	)
 
-
 	private fun onKeybindRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-		println("Received KeybindsRequest")
 		val fbb = FlatBufferBuilder(32)
 		val response = buildKeybindResponse(fbb)
 		val outbound = rpcHandler.createRPCMessage(
@@ -54,7 +52,6 @@ class RPCKeybindHandler(
 	}
 
 	private fun onChangeKeybindRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-		println("Received Keybinds Change request")
 		val req = (messageHeader.message(ChangeKeybindRequest()) as ChangeKeybindRequest).unpack()
 
 		keybindingConfig.keybinds[req.keybind.keybindId] = KeybindData(req.keybind.keybindId, req.keybind.keybindNameId, req.keybind.keybindValue, req.keybind.keybindDelay)
@@ -64,22 +61,8 @@ class RPCKeybindHandler(
 	}
 
 	override fun onKeybindUpdate() {
-		/*
-		val fbb = FlatBufferBuilder(32)
-		val response = buildKeybindResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(
-			fbb,
-			RpcMessage.KeybindResponse,
-			response
-		)
-		fbb.finish(outbound)
-
-		 */
 	}
 
-
-
 	override fun sendKeybind() {
-
 	}
 }
