@@ -1,6 +1,5 @@
 import { useState, forwardRef, useRef } from 'react';
 import { Typography } from './Typography';
-import { RecordIcon } from './icon/RecordIcon';
 
 const excludedKeys = [' ', 'SPACE', 'META'];
 const maxKeybindLength = 4;
@@ -11,7 +10,7 @@ export const KeybindRecorder = forwardRef<
     keys: string[];
     onKeysChange: (v: string[]) => void;
   }
->(function KeybindRecorder({ keys, onKeysChange }, ref) {
+>(function KeybindRecorder({ keys, onKeysChange }) {
   const [localKeys, setLocalKeys] = useState<string[]>(keys);
   const [isRecording, setIsRecording] = useState(false);
   const [oldKeys, setOldKeys] = useState<string[]>([]);
@@ -92,9 +91,8 @@ export const KeybindRecorder = forwardRef<
             const isActive = isRecording && i === activeIndex;
             const isInvalid = invalidSlot === i;
             return (
-              <div className="flex flex-row">
+              <div key={i} className="flex flex-row">
                 <div
-                  key={i}
                   className={`
                  rounded-md m-2 min-w-[50px] min-h-[50px] text-lg flex items-center justify-center hover:ring-2 hover:ring-accent
                 ${key ? 'bg-background-90 p-2' : 'bg-background-80'}

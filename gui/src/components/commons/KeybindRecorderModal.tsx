@@ -1,9 +1,5 @@
 import { BaseModal } from './BaseModal';
-import {
-  Controller,
-  Control,
-  UseFormResetField,
-} from 'react-hook-form';
+import { Controller, Control, UseFormResetField } from 'react-hook-form';
 import { KeybindRecorder } from './KeybindRecorder';
 import { Typography } from './Typography';
 import { Button } from './Button';
@@ -28,6 +24,7 @@ export function KeybindRecorderModal({
   onUnbind: () => void;
 }) {
   const { l10n } = useLocalization();
+  const keybindlocalization = 'settings-keybinds_' + id;
 
   return (
     <BaseModal
@@ -38,7 +35,8 @@ export function KeybindRecorderModal({
         <div className="flex flex-col w-full">
           <div className="flex flex-col gap-3 w-full">
             <Typography variant="section-title">
-              Assign keybind for {l10n.getString(`settings-keybinds_${id}`)}
+              {l10n.getString('settings-keybinds-recorder-modal-title')}{' '}
+              {l10n.getString(keybindlocalization)}
             </Typography>
             <Controller
               control={control}
@@ -54,20 +52,24 @@ export function KeybindRecorderModal({
             <div className="flex flex-row justify-between w-full">
               <div className="flex flex-row justify-start gap-4">
                 <Button
-                  id="settings-keybinds_reset-button"
+                  id="settings-keybinds-recorder-modal-reset-button"
                   variant="primary"
                   onClick={() => {
-                    resetField(name)
+                    resetField(name);
                   }}
                 />
-                <Button variant="primary" onClick={onUnbind}>
-                  unbind
-                </Button>
+                <Button
+                  id="settings-keybinds-recorder-modal-unbind-button"
+                  variant="primary"
+                  onClick={onUnbind}
+                />
               </div>
               <div className="flex flex-row justify-end">
-                <Button id="" variant="primary" onClick={onClose}>
-                  Done
-                </Button>
+                <Button
+                  id="settings-keybinds-recorder-modal-done-button"
+                  variant="primary"
+                  onClick={onClose}
+                />
               </div>
             </div>
           </div>

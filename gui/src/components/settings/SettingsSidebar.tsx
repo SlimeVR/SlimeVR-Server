@@ -74,11 +74,11 @@ export function SettingsSidebar() {
             id="settings-sidebar-gesture_control"
           />
           {
-          <SettingsLink
-            to="/settings/keybinds"
-            scrollTo="keybinds"
-            id="settings-sidebar-keybinds"
-          />
+            <SettingsLink
+              to="/settings/keybinds"
+              scrollTo="keybinds"
+              id="settings-sidebar-keybinds"
+            />
           }
         </div>
       </div>

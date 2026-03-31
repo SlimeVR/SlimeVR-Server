@@ -56,8 +56,6 @@ import { ElectronContextC, provideElectron } from './hooks/electron';
 import { AppLocalizationProvider } from './i18n/config';
 import { openUrl } from './hooks/crossplatform';
 import { UdevRulesModal } from './components/onboarding/UdevRulesModal';
-import { NewKeybindSettings } from './components/settings/pages/newKeybindSettings';
-import { NewKeybindsRow } from './components/commons/newKeybindsRow';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -143,7 +141,7 @@ function Layout() {
             <Route path="interface" element={<InterfaceSettings />} />
             <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />
-            <Route path="keybinds" element={<NewKeybindSettings />} />
+            <Route path="keybinds" element={<KeybindSettings />} />
           </Route>
           <Route
             path="/onboarding"

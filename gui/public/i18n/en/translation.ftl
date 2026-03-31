@@ -604,6 +604,7 @@ settings-stay_aligned-debug-description = Please include your settings when repo
 settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 
 settings-keybinds = Keybind settings
+settings-keybinds_ = ''
 settings-keybinds-description = Change keybinds for various shortcuts
 keybind_config-keybind_name = Keybind
 keybind_config-keybind_value = Combination
@@ -620,6 +621,10 @@ settings-keybinds_reset-all-button = Reset all
 settings-keybinds-wayland-description = You appear to be using wayland, Please change your shortcuts in your system settings.
 settings-keybinds-wayland-open-system-settings-button = Open system settings
 settings-sidebar-keybinds = Keybinds
+settings-keybinds-recorder-modal-title = Assign keybind for
+settings-keybinds-recorder-modal-reset-button = Reset
+settings-keybinds-recorder-modal-unbind-button = Unbind
+settings-keybinds-recorder-modal-done-button = Done
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings

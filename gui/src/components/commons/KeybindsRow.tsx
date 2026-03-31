@@ -1,12 +1,11 @@
 import { Typography } from './Typography';
 import './KeybindRow.scss';
 import { ReactNode, useEffect, useState } from 'react';
-import { Control, UseFormGetValues, useWatch } from 'react-hook-form';
+import { Control, UseFormGetValues } from 'react-hook-form';
 import { NumberSelector } from './NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
 
 const createKeybindDisplay = (keybind: string[]): ReactNode | null => {
-  console.log(keybind.length);
   if (keybind.length <= 1) {
     return (
       <div className="flex min-h-[50px] text-lg items-center justifiy-center">
@@ -28,7 +27,7 @@ const createKeybindDisplay = (keybind: string[]): ReactNode | null => {
   });
 };
 
-export function NewKeybindsRow({
+export function KeybindsRow({
   id,
   control,
   index,

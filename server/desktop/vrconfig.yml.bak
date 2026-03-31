@@ -88,7 +88,28 @@ keybindings:
 skeleton:
   toggles: {}
   values: {}
-  offsets: {}
+  offsets:
+    hipLength: 0.04
+    upperLegLength: 0.42
+    footLength: 0.05
+    handDistanceY: 0.035
+    headShift: 0.1
+    lowerArmLength: 0.26
+    shouldersWidth: 0.35
+    waistLength: 0.2
+    handDistanceZ: 0.13
+    chestOffset: 0.0
+    chestLength: 0.16
+    lowerLegLength: 0.5
+    neckLength: 0.1
+    upperArmLength: 0.26
+    hipsWidth: 0.26
+    footShift: -0.05
+    elbowOffset: 0.0
+    hipOffset: 0.0
+    shouldersDistance: 0.08
+    upperChestLength: 0.16
+    skeletonOffset: 0.0
   hmdHeight: 0.0
   floorHeight: 0.0
 legTweaks:
