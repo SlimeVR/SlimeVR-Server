@@ -115,6 +115,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev-IMU-Handschuh
+board_type-GESTURES = Gesten
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generisches nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -180,6 +185,8 @@ reset-mounting-fingers = Fingerkalibrierung
 reset-yaw = Horizontaler Reset
 reset-error-no_feet_tracker = Kein Fußtracker zugewiesen
 reset-error-no_fingers_tracker = Kein Fingertracker zugewiesen
+reset-error-mounting-need_full_reset = Ein vollständiger Reset ist vor der Tracker-Ausrichtung erforderlich.
+reset-error-yaw-need_full_reset = Für den Yaw-Reset ist ein vollständiger Reset erforderlich.
 
 ## Serial detection stuff
 
@@ -199,6 +206,7 @@ navbar-trackers_assign = Tracker-Zuordnung
 navbar-mounting = Tracker-Ausrichtung
 navbar-onboarding = Einrichtungs-Assistent
 navbar-settings = Einstellungen
+navbar-connect_trackers = Tracker verbinden
 
 ## Biovision hierarchy recording
 
@@ -269,6 +277,7 @@ tracker-table-column-name = Name
 tracker-table-column-type = Typ
 tracker-table-column-battery = Batterie
 tracker-table-column-ping = Latenz
+tracker-table-column-packet_loss = Paketverlust
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Beschleunigung X/Y/Z
@@ -310,6 +319,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Angeschalten
        *[NOT_SUPPORTED] Nicht unterstützt
     }
+tracker-infos-packet_loss = Paketverlust
+tracker-infos-packets_lost = Pakete verloren
+tracker-infos-packets_received = Pakete empfangen
 
 ## Tracker settings
 
@@ -347,6 +359,9 @@ tracker-settings-update-up_to_date = Auf dem neusten Stand
 tracker-settings-update-blocked = Update nicht verfügbar. Weitere Veröffentlichungen sind nicht verfügbar.
 tracker-settings-update = Jetzt aktualisieren
 tracker-settings-update-title = Firmware-Version
+tracker-settings-current-version = Aktuelle
+tracker-settings-latest-version = Aktuelleste
+tracker-settings-build-date = Herstellungsdatum
 
 ## Tracker part card info
 
@@ -511,14 +526,19 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Verwendet das Magnetometer auf allen Trackern, die über eine kompatible Firmware verfügen, um den Drift in stabilen magnetischen Umgebungen zu reduzieren.
     Kann pro Tracker in den Einstellungen des Trackers deaktiviert werden. <b>Bitte schalten Sie keinen der Tracker aus, während Sie dies umschalten!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Magnetometer auf Trackern verwenden
+settings-general-tracker_mechanics-trackers_over_usb = Tracker über USB
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Erlaube HID-Tracker eine USB-Direktverbindung
 settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduziert Drift, indem es deine Tracker schrittweise an deine entspannten Posen anpasst.
 settings-stay_aligned-setup-label = Stay Aligned einrichten
 settings-stay_aligned-setup-description = Sie müssen Stay Aligned einrichten, um es zu aktivieren.
 settings-stay_aligned-warnings-drift_compensation = ⚠ Bitte schalten Sie die Driftkompensation aus! Diese steht in Konflikt mit Stay Aligned.
 settings-stay_aligned-enabled-label = Tracker anpassen
+settings-stay_aligned-hide_yaw_correction-label = Anpassung ausblenden (zum Vergleich ohne Stay Aligned)
 settings-stay_aligned-general-label = Allgemein
 settings-stay_aligned-relaxed_poses-label = Entspannte Posen
+settings-stay_aligned-relaxed_poses-standing = Tracker im Stehen anpassen
+settings-stay_aligned-relaxed_poses-sitting = Tracker anpassen, während du auf einem Stuhl sitzt
 settings-stay_aligned-relaxed_poses-save_pose = Pose speichern
 settings-stay_aligned-relaxed_poses-reset_pose = Pose zurücksetzen
 settings-stay_aligned-relaxed_poses-close = Schließen
@@ -546,6 +566,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Bodenclip kann d
 settings-general-fk_settings-leg_tweak-toe_snap-description = Zehen-Ausrichtung versucht, die Rotation Ihrer Füße zu erraten, wenn keine Fuß-Tracker verwendet werden.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fußkorrektur richtet Ihre Füße parallel zum Boden aus, wenn sie den Boden berühren.
 settings-general-fk_settings-leg_fk = Beintracking
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Erzwinge Fußausrichtungs-Kalibrierung während der Körperausrichtungs-Kalibrierung.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Fuß-Ausrichtung kalibrieren
 settings-general-fk_settings-enforce_joint_constraints = Gelenkgrenzen
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Grenzen erzwingen
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Verhindert, dass sich Gelenke über ihre Grenzen hinaus drehen
@@ -845,10 +867,12 @@ settings-utils-advanced-open_logs-label = Ordner öffnen
 
 settings-home-list-layout = Layout der Tracker-Liste
 settings-home-list-layout-desc = Wählen Sie eines der möglichen Startbildschirm-Layouts aus
+settings-home-list-layout-grid = Raster
 settings-home-list-layout-table = Tabelle
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Aktive Schritte
 
 ## Setup/onboarding menu
 
@@ -863,6 +887,7 @@ onboarding-setup_warning-cancel = Einrichtung fortsetzen
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Zurück zur Einführung
+onboarding-wifi_creds-v2 = Tracker mit WLAN
 onboarding-wifi_creds-skip = WLAN-Zugangsdaten überspringen
 onboarding-wifi_creds-submit = Weiter!
 onboarding-wifi_creds-ssid =
@@ -872,6 +897,8 @@ onboarding-wifi_creds-ssid-required = WLAN-Name ist erforderlich
 onboarding-wifi_creds-password =
     .label = Passwort
     .placeholder = Passwort eingeben
+onboarding-wifi_creds-dongle-title = Tracker mit einem Dongle
+onboarding-wifi_creds-dongle-continue = Fahre mit einem Dongle fort
 
 ## Mounting setup
 
@@ -970,6 +997,7 @@ onboarding-assignment_tutorial-done = Ich habe Aufkleber und Bänder angebracht!
 onboarding-assign_trackers-back = Zurück zu den WLAN-Zugangsdaten
 onboarding-assign_trackers-title = Tracker zuweisen
 onboarding-assign_trackers-description = Wählen Sie nun aus, welcher Tracker wo befestigt ist. Klicken Sie auf einen Ort, an dem der Tracker platziert ist.
+onboarding-assign_trackers-unassign_all = Alle Trackerzuweisungen aufheben
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
@@ -1115,6 +1143,9 @@ onboarding-automatic_mounting-mounting_reset-title = Befestigungs-Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Beugen Sie sich in die "Skifahren"-Pose mit gebeugten Beinen, geneigtem Oberkörper und gebeugten Armen.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Drücken Sie die Schaltfläche "Befestigungs-Reset" und warten Sie 3 Sekunden, bevor die Drehungen der Tracker gesetzt werden.
 onboarding-automatic_mounting-preparation-title = Vorbereitung
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. Drücke den Knopf "Kompletter Reset".
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stehe aufrecht mit den Armen an den Seiten. Schaue unbedingt nach vorne.
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Halte die Position, bis 3 Sekunden abgelaufen sind.
 onboarding-automatic_mounting-put_trackers_on-title = Legen Sie Ihre Tracker an
 onboarding-automatic_mounting-put_trackers_on-description = Um die Drehung der Tracker zu kalibrieren, werden die Tracker verwendet, welche Sie gerade zugewiesen haben. Ziehen Sie alle Ihre Tracker an, in der Abbildung rechts können sie sehen um welchen Tracker es sich handelt.
 onboarding-automatic_mounting-put_trackers_on-next = Ich habe alle meine Tracker angelegt
@@ -1128,6 +1159,7 @@ onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Bitte schlie
 onboarding-manual_proportions-export = Proportionen exportieren
 onboarding-manual_proportions-import = Proportionen importieren
 onboarding-manual_proportions-file_type = Körperproportions-Datei
+onboarding-manual_proportions-grouped_proportions = Gruppierte Proportionen
 onboarding-manual_proportions-all_proportions = Alle Proportionen
 onboarding-manual_proportions-estimated_height = Geschätzte Benutzergröße
 
@@ -1216,10 +1248,26 @@ onboarding-automatic_proportions-smol_warning-cancel = Zurück
 
 ## User height calibration
 
+onboarding-user_height-title = Wie groß bist du?
+onboarding-user_height-description = Wir brauchen deine Größe, um deine Körperproportionen zu berechnen und deine Bewegungen genau darzustellen. Du kannst dies entweder SlimeVR berechnen lassen oder deine Höhe manuell eingeben.
+onboarding-user_height-calculate = Berechne meine Körpergröße automatisch
+onboarding-user_height-next_step = Fortfahren und speichern
+onboarding-user_height-manual-proportions = Manuelle Körperproportionen
+onboarding-user_height-calibration-title = Kalibrierungsfortschritt
+onboarding-user_height-calibration-WAITING_FOR_RISE = Steh wieder auf
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Steh wieder auf und schau nach vorne
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Achte darauf, dass dein Kopf waagerecht ist
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Schauen sie nicht auf den Boden
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Schauen sie nicht zu hoch nach oben
 onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Achten sie darauf, dass der Controller nach unten zeigt
+onboarding-user_height-calibration-RECORDING_HEIGHT = Steh wieder auf und steh still!
 onboarding-user_height-calibration-DONE = Erfolg!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Die Kalibrierung ist abgelaufen, versuche es nochmal.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = Die erkannte Benutzerhöhe ist zu hoch, versuche es erneut.
+onboarding-user_height-calibration-error = Kalibrierung fehlgeschlagen
+onboarding-user_height-reset-warning =
+    <b>Achtung:</b> Die Proportionen werden zurückgesetzt und auf Basis deiner Körpergröße neu berechnet.
+    Bist du dir sicher?
 
 ## Stay Aligned setup
 
@@ -1230,20 +1278,34 @@ onboarding-stay_aligned-put_trackers_on-description = Um Ihre Ruheposen zu speic
 onboarding-stay_aligned-put_trackers_on-trackers_warning = Sie haben derzeit weniger als 5 Tracker verbunden und zugewiesen! Dies ist die Mindestanzahl an Trackern, die erforderlich sind, damit Stay Aligned richtig funktioniert.
 onboarding-stay_aligned-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-stay_aligned-verify_mounting-title = Tracker-Ausrichtung
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Bewege dich im Stehen.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Setz dich hin und bewege deine Beine und Füße.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. Wenn deine Tracker nicht an der richtigen Stelle sind, drücke "Ausrichtungskalibrierung wiederholen".
 onboarding-stay_aligned-verify_mounting-redo_mounting = Tracker-Ausrichtungskalibrierung wiederholen
 onboarding-stay_aligned-preparation-title = Vorbereitung
 onboarding-stay_aligned-preparation-tip = Achten Sie darauf, aufrecht zu stehen. Schauen Sie nach vorne und lassen Sie die Arme an den Seiten hängen.
+onboarding-stay_aligned-relaxed_poses-standing-title = Entspannte Stehpose
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Nehmen Sie eine bequeme Haltung ein. Entspannen Sie sich!
 onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Drücken Sie die Taste „Pose speichern“.
+onboarding-stay_aligned-relaxed_poses-sitting-title = Entspannte Im-Stuhl-sitzen-Pose
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Nehme eine bequeme Haltung ein. Entspanne dich!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Drücke die Taste „Pose speichern“.
+onboarding-stay_aligned-relaxed_poses-flat-title = Entspannte Sitzposition auf dem Boden
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Setz dich mit den Beinen nach vorne auf den Boden. Entspann dich!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Drücke die Taste „Pose speichern“.
 onboarding-stay_aligned-relaxed_poses-skip_step = Überspringen
+onboarding-stay_aligned-done-title = Stay aligned aktiviert!
+onboarding-stay_aligned-done-description = Dein Stay Aligned-Setup ist komplett!
 onboarding-stay_aligned-previous_step = Zurück
 onboarding-stay_aligned-next_step = Weiter
 onboarding-stay_aligned-restart = Neu starten
 onboarding-stay_aligned-done = Fertig
+onboarding-stay_aligned-manual_mounting-done = Fertig
 
 ## Home
 
 home-no_trackers = Keine Tracker erkannt oder zugewiesen
+home-settings = Startseiten-Einstellungen
 home-settings-close = Schließen
 
 ## Trackers Still On notification
@@ -1280,12 +1342,19 @@ firmware_tool = DIY Firmware-Tool
 firmware_tool-description = Erlaubt ihnen das Konfigurieren und Flashen von DIY Trackern
 firmware_tool-not_available = Das Firmware Tool ist im Moment nicht verfügbar. Versuche sie später erneut!
 firmware_tool-not_compatible = Das Firmware Tool ist nicht mit dieser Version des Servers kompatibel. Bitte den Server aktualisieren!
+firmware_tool-select_source = Wähle die Firmware zum Flashen aus
+firmware_tool-select_source-description = Wähle die Firmware aus, die du auf deinem Board flashen möchtest
+firmware_tool-select_source-error = Quellen konnten nicht geladen werden
 firmware_tool-select_source-board_type = Boardtyp
 firmware_tool-select_source-firmware = Firmware-Quelle
 firmware_tool-select_source-version = Firmware-Version
 firmware_tool-select_source-official = Offiziell
 firmware_tool-select_source-dev = Dev
+firmware_tool-select_source-not_selected = Keine Quelle ausgewählt
+firmware_tool-select_source-no_boards = Keine verfügbaren Boards für diese Quelle
+firmware_tool-select_source-no_versions = Keine verfügbaren Versionen für diese Quelle
 firmware_tool-board_defaults = Konfigurieren Sie Ihr Board
+firmware_tool-board_defaults-description = Stelle die Pins oder Einstellungen relativ zu deiner Hardware ein
 firmware_tool-board_defaults-add = Hinzufügen
 firmware_tool-board_defaults-reset = Auf Standard zurücksetzen
 firmware_tool-board_defaults-error-required = Erforderliches Feld
@@ -1398,7 +1467,12 @@ unknown_device-modal-forget = Ignorieren
 # VRChat config warnings
 vrc_config-page-title = VRChat Konfigurations-Warnungen
 vrc_config-page-desc = Diese Seite zeigt den Zustand deiner VRChat-Einstellungen und zeigt, welche Einstellungen mit SlimeVR inkompatibel sind. Es wird dringend empfohlen, alle hier angezeigten Warnungen zu beheben, um das beste Nutzererlebnis mit SlimeVR zu gewährleisten.
+vrc_config-page-help = Kannst du die Einstellungen nicht finden?
 vrc_config-page-help-desc = Schauen Sie sich unsere <a>Dokumentation zu diesem Thema</a> an!
+vrc_config-page-big_menu = Tracking & IK (Großes Menü)
+vrc_config-page-big_menu-desc = Einstellungen im Zusammenhang mit IK im großen Einstellungsmenü
+vrc_config-page-wrist_menu = Tracking & IK (Handgelenkmenü)
+vrc_config-page-wrist_menu-desc = Einstellungen im Zusammenhang mit IK im kleinen Einstellungsmenü (Handgelenkmenü)
 vrc_config-on = An
 vrc_config-off = Aus
 vrc_config-invalid = Sie haben falsch konfigurierte VRChat-Einstellungen!
@@ -1409,13 +1483,23 @@ vrc_config-current_value = Aktueller Wert
 vrc_config-mute = Warnung stummschalten
 vrc_config-mute-btn = Stummschalten
 vrc_config-unmute-btn = Stummschaltung aufheben
+vrc_config-legacy_mode = Verwende Legacy IK Solving
 vrc_config-disable_shoulder_tracking = Schultertracking deaktivieren
+vrc_config-shoulder_width_compensation = Schulterbreitenkompensation
+vrc_config-spine_mode = FBT-Wirbelsäulenmodus
+vrc_config-tracker_model = FBT-Trackermodell
+vrc_config-avatar_measurement_type = Avatar-Messung
+vrc_config-calibration_range = Kalibrierungsbereich
+vrc_config-calibration_visuals = Display-Kalibrierungsvisualisierungen
 vrc_config-user_height = Echte Benutzergröße
 vrc_config-spine_mode-UNKNOWN = Unbekannt
+vrc_config-spine_mode-LOCK_BOTH = Beide sperren
 vrc_config-spine_mode-LOCK_HEAD = Kopf sperren
 vrc_config-spine_mode-LOCK_HIP = Hüfte sperren
 vrc_config-tracker_model-UNKNOWN = Unbekannt
 vrc_config-tracker_model-AXIS = Achse
+vrc_config-tracker_model-BOX = Box
+vrc_config-tracker_model-SPHERE = Sphäre
 vrc_config-tracker_model-SYSTEM = System
 vrc_config-avatar_measurement_type-UNKNOWN = Unbekannt
 vrc_config-avatar_measurement_type-HEIGHT = Höhe
@@ -1433,22 +1517,41 @@ error_collection_modal-cancel = Ich will nicht
 
 ## Tracking checklist section
 
+tracking_checklist = Tracking-Checkliste
+tracking_checklist-settings = Einstellungen der Tracking-Checkliste
 tracking_checklist-settings-close = Schließen
+tracking_checklist-status-incomplete = Du bist nicht darauf vorbereitet, SlimeVR zu benutzen!
 tracking_checklist-status-partial =
     { $count ->
         [one] Sie haben 1 Warnung!
        *[other] Sie haben { $count } Warnungen!
     }
+tracking_checklist-status-complete = Du bist bereit, SlimeVR zu nutzen!
 tracking_checklist-MOUNTING_CALIBRATION = Tracker-Ausrichtung durchführen
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Führe eine Fußmontage-Kalibrierung durch
+tracking_checklist-FULL_RESET = Führe einen vollständigen Reset durch
+tracking_checklist-FULL_RESET-desc = Manche Tracker benötigen eine erneute Kalibrierung.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR läuft nicht
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR läuft nicht. Nutzen sie es für VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = SteamVR starten
+tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibriere deine Tracker
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Sie haben keine Tracker-Kalibrierung durchgeführt. Bitte lassen Sie Ihre Tracker (gelb markiert) für einige Sekunden auf einer stabilen Oberfläche ruhen.
 tracking_checklist-TRACKER_ERROR = Tracker mit Fehlern
+tracking_checklist-TRACKER_ERROR-desc = Einige deiner Tracker haben einen Fehler. Bitte starte die gelb markierten Tracker neu.
 tracking_checklist-VRCHAT_SETTINGS = VRChat-Einstellungen konfigurieren
+tracking_checklist-VRCHAT_SETTINGS-desc = Du hast die VRChat-Einstellungen falsch konfiguriert! Das kann sich negativ auf dein Tracking auswirken.
 tracking_checklist-VRCHAT_SETTINGS-open = Gehen sie zu den VRChat-Warnungen
+tracking_checklist-UNASSIGNED_HMD = VR-Headset nicht dem Kopf zugewiesen
+tracking_checklist-UNASSIGNED_HMD-desc = Das VR-Headset sollte als Kopf-Tracker zugewiesen sein.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Ändere dein Netzwerkprofil
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one] Dein Netzwerkprofil ist derzeit auf Öffentlich ({ $adapters }) eingestellt. Dies wird für das ordnungsgemäße Funktionieren von SlimeVR nicht empfohlen. <PublicFixLink>Hier erfährst du, wie du das beheben kannst.</PublicFixLink>
+       *[other] Einige deiner Netzwerkadapter sind auf Öffentlich eingestellt:¶{ $adapters }¶Das wird nicht empfohlen, damit SlimeVR ordnungsgemäß funktioniert.¶<PublicFixLink>Hier erfährst du, wie du das beheben kannst.</PublicFixLink>
+    }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Kontrollpanel öffnen
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Stay Aligned konfigurieren
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Zeichne die Stay Aligned-Posen auf, um Drift zu reduzieren
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Öffne den Stay Aligned Assistent
 tracking_checklist-ignore = Ignorieren
 preview-mocap_mode_soon = Mocap-Modus (Bald™)
@@ -1458,5 +1561,6 @@ toolbar-mounting_calibration = Tracker-Ausrichtung
 toolbar-mounting_calibration-default = Körper
 toolbar-mounting_calibration-feet = Füße
 toolbar-mounting_calibration-fingers = Finger
+toolbar-drift_reset = Drift-Reset
 toolbar-assigned_trackers = { $count } Tracker zugewiesen
 toolbar-unassigned_trackers = { $count } Tracker nicht zugewiesen

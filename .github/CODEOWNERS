@@ -17,8 +17,7 @@
 /gui/src/components/settings/ @Erimelowo @loucass003
 
 # Rust part of the GUI
-/gui/src-tauri/ @loucass003
-/Cargo.lock @loucass003
+/gui/electron/ @loucass003
 
 # Some server code~
 /server/ @ButterscotchV @Eirenliel @Erimelowo
