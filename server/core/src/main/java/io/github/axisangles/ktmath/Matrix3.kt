@@ -5,9 +5,8 @@ package io.github.axisangles.ktmath
 import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-@JvmInline
 @Serializable
-value class Matrix3
+class Matrix3
 @Suppress("ktlint") constructor(
 	val xx: Float, val yx: Float, val zx: Float,
 	val xy: Float, val yy: Float, val zy: Float,

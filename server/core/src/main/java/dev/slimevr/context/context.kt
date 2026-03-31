@@ -19,7 +19,9 @@ class Context<S, in A>(
 	val state: StateFlow<S> = mutableStateFlow.asStateFlow()
 
 	fun dispatch(action: A) {
-		mutableStateFlow.update { applyAction(it, action) }
+		mutableStateFlow.update {
+			applyAction(it, action)
+		}
 	}
 
 	fun dispatchAll(actions: List<A>) {

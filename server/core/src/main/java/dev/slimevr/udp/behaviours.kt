@@ -226,6 +226,16 @@ object SensorRotationBehaviour : UDPConnectionBehaviour {
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation) })
 		}
+
+		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
+			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation) })
+		}
+
+		receiver.packetEvents.onPacket<Rotation2> { event ->
+			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation) })
+		}
 	}
 }
 
@@ -267,6 +277,15 @@ object FlagsBehaviour : UDPConnectionBehaviour {
 			receiver.context.dispatch(UDPConnectionActions.FirmwareFeatures(event.data.firmwareFeatures))
 			// send back the server features
 			receiver.send(FeatureFlags())
+		}
+	}
+}
+
+object TemperatureBehaviour : UDPConnectionBehaviour {
+	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<Temperature> { event ->
+			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.Update { copy(imuTemp = event.data.temp) })
 		}
 	}
 }

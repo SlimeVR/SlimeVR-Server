@@ -22,6 +22,7 @@ data class TrackerState(
 	val deviceId: Int,
 	val origin: DeviceOrigin,
 	val tps: UShort,
+	val imuTemp: Float?,
 	val position: Vector3?,
 )
 
@@ -56,6 +57,7 @@ class Tracker(
 				sensorType = sensorType,
 				position = null,
 				tps = 0u,
+				imuTemp = null,
 			)
 
 			val behaviours = listOf(TrackerBasicBehaviour, TrackerTPSBehaviour)

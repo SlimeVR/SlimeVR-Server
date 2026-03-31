@@ -34,6 +34,7 @@ suspend fun createUDPTrackerServer(
 	val recvPacket = DatagramPacket(recvBuffer, recvBuffer.size)
 
 	supervisorScope {
+		val udpScope = this
 		launch(Dispatchers.IO) {
 			while (isActive) {
 				socket.receive(recvPacket)
@@ -64,7 +65,7 @@ suspend fun createUDPTrackerServer(
 							remotePort = port,
 							socket = socket,
 							serverContext = serverContext,
-							scope = this,
+							scope = udpScope,
 						)
 
 						state.connections[ip] = newContext

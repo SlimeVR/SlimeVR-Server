@@ -8,9 +8,8 @@ import kotlin.math.sin
 
 enum class EulerOrder { XYZ, YZX, ZXY, ZYX, YXZ, XZY }
 
-@JvmInline
 @Serializable
-value class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z: Float) {
+class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z: Float) {
 	operator fun component1(): EulerOrder = order
 	operator fun component2(): Float = x
 	operator fun component3(): Float = y

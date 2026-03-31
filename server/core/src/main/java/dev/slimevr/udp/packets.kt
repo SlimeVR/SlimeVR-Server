@@ -496,6 +496,7 @@ fun writePacket(dst: Sink, packet: UDPPacket) {
 
 data class PacketEvent<out T : UDPPacket>(
 	val data: T,
+	// Packet number is optional for the inner packets of a bundle packet
 	val packetNumber: Long?,
 )
 

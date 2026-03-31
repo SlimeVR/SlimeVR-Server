@@ -5,9 +5,8 @@ package io.github.axisangles.ktmath
 import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-@JvmInline
 @Serializable
-value class Vector3(val x: Float, val y: Float, val z: Float) {
+class Vector3(val x: Float, val y: Float, val z: Float) {
 	companion object {
 		val NULL = Vector3(0f, 0f, 0f)
 		val POS_X = Vector3(1f, 0f, 0f)

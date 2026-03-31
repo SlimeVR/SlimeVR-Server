@@ -94,7 +94,8 @@ class UDPConnection(
 				SensorInfoBehaviour,
 				SensorRotationBehaviour,
 				BundledPacketBehaviour,
-				FlagsBehaviour
+				FlagsBehaviour,
+				TemperatureBehaviour
 			)
 
 			val context = Context.create(

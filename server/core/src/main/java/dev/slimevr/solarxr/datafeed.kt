@@ -21,6 +21,7 @@ import solarxr_protocol.data_feed.tracker.TrackerDataMask
 import solarxr_protocol.data_feed.tracker.TrackerInfo
 import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.Ipv4Address
+import solarxr_protocol.datatypes.Temperature
 import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
@@ -28,25 +29,28 @@ import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
 import java.nio.ByteBuffer
 
-private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask): TrackerData = TrackerData(
-	trackerId = TrackerId(
-		trackerNum = tracker.id.toUByte(),
-		deviceId = DeviceId(device.id.toUByte()),
-	),
-	status = if (trackerMask.status == true) device.status else null,
-	rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
-	position = if (trackerMask.position == true && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
-	info = if (trackerMask.info == true) {
-		TrackerInfo(
-			imuType = tracker.sensorType,
-			bodyPart = tracker.bodyPart,
-			displayName = tracker.name,
-		)
-	} else {
-		null
-	},
-	tps = if (trackerMask.tps == true) tracker.tps else null,
-)
+private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask, datafeedConfig: DataFeedConfig): TrackerData {
+	return TrackerData(
+		trackerId = TrackerId(
+			trackerNum = tracker.id.toUByte(),
+			deviceId = DeviceId(device.id.toUByte()),
+		),
+		status = if (trackerMask.status == true) device.status else null,
+		rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
+		position = if (trackerMask.position == true && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
+		info = if (trackerMask.info == true) {
+			TrackerInfo(
+				imuType = tracker.sensorType,
+				bodyPart = tracker.bodyPart,
+				displayName = tracker.name,
+			)
+		} else {
+			null
+		},
+		tps = if (trackerMask.tps == true) tracker.tps else null,
+		temp = if (trackerMask.temp == true && tracker.imuTemp != null) Temperature(temp = tracker.imuTemp) else null,
+	)
+}
 
 private fun createDevice(
 	device: DeviceState,
@@ -73,7 +77,7 @@ private fun createDevice(
 		),
 		trackers = if (trackerMask != null) {
 			trackers.filter { it.deviceId == device.id }
-				.map { tracker -> createTracker(device, tracker, trackerMask) }
+				.map { tracker -> createTracker(device, tracker, trackerMask, datafeedConfig) }
 		} else {
 			null
 		},
