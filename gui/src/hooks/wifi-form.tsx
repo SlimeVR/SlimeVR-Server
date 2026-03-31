@@ -8,7 +8,7 @@ export interface WifiFormData {
   password?: string;
 }
 
-export function useWifiForm(nextPage?: string) {
+export function useWifiForm() {
   const navigate = useNavigate();
   const { state, setWifiCredentials } = useOnboarding();
   const { register, reset, handleSubmit, formState, control } =
@@ -28,7 +28,7 @@ export function useWifiForm(nextPage?: string) {
 
   const submitWifiCreds = (value: WifiFormData) => {
     setWifiCredentials(value.ssid, value.password ?? '');
-    navigate(nextPage ? nextPage : '/onboarding/connect-trackers', {
+    navigate('/onboarding/connect-trackers', {
       state: { alonePage: state.alonePage },
     });
   };
