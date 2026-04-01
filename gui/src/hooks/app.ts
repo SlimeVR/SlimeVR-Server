@@ -59,16 +59,6 @@ export function useProvideAppContext(): AppContext {
     }
   });
 
-  useEffect(() => {
-    sendRPCPacket(RpcMessage.InstalledInfoRequest, new InstalledInfoResponseT());
-  }, []);
-
-  useRPCPacket(
-    RpcMessage.InstalledInfoResponse,
-    ({ isUdevInstalled, isWayland }: InstalledInfoResponseT) => {
-      setInstallInfo(new InstalledInfoResponseT(isUdevInstalled, isWayland));
-    }
-  );
 
   useEffect(() => {
     updateSentryContext(devices);
@@ -89,6 +79,18 @@ export function useProvideAppContext(): AppContext {
       clearInterval(interval);
     };
   }, [config?.uuid]);
+
+    useEffect(() => {
+    sendRPCPacket(RpcMessage.InstalledInfoRequest, new InstalledInfoResponseT());
+  }, []);
+
+  useRPCPacket(
+    RpcMessage.InstalledInfoResponse,
+    ({ isUdevInstalled, isWayland }: InstalledInfoResponseT) => {
+      setInstallInfo(new InstalledInfoResponseT(isUdevInstalled, isWayland));
+    }
+  );
+
 
   useLayoutEffect(() => {
     changeLocales([config?.lang || DEFAULT_LOCALE]);

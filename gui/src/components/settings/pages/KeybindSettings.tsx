@@ -16,9 +16,12 @@ import {
   KeybindRequestT,
   KeybindResponseT,
   KeybindT,
+  OpenUriRequestT,
   RpcMessage,
 } from 'solarxr-protocol';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { useAppContext } from '@/hooks/app';
+import { useElectron } from '@/hooks/electron';
 
 export type KeybindForm = {
   keybinds: {
@@ -30,6 +33,7 @@ export type KeybindForm = {
 };
 
 export function KeybindSettings() {
+  const electron = useElectron();
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -39,6 +43,8 @@ export function KeybindSettings() {
     }
   );
   const currentIndex = useRef<number | null>(null);
+  const { installInfo } = useAppContext();
+
 
   const { control, resetField, handleSubmit, reset, setValue, getValues } =
     useForm<KeybindForm>({
@@ -64,6 +70,10 @@ export function KeybindSettings() {
 
       sendRPCPacket(RpcMessage.ChangeKeybindRequest, changeKeybindRequest);
     });
+  };
+
+  const handleOpenSystemSettingsButton = () => {
+    sendRPCPacket(RpcMessage.OpenUriRequest, new OpenUriRequestT());
   };
 
   useRPCPacket(
@@ -127,62 +137,82 @@ export function KeybindSettings() {
   return (
     <SettingsPageLayout>
       <SettingsPagePaneLayout icon={<WrenchIcon />} id="keybinds">
-        <Typography variant="main-title" id="settings-keybinds" />
-        <div className="flex flex-col pt-2 pb-4">
-          {l10n
-            .getString('settings-keybinds-description')
-            .split('\n')
-            .map((line, i) => (
-              <Typography key={i}>{line}</Typography>
-            ))}
+        <div className="flex flex-col gap-2">
+          <Typography variant="main-title" id="settings-keybinds" />
+          <div className="flex flex-col pt-2 pb-4">
+            {l10n
+              .getString('settings-keybinds-description')
+              .split('\n')
+              .map((line, i) => (
+                <Typography key={i}>{line}</Typography>
+              ))}
+          </div>
+          {installInfo?.isWayland ?  (
+            <div className="flex flex-col gap-4">
+              <Typography id="settings-keybinds-wayland-description" />
+              <div>
+                <Button
+                  id="settings-keybinds-wayland-open-system-settings-button"
+                  className="flex flex-col"
+                  onClick={handleOpenSystemSettingsButton}
+                  variant="primary"
+                />
+              </div>
+            </div>
+          ) :  electron.isElectron && electron.data().os.type === 'windows' && (
+            <>
+              <div className="keybind-settings">
+                <Typography
+                  id="keybind_config-keybind_name"
+                  variant="section-title"
+                />
+                <Typography
+                  id="keybind_config-keybind_value"
+                  variant="section-title"
+                />
+                <Typography
+                  id="keybind_config-keybind_delay"
+                  variant="section-title"
+                />
+                {createKeybindRows()}
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  id="settings-keybinds_reset-all-button"
+                  onClick={() => {
+                    reset(defaultKeybindsState);
+                    handleSubmit(onSubmit)();
+                  }}
+                  variant="primary"
+                />
+              </div>
+
+              <KeybindRecorderModal
+                id={
+                  currentIndex.current != null
+                    ? fields[currentIndex.current].name
+                    : ''
+                }
+                control={control}
+                resetField={resetField}
+                name={
+                  currentIndex.current != null
+                    ? `keybinds.${currentIndex.current}.binding`
+                    : ''
+                }
+                isVisisble={isOpen}
+                onClose={() => {
+                  setIsOpen(false);
+                  handleSubmit(onSubmit)();
+                }}
+                onUnbind={() => {
+                  if (currentIndex.current != null)
+                    setValue(`keybinds.${currentIndex.current}.binding`, []);
+                }}
+              />
+            </>
+          )}
         </div>
-        <div className="keybind-settings">
-          <Typography
-            id="keybind_config-keybind_name"
-            variant="section-title"
-          />
-          <Typography
-            id="keybind_config-keybind_value"
-            variant="section-title"
-          />
-          <Typography
-            id="keybind_config-keybind_delay"
-            variant="section-title"
-          />
-          {createKeybindRows()}
-          <Button
-            id="settings-keybinds_reset-all-button"
-            className="justify-self-start"
-            onClick={() => {
-              reset(defaultKeybindsState);
-              handleSubmit(onSubmit)();
-            }}
-            variant="primary"
-          />
-        </div>
-        <KeybindRecorderModal
-          id={
-            currentIndex.current != null
-              ? fields[currentIndex.current].name
-              : ''
-          }
-          control={control}
-          resetField={resetField}
-          name={
-            currentIndex.current != null
-              ? `keybinds.${currentIndex.current}.binding`
-              : ''
-          }
-          isVisisble={isOpen}
-          onClose={() => {
-            setIsOpen(false);
-            handleSubmit(onSubmit)();
-          }}
-          onUnbind={() => {
-            if (currentIndex.current != null)
-              setValue(`keybinds.${currentIndex.current}.binding`, []);
-          }}
-        />
       </SettingsPagePaneLayout>
     </SettingsPageLayout>
   );

@@ -29,49 +29,50 @@ export function KeybindRecorderModal({
   return (
     <BaseModal
       isOpen={isVisisble}
-      appendClasses="w-full max-w-xl h-full max-h-52"
+      onRequestClose={() => onClose()}
+      appendClasses="w-full max-w-xl"
     >
-      <div className="flex-col gap-4 w-full">
-        <div className="flex flex-col w-full">
-          <div className="flex flex-col gap-3 w-full">
-            <Typography variant="section-title">
-              {l10n.getString('settings-keybinds-recorder-modal-title')}{' '}
-              {l10n.getString(keybindlocalization)}
-            </Typography>
-            <Controller
-              control={control}
-              name={name}
-              render={({ field }) => (
-                <KeybindRecorder
-                  keys={field.value ?? []}
-                  onKeysChange={field.onChange}
-                  ref={field.ref}
-                />
-              )}
+      <div className="flex flex-col gap-3 w-full justify-between h-full">
+        <Typography variant="section-title">
+          {l10n.getString('settings-keybinds-recorder-modal-title')}{' '}
+          {l10n.getString(keybindlocalization)}
+        </Typography>
+        <Controller
+          control={control}
+          name={name}
+          render={({ field }) => (
+            <KeybindRecorder
+              keys={field.value ?? []}
+              onKeysChange={field.onChange}
+              ref={field.ref}
             />
-            <div className="flex flex-row justify-between w-full">
-              <div className="flex flex-row justify-start gap-4">
-                <Button
-                  id="settings-keybinds-recorder-modal-reset-button"
-                  variant="primary"
-                  onClick={() => {
-                    resetField(name);
-                  }}
-                />
-                <Button
-                  id="settings-keybinds-recorder-modal-unbind-button"
-                  variant="primary"
-                  onClick={onUnbind}
-                />
-              </div>
-              <div className="flex flex-row justify-end">
-                <Button
-                  id="settings-keybinds-recorder-modal-done-button"
-                  variant="primary"
-                  onClick={onClose}
-                />
-              </div>
-            </div>
+          )}
+        />
+        <div className="flex flex-row justify-between w-full">
+          <div className="flex flex-row justify-start gap-4">
+            <Button
+              id="settings-keybinds-recorder-modal-reset-button"
+              variant="tertiary"
+              onClick={() => {
+                resetField(name);
+                onClose()
+              }}
+            />
+            <Button
+              id="settings-keybinds-recorder-modal-unbind-button"
+              variant="tertiary"
+              onClick={() => {
+                onUnbind()
+                onClose()
+              }}
+            />
+          </div>
+          <div className="flex flex-row justify-end">
+            <Button
+              id="settings-keybinds-recorder-modal-done-button"
+              variant="primary"
+              onClick={onClose}
+            />
           </div>
         </div>
       </div>

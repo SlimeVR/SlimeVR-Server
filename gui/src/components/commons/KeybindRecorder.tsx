@@ -1,5 +1,6 @@
 import { useState, forwardRef, useRef } from 'react';
 import { Typography } from './Typography';
+import classNames from 'classnames';
 
 const excludedKeys = [' ', 'SPACE', 'META'];
 const maxKeybindLength = 4;
@@ -68,19 +69,12 @@ export const KeybindRecorder = forwardRef<
   };
 
   return (
-    <div className="relative w-full justify-center align-center">
-      {showError ? (
-        <div className="absolute bottom isInvalid keyslot-invalid text-red-600">
-          <Typography color="red-600">{errorText}</Typography>
-        </div>
-      ) : (
-        ''
-      )}
-      <div className="flex gap-2 m-2 items-center rounded-lg">
+    <div className="w-full justify-center items-center flex flex-col gap-2">
+      <div className="flex gap-2 p-2 items-center rounded-lg relative">
         <input
           autoFocus
           ref={inputRef}
-          className="opacity-0 absolute inset-0 cursor-pointer"
+          className="opacity-0 absolute cursor-pointer w-full"
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
           onKeyDown={handleKeyDown}
@@ -93,20 +87,15 @@ export const KeybindRecorder = forwardRef<
             return (
               <div key={i} className="flex flex-row">
                 <div
-                  className={`
-                flex p-2 rounded-lg min-w-[50px] min-h-[50px] text-lg justify-center items-center bg-background-80 mobile:text-sm
-                ${
-                  isInvalid
-                    ? 'keyslot-invalid ring-2 ring-red-600'
-                    : isActive
-                      ? 'keyslot-animate ring-2 ring-accent'
-                      : 'ring-accent'
-                }
-              `}
+                  className={classNames('flex p-2 rounded-lg min-w-[50px] min-h-[50px] text-main-title justify-center items-center bg-background-80 mobile:text-sm', {
+                    'keyslot-invalid ring-2 ring-status-critical': isInvalid,
+                    'keyslot-animate ring-2 ring-accent': isActive && !isInvalid,
+                    'ring-accent': !isInvalid && !isInvalid
+                  })}
                 >
                   {key ?? ''}
                 </div>
-                <div className="flex pl-2 text-lg justify-center items-center mobile:text-sm">
+                <div className="flex pl-2 text-main-title justify-center items-center mobile:text-sm">
                   {i < maxKeybindLength - 1 ? '+' : ''}
                 </div>
               </div>
@@ -114,6 +103,11 @@ export const KeybindRecorder = forwardRef<
           })}
         </div>
       </div>
+      {showError && (
+        <div className="isInvalid keyslot-invalid">
+          <Typography color="text-status-critical">{errorText}</Typography>
+        </div>
+      )}
     </div>
   );
 });
