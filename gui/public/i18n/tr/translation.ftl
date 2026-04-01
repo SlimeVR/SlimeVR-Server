@@ -43,24 +43,24 @@ unit-cm = cm
 body_part-NONE = Atanmamış
 body_part-HEAD = Kafa
 body_part-NECK = Boyun
-body_part-RIGHT_SHOULDER = Sağ omuz
-body_part-RIGHT_UPPER_ARM = Sağ üst kol
-body_part-RIGHT_LOWER_ARM = Sağ alt kol
-body_part-RIGHT_HAND = Sağ el
-body_part-RIGHT_UPPER_LEG = Sağ uyluk
-body_part-RIGHT_LOWER_LEG = Sağ ayak bileği
-body_part-RIGHT_FOOT = Sağ ayak
-body_part-UPPER_CHEST = Üst göğüs
+body_part-RIGHT_SHOULDER = Sağ Omuz
+body_part-RIGHT_UPPER_ARM = Sağ Üst Kol
+body_part-RIGHT_LOWER_ARM = Sağ Alt Kol
+body_part-RIGHT_HAND = Sağ El
+body_part-RIGHT_UPPER_LEG = Sağ Uyluk
+body_part-RIGHT_LOWER_LEG = Sağ Ayak Bileği
+body_part-RIGHT_FOOT = Sağ Ayak
+body_part-UPPER_CHEST = Üst Göğüs
 body_part-CHEST = Göğüs
 body_part-WAIST = Bel
 body_part-HIP = Kalça
-body_part-LEFT_SHOULDER = Sol omuz
-body_part-LEFT_UPPER_ARM = Sol üst kol
-body_part-LEFT_LOWER_ARM = Sol alt kol
-body_part-LEFT_HAND = Sol el
-body_part-LEFT_UPPER_LEG = Sol uyluk
-body_part-LEFT_LOWER_LEG = Sol ayak bileği
-body_part-LEFT_FOOT = Sol ayak
+body_part-LEFT_SHOULDER = Sol Omuz
+body_part-LEFT_UPPER_ARM = Sol Üst Kol
+body_part-LEFT_LOWER_ARM = Sol Alt Kol
+body_part-LEFT_HAND = Sol El
+body_part-LEFT_UPPER_LEG = Sol Uyluk
+body_part-LEFT_LOWER_LEG = Sol Ayak Bileği
+body_part-LEFT_FOOT = Sol Ayak
 body_part-LEFT_THUMB_METACARPAL = Sol başparmak metakarpal kemiği
 body_part-LEFT_THUMB_PROXIMAL = Sol başparmak proksimal kemiği
 body_part-LEFT_THUMB_DISTAL = Sol başparmak distal falanks kemiği
@@ -101,6 +101,7 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
 board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
@@ -122,7 +123,7 @@ board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 ## Proportions
 
 skeleton_bone-NONE = Yok
-skeleton_bone-HEAD = Kafa hizası
+skeleton_bone-HEAD = Kafa Hizası
 skeleton_bone-HEAD-desc =
     Bu, kulaklığın ile başının ortası arasındaki mesafedir.
     Ayarlamak için, 'hayır' der gibi başını soldan sağa ve sağdan sola salla,
@@ -132,7 +133,7 @@ skeleton_bone-NECK-desc =
     Bu, başının ortasından boynunun başlangıcına kadar olan mesafedir.
     Ayarlamak için başını 'evet' der gibi yukarı-aşağı hareket ettir veya başını hafifçe öne eğip, başını sola ve sağa kaydır,
     diğer takipçiler yerinden oynamayana kadar bunu tekrarlayıp ayarla.
-skeleton_bone-torso_group = Gövde uzunluğu
+skeleton_bone-torso_group = Gövde Uzunluğu
 skeleton_bone-torso_group-desc =
     Bu, boynunun başlangıcından kalçalarına kadar olan mesafedir.
     Ayarlamak için dik dur ve sanal kalçaların, gerçek kalçalarınla hizalanana kadar değeri değiştir.
@@ -141,7 +142,7 @@ skeleton_bone-UPPER_CHEST-desc =
     Bu, boynunun başlangıcından göğsünün ortasına kadar olan mesafedir.
     Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
     gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-CHEST_OFFSET = Göğüs hizası
+skeleton_bone-CHEST_OFFSET = Göğüs Hizası
 skeleton_bone-CHEST_OFFSET-desc =
     Bu, bazı oyun veya uygulamalarda kalibrasyona yardımcı olmak için,
     sanal göğüs takipçisini yukarı ya da aşağı hareket ettirmene izin verir.
@@ -160,7 +161,7 @@ skeleton_bone-HIP-desc =
     Bu, göbek deliğinden kalçalarına kadar olan mesafedir.
     Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
     gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-HIP_OFFSET = Kalça hizası
+skeleton_bone-HIP_OFFSET = Kalça Hizası
 skeleton_bone-HIP_OFFSET-desc =
     Bu, bazı oyun veya uygulamalarda kalibrasyona yardımcı olmak için,
     sanal kalça takipçisini yukarı ya da aşağı hareket ettirmene izin verir.
