@@ -9,10 +9,16 @@
 
 websocket-connecting = Sunucuya bağlanılıyor
 websocket-connection_lost = Sunucuyla bağlantı kesildi. Tekrar bağlanılmaya çalışılıyor...
+websocket-connection_lost-desc = SlimeVR sunucusu çöktü. Kayıtları kontrol edip programı yeniden başlat.
+websocket-timedout = Sunucuya bağlanılamadı
+websocket-timedout-desc = SlimeVR sunucusu çöktü veya zaman aşımına uğradı. Kayıtları kontrol et ve programı yeniden başlat.
+websocket-error-close = SlimeVR'ı kapat
+websocket-error-logs = Kayıtlar klasörünü aç
 
 ## Update notification
 
 version_update-title = Yeni sürüm mevcut: { $version }
+version_update-description = "{ version_update-update }" seçeneğine tıklamak SlimeVR kurulum uygulamasını indirir.
 version_update-update = Güncelle
 version_update-close = Kapat
 
