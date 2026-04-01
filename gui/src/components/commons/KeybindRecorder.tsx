@@ -1,6 +1,7 @@
 import { useState, forwardRef, useRef } from 'react';
 import { Typography } from './Typography';
 import classNames from 'classnames';
+import { useFormContext } from 'react-hook-form';
 
 const excludedKeys = [' ', 'SPACE', 'META'];
 const maxKeybindLength = 4;
@@ -10,17 +11,20 @@ export const KeybindRecorder = forwardRef<
   {
     keys: string[];
     onKeysChange: (v: string[]) => void;
+    error?: string;
   }
->(function KeybindRecorder({ keys, onKeysChange }) {
+>(function KeybindRecorder({ keys, onKeysChange, error }) {
   const [localKeys, setLocalKeys] = useState<string[]>(keys);
   const [isRecording, setIsRecording] = useState(false);
   const [oldKeys, setOldKeys] = useState<string[]>([]);
   const [invalidSlot, setInvalidSlot] = useState<number | null>(null);
-  const [showError, setShowError] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
   const displayKeys = isRecording ? localKeys : keys;
   const activeIndex = isRecording ? displayKeys.length : -1;
+  const displayError = errorText || error;
+
+  const { clearErrors } = useFormContext();
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.preventDefault();
@@ -33,7 +37,6 @@ export const KeybindRecorder = forwardRef<
     if (errorMsg) {
       setErrorText(errorMsg);
       setInvalidSlot(activeIndex);
-      setShowError(true);
       setTimeout(() => {
         setInvalidSlot(null);
       }, 350);
@@ -41,7 +44,6 @@ export const KeybindRecorder = forwardRef<
     }
 
     if (displayKeys.length < maxKeybindLength) {
-      setShowError(false);
       const updatedKeys = [...displayKeys, key];
       setLocalKeys(updatedKeys);
       onKeysChange(updatedKeys);
@@ -53,14 +55,14 @@ export const KeybindRecorder = forwardRef<
 
   const handleOnBlur = () => {
     setIsRecording(false);
-    setShowError(false);
-    if (displayKeys.length < maxKeybindLength - 2) {
+    if (displayKeys.length < maxKeybindLength - 2 || error) {
       onKeysChange(oldKeys);
       setLocalKeys(oldKeys);
     }
   };
 
   const handleOnFocus = () => {
+    clearErrors('keybinds');
     const initialKeys: string[] = [];
     setOldKeys(keys);
     setLocalKeys(initialKeys);
@@ -107,9 +109,9 @@ export const KeybindRecorder = forwardRef<
           })}
         </div>
       </div>
-      {showError && (
+      {displayError && (
         <div className="isInvalid keyslot-invalid">
-          <Typography color="text-status-critical">{errorText}</Typography>
+          <Typography color="text-status-critical">{`${errorText} ${error}`}</Typography>
         </div>
       )}
     </div>

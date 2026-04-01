@@ -1,5 +1,5 @@
 import { BaseModal } from './BaseModal';
-import { Controller, Control, UseFormResetField } from 'react-hook-form';
+import { Controller, Control, useFormContext } from 'react-hook-form';
 import { KeybindRecorder } from './KeybindRecorder';
 import { Typography } from './Typography';
 import { Button } from './Button';
@@ -10,26 +10,31 @@ export function KeybindRecorderModal({
   id,
   control,
   name,
-  resetField,
   isVisisble,
   onClose,
   onUnbind,
+  onSubmit,
 }: {
   id?: string;
   control: Control<any>;
   name: string;
-  resetField: UseFormResetField<any>;
   isVisisble: boolean;
   onClose: () => void;
   onUnbind: () => void;
+  onSubmit: () => void;
 }) {
   const { l10n } = useLocalization();
   const keybindlocalization = 'settings-keybinds_' + id;
+  const {
+    formState: { errors },
+    resetField,
+    handleSubmit,
+  } = useFormContext();
 
   return (
     <BaseModal
       isOpen={isVisisble}
-      onRequestClose={() => onClose()}
+      onRequestClose={onClose}
       appendClasses="w-full max-w-xl"
     >
       <div className="flex flex-col gap-3 w-full justify-between h-full">
@@ -45,6 +50,7 @@ export function KeybindRecorderModal({
               keys={field.value ?? []}
               onKeysChange={field.onChange}
               ref={field.ref}
+              error={errors.keybinds?.message as string}
             />
           )}
         />
@@ -55,7 +61,7 @@ export function KeybindRecorderModal({
               variant="tertiary"
               onClick={() => {
                 resetField(name);
-                onClose();
+                handleSubmit(onSubmit)();
               }}
             />
             <Button
@@ -63,7 +69,7 @@ export function KeybindRecorderModal({
               variant="tertiary"
               onClick={() => {
                 onUnbind();
-                onClose();
+                handleSubmit(onSubmit)();
               }}
             />
           </div>
@@ -71,7 +77,7 @@ export function KeybindRecorderModal({
             <Button
               id="settings-keybinds-recorder-modal-done-button"
               variant="primary"
-              onClick={onClose}
+              onClick={handleSubmit(onSubmit)}
             />
           </div>
         </div>

@@ -19,7 +19,7 @@ import {
   OpenUriRequestT,
   RpcMessage,
 } from 'solarxr-protocol';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { useAppContext } from '@/hooks/app';
 import { useElectron } from '@/hooks/electron';
 
@@ -45,17 +45,33 @@ export function KeybindSettings() {
   const currentIndex = useRef<number | null>(null);
   const { installInfo } = useAppContext();
 
-  const { control, resetField, handleSubmit, reset, setValue, getValues } =
-    useForm<KeybindForm>({
-      defaultValues: defaultKeybindsState,
-    });
+  const methods = useForm<KeybindForm>({
+    defaultValues: defaultKeybindsState,
+  });
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    getValues,
+    setError,
+    clearErrors,
+    resetField,
+  } = methods;
 
   const { fields } = useFieldArray({
     control,
     name: 'keybinds',
   });
 
-  const onSubmit = (value: KeybindForm) => {
+  const onSubmit = () => {
+    const value = getValues();
+    if (checkDuplicates(value)) {
+      return;
+    }
+    clearErrors('keybinds');
+
     value.keybinds.forEach((kb) => {
       const changeKeybindRequest = new ChangeKeybindRequestT();
 
@@ -68,7 +84,26 @@ export function KeybindSettings() {
       changeKeybindRequest.keybind = keybind;
 
       sendRPCPacket(RpcMessage.ChangeKeybindRequest, changeKeybindRequest);
+      setIsOpen(false);
     });
+  };
+
+  const checkDuplicates = (value: KeybindForm) => {
+    const normalized = value.keybinds
+      .filter((kb) => kb.binding.length > 0)
+      .map((kb) => JSON.stringify([...kb.binding].sort()));
+
+    const unique = new Set(normalized);
+
+    if (unique.size !== normalized.length) {
+      setError('keybinds', {
+        type: 'manual',
+        message: 'Duplicate keybind combinations are not allowed',
+      });
+      return true;
+    }
+
+    return false;
   };
 
   const handleOpenSystemSettingsButton = () => {
@@ -89,6 +124,7 @@ export function KeybindSettings() {
       }));
 
       setDefaultKeybindsState({ keybinds: mappedDefaults });
+      reset({ keybinds: mappedDefaults });
 
       const mapped = keybind.map((kb) => ({
         id: kb.keybindId,
@@ -97,7 +133,6 @@ export function KeybindSettings() {
           typeof kb.keybindValue === 'string' ? kb.keybindValue.split('+') : [],
         delay: kb.keybindDelay,
       }));
-      reset({ keybinds: mappedDefaults });
 
       mapped.forEach((keybind, index) => {
         setValue(`keybinds.${index}.binding`, keybind.binding);
@@ -111,6 +146,13 @@ export function KeybindSettings() {
     if (currentIndex !== null) {
       setIsOpen(true);
     }
+  };
+
+  const onClose = () => {
+    if (currentIndex.current != null) {
+      resetField(`keybinds.${currentIndex.current}.binding`);
+    }
+    setIsOpen(false);
   };
 
   const createKeybindRows = (): ReactNode => {
@@ -146,7 +188,7 @@ export function KeybindSettings() {
                 <Typography key={i}>{line}</Typography>
               ))}
           </div>
-          {installInfo?.isWayland ? (
+          {!installInfo?.isWayland ? (
             <div className="flex flex-col gap-4">
               <Typography id="settings-keybinds-wayland-description" />
               <div>
@@ -160,57 +202,58 @@ export function KeybindSettings() {
             </div>
           ) : (
             electron.isElectron &&
-            electron.data().os.type === 'windows' && (
+            electron.data().os.type !== 'windows' && (
               <>
-                <div className="keybind-settings">
-                  <Typography
-                    id="keybind_config-keybind_name"
-                    variant="section-title"
-                  />
-                  <Typography
-                    id="keybind_config-keybind_value"
-                    variant="section-title"
-                  />
-                  <Typography
-                    id="keybind_config-keybind_delay"
-                    variant="section-title"
-                  />
-                  {createKeybindRows()}
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    id="settings-keybinds_reset-all-button"
-                    onClick={() => {
-                      reset(defaultKeybindsState);
-                      handleSubmit(onSubmit)();
+                <FormProvider {...methods}>
+                  <div className="keybind-settings">
+                    <Typography
+                      id="keybind_config-keybind_name"
+                      variant="section-title"
+                    />
+                    <Typography
+                      id="keybind_config-keybind_value"
+                      variant="section-title"
+                    />
+                    <Typography
+                      id="keybind_config-keybind_delay"
+                      variant="section-title"
+                    />
+                    {createKeybindRows()}
+                  </div>
+                  <div className="flex justify-end">
+                    <Button
+                      id="settings-keybinds_reset-all-button"
+                      onClick={() => {
+                        reset(defaultKeybindsState);
+                        handleSubmit(onSubmit)();
+                      }}
+                      variant="primary"
+                    />
+                  </div>
+                  <KeybindRecorderModal
+                    id={
+                      currentIndex.current != null
+                        ? fields[currentIndex.current].name
+                        : ''
+                    }
+                    control={control}
+                    name={
+                      currentIndex.current != null
+                        ? `keybinds.${currentIndex.current}.binding`
+                        : ''
+                    }
+                    isVisisble={isOpen}
+                    onClose={onClose}
+                    onUnbind={() => {
+                      if (currentIndex.current != null)
+                        setValue(
+                          `keybinds.${currentIndex.current}.binding`,
+                          []
+                        );
                     }}
-                    variant="primary"
+                    onSubmit={onSubmit}
                   />
-                </div>
-
-                <KeybindRecorderModal
-                  id={
-                    currentIndex.current != null
-                      ? fields[currentIndex.current].name
-                      : ''
-                  }
-                  control={control}
-                  resetField={resetField}
-                  name={
-                    currentIndex.current != null
-                      ? `keybinds.${currentIndex.current}.binding`
-                      : ''
-                  }
-                  isVisisble={isOpen}
-                  onClose={() => {
-                    setIsOpen(false);
-                    handleSubmit(onSubmit)();
-                  }}
-                  onUnbind={() => {
-                    if (currentIndex.current != null)
-                      setValue(`keybinds.${currentIndex.current}.binding`, []);
-                  }}
-                />
+                </FormProvider>
               </>
             )
           )}
