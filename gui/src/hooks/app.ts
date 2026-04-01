@@ -59,7 +59,6 @@ export function useProvideAppContext(): AppContext {
     }
   });
 
-
   useEffect(() => {
     updateSentryContext(devices);
   }, [devices]);
@@ -80,7 +79,7 @@ export function useProvideAppContext(): AppContext {
     };
   }, [config?.uuid]);
 
-    useEffect(() => {
+  useEffect(() => {
     sendRPCPacket(RpcMessage.InstalledInfoRequest, new InstalledInfoResponseT());
   }, []);
 
@@ -90,7 +89,6 @@ export function useProvideAppContext(): AppContext {
       setInstallInfo(new InstalledInfoResponseT(isUdevInstalled, isWayland));
     }
   );
-
 
   useLayoutEffect(() => {
     changeLocales([config?.lang || DEFAULT_LOCALE]);

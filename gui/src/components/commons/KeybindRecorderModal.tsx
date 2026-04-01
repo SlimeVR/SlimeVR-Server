@@ -55,15 +55,15 @@ export function KeybindRecorderModal({
               variant="tertiary"
               onClick={() => {
                 resetField(name);
-                onClose()
+                onClose();
               }}
             />
             <Button
               id="settings-keybinds-recorder-modal-unbind-button"
               variant="tertiary"
               onClick={() => {
-                onUnbind()
-                onClose()
+                onUnbind();
+                onClose();
               }}
             />
           </div>

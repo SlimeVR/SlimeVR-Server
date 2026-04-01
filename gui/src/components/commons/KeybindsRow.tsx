@@ -25,7 +25,7 @@ function KeyBindKeyList({ keybind }: { keybind: string[] }) {
       </div>
     );
   });
-};
+}
 
 export function KeybindsRow({
   id,

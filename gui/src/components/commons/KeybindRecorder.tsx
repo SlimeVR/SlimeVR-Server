@@ -87,11 +87,15 @@ export const KeybindRecorder = forwardRef<
             return (
               <div key={i} className="flex flex-row">
                 <div
-                  className={classNames('flex p-2 rounded-lg min-w-[50px] min-h-[50px] text-main-title justify-center items-center bg-background-80 mobile:text-sm', {
-                    'keyslot-invalid ring-2 ring-status-critical': isInvalid,
-                    'keyslot-animate ring-2 ring-accent': isActive && !isInvalid,
-                    'ring-accent': !isInvalid && !isInvalid
-                  })}
+                  className={classNames(
+                    'flex p-2 rounded-lg min-w-[50px] min-h-[50px] text-main-title justify-center items-center bg-background-80 mobile:text-sm',
+                    {
+                      'keyslot-invalid ring-2 ring-status-critical': isInvalid,
+                      'keyslot-animate ring-2 ring-accent':
+                        isActive && !isInvalid,
+                      'ring-accent': !isInvalid && !isInvalid,
+                    }
+                  )}
                 >
                   {key ?? ''}
                 </div>

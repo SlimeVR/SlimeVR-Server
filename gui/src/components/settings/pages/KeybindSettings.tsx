@@ -45,7 +45,6 @@ export function KeybindSettings() {
   const currentIndex = useRef<number | null>(null);
   const { installInfo } = useAppContext();
 
-
   const { control, resetField, handleSubmit, reset, setValue, getValues } =
     useForm<KeybindForm>({
       defaultValues: defaultKeybindsState,
@@ -147,7 +146,7 @@ export function KeybindSettings() {
                 <Typography key={i}>{line}</Typography>
               ))}
           </div>
-          {installInfo?.isWayland ?  (
+          {installInfo?.isWayland ? (
             <div className="flex flex-col gap-4">
               <Typography id="settings-keybinds-wayland-description" />
               <div>
@@ -159,58 +158,61 @@ export function KeybindSettings() {
                 />
               </div>
             </div>
-          ) :  electron.isElectron && electron.data().os.type === 'windows' && (
-            <>
-              <div className="keybind-settings">
-                <Typography
-                  id="keybind_config-keybind_name"
-                  variant="section-title"
-                />
-                <Typography
-                  id="keybind_config-keybind_value"
-                  variant="section-title"
-                />
-                <Typography
-                  id="keybind_config-keybind_delay"
-                  variant="section-title"
-                />
-                {createKeybindRows()}
-              </div>
-              <div className="flex justify-end">
-                <Button
-                  id="settings-keybinds_reset-all-button"
-                  onClick={() => {
-                    reset(defaultKeybindsState);
+          ) : (
+            electron.isElectron &&
+            electron.data().os.type === 'windows' && (
+              <>
+                <div className="keybind-settings">
+                  <Typography
+                    id="keybind_config-keybind_name"
+                    variant="section-title"
+                  />
+                  <Typography
+                    id="keybind_config-keybind_value"
+                    variant="section-title"
+                  />
+                  <Typography
+                    id="keybind_config-keybind_delay"
+                    variant="section-title"
+                  />
+                  {createKeybindRows()}
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    id="settings-keybinds_reset-all-button"
+                    onClick={() => {
+                      reset(defaultKeybindsState);
+                      handleSubmit(onSubmit)();
+                    }}
+                    variant="primary"
+                  />
+                </div>
+
+                <KeybindRecorderModal
+                  id={
+                    currentIndex.current != null
+                      ? fields[currentIndex.current].name
+                      : ''
+                  }
+                  control={control}
+                  resetField={resetField}
+                  name={
+                    currentIndex.current != null
+                      ? `keybinds.${currentIndex.current}.binding`
+                      : ''
+                  }
+                  isVisisble={isOpen}
+                  onClose={() => {
+                    setIsOpen(false);
                     handleSubmit(onSubmit)();
                   }}
-                  variant="primary"
+                  onUnbind={() => {
+                    if (currentIndex.current != null)
+                      setValue(`keybinds.${currentIndex.current}.binding`, []);
+                  }}
                 />
-              </div>
-
-              <KeybindRecorderModal
-                id={
-                  currentIndex.current != null
-                    ? fields[currentIndex.current].name
-                    : ''
-                }
-                control={control}
-                resetField={resetField}
-                name={
-                  currentIndex.current != null
-                    ? `keybinds.${currentIndex.current}.binding`
-                    : ''
-                }
-                isVisisble={isOpen}
-                onClose={() => {
-                  setIsOpen(false);
-                  handleSubmit(onSubmit)();
-                }}
-                onUnbind={() => {
-                  if (currentIndex.current != null)
-                    setValue(`keybinds.${currentIndex.current}.binding`, []);
-                }}
-              />
-            </>
+              </>
+            )
           )}
         </div>
       </SettingsPagePaneLayout>
