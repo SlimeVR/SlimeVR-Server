@@ -26,6 +26,8 @@ version_update-close = Kapat
 
 tips-find_tracker = Hangi takipçi hangisi emin değil misin? Takipçilerden birini hareket ettirerek belirleyebilirsin.
 tips-do_not_move_heels = Kayıt sırasında ayaklarınızın hareket etmediğinden emin olun!
+tips-file_select = Dosyaları sürükleyip bırak veya dosyalarından <u>seç</u>.
+tips-tap_setup = Menüden seçmek yerine takipçine 2 kez yavaşça dokunarak da seçebilirsin.
 
 ## Units
 
