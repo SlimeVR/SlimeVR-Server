@@ -28,9 +28,15 @@ tips-find_tracker = Hangi takipçi hangisi emin değil misin? Takipçilerden bir
 tips-do_not_move_heels = Kayıt sırasında ayaklarınızın hareket etmediğinden emin olun!
 tips-file_select = Dosyaları sürükleyip bırak veya dosyalarından <u>seç</u>.
 tips-tap_setup = Menüden seçmek yerine takipçine 2 kez yavaşça dokunarak da seçebilirsin.
+tips-turn_on_tracker = Resmi SlimeVR takipçisi mi kullanıyorsun? Takipçilerini bilgisayara bağladıktan sonra onları <b><em>açmayı</em></b> unutma!
+tips-failed_webgl = WebGL başlatılamadı.
 
 ## Units
 
+unit-meter = Metre
+unit-foot = Ayak
+unit-inch = Inç
+unit-cm = cm
 
 ## Body parts
 
@@ -55,9 +61,45 @@ body_part-LEFT_HAND = Sol el
 body_part-LEFT_UPPER_LEG = Sol uyluk
 body_part-LEFT_LOWER_LEG = Sol ayak bileği
 body_part-LEFT_FOOT = Sol ayak
+body_part-LEFT_THUMB_METACARPAL = Sol başparmak metakarpal kemiği
+body_part-LEFT_THUMB_PROXIMAL = Sol başparmak proksimal kemiği
+body_part-LEFT_THUMB_DISTAL = Sol başparmak distal falanks kemiği
+body_part-LEFT_INDEX_PROXIMAL = Sol işaret parmağının proksimal falanks kemiği
+body_part-LEFT_INDEX_INTERMEDIATE = Sol işaret parmağının orta falanks kemiği
+body_part-LEFT_INDEX_DISTAL = Sol işaret parmağının distal falanks kemiği
+body_part-LEFT_MIDDLE_PROXIMAL = Sol orta parmağın proksimal falanks kemiği
+body_part-LEFT_MIDDLE_INTERMEDIATE = Sol orta parmağın orta falanks kemiği
+body_part-LEFT_MIDDLE_DISTAL = Sol orta parmağın distal falanks kemiği
+body_part-LEFT_RING_PROXIMAL = Sol yüzük parmağının proksimal falanks kemiği
+body_part-LEFT_RING_INTERMEDIATE = Sol yüzük parmağının orta falanks kemiği
+body_part-LEFT_RING_DISTAL = Sol yüzük parmağının distal falanks kemiği
+body_part-LEFT_LITTLE_PROXIMAL = Sol küçük parmağın proksimal falanks kemiği
+body_part-LEFT_LITTLE_INTERMEDIATE = Sol küçük parmağın orta falanks kemiği
+body_part-LEFT_LITTLE_DISTAL = Sol küçük parmağın distal falanks kemiği
+body_part-RIGHT_THUMB_METACARPAL = Sağ başparmak metakarpal kemiği
+body_part-RIGHT_THUMB_PROXIMAL = Sağ başparmağın proksimal falanks kemiği
+body_part-RIGHT_THUMB_DISTAL = Sağ başparmağın distal falanks kemiği
+body_part-RIGHT_INDEX_PROXIMAL = Sağ işaret parmağının proksimal falanks kemiği
+body_part-RIGHT_INDEX_INTERMEDIATE = Sağ işaret parmağının orta falanks kemiği
+body_part-RIGHT_INDEX_DISTAL = Sağ işaret parmağının distal falanks kemiği
+body_part-RIGHT_MIDDLE_PROXIMAL = Sağ orta parmağın proksimal falanks kemiği
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Sağ orta parmağın orta falanks kemiği
+body_part-RIGHT_MIDDLE_DISTAL = Sağ orta parmağın distal falanks kemiği
+body_part-RIGHT_RING_PROXIMAL = Sağ yüzük parmağının proksimal falanks kemiği
+body_part-RIGHT_RING_INTERMEDIATE = Sağ yüzük parmağının orta falanks kemiği
+body_part-RIGHT_RING_DISTAL = Sağ yüzük parmağının distal falanks kemiği
+body_part-RIGHT_LITTLE_PROXIMAL = Sağ küçük parmağın proksimal falanks kemiği
+body_part-RIGHT_LITTLE_INTERMEDIATE = Sağ küçük parmağın orta falanks kemiği
+body_part-RIGHT_LITTLE_DISTAL = Sağ küçük parmağın distal falanks kemiği
 
 ## BoardType
 
+board_type-UNKNOWN = Bilinmeyen
+board_type-NODEMCU = NodeMCU
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
 
 ## Proportions
 
