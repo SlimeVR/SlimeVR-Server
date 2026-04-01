@@ -7,7 +7,7 @@
 
 ## Websocket (server) status
 
-websocket-connecting = Sunucuya bağlanılıyor
+websocket-connecting = Sunucuya bağlanılıyor...
 websocket-connection_lost = Sunucuyla bağlantı kesildi. Tekrar bağlanılmaya çalışılıyor...
 websocket-connection_lost-desc = SlimeVR sunucusu çöktü. Kayıtları kontrol edip programı yeniden başlat.
 websocket-timedout = Sunucuya bağlanılamadı
@@ -25,7 +25,7 @@ version_update-close = Kapat
 ## Tips
 
 tips-find_tracker = Hangi takipçi hangisi emin değil misin? Takipçilerden birini hareket ettirerek belirleyebilirsin.
-tips-do_not_move_heels = Kayıt sırasında ayaklarınızın hareket etmediğinden emin olun!
+tips-do_not_move_heels = Kayıt sırasında ayaklarının hareket etmediğinden emin ol!
 tips-file_select = Dosyaları sürükleyip bırak veya dosyalarından <u>seç</u>.
 tips-tap_setup = Menüden seçmek yerine takipçine 2 kez yavaşça dokunarak da seçebilirsin.
 tips-turn_on_tracker = Resmi SlimeVR takipçisi mi kullanıyorsun? Takipçilerini bilgisayara bağladıktan sonra onları <b><em>açmayı</em></b> unutma!
@@ -100,24 +100,94 @@ board_type-WROOM32 = WROOM32
 board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Eldiveni
+board_type-GESTURES = Hareketler
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Jenerik nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
 skeleton_bone-NONE = Yok
 skeleton_bone-HEAD = Kafa hizası
+skeleton_bone-HEAD-desc =
+    Bu, kulaklığın ile başının ortası arasındaki mesafedir.
+    Ayarlamak için, 'hayır' der gibi başını soldan sağa ve sağdan sola salla,
+    diğer takipçiler yerinden oynamayana kadar bunu tekrarlayıp ayarla.
 skeleton_bone-NECK = Boyun Uzunluğu
+skeleton_bone-NECK-desc =
+    Bu, başının ortasından boynunun başlangıcına kadar olan mesafedir.
+    Ayarlamak için başını 'evet' der gibi yukarı-aşağı hareket ettir veya başını hafifçe öne eğip, başını sola ve sağa kaydır,
+    diğer takipçiler yerinden oynamayana kadar bunu tekrarlayıp ayarla.
 skeleton_bone-torso_group = Gövde uzunluğu
+skeleton_bone-torso_group-desc =
+    Bu, boynunun başlangıcından kalçalarına kadar olan mesafedir.
+    Ayarlamak için dik dur ve sanal kalçaların, gerçek kalçalarınla hizalanana kadar değeri değiştir.
 skeleton_bone-UPPER_CHEST = Üst Göğüs Uzunluğu
+skeleton_bone-UPPER_CHEST-desc =
+    Bu, boynunun başlangıcından göğsünün ortasına kadar olan mesafedir.
+    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
+    gerçek omurganla eşleşene kadar bu değeri değiştir.
 skeleton_bone-CHEST_OFFSET = Göğüs hizası
+skeleton_bone-CHEST_OFFSET-desc =
+    Bu, bazı oyun veya uygulamalarda kalibrasyona yardımcı olmak için,
+    sanal göğüs takipçisini yukarı ya da aşağı hareket ettirmene izin verir.
 skeleton_bone-CHEST = Göğüs Uzunluğu
+skeleton_bone-CHEST-desc =
+    Bu, göğsünün ortasından omurganın ortasına kadar olan mesafedir.
+    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
+    gerçek omurganla eşleşene kadar bu değeri değiştir.
 skeleton_bone-WAIST = Bel Uzunluğu
+skeleton_bone-WAIST-desc =
+    Bu, omurganın ortasından göbek deliğine kadar olan mesafedir.
+    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
+    gerçek omurganla eşleşene kadar bu değeri değiştir.
 skeleton_bone-HIP = Kalça Uzunluğu
+skeleton_bone-HIP-desc =
+    Bu, göbek deliğinden kalçalarına kadar olan mesafedir.
+    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
+    gerçek omurganla eşleşene kadar bu değeri değiştir.
 skeleton_bone-HIP_OFFSET = Kalça hizası
+skeleton_bone-HIP_OFFSET-desc =
+    Bu, bazı oyun veya uygulamalarda kalibrasyona yardımcı olmak için,
+    sanal kalça takipçisini yukarı ya da aşağı hareket ettirmene izin verir.
 skeleton_bone-HIPS_WIDTH = Kalça Genişliği
+skeleton_bone-HIPS_WIDTH-desc =
+    Bu, bacaklarının başladığı noktalar arasındaki mesafedir.
+    Ayarlamak için bacaklarını düz tutarak tam bir sıfırlama yap ve,
+    sanal bacaklarının aralığı, gerçek bacaklarının aralığıyla hizalanana kadar bu değeri değiştir.
 skeleton_bone-leg_group = Bacak uzunluğu
+skeleton_bone-leg_group-desc =
+    Bu, kalçandan ayaklarına olan mesafedir.
+    Ayarlamak için Gövde uzunluğunu doğru şekilde ayarla ve,
+    sanal ayakların gerçek ayaklarınla aynı seviyeye gelene kadar bu değeri değiştir.
 skeleton_bone-UPPER_LEG = Üst Bacak Uzunluğu
+skeleton_bone-UPPER_LEG-desc =
+    Bu, kalçandan dizlerine olan mesafedir.
+    Ayarlamak için Bacak uzunluğunu doğru şekilde ayarla ve,
+    sanal dizlerin gerçek dizlerinle aynı seviyeye gelene kadar bu değeri değiştir.
 skeleton_bone-LOWER_LEG = Alt Bacak Uzunluğu
+skeleton_bone-LOWER_LEG-desc =
+    Bu, dizlerinden ayak bileklerine olan mesafedir.
+    Ayarlamak için Bacak uzunluğunu doğru şekilde ayarla ve,
+    sanal dizlerin gerçek dizlerinle aynı seviyeye gelene kadar bu değeri değiştir.
 skeleton_bone-FOOT_LENGTH = Ayak Uzunluğu
+skeleton_bone-FOOT_LENGTH-desc =
+    Bu, ayak bileklerinden ayak parmaklarına olan mesafedir.
+    Ayarlamak için parmak uçlarına çık ve sanal ayakların sabit kalana kadar bu değeri değiştir.
 skeleton_bone-FOOT_SHIFT = Ayak hizası
 skeleton_bone-FOOT_SHIFT-desc =
     Bu değer, dizinden ayak bileğine olan yatay mesafedir.
