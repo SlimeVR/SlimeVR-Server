@@ -69,6 +69,11 @@ skeleton_bone-UPPER_LEG = Üst Bacak Uzunluğu
 skeleton_bone-LOWER_LEG = Alt Bacak Uzunluğu
 skeleton_bone-FOOT_LENGTH = Ayak Uzunluğu
 skeleton_bone-FOOT_SHIFT = Ayak hizası
+skeleton_bone-FOOT_SHIFT-desc =
+    Bu değer, dizinden ayak bileğine olan yatay mesafedir.
+    Bu, dik dururken alt bacaklarının geriye doğru konumlanmasını telafi eder.
+    Ayarlamak için Ayak uzunluğunu 0 olarak ayarla, tam sıfırlama yap ve,
+    sanal ayakların ayak bileklerinin ortasıyla hizalanana kadar bu değeri değiştir.
 skeleton_bone-SKELETON_OFFSET = İskelet hizası
 skeleton_bone-SHOULDERS_DISTANCE = Omuz Mesafesi
 skeleton_bone-SHOULDERS_WIDTH = Omuz Genişliği
