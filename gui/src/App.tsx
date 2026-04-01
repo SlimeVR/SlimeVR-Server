@@ -51,6 +51,7 @@ import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/Sta
 import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
 import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
 import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist';
+import { KeybindSettings } from './components/settings/pages/KeybindSettings';
 import { ElectronContextC, provideElectron } from './hooks/electron';
 import { AppLocalizationProvider } from './i18n/config';
 import { openUrl } from './hooks/crossplatform';
@@ -140,6 +141,7 @@ function Layout() {
             <Route path="interface" element={<InterfaceSettings />} />
             <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />
+            <Route path="keybinds" element={<KeybindSettings />} />
           </Route>
           <Route
             path="/onboarding"

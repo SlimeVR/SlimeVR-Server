@@ -603,6 +603,29 @@ settings-stay_aligned-debug-label = Debugging
 settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
 settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 
+settings-keybinds = Keybind settings
+settings-keybinds_ = ''
+settings-keybinds-description = Change keybinds for various shortcuts
+keybind_config-keybind_name = Keybind
+keybind_config-keybind_value = Combination
+keybind_config-keybind_delay = Delay before trigger (s)
+settings-keybinds_full-reset = Full Reset
+settings-keybinds_yaw-reset = Yaw Reset
+settings-keybinds_mounting-reset = Mounting Reset
+settings-keybinds_feet-mounting-reset = Feet Mounting Reset
+settings-keybinds_pause-tracking = Pause Tracking
+settings-keybinds_record-keybind = Click to record
+settings-keybinds_now-recording = Recording…
+settings-keybinds_reset-button = Reset
+settings-keybinds_reset-all-button = Reset all
+settings-keybinds-wayland-description = You appear to be using wayland, Please change your shortcuts in your system settings.
+settings-keybinds-wayland-open-system-settings-button = Open system settings
+settings-sidebar-keybinds = Keybinds
+settings-keybinds-recorder-modal-title = Assign keybind for
+settings-keybinds-recorder-modal-reset-button = Reset
+settings-keybinds-recorder-modal-unbind-button = Unbind
+settings-keybinds-recorder-modal-done-button = Done
+
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
 

@@ -37,6 +37,10 @@ import { ServerStatusEvent } from 'electron/preload/interface';
 import { mkdir } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 
+
+app.setPath('userData', getGuiDataFolder())
+app.setPath('sessionData', join(getGuiDataFolder(), 'electron'))
+
 // Register custom protocol to handle asset paths with leading slashes
 protocol.registerSchemesAsPrivileged([
   {

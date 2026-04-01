@@ -39,8 +39,8 @@ function StaAlignedPoseModal({
           <Typography variant="main-title">{l10n.getString(title)}</Typography>
         </div>
         <div className="flex flex-col gap-1">
-          {descriptionKeys.map((descriptionKey) => (
-            <Typography>{l10n.getString(descriptionKey)}</Typography>
+          {descriptionKeys.map((descriptionKey, i) => (
+            <Typography key={i}>{l10n.getString(descriptionKey)}</Typography>
           ))}
         </div>
         <div className="flex pt-1 items-center fill-background-50 justify-center px-12">

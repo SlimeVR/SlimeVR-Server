@@ -86,7 +86,9 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: server-jar
-          path: server/desktop/build/libs/slimevr.jar
+          path: |
+              server/desktop/build/libs/slimevr.jar
+              server/core/resources
 
   build-gui-frontend:
     name: Build GUI Assets
@@ -138,7 +140,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: server-jar
-          path: server/desktop/build/libs/
+          path: server
       - name: Download GUI Dist
         uses: actions/download-artifact@v6
         with:
@@ -156,7 +158,9 @@ jobs:
                    gui/dist/artifacts/mac
           cd gui
           pnpm i
-          pnpm exec electron-builder --${{ matrix.platform }} ${{ matrix.platform == 'macos' && '--universal' || '' }} --publish never
+          pnpm exec electron-builder --${{ matrix.platform }} \
+            ${{ matrix.platform == 'macos' && '--universal' || '' }} \
+            --publish never
       - name: Collect and Rename Artifacts
         shell: bash
         run: |
@@ -166,7 +170,7 @@ jobs:
 
           if [ "${{ matrix.platform }}" == "windows" ]; then
             [[ "${{ matrix.os }}" == *"arm"* ]] && SUFFIX="win-aarch64" || SUFFIX="win64"
-            cp "$SRC_DIR"/win/*.exe "$DEST_DIR/SlimeVR-$SUFFIX.zip"
+            cp "$SRC_DIR"/win/*.zip "$DEST_DIR/SlimeVR-$SUFFIX.zip"
 
           elif [ "${{ matrix.platform }}" == "linux" ]; then
             for f in "$SRC_DIR"/linux/*; do
@@ -237,11 +241,13 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           pattern: release-*
+          path: release-out
           merge-multiple: true
       - name: Download Server Jar
         uses: actions/download-artifact@v6
         with:
           name: server-jar
+          path: server
       - name: Download GUI Dist
         uses: actions/download-artifact@v6
         with:

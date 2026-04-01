@@ -32,12 +32,13 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			LogManager.warning("Server couldn't verify if udev is installed")
 			return
 		}
-		val response = udevResponse.contains("slime")
+		val isUdevInstalled = udevResponse.contains("slime")
+		val isWayland = System.getenv("XDG_SESSION_TYPE").lowercase().contains("wayland")
 		val fbb = FlatBufferBuilder(1024)
 		val outbound = this.rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.InstalledInfoResponse,
-			createInstalledInfoResponse(fbb, response),
+			createInstalledInfoResponse(fbb, isUdevInstalled, isWayland),
 		)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
