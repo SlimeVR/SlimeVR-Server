@@ -3,6 +3,8 @@ package dev.slimevr.solarxr
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceState
+import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.tracker.TrackerState
 import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.cancelAndJoin
@@ -10,6 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import solarxr_protocol.MessageBundle
+import solarxr_protocol.data_feed.Bone
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.data_feed.DataFeedUpdate
@@ -85,6 +88,15 @@ private fun createDevice(
 	)
 }
 
+private fun createBone(
+	bone: BoneState,
+): Bone = Bone(
+	bodyPart = bone.bodyPart,
+	rotationG = bone.rotation.let { Quat(it.x, it.y, it.z, it.w) },
+	boneLength = bone.length,
+	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) },
+)
+
 fun createDatafeedFrame(
 	serverContext: VRServer,
 	datafeedConfig: DataFeedConfig,
@@ -94,9 +106,15 @@ fun createDatafeedFrame(
 	val trackers = serverState.trackers.values.map { it.context.state.value }
 	val devices = serverState.devices.values.map { it.context.state.value }
 		.map { device -> createDevice(device, trackers, datafeedConfig) }
+	val bones = if (datafeedConfig.boneMask) {
+		DEFAULT_SKELETON_STATE.bones.values.map { createBone(it) }
+	} else {
+		null
+	}
 	return DataFeedMessageHeader(
 		message = DataFeedUpdate(
 			devices = if (datafeedConfig.dataMask?.deviceData != null) devices else null,
+			bones = bones,
 			index = index.toUByte(),
 		),
 	)
