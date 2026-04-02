@@ -62,6 +62,10 @@ win:
 
 mac:
   target: dmg
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: "build/entitlements.mac.plist"
+  entitlementsInherit: build/entitlements.mac.plist
   artifactName: "SlimeVR-mac.${ext}"
   x64ArchFiles: "**/register-protocol-handler.node"
   icon: "./electron/resources/icons/icon.icns"

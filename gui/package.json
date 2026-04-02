@@ -33,6 +33,7 @@
   "devDependencies": {
     "@dword-design/eslint-plugin-import-alias": "^4.0.9",
     "@electron/asar": "^4.0.1",
+    "@electron/notarize": "^3.1.1",
     "@fluent/bundle": "^0.18.0",
     "@fluent/react": "^0.15.2",
     "@fontsource/poppins": "^5.1.0",
