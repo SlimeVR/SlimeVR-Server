@@ -112,12 +112,12 @@ export const findSystemJRE = async (sharedDir: string) => {
 export const findServerJar = () => {
   const paths = [
     options.path ? path.resolve(options.path) : undefined,
+    app.isPackaged ? path.resolve(process.resourcesPath) : undefined,
     // AppImage passes the fakeroot in `APPDIR` env var.
     process.env['APPDIR']
       ? path.resolve(join(process.env['APPDIR'], 'usr/share/slimevr/'))
       : undefined,
     path.dirname(app.getPath('exe')),
-
     // For flatpack container
     path.resolve('/app/share/slimevr/'),
     path.resolve('/usr/share/slimevr/'),

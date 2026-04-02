@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openUrl: (url) => ipcRenderer.invoke(IPC_CHANNELS.OPEN_URL, url),
   osStats: () => ipcRenderer.invoke(IPC_CHANNELS.OS_STATS),
   close: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'close'),
+  hide: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'hide'),
   minimize: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'minimize'),
   maximize: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'maximize'),
   getStorage: async (type) => {

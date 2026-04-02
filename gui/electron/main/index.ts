@@ -14,7 +14,7 @@ import { IPC_CHANNELS } from '../shared';
 import path, { dirname, join } from 'path';
 import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
-import appleTrayIcon from '../resources/icons/appleTrayIcon.png?asset';
+import appleTrayIcon from '../resources/icons/Square30x30Logo.png?asset';
 import { readFile, stat } from 'fs/promises';
 import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
@@ -27,7 +27,7 @@ import {
   getWindowStateFile,
 } from './paths';
 import { stores } from './store';
-import { logger } from './logger';
+import { closeLogger, logger } from './logger';
 import { writeFileSync } from 'node:fs';
 
 import { spawn } from 'node:child_process';
@@ -37,7 +37,16 @@ import { ServerStatusEvent } from 'electron/preload/interface';
 import { mkdir } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 
-// Register custom protocol to handle asset paths with leading slashes
+// Fixes colors looking washed on linux
+// Might affect hdr
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('disable-features', 'WaylandWpColorManagerV1');
+  app.commandLine.appendSwitch('force-color-profile', 'srgb');
+}
+
+app.setPath('userData', getGuiDataFolder());
+app.setPath('sessionData', join(getGuiDataFolder(), 'electron'));
+
 protocol.registerSchemesAsPrivileged([
   {
     scheme: 'app',
@@ -267,6 +276,9 @@ function createWindow() {
       case 'close':
         mainWindow?.close();
         break;
+      case 'hide':
+        mainWindow?.hide();
+        break;
       case 'minimize':
         mainWindow?.minimize();
         break;
@@ -338,8 +350,7 @@ function createWindow() {
     menu.append(new MenuItem({ label: 'Copy', role: 'copy' }));
     menu.append(new MenuItem({ label: 'Paste', role: 'paste' }));
 
-    if (mainWindow)
-      menu.popup({ window: mainWindow });
+    if (mainWindow) menu.popup({ window: mainWindow });
   });
 }
 
@@ -352,7 +363,7 @@ const checkEnvironmentVariables = () => {
       'SlimeVR',
       `You have environment variables ${set.join(', ')} set, which may cause the SlimeVR Server to fail to launch properly.`
     );
-    app.exit(0);
+    app.quit();
   }
 };
 
@@ -379,22 +390,40 @@ const spawnServer = async () => {
       'SlimeVR',
       `Couldn't find a compatible Java version, please download Java 17 or higher`
     );
-    app.exit(0);
+    app.quit()
     return;
   }
 
   logger.info({ javaBin, serverJar }, 'Found Java and server jar');
-  const serverArgs = ['-Xmx128M', '-jar', serverJar]
+  const platform = getPlatform();
+  const serverWorkdir = getServerDataFolder()
 
+  const serverArgs = ['-Xmx128M', '-jar', serverJar]
   if (options.steam) serverArgs.push(`--steam`)
   if (options.install) serverArgs.push(`--install`)
   if (options.noUdev) serverArgs.push(`--no-udev`)
 
   serverArgs.push('run')
 
-  const process = spawn(javaBin, serverArgs)
 
-  logger.info(`Java start command: ${serverArgs.join(' ')})`)
+  const serverProcess = spawn(javaBin, serverArgs, {
+    cwd: serverWorkdir,
+    shell: false,
+    env:
+      platform === 'windows'
+        ? {
+            ...process.env,
+            APPDATA: app.getPath('appData'),
+            LOCALAPPDATA: process.env['USERPROFILE'] ? path.join(process.env['USERPROFILE'], 'AppData', 'Local') : undefined,
+          }
+        : undefined,
+  });
+
+  const sendToWindow = (event: ServerStatusEvent) => {
+    if (mainWindow && !mainWindow.webContents.isDestroyed()) {
+      mainWindow.webContents.send(IPC_CHANNELS.SERVER_STATUS, event);
+    }
+  };
 
   process.stdout?.on('data', (message) => {
     mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
@@ -403,20 +432,29 @@ const spawnServer = async () => {
     } satisfies ServerStatusEvent);
   });
 
-  process.stderr?.on('data', (message) => {
-    mainWindow?.webContents.send(IPC_CHANNELS.SERVER_STATUS, {
-      message: message.toString(),
-      type: 'stderr',
-    } satisfies ServerStatusEvent);
+  serverProcess.stderr?.on('data', (message) => {
+    sendToWindow({ message: message.toString(), type: 'stderr' });
   });
 
+  serverProcess.on('error', (err) => {
+    logger.info({ err }, 'Error launching the java server');
+    if (!isQuitting) app.quit();
+  })
+
+  serverProcess.on('exit', () => {
+    logger.info('Server process exiting');
+  })
+
+  const exited = new Promise<void>((resolve) => serverProcess.once('exit', resolve));
+
   return {
-    process: process,
-    close: () => {
-      process.kill('SIGTERM');
-    },
+    process: serverProcess,
+    close: () => serverProcess.kill(),
+    waitForExit: () => exited,
   };
 };
+
+let isQuitting = false;
 
 app.whenReady().then(async () => {
   // Register protocol handler for app:// scheme to handle assets with leading slashes
@@ -434,23 +472,21 @@ app.whenReady().then(async () => {
   logger.info('SlimeVR started!');
 
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-      app.quit();
-    }
+    app.quit();
   });
 
-  process.on('exit', () => {
-    server?.close();
-  });
-
-  app.on('before-quit', async () => {
+  app.on('before-quit', async (event) => {
+    if (isQuitting) return;
+    isQuitting = true;
+    event.preventDefault();
     logger.info('App quitting, saving...');
     server?.close();
+    await server?.waitForExit();
     stores.settings.save();
     stores.cache.save();
-
     discordPresence.destroy();
-
     await saveWindowState();
+    await closeLogger();
+    app.exit(0);
   });
 });

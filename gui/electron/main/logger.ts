@@ -24,3 +24,11 @@ const transport = pino.transport({
 });
 
 export const logger = pino(transport);
+
+export const closeLogger = () =>
+  new Promise<void>((resolve) => {
+    logger.flush(() => {
+      transport.once('close', resolve);
+      transport.end();
+    });
+  });

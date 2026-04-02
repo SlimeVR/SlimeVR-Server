@@ -45,6 +45,18 @@ class UDPDevice(
 	var lastPacketNumber: Long = -1
 
 	@JvmField
+	var totalPacketsReceived: Int = 0
+
+	@JvmField
+	var acceptedPackets: Int = 0
+
+	@JvmField
+	var lastPacketCounterReset: Long = System.currentTimeMillis()
+
+	val packetLossPercent: Float
+		get() = if (totalPacketsReceived == 0) 0f else (1f - acceptedPackets.toFloat() / totalPacketsReceived.toFloat())
+
+	@JvmField
 	var protocol: NetworkProtocol? = null
 
 	@JvmField
@@ -68,9 +80,25 @@ class UDPDevice(
 	var firmwareFeatures = FirmwareFeatures()
 
 	fun isNextPacket(packetId: Long): Boolean {
-		if (packetId != 0L && packetId <= lastPacketNumber) return false
-		lastPacketNumber = packetId
-		return true
+		val now = System.currentTimeMillis()
+		if (now - lastPacketCounterReset >= 10_000L) {
+			totalPacketsReceived = 0
+			acceptedPackets = 0
+			lastPacketCounterReset = now
+		}
+		totalPacketsReceived++
+		val accepted = packetId == 0L || packetId > lastPacketNumber
+		if (accepted) {
+			lastPacketNumber = packetId
+			acceptedPackets++
+		}
+		val lost = totalPacketsReceived - acceptedPackets
+		trackers.values.forEach {
+			it.packetsReceived = totalPacketsReceived
+			it.packetsLost = lost
+			it.packetLoss = packetLossPercent
+		}
+		return accepted
 	}
 
 	override fun toString(): String = "udp:/$ipAddress"

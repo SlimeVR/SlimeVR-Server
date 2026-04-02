@@ -51,8 +51,14 @@ rpm:
 
 win:
   artifactName: "${productName}-${os}-${arch}.${ext}"
-  target: [target: portable]
+  target: zip
   icon: "./electron/resources/icons/icon.ico"
+  extraFiles:
+    - from: "../server/desktop/build/libs/slimevr.jar"
+      to: "."
+    - from: "../server/core/resources"
+      to: "."
+      filter: ["**/*"]
 
 mac:
   target: dmg
