@@ -60,7 +60,7 @@ export function BatteryIcon({
         />
       </mask>
       <g mask="url(#mask0_4_39)" className={classNames(col, 'opacity-100')}>
-        <rect width={charging ? 18 : value * 18} height="9" />
+        <rect width={charging ? 18 : value > 2 ? 0 : value * 18} height="9" />
       </g>
       {charging && value <= 1 && (
         <path
@@ -68,7 +68,7 @@ export function BatteryIcon({
           fill="#081e30"
         />
       )}
-      {charging && value > 1 && (
+      {charging && value > 1 && value < 2 && (
         <path
           d="M 5.5342464,4.6225095 C 6.1777799,5.0106205 6.6131537,5.2516456 7.5253371,6.545223 8.4340868,4.4016445 8.7809738,3.661475 10.605195,1.5520288"
           fill="none"
