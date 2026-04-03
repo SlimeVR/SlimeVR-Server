@@ -81,7 +81,7 @@ export function TopBar({
     }
 
     if (config?.useTray && !dontTray) {
-      electron.api.minimize();
+      electron.api.hide();
     } else if (
       config?.connectedTrackersWarning &&
       connectedIMUTrackers.filter(

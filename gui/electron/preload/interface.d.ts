@@ -43,6 +43,7 @@ export interface IElectronAPI {
   openLogsFolder: () => Promise<void>;
   openConfigFolder: () => Promise<void>;
   close: () => void;
+  hide: () => void;
   minimize: () => void;
   maximize: () => void;
   showDecorations: (decorations: boolean) => void;
