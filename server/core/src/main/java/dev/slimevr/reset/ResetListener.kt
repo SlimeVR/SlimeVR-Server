@@ -1,7 +1,9 @@
 package dev.slimevr.reset
 
-interface ResetListener {
-	fun onStarted(resetType: Int, txId: Long?, bodyParts: List<Int>? = null, progress: Int, duration: Int)
+import dev.slimevr.protocol.rpc.TransactionInfo
 
-	fun onFinished(resetType: Int, txId: Long?, bodyParts: List<Int>? = null, duration: Int)
+interface ResetListener {
+	fun onStarted(resetType: Int, tx: TransactionInfo?, bodyParts: List<Int>? = null, progress: Int, duration: Int)
+
+	fun onFinished(resetType: Int, tx: TransactionInfo?, bodyParts: List<Int>? = null, duration: Int)
 }
