@@ -1,3 +1,9 @@
 [submodule "solarxr-protocol"]
 	path = solarxr-protocol
 	url = https://github.com/SlimeVR/SolarXR-Protocol.git
+[submodule "svr-bindings-provider/openvr"]
+	path = svr-bindings-provider/openvr
+	url = https://github.com/ValveSoftware/openvr.git
+[submodule "svr-bindings-provider/vcpkg"]
+	path = svr-bindings-provider/vcpkg
+	url = https://github.com/microsoft/vcpkg.git

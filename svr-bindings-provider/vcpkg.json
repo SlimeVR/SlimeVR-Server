@@ -1,0 +1,9 @@
+{
+  "dependencies": ["flatbuffers"],
+  "overrides": [
+    {
+      "name": "flatbuffers",
+      "version": "22.10.26"
+    }
+  ]
+}
