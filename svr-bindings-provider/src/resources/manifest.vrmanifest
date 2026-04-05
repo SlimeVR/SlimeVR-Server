@@ -1,0 +1,15 @@
+{
+    "source": "builtin",
+    "applications": [{
+        "app_key": "dev.slimevr.BindingsProvider",
+        "launch_type": "binary",
+        "is_dashboard_overlay": false,
+        "action_manifest_path": "action_manifest.json",
+        "strings": {
+            "en_us": {
+                "name": "SlimeVR Bindings Provider",
+                "description": "SlimeVR Bindings Provider"
+            }
+        }
+    }]
+}

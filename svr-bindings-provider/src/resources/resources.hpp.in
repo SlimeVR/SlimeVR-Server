@@ -1,0 +1,4 @@
+#pragma once
+
+#cmakedefine SVR_VRAPP_MANIFEST R"(@SVR_VRAPP_MANIFEST@)"
+#cmakedefine SVR_VRAPP_ACTION_MANIFEST R"(@SVR_VRAPP_ACTION_MANIFEST@)"
