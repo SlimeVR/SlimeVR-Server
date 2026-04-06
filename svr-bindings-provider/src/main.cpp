@@ -5,12 +5,15 @@
 #include <thread>
 #include <tuple>
 
+// These must be included before Windows.h because of some macro collisions.
+#include "flatbuffers/flatbuffers.h"
+#include "solarxr_protocol/generated/all_generated.h"
+
 #include "logger.hpp"
 #include "solarxr.hpp"
 #include "vr_utils.hpp"
 
 #include "openvr.h"
-#include "solarxr_protocol/generated/all_generated.h"
 
 using namespace std::chrono_literals;
 using namespace solarxr_protocol;
