@@ -977,7 +977,7 @@ onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
 onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
 
 ## Wi-Fi setup
-onboarding-wifi_creds-back-v2 = Go Back
+onboarding-wifi_creds-back-v2 = Go back
 onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
