@@ -214,15 +214,16 @@ fun provideBridges(
 		}
 
 		OperatingSystem.LINUX -> {
-			var linuxBridge: SteamVRBridge? = null
 			try {
-				linuxBridge = UnixSocketBridge(
-					server,
-					"steamvr",
-					"SteamVR Driver Bridge",
-					Paths.get(OperatingSystem.socketDirectory, "SlimeVRDriver")
-						.toString(),
-					computedTrackers,
+				yield(
+					UnixSocketBridge(
+						server,
+						"steamvr",
+						"SteamVR Driver Bridge",
+						Paths.get(OperatingSystem.socketDirectory, "SlimeVRDriver")
+							.toString(),
+						computedTrackers,
+					),
 				)
 			} catch (ex: Exception) {
 				LogManager.severe(
@@ -230,19 +231,7 @@ fun provideBridges(
 					ex,
 				)
 			}
-			if (linuxBridge != null) {
-				// Close the named socket on shutdown, or otherwise it's not going to get removed
-				Runtime.getRuntime().addShutdownHook(
-					Thread {
-						try {
-							(linuxBridge as? UnixSocketBridge)?.close()
-						} catch (e: Exception) {
-							throw RuntimeException(e)
-						}
-					},
-				)
-				yield(linuxBridge)
-			}
+
 			yield(
 				UnixSocketBridge(
 					server,

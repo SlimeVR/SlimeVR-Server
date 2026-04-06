@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.bridge.BridgeThread
+import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.BridgeConfig
 import dev.slimevr.desktop.platform.ProtobufMessages.*
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
@@ -15,6 +16,7 @@ import dev.slimevr.tracking.trackers.TrackerRole.Companion.getById
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.collections.FastList
+import io.eiren.util.logging.LogManager
 
 abstract class SteamVRBridge(
 	protected val server: VRServer,
@@ -38,6 +40,11 @@ abstract class SteamVRBridge(
 			)
 		}
 		runnerThread.start()
+	}
+
+	@VRServerThread
+	override fun stopBridge() {
+		runnerThread.interrupt()
 	}
 
 	@VRServerThread
@@ -141,6 +148,21 @@ abstract class SteamVRBridge(
 
 	@VRServerThread
 	override fun createNewTracker(trackerAdded: TrackerAdded): Tracker {
+		val isHmd = trackerAdded.trackerId == 0
+		// We (should) only ever get this message from the driver. Shut off the feeder
+		// bridge if the driver is new enough
+		if (isHmd && remoteProtocolVersion >= 2) {
+			instance.queueTask {
+				val bridge = instance.getVRBridge {
+					it is ISteamVRBridge && it.getBridgeConfigKey() == "steamvr_feeder"
+				} as? SteamVRBridge
+				bridge?.let {
+					LogManager.info("SteamVR driver is new enough, deactivating feeder bridge")
+					instance.removeVRBridge(it)
+				}
+			}
+		}
+
 		val device = instance.deviceManager
 			.createDevice(
 				trackerAdded.trackerName,
@@ -150,7 +172,6 @@ abstract class SteamVRBridge(
 
 		// Display name, needsReset and isHmd
 		val displayName: String = trackerAdded.trackerName
-		val isHmd = trackerAdded.trackerId == 0
 
 		// trackerPosition
 		val role = getById(trackerAdded.trackerRole)

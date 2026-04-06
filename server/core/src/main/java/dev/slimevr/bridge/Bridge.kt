@@ -41,6 +41,9 @@ interface Bridge {
 	@VRServerThread
 	fun startBridge()
 
+	@VRServerThread
+	fun stopBridge()
+
 	fun isConnected(): Boolean
 }
 
