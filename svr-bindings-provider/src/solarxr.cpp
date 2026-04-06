@@ -1,11 +1,13 @@
 #include "solarxr.hpp"
 #include "logger.hpp"
 
+#include <stdexcept>
+
 #if defined(__linux__)
 #include <sys/socket.h>
 #include <sys/un.h>
 #elif defined(_WIN32)
-#error "TODO: actually implement this lol"
+#include <Windows.h>
 #else
 #error "Unsupported platform"
 #endif
@@ -40,13 +42,14 @@ fs::path SolarXRConnection::getSocketPath() {
     Logger::get().info(
         "Skipping socket directory {} because socket does not exist", name);
   }
-
-  throw std::runtime_error("Failed to find socket directory");
 #elif defined(_WIN32)
-#error "TODO: actually implement this lol"
+  throw std::logic_error(
+      "SolarXRConnection::getSocketPath should not be called on Windows");
 #else
 #error "Unsupported platform"
 #endif
+
+  throw std::runtime_error("Failed to find socket directory");
 }
 
 SolarXRConnection::SolarXRConnection() {
@@ -67,7 +70,17 @@ SolarXRConnection::SolarXRConnection() {
   }
 
 #elif defined(_WIN32)
-#error "TODO: actually implement this lol"
+  const char *pipeName = R"(\\.\pipe\SlimeVRRpc)";
+  if (!WaitNamedPipe(pipeName, 5000)) {
+    throw std::runtime_error("Timed out waiting for pipe");
+  }
+
+  pipe = CreateFile(pipeName, GENERIC_READ | GENERIC_WRITE, 0, nullptr,
+                    OPEN_EXISTING, 0, nullptr);
+  if (pipe == INVALID_HANDLE_VALUE) {
+    throw std::runtime_error(
+        std::format("Unable to open pipe (error={})", GetLastError()));
+  }
 #else
 #error "Unsupported platform"
 #endif
@@ -78,7 +91,8 @@ SolarXRConnection::~SolarXRConnection() {
   if (fd != -1)
     close(fd);
 #elif defined(_WIN32)
-#error "TODO: actually implement this lol"
+  if (pipe != INVALID_HANDLE_VALUE)
+    CloseHandle(pipe);
 #else
 #error "Unsupported platform"
 #endif
@@ -87,12 +101,12 @@ SolarXRConnection::~SolarXRConnection() {
 void SolarXRConnection::sendMsg(flatbuffers::FlatBufferBuilder &fbb) {
   // The server expects the total size of the buffer to be written at the
   // start of the packet, including the first 4 bytes for the size
-  int size{};
-  if constexpr (std::endian::native == std::endian::big)
-    size = std::byteswap(fbb.GetSize() + 4);
-  else
-    size = fbb.GetSize() + 4;
+  int size = fbb.GetSize() + 4;
+  // This may be wrong on mixed-endianness, but oh well...
+  if constexpr (std::endian::native != std::endian::little)
+    size = std::byteswap(size);
 
+#if defined(__linux__)
   if (write(fd, &size, sizeof(size)) == -1) {
     Logger::get().warning("Failed to write message size to socket: {}",
                           strerror(errno));
@@ -104,4 +118,20 @@ void SolarXRConnection::sendMsg(flatbuffers::FlatBufferBuilder &fbb) {
                           strerror(errno));
     return;
   }
+#elif defined(_WIN32)
+  uint8_t tempBuf[2048];
+  if (fbb.GetSize() > 2048 - 4) {
+    throw std::runtime_error("Message is too big for temporary buffer");
+  }
+
+  *reinterpret_cast<int *>(&tempBuf[0]) = size;
+  memcpy(&tempBuf[4], fbb.GetBufferPointer(), fbb.GetSize());
+  if (!WriteFile(pipe, tempBuf, fbb.GetSize() + 4, nullptr, nullptr)) {
+    Logger::get().warning("Failed to write message to pipe (error={})",
+                          GetLastError());
+    return;
+  }
+#else
+#error "Unsupported platform"
+#endif
 }
