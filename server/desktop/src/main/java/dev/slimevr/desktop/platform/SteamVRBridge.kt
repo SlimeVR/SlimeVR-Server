@@ -15,8 +15,82 @@ import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerRole.Companion.getById
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import dev.slimevr.util.ann.VRServerThread
+import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.exists
+
+class BindingsProviderManager : Runnable {
+	private var process: Process? = null
+	private var watcherThread: Thread? = null
+
+	private fun getBinaryPath(): Path? {
+		// First we want to try to find it in the working directory, its location on
+		// Steam/Windows/portable.
+		val binaryName = if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
+			"BindingsProvider.exe"
+		} else {
+			"BindingsProvider"
+		}
+		val workingDir = System.getProperty("user.dir")!!
+
+		val binaryPath = Path(workingDir, binaryName)
+		if (binaryPath.exists()) return binaryPath
+
+		// Then look through PATH to find the binary.
+		val path = System.getenv("PATH") ?: error("")
+		val pathSeparator = System.getProperty("path.separator")!!
+		for (path in path.split(pathSeparator)) {
+			val binaryPath = Path(path, binaryName)
+			if (binaryPath.exists()) return binaryPath
+		}
+
+		// :(
+		return null
+	}
+
+	fun start() {
+		check(process == null && watcherThread == null) {
+			"BindingsProviderManager already running"
+		}
+
+		val binaryPath = getBinaryPath() ?: throw RuntimeException("Unable to find bindings provider binary")
+		process = ProcessBuilder(binaryPath.toString())
+			.redirectErrorStream(true)
+			.start()
+		LogManager.info("[BindingsProviderManager] Started process")
+		watcherThread = Thread(this, "Bindings provider watcher")
+		watcherThread!!.start()
+	}
+	fun stop() {
+		process?.let {
+			it.destroy()
+		}
+		process = null
+		watcherThread?.interrupt()
+		watcherThread = null
+	}
+
+	override fun run() {
+		try {
+			val interval = 1000L / 30L
+			while (process?.isAlive == true) {
+				Thread.sleep(interval)
+			}
+
+			val exitCode = process?.exitValue()
+			if (exitCode != null) {
+				LogManager.info("[BindingsProviderManager] Process has exited with exit code $exitCode")
+			} else {
+				LogManager.info("[BindingsProviderManager] Process has exited")
+			}
+		} catch (_: InterruptedException) {
+			// Ignore it
+		}
+	}
+}
 
 abstract class SteamVRBridge(
 	protected val server: VRServer,
@@ -27,6 +101,7 @@ abstract class SteamVRBridge(
 ) : ProtobufBridge(bridgeName),
 	Runnable {
 	protected val runnerThread: Thread = Thread(this, threadName)
+	private var bindingsProviderManager: BindingsProviderManager? = null
 	protected val config: BridgeConfig = server.configManager.vrConfig.getBridge(bridgeSettingsKey)
 	var connected: Boolean = false
 
@@ -44,6 +119,8 @@ abstract class SteamVRBridge(
 
 	@VRServerThread
 	override fun stopBridge() {
+		bindingsProviderManager?.stop()
+		bindingsProviderManager = null
 		runnerThread.interrupt()
 	}
 
@@ -148,21 +225,6 @@ abstract class SteamVRBridge(
 
 	@VRServerThread
 	override fun createNewTracker(trackerAdded: TrackerAdded): Tracker {
-		val isHmd = trackerAdded.trackerId == 0
-		// We (should) only ever get this message from the driver. Shut off the feeder
-		// bridge if the driver is new enough
-		if (isHmd && remoteProtocolVersion >= 2) {
-			instance.queueTask {
-				val bridge = instance.getVRBridge {
-					it is ISteamVRBridge && it.getBridgeConfigKey() == "steamvr_feeder"
-				} as? SteamVRBridge
-				bridge?.let {
-					LogManager.info("SteamVR driver is new enough, deactivating feeder bridge")
-					instance.removeVRBridge(it)
-				}
-			}
-		}
-
 		val device = instance.deviceManager
 			.createDevice(
 				trackerAdded.trackerName,
@@ -175,6 +237,7 @@ abstract class SteamVRBridge(
 
 		// trackerPosition
 		val role = getById(trackerAdded.trackerRole)
+		val isHmd = trackerAdded.trackerId == 0
 		val trackerPosition = if (role != null) {
 			getByTrackerRole(role)
 		} else {
@@ -200,6 +263,33 @@ abstract class SteamVRBridge(
 		device.trackers[0] = tracker
 		instance.deviceManager.addDevice(device)
 		return tracker
+	}
+
+	@VRServerThread
+	override fun versionReceived(versionMessage: Version) {
+		super.versionReceived(versionMessage)
+		if (bridgeSettingsKey == "steamvr" && remoteProtocolVersion >= 2) {
+			instance.queueTask {
+				// Shut off the feeder bridge if the connected driver is recent enough
+				val bridge = instance.getVRBridge {
+					it is ISteamVRBridge && it.getBridgeConfigKey() == "steamvr_feeder"
+				} as? SteamVRBridge
+				bridge?.let {
+					LogManager.info("[$bridgeName] Driver version is new enough, deactivating feeder bridge")
+					instance.removeVRBridge(it)
+				}
+
+				// Start the bindings utility when the driver starts up
+				if (bindingsProviderManager == null) {
+					bindingsProviderManager = BindingsProviderManager()
+				}
+				try {
+					bindingsProviderManager!!.start()
+				} catch (e: Exception) {
+					LogManager.warning("[$bridgeName] Failed to start bindings provider", e)
+				}
+			}
+		}
 	}
 
 	// Battery Status
@@ -433,6 +523,7 @@ abstract class SteamVRBridge(
 
 	@BridgeThread
 	protected fun reportDisconnected() {
+		bindingsProviderManager?.stop()
 		connected = false
 	}
 
