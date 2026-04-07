@@ -605,6 +605,8 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Se puede desactivar por sensor en la configuración del sensor. <b>¡Por favor, no apagues ninguno de los trackers mientras activas esta opción!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar magnetómetro en trackers
 settings-general-tracker_mechanics-trackers_over_usb = Trackers por USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Permite recibir datos de trackers HID por USB. ¡Asegúrate de que los trackers conectados tengan <b>conexión por HID</b> activados!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Permite a los trackers HID conectarse directamente por USB
 settings-stay_aligned = Mantente Alineado
 settings-stay_aligned-description = Mantente Alineado reduce el desvío ajustando gradualmente tus trackers para calzar tus poses relajadas.
 settings-stay_aligned-setup-label = Configurar Mantente Alineado
@@ -1469,6 +1471,8 @@ firmware_tool-select_source-version = Versión del Firmware
 firmware_tool-select_source-official = Oficial
 firmware_tool-select_source-dev = Desarrollo
 firmware_tool-select_source-not_selected = Ninguna fuente seleccionada
+firmware_tool-select_source-no_boards = No hay placas disponibles para esta fuente
+firmware_tool-select_source-no_versions = No hay versiones disponibles para esta fuente
 firmware_tool-board_defaults = Configura tu placa
 firmware_tool-board_defaults-description = Establece los pines o ajustes relativos a tu hardware
 firmware_tool-board_defaults-add = Añadir
