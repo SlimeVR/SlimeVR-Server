@@ -1144,32 +1144,31 @@ export function GeneralSettings() {
                     />
                   </div>
                 </div>
-
-                <div className="flex flex-col pt-2 pb-3">
-                  <Typography variant="section-title">
-                    {l10n.getString(
-                      'settings-general-fk_settings-self_localization-title'
-                    )}
-                  </Typography>
-                  <Typography>
-                    {l10n.getString(
-                      'settings-general-fk_settings-self_localization-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="grid sm:grid-cols-1 gap3 pb5">
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    control={control}
-                    name="toggles.selfLocalization"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-self_localization-title'
-                    )}
-                  />
-                </div>
               </>
             )}
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-fk_settings-self_localization-title'
+                )}
+              </Typography>
+              <Typography>
+                {l10n.getString(
+                  'settings-general-fk_settings-self_localization-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 gap3 pb5">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.selfLocalization"
+                label={l10n.getString(
+                  'settings-general-fk_settings-self_localization-title'
+                )}
+              />
+            </div>
           </>
         </SettingsPagePaneLayout>
 

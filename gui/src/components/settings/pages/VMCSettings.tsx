@@ -31,7 +31,6 @@ import { boolean, object } from 'yup';
 interface VMCSettingsForm {
   vmc: {
     oscSettings: OSCSettings;
-    vrmJson?: FileList;
     anchorHip: boolean;
     mirrorTracking: boolean;
   };
@@ -50,10 +49,86 @@ const defaultValues = {
   },
 };
 
+export function VMCFileUpload() {
+  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { l10n } = useLocalization();
+  const [modelName, setModelName] = useState<string | null>(null);
+  const [settings, setSettings] = useState<SettingsResponseT>();
+
+  const { control, watch } = useForm<{
+    vrmJson?: FileList;
+  }>({
+    defaultValues: { vrmJson: undefined },
+    reValidateMode: 'onChange',
+    mode: 'onChange',
+  });
+
+  const vrmJson = watch('vrmJson');
+
+  const updateVRMJson = async () => {
+    if (!settings?.vmcOsc) return;
+
+    const req = new ChangeSettingsRequestT();
+    const vmcOsc = new VMCOSCSettingsT();
+    vmcOsc.oscSettings = Object.assign(
+      new OSCSettingsT(),
+      settings.vmcOsc.oscSettings
+    );
+    if (vrmJson !== undefined) {
+      if (vrmJson.length > 0) {
+        const file = await parseVRMFile(vrmJson[0]);
+        if (file) {
+          vmcOsc.vrmJson = file.json;
+          setModelName(file.name);
+        }
+      } else {
+        vmcOsc.vrmJson = '';
+        setModelName(null);
+      }
+    }
+    req.vmcOsc = vmcOsc;
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
+  };
+
+  useEffect(() => {
+    updateVRMJson();
+  }, [vrmJson]);
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+  }, []);
+
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    setSettings(settings);
+    const vrmJson = settings.vmcOsc?.vrmJson?.toString();
+    if (vrmJson) {
+      setModelName(getVRMName(vrmJson) || '');
+    }
+  });
+
+  return (
+    <FileInput
+      control={control}
+      name="vrmJson"
+      rules={{
+        required: false,
+      }}
+      value="help"
+      importedFileName={
+        // if modelname is an empty string, it's an untitled model
+        modelName === ''
+          ? l10n.getString('settings-osc-vmc-vrm-untitled_model')
+          : modelName
+      }
+      label="settings-osc-vmc-vrm-file_select"
+      accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
+    />
+  );
+}
+
 export function VMCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [modelName, setModelName] = useState<string | null>(null);
   const { oscValidator } = useOscSettingsValidator();
 
   const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
@@ -81,18 +156,6 @@ export function VMCSettings() {
         new OSCSettingsT(),
         values.vmc.oscSettings
       );
-      if (values.vmc.vrmJson !== undefined) {
-        if (values.vmc.vrmJson.length > 0) {
-          const file = await parseVRMFile(values.vmc.vrmJson[0]);
-          if (file) {
-            vmcOsc.vrmJson = file.json;
-            setModelName(file.name);
-          }
-        } else {
-          vmcOsc.vrmJson = '';
-          setModelName(null);
-        }
-      }
       vmcOsc.anchorHip = values.vmc.anchorHip;
       vmcOsc.mirrorTracking = values.vmc.mirrorTracking;
 
@@ -123,10 +186,6 @@ export function VMCSettings() {
         if (settings.vmcOsc.oscSettings.address)
           formData.vmc.oscSettings.address =
             settings.vmcOsc.oscSettings.address.toString();
-      }
-      const vrmJson = settings.vmcOsc.vrmJson?.toString();
-      if (vrmJson) {
-        setModelName(getVRMName(vrmJson) || '');
       }
 
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
@@ -238,23 +297,7 @@ export function VMCSettings() {
               </Typography>
             </div>
             <div className="grid gap-3 pb-5">
-              <FileInput
-                control={control}
-                name="vmc.vrmJson"
-                rules={{
-                  required: false,
-                }}
-                value="help"
-                importedFileName={
-                  // if modelname is an empty string, it's an untitled model
-                  modelName === ''
-                    ? l10n.getString('settings-osc-vmc-vrm-untitled_model')
-                    : modelName
-                }
-                label="settings-osc-vmc-vrm-file_select"
-                accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
-              />
-              {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
+              <VMCFileUpload />
             </div>
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-anchor_hip')}
