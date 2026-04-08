@@ -39,6 +39,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var yawResetSmoothTime = 0.0f
 	var saveMountingReset = false
 	var resetHmdPitch = false
+	var stepMounting = false
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -85,7 +86,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * [mountingOrientation] will apply.
 	 */
 	var mountRotFix = Quaternion.IDENTITY
-		private set
 
 	/**
 	 * Yaw fix is set by yaw reset. This sets the current y rotation to match the
@@ -165,6 +165,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		yawResetSmoothTime = config.yawResetSmoothTime
 		saveMountingReset = config.saveMountingReset
 		resetHmdPitch = config.resetHmdPitch
+		stepMounting = config.stepMounting
 	}
 
 	fun trySetMountingReset(quat: Quaternion) {
