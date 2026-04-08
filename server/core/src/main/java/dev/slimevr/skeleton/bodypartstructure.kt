@@ -2,7 +2,7 @@ package dev.slimevr.skeleton
 
 import solarxr_protocol.datatypes.BodyPart
 
-val BODY_PART_CHILD_MAP = mapOf(
+val BODY_PART_HIERARCHY_MAP = mapOf(
 	BodyPart.HEAD to arrayOf(BodyPart.NECK),
 	BodyPart.NECK to arrayOf(BodyPart.UPPER_CHEST, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
 
@@ -64,12 +64,12 @@ val BODY_PART_CHILD_MAP = mapOf(
 	BodyPart.RIGHT_LOWER_LEG to arrayOf(BodyPart.RIGHT_FOOT),
 )
 
-private suspend fun SequenceScope<Pair<BodyPart?, BodyPart>>.visitBone(parentBone: BodyPart?, bone: BodyPart) {
+private suspend fun SequenceScope<Pair<BodyPart?, BodyPart>>.visitBodyPart(parentBone: BodyPart?, bone: BodyPart) {
 	yield(Pair(parentBone, bone))
-	val children = BODY_PART_CHILD_MAP[bone] ?: return
-	for (child in children) visitBone(bone, child)
+	val children = BODY_PART_HIERARCHY_MAP[bone] ?: return
+	for (child in children) visitBodyPart(bone, child)
 }
 
-fun iterateBoneHierarchy() = sequence {
-	visitBone(null, BodyPart.HEAD)
+fun iterateBodyPartHierarchy() = sequence {
+	visitBodyPart(null, BodyPart.HEAD)
 }

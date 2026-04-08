@@ -28,7 +28,7 @@ data class SkeletonState(
 
 val DEFAULT_SKELETON_STATE = run {
 	val skeletonBones = mutableMapOf<BodyPart, BoneState>()
-	iterateBoneHierarchy().forEach { (parent, child) ->
+	iterateBodyPartHierarchy().forEach { (parent, child) ->
 		val parent = skeletonBones[parent]
 
 		val length = when (child) {
