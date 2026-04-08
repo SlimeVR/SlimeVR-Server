@@ -126,7 +126,8 @@ export function VMCSettings() {
       }
       const vrmJson = settings.vmcOsc.vrmJson?.toString();
       if (vrmJson) {
-        setModelName(getVRMName(vrmJson) || '');
+        const data = JSON.parse(vrmJson);
+        setModelName(getVRMName(data) || '');
       }
 
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
@@ -344,16 +345,27 @@ async function parseVRMFile(
     .slice(gltfHeaderEnd, gltfHeaderEnd + jsonLength, 'application/json')
     .text();
 
-  const name = getVRMName(json);
+  const data = JSON.parse(json);
+  const name = getVRMName(data);
   if (name === null) return null;
 
-  return { json, name };
+  // Only keep the fields we care about
+  /* eslint-disable camelcase */
+  const vrmJson = {
+    extensions: {
+      vrmV0: data.extensions.vrmV0,
+      VRMC_vrm: data.extensions.VRMC_vrm,
+    },
+    extensionsUsed: data.extensionsUsed,
+    nodes: data.nodes,
+  };
+  /* eslint-enable camelcase */
+
+  return { json: JSON.stringify(vrmJson), name };
 }
 
-function getVRMName(json: string): string | null {
+function getVRMName(data: any): string | null {
   try {
-    const data = JSON.parse(json);
-
     if (typeof data?.extensions?.VRMC_vrm?.specVersion === 'string') {
       const name = data.extensions.VRMC_vrm.meta.name;
 
