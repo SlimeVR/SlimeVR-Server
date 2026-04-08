@@ -15,6 +15,7 @@ import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
+import dev.slimevr.desktop.platform.windows.WindowsNamedPipeRpcBridge
 import dev.slimevr.desktop.serial.DesktopSerialHandler
 import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDManager
 import dev.slimevr.tracking.trackers.Tracker
@@ -209,6 +210,13 @@ fun provideBridges(
 					"SteamVR Feeder Bridge",
 					"""\\.\pipe\SlimeVRInput""",
 					FastList(),
+				),
+			)
+
+			yield(
+				WindowsNamedPipeRpcBridge(
+					server,
+					"""\\.\pipe\SlimeVRRpc""",
 				),
 			)
 		}
