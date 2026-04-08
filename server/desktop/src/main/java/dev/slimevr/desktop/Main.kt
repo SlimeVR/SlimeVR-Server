@@ -235,7 +235,6 @@ fun provideBridges(
 					server,
 					Paths.get(OperatingSystem.socketDirectory, "SlimeVRRpc")
 						.toString(),
-					computedTrackers,
 				),
 			)
 		}

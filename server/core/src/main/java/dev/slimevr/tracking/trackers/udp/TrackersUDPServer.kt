@@ -1,7 +1,6 @@
 package dev.slimevr.tracking.trackers.udp
 
 import com.jme3.math.FastMath
-import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
 import dev.slimevr.config.config
 import dev.slimevr.protocol.rpc.MAG_TIMEOUT
