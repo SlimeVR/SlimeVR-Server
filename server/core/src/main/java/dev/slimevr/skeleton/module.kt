@@ -12,7 +12,6 @@ data class BoneState(
 	val headPosition: Vector3,
 	val tailPosition: Vector3,
 	val parentBone: BoneState?,
-	val childBones: List<BoneState>,
 ) {
 	val localRotation: Quaternion
 		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
@@ -50,15 +49,12 @@ fun makeBone(bodyPart: BodyPart, parent: BoneState? = null, length: Float = 0.1f
 		headPosition = head,
 		tailPosition = head + offset,
 		parentBone = parent,
-		childBones = mutableListOf(),
 	)
-	(parent?.childBones as? MutableList)?.add(bone)
 	return bone
 }
 
 suspend fun SequenceScope<BoneState>.visitBone(bone: BoneState) {
 	yield(bone)
-	bone.childBones.forEach { visitBone(it) }
 }
 
 fun navigateHierarchy(rootBone: BoneState): Sequence<BoneState> = sequence {
