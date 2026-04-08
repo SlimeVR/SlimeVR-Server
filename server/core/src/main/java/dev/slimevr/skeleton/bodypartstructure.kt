@@ -63,3 +63,13 @@ val BODY_PART_CHILD_MAP = mapOf(
 	BodyPart.RIGHT_UPPER_LEG to arrayOf(BodyPart.RIGHT_LOWER_LEG),
 	BodyPart.RIGHT_LOWER_LEG to arrayOf(BodyPart.RIGHT_FOOT),
 )
+
+private suspend fun SequenceScope<Pair<BodyPart?, BodyPart>>.visitBone(parentBone: BodyPart?, bone: BodyPart) {
+	yield(Pair(parentBone, bone))
+	val children = BODY_PART_CHILD_MAP[bone] ?: return
+	for (child in children) visitBone(bone, child)
+}
+
+fun iterateBoneHierarchy() = sequence {
+	visitBone(null, BodyPart.HEAD)
+}
