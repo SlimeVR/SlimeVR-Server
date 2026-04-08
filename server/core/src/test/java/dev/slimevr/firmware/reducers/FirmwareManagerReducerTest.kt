@@ -1,6 +1,7 @@
 package dev.slimevr.firmware.reducers
 
 import dev.slimevr.context.Context
+import dev.slimevr.firmware.FirmwareJobStatus
 import dev.slimevr.firmware.FirmwareManagerActions
 import dev.slimevr.firmware.FirmwareManagerBaseBehaviour
 import dev.slimevr.firmware.FirmwareManagerState
@@ -14,10 +15,12 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 private fun serialJob(port: String, status: FirmwareUpdateStatus, progress: Int = 0) = FirmwareManagerActions.UpdateJob(
-	portLocation = port,
-	firmwareDeviceId = SerialDevicePort(port = port),
-	status = status,
-	progress = progress,
+	FirmwareJobStatus(
+		portLocation = port,
+		firmwareDeviceId = SerialDevicePort(port = port),
+		status = status,
+		progress = progress,
+	)
 )
 
 class FirmwareManagerReducerTest {

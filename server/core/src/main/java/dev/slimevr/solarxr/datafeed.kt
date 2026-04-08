@@ -43,6 +43,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 				imuType = tracker.sensorType,
 				bodyPart = tracker.bodyPart,
 				displayName = tracker.name,
+				isImu = tracker.sensorType != null
 			)
 		} else {
 			null

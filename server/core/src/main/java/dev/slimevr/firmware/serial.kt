@@ -3,6 +3,7 @@ package dev.slimevr.firmware
 import dev.llelievr.espflashkotlin.Flasher
 import dev.llelievr.espflashkotlin.FlashingProgressListener
 import dev.slimevr.VRServer
+import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +22,6 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 
-private val MAC_REGEX = Regex("mac: (([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2})", RegexOption.IGNORE_CASE)
 
 @OptIn(ExperimentalCoroutinesApi::class)
 suspend fun doSerialFlash(
@@ -183,16 +183,7 @@ internal suspend fun doSerialFlashPostFlash(
 	}
 
 	// wait for the tracker with that MAC to connect to the server via UDP
-	@OptIn(ExperimentalCoroutinesApi::class)
-	val connected = withTimeoutOrNull(60_000) {
-		server.context.state
-			.flatMapLatest { state ->
-				val device = state.devices.values.find { it.context.state.value.macAddress?.uppercase() == macAddress }
-				device?.context?.state?.map { it.status != TrackerStatus.DISCONNECTED } ?: flowOf(false)
-			}
-			.filter { it }
-			.first()
-	}
+	val connected = waitForConnected(server, macAddress)
 
 	if (connected == null) {
 		onStatus(FirmwareUpdateStatus.ERROR_TIMEOUT, 0)
@@ -201,3 +192,17 @@ internal suspend fun doSerialFlashPostFlash(
 
 	onStatus(FirmwareUpdateStatus.DONE, 0)
 }
+
+suspend fun waitForConnected(server: VRServer, macAddress: String): Boolean? =
+	@OptIn(ExperimentalCoroutinesApi::class)
+	withTimeoutOrNull(30_000) {
+		server.context.state
+			.flatMapLatest { state ->
+				val device =
+					state.devices.values.find { it.context.state.value.macAddress?.uppercase() == macAddress }
+				device?.context?.state?.map { it.status != TrackerStatus.DISCONNECTED }
+					?: flowOf(false)
+			}
+			.filter { it }
+			.first()
+	}

@@ -15,7 +15,7 @@ data class TrackerState(
 	val id: Int,
 	val name: String,
 	val hardwareId: String,
-	val sensorType: ImuType,
+	val sensorType: ImuType?,
 	val bodyPart: BodyPart?,
 	val customName: String?,
 	val rawRotation: Quaternion,
@@ -41,7 +41,7 @@ class Tracker(
 			scope: CoroutineScope,
 			id: Int,
 			deviceId: Int,
-			sensorType: ImuType,
+			sensorType: ImuType?,
 			hardwareId: String,
 			origin: DeviceOrigin,
 		): Tracker {

@@ -27,17 +27,16 @@ data class FirmwareManagerState(
 
 sealed interface FirmwareManagerActions {
 	data class UpdateJob(
-		val portLocation: String,
-		val firmwareDeviceId: FirmwareUpdateDeviceId,
-		val status: FirmwareUpdateStatus,
-		val progress: Int = 0,
+		val jobStatus: FirmwareJobStatus
 	) : FirmwareManagerActions
 
 	data class RemoveJob(val portLocation: String) : FirmwareManagerActions
+
+	data object ClearJobs : FirmwareManagerActions
 }
 
 typealias FirmwareManagerContext = Context<FirmwareManagerState, FirmwareManagerActions>
-typealias FirmwareManagerBehaviour = Behaviour<FirmwareManagerState, FirmwareManagerActions, FirmwareManagerContext>
+typealias FirmwareManagerBehaviour = Behaviour<FirmwareManagerState, FirmwareManagerActions, FirmwareManager>
 
 class FirmwareManager(
 	val context: FirmwareManagerContext,
@@ -67,15 +66,18 @@ class FirmwareManager(
 				onStatus = { status, progress ->
 					context.dispatch(
 						FirmwareManagerActions.UpdateJob(
-							portLocation = portLocation,
-							firmwareDeviceId = SerialDevicePort(port = portLocation),
-							status = status,
-							progress = progress,
+							FirmwareJobStatus(
+								portLocation = portLocation,
+								firmwareDeviceId = SerialDevicePort(port = portLocation),
+								status = status,
+								progress = progress,
+							)
 						),
 					)
 				},
 				scope = scope,
 			)
+			context.dispatch(FirmwareManagerActions.RemoveJob(portLocation))
 		}
 	}
 
@@ -95,18 +97,22 @@ class FirmwareManager(
 				onStatus = { status, progress ->
 					context.dispatch(
 						FirmwareManagerActions.UpdateJob(
-							portLocation = deviceIp,
-							firmwareDeviceId = firmwareDeviceId,
-							status = status,
-							progress = progress,
+							FirmwareJobStatus(
+								portLocation = deviceIp,
+								firmwareDeviceId = firmwareDeviceId,
+								status = status,
+								progress = progress,
+							)
 						),
 					)
 				},
 			)
+			context.dispatch(FirmwareManagerActions.RemoveJob(deviceIp))
 		}
 	}
 
 	suspend fun cancelAll() {
+		context.dispatch(FirmwareManagerActions.ClearJobs)
 		runningJobs.values.forEach { it.cancelAndJoin() }
 		runningJobs.clear()
 	}
@@ -120,7 +126,7 @@ class FirmwareManager(
 				behaviours = behaviours,
 			)
 			val manager = FirmwareManager(context = context, serialServer = serialServer, scope = scope)
-			behaviours.forEach { it.observe(context) }
+			behaviours.forEach { it.observe(manager) }
 			return manager
 		}
 	}
