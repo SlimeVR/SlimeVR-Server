@@ -1,5 +1,6 @@
 package dev.slimevr.tracker
 
+import kotlin.time.TimeSource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
@@ -24,9 +25,13 @@ object TrackerTPSBehaviour : TrackerBehaviour {
 		}.launchIn(receiver.scope)
 
 		receiver.scope.launch {
+			var mark = TimeSource.Monotonic.markNow()
 			while (isActive) {
 				delay(1000)
-				receiver.dispatch(TrackerActions.Update { copy(tps = count.exchange(0).toUShort()) })
+				val elapsed = mark.elapsedNow()
+				val tps = count.exchange(0) * 1000L / elapsed.inWholeMilliseconds
+				receiver.dispatch(TrackerActions.Update { copy(tps = tps.toUShort()) })
+				mark = TimeSource.Monotonic.markNow()
 			}
 		}
 	}
