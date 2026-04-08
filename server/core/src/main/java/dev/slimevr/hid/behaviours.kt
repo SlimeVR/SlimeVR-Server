@@ -103,6 +103,7 @@ object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 						sensorType = packet.imuType,
 						hardwareId = deviceState.address,
 						origin = DeviceOrigin.HID,
+						server = receiver.serverContext
 					)
 					receiver.serverContext.context.dispatch(VRServerActions.NewTracker(trackerId, newTracker))
 					receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, trackerId))

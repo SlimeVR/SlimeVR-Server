@@ -204,6 +204,7 @@ object SensorInfoBehaviour : UDPConnectionBehaviour {
 					deviceId = deviceState.id,
 					origin = DeviceOrigin.UDP,
 					scope = receiver.serverContext.context.scope,
+					server = receiver.serverContext
 				)
 
 				receiver.serverContext.context.dispatch(
@@ -229,7 +230,12 @@ object SensorRotationBehaviour : UDPConnectionBehaviour {
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation) })
+			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation, acceleration = event.data.acceleration) })
+		}
+
+		receiver.packetEvents.onPacket<Accel> { event ->
+			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.Update { copy(acceleration = event.data.acceleration) })
 		}
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->

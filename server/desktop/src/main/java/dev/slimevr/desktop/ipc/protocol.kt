@@ -131,6 +131,7 @@ suspend fun handleFeederConnection(
 					sensorType = ImuType.MPU9250, // TODO: prob need to make sensor type optional
 					hardwareId = serial,
 					origin = DeviceOrigin.FEEDER,
+					server = server
 				)
 				server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 

@@ -53,6 +53,8 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 		},
 		tps = if (trackerMask.tps == true) tracker.tps else null,
 		temp = if (trackerMask.temp == true && tracker.imuTemp != null) Temperature(temp = tracker.imuTemp) else null,
+		rawAcceleration = if (trackerMask.rawAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
+		linearAcceleration = if (trackerMask.linearAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null // FIXME: temp value
 	)
 }
 

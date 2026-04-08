@@ -1,5 +1,6 @@
 package dev.slimevr.tracker
 
+import dev.slimevr.VRServer
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.DeviceOrigin
@@ -19,6 +20,7 @@ data class TrackerState(
 	val bodyPart: BodyPart?,
 	val customName: String?,
 	val rawRotation: Quaternion,
+	val acceleration: Vector3,
 	val deviceId: Int,
 	val origin: DeviceOrigin,
 	val tps: UShort,
@@ -31,10 +33,11 @@ sealed interface TrackerActions {
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
-typealias TrackerBehaviour = Behaviour<TrackerState, TrackerActions, TrackerContext>
+typealias TrackerBehaviour = Behaviour<TrackerState, TrackerActions, Tracker>
 
 class Tracker(
 	val context: TrackerContext,
+	val server: VRServer,
 ) {
 	companion object {
 		fun create(
@@ -44,12 +47,14 @@ class Tracker(
 			sensorType: ImuType?,
 			hardwareId: String,
 			origin: DeviceOrigin,
+			server: VRServer
 		): Tracker {
 			val trackerState = TrackerState(
 				id = id,
 				hardwareId = hardwareId,
 				name = "Tracker #$id",
 				rawRotation = Quaternion.IDENTITY,
+				acceleration = Vector3.NULL,
 				bodyPart = null,
 				origin = origin,
 				deviceId = deviceId,
@@ -60,10 +65,11 @@ class Tracker(
 				imuTemp = null,
 			)
 
-			val behaviours = listOf(TrackerBasicBehaviour, TrackerTPSBehaviour)
+			val behaviours = listOf(TrackerBasicBehaviour, TrackerTPSBehaviour, TrackerTapDetectionBehaviour)
 			val context = Context.create(initialState = trackerState, scope = scope, behaviours = behaviours)
-			behaviours.forEach { it.observe(context) }
-			return Tracker(context = context)
+			val tracker = Tracker(context = context, server)
+			behaviours.forEach { it.observe(tracker) }
+			return tracker
 		}
 	}
 }
