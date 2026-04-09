@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.26)
 
-project(SlimeVR-OpenVR-BindingsProvider)
+project(SlimeVR-Bindings-Provider)
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
 find_package(flatbuffers CONFIG REQUIRED)
@@ -42,16 +42,20 @@ message(STATUS "OpenVR library search path: ${OPENVR_ROOT}/lib/${PLATFORM_NAME}$
 find_library(OPENVR_LIBRARY NAMES openvr_api REQUIRED PATHS "${OPENVR_ROOT}/lib/${PLATFORM_NAME}${PROCESSOR_ARCH}/" NO_DEFAULT_PATH)
 message(STATUS "Found OpenVR library at: ${OPENVR_LIBRARY}")
 
-add_executable(BindingsProvider
+add_executable("${PROJECT_NAME}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/paths.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/logger.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/solarxr.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/vr_utils.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
 )
-set_target_properties(BindingsProvider PROPERTIES CXX_STANDARD 23)
-target_include_directories(BindingsProvider PRIVATE "${SOLARXR_PROTOCOL_ROOT}/lib/flatbuffers/" "${FLATBUFFERS_GENERATED_ROOT}/include" "${CMAKE_CURRENT_SOURCE_DIR}/include" "${OPENVR_ROOT}/headers")
-target_link_libraries(BindingsProvider PRIVATE flatbuffers::flatbuffers "${OPENVR_LIBRARY}")
+set_target_properties("${PROJECT_NAME}" PROPERTIES CXX_STANDARD 23)
+target_include_directories("${PROJECT_NAME}" PRIVATE "${SOLARXR_PROTOCOL_ROOT}/lib/flatbuffers/" "${FLATBUFFERS_GENERATED_ROOT}/include" "${CMAKE_CURRENT_SOURCE_DIR}/include" "${OPENVR_ROOT}/headers")
+target_link_libraries("${PROJECT_NAME}" PRIVATE flatbuffers::flatbuffers "${OPENVR_LIBRARY}")
+
+if(LINUX)
+    set_target_properties("${PROJECT_NAME}" PROPERTIES OUTPUT_NAME slimevr-bindings-provider)
+endif()
 
 set(OPENVR_RUNTIME_LIBRARY "${OPENVR_ROOT}/bin/${PLATFORM_NAME}${PROCESSOR_ARCH}/${OPENVR_LIBRARY_NAME}.${OPENVR_LIBRARY_EXT}")
 message(STATUS "Found OpenVR runtime library: ${OPENVR_RUNTIME_LIBRARY}")
@@ -61,4 +65,4 @@ configure_file("${OPENVR_RUNTIME_LIBRARY}" "." COPYONLY)
 file(STRINGS src/resources/manifest.vrmanifest SVR_VRAPP_MANIFEST NEWLINE_CONSUME)
 file(STRINGS src/resources/action_manifest.json SVR_VRAPP_ACTION_MANIFEST NEWLINE_CONSUME)
 configure_file(src/resources/resources.hpp.in src/resources/resources.hpp @ONLY)
-target_include_directories(BindingsProvider PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/src")
+target_include_directories("${PROJECT_NAME}" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/src")
