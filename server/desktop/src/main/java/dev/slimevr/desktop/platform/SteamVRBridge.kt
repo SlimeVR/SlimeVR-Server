@@ -30,9 +30,9 @@ class BindingsProviderManager : Runnable {
 		// First we want to try to find it in the working directory, its location on
 		// Steam/Windows/portable.
 		val binaryName = if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
-			"BindingsProvider.exe"
+			"SlimeVR-Bindings-Provider.exe"
 		} else {
-			"BindingsProvider"
+			"slimevr-bindings-provider"
 		}
 		val workingDir = System.getProperty("user.dir")!!
 
