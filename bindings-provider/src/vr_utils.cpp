@@ -24,7 +24,7 @@ VRUtils::getStringProp(vr::TrackedDeviceIndex_t deviceIndex,
     return std::nullopt;
   }
 
-  std::string s(required_len, '\0');
+  std::string s(required_len - 1, '\0');
   sys->GetStringTrackedDeviceProperty(deviceIndex, prop, s.data(), required_len,
                                       &err);
   if (err != vr::TrackedProp_Success) {
