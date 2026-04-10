@@ -4,6 +4,3 @@
 [submodule "svr-bindings-provider/openvr"]
 	path = bindings-provider/openvr
 	url = https://github.com/ValveSoftware/openvr.git
-[submodule "svr-bindings-provider/vcpkg"]
-	path = bindings-provider/vcpkg
-	url = https://github.com/microsoft/vcpkg.git
