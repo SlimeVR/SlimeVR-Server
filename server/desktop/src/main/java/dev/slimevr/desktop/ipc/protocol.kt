@@ -162,13 +162,11 @@ suspend fun handleFeederConnection(
 }
 
 suspend fun handleSolarXRConnection(
-	server: VRServer,
 	messages: Flow<ByteArray>,
 	send: suspend (ByteArray) -> Unit,
 	behaviours: List<SolarXRConnectionBehaviour>,
 ) = coroutineScope {
 	val connection = SolarXRConnection.create(
-		serverContext = server,
 		scope = this,
 		onSend = send,
 		behaviours = behaviours,

@@ -5,6 +5,7 @@ import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServer
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.Skeleton
 import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -43,7 +44,6 @@ suspend fun onSolarXRMessage(message: ByteBuffer, context: SolarXRConnection) {
 
 class SolarXRConnection(
 	val context: SolarXRConnectionContext,
-	val serverContext: VRServer,
 	val dataFeedDispatcher: EventDispatcher<DataFeedMessage>,
 	val rpcDispatcher: EventDispatcher<RpcMessage>,
 	private val onSend: suspend (ByteArray) -> Unit,
@@ -60,7 +60,6 @@ class SolarXRConnection(
 
 	companion object {
 		fun create(
-			serverContext: VRServer,
 			onSend: suspend (ByteArray) -> Unit,
 			scope: CoroutineScope,
 			behaviours: List<SolarXRConnectionBehaviour>,
@@ -73,7 +72,6 @@ class SolarXRConnection(
 
 			val conn = SolarXRConnection(
 				context = context,
-				serverContext = serverContext,
 				dataFeedDispatcher = EventDispatcher(),
 				rpcDispatcher = EventDispatcher(),
 				onSend = onSend,

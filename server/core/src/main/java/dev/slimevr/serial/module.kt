@@ -38,7 +38,6 @@ typealias SerialServerBehaviour = Behaviour<SerialServerState, SerialServerActio
 
 class SerialServer(
 	val context: SerialServerContext,
-	private val scope: CoroutineScope,
 	private val openPortFactory: (
 		portLocation: String,
 		onDataReceived: (portLocation: String, line: String) -> Unit,
@@ -80,7 +79,7 @@ class SerialServer(
 		val state = context.state.value
 		if (!state.availablePorts.containsKey(portLocation) || state.connections.containsKey(portLocation)) return
 		val handle = openPortFactory(portLocation, ::onDataReceived, ::onPortDisconnected) ?: return
-		context.dispatch(SerialServerActions.RegisterConnection(portLocation, SerialConnection.Console.create(handle, scope)))
+		context.dispatch(SerialServerActions.RegisterConnection(portLocation, SerialConnection.Console.create(handle, context.scope)))
 	}
 
 	fun closeConnection(portLocation: String) {
@@ -100,7 +99,7 @@ class SerialServer(
 		return object : FlashingHandler by handler {
 			override fun closeSerial() {
 				handler.closeSerial()
-				scope.launch { context.dispatch(SerialServerActions.RemoveConnection(portLocation)) }
+				context.scope.launch { context.dispatch(SerialServerActions.RemoveConnection(portLocation)) }
 			}
 		}
 	}
@@ -119,7 +118,6 @@ class SerialServer(
 			)
 			val server = SerialServer(
 				context = context,
-				scope = scope,
 				openPortFactory = openPort,
 				openFlashingPortFactory = openFlashingPort,
 			)

@@ -20,13 +20,13 @@ suspend fun createIpcServers(server: VRServer, behaviours: List<SolarXRConnectio
 		Platform.LINUX, Platform.OSX -> {
 			launch { createUnixDriverSocket(server) }
 			launch { createUnixFeederSocket(server) }
-			launch { createUnixSolarXRSocket(server, behaviours) }
+			launch { createUnixSolarXRSocket(behaviours) }
 		}
 
 		Platform.WINDOWS -> {
 			launch { createWindowsDriverPipe(server) }
 			launch { createWindowsFeederPipe(server) }
-			launch { createWindowsSolarXRPipe(server, behaviours) }
+			launch { createWindowsSolarXRPipe(behaviours) }
 		}
 
 		else -> Unit

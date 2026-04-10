@@ -36,9 +36,8 @@ suspend fun createWindowsFeederPipe(server: VRServer) = acceptWindowsClients(FEE
 	)
 }
 
-suspend fun createWindowsSolarXRPipe(server: VRServer, behaviours: List<SolarXRConnectionBehaviour>) = acceptWindowsClients(SOLARXR_PIPE) { handle ->
+suspend fun createWindowsSolarXRPipe(behaviours: List<SolarXRConnectionBehaviour>) = acceptWindowsClients(SOLARXR_PIPE) { handle ->
 	handleSolarXRConnection(
-		server = server,
 		messages = readFramedMessages(handle),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
 		behaviours = behaviours,

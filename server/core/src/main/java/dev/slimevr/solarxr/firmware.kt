@@ -1,5 +1,6 @@
 package dev.slimevr.solarxr
 
+import dev.slimevr.VRServer
 import dev.slimevr.firmware.FirmwareJobStatus
 import dev.slimevr.firmware.FirmwareManager
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -13,7 +14,7 @@ import solarxr_protocol.rpc.FirmwareUpdateStopQueuesRequest
 import solarxr_protocol.rpc.OTAFirmwareUpdate
 import solarxr_protocol.rpc.SerialFirmwareUpdate
 
-class FirmwareBehaviour(private val firmwareManager: FirmwareManager) : SolarXRConnectionBehaviour {
+class FirmwareBehaviour(private val server: VRServer, private val firmwareManager: FirmwareManager) : SolarXRConnectionBehaviour {
 	override fun observe(receiver: SolarXRConnection) {
 		val scope = receiver.context.scope
 
@@ -49,16 +50,16 @@ class FirmwareBehaviour(private val firmwareManager: FirmwareManager) : SolarXRC
 						method.needmanualreboot,
 						method.ssid,
 						method.password,
-						receiver.serverContext,
+						server,
 					)
 				}
 
 				is OTAFirmwareUpdate -> {
 					val deviceId = method.deviceId ?: return@on
 					val part = method.firmwarePart ?: return@on
-					val device = receiver.serverContext.getDevice(deviceId.id.toInt()) ?: return@on
+					val device = server.getDevice(deviceId.id.toInt()) ?: return@on
 					val deviceIp = device.context.state.value.address
-					firmwareManager.otaFlash(deviceIp, DeviceIdTable(id = deviceId), part, receiver.serverContext)
+					firmwareManager.otaFlash(deviceIp, DeviceIdTable(id = deviceId), part, server)
 				}
 
 				else -> return@on

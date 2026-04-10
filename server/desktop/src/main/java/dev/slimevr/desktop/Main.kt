@@ -12,6 +12,7 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resolveConfigDirectory
+import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.DataFeedInitBehaviour
 import dev.slimevr.solarxr.FirmwareBehaviour
 import dev.slimevr.solarxr.HeightCalibrationBehaviour
@@ -35,6 +36,8 @@ fun main(args: Array<String>) = runBlocking {
 	val heightCalibrationManager = HeightCalibrationManager.create(serverContext = server, scope = this)
 	val provisioningManager = ProvisioningManager.create(serialServer, this)
 
+	val skeleton = Skeleton.create(this)
+
 	launch {
 		createUDPTrackerServer(server, config)
 	}
@@ -43,14 +46,14 @@ fun main(args: Array<String>) = runBlocking {
 	}
 
 	val solarXRBehaviours = listOf(
-		DataFeedInitBehaviour,
+		DataFeedInitBehaviour(server, skeleton),
 		SerialBehaviour(serialServer),
-		FirmwareBehaviour(firmwareManager),
-		VrcBehaviour(vrcConfigManager, userHeight = { config.userConfig.context.state.value.data.userHeight.toDouble() }),
+		FirmwareBehaviour(server, firmwareManager),
+		VrcBehaviour(vrcConfigManager, server, userHeight = { config.userConfig.context.state.value.data.userHeight.toDouble() }),
 		HeightCalibrationBehaviour(heightCalibrationManager),
 		ProvisioningBehaviour(server, provisioningManager)
 	)
-	launch { createSolarXRWebsocketServer(server, solarXRBehaviours) }
+	launch { createSolarXRWebsocketServer(solarXRBehaviours) }
 	launch { createIpcServers(server, solarXRBehaviours) }
 
 	Unit

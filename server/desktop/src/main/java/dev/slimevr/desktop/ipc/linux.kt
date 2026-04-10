@@ -33,9 +33,8 @@ suspend fun createUnixFeederSocket(server: VRServer) = acceptUnixClients(FEEDER_
 	)
 }
 
-suspend fun createUnixSolarXRSocket(server: VRServer, behaviours: List<SolarXRConnectionBehaviour>) = acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
+suspend fun createUnixSolarXRSocket(behaviours: List<SolarXRConnectionBehaviour>) = acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
 	handleSolarXRConnection(
-		server = server,
 		messages = readFramedMessages(channel),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
 		behaviours = behaviours,

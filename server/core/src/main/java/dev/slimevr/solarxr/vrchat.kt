@@ -1,5 +1,6 @@
 package dev.slimevr.solarxr
 
+import dev.slimevr.VRServer
 import dev.slimevr.vrchat.VRCConfigActions
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrchat.computeRecommendedValues
@@ -13,6 +14,7 @@ import solarxr_protocol.rpc.VRCConfigStateRequest
 
 class VrcBehaviour(
 	private val vrcManager: VRCConfigManager,
+	private val server: VRServer,
 	private val userHeight: () -> Double,
 ) : SolarXRConnectionBehaviour {
 	override fun observe(receiver: SolarXRConnection) {
@@ -20,7 +22,7 @@ class VrcBehaviour(
 			val state = vrcManager.context.state.value
 			val values = state.currentValues
 			if (!state.isSupported || values == null) return VRCConfigStateChangeResponse(isSupported = false)
-			val recommended = computeRecommendedValues(receiver.serverContext, userHeight())
+			val recommended = computeRecommendedValues(server, userHeight())
 			return VRCConfigStateChangeResponse(
 				isSupported = true,
 				validity = computeValidity(values, recommended),

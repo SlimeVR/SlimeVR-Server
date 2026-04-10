@@ -15,7 +15,7 @@ import solarxr_protocol.rpc.ResetRequest
 import java.nio.ByteBuffer
 
 const val SOLARXR_PORT = 21110
-suspend fun createSolarXRWebsocketServer(serverContext: VRServer, behaviours: List<SolarXRConnectionBehaviour>) {
+suspend fun createSolarXRWebsocketServer(behaviours: List<SolarXRConnectionBehaviour>) {
 	val engine = embeddedServer(Netty, port = SOLARXR_PORT) {
 		install(WebSockets)
 
@@ -23,7 +23,6 @@ suspend fun createSolarXRWebsocketServer(serverContext: VRServer, behaviours: Li
 			webSocket {
 				AppLogger.solarxr.info("[WS] New connection")
 				val solarxrConnection = SolarXRConnection.create(
-					serverContext,
 					scope = this,
 					onSend = {
 						send(Frame.Binary(fin = true, data = it))

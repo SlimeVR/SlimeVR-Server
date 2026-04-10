@@ -3,8 +3,8 @@ package dev.slimevr.solarxr
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceState
-import dev.slimevr.skeleton.BoneState
-import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
+import dev.slimevr.skeleton.ComputedBone
+import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
 import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.cancelAndJoin
@@ -90,26 +90,25 @@ private fun createDevice(
 	)
 }
 
-private fun createBone(
-	bone: BoneState,
-): Bone = Bone(
+private fun createBone(bone: ComputedBone): Bone = Bone(
 	bodyPart = bone.bodyPart,
 	rotationG = bone.rotation.let { Quat(it.x, it.y, it.z, it.w) },
 	boneLength = bone.length,
-	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) },
+	headPositionG = bone.head.let { Vec3f(it.x, it.y, it.z) },
 )
 
 fun createDatafeedFrame(
-	serverContext: VRServer,
+	server: VRServer,
 	datafeedConfig: DataFeedConfig,
+	skeleton: Skeleton,
 	index: Int = 0,
 ): DataFeedMessageHeader {
-	val serverState = serverContext.context.state.value
+	val serverState = server.context.state.value
 	val trackers = serverState.trackers.values.map { it.context.state.value }
 	val devices = serverState.devices.values.map { it.context.state.value }
 		.map { device -> createDevice(device, trackers, datafeedConfig) }
 	val bones = if (datafeedConfig.boneMask) {
-		DEFAULT_SKELETON_STATE.bones.values.map { createBone(it) }
+		skeleton.computed.value.bones.values.map { createBone(it) }
 	} else {
 		null
 	}
@@ -122,7 +121,7 @@ fun createDatafeedFrame(
 	)
 }
 
-object DataFeedInitBehaviour : SolarXRConnectionBehaviour {
+class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : SolarXRConnectionBehaviour {
 	override fun reduce(state: SolarXRConnectionState, action: SolarXRConnectionActions) = when (action) {
 		is SolarXRConnectionActions.SetConfig -> state.copy(
 			dataFeedConfigs = action.configs,
@@ -145,7 +144,12 @@ object DataFeedInitBehaviour : SolarXRConnectionBehaviour {
 						fbb.finish(
 							MessageBundle(
 								dataFeedMsgs = listOf(
-									createDatafeedFrame(receiver.serverContext, config, index),
+									createDatafeedFrame(
+										server = server,
+										skeleton = skeleton,
+										datafeedConfig = config,
+										index = index
+									),
 								),
 							).encode(fbb),
 						)
@@ -167,7 +171,11 @@ object DataFeedInitBehaviour : SolarXRConnectionBehaviour {
 			fbb.finish(
 				MessageBundle(
 					dataFeedMsgs = listOf(
-						createDatafeedFrame(serverContext = receiver.serverContext, datafeedConfig = config),
+						createDatafeedFrame(
+							server = server,
+							datafeedConfig = config,
+							skeleton = skeleton,
+						),
 					),
 				).encode(fbb),
 			)
