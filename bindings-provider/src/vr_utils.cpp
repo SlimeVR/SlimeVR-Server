@@ -3,7 +3,9 @@
 #include "paths.hpp"
 #include "resources/resources.hpp"
 
+#include <array>
 #include <fstream>
+#include <string_view>
 #include <utility>
 
 namespace fs = std::filesystem;
@@ -46,17 +48,26 @@ std::tuple<fs::path, fs::path> VRUtils::initialiseManifest() {
         std::format("Failed to create manifest folder: {}", ec.message()));
   }
 
-  fs::path appManifestPath = manifestDir / "manifest.vrmanifest";
-  if (!fs::exists(appManifestPath)) {
-    std::ofstream appManifestStream(appManifestPath);
-    appManifestStream << SVR_VRAPP_MANIFEST;
+  using namespace std::string_view_literals;
+  // Make sure the vrmanifest and action manifest are 1st and 2nd respectively
+  // in the array
+  std::array requiredFiles{
+      std::make_pair("manifest.vrmanifest"sv, SVR_VRAPP_MANIFEST),
+      std::make_pair("action_manifest.json"sv, SVR_VRAPP_ACTION_MANIFEST),
+      std::make_pair("generic.json"sv, SVR_VRAPP_GENERIC_BINDS),
+      std::make_pair("knuckles.json"sv, SVR_VRAPP_KNUCKLES_BINDS),
+      std::make_pair("oculus_touch.json"sv, SVR_VRAPP_OCULUS_BINDS),
+      std::make_pair("vive_controller.json"sv, SVR_VRAPP_VIVE_BINDS),
+  };
+
+  for (auto &[name, contents] : requiredFiles) {
+    fs::path path = manifestDir / name;
+    if (!fs::exists(path)) {
+      std::ofstream stream(path);
+      stream << contents;
+    }
   }
 
-  fs::path actionManifestPath = manifestDir / "action_manifest.json";
-  if (!fs::exists(actionManifestPath)) {
-    std::ofstream actionManifestStream(actionManifestPath);
-    actionManifestStream << SVR_VRAPP_ACTION_MANIFEST;
-  }
-
-  return {appManifestPath, actionManifestPath};
+  return {manifestDir / requiredFiles.at(0).first,
+          manifestDir / requiredFiles.at(1).first};
 }
