@@ -19,13 +19,12 @@ private:
 
     auto s = std::format(fmt, std::forward<Args>(args)...);
     if constexpr (important)
-      std::cerr << suffix << ' ' << s << std::endl;
+      std::cerr << suffix << ' ' << s << '\n';
     else
-      std::cout << suffix << ' ' << s << std::endl;
+      std::cout << suffix << ' ' << s << '\n';
 
     log_stream << std::put_time(std::localtime(&time_t), "[%F %T]") //
-               << ' ' << suffix
-               << ' ' << s << std::endl;
+               << ' ' << suffix << ' ' << s << '\n';
   }
 
 public:
@@ -51,6 +50,12 @@ public:
   template <typename... Args>
   void error(std::format_string<Args...> fmt, Args &&...args) {
     log<true>("[ERROR]", fmt, std::forward<Args>(args)...);
+  }
+
+  void flush() {
+    std::cerr.flush();
+    std::cout.flush();
+    log_stream.flush();
   }
 
   static Logger &get();
