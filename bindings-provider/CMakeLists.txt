@@ -62,7 +62,20 @@ message(STATUS "Found OpenVR runtime library: ${OPENVR_RUNTIME_LIBRARY}")
 configure_file("${OPENVR_RUNTIME_LIBRARY}" "." COPYONLY)
 
 # Embed the resources into resources.hpp
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+             src/resources/manifest.vrmanifest
+             src/resources/action_manifest.json
+             src/resources/generic.json
+             src/resources/knuckles.json
+             src/resources/oculus_touch.json
+             src/resources/vive_controller.json
+)
 file(STRINGS src/resources/manifest.vrmanifest SVR_VRAPP_MANIFEST NEWLINE_CONSUME)
 file(STRINGS src/resources/action_manifest.json SVR_VRAPP_ACTION_MANIFEST NEWLINE_CONSUME)
+file(STRINGS src/resources/generic.json SVR_VRAPP_GENERIC_BINDS NEWLINE_CONSUME)
+file(STRINGS src/resources/knuckles.json SVR_VRAPP_KNUCKLES_BINDS NEWLINE_CONSUME)
+file(STRINGS src/resources/oculus_touch.json SVR_VRAPP_OCULUS_BINDS NEWLINE_CONSUME)
+file(STRINGS src/resources/vive_controller.json SVR_VRAPP_VIVE_BINDS NEWLINE_CONSUME)
+
 configure_file(src/resources/resources.hpp.in src/resources/resources.hpp @ONLY)
 target_include_directories("${PROJECT_NAME}" PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/src")

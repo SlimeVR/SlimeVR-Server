@@ -1,4 +1,22 @@
 {
+  "default_bindings": [
+    {
+      "controller_type": "generic",
+      "binding_url": "generic.json"
+    },
+    {
+      "controller_type": "oculus_touch",
+      "binding_url": "oculus_touch.json"
+    },
+    {
+      "controller_type": "knuckles",
+      "binding_url": "knuckles.json"
+    },
+    {
+      "controller_type": "vive_controller",
+      "binding_url": "vive_controller.json"
+    }
+  ],
   "actions": [
     {
       "name": "/actions/main/in/YawReset",
