@@ -99,9 +99,21 @@ int main() {
 
   try {
     SolarXRConnection conn;
-    vr::EVRInitError err{};
-    std::unique_ptr<vr::IVRSystem, decltype(&shutdown_vr)> sys = {
-        vr::VR_Init(&err, vr::VRApplication_Background), shutdown_vr};
+    std::unique_ptr<vr::IVRSystem, decltype(&shutdown_vr)> sys{nullptr,
+                                                               shutdown_vr};
+
+    // On vrlink, VR_Init returns
+    // VRInitError_Driver_WirelessHmdNotConnected while the connection
+    // is initialising, so keep calling VR_Init until it ends up
+    // succeeding
+
+    vr::EVRInitError err{vr::VRInitError_Driver_WirelessHmdNotConnected};
+    while (err == vr::VRInitError_Driver_WirelessHmdNotConnected) {
+      sys.reset(vr::VR_Init(&err, vr::VRApplication_Background));
+      if (err == vr::VRInitError_Driver_WirelessHmdNotConnected)
+        std::this_thread::sleep_for(500ms);
+    }
+
     if (sys == nullptr or err != vr::VRInitError_None) {
       logger.error("Failed to init OpenVR: {} ({})",
                    vr::VR_GetVRInitErrorAsSymbol(err),
