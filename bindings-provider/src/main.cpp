@@ -257,14 +257,17 @@ int main() {
         }
       }
 
+      logger.flush();
       std::this_thread::sleep_for(interval);
     }
 
     logger.info("Main loop done");
   } catch (std::exception &ex) {
     logger.error("Exception in main: {}", ex.what());
+    logger.flush();
     return 1;
   }
 
+  logger.flush();
   return 0;
 }
