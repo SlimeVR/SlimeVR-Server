@@ -194,8 +194,35 @@ int main() {
           logger.info("OpenVR runtime requested quit");
           should_exit = 1;
           break;
+        case vr::VREvent_Input_BindingLoadFailed: {
+          auto &loadData = event.data.inputBinding;
+          logger.debug("Binding load failed (ulAppContainer={} "
+                       "pathMessage={} pathUrl={} pathControllerType={})",
+                       loadData.ulAppContainer, loadData.pathMessage,
+                       loadData.pathUrl, loadData.pathControllerType);
+          break;
+        }
+        case vr::VREvent_Input_BindingLoadSuccessful: {
+          auto &loadData = event.data.inputBinding;
+          logger.debug("Binding load successful (ulAppContainer={} "
+                       "pathMessage={} pathUrl={} pathControllerType={})",
+                       loadData.ulAppContainer, loadData.pathMessage,
+                       loadData.pathUrl, loadData.pathControllerType);
+          break;
+        }
+        case vr::VREvent_Input_ActionManifestReloaded:
+          logger.debug("Action manifest reloaded");
+          break;
+        case vr::VREvent_Input_ActionManifestLoadFailed: {
+          auto &manifestData = event.data.actionManifest;
+          logger.debug(
+              "Action manifest load failed (pathAppKey={} pathMessage={} "
+              "pathMessageParam={} pathManifestPath={})",
+              manifestData.pathAppKey, manifestData.pathMessage,
+              manifestData.pathMessageParam, manifestData.pathManifestPath);
+          break;
+        }
         default:
-          logger.debug("Received event {}", event.eventType);
           break;
         }
       }
