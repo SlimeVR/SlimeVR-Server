@@ -1,0 +1,12 @@
+{
+  "name": "Default Bindings for Generic",
+  "controller_type": "generic",
+  "bindings": {
+    "/actions/main": {
+      "sources": [],
+      "skeleton": [],
+      "haptics": [],
+      "poses": []
+    }
+  }
+}
