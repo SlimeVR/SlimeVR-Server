@@ -19,19 +19,14 @@ data class BoneState(
 	val rotation: Quaternion = Quaternion.IDENTITY,
 	val headPosition: Vector3 = Vector3.NULL,
 	val tailPosition: Vector3 = Vector3.NULL,
-	val parentBone: BodyPart? = null,
+	val parentBone: BoneState? = null,
 ) {
-	val localTailPosition: Vector3 get() = tailPosition - headPosition
-
-	fun localRotation(bones: Map<BodyPart, BoneState>): Quaternion {
-		val parent = parentBone?.let { bones[it] } ?: return rotation
-		return parent.rotation.inv() * rotation
-	}
-
-	fun localHeadPosition(bones: Map<BodyPart, BoneState>): Vector3 {
-		val parent = parentBone?.let { bones[it] } ?: return headPosition
-		return headPosition - parent.tailPosition
-	}
+	val localRotation: Quaternion
+		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
+	val localHeadPosition: Vector3
+		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
+	val localTailPosition: Vector3
+		get() = tailPosition - headPosition
 }
 
 private val BONE_TAIL_OFFSETS: Map<BodyPart, Vector3> = run {
@@ -117,7 +112,7 @@ fun buildBones(state: SkeletonState, rootHead: Vector3 = Vector3.NULL): Map<Body
 		result[childPart] = bone.copy(
 			headPosition = head,
 			tailPosition = head + bone.rotation.sandwich(tailOffset),
-			parentBone = parentPart,
+			parentBone = parentBone,
 		)
 	}
 	return result
