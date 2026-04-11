@@ -8,10 +8,13 @@ import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.random.Random
 
 data class BoneState(
 	val bodyPart: BodyPart,
@@ -90,28 +93,57 @@ private val BONE_TAIL_OFFSETS: Map<BodyPart, Vector3> = run {
 	offsets
 }
 
-data class SkeletonState(val bones: Map<BodyPart, BoneState>)
+private val BONE_TAIL_DIRECTIONS: Map<BodyPart, Vector3> =
+	BONE_TAIL_OFFSETS.mapValues { (_, offset) -> offset.unit() }
 
-val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
-	bones = BONE_TAIL_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
+private val SPINE_CHAIN = listOf(
+	BodyPart.NECK,
+	BodyPart.UPPER_CHEST,
+	BodyPart.CHEST,
+	BodyPart.WAIST,
+	BodyPart.HIP,
+)
+
+private val LEG_PAIRS = listOf(
+	BodyPart.LEFT_UPPER_LEG to BodyPart.RIGHT_UPPER_LEG,
+	BodyPart.LEFT_LOWER_LEG to BodyPart.RIGHT_LOWER_LEG,
+)
+
+private fun computeUserHeight(bones: Map<BodyPart, BoneState>): Double {
+	val spineHeight = SPINE_CHAIN.sumOf { part ->
+		(bones[part]?.length ?: error("$part should exist")).toDouble()
+	}
+	val legHeight = LEG_PAIRS.sumOf { (left, right) ->
+		val leftLen = (bones[left]?.length ?: error("$left should exist")).toDouble()
+		val rightLen = (bones[right]?.length ?: error("$right should exist")).toDouble()
+		maxOf(leftLen, rightLen)
+	}
+	return spineHeight + legHeight
+}
+
+data class SkeletonState(val bones: Map<BodyPart, BoneState>, val userHeight: Double)
+
+val DEFAULT_SKELETON_STATE: SkeletonState = run {
+	val bones = BONE_TAIL_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
 		val restRotation = when (bodyPart) {
 			BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT -> Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
 			else -> Quaternion.IDENTITY
 		}
 		bodyPart to BoneState(bodyPart = bodyPart, length = tailOffset.len(), rotation = restRotation)
 	}
-)
+	SkeletonState(bones = bones, userHeight = computeUserHeight(bones))
+}
 
 fun buildBones(state: SkeletonState, rootHead: Vector3 = Vector3.NULL): Map<BodyPart, BoneState> {
 	val result = mutableMapOf<BodyPart, BoneState>()
 	iterateBodyPartHierarchy().forEach { (parentPart, childPart) ->
 		val bone = state.bones[childPart] ?: return@forEach
-		val tailOffset = BONE_TAIL_OFFSETS[childPart] ?: return@forEach
+		val tailDirection = BONE_TAIL_DIRECTIONS[childPart] ?: return@forEach
 		val parentBone = parentPart?.let { result[it] }
 		val head = parentBone?.tailPosition ?: rootHead
 		result[childPart] = bone.copy(
 			headPosition = head,
-			tailPosition = head + bone.rotation.sandwich(tailOffset),
+			tailPosition = head + bone.rotation.sandwich(tailDirection * bone.length),
 			parentBone = parentBone,
 		)
 	}
@@ -120,6 +152,7 @@ fun buildBones(state: SkeletonState, rootHead: Vector3 = Vector3.NULL): Map<Body
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
+	data class SetProportions(val lengths: Map<BodyPart, Float>) : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
@@ -135,6 +168,7 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 				bones[action.bodyPart] = bone.copy(rotation = action.rotation)
 				state.copy(bones = bones)
 			}
+			is SkeletonActions.SetProportions -> state
 		}
 	}
 
@@ -162,6 +196,50 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 	}
 }
 
+class RandomProportionsBehaviour(val intervalMs: Long) : SkeletonBehaviour {
+	private val targets = listOf(
+		BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG,
+		BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG,
+		BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM,
+	)
+
+	override fun observe(receiver: Skeleton) {
+		receiver.context.scope.launch {
+			while (true) {
+				delay(intervalMs)
+				receiver.context.dispatch(
+					SkeletonActions.SetProportions(
+						targets.associateWith { Random.nextFloat() * 0.4f + 0.2f }
+					)
+				)
+			}
+		}
+	}
+}
+
+class HeightLogBehaviour : SkeletonBehaviour {
+	override fun observe(receiver: Skeleton) {
+		receiver.context.scope.launch {
+			receiver.context.state
+				.map { state -> state.userHeight }
+				.distinctUntilChanged()
+				.collect { height -> println("User height changed: ${"%.2f".format(height)}m") }
+		}
+	}
+}
+
+class ProportionsBehaviour : SkeletonBehaviour {
+	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
+		is SkeletonActions.SetProportions -> {
+			val newBones = state.bones.mapValues { (bodyPart, bone) ->
+				bone.copy(length = action.lengths[bodyPart] ?: bone.length)
+			}
+			state.copy(bones = newBones, userHeight = computeUserHeight(newBones))
+		}
+		else -> state
+	}
+}
+
 interface SkeletonProcessor {
 	var enabled: Boolean
 	fun process(state: SkeletonState): SkeletonState
@@ -170,15 +248,23 @@ interface SkeletonProcessor {
 class SmoothingProcessor(var smoothing: Float) : SkeletonProcessor {
 	override var enabled: Boolean = true
 	private var smoothedRotations: Map<BodyPart, Quaternion> = emptyMap()
+	private var smoothedLengths: Map<BodyPart, Float> = emptyMap()
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val alpha = 1f - smoothing.coerceAtMost(0.99f)
 		smoothedRotations = state.bones.mapValues { (bodyPart, bone) ->
 			(smoothedRotations[bodyPart] ?: bone.rotation).lerpR(bone.rotation, alpha).unit()
 		}
+		smoothedLengths = state.bones.mapValues { (bodyPart, bone) ->
+			val prev = smoothedLengths[bodyPart] ?: bone.length
+			prev + (bone.length - prev) * alpha
+		}
 		return state.copy(
 			bones = state.bones.mapValues { (bodyPart, bone) ->
-				bone.copy(rotation = smoothedRotations[bodyPart] ?: bone.rotation)
+				bone.copy(
+					rotation = smoothedRotations[bodyPart] ?: bone.rotation,
+					length = smoothedLengths[bodyPart] ?: bone.length,
+				)
 			}
 		)
 	}
@@ -187,7 +273,12 @@ class SmoothingProcessor(var smoothing: Float) : SkeletonProcessor {
 class PredictionProcessor(var predictionAmount: Float) : SkeletonProcessor {
 	override var enabled: Boolean = true
 
-	private data class BoneVelocity(val lastRotation: Quaternion, val delta: Quaternion)
+	private data class BoneVelocity(
+		val lastRotation: Quaternion,
+		val rotationDelta: Quaternion,
+		val lastLength: Float,
+		val lengthDelta: Float,
+	)
 
 	private var velocities: Map<BodyPart, BoneVelocity> = emptyMap()
 
@@ -196,17 +287,25 @@ class PredictionProcessor(var predictionAmount: Float) : SkeletonProcessor {
 		val newBones = state.bones.mapValues { (bodyPart, bone) ->
 			val prev = velocities[bodyPart]
 			if (prev == null) {
-				newVelocities[bodyPart] = BoneVelocity(bone.rotation, Quaternion.IDENTITY)
+				newVelocities[bodyPart] = BoneVelocity(bone.rotation, Quaternion.IDENTITY, bone.length, 0f)
 				return@mapValues bone
 			}
-			val velocity = if (bone.rotation !== prev.lastRotation) {
-				BoneVelocity(bone.rotation, bone.rotation * prev.lastRotation.inv())
+			val rotationDelta = if (bone.rotation !== prev.lastRotation) {
+				bone.rotation * prev.lastRotation.inv()
 			} else {
-				prev
+				prev.rotationDelta
 			}
-			newVelocities[bodyPart] = velocity
-			val scaledDelta = Quaternion.IDENTITY.lerpR(velocity.delta, predictionAmount).unit()
-			bone.copy(rotation = (scaledDelta * bone.rotation).unit())
+			val lengthDelta = if (bone.length != prev.lastLength) {
+				bone.length - prev.lastLength
+			} else {
+				prev.lengthDelta
+			}
+			newVelocities[bodyPart] = BoneVelocity(bone.rotation, rotationDelta, bone.length, lengthDelta)
+			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, predictionAmount).unit()
+			bone.copy(
+				rotation = (scaledDelta * bone.rotation).unit(),
+				length = bone.length + lengthDelta * predictionAmount,
+			)
 		}
 		velocities = newVelocities
 		return state.copy(bones = newBones)
@@ -239,6 +338,9 @@ class Skeleton(
 	companion object {
 		fun create(scope: CoroutineScope): Skeleton {
 			val behaviours = listOf<SkeletonBehaviour>(
+				ProportionsBehaviour(),
+				HeightLogBehaviour(),
+				RandomProportionsBehaviour(intervalMs = 3000L),
 				YouSpinMeRightRoundBehaviour(inputHz = 1f),
 				ComputedSkeletonBehaviour(processors = listOf(
 //					PredictionProcessor(predictionAmount = 0.3f),
