@@ -8,21 +8,35 @@ import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
+import kotlin.math.sin
 
-data class BoneDefinition(
+data class BoneState(
 	val bodyPart: BodyPart,
 	val length: Float,
-	val localTailOffset: Vector3,
-	val parentPart: BodyPart?,
-)
+	val rotation: Quaternion = Quaternion.IDENTITY,
+	val headPosition: Vector3 = Vector3.NULL,
+	val tailPosition: Vector3 = Vector3.NULL,
+	val parentBone: BodyPart? = null,
+) {
+	val localTailPosition: Vector3 get() = tailPosition - headPosition
 
-val BONE_DEFINITIONS: Map<BodyPart, BoneDefinition> = run {
-	val defs = mutableMapOf<BodyPart, BoneDefinition>()
-	iterateBodyPartHierarchy().forEach { (parentPart, child) ->
+	fun localRotation(bones: Map<BodyPart, BoneState>): Quaternion {
+		val parent = parentBone?.let { bones[it] } ?: return rotation
+		return parent.rotation.inv() * rotation
+	}
+
+	fun localHeadPosition(bones: Map<BodyPart, BoneState>): Vector3 {
+		val parent = parentBone?.let { bones[it] } ?: return headPosition
+		return headPosition - parent.tailPosition
+	}
+}
+
+private val BONE_TAIL_OFFSETS: Map<BodyPart, Vector3> = run {
+	val offsets = mutableMapOf<BodyPart, Vector3>()
+	iterateBodyPartHierarchy().forEach { (_, child) ->
 		val length = when (child) {
 			BodyPart.HEAD, BodyPart.NECK -> 0.1f
 
@@ -76,80 +90,34 @@ val BONE_DEFINITIONS: Map<BodyPart, BoneDefinition> = run {
 			BodyPart.RIGHT_HIP -> Vector3(length, 0f, 0f)
 			else -> Vector3(0f, -length, 0f)
 		}
-		defs[child] = BoneDefinition(
-			bodyPart = child,
-			length = length,
-			localTailOffset = restRotation.inv().sandwich(offset),
-			parentPart = parentPart,
-		)
+		offsets[child] = restRotation.inv().sandwich(offset)
 	}
-	defs
+	offsets
 }
 
-data class BoneInput(
-	val rotation: Quaternion = Quaternion.IDENTITY,
-	val headPositionOverride: Vector3? = null,
-)
+data class SkeletonState(val bones: Map<BodyPart, BoneState>)
 
-data class BonePose(val head: Vector3, val tail: Vector3)
-
-data class ComputedBone(
-	val bodyPart: BodyPart,
-	val length: Float,
-	val rotation: Quaternion,
-	val head: Vector3,
-	val tail: Vector3,
-	val parentBone: ComputedBone? = null,
-) {
-	val localRotation: Quaternion
-		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
-	val localHeadPosition: Vector3
-		get() = parentBone?.let { head - it.tail } ?: head
-	val localTailPosition: Vector3
-		get() = tail - head
-}
-
-data class SkeletonState(val inputs: Map<BodyPart, BoneInput>)
-
-val DEFAULT_SKELETON_STATE = SkeletonState(
-	inputs = BONE_DEFINITIONS.keys.associateWith { part ->
-		BoneInput(
-			rotation = when (part) {
-				BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT -> Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
-				else -> Quaternion.IDENTITY
-			}
-		)
+val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
+	bones = BONE_TAIL_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
+		val restRotation = when (bodyPart) {
+			BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT -> Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
+			else -> Quaternion.IDENTITY
+		}
+		bodyPart to BoneState(bodyPart = bodyPart, length = tailOffset.len(), rotation = restRotation)
 	}
 )
 
-fun computePoses(state: SkeletonState, rootHead: Vector3 = Vector3.NULL): Map<BodyPart, BonePose> {
-	val poses = mutableMapOf<BodyPart, BonePose>()
+fun buildBones(state: SkeletonState, rootHead: Vector3 = Vector3.NULL): Map<BodyPart, BoneState> {
+	val result = mutableMapOf<BodyPart, BoneState>()
 	iterateBodyPartHierarchy().forEach { (parentPart, childPart) ->
-		val def = BONE_DEFINITIONS[childPart] ?: return@forEach
-		val input = state.inputs[childPart] ?: return@forEach
-		val fkHead = parentPart?.let { poses[it]?.tail } ?: rootHead
-		val head = input.headPositionOverride ?: fkHead
-		poses[childPart] = BonePose(head, head + input.rotation.sandwich(def.localTailOffset))
-	}
-	return poses
-}
-
-data class ComputedSkeletonState(val bones: Map<BodyPart, ComputedBone>)
-
-fun buildComputedBones(state: SkeletonState): Map<BodyPart, ComputedBone> {
-	val poses = computePoses(state)
-	val result = mutableMapOf<BodyPart, ComputedBone>()
-	iterateBodyPartHierarchy().forEach { (parentPart, childPart) ->
-		val def = BONE_DEFINITIONS[childPart] ?: return@forEach
-		val input = state.inputs[childPart] ?: return@forEach
-		val pose = poses[childPart] ?: return@forEach
-		result[childPart] = ComputedBone(
-			bodyPart = def.bodyPart,
-			length = def.length,
-			rotation = input.rotation,
-			head = pose.head,
-			tail = pose.tail,
-			parentBone = parentPart?.let { result[it] },
+		val bone = state.bones[childPart] ?: return@forEach
+		val tailOffset = BONE_TAIL_OFFSETS[childPart] ?: return@forEach
+		val parentBone = parentPart?.let { result[it] }
+		val head = parentBone?.tailPosition ?: rootHead
+		result[childPart] = bone.copy(
+			headPosition = head,
+			tailPosition = head + bone.rotation.sandwich(tailOffset),
+			parentBone = parentPart,
 		)
 	}
 	return result
@@ -157,7 +125,6 @@ fun buildComputedBones(state: SkeletonState): Map<BodyPart, ComputedBone> {
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
-	data class SetBoneHeadPosition(val bodyPart: BodyPart, val position: Vector3?) : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
@@ -166,17 +133,12 @@ typealias SkeletonBehaviour = Behaviour<SkeletonState, SkeletonActions, Skeleton
 class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour {
 
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState {
-		val inputs = state.inputs.toMutableMap()
+		val bones = state.bones.toMutableMap()
 		return when (action) {
 			is SkeletonActions.SetBoneRotation -> {
-				val boneInput = inputs[action.bodyPart] ?: return state
-				inputs[action.bodyPart] = boneInput.copy(rotation = action.rotation)
-				state.copy(inputs = inputs)
-			}
-			is SkeletonActions.SetBoneHeadPosition -> {
-				val boneInput = inputs[action.bodyPart] ?: return state
-				inputs[action.bodyPart] = boneInput.copy(headPositionOverride = action.position)
-				state.copy(inputs = inputs)
+				val bone = bones[action.bodyPart] ?: return state
+				bones[action.bodyPart] = bone.copy(rotation = action.rotation)
+				state.copy(bones = bones)
 			}
 		}
 	}
@@ -191,7 +153,13 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 				receiver.context.dispatch(
 					SkeletonActions.SetBoneRotation(
 						BodyPart.CHEST,
-						Quaternion.fromRotationVector(Vector3(cos(elapsed), cos(elapsed), 0f)),
+						Quaternion.fromRotationVector(Vector3(cos(elapsed), sin(elapsed), 0f)),
+					)
+				)
+				receiver.context.dispatch(
+					SkeletonActions.SetBoneRotation(
+						BodyPart.LEFT_LOWER_LEG,
+						Quaternion.fromRotationVector(Vector3(cos(elapsed + 1000), sin(elapsed + 1000), 0f)),
 					)
 				)
 			}
@@ -210,12 +178,12 @@ class SmoothingProcessor(var smoothing: Float) : SkeletonProcessor {
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val alpha = 1f - smoothing.coerceAtMost(0.99f)
-		smoothedRotations = state.inputs.mapValues { (bodyPart, input) ->
-			(smoothedRotations[bodyPart] ?: input.rotation).lerpR(input.rotation, alpha).unit()
+		smoothedRotations = state.bones.mapValues { (bodyPart, bone) ->
+			(smoothedRotations[bodyPart] ?: bone.rotation).lerpR(bone.rotation, alpha).unit()
 		}
 		return state.copy(
-			inputs = state.inputs.mapValues { (bodyPart, input) ->
-				input.copy(rotation = smoothedRotations[bodyPart] ?: input.rotation)
+			bones = state.bones.mapValues { (bodyPart, bone) ->
+				bone.copy(rotation = smoothedRotations[bodyPart] ?: bone.rotation)
 			}
 		)
 	}
@@ -224,53 +192,46 @@ class SmoothingProcessor(var smoothing: Float) : SkeletonProcessor {
 class PredictionProcessor(var predictionAmount: Float) : SkeletonProcessor {
 	override var enabled: Boolean = true
 
-	private data class BoneVelocity(
-		val lastRotation: Quaternion,
-		val delta: Quaternion,
-	)
+	private data class BoneVelocity(val lastRotation: Quaternion, val delta: Quaternion)
 
 	private var velocities: Map<BodyPart, BoneVelocity> = emptyMap()
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val newVelocities = mutableMapOf<BodyPart, BoneVelocity>()
-
-		val predicted = state.inputs.mapValues { (bodyPart, input) ->
+		val newBones = state.bones.mapValues { (bodyPart, bone) ->
 			val prev = velocities[bodyPart]
-
 			if (prev == null) {
-				newVelocities[bodyPart] = BoneVelocity(input.rotation, Quaternion.IDENTITY)
-				return@mapValues input
+				newVelocities[bodyPart] = BoneVelocity(bone.rotation, Quaternion.IDENTITY)
+				return@mapValues bone
 			}
-
-			val velocity = if (input.rotation !== prev.lastRotation) {
-				BoneVelocity(input.rotation, input.rotation * prev.lastRotation.inv())
+			val velocity = if (bone.rotation !== prev.lastRotation) {
+				BoneVelocity(bone.rotation, bone.rotation * prev.lastRotation.inv())
 			} else {
 				prev
 			}
-
 			newVelocities[bodyPart] = velocity
-
 			val scaledDelta = Quaternion.IDENTITY.lerpR(velocity.delta, predictionAmount).unit()
-			input.copy(rotation = (scaledDelta * input.rotation).unit())
+			bone.copy(rotation = (scaledDelta * bone.rotation).unit())
 		}
-
 		velocities = newVelocities
-		return state.copy(inputs = predicted)
+		return state.copy(bones = newBones)
 	}
 }
 
-class ComputedSkeletonBehaviour(val processors: List<SkeletonProcessor> = emptyList()) : SkeletonBehaviour {
+class ComputedSkeletonBehaviour(
+	val hz: Float = 100f,
+	val processors: List<SkeletonProcessor> = emptyList()
+) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
+		val intervalMs = (1000f / hz).toLong()
 		receiver.context.scope.launch {
 			while (true) {
-				delay(10)
+				delay(intervalMs)
 				val targetState = receiver.context.state.value
 				val processed = processors
-					.filter { it.enabled }
-					.fold(targetState) {
-						state, processor -> processor.process(state)
-					}
-				receiver.computed.value = ComputedSkeletonState(buildComputedBones(processed))
+					.filter { processor -> processor.enabled }
+					.fold(targetState) { state, processor -> processor.process(state) }
+				receiver.computed.value = buildBones(processed)
 			}
 		}
 	}
@@ -278,7 +239,7 @@ class ComputedSkeletonBehaviour(val processors: List<SkeletonProcessor> = emptyL
 
 class Skeleton(
 	val context: SkeletonContext,
-	val computed: MutableStateFlow<ComputedSkeletonState>,
+	val computed: MutableStateFlow<Map<BodyPart, BoneState>>,
 ) {
 	companion object {
 		fun create(scope: CoroutineScope): Skeleton {
@@ -296,7 +257,7 @@ class Skeleton(
 				behaviours = behaviours,
 			)
 
-			val skeleton = Skeleton(context, MutableStateFlow(ComputedSkeletonState(buildComputedBones(context.state.value))))
+			val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
 			behaviours.forEach { it.observe(skeleton) }
 
 			return skeleton
