@@ -18,6 +18,7 @@ private const val USER_CONFIG_VERSION = 1
 @Serializable
 data class UserConfigData(
 	val userHeight: Float = 1.6f,
+	val proportions: Map<String, Float> = emptyMap(),
 	val version: Int = USER_CONFIG_VERSION,
 )
 

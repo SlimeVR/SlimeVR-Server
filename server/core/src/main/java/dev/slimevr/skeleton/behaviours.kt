@@ -1,0 +1,130 @@
+package dev.slimevr.skeleton
+
+import dev.slimevr.config.UserConfig
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.BodyPart
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.random.Random
+
+class ProportionsBehaviour : SkeletonBehaviour {
+	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
+		is SkeletonActions.SetProportions -> {
+			val newBones = state.bones.mapValues { (bodyPart, bone) ->
+				bone.copy(length = action.lengths[bodyPart] ?: bone.length)
+			}
+			state.copy(bones = newBones, userHeight = computeUserHeight(newBones.mapValues { (_, bone) -> bone.length }))
+		}
+		else -> state
+	}
+}
+
+class ScaledProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
+	override fun observe(receiver: Skeleton) {
+		userConfig.context.state
+			.map { state -> state.data.proportions }
+			.distinctUntilChanged()
+			.onEach { proportions ->
+				if (proportions.isNotEmpty()) {
+					receiver.context.dispatch(SkeletonActions.SetProportions(expandProportions(proportions)))
+				}
+			}
+			.launchIn(receiver.context.scope)
+	}
+}
+
+class HeightLogBehaviour : SkeletonBehaviour {
+	override fun observe(receiver: Skeleton) {
+		receiver.context.scope.launch {
+			receiver.context.state
+				.map { state -> state.userHeight }
+				.distinctUntilChanged()
+				.collect { height -> println("User height changed: ${"%.2f".format(height)}m") }
+		}
+	}
+}
+
+class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour {
+
+	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState {
+		val bones = state.bones.toMutableMap()
+		return when (action) {
+			is SkeletonActions.SetBoneRotation -> {
+				val bone = bones[action.bodyPart] ?: return state
+				bones[action.bodyPart] = bone.copy(rotation = action.rotation)
+				state.copy(bones = bones)
+			}
+			else -> state
+		}
+	}
+
+	override fun observe(receiver: Skeleton) {
+		receiver.context.scope.launch {
+			val intervalMs = (1000f / inputHz).toLong()
+			val startTime = System.currentTimeMillis()
+			while (true) {
+				delay(intervalMs)
+				val elapsed = (System.currentTimeMillis() - startTime) / 1000f
+				receiver.context.dispatch(
+					SkeletonActions.SetBoneRotation(
+						BodyPart.CHEST,
+						Quaternion.fromRotationVector(Vector3(cos(elapsed), sin(elapsed), 0f)),
+					)
+				)
+				receiver.context.dispatch(
+					SkeletonActions.SetBoneRotation(
+						BodyPart.LEFT_LOWER_LEG,
+						Quaternion.fromRotationVector(Vector3(cos(elapsed + 1000), sin(elapsed + 1000), 0f)),
+					)
+				)
+			}
+		}
+	}
+}
+
+class RandomProportionsBehaviour(val intervalMs: Long) : SkeletonBehaviour {
+	private val targets = listOf(
+		BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG,
+		BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG,
+		BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM,
+	)
+
+	override fun observe(receiver: Skeleton) {
+		receiver.context.scope.launch {
+			while (true) {
+				delay(intervalMs)
+				receiver.context.dispatch(
+					SkeletonActions.SetProportions(
+						targets.associateWith { Random.nextFloat() * 0.4f + 0.2f }
+					)
+				)
+			}
+		}
+	}
+}
+
+class ComputedSkeletonBehaviour(
+	val hz: Float = 100f,
+	val processors: List<SkeletonProcessor> = emptyList()
+) : SkeletonBehaviour {
+	override fun observe(receiver: Skeleton) {
+		val intervalMs = (1000f / hz).toLong()
+		receiver.context.scope.launch {
+			while (true) {
+				delay(intervalMs)
+				val targetState = receiver.context.state.value
+				val processed = processors
+					.filter { processor -> processor.enabled }
+					.fold(targetState) { state, processor -> processor.process(state) }
+				receiver.computed.value = buildBones(processed)
+			}
+		}
+	}
+}

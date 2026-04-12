@@ -2,6 +2,9 @@
 
 package dev.slimevr.heightcalibration
 
+import dev.slimevr.config.UserConfig
+import dev.slimevr.config.UserConfigActions
+import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.takeWhile
@@ -62,6 +65,7 @@ object CalibrationBehaviour : HeightCalibrationBehaviourType {
 
 internal suspend fun runCalibrationSession(
 	context: HeightCalibrationContext,
+	userConfig: UserConfig,
 	hmdUpdates: kotlinx.coroutines.flow.Flow<TrackerSnapshot>,
 	controllerUpdates: kotlinx.coroutines.flow.Flow<TrackerSnapshot>,
 	clock: () -> Long = System::nanoTime,
@@ -178,7 +182,13 @@ internal suspend fun runCalibrationSession(
 					}
 					dispatch(finalStatus, relativeY)
 
-					// TODO (when DONE): persist height to config, update user proportions, clear mounting reset flags
+					if (finalStatus == UserHeightCalibrationStatus.DONE) {
+						userConfig.context.dispatch(
+							UserConfigActions.Update {
+								copy(userHeight = relativeY, proportions = computeDefaultProportionsByBone(relativeY))
+							}
+						)
+					}
 				}
 			}
 	} ?: dispatch(UserHeightCalibrationStatus.ERROR_TIMEOUT)

@@ -3,6 +3,7 @@
 package dev.slimevr.heightcalibration
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.UserConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import io.github.axisangles.ktmath.Quaternion
@@ -40,6 +41,7 @@ val INITIAL_HEIGHT_CALIBRATION_STATE = HeightCalibrationState(
 class HeightCalibrationManager(
 	val context: HeightCalibrationContext,
 	val serverContext: VRServer,
+	private val userConfig: UserConfig,
 ) {
 	private var sessionJob: Job? = null
 
@@ -76,7 +78,7 @@ class HeightCalibrationManager(
 
 	fun start() {
 		sessionJob?.cancel()
-		sessionJob = context.scope.launch { runCalibrationSession(context, hmdUpdates, controllerUpdates) }
+		sessionJob = context.scope.launch { runCalibrationSession(context, userConfig, hmdUpdates, controllerUpdates) }
 	}
 
 	fun cancel() {
@@ -88,6 +90,7 @@ class HeightCalibrationManager(
 	companion object {
 		fun create(
 			serverContext: VRServer,
+			userConfig: UserConfig,
 			scope: CoroutineScope,
 		): HeightCalibrationManager {
 			val behaviours = listOf(CalibrationBehaviour)
@@ -96,7 +99,7 @@ class HeightCalibrationManager(
 				scope = scope,
 				behaviours = behaviours,
 			)
-			return HeightCalibrationManager(context = context, serverContext = serverContext)
+			return HeightCalibrationManager(context = context, serverContext = serverContext, userConfig = userConfig)
 		}
 	}
 }
