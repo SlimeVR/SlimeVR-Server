@@ -89,27 +89,6 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 	}
 }
 
-class RandomProportionsBehaviour(val intervalMs: Long) : SkeletonBehaviour {
-	private val targets = listOf(
-		BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG,
-		BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG,
-		BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM,
-	)
-
-	override fun observe(receiver: Skeleton) {
-		receiver.context.scope.launch {
-			while (true) {
-				delay(intervalMs)
-				receiver.context.dispatch(
-					SkeletonActions.SetProportions(
-						targets.associateWith { Random.nextFloat() * 0.4f + 0.2f }
-					)
-				)
-			}
-		}
-	}
-}
-
 class ComputedSkeletonBehaviour(
 	val hz: Float = 100f,
 	val processors: List<SkeletonProcessor> = emptyList()

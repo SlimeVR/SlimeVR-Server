@@ -76,7 +76,7 @@ class Skeleton(
 				HeightLogBehaviour(),
 				YouSpinMeRightRoundBehaviour(inputHz = 10f),
 				ComputedSkeletonBehaviour(processors = listOf(
-//				PredictionProcessor(predictionAmount = 0.3f),
+//					PredictionProcessor(predictionAmount = 0.3f),
 					SmoothingProcessor(smoothing = 0.3f)
 				)),
 			)
