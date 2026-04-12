@@ -11,7 +11,7 @@ import {
   WebSocketApiContext,
 } from './hooks/websocket-api';
 
-import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
+import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvider';
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
 import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
