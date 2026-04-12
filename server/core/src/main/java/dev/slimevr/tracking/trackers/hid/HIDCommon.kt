@@ -23,7 +23,8 @@ import kotlin.math.sqrt
 /**
  * A collection of shared HID functions between OS specific HID implementations.
  */
-class HIDCommon {
+open class HIDCommon(name: String) :
+	Thread(name) {
 	companion object {
 		const val HID_TRACKER_RECEIVER_VID = 0x1209
 		const val HID_TRACKER_RECEIVER_PID = 0x7690

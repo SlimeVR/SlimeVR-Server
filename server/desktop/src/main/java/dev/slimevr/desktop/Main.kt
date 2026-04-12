@@ -135,7 +135,8 @@ fun main(args: Array<String>) {
 		vrServer.start()
 
 		// Start service for USB HID trackers
-		DesktopHIDManager(
+		LogManager.info("Starting the HID tracker service")
+		vrServer.hidTrackersServer = DesktopHIDManager(
 			"Sensors HID service",
 		) { tracker: Tracker -> vrServer.registerTracker(tracker) }
 

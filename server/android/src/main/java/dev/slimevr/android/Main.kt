@@ -47,12 +47,13 @@ fun startVRServer(activity: AppCompatActivity) {
 			vrServer.start()
 
 			// Start service for USB HID trackers
-			val androidHidManager = AndroidHIDManager(
+			LogManager.info("Starting the HID tracker service")
+			vrServer.hidTrackersServer = AndroidHIDManager(
 				"Sensors HID service",
 				{ tracker: Tracker -> vrServer.registerTracker(tracker) },
 				activity,
 			)
-			androidHidManager.start()
+			vrServer.hidTrackersServer.start()
 
 			Keybinding(vrServer)
 			vrServer.join()

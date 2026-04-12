@@ -32,7 +32,7 @@ class AndroidHIDManager(
 	name: String,
 	private val trackersConsumer: Consumer<Tracker>,
 	private val context: Context,
-) : Thread(name) {
+) : HIDCommon(name) {
 	private val devices: MutableList<HIDDevice> = mutableListOf()
 	private val devicesBySerial: MutableMap<String, MutableList<Int>> = HashMap()
 	private val devicesByHID: MutableMap<UsbDevice, MutableList<Int>> = HashMap()
