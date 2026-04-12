@@ -265,6 +265,49 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 		}
 	}
 
+	override fun sendTrackerCommand(
+			hwid: String?,
+			command: UByte
+	) {
+		var address: String
+		var id: Int? = null
+		if (hwid != null) {
+			synchronized(devices) {
+				for ((index, device) in devices.withIndex()) {
+					if (device.hardwareIdentifier == hwid) {
+						id = index
+						break
+					}
+				}
+			}
+			if (id == null) {
+				return
+			}
+			address = hwid
+		}
+		else {
+			address = "000000000000" // send to all
+		}
+		val buffer = constructCommandPacket(address, command)
+		synchronized(devicesByHID) {
+			for ((hidDevice, deviceList) in devicesByHID) {
+				if (id != null)
+				{
+					var device = deviceList.getOrNull(id)
+					if (device == null) {
+						continue
+					}
+				}
+				try {
+//public int write(byte[] message, int packetLength, byte reportId, boolean applyPadding=false)
+					hidDevice.write(buffer, 16, 0)
+				} catch (e: IllegalStateException) {
+					continue // Skip devices with open error (Maybe disconnected)
+				}
+			}
+		}
+	}
+
 	override fun run() { // Doesn't seem to run
 	}
 

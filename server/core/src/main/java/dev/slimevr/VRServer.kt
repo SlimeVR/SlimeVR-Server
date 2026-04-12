@@ -30,6 +30,7 @@ import dev.slimevr.status.StatusSystem
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.*
+import dev.slimevr.tracking.trackers.hid.HIDCommon
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.trackingchecklist.TrackingChecklistManager
 import dev.slimevr.util.ann.VRServerThread
@@ -67,6 +68,7 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val humanPoseManager: HumanPoseManager
 	private val trackers: MutableList<Tracker> = FastList()
+	var hidTrackersServer: HIDCommon? = null
 	val trackersServer: TrackersUDPServer
 	private val bridges: MutableList<Bridge> = FastList()
 	private val tasks: Queue<Runnable> = LinkedBlockingQueue()

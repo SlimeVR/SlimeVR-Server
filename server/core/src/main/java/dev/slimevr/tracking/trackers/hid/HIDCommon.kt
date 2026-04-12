@@ -25,6 +25,19 @@ import kotlin.math.sqrt
  */
 open class HIDCommon(name: String) :
 	Thread(name) {
+	fun parseCommand(
+		hwid: String?,
+		command: String
+	) {
+		val tokens = command.split(' ')
+		val parsed = tokens[0].toUByte()
+		sendTrackerCommand(hwid, parsed)
+	}
+	open fun sendTrackerCommand(
+		hwid: String?,
+		command: UByte
+	)
+	{}
 	companion object {
 		const val HID_TRACKER_RECEIVER_VID = 0x1209
 		const val HID_TRACKER_RECEIVER_PID = 0x7690
@@ -379,6 +392,17 @@ open class HIDCommon(name: String) :
 			if (packetType == 1 || packetType == 2 || packetType == 4 || packetType == 7) {
 				tracker.dataTick() // only data tick if there is rotation data
 			}
+		}
+
+		fun constructCommandPacket(
+			hwid: String,
+			command: UByte
+		): ByteArray {
+			var array = ByteArray(16)
+			array.set(0, 254.toByte())
+			array.set(1, command.toByte())
+//			hwid.hexToByteArray().copyInto(array, 2)
+			return array
 		}
 	}
 }
