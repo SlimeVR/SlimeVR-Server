@@ -20,7 +20,7 @@ private const val MIN_HEIGHT = 1.0f
 class SkeletonBehaviour(
 	private val userConfig: UserConfig,
 	private val skeleton: Skeleton,
-) : SolarXRConnectionBehaviour {
+) : SolarXRBridgeBehaviour {
 
 	private fun buildConfigResponse(): SkeletonConfigResponse {
 		val proportions = userConfig.context.state.value.data.proportions
@@ -40,7 +40,7 @@ class SkeletonBehaviour(
 		return SkeletonConfigResponse(skeletonParts = skeletonParts, userHeight = userHeight)
 	}
 
-	override fun observe(receiver: SolarXRConnection) {
+	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<SkeletonConfigRequest> {
 			receiver.sendRpc(buildConfigResponse())
 		}

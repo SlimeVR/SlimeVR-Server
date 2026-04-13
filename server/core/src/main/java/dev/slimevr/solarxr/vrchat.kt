@@ -16,8 +16,8 @@ class VrcBehaviour(
 	private val vrcManager: VRCConfigManager,
 	private val server: VRServer,
 	private val userHeight: () -> Double,
-) : SolarXRConnectionBehaviour {
-	override fun observe(receiver: SolarXRConnection) {
+) : SolarXRBridgeBehaviour {
+	override fun observe(receiver: SolarXRBridge) {
 		fun buildCurrentResponse(): VRCConfigStateChangeResponse {
 			val state = vrcManager.context.state.value
 			val values = state.currentValues

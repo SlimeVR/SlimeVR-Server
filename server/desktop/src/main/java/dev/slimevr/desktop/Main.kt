@@ -19,8 +19,10 @@ import dev.slimevr.solarxr.HeightCalibrationBehaviour
 import dev.slimevr.solarxr.ProvisioningBehaviour
 import dev.slimevr.solarxr.SerialBehaviour
 import dev.slimevr.solarxr.SkeletonBehaviour
+import dev.slimevr.solarxr.TrackingChecklistBehaviour
 import dev.slimevr.solarxr.VrcBehaviour
-import dev.slimevr.solarxr.createSolarXRWebsocketServer
+import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
+import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.createUDPTrackerServer
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -38,6 +40,12 @@ fun main(args: Array<String>) = runBlocking {
 	val provisioningManager = ProvisioningManager.create(serialServer, this)
 
 	val skeleton = Skeleton.create(this, config.userConfig)
+	val trackingChecklist = TrackingChecklist.create(
+		scope = this,
+		server = server,
+		skeleton = skeleton,
+		vrcConfigManager = vrcConfigManager,
+	)
 
 	launch {
 		createUDPTrackerServer(server, config)
@@ -54,8 +62,9 @@ fun main(args: Array<String>) = runBlocking {
 		HeightCalibrationBehaviour(heightCalibrationManager),
 		ProvisioningBehaviour(server, provisioningManager),
 		SkeletonBehaviour(config.userConfig, skeleton),
+		TrackingChecklistBehaviour(trackingChecklist, config.settings),
 	)
-	launch { createSolarXRWebsocketServer(solarXRBehaviours) }
+	launch { createSolarXRWebsocketServer(server, solarXRBehaviours) }
 	launch { createIpcServers(server, solarXRBehaviours) }
 
 	Unit

@@ -19,6 +19,7 @@ private const val SETTINGS_CONFIG_VERSION = 1
 data class SettingsConfigState(
 	val trackerPort: Int = 6969,
 	val mutedVRCWarnings: List<String> = listOf(),
+	val mutedChecklistSteps: Set<String> = emptySet(),
 	val version: Int = SETTINGS_CONFIG_VERSION,
 )
 

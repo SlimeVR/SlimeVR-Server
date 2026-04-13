@@ -2,19 +2,17 @@ package dev.slimevr.desktop.hid
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
+import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
-import dev.slimevr.hid.HID_TRACKER_PID
-import dev.slimevr.hid.HID_TRACKER_RECEIVER_PID
-import dev.slimevr.hid.HID_TRACKER_RECEIVER_VID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import solarxr_protocol.datatypes.TrackerStatus
 import org.hid4java.HidDevice
 import org.hid4java.HidManager
 import org.hid4java.HidServicesSpecification
@@ -22,6 +20,10 @@ import org.hid4java.jna.HidApi
 import org.hid4java.jna.HidDeviceInfoStructure
 
 private const val HID_POLL_INTERVAL_MS = 3000L
+
+private const val HID_TRACKER_RECEIVER_VID = 0x1209
+private const val HID_TRACKER_RECEIVER_PID = 0x7690
+private const val HID_TRACKER_PID = 0x7692
 
 private fun isCompatibleDevice(vid: Int, pid: Int) = vid == HID_TRACKER_RECEIVER_VID && (pid == HID_TRACKER_RECEIVER_PID || pid == HID_TRACKER_PID)
 
@@ -87,7 +89,13 @@ fun createDesktopHIDManager(serverContext: VRServer, scope: CoroutineScope) {
 				val deviceJob = Job(scope.coroutineContext[Job])
 				val deviceScope = CoroutineScope(scope.coroutineContext + deviceJob)
 
-				val dataFlow = channelFlow {
+				val receiver = HIDReceiver.create(
+					serialNumber = serial,
+					serverContext = serverContext,
+					scope = deviceScope,
+				)
+
+				deviceScope.launch {
 					try {
 						while (isActive) {
 							val data = withContext(Dispatchers.IO) {
@@ -98,25 +106,25 @@ fun createDesktopHIDManager(serverContext: VRServer, scope: CoroutineScope) {
 								}
 							}
 							when {
-								data == null -> return@channelFlow
+								data == null -> return@launch
 
 								// read error, device gone
-								data.isNotEmpty() -> send(data)
+								data.isNotEmpty() -> parseHIDPackets(data).forEach { receiver.packetEvents.emit(it) }
 
 								else -> delay(1) // no data yet, yield without busy-spinning
 							}
 						}
 					} finally {
 						withContext(NonCancellable + Dispatchers.IO) { hidDevice.close() }
+						withContext(NonCancellable) {
+							for (record in receiver.context.state.value.trackers.values) {
+								serverContext.getDevice(record.deviceId)?.context?.dispatch(
+									DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
+								)
+							}
+						}
 					}
 				}
-
-				val receiver = HIDReceiver.create(
-					serialNumber = serial,
-					data = dataFlow,
-					serverContext = serverContext,
-					scope = deviceScope,
-				)
 				deviceJob.complete()
 
 				active[path] = ActiveReceiver(deviceJob, receiver)

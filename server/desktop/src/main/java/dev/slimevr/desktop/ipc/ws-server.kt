@@ -1,7 +1,9 @@
-package dev.slimevr.solarxr
+package dev.slimevr.desktop.ipc
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import dev.slimevr.solarxr.handleSolarXRBridge
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -10,40 +12,31 @@ import io.ktor.server.websocket.WebSockets
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
 import kotlinx.coroutines.awaitCancellation
-import solarxr_protocol.MessageBundle
-import solarxr_protocol.rpc.ResetRequest
-import java.nio.ByteBuffer
+import kotlinx.coroutines.flow.flow
 
 const val SOLARXR_PORT = 21110
-suspend fun createSolarXRWebsocketServer(behaviours: List<SolarXRConnectionBehaviour>) {
+
+suspend fun createSolarXRWebsocketServer(server: VRServer, behaviours: List<SolarXRBridgeBehaviour>) {
 	val engine = embeddedServer(Netty, port = SOLARXR_PORT) {
 		install(WebSockets)
 
 		routing {
 			webSocket {
 				AppLogger.solarxr.info("[WS] New connection")
-				val solarxrConnection = SolarXRConnection.create(
-					scope = this,
-					onSend = {
-						send(Frame.Binary(fin = true, data = it))
+				handleSolarXRBridge(
+					server = server,
+					messages = flow {
+						for (frame in incoming) {
+							when (frame) {
+								is Frame.Binary -> emit(frame.data)
+								is Frame.Close -> AppLogger.solarxr.info("[WS] Connection closed")
+								else -> {}
+							}
+						}
 					},
+					send = { bytes -> send(Frame.Binary(fin = true, data = bytes)) },
 					behaviours = behaviours,
 				)
-
-				for (frame in incoming) {
-					when (frame) {
-						is Frame.Binary -> onSolarXRMessage(
-							frame.buffer,
-							solarxrConnection,
-						)
-
-						is Frame.Close -> {
-							AppLogger.solarxr.info("[WS] Connection closed")
-						}
-
-						else -> {}
-					}
-				}
 			}
 		}
 	}

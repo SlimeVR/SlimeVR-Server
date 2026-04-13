@@ -13,8 +13,8 @@ import solarxr_protocol.rpc.WifiProvisioningStatusResponse
 class ProvisioningBehaviour(
 	private val server: VRServer,
 	private val provisioningManager: ProvisioningManager,
-) : SolarXRConnectionBehaviour {
-	override fun observe(receiver: SolarXRConnection) {
+) : SolarXRBridgeBehaviour {
+	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<StartWifiProvisioningRequest> { event ->
 			val ssid = event.ssid ?: return@on
 

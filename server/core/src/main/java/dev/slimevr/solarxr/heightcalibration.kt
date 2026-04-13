@@ -10,8 +10,8 @@ import solarxr_protocol.rpc.UserHeightRecordingStatusResponse
 
 class HeightCalibrationBehaviour(
 	private val heightCalibrationManager: HeightCalibrationManager,
-) : SolarXRConnectionBehaviour {
-	override fun observe(receiver: SolarXRConnection) {
+) : SolarXRBridgeBehaviour {
+	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<StartUserHeightCalibration> {
 			heightCalibrationManager.start()
 		}

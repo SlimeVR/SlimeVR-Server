@@ -1,17 +1,14 @@
 package dev.slimevr.solarxr
 
-import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceState
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
-import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.data_feed.DataFeedUpdate
@@ -120,15 +117,15 @@ fun createDatafeedFrame(
 	)
 }
 
-class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : SolarXRConnectionBehaviour {
-	override fun reduce(state: SolarXRConnectionState, action: SolarXRConnectionActions) = when (action) {
-		is SolarXRConnectionActions.SetConfig -> state.copy(
+class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : SolarXRBridgeBehaviour {
+	override fun reduce(state: SolarXRBridgeState, action: SolarXRBridgeActions) = when (action) {
+		is SolarXRBridgeActions.SetConfig -> state.copy(
 			dataFeedConfigs = action.configs,
 			datafeedTimers = action.timers,
 		)
 	}
 
-	override fun observe(receiver: SolarXRConnection) {
+	override fun observe(receiver: SolarXRBridge) {
 		receiver.dataFeedDispatcher.on<StartDataFeed> { event ->
 			val datafeeds = event.dataFeeds ?: return@on
 
@@ -136,49 +133,22 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 
 			val timers = datafeeds.mapIndexed { index, config ->
 				receiver.context.scope.launch {
-					val fbb = FlatBufferBuilder(1024)
 					val minTime = config.minimumTimeSinceLast.toLong()
 					while (isActive) {
-						fbb.clear()
-						fbb.finish(
-							MessageBundle(
-								dataFeedMsgs = listOf(
-									createDatafeedFrame(
-										server = server,
-										skeleton = skeleton,
-										datafeedConfig = config,
-										index = index
-									),
-								),
-							).encode(fbb),
-						)
-						receiver.send(fbb.dataBuffer().moveToByteArray())
+						receiver.sendDataFeed(createDatafeedFrame(server = server, skeleton = skeleton, datafeedConfig = config, index = index))
 						delay(minTime)
 					}
 				}
 			}
 
 			receiver.context.dispatch(
-				SolarXRConnectionActions.SetConfig(datafeeds, timers = timers),
+				SolarXRBridgeActions.SetConfig(datafeeds, timers = timers),
 			)
 		}
 
 		receiver.dataFeedDispatcher.on<PollDataFeed> { event ->
 			val config = event.config ?: return@on
-
-			val fbb = FlatBufferBuilder(1024)
-			fbb.finish(
-				MessageBundle(
-					dataFeedMsgs = listOf(
-						createDatafeedFrame(
-							server = server,
-							datafeedConfig = config,
-							skeleton = skeleton,
-						),
-					),
-				).encode(fbb),
-			)
-			receiver.send(fbb.dataBuffer().moveToByteArray())
+			receiver.sendDataFeed(createDatafeedFrame(server = server, datafeedConfig = config, skeleton = skeleton))
 		}
 	}
 }

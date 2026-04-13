@@ -22,8 +22,8 @@ import solarxr_protocol.rpc.SerialTrackerGetWifiScanRequest
 import solarxr_protocol.rpc.SerialTrackerRebootRequest
 import solarxr_protocol.rpc.SerialUpdateResponse
 
-class SerialBehaviour(private val serialServer: SerialServer) : SolarXRConnectionBehaviour {
-	override fun observe(receiver: SolarXRConnection) {
+class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBehaviour {
+	override fun observe(receiver: SolarXRBridge) {
 		val scope = receiver.context.scope
 
 		// We assume that you can only subscribe to one serial console at a time

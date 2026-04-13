@@ -2,7 +2,8 @@ package dev.slimevr.desktop.ipc
 
 import dev.slimevr.VRServer
 import dev.slimevr.getSocketDirectory
-import dev.slimevr.solarxr.SolarXRConnectionBehaviour
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import dev.slimevr.solarxr.handleSolarXRBridge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -33,8 +34,9 @@ suspend fun createUnixFeederSocket(server: VRServer) = acceptUnixClients(FEEDER_
 	)
 }
 
-suspend fun createUnixSolarXRSocket(behaviours: List<SolarXRConnectionBehaviour>) = acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
-	handleSolarXRConnection(
+suspend fun createUnixSolarXRSocket(server: VRServer, behaviours: List<SolarXRBridgeBehaviour>) = acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
+	handleSolarXRBridge(
+		server = server,
 		messages = readFramedMessages(channel),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
 		behaviours = behaviours,
