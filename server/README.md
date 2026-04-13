@@ -1,293 +1,281 @@
-# SlimeVR Server — Design Guidelines
+for a# SlimeVR Server — Architecture
 
-This document explains the architectural choices made in the server rewrite and how to extend the system correctly.
-
----
-
-## Core Principle: Reducers and State
-
-Every major part of this server — a tracker, a device, a UDP connection, a SolarXR session — manages state the same way: immutable data, typed actions, and pure reducer functions that transform one into the other.
-
-This is not accidental. It gives us:
-- **Predictability**: state only changes through known, enumerated actions
-- **Observability**: any code can `collect` the `StateFlow` and react to changes
-- **Concurrency safety**: `StateFlow.update` is atomic; two concurrent dispatches never corrupt state
+This document explains how the server is structured, why it's structured that way, and how to extend it correctly.
 
 ---
 
-## The Context System
+## Mental Model
 
-The `Context<S, A>` type (`context/context.kt`) is the building block of every module:
+Every significant part of the server — a tracker, a UDP connection, a SolarXR session, a config file — is a **module**. Every module is a list of behaviours sharing one context:
+
+![Architecture diagram](architecture.svg)
+
+That's the entire system. Everything else is an application of this pattern.
+
+---
+
+## Why This Pattern
+
+The server handles many concurrent connections, each with independent state that many other components need to observe. A shared mutable object works fine until two coroutines update it at the same time, or you need to know *when* something changed, or you want to add a feature without touching existing code.
+
+The reducer pattern solves all three:
+
+- **Thread safety**: `StateFlow.update` is atomic. Concurrent dispatches serialize without locks.
+- **Observability**: `context.state` is a hot `StateFlow` — it always holds the current value and any code can `collect` it and react to changes without being coupled to the producer.
+- **Extensibility**: adding a feature means adding a `Behaviour` to a list. Nothing else changes.
+
+The cost is that you cannot mutate state directly. Everything goes through `dispatch`. That constraint is the point.
+
+---
+
+## The Context
+
+`Context<S, A>` (`context/context.kt`) holds two things: the current state as a `StateFlow<S>`, and the coroutine scope that defines this module's lifetime.
 
 ```kotlin
 class Context<S, in A>(
-	val state: StateFlow<S>,        // current state, readable by anyone
-	val scope: CoroutineScope,      // lifetime of this module
+    val state: StateFlow<S>,
+    val scope: CoroutineScope,
 ) {
-	fun dispatch(action: A)
-	fun dispatchAll(actions: List<A>)
+    fun dispatch(action: A)
+    fun dispatchAll(actions: List<A>)
 }
 ```
 
-`Context.create` wires everything together:
-1. Takes an `initialState` and a list of **behaviours**
-2. On each `dispatch`, folds all behaviours' `reduce` over the current state
-3. Publishes the new state on the `StateFlow`
+`Context.create` takes an initial state and a list of behaviours. On each `dispatch`, it folds every behaviour's `reduce` over the current state in order and publishes the result. Behaviours that don't care about an action return the state unchanged.
 
-**Never mutate state directly.** Always go through `dispatch`.
+`dispatchAll(actions)` applies a list of actions in one atomic `StateFlow.update`. Use it when you need multiple state changes to be visible as one — intermediate states are never published, so no observer fires between them.
 
 ---
 
-## Behaviours: Splitting Concerns
+## Behaviours
 
-A `Behaviour` is an interface with two methods, both with no-op defaults:
+A behaviour is one feature of a module. It has two methods, both optional:
 
 ```kotlin
 interface Behaviour<S, A, C> {
-	fun reduce(state: S, action: A): S = state
-	fun observe(receiver: C) {}
+    fun reduce(state: S, action: A): S = state   // pure, no side effects
+    fun observe(receiver: C) {}                   // side effects go here
 }
 ```
 
-- **`reduce`**: Pure function. Handles the actions it cares about, returns the rest unchanged. Override only if the behaviour needs to modify state.
-- **`observe`**: Called once at construction. Launches coroutines, registers event listeners, subscribes to other state flows. Override only if the behaviour has side effects.
+`reduce` is a pure function — it cannot launch coroutines, call external services, or read from a clock. It just maps `(state, action) → state`.
 
-The type parameter `C` is what the observer receives. For modules where the behaviour only needs the context, `C = Context<S, A>`. For modules where behaviours need access to the full service object (its `send` method, dispatchers, etc.), `C` is the service class itself:
+`observe` is called once at construction, after the context exists. This is where you launch coroutines, subscribe to flows, register event listeners. All coroutines launched here should use `receiver.context.scope` so they die when the module dies — no manual cleanup, no leaks.
+
+**Why behaviours instead of methods on the module class?**
+
+The natural alternative is one class with methods for each feature — ping handling, handshake logic, sensor registration, timeout detection, all in the same file. That works until the class has 20 features and every change has global blast radius. Behaviours make the feature list explicit: you read `create()`, you see exactly what the module does. Adding or removing a feature is one line in that list, touching nothing else.
+
+**Why `observe` is separate from `reduce`:**
+
+`reduce` must stay pure so state transitions are testable and predictable. Side effects in `observe` are isolated — a behaviour that logs packets doesn't affect state, a behaviour that saves config doesn't affect packet handling.
+
+### Scoping Behaviours to Module Lifetime
+
+Every behaviour's coroutines run inside `receiver.context.scope`. When a UDP connection drops, its scope is cancelled, which cancels every coroutine every behaviour launched for that connection. No teardown code needed anywhere.
+
+This is why `observe` receives the module (or context) rather than taking a raw `CoroutineScope` parameter — it enforces that behaviours cannot outlive their module.
+
+### Stateless vs. Stateful Behaviours
+
+Behaviours with no constructor dependencies are `object`s — singletons, zero allocation:
 
 ```kotlin
-// Observer receives only the context
-typealias DeviceBehaviour = Behaviour<DeviceState, DeviceActions, DeviceContext>
+object PacketBehaviour : UDPConnectionBehaviour { ... }
+```
 
-// Observer receives the full connection object
+Behaviours that need external services are `class`es, constructed at the call site:
+
+```kotlin
+class TrackerConfigBehaviour(
+    private val settings: Settings,
+    private val hardwareId: String,
+) : TrackerBehaviour { ... }
+```
+
+When a behaviour is conditional (depends on a nullable service), use `buildList`:
+
+```kotlin
+val behaviours: List<MyBehaviour> = buildList {
+    add(AlwaysPresentBehaviour)
+    optionalService?.let { add(OptionalServiceBehaviour(it)) }
+}
+```
+
+### The Receiver Type
+
+The type parameter `C` controls what `observe` receives. For simple modules where behaviours only need to dispatch or subscribe to state, `C` is the context itself. For modules where behaviours also need to call methods (send bytes, emit events), `C` is the module class:
+
+```kotlin
+// behaviours only dispatch/observe state
+typealias GlobalConfigBehaviour = Behaviour<GlobalConfigState, GlobalConfigActions, GlobalConfigContext>
+
+// behaviours also call receiver.send(), receiver.packetEvents.on<T>(...)
 typealias UDPConnectionBehaviour = Behaviour<UDPConnectionState, UDPConnectionActions, UDPConnection>
 ```
 
-Every module follows the same construction pattern:
+### File Layout
 
-```kotlin
-val behaviours = listOf(BehaviourA, BehaviourB, BehaviourC)
-
-val context = Context.create(
-	initialState = ...,
-	scope = scope,
-	behaviours = behaviours,
-)
-
-val module = MyModule(context, ...)
-behaviours.forEach { it.observe(module) }  // or it.observe(context) for basic modules
-```
-
-This is where observers are started. Order matters for reducers (applied top-to-bottom), but rarely matters for observers.
-
----
-
-## Behaviour File Layout
-
-Behaviours live in their own `behaviours.kt` file, separate from the module they belong to, within the same package:
+Behaviours live in a `behaviours.kt` file in the same package as the module, separate from the module class itself:
 
 ```
-udp/
-├── behaviours.kt   ← PacketBehaviour, PingBehaviour, HandshakeBehaviour, …
-├── connection.kt   ← UDPConnection class, state, actions, typealias
-└── packets.kt      ← packet type definitions
+tracker/
+├── module.kt       ← Tracker class, TrackerState, TrackerActions, typealiases
+├── behaviours.kt   ← TrackerBasicBehaviour, TrackerTPSBehaviour, ...
+└── config.kt       ← TrackerConfigBehaviour (its own file — distinct concern)
 ```
 
-Group behaviours that share the same receiver type in a single file. Behaviours with dependencies on external services (e.g. `SerialBehaviour`, `FirmwareBehaviour`) are standalone classes — one per file is fine when they have distinct concerns.
-
----
-
-## Stateless vs. Stateful Behaviours
-
-**Stateless behaviours** (no dependencies at construction time) are `object`s:
-
-```kotlin
-object PacketBehaviour : UDPConnectionBehaviour {
-	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
-		is UDPConnectionActions.LastPacket -> state.copy(...)
-		else -> state
-	}
-	override fun observe(receiver: UDPConnection) { ... }
-}
-```
-
-**Behaviours with dependencies** are classes, constructed at the call site:
-
-```kotlin
-class FirmwareBehaviour(private val firmwareManager: FirmwareManager) : SolarXRConnectionBehaviour {
-	override fun observe(receiver: SolarXRConnection) { ... }
-}
-
-// At the call site:
-listOf(
-	DataFeedInitBehaviour,
-	FirmwareBehaviour(firmwareManager),
-	SerialBehaviour(serialServer),
-)
-```
+`module.kt` is the standard name for the file containing the module class, state, actions, and typealiases. `behaviours.kt` holds the implementations. For modules with many distinct feature areas, split behaviours by feature instead of one file — `solarxr/` uses this: `datafeed.kt`, `firmware.kt`, `provisioning.kt`, etc. each live alongside `module.kt`.
 
 ---
 
 ## Actions
 
-Actions are `sealed interface`s with `data class` variants. This means:
-
-- The compiler enforces exhaustive `when` expressions in reducers
-- No stringly-typed dispatch
-- Refactors are caught at compile time
-
-Use `data class Update(val transform: State.() -> State)` when you need a flexible "update anything" action (see `TrackerActions`, `DeviceActions`). Use specific named actions when the action has semantic meaning that other behaviours need to pattern-match on (see `UDPConnectionActions.Handshake`).
-
----
-
-## The PacketDispatcher Pattern
-
-`PacketDispatcher<T>` routes incoming messages to typed listeners without a giant `when` block:
+Actions are `sealed interface`s. This matters because the compiler enforces exhaustive `when` in reducers — you cannot forget to handle a new action type. Named actions also mean you can grep for all places a specific transition can occur.
 
 ```kotlin
-dispatcher.on<SensorInfo> { packet -> /* only called for SensorInfo */ }
-dispatcher.onAny { packet -> /* called for everything */ }
-dispatcher.emit(packet) // routes to correct listeners
-```
-
-Use this wherever you have a stream of heterogeneous messages (UDP packets, SolarXR messages). Each behaviour registers its own listener in its `observe` — the dispatcher is passed as part of the module struct.
-
----
-
-## Coroutines and Lifetime
-
-- Every module is given a `CoroutineScope` at creation. Cancelling that scope tears down all coroutines the module launched.
-- Observers should use `receiver.context.scope.launch { ... }` so their work is scoped to the module.
-- Blocking I/O goes on `Dispatchers.IO`. State updates and logic stay on the default dispatcher.
-- **Avoid `runBlocking`** inside observers or handlers — it blocks the coroutine thread. The one acceptable use is synchronous listener registration before a scope is started.
-
----
-
-## State vs. Out-of-Band Data
-
-Not everything belongs in `StateFlow`. Two good examples:
-
-- `VRServer.handleCounter` is an `AtomicInteger` — not in state — because nothing needs to react to it changing, and `incrementAndGet()` is faster and simpler than a dispatch round-trip.
-- `UDPTrackerServer` has no `Context` at all. Its connection map is a plain `MutableMap` internal to the server loop. Nothing outside the loop reads it, so there is no reason to wrap it in a state machine.
-
-Rule of thumb: put data in state if **any other code needs to react to it changing**. If it's purely an implementation detail owned by one place, keep it plain.
-
----
-
-## Adding a New Module
-
-To add a new major section of the server (say, a HID device connection):
-
-1. **Define the state**:
-```kotlin
-data class HIDConnectionState(
-	val deviceId: Int?,
-	val connected: Boolean,
-)
-```
-
-2. **Define sealed actions**:
-```kotlin
-sealed interface HIDConnectionActions {
-	data class Connected(val deviceId: Int) : HIDConnectionActions
-	data object Disconnected : HIDConnectionActions
+sealed interface UDPConnectionActions {
+    data class Handshake(val deviceId: Int) : UDPConnectionActions
+    data class LastPacket(val packetNum: Long?, val time: Long) : UDPConnectionActions
+    data object Disconnected : UDPConnectionActions
 }
 ```
 
-3. **Create type aliases** (keeps signatures readable):
+The choice between a flexible `Update` action and a named action is about who else needs to react:
+
+- **`Update`** — when only the caller cares about the change. It carries a lambda that transforms state directly. No other behaviour pattern-matches it, so there's no coupling.
+- **Named action** — when other behaviours need to react to this specific event. `Handshake` in `UDPConnectionActions` signals to multiple behaviours that a connection is now established; each one matches it independently.
+
 ```kotlin
-typealias HIDConnectionContext = Context<HIDConnectionState, HIDConnectionActions>
-typealias HIDConnectionBehaviour = Behaviour<HIDConnectionState, HIDConnectionActions, HIDConnection>
+// Nothing else needs to react — use Update
+tracker.context.dispatch(TrackerActions.Update { copy(tps = newTps) })
+
+// Multiple behaviours react to this — use a named action
+connection.context.dispatch(UDPConnectionActions.Handshake(deviceId = id))
 ```
 
-4. **Define the module class** (holds context + extra runtime state):
-```kotlin
-class HIDConnection(
-	val context: HIDConnectionContext,
-	val serverContext: VRServer,
-	private val onSend: suspend (ByteArray) -> Unit,
-) {
-	suspend fun send(bytes: ByteArray) = onSend(bytes)
-}
-```
-
-5. **Write behaviours** in a separate `behaviours.kt` file:
-```kotlin
-object HIDHandshakeBehaviour : HIDConnectionBehaviour {
-	override fun reduce(state: HIDConnectionState, action: HIDConnectionActions) = when (action) {
-		is HIDConnectionActions.Connected -> state.copy(deviceId = action.deviceId, connected = true)
-		is HIDConnectionActions.Disconnected -> state.copy(connected = false)
-	}
-	override fun observe(receiver: HIDConnection) {
-		// launch coroutines, subscribe to events, etc.
-	}
-}
-```
-
-6. **Write a `companion object { fun create() }`**:
-```kotlin
-companion object {
-	fun create(serverContext: VRServer, scope: CoroutineScope, send: suspend (ByteArray) -> Unit): HIDConnection {
-		val behaviours = listOf(HIDHandshakeBehaviour, ...)
-		val context = Context.create(initialState = ..., scope = scope, behaviours = behaviours)
-		val conn = HIDConnection(context, serverContext, send)
-		behaviours.forEach { it.observe(conn) }
-		return conn
-	}
-}
-```
+If you find yourself dispatching an `Update` that other behaviours start matching against, it's time to promote it to a named action.
 
 ---
 
-## Adding a New Behaviour to an Existing Module
+## EventDispatcher
 
-Find the `create` function, add your behaviour to the `behaviours` list. That's it. The behaviour's `reduce` and `observe` are automatically picked up.
+`EventDispatcher<T>` routes events to typed listeners. Each behaviour registers its own listener in `observe`:
 
-Example: adding battery tracking to a HID connection requires only adding a `HIDBatteryBehaviour` to the list — nothing else changes.
+```kotlin
+receiver.packetEvents.on<SensorInfo> { packet -> ... }  // only SensorInfo
+receiver.packetEvents.onAny { packet -> ... }           // every packet
+```
+
+**Why not a central `when` block?**
+
+A central switch means every new packet type requires editing the dispatch hub. With `EventDispatcher`, each behaviour owns its subscription. Adding a new packet type means adding a class to `packets.kt` and a listener in a behaviour — the routing hub never changes.
+
+It also means behaviours are self-contained: `SensorInfoBehaviour` is the only place that knows what to do with `SensorInfo`. No shared routing code.
+
+`EventDispatcher` dispatches by the runtime type of the event by default. When events are wrapped (e.g. `PacketEvent<UDPPacket>` where the actual packet is the inner value), pass a `keyOf` lambda to tell the dispatcher which type to route by — otherwise all events would be bucketed under `PacketEvent` regardless of the inner packet type.
 
 ---
 
-## Adding a New UDP Packet Type
+## Coroutine Scope and Lifetime
 
-1. Add the packet class and its `read` function in `udp/packets.kt`
-2. In a behaviour's `observe`, register a listener:
+Every module receives a `CoroutineScope` at creation. That scope defines when the module lives and dies:
+
+- Cancelling the scope cancels all coroutines all behaviours launched inside it
+- No `close()`, `stop()`, or `dispose()` methods needed anywhere
+- A disconnected client, a dropped UDP connection, a closed serial port — all cleaned up by scope cancellation
+
+Blocking I/O goes on `Dispatchers.IO`. State updates and logic stay on the default dispatcher. Never use `runBlocking` inside an observer — it blocks the coroutine thread pool.
+
+---
+
+## State vs. Plain Data
+
+Not everything needs to be in a `StateFlow`. The rule: **put data in state only if other code needs to react to it changing**.
+
+- `VRServer.handleCounter` is an `AtomicInt` — nothing reacts to it, so a dispatch round-trip would be waste.
+- `UDPTrackerServer` has no `Context` at all. Its connection map is a `MutableMap` internal to the server loop. Nothing outside reads it.
+- Tracker config *is* in state because the SolarXR layer and the config autosave both react to body part assignments changing.
+
+---
+
+## Cross-Module Communication
+
+Modules don't call each other directly. A behaviour in one module subscribes to another module's `StateFlow` and dispatches into its own context (or another module's context) when something relevant changes.
+
+Two common patterns:
+
+**React to another module's state:**
 ```kotlin
-receiver.packetEvents.on<MyNewPacket> { event ->
-	// handle it
+// Inside TrackerConfigBehaviour.observe()
+// When tracker state changes, persist the relevant fields to Settings
+receiver.context.state
+    .distinctUntilChangedBy { stateToConfig(it) }
+    .drop(1)
+    .onEach { state ->
+        settings.context.dispatch(SettingsActions.UpdateTracker(hardwareId) { stateToConfig(state) })
+    }
+    .launchIn(receiver.context.scope)
+```
+
+**Dispatch into VRServer from a connection:**
+```kotlin
+// Inside HandshakeBehaviour.observe() — a UDP connection registers a new device
+receiver.packetEvents.on<Handshake> { event ->
+    val device = Device.create(...)
+    receiver.serverContext.context.dispatch(VRServerActions.NewDevice(deviceId, device))
 }
 ```
-3. In `udp/server.kt`, route the new packet type to `emit`.
+
+The key rule: behaviours own the subscription lifetime via `launchIn(receiver.context.scope)`. When the module dies, the subscription stops — no dangling listeners in foreign modules.
 
 ---
 
-## IPC
+## IPC and Transport
 
-There are three IPC sockets, each serving a distinct client:
+The server exposes four connection points:
 
-| Socket | Client | Payload encoding |
+| Transport | Client | Protocol |
 |---|---|---|
-| `SlimeVRDriver` | OpenVR driver | Protobuf (Wire) |
-| `SlimeVRInput` | External feeder | Protobuf (Wire) |
-| `SlimeVRRpc` | SolarXR RPC | FlatBuffers (solarxr-protocol) |
+| Unix socket / named pipe `SlimeVRDriver` | OpenVR driver | Protobuf (Wire) |
+| Unix socket / named pipe `SlimeVRInput` | External feeder | Protobuf (Wire) |
+| Unix socket / named pipe `SlimeVRRpc` | SolarXR (IPC path) | FlatBuffers |
+| WebSocket port 21110 | GUI / third-party (SolarXR) | FlatBuffers |
 
-### Wire framing
+**Why separate transport from protocol?**
 
-All three sockets share the same framing: a **LE u32 length** prefix (which includes the 4-byte header itself) followed by the raw payload bytes.
+Platform files (`linux.kt`, `windows.kt`) own reading frames off a socket and produce a `Flow<ByteArray>` + a `send` function. Protocol handlers (`protocol.kt`, `ipc.kt`) are plain `suspend fun`s that take those two things and know nothing about Unix sockets or named pipes.
 
-### Transport / protocol split
+The same `handleSolarXRBridge` function runs on Linux sockets, Windows pipes, and WebSocket. The WebSocket adapter in `ws-server.kt` converts Ktor frames to the same `Flow<ByteArray>` + `send` abstraction. The handler never changes.
 
-Platform files (`linux.kt`, `windows.kt`) own the transport layer — accepting connections, reading frames, and producing a `Flow<ByteArray>` + a `send` function. The protocol handlers in `protocol.kt` are plain `suspend fun`s that consume those two abstractions and know nothing about Unix sockets or named pipes.
+**Why events for IPC message routing?**
 
-This means the same handler runs on Linux (Unix domain sockets) and Windows (named pipes) without any changes.
+Same reason as UDP packets. The SolarXR protocol has dozens of RPC message types. Behaviours that handle firmware updates, skeleton config, data feeds, etc. each register their own listener on the `rpcDispatcher`. Adding a new RPC handler doesn't touch existing ones.
 
-### Connection lifetime
+### Wire Framing (named sockets)
 
-Each client runs in its own `launch` block. When the socket disconnects, the coroutine scope is cancelled and everything inside cleans up automatically.
+All three named sockets use the same framing: a **LE u32 length** prefix (including the 4-byte header itself) followed by the raw payload bytes.
 
-### What each handler does
+### UDP Packet Pipeline
 
-- **Driver** (`handleDriverConnection`): on connect, sends the protocol version and streams `TrackerAdded` + `Position` messages for every non-driver tracker. Receives user actions from the driver (resets, etc.).
-- **Feeder** (`handleFeederConnection`): receives `TrackerAdded` messages to create new devices and trackers, then `Position` updates to drive their rotation.
-- **SolarXR** (`handleSolarXRConnection`): creates a `SolarXRConnection` and forwards all incoming FlatBuffers messages to it.
+The UDP receive loop runs on `Dispatchers.IO`. It reads a datagram, parses the packet type and payload via `readPacket`, wraps the result in a `PacketEvent`, and pushes it into a `Channel<PacketEvent<UDPPacket>>` per connection.
+
+A dedicated coroutine per connection drains the channel and calls `EventDispatcher.emit`. Pre-handshake packets are filtered at the channel drain step — a single guard in one place, not spread across every behaviour.
+
+---
+
+## Config
+
+Config is not just file I/O — it is a live state machine. The server supports runtime profile switching, so config data lives in a `StateFlow` like everything else. Code that needs to react to config changes (e.g. tracker body part assignment saving to disk) subscribes to the settings state flow.
+
+The config system has three layers:
+
+- **`AppConfig`** — global state: which user profile and settings profile are active
+- **`UserConfig`** — per-user data (body proportions, etc.)
+- **`Settings`** — per-profile settings (tracker assignments, port, VRC warnings); persists to disk
+
+Each is a full module with its own `Context`, behaviours, and JSON autosave. Migrations live in the module's `parseAndMigrate` function — add a `version < N` branch there.
 
 ---
 
@@ -295,22 +283,76 @@ Each client runs in its own `launch` block. When the socket disconnects, the cor
 
 | Location | Purpose |
 |---|---|
-| `server/core` | Protocol-agnostic business logic (trackers, devices, config, SolarXR) |
-| `server/desktop` | Platform-specific entry point, IPC socket wiring, platform abstractions |
-| `context/context.kt` | The `Context` / `Behaviour` primitives — do not add domain logic here |
-| `udp/` | Everything specific to the SlimeVR UDP wire protocol |
-| `solarxr/` | SolarXR WebSocket server + FlatBuffers message handling |
-| `config/` | JSON config read/write with autosave; no business logic |
-| `firmware/` | OTA update and serial flash logic; interacts with devices over the network, independent of the UDP tracker protocol |
+| `server/core` | Protocol-agnostic business logic |
+| `server/desktop` | Platform entry point, IPC wiring, HID, serial flash |
+| `context/context.kt` | `Context` and `Behaviour` primitives — no domain logic here |
+| `udp/` | UDP wire protocol: connection state, packets, behaviours, server loop |
+| `hid/` | HID tracker receiver: registration, rotation, battery, status |
+| `solarxr/` | `SolarXRBridge` + per-feature behaviour files (one per RPC area) |
+| `config/` | 3-tier config: `AppConfig`, `UserConfig`, `Settings` |
+| `firmware/` | OTA and serial flash; independent of UDP tracker protocol |
+| `trackingchecklist/` | Checklist steps as behaviours observing server/tracker/VRC state |
+| `skeleton/` | Skeleton solving, proportions, bone geometry |
+| `vrchat/` | VRChat config monitoring and recommended-value computation |
+
+---
+
+## Extending the Server
+
+### Adding a New Module
+
+1. **Define state and actions** in `module.kt`:
+```kotlin
+data class MyState(val connected: Boolean)
+
+sealed interface MyActions {
+    data object Connected : MyActions
+    data object Disconnected : MyActions
+}
+
+typealias MyContext = Context<MyState, MyActions>
+typealias MyBehaviour = Behaviour<MyState, MyActions, MyModule>
+```
+
+2. **Define the module class** (holds context + anything behaviours need to call):
+```kotlin
+class MyModule(val context: MyContext, val server: VRServer) {
+    companion object {
+        fun create(scope: CoroutineScope, server: VRServer): MyModule {
+            val behaviours = listOf(MyCoreBehaviour, ...)
+            val context = Context.create(initialState = MyState(false), scope = scope, behaviours = behaviours)
+            val module = MyModule(context, server)
+            behaviours.forEach { it.observe(module) }
+            return module
+        }
+    }
+}
+```
+
+3. **Write behaviours** in `behaviours.kt` (or per-feature files for large modules).
+
+### Adding a Behaviour to an Existing Module
+
+Add it to the `behaviours` list in `create()`. The behaviour's `reduce` and `observe` are automatically wired in. Nothing else changes.
+
+### Adding a New UDP Packet Type
+
+1. Add the packet class and its `read` function in `udp/packets.kt`
+2. Add an entry to the `PacketType` enum and a branch in `readPacket()`
+3. Register a listener in a behaviour's `observe`:
+```kotlin
+receiver.packetEvents.on<MyPacket> { event ->
+    receiver.context.dispatch(...)
+}
+```
 
 ---
 
 ## Style Conventions
 
-- **Limit OOP to strictly necessary cases.** Prefer plain functions, function types, and data classes. Avoid classes and inheritance unless there is a genuine need for encapsulated mutable state or polymorphism. A single-method interface should almost always be a function type instead (`() -> Unit`, `suspend (String) -> Unit`, etc.). When in doubt, write a function.
-- **Prefer plain functions over extension functions.** Only use extension functions when the receiver type is genuinely the primary subject and the function would be confusing without it.
-- Behaviours are `object`s (no dependencies) or `class`es (with dependencies), defined in a dedicated `behaviours.kt` file in the same package as the module they belong to.
-- Module creation lives in `companion object { fun create(...) }`.
-- State data classes use `copy(...)` inside reducers and `Update { copy(...) }` actions — never expose a `MutableStateFlow` directly.
-- **Never use `var` in a state data class** — state must be immutable, all fields `val`. Using `var` in any data class is almost certainly a design mistake; if you need mutable fields, prefer a plain class or rethink the structure.
-- Use `sealed interface` for action types, not `sealed class`, to avoid the extra constructor overhead.
+- **Prefer plain functions over classes.** A single-method interface should almost always be a function type (`() -> Unit`, `suspend (ByteArray) -> Unit`). A class with no mutable state should be a plain function or `object`. When in doubt, write a function.
+- **Prefer plain functions over extension functions.** Only use extensions when the receiver type is genuinely the primary subject.
+- **State data classes are all `val`.** Mutable fields in a state class are a design mistake — use `var` in a plain class if you need local mutability, never in state.
+- **Use `sealed interface` for actions**, not `sealed class` — no constructor overhead.
+- **Module creation lives in `companion object { fun create(...) }`.**
+- **Never expose `MutableStateFlow` directly.** Expose `StateFlow` via `context.state`.

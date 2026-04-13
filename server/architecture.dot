@@ -1,0 +1,99 @@
+digraph module_architecture {
+    rankdir=TB
+    nodesep=0.8
+    ranksep=0.8
+    forcelabels=true
+    fontname="monospace"
+    node [fontname="monospace", fontsize=11, style="filled,rounded", shape=box, margin="0.3,0.2"]
+    edge [fontname="monospace", fontsize=10]
+
+    ext [
+        label="external events\n(packets · messages)"
+        shape=ellipse fillcolor="#dae8fc" color="#6c8ebf"
+    ]
+
+    subgraph cluster_A {
+        label="Module A"
+        style="rounded" bgcolor="#fafafa" color="#999999" penwidth=1.5
+
+        subgraph cluster_A_beh {
+            label="Behaviours"
+            style="dashed" color="#aaaaaa" bgcolor="#fffff8"
+
+            bA1 [label="BehaviourA1\n────────────────────\nobserve(receiver)\n  subscribes to flows\n  calls dispatch()\n────────────────────\nreduce(state, action)\n  pure: State → State"
+                fillcolor="#fff9db" color="#d6ae00"]
+
+            bA2 [label="BehaviourA2\n────────────────────\nobserve(receiver)\n  ...\n────────────────────\nreduce(state, action)\n  ..."
+                fillcolor="#fff9db" color="#d6ae00"]
+
+            bAmore [label="···\n────────────────────\nobserve(receiver)\n  ...\n────────────────────\nreduce(state, action)\n  ..."
+                fillcolor="#fff9db" color="#d6ae00"]
+        }
+
+        foldA [
+            label="reduce fold\n──────────────────────────────────\nstate = BehaviourA1.reduce(state, a)\nstate = BehaviourA2.reduce(state, a)\nstate = ···"
+            fillcolor="#d5e8d4" color="#82b366"
+        ]
+
+        sfA [
+            label="StateFlow<StateA>"
+            shape=cylinder fillcolor="#dae8fc" color="#6c8ebf"
+        ]
+    }
+
+    subgraph cluster_B {
+        label="Module B"
+        style="rounded" bgcolor="#fafafa" color="#999999" penwidth=1.5
+        subgraph cluster_B_beh {
+            label="Behaviours" style="dashed" color="#aaaaaa" bgcolor="#fffff8"
+            bB [label="observe()\n  subscribes to flows\n  and external events\nreduce(state, action)" fillcolor="#fff9db" color="#d6ae00"]
+        }
+        sfB [label="StateFlow<StateB>" shape=cylinder fillcolor="#dae8fc" color="#6c8ebf"]
+        bB -> sfB [style=invis]
+    }
+
+    subgraph cluster_C {
+        label="Module C"
+        style="rounded" bgcolor="#fafafa" color="#999999" penwidth=1.5
+        subgraph cluster_C_beh {
+            label="Behaviours" style="dashed" color="#aaaaaa" bgcolor="#fffff8"
+            bC [label="observe()\n  subscribes to flows\n  and external events\nreduce(state, action)" fillcolor="#fff9db" color="#d6ae00"]
+        }
+        sfC [label="StateFlow<StateC>" shape=cylinder fillcolor="#dae8fc" color="#6c8ebf"]
+        bC -> sfC [style=invis]
+    }
+
+    subgraph cluster_D {
+        label="Module D"
+        style="rounded" bgcolor="#fafafa" color="#999999" penwidth=1.5
+        subgraph cluster_D_beh {
+            label="Behaviours" style="dashed" color="#aaaaaa" bgcolor="#fffff8"
+            bD [label="observe()\n  subscribes to flows\n  and external events\nreduce(state, action)" fillcolor="#fff9db" color="#d6ae00"]
+        }
+        sfD [label="StateFlow<StateD>" shape=cylinder fillcolor="#dae8fc" color="#6c8ebf"]
+        bD -> sfD [style=invis]
+    }
+
+    // Module A internal flow
+    ext    -> bA1    [xlabel="subscribe" color="#6c8ebf" fontcolor="#6c8ebf" weight=1]
+    ext    -> bA2    [color="#6c8ebf" weight=5]
+    ext    -> bAmore [color="#6c8ebf" weight=1]
+
+    bA1    -> foldA  [xlabel="dispatch(action)" color="#d6ae00" fontcolor="#d6ae00"]
+    bA2    -> foldA  [color="#d6ae00"]
+    bAmore -> foldA  [color="#d6ae00"]
+
+    foldA  -> sfA    [xlabel="new state" color="#82b366" fontcolor="#82b366"]
+
+    // Within-module reaction -- routes through interior via centre behaviour
+    sfA -> bA2 [
+        xlabel="collect() -> dispatch()"
+        style=dashed color="#888888" fontcolor="#888888"
+        constraint=false
+    ]
+
+    // Cross-module fan-out
+    sfA -> bB [xlabel="collect()" style=dashed color="#b85450" fontcolor="#b85450" minlen=2 weight=1]
+    sfA -> bC [xlabel="collect()" style=dashed color="#b85450" fontcolor="#b85450" minlen=2 weight=5]
+    sfA -> bD [xlabel="collect()" style=dashed color="#b85450" fontcolor="#b85450" minlen=2 weight=1]
+}
