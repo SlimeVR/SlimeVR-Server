@@ -2,6 +2,7 @@ package dev.slimevr.hid
 
 import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
@@ -54,11 +55,12 @@ class HIDReceiver(
 		fun create(
 			serialNumber: String,
 			serverContext: VRServer,
+			settings: Settings,
 			scope: CoroutineScope,
 		): HIDReceiver {
 			val behaviours = listOf(
-				HIDRegistrationBehaviour,
-				HIDDeviceInfoBehaviour,
+				HIDRegistrationBehaviour(settings),
+				HIDDeviceInfoBehaviour(settings),
 				HIDRotationBehaviour,
 				HIDBatteryBehaviour,
 				HIDStatusBehaviour,

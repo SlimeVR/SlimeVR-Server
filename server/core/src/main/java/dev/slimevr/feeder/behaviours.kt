@@ -2,6 +2,7 @@ package dev.slimevr.feeder
 
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
+import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
@@ -9,7 +10,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
-class FeederBaseBehaviour(private val server: VRServer) : FeederBridgeBehaviour {
+class FeederBaseBehaviour(private val server: VRServer, private val settings: Settings) : FeederBridgeBehaviour {
 	override fun reduce(state: FeederBridgeState, action: FeederBridgeActions): FeederBridgeState = when (action) {
 		is FeederBridgeActions.UpdateProtocolVersion -> state.copy(protocolVersion = action.version, firmware = action.firmware)
 	}
@@ -59,6 +60,7 @@ class FeederBaseBehaviour(private val server: VRServer) : FeederBridgeBehaviour 
 				hardwareId = serial,
 				origin = DeviceOrigin.FEEDER,
 				server = server,
+				settings = settings,
 			)
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 

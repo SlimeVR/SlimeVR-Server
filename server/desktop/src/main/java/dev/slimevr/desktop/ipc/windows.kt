@@ -7,6 +7,7 @@ import com.sun.jna.platform.win32.WinError
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.ptr.IntByReference
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.handleSolarXRBridge
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +30,10 @@ suspend fun createWindowsDriverPipe(server: VRServer) = acceptWindowsClients(DRI
 	)
 }
 
-suspend fun createWindowsFeederPipe(server: VRServer) = acceptWindowsClients(FEEDER_PIPE) { handle ->
+suspend fun createWindowsFeederPipe(server: VRServer, settings: Settings) = acceptWindowsClients(FEEDER_PIPE) { handle ->
 	handleFeederConnection(
 		server = server,
+		settings = settings,
 		messages = readFramedMessages(handle),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
 	)

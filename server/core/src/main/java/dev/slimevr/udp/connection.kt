@@ -2,6 +2,7 @@ package dev.slimevr.udp
 
 import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
@@ -83,6 +84,7 @@ class UDPConnection(
 			remoteIp: String,
 			remotePort: Int,
 			serverContext: VRServer,
+			settings: Settings,
 			scope: CoroutineScope,
 		): UDPConnection {
 			val behaviours = listOf(
@@ -91,7 +93,7 @@ class UDPConnection(
 				TimeoutBehaviour,
 				PingBehaviour,
 				DeviceStatsBehaviour,
-				SensorInfoBehaviour,
+				SensorInfoBehaviour(settings),
 				SensorRotationBehaviour,
 				BundledPacketBehaviour,
 				FlagsBehaviour,

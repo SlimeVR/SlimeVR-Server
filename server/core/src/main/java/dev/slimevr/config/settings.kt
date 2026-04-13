@@ -5,21 +5,58 @@ import dev.slimevr.context.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import io.github.axisangles.ktmath.Quaternion
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import solarxr_protocol.datatypes.BodyPart
 import java.io.File
 
 private const val SETTINGS_CONFIG_VERSION = 1
+
+private object BodyPartSerializer : KSerializer<BodyPart> {
+	override val descriptor = PrimitiveSerialDescriptor("BodyPart", PrimitiveKind.STRING)
+	override fun serialize(encoder: Encoder, value: BodyPart) = encoder.encodeString(value.name)
+	override fun deserialize(decoder: Decoder): BodyPart =
+		BodyPart.entries.firstOrNull { it.name == decoder.decodeString() } ?: BodyPart.NONE
+}
+
+@Serializable
+private data class QuaternionSurrogate(val w: Float, val x: Float, val y: Float, val z: Float)
+
+private object QuaternionSerializer : KSerializer<Quaternion> {
+	override val descriptor = QuaternionSurrogate.serializer().descriptor
+	override fun serialize(encoder: Encoder, value: Quaternion) =
+		encoder.encodeSerializableValue(QuaternionSurrogate.serializer(), QuaternionSurrogate(value.w, value.x, value.y, value.z))
+	override fun deserialize(decoder: Decoder): Quaternion {
+		val s = decoder.decodeSerializableValue(QuaternionSurrogate.serializer())
+		return Quaternion(s.w, s.x, s.y, s.z)
+	}
+}
+
+@Serializable
+data class TrackerConfig(
+	@Serializable(with = BodyPartSerializer::class)
+	val bodyPart: BodyPart? = null,
+	val customName: String? = null,
+	@Serializable(with = QuaternionSerializer::class)
+	val mountingOrientation: Quaternion? = null,
+)
 
 @Serializable
 data class SettingsConfigState(
 	val trackerPort: Int = 6969,
 	val mutedVRCWarnings: List<String> = listOf(),
 	val mutedChecklistSteps: Set<String> = emptySet(),
+	val trackers: Map<String, TrackerConfig> = emptyMap(),
 	val version: Int = SETTINGS_CONFIG_VERSION,
 )
 
@@ -44,6 +81,7 @@ data class SettingsState(
 sealed interface SettingsActions {
 	data class Update(val transform: SettingsConfigState.() -> SettingsConfigState) : SettingsActions
 	data class LoadProfile(val newState: SettingsState) : SettingsActions
+	data class UpdateTracker(val hardwareId: String, val transform: TrackerConfig.() -> TrackerConfig) : SettingsActions
 }
 
 typealias SettingsContext = Context<SettingsState, SettingsActions>

@@ -3,6 +3,7 @@ package dev.slimevr.feeder
 import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import io.github.axisangles.ktmath.Quaternion
@@ -38,8 +39,8 @@ class FeederBridge(
 	}
 
 	companion object {
-		fun create(id: Int, serverContext: VRServer, scope: CoroutineScope): FeederBridge {
-			val behaviours = listOf(FeederBaseBehaviour(serverContext))
+		fun create(id: Int, serverContext: VRServer, settings: Settings, scope: CoroutineScope): FeederBridge {
+			val behaviours = listOf(FeederBaseBehaviour(serverContext, settings))
 
 			val context = Context.create(
 				initialState = FeederBridgeState(protocolVersion = 0, firmware = null),

@@ -1,6 +1,7 @@
 package dev.slimevr.tracker
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.DeviceOrigin
@@ -19,6 +20,7 @@ data class TrackerState(
 	val sensorType: ImuType?,
 	val bodyPart: BodyPart?,
 	val customName: String?,
+	val mountingOrientation: Quaternion?,
 	val rawRotation: Quaternion,
 	val acceleration: Vector3,
 	val deviceId: Int,
@@ -47,7 +49,8 @@ class Tracker(
 			sensorType: ImuType?,
 			hardwareId: String,
 			origin: DeviceOrigin,
-			server: VRServer
+			server: VRServer,
+			settings: Settings,
 		): Tracker {
 			val trackerState = TrackerState(
 				id = id,
@@ -56,6 +59,7 @@ class Tracker(
 				rawRotation = Quaternion.IDENTITY,
 				acceleration = Vector3.NULL,
 				bodyPart = null,
+				mountingOrientation = null,
 				origin = origin,
 				deviceId = deviceId,
 				customName = null,
@@ -65,7 +69,12 @@ class Tracker(
 				imuTemp = null,
 			)
 
-			val behaviours = listOf(TrackerBasicBehaviour, TrackerTPSBehaviour, TrackerTapDetectionBehaviour)
+			val behaviours = listOf(
+				TrackerBasicBehaviour,
+				TrackerTPSBehaviour,
+				TrackerTapDetectionBehaviour,
+				TrackerConfigBehaviour(settings, hardwareId)
+			)
 			val context = Context.create(initialState = trackerState, scope = scope, behaviours = behaviours)
 			val tracker = Tracker(context = context, server)
 			behaviours.forEach { it.observe(tracker) }

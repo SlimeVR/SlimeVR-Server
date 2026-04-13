@@ -42,7 +42,9 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 				imuType = tracker.sensorType,
 				bodyPart = tracker.bodyPart,
 				displayName = tracker.name,
-				isImu = tracker.sensorType != null
+				customName = tracker.customName,
+				mountingOrientation = tracker.mountingOrientation?.let { Quat(it.x, it.y, it.z, it.w) },
+				isImu = tracker.sensorType != null,
 			)
 		} else {
 			null

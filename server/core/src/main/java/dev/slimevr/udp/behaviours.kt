@@ -2,6 +2,7 @@ package dev.slimevr.udp
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServerActions
+import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
@@ -176,7 +177,7 @@ object DeviceStatsBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object SensorInfoBehaviour : UDPConnectionBehaviour {
+class SensorInfoBehaviour(private val settings: Settings) : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
 		is UDPConnectionActions.AssignTracker -> state.copy(trackerIds = state.trackerIds + action.trackerId)
 		else -> state
@@ -196,15 +197,17 @@ object SensorInfoBehaviour : UDPConnectionBehaviour {
 				tracker.context.dispatch(action)
 			} else {
 				val deviceState = device.context.state.value
+				val hardwareId = "${deviceState.address}:${event.data.sensorId}"
 				val trackerId = receiver.serverContext.nextHandle()
 				val newTracker = Tracker.create(
 					id = trackerId,
-					hardwareId = "${deviceState.address}:${event.data.sensorId}",
+					hardwareId = hardwareId,
 					sensorType = event.data.imuType,
 					deviceId = deviceState.id,
 					origin = DeviceOrigin.UDP,
 					scope = receiver.serverContext.context.scope,
-					server = receiver.serverContext
+					server = receiver.serverContext,
+					settings = settings,
 				)
 
 				receiver.serverContext.context.dispatch(

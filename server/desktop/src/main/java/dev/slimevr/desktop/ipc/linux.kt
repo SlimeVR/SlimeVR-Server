@@ -1,6 +1,7 @@
 package dev.slimevr.desktop.ipc
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.getSocketDirectory
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.handleSolarXRBridge
@@ -26,9 +27,10 @@ suspend fun createUnixDriverSocket(server: VRServer) = acceptUnixClients(DRIVER_
 	)
 }
 
-suspend fun createUnixFeederSocket(server: VRServer) = acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
+suspend fun createUnixFeederSocket(server: VRServer, settings: Settings) = acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
 	handleFeederConnection(
 		server = server,
+		settings = settings,
 		messages = readFramedMessages(channel),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
 	)

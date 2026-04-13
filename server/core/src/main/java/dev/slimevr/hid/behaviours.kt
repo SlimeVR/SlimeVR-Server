@@ -2,6 +2,7 @@ package dev.slimevr.hid
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServerActions
+import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
@@ -9,7 +10,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import solarxr_protocol.datatypes.TrackerStatus
 
-object HIDRegistrationBehaviour : HIDReceiverBehaviour {
+class HIDRegistrationBehaviour(private val settings: Settings) : HIDReceiverBehaviour {
 	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions) = when (action) {
 		is HIDReceiverActions.DeviceRegistered -> state.copy(
 			trackers = state.trackers +
@@ -57,7 +58,7 @@ object HIDRegistrationBehaviour : HIDReceiverBehaviour {
 	}
 }
 
-object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
+class HIDDeviceInfoBehaviour(private val settings: Settings) : HIDReceiverBehaviour {
 	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions): HIDReceiverState = when (action) {
 		is HIDReceiverActions.TrackerRegistered -> {
 			val existing = state.trackers[action.hidId] ?: return state
@@ -103,7 +104,8 @@ object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 						sensorType = packet.imuType,
 						hardwareId = deviceState.address,
 						origin = DeviceOrigin.HID,
-						server = receiver.serverContext
+						server = receiver.serverContext,
+						settings = settings,
 					)
 					receiver.serverContext.context.dispatch(VRServerActions.NewTracker(trackerId, newTracker))
 					receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, trackerId))

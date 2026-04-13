@@ -65,6 +65,7 @@ suspend fun createUDPTrackerServer(
 							remotePort = port,
 							socket = socket,
 							serverContext = serverContext,
+							settings = configContext.settings,
 							scope = udpScope,
 						)
 

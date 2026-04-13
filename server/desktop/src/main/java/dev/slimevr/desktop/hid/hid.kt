@@ -2,6 +2,7 @@ package dev.slimevr.desktop.hid
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +52,7 @@ private fun enumerateCompatibleDevices(): Map<String, HidDevice> {
 
 private data class ActiveReceiver(val job: Job, val receiver: HIDReceiver)
 
-fun createDesktopHIDManager(serverContext: VRServer, scope: CoroutineScope) {
+fun createDesktopHIDManager(serverContext: VRServer, settings: Settings, scope: CoroutineScope) {
 	val active = mutableMapOf<String, ActiveReceiver>()
 
 	scope.launch {
@@ -92,6 +93,7 @@ fun createDesktopHIDManager(serverContext: VRServer, scope: CoroutineScope) {
 				val receiver = HIDReceiver.create(
 					serialNumber = serial,
 					serverContext = serverContext,
+					settings = settings,
 					scope = deviceScope,
 				)
 

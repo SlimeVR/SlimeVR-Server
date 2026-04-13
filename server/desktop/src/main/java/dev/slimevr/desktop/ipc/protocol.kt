@@ -1,6 +1,7 @@
 package dev.slimevr.desktop.ipc
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
 import dev.slimevr.driver.DriverBridgeOutbound
@@ -57,10 +58,11 @@ suspend fun handleDriverConnection(
 
 suspend fun handleFeederConnection(
 	server: VRServer,
+	settings: Settings,
 	messages: Flow<ByteArray>,
 	send: suspend (ByteArray) -> Unit,
 ) = coroutineScope {
-	val bridge = FeederBridge.create(id = server.nextHandle(), serverContext = server, scope = this)
+	val bridge = FeederBridge.create(id = server.nextHandle(), serverContext = server, settings = settings, scope = this)
 
 	send(ProtobufMessage.ADAPTER.encode(ProtobufMessage(version = Version(protocol_version = PROTOCOL_VERSION))))
 

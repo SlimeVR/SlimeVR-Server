@@ -13,6 +13,7 @@ import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.solarxr.AssignTrackerBehaviour
 import dev.slimevr.solarxr.DataFeedInitBehaviour
 import dev.slimevr.solarxr.FirmwareBehaviour
 import dev.slimevr.solarxr.HeightCalibrationBehaviour
@@ -51,7 +52,7 @@ fun main(args: Array<String>) = runBlocking {
 		createUDPTrackerServer(server, config)
 	}
 	launch {
-		createDesktopHIDManager(server, this)
+		createDesktopHIDManager(server, config.settings, this)
 	}
 
 	val solarXRBehaviours = listOf(
@@ -63,9 +64,10 @@ fun main(args: Array<String>) = runBlocking {
 		ProvisioningBehaviour(server, provisioningManager),
 		SkeletonBehaviour(config.userConfig, skeleton),
 		TrackingChecklistBehaviour(trackingChecklist, config.settings),
+		AssignTrackerBehaviour(server),
 	)
 	launch { createSolarXRWebsocketServer(server, solarXRBehaviours) }
-	launch { createIpcServers(server, solarXRBehaviours) }
+	launch { createIpcServers(server, config.settings, solarXRBehaviours) }
 
 	Unit
 }
