@@ -1,4 +1,4 @@
-for a# SlimeVR Server — Architecture
+# SlimeVR Server — Architecture
 
 This document explains how the server is structured, why it's structured that way, and how to extend it correctly.
 
