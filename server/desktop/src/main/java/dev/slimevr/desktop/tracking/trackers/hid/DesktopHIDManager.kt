@@ -71,6 +71,7 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 			// val manufacturer = hidDevice.manufacturer
 			this.devicesBySerial[serial]?.let {
 				this.devicesByHID[hidDevice] = it
+				this.lastDataByHID[hidDevice] = this.lastDataByHID.getOrDefault(hidDevice, 0)
 				synchronized(this.devices) {
 					for (id in it) {
 						val device = this.devices[id]
@@ -93,6 +94,23 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 		}
 	}
 
+	private fun keepFirstHidPerPhysicalDevice(devices: List<HidDevice>): List<HidDevice> {
+		// If we see a serial number, we can assume that the device is the same
+		// This is to accommodate an additional HID control port (I believe the native port should not be used for the receiver’s control loop).
+		//TODO: Maybe has a receiver that uses two HID ports simultaneously?
+		val seenSerials = HashSet<String>()
+		val result = mutableListOf<HidDevice>()
+		for (d in devices) {
+			val serial = d.serialNumber
+			if (serial.isNullOrBlank()) {
+				result.add(d)
+			} else if (seenSerials.add(serial)) {
+				result.add(d)
+			}
+		}
+		return result
+	}
+
 	private fun removeDevice(hidDevice: HidDevice) {
 		this.devicesByHID[hidDevice]?.let {
 			synchronized(this.devices) {
@@ -107,6 +125,7 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 				}
 			}
 			this.devicesByHID.remove(hidDevice)
+			this.lastDataByHID.remove(hidDevice)
 			LogManager.info("[TrackerServer] Linked HID device removed: ${hidDevice.serialNumber}")
 		}
 	}
@@ -199,7 +218,7 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 					}
 					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
 				} else {
-					lastDataByHID[hidDevice] = lastDataByHID[hidDevice]!! + 1 // increment last data received
+					lastDataByHID[hidDevice] = lastDataByHID.getOrDefault(hidDevice, 0) + 1 // increment last data received
 				}
 			}
 			if (!devicesPresent) {
@@ -234,32 +253,41 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 			}
 			last.next = rootTrackers
 		}
-		val hidDeviceList: MutableList<HidDevice> = mutableListOf()
+		val hidDeviceListFull: MutableList<HidDevice> = mutableListOf()
 		if (root != null) {
 			var hidDeviceInfoStructure: HidDeviceInfoStructure? = root
 			do {
-				hidDeviceList.add(HidDevice(hidDeviceInfoStructure, null, hidServicesSpecification))
+				hidDeviceListFull.add(HidDevice(hidDeviceInfoStructure, null, hidServicesSpecification))
 				hidDeviceInfoStructure = hidDeviceInfoStructure?.next()
 			} while (hidDeviceInfoStructure != null)
 			HidApi.freeEnumeration(root)
 		}
+		// Remove duplicates
+		val hidDeviceList = keepFirstHidPerPhysicalDevice(hidDeviceListFull)
+		val enumeratedSet = hidDeviceListFull.toSet()
+		val keptSet = hidDeviceList.toSet()
+		val droppedDuplicate = hidDeviceListFull.filter { it !in keptSet }
+		val droppedSet = droppedDuplicate.toSet()
 		synchronized(devicesByHID) {
 			// Work on devicesByHid and add/remove as necessary
-			val removeList: MutableList<HidDevice> = devicesByHID.keys.toMutableList()
-			removeList.removeAll(hidDeviceList)
-			for (device in removeList) {
-				removeDevice(device)
+			for (device in devicesByHID.keys.toList()) {
+				if (device !in enumeratedSet) {
+					removeDevice(device)
+				} else if (device in droppedSet) {
+					removeDevice(device)
+				}
 			}
 			// Quickly reattaching a device may not be detected, so always try to open existing devices
 			for (device in devicesByHID.keys) {
 				// a receiver sends keep-alive data at 10 packets/s
-				if (lastDataByHID[device]!! > 100) { // try to reopen device if no data was received recently (about >100ms)
+				if (lastDataByHID.getOrDefault(device, 0) > 100) { // try to reopen device if no data was received recently (about >100ms)
 					LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
 					device.open()
 				}
 			}
-			hidDeviceList.removeAll(devicesByHID.keys) // addList
-			for (device in hidDeviceList) {
+			val addList = hidDeviceList.toMutableList()
+			addList.removeAll(devicesByHID.keys) // addList
+			for (device in addList) {
 				checkConfigureDevice(device)
 			}
 		}
