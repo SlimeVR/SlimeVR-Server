@@ -69,6 +69,7 @@ private fun createDevice(
 			batteryVoltage = device.batteryVoltage,
 			batteryPctEstimate = (device.batteryLevel * 100).toUInt().toUByte(),
 			ping = device.ping?.toUShort(),
+			rssi = device.signalStrength?.toShort(),
 		),
 		hardwareInfo = HardwareInfo(
 			mcuId = device.mcuType,
