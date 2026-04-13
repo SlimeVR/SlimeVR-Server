@@ -34,10 +34,10 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 			trackerNum = tracker.id.toUByte(),
 			deviceId = DeviceId(device.id.toUByte()),
 		),
-		status = if (trackerMask.status == true) tracker.status else null,
-		rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
-		position = if (trackerMask.position == true && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
-		info = if (trackerMask.info == true) {
+		status = if (trackerMask.status) tracker.status else null,
+		rotation = if (trackerMask.rotation) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
+		position = if (trackerMask.position && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
+		info = if (trackerMask.info) {
 			TrackerInfo(
 				imuType = tracker.sensorType,
 				bodyPart = tracker.bodyPart,
@@ -49,10 +49,10 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 		} else {
 			null
 		},
-		tps = if (trackerMask.tps == true) tracker.tps else null,
-		temp = if (trackerMask.temp == true && tracker.imuTemp != null) Temperature(temp = tracker.imuTemp) else null,
-		rawAcceleration = if (trackerMask.rawAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
-		linearAcceleration = if (trackerMask.linearAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null // FIXME: temp value
+		tps = if (trackerMask.tps) tracker.tps else null,
+		temp = if (trackerMask.temp && tracker.imuTemp != null) Temperature(temp = tracker.imuTemp) else null,
+		rawAcceleration = if (trackerMask.rawAcceleration) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
+		linearAcceleration = if (trackerMask.linearAcceleration) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null // FIXME: temp value
 	)
 }
 

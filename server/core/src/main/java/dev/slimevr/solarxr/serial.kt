@@ -55,7 +55,7 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 		}
 
 		receiver.rpcDispatcher.on<OpenSerialRequest> { req ->
-			val portLocation = if (req.auto == true) {
+			val portLocation = if (req.auto) {
 				serialServer.context.state.value.availablePorts.keys.firstOrNull()
 			} else {
 				req.port
