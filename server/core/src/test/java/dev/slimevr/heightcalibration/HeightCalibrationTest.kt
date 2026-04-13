@@ -2,6 +2,7 @@
 
 package dev.slimevr.heightcalibration
 
+import dev.slimevr.buildTestUserConfig
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.Job
@@ -51,8 +52,9 @@ private fun TestScope.launchSession(
 	controllerFlow: MutableSharedFlow<TrackerSnapshot>,
 ): Job {
 	val scope = this
+	val userConfig = buildTestUserConfig(backgroundScope)
 	return launch {
-		runCalibrationSession(context, hmdFlow, controllerFlow, clock = { scope.currentTime * 1_000_000L })
+		runCalibrationSession(context, userConfig, hmdFlow, controllerFlow, clock = { scope.currentTime * 1_000_000L })
 	}
 }
 
@@ -290,7 +292,7 @@ class HeightCalibrationSessionTest {
 		val context = makeContext(this)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
-		val job = launch { runCalibrationSession(context, hmdFlow, controllerFlow) }
+		val job = launch { runCalibrationSession(context, buildTestUserConfig(backgroundScope), hmdFlow, controllerFlow) }
 
 		advanceTimeBy(TIMEOUT_MS + 1)
 

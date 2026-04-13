@@ -1,21 +1,31 @@
 package dev.slimevr.solarxr
 
+import dev.slimevr.buildTestUserConfig
 import dev.slimevr.buildTestVrServer
+import dev.slimevr.skeleton.Skeleton
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend: suspend (ByteArray) -> Unit) = SolarXRConnection.create(
-	buildTestVrServer(backgroundScope),
-	onSend = onSend,
-	scope = backgroundScope,
-	behaviours = listOf(DataFeedInitBehaviour),
-)
+private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend: suspend (ByteArray) -> Unit): SolarXRBridge {
+	val server = buildTestVrServer(backgroundScope)
+	val userConfig = buildTestUserConfig(backgroundScope)
+	val skeleton = Skeleton.create(backgroundScope, userConfig)
+	val bridge = SolarXRBridge.create(
+		id = 1,
+		serverContext = server,
+		scope = backgroundScope,
+		behaviours = listOf(DataFeedInitBehaviour(server, skeleton)),
+	)
+	bridge.outbound.on<MessageBundle> { _ -> onSend(ByteArray(0)) }
+	return bridge
+}
 
 private fun config(intervalMs: Int) = DataFeedConfig(minimumTimeSinceLast = intervalMs.toUShort())
 
