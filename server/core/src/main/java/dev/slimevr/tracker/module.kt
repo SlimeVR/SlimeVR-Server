@@ -2,6 +2,7 @@ package dev.slimevr.tracker
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
+import dev.slimevr.config.TrackerConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.DeviceOrigin
@@ -9,7 +10,10 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+
+
 
 data class TrackerIdNum(val id: Int, val trackerNum: Int)
 
@@ -28,6 +32,7 @@ data class TrackerState(
 	val tps: UShort,
 	val imuTemp: Float?,
 	val position: Vector3?,
+	val status: TrackerStatus,
 )
 
 sealed interface TrackerActions {
@@ -52,7 +57,9 @@ class Tracker(
 			server: VRServer,
 			settings: Settings,
 		): Tracker {
-			val trackerState = TrackerState(
+			val trackerConfigs = settings.context.state.value.data.trackers
+			val savedConfig = trackerConfigs[hardwareId]
+			val baseState = TrackerState(
 				id = id,
 				hardwareId = hardwareId,
 				name = "Tracker #$id",
@@ -67,13 +74,18 @@ class Tracker(
 				position = null,
 				tps = 0u,
 				imuTemp = null,
+				status = TrackerStatus.DISCONNECTED,
 			)
+			val trackerState = if (savedConfig != null)
+				restoreFromConfig(baseState, savedConfig)
+			else
+				baseState
 
 			val behaviours = listOf(
 				TrackerBasicBehaviour,
+				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerTPSBehaviour,
 				TrackerTapDetectionBehaviour,
-				TrackerConfigBehaviour(settings, hardwareId)
 			)
 			val context = Context.create(initialState = trackerState, scope = scope, behaviours = behaviours)
 			val tracker = Tracker(context = context, server)

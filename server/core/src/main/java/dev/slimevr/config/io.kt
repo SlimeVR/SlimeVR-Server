@@ -41,6 +41,7 @@ suspend inline fun <reified T> loadFileWithBackup(file: File, default: T, crossi
 	try {
 		deserialize(file.readText())
 	} catch (e: Exception) {
+		e.printStackTrace()
 		System.err.println("Failed to load ${file.absolutePath}: ${e.message}")
 		if (file.exists()) {
 			try {

@@ -6,13 +6,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.nullable
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonEncoder
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
@@ -22,25 +28,7 @@ import java.io.File
 
 private const val SETTINGS_CONFIG_VERSION = 1
 
-private object BodyPartSerializer : KSerializer<BodyPart> {
-	override val descriptor = PrimitiveSerialDescriptor("BodyPart", PrimitiveKind.STRING)
-	override fun serialize(encoder: Encoder, value: BodyPart) = encoder.encodeString(value.name)
-	override fun deserialize(decoder: Decoder): BodyPart =
-		BodyPart.entries.firstOrNull { it.name == decoder.decodeString() } ?: BodyPart.NONE
-}
 
-@Serializable
-private data class QuaternionSurrogate(val w: Float, val x: Float, val y: Float, val z: Float)
-
-private object QuaternionSerializer : KSerializer<Quaternion> {
-	override val descriptor = QuaternionSurrogate.serializer().descriptor
-	override fun serialize(encoder: Encoder, value: Quaternion) =
-		encoder.encodeSerializableValue(QuaternionSurrogate.serializer(), QuaternionSurrogate(value.w, value.x, value.y, value.z))
-	override fun deserialize(decoder: Decoder): Quaternion {
-		val s = decoder.decodeSerializableValue(QuaternionSurrogate.serializer())
-		return Quaternion(s.w, s.x, s.y, s.z)
-	}
-}
 
 @Serializable
 data class TrackerConfig(

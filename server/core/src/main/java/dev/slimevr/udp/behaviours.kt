@@ -151,6 +151,9 @@ object TimeoutBehaviour : UDPConnectionBehaviour {
 					receiver.getDevice()?.context?.dispatch(
 						DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
 					)
+					state.trackerIds.mapNotNull { receiver.serverContext.getTracker(it.id) }.forEach { tracker ->
+						tracker.context.dispatch(TrackerActions.Update { copy(status = TrackerStatus.DISCONNECTED) })
+					}
 				} else {
 					delay(timeUntilTimeout + 1)
 				}
@@ -188,16 +191,18 @@ class SensorInfoBehaviour(private val settings: Settings) : UDPConnectionBehavio
 			val device = receiver.getDevice()
 				?: error("invalid state - a device should exist at this point")
 
-			device.context.dispatch(DeviceActions.Update { copy(status = event.data.status) })
-
 			val tracker = receiver.getTracker(event.data.sensorId)
-			val action = TrackerActions.Update { copy(sensorType = event.data.imuType) }
+			val action = TrackerActions.Update { copy(sensorType = event.data.imuType, status = event.data.status) }
 
 			if (tracker != null) {
 				tracker.context.dispatch(action)
 			} else {
 				val deviceState = device.context.state.value
-				val hardwareId = "${deviceState.address}:${event.data.sensorId}"
+				val mac = deviceState.macAddress ?: run {
+						AppLogger.udp.warn("[${deviceState.address}] No MAC address available, falling back to IP for hardware ID")
+						deviceState.address
+					}
+					val hardwareId = "$mac:${event.data.sensorId}"
 				val trackerId = receiver.serverContext.nextHandle()
 				val newTracker = Tracker.create(
 					id = trackerId,

@@ -16,6 +16,7 @@ import dev.slimevr.vrchat.isVRCConfigValid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
@@ -71,6 +72,7 @@ class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBeh
 
 class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
     private fun computeStep(trackers: List<TrackerState>): ChecklistStep {
+		// FIXME: Most likely incomplete
         val hasSteamVR = trackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
         val hmdTracker = trackers.firstOrNull { tracker -> tracker.origin == DeviceOrigin.DRIVER && tracker.position != null }
         val isAssigned = hmdTracker?.bodyPart == BodyPart.HEAD
@@ -94,12 +96,10 @@ class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehavio
 }
 
 class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
-    private fun computeStep(trackers: List<TrackerState>, devices: List<DeviceState>): ChecklistStep {
-        val errorDeviceIds = devices
-            .filter { device -> device.status == TrackerStatus.ERROR || device.status == TrackerStatus.TIMED_OUT }
-            .map { device -> device.id }
+    private fun computeStep(trackers: List<TrackerState>): ChecklistStep {
+        val errorTrackers = trackers
+            .filter { tracker -> tracker.status == TrackerStatus.ERROR && tracker.bodyPart != null }
             .toSet()
-        val errorTrackers = trackers.filter { tracker -> tracker.deviceId in errorDeviceIds }
         return ChecklistStep(
             valid = errorTrackers.isEmpty(),
             enabled = trackers.isNotEmpty(),
@@ -110,9 +110,8 @@ class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingCheckli
     }
 
     override fun observe(receiver: TrackingChecklist) {
-        combine(trackerStatesFlow(server), deviceStatesFlow(server)) { trackers, devices ->
-            computeStep(trackers, devices)
-        }
+        trackerStatesFlow(server)
+            .map { trackers -> computeStep(trackers) }
             .distinctUntilChanged()
             .onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.TRACKER_ERROR, step)) }
             .launchIn(receiver.context.scope)

@@ -309,9 +309,16 @@ data class SensorInfo(
 	val trackerDataType: Int? = null,
 ) : SensorSpecificPacket {
 	companion object {
+		private fun statusFromUDP(raw: UByte): TrackerStatus = when (raw.toInt()) {
+			0 -> TrackerStatus.DISCONNECTED
+			1 -> TrackerStatus.OK
+			2 -> TrackerStatus.ERROR
+			else -> TrackerStatus.DISCONNECTED
+		}
+
 		fun read(src: Source) = with(src) {
 			val id = readU8()
-			val stat = TrackerStatus.fromValue((readUByte() + 1u).toUByte()) ?: TrackerStatus.DISCONNECTED
+			val stat = statusFromUDP(readUByte())
 			val imu = if (remaining > 0) ImuType.fromValue(readUByte().toUShort()) ?: ImuType.Other else ImuType.Other
 			val conf = if (remaining >= 2) readShort().toUShort() else null
 			val calib = if (remaining > 0) readU8() != 0 else null
