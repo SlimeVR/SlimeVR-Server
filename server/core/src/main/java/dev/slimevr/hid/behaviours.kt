@@ -94,7 +94,8 @@ class HIDDeviceInfoBehaviour(private val settings: Settings) : HIDReceiverBehavi
 
 				if (existingTracker != null) {
 					receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, existingTracker.context.state.value.id))
-					existingTracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType) })
+					// HID does not have a rest calibration signal
+					existingTracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true) })
 				} else {
 					val trackerId = receiver.serverContext.nextHandle()
 					val newTracker = Tracker.create(
@@ -114,7 +115,8 @@ class HIDDeviceInfoBehaviour(private val settings: Settings) : HIDReceiverBehavi
 
 				device.context.dispatch(DeviceActions.Update { copy(status = TrackerStatus.OK) })
 			} else {
-				tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType) })
+				// HID does not have a rest calibration signal
+				tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true) })
 			}
 		}
 	}

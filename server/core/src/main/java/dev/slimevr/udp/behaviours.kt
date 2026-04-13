@@ -192,7 +192,13 @@ class SensorInfoBehaviour(private val settings: Settings) : UDPConnectionBehavio
 				?: error("invalid state - a device should exist at this point")
 
 			val tracker = receiver.getTracker(event.data.sensorId)
-			val action = TrackerActions.Update { copy(sensorType = event.data.imuType, status = event.data.status) }
+			val action = TrackerActions.Update {
+				copy(
+					sensorType = event.data.imuType,
+					status = event.data.status,
+					completedRestCalibration = event.data.hasCompletedRestCalibration ?: tracker?.context?.state?.value?.completedRestCalibration ?: false
+				)
+			}
 
 			if (tracker != null) {
 				tracker.context.dispatch(action)

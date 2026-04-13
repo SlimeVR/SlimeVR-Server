@@ -26,6 +26,7 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.TrackingChecklistNeedCalibration
 import solarxr_protocol.rpc.TrackingChecklistStepId
 import solarxr_protocol.rpc.TrackingChecklistSteamVRDisconnected
 import solarxr_protocol.rpc.TrackingChecklistTrackerError
@@ -93,6 +94,30 @@ class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehavio
             .onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.UNASSIGNED_HMD, step)) }
             .launchIn(receiver.context.scope)
     }
+}
+
+class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
+	private fun computeStep(trackers: List<TrackerState>): ChecklistStep {
+		val uncalibratedTrackers = trackers.filter { tracker ->
+			(tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID)
+				&& tracker.status == TrackerStatus.OK && !tracker.completedRestCalibration
+		}
+		return ChecklistStep(
+			valid = uncalibratedTrackers.isEmpty(),
+			enabled = trackers.isNotEmpty(),
+			extraData = if (!uncalibratedTrackers.isEmpty()) TrackingChecklistNeedCalibration(
+				trackersId = uncalibratedTrackers.map { tracker -> trackerIdOf(tracker) },
+			) else null,
+		)
+	}
+
+	override fun observe(receiver: TrackingChecklist) {
+		trackerStatesFlow(server)
+			.map { trackers -> computeStep(trackers) }
+			.distinctUntilChanged()
+			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.TRACKERS_REST_CALIBRATION, step)) }
+			.launchIn(receiver.context.scope)
+	}
 }
 
 class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {

@@ -33,6 +33,7 @@ data class TrackerState(
 	val imuTemp: Float?,
 	val position: Vector3?,
 	val status: TrackerStatus,
+	val completedRestCalibration: Boolean,
 )
 
 sealed interface TrackerActions {
@@ -75,6 +76,7 @@ class Tracker(
 				tps = 0u,
 				imuTemp = null,
 				status = TrackerStatus.DISCONNECTED,
+				completedRestCalibration = false
 			)
 			val trackerState = if (savedConfig != null)
 				restoreFromConfig(baseState, savedConfig)

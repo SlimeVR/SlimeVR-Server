@@ -58,6 +58,7 @@ class TrackingChecklist(
             val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
                 add(SteamVRCheckBehaviour(server))
                 add(HMDCheckBehaviour(server))
+				add(TrackerRestCheckBehaviour(server))
                 add(TrackerErrorCheckBehaviour(server))
                 vrcConfigManager?.let { add(VRChatSettingsCheckBehaviour(server, skeleton, it)) }
             }
