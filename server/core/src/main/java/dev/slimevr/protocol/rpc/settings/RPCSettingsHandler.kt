@@ -158,6 +158,10 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 					.mountingResetEnabled = tapDetectionSettings.mountingResetEnabled()
 				tapDetectionConfig.setupMode = tapDetectionSettings.setupMode()
 
+				tapDetectionConfig.yawResetTracker = tapDetectionSettings.yawResetTracker()
+				tapDetectionConfig.fullResetTracker = tapDetectionSettings.fullResetTracker()
+				tapDetectionConfig.mountingResetTracker = tapDetectionSettings.mountingResetTracker()
+
 				// set number of trackers that can have high accel before taps
 				// are rejected
 				if (tapDetectionSettings.hasNumberTrackersOverThreshold()) {

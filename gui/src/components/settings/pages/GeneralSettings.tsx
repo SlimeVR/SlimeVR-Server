@@ -443,6 +443,15 @@ export function GeneralSettings() {
         mountingResetTaps:
           settings.tapDetectionSettings.mountingResetTaps ||
           defaultValues.tapDetection.mountingResetTaps,
+        yawResetTracker:
+          settings.tapDetectionSettings.yawResetTracker ||
+          defaultValues.tapDetection.yawResetTracker,
+        fullResetTracker:
+          settings.tapDetectionSettings.fullResetTracker ||
+          defaultValues.tapDetection.fullResetTracker,
+        mountingResetTracker:
+          settings.tapDetectionSettings.mountingResetTracker ||
+          defaultValues.tapDetection.mountingResetTracker,
         numberTrackersOverThreshold:
           settings.tapDetectionSettings.numberTrackersOverThreshold ||
           defaultValues.tapDetection.numberTrackersOverThreshold,

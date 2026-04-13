@@ -99,10 +99,10 @@ class TapDetectionManager(
 			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.fullResetTracker } ?: return null)
 		}
 
-	// hi me, i fixed the bug by using the existing server
 	private val yawResetTracker: Tracker?
 		get() {
 			val position = TrackerPosition.entries.firstOrNull { it.bodyPart == config.yawResetTracker }
+			LogManager.info(position.toString())
 			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, position ?: return null)
 
 		}
