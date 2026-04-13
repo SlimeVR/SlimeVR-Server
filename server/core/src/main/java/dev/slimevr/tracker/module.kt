@@ -10,6 +10,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
@@ -34,6 +35,7 @@ data class TrackerState(
 	val position: Vector3?,
 	val status: TrackerStatus,
 	val completedRestCalibration: Boolean,
+	val magStatus: MagnetometerStatus,
 )
 
 sealed interface TrackerActions {
@@ -76,7 +78,8 @@ class Tracker(
 				tps = 0u,
 				imuTemp = null,
 				status = TrackerStatus.DISCONNECTED,
-				completedRestCalibration = false
+				completedRestCalibration = false,
+				magStatus = MagnetometerStatus.NOT_SUPPORTED,
 			)
 			val trackerState = if (savedConfig != null)
 				restoreFromConfig(baseState, savedConfig)

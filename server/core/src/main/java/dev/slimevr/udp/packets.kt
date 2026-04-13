@@ -303,11 +303,35 @@ data class SensorInfo(
 	override val sensorId: Int = 0,
 	val status: TrackerStatus = TrackerStatus.DISCONNECTED,
 	val imuType: ImuType = ImuType.Other,
-	val sensorConfig: UShort? = null,
+	val sensorConfig: SensorConfig? = null,
 	val hasCompletedRestCalibration: Boolean? = null,
 	val trackerPosition: Int? = null,
 	val trackerDataType: Int? = null,
 ) : SensorSpecificPacket {
+	data class SensorConfig(
+		val magEnabled: Boolean,
+		val magSupported: Boolean,
+		val calibrationEnabled: Boolean,
+		val calibrationSupported: Boolean,
+		val tempGradientCalibrationEnabled: Boolean,
+		val tempGradientCalibrationSupported: Boolean
+	) {
+		companion object {
+			fun fromUDP(raw: UShort) = with(raw) {
+				val raw = toInt()
+
+				SensorConfig(
+					magEnabled = raw and 1 != 0,
+					magSupported = (raw shr 1) and 1 != 0,
+					calibrationEnabled = (raw shr 2) and 1 != 0,
+					calibrationSupported = (raw shr 3) and 1 != 0,
+					tempGradientCalibrationEnabled = (raw shr 4) and 1 != 0,
+					tempGradientCalibrationSupported = (raw shr 5) and 1 != 0,
+				)
+			}
+		}
+	}
+
 	companion object {
 		private fun statusFromUDP(raw: UByte): TrackerStatus = when (raw.toInt()) {
 			0 -> TrackerStatus.DISCONNECTED
@@ -320,7 +344,7 @@ data class SensorInfo(
 			val id = readU8()
 			val stat = statusFromUDP(readUByte())
 			val imu = if (remaining > 0) ImuType.fromValue(readUByte().toUShort()) ?: ImuType.Other else ImuType.Other
-			val conf = if (remaining >= 2) readShort().toUShort() else null
+			val conf = if (remaining >= 2) SensorConfig.fromUDP(readShort().toUShort()) else null
 			val calib = if (remaining > 0) readU8() != 0 else null
 			val pos = if (remaining > 0) readU8() else null
 			val dt = if (remaining > 0) readU8() else null

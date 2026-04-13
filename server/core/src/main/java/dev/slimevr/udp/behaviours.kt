@@ -12,6 +12,7 @@ import dev.slimevr.tracker.TrackerIdNum
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.random.Random
 
@@ -193,10 +194,22 @@ class SensorInfoBehaviour(private val settings: Settings) : UDPConnectionBehavio
 
 			val tracker = receiver.getTracker(event.data.sensorId)
 			val action = TrackerActions.Update {
+				val completedRestCalibration = event.data.hasCompletedRestCalibration
+					?: tracker?.context?.state?.value?.completedRestCalibration
+					?: false
+
+				val magStatus = event.data.sensorConfig?.let {
+					if (it.magSupported) {
+						if (it.magEnabled) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED
+					} else {
+						MagnetometerStatus.NOT_SUPPORTED
+					}
+				} ?: tracker?.context?.state?.value?.magStatus ?: MagnetometerStatus.NOT_SUPPORTED
 				copy(
 					sensorType = event.data.imuType,
 					status = event.data.status,
-					completedRestCalibration = event.data.hasCompletedRestCalibration ?: tracker?.context?.state?.value?.completedRestCalibration ?: false
+					completedRestCalibration = completedRestCalibration,
+					magStatus = magStatus,
 				)
 			}
 
@@ -205,10 +218,10 @@ class SensorInfoBehaviour(private val settings: Settings) : UDPConnectionBehavio
 			} else {
 				val deviceState = device.context.state.value
 				val mac = deviceState.macAddress ?: run {
-						AppLogger.udp.warn("[${deviceState.address}] No MAC address available, falling back to IP for hardware ID")
-						deviceState.address
-					}
-					val hardwareId = "$mac:${event.data.sensorId}"
+					AppLogger.udp.warn("[${deviceState.address}] No MAC address available, falling back to IP for hardware ID")
+					deviceState.address
+				}
+				val hardwareId = "$mac:${event.data.sensorId}"
 				val trackerId = receiver.serverContext.nextHandle()
 				val newTracker = Tracker.create(
 					id = trackerId,
