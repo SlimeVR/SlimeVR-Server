@@ -94,11 +94,14 @@ export function TrackersAssignPage() {
       tapDetectionSettings.fullResetDelay,
       tapDetectionSettings.fullResetEnabled,
       tapDetectionSettings.fullResetTaps,
+      tapDetectionSettings.fullResetTracker,
       tapDetectionSettings.yawResetDelay,
       tapDetectionSettings.yawResetEnabled,
       tapDetectionSettings.yawResetTaps,
+      tapDetectionSettings.yawResetTracker,
       tapDetectionSettings.mountingResetDelay,
       tapDetectionSettings.mountingResetEnabled,
+      tapDetectionSettings.mountingResetTracker,
       tapDetectionSettings.mountingResetTaps,
       true
     );

@@ -4,9 +4,9 @@ import dev.slimevr.VRServer
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
-import java.util.concurrent.CopyOnWriteArrayList
 import dev.slimevr.tracking.trackers.TrackerUtils
 import io.eiren.util.logging.LogManager
+import java.util.concurrent.CopyOnWriteArrayList
 
 class TapDetectionManager(
 	val server: VRServer,
@@ -72,7 +72,7 @@ class TapDetectionManager(
 		tapDetectors.clear()
 		registerSingleTapDetectors()
 		registerResetsDetectors()
-		//LogManager.info(yawResetTracker.toString())
+		// LogManager.info(yawResetTracker.toString())
 	}
 
 	fun update() {
@@ -101,10 +101,8 @@ class TapDetectionManager(
 
 	private val yawResetTracker: Tracker?
 		get() {
-			val position = TrackerPosition.entries.firstOrNull { it.bodyPart == config.yawResetTracker }
-			LogManager.info(position.toString())
-			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, position ?: return null)
 
+			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.yawResetTracker } ?: return null)
 		}
 
 	companion object {
