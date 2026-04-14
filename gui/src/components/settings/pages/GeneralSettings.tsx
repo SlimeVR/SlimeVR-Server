@@ -101,9 +101,9 @@ export type SettingsForm = {
     fullResetTaps: number;
     mountingResetTaps: number;
     numberTrackersOverThreshold: number;
-    yawResetTracker: BodyPart;
-    mountingResetTracker: BodyPart;
-    fullResetTracker: BodyPart;
+    yawResetTracker: string;
+    mountingResetTracker: string;
+    fullResetTracker: string;
   };
   legTweaks: {
     correctionStrength: number;
@@ -164,9 +164,9 @@ const defaultValues: SettingsForm = {
     fullResetTaps: 3,
     mountingResetTaps: 3,
     numberTrackersOverThreshold: 1,
-    yawResetTracker: BodyPart.CHEST,
-    mountingResetTracker: BodyPart.RIGHT_UPPER_LEG,
-    fullResetTracker: BodyPart.LEFT_UPPER_LEG,
+    yawResetTracker: String(BodyPart.CHEST),
+    mountingResetTracker: String(BodyPart.RIGHT_UPPER_LEG),
+    fullResetTracker: String(BodyPart.LEFT_UPPER_LEG),
   },
   legTweaks: { correctionStrength: 0.3 },
   resetsSettings: defaultResetSettings,
@@ -443,15 +443,18 @@ export function GeneralSettings() {
         mountingResetTaps:
           settings.tapDetectionSettings.mountingResetTaps ||
           defaultValues.tapDetection.mountingResetTaps,
-        yawResetTracker:
+        yawResetTracker: String(
           settings.tapDetectionSettings.yawResetTracker ||
-          defaultValues.tapDetection.yawResetTracker,
-        fullResetTracker:
+            defaultValues.tapDetection.yawResetTracker
+        ),
+        fullResetTracker: String(
           settings.tapDetectionSettings.fullResetTracker ||
-          defaultValues.tapDetection.fullResetTracker,
-        mountingResetTracker:
+            defaultValues.tapDetection.fullResetTracker
+        ),
+        mountingResetTracker: String(
           settings.tapDetectionSettings.mountingResetTracker ||
-          defaultValues.tapDetection.mountingResetTracker,
+            defaultValues.tapDetection.mountingResetTracker
+        ),
         numberTrackersOverThreshold:
           settings.tapDetectionSettings.numberTrackersOverThreshold ||
           defaultValues.tapDetection.numberTrackersOverThreshold,
@@ -1288,7 +1291,7 @@ export function GeneralSettings() {
               </div>
               <div className="grid sm:grid-cols-3 gap-5 pb-2">
                 <div>
-                  Choose Which tracker location you want to use this reset with!
+                  <Localized id="settings-general-gesture_control-yawResetTracker" />
                   <Dropdown
                     control={control}
                     placeholder={''}
@@ -1299,9 +1302,8 @@ export function GeneralSettings() {
                     }))}
                   />
                 </div>
-
                 <div>
-                  Choose Which tracker location you want to use this reset with!
+                  <Localized id="settings-general-gesture_control-mountingResetTracker" />
                   <Dropdown
                     control={control}
                     placeholder={''}
@@ -1313,7 +1315,7 @@ export function GeneralSettings() {
                   />
                 </div>
                 <div>
-                  Choose Which tracker location you want to use this reset with!
+                  <Localized id="settings-general-gesture_control-fullResetTracker" />
                   <Dropdown
                     control={control}
                     placeholder={''}
