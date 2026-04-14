@@ -1291,8 +1291,13 @@ export function GeneralSettings() {
               </div>
               <div className="grid sm:grid-cols-3 gap-5 pb-2">
                 <div>
-                  <Localized id="settings-general-gesture_control-yawResetTracker" />
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'settings-general-gesture_control-yawResetTracker'
+                    )}
+                  </Typography>
                   <Dropdown
+                    display="block"
                     control={control}
                     placeholder={''}
                     name="tapDetection.yawResetTracker"
@@ -1303,8 +1308,13 @@ export function GeneralSettings() {
                   />
                 </div>
                 <div>
-                  <Localized id="settings-general-gesture_control-mountingResetTracker" />
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'settings-general-gesture_control-mountingResetTracker'
+                    )}
+                  </Typography>
                   <Dropdown
+                    display="block"
                     control={control}
                     placeholder={''}
                     name="tapDetection.mountingResetTracker"
@@ -1315,8 +1325,13 @@ export function GeneralSettings() {
                   />
                 </div>
                 <div>
-                  <Localized id="settings-general-gesture_control-fullResetTracker" />
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'settings-general-gesture_control-fullResetTracker'
+                    )}
+                  </Typography>
                   <Dropdown
+                    display="block"
                     control={control}
                     placeholder={''}
                     name="tapDetection.fullResetTracker"

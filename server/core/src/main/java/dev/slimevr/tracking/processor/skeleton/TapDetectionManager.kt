@@ -91,18 +91,18 @@ class TapDetectionManager(
 
 	private val mountingResetTracker: Tracker?
 		get() {
-			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.mountingResetTracker } ?: return null)
+			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.mountingResetTracker)
 		}
 
 	private val fullResetTracker: Tracker?
 		get() {
-			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.fullResetTracker } ?: return null)
+			return TrackerUtils.getTrackerForSkeleton(server.allTrackers,  config.fullResetTracker)
 		}
 
 	private val yawResetTracker: Tracker?
 		get() {
 
-			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.yawResetTracker } ?: return null)
+			return TrackerUtils.getTrackerForSkeleton(server.allTrackers,  config.yawResetTracker)
 		}
 
 	companion object {

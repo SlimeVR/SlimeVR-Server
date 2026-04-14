@@ -1,7 +1,6 @@
 package dev.slimevr.config
 import com.jme3.math.FastMath
 import dev.slimevr.tracking.trackers.TrackerPosition
-import solarxr_protocol.datatypes.BodyPart
 
 // handles the tap detection config
 // this involves the number of taps, the delay, and whether or not the feature is enabled
@@ -13,9 +12,9 @@ class TapDetectionConfig {
 	var yawResetEnabled = true
 	var fullResetEnabled = true
 	var mountingResetEnabled = true
-	var yawResetTracker = BodyPart.CHEST
-	var mountingResetTracker = BodyPart.RIGHT_UPPER_LEG
-	var fullResetTracker = BodyPart.LEFT_UPPER_LEG
+	var yawResetTracker = TrackerPosition.CHEST
+	var mountingResetTracker = TrackerPosition.RIGHT_UPPER_LEG
+	var fullResetTracker = TrackerPosition.LEFT_UPPER_LEG
 	var setupMode = false
 	var yawResetTaps = 2
 		set(yawResetTaps) {
