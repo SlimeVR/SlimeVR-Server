@@ -1,17 +1,23 @@
 package dev.slimevr
 
 import dev.llelievr.espflashkotlin.FlasherSerialInterface
+import dev.slimevr.config.AppConfig
 import dev.slimevr.config.DefaultUserBehaviour
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
+import dev.slimevr.firmware.FirmwareManager
+import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
-import dev.slimevr.skeleton.buildBones
 import dev.slimevr.skeleton.ProportionsBehaviour
+import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.skeleton.buildBones
+import dev.slimevr.trackingchecklist.TrackingChecklist
+import dev.slimevr.vrchat.VRCConfigManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.nio.file.Files
@@ -59,4 +65,15 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 	val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
 	skeleton.startObserving()
 	return skeleton
+}
+
+abstract class TestAppContext : AppContextProvider {
+	override val config: AppConfig get() = error("not used in test")
+	override val serialServer: SerialServer get() = error("not used in test")
+	override val firmwareManager: FirmwareManager get() = error("not used in test")
+	override val vrcConfigManager: VRCConfigManager? = null
+	override val provisioningManager: ProvisioningManager get() = error("not used in test")
+	override val heightCalibrationManager: HeightCalibrationManager get() = error("not used in test")
+	override val trackingChecklist: TrackingChecklist get() = error("not used in test")
+	override fun startObserving() {}
 }

@@ -1,7 +1,7 @@
 package dev.slimevr.solarxr
 
-import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
+import dev.slimevr.TestAppContext
 import dev.slimevr.buildTestSkeleton
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
@@ -18,17 +18,9 @@ import kotlin.test.assertEquals
 private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend: suspend (ByteArray) -> Unit): SolarXRBridge {
 	val server = buildTestVrServer(backgroundScope)
 	val skeleton = buildTestSkeleton(backgroundScope)
-	val appContext = object : AppContextProvider {
+	val appContext = object : TestAppContext() {
 		override val server = server
 		override val skeleton = skeleton
-		override val config get() = error("not used")
-		override val serialServer get() = error("not used")
-		override val firmwareManager get() = error("not used")
-		override val vrcConfigManager = null
-		override val provisioningManager get() = error("not used")
-		override val heightCalibrationManager get() = error("not used")
-		override val trackingChecklist get() = error("not used")
-		override fun startObserving() {}
 	}
 	val context = Context.create(
 		initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
