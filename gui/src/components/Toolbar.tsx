@@ -147,7 +147,7 @@ export function Toolbar() {
 
   const { visibleGroups, groupVisibility } = useMemo(() => {
     const groupVisibility = Object.keys(BODY_PARTS_GROUPS)
-      .filter((k) => ['fingers'].includes(k))
+      .filter((k) => ['fingers', 'toes'].includes(k))
       .reduce(
         (curr, key) => {
           const group = key as MountingResetGroup;
@@ -200,6 +200,13 @@ export function Toolbar() {
                 group={'feet'}
                 customName="toolbar-mounting_calibration-feet"
               />
+              {groupVisibility['toes'] && (
+                <BasicResetButton
+                  type={ResetType.Mounting}
+                  group={'toes'}
+                  customName="toolbar-mounting_calibration-toes"
+                />
+              )}
               {groupVisibility['fingers'] && (
                 <BasicResetButton
                   type={ResetType.Mounting}

@@ -27,6 +27,7 @@ import dev.slimevr.serial.SerialHandlerStub
 import dev.slimevr.setup.HandshakeHandler
 import dev.slimevr.setup.TapSetupHandler
 import dev.slimevr.status.StatusSystem
+import dev.slimevr.tracking.ToesOSCHandler
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.*
@@ -102,6 +103,8 @@ class VRServer @JvmOverloads constructor(
 	val tapSetupHandler: TapSetupHandler
 
 	@JvmField
+	val toesOSCHandler : ToesOSCHandler
+	@JvmField
 	val protocolAPI: ProtocolAPI
 	private val timer = Timer()
 	private val resetTimerManager = ResetTimerManager()
@@ -168,11 +171,15 @@ class VRServer @JvmOverloads constructor(
 			humanPoseManager,
 			configManager.vrConfig.vmc,
 		)
-
+		toesOSCHandler = ToesOSCHandler(
+			this,
+			configManager.vrConfig.vrcOSC
+		)
 		// Initialize OSC router
 		val oscHandlers = FastList<OSCHandler>()
 		oscHandlers.add(vrcOSCHandler)
 		oscHandlers.add(vMCHandler)
+		oscHandlers.add(toesOSCHandler)
 		oSCRouter = OSCRouter(configManager.vrConfig.oscRouter, oscHandlers)
 		bvhRecorder = BVHRecorder(this)
 		for (tracker in computedTrackers) {
@@ -259,6 +266,7 @@ class VRServer @JvmOverloads constructor(
 			}
 			vrcOSCHandler.update()
 			vMCHandler.update()
+			toesOSCHandler.update()
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				sleep(1) // 1000Hz

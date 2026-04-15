@@ -79,6 +79,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	private var hipToFloorDist = 0f
 	private var currentDisengagementOffset = 0.0f
 	private var footLength = 0.0f
+	private var toeLength = 0.0f
 	private var currentCorrectionStrength = 0.3f // default value
 
 	private var initialized = true
@@ -110,12 +111,15 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	// leg data
 	private var leftFootPosition = Vector3.NULL
 	private var rightFootPosition = Vector3.NULL
+	private var leftToePosition = Vector3.NULL
+	private var rightToePosition = Vector3.NULL
 	private var leftKneePosition = Vector3.NULL
 	private var rightKneePosition = Vector3.NULL
 	private var hipPosition = Vector3.NULL
 	private var leftFootRotation = Quaternion.IDENTITY
 	private var rightFootRotation = Quaternion.IDENTITY
-
+	private var leftToeRotation = Quaternion.IDENTITY
+	private var rightToeRotation = Quaternion.IDENTITY
 	private var leftFootAcceleration = Vector3.NULL
 	private var rightFootAcceleration = Vector3.NULL
 	private var leftLowerLegAcceleration = Vector3.NULL
@@ -195,7 +199,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		if (footPlantEnabled || toeSnapEnabled) correctFootRotations()
 
 		// push the feet up if needed (Floor clip)
-		if (floorClipEnabled && !localizerMode) correctClipping()
+		if (floorClipEnabled && !localizerMode) correctFootClipping()
 
 		// correct for skating if needed (Skating correction)
 		if (skatingCorrectionEnabled) correctSkating()
@@ -301,8 +305,13 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		rightKneePosition = skeleton.computedRightKneeTracker?.position ?: Vector3.NULL
 		leftFootPosition = skeleton.computedLeftFootTracker?.position ?: Vector3.NULL
 		rightFootPosition = skeleton.computedRightFootTracker?.position ?: Vector3.NULL
+		leftToePosition = skeleton.computedLeftAbductorHallucisTracker?.position ?: Vector3.NULL
+		rightToePosition = skeleton.computedRightAbductorHallucisTracker?.position ?: Vector3.NULL
 		leftFootRotation = skeleton.computedLeftFootTracker?.getRotation() ?: Quaternion.NULL
 		rightFootRotation = skeleton.computedRightFootTracker?.getRotation() ?: Quaternion.NULL
+		leftToeRotation = skeleton.computedLeftAbductorHallucisTracker?.getRotation() ?: Quaternion.NULL
+		rightToeRotation = skeleton.computedRightAbductorHallucisTracker?.getRotation() ?: Quaternion.NULL
+
 
 		// get the vector for acceleration of the feet and lower legs
 		leftFootAcceleration =
@@ -333,6 +342,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 		// update the foot length
 		footLength = skeleton.leftFootBone.length
+		toeLength = skeleton.leftAbductorHallucisBone.length
 
 		// if the user is standing start checking for a good time to enable leg
 		// tweaks
@@ -351,7 +361,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 			// if active correct clipping before populating corrected positions
 			if (active) {
-				correctClipping()
+				correctFootClipping()
 			}
 
 			bufferHead
@@ -412,14 +422,16 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	}
 
 	// returns true if the foot is clipped and false if it is not
-	private fun isClipped(leftOffset: Float, rightOffset: Float): Boolean = (
+	private fun isFootClipped(leftOffset: Float, rightOffset: Float): Boolean = (
 		leftFootPosition.y < floorLevel + leftOffset * footLength ||
-			rightFootPosition.y < floorLevel + rightOffset * footLength
+			rightFootPosition.y < floorLevel + rightOffset * footLength ||
+		leftToePosition.y < floorLevel + leftOffset * toeLength ||
+			rightToePosition.y < floorLevel + rightOffset * toeLength
 		)
 
 	// corrects the foot position to be above the floor level that is calculated
 	// on calibration
-	private fun correctClipping() {
+	private fun correctFootClipping() {
 		// calculate how angled down the feet are as a scalar value between 0
 		// and 1 (0 = flat, 1 = max angle)
 		val leftOffset: Float = getFootOffset(leftFootRotation)
@@ -427,7 +439,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		var avgOffset = 0f
 
 		// if there is no clipping, return
-		if (!isClipped(leftOffset, rightOffset)) return
+		if (!isFootClipped(leftOffset, rightOffset)) return
 
 		// move the feet to their new positions
 		if (leftFootPosition.y
@@ -442,6 +454,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 						footLength *
 						leftOffset -
 						leftFootPosition.y -
+						leftToePosition.y -
 						currentDisengagementOffset
 					),
 			)
@@ -470,6 +483,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 						footLength *
 						rightOffset -
 						rightFootPosition.y -
+						rightToePosition.y -
 						currentDisengagementOffset
 					),
 			)
