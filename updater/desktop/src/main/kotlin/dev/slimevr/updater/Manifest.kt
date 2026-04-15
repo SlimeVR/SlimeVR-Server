@@ -6,28 +6,24 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 class Manifest {
-	val manifestObj: ManifestObject
+	private val json: Json = Json { ignoreUnknownKeys = true }
+	private val manifest: ManifestObject
 
 	init {
-		val manifest = File("update-manifest.json").readText()
-		manifestObj = Json.decodeFromString<ManifestObject>(manifest)
-
-		getAllVersions()
-		println(manifestObj)
+		val file = File("update-manifest.json").readText()
+		manifest = Json.decodeFromString<ManifestObject>(file)
+		val json = Json {
+			ignoreUnknownKeys = true
+		}
 	}
 
-
-	fun getAllVersions() {
-		manifestObj.channels.
-	}
-
-	fun getChannels() {
-
+	fun getManifest(): ManifestObject {
+		return manifest
 	}
 }
 
 @Serializable
-data class Arch(
+data class Release(
 	val url: String,
 	val run: List<String>
 )
@@ -36,7 +32,7 @@ data class Arch(
 data class Versions(
 	@SerialName("release_notes")
 	val releaseNotes: String,
-	val builds: Map<String, Map<String, Arch>>
+	val builds: Map<String, Map<String, Release>>
 )
 
 @Serializable
@@ -52,4 +48,15 @@ data class ManifestObject(
 	@SerialName("default_channel")
 	val defaultChannel: String,
 	val channels: Map<String, Channel>
+)
+
+class ChannelDisplayObject(
+	val channelName: String,
+	val Description: String
+)
+
+class VersionDisplayObject(
+	val version: String,
+	val Description: String,
+	val Url: String
 )

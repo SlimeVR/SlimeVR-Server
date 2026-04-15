@@ -22,9 +22,11 @@ class Updater {
 
 	val os = System.getProperty("os.name").lowercase()
 
-	suspend fun runUpdater() {
+	fun runUpdater() {
 
-		val channels = Manifest()
+		val manifest = Manifest()
+
+
 
 		//channels.getChannels("Server")
 
