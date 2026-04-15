@@ -1,9 +1,7 @@
 package dev.slimevr.desktop.ipc
 
-import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
+import dev.slimevr.AppContextProvider
 import dev.slimevr.getSocketDirectory
-import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.handleSolarXRBridge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -19,29 +17,27 @@ import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
 import kotlin.io.path.Path
 
-suspend fun createUnixDriverSocket(server: VRServer) = acceptUnixClients(DRIVER_SOCKET_NAME) { channel ->
+suspend fun createUnixDriverSocket(appContext: AppContextProvider) = acceptUnixClients(DRIVER_SOCKET_NAME) { channel ->
 	handleDriverConnection(
-		server = server,
+		appContext = appContext,
 		messages = readFramedMessages(channel),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
 	)
 }
 
-suspend fun createUnixFeederSocket(server: VRServer, settings: Settings) = acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
+suspend fun createUnixFeederSocket(appContext: AppContextProvider) = acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
 	handleFeederConnection(
-		server = server,
-		settings = settings,
+		appContext = appContext,
 		messages = readFramedMessages(channel),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
 	)
 }
 
-suspend fun createUnixSolarXRSocket(server: VRServer, behaviours: List<SolarXRBridgeBehaviour>) = acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
+suspend fun createUnixSolarXRSocket(appContext: AppContextProvider) = acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
 	handleSolarXRBridge(
-		server = server,
+		appContext = appContext,
 		messages = readFramedMessages(channel),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
-		behaviours = behaviours,
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } }
 	)
 }
 

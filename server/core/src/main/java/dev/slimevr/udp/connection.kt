@@ -1,8 +1,7 @@
 package dev.slimevr.udp
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
-import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
@@ -50,7 +49,7 @@ typealias UDPConnectionBehaviour = Behaviour<UDPConnectionState, UDPConnectionAc
 
 class UDPConnection(
 	val context: UDPConnectionContext,
-	val serverContext: VRServer,
+	val appContext: AppContextProvider,
 	val packetEvents: UDPPacketDispatcher,
 	val packetChannel: Channel<PacketEvent<UDPPacket>>,
 	private val socket: DatagramSocket,
@@ -67,14 +66,16 @@ class UDPConnection(
 		}
 	}
 
+	fun startObserving() = context.observeAll(this)
+
 	fun getDevice(): Device? {
 		val deviceId = context.state.value.deviceId
-		return if (deviceId != null) serverContext.getDevice(deviceId) else null
+		return if (deviceId != null) appContext.server.getDevice(deviceId) else null
 	}
 
 	fun getTracker(id: Int): Tracker? {
 		val trackerId = context.state.value.trackerIds.find { it.trackerNum == id }
-		return if (trackerId != null) serverContext.getTracker(trackerId.id) else null
+		return if (trackerId != null) appContext.server.getTracker(trackerId.id) else null
 	}
 
 	companion object {
@@ -83,8 +84,7 @@ class UDPConnection(
 			socket: DatagramSocket,
 			remoteIp: String,
 			remotePort: Int,
-			serverContext: VRServer,
-			settings: Settings,
+			appContext: AppContextProvider,
 			scope: CoroutineScope,
 		): UDPConnection {
 			val behaviours = listOf(
@@ -93,11 +93,11 @@ class UDPConnection(
 				TimeoutBehaviour,
 				PingBehaviour,
 				DeviceStatsBehaviour,
-				SensorInfoBehaviour(settings),
+				SensorInfoBehaviour,
 				SensorRotationBehaviour,
 				BundledPacketBehaviour,
 				FlagsBehaviour,
-				TemperatureBehaviour
+				TemperatureBehaviour,
 			)
 
 			val context = Context.create(
@@ -111,7 +111,7 @@ class UDPConnection(
 					port = remotePort,
 					deviceId = null,
 					trackerIds = listOf(),
-					features = null
+					features = null,
 				),
 				scope = scope,
 				behaviours = behaviours,
@@ -123,7 +123,7 @@ class UDPConnection(
 
 			val conn = UDPConnection(
 				context = context,
-				serverContext = serverContext,
+				appContext = appContext,
 				packetEvents = dispatcher,
 				packetChannel = packetChannel,
 				socket = socket,
@@ -131,8 +131,7 @@ class UDPConnection(
 				remotePort = remotePort,
 				scope = scope,
 			)
-
-			behaviours.forEach { it.observe(conn) }
+			conn.startObserving()
 
 			// Dedicated coroutine per connection so the receive loop is never blocked by packet processing
 			scope.launch {

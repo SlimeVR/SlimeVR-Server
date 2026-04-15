@@ -1,7 +1,7 @@
 package dev.slimevr.driver
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
-import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
@@ -33,17 +33,19 @@ typealias DriverBridgeBehaviour = Behaviour<DriverBridgeState, DriverBridgeActio
 class DriverBridge(
 	val id: Int,
 	val context: DriverBridgeContext,
-	val serverContext: VRServer,
+	val appContext: AppContextProvider,
 	val inbound: EventDispatcher<DriverBridgeInbound> = EventDispatcher(),
 	val outbound: EventDispatcher<DriverBridgeOutbound> = EventDispatcher(),
 ) {
 	fun disconnect() {
-		serverContext.context.dispatch(VRServerActions.DriverDisconnected(id))
+		appContext.server.context.dispatch(VRServerActions.DriverDisconnected(id))
 	}
 
+	fun startObserving() = context.observeAll(this)
+
 	companion object {
-		fun create(id: Int, serverContext: VRServer, scope: CoroutineScope): DriverBridge {
-			val behaviours = listOf(DriverBaseBehaviour(serverContext))
+		fun create(id: Int, appContext: AppContextProvider, scope: CoroutineScope): DriverBridge {
+			val behaviours = listOf(DriverBaseBehaviour)
 
 			val context = Context.create(
 				initialState = DriverBridgeState(protocolVersion = 0),
@@ -51,11 +53,9 @@ class DriverBridge(
 				behaviours = behaviours,
 			)
 
-			val bridge = DriverBridge(id = id, context = context, serverContext = serverContext)
-
-			behaviours.forEach { it.observe(bridge) }
-
-			serverContext.context.dispatch(VRServerActions.DriverConnected(bridge))
+			val bridge = DriverBridge(id = id, context = context, appContext = appContext)
+			bridge.startObserving()
+			appContext.server.context.dispatch(VRServerActions.DriverConnected(bridge))
 
 			return bridge
 		}

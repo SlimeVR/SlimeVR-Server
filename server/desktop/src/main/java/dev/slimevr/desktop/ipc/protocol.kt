@@ -1,7 +1,6 @@
 package dev.slimevr.desktop.ipc
 
-import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
+import dev.slimevr.AppContextProvider
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
 import dev.slimevr.driver.DriverBridgeOutbound
@@ -20,7 +19,7 @@ import kotlinx.coroutines.sync.withLock
 const val PROTOCOL_VERSION = 5
 
 suspend fun handleDriverConnection(
-	server: VRServer,
+	appContext: AppContextProvider,
 	messages: Flow<ByteArray>,
 	send: suspend (ByteArray) -> Unit,
 ) = coroutineScope {
@@ -30,7 +29,7 @@ suspend fun handleDriverConnection(
 		send(ProtobufMessage.ADAPTER.encode(msg))
 	}
 
-	val bridge = DriverBridge.create(id = server.nextHandle(), serverContext = server, scope = this)
+	val bridge = DriverBridge.create(id = appContext.server.nextHandle(), appContext = appContext, scope = this)
 
 	bridge.outbound.on<DriverBridgeOutbound.TrackerAdded> { event ->
 		sendMsg(ProtobufMessage(tracker_added = TrackerAdded(tracker_id = event.trackerId, tracker_serial = event.serial, tracker_name = event.name)))
@@ -57,12 +56,11 @@ suspend fun handleDriverConnection(
 }
 
 suspend fun handleFeederConnection(
-	server: VRServer,
-	settings: Settings,
+	appContext: AppContextProvider,
 	messages: Flow<ByteArray>,
 	send: suspend (ByteArray) -> Unit,
 ) = coroutineScope {
-	val bridge = FeederBridge.create(id = server.nextHandle(), serverContext = server, settings = settings, scope = this)
+	val bridge = FeederBridge.create(id = appContext.server.nextHandle(), appContext = appContext, scope = this)
 
 	send(ProtobufMessage.ADAPTER.encode(ProtobufMessage(version = Version(protocol_version = PROTOCOL_VERSION))))
 

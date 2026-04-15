@@ -1,5 +1,6 @@
 package dev.slimevr.provisioning
 
+import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
@@ -35,6 +36,8 @@ data class ProvisioningManager(
 	private val serialServer: SerialServer,
 	private val scope: CoroutineScope,
 ) {
+	fun startObserving() = context.observeAll(this)
+
 	// Jobs cannot be held into a state / mutable flow
 	// as we cannot guarantee immutability
 	private var provisioningJob: Job? = null
@@ -85,21 +88,18 @@ data class ProvisioningManager(
 			macAddress = null,
 		)
 
-		fun create(serialServer: SerialServer, scope: CoroutineScope): ProvisioningManager {
+		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope): ProvisioningManager {
 			val behaviours = listOf(ProvisioningManagerBaseBehaviour)
 			val context = Context.create(
 				initialState = INITIAL_STATE,
 				scope = scope,
 				behaviours = behaviours,
 			)
-			val manager = ProvisioningManager(
+			return ProvisioningManager(
 				context = context,
-				serialServer = serialServer,
-				scope = scope
+				serialServer = ctx.serialServer,
+				scope = scope,
 			)
-			behaviours.forEach { it.observe(manager) }
-
-			return manager
 		}
 	}
 }

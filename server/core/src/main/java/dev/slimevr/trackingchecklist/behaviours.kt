@@ -27,6 +27,7 @@ import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.TrackingChecklistNeedCalibration
+import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
 import solarxr_protocol.rpc.TrackingChecklistSteamVRDisconnected
 import solarxr_protocol.rpc.TrackingChecklistTrackerError
@@ -58,7 +59,7 @@ class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBeh
         server.context.state
             .map { state ->
                 val connected = state.drivers.isNotEmpty()
-                ChecklistStep(
+                TrackingChecklistStep(
                     valid = connected,
                     enabled = true,
                     ignorable = true,
@@ -72,12 +73,12 @@ class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBeh
 }
 
 class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
-    private fun computeStep(trackers: List<TrackerState>): ChecklistStep {
+    private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
 		// FIXME: Most likely incomplete
         val hasSteamVR = trackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
         val hmdTracker = trackers.firstOrNull { tracker -> tracker.origin == DeviceOrigin.DRIVER && tracker.position != null }
         val isAssigned = hmdTracker?.bodyPart == BodyPart.HEAD
-        return ChecklistStep(
+        return TrackingChecklistStep(
             valid = isAssigned,
             enabled = hasSteamVR,
             ignorable = true,
@@ -97,12 +98,12 @@ class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehavio
 }
 
 class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
-	private fun computeStep(trackers: List<TrackerState>): ChecklistStep {
+	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
 		val uncalibratedTrackers = trackers.filter { tracker ->
 			(tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID)
 				&& tracker.status == TrackerStatus.OK && !tracker.completedRestCalibration
 		}
-		return ChecklistStep(
+		return TrackingChecklistStep(
 			valid = uncalibratedTrackers.isEmpty(),
 			enabled = trackers.isNotEmpty(),
 			extraData = if (!uncalibratedTrackers.isEmpty()) TrackingChecklistNeedCalibration(
@@ -121,11 +122,11 @@ class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklis
 }
 
 class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
-    private fun computeStep(trackers: List<TrackerState>): ChecklistStep {
+    private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
         val errorTrackers = trackers
             .filter { tracker -> tracker.status == TrackerStatus.ERROR && tracker.bodyPart != null }
             .toSet()
-        return ChecklistStep(
+        return TrackingChecklistStep(
             valid = errorTrackers.isEmpty(),
             enabled = trackers.isNotEmpty(),
             extraData = if (errorTrackers.isNotEmpty()) TrackingChecklistTrackerError(
@@ -148,12 +149,12 @@ class VRChatSettingsCheckBehaviour(
     private val skeleton: Skeleton,
     private val vrcConfigManager: VRCConfigManager,
 ) : TrackingChecklistBehaviourType {
-    private fun computeStep(vrc: VRCConfigState, userHeight: Double): ChecklistStep {
+    private fun computeStep(vrc: VRCConfigState, userHeight: Double): TrackingChecklistStep {
         val values = vrc.currentValues
-        if (!vrc.isSupported || values == null) return ChecklistStep(valid = true, enabled = false)
+        if (!vrc.isSupported || values == null) return TrackingChecklistStep(valid = true, enabled = false)
         val recommended = computeRecommendedValues(server, userHeight)
         val validity = computeValidity(values, recommended)
-        return ChecklistStep(valid = isVRCConfigValid(validity, vrc.mutedWarnings), enabled = true)
+        return TrackingChecklistStep(valid = isVRCConfigValid(validity, vrc.mutedWarnings), enabled = true)
     }
 
     override fun observe(receiver: TrackingChecklist) {

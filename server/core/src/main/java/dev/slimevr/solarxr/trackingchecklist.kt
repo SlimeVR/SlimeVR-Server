@@ -2,7 +2,6 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
-import dev.slimevr.trackingchecklist.ChecklistStep
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.IgnoreTrackingChecklistStepRequest
 import solarxr_protocol.rpc.TrackingChecklistRequest
 import solarxr_protocol.rpc.TrackingChecklistResponse
-import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
 
 class TrackingChecklistBehaviour(
@@ -27,21 +25,10 @@ class TrackingChecklistBehaviour(
     private fun buildResponse(): TrackingChecklistResponse {
         val state = checklist.context.state.value
         return TrackingChecklistResponse(
-            steps = state.steps.map { (id, step) -> toProtocolStep(id, step) },
-            ignoredSteps = (state.ignoredSteps + parseMutedSteps()).toList(),
+            steps = state.steps.values.toList(),
+            ignoredSteps = parseMutedSteps().toList(),
         )
     }
-
-    private fun toProtocolStep(id: TrackingChecklistStepId, step: ChecklistStep): TrackingChecklistStep =
-        TrackingChecklistStep(
-            id = id,
-            valid = step.valid,
-            enabled = step.enabled,
-            optional = step.optional,
-            ignorable = step.ignorable,
-            visibility = step.visibility,
-            extraData = step.extraData,
-        )
 
     override fun observe(receiver: SolarXRBridge) {
         combine(

@@ -2,7 +2,6 @@ package dev.slimevr.hid
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServerActions
-import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
@@ -10,7 +9,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import solarxr_protocol.datatypes.TrackerStatus
 
-class HIDRegistrationBehaviour(private val settings: Settings) : HIDReceiverBehaviour {
+object HIDRegistrationBehaviour : HIDReceiverBehaviour {
 	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions) = when (action) {
 		is HIDReceiverActions.DeviceRegistered -> state.copy(
 			trackers = state.trackers +
@@ -33,7 +32,7 @@ class HIDRegistrationBehaviour(private val settings: Settings) : HIDReceiverBeha
 			val existing = state.trackers[packet.hidId]
 			if (existing != null) return@onPacket
 
-			val existingDevice = receiver.serverContext.context.state.value.devices.values
+			val existingDevice = receiver.appContext.server.context.state.value.devices.values
 				.find { it.context.state.value.macAddress == packet.address && it.context.state.value.origin == DeviceOrigin.HID }
 
 			if (existingDevice != null) {
@@ -42,23 +41,23 @@ class HIDRegistrationBehaviour(private val settings: Settings) : HIDReceiverBeha
 				return@onPacket
 			}
 
-			val deviceId = receiver.serverContext.nextHandle()
+			val deviceId = receiver.appContext.server.nextHandle()
 			val device = Device.create(
-				scope = receiver.serverContext.context.scope,
+				scope = receiver.appContext.server.context.scope,
 				id = deviceId,
 				address = packet.address,
 				macAddress = packet.address,
 				origin = DeviceOrigin.HID,
 				protocolVersion = 0,
 			)
-			receiver.serverContext.context.dispatch(VRServerActions.NewDevice(deviceId, device))
+			receiver.appContext.server.context.dispatch(VRServerActions.NewDevice(deviceId, device))
 			receiver.context.dispatch(HIDReceiverActions.DeviceRegistered(packet.hidId, packet.address, deviceId))
 			AppLogger.hid.info("Registered HID device ${packet.address} (hidId=${packet.hidId})")
 		}
 	}
 }
 
-class HIDDeviceInfoBehaviour(private val settings: Settings) : HIDReceiverBehaviour {
+object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions): HIDReceiverState = when (action) {
 		is HIDReceiverActions.TrackerRegistered -> {
 			val existing = state.trackers[action.hidId] ?: return state
@@ -89,7 +88,7 @@ class HIDDeviceInfoBehaviour(private val settings: Settings) : HIDReceiverBehavi
 			if (tracker == null) {
 				val deviceState = device.context.state.value
 
-				val existingTracker = receiver.serverContext.context.state.value.trackers.values
+				val existingTracker = receiver.appContext.server.context.state.value.trackers.values
 					.find { it.context.state.value.hardwareId == deviceState.address && it.context.state.value.origin == DeviceOrigin.HID }
 
 				if (existingTracker != null) {
@@ -97,18 +96,18 @@ class HIDDeviceInfoBehaviour(private val settings: Settings) : HIDReceiverBehavi
 					// HID does not have a rest calibration signal
 					existingTracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true) })
 				} else {
-					val trackerId = receiver.serverContext.nextHandle()
+					val trackerId = receiver.appContext.server.nextHandle()
 					val newTracker = Tracker.create(
-						scope = receiver.serverContext.context.scope,
+						scope = receiver.appContext.server.context.scope,
 						id = trackerId,
 						deviceId = deviceState.id,
 						sensorType = packet.imuType,
 						hardwareId = deviceState.address,
 						origin = DeviceOrigin.HID,
-						server = receiver.serverContext,
-						settings = settings,
+						server = receiver.appContext.server,
+						settings = receiver.appContext.config.settings,
 					)
-					receiver.serverContext.context.dispatch(VRServerActions.NewTracker(trackerId, newTracker))
+					receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, newTracker))
 					receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, trackerId))
 					AppLogger.hid.info("Registered HID tracker for device ${deviceState.address} (hidId=${packet.hidId})")
 				}

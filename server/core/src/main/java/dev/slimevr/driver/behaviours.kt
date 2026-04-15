@@ -1,12 +1,11 @@
 package dev.slimevr.driver
 
-import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.TrackerActions
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class DriverBaseBehaviour(private val server: VRServer) : DriverBridgeBehaviour {
+object DriverBaseBehaviour : DriverBridgeBehaviour {
 	override fun reduce(state: DriverBridgeState, action: DriverBridgeActions): DriverBridgeState = when (action) {
 		is DriverBridgeActions.UpdateProtocolVersion -> state.copy(protocolVersion = action.version)
 	}
@@ -17,7 +16,7 @@ class DriverBaseBehaviour(private val server: VRServer) : DriverBridgeBehaviour 
 		}
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
-			server.getTracker(event.trackerId)?.context?.dispatch(
+			receiver.appContext.server.getTracker(event.trackerId)?.context?.dispatch(
 				TrackerActions.Update { copy(rawRotation = event.rotation) },
 			)
 		}
@@ -25,7 +24,7 @@ class DriverBaseBehaviour(private val server: VRServer) : DriverBridgeBehaviour 
 		// Should be safe: StateFlow never delivers two emissions concurrently to the same collector.
 		val subscribedTrackers = mutableSetOf<Int>()
 
-		server.context.state
+		receiver.appContext.server.context.state
 			.onEach { state ->
 				state.trackers.values.forEach { tracker ->
 					val ts = tracker.context.state.value

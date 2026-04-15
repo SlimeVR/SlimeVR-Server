@@ -1,8 +1,7 @@
 package dev.slimevr.udp
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
-import dev.slimevr.VRServer
-import dev.slimevr.config.AppConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -19,11 +18,10 @@ class UDPTrackerServerState(
 )
 
 suspend fun createUDPTrackerServer(
-	serverContext: VRServer,
-	configContext: AppConfig,
+	appContext: AppContextProvider,
 ): UDPTrackerServerState {
 	val state = UDPTrackerServerState(
-		port = configContext.settings.context.state.value.data.trackerPort,
+		port = appContext.config.settings.context.state.value.data.trackerPort,
 		connections = mutableMapOf(),
 	)
 
@@ -64,8 +62,7 @@ suspend fun createUDPTrackerServer(
 							remoteIp = ip,
 							remotePort = port,
 							socket = socket,
-							serverContext = serverContext,
-							settings = configContext.settings,
+							appContext = appContext,
 							scope = udpScope,
 						)
 

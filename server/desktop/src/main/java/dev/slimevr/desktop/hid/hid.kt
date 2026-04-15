@@ -1,8 +1,7 @@
 package dev.slimevr.desktop.hid
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
-import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +51,7 @@ private fun enumerateCompatibleDevices(): Map<String, HidDevice> {
 
 private data class ActiveReceiver(val job: Job, val receiver: HIDReceiver)
 
-fun createDesktopHIDManager(serverContext: VRServer, settings: Settings, scope: CoroutineScope) {
+fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScope) {
 	val active = mutableMapOf<String, ActiveReceiver>()
 
 	scope.launch {
@@ -92,8 +91,7 @@ fun createDesktopHIDManager(serverContext: VRServer, settings: Settings, scope: 
 
 				val receiver = HIDReceiver.create(
 					serialNumber = serial,
-					serverContext = serverContext,
-					settings = settings,
+					appContext = appContext,
 					scope = deviceScope,
 				)
 
@@ -120,7 +118,7 @@ fun createDesktopHIDManager(serverContext: VRServer, settings: Settings, scope: 
 						withContext(NonCancellable + Dispatchers.IO) { hidDevice.close() }
 						withContext(NonCancellable) {
 							for (record in receiver.context.state.value.trackers.values) {
-								serverContext.getDevice(record.deviceId)?.context?.dispatch(
+								appContext.server.getDevice(record.deviceId)?.context?.dispatch(
 									DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
 								)
 							}

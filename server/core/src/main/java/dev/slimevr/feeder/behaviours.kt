@@ -1,8 +1,6 @@
 package dev.slimevr.feeder
 
-import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
-import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
@@ -10,7 +8,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
-class FeederBaseBehaviour(private val server: VRServer, private val settings: Settings) : FeederBridgeBehaviour {
+object FeederBaseBehaviour : FeederBridgeBehaviour {
 	override fun reduce(state: FeederBridgeState, action: FeederBridgeActions): FeederBridgeState = when (action) {
 		is FeederBridgeActions.UpdateProtocolVersion -> state.copy(protocolVersion = action.version, firmware = action.firmware)
 	}
@@ -21,17 +19,19 @@ class FeederBaseBehaviour(private val server: VRServer, private val settings: Se
 		}
 
 		receiver.inbound.on<FeederBridgeInbound.TrackerAdded> { event ->
-			handleTrackerAdded(event.serial)
+			handleTrackerAdded(receiver, event.serial)
 		}
 
 		receiver.inbound.on<FeederBridgeInbound.TrackerPosition> { event ->
-			server.getTracker(event.trackerId)?.context?.dispatch(
+			receiver.appContext.server.getTracker(event.trackerId)?.context?.dispatch(
 				TrackerActions.Update { copy(rawRotation = event.rotation) },
 			)
 		}
 	}
 
-	private fun handleTrackerAdded(serial: String) {
+	private fun handleTrackerAdded(receiver: FeederBridge, serial: String) {
+		val server = receiver.appContext.server
+		val settings = receiver.appContext.config.settings
 		val scope = server.context.scope
 		val existingTracker = server.context.state.value.trackers.values
 			.find { tracker -> tracker.context.state.value.hardwareId == serial }

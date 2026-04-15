@@ -1,7 +1,7 @@
 package dev.slimevr.skeleton
 
 import com.jme3.math.FastMath
-import dev.slimevr.config.UserConfig
+import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import io.github.axisangles.ktmath.Quaternion
@@ -68,11 +68,13 @@ class Skeleton(
 	val context: SkeletonContext,
 	val computed: MutableStateFlow<Map<BodyPart, BoneState>>,
 ) {
+	fun startObserving() = context.observeAll(this)
+
 	companion object {
-		fun create(scope: CoroutineScope, userConfig: UserConfig): Skeleton {
+		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider): Skeleton {
 			val behaviours = listOf<SkeletonBehaviour>(
 				ProportionsBehaviour(),
-				ScaledProportionsBehaviour(userConfig),
+				ScaledProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				YouSpinMeRightRoundBehaviour(inputHz = 10f),
 				ComputedSkeletonBehaviour(processors = listOf(
@@ -87,10 +89,7 @@ class Skeleton(
 				behaviours = behaviours,
 			)
 
-			val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
-			behaviours.forEach { it.observe(skeleton) }
-
-			return skeleton
+			return Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
 		}
 	}
 }

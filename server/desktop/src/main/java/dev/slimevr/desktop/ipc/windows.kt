@@ -6,9 +6,7 @@ import com.sun.jna.platform.win32.WinBase
 import com.sun.jna.platform.win32.WinError
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.ptr.IntByReference
-import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
-import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import dev.slimevr.AppContextProvider
 import dev.slimevr.solarxr.handleSolarXRBridge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -22,29 +20,27 @@ import java.nio.ByteOrder
 private val k32 = Kernel32.INSTANCE
 private val adv32 = Advapi32.INSTANCE
 
-suspend fun createWindowsDriverPipe(server: VRServer) = acceptWindowsClients(DRIVER_PIPE) { handle ->
+suspend fun createWindowsDriverPipe(appContext: AppContextProvider) = acceptWindowsClients(DRIVER_PIPE) { handle ->
 	handleDriverConnection(
-		server = server,
+		appContext = appContext,
 		messages = readFramedMessages(handle),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
 	)
 }
 
-suspend fun createWindowsFeederPipe(server: VRServer, settings: Settings) = acceptWindowsClients(FEEDER_PIPE) { handle ->
+suspend fun createWindowsFeederPipe(appContext: AppContextProvider) = acceptWindowsClients(FEEDER_PIPE) { handle ->
 	handleFeederConnection(
-		server = server,
-		settings = settings,
+		appContext = appContext,
 		messages = readFramedMessages(handle),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
 	)
 }
 
-suspend fun createWindowsSolarXRPipe(server: VRServer, behaviours: List<SolarXRBridgeBehaviour>) = acceptWindowsClients(SOLARXR_PIPE) { handle ->
+suspend fun createWindowsSolarXRPipe(appContext: AppContextProvider) = acceptWindowsClients(SOLARXR_PIPE) { handle ->
 	handleSolarXRBridge(
-		server = server,
+		appContext = appContext,
 		messages = readFramedMessages(handle),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
-		behaviours = behaviours,
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } }
 	)
 }
 

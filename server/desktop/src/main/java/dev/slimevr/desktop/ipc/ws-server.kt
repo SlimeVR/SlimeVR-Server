@@ -1,8 +1,7 @@
 package dev.slimevr.desktop.ipc
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
-import dev.slimevr.VRServer
-import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.handleSolarXRBridge
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
@@ -16,7 +15,7 @@ import kotlinx.coroutines.flow.flow
 
 const val SOLARXR_PORT = 21110
 
-suspend fun createSolarXRWebsocketServer(server: VRServer, behaviours: List<SolarXRBridgeBehaviour>) {
+suspend fun createSolarXRWebsocketServer(appContext: AppContextProvider) {
 	val engine = embeddedServer(Netty, port = SOLARXR_PORT) {
 		install(WebSockets)
 
@@ -24,7 +23,7 @@ suspend fun createSolarXRWebsocketServer(server: VRServer, behaviours: List<Sola
 			webSocket {
 				AppLogger.solarxr.info("[WS] New connection")
 				handleSolarXRBridge(
-					server = server,
+					appContext = appContext,
 					messages = flow {
 						for (frame in incoming) {
 							when (frame) {
@@ -35,7 +34,6 @@ suspend fun createSolarXRWebsocketServer(server: VRServer, behaviours: List<Sola
 						}
 					},
 					send = { bytes -> send(Frame.Binary(fin = true, data = bytes)) },
-					behaviours = behaviours,
 				)
 			}
 		}

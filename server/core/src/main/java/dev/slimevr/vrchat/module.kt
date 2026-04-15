@@ -46,6 +46,8 @@ class VRCConfigManager(
 	val context: VRCConfigContext,
 	val config: AppConfig,
 ) {
+	fun startObserving() = context.observeAll(this)
+
 	companion object {
 		fun create(
 			config: AppConfig,
@@ -69,9 +71,7 @@ class VRCConfigManager(
 				values.collect { context.dispatch(VRCConfigActions.UpdateValues(it)) }
 			}
 
-			val manager = VRCConfigManager(context = context, config = config)
-			behaviours.forEach { it.observe(manager) }
-			return manager
+			return VRCConfigManager(context = context, config = config)
 		}
 	}
 }

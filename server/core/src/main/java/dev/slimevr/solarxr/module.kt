@@ -1,7 +1,7 @@
 package dev.slimevr.solarxr
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
-import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
@@ -44,7 +44,7 @@ suspend fun onSolarXRMessage(message: ByteBuffer, context: SolarXRBridge) {
 class SolarXRBridge(
 	val id: Int,
 	val context: SolarXRBridgeContext,
-	val serverContext: VRServer,
+	val appContext: AppContextProvider,
 	val dataFeedDispatcher: EventDispatcher<DataFeedMessage>,
 	val rpcDispatcher: EventDispatcher<RpcMessage>,
 	val outbound: EventDispatcher<MessageBundle> = EventDispatcher(),
@@ -54,33 +54,45 @@ class SolarXRBridge(
 	suspend fun sendDataFeed(frame: DataFeedMessageHeader) = outbound.emit(MessageBundle(dataFeedMsgs = listOf(frame)))
 
 	fun disconnect() {
-		serverContext.context.dispatch(VRServerActions.SolarXRDisconnected(id))
+		appContext.server.context.dispatch(VRServerActions.SolarXRDisconnected(id))
 	}
 
+	fun startObserving() = context.observeAll(this)
+
 	companion object {
+		fun buildBehaviours(appContext: AppContextProvider): List<SolarXRBridgeBehaviour> = buildList {
+			add(DataFeedInitBehaviour(appContext.server, appContext.skeleton))
+			add(SerialBehaviour(appContext.serialServer))
+			add(FirmwareBehaviour(appContext.server, appContext.firmwareManager))
+			appContext.vrcConfigManager?.let { vrc ->
+				add(VrcBehaviour(vrc, appContext.server, userHeight = { appContext.skeleton.context.state.value.userHeight }))
+			}
+			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))
+			add(ProvisioningBehaviour(appContext.server, appContext.provisioningManager))
+			add(SkeletonBehaviour(appContext.config.userConfig, appContext.skeleton))
+			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))
+			add(AssignTrackerBehaviour(appContext.server))
+		}
+
 		fun create(
 			id: Int,
-			serverContext: VRServer,
+			appContext: AppContextProvider,
 			scope: CoroutineScope,
-			behaviours: List<SolarXRBridgeBehaviour>,
 		): SolarXRBridge {
 			val context = Context.create(
 				initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
 				scope = scope,
-				behaviours = behaviours,
+				behaviours = buildBehaviours(appContext),
 			)
 
 			val bridge = SolarXRBridge(
 				id = id,
 				context = context,
-				serverContext = serverContext,
+				appContext = appContext,
 				dataFeedDispatcher = EventDispatcher(),
 				rpcDispatcher = EventDispatcher(),
 			)
-
-			behaviours.forEach { it.observe(bridge) }
-
-
+			bridge.startObserving()
 			return bridge
 		}
 	}

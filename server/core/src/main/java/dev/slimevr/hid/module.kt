@@ -1,8 +1,7 @@
 package dev.slimevr.hid
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
-import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
@@ -37,30 +36,31 @@ inline fun <reified T : HIDPacket> HIDPacketDispatcher.onPacket(crossinline call
 
 class HIDReceiver(
 	val context: HIDReceiverContext,
-	val serverContext: VRServer,
+	val appContext: AppContextProvider,
 	val packetEvents: HIDPacketDispatcher,
 ) {
+	fun startObserving() = context.observeAll(this)
+
 	fun getDevice(hidId: Int): Device? {
 		val record = context.state.value.trackers[hidId] ?: return null
-		return serverContext.getDevice(record.deviceId)
+		return appContext.server.getDevice(record.deviceId)
 	}
 
 	fun getTracker(hidId: Int): Tracker? {
 		val record = context.state.value.trackers[hidId] ?: return null
 		val trackerId = record.trackerId ?: return null
-		return serverContext.getTracker(trackerId)
+		return appContext.server.getTracker(trackerId)
 	}
 
 	companion object {
 		fun create(
 			serialNumber: String,
-			serverContext: VRServer,
-			settings: Settings,
+			appContext: AppContextProvider,
 			scope: CoroutineScope,
 		): HIDReceiver {
 			val behaviours = listOf(
-				HIDRegistrationBehaviour(settings),
-				HIDDeviceInfoBehaviour(settings),
+				HIDRegistrationBehaviour,
+				HIDDeviceInfoBehaviour,
 				HIDRotationBehaviour,
 				HIDBatteryBehaviour,
 				HIDStatusBehaviour,
@@ -76,12 +76,10 @@ class HIDReceiver(
 
 			val receiver = HIDReceiver(
 				context = context,
-				serverContext = serverContext,
+				appContext = appContext,
 				packetEvents = dispatcher,
 			)
-
-			behaviours.forEach { it.observe(receiver) }
-
+			receiver.startObserving()
 			return receiver
 		}
 	}

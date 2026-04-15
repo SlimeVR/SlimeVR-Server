@@ -1,8 +1,10 @@
 package dev.slimevr.solarxr
 
-import dev.slimevr.buildTestUserConfig
+import dev.slimevr.AppContextProvider
+import dev.slimevr.EventDispatcher
+import dev.slimevr.buildTestSkeleton
 import dev.slimevr.buildTestVrServer
-import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.context.Context
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
@@ -15,14 +17,32 @@ import kotlin.test.assertEquals
 
 private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend: suspend (ByteArray) -> Unit): SolarXRBridge {
 	val server = buildTestVrServer(backgroundScope)
-	val userConfig = buildTestUserConfig(backgroundScope)
-	val skeleton = Skeleton.create(backgroundScope, userConfig)
-	val bridge = SolarXRBridge.create(
-		id = 1,
-		serverContext = server,
+	val skeleton = buildTestSkeleton(backgroundScope)
+	val appContext = object : AppContextProvider {
+		override val server = server
+		override val skeleton = skeleton
+		override val config get() = error("not used")
+		override val serialServer get() = error("not used")
+		override val firmwareManager get() = error("not used")
+		override val vrcConfigManager = null
+		override val provisioningManager get() = error("not used")
+		override val heightCalibrationManager get() = error("not used")
+		override val trackingChecklist get() = error("not used")
+		override fun startObserving() {}
+	}
+	val context = Context.create(
+		initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
 		scope = backgroundScope,
 		behaviours = listOf(DataFeedInitBehaviour(server, skeleton)),
 	)
+	val bridge = SolarXRBridge(
+		id = 1,
+		context = context,
+		appContext = appContext,
+		dataFeedDispatcher = EventDispatcher(),
+		rpcDispatcher = EventDispatcher(),
+	)
+	bridge.startObserving()
 	bridge.outbound.on<MessageBundle> { _ -> onSend(ByteArray(0)) }
 	return bridge
 }

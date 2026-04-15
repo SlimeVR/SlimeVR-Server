@@ -2,6 +2,7 @@
 
 package dev.slimevr.heightcalibration
 
+import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.config.UserConfig
 import dev.slimevr.context.Behaviour
@@ -43,6 +44,8 @@ class HeightCalibrationManager(
 	val serverContext: VRServer,
 	private val userConfig: UserConfig,
 ) {
+	fun startObserving() = context.observeAll(this)
+
 	private var sessionJob: Job? = null
 
 	// These Flows do nothing until the calibration use collect on it
@@ -89,8 +92,7 @@ class HeightCalibrationManager(
 
 	companion object {
 		fun create(
-			serverContext: VRServer,
-			userConfig: UserConfig,
+			ctx: Phase1ContextProvider,
 			scope: CoroutineScope,
 		): HeightCalibrationManager {
 			val behaviours = listOf(CalibrationBehaviour)
@@ -99,7 +101,7 @@ class HeightCalibrationManager(
 				scope = scope,
 				behaviours = behaviours,
 			)
-			return HeightCalibrationManager(context = context, serverContext = serverContext, userConfig = userConfig)
+			return HeightCalibrationManager(context = context, serverContext = ctx.server, userConfig = ctx.config.userConfig)
 		}
 	}
 }

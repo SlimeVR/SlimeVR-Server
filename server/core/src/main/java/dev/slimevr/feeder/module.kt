@@ -1,9 +1,8 @@
 package dev.slimevr.feeder
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
-import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
-import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import io.github.axisangles.ktmath.Quaternion
@@ -31,16 +30,18 @@ typealias FeederBridgeBehaviour = Behaviour<FeederBridgeState, FeederBridgeActio
 class FeederBridge(
 	val id: Int,
 	val context: FeederBridgeContext,
-	val serverContext: VRServer,
+	val appContext: AppContextProvider,
 	val inbound: EventDispatcher<FeederBridgeInbound> = EventDispatcher(),
 ) {
 	fun disconnect() {
-		serverContext.context.dispatch(VRServerActions.FeederDisconnected(id))
+		appContext.server.context.dispatch(VRServerActions.FeederDisconnected(id))
 	}
 
+	fun startObserving() = context.observeAll(this)
+
 	companion object {
-		fun create(id: Int, serverContext: VRServer, settings: Settings, scope: CoroutineScope): FeederBridge {
-			val behaviours = listOf(FeederBaseBehaviour(serverContext, settings))
+		fun create(id: Int, appContext: AppContextProvider, scope: CoroutineScope): FeederBridge {
+			val behaviours = listOf(FeederBaseBehaviour)
 
 			val context = Context.create(
 				initialState = FeederBridgeState(protocolVersion = 0, firmware = null),
@@ -48,11 +49,9 @@ class FeederBridge(
 				behaviours = behaviours,
 			)
 
-			val bridge = FeederBridge(id = id, context = context, serverContext = serverContext)
-
-			behaviours.forEach { it.observe(bridge) }
-
-			serverContext.context.dispatch(VRServerActions.FeederConnected(bridge))
+			val bridge = FeederBridge(id = id, context = context, appContext = appContext)
+			bridge.startObserving()
+			appContext.server.context.dispatch(VRServerActions.FeederConnected(bridge))
 
 			return bridge
 		}

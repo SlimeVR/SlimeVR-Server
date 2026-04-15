@@ -8,7 +8,12 @@ import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
+import dev.slimevr.skeleton.buildBones
+import dev.slimevr.skeleton.ProportionsBehaviour
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.nio.file.Files
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
@@ -35,13 +40,23 @@ fun buildTestVrServer(scope: CoroutineScope): VRServer = VRServer.create(scope)
 fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	val tempDir = Files.createTempDirectory("slimevr-test").toFile()
 	tempDir.deleteOnExit()
-	val behaviours = listOf(DefaultUserBehaviour)
 	val context = Context.create(
 		initialState = UserConfigState(data = UserConfigData(), name = "test"),
 		scope = scope,
-		behaviours = behaviours,
+		behaviours = listOf(DefaultUserBehaviour),
 	)
 	val userConfig = UserConfig(context, scope = scope, userConfigDir = tempDir)
-	behaviours.forEach { it.observe(userConfig) }
+	context.observeAll(userConfig)
 	return userConfig
+}
+
+fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
+	val context = Context.create(
+		initialState = DEFAULT_SKELETON_STATE,
+		scope = scope,
+		behaviours = listOf(ProportionsBehaviour()),
+	)
+	val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
+	skeleton.startObserving()
+	return skeleton
 }

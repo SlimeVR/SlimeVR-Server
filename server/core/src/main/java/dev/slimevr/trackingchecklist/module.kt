@@ -1,32 +1,18 @@
 package dev.slimevr.trackingchecklist
 
-import dev.slimevr.VRServer
+import dev.slimevr.AppContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.vrchat.VRCConfigManager
 import kotlinx.coroutines.CoroutineScope
-import solarxr_protocol.rpc.TrackingChecklistExtraData
+import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
-import solarxr_protocol.rpc.TrackingChecklistStepVisibility
-
-data class ChecklistStep(
-    val valid: Boolean,
-    val enabled: Boolean,
-    val optional: Boolean = false,
-    val ignorable: Boolean = false,
-    val visibility: TrackingChecklistStepVisibility = TrackingChecklistStepVisibility.WHEN_INVALID,
-    val extraData: TrackingChecklistExtraData? = null,
-)
 
 data class TrackingChecklistState(
-    val steps: Map<TrackingChecklistStepId, ChecklistStep> = emptyMap(),
-    val ignoredSteps: Set<TrackingChecklistStepId> = emptySet(),
+    val steps: Map<TrackingChecklistStepId, TrackingChecklistStep> = emptyMap(),
 )
 
 sealed interface TrackingChecklistActions {
-    data class UpdateStep(val id: TrackingChecklistStepId, val step: ChecklistStep) : TrackingChecklistActions
-    data class SetIgnored(val id: TrackingChecklistStepId, val ignored: Boolean) : TrackingChecklistActions
+    data class UpdateStep(val id: TrackingChecklistStepId, val step: TrackingChecklistStep) : TrackingChecklistActions
 }
 
 typealias TrackingChecklistContext = Context<TrackingChecklistState, TrackingChecklistActions>
@@ -35,44 +21,33 @@ typealias TrackingChecklistBehaviourType = Behaviour<TrackingChecklistState, Tra
 object ChecklistBaseBehaviour : TrackingChecklistBehaviourType {
     override fun reduce(state: TrackingChecklistState, action: TrackingChecklistActions): TrackingChecklistState = when (action) {
         is TrackingChecklistActions.UpdateStep -> state.copy(steps = state.steps + (action.id to action.step))
-        is TrackingChecklistActions.SetIgnored -> state.copy(
-            ignoredSteps = if (action.ignored) state.ignoredSteps + action.id else state.ignoredSteps - action.id,
-        )
     }
 }
 
 class TrackingChecklist(
     val context: TrackingChecklistContext,
 ) {
-    fun setIgnored(stepId: TrackingChecklistStepId, ignored: Boolean) {
-        context.dispatch(TrackingChecklistActions.SetIgnored(stepId, ignored))
+    fun startObserving(appContext: AppContextProvider) {
+        val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
+            add(SteamVRCheckBehaviour(appContext.server))
+            add(HMDCheckBehaviour(appContext.server))
+            add(TrackerRestCheckBehaviour(appContext.server))
+            add(TrackerErrorCheckBehaviour(appContext.server))
+            appContext.vrcConfigManager?.let { add(VRChatSettingsCheckBehaviour(appContext.server, appContext.skeleton, it)) }
+        }
+		context.behaviours.addAll(stepBehaviours)
+		context.observeAll(this)
     }
 
     companion object {
-        fun create(
-            scope: CoroutineScope,
-            server: VRServer,
-            skeleton: Skeleton,
-            vrcConfigManager: VRCConfigManager?,
-        ): TrackingChecklist {
-            val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
-                add(SteamVRCheckBehaviour(server))
-                add(HMDCheckBehaviour(server))
-				add(TrackerRestCheckBehaviour(server))
-                add(TrackerErrorCheckBehaviour(server))
-                vrcConfigManager?.let { add(VRChatSettingsCheckBehaviour(server, skeleton, it)) }
-            }
-
-            val behaviours = listOf(ChecklistBaseBehaviour) + stepBehaviours
-
+        fun create(scope: CoroutineScope): TrackingChecklist {
+            val initialBehaviours = listOf(ChecklistBaseBehaviour)
             val context = Context.create(
                 initialState = TrackingChecklistState(),
                 scope = scope,
-                behaviours = behaviours,
+                behaviours = initialBehaviours,
             )
-
             val checklist = TrackingChecklist(context)
-            behaviours.forEach { it.observe(checklist) }
             return checklist
         }
     }

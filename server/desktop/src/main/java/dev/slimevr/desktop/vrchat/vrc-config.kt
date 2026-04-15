@@ -1,8 +1,8 @@
 package dev.slimevr.desktop.vrchat
 
 import dev.slimevr.CURRENT_PLATFORM
+import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.Platform
-import dev.slimevr.config.AppConfig
 import dev.slimevr.vrchat.VRCConfigManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.emptyFlow
@@ -13,23 +13,23 @@ import solarxr_protocol.rpc.VRCTrackerModel
 
 internal const val VRC_REG_PATH = "Software\\VRChat\\VRChat"
 
-fun createDesktopVRCConfigManager(config: AppConfig, scope: CoroutineScope): VRCConfigManager = when (CURRENT_PLATFORM) {
+fun createDesktopVRCConfigManager(ctx: Phase1ContextProvider, scope: CoroutineScope): VRCConfigManager = when (CURRENT_PLATFORM) {
 	Platform.WINDOWS -> VRCConfigManager.create(
-		config = config,
+		config = ctx.config,
 		scope = scope,
 		isSupported = true,
 		values = windowsVRCConfigFlow(),
 	)
 
 	Platform.LINUX -> VRCConfigManager.create(
-		config = config,
+		config = ctx.config,
 		scope = scope,
 		isSupported = true,
 		values = linuxVRCConfigFlow(),
 	)
 
 	else -> VRCConfigManager.create(
-		config = config,
+		config = ctx.config,
 		scope = scope,
 		isSupported = false,
 		values = emptyFlow(),

@@ -2,7 +2,6 @@ package dev.slimevr.udp
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServerActions
-import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
@@ -79,7 +78,7 @@ object PingBehaviour : UDPConnectionBehaviour {
 			}
 
 			val ping = (System.currentTimeMillis() - state.lastPing.startTime) / 2
-			val device = receiver.serverContext.getDevice(deviceId) ?: return@onPacket
+			val device = receiver.appContext.server.getDevice(deviceId) ?: return@onPacket
 			device.context.dispatch(DeviceActions.Update { copy(ping = ping) })
 		}
 	}
@@ -97,16 +96,16 @@ object HandshakeBehaviour : UDPConnectionBehaviour {
 			val state = receiver.context.state.value
 
 			val device = if (state.deviceId == null) {
-				val deviceId = receiver.serverContext.nextHandle()
+				val deviceId = receiver.appContext.server.nextHandle()
 				val newDevice = Device.create(
 					id = deviceId,
-					scope = receiver.serverContext.context.scope,
+					scope = receiver.appContext.server.context.scope,
 					address = state.address,
 					macAddress = packet.data.macString,
 					origin = DeviceOrigin.UDP,
 					protocolVersion = packet.data.protocolVersion,
 				)
-				receiver.serverContext.context.dispatch(VRServerActions.NewDevice(deviceId = deviceId, context = newDevice))
+				receiver.appContext.server.context.dispatch(VRServerActions.NewDevice(deviceId = deviceId, context = newDevice))
 				receiver.context.dispatch(UDPConnectionActions.Handshake(deviceId))
 				newDevice
 			} else {
@@ -152,7 +151,7 @@ object TimeoutBehaviour : UDPConnectionBehaviour {
 					receiver.getDevice()?.context?.dispatch(
 						DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
 					)
-					state.trackerIds.mapNotNull { receiver.serverContext.getTracker(it.id) }.forEach { tracker ->
+					state.trackerIds.mapNotNull { receiver.appContext.server.getTracker(it.id) }.forEach { tracker ->
 						tracker.context.dispatch(TrackerActions.Update { copy(status = TrackerStatus.DISCONNECTED) })
 					}
 				} else {
@@ -181,7 +180,7 @@ object DeviceStatsBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-class SensorInfoBehaviour(private val settings: Settings) : UDPConnectionBehaviour {
+object SensorInfoBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
 		is UDPConnectionActions.AssignTracker -> state.copy(trackerIds = state.trackerIds + action.trackerId)
 		else -> state
@@ -222,19 +221,19 @@ class SensorInfoBehaviour(private val settings: Settings) : UDPConnectionBehavio
 					deviceState.address
 				}
 				val hardwareId = "$mac:${event.data.sensorId}"
-				val trackerId = receiver.serverContext.nextHandle()
+				val trackerId = receiver.appContext.server.nextHandle()
 				val newTracker = Tracker.create(
 					id = trackerId,
 					hardwareId = hardwareId,
 					sensorType = event.data.imuType,
 					deviceId = deviceState.id,
 					origin = DeviceOrigin.UDP,
-					scope = receiver.serverContext.context.scope,
-					server = receiver.serverContext,
-					settings = settings,
+					scope = receiver.appContext.server.context.scope,
+					server = receiver.appContext.server,
+					settings = receiver.appContext.config.settings,
 				)
 
-				receiver.serverContext.context.dispatch(
+				receiver.appContext.server.context.dispatch(
 					VRServerActions.NewTracker(trackerId = trackerId, context = newTracker),
 				)
 				receiver.context.dispatch(
@@ -297,7 +296,7 @@ object BundledPacketBehaviour : UDPConnectionBehaviour {
 object FlagsBehaviour : UDPConnectionBehaviour {
 	override fun reduce(
 		state: UDPConnectionState,
-		action: UDPConnectionActions
+		action: UDPConnectionActions,
 	): UDPConnectionState {
 		return when (action) {
 			is UDPConnectionActions.FirmwareFeatures -> state.copy(features = action.features)

@@ -1,5 +1,6 @@
 package dev.slimevr.firmware
 
+import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
@@ -43,6 +44,8 @@ class FirmwareManager(
 	private val serialServer: SerialServer,
 	private val scope: CoroutineScope,
 ) {
+	fun startObserving() = context.observeAll(this)
+
 	private val runningJobs = mutableMapOf<String, Job>()
 
 	suspend fun flash(
@@ -118,16 +121,14 @@ class FirmwareManager(
 	}
 
 	companion object {
-		fun create(serialServer: SerialServer, scope: CoroutineScope): FirmwareManager {
+		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope): FirmwareManager {
 			val behaviours = listOf(FirmwareManagerBaseBehaviour)
 			val context = Context.create(
 				initialState = FirmwareManagerState(jobs = mapOf()),
 				scope = scope,
 				behaviours = behaviours,
 			)
-			val manager = FirmwareManager(context = context, serialServer = serialServer, scope = scope)
-			behaviours.forEach { it.observe(manager) }
-			return manager
+			return FirmwareManager(context = context, serialServer = ctx.serialServer, scope = scope)
 		}
 	}
 }

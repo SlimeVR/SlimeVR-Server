@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestSerialServer
 import dev.slimevr.buildTestVrServer
+import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
@@ -21,6 +22,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 private fun fakePort(loc: String = "COM1") = SerialPortInfo(loc, "Fake $loc", 0x1A86, 0x7523)
+
+private fun buildManager(serialServer: dev.slimevr.serial.SerialServer, scope: CoroutineScope): ProvisioningManager {
+	val context = Context.create(
+		initialState = ProvisioningManager.INITIAL_STATE,
+		scope = scope,
+		behaviours = listOf(ProvisioningManagerBaseBehaviour),
+	)
+	return ProvisioningManager(context = context, serialServer = serialServer, scope = scope).also { it.startObserving() }
+}
 
 // Injects a fully connected device into the VRServer, simulating a tracker appearing on the network.
 private fun connectDevice(vrServer: VRServer, mac: String, scope: CoroutineScope) {
@@ -42,7 +52,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `NO_SERIAL_DEVICE_FOUND when no port appears within 15 seconds`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 
@@ -54,7 +64,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `OBTAINING_MAC_ADDRESS after port is detected and 2 second reboot delay elapses`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -67,7 +77,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `NO_SERIAL_LOGS_ERROR when tracker produces no serial output after 5 second timeout`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -81,7 +91,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `recovers from NO_SERIAL_LOGS_ERROR and sets macAddress when logs appear containing the MAC`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -102,7 +112,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `CONNECTION_ERROR when logs are present but no MAC received within 5 second timeout`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -121,7 +131,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `CONNECTION_ERROR when WiFi credentials not acknowledged within 5 second timeout`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -141,7 +151,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `CONNECTION_ERROR when WiFi does not connect within 15 second timeout`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -163,7 +173,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `CONNECTION_ERROR after exhausting all retries on can't connect`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -190,7 +200,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `COULD_NOT_FIND_SERVER when tracker does not appear on the network within 30 second timeout`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -215,7 +225,7 @@ class ProvisioningManagerTest {
 	fun `DONE when full provisioning succeeds`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
 		val vrServer = buildTestVrServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(vrServer, "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -241,7 +251,7 @@ class ProvisioningManagerTest {
 	fun `resets to NONE and clears port after USB disconnect following DONE`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
 		val vrServer = buildTestVrServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(vrServer, "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
@@ -271,7 +281,7 @@ class ProvisioningManagerTest {
 	@Test
 	fun `does not retry the same port after failure - waits for USB disconnect`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
-		val manager = ProvisioningManager.create(serialServer, backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
 
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())

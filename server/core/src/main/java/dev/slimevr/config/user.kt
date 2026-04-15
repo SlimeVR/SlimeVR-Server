@@ -83,10 +83,9 @@ class UserConfig(
 			}
 			val initialState = UserConfigState(name = name, data = initialData)
 
-			val behaviours = listOf(DefaultUserBehaviour)
-			val context = Context.create(initialState = initialState, scope = scope, behaviours = behaviours)
+			val context = Context.create(initialState = initialState, scope = scope, behaviours = listOf(DefaultUserBehaviour))
 			val userConfig = UserConfig(context, scope = scope, userConfigDir = userConfigDir)
-			behaviours.forEach { it.observe(userConfig) }
+			context.observeAll(userConfig)
 			return userConfig
 		}
 	}
