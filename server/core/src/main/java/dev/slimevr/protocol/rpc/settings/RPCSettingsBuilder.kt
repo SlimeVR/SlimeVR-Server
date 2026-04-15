@@ -88,6 +88,13 @@ fun createVRCOSCSettings(
 				config.getOSCTrackerRole(TrackerRole.RIGHT_ELBOW, false),
 			config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false) &&
 				config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false),
+			config.getOSCTrackerRole(TrackerRole.LEFT_TOES_ABDUCTOR_HALLUCIS, false)
+				&& config.getOSCTrackerRole(TrackerRole.LEFT_TOES_DIGITORUM_BREVIS, false)
+				&& config.getOSCTrackerRole(TrackerRole.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI, false)
+				&& config.getOSCTrackerRole(TrackerRole.RIGHT_TOES_ABDUCTOR_HALLUCIS, false)
+				&& config.getOSCTrackerRole(TrackerRole.RIGHT_TOES_DIGITORUM_BREVIS, false)
+				&& config.getOSCTrackerRole(TrackerRole.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI, false)
+
 		)
 	VRCOSCSettings.startVRCOSCSettings(fbb)
 	VRCOSCSettings.addOscSettings(fbb, generalSettingOffset)
@@ -183,6 +190,8 @@ fun createSteamVRSettings(fbb: FlatBufferBuilder, bridge: ISteamVRBridge?): Int 
 				bridge.getShareSetting(TrackerRole.RIGHT_ELBOW),
 				bridge.getShareSetting(TrackerRole.LEFT_HAND),
 				bridge.getShareSetting(TrackerRole.RIGHT_HAND),
+				bridge.getShareSetting(TrackerRole.LEFT_TOES_ABDUCTOR_HALLUCIS),
+				bridge.getShareSetting(TrackerRole.RIGHT_TOES_ABDUCTOR_HALLUCIS)
 			)
 	}
 	return steamvrTrackerSettings
