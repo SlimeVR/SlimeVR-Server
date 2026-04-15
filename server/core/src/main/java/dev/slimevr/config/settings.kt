@@ -37,6 +37,7 @@ data class TrackerConfig(
 	val customName: String? = null,
 	@Serializable(with = QuaternionSerializer::class)
 	val mountingOrientation: Quaternion? = null,
+	val magEnabled: Boolean? = null,
 )
 
 @Serializable

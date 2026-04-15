@@ -17,6 +17,7 @@ import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.trackingchecklist.TrackingChecklist
+import dev.slimevr.udp.UdpServer
 import dev.slimevr.vrchat.VRCConfigManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,5 +76,6 @@ abstract class TestAppContext : AppContextProvider {
 	override val provisioningManager: ProvisioningManager get() = error("not used in test")
 	override val heightCalibrationManager: HeightCalibrationManager get() = error("not used in test")
 	override val trackingChecklist: TrackingChecklist get() = error("not used in test")
+	override val udpServer: UdpServer get() = error("not used in test")
 	override fun startObserving() {}
 }

@@ -72,6 +72,7 @@ class SolarXRBridge(
 			add(SkeletonBehaviour(appContext.config.userConfig, appContext.skeleton))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))
 			add(AssignTrackerBehaviour(appContext.server))
+			add(MagBehaviour(appContext))
 		}
 
 		fun create(

@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.io.Buffer
 import kotlinx.io.readByteArray
+import solarxr_protocol.datatypes.MagnetometerStatus
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -20,6 +21,10 @@ import java.net.InetAddress
 data class LastPing(
 	val id: Int,
 	val startTime: Long,
+)
+
+data class SensorConfigFlags(
+	val magStatus: MagnetometerStatus,
 )
 
 data class UDPConnectionState(
@@ -33,6 +38,7 @@ data class UDPConnectionState(
 	val deviceId: Int?,
 	val trackerIds: List<TrackerIdNum>,
 	val features: FirmwareFeatures?,
+	val sensorConfigFlags: Map<Int, SensorConfigFlags>,
 )
 
 sealed interface UDPConnectionActions {
@@ -41,7 +47,8 @@ sealed interface UDPConnectionActions {
 	data class LastPacket(val packetNum: Long? = null, val time: Long) : UDPConnectionActions
 	data class AssignTracker(val trackerId: TrackerIdNum) : UDPConnectionActions
 	data class FirmwareFeatures(val features: dev.slimevr.udp.FirmwareFeatures) : UDPConnectionActions
-	data object Disconnected : UDPConnectionActions
+	data class SetSensorConfig(val sensorId: Int, val flags: SensorConfigFlags) : UDPConnectionActions
+	data object TimedOut : UDPConnectionActions
 }
 
 typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
@@ -91,6 +98,7 @@ class UDPConnection(
 				PacketBehaviour,
 				HandshakeBehaviour,
 				TimeoutBehaviour,
+				DisconnectBehaviour,
 				PingBehaviour,
 				DeviceStatsBehaviour,
 				SensorInfoBehaviour,
@@ -98,6 +106,7 @@ class UDPConnection(
 				BundledPacketBehaviour,
 				FlagsBehaviour,
 				TemperatureBehaviour,
+				SensorConfigBehaviour,
 			)
 
 			val context = Context.create(
@@ -112,6 +121,7 @@ class UDPConnection(
 					deviceId = null,
 					trackerIds = listOf(),
 					features = null,
+					sensorConfigFlags = emptyMap(),
 				),
 				scope = scope,
 				behaviours = behaviours,

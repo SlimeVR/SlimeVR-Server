@@ -449,10 +449,20 @@ data class AckConfigChange(override val sensorId: Int = 0, val configType: UShor
 	}
 }
 
-data class SetConfigFlag(override val sensorId: Int = 255, val configType: UShort = 0u, val state: Boolean = false) : SensorSpecificPacket {
+enum class SensorConfigType(val id: UShort) {
+	MAGNETOMETER(1u),
+	;
+
+	companion object {
+		private val byId = entries.associateBy { it.id }
+		fun fromId(id: UShort) = byId[id]
+	}
+}
+
+data class SetConfigFlag(override val sensorId: Int = 255, val configType: SensorConfigType, val state: Boolean = false) : SensorSpecificPacket {
 	override fun write(dst: Sink) {
 		dst.writeUByte(sensorId.toUByte())
-		dst.writeShort(configType.toShort())
+		dst.writeShort(configType.id.toShort())
 		dst.writeUByte(if (state) 1u else 0u)
 	}
 }
@@ -499,12 +509,12 @@ fun readPacket(type: PacketType, src: Source): UDPPacket = when (type) {
 	PacketType.FEATURE_FLAGS -> FeatureFlags.read(src)
 	PacketType.ROTATION_AND_ACCEL -> RotationAndAccel.read(src)
 	PacketType.ACK_CONFIG_CHANGE -> AckConfigChange.read(src)
-	PacketType.SET_CONFIG_FLAG -> SetConfigFlag()
 	PacketType.FLEX_DATA -> FlexData.read(src)
 	PacketType.POSITION -> PositionPacket.read(src)
 	PacketType.PACKET_BUNDLE -> PacketBundle.read(src)
 	PacketType.PACKET_BUNDLE_COMPACT -> PacketBundleCompact.read(src)
 	PacketType.PROTOCOL_CHANGE -> ProtocolChange.read(src)
+	else -> error("Inbound support not implemented for ${type::class.simpleName}")
 }
 
 fun writePacket(dst: Sink, packet: UDPPacket) {

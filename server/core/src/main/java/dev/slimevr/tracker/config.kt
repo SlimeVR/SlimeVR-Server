@@ -8,17 +8,28 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MagnetometerStatus
 
 fun restoreFromConfig(state: TrackerState, config: TrackerConfig): TrackerState = state.copy(
 	bodyPart = config.bodyPart?.takeIf { it != BodyPart.NONE } ?: state.bodyPart,
 	customName = config.customName ?: state.customName,
 	mountingOrientation = config.mountingOrientation ?: state.mountingOrientation,
+	magStatus = when (config.magEnabled) {
+		true -> MagnetometerStatus.ENABLED
+		false -> MagnetometerStatus.DISABLED
+		null -> MagnetometerStatus.NOT_SUPPORTED
+	}
 )
 
 private fun stateToConfig(state: TrackerState) = TrackerConfig(
 	bodyPart = state.bodyPart,
 	customName = state.customName,
 	mountingOrientation = state.mountingOrientation,
+	magEnabled = when (state.magStatus) {
+		MagnetometerStatus.DISABLED -> false
+		MagnetometerStatus.ENABLED -> true
+		MagnetometerStatus.NOT_SUPPORTED -> null
+	},
 )
 
 class TrackerConfigBehaviour(

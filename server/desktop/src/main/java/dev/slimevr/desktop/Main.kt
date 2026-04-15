@@ -17,7 +17,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
-import dev.slimevr.udp.createUDPTrackerServer
+import dev.slimevr.udp.UdpServer
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -35,6 +35,7 @@ fun main(args: Array<String>) = runBlocking {
 	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
 	val trackingChecklist = TrackingChecklist.create(scope = this)
+	val udpServer = UdpServer.create(scope = this)
 
 	val appContext = AppContext(
 		server = server,
@@ -46,11 +47,11 @@ fun main(args: Array<String>) = runBlocking {
 		provisioningManager = provisioningManager,
 		heightCalibrationManager = heightCalibrationManager,
 		trackingChecklist = trackingChecklist,
+		udpServer = udpServer,
 	)
 
 	appContext.startObserving()
 
-	launch { createUDPTrackerServer(appContext) }
 	launch { createDesktopHIDManager(appContext, this) }
 	launch { createSolarXRWebsocketServer(appContext) }
 	launch { createIpcServers(appContext) }
