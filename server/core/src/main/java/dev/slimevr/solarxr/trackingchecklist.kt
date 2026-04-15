@@ -23,9 +23,9 @@ class TrackingChecklistBehaviour(
             .toSet()
 
     private fun buildResponse(): TrackingChecklistResponse {
-        val state = checklist.context.state.value
+        val steps = checklist.context.state.value.steps.mapValues { it.value.copy(id = it.key) }.values.toList()
         return TrackingChecklistResponse(
-            steps = state.steps.values.toList(),
+            steps = steps,
             ignoredSteps = parseMutedSteps().toList(),
         )
     }
