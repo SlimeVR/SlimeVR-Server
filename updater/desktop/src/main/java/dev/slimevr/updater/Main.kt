@@ -11,7 +11,7 @@ val VERSION =
 val updaterGui = UpdaterGui()
 
 suspend fun main(args: Array<String>) {
-
+	val manifest = Manifest()
 	val updater = Updater()
 	updater.runUpdater()
 }

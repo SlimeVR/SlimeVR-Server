@@ -22,7 +22,7 @@ class UpdaterGui : Frame() {
 		setLocationRelativeTo(null)
 
 		setBackground(Color(17, 45, 67))
-		setSize(300, 350)
+		setSize(400, 450)
 
 		val dim = Toolkit.getDefaultToolkit().screenSize
 		this.setLocation(

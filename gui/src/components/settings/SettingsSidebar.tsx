@@ -73,6 +73,10 @@ export function SettingsSidebar() {
             scrollTo="gestureControl"
             id="settings-sidebar-gesture_control"
           />
+          <SettingsLink
+            to="/settings/updates"
+            id="settings-updates"
+          />
         </div>
       </div>
       <div className="flex flex-col gap-3">

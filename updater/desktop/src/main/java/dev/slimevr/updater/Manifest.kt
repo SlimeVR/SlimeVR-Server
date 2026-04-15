@@ -1,48 +1,55 @@
 package dev.slimevr.updater
 
-import dev.slimevr.updater.Updater.Companion.CDN
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
+import java.io.File
 
-class Channels {
-/*
-	@Serializable
-	data class ServerResponse(
-		val channels: JsonArray
-	)
+class Manifest {
+	val manifestObj: ManifestObject
 
-	suspend fun getChannels(product: String) {
-		val client = HttpClient(CIO) {
-			install(ContentNegotiation) {
-				json(
-					Json {
-						ignoreUnknownKeys = true
-					},
-				)
-			}
-		}
-		try {
-			val response = client.get("${CDN}/${product}").body()
-			client.close()
-			println(response)
-			val json = Json {
-				ignoreUnknownKeys = true
-			}
-			//val channels = json.decodeFromString<Array<ServerResponse>>(response.channels.toString())
-			//println(channels)
-		} catch (e: Exception) {
-			println("Error fetching release info: ${e.message}")
-		}
+	init {
+		val manifest = File("update-manifest.json").readText()
+		manifestObj = Json.decodeFromString<ManifestObject>(manifest)
 
-
+		getAllVersions()
+		println(manifestObj)
 	}
 
- */
+
+	fun getAllVersions() {
+		manifestObj.channels.
+	}
+
+	fun getChannels() {
+
+	}
 }
+
+@Serializable
+data class Arch(
+	val url: String,
+	val run: List<String>
+)
+
+@Serializable
+data class Versions(
+	@SerialName("release_notes")
+	val releaseNotes: String,
+	val builds: Map<String, Map<String, Arch>>
+)
+
+@Serializable
+data class Channel(
+	val description: String,
+	@SerialName("current_version")
+	val currentVersion: String,
+	val versions: Map<String, Versions>
+)
+
+@Serializable
+data class ManifestObject(
+	@SerialName("default_channel")
+	val defaultChannel: String,
+	val channels: Map<String, Channel>
+)

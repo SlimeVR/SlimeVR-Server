@@ -23,13 +23,22 @@ class Updater {
 	val os = System.getProperty("os.name").lowercase()
 
 	suspend fun runUpdater() {
+
+		val channels = Manifest()
+
+		//channels.getChannels("Server")
+
+		/*
 		val shouldUpdate: Boolean = shouldUpdate()
 		println("Should update $shouldUpdate")
 
+		/*
 		if (!shouldUpdate) {
 		 		println("Updater didn't find any new version")
 		 	return
 		}
+
+		 */
 
 		if (os.contains("linux")) {
 			val linuxUpdater = Linux()
@@ -56,5 +65,12 @@ class Updater {
 
 		Thread.sleep(1000)
 		return
+
+		 */
+	}
+
+
+	companion object {
+		val CDN = "http://127.0.0.1:8080"
 	}
 }
