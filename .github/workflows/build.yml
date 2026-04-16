@@ -168,8 +168,8 @@ jobs:
           [ -z "$VERSION" ] && VERSION="0.0.0"
           VERSION="${VERSION#v}"
           echo "Building version: $VERSION"
-          cd gui
           pnpm i
+          cd gui
           pnpm exec electron-builder --${{ matrix.platform }} \
             ${{ matrix.platform == 'macos' && '--universal' || '' }} \
             --config.extraMetadata.version="$VERSION" \

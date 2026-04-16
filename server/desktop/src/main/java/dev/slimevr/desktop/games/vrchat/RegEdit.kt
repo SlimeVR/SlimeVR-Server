@@ -20,6 +20,7 @@ abstract class AbstractRegEdit {
 	abstract fun getQwordValue(path: String, key: String): Double?
 	abstract fun getDwordValue(path: String, key: String): Int?
 	abstract fun getVRChatKeys(path: String): Map<String, String>
+	abstract fun getKeyByPath(hkey: WinReg.HKEY, path: String): Map<String, String>
 }
 
 class RegEditWindows : AbstractRegEdit() {
@@ -72,6 +73,19 @@ class RegEditWindows : AbstractRegEdit() {
 			}
 		} catch (e: Exception) {
 			LogManager.severe("[VRChatRegEdit] Error reading Values from VRC registry: ${e.message}")
+		}
+		return keysMap
+	}
+
+	override fun getKeyByPath(hkey: WinReg.HKEY, path: String): Map<String, String> {
+		val keysMap = mutableMapOf<String, String>()
+
+		try {
+			Advapi32Util.registryGetValues(hkey, path).forEach {
+				keysMap[it.key.replace("""_h\d+$""".toRegex(), "")] = it.value.toString()
+			}
+		} catch (e: Exception) {
+			LogManager.severe("[RegEdit] Error reading values from registry", e)
 		}
 		return keysMap
 	}
@@ -141,6 +155,9 @@ class RegEditLinux : AbstractRegEdit() {
 		registry = map
 		return keysMap
 	}
+
+	// This function should never run on Linux.
+	override fun getKeyByPath(hkey: WinReg.HKEY, path: String): Map<String, String> = mutableMapOf<String, String>()
 
 	companion object {
 		private fun findAppLibraryLocation(steamPath: Path, appId: Int): Path? {
