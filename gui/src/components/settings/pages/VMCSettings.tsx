@@ -102,7 +102,13 @@ export function VMCFileUpload() {
     setSettings(settings);
     const vrmJson = settings.vmcOsc?.vrmJson?.toString();
     if (vrmJson) {
-      setModelName(getVRMName(vrmJson) || '');
+      let data: any;
+      try {
+        data = JSON.parse(vrmJson);
+        setModelName(getVRMName(data) || '');
+      } catch (e) {
+        error('Failed to fetch VRM name: ' + e);
+      }
     }
   });
 
@@ -387,16 +393,34 @@ async function parseVRMFile(
     .slice(gltfHeaderEnd, gltfHeaderEnd + jsonLength, 'application/json')
     .text();
 
-  const name = getVRMName(json);
+  let data: any;
+  try {
+    data = JSON.parse(json);
+  } catch (e) {
+    error('Failed to parse VRM glTF header: ' + e);
+    return null;
+  }
+
+  const name = getVRMName(data);
   if (name === null) return null;
 
-  return { json, name };
+  // Only keep the fields we care about
+  /* eslint-disable camelcase */
+  const vrmJson = {
+    extensions: {
+      vrmV0: data.extensions.vrmV0,
+      VRMC_vrm: data.extensions.VRMC_vrm,
+    },
+    extensionsUsed: data.extensionsUsed,
+    nodes: data.nodes,
+  };
+  /* eslint-enable camelcase */
+
+  return { json: JSON.stringify(vrmJson), name };
 }
 
-function getVRMName(json: string): string | null {
+function getVRMName(data: any): string | null {
   try {
-    const data = JSON.parse(json);
-
     if (typeof data?.extensions?.VRMC_vrm?.specVersion === 'string') {
       const name = data.extensions.VRMC_vrm.meta.name;
 
@@ -412,7 +436,7 @@ function getVRMName(json: string): string | null {
       return data?.extensions?.VRM?.meta?.title || '';
     }
   } catch (e) {
-    error(e);
+    error('Failed to fetch VRM name: ' + e);
     return null;
   }
 }
