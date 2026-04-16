@@ -17,12 +17,11 @@ enum class Keybinds(val id: Int, val keybindName: String, val description: Strin
 	FULL_RESET(KeybindId.FULL_RESET, "FULL_RESET", "Full Reset", "CTRL+ALT+SHIFT+Y"),
 	MOUNTING_RESET(KeybindId.MOUNTING_RESET, "MOUNTING_RESET", "Mounting Reset", "CTRL+ALT+SHIFT+I"),
 	PAUSE_TRACKING(KeybindId.PAUSE_TRACKING, "PAUSE_TRACKING", "Pause Tracking", "CTRL+ALT+SHIFT+O"),
-	YAW_RESET(KeybindId.YAW_RESET,"YAW_RESET", "Yaw Reset", "CTRL+ALT+SHIFT+U"),
-	FEET_MOUNTING_RESET(KeybindId.FEET_MOUNTING_RESET,"FEET_MOUNTING_RESET", "Feet Mounting Reset", "CTRL+ALT+SHIFT+P");
+	YAW_RESET(KeybindId.YAW_RESET, "YAW_RESET", "Yaw Reset", "CTRL+ALT+SHIFT+U"),
+	FEET_MOUNTING_RESET(KeybindId.FEET_MOUNTING_RESET, "FEET_MOUNTING_RESET", "Feet Mounting Reset", "CTRL+ALT+SHIFT+P"),
+	;
 
-	override fun toString(): String {
-		return keybindName
-	}
+	override fun toString(): String = keybindName
 
 	companion object {
 		private val byId = Keybinds.entries.associateBy { it.id }
@@ -69,29 +68,33 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 			)
 
 			val onShortcut: (id: String) -> Unit = { shortcutId ->
-				val keybind = Keybinds.getByName(shortcutId);
+				val keybind = Keybinds.getByName(shortcutId)
 				if (keybind != null) {
 					val delay = config.keybinds[keybind]?.delay?.toLong() ?: 0L
 					when (keybind) {
 						Keybinds.FULL_RESET -> {
 							server.scheduleResetTrackersFull(keybind.keybindName, delay)
 						}
+
 						Keybinds.YAW_RESET -> {
 							server.scheduleResetTrackersYaw(keybind.keybindName, delay)
 						}
-						Keybinds.MOUNTING_RESET  -> {
+
+						Keybinds.MOUNTING_RESET -> {
 							server.scheduleResetTrackersMounting(
 								keybind.keybindName,
 								delay,
 							)
 						}
-						Keybinds.FEET_MOUNTING_RESET-> {
+
+						Keybinds.FEET_MOUNTING_RESET -> {
 							server.scheduleResetTrackersMounting(
 								keybind.keybindName,
 								delay,
 								TrackerUtils.feetsBodyParts,
 							)
 						}
+
 						Keybinds.PAUSE_TRACKING -> {
 							server.scheduleTogglePauseTracking(
 								keybind.keybindName,
@@ -109,7 +112,7 @@ class Keybinding @AWTThread constructor(val server: VRServer) : HotkeyListener {
 	@AWTThread
 	override fun onHotKey(identifier: Int) {
 		val keybind = Keybinds.getById(identifier) ?: return
-		val delay = config.keybinds[keybind]?.delay?.toLong() ?: 0L;
+		val delay = config.keybinds[keybind]?.delay?.toLong() ?: 0L
 		when (keybind) {
 			Keybinds.FULL_RESET -> {
 				server.scheduleResetTrackersFull(keybind.keybindName, delay)

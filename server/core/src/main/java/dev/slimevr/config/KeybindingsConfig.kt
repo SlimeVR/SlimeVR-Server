@@ -14,4 +14,3 @@ class KeybindingsConfig {
 		.associateWith { KeybindData(it.id, it.keybindName, it.keybind, 0f) }
 		.toMutableMap()
 }
-

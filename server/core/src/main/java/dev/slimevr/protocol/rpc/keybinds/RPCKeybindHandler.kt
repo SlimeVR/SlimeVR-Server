@@ -61,7 +61,7 @@ class RPCKeybindHandler(
 			req.keybind.keybindId,
 			req.keybind.keybindNameId,
 			req.keybind.keybindValue,
-			req.keybind.keybindDelay
+			req.keybind.keybindDelay,
 		)
 
 		api.server.configManager.saveConfig()
