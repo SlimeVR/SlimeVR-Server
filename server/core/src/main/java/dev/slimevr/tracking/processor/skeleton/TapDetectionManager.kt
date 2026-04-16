@@ -6,6 +6,7 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import java.util.concurrent.CopyOnWriteArrayList
 import dev.slimevr.tracking.trackers.TrackerUtils
+import io.eiren.util.logging.LogManager
 
 class TapDetectionManager(
 	val server: VRServer,
@@ -71,6 +72,7 @@ class TapDetectionManager(
 		tapDetectors.clear()
 		registerSingleTapDetectors()
 		registerResetsDetectors()
+		//LogManager.info(yawResetTracker.toString())
 	}
 
 	fun update() {
@@ -87,30 +89,22 @@ class TapDetectionManager(
 		}
 	}
 
-	lateinit var vrServer: VRServer
-
 	private val mountingResetTracker: Tracker?
 		get() {
-			if (::vrServer.isInitialized) {
-				return TrackerUtils.getTrackerForSkeleton(vrServer.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.mountingResetTracker } ?: return null)
-			}
-			return null
+			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.mountingResetTracker } ?: return null)
 		}
 
 	private val fullResetTracker: Tracker?
 		get() {
-			if (::vrServer.isInitialized) {
-				return TrackerUtils.getTrackerForSkeleton(vrServer.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.fullResetTracker } ?: return null)
-			}
-			return null
+			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.fullResetTracker } ?: return null)
 		}
 
+	// hi me, i fixed the bug by using the existing server
 	private val yawResetTracker: Tracker?
 		get() {
-			if (::vrServer.isInitialized) {
-				return TrackerUtils.getTrackerForSkeleton(vrServer.allTrackers, TrackerPosition.entries.firstOrNull { it.bodyPart == config.yawResetTracker } ?: return null)
-			}
-			return null
+			val position = TrackerPosition.entries.firstOrNull { it.bodyPart == config.yawResetTracker }
+			return TrackerUtils.getTrackerForSkeleton(server.allTrackers, position ?: return null)
+
 		}
 
 	companion object {

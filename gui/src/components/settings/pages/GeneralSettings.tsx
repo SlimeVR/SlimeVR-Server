@@ -26,7 +26,6 @@ import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
-import { DropdownItem } from '@/components/commons/Dropdown';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
@@ -1281,10 +1280,9 @@ export function GeneralSettings() {
               <div className="grid sm:grid-cols-3 gap-5 pb-2">
                 <div>
                   Choose Which tracker location you want to use this reset with!
-                  Defaults are Chest, Upper chest, Hip and waist
                   <Dropdown
                     control={control}
-                    placeholder="Default"
+                    placeholder={''}
                     name="tapDetection.yawResetTracker"
                     items={BodyParts.map(({ label, value }) => ({
                       label: label,
@@ -1295,10 +1293,9 @@ export function GeneralSettings() {
 
                 <div>
                   Choose Which tracker location you want to use this reset with!
-                  Defaults are right thigh and right ankle
                   <Dropdown
                     control={control}
-                    placeholder=""
+                    placeholder={''}
                     name="tapDetection.mountingResetTracker"
                     items={BodyParts.map(({ label, value }) => ({
                       label: label,
@@ -1308,10 +1305,9 @@ export function GeneralSettings() {
                 </div>
                 <div>
                   Choose Which tracker location you want to use this reset with!
-                  Defaults are left thigh and left ankle
                   <Dropdown
                     control={control}
-                    placeholder="Default"
+                    placeholder={''}
                     name="tapDetection.fullResetTracker"
                     items={BodyParts.map(({ label, value }) => ({
                       label: label,
