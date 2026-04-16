@@ -5,6 +5,7 @@ import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.ProtocolAPIServer
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.TransactionInfo
 import dev.slimevr.reset.ResetListener
 import solarxr_protocol.rpc.ClearMountingResetRequest
 import solarxr_protocol.rpc.ResetRequest
@@ -13,6 +14,7 @@ import solarxr_protocol.rpc.ResetStatus
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
+import java.nio.ByteBuffer
 import java.util.function.Consumer
 
 class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetListener {
@@ -38,6 +40,10 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 			}
 		}
 
+		val tx = messageHeader.txId()?.id()?.let {
+			TransactionInfo(it, conn)
+		}
+
 		if (req.resetType() == ResetType.Yaw) {
 			val delay = if (req.hasDelay()) {
 				req.delay()
@@ -45,9 +51,9 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 				resetsConfig.yawResetDelay
 			}
 			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong())
+				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong(), tx = tx)
 			} else {
-				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
+				api.server.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList(), tx = tx)
 			}
 		}
 		if (req.resetType() == ResetType.Full) {
@@ -57,9 +63,9 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 				resetsConfig.fullResetDelay
 			}
 			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong())
+				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong(), tx = tx)
 			} else {
-				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
+				api.server.scheduleResetTrackersFull(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList(), tx = tx)
 			}
 		}
 		if (req.resetType() == ResetType.Mounting) {
@@ -69,35 +75,55 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 				resetsConfig.mountingResetDelay
 			}
 			if (bodyParts.isEmpty()) {
-				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong())
+				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong(), tx = tx)
 			} else {
-				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList())
+				api.server.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (delay * 1000).toLong(), bodyParts.toList(), tx = tx)
 			}
 		}
 	}
 
-	fun sendResetStatusResponse(resetType: Int, status: Int, bodyParts: List<Int>? = null, progress: Int = 0, duration: Int = 0) {
-		val fbb = FlatBufferBuilder(32)
+	fun sendResetStatusResponse(resetType: Int, status: Int, tx: TransactionInfo? = null, bodyParts: List<Int>? = null, progress: Int = 0, duration: Int = 0) {
+		fun buildMessage(txId: Long?): ByteBuffer {
+			val fbb = FlatBufferBuilder(32)
 
-		val bodyPartsOffset = if (bodyParts != null) ResetResponse.createBodyPartsVector(fbb, bodyParts.map { it.toByte() }.toByteArray()) else 0
+			val bodyPartsOffset = bodyParts?.let {
+				ResetResponse.createBodyPartsVector(
+					fbb,
+					bodyParts.map { it.toByte() }.toByteArray(),
+				)
+			} ?: 0
 
-		ResetResponse.startResetResponse(fbb)
-		ResetResponse.addResetType(fbb, resetType)
-		ResetResponse.addStatus(fbb, status)
-		if (bodyPartsOffset >= 0) {
-			ResetResponse.addBodyParts(fbb, bodyPartsOffset)
+			ResetResponse.startResetResponse(fbb)
+			ResetResponse.addResetType(fbb, resetType)
+			ResetResponse.addStatus(fbb, status)
+
+			if (bodyPartsOffset >= 0) {
+				ResetResponse.addBodyParts(fbb, bodyPartsOffset)
+			}
+
+			ResetResponse.addProgress(fbb, progress)
+			ResetResponse.addDuration(fbb, duration)
+
+			val update = ResetResponse.endResetResponse(fbb)
+			val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.ResetResponse, update, txId)
+			fbb.finish(outbound)
+
+			return fbb.dataBuffer()
 		}
-		ResetResponse.addProgress(fbb, progress)
-		ResetResponse.addDuration(fbb, duration)
-		val update = ResetResponse.endResetResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.ResetResponse, update)
-		fbb.finish(outbound)
 
-		this.forAllListeners(
-			Consumer { conn: GenericConnection ->
-				conn.send(fbb.dataBuffer())
-			},
-		)
+		tx?.let { tx ->
+			tx.conn.send(buildMessage(tx.id))
+		}
+
+		buildMessage(null).let {
+			this.forAllListeners(
+				Consumer { conn: GenericConnection ->
+					if (tx == null || tx.conn != conn) {
+						conn.send(it)
+					}
+				},
+			)
+		}
 	}
 
 	fun onClearMountingResetRequest(
@@ -113,12 +139,12 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		api.server.clearTrackersMounting(RESET_SOURCE_NAME)
 	}
 
-	override fun onStarted(resetType: Int, bodyParts: List<Int>?, progress: Int, duration: Int) {
-		sendResetStatusResponse(resetType, ResetStatus.STARTED, bodyParts, progress, duration)
+	override fun onStarted(resetType: Int, tx: TransactionInfo?, bodyParts: List<Int>?, progress: Int, duration: Int) {
+		sendResetStatusResponse(resetType, ResetStatus.STARTED, tx, bodyParts, progress, duration)
 	}
 
-	override fun onFinished(resetType: Int, bodyParts: List<Int>?, duration: Int) {
-		sendResetStatusResponse(resetType, ResetStatus.FINISHED, bodyParts, duration, duration)
+	override fun onFinished(resetType: Int, tx: TransactionInfo?, bodyParts: List<Int>?, duration: Int) {
+		sendResetStatusResponse(resetType, ResetStatus.FINISHED, tx, bodyParts, duration, duration)
 	}
 
 	fun forAllListeners(action: Consumer<in GenericConnection?>?) {
