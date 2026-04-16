@@ -499,6 +499,9 @@ onboarding-wifi_creds-password =
 onboarding-reset_tutorial-back = Gå tilbage til monteringskalibrering
 onboarding-reset_tutorial = Start forfra
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Velkommen til SlimeVR

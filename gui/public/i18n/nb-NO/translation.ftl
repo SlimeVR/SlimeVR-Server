@@ -514,6 +514,9 @@ onboarding-reset_tutorial-back = Gå tilbake til monterings kalibrering
 onboarding-reset_tutorial = Nullstill opplæringen
 onboarding-reset_tutorial-skip = Hopp over trinn
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Velkommen til SlimeVR

@@ -1025,6 +1025,9 @@ onboarding-reset_tutorial-2 =
     
     Requiere que estas en una pose como que estás esquiando, como se muestra en el tutorial de montura automática y tenes un retraso de 3 segundos (configurable) antes de que actualmente suceda.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Bienvenido a SlimeVR

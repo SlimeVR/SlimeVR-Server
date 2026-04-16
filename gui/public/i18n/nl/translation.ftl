@@ -1013,6 +1013,9 @@ onboarding-reset_tutorial-2 =
     
     Je moet in een houding staan alsof je aan het skiën bent, zoals wordt weergegeven in de Automatische montage wizard, je hebt een vertraging van 3 seconden (instelbaar) voordat deze wordt geactiveerd.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Welkom bij SlimeVR

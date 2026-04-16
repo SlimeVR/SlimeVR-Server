@@ -780,6 +780,9 @@ onboarding-reset_tutorial-2 =
     
     자동 착용 방향 설정 마법사에서 봤던 것처럼 스키를 타는 듯한 자세로 몸을 구부리고 있으세요. 탭한 다음 3초 뒤에(설정에서 변경 가능) 보정이 시작될 거예요.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = SlimeVR에 어서오세요!
