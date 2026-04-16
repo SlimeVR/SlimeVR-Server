@@ -72,12 +72,16 @@ dependencies {
 	implementation("org.apache.commons:commons-lang3:3.20.0")
 	implementation("org.apache.commons:commons-collections4:4.5.0")
 
-	implementation("com.illposed.osc:javaosc-core:0.9")
+	implementation("com.illposed.osc:javaosc-core:0.8")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-	implementation("com.mayakapps.kache:kache:2.1.1")
+
+	// 2.1.1 - of kache cause OSCQuery to fail on android.
+	// Same goes for upgrading coroutines. kache prob upgrade coroutines too.
+	// proceed with caution if you plan on upgrading that library
+	implementation("com.mayakapps.kache:kache:2.1.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")
 

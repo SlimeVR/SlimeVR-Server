@@ -1,10 +1,10 @@
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { Button } from './Button';
 import { Typography } from './Typography';
 import { useCallback, useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
 
-export function NumberSelector({
+export function NumberSelector<T extends FieldValues = FieldValues>({
   label,
   valueLabelFormat,
   control,
@@ -18,8 +18,8 @@ export function NumberSelector({
 }: {
   label?: string;
   valueLabelFormat?: (value: number) => string;
-  control: Control<any>;
-  name: string;
+  control: Control<T>;
+  name: FieldPath<T>;
   min: number;
   max: number;
   step: number | ((value: number, add: boolean) => number);

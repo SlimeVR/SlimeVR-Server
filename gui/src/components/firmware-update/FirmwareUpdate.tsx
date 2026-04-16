@@ -58,7 +58,7 @@ const DeviceList = ({
   control,
   devices,
 }: {
-  control: Control<any>;
+  control: Control<FirmwareUpdateForm>;
   devices: DeviceDataT[];
 }) => {
   const { l10n } = useLocalization();

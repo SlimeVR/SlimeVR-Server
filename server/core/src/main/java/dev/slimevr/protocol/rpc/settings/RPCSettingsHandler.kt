@@ -47,6 +47,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				bridge.changeShareSettings(TrackerRole.LEFT_HAND, req.steamVrTrackers().leftHand())
 				bridge.changeShareSettings(TrackerRole.RIGHT_HAND, req.steamVrTrackers().rightHand())
 				bridge.setAutomaticSharedTrackers(req.steamVrTrackers().automaticTrackerToggle())
+				sendSteamVRUpdatedSettings(api, rpcHandler)
 			}
 		}
 

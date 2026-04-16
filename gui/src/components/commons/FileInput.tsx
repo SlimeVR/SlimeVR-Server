@@ -7,7 +7,13 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Control, Controller, UseControllerProps } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  FieldPath,
+  FieldValues,
+  UseControllerProps,
+} from 'react-hook-form';
 import { FileIcon } from './icon/FileIcon';
 import { UploadFileIcon } from './icon/UploadFileIcon';
 import { Typography } from './Typography';
@@ -193,7 +199,7 @@ export const FileInputInside = forwardRef<
   );
 });
 
-export const FileInput = ({
+export const FileInput = <T extends FieldValues = FieldValues>({
   control,
   name,
   label,
@@ -204,8 +210,9 @@ export const FileInput = ({
   capture,
   importedFileName,
 }: {
-  rules: UseControllerProps<any>['rules'];
-  control: Control<any>;
+  rules: UseControllerProps<T, FieldPath<T>>['rules'];
+  control: Control<T>;
+  name: FieldPath<T>;
   accept: string;
   multiple?: boolean;
   capture?: boolean | 'user' | 'environment';
@@ -214,7 +221,7 @@ export const FileInput = ({
    **/
   label?: string;
   importedFileName: string | null;
-} & InputProps &
+} & Omit<InputProps, 'name'> &
   Partial<HTMLInputElement>) => {
   return (
     <Controller

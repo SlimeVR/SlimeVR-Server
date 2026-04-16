@@ -12,6 +12,7 @@ import java.io.FileReader
 import java.io.InvalidObjectException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
 
@@ -19,6 +20,7 @@ abstract class AbstractRegEdit {
 	abstract fun getQwordValue(path: String, key: String): Double?
 	abstract fun getDwordValue(path: String, key: String): Int?
 	abstract fun getVRChatKeys(path: String): Map<String, String>
+	abstract fun getKeyByPath(hkey: WinReg.HKEY, path: String): Map<String, String>
 }
 
 class RegEditWindows : AbstractRegEdit() {
@@ -71,6 +73,19 @@ class RegEditWindows : AbstractRegEdit() {
 			}
 		} catch (e: Exception) {
 			LogManager.severe("[VRChatRegEdit] Error reading Values from VRC registry: ${e.message}")
+		}
+		return keysMap
+	}
+
+	override fun getKeyByPath(hkey: WinReg.HKEY, path: String): Map<String, String> {
+		val keysMap = mutableMapOf<String, String>()
+
+		try {
+			Advapi32Util.registryGetValues(hkey, path).forEach {
+				keysMap[it.key.replace("""_h\d+$""".toRegex(), "")] = it.value.toString()
+			}
+		} catch (e: Exception) {
+			LogManager.severe("[RegEdit] Error reading values from registry", e)
 		}
 		return keysMap
 	}
@@ -141,14 +156,82 @@ class RegEditLinux : AbstractRegEdit() {
 		return keysMap
 	}
 
+	// This function should never run on Linux.
+	override fun getKeyByPath(hkey: WinReg.HKEY, path: String): Map<String, String> = mutableMapOf<String, String>()
+
 	companion object {
-		const val USER_REG_SUBPATH = "steamapps/compatdata/438100/pfx/user.reg"
-		val USER_REG_PATH =
-			System.getenv("HOME")?.let {
-				Path(it, ".steam", "root", USER_REG_SUBPATH).let { if (it.exists()) it else null }
-					?: Path(it, ".steam", "debian-installation", USER_REG_SUBPATH).let { if (it.exists()) it else null }
-					?: Path(it, ".var", "app", "com.valvesoftware.Steam", "data", "Steam", USER_REG_SUBPATH).let { if (it.exists()) it else null }
+		private fun findAppLibraryLocation(steamPath: Path, appId: Int): Path? {
+			val keyValueRegex = Regex(""""(\w+)"[ \t]*(?:"(.+)")?""")
+			try {
+				BufferedReader(FileReader(steamPath.resolve("config/libraryfolders.vdf").toFile())).use { reader ->
+					var depth = 0
+					var currentLibraryPath: Path? = null
+
+					while (reader.ready()) {
+						val line = reader.readLine().trim()
+						if (line == "{") {
+							depth += 1
+							continue
+						}
+						if (line == "}") {
+							depth -= 1
+							continue
+						}
+
+						keyValueRegex.matchEntire(line)?.let {
+							val key = it.groupValues[1]
+							val value = it.groupValues[2]
+
+							when (depth) {
+								0 -> {
+									require(key == "libraryfolders") { "root key must be libraryfolders" }
+								}
+
+								1 -> {
+									// start of a library node
+								}
+
+								2 -> {
+									// in a library node
+									if (key == "path") {
+										currentLibraryPath = Path(value)
+									} else if (key == "apps") {
+										// start of apps node
+										require(currentLibraryPath != null) { "path must come before apps in node" }
+									}
+								}
+
+								3 -> {
+									// in apps node
+									val curAppId = try {
+										key.toInt()
+									} catch (_: NumberFormatException) {
+										null
+									}
+									if (curAppId != null && curAppId == appId) {
+										assert(currentLibraryPath != null)
+										return currentLibraryPath
+									}
+								}
+							}
+						}
+					}
+					LogManager.warning("[VRChatRegEdit] Couldn't find library folder for appid $appId")
+				}
+			} catch (e: Exception) {
+				LogManager.severe("[VRChatRegEdit] Error parsing Steam libraryfolders", e)
 			}
+			return null
+		}
+
+		const val USER_REG_SUBPATH = "steamapps/compatdata/438100/pfx/user.reg"
+		val STEAM_PATH = System.getenv("HOME")?.let { home ->
+			Path(home, ".steam", "root").takeIf { it.exists() }
+				?: Path(home, ".steam", "debian-installation").takeIf { it.exists() }
+				?: Path(home, ".var", "app", "com.valvesoftware.Steam", "data", "Steam").takeIf { it.exists() }
+		}
+		val USER_REG_PATH: Path? = if (STEAM_PATH != null) findAppLibraryLocation(STEAM_PATH, 438100)?.resolve(USER_REG_SUBPATH) else null
+
 		val KEY_VALUE_PATTERN = Regex(""""(.+)"=(.+)""")
 
 		val HEX_FORMAT = HexFormat {

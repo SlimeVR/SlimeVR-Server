@@ -4,6 +4,8 @@ import {
   Control,
   Controller,
   FieldError,
+  FieldPath,
+  FieldValues,
   UseControllerProps,
 } from 'react-hook-form';
 import { EyeIcon } from './icon/EyeIcon';
@@ -119,7 +121,7 @@ export const InputInside = forwardRef<
   );
 });
 
-export const Input = ({
+export const Input = <T extends FieldValues = FieldValues>({
   type = 'text',
   control,
   name,
@@ -131,10 +133,11 @@ export const Input = ({
   rules,
   ...props
 }: {
-  rules?: UseControllerProps<any>['rules'];
-  control: Control<any>;
+  rules?: UseControllerProps<T, FieldPath<T>>['rules'];
+  control: Control<T>;
+  name: FieldPath<T>;
   autocomplete?: boolean | string;
-} & InputProps &
+} & Omit<InputProps, 'name'> &
   Partial<React.HTMLProps<HTMLInputElement>>) => {
   return (
     <Controller

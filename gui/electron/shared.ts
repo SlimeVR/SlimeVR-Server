@@ -25,7 +25,7 @@ export const IPC_CHANNELS = {
 export interface IpcInvokeMap {
   [IPC_CHANNELS.OPEN_URL]: (url: string) => void;
   [IPC_CHANNELS.OS_STATS]: () => Promise<OSStats>;
-  [IPC_CHANNELS.WINDOW_ACTIONS]: (action: 'close' | 'minimize' | 'maximize') => void;
+  [IPC_CHANNELS.WINDOW_ACTIONS]: (action: 'close' | 'minimize' | 'maximize' | 'hide') => void;
   [IPC_CHANNELS.LOG]: (type: 'info' | 'error' | 'warn', ...args: unknown[]) => void;
   [IPC_CHANNELS.OPEN_DIALOG]: (
     options: OpenDialogOptions
@@ -41,7 +41,7 @@ export interface IpcInvokeMap {
     value?: unknown;
   }) => Promise<unknown>;
   [IPC_CHANNELS.OPEN_FILE]: (path: string) => void;
-  [IPC_CHANNELS.GET_FOLDER]: (folder: 'config' | 'logs') => string;
+  [IPC_CHANNELS.GET_FOLDER]: (folder: 'config' | 'logs' | 'exe') => string;
   [IPC_CHANNELS.GH_FETCH]: <T extends GHGet>(
     options: T
   ) => Promise<GHReturn[T['type']]>;

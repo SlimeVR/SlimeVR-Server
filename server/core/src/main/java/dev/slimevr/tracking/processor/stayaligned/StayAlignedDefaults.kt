@@ -64,6 +64,7 @@ object StayAlignedDefaults {
 		set(IMUType.LSM6DSR, YAW_CORRECTION_IMU_GOOD)
 		set(IMUType.ICM45686, YAW_CORRECTION_IMU_GOOD)
 		set(IMUType.ICM45605, YAW_CORRECTION_IMU_GOOD)
+		set(IMUType.ICM55686, YAW_CORRECTION_IMU_GOOD)
 	}
 
 	// Assume any new IMUs are at least OK, or else we wouldn't be writing firmware to

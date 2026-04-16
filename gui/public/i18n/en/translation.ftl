@@ -524,8 +524,10 @@ settings-general-steamvr-trackers-right_hand = Right hand
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
 settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments.
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
-settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers.
-    Are you sure?
+settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> Enabling the SteamVR hand trackers will disable inputs from real controllers.
+    This should only be enabled if you are using SlimeVR for hand tracking.
+
+    Are you sure you want to do this?
 settings-general-steamvr-trackers-hands-warning-cancel = Cancel
 settings-general-steamvr-trackers-hands-warning-done = Yes
 
@@ -936,8 +938,50 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Skip setup
 onboarding-setup_warning-cancel = Continue setup
 
+## Quiz
+onboarding-quiz_continue = Continue
+onboarding-quiz_back = Back
+
+onboarding-quiz-more_sets_modal-title = Have you connected all of your trackers?
+onboarding-quiz-more_sets_modal-desc = If you have sets of different models, we can connect them right now!
+onboarding-quiz-more_sets_modal-confirm = I have connected all my trackers
+onboarding-quiz-more_sets_modal-cancel = I want to connect more trackers
+
+onboarding-quiz-slimeset-title = What type of trackers are you connecting?
+onboarding-quiz-slimeset-description = If you have multiple sets, you will be asked again later in the process
+onboarding-quiz-slimeset-official-sets = Official SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Third-party or DIY Trackers
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-based Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-based Slime
+
+onboarding-quiz-usage-title = What are you using your trackers for?
+onboarding-quiz-usage-description = If you plan on using SlimeVR for multiple purposes, you can change the affected settings later.
+onboarding-quiz-usage-answer-VRC = VR Gaming (e.g. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap and VTubing
+
+onboarding-quiz-runtime-title = Do you run games via SteamVR, or on the headset itself (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+
+onboarding-quiz-mocap_preferences-title = Mocap Preferences
+onboarding-quiz-mocap_preferences-desc = Specify how you plan to use SlimeVR for mocap or VTubing
+onboarding-quiz-mocap_preferences-playspace-title = What is your playspace?
+onboarding-quiz-mocap_preferences-playspace-desc = If standing, SlimeVR will try to track walking movement instead of anchoring you in one spot.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sitting
+onboarding-quiz-mocap_preferences-playspace-standing = Standing
+onboarding-quiz-mocap_preferences-vrm_model-title = Do you have a VRM model? (Optional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Loading a VRM model will improve tracking quality and compatibility with applications that use VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Are you wearing a tracker or VR headset on your head?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Yes
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Where is your head tracker located?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Forehead
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Face
+
 ## Wi-Fi setup
-onboarding-wifi_creds-back = Go back to introduction
+onboarding-wifi_creds-back-v2 = Go back
 onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -982,6 +1026,11 @@ onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to tri
 
     You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
 
+## Install info
+install-info_udev-rules_modal_title = Hardware udev access rules not found
+install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
+install-info_udev-rules_modal_button = Close
+install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 ## Setup start
 onboarding-home = Welcome to SlimeVR
 onboarding-home-start = Let's get set up!
@@ -1308,6 +1357,7 @@ onboarding-user_height-description = We need your height to calculate your body 
 onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
 onboarding-user_height-calculate = Calculate my height automatically
 onboarding-user_height-next_step = Continue and save
+onboarding-user_height-prev_step = Back
 onboarding-user_height-manual-proportions = Manual Proportions
 onboarding-user_height-calibration-title = Calibration Progress
 onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
@@ -1470,6 +1520,7 @@ firmware_tool-flashing_step-description =
 firmware_tool-flashing_step-warning-v2 = Do not unplug or turn off the tracker during the upload process unless told to, it may make your board unusable
 firmware_tool-flashing_step-flash_more = Flash more trackers
 firmware_tool-flashing_step-exit = Exit
+firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 firmware_tool-build-QUEUED = Waiting to build....
@@ -1603,8 +1654,11 @@ tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR not running
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
+tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
-tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few secconds.
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
 tracking_checklist-TRACKER_ERROR = Trackers with Errors
 tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the trackers highlighted in yellow.
 tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings

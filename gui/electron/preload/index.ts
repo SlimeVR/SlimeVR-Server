@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openUrl: (url) => ipcRenderer.invoke(IPC_CHANNELS.OPEN_URL, url),
   osStats: () => ipcRenderer.invoke(IPC_CHANNELS.OS_STATS),
   close: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'close'),
+  hide: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'hide'),
   minimize: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'minimize'),
   maximize: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'maximize'),
   getStorage: async (type) => {
@@ -35,5 +36,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openLogsFolder: async () => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, await ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'logs')),
   openFile: (path) => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, path),
   ghGet: (req) => ipcRenderer.invoke(IPC_CHANNELS.GH_FETCH, req),
-  setPresence: (options) => ipcRenderer.invoke(IPC_CHANNELS.DISCORD_PRESENCE, options)
+  setPresence: (options) => ipcRenderer.invoke(IPC_CHANNELS.DISCORD_PRESENCE, options),
+  getInstallDir: () => ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'exe')
 } satisfies IElectronAPI);

@@ -43,6 +43,7 @@ export interface IElectronAPI {
   openLogsFolder: () => Promise<void>;
   openConfigFolder: () => Promise<void>;
   close: () => void;
+  hide: () => void;
   minimize: () => void;
   maximize: () => void;
   showDecorations: (decorations: boolean) => void;
@@ -55,6 +56,7 @@ export interface IElectronAPI {
   openFile: (path: string) => void;
   ghGet: <T extends GHGet>(options: T) => Promise<GHReturn[T['type']]>;
   setPresence: (options: DiscordPresence) => void;
+  getInstallDir: () => Promise<string>;
 }
 
 declare global {

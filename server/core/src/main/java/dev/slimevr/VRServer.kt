@@ -17,6 +17,7 @@ import dev.slimevr.osc.VMCHandler
 import dev.slimevr.osc.VRCOSCHandler
 import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
+import dev.slimevr.protocol.rpc.TransactionInfo
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.reset.ResetHandler
 import dev.slimevr.reset.ResetTimerManager
@@ -56,6 +57,7 @@ const val SLIMEVR_IDENTIFIER = "dev.slimevr.SlimeVR"
 
 class VRServer @JvmOverloads constructor(
 	bridgeProvider: BridgeProvider = { _, _ -> sequence {} },
+	featureFlagsProvider: (VRServer) -> FeatureFlags = { _ -> FeatureFlags() },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
 	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
@@ -82,6 +84,9 @@ class VRServer @JvmOverloads constructor(
 
 	@JvmField
 	val deviceManager: DeviceManager
+
+	// UwU
+	val featureFlags: FeatureFlags = featureFlagsProvider(this)
 
 	@JvmField
 	val bvhRecorder: BVHRecorder
@@ -126,7 +131,6 @@ class VRServer @JvmOverloads constructor(
 	val serverGuards = ServerGuards()
 
 	init {
-		// UwU
 		deviceManager = DeviceManager(this)
 		serialHandler = serialHandlerProvider(this)
 		serialFlashingHandler = flashingHandlerProvider(this)
@@ -301,9 +305,8 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.updateSkeletonModelFromServer()
 			vrcOSCHandler.setHeadTracker(TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD))
-			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
-				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
-			}
+			this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically()
+			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 	}
 
@@ -329,9 +332,8 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.setPauseTracking(pauseTracking, sourceName)
 			// Toggle trackers as they don't toggle when tracking is paused
-			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
-				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
-			}
+			this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically()
+			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 	}
 
@@ -339,55 +341,54 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.togglePauseTracking(sourceName)
 			// Toggle trackers as they don't toggle when tracking is paused
-			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
-				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
-			}
+			this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically()
+			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 	}
 
-	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList()) {
+	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList(), tx: TransactionInfo? = null) {
 		resetTimer(
 			resetTimerManager,
 			delay,
 			onTick = { progress ->
-				resetHandler.sendStarted(ResetType.Full, bodyParts, progress, delay.toInt())
+				resetHandler.sendStarted(ResetType.Full, tx, bodyParts, progress, delay.toInt())
 			},
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersFull(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Full, bodyParts, delay.toInt())
+					resetHandler.sendFinished(ResetType.Full, tx, bodyParts, delay.toInt())
 				}
 			},
 		)
 	}
 
-	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers, tx: TransactionInfo? = null) {
 		resetTimer(
 			resetTimerManager,
 			delay,
 			onTick = { progress ->
-				resetHandler.sendStarted(ResetType.Yaw, bodyParts, progress, delay.toInt())
+				resetHandler.sendStarted(ResetType.Yaw, tx, bodyParts, progress, delay.toInt())
 			},
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Yaw, bodyParts, delay.toInt())
+					resetHandler.sendFinished(ResetType.Yaw, tx, bodyParts, delay.toInt())
 				}
 			},
 		)
 	}
 
-	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<Int>? = null) {
+	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<Int>? = null, tx: TransactionInfo? = null) {
 		resetTimer(
 			resetTimerManager,
 			delay,
 			onTick = { progress ->
-				resetHandler.sendStarted(ResetType.Mounting, bodyParts, progress, delay.toInt())
+				resetHandler.sendStarted(ResetType.Mounting, tx, bodyParts, progress, delay.toInt())
 			},
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Mounting, bodyParts, delay.toInt())
+					resetHandler.sendFinished(ResetType.Mounting, tx, bodyParts, delay.toInt())
 				}
 			},
 		)

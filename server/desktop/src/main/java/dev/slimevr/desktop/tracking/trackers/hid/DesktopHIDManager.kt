@@ -157,6 +157,8 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 					hidDevice.readAll(0) // multiples 64 bytes
 				} catch (e: NegativeArraySizeException) {
 					continue // Skip devices with read error (Maybe disconnected)
+				} catch (e: IllegalStateException) {
+					continue // Skip devices with open error (Maybe disconnected)
 				}
 				devicesPresent = true // Even if the device has no data
 				if (dataReceived.isNotEmpty()) {
@@ -254,7 +256,13 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 			for (device in devicesByHID.keys) {
 				// a receiver sends keep-alive data at 10 packets/s
 				if (lastDataByHID[device]!! > 100) { // try to reopen device if no data was received recently (about >100ms)
-					LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
+					if (lastDataByHID[device]!! < 10000) {
+						LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
+						lastDataByHID[device] = 10000 // flag once
+					} else if (lastDataByHID[device]!! < 20000) {
+						LogManager.info("[TrackerServer] Repeatedly reopening device ${device.serialNumber}")
+						lastDataByHID[device] = 20000 // flag twice
+					}
 					device.open()
 				}
 			}
