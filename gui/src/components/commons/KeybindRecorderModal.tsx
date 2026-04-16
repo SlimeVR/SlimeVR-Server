@@ -1,12 +1,18 @@
 import { BaseModal } from './BaseModal';
-import { Controller, Control, useFormContext } from 'react-hook-form';
+import {
+  Controller,
+  Control,
+  useFormContext,
+  FieldValues,
+  FieldPath,
+} from 'react-hook-form';
 import { KeybindRecorder } from './KeybindRecorder';
 import { Typography } from './Typography';
 import { Button } from './Button';
 import './KeybindRow.scss';
 import { useLocalization } from '@fluent/react';
 
-export function KeybindRecorderModal({
+export function KeybindRecorderModal<T extends FieldValues = FieldValues>({
   id,
   control,
   name,
@@ -16,8 +22,8 @@ export function KeybindRecorderModal({
   onSubmit,
 }: {
   id?: string;
-  control: Control<any>;
-  name: string;
+  control: Control<T>;
+  name: FieldPath<T>;
   isVisisble: boolean;
   onClose: () => void;
   onUnbind: () => void;

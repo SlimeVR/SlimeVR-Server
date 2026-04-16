@@ -19,7 +19,12 @@ import {
   OpenUriRequestT,
   RpcMessage,
 } from 'solarxr-protocol';
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import {
+  FieldPath,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from 'react-hook-form';
 import { useAppContext } from '@/hooks/app';
 import { useElectron } from '@/hooks/electron';
 
@@ -238,9 +243,9 @@ export function KeybindSettings() {
                     }
                     control={control}
                     name={
-                      currentIndex.current != null
+                      (currentIndex.current != null
                         ? `keybinds.${currentIndex.current}.binding`
-                        : ''
+                        : '') as FieldPath<KeybindForm>
                     }
                     isVisisble={isOpen}
                     onClose={onClose}

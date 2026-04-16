@@ -1,4 +1,4 @@
-import { Control, Controller, FieldPath, FieldValues  } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { Button } from './Button';
 import { Typography } from './Typography';
 import { useCallback, useMemo } from 'react';

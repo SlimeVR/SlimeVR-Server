@@ -1,7 +1,12 @@
 import { Typography } from './Typography';
 import './KeybindRow.scss';
 import { useEffect, useState } from 'react';
-import { Control, UseFormGetValues } from 'react-hook-form';
+import {
+  Control,
+  FieldPath,
+  FieldValues,
+  UseFormGetValues,
+} from 'react-hook-form';
 import { NumberSelector } from './NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
 
@@ -27,7 +32,7 @@ function KeyBindKeyList({ keybind }: { keybind: string[] }) {
   });
 }
 
-export function KeybindsRow({
+export function KeybindsRow<T extends FieldValues = FieldValues>({
   id,
   control,
   index,
@@ -35,7 +40,7 @@ export function KeybindsRow({
   openKeybindRecorderModal,
 }: {
   id?: string;
-  control: Control<any>;
+  control: Control<T>;
   index: number;
   getValue: UseFormGetValues<any>;
   openKeybindRecorderModal: (index: number) => void;
@@ -72,7 +77,7 @@ export function KeybindsRow({
       </div>
       <NumberSelector
         control={control}
-        name={`keybinds.${index}.delay`}
+        name={`keybinds.${index}.delay` as FieldPath<T>}
         valueLabelFormat={(value) => secondsFormat.format(value)}
         min={0}
         max={10}
