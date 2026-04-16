@@ -128,12 +128,14 @@ class VRCOSCHandler(
 	}
 
 	fun ipEquals(a: InetAddress?, b: InetAddress?): Boolean = a == b ||
-		a != null &&
-		b != null &&
 		(
-			a.address.contentEquals(b.address) ||
-				a.hostName == b.hostName ||
-				(ipIsLocal(a) && ipIsLocal(b))
+			a != null &&
+				b != null &&
+				(
+					a.address.contentEquals(b.address) ||
+						(a.hostName == b.hostName) ||
+						(ipIsLocal(a) && ipIsLocal(b))
+					)
 			)
 
 	/**
