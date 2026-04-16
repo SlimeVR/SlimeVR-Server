@@ -872,6 +872,9 @@ onboarding-reset_tutorial-1 =
     Pro tuto funkci musíte stát v základní pozici (ruce podél těla). Před provedením resetu je zde 3 sekundová prodleva (lze nastavit).
     Tímto se kompletně resetuje pozice a rotace všech vašich trackerů, což by mělo vyřešit většinu problémů.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Vítejte ve SlimeVR

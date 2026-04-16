@@ -947,6 +947,9 @@ onboarding-reset_tutorial-2 =
     
     Devi essere in posa come se stessi sciando come mostrato nella procedura guidata di posizionamento automatico e ha un ritardo di 3 secondi (configurabile) prima che venga attivato.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Benvenuti a SlimeVR

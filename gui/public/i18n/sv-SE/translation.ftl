@@ -866,6 +866,9 @@ onboarding-reset_tutorial-0 =
     
     Detta gör att spårarna vänds i samma riktning som ditt headset (HMD).
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Välkommen till SlimeVR

@@ -1006,6 +1006,9 @@ onboarding-reset_tutorial-2 =
     
     你需要摆出一个像滑雪那样的姿势，就像在运行自动设置佩戴向导时做的那样，在重置实际发生前有 3 秒延迟（可配置）。
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = 欢迎来到 SlimeVR

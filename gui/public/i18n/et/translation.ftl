@@ -595,6 +595,9 @@ onboarding-reset_tutorial-2 =
     
     Peate olema poosis, nagu suusatate, nagu see on näidatud automaatse paigaldamise viisardil, ja teil on 3-sekundiline viivitus (konfigureeritav), enne kui see käivitub.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Tere tulemast SlimeVR-i

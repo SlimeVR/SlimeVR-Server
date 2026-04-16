@@ -1000,6 +1000,9 @@ onboarding-reset_tutorial-2 =
     
     Musisz być w pozie, jakbyś jechał na nartach, tak jak jest to pokazane w kreatorze automatycznego montażu, i masz 3-sekundowe opóźnienie (konfigurowalne), zanim zostanie uruchomione.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Witamy w SlimeVR

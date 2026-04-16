@@ -628,6 +628,9 @@ onboarding-reset_tutorial-2 =
     
     Sinun on oltava hiihto-asennossa, kuten on näytettynä Automaattisessa Asennuksessa ja sinulla on 3 sekunnin viive (muokattavissa), ennen kuin se käynnistyy.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Tervetuloa SlimeVR:ään
