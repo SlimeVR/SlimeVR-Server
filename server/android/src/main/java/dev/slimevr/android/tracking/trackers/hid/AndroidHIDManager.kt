@@ -91,7 +91,7 @@ class AndroidHIDManager(
 	}
 
 	fun checkConfigureDevice(usbDevice: UsbDevice, requestPermission: Boolean = false) {
-		if (HIDCommon.matchesReceiver(usbDevice.vendorId, usbDevice.productId) || HIDCommon.matchesTracker(usbDevice.vendorId, usbDevice.productId)) {
+		if (HIDCommon.matchesAny(usbDevice.vendorId, usbDevice.productId)) {
 			if (usbManager.hasPermission(usbDevice)) {
 				LogManager.info("[TrackerServer] Already have permission for ${usbDevice.deviceName}")
 				proceedWithDeviceConfiguration(usbDevice)

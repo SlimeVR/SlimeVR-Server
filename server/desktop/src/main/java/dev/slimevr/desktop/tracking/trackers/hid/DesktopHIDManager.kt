@@ -55,7 +55,7 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	}
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
-		if (HIDCommon.matchesReceiver(hidDevice.vendorId, hidDevice.productId) || HIDCommon.matchesTracker(hidDevice.vendorId, hidDevice.productId)) {
+		if (HIDCommon.matchesAny(hidDevice.vendorId, hidDevice.productId)) {
 			val serial = hidDevice.serialNumber ?: "Unknown HID Device"
 			if (hidDevice.isClosed) {
 				if (!hidDevice.open()) {
@@ -210,13 +210,12 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	private fun deviceEnumerate() {
 		val trackersOverHID: Boolean = VRServer.instance.configManager.vrConfig.hidConfig.trackersOverHID
 		val hidDeviceList: MutableList<HidDevice> = mutableListOf()
-		for (vendorId in HIDCommon.supportedVendorIds()) {
+		for (rule in HIDCommon.allProductRules()) {
 			var root: HidDeviceInfoStructure? = null
 			try {
-				// Filter by vendor in hidapi, then apply product/mask matching in code.
-				root = HidApi.enumerateDevices(vendorId, 0)
+				root = HidApi.enumerateDevices(rule.vendorId, if (rule.productMask == 0xFFFF) rule.productId else 0)
 			} catch (e: Throwable) {
-				LogManager.severe("[TrackerServer] Couldn't enumerate HID devices for VID ${String.format("0x%04X", vendorId)}", e)
+				LogManager.severe("[TrackerServer] Couldn't enumerate HID devices using rule ${String.format("%04x:%04x", rule.vendorId, rule.productId)} & ${String.format("0x%04X", rule.productMask)}", e)
 			}
 			if (root != null) {
 				var hidDeviceInfoStructure: HidDeviceInfoStructure? = root
