@@ -1,0 +1,12 @@
+{
+  "name": "Default Bindings for Oculus Touch",
+  "controller_type": "oculus_touch",
+  "bindings": {
+    "/actions/main": {
+      "sources": [],
+      "skeleton": [],
+      "haptics": [],
+      "poses": []
+    }
+  }
+}

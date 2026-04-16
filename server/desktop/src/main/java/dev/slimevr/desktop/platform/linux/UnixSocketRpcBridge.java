@@ -93,6 +93,12 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 	}
 
 	@Override
+	@VRServerThread
+	public void stopBridge() {
+		this.runnerThread.interrupt();
+	}
+
+	@Override
 	@BridgeThread
 	public void run() {
 		try {

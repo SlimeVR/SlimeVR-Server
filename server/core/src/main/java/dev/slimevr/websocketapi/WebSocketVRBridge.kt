@@ -231,6 +231,10 @@ class WebSocketVRBridge(
 		start()
 	}
 
+	override fun stopBridge() {
+		stop()
+	}
+
 	override fun isConnected(): Boolean = super.getConnections().isNotEmpty()
 
 	companion object {
