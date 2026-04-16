@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 
-export function ThemeSelector({
+export function ThemeSelector<T extends FieldValues = FieldValues>({
   control,
   name,
   value,
@@ -10,8 +10,8 @@ export function ThemeSelector({
   colors,
   ...props
 }: {
-  control: Control<any>;
-  name: string;
+  control: Control<T>;
+  name: FieldPath<T>;
   colors: string | undefined;
   value: string;
 } & React.HTMLProps<HTMLInputElement>) {

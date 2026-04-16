@@ -14,7 +14,7 @@ import {
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { ReactNode, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { FieldPath, useForm } from 'react-hook-form';
 import { TrackingChecklistStepId } from 'solarxr-protocol';
 import * as Sentry from '@sentry/react';
 
@@ -82,7 +82,7 @@ export function TrackingChecklistSettings({
             <div key={step.id}>
               <CheckBox
                 control={control}
-                name={`steps.${step.id}`}
+                name={`steps.${step.id}` as FieldPath<StepsForm>}
                 disabled={!step.ignorable || !step.enabled}
                 label={l10n.getString(trackingchecklistIdtoLabel[step.id])}
                 outlined
