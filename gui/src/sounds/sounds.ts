@@ -97,8 +97,6 @@ function createAudio(path: string): HTMLAudioElement {
 export function restartAndPlay(audio: HTMLAudioElement | null, volume: number) {
   if (!audio) return;
   try {
-    audio.load(); // LINUX: Solves wierd bug where webkit would unload sounds wierdly and make the sounds not play anymore
-
     audio.volume = Math.min(1, Math.pow(volume, Math.E) + 0.05);
     audio.currentTime = 0;
     const playPromise = audio.play();

@@ -478,7 +478,7 @@ export function ScaledProportionsPage() {
               <Button
                 variant="primary"
                 id="onboarding-user_height-next_step"
-                to="/"
+                to="/onboarding/quiz/usage"
               />
             )}
           </div>

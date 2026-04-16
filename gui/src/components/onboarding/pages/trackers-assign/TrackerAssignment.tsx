@@ -55,7 +55,7 @@ export function TrackersAssignPage() {
   const { isMd } = useBreakpoint('md');
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { applyProgress, state } = useOnboarding();
+  const { applyProgress, state, slimeSet } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const defaultValues = {
     mirrorView: config?.mirrorView ?? defaultConfig.mirrorView,
@@ -329,9 +329,24 @@ export function TrackersAssignPage() {
               <div className="flex flex-row">
                 {!state.alonePage && (
                   <>
-                    <Button variant="secondary" to="/onboarding/wifi-creds">
-                      {l10n.getString('onboarding-previous_step')}
-                    </Button>
+                    {state.alonePage && (
+                      <Button variant="secondary" to="/onboarding/wifi-creds">
+                        {l10n.getString('onboarding-previous_step')}
+                      </Button>
+                    )}
+                    {!state.alonePage && (
+                      <Button
+                        variant="secondary"
+                        to={
+                          slimeSet &&
+                          ['butterfly', 'dongle-slime'].includes(slimeSet)
+                            ? '/onboarding/dongle'
+                            : '/onboarding/wifi-creds'
+                        }
+                      >
+                        {l10n.getString('onboarding-previous_step')}
+                      </Button>
+                    )}
                     <Button
                       variant="primary"
                       to="/onboarding/mounting/choose"

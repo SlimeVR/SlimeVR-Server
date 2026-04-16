@@ -375,12 +375,9 @@ abstract class SteamVRBridge(
 		// External battery reporting anything > 0V.
 		// The following should catch internal battery reporting and erroneous
 		// readings.
-		if (((lowestLevel >= 200) || (lowestLevel < 0)) ||
-			(
-				(trackerVoltage < 3.2) &&
-					(lowestLevel <= 0) ||
-					((trackerVoltage >= 5) && (lowestLevel > 150))
-				)
+		if ((lowestLevel >= 200 || lowestLevel < 0) ||
+			(trackerVoltage < 3.2 && lowestLevel <= 0) ||
+			(trackerVoltage >= 5 && lowestLevel > 150)
 		) {
 			return
 		} else {

@@ -11,15 +11,13 @@ import {
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BodyProportions } from './BodyProportions';
-import { Localized, useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
+import { useBreakpoint } from '@/hooks/breakpoint';
 import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 import { ProportionsResetModal } from './ProportionsResetModal';
 import { fileOpen, fileSave } from 'browser-fs-access';
 import { CURRENT_EXPORT_VERSION, MIN_HEIGHT } from '@/hooks/manual-proportions';
-import { save } from '@tauri-apps/plugin-dialog';
-import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import classNames from 'classnames';
 import { Tooltip } from '@/components/commons/Tooltip';
@@ -118,8 +116,6 @@ enum ImportStatus {
 }
 
 function ImportExportButtons() {
-  const isTauri = useIsTauri();
-  const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [importState, setImportState] = useState(ImportStatus.OK);
   const exporting = useRef(false);
@@ -145,28 +141,10 @@ function ImportExportButtons() {
       const blob = new Blob([JSON.stringify(copy)], {
         type: 'application/json',
       });
-      if (isTauri) {
-        save({
-          filters: [
-            {
-              name: l10n.getString('onboarding-manual_proportions-file_type'),
-              extensions: ['json'],
-            },
-          ],
-          defaultPath: 'body-proportions.json',
-        })
-          .then((path) =>
-            path ? writeTextFile(path, JSON.stringify(copy)) : undefined
-          )
-          .catch((err) => {
-            error(err);
-          });
-      } else {
-        fileSave(blob, {
-          fileName: 'body-proportions.json',
-          extensions: ['.json'],
-        });
-      }
+      fileSave(blob, {
+        fileName: 'body-proportions.json',
+        extensions: ['.json'],
+      });
     }
   );
 
