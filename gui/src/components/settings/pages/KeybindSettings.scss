@@ -1,0 +1,15 @@
+.keybind-settings {
+  display: grid;
+
+  grid-template:
+    'n v d ' auto
+    'k k k ' auto
+    'b . . ' auto
+    / 1fr 1fr 90px;
+
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+
+  align-items: left;
+  gap: 10px;
+}

@@ -1,4 +1,4 @@
-import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues  } from 'react-hook-form';
 import { Button } from './Button';
 import { Typography } from './Typography';
 import { useCallback, useMemo } from 'react';
@@ -57,60 +57,62 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, value } }) => (
-        <div className="flex flex-col gap-1 w-full">
-          <Typography bold>{label}</Typography>
-          <div className="flex gap-5 bg-background-60 p-2 rounded-lg">
-            <div className="flex gap-1">
-              {doubleStep !== undefined && (
+      render={({ field: { onChange, value } }) => {
+        return (
+          <div className="flex flex-col gap-1 w-full">
+            {label?.length != 0 ? <Typography bold>{label}</Typography> : <></>}
+            <div className="flex gap-5 bg-background-60 p-2 rounded-lg">
+              <div className="flex gap-1">
+                {doubleStep !== undefined && (
+                  <Button
+                    variant="tertiary"
+                    rounded
+                    onClick={() => onChange(doubleStepFn(value, false))}
+                    disabled={doubleStepFn(value, false) < min || disabled}
+                  >
+                    {showButtonWithNumber
+                      ? decimalFormat.format(-doubleStep)
+                      : '--'}
+                  </Button>
+                )}
                 <Button
                   variant="tertiary"
                   rounded
-                  onClick={() => onChange(doubleStepFn(value, false))}
-                  disabled={doubleStepFn(value, false) < min || disabled}
+                  onClick={() => onChange(stepFn(value, false))}
+                  disabled={stepFn(value, false) < min || disabled}
                 >
-                  {showButtonWithNumber
-                    ? decimalFormat.format(-doubleStep)
-                    : '--'}
+                  -
                 </Button>
-              )}
-              <Button
-                variant="tertiary"
-                rounded
-                onClick={() => onChange(stepFn(value, false))}
-                disabled={stepFn(value, false) < min || disabled}
-              >
-                -
-              </Button>
-            </div>
-            <div className="flex flex-grow justify-center text-center items-center w-10 text-standard">
-              {valueLabelFormat ? valueLabelFormat(value) : value}
-            </div>
-            <div className="flex gap-1">
-              <Button
-                variant="tertiary"
-                rounded
-                onClick={() => onChange(stepFn(value, true))}
-                disabled={stepFn(value, true) > max || disabled}
-              >
-                +
-              </Button>
-              {doubleStep !== undefined && (
+              </div>
+              <div className="flex flex-grow justify-center text-center items-center w-10 text-standard">
+                {valueLabelFormat ? valueLabelFormat(value) : value}
+              </div>
+              <div className="flex gap-1">
                 <Button
                   variant="tertiary"
                   rounded
-                  onClick={() => onChange(doubleStepFn(value, true))}
-                  disabled={doubleStepFn(value, true) > max || disabled}
+                  onClick={() => onChange(stepFn(value, true))}
+                  disabled={stepFn(value, true) > max || disabled}
                 >
-                  {showButtonWithNumber
-                    ? decimalFormat.format(doubleStep)
-                    : '++'}
+                  +
                 </Button>
-              )}
+                {doubleStep !== undefined && (
+                  <Button
+                    variant="tertiary"
+                    rounded
+                    onClick={() => onChange(doubleStepFn(value, true))}
+                    disabled={doubleStepFn(value, true) > max || disabled}
+                  >
+                    {showButtonWithNumber
+                      ? decimalFormat.format(doubleStep)
+                      : '++'}
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      }}
     />
   );
 }
