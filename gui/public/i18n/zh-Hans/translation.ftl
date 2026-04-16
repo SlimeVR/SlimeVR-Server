@@ -955,9 +955,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = 跳过设置
 onboarding-setup_warning-cancel = 继续设置
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = 返回简介
 onboarding-wifi_creds-v2 = 通过 Wi-Fi 连接
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1003,6 +1005,9 @@ onboarding-reset_tutorial-2 =
     佩戴重置能对追踪器实际的配戴方式进行调整，所以如果你不小心移动了追踪器并将它们的佩戴方向改变了很多，这个功能将有所帮助。
     
     你需要摆出一个像滑雪那样的姿势，就像在运行自动设置佩戴向导时做的那样，在重置实际发生前有 3 秒延迟（可配置）。
+
+## Install info
+
 
 ## Setup start
 

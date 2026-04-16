@@ -589,9 +589,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Ohita asennus
 onboarding-setup_warning-cancel = Jatka asennusta
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Palaa esittelyyn
 onboarding-wifi_creds-skip = Ohita Wi-Fi-asetukset
 onboarding-wifi_creds-submit = Lähetä!
 onboarding-wifi_creds-ssid =
@@ -625,6 +627,9 @@ onboarding-reset_tutorial-2 =
     Asennuksen nollaus auttaa siinä, kuinka jäljittimet on todella asetettu sinulla, joten jos vahingossa siirsit ja muutit suuresti niiden suuntaa, tämä auttaa.
     
     Sinun on oltava hiihto-asennossa, kuten on näytettynä Automaattisessa Asennuksessa ja sinulla on 3 sekunnin viive (muokattavissa), ennen kuin se käynnistyy.
+
+## Install info
+
 
 ## Setup start
 
