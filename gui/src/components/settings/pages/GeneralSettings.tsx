@@ -43,6 +43,9 @@ import {
   loadResetSettings,
   ResetSettingsForm,
 } from '@/hooks/reset-settings';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { isEqual } from '@react-hookz/deep-equal';
+import { selectAtom } from 'jotai/utils';
 
 export type SettingsForm = {
   trackers: {
@@ -163,7 +166,16 @@ const defaultValues: SettingsForm = {
   hidSettings: { trackersOverHID: false },
 };
 
+const settingsAtom = atom(new SettingsResponseT());
+const settingsValueAtom = selectAtom(
+  settingsAtom,
+  (settings) => settings,
+  isEqual
+);
+
 export function GeneralSettings() {
+  const setSettings = useSetAtom(settingsAtom);
+  const settings = useAtomValue(settingsValueAtom);
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const { currentLocales } = useLocaleConfig();
@@ -183,7 +195,10 @@ export function GeneralSettings() {
   const { reset, control, watch, handleSubmit, getValues, setValue } =
     useForm<SettingsForm>({
       defaultValues,
+      mode: 'onChange',
+      reValidateMode: 'onChange',
     });
+
   const {
     trackers: {
       automaticTrackerToggle,
@@ -302,10 +317,7 @@ export function GeneralSettings() {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
 
-  // If null, we still haven't shown the hands warning
-  // if false then initially the hands warning was disabled
-  const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+  useEffect(() => {
     const formData: DefaultValues<SettingsForm> = {};
 
     if (settings.filtering) {
@@ -408,6 +420,13 @@ export function GeneralSettings() {
     }
 
     reset({ ...getValues(), ...formData });
+  }, [settings]);
+
+  // If null, we still haven't shown the hands warning
+  // if false then initially the hands warning was disabled
+  const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    setSettings(settings);
   });
 
   useEffect(() => {
@@ -420,18 +439,6 @@ export function GeneralSettings() {
       setHandsWarning(null);
     }
   }, [steamVrLeftHand, steamVrRightHand, handsWarning]);
-
-  // Handle scrolling to selected page
-  // useEffect(() => {
-  //   const typedState: { scrollTo: string } = state as any;
-  //   if (!pageRef.current || !typedState || !typedState.scrollTo) {
-  //     return;
-  //   }
-  //   const elem = pageRef.current.querySelector(`#${typedState.scrollTo}`);
-  //   if (elem) {
-  //     elem.scrollIntoView({ behavior: 'smooth' });
-  //   }
-  // }, [state]);
 
   return (
     <SettingsPageLayout>

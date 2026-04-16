@@ -302,9 +302,8 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.updateSkeletonModelFromServer()
 			vrcOSCHandler.setHeadTracker(TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD))
-			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
-				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
-			}
+			this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically()
+			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 	}
 
@@ -330,9 +329,8 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.setPauseTracking(pauseTracking, sourceName)
 			// Toggle trackers as they don't toggle when tracking is paused
-			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
-				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
-			}
+			this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically()
+			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 	}
 
@@ -340,9 +338,8 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.togglePauseTracking(sourceName)
 			// Toggle trackers as they don't toggle when tracking is paused
-			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
-				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
-			}
+			this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically()
+			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 	}
 
