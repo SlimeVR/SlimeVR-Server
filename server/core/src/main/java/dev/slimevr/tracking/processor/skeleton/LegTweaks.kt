@@ -92,8 +92,6 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	var toeSnapEnabled = false
 	var footPlantEnabled = false
 	private var active = false
-	private var rightLegActive = false
-	private var leftLegActive = false
 	private var leftFramesLocked = 0
 	private var rightFramesLocked = 0
 	private var leftFramesUnlocked = 0
@@ -199,53 +197,6 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 		// correct for skating if needed (Skating correction)
 		if (skatingCorrectionEnabled) correctSkating()
-
-		// determine if either leg is in a position to activate or
-		// deactivate
-		// (use the buffer to get the positions before corrections)
-		val leftFootDif = abs(
-			(bufferHead.leftFootPosition - leftFootPosition).y,
-		)
-		val rightFootDif = abs(
-			(bufferHead.rightFootPosition - rightFootPosition).y,
-		)
-
-		if (!active && leftFootDif < NEARLY_ZERO) {
-			leftLegActive = false
-		} else if (active && leftFootDif < NEARLY_ZERO) {
-			leftLegActive = true
-		}
-		if (!active && rightFootDif < NEARLY_ZERO) {
-			rightLegActive = false
-		} else if (active && rightFootDif < NEARLY_ZERO) {
-			rightLegActive = true
-		}
-
-		// restore the y positions of inactive legs
-		if (!leftLegActive) {
-			leftFootPosition = Vector3(
-				leftFootPosition.x,
-				bufferHead.leftFootPosition.y,
-				leftFootPosition.z,
-			)
-			leftKneePosition = Vector3(
-				leftKneePosition.x,
-				bufferHead.leftKneePosition.y,
-				leftKneePosition.z,
-			)
-		}
-		if (!rightLegActive) {
-			rightFootPosition = Vector3(
-				rightFootPosition.x,
-				bufferHead.rightFootPosition.y,
-				rightFootPosition.z,
-			)
-			rightKneePosition = Vector3(
-				rightKneePosition.x,
-				bufferHead.rightKneePosition.y,
-				rightKneePosition.z,
-			)
-		}
 
 		// calculate the correction for the knees
 		if (initialized) solveLowerBody()
