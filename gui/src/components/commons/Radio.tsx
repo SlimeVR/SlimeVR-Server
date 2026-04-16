@@ -1,9 +1,9 @@
 import classNames from 'classnames';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { Typography } from './Typography';
 import { ReactNode } from 'react';
 
-export function Radio({
+export function Radio<T extends FieldValues = FieldValues>({
   control,
   name,
   label,
@@ -14,8 +14,8 @@ export function Radio({
   disabled,
   ...props
 }: {
-  control: Control<any>;
-  name: string;
+  control: Control<T>;
+  name: FieldPath<T>;
   label?: string;
   value: string;
   description?: string | null;

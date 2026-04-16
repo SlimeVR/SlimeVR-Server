@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { FieldPath, useForm } from 'react-hook-form';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -57,7 +57,7 @@ export function DeveloperModeWidget() {
       control={control}
       variant="toggle"
       outlined
-      name={name}
+      name={name as FieldPath<DeveloperModeWidgetForm>}
       label={l10n.getString(`widget-developer_mode-${label}`)}
     />
   );
