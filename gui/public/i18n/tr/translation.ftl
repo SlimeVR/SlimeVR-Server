@@ -428,6 +428,9 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Mounting setup
 
 
+## Install info
+
+
 ## Setup start
 
 

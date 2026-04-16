@@ -927,6 +927,9 @@ onboarding-reset_tutorial-2 =
     
     Sie müssen sich in einer "Skifahren"-Pose, wie im Tracker-Ausrichtung-Assistenten gezeigt wird, befinden. Nach dem Auslösen wird der Reset nach 3 Sekunden (konfigurierbar) durchgeführt.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Willkommen zu SlimeVR

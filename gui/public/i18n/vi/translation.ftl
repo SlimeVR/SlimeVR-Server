@@ -688,6 +688,9 @@ onboarding-reset_tutorial-2 =
     
     Bạn cần phải ở trên một tư thế như bạn đang trượt tuyết như nó được hiển thị trên trình hướng dẫn gắn tự động và bạn có độ trễ 3 giây (có thể định cấu hình) trước khi nó được kích hoạt.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Chào mừng bạn đến với SlimeVR!

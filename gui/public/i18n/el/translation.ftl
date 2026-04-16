@@ -300,6 +300,9 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 ## Mounting setup
 
 
+## Install info
+
+
 ## Setup start
 
 
