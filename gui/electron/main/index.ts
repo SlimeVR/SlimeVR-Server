@@ -20,6 +20,7 @@ import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
   findServerJar,
   findSystemJRE,
+  getExeFolder,
   getGuiDataFolder,
   getLogsFolder,
   getServerDataFolder,
@@ -182,6 +183,8 @@ handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
       return getGuiDataFolder();
     case 'logs':
       return getLogsFolder();
+    case 'exe':
+      return getExeFolder();
   }
 });
 
@@ -394,7 +397,16 @@ const spawnServer = async () => {
   logger.info({ javaBin, serverJar }, 'Found Java and server jar');
   const platform = getPlatform();
   const serverWorkdir = getServerDataFolder()
-  const serverProcess = spawn(javaBin, ['-Xmx128M', '-jar', serverJar, 'run'], {
+
+  const serverArgs = ['-Xmx128M', '-jar', serverJar]
+  if (options.steam) serverArgs.push(`--steam`)
+  if (options.install) serverArgs.push(`--install`)
+  if (options.noUdev) serverArgs.push(`--no-udev`)
+
+  serverArgs.push('run')
+
+
+  const serverProcess = spawn(javaBin, serverArgs, {
     cwd: serverWorkdir,
     shell: false,
     env:

@@ -11,8 +11,12 @@ import { DeviceDataT } from 'solarxr-protocol';
 
 export function getSentryOrCompute(enabled = false, uuid: string) {
   Sentry.setUser({ id: uuid });
+
   // if sentry is already initialized - SKIP
-  if (enabled && Sentry.isInitialized()) return;
+  if (enabled && Sentry.isInitialized()) {
+    log('Sentry already enabled, skipping initialization');
+    return;
+  }
 
   const client = Sentry.getClient();
   if (client) {
