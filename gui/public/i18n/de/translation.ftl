@@ -884,9 +884,11 @@ onboarding-setup_warning = <b>Warnung:</b> Für gutes Tracking ist die Ersteinri
 onboarding-setup_warning-skip = Einrichtung überspringen
 onboarding-setup_warning-cancel = Einrichtung fortsetzen
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Zurück zur Einführung
 onboarding-wifi_creds-v2 = Tracker mit WLAN
 onboarding-wifi_creds-skip = WLAN-Zugangsdaten überspringen
 onboarding-wifi_creds-submit = Weiter!

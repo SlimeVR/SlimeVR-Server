@@ -739,9 +739,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = skipy setup
 onboarding-setup_warning-cancel = continu setup
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = gaww bawwk to intwoduction
 onboarding-wifi_creds-skip = skipy wi-fi settiwyngs
 onboarding-wifi_creds-submit = suwbmyt!
 onboarding-wifi_creds-ssid =

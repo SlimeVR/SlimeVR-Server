@@ -649,9 +649,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Bỏ qua cài đặt
 onboarding-setup_warning-cancel = Tiếp tục thiết lập
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Quay lại giới thiệu
 onboarding-wifi_creds-skip = Bỏ qua cài đặt Wi-Fi
 onboarding-wifi_creds-submit = Gửi
 onboarding-wifi_creds-ssid =

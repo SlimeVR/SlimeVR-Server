@@ -904,9 +904,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Omitir configuración
 onboarding-setup_warning-cancel = Continuar con la configuración
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Volver a la introducción
 onboarding-wifi_creds-skip = Omitir configuración Wi-Fi
 onboarding-wifi_creds-submit = ¡Enviar!
 onboarding-wifi_creds-ssid =

@@ -419,6 +419,9 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Setup/onboarding menu
 
 
+## Quiz
+
+
 ## Wi-Fi setup
 
 

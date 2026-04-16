@@ -811,9 +811,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = تخطى الإعداد
 onboarding-setup_warning-cancel = متابعة الإعداد
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = العودة إلى المقدمة
 onboarding-wifi_creds-skip = تخطى إعدادات واي فاي
 onboarding-wifi_creds-submit = إرسال!
 onboarding-wifi_creds-ssid =
