@@ -740,9 +740,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = 설정 건너뛰기
 onboarding-setup_warning-cancel = 설정 계속하기
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = 처음으로 돌아가기
 onboarding-wifi_creds-skip = Wi-Fi 설정 건너뛰기
 onboarding-wifi_creds-submit = 저장!
 onboarding-wifi_creds-ssid =

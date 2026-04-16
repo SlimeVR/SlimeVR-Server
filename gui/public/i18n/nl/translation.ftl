@@ -962,9 +962,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Setupgids overslaan
 onboarding-setup_warning-cancel = Doorgaan met setupgids
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Ga terug naar de introductie
 onboarding-wifi_creds-v2 = Trackers die Wi-Fi gebruiken
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =

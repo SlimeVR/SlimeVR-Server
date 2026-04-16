@@ -955,9 +955,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = 跳过设置
 onboarding-setup_warning-cancel = 继续设置
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = 返回简介
 onboarding-wifi_creds-v2 = 通过 Wi-Fi 连接
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =

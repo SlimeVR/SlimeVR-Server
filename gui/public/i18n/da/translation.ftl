@@ -480,9 +480,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Spring opsætning over
 onboarding-setup_warning-cancel = Fortsæt konfigurationen
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Gå tilbage til introduktion
 onboarding-wifi_creds-skip = Spring Wi-Fi-indstillinger over
 onboarding-wifi_creds-submit = Færdig!
 onboarding-wifi_creds-ssid =

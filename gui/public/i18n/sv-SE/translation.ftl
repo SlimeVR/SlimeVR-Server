@@ -839,9 +839,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Hoppa över inställning
 onboarding-setup_warning-cancel = Fortsätt inställning
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Gå tillbaka till introduktion
 onboarding-wifi_creds-skip = Hoppa över Wi-Fi inställningar.
 onboarding-wifi_creds-submit = Överlämna!
 onboarding-wifi_creds-ssid =
