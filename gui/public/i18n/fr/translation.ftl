@@ -1022,6 +1022,9 @@ onboarding-reset_tutorial-2 =
     
     Accroupissez-vous dans une position de « ski » comme affiché sur l'assistant d'alignement des capteurs. Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = Bienvenue sur SlimeVR

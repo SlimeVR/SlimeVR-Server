@@ -618,6 +618,9 @@ settings-general-gesture_control-trackers =
 ## Mounting setup
 
 
+## Install info
+
+
 ## Setup start
 
 

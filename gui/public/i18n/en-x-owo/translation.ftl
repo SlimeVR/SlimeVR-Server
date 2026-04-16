@@ -779,6 +779,9 @@ onboarding-reset_tutorial-2 =
     
     u need to be on pose wike you awe skiing wike it's shown on da Pawtomatic Meownting wizawd and you have a 3 second deway (configuwabwe) befowe it gets twiggewed.
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = wewcome to SwimeVR

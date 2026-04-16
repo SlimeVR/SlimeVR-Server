@@ -1008,6 +1008,9 @@ onboarding-reset_tutorial-2 =
     
     做此校正時需要進行滑雪姿勢，如自動配戴校正的畫面所示。在觸發 3 秒後（可修改）才會真正進行重置。
 
+## Install info
+
+
 ## Setup start
 
 onboarding-home = 歡迎來到 SlimeVR
