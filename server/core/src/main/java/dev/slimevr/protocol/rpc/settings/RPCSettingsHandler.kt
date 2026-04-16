@@ -18,24 +18,9 @@ import kotlin.math.*
 
 class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	init {
-		rpcHandler.registerPacketListener(RpcMessage.SettingsRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
-			this.onSettingsRequest(
-				conn,
-				messageHeader,
-			)
-		}
-		rpcHandler
-			.registerPacketListener(
-				RpcMessage.ChangeSettingsRequest,
-			) { conn: GenericConnection?, messageHeader: RpcMessageHeader ->
-				this.onChangeSettingsRequest(
-					conn,
-					messageHeader,
-				)
-			}
-		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
-			this.onSettingsResetRequest(conn, messageHeader)
-		}
+		rpcHandler.registerPacketListener(RpcMessage.SettingsRequest, ::onSettingsRequest)
+		rpcHandler.registerPacketListener(RpcMessage.ChangeSettingsRequest, ::onChangeSettingsRequest)
+		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest, ::onSettingsResetRequest)
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
@@ -62,6 +47,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				bridge.changeShareSettings(TrackerRole.LEFT_HAND, req.steamVrTrackers().leftHand())
 				bridge.changeShareSettings(TrackerRole.RIGHT_HAND, req.steamVrTrackers().rightHand())
 				bridge.setAutomaticSharedTrackers(req.steamVrTrackers().automaticTrackerToggle())
+				sendSteamVRUpdatedSettings(api, rpcHandler)
 			}
 		}
 
@@ -331,7 +317,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				.vrConfig
 				.autoBone
 
-			RPCSettingsBuilder.readAutoBoneSettings(autoBoneSettings, autoBoneConfig)
+			readAutoBoneSettings(autoBoneSettings, autoBoneConfig)
 		}
 
 		if (req.resetsSettings() != null) {
@@ -369,6 +355,12 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			config.flatRelaxedPose.footAngleInDeg = requestConfig.flatFootAngle()
 		}
 
+		if (req.hidSettings() != null) {
+			val config = api.server.configManager.vrConfig.hidConfig
+			val requestConfig = req.hidSettings()
+			config.trackersOverHID = requestConfig.trackersOverHid()
+		}
+
 		api.server.configManager.saveConfig()
 	}
 
@@ -385,7 +377,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)

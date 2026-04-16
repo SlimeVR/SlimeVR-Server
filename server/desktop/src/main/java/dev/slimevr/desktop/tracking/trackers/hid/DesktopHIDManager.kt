@@ -1,9 +1,12 @@
 package dev.slimevr.desktop.tracking.trackers.hid
 
+import dev.slimevr.VRServer
+import dev.slimevr.config.config
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.hid.HIDCommon
+import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_PID
 import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_PID
 import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_VID
 import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.PACKET_SIZE
@@ -55,7 +58,7 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	}
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
-		if (hidDevice.vendorId == HID_TRACKER_RECEIVER_VID && hidDevice.productId == HID_TRACKER_RECEIVER_PID) { // TODO: Use correct ids
+		if (hidDevice.vendorId == HID_TRACKER_RECEIVER_VID && (hidDevice.productId == HID_TRACKER_RECEIVER_PID || hidDevice.productId == HID_TRACKER_PID)) { // TODO: Use list of valid ids
 			val serial = hidDevice.serialNumber ?: "Unknown HID Device"
 			if (hidDevice.isClosed) {
 				if (!hidDevice.open()) {
@@ -154,6 +157,8 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 					hidDevice.readAll(0) // multiples 64 bytes
 				} catch (e: NegativeArraySizeException) {
 					continue // Skip devices with read error (Maybe disconnected)
+				} catch (e: IllegalStateException) {
+					continue // Skip devices with open error (Maybe disconnected)
 				}
 				devicesPresent = true // Even if the device has no data
 				if (dataReceived.isNotEmpty()) {
@@ -208,11 +213,28 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	}
 
 	private fun deviceEnumerate() {
-		var root: HidDeviceInfoStructure? = null
+		var rootReceivers: HidDeviceInfoStructure? = null
+		var rootTrackers: HidDeviceInfoStructure? = null
+		val trackersOverHID: Boolean = VRServer.instance.configManager.vrConfig.hidConfig.trackersOverHID
 		try {
-			root = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_RECEIVER_PID) // TODO: change to proper vendorId and productId, need to enum all appropriate productId
+			rootReceivers = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_RECEIVER_PID) // TODO: Use list of ids
+			rootTrackers = if (trackersOverHID) {
+				HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_PID)
+			} else {
+				null
+			} // TODO: Use list of ids
 		} catch (e: Throwable) {
 			LogManager.severe("[TrackerServer] Couldn't enumerate HID devices", e)
+		}
+		var root: HidDeviceInfoStructure? = rootReceivers
+		if (root == null) {
+			root = rootTrackers
+		} else {
+			var last: HidDeviceInfoStructure = root
+			while (last.hasNext()) {
+				last = last.next()
+			}
+			last.next = rootTrackers
 		}
 		val hidDeviceList: MutableList<HidDevice> = mutableListOf()
 		if (root != null) {
@@ -234,7 +256,13 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 			for (device in devicesByHID.keys) {
 				// a receiver sends keep-alive data at 10 packets/s
 				if (lastDataByHID[device]!! > 100) { // try to reopen device if no data was received recently (about >100ms)
-					LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
+					if (lastDataByHID[device]!! < 10000) {
+						LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
+						lastDataByHID[device] = 10000 // flag once
+					} else if (lastDataByHID[device]!! < 20000) {
+						LogManager.info("[TrackerServer] Repeatedly reopening device ${device.serialNumber}")
+						lastDataByHID[device] = 20000 // flag twice
+					}
 					device.open()
 				}
 			}

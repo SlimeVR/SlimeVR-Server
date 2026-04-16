@@ -30,14 +30,18 @@ abstract class SerialHandler {
 			Pair(0x1A86, 0x7523),
 			// CH341
 			Pair(0x1A86, 0x5523),
+			// CH343
+			Pair(0x1A86, 0x55D3),
 			// CH9102x
 			Pair(0x1A86, 0x55D4),
 			// / Silabs
 			// CP210x
 			Pair(0x10C4, 0xEA60),
 			// / Espressif
-			// ESP32-C3
+			// ESP32-S3 / ESP32-C3 / ESP32-C5 / ESP32-C6 / ESP32-C61 / ESP32-H2 / ESP32-P4
 			Pair(0x303A, 0x1001),
+			// ESP32-S2
+			Pair(0x303A, 0x0002),
 			// / FTDI
 			// FT232BM/L/Q, FT245BM/L/Q
 			// FT232RL/Q, FT245RL/Q

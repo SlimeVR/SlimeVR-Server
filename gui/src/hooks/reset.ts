@@ -27,13 +27,16 @@ export const BODY_PARTS_GROUPS: Record<MountingResetGroup, BodyPart[]> = {
   fingers: FINGER_BODY_PARTS,
 };
 
-export function useReset(options: UseResetOptions, onReseted?: () => void) {
+export function useReset(
+  options: UseResetOptions,
+  onReseted?: () => void,
+  onFailed?: () => void
+) {
   if (options.type === ResetType.Mounting && !options.group) options.group = 'default';
 
   const serverGuards = useAtomValue(serverGuardsAtom);
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-
   const finishedTimeoutRef = useRef<NodeJS.Timeout>();
   const [status, setStatus] = useState<ResetBtnStatus>('idle');
   const [progress, setProgress] = useState(0);
@@ -62,6 +65,7 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
 
   const onResetCanceled = () => {
     if (status !== 'finished') setStatus('idle');
+    if (onFailed) onFailed();
   };
 
   useEffect(() => {

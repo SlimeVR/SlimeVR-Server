@@ -6,12 +6,16 @@ import {
 } from '@/hooks/tracking-checklist';
 import classNames from 'classnames';
 import {
+  ChangeSettingsRequestT,
   ResetType,
+  RpcMessage,
+  SettingsRequestT,
+  SettingsResponseT,
+  SteamVRTrackersSettingT,
   TrackingChecklistPublicNetworksT,
   TrackingChecklistStepId,
 } from 'solarxr-protocol';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { openUrl } from '@tauri-apps/plugin-opener';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
@@ -29,6 +33,8 @@ import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { TrackingChecklistModal } from './TrackingChecklistModal';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { openUrl } from '@/hooks/crossplatform';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 
 function Step({
   step: { status, id, optional, firstRequired },
@@ -102,6 +108,55 @@ function Step({
   );
 }
 
+function SteamVRHandsEnabled() {
+  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const [steamVrTrackers, setSteamVrTrackers] = useState<Omit<
+    SteamVRTrackersSettingT,
+    'pack'
+  > | null>(null);
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+  }, []);
+
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    if (settings.steamVrTrackers) {
+      setSteamVrTrackers(settings.steamVrTrackers);
+    }
+  });
+
+  const disableHandTrackers = () => {
+    const settings = new ChangeSettingsRequestT();
+    settings.steamVrTrackers = new SteamVRTrackersSettingT(
+      steamVrTrackers?.waist,
+      steamVrTrackers?.chest,
+      steamVrTrackers?.automaticTrackerToggle,
+      steamVrTrackers?.leftFoot,
+      steamVrTrackers?.rightFoot,
+      steamVrTrackers?.leftKnee,
+      steamVrTrackers?.rightKnee,
+      steamVrTrackers?.leftElbow,
+      steamVrTrackers?.rightElbow,
+      false,
+      false
+    );
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
+  };
+
+  return (
+    <div className="space-y-2.5">
+      <Typography id="tracking_checklist-STEAMVR_HANDS_ENABLED-desc" />
+      <div className="flex">
+        <Button
+          id="tracking_checklist-STEAMVR_HANDS_ENABLED-go"
+          variant="primary"
+          onClick={disableHandTrackers}
+        />
+      </div>
+    </div>
+  );
+}
+
 const stepContentLookup: Record<
   number,
   (
@@ -109,7 +164,10 @@ const stepContentLookup: Record<
     context: TrackingChecklistContext
   ) => JSX.Element
 > = {
-  [TrackingChecklistStepId.TRACKERS_REST_CALIBRATION]: (step, { toggle }) => {
+  [TrackingChecklistStepId.TRACKERS_REST_CALIBRATION]: (
+    step,
+    { toggleSession }
+  ) => {
     return (
       <div className="space-y-2.5">
         <Typography id="tracking_checklist-TRACKERS_REST_CALIBRATION-desc" />
@@ -118,7 +176,7 @@ const stepContentLookup: Record<
             <Button
               id="tracking_checklist-ignore"
               variant="secondary"
-              onClick={() => toggle(step.id)}
+              onClick={() => toggleSession(step.id)}
             />
           )}
         </div>
@@ -166,7 +224,7 @@ const stepContentLookup: Record<
       </div>
     );
   },
-  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]: (step, { toggle }) => {
+  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]: (step, { toggleSession }) => {
     return (
       <>
         <div className="space-y-2.5">
@@ -181,7 +239,7 @@ const stepContentLookup: Record<
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
-                onClick={() => toggle(step.id)}
+                onClick={() => toggleSession(step.id)}
               />
             )}
           </div>
@@ -195,7 +253,10 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.UNASSIGNED_HMD]: () => {
     return <Typography id="tracking_checklist-UNASSIGNED_HMD-desc" />;
   },
-  [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (step, { toggle }) => {
+  [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (
+    step,
+    { toggleSession }
+  ) => {
     const data = step.extraData as TrackingChecklistPublicNetworksT | null;
     return (
       <>
@@ -226,7 +287,7 @@ const stepContentLookup: Record<
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
-                onClick={() => toggle(step.id)}
+                onClick={() => toggleSession(step.id)}
               />
             )}
           </div>
@@ -234,7 +295,7 @@ const stepContentLookup: Record<
       </>
     );
   },
-  [TrackingChecklistStepId.VRCHAT_SETTINGS]: (step, { toggle }) => {
+  [TrackingChecklistStepId.VRCHAT_SETTINGS]: (step, { toggleSession }) => {
     return (
       <>
         <div className="space-y-2.5">
@@ -249,7 +310,7 @@ const stepContentLookup: Record<
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
-                onClick={() => toggle(step.id)}
+                onClick={() => toggleSession(step.id)}
               />
             )}
           </div>
@@ -257,7 +318,7 @@ const stepContentLookup: Record<
       </>
     );
   },
-  [TrackingChecklistStepId.MOUNTING_CALIBRATION]: (step, { toggle }) => {
+  [TrackingChecklistStepId.MOUNTING_CALIBRATION]: (step, { toggleSession }) => {
     return (
       <div className="space-y-2.5">
         <Typography id="onboarding-automatic_mounting-mounting_reset-step-0" />
@@ -275,14 +336,17 @@ const stepContentLookup: Record<
             <Button
               id="tracking_checklist-ignore"
               variant="secondary"
-              onClick={() => toggle(step.id)}
+              onClick={() => toggleSession(step.id)}
             />
           )}
         </div>
       </div>
     );
   },
-  [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]: (step, { toggle }) => {
+  [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]: (
+    step,
+    { toggleSession }
+  ) => {
     return (
       <div className="space-y-2.5">
         <Typography id="onboarding-automatic_mounting-mounting_reset-feet-step-0" />
@@ -309,14 +373,17 @@ const stepContentLookup: Record<
             <Button
               id="tracking_checklist-ignore"
               variant="secondary"
-              onClick={() => toggle(step.id)}
+              onClick={() => toggleSession(step.id)}
             />
           )}
         </div>
       </div>
     );
   },
-  [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]: (step, { toggle }) => {
+  [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]: (
+    step,
+    { toggleSession }
+  ) => {
     return (
       <>
         <div className="space-y-2.5">
@@ -332,13 +399,16 @@ const stepContentLookup: Record<
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
-                onClick={() => toggle(step.id)}
+                onClick={() => toggleSession(step.id)}
               />
             )}
           </div>
         </div>
       </>
     );
+  },
+  [TrackingChecklistStepId.STEAMVR_HANDS_ENABLED]: () => {
+    return <SteamVRHandsEnabled />;
   },
 };
 

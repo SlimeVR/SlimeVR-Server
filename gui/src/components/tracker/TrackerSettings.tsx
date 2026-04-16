@@ -199,7 +199,7 @@ export function TrackerSettingsPage() {
               shakeHighlight={false}
             />
           )}
-          {
+          {tracker?.device?.hardwareInfo?.hardwareIdentifier != 'Unknown' && (
             <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
               <Typography
                 variant="section-title"
@@ -223,34 +223,38 @@ export function TrackerSettingsPage() {
                     whitespace="whitespace-pre-wrap"
                     textAlign="text-end"
                   >
-                    v{tracker?.device?.hardwareInfo?.firmwareVersion}
+                    {tracker?.device?.hardwareInfo?.firmwareVersion
+                      ? `v${tracker?.device?.hardwareInfo?.firmwareVersion}`
+                      : '--'}
                   </Typography>
                 </div>
-                <div className="flex justify-between gap-2">
-                  <Typography id="tracker-settings-latest-version" />
-                  {!updateUnavailable && (
-                    <>
-                      {currentFirmwareRelease && (
-                        <Typography
-                          color={
-                            needUpdate === 'updated'
-                              ? undefined
-                              : 'text-accent-background-10'
-                          }
-                          textAlign="text-end"
-                          whitespace="whitespace-pre-wrap"
-                        >
-                          {currentFirmwareRelease.name}
-                        </Typography>
-                      )}
-                    </>
-                  )}
-                  {updateUnavailable && (
-                    <Typography id="tracker-settings-update-unavailable-v2">
-                      No releases found
-                    </Typography>
-                  )}
-                </div>
+                {!!tracker?.device?.hardwareInfo?.officialBoardType && (
+                  <div className="flex justify-between gap-2">
+                    <Typography id="tracker-settings-latest-version" />
+                    {!updateUnavailable && (
+                      <>
+                        {currentFirmwareRelease && (
+                          <Typography
+                            color={
+                              needUpdate === 'updated'
+                                ? undefined
+                                : 'text-accent-background-10'
+                            }
+                            textAlign="text-end"
+                            whitespace="whitespace-pre-wrap"
+                          >
+                            {currentFirmwareRelease.name}
+                          </Typography>
+                        )}
+                      </>
+                    )}
+                    {updateUnavailable && (
+                      <Typography id="tracker-settings-update-unavailable-v2">
+                        No releases found
+                      </Typography>
+                    )}
+                  </div>
+                )}
               </div>
               {!updateUnavailable && (
                 <Tooltip
@@ -289,7 +293,7 @@ export function TrackerSettingsPage() {
                 </Tooltip>
               )}
             </div>
-          }
+          )}
 
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2 overflow-x-auto">
             <div className="flex justify-between">
@@ -317,10 +321,11 @@ export function TrackerSettingsPage() {
             <div className="flex justify-between">
               <Typography>{l10n.getString('tracker-infos-url')}</Typography>
               <Typography>
-                udp://
-                {IPv4.fromNumber(
-                  tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
-                ).toString()}
+                {tracker?.device?.hardwareInfo?.ipAddress?.addr
+                  ? `udp://${IPv4.fromNumber(
+                      tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
+                    ).toString()}`
+                  : '--'}
               </Typography>
             </div>
             <div className="flex justify-between">
@@ -376,6 +381,37 @@ export function TrackerSettingsPage() {
                 {tracker?.device?.hardwareInfo?.networkProtocolVersion || '--'}
               </Typography>
             </div>
+            {tracker?.device?.hardwareStatus?.packetsReceived !== null && (
+              <>
+                <div className="flex justify-between">
+                  <Typography>
+                    {l10n.getString('tracker-infos-packet_loss')}
+                  </Typography>
+                  <Typography>
+                    {(
+                      (tracker?.device?.hardwareStatus?.packetLoss ?? 0) * 100
+                    ).toFixed(0)}
+                    %
+                  </Typography>
+                </div>
+                <div className="flex justify-between">
+                  <Typography>
+                    {l10n.getString('tracker-infos-packets_lost')}
+                  </Typography>
+                  <Typography>
+                    {tracker?.device?.hardwareStatus?.packetsLost ?? '0'}
+                  </Typography>
+                </div>
+                <div className="flex justify-between">
+                  <Typography>
+                    {l10n.getString('tracker-infos-packets_received')}
+                  </Typography>
+                  <Typography>
+                    {tracker?.device?.hardwareStatus?.packetsReceived ?? '0'}
+                  </Typography>
+                </div>
+              </>
+            )}
           </div>
           {tracker?.tracker && (
             <IMUVisualizerWidget tracker={tracker?.tracker} />

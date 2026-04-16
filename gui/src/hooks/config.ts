@@ -5,11 +5,10 @@ import {
 } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
-import { load, Store } from '@tauri-apps/plugin-store';
-import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
-import { isTauri } from '@tauri-apps/api/core';
 import { v4 as uuidv4 } from 'uuid';
+import { useElectron } from './electron';
+import { CrossStorage } from 'electron/preload/interface';
 
 export interface WindowConfig {
   width: number;
@@ -44,7 +43,6 @@ export interface Config {
   assignMode: AssignMode | null;
   discordPresence: boolean;
   errorTracking: boolean | null;
-  decorations: boolean;
   vrcMutedWarnings: string[];
   bvhDirectory: string | null;
   homeLayout: 'default' | 'table';
@@ -75,7 +73,6 @@ export const defaultConfig: Config = {
   assignMode: null,
   discordPresence: false,
   errorTracking: null,
-  decorations: false,
   vrcMutedWarnings: [],
   devSettings: defaultDevSettings,
   bvhDirectory: null,
@@ -84,18 +81,18 @@ export const defaultConfig: Config = {
   lastUsedProportions: null,
 };
 
-interface CrossStorage {
-  set(key: string, value: unknown): Promise<void>;
-  get<T>(key: string): Promise<T | undefined>;
-}
-
 const localStore: CrossStorage = {
   get: async <T>(key: string) => (localStorage.getItem(key) as T) ?? undefined,
   set: async (key, value) => localStorage.setItem(key, value as string),
+  save: async () => true,
+  delete: async (key: string) => {
+    localStorage.removeItem(key);
+    return true;
+  },
 };
 
-const store: CrossStorage = isTauri()
-  ? await load('gui-settings.dat', { autoSave: 100, defaults: {} })
+const store: CrossStorage = window.electronAPI
+  ? await window.electronAPI.getStorage('settings')
   : localStore;
 
 function fallbackToDefaults(loadedConfig: any): Config {
@@ -106,15 +103,6 @@ function fallbackToDefaults(loadedConfig: any): Config {
 // allows to load everything before the first render
 export const loadConfig = async () => {
   try {
-    const migrated = await store.get<string>('configMigratedToTauri');
-    if (!migrated) {
-      const oldConfig = localStorage.getItem('config.json');
-
-      if (oldConfig) await store.set('config.json', oldConfig);
-
-      store.set('configMigratedToTauri', 'true');
-    }
-
     const json = await store.get<string>('config.json');
 
     if (!json) throw new Error('Config has ceased existing for some reason');
@@ -138,7 +126,7 @@ export function useConfigProvider(initialConfig: Config | null): ConfigContext {
   const [currConfig, set] = useState<Config | null>(
     initialConfig || (defaultConfig as Config)
   );
-  const tauri = useIsTauri();
+  const electron = useElectron();
 
   useDebouncedEffect(
     () => {
@@ -159,7 +147,7 @@ export function useConfigProvider(initialConfig: Config | null): ConfigContext {
           } as Config)
         : null
     );
-    if (tauri) {
+    if (electron.isElectron) {
       await waitUntil(
         async () => {
           const newConfig: Partial<Config> = JSON.parse(
@@ -196,8 +184,8 @@ export function useConfigProvider(initialConfig: Config | null): ConfigContext {
     config: currConfig,
     setConfig,
     saveConfig: async () => {
-      if (!tauri) return;
-      await (store as Store).save();
+      if (!electron.isElectron) return;
+      await store.save();
     },
   };
 }

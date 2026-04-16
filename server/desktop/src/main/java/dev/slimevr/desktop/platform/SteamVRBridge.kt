@@ -119,10 +119,7 @@ abstract class SteamVRBridge(
 		if (value == config.automaticSharedTrackersToggling) return
 
 		config.automaticSharedTrackersToggling = value
-		if (value) {
-			updateShareSettingsAutomatically()
-			RPCSettingsHandler.sendSteamVRUpdatedSettings(instance.protocolAPI, instance.protocolAPI.rpcHandler)
-		}
+		updateShareSettingsAutomatically()
 		instance.configManager.saveConfig()
 	}
 
@@ -147,23 +144,13 @@ abstract class SteamVRBridge(
 		val device = instance.deviceManager
 			.createDevice(
 				trackerAdded.trackerName,
-				trackerAdded.trackerSerial,
-				"OpenVR", // TODO : We need the manufacturer
+				null,
+				trackerAdded.manufacturer.ifEmpty { "OpenVR" },
 			)
 
 		// Display name, needsReset and isHmd
-		val displayName: String
-		val isHmd = if (trackerAdded.trackerId == 0) {
-			displayName = if (trackerAdded.trackerName == "HMD") {
-				"SteamVR Driver HMD"
-			} else {
-				"Feeder App HMD"
-			}
-			true
-		} else {
-			displayName = trackerAdded.trackerName
-			false
-		}
+		val displayName: String = trackerAdded.trackerName
+		val isHmd = trackerAdded.trackerId == 0
 
 		// trackerPosition
 		val role = getById(trackerAdded.trackerRole)
@@ -385,12 +372,9 @@ abstract class SteamVRBridge(
 		// External battery reporting anything > 0V.
 		// The following should catch internal battery reporting and erroneous
 		// readings.
-		if (((lowestLevel >= 200) || (lowestLevel < 0)) ||
-			(
-				(trackerVoltage < 3.2) &&
-					(lowestLevel <= 0) ||
-					((trackerVoltage >= 5) && (lowestLevel > 150))
-				)
+		if ((lowestLevel >= 200 || lowestLevel < 0) ||
+			(trackerVoltage < 3.2 && lowestLevel <= 0) ||
+			(trackerVoltage >= 5 && lowestLevel > 150)
 		) {
 			return
 		} else {

@@ -75,7 +75,7 @@ export function VerifyResultsStep({
                 hasRecording === ProcessStatus.FULFILLED && (
                   <Typography>
                     {l10n.getString(
-                      'onboarding-automatic-proportions-verify-results-processing'
+                      'onboarding-automatic_proportions-verify_results-processing'
                     )}
                   </Typography>
                 )}

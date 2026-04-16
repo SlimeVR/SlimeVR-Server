@@ -10,6 +10,7 @@ import {
 } from '@/firmware-tool-api/firmwareToolComponents';
 import { useEffect, useMemo, useState } from 'react';
 import { useSafeLocalization } from '@/i18n/config';
+import semver from 'semver';
 
 function Selector({
   text,
@@ -101,13 +102,10 @@ export function SelectSourceSetep({
               curr.push({
                 name: source.source,
                 official: source.official,
-                disabled:
-                  !partialBoard?.board ||
-                  !source.availableBoards.includes(partialBoard.board),
               });
             return curr;
           },
-          [] as { name: string; official: boolean; disabled: boolean }[]
+          [] as { name: string; official: boolean }[]
         )
         .sort((a, b) => {
           if (a.official !== b.official) return a.official ? -1 : 1;
@@ -115,6 +113,7 @@ export function SelectSourceSetep({
         }),
       possibleBoards: sources
         ?.reduce((curr, source) => {
+          if (source.source !== partialBoard?.source) return curr;
           const unknownBoards = source.availableBoards.filter(
             (b) => !curr.includes(b)
           );
@@ -136,6 +135,7 @@ export function SelectSourceSetep({
       possibleVersions: sources
         ?.reduce(
           (curr, source) => {
+            if (source.source !== partialBoard?.source) return curr;
             if (!curr.find(({ name }) => source.version === name))
               curr.push({
                 disabled:
@@ -143,16 +143,33 @@ export function SelectSourceSetep({
                   !source.availableBoards.includes(partialBoard.board) ||
                   source.source !== partialBoard.source,
                 name: source.version,
-                isBranch: source.branch == source.version,
               });
 
             return curr;
           },
-          [] as { name: string; disabled: boolean; isBranch: boolean }[]
+          [] as { name: string; disabled: boolean }[]
         )
         .sort((a, b) => {
-          if (a.isBranch !== b.isBranch) return a.isBranch ? 1 : -1;
-          return a.name.localeCompare(b.name);
+          // safeguard against inf loop
+          if (a == b) return 0;
+
+          const versionA = semver.valid(a.name);
+          const versionB = semver.valid(b.name);
+
+          // if both are not valid versions:
+          //   if one is main, push that higher
+          //   otherwise, push up the one which is alphabetically sooner
+          if (versionA == null && versionB == null) {
+            if (a.name == 'main') return -1;
+            return a.name.localeCompare(b.name);
+          }
+
+          // if one isn't valid, push the one that's valid up
+          if ((versionA == null) != (versionB == null))
+            return versionA == null ? 1 : -1;
+
+          // if A is lower, push B up
+          return semver.lt(versionA!, versionB!) ? 1 : -1;
         }),
     };
   }, [sources, partialBoard]);
@@ -194,6 +211,25 @@ export function SelectSourceSetep({
             <div className="flex flex-col gap-2">
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="flex flex-col gap-1 w-full">
+                  <Localized id="firmware_tool-select_source-firmware">
+                    <Typography variant="section-title" />
+                  </Localized>
+                  <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
+                    {sourcesGroupped?.map(({ name, official }) => (
+                      <Selector
+                        active={partialBoard?.source === name}
+                        key={`${name}`}
+                        tag={official ? 'official' : undefined}
+                        onClick={() => {
+                          if (partialBoard?.source !== name)
+                            setPartialBoard({ source: name });
+                        }}
+                        text={formatSource(name, official)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1 w-full">
                   <Localized id="firmware_tool-select_source-board_type">
                     <Typography variant="section-title" />
                   </Localized>
@@ -203,7 +239,7 @@ export function SelectSourceSetep({
                         active={partialBoard?.board === board}
                         key={`${board}`}
                         onClick={() => {
-                          setPartialBoard({ board });
+                          setPartialBoard((curr) => ({ ...curr, board }));
                         }}
                         tag={
                           board.startsWith('BOARD_SLIMEVR')
@@ -219,30 +255,15 @@ export function SelectSourceSetep({
                         }
                       />
                     ))}
+                    {partialBoard?.source && possibleBoards?.length === 0 && (
+                      <Typography id="firmware_tool-select_source-no_boards" />
+                    )}
+                    {!partialBoard?.source && (
+                      <Typography id="firmware_tool-select_source-not_selected" />
+                    )}
                   </div>
                 </div>
-                <div className="flex flex-col gap-1 w-full">
-                  <Localized id="firmware_tool-select_source-firmware">
-                    <Typography variant="section-title" />
-                  </Localized>
-                  <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
-                    {sourcesGroupped?.map(({ name, official, disabled }) => (
-                      <Selector
-                        active={partialBoard?.source === name}
-                        disabled={disabled}
-                        key={`${name}`}
-                        tag={official ? 'official' : undefined}
-                        onClick={() => {
-                          setPartialBoard((curr) => ({
-                            ...curr,
-                            source: name,
-                          }));
-                        }}
-                        text={formatSource(name, official)}
-                      />
-                    ))}
-                  </div>
-                </div>
+
                 <div className="flex flex-col gap-1 w-full">
                   <Localized id="firmware_tool-select_source-version">
                     <Typography variant="section-title" />
@@ -268,6 +289,12 @@ export function SelectSourceSetep({
                         text={name}
                       />
                     ))}
+                    {partialBoard?.source && possibleVersions?.length === 0 && (
+                      <Typography id="firmware_tool-select_source-no_versions" />
+                    )}
+                    {!partialBoard?.source && (
+                      <Typography id="firmware_tool-select_source-not_selected" />
+                    )}
                   </div>
                 </div>
               </div>

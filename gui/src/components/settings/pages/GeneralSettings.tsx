@@ -14,6 +14,7 @@ import {
   SettingsResponseT,
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
+  HIDSettingsT,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -42,6 +43,9 @@ import {
   loadResetSettings,
   ResetSettingsForm,
 } from '@/hooks/reset-settings';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { isEqual } from '@react-hookz/deep-equal';
+import { selectAtom } from 'jotai/utils';
 
 export type SettingsForm = {
   trackers: {
@@ -101,6 +105,9 @@ export type SettingsForm = {
   };
   resetsSettings: ResetSettingsForm;
   stayAligned: StayAlignedSettingsForm;
+  hidSettings: {
+    trackersOverHID: boolean;
+  };
 };
 
 const defaultValues: SettingsForm = {
@@ -156,9 +163,19 @@ const defaultValues: SettingsForm = {
   legTweaks: { correctionStrength: 0.3 },
   resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
+  hidSettings: { trackersOverHID: false },
 };
 
+const settingsAtom = atom(new SettingsResponseT());
+const settingsValueAtom = selectAtom(
+  settingsAtom,
+  (settings) => settings,
+  isEqual
+);
+
 export function GeneralSettings() {
+  const setSettings = useSetAtom(settingsAtom);
+  const settings = useAtomValue(settingsValueAtom);
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const { currentLocales } = useLocaleConfig();
@@ -178,7 +195,10 @@ export function GeneralSettings() {
   const { reset, control, watch, handleSubmit, getValues, setValue } =
     useForm<SettingsForm>({
       defaultValues,
+      mode: 'onChange',
+      reValidateMode: 'onChange',
     });
+
   const {
     trackers: {
       automaticTrackerToggle,
@@ -277,6 +297,10 @@ export function GeneralSettings() {
 
     settings.stayAligned = serializeStayAlignedSettings(values.stayAligned);
 
+    const hidSettings = new HIDSettingsT();
+    hidSettings.trackersOverHid = values.hidSettings.trackersOverHID;
+    settings.hidSettings = hidSettings;
+
     if (values.resetsSettings) {
       settings.resetsSettings = loadResetSettings(values.resetsSettings);
     }
@@ -293,10 +317,7 @@ export function GeneralSettings() {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
 
-  // If null, we still haven't shown the hands warning
-  // if false then initially the hands warning was disabled
-  const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+  useEffect(() => {
     const formData: DefaultValues<SettingsForm> = {};
 
     if (settings.filtering) {
@@ -392,7 +413,20 @@ export function GeneralSettings() {
       );
     }
 
+    if (settings.hidSettings) {
+      formData.hidSettings = {
+        trackersOverHID: settings.hidSettings.trackersOverHid,
+      };
+    }
+
     reset({ ...getValues(), ...formData });
+  }, [settings]);
+
+  // If null, we still haven't shown the hands warning
+  // if false then initially the hands warning was disabled
+  const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    setSettings(settings);
   });
 
   useEffect(() => {
@@ -405,18 +439,6 @@ export function GeneralSettings() {
       setHandsWarning(null);
     }
   }, [steamVrLeftHand, steamVrRightHand, handsWarning]);
-
-  // Handle scrolling to selected page
-  // useEffect(() => {
-  //   const typedState: { scrollTo: string } = state as any;
-  //   if (!pageRef.current || !typedState || !typedState.scrollTo) {
-  //     return;
-  //   }
-  //   const elem = pageRef.current.querySelector(`#${typedState.scrollTo}`);
-  //   if (elem) {
-  //     elem.scrollIntoView({ behavior: 'smooth' });
-  //   }
-  // }, [state]);
 
   return (
     <SettingsPageLayout>
@@ -688,6 +710,28 @@ export function GeneralSettings() {
             <MagnetometerToggleSetting
               settingType="general"
               id="mechanics-magnetometer"
+            />
+            <div className="flex flex-col pt-5 pb-3">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-trackers_over_usb'
+                )}
+              </Typography>
+              <Localized
+                id="settings-general-tracker_mechanics-trackers_over_usb-description"
+                elems={{ b: <b /> }}
+              >
+                <Typography />
+              </Localized>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="hidSettings.trackersOverHID"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-trackers_over_usb-enabled-label'
+              )}
             />
           </>
         </SettingsPagePaneLayout>
@@ -1107,32 +1151,31 @@ export function GeneralSettings() {
                     />
                   </div>
                 </div>
-
-                <div className="flex flex-col pt-2 pb-3">
-                  <Typography variant="section-title">
-                    {l10n.getString(
-                      'settings-general-fk_settings-self_localization-title'
-                    )}
-                  </Typography>
-                  <Typography>
-                    {l10n.getString(
-                      'settings-general-fk_settings-self_localization-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="grid sm:grid-cols-1 gap3 pb5">
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    control={control}
-                    name="toggles.selfLocalization"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-self_localization-title'
-                    )}
-                  />
-                </div>
               </>
             )}
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-fk_settings-self_localization-title'
+                )}
+              </Typography>
+              <Typography>
+                {l10n.getString(
+                  'settings-general-fk_settings-self_localization-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 gap3 pb5">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.selfLocalization"
+                label={l10n.getString(
+                  'settings-general-fk_settings-self_localization-title'
+                )}
+              />
+            </div>
           </>
         </SettingsPagePaneLayout>
 

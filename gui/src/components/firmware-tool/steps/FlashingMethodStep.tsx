@@ -132,7 +132,6 @@ function SerialDevicesList({
   useEffect(() => {
     if (isActive) {
       const id = setInterval(() => {
-        console.log('request');
         sendRPCPacket(
           RpcMessage.SerialDevicesRequest,
           new SerialDevicesRequestT()
@@ -231,7 +230,10 @@ function OTADevicesList({
   const allDevices = useAtomValue(devicesAtom);
 
   const devices =
-    allDevices.filter(({ trackers }) => {
+    allDevices.filter(({ hardwareInfo, trackers }) => {
+      // filter out devices we can't update
+      if (!hardwareInfo?.officialBoardType) return false;
+
       // if the device has no trackers it is prob misconfigured so we skip for safety
       if (trackers.length <= 0) return false;
 
@@ -375,12 +377,6 @@ export function FlashingMethodStep({
   });
 
   const flashingMethod = watch('flashingMethod');
-
-  console.log(
-    !isValid,
-    selectedDevices === null,
-    selectedDevices?.length === 0
-  );
 
   return (
     <>

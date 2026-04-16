@@ -29,9 +29,13 @@ yarn-error.log*
 /dist
 /stats.html
 vite.config.ts.timestamp*
+electron.vite.config.*.mjs
 
 # eslint
 .eslintcache
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# electron
+out/

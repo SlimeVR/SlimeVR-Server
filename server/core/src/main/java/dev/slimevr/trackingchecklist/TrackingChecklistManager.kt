@@ -8,9 +8,12 @@ import dev.slimevr.games.vrchat.VRCConfigRecommendedValues
 import dev.slimevr.games.vrchat.VRCConfigValidity
 import dev.slimevr.games.vrchat.VRCConfigValues
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
+import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.*
@@ -81,6 +84,16 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 				enabled = false
 				optional = false
 				ignorable = true
+				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
+			},
+		)
+
+		steps.add(
+			TrackingChecklistStepT().apply {
+				id = TrackingChecklistStepId.STEAMVR_HANDS_ENABLED
+				enabled = false
+				optional = false
+				ignorable = false
 				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
 			},
 		)
@@ -199,7 +212,8 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		}
 		// We ask for a full reset if you need to do mounting calibration but cant because you haven't done full reset in a while
 		// or if you have trackers that need reset after re-assigning
-		val needFullReset = (!resetMountingCompleted && !vrServer.serverGuards.canDoMounting) || trackerRequireReset.isNotEmpty()
+		val usingSavedCalibration = vrServer.configManager.vrConfig.resetsConfig.saveMountingReset && imuTrackers.all { it.resetsHandler.mountRotFix != Quaternion.IDENTITY }
+		val needFullReset = (vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC && !usingSavedCalibration && !resetMountingCompleted && !vrServer.serverGuards.canDoMounting) || trackerRequireReset.isNotEmpty()
 		updateValidity(TrackingChecklistStepId.FULL_RESET, !needFullReset) {
 			it.enabled = imuTrackers.isNotEmpty()
 			if (trackerRequireReset.isNotEmpty()) {
@@ -216,7 +230,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			}
 		}
 		val hmd =
-			assignedTrackers.firstOrNull { it.isHmd && !it.isInternal && it.status.sendData }
+			vrServer.allTrackers.firstOrNull { it.status != TrackerStatus.DISCONNECTED && it.isHmd && !it.isInternal && it.status.sendData }
 		val assignedHmd = hmd == null || vrServer.humanPoseManager.skeleton.headTracker != null
 		updateValidity(TrackingChecklistStepId.UNASSIGNED_HMD, assignedHmd) {
 			if (!assignedHmd) {
@@ -277,6 +291,17 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 				} else {
 					it.extraData = null
 				}
+			}
+
+			val handsEnabled = steamVRBridge.getShareSetting(TrackerRole.LEFT_HAND) || steamVRBridge.getShareSetting(TrackerRole.RIGHT_HAND)
+			val hasControllers = vrServer.allTrackers.any {
+				(it.trackerPosition == TrackerPosition.LEFT_HAND || it.trackerPosition == TrackerPosition.RIGHT_HAND) && it.isComputed && !it.isInternal
+			}
+			val hasHandTrackers = vrServer.allTrackers.any {
+				(it.trackerPosition == TrackerPosition.LEFT_HAND || it.trackerPosition == TrackerPosition.RIGHT_HAND) && !it.isComputed
+			}
+			updateValidity(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED, !steamvrConnected || !handsEnabled || (!hasControllers && hasHandTrackers)) {
+				it.enabled = true
 			}
 		}
 
