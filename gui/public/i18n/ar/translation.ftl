@@ -811,9 +811,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = تخطى الإعداد
 onboarding-setup_warning-cancel = متابعة الإعداد
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = العودة إلى المقدمة
 onboarding-wifi_creds-skip = تخطى إعدادات واي فاي
 onboarding-wifi_creds-submit = إرسال!
 onboarding-wifi_creds-ssid =
@@ -848,6 +850,9 @@ onboarding-reset_tutorial-2 =
     يساعد إعادة التعيين المتصاعد في تحديد كيفية وضع أجهزة التعقب عليك بالفعل. لذلك إذا قمت بنقلهم عن طريق الخطأ وغيرت كيفية توجيههم بمقدار كبير ، فسيساعد ذلك.
     
     يجب أن تكون في وضع تزلج كما هو موضح في معالج "التثبيت التلقائي" ولديك تأخير لمدة 3 ثوانٍ (قابل للتكوين) قبل أن يتم تشغيله.
+
+## Install info
+
 
 ## Setup start
 
