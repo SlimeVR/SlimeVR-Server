@@ -14,9 +14,6 @@ import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.hid.HIDCommon
-import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_PID
-import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_PID
-import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_VID
 import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.PACKET_SIZE
 import dev.slimevr.tracking.trackers.hid.HIDDevice
 import io.eiren.util.logging.LogManager
@@ -94,7 +91,7 @@ class AndroidHIDManager(
 	}
 
 	fun checkConfigureDevice(usbDevice: UsbDevice, requestPermission: Boolean = false) {
-		if (usbDevice.vendorId == HID_TRACKER_RECEIVER_VID && (usbDevice.productId == HID_TRACKER_RECEIVER_PID || usbDevice.productId == HID_TRACKER_PID)) {
+		if (HIDCommon.matchesAny(usbDevice.vendorId, usbDevice.productId)) {
 			if (usbManager.hasPermission(usbDevice)) {
 				LogManager.info("[TrackerServer] Already have permission for ${usbDevice.deviceName}")
 				proceedWithDeviceConfiguration(usbDevice)
@@ -204,7 +201,7 @@ class AndroidHIDManager(
 	private fun deviceEnumerate(requestPermission: Boolean = false) {
 		val trackersOverHID: Boolean = VRServer.instance.configManager.vrConfig.hidConfig.trackersOverHID
 		val hidDeviceList: MutableList<UsbDevice> = usbManager.deviceList.values.filter {
-			it.vendorId == HID_TRACKER_RECEIVER_VID && (it.productId == HID_TRACKER_RECEIVER_PID || (trackersOverHID && it.productId == HID_TRACKER_PID))
+			HIDCommon.matchesReceiver(it.vendorId, it.productId) || (trackersOverHID && HIDCommon.matchesTracker(it.vendorId, it.productId))
 		}.toMutableList()
 		synchronized(devicesByHID) {
 			// Work on devicesByHid and add/remove as necessary
