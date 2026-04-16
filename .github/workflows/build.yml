@@ -145,12 +145,12 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
       - name: Download Server Jar
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: server-jar
           path: server
       - name: Download GUI Dist
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: gui-dist
       - name: Extract GUI for Electron
@@ -224,7 +224,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
       - name: Download GUI Dist
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: gui-dist
       - name: Extract GUI for Android
@@ -271,18 +271,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download All Release Artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           pattern: release-*
           path: release-out
           merge-multiple: true
       - name: Download Server Jar
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: server-jar
           path: server
       - name: Download GUI Dist
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: gui-dist
       - name: Create GitHub Release
