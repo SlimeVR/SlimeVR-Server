@@ -2,6 +2,7 @@
 
 package dev.slimevr.desktop
 
+import dev.slimevr.FeatureFlags
 import dev.slimevr.Keybinding
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
@@ -9,6 +10,7 @@ import dev.slimevr.bridge.Bridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.desktop.firmware.DesktopSerialFlashingHandler
 import dev.slimevr.desktop.games.vrchat.DesktopVRCConfigHandler
+import dev.slimevr.desktop.install.drivers.InstallDrivers
 import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
@@ -43,6 +45,8 @@ val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
 
+val featureFlags = FeatureFlags()
+
 fun main(args: Array<String>) {
 	System.setProperty("awt.useSystemAAFontSettings", "on")
 	System.setProperty("swing.aatext", "true")
@@ -50,23 +54,38 @@ fun main(args: Array<String>) {
 	val parser: CommandLineParser = DefaultParser()
 	val formatter = HelpFormatter()
 	val options = Options()
+	val isLinux = OperatingSystem.currentPlatform == OperatingSystem.LINUX
 	options.addOption("h", "help", false, "Show help")
 	options.addOption("V", "version", false, "Show version")
+	options.addOption("i", "install", true, "Run the driver install")
+	options.addOption("s", "steam", true, "Run the server in steam mode")
+	if (isLinux) {
+		options.addOption("u", "no-udev", false, "Skip checking if udev rules are installed")
+	}
+
 	val cmd: CommandLine = try {
 		parser.parse(options, args, true)
 	} catch (e: org.apache.commons.cli.ParseException) {
 		formatter.printHelp("slimevr.jar", options)
 		exitProcess(1)
 	}
-
 	if (cmd.hasOption("help")) {
 		formatter.printHelp("slimevr.jar", options)
 		exitProcess(0)
 	}
 	if (cmd.hasOption("version")) {
-		println("SlimeVR Server $VERSION")
+		LogManager.info("SlimeVR Server $VERSION")
 		exitProcess(0)
 	}
+	if (cmd.hasOption("install")) {
+		val installDrivers = InstallDrivers()
+		installDrivers.runInstaller()
+		exitProcess(0)
+	}
+	if (cmd.hasOption("steam")) {
+		featureFlags.steam = true
+	}
+	featureFlags.skipCheckUdev = !isLinux || cmd.hasOption("no-udev")
 
 	if (cmd.args.isEmpty()) {
 		System.err.println("No command specified, expected 'run'")
@@ -99,6 +118,12 @@ fun main(args: Array<String>) {
 		return
 	}
 
+	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toInt()
+	if (featureFlags.steam && isInstallDisabled != 1) {
+		val installDrivers = InstallDrivers()
+		installDrivers.runInstaller()
+	}
+
 	val configDir = resolveConfig()
 	LogManager.info("Using config dir: $configDir")
 
@@ -126,6 +151,7 @@ fun main(args: Array<String>) {
 	try {
 		val vrServer = VRServer(
 			::provideBridges,
+			{ _ -> featureFlags },
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
 			{ _ -> DesktopVRCConfigHandler() },
@@ -133,7 +159,6 @@ fun main(args: Array<String>) {
 			configManager = configManager,
 		)
 		vrServer.start()
-
 		// Start service for USB HID trackers
 		DesktopHIDManager(
 			"Sensors HID service",
@@ -218,7 +243,6 @@ fun provideBridges(
 				)
 				yield(linuxBridge)
 			}
-
 			yield(
 				UnixSocketBridge(
 					server,

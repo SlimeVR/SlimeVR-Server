@@ -1,5 +1,6 @@
 package io.eiren.util
 
+import dev.slimevr.SLIMEVR_IDENTIFIER
 import java.io.File
 import java.nio.file.Path
 import java.util.*
@@ -38,6 +39,12 @@ enum class OperatingSystem(
 				var dir = System.getenv("SLIMEVR_SOCKET_DIR")
 				if (dir != null) return dir
 				if (currentPlatform == LINUX) {
+					val isPressureVessel = System.getenv("PRESSURE_VESSEL_RUNTIME")?.isNotEmpty() == true
+					if (isPressureVessel) {
+						dir = System.getenv("XDG_CONFIG_HOME")?.let { Path(it, SLIMEVR_IDENTIFIER).toString() }
+							?: System.getenv("HOME")?.let { Path(it, ".local", "share", SLIMEVR_IDENTIFIER).toString() }
+						if (dir != null) return dir
+					}
 					dir = System.getenv("XDG_RUNTIME_DIR")
 					if (dir != null) return dir
 				}

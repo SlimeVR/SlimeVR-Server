@@ -17,6 +17,7 @@ import { AutomaticProportionsPage } from './components/onboarding/pages/body-pro
 import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
 import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
 import { HomePage } from './components/onboarding/pages/Home';
+import { ErrorCollectingConsentPage } from './components/onboarding/pages/ErrorCollectingConsent';
 import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
@@ -58,6 +59,7 @@ import { QuizMocapPosQuestion } from './components/onboarding/pages/quiz/MocapPr
 import { ElectronContextC, provideElectron } from './hooks/electron';
 import { AppLocalizationProvider } from './i18n/config';
 import { openUrl } from './hooks/crossplatform';
+import { UdevRulesModal } from './components/onboarding/UdevRulesModal';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -75,6 +77,7 @@ function Layout() {
       <SerialDetectionModal />
       <VersionUpdateModal />
       <UnknownDeviceModal />
+      <UdevRulesModal />
       <SentryRoutes>
         <Route element={<AppLayout />}>
           <Route
@@ -152,6 +155,10 @@ function Layout() {
             }
           >
             <Route path="home" element={<HomePage />} />
+            <Route
+              path="error-collecting-consent"
+              element={<ErrorCollectingConsentPage />}
+            />
             <Route path="wifi-creds" element={<WifiCredsPage />} />
             <Route path="quiz/slime-set" element={<QuizSlimeSetQuestion />} />
             <Route path="quiz/usage" element={<QuizUsageQuestion />} />
