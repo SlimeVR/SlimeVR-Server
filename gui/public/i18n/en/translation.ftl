@@ -524,8 +524,10 @@ settings-general-steamvr-trackers-right_hand = Right hand
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
 settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments.
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
-settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers.
-    Are you sure?
+settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> Enabling the SteamVR hand trackers will disable inputs from real controllers.
+    This should only be enabled if you are using SlimeVR for hand tracking.
+
+    Are you sure you want to do this?
 settings-general-steamvr-trackers-hands-warning-cancel = Cancel
 settings-general-steamvr-trackers-hands-warning-done = Yes
 
@@ -1645,6 +1647,9 @@ tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR not running
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
+tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
 tracking_checklist-TRACKER_ERROR = Trackers with Errors
