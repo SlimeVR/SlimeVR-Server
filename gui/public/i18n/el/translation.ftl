@@ -291,6 +291,9 @@ settings-osc-vrchat-network-trackers-feet = Πόδια
 ## Setup/onboarding menu
 
 
+## Quiz
+
+
 ## Wi-Fi setup
 
 

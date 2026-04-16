@@ -589,9 +589,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Ohita asennus
 onboarding-setup_warning-cancel = Jatka asennusta
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Palaa esittelyyn
 onboarding-wifi_creds-skip = Ohita Wi-Fi-asetukset
 onboarding-wifi_creds-submit = Lähetä!
 onboarding-wifi_creds-ssid =

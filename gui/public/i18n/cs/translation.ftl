@@ -836,9 +836,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Přeskočit nastavení
 onboarding-setup_warning-cancel = Pokračovat v nastavení
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Zpět na úvod
 onboarding-wifi_creds-v2 = Trackey používající Wi-Fi
 onboarding-wifi_creds-skip = Přeskočit nastavení Wi-Fi
 onboarding-wifi_creds-submit = Odeslat!
