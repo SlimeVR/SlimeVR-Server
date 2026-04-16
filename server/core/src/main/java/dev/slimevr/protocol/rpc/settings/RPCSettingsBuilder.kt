@@ -165,7 +165,7 @@ fun createTapDetectionSettings(
 		tapDetectionConfig.numberTrackersOverThreshold,
 		tapDetectionConfig.yawResetTracker.bodyPart,
 		tapDetectionConfig.fullResetTracker.bodyPart,
-			tapDetectionConfig.mountingResetTracker.bodyPart,
+		tapDetectionConfig.mountingResetTracker.bodyPart,
 	)
 
 fun createSteamVRSettings(fbb: FlatBufferBuilder, bridge: ISteamVRBridge?): Int {
@@ -424,7 +424,7 @@ fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
 				server.configManager.vrConfig.stayAlignedConfig,
 			),
 			createHIDSettings(fbb, server.configManager.vrConfig.hidConfig),
-			0
+			0,
 		)
 }
 
