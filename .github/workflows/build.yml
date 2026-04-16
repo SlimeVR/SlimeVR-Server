@@ -164,10 +164,15 @@ jobs:
           mkdir -p gui/dist/artifacts/linux/ \
                    gui/dist/artifacts/win \
                    gui/dist/artifacts/mac
+          VERSION=$(git --no-pager tag --sort -taggerdate --points-at HEAD | head -1)
+          [ -z "$VERSION" ] && VERSION="0.0.0"
+          VERSION="${VERSION#v}"
+          echo "Building version: $VERSION"
           cd gui
           pnpm i
           pnpm exec electron-builder --${{ matrix.platform }} \
             ${{ matrix.platform == 'macos' && '--universal' || '' }} \
+            --config.extraMetadata.version="$VERSION" \
             --publish never
       - name: Collect and Rename Artifacts
         shell: bash
