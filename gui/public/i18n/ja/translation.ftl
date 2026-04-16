@@ -574,9 +574,11 @@ onboarding-wip = 実行中
 onboarding-setup_warning-skip = セットアップをスキップする
 onboarding-setup_warning-cancel = セットアップを続行する
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = 戻る
 onboarding-wifi_creds-skip = Wi-Fi設定をスキップする
 onboarding-wifi_creds-submit = 実行！
 onboarding-wifi_creds-ssid =

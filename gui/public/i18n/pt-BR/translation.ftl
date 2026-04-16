@@ -970,9 +970,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Pular configurações
 onboarding-setup_warning-cancel = Continuar configurações
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Voltar para introdução
 onboarding-wifi_creds-v2 = Trackers conectados via Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =

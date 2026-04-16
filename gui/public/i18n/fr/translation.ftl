@@ -971,9 +971,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Passer la configuration
 onboarding-setup_warning-cancel = Continuer la configuration
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Retour à l'introduction
 onboarding-wifi_creds-v2 = Capteurs utilisant le Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =

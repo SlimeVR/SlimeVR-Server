@@ -954,9 +954,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = ข้ามการตั้งค่า
 onboarding-setup_warning-cancel = ดำเนินการตั้งค่าต่อ
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = กลับไปที่หน้าบทนำ
 onboarding-wifi_creds-v2 = แทร็กเกอร์ที่ใช้ Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =

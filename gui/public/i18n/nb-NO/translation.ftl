@@ -494,9 +494,11 @@ onboarding-skip = Hopp over oppsett
 onboarding-continue = Fortsett
 onboarding-wip = Arbeid pågår
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Gå tilbake til introduksjonen
 onboarding-wifi_creds-skip = Hopp over Wi-Fi innstillinger
 onboarding-wifi_creds-submit = Send inn!
 onboarding-wifi_creds-ssid =
