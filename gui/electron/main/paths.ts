@@ -53,7 +53,7 @@ export const getExeFolder = () => {
 };
 
 export const getWindowStateFile = () =>
-  join(getGuiDataFolder(), '.window-state.json');
+  join(getServerDataFolder(), '.window-state.json');
 
 const localJavaBin = (sharedDir: string) => {
   const platform = getPlatform();
