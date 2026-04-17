@@ -1,4 +1,4 @@
-import { access, mkdir, readFile, writeFile } from "fs/promises";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { logger } from "./logger";
 import { getGuiDataFolder } from "./paths";
@@ -10,29 +10,25 @@ export class CustomStore {
   private filePath: string;
   private debounceMs: number;
 
-  private constructor(filePath: string, debounceMs: number = 2000) {
+  constructor(filePath: string, debounceMs: number = 2000) {
     this.filePath = filePath;
     this.debounceMs = debounceMs;
+    this.load();
   }
 
-  static async create(filePath: string, debounceMs: number = 2000): Promise<CustomStore> {
-    const store = new CustomStore(filePath, debounceMs);
-    await store.load();
-    return store;
-  }
-
-  private async load(): Promise<void> {
+  private load() {
     try {
-      await access(this.filePath);
-      const raw = await readFile(this.filePath, 'utf-8');
-      console.log(`Loaded store from ${this.filePath}:`, raw);
-      this.data = JSON.parse(raw);
-    } catch {
+      if (existsSync(this.filePath)) {
+        const raw = readFileSync(this.filePath, 'utf-8');
+        this.data = JSON.parse(raw);
+      }
+    } catch (err) {
+      logger.error(err, `Failed to load store at ${this.filePath}`);
       this.data = {};
-      logger.warn(`No existing store found at ${this.filePath}, starting with empty store.`);
     }
   }
 
+  /** Set a key and trigger the debounced auto-save */
   set(key: string, value: unknown) {
     this.data[key] = value;
     this.triggerAutoSave();
@@ -58,12 +54,14 @@ export class CustomStore {
     }, this.debounceMs);
   }
 
-  async save(): Promise<boolean> {
+  save(): boolean {
     try {
       if (this.saveTimeout) clearTimeout(this.saveTimeout);
 
-      await mkdir(dirname(this.filePath), { recursive: true });
-      await writeFile(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8');
+      const dir = dirname(this.filePath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+
+      writeFileSync(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8');
       return true;
     } catch (err) {
       logger.error(err, 'Save failed', this.filePath);
@@ -72,9 +70,7 @@ export class CustomStore {
   }
 }
 
-export async function initStores() {
-  return {
-    settings: await CustomStore.create(join(getGuiDataFolder(), 'gui-settings.dat'), 1000),
-    cache: await CustomStore.create(join(getGuiDataFolder(), 'gui-cache.dat'), 100),
-  };
-}
+export const stores = {
+  settings: new CustomStore(join(getGuiDataFolder(), 'gui-settings.dat'), 1000),
+  cache: new CustomStore(join(getGuiDataFolder(), 'gui-cache.dat'), 100),
+};

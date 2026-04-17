@@ -105,7 +105,10 @@ function fallbackToDefaults(loadedConfig: any): Config {
 // allows to load everything before the first render
 export const loadConfig = async () => {
   try {
-    const json = await store.get<string>('config.json') ?? '{}';
+    const json = await store.get<string>('config.json');
+
+    if (!json) throw new Error('Config has ceased existing for some reason');
+
     const loadedConfig = fallbackToDefaults(JSON.parse(json));
 
     if (!loadedConfig.uuid) {
