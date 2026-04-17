@@ -26,16 +26,18 @@ import {
   getServerDataFolder,
   getWindowStateFile,
 } from './paths';
-import { stores } from './store';
+import { initStores } from './store';
 import { closeLogger, logger } from './logger';
-import { writeFileSync } from 'node:fs';
 
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
 import { ServerStatusEvent } from 'electron/preload/interface';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
+
+type Stores = Awaited<ReturnType<typeof initStores>>;
+let stores: Stores;
 
 // Fixes colors looking washed on linux
 // Might affect hdr
@@ -188,10 +190,6 @@ handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
   }
 });
 
-const windowStateFile = await readFile(getWindowStateFile(), {
-  encoding: 'utf-8',
-}).catch(() => null);
-
 const defaultWindowState: {
   width: number;
   height: number;
@@ -203,7 +201,15 @@ const defaultWindowState: {
   x: undefined,
   y: undefined,
 };
-const windowState = windowStateFile ? JSON.parse(windowStateFile) : defaultWindowState;
+
+const windowState = await readFile(getWindowStateFile(), {
+  encoding: 'utf-8',
+})
+.then(data => JSON.parse(data))
+.catch(() => {
+  logger.error('Failed to load window state, using defaults');
+  return defaultWindowState;
+});
 
 const MIN_WIDTH = 393;
 const MIN_HEIGHT = 667;
@@ -236,7 +242,7 @@ function validateWindowState(state: typeof defaultWindowState) {
 
 const saveWindowState = async () => {
   await mkdir(dirname(getWindowStateFile()), { recursive: true });
-  writeFileSync(getWindowStateFile(), JSON.stringify(windowState));
+  await writeFile(getWindowStateFile(), JSON.stringify(windowState), { encoding: 'utf-8' });
 };
 
 function createWindow() {
@@ -451,6 +457,12 @@ const spawnServer = async () => {
   };
 };
 
+const createFolders = async () => {
+  await mkdir(getServerDataFolder(), { recursive: true });
+  await mkdir(getGuiDataFolder(), { recursive: true });
+}
+
+
 let isQuitting = false;
 
 app.whenReady().then(async () => {
@@ -461,6 +473,21 @@ app.whenReady().then(async () => {
     return net.fetch('file://' + filePath);
   });
 
+
+  try {
+    await createFolders();
+  } catch (err) {
+    logger.error(err, 'Failed to initialize stores');
+    dialog.showErrorBox(
+      'SlimeVR',
+      'Failed to initialize application storage. Please make sure the application has write permissions to its data folder.'
+    );
+    app.quit();
+    return;
+  }
+
+
+  stores = await initStores();
   checkEnvironmentVariables();
   const server = await spawnServer();
 
@@ -479,8 +506,8 @@ app.whenReady().then(async () => {
     logger.info('App quitting, saving...');
     server?.close();
     await server?.waitForExit();
-    stores.settings.save();
-    stores.cache.save();
+    await stores.settings.save();
+    await stores.cache.save();
     discordPresence.destroy();
     await saveWindowState();
     await closeLogger();
