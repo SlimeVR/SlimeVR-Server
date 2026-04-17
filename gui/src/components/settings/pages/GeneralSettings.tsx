@@ -309,7 +309,9 @@ export function GeneralSettings() {
   };
 
   useEffect(() => {
-    const subscription = watch(() => handleSubmit(onSubmit)());
+    const subscription = watch((value, { type }) => {
+      if (type === 'change') handleSubmit(onSubmit)();
+    });
     return () => subscription.unsubscribe();
   }, []);
 
