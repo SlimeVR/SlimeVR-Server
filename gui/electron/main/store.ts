@@ -25,7 +25,6 @@ export class CustomStore {
     try {
       await access(this.filePath);
       const raw = await readFile(this.filePath, 'utf-8');
-      console.log(`Loaded store from ${this.filePath}:`, raw);
       this.data = JSON.parse(raw);
     } catch {
       this.data = {};
