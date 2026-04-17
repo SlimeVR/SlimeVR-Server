@@ -13,7 +13,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.io.Buffer
 import kotlinx.io.readByteArray
-import solarxr_protocol.datatypes.MagnetometerStatus
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -24,7 +23,7 @@ data class LastPing(
 )
 
 data class SensorConfigFlags(
-	val magStatus: MagnetometerStatus,
+	val magEnabled: Boolean,
 )
 
 data class UDPConnectionState(
@@ -107,6 +106,7 @@ class UDPConnection(
 				FlagsBehaviour,
 				TemperatureBehaviour,
 				SensorConfigBehaviour,
+				AckConfigBehaviour,
 			)
 
 			val context = Context.create(

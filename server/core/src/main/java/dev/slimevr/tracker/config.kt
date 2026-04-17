@@ -17,19 +17,14 @@ fun restoreFromConfig(state: TrackerState, config: TrackerConfig): TrackerState 
 	magStatus = when (config.magEnabled) {
 		true -> MagnetometerStatus.ENABLED
 		false -> MagnetometerStatus.DISABLED
-		null -> MagnetometerStatus.NOT_SUPPORTED
+		null -> state.magStatus
 	}
 )
 
-private fun stateToConfig(state: TrackerState) = TrackerConfig(
+private fun applyStateToConfig(config: TrackerConfig, state: TrackerState) = config.copy(
 	bodyPart = state.bodyPart,
 	customName = state.customName,
 	mountingOrientation = state.mountingOrientation,
-	magEnabled = when (state.magStatus) {
-		MagnetometerStatus.DISABLED -> false
-		MagnetometerStatus.ENABLED -> true
-		MagnetometerStatus.NOT_SUPPORTED -> null
-	},
 )
 
 class TrackerConfigBehaviour(
@@ -38,10 +33,10 @@ class TrackerConfigBehaviour(
 ) : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
-			.distinctUntilChangedBy { stateToConfig(it) }
+			.distinctUntilChangedBy { it.bodyPart to it.customName to it.mountingOrientation }
 			.drop(1)
 			.onEach { state ->
-				settings.context.dispatch(SettingsActions.UpdateTracker(hardwareId) { stateToConfig(state) })
+				settings.context.dispatch(SettingsActions.UpdateTracker(hardwareId) { applyStateToConfig(this, state) })
 			}
 			.launchIn(receiver.context.scope)
 	}

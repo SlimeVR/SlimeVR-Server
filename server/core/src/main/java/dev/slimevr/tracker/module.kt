@@ -34,7 +34,7 @@ data class TrackerState(
 	val imuTemp: Float?,
 	val position: Vector3?,
 	val status: TrackerStatus,
-	val completedRestCalibration: Boolean,
+	val completedRestCalibration: Boolean?,
 	val magStatus: MagnetometerStatus,
 )
 

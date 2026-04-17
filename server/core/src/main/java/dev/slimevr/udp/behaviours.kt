@@ -241,13 +241,10 @@ object SensorInfoBehaviour : UDPConnectionBehaviour {
 
 			val tracker = receiver.getTracker(event.data.sensorId)
 			val trackerState = tracker?.context?.state?.value
-			val sensorConfig = event.data.sensorConfig
 
 			val completedRestCalibration = event.data.hasCompletedRestCalibration
-				?: trackerState?.completedRestCalibration
-				?: false
 
-			val magStatus = sensorConfig?.let {
+			val magStatus = event.data.sensorConfig?.let {
 				if (it.magSupported) {
 					if (it.magEnabled) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED
 				} else {
@@ -280,7 +277,10 @@ object SensorInfoBehaviour : UDPConnectionBehaviour {
 				val assignedTracker = if (existingTracker != null) {
 					receiver.context.dispatch(
 						UDPConnectionActions.AssignTracker(
-							trackerId = TrackerIdNum(id = existingTracker.context.state.value.id, trackerNum = event.data.sensorId),
+							trackerId = TrackerIdNum(
+								id = existingTracker.context.state.value.id,
+								trackerNum = event.data.sensorId
+							),
 						),
 					)
 					existingTracker.context.dispatch(action)
@@ -311,14 +311,17 @@ object SensorInfoBehaviour : UDPConnectionBehaviour {
 				}
 
 				val magStatus = assignedTracker.context.state.value.magStatus
-				if (magStatus != MagnetometerStatus.NOT_SUPPORTED) {
+				val globalMagEnabled = receiver.appContext.config.settings.context.state.value.data.globalMagEnabled
+				if (magStatus != MagnetometerStatus.NOT_SUPPORTED && globalMagEnabled) {
 					receiver.context.dispatch(
 						UDPConnectionActions.SetSensorConfig(
 							sensorId = event.data.sensorId,
-							flags = SensorConfigFlags(magStatus = magStatus),
+							flags = SensorConfigFlags(magEnabled = magStatus == MagnetometerStatus.ENABLED),
 						),
 					)
 				}
+
+
 			}
 		}
 	}
@@ -412,9 +415,28 @@ object SensorConfigBehaviour : UDPConnectionBehaviour {
 			.distinctUntilChangedBy { it.sensorConfigFlags }
 			.onEach { state ->
 				for ((sensorId, flags) in state.sensorConfigFlags) {
-					receiver.send(SetConfigFlag(sensorId = sensorId, configType = SensorConfigType.MAGNETOMETER, state = flags.magStatus == MagnetometerStatus.ENABLED))
+					receiver.send(
+						SetConfigFlag(
+							sensorId = sensorId,
+							configType = SensorConfigType.MAGNETOMETER,
+							state = flags.magEnabled
+						)
+					)
 				}
 			}
 			.launchIn(receiver.context.scope)
+	}
+}
+
+object AckConfigBehaviour : UDPConnectionBehaviour {
+	override fun observe(receiver: UDPConnection) {
+		receiver.packetEvents.onPacket<AckConfigChange> { event ->
+			val configType = SensorConfigType.fromId(event.data.configType) ?: return@onPacket
+			if (configType != SensorConfigType.MAGNETOMETER) return@onPacket
+			val flags = receiver.context.state.value.sensorConfigFlags[event.data.sensorId] ?: return@onPacket
+			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
+			val magStatus = if (flags.magEnabled) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED
+			tracker.context.dispatch(TrackerActions.Update { copy(magStatus = magStatus) })
+		}
 	}
 }

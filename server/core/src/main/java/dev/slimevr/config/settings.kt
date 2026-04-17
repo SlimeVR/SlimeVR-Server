@@ -46,6 +46,7 @@ data class SettingsConfigState(
 	val mutedVRCWarnings: List<String> = listOf(),
 	val mutedChecklistSteps: Set<String> = emptySet(),
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
+	val globalMagEnabled: Boolean = true,
 	val version: Int = SETTINGS_CONFIG_VERSION,
 )
 

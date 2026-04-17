@@ -26,7 +26,6 @@ class Context<S, A>(
 		}
 	}
 
-
 	fun <C> observeAll(receiver: C) = behaviours.forEach { behaviour ->
 		@Suppress("UNCHECKED_CAST")
 		(behaviour as Behaviour<S, A, C>).observe(receiver)
