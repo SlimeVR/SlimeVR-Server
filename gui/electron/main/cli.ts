@@ -8,7 +8,9 @@ program
     '--skip-server-if-running',
     'gui will not launch the server if it is already running'
   )
-  .allowUnknownOption();
+  .allowUnknownOption()
+  // Allow passing arguments to Electron.
+  .allowExcessArguments();
 
 if (process.platform === "linux") {
   const noUdevOption = new Option('--no-udev', 'disable udev warning');
