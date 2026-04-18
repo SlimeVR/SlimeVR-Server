@@ -1,5 +1,5 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
@@ -179,6 +179,10 @@ export function GeneralSettings() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const { currentLocales } = useLocaleConfig();
+  // null = we should show the hands warning on next hand tracker toggle.
+  // false = means the warning should not be shown right now
+  // true = warning is being shown
+  const handsWarning = useRef<boolean | null>(null);
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
@@ -200,15 +204,11 @@ export function GeneralSettings() {
     });
 
   const {
-    trackers: {
-      automaticTrackerToggle,
-      leftHand: steamVrLeftHand,
-      rightHand: steamVrRightHand,
-    },
+    trackers: { automaticTrackerToggle },
   } = watch();
 
   const onSubmit = (values: SettingsForm) => {
-    const settings = new ChangeSettingsRequestT();
+    const settingsReq = new ChangeSettingsRequestT();
 
     if (values.trackers) {
       const trackers = new SteamVRTrackersSettingT();
@@ -226,8 +226,28 @@ export function GeneralSettings() {
       trackers.leftHand = values.trackers.leftHand;
       trackers.rightHand = values.trackers.rightHand;
 
+      if (
+        handsWarning.current === null &&
+        !settings.steamVrTrackers?.leftHand &&
+        !settings.steamVrTrackers?.rightHand &&
+        (trackers.leftHand || trackers.rightHand)
+      ) {
+        // We have just toggled on one of the hand trackers, show the user a warning
+        trackers.leftHand = false;
+        trackers.rightHand = false;
+        handsWarning.current = true;
+      } else if (
+        handsWarning.current === false &&
+        !trackers.leftHand &&
+        !trackers.rightHand
+      ) {
+        // Both hand trackers have just been disabled, make sure the warning shows up
+        // again next time the user toggles one back on
+        handsWarning.current = null;
+      }
+
       trackers.automaticTrackerToggle = values.trackers.automaticTrackerToggle;
-      settings.steamVrTrackers = trackers;
+      settingsReq.steamVrTrackers = trackers;
     }
 
     const modelSettings = new ModelSettingsT();
@@ -272,7 +292,7 @@ export function GeneralSettings() {
       modelSettings.legTweaks = legTweaks;
     }
 
-    settings.modelSettings = modelSettings;
+    settingsReq.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
     tapDetection.fullResetDelay = values.tapDetection.fullResetDelay;
@@ -288,24 +308,24 @@ export function GeneralSettings() {
     tapDetection.numberTrackersOverThreshold =
       values.tapDetection.numberTrackersOverThreshold;
     tapDetection.setupMode = false;
-    settings.tapDetectionSettings = tapDetection;
+    settingsReq.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
     filtering.type = values.filtering.type;
     filtering.amount = values.filtering.amount;
-    settings.filtering = filtering;
+    settingsReq.filtering = filtering;
 
-    settings.stayAligned = serializeStayAlignedSettings(values.stayAligned);
+    settingsReq.stayAligned = serializeStayAlignedSettings(values.stayAligned);
 
     const hidSettings = new HIDSettingsT();
     hidSettings.trackersOverHid = values.hidSettings.trackersOverHID;
-    settings.hidSettings = hidSettings;
+    settingsReq.hidSettings = hidSettings;
 
     if (values.resetsSettings) {
-      settings.resetsSettings = loadResetSettings(values.resetsSettings);
+      settingsReq.resetsSettings = loadResetSettings(values.resetsSettings);
     }
 
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsReq);
   };
 
   useEffect(() => {
@@ -329,10 +349,11 @@ export function GeneralSettings() {
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
       if (
-        settings.steamVrTrackers.leftHand ||
-        settings.steamVrTrackers.rightHand
+        handsWarning.current != true &&
+        (settings.steamVrTrackers.leftHand ||
+          settings.steamVrTrackers.rightHand)
       ) {
-        setHandsWarning(false);
+        handsWarning.current = false;
       }
     }
 
@@ -424,37 +445,23 @@ export function GeneralSettings() {
     reset({ ...getValues(), ...formData });
   }, [settings]);
 
-  // If null, we still haven't shown the hands warning
-  // if false then initially the hands warning was disabled
-  const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     setSettings(settings);
   });
 
-  useEffect(() => {
-    if ((steamVrLeftHand || steamVrRightHand) && handsWarning === null) {
-      setHandsWarning(true);
-    } else if (
-      !(steamVrLeftHand || steamVrRightHand) &&
-      handsWarning === false
-    ) {
-      setHandsWarning(null);
-    }
-  }, [steamVrLeftHand, steamVrRightHand, handsWarning]);
-
   return (
     <SettingsPageLayout>
       <HandsWarningModal
-        isOpen={!!handsWarning}
+        isOpen={!!handsWarning.current}
         onClose={() => {
           setValue('trackers.leftHand', false);
           setValue('trackers.rightHand', false);
-          setHandsWarning(null);
+          handsWarning.current = null;
         }}
         accept={() => {
           setValue('trackers.leftHand', true);
           setValue('trackers.rightHand', true);
-          setHandsWarning(false);
+          handsWarning.current = false;
         }}
       />
       <form className="flex flex-col gap-2 w-full">
