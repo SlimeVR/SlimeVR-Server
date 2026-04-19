@@ -72,7 +72,7 @@ class TapDetectionManager(
 		tapDetectors.clear()
 		registerSingleTapDetectors()
 		registerResetsDetectors()
-		// LogManager.info(yawResetTracker.toString())
+		LogManager.info(yawResetTracker.toString())
 	}
 
 	fun update() {
@@ -91,11 +91,8 @@ class TapDetectionManager(
 
 	private val mountingResetTracker: Tracker?
 		get() {
-			val trackers = TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.yawResetTracker)
-			if (trackers != null) {
-				return trackers
-			}
-			return arrayOf( // fallback locations for mounting reset
+			return arrayOf(
+			TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.mountingResetTracker),
 				skeleton.rightUpperLegTracker,
 				skeleton.rightLowerLegTracker,
 			).firstNotNullOfOrNull { it }
@@ -103,11 +100,8 @@ class TapDetectionManager(
 
 	private val fullResetTracker: Tracker?
 		get() {
-			val trackers = TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.fullResetTracker)
-			if (trackers != null) {
-				return trackers
-			}
-			return arrayOf( // fallback locations for full reset
+			return arrayOf(
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.fullResetTracker),
 				skeleton.leftUpperLegTracker,
 				skeleton.leftLowerLegTracker,
 			).firstNotNullOfOrNull { it }
@@ -115,11 +109,8 @@ class TapDetectionManager(
 
 	private val yawResetTracker: Tracker?
 		get() {
-			val trackers = TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.yawResetTracker)
-			if (trackers != null) {
-				return trackers
-			}
-			return arrayOf( // fallback locations for yaw reset
+			return arrayOf(
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.yawResetTracker),
 				skeleton.upperChestTracker,
 				skeleton.chestTracker,
 				skeleton.hipTracker,

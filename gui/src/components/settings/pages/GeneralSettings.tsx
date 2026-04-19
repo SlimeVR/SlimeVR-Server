@@ -48,6 +48,7 @@ import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
 import { Dropdown } from '@/components/commons/Dropdown';
+import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
 
 export type SettingsForm = {
   trackers: {
@@ -188,44 +189,13 @@ export function GeneralSettings() {
   const { config } = useConfig();
   const { currentLocales } = useLocaleConfig();
 
-  const BodyParts: { value: BodyPart; label: string }[] = [
-    {
-      value: BodyPart.CHEST,
-      label: l10n.getString('body_part-CHEST'),
-    },
-    {
-      value: BodyPart.WAIST,
-      label: l10n.getString('body_part-WAIST'),
-    },
-    {
-      value: BodyPart.HIP,
-      label: l10n.getString('body_part-HIP'),
-    },
-    {
-      value: BodyPart.RIGHT_UPPER_LEG,
-      label: l10n.getString('body_part-RIGHT_UPPER_LEG'),
-    },
-    {
-      value: BodyPart.RIGHT_LOWER_LEG,
-      label: l10n.getString('body_part-RIGHT_LOWER_LEG'),
-    },
-    {
-      value: BodyPart.RIGHT_FOOT,
-      label: l10n.getString('body_part-RIGHT_FOOT'),
-    },
-    {
-      value: BodyPart.LEFT_UPPER_LEG,
-      label: l10n.getString('body_part-LEFT_UPPER_LEG'),
-    },
-    {
-      value: BodyPart.LEFT_LOWER_LEG,
-      label: l10n.getString('body_part-LEFT_LOWER_LEG'),
-    },
-    {
-      value: BodyPart.LEFT_FOOT,
-      label: l10n.getString('body_part-LEFT_FOOT'),
-    },
-  ];
+  const bodyParts: { value: string; label: string }[] = Object.values(BodyPart)
+    .filter((v): v is BodyPart => typeof v === 'number')
+    .filter((v) => ASSIGNMENT_MODES['full-body'].includes(v as BodyPart))
+    .map((value) => ({
+      value: String(value),
+      label: l10n.getString(`body_part-${BodyPart[value]}`),
+    }));
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
@@ -329,9 +299,11 @@ export function GeneralSettings() {
     tapDetection.yawResetEnabled = values.tapDetection.yawResetEnabled;
     tapDetection.yawResetTaps = values.tapDetection.yawResetTaps;
     tapDetection.yawResetTracker = Number(values.tapDetection.yawResetTracker);
+    console.log(tapDetection.yawResetTracker);
     tapDetection.mountingResetTracker = Number(
       values.tapDetection.mountingResetTracker
     );
+    console.log(tapDetection.mountingResetTracker);
     tapDetection.fullResetTracker = Number(
       values.tapDetection.fullResetTracker
     );
@@ -1301,10 +1273,7 @@ export function GeneralSettings() {
                     control={control}
                     placeholder={''}
                     name="tapDetection.yawResetTracker"
-                    items={BodyParts.map(({ label, value }) => ({
-                      label: label,
-                      value: String(value),
-                    }))}
+                    items={bodyParts}
                   />
                 </div>
                 <div>
@@ -1318,10 +1287,7 @@ export function GeneralSettings() {
                     control={control}
                     placeholder={''}
                     name="tapDetection.mountingResetTracker"
-                    items={BodyParts.map(({ label, value }) => ({
-                      label: label,
-                      value: String(value),
-                    }))}
+                    items={bodyParts}
                   />
                 </div>
                 <div>
@@ -1335,10 +1301,7 @@ export function GeneralSettings() {
                     control={control}
                     placeholder={''}
                     name="tapDetection.fullResetTracker"
-                    items={BodyParts.map(({ label, value }) => ({
-                      label: label,
-                      value: String(value),
-                    }))}
+                    items={bodyParts}
                   />
                 </div>
               </div>
