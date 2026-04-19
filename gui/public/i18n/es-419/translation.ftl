@@ -976,6 +976,9 @@ onboarding-setup_warning-cancel = Continuar configuración
 
 ## Quiz
 
+onboarding-quiz_continue = Continuar
+onboarding-quiz_back = Atrás
+onboarding-quiz-more_sets_modal-title = ¿Has conectado todos tus trackers?
 
 ## Wi-Fi setup
 
