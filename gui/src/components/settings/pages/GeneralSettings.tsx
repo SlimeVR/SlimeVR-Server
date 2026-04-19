@@ -15,10 +15,12 @@ import {
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
   HIDSettingsT,
+  TimeoutSettingsT,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocaleConfig } from '@/i18n/config';
+import { Input } from '@/components/commons/Input';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { SteamIcon } from '@/components/commons/icon/SteamIcon';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
@@ -108,6 +110,9 @@ export type SettingsForm = {
   hidSettings: {
     trackersOverHID: boolean;
   };
+  timeout: {
+    duration: number;
+  };
 };
 
 const defaultValues: SettingsForm = {
@@ -164,6 +169,7 @@ const defaultValues: SettingsForm = {
   resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
   hidSettings: { trackersOverHID: false },
+  timeout: { duration: 3.0 },
 };
 
 const settingsAtom = atom(new SettingsResponseT());
@@ -301,6 +307,10 @@ export function GeneralSettings() {
     hidSettings.trackersOverHid = values.hidSettings.trackersOverHID;
     settings.hidSettings = hidSettings;
 
+    const timeout = new TimeoutSettingsT();
+    timeout.duration = values.timeout.duration;
+    settings.timeout = timeout;
+
     if (values.resetsSettings) {
       settings.resetsSettings = loadResetSettings(values.resetsSettings);
     }
@@ -421,6 +431,12 @@ export function GeneralSettings() {
       };
     }
 
+    if (settings.timeout) {
+      formData.timeout = {
+        duration: settings.timeout.duration,
+      };
+    }
+
     reset({ ...getValues(), ...formData });
   }, [settings]);
 
@@ -457,7 +473,10 @@ export function GeneralSettings() {
           setHandsWarning(false);
         }}
       />
-      <form className="flex flex-col gap-2 w-full">
+      <form
+        className="flex flex-col gap-2 w-full"
+        onSubmit={(e) => e.preventDefault()}
+      >
         <SettingsPagePaneLayout icon={<SteamIcon />} id="steamvr">
           <>
             <Typography variant="main-title">
@@ -735,6 +754,31 @@ export function GeneralSettings() {
                 'settings-general-tracker_mechanics-trackers_over_usb-enabled-label'
               )}
             />
+            <div className="flex flex-col pt-5 pb-3">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-timeout_duration'
+                )}
+              </Typography>
+              <div className="flex flex-col">
+                <Typography>
+                  {l10n.getString(
+                    'settings-general-tracker_mechanics-timeout_duration-description'
+                  )}
+                </Typography>
+              </div>
+            </div>
+            <div className="grid gap-3">
+              <Input
+                type="number"
+                control={control}
+                name="timeout.duration"
+                label=""
+                min={1}
+                max={1000000000000000}
+                step="any"
+              />
+            </div>
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout icon={<WrenchIcon />} id="fksettings">
