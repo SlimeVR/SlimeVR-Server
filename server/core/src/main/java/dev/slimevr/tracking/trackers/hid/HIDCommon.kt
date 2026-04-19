@@ -435,6 +435,9 @@ class HIDCommon {
 			} else {
 				tracker.heartbeat() // else, something received
 			}
+			if (packetType == 1 || packetType == 2 || packetType == 7) {
+				tracker.accelDataTick()
+			}
 		}
 	}
 }
