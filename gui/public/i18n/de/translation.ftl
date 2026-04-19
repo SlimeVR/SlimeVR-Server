@@ -884,9 +884,11 @@ onboarding-setup_warning = <b>Warnung:</b> Für gutes Tracking ist die Ersteinri
 onboarding-setup_warning-skip = Einrichtung überspringen
 onboarding-setup_warning-cancel = Einrichtung fortsetzen
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Zurück zur Einführung
 onboarding-wifi_creds-v2 = Tracker mit WLAN
 onboarding-wifi_creds-skip = WLAN-Zugangsdaten überspringen
 onboarding-wifi_creds-submit = Weiter!
@@ -924,6 +926,9 @@ onboarding-reset_tutorial-2 =
     Ein Reset der Tracker-Ausrichtung hilft dabei, die Tracker neu auszurichten, so wie diese tatsächlich an Ihnen angebracht sind. Zum Beispiel, wenn Sie ein Tracker versehentlich verschoben haben und dessen Orientierung sich stark verändert hat.
     
     Sie müssen sich in einer "Skifahren"-Pose, wie im Tracker-Ausrichtung-Assistenten gezeigt wird, befinden. Nach dem Auslösen wird der Reset nach 3 Sekunden (konfigurierbar) durchgeführt.
+
+## Install info
+
 
 ## Setup start
 

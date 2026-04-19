@@ -970,9 +970,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Pular configurações
 onboarding-setup_warning-cancel = Continuar configurações
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Voltar para introdução
 onboarding-wifi_creds-v2 = Trackers conectados via Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1017,6 +1019,9 @@ onboarding-reset_tutorial-2 =
     A calibração de montagem ajusta conforme os trackers estão fixados no seu corpo. Se eles tiverem se movido ou girado significativamente, isso ajuda a recalibrar a orientação deles.
     
     Você precisa estar em uma pose como se estivesse esquiando, conforme mostrado no assistente de montagem automática, e há um atraso de 3 segundos (configurável) antes que ela seja acionada.
+
+## Install info
+
 
 ## Setup start
 
