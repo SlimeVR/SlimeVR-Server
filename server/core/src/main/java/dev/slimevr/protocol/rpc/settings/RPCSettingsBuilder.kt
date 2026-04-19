@@ -163,6 +163,9 @@ fun createTapDetectionSettings(
 		tapDetectionConfig.mountingResetTaps,
 		tapDetectionConfig.setupMode,
 		tapDetectionConfig.numberTrackersOverThreshold,
+		tapDetectionConfig.yawResetTracker.bodyPart,
+		tapDetectionConfig.fullResetTracker.bodyPart,
+		tapDetectionConfig.mountingResetTracker.bodyPart,
 	)
 
 fun createSteamVRSettings(fbb: FlatBufferBuilder, bridge: ISteamVRBridge?): Int {

@@ -3,6 +3,9 @@ package dev.slimevr.tracking.processor.skeleton
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerUtils
+import io.eiren.util.logging.LogManager
 import java.util.concurrent.CopyOnWriteArrayList
 
 class TapDetectionManager(
@@ -69,6 +72,7 @@ class TapDetectionManager(
 		tapDetectors.clear()
 		registerSingleTapDetectors()
 		registerResetsDetectors()
+		LogManager.info(yawResetTracker.toString())
 	}
 
 	fun update() {
@@ -88,6 +92,7 @@ class TapDetectionManager(
 	private val mountingResetTracker: Tracker?
 		get() {
 			return arrayOf(
+			TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.mountingResetTracker),
 				skeleton.rightUpperLegTracker,
 				skeleton.rightLowerLegTracker,
 			).firstNotNullOfOrNull { it }
@@ -96,6 +101,7 @@ class TapDetectionManager(
 	private val fullResetTracker: Tracker?
 		get() {
 			return arrayOf(
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.fullResetTracker),
 				skeleton.leftUpperLegTracker,
 				skeleton.leftLowerLegTracker,
 			).firstNotNullOfOrNull { it }
@@ -104,6 +110,7 @@ class TapDetectionManager(
 	private val yawResetTracker: Tracker?
 		get() {
 			return arrayOf(
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.yawResetTracker),
 				skeleton.upperChestTracker,
 				skeleton.chestTracker,
 				skeleton.hipTracker,

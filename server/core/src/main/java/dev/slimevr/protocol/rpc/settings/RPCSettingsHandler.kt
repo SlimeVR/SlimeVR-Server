@@ -9,6 +9,7 @@ import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
+import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
 import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.RpcMessage
@@ -157,6 +158,10 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				tapDetectionConfig
 					.mountingResetEnabled = tapDetectionSettings.mountingResetEnabled()
 				tapDetectionConfig.setupMode = tapDetectionSettings.setupMode()
+
+				tapDetectionConfig.yawResetTracker = TrackerPosition.getByBodyPart(tapDetectionSettings.yawResetTracker()) ?: TrackerPosition.CHEST
+				tapDetectionConfig.fullResetTracker = TrackerPosition.getByBodyPart(tapDetectionSettings.fullResetTracker()) ?: TrackerPosition.LEFT_UPPER_LEG
+				tapDetectionConfig.mountingResetTracker = TrackerPosition.getByBodyPart(tapDetectionSettings.mountingResetTracker()) ?: TrackerPosition.RIGHT_UPPER_LEG
 
 				// set number of trackers that can have high accel before taps
 				// are rejected
