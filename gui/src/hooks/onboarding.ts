@@ -102,7 +102,7 @@ export function useProvideOnboarding() {
   });
 
   const onboardingEnded = () => {
-    if (!settings?.modelSettings || !settings?.vrcOsc) throw 'settings should be set';
+    if (!settings?.modelSettings || !settings?.vrcOsc) return;
     const req = new ChangeSettingsRequestT();
     const modelSettings = new ModelSettingsT();
     const oscSettings = new VRCOSCSettingsT();

@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { access, mkdir, readFile, writeFile } from "fs/promises";
 import { dirname, join } from "path";
 import { logger } from "./logger";
 import { getGuiDataFolder } from "./paths";
@@ -10,25 +10,28 @@ export class CustomStore {
   private filePath: string;
   private debounceMs: number;
 
-  constructor(filePath: string, debounceMs: number = 2000) {
+  private constructor(filePath: string, debounceMs: number = 2000) {
     this.filePath = filePath;
     this.debounceMs = debounceMs;
-    this.load();
   }
 
-  private load() {
+  static async create(filePath: string, debounceMs: number = 2000): Promise<CustomStore> {
+    const store = new CustomStore(filePath, debounceMs);
+    await store.load();
+    return store;
+  }
+
+  private async load(): Promise<void> {
     try {
-      if (existsSync(this.filePath)) {
-        const raw = readFileSync(this.filePath, 'utf-8');
-        this.data = JSON.parse(raw);
-      }
-    } catch (err) {
-      logger.error(err, `Failed to load store at ${this.filePath}`);
+      await access(this.filePath);
+      const raw = await readFile(this.filePath, 'utf-8');
+      this.data = JSON.parse(raw);
+    } catch {
       this.data = {};
+      logger.warn(`No existing store found at ${this.filePath}, starting with empty store.`);
     }
   }
 
-  /** Set a key and trigger the debounced auto-save */
   set(key: string, value: unknown) {
     this.data[key] = value;
     this.triggerAutoSave();
@@ -54,14 +57,12 @@ export class CustomStore {
     }, this.debounceMs);
   }
 
-  save(): boolean {
+  async save(): Promise<boolean> {
     try {
       if (this.saveTimeout) clearTimeout(this.saveTimeout);
 
-      const dir = dirname(this.filePath);
-      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-
-      writeFileSync(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8');
+      await mkdir(dirname(this.filePath), { recursive: true });
+      await writeFile(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8');
       return true;
     } catch (err) {
       logger.error(err, 'Save failed', this.filePath);
@@ -70,7 +71,9 @@ export class CustomStore {
   }
 }
 
-export const stores = {
-  settings: new CustomStore(join(getGuiDataFolder(), 'gui-settings.dat'), 1000),
-  cache: new CustomStore(join(getGuiDataFolder(), 'gui-cache.dat'), 100),
-};
+export async function initStores() {
+  return {
+    settings: await CustomStore.create(join(getGuiDataFolder(), 'gui-settings.dat'), 1000),
+    cache: await CustomStore.create(join(getGuiDataFolder(), 'gui-cache.dat'), 100),
+  };
+}
