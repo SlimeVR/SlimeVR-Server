@@ -2594,6 +2594,39 @@ public final class ProtobufMessages {
      */
     dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder getInputOrBuilder(
         int index);
+
+    /**
+     * <code>optional float vx = 12;</code>
+     * @return Whether the vx field is set.
+     */
+    boolean hasVx();
+    /**
+     * <code>optional float vx = 12;</code>
+     * @return The vx.
+     */
+    float getVx();
+
+    /**
+     * <code>optional float vy = 13;</code>
+     * @return Whether the vy field is set.
+     */
+    boolean hasVy();
+    /**
+     * <code>optional float vy = 13;</code>
+     * @return The vy.
+     */
+    float getVy();
+
+    /**
+     * <code>optional float vz = 14;</code>
+     * @return Whether the vz field is set.
+     */
+    boolean hasVz();
+    /**
+     * <code>optional float vz = 14;</code>
+     * @return The vz.
+     */
+    float getVz();
   }
   /**
    * Protobuf type {@code messages.Position}
@@ -2990,6 +3023,63 @@ public final class ProtobufMessages {
       return input_.get(index);
     }
 
+    public static final int VX_FIELD_NUMBER = 12;
+    private float vx_ = 0F;
+    /**
+     * <code>optional float vx = 12;</code>
+     * @return Whether the vx field is set.
+     */
+    @java.lang.Override
+    public boolean hasVx() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>optional float vx = 12;</code>
+     * @return The vx.
+     */
+    @java.lang.Override
+    public float getVx() {
+      return vx_;
+    }
+
+    public static final int VY_FIELD_NUMBER = 13;
+    private float vy_ = 0F;
+    /**
+     * <code>optional float vy = 13;</code>
+     * @return Whether the vy field is set.
+     */
+    @java.lang.Override
+    public boolean hasVy() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <code>optional float vy = 13;</code>
+     * @return The vy.
+     */
+    @java.lang.Override
+    public float getVy() {
+      return vy_;
+    }
+
+    public static final int VZ_FIELD_NUMBER = 14;
+    private float vz_ = 0F;
+    /**
+     * <code>optional float vz = 14;</code>
+     * @return Whether the vz field is set.
+     */
+    @java.lang.Override
+    public boolean hasVz() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <code>optional float vz = 14;</code>
+     * @return The vz.
+     */
+    @java.lang.Override
+    public float getVz() {
+      return vz_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3036,6 +3126,15 @@ public final class ProtobufMessages {
       }
       for (int i = 0; i < input_.size(); i++) {
         output.writeMessage(11, input_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        output.writeFloat(12, vx_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        output.writeFloat(13, vy_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        output.writeFloat(14, vz_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3089,6 +3188,18 @@ public final class ProtobufMessages {
       for (int i = 0; i < input_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(11, input_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(12, vx_);
+      }
+      if (((bitField0_ & 0x00000020) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(13, vy_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(14, vz_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -3145,6 +3256,24 @@ public final class ProtobufMessages {
           .equals(other.getFingerBoneRotationsList())) return false;
       if (!getInputList()
           .equals(other.getInputList())) return false;
+      if (hasVx() != other.hasVx()) return false;
+      if (hasVx()) {
+        if (java.lang.Float.floatToIntBits(getVx())
+            != java.lang.Float.floatToIntBits(
+                other.getVx())) return false;
+      }
+      if (hasVy() != other.hasVy()) return false;
+      if (hasVy()) {
+        if (java.lang.Float.floatToIntBits(getVy())
+            != java.lang.Float.floatToIntBits(
+                other.getVy())) return false;
+      }
+      if (hasVz() != other.hasVz()) return false;
+      if (hasVz()) {
+        if (java.lang.Float.floatToIntBits(getVz())
+            != java.lang.Float.floatToIntBits(
+                other.getVz())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3196,6 +3325,21 @@ public final class ProtobufMessages {
       if (getInputCount() > 0) {
         hash = (37 * hash) + INPUT_FIELD_NUMBER;
         hash = (53 * hash) + getInputList().hashCode();
+      }
+      if (hasVx()) {
+        hash = (37 * hash) + VX_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getVx());
+      }
+      if (hasVy()) {
+        hash = (37 * hash) + VY_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getVy());
+      }
+      if (hasVz()) {
+        hash = (37 * hash) + VZ_FIELD_NUMBER;
+        hash = (53 * hash) + java.lang.Float.floatToIntBits(
+            getVz());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -3351,6 +3495,9 @@ public final class ProtobufMessages {
           inputBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000400);
+        vx_ = 0F;
+        vy_ = 0F;
+        vz_ = 0F;
         return this;
       }
 
@@ -3437,6 +3584,18 @@ public final class ProtobufMessages {
         if (((from_bitField0_ & 0x00000100) != 0)) {
           result.dataSource_ = dataSource_;
           to_bitField0_ |= 0x00000008;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.vx_ = vx_;
+          to_bitField0_ |= 0x00000010;
+        }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
+          result.vy_ = vy_;
+          to_bitField0_ |= 0x00000020;
+        }
+        if (((from_bitField0_ & 0x00002000) != 0)) {
+          result.vz_ = vz_;
+          to_bitField0_ |= 0x00000040;
         }
         result.bitField0_ |= to_bitField0_;
       }
@@ -3531,6 +3690,15 @@ public final class ProtobufMessages {
               inputBuilder_.addAllMessages(other.input_);
             }
           }
+        }
+        if (other.hasVx()) {
+          setVx(other.getVx());
+        }
+        if (other.hasVy()) {
+          setVy(other.getVy());
+        }
+        if (other.hasVz()) {
+          setVz(other.getVz());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -3629,6 +3797,21 @@ public final class ProtobufMessages {
                 }
                 break;
               } // case 90
+              case 101: {
+                vx_ = input.readFloat();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 101
+              case 109: {
+                vy_ = input.readFloat();
+                bitField0_ |= 0x00001000;
+                break;
+              } // case 109
+              case 117: {
+                vz_ = input.readFloat();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 117
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -4462,6 +4645,126 @@ public final class ProtobufMessages {
           input_ = null;
         }
         return inputBuilder_;
+      }
+
+      private float vx_ ;
+      /**
+       * <code>optional float vx = 12;</code>
+       * @return Whether the vx field is set.
+       */
+      @java.lang.Override
+      public boolean hasVx() {
+        return ((bitField0_ & 0x00000800) != 0);
+      }
+      /**
+       * <code>optional float vx = 12;</code>
+       * @return The vx.
+       */
+      @java.lang.Override
+      public float getVx() {
+        return vx_;
+      }
+      /**
+       * <code>optional float vx = 12;</code>
+       * @param value The vx to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVx(float value) {
+
+        vx_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional float vx = 12;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVx() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        vx_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float vy_ ;
+      /**
+       * <code>optional float vy = 13;</code>
+       * @return Whether the vy field is set.
+       */
+      @java.lang.Override
+      public boolean hasVy() {
+        return ((bitField0_ & 0x00001000) != 0);
+      }
+      /**
+       * <code>optional float vy = 13;</code>
+       * @return The vy.
+       */
+      @java.lang.Override
+      public float getVy() {
+        return vy_;
+      }
+      /**
+       * <code>optional float vy = 13;</code>
+       * @param value The vy to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVy(float value) {
+
+        vy_ = value;
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional float vy = 13;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVy() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        vy_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private float vz_ ;
+      /**
+       * <code>optional float vz = 14;</code>
+       * @return Whether the vz field is set.
+       */
+      @java.lang.Override
+      public boolean hasVz() {
+        return ((bitField0_ & 0x00002000) != 0);
+      }
+      /**
+       * <code>optional float vz = 14;</code>
+       * @return The vz.
+       */
+      @java.lang.Override
+      public float getVz() {
+        return vz_;
+      }
+      /**
+       * <code>optional float vz = 14;</code>
+       * @param value The vz to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVz(float value) {
+
+        vz_ = value;
+        bitField0_ |= 0x00002000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional float vz = 14;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVz() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        vz_ = 0F;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:messages.Position)
@@ -6620,6 +6923,18 @@ java.lang.String defaultValue) {
      * @return The trackerRole.
      */
     int getTrackerRole();
+
+    /**
+     * <code>string manufacturer = 5;</code>
+     * @return The manufacturer.
+     */
+    java.lang.String getManufacturer();
+    /**
+     * <code>string manufacturer = 5;</code>
+     * @return The bytes for manufacturer.
+     */
+    com.google.protobuf.ByteString
+        getManufacturerBytes();
   }
   /**
    * Protobuf type {@code messages.TrackerAdded}
@@ -6645,6 +6960,7 @@ java.lang.String defaultValue) {
     private TrackerAdded() {
       trackerSerial_ = "";
       trackerName_ = "";
+      manufacturer_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -6760,6 +7076,45 @@ java.lang.String defaultValue) {
       return trackerRole_;
     }
 
+    public static final int MANUFACTURER_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object manufacturer_ = "";
+    /**
+     * <code>string manufacturer = 5;</code>
+     * @return The manufacturer.
+     */
+    @java.lang.Override
+    public java.lang.String getManufacturer() {
+      java.lang.Object ref = manufacturer_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        manufacturer_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string manufacturer = 5;</code>
+     * @return The bytes for manufacturer.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getManufacturerBytes() {
+      java.lang.Object ref = manufacturer_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        manufacturer_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -6786,6 +7141,9 @@ java.lang.String defaultValue) {
       if (trackerRole_ != 0) {
         output.writeInt32(4, trackerRole_);
       }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(manufacturer_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, manufacturer_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -6808,6 +7166,9 @@ java.lang.String defaultValue) {
       if (trackerRole_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, trackerRole_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(manufacturer_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, manufacturer_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -6832,6 +7193,8 @@ java.lang.String defaultValue) {
           .equals(other.getTrackerName())) return false;
       if (getTrackerRole()
           != other.getTrackerRole()) return false;
+      if (!getManufacturer()
+          .equals(other.getManufacturer())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -6851,6 +7214,8 @@ java.lang.String defaultValue) {
       hash = (53 * hash) + getTrackerName().hashCode();
       hash = (37 * hash) + TRACKER_ROLE_FIELD_NUMBER;
       hash = (53 * hash) + getTrackerRole();
+      hash = (37 * hash) + MANUFACTURER_FIELD_NUMBER;
+      hash = (53 * hash) + getManufacturer().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -6986,6 +7351,7 @@ java.lang.String defaultValue) {
         trackerSerial_ = "";
         trackerName_ = "";
         trackerRole_ = 0;
+        manufacturer_ = "";
         return this;
       }
 
@@ -7031,6 +7397,9 @@ java.lang.String defaultValue) {
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.trackerRole_ = trackerRole_;
         }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.manufacturer_ = manufacturer_;
+        }
       }
 
       @java.lang.Override
@@ -7060,6 +7429,11 @@ java.lang.String defaultValue) {
         }
         if (other.getTrackerRole() != 0) {
           setTrackerRole(other.getTrackerRole());
+        }
+        if (!other.getManufacturer().isEmpty()) {
+          manufacturer_ = other.manufacturer_;
+          bitField0_ |= 0x00000010;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -7107,6 +7481,11 @@ java.lang.String defaultValue) {
                 bitField0_ |= 0x00000008;
                 break;
               } // case 32
+              case 42: {
+                manufacturer_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -7328,6 +7707,78 @@ java.lang.String defaultValue) {
       public Builder clearTrackerRole() {
         bitField0_ = (bitField0_ & ~0x00000008);
         trackerRole_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object manufacturer_ = "";
+      /**
+       * <code>string manufacturer = 5;</code>
+       * @return The manufacturer.
+       */
+      public java.lang.String getManufacturer() {
+        java.lang.Object ref = manufacturer_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          manufacturer_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string manufacturer = 5;</code>
+       * @return The bytes for manufacturer.
+       */
+      public com.google.protobuf.ByteString
+          getManufacturerBytes() {
+        java.lang.Object ref = manufacturer_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          manufacturer_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string manufacturer = 5;</code>
+       * @param value The manufacturer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setManufacturer(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        manufacturer_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string manufacturer = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearManufacturer() {
+        manufacturer_ = getDefaultInstance().getManufacturer();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string manufacturer = 5;</code>
+       * @param value The bytes for manufacturer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setManufacturerBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        manufacturer_ = value;
+        bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
@@ -11318,51 +11769,53 @@ java.lang.String defaultValue) {
       "BUTTON_2_HELD\020\004\022\023\n\017BUTTON_2_UNHELD\020\005\022\026\n\022" +
       "MENU_RECENTER_HELD\020\006\022\030\n\024MENU_RECENTER_UN" +
       "HELD\020\007\022\024\n\020STICK_CLICK_HELD\020\t\022\026\n\022STICK_CL" +
-      "ICK_UNHELD\020\n\"\360\002\n\010Position\022\022\n\ntracker_id\030" +
+      "ICK_UNHELD\020\n\"\270\003\n\010Position\022\022\n\ntracker_id\030" +
       "\001 \001(\005\022\016\n\001x\030\002 \001(\002H\000\210\001\001\022\016\n\001y\030\003 \001(\002H\001\210\001\001\022\016\n" +
       "\001z\030\004 \001(\002H\002\210\001\001\022\n\n\002qx\030\005 \001(\002\022\n\n\002qy\030\006 \001(\002\022\n\n" +
       "\002qz\030\007 \001(\002\022\n\n\002qw\030\010 \001(\002\0227\n\013data_source\030\t \001" +
       "(\0162\035.messages.Position.DataSourceH\003\210\001\001\022;" +
       "\n\025finger_bone_rotations\030\n \003(\0132\034.messages" +
       ".FingerBoneRotation\022\036\n\005input\030\013 \003(\0132\017.mes" +
-      "sages.Input\"8\n\nDataSource\022\010\n\004NONE\020\000\022\007\n\003I" +
-      "MU\020\001\022\r\n\tPRECISION\020\002\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_" +
-      "yB\004\n\002_zB\016\n\014_data_source\"\200\002\n\017ControllerIn" +
-      "put\022\022\n\ntracker_id\030\001 \001(\005\022\024\n\014thumbstick_x\030" +
-      "\002 \001(\002\022\024\n\014thumbstick_y\030\003 \001(\002\022\022\n\ntrackpad_" +
-      "x\030\004 \001(\002\022\022\n\ntrackpad_y\030\005 \001(\002\022\017\n\007trigger\030\006" +
-      " \001(\002\022\014\n\004grip\030\007 \001(\002\022\020\n\010button_1\030\010 \001(\010\022\020\n\010" +
-      "button_2\030\t \001(\010\022\025\n\rmenu_recenter\030\n \001(\010\022\023\n" +
-      "\013stick_click\030\013 \001(\010\022\026\n\016trackpad_click\030\014 \001" +
-      "(\010\"\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020actio" +
-      "n_arguments\030\002 \003(\0132).messages.UserAction." +
-      "ActionArgumentsEntry\0326\n\024ActionArgumentsE" +
-      "ntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"f\n\014" +
-      "TrackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016trac" +
-      "ker_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024" +
-      "\n\014tracker_role\030\004 \001(\005\"\374\002\n\rTrackerStatus\022\022" +
-      "\n\ntracker_id\030\001 \001(\005\022.\n\006status\030\002 \001(\0162\036.mes" +
-      "sages.TrackerStatus.Status\0221\n\005extra\030\003 \003(" +
-      "\0132\".messages.TrackerStatus.ExtraEntry\022;\n" +
-      "\nconfidence\030\004 \001(\0162\".messages.TrackerStat" +
-      "us.ConfidenceH\000\210\001\001\032,\n\nExtraEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n\014DI" +
-      "SCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020" +
-      "\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfidence\022\006\n\002NO\020\000\022\007\n" +
-      "\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_confide" +
-      "nce\"I\n\007Battery\022\022\n\ntracker_id\030\001 \001(\005\022\025\n\rba" +
-      "ttery_level\030\002 \001(\002\022\023\n\013is_charging\030\003 \001(\010\"\330" +
-      "\002\n\017ProtobufMessage\022&\n\010position\030\001 \001(\0132\022.m" +
-      "essages.PositionH\000\022+\n\013user_action\030\002 \001(\0132" +
-      "\024.messages.UserActionH\000\022/\n\rtracker_added" +
-      "\030\003 \001(\0132\026.messages.TrackerAddedH\000\0221\n\016trac" +
-      "ker_status\030\004 \001(\0132\027.messages.TrackerStatu" +
-      "sH\000\022$\n\007battery\030\005 \001(\0132\021.messages.BatteryH" +
-      "\000\022$\n\007version\030\006 \001(\0132\021.messages.VersionH\000\022" +
-      "5\n\020controller_input\030\007 \001(\0132\031.messages.Con" +
-      "trollerInputH\000B\t\n\007messageB2\n\034dev.slimevr" +
-      ".desktop.platformB\020ProtobufMessagesH\003b\006p" +
-      "roto3"
+      "sages.Input\022\017\n\002vx\030\014 \001(\002H\004\210\001\001\022\017\n\002vy\030\r \001(\002" +
+      "H\005\210\001\001\022\017\n\002vz\030\016 \001(\002H\006\210\001\001\"8\n\nDataSource\022\010\n\004" +
+      "NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRECISION\020\002\022\010\n\004FULL\020\003" +
+      "B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014_data_sourceB\005\n\003_v" +
+      "xB\005\n\003_vyB\005\n\003_vz\"\200\002\n\017ControllerInput\022\022\n\nt" +
+      "racker_id\030\001 \001(\005\022\024\n\014thumbstick_x\030\002 \001(\002\022\024\n" +
+      "\014thumbstick_y\030\003 \001(\002\022\022\n\ntrackpad_x\030\004 \001(\002\022" +
+      "\022\n\ntrackpad_y\030\005 \001(\002\022\017\n\007trigger\030\006 \001(\002\022\014\n\004" +
+      "grip\030\007 \001(\002\022\020\n\010button_1\030\010 \001(\010\022\020\n\010button_2" +
+      "\030\t \001(\010\022\025\n\rmenu_recenter\030\n \001(\010\022\023\n\013stick_c" +
+      "lick\030\013 \001(\010\022\026\n\016trackpad_click\030\014 \001(\010\"\227\001\n\nU" +
+      "serAction\022\014\n\004name\030\001 \001(\t\022C\n\020action_argume" +
+      "nts\030\002 \003(\0132).messages.UserAction.ActionAr" +
+      "gumentsEntry\0326\n\024ActionArgumentsEntry\022\013\n\003" +
+      "key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"|\n\014TrackerA" +
+      "dded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016tracker_seri" +
+      "al\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024\n\014tracke" +
+      "r_role\030\004 \001(\005\022\024\n\014manufacturer\030\005 \001(\t\"\374\002\n\rT" +
+      "rackerStatus\022\022\n\ntracker_id\030\001 \001(\005\022.\n\006stat" +
+      "us\030\002 \001(\0162\036.messages.TrackerStatus.Status" +
+      "\0221\n\005extra\030\003 \003(\0132\".messages.TrackerStatus" +
+      ".ExtraEntry\022;\n\nconfidence\030\004 \001(\0162\".messag" +
+      "es.TrackerStatus.ConfidenceH\000\210\001\001\032,\n\nExtr" +
+      "aEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E" +
+      "\n\006Status\022\020\n\014DISCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BU" +
+      "SY\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfide" +
+      "nce\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH" +
+      "\020\nB\r\n\013_confidence\"I\n\007Battery\022\022\n\ntracker_" +
+      "id\030\001 \001(\005\022\025\n\rbattery_level\030\002 \001(\002\022\023\n\013is_ch" +
+      "arging\030\003 \001(\010\"\330\002\n\017ProtobufMessage\022&\n\010posi" +
+      "tion\030\001 \001(\0132\022.messages.PositionH\000\022+\n\013user" +
+      "_action\030\002 \001(\0132\024.messages.UserActionH\000\022/\n" +
+      "\rtracker_added\030\003 \001(\0132\026.messages.TrackerA" +
+      "ddedH\000\0221\n\016tracker_status\030\004 \001(\0132\027.message" +
+      "s.TrackerStatusH\000\022$\n\007battery\030\005 \001(\0132\021.mes" +
+      "sages.BatteryH\000\022$\n\007version\030\006 \001(\0132\021.messa" +
+      "ges.VersionH\000\0225\n\020controller_input\030\007 \001(\0132" +
+      "\031.messages.ControllerInputH\000B\t\n\007messageB" +
+      "2\n\034dev.slimevr.desktop.platformB\020Protobu" +
+      "fMessagesH\003b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -11397,7 +11850,7 @@ java.lang.String defaultValue) {
     internal_static_messages_Position_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_Position_descriptor,
-        new java.lang.String[] { "TrackerId", "X", "Y", "Z", "Qx", "Qy", "Qz", "Qw", "DataSource", "FingerBoneRotations", "Input", });
+        new java.lang.String[] { "TrackerId", "X", "Y", "Z", "Qx", "Qy", "Qz", "Qw", "DataSource", "FingerBoneRotations", "Input", "Vx", "Vy", "Vz", });
     internal_static_messages_ControllerInput_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_messages_ControllerInput_fieldAccessorTable = new
@@ -11421,7 +11874,7 @@ java.lang.String defaultValue) {
     internal_static_messages_TrackerAdded_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_TrackerAdded_descriptor,
-        new java.lang.String[] { "TrackerId", "TrackerSerial", "TrackerName", "TrackerRole", });
+        new java.lang.String[] { "TrackerId", "TrackerSerial", "TrackerName", "TrackerRole", "Manufacturer", });
     internal_static_messages_TrackerStatus_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_messages_TrackerStatus_fieldAccessorTable = new
