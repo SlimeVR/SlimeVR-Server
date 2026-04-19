@@ -181,7 +181,11 @@ export function GeneralSettings() {
   const { currentLocales } = useLocaleConfig();
 
   const blockHandsWarning = useRef(false);
-  const [showHandsWarning, setShowHandsWarning] = useState(false);
+  // If not null, warning will be shown, and showHandsWarning will
+  // hold which hands should be toggled ([leftHand, rightHand])
+  const [showHandsWarning, setShowHandsWarning] = useState<
+    [boolean, boolean] | null
+  >(null);
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
@@ -233,9 +237,9 @@ export function GeneralSettings() {
         (trackers.leftHand || trackers.rightHand)
       ) {
         // We have just toggled on one of the hand trackers, show the user a warning
+        setShowHandsWarning([trackers.leftHand, trackers.rightHand]);
         trackers.leftHand = false;
         trackers.rightHand = false;
-        setShowHandsWarning(true);
       } else if (
         blockHandsWarning.current &&
         !trackers.leftHand &&
@@ -452,17 +456,18 @@ export function GeneralSettings() {
   return (
     <SettingsPageLayout>
       <HandsWarningModal
-        isOpen={showHandsWarning}
+        isOpen={!!showHandsWarning}
         onClose={() => {
-          setShowHandsWarning(false);
           setValue('trackers.leftHand', false);
           setValue('trackers.rightHand', false);
+          setShowHandsWarning(null);
         }}
         accept={() => {
-          setShowHandsWarning(false);
+          const [leftHand, rightHand] = showHandsWarning!;
           blockHandsWarning.current = true;
-          setValue('trackers.leftHand', true);
-          setValue('trackers.rightHand', true);
+          setValue('trackers.leftHand', leftHand);
+          setValue('trackers.rightHand', rightHand);
+          setShowHandsWarning(null);
         }}
       />
       <form className="flex flex-col gap-2 w-full">
