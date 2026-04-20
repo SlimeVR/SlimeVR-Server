@@ -43,7 +43,7 @@ let stores: Stores;
 // Fixes colors looking washed on linux
 // Might affect hdr
 if (process.platform === 'linux') {
-  app.commandLine.appendSwitch('disable-features', 'WaylandWpColorManagerV1,AudioServiceSandbox');
+  app.commandLine.appendSwitch('disable-features', 'WaylandWpColorManagerV1');
   app.commandLine.appendSwitch('force-color-profile', 'srgb');
 }
 
