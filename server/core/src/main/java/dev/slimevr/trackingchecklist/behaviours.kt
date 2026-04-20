@@ -101,7 +101,7 @@ class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklis
 	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
 		val uncalibratedTrackers = trackers.filter { tracker ->
 			(tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID)
-				&& tracker.status == TrackerStatus.OK && !tracker.completedRestCalibration
+				&& tracker.status == TrackerStatus.OK && (tracker.completedRestCalibration != null && !tracker.completedRestCalibration)
 		}
 		return TrackingChecklistStep(
 			valid = uncalibratedTrackers.isEmpty(),

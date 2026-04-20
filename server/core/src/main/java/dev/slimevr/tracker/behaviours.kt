@@ -81,7 +81,15 @@ object TrackerTapDetectionBehaviour : TrackerBehaviour {
 }
 
 object TrackerBasicBehaviour : TrackerBehaviour {
-	override fun reduce(state: TrackerState, action: TrackerActions) = if (action is TrackerActions.Update) action.transform(state) else state
+	override fun reduce(state: TrackerState, action: TrackerActions) : TrackerState {
+		val newState = if (action is TrackerActions.Update)
+			action.transform(state)
+		else
+			state
+		if (action is TrackerActions.Update)
+			println(newState)
+		return newState
+	}
 }
 
 object TrackerTPSBehaviour : TrackerBehaviour {

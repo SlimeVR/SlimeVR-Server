@@ -5,81 +5,62 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.udp.SensorConfigFlags
 import dev.slimevr.udp.UDPConnectionActions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
-import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.MagnetometerStatus
-import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.rpc.ChangeMagToggleRequest
-import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.MagToggleRequest
 import solarxr_protocol.rpc.MagToggleResponse
 
 class MagBehaviour(
 	private val appContext: AppContextProvider,
 ) : SolarXRBridgeBehaviour {
-	override fun observe(receiver: SolarXRBridge) {
+	private fun setUDPTrackerMag(trackerId: Int, deviceId: Int, enable: Boolean): Boolean {
+		val connection = appContext.udpServer.findConnectionForDevice(deviceId) ?: return false
+		val sensorId = connection.context.state.value.trackerIds.find { it.id == trackerId }?.trackerNum ?: return false
+		connection.context.dispatch(
+			UDPConnectionActions.SetSensorConfig(
+				sensorId = sensorId,
+				flags = SensorConfigFlags(magStatus = if (enable) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED),
+			)
+		)
+		return true
+	}
 
+	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<ChangeMagToggleRequest> { req ->
 			val trackerId = req.trackerId
 
 			if (trackerId == null) {
-				receiver.appContext.config.settings.context.dispatch(
-					SettingsActions.Update {
-						copy(globalMagEnabled = req.enable)
+				receiver.appContext.config.settings.context.dispatch(SettingsActions.Update { copy(globalMagEnabled = req.enable) })
+				appContext.server.context.state.value.trackers.values.forEach { tracker ->
+					val state = tracker.context.state.value
+					if (state.magStatus == MagnetometerStatus.NOT_SUPPORTED) return@forEach
+					when (state.origin) {
+						DeviceOrigin.UDP -> setUDPTrackerMag(state.id, state.deviceId, req.enable)
+						DeviceOrigin.HID -> { /* TODO: implement HID mag toggle */ }
+						else -> Unit
 					}
-				)
-				receiver.sendRpc(MagToggleResponse(
-					trackerId = null,
-					enable = req.enable
-				))
+				}
+				receiver.sendRpc(MagToggleResponse(trackerId = null, enable = req.enable))
 				return@on
 			}
 
 			val tracker = appContext.server.getTracker(trackerId.trackerNum.toInt()) ?: return@on
 			val trackerState = tracker.context.state.value
-
 			if (trackerState.magStatus == MagnetometerStatus.NOT_SUPPORTED) return@on
 
 			when (trackerState.origin) {
 				DeviceOrigin.UDP -> {
-					val connection = appContext.udpServer.findConnectionForDevice(trackerState.deviceId) ?: return@on
-					val sensorId = connection.context.state.value.trackerIds
-						.find { it.id == trackerState.id }
-						?.trackerNum
-						?: return@on
-					connection.context.dispatch(
-						UDPConnectionActions.SetSensorConfig(
-							sensorId = sensorId,
-							flags = SensorConfigFlags(magEnabled = req.enable)
-						),
-					)
-
+					if (!setUDPTrackerMag(trackerState.id, trackerState.deviceId, req.enable)) return@on
 					tracker.context.scope.launch {
 						withTimeout(10_000) {
 							tracker.context.state
 								.distinctUntilChangedBy { it.magStatus }
-								.first { trackerState ->
-									val status = when (trackerState.magStatus) {
-										MagnetometerStatus.ENABLED -> true
-										MagnetometerStatus.DISABLED -> false
-										MagnetometerStatus.NOT_SUPPORTED -> false
-									}
-									return@first status == req.enable
-								}
-							receiver.sendRpc(
-								MagToggleResponse(
-									trackerId = trackerId,
-									enable = req.enable
-								)
-							)
+								.first { it.magStatus == if (req.enable) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED }
+							receiver.sendRpc(MagToggleResponse(trackerId = trackerId, enable = req.enable))
 						}
 					}
 				}
@@ -94,23 +75,17 @@ class MagBehaviour(
 			val trackerId = req.trackerId
 
 			if (trackerId == null) {
-				val globalMagEnabled = receiver.appContext.config.settings.context.state.value.data.globalMagEnabled
 				receiver.sendRpc(MagToggleResponse(
 					trackerId = null,
-					enable = globalMagEnabled
+					enable = receiver.appContext.config.settings.context.state.value.data.globalMagEnabled,
 				))
 				return@on
 			}
 
-			val tracker = appContext.server.getTracker(trackerId.trackerNum.toInt()) ?: return@on
-			val trackerState = tracker.context.state.value
+			val trackerState = appContext.server.getTracker(trackerId.trackerNum.toInt())?.context?.state?.value ?: return@on
 			receiver.sendRpc(MagToggleResponse(
 				trackerId = trackerId,
-				enable = when (trackerState.magStatus) {
-					MagnetometerStatus.ENABLED -> true
-					MagnetometerStatus.DISABLED -> false
-					MagnetometerStatus.NOT_SUPPORTED -> false
-				}
+				enable = trackerState.magStatus == MagnetometerStatus.ENABLED,
 			))
 		}
 	}

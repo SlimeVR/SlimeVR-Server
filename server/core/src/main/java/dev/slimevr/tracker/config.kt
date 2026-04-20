@@ -25,6 +25,11 @@ private fun applyStateToConfig(config: TrackerConfig, state: TrackerState) = con
 	bodyPart = state.bodyPart,
 	customName = state.customName,
 	mountingOrientation = state.mountingOrientation,
+	magEnabled = when (state.magStatus) {
+		MagnetometerStatus.ENABLED -> true
+		MagnetometerStatus.DISABLED -> false
+		MagnetometerStatus.NOT_SUPPORTED -> config.magEnabled
+	},
 )
 
 class TrackerConfigBehaviour(
@@ -33,7 +38,7 @@ class TrackerConfigBehaviour(
 ) : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
-			.distinctUntilChangedBy { it.bodyPart to it.customName to it.mountingOrientation }
+			.distinctUntilChangedBy { it.bodyPart to it.customName to it.mountingOrientation to it.magStatus }
 			.drop(1)
 			.onEach { state ->
 				settings.context.dispatch(SettingsActions.UpdateTracker(hardwareId) { applyStateToConfig(this, state) })
