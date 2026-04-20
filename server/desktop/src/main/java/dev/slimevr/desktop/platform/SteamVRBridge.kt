@@ -40,7 +40,8 @@ class BindingsProviderManager : Runnable {
 		if (binaryPath.exists()) return binaryPath
 
 		// Then look through PATH to find the binary.
-		val path = System.getenv("PATH") ?: error("")
+		// PATH shouldn't be null, but if it is just gracefully fail
+		val path = System.getenv("PATH") ?: return null
 		val pathSeparator = System.getProperty("path.separator")!!
 		for (path in path.split(pathSeparator)) {
 			val binaryPath = Path(path, binaryName)
