@@ -76,6 +76,7 @@ static void onToggleTracking(SolarXRConnection &conn) {
   static bool shouldPause = false;
   flatbuffers::FlatBufferBuilder fbb;
 
+  shouldPause = !shouldPause;
   auto toggleReq = rpc::CreateSetPauseTrackingRequest(fbb, shouldPause);
   auto msgHeader = rpc::CreateRpcMessageHeader(
       fbb, nullptr, rpc::RpcMessage::SetPauseTrackingRequest,
