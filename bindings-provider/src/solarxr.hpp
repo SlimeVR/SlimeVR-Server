@@ -22,7 +22,7 @@ private:
   static std::filesystem::path getSocketPath();
 
 public:
-  SolarXRConnection();
+  SolarXRConnection() noexcept(false);
 
   ~SolarXRConnection();
 

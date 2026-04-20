@@ -60,13 +60,15 @@ SolarXRConnection::SolarXRConnection() {
 
   fd = socket(AF_UNIX, SOCK_STREAM, 0);
   if (fd == -1) {
-    Logger::get().error("Failed to create listen socket: {}", strerror(errno));
-    throw std::runtime_error("Failed to create socket");
+    throw std::runtime_error(
+        std::format("Failed to create listen socket: {}", strerror(errno)));
   }
 
   if (connect(fd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == -1) {
-    Logger::get().error("Failed to connect to socket {}: {}", addr.sun_path,
-                        strerror(errno));
+    int e = errno;
+    close(fd);
+    throw std::runtime_error(std::format("Failed to connect to socket {}: {}",
+                                         addr.sun_path, strerror(e)));
   }
 
 #elif defined(_WIN32)
@@ -121,7 +123,8 @@ void SolarXRConnection::sendMsg(flatbuffers::FlatBufferBuilder &fbb) {
 #elif defined(_WIN32)
   uint8_t tempBuf[2048];
   if (fbb.GetSize() > 2048 - 4) {
-    throw std::runtime_error("Message is too big for temporary buffer");
+    Logger::get().warning("Message is too big for temporary buffer");
+    return;
   }
 
   *reinterpret_cast<int *>(&tempBuf[0]) = size;
