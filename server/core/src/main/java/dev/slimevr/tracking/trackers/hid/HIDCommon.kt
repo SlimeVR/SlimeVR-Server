@@ -29,8 +29,8 @@ class HIDCommon {
 		const val HID_RECEIVER_PID = 0x7690
 		const val HID_TRACKER_PID = 0x7692
 		const val GESTURES_INC_VID = 0x4E76
-		const val GESTURES_INC_PID_D2XX = 0xD200
-		const val GESTURES_INC_PID_D2XX_MASK = 0xFF00
+		const val GESTURES_INC_PID_D2DX = 0xD2D0
+		const val GESTURES_INC_PID_D2DX_MASK = 0xFFF0
 
 		const val PACKET_SIZE = 16
 
@@ -44,7 +44,7 @@ class HIDCommon {
 
 		val receiverProductRules = listOf(
 			HidProductRule(HID_TRACKER_RECEIVER_VID, HID_RECEIVER_PID),
-			HidProductRule(GESTURES_INC_VID, GESTURES_INC_PID_D2XX, GESTURES_INC_PID_D2XX_MASK),
+			HidProductRule(GESTURES_INC_VID, GESTURES_INC_PID_D2DX, GESTURES_INC_PID_D2DX_MASK),
 		)
 		val trackerProductRules = listOf(
 			HidProductRule(HID_TRACKER_RECEIVER_VID, HID_TRACKER_PID),
