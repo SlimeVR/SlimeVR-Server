@@ -194,7 +194,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	//  make acceleration worse, so I'm just leaving this until we work that out. The
 	//  output of this will be world space, but with an unknown offset to heading (yaw).
 	//  - Butterscotch
-	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = rawRot.sandwich(accel)
+	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = (gyroFix * mountRotFix.inv() * yawFix * rawRot).sandwich(accel)
 
 	/**
 	 * Converts raw or filtered rotation into reference- and

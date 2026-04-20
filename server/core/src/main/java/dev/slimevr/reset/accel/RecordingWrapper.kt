@@ -50,7 +50,7 @@ data class RecordingWrapper(val tracker: Tracker, var moving: Boolean = false) {
 		// Conditions to start or remain moving
 		// TODO: Add rotation as a rest metric
 		moving = if (moving) {
-			stats.mean >= 0.1f || stats.standardDeviation >= 0.2f
+			stats.mean >= 0.2f || stats.standardDeviation >= 0.25f
 		} else {
 			stats.mean >= 0.3f || new.accel.len() - stats.mean >= 0.6f
 		}
