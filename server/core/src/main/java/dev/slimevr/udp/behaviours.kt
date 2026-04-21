@@ -172,7 +172,7 @@ object TimeoutBehaviour : UDPConnectionBehaviour {
 						DeviceActions.Update { copy(status = TrackerStatus.TIMED_OUT) },
 					)
 					state.trackerIds.mapNotNull { receiver.appContext.server.getTracker(it.id) }.forEach { tracker ->
-						tracker.context.dispatch(TrackerActions.Update { copy(status = TrackerStatus.TIMED_OUT) })
+						tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
 					}
 				} else {
 					delay(timeUntilTimeout + 1)
@@ -198,7 +198,7 @@ object DisconnectBehaviour : UDPConnectionBehaviour {
 							DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
 						)
 						currentState.trackerIds.mapNotNull { receiver.appContext.server.getTracker(it.id) }.forEach { tracker ->
-							tracker.context.dispatch(TrackerActions.Update { copy(status = TrackerStatus.DISCONNECTED) })
+							tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
 						}
 					}
 				} else {
@@ -278,23 +278,23 @@ object SensorInfoBehaviour : UDPConnectionBehaviour {
 
 			val existingTracker = receiver.getTracker(event.data.sensorId)
 			if (existingTracker != null) {
-				existingTracker.context.dispatch(TrackerActions.Update {
-					copy(sensorType = event.data.imuType, status = event.data.status, completedRestCalibration = event.data.hasCompletedRestCalibration)
-				})
+				existingTracker.context.dispatchAll(listOf(
+					TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
+					TrackerActions.SetStatus(event.data.status),
+				))
 				return@onPacket
 			}
 
 			val (tracker, isNew) = assignTracker(receiver, device, event)
-			tracker.context.dispatch(TrackerActions.Update {
-				copy(
-					sensorType = event.data.imuType,
-					status = event.data.status,
-					completedRestCalibration = event.data.hasCompletedRestCalibration,
-					magStatus = if (isNew && magStatus == MagnetometerStatus.NOT_SUPPORTED) {
-						if (event.data.sensorConfig?.magSupported == true) MagnetometerStatus.DISABLED else MagnetometerStatus.NOT_SUPPORTED
-					} else magStatus,
-				)
-			})
+			tracker.context.dispatchAll(listOf(
+				TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
+				TrackerActions.SetStatus(event.data.status),
+			))
+			if (isNew && tracker.context.state.value.magStatus == MagnetometerStatus.NOT_SUPPORTED) {
+				tracker.context.dispatch(TrackerActions.SetMagStatus(
+					if (event.data.sensorConfig?.magSupported == true) MagnetometerStatus.DISABLED else MagnetometerStatus.NOT_SUPPORTED
+				))
+			}
 
 			val remoteMagStatus = event.data.sensorConfig?.let {
 				if (it.magSupported) {
@@ -321,22 +321,22 @@ object SensorRotationBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation) })
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = event.data.rotation))
 		}
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation, acceleration = event.data.acceleration) })
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = event.data.rotation, acceleration = event.data.acceleration))
 		}
 
 		receiver.packetEvents.onPacket<Accel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.Update { copy(acceleration = event.data.acceleration) })
+			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = event.data.acceleration))
 		}
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = event.data.rotation) })
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = event.data.rotation))
 		}
 	}
 }
@@ -412,7 +412,6 @@ object SensorConfigBehaviour : UDPConnectionBehaviour {
 							state = flags.magStatus == MagnetometerStatus.ENABLED
 						)
 					)
-					println("SEND CONFIG = ${flags.magStatus}")
 				}
 			}
 			.launchIn(receiver.context.scope)
@@ -427,8 +426,7 @@ object AckConfigBehaviour : UDPConnectionBehaviour {
 
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			if (configType == SensorConfigType.MAGNETOMETER) {
-				tracker.context.dispatch(TrackerActions.Update { copy(magStatus = flags.magStatus) })
-				println("UPDATE? = ${flags.magStatus}")
+				tracker.context.dispatch(TrackerActions.SetMagStatus(flags.magStatus))
 			}
 		}
 	}

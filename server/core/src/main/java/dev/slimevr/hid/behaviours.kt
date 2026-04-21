@@ -125,22 +125,22 @@ object HIDRotationBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.onPacket<HIDRotation> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = packet.rotation) })
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
 		}
 
 		receiver.packetEvents.onPacket<HIDRotationBattery> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = packet.rotation) })
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
 		}
 
 		receiver.packetEvents.onPacket<HIDRotationMag> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = packet.rotation) })
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation))
 		}
 
 		receiver.packetEvents.onPacket<HIDRotationButton> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.Update { copy(rawRotation = packet.rotation) })
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
 		}
 	}
 }

@@ -24,7 +24,7 @@ object FeederBaseBehaviour : FeederBridgeBehaviour {
 
 		receiver.inbound.on<FeederBridgeInbound.TrackerPosition> { event ->
 			receiver.appContext.server.getTracker(event.trackerId)?.context?.dispatch(
-				TrackerActions.Update { copy(rawRotation = event.rotation) },
+				TrackerActions.SetRotation(rotation = event.rotation),
 			)
 		}
 	}

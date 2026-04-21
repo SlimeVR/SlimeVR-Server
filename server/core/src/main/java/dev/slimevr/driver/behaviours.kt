@@ -17,7 +17,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			receiver.appContext.server.getTracker(event.trackerId)?.context?.dispatch(
-				TrackerActions.Update { copy(rawRotation = event.rotation) },
+				TrackerActions.SetRotation(rotation = event.rotation),
 			)
 		}
 
