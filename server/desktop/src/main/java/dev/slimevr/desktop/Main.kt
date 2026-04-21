@@ -58,8 +58,8 @@ fun main(args: Array<String>) {
 	val isLinux = OperatingSystem.currentPlatform == OperatingSystem.LINUX
 	options.addOption("h", "help", false, "Show help")
 	options.addOption("V", "version", false, "Show version")
-	options.addOption("i", "install", true, "Run the driver install")
-	options.addOption("s", "steam", true, "Run the server in steam mode")
+	options.addOption("i", "install", false, "Run the driver install")
+	options.addOption("s", "steam", false, "Run the server in steam mode")
 	if (isLinux) {
 		options.addOption("u", "no-udev", false, "Skip checking if udev rules are installed")
 	}
