@@ -164,6 +164,8 @@ enum class TrackerPosition(
 	RIGHT_LITTLE_PROXIMAL("body:right_little_proximal", null, BodyPart.RIGHT_LITTLE_PROXIMAL, 48),
 	RIGHT_LITTLE_INTERMEDIATE("body:right_little_intermediate", null, BodyPart.RIGHT_LITTLE_INTERMEDIATE, 49),
 	RIGHT_LITTLE_DISTAL("body:right_little_distal", null, BodyPart.RIGHT_LITTLE_DISTAL, 50),
+	LEFT_HAND_INPUT("body:left_hand_input", TrackerRole.LEFT_HAND_INPUT, BodyPart.LEFT_HAND_INPUT, 70),
+	RIGHT_HAND_INPUT("body:right_hand_input", TrackerRole.RIGHT_HAND_INPUT, BodyPart.RIGHT_HAND_INPUT, 71)
 	;
 
 	/**
@@ -197,7 +199,7 @@ enum class TrackerPosition(
 
 	companion object {
 		/** Indexed by `BodyPart` int value. EFFICIENCY FTW  */
-		private val byBodyPart: Array<out TrackerPosition?> = arrayOfNulls<TrackerPosition>(BodyPart.names.size).apply {
+		private val byBodyPart: Array<out TrackerPosition?> = arrayOfNulls<TrackerPosition>(entries.maxOf { it.bodyPart } + 1).apply {
 			for (position in entries) {
 				this[position.bodyPart] = position
 			}
