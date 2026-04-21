@@ -124,7 +124,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			builder.setQw(rot.w)
 		}
 
-		if (tracker.allowVelocity) {
+		if (tracker.hasVelocity) {
 			val vel = tracker.getVelocity()
 			builder.setVx(vel.x)
 			builder.setVy(vel.y)

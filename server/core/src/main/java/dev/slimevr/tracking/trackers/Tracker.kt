@@ -12,6 +12,9 @@ import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.properties.Delegates
+import kotlin.time.DurationUnit
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 const val TIMEOUT_MS = 2_000L
 const val DISCONNECT_MS = 3_000L + TIMEOUT_MS
@@ -123,7 +126,7 @@ class Tracker @JvmOverloads constructor(
 	 * Velocity state server-side differentiation based on sent poses
 	 */
 	private data class VelocityState(
-		var prevTimeNs: Long = 0L,
+		var prevMark: TimeMark? = null,
 		var prevPos: Vector3 = Vector3(0f, 0f, 0f),
 	)
 
@@ -370,7 +373,7 @@ class Tracker @JvmOverloads constructor(
 	 * last update, applying a sanity check on the time delta to filter out noise and ensure data stability.
 	 *
 	 */
-	fun updateDerivedVelocity(nowNs: Long) {
+	fun updateDerivedVelocity() {
 		if (!allowVelocity || !hasPosition) {
 			velocityState = null
 			_velocity = Vector3.NULL
@@ -382,8 +385,9 @@ class Tracker @JvmOverloads constructor(
 			velocityState = it
 		}
 
-		if (state.prevTimeNs != 0L) {
-			val dt = (nowNs - state.prevTimeNs) * 1e-9
+		val prevMark = state.prevMark
+		if (prevMark != null) {
+			val dt = prevMark.elapsedNow().toDouble(DurationUnit.SECONDS)
 			if (dt in 1e-4..0.25) {
 				_velocity = Vector3(
 					((pos.x - state.prevPos.x) / dt).toFloat(),
@@ -394,7 +398,7 @@ class Tracker @JvmOverloads constructor(
 				_velocity = Vector3.NULL
 			}
 		}
-		state.prevTimeNs = nowNs
+		state.prevMark = TimeSource.Monotonic.markNow()
 		state.prevPos = pos
 	}
 
