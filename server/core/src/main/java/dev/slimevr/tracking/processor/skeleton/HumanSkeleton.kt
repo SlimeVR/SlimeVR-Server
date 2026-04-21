@@ -1171,7 +1171,7 @@ class HumanSkeleton(
 			it.position = trackerBone.getTailPosition()
 			it.setRotation(trackerBone.getGlobalRotation() * trackerBone.rotationOffset.inv())
 			it.dataTick()
-			it.updateDerivedVelocity(System.nanoTime())
+			it.updateDerivedVelocity()
 		}
 	}
 
