@@ -1,0 +1,78 @@
+package dev.slimevr.updater
+
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
+
+class Updater {
+
+	@Serializable
+	data class GHResponse(
+		val tag_name: String,
+		val assets: JsonArray
+	)
+
+	@Serializable
+	data class ReleaseInfo(
+		val url: String,
+		val id: Long,
+		val name: String,
+		val digest: String
+	)
+
+
+	val os = System.getProperty("os.name").lowercase()
+
+	fun runUpdater() {
+
+		val manifest = Manifest()
+
+
+
+		//channels.getChannels("Server")
+
+		/*
+		val shouldUpdate: Boolean = shouldUpdate()
+		println("Should update $shouldUpdate")
+
+		/*
+		if (!shouldUpdate) {
+		 		println("Updater didn't find any new version")
+		 	return
+		}
+
+		 */
+
+		if (os.contains("linux")) {
+			val linuxUpdater = Linux()
+			val linuxFlavour = executeShellCommand("uname", "-n")
+
+			// Skip some install stuff if running on frame
+			// if (linuxFlavour.contains("amos")) {
+			// 	linuxUpdater.updateFrame()
+			// }
+			// else {
+			linuxUpdater.updateLinux()
+			// }
+		} else if (os.contains("windows")) {
+			println("Running windows updater")
+			val windowsUpdater = Windows()
+			windowsUpdater.updateWindows()
+		} else if (os.contains("darwin")) {
+			println("I dunno")
+		} else {
+			println("guess I'll die")
+		}
+		updaterGui.mainLabel.text = "Done Installing"
+		updaterGui.mainLabel.isVisible = false
+
+		Thread.sleep(1000)
+		return
+
+		 */
+	}
+
+
+	companion object {
+		val CDN = "http://127.0.0.1:8080"
+	}
+}
