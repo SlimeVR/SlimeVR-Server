@@ -111,6 +111,7 @@ class AccelResetHandler(val timeSource: TimeSource.WithComparableMarks = TimeSou
 			recordingLock.withLock {
 				// Race condition
 				if (!isRecording) return
+				stop()
 				// Let's not block the tracker thread while processing
 				thread {
 					process()
@@ -132,8 +133,6 @@ class AccelResetHandler(val timeSource: TimeSource.WithComparableMarks = TimeSou
 	 * Stops recording, processes the recorded data, then resets this handler.
 	 */
 	private fun process() {
-		stop()
-
 		LogManager.info("[AccelResetHandler] Done recording, processing...")
 
 		for (tracker in trackers) {
