@@ -45,7 +45,7 @@ class Context<S, A>(
 		mutableStateFlow.update { currentState ->
 			actions.fold(currentState) { s, action -> reducer(s, action) }
 		}
-		debugMiddleware.onDispatchBatch(caller, before, actions, mutableStateFlow.value)
+		debugMiddleware.onDispatchAll(caller, before, actions, mutableStateFlow.value)
 	}
 
 	fun <C> observeAll(receiver: C) = behaviours.forEach { behaviour ->

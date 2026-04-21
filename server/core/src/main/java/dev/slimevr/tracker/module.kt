@@ -2,9 +2,9 @@ package dev.slimevr.tracker
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
-import dev.slimevr.config.TrackerConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
 import dev.slimevr.device.DeviceOrigin
 import io.github.axisangles.ktmath.Quaternion
@@ -99,9 +99,10 @@ class Tracker(
 				initialState = trackerState,
 				scope = scope,
 				behaviours = behaviours,
-				LoggingMiddleware(
+				debugMiddleware = LoggingMiddleware(
 					"Tracker[$hardwareId]",
-// 					block = setOf(TrackerActions.SetRotation::class)
+ 					block = setOf(TrackerActions.SetRotation::class),
+					diffStyle = DiffStyle.MULTILINE
 				),
 			)
 			val tracker = Tracker(context = context, server)

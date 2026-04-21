@@ -39,7 +39,7 @@ class LoggingMiddleware<S, A>(
 		println(formatLine("$tag $actionName$callerSuffix", before, after))
 	}
 
-	override fun onDispatchBatch(caller: String?, before: S, actions: List<A>, after: S) {
+	override fun onDispatchAll(caller: String?, before: S, actions: List<A>, after: S) {
 		val visible = actions.filter { action -> isAllowed(action) }
 		if (visible.isEmpty()) return
 		if (!logNoOps && before == after) return
