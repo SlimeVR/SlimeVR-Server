@@ -35,6 +35,10 @@ linux:
   extraFiles:
     - from: "../server/desktop/build/libs/slimevr.jar"
       to: "."
+    - from: "../bindings-provider/build/linux-${arch}/slimevr-bindings-provider"
+      to: "."
+    - from: "../bindings-provider/build/linux-${arch}/libopenvr_api.so"
+      to: "."
     - from: "./electron/resources/69-slimevr-devices.rules"
       to: "."
   icon: "./electron/resources/icons"
@@ -59,6 +63,10 @@ win:
     - from: "../server/core/resources"
       to: "."
       filter: ["**/*"]
+    - from: "../bindings-provider/build/${os}-${arch}/Release/SlimeVR-Bindings-Provider.exe"
+      to: "."
+    - from: "../bindings-provider/build/${os}-${arch}/openvr_api.dll"
+      to: "."
 
 mac:
   target: dmg

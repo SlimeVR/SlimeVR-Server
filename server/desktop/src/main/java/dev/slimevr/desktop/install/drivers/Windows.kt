@@ -10,20 +10,6 @@ class Windows {
 
 	fun updateWindows() {
 		steamVRDriver()
-		feeder()
-	}
-
-	fun feeder() {
-		val feederOutput = executeShellCommand("${path}\\${WINDOWS_FEEDER_DIRECTORY}\\SlimeVR-Feeder-App.exe", "--install")
-		if (feederOutput == null) {
-			LogManager.warning("Error installing feeder")
-			return
-		}
-		if (feederOutput.lowercase().contains("manifest is not installed")) {
-			LogManager.warning("Could not install feeder application")
-		} else {
-			LogManager.info("Successfully installed feeder application")
-		}
 	}
 
 	fun steamVRDriver() {
@@ -57,6 +43,5 @@ class Windows {
 
 	companion object {
 		private const val WINDOWS_STEAMVR_DRIVER_DIRECTORY = "slimevr-openvr-driver-win64"
-		private const val WINDOWS_FEEDER_DIRECTORY = "SlimeVR-Feeder-App-win64"
 	}
 }
