@@ -92,9 +92,9 @@ class TapDetectionManager(
 	private val mountingResetTracker: Tracker?
 		get() {
 			return arrayOf(
-			TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.mountingResetTracker),
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.mountingResetTracker),
 				if (config.yawResetTracker !== TrackerPosition.RIGHT_UPPER_LEG && config.fullResetTracker !== TrackerPosition.RIGHT_UPPER_LEG) skeleton.rightUpperLegTracker else null,
-				if (config.yawResetTracker !== TrackerPosition.RIGHT_LOWER_LEG && config.fullResetTracker !== TrackerPosition.RIGHT_LOWER_LEG) skeleton.rightLowerLegTracker else null
+				if (config.yawResetTracker !== TrackerPosition.RIGHT_LOWER_LEG && config.fullResetTracker !== TrackerPosition.RIGHT_LOWER_LEG) skeleton.rightLowerLegTracker else null,
 			).firstNotNullOfOrNull { it }
 		}
 
@@ -103,7 +103,7 @@ class TapDetectionManager(
 			return arrayOf(
 				TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.fullResetTracker),
 				if (config.yawResetTracker !== TrackerPosition.LEFT_UPPER_LEG && config.mountingResetTracker !== TrackerPosition.LEFT_UPPER_LEG) skeleton.leftUpperLegTracker else null,
-				if (config.yawResetTracker !== TrackerPosition.LEFT_LOWER_LEG && config.mountingResetTracker !== TrackerPosition.LEFT_LOWER_LEG) skeleton.leftLowerLegTracker else null
+				if (config.yawResetTracker !== TrackerPosition.LEFT_LOWER_LEG && config.mountingResetTracker !== TrackerPosition.LEFT_LOWER_LEG) skeleton.leftLowerLegTracker else null,
 			).firstNotNullOfOrNull { it }
 		}
 
@@ -114,7 +114,7 @@ class TapDetectionManager(
 				if (config.fullResetTracker !== TrackerPosition.UPPER_CHEST && config.mountingResetTracker !== TrackerPosition.UPPER_CHEST) skeleton.upperChestTracker else null,
 				if (config.fullResetTracker !== TrackerPosition.CHEST && config.mountingResetTracker !== TrackerPosition.CHEST) skeleton.chestTracker else null,
 				if (config.fullResetTracker !== TrackerPosition.HIP && config.mountingResetTracker !== TrackerPosition.HIP) skeleton.hipTracker else null,
-				if (config.fullResetTracker !== TrackerPosition.WAIST && config.mountingResetTracker !== TrackerPosition.WAIST) skeleton.waistTracker else null
+				if (config.fullResetTracker !== TrackerPosition.WAIST && config.mountingResetTracker !== TrackerPosition.WAIST) skeleton.waistTracker else null,
 			).firstNotNullOfOrNull { it }
 		}
 
