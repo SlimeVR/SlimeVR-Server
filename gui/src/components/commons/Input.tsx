@@ -37,6 +37,7 @@ export const InputInside = forwardRef<
     value,
     error,
     variant = 'primary',
+    ...props
   },
   ref
 ) {
@@ -100,6 +101,7 @@ export const InputInside = forwardRef<
           value={computedValue} // Do we want that behaviour ?
           disabled={disabled}
           ref={ref}
+          {...props}
         />
         {type === 'password' && (
           <div
@@ -129,6 +131,7 @@ export const Input = <T extends FieldValues = FieldValues>({
   disabled,
   variant = 'primary',
   rules,
+  ...props
 }: {
   rules?: UseControllerProps<T, FieldPath<T>>['rules'];
   control: Control<T>;
@@ -157,6 +160,7 @@ export const Input = <T extends FieldValues = FieldValues>({
           onChange={onChange}
           ref={ref}
           name={name}
+          {...props}
         />
       )}
     />

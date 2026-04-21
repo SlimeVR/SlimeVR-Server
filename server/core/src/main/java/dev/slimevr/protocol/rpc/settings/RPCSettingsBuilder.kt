@@ -13,6 +13,7 @@ import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.SkeletonConfig
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.config.TimeoutConfig
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.filtering.TrackerFilters.Companion.getByConfigkey
@@ -32,6 +33,7 @@ import solarxr_protocol.rpc.SettingsResponse
 import solarxr_protocol.rpc.StayAlignedSettings
 import solarxr_protocol.rpc.SteamVRTrackersSetting
 import solarxr_protocol.rpc.TapDetectionSettings
+import solarxr_protocol.rpc.TimeoutSettings
 import solarxr_protocol.rpc.VMCOSCSettings
 import solarxr_protocol.rpc.VRCOSCSettings
 import solarxr_protocol.rpc.settings.LegTweaksSettings
@@ -426,7 +428,10 @@ fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
 				server.configManager.vrConfig.stayAlignedConfig,
 			),
 			createHIDSettings(fbb, server.configManager.vrConfig.hidConfig),
-			0,
+			createTimeoutSettings(
+				fbb,
+				server.configManager.vrConfig.timeout,
+			),
 		)
 }
 
@@ -461,4 +466,13 @@ fun createHIDSettings(
 	.createHIDSettings(
 		fbb,
 		config.trackersOverHID,
+	)
+
+fun createTimeoutSettings(
+	fbb: FlatBufferBuilder,
+	timeoutConfig: TimeoutConfig,
+): Int = TimeoutSettings
+	.createTimeoutSettings(
+		fbb,
+		timeoutConfig.duration,
 	)

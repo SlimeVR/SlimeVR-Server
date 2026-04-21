@@ -362,6 +362,14 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			config.trackersOverHID = requestConfig.trackersOverHid()
 		}
 
+		if (req.timeout() != null) {
+			val timeoutConfig = api.server.configManager
+				.vrConfig
+				.timeout
+			timeoutConfig.duration = req.timeout().duration()
+			timeoutConfig.updateTimeoutDuration()
+		}
+
 		api.server.configManager.saveConfig()
 	}
 
