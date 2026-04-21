@@ -37,7 +37,7 @@ suspend fun createUnixSolarXRSocket(appContext: AppContextProvider) = acceptUnix
 	handleSolarXRBridge(
 		appContext = appContext,
 		messages = readFramedMessages(channel),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } }
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
 	)
 }
 

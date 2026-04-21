@@ -34,13 +34,13 @@ The cost is that you cannot mutate state directly. Everything goes through `disp
 
 ```kotlin
 class Context<S, A>(
-    val state: StateFlow<S>,
-    val scope: CoroutineScope,
-    val behaviours: CopyOnWriteArrayList<Behaviour<S, A, *>>,
+	val state: StateFlow<S>,
+	val scope: CoroutineScope,
+	val behaviours: CopyOnWriteArrayList<Behaviour<S, A, *>>,
 ) {
-    fun dispatch(action: A)
-    fun dispatchAll(actions: List<A>)
-    fun <C> observeAll(receiver: C)
+	fun dispatch(action: A)
+	fun dispatchAll(actions: List<A>)
+	fun <C> observeAll(receiver: C)
 }
 ```
 
@@ -60,8 +60,8 @@ A behaviour is one feature of a module. It has two methods, both optional:
 
 ```kotlin
 interface Behaviour<S, A, C> {
-    fun reduce(state: S, action: A): S = state   // pure, no side effects
-    fun observe(receiver: C) {}                   // side effects go here
+	fun reduce(state: S, action: A): S = state   // pure, no side effects
+	fun observe(receiver: C) {}                   // side effects go here
 }
 ```
 
@@ -95,8 +95,8 @@ Behaviours that need external services are `class`es, constructed at the call si
 
 ```kotlin
 class TrackerConfigBehaviour(
-    private val settings: Settings,
-    private val hardwareId: String,
+	private val settings: Settings,
+	private val hardwareId: String,
 ) : TrackerBehaviour { ... }
 ```
 
@@ -104,8 +104,8 @@ When a behaviour is conditional (depends on a nullable service), use `buildList`
 
 ```kotlin
 val behaviours: List<MyBehaviour> = buildList {
-    add(AlwaysPresentBehaviour)
-    optionalService?.let { add(OptionalServiceBehaviour(it)) }
+	add(AlwaysPresentBehaviour)
+	optionalService?.let { add(OptionalServiceBehaviour(it)) }
 }
 ```
 
@@ -113,11 +113,11 @@ For modules like `SolarXRBridge` where the behaviour list is large and reusable,
 
 ```kotlin
 companion object {
-    fun buildBehaviours(appContext: AppContextProvider): List<SolarXRBridgeBehaviour> = buildList {
-        add(DataFeedInitBehaviour(appContext.server, appContext.skeleton))
-        add(FirmwareBehaviour(appContext.server, appContext.firmwareManager))
-        // ...
-    }
+	fun buildBehaviours(appContext: AppContextProvider): List<SolarXRBridgeBehaviour> = buildList {
+		add(DataFeedInitBehaviour(appContext.server, appContext.skeleton))
+		add(FirmwareBehaviour(appContext.server, appContext.firmwareManager))
+		// ...
+	}
 }
 ```
 
@@ -205,9 +205,9 @@ Phase1ContextProvider
 
 ```kotlin
 interface Phase1ContextProvider {
-    val server: VRServer
-    val config: AppConfig
-    val serialServer: SerialServer
+	val server: VRServer
+	val config: AppConfig
+	val serialServer: SerialServer
 }
 ```
 
@@ -215,13 +215,13 @@ interface Phase1ContextProvider {
 
 ```kotlin
 interface AppContextProvider : Phase1ContextProvider {
-    val skeleton: Skeleton
-    val firmwareManager: FirmwareManager
-    val vrcConfigManager: VRCConfigManager?
-    val provisioningManager: ProvisioningManager
-    val heightCalibrationManager: HeightCalibrationManager
-    val trackingChecklist: TrackingChecklist
-    fun startObserving()
+	val skeleton: Skeleton
+	val firmwareManager: FirmwareManager
+	val vrcConfigManager: VRCConfigManager?
+	val provisioningManager: ProvisioningManager
+	val heightCalibrationManager: HeightCalibrationManager
+	val trackingChecklist: TrackingChecklist
+	fun startObserving()
 }
 ```
 
@@ -237,9 +237,9 @@ Actions are `sealed interface`s. This matters because the compiler enforces exha
 
 ```kotlin
 sealed interface UDPConnectionActions {
-    data class Handshake(val deviceId: Int) : UDPConnectionActions
-    data class LastPacket(val packetNum: Long?, val time: Long) : UDPConnectionActions
-    data object Disconnected : UDPConnectionActions
+	data class Handshake(val deviceId: Int) : UDPConnectionActions
+	data class LastPacket(val packetNum: Long?, val time: Long) : UDPConnectionActions
+	data object Disconnected : UDPConnectionActions
 }
 ```
 
@@ -312,20 +312,20 @@ Two common patterns:
 // Inside TrackerConfigBehaviour.observe()
 // When tracker state changes, persist the relevant fields to Settings
 receiver.context.state
-    .distinctUntilChangedBy { stateToConfig(it) }
-    .drop(1)
-    .onEach { state ->
-        settings.context.dispatch(SettingsActions.UpdateTracker(hardwareId) { stateToConfig(state) })
-    }
-    .launchIn(receiver.context.scope)
+	.distinctUntilChangedBy { stateToConfig(it) }
+	.drop(1)
+	.onEach { state ->
+		settings.context.dispatch(SettingsActions.UpdateTracker(hardwareId) { stateToConfig(state) })
+	}
+	.launchIn(receiver.context.scope)
 ```
 
 **Dispatch into VRServer from a connection:**
 ```kotlin
 // Inside HandshakeBehaviour.observe() - a UDP connection registers a new device
 receiver.packetEvents.on<Handshake> { event ->
-    val device = Device.create(...)
-    receiver.serverContext.context.dispatch(VRServerActions.NewDevice(deviceId, device))
+	val device = Device.create(...)
+	receiver.serverContext.context.dispatch(VRServerActions.NewDevice(deviceId, device))
 }
 ```
 
@@ -390,9 +390,9 @@ Create a context directly with the behaviours you want to test. No module class,
 
 ```kotlin
 val context = Context.create(
-    initialState = FirmwareManagerState(jobs = mapOf()),
-    scope = this,
-    behaviours = listOf(FirmwareManagerBaseBehaviour),
+	initialState = FirmwareManagerState(jobs = mapOf()),
+	scope = this,
+	behaviours = listOf(FirmwareManagerBaseBehaviour),
 )
 context.dispatch(FirmwareManagerActions.UpdateJob(...))
 assertEquals(FirmwareUpdateStatus.UPLOADING, context.state.value.jobs["COM1"]?.status)
@@ -405,9 +405,9 @@ Construct the module directly - bypassing `create()` - with only the behaviours 
 ```kotlin
 val serialServer = buildTestSerialServer(backgroundScope)
 val context = Context.create(
-    initialState = ProvisioningManager.INITIAL_STATE,
-    scope = backgroundScope,
-    behaviours = listOf(ProvisioningManagerBaseBehaviour),
+	initialState = ProvisioningManager.INITIAL_STATE,
+	scope = backgroundScope,
+	behaviours = listOf(ProvisioningManagerBaseBehaviour),
 )
 val manager = ProvisioningManager(context = context, serialServer = serialServer, scope = backgroundScope)
 manager.startObserving()
@@ -421,16 +421,16 @@ For modules that need an `AppContextProvider` (e.g. `SolarXRBridge`), extend `Te
 val server = buildTestVrServer(backgroundScope)
 val skeleton = buildTestSkeleton(backgroundScope)
 val appContext = object : TestAppContext() {
-    override val server = server
-    override val skeleton = skeleton
+	override val server = server
+	override val skeleton = skeleton
 }
 val context = Context.create(
-    initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
-    scope = backgroundScope,
-    behaviours = listOf(DataFeedInitBehaviour(server, skeleton)),
+	initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
+	scope = backgroundScope,
+	behaviours = listOf(DataFeedInitBehaviour(server, skeleton)),
 )
 val bridge = SolarXRBridge(id = 1, context = context, appContext = appContext,
-    dataFeedDispatcher = EventDispatcher(), rpcDispatcher = EventDispatcher())
+	dataFeedDispatcher = EventDispatcher(), rpcDispatcher = EventDispatcher())
 bridge.startObserving()
 ```
 
@@ -471,8 +471,8 @@ bridge.startObserving()
 data class MyState(val connected: Boolean)
 
 sealed interface MyActions {
-    data object Connected : MyActions
-    data object Disconnected : MyActions
+	data object Connected : MyActions
+	data object Disconnected : MyActions
 }
 
 typealias MyContext = Context<MyState, MyActions>
@@ -482,18 +482,18 @@ typealias MyBehaviour = Behaviour<MyState, MyActions, MyModule>
 2. **Define the module class** with a `create()` factory and a `startObserving()` method:
 ```kotlin
 class MyModule(val context: MyContext, val server: VRServer) {
-    fun startObserving() = context.observeAll(this)
+	fun startObserving() = context.observeAll(this)
 
-    companion object {
-        fun create(ctx: Phase1ContextProvider, scope: CoroutineScope): MyModule {
-            val context = Context.create(
-                initialState = MyState(false),
-                scope = scope,
-                behaviours = listOf(MyCoreBehaviour),
-            )
-            return MyModule(context, ctx.server)
-        }
-    }
+	companion object {
+		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope): MyModule {
+			val context = Context.create(
+				initialState = MyState(false),
+				scope = scope,
+				behaviours = listOf(MyCoreBehaviour),
+			)
+			return MyModule(context, ctx.server)
+		}
+	}
 }
 ```
 
@@ -512,7 +512,7 @@ Add it to the `behaviours` list in `create()`. The behaviour's `reduce` and `obs
 3. Register a listener in a behaviour's `observe`:
 ```kotlin
 receiver.packetEvents.on<MyPacket> { event ->
-    receiver.context.dispatch(...)
+	receiver.context.dispatch(...)
 }
 ```
 

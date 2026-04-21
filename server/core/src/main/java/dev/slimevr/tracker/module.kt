@@ -5,6 +5,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.context.debug.LoggingMiddleware
 import dev.slimevr.device.DeviceOrigin
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -13,8 +14,6 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
-
-
 
 data class TrackerIdNum(val id: Int, val trackerNum: Int)
 
@@ -84,10 +83,11 @@ class Tracker(
 				completedRestCalibration = false,
 				magStatus = MagnetometerStatus.NOT_SUPPORTED,
 			)
-			val trackerState = if (savedConfig != null)
+			val trackerState = if (savedConfig != null) {
 				restoreFromConfig(baseState, savedConfig)
-			else
+			} else {
 				baseState
+			}
 
 			val behaviours = listOf(
 				TrackerBasicBehaviour,
@@ -95,7 +95,15 @@ class Tracker(
 				TrackerTPSBehaviour,
 				TrackerTapDetectionBehaviour,
 			)
-			val context = Context.create(initialState = trackerState, scope = scope, behaviours = behaviours)
+			val context = Context.create(
+				initialState = trackerState,
+				scope = scope,
+				behaviours = behaviours,
+				LoggingMiddleware(
+					"Tracker[$hardwareId]",
+// 					block = setOf(TrackerActions.SetRotation::class)
+				),
+			)
 			val tracker = Tracker(context = context, server)
 			behaviours.forEach { it.observe(tracker) }
 			return tracker

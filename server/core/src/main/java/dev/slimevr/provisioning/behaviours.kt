@@ -8,12 +8,15 @@ object ProvisioningManagerBaseBehaviour : ProvisioningManagerBehaviour {
 			portLocation = action.portLocation,
 			macAddress = null,
 		)
+
 		is ProvisioningActions.StatusChanged -> state.copy(
 			status = action.status,
 		)
+
 		is ProvisioningActions.MacAddressObtained -> state.copy(
 			macAddress = action.mac,
 		)
+
 		is ProvisioningActions.Clear -> INITIAL_STATE
 	}
 }

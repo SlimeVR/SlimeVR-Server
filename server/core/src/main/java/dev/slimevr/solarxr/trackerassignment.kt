@@ -17,13 +17,15 @@ class AssignTrackerBehaviour(
 
 			val bodyPart = req.bodyPosition?.takeIf { it != BodyPart.NONE }
 			val mountingOrientation = req.mountingOrientation?.let { Quaternion(it.w, it.x, it.y, it.z) }
-			tracker.context.dispatch(TrackerActions.Update {
-				copy(
-					bodyPart = bodyPart,
-					customName = req.displayName,
-					mountingOrientation = mountingOrientation,
-				)
-			})
+			tracker.context.dispatch(
+				TrackerActions.Update {
+					copy(
+						bodyPart = bodyPart,
+						customName = req.displayName,
+						mountingOrientation = mountingOrientation,
+					)
+				},
+			)
 		}
 	}
 }

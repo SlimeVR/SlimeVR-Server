@@ -1,15 +1,15 @@
 package dev.slimevr.desktop.ipc
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.desktop.platform.Position
+import dev.slimevr.desktop.platform.ProtobufMessage
+import dev.slimevr.desktop.platform.TrackerAdded
+import dev.slimevr.desktop.platform.Version
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
 import dev.slimevr.driver.DriverBridgeOutbound
 import dev.slimevr.feeder.FeederBridge
 import dev.slimevr.feeder.FeederBridgeInbound
-import dev.slimevr.desktop.platform.Position
-import dev.slimevr.desktop.platform.ProtobufMessage
-import dev.slimevr.desktop.platform.TrackerAdded
-import dev.slimevr.desktop.platform.Version
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow

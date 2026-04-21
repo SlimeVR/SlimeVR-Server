@@ -12,12 +12,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import solarxr_protocol.datatypes.TrackerStatus
 import org.hid4java.HidDevice
 import org.hid4java.HidManager
 import org.hid4java.HidServicesSpecification
 import org.hid4java.jna.HidApi
 import org.hid4java.jna.HidDeviceInfoStructure
+import solarxr_protocol.datatypes.TrackerStatus
 
 private const val HID_POLL_INTERVAL_MS = 3000L
 

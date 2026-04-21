@@ -22,8 +22,11 @@ object BodyPartSerializer : KSerializer<BodyPart?> {
 
 	override fun serialize(encoder: Encoder, value: BodyPart?) {
 		val jsonEncoder = encoder as JsonEncoder
-		if (value == null) jsonEncoder.encodeJsonElement(JsonNull)
-		else jsonEncoder.encodeJsonElement(JsonPrimitive(value.name))
+		if (value == null) {
+			jsonEncoder.encodeJsonElement(JsonNull)
+		} else {
+			jsonEncoder.encodeJsonElement(JsonPrimitive(value.name))
+		}
 	}
 
 	override fun deserialize(decoder: Decoder): BodyPart? {
@@ -38,8 +41,7 @@ private data class QuaternionSurrogate(val w: Float, val x: Float, val y: Float,
 
 object QuaternionSerializer : KSerializer<Quaternion> {
 	override val descriptor = QuaternionSurrogate.serializer().descriptor
-	override fun serialize(encoder: Encoder, value: Quaternion) =
-		encoder.encodeSerializableValue(QuaternionSurrogate.serializer(), QuaternionSurrogate(value.w, value.x, value.y, value.z))
+	override fun serialize(encoder: Encoder, value: Quaternion) = encoder.encodeSerializableValue(QuaternionSurrogate.serializer(), QuaternionSurrogate(value.w, value.x, value.y, value.z))
 	override fun deserialize(decoder: Decoder): Quaternion {
 		val s = decoder.decodeSerializableValue(QuaternionSurrogate.serializer())
 		return Quaternion(s.w, s.x, s.y, s.z)

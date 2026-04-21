@@ -5,7 +5,9 @@ object FirmwareManagerBaseBehaviour : FirmwareManagerBehaviour {
 		is FirmwareManagerActions.UpdateJob -> state.copy(
 			jobs = state.jobs + (action.jobStatus.portLocation to action.jobStatus),
 		)
+
 		is FirmwareManagerActions.RemoveJob -> state.copy(jobs = state.jobs - action.portLocation)
+
 		is FirmwareManagerActions.ClearJobs -> state.copy(jobs = mapOf())
 	}
 }

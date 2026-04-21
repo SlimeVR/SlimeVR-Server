@@ -28,7 +28,7 @@ class SmoothingProcessor(var smoothing: Float) : SkeletonProcessor {
 					rotation = smoothedRotations[bodyPart] ?: bone.rotation,
 					length = smoothedLengths[bodyPart] ?: bone.length,
 				)
-			}
+			},
 		)
 	}
 }

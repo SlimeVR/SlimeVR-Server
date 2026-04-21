@@ -40,7 +40,7 @@ internal suspend fun selectAndOpenPort(
 		listOf(
 			ProvisioningActions.PortSelected(portEntry.key),
 			ProvisioningActions.StatusChanged(WifiProvisioningStatus.SERIAL_INIT),
-		)
+		),
 	)
 	serialServer.openConnection(portEntry.key)
 	return true
@@ -133,7 +133,6 @@ internal suspend fun waitForWifiConnect(
 	context: ProvisioningManagerContext,
 	serialConn: SerialConnection.Console,
 ): Boolean {
-
 	var connectRetries = 0
 
 	while (currentCoroutineContext().isActive) {
@@ -150,6 +149,7 @@ internal suspend fun waitForWifiConnect(
 						} -> true
 
 						lines.any { "can't connect from any credentials" in it.lowercase() } -> false
+
 						else -> null
 					}
 				}

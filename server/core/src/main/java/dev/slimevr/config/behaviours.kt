@@ -10,7 +10,9 @@ object DefaultGlobalConfigBehaviour : GlobalConfigBehaviour {
 object DefaultSettingsBehaviour : SettingsBehaviour {
 	override fun reduce(state: SettingsState, action: SettingsActions) = when (action) {
 		is SettingsActions.Update -> state.copy(data = action.transform(state.data))
+
 		is SettingsActions.LoadProfile -> action.newState
+
 		is SettingsActions.UpdateTracker -> {
 			val existing = state.data.trackers[action.hardwareId] ?: TrackerConfig()
 			state.copy(data = state.data.copy(trackers = state.data.trackers + (action.hardwareId to action.transform(existing))))

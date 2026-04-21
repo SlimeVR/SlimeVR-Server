@@ -26,7 +26,6 @@ data class BoneState(
 		get() = tailPosition - headPosition
 }
 
-
 data class SkeletonState(val bones: Map<BodyPart, BoneState>, val userHeight: Double)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = run {
@@ -77,10 +76,12 @@ class Skeleton(
 				ScaledProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				YouSpinMeRightRoundBehaviour(inputHz = 10f),
-				ComputedSkeletonBehaviour(processors = listOf(
-//					PredictionProcessor(predictionAmount = 0.3f),
-					SmoothingProcessor(smoothing = 0.3f)
-				)),
+				ComputedSkeletonBehaviour(
+					processors = listOf(
+// 					PredictionProcessor(predictionAmount = 0.3f),
+						SmoothingProcessor(smoothing = 0.3f),
+					),
+				),
 			)
 
 			val context = Context.create(

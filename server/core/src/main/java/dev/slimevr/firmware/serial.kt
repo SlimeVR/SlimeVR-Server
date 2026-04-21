@@ -22,7 +22,6 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 
-
 @OptIn(ExperimentalCoroutinesApi::class)
 suspend fun doSerialFlash(
 	portLocation: String,

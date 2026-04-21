@@ -6,7 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 
 val MAC_REGEX = Regex("mac: (([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2})", RegexOption.IGNORE_CASE)
 
-
 data class SerialPortHandle(
 	val portLocation: String,
 	val descriptivePortName: String,

@@ -36,10 +36,9 @@ object UdpServerBaseBehaviour : UdpServerBehaviour {
 class UdpServer(val context: UdpServerContext) {
 	fun startObserving() = context.observeAll(this)
 
-	fun findConnectionForDevice(deviceId: Int): UDPConnection? =
-		context.state.value.connections.values.find { conn ->
-			conn.context.state.value.deviceId == deviceId
-		}
+	fun findConnectionForDevice(deviceId: Int): UDPConnection? = context.state.value.connections.values.find { conn ->
+		conn.context.state.value.deviceId == deviceId
+	}
 
 	fun startReceiving(appContext: AppContextProvider, scope: CoroutineScope) {
 		scope.launch {

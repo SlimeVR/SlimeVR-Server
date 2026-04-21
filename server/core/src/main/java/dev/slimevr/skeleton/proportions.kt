@@ -46,17 +46,15 @@ private val HEIGHT_CONTRIBUTING_BONES: Set<SkeletonBone> =
 
 // Sums the HEIGHT_CONTRIBUTING_BONES lengths to derive standing height.
 // For symmetric bones (legs) the larger side is used.
-fun computeUserHeight(lengths: Map<BodyPart, Float>): Double =
-	HEIGHT_CONTRIBUTING_BONES.sumOf { bone ->
-		val bodyParts = SKELETON_BONE_TO_BODY_PARTS[bone] ?: return@sumOf 0.0
-		bodyParts.maxOfOrNull { lengths[it] ?: 0f }?.toDouble() ?: 0.0
-	}
+fun computeUserHeight(lengths: Map<BodyPart, Float>): Double = HEIGHT_CONTRIBUTING_BONES.sumOf { bone ->
+	val bodyParts = SKELETON_BONE_TO_BODY_PARTS[bone] ?: return@sumOf 0.0
+	bodyParts.maxOfOrNull { lengths[it] ?: 0f }?.toDouble() ?: 0.0
+}
 
 // Returns proportions keyed by SkeletonBone.name for config storage.
 // Only height-scaled bones are included.
-fun computeDefaultProportionsByBone(height: Float): Map<String, Float> =
-	HEIGHT_SCALED_BONE_RATIOS.mapKeys { (bone, _) -> bone.name }
-		.mapValues { (_, ratio) -> height * ratio }
+fun computeDefaultProportionsByBone(height: Float): Map<String, Float> = HEIGHT_SCALED_BONE_RATIOS.mapKeys { (bone, _) -> bone.name }
+	.mapValues { (_, ratio) -> height * ratio }
 
 // Returns proportions for all tracked bones: height-scaled + default lengths for the rest.
 fun computeAllDefaultProportionsByBone(height: Float): Map<String, Float> {
@@ -72,8 +70,7 @@ fun computeAllDefaultProportionsByBone(height: Float): Map<String, Float> {
 	return heightScaled + nonScaled
 }
 
-fun expandProportions(proportions: Map<String, Float>): Map<BodyPart, Float> =
-	proportions.entries.flatMap { (boneName, length) ->
-		val bone = SkeletonBone.entries.firstOrNull { it.name == boneName } ?: return@flatMap emptyList()
-		(SKELETON_BONE_TO_BODY_PARTS[bone] ?: return@flatMap emptyList()).map { bodyPart -> bodyPart to length }
-	}.toMap()
+fun expandProportions(proportions: Map<String, Float>): Map<BodyPart, Float> = proportions.entries.flatMap { (boneName, length) ->
+	val bone = SkeletonBone.entries.firstOrNull { it.name == boneName } ?: return@flatMap emptyList()
+	(SKELETON_BONE_TO_BODY_PARTS[bone] ?: return@flatMap emptyList()).map { bodyPart -> bodyPart to length }
+}.toMap()

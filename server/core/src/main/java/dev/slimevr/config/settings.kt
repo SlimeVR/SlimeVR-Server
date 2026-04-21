@@ -2,10 +2,10 @@ package dev.slimevr.config
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import io.github.axisangles.ktmath.Quaternion
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -27,8 +27,6 @@ import solarxr_protocol.datatypes.BodyPart
 import java.io.File
 
 private const val SETTINGS_CONFIG_VERSION = 1
-
-
 
 @Serializable
 data class TrackerConfig(

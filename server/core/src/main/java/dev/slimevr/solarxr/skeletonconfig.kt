@@ -54,7 +54,7 @@ class SkeletonBehaviour(
 					userConfig.context.dispatch(
 						UserConfigActions.Update {
 							copy(userHeight = height, proportions = computeDefaultProportionsByBone(height))
-						}
+						},
 					)
 				}
 			}
@@ -72,7 +72,7 @@ class SkeletonBehaviour(
 		receiver.rpcDispatcher.on<ChangeSkeletonConfigRequest> { req ->
 			val bone = req.bone ?: return@on
 			userConfig.context.dispatch(
-				UserConfigActions.Update { copy(proportions = proportions + (bone.name to req.value)) }
+				UserConfigActions.Update { copy(proportions = proportions + (bone.name to req.value)) },
 			)
 			receiver.sendRpc(buildConfigResponse())
 		}

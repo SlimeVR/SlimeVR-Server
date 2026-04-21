@@ -1,19 +1,15 @@
 package dev.slimevr.tracker
 
-import kotlin.time.TimeSource
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
+import kotlin.time.TimeSource
 
 private const val NS_CONVERTER = 1.0e9f
 private const val CLUMP_TIME_NS = 0.06f * NS_CONVERTER
@@ -83,8 +79,11 @@ object TrackerTapDetectionBehaviour : TrackerBehaviour {
 object TrackerBasicBehaviour : TrackerBehaviour {
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
 		is TrackerActions.Update -> action.transform(state)
+
 		is TrackerActions.SetMagStatus -> state.copy(magStatus = action.status)
+
 		is TrackerActions.SetStatus -> state.copy(status = action.status)
+
 		is TrackerActions.SetRotation -> state.copy(
 			rawRotation = action.rotation ?: state.rawRotation,
 			acceleration = action.acceleration ?: state.acceleration,

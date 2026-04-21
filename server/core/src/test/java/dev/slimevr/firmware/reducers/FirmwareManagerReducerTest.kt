@@ -20,7 +20,7 @@ private fun serialJob(port: String, status: FirmwareUpdateStatus, progress: Int 
 		firmwareDeviceId = SerialDevicePort(port = port),
 		status = status,
 		progress = progress,
-	)
+	),
 )
 
 class FirmwareManagerReducerTest {

@@ -65,4 +65,3 @@ data class HIDRotationButton(
 	val acceleration: Vector3,
 	val rssi: Int,
 ) : HIDPacket
-

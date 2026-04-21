@@ -40,7 +40,7 @@ suspend fun createWindowsSolarXRPipe(appContext: AppContextProvider) = acceptWin
 	handleSolarXRBridge(
 		appContext = appContext,
 		messages = readFramedMessages(handle),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } }
+		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
 	)
 }
 

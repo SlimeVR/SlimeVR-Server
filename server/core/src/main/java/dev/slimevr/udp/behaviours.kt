@@ -278,22 +278,28 @@ object SensorInfoBehaviour : UDPConnectionBehaviour {
 
 			val existingTracker = receiver.getTracker(event.data.sensorId)
 			if (existingTracker != null) {
-				existingTracker.context.dispatchAll(listOf(
-					TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
-					TrackerActions.SetStatus(event.data.status),
-				))
+				existingTracker.context.dispatchAll(
+					listOf(
+						TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
+						TrackerActions.SetStatus(event.data.status),
+					),
+				)
 				return@onPacket
 			}
 
 			val (tracker, isNew) = assignTracker(receiver, device, event)
-			tracker.context.dispatchAll(listOf(
-				TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
-				TrackerActions.SetStatus(event.data.status),
-			))
+			tracker.context.dispatchAll(
+				listOf(
+					TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
+					TrackerActions.SetStatus(event.data.status),
+				),
+			)
 			if (isNew && tracker.context.state.value.magStatus == MagnetometerStatus.NOT_SUPPORTED) {
-				tracker.context.dispatch(TrackerActions.SetMagStatus(
-					if (event.data.sensorConfig?.magSupported == true) MagnetometerStatus.DISABLED else MagnetometerStatus.NOT_SUPPORTED
-				))
+				tracker.context.dispatch(
+					TrackerActions.SetMagStatus(
+						if (event.data.sensorConfig?.magSupported == true) MagnetometerStatus.DISABLED else MagnetometerStatus.NOT_SUPPORTED,
+					),
+				)
 			}
 
 			val remoteMagStatus = event.data.sensorConfig?.let {
@@ -307,8 +313,9 @@ object SensorInfoBehaviour : UDPConnectionBehaviour {
 			var desiredMagStatus = tracker.context.state.value.magStatus
 			val globalMagEnabled = receiver.appContext.config.settings.context.state.value.data.globalMagEnabled
 			if (remoteMagStatus != desiredMagStatus) {
-				if (globalMagEnabled && remoteMagStatus != MagnetometerStatus.ENABLED && desiredMagStatus != MagnetometerStatus.NOT_SUPPORTED)
+				if (globalMagEnabled && remoteMagStatus != MagnetometerStatus.ENABLED && desiredMagStatus != MagnetometerStatus.NOT_SUPPORTED) {
 					desiredMagStatus = MagnetometerStatus.ENABLED
+				}
 				receiver.context.dispatch(
 					UDPConnectionActions.SetSensorConfig(sensorId = event.data.sensorId, flags = SensorConfigFlags(magStatus = desiredMagStatus)),
 				)
@@ -367,11 +374,9 @@ object FlagsBehaviour : UDPConnectionBehaviour {
 	override fun reduce(
 		state: UDPConnectionState,
 		action: UDPConnectionActions,
-	): UDPConnectionState {
-		return when (action) {
-			is UDPConnectionActions.FirmwareFeatures -> state.copy(features = action.features)
-			else -> state
-		}
+	): UDPConnectionState = when (action) {
+		is UDPConnectionActions.FirmwareFeatures -> state.copy(features = action.features)
+		else -> state
 	}
 
 	override fun observe(receiver: UDPConnection) {
@@ -397,6 +402,7 @@ object SensorConfigBehaviour : UDPConnectionBehaviour {
 		is UDPConnectionActions.SetSensorConfig -> state.copy(
 			sensorConfigFlags = state.sensorConfigFlags + (action.sensorId to action.flags),
 		)
+
 		else -> state
 	}
 
@@ -409,8 +415,8 @@ object SensorConfigBehaviour : UDPConnectionBehaviour {
 						SetConfigFlag(
 							sensorId = sensorId,
 							configType = SensorConfigType.MAGNETOMETER,
-							state = flags.magStatus == MagnetometerStatus.ENABLED
-						)
+							state = flags.magStatus == MagnetometerStatus.ENABLED,
+						),
 					)
 				}
 			}

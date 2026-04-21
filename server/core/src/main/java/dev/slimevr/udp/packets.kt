@@ -25,16 +25,16 @@ enum class ServerFeatureFlags {
 	PROTOCOL_BUNDLE_SUPPORT,
 
 	/** Server can parse bundle packets with compact headers and packed IMU rotation/acceleration frames:
-	- `PACKET_BUNDLE_COMPACT` = 101 (0x65),
-	- `PACKET_ROTATION_AND_ACCELERATION` = 23 (0x17). */
-	PROTOCOL_BUNDLE_COMPACT_SUPPORT
+	 - `PACKET_BUNDLE_COMPACT` = 101 (0x65),
+	 - `PACKET_ROTATION_AND_ACCELERATION` = 23 (0x17). */
+	PROTOCOL_BUNDLE_COMPACT_SUPPORT,
 
 	;
 
 	companion object {
 		val flagsEnabled: Set<ServerFeatureFlags> = setOf(
 			PROTOCOL_BUNDLE_SUPPORT,
-			PROTOCOL_BUNDLE_COMPACT_SUPPORT
+			PROTOCOL_BUNDLE_COMPACT_SUPPORT,
 		)
 
 		val packed: ByteArray by lazy {
@@ -57,7 +57,8 @@ class FirmwareFeatures {
 	enum class FirmwareFeatureFlags {
 		REMOTE_COMMAND,
 		B64_WIFI_SCANNING,
-		SENSOR_CONFIG;
+		SENSOR_CONFIG,
+		;
 
 		companion object {
 			// "Size + 7" ensures that 1-8 flags = 1 byte, 9-16 flags = 2 bytes, etc.
@@ -188,7 +189,7 @@ data class Handshake(
 
 data class PacketBundle(
 	val packets: List<UDPPacket>,
-): PreHandshakePacket {
+) : PreHandshakePacket {
 	companion object {
 		fun read(src: Source): PacketBundle = with(src) {
 			val readPackets = mutableListOf<UDPPacket>()
@@ -219,7 +220,7 @@ data class PacketBundle(
 
 data class PacketBundleCompact(
 	val packets: List<UDPPacket>,
-): PreHandshakePacket {
+) : PreHandshakePacket {
 	companion object {
 		fun read(src: Source): PacketBundle = with(src) {
 			val readPackets = mutableListOf<UDPPacket>()
@@ -314,7 +315,7 @@ data class SensorInfo(
 		val calibrationEnabled: Boolean,
 		val calibrationSupported: Boolean,
 		val tempGradientCalibrationEnabled: Boolean,
-		val tempGradientCalibrationSupported: Boolean
+		val tempGradientCalibrationSupported: Boolean,
 	) {
 		companion object {
 			fun fromUDP(raw: UShort) = with(raw) {
@@ -418,7 +419,7 @@ data class FeatureFlags(val firmwareFeatures: FirmwareFeatures = FirmwareFeature
 			FirmwareFeatures.from(
 				length = src.remaining.toInt(),
 				received = ByteBuffer.wrap(src.readByteArray()),
-			)
+			),
 		)
 	}
 }

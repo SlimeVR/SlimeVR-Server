@@ -186,7 +186,7 @@ internal suspend fun runCalibrationSession(
 						userConfig.context.dispatch(
 							UserConfigActions.Update {
 								copy(userHeight = relativeY, proportions = computeDefaultProportionsByBone(relativeY))
-							}
+							},
 						)
 					}
 				}

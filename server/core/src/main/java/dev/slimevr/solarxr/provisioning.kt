@@ -2,11 +2,10 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.VRServer
 import dev.slimevr.provisioning.ProvisioningManager
-import solarxr_protocol.rpc.StartWifiProvisioningRequest
-
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.rpc.StartWifiProvisioningRequest
 import solarxr_protocol.rpc.StopWifiProvisioningRequest
 import solarxr_protocol.rpc.WifiProvisioningStatusResponse
 

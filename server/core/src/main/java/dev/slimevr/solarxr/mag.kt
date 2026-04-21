@@ -24,7 +24,7 @@ class MagBehaviour(
 			UDPConnectionActions.SetSensorConfig(
 				sensorId = sensorId,
 				flags = SensorConfigFlags(magStatus = if (enable) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED),
-			)
+			),
 		)
 		return true
 	}
@@ -64,9 +64,11 @@ class MagBehaviour(
 						}
 					}
 				}
+
 				DeviceOrigin.HID -> {
 					// TODO: implement HID mag toggle
 				}
+
 				else -> return@on
 			}
 		}
@@ -75,18 +77,22 @@ class MagBehaviour(
 			val trackerId = req.trackerId
 
 			if (trackerId == null) {
-				receiver.sendRpc(MagToggleResponse(
-					trackerId = null,
-					enable = receiver.appContext.config.settings.context.state.value.data.globalMagEnabled,
-				))
+				receiver.sendRpc(
+					MagToggleResponse(
+						trackerId = null,
+						enable = receiver.appContext.config.settings.context.state.value.data.globalMagEnabled,
+					),
+				)
 				return@on
 			}
 
 			val trackerState = appContext.server.getTracker(trackerId.trackerNum.toInt())?.context?.state?.value ?: return@on
-			receiver.sendRpc(MagToggleResponse(
-				trackerId = trackerId,
-				enable = trackerState.magStatus == MagnetometerStatus.ENABLED,
-			))
+			receiver.sendRpc(
+				MagToggleResponse(
+					trackerId = trackerId,
+					enable = trackerState.magStatus == MagnetometerStatus.ENABLED,
+				),
+			)
 		}
 	}
 }

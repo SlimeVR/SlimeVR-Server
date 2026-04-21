@@ -22,6 +22,7 @@ class ProportionsBehaviour : SkeletonBehaviour {
 			}
 			state.copy(bones = newBones, userHeight = computeUserHeight(newBones.mapValues { (_, bone) -> bone.length }))
 		}
+
 		else -> state
 	}
 }
@@ -61,6 +62,7 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 				bones[action.bodyPart] = bone.copy(rotation = action.rotation)
 				state.copy(bones = bones)
 			}
+
 			else -> state
 		}
 	}
@@ -76,13 +78,13 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 					SkeletonActions.SetBoneRotation(
 						BodyPart.CHEST,
 						Quaternion.fromRotationVector(Vector3(cos(elapsed), sin(elapsed), 0f)),
-					)
+					),
 				)
 				receiver.context.dispatch(
 					SkeletonActions.SetBoneRotation(
 						BodyPart.LEFT_LOWER_LEG,
 						Quaternion.fromRotationVector(Vector3(cos(elapsed + 1000), sin(elapsed + 1000), 0f)),
-					)
+					),
 				)
 			}
 		}
@@ -91,7 +93,7 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 
 class ComputedSkeletonBehaviour(
 	val hz: Float = 100f,
-	val processors: List<SkeletonProcessor> = emptyList()
+	val processors: List<SkeletonProcessor> = emptyList(),
 ) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		val intervalMs = (1000f / hz).toLong()

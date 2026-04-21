@@ -18,7 +18,7 @@ fun restoreFromConfig(state: TrackerState, config: TrackerConfig): TrackerState 
 		true -> MagnetometerStatus.ENABLED
 		false -> MagnetometerStatus.DISABLED
 		null -> state.magStatus
-	}
+	},
 )
 
 private fun applyStateToConfig(config: TrackerConfig, state: TrackerState) = config.copy(

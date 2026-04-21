@@ -24,7 +24,9 @@ object SerialLogBehaviour : SerialConnectionBehaviour {
 			val lines = if (state.logLines.size >= MAX_LOG_LINES) state.logLines.drop(1) else state.logLines
 			state.copy(logLines = lines + action.line)
 		}
+
 		is SerialConnectionActions.ClearLogs -> state.copy(logLines = listOf())
+
 		is SerialConnectionActions.Disconnected -> state.copy(connected = false)
 	}
 }

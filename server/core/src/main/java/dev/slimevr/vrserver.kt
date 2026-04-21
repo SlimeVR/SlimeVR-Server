@@ -1,10 +1,10 @@
 package dev.slimevr
 
-import dev.slimevr.driver.DriverBridge
-import dev.slimevr.feeder.FeederBridge
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
+import dev.slimevr.driver.DriverBridge
+import dev.slimevr.feeder.FeederBridge
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope

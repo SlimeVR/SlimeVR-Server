@@ -28,7 +28,7 @@ data class FirmwareManagerState(
 
 sealed interface FirmwareManagerActions {
 	data class UpdateJob(
-		val jobStatus: FirmwareJobStatus
+		val jobStatus: FirmwareJobStatus,
 	) : FirmwareManagerActions
 
 	data class RemoveJob(val portLocation: String) : FirmwareManagerActions
@@ -74,7 +74,7 @@ class FirmwareManager(
 								firmwareDeviceId = SerialDevicePort(port = portLocation),
 								status = status,
 								progress = progress,
-							)
+							),
 						),
 					)
 				},
@@ -105,7 +105,7 @@ class FirmwareManager(
 								firmwareDeviceId = firmwareDeviceId,
 								status = status,
 								progress = progress,
-							)
+							),
 						),
 					)
 				},

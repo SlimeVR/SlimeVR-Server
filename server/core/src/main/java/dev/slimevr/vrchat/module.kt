@@ -106,16 +106,15 @@ fun computeRecommendedValues(server: VRServer, userHeight: Double): VRCConfigRec
 	)
 }
 
-fun isVRCConfigValid(validity: VRCConfigValidity, mutedWarnings: List<String>): Boolean =
-	(validity.legacyModeOk || "legacyModeOk" in mutedWarnings) &&
-		(validity.shoulderTrackingOk || "shoulderTrackingOk" in mutedWarnings) &&
-		(validity.shoulderWidthCompensationOk || "shoulderWidthCompensationOk" in mutedWarnings) &&
-		(validity.userHeightOk || "userHeightOk" in mutedWarnings) &&
-		(validity.calibrationRangeOk || "calibrationRangeOk" in mutedWarnings) &&
-		(validity.calibrationVisualsOk || "calibrationVisualsOk" in mutedWarnings) &&
-		(validity.trackerModelOk || "trackerModelOk" in mutedWarnings) &&
-		(validity.spineModeOk || "spineModeOk" in mutedWarnings) &&
-		(validity.avatarMeasurementTypeOk || "avatarMeasurementTypeOk" in mutedWarnings)
+fun isVRCConfigValid(validity: VRCConfigValidity, mutedWarnings: List<String>): Boolean = (validity.legacyModeOk || "legacyModeOk" in mutedWarnings) &&
+	(validity.shoulderTrackingOk || "shoulderTrackingOk" in mutedWarnings) &&
+	(validity.shoulderWidthCompensationOk || "shoulderWidthCompensationOk" in mutedWarnings) &&
+	(validity.userHeightOk || "userHeightOk" in mutedWarnings) &&
+	(validity.calibrationRangeOk || "calibrationRangeOk" in mutedWarnings) &&
+	(validity.calibrationVisualsOk || "calibrationVisualsOk" in mutedWarnings) &&
+	(validity.trackerModelOk || "trackerModelOk" in mutedWarnings) &&
+	(validity.spineModeOk || "spineModeOk" in mutedWarnings) &&
+	(validity.avatarMeasurementTypeOk || "avatarMeasurementTypeOk" in mutedWarnings)
 
 fun computeValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity = VRCConfigValidity(
 	legacyModeOk = values.legacyMode == recommended.legacyMode,
