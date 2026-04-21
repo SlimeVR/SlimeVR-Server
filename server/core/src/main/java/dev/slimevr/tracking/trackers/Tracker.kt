@@ -98,13 +98,35 @@ class Tracker @JvmOverloads constructor(
 	 * NOT the same as hasRotation (other data types emulate rotation)
 	 */
 	val trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
+	/**
+	 * Set status when tracker is sleeping
+	 */
+	val usesSleep: Boolean = false,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
+	private var timeScheduledSleep: Long = Long.MAX_VALUE
 	private var _rotation = Quaternion.IDENTITY
 
 	// IMU: +z forward, +x left, +y up
 	// SlimeVR: +z backward, +x right, +y up
+
+	var position = Vector3.NULL
+	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
+	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
+	val trackerFlexHandler: TrackerFlexHandler = TrackerFlexHandler(this)
+	var batteryVoltage: Float? = null
+	var batteryLevel: Float? = null
+	var batteryRemainingRuntime: Long? = null
+	var ping: Int? = null
+	var signalStrength: Int? = null
+	var temperature: Float? = null
+	var button: Int? = null
+	var packetsReceived: Int? = null
+	var packetsLost: Int? = null
+	var packetLoss: Float? = null
+	var customName: String? = null
+	var magStatus: MagnetometerStatus = magStatus
 	private var _acceleration = Vector3.NULL
 	private var _magVector = Vector3.NULL
 	private var _analogueThumbstick = Vector3.NULL
@@ -116,19 +138,6 @@ class Tracker @JvmOverloads constructor(
 	private var _trackpadClickButton = false
 	private var _trigger = 0f
 	private var _grip = 0f
-	var position = Vector3.NULL
-	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
-	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
-	val trackerFlexHandler: TrackerFlexHandler = TrackerFlexHandler(this)
-	var batteryVoltage: Float? = null
-	var batteryLevel: Float? = null
-	var ping: Int? = null
-	var signalStrength: Int? = null
-	var temperature: Float? = null
-	var customName: String? = null
-	var leftTapPressed: Boolean = false
-	var rightTapPressed: Boolean = false
-	var magStatus: MagnetometerStatus = magStatus
 		private set
 
 	/**
@@ -264,6 +273,16 @@ class Tracker @JvmOverloads constructor(
 			if (System.currentTimeMillis() - timeAtLastUpdate > DISCONNECT_MS) {
 				status = TrackerStatus.DISCONNECTED
 			} else if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
+				status = TrackerStatus.TIMED_OUT
+			}
+		}
+
+		if (usesSleep && status != TrackerStatus.DISCONNECTED) {
+			if (System.currentTimeMillis() > timeScheduledSleep) {
+				status = TrackerStatus.TIMED_OUT
+			}
+			// Want to also use timeout but without following disconnect
+			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
 				status = TrackerStatus.TIMED_OUT
 			}
 		}
@@ -575,5 +594,8 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun getTrackpad(): Vector3 {
 		return this._analogueTrackpad
+	}
+	fun setSleepTime(time: Long) {
+		this.timeScheduledSleep = time
 	}
 }
