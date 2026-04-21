@@ -16,6 +16,7 @@ import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
 import appleTrayIcon from '../resources/icons/Square30x30Logo.png?asset';
 import { readFile, stat } from 'fs/promises';
+import { pathToFileURL } from 'node:url';
 import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
   findServerJar,
@@ -57,6 +58,7 @@ protocol.registerSchemesAsPrivileged([
       secure: true,
       supportFetchAPI: true,
       corsEnabled: true,
+      stream: true,
     },
   },
 ]);
@@ -466,11 +468,10 @@ const createFolders = async () => {
 let isQuitting = false;
 
 app.whenReady().then(async () => {
-  // Register protocol handler for app:// scheme to handle assets with leading slashes
   protocol.handle('app', (request) => {
-    const url = request.url.slice('app://'.length);
-    const filePath = path.normalize(join(__dirname, '../renderer', url));
-    return net.fetch('file://' + filePath);
+    const { pathname } = new URL(request.url);
+    const filePath = path.normalize(join(__dirname, '../renderer', pathname));
+    return net.fetch(pathToFileURL(filePath).toString(), { headers: request.headers });
   });
 
 

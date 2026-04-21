@@ -15,7 +15,7 @@
           runtimeLibs = pkgs: (with pkgs; [
             jdk17
 
-            alsa-lib at-spi2-atk at-spi2-core cairo cups dbus expat
+            alsa-lib libpulseaudio at-spi2-atk at-spi2-core cairo cups dbus expat
             gdk-pixbuf glib gtk3 libdrm libgbm libglvnd libnotify
             libxkbcommon mesa nspr nss pango systemd vulkan-loader
             wayland xorg.libX11 xorg.libXcomposite xorg.libXdamage
