@@ -358,7 +358,7 @@ export function GeneralSettings() {
     const velocitySettings = new VelocitySettingsT();
     velocitySettings.sendDerivedVelocity =
       values.velocitySettings.sendDerivedVelocity;
-    settings.velocitySettings = velocitySettings;
+    settingsReq.velocitySettings = velocitySettings;
 
     if (values.resetsSettings) {
       settingsReq.resetsSettings = loadResetSettings(values.resetsSettings);
