@@ -140,12 +140,26 @@ int main() {
       return 1;
     }
 
-    if (auto err =
-            input->SetActionManifestPath(actionManifestPath.string().data());
-        err != vr::VRInputError_None) {
-      logger.error("Failed to set action manifest path: {}",
-                   std::to_underlying(err));
-      return 1;
+    // SetActionManifestPath may return IPCError if vrserver is busy and takes
+    // too long to reply, so keep invoking until it succeeds
+    {
+      vr::EVRInputError err{};
+      constexpr int max_tries = 5;
+      int tries = 0;
+      while ((err = input->SetActionManifestPath(
+                  actionManifestPath.string().data())) ==
+                 vr::VRInputError_IPCError &&
+             tries++ < max_tries) {
+        logger.debug("IPC error loading action manifest, retrying ({}/{})",
+                     tries, max_tries);
+        std::this_thread::sleep_for(20ms);
+      }
+
+      if (err != vr::VRInputError_None) {
+        logger.error("Failed to set action manifest path: {}",
+                     std::to_underlying(err));
+        return 1;
+      }
     }
 
     vr::VRActionSetHandle_t action_set;
