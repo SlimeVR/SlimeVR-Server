@@ -59,7 +59,7 @@ private fun decodeAccel(data: ByteArray, offset: Int): Vector3 {
 	)
 }
 
-private fun decodeBattery(raw: Int): Float = if (raw == 128) 1f else (raw and 127).toFloat()
+private fun decodeBattery(raw: Int): Float = if (raw == 128) 1f else (raw and 127).toFloat() / 100f
 
 private fun decodeBatteryVoltage(raw: Int): Float = (raw.toFloat() + 245f) / 100f
 
