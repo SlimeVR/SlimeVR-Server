@@ -26,7 +26,12 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.function.Consumer
 import kotlin.collections.HashMap
+import kotlin.concurrent.thread
 import kotlin.coroutines.resume
+import kotlin.math.floor
+import kotlin.time.Duration.Companion.microseconds
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource
 
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
@@ -55,6 +60,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 	// 1500 is a common network MTU. 1472 is the maximum size of a UDP packet (1500 - 20 for IPv4 header - 8 for UDP header)
 	private val rcvBuffer = ByteArray(1500 - 20 - 8)
 	private val bb = ByteBuffer.wrap(rcvBuffer).order(ByteOrder.BIG_ENDIAN)
+
+	private val rcvBuffer2 = ByteArray(1500 - 20 - 8)
+	private val bb2 = ByteBuffer.wrap(rcvBuffer2).order(ByteOrder.BIG_ENDIAN)
 
 	// Gets initialized in this.run()
 	private lateinit var socket: DatagramSocket
@@ -133,6 +141,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				handshake.macString ?: addr.hostAddress,
 				handshake.boardType,
 				handshake.mcuType,
+				connections.size
 			)
 			VRServer.instance.deviceManager.addDevice(connection)
 			connection.protocolVersion = handshake.protocolVersion
@@ -295,8 +304,63 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 	override fun run() {
 		val serialBuffer2 = StringBuilder()
+
 		try {
 			socket = DatagramSocket(port)
+
+			thread(start = true) {
+				val startInstant = TimeSource.Monotonic.markNow()
+				val interval = 500.milliseconds
+				val slotInterval = 0.microseconds
+				val connLastSent = mutableListOf<TimeSource.Monotonic.ValueTimeMark>()
+				while (true) {
+					val now = TimeSource.Monotonic.markNow()
+
+					synchronized(connections) {
+						if (connLastSent.size != connections.size) {
+							connLastSent.clear()
+							for (conn in connections) {
+								connLastSent += now
+							}
+						}
+					}
+
+					for ((i, lastSent) in connLastSent.withIndex()) {
+						val timeToPing =
+							startInstant +
+								interval * (floor((lastSent - startInstant) / interval) + 1.0) +
+								(slotInterval * i)
+
+						if (now >= timeToPing) {
+							connLastSent[i] = now
+
+							val address: SocketAddress
+							val lastPingPacketId = random.nextInt()
+							synchronized(connections) {
+								val conn = connections[i]
+								address = conn.address
+								conn.lastPingPacketId = lastPingPacketId
+								conn.lastPingPacketTime = System.currentTimeMillis()
+								conn.lastPingPacketInstant = now
+							}
+							bb2.limit(bb2.capacity())
+							bb2.rewind()
+							bb2.putInt(10)
+							bb2.putLong(0)
+							bb2.putInt(lastPingPacketId)
+							socket.send(
+								DatagramPacket(
+									rcvBuffer2,
+									bb2.position(),
+									address
+								)
+							)
+						}
+					}
+					yield()
+				}
+			}
+
 			var prevPacketTime = System.currentTimeMillis()
 			socket.soTimeout = 250
 			while (true) {
@@ -380,16 +444,6 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 								conn.serialBuffer.setLength(0)
 							}
 
-							if (conn.lastPingPacketTime + 500 < System.currentTimeMillis()) {
-								conn.lastPingPacketId = random.nextInt()
-								conn.lastPingPacketTime = System.currentTimeMillis()
-								bb.limit(bb.capacity())
-								bb.rewind()
-								bb.putInt(10)
-								bb.putLong(0)
-								bb.putInt(conn.lastPingPacketId)
-								socket.send(DatagramPacket(rcvBuffer, bb.position(), conn.address))
-							}
 						}
 					}
 				}
