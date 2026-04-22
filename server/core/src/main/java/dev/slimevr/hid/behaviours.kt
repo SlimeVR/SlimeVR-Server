@@ -109,14 +109,14 @@ object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 					)
 					receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, newTracker))
 					receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, trackerId))
-					AppLogger.hid.info("Registered HID tracker for device ${deviceState.address} (hidId=${packet.hidId})")
 				}
-
-				device.context.dispatch(DeviceActions.Update { copy(status = TrackerStatus.OK) })
 			} else {
 				// HID does not have a rest calibration signal
 				tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true) })
+				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 			}
+
+
 		}
 	}
 }

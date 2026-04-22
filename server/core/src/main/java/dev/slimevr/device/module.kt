@@ -2,6 +2,8 @@ package dev.slimevr.device
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.context.debug.DiffStyle
+import dev.slimevr.context.debug.LoggingMiddleware
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
@@ -73,7 +75,16 @@ class Device(
 			)
 
 			val behaviours = listOf(DeviceStatsBehaviour)
-			val context = Context.create(initialState = deviceState, scope = scope, behaviours = behaviours)
+			val context = Context.create(
+				initialState = deviceState,
+				scope = scope,
+				behaviours = behaviours,
+				debugMiddleware = LoggingMiddleware(
+					"Device[$address]",
+					block = setOf(DeviceActions.PacketStats::class),
+					diffStyle = DiffStyle.MULTILINE,
+				),
+			)
 			behaviours.forEach { it.observe(context) }
 			return Device(context = context)
 		}
