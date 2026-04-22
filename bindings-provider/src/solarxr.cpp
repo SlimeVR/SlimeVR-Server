@@ -100,6 +100,28 @@ SolarXRConnection::~SolarXRConnection() {
 #endif
 }
 
+bool SolarXRConnection::connected() {
+#if defined(__linux__)
+  if (read(fd, nullptr, 0) == -1) {
+    return !(errno == EBADF || errno == EINVAL);
+  }
+
+  return true;
+#elif defined(_WIN32)
+  if (!WriteFile(pipe, nullptr, 0, nullptr, nullptr)) {
+    int err = GetLastError();
+    // The documentation says it should return ERROR_BROKEN_PIPE
+    // when the write-end has been closed, but it seems to actually
+    // return ERROR_NO_DATA...
+    return !(err == ERROR_NO_DATA || err == ERROR_BROKEN_PIPE);
+  }
+
+  return true;
+#else
+#error "Unsupported platform"
+#endif
+}
+
 void SolarXRConnection::sendMsg(flatbuffers::FlatBufferBuilder &fbb) {
   // The server expects the total size of the buffer to be written at the
   // start of the packet, including the first 4 bytes for the size

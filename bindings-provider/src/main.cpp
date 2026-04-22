@@ -242,6 +242,11 @@ int main() {
         }
       }
 
+      if (!conn.connected()) {
+        logger.warning("Connection to SlimeVR lost, exiting");
+        break;
+      }
+
       vr::VRActiveActionSet_t set{
           .ulActionSet = action_set,
           .ulRestrictedToDevice = vr::k_ulInvalidInputValueHandle,

@@ -26,5 +26,6 @@ public:
 
   ~SolarXRConnection();
 
+  bool connected();
   void sendMsg(flatbuffers::FlatBufferBuilder &fbb);
 };
