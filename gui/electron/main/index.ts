@@ -404,18 +404,16 @@ const spawnServer = async () => {
 
   logger.info({ javaBin, serverJar }, 'Found Java and server jar');
   const platform = getPlatform();
-  const serverWorkdir = getServerDataFolder()
 
-  const serverArgs = ['-Xmx128M', '-jar', serverJar]
-  if (options.steam) serverArgs.push(`--steam`)
-  if (options.install) serverArgs.push(`--install`)
-  if (options.noUdev) serverArgs.push(`--no-udev`)
+  const serverArgs = ['-Xmx128M', '-jar', serverJar];
+  if (options.steam) serverArgs.push('--steam');
+  if (options.install) serverArgs.push('--install');
+  if (options.noUdev) serverArgs.push('--no-udev');
 
-  serverArgs.push('run')
-
+  serverArgs.push('run');
 
   const serverProcess = spawn(javaBin, serverArgs, {
-    cwd: serverWorkdir,
+    cwd: sharedDir,
     shell: false,
     env:
       platform === 'windows'

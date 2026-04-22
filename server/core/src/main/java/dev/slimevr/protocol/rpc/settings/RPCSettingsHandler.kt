@@ -33,8 +33,9 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			.message(ChangeSettingsRequest()) as? ChangeSettingsRequest ?: return
 
 		if (req.steamVrTrackers() != null) {
-			val bridge = api.server
-				.getVRBridge(ISteamVRBridge::class.java)
+			val bridge = api.server.getVRBridge {
+				it is ISteamVRBridge
+			} as? ISteamVRBridge
 
 			if (bridge != null) {
 				bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist())
@@ -376,8 +377,9 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	companion object {
 		fun sendSteamVRUpdatedSettings(api: ProtocolAPI, rpcHandler: RPCHandler) {
 			val fbb = FlatBufferBuilder(32)
-			val bridge: ISteamVRBridge =
-				api.server.getVRBridge(ISteamVRBridge::class.java) ?: return
+			val bridge = api.server.getVRBridge {
+				it is ISteamVRBridge
+			} as? ISteamVRBridge ?: return
 
 			val settings = SettingsResponse
 				.createSettingsResponse(

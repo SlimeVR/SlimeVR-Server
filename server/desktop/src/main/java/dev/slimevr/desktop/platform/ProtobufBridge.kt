@@ -46,7 +46,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	@BridgeThread
 	protected abstract fun sendMessageReal(message: ProtobufMessage?): Boolean
 
-	private var remoteProtocolVersion: Int = 0
+	protected var remoteProtocolVersion: Int = 0
 
 	@BridgeThread
 	protected fun messageReceived(message: ProtobufMessage) {
@@ -295,6 +295,6 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 
 	companion object {
 		private const val resetSourceNamePrefix = "ProtobufBridge"
-		private const val PROTOCOL_VERSION = 1
+		private const val PROTOCOL_VERSION = 2
 	}
 }

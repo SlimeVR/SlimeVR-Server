@@ -375,7 +375,9 @@ fun createArmsResetModeSettings(
 	)
 
 fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
-	val bridge = server.getVRBridge(ISteamVRBridge::class.java)
+	val bridge = server.getVRBridge {
+		it is ISteamVRBridge
+	} as? ISteamVRBridge
 
 	return SettingsResponse
 		.createSettingsResponse(
