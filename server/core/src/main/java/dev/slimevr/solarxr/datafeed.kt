@@ -69,6 +69,9 @@ private fun createDevice(
 			batteryPctEstimate = (device.batteryLevel * 100).toUInt().toUByte(),
 			ping = device.ping?.toUShort(),
 			rssi = device.signalStrength?.toShort(),
+			packetsReceived = device.packetsReceived.toInt(),
+			packetsLost = device.packetsLost.toInt(),
+			packetLoss = if (device.packetsReceived > 0) device.packetsLost.toFloat() / device.packetsReceived.toFloat() else null,
 		),
 		hardwareInfo = HardwareInfo(
 			mcuId = device.mcuType,

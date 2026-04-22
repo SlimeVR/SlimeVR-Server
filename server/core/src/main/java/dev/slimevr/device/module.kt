@@ -29,10 +29,13 @@ data class DeviceState(
 	val protocolVersion: Int,
 	val status: TrackerStatus,
 	val origin: DeviceOrigin,
+	val packetsReceived: Long,
+	val packetsLost: Long,
 )
 
 sealed interface DeviceActions {
 	data class Update(val transform: DeviceState.() -> DeviceState) : DeviceActions
+	data class PacketStats(val packetsReceived: Long, val packetsLost: Long) : DeviceActions
 }
 
 typealias DeviceContext = Context<DeviceState, DeviceActions>
@@ -65,6 +68,8 @@ class Device(
 				mcuType = McuType.Other,
 				boardType = BoardType.UNKNOWN,
 				firmware = null,
+				packetsReceived = 0L,
+				packetsLost = 0L,
 			)
 
 			val behaviours = listOf(DeviceStatsBehaviour)

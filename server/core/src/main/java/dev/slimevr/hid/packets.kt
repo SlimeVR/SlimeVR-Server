@@ -48,6 +48,8 @@ data class HIDStatus(
 	override val hidId: Int,
 	val status: TrackerStatus,
 	val rssi: Int,
+	val packetsReceived: Int,
+	val packetsLost: Int,
 ) : HIDPacket
 
 /** Full-precision Q15 quaternion + Q10 magnetometer (type 4). */

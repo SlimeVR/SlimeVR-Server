@@ -64,6 +64,7 @@ class HIDReceiver(
 				HIDRotationBehaviour,
 				HIDBatteryBehaviour,
 				HIDStatusBehaviour,
+				HIDPacketLossBehaviour,
 			)
 
 			val context = Context.create(

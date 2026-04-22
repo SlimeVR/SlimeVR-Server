@@ -101,8 +101,8 @@ class Tracker(
 				behaviours = behaviours,
 				debugMiddleware = LoggingMiddleware(
 					"Tracker[$hardwareId]",
- 					block = setOf(TrackerActions.SetRotation::class),
-					diffStyle = DiffStyle.MULTILINE
+					block = setOf(TrackerActions.SetRotation::class),
+					diffStyle = DiffStyle.MULTILINE,
 				),
 			)
 			val tracker = Tracker(context = context, server)

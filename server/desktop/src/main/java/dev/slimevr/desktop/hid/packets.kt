@@ -118,6 +118,8 @@ private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
 			hidId = hidId,
 			status = TrackerStatus.fromValue((data[i + 2].toUByte().toInt() + 1).toUByte()) ?: TrackerStatus.OK,
 			rssi = -data[i + 15].toUByte().toInt(),
+			packetsReceived = data[i + 4].toUByte().toInt(),
+			packetsLost = data[i + 5].toUByte().toInt(),
 		)
 
 		4 -> {

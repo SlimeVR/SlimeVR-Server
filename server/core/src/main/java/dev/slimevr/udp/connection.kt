@@ -96,6 +96,7 @@ class UDPConnection(
 		): UDPConnection {
 			val behaviours = listOf(
 				PacketBehaviour,
+				PacketLossBehaviour,
 				HandshakeBehaviour,
 				TimeoutBehaviour,
 				DisconnectBehaviour,

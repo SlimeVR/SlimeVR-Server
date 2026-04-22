@@ -46,11 +46,43 @@ object PacketBehaviour : UDPConnectionBehaviour {
 				AppLogger.udp.warn("[${state.address}] WARN: Received packet with wrong packet number")
 				return@onAny
 			} else {
-				receiver.context.dispatch(UDPConnectionActions.LastPacket(time = now))
+				receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = packet.packetNumber, time = now))
 			}
 		}
 	}
 }
+
+object PacketLossBehaviour : UDPConnectionBehaviour {
+	override fun observe(receiver: UDPConnection) {
+		var totalPacketsReceived = 0L
+		var acceptedPackets = 0L
+		var lastPacketCounterReset = System.currentTimeMillis()
+		var lastPacketNumber = 0L
+
+		receiver.packetEvents.onAny { packet ->
+			val num = packet.packetNumber ?: return@onAny
+			val now = System.currentTimeMillis()
+
+			if (now - lastPacketCounterReset >= 10_000L) {
+				totalPacketsReceived = 0L
+				acceptedPackets = 0L
+				lastPacketCounterReset = now
+			}
+
+			totalPacketsReceived++
+			val accepted = num == 0L || num > lastPacketNumber
+			if (accepted) {
+				lastPacketNumber = num
+				acceptedPackets++
+			}
+
+			receiver.getDevice()?.context?.dispatch(
+				DeviceActions.PacketStats(packetsReceived = totalPacketsReceived, packetsLost = totalPacketsReceived - acceptedPackets),
+			)
+		}
+	}
+}
+
 
 object PingBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {

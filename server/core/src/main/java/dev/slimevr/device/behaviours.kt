@@ -4,7 +4,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 object DeviceStatsBehaviour : DeviceBehaviour {
-	override fun reduce(state: DeviceState, action: DeviceActions) = if (action is DeviceActions.Update) action.transform(state) else state
+	override fun reduce(state: DeviceState, action: DeviceActions) = when (action) {
+		is DeviceActions.Update -> action.transform(state)
+		is DeviceActions.PacketStats -> state.copy(packetsReceived = action.packetsReceived, packetsLost = action.packetsLost)
+	}
 
 	override fun observe(receiver: DeviceContext) {
 		receiver.state.onEach {

@@ -173,3 +173,13 @@ object HIDStatusBehaviour : HIDReceiverBehaviour {
 		}
 	}
 }
+
+object HIDPacketLossBehaviour : HIDReceiverBehaviour {
+	override fun observe(receiver: HIDReceiver) {
+		receiver.packetEvents.onPacket<HIDStatus> { packet ->
+			receiver.getDevice(packet.hidId)?.context?.dispatch(
+				DeviceActions.PacketStats(packetsReceived = packet.packetsReceived.toLong(), packetsLost = packet.packetsLost.toLong()),
+			)
+		}
+	}
+}
