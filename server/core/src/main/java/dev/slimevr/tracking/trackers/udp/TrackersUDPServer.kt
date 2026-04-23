@@ -676,12 +676,12 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			is UDPPacket69Grip -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if(tracker == null) return
-				tracker.setTrigger(packet.grip);
+				tracker.setGrip(packet.grip);
 			}
 			is UDPPacket70Trackpad -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if(tracker == null) return
-				tracker.setThumbstick(packet.analogueTrackpad);
+				tracker.setTrackpad(packet.analogueTrackpad);
 			}
 			is UDPPacket200ProtocolChange -> {}
 		}

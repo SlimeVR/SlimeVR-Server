@@ -128,10 +128,11 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 		)
 		if (localTracker.hasControls) {
 			val thumbstick = localTracker.getThumbstick()
+			val trackpad = localTracker.getTrackpad()
 			builder.setThumbstickX(thumbstick.x)
 			builder.setThumbstickY(thumbstick.y)
-			builder.setTrackpadX(thumbstick.x)
-			builder.setTrackpadY(thumbstick.y)
+			builder.setTrackpadX(trackpad.x)
+			builder.setTrackpadY(trackpad.y)
 			builder.setButton1(localTracker.getButton1())
 			builder.setButton2(localTracker.getButton2())
 			builder.setMenuRecenter(localTracker.getMenuRecenterButton())
