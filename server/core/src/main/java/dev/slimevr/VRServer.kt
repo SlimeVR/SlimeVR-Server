@@ -231,9 +231,6 @@ class VRServer @JvmOverloads constructor(
 			refreshTrackersDriftCompensationEnabled()
 			configManager.vrConfig.writeTrackerConfig(tracker)
 			configManager.saveConfig()
-
-			// Requires a fresh TrackerConfig on Update, so executed after we save a new state.
-			tracker?.let { configManager.vrConfig.applyVelocityPolicy(it) }
 		}
 	}
 
