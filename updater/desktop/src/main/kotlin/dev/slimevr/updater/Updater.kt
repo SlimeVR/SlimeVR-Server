@@ -1,6 +1,5 @@
 package dev.slimevr.updater
 
-import dev.slimevr.updater.ManifestUtils.Companion.getChannels
 import dev.slimevr.updater.ManifestUtils.Companion.getCurrentVersion
 import dev.slimevr.updater.ManifestUtils.Companion.getCurrentVersionTag
 import kotlinx.serialization.Serializable
@@ -35,9 +34,11 @@ class Updater(
 			else -> arch
 		}
 		val currentVersion = getCurrentVersion(manifest, os, normalizedArch)
+		val currentVersionTag = getCurrentVersionTag(manifest, os, normalizedArch)
 		println(currentVersion)
-		if (currentVersion == null) return
+		if (currentVersion == null || currentVersionTag == null) return
 		val linux = Linux(state, updaterIO)
+		state.version = currentVersionTag
 		linux.updateServer(currentVersion.url)
 
 		/*

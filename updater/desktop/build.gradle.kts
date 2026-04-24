@@ -1,4 +1,7 @@
+@file:OptIn(ExperimentalComposeLibrary::class)
+
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -62,12 +65,13 @@ dependencies {
 	implementation("io.ktor:ktor-client-content-negotiation:3.0.3")
 	implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.3")
 	implementation("commons-cli:commons-cli:1.8.0")
-	implementation("org.apache.commons:commons-lang3:3.15.0")
+	implementation("org.apache.commons:commons-lang3:3.18.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2")
 	implementation(compose.desktop.currentOs)
-	implementation(compose.material3)
-	implementation(compose.components.resources)
+	implementation("org.jetbrains.compose.material3:material3:1.9.0-beta03")
+	implementation("org.jetbrains.compose.components:components-resources:1.10.3")
+	implementation("org.jetbrains.compose.components:components-animatedimage:1.10.3")
 	implementation("io.coil-kt.coil3:coil-compose:3.4.0")
 
 

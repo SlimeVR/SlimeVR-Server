@@ -1,6 +1,7 @@
 package dev.slimevr.updater
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,7 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowScope
 import androidx.compose.foundation.window.WindowDraggableArea
-import coil3.compose.AsyncImage
+import androidx.compose.runtime.produceState
+import org.jetbrains.compose.animatedimage.AnimatedImage
+import org.jetbrains.compose.animatedimage.animate
+import org.jetbrains.compose.animatedimage.loadResourceAnimatedImage
 
 val BG = Color(0xFF112D43)
 val TEXT = Color.White
@@ -101,7 +105,7 @@ fun WindowScope.UpdaterScreen(state: UpdaterState) {
 			Spacer(modifier = Modifier.weight(1f))
 
 			Text(
-				text = "v${state.version}",
+				text = "${state.version} Release notes: url",
 				color = TEXT.copy(alpha = 0.5f),
 				fontSize = 10.sp
 			)
@@ -110,14 +114,26 @@ fun WindowScope.UpdaterScreen(state: UpdaterState) {
 }
 
 @Composable
-fun LoadingGif() {
-	val stream = object {}.javaClass.getResourceAsStream("/jumping-slime.gif")
-		?: error("Missing resource: jumping-slime.gif")
+fun LoadingGif(modifier: Modifier = Modifier) {
+	val animatedImageState = produceState<AnimatedImage?>(initialValue = null) {
+		try {
+			value = loadResourceAnimatedImage("jumping-slime.gif")
+		} catch (e: Exception) {
+			e.printStackTrace()
+		}
+	}
 
-	AsyncImage(
-		model = stream.readBytes(),
-		contentDescription = "Loading animation"
-	)
+	val animatedImage = animatedImageState.value
+
+	if (animatedImage != null) {
+		Image(
+			bitmap = animatedImage.animate(),
+			contentDescription = "Loading animation",
+			modifier = modifier
+		)
+	} else {
+		Box(modifier = modifier)
+	}
 }
 
 @Composable
