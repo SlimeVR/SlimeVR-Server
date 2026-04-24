@@ -103,29 +103,27 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	}
 
 	@VRServerThread
-	protected fun writeTrackerUpdate(localTracker: Tracker?) {
-		val tracker = localTracker ?: return
-
+	protected fun writeTrackerUpdate(localTracker: Tracker) {
 		val builder = ProtobufMessages.Position.newBuilder()
-			.setTrackerId(tracker.id)
+			.setTrackerId(localTracker.id)
 
-		if (tracker.hasPosition) {
-			val pos = tracker.position
+		if (localTracker.hasPosition) {
+			val pos = localTracker.position
 			builder.setX(pos.x)
 			builder.setY(pos.y)
 			builder.setZ(pos.z)
 		}
 
-		if (tracker.hasRotation) {
-			val rot = tracker.getRotation()
+		if (localTracker.hasRotation) {
+			val rot = localTracker.getRotation()
 			builder.setQx(rot.x)
 			builder.setQy(rot.y)
 			builder.setQz(rot.z)
 			builder.setQw(rot.w)
 		}
 
-		if (tracker.hasVelocity) {
-			val vel = tracker.getVelocity()
+		if (localTracker.hasVelocity) {
+			val vel = localTracker.getVelocity()
 			builder.setVx(vel.x)
 			builder.setVy(vel.y)
 			builder.setVz(vel.z)

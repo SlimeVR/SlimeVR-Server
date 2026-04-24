@@ -12,8 +12,9 @@ import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.properties.Delegates
+import kotlin.time.Duration.Companion.microseconds
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
-import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 const val TIMEOUT_MS = 2_000L
@@ -126,11 +127,11 @@ class Tracker @JvmOverloads constructor(
 	 * Velocity state server-side differentiation based on sent poses
 	 */
 	private data class VelocityState(
-		var prevMark: TimeMark? = null,
+		var prevMark: TimeSource.Monotonic.ValueTimeMark? = null,
 		var prevPos: Vector3 = Vector3(0f, 0f, 0f),
 	)
 
-	private var velocityState: VelocityState? = null
+	private var velocityState: VelocityState = VelocityState()
 
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
@@ -375,30 +376,30 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun updateDerivedVelocity() {
 		if (!allowVelocity || !hasPosition) {
-			velocityState = null
+			velocityState.prevMark = null
 			_velocity = Vector3.NULL
 			return
 		}
 
 		val pos = position
-		val state = velocityState ?: VelocityState().also {
-			velocityState = it
-		}
+		val state = velocityState
+		val now = TimeSource.Monotonic.markNow()
 
 		val prevMark = state.prevMark
 		if (prevMark != null) {
-			val dt = prevMark.elapsedNow().toDouble(DurationUnit.SECONDS)
-			if (dt in 1e-4..0.25) {
+			val dt = now - prevMark
+			if (dt in 100.microseconds..250.milliseconds) {
+				val dtSeconds = dt.toDouble(DurationUnit.SECONDS)
 				_velocity = Vector3(
-					((pos.x - state.prevPos.x) / dt).toFloat(),
-					((pos.y - state.prevPos.y) / dt).toFloat(),
-					((pos.z - state.prevPos.z) / dt).toFloat(),
+					((pos.x - state.prevPos.x) / dtSeconds).toFloat(),
+					((pos.y - state.prevPos.y) / dtSeconds).toFloat(),
+					((pos.z - state.prevPos.z) / dtSeconds).toFloat(),
 				)
 			} else {
 				_velocity = Vector3.NULL
 			}
 		}
-		state.prevMark = TimeSource.Monotonic.markNow()
+		state.prevMark = now
 		state.prevPos = pos
 	}
 
