@@ -1,14 +1,19 @@
 package dev.slimevr.updater
 
+import dev.slimevr.updater.ManifestUtils.Companion.getChannels
+import dev.slimevr.updater.ManifestUtils.Companion.getCurrentVersion
+import dev.slimevr.updater.ManifestUtils.Companion.getCurrentVersionTag
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 
-class Updater {
+class Updater(
+	val state: UpdaterState,
+) {
 
 	@Serializable
 	data class GHResponse(
 		val tag_name: String,
-		val assets: JsonArray
+		val assets: JsonArray,
 	)
 
 	@Serializable
@@ -16,19 +21,24 @@ class Updater {
 		val url: String,
 		val id: Long,
 		val name: String,
-		val digest: String
+		val digest: String,
 	)
 
-
-	val os = System.getProperty("os.name").lowercase()
-
-	fun runUpdater() {
-
-		val manifest = Manifest()
-
-
-
-		//channels.getChannels("Server")
+	suspend fun runUpdater() {
+		val manifest = Manifest().getManifest()
+		val updaterIO = UpdaterIO(state)
+		val os = System.getProperty("os.name").lowercase()
+		val arch = System.getProperty("os.arch").lowercase()
+		val normalizedArch = when {
+			arch.contains("amd64") || arch.contains("x86_64") -> "x86_64"
+			arch.contains("arm") -> "arm64"
+			else -> arch
+		}
+		val currentVersion = getCurrentVersion(manifest, os, normalizedArch)
+		println(currentVersion)
+		if (currentVersion == null) return
+		val linux = Linux(state, updaterIO)
+		linux.updateServer(currentVersion.url)
 
 		/*
 		val shouldUpdate: Boolean = shouldUpdate()
@@ -70,7 +80,6 @@ class Updater {
 
 		 */
 	}
-
 
 	companion object {
 		val CDN = "http://127.0.0.1:8080"

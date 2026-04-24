@@ -3,11 +3,12 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	kotlin("jvm")
-	kotlin("plugin.serialization") version "2.3.10"
-	application
+	kotlin("jvm") version "2.3.21"
+	kotlin("plugin.serialization") version "2.3.21"
+	id("org.jetbrains.kotlin.plugin.compose") version "2.3.21"
+	id("org.jetbrains.compose") version "1.10.3"
 	id("com.gradleup.shadow")
-	id("com.github.gmazzo.buildconfig")
+	id("com.github.gmazzo.buildconfig") version "5.3.5"
 	id("org.ajoberstar.grgit")
 }
 
@@ -21,10 +22,10 @@ java {
 		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
-tasks.withType<KotlinCompile> {
+
+tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions {
 		jvmTarget.set(JvmTarget.JVM_17)
-		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
 
@@ -46,9 +47,11 @@ allprojects {
 	repositories {
 		// Use jcenter for resolving dependencies.
 		// You can declare any Maven/Ivy/file repository here.
+		google()
 		mavenCentral()
 		maven(url = "https://jitpack.io")
 		maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+		maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 	}
 }
 
@@ -61,26 +64,32 @@ dependencies {
 	implementation("commons-cli:commons-cli:1.8.0")
 	implementation("org.apache.commons:commons-lang3:3.15.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2")
+	implementation(compose.desktop.currentOs)
+	implementation(compose.material3)
+	implementation(compose.components.resources)
+	implementation("io.coil-kt.coil3:coil-compose:3.4.0")
 
 
 	testImplementation(kotlin("test"))
 }
 
 tasks.shadowJar {
-	minimize {
-		exclude(dependency("com.fazecast:jSerialComm:.*"))
-		exclude(dependency("net.java.dev.jna:.*:.*"))
-		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
-
-		exclude(project(":solarxr-protocol"))
-	}
 	archiveBaseName.set("updater")
 	archiveClassifier.set("")
 	archiveVersion.set("")
 }
 
-application {
-	mainClass.set("dev.slimevr.updater.Main")
+compose.desktop {
+	application {
+		mainClass = "dev.slimevr.updater.MainKt"
+
+		nativeDistributions {
+			targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
+			packageName = "SlimeVRUpdater"
+			packageVersion = "1.0.0"
+		}
+	}
 }
 
 buildConfig {
@@ -95,7 +104,7 @@ buildConfig {
 	buildConfigField("boolean", "GIT_CLEAN", grgit.status().isClean.toString())
 }
 
-tasks.run<JavaExec> {
-	standardInput = System.`in` // this is not working
-	args = listOf("run")
+tasks.withType<JavaExec> {
+	standardInput = System.`in`
+	systemProperty("terminal.jline", "false")
 }

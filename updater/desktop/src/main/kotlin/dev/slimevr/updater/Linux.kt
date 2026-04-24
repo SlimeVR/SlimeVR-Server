@@ -4,100 +4,202 @@ import java.nio.file.Paths
 import kotlin.io.path.Path
 import kotlin.io.path.exists
 
-class Linux {
+class Linux(
+	private val state: UpdaterState,
+	private val io: UpdaterIO,
+) {
 
-	val sendMainProgress: (Int) -> Unit = { progress -> updaterGui.mainProgressBar.setProgress(progress) }
-	val path = Paths.get("").toAbsolutePath().toString()
+	private val path = Paths.get("").toAbsolutePath().toString()
 
 	suspend fun updateLinux() {
-		updateLinuxSteamVRDriver()
 		updateUdev()
 		feeder()
 	}
 
-	suspend fun updateFrame() {
-		updateLinuxSteamVRDriver()
-	}
+	suspend fun updateLinuxSteamVRDriver(openVRDriverUrl: String) {
+		state.update {
+			statusText = "Updating SteamVR Driver"
+		}
 
-	// TODO: tell user in gui to add steamvr launch arguments
-	suspend fun updateLinuxSteamVRDriver() {
-		updaterGui.subLabel.text = "Updating SteamVR Driver"
-		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
+		val steamVRPath =
+			"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh"
+
+		val vrPathRegContents = io.executeShellCommand(steamVRPath)
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
+
 		if (isDriverRegistered) {
-			updaterGui.subLabel.text = "Downloading SteamVR Driver"
-			downloadFile(LINUXSTEAMVRDRIVERURL, LINUXSTEAMVRDRIVERNAME)
-			updaterGui.subLabel.text = "Unzipping SteamVR Driver"
-			unzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
-			println("${Paths.get("").toAbsolutePath()}/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr")
-			executeShellCommand(
-				"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
+			state.update {
+				statusText = "Downloading SteamVR Driver"
+			}
+
+			io.downloadFile(openVRDriverUrl, LINUXSTEAMVRDRIVERNAME)
+
+			state.update {
+				statusText = "Unzipping SteamVR Driver"
+			}
+
+			io.unzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
+
+			state.update {
+				statusText = "Registering SteamVR Driver"
+			}
+
+			io.executeShellCommand(
+				steamVRPath,
 				"adddriver",
 				"$path/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr",
 			)
 		} else {
-			println("steamVR driver is already registered. Skipping...")
+			state.update {
+				statusText = "SteamVR driver already registered. Skipping..."
+			}
 		}
-		updaterGui.subLabel.text = "SteamVR Driver done"
-		sendMainProgress(33)
+
+		state.update {
+			mainProgress = 0.33f
+			statusText = "SteamVR Driver done"
+		}
 	}
 
-	fun removeLinuxSteamVRDriver() {
-		val vrPathRegContents = executeShellCommand("${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh")
+	suspend fun removeLinuxSteamVRDriver() {
+		val steamVRPath =
+			"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh"
+
+		val vrPathRegContents = io.executeShellCommand(steamVRPath)
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
+
 		if (isDriverRegistered) {
-			println("Removing driver from steamvr")
-			executeShellCommand(
-				"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh",
+			state.update {
+				statusText = "Removing SteamVR driver"
+			}
+
+			io.executeShellCommand(
+				steamVRPath,
 				"removedriver",
 				"$path/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr",
 			)
 		} else {
-			println("steamVR driver isn't registered. Skipping...")
+			state.update {
+				statusText = "SteamVR driver not registered. Skipping..."
+			}
+		}
+	}
+
+	suspend fun updateServer(serverUrl: String) {
+		println("downloading server")
+		state.update {
+			statusText = "Updating SlimeVR"
+			subProgress = 0f
+		}
+
+		state.update {
+			statusText = "Downloading Server"
+		}
+
+		io.downloadFile(serverUrl, LINUXSERVERNAME)
+
+		state.update {
+			subProgress = 1f
+			statusText = "Server download complete"
 		}
 	}
 
 	suspend fun feeder() {
-		updaterGui.subLabel.text = "Downloading Feeder App"
-		downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
-		updaterGui.subLabel.text = "Unzipping Feeder App"
-		unzip(LINUXFEEDERNAME, LINUXFEEDERDIRECTORY)
-		updaterGui.subLabel.text = "Registering Feeder App"
-		executeShellCommand("chmod", "+x", "$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App")
-		executeShellCommand("$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App", "--install")
-		sendMainProgress(100)
-		updaterGui.subLabel.text = "Feeder App Done"
+		state.update {
+			statusText = "Downloading Feeder App"
+		}
+
+		io.downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
+
+		state.update {
+			statusText = "Unzipping Feeder App"
+		}
+
+		io.unzip(LINUXFEEDERNAME, LINUXFEEDERDIRECTORY)
+
+		state.update {
+			statusText = "Installing Feeder App"
+		}
+
+		io.executeShellCommand(
+			"chmod",
+			"+x",
+			"$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App",
+		)
+
+		io.executeShellCommand(
+			"$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App",
+			"--install",
+		)
+
+		state.update {
+			mainProgress = 1f
+			statusText = "Feeder App Done"
+		}
 	}
 
-	// TODO: Find a way to do version checking on udev rules
-	fun updateUdev() {
-		updaterGui.subLabel.text = "Setting udev"
+	suspend fun updateUdev() {
+		state.update {
+			statusText = "Setting up udev rules"
+		}
+
 		val file = Path("/etc/udev/rules.d/69-slimevr-devices.rules")
+
 		if (file.exists()) {
-			updaterGui.subLabel.text = "Udev rules already installed"
+			state.update {
+				statusText = "Udev rules already installed"
+				mainProgress = 0.66f
+			}
 			return
 		}
-		updaterGui.subLabel.text = "Asking for privileges"
-		val res = executeShellCommand("pkexec", "cp", "$path/69-slimevr-devices.rules", "/etc/udev/rules.d/69-slimevr-devices.rules")
-		if (res.contains("Error")) {
-			println("Error installing udev rules")
-		} else {
-			println("Successfully installed udev rules")
+
+		state.update {
+			statusText = "Requesting privileges"
 		}
-		sendMainProgress(66)
-		updaterGui.subLabel.text = "Udev done"
+
+		val res = io.executeShellCommand(
+			"pkexec",
+			"cp",
+			"$path/69-slimevr-devices.rules",
+			"/etc/udev/rules.d/69-slimevr-devices.rules",
+		)
+
+		state.update {
+			statusText =
+				if (res.contains("Error")) {
+					"Error installing udev rules"
+				} else {
+					"Udev rules installed"
+				}
+
+			mainProgress = 0.66f
+		}
 	}
 
 	companion object {
-		// Linux URLs
-		private const val LINUXSTEAMVRDRIVERURL = "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
-		private const val LINUXSTEAMVRDRIVERNAME = "slimevr-openvr-driver-x64-linux.zip"
-		private const val LINUXSTEAMVRDRIVERDIRECTORY = "slimevr-openvr-driver-x64-linux"
-		private const val LINUXFEEDERURL = "https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-Linux.zip"
-		private const val LINUXFEEDERNAME = "SlimeVR-Feeder-App-Linux.zip"
-		private const val LINUXFEEDERDIRECTORY = "SlimeVR-Feeder-App-Linux"
-		private const val LINUXSERVERURL = "https://github.com/SlimeVR/SlimeVR-Server/releases/latest/download/SlimeVR-amd64.appimage"
-		private const val LINUXSERVERNAME = "SlimeVR-amd64.appimage"
-		private const val LINUXSERVERDIRECTORY = "slimevr-linux"
+
+		private const val LINUXSTEAMVRDRIVERURL =
+			"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
+
+		private const val LINUXSTEAMVRDRIVERNAME =
+			"slimevr-openvr-driver-x64-linux.zip"
+
+		private const val LINUXSTEAMVRDRIVERDIRECTORY =
+			"slimevr-openvr-driver-x64-linux"
+
+		private const val LINUXFEEDERURL =
+			"https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-Linux.zip"
+
+		private const val LINUXFEEDERNAME =
+			"SlimeVR-Feeder-App-Linux.zip"
+
+		private const val LINUXFEEDERDIRECTORY =
+			"SlimeVR-Feeder-App-Linux"
+
+		private const val LINUXSERVERURL =
+			"https://github.com/SlimeVR/SlimeVR-Server/releases/latest/download/SlimeVR-amd64.appimage"
+
+		private const val LINUXSERVERNAME =
+			"SlimeVR-amd64.appimage"
 	}
 }

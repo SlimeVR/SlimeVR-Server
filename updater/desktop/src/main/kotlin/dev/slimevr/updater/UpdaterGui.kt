@@ -1,163 +1,148 @@
 package dev.slimevr.updater
 
-import java.awt.*
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.WindowScope
+import androidx.compose.foundation.window.WindowDraggableArea
+import coil3.compose.AsyncImage
 
+val BG = Color(0xFF112D43)
+val TEXT = Color.White
+val ERROR = Color(0xFFE57373)
+val PROGRESS_BG = Color(0xFF081E30)
+val PROGRESS_FG = Color(0xFF65459A)
 
-class UpdaterGui : Frame() {
+@Composable
+fun WindowScope.UpdaterScreen(state: UpdaterState) {
+	WindowDraggableArea {
+		Column(
+			modifier = Modifier
+				.fillMaxSize()
+				.clip(RoundedCornerShape(12.dp))
+				.background(BG)
+				.padding(16.dp),
+			horizontalAlignment = Alignment.CenterHorizontally,
+			verticalArrangement = Arrangement.spacedBy(12.dp)
+		) {
 
-	val mainLabel = Label("Installing SlimeVR Drivers", Label.CENTER)
-	val subLabel = Label("", Label.CENTER)
-	val mainProgressBar: ProgressBar = ProgressBar()
-	val subProgressBar: ProgressBar = ProgressBar()
-
-	init {
-		isUndecorated = true
-
-		val frameDragListener: FrameDragListener = FrameDragListener(this)
-		addMouseListener(frameDragListener)
-		addMouseMotionListener(frameDragListener)
-		pack()
-		setLocationRelativeTo(null)
-
-		setBackground(Color(17, 45, 67))
-		setSize(400, 450)
-
-		val dim = Toolkit.getDefaultToolkit().screenSize
-		this.setLocation(
-			dim.width / 2 - this.size.width / 2,
-			dim.height / 2 - this.size.height / 2,
-		)
-
-		mainLabel.foreground = Color.WHITE
-		mainLabel.setFont(Font("Poppins", Font.PLAIN, 16))
-		subLabel.foreground = Color.WHITE
-
-		setLayout(GridBagLayout())
-		val gbc = GridBagConstraints()
-		gbc.gridx = 0
-		gbc.insets = Insets(0, 10, 5, 10)
-
-		val gifLabel = Label("Loading Animation...", Label.CENTER)
-		gifLabel.setForeground(Color.WHITE)
-
-		val animatedGif = GifCanvas("jumping-slime.gif")
-
-		gbc.gridy = 0
-		add(mainLabel, gbc)
-		gbc.gridy = 1
-		add(animatedGif, gbc)
-		gbc.gridy = 2
-		gbc.fill = GridBagConstraints.HORIZONTAL
-		add(mainProgressBar, gbc)
-		gbc.gridy = 3
-		add(subLabel, gbc)
-		gbc.gridy = 4
-		add(subProgressBar, gbc)
-
-		isVisible = true
-	}
-}
-
-class FrameDragListener(private val frame: UpdaterGui) : MouseAdapter() {
-	private var mouseDownCompCoords: Point? = null
-
-	override fun mouseReleased(e: MouseEvent?) {
-		mouseDownCompCoords = null
-	}
-
-	override fun mousePressed(e: MouseEvent) {
-		mouseDownCompCoords = e.getPoint()
-	}
-
-	override fun mouseDragged(e: MouseEvent) {
-		val currCoords: Point = e.locationOnScreen
-		frame.setLocation(
-			currCoords.x - mouseDownCompCoords!!.x,
-			currCoords.y - mouseDownCompCoords!!.y
-		)
-	}
-}
-
-class GifCanvas(path: String?) : Canvas() {
-	private val img: Image? = Toolkit.getDefaultToolkit().getImage(path)
-	private val scaledImage: Image? = img?.getScaledInstance(150, 150, Image.SCALE_DEFAULT)
-	private var offscreen: Image? = null
-	private var offscreenG: Graphics? = null
-
-	init {
-		prepareImage(img, this)
-		val tracker = MediaTracker(this)
-		tracker.addImage(img, 0)
-		try {
-			tracker.waitForID(0)
-		} catch (e: Exception) {
-
-		}
-
-	}
-
-	override fun update(g: Graphics) {
-		paint(g)
-	}
-
-	override fun paint(g: Graphics) {
-		val w = getWidth()
-		val h = getHeight()
-		offscreen = createImage(width, height)
-		offscreenG = offscreen?.graphics
-
-		offscreenG?.color = Color(17, 45, 67, 255)
-		offscreenG?.fillRect(0, 0, w, h)
-
-		if (scaledImage != null) {
-			val iw = scaledImage.getWidth(this)
-			val ih = scaledImage.getHeight(this)
-			if (iw > 0 && ih > 0) {
-				offscreenG?.drawImage(scaledImage, (w - iw) / 2, (h - ih) / 2, this)
+			// TITLE
+			Box(
+				modifier = Modifier
+					.fillMaxWidth()
+					.height(40.dp)
+			) {
+				Text(
+					text = "SlimeVR Updater",
+					color = TEXT,
+					fontSize = 20.sp,
+					fontWeight = FontWeight.Bold,
+					textAlign = TextAlign.Center,
+					modifier = Modifier.align(Alignment.Center)
+				)
 			}
+
+			Box(
+				modifier = Modifier.size(160.dp),
+				contentAlignment = Alignment.Center
+			) {
+				LoadingGif()
+			}
+
+			// STATUS HEADER
+			Box(
+				modifier = Modifier
+					.fillMaxWidth()
+					.height(40.dp)
+			) {
+				Text(
+					text = state.statusText,
+					color = TEXT,
+					fontSize = 20.sp,
+					fontWeight = FontWeight.Bold,
+					textAlign = TextAlign.Center,
+					modifier = Modifier.align(Alignment.Center)
+				)
+			}
+
+			// MAIN PROGRESS
+			ProgressBar(
+				progress = state.mainProgress,
+				color = if (state.errorMessage != null) ERROR else PROGRESS_FG
+			)
+
+			// STATUS TEXT
+			Text(
+				text = state.errorMessage ?: state.statusText,
+				color = if (state.errorMessage != null) ERROR else TEXT,
+				fontSize = 13.sp,
+				textAlign = TextAlign.Center
+			)
+
+			// SUB PROGRESS
+			ProgressBar(
+				progress = state.subProgress,
+				color = if (state.errorMessage != null) ERROR else PROGRESS_FG
+			)
+
+			Spacer(modifier = Modifier.weight(1f))
+
+			Text(
+				text = "v${state.version}",
+				color = TEXT.copy(alpha = 0.5f),
+				fontSize = 10.sp
+			)
 		}
-
-		g.drawImage(offscreen, 0, 0, this)
 	}
-
-	override fun imageUpdate(
-		img: Image?,
-		infoflags: Int,
-		x: Int,
-		y: Int,
-		w: Int,
-		h: Int,
-	): Boolean {
-		if ((infoflags and (FRAMEBITS or ALLBITS)) != 0) {
-			repaint()
-		}
-		return (infoflags and (ALLBITS or ABORT or ERROR)) == 0
-	}
-
-	override fun getPreferredSize(): Dimension = Dimension(200, 200)
 }
 
-class ProgressBar() : Canvas() {
-	var currentProgress: Int = 0
-	val progressBarWidth = 200
+@Composable
+fun LoadingGif() {
+	val stream = object {}.javaClass.getResourceAsStream("/jumping-slime.gif")
+		?: error("Missing resource: jumping-slime.gif")
 
-	fun setProgress(newProgress: Int) {
-		currentProgress = ((newProgress) * (progressBarWidth) / 100)
-		repaint()
-	}
-	init {
-		setSize(200, 15)
-	}
+	AsyncImage(
+		model = stream.readBytes(),
+		contentDescription = "Loading animation"
+	)
+}
 
-	override fun paint(g: Graphics) {
-		// Background
-		g.color = Color(8, 30, 48)
-		g.fillRoundRect(0, 0, progressBarWidth, 10, 5, 5)
+@Composable
+fun ProgressBar(
+	progress: Float,
+	color: Color
+) {
+	val clamped = progress.coerceIn(0f, 1f)
 
-		// Progress
-		g.color = Color(101, 69, 154)
-		g.fillRoundRect(0, 0, currentProgress, 10, 5, 5) // Static 60% for now
+	Canvas(
+		modifier = Modifier
+			.fillMaxWidth(0.8f)
+			.height(12.dp)
+	) {
+		// background
+		drawRoundRect(
+			color = PROGRESS_BG,
+			size = size,
+			cornerRadius = CornerRadius(6.dp.toPx())
+		)
+		// fill
+		drawRoundRect(
+			color = color,
+			size = Size(size.width * clamped, size.height),
+			cornerRadius = CornerRadius(6.dp.toPx())
+		)
 	}
 }

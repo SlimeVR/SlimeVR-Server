@@ -10,29 +10,40 @@ class Manifest {
 	private val manifest: ManifestObject
 
 	init {
-		val file = File("update-manifest.json").readText()
-		manifest = Json.decodeFromString<ManifestObject>(file)
+		val text = loadManifestText("update-manifest.json")
+		manifest = Json.decodeFromString<ManifestObject>(text)
 		val json = Json {
 			ignoreUnknownKeys = true
 		}
 	}
 
-	fun getManifest(): ManifestObject {
-		return manifest
+	fun getManifest(): ManifestObject = manifest
+
+	private fun loadManifestText(fileName: String): String {
+		val externalFile = File(fileName)
+		if (externalFile.exists()) {
+			return externalFile.readText()
+		}
+
+		val resourceStream = object {}.javaClass.getResourceAsStream("/$fileName")
+		if (resourceStream != null) {
+			return resourceStream.bufferedReader().use { it.readText() }
+		}
+		error("Could not find $fileName in filesystem or JAR resources")
 	}
 }
 
 @Serializable
 data class Release(
 	val url: String,
-	val run: List<String>
+	val run: List<String>,
 )
 
 @Serializable
 data class Versions(
 	@SerialName("release_notes")
 	val releaseNotes: String,
-	val builds: Map<String, Map<String, Release>>
+	val builds: Map<String, Map<String, Release>>,
 )
 
 @Serializable
@@ -40,23 +51,23 @@ data class Channel(
 	val description: String,
 	@SerialName("current_version")
 	val currentVersion: String,
-	val versions: Map<String, Versions>
+	val versions: Map<String, Versions>,
 )
 
 @Serializable
 data class ManifestObject(
 	@SerialName("default_channel")
 	val defaultChannel: String,
-	val channels: Map<String, Channel>
+	val channels: Map<String, Channel>,
 )
 
 class ChannelDisplayObject(
 	val channelName: String,
-	val Description: String
+	val Description: String,
 )
 
 class VersionDisplayObject(
 	val version: String,
 	val Description: String,
-	val Url: String
+	val Url: String,
 )

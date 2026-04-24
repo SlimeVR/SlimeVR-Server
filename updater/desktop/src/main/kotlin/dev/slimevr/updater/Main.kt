@@ -1,9 +1,7 @@
-@file:JvmName("Main")
-
 package dev.slimevr.updater
 
-import dev.slimevr.updater.ManifestUtils.Companion.listChannels
-import dev.slimevr.updater.ManifestUtils.Companion.listVersions
+import dev.slimevr.updater.ManifestUtils.Companion.getChannels
+import dev.slimevr.updater.ManifestUtils.Companion.getVersionTags
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.CommandLineParser
 import org.apache.commons.cli.DefaultParser
@@ -15,7 +13,6 @@ import kotlin.text.ifEmpty
 val VERSION =
 	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
 		if (GIT_CLEAN) "" else "-dirty"
-val updaterGui = UpdaterGui()
 
 val featureFlags = FeatureFlags()
 
@@ -43,18 +40,16 @@ fun main(args: Array<String>) {
 	if (cmd.hasOption("channels")) {
 		featureFlags.listChannels = true
 		val manifest = Manifest().getManifest()
-		listChannels(manifest)
+		getChannels(manifest)
 		exitProcess(0)
 	}
 	if (cmd.hasOption("list")) {
 		featureFlags.listVersions = true
 		val manifest = Manifest().getManifest()
-		listVersions(manifest, cmd.getOptionValue("list"))
+		getVersionTags(manifest, cmd.getOptionValue("list"))
 		exitProcess(0)
 	}
 
-	val manifest = Manifest()
-
-	val updater = Updater()
-	updater.runUpdater()
+	val updaterController = UpdaterController()
+	updaterController.startGui()
 }

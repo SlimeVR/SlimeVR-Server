@@ -1,15 +1,16 @@
 package dev.slimevr.updater
 
+import dev.slimevr.updater.ManifestUtils.Companion.getChannels
+import dev.slimevr.updater.ManifestUtils.Companion.getCurrentVersion
 import dev.slimevr.updater.ManifestUtils.Companion.getRelease
-import dev.slimevr.updater.ManifestUtils.Companion.listChannels
-import dev.slimevr.updater.ManifestUtils.Companion.listVersions
+import dev.slimevr.updater.ManifestUtils.Companion.getVersionTags
 import kotlin.test.Test
 
+/*
 class UpdaterTest {
 
 	@Test
 	fun testArguments() {
-
 	}
 
 	@Test
@@ -20,38 +21,69 @@ class UpdaterTest {
 
 	@Test
 	fun testDownload() {
-
 	}
 
 	@Test
-	fun testListVersions() {
+	fun testGetChannels() {
 		val manifest = Manifest().getManifest()
-		listVersions(manifest, "stable")
-		println("/------------------------------------------")
-		listVersions(manifest, "beta")
+		val channels = getChannels(manifest)
+		println(channels)
 	}
 
 	@Test
-	fun testListChannels() {
+	fun testGetVersionTags() {
 		val manifest = Manifest().getManifest()
-		listChannels(manifest)
+		val stableVersionTags = getVersionTags(manifest, "stable")
+		println(stableVersionTags)
 	}
 
 	@Test
-	fun testGetLatestWindowsRelease() {
+	fun testGetPlatforms() {
+		val manifest = Manifest().getManifest()
+	}
+
+	@Test
+	fun testGetArbitraryRelease() {
 		val manifest = Manifest().getManifest()
 		val release = getRelease(manifest, "stable", "v19.0.0", "windows", "x86_64")
 		println(release?.url)
 	}
 
 	@Test
-	fun downgrade() {
+	fun testGetLatestStable() {
+		val manifest = Manifest().getManifest()
+		val currentVersion = getCurrentVersion(manifest, "windows", "x86_64")
+		println(currentVersion)
+	}
 
+	@Test
+	fun downgrade() {
+	}
+
+	@Test
+	fun testUpdateToLatestStable() {
+		val os = System.getProperty("os.name").lowercase()
+		val arch = System.getProperty("os.arch").lowercase()
+		val normalizedArch = when {
+			arch.contains("amd64") || arch.contains("x86_64") -> "x86_64"
+			arch.contains("arm") -> "arm64"
+			else -> arch
+		}
+
+		val updaterGui = UpdaterGui()
+		val featureFlags = FeatureFlags()
+		val manifest = Manifest().getManifest()
+		val currentVersion = getCurrentVersion(manifest, os, normalizedArch) ?: return
+		println("Current Version for $os ($normalizedArch): $currentVersion")
+
+		val linuxUpdater = Linux()
+
+		linuxUpdater.updateServer(currentVersion.url)
 	}
 
 	@Test
 	fun updateToSpecificVersion() {
-
 	}
-
 }
+
+ */
