@@ -12,6 +12,10 @@ import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.properties.Delegates
+import kotlin.time.Duration.Companion.microseconds
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
+import kotlin.time.TimeSource
 
 const val TIMEOUT_MS = 2_000L
 const val DISCONNECT_MS = 3_000L + TIMEOUT_MS
@@ -75,6 +79,11 @@ class Tracker @JvmOverloads constructor(
 	 */
 	val allowMounting: Boolean = false,
 
+	/**
+	 * If true, the tracker will send Derived Velocity.
+	 */
+	var allowVelocity: Boolean = false,
+
 	val isHmd: Boolean = false,
 
 	/**
@@ -111,7 +120,19 @@ class Tracker @JvmOverloads constructor(
 	// IMU: +z forward, +x left, +y up
 	// SlimeVR: +z backward, +x right, +y up
 	private var _acceleration = Vector3.NULL
+	private var _velocity = Vector3.NULL
 	private var _magVector = Vector3.NULL
+
+	/**
+	 * Velocity state server-side differentiation based on sent poses
+	 */
+	private data class VelocityState(
+		var prevMark: TimeSource.Monotonic.ValueTimeMark? = null,
+		var prevPos: Vector3 = Vector3(0f, 0f, 0f),
+	)
+
+	private val velocityState = VelocityState()
+
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -346,6 +367,42 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
+	 * Updates the derived velocity of the tracker by differentiating position over time.
+	 *
+	 * This method enforces the [allowVelocity] policy and checks for valid position data before
+	 * proceeding. If conditions are met, it calculates velocity based on the displacement since the
+	 * last update, applying a sanity check on the time delta to filter out noise and ensure data stability.
+	 *
+	 */
+	fun updateDerivedVelocity() {
+		if (!allowVelocity || !hasPosition) {
+			velocityState.prevMark = null
+			_velocity = Vector3.NULL
+			return
+		}
+
+		val pos = position
+		val now = TimeSource.Monotonic.markNow()
+
+		val prevMark = velocityState.prevMark
+		if (prevMark != null) {
+			val dt = now - prevMark
+			if (dt in 100.microseconds..250.milliseconds) {
+				val dtSeconds = dt.toDouble(DurationUnit.SECONDS)
+				_velocity = Vector3(
+					((pos.x - velocityState.prevPos.x) / dtSeconds).toFloat(),
+					((pos.y - velocityState.prevPos.y) / dtSeconds).toFloat(),
+					((pos.z - velocityState.prevPos.z) / dtSeconds).toFloat(),
+				)
+			} else {
+				_velocity = Vector3.NULL
+			}
+		}
+		velocityState.prevMark = now
+		velocityState.prevPos = pos
+	}
+
+	/**
 	 * Gets the identity-adjusted tracker rotation after the resetsHandler's corrections
 	 * (identity reset, drift and identity mounting).
 	 * This is used for debugging/visualizing tracker data
@@ -420,6 +477,24 @@ class Tracker @JvmOverloads constructor(
 	fun setAcceleration(vec: Vector3) {
 		this._acceleration = vec
 	}
+
+	/**
+	 * Sets the derived velocity of the tracker.
+	 */
+	fun setVelocity(vec: Vector3) {
+		this._velocity = if (allowVelocity) vec else Vector3.NULL
+	}
+
+	/**
+	 * Gets the derived velocity of the tracker.
+	 */
+	fun getVelocity(): Vector3 = _velocity
+
+	/**
+	 * True if the tracker has valid velocity data.
+	 */
+	val hasVelocity: Boolean
+		get() = allowVelocity && _velocity != Vector3.NULL
 
 	/**
 	 * True if the raw rotation is coming directly from an IMU (no cameras or lighthouses)
