@@ -131,7 +131,7 @@ class Tracker @JvmOverloads constructor(
 		var prevPos: Vector3 = Vector3(0f, 0f, 0f),
 	)
 
-	private var velocityState: VelocityState = VelocityState()
+	private val velocityState = VelocityState()
 
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
@@ -382,25 +382,24 @@ class Tracker @JvmOverloads constructor(
 		}
 
 		val pos = position
-		val state = velocityState
 		val now = TimeSource.Monotonic.markNow()
 
-		val prevMark = state.prevMark
+		val prevMark = velocityState.prevMark
 		if (prevMark != null) {
 			val dt = now - prevMark
 			if (dt in 100.microseconds..250.milliseconds) {
 				val dtSeconds = dt.toDouble(DurationUnit.SECONDS)
 				_velocity = Vector3(
-					((pos.x - state.prevPos.x) / dtSeconds).toFloat(),
-					((pos.y - state.prevPos.y) / dtSeconds).toFloat(),
-					((pos.z - state.prevPos.z) / dtSeconds).toFloat(),
+					((pos.x - velocityState.prevPos.x) / dtSeconds).toFloat(),
+					((pos.y - velocityState.prevPos.y) / dtSeconds).toFloat(),
+					((pos.z - velocityState.prevPos.z) / dtSeconds).toFloat(),
 				)
 			} else {
 				_velocity = Vector3.NULL
 			}
 		}
-		state.prevMark = now
-		state.prevPos = pos
+		velocityState.prevMark = now
+		velocityState.prevPos = pos
 	}
 
 	/**
