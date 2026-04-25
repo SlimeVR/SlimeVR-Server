@@ -41,10 +41,8 @@ import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.ResetType
-import java.util.*
-import java.util.concurrent.LinkedBlockingQueue
+import java.util.Timer
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.Consumer
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
@@ -71,8 +69,8 @@ class VRServer @JvmOverloads constructor(
 	private val trackers: MutableList<Tracker> = FastList()
 	val trackersServer: TrackersUDPServer
 	private val bridges: MutableList<Bridge> = FastList()
-	private val tasks: Queue<Runnable> = LinkedBlockingQueue()
-	private val newTrackersConsumers: MutableList<Consumer<Tracker>> = FastList()
+	private val tasks: ArrayDeque<Runnable> = ArrayDeque()
+	private val newTrackersConsumers: MutableList<(Tracker) -> Unit> = FastList()
 	private val trackerStatusListeners: MutableList<TrackerStatusListener> = FastList()
 	private val onTick: MutableList<Runnable> = FastList()
 	private val lock = acquireMulticastLock()
@@ -214,11 +212,11 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	@ThreadSafe
-	fun addNewTrackerConsumer(consumer: Consumer<Tracker>) {
+	fun addNewTrackerConsumer(consumer: (Tracker) -> Unit) {
 		queueTask {
 			newTrackersConsumers.add(consumer)
 			for (tracker in trackers) {
-				consumer.accept(tracker)
+				consumer(tracker)
 			}
 		}
 	}
@@ -235,7 +233,7 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	@ThreadSafe
-	fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton>) {
+	fun addSkeletonUpdatedCallback(consumer: (HumanSkeleton) -> Unit) {
 		queueTask { humanPoseManager.addSkeletonUpdatedCallback(consumer) }
 	}
 
@@ -246,7 +244,7 @@ class VRServer @JvmOverloads constructor(
 			// final long start = System.currentTimeMillis();
 			fpsTimer.update()
 			do {
-				val task = tasks.poll() ?: break
+				val task = tasks.removeFirstOrNull() ?: break
 				task.run()
 			} while (true)
 			for (task in onTick) {
@@ -296,7 +294,7 @@ class VRServer @JvmOverloads constructor(
 			trackers.add(tracker)
 			trackerAdded(tracker)
 			for (tc in newTrackersConsumers) {
-				tc.accept(tracker)
+				tc(tracker)
 			}
 		}
 	}

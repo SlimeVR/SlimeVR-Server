@@ -13,7 +13,6 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
 import java.nio.ByteBuffer
-import java.util.function.Consumer
 import kotlin.collections.set
 import kotlin.math.PI
 import kotlin.math.cos
@@ -100,7 +99,7 @@ class HIDCommon {
 			sensorType: IMUType,
 			sensorStatus: TrackerStatus,
 			magStatus: MagnetometerStatus,
-			trackersConsumer: Consumer<Tracker>,
+			trackersConsumer: (Tracker) -> Unit,
 		) {
 			// LogManager.info("[TrackerServer] Sensor $trackerId for ${device.name}, status $sensorStatus")
 			var imuTracker = device.getTracker(trackerId)
@@ -128,7 +127,7 @@ class HIDCommon {
 				// TODO: Could tracker maybe use "Timed out" status without marking as disconnecting?
 				// TODO: can be marked as "Disconnected" by timeout if the tracker has enabled activity timeouts
 				device.trackers[trackerId] = imuTracker
-				trackersConsumer.accept(imuTracker)
+				trackersConsumer(imuTracker)
 				imuTracker.status = sensorStatus
 				LogManager
 					.info(
@@ -145,7 +144,7 @@ class HIDCommon {
 			q: IntArray,
 			a: IntArray,
 			m: IntArray,
-			trackersConsumer: Consumer<Tracker>,
+			trackersConsumer: (Tracker) -> Unit,
 		) {
 			val trackerId = 0 // no concept of extensions
 

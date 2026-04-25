@@ -15,7 +15,6 @@ import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
 import java.nio.ByteBuffer
-import java.util.function.Consumer
 
 class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetListener {
 	val resetsConfig = api.server.configManager.vrConfig.resetsConfig
@@ -116,13 +115,11 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		}
 
 		buildMessage(null).let {
-			this.forAllListeners(
-				Consumer { conn: GenericConnection ->
-					if (tx == null || tx.conn != conn) {
-						conn.send(it)
-					}
-				},
-			)
+			this.forAllListeners { conn: GenericConnection ->
+				if (tx == null || tx.conn != conn) {
+					conn.send(it)
+				}
+			}
 		}
 	}
 
@@ -147,16 +144,15 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		sendResetStatusResponse(resetType, ResetStatus.FINISHED, tx, bodyParts, duration, duration)
 	}
 
-	fun forAllListeners(action: Consumer<in GenericConnection?>?) {
+	fun forAllListeners(action: ((GenericConnection) -> Unit)?) {
+		if (action == null) return
 		this.api
 			.apiServers
-			.forEach(
-				Consumer { server: ProtocolAPIServer ->
-					server
-						.apiConnections
-						.forEach(action)
-				},
-			)
+			.forEach { server: ProtocolAPIServer ->
+				server
+					.apiConnections
+					.forEach(action)
+			}
 	}
 
 	companion object {

@@ -18,7 +18,6 @@ import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.PACKET_SIZE
 import dev.slimevr.tracking.trackers.hid.HIDDevice
 import io.eiren.util.logging.LogManager
 import java.nio.ByteBuffer
-import java.util.function.Consumer
 
 const val ACTION_USB_PERMISSION = "dev.slimevr.USB_PERMISSION"
 
@@ -27,7 +26,7 @@ const val ACTION_USB_PERMISSION = "dev.slimevr.USB_PERMISSION"
  */
 class AndroidHIDManager(
 	name: String,
-	private val trackersConsumer: Consumer<Tracker>,
+	private val trackersConsumer: (Tracker) -> Unit,
 	private val context: Context,
 ) : Thread(name) {
 	private val devices: MutableList<HIDDevice> = mutableListOf()

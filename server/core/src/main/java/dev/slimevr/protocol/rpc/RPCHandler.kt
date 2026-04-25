@@ -369,7 +369,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	override fun onMessage(conn: GenericConnection, message: RpcMessageHeader) {
 		val consumer = handlers[message.messageType().toInt()]
 		if (consumer != null) {
-			consumer.accept(conn, message)
+			consumer(conn, message)
 		} else {
 			LogManager
 				.info("[ProtocolAPI] Unhandled RPC packet received id: ${message.messageType()}")

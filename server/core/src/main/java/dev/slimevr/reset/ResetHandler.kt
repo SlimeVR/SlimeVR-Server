@@ -2,7 +2,6 @@ package dev.slimevr.reset
 
 import dev.slimevr.protocol.rpc.TransactionInfo
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.function.Consumer
 
 class ResetHandler {
 	private val listeners: MutableList<ResetListener> = CopyOnWriteArrayList()

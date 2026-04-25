@@ -20,7 +20,6 @@ import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import org.apache.commons.math3.util.Precision
-import java.util.function.Consumer
 import kotlin.math.*
 
 /**
@@ -29,7 +28,7 @@ import kotlin.math.*
  */
 class HumanPoseManager(val server: VRServer?) {
 	val computedTrackers: MutableList<Tracker> = FastList()
-	private val onSkeletonUpdated: MutableList<Consumer<HumanSkeleton>> = FastList()
+	private val onSkeletonUpdated: MutableList<(HumanSkeleton) -> Unit> = FastList()
 	private val skeletonConfigManager = SkeletonConfigManager(true, this)
 
 	@get:ThreadSafe
@@ -49,7 +48,7 @@ class HumanPoseManager(val server: VRServer?) {
 			// explicitly loaded into the skeleton (no need for
 			// `computeAllNodeOffsets()`)
 			loadFromConfig(server.configManager)
-			for (sc in onSkeletonUpdated) sc.accept(skeleton)
+			for (sc in onSkeletonUpdated) sc(skeleton)
 		}
 	}
 
@@ -252,9 +251,9 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	@VRServerThread
-	fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton>) {
+	fun addSkeletonUpdatedCallback(consumer: (HumanSkeleton) -> Unit) {
 		onSkeletonUpdated.add(consumer)
-		consumer.accept(skeleton)
+		consumer(skeleton)
 	}
 
 	/**

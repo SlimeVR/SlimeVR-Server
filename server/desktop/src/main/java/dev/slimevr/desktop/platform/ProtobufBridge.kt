@@ -15,8 +15,6 @@ import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import java.util.Queue
-import java.util.concurrent.LinkedBlockingQueue
 import kotlin.collections.HashMap
 
 abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISteamVRBridge {
@@ -25,10 +23,10 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	protected val sharedTrackers: MutableList<Tracker> = FastList()
 
 	@ThreadSafe
-	private val inputQueue: Queue<ProtobufMessage> = LinkedBlockingQueue()
+	private val inputQueue: ArrayDeque<ProtobufMessage> = ArrayDeque()
 
 	@ThreadSafe
-	private val outputQueue: Queue<ProtobufMessage> = LinkedBlockingQueue()
+	private val outputQueue: ArrayDeque<ProtobufMessage> = ArrayDeque()
 
 	@Synchronize("self")
 	private val remoteTrackersBySerial: MutableMap<String, Tracker> = HashMap()
@@ -62,7 +60,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	@BridgeThread
 	protected fun updateMessageQueue() {
 		var message: ProtobufMessage?
-		while ((outputQueue.poll().also { message = it }) != null) {
+		while ((outputQueue.removeFirstOrNull().also { message = it }) != null) {
 			if (!sendMessageReal(message)) return
 		}
 	}
@@ -71,7 +69,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	override fun dataRead() {
 		hadNewData = false
 		var message: ProtobufMessage?
-		while ((inputQueue.poll().also { message = it }) != null) {
+		while ((inputQueue.removeFirstOrNull().also { message = it }) != null) {
 			processMessageReceived(message)
 			hadNewData = true
 		}

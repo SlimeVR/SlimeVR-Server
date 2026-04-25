@@ -2,7 +2,6 @@ package dev.slimevr.tracking.trackers.udp
 
 import java.io.IOException
 import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
 
 class UDPProtocolParser {
 	@Throws(IOException::class)
@@ -162,7 +161,7 @@ class UDPProtocolParser {
 
 		init {
 			HANDSHAKE_BUFFER[0] = 3
-			val str = "Hey OVR =D 5".toByteArray(StandardCharsets.US_ASCII)
+			val str = "Hey OVR =D 5".toByteArray(Charsets.US_ASCII)
 			System.arraycopy(str, 0, HANDSHAKE_BUFFER, 1, str.size)
 		}
 	}

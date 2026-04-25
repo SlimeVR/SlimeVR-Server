@@ -30,7 +30,6 @@ import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
 import java.nio.ByteBuffer
-import java.util.function.Consumer
 
 fun createHardwareInfo(fbb: FlatBufferBuilder, device: Device): Int {
 	val nameOffset = if (device.firmwareVersion != null) {
@@ -296,14 +295,12 @@ fun createTrackersData(
 		}
 
 	DeviceData.startTrackersVector(fbb, trackersOffsets.size)
-	trackersOffsets.forEach(
-		Consumer { offset: Int ->
-			DeviceData.addTrackers(
-				fbb,
-				offset,
-			)
-		},
-	)
+	trackersOffsets.forEach { offset: Int ->
+		DeviceData.addTrackers(
+			fbb,
+			offset,
+		)
+	}
 	return fbb.endVector()
 }
 
@@ -383,24 +380,18 @@ fun createSyntheticTrackersData(
 	val trackerOffsets: MutableList<Int> = ArrayList()
 
 	trackers
-		.forEach(
-			Consumer { tracker: Tracker ->
-				trackerOffsets
-					.add(createTrackerData(fbb, trackerDataMaskT, tracker))
-			},
-		)
+		.forEach { tracker: Tracker ->
+			trackerOffsets
+				.add(createTrackerData(fbb, trackerDataMaskT, tracker))
+		}
 
 	DataFeedUpdate.startSyntheticTrackersVector(fbb, trackerOffsets.size)
-	trackerOffsets.forEach(
-		(
-			Consumer { tracker: Int ->
-				DataFeedUpdate.addSyntheticTrackers(
-					fbb,
-					tracker,
-				)
-			}
-			),
-	)
+	trackerOffsets.forEach { tracker: Int ->
+		DataFeedUpdate.addSyntheticTrackers(
+			fbb,
+			tracker,
+		)
+	}
 	return fbb.endVector()
 }
 

@@ -9,7 +9,6 @@ import io.eiren.util.logging.LogManager
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
@@ -222,7 +221,7 @@ class DesktopSerialHandler :
 		when (event.eventType) {
 			SerialPort.LISTENING_EVENT_DATA_RECEIVED -> {
 				val newData = event.receivedData
-				val s = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(newData)).toString()
+				val s = Charsets.UTF_8.decode(ByteBuffer.wrap(newData)).toString()
 				addLog(s, false)
 			}
 

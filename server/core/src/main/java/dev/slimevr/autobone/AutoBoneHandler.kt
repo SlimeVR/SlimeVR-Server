@@ -14,6 +14,7 @@ import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import io.eiren.util.StringUtils
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
+import kotlinx.coroutines.runBlocking
 import org.apache.commons.lang3.tuple.Pair
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -118,7 +119,7 @@ class AutoBoneHandler(private val server: VRServer) {
 							eta = totalTime - (progress.frame * totalTime / progress.totalFrames),
 						)
 					}
-				val frames = framesFuture.get()
+				val frames = runBlocking { framesFuture.await() }
 				LogManager.info("[AutoBone] Done recording!")
 
 				// Save a recurring recording for users to send as debug info
@@ -188,7 +189,7 @@ class AutoBoneHandler(private val server: VRServer) {
 			val framesFuture = poseRecorder.framesAsync
 			if (framesFuture != null) {
 				announceProcessStatus(AutoBoneProcessType.SAVE, "Waiting for recording...")
-				val frames = framesFuture.get()
+				val frames = runBlocking { framesFuture.await() }
 				check(frames.frameHolders.isNotEmpty()) { "Recording has no trackers." }
 				check(frames.maxFrameCount > 0) { "Recording has no frames." }
 				announceProcessStatus(AutoBoneProcessType.SAVE, "Saving recording...")
@@ -242,7 +243,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				val framesFuture = poseRecorder.framesAsync
 				if (framesFuture != null) {
 					announceProcessStatus(AutoBoneProcessType.PROCESS, "Waiting for recording...")
-					val frames = framesFuture.get()
+					val frames = runBlocking { framesFuture.await() }
 					frameRecordings.add(Pair.of("<Recording>", frames))
 				} else {
 					announceProcessStatus(

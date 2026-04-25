@@ -47,3 +47,6 @@ vrconfig.yml.tmp
 
 # Nixos
 .bin/
+
+# macOS
+.DS_Store

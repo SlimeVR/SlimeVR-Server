@@ -1,10 +1,8 @@
 package dev.slimevr.protocol
 
-import java.util.function.BiConsumer
-
 abstract class ProtocolHandler<H> {
 	@JvmField
-	val handlers: Array<BiConsumer<GenericConnection, H>?>
+	val handlers: Array<((GenericConnection, H) -> Unit)?>
 
 	init {
 		this.handlers = arrayOfNulls(this.messagesCount())
@@ -14,10 +12,14 @@ abstract class ProtocolHandler<H> {
 
 	abstract fun messagesCount(): Int
 
-	fun registerPacketListener(packetType: Byte, consumer: BiConsumer<GenericConnection, H>) {
+	fun registerPacketListener(packetType: Byte, consumer: (GenericConnection, H) -> Unit) {
 		val packetInt = packetType.toInt()
 		if (handlers[packetInt] != null) {
-			handlers[packetInt] = handlers[packetInt]!!.andThen(consumer)
+			val previous = handlers[packetInt]!!
+			handlers[packetInt] = { conn, msg ->
+				previous(conn, msg)
+				consumer(conn, msg)
+			}
 		} else {
 			handlers[packetInt] = consumer
 		}

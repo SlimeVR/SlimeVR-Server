@@ -3,7 +3,6 @@ package dev.slimevr.tracking.processor
 import io.eiren.util.ann.ThreadSafe
 import io.github.axisangles.ktmath.Transform
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.function.Consumer
 
 /**
  * Represents a joint
@@ -49,11 +48,11 @@ class TransformNode(val localRotation: Boolean) {
 		}
 	}
 
-	fun depthFirstTraversal(visitor: Consumer<TransformNode?>) {
+	fun depthFirstTraversal(visitor: (TransformNode) -> Unit) {
 		for (node in children) {
 			node.depthFirstTraversal(visitor)
 		}
-		visitor.accept(this)
+		visitor(this)
 	}
 
 	private fun combineWithParentGlobalRotation(parent: Transform) {

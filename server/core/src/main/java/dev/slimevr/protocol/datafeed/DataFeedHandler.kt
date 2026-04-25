@@ -15,8 +15,6 @@ import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.data_feed.DataFeedUpdate
 import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
-import java.util.function.Consumer
-import java.util.stream.Collectors
 
 class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMessageHeader>() {
 	init {
@@ -79,9 +77,8 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 			config.syntheticTrackersMask,
 			this.api.server
 				.allTrackers
-				.stream()
 				.filter(Tracker::isComputed)
-				.collect(Collectors.toList()),
+				.toMutableList(),
 		)
 
 		val h = this.api.server.humanPoseManager
@@ -117,48 +114,46 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 	fun sendDataFeedUpdate() {
 		val currTime = System.currentTimeMillis()
 
-		this.api.apiServers.forEach(
-			Consumer { server: ProtocolAPIServer ->
-				server.apiConnections.forEach { conn: GenericConnection ->
-					var fbb: FlatBufferBuilder? = null
-					val feedList = conn.context.dataFeedList
-					synchronized(feedList) {
-						val configsCount = feedList.size
-						val data = IntArray(configsCount)
-						for (index in 0..<configsCount) {
-							val feed = feedList[index]
-							val lastTimeSent = feed.timeLastSent
-							val configT = feed.config
-							if (currTime - lastTimeSent > configT.minimumTimeSinceLast) {
-								if (fbb == null) {
-									// That way we create a buffer only when needed
-									fbb = FlatBufferBuilder(300)
-								}
-
-								val messageOffset = this.buildDatafeed(fbb, configT, index)
-
-								DataFeedMessageHeader.startDataFeedMessageHeader(fbb)
-								DataFeedMessageHeader.addMessage(fbb, messageOffset)
-								DataFeedMessageHeader.addMessageType(fbb, DataFeedMessage.DataFeedUpdate)
-								data[index] = DataFeedMessageHeader.endDataFeedMessageHeader(fbb)
-
-								feed.timeLastSent = currTime
-								val messages = MessageBundle.createDataFeedMsgsVector(fbb, data)
-								val packet = createMessage(fbb, messages)
-								fbb.finish(packet)
-								conn.send(fbb.dataBuffer())
+		this.api.apiServers.forEach { server: ProtocolAPIServer ->
+			server.apiConnections.forEach { conn: GenericConnection ->
+				var fbb: FlatBufferBuilder? = null
+				val feedList = conn.context.dataFeedList
+				synchronized(feedList) {
+					val configsCount = feedList.size
+					val data = IntArray(configsCount)
+					for (index in 0..<configsCount) {
+						val feed = feedList[index]
+						val lastTimeSent = feed.timeLastSent
+						val configT = feed.config
+						if (currTime - lastTimeSent > configT.minimumTimeSinceLast) {
+							if (fbb == null) {
+								// That way we create a buffer only when needed
+								fbb = FlatBufferBuilder(300)
 							}
+
+							val messageOffset = this.buildDatafeed(fbb, configT, index)
+
+							DataFeedMessageHeader.startDataFeedMessageHeader(fbb)
+							DataFeedMessageHeader.addMessage(fbb, messageOffset)
+							DataFeedMessageHeader.addMessageType(fbb, DataFeedMessage.DataFeedUpdate)
+							data[index] = DataFeedMessageHeader.endDataFeedMessageHeader(fbb)
+
+							feed.timeLastSent = currTime
+							val messages = MessageBundle.createDataFeedMsgsVector(fbb, data)
+							val packet = createMessage(fbb, messages)
+							fbb.finish(packet)
+							conn.send(fbb.dataBuffer())
 						}
 					}
 				}
-			},
-		)
+			}
+		}
 	}
 
 	override fun onMessage(conn: GenericConnection, message: DataFeedMessageHeader) {
 		val consumer = this.handlers[message.messageType().toInt()]
 		if (consumer != null) {
-			consumer.accept(conn, message)
+			consumer(conn, message)
 		} else {
 			LogManager
 				.info(
