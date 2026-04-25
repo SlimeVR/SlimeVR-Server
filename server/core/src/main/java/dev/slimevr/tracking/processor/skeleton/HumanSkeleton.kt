@@ -32,7 +32,6 @@ import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import solarxr_protocol.datatypes.BodyPart
-import java.lang.IllegalArgumentException
 import kotlin.properties.Delegates
 
 class HumanSkeleton(

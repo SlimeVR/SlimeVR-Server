@@ -7,11 +7,10 @@ import dev.slimevr.util.TickReducer
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.runBlocking
 import org.apache.commons.lang3.tuple.Pair
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.Future
-import java.util.function.Consumer
 
 class PoseRecorder(private val server: VRServer) {
 	inner class RecordingProgress(val frame: Int, val totalFrames: Int)
@@ -23,8 +22,8 @@ class PoseRecorder(private val server: VRServer) {
 	// Default 50 TPS
 	private val ticker = TickReducer({ onTick() }, 0.02f)
 
-	private var recordingFuture: CompletableFuture<PoseFrames>? = null
-	private var frameCallback: Consumer<RecordingProgress>? = null
+	private var recordingFuture: CompletableDeferred<PoseFrames>? = null
+	private var frameCallback: ((RecordingProgress) -> Unit)? = null
 	var trackers = FastList<Pair<Tracker, TrackerFrames>>()
 
 	init {
@@ -54,7 +53,7 @@ class PoseRecorder(private val server: VRServer) {
 		}
 
 		// Send the number of finished frames
-		frameCallback?.accept(RecordingProgress(frameCursor, numFrames))
+		frameCallback?.invoke(RecordingProgress(frameCursor, numFrames))
 		// If done, send finished recording
 		if (frameCursor >= numFrames) {
 			stopFrameRecording()
@@ -66,8 +65,8 @@ class PoseRecorder(private val server: VRServer) {
 		numFrames: Int,
 		interval: Float,
 		trackers: List<Tracker?> = server.allTrackers,
-		frameCallback: Consumer<RecordingProgress>? = null,
-	): Future<PoseFrames> {
+		frameCallback: ((RecordingProgress) -> Unit)? = null,
+	): Deferred<PoseFrames> {
 		require(numFrames >= 1) { "numFrames must at least have a value of 1." }
 		require(interval > 0) { "interval must be greater than 0." }
 		require(trackers.isNotEmpty()) { "trackers must have at least one entry." }
@@ -97,7 +96,7 @@ class PoseRecorder(private val server: VRServer) {
 		ticker.interval = interval
 		ticker.reset()
 
-		val recordingFuture = CompletableFuture<PoseFrames>()
+		val recordingFuture = CompletableDeferred<PoseFrames>()
 		this.recordingFuture = recordingFuture
 		this.frameCallback = frameCallback
 
@@ -116,12 +115,12 @@ class PoseRecorder(private val server: VRServer) {
 	@Synchronized
 	private fun internalStopFrameRecording(cancel: Boolean) {
 		val currentRecording = recordingFuture
-		if (currentRecording != null && !currentRecording.isDone) {
+		if (currentRecording != null && !currentRecording.isCompleted) {
 			val currentFrames = poseFrame
 			if (cancel || currentFrames == null) {
 				// If it's supposed to be cancelled or there's actually no recording,
 				// then cancel the recording and return nothing
-				currentRecording.cancel(true)
+				currentRecording.cancel()
 			} else {
 				// Stop the recording, returning the frames recorded
 				currentRecording.complete(currentFrames)
@@ -151,12 +150,9 @@ class PoseRecorder(private val server: VRServer) {
 
 	fun hasRecording(): Boolean = recordingFuture != null
 
-	val framesAsync: Future<PoseFrames>?
+	val framesAsync: Deferred<PoseFrames>?
 		get() = recordingFuture
 
-	@get:Throws(ExecutionException::class, InterruptedException::class)
 	val frames: PoseFrames?
-		get() {
-			return recordingFuture?.get()
-		}
+		get() = runBlocking { recordingFuture?.await() }
 }

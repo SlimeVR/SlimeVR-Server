@@ -42,7 +42,7 @@ object PoseFrameIterator {
 		val frameCount = step.maxFrameCount
 
 		// Perform any setup that needs to be done before the current epoch
-		step.preEpoch?.accept(step)
+		step.preEpoch?.invoke(step)
 
 		val randIndices = if (config.randomizeFrameOrder) {
 			randomIndices(step.maxFrameCount, step.random)
@@ -77,7 +77,7 @@ object PoseFrameIterator {
 				}
 
 				// Process the iteration
-				step.onStep.accept(step)
+				step.onStep(step)
 
 				// Move on to the next iteration
 				frameCursor += config.cursorIncrement
@@ -85,6 +85,6 @@ object PoseFrameIterator {
 			cursorOffset++
 		}
 
-		step.postEpoch?.accept(step)
+		step.postEpoch?.invoke(step)
 	}
 }

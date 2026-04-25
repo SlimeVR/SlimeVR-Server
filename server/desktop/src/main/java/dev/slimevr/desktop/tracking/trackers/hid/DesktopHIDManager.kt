@@ -19,12 +19,11 @@ import org.hid4java.event.HidServicesEvent
 import org.hid4java.jna.HidApi
 import org.hid4java.jna.HidDeviceInfoStructure
 import java.nio.ByteBuffer
-import java.util.function.Consumer
 
 /**
  * Handles desktop USB HID dongles and receives tracker data from them.
  */
-class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tracker>) :
+class DesktopHIDManager(name: String, private val trackersConsumer: (Tracker) -> Unit) :
 	Thread(name),
 	HidServicesListener {
 	private val devices: MutableList<HIDDevice> = mutableListOf()

@@ -9,7 +9,6 @@ import dev.slimevr.serial.ProvisioningListener
 import dev.slimevr.serial.ProvisioningStatus
 import dev.slimevr.serial.SerialPort
 import solarxr_protocol.rpc.*
-import java.util.function.Consumer
 
 class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ProvisioningListener {
 	init {
@@ -50,19 +49,18 @@ class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) :
 			.createRPCMessage(fbb, RpcMessage.WifiProvisioningStatusResponse, update)
 		fbb.finish(outbound)
 
-		this.forAllListeners(Consumer { conn: GenericConnection -> conn.send(fbb.dataBuffer()) })
+		this.forAllListeners { conn: GenericConnection -> conn.send(fbb.dataBuffer()) }
 	}
 
-	private fun forAllListeners(action: Consumer<in GenericConnection?>?) {
+	private fun forAllListeners(action: ((GenericConnection) -> Unit)?) {
+		if (action == null) return
 		this.api
 			.apiServers
-			.forEach(
-				Consumer { server: ProtocolAPIServer ->
-					server
-						.apiConnections
-						.filter { conn: GenericConnection -> conn.context.useProvisioning }
-						.forEach(action)
-				},
-			)
+			.forEach { server: ProtocolAPIServer ->
+				server
+					.apiConnections
+					.filter { conn: GenericConnection -> conn.context.useProvisioning }
+					.forEach(action)
+			}
 	}
 }

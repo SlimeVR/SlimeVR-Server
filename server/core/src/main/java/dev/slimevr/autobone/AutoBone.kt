@@ -20,8 +20,6 @@ import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.lang3.tuple.Pair
 import java.io.File
 import java.util.*
-import java.util.function.Consumer
-import java.util.function.Function
 import kotlin.math.*
 
 class AutoBone(private val server: VRServer) {
@@ -74,17 +72,14 @@ class AutoBone(private val server: VRServer) {
 		// Get current or default skeleton configs
 		val skeleton = server.humanPoseManager
 		// Still compensate for a null skeleton, as it may not be initialized yet
-		val getOffset: Function<SkeletonConfigOffsets, Float> =
-			if (skeleton != null) {
-				Function { key: SkeletonConfigOffsets -> skeleton.getOffset(key) }
-			} else {
-				val defaultConfig = SkeletonConfigManager(false)
-				Function { config: SkeletonConfigOffsets ->
-					defaultConfig.getOffset(config)
-				}
-			}
+		val defaultConfig = SkeletonConfigManager(false)
+		val getOffset: (SkeletonConfigOffsets) -> Float = if (skeleton != null) {
+			{ key: SkeletonConfigOffsets -> skeleton.getOffset(key) }
+		} else {
+			{ config: SkeletonConfigOffsets -> defaultConfig.getOffset(config) }
+		}
 		for (bone in adjustOffsets) {
-			val offset = getOffset.apply(bone)
+			val offset = getOffset(bone)
 			if (offset > 0f) {
 				offsets[bone] = offset
 			}
@@ -216,7 +211,7 @@ class AutoBone(private val server: VRServer) {
 		frames: PoseFrames,
 		config: AutoBoneConfig = globalConfig,
 		skeletonConfig: SkeletonConfig = globalSkeletonConfig,
-		epochCallback: Consumer<Epoch>? = null,
+		epochCallback: ((Epoch) -> Unit)? = null,
 	): AutoBoneResults {
 		check(frames.frameHolders.isNotEmpty()) { "Recording has no trackers." }
 		check(frames.maxFrameCount > 0) { "Recording has no frames." }
@@ -296,7 +291,7 @@ class AutoBone(private val server: VRServer) {
 
 	private fun epoch(
 		step: PoseFrameStep<AutoBoneStep>,
-		epochCallback: Consumer<Epoch>? = null,
+		epochCallback: ((Epoch) -> Unit)? = null,
 	) {
 		val config = step.config
 		val epoch = step.epoch
@@ -319,7 +314,7 @@ class AutoBone(private val server: VRServer) {
 			for (entry in scaledOffsets.entries) {
 				entry.setValue(entry.value * estimatedHeight)
 			}
-			epochCallback.accept(Epoch(epoch + 1, config.numEpochs, step.data.errorStats, scaledOffsets))
+			epochCallback(Epoch(epoch + 1, config.numEpochs, step.data.errorStats, scaledOffsets))
 		}
 	}
 

@@ -17,7 +17,6 @@ import dev.slimevr.serial.SerialListener
 import io.eiren.util.logging.LogManager
 import java.io.IOException
 import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
 import kotlin.streams.asSequence
@@ -128,9 +127,10 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	}
 
 	private fun detectNewPorts() {
-		val addDifferences = knownPorts.asSequence() - lastKnownPorts
-		val delDifferences = lastKnownPorts - knownPorts.asSequence().toSet()
-		lastKnownPorts = knownPorts.asSequence().toSet()
+		val knownPortsSet = knownPorts.asSequence().toSet()
+		val addDifferences = knownPortsSet - lastKnownPorts
+		val delDifferences = lastKnownPorts - knownPortsSet
+		lastKnownPorts = knownPortsSet
 		addDifferences.forEach { onNewDevice(it) }
 		delDifferences.forEach { onDeviceDel(it) }
 	}
@@ -297,7 +297,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 			// Collect serial in a buffer until newline (or character limit)
 			// This is somewhat of a workaround for Android serial buffer being smaller
 			//  than on desktop, so we don't read full lines and it causes parsing issues
-			readBuffer.append(StandardCharsets.UTF_8.decode(ByteBuffer.wrap(data)))
+			readBuffer.append(Charsets.UTF_8.decode(ByteBuffer.wrap(data)))
 
 			if (readBuffer.contains('\n') || readBuffer.length >= 1024) {
 				addLog(readBuffer.toString(), false)

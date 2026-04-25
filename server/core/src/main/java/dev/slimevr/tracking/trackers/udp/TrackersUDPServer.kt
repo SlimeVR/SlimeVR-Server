@@ -21,17 +21,15 @@ import java.net.SocketAddress
 import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.util.*
+import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedDeque
-import java.util.function.Consumer
 import kotlin.collections.HashMap
 import kotlin.coroutines.resume
 
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
-class TrackersUDPServer(private val port: Int, name: String, private val trackersConsumer: Consumer<Tracker>) : Thread(name) {
+class TrackersUDPServer(private val port: Int, name: String, private val trackersConsumer: (Tracker) -> Unit) : Thread(name) {
 	private val random = Random()
 	private val connections: MutableList<UDPDevice> = FastList()
 	private val connectionsByAddress: MutableMap<SocketAddress, UDPDevice> = HashMap()
@@ -235,7 +233,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				trackerDataType = trackerDataType,
 			)
 			connection.trackers[trackerId] = imuTracker
-			trackersConsumer.accept(imuTracker)
+			trackersConsumer(imuTracker)
 			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, ImuType $sensorType, DataType $trackerDataType, default TrackerPosition $trackerPosition")
 		}
 		val status = UDPPacket15SensorInfo.getStatus(sensorStatus)
@@ -270,11 +268,11 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		var ran: Boolean = false,
 	)
 
-	private val queues: MutableMap<Triple<SocketAddress, ConfigTypeId, Int>, Deque<ConfigStateWaiter>> = ConcurrentHashMap()
+	private val queues: MutableMap<Triple<SocketAddress, ConfigTypeId, Int>, ArrayDeque<ConfigStateWaiter>> = ConcurrentHashMap()
 	suspend fun setConfigFlag(device: UDPDevice, configTypeId: ConfigTypeId, state: Boolean, sensorId: Int = 255) {
 		if (device.timedOut) return
 		val triple = Triple(device.address, configTypeId, sensorId)
-		val queue = queues.computeIfAbsent(triple) { _ -> ConcurrentLinkedDeque() }
+		val queue = queues.computeIfAbsent(triple) { _ -> ArrayDeque() }
 
 		suspendCancellableCoroutine {
 			val waiter = ConfigStateWaiter(state, it)

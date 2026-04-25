@@ -14,15 +14,13 @@ import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
-import java.util.stream.Stream
-import kotlin.streams.asStream
 
 /**
  * Tests [TrackerResetsHandler.resetFull]
  */
 class ReferenceAdjustmentsTests {
 	@get:TestFactory
-	val testsYaw: Stream<DynamicTest>
+	val testsYaw: List<DynamicTest>
 		get() = anglesSet
 			.map { p: AnglesSet ->
 				DynamicTest.dynamicTest(
@@ -40,7 +38,7 @@ class ReferenceAdjustmentsTests {
 			}
 
 	@get:TestFactory
-	val testsFull: Stream<DynamicTest>
+	val testsFull: List<DynamicTest>
 		get() = anglesSet
 			.map { p: AnglesSet ->
 				DynamicTest.dynamicTest(
@@ -61,10 +59,10 @@ class ReferenceAdjustmentsTests {
 	// TODO : Test is not passing because the test is wrong
 	// See issue https://github.com/SlimeVR/SlimeVR-Server/issues/55
 	// @TestFactory
-	val testsForRotation: Stream<DynamicTest>
+	val testsForRotation: List<DynamicTest>
 		get() = anglesSet
 			.flatMap { p: AnglesSet ->
-				yaws.asSequence().map {
+				yaws.map {
 					DynamicTest.dynamicTest(
 						"Adjustment Rotation Test of Tracker(${p.pitch},${p.yaw},${p.roll}), Ref $it",
 					) {
@@ -75,7 +73,7 @@ class ReferenceAdjustmentsTests {
 							0,
 						)
 					}
-				}.asStream()
+				}
 			}
 
 	fun checkReferenceAdjustmentFull(
@@ -295,12 +293,12 @@ class ReferenceAdjustmentsTests {
 		private var errors = 0
 		private var successes = 0
 
-		val anglesSet: Stream<AnglesSet>
+		val anglesSet: List<AnglesSet>
 			get() = yaws.asSequence()
 				.zip(pitches.asSequence())
 				.zip(rolls.asSequence()) { (yaw, pitch), roll ->
 					AnglesSet(pitch, yaw, roll)
-				}.asStream()
+				}.toList()
 
 		private fun name(
 			yaw: Int,

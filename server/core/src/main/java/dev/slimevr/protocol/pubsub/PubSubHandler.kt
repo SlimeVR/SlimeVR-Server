@@ -18,7 +18,6 @@ import solarxr_protocol.pub_sub.TopicId
 import solarxr_protocol.pub_sub.TopicIdT
 import solarxr_protocol.pub_sub.TopicMapping
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.Consumer
 
 class PubSubHandler(private val api: ProtocolAPI) : ProtocolHandler<PubSubHeader>() {
 	// Two ways maps for faster reading when handling lots of packets
@@ -66,10 +65,8 @@ class PubSubHandler(private val api: ProtocolAPI) : ProtocolHandler<PubSubHeader
 		val first = conn
 			.context
 			.subscribedTopics
-			.stream()
-			.filter { handle: Int -> handle == finalSubHandle }
-			.findFirst()
-		if (!first.isPresent) {
+			.find { it == finalSubHandle }
+		if (first == null) {
 			conn.context.subscribedTopics.add(finalSubHandle)
 		}
 
@@ -121,33 +118,31 @@ class PubSubHandler(private val api: ProtocolAPI) : ProtocolHandler<PubSubHeader
 
 		val finalSubHandle = subHandle
 
-		this.api.apiServers.forEach(
-			Consumer { server: ProtocolAPIServer ->
-				server.apiConnections.forEach { conn: GenericConnection ->
-					// Make sure that we are not sending a message to ourselves
-					// And check that the receiver has subscribed to the topic
-					if (conn.connectionId != c.connectionId &&
-						conn.context.subscribedTopics
-							.contains(finalSubHandle)
-					) {
-						val fbb = FlatBufferBuilder(32)
-						val outbound = createMessage(
-							fbb,
-							PubSubUnion.Message,
-							Message.pack(fbb, messageT),
-						)
-						fbb.finish(outbound)
-						conn.send(fbb.dataBuffer())
-					}
+		this.api.apiServers.forEach { server: ProtocolAPIServer ->
+			server.apiConnections.forEach { conn: GenericConnection ->
+				// Make sure that we are not sending a message to ourselves
+				// And check that the receiver has subscribed to the topic
+				if (conn.connectionId != c.connectionId &&
+					conn.context.subscribedTopics
+						.contains(finalSubHandle)
+				) {
+					val fbb = FlatBufferBuilder(32)
+					val outbound = createMessage(
+						fbb,
+						PubSubUnion.Message,
+						Message.pack(fbb, messageT),
+					)
+					fbb.finish(outbound)
+					conn.send(fbb.dataBuffer())
 				}
-			},
-		)
+			}
+		}
 	}
 
 	override fun onMessage(conn: GenericConnection, message: PubSubHeader) {
 		val consumer = this.handlers[message.uType().toInt()]
 		if (consumer != null) {
-			consumer.accept(conn, message)
+			consumer(conn, message)
 		} else {
 			LogManager
 				.info("[ProtocolAPI] Unhandled PubSub packet received id: " + message.uType())

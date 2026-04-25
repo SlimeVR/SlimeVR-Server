@@ -5,7 +5,6 @@ import dev.slimevr.config.ConfigManager
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.poseframeformat.player.TrackerFramesPlayer
 import dev.slimevr.tracking.processor.HumanPoseManager
-import java.util.function.Consumer
 import kotlin.random.Random
 
 class PoseFrameStep<T>(
@@ -14,11 +13,11 @@ class PoseFrameStep<T>(
 	serverConfig: ConfigManager? = null,
 	val frames: PoseFrames,
 	/** The consumer run before each epoch. */
-	val preEpoch: Consumer<PoseFrameStep<T>>? = null,
+	val preEpoch: ((PoseFrameStep<T>) -> Unit)? = null,
 	/** The consumer run for each step. */
-	val onStep: Consumer<PoseFrameStep<T>>,
+	val onStep: (PoseFrameStep<T>) -> Unit,
 	/** The consumer run after each epoch. */
-	val postEpoch: Consumer<PoseFrameStep<T>>? = null,
+	val postEpoch: ((PoseFrameStep<T>) -> Unit)? = null,
 	/** The current epoch. */
 	var epoch: Int = 0,
 	/** The current frame cursor position in [frames] for skeleton1. */

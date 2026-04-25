@@ -9,8 +9,6 @@ import dev.slimevr.serial.SerialListener
 import dev.slimevr.serial.SerialPort
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.rpc.*
-import java.util.*
-import java.util.function.Consumer
 
 class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : SerialListener {
 	init {
@@ -35,12 +33,10 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
 		fbb.finish(outbound)
 
-		this.forAllListeners(
-			Consumer { conn: GenericConnection ->
-				conn.send(fbb.dataBuffer())
-				conn.context.useSerial = false
-			},
-		)
+		this.forAllListeners { conn: GenericConnection ->
+			conn.send(fbb.dataBuffer())
+			conn.context.useSerial = false
+		}
 	}
 
 	override fun onSerialLog(str: String, server: Boolean) {
@@ -54,11 +50,9 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
 		fbb.finish(outbound)
 
-		this.forAllListeners(
-			Consumer { conn: GenericConnection ->
-				conn.send(fbb.dataBuffer())
-			},
-		)
+		this.forAllListeners { conn: GenericConnection ->
+			conn.send(fbb.dataBuffer())
+		}
 	}
 
 	override fun onNewSerialDevice(port: SerialPort) {
@@ -75,15 +69,13 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 
 		this.api
 			.apiServers
-			.forEach(
-				Consumer { server: ProtocolAPIServer ->
-					server
-						.apiConnections
-						.forEach { conn: GenericConnection ->
-							conn.send(fbb.dataBuffer())
-						}
-				},
-			)
+			.forEach { server: ProtocolAPIServer ->
+				server
+					.apiConnections
+					.forEach { conn: GenericConnection ->
+						conn.send(fbb.dataBuffer())
+					}
+			}
 	}
 
 	override fun onSerialConnected(port: SerialPort) {
@@ -95,11 +87,9 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
 		fbb.finish(outbound)
 
-		this.forAllListeners(
-			Consumer { conn: GenericConnection ->
-				conn.send(fbb.dataBuffer())
-			},
-		)
+		this.forAllListeners { conn: GenericConnection ->
+			conn.send(fbb.dataBuffer())
+		}
 	}
 
 	fun onSerialTrackerRebootRequest(
@@ -155,7 +145,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 
 		if (req == null || req.command() == null) return
 
-		this.api.server.serialHandler.customCommandRequest(Objects.requireNonNull(req.command()))
+		this.api.server.serialHandler.customCommandRequest(req.command()!!)
 	}
 
 	private fun onRequestSerialDevices(conn: GenericConnection, messageHeader: RpcMessageHeader) {
@@ -178,7 +168,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		}
 
 		SerialDevicesResponse.startDevicesVector(fbb, devicesOffsets.size)
-		devicesOffsets.forEach(Consumer { offset: Int -> SerialDevicesResponse.addDevices(fbb, offset) })
+		devicesOffsets.forEach { offset: Int -> SerialDevicesResponse.addDevices(fbb, offset) }
 		val devices = fbb.endVector()
 		val serialDeviceOffsets = SerialDevicesResponse.createSerialDevicesResponse(fbb, devices)
 		val outbound = rpcHandler
@@ -245,17 +235,16 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		conn.send(fbb.dataBuffer())
 	}
 
-	fun forAllListeners(action: Consumer<in GenericConnection?>?) {
+	fun forAllListeners(action: ((GenericConnection) -> Unit)?) {
+		if (action == null) return
 		this.api
 			.apiServers
-			.forEach(
-				Consumer { server: ProtocolAPIServer ->
-					server
-						.apiConnections
-						.filter { conn: GenericConnection -> conn.context.useSerial }
-						.forEach(action)
-				},
-			)
+			.forEach { server: ProtocolAPIServer ->
+				server
+					.apiConnections
+					.filter { conn: GenericConnection -> conn.context.useSerial }
+					.forEach(action)
+			}
 	}
 
 	override fun onSerialDeviceDeleted(port: SerialPort) {

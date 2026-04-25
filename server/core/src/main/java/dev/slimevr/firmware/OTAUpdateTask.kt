@@ -12,15 +12,14 @@ import java.net.ServerSocket
 import java.net.Socket
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.util.*
-import java.util.function.Consumer
+import java.util.UUID
 import kotlin.math.min
 
 class OTAUpdateTask(
 	private val firmware: ByteArray,
 	private val deviceId: UpdateDeviceId<Int>,
 	private val deviceIp: InetAddress,
-	private val statusCallback: Consumer<UpdateStatusEvent<Int>>,
+	private val statusCallback: (UpdateStatusEvent<Int>) -> Unit,
 ) {
 	private val receiveBuffer: ByteArray = ByteArray(38)
 	var socketServer: ServerSocket? = null
@@ -44,7 +43,7 @@ class OTAUpdateTask(
 		try {
 			DatagramSocket().use { socket ->
 				authSocket = socket
-				statusCallback.accept(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.AUTHENTICATING))
+				statusCallback(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.AUTHENTICATING))
 				LogManager.info("[OTAUpdate] Sending OTA invitation to: $deviceIp")
 
 				val fileMd5 = bytesToMd5(firmware)
@@ -116,7 +115,7 @@ class OTAUpdateTask(
 			var offset = 0
 			val chunkSize = 2048
 			while (offset != firmware.size && !canceled) {
-				statusCallback.accept(
+				statusCallback(
 					UpdateStatusEvent(
 						deviceId,
 						FirmwareUpdateStatus.UPLOADING,
@@ -161,7 +160,7 @@ class OTAUpdateTask(
 		ServerSocket(0).use { serverSocket ->
 			socketServer = serverSocket
 			if (!authenticate(serverSocket.localPort)) {
-				statusCallback.accept(
+				statusCallback(
 					UpdateStatusEvent(
 						deviceId,
 						FirmwareUpdateStatus.ERROR_AUTHENTICATION_FAILED,
@@ -171,7 +170,7 @@ class OTAUpdateTask(
 			}
 
 			if (!upload(serverSocket)) {
-				statusCallback.accept(
+				statusCallback(
 					UpdateStatusEvent(
 						deviceId,
 						FirmwareUpdateStatus.ERROR_UPLOAD_FAILED,
@@ -180,7 +179,7 @@ class OTAUpdateTask(
 				return
 			}
 
-			statusCallback.accept(
+			statusCallback(
 				UpdateStatusEvent(
 					deviceId,
 					FirmwareUpdateStatus.REBOOTING,
