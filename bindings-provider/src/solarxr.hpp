@@ -12,19 +12,20 @@
 class SolarXRConnection {
 private:
 #if defined(__linux__)
-  int fd{-1};
+    int fd{ -1 };
 #elif defined(_WIN32)
-  HANDLE pipe{INVALID_HANDLE_VALUE};
+    HANDLE pipe{ INVALID_HANDLE_VALUE };
 #else
 #error "Unsupported platform"
 #endif
 
-  static std::filesystem::path getSocketPath();
+    static std::filesystem::path getSocketPath();
 
 public:
-  SolarXRConnection() noexcept(false);
+    SolarXRConnection() noexcept(false);
 
-  ~SolarXRConnection();
+    ~SolarXRConnection();
 
-  void sendMsg(flatbuffers::FlatBufferBuilder &fbb);
+    bool connected();
+    void sendMsg(flatbuffers::FlatBufferBuilder &fbb);
 };
