@@ -904,9 +904,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Omitir configuración
 onboarding-setup_warning-cancel = Continuar con la configuración
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Volver a la introducción
 onboarding-wifi_creds-skip = Omitir configuración Wi-Fi
 onboarding-wifi_creds-submit = ¡Enviar!
 onboarding-wifi_creds-ssid =
@@ -941,6 +943,9 @@ onboarding-reset_tutorial-2 =
     El restablecimiento de montura ayuda en cómo los trackers están realmente colocados en ti, así que si accidentalmente los moviste y cambiaste su orientación por una gran cantidad, esto ayudará.
     
     Necesitas estar en una pose como si estuvieras esquiando como se muestra en el asistente de montaje automático y tienes un retraso de 3 segundos (configurable) antes de que se active.
+
+## Install info
+
 
 ## Setup start
 

@@ -649,9 +649,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Bỏ qua cài đặt
 onboarding-setup_warning-cancel = Tiếp tục thiết lập
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Quay lại giới thiệu
 onboarding-wifi_creds-skip = Bỏ qua cài đặt Wi-Fi
 onboarding-wifi_creds-submit = Gửi
 onboarding-wifi_creds-ssid =
@@ -685,6 +687,9 @@ onboarding-reset_tutorial-2 =
     Thiết lập lại gắn kết giúp ích cho cách các trình theo dõi thực sự được đặt vào bạn, vì vậy nếu bạn vô tình di chuyển chúng và thay đổi cách chúng được định hướng với số lượng lớn, điều này sẽ hữu ích.
     
     Bạn cần phải ở trên một tư thế như bạn đang trượt tuyết như nó được hiển thị trên trình hướng dẫn gắn tự động và bạn có độ trễ 3 giây (có thể định cấu hình) trước khi nó được kích hoạt.
+
+## Install info
+
 
 ## Setup start
 

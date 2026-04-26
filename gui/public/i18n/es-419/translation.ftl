@@ -355,6 +355,7 @@ tracker-table-column-name = Nombre
 tracker-table-column-type = Tipo
 tracker-table-column-battery = Batería
 tracker-table-column-ping = Latencia
+tracker-table-column-packet_loss = Pérdida de paquetes
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
@@ -396,19 +397,22 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Habilitado
        *[NOT_SUPPORTED] No soportado
     }
+tracker-infos-packet_loss = Pérdida de paquetes
+tracker-infos-packets_lost = Paquetes perdidos
+tracker-infos-packets_received = Paquetes recibidos
 
 ## Tracker settings
 
-tracker-settings-back = Volver a la lista de sensores
-tracker-settings-title = Ajustes de los sensores
+tracker-settings-back = Volver a la lista de trackers
+tracker-settings-title = Ajustes de los trackers
 tracker-settings-assignment_section = Asignación
 tracker-settings-assignment_section-description = Parte del cuerpo asignado al sensor.
 tracker-settings-assignment_section-edit = Editar asignación
 tracker-settings-mounting_section = Posición de montura
-tracker-settings-mounting_section-description = ¿Dónde está montado el sensor?
+tracker-settings-mounting_section-description = ¿Dónde está montado el tracker?
 tracker-settings-mounting_section-edit = Editar montura
 tracker-settings-drift_compensation_section = Permitir compensación de desviación
-tracker-settings-drift_compensation_section-description = ¿Este sensor deberia compensar la desviación?
+tracker-settings-drift_compensation_section-description = ¿Este tracker debería compensar la desviación?
 tracker-settings-drift_compensation_section-edit = Permitir compensación de desviación
 tracker-settings-use_mag = Permitir el uso del magnetómetro en este tracker
 # Multiline!
@@ -419,10 +423,10 @@ tracker-settings-use_mag-description =
 tracker-settings-use_mag-label = Permitir el uso del magnetómetro
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
-tracker-settings-name_section = Nombre del sensor
+tracker-settings-name_section = Nombre del tracker
 tracker-settings-name_section-description = Dale un apodo bonito :)
 tracker-settings-name_section-placeholder = Pata izquierda de Manteca
-tracker-settings-name_section-label = Nombre del sensor
+tracker-settings-name_section-label = Nombre del tracker
 tracker-settings-forget = Olvidar tracker
 tracker-settings-forget-description = Remueve el tracker del servidor de SlimeVR y lo previene de conectarse hasta que el servidor se reinicie. La configuración del tracker no se perderá.
 tracker-settings-forget-label = Olvidar tracker
@@ -444,11 +448,11 @@ tracker-part_card-unassigned = Sin asignar
 
 ## Body assignment menu
 
-body_assignment_menu = ¿Dónde quieres que esté este sensor?
-body_assignment_menu-description = Selecciona la posición donde quieres asignar este sensor. También puedes escoger administrar todos los sensores al mismo tiempo en vez de uno por uno.
+body_assignment_menu = ¿Dónde quieres que esté este tracker?
+body_assignment_menu-description = Selecciona la posición donde quieres asignar este tracker. También puedes escoger administrar todos los trackers al mismo tiempo en vez de uno por uno.
 body_assignment_menu-show_advanced_locations = Mostrar posiciones de asignación avanzadas
-body_assignment_menu-manage_trackers = Administrar todos los sensores
-body_assignment_menu-unassign_tracker = Desasignar sensor
+body_assignment_menu-manage_trackers = Administrar todos los trackers
+body_assignment_menu-unassign_tracker = Desasignar tracker
 
 ## Tracker assignment menu
 
@@ -457,8 +461,8 @@ body_assignment_menu-unassign_tracker = Desasignar sensor
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = ¿Qué sensor asignar a tu
-tracker_selection_menu-NONE = ¿Qué sensor quieres que esté sin asignar?
+-tracker_selection-part = ¿Qué tracker asignar a tu
+tracker_selection_menu-NONE = ¿Qué tracker quieres que esté sin asignar?
 tracker_selection_menu-HEAD = { -tracker_selection-part } cabeza?
 tracker_selection_menu-NECK = { -tracker_selection-part } cuello?
 tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } hombro derecho?
@@ -481,8 +485,8 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } muslo izquie
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } tobillo izquiero?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } pie izquierdo?
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } mando izquierdo?
-tracker_selection_menu-unassigned = Sensores sin asignar
-tracker_selection_menu-assigned = Sensores asignados
+tracker_selection_menu-unassigned = Trackers sin asignar
+tracker_selection_menu-assigned = Trackers asignados
 tracker_selection_menu-dont_assign = No asignar
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
@@ -494,7 +498,7 @@ tracker_selection_menu-neck_warning-cancel = Cancelar
 
 ## Mounting menu
 
-mounting_selection_menu = ¿Dónde quieres colocar el sensor?
+mounting_selection_menu = ¿Dónde quieres colocar el tracker?
 mounting_selection_menu-close = Cerrar
 
 ## Sidebar settings
@@ -502,13 +506,13 @@ mounting_selection_menu-close = Cerrar
 settings-sidebar-title = Ajustes
 settings-sidebar-general = General
 settings-sidebar-steamvr = SteamVR
-settings-sidebar-tracker_mechanics = Mecánicas del sensor
+settings-sidebar-tracker_mechanics = Mecánicas del tracker
 settings-sidebar-stay_aligned = Mantente Alineado
 settings-sidebar-fk_settings = Ajustes de FK
 settings-sidebar-gesture_control = Control de gestos
 settings-sidebar-interface = Interfaz
 settings-sidebar-osc_router = Router OSC
-settings-sidebar-osc_trackers = Sensores OSC de VRChat
+settings-sidebar-osc_trackers = Trackers OSC de VRChat
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
@@ -578,7 +582,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction = Compensación
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
     Predice la desviación horizontal y compensa cuando esta mas allá del rango previamente medido.
-    Activa esto si el sensor esta girando continuamente en el eje horizontal.
+    Activa esto si el tracker esta girando continuamente en el eje horizontal.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Compensación mediante la predicción del desvío
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Advertencia:</b> Solo usa la compensación de desviación si necesitas reiniciar
@@ -600,6 +604,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Usa el magnetómetro en todos los trackers que tienen un firmware compatible, lo que reduce la desviación en entornos magnéticos estables.
     Se puede desactivar por sensor en la configuración del sensor. <b>¡Por favor, no apagues ninguno de los trackers mientras activas esta opción!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar magnetómetro en trackers
+settings-general-tracker_mechanics-trackers_over_usb = Trackers por USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Permite recibir datos de trackers HID por USB. ¡Asegúrate de que los trackers conectados tengan <b>conexión por HID</b> activados!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Permite a los trackers HID conectarse directamente por USB
 settings-stay_aligned = Mantente Alineado
 settings-stay_aligned-description = Mantente Alineado reduce el desvío ajustando gradualmente tus trackers para calzar tus poses relajadas.
 settings-stay_aligned-setup-label = Configurar Mantente Alineado
@@ -967,9 +974,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Saltar configuración
 onboarding-setup_warning-cancel = Continuar configuración
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Volver a la introducción
 onboarding-wifi_creds-v2 = Trackers utilizando Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1015,6 +1024,9 @@ onboarding-reset_tutorial-2 =
     El reinicio de montura ayuda en como tus sensores están puestos en tu cuerpo, ya que si los movistes o cambiaste para donde están orientados bastante, esto debería de ayudar.
     
     Requiere que estas en una pose como que estás esquiando, como se muestra en el tutorial de montura automática y tenes un retraso de 3 segundos (configurable) antes de que actualmente suceda.
+
+## Install info
+
 
 ## Setup start
 
@@ -1412,6 +1424,7 @@ onboarding-stay_aligned-previous_step = Atrás
 onboarding-stay_aligned-next_step = Siguiente
 onboarding-stay_aligned-restart = Reiniciar
 onboarding-stay_aligned-done = Hecho
+onboarding-stay_aligned-manual_mounting-done = Hecho
 
 ## Home
 
@@ -1462,6 +1475,9 @@ firmware_tool-select_source-firmware = Fuente del Firmware
 firmware_tool-select_source-version = Versión del Firmware
 firmware_tool-select_source-official = Oficial
 firmware_tool-select_source-dev = Desarrollo
+firmware_tool-select_source-not_selected = Ninguna fuente seleccionada
+firmware_tool-select_source-no_boards = No hay placas disponibles para esta fuente
+firmware_tool-select_source-no_versions = No hay versiones disponibles para esta fuente
 firmware_tool-board_defaults = Configura tu placa
 firmware_tool-board_defaults-description = Establece los pines o ajustes relativos a tu hardware
 firmware_tool-board_defaults-add = Añadir

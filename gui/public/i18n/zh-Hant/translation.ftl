@@ -957,9 +957,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = 跳過設定
 onboarding-setup_warning-cancel = 繼續設定
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = 返回簡介
 onboarding-wifi_creds-v2 = 透過 Wi-Fi 連接
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1005,6 +1007,9 @@ onboarding-reset_tutorial-2 =
     配戴重置能對追蹤器實際的配戴方式進行調整，因此若你不小心移動到追蹤器，或是大幅度的變更配戴方向，這個功能會有所幫助。
     
     做此校正時需要進行滑雪姿勢，如自動配戴校正的畫面所示。在觸發 3 秒後（可修改）才會真正進行重置。
+
+## Install info
+
 
 ## Setup start
 

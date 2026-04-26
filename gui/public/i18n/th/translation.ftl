@@ -954,9 +954,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = ข้ามการตั้งค่า
 onboarding-setup_warning-cancel = ดำเนินการตั้งค่าต่อ
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = กลับไปที่หน้าบทนำ
 onboarding-wifi_creds-v2 = แทร็กเกอร์ที่ใช้ Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1000,6 +1002,9 @@ onboarding-reset_tutorial-2 =
     การตั้งศูนย์การติดตั้งจะปรับแก้ตามวิธีการวางแทร็กเกอร์บนร่างกายของคุณ นี่จะช่วยคุณได้มากหากคุณเผลอเคลื่อนย้ายหรือเปลี่ยนทิศทางของแทร็กเกอร์จนมากเกินไป
     
      คุณต้องอยู่ในท่าเล่นสกีตามที่แสดงในตัวช่วยตั้งค่า โดยจะนับถอยหลังใน 3 วินาที (สามารถกำหนดได้) ก่อนที่การรีเซ็ตจะเกิดขึ้น
+
+## Install info
+
 
 ## Setup start
 
