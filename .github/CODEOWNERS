@@ -30,6 +30,8 @@
 /server/src/main/java/dev/slimevr/tracking/processor/ @Erimelowo
 /server/src/main/java/dev/slimevr/filtering/ @Erimelowo
 
+/bindings-provider/ @ImSapphire
+
 # Linux files
 *.nix @loucass003
 /flake.lock @loucass003
