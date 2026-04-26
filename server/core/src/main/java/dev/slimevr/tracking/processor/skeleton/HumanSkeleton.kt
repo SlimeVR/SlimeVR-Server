@@ -144,6 +144,8 @@ class HumanSkeleton(
 	var rightUpperArmTracker: Tracker? = null
 	var leftHandTracker: Tracker? = null
 	var rightHandTracker: Tracker? = null
+	var leftHandInput: Tracker? = null
+	var rightHandInput: Tracker? = null
 	var leftShoulderTracker: Tracker? = null
 	var rightShoulderTracker: Tracker? = null
 	var leftThumbMetacarpalTracker: Tracker? = null
@@ -396,6 +398,8 @@ class HumanSkeleton(
 		rightUpperArmTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_UPPER_ARM)
 		leftHandTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_HAND)
 		rightHandTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_HAND)
+		leftHandInput = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_HAND_INPUT)
+		rightHandInput = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_HAND_INPUT)
 		leftShoulderTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_SHOULDER)
 		rightShoulderTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_SHOULDER)
 
@@ -1162,15 +1166,30 @@ class HumanSkeleton(
 		updateComputedTracker(computedRightFootTracker, rightFootTrackerBone)
 		updateComputedTracker(computedLeftElbowTracker, leftElbowTrackerBone)
 		updateComputedTracker(computedRightElbowTracker, rightElbowTrackerBone)
-		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone)
-		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone)
+
+		// For hand inputs, check and see whether we have a device dedicated to just controller input, otherwise assume hand trackers have their own inputs.
+		var leftInput = if (leftHandInput != null) leftHandInput else if(leftHandTracker != null && leftHandTracker!!.hasControls) leftHandTracker else leftLowerArmTracker
+		var rightInput = if (rightHandInput != null) rightHandInput else if(rightHandTracker != null && rightHandTracker!!.hasControls) rightHandTracker else rightLowerArmTracker
+		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone,leftInput)
+		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone, rightInput)
 	}
 
-	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone) {
+	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone, originalTracker: Tracker? = null) {
 		computedTracker?.let {
 			it.position = trackerBone.getTailPosition()
 			it.setRotation(trackerBone.getGlobalRotation() * trackerBone.rotationOffset.inv())
-			it.dataTick()
+			if(originalTracker != null) {
+				it.setButton1(originalTracker.getButton1())
+				it.setButton2(originalTracker.getButton2())
+				it.setMenuRecenterButton(originalTracker.getMenuRecenterButton())
+				it.setStickClickButton(originalTracker.getStickClickButton());
+				it.setTrackpadClickButton(originalTracker.getTrackpadClickButton());
+				it.setThumbstick(originalTracker.getThumbstick());
+				it.setTrigger(originalTracker.getTrigger());
+				it.setGrip(originalTracker.getGrip());
+				it.hasControls = originalTracker.hasControls;
+				it.dataTick()
+			}
 		}
 	}
 

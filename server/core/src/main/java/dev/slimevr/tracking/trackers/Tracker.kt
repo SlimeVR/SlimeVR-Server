@@ -41,6 +41,7 @@ class Tracker @JvmOverloads constructor(
 	trackerNum: Int? = null,
 	val hasPosition: Boolean = false,
 	val hasRotation: Boolean = false,
+	var hasControls: Boolean = false,
 	val hasAcceleration: Boolean = false,
 	/**
 	 * User can change TrackerPosition, mounting...
@@ -97,7 +98,6 @@ class Tracker @JvmOverloads constructor(
 	 * NOT the same as hasRotation (other data types emulate rotation)
 	 */
 	val trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
-
 	/**
 	 * Set status when tracker is sleeping
 	 */
@@ -110,8 +110,7 @@ class Tracker @JvmOverloads constructor(
 
 	// IMU: +z forward, +x left, +y up
 	// SlimeVR: +z backward, +x right, +y up
-	private var _acceleration = Vector3.NULL
-	private var _magVector = Vector3.NULL
+
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -128,6 +127,17 @@ class Tracker @JvmOverloads constructor(
 	var packetLoss: Float? = null
 	var customName: String? = null
 	var magStatus: MagnetometerStatus = magStatus
+	private var _acceleration = Vector3.NULL
+	private var _magVector = Vector3.NULL
+	private var _analogueThumbstick = Vector3.NULL
+	private var _analogueTrackpad = Vector3.NULL
+	private var _button1 = false
+	private var _button2 = false
+	private var _menuRecenterButton = false
+	private var _stickClickButton = false
+	private var _trackpadClickButton = false
+	private var _trigger = 0f
+	private var _grip = 0f
 		private set
 
 	/**
@@ -466,10 +476,125 @@ class Tracker @JvmOverloads constructor(
 	fun resetFilteringQuats(reference: Quaternion) {
 		filteringHandler.resetMovingAverage(getAdjustedRotation(), reference)
 	}
+	/**
+	 * Sets the first button of the tracker.
+	 */
+	fun setButton1(button1: Boolean) {
+		this.hasControls = true;
+		this._button1 = button1
+	}
+	/**
+	 * Gets the first button of the tracker.
+	 */
+	fun getButton1(): Boolean {
+		return this._button1
+	}
+	/**
+	 * Sets the second button of the tracker.
+	 */
+	fun setButton2(button2: Boolean) {
+		this.hasControls = true;
+		this._button2 = button2
+	}
+	/**
+	 * Gets the second button of the tracker.
+	 */
+	fun getButton2(): Boolean {
+		this.hasControls = true;
+		return this._button2
+	}
+	/**
+	 * Sets the menu/recenter button of the tracker.
+	 */
+	fun setMenuRecenterButton(menuRecenterButton: Boolean) {
+		this.hasControls = true;
+		this._menuRecenterButton = menuRecenterButton
+	}
+	/**
+	 * Gets the menu/recenter button of the tracker.
+	 */
+	fun getMenuRecenterButton(): Boolean {
+		return this._menuRecenterButton
+	}
 
 	/**
-	 * Sets time in future if a tracker is expected to sleep
+	 * Sets the stick click button of the tracker.
 	 */
+	fun setStickClickButton(stickClickButton: Boolean) {
+		this.hasControls = true;
+		this._stickClickButton = stickClickButton
+	}
+	/**
+	 * Gets the stick click button of the tracker.
+	 */
+	fun getStickClickButton(): Boolean {
+		return this._stickClickButton
+	}
+	/**
+	 * Sets the stick click button of the tracker.
+	 */
+	fun setTrackpadClickButton(trackpadClickButton: Boolean) {
+		this.hasControls = true;
+		this._trackpadClickButton = trackpadClickButton
+	}
+	/**
+	 * Gets the stick click button of the tracker.
+	 */
+	fun getTrackpadClickButton(): Boolean {
+		return this._trackpadClickButton
+	}
+	/**
+	 * Sets the grip of the tracker.
+	 */
+	fun setGrip(grip: Float) {
+		this._grip = grip
+		this.hasControls = true;
+	}
+	/**
+	 * Gets the grip of the tracker.
+	 */
+	fun getGrip(): Float {
+		return this._grip
+	}
+	/**
+	 * Sets the grip of the tracker.
+	 */
+	fun setTrigger(trigger: Float) {
+		this.hasControls = true;
+		this._trigger = trigger
+	}
+	/**
+	 * Gets the grip of the tracker.
+	 */
+	fun getTrigger(): Float {
+		return this._trigger
+	}
+	/**
+	 * Sets the thumbstick the tracker.
+	 */
+	fun setThumbstick(analogueThumbstick: Vector3) {
+		this.hasControls = true;
+		this._analogueThumbstick = analogueThumbstick
+	}
+	/**
+	 * Gets the thumbstick of the tracker.
+	 */
+	fun getThumbstick(): Vector3 {
+		return this._analogueThumbstick
+	}
+	/**
+	 * Sets the trackpad of the tracker.
+	 */
+	fun setTrackpad(analogueTrackpad: Vector3) {
+		this.hasControls = true;
+		this._analogueTrackpad = analogueTrackpad
+	}
+	/**
+	 * Gets the trackpad of the tracker.
+	 */
+	fun getTrackpad(): Vector3 {
+		return this._analogueTrackpad
+	}
 	fun setSleepTime(time: Long) {
 		this.timeScheduledSleep = time
 	}
