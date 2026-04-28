@@ -370,7 +370,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		if (req.velocitySettings() != null) {
 			val velocityConfig = api.server.configManager.vrConfig.velocityConfig
 			velocityConfig.sendDerivedVelocity = req.velocitySettings().sendDerivedVelocity()
-			velocityConfig.updateTrackersVelocityPolicy()
+			velocityConfig.updateTrackersVelocitySettings()
 		}
 
 		api.server.configManager.saveConfig()
