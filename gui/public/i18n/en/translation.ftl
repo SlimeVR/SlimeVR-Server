@@ -822,6 +822,9 @@ settings-osc-router-network-port_out =
 settings-osc-router-network-address = Network address
 settings-osc-router-network-address-description = Set the address to send out data at.
 settings-osc-router-network-address-placeholder = IPV4 address
+settings-osc-router-rescale_tracking = Rescale Tracking
+settings-osc-router-rescale_tracking-description = Rescale external tracking routed through OSC to avatar scale as determined by the VRM loaded in VMC settings.
+settings-osc-router-rescale_tracking-label = Rescale Tracking
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers

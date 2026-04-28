@@ -19,7 +19,7 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { object } from 'yup';
+import { boolean, object } from 'yup';
 import {
   OSCSettings,
   useOscSettingsValidator,
@@ -28,6 +28,7 @@ import {
 interface OSCRouterSettingsForm {
   router: {
     oscSettings: OSCSettings;
+    rescaleTracking: boolean;
   };
 }
 
@@ -39,6 +40,7 @@ const defaultValues = {
       portOut: 9000,
       address: '127.0.0.1',
     },
+    rescaleTracking: false,
   },
 };
 
@@ -56,6 +58,7 @@ export function OSCRouterSettings() {
         object({
           router: object({
             oscSettings: oscValidator,
+            rescaleTracking: boolean().required(),
           }),
         })
       ),
@@ -71,6 +74,7 @@ export function OSCRouterSettings() {
         new OSCSettingsT(),
         values.router.oscSettings
       );
+      router.rescaleTracking = values.router.rescaleTracking;
 
       settings.oscRouter = router;
     }
@@ -102,6 +106,7 @@ export function OSCRouterSettings() {
           formData.router.oscSettings.address =
             settings.oscRouter.oscSettings.address.toString();
       }
+      formData.router.rescaleTracking = settings.oscRouter.rescaleTracking;
 
       reset(formData);
     }
@@ -200,6 +205,27 @@ export function OSCRouterSettings() {
                   'settings-osc-router-network-address-placeholder'
                 )}
                 label=""
+              />
+            </div>
+            <Typography variant="section-title">
+              {l10n.getString('settings-osc-router-rescale_tracking')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <Typography>
+                {l10n.getString(
+                  'settings-osc-router-rescale_tracking-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pb-5">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="router.rescaleTracking"
+                label={l10n.getString(
+                  'settings-osc-router-rescale_tracking-label'
+                )}
               />
             </div>
           </>

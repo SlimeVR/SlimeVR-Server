@@ -4,7 +4,7 @@ import com.illposed.osc.*;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.OSCPortOut;
-import dev.slimevr.config.OSCConfig;
+import dev.slimevr.config.OSCRouterConfig;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.LogManager;
 
@@ -12,23 +12,26 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 
 public class OSCRouter {
 	private OSCPortIn oscReceiver;
 	private OSCPortOut oscSender;
-	private final OSCConfig config;
+	private final OSCRouterConfig config;
 	private final FastList<OSCHandler> oscHandlers;
 	private int lastPortIn;
 	private int lastPortOut;
 	private InetAddress lastAddress;
 	private long timeAtLastError;
 
+	public float scaleTrackingVolume = 1f;
+
 	public OSCRouter(
-		OSCConfig oscConfig,
+		OSCRouterConfig oscRouterConfig,
 		FastList<OSCHandler> oscHandlers
 	) {
-		this.config = oscConfig;
+		this.config = oscRouterConfig;
 		this.oscHandlers = oscHandlers;
 
 		refreshSettings(false);
@@ -156,12 +159,30 @@ public class OSCRouter {
 
 	void handleReceivedMessage(OSCMessageEvent event) {
 		if (oscSender != null && oscSender.isConnected()) {
-			OSCMessage oscMessage = new OSCMessage(
-				event.getMessage().getAddress(),
-				event.getMessage().getArguments()
-			);
+			var address = event.getMessage().getAddress();
+			var args = event.getMessage().getArguments();
+			OSCMessage oscMessageA = null, oscMessageB = null;
+			if (
+				config.getRescaleTracking()
+					&& scaleTrackingVolume != 1.0f
+					&& address.endsWith("/Pos")
+			) {
+				// Original message with coordinates in device scale
+				oscMessageA = new OSCMessage(address + "/Local", args);
+				// Modified message with coordinates in avatar scale
+				ArrayList<Object> argsMod = new ArrayList<Object>(args);
+				argsMod.set(1, (Float) argsMod.get(1) * scaleTrackingVolume);
+				argsMod.set(2, (Float) argsMod.get(2) * scaleTrackingVolume);
+				argsMod.set(3, (Float) argsMod.get(3) * scaleTrackingVolume);
+				oscMessageB = new OSCMessage(address, argsMod);
+			} else {
+				oscMessageA = new OSCMessage(address, args);
+			}
+
 			try {
-				oscSender.send(oscMessage);
+				oscSender.send(oscMessageA);
+				if (oscMessageB != null)
+					oscSender.send(oscMessageB);
 			} catch (IOException | OSCSerializeException e) {
 				// Avoid spamming AsynchronousCloseException too many
 				// times per second

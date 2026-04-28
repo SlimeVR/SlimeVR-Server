@@ -21,7 +21,7 @@ class VRConfig {
 
 	val driftCompensation: DriftCompensationConfig = DriftCompensationConfig()
 
-	val oscRouter: OSCConfig = OSCConfig()
+	val oscRouter: OSCRouterConfig = OSCRouterConfig()
 
 	val vrcOSC: VRCOSCConfig = VRCOSCConfig()
 

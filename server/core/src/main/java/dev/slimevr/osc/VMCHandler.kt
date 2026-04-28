@@ -342,6 +342,10 @@ class VMCHandler(
 				oscArgs.add((System.currentTimeMillis() - startTime) / 1000f)
 				oscBundle.addPacket(OSCMessage("/VMC/Ext/T", oscArgs.clone()))
 
+				// Rescale tracking to avatar scale if configured with target VRM
+				val vrmScale = if (vrmHeight > 0) vrmHeight / humanPoseManager.userNeckHeightFromConfig else 1f
+				server.oSCRouter.scaleTrackingVolume = vrmScale
+
 				if (humanPoseManager.isSkeletonPresent) {
 					// Indicate tracking is available
 					oscArgs.clear()
@@ -376,12 +380,9 @@ class VMCHandler(
 					if (!anchorHip) {
 						// Anchor from head
 						outputUnityArmature?.let { unityArmature ->
-							// Scale the SlimeVR neck position with the VRM model
+							// Scale the SlimeVR neck position with the VRM avatar
 							// We're only getting the height up to the neck because we don't want to factor the neck's length into the scaling
-							var rootPos = humanPoseManager.getBone(BoneType.NECK).getTailPosition()
-							if (vrmHeight > 0) {
-								rootPos *= vrmHeight / humanPoseManager.userNeckHeightFromConfig
-							}
+							var rootPos = humanPoseManager.getBone(BoneType.NECK).getTailPosition() * vrmScale
 
 							// Get the VRM head and hip positions
 							val vrmHeadPos = unityArmature.getHeadNodeOfBone(UnityBone.HEAD)!!.parent!!.worldTransform.translation
@@ -426,12 +427,9 @@ class VMCHandler(
 				for (tracker in computedTrackers) {
 					if (!tracker.status.reset) {
 						oscArgs.clear()
-
-						val name = tracker.name
-						oscArgs.add(name)
-
+						oscArgs.add(tracker.name)
 						addTransformToArgs(
-							tracker.position,
+							tracker.position * vrmScale,
 							tracker.getRotation(),
 						)
 
@@ -444,6 +442,7 @@ class VMCHandler(
 						} else {
 							"/VMC/Ext/Tra/Pos"
 						}
+
 						oscBundle
 							.addPacket(
 								OSCMessage(
@@ -451,6 +450,22 @@ class VMCHandler(
 									oscArgs.clone(),
 								),
 							)
+
+						if (vrmScale != 1f) {
+							oscArgs.clear()
+							oscArgs.add(tracker.name)
+							addTransformToArgs(
+								tracker.position,
+								tracker.getRotation(),
+							)
+							oscBundle
+								.addPacket(
+									OSCMessage(
+										address + "/Local",
+										oscArgs.clone(),
+									),
+								)
+						}
 					}
 				}
 
