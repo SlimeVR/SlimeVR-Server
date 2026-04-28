@@ -367,12 +367,9 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
-	 * Updates the derived velocity of the tracker by differentiating position over time.
-	 *
-	 * This method enforces the [allowVelocity] policy and checks for valid position data before
-	 * proceeding. If conditions are met, it calculates velocity based on the displacement since the
-	 * last update, applying a sanity check on the time delta to filter out noise and ensure data stability.
-	 *
+	 * If derived velocity is enabled, updates the derived velocity of the tracker,
+	 * calculating it based on the position displacement since the last update,
+	 * applying a sanity check on the time delta to filter out noise and ensure data stability.
 	 */
 	fun updateDerivedVelocity() {
 		if (!allowVelocity || !hasPosition) {

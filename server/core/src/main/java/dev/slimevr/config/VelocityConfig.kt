@@ -11,7 +11,7 @@ class VelocityConfig {
 	// Disables derived velocity for all trackers. Driver zeroes out velocity if nothing is returned in protobuf message.
 	var sendDerivedVelocity: Boolean = false
 
-	fun updateTrackersVelocityPolicy() {
+	fun updateTrackersVelocitySettings() {
 		for (t in VRServer.instance.allTrackers) {
 			t.allowVelocity = sendDerivedVelocity
 		}
