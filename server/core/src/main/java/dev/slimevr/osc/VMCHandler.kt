@@ -283,7 +283,7 @@ class VMCHandler(
 				trackerDevice,
 				getNextLocalTrackerId(),
 				name,
-				"VMC Tracker #$currentLocalTrackerId",
+				name,
 				trackerPosition,
 				hasPosition = position != null,
 				hasRotation = true,
