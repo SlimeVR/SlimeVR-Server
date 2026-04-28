@@ -369,15 +369,17 @@ class VMCHandler(
 						outputUnityArmature?.let { unityArmature ->
 							// Scale the SlimeVR neck position with the VRM model
 							// We're only getting the height up to the neck because we don't want to factor the neck's length into the scaling
-							val slimevrScaledRootPos = humanPoseManager.getBone(BoneType.NECK).getTailPosition() *
-								(vrmHeight / humanPoseManager.userNeckHeightFromConfig)
+							var rootPos = humanPoseManager.getBone(BoneType.NECK).getTailPosition()
+							if (vrmHeight > 0) {
+								rootPos *= vrmHeight / humanPoseManager.userNeckHeightFromConfig
+							}
 
 							// Get the VRM head and hip positions
 							val vrmHeadPos = unityArmature.getHeadNodeOfBone(UnityBone.HEAD)!!.parent!!.worldTransform.translation
 							val vrmHipPos = unityArmature.getHeadNodeOfBone(UnityBone.HIPS)!!.worldTransform.translation
 
 							// Calculate the new VRM hip position by subtracting the difference head-hip distance from the SlimeVR head
-							val calculatedVrmHipPos = slimevrScaledRootPos - (vrmHeadPos - vrmHipPos)
+							val calculatedVrmHipPos = rootPos - (vrmHeadPos - vrmHipPos)
 
 							// Set the VRM's hip position
 							unityArmature.getHeadNodeOfBone(UnityBone.HIPS)?.localTransform?.translation = calculatedVrmHipPos
