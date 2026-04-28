@@ -201,6 +201,7 @@ class VMCHandler(
 				if (trackerPosition != null) {
 					handleReceivedTracker(
 						"VMC-Bone-" + event.message.arguments[0],
+						"VMC Bone: " + event.message.arguments[0],
 						trackerPosition,
 						null,
 						Quaternion(
@@ -221,6 +222,7 @@ class VMCHandler(
 			"/VMC/Ext/Hmd/Pos", "/VMC/Ext/Con/Pos", "/VMC/Ext/Tra/Pos" ->
 				handleReceivedTracker(
 					"VMC-Tracker-" + event.message.arguments[0],
+					"VMC: " + event.message.arguments[0],
 					null,
 					Vector3(
 						event.message.arguments[1] as Float,
@@ -261,6 +263,7 @@ class VMCHandler(
 
 	private fun handleReceivedTracker(
 		name: String,
+		label: String,
 		trackerPosition: TrackerPosition?,
 		position: Vector3?,
 		rotation: Quaternion,
@@ -283,7 +286,7 @@ class VMCHandler(
 				trackerDevice,
 				getNextLocalTrackerId(),
 				name,
-				"VMC Tracker #$currentLocalTrackerId",
+				label,
 				trackerPosition,
 				hasPosition = position != null,
 				hasRotation = true,
