@@ -45,6 +45,7 @@ data class SettingsConfigState(
 	val mutedChecklistSteps: Set<String> = emptySet(),
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
 	val globalMagEnabled: Boolean = true,
+	val allowedUdpDevices: Set<String> = emptySet(),
 	val version: Int = SETTINGS_CONFIG_VERSION,
 )
 
@@ -70,6 +71,8 @@ sealed interface SettingsActions {
 	data class Update(val transform: SettingsConfigState.() -> SettingsConfigState) : SettingsActions
 	data class LoadProfile(val newState: SettingsState) : SettingsActions
 	data class UpdateTracker(val hardwareId: String, val transform: TrackerConfig.() -> TrackerConfig) : SettingsActions
+	data class AddAllowedUdpDevice(val mac: String) : SettingsActions
+	data class RemoveAllowedUdpDevice(val mac: String) : SettingsActions
 }
 
 typealias SettingsContext = Context<SettingsState, SettingsActions>
@@ -115,7 +118,7 @@ class Settings(
 				initialState = initialState,
 				scope = scope,
 				behaviours = behaviours,
-				name = "Settings[$name]"
+				name = "Settings[$name]",
 			)
 			val settings = Settings(context, scope = scope, settingsDir = settingsDir)
 			behaviours.forEach { it.observe(settings) }

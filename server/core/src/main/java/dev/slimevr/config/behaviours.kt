@@ -17,6 +17,10 @@ object DefaultSettingsBehaviour : SettingsBehaviour {
 			val existing = state.data.trackers[action.hardwareId] ?: TrackerConfig()
 			state.copy(data = state.data.copy(trackers = state.data.trackers + (action.hardwareId to action.transform(existing))))
 		}
+
+		is SettingsActions.AddAllowedUdpDevice -> state.copy(data = state.data.copy(allowedUdpDevices = state.data.allowedUdpDevices + action.mac))
+
+		is SettingsActions.RemoveAllowedUdpDevice -> state.copy(data = state.data.copy(allowedUdpDevices = state.data.allowedUdpDevices - action.mac))
 	}
 }
 

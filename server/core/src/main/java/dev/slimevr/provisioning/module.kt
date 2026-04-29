@@ -2,6 +2,7 @@ package dev.slimevr.provisioning
 
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.serial.SerialConnection
@@ -34,6 +35,7 @@ typealias ProvisioningManagerBehaviour = Behaviour<ProvisioningManagerState, Pro
 data class ProvisioningManager(
 	val context: ProvisioningManagerContext,
 	private val serialServer: SerialServer,
+	private val settings: Settings,
 	private val scope: CoroutineScope,
 ) {
 	fun startObserving() = context.observeAll(this)
@@ -70,7 +72,7 @@ data class ProvisioningManager(
 				if (serialConn == null) {
 					context.dispatch(ProvisioningActions.StatusChanged(WifiProvisioningStatus.NO_SERIAL_DEVICE_FOUND))
 				} else {
-					provisionPort(context, server, serialConn, ssid, password)
+					provisionPort(context, server, settings, serialConn, ssid, password)
 				}
 
 				// Any outcome (success or failure) waits for the port to disconnect
@@ -99,6 +101,7 @@ data class ProvisioningManager(
 			return ProvisioningManager(
 				context = context,
 				serialServer = ctx.serialServer,
+				settings = ctx.config.settings,
 				scope = scope,
 			)
 		}

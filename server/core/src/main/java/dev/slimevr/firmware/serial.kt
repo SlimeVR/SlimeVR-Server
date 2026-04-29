@@ -3,6 +3,8 @@ package dev.slimevr.firmware
 import dev.llelievr.espflashkotlin.Flasher
 import dev.llelievr.espflashkotlin.FlashingProgressListener
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
@@ -30,6 +32,7 @@ suspend fun doSerialFlash(
 	ssid: String?,
 	password: String?,
 	serialServer: SerialServer,
+	settings: Settings,
 	server: VRServer,
 	onStatus: suspend (FirmwareUpdateStatus, Int) -> Unit,
 	scope: CoroutineScope,
@@ -86,6 +89,7 @@ suspend fun doSerialFlash(
 		ssid = ssid,
 		password = password,
 		serialServer = serialServer,
+		settings = settings,
 		server = server,
 		onStatus = onStatus,
 	)
@@ -105,6 +109,7 @@ internal suspend fun doSerialFlashPostFlash(
 	ssid: String?,
 	password: String?,
 	serialServer: SerialServer,
+	settings: Settings,
 	server: VRServer,
 	onStatus: suspend (FirmwareUpdateStatus, Int) -> Unit,
 ) {
@@ -157,6 +162,8 @@ internal suspend fun doSerialFlashPostFlash(
 		onStatus(FirmwareUpdateStatus.ERROR_PROVISIONING_FAILED, 0)
 		return
 	}
+
+	settings.context.dispatch(SettingsActions.AddAllowedUdpDevice(macAddress))
 
 	// provision with Wi-Fi credentials
 	if (ssid == null || password == null) {

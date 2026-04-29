@@ -76,6 +76,7 @@ class SolarXRBridge(
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))
 			add(AssignTrackerBehaviour(appContext.server))
 			add(MagBehaviour(appContext))
+			add(KnownTrackersBehaviour(appContext.config.settings))
 		}
 
 		fun create(
@@ -87,7 +88,7 @@ class SolarXRBridge(
 				initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
 				scope = scope,
 				behaviours = buildBehaviours(appContext),
-				name = "SolarXR[$id]"
+				name = "SolarXR[$id]",
 			)
 
 			val bridge = SolarXRBridge(

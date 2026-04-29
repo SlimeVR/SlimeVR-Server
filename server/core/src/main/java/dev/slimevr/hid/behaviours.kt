@@ -115,8 +115,6 @@ object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 				tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true) })
 				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 			}
-
-
 		}
 	}
 }

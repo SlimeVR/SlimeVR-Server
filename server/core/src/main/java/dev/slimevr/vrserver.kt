@@ -57,7 +57,7 @@ class VRServer(
 				),
 				scope = scope,
 				behaviours = behaviours,
-				name = "VRServer"
+				name = "VRServer",
 			)
 			val server = VRServer(context = context)
 			behaviours.forEach { it.observe(server) }

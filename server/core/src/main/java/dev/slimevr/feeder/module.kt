@@ -5,9 +5,9 @@ import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import kotlinx.coroutines.CoroutineScope
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.CoroutineScope
 
 data class FeederBridgeState(
 	val protocolVersion: Int,
@@ -50,7 +50,7 @@ class FeederBridge(
 				initialState = FeederBridgeState(protocolVersion = 0, firmware = null),
 				scope = scope,
 				behaviours = behaviours,
-				name = "Feeder[$id]"
+				name = "Feeder[$id]",
 			)
 
 			val bridge = FeederBridge(id = id, context = context, appContext = appContext)

@@ -2,6 +2,7 @@ package dev.slimevr.firmware
 
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.serial.SerialServer
@@ -42,6 +43,7 @@ typealias FirmwareManagerBehaviour = Behaviour<FirmwareManagerState, FirmwareMan
 class FirmwareManager(
 	val context: FirmwareManagerContext,
 	private val serialServer: SerialServer,
+	private val settings: Settings,
 	private val scope: CoroutineScope,
 ) {
 	fun startObserving() = context.observeAll(this)
@@ -65,6 +67,7 @@ class FirmwareManager(
 				ssid = ssid,
 				password = password,
 				serialServer = serialServer,
+				settings = settings,
 				server = server,
 				onStatus = { status, progress ->
 					context.dispatch(
@@ -129,7 +132,7 @@ class FirmwareManager(
 				behaviours = behaviours,
 				name = "FirmwareManager",
 			)
-			return FirmwareManager(context = context, serialServer = ctx.serialServer, scope = scope)
+			return FirmwareManager(context = context, serialServer = ctx.serialServer, settings = ctx.config.settings, scope = scope)
 		}
 	}
 }

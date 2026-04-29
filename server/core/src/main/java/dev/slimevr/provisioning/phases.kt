@@ -1,6 +1,8 @@
 package dev.slimevr.provisioning
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
 import dev.slimevr.firmware.waitForConnected
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConnection
@@ -185,12 +187,15 @@ internal suspend fun waitForWifiConnect(
 internal suspend fun provisionPort(
 	context: ProvisioningManagerContext,
 	server: VRServer,
+	settings: Settings,
 	serialConn: SerialConnection.Console,
 	ssid: String,
 	password: String?,
 ) {
 	if (!obtainMacAddress(context, serialConn)) return
 	val macAddress = context.state.value.macAddress ?: return
+
+	settings.context.dispatch(SettingsActions.AddAllowedUdpDevice(macAddress))
 
 	if (!sendCredentials(context, serialConn, ssid, password)) return
 	if (!waitForWifiConnect(context, serialConn)) return

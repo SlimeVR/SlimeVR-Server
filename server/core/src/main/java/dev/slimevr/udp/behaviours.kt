@@ -17,6 +17,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
 import kotlin.random.Random
 
 internal const val CONNECTION_TIMEOUT_MS = 5000L
@@ -82,7 +83,6 @@ object PacketLossBehaviour : UDPConnectionBehaviour {
 		}
 	}
 }
-
 
 object PingBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
@@ -157,6 +157,20 @@ object HandshakeBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<Handshake> { packet ->
 			val state = receiver.context.state.value
+			val mac = packet.data.macString
+
+			if (mac != null) {
+				val settings = receiver.appContext.config.settings.context.state.value.data
+				if (mac !in settings.allowedUdpDevices) {
+					AppLogger.udp.info("[${state.address}] Unknown MAC $mac, notifying solarxr")
+					receiver.appContext.server.context.scope.launch {
+						receiver.appContext.server.context.state.value.solarxr.values.forEach { bridge ->
+							bridge.sendRpc(UnknownDeviceHandshakeNotification(macAddress = mac))
+						}
+					}
+					return@onPacket
+				}
+			}
 
 			val device = if (state.deviceId == null) {
 				findOrCreateDevice(receiver, state, packet.data)
