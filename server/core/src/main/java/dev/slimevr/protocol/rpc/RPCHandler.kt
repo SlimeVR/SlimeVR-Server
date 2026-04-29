@@ -30,7 +30,21 @@ import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.client.request.setBody
+import io.ktor.http.HttpMethod
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.TransactionId
 import solarxr_protocol.rpc.*
@@ -150,6 +164,11 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		registerPacketListener(
 			RpcMessage.ResetStayAlignedRelaxedPoseRequest,
 			::onResetStayAlignedRelaxedPoseRequest,
+		)
+
+		registerPacketListener(
+			RpcMessage.EnableSteamVRDriverRequest,
+			::onEnableSteamVRDriverRequest,
 		)
 	}
 
@@ -608,6 +627,47 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		LogManager.info("[resetStayAlignedRelaxedPose] pose=$pose")
 
 		sendSettingsChangedResponse(conn, messageHeader)
+	}
+
+	private fun onEnableSteamVRDriverRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val request = messageHeader.message(EnableSteamVRDriverRequest()) as? EnableSteamVRDriverRequest ?: return
+
+		val serverUrl = "http://127.0.0.1:27062"
+		val client = HttpClient(CIO)
+		val referer = "$serverUrl/dashboard/index.html"
+		mainScope.launch {
+			val unblockReq = client.get("$serverUrl/drivers/unblock") {
+				method = HttpMethod.Post
+				header("Referer", referer)
+				setBody("""{"driver":"slimevr"}""")
+			}
+			if (!unblockReq.status.isSuccess()) {
+				LogManager.severe("[EnableSteamVRDriverRequest] Failed to unblock driver: ${unblockReq.status}")
+			}
+
+			val enableReq = client.get("$serverUrl/drivers/setenable") {
+				method = HttpMethod.Post
+				header("Referer", referer)
+				setBody("""{"driver":"slimevr","enable":true}""")
+			}
+			if (!enableReq.status.isSuccess()) {
+				LogManager.severe("[EnableSteamVRDriverRequest] Failed to enable driver: ${enableReq.status}")
+			}
+
+			val restartReq = client.get("$serverUrl/console_command.action") {
+				method = HttpMethod.Get
+				header("Referer", referer)
+				parameter("sCommand", "restart")
+			}
+			if (restartReq.status.isSuccess()) {
+				val resp = Json.parseToJsonElement(restartReq.body())
+				if (resp !is JsonObject || resp.jsonObject["jsonid"]?.jsonPrimitive?.contentOrNull != "vr_console_command") {
+					LogManager.severe("[EnableSteamVRDriverRequest] Got unexpected response for console command: $resp")
+				}
+			} else {
+				LogManager.severe("[EnableSteamVRDriverRequest] Failed to send restart command: ${restartReq.status}")
+			}
+		}
 	}
 
 	fun sendSettingsChangedResponse(conn: GenericConnection, messageHeader: RpcMessageHeader?) {

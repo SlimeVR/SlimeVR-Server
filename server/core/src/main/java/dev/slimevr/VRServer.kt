@@ -35,6 +35,7 @@ import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.trackingchecklist.TrackingChecklistManager
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
+import io.eiren.util.Process
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.ann.ThreadSecure
 import io.eiren.util.collections.FastList
@@ -62,6 +63,7 @@ class VRServer @JvmOverloads constructor(
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
 	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
 	networkProfileProvider: (VRServer) -> NetworkProfileChecker = { _ -> NetworkProfileCheckerStub() },
+	val processListProvider: () -> Sequence<Process> = { emptySequence() },
 	acquireMulticastLock: () -> Any? = { null },
 	@JvmField val configManager: ConfigManager,
 ) : Thread("VRServer") {

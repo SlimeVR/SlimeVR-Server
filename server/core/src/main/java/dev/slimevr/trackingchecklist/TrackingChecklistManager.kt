@@ -13,10 +13,24 @@ import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
+import io.eiren.util.OperatingSystem
+import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.header
+import io.ktor.client.request.request
+import io.ktor.http.isSuccess
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.*
+import java.net.ConnectException
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.concurrent.timerTask
@@ -25,9 +39,44 @@ interface TrackingChecklistListener {
 	fun onStepsUpdate()
 }
 
-class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListener {
+@Serializable
+private data class DriverManifest(
+	val directory: String,
+	@SerialName("hmd_presence")
+	val hmdPresence: List<String>?,
+	val name: String,
+)
 
+@Serializable
+private data class Driver(
+	@SerialName("always_activate")
+	val alwaysActivate: Boolean,
+	@SerialName("blocked_by_safe_mode")
+	val blockedBySafeMode: Boolean,
+	val enabled: Boolean,
+	@SerialName("enabled_by_default")
+	val enabledByDefault: Boolean,
+	val id: Int,
+	@SerialName("load_priority")
+	val loadPriority: Int,
+	val manifest: DriverManifest,
+	@SerialName("on_safemode_whitelist")
+	val onSafeModeWhitelist: Boolean,
+	@SerialName("show_enable_in_settings")
+	val showEnableInSettings: Boolean,
+)
+
+@Serializable
+private data class SteamVRDriversList(
+	val drivers: List<Driver>,
+	@SerialName("jsonid")
+	val jsonId: String,
+)
+
+class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListener {
+	private var httpClient: HttpClient? = null
 	private val listeners: MutableList<TrackingChecklistListener> = CopyOnWriteArrayList()
+	private val jsonIgnoreUnknownKeys = Json { ignoreUnknownKeys = true }
 	val steps: MutableList<TrackingChecklistStepT> = mutableListOf()
 
 	private val updateTrackingChecklistTimer = Timer("TrackingChecklistTimer")
@@ -283,15 +332,74 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 				steamvrConnected,
 			) {
 				it.enabled = true
-				if (!steamvrConnected) {
-					it.extraData = TrackingChecklistExtraDataUnion().apply {
+				it.extraData = if (!steamvrConnected) {
+					val vrServerProcName = when (OperatingSystem.currentPlatform) {
+						OperatingSystem.WINDOWS -> "vrserver.exe"
+						else -> "vrserver"
+					}
+					val processes = vrServer.processListProvider().toList()
+					val steamvrRunning = processes.any { proc ->
+						proc.name == vrServerProcName
+					}
+
+					val serverUrl = "http://127.0.0.1:27062"
+					val referer = "$serverUrl/dashboard/index.html"
+					val drivers = if (steamvrRunning) {
+						runBlocking {
+							if (httpClient == null) httpClient = HttpClient(CIO)
+
+							val resp = try {
+								httpClient!!.request("$serverUrl/drivers/list.json") {
+									header("Referer", referer)
+								}
+							} catch (_: Exception) {
+								return@runBlocking null
+							}
+
+							if (!resp.status.isSuccess()) {
+								LogManager.warning("[TrackingChecklistManager] Failed to connect to SteamVR web server (status ${resp.status})")
+								return@runBlocking null
+							}
+
+							val body: String = try {
+								resp.body()
+							} catch (_: Exception) {
+								return@runBlocking null
+							}
+
+							val driverList: SteamVRDriversList = try {
+								jsonIgnoreUnknownKeys.decodeFromString(body)
+							} catch (e: Exception) {
+								LogManager.warning("[TrackingChecklistManager] Failed to decode SteamVR drivers list", e)
+								return@runBlocking null
+							}
+
+							if (driverList.jsonId != "vr_driver_list") {
+								LogManager.severe("[TrackingChecklistManager] SteamVR driver list response had wrong json ID ${driverList.jsonId}")
+								return@runBlocking null
+							}
+
+							driverList.drivers
+						}
+					} else {
+						null
+					}
+					val driver = drivers?.firstOrNull { driver ->
+						driver.manifest.name == "slimevr"
+					}
+
+					val isDriverInstalled = !steamvrRunning || drivers == null || driver != null
+					TrackingChecklistExtraDataUnion().apply {
 						type = TrackingChecklistExtraData.TrackingChecklistSteamVRDisconnected
 						value = TrackingChecklistSteamVRDisconnectedT().apply {
 							bridgeSettingsName = steamVRBridge.getBridgeConfigKey()
+							driverBlockedBySafeMode = driver?.blockedBySafeMode ?: false
+							driverDisabledInSettings = !(driver?.enabled ?: true)
+							driverInstalled = isDriverInstalled
 						}
 					}
 				} else {
-					it.extraData = null
+					null
 				}
 			}
 
