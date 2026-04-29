@@ -8,25 +8,27 @@ import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
-import java.io.*
+import kotlinx.io.IOException
+import java.io.File
+import java.io.FileOutputStream
 import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.security.MessageDigest
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import kotlin.time.Duration.Companion.seconds
 
 class UpdaterIO(
-	private val state: UpdaterState
+	private val state: UpdaterState,
 ) {
-
 	private val client = HttpClient(CIO)
-
 
 	fun executeShellCommand(vararg command: String): String = try {
 		val process = ProcessBuilder(*command)
@@ -37,74 +39,88 @@ class UpdaterIO(
 			process.waitFor()
 		}
 	} catch (e: IOException) {
+		state.hasError = true
 		"Error executing shell command: ${e.message}"
 	}
 
-	fun downloadFile(
-		fileUrl: String,
-		fileName: String,
-	) {
+	fun downloadFile(fileUrl: String, fileName: String, checksum: String = "") {
 		state.subProgress = 0f
+		val targetFile = File(fileName)
 
-		val outputStream = FileOutputStream(fileName)
+		try {
+			runBlocking {
+				FileOutputStream(targetFile).use { outputStream ->
+					client.prepareGet(fileUrl) {
+						val timeoutVal = 30.seconds.inWholeMilliseconds
+						timeout {
+							requestTimeoutMillis = timeoutVal
+							connectTimeoutMillis = timeoutVal
+							socketTimeoutMillis = timeoutVal
+						}
 
-		kotlinx.coroutines.runBlocking {
-			client.prepareGet(fileUrl) {
-				val timeout = 30.seconds.inWholeMilliseconds
-				timeout {
-					requestTimeoutMillis = timeout
-					connectTimeoutMillis = timeout
-					socketTimeoutMillis = timeout
-				}
-
-				onDownload { sent, total ->
-					val progress = sent.toFloat() / (total?.toFloat() ?: 1f)
-					state.subProgress = progress
-				}
-			}.execute { response ->
-				if (response.status.value in 200..299) {
-					response.bodyAsChannel().copyTo(outputStream)
+						onDownload { sent, total ->
+							val progress = sent.toFloat() / (total?.toFloat() ?: 1f)
+							state.subProgress = progress
+						}
+					}.execute { response ->
+						if (response.status.value in 200..299) {
+							response.bodyAsChannel().copyTo(outputStream)
+						} else {
+							throw IOException("Server returned HTTP ${response.status.value}")
+						}
+					}
 				}
 			}
-		}
 
-		checksum(fileName)
-		state.subProgress = 1f
+			if (checksum.isNotEmpty()) {
+				validateChecksum(fileName, checksum)
+			}
+
+			state.subProgress = 1f
+		} catch (e: Exception) {
+			state.hasError = true
+			state.statusText = "Error downloading $fileName"
+			if (targetFile.exists()) targetFile.delete()
+		}
 	}
 
-	fun unzip(
-		file: String,
-		destDir: String,
-	) {
+	fun unzip(file: String, destDir: String) {
 		val destFolder = File(destDir)
 		if (!destFolder.exists()) destFolder.mkdirs()
 
 		state.subProgress = 0f
 
-		val zipFile = ZipFile(file)
-		val entries = zipFile.entries().toList()
-		val total = entries.size.coerceAtLeast(1)
+		try {
+			ZipFile(file).use { zipFile ->
+				val entries = zipFile.entries().toList()
+				val total = entries.size.coerceAtLeast(1)
+				val completedCount = AtomicInteger(0)
 
-		kotlinx.coroutines.runBlocking {
-			withContext(Dispatchers.IO) {
-				val semaphore = Semaphore(4)
+				runBlocking {
+					coroutineScope {
+						val semaphore = Semaphore(4)
 
-				var index = 0
-
-				for (entry in entries) {
-					launch {
-						semaphore.withPermit {
-							unzipWorker(zipFile, entry, destDir)
+						for (entry in entries) {
+							launch(Dispatchers.IO) {
+								semaphore.withPermit {
+									try {
+										unzipWorker(zipFile, entry, destDir)
+									} finally {
+										// Update progress atomically to avoid race conditions
+										val current = completedCount.incrementAndGet()
+										state.subProgress = current.toFloat() / total
+									}
+								}
+							}
 						}
 					}
-
-					index++
-					state.subProgress = index.toFloat() / total
 				}
 			}
+			state.subProgress = 1f
+		} catch (e: Exception) {
+			state.hasError = true
+			state.statusText = "Unzip error: ${e.message}"
 		}
-
-		state.subProgress = 1f
 	}
 
 	private suspend fun unzipWorker(zipFile: ZipFile, zipEntry: ZipEntry, destDir: String) {
@@ -115,21 +131,15 @@ class UpdaterIO(
 			throw IOException("Entry is outside target dir: ${zipEntry.name}")
 		}
 
-		withContext(Dispatchers.IO) {
-			try {
-				if (zipEntry.isDirectory) {
-					targetFile.mkdirs()
-				} else {
-					targetFile.parentFile?.mkdirs()
+		if (zipEntry.isDirectory) {
+			targetFile.mkdirs()
+		} else {
+			targetFile.parentFile?.mkdirs()
 
-					zipFile.getInputStream(zipEntry).use { input ->
-						FileOutputStream(targetFile).use { output ->
-							input.copyTo(output, 8192)
-						}
-					}
+			zipFile.getInputStream(zipEntry).use { input ->
+				FileOutputStream(targetFile).use { output ->
+					input.copyTo(output, 8192)
 				}
-			} catch (e: Exception) {
-				state.statusText = "Unzip error: ${zipEntry.name}"
 			}
 		}
 	}
@@ -138,20 +148,44 @@ class UpdaterIO(
 		if (file.exists() && file.isFile) file.delete()
 	}
 
-	fun checksum(file: String): String {
+	fun validateChecksum(file: String, checksum: String): String {
 		val data = Files.readAllBytes(Paths.get(file))
 		val hash = MessageDigest.getInstance("SHA-256").digest(data)
-		return BigInteger(1, hash).toString(16)
+		val result = BigInteger(1, hash).toString(16).padStart(64, '0')
+
+		if (checksum.isNotEmpty() && result != checksum.lowercase()) {
+			throw IOException("Checksum mismatch! Expected $checksum but got $result")
+		}
+		return result
 	}
 
-	fun shouldUpdate(latest: String): Boolean {
-		if (VERSION.contains("dirty")) return false
+	fun restartApplication() {
+		try {
+			val javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java"
+			val currentJar = File(UpdaterIO::class.java.protectionDomain.codeSource.location.toURI())
 
-		val local = VERSION.replace("v", "").split(".")
+			val pb = if (!currentJar.name.endsWith(".jar")) {
+				ProcessBuilder(System.getProperty("eclipse.launcher") ?: System.getProperty("sun.java.command"))
+			} else {
+				ProcessBuilder(javaBin, "-jar", currentJar.path)
+			}
+
+			pb.start()
+		} catch (e: Exception) {
+			e.printStackTrace()
+		} finally {
+			System.exit(0)
+		}
+	}
+
+	fun shouldUpdate(latest: String, currentVersion: String): Boolean {
+		if (currentVersion.contains("dirty")) return false
+
+		val local = currentVersion.replace("v", "").split(".")
 		val remote = latest.replace("v", "").split(".")
 
 		return remote.zip(local).any { (r, l) ->
-			r.toIntOrNull() ?: 0 > (l.toIntOrNull() ?: 0)
+			(r.toIntOrNull() ?: 0) > (l.toIntOrNull() ?: 0)
 		}
 	}
 }

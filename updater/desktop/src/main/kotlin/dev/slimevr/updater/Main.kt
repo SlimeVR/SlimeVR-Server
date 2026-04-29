@@ -1,55 +1,90 @@
 package dev.slimevr.updater
 
+import com.github.ajalt.mordant.rendering.TextColors
+import com.github.ajalt.mordant.rendering.TextStyles.bold
 import dev.slimevr.updater.ManifestUtils.Companion.getChannels
 import dev.slimevr.updater.ManifestUtils.Companion.getVersionTags
+import dev.slimevr.updater.util.TerminalUtil
+import dev.slimevr.updater.util.TerminalUtil.t
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.CommandLineParser
 import org.apache.commons.cli.DefaultParser
 import org.apache.commons.cli.HelpFormatter
+import org.apache.commons.cli.Option
 import org.apache.commons.cli.Options
+import org.apache.commons.cli.ParseException
 import kotlin.system.exitProcess
-import kotlin.text.ifEmpty
 
-val VERSION =
-	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
-		if (GIT_CLEAN) "" else "-dirty"
+val VERSION = (GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) + if (GIT_CLEAN) "" else "-dirty"
 
 val featureFlags = FeatureFlags()
 
 fun main(args: Array<String>) {
+	val options = Options().apply {
+		addOption("h", "help", false, "Show help")
+		addOption("c", "channels", false, "List all release channels")
+		addOption(
+			Option.builder("i")
+				.longOpt("install")
+				.hasArgs()
+				.numberOfArgs(2)
+				.argName("channel> <version")
+				.desc("Specify channel and version to update to")
+				.build(),
+		)
+		addOption("l", "list", true, "List all versions for a channel")
+	}
+
 	val parser: CommandLineParser = DefaultParser()
 	val formatter = HelpFormatter()
-	val options = Options()
-	options.addOption("h", "help", false, "Show help")
-	options.addOption("i", "install", false, "Specify version to update to")
-	options.addOption("c", "channels", false, "List all release channels")
-	options.addOption("l", "list", false, "List all versions")
+
 	val cmd: CommandLine = try {
-		parser.parse(options, args, true)
-	} catch (e: org.apache.commons.cli.ParseException) {
+		parser.parse(options, args)
+	} catch (e: ParseException) {
+		TerminalUtil.error("Argument Error: ${e.message}")
 		formatter.printHelp("updater.jar", options)
 		exitProcess(1)
 	}
+
+	t.println(bold(TextColors.cyan("SlimeVR Updater — Version $VERSION")))
+	t.println(TextColors.gray("━".repeat(t.size.width.coerceAtMost(40))))
+
 	if (cmd.hasOption("help")) {
 		formatter.printHelp("updater.jar", options)
 		exitProcess(0)
 	}
-	if (cmd.hasOption("install")) {
-		featureFlags.version = cmd.getOptionValue("install")
-	}
+
 	if (cmd.hasOption("channels")) {
-		featureFlags.listChannels = true
 		val manifest = Manifest().getManifest()
-		getChannels(manifest)
-		exitProcess(0)
-	}
-	if (cmd.hasOption("list")) {
-		featureFlags.listVersions = true
-		val manifest = Manifest().getManifest()
-		getVersionTags(manifest, cmd.getOptionValue("list"))
+		val channels = getChannels(manifest)
+		TerminalUtil.info("Available Release Channels:")
+		channels.forEach { t.println(" • ${TextColors.green(it)}") }
 		exitProcess(0)
 	}
 
+	if (cmd.hasOption("list")) {
+		val channel = cmd.getOptionValue("list")
+		val manifest = Manifest().getManifest()
+		val versions = getVersionTags(manifest, channel)
+		TerminalUtil.printVersionGrid(versions, title = "Releases in '$channel'")
+		exitProcess(0)
+	}
+
+	if (cmd.hasOption("install")) {
+		val installArgs = cmd.getOptionValues("install")
+		if (installArgs.size != 2) {
+			TerminalUtil.error("Argument Error: usage <channel> <version>")
+			exitProcess(1)
+		}
+		val channel = installArgs[0]
+		val version = installArgs[1]
+		featureFlags.version = version
+		featureFlags.channel = channel
+
+		TerminalUtil.success("Target set: ${bold(version)} on channel ${bold(channel)}")
+	}
+
+	TerminalUtil.info("Launching graphical interface...")
 	val updaterController = UpdaterController()
 	updaterController.startGui()
 }

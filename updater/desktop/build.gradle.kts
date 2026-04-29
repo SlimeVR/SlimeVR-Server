@@ -72,9 +72,17 @@ dependencies {
 	implementation("org.jetbrains.compose.material3:material3:1.9.0-beta03")
 	implementation("org.jetbrains.compose.components:components-resources:1.10.3")
 	implementation("org.jetbrains.compose.components:components-animatedimage:1.10.3")
-	implementation("io.coil-kt.coil3:coil-compose:3.4.0")
 
 
+	implementation("com.github.ajalt.mordant:mordant:3.0.2")
+	implementation("com.github.ajalt.mordant:mordant-markdown:3.0.2")
+
+
+	testImplementation("org.slf4j:slf4j-simple:2.0.9")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.9.20")
+	testImplementation("io.mockk:mockk:1.13.8")
+	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.x")
 	testImplementation(kotlin("test"))
 }
 
@@ -82,6 +90,13 @@ tasks.shadowJar {
 	archiveBaseName.set("updater")
 	archiveClassifier.set("")
 	archiveVersion.set("")
+	manifest {
+		attributes["Main-Class"] = "dev.slimevr.updater.MainKt"
+	}
+}
+
+tasks.test {
+	useJUnitPlatform()
 }
 
 compose.desktop {

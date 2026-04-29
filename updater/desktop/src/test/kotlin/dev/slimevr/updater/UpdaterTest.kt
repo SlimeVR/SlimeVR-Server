@@ -4,9 +4,9 @@ import dev.slimevr.updater.ManifestUtils.Companion.getChannels
 import dev.slimevr.updater.ManifestUtils.Companion.getCurrentVersion
 import dev.slimevr.updater.ManifestUtils.Companion.getRelease
 import dev.slimevr.updater.ManifestUtils.Companion.getVersionTags
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
-/*
 class UpdaterTest {
 
 	@Test
@@ -14,9 +14,15 @@ class UpdaterTest {
 	}
 
 	@Test
-	fun testUpdater() {
-		val updater = Updater()
-		updater.runUpdater()
+	fun testUpdaterGUI() {
+		val updaterController = UpdaterController()
+		updaterController.startGui()
+	}
+
+	@Test
+	fun `test update process`(): Unit = runTest {
+		val updaterController = UpdaterController()
+		val result = updaterController.startGui()
 	}
 
 	@Test
@@ -62,6 +68,7 @@ class UpdaterTest {
 
 	@Test
 	fun testUpdateToLatestStable() {
+		val state = UpdaterState()
 		val os = System.getProperty("os.name").lowercase()
 		val arch = System.getProperty("os.arch").lowercase()
 		val normalizedArch = when {
@@ -70,20 +77,15 @@ class UpdaterTest {
 			else -> arch
 		}
 
-		val updaterGui = UpdaterGui()
+		val updateController = UpdaterController()
+		updateController.startGui()
 		val featureFlags = FeatureFlags()
 		val manifest = Manifest().getManifest()
 		val currentVersion = getCurrentVersion(manifest, os, normalizedArch) ?: return
 		println("Current Version for $os ($normalizedArch): $currentVersion")
-
-		val linuxUpdater = Linux()
-
-		linuxUpdater.updateServer(currentVersion.url)
 	}
 
 	@Test
 	fun updateToSpecificVersion() {
 	}
 }
-
- */

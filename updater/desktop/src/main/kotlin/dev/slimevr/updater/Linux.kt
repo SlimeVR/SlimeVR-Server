@@ -1,5 +1,8 @@
 package dev.slimevr.updater
 
+import dev.slimevr.updater.util.TerminalUtil
+import kotlinx.io.IOException
+import java.io.File
 import java.nio.file.Paths
 import kotlin.io.path.Path
 import kotlin.io.path.exists
@@ -11,14 +14,51 @@ class Linux(
 
 	private val path = Paths.get("").toAbsolutePath().toString()
 
-	suspend fun updateLinux() {
-		updateUdev()
-		feeder()
+	suspend fun updateLinux(currentVersionTag: String, versionTag: String, configDir: String, vrConfig: String, serverUrl: String, openVRDriverUrl: String) {
+		backupConfig(currentVersionTag, configDir, vrConfig)
+		restoreConfig(versionTag, configDir, vrConfig)
+		updateServer(serverUrl)
+		updateLinuxSteamVRDriver(openVRDriverUrl)
+	}
+
+	fun backupConfig(versionTag: String, configDir: String, vrConfig: String) {
+		TerminalUtil.info("Backing up Config")
+		try {
+			val targetDir =
+				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
+			targetDir.mkdirs()
+			val config = File(vrConfig)
+			val destination = "$targetDir/vrconfig.yml"
+			config.copyTo(File(destination), true)
+			TerminalUtil.success("Config backed up to $destination")
+		} catch (e: IOException) {
+			state.hasError = true
+			state.errorText = "Error backing up config"
+			TerminalUtil.error("Error backing up config")
+		}
+	}
+
+	fun restoreConfig(versionTag: String, configDir: String, vrConfig: String) {
+		try {
+			val sourceDir =
+				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
+			if (!sourceDir.exists()) return
+			val config = File("$sourceDir/vrconfig.yml")
+			val destination = "$configDir/vrconfig.yml"
+			config.copyTo(File(destination), true)
+			TerminalUtil.success("Config restored up to $destination")
+		} catch (e: IOException) {
+			state.hasError = true
+			state.errorText = "Error restoring config"
+			TerminalUtil.error("Error restoring config")
+		}
 	}
 
 	suspend fun updateLinuxSteamVRDriver(openVRDriverUrl: String) {
+		TerminalUtil.info("Updating SteamVR Driver")
 		state.update {
 			statusText = "Updating SteamVR Driver"
+			mainProgress = 0.5f
 		}
 
 		val steamVRPath =
@@ -29,14 +69,18 @@ class Linux(
 
 		if (isDriverRegistered) {
 			state.update {
-				statusText = "Downloading SteamVR Driver"
+				statusText = "Updating OpenVR Driver"
+				subText = "Downloading OpenVR Driver"
 			}
+			TerminalUtil.info("Downloading SteamVR Driver")
 
 			io.downloadFile(openVRDriverUrl, LINUXSTEAMVRDRIVERNAME)
 
 			state.update {
-				statusText = "Unzipping SteamVR Driver"
+				subText = "Unzipping SteamVR Driver"
+				subProgressisVisible = true
 			}
+			TerminalUtil.info("Unzipping SteamVR Driver")
 
 			io.unzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
 
@@ -49,16 +93,13 @@ class Linux(
 				"adddriver",
 				"$path/$LINUXSTEAMVRDRIVERDIRECTORY/slimevr",
 			)
-		} else {
-			state.update {
-				statusText = "SteamVR driver already registered. Skipping..."
-			}
 		}
 
 		state.update {
-			mainProgress = 0.33f
+			mainProgress = 1.0f
 			statusText = "SteamVR Driver done"
 		}
+		TerminalUtil.success("SteamVR Driver done")
 	}
 
 	suspend fun removeLinuxSteamVRDriver() {
@@ -86,24 +127,28 @@ class Linux(
 	}
 
 	suspend fun updateServer(serverUrl: String) {
-		println("downloading server")
+		TerminalUtil.info("Updating server")
 		state.update {
-			statusText = "Updating SlimeVR"
+			statusText = "Updating Server"
+			subProgressisVisible = true
 			subProgress = 0f
 		}
 
 		state.update {
-			statusText = "Downloading Server"
+			subText = "Downloading Server"
 		}
-
+		TerminalUtil.info("Downloading server")
 		io.downloadFile(serverUrl, LINUXSERVERNAME)
 
 		state.update {
 			subProgress = 1f
 			statusText = "Server download complete"
+			subText = ""
 		}
+		TerminalUtil.success("Updating server done")
 	}
 
+	// Legacy
 	suspend fun feeder() {
 		state.update {
 			statusText = "Downloading Feeder App"
@@ -177,6 +222,8 @@ class Linux(
 	}
 
 	companion object {
+		private const val LINUXCONFIGLOCATION =
+			""
 
 		private const val LINUXSTEAMVRDRIVERURL =
 			"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
@@ -195,9 +242,6 @@ class Linux(
 
 		private const val LINUXFEEDERDIRECTORY =
 			"SlimeVR-Feeder-App-Linux"
-
-		private const val LINUXSERVERURL =
-			"https://github.com/SlimeVR/SlimeVR-Server/releases/latest/download/SlimeVR-amd64.appimage"
 
 		private const val LINUXSERVERNAME =
 			"SlimeVR-amd64.appimage"

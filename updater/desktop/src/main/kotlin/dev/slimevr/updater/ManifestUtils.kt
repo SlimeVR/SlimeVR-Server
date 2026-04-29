@@ -13,7 +13,7 @@ class ManifestUtils {
 		}
 
 		@JvmStatic
-		fun getVersionTags(manifest: ManifestObject, channel: String): List<String> {
+		fun getVersionTags(manifest: ManifestObject, channel: String?): List<String> {
 			val versionTags = mutableListOf<String>()
 			manifest.channels[channel]?.versions?.forEach { version ->
 				versionTags.add(version.key)
@@ -28,6 +28,12 @@ class ManifestUtils {
 				platforms.add(build.key)
 			}
 			return platforms
+		}
+
+		@JvmStatic
+		fun getVersionTag(manifest: ManifestObject, channel: String, version: String, platform: String, architecture: String): Release? {
+			val res = manifest.channels[channel]?.versions[version]?.builds[platform]?.get(architecture)
+			return res
 		}
 
 		@JvmStatic

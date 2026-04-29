@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 class UpdaterController {
 
 	val state = UpdaterState()
+	val updaterIO = UpdaterIO(state)
 
 	fun startGui() = application {
 		val scope = CoroutineScope(Dispatchers.Default)
@@ -23,16 +24,26 @@ class UpdaterController {
 			transparent = true,
 			state = WindowState(width = 400.dp, height = 450.dp, position = WindowPosition(Alignment.Center)),
 		) {
-			UpdaterScreen(state)
+			UpdaterScreen(state, updaterIO)
 			scope.launch {
 				runUpdate()
 			}
 		}
 	}
 
+	fun startHeadless() {
+		val scope = CoroutineScope(Dispatchers.Default)
+		scope.launch {
+			runHeadless()
+		}
+	}
+
 	private suspend fun runUpdate() {
 		println("run update")
-		val updater = Updater(state)
+		val updater = Updater(state, updaterIO)
 		updater.runUpdater()
+	}
+
+	private suspend fun runHeadless() {
 	}
 }

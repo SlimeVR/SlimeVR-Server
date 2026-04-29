@@ -9,10 +9,29 @@ class Windows(
 
 	private val path = Paths.get("").toAbsolutePath().toString()
 
-	suspend fun updateWindows() {
+	suspend fun updateWindows(serverUrl: String) {
 		usbDrivers()
 		steamVRDriver()
 		feeder()
+	}
+
+	suspend fun updateServer(serverUrl: String) {
+		println("downloading server")
+		state.update {
+			statusText = "Updating SlimeVR"
+			subProgress = 0f
+		}
+
+		state.update {
+			statusText = "Downloading Server"
+		}
+
+		io.downloadFile(serverUrl, WINDOWSSERVERNAME)
+
+		state.update {
+			subProgress = 1f
+			statusText = "Server download complete"
+		}
 	}
 
 	fun usbDrivers() {
