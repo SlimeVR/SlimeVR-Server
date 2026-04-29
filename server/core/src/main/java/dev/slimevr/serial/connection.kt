@@ -46,7 +46,9 @@ sealed interface SerialConnection {
 					),
 					scope = scope,
 					behaviours = behaviours,
+					name = "SerialConnection[${handle.descriptivePortName}]",
 				)
+
 				val conn = Console(context = context, handle = handle)
 				behaviours.forEach { it.observe(conn) }
 				return conn

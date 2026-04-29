@@ -28,6 +28,7 @@ class FirmwareManagerReducerTest {
 		initialState = FirmwareManagerState(jobs = mapOf()),
 		behaviours = listOf(FirmwareManagerBaseBehaviour),
 		scope = scope,
+		name = "FirmwareManagerReducerTest",
 	)
 
 	@Test

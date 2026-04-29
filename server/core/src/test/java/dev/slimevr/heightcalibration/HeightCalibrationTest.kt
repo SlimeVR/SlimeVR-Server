@@ -42,6 +42,7 @@ private fun makeContext(scope: kotlinx.coroutines.CoroutineScope) = HeightCalibr
 	initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
 	scope = scope,
 	behaviours = listOf(CalibrationBehaviour),
+	name = "HeightCalibrationTest",
 )
 
 // Launches a calibration session with the virtual-time clock, so that advancing virtual time

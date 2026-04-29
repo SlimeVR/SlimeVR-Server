@@ -84,6 +84,7 @@ class Device(
 					block = setOf(DeviceActions.PacketStats::class),
 					diffStyle = DiffStyle.MULTILINE,
 				),
+				name = "Device[$address]",
 			)
 			behaviours.forEach { it.observe(context) }
 			return Device(context = context)

@@ -5,9 +5,9 @@ import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import kotlinx.coroutines.CoroutineScope
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import kotlinx.coroutines.CoroutineScope
 
 data class FeederBridgeState(
 	val protocolVersion: Int,
@@ -33,11 +33,14 @@ class FeederBridge(
 	val appContext: AppContextProvider,
 	val inbound: EventDispatcher<FeederBridgeInbound> = EventDispatcher(),
 ) {
-	fun disconnect() {
-		appContext.server.context.dispatch(VRServerActions.FeederDisconnected(id))
-	}
+	fun dispose() = context.dispose()
 
 	fun startObserving() = context.observeAll(this)
+
+	fun disconnect() {
+		dispose()
+		appContext.server.context.dispatch(VRServerActions.FeederDisconnected(id))
+	}
 
 	companion object {
 		fun create(id: Int, appContext: AppContextProvider, scope: CoroutineScope): FeederBridge {
@@ -47,6 +50,7 @@ class FeederBridge(
 				initialState = FeederBridgeState(protocolVersion = 0, firmware = null),
 				scope = scope,
 				behaviours = behaviours,
+				name = "Feeder[$id]"
 			)
 
 			val bridge = FeederBridge(id = id, context = context, appContext = appContext)

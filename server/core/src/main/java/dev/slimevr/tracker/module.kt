@@ -104,6 +104,7 @@ class Tracker(
 					block = setOf(TrackerActions.SetRotation::class),
 					diffStyle = DiffStyle.MULTILINE,
 				),
+				name = "Tracker[$hardwareId]",
 			)
 			val tracker = Tracker(context = context, server)
 			behaviours.forEach { it.observe(tracker) }

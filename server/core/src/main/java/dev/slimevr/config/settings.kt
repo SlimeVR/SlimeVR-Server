@@ -111,7 +111,12 @@ class Settings(
 			val initialState = SettingsState(name = name, data = initialData)
 
 			val behaviours = listOf(DefaultSettingsBehaviour)
-			val context = Context.create(initialState = initialState, scope = scope, behaviours = behaviours)
+			val context = Context.create(
+				initialState = initialState,
+				scope = scope,
+				behaviours = behaviours,
+				name = "Settings[$name]"
+			)
 			val settings = Settings(context, scope = scope, settingsDir = settingsDir)
 			behaviours.forEach { it.observe(settings) }
 			return settings

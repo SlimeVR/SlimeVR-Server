@@ -127,6 +127,7 @@ class UDPConnection(
 				),
 				scope = scope,
 				behaviours = behaviours,
+				name = "UDPConnection[$id]",
 			)
 
 			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>> { it.data::class }

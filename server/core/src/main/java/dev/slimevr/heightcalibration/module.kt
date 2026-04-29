@@ -100,6 +100,7 @@ class HeightCalibrationManager(
 				initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
 				scope = scope,
 				behaviours = behaviours,
+				name = "HeightCalibration",
 			)
 			return HeightCalibrationManager(context = context, serverContext = ctx.server, userConfig = ctx.config.userConfig)
 		}

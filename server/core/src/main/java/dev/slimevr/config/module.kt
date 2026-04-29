@@ -67,6 +67,7 @@ class AppConfig(
 				initialState = initialGlobal,
 				scope = scope,
 				behaviours = behaviours,
+				name = "GlobalConfig",
 			)
 			behaviours.forEach { it.observe(globalContext) }
 

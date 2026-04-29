@@ -71,6 +71,7 @@ class HIDReceiver(
 				initialState = HIDReceiverState(serialNumber = serialNumber, trackers = mapOf()),
 				scope = scope,
 				behaviours = behaviours,
+				name = "HIDReceiver[$serialNumber]",
 			)
 
 			val dispatcher = HIDPacketDispatcher()

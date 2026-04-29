@@ -1,7 +1,11 @@
 package dev.slimevr.context
 
 import dev.slimevr.context.debug.DebugMiddleware
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,11 +20,18 @@ interface Behaviour<S, A, C> {
 class Context<S, A>(
 	private val mutableStateFlow: MutableStateFlow<S>,
 	val reducer: (S, A) -> S,
-	val scope: CoroutineScope,
+	private val parentScope: CoroutineScope,
 	val behaviours: CopyOnWriteArrayList<Behaviour<S, A, *>>,
 	private val debugMiddleware: DebugMiddleware<S, A>? = null,
+	val name: String,
 ) {
+	private val job = SupervisorJob(parentScope.coroutineContext[Job])
+	val scope = CoroutineScope(parentScope.coroutineContext + job + CoroutineName(name))
 	val state: StateFlow<S> = mutableStateFlow.asStateFlow()
+
+	fun dispose() {
+		job.cancel()
+	}
 
 	fun dispatch(action: A) {
 		if (debugMiddleware == null) {
@@ -69,12 +80,13 @@ class Context<S, A>(
 			scope: CoroutineScope,
 			behaviours: List<Behaviour<S, A, *>>,
 			debugMiddleware: DebugMiddleware<S, A>? = null,
+			name: String,
 		): Context<S, A> {
 			val mutableStateFlow = MutableStateFlow(initialState)
 			val reducer: (S, A) -> S = { currentState, action ->
 				behaviours.fold(currentState) { s, b -> b.reduce(s, action) }
 			}
-			return Context(mutableStateFlow, reducer, scope, CopyOnWriteArrayList(behaviours), if (debugEnabled) debugMiddleware else null)
+			return Context(mutableStateFlow, reducer, scope, CopyOnWriteArrayList(behaviours), if (debugEnabled) debugMiddleware else null, name)
 		}
 	}
 }

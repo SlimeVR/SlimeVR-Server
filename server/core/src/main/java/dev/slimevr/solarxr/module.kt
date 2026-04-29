@@ -49,11 +49,14 @@ class SolarXRBridge(
 	val rpcDispatcher: EventDispatcher<RpcMessage>,
 	val outbound: EventDispatcher<MessageBundle> = EventDispatcher(),
 ) {
+	fun dispose() = context.dispose()
+
 	suspend fun sendRpc(message: RpcMessage) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(message = message))))
-
+	
 	suspend fun sendDataFeed(frame: DataFeedMessageHeader) = outbound.emit(MessageBundle(dataFeedMsgs = listOf(frame)))
-
+	
 	fun disconnect() {
+		dispose()
 		appContext.server.context.dispatch(VRServerActions.SolarXRDisconnected(id))
 	}
 
@@ -84,6 +87,7 @@ class SolarXRBridge(
 				initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
 				scope = scope,
 				behaviours = buildBehaviours(appContext),
+				name = "SolarXR[$id]"
 			)
 
 			val bridge = SolarXRBridge(

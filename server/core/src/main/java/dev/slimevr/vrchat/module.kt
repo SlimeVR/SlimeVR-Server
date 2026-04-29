@@ -65,6 +65,7 @@ class VRCConfigManager(
 				),
 				scope = scope,
 				behaviours = behaviours,
+				name = "VRCConfig",
 			)
 
 			scope.launch {

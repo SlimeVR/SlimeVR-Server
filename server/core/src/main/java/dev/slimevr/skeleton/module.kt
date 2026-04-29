@@ -88,6 +88,7 @@ class Skeleton(
 				initialState = DEFAULT_SKELETON_STATE,
 				scope = scope,
 				behaviours = behaviours,
+				name = "Skeleton",
 			)
 
 			return Skeleton(context, MutableStateFlow(buildBones(context.state.value)))

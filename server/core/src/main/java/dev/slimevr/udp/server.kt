@@ -96,6 +96,7 @@ class UdpServer(val context: UdpServerContext) {
 				initialState = INITIAL_STATE,
 				scope = scope,
 				behaviours = listOf(UdpServerBaseBehaviour),
+				name = "UdpServer"
 			)
 			val server = UdpServer(context)
 			server.startObserving()

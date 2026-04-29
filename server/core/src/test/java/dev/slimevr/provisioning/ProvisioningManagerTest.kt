@@ -28,6 +28,7 @@ private fun buildManager(serialServer: dev.slimevr.serial.SerialServer, scope: C
 		initialState = ProvisioningManager.INITIAL_STATE,
 		scope = scope,
 		behaviours = listOf(ProvisioningManagerBaseBehaviour),
+		name = "ProvisioningManagerTest",
 	)
 	return ProvisioningManager(context = context, serialServer = serialServer, scope = scope).also { it.startObserving() }
 }

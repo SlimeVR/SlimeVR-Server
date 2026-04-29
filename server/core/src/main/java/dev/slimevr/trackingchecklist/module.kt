@@ -46,6 +46,7 @@ class TrackingChecklist(
 				initialState = TrackingChecklistState(),
 				scope = scope,
 				behaviours = initialBehaviours,
+				name = "TrackingChecklist",
 			)
 			val checklist = TrackingChecklist(context)
 			return checklist

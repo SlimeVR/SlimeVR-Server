@@ -127,6 +127,7 @@ class FirmwareManager(
 				initialState = FirmwareManagerState(jobs = mapOf()),
 				scope = scope,
 				behaviours = behaviours,
+				name = "FirmwareManager",
 			)
 			return FirmwareManager(context = context, serialServer = ctx.serialServer, scope = scope)
 		}

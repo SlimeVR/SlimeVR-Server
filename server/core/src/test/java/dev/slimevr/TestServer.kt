@@ -51,6 +51,7 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 		initialState = UserConfigState(data = UserConfigData(), name = "test"),
 		scope = scope,
 		behaviours = listOf(DefaultUserBehaviour),
+		name = "TestUserConfig",
 	)
 	val userConfig = UserConfig(context, scope = scope, userConfigDir = tempDir)
 	context.observeAll(userConfig)
@@ -62,6 +63,7 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 		initialState = DEFAULT_SKELETON_STATE,
 		scope = scope,
 		behaviours = listOf(ProportionsBehaviour()),
+		name = "TestSkeleton",
 	)
 	val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
 	skeleton.startObserving()

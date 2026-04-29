@@ -94,6 +94,7 @@ data class ProvisioningManager(
 				initialState = INITIAL_STATE,
 				scope = scope,
 				behaviours = behaviours,
+				name = "ProvisioningManager",
 			)
 			return ProvisioningManager(
 				context = context,

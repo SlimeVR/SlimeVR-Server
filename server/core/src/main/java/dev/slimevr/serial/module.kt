@@ -115,6 +115,7 @@ class SerialServer(
 				initialState = SerialServerState(availablePorts = mapOf(), connections = mapOf()),
 				scope = scope,
 				behaviours = behaviours,
+				name = "SerialServer",
 			)
 			val server = SerialServer(
 				context = context,
