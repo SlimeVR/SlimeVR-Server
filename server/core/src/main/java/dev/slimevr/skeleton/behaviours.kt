@@ -14,6 +14,25 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 
+class BoneTransformBehaviour : SkeletonBehaviour {
+	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
+		is SkeletonActions.SetBoneRotation -> {
+			val bones = state.bones.toMutableMap()
+			val bone = bones[action.bodyPart] ?: return state
+			bones[action.bodyPart] = bone.copy(rotation = action.rotation)
+			state.copy(bones = bones)
+		}
+
+		is SkeletonActions.SetBonePosition -> {
+			val positions = state.bonePositions.toMutableMap()
+			positions[action.bodyPart] = action.position
+			state.copy(bonePositions = positions)
+		}
+
+		else -> state
+	}
+}
+
 class ProportionsBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetProportions -> {
@@ -53,20 +72,6 @@ class HeightLogBehaviour : SkeletonBehaviour {
 }
 
 class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour {
-
-	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState {
-		val bones = state.bones.toMutableMap()
-		return when (action) {
-			is SkeletonActions.SetBoneRotation -> {
-				val bone = bones[action.bodyPart] ?: return state
-				bones[action.bodyPart] = bone.copy(rotation = action.rotation)
-				state.copy(bones = bones)
-			}
-
-			else -> state
-		}
-	}
-
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
 			val intervalMs = (1000f / inputHz).toLong()
@@ -74,6 +79,8 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 			while (true) {
 				delay(intervalMs)
 				val elapsed = (System.currentTimeMillis() - startTime) / 1000f
+				val state = receiver.context.state.value
+
 				receiver.context.dispatch(
 					SkeletonActions.SetBoneRotation(
 						BodyPart.CHEST,
@@ -84,6 +91,17 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 					SkeletonActions.SetBoneRotation(
 						BodyPart.LEFT_LOWER_LEG,
 						Quaternion.fromRotationVector(Vector3(cos(elapsed + 1000), sin(elapsed + 1000), 0f)),
+					),
+				)
+
+				val circleRadius = 0.5f
+				val circleX = cos(elapsed * 2f) * circleRadius
+				val circleZ = sin(elapsed * 2f) * circleRadius
+				val jumpHeight = maxOf(0f, sin(elapsed * 3f) * 0.3f)
+				receiver.context.dispatch(
+					SkeletonActions.SetBonePosition(
+						BodyPart.HEAD,
+						Vector3(circleX, state.userHeight.toFloat() + jumpHeight, circleZ),
 					),
 				)
 			}
@@ -104,7 +122,8 @@ class ComputedSkeletonBehaviour(
 				val processed = processors
 					.filter { processor -> processor.enabled }
 					.fold(targetState) { state, processor -> processor.process(state) }
-				receiver.computed.value = buildBones(processed)
+				val rootHead = processed.bonePositions[BodyPart.HEAD] ?: Vector3(0f, targetState.userHeight.toFloat(), 0f)
+				receiver.computed.value = buildBones(processed, rootHead = rootHead)
 			}
 		}
 	}

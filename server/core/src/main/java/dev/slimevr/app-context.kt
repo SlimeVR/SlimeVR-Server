@@ -1,5 +1,6 @@
 package dev.slimevr
 
+import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
@@ -30,6 +31,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val heightCalibrationManager: HeightCalibrationManager
 	val trackingChecklist: TrackingChecklist
 	val udpServer: UdpServer
+	val bvhManager: BVHManager
 	fun startObserving()
 }
 
@@ -44,6 +46,7 @@ class AppContext(
 	override val heightCalibrationManager: HeightCalibrationManager,
 	override val trackingChecklist: TrackingChecklist,
 	override val udpServer: UdpServer,
+	override val bvhManager: BVHManager,
 ) : AppContextProvider {
 	override fun startObserving() {
 		skeleton.startObserving()

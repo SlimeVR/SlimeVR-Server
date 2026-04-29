@@ -5,6 +5,7 @@ package dev.slimevr.desktop
 import dev.slimevr.AppContext
 import dev.slimevr.Phase1Context
 import dev.slimevr.VRServer
+import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.desktop.hid.createDesktopHIDManager
 import dev.slimevr.desktop.ipc.createIpcServers
@@ -36,6 +37,7 @@ fun main(args: Array<String>) = runBlocking {
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
 	val trackingChecklist = TrackingChecklist.create(scope = this)
 	val udpServer = UdpServer.create(scope = this)
+	val bvhManager = BVHManager.create(skeleton = skeleton, scope = this)
 
 	val appContext = AppContext(
 		server = server,
@@ -48,6 +50,7 @@ fun main(args: Array<String>) = runBlocking {
 		heightCalibrationManager = heightCalibrationManager,
 		trackingChecklist = trackingChecklist,
 		udpServer = udpServer,
+		bvhManager = bvhManager,
 	)
 
 	appContext.startObserving()

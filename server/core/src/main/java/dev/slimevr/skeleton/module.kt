@@ -26,7 +26,7 @@ data class BoneState(
 		get() = tailPosition - headPosition
 }
 
-data class SkeletonState(val bones: Map<BodyPart, BoneState>, val userHeight: Double)
+data class SkeletonState(val bones: Map<BodyPart, BoneState>, val userHeight: Double, val bonePositions: Map<BodyPart, Vector3> = emptyMap())
 
 val DEFAULT_SKELETON_STATE: SkeletonState = run {
 	val bones = BONE_TAIL_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
@@ -57,6 +57,7 @@ fun buildBones(state: SkeletonState, rootHead: Vector3 = Vector3.NULL): Map<Body
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
+	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3) : SkeletonActions
 	data class SetProportions(val lengths: Map<BodyPart, Float>) : SkeletonActions
 }
 
@@ -71,7 +72,8 @@ class Skeleton(
 
 	companion object {
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider): Skeleton {
-			val behaviours = listOf<SkeletonBehaviour>(
+			val behaviours = listOf(
+				BoneTransformBehaviour(),
 				ProportionsBehaviour(),
 				ScaledProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
