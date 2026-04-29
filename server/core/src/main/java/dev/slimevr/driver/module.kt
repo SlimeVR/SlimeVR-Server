@@ -9,8 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
-import kotlinx.coroutines.CoroutineScope
-
 data class DriverBridgeState(
 	val protocolVersion: Int,
 )
