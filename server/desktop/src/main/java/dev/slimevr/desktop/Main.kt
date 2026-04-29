@@ -2,6 +2,10 @@
 
 package dev.slimevr.desktop
 
+import com.sun.jna.platform.win32.Kernel32
+import com.sun.jna.platform.win32.Tlhelp32
+import com.sun.jna.platform.win32.WinBase
+import com.sun.jna.platform.win32.WinDef
 import dev.slimevr.FeatureFlags
 import dev.slimevr.Keybinding
 import dev.slimevr.SLIMEVR_IDENTIFIER
@@ -20,6 +24,10 @@ import dev.slimevr.desktop.serial.DesktopSerialHandler
 import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDManager
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
+import io.eiren.util.OperatingSystem.Companion.currentPlatform
+import io.eiren.util.OperatingSystem.LINUX
+import io.eiren.util.OperatingSystem.WINDOWS
+import io.eiren.util.Process
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import org.apache.commons.cli.CommandLine
@@ -157,6 +165,7 @@ fun main(args: Array<String>) {
 			{ _ -> DesktopSerialFlashingHandler() },
 			{ _ -> DesktopVRCConfigHandler() },
 			{ server -> DesktopNetworkProfileChecker(server) },
+			::getRunningProcesses,
 			configManager = configManager,
 		)
 		vrServer.start()
@@ -263,6 +272,47 @@ fun provideBridges(
 
 		else -> {}
 	}
+}
+
+fun getRunningProcesses(): Sequence<Process> = when (currentPlatform) {
+	LINUX -> sequence {
+		val psProc = try {
+			ProcessBuilder("ps", "-eo", "pid,comm").redirectErrorStream(true).start()
+		} catch (_: IOException) {
+			return@sequence
+		}
+
+		val lines = psProc.inputStream.bufferedReader().readLines()
+		// skip the header
+		for (line in lines.slice(1 until lines.size)) {
+			val data = line.trimStart().split(' ')
+			yield(Process(data[0].toULong(), data[1]))
+		}
+	}
+
+	WINDOWS -> sequence {
+		val k32 = Kernel32.INSTANCE
+		val snapshot = k32.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, WinDef.DWORD(0))
+		if (WinBase.INVALID_HANDLE_VALUE.equals(snapshot)) {
+			return@sequence
+		}
+
+		try {
+			val entry = Tlhelp32.PROCESSENTRY32()
+			if (!k32.Process32First(snapshot, entry)) {
+				LogManager.warning("[Windows] Failed to retrieve process information: " + k32.GetLastError())
+				return@sequence
+			}
+
+			do {
+				yield(Process(entry.th32ProcessID.toLong().toULong(), entry.szExeFile.toString()))
+			} while (k32.Process32Next(snapshot, entry))
+		} finally {
+			k32.CloseHandle(snapshot)
+		}
+	}
+
+	else -> emptySequence()
 }
 
 const val CONFIG_FILENAME = "vrconfig.yml"

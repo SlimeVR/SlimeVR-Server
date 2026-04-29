@@ -7,12 +7,14 @@ import {
 import classNames from 'classnames';
 import {
   ChangeSettingsRequestT,
+  EnableSteamVRDriverRequestT,
   ResetType,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
   SteamVRTrackersSettingT,
   TrackingChecklistPublicNetworksT,
+  TrackingChecklistSteamVRDisconnectedT,
   TrackingChecklistStepId,
 } from 'solarxr-protocol';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
@@ -105,6 +107,71 @@ function Step({
         <div className="pt-2 pl-5">{children}</div>
       )}
     </div>
+  );
+}
+
+function SteamVRDisconnected({
+  step,
+  context,
+}: {
+  step: TrackingChecklistStep;
+  context: TrackingChecklistContext;
+}) {
+  const { sendRPCPacket } = useWebsocketAPI();
+  const data = step.extraData as TrackingChecklistSteamVRDisconnectedT | null;
+
+  const enableDriver = () => {
+    sendRPCPacket(
+      RpcMessage.EnableSteamVRDriverRequest,
+      new EnableSteamVRDriverRequestT()
+    );
+  };
+
+  const driverNotInstalled = data?.driverInstalled === false;
+  const driverBlocked = data?.driverBlockedBySafeMode === true;
+  const driverDisabled = data?.driverEnabled === false;
+
+  const showEnableDriverButton = driverBlocked || driverDisabled;
+
+  const getDescriptionId = () => {
+    if (driverBlocked)
+      return 'tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc';
+    if (driverDisabled)
+      return 'tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc';
+    if (driverNotInstalled)
+      return 'tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc';
+    return 'tracking_checklist-STEAMVR_DISCONNECTED-desc';
+  };
+
+  return (
+    <>
+      <div className="space-y-2.5">
+        <Typography id={getDescriptionId()} />
+        <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
+          {showEnableDriverButton && (
+            <Button
+              id="tracking_checklist-STEAMVR_DISCONNECTED-enable"
+              variant="primary"
+              onClick={enableDriver}
+            />
+          )}
+          {!showEnableDriverButton && !driverNotInstalled && (
+            <Button
+              id="tracking_checklist-STEAMVR_DISCONNECTED-open"
+              variant="primary"
+              onClick={() => openUrl('steam://run/250820')}
+            />
+          )}
+          {step.ignorable && (
+            <Button
+              id="tracking_checklist-ignore"
+              variant="secondary"
+              onClick={() => context.toggleSession(step.id)}
+            />
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -224,28 +291,8 @@ const stepContentLookup: Record<
       </div>
     );
   },
-  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]: (step, { toggleSession }) => {
-    return (
-      <>
-        <div className="space-y-2.5">
-          <Typography id="tracking_checklist-STEAMVR_DISCONNECTED-desc" />
-          <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-            <Button
-              id="tracking_checklist-STEAMVR_DISCONNECTED-open"
-              variant="primary"
-              onClick={() => openUrl('steam://run/250820')}
-            />
-            {step.ignorable && (
-              <Button
-                id="tracking_checklist-ignore"
-                variant="secondary"
-                onClick={() => toggleSession(step.id)}
-              />
-            )}
-          </div>
-        </div>
-      </>
-    );
+  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]: (step, context) => {
+    return <SteamVRDisconnected step={step} context={context} />;
   },
   [TrackingChecklistStepId.TRACKER_ERROR]: () => {
     return <Typography id="tracking_checklist-TRACKER_ERROR-desc" />;
