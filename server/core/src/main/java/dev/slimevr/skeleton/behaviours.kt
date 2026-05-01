@@ -12,23 +12,21 @@ import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.random.Random
 
 class BoneTransformBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetBoneRotation -> {
-			val bones = state.bones.toMutableMap()
+			val bones = state.rawBones.toMutableMap()
 			val bone = bones[action.bodyPart] ?: return state
-			bones[action.bodyPart] = bone.copy(rotation = action.rotation)
-			state.copy(bones = bones)
+			bones[action.bodyPart] = bone.copy(rawRotation = action.rotation)
+			state.copy(rawBones = bones)
 		}
-
 		is SkeletonActions.SetBonePosition -> {
-			val positions = state.bonePositions.toMutableMap()
-			positions[action.bodyPart] = action.position
-			state.copy(bonePositions = positions)
+			val bones = state.rawBones.toMutableMap()
+			val bone = bones[action.bodyPart] ?: return state
+			bones[action.bodyPart] = bone.copy(rawPosition = action.position)
+			state.copy(rawBones = bones)
 		}
-
 		else -> state
 	}
 }
@@ -36,10 +34,10 @@ class BoneTransformBehaviour : SkeletonBehaviour {
 class ProportionsBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetProportions -> {
-			val newBones = state.bones.mapValues { (bodyPart, bone) ->
+			val newBones = state.rawBones.mapValues { (bodyPart, bone) ->
 				bone.copy(length = action.lengths[bodyPart] ?: bone.length)
 			}
-			state.copy(bones = newBones, userHeight = computeUserHeight(newBones.mapValues { (_, bone) -> bone.length }))
+			state.copy(rawBones = newBones, userHeight = computeUserHeight(newBones.mapValues { (_, bone) -> bone.length }))
 		}
 
 		else -> state
@@ -122,7 +120,7 @@ class ComputedSkeletonBehaviour(
 				val processed = processors
 					.filter { processor -> processor.enabled }
 					.fold(targetState) { state, processor -> processor.process(state) }
-				val rootHead = processed.bonePositions[BodyPart.HEAD] ?: Vector3(0f, targetState.userHeight.toFloat(), 0f)
+				val rootHead = Vector3(0f, targetState.userHeight.toFloat(), 0f) // FIXME WRONG
 				receiver.computed.value = buildBones(processed, rootHead = rootHead)
 			}
 		}

@@ -24,7 +24,7 @@ class SkeletonBehaviour(
 
 	private fun buildConfigResponse(): SkeletonConfigResponse {
 		val proportions = userConfig.context.state.value.data.proportions
-		val bones = skeleton.context.state.value.bones
+		val bones = skeleton.context.state.value.rawBones
 		val skeletonParts = SKELETON_BONE_TO_BODY_PARTS.mapNotNull { (skeletonBone, bodyParts) ->
 			val length = proportions[skeletonBone.name]
 				?: bodyParts.mapNotNull { bones[it]?.length }.average().takeIf { !it.isNaN() }?.toFloat()

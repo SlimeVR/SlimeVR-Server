@@ -10,6 +10,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import solarxr_protocol.datatypes.BodyPart
 
+data class RawBone(
+	val bodyPart: BodyPart,
+	val length: Float,
+	val rawRotation: Quaternion,
+	val rawPosition: Vector3
+)
+
 data class BoneState(
 	val bodyPart: BodyPart,
 	val length: Float,
@@ -22,11 +29,11 @@ data class BoneState(
 		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
 	val localHeadPosition: Vector3
 		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
-	val localTailPosition: Vector3
-		get() = tailPosition - headPosition
+//	val localTailPosition: Vector3
+//		get() = tailPosition - headPosition
 }
 
-data class SkeletonState(val bones: Map<BodyPart, BoneState>, val userHeight: Double, val bonePositions: Map<BodyPart, Vector3> = emptyMap())
+data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val userHeight: Double)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = run {
 	val bones = BONE_TAIL_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
@@ -36,19 +43,22 @@ val DEFAULT_SKELETON_STATE: SkeletonState = run {
 		}
 		bodyPart to BoneState(bodyPart = bodyPart, length = tailOffset.len(), rotation = restRotation)
 	}
-	SkeletonState(bones = bones, userHeight = computeUserHeight(bones.mapValues { (_, bone) -> bone.length }))
+	SkeletonState(rawBones =  bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, length = bone.length, rawPosition = Vector3.NULL) }, userHeight = computeUserHeight(bones.mapValues { (_, bone) -> bone.length }))
 }
 
 fun buildBones(state: SkeletonState, rootHead: Vector3 = Vector3.NULL): Map<BodyPart, BoneState> {
 	val result = mutableMapOf<BodyPart, BoneState>()
 	iterateBodyPartHierarchy().forEach { (parentPart, childPart) ->
-		val bone = state.bones[childPart] ?: return@forEach
+		val rawBone = state.rawBones[childPart] ?: return@forEach
 		val tailDirection = BONE_TAIL_DIRECTIONS[childPart] ?: return@forEach
 		val parentBone = parentPart?.let { result[it] }
 		val head = parentBone?.tailPosition ?: rootHead
-		result[childPart] = bone.copy(
+		result[childPart] = BoneState(
+			bodyPart = rawBone.bodyPart,
+			length = rawBone.length,
 			headPosition = head,
-			tailPosition = head + bone.rotation.sandwich(tailDirection * bone.length),
+			rotation = rawBone.rawRotation,
+			tailPosition = head + rawBone.rawRotation.sandwich(tailDirection * rawBone.length),
 			parentBone = parentBone,
 		)
 	}

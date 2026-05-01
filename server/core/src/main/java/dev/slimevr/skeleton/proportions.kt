@@ -3,7 +3,7 @@ package dev.slimevr.skeleton
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.SkeletonBone
 
-// Sum of default bone lengths for height-contributing bones (from Drillis and Contini 1966).
+// Sum of default bone lengths for height-contributing bones
 // Used to normalize HEIGHT_SCALED_BONE_RATIOS.
 private const val DEFAULT_HEIGHT = 0.1f + 0.16f + 0.16f + 0.20f + 0.04f + 0.42f + 0.50f // = 1.58f
 
@@ -23,7 +23,7 @@ val SKELETON_BONE_TO_BODY_PARTS: Map<SkeletonBone, List<BodyPart>> = mapOf(
 	SkeletonBone.LOWER_ARM to listOf(BodyPart.LEFT_LOWER_ARM, BodyPart.RIGHT_LOWER_ARM),
 )
 
-// Per-bone fraction of total standing height, derived from Drillis and Contini (1966).
+// Per-bone fraction of total standing height,
 // Includes spine, legs, and arms, all bones whose length scales with user height.
 // Non-height bones (HEAD, FOOT_LENGTH) are absent; they keep fixed defaults from DEFAULT_SKELETON_STATE.
 private val HEIGHT_SCALED_BONE_RATIOS: Map<SkeletonBone, Float> = mapOf(
@@ -63,7 +63,7 @@ fun computeAllDefaultProportionsByBone(height: Float): Map<String, Float> {
 		.filter { (bone, _) -> bone !in HEIGHT_SCALED_BONE_RATIOS }
 		.mapNotNull { (bone, bodyParts) ->
 			val length = bodyParts
-				.mapNotNull { DEFAULT_SKELETON_STATE.bones[it]?.length }
+				.mapNotNull { DEFAULT_SKELETON_STATE.rawBones[it]?.length }
 				.average().takeIf { !it.isNaN() }?.toFloat() ?: return@mapNotNull null
 			bone.name to length
 		}.toMap()

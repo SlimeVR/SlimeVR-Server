@@ -15,17 +15,17 @@ class SmoothingProcessor(var smoothing: Float) : SkeletonProcessor {
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val alpha = 1f - smoothing.coerceAtMost(0.99f)
-		smoothedRotations = state.bones.mapValues { (bodyPart, bone) ->
-			(smoothedRotations[bodyPart] ?: bone.rotation).lerpR(bone.rotation, alpha).unit()
+		smoothedRotations = state.rawBones.mapValues { (bodyPart, bone) ->
+			(smoothedRotations[bodyPart] ?: bone.rawRotation).lerpR(bone.rawRotation, alpha).unit()
 		}
-		smoothedLengths = state.bones.mapValues { (bodyPart, bone) ->
+		smoothedLengths = state.rawBones.mapValues { (bodyPart, bone) ->
 			val prev = smoothedLengths[bodyPart] ?: bone.length
 			prev + (bone.length - prev) * alpha
 		}
 		return state.copy(
-			bones = state.bones.mapValues { (bodyPart, bone) ->
+			rawBones = state.rawBones.mapValues { (bodyPart, bone) ->
 				bone.copy(
-					rotation = smoothedRotations[bodyPart] ?: bone.rotation,
+					rawRotation = smoothedRotations[bodyPart] ?: bone.rawRotation,
 					length = smoothedLengths[bodyPart] ?: bone.length,
 				)
 			},
@@ -47,14 +47,14 @@ class PredictionProcessor(var predictionAmount: Float) : SkeletonProcessor {
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val newVelocities = mutableMapOf<BodyPart, BoneVelocity>()
-		val newBones = state.bones.mapValues { (bodyPart, bone) ->
+		val newBones = state.rawBones.mapValues { (bodyPart, bone) ->
 			val prev = velocities[bodyPart]
 			if (prev == null) {
-				newVelocities[bodyPart] = BoneVelocity(bone.rotation, Quaternion.IDENTITY, bone.length, 0f)
+				newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, Quaternion.IDENTITY, bone.length, 0f)
 				return@mapValues bone
 			}
-			val rotationDelta = if (bone.rotation !== prev.lastRotation) {
-				bone.rotation * prev.lastRotation.inv()
+			val rotationDelta = if (bone.rawRotation !== prev.lastRotation) {
+				bone.rawRotation * prev.lastRotation.inv()
 			} else {
 				prev.rotationDelta
 			}
@@ -63,14 +63,14 @@ class PredictionProcessor(var predictionAmount: Float) : SkeletonProcessor {
 			} else {
 				prev.lengthDelta
 			}
-			newVelocities[bodyPart] = BoneVelocity(bone.rotation, rotationDelta, bone.length, lengthDelta)
+			newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, rotationDelta, bone.length, lengthDelta)
 			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, predictionAmount).unit()
 			bone.copy(
-				rotation = (scaledDelta * bone.rotation).unit(),
+				rawRotation = (scaledDelta * bone.rawRotation).unit(),
 				length = bone.length + lengthDelta * predictionAmount,
 			)
 		}
 		velocities = newVelocities
-		return state.copy(bones = newBones)
+		return state.copy(rawBones = newBones)
 	}
 }
