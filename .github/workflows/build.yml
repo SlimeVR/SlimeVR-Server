@@ -45,9 +45,7 @@ jobs:
           submodules: recursive
       - if: matrix.platform == 'linux'
         name: Install GCC
-        uses: egor-tensin/setup-gcc@v2
-        with:
-          version: 16
+        run: sudo apt install -y gcc-12
       - name: Get CMake
         uses: lukka/get-cmake@latest
       - name: Configure
