@@ -102,6 +102,7 @@ export function useProvideOnboarding() {
   });
 
   const onboardingEnded = () => {
+    setConfig({ doneOnboarding: true });
     if (!settings?.modelSettings || !settings?.vrcOsc) return;
     const req = new ChangeSettingsRequestT();
     const modelSettings = new ModelSettingsT();
