@@ -976,9 +976,43 @@ onboarding-setup_warning-cancel = Continuar configuración
 
 ## Quiz
 
+onboarding-quiz_continue = Continuar
+onboarding-quiz_back = Atrás
+onboarding-quiz-more_sets_modal-title = ¿Has conectado todos tus trackers?
+onboarding-quiz-more_sets_modal-desc = Si tienes sets de diferentes modelos, ¡los podemos conectar ahora!
+onboarding-quiz-more_sets_modal-confirm = He conectado todos mis trackers
+onboarding-quiz-more_sets_modal-cancel = Quiero conectar mas trackers
+onboarding-quiz-slimeset-title = ¿Que tipo de trackers estás conectando?
+onboarding-quiz-slimeset-description = Si tienes múltiples sets, se te preguntará de nuevo más adelante en el proceso
+onboarding-quiz-slimeset-official-sets = Trackers SlimeVR Oficiales
+onboarding-quiz-slimeset-thirdparty-sets = Trackers DIY o de terceros
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 y V1.2
+onboarding-quiz-slimeset-answer-butterfly = Mariposa
+onboarding-quiz-usage-title = ¿Para que usas tus trackers?
+onboarding-quiz-usage-description = Si planeas usar SlimeVR para múltiples propósitos, puedes cambiar los ajustes afectados más adelante.
+onboarding-quiz-usage-answer-VRC = Juegos VR (por ejemplo, VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap y VTubing
+onboarding-quiz-runtime-title = ¿Ejecutas los juegos por SteamVR o directamente del casco (independiente)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Independiente
+onboarding-quiz-mocap_preferences-title = Preferencias de Mocap
+onboarding-quiz-mocap_preferences-desc = Especifica cómo planeas usar SlimeVR para mocap o VTubing
+onboarding-quiz-mocap_preferences-playspace-title = ¿Cuál es tu espacio de juego?
+onboarding-quiz-mocap_preferences-playspace-desc = Si estás de pie, SlimeVR intentará trackear el movimiento al caminar en vez de anclarte en un lugar.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sentado
+onboarding-quiz-mocap_preferences-playspace-standing = De pie
+onboarding-quiz-mocap_preferences-vrm_model-title = ¿Tienes un modelo VRM? (Opcional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Cargar un modelo VRM mejorará la calidad de trackeo y la compatibilidad con aplicaciones que usan VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = ¿Tienes un tracker o un casco VR en tu cabeza?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Sí
+onboarding-quiz-mocap_preferences-head_tracker-no = No
+onboarding-quiz-mocap_preferences-head_tracker_location-title = ¿Donde se encuentra el tracker de cabeza?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Frente
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Cara
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Volver
 onboarding-wifi_creds-v2 = Trackers utilizando Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1027,6 +1061,8 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Cerrar
+install-info_udev-rules_modal-dont-show-again_checkbox = No mostrar de nuevo
 
 ## Setup start
 
@@ -1371,6 +1407,7 @@ onboarding-user_height-description = Necesitamos tu altura para calcular tus pro
 onboarding-user_height-need_head_tracker = Un casco y controles con rastreo posicional son requeridos para realizar la calibración.
 onboarding-user_height-calculate = Calcular mi altura automáticamente
 onboarding-user_height-next_step = Continuar y guardar
+onboarding-user_height-prev_step = Atrás
 onboarding-user_height-manual-proportions = Proporciones Manuales
 onboarding-user_height-calibration-title = Progreso de Calibración
 onboarding-user_height-calibration-RECORDING_FLOOR = Toca el suelo con la punta de tu control
@@ -1521,6 +1558,7 @@ firmware_tool-flashing_step-description = Sus trackers se están flasheando, por
 firmware_tool-flashing_step-warning-v2 = No desconectes o apagues el tracker durante el proceso de subida a menos que se te indique, puede causar que tu placa quede inutilizable.
 firmware_tool-flashing_step-flash_more = Flashear más sensores
 firmware_tool-flashing_step-exit = Salir
+firmware_tool-flashing_step-onboarding_continue = Continuar
 
 ## firmware tool build status
 
@@ -1662,6 +1700,9 @@ tracking_checklist-FULL_RESET-desc = Algunos trackers necesitan realizar un rein
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR no se está ejecutando
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR no se esta ejecutando. ¿Lo estas usando para VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Abrir SteamVR
+tracking_checklist-STEAMVR_HANDS_ENABLED = Trackers de mano activados
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Has activado los trackers de mano virtuales de SteamVR. Esto causará que los botones no funcionarán en SteamVR ni en juegos.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Desactívalos
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibra tus trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = No realizaste una calibración para los trackers. Por favor deja reposar tus trackers (resaltados en amarillo) en una superficie estable por unos segundos.
 tracking_checklist-TRACKER_ERROR = Trackers con Errores
