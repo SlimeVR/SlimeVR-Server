@@ -3,6 +3,9 @@ package dev.slimevr.tracking.processor.skeleton
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerUtils
+import io.eiren.util.logging.LogManager
 import java.util.concurrent.CopyOnWriteArrayList
 
 class TapDetectionManager(
@@ -69,6 +72,7 @@ class TapDetectionManager(
 		tapDetectors.clear()
 		registerSingleTapDetectors()
 		registerResetsDetectors()
+		LogManager.info(yawResetTracker.toString())
 	}
 
 	fun update() {
@@ -88,26 +92,29 @@ class TapDetectionManager(
 	private val mountingResetTracker: Tracker?
 		get() {
 			return arrayOf(
-				skeleton.rightUpperLegTracker,
-				skeleton.rightLowerLegTracker,
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.mountingResetTracker),
+				if (config.yawResetTracker !== TrackerPosition.RIGHT_UPPER_LEG && config.fullResetTracker !== TrackerPosition.RIGHT_UPPER_LEG) skeleton.rightUpperLegTracker else null,
+				if (config.yawResetTracker !== TrackerPosition.RIGHT_LOWER_LEG && config.fullResetTracker !== TrackerPosition.RIGHT_LOWER_LEG) skeleton.rightLowerLegTracker else null,
 			).firstNotNullOfOrNull { it }
 		}
 
 	private val fullResetTracker: Tracker?
 		get() {
 			return arrayOf(
-				skeleton.leftUpperLegTracker,
-				skeleton.leftLowerLegTracker,
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.fullResetTracker),
+				if (config.yawResetTracker !== TrackerPosition.LEFT_UPPER_LEG && config.mountingResetTracker !== TrackerPosition.LEFT_UPPER_LEG) skeleton.leftUpperLegTracker else null,
+				if (config.yawResetTracker !== TrackerPosition.LEFT_LOWER_LEG && config.mountingResetTracker !== TrackerPosition.LEFT_LOWER_LEG) skeleton.leftLowerLegTracker else null,
 			).firstNotNullOfOrNull { it }
 		}
 
 	private val yawResetTracker: Tracker?
 		get() {
 			return arrayOf(
-				skeleton.upperChestTracker,
-				skeleton.chestTracker,
-				skeleton.hipTracker,
-				skeleton.waistTracker,
+				TrackerUtils.getTrackerForSkeleton(server.allTrackers, config.yawResetTracker),
+				if (config.fullResetTracker !== TrackerPosition.UPPER_CHEST && config.mountingResetTracker !== TrackerPosition.UPPER_CHEST) skeleton.upperChestTracker else null,
+				if (config.fullResetTracker !== TrackerPosition.CHEST && config.mountingResetTracker !== TrackerPosition.CHEST) skeleton.chestTracker else null,
+				if (config.fullResetTracker !== TrackerPosition.HIP && config.mountingResetTracker !== TrackerPosition.HIP) skeleton.hipTracker else null,
+				if (config.fullResetTracker !== TrackerPosition.WAIST && config.mountingResetTracker !== TrackerPosition.WAIST) skeleton.waistTracker else null,
 			).firstNotNullOfOrNull { it }
 		}
 
