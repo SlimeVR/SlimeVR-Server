@@ -127,14 +127,14 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
 });
 
 handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => {
-  const allowed_urls = [
+  const allowedUrls = [
     /^steam:\/\//,
     /^ms-settings:network$/,
     /^https:\/\/(?:.+\.)?slimevr\.dev(?:\/.+)?$/,
     /^https:\/\/github\.com\/SlimeVR(?:\/.+)?$/,
     /^https:\/\/discord\.gg\/slimevr$/,
   ];
-  if (allowed_urls.find((a) => url.match(a))) open(url);
+  if (allowedUrls.find((a) => url.match(a))) open(url);
   else logger.error({ url }, 'attempted to open non-whitelisted URL');
 });
 
@@ -367,9 +367,9 @@ function createWindow() {
 }
 
 const checkEnvironmentVariables = () => {
-  const to_check = ['_JAVA_OPTIONS', 'JAVA_TOOL_OPTIONS'];
+  const disallowedVars = ['_JAVA_OPTIONS', 'JAVA_TOOL_OPTIONS'];
 
-  const set = to_check.filter((env) => !!process.env[env]);
+  const set = disallowedVars.filter((env) => !!process.env[env]);
   if (set.length > 0) {
     dialog.showErrorBox(
       'SlimeVR',
@@ -400,7 +400,7 @@ const spawnServer = async () => {
   if (!javaBin) {
     dialog.showErrorBox(
       'SlimeVR',
-      `Couldn't find a compatible Java version, please download Java 17 or higher`
+      'Unable to find a compatible Java version, please download Java 17 or higher'
     );
     app.quit();
     return;
