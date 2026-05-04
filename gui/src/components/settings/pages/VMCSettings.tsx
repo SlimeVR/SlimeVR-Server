@@ -408,7 +408,7 @@ async function parseVRMFile(
   /* eslint-disable camelcase */
   const vrmJson = {
     extensions: {
-      vrmV0: data.extensions.vrmV0,
+      VRM: data.extensions.VRM,
       VRMC_vrm: data.extensions.VRMC_vrm,
     },
     extensionsUsed: data.extensionsUsed,
