@@ -907,9 +907,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Salta la configurazione
 onboarding-setup_warning-cancel = Continua la configurazione
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Torna all'introduzione
 onboarding-wifi_creds-skip = Salta impostazioni Wi-Fi
 onboarding-wifi_creds-submit = Conferma!
 onboarding-wifi_creds-ssid =
@@ -944,6 +946,9 @@ onboarding-reset_tutorial-2 =
     Il ripristino del posizionamento aiuta a determinare come i tracker vengono effettivamente posizionati su di te, quindi se li hai spostati accidentalmente e hai cambiato il modo in cui sono orientati di una grande quantità, questo aiuterà.
     
     Devi essere in posa come se stessi sciando come mostrato nella procedura guidata di posizionamento automatico e ha un ritardo di 3 secondi (configurabile) prima che venga attivato.
+
+## Install info
+
 
 ## Setup start
 
