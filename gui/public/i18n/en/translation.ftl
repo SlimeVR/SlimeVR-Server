@@ -1667,6 +1667,10 @@ tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
 tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
 tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
 tracking_checklist-TRACKER_ERROR = Trackers with Errors

@@ -105,6 +105,16 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 
 		steps.add(
 			TrackingChecklistStepT().apply {
+				id = TrackingChecklistStepId.STANDABLE_INSTALLED
+				enabled = false
+				optional = false
+				ignorable = true
+				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
+			},
+		)
+
+		steps.add(
+			TrackingChecklistStepT().apply {
 				id = TrackingChecklistStepId.TRACKER_ERROR
 				valid = true // Default to valid
 				enabled = true
@@ -300,6 +310,12 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			} else {
 				null
 			}
+			val driver = driverList?.firstOrNull { driver ->
+				driver.manifest.name == "slimevr"
+			}
+			val standableInstalled = driverList?.any { driver ->
+				driver.manifest.name == "standable"
+			} ?: false
 
 			updateValidity(
 				TrackingChecklistStepId.STEAMVR_DISCONNECTED,
@@ -307,10 +323,6 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			) {
 				it.enabled = true
 				it.extraData = if (!steamvrConnected) {
-					val driver = driverList?.firstOrNull { driver ->
-						driver.manifest.name == "slimevr"
-					}
-
 					TrackingChecklistExtraDataUnion().apply {
 						type = TrackingChecklistExtraData.TrackingChecklistSteamVRDisconnected
 						value = TrackingChecklistSteamVRDisconnectedT().apply {
@@ -323,6 +335,13 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 				} else {
 					null
 				}
+			}
+
+			updateValidity(
+				TrackingChecklistStepId.STANDABLE_INSTALLED,
+				!standableInstalled,
+			) {
+				it.enabled = true
 			}
 
 			val handsEnabled = steamVRBridge.getShareSetting(TrackerRole.LEFT_HAND) || steamVRBridge.getShareSetting(TrackerRole.RIGHT_HAND)
