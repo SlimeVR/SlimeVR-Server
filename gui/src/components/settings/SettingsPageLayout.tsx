@@ -29,14 +29,7 @@ export function SettingsPageLayout({
   }, [state]);
 
   return (
-    <div
-      ref={pageRef}
-      className={classNames(
-        '[&_[id]]:scroll-mt-[45px] mobile:[&_[id]]:scroll-mt-[80px]',
-        className
-      )}
-      {...props}
-    >
+    <div ref={pageRef} className={className} {...props}>
       {children}
     </div>
   );
@@ -54,7 +47,7 @@ export function SettingsPagePaneLayout({
   return (
     <div
       className={classNames(
-        'bg-background-70 rounded-lg px-4 py-8 flex xs:gap-4 w-full relative',
+        'bg-background-70 rounded-lg px-4 py-8 flex xs:gap-4 w-full relative scroll-mt-12 mobile:scroll-mt-20',
         className
       )}
       {...props}
