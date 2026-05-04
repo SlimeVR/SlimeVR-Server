@@ -14,6 +14,14 @@ body {
   scrollbar-width: thin;
 }
 
+.settings-page-layout [id] {
+  scroll-margin-top: 45px;
+
+  @screen mobile {
+    scroll-margin-top: 80px;
+  }
+}
+
 @font-face {
   font-family: 'OpenDyslexic';
   src: url('/fonts/OpenDyslexic-Regular.woff') format('woff');
