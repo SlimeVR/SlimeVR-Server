@@ -45,7 +45,7 @@ export interface IElectronAPI {
   close: () => void;
   hide: () => void;
   minimize: () => void;
-  maximize: () => void;
+  toggleMaximize: () => void;
   showDecorations: (decorations: boolean) => void;
   setTranslations: (translations: Record<string, string>) => void;
   i18nOverride: () => Promise<string | false>;

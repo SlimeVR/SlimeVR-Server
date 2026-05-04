@@ -281,18 +281,22 @@ function createWindow() {
   });
 
   handleIpc('window-actions', (e, action) => {
+    if (mainWindow === null) return;
     switch (action) {
       case 'close':
-        mainWindow?.close();
+        mainWindow.close();
         break;
       case 'hide':
-        mainWindow?.hide();
+        mainWindow.hide();
         break;
       case 'minimize':
-        mainWindow?.minimize();
+        mainWindow.minimize();
         break;
-      case 'maximize':
-        mainWindow?.maximize();
+      case 'toggle-maximize':
+        if (mainWindow.isMaximized())
+          mainWindow.unmaximize();
+        else
+          mainWindow.maximize();
         break;
     }
   });
