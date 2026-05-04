@@ -155,10 +155,11 @@ handleIpc(IPC_CHANNELS.STORAGE, async (e, { type, method, key, value }) => {
 });
 
 handleIpc(IPC_CHANNELS.DISCORD_PRESENCE, async (e, options) => {
-  if (options.enable && !discordPresence.state.ready) {
-    await discordPresence.connect();
+  if (options.enable) {
+    if (!discordPresence.state.ready)
+      await discordPresence.connect();
     discordPresence.updateActivity(options.activity);
-  } else if (!options.enable && discordPresence.state.ready) {
+  } else if (discordPresence.state.ready) {
     discordPresence.destroy();
   }
 });
