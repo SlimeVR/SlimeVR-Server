@@ -1,5 +1,6 @@
 package dev.slimevr.steamvr
 
+import dev.slimevr.VRServer
 import io.eiren.util.logging.LogManager
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -10,6 +11,7 @@ import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpMethod
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.delay
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -17,9 +19,10 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
-public data class DriverManifest(
+data class DriverManifest(
 	val directory: String,
 	@SerialName("hmd_presence")
 	val hmdPresence: List<String>?,
@@ -27,7 +30,7 @@ public data class DriverManifest(
 )
 
 @Serializable
-public data class Driver(
+data class Driver(
 	@SerialName("always_activate")
 	val alwaysActivate: Boolean,
 	@SerialName("blocked_by_safe_mode")
@@ -46,7 +49,11 @@ public data class Driver(
 )
 
 @Serializable
-private data class DriverListResponse(val drivers: List<Driver>, val jsonid: String)
+private data class DriverListResponse(
+	val drivers: List<Driver>,
+	@SerialName("jsonid")
+	val jsonId: String,
+)
 
 class SteamVRUtils {
 	companion object {
@@ -59,8 +66,7 @@ class SteamVRUtils {
 				client.request("$SERVER_URL/drivers/list.json") {
 					header("Referer", REFERER)
 				}
-			} catch (e: Exception) {
-				LogManager.warning("[SteamVRUtils] Failed to connect to SteamVR web server", e)
+			} catch (_: Exception) {
 				return null
 			}
 
@@ -71,8 +77,7 @@ class SteamVRUtils {
 
 			val body: String = try {
 				resp.body()
-			} catch (e: Exception) {
-				LogManager.warning("[SteamVRUtils] Failed to get response from SteamVR", e)
+			} catch (_: Exception) {
 				return null
 			}
 
@@ -83,8 +88,8 @@ class SteamVRUtils {
 				return null
 			}
 
-			if (driverList.jsonid != "vr_driver_list") {
-				LogManager.severe("[SteamVRUtils] SteamVR driver list response had wrong jsonid ${driverList.jsonid}")
+			if (driverList.jsonId != "vr_driver_list") {
+				LogManager.severe("[SteamVRUtils] SteamVR driver list response had wrong jsonId (${driverList.jsonId})")
 				return null
 			}
 
@@ -110,19 +115,9 @@ class SteamVRUtils {
 				LogManager.severe("[SteamVRUtils] Failed to enable driver: ${enableReq.status}")
 			}
 
-			val restartReq = client.get("$SERVER_URL/console_command.action") {
-				method = HttpMethod.Get
-				header("Referer", REFERER)
-				parameter("sCommand", "restart")
-			}
-			if (restartReq.status.isSuccess()) {
-				val resp = Json.parseToJsonElement(restartReq.body())
-				if (resp !is JsonObject || resp.jsonObject["jsonid"]?.jsonPrimitive?.contentOrNull != "vr_console_command") {
-					LogManager.severe("[SteamVRUtils] Got unexpected response for console command: $resp")
-				}
-			} else {
-				LogManager.severe("[SteamVRUtils] Failed to send restart command: ${restartReq.status}")
-			}
+			delay(500.milliseconds)
+
+			VRServer.instance.tryOpenUri("vrmonitor://restartsystem")
 		}
 	}
 }
