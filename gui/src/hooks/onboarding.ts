@@ -1,4 +1,4 @@
-import { createContext, Reducer, useContext, useLayoutEffect, useReducer } from 'react';
+import { createContext, Reducer, useContext, useEffect, useLayoutEffect, useReducer, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useConfig } from './config';
 
@@ -52,7 +52,8 @@ export function useProvideOnboarding(): OnboardingContext {
     }
   );
 
-  const { state: locatioState } = useLocation();
+  const { state: locatioState, pathname } = useLocation();
+  const [previousPath, setPreviousPath] = useState(pathname);
 
   useLayoutEffect(() => {
     const { alonePage = false }: { alonePage?: boolean } = (locatioState as any) || {};
@@ -60,6 +61,18 @@ export function useProvideOnboarding(): OnboardingContext {
     if (alonePage !== state.alonePage)
       dispatch({ type: 'alone-page', value: alonePage });
   }, [locatioState, state]);
+
+  const onboardingEnded = () => {
+    setConfig({ doneOnboarding: true });
+  };
+
+  useEffect(() => {
+    setPreviousPath(pathname);
+
+    if (!pathname.startsWith('/onboarding') && previousPath.startsWith('/onboarding')) {
+      onboardingEnded();
+    }
+  }, [pathname]);
 
   return {
     state,
