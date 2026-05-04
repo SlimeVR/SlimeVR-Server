@@ -3,7 +3,7 @@ package dev.slimevr.unit
 import com.jme3.math.FastMath
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.TrackerPosition
-import dev.slimevr.unit.TrackerTestUtils.assertAnglesApproxEqual
+import dev.slimevr.unit.TrackerTestUtils.assertAngleEquals
 import dev.slimevr.unit.TrackerTestUtils.quatApproxEqual
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -57,8 +57,8 @@ class SkeletonResetTests {
 		hpm.resetTrackersYaw(resetSource)
 
 		for (tracker in trackers.set) {
-			val yaw = TrackerTestUtils.yaw(tracker.getRotation())
-			assertAnglesApproxEqual(0f, yaw, "\"${tracker.name}\" did not reset to the reference rotation.")
+			val yaw = TrackerTestUtils.radYaw(tracker.getRotation())
+			assertAngleEquals(0f, yaw, message = "\"${tracker.name}\" did not reset to the reference rotation.")
 		}
 	}
 
@@ -104,9 +104,9 @@ class SkeletonResetTests {
 			val actualMounting = tracker.resetsHandler.mountRotFix
 
 			// Make sure yaw matches
-			val expectedY = TrackerTestUtils.yaw(expectedMounting)
-			val actualY = TrackerTestUtils.yaw(actualMounting)
-			assertAnglesApproxEqual(expectedY, actualY, "\"${tracker.name}\" did not reset to the reference rotation.")
+			val expectedY = TrackerTestUtils.radYaw(expectedMounting)
+			val actualY = TrackerTestUtils.radYaw(actualMounting)
+			assertAngleEquals(expectedY, actualY, message = "\"${tracker.name}\" did not reset to the reference rotation.")
 
 			// X and Z components should be zero for mounting
 			assert(FastMath.isApproxZero(actualMounting.x)) {
