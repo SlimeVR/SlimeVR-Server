@@ -22,9 +22,10 @@ export const richPresence = () => {
     state,
     connect: async () => {
       try {
+        logger.info('Logging into Discord RPC');
         await client.login();
       } catch (e) {
-        logger.error(e, 'unable to connect to discord rpc');
+        logger.error(e, 'Unable to connect to Discord RPC');
       }
     },
     updateActivity: (content: string) => {
@@ -36,10 +37,11 @@ export const richPresence = () => {
           startTimestamp: state.start,
         })
         .catch((e) => {
-          logger.error(e, 'unable to update rpc activity');
+          logger.error(e, 'Failed to update Discord RPC activity');
         });
     },
     destroy: () => {
+      logger.info('Destroying Discord RPC');
       client.destroy();
       Object.assign(state, initialState());
     },
