@@ -1,8 +1,7 @@
-import { access, mkdir, readFile, writeFile } from "fs/promises";
-import { dirname, join } from "path";
-import { logger } from "./logger";
-import { getGuiDataFolder } from "./paths";
-
+import { access, mkdir, readFile, writeFile } from 'fs/promises';
+import { dirname, join } from 'path';
+import { logger } from './logger';
+import { getGuiDataFolder } from './paths';
 
 export class CustomStore {
   private data: Record<string, unknown> = {};
@@ -15,7 +14,10 @@ export class CustomStore {
     this.debounceMs = debounceMs;
   }
 
-  static async create(filePath: string, debounceMs: number = 2000): Promise<CustomStore> {
+  static async create(
+    filePath: string,
+    debounceMs: number = 2000
+  ): Promise<CustomStore> {
     const store = new CustomStore(filePath, debounceMs);
     await store.load();
     return store;
@@ -28,7 +30,9 @@ export class CustomStore {
       this.data = JSON.parse(raw);
     } catch {
       this.data = {};
-      logger.warn(`No existing store found at ${this.filePath}, starting with empty store.`);
+      logger.warn(
+        `No existing store found at ${this.filePath}, starting with empty store.`
+      );
     }
   }
 
@@ -73,7 +77,10 @@ export class CustomStore {
 
 export async function initStores() {
   return {
-    settings: await CustomStore.create(join(getGuiDataFolder(), 'gui-settings.dat'), 1000),
+    settings: await CustomStore.create(
+      join(getGuiDataFolder(), 'gui-settings.dat'),
+      1000
+    ),
     cache: await CustomStore.create(join(getGuiDataFolder(), 'gui-cache.dat'), 100),
   };
 }
