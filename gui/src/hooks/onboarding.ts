@@ -1,4 +1,12 @@
-import { createContext, Reducer, useContext, useEffect, useLayoutEffect, useReducer, useState } from 'react';
+import {
+  createContext,
+  Reducer,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import { useConfig } from './config';
 
