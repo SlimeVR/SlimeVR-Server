@@ -19,7 +19,7 @@ export const IPC_CHANNELS = {
   OPEN_FILE: 'open-file',
   GET_FOLDER: 'get-folder',
   GH_FETCH: 'gh-fetch',
-  DISCORD_PRESENCE: 'discord-presence'
+  DISCORD_PRESENCE: 'discord-presence',
 } as const;
 
 export interface IpcInvokeMap {

@@ -156,8 +156,7 @@ handleIpc(IPC_CHANNELS.STORAGE, async (e, { type, method, key, value }) => {
 
 handleIpc(IPC_CHANNELS.DISCORD_PRESENCE, async (e, options) => {
   if (options.enable) {
-    if (!discordPresence.state.ready)
-      await discordPresence.connect();
+    if (!discordPresence.state.ready) await discordPresence.connect();
     discordPresence.updateActivity(options.activity, options.iconText);
   } else if (discordPresence.state.ready) {
     discordPresence.destroy();
@@ -208,11 +207,11 @@ const defaultWindowState: {
 const windowState = await readFile(getWindowStateFile(), {
   encoding: 'utf-8',
 })
-.then(data => JSON.parse(data))
-.catch(() => {
-  logger.error('Failed to load window state, using defaults');
-  return defaultWindowState;
-});
+  .then((data) => JSON.parse(data))
+  .catch(() => {
+    logger.error('Failed to load window state, using defaults');
+    return defaultWindowState;
+  });
 
 const MIN_WIDTH = 393;
 const MIN_HEIGHT = 667;
@@ -245,7 +244,9 @@ function validateWindowState(state: typeof defaultWindowState) {
 
 const saveWindowState = async () => {
   await mkdir(dirname(getWindowStateFile()), { recursive: true });
-  await writeFile(getWindowStateFile(), JSON.stringify(windowState), { encoding: 'utf-8' });
+  await writeFile(getWindowStateFile(), JSON.stringify(windowState), {
+    encoding: 'utf-8',
+  });
 };
 
 function createWindow() {
@@ -293,10 +294,8 @@ function createWindow() {
         mainWindow.minimize();
         break;
       case 'toggle-maximize':
-        if (mainWindow.isMaximized())
-          mainWindow.unmaximize();
-        else
-          mainWindow.maximize();
+        if (mainWindow.isMaximized()) mainWindow.unmaximize();
+        else mainWindow.maximize();
         break;
     }
   });
@@ -403,7 +402,7 @@ const spawnServer = async () => {
       'SlimeVR',
       `Couldn't find a compatible Java version, please download Java 17 or higher`
     );
-    app.quit()
+    app.quit();
     return;
   }
 
@@ -425,7 +424,9 @@ const spawnServer = async () => {
         ? {
             ...process.env,
             APPDATA: app.getPath('appData'),
-            LOCALAPPDATA: process.env['USERPROFILE'] ? path.join(process.env['USERPROFILE'], 'AppData', 'Local') : undefined,
+            LOCALAPPDATA: process.env['USERPROFILE']
+              ? path.join(process.env['USERPROFILE'], 'AppData', 'Local')
+              : undefined,
           }
         : undefined,
   });
@@ -447,11 +448,11 @@ const spawnServer = async () => {
   serverProcess.on('error', (err) => {
     logger.info({ err }, 'Error launching the java server');
     if (!isQuitting) app.quit();
-  })
+  });
 
   serverProcess.on('exit', () => {
     logger.info('Server process exiting');
-  })
+  });
 
   const exited = new Promise<void>((resolve) => serverProcess.once('exit', resolve));
 
@@ -465,8 +466,7 @@ const spawnServer = async () => {
 const createFolders = async () => {
   await mkdir(getServerDataFolder(), { recursive: true });
   await mkdir(getGuiDataFolder(), { recursive: true });
-}
-
+};
 
 let isQuitting = false;
 
@@ -476,7 +476,6 @@ app.whenReady().then(async () => {
     const filePath = path.normalize(join(__dirname, '../renderer', pathname));
     return net.fetch(pathToFileURL(filePath).toString(), { headers: request.headers });
   });
-
 
   try {
     await createFolders();
@@ -489,7 +488,6 @@ app.whenReady().then(async () => {
     app.quit();
     return;
   }
-
 
   stores = await initStores();
   checkEnvironmentVariables();
