@@ -25,7 +25,9 @@ export const IPC_CHANNELS = {
 export interface IpcInvokeMap {
   [IPC_CHANNELS.OPEN_URL]: (url: string) => void;
   [IPC_CHANNELS.OS_STATS]: () => Promise<OSStats>;
-  [IPC_CHANNELS.WINDOW_ACTIONS]: (action: 'close' | 'minimize' | 'maximize' | 'hide') => void;
+  [IPC_CHANNELS.WINDOW_ACTIONS]: (
+    action: 'close' | 'minimize' | 'toggle-maximize' | 'hide'
+  ) => void;
   [IPC_CHANNELS.LOG]: (type: 'info' | 'error' | 'warn', ...args: unknown[]) => void;
   [IPC_CHANNELS.OPEN_DIALOG]: (
     options: OpenDialogOptions
