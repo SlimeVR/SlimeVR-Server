@@ -64,6 +64,7 @@ class VRServer @JvmOverloads constructor(
 	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
 	networkProfileProvider: (VRServer) -> NetworkProfileChecker = { _ -> NetworkProfileCheckerStub() },
 	val processListProvider: () -> Sequence<Process> = { emptySequence() },
+	val tryOpenUri: (String) -> Unit = {},
 	acquireMulticastLock: () -> Any? = { null },
 	@JvmField val configManager: ConfigManager,
 ) : Thread("VRServer") {

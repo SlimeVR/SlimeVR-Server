@@ -335,7 +335,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 						type = TrackingChecklistExtraData.TrackingChecklistSteamVRDisconnected
 						value = TrackingChecklistSteamVRDisconnectedT().apply {
 							bridgeSettingsName = steamVRBridge.getBridgeConfigKey()
-							driverInstalled = !steamvrRunning || driver != null
+							driverInstalled = !steamvrRunning || driverList == null || driver != null
 							driverBlockedBySafeMode = driver?.blockedBySafeMode ?: false
 							driverEnabled = driver?.enabled ?: true
 						}

@@ -2,10 +2,13 @@
 
 package dev.slimevr.desktop
 
+import com.sun.jna.Native
 import com.sun.jna.platform.win32.Kernel32
+import com.sun.jna.platform.win32.Shell32
 import com.sun.jna.platform.win32.Tlhelp32
 import com.sun.jna.platform.win32.WinBase
 import com.sun.jna.platform.win32.WinDef
+import com.sun.jna.platform.win32.WinUser
 import dev.slimevr.FeatureFlags
 import dev.slimevr.Keybinding
 import dev.slimevr.SLIMEVR_IDENTIFIER
@@ -25,8 +28,6 @@ import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDManager
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.OperatingSystem.Companion.currentPlatform
-import io.eiren.util.OperatingSystem.LINUX
-import io.eiren.util.OperatingSystem.WINDOWS
 import io.eiren.util.Process
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -166,6 +167,7 @@ fun main(args: Array<String>) {
 			{ _ -> DesktopVRCConfigHandler() },
 			{ server -> DesktopNetworkProfileChecker(server) },
 			::getRunningProcesses,
+			::tryOpenUri,
 			configManager = configManager,
 		)
 		vrServer.start()
@@ -275,7 +277,7 @@ fun provideBridges(
 }
 
 fun getRunningProcesses(): Sequence<Process> = when (currentPlatform) {
-	LINUX -> sequence {
+	OperatingSystem.LINUX -> sequence {
 		val psProc = try {
 			ProcessBuilder("ps", "-eo", "pid,comm").redirectErrorStream(true).start()
 		} catch (_: IOException) {
@@ -290,7 +292,7 @@ fun getRunningProcesses(): Sequence<Process> = when (currentPlatform) {
 		}
 	}
 
-	WINDOWS -> sequence {
+	OperatingSystem.WINDOWS -> sequence {
 		val k32 = Kernel32.INSTANCE
 		val snapshot = k32.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, WinDef.DWORD(0))
 		if (WinBase.INVALID_HANDLE_VALUE.equals(snapshot)) {
@@ -305,7 +307,7 @@ fun getRunningProcesses(): Sequence<Process> = when (currentPlatform) {
 			}
 
 			do {
-				yield(Process(entry.th32ProcessID.toLong().toULong(), entry.szExeFile.toString()))
+				yield(Process(entry.th32ProcessID.toLong().toULong(), Native.toString(entry.szExeFile)))
 			} while (k32.Process32Next(snapshot, entry))
 		} finally {
 			k32.CloseHandle(snapshot)
@@ -313,6 +315,27 @@ fun getRunningProcesses(): Sequence<Process> = when (currentPlatform) {
 	}
 
 	else -> emptySequence()
+}
+
+fun tryOpenUri(uri: String) {
+	when (currentPlatform) {
+		OperatingSystem.LINUX -> {
+			try {
+				ProcessBuilder("xdg-open", uri).start()
+			} catch (e: Exception) {
+				LogManager.severe("[Linux] Failed to open URI $uri", e)
+			}
+		}
+
+		OperatingSystem.WINDOWS -> {
+			val ret = Shell32.INSTANCE.ShellExecute(null, null, uri, null, null, WinUser.SW_SHOWNORMAL).toLong()
+			if (ret <= 32) {
+				LogManager.severe("[Windows] Failed to open URI $uri: $ret (${Kernel32.INSTANCE.GetLastError()})")
+			}
+		}
+
+		else -> {}
+	}
 }
 
 const val CONFIG_FILENAME = "vrconfig.yml"
