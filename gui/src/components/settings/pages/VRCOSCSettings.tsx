@@ -187,14 +187,12 @@ export function VRCOSCSettings() {
               {l10n.getString('settings-osc-vrchat-oscqueryEnabled')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography>
-                {l10n
-                  .getString('settings-osc-vrchat-oscqueryEnabled-description')
-                  .split('\n')
-                  .map((line, i) => (
-                    <Typography key={i}>{line}</Typography>
-                  ))}
-              </Typography>
+              {l10n
+                .getString('settings-osc-vrchat-oscqueryEnabled-description')
+                .split('\n')
+                .map((line, i) => (
+                  <Typography key={i}>{line}</Typography>
+                ))}
             </div>
             <div className="grid grid-cols-2 gap-3 pb-5">
               <CheckBox
