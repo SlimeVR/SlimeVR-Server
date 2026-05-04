@@ -30,7 +30,7 @@ import {
   ArrowDownIcon,
   ArrowRightIcon,
 } from '@/components/commons/icon/ArrowIcons';
-import { Localized } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { TrackingChecklistModal } from './TrackingChecklistModal';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -221,6 +221,23 @@ function SteamVRHandsEnabled() {
         />
       </div>
     </div>
+  );
+}
+
+function StandableInstalled() {
+  const { l10n } = useLocalization();
+
+  return (
+    <>
+      <div className="space-y-2.5">
+        {l10n
+          .getString('tracking_checklist-STANDABLE_INSTALLED-desc')
+          .split('\n')
+          .map((line, i) => (
+            <Typography key={i}>{line}</Typography>
+          ))}
+      </div>
+    </>
   );
 }
 
@@ -456,6 +473,9 @@ const stepContentLookup: Record<
   },
   [TrackingChecklistStepId.STEAMVR_HANDS_ENABLED]: () => {
     return <SteamVRHandsEnabled />;
+  },
+  [TrackingChecklistStepId.STANDABLE_INSTALLED]: () => {
+    return <StandableInstalled />;
   },
 };
 
