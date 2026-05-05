@@ -79,7 +79,7 @@ fun decodeMessage(bytes: ByteArray, offset: Int = 0): Pair<OscMessage, Int> {
 	// Parse arguments
 	val args = mutableListOf<OscArg>()
 	if (typeTag.startsWith(",")) {
-		buf.position(pos - offset)
+		buf.position(pos)
 		for (i in 1 until typeTag.length) {
 			when (typeTag[i]) {
 				'i' -> args.add(OscArg.Int(buf.int))
@@ -92,10 +92,10 @@ fun decodeMessage(bytes: ByteArray, offset: Int = 0): Pair<OscMessage, Int> {
 
 				's' -> {
 					val strStart = buf.position()
-					while (buf.position() < bytes.size && bytes[offset + buf.position()] != 0.toByte()) {
+					while (buf.position() < bytes.size && bytes[buf.position()] != 0.toByte()) {
 						buf.position(buf.position() + 1)
 					}
-					val str = bytes.sliceArray(strStart + offset until offset + buf.position()).toString(StandardCharsets.US_ASCII)
+					val str = bytes.sliceArray(strStart until buf.position()).toString(StandardCharsets.US_ASCII)
 					args.add(OscArg.String(str))
 					buf.position(buf.position() + 1) // skip null
 					val strPadding = padToMultiple(str.length + 1, 4)
@@ -156,24 +156,24 @@ fun decodeBundle(bytes: ByteArray, offset: Int = 0): Pair<OscBundle, Int> {
 		throw IllegalArgumentException("Invalid bundle prefix")
 	}
 
-	var pos = offset + 8
-	val buf = ByteBuffer.wrap(bytes, pos, bytes.size - pos)
+	val buf = ByteBuffer.wrap(bytes)
 	buf.order(java.nio.ByteOrder.BIG_ENDIAN)
 
+	var pos = offset + 8
+	buf.position(pos)
 	val timetag = buf.long
 	pos += 8
 
 	val contents = mutableListOf<OscContent>()
-	while (pos < bytes.size) {
-		buf.position(pos - offset - 8)
+	while (pos + 4 <= bytes.size) {
+		buf.position(pos)
 		val elementSize = buf.int
 		pos += 4
 
 		if (elementSize <= 0 || pos + elementSize > bytes.size) break
 
-		val element = bytes.sliceArray(pos until pos + elementSize)
 		try {
-			if (element.size >= 8 && element.sliceArray(0..7).contentEquals(prefixBytes)) {
+			if (elementSize >= 8 && bytes.sliceArray(pos until pos + 8).contentEquals(prefixBytes)) {
 				val (bundle, _) = decodeBundle(bytes, pos)
 				contents.add(OscContent.Bundle(bundle))
 			} else {

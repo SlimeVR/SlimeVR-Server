@@ -121,6 +121,34 @@ class CodecTest {
 	}
 
 	@Test
+	fun testSimpleBundle() {
+		// Test with just one message to isolate the issue
+		val msg = OscMessage("/test", listOf(OscArg.Int(42)))
+		val encoded = encodeMessage(msg)
+		val (decoded, _) = decodeMessage(encoded)
+		assertEquals(42, (decoded.args[0] as OscArg.Int).value)
+	}
+
+	@Test
+	fun testBundleWithOneMessage() {
+		val msg = OscMessage("/single", listOf(OscArg.Int(99)))
+		val bundle = OscBundle(5, listOf(OscContent.Message(msg)))
+		val encoded = encodeBundle(bundle)
+
+		val (decoded, _) = decodeBundle(encoded)
+
+		assertEquals(5, decoded.timetag)
+		assertEquals(1, decoded.contents.size)
+
+		val decodedMsg = (decoded.contents[0] as OscContent.Message).msg
+		assertEquals("/single", decodedMsg.address)
+		assertTrue(decodedMsg.args.isNotEmpty(), "Message has no args!")
+		val arg = decodedMsg.args[0]
+		assertTrue(arg is OscArg.Int, "First arg is not Int, got: ${arg::class.simpleName}")
+		assertEquals(99, (arg as OscArg.Int).value, "Int arg value mismatch")
+	}
+
+	@Test
 	fun testEncodeDecodeBundle() {
 		val bundle = OscBundle(
 			1,
