@@ -13,18 +13,34 @@ data class NetworkInfo(
 )
 
 enum class NetworkCategory(val value: Int) {
-	PUBLIC(0), PRIVATE(1), DOMAIN_AUTHENTICATED(2);
-	companion object { fun fromInt(value: Int) = entries.find { it.value == value } }
+	PUBLIC(0),
+	PRIVATE(1),
+	DOMAIN_AUTHENTICATED(2),
+	;
+
+	companion object {
+		fun fromInt(value: Int) = entries.find { it.value == value }
+	}
 }
 
 enum class ConnectivityFlags(val value: Int) {
 	DISCONNECTED(0),
-	IPV4_NOTRAFFIC(0x1), IPV6_NOTRAFFIC(0x2),
-	IPV4_SUBNET(0x10), IPV4_LOCALNETWORK(0x20), IPV4_INTERNET(0x40),
-	IPV6_SUBNET(0x100), IPV6_LOCALNETWORK(0x200), IPV6_INTERNET(0x400);
+	IPV4_NOTRAFFIC(0x1),
+	IPV6_NOTRAFFIC(0x2),
+	IPV4_SUBNET(0x10),
+	IPV4_LOCALNETWORK(0x20),
+	IPV4_INTERNET(0x40),
+	IPV6_SUBNET(0x100),
+	IPV6_LOCALNETWORK(0x200),
+	IPV6_INTERNET(0x400),
+	;
+
 	companion object {
-		fun fromInt(value: Int): Set<ConnectivityFlags> = if (value == 0) setOf(DISCONNECTED)
-			else entries.filter { it != DISCONNECTED && (value and it.value) != 0 }.toSet()
+		fun fromInt(value: Int): Set<ConnectivityFlags> = if (value == 0) {
+			setOf(DISCONNECTED)
+		} else {
+			entries.filter { it != DISCONNECTED && (value and it.value) != 0 }.toSet()
+		}
 	}
 }
 

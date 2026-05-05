@@ -7,7 +7,6 @@ import dev.slimevr.Phase1Context
 import dev.slimevr.VRServer
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
-import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.desktop.hid.createDesktopHIDManager
 import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
@@ -16,6 +15,7 @@ import dev.slimevr.desktop.serial.createDesktopSerialServer
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton

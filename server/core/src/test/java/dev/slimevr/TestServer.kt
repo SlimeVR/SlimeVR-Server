@@ -1,14 +1,19 @@
 package dev.slimevr
 
 import dev.llelievr.espflashkotlin.FlasherSerialInterface
+import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.DefaultUserBehaviour
+import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsConfigState
+import dev.slimevr.config.SettingsState
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
@@ -44,6 +49,12 @@ fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
 
 fun buildTestVrServer(scope: CoroutineScope): VRServer = VRServer.create(scope)
 
+fun buildTestVrServerStub(scope: CoroutineScope): VRServer {
+	val vrServer = VRServer.create(scope)
+	// Don't call startObserving() to avoid starting infinite flow observers
+	return vrServer
+}
+
 fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	val tempDir = Files.createTempDirectory("slimevr-test").toFile()
 	tempDir.deleteOnExit()
@@ -70,6 +81,19 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 	return skeleton
 }
 
+fun buildTestSettings(scope: CoroutineScope): Settings {
+	val initialState = SettingsState(data = SettingsConfigState(), name = "test")
+	val context = Context.create<SettingsState, dev.slimevr.config.SettingsActions>(
+		initialState = initialState,
+		scope = scope,
+		behaviours = emptyList(),
+		name = "Settings[test]",
+	)
+	// Use a path in /tmp that won't actually be written to in tests
+	val fakeDir = java.io.File("/tmp/slimevr-test-${System.nanoTime()}")
+	return Settings(context, scope, fakeDir)
+}
+
 abstract class TestAppContext : AppContextProvider {
 	override val config: AppConfig get() = error("not used in test")
 	override val serialServer: SerialServer get() = error("not used in test")
@@ -79,5 +103,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val heightCalibrationManager: HeightCalibrationManager get() = error("not used in test")
 	override val trackingChecklist: TrackingChecklist get() = error("not used in test")
 	override val udpServer: UdpServer get() = error("not used in test")
+	override val networkProfileManager: NetworkProfileManager? = null
+	override val bvhManager: BVHManager get() = error("not used in test")
 	override fun startObserving() {}
 }

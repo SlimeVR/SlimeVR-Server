@@ -21,12 +21,14 @@ class BoneTransformBehaviour : SkeletonBehaviour {
 			bones[action.bodyPart] = bone.copy(rawRotation = action.rotation)
 			state.copy(rawBones = bones)
 		}
+
 		is SkeletonActions.SetBonePosition -> {
 			val bones = state.rawBones.toMutableMap()
 			val bone = bones[action.bodyPart] ?: return state
 			bones[action.bodyPart] = bone.copy(rawPosition = action.position)
 			state.copy(rawBones = bones)
 		}
+
 		else -> state
 	}
 }

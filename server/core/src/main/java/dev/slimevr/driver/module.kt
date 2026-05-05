@@ -5,6 +5,7 @@ import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.context.ManagedContext
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -36,8 +37,9 @@ class DriverBridge(
 	val appContext: AppContextProvider,
 	val inbound: EventDispatcher<DriverBridgeInbound> = EventDispatcher(),
 	val outbound: EventDispatcher<DriverBridgeOutbound> = EventDispatcher(),
+	private val managedContext: ManagedContext<DriverBridgeState, DriverBridgeActions>? = null,
 ) {
-	fun dispose() = context.dispose()
+	fun dispose() = managedContext?.dispose()
 
 	fun startObserving() = context.observeAll(this)
 
@@ -50,14 +52,14 @@ class DriverBridge(
 		fun create(id: Int, appContext: AppContextProvider, scope: CoroutineScope): DriverBridge {
 			val behaviours = listOf(DriverBaseBehaviour)
 
-			val context = Context.create(
+			val managedContext = ManagedContext.create(
 				initialState = DriverBridgeState(protocolVersion = 0),
 				scope = scope,
 				behaviours = behaviours,
 				name = "Driver[$id]",
 			)
 
-			val bridge = DriverBridge(id = id, context = context, appContext = appContext)
+			val bridge = DriverBridge(id = id, context = managedContext.context, appContext = appContext, managedContext = managedContext)
 			bridge.startObserving()
 			appContext.server.context.dispatch(VRServerActions.DriverConnected(bridge))
 

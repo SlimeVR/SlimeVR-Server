@@ -5,6 +5,7 @@ import dev.slimevr.EventDispatcher
 import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.context.ManagedContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import solarxr_protocol.MessageBundle
@@ -48,8 +49,9 @@ class SolarXRBridge(
 	val dataFeedDispatcher: EventDispatcher<DataFeedMessage>,
 	val rpcDispatcher: EventDispatcher<RpcMessage>,
 	val outbound: EventDispatcher<MessageBundle> = EventDispatcher(),
+	private val managedContext: ManagedContext<SolarXRBridgeState, SolarXRBridgeActions>? = null,
 ) {
-	fun dispose() = context.dispose()
+	fun dispose() = managedContext?.dispose()
 
 	suspend fun sendRpc(message: RpcMessage) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(message = message))))
 	
@@ -85,7 +87,7 @@ class SolarXRBridge(
 			appContext: AppContextProvider,
 			scope: CoroutineScope,
 		): SolarXRBridge {
-			val context = Context.create(
+			val managedContext = ManagedContext.create(
 				initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
 				scope = scope,
 				behaviours = buildBehaviours(appContext),
@@ -94,10 +96,11 @@ class SolarXRBridge(
 
 			val bridge = SolarXRBridge(
 				id = id,
-				context = context,
+				context = managedContext.context,
 				appContext = appContext,
 				dataFeedDispatcher = EventDispatcher(),
 				rpcDispatcher = EventDispatcher(),
+				managedContext = managedContext,
 			)
 			bridge.startObserving()
 			return bridge

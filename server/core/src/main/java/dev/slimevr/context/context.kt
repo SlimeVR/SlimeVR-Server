@@ -5,7 +5,6 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,21 +16,36 @@ interface Behaviour<S, A, C> {
 	fun observe(receiver: C) {}
 }
 
+class ManagedContext<S, A>(
+	val context: Context<S, A>,
+	private val supervisorJob: Job,
+) {
+	fun dispose() = supervisorJob.cancel()
+
+	companion object {
+		fun <S, A> create(
+			initialState: S,
+			scope: CoroutineScope,
+			behaviours: List<Behaviour<S, A, *>>,
+			debugMiddleware: DebugMiddleware<S, A>? = null,
+			name: String,
+		): ManagedContext<S, A> {
+			val job = SupervisorJob(scope.coroutineContext[Job])
+			val scopeWithJob = CoroutineScope(scope.coroutineContext + job)
+			val context = Context.create(initialState, scopeWithJob, behaviours, debugMiddleware, name)
+			return ManagedContext(context, job)
+		}
+	}
+}
+
 class Context<S, A>(
 	private val mutableStateFlow: MutableStateFlow<S>,
 	val reducer: (S, A) -> S,
-	private val parentScope: CoroutineScope,
+	val scope: CoroutineScope,
 	val behaviours: CopyOnWriteArrayList<Behaviour<S, A, *>>,
 	private val debugMiddleware: DebugMiddleware<S, A>? = null,
-	val name: String,
 ) {
-	private val job = SupervisorJob(parentScope.coroutineContext[Job])
-	val scope = CoroutineScope(parentScope.coroutineContext + job + CoroutineName(name))
 	val state: StateFlow<S> = mutableStateFlow.asStateFlow()
-
-	fun dispose() {
-		job.cancel()
-	}
 
 	fun dispatch(action: A) {
 		if (debugMiddleware == null) {
@@ -86,8 +100,9 @@ class Context<S, A>(
 			val reducer: (S, A) -> S = { currentState, action ->
 				behaviours.fold(currentState) { s, b -> b.reduce(s, action) }
 			}
+			val scopeWithName = CoroutineScope(scope.coroutineContext + CoroutineName(name))
 			val middlewareToUse = if (debugEnabled) debugMiddleware else null
-			val context = Context(mutableStateFlow, reducer, scope, CopyOnWriteArrayList(behaviours), middlewareToUse, name)
+			val context = Context(mutableStateFlow, reducer, scopeWithName, CopyOnWriteArrayList(behaviours), middlewareToUse)
 			middlewareToUse?.init(context)
 			return context
 		}

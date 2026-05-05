@@ -3,6 +3,7 @@ package dev.slimevr.provisioning
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestSerialServer
+import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
@@ -30,7 +31,7 @@ private fun buildManager(serialServer: dev.slimevr.serial.SerialServer, scope: C
 		behaviours = listOf(ProvisioningManagerBaseBehaviour),
 		name = "ProvisioningManagerTest",
 	)
-	return ProvisioningManager(context = context, serialServer = serialServer, scope = scope).also { it.startObserving() }
+	return ProvisioningManager(context = context, serialServer = serialServer, settings = buildTestSettings(scope), scope = scope).also { it.startObserving() }
 }
 
 // Injects a fully connected device into the VRServer, simulating a tracker appearing on the network.

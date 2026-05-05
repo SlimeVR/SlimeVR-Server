@@ -14,7 +14,7 @@ data class RawBone(
 	val bodyPart: BodyPart,
 	val length: Float,
 	val rawRotation: Quaternion,
-	val rawPosition: Vector3
+	val rawPosition: Vector3,
 )
 
 data class BoneState(
@@ -29,8 +29,8 @@ data class BoneState(
 		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
 	val localHeadPosition: Vector3
 		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
-//	val localTailPosition: Vector3
-//		get() = tailPosition - headPosition
+// 	val localTailPosition: Vector3
+// 		get() = tailPosition - headPosition
 }
 
 data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val userHeight: Double)
@@ -43,7 +43,7 @@ val DEFAULT_SKELETON_STATE: SkeletonState = run {
 		}
 		bodyPart to BoneState(bodyPart = bodyPart, length = tailOffset.len(), rotation = restRotation)
 	}
-	SkeletonState(rawBones =  bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, length = bone.length, rawPosition = Vector3.NULL) }, userHeight = computeUserHeight(bones.mapValues { (_, bone) -> bone.length }))
+	SkeletonState(rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, length = bone.length, rawPosition = Vector3.NULL) }, userHeight = computeUserHeight(bones.mapValues { (_, bone) -> bone.length }))
 }
 
 fun buildBones(state: SkeletonState, rootHead: Vector3 = Vector3.NULL): Map<BodyPart, BoneState> {

@@ -1,6 +1,7 @@
 package dev.slimevr.context.debug
 
 import dev.slimevr.context.Context
+import kotlinx.coroutines.CoroutineName
 import kotlin.reflect.KClass
 
 private object Ansi {
@@ -26,7 +27,7 @@ class LoggingMiddleware<S, A>(
 	private val tag get() = "${Ansi.CYAN}[$contextName]${Ansi.RESET}"
 
 	override fun init(context: Context<S, A>) {
-		contextName = context.name
+		contextName = context.scope.coroutineContext[CoroutineName]?.name ?: "Unknown"
 	}
 
 	private fun isAllowed(action: A): Boolean {
