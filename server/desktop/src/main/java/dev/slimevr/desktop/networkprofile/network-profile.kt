@@ -27,6 +27,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
+@Suppress("ktlint:standard:function-naming")
 interface Iphlpapi : Library {
 	fun NotifyIpInterfaceChange(
 		family: Int,

@@ -16,6 +16,7 @@ object AppLogger {
 	val firmware = logger("Firmware")
 	val vrc = logger("VRChat")
 	val bvh = logger("BVH")
+	val vmc = logger("VMC")
 
 	init {
 		loggingConfiguration {

@@ -7,7 +7,7 @@ sealed class OscArg {
 	data class Double(val value: kotlin.Double) : OscArg()
 	data class String(val value: kotlin.String) : OscArg()
 	data class Blob(val value: ByteArray) : OscArg() {
-		override fun equals(other: Any?) = this === other || other is Blob && value.contentEquals(other.value)
+		override fun equals(other: Any?) = this === other || (other is Blob && value.contentEquals(other.value))
 		override fun hashCode() = value.contentHashCode()
 	}
 

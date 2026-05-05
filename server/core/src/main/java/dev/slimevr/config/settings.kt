@@ -2,23 +2,13 @@ package dev.slimevr.config
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.vmc.VMCConfig
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.nullable
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.JsonDecoder
-import kotlinx.serialization.json.JsonEncoder
-import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
@@ -46,6 +36,7 @@ data class SettingsConfigState(
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
 	val globalMagEnabled: Boolean = true,
 	val allowedUdpDevices: Set<String> = emptySet(),
+	val vmcConfig: VMCConfig = VMCConfig(),
 	val version: Int = SETTINGS_CONFIG_VERSION,
 )
 

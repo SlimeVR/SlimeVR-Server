@@ -1,197 +1,160 @@
 package dev.slimevr.osc
 
-import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
+private val BUNDLE_PREFIX = "#bundle".encodeToByteArray() + byteArrayOf(0)
 
-private const val BUNDLE_PREFIX = "#bundle "
+private fun pad4(n: Int) = (n + 3) and 3.inv()
 
-fun encodeMessage(msg: OscMessage): ByteArray {
-	val buf = ByteBuffer.allocate(65536) // max UDP packet
-	buf.order(java.nio.ByteOrder.BIG_ENDIAN)
+private class Writer(capacity: Int = 65536) {
+	private val buf = ByteArray(capacity)
+	var pos = 0
 
-	// Address + null terminator
-	val addressBytes = msg.address.toByteArray(StandardCharsets.US_ASCII)
-	buf.put(addressBytes)
-	buf.put(0.toByte()) // null terminator
-	val addressPadded = padToMultiple(addressBytes.size + 1, 4)
-	buf.put(ByteArray(addressPadded - addressBytes.size - 1))
-
-	// Type tag string
-	val typeTag = "," + msg.args.joinToString("") { it.typeTag.toString() }
-	val typeTagBytes = typeTag.toByteArray(StandardCharsets.US_ASCII)
-	buf.put(typeTagBytes)
-	buf.put(0.toByte())
-	val typeTagPadded = padToMultiple(typeTagBytes.size + 1, 4)
-	buf.put(ByteArray(typeTagPadded - typeTagBytes.size - 1))
-
-	// Arguments
-	for (arg in msg.args) {
-		when (arg) {
-			is OscArg.Int -> buf.putInt(arg.value)
-
-			is OscArg.Long -> buf.putLong(arg.value)
-
-			is OscArg.Float -> buf.putFloat(arg.value)
-
-			is OscArg.Double -> buf.putDouble(arg.value)
-
-			is OscArg.String -> {
-				val strBytes = arg.value.toByteArray(StandardCharsets.US_ASCII)
-				buf.put(strBytes)
-				buf.put(0.toByte())
-				val strPadded = padToMultiple(strBytes.size + 1, 4)
-				buf.put(ByteArray(strPadded - strBytes.size - 1))
-			}
-
-			is OscArg.Blob -> {
-				buf.putInt(arg.value.size)
-				buf.put(arg.value)
-				val blobPadded = padToMultiple(arg.value.size, 4)
-				buf.put(ByteArray(blobPadded - arg.value.size))
-			}
-
-			else -> {} // Impulse, Null, True, False have no arguments
-		}
+	fun byte(v: Byte) {
+		buf[pos++] = v
 	}
-
-	return buf.array().sliceArray(0 until buf.position())
+	fun bytes(v: ByteArray) {
+		v.copyInto(buf, pos)
+		pos += v.size
+	}
+	fun int(v: Int) {
+		byte((v ushr 24).toByte())
+		byte((v ushr 16).toByte())
+		byte((v ushr 8).toByte())
+		byte(v.toByte())
+	}
+	fun long(v: Long) {
+		int((v ushr 32).toInt())
+		int(v.toInt())
+	}
+	fun float(v: Float) = int(v.toBits())
+	fun double(v: Double) = long(v.toBits())
+	fun string(s: String) {
+		val b = s.encodeToByteArray()
+		bytes(b)
+		byte(0)
+		repeat(pad4(b.size + 1) - b.size - 1) { byte(0) }
+	}
+	fun result() = buf.copyOfRange(0, pos)
 }
 
-fun decodeMessage(bytes: ByteArray, offset: Int = 0): Pair<OscMessage, Int> {
-	var pos = offset
-	val buf = ByteBuffer.wrap(bytes, offset, bytes.size - offset)
-	buf.order(java.nio.ByteOrder.BIG_ENDIAN)
-
-	// Parse address
-	val addressStart = pos
-	while (pos < bytes.size && bytes[pos] != 0.toByte()) pos++
-	val address = bytes.sliceArray(addressStart until pos).toString(StandardCharsets.US_ASCII)
-	pos++ // skip null terminator
-	pos = alignToMultiple(pos, 4)
-
-	// Parse type tag
-	val typeTagStart = pos
-	while (pos < bytes.size && bytes[pos] != 0.toByte()) pos++
-	val typeTag = bytes.sliceArray(typeTagStart until pos).toString(StandardCharsets.US_ASCII)
-	pos++ // skip null terminator
-	pos = alignToMultiple(pos, 4)
-
-	// Parse arguments
-	val args = mutableListOf<OscArg>()
-	if (typeTag.startsWith(",")) {
-		buf.position(pos)
-		for (i in 1 until typeTag.length) {
-			when (typeTag[i]) {
-				'i' -> args.add(OscArg.Int(buf.int))
-
-				'h' -> args.add(OscArg.Long(buf.long))
-
-				'f' -> args.add(OscArg.Float(buf.float))
-
-				'd' -> args.add(OscArg.Double(buf.double))
-
-				's' -> {
-					val strStart = buf.position()
-					while (buf.position() < bytes.size && bytes[buf.position()] != 0.toByte()) {
-						buf.position(buf.position() + 1)
-					}
-					val str = bytes.sliceArray(strStart until buf.position()).toString(StandardCharsets.US_ASCII)
-					args.add(OscArg.String(str))
-					buf.position(buf.position() + 1) // skip null
-					val strPadding = padToMultiple(str.length + 1, 4)
-					buf.position(buf.position() + strPadding - str.length - 1)
-				}
-
-				'b' -> {
-					val size = buf.int
-					val blob = ByteArray(size)
-					buf.get(blob)
-					args.add(OscArg.Blob(blob))
-					val blobPadding = padToMultiple(size, 4)
-					buf.position(buf.position() + blobPadding - size)
-				}
-
-				'I' -> args.add(OscArg.Impulse)
-
-				'N' -> args.add(OscArg.Null)
-
-				'T' -> args.add(OscArg.True)
-
-				'F' -> args.add(OscArg.False)
-			}
-		}
-		pos = offset + buf.position()
+private class Reader(private val bytes: ByteArray, var pos: Int = 0) {
+	private fun byte() = bytes[pos++].toInt()
+	fun int() = (byte() and 0xFF shl 24) or (byte() and 0xFF shl 16) or (byte() and 0xFF shl 8) or (byte() and 0xFF)
+	fun long() = (int().toLong() and 0xFFFFFFFFL shl 32) or (int().toLong() and 0xFFFFFFFFL)
+	fun float() = Float.fromBits(int())
+	fun double() = Double.fromBits(long())
+	fun string(): String {
+		val start = pos
+		while (pos < bytes.size && bytes[pos] != 0.toByte()) pos++
+		val s = bytes.decodeToString(start, pos)
+		pos++ // skip null
+		pos = pad4(pos)
+		return s
 	}
+	fun bytes(n: Int) = bytes.copyOfRange(pos, pos + n).also { pos += n }
+	fun hasPrefix(prefix: ByteArray) = pos + prefix.size <= bytes.size &&
+		bytes.copyOfRange(pos, pos + prefix.size).contentEquals(prefix)
+}
 
-	return OscMessage(address, args) to pos
+fun encodeMessage(msg: OscMessage): ByteArray {
+	val w = Writer()
+	w.string(msg.address)
+	w.string("," + msg.args.joinToString("") { it.typeTag.toString() })
+	for (arg in msg.args) {
+		when (arg) {
+			is OscArg.Int -> w.int(arg.value)
+
+			is OscArg.Long -> w.long(arg.value)
+
+			is OscArg.Float -> w.float(arg.value)
+
+			is OscArg.Double -> w.double(arg.value)
+
+			is OscArg.String -> w.string(arg.value)
+
+			is OscArg.Blob -> {
+				w.int(arg.value.size)
+				w.bytes(arg.value)
+				repeat(pad4(arg.value.size) - arg.value.size) { w.byte(0) }
+			}
+
+			else -> {}
+		}
+	}
+	return w.result()
 }
 
 fun encodeBundle(bundle: OscBundle): ByteArray {
-	val buf = ByteBuffer.allocate(65536)
-	buf.order(java.nio.ByteOrder.BIG_ENDIAN)
-
-	// Bundle prefix
-	val prefixBytes = BUNDLE_PREFIX.toByteArray(StandardCharsets.US_ASCII)
-	buf.put(prefixBytes)
-
-	// Timetag (8 bytes, NTP format)
-	buf.putLong(bundle.timetag)
-
-	// Contents
+	val w = Writer()
+	w.bytes(BUNDLE_PREFIX)
+	w.long(bundle.timetag)
 	for (content in bundle.contents) {
-		val contentBytes = when (content) {
+		val encoded = when (content) {
 			is OscContent.Message -> encodeMessage(content.msg)
 			is OscContent.Bundle -> encodeBundle(content.bundle)
 		}
-		buf.putInt(contentBytes.size)
-		buf.put(contentBytes)
+		w.int(encoded.size)
+		w.bytes(encoded)
 	}
+	return w.result()
+}
 
-	return buf.array().sliceArray(0 until buf.position())
+fun decodeMessage(bytes: ByteArray, offset: Int = 0): Pair<OscMessage, Int> {
+	val r = Reader(bytes, offset)
+	val address = r.string()
+	val typeTag = r.string()
+	val args = mutableListOf<OscArg>()
+	if (typeTag.startsWith(",")) {
+		for (c in typeTag.drop(1)) {
+			when (c) {
+				'i' -> args += OscArg.Int(r.int())
+
+				'h' -> args += OscArg.Long(r.long())
+
+				'f' -> args += OscArg.Float(r.float())
+
+				'd' -> args += OscArg.Double(r.double())
+
+				's' -> args += OscArg.String(r.string())
+
+				'b' -> {
+					val size = r.int()
+					args += OscArg.Blob(r.bytes(size))
+					r.pos += pad4(size) - size
+				}
+
+				'I' -> args += OscArg.Impulse
+
+				'N' -> args += OscArg.Null
+
+				'T' -> args += OscArg.True
+
+				'F' -> args += OscArg.False
+			}
+		}
+	}
+	return OscMessage(address, args) to r.pos
 }
 
 fun decodeBundle(bytes: ByteArray, offset: Int = 0): Pair<OscBundle, Int> {
-	val prefixBytes = BUNDLE_PREFIX.toByteArray(StandardCharsets.US_ASCII)
-	if (!bytes.sliceArray(offset until minOf(offset + 8, bytes.size)).contentEquals(prefixBytes)) {
-		throw IllegalArgumentException("Invalid bundle prefix")
-	}
-
-	val buf = ByteBuffer.wrap(bytes)
-	buf.order(java.nio.ByteOrder.BIG_ENDIAN)
-
-	var pos = offset + 8
-	buf.position(pos)
-	val timetag = buf.long
-	pos += 8
-
+	val r = Reader(bytes, offset)
+	if (!r.hasPrefix(BUNDLE_PREFIX)) throw IllegalArgumentException("Invalid bundle prefix")
+	r.pos += 8
+	val timetag = r.long()
 	val contents = mutableListOf<OscContent>()
-	while (pos + 4 <= bytes.size) {
-		buf.position(pos)
-		val elementSize = buf.int
-		pos += 4
-
-		if (elementSize <= 0 || pos + elementSize > bytes.size) break
-
+	while (r.pos + 4 <= bytes.size) {
+		val elementSize = r.int()
+		if (elementSize <= 0 || r.pos + elementSize > bytes.size) break
+		val elemStart = r.pos
 		try {
-			if (elementSize >= 8 && bytes.sliceArray(pos until pos + 8).contentEquals(prefixBytes)) {
-				val (bundle, _) = decodeBundle(bytes, pos)
-				contents.add(OscContent.Bundle(bundle))
+			contents += if (Reader(bytes, elemStart).hasPrefix(BUNDLE_PREFIX)) {
+				OscContent.Bundle(decodeBundle(bytes, elemStart).first)
 			} else {
-				val (msg, _) = decodeMessage(bytes, pos)
-				contents.add(OscContent.Message(msg))
+				OscContent.Message(decodeMessage(bytes, elemStart).first)
 			}
-		} catch (e: Exception) {
+		} catch (_: Exception) {
 			break
 		}
-		pos += elementSize
+		r.pos = elemStart + elementSize
 	}
-
-	return OscBundle(timetag, contents) to pos
+	return OscBundle(timetag, contents) to r.pos
 }
-
-private fun padToMultiple(value: Int, alignment: Int): Int {
-	val remainder = value % alignment
-	return if (remainder == 0) value else value + (alignment - remainder)
-}
-
-private fun alignToMultiple(value: Int, alignment: Int): Int = padToMultiple(value, alignment)

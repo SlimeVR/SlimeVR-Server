@@ -21,7 +21,7 @@ import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
-import kotlinx.coroutines.Dispatchers
+import dev.slimevr.vmc.VMCManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -42,6 +42,7 @@ fun main(args: Array<String>) = runBlocking {
 	val trackingChecklist = TrackingChecklist.create(scope = this)
 	val udpServer = UdpServer.create(scope = this)
 	val bvhManager = BVHManager.create(skeleton = skeleton, scope = this)
+	val vmcManager = VMCManager.create(skeleton = skeleton, ctx = phase1, scope = this)
 
 	val appContext = AppContext(
 		server = server,
@@ -56,6 +57,7 @@ fun main(args: Array<String>) = runBlocking {
 		trackingChecklist = trackingChecklist,
 		udpServer = udpServer,
 		bvhManager = bvhManager,
+		vmcManager = vmcManager,
 	)
 
 	appContext.startObserving()

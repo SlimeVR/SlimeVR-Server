@@ -46,11 +46,16 @@ val DEFAULT_SKELETON_STATE: SkeletonState = run {
 	SkeletonState(rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, length = bone.length, rawPosition = Vector3.NULL) }, userHeight = computeUserHeight(bones.mapValues { (_, bone) -> bone.length }))
 }
 
-fun buildBones(state: SkeletonState, rootHead: Vector3 = Vector3.NULL): Map<BodyPart, BoneState> {
+fun buildBones(
+	state: SkeletonState,
+	rootHead: Vector3 = Vector3.NULL,
+	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
+	tailDirections: Map<BodyPart, Vector3> = BONE_TAIL_DIRECTIONS,
+): Map<BodyPart, BoneState> {
 	val result = mutableMapOf<BodyPart, BoneState>()
-	iterateBodyPartHierarchy().forEach { (parentPart, childPart) ->
+	hierarchy.forEach { (parentPart, childPart) ->
 		val rawBone = state.rawBones[childPart] ?: return@forEach
-		val tailDirection = BONE_TAIL_DIRECTIONS[childPart] ?: return@forEach
+		val tailDirection = tailDirections[childPart] ?: return@forEach
 		val parentBone = parentPart?.let { result[it] }
 		val head = parentBone?.tailPosition ?: rootHead
 		result[childPart] = BoneState(
