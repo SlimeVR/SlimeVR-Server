@@ -147,6 +147,7 @@ public class OSCRouter {
 				// Listens for any message ("//" is a wildcard)
 				MessageSelector selector = new OSCPatternAddressMessageSelector("//");
 				oscReceiver.getDispatcher().addListener(selector, listener);
+				oscReceiver.getDispatcher().setAlwaysDispatchingImmediately(true);
 				if (!oscReceiver.isListening())
 					oscReceiver.startListening();
 			}

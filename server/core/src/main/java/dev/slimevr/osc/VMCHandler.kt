@@ -148,6 +148,7 @@ class VMCHandler(
 						.addListener(OSCPatternAddressMessageSelector(address), listener)
 				}
 
+				oscReceiver!!.dispatcher.setAlwaysDispatchingImmediately(true)
 				oscReceiver!!.startListening()
 			}
 		}
