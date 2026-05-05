@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VMCConfig(
-	val enabled: Boolean = true,
+	val enabled: Boolean = false,
 	val portOut: Int = 39539,
 	val portIn: Int = 39540,
 	val address: String = "172.17.0.1",
