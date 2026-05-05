@@ -6,6 +6,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServerState
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.device.DeviceState
+import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.vrchat.VRCConfigManager
@@ -16,7 +17,6 @@ import dev.slimevr.vrchat.isVRCConfigValid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
@@ -174,6 +174,23 @@ class VRChatSettingsCheckBehaviour(
 		) { userHeight, vrc -> computeStep(vrc, userHeight) }
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.VRCHAT_SETTINGS, step)) }
+			.launchIn(receiver.context.scope)
+	}
+}
+
+class NetworkProfileCheckBehaviour(
+	private val manager: NetworkProfileManager,
+) : TrackingChecklistBehaviourType {
+	override fun observe(receiver: TrackingChecklist) {
+		manager.context.state
+			.map { state ->
+				TrackingChecklistStep(
+					valid = state.publicNetworks.isEmpty(),
+					enabled = state.isSupported,
+				)
+			}
+			.distinctUntilChanged()
+			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC, step)) }
 			.launchIn(receiver.context.scope)
 	}
 }

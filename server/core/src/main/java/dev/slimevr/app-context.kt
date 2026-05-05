@@ -4,6 +4,7 @@ import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
@@ -27,6 +28,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val skeleton: Skeleton
 	val firmwareManager: FirmwareManager
 	val vrcConfigManager: VRCConfigManager?
+	val networkProfileManager: NetworkProfileManager?
 	val provisioningManager: ProvisioningManager
 	val heightCalibrationManager: HeightCalibrationManager
 	val trackingChecklist: TrackingChecklist
@@ -42,6 +44,7 @@ class AppContext(
 	override val skeleton: Skeleton,
 	override val firmwareManager: FirmwareManager,
 	override val vrcConfigManager: VRCConfigManager?,
+	override val networkProfileManager: NetworkProfileManager?,
 	override val provisioningManager: ProvisioningManager,
 	override val heightCalibrationManager: HeightCalibrationManager,
 	override val trackingChecklist: TrackingChecklist,
@@ -54,6 +57,7 @@ class AppContext(
 		provisioningManager.startObserving()
 		heightCalibrationManager.startObserving()
 		vrcConfigManager?.startObserving()
+		networkProfileManager?.startObserving()
 		trackingChecklist.startObserving(this)
 		udpServer.startReceiving(this, server.context.scope)
 	}

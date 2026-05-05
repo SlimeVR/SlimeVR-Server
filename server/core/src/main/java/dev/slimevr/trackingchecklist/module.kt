@@ -33,7 +33,9 @@ class TrackingChecklist(
 			add(HMDCheckBehaviour(appContext.server))
 			add(TrackerRestCheckBehaviour(appContext.server))
 			add(TrackerErrorCheckBehaviour(appContext.server))
+
 			appContext.vrcConfigManager?.let { add(VRChatSettingsCheckBehaviour(appContext.server, appContext.skeleton, it)) }
+			appContext.networkProfileManager?.let { add(NetworkProfileCheckBehaviour(it)) }
 		}
 		context.behaviours.addAll(stepBehaviours)
 		context.observeAll(this)

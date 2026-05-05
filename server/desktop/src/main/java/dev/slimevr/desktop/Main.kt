@@ -7,9 +7,11 @@ import dev.slimevr.Phase1Context
 import dev.slimevr.VRServer
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
+import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.desktop.hid.createDesktopHIDManager
 import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
+import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
 import dev.slimevr.desktop.serial.createDesktopSerialServer
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
 import dev.slimevr.firmware.FirmwareManager
@@ -19,6 +21,7 @@ import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -32,6 +35,7 @@ fun main(args: Array<String>) = runBlocking {
 
 	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this)
 	val vrcConfigManager = createDesktopVRCConfigManager(ctx = phase1, scope = this)
+	val networkProfileManager = NetworkProfileManager.create(scope = this, isSupported = true)
 	val skeleton = Skeleton.create(scope = this, ctx = phase1)
 	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
@@ -46,6 +50,7 @@ fun main(args: Array<String>) = runBlocking {
 		skeleton = skeleton,
 		firmwareManager = firmwareManager,
 		vrcConfigManager = vrcConfigManager,
+		networkProfileManager = networkProfileManager,
 		provisioningManager = provisioningManager,
 		heightCalibrationManager = heightCalibrationManager,
 		trackingChecklist = trackingChecklist,
@@ -58,6 +63,7 @@ fun main(args: Array<String>) = runBlocking {
 	launch { createDesktopHIDManager(appContext, this) }
 	launch { createSolarXRWebsocketServer(appContext) }
 	launch { createIpcServers(appContext) }
+	launch(Dispatchers.IO) { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
 
 	Unit
 }
