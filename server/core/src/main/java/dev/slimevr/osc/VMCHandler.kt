@@ -214,6 +214,7 @@ class VMCHandler(
 						getByStringVal(
 							event.message.arguments[0].toString(),
 						),
+						false,
 					)
 				}
 			}
@@ -237,6 +238,7 @@ class VMCHandler(
 					),
 					false,
 					null,
+					event.message.address == "/VMC/Ext/Hmd/Pos",
 				)
 
 			// Is VMC tracking root (offsets all rotations)
@@ -269,6 +271,7 @@ class VMCHandler(
 		rotation: Quaternion,
 		localRotation: Boolean,
 		unityBone: UnityBone?,
+		isHmd: Boolean,
 	) {
 		// Create device if it doesn't exist
 		var rot = rotation
@@ -294,11 +297,13 @@ class VMCHandler(
 				isComputed = position != null,
 				usesTimeout = true,
 				allowReset = position != null,
+				isHmd = isHmd,
 			)
 			trackerDevice!!.trackers[trackerDevice!!.trackers.size] = tracker
 			byTrackerNameTracker[name] = tracker
 			server.registerTracker(tracker)
 		}
+		tracker.isHmd = isHmd
 		tracker.status = TrackerStatus.OK
 
 		// Set position
