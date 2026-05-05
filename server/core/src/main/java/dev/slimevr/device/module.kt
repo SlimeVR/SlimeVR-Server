@@ -80,7 +80,6 @@ class Device(
 				scope = scope,
 				behaviours = behaviours,
 				debugMiddleware = LoggingMiddleware(
-					"Device[$address]",
 					block = setOf(DeviceActions.PacketStats::class),
 					diffStyle = DiffStyle.MULTILINE,
 				),

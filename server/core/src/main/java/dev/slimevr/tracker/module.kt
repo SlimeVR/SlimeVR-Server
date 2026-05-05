@@ -100,7 +100,6 @@ class Tracker(
 				scope = scope,
 				behaviours = behaviours,
 				debugMiddleware = LoggingMiddleware(
-					"Tracker[$hardwareId]",
 					block = setOf(TrackerActions.SetRotation::class),
 					diffStyle = DiffStyle.MULTILINE,
 				),

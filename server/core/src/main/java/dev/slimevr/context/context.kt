@@ -86,7 +86,10 @@ class Context<S, A>(
 			val reducer: (S, A) -> S = { currentState, action ->
 				behaviours.fold(currentState) { s, b -> b.reduce(s, action) }
 			}
-			return Context(mutableStateFlow, reducer, scope, CopyOnWriteArrayList(behaviours), if (debugEnabled) debugMiddleware else null, name)
+			val middlewareToUse = if (debugEnabled) debugMiddleware else null
+			val context = Context(mutableStateFlow, reducer, scope, CopyOnWriteArrayList(behaviours), middlewareToUse, name)
+			middlewareToUse?.init(context)
+			return context
 		}
 	}
 }

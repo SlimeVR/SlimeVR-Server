@@ -1,5 +1,6 @@
 package dev.slimevr.context.debug
 
+import dev.slimevr.context.Context
 import kotlin.reflect.KClass
 
 private object Ansi {
@@ -16,13 +17,17 @@ private object Ansi {
 enum class DiffStyle { INLINE, MULTILINE }
 
 class LoggingMiddleware<S, A>(
-	moduleName: String,
 	private val logNoOps: Boolean = false,
 	private val diffStyle: DiffStyle = DiffStyle.MULTILINE,
 	private val allow: Set<KClass<*>>? = null,
 	private val block: Set<KClass<*>> = emptySet(),
 ) : DebugMiddleware<S, A> {
-	private val tag = "${Ansi.CYAN}[$moduleName]${Ansi.RESET}"
+	private var contextName = ""
+	private val tag get() = "${Ansi.CYAN}[$contextName]${Ansi.RESET}"
+
+	override fun init(context: Context<S, A>) {
+		contextName = context.name
+	}
 
 	private fun isAllowed(action: A): Boolean {
 		val klass = action!!::class
