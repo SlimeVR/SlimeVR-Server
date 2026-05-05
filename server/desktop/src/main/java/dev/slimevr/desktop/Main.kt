@@ -63,7 +63,7 @@ fun main(args: Array<String>) = runBlocking {
 	launch { createDesktopHIDManager(appContext, this) }
 	launch { createSolarXRWebsocketServer(appContext) }
 	launch { createIpcServers(appContext) }
-	launch(Dispatchers.IO) { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
+	launch { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
 
 	Unit
 }
