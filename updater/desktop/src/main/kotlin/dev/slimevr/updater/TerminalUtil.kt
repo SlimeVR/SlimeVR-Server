@@ -1,4 +1,4 @@
-package dev.slimevr.updater.util
+package dev.slimevr.updater
 
 import com.github.ajalt.mordant.rendering.TextAlign
 import com.github.ajalt.mordant.rendering.TextColors

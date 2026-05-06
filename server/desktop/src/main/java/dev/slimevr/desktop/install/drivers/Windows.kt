@@ -12,6 +12,7 @@ class Windows {
 		steamVRDriver()
 	}
 
+
 	fun steamVRDriver() {
 		val regEdit = RegEditWindows()
 		val regQuery = regEdit.getKeyByPath(WinReg.HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820")
@@ -43,5 +44,6 @@ class Windows {
 
 	companion object {
 		private const val WINDOWS_STEAMVR_DRIVER_DIRECTORY = "slimevr-openvr-driver-win64"
+		private const val WINDOWS_SERVER_NAME = "slimevr-win64.zip"
 	}
 }

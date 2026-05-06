@@ -1,5 +1,7 @@
 package dev.slimevr.updater
 
+import kotlinx.io.IOException
+import java.io.File
 import java.nio.file.Paths
 
 class Windows(
@@ -9,10 +11,45 @@ class Windows(
 
 	private val path = Paths.get("").toAbsolutePath().toString()
 
-	suspend fun updateWindows(serverUrl: String) {
+	suspend fun updateWindows(currentVersionTag: String, versionTag: String, configDir: String, vrConfig: String, serverUrl: String, openVRDriverUrl: String) {
+		backupConfig(currentVersionTag, configDir, vrConfig)
+		restoreConfig(versionTag, configDir, vrConfig)
+		updateServer(serverUrl)
 		usbDrivers()
 		steamVRDriver()
-		feeder()
+	}
+
+	fun backupConfig(versionTag: String, configDir: String, vrConfig: String) {
+		TerminalUtil.info("Backing up Config")
+		try {
+			val targetDir =
+				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
+			targetDir.mkdirs()
+			val config = File(vrConfig)
+			val destination = "$targetDir/vrconfig.yml"
+			config.copyTo(File(destination), true)
+			TerminalUtil.success("Config backed up to $destination")
+		} catch (e: IOException) {
+			state.hasError = true
+			state.errorText = "Error backing up config"
+			TerminalUtil.error("Error backing up config")
+		}
+	}
+
+	fun restoreConfig(versionTag: String, configDir: String, vrConfig: String) {
+		try {
+			val sourceDir =
+				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
+			if (!sourceDir.exists()) return
+			val config = File("$sourceDir/vrconfig.yml")
+			val destination = "$configDir/vrconfig.yml"
+			config.copyTo(File(destination), true)
+			TerminalUtil.success("Config restored up to $destination")
+		} catch (e: IOException) {
+			state.hasError = true
+			state.errorText = "Error restoring config"
+			TerminalUtil.error("Error restoring config")
+		}
 	}
 
 	suspend fun updateServer(serverUrl: String) {
@@ -32,6 +69,8 @@ class Windows(
 			subProgress = 1f
 			statusText = "Server download complete"
 		}
+
+		io.unzip(WINDOWSSERVERNAME)
 	}
 
 	fun usbDrivers() {
@@ -77,7 +116,6 @@ class Windows(
 
 		io.unzip(
 			WINDOWSFEEDERNAME,
-			WINDOWSFEEDERDIRECTORY,
 		)
 
 		state.statusText = "Installing Feeder App"
@@ -129,8 +167,7 @@ class Windows(
 		state.statusText = "Unzipping SteamVR Driver"
 
 		io.unzip(
-			WINDOWSSTEAMVRDRIVERNAME,
-			WINDOWSSTEAMVRDRIVERDIRECTORY,
+			WINDOWSSTEAMVRDRIVERNAME
 		)
 
 		state.statusText = "Registering SteamVR Driver"

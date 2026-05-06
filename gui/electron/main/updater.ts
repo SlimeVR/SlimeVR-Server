@@ -38,18 +38,8 @@ export const runUpdater = async (args: string[]) => {
   const updaterArgs = ['-Xmx128M', '-jar', updaterJar, ...args];
   console.log(updaterArgs)
   const updaterProcess = spawn(javaBin, updaterArgs, {
-    cwd: sharedDir,
-    shell: false,
-    env:
-      platform === 'windows'
-        ? {
-            ...process.env,
-            APPDATA: app.getPath('appData'),
-            LOCALAPPDATA: process.env['USERPROFILE']
-              ? path.join(process.env['USERPROFILE'], 'AppData', 'Local')
-              : undefined,
-          }
-        : undefined,
+    detached: true,
+    stdio: 'ignore'
   });
 
   updaterProcess.on('error', (err) => {
@@ -58,6 +48,5 @@ export const runUpdater = async (args: string[]) => {
     updaterProcess.on('exit', () => {
       logger.info('Server process exiting');
     })
-
-  app.quit();
+    app.exit();
 };

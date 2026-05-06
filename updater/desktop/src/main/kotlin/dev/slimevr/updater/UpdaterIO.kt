@@ -84,14 +84,17 @@ class UpdaterIO(
 		}
 	}
 
-	fun unzip(file: String, destDir: String) {
+	fun unzip(file: String) {
+		val zipFileObject = File(file)
+		val destDir = zipFileObject.parent ?: "."
+
 		val destFolder = File(destDir)
 		if (!destFolder.exists()) destFolder.mkdirs()
 
 		state.subProgress = 0f
 
 		try {
-			ZipFile(file).use { zipFile ->
+			ZipFile(zipFileObject).use { zipFile ->
 				val entries = zipFile.entries().toList()
 				val total = entries.size.coerceAtLeast(1)
 				val completedCount = AtomicInteger(0)
@@ -106,7 +109,6 @@ class UpdaterIO(
 									try {
 										unzipWorker(zipFile, entry, destDir)
 									} finally {
-										// Update progress atomically to avoid race conditions
 										val current = completedCount.incrementAndGet()
 										state.subProgress = current.toFloat() / total
 									}

@@ -1,6 +1,5 @@
 package dev.slimevr.updater
 
-import dev.slimevr.updater.util.TerminalUtil
 import kotlinx.io.IOException
 import java.io.File
 import java.nio.file.Paths
@@ -82,7 +81,7 @@ class Linux(
 			}
 			TerminalUtil.info("Unzipping SteamVR Driver")
 
-			io.unzip(LINUXSTEAMVRDRIVERNAME, LINUXSTEAMVRDRIVERDIRECTORY)
+			io.unzip(LINUXSTEAMVRDRIVERNAME)
 
 			state.update {
 				statusText = "Registering SteamVR Driver"
@@ -160,7 +159,7 @@ class Linux(
 			statusText = "Unzipping Feeder App"
 		}
 
-		io.unzip(LINUXFEEDERNAME, LINUXFEEDERDIRECTORY)
+		io.unzip(LINUXFEEDERNAME)
 
 		state.update {
 			statusText = "Installing Feeder App"

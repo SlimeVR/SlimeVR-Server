@@ -4,7 +4,6 @@ import Manifest
 import ManifestUtils.Companion.getCurrentVersionTag
 import ManifestUtils.Companion.getRelease
 import dev.slimevr.updater.OperatingSystem.Companion.currentPlatform
-import dev.slimevr.updater.util.TerminalUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -70,7 +69,7 @@ class Updater(
 		when (os.currentPlatform) {
 			OperatingSystem.WINDOWS -> {
 				val windows = Windows(state, updaterIO)
-				windows.updateWindows(selectedVersion.url)
+				windows.updateWindows(currentVersionTag, versionTag, configDir, vrConfig, selectedVersion.url, "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip")
 			}
 
 			OperatingSystem.LINUX -> {
@@ -95,6 +94,12 @@ class Updater(
 			if (featureFlags.restartServer) {
 				when (os.currentPlatform) {
 					OperatingSystem.WINDOWS -> {
+						val exeFile = File("SlimeVR.exe").absoluteFile
+						if (exeFile.exists()) {
+							launchDetached(listOf(exeFile.absolutePath))
+						} else {
+							TerminalUtil.error("SlimeVR.exe not found at ${exeFile.absolutePath}")
+						}
 
 					}
 					OperatingSystem.LINUX -> {
