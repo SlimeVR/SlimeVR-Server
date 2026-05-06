@@ -195,6 +195,7 @@ fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO) {
 						fontSize = 20.sp,
 						fontWeight = FontWeight.Bold,
 						textAlign = TextAlign.Center,
+						style = BaseTextStyle.copy(fontWeight = FontWeight.Normal),
 						modifier = Modifier.align(Alignment.Center)
 					)
 				}
@@ -209,6 +210,7 @@ fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO) {
 					text = state.subText ?: state.statusText,
 					color = TEXT,
 					fontSize = 13.sp,
+					style = BaseTextStyle.copy(fontWeight = FontWeight.Normal),
 					textAlign = TextAlign.Center
 				)
 				// SUB PROGRESS
@@ -223,6 +225,7 @@ fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO) {
 				Text(
 					text = state.versionTag,
 					color = TEXT.copy(alpha = 0.5f),
+					style = BaseTextStyle.copy(fontWeight = FontWeight.Normal),
 					fontSize = 10.sp
 				)
 			}
