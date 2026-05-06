@@ -36,10 +36,11 @@ class BoneTransformBehaviour : SkeletonBehaviour {
 class ProportionsBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetProportions -> {
+			val bones = action.lengths.toBodyPartOffsets()
 			val newBones = state.rawBones.mapValues { (bodyPart, bone) ->
-				bone.copy(length = action.lengths[bodyPart] ?: bone.length)
+				bone.copy(length = bones[bodyPart]?.len() ?: bone.length)
 			}
-			state.copy(rawBones = newBones, userHeight = computeUserHeight(newBones.mapValues { (_, bone) -> bone.length }))
+			state.copy(rawBones = newBones, userHeight = action.lengths.height())
 		}
 
 		else -> state
@@ -53,7 +54,7 @@ class ScaledProportionsBehaviour(private val userConfig: UserConfig) : SkeletonB
 			.distinctUntilChanged()
 			.onEach { proportions ->
 				if (proportions.isNotEmpty()) {
-					receiver.context.dispatch(SkeletonActions.SetProportions(expandProportions(proportions)))
+					receiver.context.dispatch(SkeletonActions.SetProportions(configToSkeletonBoneValues(proportions)))
 				}
 			}
 			.launchIn(receiver.context.scope)
@@ -101,7 +102,7 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 				receiver.context.dispatch(
 					SkeletonActions.SetBonePosition(
 						BodyPart.HEAD,
-						Vector3(circleX, state.userHeight.toFloat() + jumpHeight, circleZ),
+						Vector3(circleX, state.userHeight + jumpHeight, circleZ),
 					),
 				)
 			}
@@ -122,7 +123,7 @@ class ComputedSkeletonBehaviour(
 				val processed = processors
 					.filter { processor -> processor.enabled }
 					.fold(targetState) { state, processor -> processor.process(state) }
-				val rootHead = Vector3(0f, targetState.userHeight.toFloat(), 0f) // FIXME WRONG
+				val rootHead = Vector3(0f, targetState.userHeight, 0f) // FIXME WRONG
 				receiver.computed.value = buildBones(processed, rootHead = rootHead)
 			}
 		}

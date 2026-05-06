@@ -77,7 +77,7 @@ class VRCConfigManager(
 	}
 }
 
-fun computeRecommendedValues(server: VRServer, userHeight: Double): VRCConfigRecommendedValues {
+fun computeRecommendedValues(server: VRServer, userHeight: Float): VRCConfigRecommendedValues {
 	val trackers = server.context.state.value.trackers.values
 
 	fun hasTracker(bodyPart: BodyPart) = trackers.any { it.context.state.value.bodyPart == bodyPart }
@@ -97,7 +97,7 @@ fun computeRecommendedValues(server: VRServer, userHeight: Double): VRCConfigRec
 		shoulderTrackingDisabled =
 		(!hasLeftHandWithPosition || !hasRightHandWithPosition || isMissingAnArmTracker) &&
 			((hasLeftHandWithPosition && hasRightHandWithPosition) || isMissingAShoulderTracker),
-		userHeight = userHeight.toFloat(),
+		userHeight = userHeight,
 		calibrationRange = 0.2f,
 		trackerModel = VRCTrackerModel.AXIS,
 		spineMode = listOf(VRCSpineMode.LOCK_HIP, VRCSpineMode.LOCK_HEAD),

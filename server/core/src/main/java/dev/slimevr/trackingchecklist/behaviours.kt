@@ -159,7 +159,7 @@ class VRChatSettingsCheckBehaviour(
 	private val skeleton: Skeleton,
 	private val vrcConfigManager: VRCConfigManager,
 ) : TrackingChecklistBehaviourType {
-	private fun computeStep(vrc: VRCConfigState, userHeight: Double): TrackingChecklistStep {
+	private fun computeStep(vrc: VRCConfigState, userHeight: Float): TrackingChecklistStep {
 		val values = vrc.currentValues
 		if (!vrc.isSupported || values == null) return TrackingChecklistStep(valid = true, enabled = false)
 		val recommended = computeRecommendedValues(server, userHeight)

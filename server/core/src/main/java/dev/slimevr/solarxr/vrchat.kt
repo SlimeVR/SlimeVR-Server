@@ -15,7 +15,7 @@ import solarxr_protocol.rpc.VRCConfigStateRequest
 class VrcBehaviour(
 	private val vrcManager: VRCConfigManager,
 	private val server: VRServer,
-	private val userHeight: () -> Double,
+	private val userHeight: () -> Float,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		fun buildCurrentResponse(): VRCConfigStateChangeResponse {

@@ -9,6 +9,7 @@ import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.SkeletonBone
 
 data class RawBone(
 	val bodyPart: BodyPart,
@@ -33,7 +34,7 @@ data class BoneState(
 // 		get() = tailPosition - headPosition
 }
 
-data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val userHeight: Double)
+data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val userHeight: Float)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = run {
 	val bones = BONE_TAIL_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
@@ -43,7 +44,7 @@ val DEFAULT_SKELETON_STATE: SkeletonState = run {
 		}
 		bodyPart to BoneState(bodyPart = bodyPart, length = tailOffset.len(), rotation = restRotation)
 	}
-	SkeletonState(rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, length = bone.length, rawPosition = Vector3.NULL) }, userHeight = computeUserHeight(bones.mapValues { (_, bone) -> bone.length }))
+	SkeletonState(rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, length = bone.length, rawPosition = Vector3.NULL) }, userHeight = DEFAULT_HEIGHT)
 }
 
 fun buildBones(
@@ -73,7 +74,7 @@ fun buildBones(
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
 	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3) : SkeletonActions
-	data class SetProportions(val lengths: Map<BodyPart, Float>) : SkeletonActions
+	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
