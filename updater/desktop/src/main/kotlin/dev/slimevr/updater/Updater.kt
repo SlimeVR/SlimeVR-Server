@@ -1,10 +1,10 @@
 package dev.slimevr.updater
 
-import dev.slimevr.updater.ManifestUtils.Companion.getCurrentVersionTag
-import dev.slimevr.updater.ManifestUtils.Companion.getRelease
+import Manifest
+import ManifestUtils.Companion.getCurrentVersionTag
+import ManifestUtils.Companion.getRelease
 import dev.slimevr.updater.OperatingSystem.Companion.currentPlatform
 import dev.slimevr.updater.util.TerminalUtil
-import io.eiren.util.logging.LogManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -24,8 +24,8 @@ class Updater(
 	suspend fun runUpdater() {
 		val vrConfig = resolveConfig("vrconfig.yml")
 		val configDir = resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.toAbsolutePath().toString()
-		LogManager.info("Using config dir: $configDir")
-		val manifest = Manifest().getManifest()
+		//LogManager.info("Using config dir: $configDir")
+		val manifest = Manifest(manifestPath).getManifest()
 		val os = OperatingSystem
 		val arch = System.getProperty("os.arch").lowercase()
 		val normalizedArch = when {
@@ -92,7 +92,37 @@ class Updater(
 			setUpdateDone()
 			saveCurrentVersionTag()
 			Thread.sleep(500)
+			if (featureFlags.restartServer) {
+				when (os.currentPlatform) {
+					OperatingSystem.WINDOWS -> {
+
+					}
+					OperatingSystem.LINUX -> {
+						launchDetached(listOf("./SlimeVR-amd64.appimage"))
+					}
+
+					else -> {
+						TerminalUtil.error("Unknown operating system")
+						return
+					}
+				}
+			}
 			exitProcess(0)
+		}
+
+
+	}
+
+	fun launchDetached(command: List<String>) {
+		val processBuilder = ProcessBuilder(command)
+		processBuilder.redirectOutput(ProcessBuilder.Redirect.DISCARD)
+		processBuilder.redirectError(ProcessBuilder.Redirect.DISCARD)
+
+		try {
+			processBuilder.start()
+			println("Process started successfully. Closing parent...")
+		} catch (e: Exception) {
+			e.printStackTrace()
 		}
 	}
 
@@ -114,7 +144,7 @@ class Updater(
 
 		val configFile = resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(configFilename) ?: return configFilename
 		if (!configFile.exists() && Path(configFilename).exists()) {
-			LogManager.info("Moved local config file to appdata folder")
+			//LogManager.info("Moved local config file to appdata folder")
 			Files.move(Path(configFilename), configFile)
 		}
 		return configFile.pathString

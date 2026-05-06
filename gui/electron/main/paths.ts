@@ -130,3 +130,25 @@ export const findServerJar = () => {
     .map((p) => join(p!, 'slimevr.jar'))
     .find((p) => existsSync(p));
 };
+
+export const findUpdaterJar = () => {
+  const paths = [
+    options.path ? path.resolve(options.path) : undefined,
+    app.isPackaged ? path.resolve(process.resourcesPath) : undefined,
+    // AppImage passes the fakeroot in `APPDIR` env var.
+    process.env['APPDIR']
+      ? path.resolve(join(process.env['APPDIR'], 'usr/share/slimevr/'))
+      : undefined,
+    path.dirname(app.getPath('exe')),
+    // For flatpack container
+    path.resolve('/app/share/slimevr/'),
+    path.resolve('/usr/share/slimevr/'),
+
+    // For macos on steam
+    path.resolve(`${app.getPath('exe')}/../../../../`),
+  ];
+  return paths
+    .filter((p) => !!p)
+    .map((p) => join(p!, 'updater.jar'))
+    .find((p) => existsSync(p));
+};

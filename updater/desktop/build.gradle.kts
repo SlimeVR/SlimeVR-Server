@@ -29,6 +29,7 @@ java {
 tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions {
 		jvmTarget.set(JvmTarget.JVM_17)
+		freeCompilerArgs.add("-Xskip-prerelease-check")
 	}
 }
 
@@ -43,13 +44,14 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
-group = "org.example"
-version = "unspecified"
+group = "dev.slimevr"
+version = "updater"
 
 allprojects {
 	repositories {
 		// Use jcenter for resolving dependencies.
 		// You can declare any Maven/Ivy/file repository here.
+		mavenLocal()
 		google()
 		mavenCentral()
 		maven(url = "https://jitpack.io")
@@ -59,7 +61,6 @@ allprojects {
 }
 
 dependencies {
-	implementation(project(":server:core"))
 	implementation("io.ktor:ktor-client-core:3.0.3")
 	implementation("io.ktor:ktor-client-cio:3.0.3")
 	implementation("io.ktor:ktor-client-content-negotiation:3.0.3")
@@ -72,7 +73,7 @@ dependencies {
 	implementation("org.jetbrains.compose.material3:material3:1.9.0-beta03")
 	implementation("org.jetbrains.compose.components:components-resources:1.10.3")
 	implementation("org.jetbrains.compose.components:components-animatedimage:1.10.3")
-
+	implementation("com.github.HannahPadd:manifestUtils:fc4f0fb769")
 
 	implementation("com.github.ajalt.mordant:mordant:3.0.2")
 	implementation("com.github.ajalt.mordant:mordant-markdown:3.0.2")

@@ -36,6 +36,7 @@ import { options } from './cli';
 import { ServerStatusEvent } from 'electron/preload/interface';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
+import { runUpdater } from './updater';
 
 type Stores = Awaited<ReturnType<typeof initStores>>;
 let stores: Stores;
@@ -191,6 +192,10 @@ handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
       return getExeFolder();
   }
 });
+
+handleIpc(IPC_CHANNELS.RUN_UPDATER, (e, args) => {
+  runUpdater(args)
+})
 
 const defaultWindowState: {
   width: number;

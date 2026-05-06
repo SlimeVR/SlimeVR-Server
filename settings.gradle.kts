@@ -10,11 +10,11 @@
 rootProject.name = "SlimeVR Server"
 
 pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
+	repositories {
+		gradlePluginPortal()
+		google()
+		mavenCentral()
+	}
 
 	val kotlinVersion: String by settings
 	val spotlessVersion: String by settings
@@ -44,3 +44,9 @@ include(":server:android")
 include(":updater")
 project(":updater").projectDir = File("updater")
 include("updater:desktop")
+
+include("manifestUtils")
+
+include("manifestUtils")
+include("manifestUtils")
+include("manifestUtils")

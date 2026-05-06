@@ -19,7 +19,8 @@ export const IPC_CHANNELS = {
   OPEN_FILE: 'open-file',
   GET_FOLDER: 'get-folder',
   GH_FETCH: 'gh-fetch',
-  DISCORD_PRESENCE: 'discord-presence'
+  DISCORD_PRESENCE: 'discord-presence',
+  RUN_UPDATER: "run-updater"
 } as const;
 
 export interface IpcInvokeMap {
@@ -46,4 +47,5 @@ export interface IpcInvokeMap {
     options: T
   ) => Promise<GHReturn[T['type']]>;
   [IPC_CHANNELS.DISCORD_PRESENCE]: (options: DiscordPresence) => void;
+  [IPC_CHANNELS.RUN_UPDATER]: (args: string[]) => void;
 }

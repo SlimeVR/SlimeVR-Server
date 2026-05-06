@@ -1,9 +1,10 @@
 package dev.slimevr.updater
 
+import Manifest
+import ManifestUtils.Companion.getChannels
+import ManifestUtils.Companion.getVersionTags
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextStyles.bold
-import dev.slimevr.updater.ManifestUtils.Companion.getChannels
-import dev.slimevr.updater.ManifestUtils.Companion.getVersionTags
 import dev.slimevr.updater.util.TerminalUtil
 import dev.slimevr.updater.util.TerminalUtil.t
 import org.apache.commons.cli.CommandLine
@@ -19,6 +20,8 @@ val VERSION = (GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) + if (GIT_CLEAN) "" 
 
 val featureFlags = FeatureFlags()
 
+val manifestPath = "update-manifest.json"
+
 fun main(args: Array<String>) {
 	val options = Options().apply {
 		addOption("h", "help", false, "Show help")
@@ -33,6 +36,7 @@ fun main(args: Array<String>) {
 				.build(),
 		)
 		addOption("l", "list", true, "List all versions for a channel")
+		addOption("r", "restart-server", false, "Restart server after the updater is done")
 	}
 
 	val parser: CommandLineParser = DefaultParser()
@@ -55,7 +59,7 @@ fun main(args: Array<String>) {
 	}
 
 	if (cmd.hasOption("channels")) {
-		val manifest = Manifest().getManifest()
+		val manifest = Manifest(manifestPath).getManifest()
 		val channels = getChannels(manifest)
 		TerminalUtil.info("Available Release Channels:")
 		channels.forEach { t.println(" • ${TextColors.green(it)}") }
@@ -64,7 +68,7 @@ fun main(args: Array<String>) {
 
 	if (cmd.hasOption("list")) {
 		val channel = cmd.getOptionValue("list")
-		val manifest = Manifest().getManifest()
+		val manifest = Manifest(manifestPath).getManifest()
 		val versions = getVersionTags(manifest, channel)
 		TerminalUtil.printVersionGrid(versions, title = "Releases in '$channel'")
 		exitProcess(0)
@@ -82,6 +86,10 @@ fun main(args: Array<String>) {
 		featureFlags.channel = channel
 
 		TerminalUtil.success("Target set: ${bold(version)} on channel ${bold(channel)}")
+	}
+
+	if (cmd.hasOption("restart-server")) {
+		featureFlags.restartServer = true
 	}
 
 	TerminalUtil.info("Launching graphical interface...")

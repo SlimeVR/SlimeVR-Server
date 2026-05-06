@@ -91,6 +91,9 @@ dependencies {
 	// Jitpack
 	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
 
+	// Utils library for the updater manifest
+	implementation("com.github.HannahPadd:manifestUtils:fc4f0fb769")
+
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
 	testImplementation(platform("org.junit:junit-bom:6.0.2"))

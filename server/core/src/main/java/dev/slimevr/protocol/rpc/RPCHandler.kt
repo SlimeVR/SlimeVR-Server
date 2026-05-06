@@ -22,6 +22,7 @@ import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
 import dev.slimevr.protocol.rpc.status.RPCStatusHandler
 import dev.slimevr.protocol.rpc.trackingchecklist.RPCTrackingChecklistHandler
 import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause
+import dev.slimevr.protocol.rpc.updater.RPCUpdaterHandler
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.processor.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracking.trackers.TrackerPosition
@@ -54,6 +55,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCTrackingChecklistHandler(this, api)
 		RPCUserHeightCalibration(this, api)
 		RPCInstallInfoHandler(this, api)
+		RPCUpdaterHandler(this, api)
 
 		registerPacketListener(
 			RpcMessage.AssignTrackerRequest,

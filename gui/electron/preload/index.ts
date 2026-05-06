@@ -37,5 +37,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openFile: (path) => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, path),
   ghGet: (req) => ipcRenderer.invoke(IPC_CHANNELS.GH_FETCH, req),
   setPresence: (options) => ipcRenderer.invoke(IPC_CHANNELS.DISCORD_PRESENCE, options),
-  getInstallDir: () => ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'exe')
+  getInstallDir: () => ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'exe'),
+  runUpdater: (args) => ipcRenderer.invoke(IPC_CHANNELS.RUN_UPDATER, args)
 } satisfies IElectronAPI);
