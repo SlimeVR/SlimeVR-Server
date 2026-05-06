@@ -101,22 +101,6 @@ function initializePreview(
     skeletonHelper.resolution.copy(resolution);
     skeletonGroup.add(skeletonHelper);
     scene.add(newSkeleton[0]);
-
-    const hmd = bones.get(BodyPart.HEAD);
-    const chest = bones.get(BodyPart.UPPER_CHEST);
-    // Check if HMD is identity, if it's then use upper chest's rotation
-    const quat = isIdentity(hmd?.rotationG)
-      ? QuaternionFromQuatT(chest?.rotationG).normalize().invert()
-      : QuaternionFromQuatT(hmd?.rotationG).normalize().invert();
-
-    // Project quat to (0x, 1y, 0z)
-    const VEC_Y = new Vector3(0, 1, 0);
-    const vec = VEC_Y.multiplyScalar(
-      new Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
-    );
-    const yawReset = new Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
-
-    skeletonGroup.rotation.setFromQuaternion(yawReset);
   };
 
   const computeUserHeight = (bones: Map<BodyPart, BoneT>) => {
