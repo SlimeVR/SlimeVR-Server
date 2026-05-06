@@ -1,11 +1,15 @@
 package dev.slimevr.updater
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +36,14 @@ import androidx.compose.ui.window.WindowScope
 import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.platform.Font
 import org.jetbrains.compose.animatedimage.AnimatedImage
 import org.jetbrains.compose.animatedimage.animate
 import org.jetbrains.compose.animatedimage.loadResourceAnimatedImage
@@ -40,8 +51,30 @@ import org.jetbrains.compose.animatedimage.loadResourceAnimatedImage
 val BG = Color(0xFF112D43)
 val TEXT = Color.White
 val ERROR = Color(0xFFE57373)
+val BUTTON_PRIMARY = Color(0xFF65459A)
+val BUTTON_SECONDARY = Color(0xFF112D43)
 val PROGRESS_BG = Color(0xFF081E30)
 val PROGRESS_FG = Color(0xFF65459A)
+
+val BUTTON_BORDER_RADIUS = 6.dp
+
+val PoppinsFontFamily = FontFamily(
+	Font(
+		resource = "fonts/poppins-latin-500-normal.woff2",
+		weight = FontWeight.Normal,
+		style = FontStyle.Normal
+	),
+	Font(
+		resource = "fonts/poppins-latin-700-normal.woff2",
+		weight = FontWeight.Bold,
+		style = FontStyle.Normal
+	)
+)
+
+val BaseTextStyle = TextStyle(
+	fontFamily = PoppinsFontFamily,
+	color = TEXT
+)
 
 @Composable
 fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO) {
@@ -64,84 +97,82 @@ fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO) {
 				) {
 					Text(
 						text = "SlimeVR Installer",
-						color = TEXT,
-						fontSize = 20.sp,
-						fontWeight = FontWeight.Bold,
-						textAlign = TextAlign.Center,
+						style = BaseTextStyle.copy(
+							fontSize = 20.sp,
+							fontWeight = FontWeight.Bold,
+							textAlign = TextAlign.Center
+						),
 						modifier = Modifier.align(Alignment.Center)
 					)
 				}
 				if (state.hasError) {
-					Box(
-						modifier = Modifier.size(160.dp),
-						contentAlignment = Alignment.Center
-					) {
-						ErrorGif()
-					}
-					Box(
-						modifier = Modifier
-							.fillMaxWidth()
-							.height(40.dp)
-					) {
-						Text(
-							text = "Whoops, something went wrong",
-							color = TEXT,
+					ErrorGif(modifier = Modifier.size(160.dp))
+
+					Text(
+						text = "Whoops, something went wrong",
+						style = BaseTextStyle.copy(
 							fontSize = 20.sp,
 							fontWeight = FontWeight.Bold,
-							textAlign = TextAlign.Center,
-							modifier = Modifier.align(Alignment.Center)
+							textAlign = TextAlign.Center
 						)
-					}
-					Box(
-						modifier = Modifier
-							.fillMaxWidth()
-							.height(40.dp)
-					) {
-						Text(
-							text = state.errorText,
-							color = TEXT,
+					)
+
+					Text(
+						text = state.errorText,
+						style = BaseTextStyle.copy(
 							fontSize = 13.sp,
-							textAlign = TextAlign.Center,
-							modifier = Modifier.align(Alignment.Center)
-						)
-					}
-					Box(
-						modifier = Modifier
-							.fillMaxWidth()
-							.height(40.dp)
+							textAlign = TextAlign.Center
+						),
+						modifier = Modifier.padding(bottom = 8.dp)
+					)
+
+					Column(
+						horizontalAlignment = Alignment.CenterHorizontally,
+						verticalArrangement = Arrangement.spacedBy(8.dp)
 					) {
+						val interactionSource = remember { MutableInteractionSource() }
+						val isHovered by interactionSource.collectIsHoveredAsState()
+						val animatedButtonColor by
+						animateColorAsState(
+							targetValue = if (isHovered) BUTTON_PRIMARY.copy(alpha = 0.85f) else BUTTON_PRIMARY,
+							animationSpec = tween(durationMillis = 200)
+						)
 						Button(
 							onClick = {
 								state.hasError = false
 								updaterIO.restartApplication()
 							},
+							shape = RoundedCornerShape(BUTTON_BORDER_RADIUS),
 							colors = ButtonDefaults.buttonColors(
-								backgroundColor = ERROR
+								backgroundColor = animatedButtonColor,
+								contentColor = TEXT
 							),
-							modifier = Modifier.align(Alignment.Center)
+							modifier = Modifier.fillMaxWidth(0.5f)
 						) {
 							Text(
 								text = "Try update again",
-								textAlign = TextAlign.Center
+								style = BaseTextStyle.copy(fontWeight = FontWeight.Normal)
 							)
 						}
-					}
-					Box(
-						modifier = Modifier
-							.fillMaxWidth()
-							.height(40.dp)
-					) {
+
+						val secInteractionSource = remember { MutableInteractionSource() }
+						val isSecHovered by secInteractionSource.collectIsHoveredAsState()
+
+						val animatedSecColor by animateColorAsState(
+							targetValue = if (isSecHovered) Color(0xFF1C4566) else BUTTON_SECONDARY,
+							animationSpec = tween(durationMillis = 200)
+						)
 						Button(
-							onClick = {
-							},
-							colors = ButtonDefaults.buttonColors(
-								backgroundColor = ERROR
-							),
-							modifier = Modifier.align(Alignment.Center)
+							onClick = { /* ... */ },
+							shape = RoundedCornerShape(6.dp),
+							interactionSource = secInteractionSource,
+							colors = ButtonDefaults.buttonColors(backgroundColor = animatedSecColor),
+							modifier = Modifier
+								.fillMaxWidth(0.5f)
 						) {
 							Text(
-								text = "Start server",
-								textAlign = TextAlign.Center
+								text = "Start server anyway",
+								style = BaseTextStyle.copy(fontWeight = FontWeight.Normal)
 							)
 						}
 					}
