@@ -45,7 +45,9 @@ interface Iphlpapi : Library {
 }
 
 @Suppress("ktlint:standard:backing-property-naming")
-private class INetworkConnection(instance: Pointer?) : Dispatch(instance), AutoCloseable {
+private class INetworkConnection(instance: Pointer?) :
+	Dispatch(instance),
+	AutoCloseable {
 	override fun close() {
 		Release()
 	}
@@ -58,7 +60,9 @@ private class INetworkConnection(instance: Pointer?) : Dispatch(instance), AutoC
 }
 
 @Suppress("ktlint:standard:backing-property-naming")
-private class IEnumNetworkConnections(instance: Pointer?) : Dispatch(instance), AutoCloseable {
+private class IEnumNetworkConnections(instance: Pointer?) :
+	Dispatch(instance),
+	AutoCloseable {
 	override fun close() {
 		Release()
 	}
@@ -72,7 +76,9 @@ private class IEnumNetworkConnections(instance: Pointer?) : Dispatch(instance), 
 }
 
 @Suppress("ktlint:standard:backing-property-naming")
-private class INetworkListManager(instance: Pointer?) : Dispatch(instance), AutoCloseable {
+private class INetworkListManager(instance: Pointer?) :
+	Dispatch(instance),
+	AutoCloseable {
 	override fun close() {
 		Release()
 	}
@@ -85,7 +91,9 @@ private class INetworkListManager(instance: Pointer?) : Dispatch(instance), Auto
 }
 
 @Suppress("ktlint:standard:backing-property-naming")
-private class INetwork(instance: Pointer?) : Dispatch(instance), AutoCloseable {
+private class INetwork(instance: Pointer?) :
+	Dispatch(instance),
+	AutoCloseable {
 	override fun close() {
 		Release()
 	}
@@ -132,37 +140,35 @@ private class INetwork(instance: Pointer?) : Dispatch(instance), AutoCloseable {
 	}
 }
 
-private fun enumerateNetworks(): List<NetworkInfo> {
-	return try {
-		Ole32.INSTANCE.CoInitializeEx(null, 0)
-		val clsid = CLSID("dcb00c01-570f-4a9b-8d69-199fdba5723b")
-		val iid = IID("dcb00000-570f-4a9b-8d69-199fdba5723b")
-		val ptr = PointerByReference()
-		COMUtils.checkRC(Ole32.INSTANCE.CoCreateInstance(clsid, null, WTypes.CLSCTX_ALL, iid, ptr))
-		val mgr = INetworkListManager(ptr.value)
-		val result = mgr.getNetworkConnections().use { conns ->
-			generateSequence { conns.next() }
-				.map { conn ->
-					conn.use {
-						conn.getNetwork().use { network ->
-							NetworkInfo(
-								network.getName(),
-								network.getDescription(),
-								network.getCategory(),
-								network.getConnectivity(),
-								network.isConnected(),
-							)
-						}
+private fun enumerateNetworks(): List<NetworkInfo> = try {
+	Ole32.INSTANCE.CoInitializeEx(null, 0)
+	val clsid = CLSID("dcb00c01-570f-4a9b-8d69-199fdba5723b")
+	val iid = IID("dcb00000-570f-4a9b-8d69-199fdba5723b")
+	val ptr = PointerByReference()
+	COMUtils.checkRC(Ole32.INSTANCE.CoCreateInstance(clsid, null, WTypes.CLSCTX_ALL, iid, ptr))
+	val mgr = INetworkListManager(ptr.value)
+	val result = mgr.getNetworkConnections().use { conns ->
+		generateSequence { conns.next() }
+			.map { conn ->
+				conn.use {
+					conn.getNetwork().use { network ->
+						NetworkInfo(
+							network.getName(),
+							network.getDescription(),
+							network.getCategory(),
+							network.getConnectivity(),
+							network.isConnected(),
+						)
 					}
-				}.toList()
-		}
-		mgr.close()
-		Ole32.INSTANCE.CoUninitialize()
-		result
-	} catch (e: Exception) {
-		println(e.stackTraceToString())
-		emptyList()
+				}
+			}.toList()
 	}
+	mgr.close()
+	Ole32.INSTANCE.CoUninitialize()
+	result
+} catch (e: Exception) {
+	println(e.stackTraceToString())
+	emptyList()
 }
 
 suspend fun setupDesktopNetworkProfileChecker(scope: CoroutineScope, manager: NetworkProfileManager) {
