@@ -99,6 +99,7 @@ data class UDPPacket3Handshake(
 	var protocolVersion: Int = 0,
 	var firmware: String? = null,
 	var macString: String? = null,
+	var manufacturer: String? = null,
 ) : UDPPacket(3) {
 	override fun readData(buf: ByteBuffer) {
 		if (buf.remaining() == 0) return
@@ -136,6 +137,24 @@ data class UDPPacket3Handshake(
 			)
 			if (macString == "00:00:00:00:00:00") macString = null
 		}
+
+		var trackerType: UInt = 0u
+		if (buf.remaining() > 1) {
+			// not sure if this is the right type etc., but we just want to skip over it
+			trackerType = buf.get().toUInt()
+		}
+
+		var vendorLength = 0
+		if (buf.remaining() > 0) vendorLength = buf.get().toInt()
+
+		// VENDOR_NAME/manufacturer length is 1 longer than
+		// that because it's null-terminated
+		var vendor: String = "placeholder"
+		vendor = readASCIIString(buf, vendorLength)
+
+		// redundant, but just in case they are somehow different
+		manufacturer = vendor
+
 	}
 
 	override fun writeData(buf: ByteBuffer) {

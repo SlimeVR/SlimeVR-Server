@@ -14,6 +14,7 @@ class UDPDevice(
 	override val hardwareIdentifier: String,
 	override val boardType: BoardType = BoardType.UNKNOWN,
 	override val mcuType: MCUType = MCUType.UNKNOWN,
+	override var manufacturer: String? = null,
 ) : Device(true) {
 
 	override val id: Int = nextLocalDeviceId.incrementAndGet()
@@ -74,12 +75,6 @@ class UDPDevice(
 	}
 
 	override fun toString(): String = "udp:/$ipAddress"
-
-	override var manufacturer: String?
-		get() = "SlimeVR"
-		set(manufacturer) {
-			super.manufacturer = manufacturer
-		}
 
 	fun getTracker(id: Int): Tracker? = trackers[id]
 }

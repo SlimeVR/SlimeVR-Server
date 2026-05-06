@@ -61,6 +61,7 @@ enum class BoardType(val id: UInt) {
 	GENERIC_NRF(24u),
 	SLIMEVR_BUTTERFLY_DEV(25u),
 	SLIMEVR_BUTTERFLY(26u),
+	SOMATICVR_ORION(27u),
 	DEV_RESERVED(250u),
 	;
 
@@ -94,6 +95,7 @@ enum class BoardType(val id: UInt) {
 		GENERIC_NRF -> "Generic nRF"
 		SLIMEVR_BUTTERFLY_DEV -> "SlimeVR Dev Butterfly"
 		SLIMEVR_BUTTERFLY -> "SlimeVR Butterfly"
+		SOMATICVR_ORION -> "Somatic Orion"
 		DEV_RESERVED -> "Prototype"
 	}
 
