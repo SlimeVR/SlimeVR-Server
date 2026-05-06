@@ -32,10 +32,6 @@ val DEFAULT_PROPORTIONS = mapOf(
 	SkeletonBone.ELBOW_OFFSET to 0f,
 )
 
-// Sum of default bone lengths for height-contributing bones
-// Used to normalize HEIGHT_SCALED_BONE_RATIOS.
-val DEFAULT_HEIGHT = DEFAULT_PROPORTIONS.height() // = 1.58f
-
 // Set of SkeletonBones whose lengths sum to standing height (spine + legs).
 // Arms are excluded: they scale with height but are not part of the height measurement.
 private val HEIGHT_CONTRIBUTING_BONES: Set<SkeletonBone> = setOf(
@@ -47,13 +43,6 @@ private val HEIGHT_CONTRIBUTING_BONES: Set<SkeletonBone> = setOf(
 	SkeletonBone.UPPER_LEG,
 	SkeletonBone.LOWER_LEG,
 )
-
-// Per-bone fraction of total standing height, includes spine, legs, and arms, all bones
-// whose length scales with user height.
-// Non-height bones (HEAD, FOOT_LENGTH) are absent; they keep fixed defaults from DEFAULT_SKELETON_STATE.
-private val HEIGHT_SCALED_BONE_RATIOS: Map<SkeletonBone, Float> = (
-	HEIGHT_CONTRIBUTING_BONES + setOf(SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM)
-	).associateWith { (DEFAULT_PROPORTIONS[it] ?: 0f) / DEFAULT_HEIGHT }
 
 // Maps each SolarXR SkeletonBone to the BodyPart(s) it controls in the skeleton with vectors for offset directions.
 private val SKELETON_BONE_FLOAT_TO_BODY_PARTS: Map<SkeletonBone, Map<BodyPart, Vector3>> = mapOf(
@@ -94,6 +83,17 @@ private val BODY_PART_VECTOR_TO_SKELETON_BONES: Map<BodyPart, Map<SkeletonBone, 
 // Maps each SolarXR SkeletonBone to the BodyPart(s) it controls in the skeleton.
 // Symmetric bones (legs, arms) map to both left and right sides.
 val SKELETON_BONE_TO_BODY_PARTS: Map<SkeletonBone, Set<BodyPart>> = SKELETON_BONE_FLOAT_TO_BODY_PARTS.mapValues { it.value.keys }
+
+// Sum of default bone lengths for height-contributing bones
+// Used to normalize HEIGHT_SCALED_BONE_RATIOS.
+val DEFAULT_HEIGHT = DEFAULT_PROPORTIONS.height() // = 1.58f
+
+// Per-bone fraction of total standing height, includes spine, legs, and arms, all bones
+// whose length scales with user height.
+// Non-height bones (HEAD, FOOT_LENGTH) are absent; they keep fixed defaults from DEFAULT_SKELETON_STATE.
+private val HEIGHT_SCALED_BONE_RATIOS: Map<SkeletonBone, Float> = (
+	HEIGHT_CONTRIBUTING_BONES + setOf(SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM)
+	).associateWith { (DEFAULT_PROPORTIONS[it] ?: 0f) / DEFAULT_HEIGHT }
 
 // Sums the HEIGHT_CONTRIBUTING_BONES lengths to derive standing height.
 fun Map<SkeletonBone, Float>.height(): Float = HEIGHT_CONTRIBUTING_BONES.sumOf { bone ->
