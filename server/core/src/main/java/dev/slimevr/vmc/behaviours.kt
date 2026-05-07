@@ -10,10 +10,8 @@ import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.osc.OscReceiver
 import dev.slimevr.osc.OscSender
-import dev.slimevr.skeleton.BONE_TAIL_DIRECTIONS
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.skeleton.buildBones
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -35,12 +33,27 @@ class VMCOutputBehaviour(
 
 	override fun observe(receiver: VMCManager) {
 		var sender: OscSender? = null
+		var vrmGeometry: VrmGeometry? = null
 
 		receiver.context.state
 			.map { it.config }
 			.distinctUntilChanged()
 			.onEach { config ->
 				settings.context.dispatch(SettingsActions.Update { copy(vmcConfig = config) })
+			}.launchIn(receiver.context.scope)
+
+		receiver.context.state
+			.map { it.config.vrmJson }
+			.distinctUntilChanged()
+			.onEach { json ->
+				vrmGeometry = json?.takeIf { value -> value.isNotEmpty() }?.let { value ->
+					try {
+						buildVrmGeometry(VrmReader(value))
+					} catch (e: Exception) {
+						AppLogger.vmc.error("Failed to parse VRM JSON", e)
+						null
+					}
+				}
 			}.launchIn(receiver.context.scope)
 
 		receiver.context.state
@@ -67,9 +80,10 @@ class VMCOutputBehaviour(
 				val s = sender ?: return@onEach
 				val config = receiver.context.state.value.config
 				val currentTime = System.currentTimeMillis()
+				val vrm = vrmGeometry
 				receiver.context.scope.launch {
 					try {
-						s.send(buildBundle(bones, config, currentTime))
+						s.send(buildBundle(bones, config, currentTime, vrm))
 					} catch (e: Exception) {
 						AppLogger.vmc.error("Failed to send VMC frame", e)
 					}
@@ -77,32 +91,25 @@ class VMCOutputBehaviour(
 			}.launchIn(receiver.context.scope)
 	}
 
-	private fun buildBundle(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long): OscBundle = OscBundle(1L, buildMessages(bones, config, currentTime).map { OscContent.Message(it) }.toList())
+	private fun buildBundle(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?): OscBundle =
+		OscBundle(1L, buildMessages(bones, config, currentTime, vrm).map { msg -> OscContent.Message(msg) }.toList())
 
-	// TODO: coordinate space conversion to VMC space
+	// Z-axis handedness flip for SlimeVR (RH) to Unity/VMC (LH).
 	private fun boneMessage(address: String, name: String, pos: Vector3, rot: Quaternion): OscMessage = OscMessage(
 		address,
 		listOf(
 			OscArg.String(name),
 			OscArg.Float(pos.x),
 			OscArg.Float(pos.y),
-			OscArg.Float(pos.z),
+			OscArg.Float(-pos.z),
 			OscArg.Float(rot.x),
 			OscArg.Float(rot.y),
-			OscArg.Float(rot.z),
-			OscArg.Float(rot.w),
+			OscArg.Float(-rot.z),
+			OscArg.Float(-rot.w),
 		),
 	)
 
-	private fun buildMessages(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long): Sequence<OscMessage> = sequence {
-		val hipPos = bones[BodyPart.HIP]?.headPosition ?: Vector3.NULL
-		val vmcBones = buildBones(
-			skeleton.context.state.value,
-			rootHead = hipPos,
-			hierarchy = iterateVMCHierarchy(),
-			tailDirections = BONE_TAIL_DIRECTIONS,
-		)
-
+	private fun buildMessages(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?): Sequence<OscMessage> = sequence {
 		val time = (currentTime - initTime) / 1000f
 		yield(OscMessage("/VMC/Ext/T", listOf(OscArg.Float(time))))
 		yield(OscMessage("/VMC/Ext/OK", listOf(OscArg.Int(1))))
@@ -122,15 +129,30 @@ class VMCOutputBehaviour(
 			),
 		)
 
-		// TODO: implement mirrorTracking
-		for ((bodyPart, unityName) in BODY_PART_TO_UNITY_BONE) {
-			val bone = vmcBones[bodyPart] ?: continue
-			yield(boneMessage("/VMC/Ext/Bone/Pos", unityName, bone.localHeadPosition, bone.localRotation))
+		// Hip world position.
+		// 	With VRM data: anchor at HEAD: scale our skeleton head into VRM
+		// 		units and walk back to the hip via the avatar's own bind pose so the model stays
+		// 		grounded at its native proportions.
+		// 	Without VRM data: fall back to absolute world hip.
+		val hipPos = if (vrm != null) {
+			val userHeight = skeleton.context.state.value.userHeight
+			val scale = if (userHeight > 0f) vrm.height / userHeight else 1f
+			val ourHead = bones[BodyPart.HEAD]?.headPosition ?: Vector3.NULL
+			ourHead * scale - vrm.headOffsetFromHip
+		} else {
+			bones[BodyPart.HIP]?.headPosition ?: Vector3.NULL
 		}
 
-		val headBone = vmcBones[BodyPart.HEAD]
-		if (headBone != null) {
-			yield(boneMessage("/VMC/Ext/Hmd/Pos", "human://HEAD", headBone.localHeadPosition, headBone.localRotation))
+		// TODO: implement mirrorTracking and anchor at hip
+		for ((bodyPart, unityName) in BODY_PART_TO_UNITY_BONE) {
+			val bone = bones[bodyPart] ?: continue
+			val parent = VMC_BONE_PARENTS[bodyPart]?.let { bones[it] }
+			val pos = when {
+				parent == null -> hipPos
+				vrm != null -> vrm.bindOffsets[bodyPart] ?: Vector3.NULL
+				else -> vmcLocalPosition(bone, parent)
+			}
+			yield(boneMessage("/VMC/Ext/Bone/Pos", unityName, pos, vmcLocalRotation(bone, parent)))
 		}
 	}
 }

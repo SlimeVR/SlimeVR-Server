@@ -9,11 +9,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VMCConfig(
-	val enabled: Boolean = false,
+	val enabled: Boolean = true,
 	val portOut: Int = 39539,
 	val portIn: Int = 39540,
 	val address: String = "172.17.0.1",
 	val mirrorTracking: Boolean = false,
+	val anchorAtHips: Boolean = false,
+	val vrmJson: String? = null,
 )
 
 data class VMCState(val config: VMCConfig = VMCConfig())
