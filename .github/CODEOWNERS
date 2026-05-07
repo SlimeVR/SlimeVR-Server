@@ -1,6 +1,3 @@
-# Global code owner
-* @Eirenliel
-
 # Make everyone be able to approve SolarXR submodule changes
 /solarxr-protocol @ButterscotchV @Erimelowo @loucass003
 
@@ -16,11 +13,11 @@
 
 /gui/src/components/settings/ @Erimelowo @loucass003
 
-# Rust part of the GUI
+# Electron part of the GUI
 /gui/electron/ @loucass003
 
 # Some server code~
-/server/ @ButterscotchV @Eirenliel @Erimelowo
+/server/ @ButterscotchV @loucass003 @Erimelowo
 
 /server/src/main/java/dev/slimevr/autobone/ @ButterscotchV
 /server/src/main/java/dev/slimevr/poserecorder/ @ButterscotchV
