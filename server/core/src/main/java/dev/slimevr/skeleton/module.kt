@@ -93,7 +93,7 @@ class Skeleton(
 				ProportionsBehaviour(),
 				ScaledProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
-				YouSpinMeRightRoundBehaviour(inputHz = 10f),
+				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					processors = listOf(
 // 					PredictionProcessor(predictionAmount = 0.3f),

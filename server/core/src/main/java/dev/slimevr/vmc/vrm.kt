@@ -81,13 +81,11 @@ data class Node(
 	val children: List<Int> = emptyList(),
 )
 
-// VRM bind-pose geometry derived from a parsed VRM JSON. Used to anchor the avatar at HEAD,
-// scale our skeleton positions into VRM units, and override per-bone positions with the
-// model's own bind pose so the mesh isn't stretched.
+// VRM bind-pose geometry derived from a parsed VRM JSON. Used to keep the avatar's
+// local bone offsets aligned with the model's own proportions.
 data class VrmGeometry(
 	val bindOffsets: Map<BodyPart, Vector3>,
-	val height: Float,
-	val headOffsetFromHip: Vector3,
+	val hipLocalPosition: Vector3,
 )
 
 fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
@@ -96,12 +94,10 @@ fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
 	}
 	fun offset(bodyPart: BodyPart) = bindOffsets[bodyPart] ?: Vector3.NULL
 
-	val headOffsetFromHip = offset(BodyPart.WAIST) + offset(BodyPart.CHEST) + offset(BodyPart.UPPER_CHEST) + offset(BodyPart.NECK) + offset(BodyPart.HEAD)
-	val height = offset(BodyPart.HIP).y + headOffsetFromHip.y
+	val hipLocalPosition = offset(BodyPart.HIP)
 
 	return VrmGeometry(
 		bindOffsets = bindOffsets,
-		height = height,
-		headOffsetFromHip = headOffsetFromHip,
+		hipLocalPosition = hipLocalPosition,
 	)
 }

@@ -91,11 +91,9 @@ class VMCOutputBehaviour(
 			}.launchIn(receiver.context.scope)
 	}
 
-	private fun buildBundle(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?): OscBundle =
-		OscBundle(1L, buildMessages(bones, config, currentTime, vrm).map { msg -> OscContent.Message(msg) }.toList())
+	private fun buildBundle(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?): OscBundle = OscBundle(1L, buildMessages(bones, config, currentTime, vrm).map { msg -> OscContent.Message(msg) }.toList())
 
-	// Z-axis handedness flip for SlimeVR (RH) to Unity/VMC (LH).
-	private fun boneMessage(address: String, name: String, pos: Vector3, rot: Quaternion): OscMessage = OscMessage(
+	private fun transformMessage(address: String, name: String, pos: Vector3, rot: Quaternion): OscMessage = OscMessage(
 		address,
 		listOf(
 			OscArg.String(name),
@@ -113,46 +111,42 @@ class VMCOutputBehaviour(
 		val time = (currentTime - initTime) / 1000f
 		yield(OscMessage("/VMC/Ext/T", listOf(OscArg.Float(time))))
 		yield(OscMessage("/VMC/Ext/OK", listOf(OscArg.Int(1))))
-		yield(
-			OscMessage(
-				"/VMC/Ext/Root/Pos",
-				listOf(
-					OscArg.String("root"),
-					OscArg.Float(0f),
-					OscArg.Float(0f),
-					OscArg.Float(0f),
-					OscArg.Float(0f),
-					OscArg.Float(0f),
-					OscArg.Float(0f),
-					OscArg.Float(1f),
-				),
-			),
-		)
 
-		// Hip world position.
-		// 	With VRM data: anchor at HEAD: scale our skeleton head into VRM
-		// 		units and walk back to the hip via the avatar's own bind pose so the model stays
-		// 		grounded at its native proportions.
-		// 	Without VRM data: fall back to absolute world hip.
-		val hipPos = if (vrm != null) {
-			val userHeight = skeleton.context.state.value.userHeight
-			val scale = if (userHeight > 0f) vrm.height / userHeight else 1f
-			val ourHead = bones[BodyPart.HEAD]?.headPosition ?: Vector3.NULL
-			ourHead * scale - vrm.headOffsetFromHip
-		} else {
-			bones[BodyPart.HIP]?.headPosition ?: Vector3.NULL
-		}
+		val rootPos = vmcRootPosition(bones, config, vrm)
+		yield(transformMessage("/VMC/Ext/Root/Pos", "root", rootPos, Quaternion.IDENTITY))
 
-		// TODO: implement mirrorTracking and anchor at hip
-		for ((bodyPart, unityName) in BODY_PART_TO_UNITY_BONE) {
-			val bone = bones[bodyPart] ?: continue
-			val parent = VMC_BONE_PARENTS[bodyPart]?.let { bones[it] }
-			val pos = when {
-				parent == null -> hipPos
-				vrm != null -> vrm.bindOffsets[bodyPart] ?: Vector3.NULL
-				else -> vmcLocalPosition(bone, parent)
+		for ((targetBodyPart, unityName) in BODY_PART_TO_UNITY_BONE) {
+			val targetParentBodyPart = VMC_BONE_PARENTS[targetBodyPart]
+			val trackingBodyPart = if (config.mirrorTracking) vmcMirrorSource(targetBodyPart) else targetBodyPart
+			val trackingBone = bones[trackingBodyPart] ?: continue
+
+			if (targetParentBodyPart == null) {
+				val pos = vrm?.hipLocalPosition ?: Vector3.NULL
+				val rot = vmcLocalRotation(trackingBone, null, targetBodyPart, null, config.mirrorTracking)
+				yield(transformMessage("/VMC/Ext/Bone/Pos", unityName, pos, rot))
+				continue
 			}
-			yield(boneMessage("/VMC/Ext/Bone/Pos", unityName, pos, vmcLocalRotation(bone, parent)))
+
+			val trackingParentBodyPart = if (config.mirrorTracking) {
+				vmcMirrorSource(targetParentBodyPart)
+			} else {
+				targetParentBodyPart
+			}
+			val trackingParent = bones[trackingParentBodyPart] ?: continue
+
+			val pos = if (vrm != null) {
+				vrm.bindOffsets[targetBodyPart] ?: Vector3.NULL
+			} else {
+				vmcLocalPosition(trackingBone, trackingParent, targetParentBodyPart, config.mirrorTracking)
+			}
+			val rot = vmcLocalRotation(
+				trackingBone,
+				trackingParent,
+				targetBodyPart,
+				targetParentBodyPart,
+				config.mirrorTracking,
+			)
+			yield(transformMessage("/VMC/Ext/Bone/Pos", unityName, pos, rot))
 		}
 	}
 }

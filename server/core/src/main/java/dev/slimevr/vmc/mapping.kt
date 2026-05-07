@@ -6,7 +6,6 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
-
 val BODY_PART_TO_UNITY_BONE: Map<BodyPart, String> = mapOf(
 	BodyPart.HEAD to "Head",
 	BodyPart.NECK to "Neck",
@@ -123,6 +122,37 @@ fun iterateVMCHierarchy() = sequence { visitVMC(null, BodyPart.HIP) }
 val VMC_BONE_PARENTS: Map<BodyPart, BodyPart?> =
 	iterateVMCHierarchy().associate { (parent, child) -> child to parent }
 
+val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
+	BodyPart.LEFT_SHOULDER to BodyPart.RIGHT_SHOULDER,
+	BodyPart.LEFT_UPPER_ARM to BodyPart.RIGHT_UPPER_ARM,
+	BodyPart.LEFT_LOWER_ARM to BodyPart.RIGHT_LOWER_ARM,
+	BodyPart.LEFT_HAND to BodyPart.RIGHT_HAND,
+	BodyPart.LEFT_UPPER_LEG to BodyPart.RIGHT_UPPER_LEG,
+	BodyPart.LEFT_LOWER_LEG to BodyPart.RIGHT_LOWER_LEG,
+	BodyPart.LEFT_FOOT to BodyPart.RIGHT_FOOT,
+	BodyPart.LEFT_THUMB_METACARPAL to BodyPart.RIGHT_THUMB_METACARPAL,
+	BodyPart.LEFT_THUMB_PROXIMAL to BodyPart.RIGHT_THUMB_PROXIMAL,
+	BodyPart.LEFT_THUMB_DISTAL to BodyPart.RIGHT_THUMB_DISTAL,
+	BodyPart.LEFT_INDEX_PROXIMAL to BodyPart.RIGHT_INDEX_PROXIMAL,
+	BodyPart.LEFT_INDEX_INTERMEDIATE to BodyPart.RIGHT_INDEX_INTERMEDIATE,
+	BodyPart.LEFT_INDEX_DISTAL to BodyPart.RIGHT_INDEX_DISTAL,
+	BodyPart.LEFT_MIDDLE_PROXIMAL to BodyPart.RIGHT_MIDDLE_PROXIMAL,
+	BodyPart.LEFT_MIDDLE_INTERMEDIATE to BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
+	BodyPart.LEFT_MIDDLE_DISTAL to BodyPart.RIGHT_MIDDLE_DISTAL,
+	BodyPart.LEFT_RING_PROXIMAL to BodyPart.RIGHT_RING_PROXIMAL,
+	BodyPart.LEFT_RING_INTERMEDIATE to BodyPart.RIGHT_RING_INTERMEDIATE,
+	BodyPart.LEFT_RING_DISTAL to BodyPart.RIGHT_RING_DISTAL,
+	BodyPart.LEFT_LITTLE_PROXIMAL to BodyPart.RIGHT_LITTLE_PROXIMAL,
+	BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
+	BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
+)
+
+val VMC_MIRROR_BONES: Map<BodyPart, BodyPart> = VMC_MIRROR_BONE_PAIRS
+	.flatMap { (left, right) -> listOf(left to right, right to left) }
+	.toMap()
+
+fun vmcMirrorSource(bodyPart: BodyPart): BodyPart = VMC_MIRROR_BONES[bodyPart] ?: bodyPart
+
 // Per-bone rest offset, subtracted from the live world rotation before computing the VMC local.
 // Foot cancels R(90deg,X) baked into DEFAULT_SKELETON_STATE. Arms remap our hanging rest (NEG_Y)
 // to the VRM rig's T-pose rest direction so the avatar isn't stuck at T regardless of our pose.
@@ -153,28 +183,51 @@ val VMC_REST_ROTATIONS: Map<BodyPart, Quaternion> = run {
 		BodyPart.RIGHT_UPPER_ARM to rightArm,
 		BodyPart.RIGHT_LOWER_ARM to rightArm,
 		BodyPart.RIGHT_HAND to rightArm,
-	) + leftFingers.associateWith { leftArm } + rightFingers.associateWith { rightArm }
+	) +
+		leftFingers.associateWith { leftArm } +
+		rightFingers.associateWith { rightArm }
 }
 
-private fun restAdjustedWorld(bone: BoneState): Quaternion {
-	val rest = VMC_REST_ROTATIONS[bone.bodyPart] ?: return bone.rotation
-	return bone.rotation * rest.inv()
+fun vmcMirrorPosition(pos: Vector3): Vector3 = Vector3(-pos.x, pos.y, pos.z)
+
+fun vmcMirrorRotation(rot: Quaternion): Quaternion = Quaternion(rot.w, rot.x, -rot.y, -rot.z)
+
+private fun restAdjustedWorld(
+	bone: BoneState,
+	restBodyPart: BodyPart = bone.bodyPart,
+	mirror: Boolean = false,
+): Quaternion {
+	val world = if (mirror) vmcMirrorRotation(bone.rotation) else bone.rotation
+	val rest = VMC_REST_ROTATIONS[restBodyPart] ?: return world
+	return world * rest.inv()
 }
 
-// Local rotation relative to the VMC parent. Rest offset is applied to both bone and parent
-// before taking the relative rotation. Parent is explicit because VMC hierarchy differs from
-// the skeleton's head-rooted parentBone.
-fun vmcLocalRotation(bone: BoneState, parent: BoneState?): Quaternion {
-	val adjusted = restAdjustedWorld(bone)
+fun vmcLocalRotation(
+	bone: BoneState,
+	parent: BoneState?,
+	restBodyPart: BodyPart,
+	restParentBodyPart: BodyPart?,
+	mirror: Boolean,
+): Quaternion {
+	val adjusted = restAdjustedWorld(bone, restBodyPart, mirror)
 	if (parent == null) return adjusted
-	return restAdjustedWorld(parent).inv() * adjusted
+	return restAdjustedWorld(parent, restParentBodyPart ?: parent.bodyPart, mirror).inv() * adjusted
 }
 
-// Local position relative to the VMC parent. Overrides the VRM bind-pose offset so each bone
-// lands at our skeleton's world position when the receiver honors it. HIP root is handled by
-// the caller since the root has no parent in VMC.
-fun vmcLocalPosition(bone: BoneState, parent: BoneState): Vector3 {
-	val parentAdjusted = restAdjustedWorld(parent)
-	return parentAdjusted.inv().sandwich(bone.headPosition - parent.headPosition)
+fun vmcLocalPosition(
+	bone: BoneState,
+	parent: BoneState,
+	restParentBodyPart: BodyPart,
+	mirror: Boolean,
+): Vector3 {
+	val parentAdjusted = restAdjustedWorld(parent, restParentBodyPart, mirror)
+	val localPosition = bone.headPosition - parent.headPosition
+	return parentAdjusted.inv().sandwich(if (mirror) vmcMirrorPosition(localPosition) else localPosition)
 }
 
+fun vmcRootPosition(bones: Map<BodyPart, BoneState>, config: VMCConfig, vrm: VrmGeometry?): Vector3 {
+	val userHip = bones[BodyPart.HIP]?.headPosition ?: Vector3.NULL
+	val hipLocalPosition = vrm?.hipLocalPosition ?: Vector3.NULL
+	val targetHip = if (config.anchorAtHips) Vector3.NULL else userHip
+	return (if (config.mirrorTracking) vmcMirrorPosition(targetHip) else targetHip) - hipLocalPosition
+}
