@@ -128,11 +128,11 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
 
 handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => {
   const allowed_urls = [
-    /steam:\/\/.*/,
-    /ms-settings:network$/,
-    /https:\/\/.*\.slimevr\.dev.*/,
-    /https:\/\/github\.com\/.*/,
-    /https:\/\/discord\.gg\/slimevr$/,
+    /^steam:\/\//,
+    /^ms-settings:network$/,
+    /^https:\/\/(?:.+\.)?slimevr\.dev(?:\/.+)?$/,
+    /^https:\/\/github\.com\/SlimeVR(?:\/.+)?$/,
+    /^https:\/\/discord\.gg\/slimevr$/,
   ];
   if (allowed_urls.find((a) => url.match(a))) open(url);
   else logger.error({ url }, 'attempted to open non-whitelisted URL');
