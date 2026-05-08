@@ -196,9 +196,9 @@ export function VMCSettings() {
 
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
       formData.vmc.mirrorTracking = settings.vmcOsc.mirrorTracking;
-    }
 
-    reset(formData);
+      reset(formData);
+    }
   });
 
   return (
