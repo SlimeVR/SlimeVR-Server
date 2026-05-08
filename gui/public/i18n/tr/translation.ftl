@@ -206,6 +206,7 @@ skeleton_bone-ELBOW_OFFSET = Dirsek hizası
 ## Tracker reset buttons
 
 reset-reset_all = Tüm oranları sıfırla
+reset-reset_all_warning-cancel = İptal et
 reset-full = Sıfırlama
 
 ## Serial detection stuff
