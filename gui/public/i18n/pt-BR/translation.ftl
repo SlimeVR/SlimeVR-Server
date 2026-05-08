@@ -654,6 +654,8 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = Dados de posição
 settings-general-fk_settings-ik-use_position = Usar dados de posição
 settings-general-fk_settings-ik-use_position-description = Ativa o uso de dados de posição dos trackers que os fornecem. Ao ativar isso, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
+settings-general-fk_settings-velocity_settings = Configurações de Velocidade
+settings-general-fk_settings-velocity_settings-description = Envia dados de velocidade derivados para o SteamVR. Necessário para suporte ao Natural Locomotion. Pode causar instabilidade no FBT.
 settings-general-fk_settings-arm_fk = Rastreamento dos braços
 settings-general-fk_settings-arm_fk-description = Forçar o rastreamento dos braços a partir do headset (HMD), mesmo que dados posicionais das mãos estejam disponíveis.
 settings-general-fk_settings-arm_fk-force_arms = Forçar braços do HMD
