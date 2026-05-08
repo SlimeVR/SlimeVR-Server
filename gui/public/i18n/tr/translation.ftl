@@ -208,6 +208,8 @@ skeleton_bone-ELBOW_OFFSET = Dirsek hizası
 reset-reset_all = Tüm oranları sıfırla
 reset-reset_all_warning-cancel = İptal et
 reset-full = Sıfırlama
+reset-mounting-feet = Ayak Kalibrasyonu
+reset-mounting-fingers = Parmak Kalibrasyonu
 
 ## Serial detection stuff
 
@@ -255,10 +257,13 @@ widget-developer_mode-more_info = Daha fazla bilgi
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Rotasyon
+widget-imu_visualizer-preview = Önizle
+widget-imu_visualizer-hide = Gizle
 widget-imu_visualizer-rotation_preview = Önizle
 
 ## Widget: Skeleton Visualizer
 
+widget-skeleton_visualizer-hide = Gizle
 
 ## Tracker status
 
@@ -267,6 +272,7 @@ tracker-status-busy = Meşgul
 tracker-status-error = Hata
 tracker-status-disconnected = Bağlantı kesildi
 tracker-status-ok = İYİ
+tracker-status-timed_out = Zaman aşımı
 
 ## Tracker status columns
 
