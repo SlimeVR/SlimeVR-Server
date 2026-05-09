@@ -11,6 +11,7 @@ object AppLogger {
 	val device = logger("Device")
 	val udp = logger("UDPConnection")
 	val solarxr = logger("SolarXR")
+	val steamvr = logger("SteamVR")
 	val hid = logger("HID")
 	val serial = logger("Serial")
 	val firmware = logger("Firmware")

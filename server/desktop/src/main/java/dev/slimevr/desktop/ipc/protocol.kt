@@ -1,6 +1,9 @@
 package dev.slimevr.desktop.ipc
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.AppLogger
+import dev.slimevr.CURRENT_PLATFORM
+import dev.slimevr.Platform
 import dev.slimevr.desktop.platform.Position
 import dev.slimevr.desktop.platform.ProtobufMessage
 import dev.slimevr.desktop.platform.TrackerAdded
@@ -11,12 +14,66 @@ import dev.slimevr.driver.DriverBridgeOutbound
 import dev.slimevr.feeder.FeederBridge
 import dev.slimevr.feeder.FeederBridgeInbound
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.exists
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
-const val PROTOCOL_VERSION = 5
+const val PROTOCOL_VERSION = 2
+
+private fun getBindingsProviderPath(): Path? {
+	val executableName = when (CURRENT_PLATFORM) {
+		Platform.WINDOWS -> "SlimeVR-Bindings-Provider.exe"
+		Platform.LINUX -> "slimevr-bindings-provider"
+		else -> return null
+	}
+
+	// First we want to try to find it in the working directory, its location on
+	// Steam/Windows/portable.
+	val workingDir = System.getProperty("user.dir")
+	val binaryPath = Path(workingDir, executableName)
+	if (binaryPath.exists()) return binaryPath
+
+	// Then look through PATH to find the binary.
+	// PATH shouldn't be null, but if it is just gracefully fail
+	val path = System.getenv("PATH") ?: return null
+	val separator = System.getProperty("path.separator")
+	for (path in path.split(separator)) {
+		val binaryPath = Path(path, executableName)
+		if (binaryPath.exists()) return binaryPath
+	}
+
+	// :(
+	return null
+}
+
+suspend fun startBindingProvider() = withContext(Dispatchers.IO) {
+	val path = getBindingsProviderPath()
+	if (path == null) {
+		AppLogger.steamvr.warn("Failed to find bindings provider")
+		return@withContext
+	}
+
+	val proc = try {
+		ProcessBuilder(path.toString()).start()
+	} catch (e: Exception) {
+		AppLogger.steamvr.error(e, "Failed to start bindings provider")
+		return@withContext
+	}
+	AppLogger.steamvr.info("Started bindings provider (PID ${proc.pid()})")
+	proc.waitFor()
+
+	AppLogger.steamvr.info("Bindings provider exited with code ${proc.exitValue()}")
+}
 
 suspend fun handleDriverConnection(
 	appContext: AppContextProvider,
@@ -45,6 +102,11 @@ suspend fun handleDriverConnection(
 			val msg = ProtobufMessage.ADAPTER.decode(bytes)
 			msg.version?.let { ver ->
 				bridge.inbound.emit(DriverBridgeInbound.Version(ver.protocol_version))
+				if (ver.protocol_version >= 2) {
+					launch {
+						startBindingProvider()
+					}
+				}
 			}
 			msg.position?.let { pos ->
 				bridge.inbound.emit(DriverBridgeInbound.TrackerPosition(trackerId = pos.tracker_id, rotation = Quaternion(w = pos.qw, x = pos.qx, y = pos.qy, z = pos.qz), position = null))
