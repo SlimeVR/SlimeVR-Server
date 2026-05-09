@@ -25,6 +25,7 @@ export function useDiscordPresence() {
       activity: l10n.getString('settings-general-interface-discord_presence-message', {
         amount: imuTrackersCount,
       }),
+      iconText: (__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty'),
     });
   }, [config?.discordPresence, imuTrackersCount]);
 }

@@ -158,7 +158,7 @@ handleIpc(IPC_CHANNELS.DISCORD_PRESENCE, async (e, options) => {
   if (options.enable) {
     if (!discordPresence.state.ready)
       await discordPresence.connect();
-    discordPresence.updateActivity(options.activity);
+    discordPresence.updateActivity(options.activity, options.iconText);
   } else if (discordPresence.state.ready) {
     discordPresence.destroy();
   }

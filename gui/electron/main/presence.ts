@@ -28,12 +28,13 @@ export const richPresence = () => {
         logger.error(e, 'Unable to connect to Discord RPC');
       }
     },
-    updateActivity: (content: string) => {
+    updateActivity: (content: string, iconText: string | undefined) => {
       if (!state.ready) return;
       client.user
         ?.setActivity({
           state: content,
           largeImageKey: 'icon',
+          largeImageText: iconText,
           startTimestamp: state.start,
         })
         .catch((e) => {
