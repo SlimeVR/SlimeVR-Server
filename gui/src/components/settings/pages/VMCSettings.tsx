@@ -8,6 +8,7 @@ import {
   SettingsResponseT,
   OSCSettingsT,
   VMCOSCSettingsT,
+  VRMSettingsT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -53,7 +54,6 @@ export function VMCFileUpload() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { l10n } = useLocalization();
   const [modelName, setModelName] = useState<string | null>(null);
-  const [settings, setSettings] = useState<SettingsResponseT>();
 
   const { control, watch } = useForm<{
     vrmJson?: FileList;
@@ -66,27 +66,21 @@ export function VMCFileUpload() {
   const vrmJson = watch('vrmJson');
 
   const updateVRMJson = async () => {
-    if (!settings?.vmcOsc) return;
-
     const req = new ChangeSettingsRequestT();
-    const vmcOsc = new VMCOSCSettingsT();
-    vmcOsc.oscSettings = Object.assign(
-      new OSCSettingsT(),
-      settings.vmcOsc.oscSettings
-    );
+    const vrm = new VRMSettingsT();
     if (vrmJson !== undefined) {
       if (vrmJson.length > 0) {
         const file = await parseVRMFile(vrmJson[0]);
         if (file) {
-          vmcOsc.vrmJson = file.json;
+          vrm.vrmJson = file.json;
           setModelName(file.name);
         }
       } else {
-        vmcOsc.vrmJson = '';
+        vrm.vrmJson = '';
         setModelName(null);
       }
     }
-    req.vmcOsc = vmcOsc;
+    req.vrm = vrm;
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
   };
 
@@ -99,8 +93,7 @@ export function VMCFileUpload() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    setSettings(settings);
-    const vrmJson = settings.vmcOsc?.vrmJson?.toString();
+    const vrmJson = settings.vrm?.vrmJson?.toString();
     if (vrmJson) {
       let data: any;
       try {
@@ -196,9 +189,9 @@ export function VMCSettings() {
 
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
       formData.vmc.mirrorTracking = settings.vmcOsc.mirrorTracking;
-    }
 
-    reset(formData);
+      reset(formData);
+    }
   });
 
   return (

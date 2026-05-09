@@ -142,9 +142,9 @@ export function VRCOSCSettings() {
         formData.vrchat.trackers = settings.vrcOsc.trackers;
 
       formData.vrchat.oscqueryEnabled = settings.vrcOsc.oscqueryEnabled;
-    }
 
-    reset(formData);
+      reset(formData);
+    }
   });
 
   return (
