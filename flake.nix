@@ -6,28 +6,77 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      flake-parts,
+      ...
+    }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
 
-      perSystem = { pkgs, ... }:
+      perSystem =
+        { pkgs, ... }:
         let
-          runtimeLibs = pkgs: (with pkgs; [
-            jdk17
+          runtimeLibs =
+            pkgs:
+            (with pkgs; [
+              jdk17
 
-            alsa-lib libpulseaudio at-spi2-atk at-spi2-core cairo cups dbus expat
-            gdk-pixbuf glib gtk3 libdrm libgbm libglvnd libnotify
-            libxkbcommon mesa nspr nss pango systemd vulkan-loader
-            wayland xorg.libX11 xorg.libXcomposite xorg.libXdamage
-            xorg.libXext xorg.libXfixes xorg.libXrandr xorg.libxcb
-            xorg.libxshmfence libusb1 udev libxcrypt-legacy
-            rpm fpm
+              alsa-lib
+              libpulseaudio
+              at-spi2-atk
+              at-spi2-core
+              cairo
+              cups
+              dbus
+              expat
+              gdk-pixbuf
+              glib
+              gtk3
+              libdrm
+              libgbm
+              libglvnd
+              libnotify
+              libxkbcommon
+              mesa
+              nspr
+              nss
+              pango
+              systemd
+              vulkan-loader
+              wayland
+              libX11
+              libXcomposite
+              libXdamage
+              libXext
+              libXfixes
+              libXrandr
+              libxcb
+              libxshmfence
+              libusb1
+              udev
+              libxcrypt-legacy
+              rpm
+              fpm
 
-            wineWow64Packages.stable
-            zlib squashfsTools fakeroot libarchive icu
-            nodejs_22 pnpm pkg-config python3 gcc gnumake binutils git
-            pkgs.nodePackages.node-gyp-build
-          ]);
+              wineWow64Packages.stable
+              zlib
+              squashfsTools
+              fakeroot
+              libarchive
+              icu
+              nodejs_22
+              pnpm
+              pkg-config
+              python3
+              gcc
+              gnumake
+              binutils
+              git
+              node-gyp-build
+            ]);
 
           slimeShell = pkgs.buildFHSEnv {
             name = "slimevr-env";

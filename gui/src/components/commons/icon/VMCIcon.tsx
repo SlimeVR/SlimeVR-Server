@@ -1,9 +1,6 @@
 export function VMCIcon() {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="-38 0 409 155"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-38 0 409 155">
       <style>
         {
           '.st1,.st3{stroke:#000;stroke-width:13}.st3{display:inline;fill:none;stroke-width:12.9402;stroke-miterlimit:11.3386}'
