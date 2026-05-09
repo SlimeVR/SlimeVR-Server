@@ -36,7 +36,7 @@ class BoneTransformBehaviour : SkeletonBehaviour {
 class ProportionsBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetProportions -> {
-			val bones = action.lengths.toBodyPartOffsets()
+			val bones = action.lengths.toBoneOffsets()
 			val newBones = state.rawBones.mapValues { (bodyPart, bone) ->
 				bone.copy(length = bones[bodyPart]?.len() ?: bone.length)
 			}
@@ -54,7 +54,7 @@ class ScaledProportionsBehaviour(private val userConfig: UserConfig) : SkeletonB
 			.distinctUntilChanged()
 			.onEach { proportions ->
 				if (proportions.isNotEmpty()) {
-					receiver.context.dispatch(SkeletonActions.SetProportions(configToSkeletonBoneValues(proportions)))
+					receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
 				}
 			}
 			.launchIn(receiver.context.scope)

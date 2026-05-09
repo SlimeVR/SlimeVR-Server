@@ -37,7 +37,7 @@ data class BoneState(
 data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val userHeight: Float)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = run {
-	val bones = BONE_TAIL_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
+	val bones = DEFAULT_BONE_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
 		val restRotation = when (bodyPart) {
 			BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT -> Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
 			else -> Quaternion.IDENTITY
@@ -51,7 +51,7 @@ fun buildBones(
 	state: SkeletonState,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
-	tailDirections: Map<BodyPart, Vector3> = BONE_TAIL_DIRECTIONS,
+	tailDirections: Map<BodyPart, Vector3> = DEFAULT_BONE_DIRECTIONS,
 ): Map<BodyPart, BoneState> {
 	val result = mutableMapOf<BodyPart, BoneState>()
 	hierarchy.forEach { (parentPart, childPart) ->

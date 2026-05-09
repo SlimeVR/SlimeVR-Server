@@ -2,8 +2,8 @@ package dev.slimevr.bvh
 
 import com.jme3.math.FastMath
 import dev.slimevr.skeleton.BODY_PART_HIERARCHY_MAP
-import dev.slimevr.skeleton.BONE_TAIL_OFFSETS
 import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.DEFAULT_BONE_OFFSETS
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -85,7 +85,7 @@ class BvhStream(file: File) {
 	}
 
 	private fun getBvhOffset(parentPart: BodyPart, bones: Map<BodyPart, BoneState>): Vector3 {
-		val tailOffsetLocal = BONE_TAIL_OFFSETS[parentPart] ?: return Vector3.NULL
+		val tailOffsetLocal = DEFAULT_BONE_OFFSETS[parentPart] ?: return Vector3.NULL
 		val parentLength = bones[parentPart]?.length ?: 0f
 		return tailOffsetLocal.unit() * (parentLength * OFFSET_SCALE)
 	}

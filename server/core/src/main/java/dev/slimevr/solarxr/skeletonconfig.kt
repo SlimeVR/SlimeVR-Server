@@ -6,7 +6,7 @@ import dev.slimevr.skeleton.SKELETON_BONE_TO_BODY_PARTS
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
-import dev.slimevr.skeleton.configToSkeletonBoneValues
+import dev.slimevr.skeleton.configToBoneValues
 import dev.slimevr.skeleton.height
 import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.ChangeSkeletonConfigRequest
@@ -31,7 +31,7 @@ class SkeletonBehaviour(
 				?: return@mapNotNull null
 			SkeletonPart(bone = skeletonBone, value = length)
 		}
-		val expanded = configToSkeletonBoneValues(proportions)
+		val expanded = configToBoneValues(proportions)
 		val userHeight = if (expanded.isNotEmpty()) {
 			expanded.height()
 		} else {

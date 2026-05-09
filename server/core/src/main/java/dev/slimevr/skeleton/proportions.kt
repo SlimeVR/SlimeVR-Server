@@ -45,7 +45,7 @@ private val HEIGHT_CONTRIBUTING_BONES: Set<SkeletonBone> = setOf(
 )
 
 // Maps each SolarXR SkeletonBone to the BodyPart(s) it controls in the skeleton with vectors for offset directions.
-private val SKELETON_BONE_FLOAT_TO_BODY_PARTS: Map<SkeletonBone, Map<BodyPart, Vector3>> = mapOf(
+private val BONE_VALUE_TO_OFFSETS: Map<SkeletonBone, Map<BodyPart, Vector3>> = mapOf(
 	SkeletonBone.HEAD to mapOf(BodyPart.HEAD to Vector3.POS_Z),
 	SkeletonBone.NECK to mapOf(BodyPart.NECK to Vector3.NEG_Y),
 	SkeletonBone.UPPER_CHEST to mapOf(BodyPart.UPPER_CHEST to Vector3.NEG_Y),
@@ -69,7 +69,7 @@ private val SKELETON_BONE_FLOAT_TO_BODY_PARTS: Map<SkeletonBone, Map<BodyPart, V
 	SkeletonBone.ELBOW_OFFSET to mapOf(),
 )
 
-private val BODY_PART_VECTOR_TO_SKELETON_BONES: Map<BodyPart, Map<SkeletonBone, Vector3>> = SKELETON_BONE_FLOAT_TO_BODY_PARTS
+private val BONE_OFFSET_TO_VALUES: Map<BodyPart, Map<SkeletonBone, Vector3>> = BONE_VALUE_TO_OFFSETS
 	.flatMap { (cfg, bones) ->
 		// Invert map, splitting entries [ List<Pair<BodyPart, Pair<SkeletonBone, Vector3>>> ]
 		// Vector also needs to be inverted ((vec/len)/len)==(1/vec)
@@ -82,7 +82,7 @@ private val BODY_PART_VECTOR_TO_SKELETON_BONES: Map<BodyPart, Map<SkeletonBone, 
 
 // Maps each SolarXR SkeletonBone to the BodyPart(s) it controls in the skeleton.
 // Symmetric bones (legs, arms) map to both left and right sides.
-val SKELETON_BONE_TO_BODY_PARTS: Map<SkeletonBone, Set<BodyPart>> = SKELETON_BONE_FLOAT_TO_BODY_PARTS.mapValues { it.value.keys }
+val SKELETON_BONE_TO_BODY_PARTS: Map<SkeletonBone, Set<BodyPart>> = BONE_VALUE_TO_OFFSETS.mapValues { it.value.keys }
 
 // Sum of default bone lengths for height-contributing bones
 // Used to normalize HEIGHT_SCALED_BONE_RATIOS.
@@ -113,22 +113,20 @@ fun computeAllDefaultProportionsByBone(height: Float): Map<String, Float> {
 	return nonScaled + heightScaled
 }
 
-fun Map<SkeletonBone, Float>.toBodyPartOffsets(): Map<BodyPart, Vector3> = this
+fun Map<SkeletonBone, Float>.toBoneOffsets(): Map<BodyPart, Vector3> = this
 	.flatMap { (cfg, length) ->
-		SKELETON_BONE_FLOAT_TO_BODY_PARTS[cfg]?.map { (bone, vec) -> bone to length * vec } ?: emptyList()
+		BONE_VALUE_TO_OFFSETS[cfg]?.map { (bone, vec) -> bone to length * vec } ?: emptyList()
 	}
 	.groupBy({ it.first }, { it.second })
 	.mapValues { it.value.fold(Vector3.NULL) { acc, value -> acc + value } }
 
-fun Map<BodyPart, Vector3>.toSkeletonBoneValues(): Map<SkeletonBone, Float> = this
+fun Map<BodyPart, Vector3>.toBoneValues(): Map<SkeletonBone, Float> = this
 	.flatMap { (bone, vec) ->
-		BODY_PART_VECTOR_TO_SKELETON_BONES[bone]?.map { (cfg, cfgVec) -> cfg to vec.hadamard(cfgVec).len() } ?: emptyList()
+		BONE_OFFSET_TO_VALUES[bone]?.map { (cfg, cfgVec) -> cfg to vec.hadamard(cfgVec).len() } ?: emptyList()
 	}
 	.groupBy({ it.first }, { it.second })
 	.mapValues { it.value.sum() }
 
-fun configToSkeletonBoneValues(proportions: Map<String, Float>): Map<SkeletonBone, Float> = proportions.mapKeys {
+fun configToBoneValues(proportions: Map<String, Float>): Map<SkeletonBone, Float> = proportions.mapKeys {
 	SkeletonBone.entries.firstOrNull { cfg -> cfg.name == it.key } ?: SkeletonBone.NONE
 }
-
-fun expandProportions(proportions: Map<String, Float>): Map<BodyPart, Vector3> = configToSkeletonBoneValues(proportions).toBodyPartOffsets()
