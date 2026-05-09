@@ -29,6 +29,14 @@ sealed class OscArg {
 			True -> 'T'
 			False -> 'F'
 		}
+
+	fun asFloatOrNull(): kotlin.Float? = when (this) {
+		is Float -> value
+		is Double -> value.toFloat()
+		is Int -> value.toFloat()
+		is Long -> value.toFloat()
+		else -> null
+	}
 }
 
 data class OscMessage(val address: String, val args: List<OscArg> = emptyList())

@@ -22,6 +22,7 @@ import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
+import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -43,6 +44,7 @@ fun main(args: Array<String>) = runBlocking {
 	val udpServer = UdpServer.create(scope = this)
 	val bvhManager = BVHManager.create(skeleton = skeleton, scope = this)
 	val vmcManager = VMCManager.create(skeleton = skeleton, ctx = phase1, scope = this)
+	val vrcOscManager = VRCOSCManager.create(skeleton = skeleton, ctx = phase1, scope = this)
 
 	val appContext = AppContext(
 		server = server,
@@ -58,6 +60,7 @@ fun main(args: Array<String>) = runBlocking {
 		udpServer = udpServer,
 		bvhManager = bvhManager,
 		vmcManager = vmcManager,
+		vrcOscManager = vrcOscManager,
 	)
 
 	appContext.startObserving()

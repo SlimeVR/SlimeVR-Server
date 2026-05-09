@@ -12,6 +12,7 @@ import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
+import dev.slimevr.vrcosc.VRCOSCManager
 
 interface Phase1ContextProvider {
 	val server: VRServer
@@ -36,6 +37,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val udpServer: UdpServer
 	val bvhManager: BVHManager
 	val vmcManager: VMCManager
+	val vrcOscManager: VRCOSCManager
 	fun startObserving()
 }
 
@@ -53,6 +55,7 @@ class AppContext(
 	override val udpServer: UdpServer,
 	override val bvhManager: BVHManager,
 	override val vmcManager: VMCManager,
+	override val vrcOscManager: VRCOSCManager,
 ) : AppContextProvider {
 	override fun startObserving() {
 		skeleton.startObserving()
@@ -64,5 +67,6 @@ class AppContext(
 		trackingChecklist.startObserving(this)
 		udpServer.startReceiving(this, server.context.scope)
 		vmcManager.startObserving()
+		vrcOscManager.startObserving()
 	}
 }

@@ -23,7 +23,9 @@ import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
+import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
+import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.nio.file.Files
@@ -105,5 +107,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val udpServer: UdpServer get() = error("not used in test")
 	override val networkProfileManager: NetworkProfileManager? = null
 	override val bvhManager: BVHManager get() = error("not used in test")
+	override val vmcManager: VMCManager get() = error("not used in test")
+	override val vrcOscManager: VRCOSCManager get() = error("not used in test")
 	override fun startObserving() {}
 }

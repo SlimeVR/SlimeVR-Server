@@ -83,8 +83,7 @@ dependencies {
 	// Allow the use of reflection
 	implementation(kotlin("reflect"))
 
-	// Jitpack
-	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
+	implementation("com.appstractive:dns-sd-kt:1.1.0")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework

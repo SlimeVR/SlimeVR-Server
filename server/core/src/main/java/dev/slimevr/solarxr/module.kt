@@ -72,6 +72,7 @@ class SolarXRBridge(
 			appContext.vrcConfigManager?.let { vrc ->
 				add(VrcBehaviour(vrc, appContext.server, userHeight = { appContext.skeleton.context.state.value.userHeight }))
 			}
+			add(VrcOscBehaviour(appContext.vrcOscManager))
 			add(VmcBehaviour(appContext.vmcManager))
 			add(SettingsBehaviour(appContext.vmcManager))
 			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))

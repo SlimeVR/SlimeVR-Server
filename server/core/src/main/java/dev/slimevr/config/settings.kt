@@ -9,6 +9,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
@@ -16,7 +18,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
 import java.io.File
 
-private const val SETTINGS_CONFIG_VERSION = 1
+private const val SETTINGS_CONFIG_VERSION = 2
 
 @Serializable
 data class TrackerConfig(
@@ -36,16 +38,76 @@ data class SettingsConfigState(
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
 	val globalMagEnabled: Boolean = true,
 	val allowedUdpDevices: Set<String> = emptySet(),
+	val vrcOscConfig: VRCOSCConfig = defaultVrcOscConfig(),
 	val vmcConfig: VMCConfig = VMCConfig(),
 	val version: Int = SETTINGS_CONFIG_VERSION,
 )
 
+private fun defaultVrcOscConfig() = VRCOSCConfig()
+
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {
 	val version = json["version"]?.jsonPrimitive?.intOrNull ?: 0
 	return when {
-		// add migration branches here as: version < N -> migrateSettingsConfig(...)
+		version < 2 -> migrateSettingsConfig(migrateSettingsConfigV2(json))
 		else -> json
 	}
+}
+
+private fun migrateSettingsConfigV2(json: JsonObject): JsonObject {
+	val vrcOscConfig = json["vrcOscConfig"]?.jsonObject
+	val migratedVrcOscConfig = if (vrcOscConfig == null || "manualNetwork" in vrcOscConfig) {
+		vrcOscConfig?.let(::normalizeVrcOscConfig)
+	} else {
+		val portIn = vrcOscConfig["portIn"]?.jsonPrimitive?.intOrNull ?: 9001
+		val portOut = vrcOscConfig["portOut"]?.jsonPrimitive?.intOrNull ?: 9000
+		val address = vrcOscConfig["address"]?.jsonPrimitive?.contentOrNull.orEmpty()
+		val oscqueryEnabled = vrcOscConfig["oscqueryEnabled"]?.jsonPrimitive?.content?.toBooleanStrictOrNull() ?: true
+		val useAutomaticNetwork =
+			oscqueryEnabled &&
+				portIn == 9001 &&
+				portOut == 9000 &&
+				(address.isBlank() || address == "127.0.0.1" || address == "localhost")
+
+		buildMap {
+			vrcOscConfig["enabled"]?.let { put("enabled", it) }
+			vrcOscConfig["trackers"]?.let { put("trackers", it) }
+			if (!useAutomaticNetwork) {
+				put(
+					"manualNetwork",
+					JsonObject(
+						mapOf(
+							"portIn" to JsonPrimitive(portIn),
+							"portOut" to JsonPrimitive(portOut),
+							"address" to JsonPrimitive(address),
+						),
+					),
+				)
+			}
+		}.let(::JsonObject)
+	}
+
+	return JsonObject(
+		json.toMutableMap().apply {
+			put("version", JsonPrimitive(SETTINGS_CONFIG_VERSION))
+			if (migratedVrcOscConfig != null) put("vrcOscConfig", migratedVrcOscConfig)
+		},
+	)
+}
+
+private fun normalizeVrcOscConfig(vrcOscConfig: JsonObject): JsonObject {
+	val manualNetwork = vrcOscConfig["manualNetwork"]?.jsonObject ?: return vrcOscConfig
+	val normalizedManualNetwork = JsonObject(
+		mapOf(
+			"portIn" to (manualNetwork["portIn"] ?: JsonPrimitive(DEFAULT_VRC_OSC_PORT_IN)),
+			"portOut" to (manualNetwork["portOut"] ?: JsonPrimitive(DEFAULT_VRC_OSC_PORT_OUT)),
+			"address" to (manualNetwork["address"] ?: JsonPrimitive(DEFAULT_VRC_OSC_ADDRESS)),
+		),
+	)
+	return JsonObject(
+		vrcOscConfig.toMutableMap().apply {
+			put("manualNetwork", normalizedManualNetwork)
+		},
+	)
 }
 
 private fun parseAndMigrateSettingsConfig(raw: String): SettingsConfigState {
