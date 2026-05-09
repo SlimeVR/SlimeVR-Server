@@ -26,8 +26,9 @@ data class VRCOSCDiscoveredTargetInfo(
 )
 
 /**
- * Status of the VRC OSC subsystem. Mirrors the solarxr `VRCOSCStatusChangeResponse`
- * one-to-one and reuses the generated enums, so `solarxr/vrcosc.kt` is a pass-through.
+ * Internal runtime status for the VRC OSC subsystem.
+ * Kept close to the SolarXR status response shape so the bridge mapping stays small,
+ * but this remains a server-side state model rather than an RPC transport type.
  */
 data class VRCOSCStatus(
 	val inputState: VRCOSCInputState = VRCOSCInputState.IDLE,

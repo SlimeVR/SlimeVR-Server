@@ -147,7 +147,17 @@ class VRCOSCInputBehaviour(
 					return@onEach
 				}
 
-				val newReceiver = OscReceiver(portIn)
+				val newReceiver = try {
+					OscReceiver(portIn)
+				} catch (e: Exception) {
+					dispatchInputError(
+						receiver = receiver,
+						port = portIn,
+						message = "Failed to start VRChat OSC receiver",
+						throwable = e,
+					)
+					return@onEach
+				}
 				oscReceiver = newReceiver
 				receiver.context.dispatch(
 					VRCOSCActions.SetInput(state = VRCOSCInputState.LISTENING, port = portIn),
@@ -191,13 +201,19 @@ class VRCOSCInputBehaviour(
 		receiver: VRCOSCManager,
 		portIn: Int,
 	) {
-		for (content in bundle.contents) {
+		handleBundleContents(bundle.contents, registry, receiver, portIn)
+	}
+
+	private fun handleBundleContents(
+		contents: List<OscContent>,
+		registry: VRSystemTrackerRegistry,
+		receiver: VRCOSCManager,
+		portIn: Int,
+	) {
+		for (content in contents) {
 			when (content) {
 				is OscContent.Message -> handleIncomingMessage(content.msg, registry, receiver, portIn)
-
-				is OscContent.Bundle -> for (nested in content.bundle.contents) {
-					if (nested is OscContent.Message) handleIncomingMessage(nested.msg, registry, receiver, portIn)
-				}
+				is OscContent.Bundle -> handleBundleContents(content.bundle.contents, registry, receiver, portIn)
 			}
 		}
 	}

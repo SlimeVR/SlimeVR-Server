@@ -849,6 +849,40 @@ settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
 
+## VRChat OSC status
+settings-osc-vrchat-status-title = Status
+settings-osc-vrchat-status-disabled = Disabled
+settings-osc-vrchat-status-input = Input
+settings-osc-vrchat-status-output = Output
+settings-osc-vrchat-status-oscquery = OSCQuery
+settings-osc-vrchat-status-input-idle = Not listening
+settings-osc-vrchat-status-input-listening = Listening on port {$port}
+settings-osc-vrchat-status-input-last-data = Last data from VRChat: {$elapsed}
+settings-osc-vrchat-status-input-no-data = No data received from VRChat yet
+settings-osc-vrchat-status-output-idle = No target
+settings-osc-vrchat-status-output-sending = Sending to {$address}:{$port} ({$source})
+settings-osc-vrchat-status-output-target = Target {$address}:{$port} ({$source})
+settings-osc-vrchat-status-output-last-frame = Last frame sent: {$elapsed}
+settings-osc-vrchat-status-output-no-frame = No frame sent yet
+settings-osc-vrchat-status-source-manual = manual
+settings-osc-vrchat-status-source-auto = auto-detected
+settings-osc-vrchat-status-oscquery-disabled = OSCQuery off (manual network mode)
+settings-osc-vrchat-status-oscquery-advertising = Advertising on port {$port}
+settings-osc-vrchat-status-oscquery-searching = No VRChat clients found yet
+settings-osc-vrchat-status-oscquery-discovered-title = Discovered VRChat clients:
+settings-osc-vrchat-status-oscquery-switch = Switch
+settings-osc-vrchat-status-network-mode = Network mode
+settings-osc-vrchat-status-network-mode-description = Automatic mode discovers VRChat through OSCQuery. Manual mode uses the configured address and ports.
+settings-osc-vrchat-status-network-mode-toggle = Manual network settings
+settings-osc-vrchat-status-network-manual-description = Configure the local input port and the VRChat OSC target manually.
+settings-osc-vrchat-status-badge-idle = Idle
+settings-osc-vrchat-status-badge-listening = Listening
+settings-osc-vrchat-status-badge-ready = Ready
+settings-osc-vrchat-status-badge-found = Found
+settings-osc-vrchat-status-badge-searching = Searching
+settings-osc-vrchat-status-badge-disabled = Disabled
+settings-osc-vrchat-status-badge-error = Error
+
 ## VMC OSC settings
 settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
