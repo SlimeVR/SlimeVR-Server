@@ -33,9 +33,9 @@ import solarxr_protocol.rpc.SettingsResponse
 import solarxr_protocol.rpc.StayAlignedSettings
 import solarxr_protocol.rpc.SteamVRTrackersSetting
 import solarxr_protocol.rpc.TapDetectionSettings
-import solarxr_protocol.rpc.VRMSettings
 import solarxr_protocol.rpc.VMCOSCSettings
 import solarxr_protocol.rpc.VRCOSCSettings
+import solarxr_protocol.rpc.VRMSettings
 import solarxr_protocol.rpc.VelocitySettings
 import solarxr_protocol.rpc.settings.LegTweaksSettings
 import solarxr_protocol.rpc.settings.ModelRatios
