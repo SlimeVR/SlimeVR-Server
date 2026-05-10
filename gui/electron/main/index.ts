@@ -365,6 +365,10 @@ function createWindow() {
 
     if (mainWindow) menu.popup({ window: mainWindow });
   });
+
+  mainWindow.webContents.setWindowOpenHandler(() => {
+    return { action: "deny" };
+  });
 }
 
 const checkEnvironmentVariables = () => {
