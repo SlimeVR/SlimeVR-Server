@@ -95,6 +95,8 @@ board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-GENERIC_NRF = Obecné nRF
 board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
 board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
+board_type-SOMATICVR_ORION = Somatic Orion
+
 
 ## Proportions
 
