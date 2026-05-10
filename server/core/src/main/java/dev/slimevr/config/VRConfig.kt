@@ -78,12 +78,12 @@ class VRConfig {
 		vrcOSC
 			.setOSCTrackerRole(
 				TrackerRole.LEFT_FOOT,
-				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true),
+				vrcOSC.getOSCTrackerRole(TrackerRole.LEFT_FOOT, true),
 			)
 		vrcOSC
 			.setOSCTrackerRole(
 				TrackerRole.RIGHT_FOOT,
-				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true),
+				vrcOSC.getOSCTrackerRole(TrackerRole.RIGHT_FOOT, true),
 			)
 
 		// Initialize default settings for VMC
