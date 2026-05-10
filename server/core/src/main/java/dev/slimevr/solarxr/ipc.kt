@@ -3,6 +3,7 @@ package dev.slimevr.solarxr
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
+import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +25,7 @@ suspend fun handleSolarXRBridge(
 
 	bridge.outbound.on<MessageBundle> { bundle ->
 		val fbb = FlatBufferBuilder(256)
-		fbb.finish(bundle.encode(fbb))
+		fbb.finish(bundle.encode(JvmFlatBufferWriter(fbb)))
 		send(fbb.dataBuffer().moveToByteArray())
 	}
 

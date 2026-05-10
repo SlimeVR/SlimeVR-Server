@@ -3,7 +3,9 @@
 package dev.slimevr.desktop
 
 import dev.slimevr.AppContext
+import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Phase1Context
+import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
@@ -36,7 +38,7 @@ fun main(args: Array<String>) = runBlocking {
 
 	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this)
 	val vrcConfigManager = createDesktopVRCConfigManager(ctx = phase1, scope = this)
-	val networkProfileManager = NetworkProfileManager.create(scope = this, isSupported = true)
+	val networkProfileManager = NetworkProfileManager.create(scope = this, isSupported = CURRENT_PLATFORM == Platform.WINDOWS)
 	val skeleton = Skeleton.create(scope = this, ctx = phase1)
 	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)

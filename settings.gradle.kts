@@ -26,6 +26,7 @@ pluginManagement {
 		kotlin("plugin.serialization") version kotlinVersion
 		kotlin("jvm") version kotlinVersion
 		kotlin("android") version kotlinVersion
+		kotlin("multiplatform") version kotlinVersion
 		id("com.diffplug.spotless") version spotlessVersion
 		id("com.gradleup.shadow") version shadowJarVersion
 		id("com.github.gmazzo.buildconfig") version buildconfigVersion
@@ -35,7 +36,11 @@ pluginManagement {
 }
 
 include(":solarxr-protocol")
-project(":solarxr-protocol").projectDir = File("solarxr-protocol/protocol/kotlin")
+project(":solarxr-protocol").projectDir = File("solarxr-protocol")
+include(":solarxr-protocol:codegen")
+project(":solarxr-protocol:codegen").projectDir = File("solarxr-protocol/kotlin-codegen")
+include(":solarxr-protocol:generated")
+project(":solarxr-protocol:generated").projectDir = File("solarxr-protocol/protocol/kotlin")
 
 include(":server")
 project(":server").projectDir = File("server")

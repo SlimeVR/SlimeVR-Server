@@ -57,8 +57,7 @@ allprojects {
 }
 
 dependencies {
-	implementation(project(":solarxr-protocol"))
-
+	implementation(project(":solarxr-protocol:generated"))
 	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
 
 	implementation("com.illposed.osc:javaosc-core:0.9")

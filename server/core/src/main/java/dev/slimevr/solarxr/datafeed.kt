@@ -18,12 +18,15 @@ import solarxr_protocol.data_feed.device_data.DeviceData
 import solarxr_protocol.data_feed.tracker.TrackerData
 import solarxr_protocol.data_feed.tracker.TrackerDataMask
 import solarxr_protocol.data_feed.tracker.TrackerInfo
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.Ipv4Address
 import solarxr_protocol.datatypes.Temperature
 import solarxr_protocol.datatypes.TrackerId
+import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
+import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
 import java.nio.ByteBuffer
@@ -33,10 +36,10 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 		trackerNum = tracker.id.toUByte(),
 		deviceId = DeviceId(device.id.toUByte()),
 	),
-	status = if (trackerMask.status) tracker.status else null,
-	rotation = if (trackerMask.rotation) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
-	position = if (trackerMask.position && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
-	info = if (trackerMask.info) {
+	status = if (trackerMask.status == true) tracker.status else null,
+	rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
+	position = if (trackerMask.position == true && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
+	info = if (trackerMask.info == true) {
 		TrackerInfo(
 			imuType = tracker.sensorType,
 			bodyPart = tracker.bodyPart,
@@ -49,10 +52,10 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	} else {
 		null
 	},
-	tps = if (trackerMask.tps) tracker.tps else null,
-	temp = if (trackerMask.temp && tracker.imuTemp != null) Temperature(temp = tracker.imuTemp) else null,
-	rawAcceleration = if (trackerMask.rawAcceleration) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
-	linearAcceleration = if (trackerMask.linearAcceleration) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null, // FIXME: temp value
+	tps = if (trackerMask.tps == true) tracker.tps else null,
+	temp = if (trackerMask.temp == true && tracker.imuTemp != null) Temperature(temp = tracker.imuTemp) else null,
+	rawAcceleration = if (trackerMask.rawAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
+	linearAcceleration = if (trackerMask.linearAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null, // FIXME: temp value
 )
 
 private fun createDevice(
@@ -108,7 +111,7 @@ fun createDatafeedFrame(
 	val trackers = serverState.trackers.values.map { it.context.state.value }
 	val devices = serverState.devices.values.map { it.context.state.value }
 		.map { device -> createDevice(device, trackers, datafeedConfig) }
-	val bones = if (datafeedConfig.boneMask) {
+	val bones = if (datafeedConfig.boneMask == true) {
 		skeleton.computed.value.values.map { createBone(it) }
 	} else {
 		null

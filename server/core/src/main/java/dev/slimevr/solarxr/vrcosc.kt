@@ -55,12 +55,12 @@ internal class VrcOscBehaviour(
 			vrcOscManager.context.dispatch(
 				VRCOSCActions.UpdateConfig(
 					VRCOSCConfig(
-						enabled = vrcOsc.enabled,
-						manualNetwork = vrcOsc.manualNetwork?.let { network ->
+						enabled = vrcOsc.enabled == true,
+						manualNetwork = vrcOsc.manualNetwork?.takeIf { it.portIn !== null && it.portOut !== null && it.address !== null }?.let { network ->
 							VRCOSCManualNetworkConfig(
-								portIn = network.portIn.toInt(),
-								portOut = network.portOut.toInt(),
-								address = network.address.orEmpty(),
+								portIn = network.portIn?.toInt() ?: error("portIn should be set"),
+								portOut = network.portOut?.toInt() ?: error("portOut should be set"),
+								address = network.address ?: error("address should be set"),
 							)
 						},
 						trackers = VRCOSCTrackers(

@@ -6,6 +6,7 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
+import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import solarxr_protocol.MessageBundle
@@ -29,7 +30,7 @@ typealias SolarXRBridgeContext = Context<SolarXRBridgeState, SolarXRBridgeAction
 typealias SolarXRBridgeBehaviour = Behaviour<SolarXRBridgeState, SolarXRBridgeActions, SolarXRBridge>
 
 suspend fun onSolarXRMessage(message: ByteBuffer, context: SolarXRBridge) {
-	val messageBundle = MessageBundle.fromByteBuffer(message)
+	val messageBundle = MessageBundle.fromByteBuffer(JvmFlatBufferReader(message))
 
 	messageBundle.dataFeedMsgs?.forEach {
 		val msg = it.message ?: return

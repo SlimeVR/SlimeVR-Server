@@ -71,8 +71,10 @@ class SkeletonBehaviour(
 
 		receiver.rpcDispatcher.on<ChangeSkeletonConfigRequest> { req ->
 			val bone = req.bone ?: return@on
+			val value = req.value ?: return@on
+
 			userConfig.context.dispatch(
-				UserConfigActions.Update { copy(proportions = proportions + (bone.name to req.value)) },
+				UserConfigActions.Update { copy(proportions = proportions + (bone.name to value)) },
 			)
 			receiver.sendRpc(buildConfigResponse())
 		}

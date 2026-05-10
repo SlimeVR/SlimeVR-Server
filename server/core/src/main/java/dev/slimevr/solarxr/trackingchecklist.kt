@@ -46,7 +46,7 @@ class TrackingChecklistBehaviour(
 			val name = stepId.name
 			settings.context.dispatch(
 				SettingsActions.Update {
-					copy(mutedChecklistSteps = if (req.ignore) mutedChecklistSteps + name else mutedChecklistSteps - name)
+					copy(mutedChecklistSteps = if (req.ignore == true) mutedChecklistSteps + name else mutedChecklistSteps - name)
 				},
 			)
 		}

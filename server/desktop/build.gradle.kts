@@ -74,7 +74,7 @@ wire {
 
 dependencies {
 	implementation(project(":server:core"))
-	implementation(project(":solarxr-protocol"))
+	implementation(project(":solarxr-protocol:generated"))
 
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
@@ -97,7 +97,7 @@ tasks.shadowJar {
 		exclude(dependency("net.java.dev.jna:.*:.*"))
 		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
 
-		exclude(project(":solarxr-protocol"))
+		exclude(project(":solarxr-protocol:generated"))
 	}
 	archiveBaseName.set("slimevr")
 	archiveClassifier.set("")

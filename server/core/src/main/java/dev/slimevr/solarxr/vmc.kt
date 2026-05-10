@@ -14,15 +14,17 @@ class VmcBehaviour(
 		receiver.rpcDispatcher.on<ChangeSettingsRequest> { req ->
 			val vmc = req.vmcOsc ?: return@on
 			val osc = vmc.oscSettings ?: return@on
+			val portIn = osc.portIn?.toInt() ?: return@on
+			val portOut = osc.portOut?.toInt() ?: return@on
 			vmcManager.context.dispatch(
 				VMCActions.UpdateConfig(
 					VMCConfig(
-						enabled = osc.enabled,
-						portIn = osc.portIn.toInt(),
-						portOut = osc.portOut.toInt(),
+						enabled = osc.enabled == true,
+						portIn = portIn,
+						portOut = portOut,
 						address = osc.address.orEmpty(),
-						mirrorTracking = vmc.mirrorTracking,
-						anchorAtHips = vmc.anchorHip,
+						mirrorTracking = vmc.mirrorTracking == true,
+						anchorAtHips = vmc.anchorHip == true,
 						vrmJson = vmc.vrmJson?.ifEmpty { null },
 					),
 				),

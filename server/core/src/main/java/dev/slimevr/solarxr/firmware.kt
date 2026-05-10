@@ -47,7 +47,7 @@ class FirmwareBehaviour(private val server: VRServer, private val firmwareManage
 					firmwareManager.flash(
 						portLocation,
 						parts,
-						method.needmanualreboot,
+						method.needmanualreboot == true,
 						method.ssid,
 						method.password,
 						server,

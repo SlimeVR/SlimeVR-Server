@@ -107,23 +107,23 @@ fun computeRecommendedValues(server: VRServer, userHeight: Float): VRCConfigReco
 	)
 }
 
-fun isVRCConfigValid(validity: VRCConfigValidity, mutedWarnings: List<String>): Boolean = (validity.legacyModeOk || "legacyModeOk" in mutedWarnings) &&
-	(validity.shoulderTrackingOk || "shoulderTrackingOk" in mutedWarnings) &&
-	(validity.shoulderWidthCompensationOk || "shoulderWidthCompensationOk" in mutedWarnings) &&
-	(validity.userHeightOk || "userHeightOk" in mutedWarnings) &&
-	(validity.calibrationRangeOk || "calibrationRangeOk" in mutedWarnings) &&
-	(validity.calibrationVisualsOk || "calibrationVisualsOk" in mutedWarnings) &&
-	(validity.trackerModelOk || "trackerModelOk" in mutedWarnings) &&
-	(validity.spineModeOk || "spineModeOk" in mutedWarnings) &&
-	(validity.avatarMeasurementTypeOk || "avatarMeasurementTypeOk" in mutedWarnings)
+fun isVRCConfigValid(validity: VRCConfigValidity, mutedWarnings: List<String>): Boolean = (validity.legacyModeOk == true || "legacyModeOk" in mutedWarnings) &&
+	(validity.shoulderTrackingOk == true || "shoulderTrackingOk" in mutedWarnings) &&
+	(validity.shoulderWidthCompensationOk == true || "shoulderWidthCompensationOk" in mutedWarnings) &&
+	(validity.userHeightOk == true || "userHeightOk" in mutedWarnings) &&
+	(validity.calibrationRangeOk == true || "calibrationRangeOk" in mutedWarnings) &&
+	(validity.calibrationVisualsOk == true || "calibrationVisualsOk" in mutedWarnings) &&
+	(validity.trackerModelOk == true|| "trackerModelOk" in mutedWarnings) &&
+	(validity.spineModeOk == true || "spineModeOk" in mutedWarnings) &&
+	(validity.avatarMeasurementTypeOk == true || "avatarMeasurementTypeOk" in mutedWarnings)
 
 fun computeValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity = VRCConfigValidity(
 	legacyModeOk = values.legacyMode == recommended.legacyMode,
 	shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
 	spineModeOk = recommended.spineMode?.contains(values.spineMode) == true,
 	trackerModelOk = values.trackerModel == recommended.trackerModel,
-	calibrationRangeOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1f,
-	userHeightOk = abs(recommended.userHeight - values.userHeight) < 0.1f,
+	calibrationRangeOk = abs((values.calibrationRange ?: 0f) - (recommended.calibrationRange ?: 0f)) < 0.1f,
+	userHeightOk = abs((recommended.userHeight ?: 0f) - (values.userHeight?: 0f)) < 0.1f,
 	calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
 	avatarMeasurementTypeOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
 	shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,

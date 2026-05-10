@@ -12,7 +12,7 @@ import java.nio.file.Path
 class BvhBehaviour(private val bvhManager: BVHManager) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<RecordBVHRequest> { req ->
-			if (req.stop) {
+			if (req.stop == true) {
 				bvhManager.stopRecording()
 			} else {
 				req.path?.let { path -> bvhManager.startRecording(Path.of(path)) }
