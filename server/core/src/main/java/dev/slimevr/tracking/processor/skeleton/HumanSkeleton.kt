@@ -999,6 +999,12 @@ class HumanSkeleton(
 		lowerArmTracker: Tracker?,
 		handTracker: Tracker?,
 	) {
+		// Get shoulder rotation
+		var armRot = shoulderTracker?.getRotation() ?: upperChestBone.getLocalRotation()
+		// Set shoulder rotation
+		upperShoulderBone.setRotation(upperChestBone.getLocalRotation())
+		shoulderBone.setRotation(armRot)
+
 		if (isTrackingFromController) { // From controller
 			// Set hand rotation and position from tracker
 			handTracker?.let {
@@ -1008,7 +1014,7 @@ class HumanSkeleton(
 			}
 
 			// Get lower arm rotation
-			var armRot = getFirstAvailableTracker(lowerArmTracker, upperArmTracker)?.getRotation() ?: IDENTITY
+			armRot = getFirstAvailableTracker(lowerArmTracker, upperArmTracker)?.getRotation() ?: IDENTITY
 			// Set lower arm rotation
 			lowerArmBone.setRotation(armRot)
 
@@ -1017,11 +1023,6 @@ class HumanSkeleton(
 			// Set elbow tracker rotation
 			elbowTrackerBone.setRotation(armRot)
 		} else { // From HMD
-			// Get shoulder rotation
-			var armRot = shoulderTracker?.getRotation() ?: upperChestBone.getLocalRotation()
-			// Set shoulder rotation
-			upperShoulderBone.setRotation(upperChestBone.getLocalRotation())
-			shoulderBone.setRotation(armRot)
 
 			if (upperArmTracker != null || lowerArmTracker != null) {
 				// Get upper arm rotation
@@ -1036,7 +1037,6 @@ class HumanSkeleton(
 				lowerArmBone.setRotation(armRot)
 			} else {
 				// Fallback arm rotation as upper chest
-				armRot = upperChestBone.getLocalRotation()
 				upperArmBone.setRotation(armRot)
 				elbowTrackerBone.setRotation(armRot)
 				lowerArmBone.setRotation(armRot)
