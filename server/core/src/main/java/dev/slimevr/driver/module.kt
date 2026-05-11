@@ -6,7 +6,6 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
-import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -20,14 +19,14 @@ data class DriverBridgeState(
 )
 
 sealed interface DriverBridgeActions {
-	data class AddTracker(val id: Int, val tracker: Tracker) : DriverBridgeActions
+	data class AddTracker(val id: Int, val trackerId: Int) : DriverBridgeActions
 	data class UpdateProtocolVersion(val version: Int) : DriverBridgeActions
 }
 
 sealed interface DriverBridgeInbound {
 	data class Version(val protocolVersion: Int) : DriverBridgeInbound
 	data class TrackerAdded(val id: Int, val name: String, val manufacturer: String, val serial: String) : DriverBridgeInbound
-	data class TrackerPosition(val trackerId: Int, val rotation: Quaternion, val position: Vector3?) : DriverBridgeInbound
+	data class TrackerPosition(val id: Int, val rotation: Quaternion, val position: Vector3?) : DriverBridgeInbound
 	data class TrackerBattery(val id: Int, val batteryLevel: Float, val charging: Boolean) : DriverBridgeInbound
 }
 

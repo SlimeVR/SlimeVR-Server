@@ -17,7 +17,6 @@ import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -118,7 +117,7 @@ suspend fun handleDriverConnection(
 			}
 			msg.position?.let { pos ->
 				bridge.inbound.emit(DriverBridgeInbound.TrackerPosition(
-					trackerId = pos.tracker_id,
+					id = pos.tracker_id,
 					rotation = Quaternion(w = pos.qw, x = pos.qx, y = pos.qy, z = pos.qz),
 					position = if (pos.x != null && pos.y != null && pos.z != null) Vector3(pos.x, pos.y, pos.z) else null,
 				))

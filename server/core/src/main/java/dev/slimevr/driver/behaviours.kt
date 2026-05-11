@@ -1,6 +1,5 @@
 package dev.slimevr.driver
 
-import dev.slimevr.AppLogger
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
@@ -10,11 +9,10 @@ import dev.slimevr.tracker.TrackerActions
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.TrackerStatus
-import solarxr_protocol.datatypes.hardware_info.ImuType
 
 object DriverBaseBehaviour : DriverBridgeBehaviour {
 	override fun reduce(state: DriverBridgeState, action: DriverBridgeActions): DriverBridgeState = when (action) {
-		is DriverBridgeActions.AddTracker -> state.copy(trackers = state.trackers + (action.id to action.tracker.context.state.value.id))
+		is DriverBridgeActions.AddTracker -> state.copy(trackers = state.trackers + (action.id to action.trackerId))
 		is DriverBridgeActions.UpdateProtocolVersion -> state.copy(protocolVersion = action.version)
 	}
 
@@ -28,7 +26,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 		}
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
-			val trackerId = receiver.context.state.value.trackers[event.trackerId] ?: return@on
+			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
 			receiver.appContext.server.getTracker(trackerId)?.let { tracker ->
 				tracker.context.dispatch(TrackerActions.Update {
 					copy(rawRotation = event.rotation, position = event.position)
@@ -91,9 +89,10 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 		val existingTracker = server.context.state.value.trackers.values
 			.find { tracker -> tracker.context.state.value.hardwareId == serial }
 
-		val device = if (existingTracker != null) {
-			server.getDevice(existingTracker.context.state.value.deviceId)
+		val (device, tracker) = if (existingTracker != null) {
+			val device = server.getDevice(existingTracker.context.state.value.deviceId)
 				?: error("could not find existing device for serial $serial")
+			Pair(device, existingTracker)
 		} else {
 			val deviceId = server.nextHandle()
 			val newDevice = Device.create(
@@ -122,12 +121,11 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 			)
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 
-			receiver.context.dispatch(DriverBridgeActions.AddTracker(id, tracker))
-			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
-
-			newDevice
+			Pair(newDevice, tracker)
 		}
 
+		receiver.context.dispatch(DriverBridgeActions.AddTracker(id, tracker.context.state.value.id))
+		tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 		device.context.dispatch(DeviceActions.Update { copy(protocolVersion = 0) })
 	}
 }
