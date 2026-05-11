@@ -36,6 +36,20 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 			}
 		}
 
+		receiver.inbound.on<DriverBridgeInbound.TrackerBattery> { event ->
+			receiver.context.state.value.trackers[event.id]?.let { tracker ->
+				val device = tracker.server.getDevice(tracker.context.state.value.deviceId) ?: error("could not find device")
+				device.context.dispatch(
+					DeviceActions.Update {
+						copy(
+							batteryLevel = event.batteryLevel / 100f,
+							batteryVoltage = if (event.charging) 4.3f else 3.7f,
+						)
+					},
+				)
+			}
+		}
+
 		// Should be safe: StateFlow never delivers two emissions concurrently to the same collector.
 		val subscribedTrackers = mutableSetOf<Int>()
 
