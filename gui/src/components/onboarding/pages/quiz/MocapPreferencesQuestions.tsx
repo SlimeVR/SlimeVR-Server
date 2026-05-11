@@ -68,7 +68,7 @@ export function QuizMocapPosQuestion() {
               />
               <Typography id="onboarding-quiz-mocap_preferences-vrm_model-desc" />
             </div>
-            <VMCFileUpload />
+            <VMCFileUpload suggested={playspace !== 'sitting'} />
           </div>
         </div>
 
