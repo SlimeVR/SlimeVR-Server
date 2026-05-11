@@ -9,6 +9,7 @@ import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
+import dev.slimevr.context.debug.ContextDebug
 import dev.slimevr.desktop.config.DesktopConfigStorage
 import dev.slimevr.desktop.hid.createDesktopHIDManager
 import dev.slimevr.desktop.ipc.createIpcServers
@@ -32,6 +33,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>) = runBlocking {
+	ContextDebug.enabled = System.getProperty("slimevr.debug.context") == "true" ||
+		System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
+
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
 	val storage = DesktopConfigStorage(configFolder.toFile())
 	val config = AppConfig.create(this, storage = storage)

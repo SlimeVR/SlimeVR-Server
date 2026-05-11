@@ -1,6 +1,7 @@
 package dev.slimevr.context
 
 import dev.slimevr.context.debug.DebugMiddleware
+import dev.slimevr.context.debug.ContextDebug
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -112,8 +113,14 @@ class Context<S, A>(
 		): Context<S, A> {
 			val mutableStateFlow = MutableStateFlow(initialState)
 			val scopeWithName = CoroutineScope(scope.coroutineContext + CoroutineName(name))
-			val context = Context(mutableStateFlow, scopeWithName, BehaviourList(behaviours), debugMiddleware)
-			debugMiddleware?.init(context)
+			val effectiveDebugMiddleware = if (ContextDebug.enabled) debugMiddleware else null
+			val context = Context(
+				mutableStateFlow,
+				scopeWithName,
+				BehaviourList(behaviours),
+				effectiveDebugMiddleware,
+			)
+			effectiveDebugMiddleware?.init(context)
 			return context
 		}
 	}
