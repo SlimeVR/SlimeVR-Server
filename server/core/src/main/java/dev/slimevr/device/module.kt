@@ -20,6 +20,7 @@ enum class DeviceOrigin {
 data class DeviceState(
 	val id: Int,
 	val name: String,
+	val manufacturer: String,
 	val address: String,
 	val macAddress: String?,
 	val batteryLevel: Float?,
@@ -51,6 +52,8 @@ class Device(
 		fun create(
 			scope: CoroutineScope,
 			id: Int,
+			name: String = "Device $id",
+			manufacturer: String = "SlimeVR",
 			address: String,
 			macAddress: String? = null,
 			origin: DeviceOrigin,
@@ -58,7 +61,8 @@ class Device(
 		): Device {
 			val deviceState = DeviceState(
 				id = id,
-				name = "Device $id",
+				name = name,
+				manufacturer = manufacturer,
 				batteryLevel = null,
 				batteryVoltage = null,
 				origin = origin,

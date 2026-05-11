@@ -55,6 +55,7 @@ class Tracker(
 		fun create(
 			scope: CoroutineScope,
 			id: Int,
+			name: String = "Tracker #$id",
 			deviceId: Int,
 			sensorType: ImuType?,
 			hardwareId: String,
@@ -67,7 +68,7 @@ class Tracker(
 			val baseState = TrackerState(
 				id = id,
 				hardwareId = hardwareId,
-				name = "Tracker #$id",
+				name = name,
 				rawRotation = Quaternion.IDENTITY,
 				acceleration = Vector3.NULL,
 				bodyPart = null,

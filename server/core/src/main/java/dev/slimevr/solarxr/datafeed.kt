@@ -86,7 +86,7 @@ private fun createDevice(
 		),
 		hardwareInfo = HardwareInfo(
 			mcuId = device.mcuType,
-			manufacturer = "SlimeVR",
+			manufacturer = device.manufacturer,
 			boardType = device.boardType.toString(),
 			officialBoardType = device.boardType,
 			model = device.mcuType.toString(),

@@ -25,7 +25,7 @@ sealed interface DriverBridgeActions {
 
 sealed interface DriverBridgeInbound {
 	data class Version(val protocolVersion: Int) : DriverBridgeInbound
-	data class TrackerAdded(val id: Int, val serial: String) : DriverBridgeInbound
+	data class TrackerAdded(val id: Int, val name: String, val manufacturer: String, val serial: String) : DriverBridgeInbound
 	data class TrackerPosition(val trackerId: Int, val rotation: Quaternion, val position: Vector3?) : DriverBridgeInbound
 	data class TrackerBattery(val id: Int, val batteryLevel: Float, val charging: Boolean) : DriverBridgeInbound
 }

@@ -24,7 +24,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 		}
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerAdded> { event ->
-			handleTrackerAdded(receiver, event.id, event.serial)
+			handleTrackerAdded(receiver, event.id, event.name, event.manufacturer, event.serial)
 		}
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
@@ -83,7 +83,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 			.launchIn(receiver.context.scope)
 	}
 
-	private fun handleTrackerAdded(receiver: DriverBridge, id: Int, serial: String) {
+	private fun handleTrackerAdded(receiver: DriverBridge, id: Int, name: String, manufacturer: String, serial: String) {
 		val server = receiver.appContext.server
 		val settings = receiver.appContext.config.settings
 		val scope = server.context.scope
@@ -98,6 +98,8 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 			val newDevice = Device.create(
 				scope = scope,
 				id = deviceId,
+				name = name,
+				manufacturer = manufacturer,
 				address = serial,
 				macAddress = serial,
 				origin = DeviceOrigin.DRIVER,
@@ -109,6 +111,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 			val tracker = Tracker.create(
 				scope = scope,
 				id = trackerId,
+				name = name,
 				deviceId = deviceId,
 				sensorType = null,
 				hardwareId = serial,

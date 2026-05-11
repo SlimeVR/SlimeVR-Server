@@ -104,7 +104,7 @@ suspend fun handleDriverConnection(
 				}
 			}
 			msg.tracker_added?.let { ta ->
-				bridge.inbound.emit(DriverBridgeInbound.TrackerAdded(id = ta.tracker_id, serial = ta.tracker_serial))
+				bridge.inbound.emit(DriverBridgeInbound.TrackerAdded(id = ta.tracker_id, name = ta.tracker_name, manufacturer = ta.manufacturer.ifEmpty { "SlimeVR" }, serial = ta.tracker_serial))
 			}
 			msg.battery?.let { bat ->
 				bridge.inbound.emit(DriverBridgeInbound.TrackerBattery(id = bat.tracker_id, batteryLevel = bat.battery_level, charging = bat.is_charging))
