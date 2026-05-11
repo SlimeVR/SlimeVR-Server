@@ -108,7 +108,7 @@ suspend fun handleDriverConnection(
 				bridge.inbound.emit(DriverBridgeInbound.TrackerAdded(
 					id = ta.tracker_id,
 					name = ta.tracker_name,
-					manufacturer = ta.manufacturer.ifEmpty { "SlimeVR" },
+					manufacturer = ta.manufacturer.ifEmpty { "OpenVR" },
 					serial = ta.tracker_serial
 				))
 			}
