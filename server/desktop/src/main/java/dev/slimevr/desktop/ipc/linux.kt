@@ -1,6 +1,7 @@
 package dev.slimevr.desktop.ipc
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.AppLogger
 import dev.slimevr.getSocketDirectory
 import dev.slimevr.solarxr.handleSolarXRBridge
 import kotlinx.coroutines.Dispatchers
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.SocketException
 import java.net.StandardProtocolFamily
 import java.net.UnixDomainSocketAddress
 import java.nio.ByteBuffer
@@ -53,16 +55,20 @@ private fun isSocketInUse(socketPath: String): Boolean = try {
 // Length field is LE u32 and includes the 4-byte header itself
 private fun readFramedMessages(channel: SocketChannel) = flow {
 	val lenBuf = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
-	while (true) {
-		lenBuf.clear()
-		if (channel.read(lenBuf) == -1) break
-		lenBuf.flip()
+	try {
+		while (true) {
+			lenBuf.clear()
+			if (channel.read(lenBuf) == -1) break
+			lenBuf.flip()
 
-		val dataBuf = ByteBuffer.allocate(lenBuf.int - 4)
-		while (dataBuf.hasRemaining()) {
-			if (channel.read(dataBuf) == -1) break
+			val dataBuf = ByteBuffer.allocate(lenBuf.int - 4)
+			while (dataBuf.hasRemaining()) {
+				if (channel.read(dataBuf) == -1) break
+			}
+			emit(dataBuf.array())
 		}
-		emit(dataBuf.array())
+	} catch (e: SocketException) {
+		AppLogger.ipc.warn("Exception on socket: ${e.message}")
 	}
 }.flowOn(Dispatchers.IO)
 
