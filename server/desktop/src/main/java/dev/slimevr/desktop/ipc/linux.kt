@@ -26,7 +26,7 @@ suspend fun createUnixDriverSocket(appContext: AppContextProvider) = acceptUnixC
 }
 
 suspend fun createUnixFeederSocket(appContext: AppContextProvider) = acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
-	handleFeederConnection(
+	handleDriverConnection(
 		appContext = appContext,
 		messages = readFramedMessages(channel),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },

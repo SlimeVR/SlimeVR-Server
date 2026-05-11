@@ -11,7 +11,6 @@ import solarxr_protocol.datatypes.hardware_info.McuType
 
 enum class DeviceOrigin {
 	DRIVER,
-	FEEDER,
 	UDP,
 	HID,
 	OSC,

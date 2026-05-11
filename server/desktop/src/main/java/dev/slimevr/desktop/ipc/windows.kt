@@ -29,7 +29,7 @@ suspend fun createWindowsDriverPipe(appContext: AppContextProvider) = acceptWind
 }
 
 suspend fun createWindowsFeederPipe(appContext: AppContextProvider) = acceptWindowsClients(FEEDER_PIPE) { handle ->
-	handleFeederConnection(
+	handleDriverConnection(
 		appContext = appContext,
 		messages = readFramedMessages(handle),
 		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },

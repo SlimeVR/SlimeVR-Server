@@ -11,12 +11,9 @@ import dev.slimevr.desktop.platform.Version
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
 import dev.slimevr.driver.DriverBridgeOutbound
-import dev.slimevr.feeder.FeederBridge
-import dev.slimevr.feeder.FeederBridgeInbound
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -25,8 +22,6 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 const val PROTOCOL_VERSION = 2
 
@@ -108,35 +103,11 @@ suspend fun handleDriverConnection(
 					}
 				}
 			}
+			msg.tracker_added?.let { ta ->
+				bridge.inbound.emit(DriverBridgeInbound.TrackerAdded(id = ta.tracker_id, serial = ta.tracker_serial))
+			}
 			msg.position?.let { pos ->
 				bridge.inbound.emit(DriverBridgeInbound.TrackerPosition(trackerId = pos.tracker_id, rotation = Quaternion(w = pos.qw, x = pos.qx, y = pos.qy, z = pos.qz), position = null))
-			}
-		}
-	} finally {
-		bridge.disconnect()
-	}
-}
-
-suspend fun handleFeederConnection(
-	appContext: AppContextProvider,
-	messages: Flow<ByteArray>,
-	send: suspend (ByteArray) -> Unit,
-) = coroutineScope {
-	val bridge = FeederBridge.create(id = appContext.server.nextHandle(), appContext = appContext, scope = this)
-
-	send(ProtobufMessage.ADAPTER.encode(ProtobufMessage(version = Version(protocol_version = PROTOCOL_VERSION))))
-
-	try {
-		messages.collect { bytes ->
-			val msg = ProtobufMessage.ADAPTER.decode(bytes)
-			msg.version?.let { ver ->
-				bridge.inbound.emit(FeederBridgeInbound.Version(protocolVersion = ver.protocol_version, firmware = ver.toString()))
-			}
-			msg.tracker_added?.let { ta ->
-				bridge.inbound.emit(FeederBridgeInbound.TrackerAdded(serial = ta.tracker_serial))
-			}
-			msg.position?.let { pos ->
-				bridge.inbound.emit(FeederBridgeInbound.TrackerPosition(trackerId = pos.tracker_id, rotation = Quaternion(w = pos.qw, x = pos.qx, y = pos.qy, z = pos.qz), position = null))
 			}
 		}
 	} finally {

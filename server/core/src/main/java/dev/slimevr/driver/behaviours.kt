@@ -1,12 +1,20 @@
 package dev.slimevr.driver
 
+import dev.slimevr.AppLogger
+import dev.slimevr.VRServerActions
+import dev.slimevr.device.Device
+import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.datatypes.hardware_info.ImuType
 
 object DriverBaseBehaviour : DriverBridgeBehaviour {
 	override fun reduce(state: DriverBridgeState, action: DriverBridgeActions): DriverBridgeState = when (action) {
+		is DriverBridgeActions.AddTracker -> state.copy(trackers = state.trackers + (action.id to action.tracker))
 		is DriverBridgeActions.UpdateProtocolVersion -> state.copy(protocolVersion = action.version)
 	}
 
@@ -15,10 +23,17 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 			receiver.context.dispatch(DriverBridgeActions.UpdateProtocolVersion(event.protocolVersion))
 		}
 
+		receiver.inbound.on<DriverBridgeInbound.TrackerAdded> { event ->
+			handleTrackerAdded(receiver, event.id, event.serial)
+		}
+
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
-			receiver.appContext.server.getTracker(event.trackerId)?.context?.dispatch(
-				TrackerActions.SetRotation(rotation = event.rotation),
-			)
+			val tracker = receiver.context.state.value.trackers[event.trackerId]
+			if (tracker != null) {
+				tracker.context.dispatch(TrackerActions.SetRotation(rotation = event.rotation))
+			} else {
+				AppLogger.steamvr.warn("Failed to find tracker ${event.trackerId}")
+			}
 		}
 
 		// Should be safe: StateFlow never delivers two emissions concurrently to the same collector.
@@ -52,5 +67,49 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 				}
 			}
 			.launchIn(receiver.context.scope)
+	}
+
+	private fun handleTrackerAdded(receiver: DriverBridge, id: Int, serial: String) {
+		val server = receiver.appContext.server
+		val settings = receiver.appContext.config.settings
+		val scope = server.context.scope
+		val existingTracker = server.context.state.value.trackers.values
+			.find { tracker -> tracker.context.state.value.hardwareId == serial }
+
+		val device = if (existingTracker != null) {
+			server.getDevice(existingTracker.context.state.value.deviceId)
+				?: error("could not find existing device for serial $serial")
+		} else {
+			val deviceId = server.nextHandle()
+			val newDevice = Device.create(
+				scope = scope,
+				id = deviceId,
+				address = serial,
+				macAddress = serial,
+				origin = DeviceOrigin.DRIVER,
+				protocolVersion = 0,
+			)
+			server.context.dispatch(VRServerActions.NewDevice(deviceId, newDevice))
+
+			val trackerId = server.nextHandle()
+			val tracker = Tracker.create(
+				scope = scope,
+				id = trackerId,
+				deviceId = deviceId,
+				sensorType = ImuType.Other,
+				hardwareId = serial,
+				origin = DeviceOrigin.DRIVER,
+				server = server,
+				settings = settings,
+			)
+			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
+
+			receiver.context.dispatch(DriverBridgeActions.AddTracker(id, tracker))
+			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+
+			newDevice
+		}
+
+		device.context.dispatch(DeviceActions.Update { copy(protocolVersion = 0) })
 	}
 }

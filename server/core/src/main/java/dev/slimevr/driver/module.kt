@@ -6,20 +6,26 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
+import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
+import solarxr_protocol.datatypes.TrackerStatus
 
 data class DriverBridgeState(
 	val protocolVersion: Int,
+	val trackers: Map<Int, Tracker>,
 )
 
 sealed interface DriverBridgeActions {
+	data class AddTracker(val id: Int, val tracker: Tracker) : DriverBridgeActions
 	data class UpdateProtocolVersion(val version: Int) : DriverBridgeActions
 }
 
 sealed interface DriverBridgeInbound {
 	data class Version(val protocolVersion: Int) : DriverBridgeInbound
+	data class TrackerAdded(val id: Int, val serial: String) : DriverBridgeInbound
 	data class TrackerPosition(val trackerId: Int, val rotation: Quaternion, val position: Vector3?) : DriverBridgeInbound
 }
 
@@ -46,6 +52,9 @@ class DriverBridge(
 	fun disconnect() {
 		dispose()
 		appContext.server.context.dispatch(VRServerActions.DriverDisconnected(id))
+		context.state.value.trackers.forEach { (_, tracker) ->
+			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
+		}
 	}
 
 	companion object {
@@ -53,7 +62,10 @@ class DriverBridge(
 			val behaviours = listOf(DriverBaseBehaviour)
 
 			val managedContext = ManagedContext.create(
-				initialState = DriverBridgeState(protocolVersion = 0),
+				initialState = DriverBridgeState(
+					protocolVersion = 0,
+					trackers = emptyMap(),
+				),
 				scope = scope,
 				behaviours = behaviours,
 				name = "Driver[$id]",
