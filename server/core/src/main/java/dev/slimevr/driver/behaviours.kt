@@ -110,7 +110,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 				scope = scope,
 				id = trackerId,
 				deviceId = deviceId,
-				sensorType = ImuType.Other,
+				sensorType = null,
 				hardwareId = serial,
 				origin = DeviceOrigin.DRIVER,
 				server = server,
