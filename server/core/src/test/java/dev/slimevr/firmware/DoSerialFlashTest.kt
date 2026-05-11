@@ -1,6 +1,5 @@
 package dev.slimevr.firmware
 
-import dev.llelievr.espflashkotlin.FlasherSerialInterface
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestSettings
@@ -8,6 +7,7 @@ import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
@@ -32,7 +32,7 @@ private fun fakePortHandle(loc: String) = SerialPortHandle(
 private fun fakePort(loc: String = "COM1") = SerialPortInfo(loc, "Fake $loc", 0x1A86, 0x7523)
 
 /** Fails immediately at openSerial so the Flasher throws with no IO delays */
-private fun failingFlashHandler() = object : FlasherSerialInterface {
+private fun fakeFlashHandler() = object : FlashingHandler {
 	override fun openSerial(port: Any) = error("simulated flash failure")
 	override fun closeSerial() {}
 	override fun write(data: ByteArray) {}
@@ -45,9 +45,13 @@ private fun failingFlashHandler() = object : FlasherSerialInterface {
 	override fun flushIOBuffers() {}
 }
 
+private val failingFirmwareFlasher = FirmwareFlasher { portLocation, handler, _, _ ->
+	handler.openSerial(portLocation)
+}
+
 private fun buildSerialServer(
 	scope: kotlinx.coroutines.CoroutineScope,
-	flashHandler: () -> FlasherSerialInterface = ::failingFlashHandler,
+	flashHandler: () -> FlashingHandler = ::fakeFlashHandler,
 ) = SerialServer.create(
 	openPort = { loc, _, _ -> fakePortHandle(loc) },
 	openFlashingPort = flashHandler,
@@ -78,6 +82,7 @@ class DoSerialFlashTest {
 			serialServer = server,
 			settings = buildTestSettings(backgroundScope),
 			server = vrServer,
+			flasher = failingFirmwareFlasher,
 			onStatus = { s, _ -> statuses += s },
 			scope = this,
 		)
@@ -101,6 +106,7 @@ class DoSerialFlashTest {
 			serialServer = server,
 			settings = buildTestSettings(backgroundScope),
 			server = buildTestVrServerStub(backgroundScope),
+			flasher = failingFirmwareFlasher,
 			onStatus = { s, _ -> statuses += s },
 			scope = this,
 		)
@@ -110,7 +116,7 @@ class DoSerialFlashTest {
 
 	@Test
 	fun `emits ERROR_UPLOAD_FAILED when flash throws`() = runTest {
-		val server = buildSerialServer(this, ::failingFlashHandler)
+		val server = buildSerialServer(this, ::fakeFlashHandler)
 		server.onPortDetected(fakePort())
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
@@ -123,6 +129,7 @@ class DoSerialFlashTest {
 			serialServer = server,
 			settings = buildTestSettings(backgroundScope),
 			server = buildTestVrServerStub(backgroundScope),
+			flasher = failingFirmwareFlasher,
 			onStatus = { s, _ -> statuses += s },
 			scope = this,
 		)

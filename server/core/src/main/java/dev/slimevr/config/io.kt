@@ -14,9 +14,24 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
+
+interface ConfigStorage {
+	suspend fun read(path: String): String?
+	suspend fun write(path: String, content: String)
+	suspend fun backup(path: String)
+	suspend fun exists(path: String): Boolean
+	suspend fun ensureDirectory(path: String): Boolean
+	suspend fun openTextFile(path: String): TextFileHandle
+	fun displayPath(path: String): String = path
+}
+
+interface TextFileHandle {
+	suspend fun write(text: String)
+	suspend fun flush()
+	suspend fun position(): Long
+	suspend fun seek(position: Long)
+	suspend fun close()
+}
 
 val jsonConfig = Json {
 	prettyPrint = true
@@ -24,38 +39,29 @@ val jsonConfig = Json {
 	encodeDefaults = true
 }
 
-suspend fun atomicWriteFile(file: File, content: String) = withContext(Dispatchers.IO) {
-	file.parentFile?.mkdirs()
-	val tmp = File(file.parent, "${file.name}.tmp")
-	tmp.writeText(content)
-	Files.move(tmp.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
-	Unit
-}
+fun configPath(vararg parts: String): String = parts.filter { it.isNotEmpty() }.joinToString("/")
 
-suspend inline fun <reified T> loadFileWithBackup(file: File, default: T, crossinline deserialize: (String) -> T): T = withContext(Dispatchers.IO) {
-	if (!file.exists()) {
-		atomicWriteFile(file, jsonConfig.encodeToString(default))
+suspend inline fun <reified T> loadFileWithBackup(
+	storage: ConfigStorage,
+	path: String,
+	default: T,
+	crossinline deserialize: (String) -> T,
+): T = withContext(Dispatchers.IO) {
+	val raw = storage.read(path)
+	if (raw == null) {
+		storage.write(path, jsonConfig.encodeToString(default))
 		return@withContext default
 	}
 
 	try {
-		deserialize(file.readText())
+		deserialize(raw)
 	} catch (e: Exception) {
 		e.printStackTrace()
-		System.err.println("Failed to load ${file.absolutePath}: ${e.message}")
-		if (file.exists()) {
-			try {
-				val bakTmp = File(file.parent, "${file.name}.bak.tmp")
-				file.copyTo(bakTmp, overwrite = true)
-				Files.move(
-					bakTmp.toPath(),
-					File(file.parent, "${file.name}.bak").toPath(),
-					StandardCopyOption.ATOMIC_MOVE,
-					StandardCopyOption.REPLACE_EXISTING,
-				)
-			} catch (e2: Exception) {
-				System.err.println("Failed to back up corrupted file: ${e2.message}")
-			}
+		System.err.println("Failed to load ${storage.displayPath(path)}: ${e.message}")
+		try {
+			storage.backup(path)
+		} catch (e2: Exception) {
+			System.err.println("Failed to back up corrupted file: ${e2.message}")
 		}
 		default
 	}
@@ -71,7 +77,8 @@ suspend inline fun <reified T> loadFileWithBackup(file: File, default: T, crossi
 fun <S> launchAutosave(
 	scope: CoroutineScope,
 	state: StateFlow<S>,
-	toFile: (S) -> File,
+	storage: ConfigStorage,
+	toPath: (S) -> String,
 	serialize: (S) -> String,
 ): Job {
 	var lastSaved = state.value
@@ -80,10 +87,10 @@ fun <S> launchAutosave(
 		.filter { it != lastSaved }
 		.onEach { s ->
 			try {
-				val file = toFile(s)
-				atomicWriteFile(file, serialize(s))
+				val path = toPath(s)
+				storage.write(path, serialize(s))
 				lastSaved = s
-				println("Saved ${file.absolutePath}")
+				println("Saved ${storage.displayPath(path)}")
 			} catch (e: Exception) {
 				System.err.println("Failed to save: ${e.message}")
 			}

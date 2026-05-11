@@ -9,12 +9,15 @@ import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
+import dev.slimevr.desktop.config.DesktopConfigStorage
 import dev.slimevr.desktop.hid.createDesktopHIDManager
 import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
 import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
+import dev.slimevr.desktop.serial.DesktopFirmwareFlasher
 import dev.slimevr.desktop.serial.createDesktopSerialServer
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
+import dev.slimevr.desktop.vrchat.resolveDesktopOscQueryAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.networkprofile.NetworkProfileManager
@@ -30,13 +33,14 @@ import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>) = runBlocking {
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
-	val config = AppConfig.create(this, configFolder = configFolder.toFile())
+	val storage = DesktopConfigStorage(configFolder.toFile())
+	val config = AppConfig.create(this, storage = storage)
 	val server = VRServer.create(this)
 	val serialServer = createDesktopSerialServer(this)
 
 	val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer)
 
-	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this)
+	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this, flasher = DesktopFirmwareFlasher)
 	val vrcConfigManager = createDesktopVRCConfigManager(ctx = phase1, scope = this)
 	val networkProfileManager = NetworkProfileManager.create(scope = this, isSupported = CURRENT_PLATFORM == Platform.WINDOWS)
 	val skeleton = Skeleton.create(scope = this, ctx = phase1)
@@ -44,9 +48,14 @@ fun main(args: Array<String>) = runBlocking {
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
 	val trackingChecklist = TrackingChecklist.create(scope = this)
 	val udpServer = UdpServer.create(scope = this)
-	val bvhManager = BVHManager.create(skeleton = skeleton, scope = this)
+	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(skeleton = skeleton, ctx = phase1, scope = this)
-	val vrcOscManager = VRCOSCManager.create(skeleton = skeleton, ctx = phase1, scope = this)
+	val vrcOscManager = VRCOSCManager.create(
+		skeleton = skeleton,
+		ctx = phase1,
+		scope = this,
+		oscQueryAddress = resolveDesktopOscQueryAddress(),
+	)
 
 	val appContext = AppContext(
 		server = server,

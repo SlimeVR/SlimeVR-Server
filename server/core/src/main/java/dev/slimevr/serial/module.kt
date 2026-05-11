@@ -1,13 +1,23 @@
 package dev.slimevr.serial
 
-import dev.llelievr.espflashkotlin.FlasherSerialInterface
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.SerialDevice
 
-typealias FlashingHandler = FlasherSerialInterface
+interface FlashingHandler {
+	fun openSerial(port: Any)
+	fun closeSerial()
+	fun write(data: ByteArray)
+	fun read(length: Int): ByteArray
+	fun setDTR(value: Boolean)
+	fun setRTS(value: Boolean)
+	fun changeBaud(baud: Int)
+	fun setReadTimeout(timeout: Long)
+	fun availableBytes(): Int
+	fun flushIOBuffers()
+}
 
 data class SerialPortInfo(
 	val portLocation: String,
@@ -45,6 +55,7 @@ class SerialServer(
 	) -> SerialPortHandle?,
 	private val openFlashingPortFactory: () -> FlashingHandler,
 ) {
+
 	fun onPortDetected(info: SerialPortInfo) {
 		context.dispatch(SerialServerActions.PortDetected(info))
 	}

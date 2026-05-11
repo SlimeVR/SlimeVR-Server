@@ -29,7 +29,15 @@ import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
-import java.nio.ByteBuffer
+
+private fun ipv4AddressFromString(address: String): UInt {
+	val parts = address.split('.')
+	if (parts.size != 4) return 0u
+	return parts.fold(0u) { acc, part ->
+		val value = part.toUIntOrNull()?.takeIf { it <= 255u } ?: return 0u
+		(acc shl 8) or value
+	}
+}
 
 private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask, datafeedConfig: DataFeedConfig): TrackerData = TrackerData(
 	trackerId = TrackerId(
@@ -83,7 +91,7 @@ private fun createDevice(
 			officialBoardType = device.boardType,
 			model = device.mcuType.toString(),
 			firmwareVersion = device.firmware,
-			ipAddress = Ipv4Address(ByteBuffer.wrap(device.address.toByteArray()).getLong().toUInt()),
+			ipAddress = Ipv4Address(ipv4AddressFromString(device.address)),
 		),
 		trackers = if (trackerMask != null) {
 			trackers.filter { it.deviceId == device.id }

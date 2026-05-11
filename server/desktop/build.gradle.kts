@@ -75,6 +75,8 @@ wire {
 dependencies {
 	implementation(project(":server:core"))
 	implementation(project(":solarxr-protocol:generated"))
+	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
+	implementation("com.github.loucass003:EspflashKotlin:v0.11.0")
 
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")

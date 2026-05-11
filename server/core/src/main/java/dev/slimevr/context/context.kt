@@ -5,15 +5,36 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.concurrent.CopyOnWriteArrayList
 
 interface Behaviour<S, A, C> {
 	fun reduce(state: S, action: A): S = state
 	fun observe(receiver: C) {}
+}
+
+class BehaviourList<S, A>(
+	initial: List<Behaviour<S, A, *>>,
+) {
+	private val mutex = Mutex()
+	private var items: List<Behaviour<S, A, *>> = initial.toList()
+
+	fun addAll(newItems: List<Behaviour<S, A, *>>) = runBlocking {
+		mutex.withLock {
+			items = items + newItems
+		}
+	}
+
+	fun snapshot(): List<Behaviour<S, A, *>> = runBlocking {
+		mutex.withLock {
+			items.toList()
+		}
+	}
 }
 
 class ManagedContext<S, A>(
@@ -40,55 +61,48 @@ class ManagedContext<S, A>(
 
 class Context<S, A>(
 	private val mutableStateFlow: MutableStateFlow<S>,
-	val reducer: (S, A) -> S,
 	val scope: CoroutineScope,
-	val behaviours: CopyOnWriteArrayList<Behaviour<S, A, *>>,
+	val behaviours: BehaviourList<S, A>,
 	private val debugMiddleware: DebugMiddleware<S, A>? = null,
 ) {
 	val state: StateFlow<S> = mutableStateFlow.asStateFlow()
 
 	fun dispatch(action: A) {
 		if (debugMiddleware == null) {
-			mutableStateFlow.update { currentState -> reducer(currentState, action) }
+			mutableStateFlow.update { currentState -> reduce(currentState, action) }
 			return
 		}
-		val caller = captureCallerBehaviour()
 		val before = mutableStateFlow.value
-		mutableStateFlow.update { currentState -> reducer(currentState, action) }
-		debugMiddleware.onDispatch(caller, before, action, mutableStateFlow.value)
+		mutableStateFlow.update { currentState -> reduce(currentState, action) }
+		debugMiddleware.onDispatch(null, before, action, mutableStateFlow.value)
 	}
 
 	fun dispatchAll(actions: List<A>) {
 		if (debugMiddleware == null) {
 			mutableStateFlow.update { currentState ->
-				actions.fold(currentState) { s, action -> reducer(s, action) }
+				actions.fold(currentState) { s, action -> reduce(s, action) }
 			}
 			return
 		}
-		val caller = captureCallerBehaviour()
 		val before = mutableStateFlow.value
 		mutableStateFlow.update { currentState ->
-			actions.fold(currentState) { s, action -> reducer(s, action) }
+			actions.fold(currentState) { s, action -> reduce(s, action) }
 		}
-		debugMiddleware.onDispatchAll(caller, before, actions, mutableStateFlow.value)
+		debugMiddleware.onDispatchAll(null, before, actions, mutableStateFlow.value)
 	}
 
-	fun <C> observeAll(receiver: C) = behaviours.forEach { behaviour ->
+	fun <C> observeAll(receiver: C) = behaviours.snapshot().forEach { behaviour ->
 		@Suppress("UNCHECKED_CAST")
 		(behaviour as Behaviour<S, A, C>).observe(receiver)
 	}
 
-	private fun captureCallerBehaviour(): String? {
-		val knownBehaviourClasses = behaviours.mapTo(HashSet()) { b -> b::class.java.name }
-		return Thread.currentThread().stackTrace
-			.firstOrNull { frame -> frame.className in knownBehaviourClasses }
-			?.className?.substringAfterLast('.')
+	private fun reduce(currentState: S, action: A): S {
+		return behaviours.snapshot().fold(currentState) { state, behaviour ->
+			behaviour.reduce(state, action)
+		}
 	}
 
 	companion object {
-		val debugEnabled: Boolean = System.getProperty("slimevr.debug.context") == "true" ||
-			System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
-
 		fun <S, A> create(
 			initialState: S,
 			scope: CoroutineScope,
@@ -97,13 +111,9 @@ class Context<S, A>(
 			name: String,
 		): Context<S, A> {
 			val mutableStateFlow = MutableStateFlow(initialState)
-			val reducer: (S, A) -> S = { currentState, action ->
-				behaviours.fold(currentState) { s, b -> b.reduce(s, action) }
-			}
 			val scopeWithName = CoroutineScope(scope.coroutineContext + CoroutineName(name))
-			val middlewareToUse = if (debugEnabled) debugMiddleware else null
-			val context = Context(mutableStateFlow, reducer, scopeWithName, CopyOnWriteArrayList(behaviours), middlewareToUse)
-			middlewareToUse?.init(context)
+			val context = Context(mutableStateFlow, scopeWithName, BehaviourList(behaviours), debugMiddleware)
+			debugMiddleware?.init(context)
 			return context
 		}
 	}

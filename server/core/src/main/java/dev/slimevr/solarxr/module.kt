@@ -6,7 +6,6 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
-import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import solarxr_protocol.MessageBundle
@@ -15,7 +14,6 @@ import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
-import java.nio.ByteBuffer
 
 data class SolarXRBridgeState(
 	val dataFeedConfigs: List<DataFeedConfig>,
@@ -29,15 +27,13 @@ sealed interface SolarXRBridgeActions {
 typealias SolarXRBridgeContext = Context<SolarXRBridgeState, SolarXRBridgeActions>
 typealias SolarXRBridgeBehaviour = Behaviour<SolarXRBridgeState, SolarXRBridgeActions, SolarXRBridge>
 
-suspend fun onSolarXRMessage(message: ByteBuffer, context: SolarXRBridge) {
-	val messageBundle = MessageBundle.fromByteBuffer(JvmFlatBufferReader(message))
-
-	messageBundle.dataFeedMsgs?.forEach {
+suspend fun onSolarXRMessage(message: MessageBundle, context: SolarXRBridge) {
+	message.dataFeedMsgs?.forEach {
 		val msg = it.message ?: return
 		context.dataFeedDispatcher.emit(msg)
 	}
 
-	messageBundle.rpcMsgs?.forEach {
+	message.rpcMsgs?.forEach {
 		val msg = it.message ?: return
 		context.rpcDispatcher.emit(msg)
 	}

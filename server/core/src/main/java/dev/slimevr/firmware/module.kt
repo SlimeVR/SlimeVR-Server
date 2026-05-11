@@ -44,6 +44,7 @@ class FirmwareManager(
 	val context: FirmwareManagerContext,
 	private val serialServer: SerialServer,
 	private val settings: Settings,
+	private val flasher: FirmwareFlasher,
 	private val scope: CoroutineScope,
 ) {
 	fun startObserving() = context.observeAll(this)
@@ -69,6 +70,7 @@ class FirmwareManager(
 				serialServer = serialServer,
 				settings = settings,
 				server = server,
+				flasher = flasher,
 				onStatus = { status, progress ->
 					context.dispatch(
 						FirmwareManagerActions.UpdateJob(
@@ -124,7 +126,7 @@ class FirmwareManager(
 	}
 
 	companion object {
-		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope): FirmwareManager {
+		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope, flasher: FirmwareFlasher): FirmwareManager {
 			val behaviours = listOf(FirmwareManagerBaseBehaviour)
 			val context = Context.create(
 				initialState = FirmwareManagerState(jobs = mapOf()),
@@ -132,7 +134,13 @@ class FirmwareManager(
 				behaviours = behaviours,
 				name = "FirmwareManager",
 			)
-			return FirmwareManager(context = context, serialServer = ctx.serialServer, settings = ctx.config.settings, scope = scope)
+			return FirmwareManager(
+				context = context,
+				serialServer = ctx.serialServer,
+				settings = ctx.config.settings,
+				flasher = flasher,
+				scope = scope,
+			)
 		}
 	}
 }

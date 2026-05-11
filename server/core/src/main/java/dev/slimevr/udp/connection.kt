@@ -8,15 +8,14 @@ import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerIdNum
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import io.ktor.network.sockets.BoundDatagramSocket
+import io.ktor.network.sockets.Datagram
+import io.ktor.network.sockets.InetSocketAddress
 import kotlinx.io.Buffer
 import kotlinx.io.readByteArray
 import solarxr_protocol.datatypes.MagnetometerStatus
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
 
 data class LastPing(
 	val id: Int,
@@ -59,17 +58,15 @@ class UDPConnection(
 	val appContext: AppContextProvider,
 	val packetEvents: UDPPacketDispatcher,
 	val packetChannel: Channel<PacketEvent<UDPPacket>>,
-	private val socket: DatagramSocket,
-	private val remoteInetAddress: InetAddress,
-	private val remotePort: Int,
+	private val socket: BoundDatagramSocket,
+	private val remoteAddress: InetSocketAddress,
 	private val scope: CoroutineScope,
 ) {
 	fun send(packet: UDPPacket) {
-		scope.launch(Dispatchers.IO) {
+		scope.launch {
 			val buf = Buffer()
 			writePacket(buf, packet)
-			val bytes = buf.readByteArray()
-			socket.send(DatagramPacket(bytes, bytes.size, remoteInetAddress, remotePort))
+			socket.send(Datagram(buf, remoteAddress))
 		}
 	}
 
@@ -88,9 +85,8 @@ class UDPConnection(
 	companion object {
 		fun create(
 			id: String,
-			socket: DatagramSocket,
-			remoteIp: String,
-			remotePort: Int,
+			socket: BoundDatagramSocket,
+			remoteAddress: InetSocketAddress,
 			appContext: AppContextProvider,
 			scope: CoroutineScope,
 		): UDPConnection {
@@ -118,8 +114,8 @@ class UDPConnection(
 					lastPacketNum = 0,
 					lastPing = LastPing(id = 0, startTime = 0),
 					didHandshake = false,
-					address = remoteIp,
-					port = remotePort,
+					address = remoteAddress.hostname,
+					port = remoteAddress.port,
 					deviceId = null,
 					trackerIds = listOf(),
 					features = null,
@@ -132,7 +128,6 @@ class UDPConnection(
 
 			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>> { it.data::class }
 			val packetChannel = Channel<PacketEvent<UDPPacket>>(capacity = 256)
-			val remoteInetAddress = InetAddress.getByName(remoteIp)
 
 			val conn = UDPConnection(
 				context = context,
@@ -140,8 +135,7 @@ class UDPConnection(
 				packetEvents = dispatcher,
 				packetChannel = packetChannel,
 				socket = socket,
-				remoteInetAddress = remoteInetAddress,
-				remotePort = remotePort,
+				remoteAddress = remoteAddress,
 				scope = scope,
 			)
 			conn.startObserving()

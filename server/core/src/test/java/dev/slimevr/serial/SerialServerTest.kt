@@ -1,6 +1,5 @@
 package dev.slimevr.serial
 
-import dev.llelievr.espflashkotlin.FlasherSerialInterface
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -15,7 +14,7 @@ private fun fakePortHandle(portLocation: String) = SerialPortHandle(
 	close = {},
 )
 
-private fun fakeFlashingHandler() = object : FlasherSerialInterface {
+private fun fakeFlashingHandler() = object : FlashingHandler {
 	override fun openSerial(port: Any) {}
 	override fun closeSerial() {}
 	override fun write(data: ByteArray) {}

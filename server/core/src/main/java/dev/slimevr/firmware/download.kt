@@ -1,7 +1,9 @@
 package dev.slimevr.firmware
 
-import java.io.ByteArrayOutputStream
-import java.net.URL
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.get
 import java.security.MessageDigest
 
 data class DownloadedFirmwarePart(
@@ -23,17 +25,10 @@ data class DownloadedFirmwarePart(
 	}
 }
 
-fun downloadFirmware(url: String, digest: String): ByteArray {
-	val output = ByteArrayOutputStream()
-	val chunk = ByteArray(4096)
-	URL(url).openStream().use { stream ->
-		while (true) {
-			val read = stream.read(chunk)
-			if (read <= 0) break
-			output.write(chunk, 0, read)
-		}
-	}
-	val data = output.toByteArray()
+private val firmwareHttpClient = HttpClient(CIO)
+
+suspend fun downloadFirmware(url: String, digest: String): ByteArray {
+	val data: ByteArray = firmwareHttpClient.get(url).body()
 	check(verifyChecksum(data, digest)) { "Checksum verification failed for $url" }
 	return data
 }

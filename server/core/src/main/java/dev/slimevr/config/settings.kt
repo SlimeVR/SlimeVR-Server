@@ -16,7 +16,6 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
-import java.io.File
 
 private const val SETTINGS_CONFIG_VERSION = 2
 
@@ -48,66 +47,8 @@ private fun defaultVrcOscConfig() = VRCOSCConfig()
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {
 	val version = json["version"]?.jsonPrimitive?.intOrNull ?: 0
 	return when {
-		version < 2 -> migrateSettingsConfig(migrateSettingsConfigV2(json))
 		else -> json
 	}
-}
-
-private fun migrateSettingsConfigV2(json: JsonObject): JsonObject {
-	val vrcOscConfig = json["vrcOscConfig"]?.jsonObject
-	val migratedVrcOscConfig = if (vrcOscConfig == null || "manualNetwork" in vrcOscConfig) {
-		vrcOscConfig?.let(::normalizeVrcOscConfig)
-	} else {
-		val portIn = vrcOscConfig["portIn"]?.jsonPrimitive?.intOrNull ?: 9001
-		val portOut = vrcOscConfig["portOut"]?.jsonPrimitive?.intOrNull ?: 9000
-		val address = vrcOscConfig["address"]?.jsonPrimitive?.contentOrNull.orEmpty()
-		val oscqueryEnabled = vrcOscConfig["oscqueryEnabled"]?.jsonPrimitive?.content?.toBooleanStrictOrNull() ?: true
-		val useAutomaticNetwork =
-			oscqueryEnabled &&
-				portIn == 9001 &&
-				portOut == 9000 &&
-				(address.isBlank() || address == "127.0.0.1" || address == "localhost")
-
-		buildMap {
-			vrcOscConfig["enabled"]?.let { put("enabled", it) }
-			vrcOscConfig["trackers"]?.let { put("trackers", it) }
-			if (!useAutomaticNetwork) {
-				put(
-					"manualNetwork",
-					JsonObject(
-						mapOf(
-							"portIn" to JsonPrimitive(portIn),
-							"portOut" to JsonPrimitive(portOut),
-							"address" to JsonPrimitive(address),
-						),
-					),
-				)
-			}
-		}.let(::JsonObject)
-	}
-
-	return JsonObject(
-		json.toMutableMap().apply {
-			put("version", JsonPrimitive(SETTINGS_CONFIG_VERSION))
-			if (migratedVrcOscConfig != null) put("vrcOscConfig", migratedVrcOscConfig)
-		},
-	)
-}
-
-private fun normalizeVrcOscConfig(vrcOscConfig: JsonObject): JsonObject {
-	val manualNetwork = vrcOscConfig["manualNetwork"]?.jsonObject ?: return vrcOscConfig
-	val normalizedManualNetwork = JsonObject(
-		mapOf(
-			"portIn" to (manualNetwork["portIn"] ?: JsonPrimitive(DEFAULT_VRC_OSC_PORT_IN)),
-			"portOut" to (manualNetwork["portOut"] ?: JsonPrimitive(DEFAULT_VRC_OSC_PORT_OUT)),
-			"address" to (manualNetwork["address"] ?: JsonPrimitive(DEFAULT_VRC_OSC_ADDRESS)),
-		),
-	)
-	return JsonObject(
-		vrcOscConfig.toMutableMap().apply {
-			put("manualNetwork", normalizedManualNetwork)
-		},
-	)
 }
 
 private fun parseAndMigrateSettingsConfig(raw: String): SettingsConfigState {
@@ -134,21 +75,23 @@ typealias SettingsBehaviour = Behaviour<SettingsState, SettingsActions, Settings
 class Settings(
 	val context: SettingsContext,
 	private val scope: CoroutineScope,
-	private val settingsDir: File,
+	private val storage: ConfigStorage,
+	private val settingsDir: String,
 ) {
 	private var autosaveJob: Job = startAutosave()
 
 	private fun startAutosave() = launchAutosave(
 		scope = scope,
 		state = context.state,
-		toFile = { state -> File(settingsDir, "${state.name}.json") },
+		storage = storage,
+		toPath = { state -> configPath(settingsDir, "${state.name}.json") },
 		serialize = { state -> jsonConfig.encodeToString(state.data) },
 	)
 
 	suspend fun swap(newName: String) {
 		autosaveJob.cancelAndJoin()
 
-		val newData = loadFileWithBackup(File(settingsDir, "$newName.json"), SettingsConfigState()) {
+		val newData = loadFileWithBackup(storage, configPath(settingsDir, "$newName.json"), SettingsConfigState()) {
 			parseAndMigrateSettingsConfig(it)
 		}
 		val newState = SettingsState(name = newName, data = newData)
@@ -158,10 +101,10 @@ class Settings(
 	}
 
 	companion object {
-		suspend fun create(scope: CoroutineScope, configDir: File, name: String): Settings {
-			val settingsDir = File(configDir, "settings")
+		suspend fun create(scope: CoroutineScope, storage: ConfigStorage, name: String): Settings {
+			val settingsDir = "settings"
 
-			val initialData = loadFileWithBackup(File(settingsDir, "$name.json"), SettingsConfigState()) {
+			val initialData = loadFileWithBackup(storage, configPath(settingsDir, "$name.json"), SettingsConfigState()) {
 				parseAndMigrateSettingsConfig(it)
 			}
 			val initialState = SettingsState(name = name, data = initialData)
@@ -173,7 +116,7 @@ class Settings(
 				behaviours = behaviours,
 				name = "Settings[$name]",
 			)
-			val settings = Settings(context, scope = scope, settingsDir = settingsDir)
+			val settings = Settings(context, scope = scope, storage = storage, settingsDir = settingsDir)
 			behaviours.forEach { it.observe(settings) }
 			return settings
 		}

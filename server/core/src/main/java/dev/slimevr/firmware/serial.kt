@@ -1,10 +1,9 @@
 package dev.slimevr.firmware
 
-import dev.llelievr.espflashkotlin.Flasher
-import dev.llelievr.espflashkotlin.FlashingProgressListener
 import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
@@ -24,6 +23,24 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 
+fun interface FirmwareFlasher {
+	suspend fun flash(
+		portLocation: String,
+		handler: FlashingHandler,
+		parts: List<DownloadedFirmwarePart>,
+		onProgress: (Int) -> Unit,
+	)
+}
+
+object NoopFirmwareFlasher : FirmwareFlasher {
+	override suspend fun flash(
+		portLocation: String,
+		handler: FlashingHandler,
+		parts: List<DownloadedFirmwarePart>,
+		onProgress: (Int) -> Unit,
+	) = Unit
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 suspend fun doSerialFlash(
 	portLocation: String,
@@ -34,6 +51,7 @@ suspend fun doSerialFlash(
 	serialServer: SerialServer,
 	settings: Settings,
 	server: VRServer,
+	flasher: FirmwareFlasher,
 	onStatus: suspend (FirmwareUpdateStatus, Int) -> Unit,
 	scope: CoroutineScope,
 ) {
@@ -63,20 +81,15 @@ suspend fun doSerialFlash(
 		return
 	}
 
-	val flasher = Flasher(handler)
-	for (part in downloadedParts) {
-		flasher.addBin(part.data, part.offset)
-	}
-	flasher.addProgressListener(
-		object : FlashingProgressListener {
-			override fun progress(progress: Float) {
-				scope.launch { onStatus(FirmwareUpdateStatus.UPLOADING, (progress * 100).toInt()) }
-			}
-		},
-	)
-
 	val runFlasher = runCatching {
-		withContext(Dispatchers.IO) { flasher.flash(portLocation) }
+		flasher.flash(
+			portLocation = portLocation,
+			handler = handler,
+			parts = downloadedParts,
+			onProgress = { progress ->
+				scope.launch { onStatus(FirmwareUpdateStatus.UPLOADING, progress) }
+			},
+		)
 	}
 
 	if (runFlasher.isFailure) {

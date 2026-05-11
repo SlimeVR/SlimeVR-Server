@@ -5,7 +5,14 @@ import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.Datagram
 import io.ktor.network.sockets.InetSocketAddress
+import io.ktor.network.sockets.ServerSocket
 import io.ktor.network.sockets.aSocket
+import io.ktor.network.sockets.openReadChannel
+import io.ktor.network.sockets.openWriteChannel
+import io.ktor.network.sockets.port
+import io.ktor.utils.io.discardExact
+import io.ktor.utils.io.readRemaining
+import io.ktor.utils.io.writeFully
 import io.ktor.utils.io.core.buildPacket
 import io.ktor.utils.io.core.readText
 import io.ktor.utils.io.core.writeFully
@@ -22,13 +29,10 @@ import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.io.IOException
-import java.net.ServerSocket
 import java.security.MessageDigest
 import java.util.UUID
 import kotlin.math.min
+import kotlinx.io.readByteArray
 
 private const val OTA_PORT = 8266
 private const val OTA_PASSWORD = "SlimeVR-OTA"
@@ -81,29 +85,24 @@ private suspend fun otaUpload(
 	firmware: ByteArray,
 	onProgress: suspend (Int) -> Unit,
 ): Boolean {
-	val socket = withContext(Dispatchers.IO) { tcpServer.accept() }
+	val socket = withTimeout(30_000) { tcpServer.accept() }
 	return socket.use {
-		socket.soTimeout = 1_000
-		val dos = DataOutputStream(socket.getOutputStream())
-		val dis = DataInputStream(socket.getInputStream())
+		val output = socket.openWriteChannel(autoFlush = true)
+		val input = socket.openReadChannel()
 
 		var offset = 0
 		while (offset < firmware.size) {
 			onProgress(((offset.toDouble() / firmware.size) * 100).toInt())
 
 			val chunkLen = min(OTA_CHUNK_SIZE, firmware.size - offset)
-			withContext(Dispatchers.IO) {
-				dos.write(firmware, offset, chunkLen)
-				dos.flush()
-			}
+			output.writeFully(firmware, offset, offset + chunkLen)
 			offset += chunkLen
 
-			val bytesSkipped = withContext(Dispatchers.IO) { dis.skipBytes(4) }
-			if (bytesSkipped != 4) throw IOException("Unexpected bytes skipped: $bytesSkipped")
+			withTimeout(1_000) { input.discardExact(4) }
 		}
 
-		socket.soTimeout = 10_000
-		val response = withContext(Dispatchers.IO) { dis.readBytes().decodeToString() }
+		output.flush()
+		val response = withTimeout(10_000) { input.readRemaining().readByteArray().decodeToString() }
 		response.contains("OK")
 	}
 }
@@ -132,9 +131,8 @@ suspend fun doOtaFlash(
 
 	SelectorManager(Dispatchers.IO).use { selectorManager ->
 		// Bind TCP server first so we know which port to advertise in the invitation
-		ServerSocket(0).use { tcpServer ->
-			tcpServer.soTimeout = 30_000
-			val localPort = tcpServer.localPort
+		aSocket(selectorManager).tcp().bind(port = 0).use { tcpServer ->
+			val localPort = tcpServer.port
 
 			if (!otaAuthenticate(selectorManager, deviceIp, localPort, firmware)) {
 				onStatus(FirmwareUpdateStatus.ERROR_AUTHENTICATION_FAILED, 0)

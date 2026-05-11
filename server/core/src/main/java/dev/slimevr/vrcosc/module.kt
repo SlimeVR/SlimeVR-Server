@@ -107,7 +107,12 @@ class VRCOSCManager(
 	}
 
 	companion object {
-		fun create(skeleton: Skeleton, ctx: Phase1ContextProvider, scope: CoroutineScope): VRCOSCManager {
+		fun create(
+			skeleton: Skeleton,
+			ctx: Phase1ContextProvider,
+			scope: CoroutineScope,
+			oscQueryAddress: String,
+		): VRCOSCManager {
 			val settings = ctx.config.settings
 			val initialConfig = settings.context.state.value.data.vrcOscConfig
 			val context = Context.create(
@@ -120,7 +125,7 @@ class VRCOSCManager(
 					VRCOSCSettingsBehaviour(settings),
 					VRCOSCOutputBehaviour(skeleton),
 					VRCOSCInputBehaviour(ctx),
-					VRCOSCOscQueryBehaviour(),
+					VRCOSCOscQueryBehaviour(localIp = oscQueryAddress),
 				),
 				name = "VRCOSC",
 			)

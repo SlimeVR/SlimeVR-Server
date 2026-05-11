@@ -17,7 +17,9 @@ import solarxr_protocol.rpc.VRCOSCOscQueryState
 
 private const val VRCHAT_SERVICE_PREFIX = "VRChat-Client"
 
-class VRCOSCOscQueryBehaviour : VRCOSCBehaviour {
+class VRCOSCOscQueryBehaviour(
+	private val localIp: String,
+) : VRCOSCBehaviour {
 	private class OscQueryRuntime(
 		val localIp: String,
 	) {
@@ -43,7 +45,7 @@ class VRCOSCOscQueryBehaviour : VRCOSCBehaviour {
 	}
 
 	override fun observe(receiver: VRCOSCManager) {
-		val runtime = OscQueryRuntime(resolveLocalIp())
+		val runtime = OscQueryRuntime(localIp)
 
 		receiver.context.state
 			.map { state -> Triple(state.config.enabled, state.config.manualNetwork == null, vrcOscPortIn(state.config)) }
@@ -57,21 +59,6 @@ class VRCOSCOscQueryBehaviour : VRCOSCBehaviour {
 				syncOscQueryServer(receiver, runtime, portIn)
 				startDiscovery(receiver, runtime)
 			}.launchIn(receiver.context.scope)
-	}
-
-	private fun resolveLocalIp(): String = try {
-		val candidates = java.util.Collections.list(java.net.NetworkInterface.getNetworkInterfaces())
-			.asSequence()
-			.filter { iface -> iface.isUp && !iface.isLoopback && !iface.isVirtual }
-			.flatMap { iface -> java.util.Collections.list(iface.inetAddresses).asSequence() }
-			.filter { address -> !address.isLoopbackAddress && !address.hostAddress.contains(':') }
-			.toList()
-
-		val siteLocal = candidates.firstOrNull { address -> address.isSiteLocalAddress }
-		(siteLocal ?: candidates.firstOrNull())?.hostAddress
-			?: java.net.InetAddress.getLoopbackAddress().hostAddress
-	} catch (_: Exception) {
-		java.net.InetAddress.getLoopbackAddress().hostAddress
 	}
 
 	private suspend fun stopOscQuery(receiver: VRCOSCManager, runtime: OscQueryRuntime) {

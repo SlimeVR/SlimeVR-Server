@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 
-internal val oscQueryJson = Json {
+val oscQueryJson = Json {
 	encodeDefaults = true
 	ignoreUnknownKeys = true
 	// OSCQuery clients (notably VRChat) treat omitted fields as "absent" rather

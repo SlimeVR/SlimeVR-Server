@@ -3,9 +3,9 @@ package dev.slimevr.oscquery
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.cio.CIO
 import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.param
@@ -28,10 +28,8 @@ internal class OscQueryHttpServer(
 	suspend fun start(scope: CoroutineScope, address: String = "0.0.0.0", port: UShort = 0u): UShort = mutex.withLock {
 		if (engine != null) return boundPort
 
-		val started = embeddedServer(Netty, host = address, port = port.toInt()) {
+		val started = embeddedServer(CIO, host = address, port = port.toInt()) {
 			routing {
-				// `GET /?HOST_INFO` returns server host info. Must come before the
-				// plain root route so ktor matches the parameterised route first.
 				param("HOST_INFO") { get("/") { respondHostInfo(call) } }
 				get("/") { respondNode(call, "/") }
 				get("/{path...}") {

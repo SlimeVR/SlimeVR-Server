@@ -1,40 +1,31 @@
 package dev.slimevr.bvh
 
 import dev.slimevr.AppLogger
+import dev.slimevr.config.ConfigStorage
 import dev.slimevr.skeleton.Skeleton
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.nio.file.Path
 
-private suspend fun resolveBvhFile(path: Path): File? = withContext(Dispatchers.IO) {
-	val file = path.toFile()
-	if (file.isDirectory) {
-		getBvhFileInDir(file)
-	} else {
-		if (file.name.lowercase().endsWith(".bvh")) file else null
+private suspend fun resolveBvhPath(storage: ConfigStorage, path: String): String? {
+	if (path.lowercase().endsWith(".bvh")) return path
+	if (!storage.ensureDirectory(path)) {
+		AppLogger.bvh.error("Failed to create recording directory \"${storage.displayPath(path)}\"")
+		return null
+	}
+
+	var index = 1
+	while (true) {
+		val candidate = "$path/BVH-Recording${index++}.bvh"
+		if (!storage.exists(candidate)) return candidate
 	}
 }
 
-private suspend fun getBvhFileInDir(dir: File): File? = withContext(Dispatchers.IO) {
-	if (dir.isDirectory || dir.mkdirs()) {
-		var file: File
-		var index = 1
-		do {
-			file = File(dir, "BVH-Recording${index++}.bvh")
-		} while (file.exists())
-		file
-	} else {
-		AppLogger.bvh.error("Failed to create recording directory \"${dir.path}\"")
-		null
-	}
-}
-
-class BVHRecordingBehaviour(private val skeleton: Skeleton) : BVHBehaviourType {
+class BVHRecordingBehaviour(
+	private val skeleton: Skeleton,
+	private val storage: ConfigStorage,
+) : BVHBehaviourType {
 	override fun reduce(state: BVHState, action: BVHActions) = when (action) {
 		is BVHActions.StartRecording -> state.copy(recording = true, recordingPath = action.path)
 		is BVHActions.StopRecording -> state.copy(recording = false, recordingPath = null)
@@ -48,9 +39,9 @@ class BVHRecordingBehaviour(private val skeleton: Skeleton) : BVHBehaviourType {
 			.distinctUntilChanged()
 			.onEach { (recording, path) ->
 				if (recording && stream == null) {
-					val file = resolveBvhFile(path ?: return@onEach) ?: return@onEach
+					val resolvedPath = resolveBvhPath(storage, path ?: return@onEach) ?: return@onEach
 					try {
-						stream = BvhStream(file).also {
+						stream = BvhStream(storage.openTextFile(resolvedPath)).also {
 							it.writeHeader(skeleton.computed.value)
 							// TODO: we could write the initial T-Pose or whatever here
 						}

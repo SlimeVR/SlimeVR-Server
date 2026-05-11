@@ -5,41 +5,9 @@
  * For more details take a look at the Java Libraries chapter in the Gradle
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-	kotlin("jvm")
+	kotlin("multiplatform")
 	kotlin("plugin.serialization")
-	`java-library`
-}
-
-kotlin {
-	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(24))
-	}
-}
-java {
-	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(24))
-	}
-}
-tasks.withType<KotlinCompile> {
-	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_24)
-		freeCompilerArgs.set(listOf("-Xvalue-classes"))
-	}
-}
-
-// Set compiler to use UTF-8
-tasks.withType<JavaCompile> {
-	options.encoding = "UTF-8"
-}
-tasks.withType<Test> {
-	systemProperty("file.encoding", "UTF-8")
-}
-tasks.withType<Javadoc> {
-	options.encoding = "UTF-8"
 }
 
 tasks.withType<Jar> {
@@ -56,42 +24,52 @@ allprojects {
 	}
 }
 
-dependencies {
-	implementation(project(":solarxr-protocol:generated"))
-	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
+kotlin {
+	jvmToolchain(24)
+	jvm()
 
-	implementation("com.illposed.osc:javaosc-core:0.9")
-	implementation("com.melloware:jintellitype:1.+")
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-	implementation("com.mayakapps.kache:kache:2.1.1")
-	implementation("io.klogging:klogging:0.11.7")
-	implementation("io.klogging:slf4j-klogging:0.11.7")
+	sourceSets {
+		val commonMain by getting {
+			kotlin.srcDir("src/main/java")
+			dependencies {
+				implementation(project(":solarxr-protocol:generated"))
+				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+				implementation("com.mayakapps.kache:kache:2.1.1")
+				implementation("io.klogging:klogging:0.11.7")
+				implementation("com.appstractive:dns-sd-kt:1.1.0")
 
-	val ktor_version = "3.4.1"
-	implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
-	implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-	implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
-	implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
-	implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
-	implementation("io.ktor:ktor-network:$ktor_version")
-	implementation("io.ktor:ktor-utils:$ktor_version")
+				val ktorVersion = "3.4.1"
+				implementation("io.ktor:ktor-client-core:$ktorVersion")
+				implementation("io.ktor:ktor-client-cio:$ktorVersion")
+				implementation("io.ktor:ktor-server-core:$ktorVersion")
+				implementation("io.ktor:ktor-server-cio:$ktorVersion")
+				implementation("io.ktor:ktor-network:$ktorVersion")
+				implementation("io.ktor:ktor-utils:$ktorVersion")
 
-	api("com.github.loucass003:EspflashKotlin:v0.11.0")
+				// Allow the use of reflection
+				implementation(kotlin("reflect"))
 
-	// Allow the use of reflection
-	implementation(kotlin("reflect"))
-
-	implementation("com.appstractive:dns-sd-kt:1.1.0")
-
-	testImplementation(kotlin("test"))
-	// Use JUnit test framework
-	testImplementation(platform("org.junit:junit-bom:6.0.2"))
-	testImplementation("org.junit.jupiter:junit-jupiter")
-	testImplementation("org.junit.platform:junit-platform-launcher")
-	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+				implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+			}
+		}
+		val commonTest by getting {
+			kotlin.srcDir("src/test/java")
+			dependencies {
+				implementation(kotlin("test"))
+				implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+			}
+		}
+	}
 }
 
-tasks.test {
+tasks.withType<JavaCompile> {
+	options.encoding = "UTF-8"
+}
+tasks.withType<Test> {
+	systemProperty("file.encoding", "UTF-8")
 	useJUnitPlatform()
+}
+tasks.withType<Javadoc> {
+	options.encoding = "UTF-8"
 }

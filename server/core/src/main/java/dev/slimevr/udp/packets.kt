@@ -3,8 +3,8 @@ package dev.slimevr.udp
 import dev.slimevr.EventDispatcher
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import io.ktor.utils.io.core.ByteReadPacket
 import io.ktor.utils.io.core.remaining
+import kotlinx.io.Buffer
 import kotlinx.io.Sink
 import kotlinx.io.Source
 import kotlinx.io.readByteArray
@@ -18,7 +18,6 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.hardware_info.McuType
-import java.nio.ByteBuffer
 
 enum class ServerFeatureFlags {
 	/** Server can parse bundle packets: `PACKET_BUNDLE` = 100 (0x64). */
@@ -77,11 +76,10 @@ class FirmwareFeatures {
 	}
 
 	companion object {
-
-		fun from(received: ByteBuffer, length: Int): FirmwareFeatures {
+		fun from(received: ByteArray, length: Int): FirmwareFeatures {
 			val res = FirmwareFeatures()
 			val bytesToRead = res.flags.size.coerceAtMost(length)
-			received.get(res.flags, 0, bytesToRead)
+			received.copyInto(res.flags, endIndex = bytesToRead)
 			return res
 		}
 	}
@@ -198,18 +196,15 @@ data class PacketBundle(
 				if (bundlePacketLen <= 0) continue
 
 				val rawBytes = readByteArray(bundlePacketLen)
-				val subSrc = ByteReadPacket(rawBytes)
+				val subSrc = Buffer().apply { write(rawBytes) }
 
-				subSrc.use { subSrc ->
-					if (subSrc.remaining >= 4) {
-						val packetId = subSrc.readInt()
-						val type = PacketType.fromId(packetId)
+				if (subSrc.remaining >= 4) {
+					val packetId = subSrc.readInt()
+					val type = PacketType.fromId(packetId)
 
-						if (type != null) {
-							// 4. Pass the isolated sub-source to your existing parser
-							val packetData = readPacket(type, subSrc)
-							readPackets.add(packetData)
-						}
+					if (type != null) {
+						val packetData = readPacket(type, subSrc)
+						readPackets.add(packetData)
 					}
 				}
 			}
@@ -229,18 +224,15 @@ data class PacketBundleCompact(
 				if (bundlePacketLen <= 0) continue
 
 				val rawBytes = readByteArray(bundlePacketLen)
-				val subSrc = ByteReadPacket(rawBytes)
+				val subSrc = Buffer().apply { write(rawBytes) }
 
-				subSrc.use { subSrc ->
-					if (subSrc.remaining >= 4) {
-						val packetId = subSrc.readUByte().toInt()
-						val type = PacketType.fromId(packetId)
+				if (subSrc.remaining >= 1) {
+					val packetId = subSrc.readUByte().toInt()
+					val type = PacketType.fromId(packetId)
 
-						if (type != null) {
-							// 4. Pass the isolated sub-source to your existing parser
-							val packetData = readPacket(type, subSrc)
-							readPackets.add(packetData)
-						}
+					if (type != null) {
+						val packetData = readPacket(type, subSrc)
+						readPackets.add(packetData)
 					}
 				}
 			}
@@ -418,7 +410,7 @@ data class FeatureFlags(val firmwareFeatures: FirmwareFeatures = FirmwareFeature
 		fun read(src: Source) = FeatureFlags(
 			FirmwareFeatures.from(
 				length = src.remaining.toInt(),
-				received = ByteBuffer.wrap(src.readByteArray()),
+				received = src.readByteArray(),
 			),
 		)
 	}

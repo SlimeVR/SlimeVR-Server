@@ -11,7 +11,6 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import java.io.File
 
 private const val USER_CONFIG_VERSION = 1
 
@@ -51,21 +50,23 @@ typealias UserConfigBehaviour = Behaviour<UserConfigState, UserConfigActions, Us
 class UserConfig(
 	val context: UserConfigContext,
 	private val scope: CoroutineScope,
-	private val userConfigDir: File,
+	private val storage: ConfigStorage,
+	private val userConfigDir: String,
 ) {
 	private var autosaveJob: Job = startAutosave()
 
 	private fun startAutosave() = launchAutosave(
 		scope = scope,
 		state = context.state,
-		toFile = { state -> File(userConfigDir, "${state.name}.json") },
+		storage = storage,
+		toPath = { state -> configPath(userConfigDir, "${state.name}.json") },
 		serialize = { state -> jsonConfig.encodeToString(state.data) },
 	)
 
 	suspend fun swap(newName: String) {
 		autosaveJob.cancelAndJoin()
 
-		val newData = loadFileWithBackup(File(userConfigDir, "$newName.json"), UserConfigData()) {
+		val newData = loadFileWithBackup(storage, configPath(userConfigDir, "$newName.json"), UserConfigData()) {
 			parseAndMigrateUserConfig(it)
 		}
 		val newState = UserConfigState(name = newName, data = newData)
@@ -75,10 +76,10 @@ class UserConfig(
 	}
 
 	companion object {
-		suspend fun create(scope: CoroutineScope, configDir: File, name: String): UserConfig {
-			val userConfigDir = File(configDir, "user")
+		suspend fun create(scope: CoroutineScope, storage: ConfigStorage, name: String): UserConfig {
+			val userConfigDir = "user"
 
-			val initialData = loadFileWithBackup(File(userConfigDir, "$name.json"), UserConfigData()) {
+			val initialData = loadFileWithBackup(storage, configPath(userConfigDir, "$name.json"), UserConfigData()) {
 				parseAndMigrateUserConfig(it)
 			}
 			val initialState = UserConfigState(name = name, data = initialData)
@@ -89,7 +90,7 @@ class UserConfig(
 				behaviours = listOf(DefaultUserBehaviour),
 				name = "UserConfig[$name]",
 			)
-			val userConfig = UserConfig(context, scope = scope, userConfigDir = userConfigDir)
+			val userConfig = UserConfig(context, scope = scope, storage = storage, userConfigDir = userConfigDir)
 			context.observeAll(userConfig)
 			return userConfig
 		}

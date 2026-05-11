@@ -9,7 +9,6 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import java.io.File
 
 private const val GLOBAL_CONFIG_VERSION = 1
 
@@ -57,8 +56,8 @@ class AppConfig(
 	}
 
 	companion object {
-		suspend fun create(scope: CoroutineScope, configFolder: File): AppConfig {
-			val initialGlobal = loadFileWithBackup(File(configFolder, "global.json"), GlobalConfigState()) {
+		suspend fun create(scope: CoroutineScope, storage: ConfigStorage): AppConfig {
+			val initialGlobal = loadFileWithBackup(storage, "global.json", GlobalConfigState()) {
 				parseAndMigrateGlobalConfig(it)
 			}
 
@@ -74,12 +73,13 @@ class AppConfig(
 			launchAutosave(
 				scope = scope,
 				state = globalContext.state,
-				toFile = { File(configFolder, "global.json") },
+				storage = storage,
+				toPath = { "global.json" },
 				serialize = { jsonConfig.encodeToString(it) },
 			)
 
-			val userConfig = UserConfig.create(scope, configFolder, initialGlobal.selectedUserProfile)
-			val settings = Settings.create(scope, configFolder, initialGlobal.selectedSettingsProfile)
+			val userConfig = UserConfig.create(scope, storage, initialGlobal.selectedUserProfile)
+			val settings = Settings.create(scope, storage, initialGlobal.selectedSettingsProfile)
 
 			return AppConfig(
 				globalContext = globalContext,

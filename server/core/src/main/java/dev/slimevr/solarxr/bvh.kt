@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.RecordBVHRequest
 import solarxr_protocol.rpc.RecordBVHStatus
 import solarxr_protocol.rpc.RecordBVHStatusRequest
-import java.nio.file.Path
 
 class BvhBehaviour(private val bvhManager: BVHManager) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
@@ -15,7 +14,7 @@ class BvhBehaviour(private val bvhManager: BVHManager) : SolarXRBridgeBehaviour 
 			if (req.stop == true) {
 				bvhManager.stopRecording()
 			} else {
-				req.path?.let { path -> bvhManager.startRecording(Path.of(path)) }
+				req.path?.let { path -> bvhManager.startRecording(path) }
 			}
 			receiver.sendRpc(RecordBVHStatus(recording = bvhManager.isRecording))
 		}

@@ -4,14 +4,13 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import io.ktor.network.selector.SelectorManager
+import io.ktor.network.sockets.InetSocketAddress
+import io.ktor.network.sockets.aSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.io.Buffer
-import java.net.DatagramPacket
-import java.net.DatagramSocket
 import kotlin.time.measureTime
 
 data class UdpServerState(
@@ -43,25 +42,22 @@ class UdpServer(val context: UdpServerContext) {
 	fun startReceiving(appContext: AppContextProvider, scope: CoroutineScope) {
 		scope.launch {
 			val port = appContext.config.settings.context.state.value.data.trackerPort
-			val socket = withContext(Dispatchers.IO) { DatagramSocket(port) }
-			val recvBuffer = ByteArray(2048)
-			val recvPacket = DatagramPacket(recvBuffer, recvBuffer.size)
+			val selectorManager = SelectorManager(Dispatchers.IO)
+			val socket = aSocket(selectorManager).udp().bind(port = port)
 
-			launch(Dispatchers.IO) {
+			launch {
 				while (isActive) {
-					socket.receive(recvPacket)
+					val recvPacket = socket.receive()
 					val took = measureTime {
-						val src = Buffer()
-						src.write(recvBuffer, 0, recvPacket.length)
-
+						val src = recvPacket.packet
 						val packetId = src.readInt()
 						val packetNumber = src.readLong()
 						val type = PacketType.fromId(packetId) ?: return@measureTime
 						val packetData = readPacket(type, src)
 
-						val ip = recvPacket.address.hostAddress
-						val port = recvPacket.port
-						val conn = context.state.value.connections[ip]
+						val remoteAddress = recvPacket.address as? InetSocketAddress ?: return@measureTime
+						val id = addressKey(remoteAddress)
+						val conn = context.state.value.connections[id]
 
 						val event = PacketEvent(data = packetData, packetNumber = packetNumber)
 
@@ -69,14 +65,13 @@ class UdpServer(val context: UdpServerContext) {
 							conn.packetChannel.trySend(event)
 						} else {
 							val newConn = UDPConnection.create(
-								id = ip,
-								remoteIp = ip,
-								remotePort = port,
+								id = id,
+								remoteAddress = remoteAddress,
 								socket = socket,
 								appContext = appContext,
 								scope = scope,
 							)
-							context.dispatch(UdpServerActions.ConnectionAdded(ip, newConn))
+							context.dispatch(UdpServerActions.ConnectionAdded(id, newConn))
 							newConn.packetChannel.trySend(event)
 						}
 					}
@@ -90,6 +85,15 @@ class UdpServer(val context: UdpServerContext) {
 
 	companion object {
 		val INITIAL_STATE = UdpServerState(connections = emptyMap())
+
+		private fun addressKey(address: InetSocketAddress): String {
+			val raw = address.resolveAddress()
+			return if (raw != null && raw.size == 4) {
+				raw.joinToString(".") { byte -> (byte.toInt() and 0xFF).toString() }
+			} else {
+				address.hostname
+			}
+		}
 
 		fun create(scope: CoroutineScope): UdpServer {
 			val context = Context.create(
