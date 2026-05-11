@@ -556,9 +556,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Jäta seadistamine vahele
 onboarding-setup_warning-cancel = Jätka seadistamist
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Mine tagasi juhistele
 onboarding-wifi_creds-skip = Jätke Wi-Fi seaded vahele.
 onboarding-wifi_creds-submit = Jätka!
 onboarding-wifi_creds-ssid =
@@ -592,6 +594,9 @@ onboarding-reset_tutorial-2 =
     Paigaldamise lähtestamine aitab kaasa sellele, kuidas jälgijad teile tegelikult pannakse, nii et kui te neid kogemata liigutasite ja muutsite nende orientatsiooni suure summa võrra, aitab see.
     
     Peate olema poosis, nagu suusatate, nagu see on näidatud automaatse paigaldamise viisardil, ja teil on 3-sekundiline viivitus (konfigureeritav), enne kui see käivitub.
+
+## Install info
+
 
 ## Setup start
 

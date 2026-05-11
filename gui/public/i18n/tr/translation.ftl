@@ -7,68 +7,194 @@
 
 ## Websocket (server) status
 
-websocket-connecting = Sunucuya bağlanılıyor
+websocket-connecting = Sunucuya bağlanılıyor...
 websocket-connection_lost = Sunucuyla bağlantı kesildi. Tekrar bağlanılmaya çalışılıyor...
+websocket-connection_lost-desc = SlimeVR sunucusu çöktü. Kayıtları kontrol edip programı yeniden başlat.
+websocket-timedout = Sunucuya bağlanılamadı
+websocket-timedout-desc = SlimeVR sunucusu çöktü veya zaman aşımına uğradı. Kayıtları kontrol et ve programı yeniden başlat.
+websocket-error-close = SlimeVR'ı kapat
+websocket-error-logs = Kayıtlar klasörünü aç
 
 ## Update notification
 
 version_update-title = Yeni sürüm mevcut: { $version }
+version_update-description = "{ version_update-update }" seçeneğine tıklamak SlimeVR kurulum uygulamasını indirir.
 version_update-update = Güncelle
 version_update-close = Kapat
 
 ## Tips
 
 tips-find_tracker = Hangi takipçi hangisi emin değil misin? Takipçilerden birini hareket ettirerek belirleyebilirsin.
-tips-do_not_move_heels = Kayıt sırasında ayaklarınızın hareket etmediğinden emin olun!
+tips-do_not_move_heels = Kayıt sırasında ayaklarının hareket etmediğinden emin ol!
+tips-file_select = Dosyaları sürükleyip bırak veya dosyalarından <u>seç</u>.
+tips-tap_setup = Menüden seçmek yerine takipçine 2 kez yavaşça dokunarak da seçebilirsin.
+tips-turn_on_tracker = Resmi SlimeVR takipçisi mi kullanıyorsun? Takipçilerini bilgisayara bağladıktan sonra onları <b><em>açmayı</em></b> unutma!
+tips-failed_webgl = WebGL başlatılamadı.
 
 ## Units
 
+unit-meter = Metre
+unit-foot = Ayak
+unit-inch = Inç
+unit-cm = cm
 
 ## Body parts
 
 body_part-NONE = Atanmamış
 body_part-HEAD = Kafa
 body_part-NECK = Boyun
-body_part-RIGHT_SHOULDER = Sağ omuz
-body_part-RIGHT_UPPER_ARM = Sağ üst kol
-body_part-RIGHT_LOWER_ARM = Sağ alt kol
-body_part-RIGHT_HAND = Sağ el
-body_part-RIGHT_UPPER_LEG = Sağ uyluk
-body_part-RIGHT_LOWER_LEG = Sağ ayak bileği
-body_part-RIGHT_FOOT = Sağ ayak
-body_part-UPPER_CHEST = Üst göğüs
+body_part-RIGHT_SHOULDER = Sağ Omuz
+body_part-RIGHT_UPPER_ARM = Sağ Üst Kol
+body_part-RIGHT_LOWER_ARM = Sağ Alt Kol
+body_part-RIGHT_HAND = Sağ El
+body_part-RIGHT_UPPER_LEG = Sağ Uyluk
+body_part-RIGHT_LOWER_LEG = Sağ Ayak Bileği
+body_part-RIGHT_FOOT = Sağ Ayak
+body_part-UPPER_CHEST = Üst Göğüs
 body_part-CHEST = Göğüs
 body_part-WAIST = Bel
 body_part-HIP = Kalça
-body_part-LEFT_SHOULDER = Sol omuz
-body_part-LEFT_UPPER_ARM = Sol üst kol
-body_part-LEFT_LOWER_ARM = Sol alt kol
-body_part-LEFT_HAND = Sol el
-body_part-LEFT_UPPER_LEG = Sol uyluk
-body_part-LEFT_LOWER_LEG = Sol ayak bileği
-body_part-LEFT_FOOT = Sol ayak
+body_part-LEFT_SHOULDER = Sol Omuz
+body_part-LEFT_UPPER_ARM = Sol Üst Kol
+body_part-LEFT_LOWER_ARM = Sol Alt Kol
+body_part-LEFT_HAND = Sol El
+body_part-LEFT_UPPER_LEG = Sol Uyluk
+body_part-LEFT_LOWER_LEG = Sol Ayak Bileği
+body_part-LEFT_FOOT = Sol Ayak
+body_part-LEFT_THUMB_METACARPAL = Sol başparmak metakarpal kemiği
+body_part-LEFT_THUMB_PROXIMAL = Sol başparmak proksimal kemiği
+body_part-LEFT_THUMB_DISTAL = Sol başparmak distal falanks kemiği
+body_part-LEFT_INDEX_PROXIMAL = Sol işaret parmağının proksimal falanks kemiği
+body_part-LEFT_INDEX_INTERMEDIATE = Sol işaret parmağının orta falanks kemiği
+body_part-LEFT_INDEX_DISTAL = Sol işaret parmağının distal falanks kemiği
+body_part-LEFT_MIDDLE_PROXIMAL = Sol orta parmağın proksimal falanks kemiği
+body_part-LEFT_MIDDLE_INTERMEDIATE = Sol orta parmağın orta falanks kemiği
+body_part-LEFT_MIDDLE_DISTAL = Sol orta parmağın distal falanks kemiği
+body_part-LEFT_RING_PROXIMAL = Sol yüzük parmağının proksimal falanks kemiği
+body_part-LEFT_RING_INTERMEDIATE = Sol yüzük parmağının orta falanks kemiği
+body_part-LEFT_RING_DISTAL = Sol yüzük parmağının distal falanks kemiği
+body_part-LEFT_LITTLE_PROXIMAL = Sol küçük parmağın proksimal falanks kemiği
+body_part-LEFT_LITTLE_INTERMEDIATE = Sol küçük parmağın orta falanks kemiği
+body_part-LEFT_LITTLE_DISTAL = Sol küçük parmağın distal falanks kemiği
+body_part-RIGHT_THUMB_METACARPAL = Sağ başparmak metakarpal kemiği
+body_part-RIGHT_THUMB_PROXIMAL = Sağ başparmağın proksimal falanks kemiği
+body_part-RIGHT_THUMB_DISTAL = Sağ başparmağın distal falanks kemiği
+body_part-RIGHT_INDEX_PROXIMAL = Sağ işaret parmağının proksimal falanks kemiği
+body_part-RIGHT_INDEX_INTERMEDIATE = Sağ işaret parmağının orta falanks kemiği
+body_part-RIGHT_INDEX_DISTAL = Sağ işaret parmağının distal falanks kemiği
+body_part-RIGHT_MIDDLE_PROXIMAL = Sağ orta parmağın proksimal falanks kemiği
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Sağ orta parmağın orta falanks kemiği
+body_part-RIGHT_MIDDLE_DISTAL = Sağ orta parmağın distal falanks kemiği
+body_part-RIGHT_RING_PROXIMAL = Sağ yüzük parmağının proksimal falanks kemiği
+body_part-RIGHT_RING_INTERMEDIATE = Sağ yüzük parmağının orta falanks kemiği
+body_part-RIGHT_RING_DISTAL = Sağ yüzük parmağının distal falanks kemiği
+body_part-RIGHT_LITTLE_PROXIMAL = Sağ küçük parmağın proksimal falanks kemiği
+body_part-RIGHT_LITTLE_INTERMEDIATE = Sağ küçük parmağın orta falanks kemiği
+body_part-RIGHT_LITTLE_DISTAL = Sağ küçük parmağın distal falanks kemiği
 
 ## BoardType
 
+board_type-UNKNOWN = Bilinmeyen
+board_type-NODEMCU = NodeMCU
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Eldiveni
+board_type-GESTURES = Hareketler
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Jenerik nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
 skeleton_bone-NONE = Yok
-skeleton_bone-HEAD = Kafa hizası
+skeleton_bone-HEAD = Kafa Hizası
+skeleton_bone-HEAD-desc =
+    Bu, kulaklığın ile başının ortası arasındaki mesafedir.
+    Ayarlamak için, 'hayır' der gibi başını soldan sağa ve sağdan sola salla,
+    diğer takipçiler yerinden oynamayana kadar bunu tekrarlayıp ayarla.
 skeleton_bone-NECK = Boyun Uzunluğu
-skeleton_bone-torso_group = Gövde uzunluğu
+skeleton_bone-NECK-desc =
+    Bu, başının ortasından boynunun başlangıcına kadar olan mesafedir.
+    Ayarlamak için başını 'evet' der gibi yukarı-aşağı hareket ettir veya başını hafifçe öne eğip, başını sola ve sağa kaydır,
+    diğer takipçiler yerinden oynamayana kadar bunu tekrarlayıp ayarla.
+skeleton_bone-torso_group = Gövde Uzunluğu
+skeleton_bone-torso_group-desc =
+    Bu, boynunun başlangıcından kalçalarına kadar olan mesafedir.
+    Ayarlamak için dik dur ve sanal kalçaların, gerçek kalçalarınla hizalanana kadar değeri değiştir.
 skeleton_bone-UPPER_CHEST = Üst Göğüs Uzunluğu
-skeleton_bone-CHEST_OFFSET = Göğüs hizası
+skeleton_bone-UPPER_CHEST-desc =
+    Bu, boynunun başlangıcından göğsünün ortasına kadar olan mesafedir.
+    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
+    gerçek omurganla eşleşene kadar bu değeri değiştir.
+skeleton_bone-CHEST_OFFSET = Göğüs Hizası
+skeleton_bone-CHEST_OFFSET-desc =
+    Bu, bazı oyun veya uygulamalarda kalibrasyona yardımcı olmak için,
+    sanal göğüs takipçisini yukarı ya da aşağı hareket ettirmene izin verir.
 skeleton_bone-CHEST = Göğüs Uzunluğu
+skeleton_bone-CHEST-desc =
+    Bu, göğsünün ortasından omurganın ortasına kadar olan mesafedir.
+    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
+    gerçek omurganla eşleşene kadar bu değeri değiştir.
 skeleton_bone-WAIST = Bel Uzunluğu
+skeleton_bone-WAIST-desc =
+    Bu, omurganın ortasından göbek deliğine kadar olan mesafedir.
+    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
+    gerçek omurganla eşleşene kadar bu değeri değiştir.
 skeleton_bone-HIP = Kalça Uzunluğu
-skeleton_bone-HIP_OFFSET = Kalça hizası
+skeleton_bone-HIP-desc =
+    Bu, göbek deliğinden kalçalarına kadar olan mesafedir.
+    Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
+    gerçek omurganla eşleşene kadar bu değeri değiştir.
+skeleton_bone-HIP_OFFSET = Kalça Hizası
+skeleton_bone-HIP_OFFSET-desc =
+    Bu, bazı oyun veya uygulamalarda kalibrasyona yardımcı olmak için,
+    sanal kalça takipçisini yukarı ya da aşağı hareket ettirmene izin verir.
 skeleton_bone-HIPS_WIDTH = Kalça Genişliği
+skeleton_bone-HIPS_WIDTH-desc =
+    Bu, bacaklarının başladığı noktalar arasındaki mesafedir.
+    Ayarlamak için bacaklarını düz tutarak tam bir sıfırlama yap ve,
+    sanal bacaklarının aralığı, gerçek bacaklarının aralığıyla hizalanana kadar bu değeri değiştir.
 skeleton_bone-leg_group = Bacak uzunluğu
+skeleton_bone-leg_group-desc =
+    Bu, kalçandan ayaklarına olan mesafedir.
+    Ayarlamak için Gövde uzunluğunu doğru şekilde ayarla ve,
+    sanal ayakların gerçek ayaklarınla aynı seviyeye gelene kadar bu değeri değiştir.
 skeleton_bone-UPPER_LEG = Üst Bacak Uzunluğu
+skeleton_bone-UPPER_LEG-desc =
+    Bu, kalçandan dizlerine olan mesafedir.
+    Ayarlamak için Bacak uzunluğunu doğru şekilde ayarla ve,
+    sanal dizlerin gerçek dizlerinle aynı seviyeye gelene kadar bu değeri değiştir.
 skeleton_bone-LOWER_LEG = Alt Bacak Uzunluğu
+skeleton_bone-LOWER_LEG-desc =
+    Bu, dizlerinden ayak bileklerine olan mesafedir.
+    Ayarlamak için Bacak uzunluğunu doğru şekilde ayarla ve,
+    sanal dizlerin gerçek dizlerinle aynı seviyeye gelene kadar bu değeri değiştir.
 skeleton_bone-FOOT_LENGTH = Ayak Uzunluğu
+skeleton_bone-FOOT_LENGTH-desc =
+    Bu, ayak bileklerinden ayak parmaklarına olan mesafedir.
+    Ayarlamak için parmak uçlarına çık ve sanal ayakların sabit kalana kadar bu değeri değiştir.
 skeleton_bone-FOOT_SHIFT = Ayak hizası
+skeleton_bone-FOOT_SHIFT-desc =
+    Bu değer, dizinden ayak bileğine olan yatay mesafedir.
+    Bu, dik dururken alt bacaklarının geriye doğru konumlanmasını telafi eder.
+    Ayarlamak için Ayak uzunluğunu 0 olarak ayarla, tam sıfırlama yap ve,
+    sanal ayakların ayak bileklerinin ortasıyla hizalanana kadar bu değeri değiştir.
 skeleton_bone-SKELETON_OFFSET = İskelet hizası
 skeleton_bone-SHOULDERS_DISTANCE = Omuz Mesafesi
 skeleton_bone-SHOULDERS_WIDTH = Omuz Genişliği
@@ -80,7 +206,10 @@ skeleton_bone-ELBOW_OFFSET = Dirsek hizası
 ## Tracker reset buttons
 
 reset-reset_all = Tüm oranları sıfırla
+reset-reset_all_warning-cancel = İptal et
 reset-full = Sıfırlama
+reset-mounting-feet = Ayak Kalibrasyonu
+reset-mounting-fingers = Parmak Kalibrasyonu
 
 ## Serial detection stuff
 
@@ -128,10 +257,13 @@ widget-developer_mode-more_info = Daha fazla bilgi
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Rotasyon
+widget-imu_visualizer-preview = Önizle
+widget-imu_visualizer-hide = Gizle
 widget-imu_visualizer-rotation_preview = Önizle
 
 ## Widget: Skeleton Visualizer
 
+widget-skeleton_visualizer-hide = Gizle
 
 ## Tracker status
 
@@ -140,6 +272,7 @@ tracker-status-busy = Meşgul
 tracker-status-error = Hata
 tracker-status-disconnected = Bağlantı kesildi
 tracker-status-ok = İYİ
+tracker-status-timed_out = Zaman aşımı
 
 ## Tracker status columns
 
@@ -293,10 +426,16 @@ settings-osc-vrchat-network-address = Ağ adresi
 ## Setup/onboarding menu
 
 
+## Quiz
+
+
 ## Wi-Fi setup
 
 
 ## Mounting setup
+
+
+## Install info
 
 
 ## Setup start

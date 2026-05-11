@@ -740,9 +740,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = 설정 건너뛰기
 onboarding-setup_warning-cancel = 설정 계속하기
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = 처음으로 돌아가기
 onboarding-wifi_creds-skip = Wi-Fi 설정 건너뛰기
 onboarding-wifi_creds-submit = 저장!
 onboarding-wifi_creds-ssid =
@@ -777,6 +779,9 @@ onboarding-reset_tutorial-2 =
     착용 방향 정렬은 실제로 몸에 있는 트래커의 위치를 감지할 수 있어요. 트래커를 정확한 방향으로 착용하지 않거나 실수로 움직여서 트래커가 미끄러져도 착용 방향 정렬을 통해 해결할 수 있어요.
     
     자동 착용 방향 설정 마법사에서 봤던 것처럼 스키를 타는 듯한 자세로 몸을 구부리고 있으세요. 탭한 다음 3초 뒤에(설정에서 변경 가능) 보정이 시작될 거예요.
+
+## Install info
+
 
 ## Setup start
 
