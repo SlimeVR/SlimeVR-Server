@@ -31,6 +31,46 @@ export function QuizMocapPosQuestion() {
             id="onboarding-quiz-mocap_preferences-desc"
           />
         </div>
+
+        <div className="flex flex-col gap-6">
+          <div className="flex gap-2 flex-col">
+            <div className="flex flex-col gap-2">
+              <Typography
+                variant="section-title"
+                id="onboarding-quiz-mocap_preferences-playspace-title"
+              />
+              <Typography id="onboarding-quiz-mocap_preferences-playspace-desc" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <QuizButton
+                active={playspace === 'sitting'}
+                onClick={() => setPlayspace('sitting')}
+                icon={<SittingIcon size={50} />}
+                name="onboarding-quiz-mocap_preferences-playspace-sitting"
+              />
+              <QuizButton
+                active={playspace === 'standing'}
+                onClick={() => setPlayspace('standing')}
+                icon={<HumanIcon width={50} />}
+                name="onboarding-quiz-mocap_preferences-playspace-standing"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-6">
+          <div className="flex gap-2 flex-col">
+            <div className="flex flex-col gap-2">
+              <Typography
+                variant="section-title"
+                id="onboarding-quiz-mocap_preferences-vrm_model-title"
+              />
+              <Typography id="onboarding-quiz-mocap_preferences-vrm_model-desc" />
+            </div>
+            <VMCFileUpload suggested={playspace !== 'sitting'} />
+          </div>
+        </div>
+
         <div className="flex flex-col gap-6">
           <div className="flex gap-2 flex-col">
             <div className="flex flex-col gap-2">
@@ -59,46 +99,8 @@ export function QuizMocapPosQuestion() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
-          <div className="flex gap-2 flex-col">
-            <div className="flex flex-col gap-2">
-              <Typography
-                variant="section-title"
-                id="onboarding-quiz-mocap_preferences-vrm_model-title"
-              />
-              <Typography id="onboarding-quiz-mocap_preferences-vrm_model-desc" />
-            </div>
-            <VMCFileUpload suggested={playspace !== 'sitting'} />
-          </div>
-        </div>
-
         {headTracker && (
           <>
-            <div className="flex flex-col gap-6">
-              <div className="flex gap-2 flex-col">
-                <div className="flex flex-col gap-2">
-                  <Typography
-                    variant="section-title"
-                    id="onboarding-quiz-mocap_preferences-playspace-title"
-                  />
-                  <Typography id="onboarding-quiz-mocap_preferences-playspace-desc" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <QuizButton
-                    active={playspace === 'sitting'}
-                    onClick={() => setPlayspace('sitting')}
-                    icon={<SittingIcon size={50} />}
-                    name="onboarding-quiz-mocap_preferences-playspace-sitting"
-                  />
-                  <QuizButton
-                    active={playspace === 'standing'}
-                    onClick={() => setPlayspace('standing')}
-                    icon={<HumanIcon width={50} />}
-                    name="onboarding-quiz-mocap_preferences-playspace-standing"
-                  />
-                </div>
-              </div>
-            </div>
             <div className="flex flex-col gap-6">
               <div className="flex gap-2 flex-col">
                 <div className="flex flex-col gap-2">
@@ -114,7 +116,7 @@ export function QuizMocapPosQuestion() {
                     icon={
                       <img
                         src="/images/quiz/quiz_mocap-pos_forehead.webp"
-                        className="w-44"
+                        className="w-20"
                       />
                     }
                     name="onboarding-quiz-mocap_preferences-head_tracker_location-forehead"
@@ -125,7 +127,7 @@ export function QuizMocapPosQuestion() {
                     icon={
                       <img
                         src="/images/quiz/quiz_mocap-pos_face.webp"
-                        className="w-44"
+                        className="w-20"
                       />
                     }
                     name="onboarding-quiz-mocap_preferences-head_tracker_location-face"
