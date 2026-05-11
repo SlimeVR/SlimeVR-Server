@@ -1,11 +1,21 @@
 package dev.slimevr.updater
 
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.onDownload
 import io.ktor.client.plugins.timeout
+import io.ktor.client.request.get
 import io.ktor.client.request.prepareGet
+import io.ktor.client.request.request
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
+import io.ktor.http.ContentType.Application.Json
+import io.ktor.http.HttpMethod
+import io.ktor.http.isSuccess
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -14,6 +24,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.io.IOException
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileOutputStream
 import java.math.BigInteger
@@ -43,32 +54,49 @@ class UpdaterIO(
 		"Error executing shell command: ${e.message}"
 	}
 
-	fun downloadFile(fileUrl: String, fileName: String, checksum: String = "") {
+	suspend fun getReleaseFromApi(): List<Release>  {
+		val client = HttpClient(CIO) {
+			install(ContentNegotiation) {
+				json(Json {
+					prettyPrint = true
+					isLenient = true
+					ignoreUnknownKeys = true
+				})
+			}
+		}
+		val releases: List<Release> = client.get("http://localhost:3000/releases").body()
+
+		return releases
+	}
+
+
+	suspend fun downloadFile(fileUrl: String, fileName: String, checksum: String = "") {
 		state.subProgress = 0f
 		val targetFile = File(fileName)
 
 		try {
-			runBlocking {
-				FileOutputStream(targetFile).use { outputStream ->
-					client.prepareGet(fileUrl) {
-						val timeoutVal = 30.seconds.inWholeMilliseconds
-						timeout {
-							requestTimeoutMillis = timeoutVal
-							connectTimeoutMillis = timeoutVal
-							socketTimeoutMillis = timeoutVal
-						}
+			client.prepareGet(fileUrl) {
+				val timeoutVal = 30.seconds.inWholeMilliseconds
+				timeout {
+					requestTimeoutMillis = timeoutVal
+					connectTimeoutMillis = timeoutVal
+					socketTimeoutMillis = timeoutVal
+				}
 
-						onDownload { sent, total ->
-							val progress = sent.toFloat() / (total?.toFloat() ?: 1f)
-							state.subProgress = progress
-						}
-					}.execute { response ->
-						if (response.status.value in 200..299) {
-							response.bodyAsChannel().copyTo(outputStream)
-						} else {
-							throw IOException("Server returned HTTP ${response.status.value}")
-						}
+				onDownload { sent, total ->
+					val totalBytes = total ?: 1L
+					val progress = sent.toFloat() / (totalBytes.toFloat())
+					state.subProgress = progress
+				}
+			}.execute { response ->
+				if (response.status.isSuccess()) {
+					val channel: ByteReadChannel = response.bodyAsChannel()
+
+					targetFile.outputStream().use { output ->
+						channel.copyTo(output)
 					}
+				} else {
+					throw IOException("Server returned HTTP ${response.status.value}")
 				}
 			}
 

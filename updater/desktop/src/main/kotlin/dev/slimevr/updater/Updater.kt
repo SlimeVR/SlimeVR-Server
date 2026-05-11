@@ -15,6 +15,7 @@ import kotlin.io.path.pathString
 import kotlin.system.exitProcess
 
 const val SLIMEVR_IDENTIFIER = "dev.slimevr.SlimeVR"
+val os = OperatingSystem
 
 class Updater(
 	val state: UpdaterState,
@@ -22,10 +23,10 @@ class Updater(
 ) {
 	suspend fun runUpdater() {
 		val vrConfig = resolveConfig("vrconfig.yml")
-		val configDir = resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.toAbsolutePath().toString()
+		val configDir =
+			resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.toAbsolutePath().toString()
 		//LogManager.info("Using config dir: $configDir")
 		val manifest = Manifest(manifestPath).getManifest()
-		val os = OperatingSystem
 		val arch = System.getProperty("os.arch").lowercase()
 		val normalizedArch = when {
 			arch.contains("amd64") || arch.contains("x86_64") -> "x86_64"
@@ -57,24 +58,42 @@ class Updater(
 			return
 		}
 
-		val selectedVersion = getRelease(manifest, "stable", versionTag, os.currentPlatform.descriptor, normalizedArch)
+
+
+		val releases = updaterIO.getReleaseFromApi()
+		val selectedVersion = releases.find { it.platform == os.currentPlatform.name.lowercase() }
+
 		TerminalUtil.info(selectedVersion.toString())
 		if (selectedVersion == null) {
 			state.hasError = true
 			state.errorText = "Could not get selected version"
 			return
 		}
-		state.versionTag = versionTag
+		state.versionTag = selectedVersion.version
 
 		when (os.currentPlatform) {
 			OperatingSystem.WINDOWS -> {
 				val windows = Windows(state, updaterIO)
-				windows.updateWindows(currentVersionTag, versionTag, configDir, vrConfig, selectedVersion.url, "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip")
+				windows.updateWindows(
+					currentVersionTag,
+					versionTag,
+					configDir,
+					vrConfig,
+					selectedVersion.url,
+					"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip"
+				)
 			}
 
 			OperatingSystem.LINUX -> {
 				val linux = Linux(state, updaterIO)
-				linux.updateLinux(currentVersionTag, versionTag, configDir, vrConfig, selectedVersion.url, "https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip")
+				linux.updateLinux(
+					currentVersionTag,
+					versionTag,
+					configDir,
+					vrConfig,
+					selectedVersion.url,
+					"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
+				)
 			}
 
 			OperatingSystem.OSX -> {
@@ -92,44 +111,12 @@ class Updater(
 			saveCurrentVersionTag()
 			Thread.sleep(500)
 			if (featureFlags.restartServer) {
-				when (os.currentPlatform) {
-					OperatingSystem.WINDOWS -> {
-						val exeFile = File("SlimeVR.exe").absoluteFile
-						if (exeFile.exists()) {
-							launchDetached(listOf(exeFile.absolutePath))
-						} else {
-							TerminalUtil.error("SlimeVR.exe not found at ${exeFile.absolutePath}")
-						}
-
-					}
-					OperatingSystem.LINUX -> {
-						launchDetached(listOf("./SlimeVR-amd64.appimage"))
-					}
-
-					else -> {
-						TerminalUtil.error("Unknown operating system")
-						return
-					}
-				}
+				launchServer()
 			}
-			exitProcess(0)
 		}
-
 
 	}
 
-	fun launchDetached(command: List<String>) {
-		val processBuilder = ProcessBuilder(command)
-		processBuilder.redirectOutput(ProcessBuilder.Redirect.DISCARD)
-		processBuilder.redirectError(ProcessBuilder.Redirect.DISCARD)
-
-		try {
-			processBuilder.start()
-			println("Process started successfully. Closing parent...")
-		} catch (e: Exception) {
-			e.printStackTrace()
-		}
-	}
 
 	fun resolveConfigDirectory(identifier: String): Path? = when (currentPlatform) {
 		OperatingSystem.LINUX -> System.getenv("XDG_CONFIG_HOME")?.let { Path(it, identifier) }
@@ -171,5 +158,8 @@ class Updater(
 
 	companion object {
 		val CDN = "http://127.0.0.1:8080"
+		fun launchServer() {
+
+		}
 	}
 }

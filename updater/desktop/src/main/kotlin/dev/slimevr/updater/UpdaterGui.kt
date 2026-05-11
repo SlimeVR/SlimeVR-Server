@@ -77,7 +77,7 @@ val BaseTextStyle = TextStyle(
 )
 
 @Composable
-fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO) {
+fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO, startServer: () -> Unit) {
 	WindowDraggableArea {
 			Column(
 				modifier = Modifier
@@ -163,7 +163,7 @@ fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO) {
 							animationSpec = tween(durationMillis = 200)
 						)
 						Button(
-							onClick = { /* ... */ },
+							onClick = { startServer() },
 							shape = RoundedCornerShape(6.dp),
 							interactionSource = secInteractionSource,
 							colors = ButtonDefaults.buttonColors(backgroundColor = animatedSecColor),

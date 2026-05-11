@@ -5,12 +5,15 @@ import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import io.eiren.util.logging.LogManager
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
 import solarxr_protocol.rpc.UpdaterChannel
 import solarxr_protocol.rpc.UpdaterVersion
 import solarxr_protocol.rpc.UpdatesResponse
 import solarxr_protocol.rpc.UpdatesResponse.createUpdatesResponse
+import java.io.File
+import java.net.URL
 
 class RPCUpdaterHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	init {
@@ -19,6 +22,13 @@ class RPCUpdaterHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 
 	// TODO Make finding manifest more robust
 	fun onGetVersionsListRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+		try {
+			val jsonText = URL("http://localhost:3000/manifest").readText()
+			val file = File("update-manifest.json")
+			file.writeText(jsonText)
+		} catch (e: Error) {
+			LogManager.warning("Error in downloading manifest: $e")
+		}
 		val manifest = Manifest("update-manifest.json").getManifest()
 		val fbb = FlatBufferBuilder(1024)
 

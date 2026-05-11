@@ -145,6 +145,10 @@ class Linux(
 			subText = ""
 		}
 		TerminalUtil.success("Updating server done")
+
+		val command = listOf("chmod", "+x", LINUXSERVERNAME)
+
+		//TerminalUtil.info(io.executeShellCommand("chmod +x ${LINUXSERVERNAME}"))
 	}
 
 	// Legacy
