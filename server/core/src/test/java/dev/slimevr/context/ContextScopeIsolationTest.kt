@@ -1,12 +1,12 @@
 package dev.slimevr.context
 
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,7 +29,7 @@ class ContextScopeIsolationTest {
 			name = "IsolatedContext",
 		)
 
-		context.scope.launch {
+		context.scope.safeLaunch {
 			error("boom")
 		}
 

@@ -11,6 +11,7 @@ import dev.slimevr.desktop.platform.Version
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
 import dev.slimevr.driver.DriverBridgeOutbound
+import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.Dispatchers
@@ -99,7 +100,7 @@ suspend fun handleDriverConnection(
 			msg.version?.let { ver ->
 				bridge.inbound.emit(DriverBridgeInbound.Version(ver.protocol_version))
 				if (ver.protocol_version >= 2) {
-					launch {
+					safeLaunch {
 						startBindingProvider()
 					}
 				}

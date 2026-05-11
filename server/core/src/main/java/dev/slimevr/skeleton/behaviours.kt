@@ -1,6 +1,7 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.config.UserConfig
+import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.delay
@@ -8,7 +9,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
 import kotlin.math.sin
@@ -63,7 +63,7 @@ class ScaledProportionsBehaviour(private val userConfig: UserConfig) : SkeletonB
 
 class HeightLogBehaviour : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
-		receiver.context.scope.launch {
+		receiver.context.scope.safeLaunch {
 			receiver.context.state
 				.map { state -> state.userHeight }
 				.distinctUntilChanged()
@@ -74,7 +74,7 @@ class HeightLogBehaviour : SkeletonBehaviour {
 
 class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
-		receiver.context.scope.launch {
+		receiver.context.scope.safeLaunch {
 			val intervalMs = (1000f / inputHz).toLong()
 			val startTime = System.currentTimeMillis()
 			while (true) {
@@ -116,15 +116,19 @@ class ComputedSkeletonBehaviour(
 ) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		val intervalMs = (1000f / hz).toLong()
-		receiver.context.scope.launch {
+		receiver.context.scope.safeLaunch {
 			while (true) {
-				delay(intervalMs)
-				val targetState = receiver.context.state.value
-				val processed = processors
-					.filter { processor -> processor.enabled }
-					.fold(targetState) { state, processor -> processor.process(state) }
-				val rootHead = Vector3(0f, targetState.userHeight, 0f) // FIXME WRONG
-				receiver.computed.value = buildBones(processed, rootHead = rootHead)
+				try {
+					delay(intervalMs)
+					val targetState = receiver.context.state.value
+					val processed = processors
+						.filter { processor -> processor.enabled }
+						.fold(targetState) { state, processor -> processor.process(state) }
+					val rootHead = Vector3(0f, targetState.userHeight, 0f) // FIXME WRONG
+					receiver.computed.value = buildBones(processed, rootHead = rootHead)
+				} catch (e: Exception) {
+					dev.slimevr.AppLogger.coroutines.error(e, "Error in ComputedSkeletonBehaviour")
+				}
 			}
 		}
 	}

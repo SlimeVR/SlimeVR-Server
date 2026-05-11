@@ -11,10 +11,10 @@ import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.TrackerStatus
@@ -166,7 +166,7 @@ class DoSerialFlashTest {
 		server.openConnection("COM1")
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
-		val job = launch {
+		val job = safeLaunch {
 			doSerialFlashPostFlash(
 				portLocation = "COM1",
 				needManualReboot = false,
@@ -193,7 +193,7 @@ class DoSerialFlashTest {
 		server.openConnection("COM1")
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
-		backgroundScope.launch {
+		backgroundScope.safeLaunch {
 			doSerialFlashPostFlash(
 				portLocation = "COM1",
 				needManualReboot = false,
@@ -206,7 +206,7 @@ class DoSerialFlashTest {
 			)
 		}
 
-		backgroundScope.launch {
+		backgroundScope.safeLaunch {
 			delay(100)
 			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 		}
@@ -224,7 +224,7 @@ class DoSerialFlashTest {
 		server.openConnection("COM1")
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
-		val job = launch {
+		val job = safeLaunch {
 			doSerialFlashPostFlash(
 				portLocation = "COM1",
 				needManualReboot = false,
@@ -237,7 +237,7 @@ class DoSerialFlashTest {
 			)
 		}
 
-		backgroundScope.launch {
+		backgroundScope.safeLaunch {
 			delay(100)
 			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 		}
@@ -257,7 +257,7 @@ class DoSerialFlashTest {
 		server.openConnection("COM1")
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
-		val job = launch {
+		val job = safeLaunch {
 			doSerialFlashPostFlash(
 				portLocation = "COM1",
 				needManualReboot = false,
@@ -270,7 +270,7 @@ class DoSerialFlashTest {
 			)
 		}
 
-		backgroundScope.launch {
+		backgroundScope.safeLaunch {
 			delay(100)
 			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(200)
@@ -293,7 +293,7 @@ class DoSerialFlashTest {
 		val vrServer = buildTestVrServerStub(backgroundScope)
 		val statuses = mutableListOf<FirmwareUpdateStatus>()
 
-		backgroundScope.launch {
+		backgroundScope.safeLaunch {
 			doSerialFlashPostFlash(
 				portLocation = "COM1",
 				needManualReboot = false,
@@ -306,7 +306,7 @@ class DoSerialFlashTest {
 			)
 		}
 
-		backgroundScope.launch {
+		backgroundScope.safeLaunch {
 			delay(100)
 			server.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(200)

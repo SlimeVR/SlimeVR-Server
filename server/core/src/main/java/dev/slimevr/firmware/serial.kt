@@ -7,13 +7,13 @@ import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.rpc.FirmwarePart
@@ -73,7 +73,7 @@ suspend fun doSerialFlash(
 			handler = handler,
 			parts = downloadedParts,
 			onProgress = { progress ->
-				scope.launch { onStatus(FirmwareUpdateStatus.UPLOADING, progress) }
+				scope.safeLaunch { onStatus(FirmwareUpdateStatus.UPLOADING, progress) }
 			},
 		)
 	}

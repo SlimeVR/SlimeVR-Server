@@ -1,0 +1,29 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="27ef4df3-2b89-390d-a9cd-ef29bd86503d" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="8d635bb8-7d4f-3af3-8d31-6f9164877ab2" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SSBasedInspection" enabled="true" level="ERROR" enabled_by_default="true">
+      <searchConfiguration name="Use safeLaunch instead of raw launch" uuid="8d635bb8-7d4f-3af3-8d31-6f9164877ab2" description="Use dev.slimevr.util.safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly." suppressId="RAW_LAUNCH_USAGE" problemDescriptor="Use safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly." text="$scope$.launch { $statements$; }" recursive="true" caseInsensitive="false" type="Kotlin" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="scope" within="" contains="" />
+        <constraint name="statements" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="Use safeLaunch instead of raw launch" uuid="0e4a6db4-4c7b-3fd4-99ce-2717fa0fd2fb" description="Use dev.slimevr.util.safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly." suppressId="RAW_LAUNCH_USAGE" problemDescriptor="Use safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly." text="launch { $statements$; }" recursive="true" caseInsensitive="false" type="Kotlin" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="statements" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="Use safeLaunch instead of raw launch" uuid="27ef4df3-2b89-390d-a9cd-ef29bd86503d" description="Use dev.slimevr.util.safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly." suppressId="RAW_LAUNCH_USAGE" problemDescriptor="Use safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly." text="$scope$.launch($args$) { $statements$; }" recursive="true" caseInsensitive="false" type="Kotlin" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="scope" within="" contains="" />
+        <constraint name="args" maxCount="2147483647" within="" contains="" />
+        <constraint name="statements" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
+      <searchConfiguration name="Use safeLaunch instead of raw launch" uuid="ca477c43-2f5b-3907-8b06-02c34dc26930" description="Use dev.slimevr.util.safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly." suppressId="RAW_LAUNCH_USAGE" problemDescriptor="Use safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly." text="launch($args$) { $statements$; }" recursive="true" caseInsensitive="false" type="Kotlin" pattern_context="default">
+        <constraint name="__context__" within="" contains="" />
+        <constraint name="args" maxCount="2147483647" within="" contains="" />
+        <constraint name="statements" minCount="0" maxCount="2147483647" within="" contains="" />
+      </searchConfiguration>
+    </inspection_tool>
+  </profile>
+</component>

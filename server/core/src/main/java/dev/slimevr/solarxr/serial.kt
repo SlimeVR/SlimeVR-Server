@@ -3,12 +3,12 @@ package dev.slimevr.solarxr
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.CloseSerialRequest
 import solarxr_protocol.rpc.NewSerialDeviceResponse
 import solarxr_protocol.rpc.OpenSerialRequest
@@ -73,21 +73,25 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 			activePortLocation = portLocation
 			var lastSentCount = 0
 
-			logSubscription = scope.launch {
+			logSubscription = scope.safeLaunch {
 				var disconnected = false
-				connection.context.state.collect { connState ->
-					if (disconnected) return@collect
+				try {
+					connection.context.state.collect { connState ->
+						if (disconnected) return@collect
 
-					connState.logLines.drop(lastSentCount).forEach { line ->
-						receiver.sendRpc(SerialUpdateResponse(log = line + "\n"))
-					}
-					lastSentCount = connState.logLines.size
+						connState.logLines.drop(lastSentCount).forEach { line ->
+							receiver.sendRpc(SerialUpdateResponse(log = line + "\n"))
+						}
+						lastSentCount = connState.logLines.size
 
-					if (!connState.connected) {
-						disconnected = true
-						activePortLocation = null
-						receiver.sendRpc(SerialUpdateResponse(closed = true))
+						if (!connState.connected) {
+							disconnected = true
+							activePortLocation = null
+							receiver.sendRpc(SerialUpdateResponse(closed = true))
+						}
 					}
+				} catch (e: Exception) {
+					dev.slimevr.AppLogger.solarxr.error(e, "Error streaming serial log")
 				}
 			}
 		}

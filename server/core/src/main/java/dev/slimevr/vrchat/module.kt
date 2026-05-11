@@ -4,9 +4,9 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.AppConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.VRCAvatarMeasurementType
 import solarxr_protocol.rpc.VRCConfigRecommendedValues
@@ -68,7 +68,7 @@ class VRCConfigManager(
 				name = "VRCConfig",
 			)
 
-			scope.launch {
+			scope.safeLaunch {
 				values.collect { context.dispatch(VRCConfigActions.UpdateValues(it)) }
 			}
 
@@ -113,7 +113,7 @@ fun isVRCConfigValid(validity: VRCConfigValidity, mutedWarnings: List<String>): 
 	(validity.userHeightOk == true || "userHeightOk" in mutedWarnings) &&
 	(validity.calibrationRangeOk == true || "calibrationRangeOk" in mutedWarnings) &&
 	(validity.calibrationVisualsOk == true || "calibrationVisualsOk" in mutedWarnings) &&
-	(validity.trackerModelOk == true|| "trackerModelOk" in mutedWarnings) &&
+	(validity.trackerModelOk == true || "trackerModelOk" in mutedWarnings) &&
 	(validity.spineModeOk == true || "spineModeOk" in mutedWarnings) &&
 	(validity.avatarMeasurementTypeOk == true || "avatarMeasurementTypeOk" in mutedWarnings)
 
@@ -123,7 +123,7 @@ fun computeValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedVa
 	spineModeOk = recommended.spineMode?.contains(values.spineMode) == true,
 	trackerModelOk = values.trackerModel == recommended.trackerModel,
 	calibrationRangeOk = abs((values.calibrationRange ?: 0f) - (recommended.calibrationRange ?: 0f)) < 0.1f,
-	userHeightOk = abs((recommended.userHeight ?: 0f) - (values.userHeight?: 0f)) < 0.1f,
+	userHeightOk = abs((recommended.userHeight ?: 0f) - (values.userHeight ?: 0f)) < 0.1f,
 	calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
 	avatarMeasurementTypeOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
 	shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,

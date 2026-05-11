@@ -2,8 +2,8 @@ package dev.slimevr.serial
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.SerialDevice
 
 interface FlashingHandler {
@@ -110,7 +110,7 @@ class SerialServer(
 		return object : FlashingHandler by handler {
 			override fun closeSerial() {
 				handler.closeSerial()
-				context.scope.launch { context.dispatch(SerialServerActions.RemoveConnection(portLocation)) }
+				context.scope.safeLaunch { context.dispatch(SerialServerActions.RemoveConnection(portLocation)) }
 			}
 		}
 	}

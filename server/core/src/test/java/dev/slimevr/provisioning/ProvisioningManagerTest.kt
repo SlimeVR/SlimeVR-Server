@@ -10,10 +10,10 @@ import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.serial.SerialPortInfo
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.TrackerStatus
@@ -101,7 +101,7 @@ class ProvisioningManagerTest {
 		advanceTimeBy(7_001)
 		assertEquals(WifiProvisioningStatus.NO_SERIAL_LOGS_ERROR, manager.context.state.value.status)
 
-		launch {
+		safeLaunch {
 			delay(100)
 			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 		}
@@ -119,7 +119,7 @@ class ProvisioningManagerTest {
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
 
-		launch {
+		safeLaunch {
 			delay(500)
 			serialServer.onDataReceived("COM1", "some log line without a mac address")
 		}
@@ -138,7 +138,7 @@ class ProvisioningManagerTest {
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
 
-		launch {
+		safeLaunch {
 			delay(2_100)
 			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			// No credential acknowledgement sent
@@ -158,7 +158,7 @@ class ProvisioningManagerTest {
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
 
-		launch {
+		safeLaunch {
 			delay(2_100)
 			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
@@ -180,7 +180,7 @@ class ProvisioningManagerTest {
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
 
-		launch {
+		safeLaunch {
 			delay(2_100)
 			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
@@ -207,7 +207,7 @@ class ProvisioningManagerTest {
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
 
-		launch {
+		safeLaunch {
 			delay(2_100)
 			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
@@ -232,7 +232,7 @@ class ProvisioningManagerTest {
 		manager.startProvisioning(vrServer, "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
 
-		launch {
+		safeLaunch {
 			delay(2_100)
 			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
@@ -258,7 +258,7 @@ class ProvisioningManagerTest {
 		manager.startProvisioning(vrServer, "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
 
-		launch {
+		safeLaunch {
 			delay(2_100)
 			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
 			delay(100)
@@ -288,7 +288,7 @@ class ProvisioningManagerTest {
 		manager.startProvisioning(buildTestVrServer(backgroundScope), "wifi", "pass", null)
 		serialServer.onPortDetected(fakePort())
 
-		launch {
+		safeLaunch {
 			delay(500)
 			serialServer.onDataReceived("COM1", "some log without mac")
 		}

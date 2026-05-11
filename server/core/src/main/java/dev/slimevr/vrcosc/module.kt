@@ -6,9 +6,9 @@ import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.VRCOSCInputState
 import solarxr_protocol.rpc.VRCOSCOscQueryState
 import solarxr_protocol.rpc.VRCOSCOutputState
@@ -101,7 +101,7 @@ class VRCOSCManager(
 	fun startObserving() = context.observeAll(this)
 
 	fun yawAlign(headRotation: Quaternion) {
-		context.scope.launch {
+		context.scope.safeLaunch {
 			events.emit(VRCOSCEvent.YawAlign(headRotation))
 		}
 	}

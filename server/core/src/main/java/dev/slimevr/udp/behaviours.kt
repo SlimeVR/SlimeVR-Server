@@ -8,13 +8,13 @@ import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerIdNum
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
@@ -92,7 +92,7 @@ object PingBehaviour : UDPConnectionBehaviour {
 
 	override fun observe(receiver: UDPConnection) {
 		// Send the ping every 1s
-		receiver.context.scope.launch {
+		receiver.context.scope.safeLaunch {
 			while (isActive) {
 				val state = receiver.context.state.value
 				if (state.didHandshake) {
@@ -163,7 +163,7 @@ object HandshakeBehaviour : UDPConnectionBehaviour {
 				val settings = receiver.appContext.config.settings.context.state.value.data
 				if (mac !in settings.allowedUdpDevices) {
 					AppLogger.udp.info("[${state.address}] Unknown MAC $mac, notifying solarxr")
-					receiver.appContext.server.context.scope.launch {
+					receiver.appContext.server.context.scope.safeLaunch {
 						receiver.appContext.server.context.state.value.solarxr.values.forEach { bridge ->
 							bridge.sendRpc(UnknownDeviceHandshakeNotification(macAddress = mac))
 						}
@@ -204,7 +204,7 @@ object HandshakeBehaviour : UDPConnectionBehaviour {
 
 object TimeoutBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
-		receiver.context.scope.launch {
+		receiver.context.scope.safeLaunch {
 			while (isActive) {
 				val state = receiver.context.state.value
 				if (!state.didHandshake) {
@@ -236,7 +236,7 @@ object DisconnectBehaviour : UDPConnectionBehaviour {
 			.distinctUntilChangedBy { it.didHandshake }
 			.onEach { state ->
 				if (!state.didHandshake) {
-					removalJob = receiver.context.scope.launch {
+					removalJob = receiver.context.scope.safeLaunch {
 						delay(CONNECTION_REMOVAL_MS)
 						val currentState = receiver.context.state.value
 						AppLogger.udp.info("[${currentState.address}] Connection removed after extended timeout")

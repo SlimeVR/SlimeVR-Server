@@ -6,20 +6,17 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
-import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.osc.OscReceiver
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.VRCOSCInputState
@@ -164,7 +161,7 @@ class VRCOSCInputBehaviour(
 				)
 				AppLogger.vrc.info("VRChat OSC input listening on port $portIn")
 
-				receiver.context.scope.launch {
+				receiver.context.scope.safeLaunch {
 					try {
 						newReceiver.listenBundles { bundle -> handleBundle(bundle, registry, receiver, portIn) }
 					} catch (e: Exception) {

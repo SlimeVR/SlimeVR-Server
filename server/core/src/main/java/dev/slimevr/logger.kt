@@ -3,6 +3,7 @@ package dev.slimevr
 import io.klogging.Level
 import io.klogging.config.loggingConfiguration
 import io.klogging.logger
+import io.klogging.noCoLogger
 import io.klogging.rendering.RENDER_SIMPLE
 import io.klogging.sending.STDOUT
 
@@ -20,6 +21,7 @@ object AppLogger {
 	val bvh = logger("BVH")
 	val vmc = logger("VMC")
 	val oscQuery = logger("OSCQuery")
+	val coroutines = noCoLogger("Coroutines")
 
 	init {
 		loggingConfiguration {

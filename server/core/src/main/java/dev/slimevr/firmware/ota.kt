@@ -12,22 +12,22 @@ import io.ktor.network.sockets.openWriteChannel
 import io.ktor.network.sockets.port
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.ByteWriteChannel
-import io.ktor.utils.io.discardExact
-import io.ktor.utils.io.readRemaining
-import io.ktor.utils.io.writeFully
 import io.ktor.utils.io.core.buildPacket
 import io.ktor.utils.io.core.readText
 import io.ktor.utils.io.core.writeFully
+import io.ktor.utils.io.discardExact
+import io.ktor.utils.io.readRemaining
+import io.ktor.utils.io.writeFully
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import kotlinx.io.readByteArray
 import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 import java.security.MessageDigest
 import java.util.UUID
 import kotlin.math.min
-import kotlinx.io.readByteArray
 
 private const val OTA_PORT = 8266
 private const val OTA_PASSWORD = "SlimeVR-OTA"

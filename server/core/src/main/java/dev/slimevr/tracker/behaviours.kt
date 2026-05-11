@@ -1,11 +1,11 @@
 package dev.slimevr.tracker
 
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
@@ -100,14 +100,18 @@ object TrackerTPSBehaviour : TrackerBehaviour {
 			count.incrementAndFetch()
 		}.launchIn(receiver.context.scope)
 
-		receiver.context.scope.launch {
+		receiver.context.scope.safeLaunch {
 			var mark = TimeSource.Monotonic.markNow()
 			while (isActive) {
-				delay(1000)
-				val elapsed = mark.elapsedNow()
-				val tps = count.exchange(0) * 1000L / elapsed.inWholeMilliseconds
-				receiver.context.dispatch(TrackerActions.Update { copy(tps = tps.toUShort()) })
-				mark = TimeSource.Monotonic.markNow()
+				try {
+					delay(1000)
+					val elapsed = mark.elapsedNow()
+					val tps = count.exchange(0) * 1000L / elapsed.inWholeMilliseconds
+					receiver.context.dispatch(TrackerActions.Update { copy(tps = tps.toUShort()) })
+					mark = TimeSource.Monotonic.markNow()
+				} catch (e: Exception) {
+					dev.slimevr.AppLogger.coroutines.error(e, "Error in TrackerTPSBehaviour")
+				}
 			}
 		}
 	}

@@ -4,11 +4,11 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
 import dev.slimevr.getSocketDirectory
 import dev.slimevr.solarxr.handleSolarXRBridge
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.SocketException
 import java.net.StandardProtocolFamily
@@ -95,7 +95,7 @@ private suspend fun acceptUnixClients(
 		server.bind(UnixDomainSocketAddress.of(path))
 		while (isActive) {
 			val client = server.accept()
-			launch { handle(client) }
+			safeLaunch { handle(client) }
 		}
 	}
 }

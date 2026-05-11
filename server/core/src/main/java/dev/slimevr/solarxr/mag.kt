@@ -5,9 +5,9 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.udp.SensorConfigFlags
 import dev.slimevr.udp.UDPConnectionActions
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.rpc.ChangeMagToggleRequest
@@ -34,7 +34,7 @@ class MagBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<ChangeMagToggleRequest> { req ->
 			val trackerId = req.trackerId
-			val enable = req.enable == true;
+			val enable = req.enable == true
 
 			if (trackerId == null) {
 				receiver.appContext.config.settings.context.dispatch(SettingsActions.Update { copy(globalMagEnabled = enable) })
@@ -59,12 +59,16 @@ class MagBehaviour(
 			when (trackerState.origin) {
 				DeviceOrigin.UDP -> {
 					if (!setUDPTrackerMag(trackerState.id, trackerState.deviceId, enable)) return@on
-					tracker.context.scope.launch {
-						withTimeout(10.seconds) {
-							tracker.context.state
-								.distinctUntilChangedBy { it.magStatus }
-								.first { it.magStatus == if (enable) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED }
-							receiver.sendRpc(MagToggleResponse(trackerId = trackerId, enable = enable))
+					tracker.context.scope.safeLaunch {
+						try {
+							withTimeout(10.seconds) {
+								tracker.context.state
+									.distinctUntilChangedBy { it.magStatus }
+									.first { it.magStatus == if (enable) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED }
+								receiver.sendRpc(MagToggleResponse(trackerId = trackerId, enable = enable))
+							}
+						} catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+							dev.slimevr.AppLogger.solarxr.warn("Timeout waiting for mag toggle response from tracker")
 						}
 					}
 				}

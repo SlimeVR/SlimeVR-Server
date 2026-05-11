@@ -6,11 +6,11 @@ import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.util.safeLaunch
 import io.ktor.utils.io.ByteChannel
 import io.ktor.utils.io.readRemaining
 import io.ktor.utils.io.writeFully
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.readByteArray
@@ -75,7 +75,7 @@ class OtaUploadTest {
 		val device = addUdpDevice(vrServer, backgroundScope, macAddress = "AA:BB:CC:DD:EE:FF")
 		var result: Boolean? = null
 
-		val job = backgroundScope.launch {
+		val job = backgroundScope.safeLaunch {
 			result = waitForConnected(vrServer, "AA:BB:CC:DD:EE:FF", timeoutMs = 1_000)
 		}
 
@@ -100,7 +100,7 @@ class OtaUploadTest {
 		device.context.dispatch(DeviceActions.Update { copy(status = TrackerStatus.OK) })
 		var result: Boolean? = null
 
-		val job = backgroundScope.launch {
+		val job = backgroundScope.safeLaunch {
 			result = waitForReconnected(
 				vrServer,
 				DeviceId(device.context.state.value.id.toUByte()),

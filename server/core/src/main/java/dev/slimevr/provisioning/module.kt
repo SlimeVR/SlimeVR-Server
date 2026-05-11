@@ -7,13 +7,13 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.WifiProvisioningStatus
 
 data class ProvisioningManagerState(
@@ -60,7 +60,7 @@ data class ProvisioningManager(
 			currentJob.cancelAndJoin()
 			context.dispatch(ProvisioningActions.Clear)
 		}
-		provisioningJob = scope.launch {
+		provisioningJob = scope.safeLaunch {
 			// TODO handle port field, currently ignored
 			while (isActive) {
 				if (!selectAndOpenPort(context, serialServer)) continue

@@ -6,6 +6,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -96,7 +97,7 @@ class FirmwareManager(
 		server: VRServer,
 	) {
 		runningJobs[deviceIp]?.cancelAndJoin()
-		runningJobs[deviceIp] = scope.launch {
+		runningJobs[deviceIp] = scope.safeLaunch {
 			doOtaFlash(
 				deviceIp = deviceIp,
 				deviceId = (firmwareDeviceId as? DeviceIdTable)?.id ?: error("device id should exist"),

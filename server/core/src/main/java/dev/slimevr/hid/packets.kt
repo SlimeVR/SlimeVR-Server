@@ -78,19 +78,17 @@ private val AXES_OFFSET = Quaternion.fromRotationVector(-PI.toFloat() / 2f, 0f, 
 
 private fun readLE16Signed(data: ByteArray, offset: Int): Int = data[offset + 1].toInt() shl 8 or data[offset].toUByte().toInt()
 
-private fun readLE32Unsigned(data: ByteArray, offset: Int): UInt =
-	(data[offset].toUInt() and 0xFFu) or
-		((data[offset + 1].toUInt() and 0xFFu) shl 8) or
-		((data[offset + 2].toUInt() and 0xFFu) shl 16) or
-		((data[offset + 3].toUInt() and 0xFFu) shl 24)
+private fun readLE32Unsigned(data: ByteArray, offset: Int): UInt = (data[offset].toUInt() and 0xFFu) or
+	((data[offset + 1].toUInt() and 0xFFu) shl 8) or
+	((data[offset + 2].toUInt() and 0xFFu) shl 16) or
+	((data[offset + 3].toUInt() and 0xFFu) shl 24)
 
-private fun readLE48Unsigned(data: ByteArray, offset: Int): ULong =
-	(data[offset].toULong() and 0xFFu) or
-		((data[offset + 1].toULong() and 0xFFu) shl 8) or
-		((data[offset + 2].toULong() and 0xFFu) shl 16) or
-		((data[offset + 3].toULong() and 0xFFu) shl 24) or
-		((data[offset + 4].toULong() and 0xFFu) shl 32) or
-		((data[offset + 5].toULong() and 0xFFu) shl 40)
+private fun readLE48Unsigned(data: ByteArray, offset: Int): ULong = (data[offset].toULong() and 0xFFu) or
+	((data[offset + 1].toULong() and 0xFFu) shl 8) or
+	((data[offset + 2].toULong() and 0xFFu) shl 16) or
+	((data[offset + 3].toULong() and 0xFFu) shl 24) or
+	((data[offset + 4].toULong() and 0xFFu) shl 32) or
+	((data[offset + 5].toULong() and 0xFFu) shl 40)
 
 private fun decodeQ15Quat(data: ByteArray, offset: Int): Quaternion {
 	val scale = 1f / 32768f

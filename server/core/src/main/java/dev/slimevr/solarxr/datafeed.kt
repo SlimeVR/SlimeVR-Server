@@ -5,10 +5,10 @@ import dev.slimevr.device.DeviceState
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.data_feed.DataFeedUpdate
@@ -148,10 +148,14 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 			receiver.context.state.value.datafeedTimers.forEach { it.cancelAndJoin() }
 
 			val timers = datafeeds.mapIndexed { index, config ->
-				receiver.context.scope.launch {
+				receiver.context.scope.safeLaunch {
 					val minTime = config.minimumTimeSinceLast.toLong()
 					while (isActive) {
-						receiver.sendDataFeed(createDatafeedFrame(server = server, skeleton = skeleton, datafeedConfig = config, index = index))
+						try {
+							receiver.sendDataFeed(createDatafeedFrame(server = server, skeleton = skeleton, datafeedConfig = config, index = index))
+						} catch (e: Exception) {
+							dev.slimevr.AppLogger.solarxr.error(e, "Error sending data feed")
+						}
 						delay(minTime)
 					}
 				}

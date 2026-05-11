@@ -1,5 +1,12 @@
 plugins {
 	id("com.diffplug.spotless")
+	id("io.gitlab.arturbosch.detekt") version "1.23.6"
+}
+
+detekt {
+	buildUponDefaultConfig = false
+	config.setFrom(files("${rootProject.projectDir}/server/detekt.yml"))
+	source.setFrom(files("core/src", "desktop/src"))
 }
 
 allprojects {

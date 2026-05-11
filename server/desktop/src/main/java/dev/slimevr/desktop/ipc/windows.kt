@@ -8,11 +8,11 @@ import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.ptr.IntByReference
 import dev.slimevr.AppContextProvider
 import dev.slimevr.solarxr.handleSolarXRBridge
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -115,7 +115,7 @@ private suspend fun acceptWindowsClients(
 			continue
 		}
 
-		launch {
+		safeLaunch {
 			try {
 				handle(pipe)
 			} finally {

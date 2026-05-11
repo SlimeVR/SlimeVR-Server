@@ -22,9 +22,9 @@ import dev.slimevr.networkprofile.NetworkCategory
 import dev.slimevr.networkprofile.NetworkInfo
 import dev.slimevr.networkprofile.NetworkProfileActions
 import dev.slimevr.networkprofile.NetworkProfileManager
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("ktlint:standard:function-naming")
@@ -178,7 +178,7 @@ suspend fun setupDesktopNetworkProfileChecker(scope: CoroutineScope, manager: Ne
 	val callback = object : Callback {
 		@Suppress("UNUSED")
 		fun callback(context: Pointer, row: Pointer, notificationType: Int) {
-			scope.launch {
+			scope.safeLaunch {
 				val networks = enumerateNetworks()
 					.filter { it.connected == true && it.category == NetworkCategory.PUBLIC }
 				manager.context.dispatch(NetworkProfileActions.UpdateNetworks(networks))

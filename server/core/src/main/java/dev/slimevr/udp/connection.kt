@@ -7,12 +7,12 @@ import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerIdNum
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
+import dev.slimevr.util.safeLaunch
 import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.Datagram
 import io.ktor.network.sockets.InetSocketAddress
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.io.Buffer
 import kotlinx.io.readByteArray
 import solarxr_protocol.datatypes.MagnetometerStatus
@@ -63,7 +63,7 @@ class UDPConnection(
 	private val scope: CoroutineScope,
 ) {
 	fun send(packet: UDPPacket) {
-		scope.launch {
+		scope.safeLaunch {
 			val buf = Buffer()
 			writePacket(buf, packet)
 			socket.send(Datagram(buf, remoteAddress))
@@ -141,7 +141,7 @@ class UDPConnection(
 			conn.startObserving()
 
 			// Dedicated coroutine per connection so the receive loop is never blocked by packet processing
-			scope.launch {
+			scope.safeLaunch {
 				for (event in packetChannel) {
 					// We skip any packet from the tracker that are not handshake packets
 					// if we didn't do a handshake with the server

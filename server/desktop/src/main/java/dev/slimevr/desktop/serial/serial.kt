@@ -3,15 +3,13 @@ package dev.slimevr.desktop.serial
 import com.fazecast.jSerialComm.SerialPortEvent
 import com.fazecast.jSerialComm.SerialPortMessageListener
 import dev.slimevr.AppLogger
-import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.OutputStreamWriter
 import com.fazecast.jSerialComm.SerialPort as JSerialPort
@@ -53,11 +51,11 @@ private fun openPort(
 			when (event.eventType) {
 				JSerialPort.LISTENING_EVENT_DATA_RECEIVED -> {
 					val line = event.receivedData.toString(Charsets.UTF_8).trimEnd()
-					scope.launch { onDataReceived(portLocation, line) }
+					scope.safeLaunch { onDataReceived(portLocation, line) }
 				}
 
 				JSerialPort.LISTENING_EVENT_PORT_DISCONNECTED ->
-					scope.launch { onPortDisconnected(portLocation) }
+					scope.safeLaunch { onPortDisconnected(portLocation) }
 			}
 		}
 	})
@@ -79,26 +77,30 @@ private suspend fun runSerialPoller(server: SerialServer) {
 	var lastKnown: Set<String> = emptySet()
 
 	while (true) {
-		val current = withContext(Dispatchers.IO) {
-			JSerialPort.getCommPorts()
-				.filter { isKnownBoard(it.vendorID, it.productID) }
-				.associate { port ->
-					port.portLocation to SerialPortInfo(
-						portLocation = port.portLocation,
-						descriptivePortName = port.descriptivePortName,
-						vendorId = port.vendorID,
-						productId = port.productID,
-					)
-				}
+		try {
+			val current = withContext(Dispatchers.IO) {
+				JSerialPort.getCommPorts()
+					.filter { isKnownBoard(it.vendorID, it.productID) }
+					.associate { port ->
+						port.portLocation to SerialPortInfo(
+							portLocation = port.portLocation,
+							descriptivePortName = port.descriptivePortName,
+							vendorId = port.vendorID,
+							productId = port.productID,
+						)
+					}
+			}
+
+			val added = current.keys - lastKnown
+			val removed = lastKnown - current.keys
+
+			added.forEach { loc -> server.onPortDetected(current.getValue(loc)) }
+			removed.forEach { loc -> server.onPortLost(loc) }
+
+			lastKnown = current.keys
+		} catch (e: Exception) {
+			AppLogger.serial.error(e, "Error polling serial ports")
 		}
-
-		val added = current.keys - lastKnown
-		val removed = lastKnown - current.keys
-
-		added.forEach { loc -> server.onPortDetected(current.getValue(loc)) }
-		removed.forEach { loc -> server.onPortLost(loc) }
-
-		lastKnown = current.keys
 		delay(3000)
 	}
 }
@@ -109,6 +111,6 @@ fun createDesktopSerialServer(scope: CoroutineScope): SerialServer {
 		openFlashingPort = { DesktopFlashingHandler() },
 		scope = scope,
 	)
-	scope.launch { runSerialPoller(server) }
+	scope.safeLaunch { runSerialPoller(server) }
 	return server
 }

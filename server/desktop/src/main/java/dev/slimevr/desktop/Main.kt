@@ -27,10 +27,10 @@ import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
+import dev.slimevr.util.safeLaunch
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>) = runBlocking<Unit> {
@@ -82,10 +82,10 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 	try {
 		appContext.startObserving()
 
-		launch { createDesktopHIDManager(appContext, this) }
-		launch { createSolarXRWebsocketServer(appContext) }
-		launch { createIpcServers(appContext) }
-		launch { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
+		safeLaunch { createDesktopHIDManager(appContext, this) }
+		safeLaunch { createSolarXRWebsocketServer(appContext) }
+		safeLaunch { createIpcServers(appContext) }
+		safeLaunch { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
 
 		awaitCancellation()
 	} finally {

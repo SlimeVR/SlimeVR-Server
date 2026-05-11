@@ -1,25 +1,25 @@
 package dev.slimevr.context
 
-import dev.slimevr.context.debug.DebugMiddleware
 import dev.slimevr.context.debug.ContextDebug
+import dev.slimevr.context.debug.DebugMiddleware
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 interface Behaviour<S, A, C> {
 	fun reduce(state: S, action: A): S = state
 	fun observe(receiver: C) {}
 }
 
-//TODO: missing remove + prob a unobserve or something to clear the stuff launched
+// TODO: missing remove + prob a unobserve or something to clear the stuff launched
 // in a observe -> each behaviour is prob gonna need its own scope
 class BehaviourList<S, A>(
 	initial: List<Behaviour<S, A, *>>,
@@ -101,10 +101,8 @@ class Context<S, A>(
 		(behaviour as Behaviour<S, A, C>).observe(receiver)
 	}
 
-	private fun reduce(currentState: S, action: A): S {
-		return behaviours.snapshot().fold(currentState) { state, behaviour ->
-			behaviour.reduce(state, action)
-		}
+	private fun reduce(currentState: S, action: A): S = behaviours.snapshot().fold(currentState) { state, behaviour ->
+		behaviour.reduce(state, action)
 	}
 
 	private fun captureCallerBehaviour(): String? {
