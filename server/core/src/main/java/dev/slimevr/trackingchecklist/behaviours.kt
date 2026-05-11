@@ -164,7 +164,7 @@ class VRChatSettingsCheckBehaviour(
 		if (!vrc.isSupported || values == null) return TrackingChecklistStep(valid = true, enabled = false)
 		val recommended = computeRecommendedValues(server, userHeight)
 		val validity = computeValidity(values, recommended)
-		return TrackingChecklistStep(valid = isVRCConfigValid(validity, vrc.mutedWarnings), enabled = true)
+		return TrackingChecklistStep(valid = isVRCConfigValid(validity, vrc.mutedWarnings), ignorable = true, enabled = true)
 	}
 
 	override fun observe(receiver: TrackingChecklist) {
