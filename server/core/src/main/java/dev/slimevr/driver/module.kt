@@ -15,7 +15,8 @@ import solarxr_protocol.datatypes.TrackerStatus
 
 data class DriverBridgeState(
 	val protocolVersion: Int,
-	val trackers: Map<Int, Tracker>,
+	// SteamVR device index -> Tracker ID
+	val trackers: Map<Int, Int>,
 )
 
 sealed interface DriverBridgeActions {
@@ -53,8 +54,10 @@ class DriverBridge(
 	fun disconnect() {
 		dispose()
 		appContext.server.context.dispatch(VRServerActions.DriverDisconnected(id))
-		context.state.value.trackers.forEach { (_, tracker) ->
-			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
+		context.state.value.trackers.forEach { (_, id) ->
+			appContext.server.getTracker(id)?.let {
+				it.context.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
+			}
 		}
 	}
 

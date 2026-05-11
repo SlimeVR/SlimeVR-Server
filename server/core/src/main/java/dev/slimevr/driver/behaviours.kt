@@ -14,7 +14,7 @@ import solarxr_protocol.datatypes.hardware_info.ImuType
 
 object DriverBaseBehaviour : DriverBridgeBehaviour {
 	override fun reduce(state: DriverBridgeState, action: DriverBridgeActions): DriverBridgeState = when (action) {
-		is DriverBridgeActions.AddTracker -> state.copy(trackers = state.trackers + (action.id to action.tracker))
+		is DriverBridgeActions.AddTracker -> state.copy(trackers = state.trackers + (action.id to action.tracker.context.state.value.id))
 		is DriverBridgeActions.UpdateProtocolVersion -> state.copy(protocolVersion = action.version)
 	}
 
@@ -28,18 +28,17 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 		}
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
-			val tracker = receiver.context.state.value.trackers[event.trackerId]
-			if (tracker != null) {
+			val trackerId = receiver.context.state.value.trackers[event.trackerId] ?: return@on
+			receiver.appContext.server.getTracker(trackerId)?.let { tracker ->
 				tracker.context.dispatch(TrackerActions.Update {
 					copy(rawRotation = event.rotation, position = event.position)
 				})
-			} else {
-				AppLogger.steamvr.warn("Failed to find tracker ${event.trackerId}")
 			}
 		}
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerBattery> { event ->
-			receiver.context.state.value.trackers[event.id]?.let { tracker ->
+			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
+			receiver.appContext.server.getTracker(trackerId)?.let { tracker ->
 				val device = tracker.server.getDevice(tracker.context.state.value.deviceId) ?: error("could not find device")
 				device.context.dispatch(
 					DeviceActions.Update {
