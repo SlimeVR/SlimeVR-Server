@@ -39,6 +39,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val vmcManager: VMCManager
 	val vrcOscManager: VRCOSCManager
 	fun startObserving()
+	suspend fun dispose()
 }
 
 class AppContext(
@@ -68,5 +69,9 @@ class AppContext(
 		udpServer.startReceiving(this, server.context.scope)
 		vmcManager.startObserving()
 		vrcOscManager.startObserving()
+	}
+
+	override suspend fun dispose() {
+		udpServer.dispose()
 	}
 }

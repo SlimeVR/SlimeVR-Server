@@ -192,6 +192,7 @@ object HandshakeBehaviour : UDPConnectionBehaviour {
 						mcuType = packet.data.mcuType,
 						firmware = packet.data.firmware ?: firmware,
 						protocolVersion = packet.data.protocolVersion,
+						status = TrackerStatus.OK,
 					)
 				},
 			)

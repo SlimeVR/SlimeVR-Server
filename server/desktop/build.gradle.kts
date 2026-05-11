@@ -91,6 +91,8 @@ dependencies {
 	implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
 	implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
 	implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
+
+	testImplementation(kotlin("test"))
 }
 
 tasks.shadowJar {

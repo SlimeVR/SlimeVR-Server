@@ -8,6 +8,8 @@ import dev.slimevr.skeleton.DEFAULT_BONE_OFFSETS
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import solarxr_protocol.datatypes.BodyPart
 
 private const val FRAME_COUNT_DIGITS = Long.MAX_VALUE.toString().length
@@ -17,55 +19,70 @@ private const val POSITION_SCALE = 1f
 class BvhStream(
 	private val file: TextFileHandle,
 ) {
+	private val mutex = Mutex()
 	private var frameCount = 0L
 	private var frameCountOffset = 0L
 	private var frameTimeOffset = 0L
 	private var lastFrameTime = System.currentTimeMillis()
 	private val frameIntervals = mutableListOf<Float>()
+	private var closed = false
 
 	suspend fun writeHeader(bones: Map<BodyPart, BoneState>) {
-		file.write("HIERARCHY\n")
-		writeBone(BodyPart.HEAD, null, bones, 0)
-		file.write("MOTION\n")
-		file.write("Frames: ")
-		file.flush()
-		frameCountOffset = file.position()
-		frameCount = 0L
-		file.write(getBufferedFrameCount(0L) + "\n")
-		file.write("Frame Time: ")
-		file.flush()
-		frameTimeOffset = file.position()
-		file.write(getBufferedFrameInterval(0.01f) + "\n")
-		lastFrameTime = System.currentTimeMillis()
+		mutex.withLock {
+			check(!closed) { "BVH stream is closed" }
+			file.write("HIERARCHY\n")
+			writeBone(BodyPart.HEAD, null, bones, 0)
+			file.write("MOTION\n")
+			file.write("Frames: ")
+			file.flush()
+			frameCountOffset = file.position()
+			frameCount = 0L
+			file.write(getBufferedFrameCount(0L) + "\n")
+			file.write("Frame Time: ")
+			file.flush()
+			frameTimeOffset = file.position()
+			file.write(getBufferedFrameInterval(0.01f) + "\n")
+			lastFrameTime = System.currentTimeMillis()
+		}
 	}
 
 	suspend fun writeFrame(bones: Map<BodyPart, BoneState>) {
-		val now = System.currentTimeMillis()
-		if (frameCount > 0) {
-			val interval = (now - lastFrameTime) / 1000f
-			frameIntervals.add(interval)
-		}
-		lastFrameTime = now
+		mutex.withLock {
+			if (closed) return
 
-		val head = bones[BodyPart.HEAD]
-		val pos = head?.headPosition ?: Vector3.NULL
-		file.write("${pos.x * POSITION_SCALE} ${pos.y * POSITION_SCALE} ${pos.z * POSITION_SCALE}")
-		writeRotations(BodyPart.HEAD, bones)
-		file.write("\n")
-		frameCount++
+			val now = System.currentTimeMillis()
+			if (frameCount > 0) {
+				val interval = (now - lastFrameTime) / 1000f
+				frameIntervals.add(interval)
+			}
+			lastFrameTime = now
+
+			val head = bones[BodyPart.HEAD]
+			val pos = head?.headPosition ?: Vector3.NULL
+			file.write("${pos.x * POSITION_SCALE} ${pos.y * POSITION_SCALE} ${pos.z * POSITION_SCALE}")
+			writeRotations(BodyPart.HEAD, bones)
+			file.write("\n")
+			frameCount++
+		}
 	}
 
 	suspend fun close() {
-		file.flush()
-		val avgInterval = if (frameIntervals.isNotEmpty()) frameIntervals.average().toFloat() else 0.01f
+		mutex.withLock {
+			if (closed) return
+			closed = true
 
-		file.seek(frameCountOffset)
-		file.write(getBufferedFrameCount(frameCount))
+			file.flush()
+			val avgInterval = if (frameIntervals.isNotEmpty()) frameIntervals.average().toFloat() else 0.01f
 
-		file.seek(frameTimeOffset)
-		file.write(getBufferedFrameInterval(avgInterval))
+			file.seek(frameCountOffset)
+			file.write(getBufferedFrameCount(frameCount))
 
-		file.close()
+			file.seek(frameTimeOffset)
+			file.write(getBufferedFrameInterval(avgInterval))
+			file.flush()
+
+			file.close()
+		}
 	}
 
 	private fun getBufferedFrameCount(frameCount: Long): String {

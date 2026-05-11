@@ -10,6 +10,8 @@ import io.ktor.network.sockets.aSocket
 import io.ktor.network.sockets.openReadChannel
 import io.ktor.network.sockets.openWriteChannel
 import io.ktor.network.sockets.port
+import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.ByteWriteChannel
 import io.ktor.utils.io.discardExact
 import io.ktor.utils.io.readRemaining
 import io.ktor.utils.io.writeFully
@@ -17,16 +19,9 @@ import io.ktor.utils.io.core.buildPacket
 import io.ktor.utils.io.core.readText
 import io.ktor.utils.io.core.writeFully
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.datatypes.DeviceId
-import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 import java.security.MessageDigest
@@ -87,24 +82,35 @@ private suspend fun otaUpload(
 ): Boolean {
 	val socket = withTimeout(30_000) { tcpServer.accept() }
 	return socket.use {
-		val output = socket.openWriteChannel(autoFlush = true)
-		val input = socket.openReadChannel()
-
-		var offset = 0
-		while (offset < firmware.size) {
-			onProgress(((offset.toDouble() / firmware.size) * 100).toInt())
-
-			val chunkLen = min(OTA_CHUNK_SIZE, firmware.size - offset)
-			output.writeFully(firmware, offset, offset + chunkLen)
-			offset += chunkLen
-
-			withTimeout(1_000) { input.discardExact(4) }
-		}
-
-		output.flush()
-		val response = withTimeout(10_000) { input.readRemaining().readByteArray().decodeToString() }
-		response.contains("OK")
+		uploadFirmware(
+			output = socket.openWriteChannel(autoFlush = true),
+			input = socket.openReadChannel(),
+			firmware = firmware,
+			onProgress = onProgress,
+		)
 	}
+}
+
+internal suspend fun uploadFirmware(
+	output: ByteWriteChannel,
+	input: ByteReadChannel,
+	firmware: ByteArray,
+	onProgress: suspend (Int) -> Unit,
+): Boolean {
+	var offset = 0
+	while (offset < firmware.size) {
+		onProgress(((offset.toDouble() / firmware.size) * 100).toInt())
+
+		val chunkLen = min(OTA_CHUNK_SIZE, firmware.size - offset)
+		output.writeFully(firmware, offset, offset + chunkLen)
+		offset += chunkLen
+
+		withTimeout(1_000) { input.discardExact(4) }
+	}
+
+	output.flush()
+	val response = withTimeout(10_000) { input.readRemaining().readByteArray().decodeToString() }
+	return response.contains("OK")
 }
 
 suspend fun doOtaFlash(
@@ -154,21 +160,7 @@ suspend fun doOtaFlash(
 
 	onStatus(FirmwareUpdateStatus.REBOOTING, 0)
 
-	// Wait for the device to come back online after reboot.
-	// flatMapLatest switches to the matched device's own state flow so that status changes,
-	// which don't emit a new VRServerState, are also observed.
-	@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-	val connected = withTimeoutOrNull(60_000) {
-		server.context.state
-			.flatMapLatest { state ->
-				val device = state.devices.values.find { it.context.state.value.id.toUByte() == deviceId.id }
-				device?.context?.state?.map { it.status != TrackerStatus.DISCONNECTED } ?: flowOf(false)
-			}
-			.filter { it }
-			.first()
-	}
-
-	if (connected == null) {
+	if (waitForReconnected(server, deviceId) == null) {
 		onStatus(FirmwareUpdateStatus.ERROR_TIMEOUT, 0)
 		return
 	}

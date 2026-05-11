@@ -56,7 +56,10 @@ class DesktopConfigStorage(
 
 	override fun displayPath(path: String): String = resolve(path).absolutePath
 
-	private fun resolve(path: String): File = File(root, path)
+	private fun resolve(path: String): File {
+		val requested = File(path)
+		return if (requested.isAbsolute) requested else File(root, path)
+	}
 }
 
 private class RandomAccessTextFileHandle(
@@ -79,6 +82,7 @@ private class RandomAccessTextFileHandle(
 	}
 
 	override suspend fun close() = withContext(Dispatchers.IO) {
+		file.fd.sync()
 		file.close()
 	}
 }

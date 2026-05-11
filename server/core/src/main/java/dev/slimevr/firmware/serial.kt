@@ -9,17 +9,13 @@ import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 
@@ -32,16 +28,6 @@ fun interface FirmwareFlasher {
 	)
 }
 
-object NoopFirmwareFlasher : FirmwareFlasher {
-	override suspend fun flash(
-		portLocation: String,
-		handler: FlashingHandler,
-		parts: List<DownloadedFirmwarePart>,
-		onProgress: (Int) -> Unit,
-	) = Unit
-}
-
-@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun doSerialFlash(
 	portLocation: String,
 	parts: List<FirmwarePart>,
@@ -212,17 +198,3 @@ internal suspend fun doSerialFlashPostFlash(
 
 	onStatus(FirmwareUpdateStatus.DONE, 0)
 }
-
-suspend fun waitForConnected(server: VRServer, macAddress: String): Boolean? =
-	@OptIn(ExperimentalCoroutinesApi::class)
-	withTimeoutOrNull(30_000) {
-		server.context.state
-			.flatMapLatest { state ->
-				val device =
-					state.devices.values.find { it.context.state.value.macAddress?.uppercase() == macAddress }
-				device?.context?.state?.map { it.status != TrackerStatus.DISCONNECTED }
-					?: flowOf(false)
-			}
-			.filter { it }
-			.first()
-	}

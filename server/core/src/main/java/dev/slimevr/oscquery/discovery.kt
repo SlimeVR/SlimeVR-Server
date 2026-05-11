@@ -4,12 +4,13 @@ import com.appstractive.dnssd.DiscoveryEvent
 import com.appstractive.dnssd.discoverServices
 import dev.slimevr.AppLogger
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 private const val OSC_JSON_SERVICE_TYPE = "_oscjson._tcp"
@@ -17,6 +18,7 @@ private const val OSC_JSON_SERVICE_TYPE = "_oscjson._tcp"
 class OscQueryDiscovery(
 	private val serviceType: String = OSC_JSON_SERVICE_TYPE,
 	private val serviceFilter: (String) -> Boolean = { true },
+	private val discoverServicesFlow: (String) -> Flow<DiscoveryEvent> = ::discoverServices,
 ) {
 	private val mutableServices = MutableStateFlow<List<OscQueryService>>(emptyList())
 	val services: StateFlow<List<OscQueryService>> = mutableServices.asStateFlow()
@@ -25,11 +27,11 @@ class OscQueryDiscovery(
 
 	fun start(scope: CoroutineScope) {
 		if (job != null) return
-		job = scope.launch(Dispatchers.Default) {
-			discoverServices(serviceType).collectLatest { event ->
+		job = scope.launch {
+			discoverServicesFlow(serviceType).collect { event ->
 				when (event) {
 					is DiscoveryEvent.Discovered -> {
-						if (!serviceFilter(event.service.name)) return@collectLatest
+						if (!serviceFilter(event.service.name)) return@collect
 						event.resolve()
 					}
 
@@ -40,8 +42,8 @@ class OscQueryDiscovery(
 		}
 	}
 
-	fun close() {
-		job?.cancel()
+	suspend fun close() {
+		job?.cancelAndJoin()
 		job = null
 		mutableServices.value = emptyList()
 	}

@@ -5,10 +5,13 @@ import dev.slimevr.AppLogger
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import io.ktor.network.selector.SelectorManager
+import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.InetSocketAddress
 import io.ktor.network.sockets.aSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.measureTime
@@ -33,6 +36,10 @@ object UdpServerBaseBehaviour : UdpServerBehaviour {
 }
 
 class UdpServer(val context: UdpServerContext) {
+	private var receiveJob: Job? = null
+	private var socket: BoundDatagramSocket? = null
+	private var selectorManager: SelectorManager? = null
+
 	fun startObserving() = context.observeAll(this)
 
 	fun findConnectionForDevice(deviceId: Int): UDPConnection? = context.state.value.connections.values.find { conn ->
@@ -40,12 +47,14 @@ class UdpServer(val context: UdpServerContext) {
 	}
 
 	fun startReceiving(appContext: AppContextProvider, scope: CoroutineScope) {
-		scope.launch {
+		if (receiveJob != null) return
+		receiveJob = scope.launch {
 			val port = appContext.config.settings.context.state.value.data.trackerPort
 			val selectorManager = SelectorManager(Dispatchers.IO)
 			val socket = aSocket(selectorManager).udp().bind(port = port)
-
-			launch {
+			this@UdpServer.selectorManager = selectorManager
+			this@UdpServer.socket = socket
+			try {
 				while (isActive) {
 					val recvPacket = socket.receive()
 					val took = measureTime {
@@ -79,8 +88,21 @@ class UdpServer(val context: UdpServerContext) {
 						AppLogger.udp.warn("Packet processing took too long ${took.inWholeMilliseconds}")
 					}
 				}
+			} finally {
+				this@UdpServer.receiveJob = null
+				this@UdpServer.socket = null
+				this@UdpServer.selectorManager = null
+				socket.close()
+				selectorManager.close()
 			}
 		}
+	}
+
+	suspend fun dispose() {
+		socket?.close()
+		selectorManager?.close()
+		receiveJob?.cancelAndJoin()
+		receiveJob = null
 	}
 
 	companion object {

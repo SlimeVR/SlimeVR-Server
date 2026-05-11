@@ -39,8 +39,13 @@ class BVHRecordingBehaviour(
 			.distinctUntilChanged()
 			.onEach { (recording, path) ->
 				if (recording && stream == null) {
-					val resolvedPath = resolveBvhPath(storage, path ?: return@onEach) ?: return@onEach
+					val resolvedPath = resolveBvhPath(storage, path ?: return@onEach)
+					if (resolvedPath == null) {
+						receiver.context.dispatch(BVHActions.StopRecording)
+						return@onEach
+					}
 					try {
+						AppLogger.bvh.info("Opening BVH recording at ${storage.displayPath(resolvedPath)}")
 						stream = BvhStream(storage.openTextFile(resolvedPath)).also {
 							it.writeHeader(skeleton.computed.value)
 							// TODO: we could write the initial T-Pose or whatever here
@@ -51,6 +56,7 @@ class BVHRecordingBehaviour(
 					}
 				} else if (!recording && stream != null) {
 					try {
+						AppLogger.bvh.info("Finalizing BVH recording")
 						stream?.close()
 					} catch (e: Exception) {
 						AppLogger.bvh.error("Failed to finalize BVH recording", e)
@@ -61,7 +67,12 @@ class BVHRecordingBehaviour(
 			}.launchIn(receiver.context.scope)
 
 		skeleton.computed.onEach { bones ->
-			stream?.writeFrame(bones)
+			try {
+				stream?.writeFrame(bones)
+			} catch (e: Exception) {
+				AppLogger.bvh.error("Failed to write BVH frame", e)
+				receiver.context.dispatch(BVHActions.StopRecording)
+			}
 		}.launchIn(receiver.context.scope)
 	}
 }

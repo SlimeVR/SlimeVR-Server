@@ -116,4 +116,5 @@ abstract class TestAppContext : AppContextProvider {
 	override val vmcManager: VMCManager get() = error("not used in test")
 	override val vrcOscManager: VRCOSCManager get() = error("not used in test")
 	override fun startObserving() {}
+	override suspend fun dispose() = Unit
 }

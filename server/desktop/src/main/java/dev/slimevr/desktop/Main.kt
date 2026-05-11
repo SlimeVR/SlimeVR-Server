@@ -29,10 +29,11 @@ import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrcosc.VRCOSCManager
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-fun main(args: Array<String>) = runBlocking {
+fun main(args: Array<String>) = runBlocking<Unit> {
 	ContextDebug.enabled = System.getProperty("slimevr.debug.context") == "true" ||
 		System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
 
@@ -78,12 +79,16 @@ fun main(args: Array<String>) = runBlocking {
 		vrcOscManager = vrcOscManager,
 	)
 
-	appContext.startObserving()
+	try {
+		appContext.startObserving()
 
-	launch { createDesktopHIDManager(appContext, this) }
-	launch { createSolarXRWebsocketServer(appContext) }
-	launch { createIpcServers(appContext) }
-	launch { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
+		launch { createDesktopHIDManager(appContext, this) }
+		launch { createSolarXRWebsocketServer(appContext) }
+		launch { createIpcServers(appContext) }
+		launch { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
 
-	Unit
+		awaitCancellation()
+	} finally {
+		appContext.dispose()
+	}
 }

@@ -75,9 +75,10 @@ class Context<S, A>(
 			mutableStateFlow.update { currentState -> reduce(currentState, action) }
 			return
 		}
+		val caller = captureCallerBehaviour()
 		val before = mutableStateFlow.value
 		mutableStateFlow.update { currentState -> reduce(currentState, action) }
-		debugMiddleware.onDispatch(null, before, action, mutableStateFlow.value)
+		debugMiddleware.onDispatch(caller, before, action, mutableStateFlow.value)
 	}
 
 	fun dispatchAll(actions: List<A>) {
@@ -87,11 +88,12 @@ class Context<S, A>(
 			}
 			return
 		}
+		val caller = captureCallerBehaviour()
 		val before = mutableStateFlow.value
 		mutableStateFlow.update { currentState ->
 			actions.fold(currentState) { s, action -> reduce(s, action) }
 		}
-		debugMiddleware.onDispatchAll(null, before, actions, mutableStateFlow.value)
+		debugMiddleware.onDispatchAll(caller, before, actions, mutableStateFlow.value)
 	}
 
 	fun <C> observeAll(receiver: C) = behaviours.snapshot().forEach { behaviour ->
@@ -105,6 +107,16 @@ class Context<S, A>(
 		}
 	}
 
+	private fun captureCallerBehaviour(): String? {
+		val knownBehaviourClasses = behaviours.snapshot().mapTo(HashSet()) { behaviour ->
+			behaviour::class.qualifiedName ?: behaviour::class.simpleName.orEmpty()
+		}
+		return Throwable().stackTrace
+			.firstOrNull { frame -> frame.className in knownBehaviourClasses }
+			?.className
+			?.substringAfterLast('.')
+	}
+
 	companion object {
 		fun <S, A> create(
 			initialState: S,
@@ -114,7 +126,8 @@ class Context<S, A>(
 			name: String,
 		): Context<S, A> {
 			val mutableStateFlow = MutableStateFlow(initialState)
-			val scopeWithName = CoroutineScope(scope.coroutineContext + CoroutineName(name))
+			val contextJob = SupervisorJob(scope.coroutineContext[Job])
+			val scopeWithName = CoroutineScope(scope.coroutineContext + contextJob + CoroutineName(name))
 			val effectiveDebugMiddleware = if (ContextDebug.enabled) debugMiddleware else null
 			val context = Context(
 				mutableStateFlow,
