@@ -19,6 +19,8 @@ interface Behaviour<S, A, C> {
 	fun observe(receiver: C) {}
 }
 
+//TODO: missing remove + prob a unobserve or something to clear the stuff launched
+// in a observe -> each behaviour is prob gonna need its own scope
 class BehaviourList<S, A>(
 	initial: List<Behaviour<S, A, *>>,
 ) {
