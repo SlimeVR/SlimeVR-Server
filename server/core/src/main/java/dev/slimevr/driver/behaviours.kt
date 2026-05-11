@@ -30,7 +30,9 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val tracker = receiver.context.state.value.trackers[event.trackerId]
 			if (tracker != null) {
-				tracker.context.dispatch(TrackerActions.SetRotation(rotation = event.rotation))
+				tracker.context.dispatch(TrackerActions.Update {
+					copy(rawRotation = event.rotation, position = event.position)
+				})
 			} else {
 				AppLogger.steamvr.warn("Failed to find tracker ${event.trackerId}")
 			}
