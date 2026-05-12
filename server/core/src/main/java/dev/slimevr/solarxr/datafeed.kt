@@ -105,7 +105,7 @@ private fun createDevice(
 private fun createBone(bone: BoneState): solarxr_protocol.data_feed.Bone = solarxr_protocol.data_feed.Bone(
 	bodyPart = bone.bodyPart,
 	rotationG = bone.rotation.let { Quat(it.x, it.y, it.z, it.w) },
-	boneLength = bone.length,
+	boneLength = bone.offset.len(),
 	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) },
 )
 

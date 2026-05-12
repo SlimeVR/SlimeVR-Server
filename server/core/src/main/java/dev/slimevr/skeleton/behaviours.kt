@@ -38,7 +38,7 @@ class ProportionsBehaviour : SkeletonBehaviour {
 		is SkeletonActions.SetProportions -> {
 			val bones = action.lengths.toBoneOffsets()
 			val newBones = state.rawBones.mapValues { (bodyPart, bone) ->
-				bone.copy(length = bones[bodyPart]?.len() ?: bone.length)
+				bone.copy(offset = bones[bodyPart] ?: bone.offset)
 			}
 			state.copy(rawBones = newBones, userHeight = action.lengths.height())
 		}

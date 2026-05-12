@@ -9,5 +9,3 @@ private val FINGER_OFFSETS = (
 	).map { it.second }.associateWith { Vector3(0f, -0.025f, 0f) }
 
 val DEFAULT_BONE_OFFSETS: Map<BodyPart, Vector3> = DEFAULT_PROPORTIONS.toBoneOffsets() + FINGER_OFFSETS
-
-val DEFAULT_BONE_DIRECTIONS: Map<BodyPart, Vector3> = DEFAULT_BONE_OFFSETS.mapValues { (_, vec) -> vec.unit() }

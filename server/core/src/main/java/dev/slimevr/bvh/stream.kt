@@ -97,9 +97,8 @@ class BvhStream(
 	}
 
 	private fun getBvhOffset(parentPart: BodyPart, bones: Map<BodyPart, BoneState>): Vector3 {
-		val tailOffsetLocal = DEFAULT_BONE_OFFSETS[parentPart] ?: return Vector3.NULL
-		val parentLength = bones[parentPart]?.length ?: 0f
-		return tailOffsetLocal.unit() * (parentLength * OFFSET_SCALE)
+		val offset = bones[parentPart]?.offset ?: return Vector3.NULL
+		return offset * OFFSET_SCALE
 	}
 
 	private suspend fun writeRotations(part: BodyPart, bones: Map<BodyPart, BoneState>) {

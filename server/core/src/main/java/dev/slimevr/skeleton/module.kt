@@ -13,14 +13,14 @@ import solarxr_protocol.rpc.SkeletonBone
 
 data class RawBone(
 	val bodyPart: BodyPart,
-	val length: Float,
+	val offset: Vector3,
 	val rawRotation: Quaternion,
 	val rawPosition: Vector3,
 )
 
 data class BoneState(
 	val bodyPart: BodyPart,
-	val length: Float,
+	val offset: Vector3,
 	val rotation: Quaternion = Quaternion.IDENTITY,
 	val headPosition: Vector3 = Vector3.NULL,
 	val tailPosition: Vector3 = Vector3.NULL,
@@ -42,29 +42,27 @@ val DEFAULT_SKELETON_STATE: SkeletonState = run {
 			BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT -> Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
 			else -> Quaternion.IDENTITY
 		}
-		bodyPart to BoneState(bodyPart = bodyPart, length = tailOffset.len(), rotation = restRotation)
+		bodyPart to BoneState(bodyPart = bodyPart, offset = tailOffset, rotation = restRotation)
 	}
-	SkeletonState(rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, length = bone.length, rawPosition = Vector3.NULL) }, userHeight = DEFAULT_HEIGHT)
+	SkeletonState(rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL) }, userHeight = DEFAULT_HEIGHT)
 }
 
 fun buildBones(
 	state: SkeletonState,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
-	tailDirections: Map<BodyPart, Vector3> = DEFAULT_BONE_DIRECTIONS,
 ): Map<BodyPart, BoneState> {
 	val result = mutableMapOf<BodyPart, BoneState>()
 	hierarchy.forEach { (parentPart, childPart) ->
 		val rawBone = state.rawBones[childPart] ?: return@forEach
-		val tailDirection = tailDirections[childPart] ?: return@forEach
 		val parentBone = parentPart?.let { result[it] }
 		val head = parentBone?.tailPosition ?: rootHead
 		result[childPart] = BoneState(
 			bodyPart = rawBone.bodyPart,
-			length = rawBone.length,
+			offset = rawBone.offset,
 			headPosition = head,
 			rotation = rawBone.rawRotation,
-			tailPosition = head + rawBone.rawRotation.sandwich(tailDirection * rawBone.length),
+			tailPosition = head + rawBone.rawRotation.sandwich(rawBone.offset),
 			parentBone = parentBone,
 		)
 	}
