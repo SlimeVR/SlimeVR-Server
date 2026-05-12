@@ -37,7 +37,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 		receiver.inbound.on<DriverBridgeInbound.TrackerBattery> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
 			receiver.appContext.server.getTracker(trackerId)?.let { tracker ->
-				val device = tracker.server.getDevice(tracker.context.state.value.deviceId) ?: error("could not find device")
+				val device = tracker.appContext.server.getDevice(tracker.context.state.value.deviceId) ?: error("could not find device")
 				device.context.dispatch(
 					DeviceActions.Update {
 						copy(
@@ -116,8 +116,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 				sensorType = null,
 				hardwareId = serial,
 				origin = DeviceOrigin.DRIVER,
-				server = server,
-				settings = settings,
+				appContext = receiver.appContext
 			)
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 

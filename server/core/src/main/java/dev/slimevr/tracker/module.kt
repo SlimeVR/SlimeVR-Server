@@ -1,7 +1,6 @@
 package dev.slimevr.tracker
 
-import dev.slimevr.VRServer
-import dev.slimevr.config.Settings
+import dev.slimevr.AppContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
@@ -49,7 +48,7 @@ typealias TrackerBehaviour = Behaviour<TrackerState, TrackerActions, Tracker>
 
 class Tracker(
 	val context: TrackerContext,
-	val server: VRServer,
+	val appContext: AppContextProvider,
 ) {
 	companion object {
 		fun create(
@@ -60,10 +59,10 @@ class Tracker(
 			sensorType: ImuType?,
 			hardwareId: String,
 			origin: DeviceOrigin,
-			server: VRServer,
-			settings: Settings,
+			appContext: AppContextProvider,
 		): Tracker {
-			val trackerConfigs = settings.context.state.value.data.trackers
+			val settings = appContext.config.settings
+			val trackerConfigs = appContext.config.settings.context.state.value.data.trackers
 			val savedConfig = trackerConfigs[hardwareId]
 			val baseState = TrackerState(
 				id = id,
@@ -95,6 +94,7 @@ class Tracker(
 				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerTPSBehaviour,
 				TrackerTapDetectionBehaviour,
+				TrackerToSkeletonBehaviour,
 			)
 			val context = Context.create(
 				initialState = trackerState,
@@ -106,7 +106,7 @@ class Tracker(
 				),
 				name = "Tracker[$hardwareId]",
 			)
-			val tracker = Tracker(context = context, server)
+			val tracker = Tracker(context = context, appContext)
 			behaviours.forEach { it.observe(tracker) }
 			return tracker
 		}

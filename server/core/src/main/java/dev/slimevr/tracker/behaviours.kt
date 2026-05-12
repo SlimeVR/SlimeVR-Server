@@ -1,9 +1,13 @@
 package dev.slimevr.tracker
 
+import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlin.concurrent.atomics.AtomicInt
@@ -41,7 +45,7 @@ object TrackerTapDetectionBehaviour : TrackerBehaviour {
 				val accelDelta = max - min
 
 				if (accelDelta > NEEDED_ACCEL_DELTA && !waitForLowAccel) {
-					val othersOverThreshold = receiver.server.context.state.value.trackers.values
+					val othersOverThreshold = receiver.appContext.server.context.state.value.trackers.values
 						.count { it.context.state.value.id != current.id && it.context.state.value.acceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED }
 					if (othersOverThreshold <= 1) {
 						tapTimestamps.add(now)
@@ -115,4 +119,22 @@ object TrackerTPSBehaviour : TrackerBehaviour {
 			}
 		}
 	}
+}
+
+object TrackerToSkeletonBehaviour : TrackerBehaviour {
+
+	override fun observe(receiver: Tracker) {
+		receiver.context.state
+			.filter { it.bodyPart != null }
+			.map { Pair(it.bodyPart, it.rawRotation) }
+			.distinctUntilChanged()
+			.onEach { (bodyPart, rotation) ->
+				bodyPart?.let {
+					receiver.appContext.skeleton.context.dispatch(
+						SkeletonActions.SetBoneRotation(it, rotation)
+					)
+				}
+		}.launchIn(receiver.context.scope)
+	}
+
 }

@@ -68,7 +68,7 @@ class AppContext(
 		trackingChecklist.startObserving(this)
 		udpServer.startReceiving(this, server.context.scope)
 		vmcManager.startObserving()
-		vrcOscManager.startObserving()
+		vrcOscManager.startObserving(this)
 	}
 
 	override suspend fun dispose() {

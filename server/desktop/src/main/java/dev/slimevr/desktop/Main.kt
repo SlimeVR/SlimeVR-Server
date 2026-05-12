@@ -56,7 +56,6 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(skeleton = skeleton, ctx = phase1, scope = this)
 	val vrcOscManager = VRCOSCManager.create(
-		skeleton = skeleton,
 		ctx = phase1,
 		scope = this,
 		oscQueryAddress = resolveDesktopOscQueryAddress(),

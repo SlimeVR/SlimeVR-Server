@@ -98,14 +98,13 @@ object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 				} else {
 					val trackerId = receiver.appContext.server.nextHandle()
 					val newTracker = Tracker.create(
-						scope = receiver.appContext.server.context.scope,
-						id = trackerId,
-						deviceId = deviceState.id,
-						sensorType = packet.imuType,
-						hardwareId = deviceState.address,
-						origin = DeviceOrigin.HID,
-						server = receiver.appContext.server,
-						settings = receiver.appContext.config.settings,
+                        scope = receiver.appContext.server.context.scope,
+                        id = trackerId,
+                        deviceId = deviceState.id,
+                        sensorType = packet.imuType,
+                        hardwareId = deviceState.address,
+                        origin = DeviceOrigin.HID,
+						appContext = receiver.appContext
 					)
 					receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, newTracker))
 					receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, trackerId))

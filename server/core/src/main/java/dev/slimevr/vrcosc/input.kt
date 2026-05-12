@@ -1,5 +1,6 @@
 package dev.slimevr.vrcosc
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServerActions
@@ -29,17 +30,17 @@ import solarxr_protocol.rpc.VRCOSCInputState
  * disable we only mark them DISCONNECTED — they are reused on the next enable.
  */
 private class VRSystemTrackerRegistry(
-	private val ctx: Phase1ContextProvider,
+	private val appContext: AppContextProvider,
 	private val manager: VRCOSCManager,
 ) {
 	private var deviceId: Int? = null
 	private val trackerIds = mutableMapOf<VRSystemTracker, Int>()
 
 	fun trackerFor(tracker: VRSystemTracker): Tracker {
-		trackerIds[tracker]?.let { id -> ctx.server.getTracker(id)?.let { existing -> return existing } }
+		trackerIds[tracker]?.let { id -> appContext.server.getTracker(id)?.let { existing -> return existing } }
 
 		val device = findOrCreateDevice()
-		val trackerId = ctx.server.nextHandle()
+		val trackerId = appContext.server.nextHandle()
 		val bodyPart = when (tracker) {
 			VRSystemTracker.HEAD -> BodyPart.HEAD
 			VRSystemTracker.LEFT_WRIST -> BodyPart.LEFT_HAND
@@ -51,16 +52,15 @@ private class VRSystemTrackerRegistry(
 			VRSystemTracker.RIGHT_WRIST -> "VRChat right hand"
 		}
 		val runtimeTracker = Tracker.create(
+			scope = manager.context.scope,
 			id = trackerId,
 			deviceId = device.context.state.value.id,
 			sensorType = null,
 			hardwareId = "vrcosc:vrsystem:${tracker.name.lowercase()}",
 			origin = DeviceOrigin.VRC,
-			scope = manager.context.scope,
-			server = ctx.server,
-			settings = ctx.config.settings,
+			appContext = appContext,
 		)
-		ctx.server.context.dispatch(VRServerActions.NewTracker(trackerId, runtimeTracker))
+		appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, runtimeTracker))
 		runtimeTracker.context.dispatch(
 			TrackerActions.Update {
 				copy(
@@ -76,17 +76,17 @@ private class VRSystemTrackerRegistry(
 	}
 
 	fun setStatus(status: TrackerStatus) {
-		deviceId?.let { id -> ctx.server.getDevice(id) }
+		deviceId?.let { id -> appContext.server.getDevice(id) }
 			?.context?.dispatch(DeviceActions.Update { copy(status = status) })
 		for ((_, trackerId) in trackerIds) {
-			ctx.server.getTracker(trackerId)?.context?.dispatch(TrackerActions.Update { copy(status = status) })
+			appContext.server.getTracker(trackerId)?.context?.dispatch(TrackerActions.Update { copy(status = status) })
 		}
 	}
 
 	private fun findOrCreateDevice(): Device {
-		deviceId?.let { id -> ctx.server.getDevice(id)?.let { return it } }
+		deviceId?.let { id -> appContext.server.getDevice(id)?.let { return it } }
 
-		val id = ctx.server.nextHandle()
+		val id = appContext.server.nextHandle()
 		val device = Device.create(
 			scope = manager.context.scope,
 			id = id,
@@ -102,14 +102,14 @@ private class VRSystemTrackerRegistry(
 				)
 			},
 		)
-		ctx.server.context.dispatch(VRServerActions.NewDevice(id, device))
+		appContext.server.context.dispatch(VRServerActions.NewDevice(id, device))
 		deviceId = id
 		return device
 	}
 }
 
 class VRCOSCInputBehaviour(
-	private val ctx: Phase1ContextProvider,
+	private val appContext: AppContextProvider,
 ) : VRCOSCBehaviour {
 	override fun reduce(state: VRCOSCState, action: VRCOSCActions) = when (action) {
 		is VRCOSCActions.SetInput -> state.copy(
@@ -128,7 +128,7 @@ class VRCOSCInputBehaviour(
 	}
 
 	override fun observe(receiver: VRCOSCManager) {
-		val registry = VRSystemTrackerRegistry(ctx, receiver)
+		val registry = VRSystemTrackerRegistry(appContext, receiver)
 		var oscReceiver: OscReceiver? = null
 
 		receiver.context.state

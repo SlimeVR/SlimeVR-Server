@@ -1,11 +1,11 @@
 package dev.slimevr.vrcosc
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
@@ -96,9 +96,21 @@ typealias VRCOSCBehaviour = Behaviour<VRCOSCState, VRCOSCActions, VRCOSCManager>
 
 class VRCOSCManager(
 	val context: VRCOSCContext,
-	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher(),
+	val oscQueryAddress: String
 ) {
-	fun startObserving() = context.observeAll(this)
+	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher()
+
+	fun startObserving(appContext: AppContextProvider) {
+		val behaviours = listOf(
+			VRCOSCSettingsBehaviour(appContext.config.settings),
+			VRCOSCOutputBehaviour(appContext.skeleton),
+			VRCOSCInputBehaviour(appContext),
+			VRCOSCOscQueryBehaviour(localIp = oscQueryAddress),
+		)
+
+		context.behaviours.addAll(behaviours)
+		context.observeAll(this)
+	}
 
 	fun yawAlign(headRotation: Quaternion) {
 		context.scope.safeLaunch {
@@ -108,7 +120,6 @@ class VRCOSCManager(
 
 	companion object {
 		fun create(
-			skeleton: Skeleton,
 			ctx: Phase1ContextProvider,
 			scope: CoroutineScope,
 			oscQueryAddress: String,
@@ -120,16 +131,11 @@ class VRCOSCManager(
 					config = initialConfig,
 					status = VRCOSCStatus(),
 				),
+				behaviours = emptyList<VRCOSCBehaviour>(),
 				scope = scope,
-				behaviours = listOf(
-					VRCOSCSettingsBehaviour(settings),
-					VRCOSCOutputBehaviour(skeleton),
-					VRCOSCInputBehaviour(ctx),
-					VRCOSCOscQueryBehaviour(localIp = oscQueryAddress),
-				),
 				name = "VRCOSC",
 			)
-			return VRCOSCManager(context)
+			return VRCOSCManager(context, oscQueryAddress)
 		}
 	}
 }
