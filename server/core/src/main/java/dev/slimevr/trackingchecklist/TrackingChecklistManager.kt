@@ -7,13 +7,26 @@ import dev.slimevr.games.vrchat.VRCConfigListener
 import dev.slimevr.games.vrchat.VRCConfigRecommendedValues
 import dev.slimevr.games.vrchat.VRCConfigValidity
 import dev.slimevr.games.vrchat.VRCConfigValues
+import dev.slimevr.steamvr.SteamVRUtils
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
+import io.eiren.util.OperatingSystem
+import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.header
+import io.ktor.client.request.request
+import io.ktor.http.isSuccess
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.*
@@ -26,7 +39,7 @@ interface TrackingChecklistListener {
 }
 
 class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListener {
-
+	private var httpClient: HttpClient? = null
 	private val listeners: MutableList<TrackingChecklistListener> = CopyOnWriteArrayList()
 	val steps: MutableList<TrackingChecklistStepT> = mutableListOf()
 
@@ -94,6 +107,16 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 				enabled = false
 				optional = false
 				ignorable = false
+				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
+			},
+		)
+
+		steps.add(
+			TrackingChecklistStepT().apply {
+				id = TrackingChecklistStepId.STANDABLE_INSTALLED
+				enabled = false
+				optional = false
+				ignorable = true
 				visibility = TrackingChecklistStepVisibility.WHEN_INVALID
 			},
 		)
@@ -278,21 +301,55 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		} as? ISteamVRBridge
 		if (steamVRBridge != null) {
 			val steamvrConnected = steamVRBridge.isConnected()
+			val vrServerProcName = when (OperatingSystem.currentPlatform) {
+				OperatingSystem.WINDOWS -> "vrserver.exe"
+				else -> "vrserver"
+			}
+			val steamvrRunning = steamvrConnected ||
+				vrServer.processListProvider().any { proc ->
+					proc.name == vrServerProcName
+				}
+
+			val driverList = if (steamvrRunning) {
+				runBlocking {
+					if (httpClient == null) httpClient = HttpClient(CIO)
+					SteamVRUtils.getDriversList(httpClient!!)
+				}
+			} else {
+				null
+			}
+			val driver = driverList?.firstOrNull { driver ->
+				driver.manifest.name == "slimevr"
+			}
+			val standableInstalled = driverList?.any { driver ->
+				driver.manifest.name == "standable"
+			} ?: false
+
 			updateValidity(
 				TrackingChecklistStepId.STEAMVR_DISCONNECTED,
 				steamvrConnected,
 			) {
 				it.enabled = true
-				if (!steamvrConnected) {
-					it.extraData = TrackingChecklistExtraDataUnion().apply {
+				it.extraData = if (!steamvrConnected) {
+					TrackingChecklistExtraDataUnion().apply {
 						type = TrackingChecklistExtraData.TrackingChecklistSteamVRDisconnected
 						value = TrackingChecklistSteamVRDisconnectedT().apply {
 							bridgeSettingsName = steamVRBridge.getBridgeConfigKey()
+							driverInstalled = !steamvrRunning || driverList == null || driver != null
+							driverBlockedBySafeMode = driver?.blockedBySafeMode ?: false
+							driverEnabled = driver?.enabled ?: true
 						}
 					}
 				} else {
-					it.extraData = null
+					null
 				}
+			}
+
+			updateValidity(
+				TrackingChecklistStepId.STANDABLE_INSTALLED,
+				!standableInstalled,
+			) {
+				it.enabled = true
 			}
 
 			val handsEnabled = steamVRBridge.getShareSetting(TrackerRole.LEFT_HAND) || steamVRBridge.getShareSetting(TrackerRole.RIGHT_HAND)
