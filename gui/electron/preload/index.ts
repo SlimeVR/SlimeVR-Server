@@ -14,7 +14,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   close: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'close'),
   hide: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'hide'),
   minimize: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'minimize'),
-  toggleMaximize: () => ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'toggle-maximize'),
+  toggleMaximize: () =>
+    ipcRenderer.invoke(IPC_CHANNELS.WINDOW_ACTIONS, 'toggle-maximize'),
   getStorage: async (type) => {
     return {
       get: (key) =>
@@ -32,8 +33,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setTranslations: () => {},
   openDialog: (options) => ipcRenderer.invoke(IPC_CHANNELS.OPEN_DIALOG, options),
   saveDialog: (options) => ipcRenderer.invoke(IPC_CHANNELS.SAVE_DIALOG, options),
-  openConfigFolder: async () => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, await ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'config')),
-  openLogsFolder: async () => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, await ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'logs')),
+  openConfigFolder: async () =>
+    ipcRenderer.invoke(
+      IPC_CHANNELS.OPEN_FILE,
+      await ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'config')
+    ),
+  openLogsFolder: async () =>
+    ipcRenderer.invoke(
+      IPC_CHANNELS.OPEN_FILE,
+      await ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'logs')
+    ),
   openFile: (path) => ipcRenderer.invoke(IPC_CHANNELS.OPEN_FILE, path),
   ghGet: (req) => ipcRenderer.invoke(IPC_CHANNELS.GH_FETCH, req),
   setPresence: (options) => ipcRenderer.invoke(IPC_CHANNELS.DISCORD_PRESENCE, options),
