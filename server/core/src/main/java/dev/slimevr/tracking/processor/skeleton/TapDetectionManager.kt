@@ -72,7 +72,6 @@ class TapDetectionManager(
 		tapDetectors.clear()
 		registerSingleTapDetectors()
 		registerResetsDetectors()
-		LogManager.info(yawResetTracker.toString())
 	}
 
 	fun update() {
