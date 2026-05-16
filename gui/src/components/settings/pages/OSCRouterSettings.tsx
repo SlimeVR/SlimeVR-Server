@@ -208,7 +208,7 @@ export function OSCRouterSettings() {
               />
             </div>
             <Typography variant="section-title">
-              {l10n.getString('settings-osc-router-rescale_tracking')}
+              {l10n.getString('settings-osc-router-external_tracking')}
             </Typography>
             <div className="flex flex-col pb-2">
               <Typography>
@@ -223,9 +223,7 @@ export function OSCRouterSettings() {
                 outlined
                 control={control}
                 name="router.rescaleTracking"
-                label={l10n.getString(
-                  'settings-osc-router-rescale_tracking-label'
-                )}
+                label={l10n.getString('settings-osc-router-rescale_tracking')}
               />
             </div>
           </>

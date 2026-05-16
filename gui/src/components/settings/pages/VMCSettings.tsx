@@ -16,7 +16,7 @@ import { FileInput } from '@/components/commons/FileInput';
 import { VMCIcon } from '@/components/commons/icon/VMCIcon';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
-import { TipBox, WarningBox } from '@/components/commons/TipBox';
+import { TipBox } from '@/components/commons/TipBox';
 import { magic } from '@/utils/formatting';
 import {
   SettingsPageLayout,
@@ -51,7 +51,7 @@ const defaultValues = {
   },
 };
 
-export function VMCFileUpload({ suggested = false, required = false }) {
+export function VMCFileUpload({ suggested = false }) {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { l10n } = useLocalization();
   const [modelName, setModelName] = useState<string | null>(null);
@@ -108,13 +108,10 @@ export function VMCFileUpload({ suggested = false, required = false }) {
 
   return (
     <>
-      {modelName === null && required && (
-        <WarningBox>
-          {l10n.getString('settings-osc-vmc-vrm-required')}
-        </WarningBox>
-      )}
-      {modelName === null && !required && suggested && (
-        <TipBox>{l10n.getString('settings-osc-vmc-vrm-required')}</TipBox>
+      {modelName === null && suggested && (
+        <Localized id="settings-osc-vmc-vrm-required">
+          <TipBox>Tip</TipBox>
+        </Localized>
       )}
       <FileInput
         control={control}

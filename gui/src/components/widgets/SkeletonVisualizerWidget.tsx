@@ -87,10 +87,7 @@ function initializePreview(
 
   let heightOffset = 0;
 
-  const rebuildSkeleton = (
-    newSkeleton: (BoneKind | Bone)[],
-    _bones: Map<BodyPart, BoneT>
-  ) => {
+  const rebuildSkeleton = (newSkeleton: (BoneKind | Bone)[]) => {
     skeletonGroup.remove(skeletonHelper);
     skeletonHelper.dispose();
     scene.remove(skeleton[0]);
@@ -315,7 +312,7 @@ function SkeletonVisualizer({
     if (bones.size === 0) return;
     const context = previewContext.current;
     if (!context || disabled) return;
-    context.rebuildSkeleton(createChildren(bones, BoneKind.root), bones);
+    context.rebuildSkeleton(createChildren(bones, BoneKind.root));
   }, [bones.size, disabled]);
 
   useEffect(() => {

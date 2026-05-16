@@ -823,9 +823,9 @@ settings-osc-router-network-port_out =
 settings-osc-router-network-address = Network address
 settings-osc-router-network-address-description = Set the address to send out data at.
 settings-osc-router-network-address-placeholder = IPV4 address
-settings-osc-router-rescale_tracking = Rescale Tracking To Avatar Scale
+settings-osc-router-external_tracking = External tracking
+settings-osc-router-rescale_tracking = Rescale to avatar
 settings-osc-router-rescale_tracking-description = Rescale external tracking routed through OSC to avatar scale as determined by the VRM loaded in VMC settings.
-settings-osc-router-rescale_tracking-label = Rescale Tracking
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
@@ -887,7 +887,7 @@ settings-osc-vmc-vrm = VRM Avatar
 settings-osc-vmc-vrm-description = Load a VRM avatar to allow for positioning using that avatars scale. Otherwise, alignment in external programs that use VMC might be wrong.
 settings-osc-vmc-vrm-untitled_model = Untitled model
 settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
-settings-osc-vmc-vrm-required = VRM Avatar is required for proper avatar positioning over VMC!
+settings-osc-vmc-vrm-required = Loading a VRM avatar is required for proper avatar positioning over VMC!
 settings-osc-vmc-anchor_hip = Anchor at hips
 settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing. If disabled, load a VRM avatar to allow for proper positioning.
 settings-osc-vmc-anchor_hip-label = Anchor at hips
