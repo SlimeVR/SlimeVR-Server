@@ -3,7 +3,7 @@ name: SlimeVR Full Build
 on:
   push:
     branches: [main]
-    tags: ["v*"]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
 
@@ -43,11 +43,23 @@ jobs:
         uses: actions/checkout@v6
         with:
           submodules: recursive
+
+      # Due to https://github.com/awalsh128/cache-apt-pkgs-action/issues/188, we must manually
+      # add the PPA then run apt update.
       - if: matrix.platform == 'linux'
-        name: Install GCC
-        uses: egor-tensin/setup-gcc@v2
+        name: Add Ubuntu Toolchain builds PPA
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa
+          sudo apt update
+
+      - if: matrix.platform == 'linux'
+        name: Install GCC 15
+        uses: awalsh128/cache-apt-pkgs-action@v1.6.0
         with:
-          version: 16
+          add-repository: 'ppa:ubuntu-toolchain-r/ppa'
+          packages: gcc-15
+          version: 1.0
+          debug: true
       - name: Get CMake
         uses: lukka/get-cmake@latest
       - name: Configure
@@ -102,7 +114,6 @@ jobs:
       - name: Java Spotless Check
         run: ./gradlew spotlessCheck --build-cache
 
-
   build-server-jar:
     name: Build Desktop Server
     runs-on: ubuntu-latest
@@ -129,8 +140,8 @@ jobs:
         with:
           name: server-jar
           path: |
-              server/desktop/build/libs/slimevr.jar
-              server/core/resources
+            server/desktop/build/libs/slimevr.jar
+            server/core/resources
 
   build-gui-frontend:
     name: Build GUI Assets
@@ -151,7 +162,7 @@ jobs:
           cache: 'pnpm'
       - name: Build JS
         env:
-            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: pnpm i && cd gui && pnpm run build
       - name: Tar GUI Dist
         run: tar -czf slimevr-gui-dist.tar.gz -C gui/out .
@@ -163,7 +174,13 @@ jobs:
 
   package-desktop:
     name: Package Desktop (${{ matrix.platform }} - ${{ matrix.os }})
-    needs: [setup-matrix, build-server-jar, build-gui-frontend, build-bindings-provider]
+    needs:
+      [
+        setup-matrix,
+        build-server-jar,
+        build-gui-frontend,
+        build-bindings-provider,
+      ]
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix) }}
@@ -310,7 +327,8 @@ jobs:
 
   create-release:
     name: Finalize Release Draft
-    needs: [package-desktop, bundle-android, build-server-jar, build-gui-frontend]
+    needs:
+      [package-desktop, bundle-android, build-server-jar, build-gui-frontend]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
