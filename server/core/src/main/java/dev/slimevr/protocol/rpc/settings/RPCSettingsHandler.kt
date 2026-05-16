@@ -88,6 +88,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				oscRouterConfig.portOut = osc.portOut()
 				oscRouterConfig.address = osc.address()
 			}
+			oscRouterConfig.rescaleTracking = req.oscRouter().rescaleTracking()
 
 			oscRouter.refreshSettings(true)
 		}

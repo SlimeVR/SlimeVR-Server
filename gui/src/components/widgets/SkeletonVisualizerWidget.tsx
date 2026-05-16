@@ -11,14 +11,12 @@ import {
   GridHelper,
   Group,
   PerspectiveCamera,
-  Quaternion,
   Scene,
   Vector2,
   Vector3,
   WebGLRenderer,
 } from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
-import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -72,7 +70,10 @@ function initializePreview(
   });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-  const grid = new GridHelper(10, 50, GROUND_COLOR, GROUND_COLOR);
+  const gridSize = 20,
+    gridDiv = 100,
+    gridSpacing = gridSize / gridDiv;
+  const grid = new GridHelper(gridSize, gridDiv, GROUND_COLOR, GROUND_COLOR);
   grid.position.set(0, 0, 0);
   scene.add(grid);
 
@@ -85,12 +86,8 @@ function initializePreview(
   scene.add(skeleton[0]);
 
   let heightOffset = 0;
-  let skeletonOffset = 0;
 
-  const rebuildSkeleton = (
-    newSkeleton: (BoneKind | Bone)[],
-    bones: Map<BodyPart, BoneT>
-  ) => {
+  const rebuildSkeleton = (newSkeleton: (BoneKind | Bone)[]) => {
     skeletonGroup.remove(skeletonHelper);
     skeletonHelper.dispose();
     scene.remove(skeleton[0]);
@@ -101,22 +98,6 @@ function initializePreview(
     skeletonHelper.resolution.copy(resolution);
     skeletonGroup.add(skeletonHelper);
     scene.add(newSkeleton[0]);
-
-    const hmd = bones.get(BodyPart.HEAD);
-    const chest = bones.get(BodyPart.UPPER_CHEST);
-    // Check if HMD is identity, if it's then use upper chest's rotation
-    const quat = isIdentity(hmd?.rotationG)
-      ? QuaternionFromQuatT(chest?.rotationG).normalize().invert()
-      : QuaternionFromQuatT(hmd?.rotationG).normalize().invert();
-
-    // Project quat to (0x, 1y, 0z)
-    const VEC_Y = new Vector3(0, 1, 0);
-    const vec = VEC_Y.multiplyScalar(
-      new Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
-    );
-    const yawReset = new Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
-
-    skeletonGroup.rotation.setFromQuaternion(yawReset);
   };
 
   const computeUserHeight = (bones: Map<BodyPart, BoneT>) => {
@@ -132,15 +113,23 @@ function initializePreview(
     );
   };
 
-  const computeSkeletonOffset = (bones: Map<BodyPart, BoneT>) => {
+  const computeSkeletonPos = (bones: Map<BodyPart, BoneT>) => {
     const hmd = bones.get(BodyPart.HEAD);
-    // If I know the head position, don't use an offset
-    if (hmd?.headPositionG?.y !== undefined && hmd.headPositionG?.y > 0) {
-      return 0;
-    }
+    const pos = new Vector3(
+      hmd?.headPositionG?.x ?? 0,
+      hmd?.headPositionG?.y ?? 0,
+      hmd?.headPositionG?.z ?? 0
+    );
+    if (pos.length() != 0) return pos;
+    // Estimate head height based on skeleton
+    // This path should not occur, server should send some kind of root position
     const yLength = Y_PARTS.map((x) => bones.get(x));
-    if (yLength.some((x) => x === undefined)) return 0;
-    return (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0);
+    if (yLength.some((x) => x === undefined)) return pos;
+    const offset = (yLength as BoneT[]).reduce(
+      (prev, cur) => prev + cur.boneLength,
+      0
+    );
+    return new Vector3(0, offset, 0);
   };
 
   const render = (delta: number) => {
@@ -220,11 +209,14 @@ function initializePreview(
         });
       }
 
-      const newSkeletinOffset = computeSkeletonOffset(bones);
-      if (newSkeletinOffset != skeletonOffset) {
-        skeletonOffset = newSkeletinOffset;
-        skeletonGroup.position.set(0, skeletonOffset, 0);
-      }
+      // Apply height to skeleton, and horizontal position inversely to grid (to keep skeleton centered)
+      const skeletonPos = computeSkeletonPos(bones);
+      skeletonGroup.position.set(0, skeletonPos.y, 0);
+      grid.position.set(
+        -skeletonPos.x % gridSpacing,
+        0,
+        -skeletonPos.z % gridSpacing
+      );
     },
     destroy: () => {
       cancelAnimationFrame(animationFrameId);
@@ -320,7 +312,7 @@ function SkeletonVisualizer({
     if (bones.size === 0) return;
     const context = previewContext.current;
     if (!context || disabled) return;
-    context.rebuildSkeleton(createChildren(bones, BoneKind.root), bones);
+    context.rebuildSkeleton(createChildren(bones, BoneKind.root));
   }, [bones.size, disabled]);
 
   useEffect(() => {

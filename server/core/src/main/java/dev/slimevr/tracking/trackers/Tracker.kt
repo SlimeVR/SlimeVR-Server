@@ -84,7 +84,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	var allowVelocity: Boolean = false,
 
-	val isHmd: Boolean = false,
+	var isHmd: Boolean = false,
 
 	/**
 	 * If true, the tracker need the user to perform a reset

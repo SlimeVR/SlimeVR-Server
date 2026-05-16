@@ -16,6 +16,7 @@ import { FileInput } from '@/components/commons/FileInput';
 import { VMCIcon } from '@/components/commons/icon/VMCIcon';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
+import { TipBox } from '@/components/commons/TipBox';
 import { magic } from '@/utils/formatting';
 import {
   SettingsPageLayout,
@@ -50,7 +51,7 @@ const defaultValues = {
   },
 };
 
-export function VMCFileUpload() {
+export function VMCFileUpload({ suggested = false }) {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { l10n } = useLocalization();
   const [modelName, setModelName] = useState<string | null>(null);
@@ -106,22 +107,29 @@ export function VMCFileUpload() {
   });
 
   return (
-    <FileInput
-      control={control}
-      name="vrmJson"
-      rules={{
-        required: false,
-      }}
-      value="help"
-      importedFileName={
-        // if modelname is an empty string, it's an untitled model
-        modelName === ''
-          ? l10n.getString('settings-osc-vmc-vrm-untitled_model')
-          : modelName
-      }
-      label="settings-osc-vmc-vrm-file_select"
-      accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
-    />
+    <>
+      {modelName === null && suggested && (
+        <Localized id="settings-osc-vmc-vrm-required">
+          <TipBox>Tip</TipBox>
+        </Localized>
+      )}
+      <FileInput
+        control={control}
+        name="vrmJson"
+        rules={{
+          required: false,
+        }}
+        value="help"
+        importedFileName={
+          // if modelname is an empty string, it's an untitled model
+          modelName === ''
+            ? l10n.getString('settings-osc-vmc-vrm-untitled_model')
+            : modelName
+        }
+        label="settings-osc-vmc-vrm-file_select"
+        accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
+      />
+    </>
   );
 }
 
@@ -144,6 +152,8 @@ export function VMCSettings() {
       })
     ),
   });
+
+  const anchorHip = watch('vmc.anchorHip');
 
   const onSubmit = async (values: VMCSettingsForm) => {
     const settings = new ChangeSettingsRequestT();
@@ -288,17 +298,6 @@ export function VMCSettings() {
               />
             </div>
             <Typography variant="section-title">
-              {l10n.getString('settings-osc-vmc-vrm')}
-            </Typography>
-            <div className="flex flex-col pb-2">
-              <Typography>
-                {l10n.getString('settings-osc-vmc-vrm-description')}
-              </Typography>
-            </div>
-            <div className="grid gap-3 pb-5">
-              <VMCFileUpload />
-            </div>
-            <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-anchor_hip')}
             </Typography>
             <div className="flex flex-col pb-2">
@@ -314,6 +313,17 @@ export function VMCSettings() {
                 name="vmc.anchorHip"
                 label={l10n.getString('settings-osc-vmc-anchor_hip-label')}
               />
+            </div>
+            <Typography variant="section-title">
+              {l10n.getString('settings-osc-vmc-vrm')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <Typography>
+                {l10n.getString('settings-osc-vmc-vrm-description')}
+              </Typography>
+            </div>
+            <div className="grid gap-3 pb-5">
+              <VMCFileUpload suggested={!anchorHip} />
             </div>
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-mirror_tracking')}
@@ -419,7 +429,7 @@ function getVRMName(data: any): string | null {
 
       if (typeof name !== 'string') {
         error(
-          `The name of the VRM model is not a string, instead it is a ${typeof name}`
+          `The name of the VRM avatar is not a string, instead it is a ${typeof name}`
         );
         return null;
       }

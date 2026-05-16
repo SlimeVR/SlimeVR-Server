@@ -27,6 +27,7 @@ import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
+import { TipBox } from '@/components/commons/TipBox';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
@@ -229,6 +230,7 @@ export function GeneralSettings() {
 
   const {
     trackers: { automaticTrackerToggle },
+    toggles: { forceArmsFromHmd },
   } = watch();
 
   const onSubmit = (values: SettingsForm) => {
@@ -924,6 +926,11 @@ export function GeneralSettings() {
                 )}
               />
             </div>
+            {!forceArmsFromHmd && (
+              <TipBox>
+                {l10n.getString('settings-general-fk_settings-arm_fk-legacy')}
+              </TipBox>
+            )}
 
             <div className="flex flex-col pt-2">
               <Typography variant="section-title">

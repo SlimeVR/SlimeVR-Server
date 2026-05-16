@@ -169,6 +169,7 @@ class UnityArmature(localRot: Boolean) {
 
 	fun update() {
 		// Set the upper chest node's rotation to the chest's
+		// Otherwise, some applications will apply double yaw rotation (e.g. VNyan)
 		upperChestNode.localTransform.rotation = chestNode.localTransform.rotation
 		// Update the root node
 		hipsNode.update()
