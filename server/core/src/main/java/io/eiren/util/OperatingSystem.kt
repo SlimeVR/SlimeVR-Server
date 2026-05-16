@@ -41,7 +41,7 @@ enum class OperatingSystem(
 				if (currentPlatform == LINUX) {
 					val isPressureVessel = System.getenv("PRESSURE_VESSEL_RUNTIME")?.isNotEmpty() == true
 					if (isPressureVessel) {
-						dir = System.getenv("XDG_CONFIG_HOME")?.let { Path(it, SLIMEVR_IDENTIFIER).toString() }
+						dir = System.getenv("XDG_DATA_HOME")?.let { Path(it, SLIMEVR_IDENTIFIER).toString() }
 							?: System.getenv("HOME")?.let { Path(it, ".local", "share", SLIMEVR_IDENTIFIER).toString() }
 						if (dir != null) return dir
 					}
