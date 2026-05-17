@@ -17,7 +17,6 @@ enum class DeviceOrigin {
 	VMC,
 	STEAMVR,
 	SOLARXR,
-	WEBSOCKET,
 }
 
 open class Device(val origin: DeviceOrigin, val magSupport: Boolean = false) {

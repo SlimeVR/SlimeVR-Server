@@ -9,13 +9,13 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 
-public class WebsocketConnection implements GenericConnection {
+public class WebSocketConnection implements GenericConnection {
 
 	public final ConnectionContext context;
 	public final WebSocket conn;
 	public UUID id;
 
-	public WebsocketConnection(WebSocket conn) {
+	public WebSocketConnection(WebSocket conn) {
 		this.context = new ConnectionContext();
 		this.conn = conn;
 		this.id = UUID.randomUUID();
