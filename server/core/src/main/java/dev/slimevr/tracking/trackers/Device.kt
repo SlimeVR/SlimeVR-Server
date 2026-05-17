@@ -9,7 +9,18 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
-open class Device(val magSupport: Boolean = false) {
+enum class DeviceOrigin {
+	HID,
+	UDP,
+	VRCHAT,
+	OSC,
+	VMC,
+	STEAMVR,
+	SOLARXR,
+	WEBSOCKET,
+}
+
+open class Device(val origin: DeviceOrigin, val magSupport: Boolean = false) {
 	open val id: Int = nextLocalDeviceId.incrementAndGet()
 	open var name: String? = null
 	open var firmwareVersion: String? = null
@@ -25,9 +36,6 @@ open class Device(val magSupport: Boolean = false) {
 	open val mcuType: MCUType = MCUType.UNKNOWN
 
 	open val hardwareIdentifier: String = "Unknown"
-
-	val isOpenVrDevice: Boolean
-		get() = manufacturer == "OpenVR"
 
 	init {
 		CoroutineScope(Job()).launch {
