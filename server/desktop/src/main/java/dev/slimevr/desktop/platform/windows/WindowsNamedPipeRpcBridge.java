@@ -37,10 +37,15 @@ public class WindowsNamedPipeRpcBridge implements WindowsNamedPipe.PipeMessageRe
 			FastList<WindowsNamedPipeRpcConnection> removedConnections = new FastList(
 				maxConnections
 			);
-			while (true) {
+			while (!Thread.interrupted()) {
 				WindowsNamedPipe.PipeConnection newConnection = this.pipe.tryAccept();
 				if (newConnection != null) {
 					this.connections.add(new WindowsNamedPipeRpcConnection(newConnection));
+				}
+
+				if (this.connections.isEmpty()) {
+					Thread.sleep(10);
+					continue;
 				}
 
 				for (WindowsNamedPipeRpcConnection connection : this.connections) {
@@ -56,7 +61,6 @@ public class WindowsNamedPipeRpcBridge implements WindowsNamedPipe.PipeMessageRe
 
 				this.connections.removeAll(removedConnections);
 				removedConnections.clear();
-				Thread.sleep(2);
 			}
 		} catch (IOException e) {
 			LogManager.severe("[SolarXR RPC Bridge] Exception in runner thread", e);

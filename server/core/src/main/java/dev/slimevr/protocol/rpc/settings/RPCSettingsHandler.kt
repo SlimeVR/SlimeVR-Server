@@ -7,6 +7,7 @@ import dev.slimevr.filtering.TrackerFilters
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
 import dev.slimevr.tracking.trackers.TrackerPosition
@@ -401,7 +402,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
-				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
+				createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
 			fbb.finish(outbound)
 			api.apiServers.forEach { apiServer ->
 				apiServer.apiConnections.forEach { it.send(fbb.dataBuffer()) }

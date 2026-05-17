@@ -48,7 +48,7 @@ class RPCUserHeightCalibration(var rpcHandler: RPCHandler, var api: ProtocolAPI)
 
 		val res = UserHeightRecordingStatusResponse.pack(fbb, status)
 
-		val outbound = rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.UserHeightRecordingStatusResponse,
 			res,

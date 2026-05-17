@@ -5,6 +5,7 @@ import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.ProtocolAPIServer
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import dev.slimevr.serial.SerialListener
 import dev.slimevr.serial.SerialPort
 import io.eiren.util.logging.LogManager
@@ -32,7 +33,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		SerialUpdateResponse.startSerialUpdateResponse(fbb)
 		SerialUpdateResponse.addClosed(fbb, true)
 		val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
+		val outbound = createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
 		fbb.finish(outbound)
 
 		this.forAllListeners(
@@ -51,7 +52,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		SerialUpdateResponse.startSerialUpdateResponse(fbb)
 		SerialUpdateResponse.addLog(fbb, logOffset)
 		val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
+		val outbound = createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
 		fbb.finish(outbound)
 
 		this.forAllListeners(
@@ -69,8 +70,8 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		val deviceOffset = SerialDevice.createSerialDevice(fbb, portOffset, nameOffset)
 		val newSerialOffset = NewSerialDeviceResponse
 			.createNewSerialDeviceResponse(fbb, deviceOffset)
-		val outbound = rpcHandler
-			.createRPCMessage(fbb, RpcMessage.NewSerialDeviceResponse, newSerialOffset)
+		val outbound =
+			createRPCMessage(fbb, RpcMessage.NewSerialDeviceResponse, newSerialOffset)
 		fbb.finish(outbound)
 
 		this.api
@@ -92,7 +93,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		SerialUpdateResponse.startSerialUpdateResponse(fbb)
 		SerialUpdateResponse.addClosed(fbb, false)
 		val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
+		val outbound = createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
 		fbb.finish(outbound)
 
 		this.forAllListeners(
@@ -181,8 +182,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		devicesOffsets.forEach(Consumer { offset: Int -> SerialDevicesResponse.addDevices(fbb, offset) })
 		val devices = fbb.endVector()
 		val serialDeviceOffsets = SerialDevicesResponse.createSerialDevicesResponse(fbb, devices)
-		val outbound = rpcHandler
-			.createRPCMessage(fbb, RpcMessage.SerialDevicesResponse, serialDeviceOffsets)
+		val outbound = createRPCMessage(fbb, RpcMessage.SerialDevicesResponse, serialDeviceOffsets)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -220,8 +220,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 				!this.api.server.serialHandler.isConnected,
 			)
 			val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
-			val outbound = rpcHandler
-				.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
+			val outbound = createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
 			fbb.finish(outbound)
 			conn.send(fbb.dataBuffer())
 		}
@@ -240,7 +239,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 		SerialUpdateResponse.startSerialUpdateResponse(fbb)
 		SerialUpdateResponse.addClosed(fbb, !this.api.server.serialHandler.isConnected)
 		val update = SerialUpdateResponse.endSerialUpdateResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
+		val outbound = createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}

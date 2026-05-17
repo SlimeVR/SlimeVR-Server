@@ -8,6 +8,7 @@ import dev.slimevr.games.vrchat.VRCConfigValues
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import solarxr_protocol.rpc.*
 
 class RPCVRChatHandler(
@@ -40,7 +41,7 @@ class RPCVRChatHandler(
 			muted = api.server.configManager.vrConfig.vrcConfig.mutedWarnings,
 		)
 
-		val outbound = rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.VRCConfigStateChangeResponse,
 			response,
@@ -67,7 +68,7 @@ class RPCVRChatHandler(
 			muted,
 		)
 
-		val outbound = rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.VRCConfigStateChangeResponse,
 			response,

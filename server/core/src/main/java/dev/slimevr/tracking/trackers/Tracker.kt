@@ -545,4 +545,6 @@ class Tracker @JvmOverloads constructor(
 	fun setSleepTime(time: Long) {
 		this.timeScheduledSleep = time
 	}
+
+	override fun toString(): String = "Tracker $name ('$displayName' deviceId=${device?.id} trackerNum=$trackerNum)"
 }

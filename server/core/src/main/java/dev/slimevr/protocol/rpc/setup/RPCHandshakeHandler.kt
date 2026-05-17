@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import dev.slimevr.setup.HandshakeListener
 import dev.slimevr.tracking.trackers.udp.UDPDevice
 import solarxr_protocol.rpc.AddUnknownDeviceRequest
@@ -38,7 +39,7 @@ class RPCHandshakeHandler(
 				fbb,
 				string,
 			)
-		val outbound = rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.UnknownDeviceHandshakeNotification,
 			update,

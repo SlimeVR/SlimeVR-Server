@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.rpc.InstalledInfoResponse.createInstalledInfoResponse
 import solarxr_protocol.rpc.RpcMessage
@@ -34,7 +35,7 @@ class RPCInstallInfoHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		}
 		val response = udevResponse.contains("slime")
 		val fbb = FlatBufferBuilder(1024)
-		val outbound = this.rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.InstalledInfoResponse,
 			createInstalledInfoResponse(fbb, response, false),

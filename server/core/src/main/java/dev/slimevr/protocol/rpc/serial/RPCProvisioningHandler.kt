@@ -5,6 +5,7 @@ import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.ProtocolAPIServer
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import dev.slimevr.serial.ProvisioningListener
 import dev.slimevr.serial.ProvisioningStatus
 import dev.slimevr.serial.SerialPort
@@ -46,8 +47,8 @@ class RPCProvisioningHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) :
 		WifiProvisioningStatusResponse.startWifiProvisioningStatusResponse(fbb)
 		WifiProvisioningStatusResponse.addStatus(fbb, status.id)
 		val update = WifiProvisioningStatusResponse.endWifiProvisioningStatusResponse(fbb)
-		val outbound = rpcHandler
-			.createRPCMessage(fbb, RpcMessage.WifiProvisioningStatusResponse, update)
+		val outbound =
+			createRPCMessage(fbb, RpcMessage.WifiProvisioningStatusResponse, update)
 		fbb.finish(outbound)
 
 		this.forAllListeners(Consumer { conn: GenericConnection -> conn.send(fbb.dataBuffer()) })

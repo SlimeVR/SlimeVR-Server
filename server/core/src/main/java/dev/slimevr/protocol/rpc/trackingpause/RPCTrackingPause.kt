@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import dev.slimevr.trackingpause.TrackingPauseListener
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
@@ -31,7 +32,7 @@ class RPCTrackingPause(private val rpcHandler: RPCHandler, private val api: Prot
 	private fun getPauseStateResponse(trackingPaused: Boolean, messageHeader: RpcMessageHeader? = null): ByteBuffer {
 		val fbb = FlatBufferBuilder(32)
 		val state = TrackingPauseStateResponse.createTrackingPauseStateResponse(fbb, trackingPaused)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.TrackingPauseStateResponse, state, messageHeader)
+		val outbound = createRPCMessage(fbb, RpcMessage.TrackingPauseStateResponse, state, messageHeader)
 		fbb.finish(outbound)
 		return fbb.dataBuffer()
 	}
