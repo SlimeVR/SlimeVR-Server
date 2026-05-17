@@ -8,6 +8,7 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.BridgeConfig
 import dev.slimevr.desktop.platform.ProtobufMessages.*
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
+import dev.slimevr.tracking.trackers.DeviceOrigin
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByTrackerRole
@@ -140,61 +141,33 @@ abstract class SteamVRBridge(
 		if (!config.automaticSharedTrackersToggling || server.getPauseTracking()) return false
 
 		val skeleton = instance.humanPoseManager.skeleton
-		val isWaistSteamVr = skeleton.hipTracker?.device?.isOpenVrDevice == true ||
-			skeleton.waistTracker?.device?.isOpenVrDevice == true
-		// Enable waist if skeleton has an spine tracker
-		changeShareSettings(TrackerRole.WAIST, skeleton.hasSpineTracker && !isWaistSteamVr)
-
-		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
-		val hasChest = skeleton.upperChestTracker != null || skeleton.chestTracker != null
-		val isChestSteamVr = skeleton.upperChestTracker?.device?.isOpenVrDevice == true ||
-			skeleton.chestTracker?.device?.isOpenVrDevice == true
-		changeShareSettings(
-			TrackerRole.CHEST,
-			hasChest && !isChestSteamVr,
-		)
-
-		// hasFeet if lower and/or upper leg tracker is on
-		val hasLeftFoot =
-			(skeleton.leftUpperLegTracker != null || skeleton.leftLowerLegTracker != null)
-		val isLeftFootSteamVr =
-			skeleton.leftLowerLegTracker?.device?.isOpenVrDevice == true ||
-				skeleton.leftFootTracker?.device?.isOpenVrDevice == true
-
-		val hasRightFoot =
-			(skeleton.rightUpperLegTracker != null || skeleton.rightLowerLegTracker != null)
-		val isRightFootSteamVr =
-			skeleton.rightLowerLegTracker?.device?.isOpenVrDevice == true ||
-				skeleton.rightFootTracker?.device?.isOpenVrDevice == true
-		changeShareSettings(
-			TrackerRole.LEFT_FOOT,
-			hasLeftFoot && !isLeftFootSteamVr,
-		)
-		changeShareSettings(
-			TrackerRole.RIGHT_FOOT,
-			hasRightFoot && !isRightFootSteamVr,
-		)
-
-		// hasKnees is just hasFeet
-		val isLeftKneeSteamVr = skeleton.leftUpperLegTracker?.device?.isOpenVrDevice == true
-
-		val isRightKneeSteamVr = skeleton.rightUpperLegTracker?.device?.isOpenVrDevice == true
-		changeShareSettings(TrackerRole.LEFT_KNEE, hasLeftFoot && !isLeftKneeSteamVr)
-		changeShareSettings(TrackerRole.RIGHT_KNEE, hasRightFoot && !isRightKneeSteamVr)
-
-		// hasElbows if an upper arm or a lower arm tracker is on
-		val hasLeftElbow = skeleton.hasLeftArmTracker
-		val isLeftElbowSteamVr = skeleton.leftUpperArmTracker?.device?.isOpenVrDevice == true ||
-			skeleton.leftLowerArmTracker?.device?.isOpenVrDevice == true
-
-		val hasRightElbow = skeleton.hasRightArmTracker
-		val isRightElbowSteamVr = skeleton.rightUpperArmTracker?.device?.isOpenVrDevice == true ||
-			skeleton.rightLowerArmTracker?.device?.isOpenVrDevice == true
-		changeShareSettings(TrackerRole.LEFT_ELBOW, hasLeftElbow && !isLeftElbowSteamVr)
-		changeShareSettings(TrackerRole.RIGHT_ELBOW, hasRightElbow && !isRightElbowSteamVr)
-
 		// Hands aren't touched as they will override the controller's tracking
-		// Return true to say that trackers were successfully toggled automatically
+		val roleToTrackers = mapOf(
+			TrackerRole.CHEST to setOf(skeleton.upperChestTracker, skeleton.chestTracker),
+			TrackerRole.LEFT_ELBOW to setOf(skeleton.leftUpperArmTracker),
+			TrackerRole.RIGHT_ELBOW to setOf(skeleton.rightUpperArmTracker),
+			TrackerRole.WAIST to setOf(skeleton.waistTracker, skeleton.hipTracker),
+			TrackerRole.LEFT_KNEE to setOf(skeleton.leftUpperLegTracker),
+			TrackerRole.RIGHT_KNEE to setOf(skeleton.rightUpperLegTracker),
+			TrackerRole.LEFT_FOOT to setOf(skeleton.leftLowerLegTracker, skeleton.leftFootTracker),
+			TrackerRole.RIGHT_FOOT to setOf(skeleton.rightLowerLegTracker, skeleton.rightFootTracker),
+		)
+
+		for ((role, trackers) in roleToTrackers) {
+			val shouldShare = if (role == TrackerRole.WAIST) {
+				// Waist is special, it should be enabled if there is any tracker on the spine,
+				// but ignored if the waist or hip tracker is from us
+				skeleton.hasSpineTracker &&
+					!trackers.any {
+						it?.device?.origin == DeviceOrigin.STEAMVR
+					}
+			} else {
+				trackers.any {
+					it != null && it.device?.origin != DeviceOrigin.STEAMVR
+				}
+			}
+			changeShareSettings(role, shouldShare)
+		}
 		return true
 	}
 
@@ -228,6 +201,7 @@ abstract class SteamVRBridge(
 	override fun createNewTracker(trackerAdded: TrackerAdded): Tracker {
 		val device = instance.deviceManager
 			.createDevice(
+				DeviceOrigin.STEAMVR,
 				trackerAdded.trackerName,
 				null,
 				trackerAdded.manufacturer.ifEmpty { "OpenVR" },
