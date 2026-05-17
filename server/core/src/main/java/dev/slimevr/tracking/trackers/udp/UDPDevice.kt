@@ -3,6 +3,7 @@ package dev.slimevr.tracking.trackers.udp
 import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Device
+import dev.slimevr.tracking.trackers.DeviceOrigin
 import dev.slimevr.tracking.trackers.Tracker
 import java.net.InetAddress
 import java.net.SocketAddress
@@ -14,7 +15,7 @@ class UDPDevice(
 	override val hardwareIdentifier: String,
 	override val boardType: BoardType = BoardType.UNKNOWN,
 	override val mcuType: MCUType = MCUType.UNKNOWN,
-) : Device(true) {
+) : Device(DeviceOrigin.UDP, true) {
 
 	override val id: Int = nextLocalDeviceId.incrementAndGet()
 
