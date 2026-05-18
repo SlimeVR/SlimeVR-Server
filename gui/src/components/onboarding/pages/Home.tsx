@@ -7,16 +7,16 @@ import { Typography } from '@/components/commons/Typography';
 import { useNavigate } from 'react-router-dom';
 
 export function HomePage() {
-  const nav = useNavigate()
+  const nav = useNavigate();
   const { l10n } = useLocalization();
   const { applyProgress, onboardingStarted } = useOnboarding();
 
   applyProgress(0.1);
 
   const start = () => {
-    onboardingStarted()
-    nav('/onboarding/quiz/slime-set')
-  }
+    onboardingStarted();
+    nav('/onboarding/quiz/slime-set');
+  };
 
   return (
     <>

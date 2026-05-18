@@ -14,7 +14,7 @@ export function QuizRuntimeQuestion() {
 
   const next = (type: typeof vrcOsc) => {
     setVrcOSC(type);
-    onboardingEnded()
+    onboardingEnded();
     nav('/');
   };
 

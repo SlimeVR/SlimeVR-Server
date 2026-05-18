@@ -162,7 +162,7 @@ export function useProvideOnboarding() {
     setVrcOSC,
     setMocapPos,
     onboardingEnded,
-    onboardingStarted
+    onboardingStarted,
   };
 }
 

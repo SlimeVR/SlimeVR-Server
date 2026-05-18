@@ -10,9 +10,15 @@ import { QuizButton } from './SlimeSetQuestion';
 import { useNavigate } from 'react-router-dom';
 
 export function QuizMocapPosQuestion() {
-  const nav = useNavigate()
-  const { applyProgress, setMocapPos, mocapPos, playspace, setPlayspace, onboardingEnded } =
-    useOnboarding();
+  const nav = useNavigate();
+  const {
+    applyProgress,
+    setMocapPos,
+    mocapPos,
+    playspace,
+    setPlayspace,
+    onboardingEnded,
+  } = useOnboarding();
 
   const [headTracker, setHeadTracker] = useState(true);
 
@@ -21,9 +27,9 @@ export function QuizMocapPosQuestion() {
   const canContinue = (!headTracker || mocapPos) && playspace;
 
   const end = () => {
-    onboardingEnded()
-    nav('/')
-  }
+    onboardingEnded();
+    nav('/');
+  };
 
   return (
     <div className="grid w-full h-full justify-center items-center">
