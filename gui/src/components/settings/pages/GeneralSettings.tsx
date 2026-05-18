@@ -327,11 +327,9 @@ export function GeneralSettings() {
     tapDetection.yawResetEnabled = values.tapDetection.yawResetEnabled;
     tapDetection.yawResetTaps = values.tapDetection.yawResetTaps;
     tapDetection.yawResetTracker = Number(values.tapDetection.yawResetTracker);
-    console.log(tapDetection.yawResetTracker);
     tapDetection.mountingResetTracker = Number(
       values.tapDetection.mountingResetTracker
     );
-    console.log(tapDetection.mountingResetTracker);
     tapDetection.fullResetTracker = Number(
       values.tapDetection.fullResetTracker
     );
