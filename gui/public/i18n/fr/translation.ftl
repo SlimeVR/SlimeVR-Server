@@ -971,9 +971,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Passer la configuration
 onboarding-setup_warning-cancel = Continuer la configuration
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Retour à l'introduction
 onboarding-wifi_creds-v2 = Capteurs utilisant le Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1019,6 +1021,9 @@ onboarding-reset_tutorial-2 =
     La réinitialisation de l'alignement des capteurs aide à définir la façon dont ces derniers sont portés sur vous. Cela aidera si vous en avez déplacé un sur vous accidentellement.
     
     Accroupissez-vous dans une position de « ski » comme affiché sur l'assistant d'alignement des capteurs. Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
+
+## Install info
+
 
 ## Setup start
 
