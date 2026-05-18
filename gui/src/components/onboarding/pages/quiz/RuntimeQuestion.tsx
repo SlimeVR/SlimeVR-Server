@@ -7,13 +7,14 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/commons/Button';
 
 export function QuizRuntimeQuestion() {
-  const { applyProgress, setVrcOSC, vrcOsc } = useOnboarding();
+  const { applyProgress, setVrcOSC, vrcOsc, onboardingEnded } = useOnboarding();
   const nav = useNavigate();
 
   applyProgress(0.9);
 
   const next = (type: typeof vrcOsc) => {
     setVrcOSC(type);
+    onboardingEnded()
     nav('/');
   };
 

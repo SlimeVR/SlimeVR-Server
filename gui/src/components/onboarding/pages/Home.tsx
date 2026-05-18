@@ -4,12 +4,19 @@ import { Button } from '@/components/commons/Button';
 import { SlimeVRIcon } from '@/components/commons/icon/SimevrIcon';
 import { LangSelector } from '@/components/commons/LangSelector';
 import { Typography } from '@/components/commons/Typography';
+import { useNavigate } from 'react-router-dom';
 
 export function HomePage() {
+  const nav = useNavigate()
   const { l10n } = useLocalization();
-  const { applyProgress } = useOnboarding();
+  const { applyProgress, onboardingStarted } = useOnboarding();
 
   applyProgress(0.1);
+
+  const start = () => {
+    onboardingStarted()
+    nav('/onboarding/quiz/slime-set')
+  }
 
   return (
     <>
@@ -19,7 +26,7 @@ export function HomePage() {
           <Typography variant="mobile-title">
             {l10n.getString('onboarding-home')}
           </Typography>
-          <Button variant="primary" to="/onboarding/quiz/slime-set">
+          <Button variant="primary" onClick={start}>
             {l10n.getString('onboarding-home-start')}
           </Button>
         </div>

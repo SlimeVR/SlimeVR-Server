@@ -78,8 +78,7 @@ export function useProvideOnboarding() {
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
-  const { state: locatioState, pathname } = useLocation();
-  const [previousPath, setPreviousPath] = useState(pathname);
+  const { state: locatioState } = useLocation();
   const [settings, setSettings] = useState<SettingsResponseT>();
 
   useLayoutEffect(() => {
@@ -139,17 +138,6 @@ export function useProvideOnboarding() {
     setPlayspace(undefined);
   };
 
-  useEffect(() => {
-    setPreviousPath(pathname);
-
-    if (!pathname.startsWith('/onboarding') && previousPath.startsWith('/onboarding')) {
-      onboardingEnded();
-    }
-    if (pathname.startsWith('/onboarding') && !previousPath.startsWith('/onboarding')) {
-      onboardingStarted();
-    }
-  }, [pathname]);
-
   return {
     state,
     slimeSet,
@@ -173,6 +161,8 @@ export function useProvideOnboarding() {
     setUsage,
     setVrcOSC,
     setMocapPos,
+    onboardingEnded,
+    onboardingStarted
   };
 }
 
