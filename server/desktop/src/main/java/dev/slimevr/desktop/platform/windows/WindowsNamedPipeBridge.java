@@ -47,7 +47,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge
 	public void run() {
 		try {
 			pipe = new WindowsNamedPipe(this.pipeName, 1);
-			while (true) {
+			while (!Thread.interrupted()) {
 				boolean pipesUpdated = false;
 				if (connection == null) {
 					// Report that our pipe is disconnected right now
@@ -73,18 +73,21 @@ public class WindowsNamedPipeBridge extends SteamVRBridge
 					if (connection != null && connection.getState() == PipeState.OPEN) {
 						connection.waitForData(10);
 					} else {
-						try {
-							Thread.sleep(10);
-						} catch (InterruptedException e) {
-							// Do nothing.
-						}
+						Thread.sleep(10);
 					}
 				}
 			}
 		} catch (IOException e) {
 			LogManager.severe("[" + bridgeName + "] Exception in runner thread", e);
+		} catch (InterruptedException e) {
+			// Exit the thread gracefully.
 		}
-		pipe.close();
+
+		LogManager.info("[" + bridgeName + "] Bridge thread exiting");
+		if (pipe != null) {
+			pipe.close();
+			pipe = null;
+		}
 	}
 
 	@Override
