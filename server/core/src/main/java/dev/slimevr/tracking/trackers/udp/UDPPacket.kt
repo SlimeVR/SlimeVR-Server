@@ -186,17 +186,16 @@ data class UDPPacket11Serial(var serial: String = "") : UDPPacket(11) {
 }
 
 data class UDPPacket12BatteryLevel(
-	var voltage: Float = 0.0f,
+	var voltage: Float? = null,
 	var level: Float = 0.0f,
 ) : UDPPacket(12) {
 
 	override fun readData(buf: ByteBuffer) {
-		voltage = UDPUtils.getSafeBufferFloat(buf)
-		if (buf.remaining() > 3) {
+		if (buf.remaining() >= 8) {
+			voltage = UDPUtils.getSafeBufferFloat(buf)
 			level = UDPUtils.getSafeBufferFloat(buf)
 		} else {
-			level = voltage
-			voltage = 0.0f
+			level = UDPUtils.getSafeBufferFloat(buf)
 		}
 	}
 }
