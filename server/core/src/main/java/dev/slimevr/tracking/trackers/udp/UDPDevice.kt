@@ -7,6 +7,7 @@ import dev.slimevr.tracking.trackers.Tracker
 import java.net.InetAddress
 import java.net.SocketAddress
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.TimeSource
 
 class UDPDevice(
 	var address: SocketAddress,
@@ -14,6 +15,7 @@ class UDPDevice(
 	override val hardwareIdentifier: String,
 	override val boardType: BoardType = BoardType.UNKNOWN,
 	override val mcuType: MCUType = MCUType.UNKNOWN,
+	val timeslot: Int,
 ) : Device(true) {
 
 	override val id: Int = nextLocalDeviceId.incrementAndGet()
@@ -26,6 +28,8 @@ class UDPDevice(
 
 	@JvmField
 	var lastPingPacketTime: Long = 0
+	var lastPingPacketInstant = TimeSource.Monotonic.markNow()
+
 	override var name: String? = null
 		set(name) {
 			super.name = name
