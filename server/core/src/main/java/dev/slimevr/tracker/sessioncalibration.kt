@@ -1,5 +1,6 @@
 package dev.slimevr.tracker
 
+import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 
 fun applyCalibration(
@@ -19,3 +20,12 @@ fun undoCalibration(
 	attitudeAlign: Quaternion = Quaternion.IDENTITY,
 	headingAlign: Quaternion = Quaternion.IDENTITY,
 ): Quaternion = headingAlign * headingCorrect.inv() * q * headingAlign.inv() * attitudeAlign.inv()
+
+private fun eulerHeading(q: Quaternion): Quaternion =
+	Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y)
+
+fun estimateHeadingCorrect(rawRotation: Quaternion, referenceRotation: Quaternion): Quaternion =
+	eulerHeading(eulerHeading(referenceRotation).inv() * rawRotation)
+
+fun estimateAttitudeAlign(rawRotation: Quaternion, headingCorrect: Quaternion): Quaternion =
+	headingCorrect.inv() * rawRotation
