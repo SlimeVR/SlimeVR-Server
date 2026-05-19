@@ -66,7 +66,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	public void run() {
 		try {
 			this.server = createSocket();
-			while (true) {
+			while (!Thread.interrupted()) {
 				if (this.channel == null) {
 					reportDisconnected();
 					this.selector = Selector.open();
@@ -100,21 +100,24 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 					} catch (IOException ioError) {
 						this.resetChannel();
 						ioError.printStackTrace();
-						try {
-							Thread.sleep(10);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+						Thread.sleep(10);
 					}
 				}
 			}
-		} catch (ClosedByInterruptException e) {
-			// We've been told to stop
+		} catch (ClosedByInterruptException | InterruptedException e) {
+			// Exit the thread gracefully.
 		} catch (IOException e) {
 			LogManager.severe("[" + bridgeName + "] Exception in runner thread", e);
+		} finally {
+			if (this.channel != null) {
+				try {
+					this.resetChannel();
+				} catch (IOException e) {
+					// Ignore the exception, we're shutting down anyway.
+				}
+			}
+			this.socketFile.delete();
 		}
-
-		this.socketFile.delete();
 	}
 
 	@Override
