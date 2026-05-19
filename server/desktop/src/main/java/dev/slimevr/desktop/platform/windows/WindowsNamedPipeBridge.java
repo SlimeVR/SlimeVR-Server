@@ -81,12 +81,12 @@ public class WindowsNamedPipeBridge extends SteamVRBridge
 			LogManager.severe("[" + bridgeName + "] Exception in runner thread", e);
 		} catch (InterruptedException e) {
 			// Exit the thread gracefully.
-		}
-
-		LogManager.info("[" + bridgeName + "] Bridge thread exiting");
-		if (pipe != null) {
-			pipe.close();
-			pipe = null;
+		} finally {
+			LogManager.info("[" + bridgeName + "] Bridge thread exiting");
+			if (pipe != null) {
+				pipe.close();
+				pipe = null;
+			}
 		}
 	}
 

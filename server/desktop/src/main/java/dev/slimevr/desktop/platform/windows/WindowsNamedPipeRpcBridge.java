@@ -62,11 +62,11 @@ public class WindowsNamedPipeRpcBridge implements WindowsNamedPipe.PipeMessageRe
 			LogManager.severe("[SolarXR RPC Bridge] Exception in runner thread", e);
 		} catch (InterruptedException e) {
 			// Exit the thread gracefully.
-		}
-
-		if (this.pipe != null) {
-			this.pipe.close();
-			this.pipe = null;
+		} finally {
+			if (this.pipe != null) {
+				this.pipe.close();
+				this.pipe = null;
+			}
 		}
 	}
 

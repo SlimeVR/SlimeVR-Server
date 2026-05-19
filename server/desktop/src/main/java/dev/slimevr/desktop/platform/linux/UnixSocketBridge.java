@@ -108,16 +108,16 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 			// Exit the thread gracefully.
 		} catch (IOException e) {
 			LogManager.severe("[" + bridgeName + "] Exception in runner thread", e);
-		}
-
-		if (this.channel != null) {
-			try {
-				this.resetChannel();
-			} catch (IOException e) {
-				// Ignore the exception, we're shutting down anyway.
+		} finally {
+			if (this.channel != null) {
+				try {
+					this.resetChannel();
+				} catch (IOException e) {
+					// Ignore the exception, we're shutting down anyway.
+				}
 			}
+			this.socketFile.delete();
 		}
-		this.socketFile.delete();
 	}
 
 	@Override
