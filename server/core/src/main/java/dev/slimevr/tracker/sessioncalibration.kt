@@ -4,63 +4,77 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
+typealias RawRotation = Quaternion
+typealias RawAcceleration = Vector3
+
+typealias HeadingCorrection = Quaternion
+typealias AttitudeAlignment = Quaternion
+typealias HeadingAlignment = Quaternion
+
+typealias AccelerationRotation = Quaternion
+
+typealias CalibratedRotation = Quaternion
+typealias CalibratedAcceleration = Vector3
+
 data class SessionCalibration(
-	val headingCorrection: Quaternion,
-	val attitudeAlignment: Quaternion,
-	val headingAlignment: Quaternion,
+	val headingCorrection: HeadingCorrection,
+	val attitudeAlignment: AttitudeAlignment,
+	val headingAlignment: HeadingAlignment,
 )
 
 fun applyCalibration(
-	rawRotation: Quaternion,
-	headingCorrect: Quaternion = Quaternion.IDENTITY,
-	attitudeAlign: Quaternion = Quaternion.IDENTITY,
-	headingAlign: Quaternion = Quaternion.IDENTITY,
-): Quaternion =
-	headingCorrect * headingAlign.inv() * rawRotation * attitudeAlign * headingAlign
+	rawRotation: RawRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+): CalibratedRotation =
+	headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign
 
 // We reverse the order of headingAlign and attitudeAlign here since our
 //  attitude alignment is within the raw heading frame of reference, so we must
 //  bring the orientation back into that frame of reference first. Whatever is
 //  applied last must be taken off first.
 fun undoCalibration(
-	calibratedRotation: Quaternion,
-	headingCorrect: Quaternion = Quaternion.IDENTITY,
-	attitudeAlign: Quaternion = Quaternion.IDENTITY,
-	headingAlign: Quaternion = Quaternion.IDENTITY,
-): Quaternion =
+	calibratedRotation: CalibratedRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+): RawRotation =
 	headingAlign * headingCorrect.inv() * calibratedRotation * headingAlign.inv() * attitudeAlign.inv()
 
 // Acceleration needs to be rotated by raw rotation with heading corrected
 private fun accelerationRotation(
-	rawRotation: Quaternion,
-	headingCorrect: Quaternion = Quaternion.IDENTITY,
-	headingAlign: Quaternion = Quaternion.IDENTITY,
-): Quaternion = headingAlign.inv() * headingCorrect * rawRotation
+	rawRotation: RawRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+): AccelerationRotation = headingAlign.inv() * headingCorrect * rawRotation
 
 fun applyCalibration(
-	rawAcceleration: Vector3,
-	rawRotation: Quaternion,
-	headingCorrect: Quaternion = Quaternion.IDENTITY,
-	headingAlign: Quaternion = Quaternion.IDENTITY,
-): Vector3 = accelerationRotation(rawRotation, headingCorrect, headingAlign).sandwich(
-	rawAcceleration
-)
+	rawAcceleration: RawAcceleration,
+	rawRotation: RawRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+): CalibratedAcceleration =
+	accelerationRotation(rawRotation, headingCorrect, headingAlign).sandwich(
+		rawAcceleration
+	)
 
 fun undoCalibration(
-	calibratedAcceleration: Vector3,
-	rawRotation: Quaternion,
-	headingCorrect: Quaternion = Quaternion.IDENTITY,
-	headingAlign: Quaternion = Quaternion.IDENTITY,
-): Vector3 = accelerationRotation(rawRotation, headingCorrect, headingAlign).inv()
-	.sandwich(calibratedAcceleration)
+	calibratedAcceleration: CalibratedAcceleration,
+	rawRotation: RawRotation,
+	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
+	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+): RawAcceleration =
+	accelerationRotation(rawRotation, headingCorrect, headingAlign).inv()
+		.sandwich(calibratedAcceleration)
 
 private fun eulerHeading(q: Quaternion): Quaternion =
 	Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y)
 
 fun estimateHeadingCorrect(
-	rawRotation: Quaternion, referenceRotation: Quaternion
-): Quaternion = eulerHeading(eulerHeading(referenceRotation).inv() * rawRotation)
+	rawRotation: RawRotation, referenceRotation: Quaternion
+): HeadingCorrection = eulerHeading(eulerHeading(referenceRotation).inv() * rawRotation)
 
 fun estimateAttitudeAlign(
-	rawRotation: Quaternion, headingCorrect: Quaternion
-): Quaternion = headingCorrect.inv() * rawRotation
+	rawRotation: RawRotation, headingCorrect: HeadingCorrection
+): AttitudeAlignment = headingCorrect.inv() * rawRotation
