@@ -14,13 +14,13 @@ export function InnerSystemFileInput({
   value,
   onChange,
   directory,
-  ref,
+  refCallback: refCallback,
 }: {
   label: string;
   value: string | null;
   onChange: (...event: any[]) => void;
   directory: boolean;
-  ref: RefCallBack;
+  refCallback: RefCallBack;
 }) {
   const electron = useElectron();
 
@@ -38,7 +38,7 @@ export function InnerSystemFileInput({
   };
 
   return (
-    <div ref={ref} onClick={handleClick}>
+    <div ref={refCallback} onClick={handleClick}>
       {value !== null
         ? FileInputContentFile({
             directory,
@@ -77,7 +77,7 @@ export function SystemFileInput<T extends FieldValues = FieldValues>({
           label={label}
           value={value}
           onChange={onChange}
-          ref={ref}
+          refCallback={ref}
           directory={directory}
         />
       )}
