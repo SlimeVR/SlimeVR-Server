@@ -19,9 +19,9 @@ import kotlin.test.assertNotEquals
 
 class SessionCalibrationTest {
 	@TestFactory
-	fun makeRawOrientationTests(): List<DynamicTest> = roughHeading.flatMap { hC ->
-		roughAttitude.flatMap { aA ->
-			roughHeading.map { hA ->
+	fun makeRawOrientationTests(): List<DynamicTest> = heading.flatMap { hC ->
+		attitude.flatMap { aA ->
+			heading.map { hA ->
 				DynamicTest.dynamicTest(
 					"testMakeOrientation( hC: $hC, aA: $aA, hA: $hA )",
 				) {
@@ -60,9 +60,9 @@ class SessionCalibrationTest {
 	}
 
 	@TestFactory
-	fun headingCorrectTimingTests(): List<DynamicTest> = roughHeading.flatMap { hC ->
-		roughAttitude.flatMap { aA ->
-			roughHeading.map { hA ->
+	fun headingCorrectTimingTests(): List<DynamicTest> = heading.flatMap { hC ->
+		attitude.flatMap { aA ->
+			heading.map { hA ->
 				DynamicTest.dynamicTest(
 					"testHeadingCorrectTiming( hC: $hC, aA: $aA, hA: $hA )",
 				) {
@@ -95,8 +95,8 @@ class SessionCalibrationTest {
 	}
 
 	@TestFactory
-	fun headingCorrectAttitudeAlignTests(): List<DynamicTest> = roughHeading.flatMap { hC ->
-		roughAttitude.map { aA ->
+	fun headingCorrectAttitudeAlignTests(): List<DynamicTest> = heading.flatMap { hC ->
+		attitude.map { aA ->
 			DynamicTest.dynamicTest(
 				"testHeadingCorrectAttitudeAlign( hC: $hC, aA: $aA )",
 			) {
@@ -131,10 +131,10 @@ class SessionCalibrationTest {
 	@TestFactory
 	fun attitudeHeadingAlignDependenceTests(): List<DynamicTest> {
 		// Order doesn't matter if the attitude alignment has no attitude.
-		return roughAttitude.filterNot { isApproxZero(it.x) && isApproxZero(it.z) }
+		return attitude.filterNot { isApproxZero(it.x) && isApproxZero(it.z) }
 			.flatMap { aA ->
 				// Same for if heading alignment is the quaternion identity.
-				roughHeading.filterNot {
+				heading.filterNot {
 					quaternionApproxEqual(
 						it,
 						Quaternion.IDENTITY,
@@ -167,9 +167,9 @@ class SessionCalibrationTest {
 	@TestFactory
 	fun attitudeHeadingAlignOrderTests(): List<DynamicTest> {
 		// We're not proving anything if both attitude axes are of equal magnitude.
-		return roughAttitude.filterNot { FastMath.isApproxEqual(abs(it.x), abs(it.z)) }
+		return attitude.filterNot { FastMath.isApproxEqual(abs(it.x), abs(it.z)) }
 			.flatMap { aA ->
-				roughHeading.map { hA ->
+				heading.map { hA ->
 					DynamicTest.dynamicTest(
 						"testAttitudeHeadingAlignOrder( aA: $aA, hA: $hA )",
 					) {
@@ -240,7 +240,7 @@ class SessionCalibrationTest {
 
 	companion object {
 		// 5 steps
-		val roughStep = (-180..180 step 72).map { it.toFloat() }
+		val step = (-180..180 step 72).map { it.toFloat() }
 
 		// 12 steps
 		val fineStep = (-180..180 step 30).map { it.toFloat() }
@@ -248,8 +248,8 @@ class SessionCalibrationTest {
 		// Will not work when we don't know the heading correction or heading alignment,
 		//  we will need Euler angles to calculate those, and it needs to sacrifice one
 		//  axis for Euler angles to work
-		val roughAttitude = roughStep.flatMap { x ->
-			roughStep.map { z ->
+		val attitude = step.flatMap { x ->
+			step.map { z ->
 				EulerAngles(
 					EulerOrder.YZX,
 					degreeToRadian(x),
@@ -259,7 +259,7 @@ class SessionCalibrationTest {
 			}
 		}
 
-		val roughHeading = roughStep.map { y ->
+		val heading = step.map { y ->
 			Quaternion.rotationAroundYAxis(degreeToRadian(y))
 		}
 	}
