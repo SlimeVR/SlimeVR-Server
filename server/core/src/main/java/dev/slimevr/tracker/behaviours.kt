@@ -30,10 +30,10 @@ object TrackerTapDetectionBehaviour : TrackerBehaviour {
 
 		// TODO: only enable this on the trackers that have taps assigned to them
 		receiver.context.state
-			.distinctUntilChangedBy { it.acceleration }
+			.distinctUntilChangedBy { it.rawAcceleration }
 			.onEach { current ->
 				val now = System.nanoTime()
-				val magnitude = current.acceleration.len()
+				val magnitude = current.rawAcceleration.len()
 
 				accelList.add(magnitude to now)
 				while (accelList.isNotEmpty() && now - accelList.first().second > CLUMP_TIME_NS) {
@@ -46,7 +46,7 @@ object TrackerTapDetectionBehaviour : TrackerBehaviour {
 
 				if (accelDelta > NEEDED_ACCEL_DELTA && !waitForLowAccel) {
 					val othersOverThreshold = receiver.appContext.server.context.state.value.trackers.values
-						.count { it.context.state.value.id != current.id && it.context.state.value.acceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED }
+						.count { it.context.state.value.id != current.id && it.context.state.value.rawAcceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED }
 					if (othersOverThreshold <= 1) {
 						tapTimestamps.add(now)
 						waitForLowAccel = true
@@ -90,7 +90,7 @@ object TrackerBasicBehaviour : TrackerBehaviour {
 
 		is TrackerActions.SetRotation -> state.copy(
 			rawRotation = action.rotation ?: state.rawRotation,
-			acceleration = action.acceleration ?: state.acceleration,
+			rawAcceleration = action.acceleration ?: state.rawAcceleration,
 		)
 	}
 }

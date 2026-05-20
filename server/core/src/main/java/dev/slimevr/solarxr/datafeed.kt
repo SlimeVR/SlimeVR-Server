@@ -18,15 +18,12 @@ import solarxr_protocol.data_feed.device_data.DeviceData
 import solarxr_protocol.data_feed.tracker.TrackerData
 import solarxr_protocol.data_feed.tracker.TrackerDataMask
 import solarxr_protocol.data_feed.tracker.TrackerInfo
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.Ipv4Address
 import solarxr_protocol.datatypes.Temperature
 import solarxr_protocol.datatypes.TrackerId
-import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
-import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
 
@@ -62,8 +59,8 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	},
 	tps = if (trackerMask.tps == true) tracker.tps else null,
 	temp = if (trackerMask.temp == true && tracker.imuTemp != null) Temperature(temp = tracker.imuTemp) else null,
-	rawAcceleration = if (trackerMask.rawAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
-	linearAcceleration = if (trackerMask.linearAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null, // FIXME: temp value
+	rawAcceleration = if (trackerMask.rawAcceleration == true) tracker.rawAcceleration.let { Vec3f(it.x, it.y, it.z) } else null,
+	linearAcceleration = if (trackerMask.linearAcceleration == true) tracker.rawAcceleration.let { Vec3f(it.x, it.y, it.z) } else null, // FIXME: temp value
 )
 
 private fun createDevice(

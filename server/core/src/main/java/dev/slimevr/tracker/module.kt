@@ -25,7 +25,7 @@ data class TrackerState(
 	val customName: String?,
 	val mountingOrientation: Quaternion?,
 	val rawRotation: Quaternion,
-	val acceleration: Vector3,
+	val rawAcceleration: Vector3,
 	val deviceId: Int,
 	val origin: DeviceOrigin,
 	val tps: UShort,
@@ -34,6 +34,7 @@ data class TrackerState(
 	val status: TrackerStatus,
 	val completedRestCalibration: Boolean?,
 	val magStatus: MagnetometerStatus,
+	val sessionCalibration: SessionCalibration?,
 )
 
 sealed interface TrackerActions {
@@ -69,7 +70,7 @@ class Tracker(
 				hardwareId = hardwareId,
 				name = name,
 				rawRotation = Quaternion.IDENTITY,
-				acceleration = Vector3.NULL,
+				rawAcceleration = Vector3.NULL,
 				bodyPart = null,
 				mountingOrientation = null,
 				origin = origin,
@@ -82,6 +83,7 @@ class Tracker(
 				status = TrackerStatus.DISCONNECTED,
 				completedRestCalibration = false,
 				magStatus = MagnetometerStatus.NOT_SUPPORTED,
+				sessionCalibration = null,
 			)
 			val trackerState = if (savedConfig != null) {
 				restoreFromConfig(baseState, savedConfig)
