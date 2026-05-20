@@ -23,7 +23,7 @@ class SessionCalibrationTest {
 		attitude.flatMap { aA ->
 			heading.map { hA ->
 				DynamicTest.dynamicTest(
-					"testMakeOrientation( hC: $hC, aA: $aA, hA: $hA )",
+					"( hC: $hC, aA: $aA, hA: $hA )",
 				) {
 					// We can just use identity for the target orientation as only the
 					//  calibration quaternions themselves matter.
@@ -64,7 +64,7 @@ class SessionCalibrationTest {
 		attitude.flatMap { aA ->
 			heading.map { hA ->
 				DynamicTest.dynamicTest(
-					"testHeadingCorrectTiming( hC: $hC, aA: $aA, hA: $hA )",
+					"( hC: $hC, aA: $aA, hA: $hA )",
 				) {
 					// We can just use identity for the target orientation as only the
 					//  calibration quaternions themselves matter.
@@ -98,7 +98,7 @@ class SessionCalibrationTest {
 	fun headingCorrectAttitudeAlignTests(): List<DynamicTest> = heading.flatMap { hC ->
 		attitude.map { aA ->
 			DynamicTest.dynamicTest(
-				"testHeadingCorrectAttitudeAlign( hC: $hC, aA: $aA )",
+				"( hC: $hC, aA: $aA )",
 			) {
 				// We can just use identity for the target orientation as only the
 				//  calibration quaternions themselves matter.
@@ -141,7 +141,7 @@ class SessionCalibrationTest {
 					)
 				}.map { hA ->
 					DynamicTest.dynamicTest(
-						"testAttitudeHeadingAlignDependence( aA: $aA, hA: $hA )",
+						"( aA: $aA, hA: $hA )",
 					) {
 						// We can just use identity for the target orientation as only the
 						//  calibration quaternions themselves matter.
@@ -171,7 +171,7 @@ class SessionCalibrationTest {
 			.flatMap { aA ->
 				heading.map { hA ->
 					DynamicTest.dynamicTest(
-						"testAttitudeHeadingAlignOrder( aA: $aA, hA: $hA )",
+						"( aA: $aA, hA: $hA )",
 					) {
 						// We can just use identity for the target orientation as only the
 						//  calibration quaternions themselves matter.
@@ -238,6 +238,51 @@ class SessionCalibrationTest {
 		)
 	}
 
+	@TestFactory
+	fun estimateSessionCalibrationTests(): List<DynamicTest> {
+		// We can only estimate session calibration with yaw and pitch, roll cannot be
+		//  compensated for
+		return heading.flatMap { hC ->
+			pitch.map { aA ->
+				DynamicTest.dynamicTest(
+					"( hC: $hC, aA: $aA )",
+				) {
+					// We can just use identity for the target orientation as only the
+					//  calibration quaternions themselves matter.
+					testEstimateSessionCalibration(Quaternion.IDENTITY, hC, aA)
+				}
+			}
+		}
+	}
+
+	fun testEstimateSessionCalibration(
+		calibratedRotation: CalibratedRotation,
+		headingCorrect: HeadingCorrection,
+		attitudeAlign: AttitudeAlignment,
+	) {
+		val rawRotation =
+			undoCalibration(calibratedRotation, headingCorrect, attitudeAlign)
+
+		// TODO: Can we avoid needing to use twinNearest? It would be best if it was
+		//  just inherently in the right quaternion space (for both heading & attitude).
+		//  This might also just not be a problem, I'm not sure.
+		val estimatedHeadingCorrect =
+			estimateHeadingCorrect(rawRotation, Quaternion.IDENTITY)
+		quaternionAssertEquals(
+			headingCorrect,
+			estimatedHeadingCorrect.twinNearest(headingCorrect),
+			message = "Estimated heading correction is wrong"
+		)
+
+		val estimatedAttitudeAlign =
+			estimateAttitudeAlign(rawRotation, estimatedHeadingCorrect)
+		quaternionAssertEquals(
+			attitudeAlign,
+			estimatedAttitudeAlign.twinNearest(attitudeAlign),
+			message = "Estimated attitude alignment is wrong"
+		)
+	}
+
 	companion object {
 		// 5 steps
 		val step = (-180..180 step 72).map { it.toFloat() }
@@ -261,6 +306,10 @@ class SessionCalibrationTest {
 
 		val heading = step.map { y ->
 			Quaternion.rotationAroundYAxis(degreeToRadian(y))
+		}
+
+		val pitch = step.map { x ->
+			Quaternion.rotationAroundXAxis(degreeToRadian(x))
 		}
 	}
 }

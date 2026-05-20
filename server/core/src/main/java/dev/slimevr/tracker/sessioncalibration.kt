@@ -40,7 +40,7 @@ fun undoCalibration(
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
 ): RawRotation =
-	headingAlign * headingCorrect.inv() * calibratedRotation * headingAlign.inv() * attitudeAlign.inv()
+	headingCorrect.inv() * headingAlign * calibratedRotation * headingAlign.inv() * attitudeAlign.inv()
 
 // Acceleration needs to be rotated by raw rotation with heading corrected
 private fun accelerationRotation(
@@ -69,12 +69,14 @@ fun undoCalibration(
 		.sandwich(calibratedAcceleration)
 
 private fun eulerHeading(q: Quaternion): Quaternion =
-	Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y)
+	Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y).twinNearest(q)
 
 fun estimateHeadingCorrect(
 	rawRotation: RawRotation, referenceRotation: Quaternion
-): HeadingCorrection = eulerHeading(eulerHeading(referenceRotation).inv() * rawRotation)
+): HeadingCorrection =
+	eulerHeading(eulerHeading(referenceRotation).inv() * rawRotation).inv()
+		.twinNearest(referenceRotation)
 
 fun estimateAttitudeAlign(
 	rawRotation: RawRotation, headingCorrect: HeadingCorrection
-): AttitudeAlignment = headingCorrect.inv() * rawRotation
+): AttitudeAlignment = (headingCorrect * rawRotation).inv()
