@@ -5,6 +5,7 @@ import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.datafeed.createTrackerId
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import dev.slimevr.setup.TapSetupListener
 import dev.slimevr.tracking.trackers.Tracker
 import solarxr_protocol.rpc.RpcMessage
@@ -23,7 +24,7 @@ class RPCTapSetupHandler(
 		val idOffset = createTrackerId(fbb, tracker)
 		val update = TapDetectionSetupNotification.createTapDetectionSetupNotification(fbb, idOffset)
 		val outbound =
-			rpcHandler.createRPCMessage(fbb, RpcMessage.TapDetectionSetupNotification, update)
+			createRPCMessage(fbb, RpcMessage.TapDetectionSetupNotification, update)
 		fbb.finish(outbound)
 
 		forAllListeners {

@@ -17,7 +17,6 @@ enum class DeviceOrigin {
 	VMC,
 	STEAMVR,
 	SOLARXR,
-	WEBSOCKET,
 }
 
 open class Device(val origin: DeviceOrigin, val magSupport: Boolean = false) {
@@ -35,7 +34,7 @@ open class Device(val origin: DeviceOrigin, val magSupport: Boolean = false) {
 	open val boardType: BoardType = BoardType.UNKNOWN
 	open val mcuType: MCUType = MCUType.UNKNOWN
 
-	open val hardwareIdentifier: String = "Unknown"
+	open var hardwareIdentifier: String = "Unknown"
 
 	init {
 		CoroutineScope(Job()).launch {

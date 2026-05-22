@@ -20,6 +20,7 @@ import dev.slimevr.protocol.rpc.setup.RPCHandshakeHandler
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler
 import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
 import dev.slimevr.protocol.rpc.status.RPCStatusHandler
+import dev.slimevr.protocol.rpc.tracker.RPCExternalTrackerHandler
 import dev.slimevr.protocol.rpc.trackingchecklist.RPCTrackingChecklistHandler
 import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
@@ -35,6 +36,28 @@ import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.TransactionId
 import solarxr_protocol.rpc.*
 import kotlin.io.path.Path
+
+fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int, txId: Long?): Int {
+	val data = IntArray(1)
+
+	RpcMessageHeader.startRpcMessageHeader(fbb)
+	RpcMessageHeader.addMessage(fbb, messageOffset)
+	RpcMessageHeader.addMessageType(fbb, messageType)
+	txId?.let { txId ->
+		RpcMessageHeader.addTxId(fbb, TransactionId.createTransactionId(fbb, txId))
+	}
+	data[0] = RpcMessageHeader.endRpcMessageHeader(fbb)
+
+	val messages = MessageBundle.createRpcMsgsVector(fbb, data)
+
+	MessageBundle.startMessageBundle(fbb)
+	MessageBundle.addRpcMsgs(fbb, messages)
+	return MessageBundle.endMessageBundle(fbb)
+}
+
+fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int): Int = createRPCMessage(fbb, messageType, messageOffset, txId = null)
+
+fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int, respondTo: RpcMessageHeader?): Int = createRPCMessage(fbb, messageType, messageOffset, respondTo?.txId()?.id())
 
 class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeader>() {
 	private val mainScope = CoroutineScope(SupervisorJob())
@@ -54,6 +77,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCTrackingChecklistHandler(this, api)
 		RPCUserHeightCalibration(this, api)
 		RPCInstallInfoHandler(this, api)
+		RPCExternalTrackerHandler(this, api)
 
 		registerPacketListener(
 			RpcMessage.AssignTrackerRequest,
@@ -162,7 +186,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val localIp = getLocalIp() ?: return
 		val response = ServerInfosResponse
 			.createServerInfosResponse(fbb, fbb.createString(localIp))
-		val outbound = this.createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response, messageHeader)
+		val outbound = createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -175,7 +199,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val config = api.server.configManager.vrConfig.overlay
 		val response = OverlayDisplayModeResponse
 			.createOverlayDisplayModeResponse(fbb, config.isVisible, config.isMirrored)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.OverlayDisplayModeResponse, response, messageHeader)
+		val outbound = createRPCMessage(fbb, RpcMessage.OverlayDisplayModeResponse, response, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -211,7 +235,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			// might not be a good idea maybe let the client ask again
 			val fbb = FlatBufferBuilder(300)
 			val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
-			val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
+			val outbound = createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
 			fbb.finish(outbound)
 			conn.send(fbb.dataBuffer())
 		}
@@ -226,7 +250,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		val fbb = FlatBufferBuilder(300)
 		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
+		val outbound = createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -261,7 +285,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val fbb = FlatBufferBuilder(40)
 		val status = RecordBVHStatus
 			.createRecordBVHStatus(fbb, api.server.bvhRecorder.isRecording)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status, messageHeader)
+		val outbound = createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -272,7 +296,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val fbb = FlatBufferBuilder(40)
 		val status = RecordBVHStatus
 			.createRecordBVHStatus(fbb, api.server.bvhRecorder.isRecording)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status, messageHeader)
+		val outbound = createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -376,28 +400,6 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		}
 	}
 
-	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int, txId: Long?): Int {
-		val data = IntArray(1)
-
-		RpcMessageHeader.startRpcMessageHeader(fbb)
-		RpcMessageHeader.addMessage(fbb, messageOffset)
-		RpcMessageHeader.addMessageType(fbb, messageType)
-		txId?.let { txId ->
-			RpcMessageHeader.addTxId(fbb, TransactionId.createTransactionId(fbb, txId))
-		}
-		data[0] = RpcMessageHeader.endRpcMessageHeader(fbb)
-
-		val messages = MessageBundle.createRpcMsgsVector(fbb, data)
-
-		MessageBundle.startMessageBundle(fbb)
-		MessageBundle.addRpcMsgs(fbb, messages)
-		return MessageBundle.endMessageBundle(fbb)
-	}
-
-	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int): Int = createRPCMessage(fbb, messageType, messageOffset, txId = null)
-
-	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int, respondTo: RpcMessageHeader?): Int = createRPCMessage(fbb, messageType, messageOffset, respondTo?.txId()?.id())
-
 	override fun messagesCount(): Int = RpcMessage.names.size
 
 	fun onStatusSystemRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
@@ -412,7 +414,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val response = StatusSystemResponseT()
 		response.currentStatuses = statuses
 		val offset = StatusSystemResponse.pack(fbb, response)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.StatusSystemResponse, offset, messageHeader)
+		val outbound = createRPCMessage(fbb, RpcMessage.StatusSystemResponse, offset, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}

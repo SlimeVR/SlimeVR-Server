@@ -8,6 +8,7 @@ import dev.slimevr.firmware.UpdateStatusEvent
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.DeviceIdTableT
 import solarxr_protocol.rpc.FirmwareUpdateDeviceId
@@ -73,7 +74,7 @@ class RPCFirmwareUpdateHandler(
 		FirmwareUpdateStatusResponse.addProgress(fbb, event.progress.toByte())
 
 		val update = FirmwareUpdateStatusResponse.endFirmwareUpdateStatusResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.FirmwareUpdateStatusResponse,
 			update,

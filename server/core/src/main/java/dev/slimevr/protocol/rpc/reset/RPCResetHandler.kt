@@ -6,6 +6,7 @@ import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.ProtocolAPIServer
 import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.protocol.rpc.TransactionInfo
+import dev.slimevr.protocol.rpc.createRPCMessage
 import dev.slimevr.reset.ResetListener
 import solarxr_protocol.rpc.ClearMountingResetRequest
 import solarxr_protocol.rpc.ResetRequest
@@ -105,7 +106,7 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 			ResetResponse.addDuration(fbb, duration)
 
 			val update = ResetResponse.endResetResponse(fbb)
-			val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.ResetResponse, update, txId)
+			val outbound = createRPCMessage(fbb, RpcMessage.ResetResponse, update, txId)
 			fbb.finish(outbound)
 
 			return fbb.dataBuffer()

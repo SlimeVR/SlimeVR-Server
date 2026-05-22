@@ -67,6 +67,8 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 	}
 
 	fun buildDatafeed(fbb: FlatBufferBuilder, config: DataFeedConfigT, index: Int): Int {
+		val humanPoseManager = this.api.server.humanPoseManager
+
 		val devicesOffset = createDevicesData(
 			fbb,
 			config.dataMask,
@@ -77,19 +79,14 @@ class DataFeedHandler(private val api: ProtocolAPI) : ProtocolHandler<DataFeedMe
 		val trackersOffset = createSyntheticTrackersData(
 			fbb,
 			config.syntheticTrackersMask,
-			this.api.server
-				.allTrackers
-				.stream()
-				.filter(Tracker::isComputed)
-				.collect(Collectors.toList()),
+			humanPoseManager.computedTrackers,
 		)
 
-		val h = this.api.server.humanPoseManager
 		val bonesOffset =
 			createBonesData(
 				fbb,
 				config.boneMask,
-				h.allBones.toMutableList(),
+				humanPoseManager.allBones.toMutableList(),
 			)
 
 		var stayAlignedPoseOffset = 0

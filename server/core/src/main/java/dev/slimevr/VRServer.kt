@@ -34,7 +34,7 @@ import dev.slimevr.tracking.trackers.*
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.trackingchecklist.TrackingChecklistManager
 import dev.slimevr.util.ann.VRServerThread
-import dev.slimevr.websocketapi.WebSocketVRBridge
+import dev.slimevr.websocketapi.WebSocketRPCBridge
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.ann.ThreadSecure
 import io.eiren.util.collections.FastList
@@ -156,7 +156,8 @@ class VRServer @JvmOverloads constructor(
 		) { tracker: Tracker -> registerTracker(tracker) }
 
 		// Start bridges and WebSocket server
-		for (bridge in bridgeProvider(this, computedTrackers) + sequenceOf(WebSocketVRBridge(computedTrackers, this))) {
+		for (bridge in bridgeProvider(this, computedTrackers) +
+			sequenceOf(WebSocketRPCBridge(this, protocolAPI))) {
 			tasks.add(Runnable { bridge.startBridge() })
 			bridges.add(bridge)
 		}
@@ -184,15 +185,6 @@ class VRServer @JvmOverloads constructor(
 		}
 
 		instance = this
-	}
-
-	fun hasBridge(bridgeClass: Class<out Bridge?>): Boolean {
-		for (bridge in bridges) {
-			if (bridgeClass.isAssignableFrom(bridge.javaClass)) {
-				return true
-			}
-		}
-		return false
 	}
 
 	@ThreadSafe

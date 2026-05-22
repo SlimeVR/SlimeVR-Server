@@ -3,6 +3,7 @@ package dev.slimevr.protocol.rpc.status
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import dev.slimevr.status.StatusListener
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.StatusDataUnion
@@ -39,7 +40,7 @@ class RPCStatusHandler(
 		StatusSystemUpdate.addNewStatus(fbb, statusOffset)
 		val update = StatusSystemUpdate.endStatusSystemUpdate(fbb)
 
-		val outbound = this.rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.StatusSystemUpdate,
 			update,
@@ -58,7 +59,7 @@ class RPCStatusHandler(
 		StatusSystemFixed.addFixedStatusId(fbb, id.toLong())
 		val update = StatusSystemFixed.endStatusSystemFixed(fbb)
 
-		val outbound = this.rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.StatusSystemFixed,
 			update,

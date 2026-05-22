@@ -1,5 +1,6 @@
 import { Control, Controller, useForm } from 'react-hook-form';
 import {
+  BodyPart,
   ChangeSkeletonConfigRequestT,
   ResetType,
   RpcMessage,
@@ -318,9 +319,7 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
 
   const beneathFloor = useMemo(() => {
     const hmd = computedTrackers.find(
-      (tracker) =>
-        tracker.tracker.trackerId?.trackerNum === 1 &&
-        tracker.tracker.trackerId.deviceId?.id === undefined
+      (tracker) => tracker.tracker.info?.bodyPart === BodyPart.HEAD
     );
     return !(hmd?.tracker.position && hmd.tracker.position.y >= MIN_HEIGHT);
   }, [computedTrackers]);

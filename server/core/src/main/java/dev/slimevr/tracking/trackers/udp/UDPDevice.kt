@@ -12,12 +12,10 @@ import java.util.concurrent.ConcurrentHashMap
 class UDPDevice(
 	var address: SocketAddress,
 	var ipAddress: InetAddress,
-	override val hardwareIdentifier: String,
+	override var hardwareIdentifier: String,
 	override val boardType: BoardType = BoardType.UNKNOWN,
 	override val mcuType: MCUType = MCUType.UNKNOWN,
 ) : Device(DeviceOrigin.UDP, true) {
-
-	override val id: Int = nextLocalDeviceId.incrementAndGet()
 
 	@JvmField
 	var lastPacket = System.currentTimeMillis()

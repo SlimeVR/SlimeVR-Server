@@ -1,9 +1,12 @@
 package dev.slimevr.websocketapi;
 
 import dev.slimevr.VRServer;
+import dev.slimevr.bridge.Bridge;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.ProtocolAPIServer;
+import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.util.ann.VRServerThread;
 import io.eiren.util.logging.LogManager;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft_6455;
@@ -18,12 +21,11 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 
-public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
-
+public class WebSocketRPCBridge extends WebSocketServer implements ProtocolAPIServer, Bridge {
 	public final VRServer server;
 	public final ProtocolAPI protocolAPI;
 
-	public WebsocketAPI(VRServer server, ProtocolAPI protocolAPI) {
+	public WebSocketRPCBridge(VRServer server, ProtocolAPI protocolAPI) {
 		super(new InetSocketAddress(21110), Collections.singletonList(new Draft_6455()));
 		this.server = server;
 		this.protocolAPI = protocolAPI;
@@ -39,7 +41,7 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 				"[WebSocketAPI] New connection from: "
 					+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
 			);
-		conn.setAttachment(new WebsocketConnection(conn));
+		conn.setAttachment(new WebSocketConnection(conn));
 	}
 
 	/**
@@ -81,7 +83,7 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 
 	@Override
 	public void onMessage(WebSocket conn, ByteBuffer message) {
-		var connection = conn.<WebsocketConnection>getAttachment();
+		var connection = conn.<WebSocketConnection>getAttachment();
 		if (connection != null)
 			this.protocolAPI.onMessage(connection, message);
 	}
@@ -102,9 +104,50 @@ public class WebsocketAPI extends WebSocketServer implements ProtocolAPIServer {
 	}
 
 	@Override
+	@VRServerThread
+	public void dataRead() {
+		// noop
+	}
+
+	@Override
+	@VRServerThread
+	public void dataWrite() {
+		// noop
+	}
+
+	@Override
+	public void addSharedTracker(Tracker tracker) {
+		// noop
+	}
+
+	@Override
+	public void removeSharedTracker(Tracker tracker) {
+		// noop
+	}
+
+	@Override
+	public void startBridge() {
+		super.start();
+	}
+
+	@Override
+	public void stopBridge() {
+		try {
+			super.stop();
+		} catch (InterruptedException e) {
+			// noop
+		}
+	}
+
+	@Override
+	public boolean isConnected() {
+		return this.getApiConnections().count() > 0;
+	}
+
+	@Override
 	public @NotNull Stream<GenericConnection> getApiConnections() {
 		return this.getConnections().stream().map(conn -> {
-			var c = conn.<WebsocketConnection>getAttachment();
+			var c = conn.<WebSocketConnection>getAttachment();
 			return (GenericConnection) c;
 		}).filter(Objects::nonNull);
 	}

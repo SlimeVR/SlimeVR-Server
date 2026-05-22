@@ -4,6 +4,7 @@ import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createRPCMessage
 import dev.slimevr.trackingchecklist.TrackingChecklistListener
 import solarxr_protocol.rpc.*
 
@@ -30,7 +31,7 @@ class RPCTrackingChecklistHandler(
 	private fun onTrackingChecklistRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val fbb = FlatBufferBuilder(32)
 		val response = buildTrackingChecklistResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.TrackingChecklistResponse,
 			response,
@@ -48,7 +49,7 @@ class RPCTrackingChecklistHandler(
 
 		val fbb = FlatBufferBuilder(32)
 		val response = buildTrackingChecklistResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.TrackingChecklistResponse,
 			response,
@@ -60,7 +61,7 @@ class RPCTrackingChecklistHandler(
 	override fun onStepsUpdate() {
 		val fbb = FlatBufferBuilder(32)
 		val response = buildTrackingChecklistResponse(fbb)
-		val outbound = rpcHandler.createRPCMessage(
+		val outbound = createRPCMessage(
 			fbb,
 			RpcMessage.TrackingChecklistResponse,
 			response,
