@@ -67,11 +67,13 @@ class RPCExternalTrackerHandler(
 				)
 			device.hardwareIdentifier = req.name()
 
+			val id = getNextLocalTrackerId()
 			val tracker = Tracker(
-				device,
-				getNextLocalTrackerId(),
-				req.name(),
-				req.displayName(),
+				device = device,
+				id = id,
+				trackerNum = 0,
+				name = req.name(),
+				displayName = req.displayName() ?: "Tracker #$id",
 				trackerPosition = TrackerPosition.getByBodyPart(req.roleHint()),
 				hasPosition = req.tracksPosition(),
 				hasRotation = req.tracksRotation(),
