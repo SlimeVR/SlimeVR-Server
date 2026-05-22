@@ -56,7 +56,7 @@ public class WindowsNamedPipeRpcConnection implements GenericConnection {
 		src.put(bytes);
 		src.flip();
 		synchronized (this) {
-			this.connection.sendBuffer(bytes.array(), bytes.remaining());
+			this.connection.sendBuffer(src.array(), src.remaining());
 		}
 	}
 }
