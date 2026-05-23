@@ -27,6 +27,7 @@ import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.TrackingChecklistNeedCalibration
+import solarxr_protocol.rpc.TrackingChecklistPublicNetworks
 import solarxr_protocol.rpc.TrackingChecklistSteamVRDisconnected
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
@@ -187,6 +188,15 @@ class NetworkProfileCheckBehaviour(
 				TrackingChecklistStep(
 					valid = state.publicNetworks.isEmpty(),
 					enabled = state.isSupported,
+					extraData = if (state.publicNetworks.isNotEmpty()) {
+						TrackingChecklistPublicNetworks(
+							adapters = state.publicNetworks.map {
+								it.name ?: "[no name]"
+							},
+						)
+					} else {
+						null
+					},
 				)
 			}
 			.distinctUntilChanged()
