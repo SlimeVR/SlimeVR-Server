@@ -34,7 +34,8 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>) = runBlocking<Unit> {
-	ContextDebug.enabled = true
+	ContextDebug.enabled = System.getProperty("slimevr.debug.context") == "true" ||
+		System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
 
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
 	val storage = DesktopConfigStorage(configFolder.toFile())
