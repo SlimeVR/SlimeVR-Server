@@ -28,9 +28,11 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
 			receiver.appContext.server.getTracker(trackerId)?.let { tracker ->
-				tracker.context.dispatch(TrackerActions.Update {
-					copy(rawRotation = event.rotation, position = event.position)
-				})
+				tracker.context.dispatch(
+					TrackerActions.Update {
+						copy(rawRotation = event.rotation, position = event.position)
+					},
+				)
 			}
 		}
 
@@ -116,7 +118,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 				sensorType = null,
 				hardwareId = serial,
 				origin = DeviceOrigin.DRIVER,
-				appContext = receiver.appContext
+				appContext = receiver.appContext,
 			)
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 

@@ -96,7 +96,7 @@ typealias VRCOSCBehaviour = Behaviour<VRCOSCState, VRCOSCActions, VRCOSCManager>
 
 class VRCOSCManager(
 	val context: VRCOSCContext,
-	val oscQueryAddress: String
+	val oscQueryAddress: String,
 ) {
 	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher()
 

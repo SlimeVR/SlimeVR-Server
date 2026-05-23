@@ -131,10 +131,9 @@ object TrackerToSkeletonBehaviour : TrackerBehaviour {
 			.onEach { (bodyPart, rotation) ->
 				bodyPart?.let {
 					receiver.appContext.skeleton.context.dispatch(
-						SkeletonActions.SetBoneRotation(it, rotation)
+						SkeletonActions.SetBoneRotation(it, rotation),
 					)
 				}
-		}.launchIn(receiver.context.scope)
+			}.launchIn(receiver.context.scope)
 	}
-
 }

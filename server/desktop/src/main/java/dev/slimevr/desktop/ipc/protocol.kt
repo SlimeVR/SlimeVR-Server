@@ -105,22 +105,26 @@ suspend fun handleDriverConnection(
 				}
 			}
 			msg.tracker_added?.let { ta ->
-				bridge.inbound.emit(DriverBridgeInbound.TrackerAdded(
-					id = ta.tracker_id,
-					name = ta.tracker_name,
-					manufacturer = ta.manufacturer.ifEmpty { "OpenVR" },
-					serial = ta.tracker_serial
-				))
+				bridge.inbound.emit(
+					DriverBridgeInbound.TrackerAdded(
+						id = ta.tracker_id,
+						name = ta.tracker_name,
+						manufacturer = ta.manufacturer.ifEmpty { "OpenVR" },
+						serial = ta.tracker_serial,
+					),
+				)
 			}
 			msg.battery?.let { bat ->
 				bridge.inbound.emit(DriverBridgeInbound.TrackerBattery(id = bat.tracker_id, batteryLevel = bat.battery_level, charging = bat.is_charging))
 			}
 			msg.position?.let { pos ->
-				bridge.inbound.emit(DriverBridgeInbound.TrackerPosition(
-					id = pos.tracker_id,
-					rotation = Quaternion(w = pos.qw, x = pos.qx, y = pos.qy, z = pos.qz),
-					position = if (pos.x != null && pos.y != null && pos.z != null) Vector3(pos.x, pos.y, pos.z) else null,
-				))
+				bridge.inbound.emit(
+					DriverBridgeInbound.TrackerPosition(
+						id = pos.tracker_id,
+						rotation = Quaternion(w = pos.qw, x = pos.qx, y = pos.qy, z = pos.qz),
+						position = if (pos.x != null && pos.y != null && pos.z != null) Vector3(pos.x, pos.y, pos.z) else null,
+					),
+				)
 			}
 		}
 	} finally {

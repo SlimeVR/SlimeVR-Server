@@ -27,8 +27,7 @@ fun applyCalibration(
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
-): CalibratedRotation =
-	headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign
+): CalibratedRotation = headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign
 
 // We reverse the order of headingAlign and attitudeAlign here since our
 //  attitude alignment is within the raw heading frame of reference, so we must
@@ -39,8 +38,7 @@ fun undoCalibration(
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
-): RawRotation =
-	headingCorrect.inv() * headingAlign * calibratedRotation * headingAlign.inv() * attitudeAlign.inv()
+): RawRotation = headingCorrect.inv() * headingAlign * calibratedRotation * headingAlign.inv() * attitudeAlign.inv()
 
 // Acceleration needs to be rotated by raw rotation with heading corrected
 private fun accelerationRotation(
@@ -54,29 +52,27 @@ fun applyCalibration(
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
-): CalibratedAcceleration =
-	accelerationRotation(rawRotation, headingCorrect, headingAlign).sandwich(
-		rawAcceleration
-	)
+): CalibratedAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).sandwich(
+	rawAcceleration,
+)
 
 fun undoCalibration(
 	calibratedAcceleration: CalibratedAcceleration,
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
-): RawAcceleration =
-	accelerationRotation(rawRotation, headingCorrect, headingAlign).inv()
-		.sandwich(calibratedAcceleration)
+): RawAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).inv()
+	.sandwich(calibratedAcceleration)
 
-private fun eulerHeading(q: Quaternion): Quaternion =
-	Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y).twinNearest(q)
+private fun eulerHeading(q: Quaternion): Quaternion = Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y).twinNearest(q)
 
 fun estimateHeadingCorrect(
-	rawRotation: RawRotation, referenceRotation: Quaternion
-): HeadingCorrection =
-	eulerHeading(eulerHeading(referenceRotation).inv() * rawRotation).inv()
-		.twinNearest(referenceRotation)
+	rawRotation: RawRotation,
+	referenceRotation: Quaternion,
+): HeadingCorrection = eulerHeading(eulerHeading(referenceRotation).inv() * rawRotation).inv()
+	.twinNearest(referenceRotation)
 
 fun estimateAttitudeAlign(
-	rawRotation: RawRotation, headingCorrect: HeadingCorrection
+	rawRotation: RawRotation,
+	headingCorrect: HeadingCorrection,
 ): AttitudeAlignment = (headingCorrect * rawRotation).inv()

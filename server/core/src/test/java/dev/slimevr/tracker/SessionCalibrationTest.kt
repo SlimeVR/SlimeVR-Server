@@ -271,7 +271,7 @@ class SessionCalibrationTest {
 		quaternionAssertEquals(
 			headingCorrect,
 			estimatedHeadingCorrect.twinNearest(headingCorrect),
-			message = "Estimated heading correction is wrong"
+			message = "Estimated heading correction is wrong",
 		)
 
 		val estimatedAttitudeAlign =
@@ -279,7 +279,7 @@ class SessionCalibrationTest {
 		quaternionAssertEquals(
 			attitudeAlign,
 			estimatedAttitudeAlign.twinNearest(attitudeAlign),
-			message = "Estimated attitude alignment is wrong"
+			message = "Estimated attitude alignment is wrong",
 		)
 	}
 
