@@ -34,6 +34,7 @@ import solarxr_protocol.rpc.SteamVRTrackersSetting
 import solarxr_protocol.rpc.TapDetectionSettings
 import solarxr_protocol.rpc.VMCOSCSettings
 import solarxr_protocol.rpc.VRCOSCSettings
+import solarxr_protocol.rpc.VRMSettings
 import solarxr_protocol.rpc.settings.LegTweaksSettings
 import solarxr_protocol.rpc.settings.ModelRatios
 import solarxr_protocol.rpc.settings.ModelSettings
@@ -118,17 +119,26 @@ fun createVMCOSCSettings(
 			addressStringOffset,
 		)
 
-	val vrmJson = config.vrmJson
-	var vrmJsonOffset = 0
-	if (vrmJson != null) vrmJsonOffset = fbb.createString(vrmJson)
-
 	VMCOSCSettings.startVMCOSCSettings(fbb)
 	VMCOSCSettings.addOscSettings(fbb, generalSettingOffset)
-	if (vrmJson != null) VMCOSCSettings.addVrmJson(fbb, vrmJsonOffset)
 	VMCOSCSettings.addAnchorHip(fbb, config.anchorHip)
 	VMCOSCSettings.addMirrorTracking(fbb, config.mirrorTracking)
 
 	return VMCOSCSettings.endVMCOSCSettings(fbb)
+}
+
+fun createVRMSettings(
+	fbb: FlatBufferBuilder,
+	config: VMCConfig,
+): Int {
+	val vrmJson = config.vrmJson
+	var vrmJsonOffset = 0
+	if (vrmJson != null) vrmJsonOffset = fbb.createString(vrmJson)
+
+	if (vrmJson != null) {
+		return VRMSettings.createVRMSettings(fbb, vrmJsonOffset)
+	}
+	return 0
 }
 
 fun createFilterSettings(
@@ -170,6 +180,9 @@ fun createTapDetectionSettings(
 		tapDetectionConfig.mountingResetTaps,
 		tapDetectionConfig.setupMode,
 		tapDetectionConfig.numberTrackersOverThreshold,
+		0,
+		0,
+		0,
 	)
 
 fun createSteamVRSettings(fbb: FlatBufferBuilder, bridge: ISteamVRBridge?): Int {
@@ -430,8 +443,10 @@ fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
 				server.configManager.vrConfig.stayAlignedConfig,
 			),
 			createHIDSettings(fbb, server.configManager.vrConfig.hidConfig),
-			0,
-		)
+		0,
+		0,
+		createVRMSettings(fbb, server.configManager.vrConfig.vmc),
+	)
 }
 
 fun createStayAlignedSettings(

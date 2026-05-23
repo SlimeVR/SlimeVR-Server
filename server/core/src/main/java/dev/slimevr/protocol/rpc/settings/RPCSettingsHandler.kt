@@ -135,8 +135,8 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				vmcConfig.portOut = osc.portOut()
 				vmcConfig.address = osc.address()
 			}
-			if (req.vmcOsc().vrmJson() != null) {
-				vmcConfig.vrmJson = req.vmcOsc().vrmJson().ifEmpty { null }
+			req.vrm()?.vrmJson()?.let { vrmJson ->
+				vmcConfig.vrmJson = vrmJson.ifEmpty { null }
 			}
 			vmcConfig.anchorHip = req.vmcOsc().anchorHip()
 			vmcConfig.mirrorTracking = req.vmcOsc().mirrorTracking()
@@ -377,7 +377,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)

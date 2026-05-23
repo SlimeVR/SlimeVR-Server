@@ -108,14 +108,6 @@ class HumanSkeleton(
 	val rightDigitorumBrevisBone = Bone(BoneType.RIGHT_TOES_DIGITORUM_BREVIS, Constraint(ConstraintType.COMPLETE))
 	val rightAbductorDigitiMinimiBone = Bone(BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI, Constraint(ConstraintType.COMPLETE))
 
-	// Toe bones
-	val leftAbductorHallucisBone = Bone(BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS, Constraint(ConstraintType.COMPLETE))
-	val leftDigitorumBrevisBone = Bone(BoneType.LEFT_TOES_DIGITORUM_BREVIS, Constraint(ConstraintType.COMPLETE))
-	val leftAbductorDigitiMinimiBone = Bone(BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI, Constraint(ConstraintType.COMPLETE))
-	val rightAbductorHallucisBone = Bone(BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS, Constraint(ConstraintType.COMPLETE))
-	val rightDigitorumBrevisBone = Bone(BoneType.RIGHT_TOES_DIGITORUM_BREVIS, Constraint(ConstraintType.COMPLETE))
-	val rightAbductorDigitiMinimiBone = Bone(BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI, Constraint(ConstraintType.COMPLETE))
-
 	// Tracker bones
 	val headTrackerBone = Bone(BoneType.HEAD_TRACKER, Constraint(ConstraintType.COMPLETE))
 	val chestTrackerBone = Bone(BoneType.CHEST_TRACKER, Constraint(ConstraintType.COMPLETE))
