@@ -16,10 +16,7 @@ import java.net.StandardProtocolFamily;
 import java.net.UnixDomainSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.nio.channels.Selector;
-import java.nio.channels.SelectionKey;
+import java.nio.channels.*;
 import java.util.List;
 
 
@@ -30,6 +27,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	private final ByteBuffer dst = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 	private final ByteBuffer src = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 
+	private File socketFile;
 	private ServerSocketChannel server;
 	private SocketChannel channel;
 	private Selector selector;
@@ -47,7 +45,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		this.socketPath = socketPath;
 		this.socketAddress = UnixDomainSocketAddress.of(socketPath);
 
-		File socketFile = new File(socketPath);
+		socketFile = new File(socketPath);
 		if (socketFile.exists()) {
 			if (SocketUtils.isSocketInUse(socketPath)) {
 				throw new RuntimeException(
@@ -68,7 +66,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	public void run() {
 		try {
 			this.server = createSocket();
-			while (true) {
+			while (!Thread.interrupted()) {
 				if (this.channel == null) {
 					reportDisconnected();
 					this.selector = Selector.open();
@@ -102,17 +100,23 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 					} catch (IOException ioError) {
 						this.resetChannel();
 						ioError.printStackTrace();
-						try {
-							Thread.sleep(10);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+						Thread.sleep(10);
 					}
 				}
 			}
+		} catch (ClosedByInterruptException | InterruptedException e) {
+			// Exit the thread gracefully.
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogManager.severe("[" + bridgeName + "] Exception in runner thread", e);
+		} finally {
+			if (this.channel != null) {
+				try {
+					this.resetChannel();
+				} catch (IOException e) {
+					// Ignore the exception, we're shutting down anyway.
+				}
+			}
+			this.socketFile.delete();
 		}
 	}
 

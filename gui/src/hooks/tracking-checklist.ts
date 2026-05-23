@@ -32,6 +32,8 @@ export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string>
     'tracking_checklist-STAY_ALIGNED_CONFIGURED',
   [TrackingChecklistStepId.STEAMVR_HANDS_ENABLED]:
     'tracking_checklist-STEAMVR_HANDS_ENABLED',
+  [TrackingChecklistStepId.STANDABLE_INSTALLED]:
+    'tracking_checklist-STANDABLE_INSTALLED',
 };
 
 export type TrackingChecklistStepStatus =

@@ -128,11 +128,11 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
 
 handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => {
   const allowed_urls = [
-    /steam:\/\/.*/,
-    /ms-settings:network$/,
-    /https:\/\/.*\.slimevr\.dev.*/,
-    /https:\/\/github\.com\/.*/,
-    /https:\/\/discord\.gg\/slimevr$/,
+    /^steam:\/\//,
+    /^ms-settings:network$/,
+    /^https:\/\/(?:.+\.)?slimevr\.dev(?:\/.+)?$/,
+    /^https:\/\/github\.com\/SlimeVR(?:\/.+)?$/,
+    /^https:\/\/discord\.gg\/slimevr$/,
   ];
   if (allowed_urls.find((a) => url.match(a))) open(url);
   else logger.error({ url }, 'attempted to open non-whitelisted URL');
@@ -155,10 +155,11 @@ handleIpc(IPC_CHANNELS.STORAGE, async (e, { type, method, key, value }) => {
 });
 
 handleIpc(IPC_CHANNELS.DISCORD_PRESENCE, async (e, options) => {
-  if (options.enable && !discordPresence.state.ready) {
-    await discordPresence.connect();
-    discordPresence.updateActivity(options.activity);
-  } else if (!options.enable && discordPresence.state.ready) {
+  if (options.enable) {
+    if (!discordPresence.state.ready)
+      await discordPresence.connect();
+    discordPresence.updateActivity(options.activity, options.iconText);
+  } else if (discordPresence.state.ready) {
     discordPresence.destroy();
   }
 });
@@ -280,18 +281,22 @@ function createWindow() {
   });
 
   handleIpc('window-actions', (e, action) => {
+    if (mainWindow === null) return;
     switch (action) {
       case 'close':
-        mainWindow?.close();
+        mainWindow.close();
         break;
       case 'hide':
-        mainWindow?.hide();
+        mainWindow.hide();
         break;
       case 'minimize':
-        mainWindow?.minimize();
+        mainWindow.minimize();
         break;
-      case 'maximize':
-        mainWindow?.maximize();
+      case 'toggle-maximize':
+        if (mainWindow.isMaximized())
+          mainWindow.unmaximize();
+        else
+          mainWindow.maximize();
         break;
     }
   });
@@ -404,18 +409,16 @@ const spawnServer = async () => {
 
   logger.info({ javaBin, serverJar }, 'Found Java and server jar');
   const platform = getPlatform();
-  const serverWorkdir = getServerDataFolder()
 
-  const serverArgs = ['-Xmx128M', '-jar', serverJar]
-  if (options.steam) serverArgs.push(`--steam`)
-  if (options.install) serverArgs.push(`--install`)
-  if (options.noUdev) serverArgs.push(`--no-udev`)
+  const serverArgs = ['-Xmx128M', '-jar', serverJar];
+  if (options.steam) serverArgs.push('--steam');
+  if (options.install) serverArgs.push('--install');
+  if (options.noUdev) serverArgs.push('--no-udev');
 
-  serverArgs.push('run')
-
+  serverArgs.push('run');
 
   const serverProcess = spawn(javaBin, serverArgs, {
-    cwd: serverWorkdir,
+    cwd: sharedDir,
     shell: false,
     env:
       platform === 'windows'

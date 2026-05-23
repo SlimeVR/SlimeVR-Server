@@ -15,6 +15,7 @@ import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
+import dev.slimevr.desktop.platform.windows.WindowsNamedPipeRpcBridge
 import dev.slimevr.desktop.serial.DesktopSerialHandler
 import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDManager
 import dev.slimevr.tracking.trackers.Tracker
@@ -57,8 +58,8 @@ fun main(args: Array<String>) {
 	val isLinux = OperatingSystem.currentPlatform == OperatingSystem.LINUX
 	options.addOption("h", "help", false, "Show help")
 	options.addOption("V", "version", false, "Show version")
-	options.addOption("i", "install", true, "Run the driver install")
-	options.addOption("s", "steam", true, "Run the server in steam mode")
+	options.addOption("i", "install", false, "Run the driver install")
+	options.addOption("s", "steam", false, "Run the server in steam mode")
 	if (isLinux) {
 		options.addOption("u", "no-udev", false, "Skip checking if udev rules are installed")
 	}
@@ -211,18 +212,26 @@ fun provideBridges(
 					FastList(),
 				),
 			)
+
+			yield(
+				WindowsNamedPipeRpcBridge(
+					server,
+					"""\\.\pipe\SlimeVRRpc""",
+				),
+			)
 		}
 
 		OperatingSystem.LINUX -> {
-			var linuxBridge: SteamVRBridge? = null
 			try {
-				linuxBridge = UnixSocketBridge(
-					server,
-					"steamvr",
-					"SteamVR Driver Bridge",
-					Paths.get(OperatingSystem.socketDirectory, "SlimeVRDriver")
-						.toString(),
-					computedTrackers,
+				yield(
+					UnixSocketBridge(
+						server,
+						"steamvr",
+						"SteamVR Driver Bridge",
+						Paths.get(OperatingSystem.socketDirectory, "SlimeVRDriver")
+							.toString(),
+						computedTrackers,
+					),
 				)
 			} catch (ex: Exception) {
 				LogManager.severe(
@@ -230,19 +239,7 @@ fun provideBridges(
 					ex,
 				)
 			}
-			if (linuxBridge != null) {
-				// Close the named socket on shutdown, or otherwise it's not going to get removed
-				Runtime.getRuntime().addShutdownHook(
-					Thread {
-						try {
-							(linuxBridge as? UnixSocketBridge)?.close()
-						} catch (e: Exception) {
-							throw RuntimeException(e)
-						}
-					},
-				)
-				yield(linuxBridge)
-			}
+
 			yield(
 				UnixSocketBridge(
 					server,

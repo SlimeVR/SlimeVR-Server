@@ -93,9 +93,10 @@ export const FileInputContentFile = ({
         </div>
         <span className="flex-grow" />
         <a
-          href="#"
+          href=""
           className="h-12 w-12 hover:bg-accent-background-20 cursor-pointer"
           onClick={(ev) => {
+            ev.preventDefault();
             ev.stopPropagation();
             onClearPicker();
           }}

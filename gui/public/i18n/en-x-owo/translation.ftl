@@ -739,9 +739,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = skipy setup
 onboarding-setup_warning-cancel = continu setup
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = gaww bawwk to intwoduction
 onboarding-wifi_creds-skip = skipy wi-fi settiwyngs
 onboarding-wifi_creds-submit = suwbmyt!
 onboarding-wifi_creds-ssid =
@@ -776,6 +778,9 @@ onboarding-reset_tutorial-2 =
     meownting weset hewps on how the twackews awe actuawly put on u, so if you accidentawly move dem and change how dey awe owiented by a big ameownt, this wiwl hewp.
     
     u need to be on pose wike you awe skiing wike it's shown on da Pawtomatic Meownting wizawd and you have a 3 second deway (configuwabwe) befowe it gets twiggewed.
+
+## Install info
+
 
 ## Setup start
 

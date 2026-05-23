@@ -273,7 +273,9 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			}
 		}
 
-		val steamVRBridge = vrServer.getVRBridge(ISteamVRBridge::class.java)
+		val steamVRBridge = vrServer.getVRBridge {
+			it is ISteamVRBridge
+		} as? ISteamVRBridge
 		if (steamVRBridge != null) {
 			val steamvrConnected = steamVRBridge.isConnected()
 			updateValidity(

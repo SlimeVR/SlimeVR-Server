@@ -34,7 +34,9 @@ export type GHReturn = {
     | null;
 };
 
-export type DiscordPresence = { enable: false } | { enable: true, activity: string }
+export type DiscordPresence =
+  | { enable: false }
+  | { enable: true; activity: string; iconText: string | undefined };
 
 export interface IElectronAPI {
   onServerStatus: (cb: (data: ServerStatusEvent) => void) => () => void;
@@ -45,7 +47,7 @@ export interface IElectronAPI {
   close: () => void;
   hide: () => void;
   minimize: () => void;
-  maximize: () => void;
+  toggleMaximize: () => void;
   showDecorations: (decorations: boolean) => void;
   setTranslations: (translations: Record<string, string>) => void;
   i18nOverride: () => Promise<string | false>;

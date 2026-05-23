@@ -1,0 +1,12 @@
+{
+  "name": "Default Bindings for Knuckles",
+  "controller_type": "knuckles",
+  "bindings": {
+    "/actions/main": {
+      "sources": [],
+      "skeleton": [],
+      "haptics": [],
+      "poses": []
+    }
+  }
+}

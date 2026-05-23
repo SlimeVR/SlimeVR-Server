@@ -291,10 +291,16 @@ settings-osc-vrchat-network-trackers-elbows = מרפקים
 ## Setup/onboarding menu
 
 
+## Quiz
+
+
 ## Wi-Fi setup
 
 
 ## Mounting setup
+
+
+## Install info
 
 
 ## Setup start

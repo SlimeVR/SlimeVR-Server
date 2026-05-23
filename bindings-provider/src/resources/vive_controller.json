@@ -1,0 +1,12 @@
+{
+  "name": "Default Bindings for Vive Wands",
+  "controller_type": "vive_controller",
+  "bindings": {
+    "/actions/main": {
+      "sources": [],
+      "skeleton": [],
+      "haptics": [],
+      "poses": []
+    }
+  }
+}

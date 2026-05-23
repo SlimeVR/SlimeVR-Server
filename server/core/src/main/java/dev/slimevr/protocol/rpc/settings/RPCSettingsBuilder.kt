@@ -15,6 +15,7 @@ import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.config.TapDetectionConfig
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.config.VRCOSCConfig
+import dev.slimevr.config.VelocityConfig
 import dev.slimevr.filtering.TrackerFilters.Companion.getByConfigkey
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
@@ -35,6 +36,7 @@ import solarxr_protocol.rpc.TapDetectionSettings
 import solarxr_protocol.rpc.VMCOSCSettings
 import solarxr_protocol.rpc.VRCOSCSettings
 import solarxr_protocol.rpc.VRMSettings
+import solarxr_protocol.rpc.VelocitySettings
 import solarxr_protocol.rpc.settings.LegTweaksSettings
 import solarxr_protocol.rpc.settings.ModelRatios
 import solarxr_protocol.rpc.settings.ModelSettings
@@ -135,10 +137,9 @@ fun createVRMSettings(
 	var vrmJsonOffset = 0
 	if (vrmJson != null) vrmJsonOffset = fbb.createString(vrmJson)
 
-	if (vrmJson != null) {
-		return VRMSettings.createVRMSettings(fbb, vrmJsonOffset)
-	}
-	return 0
+	VRMSettings.startVRMSettings(fbb)
+	if (vrmJson != null) VRMSettings.addVrmJson(fbb, vrmJsonOffset)
+	return VRMSettings.endVRMSettings(fbb)
 }
 
 fun createFilterSettings(
@@ -180,9 +181,9 @@ fun createTapDetectionSettings(
 		tapDetectionConfig.mountingResetTaps,
 		tapDetectionConfig.setupMode,
 		tapDetectionConfig.numberTrackersOverThreshold,
-		0,
-		0,
-		0,
+		tapDetectionConfig.yawResetTracker.bodyPart,
+		tapDetectionConfig.fullResetTracker.bodyPart,
+		tapDetectionConfig.mountingResetTracker.bodyPart,
 	)
 
 fun createSteamVRSettings(fbb: FlatBufferBuilder, bridge: ISteamVRBridge?): Int {
@@ -394,7 +395,9 @@ fun createArmsResetModeSettings(
 	)
 
 fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
-	val bridge = server.getVRBridge(ISteamVRBridge::class.java)
+	val bridge = server.getVRBridge {
+		it is ISteamVRBridge
+	} as? ISteamVRBridge
 
 	return SettingsResponse
 		.createSettingsResponse(
@@ -443,10 +446,13 @@ fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
 				server.configManager.vrConfig.stayAlignedConfig,
 			),
 			createHIDSettings(fbb, server.configManager.vrConfig.hidConfig),
-		0,
-		0,
-		createVRMSettings(fbb, server.configManager.vrConfig.vmc),
-	)
+			0,
+			createVelocitySettings(fbb, server.configManager.vrConfig.velocityConfig),
+			createVRMSettings(
+				fbb,
+				server.configManager.vrConfig.vmc,
+			),
+		)
 }
 
 fun createStayAlignedSettings(
@@ -480,4 +486,13 @@ fun createHIDSettings(
 	.createHIDSettings(
 		fbb,
 		config.trackersOverHID,
+	)
+
+fun createVelocitySettings(
+	fbb: FlatBufferBuilder,
+	config: VelocityConfig,
+): Int = VelocitySettings
+	.createVelocitySettings(
+		fbb,
+		config.sendDerivedVelocity,
 	)

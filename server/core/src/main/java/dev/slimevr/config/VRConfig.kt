@@ -58,6 +58,8 @@ class VRConfig {
 
 	val trackingChecklist: TrackingChecklistConfig = TrackingChecklistConfig()
 
+	val velocityConfig: VelocityConfig = VelocityConfig()
+
 	val vrcConfig: VRCConfig = VRCConfig()
 
 	init {
@@ -119,6 +121,7 @@ class VRConfig {
 					.readFilteringConfig(filters, tracker.getRotation())
 			}
 		}
+		tracker.allowVelocity = velocityConfig.sendDerivedVelocity
 	}
 
 	fun writeTrackerConfig(tracker: Tracker?) {

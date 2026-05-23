@@ -36,7 +36,7 @@ export function FlashingStep({
   const { l10n } = useLocalization();
   const { selectedDevices, selectDevices, files, selectedDefault } =
     useFirmwareTool();
-  const { state: onboardingState, state } = useOnboarding();
+  const { state: onboardingState } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [status, setStatus] = useState<{
     [key: string]: {
@@ -203,28 +203,15 @@ export function FlashingStep({
                 onClick={() => goTo('FlashingMethod')}
               />
             </Localized>
-            {state.alonePage && (
-              <Localized id="firmware_tool-flashing_step-exit">
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    clear();
-                    nav('/');
-                  }}
-                />
-              </Localized>
-            )}
-            {!state.alonePage && (
-              <Localized id="firmware_tool-flashing_step-onboarding_continue">
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    clear();
-                    nav('/onboarding/trackers-assign');
-                  }}
-                />
-              </Localized>
-            )}
+            <Localized id="firmware_tool-flashing_step-exit">
+              <Button
+                variant="primary"
+                onClick={() => {
+                  clear();
+                  nav('/');
+                }}
+              />
+            </Localized>
           </div>
         </div>
       </div>

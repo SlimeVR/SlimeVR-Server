@@ -1,0 +1,64 @@
+{
+  "default_bindings": [
+    {
+      "controller_type": "generic",
+      "binding_url": "generic.json"
+    },
+    {
+      "controller_type": "oculus_touch",
+      "binding_url": "oculus_touch.json"
+    },
+    {
+      "controller_type": "knuckles",
+      "binding_url": "knuckles.json"
+    },
+    {
+      "controller_type": "vive_controller",
+      "binding_url": "vive_controller.json"
+    }
+  ],
+  "actions": [
+    {
+      "name": "/actions/main/in/YawReset",
+      "requirement": "optional",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/main/in/FullReset",
+      "requirement": "optional",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/main/in/MountingCalibration",
+      "requirement": "optional",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/main/in/FeetMountingCalibration",
+      "requirement": "optional",
+      "type": "boolean"
+    },
+    {
+      "name": "/actions/main/in/ToggleTracking",
+      "requirement": "optional",
+      "type": "boolean"
+    }
+  ],
+  "action_sets": [
+    {
+      "name": "/actions/main",
+      "usage": "leftright"
+    }
+  ],
+  "localization": [
+    {
+      "language_tag": "en_us",
+      "/actions/main": "Utility Bindings",
+      "/actions/main/in/YawReset": "Yaw Reset",
+      "/actions/main/in/FullReset": "Full Reset",
+      "/actions/main/in/MountingCalibration": "Mounting Calibration",
+      "/actions/main/in/FeetMountingCalibration": "Feet Mounting Calibration",
+      "/actions/main/in/ToggleTracking": "Toggle Tracking"
+    }
+  ]
+}

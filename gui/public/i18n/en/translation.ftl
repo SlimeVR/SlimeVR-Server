@@ -643,6 +643,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = Position data
 settings-general-fk_settings-ik-use_position = Use Position data
 settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
@@ -679,7 +682,7 @@ settings-general-fk_settings-self_localization-description = Mocap Mode allows t
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Tap based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Calibration. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
+settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
@@ -695,12 +698,17 @@ settings-general-gesture_control-trackers = { $amount ->
 settings-general-gesture_control-yawResetEnabled = Enable tap to yaw reset
 settings-general-gesture_control-yawResetDelay = Yaw reset delay
 settings-general-gesture_control-yawResetTaps = Taps for yaw reset
+settings-general-gesture_control-yawResetTracker = Yaw Reset Tracker
 settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
 settings-general-gesture_control-fullResetDelay = Full reset delay
 settings-general-gesture_control-fullResetTaps = Taps for full reset
+settings-general-gesture_control-fullResetTracker = Full Reset Tracker
 settings-general-gesture_control-mountingResetEnabled = Enable tap to perform mounting calibration
 settings-general-gesture_control-mountingResetDelay = Mounting calibration delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting calibration
+settings-general-gesture_control-mountingResetTracker = Mounting Reset Tracker
+settings-general-gesture_control-yawResetTracker-title = Yaw Reset Tracker
+settings-general-gesture_control-fullResetTracker-title = Full Reset Tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over threshold
 settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make tap detection work as it would cause more false positives.
