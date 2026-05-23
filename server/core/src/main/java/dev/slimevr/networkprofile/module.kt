@@ -2,6 +2,8 @@ package dev.slimevr.networkprofile
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.context.debug.DiffStyle
+import dev.slimevr.context.debug.LoggingMiddleware
 import kotlinx.coroutines.CoroutineScope
 
 data class NetworkInfo(
@@ -71,6 +73,10 @@ class NetworkProfileManager(val context: NetworkProfileContext) {
 				initialState = NetworkProfileState(isSupported = isSupported),
 				scope = scope,
 				behaviours = listOf(DefaultNetworkProfileBehaviour),
+				debugMiddleware = LoggingMiddleware(
+					allow = setOf(NetworkProfileActions.UpdateNetworks::class),
+					diffStyle = DiffStyle.MULTILINE,
+				),
 				name = "NetworkProfile",
 			)
 			return NetworkProfileManager(context)

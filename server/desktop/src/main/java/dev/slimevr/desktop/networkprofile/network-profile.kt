@@ -170,24 +170,28 @@ private fun enumerateNetworks(): List<NetworkInfo> = try {
 	emptyList()
 }
 
+private class IpInterfaceChangeCallback(val scope: CoroutineScope, val manager: NetworkProfileManager) : Callback {
+	@Suppress("UNUSED")
+	fun callback(context: Pointer?, row: Pointer?, notificationType: Int) {
+		scope.safeLaunch {
+			val networks = enumerateNetworks().filter { it.connected == true && it.category == NetworkCategory.PUBLIC }
+			manager.context.dispatch(NetworkProfileActions.UpdateNetworks(networks))
+		}
+	}
+}
+
+// we need to keep a reference to our callback, lest it be garbage collected
+private var IP_INTERFACE_CHANGE_CALLBACK: IpInterfaceChangeCallback? = null
+
 suspend fun setupDesktopNetworkProfileChecker(scope: CoroutineScope, manager: NetworkProfileManager) {
 	if (CURRENT_PLATFORM != Platform.WINDOWS) return
 
 	val notificationHandle = PointerByReference()
-	val callback = object : Callback {
-		@Suppress("UNUSED")
-		fun callback(context: Pointer?, row: Pointer?, notificationType: Int) {
-			scope.safeLaunch {
-				val networks = enumerateNetworks()
-					.filter { it.connected == true && it.category == NetworkCategory.PUBLIC }
-				manager.context.dispatch(NetworkProfileActions.UpdateNetworks(networks))
-			}
-		}
-	}
+	IP_INTERFACE_CHANGE_CALLBACK = IpInterfaceChangeCallback(scope, manager)
 
 	Iphlpapi.INSTANCE.NotifyIpInterfaceChange(
 		0,
-		callback,
+		IP_INTERFACE_CHANGE_CALLBACK!!,
 		null,
 		1,
 		notificationHandle,
@@ -201,5 +205,6 @@ suspend fun setupDesktopNetworkProfileChecker(scope: CoroutineScope, manager: Ne
 				Iphlpapi.INSTANCE.CancelMibChangeNotify2(it)
 			} catch (_: Exception) {}
 		}
+		IP_INTERFACE_CHANGE_CALLBACK = null
 	}
 }
