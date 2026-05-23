@@ -24,8 +24,7 @@ import dev.slimevr.networkprofile.NetworkProfileActions
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.awaitCancellation
 
 @Suppress("ktlint:standard:function-naming")
 interface Iphlpapi : Library {
@@ -177,7 +176,7 @@ suspend fun setupDesktopNetworkProfileChecker(scope: CoroutineScope, manager: Ne
 	val notificationHandle = PointerByReference()
 	val callback = object : Callback {
 		@Suppress("UNUSED")
-		fun callback(context: Pointer, row: Pointer, notificationType: Int) {
+		fun callback(context: Pointer?, row: Pointer?, notificationType: Int) {
 			scope.safeLaunch {
 				val networks = enumerateNetworks()
 					.filter { it.connected == true && it.category == NetworkCategory.PUBLIC }
@@ -186,7 +185,7 @@ suspend fun setupDesktopNetworkProfileChecker(scope: CoroutineScope, manager: Ne
 		}
 	}
 
-	val result = Iphlpapi.INSTANCE.NotifyIpInterfaceChange(
+	Iphlpapi.INSTANCE.NotifyIpInterfaceChange(
 		0,
 		callback,
 		null,
@@ -194,19 +193,13 @@ suspend fun setupDesktopNetworkProfileChecker(scope: CoroutineScope, manager: Ne
 		notificationHandle,
 	)
 
-	if (result == 0) {
-		val initialNetworks = enumerateNetworks()
-			.filter { it.connected == true && it.category == NetworkCategory.PUBLIC }
-		manager.context.dispatch(NetworkProfileActions.UpdateNetworks(initialNetworks))
-		try {
-			delay(Long.MAX_VALUE.milliseconds)
-		} catch (e: Exception) {
-			val handle = notificationHandle.value
-			if (handle != null) {
-				try {
-					Iphlpapi.INSTANCE.CancelMibChangeNotify2(handle)
-				} catch (ignore: Exception) {}
-			}
+	try {
+		awaitCancellation()
+	} finally {
+		notificationHandle.value?.let {
+			try {
+				Iphlpapi.INSTANCE.CancelMibChangeNotify2(it)
+			} catch (_: Exception) {}
 		}
 	}
 }
