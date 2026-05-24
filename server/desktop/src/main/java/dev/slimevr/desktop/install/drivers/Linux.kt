@@ -13,20 +13,23 @@ class Linux {
 
 	fun updateLinuxSteamVRDriver() {
 		val pathRegPath = "${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh"
-		val vrPathRegContents = executeShellCommand(pathRegPath)
-		if (vrPathRegContents == null) {
-			LogManager.warning("SteamVR driver installation failed")
-			return
-		}
-		if (vrPathRegContents.contains("slimevr")) {
-			LogManager.info("SteamVR driver is already installed")
+		val (findExitCode, _) = executeShellCommand(pathRegPath, "finddriver", "slimevr") ?: run {
+			LogManager.warning("SteamVR driver installation failed: couldn't run vrpathreg finddriver")
 			return
 		}
 
-		executeShellCommand(pathRegPath, "adddriver", "$path/$LINUX_STEAM_DRIVER_DIRECTORY")
+		if (!shouldInstallDriver(findExitCode)) {
+			LogManager.info("Skipping SteamVR driver installation: ${getDriverInstallSkipReason(findExitCode)}")
+			return
+		}
 
-		if (executeShellCommand(pathRegPath)?.contains("slimevr") != true) {
-			LogManager.warning("Failed to install SteamVR driver")
+		val (addExitCode, _) = executeShellCommand(pathRegPath, "adddriver", "$path/$LINUX_STEAM_DRIVER_DIRECTORY") ?: run {
+			LogManager.warning("SteamVR driver installation failed: couldn't run vrpathreg adddriver")
+			return
+		}
+
+		if (addExitCode != 0) {
+			LogManager.warning("SteamVR driver installation failed: vrpathreg exited with code $addExitCode")
 			return
 		}
 		LogManager.info("SteamVR driver successfully installed")

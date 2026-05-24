@@ -17,25 +17,28 @@ class Windows {
 		val regQuery = regEdit.getKeyByPath(WinReg.HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820")
 		val steamVRLocation = regQuery["InstallLocation"]
 		if (steamVRLocation == null || !steamVRLocation.contains("SteamVR")) {
-			LogManager.warning("Can't find SteamVR, unable to install SteamVR driver")
+			LogManager.warning("SteamVR driver installation failed: can't find SteamVR")
 			return
 		}
 
-		val pathRegPath = "${steamVRLocation}\\bin\\win64\\vrpathreg.exe"
-		val vrPathRegContents = executeShellCommand(pathRegPath, "finddriver", "slimevr")
-		if (vrPathRegContents == null) {
-			LogManager.warning("Error installing SteamVR driver")
-			return
-		}
-		if (vrPathRegContents.contains("slimevr")) {
-			LogManager.info("SteamVR driver is already installed")
+		val pathRegPath = "$steamVRLocation\\bin\\win64\\vrpathreg.exe"
+		val (findExitCode, _) = executeShellCommand(pathRegPath, "finddriver", "slimevr") ?: run {
+			LogManager.warning("SteamVR driver installation failed: couldn't run vrpathreg finddriver")
 			return
 		}
 
-		executeShellCommand(pathRegPath, "adddriver", "${path}\\${WINDOWS_STEAMVR_DRIVER_DIRECTORY}")
+		if (!shouldInstallDriver(findExitCode)) {
+			LogManager.info("Skipping SteamVR driver installation: ${getDriverInstallSkipReason(findExitCode)}")
+			return
+		}
 
-		if (executeShellCommand(pathRegPath, "finddriver", "slimevr")?.contains("slimevr") != true) {
-			LogManager.warning("Failed to install SlimeVR driver")
+		val (addExitCode, _) = executeShellCommand(pathRegPath, "adddriver", "$path\\$WINDOWS_STEAMVR_DRIVER_DIRECTORY") ?: run {
+			LogManager.warning("SteamVR driver installation failed: couldn't run vrpathreg adddriver")
+			return
+		}
+
+		if (addExitCode != 0) {
+			LogManager.warning("SteamVR driver installation failed: vrpathreg exited with code $addExitCode")
 			return
 		}
 		LogManager.info("SteamVR driver successfully installed")
