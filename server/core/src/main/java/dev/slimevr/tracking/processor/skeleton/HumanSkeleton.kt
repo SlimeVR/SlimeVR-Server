@@ -134,6 +134,8 @@ class HumanSkeleton(
 	var hasRightArmTracker = false
 	var hasLeftFingerTracker = false
 	var hasRightFingerTracker = false
+	var hasLeftToeTracker = false
+	var hasRightToeTracker = false
 
 	// Input trackers
 	var headTracker: Tracker? by Delegates.observable(null) { _, old, new ->
@@ -509,6 +511,12 @@ class HumanSkeleton(
 			rightLittleProximalTracker != null ||
 			rightLittleIntermediateTracker != null ||
 			rightLittleDistalTracker != null
+		hasLeftToeTracker = leftAbductorHallucisTracker != null ||
+			leftDigitorumBrevisTracker != null ||
+			leftAbductorDigitiMinimiTracker != null
+		hasRightToeTracker = rightAbductorHallucisTracker != null ||
+			rightDigitorumBrevisTracker != null ||
+			rightAbductorDigitiMinimiTracker != null
 
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
