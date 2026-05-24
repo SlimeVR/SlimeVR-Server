@@ -128,25 +128,11 @@ export function PersonFrontIcon({ mirror = true }: { mirror?: boolean }) {
       />
 
       <circle
-         className="body-part-circle"
-          cx="90"
-          cy="395"
-          r={CIRCLE_RADIUS}
-          id={BodyPart[SIDES[right].toesAbductorHallucis]}
-      />
-      <circle
-          className="body-part-circle"
-          cx="102"
-          cy="395"
-          r={CIRCLE_RADIUS}
-          id={BodyPart[SIDES[right].toesDigitorumBrevis]}
-      />
-      <circle
         className="body-part-circle"
-        cx="114"
-        cy="395"
+        cx="102"
+        cy="393"
         r={CIRCLE_RADIUS}
-        id={BodyPart[SIDES[right].toesAbductorDigitiMinimi]}
+        id="right-toes"
       />
 
       <circle
@@ -202,32 +188,12 @@ export function PersonFrontIcon({ mirror = true }: { mirror?: boolean }) {
       />
       <circle
         className="body-part-circle"
-        cx="75"
-        cy="410"
+        cx="62"
+        cy="393"
         r={CIRCLE_RADIUS}
         id="left-toes"
       />
-      <circle
-        className="body-part-circle"
-        cx="75"
-        cy="395"
-        r={CIRCLE_RADIUS}
-        id={BodyPart[SIDES[left].toesAbductorHallucis]}
-      />
-      <circle
-        className="body-part-circle"
-        cx="62"
-        cy="395"
-        r={CIRCLE_RADIUS}
-        id={BodyPart[SIDES[left].toesDigitorumBrevis]}
-      />
-      <circle
-        className="body-part-circle"
-        cx="50"
-        cy="395"
-        r={CIRCLE_RADIUS}
-        id={BodyPart[SIDES[left].toesAbductorDigitiMinimi]}
-      />
+
     </svg>
   );
 }

@@ -99,6 +99,17 @@ export const ASSIGNMENT_MODES: Record<AssignMode, BodyPart[]> = {
     BodyPart.LEFT_FOOT,
     BodyPart.RIGHT_FOOT,
   ],
+  // x16 (10 + 6)
+  [AssignMode.ToeTracking]: [
+    BodyPart.CHEST,
+    BodyPart.HIP,
+    BodyPart.LEFT_UPPER_ARM,
+    BodyPart.RIGHT_UPPER_ARM,
+    ...LEGS_PARTS,
+    BodyPart.LEFT_FOOT,
+    BodyPart.RIGHT_FOOT,
+    ...TOES_PARTS,
+  ],
   // special case with all body parts
   [AssignMode.All]: [
     BodyPart.HEAD,
@@ -120,6 +131,7 @@ export function BodyAssignment({
   assignMode,
   mirror,
   onRoleSelected,
+  onToesSelected,
   rolesWithErrors = {},
   highlightedRoles = [],
   onlyAssigned = false,
@@ -131,6 +143,7 @@ export function BodyAssignment({
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
   highlightedRoles?: BodyPart[];
   onRoleSelected: (role: BodyPart) => void;
+  onToesSelected?: (side: 'left' | 'right') => void;
   width?: number;
   dotSize?: number;
 }) {
@@ -179,6 +192,7 @@ export function BodyAssignment({
         assignedRoles={assignedRoles}
         highlightedRoles={highlightedRoles}
         onSelectRole={onRoleSelected}
+        onToesSelected={onToesSelected}
         leftControls={
           <div className="flex flex-col justify-between h-full text-right">
             <div className="flex flex-col gap-2">
@@ -295,39 +309,6 @@ export function BodyAssignment({
                   direction="right"
                 />
               )}
-
-             {hasBodyPart(SIDES[left].toesAbductorHallucis) && (
-               <TrackerPartCard
-                 onlyAssigned={onlyAssigned}
-                 roleError={rolesWithErrors[SIDES[left].toesAbductorHallucis]?.label}
-                 td={trackerPartGrouped[SIDES[left].toesAbductorHallucis]}
-                 role={SIDES[left].toesAbductorHallucis}
-                 onClick={() => onRoleSelected(SIDES[left].toesAbductorHallucis)}
-                 direction="right"
-               />
-             )}
-
-             {hasBodyPart(SIDES[left].toesDigitorumBrevis) && (
-               <TrackerPartCard
-                 onlyAssigned={onlyAssigned}
-                 roleError={rolesWithErrors[SIDES[left].toesDigitorumBrevis]?.label}
-                 td={trackerPartGrouped[SIDES[left].toesDigitorumBrevis]}
-                 role={SIDES[left].toesDigitorumBrevis}
-                 onClick={() => onRoleSelected(SIDES[left].toesDigitorumBrevis)}
-                 direction="right"
-               />
-             )}
-
-             {hasBodyPart(SIDES[left].toesAbductorDigitiMinimi) && (
-               <TrackerPartCard
-                 onlyAssigned={onlyAssigned}
-                 roleError={rolesWithErrors[SIDES[left].toesAbductorDigitiMinimi]?.label}
-                 td={trackerPartGrouped[SIDES[left].toesAbductorDigitiMinimi]}
-                 role={SIDES[left].toesAbductorDigitiMinimi}
-                 onClick={() => onRoleSelected(SIDES[left].toesAbductorDigitiMinimi)}
-                 direction="right"
-               />
-             )}
 
             </div>
           </div>
@@ -451,38 +432,6 @@ export function BodyAssignment({
                 />
               )}
 
-              {hasBodyPart(SIDES[right].toesAbductorHallucis) && (
-                <TrackerPartCard
-                  onlyAssigned={onlyAssigned}
-                  roleError={rolesWithErrors[SIDES[right].toesAbductorHallucis]?.label}
-                  td={trackerPartGrouped[SIDES[right].toesAbductorHallucis]}
-                  role={SIDES[right].toesAbductorHallucis}
-                  onClick={() => onRoleSelected(SIDES[right].toesAbductorHallucis)}
-                  direction="left"
-                />
-              )}
-
-              {hasBodyPart(SIDES[right].toesDigitorumBrevis) && (
-                <TrackerPartCard
-                  onlyAssigned={onlyAssigned}
-                  roleError={rolesWithErrors[SIDES[right].toesDigitorumBrevis]?.label}
-                  td={trackerPartGrouped[SIDES[right].toesDigitorumBrevis]}
-                  role={SIDES[right].toesDigitorumBrevis}
-                  onClick={() => onRoleSelected(SIDES[right].toesDigitorumBrevis)}
-                  direction="left"
-                />
-              )}
-
-              {hasBodyPart(SIDES[right].toesAbductorDigitiMinimi) && (
-                <TrackerPartCard
-                  onlyAssigned={onlyAssigned}
-                  roleError={rolesWithErrors[SIDES[right].toesAbductorDigitiMinimi]?.label}
-                  td={trackerPartGrouped[SIDES[right].toesAbductorDigitiMinimi]}
-                  role={SIDES[right].toesAbductorDigitiMinimi}
-                  onClick={() => onRoleSelected(SIDES[right].toesAbductorDigitiMinimi)}
-                  direction="left"
-                />
-              )}
             </div>
           </div>
         }

@@ -469,6 +469,12 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+tracker_selection_menu-LEFT_TOES_ABDUCTOR_HALLUCIS = { -tracker_selection-part } left big toe?
+tracker_selection_menu-LEFT_TOES_DIGITORUM_BREVIS = { -tracker_selection-part } left middle toes?
+tracker_selection_menu-LEFT_TOES_ABDUCTOR_DIGITI_MINIMI = { -tracker_selection-part } left pinky toe?
+tracker_selection_menu-RIGHT_TOES_ABDUCTOR_HALLUCIS = { -tracker_selection-part } right big toe?
+tracker_selection_menu-RIGHT_TOES_DIGITORUM_BREVIS = { -tracker_selection-part } right middle toes?
+tracker_selection_menu-RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI = { -tracker_selection-part } right pinky toe?
 
 tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
@@ -1139,6 +1145,7 @@ onboarding-assign_trackers-option-label = { $mode ->
     [core] Core Set
     [enhanced-core] Enhanced Core Set
     [full-body] Full-Body Set
+    [toe-tracking] Toe Tracking Set
     *[all] All Trackers
 }
 onboarding-assign_trackers-option-description = { $mode ->
@@ -1146,6 +1153,7 @@ onboarding-assign_trackers-option-description = { $mode ->
     [core] + Enhanced spine tracking
     [enhanced-core] + Foot rotation
     [full-body] + Elbow tracking
+    [toe-tracking] + Toe tracking
     *[all] All available tracker assignments
 }
 
