@@ -5,7 +5,6 @@ import dev.slimevr.desktop.games.vrchat.RegEditWindows
 import io.eiren.util.logging.LogManager
 
 class Windows {
-
 	val path: String = System.getProperty("user.dir")
 
 	fun updateWindows() {
@@ -14,10 +13,9 @@ class Windows {
 
 	fun steamVRDriver() {
 		val regEdit = RegEditWindows()
-		val regQuery = regEdit.getKeyByPath(WinReg.HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820")
-		val steamVRLocation = regQuery["InstallLocation"]
+		val steamVRLocation = regEdit.getKeyByPath(WinReg.HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820")["InstallLocation"]
 		if (steamVRLocation == null || !steamVRLocation.contains("SteamVR")) {
-			LogManager.warning("SteamVR driver installation failed: can't find SteamVR")
+			LogManager.warning("SteamVR driver installation failed: couldn't find SteamVR")
 			return
 		}
 
