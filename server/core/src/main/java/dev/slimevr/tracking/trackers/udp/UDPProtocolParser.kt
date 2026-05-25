@@ -114,6 +114,7 @@ class UDPProtocolParser {
 		PACKET_TEMPERATURE -> UDPPacket20Temperature()
 		PACKET_USER_ACTION -> UDPPacket21UserAction()
 		PACKET_FEATURE_FLAGS -> UDPPacket22FeatureFlags()
+		PACKET_ROTATION_AND_ACCELERATION -> UDPPacket23RotationAndAcceleration()
 		PACKET_ACK_CONFIG_CHANGE -> UDPPacket24AckConfigChange()
 		PACKET_FLEX_DATA -> UDPPacket26FlexData()
 		PACKET_POSITION -> UDPPacket27Position()
