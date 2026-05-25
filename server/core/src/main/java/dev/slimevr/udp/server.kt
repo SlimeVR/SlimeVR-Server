@@ -21,8 +21,8 @@ data class UdpServerState(
 )
 
 sealed interface UdpServerActions {
-	data class ConnectionAdded(val ip: String, val conn: UDPConnection) : UdpServerActions
-	data class ConnectionRemoved(val ip: String) : UdpServerActions
+	data class ConnectionAdded(val address: String, val conn: UDPConnection) : UdpServerActions
+	data class ConnectionRemoved(val address: String) : UdpServerActions
 }
 
 typealias UdpServerContext = Context<UdpServerState, UdpServerActions>
@@ -30,12 +30,12 @@ typealias UdpServerBehaviour = Behaviour<UdpServerState, UdpServerActions, UdpSe
 
 object UdpServerBaseBehaviour : UdpServerBehaviour {
 	override fun reduce(state: UdpServerState, action: UdpServerActions) = when (action) {
-		is UdpServerActions.ConnectionAdded -> state.copy(connections = state.connections + (action.ip to action.conn))
-		is UdpServerActions.ConnectionRemoved -> state.copy(connections = state.connections - action.ip)
+		is UdpServerActions.ConnectionAdded -> state.copy(connections = state.connections + (action.address to action.conn))
+		is UdpServerActions.ConnectionRemoved -> state.copy(connections = state.connections - action.address)
 	}
 }
 
-class UdpServer(val context: UdpServerContext) {
+class UdpServer(val context: UdpServerContext, private val addressResolver: (InetSocketAddress) -> String) {
 	private var receiveJob: Job? = null
 	private var socket: BoundDatagramSocket? = null
 	private var selectorManager: SelectorManager? = null
@@ -66,8 +66,8 @@ class UdpServer(val context: UdpServerContext) {
 							val packetData = readPacket(type, src)
 
 							val remoteAddress = recvPacket.address as? InetSocketAddress ?: return@measureTime
-							val id = addressKey(remoteAddress)
-							val conn = context.state.value.connections[id]
+							val address = addressResolver(remoteAddress)
+							val conn = context.state.value.connections[address]
 
 							val event = PacketEvent(data = packetData, packetNumber = packetNumber)
 
@@ -75,13 +75,13 @@ class UdpServer(val context: UdpServerContext) {
 								conn.packetChannel.trySend(event)
 							} else {
 								val newConn = UDPConnection.create(
-									id = id,
+									address = address,
 									remoteAddress = remoteAddress,
 									socket = socket,
 									appContext = appContext,
 									scope = scope,
 								)
-								context.dispatch(UdpServerActions.ConnectionAdded(id, newConn))
+								context.dispatch(UdpServerActions.ConnectionAdded(address, newConn))
 								newConn.packetChannel.trySend(event)
 							}
 						}
@@ -112,23 +112,14 @@ class UdpServer(val context: UdpServerContext) {
 	companion object {
 		val INITIAL_STATE = UdpServerState(connections = emptyMap())
 
-		private fun addressKey(address: InetSocketAddress): String {
-			val raw = address.resolveAddress()
-			return if (raw != null && raw.size == 4) {
-				raw.joinToString(".") { byte -> (byte.toInt() and 0xFF).toString() }
-			} else {
-				address.hostname
-			}
-		}
-
-		fun create(scope: CoroutineScope): UdpServer {
+		fun create(scope: CoroutineScope, addressResolver: (InetSocketAddress) -> String): UdpServer {
 			val context = Context.create(
 				initialState = INITIAL_STATE,
 				scope = scope,
 				behaviours = listOf(UdpServerBaseBehaviour),
 				name = "UdpServer",
 			)
-			val server = UdpServer(context)
+			val server = UdpServer(context, addressResolver)
 			server.startObserving()
 			return server
 		}

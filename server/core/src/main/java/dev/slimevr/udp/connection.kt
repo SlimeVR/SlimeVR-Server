@@ -27,13 +27,14 @@ data class SensorConfigFlags(
 )
 
 data class UDPConnectionState(
-	val id: String,
+	// Pre-resolved IP string. InetSocketAddress.hostname triggers a reverse DNS lookup so we
+	// can't derive this on demand — it must be resolved once by the platform (see UdpServer.addressResolver)
+	// and cached here. remoteAddress is kept separately on UDPConnection only for sending datagrams.
+	val address: String,
 	val lastPacket: Long,
 	val lastPacketNum: Long,
 	val lastPing: LastPing,
 	val didHandshake: Boolean,
-	val address: String,
-	val port: Int,
 	val deviceId: Int?,
 	val trackerIds: List<TrackerIdNum>,
 	val features: FirmwareFeatures?,
@@ -84,7 +85,7 @@ class UDPConnection(
 
 	companion object {
 		fun create(
-			id: String,
+			address: String,
 			socket: BoundDatagramSocket,
 			remoteAddress: InetSocketAddress,
 			appContext: AppContextProvider,
@@ -109,13 +110,11 @@ class UDPConnection(
 
 			val context = Context.create(
 				initialState = UDPConnectionState(
-					id = id,
+					address = address,
 					lastPacket = System.currentTimeMillis(),
 					lastPacketNum = 0,
 					lastPing = LastPing(id = 0, startTime = 0),
 					didHandshake = false,
-					address = remoteAddress.hostname,
-					port = remoteAddress.port,
 					deviceId = null,
 					trackerIds = listOf(),
 					features = null,
@@ -123,7 +122,7 @@ class UDPConnection(
 				),
 				scope = scope,
 				behaviours = behaviours,
-				name = "UDPConnection[$id]",
+				name = "UDPConnection[$address]",
 			)
 
 			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>> { it.data::class }

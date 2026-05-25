@@ -26,6 +26,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
+import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.safeLaunch
 import dev.slimevr.vmc.VMCManager
@@ -52,7 +53,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
 	val trackingChecklist = TrackingChecklist.create(scope = this)
-	val udpServer = UdpServer.create(scope = this)
+	val udpServer = UdpServer.create(scope = this, addressResolver = ::resolveDesktopUdpAddress)
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(skeleton = skeleton, ctx = phase1, scope = this)
 	val vrcOscManager = VRCOSCManager.create(

@@ -213,7 +213,7 @@ object TimeoutBehaviour : UDPConnectionBehaviour {
 				}
 				val timeUntilTimeout = CONNECTION_TIMEOUT_MS - (System.currentTimeMillis() - state.lastPacket)
 				if (timeUntilTimeout <= 0) {
-					AppLogger.udp.info("[${state.address}] Connection timed out for ${state.id}")
+					AppLogger.udp.info("[${state.address}] Connection timed out")
 					receiver.context.dispatch(UDPConnectionActions.TimedOut)
 					receiver.getDevice()?.context?.dispatch(
 						DeviceActions.Update { copy(status = TrackerStatus.TIMED_OUT) },
