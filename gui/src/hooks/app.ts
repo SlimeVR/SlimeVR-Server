@@ -40,7 +40,7 @@ export function useProvideAppContext(): AppContext {
       startDataFeed.dataFeeds = [dataFeedConfig, bonesDataFeedConfig];
       sendDataFeedPacket(DataFeedMessage.StartDataFeed, startDataFeed);
     }
-  }, [isConnected]);
+  }, [isConnected, config?.debug, config?.devSettings?.fastDataFeed]);
 
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
     if (packet.index === 0) {
