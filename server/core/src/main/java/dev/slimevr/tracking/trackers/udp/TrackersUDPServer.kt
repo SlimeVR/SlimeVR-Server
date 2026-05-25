@@ -133,6 +133,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				handshake.macString ?: addr.hostAddress,
 				handshake.boardType,
 				handshake.mcuType,
+				handshake.manufacturer,
 			)
 			VRServer.instance.deviceManager.addDevice(connection)
 			connection.protocolVersion = handshake.protocolVersion
@@ -150,6 +151,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			// 		Fixing this would break config!
 			connection.descriptiveName = "udp:/$addr"
 			connection.firmwareVersion = handshake.firmware
+			connection.manufacturer = handshake.manufacturer
 			synchronized(connections) {
 				// Register the new connection
 				val i = connections.size
