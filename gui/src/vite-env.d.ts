@@ -4,7 +4,6 @@
 declare const __COMMIT_HASH__: string;
 declare const __VERSION_TAG__: string;
 declare const __GIT_CLEAN__: boolean;
-declare const __IS_STEAM__: boolean;
 
 interface Window {
   readonly __ANDROID__:

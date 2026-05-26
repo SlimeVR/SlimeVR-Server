@@ -16,11 +16,7 @@ import { getSentryOrCompute, updateSentryContext } from '@/utils/sentry';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
 import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
-const getIsSteam = async () => {
-  return await window.electronAPI.isSteam();
-};
-
-const isSteam = await getIsSteam();
+const isSteam = await window.electronAPI.isSteam();
 
 export interface AppContext {
   currentFirmwareRelease: FirmwareRelease | null;

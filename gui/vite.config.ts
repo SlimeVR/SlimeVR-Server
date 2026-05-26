@@ -14,7 +14,6 @@ const versionTag = execSync('git --no-pager tag --sort -taggerdate --points-at H
 // If not empty then it's not clean
 const gitCleanString = execSync('git status --porcelain').toString();
 const gitClean = gitCleanString ? false : true;
-const isSteam = process.env['SLIMEVR_IS_STEAM'] == 'true';
 if (!gitClean) console.log('Git is dirty because of:\n' + gitCleanString);
 
 console.log(`version is ${versionTag || commitHash}${gitClean ? '' : '-dirty'}`);
@@ -41,7 +40,6 @@ export default defineConfig({
     __COMMIT_HASH__: JSON.stringify(commitHash),
     __VERSION_TAG__: JSON.stringify(versionTag),
     __GIT_CLEAN__: gitClean,
-    __IS_STEAM__: isSteam,
   },
   plugins: [
     react({ babel: { plugins: [jotaiReactRefresh] } }),
