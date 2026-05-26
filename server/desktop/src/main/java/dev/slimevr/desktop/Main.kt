@@ -4,6 +4,7 @@ package dev.slimevr.desktop
 
 import dev.slimevr.AppContext
 import dev.slimevr.CURRENT_PLATFORM
+import dev.slimevr.FeatureFlags
 import dev.slimevr.Phase1Context
 import dev.slimevr.Platform
 import dev.slimevr.VRServer
@@ -12,6 +13,8 @@ import dev.slimevr.config.AppConfig
 import dev.slimevr.context.debug.ContextDebug
 import dev.slimevr.desktop.config.DesktopConfigStorage
 import dev.slimevr.desktop.hid.createDesktopHIDManager
+import dev.slimevr.desktop.install.executeShellCommand
+import dev.slimevr.desktop.install.runInstaller
 import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
 import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
@@ -37,6 +40,28 @@ import kotlinx.coroutines.runBlocking
 fun main(args: Array<String>) = runBlocking<Unit> {
 	ContextDebug.enabled = System.getProperty("slimevr.debug.context") == "true" ||
 		System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
+
+	val featureFlags = FeatureFlags()
+	for (arg in args) {
+		when (arg) {
+			"--steam", "-s" -> featureFlags.steam = true
+			"--install", "-i" -> { runInstaller(featureFlags); return@runBlocking }
+			"--no-udev", "-u" -> featureFlags.skipCheckUdev = true
+		}
+	}
+	if (CURRENT_PLATFORM != Platform.LINUX) featureFlags.skipCheckUdev = true
+
+	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toIntOrNull()
+	if (featureFlags.steam && isInstallDisabled != 1) runInstaller(featureFlags)
+
+	if (!featureFlags.skipCheckUdev) {
+		val command = if (featureFlags.steam) {
+			arrayOf("steam-runtime-launch-client", "--alongside-steam", "--", "udevadm", "cat")
+		} else {
+			arrayOf("udevadm", "cat")
+		}
+		featureFlags.udevRulesInstalled = executeShellCommand(*command)?.contains("slime")
+	}
 
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
 	val storage = DesktopConfigStorage(configFolder.toFile())
@@ -66,6 +91,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		server = server,
 		config = config,
 		serialServer = serialServer,
+		featureFlags = featureFlags,
 		skeleton = skeleton,
 		firmwareManager = firmwareManager,
 		vrcConfigManager = vrcConfigManager,

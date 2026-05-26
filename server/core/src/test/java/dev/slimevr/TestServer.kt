@@ -103,6 +103,7 @@ private object NoopConfigStorage : ConfigStorage {
 }
 
 abstract class TestAppContext : AppContextProvider {
+	override val featureFlags: FeatureFlags = FeatureFlags()
 	override val config: AppConfig get() = error("not used in test")
 	override val serialServer: SerialServer get() = error("not used in test")
 	override val firmwareManager: FirmwareManager get() = error("not used in test")

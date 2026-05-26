@@ -80,6 +80,7 @@ class SolarXRBridge(
 			add(MagBehaviour(appContext))
 			add(KnownTrackersBehaviour(appContext.config.settings))
 			add(BvhBehaviour(appContext.bvhManager))
+			add(InstalledInfoBehaviour)
 		}
 
 		fun create(

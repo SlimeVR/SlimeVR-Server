@@ -27,6 +27,7 @@ data class Phase1Context(
 ) : Phase1ContextProvider
 
 interface AppContextProvider : Phase1ContextProvider {
+	val featureFlags: FeatureFlags
 	val skeleton: Skeleton
 	val firmwareManager: FirmwareManager
 	val vrcConfigManager: VRCConfigManager?
@@ -46,6 +47,7 @@ class AppContext(
 	override val server: VRServer,
 	override val config: AppConfig,
 	override val serialServer: SerialServer,
+	override val featureFlags: FeatureFlags,
 	override val skeleton: Skeleton,
 	override val firmwareManager: FirmwareManager,
 	override val vrcConfigManager: VRCConfigManager?,
