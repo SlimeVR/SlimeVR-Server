@@ -86,7 +86,6 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 
 	private fun handleTrackerAdded(receiver: DriverBridge, id: Int, name: String, manufacturer: String, serial: String) {
 		val server = receiver.appContext.server
-		val settings = receiver.appContext.config.settings
 		val scope = server.context.scope
 		val existingTracker = server.context.state.value.trackers.values
 			.find { tracker -> tracker.context.state.value.hardwareId == serial }

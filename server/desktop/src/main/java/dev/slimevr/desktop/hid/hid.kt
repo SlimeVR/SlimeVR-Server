@@ -22,11 +22,17 @@ import solarxr_protocol.datatypes.TrackerStatus
 
 private const val HID_POLL_INTERVAL_MS = 3000L
 
-private const val HID_TRACKER_RECEIVER_VID = 0x1209
-private const val HID_TRACKER_RECEIVER_PID = 0x7690
-private const val HID_TRACKER_PID = 0x7692
+private data class HidProductRule(val vendorId: Int, val productId: Int, val productMask: Int = 0xFFFF)
 
-private fun isCompatibleDevice(vid: Int, pid: Int) = vid == HID_TRACKER_RECEIVER_VID && (pid == HID_TRACKER_RECEIVER_PID || pid == HID_TRACKER_PID)
+private val HID_PRODUCT_RULES = listOf(
+	HidProductRule(0x1209, 0x7690), // SlimeVR receiver
+	HidProductRule(0x1209, 0x7692), // SlimeVR tracker direct
+	HidProductRule(0x4E76, 0xD200, 0xFF00), // Gestures Inc. D2XX
+)
+
+private fun isCompatibleDevice(vid: Int, pid: Int) = HID_PRODUCT_RULES.any { rule ->
+	vid == rule.vendorId && (pid and rule.productMask) == rule.productId
+}
 
 private val hidSpec = HidServicesSpecification().apply { isAutoStart = false }
 

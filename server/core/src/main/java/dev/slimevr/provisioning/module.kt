@@ -77,7 +77,7 @@ data class ProvisioningManager(
 
 				// Any outcome (success or failure) waits for the port to disconnect
 				// before looking for the next tracker
-				serialServer.context.state.filter { portLocation !in it.availablePorts }.first()
+				serialServer.context.state.first { portLocation !in it.availablePorts }
 				context.dispatch(ProvisioningActions.Clear)
 			}
 		}
