@@ -25,7 +25,7 @@ data class HIDDeviceInfo(
 	val boardType: BoardType,
 	val mcuType: McuType,
 	val firmware: String,
-	val batteryLevel: Float,
+	val batteryLevel: Float?,
 	val batteryVoltage: Float,
 	val rssi: Int,
 ) : HIDPacket
@@ -42,7 +42,7 @@ data class HIDRotationBattery(
 	override val hidId: Int,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
-	val batteryLevel: Float,
+	val batteryLevel: Float?,
 	val batteryVoltage: Float,
 	val rssi: Int,
 ) : HIDPacket
@@ -121,7 +121,7 @@ private fun decodeAccel(data: ByteArray, offset: Int): Vector3 {
 	)
 }
 
-private fun decodeBattery(raw: Int): Float = if (raw == 128) 1f else (raw and 127).toFloat() / 100f
+private fun decodeBattery(raw: Int): Float? = if (raw == 128) null else (raw and 127).toFloat() / 100f
 
 private fun decodeBatteryVoltage(raw: Int): Float = (raw.toFloat() + 245f) / 100f
 

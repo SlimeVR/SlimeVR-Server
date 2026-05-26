@@ -32,7 +32,8 @@ suspend fun handleSolarXRBridge(
 
 	try {
 		messages.collect { bytes ->
-			onSolarXRMessage(MessageBundle.fromByteBuffer(JvmFlatBufferReader(ByteBuffer.wrap(bytes))), bridge)
+			val reader = JvmFlatBufferReader(ByteBuffer.wrap(bytes))
+			onSolarXRMessage(MessageBundle.decode(reader, reader.getInt(0)), bridge)
 		}
 	} finally {
 		bridge.disconnect()

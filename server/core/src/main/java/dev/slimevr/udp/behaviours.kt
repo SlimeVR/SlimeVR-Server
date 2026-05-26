@@ -261,10 +261,16 @@ object DeviceStatsBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<BatteryLevel> { event ->
 			val device = receiver.getDevice() ?: return@onPacket
+			val voltage = event.data.voltage
+			val level = event.data.level
+			val batteryLevel = if (voltage != null) {
+				// Gate on voltage validity: too low/high means no battery or measurement error
+				if (voltage > 2f && voltage < 6f) if (level < 0.01f) null else level else null
+			} else {
+				level
+			}
 			device.context.dispatch(
-				DeviceActions.Update {
-					copy(batteryLevel = event.data.level, batteryVoltage = event.data.voltage)
-				},
+				DeviceActions.Update { copy(batteryLevel = batteryLevel, batteryVoltage = voltage) },
 			)
 		}
 

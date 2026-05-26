@@ -271,12 +271,11 @@ data class Serial(val serial: String = "") : UDPPacket {
 	}
 }
 
-data class BatteryLevel(val voltage: Float = 0f, val level: Float = 0f) : UDPPacket {
+data class BatteryLevel(val voltage: Float?, val level: Float) : UDPPacket {
 	companion object {
-		fun read(src: Source): BatteryLevel {
-			val f = src.readSafeFloat()
-			return if (src.remaining >= 4) BatteryLevel(f, src.readSafeFloat()) else BatteryLevel(0f, f)
-		}
+		fun read(src: Source): BatteryLevel =
+			if (src.remaining >= 8) BatteryLevel(src.readSafeFloat(), src.readSafeFloat())
+			else BatteryLevel(null, src.readSafeFloat())
 	}
 }
 
