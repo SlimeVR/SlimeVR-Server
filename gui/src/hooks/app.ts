@@ -16,16 +16,15 @@ import { getSentryOrCompute, updateSentryContext } from '@/utils/sentry';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
 import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
-export interface AppContext {
-  currentFirmwareRelease: FirmwareRelease | null;
-  isSteam: boolean;
-}
-
 const getIsSteam = async () => {
   return await window.electronAPI.isSteam();
 };
 
 const isSteam = await getIsSteam();
+
+export interface AppContext {
+  currentFirmwareRelease: FirmwareRelease | null;
+}
 
 export function useProvideAppContext(): AppContext {
   const { useRPCPacket, sendDataFeedPacket, useDataFeedPacket, isConnected } =
@@ -88,11 +87,10 @@ export function useProvideAppContext(): AppContext {
       // is initialized
       getSentryOrCompute(config.errorTracking ?? false, config.uuid, isSteam);
     }
-  }, [config, isSteam]);
+  }, [config]);
 
   return {
     currentFirmwareRelease,
-    isSteam,
   };
 }
 
