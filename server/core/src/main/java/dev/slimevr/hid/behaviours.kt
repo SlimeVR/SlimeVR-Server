@@ -167,6 +167,15 @@ object HIDBatteryBehaviour : HIDReceiverBehaviour {
 				DeviceActions.Update { copy(signalStrength = packet.rssi) },
 			)
 		}
+
+		receiver.packetEvents.onPacket<HIDRuntime> { packet ->
+			// -1: not yet known (keep existing value); 0: N/A (e.g. charging)
+			if (packet.runtime >= 0) {
+				receiver.getDevice(packet.hidId)?.context?.dispatch(
+					DeviceActions.Update { copy(batteryRemainingRuntime = packet.runtime) },
+				)
+			}
+		}
 	}
 }
 
@@ -222,6 +231,7 @@ object HIDSleepBehaviour : HIDReceiverBehaviour {
 		receiver.packetEvents.onPacket<HIDRotationBattery> { packet -> onPacket(packet.hidId) }
 		receiver.packetEvents.onPacket<HIDRotationMag> { packet -> onPacket(packet.hidId) }
 		receiver.packetEvents.onPacket<HIDStatus> { packet -> onPacket(packet.hidId) }
+		receiver.packetEvents.onPacket<HIDRuntime> { packet -> onPacket(packet.hidId) }
 	}
 }
 

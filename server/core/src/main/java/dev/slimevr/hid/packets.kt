@@ -73,6 +73,9 @@ data class HIDRotationButton(
 	val rssi: Int,
 ) : HIDPacket
 
+/** Battery remaining runtime in milliseconds (type 5). -1 = unknown, 0 = N/A (e.g. charging). */
+data class HIDRuntime(override val hidId: Int, val runtime: Long) : HIDPacket
+
 /** Button state + timeout hint + rssi, no rotation (type 6). */
 data class HIDData(
 	override val hidId: Int,
@@ -98,6 +101,15 @@ private fun readLE48Unsigned(data: ByteArray, offset: Int): ULong = (data[offset
 	((data[offset + 3].toULong() and 0xFFu) shl 24) or
 	((data[offset + 4].toULong() and 0xFFu) shl 32) or
 	((data[offset + 5].toULong() and 0xFFu) shl 40)
+
+private fun readLE64Unsigned(data: ByteArray, offset: Int): Long = (data[offset].toUByte().toLong()) or
+	(data[offset + 1].toUByte().toLong() shl 8) or
+	(data[offset + 2].toUByte().toLong() shl 16) or
+	(data[offset + 3].toUByte().toLong() shl 24) or
+	(data[offset + 4].toUByte().toLong() shl 32) or
+	(data[offset + 5].toUByte().toLong() shl 40) or
+	(data[offset + 6].toUByte().toLong() shl 48) or
+	(data[offset + 7].toUByte().toLong() shl 56)
 
 private fun decodeQ15Quat(data: ByteArray, offset: Int): Quaternion {
 	val scale = 1f / 32768f
@@ -205,6 +217,11 @@ private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
 				),
 			)
 		}
+
+		5 -> HIDRuntime(
+			hidId = hidId,
+			runtime = readLE64Unsigned(data, i + 2),
+		)
 
 		6 -> HIDData(
 			hidId = hidId,

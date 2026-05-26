@@ -75,6 +75,7 @@ private fun createDevice(
 		hardwareStatus = HardwareStatus(
 			batteryVoltage = device.batteryVoltage,
 			batteryPctEstimate = device.batteryLevel?.let { (it * 100).toUInt().toUByte() },
+			batteryRuntimeEstimate = device.batteryRemainingRuntime,
 			ping = device.ping?.toUShort(),
 			rssi = device.signalStrength?.toShort(),
 			packetsReceived = device.packetsReceived.toInt(),
