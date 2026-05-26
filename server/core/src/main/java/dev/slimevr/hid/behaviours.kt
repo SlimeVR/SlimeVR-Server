@@ -7,6 +7,10 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.util.safeLaunch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import solarxr_protocol.datatypes.TrackerStatus
 
 object HIDRegistrationBehaviour : HIDReceiverBehaviour {
@@ -157,6 +161,67 @@ object HIDBatteryBehaviour : HIDReceiverBehaviour {
 				DeviceActions.Update { copy(signalStrength = packet.rssi) },
 			)
 		}
+
+		receiver.packetEvents.onPacket<HIDData> { packet ->
+			receiver.getDevice(packet.hidId)?.context?.dispatch(
+				DeviceActions.Update { copy(signalStrength = packet.rssi) },
+			)
+		}
+	}
+}
+
+private const val HID_TIMEOUT_MS = 2_000L
+
+object HIDSleepBehaviour : HIDReceiverBehaviour {
+	override fun observe(receiver: HIDReceiver) {
+		val sleepJobs = mutableMapOf<Int, Job>()
+		val idleJobs = mutableMapOf<Int, Job>()
+
+		fun scheduleSleep(hidId: Int, timeoutMs: Int) {
+			if (timeoutMs == 0) return
+			sleepJobs[hidId]?.cancel()
+			if (timeoutMs == 65535) {
+				sleepJobs.remove(hidId)
+				return
+			}
+			sleepJobs[hidId] = receiver.context.scope.safeLaunch {
+				delay(timeoutMs.toLong())
+				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
+			}
+		}
+
+		fun armIdleTimeout(hidId: Int) {
+			idleJobs[hidId]?.cancel()
+			idleJobs[hidId] = receiver.context.scope.safeLaunch {
+				delay(HID_TIMEOUT_MS)
+				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
+			}
+		}
+
+		fun onPacket(hidId: Int) {
+			val tracker = receiver.getTracker(hidId) ?: return
+			if (tracker.context.state.value.status == TrackerStatus.TIMED_OUT) {
+				sleepJobs[hidId]?.cancel()
+				sleepJobs.remove(hidId)
+				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+			}
+			armIdleTimeout(hidId)
+		}
+
+		receiver.packetEvents.onPacket<HIDRotationButton> { packet ->
+			onPacket(packet.hidId)
+			scheduleSleep(packet.hidId, packet.timeout)
+		}
+
+		receiver.packetEvents.onPacket<HIDData> { packet ->
+			onPacket(packet.hidId)
+			scheduleSleep(packet.hidId, packet.timeout)
+		}
+
+		receiver.packetEvents.onPacket<HIDRotation> { packet -> onPacket(packet.hidId) }
+		receiver.packetEvents.onPacket<HIDRotationBattery> { packet -> onPacket(packet.hidId) }
+		receiver.packetEvents.onPacket<HIDRotationMag> { packet -> onPacket(packet.hidId) }
+		receiver.packetEvents.onPacket<HIDStatus> { packet -> onPacket(packet.hidId) }
 	}
 }
 

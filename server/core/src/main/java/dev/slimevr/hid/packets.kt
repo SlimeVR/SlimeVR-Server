@@ -63,12 +63,21 @@ data class HIDRotationMag(
 	val magnetometer: Vector3,
 ) : HIDPacket
 
-/** Button state + compact exp-map quaternion + Q7 acceleration + rssi (type 7). */
+/** Button state + timeout hint + compact exp-map quaternion + Q7 acceleration + rssi (type 7). */
 data class HIDRotationButton(
 	override val hidId: Int,
 	val button: Int,
+	val timeout: Int,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
+	val rssi: Int,
+) : HIDPacket
+
+/** Button state + timeout hint + rssi, no rotation (type 6). */
+data class HIDData(
+	override val hidId: Int,
+	val button: Int,
+	val timeout: Int,
 	val rssi: Int,
 ) : HIDPacket
 
@@ -197,9 +206,17 @@ private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
 			)
 		}
 
+		6 -> HIDData(
+			hidId = hidId,
+			button = data[i + 2].toUByte().toInt(),
+			timeout = data[i + 3].toUByte().toInt() shl 8 or data[i + 4].toUByte().toInt(),
+			rssi = -data[i + 15].toUByte().toInt(),
+		)
+
 		7 -> HIDRotationButton(
 			hidId = hidId,
 			button = data[i + 2].toUByte().toInt(),
+			timeout = data[i + 3].toUByte().toInt() shl 8 or data[i + 4].toUByte().toInt(),
 			rotation = decodeExpMapQuat(data, i + 5),
 			acceleration = decodeAccel(data, i + 9),
 			rssi = -data[i + 15].toUByte().toInt(),
