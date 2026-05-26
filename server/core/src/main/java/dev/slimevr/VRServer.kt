@@ -61,7 +61,7 @@ class VRServer @JvmOverloads constructor(
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
 	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
-	networkProfileProvider: (VRServer) -> NetworkProfileChecker = { _ -> NetworkProfileCheckerStub() },
+	networkProfileProvider: (VRServer) -> NetworkProfileChecker = { _ -> StubNetworkProfileChecker() },
 	acquireMulticastLock: () -> Any? = { null },
 	@JvmField val configManager: ConfigManager,
 ) : Thread("VRServer") {
