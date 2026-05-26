@@ -18,7 +18,14 @@ import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
 export interface AppContext {
   currentFirmwareRelease: FirmwareRelease | null;
+  isSteam: boolean;
 }
+
+const getIsSteam = async () => {
+  return await window.electronAPI.isSteam();
+};
+
+const isSteam = await getIsSteam();
 
 export function useProvideAppContext(): AppContext {
   const { useRPCPacket, sendDataFeedPacket, useDataFeedPacket, isConnected } =
@@ -79,12 +86,13 @@ export function useProvideAppContext(): AppContext {
     if (config.errorTracking !== undefined) {
       // Alows for sentry to refresh if user change the setting once the gui
       // is initialized
-      getSentryOrCompute(config.errorTracking ?? false, config.uuid);
+      getSentryOrCompute(config.errorTracking ?? false, config.uuid, isSteam);
     }
-  }, [config]);
+  }, [config, isSteam]);
 
   return {
     currentFirmwareRelease,
+    isSteam,
   };
 }
 

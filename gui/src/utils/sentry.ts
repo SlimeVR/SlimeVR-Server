@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 import { DeviceDataT } from 'solarxr-protocol';
 
-export function getSentryOrCompute(enabled = false, uuid: string) {
+export function getSentryOrCompute(enabled = false, uuid: string, isSteam: boolean) {
   // to be considered prod it needs to be a proper version tag, non-dirty
   const isProd = import.meta.env.PROD && __GIT_CLEAN__ && __VERSION_TAG__;
 
@@ -50,7 +50,7 @@ export function getSentryOrCompute(enabled = false, uuid: string) {
       }),
     ],
     beforeSend: (ev) => (newClient?.getOptions().enabled ? ev : null),
-    environment: __IS_STEAM__ ? 'steam' : 'production',
+    environment: isSteam ? 'steam' : 'production',
     release: (__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty'),
     // Tracing
     tracesSampleRate: 0.5, // Capture 50% of the transactions

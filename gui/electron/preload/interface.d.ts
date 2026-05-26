@@ -59,6 +59,7 @@ export interface IElectronAPI {
   ghGet: <T extends GHGet>(options: T) => Promise<GHReturn[T['type']]>;
   setPresence: (options: DiscordPresence) => void;
   getInstallDir: () => Promise<string>;
+  isSteam: () => Promise<boolean>;
 }
 
 declare global {

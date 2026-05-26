@@ -1,21 +1,15 @@
-import { defineConfig } from 'electron-vite'
-import { resolve } from 'path'
-import rendererConfig from './vite.config' // Import your existing React config
+import { defineConfig } from 'electron-vite';
+import { resolve } from 'path';
+import rendererConfig from './vite.config'; // Import your existing React config
 
 export default defineConfig({
   main: {
     build: {
       rollupOptions: {
         input: resolve(__dirname, 'electron/main/index.ts'),
-        external: [
-          'pino',
-          'pino-pretty',
-          'pino-roll',
-          'commander',
-          'open'
-        ]
-      }
-    }
+        external: ['pino', 'pino-pretty', 'pino-roll', 'commander', 'open'],
+      },
+    },
   },
   preload: {
     build: {
@@ -23,12 +17,12 @@ export default defineConfig({
         input: resolve(__dirname, 'electron/preload/index.ts'),
         output: {
           format: 'cjs', // Force CJS for the preload
-          entryFileNames: 'index.js' // Change back to .js
-        }
-      }
-    }
+          entryFileNames: 'index.js', // Change back to .js
+        },
+      },
+    },
   },
- renderer: {
+  renderer: {
     ...rendererConfig,
     root: '.',
     build: {
@@ -40,8 +34,8 @@ export default defineConfig({
         transformMixedEsModules: true,
       },
       rollupOptions: {
-        input: resolve(__dirname, 'index.html')
-      }
-    }
-  }
-})
+        input: resolve(__dirname, 'index.html'),
+      },
+    },
+  },
+});
