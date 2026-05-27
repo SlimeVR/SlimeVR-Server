@@ -47,7 +47,7 @@ public class WindowsNamedPipe implements AutoCloseable {
 		private final WinBase.OVERLAPPED overlappedWrite = new WinBase.OVERLAPPED();
 		private final WinBase.OVERLAPPED overlappedRead = new WinBase.OVERLAPPED();
 		private final WinBase.OVERLAPPED overlappedWait = new WinBase.OVERLAPPED();
-		private final ByteBuffer buf = ByteBuffer.allocate(2048);
+		private final ByteBuffer buf = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 		private final IntByReference bytesWritten = new IntByReference(0);
 		private final IntByReference bytesAvailable = new IntByReference(0);
 		private final IntByReference bytesRead = new IntByReference(0);
@@ -190,11 +190,12 @@ public class WindowsNamedPipe implements AutoCloseable {
 		}
 
 		// Send a message to the pipe.
-		public boolean sendBuffer(byte[] buffer, int len) {
+		public boolean sendBuffer(ByteBuffer buf) {
+			int len = buf.limit();
 			overlappedWrite.clear();
 			overlappedWrite.hEvent = writeEvent;
 			boolean immediate = k32
-				.WriteFile(handle, buffer, len, null, overlappedWrite);
+				.WriteFile(handle, buf.array(), len, null, overlappedWrite);
 			int err = k32.GetLastError();
 			if (!immediate && err != WinError.ERROR_IO_PENDING) {
 				if (err == WinError.ERROR_BROKEN_PIPE || err == WinError.ERROR_NO_DATA) {
@@ -227,13 +228,10 @@ public class WindowsNamedPipe implements AutoCloseable {
 			}
 
 			boolean anyReceived = false;
-			buf.clear();
 			while (k32.PeekNamedPipe(handle, buf.array(), 4, null, bytesAvailable, null)) {
 				if (bytesAvailable.getValue() < 4) {
 					return anyReceived; // Wait for more data
 				}
-				buf.position(0);
-				buf.order(ByteOrder.LITTLE_ENDIAN);
 				int messageLength = buf.getInt();
 				if (messageLength > 1024) { // Overflow
 					setError("Pipe overflow. Message length: " + messageLength);
@@ -245,7 +243,6 @@ public class WindowsNamedPipe implements AutoCloseable {
 
 				overlappedRead.clear();
 				overlappedRead.hEvent = readEvent;
-				buf.position(0);
 				boolean immediate = k32
 					.ReadFile(handle, buf.array(), messageLength, null, overlappedRead);
 				int err = k32.GetLastError();
@@ -268,10 +265,9 @@ public class WindowsNamedPipe implements AutoCloseable {
 					return anyReceived;
 				}
 
-				buf.clear();
-				buf.position(4); // skip size
 				buf.limit(messageLength);
 				reader.onMessage(this, buf);
+				buf.clear();
 				anyReceived = true;
 
 				if (state != PipeState.OPEN)

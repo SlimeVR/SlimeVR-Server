@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.List;
 
 
@@ -22,7 +23,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge
 	protected final String bridgeSettingsKey;
 	protected WindowsNamedPipe pipe = null;
 	protected WindowsNamedPipe.PipeConnection connection = null;
-	private final byte[] buf = new byte[2048];
+	private final ByteBuffer buf = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 
 	public WindowsNamedPipeBridge(
 		VRServer server,
@@ -122,18 +123,16 @@ public class WindowsNamedPipeBridge extends SteamVRBridge
 		if (connection == null || connection.getState() != PipeState.OPEN) {
 			return false;
 		}
+
 		try {
-			int size = message.getSerializedSize();
-			CodedOutputStream os = CodedOutputStream.newInstance(buf, 4, size);
+			buf.clear();
+			int wrappedSize = message.getSerializedSize() + 4;
+			buf.limit(wrappedSize);
+			buf.putInt(wrappedSize);
+			CodedOutputStream os = CodedOutputStream.newInstance(buf);
 			message.writeTo(os);
-			size += 4;
 
-			buf[0] = (byte) (size & 0xFF);
-			buf[1] = (byte) ((size >> 8) & 0xFF);
-			buf[2] = (byte) ((size >> 16) & 0xFF);
-			buf[3] = (byte) ((size >> 24) & 0xFF);
-
-			return connection.sendBuffer(buf, size);
+			return connection.sendBuffer(buf);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
