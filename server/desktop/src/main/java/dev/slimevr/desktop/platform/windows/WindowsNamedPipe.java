@@ -197,7 +197,11 @@ public class WindowsNamedPipe implements AutoCloseable {
 				.WriteFile(handle, buffer, len, null, overlappedWrite);
 			int err = k32.GetLastError();
 			if (!immediate && err != WinError.ERROR_IO_PENDING) {
-				setError("WriteFile failed: " + err);
+				if (err == WinError.ERROR_BROKEN_PIPE || err == WinError.ERROR_NO_DATA) {
+					setError("Pipe closed");
+				} else {
+					setError("WriteFile failed: " + err);
+				}
 				return false;
 			}
 
