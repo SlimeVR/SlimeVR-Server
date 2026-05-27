@@ -5,10 +5,16 @@ import dev.slimevr.tracking.trackers.DeviceOrigin
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.MCUType
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 
 class HIDDevice(val hidId: Int) : Device(DeviceOrigin.HID) {
 	override var hardwareIdentifier: String = "Unknown"
 	override var boardType: BoardType = BoardType.UNKNOWN
 	override var mcuType: MCUType = MCUType.UNKNOWN
 	fun getTracker(id: Int): Tracker? = trackers[id]
+
+	override suspend fun setMag(status: MagnetometerStatus, sensorId: Int) {
+		val tracker = trackers[sensorId] ?: error("Tracker $sensorId not found in device $this")
+		tracker.magStatus = status
+	}
 }

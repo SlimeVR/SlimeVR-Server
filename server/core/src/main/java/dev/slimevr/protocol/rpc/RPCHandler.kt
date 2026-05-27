@@ -28,6 +28,7 @@ import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByBodyPart
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.*
@@ -517,7 +518,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		mainScope.launch {
 			withTimeoutOrNull(MAG_TIMEOUT) {
-				tracker.device.setMag(state, tracker.trackerNum)
+				tracker.device.setMag(if (state) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED, tracker.trackerNum)
 			}
 
 			val fbb = FlatBufferBuilder(32)

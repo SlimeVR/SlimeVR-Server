@@ -2,6 +2,7 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.MCUType
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -49,7 +50,7 @@ open class Device(val origin: DeviceOrigin, val magSupport: Boolean = false) {
 	 * if `sensorId` null or in the specified tracker
 	 * @param sensorId If null, every sensor will be modified
 	 */
-	open suspend fun setMag(state: Boolean, sensorId: Int = 255) {
+	open suspend fun setMag(status: MagnetometerStatus, sensorId: Int = 255) {
 		TODO("Not implemented because no mag support: $magSupport")
 	}
 

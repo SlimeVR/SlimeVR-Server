@@ -12,6 +12,7 @@ import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.runBlocking
 import java.nio.ByteBuffer
 import java.util.function.Consumer
 import kotlin.collections.set
@@ -134,6 +135,10 @@ class HIDCommon {
 					.info(
 						"[TrackerServer] Added sensor $trackerId for ${device.name}, type $sensorType",
 					)
+			} else {
+				runBlocking {
+					device.setMag(magStatus, trackerId)
+				}
 			}
 		}
 

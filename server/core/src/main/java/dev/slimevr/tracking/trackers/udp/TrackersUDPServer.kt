@@ -249,7 +249,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		) {
 			mainScope.launch {
 				withTimeoutOrNull(MAG_TIMEOUT) {
-					connection.setMag(false, trackerId)
+					connection.setMag(MagnetometerStatus.DISABLED, trackerId)
 				}
 			}
 		} else if (magStatus == MagnetometerStatus.DISABLED &&
@@ -258,7 +258,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		) {
 			mainScope.launch {
 				withTimeoutOrNull(MAG_TIMEOUT) {
-					connection.setMag(true, trackerId)
+					connection.setMag(MagnetometerStatus.ENABLED, trackerId)
 				}
 			}
 		}
