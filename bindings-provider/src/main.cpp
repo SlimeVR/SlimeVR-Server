@@ -21,6 +21,7 @@
 #include <cstdlib>
 #endif
 
+namespace fs = std::filesystem;
 using namespace std::chrono_literals;
 using namespace solarxr_protocol;
 
@@ -148,14 +149,20 @@ int main() {
         vr::IVRApplications *app = vr::VRApplications();
         vr::IVRInput *input = vr::VRInput();
 
-        auto [appManifestPath, actionManifestPath] = VRUtils::initialiseManifest();
+        fs::path actionManifestPath;
+        std::tie(std::ignore, actionManifestPath) = VRUtils::initialiseManifest();
 
+        // We don't want our app key to randomly change if SteamVR decides to honour
+        // application manifests with no binary path. Instead let it generate an
+        // app key based on the executable name (system.generated.[lowercase executable name])
+#if false
         if (auto err = app->AddApplicationManifest(appManifestPath.string().data(), true);
             err != vr::VRApplicationError_None) {
             logger.error("Failed to add application manifest: {}",
                          app->GetApplicationsErrorNameFromEnum(err));
             return 1;
         }
+#endif
 
         // SetActionManifestPath may return IPCError if vrserver is busy and takes
         // too long to reply, so keep invoking until it succeeds
