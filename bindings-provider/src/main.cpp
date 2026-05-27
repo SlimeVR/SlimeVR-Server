@@ -15,6 +15,12 @@
 
 #include "openvr.h"
 
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <cstdlib>
+#endif
+
 using namespace std::chrono_literals;
 using namespace solarxr_protocol;
 
@@ -95,6 +101,20 @@ static void signal_handler(int signal) {
 
 int main() {
     auto &logger = Logger::get();
+    // Steam and SteamVR sets these environment variables on applications that it
+    // spawns, but if an app spawned by Steam then spawns a child that initialises
+    // OpenVR, SteamVR will give the child the appkey of the root application it
+    // is a descendant of, e.g. if SteamVR launches SlimeVR as an overlay,
+    // it will set SteamAppId="3245490" and STEAMVR_APPKEY="steam.overlay.3245490"
+    // which breaks our bindings. We want SteamVR to use a generated appkey if
+    // possible.
+#ifdef _WIN32
+    SetEnvironmentVariableA("SteamAppId", nullptr);
+    SetEnvironmentVariableA("STEAMVR_APPKEY", nullptr);
+#else
+    unsetenv("SteamAppId");
+    unsetenv("STEAMVR_APPKEY");
+#endif
 
     try {
         SolarXRConnection conn;
