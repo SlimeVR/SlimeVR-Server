@@ -38,7 +38,7 @@ class OscQueryServerTest {
 			assertEquals("_osc._udp", createdServices[1].type)
 			assertTrue(createdServices.all { it.isRegistered.value })
 
-			val hostInfo = json.parseToJsonElement(readUrl("http://127.0.0.1:${server.oscQueryPort}/HOST_INFO")).jsonObject
+			val hostInfo = json.parseToJsonElement(readUrl("http://127.0.0.1:${server.oscQueryPort}/?HOST_INFO")).jsonObject
 			assertEquals("SlimeVR", hostInfo["NAME"]?.jsonPrimitive?.content)
 			assertEquals(9000, hostInfo["OSC_PORT"]?.jsonPrimitive?.content?.toInt())
 
