@@ -2,6 +2,8 @@ package dev.slimevr.tracker
 
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.util.safeLaunch
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -88,10 +90,43 @@ object TrackerBasicBehaviour : TrackerBehaviour {
 
 		is TrackerActions.SetStatus -> state.copy(status = action.status)
 
-		is TrackerActions.SetRotation -> state.copy(
-			rawRotation = action.rotation ?: state.rawRotation,
-			rawAcceleration = action.acceleration ?: state.rawAcceleration,
-		)
+		is TrackerActions.SetRotation -> {
+			val cal = state.sessionCalibration
+
+			val rawRotation: RawRotation = action.rotation ?: state.rawRotation
+			val rotation: CalibratedRotation = when {
+				cal != null && action.rotation != null -> applyCalibration(
+					rawRotation,
+					cal.headingCorrection,
+					cal.attitudeAlignment,
+					cal.headingAlignment,
+				)
+
+				cal != null -> state.rotation
+				else -> rawRotation
+			}
+
+			val rawAcceleration: RawAcceleration =
+				action.acceleration ?: state.rawAcceleration
+			val acceleration: CalibratedAcceleration = when {
+				cal != null && action.acceleration != null -> applyCalibration(
+					rawAcceleration,
+					rawRotation,
+					cal.headingCorrection,
+					cal.headingAlignment,
+				)
+
+				cal != null -> state.acceleration
+				else -> rawAcceleration
+			}
+
+			state.copy(
+				rawRotation = rawRotation,
+				rotation = rotation,
+				rawAcceleration = rawAcceleration,
+				acceleration = acceleration,
+			)
+		}
 	}
 }
 
