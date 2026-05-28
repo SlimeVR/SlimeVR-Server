@@ -16,6 +16,8 @@ import { getSentryOrCompute, updateSentryContext } from '@/utils/sentry';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
 import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
+const isSteam = await window.electronAPI.isSteam();
+
 export interface AppContext {
   currentFirmwareRelease: FirmwareRelease | null;
 }
@@ -79,7 +81,7 @@ export function useProvideAppContext(): AppContext {
     if (config.errorTracking !== undefined) {
       // Alows for sentry to refresh if user change the setting once the gui
       // is initialized
-      getSentryOrCompute(config.errorTracking ?? false, config.uuid);
+      getSentryOrCompute(config.errorTracking ?? false, config.uuid, isSteam);
     }
   }, [config]);
 
