@@ -156,7 +156,7 @@ fun main(args: Array<String>) {
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
 			{ _ -> DesktopVRCConfigHandler() },
-			{ server -> DesktopNetworkProfileChecker(server) },
+			{ _ -> DesktopNetworkProfileChecker() },
 			configManager = configManager,
 		)
 		vrServer.start()
