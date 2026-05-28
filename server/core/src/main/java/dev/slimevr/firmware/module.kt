@@ -61,7 +61,7 @@ class FirmwareManager(
 		server: VRServer,
 	) {
 		runningJobs[portLocation]?.cancelAndJoin()
-		runningJobs[portLocation] = scope.launch {
+		runningJobs[portLocation] = scope.safeLaunch {
 			doSerialFlash(
 				portLocation = portLocation,
 				parts = parts,
