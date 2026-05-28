@@ -17,9 +17,9 @@ typealias CalibratedRotation = Quaternion
 typealias CalibratedAcceleration = Vector3
 
 data class SessionCalibration(
-	val headingCorrection: HeadingCorrection,
-	val attitudeAlignment: AttitudeAlignment,
-	val headingAlignment: HeadingAlignment,
+	val headingCorrection: HeadingCorrection = Quaternion.IDENTITY,
+	val attitudeAlignment: AttitudeAlignment = Quaternion.IDENTITY,
+	val headingAlignment: HeadingAlignment = Quaternion.IDENTITY,
 )
 
 fun applyCalibration(

@@ -44,6 +44,9 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null) : TrackerActions
+	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
+	data class YawReset(val referenceRotation: Quaternion) : TrackerActions
+	data class MountingReset(val referenceRotation: Quaternion) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>

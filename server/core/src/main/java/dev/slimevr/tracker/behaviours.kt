@@ -127,6 +127,47 @@ object TrackerBasicBehaviour : TrackerBehaviour {
 				acceleration = acceleration,
 			)
 		}
+
+		is TrackerActions.FullReset -> {
+			val headingCorrection = estimateHeadingCorrect(
+				state.rawRotation,
+				action.referenceRotation,
+			)
+			val attitudeAlignment = estimateAttitudeAlign(
+				state.rawRotation,
+				headingCorrection,
+			)
+
+			val sessionCalibration = state.sessionCalibration?.copy(
+				headingCorrection = headingCorrection,
+				attitudeAlignment = attitudeAlignment,
+			) ?: SessionCalibration(
+				headingCorrection = headingCorrection,
+				attitudeAlignment = attitudeAlignment,
+			)
+
+			state.copy(sessionCalibration = sessionCalibration)
+		}
+
+		is TrackerActions.YawReset -> {
+			val headingCorrection = estimateHeadingCorrect(
+				state.rawRotation,
+				action.referenceRotation,
+			)
+
+			val sessionCalibration = state.sessionCalibration?.copy(
+				headingCorrection = headingCorrection,
+			) ?: SessionCalibration(
+				headingCorrection = headingCorrection,
+			)
+
+			state.copy(sessionCalibration = sessionCalibration)
+		}
+
+		is TrackerActions.MountingReset -> {
+			// TODO: Actually add mounting reset
+			state
+		}
 	}
 }
 
