@@ -5,7 +5,7 @@ export function useDataFeedConfig() {
   const { config } = useConfig();
 
   const fastDataFeed = config?.debug && config?.devSettings?.fastDataFeed;
-  const feedMaxTps = fastDataFeed ? 40 : 10;
+  const feedMaxTps = fastDataFeed ? 90 : 10;
 
   const trackerData = new TrackerDataMaskT();
   trackerData.position = true;
@@ -39,8 +39,13 @@ export function useDataFeedConfig() {
 }
 
 export function useBonesDataFeedConfig() {
+  const { config } = useConfig();
+
+  const fastDataFeed = config?.debug && config?.devSettings?.fastDataFeed;
+  const feedMaxTps = fastDataFeed ? 90 : 40;
+
   const dataFeedConfig = new DataFeedConfigT();
   dataFeedConfig.boneMask = true;
-  dataFeedConfig.minimumTimeSinceLast = 1000 / 40;
+  dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   return dataFeedConfig;
 }
