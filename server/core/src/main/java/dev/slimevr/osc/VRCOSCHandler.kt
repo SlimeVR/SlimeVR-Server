@@ -119,7 +119,7 @@ class VRCOSCHandler(
 		for (netInt in NetworkInterface.getNetworkInterfaces()) {
 			if (netInt.isUp && !netInt.isLoopback && !netInt.isVirtual) {
 				for (netAddr in netInt.interfaceAddresses) {
-					if (a == netAddr.address || a.address.contentEquals(netAddr.address.address) || a.hostName == netAddr.address.hostName) {
+					if (a == netAddr.address || a.address.contentEquals(netAddr.address.address)) {
 						return true
 					}
 				}
@@ -134,7 +134,6 @@ class VRCOSCHandler(
 				b != null &&
 				(
 					a.address.contentEquals(b.address) ||
-						(a.hostName == b.hostName) ||
 						(ipIsLocal(a) && ipIsLocal(b))
 					)
 			)
