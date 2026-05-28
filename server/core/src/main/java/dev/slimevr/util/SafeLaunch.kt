@@ -25,10 +25,14 @@ fun CoroutineScope.safeLaunch(
 	start: CoroutineStart = CoroutineStart.DEFAULT,
 	block: suspend CoroutineScope.() -> Unit,
 ): Job {
-	val handler = context[CoroutineExceptionHandler] ?: CoroutineExceptionHandler { ctx, throwable ->
-		val name = ctx[CoroutineName]?.name ?: "UnknownScope"
-		AppLogger.coroutines.error(throwable, "Unhandled exception in safeLaunch (scope: $name)")
-	}
+	val handler = context[CoroutineExceptionHandler]
+		?: this.coroutineContext[CoroutineExceptionHandler]
+		?: CoroutineExceptionHandler { ctx, throwable ->
+			val name = ctx[CoroutineName]?.name ?: "UnknownScope"
+			AppLogger.coroutines.error(
+				throwable, "Unhandled exception in safeLaunch (scope: $name)"
+			)
+		}
 	//noinspection RAW_LAUNCH_USAGE
 	return this.launch(context + handler, start = start, block = block)
 }
