@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbEndpoint
+import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
 import androidx.core.content.ContextCompat
 import dev.slimevr.AppContextProvider
@@ -41,7 +42,7 @@ private val HID_PRODUCT_RULES = listOf(
 private fun isCompatibleDevice(vid: Int, pid: Int) =
 	HID_PRODUCT_RULES.any { rule -> vid == rule.vendorId && (pid and rule.productMask) == rule.productId }
 
-private fun findHidInputEndpoint(device: UsbDevice): UsbEndpoint? {
+private fun findHidInputEndpoint(device: UsbDevice): Pair<UsbInterface, UsbEndpoint>? {
 	for (ifaceIdx in 0 until device.interfaceCount) {
 		val iface = device.getInterface(ifaceIdx)
 		if (iface.interfaceClass != UsbConstants.USB_CLASS_HID) continue
@@ -49,7 +50,7 @@ private fun findHidInputEndpoint(device: UsbDevice): UsbEndpoint? {
 			val endpoint = iface.getEndpoint(epIdx)
 			if (endpoint.type == UsbConstants.USB_ENDPOINT_XFER_INT &&
 				endpoint.direction == UsbConstants.USB_DIR_IN
-			) return endpoint
+			) return iface to endpoint
 		}
 	}
 	return null
@@ -89,7 +90,8 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 					usbManager.deviceList.values
 						.filter { device -> isCompatibleDevice(device.vendorId, device.productId) }
 						.associate { device -> device.deviceName to device }
-				} catch (_: Exception) {
+				} catch (e: Exception) {
+					AppLogger.hid.error(e, "HID enumeration failed")
 					emptyMap()
 				}
 			}
@@ -118,11 +120,12 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 				if (deviceName in active) continue
 				permissionRequested.remove(deviceName)
 
-				val endpoint = findHidInputEndpoint(device)
-				if (endpoint == null) {
+				val hidEndpoint = findHidInputEndpoint(device)
+				if (hidEndpoint == null) {
 					AppLogger.hid.warn("No HID input endpoint found for $deviceName")
 					continue
 				}
+				val (iface, endpoint) = hidEndpoint
 
 				val connection = withContext(Dispatchers.IO) { usbManager.openDevice(device) }
 				if (connection == null) {
@@ -130,7 +133,6 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 					continue
 				}
 
-				val iface = device.getInterface(0)
 				connection.claimInterface(iface, true)
 
 				val serial = device.serialNumber ?: deviceName

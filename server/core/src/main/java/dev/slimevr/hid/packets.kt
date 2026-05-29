@@ -153,7 +153,7 @@ private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
 	return when (packetType) {
 		255 -> {
 			val addr = readLE48Unsigned(data, i + 2)
-			HIDDeviceRegister(hidId, "%012X".format(addr))
+			HIDDeviceRegister(hidId, "%012X".format(addr.toLong()))
 		}
 
 		0 -> {

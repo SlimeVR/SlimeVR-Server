@@ -126,6 +126,5 @@ buildConfig {
 
 tasks.run<JavaExec> {
 	standardInput = System.`in` // this is not working
-	jvmArgs("--enable-native-access=ALL-UNNAMED")
 	args = listOf("run")
 }

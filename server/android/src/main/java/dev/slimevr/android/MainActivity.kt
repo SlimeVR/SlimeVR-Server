@@ -89,7 +89,6 @@ class MainActivity : AppCompatActivity() {
 		guiWebView.settings.javaScriptEnabled = true
 		guiWebView.settings.domStorageEnabled = true
 
-		// TODO: Let code know it is in android, should be gone when we start using tauri
 		guiWebView.addJavascriptInterface(AndroidJsObject(), "__ANDROID__")
 
 		guiWebView.settings.setSupportZoom(true)
