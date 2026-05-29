@@ -13,10 +13,10 @@ class Linux(
 
 	private val path = Paths.get("").toAbsolutePath().toString()
 
-	suspend fun updateLinux(currentVersionTag: String, versionTag: String, configDir: String, vrConfig: String, serverUrl: String, openVRDriverUrl: String) {
+	suspend fun updateLinux(currentVersionTag: String, versionTag: String, configDir: String, vrConfig: String, serverUrl: String, serverChecksum: String, openVRDriverUrl: String) {
 		backupConfig(currentVersionTag, configDir, vrConfig)
 		restoreConfig(versionTag, configDir, vrConfig)
-		updateServer(serverUrl)
+		updateServer(serverUrl, serverChecksum)
 		updateLinuxSteamVRDriver(openVRDriverUrl)
 	}
 
@@ -73,7 +73,7 @@ class Linux(
 			}
 			TerminalUtil.info("Downloading SteamVR Driver")
 
-			io.downloadFile(openVRDriverUrl, LINUXSTEAMVRDRIVERNAME)
+			io.downloadFile(openVRDriverUrl, LINUXSTEAMVRDRIVERNAME, "")
 
 			state.update {
 				subText = "Unzipping SteamVR Driver"
@@ -125,7 +125,7 @@ class Linux(
 		}
 	}
 
-	suspend fun updateServer(serverUrl: String) {
+	suspend fun updateServer(serverUrl: String, serverChecksum: String) {
 		TerminalUtil.info("Updating server")
 		state.update {
 			statusText = "Updating Server"
@@ -137,7 +137,7 @@ class Linux(
 			subText = "Downloading Server"
 		}
 		TerminalUtil.info("Downloading server")
-		io.downloadFile(serverUrl, LINUXSERVERNAME)
+		io.downloadFile(serverUrl, LINUXSERVERNAME, serverChecksum)
 
 		state.update {
 			subProgress = 1f
@@ -149,6 +149,7 @@ class Linux(
 		val command = listOf("chmod", "+x", LINUXSERVERNAME)
 
 		//TerminalUtil.info(io.executeShellCommand("chmod +x ${LINUXSERVERNAME}"))
+		io.unzip("slimevr-openvr-driver-x64-linux.zip")
 	}
 
 	// Legacy
@@ -157,7 +158,7 @@ class Linux(
 			statusText = "Downloading Feeder App"
 		}
 
-		io.downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME)
+		io.downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME, "")
 
 		state.update {
 			statusText = "Unzipping Feeder App"

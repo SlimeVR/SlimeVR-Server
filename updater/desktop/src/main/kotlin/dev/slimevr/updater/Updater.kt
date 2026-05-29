@@ -71,8 +71,10 @@ class Updater(
 		}
 		state.versionTag = selectedVersion.version
 
+
 		when (os.currentPlatform) {
-			OperatingSystem.WINDOWS -> {
+			//TODO: Change back to windows, for testing only
+			OperatingSystem.LINUX -> {
 				val windows = Windows(state, updaterIO)
 				windows.updateWindows(
 					currentVersionTag,
@@ -80,11 +82,12 @@ class Updater(
 					configDir,
 					vrConfig,
 					selectedVersion.url,
+					selectedVersion.checksum,
 					"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip"
 				)
 			}
 
-			OperatingSystem.LINUX -> {
+			OperatingSystem.WINDOWS -> {
 				val linux = Linux(state, updaterIO)
 				linux.updateLinux(
 					currentVersionTag,
@@ -92,6 +95,7 @@ class Updater(
 					configDir,
 					vrConfig,
 					selectedVersion.url,
+					selectedVersion.checksum,
 					"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
 				)
 			}
@@ -113,6 +117,7 @@ class Updater(
 			if (featureFlags.restartServer) {
 				launchServer()
 			}
+			exitProcess(0)
 		}
 
 	}
@@ -157,7 +162,13 @@ class Updater(
 	}
 
 	companion object {
-		val CDN = "http://127.0.0.1:8080"
+		const val CDN = "http://127.0.0.1:3000"
+		//val CDN = "https://updates.slimevr.io"
+		const val CDN_RELEASES = "$CDN/releases"
+		const val CDN_VERSIONS = "$CDN/versions"
+		const val CDN_CHANNELS = "$CDN/channels"
+		const val CDN_DOWNLOAD = "$CDN/download"
+
 		fun launchServer() {
 
 		}

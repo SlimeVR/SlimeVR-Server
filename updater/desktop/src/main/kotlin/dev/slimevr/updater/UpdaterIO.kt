@@ -1,5 +1,6 @@
 package dev.slimevr.updater
 
+import dev.slimevr.updater.Updater.Companion.CDN_RELEASES
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -64,13 +65,14 @@ class UpdaterIO(
 				})
 			}
 		}
-		val releases: List<Release> = client.get("http://localhost:3000/releases").body()
+		TerminalUtil.info(CDN_RELEASES)
+		val releases: List<Release> = client.get(CDN_RELEASES).body()
 
 		return releases
 	}
 
 
-	suspend fun downloadFile(fileUrl: String, fileName: String, checksum: String = "") {
+	suspend fun downloadFile(fileUrl: String, fileName: String, checksum: String) {
 		state.subProgress = 0f
 		val targetFile = File(fileName)
 

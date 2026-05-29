@@ -11,10 +11,10 @@ class Windows(
 
 	private val path = Paths.get("").toAbsolutePath().toString()
 
-	suspend fun updateWindows(currentVersionTag: String, versionTag: String, configDir: String, vrConfig: String, serverUrl: String, openVRDriverUrl: String) {
+	suspend fun updateWindows(currentVersionTag: String, versionTag: String, configDir: String, vrConfig: String, serverUrl: String, serverChecksum: String, openVRDriverUrl: String) {
 		backupConfig(currentVersionTag, configDir, vrConfig)
 		restoreConfig(versionTag, configDir, vrConfig)
-		updateServer(serverUrl)
+		updateServer(serverUrl, serverChecksum)
 		usbDrivers()
 		steamVRDriver()
 	}
@@ -52,7 +52,7 @@ class Windows(
 		}
 	}
 
-	suspend fun updateServer(serverUrl: String) {
+	suspend fun updateServer(serverUrl: String, serverChecksum: String) {
 		println("downloading server")
 		state.update {
 			statusText = "Updating SlimeVR"
@@ -63,7 +63,7 @@ class Windows(
 			statusText = "Downloading Server"
 		}
 
-		io.downloadFile(serverUrl, WINDOWSSERVERNAME)
+		io.downloadFile(serverUrl, WINDOWSSERVERNAME, serverChecksum)
 
 		state.update {
 			subProgress = 1f
@@ -110,6 +110,7 @@ class Windows(
 		io.downloadFile(
 			WINDOWSFEEDERURL,
 			WINDOWSFEEDERNAME,
+			""
 		)
 
 		state.statusText = "Unzipping Feeder App"
@@ -162,6 +163,7 @@ class Windows(
 		io.downloadFile(
 			WINDOWSSTEAMVRDRIVERURL,
 			WINDOWSSTEAMVRDRIVERNAME,
+			""
 		)
 
 		state.statusText = "Unzipping SteamVR Driver"
