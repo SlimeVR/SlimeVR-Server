@@ -1,9 +1,10 @@
 package dev.slimevr.updater
 
+import dev.slimevr.updater.updater.UpdaterController
+import dev.slimevr.updater.utils.TerminalUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlin.test.Test
 

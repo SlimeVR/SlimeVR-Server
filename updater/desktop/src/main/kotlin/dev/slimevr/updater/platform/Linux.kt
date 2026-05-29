@@ -1,14 +1,25 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.platform
 
+import dev.slimevr.updater.utils.TerminalUtil
+import dev.slimevr.updater.updater.UpdaterIO
+import dev.slimevr.updater.gui.UpdaterState
+import dev.slimevr.updater.gui.update
 import kotlinx.io.IOException
 import java.io.File
 import java.nio.file.Paths
 import kotlin.io.path.Path
 import kotlin.io.path.exists
+import dev.slimevr.updater.updater.Constants.Companion
+import dev.slimevr.updater.updater.Constants.Companion.LINUXFEEDERDIRECTORY
+import dev.slimevr.updater.updater.Constants.Companion.LINUXFEEDERNAME
+import dev.slimevr.updater.updater.Constants.Companion.LINUXFEEDERURL
+import dev.slimevr.updater.updater.Constants.Companion.LINUXSERVERNAME
+import dev.slimevr.updater.updater.Constants.Companion.LINUXSTEAMVRDRIVERDIRECTORY
+import dev.slimevr.updater.updater.Constants.Companion.LINUXSTEAMVRDRIVERNAME
 
 class Linux(
-	private val state: UpdaterState,
-	private val io: UpdaterIO,
+    private val state: UpdaterState,
+    private val io: UpdaterIO,
 ) {
 
 	private val path = Paths.get("").toAbsolutePath().toString()
@@ -24,7 +35,7 @@ class Linux(
 		TerminalUtil.info("Backing up Config")
 		try {
 			val targetDir =
-				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
+                File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
 			targetDir.mkdirs()
 			val config = File(vrConfig)
 			val destination = "$targetDir/vrconfig.yml"
@@ -40,7 +51,7 @@ class Linux(
 	fun restoreConfig(versionTag: String, configDir: String, vrConfig: String) {
 		try {
 			val sourceDir =
-				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
+                File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
 			if (!sourceDir.exists()) return
 			val config = File("$sourceDir/vrconfig.yml")
 			val destination = "$configDir/vrconfig.yml"
@@ -77,7 +88,7 @@ class Linux(
 
 			state.update {
 				subText = "Unzipping SteamVR Driver"
-				subProgressisVisible = true
+				subProgressIsVisible = true
 			}
 			TerminalUtil.info("Unzipping SteamVR Driver")
 
@@ -129,7 +140,7 @@ class Linux(
 		TerminalUtil.info("Updating server")
 		state.update {
 			statusText = "Updating Server"
-			subProgressisVisible = true
+			subProgressIsVisible = true
 			subProgress = 0f
 		}
 
@@ -225,29 +236,5 @@ class Linux(
 		}
 	}
 
-	companion object {
-		private const val LINUXCONFIGLOCATION =
-			""
 
-		private const val LINUXSTEAMVRDRIVERURL =
-			"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
-
-		private const val LINUXSTEAMVRDRIVERNAME =
-			"slimevr-openvr-driver-x64-linux.zip"
-
-		private const val LINUXSTEAMVRDRIVERDIRECTORY =
-			"slimevr-openvr-driver-x64-linux"
-
-		private const val LINUXFEEDERURL =
-			"https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-Linux.zip"
-
-		private const val LINUXFEEDERNAME =
-			"SlimeVR-Feeder-App-Linux.zip"
-
-		private const val LINUXFEEDERDIRECTORY =
-			"SlimeVR-Feeder-App-Linux"
-
-		private const val LINUXSERVERNAME =
-			"SlimeVR-amd64.appimage"
-	}
 }

@@ -1,17 +1,36 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.platform
 
+import dev.slimevr.updater.utils.TerminalUtil
+import dev.slimevr.updater.updater.UpdaterIO
+import dev.slimevr.updater.gui.UpdaterState
+import dev.slimevr.updater.gui.update
+import dev.slimevr.updater.updater.Constants.Companion.WINDOWSFEEDERDIRECTORY
+import dev.slimevr.updater.updater.Constants.Companion.WINDOWSFEEDERNAME
+import dev.slimevr.updater.updater.Constants.Companion.WINDOWSFEEDERURL
+import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSERVERNAME
+import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSTEAMVRDRIVERDIRECTORY
+import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSTEAMVRDRIVERNAME
+import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSTEAMVRDRIVERURL
 import kotlinx.io.IOException
 import java.io.File
 import java.nio.file.Paths
 
 class Windows(
-	private val state: UpdaterState,
-	private val io: UpdaterIO,
+    private val state: UpdaterState,
+    private val io: UpdaterIO,
 ) {
 
 	private val path = Paths.get("").toAbsolutePath().toString()
 
-	suspend fun updateWindows(currentVersionTag: String, versionTag: String, configDir: String, vrConfig: String, serverUrl: String, serverChecksum: String, openVRDriverUrl: String) {
+	suspend fun updateWindows(
+		currentVersionTag: String,
+		versionTag: String,
+		configDir: String,
+		vrConfig: String,
+		serverUrl: String,
+		serverChecksum: String,
+		openVRDriverUrl: String
+	) {
 		backupConfig(currentVersionTag, configDir, vrConfig)
 		restoreConfig(versionTag, configDir, vrConfig)
 		updateServer(serverUrl, serverChecksum)
@@ -182,35 +201,5 @@ class Windows(
 
 		state.mainProgress = 0.66f
 		state.statusText = "SteamVR Driver done"
-	}
-
-	companion object {
-
-		private const val WINDOWSSTEAMVRDRIVERURL =
-			"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip"
-
-		private const val WINDOWSSTEAMVRDRIVERNAME =
-			"slimevr-openvr-driver-win64.zip"
-
-		private const val WINDOWSSTEAMVRDRIVERDIRECTORY =
-			"slimevr-openvr-driver-win64"
-
-		private const val WINDOWSFEEDERURL =
-			"https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-win64.zip"
-
-		private const val WINDOWSFEEDERNAME =
-			"SlimeVR-Feeder-App-win64.zip"
-
-		private const val WINDOWSFEEDERDIRECTORY =
-			"SlimeVR-Feeder-App-win64"
-
-		private const val WINDOWSSERVERURL =
-			"https://github.com/SlimeVR/SlimeVR-Server/releases/latest/download/SlimeVR-win64.zip"
-
-		private const val WINDOWSSERVERNAME =
-			"slimevr-win64.zip"
-
-		private const val WINDOWSSERVERDIRECTORY =
-			"slimevr-win64"
 	}
 }

@@ -1,8 +1,8 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.utils
 
 import com.github.ajalt.mordant.rendering.TextAlign
 import com.github.ajalt.mordant.rendering.TextColors
-import com.github.ajalt.mordant.rendering.TextStyles.bold
+import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.table.grid
 import com.github.ajalt.mordant.terminal.Terminal
 import com.github.ajalt.mordant.widgets.Panel
@@ -18,25 +18,25 @@ object TerminalUtil {
 		}
 
 		val versionGrid = grid {
-			val columnCount = (t.size.width / 15).coerceAtLeast(1).coerceAtMost(6)
+            val columnCount = (t.size.width / 15).coerceAtLeast(1).coerceAtMost(6)
 
-			versions.chunked(columnCount).forEach { rowVersions ->
-				row {
-					rowVersions.forEach { tag ->
-						val style = if ("rc" in tag || "beta" in tag) TextColors.yellow else TextColors.cyan
-						cell(style(tag))
-					}
-				}
-			}
-		}
+            versions.chunked(columnCount).forEach { rowVersions ->
+                row {
+                    rowVersions.forEach { tag ->
+                        val style = if ("rc" in tag || "beta" in tag) TextColors.yellow else TextColors.cyan
+                        cell(style(tag))
+                    }
+                }
+            }
+        }
 
 		t.println(
-			Panel(
-				content = versionGrid,
-				title = Text(bold(title)),
-				titleAlign = TextAlign.LEFT,
-				borderStyle = TextColors.blue,
-			),
+            Panel(
+                content = versionGrid,
+                title = Text(TextStyles.bold(title)),
+                titleAlign = TextAlign.LEFT,
+                borderStyle = TextColors.blue,
+            ),
 		)
 	}
 

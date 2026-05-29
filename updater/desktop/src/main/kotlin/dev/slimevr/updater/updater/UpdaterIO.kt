@@ -1,6 +1,8 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.updater
 
-import dev.slimevr.updater.Updater.Companion.CDN_RELEASES
+import dev.slimevr.updater.utils.TerminalUtil
+import dev.slimevr.updater.gui.UpdaterState
+import dev.slimevr.updater.updater.Constants.Companion.CDN_RELEASES
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -9,11 +11,7 @@ import io.ktor.client.plugins.onDownload
 import io.ktor.client.plugins.timeout
 import io.ktor.client.request.get
 import io.ktor.client.request.prepareGet
-import io.ktor.client.request.request
-import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
-import io.ktor.http.ContentType.Application.Json
-import io.ktor.http.HttpMethod
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
@@ -28,9 +26,6 @@ import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileOutputStream
-import java.math.BigInteger
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.security.MessageDigest
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipEntry
@@ -103,7 +98,13 @@ class UpdaterIO(
 			}
 
 			if (checksum.isNotEmpty()) {
-				validateChecksum(fileName, checksum)
+				val match = validateChecksum(fileName, checksum)
+
+				if (!match) {
+					TerminalUtil.warn("Could not verify integrity of downloaded file, aborting!")
+					state.hasError = true
+					state.statusText = "Error downloading $fileName"
+				}
 			}
 
 			state.subProgress = 1f
@@ -180,17 +181,52 @@ class UpdaterIO(
 		if (file.exists() && file.isFile) file.delete()
 	}
 
-	fun validateChecksum(file: String, checksum: String): String {
-		val data = Files.readAllBytes(Paths.get(file))
-		val hash = MessageDigest.getInstance("SHA-256").digest(data)
-		val result = BigInteger(1, hash).toString(16).padStart(64, '0')
+	fun validateChecksum(filePath: String, expectedChecksum: String): Boolean {
+		TerminalUtil.info("Checking checksum: $filePath")
 
-		if (checksum.isNotEmpty() && result != checksum.lowercase()) {
-			throw IOException("Checksum mismatch! Expected $checksum but got $result")
+		val file = File(filePath)
+		if (!file.exists()) {
+			TerminalUtil.info("File not found for checksum validation: $filePath")
+			return false
 		}
-		return result
-	}
 
+		val digest = MessageDigest.getInstance("SHA-256")
+		try {
+			file.inputStream().use { inputStream ->
+				val buffer = ByteArray(8192)
+				var bytesRead: Int
+				while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+					digest.update(buffer, 0, bytesRead)
+				}
+			}
+		} catch (e: Exception) {
+			TerminalUtil.info("Failed to read file during checksum calculation: ${e.message}")
+			return false
+		}
+
+		val hashBytes = digest.digest()
+		val calculatedHash = hashBytes.joinToString("") { "%02x".format(it) }
+		TerminalUtil.info("Calculated checksum: $calculatedHash")
+
+		val cleanedExpected = expectedChecksum
+			.trim()
+			.lowercase()
+			.removePrefix("sha256:")
+
+		if (cleanedExpected.isEmpty() || cleanedExpected == "n/a") {
+			TerminalUtil.info("No valid expected checksum provided. Skipping validation match.")
+			return true
+		}
+
+		val matches = calculatedHash == cleanedExpected
+		if (!matches) {
+			TerminalUtil.info("Checksum mismatch! Expected $expectedChecksum but got $calculatedHash")
+		} else {
+			TerminalUtil.info("Checksum matches successfully.")
+		}
+
+		return matches
+	}
 	fun restartApplication() {
 		try {
 			val javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java"

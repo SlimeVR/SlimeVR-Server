@@ -1,4 +1,4 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.platform
 
 import java.util.Locale
 
@@ -15,7 +15,7 @@ enum class OperatingSystem(
 	companion object {
 		val currentPlatform: OperatingSystem by lazy {
 			val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
-			OperatingSystem.entries.find { os ->
+			entries.find { os ->
 				os.aliases.any { alias ->
 					osName.contains(
 						alias,

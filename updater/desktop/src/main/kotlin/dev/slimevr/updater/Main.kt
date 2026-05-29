@@ -5,7 +5,9 @@ import ManifestUtils.Companion.getChannels
 import ManifestUtils.Companion.getVersionTags
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextStyles.bold
-import dev.slimevr.updater.TerminalUtil.t
+import dev.slimevr.updater.utils.TerminalUtil.t
+import dev.slimevr.updater.updater.UpdaterController
+import dev.slimevr.updater.utils.TerminalUtil
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.CommandLineParser
 import org.apache.commons.cli.DefaultParser

@@ -1,6 +1,7 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.gui
 
 import androidx.compose.runtime.snapshots.Snapshot
+import dev.slimevr.updater.gui.UpdaterState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

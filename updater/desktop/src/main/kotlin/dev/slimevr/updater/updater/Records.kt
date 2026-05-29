@@ -1,4 +1,4 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.updater
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

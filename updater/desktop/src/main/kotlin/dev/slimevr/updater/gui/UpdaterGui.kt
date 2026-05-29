@@ -1,4 +1,4 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.gui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -39,11 +39,11 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.platform.Font
+import dev.slimevr.updater.updater.UpdaterIO
 import org.jetbrains.compose.animatedimage.AnimatedImage
 import org.jetbrains.compose.animatedimage.animate
 import org.jetbrains.compose.animatedimage.loadResourceAnimatedImage
@@ -203,7 +203,7 @@ fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO, startSe
 				ProgressBar(
 					progress = state.mainProgress,
 					color = PROGRESS_FG,
-					isVisible = state.mainProgressisVisible
+					isVisible = state.mainProgressIsVisible
 				)
 				// STATUS TEXT
 				Text(
@@ -217,7 +217,7 @@ fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO, startSe
 				ProgressBar(
 					progress = state.subProgress,
 					color = PROGRESS_FG,
-					isVisible = state.subProgressisVisible
+					isVisible = state.subProgressIsVisible
 				)
 
 				Spacer(modifier = Modifier.weight(1f))

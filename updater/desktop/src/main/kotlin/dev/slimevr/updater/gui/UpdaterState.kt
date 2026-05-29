@@ -1,4 +1,4 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.gui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -6,9 +6,9 @@ import androidx.compose.runtime.setValue
 
 class UpdaterState {
 	var mainProgress by mutableStateOf(0f)
-	var mainProgressisVisible by mutableStateOf(true)
+	var mainProgressIsVisible by mutableStateOf(true)
 	var subProgress by mutableStateOf(0f)
-	var subProgressisVisible by mutableStateOf(true)
+	var subProgressIsVisible by mutableStateOf(true)
 
 	var hasError by mutableStateOf(false)
 

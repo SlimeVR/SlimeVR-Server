@@ -1,9 +1,15 @@
-package dev.slimevr.updater
+package dev.slimevr.updater.updater
 
 import Manifest
 import ManifestUtils.Companion.getCurrentVersionTag
-import ManifestUtils.Companion.getRelease
-import dev.slimevr.updater.OperatingSystem.Companion.currentPlatform
+import dev.slimevr.updater.utils.TerminalUtil
+import dev.slimevr.updater.featureFlags
+import dev.slimevr.updater.platform.OperatingSystem.Companion.currentPlatform
+import dev.slimevr.updater.gui.UpdaterState
+import dev.slimevr.updater.manifestPath
+import dev.slimevr.updater.platform.Linux
+import dev.slimevr.updater.platform.OperatingSystem
+import dev.slimevr.updater.platform.Windows
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -73,8 +79,7 @@ class Updater(
 
 
 		when (os.currentPlatform) {
-			//TODO: Change back to windows, for testing only
-			OperatingSystem.LINUX -> {
+			OperatingSystem.WINDOWS -> {
 				val windows = Windows(state, updaterIO)
 				windows.updateWindows(
 					currentVersionTag,
@@ -87,7 +92,7 @@ class Updater(
 				)
 			}
 
-			OperatingSystem.WINDOWS -> {
+			OperatingSystem.LINUX -> {
 				val linux = Linux(state, updaterIO)
 				linux.updateLinux(
 					currentVersionTag,
@@ -152,8 +157,8 @@ class Updater(
 		state.statusText = "Update Done"
 		state.mainProgress = 0.0f
 		state.subProgress = 0.0f
-		state.mainProgressisVisible = false
-		state.subProgressisVisible = false
+		state.mainProgressIsVisible = false
+		state.subProgressIsVisible = false
 	}
 
 	fun saveCurrentVersionTag() {
@@ -162,13 +167,6 @@ class Updater(
 	}
 
 	companion object {
-		const val CDN = "http://127.0.0.1:3000"
-		//val CDN = "https://updates.slimevr.io"
-		const val CDN_RELEASES = "$CDN/releases"
-		const val CDN_VERSIONS = "$CDN/versions"
-		const val CDN_CHANNELS = "$CDN/channels"
-		const val CDN_DOWNLOAD = "$CDN/download"
-
 		fun launchServer() {
 
 		}
