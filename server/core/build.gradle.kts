@@ -32,7 +32,8 @@ kotlin {
 		val commonMain by getting {
 			kotlin.srcDir("src/main/java")
 			dependencies {
-				implementation(project(":solarxr-protocol:generated"))
+				api(project(":solarxr-protocol:generated"))
+				api("com.google.flatbuffers:flatbuffers-java:22.10.26")
 				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 				implementation("com.mayakapps.kache:kache:2.1.1")
 				implementation("io.klogging:klogging:0.11.7")

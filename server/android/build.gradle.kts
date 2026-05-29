@@ -83,7 +83,7 @@ val deleteTempKeyStore = tasks.register<Delete>("deleteTempKeyStore") {
 
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_22)
+		jvmTarget.set(JvmTarget.JVM_24)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
@@ -101,13 +101,12 @@ tasks.withType<Javadoc> {
 
 repositories {
 	google()
+	maven(url = "https://jitpack.io")
+	mavenCentral()
 }
 
 dependencies {
 	implementation(project(":server:core"))
-
-	implementation("commons-cli:commons-cli:1.11.0")
-	implementation("org.apache.commons:commons-lang3:3.20.0")
 
 	// Android stuff
 	implementation("androidx.appcompat:appcompat:1.7.1")
@@ -118,8 +117,18 @@ dependencies {
 	androidTestImplementation("androidx.test.ext:junit:1.3.0")
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
-	// Serial
+	// Serial + firmware flashing
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
+	implementation("com.github.loucass003:EspflashKotlin:v0.11.0")
+
+	// Logging
+	implementation("io.klogging:klogging:0.11.7")
+
+	// WebSocket server + coroutines
+	val ktorVersion = "3.4.1"
+	implementation("io.ktor:ktor-server-cio:$ktorVersion")
+	implementation("io.ktor:ktor-server-websockets:$ktorVersion")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 }
 
 // The android block is where you configure all your Android-specific build options.

@@ -4,4 +4,5 @@ data class FeatureFlags(
 	var steam: Boolean = false,
 	var skipCheckUdev: Boolean = false,
 	var udevRulesInstalled: Boolean? = null,
+	val supportsSteamVR: Boolean = true,
 )

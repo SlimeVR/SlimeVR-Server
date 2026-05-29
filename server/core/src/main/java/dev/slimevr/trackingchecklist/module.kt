@@ -29,7 +29,9 @@ class TrackingChecklist(
 ) {
 	fun startObserving(appContext: AppContextProvider) {
 		val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
-			add(SteamVRCheckBehaviour(appContext.server))
+			if (appContext.featureFlags.supportsSteamVR) {
+				add(SteamVRCheckBehaviour(appContext.server))
+			}
 			add(HMDCheckBehaviour(appContext.server))
 			add(TrackerRestCheckBehaviour(appContext.server))
 			add(TrackerErrorCheckBehaviour(appContext.server))

@@ -7,7 +7,6 @@ import com.sun.jna.platform.win32.WinError
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.ptr.IntByReference
 import dev.slimevr.AppContextProvider
-import dev.slimevr.solarxr.handleSolarXRBridge
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow

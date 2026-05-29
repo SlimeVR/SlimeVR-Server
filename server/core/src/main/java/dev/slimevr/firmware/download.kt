@@ -3,6 +3,7 @@ package dev.slimevr.firmware
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
 import java.security.MessageDigest
 
@@ -25,7 +26,13 @@ data class DownloadedFirmwarePart(
 	}
 }
 
-private val firmwareHttpClient = HttpClient(CIO)
+private val firmwareHttpClient = HttpClient(CIO) {
+	install(HttpTimeout) {
+		connectTimeoutMillis = 15_000
+		requestTimeoutMillis = 120_000
+		socketTimeoutMillis = 30_000
+	}
+}
 
 suspend fun downloadFirmware(url: String, digest: String): ByteArray {
 	val data: ByteArray = firmwareHttpClient.get(url).body()

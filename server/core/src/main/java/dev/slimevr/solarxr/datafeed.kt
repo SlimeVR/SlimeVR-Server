@@ -1,5 +1,6 @@
 package dev.slimevr.solarxr
 
+import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceState
 import dev.slimevr.skeleton.BoneState
@@ -152,7 +153,7 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 						try {
 							receiver.sendDataFeed(createDatafeedFrame(server = server, skeleton = skeleton, datafeedConfig = config, index = index))
 						} catch (e: Exception) {
-							dev.slimevr.AppLogger.solarxr.error(e, "Error sending data feed")
+							AppLogger.solarxr.error(e, "Error sending data feed")
 						}
 						delay(minTime)
 					}

@@ -2,7 +2,6 @@ package dev.slimevr.desktop.ipc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
-import dev.slimevr.solarxr.handleSolarXRBridge
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty

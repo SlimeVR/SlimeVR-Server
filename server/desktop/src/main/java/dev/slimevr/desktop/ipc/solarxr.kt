@@ -1,10 +1,12 @@
-package dev.slimevr.solarxr
+package dev.slimevr.desktop.ipc
 
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.onSolarXRMessage
 import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
