@@ -10,7 +10,7 @@ import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
-import dev.slimevr.context.debug.ContextDebug
+import dev.slimevr.context.debug.contextDebugEnabled
 import dev.slimevr.desktop.config.DesktopConfigStorage
 import dev.slimevr.desktop.hid.createDesktopHIDManager
 import dev.slimevr.desktop.install.executeShellCommand
@@ -38,7 +38,7 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.runBlocking
 
 fun main(args: Array<String>) = runBlocking<Unit> {
-	ContextDebug.enabled = System.getProperty("slimevr.debug.context") == "true" ||
+	contextDebugEnabled = System.getProperty("slimevr.debug.context") == "true" ||
 		System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
 
 	val featureFlags = FeatureFlags()

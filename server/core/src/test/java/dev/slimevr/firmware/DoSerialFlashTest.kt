@@ -3,6 +3,7 @@ package dev.slimevr.firmware
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestSettings
+import dev.slimevr.buildTestAppContext
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
@@ -313,7 +314,8 @@ class DoSerialFlashTest {
 			server.onDataReceived("COM1", "looking for the server")
 			delay(300)
 			val device = Device.create(
-				backgroundScope,
+				scope = backgroundScope,
+				appContext = buildTestAppContext(vrServer),
 				id = vrServer.nextHandle(),
 				address = "192.168.1.100",
 				macAddress = "AA:BB:CC:DD:EE:FF",

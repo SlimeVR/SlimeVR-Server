@@ -2,6 +2,7 @@ package dev.slimevr.firmware
 
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
+import dev.slimevr.buildTestAppContext
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
@@ -30,6 +31,7 @@ private fun addUdpDevice(
 ): Device {
 	val device = Device.create(
 		scope = scope,
+		appContext = buildTestAppContext(server),
 		id = id,
 		address = "192.168.1.100",
 		macAddress = macAddress,

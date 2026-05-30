@@ -27,7 +27,7 @@ import solarxr_protocol.rpc.VRCOSCInputState
  * created lazily when their first packet arrives and reused afterwards.
  *
  * The runtime cannot remove existing devices/trackers from the VRServer, so on
- * disable we only mark them DISCONNECTED — they are reused on the next enable.
+ * disable we only mark them DISCONNECTED; they are reused on the next enable.
  */
 private class VRSystemTrackerRegistry(
 	private val appContext: AppContextProvider,
@@ -89,6 +89,7 @@ private class VRSystemTrackerRegistry(
 		val id = appContext.server.nextHandle()
 		val device = Device.create(
 			scope = manager.context.scope,
+			appContext = appContext,
 			id = id,
 			address = "vrchat-vrsystem",
 			origin = DeviceOrigin.VRC,

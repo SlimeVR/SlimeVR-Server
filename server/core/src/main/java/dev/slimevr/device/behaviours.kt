@@ -9,9 +9,9 @@ object DeviceStatsBehaviour : DeviceBehaviour {
 		is DeviceActions.PacketStats -> state.copy(packetsReceived = action.packetsReceived, packetsLost = action.packetsLost)
 	}
 
-	override fun observe(receiver: DeviceContext) {
-		receiver.state.onEach {
+	override fun observe(receiver: Device) {
+		receiver.context.state.onEach {
 // 			AppLogger.device.info("Device state changed", it)
-		}.launchIn(receiver.scope)
+		}.launchIn(receiver.context.scope)
 	}
 }

@@ -1,5 +1,6 @@
 package dev.slimevr.device
 
+import dev.slimevr.AppContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
@@ -44,14 +45,16 @@ sealed interface DeviceActions {
 }
 
 typealias DeviceContext = Context<DeviceState, DeviceActions>
-typealias DeviceBehaviour = Behaviour<DeviceState, DeviceActions, DeviceContext>
+typealias DeviceBehaviour = Behaviour<DeviceState, DeviceActions, Device>
 
 class Device(
 	val context: DeviceContext,
+	val appContext: AppContextProvider,
 ) {
 	companion object {
 		fun create(
 			scope: CoroutineScope,
+			appContext: AppContextProvider,
 			id: Int,
 			name: String = "Device $id",
 			manufacturer: String = "SlimeVR",
@@ -92,8 +95,9 @@ class Device(
 				),
 				name = "Device[$address]",
 			)
-			behaviours.forEach { it.observe(context) }
-			return Device(context = context)
+			val device = Device(context = context, appContext = appContext)
+			behaviours.forEach { it.observe(device) }
+			return device
 		}
 	}
 }

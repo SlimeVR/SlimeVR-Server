@@ -142,8 +142,9 @@ object HandshakeBehaviour : UDPConnectionBehaviour {
 		}
 		val deviceId = receiver.appContext.server.nextHandle()
 		val newDevice = Device.create(
-			id = deviceId,
 			scope = receiver.appContext.server.context.scope,
+			appContext = receiver.appContext,
+			id = deviceId,
 			address = state.address,
 			macAddress = data.macString,
 			origin = DeviceOrigin.UDP,

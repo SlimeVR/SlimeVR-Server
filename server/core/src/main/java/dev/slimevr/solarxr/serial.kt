@@ -39,7 +39,7 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 			.distinctUntilChanged()
 			.onEach { ports ->
 				(ports.keys - prevPortKeys).forEach { key ->
-					receiver.sendRpc(NewSerialDeviceResponse(device = ports[key]!!.toSerialDevice()))
+					receiver.sendRpc(NewSerialDeviceResponse(device = ports.getValue(key).toSerialDevice()))
 				}
 				prevPortKeys = ports.keys.toSet()
 			}

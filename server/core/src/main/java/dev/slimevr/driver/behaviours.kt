@@ -98,6 +98,7 @@ object DriverBaseBehaviour : DriverBridgeBehaviour {
 			val deviceId = server.nextHandle()
 			val newDevice = Device.create(
 				scope = scope,
+				appContext = receiver.appContext,
 				id = deviceId,
 				name = name,
 				manufacturer = manufacturer,

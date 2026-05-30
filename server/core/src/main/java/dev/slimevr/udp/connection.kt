@@ -28,7 +28,7 @@ data class SensorConfigFlags(
 
 data class UDPConnectionState(
 	// Pre-resolved IP string. InetSocketAddress.hostname triggers a reverse DNS lookup so we
-	// can't derive this on demand — it must be resolved once by the platform (see UdpServer.addressResolver)
+	// can't derive this on demand; it must be resolved once by the platform (see UdpServer.addressResolver)
 	// and cached here. remoteAddress is kept separately on UDPConnection only for sending datagrams.
 	val address: String,
 	val lastPacket: Long,

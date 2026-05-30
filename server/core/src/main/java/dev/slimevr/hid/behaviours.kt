@@ -48,6 +48,7 @@ object HIDRegistrationBehaviour : HIDReceiverBehaviour {
 			val deviceId = receiver.appContext.server.nextHandle()
 			val device = Device.create(
 				scope = receiver.appContext.server.context.scope,
+				appContext = receiver.appContext,
 				id = deviceId,
 				address = packet.address,
 				macAddress = packet.address,

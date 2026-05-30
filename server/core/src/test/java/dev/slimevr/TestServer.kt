@@ -102,6 +102,10 @@ private object NoopConfigStorage : ConfigStorage {
 	override suspend fun openTextFile(path: String): TextFileHandle = error("Not used in tests")
 }
 
+fun buildTestAppContext(server: VRServer): AppContextProvider = object : TestAppContext() {
+	override val server: VRServer = server
+}
+
 abstract class TestAppContext : AppContextProvider {
 	override val featureFlags: FeatureFlags = FeatureFlags()
 	override val config: AppConfig get() = error("not used in test")

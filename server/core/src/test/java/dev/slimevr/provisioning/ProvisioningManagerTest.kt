@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestSerialServer
 import dev.slimevr.buildTestSettings
+import dev.slimevr.buildTestAppContext
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
@@ -37,7 +38,8 @@ private fun buildManager(serialServer: dev.slimevr.serial.SerialServer, scope: C
 // Injects a fully connected device into the VRServer, simulating a tracker appearing on the network.
 private fun connectDevice(vrServer: VRServer, mac: String, scope: CoroutineScope) {
 	val device = Device.create(
-		scope,
+		scope = scope,
+		appContext = buildTestAppContext(vrServer),
 		id = vrServer.nextHandle(),
 		address = "192.168.1.100",
 		macAddress = mac,

@@ -18,8 +18,8 @@ class OscSender(private val address: String, private val port: Int) {
 	private var socket: ConnectedDatagramSocket? = null
 
 	private suspend fun socket(): ConnectedDatagramSocket {
-		if (socket == null) socket = aSocket(selectorManager).udp().connect(InetSocketAddress(address, port))
-		return socket!!
+		val s = socket ?: aSocket(selectorManager).udp().connect(InetSocketAddress(address, port)).also { socket = it }
+		return s
 	}
 
 	suspend fun send(message: OscMessage) = socket().send(Datagram(encodeMessage(message).toBuffer(), InetSocketAddress(address, port)))
@@ -36,8 +36,8 @@ class OscReceiver(private val port: Int) {
 	private var running = false
 
 	private suspend fun socket(): BoundDatagramSocket {
-		if (socket == null) socket = aSocket(selectorManager).udp().bind(InetSocketAddress("0.0.0.0", port))
-		return socket!!
+		val s = socket ?: aSocket(selectorManager).udp().bind(InetSocketAddress("0.0.0.0", port)).also { socket = it }
+		return s
 	}
 
 	suspend fun listenBundles(onBundle: (OscBundle) -> Unit) {

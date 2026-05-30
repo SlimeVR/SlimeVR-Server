@@ -1,6 +1,6 @@
 package dev.slimevr.context
 
-import dev.slimevr.context.debug.ContextDebug
+import dev.slimevr.context.debug.contextDebugEnabled
 import dev.slimevr.context.debug.DebugMiddleware
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -38,7 +38,7 @@ class ContextCallerCaptureTest {
 
 	@Test
 	fun `dispatch reports calling behaviour`() {
-		ContextDebug.enabled = true
+		contextDebugEnabled = true
 
 		val middleware = RecordingDebugMiddleware()
 		val context = Context.create(

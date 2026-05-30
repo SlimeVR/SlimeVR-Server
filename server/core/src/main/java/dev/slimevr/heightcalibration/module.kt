@@ -76,7 +76,7 @@ class HeightCalibrationManager(
 						TrackerSnapshot(position = position, rotation = s.rawRotation)
 					}
 				},
-			) { snapshots -> snapshots.minByOrNull { it.position.y }!! }
+			) { snapshots -> snapshots.minByOrNull { it.position.y } ?: error("snapshots is empty; controllers check above should have prevented this") }
 		}
 
 	fun start() {

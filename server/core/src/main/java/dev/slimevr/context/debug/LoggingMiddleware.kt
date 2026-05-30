@@ -17,7 +17,7 @@ private object Ansi {
 
 enum class DiffStyle { INLINE, MULTILINE }
 
-class LoggingMiddleware<S, A>(
+class LoggingMiddleware<S, A : Any>(
 	private val logNoOps: Boolean = false,
 	private val diffStyle: DiffStyle = DiffStyle.MULTILINE,
 	private val allow: Set<KClass<*>>? = null,
@@ -31,7 +31,7 @@ class LoggingMiddleware<S, A>(
 	}
 
 	private fun isAllowed(action: A): Boolean {
-		val klass = action!!::class
+		val klass = action::class
 		if (klass in block) return false
 		if (allow != null && klass !in allow) return false
 		return true
@@ -40,7 +40,7 @@ class LoggingMiddleware<S, A>(
 	override fun onDispatch(caller: String?, before: S, action: A, after: S) {
 		if (!isAllowed(action)) return
 		if (!logNoOps && before == after) return
-		val actionName = "${Ansi.YELLOW}${action!!::class.simpleName ?: "UnknownAction"}${Ansi.RESET}"
+		val actionName = "${Ansi.YELLOW}${action::class.simpleName ?: "UnknownAction"}${Ansi.RESET}"
 		val callerSuffix = if (caller != null) " ${Ansi.DIM}(from $caller)${Ansi.RESET}" else ""
 		println(formatLine("$tag $actionName$callerSuffix", before, after))
 	}
@@ -49,7 +49,7 @@ class LoggingMiddleware<S, A>(
 		val visible = actions.filter { action -> isAllowed(action) }
 		if (visible.isEmpty()) return
 		if (!logNoOps && before == after) return
-		val names = visible.joinToString(", ") { action -> action!!::class.simpleName ?: "?" }
+		val names = visible.joinToString(", ") { action -> action::class.simpleName ?: "?" }
 		val actionName = "${Ansi.MAGENTA}batch${Ansi.RESET} ${Ansi.YELLOW}[$names]${Ansi.RESET}"
 		val callerSuffix = if (caller != null) " ${Ansi.DIM}(from $caller)${Ansi.RESET}" else ""
 		println(formatLine("$tag $actionName$callerSuffix", before, after))
@@ -126,5 +126,5 @@ private fun fieldChanges(before: String, after: String): List<FieldChange> {
 	val afterMap = parseFields(after)
 	return beforeMap.keys.intersect(afterMap.keys)
 		.filter { key -> beforeMap[key] != afterMap[key] }
-		.map { key -> FieldChange(key, beforeMap[key]!!, afterMap[key]!!) }
+		.map { key -> FieldChange(key, beforeMap.getValue(key), afterMap.getValue(key)) }
 }

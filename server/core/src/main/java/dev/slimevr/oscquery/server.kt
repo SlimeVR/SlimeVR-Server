@@ -91,7 +91,7 @@ class OscQueryServer(
 
 	// Pin the advertised address to our resolved local IP. Otherwise dns-sd-kt
 	// falls back to `getLocalAddresses().firstOrNull()` which iterates every NIC
-	// and may pick a virtual / wrong-subnet adapter — making the service
+	// and may pick a virtual / wrong-subnet adapter, making the service
 	// unreachable from headsets on the actual LAN.
 	private fun createService(type: String, name: String, port: Int, txt: Map<String, String>): NetService = serviceFactory(type, name, port, 0, 1, listOf(address), txt)
 
