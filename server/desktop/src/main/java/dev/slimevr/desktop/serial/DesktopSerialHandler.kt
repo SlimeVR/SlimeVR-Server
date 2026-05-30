@@ -261,7 +261,7 @@ class DesktopSerialHandler :
 		}
 	}
 
-	override fun getCurrentPort(): dev.slimevr.serial.SerialPort? {
+	override fun getCurrentPort(): SlimeSerialPort? {
 		val port = this.currentPort ?: return null
 		return SerialPortWrapper(port)
 	}
