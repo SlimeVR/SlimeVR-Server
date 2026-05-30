@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlin.concurrent.atomics.AtomicReference
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 interface Behaviour<S, A, C> {
 	fun reduce(state: S, action: A): S = state
@@ -20,20 +18,17 @@ interface Behaviour<S, A, C> {
 
 // TODO: missing remove + prob a unobserve or something to clear the stuff launched
 // in a observe -> each behaviour is prob gonna need its own scope
-@OptIn(ExperimentalAtomicApi::class)
 class BehaviourList<S, A>(
 	initial: List<Behaviour<S, A, *>>,
 ) {
-	private val items = AtomicReference(initial.toList())
+	@Volatile
+	private var items: List<Behaviour<S, A, *>> = initial.toList()
 
 	fun addAll(newItems: List<Behaviour<S, A, *>>) {
-		while (true) {
-			val current = items.load()
-			if (items.compareAndSet(current, current + newItems)) break
-		}
+		items = items + newItems
 	}
 
-	fun snapshot(): List<Behaviour<S, A, *>> = items.load()
+	fun snapshot(): List<Behaviour<S, A, *>> = items
 }
 
 class ManagedContext<S, A>(
