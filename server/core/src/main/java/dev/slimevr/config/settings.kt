@@ -78,6 +78,8 @@ class Settings(
 	private val storage: ConfigStorage,
 	private val settingsDir: String,
 ) {
+	fun startObserving() = context.observeAll(this)
+
 	private var autosaveJob: Job = startAutosave()
 
 	private fun startAutosave() = launchAutosave(
@@ -109,7 +111,7 @@ class Settings(
 			}
 			val initialState = SettingsState(name = name, data = initialData)
 
-			val behaviours = listOf(DefaultSettingsBehaviour)
+			val behaviours = listOf(DefaultSettingsBehaviour())
 			val context = Context.create(
 				initialState = initialState,
 				scope = scope,
@@ -117,7 +119,7 @@ class Settings(
 				name = "Settings[$name]",
 			)
 			val settings = Settings(context, scope = scope, storage = storage, settingsDir = settingsDir)
-			behaviours.forEach { it.observe(settings) }
+			settings.startObserving()
 			return settings
 		}
 	}

@@ -134,17 +134,14 @@ fun createDatafeedFrame(
 
 class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : SolarXRBridgeBehaviour {
 	override fun reduce(state: SolarXRBridgeState, action: SolarXRBridgeActions) = when (action) {
-		is SolarXRBridgeActions.SetConfig -> state.copy(
-			dataFeedConfigs = action.configs,
-			datafeedTimers = action.timers,
-		)
+		is SolarXRBridgeActions.SetConfig -> state.copy(dataFeedConfigs = action.configs)
 	}
 
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.dataFeedDispatcher.on<StartDataFeed> { event ->
 			val datafeeds = event.dataFeeds ?: return@on
 
-			receiver.context.state.value.datafeedTimers.forEach { it.cancelAndJoin() }
+			receiver.datafeedTimers.forEach { it.cancelAndJoin() }
 
 			val timers = datafeeds.mapIndexed { index, config ->
 				receiver.context.scope.safeLaunch {
@@ -160,9 +157,8 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 				}
 			}
 
-			receiver.context.dispatch(
-				SolarXRBridgeActions.SetConfig(datafeeds, timers = timers),
-			)
+			receiver.datafeedTimers = timers
+			receiver.context.dispatch(SolarXRBridgeActions.SetConfig(datafeeds))
 		}
 
 		receiver.dataFeedDispatcher.on<PollDataFeed> { event ->

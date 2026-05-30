@@ -28,7 +28,7 @@ sealed interface UdpServerActions {
 typealias UdpServerContext = Context<UdpServerState, UdpServerActions>
 typealias UdpServerBehaviour = Behaviour<UdpServerState, UdpServerActions, UdpServer>
 
-object UdpServerBaseBehaviour : UdpServerBehaviour {
+class UdpServerBaseBehaviour : UdpServerBehaviour {
 	override fun reduce(state: UdpServerState, action: UdpServerActions) = when (action) {
 		is UdpServerActions.ConnectionAdded -> state.copy(connections = state.connections + (action.address to action.conn))
 		is UdpServerActions.ConnectionRemoved -> state.copy(connections = state.connections - action.address)
@@ -116,7 +116,7 @@ class UdpServer(val context: UdpServerContext, private val addressResolver: (Ine
 			val context = Context.create(
 				initialState = INITIAL_STATE,
 				scope = scope,
-				behaviours = listOf(UdpServerBaseBehaviour),
+				behaviours = listOf(UdpServerBaseBehaviour()),
 				name = "UdpServer",
 			)
 			val server = UdpServer(context, addressResolver)

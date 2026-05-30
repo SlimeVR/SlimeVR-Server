@@ -34,9 +34,11 @@ sealed interface SerialConnection {
 		val context: SerialConnectionContext,
 		val handle: SerialPortHandle,
 	) : SerialConnection {
+		fun startObserving() = context.observeAll(this)
+
 		companion object {
 			fun create(handle: SerialPortHandle, scope: CoroutineScope): Console {
-				val behaviours = listOf(SerialLogBehaviour)
+				val behaviours = listOf(SerialLogBehaviour())
 				val context = Context.create(
 					initialState = SerialConnectionState(
 						portLocation = handle.portLocation,
@@ -50,7 +52,7 @@ sealed interface SerialConnection {
 				)
 
 				val conn = Console(context = context, handle = handle)
-				behaviours.forEach { it.observe(conn) }
+				conn.startObserving()
 				return conn
 			}
 		}

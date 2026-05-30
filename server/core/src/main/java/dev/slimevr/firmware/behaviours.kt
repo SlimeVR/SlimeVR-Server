@@ -1,6 +1,6 @@
 package dev.slimevr.firmware
 
-object FirmwareManagerBaseBehaviour : FirmwareManagerBehaviour {
+class FirmwareManagerBaseBehaviour : FirmwareManagerBehaviour {
 	override fun reduce(state: FirmwareManagerState, action: FirmwareManagerActions) = when (action) {
 		is FirmwareManagerActions.UpdateJob -> state.copy(
 			jobs = state.jobs + (action.jobStatus.portLocation to action.jobStatus),

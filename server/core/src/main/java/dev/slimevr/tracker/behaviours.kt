@@ -24,12 +24,12 @@ private const val ALLOWED_BODY_ACCEL = 2.0f
 private const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
 private const val TAP_WINDOW_PER_TAP_S = 0.3f
 
-object TrackerTapDetectionBehaviour : TrackerBehaviour {
-	override fun observe(receiver: Tracker) {
-		val accelList = ArrayDeque<Pair<Float, Long>>()
-		val tapTimestamps = ArrayDeque<Long>()
-		var waitForLowAccel = false
+class TrackerTapDetectionBehaviour : TrackerBehaviour {
+	private val accelList = ArrayDeque<Pair<Float, Long>>()
+	private val tapTimestamps = ArrayDeque<Long>()
+	private var waitForLowAccel = false
 
+	override fun observe(receiver: Tracker) {
 		// TODO: only enable this on the trackers that have taps assigned to them
 		receiver.context.state
 			.distinctUntilChangedBy { it.rawAcceleration }
@@ -82,7 +82,7 @@ object TrackerTapDetectionBehaviour : TrackerBehaviour {
 	}
 }
 
-object TrackerBasicBehaviour : TrackerBehaviour {
+class TrackerBasicBehaviour : TrackerBehaviour {
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
 		is TrackerActions.Update -> action.transform(state)
 
@@ -171,7 +171,7 @@ object TrackerBasicBehaviour : TrackerBehaviour {
 	}
 }
 
-object TrackerTPSBehaviour : TrackerBehaviour {
+class TrackerTPSBehaviour : TrackerBehaviour {
 	@OptIn(ExperimentalAtomicApi::class)
 	override fun observe(receiver: Tracker) {
 		val count = AtomicInt(0)
@@ -197,7 +197,7 @@ object TrackerTPSBehaviour : TrackerBehaviour {
 	}
 }
 
-object TrackerToSkeletonBehaviour : TrackerBehaviour {
+class TrackerToSkeletonBehaviour : TrackerBehaviour {
 
 	override fun observe(receiver: Tracker) {
 		receiver.context.state

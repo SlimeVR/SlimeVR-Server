@@ -58,7 +58,7 @@ sealed interface NetworkProfileActions {
 typealias NetworkProfileContext = Context<NetworkProfileState, NetworkProfileActions>
 typealias NetworkProfileBehaviourType = Behaviour<NetworkProfileState, NetworkProfileActions, NetworkProfileManager>
 
-object DefaultNetworkProfileBehaviour : NetworkProfileBehaviourType {
+class DefaultNetworkProfileBehaviour : NetworkProfileBehaviourType {
 	override fun reduce(state: NetworkProfileState, action: NetworkProfileActions) = when (action) {
 		is NetworkProfileActions.UpdateNetworks -> state.copy(publicNetworks = action.networks)
 	}
@@ -72,7 +72,7 @@ class NetworkProfileManager(val context: NetworkProfileContext) {
 			val context = Context.create(
 				initialState = NetworkProfileState(isSupported = isSupported),
 				scope = scope,
-				behaviours = listOf(DefaultNetworkProfileBehaviour),
+				behaviours = listOf(DefaultNetworkProfileBehaviour()),
 				debugMiddleware = LoggingMiddleware(
 					allow = setOf(NetworkProfileActions.UpdateNetworks::class),
 					diffStyle = DiffStyle.MULTILINE,

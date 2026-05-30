@@ -128,7 +128,7 @@ class FirmwareManager(
 
 	companion object {
 		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope, flasher: FirmwareFlasher): FirmwareManager {
-			val behaviours = listOf(FirmwareManagerBaseBehaviour)
+			val behaviours = listOf(FirmwareManagerBaseBehaviour())
 			val context = Context.create(
 				initialState = FirmwareManagerState(jobs = mapOf()),
 				scope = scope,

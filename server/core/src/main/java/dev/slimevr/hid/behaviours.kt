@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import solarxr_protocol.datatypes.TrackerStatus
 
-object HIDRegistrationBehaviour : HIDReceiverBehaviour {
+class HIDRegistrationBehaviour : HIDReceiverBehaviour {
 	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions) = when (action) {
 		is HIDReceiverActions.DeviceRegistered -> state.copy(
 			trackers = state.trackers +
@@ -62,7 +62,7 @@ object HIDRegistrationBehaviour : HIDReceiverBehaviour {
 	}
 }
 
-object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
+class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions): HIDReceiverState = when (action) {
 		is HIDReceiverActions.TrackerRegistered -> {
 			val existing = state.trackers[action.hidId] ?: return state
@@ -123,7 +123,7 @@ object HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 	}
 }
 
-object HIDRotationBehaviour : HIDReceiverBehaviour {
+class HIDRotationBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.onPacket<HIDRotation> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
@@ -147,7 +147,7 @@ object HIDRotationBehaviour : HIDReceiverBehaviour {
 	}
 }
 
-object HIDBatteryBehaviour : HIDReceiverBehaviour {
+class HIDBatteryBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.onPacket<HIDRotationBattery> { packet ->
 			receiver.getDevice(packet.hidId)?.context?.dispatch(
@@ -182,7 +182,7 @@ object HIDBatteryBehaviour : HIDReceiverBehaviour {
 
 private const val HID_TIMEOUT_MS = 2_000L
 
-object HIDSleepBehaviour : HIDReceiverBehaviour {
+class HIDSleepBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		val sleepJobs = mutableMapOf<Int, Job>()
 		val idleJobs = mutableMapOf<Int, Job>()
@@ -236,7 +236,7 @@ object HIDSleepBehaviour : HIDReceiverBehaviour {
 	}
 }
 
-object HIDStatusBehaviour : HIDReceiverBehaviour {
+class HIDStatusBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.onPacket<HIDStatus> { packet ->
 			if (receiver.getTracker(packet.hidId) == null) return@onPacket
@@ -247,7 +247,7 @@ object HIDStatusBehaviour : HIDReceiverBehaviour {
 	}
 }
 
-object HIDPacketLossBehaviour : HIDReceiverBehaviour {
+class HIDPacketLossBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.onPacket<HIDStatus> { packet ->
 			receiver.getDevice(packet.hidId)?.context?.dispatch(

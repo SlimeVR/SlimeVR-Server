@@ -17,11 +17,10 @@ import solarxr_protocol.rpc.RpcMessageHeader
 
 data class SolarXRBridgeState(
 	val dataFeedConfigs: List<DataFeedConfig>,
-	val datafeedTimers: List<Job>,
 )
 
 sealed interface SolarXRBridgeActions {
-	data class SetConfig(val configs: List<DataFeedConfig>, val timers: List<Job>) : SolarXRBridgeActions
+	data class SetConfig(val configs: List<DataFeedConfig>) : SolarXRBridgeActions
 }
 
 typealias SolarXRBridgeContext = Context<SolarXRBridgeState, SolarXRBridgeActions>
@@ -48,6 +47,9 @@ class SolarXRBridge(
 	val outbound: EventDispatcher<MessageBundle> = EventDispatcher(),
 	private val managedContext: ManagedContext<SolarXRBridgeState, SolarXRBridgeActions>? = null,
 ) {
+	// Jobs are mutable handles with no meaningful equality; storing them in state
+	// would break distinctUntilChanged and data class copy semantics.
+	internal var datafeedTimers: List<Job> = emptyList()
 	fun dispose() = managedContext?.dispose()
 
 	suspend fun sendRpc(message: RpcMessage) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(message = message))))
@@ -80,7 +82,7 @@ class SolarXRBridge(
 			add(MagBehaviour(appContext))
 			add(KnownTrackersBehaviour(appContext.config.settings))
 			add(BvhBehaviour(appContext.bvhManager))
-			add(InstalledInfoBehaviour)
+			add(InstalledInfoBehaviour())
 		}
 
 		fun create(
@@ -89,7 +91,7 @@ class SolarXRBridge(
 			scope: CoroutineScope,
 		): SolarXRBridge {
 			val managedContext = ManagedContext.create(
-				initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
+				initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
 				scope = scope,
 				behaviours = buildBehaviours(appContext),
 				name = "SolarXR[$id]",

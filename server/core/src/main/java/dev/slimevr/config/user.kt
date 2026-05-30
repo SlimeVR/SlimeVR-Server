@@ -87,7 +87,7 @@ class UserConfig(
 			val context = Context.create(
 				initialState = initialState,
 				scope = scope,
-				behaviours = listOf(DefaultUserBehaviour),
+				behaviours = listOf(DefaultUserBehaviour()),
 				name = "UserConfig[$name]",
 			)
 			val userConfig = UserConfig(context, scope = scope, storage = storage, userConfigDir = userConfigDir)

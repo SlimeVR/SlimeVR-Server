@@ -59,13 +59,13 @@ class HIDReceiver(
 			scope: CoroutineScope,
 		): HIDReceiver {
 			val behaviours = listOf(
-				HIDRegistrationBehaviour,
-				HIDDeviceInfoBehaviour,
-				HIDRotationBehaviour,
-				HIDBatteryBehaviour,
-				HIDStatusBehaviour,
-				HIDPacketLossBehaviour,
-				HIDSleepBehaviour,
+				HIDRegistrationBehaviour(),
+				HIDDeviceInfoBehaviour(),
+				HIDRotationBehaviour(),
+				HIDBatteryBehaviour(),
+				HIDStatusBehaviour(),
+				HIDPacketLossBehaviour(),
+				HIDSleepBehaviour(),
 			)
 
 			val context = Context.create(

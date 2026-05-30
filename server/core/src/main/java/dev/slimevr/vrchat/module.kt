@@ -55,7 +55,7 @@ class VRCConfigManager(
 			isSupported: Boolean,
 			values: Flow<VRCConfigValues?>,
 		): VRCConfigManager {
-			val behaviours = listOf(DefaultVRCConfigBehaviour)
+			val behaviours = listOf(DefaultVRCConfigBehaviour())
 
 			val context = Context.create(
 				initialState = VRCConfigState(

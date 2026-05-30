@@ -62,7 +62,7 @@ class DriverBridge(
 
 	companion object {
 		fun create(id: Int, appContext: AppContextProvider, scope: CoroutineScope): DriverBridge {
-			val behaviours = listOf(DriverBaseBehaviour)
+			val behaviours = listOf(DriverBaseBehaviour())
 
 			val managedContext = ManagedContext.create(
 				initialState = DriverBridgeState(

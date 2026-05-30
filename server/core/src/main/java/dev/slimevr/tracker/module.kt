@@ -56,6 +56,8 @@ class Tracker(
 	val context: TrackerContext,
 	val appContext: AppContextProvider,
 ) {
+	fun startObserving() = context.observeAll(this)
+
 	companion object {
 		fun create(
 			scope: CoroutineScope,
@@ -99,11 +101,11 @@ class Tracker(
 			}
 
 			val behaviours = listOf(
-				TrackerBasicBehaviour,
+				TrackerBasicBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
-				TrackerTPSBehaviour,
-				TrackerTapDetectionBehaviour,
-				TrackerToSkeletonBehaviour,
+				TrackerTPSBehaviour(),
+				TrackerTapDetectionBehaviour(),
+				TrackerToSkeletonBehaviour(),
 			)
 			val context = Context.create(
 				initialState = trackerState,
@@ -116,7 +118,7 @@ class Tracker(
 				name = "Tracker[$hardwareId]",
 			)
 			val tracker = Tracker(context = context, appContext)
-			behaviours.forEach { it.observe(tracker) }
+			tracker.startObserving()
 			return tracker
 		}
 	}

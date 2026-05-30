@@ -51,6 +51,8 @@ class Device(
 	val context: DeviceContext,
 	val appContext: AppContextProvider,
 ) {
+	fun startObserving() = context.observeAll(this)
+
 	companion object {
 		fun create(
 			scope: CoroutineScope,
@@ -84,7 +86,7 @@ class Device(
 				packetsLost = 0L,
 			)
 
-			val behaviours = listOf(DeviceStatsBehaviour)
+			val behaviours = listOf(DeviceStatsBehaviour())
 			val context = Context.create(
 				initialState = deviceState,
 				scope = scope,
@@ -96,7 +98,7 @@ class Device(
 				name = "Device[$address]",
 			)
 			val device = Device(context = context, appContext = appContext)
-			behaviours.forEach { it.observe(device) }
+			device.startObserving()
 			return device
 		}
 	}

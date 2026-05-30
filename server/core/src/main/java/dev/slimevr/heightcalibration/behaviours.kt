@@ -54,7 +54,7 @@ private fun isHmdLeveled(snapshot: TrackerSnapshot): Boolean {
 	return (up dot Vector3.POS_Y) >= HEAD_ANGLE_THRESHOLD
 }
 
-object CalibrationBehaviour : HeightCalibrationBehaviourType {
+class CalibrationBehaviour : HeightCalibrationBehaviourType {
 	override fun reduce(state: HeightCalibrationState, action: HeightCalibrationActions) = when (action) {
 		is HeightCalibrationActions.Update -> state.copy(
 			status = action.status,

@@ -85,13 +85,17 @@ This is why `observe` receives the module (or context) rather than taking a raw 
 
 ### Stateless vs. Stateful Behaviours
 
-Behaviours with no constructor dependencies are `object`s - singletons, zero allocation:
+All behaviours are `class`es, instantiated at the call site:
 
 ```kotlin
-object PacketBehaviour : UDPConnectionBehaviour { ... }
+class PacketBehaviour : UDPConnectionBehaviour { ... }
+
+val behaviours = listOf(PacketBehaviour(), PacketLossBehaviour(), HandshakeBehaviour())
 ```
 
-Behaviours that need external services are `class`es, constructed at the call site:
+Even behaviours with no constructor arguments are `class`es. `object` is banned for behaviours because `observe()` often needs to capture mutable state (timers, counters, flags). An `object` shares that state across every module instance that uses it — a subtle, hard-to-trace bug. Requiring `class` enforces that each module instance gets its own behaviour instance, with its own isolated state. The allocation cost is negligible.
+
+Behaviours that need external services take them as constructor arguments:
 
 ```kotlin
 class TrackerConfigBehaviour(
@@ -104,7 +108,7 @@ When a behaviour is conditional (depends on a nullable service), use `buildList`
 
 ```kotlin
 val behaviours: List<MyBehaviour> = buildList {
-	add(AlwaysPresentBehaviour)
+	add(AlwaysPresentBehaviour())
 	optionalService?.let { add(OptionalServiceBehaviour(it)) }
 }
 ```
@@ -392,7 +396,7 @@ Create a context directly with the behaviours you want to test. No module class,
 val context = Context.create(
 	initialState = FirmwareManagerState(jobs = mapOf()),
 	scope = this,
-	behaviours = listOf(FirmwareManagerBaseBehaviour),
+	behaviours = listOf(FirmwareManagerBaseBehaviour()),
 )
 context.dispatch(FirmwareManagerActions.UpdateJob(...))
 assertEquals(FirmwareUpdateStatus.UPLOADING, context.state.value.jobs["COM1"]?.status)
@@ -407,7 +411,7 @@ val serialServer = buildTestSerialServer(backgroundScope)
 val context = Context.create(
 	initialState = ProvisioningManager.INITIAL_STATE,
 	scope = backgroundScope,
-	behaviours = listOf(ProvisioningManagerBaseBehaviour),
+	behaviours = listOf(ProvisioningManagerBaseBehaviour()),
 )
 val manager = ProvisioningManager(context = context, serialServer = serialServer, scope = backgroundScope)
 manager.startObserving()
@@ -425,7 +429,7 @@ val appContext = object : TestAppContext() {
 	override val skeleton = skeleton
 }
 val context = Context.create(
-	initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
+	initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
 	scope = backgroundScope,
 	behaviours = listOf(DataFeedInitBehaviour(server, skeleton)),
 )
@@ -489,7 +493,7 @@ class MyModule(val context: MyContext, val server: VRServer) {
 			val context = Context.create(
 				initialState = MyState(false),
 				scope = scope,
-				behaviours = listOf(MyCoreBehaviour),
+				behaviours = listOf(MyCoreBehaviour()),
 			)
 			return MyModule(context, ctx.server)
 		}
@@ -520,7 +524,8 @@ receiver.packetEvents.on<MyPacket> { event ->
 
 ## Style Conventions
 
-- **Prefer plain functions over classes.** A single-method interface should almost always be a function type (`() -> Unit`, `suspend (ByteArray) -> Unit`). A class with no mutable state should be a plain function or `object`. When in doubt, write a function.
+- **Prefer plain functions over classes.** A single-method interface should almost always be a function type (`() -> Unit`, `suspend (ByteArray) -> Unit`). When in doubt, write a function.
+- **Behaviours are always `class`, never `object`.** Even behaviours with no constructor arguments. `observe()` frequently captures mutable state (timers, counters, flags), and a singleton `object` would share that state across every module instance — a subtle, cross-connection bug. Instantiate every behaviour at the call site: `listOf(PacketBehaviour(), PingBehaviour())`.
 - **Prefer plain functions over extension functions.** Only use extensions when the receiver type is genuinely the primary subject.
 - **State data classes are all `val`.** Mutable fields in a state class are a design mistake - use `var` in a plain class if you need local mutability, never in state.
 - **Use `sealed interface` for actions**, not `sealed class` - no constructor overhead.

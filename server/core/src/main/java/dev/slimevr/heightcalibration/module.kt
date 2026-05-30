@@ -95,7 +95,7 @@ class HeightCalibrationManager(
 			ctx: Phase1ContextProvider,
 			scope: CoroutineScope,
 		): HeightCalibrationManager {
-			val behaviours = listOf(CalibrationBehaviour)
+			val behaviours = listOf(CalibrationBehaviour())
 			val context = Context.create(
 				initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
 				scope = scope,

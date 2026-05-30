@@ -23,7 +23,7 @@ import kotlin.random.Random
 internal const val CONNECTION_TIMEOUT_MS = 5000L
 internal const val CONNECTION_REMOVAL_MS = 30_000L
 
-object PacketBehaviour : UDPConnectionBehaviour {
+class PacketBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
 		is UDPConnectionActions.LastPacket -> {
 			var newState = state.copy(lastPacket = action.time)
@@ -53,7 +53,7 @@ object PacketBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object PacketLossBehaviour : UDPConnectionBehaviour {
+class PacketLossBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		var totalPacketsReceived = 0L
 		var acceptedPackets = 0L
@@ -84,7 +84,7 @@ object PacketLossBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object PingBehaviour : UDPConnectionBehaviour {
+class PingBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
 		is UDPConnectionActions.StartPing -> state.copy(lastPing = state.lastPing.copy(startTime = action.startTime, id = action.pingId))
 		else -> state
@@ -121,7 +121,7 @@ object PingBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object HandshakeBehaviour : UDPConnectionBehaviour {
+class HandshakeBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
 		is UDPConnectionActions.Handshake -> state.copy(didHandshake = true, deviceId = action.deviceId)
 		is UDPConnectionActions.TimedOut -> state.copy(didHandshake = false)
@@ -203,7 +203,7 @@ object HandshakeBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object TimeoutBehaviour : UDPConnectionBehaviour {
+class TimeoutBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.context.scope.safeLaunch {
 			while (isActive) {
@@ -230,7 +230,7 @@ object TimeoutBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object DisconnectBehaviour : UDPConnectionBehaviour {
+class DisconnectBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		var removalJob: Job? = null
 		receiver.context.state
@@ -258,7 +258,7 @@ object DisconnectBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object DeviceStatsBehaviour : UDPConnectionBehaviour {
+class DeviceStatsBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<BatteryLevel> { event ->
 			val device = receiver.getDevice() ?: return@onPacket
@@ -282,7 +282,7 @@ object DeviceStatsBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object SensorInfoBehaviour : UDPConnectionBehaviour {
+class SensorInfoBehaviour : UDPConnectionBehaviour {
 	private suspend fun assignTracker(receiver: UDPConnection, device: Device, event: PacketEvent<SensorInfo>): Pair<Tracker, Boolean> {
 		val deviceState = device.context.state.value
 		val mac = deviceState.macAddress ?: run {
@@ -377,7 +377,7 @@ object SensorInfoBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object SensorRotationBehaviour : UDPConnectionBehaviour {
+class SensorRotationBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
@@ -401,7 +401,7 @@ object SensorRotationBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object BundledPacketBehaviour : UDPConnectionBehaviour {
+class BundledPacketBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<PacketBundle> { event ->
 			for (packet in event.data.packets) {
@@ -423,7 +423,7 @@ object BundledPacketBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object FlagsBehaviour : UDPConnectionBehaviour {
+class FlagsBehaviour : UDPConnectionBehaviour {
 	override fun reduce(
 		state: UDPConnectionState,
 		action: UDPConnectionActions,
@@ -441,7 +441,7 @@ object FlagsBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object TemperatureBehaviour : UDPConnectionBehaviour {
+class TemperatureBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<Temperature> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
@@ -450,7 +450,7 @@ object TemperatureBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object SensorConfigBehaviour : UDPConnectionBehaviour {
+class SensorConfigBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
 		is UDPConnectionActions.SetSensorConfig -> state.copy(
 			sensorConfigFlags = state.sensorConfigFlags + (action.sensorId to action.flags),
@@ -477,7 +477,7 @@ object SensorConfigBehaviour : UDPConnectionBehaviour {
 	}
 }
 
-object AckConfigBehaviour : UDPConnectionBehaviour {
+class AckConfigBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<AckConfigChange> { event ->
 			val configType = SensorConfigType.fromId(event.data.configType) ?: return@onPacket

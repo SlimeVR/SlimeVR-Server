@@ -36,13 +36,15 @@ class VRServer(
 ) {
 	private val handleCounter: AtomicInt = AtomicInt(0)
 
+	fun startObserving() = context.observeAll(this)
+
 	fun nextHandle() = handleCounter.incrementAndFetch()
 	fun getTracker(id: Int) = context.state.value.trackers[id]
 	fun getDevice(id: Int) = context.state.value.devices[id]
 
 	companion object {
 		fun create(scope: CoroutineScope): VRServer {
-			val behaviours = listOf(BaseBehaviour)
+			val behaviours = listOf(BaseBehaviour())
 			val context = Context.create(
 				initialState = VRServerState(
 					trackers = emptyMap(),
@@ -55,7 +57,7 @@ class VRServer(
 				name = "VRServer",
 			)
 			val server = VRServer(context = context)
-			behaviours.forEach { it.observe(server) }
+			server.startObserving()
 			return server
 		}
 	}

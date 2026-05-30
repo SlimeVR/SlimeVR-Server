@@ -91,7 +91,7 @@ data class ProvisioningManager(
 		)
 
 		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope): ProvisioningManager {
-			val behaviours = listOf(ProvisioningManagerBaseBehaviour)
+			val behaviours = listOf(ProvisioningManagerBaseBehaviour())
 			val context = Context.create(
 				initialState = INITIAL_STATE,
 				scope = scope,

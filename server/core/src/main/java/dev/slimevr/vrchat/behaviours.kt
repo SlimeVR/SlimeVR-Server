@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
-object DefaultVRCConfigBehaviour : VRCConfigBehaviour {
+class DefaultVRCConfigBehaviour : VRCConfigBehaviour {
 	override fun reduce(state: VRCConfigState, action: VRCConfigActions) = when (action) {
 		is VRCConfigActions.UpdateValues -> state.copy(currentValues = action.values)
 

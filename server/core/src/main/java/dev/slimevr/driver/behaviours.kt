@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.TrackerStatus
 
-object DriverBaseBehaviour : DriverBridgeBehaviour {
+class DriverBaseBehaviour : DriverBridgeBehaviour {
 	override fun reduce(state: DriverBridgeState, action: DriverBridgeActions): DriverBridgeState = when (action) {
 		is DriverBridgeActions.AddTracker -> state.copy(trackers = state.trackers + (action.id to action.trackerId))
 		is DriverBridgeActions.UpdateProtocolVersion -> state.copy(protocolVersion = action.version)

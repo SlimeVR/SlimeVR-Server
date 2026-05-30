@@ -25,7 +25,38 @@ sealed interface GlobalConfigActions {
 }
 
 typealias GlobalConfigContext = Context<GlobalConfigState, GlobalConfigActions>
-typealias GlobalConfigBehaviour = Behaviour<GlobalConfigState, GlobalConfigActions, GlobalConfigContext>
+typealias GlobalConfigBehaviour = Behaviour<GlobalConfigState, GlobalConfigActions, GlobalConfig>
+
+class GlobalConfig(
+	val context: GlobalConfigContext,
+) {
+	fun startObserving() = context.observeAll(this)
+
+	companion object {
+		suspend fun create(scope: CoroutineScope, storage: ConfigStorage): GlobalConfig {
+			val initialState = loadFileWithBackup(storage, "global.json", GlobalConfigState()) {
+				parseAndMigrateGlobalConfig(it)
+			}
+			val behaviours = listOf(DefaultGlobalConfigBehaviour())
+			val context = Context.create(
+				initialState = initialState,
+				scope = scope,
+				behaviours = behaviours,
+				name = "GlobalConfig",
+			)
+			val globalConfig = GlobalConfig(context)
+			globalConfig.startObserving()
+			launchAutosave(
+				scope = scope,
+				state = context.state,
+				storage = storage,
+				toPath = { "global.json" },
+				serialize = { jsonConfig.encodeToString(it) },
+			)
+			return globalConfig
+		}
+	}
+}
 
 private fun migrateGlobalConfig(json: JsonObject): JsonObject {
 	val version = json["version"]?.jsonPrimitive?.intOrNull ?: 0
@@ -41,48 +72,29 @@ private fun parseAndMigrateGlobalConfig(raw: String): GlobalConfigState {
 }
 
 class AppConfig(
-	val globalContext: GlobalConfigContext,
+	val globalConfig: GlobalConfig,
 	val userConfig: UserConfig,
 	val settings: Settings,
 ) {
 	suspend fun switchUserProfile(name: String) {
-		globalContext.dispatch(GlobalConfigActions.SetUserProfile(name))
+		globalConfig.context.dispatch(GlobalConfigActions.SetUserProfile(name))
 		userConfig.swap(name)
 	}
 
 	suspend fun switchSettingsProfile(name: String) {
-		globalContext.dispatch(GlobalConfigActions.SetSettingsProfile(name))
+		globalConfig.context.dispatch(GlobalConfigActions.SetSettingsProfile(name))
 		settings.swap(name)
 	}
 
 	companion object {
 		suspend fun create(scope: CoroutineScope, storage: ConfigStorage): AppConfig {
-			val initialGlobal = loadFileWithBackup(storage, "global.json", GlobalConfigState()) {
-				parseAndMigrateGlobalConfig(it)
-			}
+			val globalConfig = GlobalConfig.create(scope, storage)
 
-			val behaviours = listOf(DefaultGlobalConfigBehaviour)
-			val globalContext = Context.create(
-				initialState = initialGlobal,
-				scope = scope,
-				behaviours = behaviours,
-				name = "GlobalConfig",
-			)
-			behaviours.forEach { it.observe(globalContext) }
-
-			launchAutosave(
-				scope = scope,
-				state = globalContext.state,
-				storage = storage,
-				toPath = { "global.json" },
-				serialize = { jsonConfig.encodeToString(it) },
-			)
-
-			val userConfig = UserConfig.create(scope, storage, initialGlobal.selectedUserProfile)
-			val settings = Settings.create(scope, storage, initialGlobal.selectedSettingsProfile)
+			val userConfig = UserConfig.create(scope, storage, globalConfig.context.state.value.selectedUserProfile)
+			val settings = Settings.create(scope, storage, globalConfig.context.state.value.selectedSettingsProfile)
 
 			return AppConfig(
-				globalContext = globalContext,
+				globalConfig = globalConfig,
 				userConfig = userConfig,
 				settings = settings,
 			)
