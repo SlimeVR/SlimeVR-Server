@@ -29,6 +29,7 @@ import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
@@ -62,7 +63,7 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	val context = Context.create(
 		initialState = UserConfigState(data = UserConfigData(), name = "test"),
 		scope = scope,
-		behaviours = listOf(DefaultUserBehaviour),
+		behaviours = listOf(DefaultUserBehaviour()),
 		name = "TestUserConfig",
 	)
 	val userConfig = UserConfig(context, scope = scope, storage = NoopConfigStorage, userConfigDir = "user")
@@ -108,6 +109,7 @@ fun buildTestAppContext(server: VRServer): AppContextProvider = object : TestApp
 
 abstract class TestAppContext : AppContextProvider {
 	override val featureFlags: FeatureFlags = FeatureFlags()
+	override val skeleton: Skeleton get() = error("not used in test")
 	override val config: AppConfig get() = error("not used in test")
 	override val serialServer: SerialServer get() = error("not used in test")
 	override val firmwareManager: FirmwareManager get() = error("not used in test")

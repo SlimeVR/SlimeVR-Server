@@ -23,7 +23,7 @@ private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend:
 		override val skeleton = skeleton
 	}
 	val context = Context.create(
-		initialState = SolarXRBridgeState(dataFeedConfigs = listOf(), datafeedTimers = listOf()),
+		initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
 		scope = backgroundScope,
 		behaviours = listOf(DataFeedInitBehaviour(server, skeleton)),
 		name = "SolarXRDataFeedTest",

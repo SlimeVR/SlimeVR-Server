@@ -26,14 +26,14 @@ private fun serialJob(port: String, status: FirmwareUpdateStatus, progress: Int 
 class FirmwareManagerReducerTest {
 	private fun makeContext(scope: kotlinx.coroutines.CoroutineScope) = Context.create(
 		initialState = FirmwareManagerState(jobs = mapOf()),
-		behaviours = listOf(FirmwareManagerBaseBehaviour),
+		behaviours = listOf(FirmwareManagerBaseBehaviour()),
 		scope = scope,
 		name = "FirmwareManagerReducerTest",
 	)
 
 	@Test
 	fun `UpdateJob adds a new job`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 
 		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 42))
 
@@ -45,7 +45,7 @@ class FirmwareManagerReducerTest {
 
 	@Test
 	fun `UpdateJob replaces an existing job`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 
 		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.DOWNLOADING))
 		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 75))
@@ -59,7 +59,7 @@ class FirmwareManagerReducerTest {
 
 	@Test
 	fun `UpdateJob tracks multiple ports independently`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 
 		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 10))
 		context.dispatch(serialJob("COM2", FirmwareUpdateStatus.DOWNLOADING))
@@ -71,7 +71,7 @@ class FirmwareManagerReducerTest {
 
 	@Test
 	fun `RemoveJob removes an existing job`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 
 		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 50))
 		context.dispatch(FirmwareManagerActions.RemoveJob("COM1"))
@@ -82,7 +82,7 @@ class FirmwareManagerReducerTest {
 
 	@Test
 	fun `RemoveJob on unknown port is a no-op`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 
 		context.dispatch(serialJob("COM1", FirmwareUpdateStatus.UPLOADING, 50))
 		context.dispatch(FirmwareManagerActions.RemoveJob("COM2"))

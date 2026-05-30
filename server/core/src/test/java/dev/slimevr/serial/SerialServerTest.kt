@@ -1,6 +1,7 @@
 package dev.slimevr.serial
 
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertIs
@@ -35,7 +36,7 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 		server.onPortDetected(fakePort())
 
@@ -50,7 +51,7 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 		server.onPortDetected(fakePort())
 		server.openConnection("COM1")
@@ -65,7 +66,7 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 
 		// No onPortDetected call, port is not in availablePorts
@@ -80,7 +81,7 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 		server.onPortDetected(fakePort())
 		val handler = server.openForFlashing("COM1")!!
@@ -90,7 +91,7 @@ class SerialServerTest {
 		// The scope.launch inside closeSerial has not run yet
 		assertIs<SerialConnection.Flashing>(server.context.state.value.connections["COM1"])
 
-		advanceUntilIdle()
+		advanceTimeBy(1)
 
 		// Now the dispatched RemoveConnection has run
 		assertNull(server.context.state.value.connections["COM1"])
@@ -101,7 +102,7 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 		server.onPortDetected(fakePort())
 
@@ -115,7 +116,7 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 		server.onPortDetected(fakePort())
 		server.openConnection("COM1")
@@ -131,7 +132,7 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 		server.onPortDetected(fakePort())
 		server.openForFlashing("COM1")
@@ -148,12 +149,12 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 		server.onPortDetected(fakePort())
 		val firstHandler = server.openForFlashing("COM1")!!
 		firstHandler.closeSerial()
-		advanceUntilIdle()
+		advanceTimeBy(1)
 
 		// Connection is gone, port is still available, can flash again
 		val secondHandler = server.openForFlashing("COM1")
@@ -168,12 +169,12 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 		server.onPortDetected(fakePort())
 		val handler = server.openForFlashing("COM1")!!
 		handler.closeSerial()
-		advanceUntilIdle()
+		advanceTimeBy(1)
 
 		server.openConnection("COM1")
 
@@ -185,7 +186,7 @@ class SerialServerTest {
 		val server = SerialServer.create(
 			openPort = { loc, _, _ -> fakePortHandle(loc) },
 			openFlashingPort = ::fakeFlashingHandler,
-			scope = this,
+			scope = backgroundScope,
 		)
 		server.onPortDetected(fakePort())
 		server.openForFlashing("COM1")

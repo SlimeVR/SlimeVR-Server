@@ -41,7 +41,7 @@ private val STANDING_POSITION = Vector3(0f, 1.7f, 0f)
 private fun makeContext(scope: kotlinx.coroutines.CoroutineScope) = HeightCalibrationContext.create(
 	initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
 	scope = scope,
-	behaviours = listOf(CalibrationBehaviour),
+	behaviours = listOf(CalibrationBehaviour()),
 	name = "HeightCalibrationTest",
 )
 
@@ -93,7 +93,7 @@ private suspend fun TestScope.completeHeightPhase(
 class HeightCalibrationReducerTest {
 	@Test
 	fun `Update changes status and height`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 
 		context.dispatch(HeightCalibrationActions.Update(UserHeightCalibrationStatus.RECORDING_HEIGHT, 1.65f))
 
@@ -105,7 +105,7 @@ class HeightCalibrationReducerTest {
 class HeightCalibrationSessionTest {
 	@Test
 	fun `session starts in RECORDING_FLOOR`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -117,7 +117,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `controller too high does not change status`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -131,7 +131,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `controller not pointing down transitions to WAITING_FOR_CONTROLLER_PITCH`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -145,7 +145,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `stable floor transitions to WAITING_FOR_RISE`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -159,7 +159,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `HMD below rise threshold stays WAITING_FOR_RISE`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -175,7 +175,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `HMD not leveled transitions to WAITING_FOR_FW_LOOK`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -191,7 +191,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `stable HMD at valid height transitions to DONE`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -207,7 +207,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `stable HMD below HEIGHT_MIN transitions to ERROR_TOO_SMALL`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -222,7 +222,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `stable HMD above HEIGHT_MAX transitions to ERROR_TOO_HIGH`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -237,7 +237,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `unstable floor sample resets controller stability window`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -263,7 +263,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `out-of-threshold HMD sample resets height stability window`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -290,7 +290,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `timeout fires ERROR_TIMEOUT`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = safeLaunch { runCalibrationSession(context, buildTestUserConfig(backgroundScope), hmdFlow, controllerFlow) }
@@ -303,7 +303,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `controller pitch recovery leads to WAITING_FOR_RISE`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -321,7 +321,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `leveling HMD after WAITING_FOR_FW_LOOK transitions to RECORDING_HEIGHT`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)
@@ -341,7 +341,7 @@ class HeightCalibrationSessionTest {
 
 	@Test
 	fun `HMD rising above threshold transitions to RECORDING_HEIGHT`() = runTest {
-		val context = makeContext(this)
+		val context = makeContext(backgroundScope)
 		val controllerFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val hmdFlow = MutableSharedFlow<TrackerSnapshot>(extraBufferCapacity = 1)
 		val job = launchSession(context, hmdFlow, controllerFlow)

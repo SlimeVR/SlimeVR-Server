@@ -10,7 +10,7 @@ private sealed interface TestAction {
 	object Increment : TestAction
 }
 
-private object DispatchingBehaviour : Behaviour<Int, TestAction, Context<Int, TestAction>> {
+private class DispatchingBehaviour : Behaviour<Int, TestAction, Context<Int, TestAction>> {
 	override fun reduce(state: Int, action: TestAction): Int = when (action) {
 		TestAction.Increment -> state + 1
 	}
@@ -44,7 +44,7 @@ class ContextCallerCaptureTest {
 		val context = Context.create(
 			initialState = 0,
 			scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined),
-			behaviours = listOf(DispatchingBehaviour),
+			behaviours = listOf(DispatchingBehaviour()),
 			debugMiddleware = middleware,
 			name = "TestContext",
 		)

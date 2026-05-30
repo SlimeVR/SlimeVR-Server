@@ -12,7 +12,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-private object NoopBehaviour : Behaviour<Int, Int, Unit>
+private class NoopBehaviour : Behaviour<Int, Int, Unit>
 
 class ContextScopeIsolationTest {
 	@Test
@@ -25,7 +25,7 @@ class ContextScopeIsolationTest {
 		val context = Context.create(
 			initialState = 0,
 			scope = parentScope,
-			behaviours = listOf(NoopBehaviour),
+			behaviours = listOf(NoopBehaviour()),
 			name = "IsolatedContext",
 		)
 
