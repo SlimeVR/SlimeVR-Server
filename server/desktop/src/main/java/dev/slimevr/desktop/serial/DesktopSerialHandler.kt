@@ -190,7 +190,7 @@ class DesktopSerialHandler :
 	}
 
 	override fun write(buff: ByteArray) {
-		LogManager.info("[SerialHandler] WRITING $buff")
+		LogManager.info("[SerialHandler] WRITING ${buff.toString(Charsets.UTF_8)}")
 		currentPort?.outputStream?.write(buff)
 	}
 
