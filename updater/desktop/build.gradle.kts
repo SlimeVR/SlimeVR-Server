@@ -1,7 +1,4 @@
-@file:OptIn(ExperimentalComposeLibrary::class)
-
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -33,7 +30,6 @@ tasks.withType<KotlinCompile>().configureEach {
 	}
 }
 
-// Set compiler to use UTF-8
 tasks.withType<JavaCompile> {
 	options.encoding = "UTF-8"
 }
@@ -47,17 +43,12 @@ tasks.withType<Javadoc> {
 group = "dev.slimevr"
 version = "updater"
 
-allprojects {
-	repositories {
-		// Use jcenter for resolving dependencies.
-		// You can declare any Maven/Ivy/file repository here.
-		mavenLocal()
-		google()
-		mavenCentral()
-		maven(url = "https://jitpack.io")
-		maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
-		maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-	}
+repositories {
+	google()
+	mavenCentral()
+	maven(url = "https://jitpack.io")
+	maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+	maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
@@ -73,7 +64,6 @@ dependencies {
 	implementation("org.jetbrains.compose.material3:material3:1.9.0-beta03")
 	implementation("org.jetbrains.compose.components:components-resources:1.10.3")
 	implementation("org.jetbrains.compose.components:components-animatedimage:1.10.3")
-	implementation("com.github.HannahPadd:manifestUtils:fc4f0fb769")
 
 	implementation("net.java.dev.jna:jna:5.14.0")
 	implementation("net.java.dev.jna:jna-platform:5.14.0")
@@ -81,22 +71,12 @@ dependencies {
 	implementation("com.github.ajalt.mordant:mordant:3.0.2")
 	implementation("com.github.ajalt.mordant:mordant-markdown:3.0.2")
 
-
 	testImplementation("org.slf4j:slf4j-simple:2.0.9")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.9.20")
 	testImplementation("io.mockk:mockk:1.13.8")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.x")
 	testImplementation(kotlin("test"))
-}
-
-tasks.shadowJar {
-	archiveBaseName.set("updater")
-	archiveClassifier.set("")
-	archiveVersion.set("")
-	manifest {
-		attributes["Main-Class"] = "dev.slimevr.updater.MainKt"
-	}
 }
 
 tasks.test {
@@ -108,9 +88,35 @@ compose.desktop {
 		mainClass = "dev.slimevr.updater.MainKt"
 
 		nativeDistributions {
+			includeAllModules = false
+			modules(
+				"java.base",
+				"java.desktop",
+				"java.instrument",
+				"java.naming",
+				"java.prefs",
+				"jdk.unsupported"
+			)
 			targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
-			packageName = "SlimeVRUpdater"
+			packageName = "SlimeVR-Updater"
 			packageVersion = "1.0.0"
+			vendor = "Nighty Electronics"
+
+
+			windows {
+				console = true
+				menuGroup = "SlimeVR"
+				perUserInstall = true
+				shortcut = true
+				iconFile.set(project.file("src/main/resources/icon.ico"))
+			}
+		}
+
+		buildTypes.release {
+			proguard {
+				isEnabled = true
+				configurationFiles.from(project.file("compose-proguard-rules.pro"))
+			}
 		}
 	}
 }
@@ -130,4 +136,13 @@ buildConfig {
 tasks.withType<JavaExec> {
 	standardInput = System.`in`
 	systemProperty("terminal.jline", "false")
+}
+
+tasks.shadowJar {
+	archiveBaseName.set("desktop-updater")
+	archiveClassifier.set("")
+	archiveVersion.set("")
+	manifest {
+		attributes["Main-Class"] = "dev.slimevr.updater.MainKt"
+	}
 }

@@ -31,8 +31,8 @@ class Windows(
 	) {
 		io.backupConfig(currentVersionTag, configDir, vrConfig)
 		io.restoreConfig(versionTag, configDir, vrConfig)
+		//usbDrivers()
 		updateServer(serverUrl, serverChecksum)
-		usbDrivers()
 		steamVRDriver()
 	}
 

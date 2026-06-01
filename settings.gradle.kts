@@ -39,7 +39,7 @@ include(":server")
 project(":server").projectDir = File("server")
 include(":server:core")
 include(":server:desktop")
-include(":server:android")
+//include(":server:android")
 
 include(":updater")
 project(":updater").projectDir = File("updater")

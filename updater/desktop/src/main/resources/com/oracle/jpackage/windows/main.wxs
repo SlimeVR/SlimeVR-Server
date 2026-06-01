@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+    <Fragment>
+        <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch SlimeVR-Updater" />
+        <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+
+        <CustomAction Id="LaunchApplication"
+                      Directory="INSTALLDIR"
+                      ExeCommand="[INSTALLDIR]SlimeVR-Updater.exe"
+                      Execute="immediate"
+                      Return="asyncNoWait" />
+
+        <UI>
+            <Publish Dialog="ExitDialog"
+                     Control="Finish"
+                     Event="DoAction"
+                     Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+        </UI>
+    </Fragment>
+</Wix>

@@ -1,12 +1,11 @@
 package dev.slimevr.updater
 
-import Manifest
-import ManifestUtils.Companion.getChannels
-import ManifestUtils.Companion.getVersionTags
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextStyles.bold
+import dev.slimevr.updater.gui.UpdaterState
 import dev.slimevr.updater.utils.TerminalUtil.t
 import dev.slimevr.updater.updater.UpdaterController
+import dev.slimevr.updater.updater.UpdaterIO
 import dev.slimevr.updater.utils.TerminalUtil
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.CommandLineParser
@@ -21,9 +20,7 @@ val VERSION = (GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) + if (GIT_CLEAN) "" 
 
 val featureFlags = FeatureFlags()
 
-val manifestPath = "update-manifest.json"
-
-fun main(args: Array<String>) {
+suspend fun main(args: Array<String>) {
 	val options = Options().apply {
 		addOption("h", "help", false, "Show help")
 		addOption("c", "channels", false, "List all release channels")
@@ -60,18 +57,21 @@ fun main(args: Array<String>) {
 	}
 
 	if (cmd.hasOption("channels")) {
-		val manifest = Manifest(manifestPath).getManifest()
-		val channels = getChannels(manifest)
+		val state = UpdaterState()
+		val io = UpdaterIO(state)
+		val channels = io.getChannels()
 		TerminalUtil.info("Available Release Channels:")
-		channels.forEach { t.println(" • ${TextColors.green(it)}") }
+		channels.forEach { t.println(" • ${TextColors.green(it.description)}") }
 		exitProcess(0)
 	}
 
 	if (cmd.hasOption("list")) {
+		val state = UpdaterState()
+		val io = UpdaterIO(state)
 		val channel = cmd.getOptionValue("list")
-		val manifest = Manifest(manifestPath).getManifest()
-		val versions = getVersionTags(manifest, channel)
-		TerminalUtil.printVersionGrid(versions, title = "Releases in '$channel'")
+		val versions = io.getReleases()
+		val versionTagList: List<String> = versions.map { it.version }
+		TerminalUtil.printVersionGrid(versionTagList, title = "Releases in '$channel'")
 		exitProcess(0)
 	}
 

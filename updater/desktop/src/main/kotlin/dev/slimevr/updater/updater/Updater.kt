@@ -1,15 +1,12 @@
 package dev.slimevr.updater.updater
 
-import Manifest
-import ManifestUtils.Companion.getCurrentVersionTag
 import dev.slimevr.updater.utils.TerminalUtil
-import dev.slimevr.updater.featureFlags
 import dev.slimevr.updater.platform.OperatingSystem.Companion.currentPlatform
 import dev.slimevr.updater.gui.UpdaterState
-import dev.slimevr.updater.manifestPath
 import dev.slimevr.updater.platform.Linux
 import dev.slimevr.updater.platform.OperatingSystem
 import dev.slimevr.updater.platform.Windows
+import dev.slimevr.updater.updater.UpdaterController.Companion.launchServer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -31,15 +28,14 @@ class Updater(
 		val vrConfig = resolveConfig("vrconfig.yml")
 		val configDir =
 			resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.toAbsolutePath().toString()
-		//LogManager.info("Using config dir: $configDir")
-		val manifest = Manifest(manifestPath).getManifest()
+		TerminalUtil.info("Using config dir: $configDir")
 		val arch = System.getProperty("os.arch").lowercase()
 		val normalizedArch = when {
 			arch.contains("amd64") || arch.contains("x86_64") -> "x86_64"
 			arch.contains("arm") -> "arm64"
 			else -> arch
 		}
-		val versionFile = File("$configDir/currentVersion")
+		val versionFile = File("currentVersion")
 		if (!versionFile.exists()) {
 			withContext(Dispatchers.IO) {
 				versionFile.createNewFile()
@@ -48,26 +44,18 @@ class Updater(
 		}
 		val currentVersionTag = versionFile.readText()
 
-		val versionTag: String? = if (featureFlags.version != null) {
-			featureFlags.version
-		} else {
-			getCurrentVersionTag(
-				manifest,
-				os.currentPlatform.descriptor,
-				normalizedArch,
-			)
-		}
-
-		if (versionTag == null) {
-			state.hasError = true
-			state.errorText = "Could not get selected version"
-			return
-		}
-
-
-
-		val releases = updaterIO.getReleaseFromApi()
+		val releases = updaterIO.getReleases()
 		val selectedVersion = releases.find { it.platform == os.currentPlatform.name.lowercase() }
+
+		if (currentVersionTag == selectedVersion?.version) {
+			TerminalUtil.info("Using version: $selectedVersion")
+			TerminalUtil.info("Current version: $currentVersionTag")
+			TerminalUtil.info("No Update available")
+			TerminalUtil.info("Launching server")
+			launchServer()
+			Thread.sleep(1000)
+			exitProcess(0)
+		}
 
 		TerminalUtil.info(selectedVersion.toString())
 		if (selectedVersion == null) {
@@ -83,7 +71,7 @@ class Updater(
 				val windows = Windows(state, updaterIO)
 				windows.updateWindows(
 					currentVersionTag,
-					versionTag,
+					selectedVersion.version,
 					configDir,
 					vrConfig,
 					selectedVersion.url,
@@ -96,7 +84,7 @@ class Updater(
 				val linux = Linux(state, updaterIO)
 				linux.updateLinux(
 					currentVersionTag,
-					versionTag,
+					selectedVersion.version,
 					configDir,
 					vrConfig,
 					selectedVersion.url,
@@ -119,9 +107,7 @@ class Updater(
 			setUpdateDone()
 			saveCurrentVersionTag()
 			Thread.sleep(500)
-			if (featureFlags.restartServer) {
-				launchServer()
-			}
+			launchServer()
 			exitProcess(0)
 		}
 
@@ -163,12 +149,6 @@ class Updater(
 
 	fun saveCurrentVersionTag() {
 		val configDir = resolveConfigDirectory(SLIMEVR_IDENTIFIER)
-		File("$configDir/currentVersion").writeText(state.versionTag)
-	}
-
-	companion object {
-		fun launchServer() {
-
-		}
+		File("currentVersion").writeText(state.versionTag)
 	}
 }

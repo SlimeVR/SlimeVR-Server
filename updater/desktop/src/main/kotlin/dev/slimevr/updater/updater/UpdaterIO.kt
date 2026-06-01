@@ -2,6 +2,7 @@ package dev.slimevr.updater.updater
 
 import dev.slimevr.updater.utils.TerminalUtil
 import dev.slimevr.updater.gui.UpdaterState
+import dev.slimevr.updater.updater.Constants.Companion.CDN_CHANNELS
 import dev.slimevr.updater.updater.Constants.Companion.CDN_RELEASES
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -31,6 +32,7 @@ import java.security.MessageDigest
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
+import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds
 
 class UpdaterIO(
@@ -92,7 +94,7 @@ class UpdaterIO(
 		}
 	}
 
-	suspend fun getReleaseFromApi(): List<Release>  {
+	suspend fun getReleases(): List<Release>  {
 		try {
 			val client = HttpClient(CIO) {
 				install(ContentNegotiation) {
@@ -107,6 +109,28 @@ class UpdaterIO(
 			val releases: List<Release> = client.get(CDN_RELEASES).body()
 
 			return releases
+		} catch (e: IOException) {
+			state.hasError = true
+			TerminalUtil.error("Error retrieving releases")
+			return emptyList()
+		}
+	}
+
+	suspend fun getChannels(): List<Channel>  {
+		try {
+			val client = HttpClient(CIO) {
+				install(ContentNegotiation) {
+					json(Json {
+						prettyPrint = true
+						isLenient = true
+						ignoreUnknownKeys = true
+					})
+				}
+			}
+			TerminalUtil.info(CDN_RELEASES)
+			val channels: List<Channel> = client.get(CDN_CHANNELS).body()
+
+			return channels
 		} catch (e: IOException) {
 			state.hasError = true
 			TerminalUtil.error("Error retrieving releases")
@@ -290,7 +314,7 @@ class UpdaterIO(
 		} catch (e: Exception) {
 			e.printStackTrace()
 		} finally {
-			System.exit(0)
+			exitProcess(0)
 		}
 	}
 

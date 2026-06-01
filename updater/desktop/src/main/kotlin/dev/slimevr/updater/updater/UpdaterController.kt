@@ -52,40 +52,44 @@ class UpdaterController {
 	private suspend fun runHeadless() {
 	}
 
-	fun launchServer() {
-		TerminalUtil.info("Attempting to launch SlimeVR server")
-		when (os.currentPlatform) {
-			OperatingSystem.WINDOWS -> {
-				val exeFile = File("SlimeVR.exe").absoluteFile
-				if (exeFile.exists()) {
-					launchDetached(listOf(exeFile.absolutePath))
-				} else {
-					TerminalUtil.error("SlimeVR.exe not found at ${exeFile.absolutePath}")
-				}
 
-			}
+	companion object {
 
-			OperatingSystem.LINUX -> {
-				launchDetached(listOf("./SlimeVR-amd64.appimage"))
-			}
+		fun launchDetached(command: List<String>) {
+			val processBuilder = ProcessBuilder(command)
+			processBuilder.redirectOutput(ProcessBuilder.Redirect.DISCARD)
+			processBuilder.redirectError(ProcessBuilder.Redirect.DISCARD)
 
-			else -> {
-				TerminalUtil.error("Unknown operating system")
-				return
+			try {
+				processBuilder.start()
+				println("Process started successfully. Closing parent...")
+			} catch (e: Exception) {
+				e.printStackTrace()
 			}
 		}
-		exitProcess(0)
-	}
-	fun launchDetached(command: List<String>) {
-		val processBuilder = ProcessBuilder(command)
-		processBuilder.redirectOutput(ProcessBuilder.Redirect.DISCARD)
-		processBuilder.redirectError(ProcessBuilder.Redirect.DISCARD)
+		fun launchServer() {
+			TerminalUtil.info("Attempting to launch SlimeVR server")
+			when (os.currentPlatform) {
+				OperatingSystem.WINDOWS -> {
+					val exeFile = File("SlimeVR.exe").absoluteFile
+					if (exeFile.exists()) {
+						launchDetached(listOf(exeFile.absolutePath))
+					} else {
+						TerminalUtil.error("SlimeVR.exe not found at ${exeFile.absolutePath}")
+					}
 
-		try {
-			processBuilder.start()
-			println("Process started successfully. Closing parent...")
-		} catch (e: Exception) {
-			e.printStackTrace()
+				}
+
+				OperatingSystem.LINUX -> {
+					launchDetached(listOf("./SlimeVR-amd64.appimage"))
+				}
+
+				else -> {
+					TerminalUtil.error("Unknown operating system")
+					return
+				}
+			}
+			exitProcess(0)
 		}
 	}
 }
