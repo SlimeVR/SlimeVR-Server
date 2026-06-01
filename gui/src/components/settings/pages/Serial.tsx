@@ -91,11 +91,19 @@ export function Serial() {
   };
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
     const typedState: { serialPort: string } = state as any;
     if (typedState?.serialPort) {
       reset({ port: typedState.serialPort });
     }
+
+    sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
+    const interval = setInterval(() => {
+      sendRPCPacket(
+        RpcMessage.SerialDevicesRequest,
+        new SerialDevicesRequestT()
+      );
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
