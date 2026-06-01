@@ -213,7 +213,7 @@ class RPCSerialHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : Seria
 
 		this.api.server.queueTask {
 			try {
-				this.api.server.serialHandler.openSerial(req.port(), req.auto())
+				this.api.server.serialHandler.openSerial(req.port(), req.auto(), true)
 			} catch (e: Exception) {
 				LogManager.severe("Unable to open serial port", e)
 			} catch (e: Throwable) {
