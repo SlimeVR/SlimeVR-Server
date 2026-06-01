@@ -15,7 +15,7 @@
           runtimeLibs = pkgs: (with pkgs; [
             jdk17
 
-            alsa-lib libpulseaudio at-spi2-atk at-spi2-core cairo cups dbus expat
+            alsa-lib binutils libpulseaudio at-spi2-atk at-spi2-core cairo cups dbus dpkg expat fakeroot
             gdk-pixbuf glib gtk3 libdrm libgbm libglvnd libnotify
             libxkbcommon mesa nspr nss pango systemd vulkan-loader
             wayland xorg.libX11 xorg.libXcomposite xorg.libXdamage
@@ -35,6 +35,7 @@
             profile = ''
               export JAVA_HOME=${pkgs.jdk17}
               export PATH="${pkgs.jdk17}/bin:$PATH"
+              export FA_LIBRARY=${pkgs.fakeroot}/lib/libfakeroot.so
 
               # Tell electron-builder to use system tools instead of downloading them
               export USE_SYSTEM_FPM=true
