@@ -1,6 +1,5 @@
 package dev.slimevr.serial
 
-import dev.slimevr.tracking.trackers.hid.HIDCommon
 import java.util.stream.Stream
 
 abstract class SerialHandler {
@@ -10,7 +9,7 @@ abstract class SerialHandler {
 	abstract fun addListener(channel: SerialListener)
 	abstract fun removeListener(channel: SerialListener)
 
-	abstract fun openSerial(portLocation: String?, auto: Boolean): Boolean
+	abstract fun openSerial(portLocation: String?, auto: Boolean, autoIncludeHid: Boolean = false): Boolean
 	abstract fun rebootRequest()
 	abstract fun factoryResetRequest()
 	abstract fun infoRequest()
@@ -50,11 +49,7 @@ abstract class SerialHandler {
 			// VNC2 with FT232Slave
 			Pair(0x0403, 0x6001),
 		)
-		fun isKnownBoard(port: SerialPort): Boolean = supportedSerial.contains(Pair(port.vendorId, port.productId)) ||
-			HIDCommon.matchesAny(
-				port.vendorId,
-				port.productId,
-			)
+		fun isKnownBoard(port: SerialPort): Boolean = supportedSerial.contains(Pair(port.vendorId, port.productId))
 	}
 }
 
@@ -66,7 +61,7 @@ class SerialHandlerStub : SerialHandler() {
 
 	override fun removeListener(channel: SerialListener) {}
 
-	override fun openSerial(portLocation: String?, auto: Boolean): Boolean = false
+	override fun openSerial(portLocation: String?, auto: Boolean, autoIncludeHid: Boolean): Boolean = false
 
 	override fun rebootRequest() {}
 
