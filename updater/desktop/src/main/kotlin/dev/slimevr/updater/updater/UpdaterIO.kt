@@ -26,6 +26,7 @@ import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileOutputStream
+import java.nio.file.Paths
 import java.security.MessageDigest
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.ZipEntry
@@ -37,35 +38,81 @@ class UpdaterIO(
 ) {
 	private val client = HttpClient(CIO)
 
-	fun executeShellCommand(vararg command: String): String = try {
+	fun executeShellCommand(vararg command: String): Pair<Int, String>? = try {
 		val process = ProcessBuilder(*command)
 			.redirectErrorStream(true)
 			.start()
 
-		process.inputStream.bufferedReader().readText().also {
-			process.waitFor()
-		}
+		process.waitFor()
+		Pair(process.exitValue(), process.inputStream.bufferedReader().readText())
 	} catch (e: IOException) {
-		state.hasError = true
-		"Error executing shell command: ${e.message}"
+		TerminalUtil.warn("Error executing shell command $e")
+		null
+	}
+
+	fun shouldInstallDriver(exitCode: Int): Boolean = exitCode == 1
+
+	fun getDriverInstallSkipReason(exitCode: Int): String = when (exitCode) {
+		0 -> "driver already installed"
+		2 -> "driver installed more than once"
+		-1 -> "SteamVR is misconfigured"
+		else -> "unknown reason ($exitCode)"
+	}
+
+	fun backupConfig(versionTag: String, configDir: String, vrConfig: String) {
+		TerminalUtil.info("Backing up Config")
+		try {
+			val targetDir =
+				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
+			targetDir.mkdirs()
+			val config = File(vrConfig)
+			val destination = "$targetDir/vrconfig.yml"
+			config.copyTo(File(destination), true)
+			TerminalUtil.success("Config backed up to $destination")
+		} catch (e: IOException) {
+			state.hasError = true
+			state.errorText = "Error backing up config"
+			TerminalUtil.error("Error backing up config")
+		}
+	}
+
+	fun restoreConfig(versionTag: String, configDir: String, vrConfig: String) {
+		try {
+			val sourceDir =
+				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
+			if (!sourceDir.exists()) return
+			val config = File("$sourceDir/vrconfig.yml")
+			val destination = "$configDir/vrconfig.yml"
+			config.copyTo(File(destination), true)
+			TerminalUtil.success("Config restored up to $destination")
+		} catch (e: IOException) {
+			state.hasError = true
+			state.errorText = "Error restoring config"
+			TerminalUtil.error("Error restoring config")
+		}
 	}
 
 	suspend fun getReleaseFromApi(): List<Release>  {
-		val client = HttpClient(CIO) {
-			install(ContentNegotiation) {
-				json(Json {
-					prettyPrint = true
-					isLenient = true
-					ignoreUnknownKeys = true
-				})
+		try {
+			val client = HttpClient(CIO) {
+				install(ContentNegotiation) {
+					json(Json {
+						prettyPrint = true
+						isLenient = true
+						ignoreUnknownKeys = true
+					})
+				}
 			}
+			TerminalUtil.info(CDN_RELEASES)
+			val releases: List<Release> = client.get(CDN_RELEASES).body()
+
+			return releases
+		} catch (e: IOException) {
+			state.hasError = true
+			TerminalUtil.error("Error retrieving releases")
+			return emptyList()
 		}
-		TerminalUtil.info(CDN_RELEASES)
-		val releases: List<Release> = client.get(CDN_RELEASES).body()
-
-		return releases
 	}
-
 
 	suspend fun downloadFile(fileUrl: String, fileName: String, checksum: String) {
 		state.subProgress = 0f
@@ -156,7 +203,7 @@ class UpdaterIO(
 		}
 	}
 
-	private suspend fun unzipWorker(zipFile: ZipFile, zipEntry: ZipEntry, destDir: String) {
+	private fun unzipWorker(zipFile: ZipFile, zipEntry: ZipEntry, destDir: String) {
 		val destFolder = File(destDir)
 		val targetFile = File(destFolder, zipEntry.name)
 
@@ -227,6 +274,7 @@ class UpdaterIO(
 
 		return matches
 	}
+
 	fun restartApplication() {
 		try {
 			val javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java"

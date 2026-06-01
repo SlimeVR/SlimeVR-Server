@@ -68,8 +68,8 @@ class RPCUpdaterHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 
 		val outboundOffset = this.rpcHandler.createRPCMessage(
 			fbb,
-			 RpcMessage.UpdatesResponse,
-			responseOffset
+			RpcMessage.UpdatesResponse,
+			responseOffset,
 		)
 
 		fbb.finish(outboundOffset)

@@ -75,6 +75,9 @@ dependencies {
 	implementation("org.jetbrains.compose.components:components-animatedimage:1.10.3")
 	implementation("com.github.HannahPadd:manifestUtils:fc4f0fb769")
 
+	implementation("net.java.dev.jna:jna:5.14.0")
+	implementation("net.java.dev.jna:jna-platform:5.14.0")
+
 	implementation("com.github.ajalt.mordant:mordant:3.0.2")
 	implementation("com.github.ajalt.mordant:mordant-markdown:3.0.2")
 

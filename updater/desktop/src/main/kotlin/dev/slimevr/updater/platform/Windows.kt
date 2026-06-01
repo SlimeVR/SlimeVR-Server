@@ -1,19 +1,17 @@
 package dev.slimevr.updater.platform
 
+import com.sun.jna.platform.win32.WinReg
 import dev.slimevr.updater.utils.TerminalUtil
 import dev.slimevr.updater.updater.UpdaterIO
 import dev.slimevr.updater.gui.UpdaterState
 import dev.slimevr.updater.gui.update
-import dev.slimevr.updater.updater.Constants.Companion.WINDOWSFEEDERDIRECTORY
-import dev.slimevr.updater.updater.Constants.Companion.WINDOWSFEEDERNAME
-import dev.slimevr.updater.updater.Constants.Companion.WINDOWSFEEDERURL
 import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSERVERNAME
 import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSTEAMVRDRIVERDIRECTORY
 import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSTEAMVRDRIVERNAME
 import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSTEAMVRDRIVERURL
-import kotlinx.io.IOException
-import java.io.File
 import java.nio.file.Paths
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 class Windows(
     private val state: UpdaterState,
@@ -31,44 +29,11 @@ class Windows(
 		serverChecksum: String,
 		openVRDriverUrl: String
 	) {
-		backupConfig(currentVersionTag, configDir, vrConfig)
-		restoreConfig(versionTag, configDir, vrConfig)
+		io.backupConfig(currentVersionTag, configDir, vrConfig)
+		io.restoreConfig(versionTag, configDir, vrConfig)
 		updateServer(serverUrl, serverChecksum)
 		usbDrivers()
 		steamVRDriver()
-	}
-
-	fun backupConfig(versionTag: String, configDir: String, vrConfig: String) {
-		TerminalUtil.info("Backing up Config")
-		try {
-			val targetDir =
-				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
-			targetDir.mkdirs()
-			val config = File(vrConfig)
-			val destination = "$targetDir/vrconfig.yml"
-			config.copyTo(File(destination), true)
-			TerminalUtil.success("Config backed up to $destination")
-		} catch (e: IOException) {
-			state.hasError = true
-			state.errorText = "Error backing up config"
-			TerminalUtil.error("Error backing up config")
-		}
-	}
-
-	fun restoreConfig(versionTag: String, configDir: String, vrConfig: String) {
-		try {
-			val sourceDir =
-				File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
-			if (!sourceDir.exists()) return
-			val config = File("$sourceDir/vrconfig.yml")
-			val destination = "$configDir/vrconfig.yml"
-			config.copyTo(File(destination), true)
-			TerminalUtil.success("Config restored up to $destination")
-		} catch (e: IOException) {
-			state.hasError = true
-			state.errorText = "Error restoring config"
-			TerminalUtil.error("Error restoring config")
-		}
 	}
 
 	suspend fun updateServer(serverUrl: String, serverChecksum: String) {
@@ -95,8 +60,11 @@ class Windows(
 	fun usbDrivers() {
 		state.statusText = "Checking Windows USB Drivers"
 
-		val installedDriversList =
-			io.executeShellCommand("powershell.exe", "pnputil /enum-drivers")
+		val (_, installedDriversList) = io.executeShellCommand("powershell.exe", "pnputil /enum-drivers")
+			?: run {
+				state.statusText = "Failed to check USB drivers"
+				return
+			}
 
 		val ch341ser = installedDriversList.contains("ch341ser.inf")
 		val ch343ser = installedDriversList.contains("ch343ser.inf")
@@ -110,8 +78,11 @@ class Windows(
 
 		state.statusText = "Installing USB drivers"
 
-		val driverInstallOutput =
-			io.executeShellCommand("$path\\installusbdrivers.bat")
+		val (_, driverInstallOutput) = io.executeShellCommand("$path\\installusbdrivers.bat")
+			?: run {
+				state.statusText = "Driver install script failed to execute"
+				return
+			}
 
 		state.statusText =
 			if (driverInstallOutput.contains("error", ignoreCase = true)) {
@@ -123,57 +94,42 @@ class Windows(
 		state.mainProgress = 0.33f
 	}
 
-	suspend fun feeder() {
-		state.statusText = "Downloading Feeder App"
-
-		io.downloadFile(
-			WINDOWSFEEDERURL,
-			WINDOWSFEEDERNAME,
-			""
-		)
-
-		state.statusText = "Unzipping Feeder App"
-
-		io.unzip(
-			WINDOWSFEEDERNAME,
-		)
-
-		state.statusText = "Installing Feeder App"
-
-		io.executeShellCommand(
-			"${path}\\${WINDOWSFEEDERDIRECTORY}\\SlimeVR-Feeder-App.exe",
-			"--install",
-		)
-
-		state.mainProgress = 1f
-		state.statusText = "Feeder App Done"
-	}
-
 	suspend fun steamVRDriver() {
 		state.statusText = "Checking SteamVR"
-
-		val steamVRLocation = io.executeShellCommand(
-			"powershell.exe",
-			"-Command",
-			"(Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820').InstallLocation",
-		).trim()
-
-		if (!steamVRLocation.contains("SteamVR")) {
-			state.statusText = "SteamVR not installed"
+		val regEdit = RegEdit()
+		val steamVRLocation = regEdit.getKeyByPath(
+			WinReg.HKEY_LOCAL_MACHINE,
+			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820"
+		)["InstallLocation"]
+		if (steamVRLocation == null || !steamVRLocation.endsWith("SteamVR")) {
+			TerminalUtil.warn("SteamVR driver installation failed: couldn't find SteamVR")
 			return
 		}
 
-		val vrPathRegContents = io.executeShellCommand(
-			"${steamVRLocation}\\bin\\win64\\vrpathreg.exe",
+		if (Path(steamVRLocation, "drivers", "slimevr").exists()) {
+			TerminalUtil.warn("Skipping SteamVR driver installation: driver is in SteamVR drivers folder")
+			TerminalUtil.warn("If you would like the SteamVR driver to automatically update, please uninstall the other version of SlimeVR")
+			return
+		}
+
+		val pathRegPath = "$steamVRLocation\\bin\\win64\\vrpathreg.exe"
+		val (findExitCode, _) = io.executeShellCommand(
+			pathRegPath,
 			"finddriver",
-			"slimevr",
-		)
+			"slimevr"
+		) ?: run {
+			TerminalUtil.warn("SteamVR driver installation failed: couldn't run vrpathreg finddriver")
+			return
+		}
 
-		val isDriverRegistered =
-			vrPathRegContents.contains(WINDOWSSTEAMVRDRIVERDIRECTORY)
-
-		if (isDriverRegistered) {
-			state.statusText = "SteamVR driver already registered"
+		if (!io.shouldInstallDriver(findExitCode)) {
+			TerminalUtil.info(
+				"Skipping SteamVR driver installation: ${
+					io.getDriverInstallSkipReason(
+						findExitCode
+					)
+				}"
+			)
 			return
 		}
 
@@ -193,13 +149,23 @@ class Windows(
 
 		state.statusText = "Registering SteamVR Driver"
 
-		io.executeShellCommand(
-			"${steamVRLocation}\\bin\\win64\\vrpathreg.exe",
+		val (addExitCode, _) = io.executeShellCommand(
+			pathRegPath,
 			"adddriver",
-			"$path\\$WINDOWSSTEAMVRDRIVERDIRECTORY\\slimevr",
-		)
+			"$path\\$WINDOWSSTEAMVRDRIVERDIRECTORY"
+		) ?: run {
+			TerminalUtil.warn("SteamVR driver installation failed: couldn't run vrpathreg adddriver")
+			return
+		}
+
+		if (addExitCode != 0) {
+			TerminalUtil.warn("SteamVR driver installation failed: vrpathreg exited with code $addExitCode")
+			return
+		}
 
 		state.mainProgress = 0.66f
 		state.statusText = "SteamVR Driver done"
+
+		TerminalUtil.info("SteamVR driver successfully installed")
 	}
 }

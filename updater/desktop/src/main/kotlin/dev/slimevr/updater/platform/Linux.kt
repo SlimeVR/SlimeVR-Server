@@ -25,44 +25,13 @@ class Linux(
 	private val path = Paths.get("").toAbsolutePath().toString()
 
 	suspend fun updateLinux(currentVersionTag: String, versionTag: String, configDir: String, vrConfig: String, serverUrl: String, serverChecksum: String, openVRDriverUrl: String) {
-		backupConfig(currentVersionTag, configDir, vrConfig)
-		restoreConfig(versionTag, configDir, vrConfig)
+		io.backupConfig(currentVersionTag, configDir, vrConfig)
+		io.restoreConfig(versionTag, configDir, vrConfig)
 		updateServer(serverUrl, serverChecksum)
 		updateLinuxSteamVRDriver(openVRDriverUrl)
 	}
 
-	fun backupConfig(versionTag: String, configDir: String, vrConfig: String) {
-		TerminalUtil.info("Backing up Config")
-		try {
-			val targetDir =
-                File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
-			targetDir.mkdirs()
-			val config = File(vrConfig)
-			val destination = "$targetDir/vrconfig.yml"
-			config.copyTo(File(destination), true)
-			TerminalUtil.success("Config backed up to $destination")
-		} catch (e: IOException) {
-			state.hasError = true
-			state.errorText = "Error backing up config"
-			TerminalUtil.error("Error backing up config")
-		}
-	}
 
-	fun restoreConfig(versionTag: String, configDir: String, vrConfig: String) {
-		try {
-			val sourceDir =
-                File(Paths.get(configDir, versionTag).toAbsolutePath().toString())
-			if (!sourceDir.exists()) return
-			val config = File("$sourceDir/vrconfig.yml")
-			val destination = "$configDir/vrconfig.yml"
-			config.copyTo(File(destination), true)
-			TerminalUtil.success("Config restored up to $destination")
-		} catch (e: IOException) {
-			state.hasError = true
-			state.errorText = "Error restoring config"
-			TerminalUtil.error("Error restoring config")
-		}
-	}
 
 	suspend fun updateLinuxSteamVRDriver(openVRDriverUrl: String) {
 		TerminalUtil.info("Updating SteamVR Driver")
@@ -74,7 +43,10 @@ class Linux(
 		val steamVRPath =
 			"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh"
 
-		val vrPathRegContents = io.executeShellCommand(steamVRPath)
+		val (_, vrPathRegContents) = io.executeShellCommand(steamVRPath) ?: run {
+			TerminalUtil.warn("Failed to check SteamVR path configuration.")
+			return
+		}
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
 
 		if (isDriverRegistered) {
@@ -116,7 +88,10 @@ class Linux(
 		val steamVRPath =
 			"${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh"
 
-		val vrPathRegContents = io.executeShellCommand(steamVRPath)
+		val (_, vrPathRegContents) = io.executeShellCommand(steamVRPath) ?: run {
+			state.update { statusText = "Failed to run vrpathreg script" }
+			return
+		}
 		val isDriverRegistered = vrPathRegContents.contains("slimevr")
 
 		if (isDriverRegistered) {
@@ -159,43 +134,10 @@ class Linux(
 
 		val command = listOf("chmod", "+x", LINUXSERVERNAME)
 
-		//TerminalUtil.info(io.executeShellCommand("chmod +x ${LINUXSERVERNAME}"))
 		io.unzip("slimevr-openvr-driver-x64-linux.zip")
-	}
 
-	// Legacy
-	suspend fun feeder() {
-		state.update {
-			statusText = "Downloading Feeder App"
-		}
+		//TerminalUtil.info(io.executeShellCommand("chmod +x ${LINUXSERVERNAME}"))
 
-		io.downloadFile(LINUXFEEDERURL, LINUXFEEDERNAME, "")
-
-		state.update {
-			statusText = "Unzipping Feeder App"
-		}
-
-		io.unzip(LINUXFEEDERNAME)
-
-		state.update {
-			statusText = "Installing Feeder App"
-		}
-
-		io.executeShellCommand(
-			"chmod",
-			"+x",
-			"$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App",
-		)
-
-		io.executeShellCommand(
-			"$path/$LINUXFEEDERDIRECTORY/SlimeVR-Feeder-App",
-			"--install",
-		)
-
-		state.update {
-			mainProgress = 1f
-			statusText = "Feeder App Done"
-		}
 	}
 
 	suspend fun updateUdev() {
@@ -217,16 +159,22 @@ class Linux(
 			statusText = "Requesting privileges"
 		}
 
-		val res = io.executeShellCommand(
+		val (_, res) = io.executeShellCommand(
 			"pkexec",
 			"cp",
 			"$path/69-slimevr-devices.rules",
 			"/etc/udev/rules.d/69-slimevr-devices.rules",
-		)
+		) ?: run {
+			state.update {
+				statusText = "Error executing privilege command"
+				mainProgress = 0.66f
+			}
+			return
+		}
 
 		state.update {
 			statusText =
-				if (res.contains("Error")) {
+				if (res.contains("Error", ignoreCase = true)) {
 					"Error installing udev rules"
 				} else {
 					"Udev rules installed"
@@ -235,6 +183,4 @@ class Linux(
 			mainProgress = 0.66f
 		}
 	}
-
-
 }

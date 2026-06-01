@@ -12,7 +12,6 @@ class Windows {
 		steamVRDriver()
 	}
 
-
 	fun steamVRDriver() {
 		val regEdit = RegEditWindows()
 		val regQuery = regEdit.getKeyByPath(WinReg.HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 250820")
