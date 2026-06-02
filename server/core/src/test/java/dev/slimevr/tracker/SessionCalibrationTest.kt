@@ -274,12 +274,54 @@ class SessionCalibrationTest {
 			message = "Estimated heading correction is wrong",
 		)
 
+		// TODO: See if we can avoid using twinNearest
 		val estimatedAttitudeAlign =
 			estimateAttitudeAlign(rawRotation, estimatedHeadingCorrect)
 		quaternionAssertEquals(
 			attitudeAlign,
 			estimatedAttitudeAlign.twinNearest(attitudeAlign),
 			message = "Estimated attitude alignment is wrong",
+		)
+	}
+
+	@TestFactory
+	fun estimateHeadingAlignTests(): List<DynamicTest> {
+		val frontRot = Quaternion(0.707f, 0.707f, 0f, 0f)
+		return heading.flatMap { hA ->
+			heading.map { ref ->
+				DynamicTest.dynamicTest(
+					"( hA: $hA, ref: $ref )",
+				) {
+					testEstimateHeadingAlign(
+						ref * frontRot,
+						hA,
+						ref
+					)
+				}
+			}
+		}
+	}
+
+	fun testEstimateHeadingAlign(
+		calibratedRotation: CalibratedRotation,
+		headingAlign: HeadingAlignment,
+		reference: Quaternion,
+	) {
+		// Only undo heading
+		val rawRotation = undoCalibration(
+			calibratedRotation,
+			headingAlign = headingAlign,
+		)
+
+		// TODO: See if we can avoid using twinNearest
+		val estimateHeadingAlign = estimateHeadingAlign(
+			rawRotation,
+			reference,
+		)
+		quaternionAssertEquals(
+			headingAlign,
+			estimateHeadingAlign.twinNearest(headingAlign),
+			message = "Estimated heading alignment is wrong",
 		)
 	}
 

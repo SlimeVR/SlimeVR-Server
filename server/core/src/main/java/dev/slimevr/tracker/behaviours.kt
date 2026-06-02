@@ -146,6 +146,8 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				attitudeAlignment = attitudeAlignment,
 			)
 
+			// TODO: Immediately apply calibration on `state.rawRotation` so we don't
+			//  need to worry about desync of `state.rotation`
 			state.copy(sessionCalibration = sessionCalibration)
 		}
 
@@ -161,12 +163,29 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				headingCorrection = headingCorrection,
 			)
 
+			// TODO: Apply calibration on `state.rawRotation` -> `state.rotation`
 			state.copy(sessionCalibration = sessionCalibration)
 		}
 
 		is TrackerActions.MountingReset -> {
-			// TODO: Actually add mounting reset
-			state
+			val cal = state.sessionCalibration
+
+			val headingAlignment = estimateHeadingAlign(
+				state.rawRotation,
+				action.referenceRotation,
+				cal?.headingCorrection ?: Quaternion.IDENTITY,
+				cal?.attitudeAlignment ?: Quaternion.IDENTITY,
+				state.mountingOrientation ?: Quaternion.IDENTITY,
+			)
+
+			val sessionCalibration = state.sessionCalibration?.copy(
+				headingAlignment = headingAlignment,
+			) ?: SessionCalibration(
+				headingAlignment = headingAlignment,
+			)
+
+			// TODO: Apply calibration on `state.rawRotation` -> `state.rotation`
+			state.copy(sessionCalibration = sessionCalibration)
 		}
 	}
 }
