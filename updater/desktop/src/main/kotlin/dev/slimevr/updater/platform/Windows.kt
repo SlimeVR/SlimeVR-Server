@@ -30,10 +30,10 @@ class Windows(
 		openVRDriverUrl: String
 	) {
 		io.backupConfig(currentVersionTag, configDir, vrConfig)
-		io.restoreConfig(versionTag, configDir, vrConfig)
 		//usbDrivers()
 		updateServer(serverUrl, serverChecksum)
 		steamVRDriver()
+		io.restoreConfig(versionTag, configDir, vrConfig)
 	}
 
 	suspend fun updateServer(serverUrl: String, serverChecksum: String) {

@@ -44,9 +44,3 @@ include(":server:desktop")
 include(":updater")
 project(":updater").projectDir = File("updater")
 include("updater:desktop")
-
-include("manifestUtils")
-
-include("manifestUtils")
-include("manifestUtils")
-include("manifestUtils")

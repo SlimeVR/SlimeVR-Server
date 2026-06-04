@@ -59,7 +59,6 @@ dependencies {
 	implementation("commons-cli:commons-cli:1.8.0")
 	implementation("org.apache.commons:commons-lang3:3.18.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2")
 	implementation(compose.desktop.currentOs)
 	implementation("org.jetbrains.compose.material3:material3:1.9.0-beta03")
 	implementation("org.jetbrains.compose.components:components-resources:1.10.3")
@@ -111,13 +110,15 @@ compose.desktop {
 				iconFile.set(project.file("src/main/resources/icon.ico"))
 			}
 		}
-
+/*
 		buildTypes.release {
 			proguard {
 				isEnabled = true
 				configurationFiles.from(project.file("compose-proguard-rules.pro"))
 			}
 		}
+
+ */
 	}
 }
 

@@ -8,6 +8,7 @@ import dev.slimevr.updater.platform.OperatingSystem
 import dev.slimevr.updater.platform.Windows
 import dev.slimevr.updater.updater.UpdaterController.Companion.launchServer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Files
@@ -24,7 +25,7 @@ class Updater(
 	val state: UpdaterState,
 	val updaterIO: UpdaterIO,
 ) {
-	suspend fun runUpdater() {
+	 suspend fun runUpdater() {
 		val vrConfig = resolveConfig("vrconfig.yml")
 		val configDir =
 			resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.toAbsolutePath().toString()
@@ -44,54 +45,65 @@ class Updater(
 		}
 		val currentVersionTag = versionFile.readText()
 
-		val releases = updaterIO.getReleases()
+		 val releases = updaterIO.getReleases()
+
+
+		if (releases.isEmpty()) {
+			return
+		}
+
 		val selectedVersion = releases.find { it.platform == os.currentPlatform.name.lowercase() }
 
 		if (currentVersionTag == selectedVersion?.version) {
+			state.statusText = "No update found, starting"
+			state.subText = ""
 			TerminalUtil.info("Using version: $selectedVersion")
 			TerminalUtil.info("Current version: $currentVersionTag")
 			TerminalUtil.info("No Update available")
 			TerminalUtil.info("Launching server")
+			withContext(Dispatchers.IO) {
+				Thread.sleep(3000)
+			}
 			launchServer()
-			Thread.sleep(1000)
 			exitProcess(0)
 		}
 
-		TerminalUtil.info(selectedVersion.toString())
 		if (selectedVersion == null) {
 			state.hasError = true
 			state.errorText = "Could not get selected version"
 			return
 		}
-		state.versionTag = selectedVersion.version
 
+		state.versionTag = selectedVersion.version
+		state.mainProgressIsVisible = true
+		state.subProgressIsVisible = true
 
 		when (os.currentPlatform) {
 			OperatingSystem.WINDOWS -> {
 				val windows = Windows(state, updaterIO)
-				windows.updateWindows(
-					currentVersionTag,
-					selectedVersion.version,
-					configDir,
-					vrConfig,
-					selectedVersion.url,
-					selectedVersion.checksum,
-					"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip"
-				)
-			}
+					windows.updateWindows(
+						currentVersionTag,
+						selectedVersion.version,
+						configDir,
+						vrConfig,
+						selectedVersion.url,
+						selectedVersion.checksum,
+						"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-win64.zip"
+					)
+				}
 
 			OperatingSystem.LINUX -> {
 				val linux = Linux(state, updaterIO)
-				linux.updateLinux(
-					currentVersionTag,
-					selectedVersion.version,
-					configDir,
-					vrConfig,
-					selectedVersion.url,
-					selectedVersion.checksum,
-					"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
-				)
-			}
+					linux.updateLinux(
+						currentVersionTag,
+						selectedVersion.version,
+						configDir,
+						vrConfig,
+						selectedVersion.url,
+						selectedVersion.checksum,
+						"https://github.com/SlimeVR/SlimeVR-OpenVR-Driver/releases/latest/download/slimevr-openvr-driver-x64-linux.zip"
+					)
+				}
 
 			OperatingSystem.OSX -> {
 				TerminalUtil.error("MacOS currently not supported by the updater")
@@ -106,7 +118,9 @@ class Updater(
 		if (!state.hasError) {
 			setUpdateDone()
 			saveCurrentVersionTag()
-			Thread.sleep(500)
+			withContext(Dispatchers.IO) {
+				Thread.sleep(1000)
+			}
 			launchServer()
 			exitProcess(0)
 		}

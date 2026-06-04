@@ -13,6 +13,8 @@ import dev.slimevr.updater.platform.OperatingSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.yield
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -29,32 +31,26 @@ class UpdaterController {
 			transparent = true,
 			state = WindowState(width = 400.dp, height = 450.dp, position = WindowPosition(Alignment.Center)),
 		) {
-			UpdaterScreen(state, updaterIO, { launchServer() })
+			UpdaterScreen(state, updaterIO, { launchServer() }, { restartUpdate() })
 			scope.launch {
 				runUpdate()
 			}
 		}
 	}
 
-	fun startHeadless() {
-		val scope = CoroutineScope(Dispatchers.Default)
-		scope.launch {
-			runHeadless()
-		}
-	}
-
 	private suspend fun runUpdate() {
-		println("run update")
+		TerminalUtil.info("Running update")
 		val updater = Updater(state, updaterIO)
 		updater.runUpdater()
 	}
 
-	private suspend fun runHeadless() {
+	fun restartUpdate() {
+		runBlocking {
+			runUpdate()
+		}
 	}
 
-
 	companion object {
-
 		fun launchDetached(command: List<String>) {
 			val processBuilder = ProcessBuilder(command)
 			processBuilder.redirectOutput(ProcessBuilder.Redirect.DISCARD)

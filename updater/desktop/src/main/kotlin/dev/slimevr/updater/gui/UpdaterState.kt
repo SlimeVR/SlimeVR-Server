@@ -6,13 +6,13 @@ import androidx.compose.runtime.setValue
 
 class UpdaterState {
 	var mainProgress by mutableStateOf(0f)
-	var mainProgressIsVisible by mutableStateOf(true)
+	var mainProgressIsVisible by mutableStateOf(false)
 	var subProgress by mutableStateOf(0f)
-	var subProgressIsVisible by mutableStateOf(true)
+	var subProgressIsVisible by mutableStateOf(false)
 
 	var hasError by mutableStateOf(false)
 
-	var statusText by mutableStateOf("Installing SlimeVR")
+	var statusText by mutableStateOf("")
 	var subText by mutableStateOf<String?>(null)
 	var errorText by mutableStateOf("")
 

@@ -77,7 +77,7 @@ val BaseTextStyle = TextStyle(
 )
 
 @Composable
-fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO, startServer: () -> Unit) {
+fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO, startServer: () -> Unit, restartUpdate: () -> Unit) {
 	WindowDraggableArea {
 			Column(
 				modifier = Modifier
@@ -96,7 +96,7 @@ fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO, startSe
 						.height(40.dp)
 				) {
 					Text(
-						text = "SlimeVR Installer",
+						text = "SlimeVR",
 						style = BaseTextStyle.copy(
 							fontSize = 20.sp,
 							fontWeight = FontWeight.Bold,
@@ -140,7 +140,7 @@ fun WindowScope.UpdaterScreen(state: UpdaterState, updaterIO: UpdaterIO, startSe
 						Button(
 							onClick = {
 								state.hasError = false
-								updaterIO.restartApplication()
+								restartUpdate()
 							},
 							shape = RoundedCornerShape(BUTTON_BORDER_RADIUS),
 							colors = ButtonDefaults.buttonColors(

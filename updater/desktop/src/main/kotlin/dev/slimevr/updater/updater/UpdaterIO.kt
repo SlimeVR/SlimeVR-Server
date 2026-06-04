@@ -109,7 +109,7 @@ class UpdaterIO(
 			val releases: List<Release> = client.get(CDN_RELEASES).body()
 
 			return releases
-		} catch (e: IOException) {
+		} catch (e: Exception) {
 			state.hasError = true
 			TerminalUtil.error("Error retrieving releases")
 			return emptyList()
@@ -131,7 +131,7 @@ class UpdaterIO(
 			val channels: List<Channel> = client.get(CDN_CHANNELS).body()
 
 			return channels
-		} catch (e: IOException) {
+		} catch (e: Exception) {
 			state.hasError = true
 			TerminalUtil.error("Error retrieving releases")
 			return emptyList()
