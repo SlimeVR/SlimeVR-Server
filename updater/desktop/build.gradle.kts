@@ -96,7 +96,7 @@ compose.desktop {
 				"java.prefs",
 				"jdk.unsupported"
 			)
-			targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
+			targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
 			packageName = "SlimeVR-Updater"
 			packageVersion = "1.0.0"
 			vendor = "Nighty Electronics"
@@ -110,15 +110,12 @@ compose.desktop {
 				iconFile.set(project.file("src/main/resources/icon.ico"))
 			}
 		}
-/*
 		buildTypes.release {
 			proguard {
 				isEnabled = true
 				configurationFiles.from(project.file("compose-proguard-rules.pro"))
 			}
 		}
-
- */
 	}
 }
 

@@ -14,10 +14,12 @@ import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.Option
 import org.apache.commons.cli.Options
 import org.apache.commons.cli.ParseException
+import java.nio.file.Paths
 import kotlin.system.exitProcess
 
 val VERSION = (GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) + if (GIT_CLEAN) "" else "-dirty"
 
+val currentPath = Paths.get("").toAbsolutePath().toString()
 val featureFlags = FeatureFlags()
 
 suspend fun main(args: Array<String>) {

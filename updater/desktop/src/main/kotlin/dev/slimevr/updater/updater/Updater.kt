@@ -1,14 +1,14 @@
 package dev.slimevr.updater.updater
 
+import dev.slimevr.updater.currentPath
 import dev.slimevr.updater.utils.TerminalUtil
 import dev.slimevr.updater.platform.OperatingSystem.Companion.currentPlatform
 import dev.slimevr.updater.gui.UpdaterState
-import dev.slimevr.updater.platform.Linux
+import dev.slimevr.updater.platform.install.Linux
 import dev.slimevr.updater.platform.OperatingSystem
-import dev.slimevr.updater.platform.Windows
+import dev.slimevr.updater.platform.install.Windows
 import dev.slimevr.updater.updater.UpdaterController.Companion.launchServer
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Files
@@ -47,7 +47,6 @@ class Updater(
 
 		 val releases = updaterIO.getReleases()
 
-
 		if (releases.isEmpty()) {
 			return
 		}
@@ -64,7 +63,7 @@ class Updater(
 			withContext(Dispatchers.IO) {
 				Thread.sleep(3000)
 			}
-			launchServer()
+			launchServer(selectedVersion.version)
 			exitProcess(0)
 		}
 
@@ -121,7 +120,7 @@ class Updater(
 			withContext(Dispatchers.IO) {
 				Thread.sleep(1000)
 			}
-			launchServer()
+			launchServer(selectedVersion.version)
 			exitProcess(0)
 		}
 
@@ -165,4 +164,5 @@ class Updater(
 		val configDir = resolveConfigDirectory(SLIMEVR_IDENTIFIER)
 		File("currentVersion").writeText(state.versionTag)
 	}
+
 }

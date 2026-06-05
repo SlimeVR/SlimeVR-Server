@@ -186,9 +186,9 @@ class UpdaterIO(
 		}
 	}
 
-	fun unzip(file: String) {
+	fun unzip(file: String, destination: String? = null) {
 		val zipFileObject = File(file)
-		val destDir = zipFileObject.parent ?: "."
+		val destDir = destination ?: zipFileObject.parent ?: "."
 
 		val destFolder = File(destDir)
 		if (!destFolder.exists()) destFolder.mkdirs()
@@ -225,6 +225,7 @@ class UpdaterIO(
 			state.hasError = true
 			state.statusText = "Unzip error: ${e.message}"
 		}
+		deleteFile(File(file))
 	}
 
 	private fun unzipWorker(zipFile: ZipFile, zipEntry: ZipEntry, destDir: String) {
@@ -250,6 +251,14 @@ class UpdaterIO(
 
 	fun deleteFile(file: File) {
 		if (file.exists() && file.isFile) file.delete()
+	}
+
+	fun deleteDirectory(path: String) {
+		val directory = File(path)
+
+		if (directory.exists() && directory.isDirectory) {
+			directory.listFiles()?.forEach { deleteFile(it) }
+		}
 	}
 
 	fun validateChecksum(filePath: String, expectedChecksum: String): Boolean {

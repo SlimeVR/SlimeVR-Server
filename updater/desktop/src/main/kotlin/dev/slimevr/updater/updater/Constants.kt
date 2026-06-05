@@ -41,7 +41,7 @@ class Constants {
 			"slimevr-openvr-driver-win64.zip"
 
 		const val WINDOWSSTEAMVRDRIVERDIRECTORY =
-			"slimevr-openvr-driver-win64"
+			"slimevr"
 
 		const val WINDOWSFEEDERURL =
 			"https://github.com/SlimeVR/SlimeVR-Feeder-App/releases/latest/download/SlimeVR-Feeder-App-win64.zip"

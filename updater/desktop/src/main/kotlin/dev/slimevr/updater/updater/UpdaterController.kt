@@ -6,6 +6,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import dev.slimevr.updater.currentPath
 import dev.slimevr.updater.utils.TerminalUtil
 import dev.slimevr.updater.gui.UpdaterScreen
 import dev.slimevr.updater.gui.UpdaterState
@@ -24,7 +25,7 @@ class UpdaterController {
 	val updaterIO = UpdaterIO(state)
 
 	fun startGui() = application {
-		val scope = CoroutineScope(Dispatchers.Default)
+		val scope = CoroutineScope(Dispatchers.IO)
 		Window(
 			onCloseRequest = ::exitApplication,
 			undecorated = true,
@@ -63,11 +64,14 @@ class UpdaterController {
 				e.printStackTrace()
 			}
 		}
-		fun launchServer() {
+
+		fun launchServer(path: String = "") {
 			TerminalUtil.info("Attempting to launch SlimeVR server")
+			val executablePath = "${currentPath}/${path}"
 			when (os.currentPlatform) {
 				OperatingSystem.WINDOWS -> {
-					val exeFile = File("SlimeVR.exe").absoluteFile
+
+					val exeFile = File("${executablePath}/SlimeVR.exe").absoluteFile
 					if (exeFile.exists()) {
 						launchDetached(listOf(exeFile.absolutePath))
 					} else {

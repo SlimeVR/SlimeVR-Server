@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 suspend fun UpdaterState.update(block: UpdaterState.() -> Unit) {
-	withContext(Dispatchers.Main) {
+	withContext(Dispatchers.IO) {
 		Snapshot.withMutableSnapshot {
 			this@update.block()
 		}

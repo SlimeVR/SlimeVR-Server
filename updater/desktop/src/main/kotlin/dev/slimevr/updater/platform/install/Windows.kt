@@ -1,10 +1,12 @@
-package dev.slimevr.updater.platform
+package dev.slimevr.updater.platform.install
 
 import com.sun.jna.platform.win32.WinReg
+import dev.slimevr.updater.currentPath
 import dev.slimevr.updater.utils.TerminalUtil
 import dev.slimevr.updater.updater.UpdaterIO
 import dev.slimevr.updater.gui.UpdaterState
 import dev.slimevr.updater.gui.update
+import dev.slimevr.updater.platform.RegEdit
 import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSERVERNAME
 import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSTEAMVRDRIVERDIRECTORY
 import dev.slimevr.updater.updater.Constants.Companion.WINDOWSSTEAMVRDRIVERNAME
@@ -18,8 +20,6 @@ class Windows(
     private val io: UpdaterIO,
 ) {
 
-	private val path = Paths.get("").toAbsolutePath().toString()
-
 	suspend fun updateWindows(
 		currentVersionTag: String,
 		versionTag: String,
@@ -31,13 +31,13 @@ class Windows(
 	) {
 		io.backupConfig(currentVersionTag, configDir, vrConfig)
 		//usbDrivers()
-		updateServer(serverUrl, serverChecksum)
-		steamVRDriver()
+		updateServer(serverUrl, serverChecksum, versionTag)
+		steamVRDriver(versionTag)
 		io.restoreConfig(versionTag, configDir, vrConfig)
 	}
 
-	suspend fun updateServer(serverUrl: String, serverChecksum: String) {
-		println("downloading server")
+	suspend fun updateServer(serverUrl: String, serverChecksum: String, currentVersionTag: String) {
+		TerminalUtil.info("downloading server")
 		state.update {
 			statusText = "Updating SlimeVR"
 			subProgress = 0f
@@ -54,7 +54,7 @@ class Windows(
 			statusText = "Server download complete"
 		}
 
-		io.unzip(WINDOWSSERVERNAME)
+		io.unzip(WINDOWSSERVERNAME, currentVersionTag)
 	}
 
 	fun usbDrivers() {
@@ -78,7 +78,7 @@ class Windows(
 
 		state.statusText = "Installing USB drivers"
 
-		val (_, driverInstallOutput) = io.executeShellCommand("$path\\installusbdrivers.bat")
+		val (_, driverInstallOutput) = io.executeShellCommand("$currentPath\\installusbdrivers.bat")
 			?: run {
 				state.statusText = "Driver install script failed to execute"
 				return
@@ -94,7 +94,7 @@ class Windows(
 		state.mainProgress = 0.33f
 	}
 
-	suspend fun steamVRDriver() {
+	suspend fun steamVRDriver(versionTag: String) {
 		state.statusText = "Checking SteamVR"
 		val regEdit = RegEdit()
 		val steamVRLocation = regEdit.getKeyByPath(
@@ -123,14 +123,14 @@ class Windows(
 		}
 
 		if (!io.shouldInstallDriver(findExitCode)) {
-			TerminalUtil.info(
-				"Skipping SteamVR driver installation: ${
-					io.getDriverInstallSkipReason(
-						findExitCode
-					)
-				}"
-			)
-			return
+			val (addExitCode, _) = io.executeShellCommand(
+				pathRegPath,
+				"removeddriver",
+				"$currentPath\\driver\\$WINDOWSSTEAMVRDRIVERDIRECTORY"
+			) ?: run {
+				TerminalUtil.warn("SteamVR driver installation failed: couldn't run vrpathreg adddriver")
+				return
+			}
 		}
 
 		state.statusText = "Downloading SteamVR Driver"
@@ -144,7 +144,7 @@ class Windows(
 		state.statusText = "Unzipping SteamVR Driver"
 
 		io.unzip(
-			WINDOWSSTEAMVRDRIVERNAME
+			WINDOWSSTEAMVRDRIVERNAME, "driver"
 		)
 
 		state.statusText = "Registering SteamVR Driver"
@@ -152,7 +152,7 @@ class Windows(
 		val (addExitCode, _) = io.executeShellCommand(
 			pathRegPath,
 			"adddriver",
-			"$path\\$WINDOWSSTEAMVRDRIVERDIRECTORY"
+			"$currentPath\\driver\\$WINDOWSSTEAMVRDRIVERDIRECTORY"
 		) ?: run {
 			TerminalUtil.warn("SteamVR driver installation failed: couldn't run vrpathreg adddriver")
 			return

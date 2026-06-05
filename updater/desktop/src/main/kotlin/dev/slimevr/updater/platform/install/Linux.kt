@@ -1,18 +1,12 @@
-package dev.slimevr.updater.platform
+package dev.slimevr.updater.platform.install
 
 import dev.slimevr.updater.utils.TerminalUtil
 import dev.slimevr.updater.updater.UpdaterIO
 import dev.slimevr.updater.gui.UpdaterState
 import dev.slimevr.updater.gui.update
-import kotlinx.io.IOException
-import java.io.File
 import java.nio.file.Paths
 import kotlin.io.path.Path
 import kotlin.io.path.exists
-import dev.slimevr.updater.updater.Constants.Companion
-import dev.slimevr.updater.updater.Constants.Companion.LINUXFEEDERDIRECTORY
-import dev.slimevr.updater.updater.Constants.Companion.LINUXFEEDERNAME
-import dev.slimevr.updater.updater.Constants.Companion.LINUXFEEDERURL
 import dev.slimevr.updater.updater.Constants.Companion.LINUXSERVERNAME
 import dev.slimevr.updater.updater.Constants.Companion.LINUXSTEAMVRDRIVERDIRECTORY
 import dev.slimevr.updater.updater.Constants.Companion.LINUXSTEAMVRDRIVERNAME
