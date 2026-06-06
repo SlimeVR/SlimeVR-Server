@@ -652,6 +652,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = 定位資料
 settings-general-fk_settings-ik-use_position = 使用定位資料
 settings-general-fk_settings-ik-use_position-description = 若追蹤器支援定位，使用來自追蹤器的定位資料。啟用後請再次進行完整重置並在遊戲中重新校正追蹤器。
+settings-general-fk_settings-velocity_settings = 移動速度設定
+settings-general-fk_settings-velocity_settings-description = 傳送推算出的移動速度資料到 SteamVR，使用 Natural Locomotion 需要啟用本功能，可能會導致全身追蹤發生抖動。
+settings-general-fk_settings-velocity_settings-send_derived_velocity = 傳送推算的移動速度至驅動程式
 settings-general-fk_settings-arm_fk = 手臂追蹤
 settings-general-fk_settings-arm_fk-description = 強制透過頭戴顯示器來追蹤手臂，即使有手部的定位資料。
 settings-general-fk_settings-arm_fk-force_arms = 強制從頭戴顯示器進行手臂追蹤
