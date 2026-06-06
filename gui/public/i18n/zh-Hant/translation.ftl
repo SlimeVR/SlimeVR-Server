@@ -984,6 +984,21 @@ onboarding-quiz-slimeset-answer-dongle = 透過 USB 接收器連接的 Slime 追
 onboarding-quiz-usage-title = 追蹤器將會用於何種用途？
 onboarding-quiz-usage-description = 若打算將 SlimeVR 用在不同用途上，之後可以變更影響到的設定。
 onboarding-quiz-usage-answer-VRC = VR 遊戲（如 VRChat）
+onboarding-quiz-usage-answer-mocap_vtubing = 動作捕捉、VTuber 虛擬主播
+onboarding-quiz-runtime-title = 會透過 SteamVR 執行遊戲，或只在頭戴顯示器本機上執行遊戲？
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = 頭戴顯示器本機
+onboarding-quiz-mocap_preferences-title = 動作捕捉偏好
+onboarding-quiz-mocap_preferences-desc = 指明在動作捕捉或是虛擬主播的環境下，要如何使用 SlimeVR
+onboarding-quiz-mocap_preferences-playspace-title = 你的使用型態是什麼？
+onboarding-quiz-mocap_preferences-playspace-desc = 若選擇站立使用，SlimeVR 將會嘗試追蹤走路姿勢，而非固定在原地。
+onboarding-quiz-mocap_preferences-playspace-sitting = 坐著使用
+onboarding-quiz-mocap_preferences-playspace-standing = 站立使用
+onboarding-quiz-mocap_preferences-vrm_model-title = 你有要使用的 VRM 模型嗎？（選用）
+onboarding-quiz-mocap_preferences-vrm_model-desc = 載入 VRM 模型可以提高追蹤品質，以及使用 VMC 的應用程式的相容性。
+onboarding-quiz-mocap_preferences-head_tracker-title = 頭上有配戴追蹤器或是 VR 投戴顯示器嗎？
+onboarding-quiz-mocap_preferences-head_tracker-yes = 有
+onboarding-quiz-mocap_preferences-head_tracker-no = 沒有
 
 ## Wi-Fi setup
 
