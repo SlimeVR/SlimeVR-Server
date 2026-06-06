@@ -704,12 +704,17 @@ settings-general-gesture_control-trackers = { $amount } 個追蹤器
 settings-general-gesture_control-yawResetEnabled = 敲擊以左右偏擺重置
 settings-general-gesture_control-yawResetDelay = 左右偏擺重置延遲
 settings-general-gesture_control-yawResetTaps = 左右偏擺重置敲擊次數
+settings-general-gesture_control-yawResetTracker = 左右偏擺重置追蹤器
 settings-general-gesture_control-fullResetEnabled = 敲擊以完整重置
 settings-general-gesture_control-fullResetDelay = 完整重置延遲
 settings-general-gesture_control-fullResetTaps = 完整重置敲擊次數
+settings-general-gesture_control-fullResetTracker = 完整重置追蹤器
 settings-general-gesture_control-mountingResetEnabled = 敲擊以配戴重置
 settings-general-gesture_control-mountingResetDelay = 重置配戴延遲
 settings-general-gesture_control-mountingResetTaps = 重置配戴敲擊次數
+settings-general-gesture_control-mountingResetTracker = 配戴重置追蹤器
+settings-general-gesture_control-yawResetTracker-title = 左右偏擺重置追蹤器
+settings-general-gesture_control-fullResetTracker-title = 完整重置追蹤器
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = 觸發敲擊判定的最多追蹤器數量
 settings-general-gesture_control-numberTrackersOverThreshold-description = 如果敲擊偵測無法作動，請嘗試增加此值以降低敲擊判定的門檻。為避免誤判，請勿設定超過所需要的數值。
@@ -962,6 +967,23 @@ onboarding-setup_warning-cancel = 繼續設定
 
 ## Quiz
 
+onboarding-quiz_continue = 繼續
+onboarding-quiz_back = 返回
+onboarding-quiz-more_sets_modal-title = 已經連接全部的追蹤器了嗎？
+onboarding-quiz-more_sets_modal-desc = 如有其他追蹤器組合，現在可以進行連接。
+onboarding-quiz-more_sets_modal-confirm = 所有的追蹤器都連接好了
+onboarding-quiz-more_sets_modal-cancel = 我想連接更多追蹤器
+onboarding-quiz-slimeset-title = 連接的是什麼類型的追蹤器？
+onboarding-quiz-slimeset-description = 如要使用多組追蹤器，流程後可以再連接其他組合
+onboarding-quiz-slimeset-official-sets = 官方 SlimeVR 追蹤器
+onboarding-quiz-slimeset-thirdparty-sets = 第三方或是 DIY 的追蹤器
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 和 V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly 薄型追蹤器
+onboarding-quiz-slimeset-answer-wifi = 透過 Wi-Fi 連接的 Slime 追蹤器
+onboarding-quiz-slimeset-answer-dongle = 透過 USB 接收器連接的 Slime 追蹤器
+onboarding-quiz-usage-title = 追蹤器將會用於何種用途？
+onboarding-quiz-usage-description = 若打算將 SlimeVR 用在不同用途上，之後可以變更影響到的設定。
+onboarding-quiz-usage-answer-VRC = VR 遊戲（如 VRChat）
 
 ## Wi-Fi setup
 
