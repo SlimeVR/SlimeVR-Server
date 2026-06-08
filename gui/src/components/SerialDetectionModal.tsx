@@ -5,6 +5,7 @@ import {
   NewSerialDeviceResponseT,
   RpcMessage,
   SerialDeviceT,
+  SerialDeviceType,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -56,7 +57,8 @@ export function SerialDetectionModal() {
           '/settings/serial',
           '/onboarding/connect-trackers',
           '/settings/firmware-tool',
-        ].includes(pathname)
+        ].includes(pathname) &&
+        device?.type !== SerialDeviceType.HID_RECEIVER
       ) {
         setOpen(device);
       }
