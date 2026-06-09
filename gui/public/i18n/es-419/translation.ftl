@@ -418,7 +418,7 @@ tracker-settings-use_mag = Permitir el uso del magnetómetro en este tracker
 # Multiline!
 tracker-settings-use_mag-description =
     ¿Debería este tracker usar el magnetómetro para reducir la desviacion cuando se permite el uso del magnetómetro? <b>¡Por favor, no apagues tu tracker mientras alternas esto!</b>
-
+    
     Primero debes permitir el uso del magnetómetro, <magSetting>haga clic aquí para ir al ajuste</magSetting>.
 tracker-settings-use_mag-label = Permitir el uso del magnetómetro
 # The .<name> means it's an attribute and it's related to the top key.
@@ -587,7 +587,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Compens
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Advertencia:</b> Solo usa la compensación de desviación si necesitas reiniciar
     muy seguido (cada ~5-10 minutos).
-
+    
     Algunos IMUs propensos a reinicios frecuentes incluyen:
     Joy-Cons, owoTrack y MPU (sin un firmware reciente).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancelar
@@ -779,9 +779,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Recopilación de errores a través de Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Consientes a la recopilación de datos de errores anonimizados?</h1>
-
+    
     <b>No recopilamos información personal</b> como tu dirección IP o credenciales del Wi-Fi. ¡SlimeVR respeta tu privacidad!
-
+    
     Para proveer la mejor experiencia de usuario, recopilamos reportes de errores anonimizados, métricas de rendimiento, e información del sistema operativo. Esto nos ayuda a detectar errores y problemas con SlimeVR. Estas métricas son recopiladas a través de Sentry.io.
 settings-interface-behavior-error_tracking-label = Enviar errores a los desarrolladores
 settings-interface-behavior-bvh_directory = Carpeta para guardar grabaciones de BVH
@@ -849,7 +849,7 @@ settings-osc-vrchat-description-v1 =
     Cambia los ajustes específicos de los trackers OSC utilizados para enviar
     datos de seguimiento a aplicaciones sin SteamVR (ej. VRChat en Quest).
     Asegúrate de activar OSC en VRChat a través del menú Acción en OSC > Activado.
-    Para permitir la recepción de datos del HMD y de los mandos desde VRChat, ve a los ajustes de tu menú principal
+    Para permitir la recepción de datos del HMD y de los mandos desde VRChat, ve a los ajustes de tu menú principal 
     en Tracking & IK > Permitir el envío de datos OSC de seguimiento de RV de cabeza y muñeca.
 settings-osc-vrchat-enable = Habilitar
 settings-osc-vrchat-enable-description = Habilita el envio y recibo de datos.
@@ -1012,13 +1012,13 @@ onboarding-quiz-mocap_preferences-head_tracker_location-face = Cara
 
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back-v2 = Volver a la introducción
+onboarding-wifi_creds-back-v2 = Volver
 onboarding-wifi_creds-v2 = Trackers utilizando Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
     La mayoría de trackers (como los trackers oficiales de SlimeVR) utilizan Wi-Fi para conectar al servidor.
     Por favor utiliza las credenciales de la red Wi-Fi donde tu dispositivo esta actualmente conectado.
-
+    
     ¡Asegúrate de utilizar una conexión Wi-Fi 2.4Ghz para tus trackers!
 onboarding-wifi_creds-skip = Saltar ajustes de Wi-Fi
 onboarding-wifi_creds-submit = ¡Enviar!
@@ -1043,24 +1043,25 @@ onboarding-reset_tutorial-skip = Saltar paso
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio horizontal.
-
+    
     Esto va a hacer que tus sensores miren para la misma dirección que tu HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio completo.
-
+    
     Se requiere que estés de pie (pose en i). Esto tiene una demora de 3 segundos (configurable) antes de que realmente suceda.
     Esto reinicia completamente la posición y rotación de todos tus trackers. Debería de arreglar la mayoría de los problemas.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio de montura.
-
+    
     El reinicio de montura ayuda en como tus sensores están puestos en tu cuerpo, ya que si los movistes o cambiaste para donde están orientados bastante, esto debería de ayudar.
-
+    
     Requiere que estas en una pose como que estás esquiando, como se muestra en el tutorial de montura automática y tenes un retraso de 3 segundos (configurable) antes de que actualmente suceda.
 
 ## Install info
 
+install-info_udev-rules_warning = Se requieren reglas de acceso vía udev para acceder a la consola y la conexión por dongle. Pega el siguiente comando en tu terminal para añadir las reglas udev.
 install-info_udev-rules_modal_button = Cerrar
 install-info_udev-rules_modal-dont-show-again_checkbox = No mostrar de nuevo
 
@@ -1541,7 +1542,7 @@ firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Enciende el tracker mientras 
 firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Enciende el tracker mientras pulsas el botón FLASH en la parte superior de la placa. El LED del tracker deberia hacer un parpadeo breve.
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de flashear, probablemente tendrá que poner el sensor en modo bootloader.
-    La mayoría de las veces, esto significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo. Si el proceso de flasheo se agota al comienzo, probablemente significa que el sensor no estaba en modo bootloader.
+    La mayoría de las veces, esto significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo. Si el proceso de flasheo se agota al comienzo, probablemente significa que el sensor no estaba en modo bootloader. 
     Por favor, consulte las instrucciones de flasheo de su placa para saber cómo activar el modo bootloader.
 firmware_tool-flash_method_ota-title = Flashear por Wi-Fi
 firmware_tool-flash_method_ota-devices = Dispositivos OTA detectados:
@@ -1614,7 +1615,7 @@ tray_or_exit_modal-title = ¿Que debería hacer el botón de cerrar?
 # Multiline text
 tray_or_exit_modal-description =
     Esto te deja escoger si quieres cerrar el servidor o minimizarlo a la bandeja cuando se presiona el botón de cerrar.
-
+    
     ¡Puedes cambiar esto luego en los ajustes de la interfaz!
 tray_or_exit_modal-radio-exit = Salir al cerrar
 tray_or_exit_modal-radio-tray = Minimizar a la bandeja del sistema
@@ -1675,7 +1676,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Longitud del brazo
 error_collection_modal-title = ¿Podemos recopilar errores?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-
+    
     Tu puedes cambiar esta configuración más tarde en la sección de comportamiento de la pagina de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero
