@@ -264,6 +264,7 @@ class VRCOSCHandler(
 				)
 			}
 
+			newOscReceiver.dispatcher.setAlwaysDispatchingImmediately(true)
 			newOscReceiver.startListening()
 
 			// Advertise our new receiving port over OSCQuery

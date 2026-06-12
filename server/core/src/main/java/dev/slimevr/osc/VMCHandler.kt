@@ -149,6 +149,7 @@ class VMCHandler(
 						.addListener(OSCPatternAddressMessageSelector(address), listener)
 				}
 
+				oscReceiver!!.dispatcher.setAlwaysDispatchingImmediately(true)
 				oscReceiver!!.startListening()
 			}
 		}
@@ -202,6 +203,7 @@ class VMCHandler(
 				if (trackerPosition != null) {
 					handleReceivedTracker(
 						"VMC-Bone-" + event.message.arguments[0],
+						"VMC Bone: " + event.message.arguments[0],
 						trackerPosition,
 						null,
 						Quaternion(
@@ -214,6 +216,7 @@ class VMCHandler(
 						getByStringVal(
 							event.message.arguments[0].toString(),
 						),
+						false,
 					)
 				}
 			}
@@ -222,6 +225,7 @@ class VMCHandler(
 			"/VMC/Ext/Hmd/Pos", "/VMC/Ext/Con/Pos", "/VMC/Ext/Tra/Pos" ->
 				handleReceivedTracker(
 					"VMC-Tracker-" + event.message.arguments[0],
+					"VMC: " + event.message.arguments[0],
 					null,
 					Vector3(
 						event.message.arguments[1] as Float,
@@ -236,6 +240,7 @@ class VMCHandler(
 					),
 					false,
 					null,
+					event.message.address == "/VMC/Ext/Hmd/Pos",
 				)
 
 			// Is VMC tracking root (offsets all rotations)
@@ -262,11 +267,13 @@ class VMCHandler(
 
 	private fun handleReceivedTracker(
 		name: String,
+		label: String,
 		trackerPosition: TrackerPosition?,
 		position: Vector3?,
 		rotation: Quaternion,
 		localRotation: Boolean,
 		unityBone: UnityBone?,
+		isHmd: Boolean,
 	) {
 		// Create device if it doesn't exist
 		var rot = rotation
@@ -284,7 +291,7 @@ class VMCHandler(
 				trackerDevice,
 				getNextLocalTrackerId(),
 				name,
-				"VMC Tracker #$currentLocalTrackerId",
+				label,
 				trackerPosition,
 				hasPosition = position != null,
 				hasRotation = true,
@@ -292,11 +299,13 @@ class VMCHandler(
 				isComputed = position != null,
 				usesTimeout = true,
 				allowReset = position != null,
+				isHmd = isHmd,
 			)
 			trackerDevice!!.trackers[trackerDevice!!.trackers.size] = tracker
 			byTrackerNameTracker[name] = tracker
 			server.registerTracker(tracker)
 		}
+		tracker.isHmd = isHmd
 		tracker.status = TrackerStatus.OK
 
 		// Set position
@@ -334,6 +343,10 @@ class VMCHandler(
 				oscArgs.add((System.currentTimeMillis() - startTime) / 1000f)
 				oscBundle.addPacket(OSCMessage("/VMC/Ext/T", oscArgs.clone()))
 
+				// Rescale tracking to avatar scale if configured with target VRM
+				val vrmScale = if (vrmHeight > 0) vrmHeight / humanPoseManager.userNeckHeightFromConfig else 1f
+				server.oSCRouter.scaleTrackingVolume = vrmScale
+
 				if (humanPoseManager.isSkeletonPresent) {
 					// Indicate tracking is available
 					oscArgs.clear()
@@ -368,17 +381,16 @@ class VMCHandler(
 					if (!anchorHip) {
 						// Anchor from head
 						outputUnityArmature?.let { unityArmature ->
-							// Scale the SlimeVR neck position with the VRM model
+							// Scale the SlimeVR neck position with the VRM avatar
 							// We're only getting the height up to the neck because we don't want to factor the neck's length into the scaling
-							val slimevrScaledRootPos = humanPoseManager.getBone(BoneType.NECK).getTailPosition() *
-								(vrmHeight / humanPoseManager.userNeckHeightFromConfig)
+							var rootPos = humanPoseManager.getBone(BoneType.NECK).getTailPosition() * vrmScale
 
 							// Get the VRM head and hip positions
 							val vrmHeadPos = unityArmature.getHeadNodeOfBone(UnityBone.HEAD)!!.parent!!.worldTransform.translation
 							val vrmHipPos = unityArmature.getHeadNodeOfBone(UnityBone.HIPS)!!.worldTransform.translation
 
 							// Calculate the new VRM hip position by subtracting the difference head-hip distance from the SlimeVR head
-							val calculatedVrmHipPos = slimevrScaledRootPos - (vrmHeadPos - vrmHipPos)
+							val calculatedVrmHipPos = rootPos - (vrmHeadPos - vrmHipPos)
 
 							// Set the VRM's hip position
 							unityArmature.getHeadNodeOfBone(UnityBone.HIPS)?.localTransform?.translation = calculatedVrmHipPos
@@ -416,12 +428,9 @@ class VMCHandler(
 				for (tracker in computedTrackers) {
 					if (!tracker.status.reset) {
 						oscArgs.clear()
-
-						val name = tracker.name
-						oscArgs.add(name)
-
+						oscArgs.add(tracker.name)
 						addTransformToArgs(
-							tracker.position,
+							tracker.position * vrmScale,
 							tracker.getRotation(),
 						)
 
@@ -434,6 +443,7 @@ class VMCHandler(
 						} else {
 							"/VMC/Ext/Tra/Pos"
 						}
+
 						oscBundle
 							.addPacket(
 								OSCMessage(
@@ -441,6 +451,22 @@ class VMCHandler(
 									oscArgs.clone(),
 								),
 							)
+
+						if (vrmScale != 1f) {
+							oscArgs.clear()
+							oscArgs.add(tracker.name)
+							addTransformToArgs(
+								tracker.position,
+								tracker.getRotation(),
+							)
+							oscBundle
+								.addPacket(
+									OSCMessage(
+										address + "/Local",
+										oscArgs.clone(),
+									),
+								)
+						}
 					}
 				}
 

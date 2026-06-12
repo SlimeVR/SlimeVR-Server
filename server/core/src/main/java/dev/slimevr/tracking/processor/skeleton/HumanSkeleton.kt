@@ -545,13 +545,26 @@ class HumanSkeleton(
 
 		StayAligned.adjustNextTracker(trackerSkeleton, stayAlignedConfig)
 
+		// Update bone rotations with direct estimates from their nearest rotational tracker
+		// Head (and hand) positions are also updated to support head-tracker-only AND legacy path for head+hand trackers
+		// In both cases, ikSolver won't run and resolve positions automatically, so they need to be set here
 		updateTransforms()
-		updateBones()
+
+		// Try to solve for positional constrains within the skeletal hierarchy
+		// This supports not just head+hand trackers like legacy path below, but any kind of positional tracker
+		val solvedSkeletalHierarchy = ikSolver.solve()
+
+		// Legacy Path: Hierarchy is split for each positional tracker (head+hand), update hierarchies individually
+		if (!solvedSkeletalHierarchy) headBone.update()
+		if (isTrackingLeftArmFromController) leftHandTrackerBone.update()
+		if (isTrackingRightArmFromController) rightHandTrackerBone.update()
+
 		if (enforceConstraints) {
 			// TODO re-enable toggling correctConstraints once
 			// https://github.com/SlimeVR/SlimeVR-Server/issues/1297 is solved
 			headBone.updateWithConstraints(false)
 		}
+
 		updateComputedTrackers()
 
 		// Don't run post-processing if the tracking is paused
@@ -568,16 +581,6 @@ class HumanSkeleton(
 		for (bone in allHumanBones) {
 			bone.attachedTracker = getTrackerForBone(bone.boneType)
 		}
-	}
-
-	/**
-	 * Update all the bones by updating the roots
-	 */
-	@ThreadSafe
-	fun updateBones() {
-		headBone.update()
-		if (isTrackingLeftArmFromController) leftHandTrackerBone.update()
-		if (isTrackingRightArmFromController) rightHandTrackerBone.update()
 	}
 
 	/**
@@ -999,6 +1002,12 @@ class HumanSkeleton(
 		lowerArmTracker: Tracker?,
 		handTracker: Tracker?,
 	) {
+		// Get shoulder rotation
+		var armRot = shoulderTracker?.getRotation() ?: upperChestBone.getLocalRotation()
+		// Set shoulder rotation
+		upperShoulderBone.setRotation(upperChestBone.getLocalRotation())
+		shoulderBone.setRotation(armRot)
+
 		if (isTrackingFromController) { // From controller
 			// Set hand rotation and position from tracker
 			handTracker?.let {
@@ -1008,7 +1017,7 @@ class HumanSkeleton(
 			}
 
 			// Get lower arm rotation
-			var armRot = getFirstAvailableTracker(lowerArmTracker, upperArmTracker)?.getRotation() ?: IDENTITY
+			armRot = getFirstAvailableTracker(lowerArmTracker, upperArmTracker)?.getRotation() ?: IDENTITY
 			// Set lower arm rotation
 			lowerArmBone.setRotation(armRot)
 
@@ -1017,11 +1026,6 @@ class HumanSkeleton(
 			// Set elbow tracker rotation
 			elbowTrackerBone.setRotation(armRot)
 		} else { // From HMD
-			// Get shoulder rotation
-			var armRot = shoulderTracker?.getRotation() ?: upperChestBone.getLocalRotation()
-			// Set shoulder rotation
-			upperShoulderBone.setRotation(upperChestBone.getLocalRotation())
-			shoulderBone.setRotation(armRot)
 
 			if (upperArmTracker != null || lowerArmTracker != null) {
 				// Get upper arm rotation
@@ -1036,7 +1040,6 @@ class HumanSkeleton(
 				lowerArmBone.setRotation(armRot)
 			} else {
 				// Fallback arm rotation as upper chest
-				armRot = upperChestBone.getLocalRotation()
 				upperArmBone.setRotation(armRot)
 				elbowTrackerBone.setRotation(armRot)
 				lowerArmBone.setRotation(armRot)

@@ -169,7 +169,8 @@ class IKSolver(private val root: Bone) {
 		for (t in trackers) {
 			if (t.hasPosition &&
 				!t.isInternal &&
-				!t.status.reset
+				!t.status.reset &&
+				t.trackerPosition != null
 			) {
 				constraintList.add(t)
 			}
@@ -182,7 +183,8 @@ class IKSolver(private val root: Bone) {
 		for (t in trackers) {
 			if (t.hasRotation &&
 				!t.status.reset &&
-				!t.isInternal
+				!t.isInternal &&
+				t.trackerPosition != null
 			) {
 				constrainList.add(t)
 			}
@@ -225,8 +227,10 @@ class IKSolver(private val root: Bone) {
 		return solved
 	}
 
-	fun solve() {
-		if (rootChain == null || !enabled) return
+	fun solve(): Boolean {
+		if (rootChain == null || !enabled) {
+			return false
+		}
 
 		if (needsReset) {
 			for (c in chainList) {
@@ -235,11 +239,12 @@ class IKSolver(private val root: Bone) {
 			needsReset = false
 		}
 
-		rootChain?.resetChain()
 		root.update()
+		rootChain?.resetChain()
 
 		solve(MAX_ITERATIONS)
 
 		root.update()
+		return true
 	}
 }
