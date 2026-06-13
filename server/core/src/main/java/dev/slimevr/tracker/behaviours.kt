@@ -221,7 +221,7 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
 			.filter { it.bodyPart != null }
-			.map { Pair(it.bodyPart, it.rawRotation) }
+			.map { Pair(it.bodyPart, it.rotation) }
 			.distinctUntilChanged()
 			.onEach { (bodyPart, rotation) ->
 				bodyPart?.let {

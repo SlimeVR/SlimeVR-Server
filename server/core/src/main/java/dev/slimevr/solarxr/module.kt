@@ -53,9 +53,9 @@ class SolarXRBridge(
 	fun dispose() = managedContext?.dispose()
 
 	suspend fun sendRpc(message: RpcMessage) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(message = message))))
-	
+
 	suspend fun sendDataFeed(frame: DataFeedMessageHeader) = outbound.emit(MessageBundle(dataFeedMsgs = listOf(frame)))
-	
+
 	fun disconnect() {
 		dispose()
 		appContext.server.context.dispatch(VRServerActions.SolarXRDisconnected(id))
@@ -83,6 +83,7 @@ class SolarXRBridge(
 			add(KnownTrackersBehaviour(appContext.config.settings))
 			add(BvhBehaviour(appContext.bvhManager))
 			add(InstalledInfoBehaviour())
+			add(SessionCalibrationBehaviour(appContext.server))
 		}
 
 		fun create(
