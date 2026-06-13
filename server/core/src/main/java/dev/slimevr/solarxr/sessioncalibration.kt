@@ -32,7 +32,8 @@ class SessionCalibrationBehaviour(
 			} ?: Quaternion.IDENTITY
 
 			val action = when (req.resetType) {
-				ResetType.Yaw -> TrackerActions.YawReset(reference)
+				// TODO: SolarXR incorrectly treats 0 as null
+				ResetType.Yaw, null -> TrackerActions.YawReset(reference)
 				ResetType.Full -> TrackerActions.FullReset(reference)
 				ResetType.Mounting -> TrackerActions.MountingReset(reference)
 				else -> return@on
