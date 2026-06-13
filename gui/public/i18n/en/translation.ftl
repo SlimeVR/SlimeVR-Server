@@ -85,7 +85,15 @@ body_part-RIGHT_RING_INTERMEDIATE = Right ring intermediate
 body_part-RIGHT_RING_DISTAL = Right ring distal
 body_part-RIGHT_LITTLE_PROXIMAL = Right little proximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = Right little intermediate
-body_part-RIGHT_LITTLE_DISTAL = Right little distal
+body_part-RIGHT_LITTLE_DISTAL = Right little
+body_part-LEFT_TOES = Left Toes
+body_part-LEFT_TOES_ABDUCTOR_HALLUCIS = Left Big Toe
+body_part-LEFT_TOES_DIGITORUM_BREVIS = Left Middle Toes
+body_part-LEFT_TOES_ABDUCTOR_DIGITI_MINIMI = Left Pinky
+body_part-RIGHT_TOES = Right Toes
+body_part-RIGHT_TOES_ABDUCTOR_HALLUCIS = Right Big Toe
+body_part-RIGHT_TOES_DIGITORUM_BREVIS = Right Middle Toes
+body_part-RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI = Right Pinky
 
 ## BoardType
 board_type-UNKNOWN = Unknown
@@ -461,6 +469,12 @@ tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
 tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
+tracker_selection_menu-LEFT_TOES_ABDUCTOR_HALLUCIS = { -tracker_selection-part } left big toe?
+tracker_selection_menu-LEFT_TOES_DIGITORUM_BREVIS = { -tracker_selection-part } left middle toes?
+tracker_selection_menu-LEFT_TOES_ABDUCTOR_DIGITI_MINIMI = { -tracker_selection-part } left pinky toe?
+tracker_selection_menu-RIGHT_TOES_ABDUCTOR_HALLUCIS = { -tracker_selection-part } right big toe?
+tracker_selection_menu-RIGHT_TOES_DIGITORUM_BREVIS = { -tracker_selection-part } right middle toes?
+tracker_selection_menu-RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI = { -tracker_selection-part } right pinky toe?
 
 tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
@@ -858,6 +872,7 @@ settings-osc-vrchat-network-trackers-hip = Hip
 settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
+settings-osc-vrchat-network-trackers-toes = Toes
 
 ## VMC OSC settings
 settings-osc-vmc = Virtual Motion Capture
@@ -1130,6 +1145,7 @@ onboarding-assign_trackers-option-label = { $mode ->
     [core] Core Set
     [enhanced-core] Enhanced Core Set
     [full-body] Full-Body Set
+    [toe-tracking] Toe Tracking Set
     *[all] All Trackers
 }
 onboarding-assign_trackers-option-description = { $mode ->
@@ -1137,6 +1153,7 @@ onboarding-assign_trackers-option-description = { $mode ->
     [core] + Enhanced spine tracking
     [enhanced-core] + Foot rotation
     [full-body] + Elbow tracking
+    [toe-tracking] + Toe tracking
     *[all] All available tracker assignments
 }
 
@@ -1198,7 +1215,29 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
     [0] the chest
     *[unknown] Unknown unassigned body part
 } to also be assigned!
-
+onboarding-assign_trackers-warning-LEFT_TOES_ABDUCTOR_HALLUCIS = Left Big Toe is assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-LEFT_TOES_DIGITORUM_BREVIS = Left Middle Toes are assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-LEFT_TOES_ABDUCTOR_DIGITI_MINIMI = Left  Pinky Toe is assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_TOES_ABDUCTOR_HALLUCIS = Right Big Toe is assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_TOES_DIGITORUM_BREVIS = Right Middle Toes are assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI = Right Pinky Toe is assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
 ## Tracker mounting method choose
 onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
@@ -1696,6 +1735,7 @@ preview-disabled_render = Rendering disabled
 toolbar-mounting_calibration = Mounting Calibration
 toolbar-mounting_calibration-default = Body
 toolbar-mounting_calibration-feet = Feet
+toolbar-mounting_calibration-toes = Toes
 toolbar-mounting_calibration-fingers = Fingers
 toolbar-drift_reset = Drift Reset
 toolbar-assigned_trackers = {$count} trackers assigned

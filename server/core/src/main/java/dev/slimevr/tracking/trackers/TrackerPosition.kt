@@ -58,6 +58,16 @@ fun TrackerPosition?.isFoot(): Boolean {
 	return false
 }
 
+fun TrackerPosition?.isToe(): Boolean {
+	this?.let {
+		return it == LEFT_TOES_ABDUCTOR_HALLUCIS || it == LEFT_TOES_DIGITORUM_BREVIS ||
+			it == TrackerPosition.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI ||
+		    it == TrackerPosition.RIGHT_TOES_ABDUCTOR_HALLUCIS || it == TrackerPosition.RIGHT_TOES_DIGITORUM_BREVIS ||
+			it == TrackerPosition.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI
+	}
+	return false
+}
+
 fun TrackerPosition?.isLeftFinger(): Boolean {
 	this?.let {
 		return it == LEFT_THUMB_METACARPAL ||
@@ -164,6 +174,12 @@ enum class TrackerPosition(
 	RIGHT_LITTLE_PROXIMAL("body:right_little_proximal", null, BodyPart.RIGHT_LITTLE_PROXIMAL, 48),
 	RIGHT_LITTLE_INTERMEDIATE("body:right_little_intermediate", null, BodyPart.RIGHT_LITTLE_INTERMEDIATE, 49),
 	RIGHT_LITTLE_DISTAL("body:right_little_distal", null, BodyPart.RIGHT_LITTLE_DISTAL, 50),
+	LEFT_TOES_ABDUCTOR_HALLUCIS("body:left_toes_abductor_hallucis", TrackerRole.LEFT_TOES_ABDUCTOR_HALLUCIS, BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS, 51),
+	LEFT_TOES_DIGITORUM_BREVIS("body:left_toes_digitorum_brevis", TrackerRole.LEFT_TOES_DIGITORUM_BREVIS, BodyPart.LEFT_TOES_DIGITORUM_BREVIS, 52),
+	LEFT_TOES_ABDUCTOR_DIGITI_MINIMI("body:left_toes_abductor_digiti_minimi", TrackerRole.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI, BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI, 53),
+	RIGHT_TOES_ABDUCTOR_HALLUCIS("body:right_toes_abductor_hallucis", TrackerRole.RIGHT_TOES_ABDUCTOR_HALLUCIS, BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS, 54),
+	RIGHT_TOES_DIGITORUM_BREVIS("body:right_toes_digitorum_brevis", TrackerRole.RIGHT_TOES_DIGITORUM_BREVIS, BodyPart.RIGHT_TOES_DIGITORUM_BREVIS, 55),
+	RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI("body:right_toes_abductor_digiti_minimi", TrackerRole.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI, BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI, 56),
 	;
 
 	/**

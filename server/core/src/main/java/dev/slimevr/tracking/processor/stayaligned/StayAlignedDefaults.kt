@@ -26,6 +26,9 @@ object StayAlignedDefaults {
 			upperLeg = Angle.ofDeg(0.0f),
 			lowerLeg = Angle.ofDeg(0.0f),
 			foot = Angle.ofDeg(0.0f),
+			abductorHallucis =  Angle.ofDeg(0.0f),
+			digitorumBrevis =  Angle.ofDeg(0.0f),
+			abductorDigitiMinimi =  Angle.ofDeg(0.0f),
 		)
 
 	// Weights to calculate the average yaw of the skeleton

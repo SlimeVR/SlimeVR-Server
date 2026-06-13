@@ -10,13 +10,13 @@ import {
 import { useWebsocketAPI } from './websocket-api';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom, serverGuardsAtom } from '@/store/app-store';
-import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from './body-parts';
+import { FEET_BODY_PARTS, FINGER_BODY_PARTS, TOE_BODY_PARTS } from './body-parts';
 import { useLocaleConfig } from '@/i18n/config';
 import * as Sentry from '@sentry/react';
 
 export type ResetBtnStatus = 'idle' | 'counting' | 'finished';
 
-export type MountingResetGroup = 'default' | 'feet' | 'fingers';
+export type MountingResetGroup = 'default' | 'feet' | 'toes' | 'fingers';
 export type UseResetOptions =
   | { type: ResetType.Full | ResetType.Yaw }
   | { type: ResetType.Mounting; group: MountingResetGroup };
@@ -24,6 +24,7 @@ export type UseResetOptions =
 export const BODY_PARTS_GROUPS: Record<MountingResetGroup, BodyPart[]> = {
   default: [],
   feet: FEET_BODY_PARTS,
+  toes: TOE_BODY_PARTS,
   fingers: FINGER_BODY_PARTS,
 };
 

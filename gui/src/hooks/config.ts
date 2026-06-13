@@ -22,6 +22,7 @@ export enum AssignMode {
   Core = 'core',
   EnhancedCore = 'enhanced-core',
   FullBody = 'full-body',
+  ToeTracking = 'toe-tracking',
   All = 'all',
 }
 

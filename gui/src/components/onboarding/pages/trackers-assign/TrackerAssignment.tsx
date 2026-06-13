@@ -32,6 +32,7 @@ import { defaultConfig, useConfig } from '@/hooks/config';
 import { playTapSetupSound } from '@/sounds/sounds';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { TrackerAssignOptions } from './TrackerAssignOptions';
+import { ToeAssignmentModal } from './ToeAssignmentModal';
 import { useAtomValue } from 'jotai';
 import {
   assignedTrackersAtom,
@@ -65,6 +66,7 @@ export function TrackersAssignPage() {
   }>({ defaultValues });
   const { mirrorView } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
+  const [toeSide, setToeSide] = useState<'left' | 'right' | null>(null);
 
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
   const trackers = useAtomValue(flatTrackersAtom);
@@ -376,11 +378,19 @@ export function TrackersAssignPage() {
                 assignMode={config?.assignMode ?? null}
                 mirror={mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
+                onToesSelected={setToeSide}
               />
             </div>
           </div>
         </div>
       </div>
+      {toeSide && (
+        <ToeAssignmentModal
+          isOpen={!!toeSide}
+          side={toeSide}
+          onClose={() => setToeSide(null)}
+        />
+      )}
     </>
   );
 }

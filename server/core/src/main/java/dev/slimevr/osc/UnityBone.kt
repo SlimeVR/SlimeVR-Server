@@ -75,12 +75,6 @@ enum class UnityBone(
 	@SerialName("rightHand")
 	RIGHT_HAND("RightHand", BoneType.RIGHT_HAND, TrackerPosition.RIGHT_HAND),
 
-	@SerialName("leftToes")
-	LEFT_TOES("LeftToes", null, null),
-
-	@SerialName("rightToes")
-	RIGHT_TOES("RightToes", null, null),
-
 	@SerialName("leftEye")
 	LEFT_EYE("LeftEye", null, null),
 
@@ -180,6 +174,12 @@ enum class UnityBone(
 	@SerialName("rightLittleDistal")
 	RIGHT_LITTLE_DISTAL("RightLittleDistal", BoneType.RIGHT_LITTLE_DISTAL, TrackerPosition.RIGHT_LITTLE_DISTAL),
 
+	@SerialName("leftToes")
+	LEFT_TOES("LeftToes", BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS, TrackerPosition.LEFT_TOES_ABDUCTOR_HALLUCIS),
+
+	@SerialName("rightToes")
+	RIGHT_TOES("RightToes", BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS, TrackerPosition.RIGHT_TOES_ABDUCTOR_HALLUCIS),
+
 	LAST_BONE("LastBone", null, null),
 	;
 
@@ -208,6 +208,8 @@ enum class UnityBone(
 			RIGHT_UPPER_LEG -> LEFT_UPPER_LEG
 			RIGHT_LOWER_LEG -> LEFT_LOWER_LEG
 			RIGHT_FOOT -> LEFT_FOOT
+			LEFT_TOES -> RIGHT_TOES
+			RIGHT_TOES -> LEFT_TOES
 			LEFT_THUMB_PROXIMAL -> RIGHT_THUMB_PROXIMAL
 			LEFT_THUMB_INTERMEDIATE -> RIGHT_THUMB_INTERMEDIATE
 			LEFT_THUMB_DISTAL -> RIGHT_THUMB_DISTAL
@@ -342,5 +344,14 @@ enum class UnityBone(
 			bone == RIGHT_LITTLE_PROXIMAL ||
 			bone == RIGHT_LITTLE_INTERMEDIATE ||
 			bone == RIGHT_LITTLE_DISTAL
+		/**
+		 * Returns true if the bone is the left toe
+		 */
+		fun isLeftToeBone(bone: UnityBone): Boolean = bone == LEFT_TOES
+
+		/**
+		 * Returns true if the bone is the right toe
+		 */
+		fun isRightToeBone(bone: UnityBone): Boolean = bone == RIGHT_TOES
 	}
 }

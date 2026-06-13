@@ -9,6 +9,9 @@ export const SIDES = [
     upperLeg: BodyPart.LEFT_UPPER_LEG,
     lowerLeg: BodyPart.LEFT_LOWER_LEG,
     foot: BodyPart.LEFT_FOOT,
+    toesAbductorHallucis: BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS,
+    toesDigitorumBrevis: BodyPart.LEFT_TOES_DIGITORUM_BREVIS,
+    toesAbductorDigitiMinimi: BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI,
   },
   {
     shoulder: BodyPart.RIGHT_SHOULDER,
@@ -18,6 +21,9 @@ export const SIDES = [
     upperLeg: BodyPart.RIGHT_UPPER_LEG,
     lowerLeg: BodyPart.RIGHT_LOWER_LEG,
     foot: BodyPart.RIGHT_FOOT,
+    toesAbductorHallucis: BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS,
+    toesDigitorumBrevis: BodyPart.RIGHT_TOES_DIGITORUM_BREVIS,
+    toesAbductorDigitiMinimi: BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI,
   },
 ];
 
@@ -123,6 +129,14 @@ export function PersonFrontIcon({ mirror = true }: { mirror?: boolean }) {
 
       <circle
         className="body-part-circle"
+        cx="102"
+        cy="393"
+        r={CIRCLE_RADIUS}
+        id="right-toes"
+      />
+
+      <circle
+        className="body-part-circle"
         cx="15"
         cy="207"
         r={CIRCLE_RADIUS}
@@ -172,6 +186,14 @@ export function PersonFrontIcon({ mirror = true }: { mirror?: boolean }) {
         r={CIRCLE_RADIUS}
         id={BodyPart[SIDES[left].foot]}
       />
+      <circle
+        className="body-part-circle"
+        cx="62"
+        cy="393"
+        r={CIRCLE_RADIUS}
+        id="left-toes"
+      />
+
     </svg>
   );
 }

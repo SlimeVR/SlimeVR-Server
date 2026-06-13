@@ -391,14 +391,16 @@ class VMCHandler(
 					// Add Unity humanoid bones transforms
 					for (unityBone in UnityBone.entries) {
 						// Don't send bones for which we don't have an equivalent
-						// Don't send fingers if we don't have any tracker for them
+						// Don't send fingers/toes if we don't have any tracker for them
 						// Don't send arm bones if we're tracking from the controller
 						if (unityBone.boneType != null &&
-							(!UnityBone.isLeftFingerBone(unityBone) || humanPoseManager.skeleton.hasLeftFingerTracker || (mirrorTracking && humanPoseManager.skeleton.hasRightFingerTracker)) &&
-							(!UnityBone.isRightFingerBone(unityBone) || humanPoseManager.skeleton.hasRightFingerTracker || (mirrorTracking && humanPoseManager.skeleton.hasLeftFingerTracker)) &&
-							!(humanPoseManager.isTrackingLeftArmFromController && (UnityBone.isLeftArmBone(unityBone) || unityBone == UnityBone.LEFT_SHOULDER)) &&
-							!(humanPoseManager.isTrackingRightArmFromController && (UnityBone.isRightArmBone(unityBone) || unityBone == UnityBone.RIGHT_SHOULDER))
-						) {
+						(!UnityBone.isLeftFingerBone(unityBone) || humanPoseManager.skeleton.hasLeftFingerTracker || (mirrorTracking && humanPoseManager.skeleton.hasRightFingerTracker)) &&
+						(!UnityBone.isRightFingerBone(unityBone) || humanPoseManager.skeleton.hasRightFingerTracker || (mirrorTracking && humanPoseManager.skeleton.hasLeftFingerTracker)) &&
+						(!UnityBone.isLeftToeBone(unityBone) || humanPoseManager.skeleton.hasLeftToeTracker || (mirrorTracking && humanPoseManager.skeleton.hasRightToeTracker)) &&
+						(!UnityBone.isRightToeBone(unityBone) || humanPoseManager.skeleton.hasRightToeTracker || (mirrorTracking && humanPoseManager.skeleton.hasLeftToeTracker)) &&
+						!(humanPoseManager.isTrackingLeftArmFromController && (UnityBone.isLeftArmBone(unityBone) || unityBone == UnityBone.LEFT_SHOULDER)) &&
+						!(humanPoseManager.isTrackingRightArmFromController && (UnityBone.isRightArmBone(unityBone) || unityBone == UnityBone.RIGHT_SHOULDER))
+					) {
 							oscArgs.clear()
 							oscArgs.add(unityBone.stringVal)
 							outputUnityArmature?.let {
