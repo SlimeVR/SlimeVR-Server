@@ -383,6 +383,7 @@ fun createArmsResetModeSettings(
 		resetsConfig.yawResetSmoothTime,
 		resetsConfig.saveMountingReset,
 		resetsConfig.resetHmdPitch,
+		resetsConfig.stepMounting,
 	)
 
 fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {

@@ -48,6 +48,7 @@ enum class MountingMethods(val id: Int) {
 }
 
 class ResetsConfig {
+	var stepMounting = false
 
 	// Always reset mounting for feet
 	var resetMountingFeet = false

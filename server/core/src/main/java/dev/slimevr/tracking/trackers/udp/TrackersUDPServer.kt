@@ -424,6 +424,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					} else {
 						tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
 					}
+					tracker.accelDataTick()
 				}
 				tracker.dataTick()
 			}
@@ -462,6 +463,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				} else {
 					tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
 				}
+				tracker.accelDataTick()
 			}
 
 			is UDPPacket10PingPong -> {

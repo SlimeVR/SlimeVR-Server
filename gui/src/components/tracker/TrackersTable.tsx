@@ -60,7 +60,9 @@ export function TrackerNameCell({
             'border-[2px] border-opacity-80 rounded-md overflow-clip',
             {
               'border-status-warning': warning,
-              'border-transparent': !warning,
+              'border-transparent':
+                !warning && !tracker.accelRecordingInProgress,
+              'border-status-recording': tracker.accelRecordingInProgress,
             }
           )}
         >
