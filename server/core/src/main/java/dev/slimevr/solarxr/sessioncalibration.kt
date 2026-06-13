@@ -15,7 +15,7 @@ class SessionCalibrationBehaviour(
 			val bodyParts = req.bodyParts
 			val allTrackers = server.context.state.value.trackers
 
-			val trackers = if (bodyParts != null) {
+			val trackers = if (!bodyParts.isNullOrEmpty()) {
 				allTrackers.filterValues {
 					bodyParts.contains(it.context.state.value.bodyPart)
 				}
