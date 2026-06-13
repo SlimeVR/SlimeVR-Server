@@ -125,6 +125,8 @@ export const mapPart: Record<
     <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_HAND_INPUT]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_HAND_INPUT]: ({ width }) => <FingersIcon width={width} />
 };
 
 export function BodyPartIcon({
