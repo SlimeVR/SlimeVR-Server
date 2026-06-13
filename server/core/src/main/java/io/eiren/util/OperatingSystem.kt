@@ -2,9 +2,12 @@ package io.eiren.util
 
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import java.io.File
+import java.io.IOException
 import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.Path
+
+data class Process(val pid: ULong, val name: String)
 
 enum class OperatingSystem(
 	val descriptor: String,

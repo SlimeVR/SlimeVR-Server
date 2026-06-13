@@ -22,6 +22,7 @@ import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
 import dev.slimevr.protocol.rpc.status.RPCStatusHandler
 import dev.slimevr.protocol.rpc.trackingchecklist.RPCTrackingChecklistHandler
 import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause
+import dev.slimevr.steamvr.SteamVRUtils
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.processor.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracking.trackers.TrackerPosition
@@ -30,6 +31,8 @@ import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.*
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.TransactionId
@@ -150,6 +153,11 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		registerPacketListener(
 			RpcMessage.ResetStayAlignedRelaxedPoseRequest,
 			::onResetStayAlignedRelaxedPoseRequest,
+		)
+
+		registerPacketListener(
+			RpcMessage.EnableSteamVRDriverRequest,
+			::onEnableSteamVRDriverRequest,
 		)
 	}
 
@@ -608,6 +616,16 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		LogManager.info("[resetStayAlignedRelaxedPose] pose=$pose")
 
 		sendSettingsChangedResponse(conn, messageHeader)
+	}
+
+	private fun onEnableSteamVRDriverRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val request = messageHeader.message(EnableSteamVRDriverRequest()) as? EnableSteamVRDriverRequest ?: return
+
+		mainScope.launch {
+			val client = HttpClient(CIO)
+			SteamVRUtils.unblockDriver(client, "slimevr")
+			client.close()
+		}
 	}
 
 	fun sendSettingsChangedResponse(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
