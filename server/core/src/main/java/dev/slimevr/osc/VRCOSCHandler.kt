@@ -11,6 +11,7 @@ import com.illposed.osc.transport.OSCPortOut
 import com.jme3.math.FastMath
 import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
+import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.DeviceOrigin
@@ -77,6 +78,14 @@ class VRCOSCHandler(
 		refreshSettings(false)
 	}
 
+	internal fun enabled(): Boolean {
+		val bridge = server.getVRBridge {
+			it is ISteamVRBridge
+		} as? ISteamVRBridge
+
+		return (bridge == null || !bridge.isConnected()) && config.enabled
+	}
+
 	override fun refreshSettings(refreshRouterSettings: Boolean) {
 		// Sets which trackers are enabled and force head and hands to false
 		for (i in computedTrackers.indices) {
@@ -94,7 +103,7 @@ class VRCOSCHandler(
 		updateOscReceiver(config.portIn, vrsystemTrackersAddresses + oscTrackersAddresses)
 		updateOscSender(config.portOut, config.address)
 
-		if (config.enabled && config.oscqueryEnabled) {
+		if (enabled() && config.oscqueryEnabled) {
 			if (vrcOscQueryHandler == null) {
 				try {
 					vrcOscQueryHandler = VRCOSCQueryHandler(server, this)
@@ -143,7 +152,7 @@ class VRCOSCHandler(
 	 * Adds an OSC Sender from OSCQuery
 	 */
 	fun addOSCQuerySender(oscPortOut: Int, oscIP: String) {
-		if (!config.enabled) {
+		if (!enabled()) {
 			closeOscQuerySender()
 			return
 		}
@@ -237,7 +246,7 @@ class VRCOSCHandler(
 	}
 
 	override fun updateOscReceiver(portIn: Int, oscAddresses: Array<String>) {
-		if (!config.enabled) {
+		if (!enabled()) {
 			closeOscReceiver()
 			return
 		}
@@ -275,7 +284,7 @@ class VRCOSCHandler(
 	}
 
 	override fun updateOscSender(portOut: Int, ip: String) {
-		if (!config.enabled) {
+		if (!enabled()) {
 			closeOscSender()
 			return
 		}
@@ -505,7 +514,7 @@ class VRCOSCHandler(
 	}
 
 	override fun update() {
-		if (!config.enabled) {
+		if (!enabled()) {
 			return
 		}
 
