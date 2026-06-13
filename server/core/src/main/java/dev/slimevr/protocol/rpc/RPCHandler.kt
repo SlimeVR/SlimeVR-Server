@@ -11,6 +11,8 @@ import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler
 import dev.slimevr.protocol.rpc.firmware.RPCFirmwareUpdateHandler
 import dev.slimevr.protocol.rpc.games.vrchat.RPCVRChatHandler
 import dev.slimevr.protocol.rpc.installinfo.RPCInstallInfoHandler
+import dev.slimevr.protocol.rpc.keybinds.RPCKeybindHandler
+import dev.slimevr.protocol.rpc.openuri.RPCOpenUriHandler
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler
@@ -54,6 +56,14 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCTrackingChecklistHandler(this, api)
 		RPCUserHeightCalibration(this, api)
 		RPCInstallInfoHandler(this, api)
+		RPCOpenUriHandler(this, api)
+		try {
+			RPCKeybindHandler(this, api)
+		} catch (e: Exception) {
+			e.printStackTrace()
+		} catch (t: Throwable) {
+			t.printStackTrace()
+		}
 
 		registerPacketListener(
 			RpcMessage.AssignTrackerRequest,

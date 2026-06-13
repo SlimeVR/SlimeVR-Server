@@ -59,6 +59,10 @@ export function SettingSelectorMobile() {
         value: { url: '/settings/advanced' },
       },
       {
+        label: l10n.getString('settings-sidebar-keybinds'),
+        value: { url: '/settings/keybinds' },
+      },
+      {
         label: l10n.getString('navbar-onboarding'),
         value: { url: '/onboarding/home' },
       },

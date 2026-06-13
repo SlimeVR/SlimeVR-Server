@@ -83,6 +83,8 @@ dependencies {
 	implementation("com.mayakapps.kache:kache:2.1.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
+	implementation("com.github.HannahPadd:DbusGlobalShortcutsWayland:v0.1.0")
+
 	api("com.github.loucass003:EspflashKotlin:v0.11.0")
 
 	// Allow the use of reflection
