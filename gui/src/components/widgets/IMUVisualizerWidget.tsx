@@ -130,14 +130,18 @@ async function initializeIMUVisualizer(
       accelArrow.setLength(Math.sqrt(accelLength) * 2);
     }
 
-    const magVec = new Vector3(mag.x, mag.y, mag.z);
+    const magVec = Vector3FromVec3fT(mag);
     const magLen = magVec.length();
     const magMag = Math.sqrt(magLen / 100);
     if (magLen > 0) {
+      if (magArrow.parent === null) scene.add(magArrow);
+
       const magDir = magVec.clone().normalize();
       magArrow.position.copy(magDir.clone().multiplyScalar(-magMag));
       magArrow.setDirection(magDir);
       magArrow.setLength(2 * magMag);
+    } else {
+      magArrow.removeFromParent();
     }
   };
 
@@ -207,9 +211,7 @@ function IMUVisualizerCanvas({
   }, [model]);
 
   useEffect(() => {
-    if (contextRef.current) {
-      contextRef.current.update(quat, vec, mag);
-    }
+    contextRef.current?.update(quat, vec, mag);
   }, [quat, vec, mag]);
 
   if (error) {
