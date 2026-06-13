@@ -71,6 +71,7 @@ class AndroidHIDManager(
 		val serial = hidDevice.serialNumber ?: "Unknown USB Device ${hidDevice.deviceId}"
 		this.devicesBySerial[serial]?.let {
 			this.devicesByHID[hidDevice] = it
+			this.lastDataByHID[hidDevice] = 0
 			synchronized(this.devices) {
 				for (id in it) {
 					val device = this.devices[id]
@@ -187,7 +188,7 @@ class AndroidHIDManager(
 					}
 					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
 				} else {
-					lastDataByHID[hidDevice] = lastDataByHID[hidDevice]!! + 1 // increment last data received
+					lastDataByHID[hidDevice] = lastDataByHID.getOrDefault(hidDevice, 0) + 1 // increment last data received
 				}
 			}
 			if (!devicesPresent) {
