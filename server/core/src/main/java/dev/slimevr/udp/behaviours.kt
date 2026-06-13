@@ -1,5 +1,6 @@
 package dev.slimevr.udp
 
+import com.jme3.math.FastMath
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
@@ -9,6 +10,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerIdNum
 import dev.slimevr.util.safeLaunch
+import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -20,6 +22,10 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
 import kotlin.random.Random
 
+/**
+ * Change between IMU axes and OpenGL/SteamVR axes
+ */
+internal val AXES_OFFSET = Quaternion.fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
 internal const val CONNECTION_TIMEOUT_MS = 5000L
 internal const val CONNECTION_REMOVAL_MS = 30_000L
 
@@ -381,12 +387,12 @@ class SensorRotationBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = event.data.rotation))
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
 		}
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = event.data.rotation, acceleration = event.data.acceleration))
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration))
 		}
 
 		receiver.packetEvents.onPacket<Accel> { event ->
@@ -396,7 +402,7 @@ class SensorRotationBehaviour : UDPConnectionBehaviour {
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = event.data.rotation))
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
 		}
 	}
 }
