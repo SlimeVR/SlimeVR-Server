@@ -239,7 +239,7 @@ function StatusCard({
           <>
             <Typography color="secondary">
               {l10n.getString('settings-osc-vrchat-status-input-listening', {
-                port: status.inputPort ?? 0,
+                port: `${status.inputPort ?? 0}`,
               })}
             </Typography>
             {inputState === VRCOSCInputState.ERROR && status.inputError ? (
@@ -278,7 +278,7 @@ function StatusCard({
                   : 'settings-osc-vrchat-status-output-target',
                 {
                   address: asString(status.targetAddress),
-                  port: status.targetPort ?? 0,
+                  port: `${status.targetPort ?? 0}`,
                   source: sourceLabel,
                 }
               )}
@@ -320,7 +320,7 @@ function StatusCard({
             <Typography color="secondary">
               {l10n.getString(
                 'settings-osc-vrchat-status-oscquery-advertising',
-                { port: status.oscqueryAdvertisedPort ?? 0 }
+                { port: `${status.oscqueryAdvertisedPort ?? 0}` }
               )}
             </Typography>
             {oscQueryState === VRCOSCOscQueryState.FOUND &&
