@@ -427,7 +427,7 @@ div {
   -webkit-app-region: drag;
 }
 
-a {
+a, .no-user-drag {
   -webkit-user-drag: none;
   -webkit-user-select: none;
   user-select: none;
