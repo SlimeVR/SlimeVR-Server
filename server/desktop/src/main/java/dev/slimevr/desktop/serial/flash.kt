@@ -13,8 +13,8 @@ import com.fazecast.jSerialComm.SerialPort as JSerialPort
 class DesktopFlashingHandler : FlashingHandler {
 	private var port: JSerialPort? = null
 
-	override fun openSerial(portObj: Any) {
-		val portLocation = portObj as? String ?: error("expected port location string")
+	override fun openSerial(port: Any) {
+		val portLocation = port as? String ?: error("expected port location string")
 		val comPort = JSerialPort.getCommPorts().find { it.portLocation == portLocation }
 			?: error("Unable to find port $portLocation")
 		if (comPort.isOpen) {
