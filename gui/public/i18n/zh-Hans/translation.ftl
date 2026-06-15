@@ -695,6 +695,7 @@ settings-general-gesture_control-trackers = { $amount } 个追踪器
 settings-general-gesture_control-yawResetEnabled = 开启敲击重置航向轴
 settings-general-gesture_control-yawResetDelay = 敲击重置航向轴延迟
 settings-general-gesture_control-yawResetTaps = 重置航向轴敲击次数
+settings-general-gesture_control-yawResetTracker = 航向轴重置追踪器
 settings-general-gesture_control-fullResetEnabled = 开启敲击完整重置
 settings-general-gesture_control-fullResetDelay = 敲击完整重置延迟
 settings-general-gesture_control-fullResetTaps = 完整重置敲击次数
