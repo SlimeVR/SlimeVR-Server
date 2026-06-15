@@ -48,7 +48,7 @@ suspend fun doSerialFlash(
 			parts.map { part ->
 				val url = part.url ?: error("missing url")
 				val digest = part.digest ?: error("missing digest")
-				val offset = part.offset?.toInt() ?: error("missing offset")
+				val offset = (part.offset ?: 0u).toInt()
 				DownloadedFirmwarePart(
 					data = downloadFirmware(url, digest),
 					offset = offset,
