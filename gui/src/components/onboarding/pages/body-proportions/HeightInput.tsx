@@ -74,7 +74,7 @@ function UnitSelector({
           'bg-accent-background-30': active,
           'hover:bg-background-40 bg-background-40': !active,
         },
-        'flex items-center justify-center rounded-md outline-background-10 cursor-pointer'
+        'no-user-drag flex items-center justify-center rounded-md outline-background-10 cursor-pointer'
       )}
       onClick={onClick}
     >
