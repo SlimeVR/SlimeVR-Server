@@ -36,7 +36,6 @@ class SessionCalibrationBehaviour(
 				ResetType.Yaw, null -> TrackerActions.YawReset(reference)
 				ResetType.Full -> TrackerActions.FullReset(reference)
 				ResetType.Mounting -> TrackerActions.MountingReset(reference)
-				else -> return@on
 			}
 			for ((_, tracker) in trackers) {
 				tracker.context.dispatch(action)
