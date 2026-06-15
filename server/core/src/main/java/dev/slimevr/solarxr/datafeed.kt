@@ -16,6 +16,7 @@ import solarxr_protocol.data_feed.DataFeedUpdate
 import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
 import solarxr_protocol.data_feed.device_data.DeviceData
+import solarxr_protocol.data_feed.server.ServerGuards
 import solarxr_protocol.data_feed.tracker.TrackerData
 import solarxr_protocol.data_feed.tracker.TrackerDataMask
 import solarxr_protocol.data_feed.tracker.TrackerInfo
@@ -110,6 +111,12 @@ private fun createBone(bone: BoneState): solarxr_protocol.data_feed.Bone = solar
 	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) },
 )
 
+// TODO: Actually figure this stuff out
+private fun createServerGuards(): ServerGuards = ServerGuards(
+	candomounting = true,
+	candoyawreset = true,
+)
+
 fun createDatafeedFrame(
 	server: VRServer,
 	datafeedConfig: DataFeedConfig,
@@ -125,10 +132,16 @@ fun createDatafeedFrame(
 	} else {
 		null
 	}
+	val serverGuards = if (datafeedConfig.serverGuardsMask == true) {
+		createServerGuards()
+	} else {
+		null
+	}
 	return DataFeedMessageHeader(
 		message = DataFeedUpdate(
 			devices = if (datafeedConfig.dataMask?.deviceData != null) devices else null,
 			bones = bones,
+			serverGuards = serverGuards,
 			index = index.toUByte(),
 		),
 	)
