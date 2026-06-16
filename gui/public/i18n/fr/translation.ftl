@@ -1641,7 +1641,7 @@ error_collection_modal-cancel = Je ne veux pas
 ## Tracking checklist section
 
 tracking_checklist = Checklist de suivi
-tracking_checklist-settings = Paramètres de lachecklist de suivi
+tracking_checklist-settings = Paramètres de la checklist de suivi
 tracking_checklist-settings-close = Fermer
 tracking_checklist-status-incomplete = Vous n’êtes pas prêt à utiliser SlimeVR !
 tracking_checklist-status-partial =
@@ -1658,7 +1658,7 @@ tracking_checklist-STEAMVR_DISCONNECTED = SteamVR n'est pas lancé
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR n'est pas lancé. L’utilisez-vous pour la VR ?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Lancer SteamVR
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrer vos capteurs
-tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Vous n’avez pas fait de calibration de capteur. Veuillez laisser vos capteurs (surlignés en jaune) reposer sur une surface stable pendant quelques seconds.
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Vous n’avez pas fait de calibration de capteur. Veuillez laisser vos capteurs (surlignés en jaune) reposer sur une surface stable pendant quelques secondes.
 tracking_checklist-TRACKER_ERROR = Capteurs avec erreur
 tracking_checklist-TRACKER_ERROR-desc = Certains de vos capteurs ont une erreur. Veuillez redémarrer les capteurs surlignés en jaune.
 tracking_checklist-VRCHAT_SETTINGS = Configurez les paramètres de VRChat
