@@ -29,7 +29,6 @@ import {
 } from './paths';
 import { initStores } from './store';
 import { closeLogger, logger } from './logger';
-
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
@@ -500,6 +499,12 @@ app.whenReady().then(async () => {
   createWindow();
 
   logger.info('SlimeVR started!');
+
+  process.on('exit', async (code) => {
+    console.log(code);
+    server?.close();
+    await server?.waitForExit();
+  });
 
   app.on('window-all-closed', () => {
     app.quit();
