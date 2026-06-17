@@ -648,15 +648,15 @@ settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des 
 settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu’ils soient parallèles au sol lorsqu’ils le touche.
 settings-general-fk_settings-leg_fk = Capture des jambes
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l’alignement des pieds pendant la réinitialisation d’alignement générale.
-settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l'alignement des pieds
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l’alignement des pieds
 settings-general-fk_settings-enforce_joint_constraints = Limites squelettiques
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Appliquer les contraintes
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Empêche les articulations de tourner au-delà de leur limite
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Corriger avec les contraintes
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Corriger les rotations des articulations lorsqu'elles dépassent leur limite
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Corriger les rotations des articulations lorsqu’elles dépassent leur limite
 settings-general-fk_settings-ik = Données de position
 settings-general-fk_settings-ik-use_position = Utiliser les données de position
-settings-general-fk_settings-ik-use_position-description = Permet d'utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
+settings-general-fk_settings-ik-use_position-description = Permet d’utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
 settings-general-fk_settings-velocity_settings = Réglages de la vélocité
 settings-general-fk_settings-velocity_settings-description = Envoyer les données de vélocité dérivée à SteamVR. Nécessaire pour Natural Locomotion. Peut provoquer des artéfacts dans le mouvement.
 settings-general-fk_settings-velocity_settings-send_derived_velocity = Envoyer la vélocité dérivée au driver
@@ -664,17 +664,17 @@ settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
 settings-general-fk_settings-reset_settings = Paramètres de réinitialisations
-settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Réinitialise la rotation verticale du casque VR lors d'une réinitialisation complète. Utile pour porter un casque VR sur le front pour du VTubing ou de l'animation. Ne pas activer pour la VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Réinitialise la rotation verticale du casque VR lors d’une réinitialisation complète. Utile pour porter un casque VR sur le front pour du VTubing ou de l’animation. Ne pas activer pour la VR.
 settings-general-fk_settings-reset_settings-reset_hmd_pitch = Réinitialiser la rotation verticale du casque VR
-settings-general-fk_settings-arm_fk-reset_mode-description = Changer la pose des bras attendue pour la réinitialisation de l'alignement.
+settings-general-fk_settings-arm_fk-reset_mode-description = Changer la pose des bras attendue pour la réinitialisation de l’alignement.
 settings-general-fk_settings-arm_fk-back = En arrière
-settings-general-fk_settings-arm_fk-back-description = Le mode par défaut, avec les bras vers l'arrière et les avant-bras vers l'avant.
+settings-general-fk_settings-arm_fk-back-description = Le mode par défaut, avec les bras vers l’arrière et les avant-bras vers l’avant.
 settings-general-fk_settings-arm_fk-tpose_up = T-pose (vers le haut)
-settings-general-fk_settings-arm_fk-tpose_up-description = S'attend à ce que vos bras soient  vers le bas sur les côtés pendant la réinitialisation complète et à 90 degrés vers l'extérieur pendant la réinitialisation de l'alignement.
+settings-general-fk_settings-arm_fk-tpose_up-description = S’attend à ce que vos bras soient vers le bas sur les côtés pendant la réinitialisation complète et à 90 degrés vers l’extérieur pendant la réinitialisation de l’alignement.
 settings-general-fk_settings-arm_fk-tpose_down = T-pose (vers le bas)
-settings-general-fk_settings-arm_fk-tpose_down-description = S'attend à ce que vos bras soient à 90 degrés vers l'extérieur pendant la réinitialisation complète et vers le bas sur les côtés pendant la réinitialisation de l'alignement.
+settings-general-fk_settings-arm_fk-tpose_down-description = S’attend à ce que vos bras soient à 90 degrés vers l’extérieur pendant la réinitialisation complète et vers le bas sur les côtés pendant la réinitialisation de l’alignement.
 settings-general-fk_settings-arm_fk-forward = En avant
-settings-general-fk_settings-arm_fk-forward-description = S'attend à ce que vos bras soient levés 90 degrés vers l'avant. Utile pour le VTubing.
+settings-general-fk_settings-arm_fk-forward-description = S’attend à ce que vos bras soient levés 90 degrés vers l’avant. Utile pour le VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Bascules du squelette
 settings-general-fk_settings-skeleton_settings-description = Activez ou désactivez des paramètres avancés de capture.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Modèle de colonne vertébrale avancé
@@ -893,21 +893,21 @@ settings-osc-vmc-description =
     Modifier les paramètres spécifique au protocole VMC (Virtual Motion Capture)
            pour envoyer les données de capture de SlimeVR et recevoir les données de capture d'autres applications.
 settings-osc-vmc-enable = Activer
-settings-osc-vmc-enable-description = Activer/désactiver l'envoi et la réception de données.
+settings-osc-vmc-enable-description = Activer/désactiver l’envoi et la réception de données.
 settings-osc-vmc-enable-label = Activer
 settings-osc-vmc-network = Ports réseau
 settings-osc-vmc-network-description = Définissez les ports pour écouter et envoyer des données par VMC.
 settings-osc-vmc-network-port_in =
-    .label = Port d'entrée
-    .placeholder = Port d'entrée (par défaut : 39540)
+    .label = Port d’entrée
+    .placeholder = Port d’entrée (par défaut : 39540)
 settings-osc-vmc-network-port_out =
     .label = Port de sortie
     .placeholder = Port de sortie (par défaut : 39539)
 settings-osc-vmc-network-address = Adresse réseau
-settings-osc-vmc-network-address-description = Choisissez l'adresse vers laquelle envoyer des données VMC.
+settings-osc-vmc-network-address-description = Choisissez l’adresse vers laquelle envoyer des données VMC.
 settings-osc-vmc-network-address-placeholder = Adresse IPv4
 settings-osc-vmc-vrm = Modèle VRM
-settings-osc-vmc-vrm-description = Chargez un modèle VRM pour permettre l'ancrage à la tête et permettre une plus grande compatibilité avec d'autres applications
+settings-osc-vmc-vrm-description = Chargez un modèle VRM pour permettre l’ancrage à la tête et permettre une plus grande compatibilité avec d’autres applications
 settings-osc-vmc-vrm-untitled_model = Modèle sans nom
 settings-osc-vmc-vrm-file_select = Glissez et déposez un modèle à utiliser, ou <u>parcourir</u>.
 settings-osc-vmc-anchor_hip = Ancrage aux hanches
@@ -925,14 +925,14 @@ settings-osc-common-network-port_banned_error = Le port { $port } ne peut pas ê
 ## Advanced settings
 
 settings-utils-advanced = Avancé
-settings-utils-advanced-reset-gui = Réinitialiser les paramètres de l'interface graphique
-settings-utils-advanced-reset-gui-description = Restaurez les paramètres par défaut de l'interface.
-settings-utils-advanced-reset-gui-label = Réinitialiser l'interface graphique
+settings-utils-advanced-reset-gui = Réinitialiser les paramètres de l’interface graphique
+settings-utils-advanced-reset-gui-description = Restaurez les paramètres par défaut de l’interface.
+settings-utils-advanced-reset-gui-label = Réinitialiser l’interface graphique
 settings-utils-advanced-reset-server = Réinitialiser les paramètres de la capture
 settings-utils-advanced-reset-server-description = Restaurez les paramètres par défaut de la capture
 settings-utils-advanced-reset-server-label = Réinitialiser la capture
 settings-utils-advanced-reset-all = Réinitialiser tous les paramètres
-settings-utils-advanced-reset-all-description = Restaurez les paramètres de l'interface et de la capture.
+settings-utils-advanced-reset-all-description = Restaurez les paramètres de l’interface et de la capture.
 settings-utils-advanced-reset-all-label = Tout réinitialiser
 settings-utils-advanced-reset_warning =
     { $type ->
@@ -949,16 +949,16 @@ settings-utils-advanced-reset_warning =
 settings-utils-advanced-reset_warning-reset = Réinitialiser les paramètres
 settings-utils-advanced-reset_warning-cancel = Annuler
 settings-utils-advanced-open_data-v1 = Dossier de configuration
-settings-utils-advanced-open_data-description-v1 = Ouvre le dossier de configuration de SlimeVR, contenant les fichiers de configuration, dans l'explorateur de fichier
+settings-utils-advanced-open_data-description-v1 = Ouvre le dossier de configuration de SlimeVR, contenant les fichiers de configuration, dans l’explorateur de fichier
 settings-utils-advanced-open_data-label = Ouvrir le dossier
 settings-utils-advanced-open_logs = Dossier des logs
-settings-utils-advanced-open_logs-description = Ouvre le dossier des logs de SlimeVR, contenant ses logs, dans l'explorateur de fichier
+settings-utils-advanced-open_logs-description = Ouvre le dossier des logs de SlimeVR, contenant ses logs, dans l’explorateur de fichier
 settings-utils-advanced-open_logs-label = Ouvrir le dossier
 
 ## Home Screen
 
 settings-home-list-layout = Disposition de la liste des capteurs
-settings-home-list-layout-desc = Sélectionnez l'une des dispositions possibles de l'écran d'accueil
+settings-home-list-layout-desc = Sélectionnez l’une des dispositions possibles de l’écran d’accueil
 settings-home-list-layout-grid = Grille
 settings-home-list-layout-table = Tableau
 
@@ -982,10 +982,10 @@ onboarding-setup_warning-cancel = Continuer la configuration
 ## Quiz
 
 onboarding-quiz_continue = Continuer
-onboarding-quiz_back = Arrière
+onboarding-quiz_back = Retour
 onboarding-quiz-more_sets_modal-title = Avez-vous connecté tous vos capteurs ?
 onboarding-quiz-more_sets_modal-desc = Si vous avez des ensembles de modèles différents, vous pouvez les connecter maintenant !
-onboarding-quiz-more_sets_modal-confirm = J'ai connecté tous mes capteurs
+onboarding-quiz-more_sets_modal-confirm = J’ai connecté tous mes capteurs
 onboarding-quiz-more_sets_modal-cancel = Je veux connecter plus de capteurs
 onboarding-quiz-slimeset-title = Quel type de capteurs connectez-vous ?
 onboarding-quiz-slimeset-description = Si vous avez plusieurs ensembles, on vous le demandera à nouveau plus tard dans le processus
@@ -1043,10 +1043,10 @@ onboarding-wifi_creds-dongle-continue = Continuer avec un dongle
 
 ## Mounting setup
 
-onboarding-reset_tutorial-back = Retourner à l'alignement des capteurs
+onboarding-reset_tutorial-back = Retourner à l’alignement des capteurs
 onboarding-reset_tutorial = Didacticiel de réinitialisation
 onboarding-reset_tutorial-explanation = Pendant que vous utilisez vos capteurs, ils peuvent se désaligner à cause de la dérive horizontale du IMU, ou parce que vous les avez déplacés physiquement. Vous avez plusieurs façons de résoudre ce problème.
-onboarding-reset_tutorial-skip = Sauter l'étape
+onboarding-reset_tutorial-skip = Sauter l’étape
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation horizontale.
@@ -1060,15 +1060,18 @@ onboarding-reset_tutorial-1 =
     Cela réinitialise complètement la position et la rotation de tout vos capteurs, ce qui devrait corriger la plupart des problèmes.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
-    Tapotez { $taps } fois sur le capteur en surbrillance pour réinitialiser l'alignement des capteurs.
+    Tapotez { $taps } fois sur le capteur en surbrillance pour réinitialiser l’alignement des capteurs.
     
-    La réinitialisation de l'alignement des capteurs aide à définir la façon dont ces derniers sont portés sur vous. Cela aidera si vous en avez déplacé un sur vous accidentellement.
+    La réinitialisation de l’alignement des capteurs aide à définir la façon dont ces derniers sont portés sur vous. Cela aidera si vous en avez déplacé un sur vous accidentellement.
     
-    Accroupissez-vous dans une position de « ski » comme affiché sur l'assistant d'alignement des capteurs. Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
+    Accroupissez-vous dans une position de « ski » comme affiché sur l’assistant d’alignement des capteurs. Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
 
 ## Install info
 
 install-info_udev-rules_modal_title = Règles d’accès matérielles udev non trouvées
+install-info_udev-rules_warning = Les règles d’accès via udev sont nécessaires pour l’accès à la console de série et à la connexion aux dongles. Collez la commande suivante dans votre terminal pour ajouter les règles udev.
+install-info_udev-rules_modal_button = Fermer
+install-info_udev-rules_modal-dont-show-again_checkbox = Ne plus montrer
 
 ## Setup start
 
@@ -1083,28 +1086,28 @@ onboarding-done-close = Fermer le guide
 
 ## Tracker connection setup
 
-onboarding-connect_tracker-back = Revenir aux informations d'identification Wi-Fi
+onboarding-connect_tracker-back = Revenir aux informations d’identification Wi-Fi
 onboarding-connect_tracker-title = Connecter les capteurs
 onboarding-connect_tracker-description-p0-v1 = Passons maintenant à la partie amusante, connecter les capteurs!
 onboarding-connect_tracker-description-p1-v1 = Connectez chaque capteur un par un via un port USB.
-onboarding-connect_tracker-issue-serial = J'ai des problèmes de connexion !
+onboarding-connect_tracker-issue-serial = J’ai des problèmes de connexion !
 onboarding-connect_tracker-usb = Capteur USB
 onboarding-connect_tracker-connection_status-none = Recherche de capteurs
 onboarding-connect_tracker-connection_status-serial_init = Connexion au périphérique en série
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtention de l'adresse mac du capteur
+onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtention de l’adresse mac du capteur
 onboarding-connect_tracker-connection_status-provisioning = Envoi des identifiants Wi-Fi
-onboarding-connect_tracker-connection_status-connecting = Envoi d'identifiants Wi-Fi
+onboarding-connect_tracker-connection_status-connecting = Envoi d’identifiants Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Recherche du serveur
 onboarding-connect_tracker-connection_status-connection_error = Impossible de se connecter au réseau
 onboarding-connect_tracker-connection_status-could_not_find_server = Impossible de trouver le serveur
 onboarding-connect_tracker-connection_status-done = Connecté au serveur
-onboarding-connect_tracker-connection_status-no_serial_log = Erreur lors de l'obtention des journaux du capteur
+onboarding-connect_tracker-connection_status-no_serial_log = Erreur lors de l’obtention des journaux du capteur
 onboarding-connect_tracker-connection_status-no_serial_device_found = Aucun capteur trouvé par USB
 onboarding-connect_serial-error-modal-no_serial_log = Le capteur est-il allumé ?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Assurez-vous que le capteur est allumé et connecté à votre ordinateur
 onboarding-connect_serial-error-modal-no_serial_device_found = Aucun capteur détecté
 onboarding-connect_serial-error-modal-no_serial_device_found-desc =
-    Veuillez connecter un capteur avec le câble USB fourni à votre ordinateur et l'allumer.
+    Veuillez connecter un capteur avec le câble USB fourni à votre ordinateur et l’allumer.
     Si cela ne fonctionne pas :
       - Essayez avec un autre câble USB
       - Essayez avec un autre port USB
@@ -1120,14 +1123,14 @@ onboarding-connect_tracker-connected_trackers =
         [one] 1 tracker connected
        *[other] { $amount } trackers connected
     }
-onboarding-connect_tracker-next = J'ai connecté tous mes capteurs
+onboarding-connect_tracker-next = J’ai connecté tous mes capteurs
 
 ## Tracker calibration tutorial
 
 onboarding-calibration_tutorial = Tutoriel de calibration IMU
 onboarding-calibration_tutorial-subtitle = Ceci vous aidera à réduire la dérive du capteur !
-onboarding-calibration_tutorial-description-v1 = Après avoir allumé vos capteurs, placez-les sur une surface stable pendant un moment pour leur permettre de se calibrer. La calibration peut être effectué n'importe quand lors que les capteurs sont allumés - cette page sert simplement de tutoriel. Pour commencer, cliquez sur le bouton « { onboarding-calibration_tutorial-calibrate } », puis <b>ne déplacez pas vos capteurs !</b>
-onboarding-calibration_tutorial-calibrate = J'ai posé mes capteurs sur la table
+onboarding-calibration_tutorial-description-v1 = Après avoir allumé vos capteurs, placez-les sur une surface stable pendant un moment pour leur permettre de se calibrer. La calibration peut être effectué n’importe quand lors que les capteurs sont allumés - cette page sert simplement de tutoriel. Pour commencer, cliquez sur le bouton « { onboarding-calibration_tutorial-calibrate } », puis <b>ne déplacez pas vos capteurs !</b>
+onboarding-calibration_tutorial-calibrate = J’ai posé mes capteurs sur la table
 onboarding-calibration_tutorial-status-waiting = En attente de vous
 onboarding-calibration_tutorial-status-calibrating = Calibration...
 onboarding-calibration_tutorial-status-success = Génial !
@@ -1141,8 +1144,8 @@ onboarding-assignment_tutorial-first_step = 1. Placez un autocollant de partie d
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Autocollant
 onboarding-assignment_tutorial-second_step-v2 = 2. Attachez la sangle à votre capteur en gardant le velcro de la sangle dans la même direction que le visage du capteur :
-onboarding-assignment_tutorial-second_step-continuation-v2 = Le velcro de l'extension doit être orienté vers le haut comme dans l'image suivante :
-onboarding-assignment_tutorial-done = J'ai mis les autocollants et les sangles !
+onboarding-assignment_tutorial-second_step-continuation-v2 = Le velcro de l’extension doit être orienté vers le haut comme dans l’image suivante :
+onboarding-assignment_tutorial-done = J’ai mis les autocollants et les sangles !
 
 ## Tracker assignment setup
 
@@ -1158,8 +1161,8 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } sur 1 capteur attribué
        *[other] { $assigned } sur { $trackers } capteurs attribués
     }
-onboarding-assign_trackers-advanced = Afficher les emplacements d'attribution avancés
-onboarding-assign_trackers-next = J'ai attribué tous mes capteurs
+onboarding-assign_trackers-advanced = Afficher les emplacements d’attribution avancés
+onboarding-assign_trackers-next = J’ai attribué tous mes capteurs
 onboarding-assign_trackers-mirror_view = Vue miroir
 onboarding-assign_trackers-option-amount =
     { $trackersCount ->
@@ -1196,7 +1199,7 @@ onboarding-assign_trackers-warning-LEFT_FOOT =
         [4] Le pied gauche est attribué mais il faut que la cheville gauche et la cuisse gauche soient également attribuées !
         [5] Le pied gauche est attribué mais il faut que la cuisse gauche le soit également !
         [6] Le pied gauche est attribué mais il faut que la cheville gauche le soit également !
-       *[unknown] Le pied gauche est attribué mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée !
+       *[unknown] Le pied gauche est attribué mais il faut qu’une autre partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-RIGHT_FOOT =
@@ -1208,7 +1211,7 @@ onboarding-assign_trackers-warning-RIGHT_FOOT =
         [4] Le pied droit est attribué mais il faut que la cheville droite et la cuisse droite soient également attribuées !
         [5] Le pied droit est attribué mais il faut que la cuisse droite le soit également !
         [6] Le pied droit est attribué mais il faut que la cheville droite le soit également !
-       *[unknown] Le pied droit est assigné mais il faut qu'une autre partie du corps inconnue non assignée soit également attribuée !
+       *[unknown] Le pied droit est assigné mais il faut qu’une autre partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
@@ -1216,7 +1219,7 @@ onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
         [0] La cheville gauche est attribuée mais il faut que la cuisse gauche et soit la poitrine, la hanche ou la taille soient également attribuées !
         [1] La cheville gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
         [2] La cheville gauche est attribuée mais il faut que la cuisse gauche soit également attribuée !
-       *[unknown] La cheville gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
+       *[unknown] La cheville gauche est attribuée mais il faut qu’une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
@@ -1224,38 +1227,38 @@ onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
         [0] La cheville droite est attribuée mais il faut que la cuisse droite et soit la poitrine, la hanche ou la taille soient également attribuées !
         [1] La cheville droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
         [2] La cheville droite est attribuée mais il faut que la cuisse droite soit également attribuée !
-       *[unknown] La cheville droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
+       *[unknown] La cheville droite est attribuée mais il faut qu’une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
     { $unassigned ->
         [0] La cuisse gauche est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
-       *[unknown] La cuisse gauche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
+       *[unknown] La cuisse gauche est attribuée mais il faut qu’une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
     { $unassigned ->
         [0] La cuisse droite est attribuée mais il faut que la poitrine, la hanche ou la taille soient également attribuées !
-       *[unknown] La cuisse droite est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
+       *[unknown] La cuisse droite est attribuée mais il faut qu’une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-HIP =
     { $unassigned ->
         [0] La hanche est attribuée mais il faut que la poitrine le soit aussi !
-       *[unknown] La hanche est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
+       *[unknown] La hanche est attribuée mais il faut qu’une partie du corps inconnue non assignée soit également attribuée !
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-WAIST =
     { $unassigned ->
         [0] La taille est attribuée mais il faut que la poitrine le soit aussi !
-       *[unknown] La taille est attribuée mais il faut qu'une partie du corps inconnue non assignée soit également attribuée !
+       *[unknown] La taille est attribuée mais il faut qu’une partie du corps inconnue non assignée soit également attribuée !
     }
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting = Quelle méthode de calibration de l'alignement utiliser ?
+onboarding-choose_mounting = Quelle méthode de calibration de l’alignement utiliser ?
 # Multiline text
-onboarding-choose_mounting-description = La calibration de l'alignement ajuste pour l'orientation des capteurs sur votre corps.
+onboarding-choose_mounting-description = La calibration de l’alignement corrige pour l'orientation des capteurs sur votre corps.
 onboarding-choose_mounting-auto_mounting = Alignement automatique
 # Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = Recommendée
@@ -1267,8 +1270,8 @@ onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de 
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
     Êtes-vous sûr de vouloir faire
-    la calibration automatique de l'alignement ?
-onboarding-choose_mounting-manual_modal-description = <b>La calibration manuel de l'alignement est recommandé pour les nouveaux utilisateurs</b>, car les poses de calibration automatique de l'alignement peuvent être difficiles à reproduire au départ et peuvent nécessiter un peu de pratique.
+    la calibration automatique de l’alignement ?
+onboarding-choose_mounting-manual_modal-description = <b>La calibration manuelle de l’alignement est recommandé pour les nouveaux utilisateurs</b>, car les poses de calibration automatique de l’alignement peuvent être difficiles à reproduire au départ et peuvent nécessiter un peu de pratique.
 onboarding-choose_mounting-manual_modal-confirm = Je suis sûr de ce que je fais
 onboarding-choose_mounting-manual_modal-cancel = Annuler
 
@@ -1283,15 +1286,15 @@ onboarding-manual_mounting-next = Prochaine étape
 ## Tracker automatic mounting setup
 
 onboarding-automatic_mounting-back = Retournez à entrer dans la réalité virtuelle
-onboarding-automatic_mounting-title = Calibration de l'alignement des capteurs
+onboarding-automatic_mounting-title = Calibration de l’alignement des capteurs
 onboarding-automatic_mounting-description = Pour que vos capteurs SlimeVR fonctionnent, nous devons attribuer une rotation à vos capteurs pour les aligner avec la rotation réelle de ces derniers.
 onboarding-automatic_mounting-manual_mounting = Alignement manuel
 onboarding-automatic_mounting-next = Prochaine étape
 onboarding-automatic_mounting-prev_step = Étape précédente
 onboarding-automatic_mounting-done-title = Alignements calibrés.
-onboarding-automatic_mounting-done-description = La calibration de l'alignement de vos capteurs est terminée !
+onboarding-automatic_mounting-done-description = La calibration de l’alignement de vos capteurs est terminée !
 onboarding-automatic_mounting-done-restart = Retourner au début
-onboarding-automatic_mounting-mounting_reset-title = Réinitialisation de l'alignement
+onboarding-automatic_mounting-mounting_reset-title = Réinitialisation de l’alignement
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une pose de "ski" avec les jambes pliées, le haut du corps incliné vers l'avant et les bras pliés.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l'alignement" et attendez 3 secondes avant que l'alignement des capteurs se calibre.
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Mettez-vous sur la pointe des pieds, les deux pieds pointés vers l’avant. Vous pouvez aussi le faire assis sur une chaise.
@@ -1412,6 +1415,7 @@ onboarding-user_height-description = Nous avons besoin de votre taille pour calc
 onboarding-user_height-need_head_tracker = Un casque VR (ou capteur de tête) et des manettes à position absolue sont nécessaires pour calculer votre taille.
 onboarding-user_height-calculate = Calculer ma taille automatiquement
 onboarding-user_height-next_step = Continuer et enregistrer
+onboarding-user_height-prev_step = Retour
 onboarding-user_height-manual-proportions = Proportions manuelles
 onboarding-user_height-calibration-title = Progression de la calibration
 onboarding-user_height-calibration-RECORDING_FLOOR = Touchez le sol avec l'extrémité de votre contrôleur
@@ -1545,24 +1549,25 @@ firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Allumez le capteur tout en co
 firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Allumez le capteur tout en appuyant sur le bouton FLASH sur le dessus de la carte. La LED du capteur devrait faire un clignotement brièvement.
 firmware_tool-flashbtn_step-board_OTHER =
     Avant de flash le capteur, vous devrez probablement le mettre en mode bootloader.
-    La plupart du temps, il s'agit d'appuyer sur le bouton boot de la carte avant que le processus de flash ne commence.
-    Si le processus de flash expire au début du flash, cela signifie probablement que le capteur n'était pas en mode bootloader
+    La plupart du temps, il s’agit d’appuyer sur le bouton boot de la carte avant que le processus de flash ne commence.
+    Si le processus de flash expire au début du flash, cela signifie probablement que le capteur n’était pas en mode bootloader
     Veuillez vous référer aux instructions de flash de votre carte pour savoir comment activer le mode boatloader
 firmware_tool-flash_method_ota-title = Flasher via Wi-Fi
 firmware_tool-flash_method_ota-devices = Appareils OTA détectés :
-firmware_tool-flash_method_ota-no_devices = Il n'y a aucune carte pouvant être mise à jour à l'aide d'OTA, assurez-vous d'avoir sélectionné le bon type de carte
+firmware_tool-flash_method_ota-no_devices = Il n’y a aucune carte pouvant être mise à jour à l’aide d’OTA, assurez-vous d’avoir sélectionné le bon type de carte
 firmware_tool-flash_method_serial-title = Flasher via USB
 firmware_tool-flash_method_serial-wifi = Identifiants Wi-Fi :
 firmware_tool-flash_method_serial-devices-label = Appareils en série détectés :
 firmware_tool-flash_method_serial-devices-placeholder = Sélectionnez un appareil en série
-firmware_tool-flash_method_serial-no_devices = Aucun appareil en série compatible n'est détecté, assurez-vous que le capteur est branché
+firmware_tool-flash_method_serial-no_devices = Aucun appareil en série compatible n’est détecté, assurez-vous que le capteur est branché
 firmware_tool-build_step = Création
 firmware_tool-build_step-description = Le micrologiciel se fait créer, veuillez patienter
 firmware_tool-flashing_step = En train de flash
-firmware_tool-flashing_step-description = Vos capteurs se font flash, veuillez suivre les instructions à l'écran
-firmware_tool-flashing_step-warning-v2 = Ne débranchez pas ou n'éteignez pas le capteur pendant le processus d'envoi à moins qu'on ne vous le dise, cela pourrait rendre votre carte inutilisable
+firmware_tool-flashing_step-description = Vos capteurs se font flash, veuillez suivre les instructions à l’écran
+firmware_tool-flashing_step-warning-v2 = Ne débranchez pas ou n’éteignez pas le capteur pendant le processus d’envoi à moins qu’on ne vous le dise, cela pourrait rendre votre carte inutilisable
 firmware_tool-flashing_step-flash_more = Flash plus de capteurs
 firmware_tool-flashing_step-exit = Quitter
+firmware_tool-flashing_step-onboarding_continue = Continuer
 
 ## firmware tool build status
 
@@ -1585,13 +1590,13 @@ firmware_update-status-SYNCING_WITH_MCU = Synchronisation avec le MCU
 firmware_update-status-REBOOTING = Application de la mise à jour
 firmware_update-status-PROVISIONING = Envoi des identifiants Wi-Fi
 firmware_update-status-DONE = Mise à jour terminée !
-firmware_update-status-ERROR_DEVICE_NOT_FOUND = Impossible de trouver l'appareil
+firmware_update-status-ERROR_DEVICE_NOT_FOUND = Impossible de trouver l’appareil
 firmware_update-status-ERROR_TIMEOUT = Le processus de mise à jour a dépassé le délai alloué
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Échec du téléchargement du micrologiciel
-firmware_update-status-ERROR_AUTHENTICATION_FAILED = Échec de l'authentification avec le MCU
-firmware_update-status-ERROR_UPLOAD_FAILED = Échec de l'envoi du micrologiciel
-firmware_update-status-ERROR_PROVISIONING_FAILED = Impossible de définir les informations d'identification Wi-Fi
-firmware_update-status-ERROR_UNSUPPORTED_METHOD = La méthode de mise à jour n'est pas prise en charge
+firmware_update-status-ERROR_AUTHENTICATION_FAILED = Échec de l’authentification avec le MCU
+firmware_update-status-ERROR_UPLOAD_FAILED = Échec de l’envoi du micrologiciel
+firmware_update-status-ERROR_PROVISIONING_FAILED = Impossible de définir les informations d’identification Wi-Fi
+firmware_update-status-ERROR_UNSUPPORTED_METHOD = La méthode de mise à jour n’est pas prise en charge
 firmware_update-status-ERROR_UNKNOWN = Erreur inconnue
 
 ## Dedicated Firmware Update Page
@@ -1601,7 +1606,7 @@ firmware_update-devices = Appareils disponibles
 firmware_update-devices-description = Veuillez sélectionner les capteurs que vous souhaitez mettre à jour à la dernière version du micrologiciel SlimeVR
 firmware_update-no_devices = Assurez-vous que les capteurs que vous souhaitez mettre à jour sont allumés et connectés au Wi-Fi !
 firmware_update-changelog-title = Mise à jour vers { $version }
-firmware_update-looking_for_devices = Recherche d'appareils à mettre à jour...
+firmware_update-looking_for_devices = Recherche d’appareils à mettre à jour...
 firmware_update-retry = Réessayer
 firmware_update-update = Mettre à jour les capteurs sélectionnés
 firmware_update-exit = Quitter
@@ -1618,7 +1623,7 @@ tray_or_exit_modal-title = Que devrait faire le bouton de fermeture ?
 # Multiline text
 tray_or_exit_modal-description =
     Cela permet de choisir entre quitter le serveur ou le réduire à la barre de notifications lorsque le bouton de fermeture est enfoncé.
-    Vous pouvez modifier cela plus tard dans les paramètres d'interface !
+    Vous pouvez modifier cela plus tard dans les paramètres d’interface !
 tray_or_exit_modal-radio-exit = Quitter à la fermeture
 tray_or_exit_modal-radio-tray = Minimiser dans la zone de notifications
 tray_or_exit_modal-submit = Sauvegarder
@@ -1628,7 +1633,7 @@ tray_or_exit_modal-cancel = Annuler
 
 unknown_device-modal-title = Un nouveau capteur a été trouvé !
 unknown_device-modal-description =
-    Il y a un nouveau capteur avec l'adresse MAC <b>{ $deviceId }</b>.
+    Il y a un nouveau capteur avec l’adresse MAC <b>{ $deviceId }</b>.
     Voulez-vous le connecter à SlimeVR ?
 unknown_device-modal-confirm = Oui!
 unknown_device-modal-forget = Ignorer
@@ -1702,6 +1707,9 @@ tracking_checklist-FULL_RESET-desc = Certains capteurs nécessitent une réiniti
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR n'est pas lancé
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR n'est pas lancé. L’utilisez-vous pour la VR ?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Lancer SteamVR
+tracking_checklist-STEAMVR_HANDS_ENABLED = Capteurs des mains activés
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Vous avez activé les capteurs des mains virtuels SteamVR. Cela fera que les boutons de vos manettes ne fonctionneront pas dans SteamVR et dans les jeux.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Les désactiver
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrer vos capteurs
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Vous n’avez pas fait de calibration de capteur. Veuillez laisser vos capteurs (surlignés en jaune) reposer sur une surface stable pendant quelques secondes.
 tracking_checklist-TRACKER_ERROR = Capteurs avec erreur
