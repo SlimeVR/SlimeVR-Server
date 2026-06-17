@@ -30,6 +30,27 @@ data class TrackerConfig(
 )
 
 @Serializable
+data class TapDetectionConfig (
+	var yawResetDelay: Float = 0.2f,
+	var fullResetDelay: Float = 1.0f,
+	var mountingResetDelay: Float = 1.0f,
+	var yawResetEnabled: Boolean = true,
+	var fullResetEnabled: Boolean = true,
+	var mountingResetEnabled: Boolean = true,
+	@Serializable(with = BodyPartSerializer::class)
+	var yawResetBodyPart: BodyPart? = BodyPart.CHEST,
+	@Serializable(with = BodyPartSerializer::class)
+	var mountingResetBodyPart: BodyPart? = BodyPart.RIGHT_UPPER_LEG,
+	@Serializable(with = BodyPartSerializer::class)
+	var fullResetBodyPart: BodyPart? = BodyPart.LEFT_UPPER_LEG,
+	var yawResetTaps: Int = 2,
+	var fullResetTaps: Int = 3,
+	var mountingResetTaps: Int = 3,
+	var numberTrackersOverThreshold: Int = 1
+) {
+}
+
+@Serializable
 data class SettingsConfigState(
 	val trackerPort: Int = 6969,
 	val mutedVRCWarnings: List<String> = listOf(),
@@ -40,6 +61,7 @@ data class SettingsConfigState(
 	val vrcOscConfig: VRCOSCConfig = defaultVrcOscConfig(),
 	val vmcConfig: VMCConfig = VMCConfig(),
 	val version: Int = SETTINGS_CONFIG_VERSION,
+	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 )
 
 private fun defaultVrcOscConfig() = VRCOSCConfig()
