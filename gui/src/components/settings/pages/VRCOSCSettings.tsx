@@ -486,9 +486,9 @@ export function VRCOSCSettings() {
             );
           }
         }
-      }
 
       reset(formData);
+      }
     }
   );
 
