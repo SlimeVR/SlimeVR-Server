@@ -28,7 +28,7 @@ tips-find_tracker = Impossible de différencier vos capteurs ? Secouez-en un pou
 tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant l’enregistrement !
 tips-file_select = Glissez et déposez des fichiers à utiliser, ou <u>parcourir</u>.
 tips-tap_setup = Vous pouvez tapoter lentement votre capteur 2 fois pour le choisir au lieu de le sélectionner depuis le menu.
-tips-turn_on_tracker = Vous utilisez des capteurs officiels SlimeVR ? N’oubliez pas <b><em>d'allumer votre capteur</em></b> après l’avoir connecté au PC !
+tips-turn_on_tracker = Vous utilisez des capteurs officiels SlimeVR ? N’oubliez pas <b><em>d’allumer votre capteur</em></b> après l’avoir connecté au PC !
 tips-failed_webgl = Échec de l’initialisation de WebGL.
 
 ## Units
@@ -696,7 +696,7 @@ settings-general-fk_settings-self_localization-description = Le mode Mocap perme
 
 settings-general-gesture_control = Contrôle gestuel
 settings-general-gesture_control-subtitle = Double tape pour réinitialisation rapide
-settings-general-gesture_control-description = Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation horizontale, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation complète, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l'alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour être pris en compte.
+settings-general-gesture_control-description = Permet de déclencher des réinitialisations en tapant un capteur. Le capteur le plus haut sur votre torse est utilisé pour la réinitialisation horizontale, le capteur le plus haut sur votre jambe gauche est utilisé pour la réinitialisation complète, et le capteur le plus haut sur votre jambe droite est utilisé pour la réinitialisation de l’alignement. Les tapes doivent être enchainées en moins de 0,6 seconde pour être pris en compte.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -719,15 +719,15 @@ settings-general-gesture_control-fullResetEnabled = Tapoter pour réinitialisati
 settings-general-gesture_control-fullResetDelay = Délai de réinitialisation complète
 settings-general-gesture_control-fullResetTaps = Nombre de tapes pour réinitialisation complète
 settings-general-gesture_control-fullResetTracker = Capteur de réinitialisation complète
-settings-general-gesture_control-mountingResetEnabled = Tapoter pour réinitialisation de l'alignement
-settings-general-gesture_control-mountingResetDelay = Délai de réinitialisation de l'alignement
-settings-general-gesture_control-mountingResetTaps = Nombre de tapes pour la réinitialisation de l'alignement
-settings-general-gesture_control-mountingResetTracker = Capteur de réinitialisation de l'alignement
+settings-general-gesture_control-mountingResetEnabled = Tapoter pour réinitialisation de l’alignement
+settings-general-gesture_control-mountingResetDelay = Délai de réinitialisation de l’alignement
+settings-general-gesture_control-mountingResetTaps = Nombre de tapes pour la réinitialisation de l’alignement
+settings-general-gesture_control-mountingResetTracker = Capteur de réinitialisation de l’alignement
 settings-general-gesture_control-yawResetTracker-title = Capteur de réinitialisation horizontale
 settings-general-gesture_control-fullResetTracker-title = Capteur de réinitialisation complète
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Capteurs au-dessus du seuil
-settings-general-gesture_control-numberTrackersOverThreshold-description = Augmentez cette valeur si la détection des tapotements ne fonctionne pas. N'augmentez pas cette valeur au-delà de ce qui est nécessaire pour que la détection des tapotements fonctionne, car cela pourrait entraîner des faux positifs.
+settings-general-gesture_control-numberTrackersOverThreshold-description = Augmentez cette valeur si la détection des tapotements ne fonctionne pas. N’augmentez pas cette valeur au-delà de ce qui est nécessaire pour que la détection des tapotements fonctionne, car cela pourrait entraîner des faux positifs.
 
 ## Appearance settings
 
@@ -737,46 +737,46 @@ settings-general-interface-dev_mode-description = Ce mode peut être utile pour 
 settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-theme = Thème
 settings-general-interface-show-navbar-onboarding = Afficher « { navbar-onboarding } » dans la barre de navigation
-settings-general-interface-show-navbar-onboarding-description = Cela décide si le bouton « { navbar-onboarding } » s'affiche dans la barre de navigation.
+settings-general-interface-show-navbar-onboarding-description = Cela décide si le bouton « { navbar-onboarding } » s’affiche dans la barre de navigation.
 settings-general-interface-show-navbar-onboarding-label = Afficher « { navbar-onboarding } »
 settings-general-interface-lang = Langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
 settings-general-interface-lang-placeholder = Langue
 # Keep the font name untranslated
-settings-interface-appearance-font = Police de l'interface
-settings-interface-appearance-font-description = Cela change la police d'écriture utilisée par l'interface.
+settings-interface-appearance-font = Police de l’interface
+settings-interface-appearance-font-description = Cela change la police d’écriture utilisée par l’interface.
 settings-interface-appearance-font-placeholder = Police par défaut
-settings-interface-appearance-font-os_font = Police du système d'exploitation
+settings-interface-appearance-font-os_font = Police du système d’exploitation
 settings-interface-appearance-font-slime_font = Police par défaut
 settings-interface-appearance-font_size = Agrandissement du texte
-settings-interface-appearance-font_size-description = Cela affecte la taille du texte de toute l'interface, sauf de ce menu.
+settings-interface-appearance-font_size-description = Cela affecte la taille du texte de toute l’interface, sauf de ce menu.
 settings-interface-appearance-decorations = Utiliser les décorations natives du système
-settings-interface-appearance-decorations-description = Cela n'affichera pas la barre supérieure de l'interface et utilisera celle du système d'exploitation à la place.
+settings-interface-appearance-decorations-description = Cela n’affichera pas la barre supérieure de l’interface et utilisera celle du système d’exploitation à la place.
 settings-interface-appearance-decorations-label = Utiliser les décorations natives
 
 ## Notification settings
 
 settings-interface-notifications = Notifications
 settings-general-interface-serial_detection = Détection de périphérique série
-settings-general-interface-serial_detection-description = Cette option affichera une fenêtre chaque fois qu'un nouveau périphérique série qui pourrait être un capteur est connecté.
+settings-general-interface-serial_detection-description = Cette option affichera une fenêtre chaque fois qu’un nouveau périphérique série qui pourrait être un capteur est connecté.
 settings-general-interface-serial_detection-label = Détection de périphérique série
 settings-general-interface-feedback_sound = Son de retour
-settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée.
+settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu’une réanitilisation est enclenchée.
 settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-feedback_sound-volume = Volume du son de retour
 settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
-settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle à chaque fois que vous essaierez de quitter SlimeVR en ayant un ou plusieurs capteurs connectés. Il vous rappelle d'éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
+settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle à chaque fois que vous essaierez de quitter SlimeVR en ayant un ou plusieurs capteurs connectés. Il vous rappelle d’éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
 settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
 
 ## Behavior settings
 
 settings-interface-behavior = Comportement
 settings-general-interface-use_tray = Minimiser dans la zone de notifications
-settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l'utiliser sans l'interface graphique.
+settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l’utiliser sans l’interface graphique.
 settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
-settings-general-interface-discord_presence = Partager l'activité sur Discord
+settings-general-interface-discord_presence = Partager l’activité sur Discord
 settings-general-interface-discord_presence-description = Indique à votre client Discord que vous utilisez SlimeVR avec le nombre de capteurs IMU que vous utilisez.
-settings-general-interface-discord_presence-label = Partager l'activité sur Discord
+settings-general-interface-discord_presence-label = Partager l’activité sur Discord
 settings-general-interface-discord_presence-message =
     { $amount ->
         [0] Aucun capteur
@@ -785,11 +785,11 @@ settings-general-interface-discord_presence-message =
     }
 settings-interface-behavior-error_tracking = Collecte des erreurs via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
-    <h1>Consentez-vous à la collecte de données d'erreur anonymisée ?</h1>
+    <h1>Consentez-vous à la collecte de données d’erreur anonymisée ?</h1>
     
-    <b>Nous ne collectons pas d'informations personnelles</b> telles que votre adresse IP ou vos identifiants Wi-Fi. SlimeVR accorde une grande importance à votre vie privée !
+    <b>Nous ne collectons pas d’informations personnelles</b> telles que votre adresse IP ou vos identifiants Wi-Fi. SlimeVR accorde une grande importance à votre vie privée !
     
-    Pour offrir la meilleure expérience utilisateur possible, nous collectons des rapports d'erreurs anonymisés, des mesures de performance et des informations sur le système d'exploitation. Cela nous aide à détecter les bugs et les problèmes liés à SlimeVR. Ces données sont collectées via Sentry.io.
+    Pour offrir la meilleure expérience utilisateur possible, nous collectons des rapports d’erreurs anonymisés, des mesures de performance et des informations sur le système d’exploitation. Cela nous aide à détecter les bugs et les problèmes liés à SlimeVR. Ces données sont collectées via Sentry.io.
 settings-interface-behavior-error_tracking-label = Envoyer les erreurs aux développeurs
 settings-interface-behavior-bvh_directory = Répertoire pour sauvegarder les enregistrements BVH
 settings-interface-behavior-bvh_directory-description = Choisissez un répertoire où sauvegarder vos enregistrements BVH au lieu d’avoir à choisir où les sauvegarder à chaque fois.
@@ -800,9 +800,9 @@ settings-interface-behavior-bvh_directory-label = Répertoire où sauvegarder le
 settings-serial = Console série
 # This cares about multilines
 settings-serial-description =
-    Il s'agit d'un flux d'informations en direct pour la communication en série.
+    Il s’agit d’un flux d’informations en direct pour la communication en série.
     Peut être utile pour savoir si un capteur fonctionne correctement.
-settings-serial-connection_lost = Connexion à l'appareil perdue, reconnexion...
+settings-serial-connection_lost = Connexion à l’appareil perdue, reconnexion...
 settings-serial-reboot = Redémarrer
 settings-serial-factory_reset = Remise à zéro
 # This cares about multilines
@@ -828,7 +828,7 @@ settings-serial-send_command-warning-cancel = Annuler
 settings-osc-router = Routeur OSC
 # This cares about multilines
 settings-osc-router-description =
-    Transférez les messages OSC provenant d'un autre programme
+    Transférez les messages OSC provenant d’un autre programme
     Utile pour utiliser un autre programme OSC avec VRChat par exemple.
 settings-osc-router-enable = Activer
 settings-osc-router-enable-description = Activer/désactiver le transfert de messages.
@@ -839,13 +839,13 @@ settings-osc-router-network-description =
     Définissez les ports pour écouter et envoyer des données.
     Ces ports peuvent être les mêmes que les autres utilisés dans le serveur SlimeVR.
 settings-osc-router-network-port_in =
-    .label = Port d'entrée
-    .placeholder = Port d'entrée (par défaut: 9002)
+    .label = Port d’entrée
+    .placeholder = Port d’entrée (par défaut: 9002)
 settings-osc-router-network-port_out =
     .label = Port de sortie
     .placeholder = Port de sortie (par défaut: 9000)
 settings-osc-router-network-address = Adresse réseau
-settings-osc-router-network-address-description = Choisissez l'adresse vers laquelle envoyer les données.
+settings-osc-router-network-address-description = Choisissez l’adresse vers laquelle envoyer les données.
 settings-osc-router-network-address-placeholder = Adresse IPv4
 
 ## OSC VRChat settings
@@ -853,29 +853,29 @@ settings-osc-router-network-address-placeholder = Adresse IPv4
 settings-osc-vrchat = Capteurs OSC VRChat
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
-    Modifier les paramètres spécifiques à la norme « OSC Trackers » utilisée pour l'envoi
+    Modifier les paramètres spécifiques à la norme « OSC Trackers » utilisée pour l’envoi
     des données de suivi vers des applications sans SteamVR (par exemple, sur Quest).
-    Assurez-vous d'activer le protocole OSC dans VRChat via le menu d'action (rond) sous OSC > Enabled.
+    Assurez-vous d’activer le protocole OSC dans VRChat via le menu d’action (rond) sous OSC > Enabled.
 settings-osc-vrchat-enable = Activer
-settings-osc-vrchat-enable-description = Activer/désactiver l'envoi et la réception de données.
+settings-osc-vrchat-enable-description = Activer/désactiver l’envoi et la réception de données.
 settings-osc-vrchat-enable-label = Activer
 settings-osc-vrchat-oscqueryEnabled = Activer OSCQuery
 settings-osc-vrchat-oscqueryEnabled-description =
-    OSCQuery détecte automatiquement les instances VRChat en cours d'exécution et leur envoie des données.
+    OSCQuery détecte automatiquement les instances VRChat en cours d’exécution et leur envoie des données.
     Il peut également se faire détecter afin de recevoir les données du casque et des manettes VR.
     Pour permettre de recevoir les données du casque et des manettes de VRChat, allez dans les paramètres de votre menu principal
-    sous « Suivi et CI » et activez « Autoriser l'envoi de données OSC de suivi en VR pour la tête et les poignets ».
+    sous « Suivi et CI » et activez « Autoriser l’envoi de données OSC de suivi en VR pour la tête et les poignets ».
 settings-osc-vrchat-oscqueryEnabled-label = Activer OSCQuery
 settings-osc-vrchat-network = Ports réseau
-settings-osc-vrchat-network-description-v1 = Définissez les ports d'écoute et d'envoi des données. Peut être laissé intact pour VRChat.
+settings-osc-vrchat-network-description-v1 = Définissez les ports d’écoute et d’envoi des données. Peut être laissé intact pour VRChat.
 settings-osc-vrchat-network-port_in =
-    .label = Port d'entrée
-    .placeholder = Port d'entrée (par défaut : 9001)
+    .label = Port d’entrée
+    .placeholder = Port d’entrée (par défaut : 9001)
 settings-osc-vrchat-network-port_out =
     .label = Port de sortie
     .placeholder = Port de sortie (par défaut : 9000)
 settings-osc-vrchat-network-address = Adresse réseau
-settings-osc-vrchat-network-address-description-v1 = Choisissez l'adresse à laquelle envoyer des données. Peut être laissé intact pour VRChat.
+settings-osc-vrchat-network-address-description-v1 = Choisissez l’adresse à laquelle envoyer des données. Peut être laissé intact pour VRChat.
 settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
 settings-osc-vrchat-network-trackers = Capteurs
 settings-osc-vrchat-network-trackers-description = Sélectionner quels capteurs envoyer via OSC.
@@ -891,7 +891,7 @@ settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Modifier les paramètres spécifique au protocole VMC (Virtual Motion Capture)
-           pour envoyer les données de capture de SlimeVR et recevoir les données de capture d'autres applications.
+           pour envoyer les données de capture de SlimeVR et recevoir les données de capture d’autres applications.
 settings-osc-vmc-enable = Activer
 settings-osc-vmc-enable-description = Activer/désactiver l’envoi et la réception de données.
 settings-osc-vmc-enable-label = Activer
@@ -937,7 +937,7 @@ settings-utils-advanced-reset-all-label = Tout réinitialiser
 settings-utils-advanced-reset_warning =
     { $type ->
         [gui]
-            <b>Avertissement:</b> Cela réinitialisera vos paramètres de l'interface.
+            <b>Avertissement:</b> Cela réinitialisera vos paramètres de l’interface.
             Êtes-vous sûr de vouloir faire cela ?
         [server]
             <b>Avertissement:</b> Cela réinitialisera vos paramètres de la capture.
@@ -1258,7 +1258,7 @@ onboarding-assign_trackers-warning-WAIST =
 
 onboarding-choose_mounting = Quelle méthode de calibration de l’alignement utiliser ?
 # Multiline text
-onboarding-choose_mounting-description = La calibration de l’alignement corrige pour l'orientation des capteurs sur votre corps.
+onboarding-choose_mounting-description = La calibration de l’alignement corrige pour l’orientation des capteurs sur votre corps.
 onboarding-choose_mounting-auto_mounting = Alignement automatique
 # Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = Recommendée
@@ -1295,25 +1295,25 @@ onboarding-automatic_mounting-done-title = Alignements calibrés.
 onboarding-automatic_mounting-done-description = La calibration de l’alignement de vos capteurs est terminée !
 onboarding-automatic_mounting-done-restart = Retourner au début
 onboarding-automatic_mounting-mounting_reset-title = Réinitialisation de l’alignement
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une pose de "ski" avec les jambes pliées, le haut du corps incliné vers l'avant et les bras pliés.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l'alignement" et attendez 3 secondes avant que l'alignement des capteurs se calibre.
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une pose de "ski" avec les jambes pliées, le haut du corps incliné vers l’avant et les bras pliés.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l’alignement" et attendez 3 secondes avant que l’alignement des capteurs se calibre.
 onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Mettez-vous sur la pointe des pieds, les deux pieds pointés vers l’avant. Vous pouvez aussi le faire assis sur une chaise.
-onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Appuyez sur le bouton « Calibration des pieds » et attendez 3 secondes avant que l’orientation de l'alignement des capteurs ne se réinitialise.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Appuyez sur le bouton « Calibration des pieds » et attendez 3 secondes avant que l’orientation de l’alignement des capteurs ne se réinitialise.
 onboarding-automatic_mounting-preparation-title = Préparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Appuyez sur le bouton « Réinitialisation complète ».
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Tenez-vous droit debout, les bras le long du corps. Assurez-vous de regarder vers l’avant.
-onboarding-automatic_mounting-preparation-v2-step-2 = 3. Maintenez la position jusqu'à la fin du chronomètre de 3 secondes.
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Maintenez la position jusqu’à la fin du chronomètre de 3 secondes.
 onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
-onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
-onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
+onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l’alignement, nous allons utiliser les capteurs que vous venez d’attribuer.
+onboarding-automatic_mounting-put_trackers_on-next = J’ai tous mes capteurs
 onboarding-automatic_mounting-return-home = Terminé
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-back-scaled = Retour aux proportions mises à l'échelle
+onboarding-manual_proportions-back-scaled = Retour aux proportions mises à l’échelle
 onboarding-manual_proportions-title = Proportions manuelles du corps
 onboarding-manual_proportions-fine_tuning_button = Automatiquement ajuster les proportions
-onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Veuillez connecter un casque VR pour utiliser l'ajustement automatique
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Veuillez connecter un casque VR pour utiliser l’ajustement automatique
 onboarding-manual_proportions-export = Exporter les proportions
 onboarding-manual_proportions-import = Importer les proportions
 onboarding-manual_proportions-file_type = Fichier des proportions du corps
@@ -1321,7 +1321,7 @@ onboarding-manual_proportions-normal_increment = Incrément normal
 onboarding-manual_proportions-precise_increment = Incrément précis
 onboarding-manual_proportions-grouped_proportions = Proportions groupées
 onboarding-manual_proportions-all_proportions = Toutes les proportions
-onboarding-manual_proportions-estimated_height = Taille estimée de l'utilisateur
+onboarding-manual_proportions-estimated_height = Taille estimée de l’utilisateur
 
 ## Tracker automatic proportions setup
 
@@ -1331,8 +1331,8 @@ onboarding-automatic_proportions-description = Pour que les capteurs SlimeVR fon
 onboarding-automatic_proportions-manual = Calibration manuelle
 onboarding-automatic_proportions-prev_step = Étape précédente
 onboarding-automatic_proportions-put_trackers_on-title = Enfilez vos capteurs
-onboarding-automatic_proportions-put_trackers_on-description = Pour calibrer vos proportions, nous allons utiliser les capteurs que vous venez d'attribuer.
-onboarding-automatic_proportions-put_trackers_on-next = J'ai tous mes capteurs
+onboarding-automatic_proportions-put_trackers_on-description = Pour calibrer vos proportions, nous allons utiliser les capteurs que vous venez d’attribuer.
+onboarding-automatic_proportions-put_trackers_on-next = J’ai tous mes capteurs
 onboarding-automatic_proportions-requirements-title = Exigences
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-descriptionv2 =
@@ -1341,13 +1341,13 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Vos capteurs et votre casque VR sont connectés au serveur SlimeVR et fonctionnent correctement (ex. pas de lag, déconnexions, etc).
     Votre casque envoie sa position au serveur SlimeVR (cela signifie généralement que SteamVR est ouvert et connecté à SlimeVR en utilisant le pilote SteamVR de SlimeVR).
     La capture des mouvements fonctionne et représente correctement vos mouvements (ex. vous avez effectué une réinitialisation complète des capteurs et ils bougent dans le bon sens lorsque vous donnez des coups de pieds, vous penchez, vous assoyez, etc).
-onboarding-automatic_proportions-requirements-next = J'ai lu les exigences
+onboarding-automatic_proportions-requirements-next = J’ai lu les exigences
 onboarding-automatic_proportions-check_height-title-v3 = Mesurez la hauteur de votre casque
 onboarding-automatic_proportions-check_height-description-v2 = La hauteur de votre casque VR doit être légèrement inférieure à votre hauteur totale, car les casques sont à la hauteur de vos yeux. Cette mesure servira de référence pour les proportions de votre corps.
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning-v3 = Commencez à mesurer <u>droit</u> debout pour mesurer votre taille. Attention à ne pas lever vos mains plus haut que votre casque, car elles pourraient affecter la mesure !
 onboarding-automatic_proportions-check_height-guardian_tip =
-    Si vous utilisez un casque VR sans-fil, assurez-vous d'avoir votre guardien /
+    Si vous utilisez un casque VR sans-fil, assurez-vous d’avoir votre guardien /
     limite activée pour que votre hauteur soit correcte !
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Inconnu
@@ -1358,7 +1358,7 @@ onboarding-automatic_proportions-check_height-measure-stop = Arrêter de mesurer
 onboarding-automatic_proportions-check_height-measure-reset = Réessayer la mesure
 onboarding-automatic_proportions-check_height-next_step = Ils sont bons
 onboarding-automatic_proportions-check_floor_height-title = Mesurer la hauteur de votre sol (facultatif)
-onboarding-automatic_proportions-check_floor_height-description = Dans certains cas, la hauteur de votre sol peut ne pas être réglée correctement par votre casque, ce qui fait que la hauteur du casque est mesurée comme étant plus élevée qu'elle ne devrait l'être. Vous pouvez mesurer la « hauteur » de votre sol pour corriger cela.
+onboarding-automatic_proportions-check_floor_height-description = Dans certains cas, la hauteur de votre sol peut ne pas être réglée correctement par votre casque, ce qui fait que la hauteur du casque est mesurée comme étant plus élevée qu’elle ne devrait l’être. Vous pouvez mesurer la « hauteur » de votre sol pour corriger cela.
 # All the text is in bold!
 onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Commencez à mesurer et placez une manette sur votre sol pour mesurer sa hauteur. Si vous êtes sûr que la hauteur de votre sol est correcte, vous pouvez sauter cette étape.
 # Shows an element below it
@@ -1367,22 +1367,22 @@ onboarding-automatic_proportions-check_floor_height-full_height = Votre hauteur 
 onboarding-automatic_proportions-check_floor_height-measure-start = Commencer à mesurer
 onboarding-automatic_proportions-check_floor_height-measure-stop = Arrêter de mesurer
 onboarding-automatic_proportions-check_floor_height-measure-reset = Réessayer la mesure
-onboarding-automatic_proportions-check_floor_height-skip_step = Sauter l'étape et enregistrer
+onboarding-automatic_proportions-check_floor_height-skip_step = Sauter l’étape et enregistrer
 onboarding-automatic_proportions-check_floor_height-next_step = Utiliser la hauteur du sol et enregistrer
 onboarding-automatic_proportions-start_recording-title = Préparez-vous à bouger
-onboarding-automatic_proportions-start_recording-description = Nous allons maintenant enregistrer quelques positions et mouvements spécifiques. Ceux-ci seront inscris sur l'écran suivant. Soyez prêt à commencer dès que vous appuyez sur le bouton !
-onboarding-automatic_proportions-start_recording-next = Commencer l'enregistrement
+onboarding-automatic_proportions-start_recording-description = Nous allons maintenant enregistrer quelques positions et mouvements spécifiques. Ceux-ci seront inscris sur l’écran suivant. Soyez prêt à commencer dès que vous appuyez sur le bouton !
+onboarding-automatic_proportions-start_recording-next = Commencer l’enregistrement
 onboarding-automatic_proportions-recording-title = Enregistrement
 onboarding-automatic_proportions-recording-description-p0 = Enregistrement en cours...
 onboarding-automatic_proportions-recording-description-p1 = Effectuez les mouvements indiqués ci-dessous:
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
     Debout, bien droit, faites tourner votre tête en cercle.
-    Inclinez le dos vers l'avant et accroupissez-vous. Accroupi, regardez vers la gauche, puis vers la droite.
-    Tournez le haut de votre corps vers la gauche (dans le sens inverse des aiguilles d'une montre), puis penchez-vous vers le sol.
-    Tournez le haut de votre corps vers la droite (dans le sens des aiguilles d'une montre), puis penchez-vous vers le sol.
+    Inclinez le dos vers l’avant et accroupissez-vous. Accroupi, regardez vers la gauche, puis vers la droite.
+    Tournez le haut de votre corps vers la gauche (dans le sens inverse des aiguilles d’une montre), puis penchez-vous vers le sol.
+    Tournez le haut de votre corps vers la droite (dans le sens des aiguilles d’une montre), puis penchez-vous vers le sol.
     Faites rouler vos hanches dans un mouvement circulaire comme si vous utilisiez un cerceau.
-    S'il reste du temps à l'enregistrement, répétez les étapes jusqu'à la fin de ce dernier.
+    S’il reste du temps à l’enregistrement, répétez les étapes jusqu’à la fin de ce dernier.
 onboarding-automatic_proportions-recording-processing = Traitement du résultat
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
@@ -1394,18 +1394,18 @@ onboarding-automatic_proportions-verify_results-title = Vérifier les résultats
 onboarding-automatic_proportions-verify_results-description = Les résultats ci-dessous vous semblent-ils corrects ?
 onboarding-automatic_proportions-verify_results-results = Enregistrement des résultats
 onboarding-automatic_proportions-verify_results-processing = Traitement du résultat
-onboarding-automatic_proportions-verify_results-redo = Refaire l'enregistrement
+onboarding-automatic_proportions-verify_results-redo = Refaire l’enregistrement
 onboarding-automatic_proportions-verify_results-confirm = Les résultats sont corrects
 onboarding-automatic_proportions-done-title = Calibration terminée
 onboarding-automatic_proportions-done-description = La calibration de vos proportions est terminée !
 onboarding-automatic_proportions-error_modal-v2 =
-    <b>Avertissement:</b> Il y a eu une erreur lors de l'estimation des proportions !
-    Il s'agit probablement d'un problème avec la calibration de l'alignement. Assurez-vous que votre capture des mouvements fonctionne correctement avant de réessayer.
-     Veuillez <docs>consulter la documentation</docs> ou rejoindre notre <discord>Discord</discord> pour obtenir de l'aide ^_^
+    <b>Avertissement:</b> Il y a eu une erreur lors de l’estimation des proportions !
+    Il s’agit probablement d’un problème avec la calibration de l’alignement. Assurez-vous que votre capture des mouvements fonctionne correctement avant de réessayer.
+     Veuillez <docs>consulter la documentation</docs> ou rejoindre notre <discord>Discord</discord> pour obtenir de l’aide ^_^
 onboarding-automatic_proportions-error_modal-confirm = Compris !
 onboarding-automatic_proportions-smol_warning =
     Votre hauteur configurée de { $height } est inférieure à la hauteur minimale acceptée de { $minHeight }.
-    <b>Veuillez refaire les mesures et vous assurer qu'elles sont correctes.</b>
+    <b>Veuillez refaire les mesures et vous assurer qu’elles sont correctes.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Retour
 
 ## User height calibration
@@ -1418,7 +1418,7 @@ onboarding-user_height-next_step = Continuer et enregistrer
 onboarding-user_height-prev_step = Retour
 onboarding-user_height-manual-proportions = Proportions manuelles
 onboarding-user_height-calibration-title = Progression de la calibration
-onboarding-user_height-calibration-RECORDING_FLOOR = Touchez le sol avec l'extrémité de votre contrôleur
+onboarding-user_height-calibration-RECORDING_FLOOR = Touchez le sol avec l’extrémité de votre contrôleur
 onboarding-user_height-calibration-WAITING_FOR_RISE = Relevez-vous
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Relevez-vous et regardez droit devant vous
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Assurez-vous que votre tête est bien droite
@@ -1443,15 +1443,15 @@ onboarding-stay_aligned-description = Configurer Garder Aligné pour garder vos 
 onboarding-stay_aligned-put_trackers_on-title = Mettez vos capteurs
 onboarding-stay_aligned-put_trackers_on-description = Pour enregistrer vos postures de repos, nous utiliserons les capteurs que vous venez d’attribuer. Enfilez tous vos capteurs. Vous pouvez voir lesquels sont lesquels dans la figure de droite.
 onboarding-stay_aligned-put_trackers_on-trackers_warning = Vous avez actuellement moins de 5 capteurs connectés et attribués ! Il s’agit du nombre minimum de capteurs requis pour que Garder Aligné fonctionne correctement.
-onboarding-stay_aligned-put_trackers_on-next = J'ai tous mes capteurs sur moi
+onboarding-stay_aligned-put_trackers_on-next = J’ai tous mes capteurs sur moi
 onboarding-stay_aligned-verify_mounting-title = Vérifiez votre alignement
-onboarding-stay_aligned-verify_mounting-step-0 = Garder Aligné nécessite un bon alignement. Sinon, vous n'aurez pas une bonne expérience avec Garder Aligné.
+onboarding-stay_aligned-verify_mounting-step-0 = Garder Aligné nécessite un bon alignement. Sinon, vous n’aurez pas une bonne expérience avec Garder Aligné.
 onboarding-stay_aligned-verify_mounting-step-1 = 1. Déplacez-vous debout.
 onboarding-stay_aligned-verify_mounting-step-2 = 2. Asseyez-vous et bougez vos jambes et vos pieds.
-onboarding-stay_aligned-verify_mounting-step-3 = 3. Si vos capteurs ne sont pas au bons endroits, appuyez sur « Refaire la calibration de l'alignement »
-onboarding-stay_aligned-verify_mounting-redo_mounting = Refaire la calibration de l'alignement
+onboarding-stay_aligned-verify_mounting-step-3 = 3. Si vos capteurs ne sont pas au bons endroits, appuyez sur « Refaire la calibration de l’alignement »
+onboarding-stay_aligned-verify_mounting-redo_mounting = Refaire la calibration de l’alignement
 onboarding-stay_aligned-preparation-title = Préparation
-onboarding-stay_aligned-preparation-tip = Assurez-vous de vous tenir droit. Vous devez regarder vers l'avant et vos bras doivent être le long de votre corps.
+onboarding-stay_aligned-preparation-tip = Assurez-vous de vous tenir droit. Vous devez regarder vers l’avant et vos bras doivent être le long de votre corps.
 onboarding-stay_aligned-relaxed_poses-standing-title = Posture debout détendu
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Tenez-vous dans une position confortable. Détendez-vous !
 onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Appuyez sur le bouton « Enregistrer la posture ».
@@ -1474,7 +1474,7 @@ onboarding-stay_aligned-manual_mounting-done = Terminé
 ## Home
 
 home-no_trackers = Aucun capteur détecté ou attribué
-home-settings = Paramètres de la page d'accueil
+home-settings = Paramètres de la page d’accueil
 home-settings-close = Fermer
 
 ## Trackers Still On notification
@@ -1488,7 +1488,7 @@ trackers_still_on-modal-cancel = Annuler...
 
 ## Status system
 
-status_system-StatusTrackerReset = Il est recommandé d'effectuer une réinitialisation complète vu que un ou plusieurs capteurs sont ne sont pas ajustés.
+status_system-StatusTrackerReset = Il est recommandé d’effectuer une réinitialisation complète vu que un ou plusieurs capteurs sont ne sont pas ajustés.
 status_system-StatusSteamVRDisconnected =
     { $type ->
         [steamvr_feeder] Impossible de se connecter au SlimeVR Feeder App.
@@ -1510,8 +1510,8 @@ firmware_tool-loading = Chargement...
 
 firmware_tool = Outil de micrologiciel DIY
 firmware_tool-description = Vous permet de configurer et de flash vos capteurs DIY
-firmware_tool-not_available = Oups, l'outil de micrologiciel n'est pas disponible en ce moment. Revenez plus tard !
-firmware_tool-not_compatible = L'outil de micrologiciel n'est pas compatible avec cette version de serveur. Veuillez mettre à jour votre serveur !
+firmware_tool-not_available = Oups, l’outil de micrologiciel n’est pas disponible en ce moment. Revenez plus tard !
+firmware_tool-not_compatible = L’outil de micrologiciel n’est pas compatible avec cette version de serveur. Veuillez mettre à jour votre serveur !
 firmware_tool-select_source = Sélectionnez le micrologiciel à flasher
 firmware_tool-select_source-description = Sélectionnez le micrologiciel que vous souhaitez flasher sur votre carte
 firmware_tool-select_source-error = Impossible de charger les sources
@@ -1536,14 +1536,14 @@ firmware_tool-flash_method_step-ota-v2 =
     .label = Wi-Fi
     .description = Utilisez la méthode « over-the-air ». Votre capteur utilisera le Wi-Fi pour mettre à jour son microgiciel. Cette méthode ne fonctionne que pour les capteurs déjà configurés.
 firmware_tool-flash_method_step-ota-info =
-    Nous utilisons vos identifiants wifi pour flasher le capteur et confirmer que tout s'est déroulé correctement.
+    Nous utilisons vos identifiants wifi pour flasher le capteur et confirmer que tout s’est déroulé correctement.
     <b>Nous ne stockons pas vos identifiants wifi !</b>
 firmware_tool-flash_method_step-serial-v2 =
     .label = USB
     .description = Utiliser un cable USB pour mettre à jour votre capteur.
 firmware_tool-flashbtn_step = Appuyez sur le bouton boot
-firmware_tool-flashbtn_step-description = Avant de passer à l'étape suivante, il y a quelques choses que vous devez faire
-firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s'il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l'une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
+firmware_tool-flashbtn_step-description = Avant de passer à l’étape suivante, il y a quelques choses que vous devez faire
+firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s’il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l’une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
 firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Allumez le capteur tout en court-circuitant le second pad FLASH rectangulaire à partir du bord en haut de la carte jusqu’à la protection métallique du microcontrôleur. La LED du capteur devrait faire un clignotement rapide.
 firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Allumez le capteur tout en court-circuitant le pad FLASH circulaire sur le dessus de la carte à la protection métallique du microcontrôleur. La LED du capteur devrait faire un clignotement rapide.
 firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Allumez le capteur tout en appuyant sur le bouton FLASH sur le dessus de la carte. La LED du capteur devrait faire un clignotement brièvement.
@@ -1653,18 +1653,18 @@ vrc_config-show_more = Afficher plus
 vrc_config-setting_name = Nom du paramètre VRChat
 vrc_config-recommended_value = Valeur recommandée
 vrc_config-current_value = Valeur actuelle
-vrc_config-mute = Ignorer l'avertissement
+vrc_config-mute = Ignorer l’avertissement
 vrc_config-mute-btn = Ignorer
 vrc_config-unmute-btn = Ne plus ignorer
-vrc_config-legacy_mode = Utiliser l'ancienne méthode de résolution de la CI
+vrc_config-legacy_mode = Utiliser l’ancienne méthode de résolution de la CI
 vrc_config-disable_shoulder_tracking = Désactiver le suivi des épaules
 vrc_config-shoulder_width_compensation = Compensation de la largeur des épaules
 vrc_config-spine_mode = Mode colonne vertébrale du suivi du corps
 vrc_config-tracker_model = Apparence des traqueurs du suivi du corps
-vrc_config-avatar_measurement_type = Mesure de l'avatar
+vrc_config-avatar_measurement_type = Mesure de l’avatar
 vrc_config-calibration_range = Plage de calibration
 vrc_config-calibration_visuals = Afficher les visuels de calibration
-vrc_config-user_height = Taille réelle de l'utilisateur
+vrc_config-user_height = Taille réelle de l’utilisateur
 vrc_config-spine_mode-UNKNOWN = Inconnu
 vrc_config-spine_mode-LOCK_BOTH = Verrouiller les deux
 vrc_config-spine_mode-LOCK_HEAD = Verrouiller la tête
@@ -1680,12 +1680,12 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Envergure des bras
 
 ## Error collection consent modal
 
-error_collection_modal-title = Avons nous l'autorisation de collecter les erreurs ?
+error_collection_modal-title = Avons nous l’autorisation de collecter les erreurs ?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
     
     Vous pouvez modifier ce paramètre ultérieurement dans la section "Comportement" des paramètres.
-error_collection_modal-confirm = Je suis d'accord
+error_collection_modal-confirm = Je suis d’accord
 error_collection_modal-cancel = Je ne veux pas
 
 ## Tracking checklist section
@@ -1700,12 +1700,12 @@ tracking_checklist-status-partial =
        *[other] Vous avez { $count } avertissements !
     }
 tracking_checklist-status-complete = Vous êtes prêt à utiliser SlimeVR !
-tracking_checklist-MOUNTING_CALIBRATION = Effectuer une calibration de l'alignement
-tracking_checklist-FEET_MOUNTING_CALIBRATION = Effectuer une calibration de l'alignement des pieds
+tracking_checklist-MOUNTING_CALIBRATION = Effectuer une calibration de l’alignement
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Effectuer une calibration de l’alignement des pieds
 tracking_checklist-FULL_RESET = Faire une réinitialisation complète
 tracking_checklist-FULL_RESET-desc = Certains capteurs nécessitent une réinitialisation.
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR n'est pas lancé
-tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR n'est pas lancé. L’utilisez-vous pour la VR ?
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR n’est pas lancé
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR n’est pas lancé. L’utilisez-vous pour la VR ?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Lancer SteamVR
 tracking_checklist-STEAMVR_HANDS_ENABLED = Capteurs des mains activés
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Vous avez activé les capteurs des mains virtuels SteamVR. Cela fera que les boutons de vos manettes ne fonctionneront pas dans SteamVR et dans les jeux.
@@ -1732,12 +1732,12 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Ouvrir le panneau de configuration
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configurer Garder Aligné
 tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Enregistrez les poses Garder Aligné pour réduire la dérive
-tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Ouvrir l'assistant de Garder Aligné
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Ouvrir l’assistant de Garder Aligné
 tracking_checklist-ignore = Ignorer
 preview-mocap_mode_soon = Mode Mocap (Bientôt™)
 preview-disable_render = Désactiver le rendu
 preview-disabled_render = Rendu désactivé
-toolbar-mounting_calibration = Calibration de l'alignement
+toolbar-mounting_calibration = Calibration de l’alignement
 toolbar-mounting_calibration-default = Corps
 toolbar-mounting_calibration-feet = Pieds
 toolbar-mounting_calibration-fingers = Doigts
