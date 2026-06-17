@@ -11,25 +11,25 @@ websocket-connecting = Chargement...
 websocket-connection_lost = Connexion avec le serveur perdue. Reconnexion...
 websocket-connection_lost-desc = Il semble que le serveur SlimeVR ait planté. Vérifiez les logs et redémarrez le programme.
 websocket-timedout = Impossible de se connecter au serveur
-websocket-timedout-desc = Il semble que le serveur SlimeVR ait planté ou que le délai d'attente ait expiré. Vérifiez les logs et redémarrez le programme.
+websocket-timedout-desc = Il semble que le serveur SlimeVR ait planté ou que le délai d’attente ait expiré. Vérifiez les logs et redémarrez le programme.
 websocket-error-close = Quitter SlimeVR
 websocket-error-logs = Ouvrir le dossier des logs
 
 ## Update notification
 
 version_update-title = Nouvelle version disponible: { $version }
-version_update-description = Cliquer sur « { version_update-update } » téléchargera l'installateur SlimeVR pour vous.
+version_update-description = Cliquer sur « { version_update-update } » téléchargera l’installateur SlimeVR pour vous.
 version_update-update = Mettre à jour
 version_update-close = Fermer
 
 ## Tips
 
-tips-find_tracker = Impossible de différencier vos capteurs ? Secouez-en un pour qu'il soit mis en évidence.
-tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant l'enregistrement !
+tips-find_tracker = Impossible de différencier vos capteurs ? Secouez-en un pour qu’il soit mis en évidence.
+tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant l’enregistrement !
 tips-file_select = Glissez et déposez des fichiers à utiliser, ou <u>parcourir</u>.
 tips-tap_setup = Vous pouvez tapoter lentement votre capteur 2 fois pour le choisir au lieu de le sélectionner depuis le menu.
-tips-turn_on_tracker = Vous utilisez des capteurs officiels SlimeVR ? N'oubliez pas <b><em>d'allumer votre capteur</em></b> après l'avoir connecté au PC !
-tips-failed_webgl = Échec de l'initialisation de WebGL.
+tips-turn_on_tracker = Vous utilisez des capteurs officiels SlimeVR ? N’oubliez pas <b><em>d'allumer votre capteur</em></b> après l’avoir connecté au PC !
+tips-failed_webgl = Échec de l’initialisation de WebGL.
 
 ## Units
 
@@ -201,7 +201,7 @@ skeleton_bone-SKELETON_OFFSET = Décalage du squelette
 skeleton_bone-SKELETON_OFFSET-desc =
     Ceci peut être ajusté pour décaler tous vos capteurs vers l’avant ou vers l’arrière.
     Cela peut être utilisé pour aider à la calibration dans certains jeux ou applications
-    qui pourraient s’attendre à ce que vos capteurs soient plus vers l'avant.
+    qui pourraient s’attendre à ce que vos capteurs soient plus vers l’avant.
 skeleton_bone-SHOULDERS_DISTANCE = Distance des épaules
 skeleton_bone-SHOULDERS_DISTANCE-desc =
     Ceci est la distance verticale entre la base de votre cou et vos épaules.
@@ -254,15 +254,15 @@ reset-reset_all_warning-v2 =
 reset-reset_all_warning-reset = Réinitialiser les proportions
 reset-reset_all_warning-cancel = Annuler
 reset-reset_all_warning_default-v2 =
-    <b>Avertissement:</b> votre hauteur n'a pas été configurée, vos proportions seront réinitialisées aux valeurs par défaut avec la hauteur par défaut.
+    <b>Avertissement:</b> votre hauteur n’a pas été configurée, vos proportions seront réinitialisées aux valeurs par défaut avec la hauteur par défaut.
     Êtes-vous sûr de vouloir faire cela ?
 reset-full = Réinitialisation complète
-reset-mounting = Réinitialiser l'alignement
-reset-mounting-feet = Réinitialiser l'alignement des pieds
-reset-mounting-fingers = Réinitialiser l'alignement des doigts
+reset-mounting = Réinitialiser l’alignement
+reset-mounting-feet = Réinitialiser l’alignement des pieds
+reset-mounting-fingers = Réinitialiser l’alignement des doigts
 reset-yaw = Réinitialisation horizontale
 reset-error-no_feet_tracker = Aucun capteur de pieds n’est assigné
-reset-error-no_fingers_tracker = Aucun capteur de doigts n'est assigné
+reset-error-no_fingers_tracker = Aucun capteur de doigts n’est assigné
 reset-error-mounting-need_full_reset = Nécessite une réinitialisation complète avant de le monter
 reset-error-yaw-need_full_reset = Nécessite une réinitialisation complète avant une réinitialisation horizontale
 
@@ -310,7 +310,7 @@ widget-drift_compensation-clear = Réinitialiser la compensation de la dérive
 
 ## Widget: Clear Mounting calibration
 
-widget-clear_mounting = Réinitialiser la calibration de l'alignement
+widget-clear_mounting = Réinitialiser la calibration de l’alignement
 
 ## Widget: Developer settings
 
@@ -321,7 +321,7 @@ widget-developer_mode-fast_data_feed = Flux de données rapide
 widget-developer_mode-filter_slimes_and_hmd = Filtrer les capteurs SlimeVR et le casque VR
 widget-developer_mode-sort_by_name = Trier par nom
 widget-developer_mode-raw_slime_rotation = Rotation brute
-widget-developer_mode-more_info = Plus d'informations
+widget-developer_mode-more_info = Plus d’informations
 
 ## Widget: IMU Visualizer
 
@@ -410,25 +410,25 @@ tracker-settings-assignment_section-description = Partie du corps à laquelle le
 tracker-settings-assignment_section-edit = Changer
 tracker-settings-mounting_section = Orientation du capteur
 tracker-settings-mounting_section-description = Dans quelle direction pointe le capteur ?
-tracker-settings-mounting_section-edit = Changer l'orientation
+tracker-settings-mounting_section-edit = Changer l’orientation
 tracker-settings-drift_compensation_section = Permettre la compensation de la dérive
-tracker-settings-drift_compensation_section-description = Ce capteur devrait-il compenser pour sa dérive quand l'option est activée ?
+tracker-settings-drift_compensation_section-description = Ce capteur devrait-il compenser pour sa dérive quand l’option est activée ?
 tracker-settings-drift_compensation_section-edit = Permettre la compensation de la dérive
-tracker-settings-use_mag = Autoriser l'utilisation du magnétomètre sur ce capteur
+tracker-settings-use_mag = Autoriser l’utilisation du magnétomètre sur ce capteur
 # Multiline!
 tracker-settings-use_mag-description =
-    Est-ce que ce capteur devrait utiliser son magnétomètre pour réduire la dérive lorsque l'utilisation du magnétomètre est autorisée ? <b>N'éteignez pas votre capteur pendant que vous changez cette option !</b>
+    Est-ce que ce capteur devrait utiliser son magnétomètre pour réduire la dérive lorsque l’utilisation du magnétomètre est autorisée ? <b>N’éteignez pas votre capteur pendant que vous changez cette option !</b>
     
-    Vous devez d'abord autoriser l'utilisation du magnétomètre dans les paramètres. <magSetting>Cliquez ici pour y accéder</magSetting>.
+    Vous devez d’abord autoriser l’utilisation du magnétomètre dans les paramètres. <magSetting>Cliquez ici pour y accéder</magSetting>.
 tracker-settings-use_mag-label = Autoriser le magnétomètre
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nom personalisé
 tracker-settings-name_section-description = Donnez-lui un joli surnom :3
-tracker-settings-name_section-placeholder = Patte gauche d'Erimel
+tracker-settings-name_section-placeholder = Patte gauche d’Erimel
 tracker-settings-name_section-label = Nom personalisé
 tracker-settings-forget = Oublier capteur
-tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l'empêche de s'y connecter jusqu'à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
+tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l’empêche de s’y connecter jusqu’à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
 tracker-settings-forget-label = Oublier capteur
 tracker-settings-update-unavailable-v2 = Aucune publication trouvée
 tracker-settings-update-incompatible = Mise à jour impossible. Carte incompatible
@@ -449,8 +449,8 @@ tracker-part_card-unassigned = Non-attribué
 ## Body assignment menu
 
 body_assignment_menu = Où attribuer ce capteur ?
-body_assignment_menu-description = Choisissez où attribuer ce capteur. Vous pouvez également gérer tous les capteurs à la fois au lieu d'un à la fois.
-body_assignment_menu-show_advanced_locations = Afficher les emplacements d'attribution avancés
+body_assignment_menu-description = Choisissez où attribuer ce capteur. Vous pouvez également gérer tous les capteurs à la fois au lieu d’un à la fois.
+body_assignment_menu-show_advanced_locations = Afficher les emplacements d’attribution avancés
 body_assignment_menu-manage_trackers = Gérer tous les capteurs
 body_assignment_menu-unassign_tracker = Désattribuer
 
@@ -491,7 +491,7 @@ tracker_selection_menu-dont_assign = Ne pas attribuer
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
-    <b>Attention:</b> Un capteur au cou peut être mortel s'il est trop serré,
+    <b>Attention:</b> Un capteur au cou peut être mortel s’il est trop serré,
             la sangle pourrait couper la circulation à la tête !
 tracker_selection_menu-neck_warning-done = Je suis conscient des risques
 tracker_selection_menu-neck_warning-cancel = Annuler
@@ -517,7 +517,7 @@ settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
-settings-sidebar-home = Ecran d'accueil
+settings-sidebar-home = Écran d’accueil
 settings-sidebar-checklist = Checklist de suivi
 settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Comportement
@@ -547,7 +547,7 @@ settings-general-steamvr-trackers-right_elbow = Coude droit
 settings-general-steamvr-trackers-left_hand = Main gauche
 settings-general-steamvr-trackers-right_hand = Main droite
 settings-general-steamvr-trackers-tracker_toggling = Assignation automatique des capteurs
-settings-general-steamvr-trackers-tracker_toggling-description = Gère automatiquement l'activation ou la désactivation des capteurs SteamVR en fonction de vos capteurs actuellement affectés
+settings-general-steamvr-trackers-tracker_toggling-description = Gère automatiquement l’activation ou la désactivation des capteurs SteamVR en fonction de vos capteurs actuellement affectés
 settings-general-steamvr-trackers-tracker_toggling-label = Assignation automatique des capteurs
 settings-general-steamvr-trackers-hands-warning =
     <b>Attention :</b> les capteurs de mains remplaceront vos manettes.
@@ -585,7 +585,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-description =
     Activez cette option si vos capteurs tournent continuellement sur eux-mêmes horizontalement.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Prédiction de la compensation de la dérive
 settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>Avertissement:</b> n'utilisez la compensation de la dérive que si vous devez
+    <b>Avertissement:</b> n’utilisez la compensation de la dérive que si vous devez
     réinitialiser très souvent (toutes les ~5-10 minutes).
     
     Voici quelques IMUs sujets à des réinitialisations fréquentes :
@@ -594,14 +594,14 @@ settings-general-tracker_mechanics-drift_compensation_warning-cancel = Annuler
 settings-general-tracker_mechanics-drift_compensation_warning-done = Je comprends
 settings-general-tracker_mechanics-drift_compensation-amount-label = Force de la compensation
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nombre de réinitialisations prises en compte
-settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibration de la réinitialisation automatique de l'alignement
+settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibration de la réinitialisation automatique de l’alignement
 settings-general-tracker_mechanics-save_mounting_reset-description =
-    Enregistre les calibrations des réinitialisation automatiques d'alignement pour les capteurs entre les redémarrages.
+    Enregistre les calibrations des réinitialisation automatiques d’alignement pour les capteurs entre les redémarrages.
     Utile lorsque vous portez une combinaison où les capteurs ne bougent pas entre les sessions. <b>Non recommandé pour les utilisateurs normaux !</b>
-settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Enregistrer la réinitialisation de l'alignement
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Enregistrer la réinitialisation de l’alignement
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Utiliser le magnétomètre sur tous les capteurs IMU qui le prennent en charge
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Utilise le magnétomètre sur tous les capteurs dotés d'un micrologiciel compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
+    Utilise le magnétomètre sur tous les capteurs dotés d’un micrologiciel compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
     Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le magnétomètre sur les capteurs
 settings-general-tracker_mechanics-trackers_over_usb = Capteurs via USB
@@ -613,7 +613,7 @@ settings-stay_aligned-setup-label = Configurer Garder Aligné
 settings-stay_aligned-setup-description = Vous devez terminer « Configurer Garder Aligné » pour activer Garder Aligné.
 settings-stay_aligned-warnings-drift_compensation = ⚠ Veuillez désactiver la compensation de la dérive ! La compensation de la dérive entrera en conflit avec Garder Aligné.
 settings-stay_aligned-enabled-label = Ajuster les capteurs
-settings-stay_aligned-hide_yaw_correction-label = Masquer l'ajustement (pour comparer sans Garder Aligné)
+settings-stay_aligned-hide_yaw_correction-label = Masquer l’ajustement (pour comparer sans Garder Aligné)
 settings-stay_aligned-general-label = Général
 settings-stay_aligned-relaxed_poses-label = Postures détendues
 settings-stay_aligned-relaxed_poses-description = Garder Aligné utilise vos postures détendues pour garder vos capteurs alignés. Utilisez « Configurer Garder Aligné » pour mettre à jour ces poses.
@@ -642,12 +642,12 @@ settings-general-fk_settings-leg_tweak-skating_correction = Correction du glisse
 settings-general-fk_settings-leg_tweak-toe_snap = Correction des orteils
 settings-general-fk_settings-leg_tweak-foot_plant = Correction des pieds
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Force de la correction du glissement
-settings-general-fk_settings-leg_tweak-skating_correction-description = La correction de patinage corrige le patinage des pieds mais peut diminuer la précision de certains mouvements. Lorsque vous activez cette option, assurez-vous d'effectuer une réinitialisation complète et de le recalibrer en jeu.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Le limitage au sol tente de réduire ou même d'empêcher que vos pieds traversent le sol. Lorsque vous activez cette fonction, assurez-vous d'effectuer une réinitialisation complète et de recalibrer en jeu.
-settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l'orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
-settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu'ils soient parallèles au sol lorsqu'ils le touche.
+settings-general-fk_settings-leg_tweak-skating_correction-description = La correction de patinage corrige le patinage des pieds mais peut diminuer la précision de certains mouvements. Lorsque vous activez cette option, assurez-vous d’effectuer une réinitialisation complète et de le recalibrer en jeu.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Le limitage au sol tente de réduire ou même d’empêcher que vos pieds traversent le sol. Lorsque vous activez cette fonction, assurez-vous d’effectuer une réinitialisation complète et de recalibrer en jeu.
+settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l’orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
+settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu’ils soient parallèles au sol lorsqu’ils le touche.
 settings-general-fk_settings-leg_fk = Capture des jambes
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l'alignement des pieds pendant la réinitialisation d'alignement générale.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l’alignement des pieds pendant la réinitialisation d’alignement générale.
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l'alignement des pieds
 settings-general-fk_settings-enforce_joint_constraints = Limites squelettiques
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Appliquer les contraintes
@@ -989,6 +989,28 @@ onboarding-quiz-more_sets_modal-confirm = J'ai connecté tous mes capteurs
 onboarding-quiz-more_sets_modal-cancel = Je veux connecter plus de capteurs
 onboarding-quiz-slimeset-title = Quel type de capteurs connectez-vous ?
 onboarding-quiz-slimeset-description = Si vous avez plusieurs ensembles, on vous le demandera à nouveau plus tard dans le processus
+onboarding-quiz-slimeset-official-sets = Capteurs officiels SlimeVR
+onboarding-quiz-slimeset-thirdparty-sets = Capteurs tiers ou DIY
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = Slime WiFi
+onboarding-quiz-slimeset-answer-dongle = Slime avec dongle
+onboarding-quiz-usage-title = Pour quoi utiliserez-vous vos capteurs ?
+onboarding-quiz-usage-description = Si vous prévoyez utiliser SlimeVR pour un autre usage, vous pourrez modifier les paramètres liés plus tard.
+onboarding-quiz-usage-answer-VRC = Jeux VR (par exemple VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap/VTubing
+onboarding-quiz-runtime-title = Est-ce que vous jouez via SteamVR, ou directement sur votre casque (standalone) ?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Préférences Mocap
+onboarding-quiz-mocap_preferences-desc = Précisez comment vous comptez utiliser SlimeVR pour le Mocap/VTubing
+onboarding-quiz-mocap_preferences-playspace-title = Quel est votre espace de jeu ?
+onboarding-quiz-mocap_preferences-playspace-desc = Si vous êtes debout, SlimeVR essaiera de suivre vos mouvements de marche au lieu de vous garder à un seul endroit.
+onboarding-quiz-mocap_preferences-playspace-sitting = Assis
+onboarding-quiz-mocap_preferences-playspace-standing = Debout
+onboarding-quiz-mocap_preferences-vrm_model-title = Avez-vous un modèle VRM ? (Optionnel)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Charger un modèle VRM améliorera la qualité du suivi et la compatibilité avec les applications utilisant VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Portez-vous un capteur ou un casque VR sur la tête ?
 onboarding-quiz-mocap_preferences-head_tracker-yes = Oui
 onboarding-quiz-mocap_preferences-head_tracker-no = Non
 onboarding-quiz-mocap_preferences-head_tracker_location-title = Où est situé votre capteur de tête ?
@@ -1046,6 +1068,7 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Règles d’accès matérielles udev non trouvées
 
 ## Setup start
 
