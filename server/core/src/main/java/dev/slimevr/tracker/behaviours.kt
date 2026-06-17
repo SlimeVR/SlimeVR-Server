@@ -80,9 +80,12 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		serverState: VRServerState
 	): TapDetectionContext {
 		val tapDetectionConfig = configState.data.tapDetectionConfig
-		val trackersBodyParts = serverState.trackers.values
-			.map { it.context.state.value.bodyPart }
-			.toSet()
+
+		// If setupMode is true, double tap to assign
+		if (tapDetectionConfig.setupMode) {
+			println("SetupMode is enabled!")
+			return TapDetectionContext(null, 2, 0f, tapDetectionConfig.numberTrackersOverThreshold)
+		}
 
 		// Get reference rotation for reset actions
 		// TODO need a helper method or something for this
@@ -93,6 +96,9 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 			} else null
 		} ?: Quaternion.IDENTITY
 
+		val trackersBodyParts = serverState.trackers.values
+			.map { it.context.state.value.bodyPart }
+			.toSet()
 		val yawResetBodyPart = listOf(tapDetectionConfig.yawResetBodyPart, BodyPart.UPPER_CHEST, BodyPart.CHEST, BodyPart.HIP, BodyPart.WAIST)
 			.firstOrNull { it in trackersBodyParts }
 		val fullResetBodyPart = listOf(tapDetectionConfig.fullResetBodyPart, BodyPart.LEFT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG)

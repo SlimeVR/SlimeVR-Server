@@ -43,7 +43,8 @@ data class TapDetectionConfig (
 	var yawResetTaps: Int = 2,
 	var fullResetTaps: Int = 3,
 	var mountingResetTaps: Int = 3,
-	var numberTrackersOverThreshold: Int = 1
+	var numberTrackersOverThreshold: Int = 1,
+	var setupMode: Boolean = false
 ) {
 }
 

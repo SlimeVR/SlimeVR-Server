@@ -18,9 +18,9 @@ class TapDetectionBehaviour(
 				yawResetDelay = tapDetectionSettings.yawResetDelay ?: oldConfig.yawResetDelay,
 				fullResetDelay = tapDetectionSettings.fullResetDelay ?: oldConfig.fullResetDelay,
 				mountingResetDelay = tapDetectionSettings.mountingResetDelay ?: oldConfig.mountingResetDelay,
-				yawResetEnabled = tapDetectionSettings.yawResetEnabled ?: false,
-				fullResetEnabled = tapDetectionSettings.fullResetEnabled ?: false,
-				mountingResetEnabled = tapDetectionSettings.mountingResetEnabled ?: false,
+				yawResetEnabled = tapDetectionSettings.yawResetEnabled == true,
+				fullResetEnabled = tapDetectionSettings.fullResetEnabled == true,
+				mountingResetEnabled = tapDetectionSettings.mountingResetEnabled == true,
 				yawResetTaps = tapDetectionSettings.yawResetTaps?.toInt() ?: oldConfig.yawResetTaps,
 				fullResetTaps = tapDetectionSettings.fullResetTaps?.toInt() ?: oldConfig.fullResetTaps,
 				mountingResetTaps = tapDetectionSettings.mountingResetTaps?.toInt() ?: oldConfig.mountingResetTaps,
@@ -28,11 +28,10 @@ class TapDetectionBehaviour(
 				fullResetBodyPart = tapDetectionSettings.fullResetTracker ?: oldConfig.fullResetBodyPart,
 				mountingResetBodyPart = tapDetectionSettings.mountingResetTracker ?: oldConfig.mountingResetBodyPart,
 				numberTrackersOverThreshold = tapDetectionSettings.numberTrackersOverThreshold?.toInt() ?: oldConfig.numberTrackersOverThreshold,
+				setupMode = tapDetectionSettings.setupMode == true,
 			)
 
 			settings.context.dispatch(SettingsActions.Update { copy(tapDetectionConfig = newConfig) })
-
-			// TODO setupMode
 		}
 	}
 }
