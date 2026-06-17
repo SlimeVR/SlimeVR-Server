@@ -10,6 +10,7 @@ import {
 } from '@/firmware-tool-api/firmwareToolComponents';
 import { useEffect, useMemo, useState } from 'react';
 import { useSafeLocalization } from '@/i18n/config';
+import semver from 'semver';
 
 function Selector({
   text,
@@ -142,16 +143,33 @@ export function SelectSourceSetep({
                   !source.availableBoards.includes(partialBoard.board) ||
                   source.source !== partialBoard.source,
                 name: source.version,
-                isBranch: source.branch == source.version,
               });
 
             return curr;
           },
-          [] as { name: string; disabled: boolean; isBranch: boolean }[]
+          [] as { name: string; disabled: boolean }[]
         )
         .sort((a, b) => {
-          if (a.isBranch !== b.isBranch) return a.isBranch ? 1 : -1;
-          return a.name.localeCompare(b.name);
+          // safeguard against inf loop
+          if (a == b) return 0;
+
+          const versionA = semver.valid(a.name);
+          const versionB = semver.valid(b.name);
+
+          // if both are not valid versions:
+          //   if one is main, push that higher
+          //   otherwise, push up the one which is alphabetically sooner
+          if (versionA == null && versionB == null) {
+            if (a.name == 'main') return -1;
+            return a.name.localeCompare(b.name);
+          }
+
+          // if one isn't valid, push the one that's valid up
+          if ((versionA == null) != (versionB == null))
+            return versionA == null ? 1 : -1;
+
+          // if A is lower, push B up
+          return semver.lt(versionA!, versionB!) ? 1 : -1;
         }),
     };
   }, [sources, partialBoard]);

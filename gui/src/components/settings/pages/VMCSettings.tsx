@@ -8,6 +8,7 @@ import {
   SettingsResponseT,
   OSCSettingsT,
   VMCOSCSettingsT,
+  VRMSettingsT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -31,7 +32,6 @@ import { boolean, object } from 'yup';
 interface VMCSettingsForm {
   vmc: {
     oscSettings: OSCSettings;
-    vrmJson?: FileList;
     anchorHip: boolean;
     mirrorTracking: boolean;
   };
@@ -50,10 +50,84 @@ const defaultValues = {
   },
 };
 
+export function VMCFileUpload() {
+  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { l10n } = useLocalization();
+  const [modelName, setModelName] = useState<string | null>(null);
+
+  const { control, watch } = useForm<{
+    vrmJson?: FileList;
+  }>({
+    defaultValues: { vrmJson: undefined },
+    reValidateMode: 'onChange',
+    mode: 'onChange',
+  });
+
+  const vrmJson = watch('vrmJson');
+
+  const updateVRMJson = async () => {
+    const req = new ChangeSettingsRequestT();
+    const vrm = new VRMSettingsT();
+    if (vrmJson !== undefined) {
+      if (vrmJson.length > 0) {
+        const file = await parseVRMFile(vrmJson[0]);
+        if (file) {
+          vrm.vrmJson = file.json;
+          setModelName(file.name);
+        }
+      } else {
+        vrm.vrmJson = '';
+        setModelName(null);
+      }
+    }
+    req.vrm = vrm;
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
+  };
+
+  useEffect(() => {
+    updateVRMJson();
+  }, [vrmJson]);
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+  }, []);
+
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    const vrmJson = settings.vrm?.vrmJson?.toString();
+    if (vrmJson) {
+      let data: any;
+      try {
+        data = JSON.parse(vrmJson);
+        setModelName(getVRMName(data) || '');
+      } catch (e) {
+        error('Failed to fetch VRM name: ' + e);
+      }
+    }
+  });
+
+  return (
+    <FileInput
+      control={control}
+      name="vrmJson"
+      rules={{
+        required: false,
+      }}
+      value="help"
+      importedFileName={
+        // if modelname is an empty string, it's an untitled model
+        modelName === ''
+          ? l10n.getString('settings-osc-vmc-vrm-untitled_model')
+          : modelName
+      }
+      label="settings-osc-vmc-vrm-file_select"
+      accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
+    />
+  );
+}
+
 export function VMCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [modelName, setModelName] = useState<string | null>(null);
   const { oscValidator } = useOscSettingsValidator();
 
   const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
@@ -81,18 +155,6 @@ export function VMCSettings() {
         new OSCSettingsT(),
         values.vmc.oscSettings
       );
-      if (values.vmc.vrmJson !== undefined) {
-        if (values.vmc.vrmJson.length > 0) {
-          const file = await parseVRMFile(values.vmc.vrmJson[0]);
-          if (file) {
-            vmcOsc.vrmJson = file.json;
-            setModelName(file.name);
-          }
-        } else {
-          vmcOsc.vrmJson = '';
-          setModelName(null);
-        }
-      }
       vmcOsc.anchorHip = values.vmc.anchorHip;
       vmcOsc.mirrorTracking = values.vmc.mirrorTracking;
 
@@ -124,16 +186,12 @@ export function VMCSettings() {
           formData.vmc.oscSettings.address =
             settings.vmcOsc.oscSettings.address.toString();
       }
-      const vrmJson = settings.vmcOsc.vrmJson?.toString();
-      if (vrmJson) {
-        setModelName(getVRMName(vrmJson) || '');
-      }
 
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
       formData.vmc.mirrorTracking = settings.vmcOsc.mirrorTracking;
-    }
 
-    reset(formData);
+      reset(formData);
+    }
   });
 
   return (
@@ -238,23 +296,7 @@ export function VMCSettings() {
               </Typography>
             </div>
             <div className="grid gap-3 pb-5">
-              <FileInput
-                control={control}
-                name="vmc.vrmJson"
-                rules={{
-                  required: false,
-                }}
-                value="help"
-                importedFileName={
-                  // if modelname is an empty string, it's an untitled model
-                  modelName === ''
-                    ? l10n.getString('settings-osc-vmc-vrm-untitled_model')
-                    : modelName
-                }
-                label="settings-osc-vmc-vrm-file_select"
-                accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
-              />
-              {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
+              <VMCFileUpload />
             </div>
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-anchor_hip')}
@@ -344,16 +386,34 @@ async function parseVRMFile(
     .slice(gltfHeaderEnd, gltfHeaderEnd + jsonLength, 'application/json')
     .text();
 
-  const name = getVRMName(json);
+  let data: any;
+  try {
+    data = JSON.parse(json);
+  } catch (e) {
+    error('Failed to parse VRM glTF header: ' + e);
+    return null;
+  }
+
+  const name = getVRMName(data);
   if (name === null) return null;
 
-  return { json, name };
+  // Only keep the fields we care about
+  /* eslint-disable camelcase */
+  const vrmJson = {
+    extensions: {
+      VRM: data.extensions.VRM,
+      VRMC_vrm: data.extensions.VRMC_vrm,
+    },
+    extensionsUsed: data.extensionsUsed,
+    nodes: data.nodes,
+  };
+  /* eslint-enable camelcase */
+
+  return { json: JSON.stringify(vrmJson), name };
 }
 
-function getVRMName(json: string): string | null {
+function getVRMName(data: any): string | null {
   try {
-    const data = JSON.parse(json);
-
     if (typeof data?.extensions?.VRMC_vrm?.specVersion === 'string') {
       const name = data.extensions.VRMC_vrm.meta.name;
 
@@ -369,7 +429,7 @@ function getVRMName(json: string): string | null {
       return data?.extensions?.VRM?.meta?.title || '';
     }
   } catch (e) {
-    error(e);
+    error('Failed to fetch VRM name: ' + e);
     return null;
   }
 }

@@ -14,7 +14,8 @@
       't t t' var(--topbar-h)
       'n b s' var(--toolbar-h)
       'n c s' calc(100% - var(--topbar-h) - var(--toolbar-h))
-      / var(--navbar-w) calc(100% - var(--navbar-w) - var(--right-section-w)) var(--right-section-w);
+      / var(--navbar-w) calc(100% - var(--navbar-w) - var(--right-section-w))
+      var(--right-section-w);
   }
 
   @screen nsm {

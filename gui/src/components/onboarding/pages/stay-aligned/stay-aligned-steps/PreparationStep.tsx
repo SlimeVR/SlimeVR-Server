@@ -11,6 +11,7 @@ import { ResetType } from 'solarxr-protocol';
 export function PreparationStep({
   nextStep,
   prevStep,
+  isActive,
 }: VerticalStepComponentProps) {
   return (
     <div className="flex flex-col flex-grow justify-between py-2 gap-2">
@@ -53,7 +54,14 @@ export function PreparationStep({
           <Button variant={'secondary'} onClick={prevStep} />
         </Localized>
 
-        <ResetButton type={ResetType.Full} onReseted={nextStep} />
+        <ResetButton
+          type={ResetType.Full}
+          onReseted={() => {
+            if (isActive) {
+              nextStep();
+            }
+          }}
+        />
       </div>
     </div>
   );

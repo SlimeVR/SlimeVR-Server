@@ -7,7 +7,7 @@ import {
 } from '@/hooks/firmware-tool';
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import {
   FirmwareUpdateStatus,
   TrackerStatus as TrackerStatusEnum,
@@ -22,9 +22,9 @@ interface DeviceCardProps {
   color?: string;
 }
 
-interface DeviceCardControlProps {
-  control?: Control<any>;
-  name?: string;
+interface DeviceCardControlProps<T extends FieldValues = FieldValues> {
+  control?: Control<T>;
+  name?: FieldPath<T>;
   progress?: number;
   disabled?: boolean;
 }
@@ -55,7 +55,7 @@ export function DeviceCardContent({ deviceNames, status }: DeviceCardProps) {
   );
 }
 
-export function DeviceCardControl({
+export function DeviceCardControl<T extends FieldValues = FieldValues>({
   control,
   name,
   progress,
@@ -63,7 +63,7 @@ export function DeviceCardControl({
   online = null,
   color = 'bg-background-60',
   ...props
-}: DeviceCardControlProps & DeviceCardProps) {
+}: DeviceCardControlProps<T> & DeviceCardProps) {
   const cardborder = useMemo(() => {
     if (!props.status) return 'border-transparent';
 

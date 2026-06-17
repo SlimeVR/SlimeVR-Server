@@ -1,15 +1,6 @@
-export function VMCIcon({ width }: { width?: number }) {
+export function VMCIcon() {
   return (
-    <svg
-      id="svg5"
-      xmlns="http://www.w3.org/2000/svg"
-      xmlnsXlink="http://www.w3.org/1999/xlink"
-      x={0}
-      y={0}
-      width={width ?? 'fit-content'}
-      viewBox="-38 0 409 155"
-      xmlSpace="preserve"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-38 0 409 155">
       <style>
         {
           '.st1,.st3{stroke:#000;stroke-width:13}.st3{display:inline;fill:none;stroke-width:12.9402;stroke-miterlimit:11.3386}'

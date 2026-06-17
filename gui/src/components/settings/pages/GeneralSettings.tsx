@@ -1,5 +1,5 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
@@ -15,6 +15,8 @@ import {
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
   HIDSettingsT,
+  VelocitySettingsT,
+  BodyPart,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -43,6 +45,11 @@ import {
   loadResetSettings,
   ResetSettingsForm,
 } from '@/hooks/reset-settings';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { isEqual } from '@react-hookz/deep-equal';
+import { selectAtom } from 'jotai/utils';
+import { Dropdown } from '@/components/commons/Dropdown';
+import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
 
 export type SettingsForm = {
   trackers: {
@@ -96,6 +103,9 @@ export type SettingsForm = {
     fullResetTaps: number;
     mountingResetTaps: number;
     numberTrackersOverThreshold: number;
+    yawResetTracker: string;
+    mountingResetTracker: string;
+    fullResetTracker: string;
   };
   legTweaks: {
     correctionStrength: number;
@@ -104,6 +114,9 @@ export type SettingsForm = {
   stayAligned: StayAlignedSettingsForm;
   hidSettings: {
     trackersOverHID: boolean;
+  };
+  velocitySettings: {
+    sendDerivedVelocity: boolean;
   };
 };
 
@@ -156,17 +169,44 @@ const defaultValues: SettingsForm = {
     fullResetTaps: 3,
     mountingResetTaps: 3,
     numberTrackersOverThreshold: 1,
+    yawResetTracker: String(BodyPart.CHEST),
+    mountingResetTracker: String(BodyPart.RIGHT_UPPER_LEG),
+    fullResetTracker: String(BodyPart.LEFT_UPPER_LEG),
   },
   legTweaks: { correctionStrength: 0.3 },
   resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
   hidSettings: { trackersOverHID: false },
+  velocitySettings: { sendDerivedVelocity: false },
 };
 
+const settingsAtom = atom(new SettingsResponseT());
+const settingsValueAtom = selectAtom(
+  settingsAtom,
+  (settings) => settings,
+  isEqual
+);
+
 export function GeneralSettings() {
+  const setSettings = useSetAtom(settingsAtom);
+  const settings = useAtomValue(settingsValueAtom);
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const { currentLocales } = useLocaleConfig();
+
+  const bodyParts: { value: string; label: string }[] = Object.values(BodyPart)
+    .filter((v): v is BodyPart => typeof v === 'number')
+    .filter((v) => ASSIGNMENT_MODES['full-body'].includes(v as BodyPart))
+    .map((value) => ({
+      value: String(value),
+      label: l10n.getString(`body_part-${BodyPart[value]}`),
+    }));
+  const blockHandsWarning = useRef(false);
+  // If not null, warning will be shown, and showHandsWarning will
+  // hold which hands should be toggled ([leftHand, rightHand])
+  const [showHandsWarning, setShowHandsWarning] = useState<
+    [boolean, boolean] | null
+  >(null);
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
@@ -183,17 +223,16 @@ export function GeneralSettings() {
   const { reset, control, watch, handleSubmit, getValues, setValue } =
     useForm<SettingsForm>({
       defaultValues,
+      mode: 'onChange',
+      reValidateMode: 'onChange',
     });
+
   const {
-    trackers: {
-      automaticTrackerToggle,
-      leftHand: steamVrLeftHand,
-      rightHand: steamVrRightHand,
-    },
+    trackers: { automaticTrackerToggle },
   } = watch();
 
   const onSubmit = (values: SettingsForm) => {
-    const settings = new ChangeSettingsRequestT();
+    const settingsReq = new ChangeSettingsRequestT();
 
     if (values.trackers) {
       const trackers = new SteamVRTrackersSettingT();
@@ -211,8 +250,29 @@ export function GeneralSettings() {
       trackers.leftHand = values.trackers.leftHand;
       trackers.rightHand = values.trackers.rightHand;
 
+      if (
+        !blockHandsWarning.current &&
+        !showHandsWarning &&
+        !settings.steamVrTrackers?.leftHand &&
+        !settings.steamVrTrackers?.rightHand &&
+        (trackers.leftHand || trackers.rightHand)
+      ) {
+        // We have just toggled on one of the hand trackers, show the user a warning
+        setShowHandsWarning([trackers.leftHand, trackers.rightHand]);
+        trackers.leftHand = false;
+        trackers.rightHand = false;
+      } else if (
+        blockHandsWarning.current &&
+        !trackers.leftHand &&
+        !trackers.rightHand
+      ) {
+        // Both hand trackers have just been disabled, make sure the warning shows up
+        // again next time the user toggles one back on
+        blockHandsWarning.current = false;
+      }
+
       trackers.automaticTrackerToggle = values.trackers.automaticTrackerToggle;
-      settings.steamVrTrackers = trackers;
+      settingsReq.steamVrTrackers = trackers;
     }
 
     const modelSettings = new ModelSettingsT();
@@ -257,7 +317,7 @@ export function GeneralSettings() {
       modelSettings.legTweaks = legTweaks;
     }
 
-    settings.modelSettings = modelSettings;
+    settingsReq.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
     tapDetection.fullResetDelay = values.tapDetection.fullResetDelay;
@@ -266,6 +326,13 @@ export function GeneralSettings() {
     tapDetection.yawResetDelay = values.tapDetection.yawResetDelay;
     tapDetection.yawResetEnabled = values.tapDetection.yawResetEnabled;
     tapDetection.yawResetTaps = values.tapDetection.yawResetTaps;
+    tapDetection.yawResetTracker = Number(values.tapDetection.yawResetTracker);
+    tapDetection.mountingResetTracker = Number(
+      values.tapDetection.mountingResetTracker
+    );
+    tapDetection.fullResetTracker = Number(
+      values.tapDetection.fullResetTracker
+    );
     tapDetection.mountingResetEnabled =
       values.tapDetection.mountingResetEnabled;
     tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
@@ -273,28 +340,35 @@ export function GeneralSettings() {
     tapDetection.numberTrackersOverThreshold =
       values.tapDetection.numberTrackersOverThreshold;
     tapDetection.setupMode = false;
-    settings.tapDetectionSettings = tapDetection;
+    settingsReq.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
     filtering.type = values.filtering.type;
     filtering.amount = values.filtering.amount;
-    settings.filtering = filtering;
+    settingsReq.filtering = filtering;
 
-    settings.stayAligned = serializeStayAlignedSettings(values.stayAligned);
+    settingsReq.stayAligned = serializeStayAlignedSettings(values.stayAligned);
 
     const hidSettings = new HIDSettingsT();
     hidSettings.trackersOverHid = values.hidSettings.trackersOverHID;
-    settings.hidSettings = hidSettings;
+    settingsReq.hidSettings = hidSettings;
+
+    const velocitySettings = new VelocitySettingsT();
+    velocitySettings.sendDerivedVelocity =
+      values.velocitySettings.sendDerivedVelocity;
+    settingsReq.velocitySettings = velocitySettings;
 
     if (values.resetsSettings) {
-      settings.resetsSettings = loadResetSettings(values.resetsSettings);
+      settingsReq.resetsSettings = loadResetSettings(values.resetsSettings);
     }
 
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsReq);
   };
 
   useEffect(() => {
-    const subscription = watch(() => handleSubmit(onSubmit)());
+    const subscription = watch((value, { type }) => {
+      if (type === 'change') handleSubmit(onSubmit)();
+    });
     return () => subscription.unsubscribe();
   }, []);
 
@@ -302,10 +376,7 @@ export function GeneralSettings() {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
 
-  // If null, we still haven't shown the hands warning
-  // if false then initially the hands warning was disabled
-  const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+  useEffect(() => {
     const formData: DefaultValues<SettingsForm> = {};
 
     if (settings.filtering) {
@@ -315,10 +386,11 @@ export function GeneralSettings() {
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
       if (
-        settings.steamVrTrackers.leftHand ||
-        settings.steamVrTrackers.rightHand
+        !blockHandsWarning.current &&
+        (settings.steamVrTrackers.leftHand ||
+          settings.steamVrTrackers.rightHand)
       ) {
-        setHandsWarning(false);
+        blockHandsWarning.current = true;
       }
     }
 
@@ -377,6 +449,18 @@ export function GeneralSettings() {
         mountingResetTaps:
           settings.tapDetectionSettings.mountingResetTaps ||
           defaultValues.tapDetection.mountingResetTaps,
+        yawResetTracker: String(
+          settings.tapDetectionSettings.yawResetTracker ||
+            defaultValues.tapDetection.yawResetTracker
+        ),
+        fullResetTracker: String(
+          settings.tapDetectionSettings.fullResetTracker ||
+            defaultValues.tapDetection.fullResetTracker
+        ),
+        mountingResetTracker: String(
+          settings.tapDetectionSettings.mountingResetTracker ||
+            defaultValues.tapDetection.mountingResetTracker
+        ),
         numberTrackersOverThreshold:
           settings.tapDetectionSettings.numberTrackersOverThreshold ||
           defaultValues.tapDetection.numberTrackersOverThreshold,
@@ -407,45 +491,34 @@ export function GeneralSettings() {
       };
     }
 
-    reset({ ...getValues(), ...formData });
-  });
-
-  useEffect(() => {
-    if ((steamVrLeftHand || steamVrRightHand) && handsWarning === null) {
-      setHandsWarning(true);
-    } else if (
-      !(steamVrLeftHand || steamVrRightHand) &&
-      handsWarning === false
-    ) {
-      setHandsWarning(null);
+    if (settings.velocitySettings) {
+      formData.velocitySettings = {
+        sendDerivedVelocity: settings.velocitySettings.sendDerivedVelocity,
+      };
     }
-  }, [steamVrLeftHand, steamVrRightHand, handsWarning]);
 
-  // Handle scrolling to selected page
-  // useEffect(() => {
-  //   const typedState: { scrollTo: string } = state as any;
-  //   if (!pageRef.current || !typedState || !typedState.scrollTo) {
-  //     return;
-  //   }
-  //   const elem = pageRef.current.querySelector(`#${typedState.scrollTo}`);
-  //   if (elem) {
-  //     elem.scrollIntoView({ behavior: 'smooth' });
-  //   }
-  // }, [state]);
+    reset({ ...getValues(), ...formData });
+  }, [settings]);
+
+  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
+    setSettings(settings);
+  });
 
   return (
     <SettingsPageLayout>
       <HandsWarningModal
-        isOpen={!!handsWarning}
+        isOpen={!!showHandsWarning}
         onClose={() => {
           setValue('trackers.leftHand', false);
           setValue('trackers.rightHand', false);
-          setHandsWarning(null);
+          setShowHandsWarning(null);
         }}
         accept={() => {
-          setValue('trackers.leftHand', true);
-          setValue('trackers.rightHand', true);
-          setHandsWarning(false);
+          const [leftHand, rightHand] = showHandsWarning!;
+          blockHandsWarning.current = true;
+          setValue('trackers.leftHand', leftHand);
+          setValue('trackers.rightHand', rightHand);
+          setShowHandsWarning(null);
         }}
       />
       <form className="flex flex-col gap-2 w-full">
@@ -994,6 +1067,32 @@ export function GeneralSettings() {
               />
             </div>
 
+            <div className="flex flex-col pt-2 pb-1">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-fk_settings-velocity_settings'
+                )}
+              </Typography>
+              <div className="pt-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-general-fk_settings-velocity_settings-description'
+                  )}
+                </Typography>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-1 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="velocitySettings.sendDerivedVelocity"
+                label={l10n.getString(
+                  'settings-general-fk_settings-velocity_settings-send_derived_velocity'
+                )}
+              />
+            </div>
+
             {config?.debug && (
               <>
                 <div className="flex flex-col pt-2 pb-3">
@@ -1144,32 +1243,31 @@ export function GeneralSettings() {
                     />
                   </div>
                 </div>
-
-                <div className="flex flex-col pt-2 pb-3">
-                  <Typography variant="section-title">
-                    {l10n.getString(
-                      'settings-general-fk_settings-self_localization-title'
-                    )}
-                  </Typography>
-                  <Typography>
-                    {l10n.getString(
-                      'settings-general-fk_settings-self_localization-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="grid sm:grid-cols-1 gap3 pb5">
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    control={control}
-                    name="toggles.selfLocalization"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-self_localization-title'
-                    )}
-                  />
-                </div>
               </>
             )}
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-fk_settings-self_localization-title'
+                )}
+              </Typography>
+              <Typography>
+                {l10n.getString(
+                  'settings-general-fk_settings-self_localization-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 gap3 pb5">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.selfLocalization"
+                label={l10n.getString(
+                  'settings-general-fk_settings-self_localization-title'
+                )}
+              />
+            </div>
           </>
         </SettingsPagePaneLayout>
 
@@ -1187,34 +1285,80 @@ export function GeneralSettings() {
                 {l10n.getString('settings-general-gesture_control-description')}
               </Typography>
             </div>
-            <div className="grid sm:grid-cols-3 gap-5 pb-2">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="tapDetection.yawResetEnabled"
-                label={l10n.getString(
-                  'settings-general-gesture_control-yawResetEnabled'
-                )}
-              />
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="tapDetection.fullResetEnabled"
-                label={l10n.getString(
-                  'settings-general-gesture_control-fullResetEnabled'
-                )}
-              />
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="tapDetection.mountingResetEnabled"
-                label={l10n.getString(
-                  'settings-general-gesture_control-mountingResetEnabled'
-                )}
-              />
+            <div>
+              <div className="grid sm:grid-cols-3 gap-5 pb-2">
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  control={control}
+                  name="tapDetection.yawResetEnabled"
+                  label={l10n.getString(
+                    'settings-general-gesture_control-yawResetEnabled'
+                  )}
+                />
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  control={control}
+                  name="tapDetection.fullResetEnabled"
+                  label={l10n.getString(
+                    'settings-general-gesture_control-fullResetEnabled'
+                  )}
+                />
+                <CheckBox
+                  variant="toggle"
+                  outlined
+                  control={control}
+                  name="tapDetection.mountingResetEnabled"
+                  label={l10n.getString(
+                    'settings-general-gesture_control-mountingResetEnabled'
+                  )}
+                />
+              </div>
+              <div className="grid sm:grid-cols-3 gap-5 pb-2">
+                <div>
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'settings-general-gesture_control-yawResetTracker'
+                    )}
+                  </Typography>
+                  <Dropdown
+                    display="block"
+                    control={control}
+                    placeholder={''}
+                    name="tapDetection.yawResetTracker"
+                    items={bodyParts}
+                  />
+                </div>
+                <div>
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'settings-general-gesture_control-mountingResetTracker'
+                    )}
+                  </Typography>
+                  <Dropdown
+                    display="block"
+                    control={control}
+                    placeholder={''}
+                    name="tapDetection.mountingResetTracker"
+                    items={bodyParts}
+                  />
+                </div>
+                <div>
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'settings-general-gesture_control-fullResetTracker'
+                    )}
+                  </Typography>
+                  <Dropdown
+                    display="block"
+                    control={control}
+                    placeholder={''}
+                    name="tapDetection.fullResetTracker"
+                    items={bodyParts}
+                  />
+                </div>
+              </div>
             </div>
             <div className="grid sm:grid-cols-3 gap-5 pb-2">
               <NumberSelector

@@ -10,6 +10,8 @@ import {
 import {
   Control,
   FieldError,
+  FieldPath,
+  FieldValues,
   useController,
   UseControllerProps,
 } from 'react-hook-form';
@@ -17,7 +19,7 @@ import { ArrowDownIcon, ArrowUpIcon } from './icon/ArrowIcons';
 import { a11yClick } from '@/utils/a11y';
 import { createPortal } from 'react-dom';
 
-type DropdownItem = {
+export type DropdownItem = {
   value: string;
   label: ReactNode;
 };
@@ -415,14 +417,15 @@ export function DropdownInside({
   );
 }
 
-export function Dropdown({
+export function Dropdown<T extends FieldValues = FieldValues>({
   control,
   name,
   rules,
   ...props
 }: DropdownProps & {
-  control: Control<any>;
-  rules?: UseControllerProps<any>['rules'];
+  control: Control<T>;
+  name: FieldPath<T>;
+  rules?: UseControllerProps<T, FieldPath<T>>['rules'];
 }) {
   const {
     field: { value, onChange },

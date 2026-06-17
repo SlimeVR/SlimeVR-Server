@@ -28,7 +28,7 @@ export function ManualMountingPage() {
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
 
-  applyProgress(0.7);
+  applyProgress(0.6);
 
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
 

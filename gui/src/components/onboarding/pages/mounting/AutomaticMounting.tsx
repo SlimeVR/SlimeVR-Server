@@ -23,7 +23,7 @@ export function AutomaticMountingPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
 
-  applyProgress(0.7);
+  applyProgress(0.6);
 
   return (
     <>

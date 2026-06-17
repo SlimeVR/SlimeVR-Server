@@ -34,7 +34,9 @@ export type GHReturn = {
     | null;
 };
 
-export type DiscordPresence = { enable: false } | { enable: true, activity: string }
+export type DiscordPresence =
+  | { enable: false }
+  | { enable: true; activity: string; iconText: string | undefined };
 
 export interface IElectronAPI {
   onServerStatus: (cb: (data: ServerStatusEvent) => void) => () => void;
@@ -43,8 +45,9 @@ export interface IElectronAPI {
   openLogsFolder: () => Promise<void>;
   openConfigFolder: () => Promise<void>;
   close: () => void;
+  hide: () => void;
   minimize: () => void;
-  maximize: () => void;
+  toggleMaximize: () => void;
   showDecorations: (decorations: boolean) => void;
   setTranslations: (translations: Record<string, string>) => void;
   i18nOverride: () => Promise<string | false>;
@@ -55,6 +58,8 @@ export interface IElectronAPI {
   openFile: (path: string) => void;
   ghGet: <T extends GHGet>(options: T) => Promise<GHReturn[T['type']]>;
   setPresence: (options: DiscordPresence) => void;
+  getInstallDir: () => Promise<string>;
+  isSteam: () => Promise<boolean>;
 }
 
 declare global {

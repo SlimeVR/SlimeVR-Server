@@ -917,9 +917,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Пропустить настройку
 onboarding-setup_warning-cancel = Продолжить настройку
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Вернуться к введению
 onboarding-wifi_creds-skip = Пропустить настройки Wi-Fi
 onboarding-wifi_creds-submit = Отправить!
 onboarding-wifi_creds-ssid =
@@ -954,6 +956,9 @@ onboarding-reset_tutorial-2 =
     Сброс крепления помогает узнать, как на самом деле на вас надеты трекеры, поэтому, если вы случайно переместили их и сильно изменили их ориентацию, это поможет.
     
     Вы должны быть в позе, как будто вы катаетесь на лыжах, как показано в мастере автоматического монтажа крепления, и у вас есть 3-секундная задержка (настраиваемая) перед тем, как она сработает.
+
+## Install info
+
 
 ## Setup start
 

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { FieldPath, useForm } from 'react-hook-form';
 import { useConfig } from '@/hooks/config';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { useLocalization } from '@fluent/react';
 
@@ -28,7 +27,10 @@ export const defaultValues: DeveloperModeWidgetForm = {
 export function DeveloperModeWidget() {
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { reconnect } = useWebsocketAPI();
+
+  const onSubmit = (formData: DeveloperModeWidgetForm) => {
+    setConfig({ devSettings: formData });
+  };
 
   const { reset, control, handleSubmit, watch } =
     useForm<DeveloperModeWidgetForm>({
@@ -44,20 +46,13 @@ export function DeveloperModeWidget() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const onSubmit = async (formData: DeveloperModeWidgetForm) => {
-    const needReconnect =
-      config?.devSettings?.fastDataFeed !== formData.fastDataFeed;
-    await setConfig({ devSettings: formData });
-    if (needReconnect) reconnect();
-  };
-
   const makeToggle = ([name, label]: string[], index: number) => (
     <CheckBox
       key={index}
       control={control}
       variant="toggle"
       outlined
-      name={name}
+      name={name as FieldPath<DeveloperModeWidgetForm>}
       label={l10n.getString(`widget-developer_mode-${label}`)}
     />
   );

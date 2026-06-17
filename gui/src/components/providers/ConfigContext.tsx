@@ -2,11 +2,14 @@ import { ReactNode } from 'react';
 import { ConfigContextC, loadConfig, useConfigProvider } from '@/hooks/config';
 import { getSentryOrCompute } from '@/utils/sentry';
 
-const config = await loadConfig();
+const [config, isSteam] = await Promise.all([
+  loadConfig(),
+  window.electronAPI.isSteam(),
+]);
 
 if (config?.errorTracking !== undefined) {
   // load sentry ASAP to catch early errors
-  getSentryOrCompute(config.errorTracking ?? false, config.uuid);
+  getSentryOrCompute(config.errorTracking ?? false, config.uuid, isSteam);
 }
 
 export function ConfigContextProvider({ children }: { children: ReactNode }) {

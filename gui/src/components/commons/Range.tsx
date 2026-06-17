@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 
-export function Range({
+export function Range<T extends FieldValues = FieldValues>({
   control,
   name,
   values,
@@ -11,8 +11,8 @@ export function Range({
   // input props
   ...props
 }: {
-  control: Control<any>;
-  name: string;
+  control: Control<T>;
+  name: FieldPath<T>;
   max: number;
   min: number;
   step: number;

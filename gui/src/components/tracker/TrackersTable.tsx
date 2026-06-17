@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { IPv4 } from 'ip-num/IPNumber';
+import { IPv4 } from 'ip-num';
 import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useConfig } from '@/hooks/config';
 import { useTracker } from '@/hooks/tracker';

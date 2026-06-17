@@ -185,6 +185,10 @@ function ImportExportButtons() {
     parseConfigImport(config).forEach((req) =>
       sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, req)
     );
+    sendRPCPacket(
+      RpcMessage.SkeletonConfigRequest,
+      new SkeletonConfigRequestT()
+    );
     setImportState(ImportStatus.SUCCESS);
     setTimeout(() => {
       setImportState(ImportStatus.OK);

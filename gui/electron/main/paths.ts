@@ -48,12 +48,21 @@ export const getLogsFolder = () => {
   return join(getGuiDataFolder(), 'logs');
 };
 
+export const getExeFolder = () => {
+  return path.dirname(app.getPath('exe'));
+};
+
 export const getWindowStateFile = () =>
   join(getServerDataFolder(), '.window-state.json');
 
 const localJavaBin = (sharedDir: string) => {
-  const jre = join(sharedDir, 'jre/bin', javaBin);
-  return jre;
+  const platform = getPlatform();
+  switch (platform) {
+    case 'macos':
+      return join(sharedDir, '../../../../jre/Contents/Home/bin', javaBin);
+    default:
+      return join(sharedDir, 'jre/bin', javaBin);
+  }
 };
 
 const javaHomeBin = () => {
@@ -103,15 +112,18 @@ export const findSystemJRE = async (sharedDir: string) => {
 export const findServerJar = () => {
   const paths = [
     options.path ? path.resolve(options.path) : undefined,
+    app.isPackaged ? path.resolve(process.resourcesPath) : undefined,
     // AppImage passes the fakeroot in `APPDIR` env var.
     process.env['APPDIR']
       ? path.resolve(join(process.env['APPDIR'], 'usr/share/slimevr/'))
       : undefined,
     path.dirname(app.getPath('exe')),
-
     // For flatpack container
     path.resolve('/app/share/slimevr/'),
     path.resolve('/usr/share/slimevr/'),
+
+    // For macos on steam
+    path.resolve(`${app.getPath('exe')}/../../../../`),
   ];
   return paths
     .filter((p) => !!p)

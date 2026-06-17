@@ -1,6 +1,8 @@
 import {
   Control,
   Controller,
+  FieldPath,
+  FieldValues,
   RefCallBack,
   UseControllerProps,
 } from 'react-hook-form';
@@ -48,20 +50,20 @@ export function InnerSystemFileInput({
   );
 }
 
-export function SystemFileInput({
+export function SystemFileInput<T extends FieldValues = FieldValues>({
   control,
   rules,
   name,
   label,
   directory = false,
 }: {
-  rules: UseControllerProps<any>['rules'];
-  control: Control<any>;
+  rules: UseControllerProps<T, FieldPath<T>>['rules'];
+  control: Control<T>;
   /**
    * Use a translation key!
    **/
   label: string;
-  name: string;
+  name: FieldPath<T>;
   directory?: boolean;
   disabled?: boolean;
 }) {
