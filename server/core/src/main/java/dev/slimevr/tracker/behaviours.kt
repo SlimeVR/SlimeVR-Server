@@ -84,6 +84,8 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 			.map { it.context.state.value.bodyPart }
 			.toSet()
 
+		// Get reference rotation for reset actions
+		// TODO need a helper method or something for this
 		val referenceRotation = serverState.trackers.firstNotNullOfOrNull {
 			val trackerState = it.value.context.state.value
 			if (trackerState.status == TrackerStatus.OK && trackerState.bodyPart == BodyPart.HEAD) {
@@ -98,8 +100,9 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		val mountingResetBodyPart = listOf(tapDetectionConfig.mountingResetBodyPart, BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG)
 			.firstOrNull { it in trackersBodyParts }
 
+		// Switch case for each possible action
 		val (actionToExecute, tapsNeeded, actionDelay) = when (receiver.context.state.value.bodyPart) {
-			null -> Triple(null, 0, 0f)
+			null -> Triple(null, 0, 0f) // BodyParts above could be null
 			yawResetBodyPart if tapDetectionConfig.yawResetEnabled ->
 				Triple(TrackerActions.YawReset(referenceRotation), tapDetectionConfig.yawResetTaps, tapDetectionConfig.yawResetDelay)
 			fullResetBodyPart if tapDetectionConfig.fullResetEnabled ->
@@ -124,7 +127,10 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 
 		val now = System.nanoTime()
 
+		// Get the acceleration of the tracker and store it
 		accelList.add(currentTracker.rawAcceleration.len() to now)
+
+		// Remove old stored accelerations (if they are too old)
 		while (accelList.isNotEmpty() && now - accelList.first().second > CLUMP_TIME_NS) {
 			accelList.removeFirst()
 		}
@@ -133,18 +139,22 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		val min = accelList.minOfOrNull { it.first } ?: 0f
 		val accelDelta = max - min
 
+		// Check for a single tap
 		if (accelDelta > NEEDED_ACCEL_DELTA && !waitForLowAccel) {
 			val othersOverThreshold = receiver.appContext.server.context.state.value.trackers.values
 				.count { it.context.state.value.id != currentTracker.id && it.context.state.value.rawAcceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED }
 			if (othersOverThreshold < context.numberTrackersOverThreshold) {
 				tapTimestamps.add(now)
+				// After a tap, a lower acceleration is needed before another one
 				waitForLowAccel = true
 			}
 		}
 
+		// Achieved low accel?
 		if (max < ALLOWED_BODY_ACCEL) waitForLowAccel = false
 
 		if (tapTimestamps.isNotEmpty()) {
+			// Remove old stored taps (if they are too old)
 			val totalWindowNs = (TAP_WINDOW_PER_TAP_NS * tapTimestamps.size).toLong()
 			while (tapTimestamps.isNotEmpty() && now - tapTimestamps.first() > totalWindowNs) {
 				tapTimestamps.removeFirst()
@@ -152,6 +162,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 
 			if (tapTimestamps.isNotEmpty() && now - tapTimestamps.last() > TAP_WINDOW_PER_TAP_NS.toLong()) {
 				if (tapTimestamps.size >= context.tapsNeeded) {
+					// Taps completed!
 					receiver.context.scope.safeLaunch {
 						AppLogger.tracker.info("TapDetection triggered ${context.actionToExecute}")
 						delay((context.actionDelay * 1000).toLong().milliseconds)

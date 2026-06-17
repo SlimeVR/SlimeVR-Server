@@ -1,6 +1,7 @@
 package dev.slimevr.vmc
 
 import com.jme3.math.FastMath
+import dev.slimevr.config.VMCConfig
 import dev.slimevr.skeleton.BoneState
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3

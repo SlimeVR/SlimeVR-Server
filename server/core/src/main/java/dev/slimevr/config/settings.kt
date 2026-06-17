@@ -2,15 +2,12 @@ package dev.slimevr.config
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.vmc.VMCConfig
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
@@ -51,6 +48,17 @@ data class TapDetectionConfig (
 }
 
 @Serializable
+data class VMCConfig(
+	val enabled: Boolean = true,
+	val portOut: Int = 39539,
+	val portIn: Int = 39540,
+	val address: String = "172.17.0.1",
+	val mirrorTracking: Boolean = false,
+	val anchorAtHips: Boolean = false,
+	val vrmJson: String? = null,
+)
+
+@Serializable
 data class SettingsConfigState(
 	val trackerPort: Int = 6969,
 	val mutedVRCWarnings: List<String> = listOf(),
@@ -58,13 +66,11 @@ data class SettingsConfigState(
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
 	val globalMagEnabled: Boolean = true,
 	val allowedUdpDevices: Set<String> = emptySet(),
-	val vrcOscConfig: VRCOSCConfig = defaultVrcOscConfig(),
+	val vrcOscConfig: VRCOSCConfig = VRCOSCConfig(),
 	val vmcConfig: VMCConfig = VMCConfig(),
 	val version: Int = SETTINGS_CONFIG_VERSION,
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 )
-
-private fun defaultVrcOscConfig() = VRCOSCConfig()
 
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {
 	val version = json["version"]?.jsonPrimitive?.intOrNull ?: 0

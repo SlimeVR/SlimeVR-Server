@@ -6,6 +6,7 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
+import dev.slimevr.tracker.TrackerTapDetectionBehaviour
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import solarxr_protocol.MessageBundle
@@ -71,9 +72,10 @@ class SolarXRBridge(
 			appContext.vrcConfigManager?.let { vrc ->
 				add(VrcBehaviour(vrc, appContext.server, userHeight = { appContext.skeleton.context.state.value.userHeight }))
 			}
+			add(TapDetectionBehaviour(appContext.config.settings))
 			add(VrcOscBehaviour(appContext.vrcOscManager))
 			add(VmcBehaviour(appContext.vmcManager))
-			add(SettingsBehaviour(appContext.vmcManager))
+			add(SettingsBehaviour(appContext.config.settings, appContext.vmcManager))
 			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))
 			add(ProvisioningBehaviour(appContext.server, appContext.provisioningManager))
 			add(SkeletonBehaviour(appContext.config.userConfig, appContext.skeleton))

@@ -1,22 +1,11 @@
 package dev.slimevr.vmc
 
 import dev.slimevr.Phase1ContextProvider
+import dev.slimevr.config.VMCConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.Skeleton
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class VMCConfig(
-	val enabled: Boolean = true,
-	val portOut: Int = 39539,
-	val portIn: Int = 39540,
-	val address: String = "172.17.0.1",
-	val mirrorTracking: Boolean = false,
-	val anchorAtHips: Boolean = false,
-	val vrmJson: String? = null,
-)
 
 data class VMCState(val config: VMCConfig = VMCConfig())
 

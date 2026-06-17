@@ -1,5 +1,6 @@
 package dev.slimevr.solarxr
 
+import dev.slimevr.config.Settings
 import dev.slimevr.vmc.VMCManager
 import solarxr_protocol.rpc.SettingsRequest
 import solarxr_protocol.rpc.SettingsResponse
@@ -10,12 +11,14 @@ import solarxr_protocol.rpc.SettingsResponse
 // TODO: Would be nice to split settings based on their solarxr behaviour.
 // TODO: Almost all build functions could be their own request. making it easier to work with
 class SettingsBehaviour(
+	private val settings: Settings,
 	private val vmcManager: VMCManager,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<SettingsRequest> {
 			receiver.sendRpc(
 				SettingsResponse(
+					tapDetectionSettings = buildTapDetectionSettings(settings.context.state.value.data.tapDetectionConfig),
 					vmcOsc = buildVmcOscSettings(vmcManager.context.state.value.config),
 				),
 			)

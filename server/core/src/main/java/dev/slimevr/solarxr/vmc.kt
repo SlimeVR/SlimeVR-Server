@@ -1,7 +1,7 @@
 package dev.slimevr.solarxr
 
+import dev.slimevr.config.VMCConfig
 import dev.slimevr.vmc.VMCActions
-import dev.slimevr.vmc.VMCConfig
 import dev.slimevr.vmc.VMCManager
 import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.OSCSettings
