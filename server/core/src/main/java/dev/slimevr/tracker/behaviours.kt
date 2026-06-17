@@ -22,7 +22,6 @@ import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
 
 private const val NS_CONVERTER = 1.0e9f
@@ -171,7 +170,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 					// Taps completed!
 					receiver.context.scope.safeLaunch {
 						AppLogger.tracker.info("TapDetection triggered ${context.actionToExecute}")
-						delay((context.actionDelay * 1000).toLong().milliseconds)
+						delay((context.actionDelay * 1000).toLong())
 						receiver.appContext.server.context.state.value.trackers.values.forEach { it.context.dispatch(context.actionToExecute) }
 					}
 					resetTapDetection()
@@ -308,7 +307,7 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 			var mark = TimeSource.Monotonic.markNow()
 			while (isActive) {
 				try {
-					delay(1000.milliseconds)
+					delay(1000)
 					val elapsed = mark.elapsedNow()
 					val tps = count.exchange(0) * 1000L / elapsed.inWholeMilliseconds
 					receiver.context.dispatch(TrackerActions.Update { copy(tps = tps.toUShort()) })

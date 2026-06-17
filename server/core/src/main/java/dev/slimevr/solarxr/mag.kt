@@ -13,7 +13,6 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.rpc.ChangeMagToggleRequest
 import solarxr_protocol.rpc.MagToggleRequest
 import solarxr_protocol.rpc.MagToggleResponse
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class MagBehaviour(
