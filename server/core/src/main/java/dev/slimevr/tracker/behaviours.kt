@@ -18,7 +18,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceId
+import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.TapDetectionSetupNotification
+import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
@@ -35,13 +39,11 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 	private val accelList = ArrayDeque<Pair<Float, Long>>()
 	private val tapTimestamps = ArrayDeque<Long>()
 	private var waitForLowAccel = false
-
-	data class TapDetectionContext(
-		val actionToExecute: TrackerActions?,
-		val tapsNeeded: Int,
-		val actionDelay: Float,
-		val numberTrackersOverThreshold: Int
-	)
+	private var actionToExecute: TrackerActions? = null
+	private var setupModeAssign = false
+	private var tapsNeeded = 0
+	private var actionDelay = 0f
+	private var numberTrackersOverThreshold = 0
 
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: Tracker) {
@@ -62,12 +64,12 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 			loadTapDetection(receiver, configState, receiver.appContext.server.context.state.value)
 		}
 			// Inner flow (process) is refreshed everytime this tracker's acceleration is updated
-			.flatMapLatest { tapDetectionContext ->
+			.flatMapLatest {
 				receiver.context.state
-					.filter { tapDetectionContext.actionToExecute != null }
+					.filter { actionToExecute != null || setupModeAssign }
 					.distinctUntilChangedBy { it.rawAcceleration }
 					.onEach { currentTracker ->
-						processTapDetection(receiver, currentTracker, tapDetectionContext)
+						processTapDetection(receiver, currentTracker)
 					}
 			}.launchIn(receiver.context.scope)
 	}
@@ -77,13 +79,19 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		receiver: Tracker,
 		configState: SettingsState,
 		serverState: VRServerState
-	): TapDetectionContext {
+	) {
 		val tapDetectionConfig = configState.data.tapDetectionConfig
+		numberTrackersOverThreshold = tapDetectionConfig.numberTrackersOverThreshold
+		resetTapDetection()
 
 		// If setupMode is true, double tap to assign
 		if (tapDetectionConfig.setupMode) {
-			println("SetupMode is enabled!")
-			return TapDetectionContext(null, 2, 0f, tapDetectionConfig.numberTrackersOverThreshold)
+			setupModeAssign = true
+
+			actionToExecute = null
+			tapsNeeded = 2
+			actionDelay = 0f
+			return
 		}
 
 		// Get reference rotation for reset actions
@@ -106,30 +114,32 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 			.firstOrNull { it in trackersBodyParts }
 
 		// Switch case for each possible action
-		val (actionToExecute, tapsNeeded, actionDelay) = when (receiver.context.state.value.bodyPart) {
-			null -> Triple(null, 0, 0f) // BodyParts above could be null
-			yawResetBodyPart if tapDetectionConfig.yawResetEnabled ->
-				Triple(TrackerActions.YawReset(referenceRotation), tapDetectionConfig.yawResetTaps, tapDetectionConfig.yawResetDelay)
-			fullResetBodyPart if tapDetectionConfig.fullResetEnabled ->
-				Triple(TrackerActions.FullReset(referenceRotation), tapDetectionConfig.fullResetTaps, tapDetectionConfig.fullResetDelay)
-			mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled ->
-				Triple(TrackerActions.MountingReset(referenceRotation), tapDetectionConfig.mountingResetTaps, tapDetectionConfig.mountingResetDelay)
-			else -> Triple(null, 0, 0f)
+		when (receiver.context.state.value.bodyPart) {
+			null -> actionToExecute = null // BodyParts above could be null
+			yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> {
+				actionToExecute = TrackerActions.YawReset(referenceRotation)
+				tapsNeeded = tapDetectionConfig.yawResetTaps
+				actionDelay = tapDetectionConfig.yawResetDelay
+			}
+			fullResetBodyPart if tapDetectionConfig.fullResetEnabled -> {
+				actionToExecute = TrackerActions.FullReset(referenceRotation)
+				tapsNeeded = tapDetectionConfig.fullResetTaps
+				actionDelay = tapDetectionConfig.fullResetDelay
+			}
+			mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> {
+				actionToExecute = TrackerActions.MountingReset(referenceRotation)
+				tapsNeeded = tapDetectionConfig.mountingResetTaps
+				actionDelay = tapDetectionConfig.mountingResetDelay
+			}
+			else -> actionToExecute = null
 		}
-
-		resetTapDetection()
-
-		return TapDetectionContext(actionToExecute, tapsNeeded, actionDelay, tapDetectionConfig.numberTrackersOverThreshold)
 	}
 
 	// Logic loop for tap detection
 	private fun processTapDetection(
 		receiver: Tracker,
 		currentTracker: TrackerState,
-		context: TapDetectionContext
 	) {
-		if (context.actionToExecute == null) return
-
 		val now = System.nanoTime()
 
 		// Get the acceleration of the tracker and store it
@@ -148,7 +158,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		if (accelDelta > NEEDED_ACCEL_DELTA && !waitForLowAccel) {
 			val othersOverThreshold = receiver.appContext.server.context.state.value.trackers.values
 				.count { it.context.state.value.id != currentTracker.id && it.context.state.value.rawAcceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED }
-			if (othersOverThreshold < context.numberTrackersOverThreshold) {
+			if (othersOverThreshold < numberTrackersOverThreshold) {
 				tapTimestamps.add(now)
 				// After a tap, a lower acceleration is needed before another one
 				waitForLowAccel = true
@@ -165,16 +175,32 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 				tapTimestamps.removeFirst()
 			}
 
-			if (tapTimestamps.isNotEmpty() && now - tapTimestamps.last() > TAP_WINDOW_PER_TAP_NS.toLong()) {
-				if (tapTimestamps.size >= context.tapsNeeded) {
-					// Taps completed!
-					receiver.context.scope.safeLaunch {
-						AppLogger.tracker.info("TapDetection triggered ${context.actionToExecute}")
-						delay((context.actionDelay * 1000).toLong())
-						receiver.appContext.server.context.state.value.trackers.values.forEach { it.context.dispatch(context.actionToExecute) }
+			if (tapTimestamps.size >= tapsNeeded) {
+				// Taps completed!
+				receiver.context.scope.safeLaunch {
+					if (setupModeAssign) {
+						receiver.appContext.server.context.state.value.solarxr.values.forEach {
+							it.sendRpc(
+								TapDetectionSetupNotification(
+									TrackerId(DeviceId(currentTracker.deviceId.toUByte()), currentTracker.id.toUByte())
+								)
+							)
+						}
 					}
-					resetTapDetection()
+
+					// If it has an action to execute
+					actionToExecute?.let { action ->
+						AppLogger.tracker.info("TapDetection triggered $action")
+						delay((actionDelay * 1000).toLong())
+						receiver.appContext.server.context.state.value.trackers.values.forEach {
+							it.context.dispatch(
+								action
+							)
+						}
+					}
 				}
+
+				resetTapDetection()
 			}
 		}
 	}
