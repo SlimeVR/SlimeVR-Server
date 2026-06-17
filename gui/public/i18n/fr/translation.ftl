@@ -657,6 +657,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = Données de position
 settings-general-fk_settings-ik-use_position = Utiliser les données de position
 settings-general-fk_settings-ik-use_position-description = Permet d'utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
+settings-general-fk_settings-velocity_settings = Réglages de la vélocité
+settings-general-fk_settings-velocity_settings-description = Envoyer les données de vélocité dérivée à SteamVR. Nécessaire pour Natural Locomotion. Peut provoquer des artéfacts dans le mouvement.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Envoyer la vélocité dérivée au driver
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
@@ -711,12 +714,17 @@ settings-general-gesture_control-trackers =
 settings-general-gesture_control-yawResetEnabled = Tapoter pour réinitialisation horizontale
 settings-general-gesture_control-yawResetDelay = Délai de réinitialisation horizontale
 settings-general-gesture_control-yawResetTaps = Nombre de tapes pour réinitialisation horizontale
+settings-general-gesture_control-yawResetTracker = Capteur de réinitialisation horizontale
 settings-general-gesture_control-fullResetEnabled = Tapoter pour réinitialisation complète
 settings-general-gesture_control-fullResetDelay = Délai de réinitialisation complète
 settings-general-gesture_control-fullResetTaps = Nombre de tapes pour réinitialisation complète
+settings-general-gesture_control-fullResetTracker = Capteur de réinitialisation complète
 settings-general-gesture_control-mountingResetEnabled = Tapoter pour réinitialisation de l'alignement
 settings-general-gesture_control-mountingResetDelay = Délai de réinitialisation de l'alignement
 settings-general-gesture_control-mountingResetTaps = Nombre de tapes pour la réinitialisation de l'alignement
+settings-general-gesture_control-mountingResetTracker = Capteur de réinitialisation de l'alignement
+settings-general-gesture_control-yawResetTracker-title = Capteur de réinitialisation horizontale
+settings-general-gesture_control-fullResetTracker-title = Capteur de réinitialisation complète
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Capteurs au-dessus du seuil
 settings-general-gesture_control-numberTrackersOverThreshold-description = Augmentez cette valeur si la détection des tapotements ne fonctionne pas. N'augmentez pas cette valeur au-delà de ce qui est nécessaire pour que la détection des tapotements fonctionne, car cela pourrait entraîner des faux positifs.
@@ -973,9 +981,23 @@ onboarding-setup_warning-cancel = Continuer la configuration
 
 ## Quiz
 
+onboarding-quiz_continue = Continuer
+onboarding-quiz_back = Arrière
+onboarding-quiz-more_sets_modal-title = Avez-vous connecté tous vos capteurs ?
+onboarding-quiz-more_sets_modal-desc = Si vous avez des ensembles de modèles différents, vous pouvez les connecter maintenant !
+onboarding-quiz-more_sets_modal-confirm = J'ai connecté tous mes capteurs
+onboarding-quiz-more_sets_modal-cancel = Je veux connecter plus de capteurs
+onboarding-quiz-slimeset-title = Quel type de capteurs connectez-vous ?
+onboarding-quiz-slimeset-description = Si vous avez plusieurs ensembles, on vous le demandera à nouveau plus tard dans le processus
+onboarding-quiz-mocap_preferences-head_tracker-yes = Oui
+onboarding-quiz-mocap_preferences-head_tracker-no = Non
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Où est situé votre capteur de tête ?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Front
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Visage
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Retour
 onboarding-wifi_creds-v2 = Capteurs utilisant le Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1514,7 +1536,7 @@ firmware_tool-flash_method_serial-no_devices = Aucun appareil en série compatib
 firmware_tool-build_step = Création
 firmware_tool-build_step-description = Le micrologiciel se fait créer, veuillez patienter
 firmware_tool-flashing_step = En train de flash
-firmware_tool-flashing_step-description = Vos traceurs se font flash, veuillez suivre les instructions à l'écran
+firmware_tool-flashing_step-description = Vos capteurs se font flash, veuillez suivre les instructions à l'écran
 firmware_tool-flashing_step-warning-v2 = Ne débranchez pas ou n'éteignez pas le capteur pendant le processus d'envoi à moins qu'on ne vous le dise, cela pourrait rendre votre carte inutilisable
 firmware_tool-flashing_step-flash_more = Flash plus de capteurs
 firmware_tool-flashing_step-exit = Quitter
