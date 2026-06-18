@@ -145,7 +145,7 @@
             ];
             buildInputs = runtimeLibs;
 
-            JAVA_HOME = "${java}";
+            JAVA_HOME = "${java}/lib/openjdk";
             USE_SYSTEM_FPM = "true";
             ELECTRON_BUILDER_7ZIP_PATH = "${pkgs.p7zip}/bin/7za";
             APPIMAGE_TOOLS_PATH = "${appImageTools}";
