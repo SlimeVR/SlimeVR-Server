@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 
 data class TrackerSnapshot(val position: Vector3, val rotation: Quaternion)
@@ -52,7 +53,10 @@ class HeightCalibrationManager(
 	val hmdUpdates: Flow<TrackerSnapshot> = serverContext.context.state
 		.flatMapLatest { state ->
 			val hmd = state.trackers.values
-				.find { it.context.state.value.bodyPart == BodyPart.HEAD && it.context.state.value.position != null }
+				.find {
+					val state = it.context.state.value
+					state.bodyPart == BodyPart.HEAD && state.status == TrackerStatus.OK && state.position != null
+				}
 				?: return@flatMapLatest emptyFlow()
 			hmd.context.state.map { s ->
 				TrackerSnapshot(
@@ -65,8 +69,9 @@ class HeightCalibrationManager(
 	val controllerUpdates: Flow<TrackerSnapshot> = serverContext.context.state
 		.flatMapLatest { state ->
 			val controllers = state.trackers.values.filter {
-				val bodyPart = it.context.state.value.bodyPart
-				(bodyPart == BodyPart.LEFT_HAND || bodyPart == BodyPart.RIGHT_HAND) && it.context.state.value.position != null
+				val state = it.context.state.value
+				val bodyPart = state.bodyPart
+				(bodyPart == BodyPart.LEFT_HAND || bodyPart == BodyPart.RIGHT_HAND) && state.status == TrackerStatus.OK && state.position != null
 			}
 			if (controllers.isEmpty()) return@flatMapLatest emptyFlow()
 			combine(

@@ -85,7 +85,7 @@ class SolarXRBridge(
 			add(KnownTrackersBehaviour(appContext.config.settings))
 			add(BvhBehaviour(appContext.bvhManager))
 			add(InstalledInfoBehaviour())
-			add(SessionCalibrationBehaviour(appContext.server))
+			add(SessionCalibrationBehaviour(appContext.resetsManager))
 		}
 
 		fun create(

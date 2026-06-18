@@ -1,6 +1,5 @@
 package dev.slimevr.tracker
 
-import dev.slimevr.AppLogger
 import dev.slimevr.VRServerState
 import dev.slimevr.config.SettingsState
 import dev.slimevr.skeleton.SkeletonActions
@@ -20,7 +19,7 @@ import kotlinx.coroutines.isActive
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.TrackerId
-import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.TapDetectionSetupNotification
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -38,7 +37,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 	private val accelList = ArrayDeque<Pair<Float, Long>>()
 	private val tapTimestamps = ArrayDeque<Long>()
 	private var waitForLowAccel = false
-	private var actionToExecute: TrackerActions? = null
+	private var resetType: ResetType? = null
 	private var setupModeAssign = false
 	private var tapsNeeded = 0
 	private var actionDelay = 0f
@@ -68,7 +67,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		// Inner flow (process) is refreshed everytime this tracker's acceleration is updated
 		.flatMapLatest {
 			receiver.context.state
-				.filter { actionToExecute != null || setupModeAssign }
+				.filter { resetType != null || setupModeAssign }
 				.distinctUntilChangedBy { it.rawAcceleration }
 		}
 		.onEach { currentTracker ->
@@ -89,21 +88,11 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		// If setupMode is true, double tap to assign
 		if (tapDetectionConfig.setupMode) {
 			setupModeAssign = true
-
-			actionToExecute = null
+			resetType = null
 			tapsNeeded = 2
 			actionDelay = 0f
 			return
 		}
-
-		// Get reference rotation for reset actions
-		// TODO move to reset module
-		val referenceRotation = serverState.trackers.firstNotNullOfOrNull {
-			val trackerState = it.value.context.state.value
-			if (trackerState.status == TrackerStatus.OK && trackerState.bodyPart == BodyPart.HEAD) {
-				trackerState.rotation
-			} else null
-		} ?: Quaternion.IDENTITY
 
 		val trackersBodyParts = serverState.trackers.values
 			.map { it.context.state.value.bodyPart }
@@ -117,23 +106,23 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 
 		// Switch case for each possible action
 		when (receiver.context.state.value.bodyPart) {
-			null -> actionToExecute = null // BodyParts above could be null
+			null -> resetType = null // BodyParts above could be null
 			yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> {
-				actionToExecute = TrackerActions.YawReset(referenceRotation)
+				resetType = ResetType.Yaw
 				tapsNeeded = tapDetectionConfig.yawResetTaps
 				actionDelay = tapDetectionConfig.yawResetDelay
 			}
 			fullResetBodyPart if tapDetectionConfig.fullResetEnabled -> {
-				actionToExecute = TrackerActions.FullReset(referenceRotation)
+				resetType = ResetType.Full
 				tapsNeeded = tapDetectionConfig.fullResetTaps
 				actionDelay = tapDetectionConfig.fullResetDelay
 			}
 			mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> {
-				actionToExecute = TrackerActions.MountingReset(referenceRotation)
+				resetType = ResetType.Mounting
 				tapsNeeded = tapDetectionConfig.mountingResetTaps
 				actionDelay = tapDetectionConfig.mountingResetDelay
 			}
-			else -> actionToExecute = null
+			else -> resetType = null
 		}
 	}
 
@@ -180,6 +169,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 			if (tapTimestamps.size >= tapsNeeded) {
 				// Taps completed!
 				receiver.context.scope.safeLaunch {
+					// If it's in setup mode, tap to assign
 					if (setupModeAssign) {
 						receiver.appContext.server.sendSolarxrRpc(
 							TapDetectionSetupNotification(
@@ -188,16 +178,9 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 						)
 					}
 
-					// If it has an action to execute
-					// TODO use reset module
-					actionToExecute?.let { action ->
-						AppLogger.tracker.info("TapDetection triggered $action")
-						delay((actionDelay * 1000).toLong())
-						receiver.appContext.server.context.state.value.trackers.values.forEach {
-							it.context.dispatch(
-								action
-							)
-						}
+					// If it has a reset to execute
+					resetType?.let { reset ->
+						receiver.appContext.resetsManager.scheduleReset("TapDetection", reset, actionDelay)
 					}
 				}
 
@@ -348,7 +331,6 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 }
 
 class TrackerToSkeletonBehaviour : TrackerBehaviour {
-
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
 			.filter { it.bodyPart != null }

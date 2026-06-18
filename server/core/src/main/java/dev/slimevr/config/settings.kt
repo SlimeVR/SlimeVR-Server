@@ -53,24 +53,28 @@ data class VMCConfig(
 	val enabled: Boolean = true,
 	val portOut: Int = 39539,
 	val portIn: Int = 39540,
-	val address: String = "172.17.0.1",
+	val address: String = "172.17.0.1", // TODO why not 127.0.0.1?
+	/** Mirror the tracking before sending it (turn left <=> turn right, left leg <=> right leg) */
 	val mirrorTracking: Boolean = false,
+	/** Anchor the tracking at the hip (sitting down)? */
 	val anchorAtHips: Boolean = false,
+	/** JSON part of the VRM to be used */
 	val vrmJson: String? = null,
 )
 
 @Serializable
 data class SettingsConfigState(
+	val version: Int = SETTINGS_CONFIG_VERSION,
 	val trackerPort: Int = 6969,
+	val globalMagEnabled: Boolean = true,
 	val mutedVRCWarnings: List<String> = listOf(),
 	val mutedChecklistSteps: Set<String> = emptySet(),
-	val trackers: Map<String, TrackerConfig> = emptyMap(),
-	val globalMagEnabled: Boolean = true,
 	val allowedUdpDevices: Set<String> = emptySet(),
+	val trackers: Map<String, TrackerConfig> = emptyMap(),
 	val vrcOscConfig: VRCOSCConfig = VRCOSCConfig(),
 	val vmcConfig: VMCConfig = VMCConfig(),
-	val version: Int = SETTINGS_CONFIG_VERSION,
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
+	val resetsConfig: ResetsConfig = ResetsConfig(),
 )
 
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {

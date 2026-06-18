@@ -3,6 +3,7 @@ package dev.slimevr.solarxr
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceState
+import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
@@ -111,16 +112,20 @@ private fun createBone(bone: BoneState): solarxr_protocol.data_feed.Bone = solar
 	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) },
 )
 
-// TODO: Actually figure this stuff out
-private fun createServerGuards(): ServerGuards = ServerGuards(
-	candomounting = true,
-	candoyawreset = true,
-)
+private fun createServerGuards(resetsManager: ResetsManager): ServerGuards {
+	val resetsState = resetsManager.context.state.value
+	return ServerGuards(
+		candomounting = resetsState.canDoMountingReset,
+		candoyawreset = resetsState.canDoYawReset,
+		//candouserheightcalibration = true, TODO
+	)
+}
 
 fun createDatafeedFrame(
 	server: VRServer,
 	datafeedConfig: DataFeedConfig,
 	skeleton: Skeleton,
+	resetsManager: ResetsManager,
 	index: Int = 0,
 ): DataFeedMessageHeader {
 	val serverState = server.context.state.value
@@ -133,7 +138,7 @@ fun createDatafeedFrame(
 		null
 	}
 	val serverGuards = if (datafeedConfig.serverGuardsMask == true) {
-		createServerGuards()
+		createServerGuards(resetsManager)
 	} else {
 		null
 	}
@@ -163,7 +168,7 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 					val minTime = config.minimumTimeSinceLast.toLong()
 					while (isActive) {
 						try {
-							receiver.sendDataFeed(createDatafeedFrame(server = server, skeleton = skeleton, datafeedConfig = config, index = index))
+							receiver.sendDataFeed(createDatafeedFrame(server = server, datafeedConfig = config, skeleton = skeleton, resetsManager = receiver.appContext.resetsManager, index = index))
 						} catch (e: Exception) {
 							AppLogger.solarxr.error(e, "Error sending data feed")
 						}
@@ -178,7 +183,7 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 
 		receiver.dataFeedDispatcher.on<PollDataFeed> { event ->
 			val config = event.config ?: return@on
-			receiver.sendDataFeed(createDatafeedFrame(server = server, datafeedConfig = config, skeleton = skeleton))
+			receiver.sendDataFeed(createDatafeedFrame(server = server, datafeedConfig = config, skeleton = skeleton, resetsManager = receiver.appContext.resetsManager))
 		}
 	}
 }

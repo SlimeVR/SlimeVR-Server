@@ -22,6 +22,7 @@ object AppLogger {
 	val vmc = logger("VMC")
 	val oscQuery = logger("OSCQuery")
 	val install = logger("Install")
+	val resets = logger("Resets")
 	val coroutines = noCoLogger("Coroutines")
 
 	init {

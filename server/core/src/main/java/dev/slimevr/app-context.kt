@@ -6,7 +6,7 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
-import dev.slimevr.reset.ResetManager
+import dev.slimevr.resets.ResetsManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
@@ -40,7 +40,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val bvhManager: BVHManager
 	val vmcManager: VMCManager
 	val vrcOscManager: VRCOSCManager
-	val resetManager: ResetManager
+	val resetsManager: ResetsManager
 	fun startObserving()
 	suspend fun dispose()
 }
@@ -61,7 +61,7 @@ class AppContext(
 	override val bvhManager: BVHManager,
 	override val vmcManager: VMCManager,
 	override val vrcOscManager: VRCOSCManager,
-	override val resetManager: ResetManager,
+	override val resetsManager: ResetsManager,
 ) : AppContextProvider {
 	override fun startObserving() {
 		skeleton.startObserving()
@@ -74,7 +74,7 @@ class AppContext(
 		udpServer.startReceiving(this, server.context.scope)
 		vmcManager.startObserving()
 		vrcOscManager.startObserving(this)
-		resetManager.startObserving()
+		resetsManager.startObserving()
 	}
 
 	override suspend fun dispose() {
