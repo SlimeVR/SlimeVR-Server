@@ -47,30 +47,33 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: Tracker) {
 		// Outer flow (loading) is refreshed when TapDetection config or a tracker's bodyPart or status changes
-		combine(
-			receiver.appContext.config.settings.context.state
-				.distinctUntilChangedBy { configState ->
-					configState.data.tapDetectionConfig },
-			receiver.appContext.server.context.state
-				.flatMapLatest { serverState ->
-					combine(serverState.trackers.values.map { tracker -> tracker.context.state })
-					{ trackerStates ->
-						trackerStates.map { it.bodyPart to it.status }
-					}
+		val tapConfigChangingFlow = receiver.appContext.config.settings.context.state
+			.distinctUntilChangedBy { configState ->
+				configState.data.tapDetectionConfig }
+		val trackerChangingFlow = receiver.appContext.server.context.state
+			.flatMapLatest { serverState ->
+				combine(serverState.trackers.values.map { tracker -> tracker.context.state })
+				{ trackerStates ->
+					trackerStates.map { it.bodyPart to it.status }
 				}
-				.distinctUntilChanged()
+			}
+			.distinctUntilChanged()
+
+		combine(
+			tapConfigChangingFlow,
+			trackerChangingFlow
 		) { configState, _ ->
 			loadTapDetection(receiver, configState, receiver.appContext.server.context.state.value)
 		}
-			// Inner flow (process) is refreshed everytime this tracker's acceleration is updated
-			.flatMapLatest {
-				receiver.context.state
-					.filter { actionToExecute != null || setupModeAssign }
-					.distinctUntilChangedBy { it.rawAcceleration }
-					.onEach { currentTracker ->
-						processTapDetection(receiver, currentTracker)
-					}
-			}.launchIn(receiver.context.scope)
+		// Inner flow (process) is refreshed everytime this tracker's acceleration is updated
+		.flatMapLatest {
+			receiver.context.state
+				.filter { actionToExecute != null || setupModeAssign }
+				.distinctUntilChangedBy { it.rawAcceleration }
+		}
+		.onEach { currentTracker ->
+			processTapDetection(receiver, currentTracker)
+		}.launchIn(receiver.context.scope)
 	}
 
 	// Loads TapDetection config
