@@ -17,7 +17,7 @@ import solarxr_protocol.datatypes.hardware_info.ImuType
 data class TrackerIdNum(val id: Int, val trackerNum: Int)
 
 data class TrackerState(
-	val id: Int,
+	val id: Int, // trackerNum
 	val name: String,
 	val hardwareId: String,
 	val sensorType: ImuType?,

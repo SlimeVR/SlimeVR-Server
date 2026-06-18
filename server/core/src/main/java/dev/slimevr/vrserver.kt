@@ -7,6 +7,7 @@ import dev.slimevr.driver.DriverBridge
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
+import solarxr_protocol.rpc.RpcMessage
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
@@ -41,6 +42,9 @@ class VRServer(
 	fun nextHandle() = handleCounter.incrementAndFetch()
 	fun getTracker(id: Int) = context.state.value.trackers[id]
 	fun getDevice(id: Int) = context.state.value.devices[id]
+
+	suspend fun sendSolarxrRpc(message: RpcMessage) =
+		context.state.value.solarxr.values.forEach { it.sendRpc(message) }
 
 	companion object {
 		fun create(scope: CoroutineScope): VRServer {

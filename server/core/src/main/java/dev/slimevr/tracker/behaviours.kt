@@ -22,7 +22,6 @@ import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.TapDetectionSetupNotification
-import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
@@ -95,7 +94,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		}
 
 		// Get reference rotation for reset actions
-		// TODO need a helper method or something for this
+		// TODO move to reset module
 		val referenceRotation = serverState.trackers.firstNotNullOfOrNull {
 			val trackerState = it.value.context.state.value
 			if (trackerState.status == TrackerStatus.OK && trackerState.bodyPart == BodyPart.HEAD) {
@@ -179,16 +178,15 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 				// Taps completed!
 				receiver.context.scope.safeLaunch {
 					if (setupModeAssign) {
-						receiver.appContext.server.context.state.value.solarxr.values.forEach {
-							it.sendRpc(
-								TapDetectionSetupNotification(
-									TrackerId(DeviceId(currentTracker.deviceId.toUByte()), currentTracker.id.toUByte())
-								)
+						receiver.appContext.server.sendSolarxrRpc(
+							TapDetectionSetupNotification(
+								TrackerId(DeviceId(currentTracker.deviceId.toUByte()), currentTracker.id.toUByte())
 							)
-						}
+						)
 					}
 
 					// If it has an action to execute
+					// TODO use reset module
 					actionToExecute?.let { action ->
 						AppLogger.tracker.info("TapDetection triggered $action")
 						delay((actionDelay * 1000).toLong())

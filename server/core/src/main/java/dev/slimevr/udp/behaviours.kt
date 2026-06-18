@@ -171,9 +171,9 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 				if (mac !in settings.allowedUdpDevices) {
 					AppLogger.udp.info("[${state.address}] Unknown MAC $mac, notifying solarxr")
 					receiver.appContext.server.context.scope.safeLaunch {
-						receiver.appContext.server.context.state.value.solarxr.values.forEach { bridge ->
-							bridge.sendRpc(UnknownDeviceHandshakeNotification(macAddress = mac))
-						}
+						receiver.appContext.server.sendSolarxrRpc(
+							UnknownDeviceHandshakeNotification(macAddress = mac)
+						)
 					}
 					return@onPacket
 				}

@@ -30,6 +30,7 @@ import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
+import dev.slimevr.reset.ResetManager
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.safeLaunch
 import dev.slimevr.vmc.VMCManager
@@ -86,6 +87,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		scope = this,
 		oscQueryAddress = resolveDesktopOscQueryAddress(),
 	)
+	val resetManager = ResetManager.create(ctx = phase1, scope = this)
 
 	val appContext = AppContext(
 		server = server,
@@ -103,6 +105,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		bvhManager = bvhManager,
 		vmcManager = vmcManager,
 		vrcOscManager = vrcOscManager,
+		resetManager = resetManager,
 	)
 
 	try {
