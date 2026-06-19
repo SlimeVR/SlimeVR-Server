@@ -20,7 +20,7 @@
       ];
 
       perSystem =
-        { pkgs, ... }:
+        { lib, pkgs, ... }:
         let
           runtimeLibs = [
             pkgs.alsa-lib
@@ -149,6 +149,15 @@
 
             # for electron-vite, so `pnpm gui` works
             ELECTRON_EXEC_PATH = "${pkgs.electron}/bin/electron";
+
+            shellHook = ''
+              export LD_LIBRARY_PATH="${
+                lib.makeLibraryPath [
+                  pkgs.systemd
+                  pkgs.hidapi
+                ]
+              }:$LD_LIBRARY_PATH"
+            '';
           };
         };
     };
