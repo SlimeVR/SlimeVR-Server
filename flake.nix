@@ -8,31 +8,80 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-jdk24, flake-parts, ... }:
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      nixpkgs-jdk24,
+      flake-parts,
+      ...
+    }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
 
-      perSystem = { pkgs, system, ... }:
+      perSystem =
+        { system, pkgs, ... }:
         let
-          jdkPkgs = import nixpkgs-jdk24 { inherit system; };
-          java = jdkPkgs.javaPackages.compiler.temurin-bin.jdk-24;
+          java = (import nixpkgs-jdk24 { inherit system; }).jdk24;
 
-          runtimeLibs = pkgs: (with pkgs; [
-            java
+          runtimeLibs =
+            pkgs:
+            (with pkgs; [
+              java
 
-            alsa-lib at-spi2-atk at-spi2-core cairo cups dbus expat
-            gdk-pixbuf glib gtk3 libdrm libgbm libglvnd libnotify
-            libxkbcommon mesa nspr nss pango systemd vulkan-loader
-            wayland libx11 libxcomposite libxdamage
-            libxext libxfixes libxrandr libxcb
-            libxshmfence libusb1 udev libxcrypt-legacy
-            rpm fpm
+              alsa-lib
+              libpulseaudio
+              at-spi2-atk
+              at-spi2-core
+              cairo
+              cups
+              dbus
+              expat
+              gdk-pixbuf
+              glib
+              gtk3
+              libdrm
+              libgbm
+              libglvnd
+              libnotify
+              libxkbcommon
+              mesa
+              nspr
+              nss
+              pango
+              systemd
+              vulkan-loader
+              wayland
+              libX11
+              libXcomposite
+              libXdamage
+              libXext
+              libXfixes
+              libXrandr
+              libxcb
+              libxshmfence
+              libusb1
+              udev
+              libxcrypt-legacy
+              rpm
+              fpm
 
-            wineWow64Packages.stable
-            zlib squashfsTools fakeroot libarchive icu
-            nodejs_22 pnpm pkg-config python3 gcc gnumake binutils git
-            node-gyp-build
-          ]);
+              wineWow64Packages.stable
+              zlib
+              squashfsTools
+              fakeroot
+              libarchive
+              icu
+              nodejs_22
+              pnpm
+              pkg-config
+              python3
+              gcc
+              gnumake
+              binutils
+              git
+              node-gyp-build
+            ]);
 
           slimeShell = pkgs.buildFHSEnv {
             name = "slimevr-env";
