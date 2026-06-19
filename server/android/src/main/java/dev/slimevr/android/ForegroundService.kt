@@ -32,6 +32,7 @@ import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
+import dev.slimevr.resets.ResetsManager
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.safeLaunch
 import dev.slimevr.vmc.VMCManager
@@ -150,6 +151,7 @@ class ForegroundService : Service() {
 			scope = scope,
 			oscQueryAddress = resolveAndroidOscQueryAddress(),
 		)
+		val resetsManager = ResetsManager.create(server = server, scope = scope)
 
 		val appContext = AppContext(
 			server = server,
@@ -167,6 +169,7 @@ class ForegroundService : Service() {
 			bvhManager = bvhManager,
 			vmcManager = vmcManager,
 			vrcOscManager = vrcOscManager,
+			resetsManager = resetsManager,
 		)
 
 		acquireLocks()
