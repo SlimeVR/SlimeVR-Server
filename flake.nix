@@ -23,7 +23,12 @@
       ];
 
       perSystem =
-        { system, pkgs, ... }:
+        {
+          system,
+          lib,
+          pkgs,
+          ...
+        }:
         let
           java = (import nixpkgs-jdk24 { inherit system; }).jdk24;
 
@@ -155,6 +160,15 @@
 
             # for electron-vite, so `pnpm gui` works
             ELECTRON_EXEC_PATH = "${pkgs.electron}/bin/electron";
+
+            shellHook = ''
+              export LD_LIBRARY_PATH="${
+                lib.makeLibraryPath [
+                  pkgs.systemd
+                  pkgs.hidapi
+                ]
+              }:$LD_LIBRARY_PATH"
+            '';
           };
         };
     };
