@@ -1,6 +1,7 @@
 package dev.slimevr.desktop.vrchat
 
 import dev.slimevr.AppLogger
+import dev.slimevr.desktop.linux.findAppLibraryLocation
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -13,8 +14,7 @@ import java.io.FileReader
 import java.io.InvalidObjectException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import kotlin.io.path.Path
-import kotlin.io.path.exists
+import java.nio.file.Path
 
 private const val USER_REG_SUBPATH = "steamapps/compatdata/438100/pfx/user.reg"
 private val KEY_VALUE_PATTERN = Regex(""""(.+)"=(.+)""")
@@ -22,22 +22,15 @@ private val HEX_FORMAT = HexFormat {
 	upperCase = false
 	bytes.byteSeparator = ","
 }
+private const val VRCHAT_APPID = 438100
 
-internal val linuxUserRegPath = System.getenv("HOME")?.let { home ->
-	listOf(
-		Path(home, ".steam", "root", USER_REG_SUBPATH),
-		Path(home, ".steam", "debian-installation", USER_REG_SUBPATH),
-		Path(home, ".var", "app", "com.valvesoftware.Steam", "data", "Steam", USER_REG_SUBPATH),
-	).firstOrNull { it.exists() }
-}
-
-internal suspend fun linuxGetVRChatKeys(path: String, registry: MutableMap<String, String>): Map<String, String> {
+internal suspend fun linuxGetVRChatKeys(regPath: Path, keyPath: String, registry: MutableMap<String, String>): Map<String, String> {
 	val keysMap = mutableMapOf<String, String>()
 	registry.clear()
 	try {
 		withContext(Dispatchers.IO) {
-			BufferedReader(FileReader(linuxUserRegPath?.toFile() ?: return@withContext)).use { reader ->
-				val actualPath = "[${path.replace("\\", """\\""")}]"
+			BufferedReader(FileReader(regPath.toFile() ?: return@withContext)).use { reader ->
+				val actualPath = "[${keyPath.replace("\\", """\\""")}]"
 				while (reader.ready()) {
 					val line = reader.readLine()
 					if (!line.startsWith(actualPath)) continue
@@ -86,15 +79,17 @@ internal suspend fun linuxGetDwordValue(registry: Map<String, String>, key: Stri
 }
 
 internal fun linuxVRCConfigFlow(): Flow<solarxr_protocol.rpc.VRCConfigValues?> = flow {
-	val regPath = linuxUserRegPath ?: run {
-		AppLogger.vrc.info("[VRChatRegEdit] Couldn't find any VRChat registry file")
+	val regPath = try {
+		findAppLibraryLocation(VRCHAT_APPID).resolve(USER_REG_SUBPATH)
+	} catch (e: Exception) {
+		AppLogger.vrc.warn(e, "[VRChatRegEdit] Couldn't find any VRChat registry file")
 		return@flow
 	}
 	AppLogger.vrc.info("[VRChatRegEdit] Using VRChat registry file: $regPath")
 
 	val registry = mutableMapOf<String, String>()
 	while (true) {
-		val keys = linuxGetVRChatKeys(VRC_REG_PATH, registry)
+		val keys = linuxGetVRChatKeys(regPath, VRC_REG_PATH, registry)
 		if (keys.isEmpty()) {
 			emit(null)
 		} else {
