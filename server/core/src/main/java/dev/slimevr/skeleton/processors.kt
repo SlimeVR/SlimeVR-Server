@@ -9,13 +9,17 @@ interface SkeletonProcessor {
 	fun process(state: SkeletonState): SkeletonState
 }
 
+private const val SMOOTH_MIN = 0.66f
+private const val SMOOTH_MAX = 0.99f
 class SmoothingProcessor(var smoothing: Float) : SkeletonProcessor {
 	override var enabled: Boolean = true
 	private var smoothedRotations: Map<BodyPart, Quaternion> = emptyMap()
 	private var smoothedLengths: Map<BodyPart, Vector3> = emptyMap()
 
+	// TODO this isn't linear. Do we want linear smoothing like in main?
 	override fun process(state: SkeletonState): SkeletonState {
-		val alpha = 1f - smoothing.coerceAtMost(0.99f)
+		val alpha = 1 - (SMOOTH_MIN + smoothing.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN))
+
 		smoothedRotations = state.rawBones.mapValues { (bodyPart, bone) ->
 			(smoothedRotations[bodyPart] ?: bone.rawRotation).lerpR(bone.rawRotation, alpha).unit()
 		}
