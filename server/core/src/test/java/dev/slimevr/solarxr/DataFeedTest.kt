@@ -2,6 +2,7 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.EventDispatcher
 import dev.slimevr.TestAppContext
+import dev.slimevr.buildTestResetsManager
 import dev.slimevr.buildTestSkeleton
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
@@ -18,9 +19,11 @@ import kotlin.test.assertEquals
 private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend: suspend (ByteArray) -> Unit): SolarXRBridge {
 	val server = buildTestVrServer(backgroundScope)
 	val skeleton = buildTestSkeleton(backgroundScope)
+	val resetsManager = buildTestResetsManager(server, backgroundScope)
 	val appContext = object : TestAppContext() {
 		override val server = server
 		override val skeleton = skeleton
+		override val resetsManager = resetsManager
 	}
 	val context = Context.create(
 		initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),

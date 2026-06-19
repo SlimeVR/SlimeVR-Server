@@ -16,6 +16,10 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
+import dev.slimevr.resets.ResetsBasicBehaviour
+import dev.slimevr.resets.ResetsManager
+import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
+import dev.slimevr.resets.ResetsState
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
@@ -29,7 +33,6 @@ import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
@@ -83,6 +86,22 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 	return skeleton
 }
 
+fun buildTestResetsManager(server: VRServer, scope: CoroutineScope): ResetsManager {
+	val context = Context.create(
+		initialState = ResetsState(
+			canDoYawReset = true,
+			canDoMountingReset = true,
+			lastFullResetTime = 0,
+		),
+		scope = scope,
+		behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),
+		name = "TestResetsManager",
+	)
+	val resetsManager = ResetsManager(context, server)
+	resetsManager.startObserving()
+	return resetsManager
+}
+
 fun buildTestSettings(scope: CoroutineScope): Settings {
 	val initialState = SettingsState(data = SettingsConfigState(), name = "test")
 	val context = Context.create<SettingsState, dev.slimevr.config.SettingsActions>(
@@ -122,6 +141,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val bvhManager: BVHManager get() = error("not used in test")
 	override val vmcManager: VMCManager get() = error("not used in test")
 	override val vrcOscManager: VRCOSCManager get() = error("not used in test")
+	override val resetsManager: ResetsManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }
