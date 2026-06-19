@@ -1,7 +1,7 @@
 package dev.slimevr.context
 
-import dev.slimevr.context.debug.contextDebugEnabled
 import dev.slimevr.context.debug.DebugMiddleware
+import dev.slimevr.context.debug.contextDebugEnabled
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

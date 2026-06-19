@@ -43,8 +43,7 @@ class VRServer(
 	fun getTracker(id: Int) = context.state.value.trackers[id]
 	fun getDevice(id: Int) = context.state.value.devices[id]
 
-	suspend fun sendSolarxrRpc(message: RpcMessage) =
-		context.state.value.solarxr.values.forEach { it.sendRpc(message) }
+	suspend fun sendSolarxrRpc(message: RpcMessage) = context.state.value.solarxr.values.forEach { it.sendRpc(message) }
 
 	companion object {
 		fun create(scope: CoroutineScope): VRServer {

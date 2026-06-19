@@ -25,8 +25,9 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 		is ResetsActions.EndReset -> {
 			if (action.resetType == ResetType.Full) {
 				state.copy(canDoYawReset = true, canDoMountingReset = true, lastFullResetTime = System.nanoTime())
+			} else {
+				state.copy()
 			}
-			else state.copy()
 		}
 	}
 }

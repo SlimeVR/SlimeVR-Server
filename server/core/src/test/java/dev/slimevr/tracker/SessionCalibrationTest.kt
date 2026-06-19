@@ -295,7 +295,7 @@ class SessionCalibrationTest {
 					testEstimateHeadingAlign(
 						ref * frontRot,
 						hA,
-						ref
+						ref,
 					)
 				}
 			}

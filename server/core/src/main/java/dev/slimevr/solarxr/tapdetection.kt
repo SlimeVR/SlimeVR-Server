@@ -8,7 +8,7 @@ import solarxr_protocol.rpc.TapDetectionSettings
 
 class TapDetectionBehaviour(
 	private val settings: Settings,
-	) : SolarXRBridgeBehaviour {
+) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<ChangeSettingsRequest> { req ->
 			val tapDetectionSettings = req.tapDetectionSettings ?: return@on
@@ -49,5 +49,5 @@ fun buildTapDetectionSettings(config: TapDetectionConfig): TapDetectionSettings 
 	yawResetTracker = config.yawResetBodyPart,
 	fullResetTracker = config.fullResetBodyPart,
 	mountingResetTracker = config.mountingResetBodyPart,
-	numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte()
+	numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
 )

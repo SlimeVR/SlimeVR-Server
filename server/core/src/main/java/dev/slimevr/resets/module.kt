@@ -51,27 +51,32 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 		resetJob.cancelAndJoin()
 		resetJob = context.scope.safeLaunch {
 			val config = context.state.value.config
-			val delayMs = if (delay != null) (delay * 1000).toInt() // Use provided delay
-			else when (resetType) { // Fall back to config
-				ResetType.Yaw -> (config.yawResetDelay * 1000).toInt()
-				ResetType.Full -> (config.fullResetDelay * 1000).toInt()
-				ResetType.Mounting -> (config.mountingResetDelay * 1000).toInt()
+			val delayMs = if (delay != null) {
+				(delay * 1000).toInt() // Use provided delay
+			} else {
+				when (resetType) { // Fall back to config
+					ResetType.Yaw -> (config.yawResetDelay * 1000).toInt()
+
+					ResetType.Full -> (config.fullResetDelay * 1000).toInt()
+
+					ResetType.Mounting -> (config.mountingResetDelay * 1000).toInt()
+				}
 			}
 			val fullSeconds = delayMs / 1000
 			val remainder = delayMs % 1000
 
 			// Tell the GUI we started a reset
 			server.sendSolarxrRpc(
-				ResetResponse(resetType, ResetStatus.STARTED, bodyParts, 0, delayMs)
+				ResetResponse(resetType, ResetStatus.STARTED, bodyParts, 0, delayMs),
 			)
 
 			// Wait for the reset delay while updating the GUI every second
-			repeat(fullSeconds){ index ->
+			repeat(fullSeconds) { index ->
 				delay(1000)
 				// Skip final tick if at the same time as finish
 				if (index != fullSeconds - 1 || remainder != 0) {
 					server.sendSolarxrRpc(
-						ResetResponse(resetType, ResetStatus.STARTED, bodyParts, (index + 1) * 1000, delayMs)
+						ResetResponse(resetType, ResetStatus.STARTED, bodyParts, (index + 1) * 1000, delayMs),
 					)
 				}
 			}
@@ -85,7 +90,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 
 			// Tell the GUI we ended a reset
 			server.sendSolarxrRpc(
-				ResetResponse(resetType, ResetStatus.FINISHED, bodyParts, delayMs, delayMs)
+				ResetResponse(resetType, ResetStatus.FINISHED, bodyParts, delayMs, delayMs),
 			)
 		}
 	}
@@ -113,12 +118,14 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 			?.rotation ?: Quaternion.IDENTITY
 
 		// Dispatch the reset action to the trackers
-		trackers.forEach { it.context.dispatch(
-			when (resetType) {
-				ResetType.Yaw -> TrackerActions.YawReset(referenceRotation)
-				ResetType.Full -> TrackerActions.FullReset(referenceRotation)
-				ResetType.Mounting -> TrackerActions.MountingReset(referenceRotation)
-			})
+		trackers.forEach {
+			it.context.dispatch(
+				when (resetType) {
+					ResetType.Yaw -> TrackerActions.YawReset(referenceRotation)
+					ResetType.Full -> TrackerActions.FullReset(referenceRotation)
+					ResetType.Mounting -> TrackerActions.MountingReset(referenceRotation)
+				},
+			)
 		}
 	}
 

@@ -30,9 +30,9 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
+import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
-import dev.slimevr.resets.ResetsManager
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.safeLaunch
 import dev.slimevr.vmc.VMCManager

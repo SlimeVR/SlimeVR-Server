@@ -65,7 +65,9 @@ private fun openAndroidPort(
 		port.rts = false
 	} catch (e: Exception) {
 		Log.e(TAG, "Failed to open Android serial port $portLocation", e)
-		try { connection.close() } catch (_: Exception) {}
+		try {
+			connection.close()
+		} catch (_: Exception) {}
 		return null
 	}
 
@@ -99,7 +101,9 @@ private fun openAndroidPort(
 		writeCommand = { text -> port.write("$text\n".toByteArray(), 0) },
 		close = {
 			ioManager.stop()
-			try { port.close() } catch (_: Exception) {}
+			try {
+				port.close()
+			} catch (_: Exception) {}
 		},
 	)
 }

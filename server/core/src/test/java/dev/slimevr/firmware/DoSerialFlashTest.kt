@@ -2,8 +2,8 @@ package dev.slimevr.firmware
 
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
-import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestAppContext
+import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions

@@ -30,7 +30,8 @@ fun CoroutineScope.safeLaunch(
 		?: CoroutineExceptionHandler { ctx, throwable ->
 			val name = ctx[CoroutineName]?.name ?: "UnknownScope"
 			AppLogger.coroutines.error(
-				throwable, "Unhandled exception in safeLaunch (scope: $name)"
+				throwable,
+				"Unhandled exception in safeLaunch (scope: $name)",
 			)
 		}
 	//noinspection RAW_LAUNCH_USAGE

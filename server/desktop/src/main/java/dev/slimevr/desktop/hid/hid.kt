@@ -9,8 +9,8 @@ import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -115,7 +115,9 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 								}
 							}
 							when {
-								data == null -> return@safeLaunch // read error, device gone
+								data == null -> return@safeLaunch
+
+								// read error, device gone
 								data.isNotEmpty() -> parseHIDPackets(data).forEach { receiver.packetEvents.emit(it) }
 
 								else -> delay(1) // no data yet, yield without busy-spinning

@@ -27,7 +27,7 @@ data class TrackerConfig(
 )
 
 @Serializable
-data class TapDetectionConfig (
+data class TapDetectionConfig(
 	var yawResetDelay: Float = 0.2f,
 	var fullResetDelay: Float = 1.0f,
 	var mountingResetDelay: Float = 1.0f,
@@ -44,9 +44,8 @@ data class TapDetectionConfig (
 	var fullResetTaps: Int = 3,
 	var mountingResetTaps: Int = 3,
 	var numberTrackersOverThreshold: Int = 1,
-	var setupMode: Boolean = false
-) {
-}
+	var setupMode: Boolean = false,
+)
 
 @Serializable
 data class VMCConfig(

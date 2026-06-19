@@ -20,17 +20,17 @@ import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
 import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
 import dev.slimevr.desktop.serial.DesktopFirmwareFlasher
 import dev.slimevr.desktop.serial.createDesktopSerialServer
+import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
 import dev.slimevr.desktop.vrchat.resolveDesktopOscQueryAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
+import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.trackingchecklist.TrackingChecklist
-import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
-import dev.slimevr.resets.ResetsManager
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.safeLaunch
 import dev.slimevr.vmc.VMCManager
@@ -46,7 +46,12 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 	for (arg in args) {
 		when (arg) {
 			"--steam", "-s" -> featureFlags.steam = true
-			"--install", "-i" -> { runInstaller(); return@runBlocking }
+
+			"--install", "-i" -> {
+				runInstaller()
+				return@runBlocking
+			}
+
 			"--no-udev", "-u" -> featureFlags.skipCheckUdev = true
 		}
 	}

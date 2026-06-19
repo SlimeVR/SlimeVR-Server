@@ -48,7 +48,8 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		// Outer flow (loading) is refreshed when TapDetection config or a tracker's bodyPart or status changes
 		val tapConfigChangingFlow = receiver.appContext.config.settings.context.state
 			.distinctUntilChangedBy { configState ->
-				configState.data.tapDetectionConfig }
+				configState.data.tapDetectionConfig
+			}
 		val trackerChangingFlow = receiver.appContext.server.context.state
 			.flatMapLatest { serverState ->
 				combine(serverState.trackers.values.map { tracker -> tracker.context.state })
@@ -60,26 +61,26 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 
 		combine(
 			tapConfigChangingFlow,
-			trackerChangingFlow
+			trackerChangingFlow,
 		) { configState, _ ->
 			loadTapDetection(receiver, configState, receiver.appContext.server.context.state.value)
 		}
-		// Inner flow (process) is refreshed everytime this tracker's acceleration is updated
-		.flatMapLatest {
-			receiver.context.state
-				.filter { resetType != null || setupModeAssign }
-				.distinctUntilChangedBy { it.rawAcceleration }
-		}
-		.onEach { currentTracker ->
-			processTapDetection(receiver, currentTracker)
-		}.launchIn(receiver.context.scope)
+			// Inner flow (process) is refreshed everytime this tracker's acceleration is updated
+			.flatMapLatest {
+				receiver.context.state
+					.filter { resetType != null || setupModeAssign }
+					.distinctUntilChangedBy { it.rawAcceleration }
+			}
+			.onEach { currentTracker ->
+				processTapDetection(receiver, currentTracker)
+			}.launchIn(receiver.context.scope)
 	}
 
 	// Loads TapDetection config
 	private fun loadTapDetection(
 		receiver: Tracker,
 		configState: SettingsState,
-		serverState: VRServerState
+		serverState: VRServerState,
 	) {
 		val tapDetectionConfig = configState.data.tapDetectionConfig
 		numberTrackersOverThreshold = tapDetectionConfig.numberTrackersOverThreshold
@@ -106,22 +107,27 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 
 		// Switch case for each possible action
 		when (receiver.context.state.value.bodyPart) {
-			null -> resetType = null // BodyParts above could be null
+			null -> resetType = null
+
+			// BodyParts above could be null
 			yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> {
 				resetType = ResetType.Yaw
 				tapsNeeded = tapDetectionConfig.yawResetTaps
 				actionDelay = tapDetectionConfig.yawResetDelay
 			}
+
 			fullResetBodyPart if tapDetectionConfig.fullResetEnabled -> {
 				resetType = ResetType.Full
 				tapsNeeded = tapDetectionConfig.fullResetTaps
 				actionDelay = tapDetectionConfig.fullResetDelay
 			}
+
 			mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> {
 				resetType = ResetType.Mounting
 				tapsNeeded = tapDetectionConfig.mountingResetTaps
 				actionDelay = tapDetectionConfig.mountingResetDelay
 			}
+
 			else -> resetType = null
 		}
 	}
@@ -173,8 +179,8 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 					if (setupModeAssign) {
 						receiver.appContext.server.sendSolarxrRpc(
 							TapDetectionSetupNotification(
-								TrackerId(DeviceId(currentTracker.deviceId.toUByte()), currentTracker.id.toUByte())
-							)
+								TrackerId(DeviceId(currentTracker.deviceId.toUByte()), currentTracker.id.toUByte()),
+							),
 						)
 					}
 
@@ -189,7 +195,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		}
 	}
 
-	private fun resetTapDetection(){
+	private fun resetTapDetection() {
 		accelList.clear()
 		tapTimestamps.clear()
 		waitForLowAccel = false
@@ -217,6 +223,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				)
 
 				cal != null -> state.rotation
+
 				else -> rawRotation
 			}
 
@@ -231,6 +238,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				)
 
 				cal != null -> state.acceleration
+
 				else -> rawAcceleration
 			}
 

@@ -117,7 +117,7 @@ private fun createServerGuards(resetsManager: ResetsManager): ServerGuards {
 	return ServerGuards(
 		candomounting = resetsState.canDoMountingReset,
 		candoyawreset = resetsState.canDoYawReset,
-		//candouserheightcalibration = true, TODO
+		// candouserheightcalibration = true, TODO
 	)
 }
 

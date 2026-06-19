@@ -39,8 +39,7 @@ private val HID_PRODUCT_RULES = listOf(
 	HidProductRule(0x4E76, 0xD200, 0xFF00), // Gestures Inc. D2XX
 )
 
-private fun isCompatibleDevice(vid: Int, pid: Int) =
-	HID_PRODUCT_RULES.any { rule -> vid == rule.vendorId && (pid and rule.productMask) == rule.productId }
+private fun isCompatibleDevice(vid: Int, pid: Int) = HID_PRODUCT_RULES.any { rule -> vid == rule.vendorId && (pid and rule.productMask) == rule.productId }
 
 private fun findHidInputEndpoint(device: UsbDevice): Pair<UsbInterface, UsbEndpoint>? {
 	for (ifaceIdx in 0 until device.interfaceCount) {
@@ -50,7 +49,9 @@ private fun findHidInputEndpoint(device: UsbDevice): Pair<UsbInterface, UsbEndpo
 			val endpoint = iface.getEndpoint(epIdx)
 			if (endpoint.type == UsbConstants.USB_ENDPOINT_XFER_INT &&
 				endpoint.direction == UsbConstants.USB_DIR_IN
-			) return iface to endpoint
+			) {
+				return iface to endpoint
+			}
 		}
 	}
 	return null
