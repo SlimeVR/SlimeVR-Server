@@ -16,16 +16,34 @@ suspend fun runInstaller() {
 	}
 }
 
-suspend fun executeShellCommand(vararg command: String): String? = try {
-	val process = withContext(Dispatchers.IO) {
-		ProcessBuilder(*command)
+suspend fun executeShellCommand(vararg command: String): Pair<Int, String>? = try {
+	withContext(Dispatchers.IO) {
+		val process = ProcessBuilder(*command)
 			.redirectErrorStream(true)
 			.start()
-	}
-	process.inputStream.bufferedReader().readText().also {
+
+		val output = process.inputStream.bufferedReader().readText()
 		process.waitFor()
+		Pair(process.exitValue(), output)
 	}
 } catch (e: IOException) {
 	AppLogger.install.warn("Error executing shell command: ${e.message}")
 	null
+}
+
+// vrpathreg returns 1 if the driver is not present
+fun shouldInstallDriver(exitCode: Int): Boolean = exitCode == 1
+
+// get a descriptive reason why we're skipping driver installation
+// Exit codes from vrpathreg output:
+//    0 : Success
+//    1 : ( finddriver only ) Driver not present
+//    2 : ( finddriver only ) Error, driver installed more than once
+//   -1 : Configuration or permission problem
+//   -2 : Argument problem
+fun getDriverInstallSkipReason(exitCode: Int): String = when (exitCode) {
+	0 -> "driver already installed"
+	2 -> "driver installed more than once"
+	-1 -> "SteamVR is misconfigured"
+	else -> "unknown reason ($exitCode)"
 }

@@ -61,7 +61,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		} else {
 			arrayOf("udevadm", "cat")
 		}
-		featureFlags.udevRulesInstalled = executeShellCommand(*command)?.contains("slime")
+		featureFlags.udevRulesInstalled = executeShellCommand(*command)?.second?.contains("slime")
 	}
 
 	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
