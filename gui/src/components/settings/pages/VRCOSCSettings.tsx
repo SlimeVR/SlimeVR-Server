@@ -127,13 +127,13 @@ function StatusBadge({ kind }: { kind: BadgeKind }) {
   return (
     <span
       className={classNames(
-        'rounded-md px-2 py-1 bg-background-70 flex gap-2 items-center',
+        'rounded-md px-2 py-1 bg-background-70 flex gap-2 items-center'
       )}
     >
       <div
         className={classNames('h-2 w-2 rounded-full', BADGE_CLASSES[kind])}
       />
-      <Typography id={BADGE_LABEL_KEY[kind]} bold/>
+      <Typography id={BADGE_LABEL_KEY[kind]} bold />
     </span>
   );
 }
@@ -396,38 +396,39 @@ export function VRCOSCSettings() {
     [l10n]
   );
 
-  const { reset, control, watch, handleSubmit, setValue } = useForm<VRCOSCSettingsForm>({
-    defaultValues: createDefaultValues(),
-    reValidateMode: 'onChange',
-    mode: 'onChange',
-    resolver: yupResolver(
-      object({
-        vrchat: object({
-          enabled: boolean().required(),
-          useManualNetwork: boolean().required(),
-          manualNetwork: object({
-            portIn: portValidator,
-            portOut: portValidator,
-            address: string()
-              .required(' ')
-              .matches(
-                /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-                { message: ' ' }
-              ),
+  const { reset, control, watch, handleSubmit, setValue } =
+    useForm<VRCOSCSettingsForm>({
+      defaultValues: createDefaultValues(),
+      reValidateMode: 'onChange',
+      mode: 'onChange',
+      resolver: yupResolver(
+        object({
+          vrchat: object({
+            enabled: boolean().required(),
+            useManualNetwork: boolean().required(),
+            manualNetwork: object({
+              portIn: portValidator,
+              portOut: portValidator,
+              address: string()
+                .required(' ')
+                .matches(
+                  /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
+                  { message: ' ' }
+                ),
+            }),
+            trackers: object({
+              head: boolean().required(),
+              chest: boolean().required(),
+              elbows: boolean().required(),
+              feet: boolean().required(),
+              knees: boolean().required(),
+              hands: boolean().required(),
+              waist: boolean().required(),
+            }),
           }),
-          trackers: object({
-            head: boolean().required(),
-            chest: boolean().required(),
-            elbows: boolean().required(),
-            feet: boolean().required(),
-            knees: boolean().required(),
-            hands: boolean().required(),
-            waist: boolean().required(),
-          }),
-        }),
-      })
-    ),
-  });
+        })
+      ),
+    });
 
   const enabled = watch('vrchat.enabled');
   const useManualNetwork = watch('vrchat.useManualNetwork');
@@ -487,7 +488,7 @@ export function VRCOSCSettings() {
           }
         }
 
-      reset(formData);
+        reset(formData);
       }
     }
   );
@@ -553,11 +554,9 @@ export function VRCOSCSettings() {
                       asString(target.address),
                       { shouldDirty: true }
                     );
-                    setValue(
-                      'vrchat.manualNetwork.portOut',
-                      target.portOut,
-                      { shouldDirty: true }
-                    );
+                    setValue('vrchat.manualNetwork.portOut', target.portOut, {
+                      shouldDirty: true,
+                    });
                   }}
                 />
               </>

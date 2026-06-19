@@ -14,7 +14,6 @@ import {
   ChangeSettingsRequestT,
   ModelSettingsT,
   ModelTogglesT,
-  OSCSettingsT,
   ResetsSettingsT,
   RpcMessage,
   SettingsRequestT,
@@ -111,7 +110,6 @@ export function useProvideOnboarding() {
     if (!settings?.modelSettings || !vrcOscSettings) return;
     const req = new ChangeSettingsRequestT();
     const modelSettings = new ModelSettingsT();
-    const oscSettings = new VRCOSCSettingsT();
 
     const mocap = usage === 'mocap' || usage === 'vtubing';
 
