@@ -46,14 +46,14 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 	for (arg in args) {
 		when (arg) {
 			"--steam", "-s" -> featureFlags.steam = true
-			"--install", "-i" -> { runInstaller(featureFlags); return@runBlocking }
+			"--install", "-i" -> { runInstaller(); return@runBlocking }
 			"--no-udev", "-u" -> featureFlags.skipCheckUdev = true
 		}
 	}
 	if (CURRENT_PLATFORM != Platform.LINUX) featureFlags.skipCheckUdev = true
 
 	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toIntOrNull()
-	if (featureFlags.steam && isInstallDisabled != 1) runInstaller(featureFlags)
+	if (featureFlags.steam && isInstallDisabled != 1) runInstaller()
 
 	if (!featureFlags.skipCheckUdev) {
 		val command = if (featureFlags.steam) {

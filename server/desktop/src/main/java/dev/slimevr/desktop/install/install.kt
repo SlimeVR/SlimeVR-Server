@@ -8,9 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
-suspend fun runInstaller(featureFlags: FeatureFlags) {
+suspend fun runInstaller() {
 	when (CURRENT_PLATFORM) {
-		Platform.LINUX -> installLinux(featureFlags)
+		Platform.LINUX -> installLinux()
 		Platform.WINDOWS -> installWindows()
 		else -> AppLogger.install.warn("Updater doesn't support operating system '$CURRENT_PLATFORM'")
 	}

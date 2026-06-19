@@ -4,11 +4,9 @@ import dev.slimevr.AppLogger
 import dev.slimevr.FeatureFlags
 
 private const val LINUX_STEAM_DRIVER_DIRECTORY = "slimevr-openvr-driver-x64-linux"
-private const val LINUX_FEEDER_DIRECTORY = "SlimeVR-Feeder-App-Linux"
 
-suspend fun installLinux(featureFlags: FeatureFlags) {
+suspend fun installLinux() {
 	installLinuxSteamVRDriver()
-	installLinuxFeeder(featureFlags)
 }
 
 private suspend fun installLinuxSteamVRDriver() {
@@ -29,24 +27,4 @@ private suspend fun installLinuxSteamVRDriver() {
 		return
 	}
 	AppLogger.install.info("SteamVR driver successfully installed")
-}
-
-private suspend fun installLinuxFeeder(featureFlags: FeatureFlags) {
-	val path = System.getProperty("user.dir")
-	executeShellCommand("chmod", "+x", "$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App")
-	val command = if (featureFlags.steam) {
-		arrayOf("steam-runtime-launch-client", "--alongside-steam", "--", "$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App", "--install")
-	} else {
-		arrayOf("$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App", "--install")
-	}
-	val output = executeShellCommand(*command)
-	if (output == null) {
-		AppLogger.install.warn("Error installing feeder")
-		return
-	}
-	if (output.lowercase().contains("manifest is not installed")) {
-		AppLogger.install.warn("Could not install feeder application")
-	} else {
-		AppLogger.install.info("Successfully installed feeder application")
-	}
 }
