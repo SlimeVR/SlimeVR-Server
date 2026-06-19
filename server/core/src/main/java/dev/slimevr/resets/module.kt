@@ -115,9 +115,9 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 		// Dispatch the reset action to the trackers
 		trackers.forEach { it.context.dispatch(
 			when (resetType) {
-				ResetType.Yaw -> TrackerActions.YawReset(referenceRotation, config.yawResetSmoothTime)
-				ResetType.Full -> TrackerActions.FullReset(referenceRotation, config.resetHmdPitch)
-				ResetType.Mounting -> TrackerActions.MountingReset(referenceRotation, config.saveMountingReset)
+				ResetType.Yaw -> TrackerActions.YawReset(referenceRotation)
+				ResetType.Full -> TrackerActions.FullReset(referenceRotation)
+				ResetType.Mounting -> TrackerActions.MountingReset(referenceRotation)
 			})
 		}
 	}
