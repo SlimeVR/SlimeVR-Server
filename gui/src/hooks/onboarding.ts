@@ -20,6 +20,7 @@ import {
   SettingsRequestT,
   SettingsResponseT,
   SkeletonBone,
+  VRCOSCSettingsRequestT,
   VRCOSCSettingsT,
 } from 'solarxr-protocol';
 import { useManualProportions } from './manual-proportions';
@@ -80,6 +81,7 @@ export function useProvideOnboarding() {
 
   const { state: locatioState } = useLocation();
   const [settings, setSettings] = useState<SettingsResponseT>();
+  const [vrcOscSettings, setVrcOscSettings] = useState<VRCOSCSettingsT>();
 
   useLayoutEffect(() => {
     const { alonePage = false }: { alonePage?: boolean } = (locatioState as any) || {};
@@ -90,10 +92,14 @@ export function useProvideOnboarding() {
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+    sendRPCPacket(RpcMessage.VRCOSCSettingsRequest, new VRCOSCSettingsRequestT());
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     setSettings(settings);
+  });
+  useRPCPacket(RpcMessage.VRCOSCSettingsResponse, (settings: VRCOSCSettingsT) => {
+    setVrcOscSettings(settings);
   });
 
   const { changeBoneValue } = useManualProportions({
@@ -102,7 +108,7 @@ export function useProvideOnboarding() {
 
   const onboardingEnded = () => {
     setConfig({ doneOnboarding: true });
-    if (!settings?.modelSettings || !settings?.vrcOsc) return;
+    if (!settings?.modelSettings || !vrcOscSettings) return;
     const req = new ChangeSettingsRequestT();
     const modelSettings = new ModelSettingsT();
     const oscSettings = new VRCOSCSettingsT();
@@ -117,13 +123,11 @@ export function useProvideOnboarding() {
     const resets = Object.assign(new ResetsSettingsT(), settings.resetsSettings);
     resets.resetHmdPitch = mocapPos === 'forehead';
     req.resetsSettings = resets;
-
-    const osc = Object.assign(new OSCSettingsT(), settings.vrcOsc.oscSettings);
-    osc.enabled = vrcOsc ?? false;
-    oscSettings.oscSettings = osc;
-    req.vrcOsc = oscSettings;
-
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
+
+    const osc = Object.assign(new VRCOSCSettingsT(), vrcOscSettings);
+    osc.enabled = vrcOsc ?? false;
+    sendRPCPacket(RpcMessage.ChangeVRCOSCSettingsRequest, osc);
 
     if (mocap) {
       changeBoneValue({ bone: SkeletonBone.HAND_Z, type: 'bone', newValue: 0 });

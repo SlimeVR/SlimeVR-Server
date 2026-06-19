@@ -14,6 +14,7 @@ import {
   SerialUpdateResponseT,
   SerialTrackerGetWifiScanRequestT,
   SerialTrackerCustomCommandRequestT,
+  SerialDeviceType,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
@@ -122,6 +123,7 @@ export function Serial() {
         {
           name: l10n.getString('settings-serial-auto_dropdown_item'),
           port: 'Auto',
+          type: SerialDeviceType.ESP_TRACKER, // dummy value
         },
         ...(res.devices || []),
       ]);
