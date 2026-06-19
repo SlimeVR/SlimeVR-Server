@@ -4,6 +4,7 @@ import dev.slimevr.config.UserConfig
 import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -126,6 +127,8 @@ class ComputedSkeletonBehaviour(
 						.fold(targetState) { state, processor -> processor.process(state) }
 					val rootHead = Vector3(0f, targetState.userHeight, 0f) // FIXME WRONG
 					receiver.computed.value = buildBones(processed, rootHead = rootHead)
+				} catch (e: CancellationException) {
+					throw e
 				} catch (e: Exception) {
 					dev.slimevr.AppLogger.coroutines.error(e, "Error in ComputedSkeletonBehaviour")
 				}
