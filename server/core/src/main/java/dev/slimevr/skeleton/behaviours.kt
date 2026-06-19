@@ -112,7 +112,7 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 }
 
 class ComputedSkeletonBehaviour(
-	val hz: Float = 100f,
+	val hz: Float = 100f, // TODO behaviours like smoothing will behave different based on hz
 	val processors: List<SkeletonProcessor> = emptyList(),
 ) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {

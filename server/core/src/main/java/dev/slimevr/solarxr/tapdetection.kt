@@ -14,7 +14,7 @@ class TapDetectionBehaviour(
 			val tapDetectionSettings = req.tapDetectionSettings ?: return@on
 
 			val oldConfig = settings.context.state.value.data.tapDetectionConfig
-			val newConfig = TapDetectionConfig(
+			val newConfig = oldConfig.copy(
 				yawResetDelay = tapDetectionSettings.yawResetDelay ?: oldConfig.yawResetDelay,
 				fullResetDelay = tapDetectionSettings.fullResetDelay ?: oldConfig.fullResetDelay,
 				mountingResetDelay = tapDetectionSettings.mountingResetDelay ?: oldConfig.mountingResetDelay,

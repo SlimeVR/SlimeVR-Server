@@ -1,5 +1,6 @@
 package dev.slimevr.resets
 
+import dev.slimevr.config.MountingMethods
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -25,6 +26,8 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 		is ResetsActions.EndReset -> {
 			if (action.resetType == ResetType.Full) {
 				state.copy(canDoYawReset = true, canDoMountingReset = true, lastFullResetTime = System.nanoTime())
+			} else if (action.resetType == ResetType.Mounting) {
+				state.copy(config = state.config.copy(lastMountingMethod = MountingMethods.AUTOMATIC))
 			} else {
 				state.copy()
 			}

@@ -1,7 +1,6 @@
 package dev.slimevr.resets
 
 import dev.slimevr.AppLogger
-import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.context.Behaviour
@@ -47,21 +46,10 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 	 * If delay is null, the default delay from config will be used.
 	 * If bodyParts is null, resets all trackers.
 	 */
-	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float? = null, bodyParts: List<BodyPart>? = null) {
+	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float = 0f, bodyParts: List<BodyPart>? = null) {
 		resetJob.cancelAndJoin()
 		resetJob = context.scope.safeLaunch {
-			val config = context.state.value.config
-			val delayMs = if (delay != null) {
-				(delay * 1000).toInt() // Use provided delay
-			} else {
-				when (resetType) { // Fall back to config
-					ResetType.Yaw -> (config.yawResetDelay * 1000).toInt()
-
-					ResetType.Full -> (config.fullResetDelay * 1000).toInt()
-
-					ResetType.Mounting -> (config.mountingResetDelay * 1000).toInt()
-				}
-			}
+			val delayMs = (delay * 1000).toInt()
 			val fullSeconds = delayMs / 1000
 			val remainder = delayMs % 1000
 
@@ -82,7 +70,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 			}
 			delay((remainder).toLong())
 
-			executeTrackerResets(resetType, bodyParts, config)
+			executeTrackerResets(resetType, bodyParts, context.state.value.config)
 
 			context.dispatch(ResetsActions.EndReset(resetType))
 

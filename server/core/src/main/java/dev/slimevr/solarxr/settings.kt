@@ -18,6 +18,7 @@ class SettingsBehaviour(
 		receiver.rpcDispatcher.on<SettingsRequest> {
 			receiver.sendRpc(
 				SettingsResponse(
+					resetsSettings = buildResetsSettings(settings.context.state.value.data.resetsConfig),
 					tapDetectionSettings = buildTapDetectionSettings(settings.context.state.value.data.tapDetectionConfig),
 					vmcOsc = buildVmcOscSettings(vmcManager.context.state.value.config),
 				),
