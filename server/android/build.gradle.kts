@@ -170,7 +170,7 @@ android {
 			commandLine("git", "--no-pager", "tag", "-l")
 		}.standardOutput.asText.get().trim().split('\n').size + versionCodeOffset
 		versionName = providers.exec {
-			commandLine("git", "describe", "--tags", "--always")
+			commandLine("git", "describe", "--tags", "--abbrev=8", "--always")
 		}.standardOutput.asText.get().trim()
 
 		logger.lifecycle("i: Configured for SlimeVR Android version \"$versionName\" ($versionCode).")
