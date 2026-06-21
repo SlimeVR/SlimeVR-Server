@@ -14,86 +14,151 @@
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" ];
+      systems = [
+        "aarch64-linux"
+        "x86_64-linux"
+      ];
 
       perSystem =
-        { pkgs, ... }:
+        { lib, pkgs, ... }:
         let
-          runtimeLibs =
-            pkgs:
-            (with pkgs; [
-              jdk17
+          runtimeLibs = [
+            pkgs.alsa-lib
+            pkgs.libpulseaudio
+            pkgs.at-spi2-atk
+            pkgs.at-spi2-core
+            pkgs.cairo
+            pkgs.cups
+            pkgs.dbus
+            pkgs.expat
+            pkgs.gdk-pixbuf
+            pkgs.glib
+            pkgs.gtk3
+            pkgs.libdrm
+            pkgs.libgbm
+            pkgs.libglvnd
+            pkgs.libnotify
+            pkgs.libxkbcommon
+            pkgs.mesa
+            pkgs.nspr
+            pkgs.nss
+            pkgs.pango
+            pkgs.systemd
+            pkgs.vulkan-loader
+            pkgs.wayland
+            pkgs.libX11
+            pkgs.libXcomposite
+            pkgs.libXdamage
+            pkgs.libXext
+            pkgs.libXfixes
+            pkgs.libXrandr
+            pkgs.libxcb
+            pkgs.libxshmfence
+            pkgs.libusb1
+            pkgs.udev
+            pkgs.libxcrypt-legacy
+          ];
 
-              alsa-lib
-              libpulseaudio
-              at-spi2-atk
-              at-spi2-core
-              cairo
-              cups
-              dbus
-              expat
-              gdk-pixbuf
-              glib
-              gtk3
-              libdrm
-              libgbm
-              libglvnd
-              libnotify
-              libxkbcommon
-              mesa
-              nspr
-              nss
-              pango
-              systemd
-              vulkan-loader
-              wayland
-              libX11
-              libXcomposite
-              libXdamage
-              libXext
-              libXfixes
-              libXrandr
-              libxcb
-              libxshmfence
-              libusb1
-              udev
-              libxcrypt-legacy
-              rpm
-              fpm
+          toolDirectoryName =
+            if pkgs.stdenv.hostPlatform.isDarwin then
+              "darwin"
+            else if pkgs.stdenv.hostPlatform.isLinux then
+              {
+                "armv7l-linux" = "linux-arm32";
+                "aarch64-linux" = "linux-arm64";
+                "i686-linux" = "linux-ia32";
+                "x86_64-linux" = "linux-x64";
+              }
+              ."${pkgs.stdenv.hostPlatform.system}"
+            else
+              throw "Unsupported platform";
 
-              wineWow64Packages.stable
-              zlib
-              squashfsTools
-              fakeroot
-              libarchive
-              icu
-              nodejs_22
-              pnpm
-              pkg-config
-              python3
-              gcc
-              gnumake
-              binutils
-              git
-              node-gyp-build
-            ]);
-
-          slimeShell = pkgs.buildFHSEnv {
-            name = "slimevr-env";
-            targetPkgs = runtimeLibs;
-            profile = ''
-              export JAVA_HOME=${pkgs.jdk17}
-              export PATH="${pkgs.jdk17}/bin:$PATH"
-
-              # Tell electron-builder to use system tools instead of downloading them
-              export USE_SYSTEM_FPM=true
-              export USE_SYSTEM_MKSQUASHFS=true
+          # we use fuse2
+          # https://github.com/electron-userland/electron-builder/blob/a6117b3011a105204af8cc2eca02a56976d1ef29/packages/app-builder-lib/src/toolsets/linux.ts#L122
+          runtime = pkgs.stdenvNoCC.mkDerivation {
+            name = "electron-builder-appimage-runtime";
+            src = pkgs.fetchurl {
+              url = "https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage-12.0.1/appimage-12.0.1.7z";
+              hash = "sha256-0S/3648dHsRlLKUjen+9yjOswMdYBFY2/spi3G7LjsQ=";
+            };
+            # https://github.com/NixOS/nixpkgs/blob/7890ba0a99c064446fe2178ef2f8e3abdf6ec42a/pkgs/by-name/lo/losslesscut-bin/build-from-windows.nix#L20
+            nativeBuildInputs = [ pkgs.p7zip ];
+            unpackPhase = ''
+              runHook preUnpack
+              7z x "$src"
+              runHook postUnpack
             '';
-            runScript = "bash";
+            installPhase = ''
+              mkdir $out
+              cp -r -t $out/ \
+                lib/ \
+                runtime-*
+            '';
+          };
+
+          appImageTools = pkgs.stdenvNoCC.mkDerivation {
+            name = "electron-builder-appimage-tools";
+            dontUnpack = true;
+
+            installPhase = ''
+              mkdir -p "$out/${toolDirectoryName}"
+              ln -s -t $out/${toolDirectoryName} \
+                "${pkgs.desktop-file-utils}/bin/desktop-file-validate" \
+                "${pkgs.squashfsTools}/bin/mksquashfs"
+              ln -s ${runtime}/runtime-* $out/
+              ln -s ${runtime}/lib $out/lib
+            '';
           };
         in
         {
-          devShells.default = slimeShell.env;
+          devShells.default = pkgs.mkShell {
+            packages = [
+              # for running the jar
+              pkgs.jdk17
+              # for build
+              pkgs.electron
+              pkgs.rpm
+              pkgs.fpm
+              pkgs.p7zip
+              pkgs.wineWow64Packages.stable
+              pkgs.zlib
+              pkgs.squashfsTools
+              pkgs.desktop-file-utils
+              pkgs.fakeroot
+              pkgs.libarchive
+              pkgs.icu
+              pkgs.nodejs_22
+              pkgs.pnpm
+              pkgs.pkg-config
+              pkgs.python3
+              pkgs.gcc
+              pkgs.gnumake
+              pkgs.binutils
+              pkgs.git
+              pkgs.node-gyp-build
+            ];
+            buildInputs = runtimeLibs;
+
+            JAVA_HOME = "${pkgs.jdk17}/lib/openjdk";
+            USE_SYSTEM_FPM = "true";
+            ELECTRON_BUILDER_7ZIP_PATH = "${pkgs.p7zip}/bin/7za";
+            APPIMAGE_TOOLS_PATH = "${appImageTools}";
+            #ELECTRON_SKIP_BINARY_DOWNLOAD = true;
+            #ELECTRON_DIST = "${pkgs.electron.dist}";
+            #ELECTRON_VERSION = "${pkgs.electron.version}";
+
+            # for electron-vite, so `pnpm gui` works
+            ELECTRON_EXEC_PATH = "${pkgs.electron}/bin/electron";
+
+            shellHook = ''
+              export LD_LIBRARY_PATH="${
+                lib.makeLibraryPath [
+                  pkgs.systemd
+                  pkgs.hidapi
+                ]
+              }:$LD_LIBRARY_PATH"
+            '';
+          };
         };
     };
 }
