@@ -28,7 +28,7 @@ function IncrementButton({
     <div
       onClick={onClick}
       className={classNames(
-        'p-3 rounded-lg xs:w-10 xs:h-10 flex flex-col justify-center items-center cursor-pointer',
+        'no-user-drag p-3 rounded-lg xs:w-10 xs:h-10 flex flex-col justify-center items-center cursor-pointer',
         'hover:bg-opacity-50 active:bg-accent-background-30',
         { 'bg-background-60': bgDark, 'bg-background-40': !bgDark }
       )}

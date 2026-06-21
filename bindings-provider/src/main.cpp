@@ -15,6 +15,13 @@
 
 #include "openvr.h"
 
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <cstdlib>
+#endif
+
+namespace fs = std::filesystem;
 using namespace std::chrono_literals;
 using namespace solarxr_protocol;
 
@@ -95,6 +102,20 @@ static void signal_handler(int signal) {
 
 int main() {
     auto &logger = Logger::get();
+    // Steam and SteamVR sets these environment variables on applications that it
+    // spawns, but if an app spawned by Steam then spawns a child that initialises
+    // OpenVR, SteamVR will give the child the appkey of the root application it
+    // is a descendant of, e.g. if SteamVR launches SlimeVR as an overlay,
+    // it will set SteamAppId="3245490" and STEAMVR_APPKEY="steam.overlay.3245490"
+    // which breaks our bindings. We want SteamVR to use a generated appkey if
+    // possible.
+#ifdef _WIN32
+    SetEnvironmentVariableA("SteamAppId", nullptr);
+    SetEnvironmentVariableA("STEAMVR_APPKEY", nullptr);
+#else
+    unsetenv("SteamAppId");
+    unsetenv("STEAMVR_APPKEY");
+#endif
 
     try {
         SolarXRConnection conn;
@@ -128,14 +149,20 @@ int main() {
         vr::IVRApplications *app = vr::VRApplications();
         vr::IVRInput *input = vr::VRInput();
 
-        auto [appManifestPath, actionManifestPath] = VRUtils::initialiseManifest();
+        fs::path actionManifestPath;
+        std::tie(std::ignore, actionManifestPath) = VRUtils::initialiseManifest();
 
+        // We don't want our app key to randomly change if SteamVR decides to honour
+        // application manifests with no binary path. Instead let it generate an
+        // app key based on the executable name (system.generated.[lowercase executable name])
+#if false
         if (auto err = app->AddApplicationManifest(appManifestPath.string().data(), true);
             err != vr::VRApplicationError_None) {
             logger.error("Failed to add application manifest: {}",
                          app->GetApplicationsErrorNameFromEnum(err));
             return 1;
         }
+#endif
 
         // SetActionManifestPath may return IPCError if vrserver is busy and takes
         // too long to reply, so keep invoking until it succeeds
