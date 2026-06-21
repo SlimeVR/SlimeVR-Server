@@ -54,7 +54,7 @@ allprojects {
 	}
 }
 
-val downloadDriverProto by tasks.registering {
+val downloadDriverProto = tasks.register("downloadDriverProto") {
 	val protoFile = layout.buildDirectory.file("proto/ProtobufMessages.proto")
 	outputs.file(protoFile)
 	doLast {
@@ -86,10 +86,10 @@ dependencies {
 	implementation("org.hid4java:hid4java:0.8.0")
 	implementation("io.klogging:klogging:0.11.7")
 
-	val ktor_version = "3.4.1"
-	implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
-	implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-	implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
+	val ktorVersion = "3.4.1"
+	implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+	implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+	implementation("io.ktor:ktor-server-websockets-jvm:$ktorVersion")
 
 	testImplementation(kotlin("test"))
 }

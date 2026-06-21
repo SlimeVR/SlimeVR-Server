@@ -29,7 +29,7 @@ kotlin {
 	jvm()
 
 	sourceSets {
-		val commonMain by getting {
+		val commonMain = getByName("commonMain") {
 			kotlin.srcDir("src/main/java")
 			dependencies {
 				api(project(":solarxr-protocol:generated"))
@@ -54,7 +54,7 @@ kotlin {
 				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 			}
 		}
-		val commonTest by getting {
+		val commonTest = getByName("commonTest") {
 			kotlin.srcDir("src/test/java")
 			dependencies {
 				implementation(kotlin("test"))

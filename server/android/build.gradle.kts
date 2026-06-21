@@ -12,11 +12,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Base64
 
 plugins {
-	kotlin("android")
 	kotlin("plugin.serialization")
 	id("com.github.gmazzo.buildconfig")
 
-	id("com.android.application") version "8.13.2"
+	id("com.android.application") version "9.2.1"
 }
 
 kotlin {
@@ -131,16 +130,6 @@ dependencies {
 }
 
 // The android block is where you configure all your Android-specific build options.
-extra.apply {
-	val tagCount = providers.exec {
-		commandLine("git", "--no-pager", "tag", "-l")
-	}.standardOutput.asText.get().trim().split('\n').size
-	val description = providers.exec {
-		commandLine("git", "describe", "--tags", "--always")
-	}.standardOutput.asText.get().trim()
-	set("gitVersionCode", tagCount)
-	set("gitVersionName", description)
-}
 android {
 	// The app's namespace. Used primarily to access app resources.
 
@@ -175,11 +164,14 @@ android {
 		// adds an offset of the version code as we might do apk releases in the middle of actual
 		// releases if we failed on bundling or stuff
 		val versionCodeOffset = 4
-		// Defines the version number of your app.
-		versionCode = (extra["gitVersionCode"] as? Int)?.plus(versionCodeOffset) ?: 0
 
-		// Defines a user-friendly version name for your app.
-		versionName = extra["gitVersionName"] as? String ?: "v0.0.0"
+		// Defines the version number of your app.
+		versionCode = providers.exec {
+			commandLine("git", "--no-pager", "tag", "-l")
+		}.standardOutput.asText.get().trim().split('\n').size + versionCodeOffset
+		versionName = providers.exec {
+			commandLine("git", "describe", "--tags", "--always")
+		}.standardOutput.asText.get().trim()
 
 		logger.lifecycle("i: Configured for SlimeVR Android version \"$versionName\" ($versionCode).")
 

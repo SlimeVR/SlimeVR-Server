@@ -16,11 +16,11 @@ pluginManagement {
         mavenCentral()
     }
 
-	val kotlinVersion: String by settings
-	val spotlessVersion: String by settings
-	val shadowJarVersion: String by settings
-	val buildconfigVersion: String by settings
-	val wireVersion: String by settings
+	val kotlinVersion = providers.gradleProperty("kotlinVersion").get()
+	val spotlessVersion = providers.gradleProperty("spotlessVersion").get()
+	val shadowJarVersion = providers.gradleProperty("shadowJarVersion").get()
+	val buildconfigVersion = providers.gradleProperty("buildconfigVersion").get()
+	val wireVersion = providers.gradleProperty("wireVersion").get()
 	plugins {
 		kotlin("plugin.serialization") version kotlinVersion
 		kotlin("jvm") version kotlinVersion
