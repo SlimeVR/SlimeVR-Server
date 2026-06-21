@@ -13,7 +13,6 @@ plugins {
 	application
 	id("com.gradleup.shadow")
 	id("com.github.gmazzo.buildconfig")
-	id("org.ajoberstar.grgit")
 }
 
 kotlin {
@@ -89,12 +88,18 @@ buildConfig {
 	useKotlinOutput { topLevelConstants = true }
 	packageName("dev.slimevr.desktop")
 
+	val gitCommitHash = providers.exec {
+		commandLine("git", "rev-parse", "--short=8", "HEAD")
+	}.standardOutput.asText.get().trim()
 	val gitVersionTag = providers.exec {
 		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD")
-	}.standardOutput.asText.get().split('\n').first()
-	buildConfigField("String", "GIT_COMMIT_HASH", "\"${grgit.head().abbreviatedId}\"")
-	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag.trim()}\"")
-	buildConfigField("boolean", "GIT_CLEAN", grgit.status().isClean.toString())
+	}.standardOutput.asText.get().trim()
+	val gitIsClean = providers.exec {
+		commandLine("git", "status", "--porcelain")
+	}.standardOutput.asText.get().trim().isEmpty()
+	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
+	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
+	buildConfigField("boolean", "GIT_CLEAN", gitIsClean.toString())
 }
 
 tasks.run<JavaExec> {
