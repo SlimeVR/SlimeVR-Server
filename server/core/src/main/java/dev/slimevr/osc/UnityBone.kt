@@ -43,7 +43,7 @@ enum class UnityBone(
 	CHEST("Chest", BoneType.CHEST, TrackerPosition.CHEST),
 
 	@SerialName("upperChest")
-	UPPER_CHEST("UpperChest", BoneType.CHEST, TrackerPosition.CHEST),
+	UPPER_CHEST("UpperChest", BoneType.UPPER_CHEST, TrackerPosition.UPPER_CHEST),
 
 	@SerialName("neck")
 	NECK("Neck", BoneType.NECK, TrackerPosition.NECK),

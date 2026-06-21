@@ -8,7 +8,7 @@ import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.FiltersConfig
 import dev.slimevr.config.HIDConfig
 import dev.slimevr.config.LegTweaksConfig
-import dev.slimevr.config.OSCConfig
+import dev.slimevr.config.OSCRouterConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.SkeletonConfig
 import dev.slimevr.config.StayAlignedConfig
@@ -45,7 +45,7 @@ import solarxr_protocol.rpc.settings.SkeletonHeight
 
 fun createOSCRouterSettings(
 	fbb: FlatBufferBuilder,
-	config: OSCConfig,
+	config: OSCRouterConfig,
 ): Int {
 	val addressStringOffset = fbb.createString(config.address)
 
@@ -60,6 +60,7 @@ fun createOSCRouterSettings(
 
 	OSCRouterSettings.startOSCRouterSettings(fbb)
 	OSCRouterSettings.addOscSettings(fbb, oscSettingOffset)
+	OSCRouterSettings.addRescaleTracking(fbb, config.rescaleTracking)
 
 	return OSCRouterSettings.endOSCRouterSettings(fbb)
 }
