@@ -127,7 +127,7 @@ extra.apply {
 		commandLine("git", "--no-pager", "tag", "-l")
 	}.standardOutput.asText.get().trim().split('\n').size
 	val description = providers.exec {
-		commandLine("git", "describe", "--tags", "--always")
+		commandLine("git", "describe", "--tags", "--abbrev=8", "--always")
 	}.standardOutput.asText.get().trim()
 	set("gitVersionCode", tagCount)
 	set("gitVersionName", description)
