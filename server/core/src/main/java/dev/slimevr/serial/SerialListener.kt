@@ -5,8 +5,8 @@ import java.util.*
 abstract class SerialPort {
 	abstract val portLocation: String
 	abstract val descriptivePortName: String
-	abstract val vendorId: Int?
-	abstract val productId: Int?
+	abstract val vendorId: Int
+	abstract val productId: Int
 
 	override fun equals(other: Any?): Boolean {
 		val other: SerialPort = other as? SerialPort ?: return super.equals(other)
