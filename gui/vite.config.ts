@@ -6,7 +6,7 @@ import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
 import jotaiReactRefresh from 'jotai/babel/plugin-react-refresh';
 
-const commitHash = execSync('git rev-parse --verify --short HEAD').toString().trim();
+const commitHash = execSync('git rev-parse --verify --short=8 HEAD').toString().trim();
 const versionTag = execSync('git --no-pager tag --sort -taggerdate --points-at HEAD')
   .toString()
   .split('\n')[0]
