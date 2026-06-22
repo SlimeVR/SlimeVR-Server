@@ -41,6 +41,7 @@ SUBSYSTEMS=="usb", ATTRS{idVendor}=="303a", ATTRS{idProduct}=="0002", MODE="0660
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0660", TAG+="uaccess"
 
 ## SlimeVR
-# smol slime dongle
-SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="7690", MODE="0660", TAG+="uaccess"
-KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="7690", MODE="0660", TAG+="uaccess"
+# SlimeNRF Receiver & Tracker
+SUBSYSTEM=="usb|tty", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="7690|7692", MODE="0660", TAG+="uaccess"
+# same thing but hidraw
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="7690|7692", MODE="0660", TAG+="uaccess"

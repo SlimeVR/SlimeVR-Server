@@ -1,4 +1,4 @@
-import { Option, program } from "commander";
+import { Option, program } from 'commander';
 
 program
   .option('-p, --path <path>', 'set launch path')
@@ -12,10 +12,10 @@ program
   // Allow passing arguments to Electron.
   .allowExcessArguments();
 
-if (process.platform === "linux") {
+if (process.platform === 'linux') {
   const noUdevOption = new Option('--no-udev', 'disable udev warning');
   noUdevOption.negate = false;
-  program.addOption(noUdevOption)
+  program.addOption(noUdevOption);
 }
 
 program.parse(process.argv);
