@@ -148,8 +148,12 @@ class Tracker @JvmOverloads constructor(
 	var packetsLost: Int? = null
 	var packetLoss: Float? = null
 	var customName: String? = null
+
+	/**
+	 * Please don't use this and instead set it via [Device.setMag]
+	 */
 	var magStatus: MagnetometerStatus = magStatus
-		private set
+		internal set
 
 	/**
 	 * Watch the rest calibration status
@@ -498,17 +502,6 @@ class Tracker @JvmOverloads constructor(
 	 * For example, flex sensor trackers are not considered as IMU trackers (see TrackerDataType)
 	 */
 	fun isImu(): Boolean = imuType != null && trackerDataType == TrackerDataType.ROTATION
-
-	/**
-	 * Please don't use this and instead set it via [Device.setMag]
-	 */
-	internal fun setMagPrivate(mag: Boolean) {
-		magStatus = if (mag) {
-			MagnetometerStatus.ENABLED
-		} else {
-			MagnetometerStatus.DISABLED
-		}
-	}
 
 	/**
 	 * Gets the magnetic field vector, in mGauss.

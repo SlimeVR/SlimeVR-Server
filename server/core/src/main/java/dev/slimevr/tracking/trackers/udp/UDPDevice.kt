@@ -67,14 +67,15 @@ class UDPDevice(
 	var timedOut = false
 	override val trackers = ConcurrentHashMap<Int, Tracker>()
 
-	override suspend fun setMag(state: Boolean, sensorId: Int) {
+	override suspend fun setMag(magStatus: MagnetometerStatus, sensorId: Int) {
+		val state = magStatus == MagnetometerStatus.ENABLED
 		if (sensorId == 255) {
 			VRServer.instance.trackersServer.setConfigFlag(this, ConfigTypeId(1u), state)
-			trackers.forEach { (_, t) -> t.setMagPrivate(state) }
+			trackers.forEach { (_, t) -> t.magStatus = magStatus }
 		} else {
 			require(trackers[sensorId] != null) { "There is no tracker $sensorId in device ${toString()}" }
 			VRServer.instance.trackersServer.setConfigFlag(this, ConfigTypeId(1u), state, sensorId)
-			trackers[sensorId]!!.setMagPrivate(state)
+			trackers[sensorId]!!.magStatus = magStatus
 		}
 	}
 
