@@ -4,21 +4,19 @@ import { BaseModal } from '@/components/commons/BaseModal';
 import { CheckboxInternal } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { useElectron } from '@/hooks/electron';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { RpcMessage, InstalledInfoResponseT } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useLocalization } from '@fluent/react';
+import { useAppContext } from '@/hooks/app';
 
 export function UdevRulesModal() {
   const { config, setConfig } = useConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const electron = useElectron();
   const [udevContent, setUdevContent] = useState('');
-  const [isUdevInstalledResponse, setIsUdevInstalledResponse] = useState(true);
   const [showUdevWarning, setShowUdevWarning] = useState(false);
   const [dontShowThisSession, setDontShowThisSession] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const { l10n } = useLocalization();
+  const { installInfo } = useAppContext();
 
   const handleUdevContent = async () => {
     if (electron.isElectron) {
@@ -38,28 +36,14 @@ export function UdevRulesModal() {
     if (!config) throw 'Invalid state!';
     if (electron.isElectron) {
       const isLinux = electron.data().os.type === 'linux';
-      const udevMissing = !isUdevInstalledResponse;
+      const udevMissing = !installInfo?.isUdevInstalled;
       const notHiddenGlobally = !config.dontShowUdevModal;
       const notHiddenThisSession = !dontShowThisSession;
       const shouldShow =
         isLinux && udevMissing && notHiddenGlobally && notHiddenThisSession;
       setShowUdevWarning(shouldShow);
     }
-  }, [config, isUdevInstalledResponse, dontShowThisSession]);
-
-  useEffect(() => {
-    sendRPCPacket(
-      RpcMessage.InstalledInfoRequest,
-      new InstalledInfoResponseT()
-    );
-  }, []);
-
-  useRPCPacket(
-    RpcMessage.InstalledInfoResponse,
-    ({ isUdevInstalled }: InstalledInfoResponseT) => {
-      setIsUdevInstalledResponse(isUdevInstalled);
-    }
-  );
+  }, [config, dontShowThisSession]);
 
   const handleModalClose = () => {
     if (!config) throw 'Invalid State!';
@@ -72,7 +56,7 @@ export function UdevRulesModal() {
   };
 
   return (
-    <BaseModal isOpen={showUdevWarning} appendClasses={'w-full max-w-2xl'}>
+    <BaseModal isOpen={showUdevWarning} appendClasses="w-full max-w-2xl">
       <div className="flex w-full h-full flex-col gap-4">
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2">

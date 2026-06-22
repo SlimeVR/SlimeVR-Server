@@ -183,6 +183,7 @@ const config = {
       lg: '1300px',
       xl: '1600px',
       tall: { raw: '(min-height: 860px)' },
+      'keybinds-small':  { raw: 'not (min-width: 1230px)' },
     },
     extend: {
       colors: {
