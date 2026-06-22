@@ -109,32 +109,14 @@ export function TrackersAssignPage() {
 
     sendRPCPacket(
       RpcMessage.ChangeSettingsRequest,
-      new ChangeSettingsRequestT(
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        newTapSettings
-      )
+      new ChangeSettingsRequestT(null, null, null, null, null, newTapSettings)
     );
 
     return () => {
       newTapSettings.setupMode = false;
       sendRPCPacket(
         RpcMessage.ChangeSettingsRequest,
-        new ChangeSettingsRequestT(
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          newTapSettings
-        )
+        new ChangeSettingsRequestT(null, null, null, null, null, newTapSettings)
       );
     };
   }, [tapDetectionSettings]);
@@ -220,7 +202,6 @@ export function TrackersAssignPage() {
       assignreq.bodyPosition = role;
       assignreq.mountingOrientation = rotation;
       assignreq.trackerId = trackerId;
-      assignreq.allowDriftCompensation = false;
 
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     };

@@ -12,10 +12,11 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-  SteamVRTrackersSettingT,
+  OutputTrackersSettingT,
   TrackingChecklistPublicNetworksT,
   TrackingChecklistSteamVRDisconnectedT,
   TrackingChecklistStepId,
+  BodyPart,
 } from 'solarxr-protocol';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
@@ -31,7 +32,7 @@ import {
   ArrowRightIcon,
 } from '@/components/commons/icon/ArrowIcons';
 import { Localized, useLocalization } from '@fluent/react';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
+import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
 import { TrackingChecklistModal } from './TrackingChecklistModal';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '@/hooks/breakpoint';
@@ -176,7 +177,7 @@ function SteamVRDisconnected({
 function SteamVRHandsEnabled() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [steamVrTrackers, setSteamVrTrackers] = useState<Omit<
-    SteamVRTrackersSettingT,
+    OutputTrackersSettingT,
     'pack'
   > | null>(null);
 
@@ -185,25 +186,19 @@ function SteamVRHandsEnabled() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    if (settings.steamVrTrackers) {
-      setSteamVrTrackers(settings.steamVrTrackers);
+    if (settings.outputTrackers) {
+      setSteamVrTrackers(settings.outputTrackers);
     }
   });
 
   const disableHandTrackers = () => {
     const settings = new ChangeSettingsRequestT();
-    settings.steamVrTrackers = new SteamVRTrackersSettingT(
-      steamVrTrackers?.waist,
-      steamVrTrackers?.chest,
+    settings.outputTrackers = new OutputTrackersSettingT(
       steamVrTrackers?.automaticTrackerToggle,
-      steamVrTrackers?.leftFoot,
-      steamVrTrackers?.rightFoot,
-      steamVrTrackers?.leftKnee,
-      steamVrTrackers?.rightKnee,
-      steamVrTrackers?.leftElbow,
-      steamVrTrackers?.rightElbow,
-      false,
-      false
+      steamVrTrackers?.trackers.filter(
+        (tracker) =>
+          tracker != BodyPart.LEFT_HAND && tracker != BodyPart.RIGHT_HAND
+      )
     );
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
   };

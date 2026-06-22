@@ -17,7 +17,7 @@ export function useOscSettingsValidator() {
     .required()
     .test(
       'ports-dont-match',
-      l10n.getString('settings-osc-common-network-ports_match_error'),
+      l10n.getString('settings-osc-common-network-ports_match_error-v2'),
       (port, context) => context.parent.portIn != context.parent.portOut
     )
     .notOneOf(bannedPorts, (context) =>

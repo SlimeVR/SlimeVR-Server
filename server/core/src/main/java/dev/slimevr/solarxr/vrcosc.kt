@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.sample
 import solarxr_protocol.rpc.ChangeVRCOSCSettingsRequest
-import solarxr_protocol.rpc.OSCTrackersSetting
 import solarxr_protocol.rpc.VRCOSCNetworkSettings
 import solarxr_protocol.rpc.VRCOSCSettings
 import solarxr_protocol.rpc.VRCOSCSettingsRequest
@@ -51,7 +50,6 @@ internal class VrcOscBehaviour(
 
 		receiver.rpcDispatcher.on<ChangeVRCOSCSettingsRequest> { req ->
 			val vrcOsc = req.settings ?: return@on
-			val trackers = vrcOsc.trackers
 			vrcOscManager.context.dispatch(
 				VRCOSCActions.UpdateConfig(
 					VRCOSCConfig(
@@ -63,15 +61,6 @@ internal class VrcOscBehaviour(
 								address = network.address ?: error("address should be set"),
 							)
 						},
-						trackers = VRCOSCTrackers(
-							head = trackers?.head ?: false,
-							chest = trackers?.chest ?: false,
-							waist = trackers?.waist ?: true,
-							knees = trackers?.knees ?: false,
-							feet = trackers?.feet ?: true,
-							elbows = trackers?.elbows ?: false,
-							hands = trackers?.hands ?: false,
-						),
 					),
 				),
 			)
@@ -100,15 +89,6 @@ internal fun buildStatusResponse(status: VRCOSCStatus, enabled: Boolean) = VRCOS
 )
 
 internal fun buildVrcOscSettings(config: VRCOSCConfig): VRCOSCSettings = VRCOSCSettings(
-	trackers = OSCTrackersSetting(
-		head = config.trackers.head,
-		chest = config.trackers.chest,
-		waist = config.trackers.waist,
-		knees = config.trackers.knees,
-		feet = config.trackers.feet,
-		elbows = config.trackers.elbows,
-		hands = config.trackers.hands,
-	),
 	enabled = config.enabled,
 	manualNetwork = config.manualNetwork?.let { manual ->
 		VRCOSCNetworkSettings(

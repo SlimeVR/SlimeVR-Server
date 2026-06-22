@@ -6,6 +6,7 @@ import dev.slimevr.vmc.VMCManager
 import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.OSCSettings
 import solarxr_protocol.rpc.VMCOSCSettings
+import solarxr_protocol.rpc.VRMSettings
 
 class VmcBehaviour(
 	private val vmcManager: VMCManager,
@@ -25,7 +26,7 @@ class VmcBehaviour(
 						address = osc.address.orEmpty(),
 						mirrorTracking = vmc.mirrorTracking == true,
 						anchorAtHips = vmc.anchorHip == true,
-						vrmJson = vmc.vrmJson?.ifEmpty { null },
+						vrmJson = req.vrm?.vrmJson?.ifEmpty { null },
 					),
 				),
 			)
@@ -40,7 +41,10 @@ fun buildVmcOscSettings(config: VMCConfig): VMCOSCSettings = VMCOSCSettings(
 		portOut = config.portOut.toUShort(),
 		address = config.address,
 	),
-	vrmJson = config.vrmJson,
 	anchorHip = config.anchorAtHips,
 	mirrorTracking = config.mirrorTracking,
+)
+
+fun buildVrmSettings(config: VMCConfig): VRMSettings = VRMSettings(
+	vrmJson = config.vrmJson,
 )

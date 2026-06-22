@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { boolean, number, object, string } from 'yup';
 import {
   ChangeVRCOSCSettingsRequestT,
-  OSCTrackersSettingT,
   RpcMessage,
   VRCOSCInputState,
   VRCOSCNetworkSettingsT,
@@ -40,15 +39,6 @@ interface VRCOSCSettingsForm {
       portOut: number;
       address: string;
     };
-    trackers: {
-      head: boolean;
-      chest: boolean;
-      elbows: boolean;
-      feet: boolean;
-      knees: boolean;
-      hands: boolean;
-      waist: boolean;
-    };
   };
 }
 
@@ -60,15 +50,6 @@ const createDefaultValues = (): VRCOSCSettingsForm => ({
       portIn: 9001,
       portOut: 9000,
       address: '127.0.0.1',
-    },
-    trackers: {
-      head: false,
-      chest: false,
-      elbows: false,
-      feet: false,
-      knees: false,
-      hands: false,
-      waist: false,
     },
   },
 });
@@ -385,7 +366,7 @@ export function VRCOSCSettings() {
         .required()
         .test(
           'ports-dont-match',
-          l10n.getString('settings-osc-common-network-ports_match_error'),
+          l10n.getString('settings-osc-common-network-ports_match_error-v2'),
           (_port, context) => context.parent.portIn != context.parent.portOut
         )
         .notOneOf(bannedPorts, (context) =>
@@ -416,15 +397,6 @@ export function VRCOSCSettings() {
                   { message: ' ' }
                 ),
             }),
-            trackers: object({
-              head: boolean().required(),
-              chest: boolean().required(),
-              elbows: boolean().required(),
-              feet: boolean().required(),
-              knees: boolean().required(),
-              hands: boolean().required(),
-              waist: boolean().required(),
-            }),
           }),
         })
       ),
@@ -443,10 +415,6 @@ export function VRCOSCSettings() {
     const vrcOsc = new VRCOSCSettingsT();
 
     vrcOsc.enabled = values.vrchat.enabled;
-    vrcOsc.trackers = Object.assign(
-      new OSCTrackersSettingT(),
-      values.vrchat.trackers
-    );
     vrcOsc.manualNetwork = values.vrchat.useManualNetwork
       ? Object.assign(new VRCOSCNetworkSettingsT(), values.vrchat.manualNetwork)
       : null;
@@ -475,7 +443,6 @@ export function VRCOSCSettings() {
       const formData = createDefaultValues();
       if (settings) {
         formData.vrchat.enabled = settings.enabled;
-        if (settings.trackers) formData.vrchat.trackers = settings.trackers;
         if (settings.manualNetwork) {
           formData.vrchat.useManualNetwork = true;
           formData.vrchat.manualNetwork.portIn = settings.manualNetwork.portIn;
@@ -561,64 +528,6 @@ export function VRCOSCSettings() {
                 />
               </>
             )}
-
-            <Typography variant="section-title">
-              {l10n.getString('settings-osc-vrchat-network-trackers')}
-            </Typography>
-            <div className="flex flex-col pb-2">
-              <Typography>
-                {l10n.getString(
-                  'settings-osc-vrchat-network-trackers-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid grid-cols-2 gap-3 pb-5">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="vrchat.trackers.chest"
-                label={l10n.getString(
-                  'settings-osc-vrchat-network-trackers-chest'
-                )}
-              />
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="vrchat.trackers.waist"
-                label={l10n.getString(
-                  'settings-osc-vrchat-network-trackers-hip'
-                )}
-              />
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="vrchat.trackers.knees"
-                label={l10n.getString(
-                  'settings-osc-vrchat-network-trackers-knees'
-                )}
-              />
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="vrchat.trackers.feet"
-                label={l10n.getString(
-                  'settings-osc-vrchat-network-trackers-feet'
-                )}
-              />
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="vrchat.trackers.elbows"
-                label={l10n.getString(
-                  'settings-osc-vrchat-network-trackers-elbows'
-                )}
-              />
-            </div>
 
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vrchat-status-network-mode')}
