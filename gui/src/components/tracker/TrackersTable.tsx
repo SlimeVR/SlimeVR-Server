@@ -376,9 +376,9 @@ export function TrackersTable({
           />
         </div>
         <div className="flex flex-col gap-y-0">
-          {filteredSortedTrackers.map((data) => (
+          {filteredSortedTrackers.map((data, index) => (
             <Row
-              key={data.tracker.trackerId?.trackerNum}
+              key={index}
               clickedTracker={clickedTracker}
               data={data}
               highlightedTrackers={highlightedTrackers}
