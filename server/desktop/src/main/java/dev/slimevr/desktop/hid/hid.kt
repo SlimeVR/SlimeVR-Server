@@ -4,6 +4,7 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
+import dev.slimevr.hid.isCompatibleHidDevice
 import dev.slimevr.hid.parseHIDPackets
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
@@ -23,18 +24,6 @@ import solarxr_protocol.datatypes.TrackerStatus
 
 private const val HID_POLL_INTERVAL_MS = 3000L
 
-private data class HidProductRule(val vendorId: Int, val productId: Int, val productMask: Int = 0xFFFF)
-
-private val HID_PRODUCT_RULES = listOf(
-	HidProductRule(0x1209, 0x7690), // SlimeVR receiver
-	HidProductRule(0x1209, 0x7692), // SlimeVR tracker direct
-	HidProductRule(0x4E76, 0xD200, 0xFF00), // Gestures Inc. D2XX
-)
-
-private fun isCompatibleDevice(vid: Int, pid: Int) = HID_PRODUCT_RULES.any { rule ->
-	vid == rule.vendorId && (pid and rule.productMask) == rule.productId
-}
-
 private val hidSpec = HidServicesSpecification().apply { isAutoStart = false }
 
 // Initialize the native HID library. Must be called before enumerateDevices.
@@ -46,7 +35,7 @@ private fun enumerateCompatibleDevices(): Map<String, HidDevice> {
 	val result = mutableMapOf<String, HidDevice>()
 	var info: HidDeviceInfoStructure? = root
 	while (info != null) {
-		if (isCompatibleDevice(info.vendor_id.toInt(), info.product_id.toInt())) {
+		if (isCompatibleHidDevice(info.vendor_id.toInt(), info.product_id.toInt())) {
 			val device = HidDevice(info, null, hidSpec)
 			// Use path as key, unique per physical device, available without opening
 			result[info.path] = device

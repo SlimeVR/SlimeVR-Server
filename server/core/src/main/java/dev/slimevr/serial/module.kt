@@ -2,9 +2,12 @@ package dev.slimevr.serial
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.hid.isCompatibleHidReceiver
+import dev.slimevr.hid.isCompatibleHidTracker
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.rpc.SerialDevice
+import solarxr_protocol.rpc.SerialDeviceType
 
 interface FlashingHandler {
 	fun openSerial(port: Any)
@@ -28,6 +31,11 @@ data class SerialPortInfo(
 	fun toSerialDevice() = SerialDevice(
 		port = portLocation,
 		name = descriptivePortName,
+		type = when {
+			isCompatibleHidReceiver(vendorId, productId) -> SerialDeviceType.HID_RECEIVER
+			isCompatibleHidTracker(vendorId, productId) -> SerialDeviceType.HID_TRACKER
+			else -> SerialDeviceType.ESP_TRACKER
+		}
 	)
 }
 

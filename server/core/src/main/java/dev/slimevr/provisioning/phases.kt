@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.firmware.waitForConnected
+import dev.slimevr.hid.isCompatibleHidDevice
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialConnectionActions
@@ -28,7 +29,14 @@ internal suspend fun selectAndOpenPort(
 ): Boolean {
 	val portEntry = withTimeoutOrNull(15_000) {
 		serialServer.context.state
-			.mapNotNull { state -> state.availablePorts.entries.firstOrNull() }
+			.mapNotNull { state ->
+				state.availablePorts.entries.firstOrNull { (_, info) ->
+					isCompatibleHidDevice(
+						info.vendorId,
+						info.productId
+					)
+				}
+			}
 			.first()
 	}
 
@@ -81,7 +89,7 @@ internal suspend fun obtainMacAddress(
 		// Show the error and block until logs appear, this is not a retry.
 		if (serialConn.context.state.value.logLines.isEmpty()) {
 			context.dispatch(ProvisioningActions.StatusChanged(WifiProvisioningStatus.NO_SERIAL_LOGS_ERROR))
-			serialConn.context.state.filter { it.logLines.isNotEmpty() }.first()
+			serialConn.context.state.first { it.logLines.isNotEmpty() }
 
 			// The GET INFO response may have arrived while we were in the error state.
 			val existingMac = serialConn.context.state.value.logLines

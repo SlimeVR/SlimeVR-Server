@@ -15,6 +15,7 @@ import dev.slimevr.AppLogger
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.serial.isKnownSerialBoard
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,20 +27,6 @@ private const val TAG = "SerialServer"
 
 private const val ACTION_USB_SERIAL_PERMISSION = "dev.slimevr.android.USB_SERIAL_PERMISSION"
 private const val POLL_INTERVAL_MS = 3000L
-
-private val SUPPORTED_BOARDS: Set<Pair<Int, Int>> = setOf(
-	Pair(0x1A86, 0x7522), // CH340
-	Pair(0x1A86, 0x7523), // CH340
-	Pair(0x1A86, 0x5523), // CH341
-	Pair(0x1A86, 0x55D3), // CH343
-	Pair(0x1A86, 0x55D4), // CH9102x
-	Pair(0x10C4, 0xEA60), // CP210x
-	Pair(0x303A, 0x1001), // ESP32-S3
-	Pair(0x303A, 0x0002), // ESP32
-	Pair(0x0403, 0x6001), // FTDI FT232
-)
-
-private fun isKnownBoard(vid: Int, pid: Int) = SUPPORTED_BOARDS.contains(vid to pid)
 
 private fun openAndroidPort(
 	portLocation: String,
@@ -128,7 +115,7 @@ private suspend fun runAndroidSerialPoller(
 			val current = withContext(Dispatchers.IO) {
 				UsbSerialProber.getDefaultProber()
 					.findAllDrivers(usbManager)
-					.filter { driver -> isKnownBoard(driver.device.vendorId, driver.device.productId) }
+					.filter { driver -> isKnownSerialBoard(driver.device.vendorId, driver.device.productId) }
 					.associateBy { driver -> driver.device.deviceName }
 			}
 

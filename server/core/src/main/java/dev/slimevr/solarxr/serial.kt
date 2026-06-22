@@ -79,8 +79,9 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 					connection.context.state.collect { connState ->
 						if (disconnected) return@collect
 
+						val device = serialServer.context.state.value.availablePorts[portLocation]?.toSerialDevice()
 						connState.logLines.drop(lastSentCount).forEach { line ->
-							receiver.sendRpc(SerialUpdateResponse(log = line + "\n"))
+							receiver.sendRpc(SerialUpdateResponse(log = line + "\n", device = device))
 						}
 						lastSentCount = connState.logLines.size
 

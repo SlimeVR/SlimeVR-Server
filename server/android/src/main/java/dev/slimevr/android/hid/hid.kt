@@ -16,6 +16,7 @@ import dev.slimevr.AppLogger
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.parseHIDPackets
+import dev.slimevr.hid.isCompatibleHidDevice
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,16 +31,6 @@ import solarxr_protocol.datatypes.TrackerStatus
 
 private const val ACTION_USB_HID_PERMISSION = "dev.slimevr.android.USB_HID_PERMISSION"
 private const val HID_POLL_INTERVAL_MS = 3000L
-
-private data class HidProductRule(val vendorId: Int, val productId: Int, val productMask: Int = 0xFFFF)
-
-private val HID_PRODUCT_RULES = listOf(
-	HidProductRule(0x1209, 0x7690), // SlimeVR receiver
-	HidProductRule(0x1209, 0x7692), // SlimeVR tracker direct
-	HidProductRule(0x4E76, 0xD200, 0xFF00), // Gestures Inc. D2XX
-)
-
-private fun isCompatibleDevice(vid: Int, pid: Int) = HID_PRODUCT_RULES.any { rule -> vid == rule.vendorId && (pid and rule.productMask) == rule.productId }
 
 private fun findHidInputEndpoint(device: UsbDevice): Pair<UsbInterface, UsbEndpoint>? {
 	for (ifaceIdx in 0 until device.interfaceCount) {
@@ -89,7 +80,7 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 			val found = withContext(Dispatchers.IO) {
 				try {
 					usbManager.deviceList.values
-						.filter { device -> isCompatibleDevice(device.vendorId, device.productId) }
+						.filter { device -> isCompatibleHidDevice(device.vendorId, device.productId) }
 						.associate { device -> device.deviceName to device }
 				} catch (e: Exception) {
 					AppLogger.hid.error(e, "HID enumeration failed")
