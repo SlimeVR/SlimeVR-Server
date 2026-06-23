@@ -651,6 +651,8 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = Positie gegevens
 settings-general-fk_settings-ik-use_position = Positiegegevens gebruiken
 settings-general-fk_settings-ik-use_position-description = Maakt gebruik van positiegegevens mogelijk van de trackers die deze leveren. Zorg er voor dat je een volledige reset doet en opnieuw kalibreert in het spel wanneer je dit inschakelt.
+settings-general-fk_settings-velocity_settings = Snelheidsinstellingen
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Stuur afgeleide snelheid naar de driver
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
@@ -964,9 +966,32 @@ onboarding-setup_warning-cancel = Doorgaan met setupgids
 
 ## Quiz
 
+onboarding-quiz_continue = Doorgaan
+onboarding-quiz_back = Terug
+onboarding-quiz-more_sets_modal-title = Heb je al je trackers verbonden?
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-usage-title = Waar gebruik je je trackers voor?
+onboarding-quiz-usage-description = Als je van plan bent SlimeVR voor meerdere doeleinden te gebruiken, kan je later deze instellingen aanpassen.
+onboarding-quiz-usage-answer-VRC = VR-gaming (bijv. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap en VTubing
+onboarding-quiz-runtime-title = Speel je games via SteamVR, of op de headset zelf (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Mocap-voorkeuren
+onboarding-quiz-mocap_preferences-desc = Specificeer hoe je SlimeVR wilt gebruiken voor mocap of VTubing
+onboarding-quiz-mocap_preferences-playspace-title = Wat is jouw speelruimte?
+onboarding-quiz-mocap_preferences-playspace-desc = Als je staat, probeert SlimeVR je loopbeweging te volgen in plaats van je op één plek te verankeren.
+onboarding-quiz-mocap_preferences-playspace-sitting = Zitten
+onboarding-quiz-mocap_preferences-playspace-standing = Staan
+onboarding-quiz-mocap_preferences-vrm_model-title = (Optioneel) Heb je een VRM-model?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Ja
+onboarding-quiz-mocap_preferences-head_tracker-no = Nee
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Voorhoofd
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Gezicht
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Ga terug
 onboarding-wifi_creds-v2 = Trackers die Wi-Fi gebruiken
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
