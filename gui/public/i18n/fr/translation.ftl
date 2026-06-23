@@ -815,6 +815,7 @@ settings-serial-factory_reset-warning-cancel = Annuler
 settings-serial-serial_select = Sélectionnez un port série
 settings-serial-auto_dropdown_item = Automatique
 settings-serial-get_wifi_scan = Obtenir scan WiFi
+settings-serial-dfu = Entrer en mode DFU
 settings-serial-file_type = Texte brut
 settings-serial-save_logs = Enregistrer dans un fichier
 settings-serial-send_command = Envoyer
