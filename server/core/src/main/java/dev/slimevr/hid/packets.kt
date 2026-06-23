@@ -2,6 +2,7 @@ package dev.slimevr.hid
 
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.ImuType
@@ -28,6 +29,7 @@ data class HIDDeviceInfo(
 	val batteryLevel: Float?,
 	val batteryVoltage: Float,
 	val rssi: Int,
+	val magStatus: MagnetometerStatus,
 ) : HIDPacket
 
 /** Full-precision Q15 quaternion + Q7 acceleration (type 1). */
@@ -162,6 +164,7 @@ private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
 			val brdId = data[i + 5].toUByte().toInt()
 			val mcuId = data[i + 6].toUByte().toInt()
 			val imuId = data[i + 8].toUByte().toInt()
+			val magId = data[i + 9].toUByte()
 			val fwDate = data[i + 11].toUByte().toInt() shl 8 or data[i + 10].toUByte().toInt()
 			val fwMajor = data[i + 12].toUByte().toInt()
 			val fwMinor = data[i + 13].toUByte().toInt()
@@ -179,6 +182,7 @@ private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
 				batteryLevel = decodeBattery(batt),
 				batteryVoltage = decodeBatteryVoltage(battV),
 				rssi = -rssi,
+				magStatus = MagnetometerStatus.fromValue(magId) ?: MagnetometerStatus.NOT_SUPPORTED,
 			)
 		}
 

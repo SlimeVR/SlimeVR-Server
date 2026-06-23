@@ -28,6 +28,7 @@ data class TrackerState(
 	val rotation: CalibratedRotation,
 	val rawAcceleration: RawAcceleration,
 	val acceleration: CalibratedAcceleration,
+	val rawMagnetometer: Vector3, // TODO apply calibration
 	val deviceId: Int,
 	val origin: DeviceOrigin,
 	val tps: UShort,
@@ -43,7 +44,7 @@ sealed interface TrackerActions {
 	data class Update(val transform: TrackerState.() -> TrackerState) : TrackerActions
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
-	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null) : TrackerActions
+	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion) : TrackerActions
 	data class MountingReset(val referenceRotation: Quaternion) : TrackerActions
@@ -80,6 +81,7 @@ class Tracker(
 				rotation = Quaternion.IDENTITY,
 				rawAcceleration = Vector3.NULL,
 				acceleration = Vector3.NULL,
+				rawMagnetometer = Vector3.NULL,
 				bodyPart = null,
 				mountingOrientation = null,
 				origin = origin,

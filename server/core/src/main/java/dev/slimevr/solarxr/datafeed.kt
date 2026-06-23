@@ -23,6 +23,7 @@ import solarxr_protocol.data_feed.tracker.TrackerDataMask
 import solarxr_protocol.data_feed.tracker.TrackerInfo
 import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.Ipv4Address
+import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.Temperature
 import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
@@ -66,6 +67,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	linearAcceleration = if (trackerMask.linearAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
 	rotationReferenceAdjusted = if (trackerMask.rotationReferenceAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
 	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null, // FIXME: uses reference adjusted
+	rawMagneticVector = if (trackerMask.rawMagneticVector == true && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.let { Vec3f(it.x, it.y, it.z) } else null,
 )
 
 private fun createDevice(

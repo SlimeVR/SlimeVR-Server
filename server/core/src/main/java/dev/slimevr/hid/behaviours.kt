@@ -75,6 +75,7 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.onPacket<HIDDeviceInfo> { packet ->
 			val device = receiver.getDevice(packet.hidId) ?: return@onPacket
+			val deviceState = device.context.state.value
 
 			device.context.dispatch(
 				DeviceActions.Update {
@@ -90,17 +91,9 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 			)
 
 			val tracker = receiver.getTracker(packet.hidId)
-			if (tracker == null) {
-				val deviceState = device.context.state.value
-
-				val existingTracker = receiver.appContext.server.context.state.value.trackers.values
+				?: receiver.appContext.server.context.state.value.trackers.values
 					.find { it.context.state.value.hardwareId == deviceState.address && it.context.state.value.origin == DeviceOrigin.HID }
-
-				if (existingTracker != null) {
-					receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, existingTracker.context.state.value.id))
-					// HID does not have a rest calibration signal
-					existingTracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true) })
-				} else {
+				?: run {
 					val trackerId = receiver.appContext.server.nextHandle()
 					val newTracker = Tracker.create(
 						scope = receiver.appContext.server.context.scope,
@@ -112,13 +105,12 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 						appContext = receiver.appContext,
 					)
 					receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, newTracker))
-					receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, trackerId))
+					newTracker
 				}
-			} else {
-				// HID does not have a rest calibration signal
-				tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true) })
-				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
-			}
+			receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, tracker.context.state.value.id))
+			// HID does not have a rest calibration signal
+			tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true, magStatus = packet.magStatus) })
+			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 		}
 	}
 }
@@ -137,7 +129,7 @@ class HIDRotationBehaviour : HIDReceiverBehaviour {
 
 		receiver.packetEvents.onPacket<HIDRotationMag> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation))
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, magnetometer = packet.magnetometer))
 		}
 
 		receiver.packetEvents.onPacket<HIDRotationButton> { packet ->

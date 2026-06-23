@@ -242,11 +242,14 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				else -> rawAcceleration
 			}
 
+			val rawMagnetometer = action.magnetometer ?: state.rawMagnetometer
+
 			state.copy(
 				rawRotation = rawRotation,
 				rotation = rotation,
 				rawAcceleration = rawAcceleration,
 				acceleration = acceleration,
+				rawMagnetometer = rawMagnetometer,
 			)
 		}
 
