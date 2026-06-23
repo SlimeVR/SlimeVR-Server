@@ -33,7 +33,7 @@ internal suspend fun selectAndOpenPort(
 				state.availablePorts.entries.firstOrNull { (_, info) ->
 					isCompatibleHidDevice(
 						info.vendorId,
-						info.productId
+						info.productId,
 					)
 				}
 			}

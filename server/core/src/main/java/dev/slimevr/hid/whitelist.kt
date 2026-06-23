@@ -7,7 +7,7 @@ private val RECEIVER_PRODUCT_RULES = listOf(
 	HidProductRule(0x4E76, 0xD200, 0xFF00), // Gestures Inc. D2XX
 )
 private val TRACKER_PRODUCT_RULES = listOf(
-	HidProductRule(0x1209, 0x7692) // SlimeVR tracker direct
+	HidProductRule(0x1209, 0x7692), // SlimeVR tracker direct
 )
 
 private fun matchesRule(rule: HidProductRule, vid: Int, pid: Int) = vid == rule.vendorId && (pid and rule.productMask) == rule.productId

@@ -168,7 +168,8 @@ android {
 		// Defines the version number of your app.
 		versionCode = providers.exec {
 			commandLine("git", "--no-pager", "tag", "-l")
-		}.standardOutput.asText.get().trim().split('\n').size + versionCodeOffset
+		}.standardOutput.asText.get().trim().split('\n').size +
+			versionCodeOffset
 		versionName = providers.exec {
 			commandLine("git", "describe", "--tags", "--abbrev=8", "--always")
 		}.standardOutput.asText.get().trim()

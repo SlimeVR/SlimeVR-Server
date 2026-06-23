@@ -35,7 +35,7 @@ data class SerialPortInfo(
 			isCompatibleHidReceiver(vendorId, productId) -> SerialDeviceType.HID_RECEIVER
 			isCompatibleHidTracker(vendorId, productId) -> SerialDeviceType.HID_TRACKER
 			else -> SerialDeviceType.ESP_TRACKER
-		}
+		},
 	)
 }
 
