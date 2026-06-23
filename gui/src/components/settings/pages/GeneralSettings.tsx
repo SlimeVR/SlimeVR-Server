@@ -525,24 +525,14 @@ export function GeneralSettings() {
             <Typography variant="main-title">
               {l10n.getString('settings-general-output')}
             </Typography>
-            <Typography variant="section-title">
-              {l10n.getString('settings-general-output-subtitle')}
-            </Typography>
-            <div className="flex flex-col py-2">
-              {l10n
-                .getString('settings-general-output-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography key={i}>{line}</Typography>
-                ))}
-            </div>
+
             <div className="flex flex-col pt-4" />
             <Typography variant="section-title">
               {l10n.getString(
                 'settings-general-steamvr-trackers-tracker_toggling'
               )}
             </Typography>
-            <div className="flex flex-col pt-2 pb-4">
+            <div className="flex flex-col py-2">
               {l10n
                 .getString(
                   'settings-general-output-trackers-tracker_toggling-description'
@@ -562,6 +552,18 @@ export function GeneralSettings() {
               )}
             />
             <div className="flex flex-col pt-4" />
+
+            <Typography variant="section-title">
+              {l10n.getString('settings-general-output_trackers')}
+            </Typography>
+            <div className="flex flex-col py-2">
+              {l10n
+                .getString('settings-general-output_trackers-description')
+                .split('\n')
+                .map((line, i) => (
+                  <Typography key={i}>{line}</Typography>
+                ))}
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <CheckBox
                 variant="toggle"
@@ -659,6 +661,33 @@ export function GeneralSettings() {
                 name="trackers.rightHand"
                 label={l10n.getString(
                   'settings-general-steamvr-trackers-right_hand'
+                )}
+              />
+            </div>
+            <div className="flex flex-col pt-4" />
+
+            <div className="flex flex-col pt-2 pb-1">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-fk_settings-velocity_settings'
+                )}
+              </Typography>
+              <div className="pt-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-general-fk_settings-velocity_settings-description'
+                  )}
+                </Typography>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-1 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="velocitySettings.sendDerivedVelocity"
+                label={l10n.getString(
+                  'settings-general-fk_settings-velocity_settings-send_derived_velocity'
                 )}
               />
             </div>
@@ -1061,32 +1090,6 @@ export function GeneralSettings() {
                 name="toggles.usePosition"
                 label={l10n.getString(
                   'settings-general-fk_settings-ik-use_position'
-                )}
-              />
-            </div>
-
-            <div className="flex flex-col pt-2 pb-1">
-              <Typography variant="section-title">
-                {l10n.getString(
-                  'settings-general-fk_settings-velocity_settings'
-                )}
-              </Typography>
-              <div className="pt-2">
-                <Typography>
-                  {l10n.getString(
-                    'settings-general-fk_settings-velocity_settings-description'
-                  )}
-                </Typography>
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-1 pb-3">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="velocitySettings.sendDerivedVelocity"
-                label={l10n.getString(
-                  'settings-general-fk_settings-velocity_settings-send_derived_velocity'
                 )}
               />
             </div>

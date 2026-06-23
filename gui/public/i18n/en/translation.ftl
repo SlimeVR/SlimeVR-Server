@@ -497,12 +497,12 @@ settings-sidebar-advanced = Advanced
 ## Output settings
 # Some keys have steamvr in them as we switched to output but want to keep existing translations
 settings-general-output = Output
-settings-general-output-subtitle = Output trackers
+settings-general-output_trackers = Output trackers
 # Not all translation keys support multiline, only the ones that specify it will actually
 # split it in lines (that also means you can split in lines however you want in those).
 # The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
 # This one is one of this cases that cares about multilines
-settings-general-output-description =
+settings-general-output_trackers-description =
     Enable or disable specific trackers to output.
     Useful for games or apps that only support certain trackers.
 settings-general-steamvr-trackers-waist = Waist
@@ -564,7 +564,7 @@ settings-stay_aligned-description = Stay Aligned reduces drift by gradually adju
 settings-stay_aligned-setup-label = Setup Stay Aligned
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
 settings-stay_aligned-enabled-label = Adjust trackers
-settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare with no Stay Aligned)
+settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare without Stay Aligned)
 settings-stay_aligned-general-label = General
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
 settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
@@ -661,7 +661,7 @@ settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
 settings-general-gesture_control-fullResetDelay = Full reset delay
 settings-general-gesture_control-fullResetTaps = Taps for full reset
 settings-general-gesture_control-fullResetTracker = Full Reset Tracker
-settings-general-gesture_control-mountingResetEnabled = Enable tap to perform mounting calibration
+settings-general-gesture_control-mountingResetEnabled = Enable tap to mounting reset
 settings-general-gesture_control-mountingResetDelay = Mounting calibration delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting calibration
 settings-general-gesture_control-mountingResetTracker = Mounting Reset Tracker
