@@ -1293,6 +1293,8 @@ onboarding-automatic_mounting-done-restart = Försök igen
 onboarding-automatic_mounting-mounting_reset-title = Monterings-återställning
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Huka i en "Skidåknings" position med böjda ben, framåtlutad överkropp, och böjda armar.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Tryck på "Återställ montering" knappen och vänta 3 sekunder innan trackerns montering kommer att återställas.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stå på tårna med båda fötterna pekande framåt. Alternativt kan du göra det sittande på en stol.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Tryck på knappen "Fotkalibrering" och vänta i 3 sekunder innan spårarnas monteringsorientering återställs.
 onboarding-automatic_mounting-preparation-title = Förberedning
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Tryck på "Full återställning" knappen.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stå rakt upp med dina armar vid sidan av dig. Kom ihåg att kolla framåt.
@@ -1304,6 +1306,7 @@ onboarding-automatic_mounting-return-home = Klar
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Gå tillbaka till Skalade proportioner
 onboarding-manual_proportions-title = Manuella kropps-dimensioner
 onboarding-manual_proportions-fine_tuning_button = Finjustera automatiskt proportioner
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Var vänlig anslut ett VR-headset för att använda automatisk finjustering
@@ -1346,13 +1349,82 @@ onboarding-automatic_proportions-check_height-guardian_tip =
 onboarding-automatic_proportions-check_height-unknown = Okänd
 # Shows an element below it
 onboarding-automatic_proportions-check_height-hmd_height2 = Din headsethöjd är:
+onboarding-automatic_proportions-check_height-measure-start = Börja mätning.
+onboarding-automatic_proportions-check_height-measure-stop = Sluta mätningen
+onboarding-automatic_proportions-check_height-measure-reset = Försök att mäta om
+onboarding-automatic_proportions-check_height-next_step = Använd headsethöjd
+onboarding-automatic_proportions-check_floor_height-title = Mät din golvhöjd (frivilligt)
+onboarding-automatic_proportions-check_floor_height-description = I vissa fall kan det hända att din golvhöjd inte är korrekt inställd av ditt headset, vilket gör att headsethöjden mäts som högre än den borde vara. Du kan mäta "höjden" på ditt golv för att korrigera din headsethöjd.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Börja mäta och placera en controller mot golvet för att mäta höjden. Om du är säker på att golvhöjden är korrekt, kan du hoppa över det här steget.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = Din golvhöjd är:
+onboarding-automatic_proportions-check_floor_height-full_height = Beräknad full längd är:
+onboarding-automatic_proportions-check_floor_height-measure-start = Börja mätning
+onboarding-automatic_proportions-check_floor_height-measure-stop = Sluta mätning
+onboarding-automatic_proportions-check_floor_height-measure-reset = Försök att mäta om
 onboarding-automatic_proportions-start_recording-description = Vi kommer nu att spela in några specifika poser och rörelser. Dessa kommer att visas på nästa skärm. Var redo att starta när du trycker på knappen!
+onboarding-automatic_proportions-verify_results-processing = Bearbetar resultatet
+onboarding-automatic_proportions-verify_results-redo = Gör om inspelningen
+onboarding-automatic_proportions-verify_results-confirm = De har rätt
+onboarding-automatic_proportions-done-title = Kropp mätt och sparad.
+onboarding-automatic_proportions-done-description = Kalibreringen av dina kroppsproportioner är klar!
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>Varning:</b> Det uppstod ett fel när proportionerna uppskattades!
+    Detta är troligtvis ett kalibreringsproblem med monteringen. Se till att din spårning fungerar korrekt innan du försöker igen.
+    <docs>Kontrollera dokumentationen</docs> eller gå med i vår <discord>Discord</discord> för hjälp ^_^
+onboarding-automatic_proportions-error_modal-confirm = Förstått!
+onboarding-automatic_proportions-smol_warning =
+    Din konfigurerade höjd på { $height } är mindre än den minsta accepterade höjden på { $minHeight }.
+    <b>Vänligen gör om måtten och se till att de är korrekta.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Gå tillbaka
 
 ## User height calibration
 
+onboarding-user_height-title = Vad är din längd?
+onboarding-user_height-description = Vi behöver din längd för att beräkna dina kroppsproportioner och korrekt återge dina rörelser. Du kan antingen låta SlimeVR beräkna det eller ange din längd manuellt.
+onboarding-user_height-need_head_tracker = Ett headset och kontroller med positionsspårning krävs för att utföra kalibreringen.
+onboarding-user_height-calculate = Beräkna min längd automatiskt
+onboarding-user_height-next_step = Fortsätt och spara
+onboarding-user_height-manual-proportions = Manuella proportioner
+onboarding-user_height-calibration-title = Kalibreringsförlopp
+onboarding-user_height-calibration-RECORDING_FLOOR = Rör vid golvet med spetsen på din handkontroll
+onboarding-user_height-calibration-WAITING_FOR_RISE = Stå upp igen
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stå upp igen och se framåt
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Se till att ditt huvud är plant
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Håll dig i linje
+onboarding-stay_aligned-description = Konfigurera Stay Aligned för att hålla dina trackers i linje.
+onboarding-stay_aligned-put_trackers_on-title = Sätt på alla dina trackers
+onboarding-stay_aligned-put_trackers_on-description = För att spara dina vilopositioner använder vi de trackers du just tilldelade. Sätt på alla dina trackers, du kan se vilka som är vilka i bilden till höger.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Du har färre än 5 spårare anslutna och tilldelade för närvarande! Detta är det minsta antalet spårare som krävs för att Stay Aligned ska fungera korrekt.
+onboarding-stay_aligned-put_trackers_on-next = Jag har på mig alla spårare
+onboarding-stay_aligned-verify_mounting-title = Monteringskalibrering
+onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned kräver bra montering. Annars får du inte en bra upplevelse med Stay Aligned.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Rör dig stående.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Sätt dig ner och rör på benen och fötterna.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. Om dina spårare inte är på rätt plats, tryck på "Gör om monteringskalibrering".
+onboarding-stay_aligned-verify_mounting-redo_mounting = Gör om monteringskalibrering
+onboarding-stay_aligned-preparation-title = Förberedning
+onboarding-stay_aligned-preparation-tip = Se till att stå upprätt. Fortsätt att titta framåt med armarna nedåt längs sidorna.
+onboarding-stay_aligned-relaxed_poses-standing-title = Avslappnad stående position
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stå i en bekväm position. Slappna av!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Tryck på knappen "Spara pose".
+onboarding-stay_aligned-relaxed_poses-sitting-title = Avslappnad sittande i stolsställning
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sitt i en bekväm position. Slappna av!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Tryck på knappen "Spara pose".
+onboarding-stay_aligned-relaxed_poses-flat-title = Avslappnad sittande på golvet
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sitt på golvet med benen framåt. Slappna av!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Tryck på knappen "Spara pose".
+onboarding-stay_aligned-relaxed_poses-skip_step = Hoppa
+onboarding-stay_aligned-done-title = Stay Aligned aktiverat!
+onboarding-stay_aligned-done-description = Din Stay Aligned-guide är klar!
+onboarding-stay_aligned-done-description-2 = Installationen är klar! Du kan starta om processen om du vill kalibrera om poserna.
+onboarding-stay_aligned-previous_step = Tidigare
+onboarding-stay_aligned-next_step = Nästa
+onboarding-stay_aligned-restart = Starta om
 
 ## Home
 
@@ -1381,6 +1453,7 @@ firmware_tool-flashing_step-description = Dina trackers flashar, var vänlig och
 firmware_tool-flashing_step-warning-v2 = Koppla inte ur eller stäng av trackern under processen, om du inte uppmanats att göra det. Det kan göra ditt kort ej användbart.
 firmware_tool-flashing_step-flash_more = Flasha fler trackers
 firmware_tool-flashing_step-exit = Stäng
+firmware_tool-flashing_step-onboarding_continue = Fortsätt
 
 ## firmware tool build status
 
@@ -1427,6 +1500,7 @@ tray_or_exit_modal-description = Detta gör att du kan välja om du vill avsluta
 unknown_device-modal-description =
     Det finns en ny tracker med MAC-adress <b>{ $deviceId }</b>.
     Vill du ansluta den till SlimeVR?
+vrc_config-page-desc = Den här sidan visar statusen för dina VRChat-inställningar och vilka inställningar som är inkompatibla med SlimeVR. Det rekommenderas starkt att du åtgärdar eventuella varningar som visas här för bästa möjliga användarupplevelse med SlimeVR.
 vrc_config-page-help = Hittar inte inställningen?
 vrc_config-page-help-desc = Kolla vår <a>dokumentation på detta området!</a>
 vrc_config-page-big_menu = Tracking & IK (stora menyn)
@@ -1477,3 +1551,69 @@ error_collection_modal-cancel = Jag vill inte
 
 ## Tracking checklist section
 
+tracking_checklist = Spårningschecklista
+tracking_checklist-settings = Inställningar för spårningschecklista
+tracking_checklist-settings-close = Stäng
+tracking_checklist-status-incomplete = Du är inte beredd att använda SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] Du har en varning!
+       *[other] Du har { $count } varningar!
+    }
+tracking_checklist-status-complete = Du är redo att använda SlimeVR!
+tracking_checklist-MOUNTING_CALIBRATION = Utför en monteringskalibrering
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Utför en kalibrering av fotmontering
+tracking_checklist-FULL_RESET = Utför en fullständig återställning
+tracking_checklist-FULL_RESET-desc = Vissa spårare behöver en återställning för att kunna utföras.
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR frånkopplad
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR körs inte. Använder du det för VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = Drivrutinen har blockerats av SteamVR på grund av en tidigare SteamVR-krasch.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = Drivrutinen är inaktiverad i SteamVR-inställningarna.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = Drivrutinen är inte installerad.
+tracking_checklist-STEAMVR_DISCONNECTED-open = Starta SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Aktivera drivrutinen
+tracking_checklist-STEAMVR_HANDS_ENABLED = Handspårare aktiverade
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Du har aktiverat de virtuella handspårarna i SteamVR. Detta kommer att göra att knapptryckningarna inte fungerar i SteamVR och i spel.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Inaktivera dem
+tracking_checklist-STANDABLE_INSTALLED = Standable är installerad
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable orsakar ofta spårningsproblem när det används tillsammans med SlimeVR. Standable bör avinstalleras helt i Steam för att säkerställa att inga problem uppstår.
+    
+    Du måste stänga SteamVR innan du avinstallerar Standable i Steam.
+tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrera dina spårare
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Du har inte kalibrerat spåraren. Låt dina spårare (markerade med gult) vila på en stabil yta i några sekunder.
+tracking_checklist-TRACKER_ERROR = Spårare med fel
+tracking_checklist-TRACKER_ERROR-desc = Några av dina spårare har ett fel. Starta om spårarna som är markerade med gult.
+tracking_checklist-VRCHAT_SETTINGS = Konfigurera VRChat-inställningar
+tracking_checklist-VRCHAT_SETTINGS-desc = Du har felkonfigurerat VRChat-inställningarna! Detta kan påverka din spårning negativt.
+tracking_checklist-VRCHAT_SETTINGS-open = Gå till VRChat-varningar
+tracking_checklist-UNASSIGNED_HMD = VR-headsetet är inte tilldelat till Headset
+tracking_checklist-UNASSIGNED_HMD-desc = VR-headsetet bör tilldelas som en huvudtracker.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Ändra din nätverksprofil
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Din nätverksprofil är för närvarande inställd på Offentlig ({ $adapters }).
+            Detta rekommenderas inte för att SlimeVR ska fungera korrekt.
+            <PublicFixLink>Se hur du åtgärdar det här.</PublicFixLink>
+       *[other]
+            Några av dina nätverkskort är inställda på offentliga:
+            { $adapters }
+            Detta rekommenderas inte för att SlimeVR ska fungera korrekt.
+            <PublicFixLink>Se hur du åtgärdar det här.</PublicFixLink>
+    }
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Öppna Kontrollpanelen
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Konfigurera Stay Aligned
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Spela in positionerna för att hålla dig i linje för att minska avdriften.
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Öppna guiden Stay Aligned Wizard
+tracking_checklist-ignore = Ignorera
+preview-mocap_mode_soon = Mocap Mode (Snart™)
+preview-disable_render = Inaktivera rendering
+preview-disabled_render = Rendering inaktiverad
+toolbar-mounting_calibration = Monteringskalibrering
+toolbar-mounting_calibration-default = Kropp
+toolbar-mounting_calibration-feet = Fötter
+toolbar-mounting_calibration-fingers = Fingrar
+toolbar-drift_reset = Driftåterställning
+toolbar-assigned_trackers = { $count } spårare tilldelade
+toolbar-unassigned_trackers = { $count } spårare har inte tilldelats
