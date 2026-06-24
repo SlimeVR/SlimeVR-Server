@@ -565,7 +565,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Maakt 
 settings-general-tracker_mechanics-filtering-type-prediction = Voorspelling
 settings-general-tracker_mechanics-filtering-type-prediction-description = Verlaagt latentie en maakt bewegingen snappier, maar kan jitter verhogen.
 settings-general-tracker_mechanics-filtering-amount = Hoeveelheid
-settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset vertraging (0s schakelt afvlakking uit)
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontale reset vertraging (0s schakelt smoothing uit)
 settings-general-tracker_mechanics-drift_compensation = Drift compensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -1143,7 +1143,7 @@ onboarding-assignment_tutorial-done = Ik heb stickers en riemen geplaatst!
 onboarding-assign_trackers-back = Ga terug naar de instellingen voor WiFi-configuratie
 onboarding-assign_trackers-title = Trackers toewijzen
 onboarding-assign_trackers-description = Laten we de bevesteging van je trackers bepalen. Klik op de lichaamslocatie waar je een tracker wilt toewijzen.
-onboarding-assign_trackers-unassign_all = Alle trackers toewijzing verwijderen
+onboarding-assign_trackers-unassign_all = Verwijder alle tracker toewijzingen
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
