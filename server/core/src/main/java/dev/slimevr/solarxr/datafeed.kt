@@ -3,6 +3,7 @@ package dev.slimevr.solarxr
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceState
+import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
@@ -18,14 +19,12 @@ import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
 import solarxr_protocol.data_feed.device_data.DeviceData
 import solarxr_protocol.data_feed.server.ServerGuards
-import solarxr_protocol.data_feed.tracker.TrackerData
-import solarxr_protocol.data_feed.tracker.TrackerDataMask
-import solarxr_protocol.data_feed.tracker.TrackerInfo
-import solarxr_protocol.datatypes.DeviceId
+import solarxr_protocol.data_feed.tracker_data.TrackerData
+import solarxr_protocol.data_feed.tracker_data.TrackerDataMask
+import solarxr_protocol.data_feed.tracker_data.TrackerInfo
 import solarxr_protocol.datatypes.Ipv4Address
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.Temperature
-import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.math.Quat
@@ -40,11 +39,9 @@ private fun ipv4AddressFromString(address: String): UInt {
 	}
 }
 
-private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask, datafeedConfig: DataFeedConfig): TrackerData = TrackerData(
-	trackerId = TrackerId(
-		trackerNum = tracker.id.toUByte(),
-		deviceId = DeviceId(device.id.toUByte()),
-	),
+private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask): TrackerData = TrackerData(
+	deviceId = device.id.toUShort(),
+	trackerId = tracker.id.toUShort(),
 	status = if (trackerMask.status == true) tracker.status else null,
 	rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
 	position = if (trackerMask.position == true && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
@@ -78,7 +75,7 @@ private fun createDevice(
 	val trackerMask = datafeedConfig.dataMask?.trackerData
 
 	return DeviceData(
-		id = DeviceId(device.id.toUByte()),
+		id = device.id.toUShort(),
 		hardwareStatus = HardwareStatus(
 			batteryVoltage = device.batteryVoltage,
 			batteryPctEstimate = device.batteryLevel?.let { (it * 100).toUInt().toUByte() },
@@ -100,7 +97,7 @@ private fun createDevice(
 		),
 		trackers = if (trackerMask != null) {
 			trackers.filter { it.deviceId == device.id }
-				.map { tracker -> createTracker(device, tracker, trackerMask, datafeedConfig) }
+				.map { tracker -> createTracker(device, tracker, trackerMask) }
 		} else {
 			null
 		},
@@ -114,12 +111,13 @@ private fun createBone(bone: BoneState): solarxr_protocol.data_feed.Bone = solar
 	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) },
 )
 
-private fun createServerGuards(resetsManager: ResetsManager): ServerGuards {
+private fun createServerGuards(resetsManager: ResetsManager, heightCalibrationManager: HeightCalibrationManager): ServerGuards {
 	val resetsState = resetsManager.context.state.value
+	val heightCalibrationState = heightCalibrationManager.context.state.value
 	return ServerGuards(
-		candomounting = resetsState.canDoMountingReset,
-		candoyawreset = resetsState.canDoYawReset,
-		// candouserheightcalibration = true, TODO
+		canDoMountingReset = resetsState.canDoMountingReset,
+		canDoYawReset = resetsState.canDoYawReset,
+		canDoUserHeightCalibration = heightCalibrationState.canDoUserHeightCalibration,
 	)
 }
 
@@ -128,6 +126,7 @@ fun createDatafeedFrame(
 	datafeedConfig: DataFeedConfig,
 	skeleton: Skeleton,
 	resetsManager: ResetsManager,
+	heightCalibrationManager: HeightCalibrationManager,
 	index: Int = 0,
 ): DataFeedMessageHeader {
 	val serverState = server.context.state.value
@@ -140,7 +139,7 @@ fun createDatafeedFrame(
 		null
 	}
 	val serverGuards = if (datafeedConfig.serverGuardsMask == true) {
-		createServerGuards(resetsManager)
+		createServerGuards(resetsManager, heightCalibrationManager)
 	} else {
 		null
 	}
@@ -161,16 +160,23 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.dataFeedDispatcher.on<StartDataFeed> { event ->
-			val datafeeds = event.dataFeeds ?: return@on
+			val dataFeeds = event.dataFeeds ?: return@on
 
 			receiver.datafeedTimers.forEach { it.cancelAndJoin() }
 
-			val timers = datafeeds.mapIndexed { index, config ->
+			val timers = dataFeeds.mapIndexed { index, config ->
 				receiver.context.scope.safeLaunch {
 					val minTime = config.minimumTimeSinceLast.toLong()
 					while (isActive) {
 						try {
-							receiver.sendDataFeed(createDatafeedFrame(server = server, datafeedConfig = config, skeleton = skeleton, resetsManager = receiver.appContext.resetsManager, index = index))
+							receiver.sendDataFeed(createDatafeedFrame(
+								server = server,
+								datafeedConfig = config,
+								skeleton = skeleton,
+								resetsManager = receiver.appContext.resetsManager,
+								heightCalibrationManager = receiver.appContext.heightCalibrationManager,
+								index = index
+							))
 						} catch (e: Exception) {
 							AppLogger.solarxr.error(e, "Error sending data feed")
 						}
@@ -180,12 +186,18 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 			}
 
 			receiver.datafeedTimers = timers
-			receiver.context.dispatch(SolarXRBridgeActions.SetConfig(datafeeds))
+			receiver.context.dispatch(SolarXRBridgeActions.SetConfig(dataFeeds))
 		}
 
 		receiver.dataFeedDispatcher.on<PollDataFeed> { event ->
 			val config = event.config ?: return@on
-			receiver.sendDataFeed(createDatafeedFrame(server = server, datafeedConfig = config, skeleton = skeleton, resetsManager = receiver.appContext.resetsManager))
+			receiver.sendDataFeed(createDatafeedFrame(
+				server = server,
+				datafeedConfig = config,
+				skeleton = skeleton,
+				resetsManager = receiver.appContext.resetsManager,
+				heightCalibrationManager = receiver.appContext.heightCalibrationManager
+			))
 		}
 	}
 }

@@ -44,7 +44,6 @@ data class TapDetectionConfig(
 	var fullResetTaps: Int = 3,
 	var mountingResetTaps: Int = 3,
 	var numberTrackersOverThreshold: Int = 1,
-	var setupMode: Boolean = false,
 )
 
 @Serializable

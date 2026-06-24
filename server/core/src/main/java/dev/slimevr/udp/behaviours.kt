@@ -8,7 +8,7 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import dev.slimevr.tracker.TrackerIdNum
+import dev.slimevr.tracker.TrackerSensorIds
 import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.Job
@@ -225,7 +225,7 @@ class TimeoutBehaviour : UDPConnectionBehaviour {
 					receiver.getDevice()?.context?.dispatch(
 						DeviceActions.Update { copy(status = TrackerStatus.TIMED_OUT) },
 					)
-					state.trackerIds.mapNotNull { receiver.appContext.server.getTracker(it.id) }.forEach { tracker ->
+					state.trackerIds.mapNotNull { receiver.appContext.server.getTracker(it.trackerId) }.forEach { tracker ->
 						tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
 					}
 				} else {
@@ -251,7 +251,7 @@ class DisconnectBehaviour : UDPConnectionBehaviour {
 						receiver.getDevice()?.context?.dispatch(
 							DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
 						)
-						currentState.trackerIds.mapNotNull { receiver.appContext.server.getTracker(it.id) }.forEach { tracker ->
+						currentState.trackerIds.mapNotNull { receiver.appContext.server.getTracker(it.trackerId) }.forEach { tracker ->
 							tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
 						}
 					}
@@ -303,7 +303,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 		if (existingTracker != null) {
 			receiver.context.dispatch(
 				UDPConnectionActions.AssignTracker(
-					trackerId = TrackerIdNum(id = existingTracker.context.state.value.id, trackerNum = event.data.sensorId),
+					trackerId = TrackerSensorIds(trackerId = existingTracker.context.state.value.id, sensorId = event.data.sensorId),
 				),
 			)
 			return existingTracker to false
@@ -321,7 +321,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 		)
 		receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId = trackerId, context = newTracker))
 		receiver.context.dispatch(
-			UDPConnectionActions.AssignTracker(trackerId = TrackerIdNum(id = trackerId, trackerNum = event.data.sensorId)),
+			UDPConnectionActions.AssignTracker(trackerId = TrackerSensorIds(trackerId = trackerId, sensorId = event.data.sensorId)),
 		)
 		return newTracker to true
 	}

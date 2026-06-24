@@ -3,48 +3,40 @@ package dev.slimevr.solarxr
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.vmc.VMCActions
 import dev.slimevr.vmc.VMCManager
-import solarxr_protocol.rpc.ChangeSettingsRequest
-import solarxr_protocol.rpc.OSCSettings
-import solarxr_protocol.rpc.VMCOSCSettings
-import solarxr_protocol.rpc.VRMSettings
+import solarxr_protocol.rpc.ChangeVMCOSCSettingsRequest
+import solarxr_protocol.rpc.VMCOSCSettingsRequest
+import solarxr_protocol.rpc.VMCOSCSettingsResponse
 
 class VmcBehaviour(
 	private val vmcManager: VMCManager,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.rpcDispatcher.on<ChangeSettingsRequest> { req ->
-			val vmc = req.vmcOsc ?: return@on
-			val osc = vmc.oscSettings ?: return@on
-			val portIn = osc.portIn?.toInt() ?: return@on
-			val portOut = osc.portOut?.toInt() ?: return@on
+		receiver.rpcDispatcher.on<VMCOSCSettingsRequest> {
+			receiver.sendRpc(buildVmcOscSettings(vmcManager.context.state.value.config))
+		}
+
+		receiver.rpcDispatcher.on<ChangeVMCOSCSettingsRequest> { req ->
 			vmcManager.context.dispatch(
 				VMCActions.UpdateConfig(
 					VMCConfig(
-						enabled = osc.enabled == true,
-						portIn = portIn,
-						portOut = portOut,
-						address = osc.address.orEmpty(),
-						mirrorTracking = vmc.mirrorTracking == true,
-						anchorAtHips = vmc.anchorHip == true,
-						vrmJson = req.vrm?.vrmJson?.ifEmpty { null },
+						enabled = req.enabled == true,
+						portIn = req.portIn?.toInt() ?: error("portIn should be set"),
+						portOut = req.portOut?.toInt() ?: error("portOut should be set"),
+						address = req.address ?: error("address should be set"),
+						mirrorTracking = req.mirrorTracking == true,
+						anchorAtHips = req.anchorHip == true,
 					),
 				),
 			)
 		}
 	}
-}
 
-fun buildVmcOscSettings(config: VMCConfig): VMCOSCSettings = VMCOSCSettings(
-	oscSettings = OSCSettings(
+	private fun buildVmcOscSettings(config: VMCConfig): VMCOSCSettingsResponse = VMCOSCSettingsResponse(
 		enabled = config.enabled,
 		portIn = config.portIn.toUShort(),
 		portOut = config.portOut.toUShort(),
 		address = config.address,
-	),
-	anchorHip = config.anchorAtHips,
-	mirrorTracking = config.mirrorTracking,
-)
-
-fun buildVrmSettings(config: VMCConfig): VRMSettings = VRMSettings(
-	vrmJson = config.vrmJson,
-)
+		anchorHip = config.anchorAtHips,
+		mirrorTracking = config.mirrorTracking,
+	)
+}

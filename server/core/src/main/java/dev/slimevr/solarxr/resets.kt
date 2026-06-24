@@ -1,38 +1,36 @@
 package dev.slimevr.solarxr
 
 import dev.slimevr.config.ResetsConfig
-import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
-import dev.slimevr.config.TapDetectionConfig
-import solarxr_protocol.rpc.ChangeSettingsRequest
-import solarxr_protocol.rpc.ResetsSettings
-import solarxr_protocol.rpc.TapDetectionSettings
+import dev.slimevr.resets.ResetsActions
+import dev.slimevr.resets.ResetsManager
+import solarxr_protocol.rpc.ChangeResetsSettingsRequest
+import solarxr_protocol.rpc.ResetsSettingsRequest
+import solarxr_protocol.rpc.ResetsSettingsResponse
 
 class ResetsBehaviour(
-	private val settings: Settings,
+	private val resetsManager: ResetsManager,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.rpcDispatcher.on<ChangeSettingsRequest> { req ->
-			val resetsSettings = req.resetsSettings ?: return@on
+		receiver.rpcDispatcher.on<ResetsSettingsRequest> {
+			receiver.sendRpc(buildResetsSettings(resetsManager.context.state.value.config))
+		}
 
-			val oldConfig = settings.context.state.value.data.resetsConfig
-			val newConfig = oldConfig.copy(
-				resetMountingFeet = resetsSettings.resetMountingFeet == true,
-				armsResetMode = resetsSettings.armsMountingResetMode ?: oldConfig.armsResetMode,
-				yawResetSmoothTime = resetsSettings.yawResetSmoothTime ?: oldConfig.yawResetSmoothTime,
-				saveMountingReset = resetsSettings.saveMountingReset == true,
-				resetHmdPitch = resetsSettings.resetHmdPitch == true,
-			)
-
-			settings.context.dispatch(SettingsActions.Update { copy(resetsConfig = newConfig) })
+		receiver.rpcDispatcher.on<ChangeResetsSettingsRequest> { req ->
+			resetsManager.context.dispatch(ResetsActions.UpdateConfig(ResetsConfig(
+				resetMountingFeet = req.resetMountingFeet == true,
+				armsResetMode = req.armsMountingResetMode ?: error("armsMountingResetMode should be set"),
+				yawResetSmoothTime = req.yawResetSmoothTime ?: error("yawResetSmoothTime should be set"),
+				saveMountingReset = req.saveMountingReset == true,
+				resetHmdPitch = req.resetHmdPitch == true,
+			)))
 		}
 	}
-}
 
-fun buildResetsSettings(config: ResetsConfig): ResetsSettings = ResetsSettings(
-	resetMountingFeet = config.resetMountingFeet,
-	armsMountingResetMode = config.armsResetMode,
-	yawResetSmoothTime = config.yawResetSmoothTime,
-	saveMountingReset = config.saveMountingReset,
-	resetHmdPitch = config.resetHmdPitch,
-)
+	private fun buildResetsSettings(config: ResetsConfig): ResetsSettingsResponse = ResetsSettingsResponse(
+		resetMountingFeet = config.resetMountingFeet,
+		armsMountingResetMode = config.armsResetMode,
+		yawResetSmoothTime = config.yawResetSmoothTime,
+		saveMountingReset = config.saveMountingReset,
+		resetHmdPitch = config.resetHmdPitch,
+	)
+}

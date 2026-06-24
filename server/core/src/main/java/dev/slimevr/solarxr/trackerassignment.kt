@@ -11,8 +11,8 @@ class AssignTrackerBehaviour(
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<AssignTrackerRequest> { req ->
-			val trackerNum = req.trackerId?.trackerNum ?: return@on
-			val tracker = server.getTracker(trackerNum.toInt())
+			val id = req.trackerId ?: return@on
+			val tracker = server.getTracker(id.toInt())
 				?: return@on
 
 			val bodyPart = req.bodyPosition?.takeIf { it != BodyPart.NONE }

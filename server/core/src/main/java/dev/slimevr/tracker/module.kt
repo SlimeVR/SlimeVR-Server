@@ -14,10 +14,10 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
-data class TrackerIdNum(val id: Int, val trackerNum: Int)
+data class TrackerSensorIds(val trackerId: Int, val sensorId: Int)
 
 data class TrackerState(
-	val id: Int, // trackerNum
+	val id: Int,
 	val name: String,
 	val hardwareId: String,
 	val sensorType: ImuType?,

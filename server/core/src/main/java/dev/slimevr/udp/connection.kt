@@ -6,7 +6,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
-import dev.slimevr.tracker.TrackerIdNum
+import dev.slimevr.tracker.TrackerSensorIds
 import dev.slimevr.util.safeLaunch
 import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.Datagram
@@ -14,7 +14,6 @@ import io.ktor.network.sockets.InetSocketAddress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.io.Buffer
-import kotlinx.io.readByteArray
 import solarxr_protocol.datatypes.MagnetometerStatus
 
 data class LastPing(
@@ -36,7 +35,7 @@ data class UDPConnectionState(
 	val lastPing: LastPing,
 	val didHandshake: Boolean,
 	val deviceId: Int?,
-	val trackerIds: List<TrackerIdNum>,
+	val trackerIds: List<TrackerSensorIds>,
 	val features: FirmwareFeatures?,
 	val sensorConfigFlags: Map<Int, SensorConfigFlags>,
 )
@@ -45,7 +44,7 @@ sealed interface UDPConnectionActions {
 	data class StartPing(val startTime: Long, val pingId: Int) : UDPConnectionActions
 	data class Handshake(val deviceId: Int) : UDPConnectionActions
 	data class LastPacket(val packetNum: Long? = null, val time: Long) : UDPConnectionActions
-	data class AssignTracker(val trackerId: TrackerIdNum) : UDPConnectionActions
+	data class AssignTracker(val trackerId: TrackerSensorIds) : UDPConnectionActions
 	data class FirmwareFeatures(val features: dev.slimevr.udp.FirmwareFeatures) : UDPConnectionActions
 	data class SetSensorConfig(val sensorId: Int, val flags: SensorConfigFlags) : UDPConnectionActions
 	data object TimedOut : UDPConnectionActions
@@ -79,8 +78,8 @@ class UDPConnection(
 	}
 
 	fun getTracker(id: Int): Tracker? {
-		val trackerId = context.state.value.trackerIds.find { it.trackerNum == id }
-		return if (trackerId != null) appContext.server.getTracker(trackerId.id) else null
+		val trackerId = context.state.value.trackerIds.find { it.sensorId == id }
+		return if (trackerId != null) appContext.server.getTracker(trackerId.trackerId) else null
 	}
 
 	companion object {

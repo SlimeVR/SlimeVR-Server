@@ -26,6 +26,7 @@ data class TrackerSnapshot(val position: Vector3, val rotation: Quaternion)
 data class HeightCalibrationState(
 	val status: UserHeightCalibrationStatus,
 	val currentHeight: Float,
+	val canDoUserHeightCalibration: Boolean,
 )
 
 sealed interface HeightCalibrationActions {
@@ -38,6 +39,7 @@ typealias HeightCalibrationBehaviourType = Behaviour<HeightCalibrationState, Hei
 val INITIAL_HEIGHT_CALIBRATION_STATE = HeightCalibrationState(
 	status = UserHeightCalibrationStatus.NONE,
 	currentHeight = 0f,
+	canDoUserHeightCalibration = true, // TODO make the logic in behaviour for this
 )
 
 class HeightCalibrationManager(

@@ -24,7 +24,7 @@ class HeightCalibrationBehaviour(
 			receiver.sendRpc(
 				UserHeightRecordingStatusResponse(
 					status = state.status,
-					hmdheight = state.currentHeight,
+					hmdHeight = state.currentHeight,
 				),
 			)
 		}.launchIn(receiver.context.scope)

@@ -10,7 +10,7 @@ import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import solarxr_protocol.datatypes.DeviceIdTable
+import solarxr_protocol.rpc.FirmwareDeviceIdTable
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateDeviceId
 import solarxr_protocol.rpc.FirmwareUpdateStatus
@@ -99,7 +99,7 @@ class FirmwareManager(
 		runningJobs[deviceIp] = scope.safeLaunch {
 			doOtaFlash(
 				deviceIp = deviceIp,
-				deviceId = (firmwareDeviceId as? DeviceIdTable)?.id ?: error("device id should exist"),
+				deviceId = (firmwareDeviceId as? FirmwareDeviceIdTable)?.id ?: error("device id should exist"),
 				part = part,
 				server = server,
 				onStatus = { status, progress ->

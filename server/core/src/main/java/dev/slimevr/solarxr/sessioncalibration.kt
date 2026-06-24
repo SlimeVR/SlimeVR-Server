@@ -13,7 +13,7 @@ class SessionCalibrationBehaviour(
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<ResetRequest> { req ->
-			resetsManager.scheduleReset("SolarXRBridge", req.resetType ?: ResetType.Yaw, req.delay ?: 0f, req.bodyParts)
+			resetsManager.scheduleReset("SolarXRBridge", req.resetType ?: ResetType.YAW, req.delay ?: 0f, req.bodyParts)
 		}
 	}
 }

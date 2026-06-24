@@ -175,9 +175,9 @@ private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
 			val fwDay = fwDate and 31
 			HIDDeviceInfo(
 				hidId = hidId,
-				imuType = ImuType.fromValue(imuId.toUShort()) ?: ImuType.Other,
+				imuType = ImuType.fromValue(imuId.toUShort()) ?: ImuType.UNKNOWN,
 				boardType = BoardType.fromValue(brdId.toUShort()) ?: BoardType.UNKNOWN,
-				mcuType = McuType.fromValue(mcuId.toUShort()) ?: McuType.Other,
+				mcuType = McuType.fromValue(mcuId.toUShort()) ?: McuType.UNKNOWN,
 				firmware = "%04d-%02d-%02d %d.%d.%d".format(fwYear, fwMonth, fwDay, fwMajor, fwMinor, fwPatch),
 				batteryLevel = decodeBattery(batt),
 				batteryVoltage = decodeBatteryVoltage(battV),

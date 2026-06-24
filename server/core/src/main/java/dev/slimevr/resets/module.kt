@@ -94,7 +94,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 		} else {
 			// Exclude feet trackers from mounting reset if resetMountingFeet = false
 			allTrackers.filter {
-				resetType != ResetType.Mounting ||
+				resetType != ResetType.MOUNTING ||
 					config.resetMountingFeet ||
 					it.context.state.value.bodyPart !in setOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 			}
@@ -109,9 +109,9 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 		trackers.forEach {
 			it.context.dispatch(
 				when (resetType) {
-					ResetType.Yaw -> TrackerActions.YawReset(referenceRotation)
-					ResetType.Full -> TrackerActions.FullReset(referenceRotation)
-					ResetType.Mounting -> TrackerActions.MountingReset(referenceRotation)
+					ResetType.YAW -> TrackerActions.YawReset(referenceRotation)
+					ResetType.FULL -> TrackerActions.FullReset(referenceRotation)
+					ResetType.MOUNTING -> TrackerActions.MountingReset(referenceRotation)
 				},
 			)
 		}
