@@ -803,6 +803,12 @@ settings-serial-factory_reset-warning-cancel = Annuleren
 settings-serial-serial_select = Selecteer een seriële poort
 settings-serial-auto_dropdown_item = Automatisch
 settings-serial-get_wifi_scan = WiFi-scan uitvoeren
+settings-serial-enter_pairing = Begin pairing
+settings-serial-exit_pairing = Stop pairing
+settings-serial-calibrate = Kalibreer
+settings-serial-six_side_calibrate = 6-zijdige kalibratie
+settings-serial-dfu = Begin DFU
+settings-serial-meow = Miauw!
 settings-serial-file_type = Gewone tekst
 settings-serial-save_logs = Opslaan in bestand
 settings-serial-send_command = Verzenden
@@ -969,7 +975,16 @@ onboarding-setup_warning-cancel = Doorgaan met setupgids
 onboarding-quiz_continue = Doorgaan
 onboarding-quiz_back = Terug
 onboarding-quiz-more_sets_modal-title = Heb je al je trackers verbonden?
+onboarding-quiz-more_sets_modal-confirm = Ik heb al mijn trackers verbonden
+onboarding-quiz-more_sets_modal-cancel = Ik wil meer trackers verbinden
+onboarding-quiz-slimeset-title = Wat voor soort trackers verbind je?
+onboarding-quiz-slimeset-description = Als je meerdere sets hebt, word je later in het proces opnieuw gevraagd
+onboarding-quiz-slimeset-official-sets = Officiële SlimeVR Trackers
+onboarding-quiz-slimeset-thirdparty-sets = Trackers van derden of doe-het-zelf
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
 onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-gebaseerde Slime
+onboarding-quiz-slimeset-answer-dongle = Dongle-gebaseerde Slime
 onboarding-quiz-usage-title = Waar gebruik je je trackers voor?
 onboarding-quiz-usage-description = Als je van plan bent SlimeVR voor meerdere doeleinden te gebruiken, kan je later deze instellingen aanpassen.
 onboarding-quiz-usage-answer-VRC = VR-gaming (bijv. VRChat)
@@ -986,6 +1001,7 @@ onboarding-quiz-mocap_preferences-playspace-standing = Staan
 onboarding-quiz-mocap_preferences-vrm_model-title = (Optioneel) Heb je een VRM-model?
 onboarding-quiz-mocap_preferences-head_tracker-yes = Ja
 onboarding-quiz-mocap_preferences-head_tracker-no = Nee
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Waar bevindt je hoofdtracker?
 onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Voorhoofd
 onboarding-quiz-mocap_preferences-head_tracker_location-face = Gezicht
 
@@ -1040,6 +1056,8 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Sluiten
+install-info_udev-rules_modal-dont-show-again_checkbox = Niet opnieuw tonen
 
 ## Setup start
 
@@ -1374,6 +1392,7 @@ onboarding-user_height-description = We hebben je lengte nodig om je lichaamspro
 onboarding-user_height-need_head_tracker = Voor de kalibratie zijn een headset en controllers met positionele tracking vereist.
 onboarding-user_height-calculate = Bereken mijn lengte automatisch
 onboarding-user_height-next_step = Doorgaan en opslaan
+onboarding-user_height-prev_step = Terug
 onboarding-user_height-manual-proportions = Handmatige lichaamsverhoudingen
 onboarding-user_height-calibration-title = Vooruitgang van de kalibratie
 onboarding-user_height-calibration-RECORDING_FLOOR = Raak de vloer aan met de punt van je controller
@@ -1529,6 +1548,7 @@ firmware_tool-flashing_step-description = Je trackers worden geflashed, volg de 
 firmware_tool-flashing_step-warning-v2 = Koppel de tracker niet los en zet hem niet uit tijdens het uploadproces, tenzij dit wordt aangegeven. Dit kan je apparaat onbruikbaar maken.
 firmware_tool-flashing_step-flash_more = Flash meer trackers
 firmware_tool-flashing_step-exit = Sluit
+firmware_tool-flashing_step-onboarding_continue = Doorgaan
 
 ## firmware tool build status
 
@@ -1666,7 +1686,18 @@ tracking_checklist-FULL_RESET = Voer een volledige reset uit
 tracking_checklist-FULL_RESET-desc = Sommige trackers hebben een reset nodig
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR draait niet
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR draait niet. Gebruik je het voor VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = De driver is door SteamVR geblokkeerd vanwege een eerdere crash van SteamVR.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = De driver is uitgeschakeld in de SteamVR-instellingen.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = De driver is niet geïnstalleerd.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Open SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Schakel de driver in
+tracking_checklist-STEAMVR_HANDS_ENABLED = Handtrackers ingeschakeld
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Je hebt de virtuele handtrackers van SteamVR ingeschakeld. Dit zorgt ervoor dat knopinvoer niet werkt in SteamVR en in games.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Schakel ze uit
+tracking_checklist-STANDABLE_INSTALLED = Standable is geïnstalleerd
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable veroorzaakt vaak trackingproblemen wanneer het samen met SlimeVR wordt gebruikt. Standable moet volledig verwijderd zijn in Steam om te voorkomen dat er problemen ontstaan.
+    Je moet SteamVR afsluiten voordat je Standable in Steam verwijdert.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibreer je trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Je hebt geen tracker kalibratie uitgevoerd. Laat je Slimes (gemarkeerd met geel) rusten op een stabiele ondergrond voor een paar secondes.
 tracking_checklist-TRACKER_ERROR = Trackers met fouten
