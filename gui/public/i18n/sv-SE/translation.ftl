@@ -1363,7 +1363,26 @@ onboarding-automatic_proportions-check_floor_height-full_height = Beräknad full
 onboarding-automatic_proportions-check_floor_height-measure-start = Börja mätning
 onboarding-automatic_proportions-check_floor_height-measure-stop = Sluta mätning
 onboarding-automatic_proportions-check_floor_height-measure-reset = Försök att mäta om
+onboarding-automatic_proportions-check_floor_height-skip_step = Hoppa över steg och spara
+onboarding-automatic_proportions-check_floor_height-next_step = Använd golvhöjden och spara
+onboarding-automatic_proportions-start_recording-title = Gör dig redo att röra på dig
 onboarding-automatic_proportions-start_recording-description = Vi kommer nu att spela in några specifika poser och rörelser. Dessa kommer att visas på nästa skärm. Var redo att starta när du trycker på knappen!
+onboarding-automatic_proportions-start_recording-next = Starta inspelning
+onboarding-automatic_proportions-recording-title = INSPELNING
+onboarding-automatic_proportions-recording-description-p0 = Inspelning pågår...
+onboarding-automatic_proportions-recording-description-p1 = Gör rörelserna som visas nedan:
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps = Stå rakt upp och rulla huvudet i en cirkel. Böj ryggen framåt och huka dig. Medan du hukar dig, titta åt vänster och sedan åt höger. Vrid överkroppen åt vänster (moturs) och sträck dig sedan ner mot marken. Vrid överkroppen åt höger (medurs) och sträck dig sedan ner mot marken. Rulla höfterna i en cirkelrörelse som om du använder en hula hoop. Om det finns tid kvar på inspelningen kan du upprepa dessa steg tills den är klar.
+onboarding-automatic_proportions-recording-processing = Bearbetar resultatet
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] En sekund kvar
+       *[other] { $time } sekunder kvar
+    }
+onboarding-automatic_proportions-verify_results-title = Verifiera resultaten
+onboarding-automatic_proportions-verify_results-description = Kolla resultaten nedan, ser de korrekta ut?
+onboarding-automatic_proportions-verify_results-results = Registreringsresultat
 onboarding-automatic_proportions-verify_results-processing = Bearbetar resultatet
 onboarding-automatic_proportions-verify_results-redo = Gör om inspelningen
 onboarding-automatic_proportions-verify_results-confirm = De har rätt
@@ -1386,12 +1405,26 @@ onboarding-user_height-description = Vi behöver din längd för att beräkna di
 onboarding-user_height-need_head_tracker = Ett headset och kontroller med positionsspårning krävs för att utföra kalibreringen.
 onboarding-user_height-calculate = Beräkna min längd automatiskt
 onboarding-user_height-next_step = Fortsätt och spara
+onboarding-user_height-prev_step = Bak
 onboarding-user_height-manual-proportions = Manuella proportioner
 onboarding-user_height-calibration-title = Kalibreringsförlopp
 onboarding-user_height-calibration-RECORDING_FLOOR = Rör vid golvet med spetsen på din handkontroll
 onboarding-user_height-calibration-WAITING_FOR_RISE = Stå upp igen
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stå upp igen och se framåt
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Se till att ditt huvud är plant
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Titta inte på golvet
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Titta inte för högt upp
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Se till att kontrollern pekar nedåt
+onboarding-user_height-calibration-RECORDING_HEIGHT = Stå upp igen och stå still!
+onboarding-user_height-calibration-DONE = Lyckad kallibration!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Kalibreringen har gått ut på tidsgränsen, försök igen.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = Den upptäckta användarlängden är för hög, försök igen.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = Den detekterade användarlängden är för liten. Se till att stå rakt och titta framåt i slutet av kalibreringen.
+onboarding-user_height-calibration-error = Kalibreringen misslyckades
+onboarding-user_height-manual-tip = Medan du justerar din längd, prova olika positioner och se hur skelettet matchar din kropp.
+onboarding-user_height-reset-warning =
+    <b>Varning:</b> Detta återställer dina proportioner till att baseras på din längd.
+    Är du säker på att du vill göra detta?
 
 ## Stay Aligned setup
 
@@ -1425,23 +1458,94 @@ onboarding-stay_aligned-done-description-2 = Installationen är klar! Du kan sta
 onboarding-stay_aligned-previous_step = Tidigare
 onboarding-stay_aligned-next_step = Nästa
 onboarding-stay_aligned-restart = Starta om
+onboarding-stay_aligned-done = Klar
+onboarding-stay_aligned-manual_mounting-done = Klar
 
 ## Home
 
+home-no_trackers = Inga spårare upptäckta eller tilldelade
+home-settings = Inställningar för startsidan
+home-settings-close = Stäng
 
 ## Trackers Still On notification
 
+trackers_still_on-modal-title = Spårarna är fortfarande på
+trackers_still_on-modal-description =
+    En eller flera spårare är fortfarande påslagna.
+    Vill du fortfarande avsluta SlimeVR?
+trackers_still_on-modal-confirm = Avsluta SlimeVR
+trackers_still_on-modal-cancel = Vänta...
 
 ## Status system
 
+status_system-StatusTrackerReset = Det rekommenderas att utföra en fullständig återställning eftersom en eller flera spårare inte är justerade.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] För närvarande inte ansluten till SlimeVR Feeder-appen.
+       *[steamvr] För närvarande inte ansluten till SteamVR via SlimeVR-drivrutinen.
+    }
+status_system-StatusTrackerError = Spåraren { $trackerName } har ett fel.
+status_system-StatusUnassignedHMD = VR-headsetet bör tilldelas som en huvudtracker.
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Din nätverksprofil är för närvarande inställd på Offentlig ({ $adapters }). Detta rekommenderas inte för att SlimeVR ska fungera korrekt. <PublicFixLink>Se hur du åtgärdar det här.</PublicFixLink>
+       *[other] Några av dina nätverkskort är inställda på offentliga: { $adapters }. Detta rekommenderas inte för att SlimeVR ska fungera korrekt. <PublicFixLink>Se hur du åtgärdar det här.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
+firmware_tool-next_step = Nästa steg
+firmware_tool-previous_step = Föregående steg
+firmware_tool-ok = Ser bra ut
+firmware_tool-retry = Försök igen
+firmware_tool-loading = Laddar...
 
 ## Firmware tool Steps
 
+firmware_tool = DIY-firmwareverktyg
+firmware_tool-description = Låter dig konfigurera och flasha dina gör-det-själv-spårare
+firmware_tool-not_available = Oj, firmware-verktyget är inte tillgängligt för tillfället. Kom tillbaka senare!
+firmware_tool-not_compatible = Programvaruverktyget är inte kompatibelt med den här serverversionen. Uppdatera din server!
+firmware_tool-select_source = Välj den firmware som ska flashas
+firmware_tool-select_source-description = Välj den firmware du vill flasha på ditt moderkort
+firmware_tool-select_source-error = Det gick inte att ladda källor
+firmware_tool-select_source-board_type = Korttyp
+firmware_tool-select_source-firmware = Firmvarukälla
+firmware_tool-select_source-version = Firmvaruversion
+firmware_tool-select_source-official = Officiell
+firmware_tool-select_source-dev = Utvecklar
+firmware_tool-select_source-not_selected = Ingen källa vald
+firmware_tool-select_source-no_boards = Inga tillgängliga moderkort för den här källan
+firmware_tool-select_source-no_versions = Inga tillgängliga versioner för den här källan
+firmware_tool-board_defaults = Konfigurera ditt moderkort
+firmware_tool-board_defaults-description = Ställ in pinnarna eller inställningarna i förhållande till din hårdvara
+firmware_tool-board_defaults-add = Lägg till
+firmware_tool-board_defaults-reset = Återställ till standard
+firmware_tool-board_defaults-error-required = Obligatoriskt fält
+firmware_tool-board_defaults-error-format = Ogiltigt format
+firmware_tool-board_defaults-error-format-number = Inte ett nummer
+firmware_tool-flash_method_step = Flashing metod
+firmware_tool-flash_method_step-description = Välj den flashmetoden du vill använda
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = Använd OTA-metoden. Din tracker använder Wi-Fi för att uppdatera sin firmware. Fungerar bara på trackers som har konfigurerats.
+firmware_tool-flash_method_step-ota-info =
+    Vi använder dina wifi-uppgifter för att flasha spåraren och bekräfta att allt fungerade korrekt.
+    <b>Vi lagrar inte dina wifi-uppgifter!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Använd en USB-kabel för att uppdatera din tracker.
+firmware_tool-flashbtn_step = Tryck på startknappen
+firmware_tool-flashbtn_step-description = Innan du går vidare till nästa steg finns det några saker du behöver göra
+firmware_tool-flashbtn_step-board_SLIMEVR = Stäng av spåraren, ta bort höljet (om det finns ett), anslut USB-kabeln till datorn och följ sedan lämpliga steg för din SlimeVR-kortrevision:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Slå på spåraren medan du kortsluter den andra rektangulära FLASH-plattan från kanten på kortets ovansida till mikrokontrollerns metallskärm. Spårarens lysdiod ska blinka kort.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Slå på spåraren medan du kortsluter den runda FLASH-plattan på kortets ovansida till mikrokontrollerns metallskärm. Spårarens lysdiod ska blinka kort.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Slå på spåraren medan du trycker in FLASH-knappen på ovansidan av kortet. Spårarens lysdiod ska blinka kort.
+firmware_tool-flashbtn_step-board_OTHER = Innan du flashar behöver du förmodligen försätta spåraren i bootloader-läge. För det mesta innebär detta att du trycker på startknappen på kortet innan flashningsprocessen startar. Om flashningsprocessen timeoutar vid starten betyder det förmodligen att spåraren inte var i bootloader-läge. Se instruktionerna för ditt kortet för att lära dig hur du går in i bootloader-läge.
+firmware_tool-flash_method_ota-title = Flashar via Wi-Fi
 firmware_tool-flash_method_ota-devices = Upptäckta OTA enheter:
 firmware_tool-flash_method_ota-no_devices = Det finns inga kort som kan uppdateras med OTA, se till att du valde rätt kort-typ
+firmware_tool-flash_method_serial-title = Flashar via USB
 firmware_tool-flash_method_serial-wifi = Wi-Fi information:
 firmware_tool-flash_method_serial-devices-label = Upptäckta seriell enheter:
 firmware_tool-flash_method_serial-devices-placeholder = Välj en seriell enhet.
@@ -1457,7 +1561,10 @@ firmware_tool-flashing_step-onboarding_continue = Fortsätt
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Väntar på att bygga....
 firmware_tool-build-CREATING_BUILD_FOLDER = Skapar bygges-filen
+firmware_tool-build-DOWNLOADING_SOURCE = Laddar ner mjukvaran
+firmware_tool-build-EXTRACTING_SOURCE = Extraherar källkoden
 firmware_tool-build-BUILDING = Bygger mjukvaran.
 firmware_tool-build-SAVING = Sparar bygget.
 firmware_tool-build-DONE = Byggning färdig
@@ -1486,20 +1593,40 @@ firmware_update-status-ERROR_UNKNOWN = Okänd errror
 
 firmware_update-title = Mjukvaro-uppdatering
 firmware_update-devices = Tillgängliga enheter
+firmware_update-devices-description = Välj de trackers du vill uppdatera till den senaste versionen av SlimeVR-firmvaran.
+firmware_update-no_devices = Se till att de trackers du vill uppdatera är PÅ och anslutna till Wi-Fi!
+firmware_update-changelog-title = Uppdaterar till { $version }
+firmware_update-looking_for_devices = Letar efter enheter att uppdatera...
+firmware_update-retry = Försök igen
+firmware_update-update = Uppdatera valda spårare
+firmware_update-exit = Stäng
 
 ## Tray Menu
 
+tray_menu-show = Visa
+tray_menu-hide = Göm
+tray_menu-quit = Gå ut
 
 ## First exit modal
 
+tray_or_exit_modal-title = Vad ska stängningsknappen göra?
 # Multiline text
 tray_or_exit_modal-description = Detta gör att du kan välja om du vill avsluta servern eller minimera den till facket när du trycker på stäng-knappen. Du kan ändra detta senare i gränssnittsinställningarna!
+tray_or_exit_modal-radio-exit = Gå ut vid stängning
+tray_or_exit_modal-radio-tray = Minimera till systemfältet
+tray_or_exit_modal-submit = Spara
+tray_or_exit_modal-cancel = Avbryt
 
 ## Unknown device modal
 
+unknown_device-modal-title = En ny spårare hittades!
 unknown_device-modal-description =
     Det finns en ny tracker med MAC-adress <b>{ $deviceId }</b>.
     Vill du ansluta den till SlimeVR?
+unknown_device-modal-confirm = Absolut!
+unknown_device-modal-forget = Ignorera det
+# VRChat config warnings
+vrc_config-page-title = VRChat-konfigurationsvarningar
 vrc_config-page-desc = Den här sidan visar statusen för dina VRChat-inställningar och vilka inställningar som är inkompatibla med SlimeVR. Det rekommenderas starkt att du åtgärdar eventuella varningar som visas här för bästa möjliga användarupplevelse med SlimeVR.
 vrc_config-page-help = Hittar inte inställningen?
 vrc_config-page-help-desc = Kolla vår <a>dokumentation på detta området!</a>
