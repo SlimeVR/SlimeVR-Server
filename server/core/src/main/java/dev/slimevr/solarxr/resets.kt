@@ -15,11 +15,12 @@ class ResetsBehaviour(
 			receiver.sendRpc(buildResetsSettings(resetsManager.context.state.value.config))
 		}
 
+		val oldConfig = resetsManager.context.state.value.config
 		receiver.rpcDispatcher.on<ChangeResetsSettingsRequest> { req ->
 			resetsManager.context.dispatch(ResetsActions.UpdateConfig(ResetsConfig(
 				resetMountingFeet = req.resetMountingFeet == true,
-				armsResetMode = req.armsMountingResetMode ?: error("armsMountingResetMode should be set"),
-				yawResetSmoothTime = req.yawResetSmoothTime ?: error("yawResetSmoothTime should be set"),
+				armsResetMode = req.armsResetMode ?: oldConfig.armsResetMode,
+				yawResetSmoothTime = req.yawResetSmoothTime ?: oldConfig.yawResetSmoothTime,
 				saveMountingReset = req.saveMountingReset == true,
 				resetHmdPitch = req.resetHmdPitch == true,
 			)))
