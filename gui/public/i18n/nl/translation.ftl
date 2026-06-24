@@ -569,14 +569,15 @@ settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontale reset ver
 settings-general-tracker_mechanics-drift_compensation = Drift compensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compenseert voor IMU yaw drift door de toevoeging van een omgekeerde rotatie.
-    Veranderd de sterkte van de compensatie en hoeveel resets worden gebruikt.
+    Compenseert voor IMU horizontale drift door de toevoeging van een omgekeerde rotatie.
+    Veranderd de sterkte van de compensatie en de hoeveelheid resets die worden gebruikt.
+    Dit is enkel nodig indien je heel vaak moet resetten!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensate
 settings-general-tracker_mechanics-drift_compensation-prediction = Voorspelling van driftcompensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    Voorspelt compensatie van gierdrift buiten het eerder gemeten bereik.
-    Schakel dit in als jouw trackers continu om de gier-as draaien.
+    Voorspelt compensatie van horizontale drift buiten het eerder gemeten bereik.
+    Schakel dit in als jouw trackers continu om de horizontale as draaien.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Voorspelling van driftcompensatie
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Waarschuwing:</b> Gebruik alleen driftcompensatie als je heel vaak
@@ -680,9 +681,9 @@ settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Ber
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Bereken taille van borst naar benen
 settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Bereken heup van borst naar benen
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Bereken heup van taille naar benen
-settings-general-fk_settings-skeleton_settings-interp_hip_legs = Bereken het gemiddelde van de 'yaw en roll van de heup met die van de benen'
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Bereken het gemiddelde van de 'yaw en roll van de knie trackers met die van de enkels'
-settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Bereken het gemiddelde van de 'yaw en roll van de knie trackers met die van de enkels'
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Bereken het gemiddelde van de 'yaw' en 'roll' van de heup met die van de benen
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Bereken het gemiddelde van de 'yaw' en 'roll' van de knie trackers met die van de enkels
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Bereken het gemiddelde van de 'yaw' en 'roll' van de knie trackers met die van de enkels
 settings-general-fk_settings-self_localization-title = Mocap modus
 settings-general-fk_settings-self_localization-description = Mocap modus staat het skelet model toe om zijn eigen positie te bepalen zonder het gebruik van een headset of andere trackers. Dit vergt wel het gebruik van voet en hoofd trackers, dit is momenteel nog expirimenteel.
 
