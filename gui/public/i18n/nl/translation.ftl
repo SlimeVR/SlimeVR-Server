@@ -257,11 +257,11 @@ reset-full = Volledige reset
 reset-mounting = Reset montage
 reset-mounting-feet = Reset voetmontage
 reset-mounting-fingers = Reset vingermontage
-reset-yaw = Yaw Reset
+reset-yaw = Horizontale Reset
 reset-error-no_feet_tracker = Geen voet-tracker toegewezen
 reset-error-no_fingers_tracker = Geen vingertracker toegewezen
 reset-error-mounting-need_full_reset = Je hebt een volledige reset nodig voordat je een montagekalibratie kunt uitvoeren.
-reset-error-yaw-need_full_reset = Je hebt een volledige reset nodig voordat je een yaw reset kunt uitvoeren.
+reset-error-yaw-need_full_reset = Je hebt een volledige reset nodig voordat je een horizontale reset kunt uitvoeren.
 
 ## Serial detection stuff
 
@@ -652,6 +652,7 @@ settings-general-fk_settings-ik = Positie gegevens
 settings-general-fk_settings-ik-use_position = Positiegegevens gebruiken
 settings-general-fk_settings-ik-use_position-description = Maakt gebruik van positiegegevens mogelijk van de trackers die deze leveren. Zorg er voor dat je een volledige reset doet en opnieuw kalibreert in het spel wanneer je dit inschakelt.
 settings-general-fk_settings-velocity_settings = Snelheidsinstellingen
+settings-general-fk_settings-velocity_settings-description = Stuur afgeleide snelheidsgegevens naar SteamVR. Vereist voor ondersteuning van Natural Locomotion. Kan jitter veroorzaken in FBT.
 settings-general-fk_settings-velocity_settings-send_derived_velocity = Stuur afgeleide snelheid naar de driver
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
@@ -707,12 +708,16 @@ settings-general-gesture_control-trackers =
 settings-general-gesture_control-yawResetEnabled = Activeer tikken voor horizontale reset
 settings-general-gesture_control-yawResetDelay = Vertraging horizontale reset
 settings-general-gesture_control-yawResetTaps = Hoeveelheid tikken voor horizontale reset
+settings-general-gesture_control-yawResetTracker = Yaw Reset Tracker
 settings-general-gesture_control-fullResetEnabled = Activeer tikken voor volledige reset
 settings-general-gesture_control-fullResetDelay = Vertraging volledige reset
 settings-general-gesture_control-fullResetTaps = Hoeveelheid tikken voor volledige reset
+settings-general-gesture_control-fullResetTracker = Volledige resettracker
 settings-general-gesture_control-mountingResetEnabled = Activeer tikken voor montage-kalibratie
 settings-general-gesture_control-mountingResetDelay = Vertraging montage-kalibratie
 settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor montage-kalibratie
+settings-general-gesture_control-yawResetTracker-title = Yaw Reset Tracker
+settings-general-gesture_control-fullResetTracker-title = Volledige resettracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over drempelwaarde
 settings-general-gesture_control-numberTrackersOverThreshold-description = Verhoog deze waarde als de tik detectie niet werkt. Zet deze waarde niet te hoog om tik detectie te laten werken, dit kan vals positieve resultaten creëren.
