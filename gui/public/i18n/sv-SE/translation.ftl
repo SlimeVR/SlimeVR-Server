@@ -655,6 +655,8 @@ settings-general-fk_settings-ik = Positionsdata
 settings-general-fk_settings-ik-use_position = Använd positionsdata
 settings-general-fk_settings-ik-use_position-description = Aktiverar användning av positionsdata från spårare som delar det. När du aktiverar detta se till att återställa och kalibrera om helt i spelet.
 settings-general-fk_settings-velocity_settings = Hastighetsinställningar
+settings-general-fk_settings-velocity_settings-description = Skicka härledd hastighetsdata till SteamVR. Krävs för Locomotion stöd. Kan orsaka flimmer i FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Skicka mottagen hastighet till drivrutin
 settings-general-fk_settings-arm_fk = Spårning av arm
 settings-general-fk_settings-arm_fk-description = Tvinga armarna att spåras från headsetet (HMD) även om positionsdata för handen finns tillgänglig.
 settings-general-fk_settings-arm_fk-force_arms = Tvångsarmar från HMD
@@ -709,12 +711,17 @@ settings-general-gesture_control-trackers =
 settings-general-gesture_control-yawResetEnabled = Aktivera återställning av tap till yaw
 settings-general-gesture_control-yawResetDelay = Fördröjning av återställning av yaw
 settings-general-gesture_control-yawResetTaps = Tryck för återställning av yaw
+settings-general-gesture_control-yawResetTracker = Spårning av giråterställning
 settings-general-gesture_control-fullResetEnabled = Aktivera tryck för fullständig återställning
 settings-general-gesture_control-fullResetDelay = Fördröjning vid fullständig återställning
 settings-general-gesture_control-fullResetTaps = Kranar för fullständig återställning
+settings-general-gesture_control-fullResetTracker = Fullständig återställning av spårare
 settings-general-gesture_control-mountingResetEnabled = Aktivera tryck för att återställa montering
 settings-general-gesture_control-mountingResetDelay = Fördröjning av återställning av montering
 settings-general-gesture_control-mountingResetTaps = Gängtappar för montering av återställning
+settings-general-gesture_control-mountingResetTracker = Montering Återställ spårare
+settings-general-gesture_control-yawResetTracker-title = Gir återställning spårare
+settings-general-gesture_control-fullResetTracker-title = Fullständig återställning av spårare
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers över tröskelvärdet
 settings-general-gesture_control-numberTrackersOverThreshold-description = Öka detta värde om avkänningen inte fungerar. Öka inte värdet mer än vad som krävs för att detekteringen ska fungera, eftersom det kan leda till fler falska positiva resultat.
@@ -803,8 +810,19 @@ settings-serial-factory_reset-warning-cancel = Avbryt
 settings-serial-serial_select = Välj en serieport
 settings-serial-auto_dropdown_item = Automatiskt
 settings-serial-get_wifi_scan = Hämta WiFi-skanning
+settings-serial-enter_pairing = Börja parkoppling
+settings-serial-exit_pairing = Sluta parkoppling
+settings-serial-calibrate = Kallibrera
+settings-serial-six_side_calibrate = Sex sido kallibrera
+settings-serial-dfu = Gå in i DFU
+settings-serial-meow = Mjau!
 settings-serial-file_type = Vanlig text
 settings-serial-save_logs = Spara till fil
+settings-serial-send_command = Skicka
+settings-serial-send_command-placeholder = Kommand...
+settings-serial-send_command-warning = <b>Varning:</b> Att köra seriella kommandon kan leda till dataförlust eller att spårarna blir obrukbara.
+settings-serial-send_command-warning-ok = Jag vet vad jag gör
+settings-serial-send_command-warning-cancel = Avbryt
 
 ## OSC router settings
 
@@ -867,6 +885,8 @@ settings-osc-vrchat-network-trackers-elbows = Armbågar
 ## VMC OSC settings
 
 settings-osc-vmc = Virtuell rörelseinspelning
+# This cares about multilines
+settings-osc-vmc-description = Ändra inställningar som är specifika för VMC-protokollet (Virtual Motion Capture) för att skicka SlimeVR:s bendata och ta emot bendata från andra appar.
 settings-osc-vmc-enable = Aktivera
 settings-osc-vmc-enable-description = Växla mellan sändning och mottagning av data.
 settings-osc-vmc-enable-label = Aktivera
@@ -894,6 +914,8 @@ settings-osc-vmc-mirror_tracking-label = Spegla spårning
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = OSC-routerns in- och utportar kan inte vara desamma!
+settings-osc-common-network-port_banned_error = Porten { $port } kan inte användas!
 
 ## Advanced settings
 
@@ -930,9 +952,15 @@ settings-utils-advanced-open_logs-label = Öppna mapp
 
 ## Home Screen
 
+settings-home-list-layout = Layout för spårningslista
+settings-home-list-layout-desc = Välj en av de möjliga layouterna för startskärmen
+settings-home-list-layout-grid = Rutnät
+settings-home-list-layout-table = Tabell
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Aktiva steg
+settings-tracking_checklist-active_steps-desc = Lista över alla steg i spårningschecklistan. Du kan välja att inaktivera specifika steg.
 
 ## Setup/onboarding menu
 
@@ -948,9 +976,52 @@ onboarding-setup_warning-cancel = Fortsätt inställning
 
 ## Quiz
 
+onboarding-quiz_continue = Fortsätt
+onboarding-quiz_back = Bak
+onboarding-quiz-more_sets_modal-title = Har du kopplat in alla dina spårare?
+onboarding-quiz-more_sets_modal-desc = Om du har uppsättningar av olika modeller kan vi koppla ihop dem just nu!
+onboarding-quiz-more_sets_modal-confirm = Jag har anslutit alla mina spårare
+onboarding-quiz-more_sets_modal-cancel = Jag vill ansluta fler spårare
+onboarding-quiz-slimeset-title = Vilken typ av spårare ansluter du?
+onboarding-quiz-slimeset-description = Om du har flera uppsättningar kommer du att bli tillfrågad igen senare i processen.
+onboarding-quiz-slimeset-official-sets = Officiella SlimeVR-spårare
+onboarding-quiz-slimeset-thirdparty-sets = Tredjeparts- eller gör-det-själv-spårare
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Fjäril
+onboarding-quiz-slimeset-answer-wifi = WiFi-baserade Slimes
+onboarding-quiz-slimeset-answer-dongle = Dongle-baserade Slimes
+onboarding-quiz-usage-title = Vad använder du dina spårare till?
+onboarding-quiz-usage-description = Om du planerar att använda SlimeVR för flera ändamål kan du ändra de berörda inställningarna senare.
+onboarding-quiz-usage-answer-VRC = VR-spel (t.ex. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap och Virtual avatar strömming
+onboarding-quiz-runtime-title = Kör du spel via SteamVR, eller på själva headsetet (fristående)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Fristående
+onboarding-quiz-mocap_preferences-title = Mocap-inställningar
+onboarding-quiz-mocap_preferences-desc = Ange hur du planerar att använda SlimeVR för mocap eller VTubing
+onboarding-quiz-mocap_preferences-playspace-title = Vad är din spelyta?
+onboarding-quiz-mocap_preferences-playspace-desc = Om du står upp kommer SlimeVR att försöka spåra gångrörelser istället för att förankra dig på en enda plats.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sittande
+onboarding-quiz-mocap_preferences-playspace-standing = Stående
+onboarding-quiz-mocap_preferences-vrm_model-title = Har du en VRM-modell? (Valfritt)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Att ladda en VRM-modell förbättrar spårningskvaliteten och kompatibiliteten med applikationer som använder VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Har du en spårare eller VR-headset på huvudet?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Ja
+onboarding-quiz-mocap_preferences-head_tracker-no = Nej
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Var finns din huvudspårare?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Panna
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Ansikte
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Gå tillbaka
+onboarding-wifi_creds-v2 = Spårare som använder Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    De flesta spårare (som officiella SlimeVR-spårare) använder Wi-Fi för att ansluta till servern.
+    Använd inloggningsuppgifterna för det Wi-Fi-nätverk som din enhet för närvarande är ansluten till.
+    
+    Se till att använda en 2,4 GHz Wi-Fi-anslutning för dina spårare!
 onboarding-wifi_creds-skip = Hoppa över Wi-Fi inställningar.
 onboarding-wifi_creds-submit = Överlämna!
 onboarding-wifi_creds-ssid =
@@ -960,6 +1031,10 @@ onboarding-wifi_creds-ssid-required = Wi-Fi namn är nödvändigt
 onboarding-wifi_creds-password =
     .label = Lösenord
     .placeholder = Ange lösenord
+onboarding-wifi_creds-dongle-title = Spårare med hjälp av en dongel
+onboarding-wifi_creds-dongle-description = Om dina trackers kom med en dongle, anslut den till din enhet så borde du vara redo att köra!
+onboarding-wifi_creds-dongle-wip = Det här avsnittet är under utveckling. En dedikerad sida för att hantera spårare som ansluts via en dongel kommer snart att skapas.
+onboarding-wifi_creds-dongle-continue = Fortsätt med en dongel
 
 ## Mounting setup
 
@@ -987,6 +1062,10 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Åtkomstregler för hårdvaru-udev hittades inte
+install-info_udev-rules_warning = Åtkomstregler via udev krävs för seriell konsolåtkomst och dongelanslutning. Klistra in följande kommando i din terminal för att lägga till udev-reglerna.
+install-info_udev-rules_modal_button = Stäng
+install-info_udev-rules_modal-dont-show-again_checkbox = Visa inte igen
 
 ## Setup start
 
@@ -1067,6 +1146,15 @@ onboarding-assignment_tutorial-done = Jag sätter på klistermärken och remmar!
 onboarding-assign_trackers-back = Gå tillbaka till Wi-Fi uppgifter
 onboarding-assign_trackers-title = Utse trackers
 onboarding-assign_trackers-description = Låt oss välja vilken tracker som ska sitta var. Klicka på en plats där du vill placera en tracker
+onboarding-assign_trackers-unassign_all = Ta bort tilldelning av alla spårare
+# Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
+# $assigned (Number) - Trackers that have been assigned a body part
+# $trackers (Number) - Trackers connected to the server
+onboarding-assign_trackers-assigned =
+    { $trackers ->
+        [one] { $assigned } av 1 spårare tilldelad
+       *[other] { $assigned } av { $trackers } spårare tilldelade
+    }
 onboarding-assign_trackers-advanced = Visa avancerade tilldelar-positioner
 onboarding-assign_trackers-next = Jag har tilldelat alla trackers
 onboarding-assign_trackers-mirror_view = Spegla vy
@@ -1212,6 +1300,7 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Håll positioner tills 
 onboarding-automatic_mounting-put_trackers_on-title = Sätt på dig dina trackers
 onboarding-automatic_mounting-put_trackers_on-description = För att kalibrera monterings-riktningen, så kommer i att använda trackersen du precis tilldelade. Sätt på alla dina trackers, du kan se vilka som är vilka i figuren till höger.
 onboarding-automatic_mounting-put_trackers_on-next = Jag har på mig alla trackers
+onboarding-automatic_mounting-return-home = Klar
 
 ## Tracker manual proportions setupa
 
