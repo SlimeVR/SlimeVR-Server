@@ -17,16 +17,16 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 		// Clear the states of the `canDoXReset`s to false
 		is ResetsActions.ClearResets -> {
 			state.copy(
-				canDoYawReset = if (ResetType.Yaw in action.resetType) false else state.canDoYawReset,
-				canDoMountingReset = if (ResetType.Mounting in action.resetType) false else state.canDoMountingReset,
+				canDoYawReset = if (ResetType.YAW in action.resetType) false else state.canDoYawReset,
+				canDoMountingReset = if (ResetType.MOUNTING in action.resetType) false else state.canDoMountingReset,
 			)
 		}
 
 		// Whenever a reset is finished
 		is ResetsActions.EndReset -> {
-			if (action.resetType == ResetType.Full) {
+			if (action.resetType == ResetType.FULL) {
 				state.copy(canDoYawReset = true, canDoMountingReset = true, lastFullResetTime = System.nanoTime())
-			} else if (action.resetType == ResetType.Mounting) {
+			} else if (action.resetType == ResetType.MOUNTING) {
 				state.copy(config = state.config.copy(lastMountingMethod = MountingMethods.AUTOMATIC))
 			} else {
 				state.copy()
@@ -42,7 +42,7 @@ class ResetsMountingTimeoutBehaviour : ResetsBehaviour {
 			.distinctUntilChangedBy { it.lastFullResetTime }
 			.mapLatest {
 				delay(MOUNTING_RESET_TIMEOUT)
-				receiver.context.dispatch(ResetsActions.ClearResets(listOf(ResetType.Mounting)))
+				receiver.context.dispatch(ResetsActions.ClearResets(listOf(ResetType.MOUNTING)))
 			}
 			.launchIn(receiver.context.scope)
 	}

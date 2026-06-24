@@ -22,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.io.readByteArray
-import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 import java.security.MessageDigest
@@ -115,7 +114,7 @@ internal suspend fun uploadFirmware(
 
 suspend fun doOtaFlash(
 	deviceIp: String,
-	deviceId: DeviceId,
+	deviceId: UShort,
 	part: FirmwarePart,
 	server: VRServer,
 	onStatus: suspend (FirmwareUpdateStatus, Int) -> Unit,

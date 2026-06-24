@@ -23,8 +23,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
-import solarxr_protocol.datatypes.DeviceId
-import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.TrackingChecklistNeedCalibration
 import solarxr_protocol.rpc.TrackingChecklistPublicNetworks
@@ -49,8 +47,6 @@ private inline fun <C, reified S> allContextStates(
 private fun trackerStatesFlow(server: VRServer): Flow<List<TrackerState>> = allContextStates(server, { state -> state.trackers.values }) { tracker -> tracker.context.state }
 
 private fun deviceStatesFlow(server: VRServer): Flow<List<DeviceState>> = allContextStates(server, { state -> state.devices.values }) { device -> device.context.state }
-
-private fun trackerIdOf(tracker: TrackerState): TrackerId = TrackerId(trackerNum = tracker.id.toUByte(), deviceId = DeviceId(tracker.deviceId.toUByte()))
 
 class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
 	override fun observe(receiver: TrackingChecklist) {
@@ -82,7 +78,7 @@ class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehavio
 			ignorable = true,
 			extraData = if (!isAssigned) {
 				TrackingChecklistUnassignedHMD(
-					trackerId = hmdTracker?.let { tracker -> trackerIdOf(tracker) },
+					trackerId = hmdTracker?.id?.toUShort(),
 				)
 			} else {
 				null
@@ -111,7 +107,7 @@ class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklis
 			enabled = trackers.isNotEmpty(),
 			extraData = if (!uncalibratedTrackers.isEmpty()) {
 				TrackingChecklistNeedCalibration(
-					trackersId = uncalibratedTrackers.map { tracker -> trackerIdOf(tracker) },
+					trackersId = uncalibratedTrackers.map { tracker -> tracker.id.toUShort() },
 				)
 			} else {
 				null
@@ -138,7 +134,7 @@ class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingCheckli
 			enabled = trackers.isNotEmpty(),
 			extraData = if (errorTrackers.isNotEmpty()) {
 				TrackingChecklistTrackerError(
-					trackersId = errorTrackers.map { tracker -> trackerIdOf(tracker) },
+					trackersId = errorTrackers.map { tracker -> tracker.id.toUShort() },
 				)
 			} else {
 				null

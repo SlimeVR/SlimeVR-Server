@@ -20,7 +20,7 @@ class MagBehaviour(
 ) : SolarXRBridgeBehaviour {
 	private fun setUDPTrackerMag(trackerId: Int, deviceId: Int, enable: Boolean): Boolean {
 		val connection = appContext.udpServer.findConnectionForDevice(deviceId) ?: return false
-		val sensorId = connection.context.state.value.trackerIds.find { it.id == trackerId }?.trackerNum ?: return false
+		val sensorId = connection.context.state.value.trackerIds.find { it.trackerId == trackerId }?.sensorId ?: return false
 		connection.context.dispatch(
 			UDPConnectionActions.SetSensorConfig(
 				sensorId = sensorId,
@@ -50,8 +50,7 @@ class MagBehaviour(
 				return@on
 			}
 
-			val trackerNum = trackerId.trackerNum ?: return@on
-			val tracker = appContext.server.getTracker(trackerNum.toInt()) ?: return@on
+			val tracker = appContext.server.getTracker(trackerId.toInt()) ?: return@on
 			val trackerState = tracker.context.state.value
 			if (trackerState.magStatus == MagnetometerStatus.NOT_SUPPORTED) return@on
 
@@ -93,8 +92,7 @@ class MagBehaviour(
 				return@on
 			}
 
-			val trackerNum = trackerId.trackerNum ?: return@on
-			val trackerState = appContext.server.getTracker(trackerNum.toInt())?.context?.state?.value ?: return@on
+			val trackerState = appContext.server.getTracker(trackerId.toInt())?.context?.state?.value ?: return@on
 			receiver.sendRpc(
 				MagToggleResponse(
 					trackerId = trackerId,

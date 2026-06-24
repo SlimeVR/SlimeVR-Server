@@ -42,6 +42,10 @@ class VRServer(
 	fun nextHandle() = handleCounter.incrementAndFetch()
 	fun getTracker(id: Int) = context.state.value.trackers[id]
 	fun getDevice(id: Int) = context.state.value.devices[id]
+	fun getDeviceFromTrackerId(id: Int): Device? {
+		val deviceId = getTracker(id)?.context?.state?.value?.deviceId ?: return null
+		return getDevice(deviceId)
+	}
 
 	suspend fun sendSolarxrRpc(message: RpcMessage) = context.state.value.solarxr.values.forEach { it.sendRpc(message) }
 

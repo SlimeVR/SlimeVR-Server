@@ -79,7 +79,7 @@ class Device(
 				ping = null,
 				signalStrength = null,
 				status = TrackerStatus.DISCONNECTED,
-				mcuType = McuType.Other,
+				mcuType = McuType.UNKNOWN,
 				boardType = BoardType.UNKNOWN,
 				firmware = null,
 				packetsReceived = 0L,

@@ -17,8 +17,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import solarxr_protocol.datatypes.BodyPart
-import solarxr_protocol.datatypes.DeviceId
-import solarxr_protocol.datatypes.TrackerId
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.TapDetectionSetupNotification
 import kotlin.concurrent.atomics.AtomicInt
@@ -87,7 +85,8 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		resetTapDetection()
 
 		// If setupMode is true, double tap to assign
-		if (tapDetectionConfig.setupMode) {
+		// TODO setupMode
+		if (false) {
 			setupModeAssign = true
 			resetType = null
 			tapsNeeded = 2
@@ -111,19 +110,19 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 
 			// BodyParts above could be null
 			yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> {
-				resetType = ResetType.Yaw
+				resetType = ResetType.YAW
 				tapsNeeded = tapDetectionConfig.yawResetTaps
 				actionDelay = tapDetectionConfig.yawResetDelay
 			}
 
 			fullResetBodyPart if tapDetectionConfig.fullResetEnabled -> {
-				resetType = ResetType.Full
+				resetType = ResetType.FULL
 				tapsNeeded = tapDetectionConfig.fullResetTaps
 				actionDelay = tapDetectionConfig.fullResetDelay
 			}
 
 			mountingResetBodyPart if tapDetectionConfig.mountingResetEnabled -> {
-				resetType = ResetType.Mounting
+				resetType = ResetType.MOUNTING
 				tapsNeeded = tapDetectionConfig.mountingResetTaps
 				actionDelay = tapDetectionConfig.mountingResetDelay
 			}
@@ -178,9 +177,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 					// If it's in setup mode, tap to assign
 					if (setupModeAssign) {
 						receiver.appContext.server.sendSolarxrRpc(
-							TapDetectionSetupNotification(
-								TrackerId(DeviceId(currentTracker.deviceId.toUByte()), currentTracker.id.toUByte()),
-							),
+							TapDetectionSetupNotification(currentTracker.id.toUShort()),
 						)
 					}
 

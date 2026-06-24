@@ -3,13 +3,11 @@ package dev.slimevr.firmware
 import dev.slimevr.VRServer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withTimeoutOrNull
-import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.TrackerStatus
 
 private fun isOnlineStatus(status: TrackerStatus): Boolean = when (status) {
@@ -38,18 +36,16 @@ suspend fun waitForConnected(
 	macAddress: String,
 	timeoutMs: Long = 30_000,
 ): Boolean? = withTimeoutOrNull(timeoutMs) {
-	deviceStatusFlow(server) { _, deviceMac -> deviceMac?.uppercase() == macAddress }
-		.filter(::isOnlineStatus)
-		.first()
+    deviceStatusFlow(server) { _, deviceMac -> deviceMac?.uppercase() == macAddress }.first(::isOnlineStatus)
 	true
 }
 
 suspend fun waitForReconnected(
 	server: VRServer,
-	deviceId: DeviceId,
+	deviceId: UShort,
 	timeoutMs: Long = 60_000,
 ): Boolean? = withTimeoutOrNull(timeoutMs) {
-	val statuses = deviceStatusFlow(server) { id, _ -> id.toUByte() == deviceId.id }
+	val statuses = deviceStatusFlow(server) { id, _ -> id.toUShort() == deviceId }
 		.distinctUntilChanged()
 
 	if (isOnlineStatus(statuses.first())) {

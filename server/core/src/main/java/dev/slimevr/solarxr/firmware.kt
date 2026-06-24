@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import solarxr_protocol.datatypes.DeviceIdTable
+import solarxr_protocol.rpc.FirmwareDeviceIdTable
 import solarxr_protocol.rpc.FirmwareUpdateRequest
 import solarxr_protocol.rpc.FirmwareUpdateStatusResponse
 import solarxr_protocol.rpc.FirmwareUpdateStopQueuesRequest
@@ -47,7 +47,7 @@ class FirmwareBehaviour(private val server: VRServer, private val firmwareManage
 					firmwareManager.flash(
 						portLocation,
 						parts,
-						method.needmanualreboot == true,
+						method.needManualReboot == true,
 						method.ssid,
 						method.password,
 						server,
@@ -57,9 +57,9 @@ class FirmwareBehaviour(private val server: VRServer, private val firmwareManage
 				is OTAFirmwareUpdate -> {
 					val deviceId = method.deviceId ?: return@on
 					val part = method.firmwarePart ?: return@on
-					val device = server.getDevice(deviceId.id.toInt()) ?: return@on
+					val device = server.getDevice(deviceId.toInt()) ?: return@on
 					val deviceIp = device.context.state.value.address
-					firmwareManager.otaFlash(deviceIp, DeviceIdTable(id = deviceId), part, server)
+					firmwareManager.otaFlash(deviceIp, FirmwareDeviceIdTable(id = deviceId), part, server)
 				}
 
 				else -> return@on

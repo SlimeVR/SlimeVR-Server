@@ -151,7 +151,7 @@ data object Heartbeat : UDPPacket
 data class Handshake(
 	val boardType: BoardType = BoardType.UNKNOWN,
 	val imuType: Int = 0,
-	val mcuType: McuType = McuType.Other,
+	val mcuType: McuType = McuType.UNKNOWN,
 	val protocolVersion: Int = 0,
 	val firmware: String? = null,
 	val macString: String? = null,
@@ -166,7 +166,7 @@ data class Handshake(
 			if (remaining == 0L) return Handshake()
 			val b = if (remaining >= 4) BoardType.fromValue(readInt().toUShort()) ?: BoardType.UNKNOWN else BoardType.UNKNOWN
 			val i = if (remaining >= 4) readInt() else 0
-			val m = if (remaining >= 4) McuType.fromValue(readInt().toUShort()) ?: McuType.Other else McuType.Other
+			val m = if (remaining >= 4) McuType.fromValue(readInt().toUShort()) ?: McuType.UNKNOWN else McuType.UNKNOWN
 			if (remaining >= 12) {
 				readInt()
 				readInt()
@@ -296,7 +296,7 @@ data class ErrorPacket(override val sensorId: Int = 0, val errorNumber: Int = 0)
 data class SensorInfo(
 	override val sensorId: Int = 0,
 	val status: TrackerStatus = TrackerStatus.DISCONNECTED,
-	val imuType: ImuType = ImuType.Other,
+	val imuType: ImuType = ImuType.UNKNOWN,
 	val sensorConfig: SensorConfig? = null,
 	val hasCompletedRestCalibration: Boolean? = null,
 	val trackerPosition: Int? = null,
@@ -337,7 +337,7 @@ data class SensorInfo(
 		fun read(src: Source) = with(src) {
 			val id = readU8()
 			val stat = statusFromUDP(readUByte())
-			val imu = if (remaining > 0) ImuType.fromValue(readUByte().toUShort()) ?: ImuType.Other else ImuType.Other
+			val imu = if (remaining > 0) ImuType.fromValue(readUByte().toUShort()) ?: ImuType.UNKNOWN else ImuType.UNKNOWN
 			val conf = if (remaining >= 2) SensorConfig.fromUDP(readShort().toUShort()) else null
 			val calib = if (remaining > 0) readU8() != 0 else null
 			val pos = if (remaining > 0) readU8() else null
