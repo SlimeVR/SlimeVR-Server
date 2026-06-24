@@ -21,21 +21,22 @@ class TapDetectionBehaviour(
 			println(req.setupMode) // TODO
 		}
 
+		val oldConfig = settings.context.state.value.data.tapDetectionConfig
 		receiver.rpcDispatcher.on<ChangeTapDetectionSettingsRequest> { req ->
 			settings.context.dispatch(SettingsActions.Update { copy(tapDetectionConfig = TapDetectionConfig(
-				yawResetDelay = req.yawResetDelay ?: error("yawResetDelay should be set"),
-				fullResetDelay = req.fullResetDelay ?: error("fullResetDelay should be set"),
-				mountingResetDelay = req.mountingResetDelay ?: error("mountingResetDelay should be set"),
+				yawResetDelay = req.yawResetDelay ?: oldConfig.yawResetDelay,
+				fullResetDelay = req.fullResetDelay ?: oldConfig.fullResetDelay,
+				mountingResetDelay = req.mountingResetDelay ?: oldConfig.mountingResetDelay,
 				yawResetEnabled = req.yawResetEnabled == true,
 				fullResetEnabled = req.fullResetEnabled == true,
 				mountingResetEnabled = req.mountingResetEnabled == true,
-				yawResetTaps = req.yawResetTaps?.toInt() ?: error("yawResetTaps should be set"),
-				fullResetTaps = req.fullResetTaps?.toInt() ?: error("fullResetTaps should be set"),
-				mountingResetTaps = req.mountingResetTaps?.toInt() ?: error("mountingResetTaps should be set"),
-				yawResetBodyPart = req.yawResetTracker ?: error("yawResetTracker should be set"),
-				fullResetBodyPart = req.fullResetTracker ?: error("fullResetTracker should be set"),
-				mountingResetBodyPart = req.mountingResetTracker ?: error("mountingResetTracker should be set"),
-				numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: error("numberTrackersOverThreshold should be set"),
+				yawResetTaps = req.yawResetTaps?.toInt() ?: oldConfig.yawResetTaps,
+				fullResetTaps = req.fullResetTaps?.toInt() ?: oldConfig.fullResetTaps,
+				mountingResetTaps = req.mountingResetTaps?.toInt() ?: oldConfig.mountingResetTaps,
+				yawResetBodyPart = req.yawResetTracker ?: oldConfig.yawResetBodyPart,
+				fullResetBodyPart = req.fullResetTracker ?: oldConfig.fullResetBodyPart,
+				mountingResetBodyPart = req.mountingResetTracker ?: oldConfig.mountingResetBodyPart,
+				numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: oldConfig.numberTrackersOverThreshold,
 			))})
 		}
 	}

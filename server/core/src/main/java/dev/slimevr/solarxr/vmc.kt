@@ -15,14 +15,15 @@ class VmcBehaviour(
 			receiver.sendRpc(buildVmcOscSettings(vmcManager.context.state.value.config))
 		}
 
+		val oldConfig = vmcManager.context.state.value.config
 		receiver.rpcDispatcher.on<ChangeVMCOSCSettingsRequest> { req ->
 			vmcManager.context.dispatch(
 				VMCActions.UpdateConfig(
 					VMCConfig(
 						enabled = req.enabled == true,
-						portIn = req.portIn?.toInt() ?: error("portIn should be set"),
-						portOut = req.portOut?.toInt() ?: error("portOut should be set"),
-						address = req.address ?: error("address should be set"),
+						portIn = req.portIn?.toInt() ?: oldConfig.portIn,
+						portOut = req.portOut?.toInt() ?: oldConfig.portOut,
+						address = req.address ?: oldConfig.address,
 						mirrorTracking = req.mirrorTracking == true,
 						anchorAtHips = req.anchorHip == true,
 					),
