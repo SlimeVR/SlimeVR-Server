@@ -33,6 +33,10 @@ tips-failed_webgl = Misslyckades att initiera WebGL.
 
 ## Units
 
+unit-meter = Meter
+unit-foot = Fot
+unit-inch = Tum
+unit-cm = centimeter
 
 ## Body parts
 
@@ -94,6 +98,8 @@ board_type-UNKNOWN = Okänd
 board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Anpassat kretskort
 board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
 
 ## Proportions
 
