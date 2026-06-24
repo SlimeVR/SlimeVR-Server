@@ -186,8 +186,8 @@ function Row({
   const warning =
     !!highlightedTrackers?.trackers.find(
       (t) =>
-        t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
-        t?.trackerNum === tracker.trackerId?.trackerNum
+        t?.deviceId?.id === tracker.deviceId &&
+        t?.trackerNum === tracker.trackerId
     ) && highlightedTrackers.step;
 
   return (

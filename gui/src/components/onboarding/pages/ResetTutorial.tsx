@@ -200,7 +200,7 @@ export const RIGHT_LEG_PARTS = [
 ];
 
 export const RESET_TYPE_ORDER = [
-  ResetType.Yaw,
-  ResetType.Full,
-  ResetType.Mounting,
+  ResetType.YAW,
+  ResetType.FULL,
+  ResetType.MOUNTING,
 ];

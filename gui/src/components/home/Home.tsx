@@ -27,7 +27,7 @@ export function Home() {
 
   const sendToSettings = (tracker: TrackerDataT) => {
     navigate(
-      `/tracker/${tracker.trackerId?.trackerNum}/${tracker.trackerId?.deviceId?.id}`
+      `/tracker/${tracker.trackerId}/${tracker.deviceId}`
     );
   };
 
@@ -86,8 +86,8 @@ export function Home() {
                 warning={
                   !!highlightedTrackers?.trackers.find(
                     (t) =>
-                      t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
-                      t?.trackerNum === tracker.trackerId?.trackerNum
+                      t?.deviceId?.id === tracker.deviceId &&
+                      t?.trackerNum === tracker.trackerId
                   ) && highlightedTrackers.step
                 }
               />
@@ -128,8 +128,8 @@ export function Home() {
                     warning={
                       !!highlightedTrackers?.trackers.find(
                         (t) =>
-                          t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
-                          t?.trackerNum === tracker.trackerId?.trackerNum
+                          t?.deviceId?.id === tracker.deviceId &&
+                          t?.trackerNum === tracker.trackerId
                       ) && highlightedTrackers.step
                     }
                   />

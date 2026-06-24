@@ -234,10 +234,7 @@ function IMUVisualizerCanvas({
 export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
   const { l10n } = useLocalization();
   const [enabled, setEnabled] = useState(false);
-  const isExtension = useMemo(
-    () => (tracker.trackerId?.trackerNum ?? 0) > 0,
-    [tracker]
-  );
+  const isExtension = false // TODO Do we want to display extensions?
 
   useEffect(() => {
     const state = localStorage.getItem('modelPreview');

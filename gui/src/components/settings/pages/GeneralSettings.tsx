@@ -3,18 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
-  FilteringSettingsT,
   FilteringType,
-  LegTweaksSettingsT,
-  ModelRatiosT,
-  ModelSettingsT,
-  ModelTogglesT,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
   TapDetectionSettingsT,
-  HIDSettingsT,
-  VelocitySettingsT,
   BodyPart,
   OutputTrackersSettingT,
 } from 'solarxr-protocol';
@@ -54,19 +47,6 @@ import { TouchDoubleIcon } from '@/components/commons/icon/TouchDoubleIcon';
 import { MartialArtsIcon } from '@/components/commons/icon/MartialArtsIcon';
 
 export type SettingsForm = {
-  trackers: {
-    automaticTrackerToggle: boolean;
-    waist: boolean;
-    chest: boolean;
-    leftFoot: boolean;
-    rightFoot: boolean;
-    leftKnee: boolean;
-    rightKnee: boolean;
-    leftElbow: boolean;
-    rightElbow: boolean;
-    leftHand: boolean;
-    rightHand: boolean;
-  };
   filtering: {
     type: number;
     amount: number;
@@ -83,7 +63,7 @@ export type SettingsForm = {
     correctConstraints: boolean;
   };
   ratios: {
-    imputeSpineFromTopDown: number;
+    imputeSpineFromUpperLower: number;
     imputeSpineCurvature: number;
     interpHipLegs: number;
     interpKneeTrackerAnkle: number;
@@ -112,25 +92,9 @@ export type SettingsForm = {
   hidSettings: {
     trackersOverHID: boolean;
   };
-  velocitySettings: {
-    sendDerivedVelocity: boolean;
-  };
 };
 
 const defaultValues: SettingsForm = {
-  trackers: {
-    automaticTrackerToggle: true,
-    waist: false,
-    chest: false,
-    leftFoot: false,
-    rightFoot: false,
-    leftElbow: false,
-    rightElbow: false,
-    leftHand: false,
-    rightHand: false,
-    leftKnee: false,
-    rightKnee: false,
-  },
   toggles: {
     forceArmsFromHmd: false,
     floorClip: false,
@@ -143,7 +107,7 @@ const defaultValues: SettingsForm = {
     correctConstraints: true,
   },
   ratios: {
-    imputeSpineFromTopDown: 0.5,
+    imputeSpineFromUpperLower: 0.5,
     imputeSpineCurvature: 0.5,
     interpHipLegs: 0.25,
     interpKneeTrackerAnkle: 0.85,
@@ -169,7 +133,6 @@ const defaultValues: SettingsForm = {
   resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
   hidSettings: { trackersOverHID: false },
-  velocitySettings: { sendDerivedVelocity: false },
 };
 
 const settingsAtom = atom(new SettingsResponseT());
@@ -193,12 +156,6 @@ export function GeneralSettings() {
       value: String(value),
       label: l10n.getString(`body_part-${BodyPart[value]}`),
     }));
-  const blockHandsWarning = useRef(false);
-  // If not null, warning will be shown, and showHandsWarning will
-  // hold which hands should be toggled ([leftHand, rightHand])
-  const [showHandsWarning, setShowHandsWarning] = useState<
-    [boolean, boolean] | null
-  >(null);
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
@@ -219,67 +176,10 @@ export function GeneralSettings() {
       reValidateMode: 'onChange',
     });
 
-  const {
-    trackers: { automaticTrackerToggle },
-  } = watch();
+
 
   const onSubmit = (values: SettingsForm) => {
-    const settingsReq = new ChangeSettingsRequestT();
-
-    if (values.trackers) {
-      const outputTrackers = new OutputTrackersSettingT();
-
-      // The tracker is at the tail of the bone.
-      // Example, the waist tracker is at the tail of the hip bone so we use the hip BodyPart
-      const enabledBodyParts: [boolean, BodyPart][] = [
-        [values.trackers.waist, BodyPart.HIP],
-        [values.trackers.chest, BodyPart.CHEST],
-        [values.trackers.leftFoot, BodyPart.LEFT_FOOT],
-        [values.trackers.rightFoot, BodyPart.RIGHT_FOOT],
-        [values.trackers.leftKnee, BodyPart.LEFT_UPPER_LEG],
-        [values.trackers.rightKnee, BodyPart.RIGHT_UPPER_LEG],
-        [values.trackers.leftElbow, BodyPart.LEFT_UPPER_ARM],
-        [values.trackers.rightElbow, BodyPart.RIGHT_UPPER_ARM],
-        [values.trackers.leftHand, BodyPart.LEFT_HAND],
-        [values.trackers.rightHand, BodyPart.RIGHT_HAND],
-      ];
-      outputTrackers.trackers = enabledBodyParts
-        .filter(([enabled]) => enabled)
-        .map(([, part]) => part);
-
-      const leftHandEnabled = outputTrackers.trackers.includes(
-        BodyPart.LEFT_HAND
-      );
-      const rightHandEnabled = outputTrackers.trackers.includes(
-        BodyPart.RIGHT_HAND
-      );
-      if (
-        !blockHandsWarning.current &&
-        !showHandsWarning &&
-        !settings?.outputTrackers?.trackers.includes(BodyPart.LEFT_HAND) &&
-        !settings?.outputTrackers?.trackers.includes(BodyPart.RIGHT_HAND) &&
-        (leftHandEnabled || rightHandEnabled)
-      ) {
-        // We have just toggled on one of the hand trackers, show the user a warning
-        setShowHandsWarning([leftHandEnabled, rightHandEnabled]);
-        outputTrackers.trackers = outputTrackers.trackers.filter(
-          (tracker) =>
-            tracker != BodyPart.LEFT_HAND && tracker != BodyPart.RIGHT_HAND
-        );
-      } else if (
-        blockHandsWarning.current &&
-        !outputTrackers.trackers.includes(BodyPart.LEFT_HAND) &&
-        !outputTrackers.trackers.includes(BodyPart.RIGHT_HAND)
-      ) {
-        // Both hand trackers have just been disabled, make sure the warning shows up
-        // again next time the user toggles one back on
-        blockHandsWarning.current = false;
-      }
-
-      outputTrackers.automaticTrackerToggle =
-        values.trackers.automaticTrackerToggle;
-      settingsReq.outputTrackers = outputTrackers;
-    }
+    const req = new ChangeSettingsRequestT();
 
     const modelSettings = new ModelSettingsT();
 
@@ -299,8 +199,8 @@ export function GeneralSettings() {
 
     if (values.ratios) {
       const ratios = new ModelRatiosT();
-      ratios.imputeSpineFromTopDown =
-        values.ratios.imputeSpineFromTopDown || -1;
+      ratios.imputeSpineFromUpperLower =
+        values.ratios.imputeSpineFromUpperLower || -1;
       ratios.imputeSpineCurvature = values.ratios.imputeSpineCurvature || -1;
       ratios.interpHipLegs = values.ratios.interpHipLegs || -1;
       ratios.interpKneeTrackerAnkle =
@@ -315,7 +215,7 @@ export function GeneralSettings() {
       modelSettings.legTweaks = legTweaks;
     }
 
-    settingsReq.modelSettings = modelSettings;
+    req.modelSettings = modelSettings;
 
     const tapDetection = new TapDetectionSettingsT();
     tapDetection.fullResetDelay = values.tapDetection.fullResetDelay;
@@ -338,29 +238,29 @@ export function GeneralSettings() {
     tapDetection.numberTrackersOverThreshold =
       values.tapDetection.numberTrackersOverThreshold;
     tapDetection.setupMode = false;
-    settingsReq.tapDetectionSettings = tapDetection;
+    req.tapDetectionSettings = tapDetection;
 
     const filtering = new FilteringSettingsT();
     filtering.type = values.filtering.type;
     filtering.amount = values.filtering.amount;
-    settingsReq.filtering = filtering;
+    req.filtering = filtering;
 
-    settingsReq.stayAligned = serializeStayAlignedSettings(values.stayAligned);
+    req.stayAligned = serializeStayAlignedSettings(values.stayAligned);
 
     const hidSettings = new HIDSettingsT();
     hidSettings.trackersOverHid = values.hidSettings.trackersOverHID;
-    settingsReq.hidSettings = hidSettings;
+    req.hidSettings = hidSettings;
 
     const velocitySettings = new VelocitySettingsT();
     velocitySettings.sendDerivedVelocity =
       values.velocitySettings.sendDerivedVelocity;
-    settingsReq.velocitySettings = velocitySettings;
+    req.velocitySettings = velocitySettings;
 
     if (values.resetsSettings) {
-      settingsReq.resetsSettings = loadResetSettings(values.resetsSettings);
+      req.resetsSettings = loadResetSettings(values.resetsSettings);
     }
 
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsReq);
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
   };
 
   useEffect(() => {
@@ -1001,7 +901,7 @@ export function GeneralSettings() {
               <div className="grid md:grid-cols-2 flex-col gap-3 pt-2 pb-3">
                 <Radio
                   control={control}
-                  name="resetsSettings.armsMountingResetMode"
+                  name="resetsSettings.armsResetMode"
                   label={l10n.getString(
                     'settings-general-fk_settings-arm_fk-back'
                   )}
@@ -1012,7 +912,7 @@ export function GeneralSettings() {
                 />
                 <Radio
                   control={control}
-                  name="resetsSettings.armsMountingResetMode"
+                  name="resetsSettings.armsResetMode"
                   label={l10n.getString(
                     'settings-general-fk_settings-arm_fk-forward'
                   )}
@@ -1023,7 +923,7 @@ export function GeneralSettings() {
                 />
                 <Radio
                   control={control}
-                  name="resetsSettings.armsMountingResetMode"
+                  name="resetsSettings.armsResetMode"
                   label={l10n.getString(
                     'settings-general-fk_settings-arm_fk-tpose_up'
                   )}
@@ -1034,7 +934,7 @@ export function GeneralSettings() {
                 />
                 <Radio
                   control={control}
-                  name="resetsSettings.armsMountingResetMode"
+                  name="resetsSettings.armsResetMode"
                   label={l10n.getString(
                     'settings-general-fk_settings-arm_fk-tpose_down'
                   )}
@@ -1112,7 +1012,7 @@ export function GeneralSettings() {
                   <div className="grid sm:grid-cols-2 gap-3 pb-3">
                     <NumberSelector
                       control={control}
-                      name="ratios.imputeSpineFromTopDown"
+                      name="ratios.imputeSpineFromUpperLower"
                       label={l10n.getString(
                         'settings-general-fk_settings-skeleton_settings-impute_spine_from_top_down'
                       )}

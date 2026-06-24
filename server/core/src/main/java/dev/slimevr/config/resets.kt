@@ -1,7 +1,6 @@
 package dev.slimevr.config
 
 import kotlinx.serialization.Serializable
-import solarxr_protocol.rpc.ArmsMountingResetMode
 import solarxr_protocol.rpc.ArmsResetMode
 
 enum class MountingMethods(val id: Int) {

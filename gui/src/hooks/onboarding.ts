@@ -11,6 +11,7 @@ import { useLocation } from 'react-router-dom';
 import { useConfig } from './config';
 import { useWebsocketAPI } from './websocket-api';
 import {
+  ChangeResetsSettingsRequestT,
   ChangeSettingsRequestT,
   ModelSettingsT,
   ModelTogglesT,
@@ -108,7 +109,6 @@ export function useProvideOnboarding() {
   const onboardingEnded = () => {
     setConfig({ doneOnboarding: true });
     if (!settings?.modelSettings || !vrcOscSettings) return;
-    const req = new ChangeSettingsRequestT();
     const modelSettings = new ModelSettingsT();
 
     const mocap = usage === 'mocap' || usage === 'vtubing';
@@ -118,10 +118,9 @@ export function useProvideOnboarding() {
     modelSettings.toggles = toggles;
     req.modelSettings = modelSettings;
 
-    const resets = Object.assign(new ResetsSettingsT(), settings.resetsSettings);
-    resets.resetHmdPitch = mocapPos === 'forehead';
-    req.resetsSettings = resets;
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
+    const resetsReq = Object.assign(new ChangeResetsSettingsRequestT(), settings.resetsSettings); // TODO
+    resetsReq.resetHmdPitch = mocapPos === 'forehead';
+    sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsReq);
 
     const osc = Object.assign(new VRCOSCSettingsT(), vrcOscSettings);
     osc.enabled = vrcOsc ?? false;

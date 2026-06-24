@@ -99,8 +99,8 @@ export const trackerFromIdAtom = ({
         ({ tracker }) =>
           trackerNum &&
           deviceId &&
-          tracker?.trackerId?.trackerNum == trackerNum &&
-          tracker?.trackerId?.deviceId?.id == deviceId
+          tracker?.trackerId == trackerNum &&
+          tracker?.deviceId == deviceId
       )
     ),
     (a) => a,

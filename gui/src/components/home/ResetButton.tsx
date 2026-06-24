@@ -15,12 +15,12 @@ import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
 
 export function ResetButtonIcon(options: UseResetOptions) {
-  if (options.type === ResetType.Mounting && !options.group)
+  if (options.type === ResetType.MOUNTING && !options.group)
     options.group = 'default';
 
-  if (options.type === ResetType.Yaw) return <YawResetIcon width={18} />;
-  if (options.type === ResetType.Full) return <FullResetIcon width={18} />;
-  if (options.type === ResetType.Mounting) {
+  if (options.type === ResetType.YAW) return <YawResetIcon width={18} />;
+  if (options.type === ResetType.FULL) return <FullResetIcon width={18} />;
+  if (options.type === ResetType.MOUNTING) {
     if (options.group === 'default') return <SkiIcon />;
     if (options.group === 'feet') return <FootIcon />;
     if (options.group === 'fingers') return <FingersIcon width={16} />;
@@ -83,7 +83,7 @@ export function ResetButton({
           <div className="opacity-0 h-0">
             {children || <Localized id={name} />}
           </div>
-          {status !== 'counting' || options.type === ResetType.Yaw
+          {status !== 'counting' || options.type === ResetType.YAW
             ? children || <Localized id={name} />
             : String(timer)}
         </div>

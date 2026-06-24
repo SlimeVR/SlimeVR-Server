@@ -2,13 +2,13 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  ChangeSettingsRequestT,
+  ChangeVMCOSCSettingsRequestT,
+  ChangeVRMSettingsRequestT,
   RpcMessage,
-  SettingsRequestT,
-  SettingsResponseT,
-  OSCSettingsT,
-  VMCOSCSettingsT,
-  VRMSettingsT,
+  VMCOSCSettingsRequestT,
+  VMCOSCSettingsResponseT,
+  VRMSettingsRequestT,
+  VRMSettingsResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -23,34 +23,31 @@ import {
 } from '@/components/settings/SettingsPageLayout';
 import { error } from '@/utils/logging';
 import {
-  OSCSettings,
-  useOscSettingsValidator,
+  OSCPortsAddress,
+  useOscPortsAddressValidator,
 } from '@/hooks/osc-setting-validator';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { boolean, object } from 'yup';
 
 interface VMCSettingsForm {
-  vmc: {
-    oscSettings: OSCSettings;
-    anchorHip: boolean;
-    mirrorTracking: boolean;
-  };
+  enabled: boolean,
+  portsAddress: OSCPortsAddress,
+  anchorHip: boolean;
+  mirrorTracking: boolean;
 }
 
-const defaultValues = {
-  vmc: {
-    oscSettings: {
-      enabled: false,
-      portIn: 39540,
-      portOut: 39539,
-      address: '127.0.0.1',
-    },
-    anchorHip: true,
-    mirrorTracking: true,
+const defaultVMCSettings: VMCSettingsForm = {
+  enabled: false,
+  portsAddress: {
+    portIn: 39540,
+    portOut: 39539,
+    address: '127.0.0.1',
   },
+  anchorHip: true,
+  mirrorTracking: true,
 };
 
-export function VMCFileUpload() {
+export function VRMFileUpload() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { l10n } = useLocalization();
   const [modelName, setModelName] = useState<string | null>(null);
@@ -66,22 +63,20 @@ export function VMCFileUpload() {
   const vrmJson = watch('vrmJson');
 
   const updateVRMJson = async () => {
-    const req = new ChangeSettingsRequestT();
-    const vrm = new VRMSettingsT();
+    const req = new ChangeVRMSettingsRequestT();
     if (vrmJson !== undefined) {
       if (vrmJson.length > 0) {
         const file = await parseVRMFile(vrmJson[0]);
         if (file) {
-          vrm.vrmJson = file.json;
+          req.vrmJson = file.json;
           setModelName(file.name);
         }
       } else {
-        vrm.vrmJson = '';
+        req.vrmJson = '';
         setModelName(null);
       }
     }
-    req.vrm = vrm;
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
+    sendRPCPacket(RpcMessage.ChangeVRMSettingsRequest, req);
   };
 
   useEffect(() => {
@@ -89,11 +84,12 @@ export function VMCFileUpload() {
   }, [vrmJson]);
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+    sendRPCPacket(RpcMessage.VMCOSCSettingsRequest, new VMCOSCSettingsRequestT());
+    sendRPCPacket(RpcMessage.VRMSettingsRequest, new VRMSettingsRequestT());
   }, []);
 
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    const vrmJson = settings.vrm?.vrmJson?.toString();
+  useRPCPacket(RpcMessage.VRMSettingsResponse, (settings: VRMSettingsResponseT) => {
+    const vrmJson = settings.vrmJson?.toString();
     if (vrmJson) {
       let data: any;
       try {
@@ -114,7 +110,7 @@ export function VMCFileUpload() {
       }}
       value="help"
       importedFileName={
-        // if modelname is an empty string, it's an untitled model
+        // if modelName is an empty string, it's an untitled model
         modelName === ''
           ? l10n.getString('settings-osc-vmc-vrm-untitled_model')
           : modelName
@@ -128,39 +124,33 @@ export function VMCFileUpload() {
 export function VMCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { oscValidator } = useOscSettingsValidator();
+  const { oscValidator } = useOscPortsAddressValidator();
 
   const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
-    defaultValues,
+    defaultValues: defaultVMCSettings,
     reValidateMode: 'onChange',
     mode: 'onChange',
     resolver: yupResolver(
       object({
-        vmc: object({
-          oscSettings: oscValidator,
-          anchorHip: boolean().required(),
-          mirrorTracking: boolean().required(),
-        }),
+        enabled: boolean().required(),
+        portsAddress: oscValidator,
+        anchorHip: boolean().required(),
+        mirrorTracking: boolean().required(),
       })
     ),
   });
 
   const onSubmit = async (values: VMCSettingsForm) => {
-    const settings = new ChangeSettingsRequestT();
+    const req = new ChangeVMCOSCSettingsRequestT();
 
-    if (values.vmc) {
-      const vmcOsc = new VMCOSCSettingsT();
+    req.enabled = values.enabled
+    req.portIn = values.portsAddress.portIn
+    req.portOut = values.portsAddress.portOut
+    req.address = values.portsAddress.address
+    req.anchorHip = values.anchorHip;
+    req.mirrorTracking = values.mirrorTracking;
 
-      vmcOsc.oscSettings = Object.assign(
-        new OSCSettingsT(),
-        values.vmc.oscSettings
-      );
-      vmcOsc.anchorHip = values.vmc.anchorHip;
-      vmcOsc.mirrorTracking = values.vmc.mirrorTracking;
-
-      settings.vmcOsc = vmcOsc;
-    }
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
+    sendRPCPacket(RpcMessage.ChangeVMCOSCSettingsRequest, req);
   };
 
   useEffect(() => {
@@ -168,27 +158,19 @@ export function VMCSettings() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
-  }, []);
+  useRPCPacket(RpcMessage.VMCOSCSettingsResponse, (settings: VMCOSCSettingsResponseT) => {
+    const formData: VMCSettingsForm = defaultVMCSettings;
+    if (settings) {
+      formData.enabled = settings.enabled;
+      if (settings.portIn)
+        formData.portsAddress.portIn = settings.portIn;
+      if (settings.portOut)
+        formData.portsAddress.portOut = settings.portOut;
+      if (settings.address)
+        formData.portsAddress.address = settings.address.toString();
 
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    const formData: VMCSettingsForm = defaultValues;
-    if (settings.vmcOsc) {
-      if (settings.vmcOsc.oscSettings) {
-        formData.vmc.oscSettings.enabled = settings.vmcOsc.oscSettings.enabled;
-        if (settings.vmcOsc.oscSettings.portIn)
-          formData.vmc.oscSettings.portIn = settings.vmcOsc.oscSettings.portIn;
-        if (settings.vmcOsc.oscSettings.portOut)
-          formData.vmc.oscSettings.portOut =
-            settings.vmcOsc.oscSettings.portOut;
-        if (settings.vmcOsc.oscSettings.address)
-          formData.vmc.oscSettings.address =
-            settings.vmcOsc.oscSettings.address.toString();
-      }
-
-      formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
-      formData.vmc.mirrorTracking = settings.vmcOsc.mirrorTracking;
+      formData.anchorHip = settings.anchorHip;
+      formData.mirrorTracking = settings.mirrorTracking;
 
       reset(formData);
     }
@@ -225,7 +207,7 @@ export function VMCSettings() {
                 variant="toggle"
                 outlined
                 control={control}
-                name="vmc.oscSettings.enabled"
+                name="enabled"
                 label={l10n.getString('settings-osc-vmc-enable-label')}
               />
             </div>
@@ -250,7 +232,7 @@ export function VMCSettings() {
                 <Input
                   type="number"
                   control={control}
-                  name="vmc.oscSettings.portIn"
+                  name="portsAddress.portIn"
                   placeholder="9002"
                   label=""
                 />
@@ -262,7 +244,7 @@ export function VMCSettings() {
                 <Input
                   type="number"
                   control={control}
-                  name="vmc.oscSettings.portOut"
+                  name="portsAddress.portOut"
                   placeholder="9000"
                   label=""
                 />
@@ -280,7 +262,7 @@ export function VMCSettings() {
               <Input
                 type="text"
                 control={control}
-                name="vmc.oscSettings.address"
+                name="portsAddress.address"
                 placeholder={l10n.getString(
                   'settings-osc-vmc-network-address-placeholder'
                 )}
@@ -296,7 +278,7 @@ export function VMCSettings() {
               </Typography>
             </div>
             <div className="grid gap-3 pb-5">
-              <VMCFileUpload />
+              <VRMFileUpload />
             </div>
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-anchor_hip')}
@@ -311,7 +293,7 @@ export function VMCSettings() {
                 variant="toggle"
                 outlined
                 control={control}
-                name="vmc.anchorHip"
+                name="anchorHip"
                 label={l10n.getString('settings-osc-vmc-anchor_hip-label')}
               />
             </div>
@@ -328,7 +310,7 @@ export function VMCSettings() {
                 variant="toggle"
                 outlined
                 control={control}
-                name="vmc.mirrorTracking"
+                name="mirrorTracking"
                 label={l10n.getString('settings-osc-vmc-mirror_tracking-label')}
               />
             </div>

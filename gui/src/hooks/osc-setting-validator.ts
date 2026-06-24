@@ -1,14 +1,13 @@
 import { useLocalization } from '@fluent/react';
 import { number, object, boolean, string } from 'yup';
 
-export type OSCSettings = {
-  enabled: boolean;
+export type OSCPortsAddress = {
   portIn: number;
   portOut: number;
   address: string;
 };
 
-export function useOscSettingsValidator() {
+export function useOscPortsAddressValidator() {
   const bannedPorts = [6969, 21110];
   const { l10n } = useLocalization();
 
@@ -27,7 +26,6 @@ export function useOscSettingsValidator() {
     );
 
   const oscValidator = object({
-    enabled: boolean().required(),
     portIn: portValidator,
     portOut: portValidator,
     address: string()

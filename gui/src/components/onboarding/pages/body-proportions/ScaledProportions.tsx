@@ -7,14 +7,12 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useEffect, useState } from 'react';
 import {
   CancelUserHeightCalibrationT,
-  ChangeSettingsRequestT,
-  ModelSettingsT,
   ResetType,
   RpcMessage,
-  SkeletonConfigRequestT,
-  SkeletonConfigResponseT,
   SkeletonHeightT,
-  SkeletonResetAllRequestT,
+  SkeletonProportionsRequestT,
+  SkeletonProportionsResetAllRequestT,
+  SkeletonProportionsResponseT,
   StartUserHeightCalibrationT,
   UserHeightCalibrationStatus,
   UserHeightRecordingStatusResponseT,
@@ -265,7 +263,7 @@ export function ScaledProportionsPage() {
     );
   };
 
-  // Makes it so you dont get spammed by sounds if multiple status complete at once
+  // Makes it so you don't get spammed by sounds if multiple status complete at once
   useDebouncedEffect(
     () => {
       if (!config || !config.feedbackSound) return;
@@ -295,8 +293,8 @@ export function ScaledProportionsPage() {
     );
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
     sendRPCPacket(
-      RpcMessage.SkeletonResetAllRequest,
-      new SkeletonResetAllRequestT()
+      RpcMessage.SkeletonProportionsResetAllRequest,
+      new SkeletonProportionsResetAllRequestT()
     );
     setConfig({ lastUsedProportions: 'scaled' });
     setLastUsed('manual');
@@ -320,8 +318,8 @@ export function ScaledProportionsPage() {
   );
 
   useRPCPacket(
-    RpcMessage.SkeletonConfigResponse,
-    (res: SkeletonConfigResponseT) => {
+    RpcMessage.SkeletonProportionsResponse,
+    (res: SkeletonProportionsResponseT) => {
       setHmdHeight(res.userHeight);
     }
   );
@@ -336,8 +334,8 @@ export function ScaledProportionsPage() {
 
   useEffect(() => {
     sendRPCPacket(
-      RpcMessage.SkeletonConfigRequest,
-      new SkeletonConfigRequestT()
+      RpcMessage.SkeletonProportionsRequest,
+      new SkeletonProportionsRequestT()
     );
 
     return () => {
@@ -356,8 +354,8 @@ export function ScaledProportionsPage() {
           if (status && checkNotAuto(status.status)) {
             setAuto(false);
             sendRPCPacket(
-              RpcMessage.SkeletonConfigRequest,
-              new SkeletonConfigRequestT()
+              RpcMessage.SkeletonProportionsRequest,
+              new SkeletonProportionsRequestT()
             ); // Re ask the user height so it resets back to the correct value
           }
         },
@@ -469,7 +467,7 @@ export function ScaledProportionsPage() {
                   state={{ alonePage: state.alonePage }}
                 />
                 <ResetButton
-                  type={ResetType.Full}
+                  type={ResetType.FULL}
                   className="bg-background-50 hover:bg-background-40 text-background-10"
                 />
               </>

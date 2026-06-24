@@ -1,16 +1,14 @@
 import {
-  ChangeSettingsRequestT,
-  ResetsSettingsT,
+  ResetsSettingsResponseT,
   RpcMessage,
   SettingsResetRequestT,
-  SettingsResponseT,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from './websocket-api';
-import { useEffect, useState } from 'react';
+import {useWebsocketAPI} from './websocket-api';
+import {useEffect, useState} from 'react';
 
 export interface ResetSettingsForm {
   resetMountingFeet: boolean;
-  armsMountingResetMode: number;
+  armsResetMode: number;
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
   resetHmdPitch: boolean;
@@ -18,16 +16,16 @@ export interface ResetSettingsForm {
 
 export const defaultResetSettings = {
   resetMountingFeet: false,
-  armsMountingResetMode: 0,
+  armsResetMode: 0,
   yawResetSmoothTime: 0.0,
   saveMountingReset: false,
   resetHmdPitch: false,
 };
 
 export function loadResetSettings(resetSettingsForm: ResetSettingsForm) {
-  const resetsSettings = new ResetsSettingsT();
+  const resetsSettings = new ResetsSettingsResponseT();
   resetsSettings.resetMountingFeet = resetSettingsForm.resetMountingFeet;
-  resetsSettings.armsMountingResetMode = resetSettingsForm.armsMountingResetMode;
+  resetsSettings.armsResetMode = resetSettingsForm.armsResetMode;
   resetsSettings.yawResetSmoothTime = resetSettingsForm.yawResetSmoothTime;
   resetsSettings.saveMountingReset = resetSettingsForm.saveMountingReset;
   resetsSettings.resetHmdPitch = resetSettingsForm.resetHmdPitch;
@@ -40,19 +38,17 @@ export function useResetSettings() {
   const [settings, setSettings] = useState<ResetSettingsForm>(defaultResetSettings);
 
   useEffect(() =>
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsResetRequestT())
+    sendRPCPacket(RpcMessage.ResetsSettingsRequest, new SettingsResetRequestT())
   );
 
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    if (settings.resetsSettings) setSettings(settings.resetsSettings);
+  useRPCPacket(RpcMessage.ResetsSettingsResponse, (settings: ResetsSettingsResponseT) => {
+    if (settings) setSettings(settings);
   });
 
   return {
     update: (resetSettingsForm: Partial<ResetSettingsForm>) => {
-      const req = new ChangeSettingsRequestT();
-      const res = loadResetSettings({ ...settings, ...resetSettingsForm });
-      req.resetsSettings = res;
-      sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
+      const req = loadResetSettings({...settings, ...resetSettingsForm});
+      sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, req);
     },
   };
 }
