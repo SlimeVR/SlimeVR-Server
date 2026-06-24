@@ -5,8 +5,6 @@ import {
   DataFeedMessageHeaderT,
   MessageBundle,
   MessageBundleT,
-  PubSubHeaderT,
-  PubSubUnion,
   RpcMessage,
   RpcMessageHeaderT,
 } from 'solarxr-protocol';
@@ -24,22 +22,17 @@ export interface WebSocketApi {
   useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => void;
   sendRPCPacket: (type: RpcMessage, data: RPCPacketType) => void;
   sendDataFeedPacket: (type: DataFeedMessage, data: DataFeedPacketType) => void;
-  usePubSubPacket: <T>(type: PubSubUnion, callback: (packet: T) => void) => void;
-  sendPubSubPacket: (type: PubSubUnion, data: PubSubPacketType) => void;
 }
 
 export const WebSocketApiContext = createContext<WebSocketApi>(undefined as never);
 
 export type RPCPacketType = RpcMessageHeaderT['message'];
-export type PubSubPacketType = PubSubHeaderT['u'];
 export type DataFeedPacketType = DataFeedMessageHeaderT['message'];
-// export type OutboundPacketType = OutboundPacketT['packet'];
 
 export function useProvideWebsocketApi(): WebSocketApi {
   const rpcPacketCounterRef = useRef<number>(0);
   const webSocketRef = useRef<WebSocket | null>(null);
   const rpclistenerRef = useRef<EventTarget>(new EventTarget());
-  const pubsublistenerRef = useRef<EventTarget>(new EventTarget());
   const datafeedlistenerRef = useRef<EventTarget>(new EventTarget());
   const [isFirstConnection, setFirstConnection] = useState(true);
   const [timedOut, setTimedOut] = useState(false);
@@ -91,14 +84,6 @@ export function useProvideWebsocketApi(): WebSocketApi {
         })
       );
     });
-
-    message.pubSubMsgs.forEach((pubSubHeader) => {
-      pubsublistenerRef.current?.dispatchEvent(
-        new CustomEvent(PubSubUnion[pubSubHeader.uType], {
-          detail: pubSubHeader.u,
-        })
-      );
-    });
   };
 
   const sendRPCPacket = (type: RpcMessage, data: RPCPacketType): void => {
@@ -133,22 +118,6 @@ export function useProvideWebsocketApi(): WebSocketApi {
     datafeedHeader.message = data;
 
     message.dataFeedMsgs = [datafeedHeader];
-    fbb.finish(message.pack(fbb));
-
-    webSocketRef.current.send(fbb.asUint8Array());
-  };
-
-  const sendPubSubPacket = (type: PubSubUnion, data: PubSubPacketType): void => {
-    if (webSocketRef?.current?.readyState !== WebSocket.OPEN) return;
-    const fbb = new Builder(1);
-
-    const message = new MessageBundleT();
-
-    const pubSubHeader = new PubSubHeaderT();
-    pubSubHeader.uType = type;
-    pubSubHeader.u = data;
-
-    message.pubSubMsgs = [pubSubHeader];
     fbb.finish(message.pack(fbb));
 
     webSocketRef.current.send(fbb.asUint8Array());
@@ -222,20 +191,8 @@ export function useProvideWebsocketApi(): WebSocketApi {
         };
       }, [callback, type]);
     },
-    usePubSubPacket: <T>(type: PubSubUnion, callback: (packet: T) => void) => {
-      useEffect(() => {
-        const onEvent = (event: CustomEventInit) => {
-          callback(event.detail);
-        };
-        pubsublistenerRef.current.addEventListener(PubSubUnion[type], onEvent);
-        return () => {
-          pubsublistenerRef.current.removeEventListener(PubSubUnion[type], onEvent);
-        };
-      }, [callback, type]);
-    },
     sendRPCPacket,
     sendDataFeedPacket,
-    sendPubSubPacket,
   };
 }
 
