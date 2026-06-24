@@ -100,6 +100,26 @@ board_type-CUSTOM = Anpassat kretskort
 board_type-WROOM32 = WROOM32
 board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Handske
+board_type-GESTURES = Gester
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generisk nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -238,7 +258,13 @@ reset-reset_all_warning_default-v2 =
     Är du säker på att du vill göra detta?
 reset-full = Fullständig återställning
 reset-mounting = Återställning av montering
+reset-mounting-feet = Fot kallibration
+reset-mounting-fingers = Finger kallibrering
 reset-yaw = Återställning av gir
+reset-error-no_feet_tracker = Inga fot spårare tilldelade
+reset-error-no_fingers_tracker = Inga finger spårare tilldelade
+reset-error-mounting-need_full_reset = Det krävs en full omstart innan montering
+reset-error-yaw-need_full_reset = En fullständig återställning krävs innan giråterställning
 
 ## Serial detection stuff
 
@@ -258,11 +284,14 @@ navbar-trackers_assign = Tracker Uppgift
 navbar-mounting = Kalibrering av montering
 navbar-onboarding = Inställningsguide
 navbar-settings = Inställningar
+navbar-connect_trackers = Anslut spårare
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Spela in BVH-rekord
+bvh-stop_recording = Spara BVH inspelning
 bvh-recording = Inspelning...
+bvh-save_title = Spara BVH inspelning
 
 ## Tracking pause
 
@@ -326,6 +355,7 @@ tracker-table-column-name = Namn
 tracker-table-column-type = Typ
 tracker-table-column-battery = Batteri
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Paket förlust
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temperatur i Celsius:
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
@@ -367,6 +397,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Aktiverad
        *[NOT_SUPPORTED] Ej stödd
     }
+tracker-infos-packet_loss = Paket förlust
+tracker-infos-packets_lost = Paketer förlorade
+tracker-infos-packets_received = Paketer mottagna
 
 ## Tracker settings
 
@@ -397,10 +430,16 @@ tracker-settings-name_section-label = Sensorns namn
 tracker-settings-forget = Glöm spårning
 tracker-settings-forget-description = Tar bort trackern från SlimeVR-servern och förhindrar den från att ansluta till den tills servern startas om. Konfigurationen av trackern kommer inte att gå förlorad.
 tracker-settings-forget-label = Glöm spårning
+tracker-settings-update-unavailable-v2 = Inga releases hittades
+tracker-settings-update-incompatible = Kan inte uppdatera. Inkompatibel kort- eller firmwareversion
 tracker-settings-update-low-battery = Kan ej uppdatera. Batteriet är under 50%
 tracker-settings-update-up_to_date = Uppdaterad
+tracker-settings-update-blocked = Uppdatering ej tillgänglig. Inga andra utgåvor tillgängliga.
 tracker-settings-update = Uppdatera nu
 tracker-settings-update-title = Mjukvaroversion
+tracker-settings-current-version = Nuvarande
+tracker-settings-latest-version = Senaste
+tracker-settings-build-date = Byggdatum
 
 ## Tracker part card info
 
@@ -466,6 +505,7 @@ mounting_selection_menu-close = Stäng
 
 settings-sidebar-title = Inställningar
 settings-sidebar-general = Allmänt
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mekanik för spårning
 settings-sidebar-stay_aligned = Behåll inriktning
 settings-sidebar-fk_settings = Inställningar för spårning
@@ -473,9 +513,12 @@ settings-sidebar-gesture_control = Geststyrning
 settings-sidebar-interface = Gränssnitt
 settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = VRChat OSC spårare
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Verktyg
 settings-sidebar-serial = Seriell konsol
 settings-sidebar-appearance = Utseende
+settings-sidebar-home = Hemskärm
+settings-sidebar-checklist = Spårningschecklista
 settings-sidebar-notifications = Meddelanden
 settings-sidebar-behavior = Beteende
 settings-sidebar-firmware-tool = DIY Mjukvaroverktyg
@@ -528,9 +571,24 @@ settings-general-tracker_mechanics-filtering-type-prediction-description = Minsk
 settings-general-tracker_mechanics-filtering-amount = Belopp
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tid för utjämning av Yaw reset (0s avaktiverar utjämning)
 settings-general-tracker_mechanics-drift_compensation = Driftkompensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Kompenserar IMUs drift genom att tillämpa en invers rotation. 
+    Ändra kompensationsbeloppet och upp till hur många återställningar som ska beaktas.
+    Detta borde bara användas om du behöver återställa ofta!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Driftkompensation
 settings-general-tracker_mechanics-drift_compensation-prediction = Drift kompensations-förutsägelse.
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Förutsäger girningsdriftkompensation förbi tidigare uppmätt område.
+    Aktivera detta om dina trackers roterar kontinuerligt på giraxeln.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift kompensations-förutsägelse.
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>Varning:</b> Använd bara driftkompensering om du behöver återställa
+    väldigt ofta (varje 5-10 minuter).
+    
+    Vissa IMUer som är kända för att behöva återställning ofta är:
+    Joy-Cons, owoTrack, och MPUer (utan nyare mjukvara).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Avbryt
 settings-general-tracker_mechanics-drift_compensation_warning-done = Jag förstår
 settings-general-tracker_mechanics-drift_compensation-amount-label = Ersättningsbelopp
@@ -543,6 +601,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Använder magnetometers på alla sensorer som har en kompatibel mjukvara till det, minskar drift i magnetiskt stabila miljöer.
     Kan stängas av för individuella spårare i dess inställningar. <b> Var vänlig och stäng inte av någon av sensorerna när du växlar av och på denna funktionen.
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = använd magnetometer på sensorer.
+settings-general-tracker_mechanics-trackers_over_usb = Spårare över USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Möjliggör mottagning av HID-spårardata via USB. Se till att anslutna trackers har <b>anslutning över HID</b> aktiverat!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Tillåt HID spårare att ansluta direkt över USB
 settings-stay_aligned = Behåll inriktning
 settings-stay_aligned-description = Behåll inriktning minskar drift genom att gradvis justera dina sensorer för att matcha dina avslappnade positioner.
 settings-stay_aligned-setup-label = Ställ in Behåll inriktning
@@ -583,11 +644,17 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan m
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap försöker gissa rotationen på dina fötter om fotspårare inte används.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fotplatta roterar fötterna så att de är parallella med marken vid kontakt.
 settings-general-fk_settings-leg_fk = Spårning av ben
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Tvinga kalibrering av fötter under kalibrering av kroppsmontering.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Tvinga fot monteringskallibration
 settings-general-fk_settings-enforce_joint_constraints = Skelett-gränser
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Upprätthåll begränsningar
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Rätta med begränsningar
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Rätta leds-rotationer när de går förbi dess gränser
+settings-general-fk_settings-ik = Positionsdata
+settings-general-fk_settings-ik-use_position = Använd positionsdata
+settings-general-fk_settings-ik-use_position-description = Aktiverar användning av positionsdata från spårare som delar det. När du aktiverar detta se till att återställa och kalibrera om helt i spelet.
+settings-general-fk_settings-velocity_settings = Hastighetsinställningar
 settings-general-fk_settings-arm_fk = Spårning av arm
 settings-general-fk_settings-arm_fk-description = Tvinga armarna att spåras från headsetet (HMD) även om positionsdata för handen finns tillgänglig.
 settings-general-fk_settings-arm_fk-force_arms = Tvångsarmar från HMD
@@ -625,6 +692,20 @@ settings-general-fk_settings-self_localization-description = Mocap Mode gör att
 settings-general-gesture_control = Geststyrning
 settings-general-gesture_control-subtitle = Tap-baserade återställningar
 settings-general-gesture_control-description = Gör att återställningar kan utlösas genom att trycka på en tracker. Den tracker som sitter högst upp på din bål används för Yaw Reset, den tracker som sitter högst upp på ditt vänstra ben används för Full Reset och den tracker som sitter högst upp på ditt högra ben används för Mounting Reset. Taps måste ske inom tidsgränsen 0,3 sekunder gånger antalet taps som ska erkännas.
+# This is a unit: 3 taps, 2 taps, 1 tap
+# $amount (Number) - Amount of taps (touches to the tracker's case)
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] 1 Tryckning
+       *[other] { $amount } Tryckning
+    }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] 1 Tracker
+       *[other] { $amount } Trackers
+    }
 settings-general-gesture_control-yawResetEnabled = Aktivera återställning av tap till yaw
 settings-general-gesture_control-yawResetDelay = Fördröjning av återställning av yaw
 settings-general-gesture_control-yawResetTaps = Tryck för återställning av yaw
@@ -686,6 +767,12 @@ settings-general-interface-use_tray-label = Minimera till systemfältet
 settings-general-interface-discord_presence = Dela aktivitet på Discord
 settings-general-interface-discord_presence-description = Berättar för din Discord-klient att du använder SlimeVR tillsammans med antalet IMU-trackers du använder.
 settings-general-interface-discord_presence-label = Dela aktivitet på Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Slimar runt
+        [one] Använder 1 Tracker
+       *[other] Anväder { $amount } Trackers
+    }
 settings-interface-behavior-error_tracking = Error samling via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Tillåter du samlingen av anonym error-data?</h1>
@@ -694,6 +781,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     För att tillhandhålla den bästa användarupplevelsen, så samlar vi anonyma error-raporter, prestandamått och operativsystems-info. Detta hjälper oss upptäcka buggar och problem med Slimevr. Dessa rapporterna samlas via Sentry.io.
 settings-interface-behavior-error_tracking-label = Skicka errors till utväcklare
+settings-interface-behavior-bvh_directory = Katalog för att spara BVH inspelningar
+settings-interface-behavior-bvh_directory-description = Välj en katalog for att spara din BVH inspelning i stället för att behöva välja var du sparar de varje gång.
+settings-interface-behavior-bvh_directory-label = Katalog för BVH inspelning
 
 ## Serial settings
 
@@ -727,6 +817,12 @@ settings-osc-router-enable-label = Aktivera
 settings-osc-router-network = Nätverksportar
 # This cares about multilines
 settings-osc-router-network-description = Ställ in portarna för att lyssna och skicka data. Dessa kan vara desamma som andra portar som används i SlimeVR-servern.
+settings-osc-router-network-port_in =
+    .label = Port In
+    .placeholder = Port In (Normal 9002)
+settings-osc-router-network-port_out =
+    .label = Port Ut
+    .placeholder = Port Ut (Normal 9000)
 settings-osc-router-network-address = Nätverksadress
 settings-osc-router-network-address-description = Ange den adress som data ska skickas till.
 settings-osc-router-network-address-placeholder = IPV4-adress
@@ -734,6 +830,11 @@ settings-osc-router-network-address-placeholder = IPV4-adress
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC spårare
+# This cares about multilines
+settings-osc-vrchat-description-v1 =
+    Ändra inställningar som är specifika för OSC Trackers-standarden som används för att skicka 
+    spårningsdata till applikationer utan SteamVR (t.ex. Quest standalone). 
+    Se till att aktivera OSC i VRChat via Åtgärdsmenyn under OSC > Aktiverad.
 settings-osc-vrchat-enable = Aktivera
 settings-osc-vrchat-enable-description = Växla mellan sändning och mottagning av data.
 settings-osc-vrchat-enable-label = Aktivera
@@ -871,6 +972,18 @@ onboarding-reset_tutorial-0 =
     Tryck { $taps } gånger på den markerade trackern för att utlösa yaw reset.
     
     Detta gör att spårarna vänds i samma riktning som ditt headset (HMD).
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Tryck { $taps } gånger på den markerade trackern för att utlösa fullständig återställning. 
+    
+    Du måste stå upp för detta (i-pose). Det finns en fördröjning på 3 sekunder (konfigurerbar) innan det faktiskt händer. 
+    Detta återställer positionen och rotationen för alla dina trackers helt och hållet. Det bör åtgärda de flesta problem.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Tryck { $taps } gånger på den markerade trackern för att utlösa återställning av montering. 
+    
+    Återställning av montering hjälper till med hur trackers faktiskt sätts på dig, så om du av misstag flyttade dem och ändrade hur de är orienterade med en stor mängd kommer det här att hjälpa. 
+    Du måste vara i en pose som att du åker skidor som det visas i guiden för automatisk montering och du har en 3 sekunders fördröjning (konfigurerbar) innan den utlöses.
 
 ## Install info
 
@@ -931,6 +1044,7 @@ onboarding-connect_tracker-next = Jag har anslutit alla mina spårare
 
 onboarding-calibration_tutorial = Handledning för IMU-kalibrering
 onboarding-calibration_tutorial-subtitle = Detta kommer att bidra till att minska spårarens drift!
+onboarding-calibration_tutorial-description-v1 = Efter du slår på dina trackers, placera de på en stabil yta en kort stund för att tillåta kalibrering. Kalibrering kan utföras när som helst efter dina trackers är påslagna. — den här sidan är bara en handledning. Börja med att klicka på knappen "{ onboarding-calibration_tutorial-calibrate }" och <b>flytta sedan inte dina spårare!</b>
 onboarding-calibration_tutorial-calibrate = Jag placerade mina trackers på bordet
 onboarding-calibration_tutorial-status-waiting = Väntar på dig
 onboarding-calibration_tutorial-status-calibrating = Kalibrering
@@ -1122,9 +1236,27 @@ onboarding-automatic_proportions-manual = Manuella proportionern
 onboarding-automatic_proportions-prev_step = Föregående steg
 onboarding-automatic_proportions-put_trackers_on-title = Sätt på alla dina trackers
 onboarding-automatic_proportions-put_trackers_on-description = För att kalibrera proportionerna ska vi använda de trackers du just tilldelade. Sätt på dig alla dina trackers, du kan se vilka som är vilka i figuren till höger.
+onboarding-automatic_proportions-put_trackers_on-next = Jag har på mig alla spårare
+onboarding-automatic_proportions-requirements-title = Krav
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    Du har minst tillräckligt många trackers för att spåra dina fötter (vanligtvis 5 trackers). 
+    Du har dina trackers och ditt headset på dig och bär dem. 
+    Dina trackers och ditt headset är anslutna till SlimeVR-servern och fungerar korrekt (t.ex. inget stammar, kopplas bort, etc.). 
+    Ditt headset rapporterar positionsdata till SlimeVR-servern (detta innebär i allmänhet att du har SteamVR igång och är ansluten till SlimeVR med SlimeVR:s SteamVR-drivrutin). 
+    Din spårning fungerar och representerar dina rörelser korrekt (t.ex. du har utfört en fullständig återställning och de rör sig i rätt riktning när du sparkar, böjer dig, sitter, etc).
+onboarding-automatic_proportions-requirements-next = Jag har läst kraven
+onboarding-automatic_proportions-check_height-title-v3 = Mät ditt headsets höjd
+onboarding-automatic_proportions-check_height-description-v2 = Din headsethöjd (HMD) bör vara något lägre än din fulla längd eftersom headset mäter din ögonhöjd. Detta mått kommer att användas som en baslinje för dina kroppsproportioner.
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Börja mäta medan du står <u>upprätt</u> för att mäta din längd. Var försiktig så att du inte lyfter händerna högre än ditt headset, eftersom de kan påverka mätningen!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Om du använder ett fristående VR-headset, se till att ha din guardian /
     boundary aktiverad så att din höjd är korrekt!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Okänd
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height2 = Din headsethöjd är:
 onboarding-automatic_proportions-start_recording-description = Vi kommer nu att spela in några specifika poser och rörelser. Dessa kommer att visas på nästa skärm. Var redo att starta när du trycker på knappen!
 
 ## User height calibration
