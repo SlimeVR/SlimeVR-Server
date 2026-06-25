@@ -1000,6 +1000,7 @@ onboarding-quiz-mocap_preferences-head_tracker_location-face = Twarz
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back-v2 = Wróć
+onboarding-wifi_creds-v2 = Trackery korzystające z Wi-Fi
 onboarding-wifi_creds-skip = Pomiń ustawienia Wi-Fi
 onboarding-wifi_creds-submit = Potwierdź!
 onboarding-wifi_creds-ssid =
