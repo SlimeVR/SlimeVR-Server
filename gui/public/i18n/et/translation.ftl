@@ -9,12 +9,15 @@
 
 websocket-connecting = Serveriga ühendamine
 websocket-connection_lost = Ühendus serveriga on kaotatud. Ühenduse taastamine...
+websocket-timedout = Ei saanud ühendama serveriga
+websocket-error-close = Välju SlimeVR-ist
+websocket-error-logs = Ava logide kaust
 
 ## Update notification
 
 version_update-title = Uus versioon olemas: { $version }
 version_update-description = Vajutades "{ version_update-update }" tõmbab programm alla SlimeVR installeri.
-version_update-update = Värskenda
+version_update-update = Uuenda
 version_update-close = Sulge
 
 ## Tips
@@ -26,6 +29,10 @@ tips-tap_setup = Saate jälgija valimiseks menüüst valimise asemel aeglaselt o
 
 ## Units
 
+unit-meter = Meeter
+unit-foot = jalg
+unit-inch = Toll
+unit-cm = cm
 
 ## Body parts
 
@@ -53,6 +60,26 @@ body_part-LEFT_FOOT = Vasak jalg
 
 ## BoardType
 
+board_type-UNKNOWN = Tundmatu
+board_type-NODEMCU = NodeMCU
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = "Wrangler" Joyconid
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -107,6 +134,7 @@ navbar-trackers_assign = Jälgija Määramine
 navbar-mounting = Jälgijate Paigalduse Kalibreerimine
 navbar-onboarding = Häälestusviisard
 navbar-settings = Seaded
+navbar-connect_trackers = Ühendage Jälgijad
 
 ## Biovision hierarchy recording
 
@@ -198,6 +226,7 @@ tracker-infos-hardware_rev = Riistvara revisjon
 tracker-infos-hardware_identifier = Riistvara ID
 tracker-infos-imu = IMU sensor
 tracker-infos-board_type = Põhiplaat
+tracker-infos-network_version = Protokolli versioon
 
 ## Tracker settings
 
@@ -217,6 +246,7 @@ tracker-settings-drift_compensation_section-edit = Allow drift compensation
 tracker-settings-name_section = Jälgija Nimi
 tracker-settings-name_section-description = Anna talle armas hüüdnimi :)
 tracker-settings-name_section-placeholder = NightyBeast-i vasak käsi
+tracker-settings-name_section-label = Jälgija Nimi
 
 ## Tracker part card info
 
@@ -306,6 +336,11 @@ settings-general-steamvr-description =
     Kasulik teatud mängudele või äppidele, mis toetavad ainult teatuid jälgijaid.
 settings-general-steamvr-trackers-waist = Vöökoht
 settings-general-steamvr-trackers-chest = Rind
+settings-general-steamvr-trackers-left_elbow = Vasak küünarnukk
+settings-general-steamvr-trackers-right_elbow = Parem küünarnukk
+settings-general-steamvr-trackers-tracker_toggling = Automaatne jälgija määramine
+settings-general-steamvr-trackers-tracker_toggling-label = Automaatne jälgija määramine
+settings-general-steamvr-trackers-hands-warning-done = Jah
 
 ## Tracker mechanics
 
@@ -329,6 +364,7 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Compensates IMU yaw drift by applying an inverse rotation.
     Change amount of compensation and up to how many resets are taken into account.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation_warning-done = Ma mõistan
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
@@ -355,6 +391,9 @@ settings-general-fk_settings-leg_fk = Jalgade jälgimine
 settings-general-fk_settings-arm_fk = Käe jälgimine
 settings-general-fk_settings-arm_fk-description = Muuda viisi kuidas käsi jälgitakse.
 settings-general-fk_settings-arm_fk-force_arms = Sunni käed HMD-st
+settings-general-fk_settings-arm_fk-back = Tagasi
+settings-general-fk_settings-arm_fk-tpose_up = T-poos (üles)
+settings-general-fk_settings-arm_fk-tpose_down = T-poos (all)
 settings-general-fk_settings-skeleton_settings-toggles = Skeleti lülitid
 settings-general-fk_settings-skeleton_settings-description = Lülita skeletti seaded sisse või välja. Soovitatud on see sisse jätta.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Laiendatud selgroo mudel
@@ -410,6 +449,7 @@ settings-general-interface-dev_mode = Arendaja režiim
 settings-general-interface-dev_mode-description = See režiim on kasulik, kui on vaja põhjalike andmeid või või suhelda ühendatud jälgijatega kõrgemal tasemel.
 settings-general-interface-dev_mode-label = Arendaja režiim
 settings-general-interface-theme = Värviteema
+settings-general-interface-show-navbar-onboarding-label = Näita "{ navbar-onboarding }"
 settings-general-interface-lang = Vaikekeel
 settings-general-interface-lang-description = Muutke vaikekeelt, mida soovite kasutada.
 settings-general-interface-lang-placeholder = Vali keel, mida kasutada
@@ -455,6 +495,7 @@ settings-serial-factory_reset-warning-ok = Ma tean mida ma teen
 settings-serial-factory_reset-warning-cancel = Tühista
 settings-serial-serial_select = Valige jadaport
 settings-serial-auto_dropdown_item = Auto
+settings-serial-send_command-warning-ok = Ma tean mida ma teen
 
 ## OSC router settings
 
@@ -537,6 +578,12 @@ settings-osc-vmc-anchor_hip-label = Ankurda puusadel
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-reset = Lähtestada seaded
+settings-utils-advanced-open_data-v1 = Konfiguratsioonikaust
+settings-utils-advanced-open_data-description-v1 = Ava SlimeVR-i konfiguratsioonikaust failihalduris, mis sisaldavad konfiguratsiooni failid
+settings-utils-advanced-open_data-label = Ava kaust
+settings-utils-advanced-open_logs = Logide kaust
+settings-utils-advanced-open_logs-label = Ava kaust
 
 ## Home Screen
 
@@ -558,9 +605,13 @@ onboarding-setup_warning-cancel = Jätka seadistamist
 
 ## Quiz
 
+onboarding-quiz_continue = Jätka
+onboarding-quiz-more_sets_modal-confirm = Olen ühendanud kõik oma jälgijad
+onboarding-quiz-runtime-answer-standalone = Standalone
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-v2 = Jälgijad Wi-Fi kaudu
 onboarding-wifi_creds-skip = Jätke Wi-Fi seaded vahele.
 onboarding-wifi_creds-submit = Jätka!
 onboarding-wifi_creds-ssid =
@@ -569,6 +620,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-password =
     .label = Parool
     .placeholder = Sisesta parool
+onboarding-wifi_creds-dongle-continue = Jätka dongliga
 
 ## Mounting setup
 
@@ -671,6 +723,11 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = Kuva täpsemad määramiskohad
 onboarding-assign_trackers-next = Määrasin kõikide jälgijate asukohad
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
 
 ## Tracker assignment warnings
 
