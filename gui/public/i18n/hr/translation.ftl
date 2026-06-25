@@ -121,12 +121,26 @@ tracker-status-error = Greška
 tracker-status-disconnected = Odspojen
 tracker-status-occluded = Pokriveno
 tracker-status-ok = OK
+tracker-status-timed_out = Neuspješno spajanje
 
 ## Tracker status columns
 
+tracker-table-column-name = Ime
+tracker-table-column-type = Vrsta
+tracker-table-column-battery = Baterija
+tracker-table-column-ping = Ping
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Ubrzanje X/Y/Z
+tracker-table-column-rotation = Rotacija X/Y/Z
+tracker-table-column-position = Pozicija X/Y/Z
+tracker-table-column-url = URL
 
 ## Tracker rotation
 
+tracker-rotation-left = Lijevo
+tracker-rotation-right = Desno
+tracker-rotation-back = Nazad
 
 ## Tracker information
 
