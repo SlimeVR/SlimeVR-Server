@@ -333,12 +333,24 @@ tracker-rotation-front_left = Frente-Esquerda
 tracker-rotation-front_right = Frente-Direita
 tracker-rotation-left = Esquerda
 tracker-rotation-right = Direita
-tracker-rotation-back = Trás
+tracker-rotation-back = Atrás
 tracker-rotation-back_left = Atrás-Esquerda
 tracker-rotation-back_right = Atrás-Direita
+tracker-rotation-custom = Personalizado
+tracker-rotation-overriden = (substituído pela calibração de montagem)
 
 ## Tracker information
 
+tracker-infos-manufacturer = Fabricante
+tracker-infos-display_name = Nome de exibição
+tracker-infos-custom_name = Nome personalizado
+tracker-infos-url = URL do tracker
+tracker-infos-version = Versão do firmware
+tracker-infos-hardware_rev = Revisão do hardware
+tracker-infos-hardware_identifier = ID do hardware
+tracker-infos-data_support = Suporte de dados
+tracker-infos-imu = Sensor IMU
+tracker-infos-board_type = Placa principal
 
 ## Tracker settings
 
@@ -357,9 +369,42 @@ tracker-rotation-back_right = Atrás-Direita
 
 ## Sidebar settings
 
+settings-sidebar-stay_aligned = Continue alinhado
+settings-sidebar-fk_settings = Definições do rastreio
+settings-sidebar-gesture_control = Controlo de gestos
+settings-sidebar-interface = Interface
+settings-sidebar-osc_router = Router OSC
+settings-sidebar-osc_trackers = Trackers OSC do VRChat
+settings-sidebar-utils = Utilitários
+settings-sidebar-serial = Consola Serial
+settings-sidebar-appearance = Aparência
+settings-sidebar-notifications = Notificações
+settings-sidebar-behavior = Comportamento
+settings-sidebar-firmware-tool = Ferramenta de firmware DIY
+settings-sidebar-vrc_warnings = Avisos de configuração do VRChat
+settings-sidebar-advanced = Avançado
 
 ## SteamVR settings
 
+settings-general-steamvr = SteamVR
+settings-general-steamvr-subtitle = Trackers do SteamVR
+# Not all translation keys support multiline, only the ones that specify it will actually
+# split it in lines (that also means you can split in lines however you want in those).
+# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
+# This one is one of this cases that cares about multilines
+settings-general-steamvr-description =
+    Ative ou desative trackers específicos do SteamVR.
+    Útil para jogos ou aplicações que suportam apenas determinados trackers.
+settings-general-steamvr-trackers-waist = Cintura
+settings-general-steamvr-trackers-chest = Peito
+settings-general-steamvr-trackers-left_foot = Pé esquerdo
+settings-general-steamvr-trackers-right_foot = Pé direito
+settings-general-steamvr-trackers-left_knee = Joelho esquerdo
+settings-general-steamvr-trackers-right_knee = Joelho direito
+settings-general-steamvr-trackers-left_elbow = Cotovelo esquerdo
+settings-general-steamvr-trackers-right_elbow = Cotovelo direito
+settings-general-steamvr-trackers-left_hand = Mão esquerda
+settings-general-steamvr-trackers-right_hand = Mão Direita
 
 ## Tracker mechanics
 
