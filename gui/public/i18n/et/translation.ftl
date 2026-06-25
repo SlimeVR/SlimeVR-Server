@@ -628,8 +628,17 @@ onboarding-setup_warning-cancel = Jätka seadistamist
 
 onboarding-quiz_continue = Jätka
 onboarding-quiz_back = Tagasi
+onboarding-quiz-more_sets_modal-title = Kas olete kõik oma jälgijad ühendanud?
 onboarding-quiz-more_sets_modal-confirm = Olen ühendanud kõik oma jälgijad
+onboarding-quiz-more_sets_modal-cancel = Soovin ühendada rohkem jälgijaid
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 ja V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-põhine Slime
+onboarding-quiz-slimeset-answer-dongle = Dongli-põhine Slime
+onboarding-quiz-runtime-answer-steamvr = SteamVR
 onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-head_tracker-yes = Jah
+onboarding-quiz-mocap_preferences-head_tracker-no = Ei
 
 ## Wi-Fi setup
 
@@ -752,6 +761,14 @@ onboarding-assign_trackers-option-amount =
         [one] x{ $trackersCount }
        *[other] x{ $trackersCount }
     }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] All keha komplekt
+        [core] Baas komplekt
+        [enhanced-core] Täiustatud baas komplekt
+        [full-body] Täis keha komplekt
+       *[all] Kõik jälgijad
+    }
 
 ## Tracker assignment warnings
 
@@ -842,6 +859,7 @@ onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
 ## User height calibration
 
+onboarding-user_height-next_step = Jätka ja salvesta
 
 ## Stay Aligned setup
 
@@ -867,12 +885,15 @@ status_system-StatusTrackerError = Jälgijal { $trackerName } on tõrge.
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-not_selected = Allikat pole valitud
+firmware_tool-flashing_step-onboarding_continue = Jätka
 
 ## firmware tool build status
 
 
 ## Firmware update status
 
+firmware_update-status-ERROR_UNKNOWN = Tundmatu viga
 
 ## Dedicated Firmware Update Page
 
@@ -885,9 +906,15 @@ status_system-StatusTrackerError = Jälgijal { $trackerName } on tõrge.
 
 ## Unknown device modal
 
+unknown_device-modal-forget = Ignoreeri
+vrc_config-spine_mode-UNKNOWN = Tundmatu
+vrc_config-tracker_model-UNKNOWN = Tundmatu
+vrc_config-avatar_measurement_type-UNKNOWN = Tundmatu
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist-status-incomplete = Te ei ole valmis kasutama SlimeVR-i!
+tracking_checklist-ignore = Ignoreeri
