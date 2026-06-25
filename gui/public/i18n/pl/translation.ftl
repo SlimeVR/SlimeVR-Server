@@ -115,6 +115,10 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = Rękawica SlimeVR Dev IMU
+board_type-GESTURES = Gesty
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-SLIMEVR_BUTTERFLY_DEV = Deweloperski SlimeVR Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -349,6 +353,7 @@ tracker-table-column-name = Nazwa
 tracker-table-column-type = Typ
 tracker-table-column-battery = Bateria
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Utrata Pakietów
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Akceleracja X/Y/Z
@@ -390,6 +395,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Włączony
        *[NOT_SUPPORTED] Nieobsługiwane
     }
+tracker-infos-packet_loss = Utrata Pakietów
+tracker-infos-packets_lost = Utracone Pakiety
+tracker-infos-packets_received = Odebrane Pakiety
 
 ## Tracker settings
 
@@ -429,6 +437,7 @@ tracker-settings-update = Zaktualizuj teraz
 tracker-settings-update-title = Wersja oprogramowania
 tracker-settings-current-version = Aktualny
 tracker-settings-latest-version = Najnowszy
+tracker-settings-build-date = Data Kompilacji
 
 ## Tracker part card info
 
@@ -593,6 +602,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Wykorzystuje magnetometr we wszystkich trackerach, które mają kompatybilne oprogramowanie sprzętowe, redukując dryf w stabilnych środowiskach magnetycznych.¶
     Można wyłączyć dla każdego modułu śledzącego w ustawieniach modułu śledzącego. <b>Proszę nie wyłączać żadnego modułu śledzącego podczas przełączania!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Użyj magnetometru na trackerach
+settings-general-tracker_mechanics-trackers_over_usb = Trackery połączone przez USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Umożliwia odbiór danych z trackera HID przez USB. Upewnij się, że podłączone trackery mają <b>włączone połączenie przez HID</b> !
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Pozwól na bezpośrednie połączenie trackerów HID przez USB
 settings-stay_aligned = Wyrównywanie
 settings-stay_aligned-description = Wyrównywanie zmniejsza efekt driftu, stopniowo dostosowując trackery do twoich zrelaksowanych póz.
 settings-stay_aligned-setup-label = Konfiguracja Opcji Wyrównywania
@@ -798,6 +810,9 @@ settings-serial-factory_reset-warning-cancel = Anuluj
 settings-serial-serial_select = Wybierz port szeregowy
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skanuj sieci WiFi
+settings-serial-calibrate = Kalibruj
+settings-serial-six_side_calibrate = Kalibracja 6-stronna
+settings-serial-meow = Miau!
 settings-serial-file_type = Zwykły tekst
 settings-serial-save_logs = Zapisz do pliku
 settings-serial-send_command = Wyślij
@@ -962,9 +977,29 @@ onboarding-setup_warning-cancel = Kontynuuj konfigurację
 
 ## Quiz
 
+onboarding-quiz_continue = Kontynuuj
+onboarding-quiz_back = Wstecz
+onboarding-quiz-more_sets_modal-title = Czy podłączyłeś wszystkie swoje trackery?
+onboarding-quiz-more_sets_modal-desc = Jeśli masz zestawy różnych modeli, możemy je połączyć już teraz!
+onboarding-quiz-more_sets_modal-confirm = Połączyłem już wszystkie trackery
+onboarding-quiz-more_sets_modal-cancel = Chcę podłączyć więcej trackerów
+onboarding-quiz-slimeset-official-sets = Oficjalne trackery SlimeVR
+onboarding-quiz-slimeset-thirdparty-sets = Trackery firm trzecich lub samodzielnej produkcji.
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 i V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = Slime oparty na WiFi
+onboarding-quiz-slimeset-answer-dongle = Slime oparty na adapterze USB
+onboarding-quiz-usage-description = Jeśli planujesz używać SlimeVR do różnych celów, możesz później zmienić ustawienia.
+onboarding-quiz-usage-answer-VRC = Gry VR (np. VRChat)
+onboarding-quiz-mocap_preferences-head_tracker-yes = Tak
+onboarding-quiz-mocap_preferences-head_tracker-no = Nie
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Gdzie znajduje się twój tracker głowy?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Czoło
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Twarz
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Wróć
 onboarding-wifi_creds-skip = Pomiń ustawienia Wi-Fi
 onboarding-wifi_creds-submit = Potwierdź!
 onboarding-wifi_creds-ssid =
@@ -974,6 +1009,7 @@ onboarding-wifi_creds-ssid-required = Nazwa Wi-Fi jest wymagana
 onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
+onboarding-wifi_creds-dongle-continue = Kontynuuj z adapterem
 
 ## Mounting setup
 
@@ -1002,6 +1038,8 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Zamknij
+install-info_udev-rules_modal-dont-show-again_checkbox = Nie pokazuj ponownie
 
 ## Setup start
 
@@ -1352,6 +1390,7 @@ onboarding-user_height-description = Potrzebujemy twojego wzrostu, aby obliczyć
 onboarding-user_height-need_head_tracker = Do kalibracji wymaganę są gogle vr z kontrolerami.
 onboarding-user_height-calculate = Automatycznie oblicz mój wzrost
 onboarding-user_height-next_step = Kontynuuj i zapisz
+onboarding-user_height-prev_step = Wstecz
 onboarding-user_height-manual-proportions = Manualne Proporcje Ciała
 onboarding-user_height-calibration-title = Postęp kalibracji
 onboarding-user_height-calibration-RECORDING_FLOOR = Dotknij podłogi górną częścią kontrolera
@@ -1405,6 +1444,7 @@ onboarding-stay_aligned-previous_step = Poprzednie
 onboarding-stay_aligned-next_step = Następne
 onboarding-stay_aligned-restart = Restart
 onboarding-stay_aligned-done = Gotowy
+onboarding-stay_aligned-manual_mounting-done = Gotowe
 
 ## Home
 
@@ -1507,6 +1547,7 @@ firmware_tool-flashing_step-description = Twoje trackery migają. Postępuj zgod
 firmware_tool-flashing_step-warning-v2 = Nie odłączaj ani nie wyłączaj trackera podczas procesu przesyłania, chyba że zostaniesz o to poproszony, może to spowodować, że twoje urządzenie stanie się bezużyteczne.
 firmware_tool-flashing_step-flash_more = Flashuj więcej trackerów
 firmware_tool-flashing_step-exit = Wyjście
+firmware_tool-flashing_step-onboarding_continue = Kontynuuj
 
 ## firmware tool build status
 
@@ -1647,7 +1688,12 @@ tracking_checklist-FULL_RESET = Wykonaj pełny reset
 tracking_checklist-FULL_RESET-desc = Niektóre urządzenia wymagają resetu.
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR nie jest uruchomiony
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR nie jest uruchomiony. Czy twoje gogle są podłączone?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = Sterownik został zablokowany przez SteamVR z powodu wcześniejszej awarii SteamVR.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = Sterownik jest wyłączony w ustawieniach SteamVR.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = Sterownik nie jest zainstalowany.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Uruchom SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Włącz sterownik
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Wyłącz je
 tracking_checklist-TRACKERS_REST_CALIBRATION = Skalibruj swoje urządzenia
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Nie wykonałeś kalibracji urządzenia. Proszę, pozwól swoim urządzeniom (podświetlonym na żółto) odpocząć na stabilnej powierzchni przez kilka sekund.
 tracking_checklist-TRACKER_ERROR = Urządzenia z błędami
