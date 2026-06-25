@@ -57,6 +57,9 @@ body_part-LEFT_HAND = Mão esquerda
 body_part-LEFT_UPPER_LEG = Coxa esquerda
 body_part-LEFT_LOWER_LEG = Tornozelo esquerdo
 body_part-LEFT_FOOT = Pé esquerdo
+body_part-LEFT_THUMB_METACARPAL = Metacarpo do polegar esquerdo
+body_part-LEFT_THUMB_PROXIMAL = Proximal do polegar esquerdo
+body_part-LEFT_THUMB_DISTAL = Distal do polegar esquerdo
 
 ## BoardType
 
