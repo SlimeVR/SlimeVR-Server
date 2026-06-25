@@ -58,14 +58,93 @@ body_part-LEFT_UPPER_LEG = Coxa esquerda
 body_part-LEFT_LOWER_LEG = Tornozelo esquerdo
 body_part-LEFT_FOOT = Pé esquerdo
 body_part-LEFT_THUMB_METACARPAL = Metacarpo do polegar esquerdo
-body_part-LEFT_THUMB_PROXIMAL = Proximal do polegar esquerdo
-body_part-LEFT_THUMB_DISTAL = Distal do polegar esquerdo
+body_part-LEFT_THUMB_PROXIMAL = Polegar esquerdo proximal
+body_part-LEFT_THUMB_DISTAL = Polegar esquerdo distal
+body_part-LEFT_INDEX_PROXIMAL = Indicador esquerdo proximal
+body_part-LEFT_INDEX_INTERMEDIATE = Indicador esquerdo intermédio
+body_part-LEFT_INDEX_DISTAL = Indicador esquerdo distal
+body_part-LEFT_MIDDLE_PROXIMAL = Meio esquerdo proximal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Meio esquerdo intermédio
+body_part-LEFT_MIDDLE_DISTAL = Meio distal esquerdo
+body_part-LEFT_RING_PROXIMAL = Anelar esquerdo proximal
+body_part-LEFT_RING_INTERMEDIATE = Anelar esquerdo intermédio
+body_part-LEFT_RING_DISTAL = Anelar esquerdo distal
+body_part-LEFT_LITTLE_PROXIMAL = Mindinho esquerdo proximal
+body_part-LEFT_LITTLE_INTERMEDIATE = Mindinho esquerdo intermédio
+body_part-LEFT_LITTLE_DISTAL = Mindinho esquerdo distal
+body_part-RIGHT_THUMB_METACARPAL = Metacarpo do polegar direto
+body_part-RIGHT_THUMB_PROXIMAL = Polegar direito proximal
+body_part-RIGHT_THUMB_DISTAL = Polegar direito distal
+body_part-RIGHT_INDEX_PROXIMAL = Indicador direito proximal
+body_part-RIGHT_INDEX_INTERMEDIATE = Indicador direito intermédio
+body_part-RIGHT_INDEX_DISTAL = Indicador direito distal
+body_part-RIGHT_MIDDLE_PROXIMAL = Meio direito proximal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Meio direito intermédio
+body_part-RIGHT_MIDDLE_DISTAL = Meio direito distal
+body_part-RIGHT_RING_PROXIMAL = Anelar direito proximal
+body_part-RIGHT_RING_INTERMEDIATE = Anelar direito intermédio
+body_part-RIGHT_RING_DISTAL = Anelar direito distal
+body_part-RIGHT_LITTLE_PROXIMAL = Mindinho direito proximal
+body_part-RIGHT_LITTLE_INTERMEDIATE = Mindinho direito intermédio
+body_part-RIGHT_LITTLE_DISTAL = Mindinho direito distal
 
 ## BoardType
 
+board_type-UNKNOWN = Desconhecido
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Placa Personalizada
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = Luva SlimeVR Dev IMU
 
 ## Proportions
 
+skeleton_bone-NONE = Nenhum
+skeleton_bone-HEAD = Movimento da cabeça
+skeleton_bone-HEAD-desc =
+    Esta é a distância do seus óculos até ao meio da sua cabeça.
+    Para a ajustar, abane a cabeça da esquerda para a direita como se estivesse a discordar e modifique
+    até que qualquer movimento nos outros trackers seja insignificante.
+skeleton_bone-NECK = Comprimento do pescoço
+skeleton_bone-NECK-desc =
+    Esta é a distância do meio da sua cabeça até à base do pescoço.
+    Para a ajustar, mova a cabeça para cima e para baixo como se estivesse a concordar ou incline-a
+    para a esquerda e para a direita e modifique-a até que qualquer movimento nos outros trackers seja insignificante.
+skeleton_bone-torso_group = Comprimento do tronco
+skeleton_bone-torso_group-desc =
+    Esta é a distância da base do seu pescoço até às ancas.
+    Para a ajustar, fique de pé, direito, até que as suas ancas virtuais se alinhem
+    com as verdadeiras.
+skeleton_bone-UPPER_CHEST = Comprimento do peitoral superior
+skeleton_bone-UPPER_CHEST-desc =
+    Esta é a distância da base do seu pescoço até ao meio do peito.
+    Para a ajustar, ajuste o comprimento do seu tronco corretamente e modifique-o em várias posições
+    (sentado, curvado, deitado, etc.) até que a sua coluna virtual corresponda à verdadeira.
+skeleton_bone-CHEST_OFFSET = Compensação do peito
+skeleton_bone-arm_group = Comprimento do braço
+skeleton_bone-arm_group-desc =
+    Esta é a distância dos seus ombros aos seus pulsos.
+    Para a ajustar, ajuste a Distância dos Ombros corretamente, defina a Distância das Mãos Y
+    como 0 e modifique-a até que os trackers das mãos se alinhem com os seus pulsos.
+skeleton_bone-UPPER_ARM = Comprimento do braço
+skeleton_bone-UPPER_ARM-desc =
+    Esta é a distância dos seus ombros aos cotovelos.
+    Para a ajustar, ajuste o Comprimento do Braço corretamente e modifique-o até que
+    os trackers dos seus cotovelos alinhem-se com os seus cotovelos verdadeiros.
+skeleton_bone-LOWER_ARM = Comprimento do braço inferior
 
 ## Tracker reset buttons
 
