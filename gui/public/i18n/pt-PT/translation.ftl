@@ -134,6 +134,73 @@ skeleton_bone-UPPER_CHEST-desc =
     Para a ajustar, ajuste o comprimento do seu tronco corretamente e modifique-o em várias posições
     (sentado, curvado, deitado, etc.) até que a sua coluna virtual corresponda à verdadeira.
 skeleton_bone-CHEST_OFFSET = Compensação do peito
+skeleton_bone-CHEST_OFFSET-desc =
+    Isto pode ser ajustado para mover o tracker do peito virtual para cima ou para baixo, de forma a auxiliar
+    na calibração em determinados jogos ou aplicações que podem exigir que ele fique mais alto ou mais baixo.
+skeleton_bone-CHEST = Comprimento do peito
+skeleton_bone-CHEST-desc =
+    Esta é a distância do meio do seu peito ao meio da sua coluna.
+    Para a ajustar, ajuste o comprimento do seu tronco corretamente e modifique-o em várias posições
+    (sentado, curvado, deitado, etc.) até que a sua coluna virtual corresponda à verdadeira.
+skeleton_bone-WAIST = Comprimento da cintura
+skeleton_bone-WAIST-desc =
+    Esta é a distância do meio da sua coluna até ao umbigo.
+    Para a ajustar, ajuste o comprimento do seu tronco corretamente e modifique-o em várias posições
+    (sentado, curvado, deitado, etc.) até que a sua coluna virtual corresponda à verdadeira.
+skeleton_bone-HIP = Comprimento da anca
+skeleton_bone-HIP-desc =
+    Esta é a distância do seu umbigo até às ancas.
+    Para a ajustar, defina o comprimento do tronco corretamente e modifique-o em várias posições
+    (sentado, curvado, deitado, etc.) até que a sua coluna virtual corresponda à verdadeira.
+skeleton_bone-HIP_OFFSET = Compensação da anca
+skeleton_bone-HIP_OFFSET-desc =
+    Isto pode ser ajustado para mover o tracker virtual da anca para cima ou para baixo, de forma a auxiliar
+    na calibração em determinados jogos ou aplicações que exigem que fique à cintura.
+skeleton_bone-HIPS_WIDTH = Largura da anca
+skeleton_bone-HIPS_WIDTH-desc =
+    Esta é a distância entre o início das suas pernas.
+    Para a ajustar, faça uma reposição completa com as pernas esticadas e ajuste-a até que
+    as suas pernas virtuais coincidam com as verdadeiras horizontalmente.
+skeleton_bone-leg_group = Comprimento da perna
+skeleton_bone-leg_group-desc =
+    Esta é a distância da sua anca aos seus pés.
+    Para a ajustar, ajuste o Comprimento do Tronco corretamente e modifique-o
+    até que os seus pés virtuais estejam ao mesmo nível dos seus pés reais.
+skeleton_bone-UPPER_LEG = Comprimento da coxa
+skeleton_bone-UPPER_LEG-desc =
+    Esta é a distância das suas ancas aos joelhos.
+    Para a ajustar, ajuste o Comprimento das Pernas corretamente e modifique-o
+    até que os seus joelhos virtuais estejam ao mesmo nível dos joelhos verdadeiros.
+skeleton_bone-LOWER_LEG = Comprimento da perna
+skeleton_bone-LOWER_LEG-desc =
+    Esta é a distância dos seus joelhos aos tornozelos.
+    Para a ajustar, ajuste o Comprimento da Perna corretamente e modifique-o
+    até que os seus joelhos virtuais estejam ao mesmo nível dos seus joelhos verdadeiros.
+skeleton_bone-FOOT_LENGTH = Comprimento do pé
+skeleton_bone-FOOT_LENGTH-desc =
+    Esta é a distância dos seus tornozelos aos dedos dos pés.
+    Para a ajustar, coloque-se na ponta dos pés e ajuste-a até que os seus pés virtuais permaneçam no lugar.
+skeleton_bone-FOOT_SHIFT = Deslocamento do pé
+skeleton_bone-FOOT_SHIFT-desc =
+    Este valor é a distância horizontal do seu joelho até o seu tornozelo.
+    Ele leva em consideração que a parte inferior das pernas se projeta para trás quando você fica de pé.
+    Para o ajustar, defina o Comprimento do Pé como 0, execute "Redefinir Tudo" e ajuste até 
+    que seus pés virtuais se alinhem com o meio dos seus tornozelos.
+skeleton_bone-SKELETON_OFFSET = Compensação do esqueleto
+skeleton_bone-SKELETON_OFFSET-desc =
+    Isto pode ser ajustado para deslocar todos os seus trackers para a frente ou para trás.
+    Pode ser utilizado para auxiliar na calibração em determinados jogos ou aplicações
+    que podem exigir que os seus trackers estejam mais à frente.
+skeleton_bone-SHOULDERS_DISTANCE = Distância dos ombros
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    Esta é a distância vertical da base do seu pescoço até aos seus ombros.
+    Para a ajustar, defina o Comprimento do Braço para 0 e modifique-o até que os trackers virtuais do seu cotovelo
+    alinhem verticalmente com os seus ombros verdadeiros.
+skeleton_bone-SHOULDERS_WIDTH = Largura dos ombros
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    Esta é a distância horizontal da base do seu pescoço até aos seus ombros.
+    Para a ajustar, defina o Comprimento do Braço para 0 e modifique-o até que os trackers virtuais do seu cotovelo
+    alinhem horizontalmente com os seus ombros verdadeiros.
 skeleton_bone-arm_group = Comprimento do braço
 skeleton_bone-arm_group-desc =
     Esta é a distância dos seus ombros aos seus pulsos.
@@ -145,6 +212,11 @@ skeleton_bone-UPPER_ARM-desc =
     Para a ajustar, ajuste o Comprimento do Braço corretamente e modifique-o até que
     os trackers dos seus cotovelos alinhem-se com os seus cotovelos verdadeiros.
 skeleton_bone-LOWER_ARM = Comprimento do braço inferior
+skeleton_bone-LOWER_ARM-desc =
+    Esta é a distância dos seus cotovelos aos pulsos.
+    Para a ajustar, ajuste o Comprimento do Braço corretamente e modifique-o até que
+    os trackers dos seus cotovelos alinhem-se com os seus cotovelos verdadeiros.
+skeleton_bone-HAND_Y = Distância da mão Y
 
 ## Tracker reset buttons
 
