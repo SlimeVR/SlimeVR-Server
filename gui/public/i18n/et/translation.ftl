@@ -182,6 +182,7 @@ widget-developer_mode-more_info = Rohkem infot
 widget-imu_visualizer = Rotatsiooni
 widget-imu_visualizer-rotation_raw = Toores
 widget-imu_visualizer-rotation_preview = Eelvaade
+widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 
@@ -637,6 +638,8 @@ onboarding-quiz-slimeset-answer-wifi = WiFi-põhine Slime
 onboarding-quiz-slimeset-answer-dongle = Dongli-põhine Slime
 onboarding-quiz-runtime-answer-steamvr = SteamVR
 onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-playspace-sitting = Istumine
+onboarding-quiz-mocap_preferences-playspace-standing = Seismine
 onboarding-quiz-mocap_preferences-head_tracker-yes = Jah
 onboarding-quiz-mocap_preferences-head_tracker-no = Ei
 
@@ -768,6 +771,14 @@ onboarding-assign_trackers-option-label =
         [enhanced-core] Täiustatud baas komplekt
         [full-body] Täis keha komplekt
        *[all] Kõik jälgijad
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Miinimum VR Täiskeha träkkimiseks
+        [core] + Täiustatud selgroo jälitamine
+        [enhanced-core] + Jala pöörlemine
+        [full-body] + Küünarnukk jälitamine
+       *[all] Kõik saadaolevad jälgimisseadmed
     }
 
 ## Tracker assignment warnings
