@@ -46,6 +46,17 @@ body_part-RIGHT_HAND = Mão direita
 body_part-RIGHT_UPPER_LEG = Coxa direita
 body_part-RIGHT_LOWER_LEG = Tornozelo direito
 body_part-RIGHT_FOOT = Pé direito
+body_part-UPPER_CHEST = Peitoral superior
+body_part-CHEST = Peito
+body_part-WAIST = Cintura
+body_part-HIP = Anca
+body_part-LEFT_SHOULDER = Ombro esquerdo
+body_part-LEFT_UPPER_ARM = Braço esquerdo
+body_part-LEFT_LOWER_ARM = Antebraço esquerdo
+body_part-LEFT_HAND = Mão esquerda
+body_part-LEFT_UPPER_LEG = Coxa esquerda
+body_part-LEFT_LOWER_LEG = Tornozelo esquerdo
+body_part-LEFT_FOOT = Pé esquerdo
 
 ## BoardType
 
