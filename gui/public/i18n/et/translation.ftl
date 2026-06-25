@@ -26,6 +26,7 @@ tips-find_tracker = Ei ole kindel milline jälgija on mis? Raputage jälgijat, n
 tips-do_not_move_heels = Veenduge, et teie kannad ei liigu salvestamise ajal!
 tips-file_select = Pukseerige failid kasutamiseks, või <u>sirvi</u>.
 tips-tap_setup = Saate jälgija valimiseks menüüst valimise asemel aeglaselt oma jälgijat 2 korda puudutada.
+tips-turn_on_tracker = Kas kasutate ofitsiaalseid SlimeVR jälgijaid? Ärge unustage <b><em>käivitama oma jälgijat</em></b> pärast ühendamist arvutiga!
 
 ## Units
 
@@ -70,6 +71,7 @@ board_type-SLIMEVR = SlimeVR
 board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
 board_type-OWOTRACK = owoTrack
 board_type-WRANGLER = "Wrangler" Joyconid
 board_type-MOCOPI = Sony Mocopi
@@ -77,6 +79,7 @@ board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
 board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GESTURES = Žestid
 board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
 board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
@@ -114,6 +117,7 @@ skeleton_bone-ELBOW_OFFSET = Küünarnuki Nihe
 reset-reset_all = Lähtesta kõik proportsioonid
 reset-full = Lähtesta
 reset-mounting = Lähtesta Paigaldusasend
+reset-mounting-fingers = Sõrmede kalibreerimine
 reset-yaw = Lähtesta lengerdus
 
 ## Serial detection stuff
@@ -139,7 +143,9 @@ navbar-connect_trackers = Ühendage Jälgijad
 ## Biovision hierarchy recording
 
 bvh-start_recording = Salvesta BVH
+bvh-stop_recording = Salvesta BVH salvestus
 bvh-recording = Salvestamine...
+bvh-save_title = Salvesta BVH salvestus
 
 ## Tracking pause
 
@@ -179,6 +185,7 @@ widget-imu_visualizer-rotation_preview = Eelvaade
 
 ## Widget: Skeleton Visualizer
 
+widget-skeleton_visualizer-hide = Peida
 
 ## Tracker status
 
@@ -200,6 +207,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Pööre X/Y/Z
 tracker-table-column-position = Positsioon X/Y/Z
+tracker-table-column-stay_aligned = Stay Aligned
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -227,6 +235,7 @@ tracker-infos-hardware_identifier = Riistvara ID
 tracker-infos-imu = IMU sensor
 tracker-infos-board_type = Põhiplaat
 tracker-infos-network_version = Protokolli versioon
+tracker-infos-magnetometer = Magnetomeeter
 
 ## Tracker settings
 
@@ -245,7 +254,7 @@ tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jälgija Nimi
 tracker-settings-name_section-description = Anna talle armas hüüdnimi :)
-tracker-settings-name_section-placeholder = NightyBeast-i vasak käsi
+tracker-settings-name_section-placeholder = NightyBeasti vasak jalg
 tracker-settings-name_section-label = Jälgija Nimi
 
 ## Tracker part card info
@@ -312,15 +321,19 @@ mounting_selection_menu-close = Sulge
 
 settings-sidebar-title = Seaded
 settings-sidebar-general = Tavaline
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Jälgija mehaanika
-settings-sidebar-fk_settings = FK seaded
+settings-sidebar-stay_aligned = Stay Aligned
+settings-sidebar-fk_settings = Jälgija seaded
 settings-sidebar-gesture_control = Žesti juhtimine
 settings-sidebar-interface = Liides
 settings-sidebar-osc_router = OSC ruuter
 settings-sidebar-osc_trackers = VRChati OSC Jälgija
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Olemus / Lisad
 settings-sidebar-serial = Jadakonsool
 settings-sidebar-appearance = Välimus
+settings-sidebar-home = Avaleht
 settings-sidebar-notifications = Teavitused
 
 ## SteamVR settings
@@ -336,8 +349,14 @@ settings-general-steamvr-description =
     Kasulik teatud mängudele või äppidele, mis toetavad ainult teatuid jälgijaid.
 settings-general-steamvr-trackers-waist = Vöökoht
 settings-general-steamvr-trackers-chest = Rind
+settings-general-steamvr-trackers-left_foot = Vasak jalg
+settings-general-steamvr-trackers-right_foot = Parem jalg
+settings-general-steamvr-trackers-left_knee = Vasak põlv
+settings-general-steamvr-trackers-right_knee = Parem põlv
 settings-general-steamvr-trackers-left_elbow = Vasak küünarnukk
 settings-general-steamvr-trackers-right_elbow = Parem küünarnukk
+settings-general-steamvr-trackers-left_hand = Vasak käsi
+settings-general-steamvr-trackers-right_hand = Parem käsi
 settings-general-steamvr-trackers-tracker_toggling = Automaatne jälgija määramine
 settings-general-steamvr-trackers-tracker_toggling-label = Automaatne jälgija määramine
 settings-general-steamvr-trackers-hands-warning-done = Jah
@@ -367,6 +386,8 @@ settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift comp
 settings-general-tracker_mechanics-drift_compensation_warning-done = Ma mõistan
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+settings-stay_aligned = Stay Aligned
+settings-stay_aligned-setup-label = Seadista Stay Aligned
 
 ## FK/Tracking settings
 
@@ -606,6 +627,7 @@ onboarding-setup_warning-cancel = Jätka seadistamist
 ## Quiz
 
 onboarding-quiz_continue = Jätka
+onboarding-quiz_back = Tagasi
 onboarding-quiz-more_sets_modal-confirm = Olen ühendanud kõik oma jälgijad
 onboarding-quiz-runtime-answer-standalone = Standalone
 
@@ -620,6 +642,7 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-password =
     .label = Parool
     .placeholder = Sisesta parool
+onboarding-wifi_creds-dongle-title = Jälgijad dongli kaudu
 onboarding-wifi_creds-dongle-continue = Jätka dongliga
 
 ## Mounting setup
@@ -675,6 +698,7 @@ onboarding-connect_tracker-connection_status-looking_for_server = Serveri otsimi
 onboarding-connect_tracker-connection_status-connection_error = Wi-Fi-ga ei saa ühendust luua!
 onboarding-connect_tracker-connection_status-could_not_find_server = Serverit ei leitud
 onboarding-connect_tracker-connection_status-done = Ühendatud serveriga
+onboarding-connect_serial-error-modal-no_serial_device_found = Jälgijad ei ole leidnud
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
