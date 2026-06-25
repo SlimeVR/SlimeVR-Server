@@ -58,6 +58,22 @@ body_part-LEFT_FOOT = Lijevo stopalo
 
 ## Proportions
 
+skeleton_bone-HEAD = Pomak glave
+skeleton_bone-NECK = Duljina vrata
+skeleton_bone-torso_group = Duljina trupa
+skeleton_bone-UPPER_CHEST = Duljina gornjeg dijela prsa
+skeleton_bone-CHEST_OFFSET = Pomak prsa
+skeleton_bone-CHEST = Duljina prsa
+skeleton_bone-WAIST = Duljina struka
+skeleton_bone-HIP = Duljina boka
+skeleton_bone-HIP_OFFSET = Pomak boka
+skeleton_bone-HIPS_WIDTH = Širina bokova
+skeleton_bone-leg_group = Duljina nogu
+skeleton_bone-UPPER_LEG = Duljina natkoljenice
+skeleton_bone-LOWER_LEG = Duljina potkoljenice
+skeleton_bone-FOOT_LENGTH = Duljina stopala
+skeleton_bone-FOOT_SHIFT = Pomak stopala
+skeleton_bone-SKELETON_OFFSET = Pomak kostura
 
 ## Tracker reset buttons
 
@@ -88,12 +104,23 @@ body_part-LEFT_FOOT = Lijevo stopalo
 
 ## Widget: IMU Visualizer
 
+widget-imu_visualizer = Podatci praćenja
+widget-imu_visualizer-rotation_raw = Sirova rotacija
+widget-imu_visualizer-rotation_preview = Pretpregled rotacije
 
 ## Widget: Skeleton Visualizer
 
+widget-skeleton_visualizer-preview = Pretpregled kostura
+widget-skeleton_visualizer-hide = Sakri
 
 ## Tracker status
 
+tracker-status-none = Nema stanja
+tracker-status-busy = Zauzet
+tracker-status-error = Greška
+tracker-status-disconnected = Odspojen
+tracker-status-occluded = Pokriveno
+tracker-status-ok = OK
 
 ## Tracker status columns
 
