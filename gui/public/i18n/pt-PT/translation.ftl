@@ -217,15 +217,54 @@ skeleton_bone-LOWER_ARM-desc =
     Para a ajustar, ajuste o Comprimento do Braço corretamente e modifique-o até que
     os trackers dos seus cotovelos alinhem-se com os seus cotovelos verdadeiros.
 skeleton_bone-HAND_Y = Distância da mão Y
+skeleton_bone-HAND_Y-desc =
+    Esta é a distância vertical dos seus pulsos até ao meio da sua mão.
+    Para o ajustar para captura de movimento, ajuste o Comprimento do Braço corretamente e modifique-o até que os trackers da mão se alinhem verticalmente com o meio das suas mãos.
+    Para o ajustar para o rastreio do cotovelo a partir dos seus controlos, defina o Comprimento do Braço para 0 e modifique-o até que os trackers do cotovelo se alinhem verticalmente com os seus pulsos.
+skeleton_bone-HAND_Z = Distância da mão Z
+skeleton_bone-HAND_Z-desc =
+    Esta é a distância horizontal dos seus pulsos até o meio da sua mão.
+    Para a ajustar para captura de movimento, defina este valor como 0.
+    Para a ajustar para rastreamento de cotovelo a partir dos comandos, defina o Comprimento do Braço como 0 e
+    faça ajustes até que seus trackers dos cotovelos se alinhem horizontalmente com os seus pulsos.
+skeleton_bone-ELBOW_OFFSET = Compensação do cotovelo
+skeleton_bone-ELBOW_OFFSET-desc =
+    Isso pode ser ajustado para mover seus trackers de cotovelo virtuais para cima ou para baixo, 
+    a fim de ajudar a evitar que o VRChat vincule acidentalmente um tracker de cotovelo ao peito.
 
 ## Tracker reset buttons
 
+reset-reset_all = Repor todas a proporções
+reset-reset_all_warning-v2 =
+    <b>Aviso:</b> As suas proporções serão repostas para os padrões de acordo com a altura configurada.
+    Tem a certeza de que quer fazer isto?
+reset-reset_all_warning-reset = Repor proporções
+reset-reset_all_warning-cancel = Cancelar
+reset-reset_all_warning_default-v2 =
+    <b>Aviso:</b> A sua altura não foi configurada, as suas proporções serão repostas para a altura predefinida.
+    Tem a certeza de que quer fazer isto?
+reset-full = Repor tudo
+reset-mounting = Calibração de montagem
+reset-yaw = Reposição horizontal
 
 ## Serial detection stuff
 
+serial_detection-new_device-p0 = Novo dispositivo serial detetado!
+serial_detection-new_device-p1 = Insira as credenciais do seu Wi-Fi!
+serial_detection-new_device-p2 = Selecione o que pretende fazer com ele
+serial_detection-open_wifi = Ligar ao Wi-Fi
+serial_detection-open_serial = Abrir a Consola Serial
+serial_detection-submit = Submeter!
+serial_detection-close = Fechar
 
 ## Navigation bar
 
+navbar-home = Início
+navbar-body_proportions = Proporções do corpo
+navbar-trackers_assign = Atribuição do tracker
+navbar-mounting = Calibração de montagem
+navbar-onboarding = Assistente de configuração
+navbar-settings = Definições
 
 ## Biovision hierarchy recording
 
@@ -244,21 +283,59 @@ skeleton_bone-HAND_Y = Distância da mão Y
 
 ## Widget: Developer settings
 
+widget-developer_mode-raw_slime_rotation = Rotação bruta
+widget-developer_mode-more_info = Mais informação
 
 ## Widget: IMU Visualizer
 
+widget-imu_visualizer = Dados de rastreamento
+widget-imu_visualizer-preview = Pré-visualização
+widget-imu_visualizer-hide = Esconder
+widget-imu_visualizer-rotation_raw = Rotação bruta
+widget-imu_visualizer-rotation_preview = Prévisualizar rotação
+widget-imu_visualizer-acceleration = Aceleração
+widget-imu_visualizer-position = Posição
+widget-imu_visualizer-stay_aligned = Continue alinhado
 
 ## Widget: Skeleton Visualizer
 
+widget-skeleton_visualizer-preview = Visualização do esqueleto
+widget-skeleton_visualizer-hide = Esconder
 
 ## Tracker status
 
+tracker-status-none = Nenhum estado
+tracker-status-busy = Ocupado
+tracker-status-error = Erro
+tracker-status-disconnected = Desconectado
+tracker-status-occluded = Obstruído
+tracker-status-ok = OK
+tracker-status-timed_out = Tempo limite esgotado
 
 ## Tracker status columns
 
+tracker-table-column-name = Nome
+tracker-table-column-type = Tipo
+tracker-table-column-battery = Bateria
+tracker-table-column-ping = Latência
+tracker-table-column-tps = TPS
+tracker-table-column-temperature = Temp. °C
+tracker-table-column-linear-acceleration = Acel. X/Y/Z
+tracker-table-column-rotation = Rotação X/Y/Z
+tracker-table-column-position = Posição X/Y/Z
+tracker-table-column-stay_aligned = Continue alinhado
+tracker-table-column-url = URL
 
 ## Tracker rotation
 
+tracker-rotation-front = Frente
+tracker-rotation-front_left = Frente-Esquerda
+tracker-rotation-front_right = Frente-Direita
+tracker-rotation-left = Esquerda
+tracker-rotation-right = Direita
+tracker-rotation-back = Trás
+tracker-rotation-back_left = Atrás-Esquerda
+tracker-rotation-back_right = Atrás-Direita
 
 ## Tracker information
 
