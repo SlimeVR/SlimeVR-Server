@@ -10,7 +10,7 @@
 websocket-connecting = Verbinding maken met de server
 websocket-connection_lost = Verbinding met de server verbroken. Opniew verbinding maken...
 websocket-connection_lost-desc = Het ziet er naar uit dat de verbinding met de SlimeVR server is verbroken. Check het logboek en start het programma opnieuw.
-websocket-timedout = Kan niet verbinden met de server.
+websocket-timedout = Kan niet verbinden met de server
 websocket-timedout-desc = Het ziet er naar uit dat de SlimeVR server is gestopt. Check het logboek en start het programma opnieuw.
 websocket-error-close = SlimeVR afsluiten
 websocket-error-logs = Open het logboek.
@@ -257,11 +257,11 @@ reset-full = Volledige reset
 reset-mounting = Reset montage
 reset-mounting-feet = Reset voetmontage
 reset-mounting-fingers = Reset vingermontage
-reset-yaw = Horizontale Reset
+reset-yaw = Yaw Reset
 reset-error-no_feet_tracker = Geen voet-tracker toegewezen
 reset-error-no_fingers_tracker = Geen vingertracker toegewezen
 reset-error-mounting-need_full_reset = Je hebt een volledige reset nodig voordat je een montagekalibratie kunt uitvoeren.
-reset-error-yaw-need_full_reset = Je hebt een volledige reset nodig voordat je een horizontale reset kunt uitvoeren.
+reset-error-yaw-need_full_reset = Je hebt een volledige reset nodig voordat je een yaw reset kunt uitvoeren.
 
 ## Serial detection stuff
 
@@ -565,18 +565,18 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Maakt 
 settings-general-tracker_mechanics-filtering-type-prediction = Voorspelling
 settings-general-tracker_mechanics-filtering-type-prediction-description = Verlaagt latentie en maakt bewegingen snappier, maar kan jitter verhogen.
 settings-general-tracker_mechanics-filtering-amount = Hoeveelheid
-settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontale reset vertraging (0s schakelt smoothing uit)
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset vertraging (0s schakelt smoothing uit)
 settings-general-tracker_mechanics-drift_compensation = Drift compensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compenseert voor IMU horizontale drift door de toevoeging van een omgekeerde rotatie.
+    Compenseert voor IMU yaw drift door de toevoeging van een omgekeerde rotatie.
     Veranderd de sterkte van de compensatie en de hoeveelheid resets die worden gebruikt.
     Dit is enkel nodig indien je heel vaak moet resetten!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensate
 settings-general-tracker_mechanics-drift_compensation-prediction = Voorspelling van driftcompensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    Voorspelt compensatie van horizontale drift buiten het eerder gemeten bereik.
+    Voorspelt compensatie van yaw drift buiten het eerder gemeten bereik.
     Schakel dit in als jouw trackers continu om de horizontale as draaien.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Voorspelling van driftcompensatie
 settings-general-tracker_mechanics-drift_compensation_warning =
@@ -706,9 +706,9 @@ settings-general-gesture_control-trackers =
         [one] één
        *[other] anders
     }
-settings-general-gesture_control-yawResetEnabled = Activeer tikken voor horizontale reset
-settings-general-gesture_control-yawResetDelay = Vertraging horizontale reset
-settings-general-gesture_control-yawResetTaps = Hoeveelheid tikken voor horizontale reset
+settings-general-gesture_control-yawResetEnabled = Activeer tikken voor yaw reset
+settings-general-gesture_control-yawResetDelay = Vertraging yaw reset
+settings-general-gesture_control-yawResetTaps = Hoeveelheid tikken voor yaw reset
 settings-general-gesture_control-yawResetTracker = Yaw Reset Tracker
 settings-general-gesture_control-fullResetEnabled = Activeer tikken voor volledige reset
 settings-general-gesture_control-fullResetDelay = Vertraging volledige reset
@@ -717,6 +717,7 @@ settings-general-gesture_control-fullResetTracker = Volledige resettracker
 settings-general-gesture_control-mountingResetEnabled = Activeer tikken voor montage-kalibratie
 settings-general-gesture_control-mountingResetDelay = Vertraging montage-kalibratie
 settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor montage-kalibratie
+settings-general-gesture_control-mountingResetTracker = Montage resettracker
 settings-general-gesture_control-yawResetTracker-title = Yaw Reset Tracker
 settings-general-gesture_control-fullResetTracker-title = Volledige resettracker
 # The number of trackers that can have higher acceleration before a tap is rejected
@@ -981,6 +982,7 @@ onboarding-setup_warning-cancel = Doorgaan met setupgids
 onboarding-quiz_continue = Doorgaan
 onboarding-quiz_back = Terug
 onboarding-quiz-more_sets_modal-title = Heb je al je trackers verbonden?
+onboarding-quiz-more_sets_modal-desc = Als je sets van verschillende modellen hebt, kunnen we ze nu meteen verbinden!
 onboarding-quiz-more_sets_modal-confirm = Ik heb al mijn trackers verbonden
 onboarding-quiz-more_sets_modal-cancel = Ik wil meer trackers verbinden
 onboarding-quiz-slimeset-title = Wat voor soort trackers verbind je?
@@ -1005,6 +1007,8 @@ onboarding-quiz-mocap_preferences-playspace-desc = Als je staat, probeert SlimeV
 onboarding-quiz-mocap_preferences-playspace-sitting = Zitten
 onboarding-quiz-mocap_preferences-playspace-standing = Staan
 onboarding-quiz-mocap_preferences-vrm_model-title = (Optioneel) Heb je een VRM-model?
+onboarding-quiz-mocap_preferences-vrm_model-desc = Het laden van een VRM-model verbetert de tracking quality en compatibiliteit met applicaties die VMC gebruiken.
+onboarding-quiz-mocap_preferences-head_tracker-title = Draag je een tracker of VR-headset op je hoofd?
 onboarding-quiz-mocap_preferences-head_tracker-yes = Ja
 onboarding-quiz-mocap_preferences-head_tracker-no = Nee
 onboarding-quiz-mocap_preferences-head_tracker_location-title = Waar bevindt je hoofdtracker?
@@ -1062,6 +1066,8 @@ onboarding-reset_tutorial-2 =
 
 ## Install info
 
+install-info_udev-rules_modal_title = Hardware udev toegangsregels niet gevonden
+install-info_udev-rules_warning = Toegangsregels via udev zijn vereist voor seriële console-toegang en dongleverbinding. Plak het volgende commando in je terminal om de udev-regels toe te voegen.
 install-info_udev-rules_modal_button = Sluiten
 install-info_udev-rules_modal-dont-show-again_checkbox = Niet opnieuw tonen
 
