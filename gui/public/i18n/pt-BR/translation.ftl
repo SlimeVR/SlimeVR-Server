@@ -813,6 +813,7 @@ settings-serial-factory_reset-warning-cancel = Cancelar
 settings-serial-serial_select = Selecione uma porta serial
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Obter varredura WiFi
+settings-serial-meow = Miau!
 settings-serial-file_type = Texto simples
 settings-serial-save_logs = Salvar em arquivo
 settings-serial-send_command = Enviar
