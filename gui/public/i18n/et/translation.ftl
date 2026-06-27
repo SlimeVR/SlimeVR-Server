@@ -9,12 +9,15 @@
 
 websocket-connecting = Serveriga ühendamine
 websocket-connection_lost = Ühendus serveriga on kaotatud. Ühenduse taastamine...
+websocket-timedout = Ei saanud ühendama serveriga
+websocket-error-close = Välju SlimeVR-ist
+websocket-error-logs = Ava logide kaust
 
 ## Update notification
 
 version_update-title = Uus versioon olemas: { $version }
 version_update-description = Vajutades "{ version_update-update }" tõmbab programm alla SlimeVR installeri.
-version_update-update = Värskenda
+version_update-update = Uuenda
 version_update-close = Sulge
 
 ## Tips
@@ -23,9 +26,14 @@ tips-find_tracker = Ei ole kindel milline jälgija on mis? Raputage jälgijat, n
 tips-do_not_move_heels = Veenduge, et teie kannad ei liigu salvestamise ajal!
 tips-file_select = Pukseerige failid kasutamiseks, või <u>sirvi</u>.
 tips-tap_setup = Saate jälgija valimiseks menüüst valimise asemel aeglaselt oma jälgijat 2 korda puudutada.
+tips-turn_on_tracker = Kas kasutate ofitsiaalseid SlimeVR jälgijaid? Ärge unustage <b><em>käivitama oma jälgijat</em></b> pärast ühendamist arvutiga!
 
 ## Units
 
+unit-meter = Meeter
+unit-foot = jalg
+unit-inch = Toll
+unit-cm = cm
 
 ## Body parts
 
@@ -50,9 +58,61 @@ body_part-LEFT_HAND = Vasak käsi
 body_part-LEFT_UPPER_LEG = Vasak reis
 body_part-LEFT_LOWER_LEG = Vasak säär
 body_part-LEFT_FOOT = Vasak jalg
+body_part-LEFT_THUMB_METACARPAL = Vasak pöial (metakarpaal)
+body_part-LEFT_THUMB_PROXIMAL = Vasak pöial (proksimaal)
+body_part-LEFT_THUMB_DISTAL = Vasak pöial (distaal)
+body_part-LEFT_INDEX_PROXIMAL = Vasak nimetissõrm (proksimaal)
+body_part-LEFT_INDEX_INTERMEDIATE = Vasak nimetissõrm (vahefaalanks)
+body_part-LEFT_INDEX_DISTAL = Vasak nimetissõrm (distaal)
+body_part-LEFT_MIDDLE_PROXIMAL = Vasak kesksõrm (proksimaal)
+body_part-LEFT_MIDDLE_INTERMEDIATE = Vasak kesksõrm (vahefaalanks)
+body_part-LEFT_MIDDLE_DISTAL = Vasak kesksõrm (distaal)
+body_part-LEFT_RING_PROXIMAL = Vasak nimeta sõrm (proksimaal)
+body_part-LEFT_RING_INTERMEDIATE = Vasak nimeta sõrm (vahefaalanks)
+body_part-LEFT_RING_DISTAL = Vasak nimeta sõrm (distaal)
+body_part-LEFT_LITTLE_PROXIMAL = Vasak väike sõrm (proksimaal)
+body_part-LEFT_LITTLE_INTERMEDIATE = Vasak väike sõrm (vahefaalanks)
+body_part-LEFT_LITTLE_DISTAL = Vasak väike sõrm (distaal)
+body_part-RIGHT_THUMB_METACARPAL = Parem pöial (metakarpaal)
+body_part-RIGHT_THUMB_PROXIMAL = Parem pöial (proksimaal)
+body_part-RIGHT_THUMB_DISTAL = Parem pöial (distaal)
+body_part-RIGHT_INDEX_PROXIMAL = Parem nimetissõrm (proksimaal)
+body_part-RIGHT_INDEX_INTERMEDIATE = Parem nimetissõrm (vahefaalanks)
+body_part-RIGHT_INDEX_DISTAL = Parem nimetissõrm (distaal)
+body_part-RIGHT_MIDDLE_PROXIMAL = Parem kesksõrm (proksimaal)
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Parem kesksõrm (vahefaalanks)
+body_part-RIGHT_MIDDLE_DISTAL = Parem kesksõrm (distaal)
+body_part-RIGHT_RING_PROXIMAL = Parem nimeta sõrm (proksimaal)
+body_part-RIGHT_RING_INTERMEDIATE = Parem nimeta sõrm (vahefaalanks)
+body_part-RIGHT_RING_DISTAL = Parem nimeta sõrm (distaal)
+body_part-RIGHT_LITTLE_PROXIMAL = Parem väike sõrm (proksimaal)
+body_part-RIGHT_LITTLE_INTERMEDIATE = Parem väike sõrm (vahefaalanks)
+body_part-RIGHT_LITTLE_DISTAL = Parem väike sõrm (distaal)
 
 ## BoardType
 
+board_type-UNKNOWN = Tundmatu
+board_type-NODEMCU = NodeMCU
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = "Wrangler" Joyconid
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GESTURES = Žestid
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -87,6 +147,7 @@ skeleton_bone-ELBOW_OFFSET = Küünarnuki Nihe
 reset-reset_all = Lähtesta kõik proportsioonid
 reset-full = Lähtesta
 reset-mounting = Lähtesta Paigaldusasend
+reset-mounting-fingers = Sõrmede kalibreerimine
 reset-yaw = Lähtesta lengerdus
 
 ## Serial detection stuff
@@ -107,11 +168,14 @@ navbar-trackers_assign = Jälgija Määramine
 navbar-mounting = Jälgijate Paigalduse Kalibreerimine
 navbar-onboarding = Häälestusviisard
 navbar-settings = Seaded
+navbar-connect_trackers = Ühendage Jälgijad
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Salvesta BVH
+bvh-stop_recording = Salvesta BVH salvestus
 bvh-recording = Salvestamine...
+bvh-save_title = Salvesta BVH salvestus
 
 ## Tracking pause
 
@@ -148,9 +212,11 @@ widget-developer_mode-more_info = Rohkem infot
 widget-imu_visualizer = Rotatsiooni
 widget-imu_visualizer-rotation_raw = Toores
 widget-imu_visualizer-rotation_preview = Eelvaade
+widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 
+widget-skeleton_visualizer-hide = Peida
 
 ## Tracker status
 
@@ -172,6 +238,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Pööre X/Y/Z
 tracker-table-column-position = Positsioon X/Y/Z
+tracker-table-column-stay_aligned = Stay Aligned
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -198,6 +265,8 @@ tracker-infos-hardware_rev = Riistvara revisjon
 tracker-infos-hardware_identifier = Riistvara ID
 tracker-infos-imu = IMU sensor
 tracker-infos-board_type = Põhiplaat
+tracker-infos-network_version = Protokolli versioon
+tracker-infos-magnetometer = Magnetomeeter
 
 ## Tracker settings
 
@@ -212,11 +281,17 @@ tracker-settings-mounting_section-edit = Muuda paigaldusasendit
 tracker-settings-drift_compensation_section = Allow drift compensation
 tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
 tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-use_mag-label = Luba magnetomeeter
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jälgija Nimi
 tracker-settings-name_section-description = Anna talle armas hüüdnimi :)
-tracker-settings-name_section-placeholder = NightyBeast-i vasak käsi
+tracker-settings-name_section-placeholder = NightyBeasti vasak jalg
+tracker-settings-name_section-label = Jälgija Nimi
+tracker-settings-forget = Unusta jälgijat
+tracker-settings-forget-label = Unusta jälgijat
+tracker-settings-current-version = Praegune
+tracker-settings-latest-version = Viimane
 
 ## Tracker part card info
 
@@ -282,15 +357,19 @@ mounting_selection_menu-close = Sulge
 
 settings-sidebar-title = Seaded
 settings-sidebar-general = Tavaline
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Jälgija mehaanika
-settings-sidebar-fk_settings = FK seaded
+settings-sidebar-stay_aligned = Stay Aligned
+settings-sidebar-fk_settings = Jälgija seaded
 settings-sidebar-gesture_control = Žesti juhtimine
 settings-sidebar-interface = Liides
 settings-sidebar-osc_router = OSC ruuter
 settings-sidebar-osc_trackers = VRChati OSC Jälgija
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Olemus / Lisad
 settings-sidebar-serial = Jadakonsool
 settings-sidebar-appearance = Välimus
+settings-sidebar-home = Avaleht
 settings-sidebar-notifications = Teavitused
 
 ## SteamVR settings
@@ -306,6 +385,17 @@ settings-general-steamvr-description =
     Kasulik teatud mängudele või äppidele, mis toetavad ainult teatuid jälgijaid.
 settings-general-steamvr-trackers-waist = Vöökoht
 settings-general-steamvr-trackers-chest = Rind
+settings-general-steamvr-trackers-left_foot = Vasak jalg
+settings-general-steamvr-trackers-right_foot = Parem jalg
+settings-general-steamvr-trackers-left_knee = Vasak põlv
+settings-general-steamvr-trackers-right_knee = Parem põlv
+settings-general-steamvr-trackers-left_elbow = Vasak küünarnukk
+settings-general-steamvr-trackers-right_elbow = Parem küünarnukk
+settings-general-steamvr-trackers-left_hand = Vasak käsi
+settings-general-steamvr-trackers-right_hand = Parem käsi
+settings-general-steamvr-trackers-tracker_toggling = Automaatne jälgija määramine
+settings-general-steamvr-trackers-tracker_toggling-label = Automaatne jälgija määramine
+settings-general-steamvr-trackers-hands-warning-done = Jah
 
 ## Tracker mechanics
 
@@ -329,8 +419,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Compensates IMU yaw drift by applying an inverse rotation.
     Change amount of compensation and up to how many resets are taken into account.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation_warning-done = Ma mõistan
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+settings-stay_aligned = Stay Aligned
+settings-stay_aligned-setup-label = Seadista Stay Aligned
 
 ## FK/Tracking settings
 
@@ -355,6 +448,9 @@ settings-general-fk_settings-leg_fk = Jalgade jälgimine
 settings-general-fk_settings-arm_fk = Käe jälgimine
 settings-general-fk_settings-arm_fk-description = Muuda viisi kuidas käsi jälgitakse.
 settings-general-fk_settings-arm_fk-force_arms = Sunni käed HMD-st
+settings-general-fk_settings-arm_fk-back = Tagasi
+settings-general-fk_settings-arm_fk-tpose_up = T-poos (üles)
+settings-general-fk_settings-arm_fk-tpose_down = T-poos (all)
 settings-general-fk_settings-skeleton_settings-toggles = Skeleti lülitid
 settings-general-fk_settings-skeleton_settings-description = Lülita skeletti seaded sisse või välja. Soovitatud on see sisse jätta.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Laiendatud selgroo mudel
@@ -410,6 +506,7 @@ settings-general-interface-dev_mode = Arendaja režiim
 settings-general-interface-dev_mode-description = See režiim on kasulik, kui on vaja põhjalike andmeid või või suhelda ühendatud jälgijatega kõrgemal tasemel.
 settings-general-interface-dev_mode-label = Arendaja režiim
 settings-general-interface-theme = Värviteema
+settings-general-interface-show-navbar-onboarding-label = Näita "{ navbar-onboarding }"
 settings-general-interface-lang = Vaikekeel
 settings-general-interface-lang-description = Muutke vaikekeelt, mida soovite kasutada.
 settings-general-interface-lang-placeholder = Vali keel, mida kasutada
@@ -455,6 +552,7 @@ settings-serial-factory_reset-warning-ok = Ma tean mida ma teen
 settings-serial-factory_reset-warning-cancel = Tühista
 settings-serial-serial_select = Valige jadaport
 settings-serial-auto_dropdown_item = Auto
+settings-serial-send_command-warning-ok = Ma tean mida ma teen
 
 ## OSC router settings
 
@@ -537,6 +635,12 @@ settings-osc-vmc-anchor_hip-label = Ankurda puusadel
 
 ## Advanced settings
 
+settings-utils-advanced-reset_warning-reset = Lähtestada seaded
+settings-utils-advanced-open_data-v1 = Konfiguratsioonikaust
+settings-utils-advanced-open_data-description-v1 = Ava SlimeVR-i konfiguratsioonikaust failihalduris, mis sisaldavad konfiguratsiooni failid
+settings-utils-advanced-open_data-label = Ava kaust
+settings-utils-advanced-open_logs = Logide kaust
+settings-utils-advanced-open_logs-label = Ava kaust
 
 ## Home Screen
 
@@ -558,9 +662,25 @@ onboarding-setup_warning-cancel = Jätka seadistamist
 
 ## Quiz
 
+onboarding-quiz_continue = Jätka
+onboarding-quiz_back = Tagasi
+onboarding-quiz-more_sets_modal-title = Kas olete kõik oma jälgijad ühendanud?
+onboarding-quiz-more_sets_modal-confirm = Olen ühendanud kõik oma jälgijad
+onboarding-quiz-more_sets_modal-cancel = Soovin ühendada rohkem jälgijaid
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 ja V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = WiFi-põhine Slime
+onboarding-quiz-slimeset-answer-dongle = Dongli-põhine Slime
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-playspace-sitting = Istumine
+onboarding-quiz-mocap_preferences-playspace-standing = Seismine
+onboarding-quiz-mocap_preferences-head_tracker-yes = Jah
+onboarding-quiz-mocap_preferences-head_tracker-no = Ei
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-v2 = Jälgijad Wi-Fi kaudu
 onboarding-wifi_creds-skip = Jätke Wi-Fi seaded vahele.
 onboarding-wifi_creds-submit = Jätka!
 onboarding-wifi_creds-ssid =
@@ -569,6 +689,8 @@ onboarding-wifi_creds-ssid =
 onboarding-wifi_creds-password =
     .label = Parool
     .placeholder = Sisesta parool
+onboarding-wifi_creds-dongle-title = Jälgijad dongli kaudu
+onboarding-wifi_creds-dongle-continue = Jätka dongliga
 
 ## Mounting setup
 
@@ -623,6 +745,7 @@ onboarding-connect_tracker-connection_status-looking_for_server = Serveri otsimi
 onboarding-connect_tracker-connection_status-connection_error = Wi-Fi-ga ei saa ühendust luua!
 onboarding-connect_tracker-connection_status-could_not_find_server = Serverit ei leitud
 onboarding-connect_tracker-connection_status-done = Ühendatud serveriga
+onboarding-connect_serial-error-modal-no_serial_device_found = Jälgijad ei ole leidnud
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -671,6 +794,27 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = Kuva täpsemad määramiskohad
 onboarding-assign_trackers-next = Määrasin kõikide jälgijate asukohad
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] All keha komplekt
+        [core] Baas komplekt
+        [enhanced-core] Täiustatud baas komplekt
+        [full-body] Täis keha komplekt
+       *[all] Kõik jälgijad
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Miinimum VR Täiskeha träkkimiseks
+        [core] + Täiustatud selgroo jälitamine
+        [enhanced-core] + Jala pöörlemine
+        [full-body] + Küünarnukk jälitamine
+       *[all] Kõik saadaolevad jälgimisseadmed
+    }
 
 ## Tracker assignment warnings
 
@@ -761,6 +905,7 @@ onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
 ## User height calibration
 
+onboarding-user_height-next_step = Jätka ja salvesta
 
 ## Stay Aligned setup
 
@@ -786,27 +931,89 @@ status_system-StatusTrackerError = Jälgijal { $trackerName } on tõrge.
 
 ## Firmware tool Steps
 
+firmware_tool-select_source-not_selected = Allikat pole valitud
+firmware_tool-flashing_step-onboarding_continue = Jätka
 
 ## firmware tool build status
 
 
 ## Firmware update status
 
+firmware_update-status-ERROR_UNKNOWN = Tundmatu viga
 
 ## Dedicated Firmware Update Page
 
+firmware_update-exit = Välju
 
 ## Tray Menu
 
+tray_menu-show = Näita
+tray_menu-hide = Peida
 
 ## First exit modal
 
+tray_or_exit_modal-submit = Salvesta
+tray_or_exit_modal-cancel = Tühista
 
 ## Unknown device modal
 
+unknown_device-modal-forget = Ignoreeri
+vrc_config-setting_name = VRChat Seade nimi
+vrc_config-recommended_value = Soovitatav väärtus
+vrc_config-current_value = Praegune väärtus
+vrc_config-mute = Mute Warning
+vrc_config-mute-btn = Mute
+vrc_config-unmute-btn = Unmute
+vrc_config-legacy_mode = Use Legacy IK Solving
+vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
+vrc_config-shoulder_width_compensation = Shoulder Width Compensation
+vrc_config-spine_mode = FBT Spine Mode
+vrc_config-tracker_model = FBT Tracker Model
+vrc_config-avatar_measurement_type = Avatar Measurement
+vrc_config-calibration_range = Calibration Range
+vrc_config-calibration_visuals = Display Calibration Visuals
+vrc_config-user_height = User Real Height
+vrc_config-spine_mode-UNKNOWN = Tundmatu
+vrc_config-spine_mode-LOCK_BOTH = Lock Both
+vrc_config-spine_mode-LOCK_HEAD = Lock Head
+vrc_config-spine_mode-LOCK_HIP = Lock Hip
+vrc_config-tracker_model-UNKNOWN = Tundmatu
+vrc_config-tracker_model-AXIS = Axis
+vrc_config-tracker_model-BOX = Box
+vrc_config-tracker_model-SPHERE = Sphere
+vrc_config-tracker_model-SYSTEM = System
+vrc_config-avatar_measurement_type-UNKNOWN = Tundmatu
+vrc_config-avatar_measurement_type-HEIGHT = Height
+vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 
 ## Error collection consent modal
 
 
 ## Tracking checklist section
 
+tracking_checklist = Jälgimise kontroll
+tracking_checklist-settings = Jälgimise kontrolli seaded
+tracking_checklist-settings-close = Sulge
+tracking_checklist-status-incomplete = Te ei ole valmis kasutama SlimeVR-i!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] Teil on { $count } hoiatus!
+       *[other] Teil on { $count } hoiatust!
+    }
+tracking_checklist-status-complete = Teie olete valmis kasutama SlimeVR-i!
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = Draiver ei ole paigaldatud.
+tracking_checklist-STEAMVR_DISCONNECTED-open = Käivita SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Luba draiver
+tracking_checklist-STANDABLE_INSTALLED = Standable on paigaldatud
+tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibreerige oma jälgijad
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Teie ei olete teinud jälgija kalibreerimist. Palun laske oma jäligjatel (kollasega esile toonud) paar sekundit staabiilsel pinnal puhata.
+tracking_checklist-TRACKER_ERROR = Jälgijad vigadega
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Seadista Stay Aligned
+tracking_checklist-ignore = Ignoreeri
+preview-mocap_mode_soon = Mocap režiim (Soon™)
+toolbar-mounting_calibration = Paigaldamis kalibreerimine
+toolbar-mounting_calibration-default = Keha
+toolbar-mounting_calibration-feet = Jalad
+toolbar-mounting_calibration-fingers = Sõrmed
+toolbar-assigned_trackers = { $count } jälgijad määratud
+toolbar-unassigned_trackers = { $count } jälgijad määramata

@@ -646,6 +646,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = 位置数据
 settings-general-fk_settings-ik-use_position = 使用位置数据
 settings-general-fk_settings-ik-use_position-description = 若追踪器支持，使用来自追踪器的位置数据。启用后，请再次进行完全重置并在游戏中重新校准追踪器。
+settings-general-fk_settings-velocity_settings = 速度设置
+settings-general-fk_settings-velocity_settings-description = 将推算出的速度数据发送到 SteamVR。是开启模拟自然移动的必选项。可能会导致身体追踪抖动。
+settings-general-fk_settings-velocity_settings-send_derived_velocity = 将推算出的速度发送至 SteamVR
 settings-general-fk_settings-arm_fk = 手臂追踪
 settings-general-fk_settings-arm_fk-description = 即使有手臂位置数据可用，也强制使用头显的数据追踪手臂。
 settings-general-fk_settings-arm_fk-force_arms = 强制使用头显数据追踪手臂
@@ -695,12 +698,17 @@ settings-general-gesture_control-trackers = { $amount } 个追踪器
 settings-general-gesture_control-yawResetEnabled = 开启敲击重置航向轴
 settings-general-gesture_control-yawResetDelay = 敲击重置航向轴延迟
 settings-general-gesture_control-yawResetTaps = 重置航向轴敲击次数
+settings-general-gesture_control-yawResetTracker = 航向轴重置追踪器
 settings-general-gesture_control-fullResetEnabled = 开启敲击完整重置
 settings-general-gesture_control-fullResetDelay = 敲击完整重置延迟
 settings-general-gesture_control-fullResetTaps = 完整重置敲击次数
+settings-general-gesture_control-fullResetTracker = 完整重置追踪器
 settings-general-gesture_control-mountingResetEnabled = 开启敲击重置佩戴
 settings-general-gesture_control-mountingResetDelay = 敲击重置佩戴延迟
 settings-general-gesture_control-mountingResetTaps = 重置佩戴敲击次数
+settings-general-gesture_control-mountingResetTracker = 佩戴校准追踪器
+settings-general-gesture_control-yawResetTracker-title = 航向轴重置追踪器
+settings-general-gesture_control-fullResetTracker-title = 完整重置追踪器
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = 可触发敲击重置的追踪器数量
 settings-general-gesture_control-numberTrackersOverThreshold-description = 如敲击重置不起作用请增加此值。请在保证敲击重置可用的情况下将此值设置的尽可能低，否则会导致误报。

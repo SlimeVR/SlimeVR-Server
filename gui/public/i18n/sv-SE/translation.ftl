@@ -33,6 +33,10 @@ tips-failed_webgl = Misslyckades att initiera WebGL.
 
 ## Units
 
+unit-meter = Meter
+unit-foot = Fot
+unit-inch = Tum
+unit-cm = centimeter
 
 ## Body parts
 
@@ -94,6 +98,28 @@ board_type-UNKNOWN = Okänd
 board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Anpassat kretskort
 board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Handske
+board_type-GESTURES = Gester
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = Generisk nRF
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -232,7 +258,13 @@ reset-reset_all_warning_default-v2 =
     Är du säker på att du vill göra detta?
 reset-full = Fullständig återställning
 reset-mounting = Återställning av montering
+reset-mounting-feet = Fot kallibration
+reset-mounting-fingers = Finger kallibrering
 reset-yaw = Återställning av gir
+reset-error-no_feet_tracker = Inga fot spårare tilldelade
+reset-error-no_fingers_tracker = Inga finger spårare tilldelade
+reset-error-mounting-need_full_reset = Det krävs en full omstart innan montering
+reset-error-yaw-need_full_reset = En fullständig återställning krävs innan giråterställning
 
 ## Serial detection stuff
 
@@ -252,11 +284,14 @@ navbar-trackers_assign = Tracker Uppgift
 navbar-mounting = Kalibrering av montering
 navbar-onboarding = Inställningsguide
 navbar-settings = Inställningar
+navbar-connect_trackers = Anslut spårare
 
 ## Biovision hierarchy recording
 
 bvh-start_recording = Spela in BVH-rekord
+bvh-stop_recording = Spara BVH inspelning
 bvh-recording = Inspelning...
+bvh-save_title = Spara BVH inspelning
 
 ## Tracking pause
 
@@ -320,6 +355,7 @@ tracker-table-column-name = Namn
 tracker-table-column-type = Typ
 tracker-table-column-battery = Batteri
 tracker-table-column-ping = Ping
+tracker-table-column-packet_loss = Paket förlust
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temperatur i Celsius:
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
@@ -361,6 +397,9 @@ tracker-infos-magnetometer-status-v1 =
         [ENABLED] Aktiverad
        *[NOT_SUPPORTED] Ej stödd
     }
+tracker-infos-packet_loss = Paket förlust
+tracker-infos-packets_lost = Paketer förlorade
+tracker-infos-packets_received = Paketer mottagna
 
 ## Tracker settings
 
@@ -391,10 +430,16 @@ tracker-settings-name_section-label = Sensorns namn
 tracker-settings-forget = Glöm spårning
 tracker-settings-forget-description = Tar bort trackern från SlimeVR-servern och förhindrar den från att ansluta till den tills servern startas om. Konfigurationen av trackern kommer inte att gå förlorad.
 tracker-settings-forget-label = Glöm spårning
+tracker-settings-update-unavailable-v2 = Inga releases hittades
+tracker-settings-update-incompatible = Kan inte uppdatera. Inkompatibel kort- eller firmwareversion
 tracker-settings-update-low-battery = Kan ej uppdatera. Batteriet är under 50%
 tracker-settings-update-up_to_date = Uppdaterad
+tracker-settings-update-blocked = Uppdatering ej tillgänglig. Inga andra utgåvor tillgängliga.
 tracker-settings-update = Uppdatera nu
 tracker-settings-update-title = Mjukvaroversion
+tracker-settings-current-version = Nuvarande
+tracker-settings-latest-version = Senaste
+tracker-settings-build-date = Byggdatum
 
 ## Tracker part card info
 
@@ -460,6 +505,7 @@ mounting_selection_menu-close = Stäng
 
 settings-sidebar-title = Inställningar
 settings-sidebar-general = Allmänt
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Mekanik för spårning
 settings-sidebar-stay_aligned = Behåll inriktning
 settings-sidebar-fk_settings = Inställningar för spårning
@@ -467,9 +513,12 @@ settings-sidebar-gesture_control = Geststyrning
 settings-sidebar-interface = Gränssnitt
 settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = VRChat OSC spårare
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Verktyg
 settings-sidebar-serial = Seriell konsol
 settings-sidebar-appearance = Utseende
+settings-sidebar-home = Hemskärm
+settings-sidebar-checklist = Spårningschecklista
 settings-sidebar-notifications = Meddelanden
 settings-sidebar-behavior = Beteende
 settings-sidebar-firmware-tool = DIY Mjukvaroverktyg
@@ -522,9 +571,24 @@ settings-general-tracker_mechanics-filtering-type-prediction-description = Minsk
 settings-general-tracker_mechanics-filtering-amount = Belopp
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tid för utjämning av Yaw reset (0s avaktiverar utjämning)
 settings-general-tracker_mechanics-drift_compensation = Driftkompensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Kompenserar IMUs drift genom att tillämpa en invers rotation. 
+    Ändra kompensationsbeloppet och upp till hur många återställningar som ska beaktas.
+    Detta borde bara användas om du behöver återställa ofta!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Driftkompensation
 settings-general-tracker_mechanics-drift_compensation-prediction = Drift kompensations-förutsägelse.
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Förutsäger girningsdriftkompensation förbi tidigare uppmätt område.
+    Aktivera detta om dina trackers roterar kontinuerligt på giraxeln.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift kompensations-förutsägelse.
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>Varning:</b> Använd bara driftkompensering om du behöver återställa
+    väldigt ofta (varje 5-10 minuter).
+    
+    Vissa IMUer som är kända för att behöva återställning ofta är:
+    Joy-Cons, owoTrack, och MPUer (utan nyare mjukvara).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Avbryt
 settings-general-tracker_mechanics-drift_compensation_warning-done = Jag förstår
 settings-general-tracker_mechanics-drift_compensation-amount-label = Ersättningsbelopp
@@ -537,6 +601,9 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Använder magnetometers på alla sensorer som har en kompatibel mjukvara till det, minskar drift i magnetiskt stabila miljöer.
     Kan stängas av för individuella spårare i dess inställningar. <b> Var vänlig och stäng inte av någon av sensorerna när du växlar av och på denna funktionen.
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = använd magnetometer på sensorer.
+settings-general-tracker_mechanics-trackers_over_usb = Spårare över USB
+settings-general-tracker_mechanics-trackers_over_usb-description = Möjliggör mottagning av HID-spårardata via USB. Se till att anslutna trackers har <b>anslutning över HID</b> aktiverat!
+settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Tillåt HID spårare att ansluta direkt över USB
 settings-stay_aligned = Behåll inriktning
 settings-stay_aligned-description = Behåll inriktning minskar drift genom att gradvis justera dina sensorer för att matcha dina avslappnade positioner.
 settings-stay_aligned-setup-label = Ställ in Behåll inriktning
@@ -577,11 +644,19 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip kan m
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap försöker gissa rotationen på dina fötter om fotspårare inte används.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fotplatta roterar fötterna så att de är parallella med marken vid kontakt.
 settings-general-fk_settings-leg_fk = Spårning av ben
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Tvinga kalibrering av fötter under kalibrering av kroppsmontering.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Tvinga fot monteringskallibration
 settings-general-fk_settings-enforce_joint_constraints = Skelett-gränser
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Upprätthåll begränsningar
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Rätta med begränsningar
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Rätta leds-rotationer när de går förbi dess gränser
+settings-general-fk_settings-ik = Positionsdata
+settings-general-fk_settings-ik-use_position = Använd positionsdata
+settings-general-fk_settings-ik-use_position-description = Aktiverar användning av positionsdata från spårare som delar det. När du aktiverar detta se till att återställa och kalibrera om helt i spelet.
+settings-general-fk_settings-velocity_settings = Hastighetsinställningar
+settings-general-fk_settings-velocity_settings-description = Skicka härledd hastighetsdata till SteamVR. Krävs för Locomotion stöd. Kan orsaka flimmer i FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Skicka mottagen hastighet till drivrutin
 settings-general-fk_settings-arm_fk = Spårning av arm
 settings-general-fk_settings-arm_fk-description = Tvinga armarna att spåras från headsetet (HMD) även om positionsdata för handen finns tillgänglig.
 settings-general-fk_settings-arm_fk-force_arms = Tvångsarmar från HMD
@@ -619,15 +694,34 @@ settings-general-fk_settings-self_localization-description = Mocap Mode gör att
 settings-general-gesture_control = Geststyrning
 settings-general-gesture_control-subtitle = Tap-baserade återställningar
 settings-general-gesture_control-description = Gör att återställningar kan utlösas genom att trycka på en tracker. Den tracker som sitter högst upp på din bål används för Yaw Reset, den tracker som sitter högst upp på ditt vänstra ben används för Full Reset och den tracker som sitter högst upp på ditt högra ben används för Mounting Reset. Taps måste ske inom tidsgränsen 0,3 sekunder gånger antalet taps som ska erkännas.
+# This is a unit: 3 taps, 2 taps, 1 tap
+# $amount (Number) - Amount of taps (touches to the tracker's case)
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] 1 Tryckning
+       *[other] { $amount } Tryckning
+    }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] 1 Tracker
+       *[other] { $amount } Trackers
+    }
 settings-general-gesture_control-yawResetEnabled = Aktivera återställning av tap till yaw
 settings-general-gesture_control-yawResetDelay = Fördröjning av återställning av yaw
 settings-general-gesture_control-yawResetTaps = Tryck för återställning av yaw
+settings-general-gesture_control-yawResetTracker = Spårning av giråterställning
 settings-general-gesture_control-fullResetEnabled = Aktivera tryck för fullständig återställning
 settings-general-gesture_control-fullResetDelay = Fördröjning vid fullständig återställning
 settings-general-gesture_control-fullResetTaps = Kranar för fullständig återställning
+settings-general-gesture_control-fullResetTracker = Fullständig återställning av spårare
 settings-general-gesture_control-mountingResetEnabled = Aktivera tryck för att återställa montering
 settings-general-gesture_control-mountingResetDelay = Fördröjning av återställning av montering
 settings-general-gesture_control-mountingResetTaps = Gängtappar för montering av återställning
+settings-general-gesture_control-mountingResetTracker = Montering Återställ spårare
+settings-general-gesture_control-yawResetTracker-title = Gir återställning spårare
+settings-general-gesture_control-fullResetTracker-title = Fullständig återställning av spårare
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers över tröskelvärdet
 settings-general-gesture_control-numberTrackersOverThreshold-description = Öka detta värde om avkänningen inte fungerar. Öka inte värdet mer än vad som krävs för att detekteringen ska fungera, eftersom det kan leda till fler falska positiva resultat.
@@ -680,6 +774,12 @@ settings-general-interface-use_tray-label = Minimera till systemfältet
 settings-general-interface-discord_presence = Dela aktivitet på Discord
 settings-general-interface-discord_presence-description = Berättar för din Discord-klient att du använder SlimeVR tillsammans med antalet IMU-trackers du använder.
 settings-general-interface-discord_presence-label = Dela aktivitet på Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Slimar runt
+        [one] Använder 1 Tracker
+       *[other] Anväder { $amount } Trackers
+    }
 settings-interface-behavior-error_tracking = Error samling via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Tillåter du samlingen av anonym error-data?</h1>
@@ -688,6 +788,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     För att tillhandhålla den bästa användarupplevelsen, så samlar vi anonyma error-raporter, prestandamått och operativsystems-info. Detta hjälper oss upptäcka buggar och problem med Slimevr. Dessa rapporterna samlas via Sentry.io.
 settings-interface-behavior-error_tracking-label = Skicka errors till utväcklare
+settings-interface-behavior-bvh_directory = Katalog för att spara BVH inspelningar
+settings-interface-behavior-bvh_directory-description = Välj en katalog for att spara din BVH inspelning i stället för att behöva välja var du sparar de varje gång.
+settings-interface-behavior-bvh_directory-label = Katalog för BVH inspelning
 
 ## Serial settings
 
@@ -707,8 +810,19 @@ settings-serial-factory_reset-warning-cancel = Avbryt
 settings-serial-serial_select = Välj en serieport
 settings-serial-auto_dropdown_item = Automatiskt
 settings-serial-get_wifi_scan = Hämta WiFi-skanning
+settings-serial-enter_pairing = Börja parkoppling
+settings-serial-exit_pairing = Sluta parkoppling
+settings-serial-calibrate = Kallibrera
+settings-serial-six_side_calibrate = Sex sido kallibrera
+settings-serial-dfu = Gå in i DFU
+settings-serial-meow = Mjau!
 settings-serial-file_type = Vanlig text
 settings-serial-save_logs = Spara till fil
+settings-serial-send_command = Skicka
+settings-serial-send_command-placeholder = Kommand...
+settings-serial-send_command-warning = <b>Varning:</b> Att köra seriella kommandon kan leda till dataförlust eller att spårarna blir obrukbara.
+settings-serial-send_command-warning-ok = Jag vet vad jag gör
+settings-serial-send_command-warning-cancel = Avbryt
 
 ## OSC router settings
 
@@ -721,6 +835,12 @@ settings-osc-router-enable-label = Aktivera
 settings-osc-router-network = Nätverksportar
 # This cares about multilines
 settings-osc-router-network-description = Ställ in portarna för att lyssna och skicka data. Dessa kan vara desamma som andra portar som används i SlimeVR-servern.
+settings-osc-router-network-port_in =
+    .label = Port In
+    .placeholder = Port In (Normal 9002)
+settings-osc-router-network-port_out =
+    .label = Port Ut
+    .placeholder = Port Ut (Normal 9000)
 settings-osc-router-network-address = Nätverksadress
 settings-osc-router-network-address-description = Ange den adress som data ska skickas till.
 settings-osc-router-network-address-placeholder = IPV4-adress
@@ -728,6 +848,11 @@ settings-osc-router-network-address-placeholder = IPV4-adress
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC spårare
+# This cares about multilines
+settings-osc-vrchat-description-v1 =
+    Ändra inställningar som är specifika för OSC Trackers-standarden som används för att skicka 
+    spårningsdata till applikationer utan SteamVR (t.ex. Quest standalone). 
+    Se till att aktivera OSC i VRChat via Åtgärdsmenyn under OSC > Aktiverad.
 settings-osc-vrchat-enable = Aktivera
 settings-osc-vrchat-enable-description = Växla mellan sändning och mottagning av data.
 settings-osc-vrchat-enable-label = Aktivera
@@ -760,6 +885,8 @@ settings-osc-vrchat-network-trackers-elbows = Armbågar
 ## VMC OSC settings
 
 settings-osc-vmc = Virtuell rörelseinspelning
+# This cares about multilines
+settings-osc-vmc-description = Ändra inställningar som är specifika för VMC-protokollet (Virtual Motion Capture) för att skicka SlimeVR:s bendata och ta emot bendata från andra appar.
 settings-osc-vmc-enable = Aktivera
 settings-osc-vmc-enable-description = Växla mellan sändning och mottagning av data.
 settings-osc-vmc-enable-label = Aktivera
@@ -787,6 +914,8 @@ settings-osc-vmc-mirror_tracking-label = Spegla spårning
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = OSC-routerns in- och utportar kan inte vara desamma!
+settings-osc-common-network-port_banned_error = Porten { $port } kan inte användas!
 
 ## Advanced settings
 
@@ -823,9 +952,15 @@ settings-utils-advanced-open_logs-label = Öppna mapp
 
 ## Home Screen
 
+settings-home-list-layout = Layout för spårningslista
+settings-home-list-layout-desc = Välj en av de möjliga layouterna för startskärmen
+settings-home-list-layout-grid = Rutnät
+settings-home-list-layout-table = Tabell
 
 ## Tracking Checlist
 
+settings-tracking_checklist-active_steps = Aktiva steg
+settings-tracking_checklist-active_steps-desc = Lista över alla steg i spårningschecklistan. Du kan välja att inaktivera specifika steg.
 
 ## Setup/onboarding menu
 
@@ -841,9 +976,52 @@ onboarding-setup_warning-cancel = Fortsätt inställning
 
 ## Quiz
 
+onboarding-quiz_continue = Fortsätt
+onboarding-quiz_back = Bak
+onboarding-quiz-more_sets_modal-title = Har du kopplat in alla dina spårare?
+onboarding-quiz-more_sets_modal-desc = Om du har uppsättningar av olika modeller kan vi koppla ihop dem just nu!
+onboarding-quiz-more_sets_modal-confirm = Jag har anslutit alla mina spårare
+onboarding-quiz-more_sets_modal-cancel = Jag vill ansluta fler spårare
+onboarding-quiz-slimeset-title = Vilken typ av spårare ansluter du?
+onboarding-quiz-slimeset-description = Om du har flera uppsättningar kommer du att bli tillfrågad igen senare i processen.
+onboarding-quiz-slimeset-official-sets = Officiella SlimeVR-spårare
+onboarding-quiz-slimeset-thirdparty-sets = Tredjeparts- eller gör-det-själv-spårare
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 & V1.2
+onboarding-quiz-slimeset-answer-butterfly = Fjäril
+onboarding-quiz-slimeset-answer-wifi = WiFi-baserade Slimes
+onboarding-quiz-slimeset-answer-dongle = Dongle-baserade Slimes
+onboarding-quiz-usage-title = Vad använder du dina spårare till?
+onboarding-quiz-usage-description = Om du planerar att använda SlimeVR för flera ändamål kan du ändra de berörda inställningarna senare.
+onboarding-quiz-usage-answer-VRC = VR-spel (t.ex. VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap och Virtual avatar strömming
+onboarding-quiz-runtime-title = Kör du spel via SteamVR, eller på själva headsetet (fristående)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Fristående
+onboarding-quiz-mocap_preferences-title = Mocap-inställningar
+onboarding-quiz-mocap_preferences-desc = Ange hur du planerar att använda SlimeVR för mocap eller VTubing
+onboarding-quiz-mocap_preferences-playspace-title = Vad är din spelyta?
+onboarding-quiz-mocap_preferences-playspace-desc = Om du står upp kommer SlimeVR att försöka spåra gångrörelser istället för att förankra dig på en enda plats.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sittande
+onboarding-quiz-mocap_preferences-playspace-standing = Stående
+onboarding-quiz-mocap_preferences-vrm_model-title = Har du en VRM-modell? (Valfritt)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Att ladda en VRM-modell förbättrar spårningskvaliteten och kompatibiliteten med applikationer som använder VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Har du en spårare eller VR-headset på huvudet?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Ja
+onboarding-quiz-mocap_preferences-head_tracker-no = Nej
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Var finns din huvudspårare?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Panna
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Ansikte
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Gå tillbaka
+onboarding-wifi_creds-v2 = Spårare som använder Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description-v2 =
+    De flesta spårare (som officiella SlimeVR-spårare) använder Wi-Fi för att ansluta till servern.
+    Använd inloggningsuppgifterna för det Wi-Fi-nätverk som din enhet för närvarande är ansluten till.
+    
+    Se till att använda en 2,4 GHz Wi-Fi-anslutning för dina spårare!
 onboarding-wifi_creds-skip = Hoppa över Wi-Fi inställningar.
 onboarding-wifi_creds-submit = Överlämna!
 onboarding-wifi_creds-ssid =
@@ -853,6 +1031,10 @@ onboarding-wifi_creds-ssid-required = Wi-Fi namn är nödvändigt
 onboarding-wifi_creds-password =
     .label = Lösenord
     .placeholder = Ange lösenord
+onboarding-wifi_creds-dongle-title = Spårare med hjälp av en dongel
+onboarding-wifi_creds-dongle-description = Om dina trackers kom med en dongle, anslut den till din enhet så borde du vara redo att köra!
+onboarding-wifi_creds-dongle-wip = Det här avsnittet är under utveckling. En dedikerad sida för att hantera spårare som ansluts via en dongel kommer snart att skapas.
+onboarding-wifi_creds-dongle-continue = Fortsätt med en dongel
 
 ## Mounting setup
 
@@ -865,9 +1047,25 @@ onboarding-reset_tutorial-0 =
     Tryck { $taps } gånger på den markerade trackern för att utlösa yaw reset.
     
     Detta gör att spårarna vänds i samma riktning som ditt headset (HMD).
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Tryck { $taps } gånger på den markerade trackern för att utlösa fullständig återställning. 
+    
+    Du måste stå upp för detta (i-pose). Det finns en fördröjning på 3 sekunder (konfigurerbar) innan det faktiskt händer. 
+    Detta återställer positionen och rotationen för alla dina trackers helt och hållet. Det bör åtgärda de flesta problem.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Tryck { $taps } gånger på den markerade trackern för att utlösa återställning av montering. 
+    
+    Återställning av montering hjälper till med hur trackers faktiskt sätts på dig, så om du av misstag flyttade dem och ändrade hur de är orienterade med en stor mängd kommer det här att hjälpa. 
+    Du måste vara i en pose som att du åker skidor som det visas i guiden för automatisk montering och du har en 3 sekunders fördröjning (konfigurerbar) innan den utlöses.
 
 ## Install info
 
+install-info_udev-rules_modal_title = Åtkomstregler för hårdvaru-udev hittades inte
+install-info_udev-rules_warning = Åtkomstregler via udev krävs för seriell konsolåtkomst och dongelanslutning. Klistra in följande kommando i din terminal för att lägga till udev-reglerna.
+install-info_udev-rules_modal_button = Stäng
+install-info_udev-rules_modal-dont-show-again_checkbox = Visa inte igen
 
 ## Setup start
 
@@ -925,6 +1123,7 @@ onboarding-connect_tracker-next = Jag har anslutit alla mina spårare
 
 onboarding-calibration_tutorial = Handledning för IMU-kalibrering
 onboarding-calibration_tutorial-subtitle = Detta kommer att bidra till att minska spårarens drift!
+onboarding-calibration_tutorial-description-v1 = Efter du slår på dina trackers, placera de på en stabil yta en kort stund för att tillåta kalibrering. Kalibrering kan utföras när som helst efter dina trackers är påslagna. — den här sidan är bara en handledning. Börja med att klicka på knappen "{ onboarding-calibration_tutorial-calibrate }" och <b>flytta sedan inte dina spårare!</b>
 onboarding-calibration_tutorial-calibrate = Jag placerade mina trackers på bordet
 onboarding-calibration_tutorial-status-waiting = Väntar på dig
 onboarding-calibration_tutorial-status-calibrating = Kalibrering
@@ -947,6 +1146,15 @@ onboarding-assignment_tutorial-done = Jag sätter på klistermärken och remmar!
 onboarding-assign_trackers-back = Gå tillbaka till Wi-Fi uppgifter
 onboarding-assign_trackers-title = Utse trackers
 onboarding-assign_trackers-description = Låt oss välja vilken tracker som ska sitta var. Klicka på en plats där du vill placera en tracker
+onboarding-assign_trackers-unassign_all = Ta bort tilldelning av alla spårare
+# Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
+# $assigned (Number) - Trackers that have been assigned a body part
+# $trackers (Number) - Trackers connected to the server
+onboarding-assign_trackers-assigned =
+    { $trackers ->
+        [one] { $assigned } av 1 spårare tilldelad
+       *[other] { $assigned } av { $trackers } spårare tilldelade
+    }
 onboarding-assign_trackers-advanced = Visa avancerade tilldelar-positioner
 onboarding-assign_trackers-next = Jag har tilldelat alla trackers
 onboarding-assign_trackers-mirror_view = Spegla vy
@@ -1085,6 +1293,8 @@ onboarding-automatic_mounting-done-restart = Försök igen
 onboarding-automatic_mounting-mounting_reset-title = Monterings-återställning
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Huka i en "Skidåknings" position med böjda ben, framåtlutad överkropp, och böjda armar.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Tryck på "Återställ montering" knappen och vänta 3 sekunder innan trackerns montering kommer att återställas.
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stå på tårna med båda fötterna pekande framåt. Alternativt kan du göra det sittande på en stol.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Tryck på knappen "Fotkalibrering" och vänta i 3 sekunder innan spårarnas monteringsorientering återställs.
 onboarding-automatic_mounting-preparation-title = Förberedning
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Tryck på "Full återställning" knappen.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stå rakt upp med dina armar vid sidan av dig. Kom ihåg att kolla framåt.
@@ -1092,9 +1302,11 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Håll positioner tills 
 onboarding-automatic_mounting-put_trackers_on-title = Sätt på dig dina trackers
 onboarding-automatic_mounting-put_trackers_on-description = För att kalibrera monterings-riktningen, så kommer i att använda trackersen du precis tilldelade. Sätt på alla dina trackers, du kan se vilka som är vilka i figuren till höger.
 onboarding-automatic_mounting-put_trackers_on-next = Jag har på mig alla trackers
+onboarding-automatic_mounting-return-home = Klar
 
 ## Tracker manual proportions setupa
 
+onboarding-manual_proportions-back-scaled = Gå tillbaka till Skalade proportioner
 onboarding-manual_proportions-title = Manuella kropps-dimensioner
 onboarding-manual_proportions-fine_tuning_button = Finjustera automatiskt proportioner
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Var vänlig anslut ett VR-headset för att använda automatisk finjustering
@@ -1116,33 +1328,224 @@ onboarding-automatic_proportions-manual = Manuella proportionern
 onboarding-automatic_proportions-prev_step = Föregående steg
 onboarding-automatic_proportions-put_trackers_on-title = Sätt på alla dina trackers
 onboarding-automatic_proportions-put_trackers_on-description = För att kalibrera proportionerna ska vi använda de trackers du just tilldelade. Sätt på dig alla dina trackers, du kan se vilka som är vilka i figuren till höger.
+onboarding-automatic_proportions-put_trackers_on-next = Jag har på mig alla spårare
+onboarding-automatic_proportions-requirements-title = Krav
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    Du har minst tillräckligt många trackers för att spåra dina fötter (vanligtvis 5 trackers). 
+    Du har dina trackers och ditt headset på dig och bär dem. 
+    Dina trackers och ditt headset är anslutna till SlimeVR-servern och fungerar korrekt (t.ex. inget stammar, kopplas bort, etc.). 
+    Ditt headset rapporterar positionsdata till SlimeVR-servern (detta innebär i allmänhet att du har SteamVR igång och är ansluten till SlimeVR med SlimeVR:s SteamVR-drivrutin). 
+    Din spårning fungerar och representerar dina rörelser korrekt (t.ex. du har utfört en fullständig återställning och de rör sig i rätt riktning när du sparkar, böjer dig, sitter, etc).
+onboarding-automatic_proportions-requirements-next = Jag har läst kraven
+onboarding-automatic_proportions-check_height-title-v3 = Mät ditt headsets höjd
+onboarding-automatic_proportions-check_height-description-v2 = Din headsethöjd (HMD) bör vara något lägre än din fulla längd eftersom headset mäter din ögonhöjd. Detta mått kommer att användas som en baslinje för dina kroppsproportioner.
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Börja mäta medan du står <u>upprätt</u> för att mäta din längd. Var försiktig så att du inte lyfter händerna högre än ditt headset, eftersom de kan påverka mätningen!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Om du använder ett fristående VR-headset, se till att ha din guardian /
     boundary aktiverad så att din höjd är korrekt!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Okänd
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height2 = Din headsethöjd är:
+onboarding-automatic_proportions-check_height-measure-start = Börja mätning.
+onboarding-automatic_proportions-check_height-measure-stop = Sluta mätningen
+onboarding-automatic_proportions-check_height-measure-reset = Försök att mäta om
+onboarding-automatic_proportions-check_height-next_step = Använd headsethöjd
+onboarding-automatic_proportions-check_floor_height-title = Mät din golvhöjd (frivilligt)
+onboarding-automatic_proportions-check_floor_height-description = I vissa fall kan det hända att din golvhöjd inte är korrekt inställd av ditt headset, vilket gör att headsethöjden mäts som högre än den borde vara. Du kan mäta "höjden" på ditt golv för att korrigera din headsethöjd.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Börja mäta och placera en controller mot golvet för att mäta höjden. Om du är säker på att golvhöjden är korrekt, kan du hoppa över det här steget.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = Din golvhöjd är:
+onboarding-automatic_proportions-check_floor_height-full_height = Beräknad full längd är:
+onboarding-automatic_proportions-check_floor_height-measure-start = Börja mätning
+onboarding-automatic_proportions-check_floor_height-measure-stop = Sluta mätning
+onboarding-automatic_proportions-check_floor_height-measure-reset = Försök att mäta om
+onboarding-automatic_proportions-check_floor_height-skip_step = Hoppa över steg och spara
+onboarding-automatic_proportions-check_floor_height-next_step = Använd golvhöjden och spara
+onboarding-automatic_proportions-start_recording-title = Gör dig redo att röra på dig
 onboarding-automatic_proportions-start_recording-description = Vi kommer nu att spela in några specifika poser och rörelser. Dessa kommer att visas på nästa skärm. Var redo att starta när du trycker på knappen!
+onboarding-automatic_proportions-start_recording-next = Starta inspelning
+onboarding-automatic_proportions-recording-title = INSPELNING
+onboarding-automatic_proportions-recording-description-p0 = Inspelning pågår...
+onboarding-automatic_proportions-recording-description-p1 = Gör rörelserna som visas nedan:
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps = Stå rakt upp och rulla huvudet i en cirkel. Böj ryggen framåt och huka dig. Medan du hukar dig, titta åt vänster och sedan åt höger. Vrid överkroppen åt vänster (moturs) och sträck dig sedan ner mot marken. Vrid överkroppen åt höger (medurs) och sträck dig sedan ner mot marken. Rulla höfterna i en cirkelrörelse som om du använder en hula hoop. Om det finns tid kvar på inspelningen kan du upprepa dessa steg tills den är klar.
+onboarding-automatic_proportions-recording-processing = Bearbetar resultatet
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] En sekund kvar
+       *[other] { $time } sekunder kvar
+    }
+onboarding-automatic_proportions-verify_results-title = Verifiera resultaten
+onboarding-automatic_proportions-verify_results-description = Kolla resultaten nedan, ser de korrekta ut?
+onboarding-automatic_proportions-verify_results-results = Registreringsresultat
+onboarding-automatic_proportions-verify_results-processing = Bearbetar resultatet
+onboarding-automatic_proportions-verify_results-redo = Gör om inspelningen
+onboarding-automatic_proportions-verify_results-confirm = De har rätt
+onboarding-automatic_proportions-done-title = Kropp mätt och sparad.
+onboarding-automatic_proportions-done-description = Kalibreringen av dina kroppsproportioner är klar!
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>Varning:</b> Det uppstod ett fel när proportionerna uppskattades!
+    Detta är troligtvis ett kalibreringsproblem med monteringen. Se till att din spårning fungerar korrekt innan du försöker igen.
+    <docs>Kontrollera dokumentationen</docs> eller gå med i vår <discord>Discord</discord> för hjälp ^_^
+onboarding-automatic_proportions-error_modal-confirm = Förstått!
+onboarding-automatic_proportions-smol_warning =
+    Din konfigurerade höjd på { $height } är mindre än den minsta accepterade höjden på { $minHeight }.
+    <b>Vänligen gör om måtten och se till att de är korrekta.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Gå tillbaka
 
 ## User height calibration
 
+onboarding-user_height-title = Vad är din längd?
+onboarding-user_height-description = Vi behöver din längd för att beräkna dina kroppsproportioner och korrekt återge dina rörelser. Du kan antingen låta SlimeVR beräkna det eller ange din längd manuellt.
+onboarding-user_height-need_head_tracker = Ett headset och kontroller med positionsspårning krävs för att utföra kalibreringen.
+onboarding-user_height-calculate = Beräkna min längd automatiskt
+onboarding-user_height-next_step = Fortsätt och spara
+onboarding-user_height-prev_step = Bak
+onboarding-user_height-manual-proportions = Manuella proportioner
+onboarding-user_height-calibration-title = Kalibreringsförlopp
+onboarding-user_height-calibration-RECORDING_FLOOR = Rör vid golvet med spetsen på din handkontroll
+onboarding-user_height-calibration-WAITING_FOR_RISE = Stå upp igen
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stå upp igen och se framåt
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Se till att ditt huvud är plant
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Titta inte på golvet
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Titta inte för högt upp
+onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Se till att kontrollern pekar nedåt
+onboarding-user_height-calibration-RECORDING_HEIGHT = Stå upp igen och stå still!
+onboarding-user_height-calibration-DONE = Lyckad kallibration!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Kalibreringen har gått ut på tidsgränsen, försök igen.
+onboarding-user_height-calibration-ERROR_TOO_HIGH = Den upptäckta användarlängden är för hög, försök igen.
+onboarding-user_height-calibration-ERROR_TOO_SMALL = Den detekterade användarlängden är för liten. Se till att stå rakt och titta framåt i slutet av kalibreringen.
+onboarding-user_height-calibration-error = Kalibreringen misslyckades
+onboarding-user_height-manual-tip = Medan du justerar din längd, prova olika positioner och se hur skelettet matchar din kropp.
+onboarding-user_height-reset-warning =
+    <b>Varning:</b> Detta återställer dina proportioner till att baseras på din längd.
+    Är du säker på att du vill göra detta?
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Håll dig i linje
+onboarding-stay_aligned-description = Konfigurera Stay Aligned för att hålla dina trackers i linje.
+onboarding-stay_aligned-put_trackers_on-title = Sätt på alla dina trackers
+onboarding-stay_aligned-put_trackers_on-description = För att spara dina vilopositioner använder vi de trackers du just tilldelade. Sätt på alla dina trackers, du kan se vilka som är vilka i bilden till höger.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Du har färre än 5 spårare anslutna och tilldelade för närvarande! Detta är det minsta antalet spårare som krävs för att Stay Aligned ska fungera korrekt.
+onboarding-stay_aligned-put_trackers_on-next = Jag har på mig alla spårare
+onboarding-stay_aligned-verify_mounting-title = Monteringskalibrering
+onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned kräver bra montering. Annars får du inte en bra upplevelse med Stay Aligned.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Rör dig stående.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Sätt dig ner och rör på benen och fötterna.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. Om dina spårare inte är på rätt plats, tryck på "Gör om monteringskalibrering".
+onboarding-stay_aligned-verify_mounting-redo_mounting = Gör om monteringskalibrering
+onboarding-stay_aligned-preparation-title = Förberedning
+onboarding-stay_aligned-preparation-tip = Se till att stå upprätt. Fortsätt att titta framåt med armarna nedåt längs sidorna.
+onboarding-stay_aligned-relaxed_poses-standing-title = Avslappnad stående position
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stå i en bekväm position. Slappna av!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Tryck på knappen "Spara pose".
+onboarding-stay_aligned-relaxed_poses-sitting-title = Avslappnad sittande i stolsställning
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sitt i en bekväm position. Slappna av!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Tryck på knappen "Spara pose".
+onboarding-stay_aligned-relaxed_poses-flat-title = Avslappnad sittande på golvet
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sitt på golvet med benen framåt. Slappna av!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Tryck på knappen "Spara pose".
+onboarding-stay_aligned-relaxed_poses-skip_step = Hoppa
+onboarding-stay_aligned-done-title = Stay Aligned aktiverat!
+onboarding-stay_aligned-done-description = Din Stay Aligned-guide är klar!
+onboarding-stay_aligned-done-description-2 = Installationen är klar! Du kan starta om processen om du vill kalibrera om poserna.
+onboarding-stay_aligned-previous_step = Tidigare
+onboarding-stay_aligned-next_step = Nästa
+onboarding-stay_aligned-restart = Starta om
+onboarding-stay_aligned-done = Klar
+onboarding-stay_aligned-manual_mounting-done = Klar
 
 ## Home
 
+home-no_trackers = Inga spårare upptäckta eller tilldelade
+home-settings = Inställningar för startsidan
+home-settings-close = Stäng
 
 ## Trackers Still On notification
 
+trackers_still_on-modal-title = Spårarna är fortfarande på
+trackers_still_on-modal-description =
+    En eller flera spårare är fortfarande påslagna.
+    Vill du fortfarande avsluta SlimeVR?
+trackers_still_on-modal-confirm = Avsluta SlimeVR
+trackers_still_on-modal-cancel = Vänta...
 
 ## Status system
 
+status_system-StatusTrackerReset = Det rekommenderas att utföra en fullständig återställning eftersom en eller flera spårare inte är justerade.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] För närvarande inte ansluten till SlimeVR Feeder-appen.
+       *[steamvr] För närvarande inte ansluten till SteamVR via SlimeVR-drivrutinen.
+    }
+status_system-StatusTrackerError = Spåraren { $trackerName } har ett fel.
+status_system-StatusUnassignedHMD = VR-headsetet bör tilldelas som en huvudtracker.
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Din nätverksprofil är för närvarande inställd på Offentlig ({ $adapters }). Detta rekommenderas inte för att SlimeVR ska fungera korrekt. <PublicFixLink>Se hur du åtgärdar det här.</PublicFixLink>
+       *[other] Några av dina nätverkskort är inställda på offentliga: { $adapters }. Detta rekommenderas inte för att SlimeVR ska fungera korrekt. <PublicFixLink>Se hur du åtgärdar det här.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
+firmware_tool-next_step = Nästa steg
+firmware_tool-previous_step = Föregående steg
+firmware_tool-ok = Ser bra ut
+firmware_tool-retry = Försök igen
+firmware_tool-loading = Laddar...
 
 ## Firmware tool Steps
 
+firmware_tool = DIY-firmwareverktyg
+firmware_tool-description = Låter dig konfigurera och flasha dina gör-det-själv-spårare
+firmware_tool-not_available = Oj, firmware-verktyget är inte tillgängligt för tillfället. Kom tillbaka senare!
+firmware_tool-not_compatible = Programvaruverktyget är inte kompatibelt med den här serverversionen. Uppdatera din server!
+firmware_tool-select_source = Välj den firmware som ska flashas
+firmware_tool-select_source-description = Välj den firmware du vill flasha på ditt moderkort
+firmware_tool-select_source-error = Det gick inte att ladda källor
+firmware_tool-select_source-board_type = Korttyp
+firmware_tool-select_source-firmware = Firmvarukälla
+firmware_tool-select_source-version = Firmvaruversion
+firmware_tool-select_source-official = Officiell
+firmware_tool-select_source-dev = Utvecklar
+firmware_tool-select_source-not_selected = Ingen källa vald
+firmware_tool-select_source-no_boards = Inga tillgängliga moderkort för den här källan
+firmware_tool-select_source-no_versions = Inga tillgängliga versioner för den här källan
+firmware_tool-board_defaults = Konfigurera ditt moderkort
+firmware_tool-board_defaults-description = Ställ in pinnarna eller inställningarna i förhållande till din hårdvara
+firmware_tool-board_defaults-add = Lägg till
+firmware_tool-board_defaults-reset = Återställ till standard
+firmware_tool-board_defaults-error-required = Obligatoriskt fält
+firmware_tool-board_defaults-error-format = Ogiltigt format
+firmware_tool-board_defaults-error-format-number = Inte ett nummer
+firmware_tool-flash_method_step = Flashing metod
+firmware_tool-flash_method_step-description = Välj den flashmetoden du vill använda
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = Använd OTA-metoden. Din tracker använder Wi-Fi för att uppdatera sin firmware. Fungerar bara på trackers som har konfigurerats.
+firmware_tool-flash_method_step-ota-info =
+    Vi använder dina wifi-uppgifter för att flasha spåraren och bekräfta att allt fungerade korrekt.
+    <b>Vi lagrar inte dina wifi-uppgifter!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Använd en USB-kabel för att uppdatera din tracker.
+firmware_tool-flashbtn_step = Tryck på startknappen
+firmware_tool-flashbtn_step-description = Innan du går vidare till nästa steg finns det några saker du behöver göra
+firmware_tool-flashbtn_step-board_SLIMEVR = Stäng av spåraren, ta bort höljet (om det finns ett), anslut USB-kabeln till datorn och följ sedan lämpliga steg för din SlimeVR-kortrevision:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11-v2 = Slå på spåraren medan du kortsluter den andra rektangulära FLASH-plattan från kanten på kortets ovansida till mikrokontrollerns metallskärm. Spårarens lysdiod ska blinka kort.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12-v2 = Slå på spåraren medan du kortsluter den runda FLASH-plattan på kortets ovansida till mikrokontrollerns metallskärm. Spårarens lysdiod ska blinka kort.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14-v2 = Slå på spåraren medan du trycker in FLASH-knappen på ovansidan av kortet. Spårarens lysdiod ska blinka kort.
+firmware_tool-flashbtn_step-board_OTHER = Innan du flashar behöver du förmodligen försätta spåraren i bootloader-läge. För det mesta innebär detta att du trycker på startknappen på kortet innan flashningsprocessen startar. Om flashningsprocessen timeoutar vid starten betyder det förmodligen att spåraren inte var i bootloader-läge. Se instruktionerna för ditt kortet för att lära dig hur du går in i bootloader-läge.
+firmware_tool-flash_method_ota-title = Flashar via Wi-Fi
 firmware_tool-flash_method_ota-devices = Upptäckta OTA enheter:
 firmware_tool-flash_method_ota-no_devices = Det finns inga kort som kan uppdateras med OTA, se till att du valde rätt kort-typ
+firmware_tool-flash_method_serial-title = Flashar via USB
 firmware_tool-flash_method_serial-wifi = Wi-Fi information:
 firmware_tool-flash_method_serial-devices-label = Upptäckta seriell enheter:
 firmware_tool-flash_method_serial-devices-placeholder = Välj en seriell enhet.
@@ -1154,10 +1557,14 @@ firmware_tool-flashing_step-description = Dina trackers flashar, var vänlig och
 firmware_tool-flashing_step-warning-v2 = Koppla inte ur eller stäng av trackern under processen, om du inte uppmanats att göra det. Det kan göra ditt kort ej användbart.
 firmware_tool-flashing_step-flash_more = Flasha fler trackers
 firmware_tool-flashing_step-exit = Stäng
+firmware_tool-flashing_step-onboarding_continue = Fortsätt
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Väntar på att bygga....
 firmware_tool-build-CREATING_BUILD_FOLDER = Skapar bygges-filen
+firmware_tool-build-DOWNLOADING_SOURCE = Laddar ner mjukvaran
+firmware_tool-build-EXTRACTING_SOURCE = Extraherar källkoden
 firmware_tool-build-BUILDING = Bygger mjukvaran.
 firmware_tool-build-SAVING = Sparar bygget.
 firmware_tool-build-DONE = Byggning färdig
@@ -1186,20 +1593,41 @@ firmware_update-status-ERROR_UNKNOWN = Okänd errror
 
 firmware_update-title = Mjukvaro-uppdatering
 firmware_update-devices = Tillgängliga enheter
+firmware_update-devices-description = Välj de trackers du vill uppdatera till den senaste versionen av SlimeVR-firmvaran.
+firmware_update-no_devices = Se till att de trackers du vill uppdatera är PÅ och anslutna till Wi-Fi!
+firmware_update-changelog-title = Uppdaterar till { $version }
+firmware_update-looking_for_devices = Letar efter enheter att uppdatera...
+firmware_update-retry = Försök igen
+firmware_update-update = Uppdatera valda spårare
+firmware_update-exit = Stäng
 
 ## Tray Menu
 
+tray_menu-show = Visa
+tray_menu-hide = Göm
+tray_menu-quit = Gå ut
 
 ## First exit modal
 
+tray_or_exit_modal-title = Vad ska stängningsknappen göra?
 # Multiline text
 tray_or_exit_modal-description = Detta gör att du kan välja om du vill avsluta servern eller minimera den till facket när du trycker på stäng-knappen. Du kan ändra detta senare i gränssnittsinställningarna!
+tray_or_exit_modal-radio-exit = Gå ut vid stängning
+tray_or_exit_modal-radio-tray = Minimera till systemfältet
+tray_or_exit_modal-submit = Spara
+tray_or_exit_modal-cancel = Avbryt
 
 ## Unknown device modal
 
+unknown_device-modal-title = En ny spårare hittades!
 unknown_device-modal-description =
     Det finns en ny tracker med MAC-adress <b>{ $deviceId }</b>.
     Vill du ansluta den till SlimeVR?
+unknown_device-modal-confirm = Absolut!
+unknown_device-modal-forget = Ignorera det
+# VRChat config warnings
+vrc_config-page-title = VRChat-konfigurationsvarningar
+vrc_config-page-desc = Den här sidan visar statusen för dina VRChat-inställningar och vilka inställningar som är inkompatibla med SlimeVR. Det rekommenderas starkt att du åtgärdar eventuella varningar som visas här för bästa möjliga användarupplevelse med SlimeVR.
 vrc_config-page-help = Hittar inte inställningen?
 vrc_config-page-help-desc = Kolla vår <a>dokumentation på detta området!</a>
 vrc_config-page-big_menu = Tracking & IK (stora menyn)
@@ -1250,3 +1678,69 @@ error_collection_modal-cancel = Jag vill inte
 
 ## Tracking checklist section
 
+tracking_checklist = Spårningschecklista
+tracking_checklist-settings = Inställningar för spårningschecklista
+tracking_checklist-settings-close = Stäng
+tracking_checklist-status-incomplete = Du är inte beredd att använda SlimeVR!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] Du har en varning!
+       *[other] Du har { $count } varningar!
+    }
+tracking_checklist-status-complete = Du är redo att använda SlimeVR!
+tracking_checklist-MOUNTING_CALIBRATION = Utför en monteringskalibrering
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Utför en kalibrering av fotmontering
+tracking_checklist-FULL_RESET = Utför en fullständig återställning
+tracking_checklist-FULL_RESET-desc = Vissa spårare behöver en återställning för att kunna utföras.
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR frånkopplad
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR körs inte. Använder du det för VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = Drivrutinen har blockerats av SteamVR på grund av en tidigare SteamVR-krasch.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = Drivrutinen är inaktiverad i SteamVR-inställningarna.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = Drivrutinen är inte installerad.
+tracking_checklist-STEAMVR_DISCONNECTED-open = Starta SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Aktivera drivrutinen
+tracking_checklist-STEAMVR_HANDS_ENABLED = Handspårare aktiverade
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Du har aktiverat de virtuella handspårarna i SteamVR. Detta kommer att göra att knapptryckningarna inte fungerar i SteamVR och i spel.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Inaktivera dem
+tracking_checklist-STANDABLE_INSTALLED = Standable är installerad
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable orsakar ofta spårningsproblem när det används tillsammans med SlimeVR. Standable bör avinstalleras helt i Steam för att säkerställa att inga problem uppstår.
+    
+    Du måste stänga SteamVR innan du avinstallerar Standable i Steam.
+tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrera dina spårare
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Du har inte kalibrerat spåraren. Låt dina spårare (markerade med gult) vila på en stabil yta i några sekunder.
+tracking_checklist-TRACKER_ERROR = Spårare med fel
+tracking_checklist-TRACKER_ERROR-desc = Några av dina spårare har ett fel. Starta om spårarna som är markerade med gult.
+tracking_checklist-VRCHAT_SETTINGS = Konfigurera VRChat-inställningar
+tracking_checklist-VRCHAT_SETTINGS-desc = Du har felkonfigurerat VRChat-inställningarna! Detta kan påverka din spårning negativt.
+tracking_checklist-VRCHAT_SETTINGS-open = Gå till VRChat-varningar
+tracking_checklist-UNASSIGNED_HMD = VR-headsetet är inte tilldelat till Headset
+tracking_checklist-UNASSIGNED_HMD-desc = VR-headsetet bör tilldelas som en huvudtracker.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Ändra din nätverksprofil
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc =
+    { $count ->
+        [one]
+            Din nätverksprofil är för närvarande inställd på Offentlig ({ $adapters }).
+            Detta rekommenderas inte för att SlimeVR ska fungera korrekt.
+            <PublicFixLink>Se hur du åtgärdar det här.</PublicFixLink>
+       *[other]
+            Några av dina nätverkskort är inställda på offentliga:
+            { $adapters }
+            Detta rekommenderas inte för att SlimeVR ska fungera korrekt.
+            <PublicFixLink>Se hur du åtgärdar det här.</PublicFixLink>
+    }
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Öppna Kontrollpanelen
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Konfigurera Stay Aligned
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Spela in positionerna för att hålla dig i linje för att minska avdriften.
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Öppna guiden Stay Aligned Wizard
+tracking_checklist-ignore = Ignorera
+preview-mocap_mode_soon = Mocap Mode (Snart™)
+preview-disable_render = Inaktivera rendering
+preview-disabled_render = Rendering inaktiverad
+toolbar-mounting_calibration = Monteringskalibrering
+toolbar-mounting_calibration-default = Kropp
+toolbar-mounting_calibration-feet = Fötter
+toolbar-mounting_calibration-fingers = Fingrar
+toolbar-drift_reset = Driftåterställning
+toolbar-assigned_trackers = { $count } spårare tilldelade
+toolbar-unassigned_trackers = { $count } spårare har inte tilldelats
