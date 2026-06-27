@@ -954,6 +954,9 @@ firmware_update-status-ERROR_UNKNOWN = Tundmatu viga
 
 unknown_device-modal-forget = Ignoreeri
 vrc_config-setting_name = VRChat Seade nimi
+vrc_config-recommended_value = Soovitatav väärtus
+vrc_config-current_value = Praegune väärtus
+vrc_config-mute = Mute Warning
 vrc_config-mute-btn = Mute
 vrc_config-unmute-btn = Unmute
 vrc_config-legacy_mode = Use Legacy IK Solving
@@ -983,5 +986,23 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 
 ## Tracking checklist section
 
+tracking_checklist = Jälgimise kontroll
+tracking_checklist-settings = Jälgimise kontrolli seaded
+tracking_checklist-settings-close = Sulge
 tracking_checklist-status-incomplete = Te ei ole valmis kasutama SlimeVR-i!
+tracking_checklist-status-partial =
+    { $count ->
+        [one] Teil on { $count } hoiatus!
+       *[other] Teil on { $count } hoiatust!
+    }
+tracking_checklist-status-complete = Teie olete valmis kasutama SlimeVR-i!
+tracking_checklist-STEAMVR_DISCONNECTED-open = Käivita SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Luba draiver
+tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibreerige oma jälgijad
+tracking_checklist-TRACKER_ERROR = Jälgijad vigadega
 tracking_checklist-ignore = Ignoreeri
+toolbar-mounting_calibration-default = Keha
+toolbar-mounting_calibration-feet = Jalad
+toolbar-mounting_calibration-fingers = Sõrmed
+toolbar-assigned_trackers = { $count } jälgijad määratud
+toolbar-unassigned_trackers = { $count } jälgijad määramata
