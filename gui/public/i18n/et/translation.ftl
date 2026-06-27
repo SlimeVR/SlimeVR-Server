@@ -62,6 +62,32 @@ body_part-LEFT_THUMB_METACARPAL = Vasak pöial (metakarpaal)
 body_part-LEFT_THUMB_PROXIMAL = Vasak pöial (proksimaal)
 body_part-LEFT_THUMB_DISTAL = Vasak pöial (distaal)
 body_part-LEFT_INDEX_PROXIMAL = Vasak nimetissõrm (proksimaal)
+body_part-LEFT_INDEX_INTERMEDIATE = Vasak nimetissõrm (vahefaalanks)
+body_part-LEFT_INDEX_DISTAL = Vasak nimetissõrm (distaal)
+body_part-LEFT_MIDDLE_PROXIMAL = Vasak kesksõrm (proksimaal)
+body_part-LEFT_MIDDLE_INTERMEDIATE = Vasak kesksõrm (vahefaalanks)
+body_part-LEFT_MIDDLE_DISTAL = Vasak kesksõrm (distaal)
+body_part-LEFT_RING_PROXIMAL = Vasak nimeta sõrm (proksimaal)
+body_part-LEFT_RING_INTERMEDIATE = Vasak nimeta sõrm (vahefaalanks)
+body_part-LEFT_RING_DISTAL = Vasak nimeta sõrm (distaal)
+body_part-LEFT_LITTLE_PROXIMAL = Vasak väike sõrm (proksimaal)
+body_part-LEFT_LITTLE_INTERMEDIATE = Vasak väike sõrm (vahefaalanks)
+body_part-LEFT_LITTLE_DISTAL = Vasak väike sõrm (distaal)
+body_part-RIGHT_THUMB_METACARPAL = Parem pöial (metakarpaal)
+body_part-RIGHT_THUMB_PROXIMAL = Parem pöial (proksimaal)
+body_part-RIGHT_THUMB_DISTAL = Parem pöial (distaal)
+body_part-RIGHT_INDEX_PROXIMAL = Parem nimetissõrm (proksimaal)
+body_part-RIGHT_INDEX_INTERMEDIATE = Parem nimetissõrm (vahefaalanks)
+body_part-RIGHT_INDEX_DISTAL = Parem nimetissõrm (distaal)
+body_part-RIGHT_MIDDLE_PROXIMAL = Parem kesksõrm (proksimaal)
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Parem kesksõrm (vahefaalanks)
+body_part-RIGHT_MIDDLE_DISTAL = Parem kesksõrm (distaal)
+body_part-RIGHT_RING_PROXIMAL = Parem nimeta sõrm (proksimaal)
+body_part-RIGHT_RING_INTERMEDIATE = Parem nimeta sõrm (vahefaalanks)
+body_part-RIGHT_RING_DISTAL = Parem nimeta sõrm (distaal)
+body_part-RIGHT_LITTLE_PROXIMAL = Parem väike sõrm (proksimaal)
+body_part-RIGHT_LITTLE_INTERMEDIATE = Parem väike sõrm (vahefaalanks)
+body_part-RIGHT_LITTLE_DISTAL = Parem väike sõrm (distaal)
 
 ## BoardType
 
@@ -255,12 +281,17 @@ tracker-settings-mounting_section-edit = Muuda paigaldusasendit
 tracker-settings-drift_compensation_section = Allow drift compensation
 tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
 tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-use_mag-label = Luba magnetomeeter
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jälgija Nimi
 tracker-settings-name_section-description = Anna talle armas hüüdnimi :)
 tracker-settings-name_section-placeholder = NightyBeasti vasak jalg
 tracker-settings-name_section-label = Jälgija Nimi
+tracker-settings-forget = Unusta jälgijat
+tracker-settings-forget-label = Unusta jälgijat
+tracker-settings-current-version = Praegune
+tracker-settings-latest-version = Viimane
 
 ## Tracker part card info
 
@@ -922,9 +953,30 @@ firmware_update-status-ERROR_UNKNOWN = Tundmatu viga
 ## Unknown device modal
 
 unknown_device-modal-forget = Ignoreeri
+vrc_config-setting_name = VRChat Seade nimi
+vrc_config-mute-btn = Mute
+vrc_config-unmute-btn = Unmute
+vrc_config-legacy_mode = Use Legacy IK Solving
+vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
+vrc_config-shoulder_width_compensation = Shoulder Width Compensation
+vrc_config-spine_mode = FBT Spine Mode
+vrc_config-tracker_model = FBT Tracker Model
+vrc_config-avatar_measurement_type = Avatar Measurement
+vrc_config-calibration_range = Calibration Range
+vrc_config-calibration_visuals = Display Calibration Visuals
+vrc_config-user_height = User Real Height
 vrc_config-spine_mode-UNKNOWN = Tundmatu
+vrc_config-spine_mode-LOCK_BOTH = Lock Both
+vrc_config-spine_mode-LOCK_HEAD = Lock Head
+vrc_config-spine_mode-LOCK_HIP = Lock Hip
 vrc_config-tracker_model-UNKNOWN = Tundmatu
+vrc_config-tracker_model-AXIS = Axis
+vrc_config-tracker_model-BOX = Box
+vrc_config-tracker_model-SPHERE = Sphere
+vrc_config-tracker_model-SYSTEM = System
 vrc_config-avatar_measurement_type-UNKNOWN = Tundmatu
+vrc_config-avatar_measurement_type-HEIGHT = Height
+vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 
 ## Error collection consent modal
 
