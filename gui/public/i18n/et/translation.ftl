@@ -943,12 +943,17 @@ firmware_update-status-ERROR_UNKNOWN = Tundmatu viga
 
 ## Dedicated Firmware Update Page
 
+firmware_update-exit = Välju
 
 ## Tray Menu
 
+tray_menu-show = Näita
+tray_menu-hide = Peida
 
 ## First exit modal
 
+tray_or_exit_modal-submit = Salvesta
+tray_or_exit_modal-cancel = Tühista
 
 ## Unknown device modal
 
@@ -996,11 +1001,17 @@ tracking_checklist-status-partial =
        *[other] Teil on { $count } hoiatust!
     }
 tracking_checklist-status-complete = Teie olete valmis kasutama SlimeVR-i!
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = Draiver ei ole paigaldatud.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Käivita SteamVR
 tracking_checklist-STEAMVR_DISCONNECTED-enable = Luba draiver
+tracking_checklist-STANDABLE_INSTALLED = Standable on paigaldatud
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibreerige oma jälgijad
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Teie ei olete teinud jälgija kalibreerimist. Palun laske oma jäligjatel (kollasega esile toonud) paar sekundit staabiilsel pinnal puhata.
 tracking_checklist-TRACKER_ERROR = Jälgijad vigadega
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Seadista Stay Aligned
 tracking_checklist-ignore = Ignoreeri
+preview-mocap_mode_soon = Mocap režiim (Soon™)
+toolbar-mounting_calibration = Paigaldamis kalibreerimine
 toolbar-mounting_calibration-default = Keha
 toolbar-mounting_calibration-feet = Jalad
 toolbar-mounting_calibration-fingers = Sõrmed
