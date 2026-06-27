@@ -58,6 +58,10 @@ body_part-LEFT_HAND = Vasak käsi
 body_part-LEFT_UPPER_LEG = Vasak reis
 body_part-LEFT_LOWER_LEG = Vasak säär
 body_part-LEFT_FOOT = Vasak jalg
+body_part-LEFT_THUMB_METACARPAL = Vasak pöial (metakarpaal)
+body_part-LEFT_THUMB_PROXIMAL = Vasak pöial (proksimaal)
+body_part-LEFT_THUMB_DISTAL = Vasak pöial (distaal)
+body_part-LEFT_INDEX_PROXIMAL = Vasak nimetissõrm (proksimaal)
 
 ## BoardType
 
