@@ -12,22 +12,20 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Base64
 
 plugins {
-	kotlin("android")
 	kotlin("plugin.serialization")
 	id("com.github.gmazzo.buildconfig")
 
-	id("com.android.application") version "8.13.2"
-	id("org.ajoberstar.grgit")
+	id("com.android.application") version "9.2.1"
 }
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 
@@ -83,7 +81,7 @@ val deleteTempKeyStore = tasks.register<Delete>("deleteTempKeyStore") {
 
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_17)
+		jvmTarget.set(JvmTarget.JVM_24)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
@@ -101,13 +99,12 @@ tasks.withType<Javadoc> {
 
 repositories {
 	google()
+	maven(url = "https://jitpack.io")
+	mavenCentral()
 }
 
 dependencies {
 	implementation(project(":server:core"))
-
-	implementation("commons-cli:commons-cli:1.11.0")
-	implementation("org.apache.commons:commons-lang3:3.20.0")
 
 	// Android stuff
 	implementation("androidx.appcompat:appcompat:1.7.1")
@@ -118,15 +115,21 @@ dependencies {
 	androidTestImplementation("androidx.test.ext:junit:1.3.0")
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
-	// Serial
+	// Serial + firmware flashing
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
+	implementation("com.github.loucass003:EspflashKotlin:v0.11.0")
+
+	// Logging
+	implementation("io.klogging:klogging:0.11.7")
+
+	// WebSocket server + coroutines
+	val ktorVersion = "3.4.1"
+	implementation("io.ktor:ktor-server-cio:$ktorVersion")
+	implementation("io.ktor:ktor-server-websockets:$ktorVersion")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 }
 
 // The android block is where you configure all your Android-specific build options.
-extra.apply {
-	set("gitVersionCode", grgit.tag.list().size)
-	set("gitVersionName", grgit.describe(mapOf("tags" to true, "always" to true)))
-}
 android {
 	// The app's namespace. Used primarily to access app resources.
 
@@ -160,12 +163,16 @@ android {
 
 		// adds an offset of the version code as we might do apk releases in the middle of actual
 		// releases if we failed on bundling or stuff
-		val versionCodeOffset = 5
-		// Defines the version number of your app.
-		versionCode = (extra["gitVersionCode"] as? Int)?.plus(versionCodeOffset) ?: 0
+		val versionCodeOffset = 4
 
-		// Defines a user-friendly version name for your app.
-		versionName = extra["gitVersionName"] as? String ?: "v0.0.0"
+		// Defines the version number of your app.
+		versionCode = providers.exec {
+			commandLine("git", "--no-pager", "tag", "-l")
+		}.standardOutput.asText.get().trim().split('\n').size +
+			versionCodeOffset
+		versionName = providers.exec {
+			commandLine("git", "describe", "--tags", "--abbrev=8", "--always")
+		}.standardOutput.asText.get().trim()
 
 		logger.lifecycle("i: Configured for SlimeVR Android version \"$versionName\" ($versionCode).")
 
@@ -217,7 +224,7 @@ android {
 	}
 
 	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_17
-		targetCompatibility = JavaVersion.VERSION_17
+		sourceCompatibility = JavaVersion.VERSION_24
+		targetCompatibility = JavaVersion.VERSION_24
 	}
 }

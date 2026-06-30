@@ -16,24 +16,29 @@ pluginManagement {
         mavenCentral()
     }
 
-	val kotlinVersion: String by settings
-	val spotlessVersion: String by settings
-	val shadowJarVersion: String by settings
-	val buildconfigVersion: String by settings
-	val grgitVersion: String by settings
+	val kotlinVersion = providers.gradleProperty("kotlinVersion").get()
+	val spotlessVersion = providers.gradleProperty("spotlessVersion").get()
+	val shadowJarVersion = providers.gradleProperty("shadowJarVersion").get()
+	val buildconfigVersion = providers.gradleProperty("buildconfigVersion").get()
+	val wireVersion = providers.gradleProperty("wireVersion").get()
 	plugins {
 		kotlin("plugin.serialization") version kotlinVersion
 		kotlin("jvm") version kotlinVersion
 		kotlin("android") version kotlinVersion
+		kotlin("multiplatform") version kotlinVersion
 		id("com.diffplug.spotless") version spotlessVersion
 		id("com.gradleup.shadow") version shadowJarVersion
 		id("com.github.gmazzo.buildconfig") version buildconfigVersion
-		id("org.ajoberstar.grgit") version grgitVersion
+		id("com.squareup.wire") version wireVersion
 	}
 }
 
 include(":solarxr-protocol")
-project(":solarxr-protocol").projectDir = File("solarxr-protocol/protocol/java")
+project(":solarxr-protocol").projectDir = File("solarxr-protocol")
+include(":solarxr-protocol:codegen")
+project(":solarxr-protocol:codegen").projectDir = File("solarxr-protocol/kotlin-codegen")
+include(":solarxr-protocol:generated")
+project(":solarxr-protocol:generated").projectDir = File("solarxr-protocol/protocol/kotlin")
 
 include(":server")
 project(":server").projectDir = File("server")

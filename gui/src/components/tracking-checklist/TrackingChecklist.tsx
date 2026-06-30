@@ -7,13 +7,16 @@ import {
 import classNames from 'classnames';
 import {
   ChangeSettingsRequestT,
+  EnableSteamVRDriverRequestT,
   ResetType,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-  SteamVRTrackersSettingT,
+  OutputTrackersSettingT,
   TrackingChecklistPublicNetworksT,
+  TrackingChecklistSteamVRDisconnectedT,
   TrackingChecklistStepId,
+  BodyPart,
 } from 'solarxr-protocol';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
@@ -28,8 +31,8 @@ import {
   ArrowDownIcon,
   ArrowRightIcon,
 } from '@/components/commons/icon/ArrowIcons';
-import { Localized } from '@fluent/react';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
+import { Localized, useLocalization } from '@fluent/react';
+import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
 import { TrackingChecklistModal } from './TrackingChecklistModal';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '@/hooks/breakpoint';
@@ -108,10 +111,73 @@ function Step({
   );
 }
 
+function SteamVRDisconnected({
+  step,
+  context,
+}: {
+  step: TrackingChecklistStep;
+  context: TrackingChecklistContext;
+}) {
+  const { sendRPCPacket } = useWebsocketAPI();
+  const data = step.extraData as TrackingChecklistSteamVRDisconnectedT | null;
+
+  const enableDriver = () => {
+    sendRPCPacket(
+      RpcMessage.EnableSteamVRDriverRequest,
+      new EnableSteamVRDriverRequestT()
+    );
+  };
+
+  const driverNotInstalled = data?.driverInstalled === false;
+  const driverBlocked = data?.driverBlockedBySafeMode === true;
+  const driverDisabled = data?.driverEnabled === false;
+
+  const showEnableDriverButton = driverBlocked || driverDisabled;
+
+  const getDescriptionId = () => {
+    if (driverBlocked)
+      return 'tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc';
+    if (driverDisabled)
+      return 'tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc';
+    if (driverNotInstalled)
+      return 'tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc';
+    return 'tracking_checklist-STEAMVR_DISCONNECTED-desc';
+  };
+
+  return (
+    <div className="space-y-2.5">
+      <Typography id={getDescriptionId()} />
+      <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
+        {showEnableDriverButton && (
+          <Button
+            id="tracking_checklist-STEAMVR_DISCONNECTED-enable"
+            variant="primary"
+            onClick={enableDriver}
+          />
+        )}
+        {!showEnableDriverButton && !driverNotInstalled && (
+          <Button
+            id="tracking_checklist-STEAMVR_DISCONNECTED-open"
+            variant="primary"
+            onClick={() => openUrl('steam://run/250820')}
+          />
+        )}
+        {step.ignorable && (
+          <Button
+            id="tracking_checklist-ignore"
+            variant="secondary"
+            onClick={() => context.toggleSession(step.id)}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
 function SteamVRHandsEnabled() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [steamVrTrackers, setSteamVrTrackers] = useState<Omit<
-    SteamVRTrackersSettingT,
+    OutputTrackersSettingT,
     'pack'
   > | null>(null);
 
@@ -120,25 +186,19 @@ function SteamVRHandsEnabled() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    if (settings.steamVrTrackers) {
-      setSteamVrTrackers(settings.steamVrTrackers);
+    if (settings.outputTrackers) {
+      setSteamVrTrackers(settings.outputTrackers);
     }
   });
 
   const disableHandTrackers = () => {
     const settings = new ChangeSettingsRequestT();
-    settings.steamVrTrackers = new SteamVRTrackersSettingT(
-      steamVrTrackers?.waist,
-      steamVrTrackers?.chest,
+    settings.outputTrackers = new OutputTrackersSettingT(
       steamVrTrackers?.automaticTrackerToggle,
-      steamVrTrackers?.leftFoot,
-      steamVrTrackers?.rightFoot,
-      steamVrTrackers?.leftKnee,
-      steamVrTrackers?.rightKnee,
-      steamVrTrackers?.leftElbow,
-      steamVrTrackers?.rightElbow,
-      false,
-      false
+      steamVrTrackers?.trackers.filter(
+        (tracker) =>
+          tracker != BodyPart.LEFT_HAND && tracker != BodyPart.RIGHT_HAND
+      )
     );
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
   };
@@ -153,6 +213,21 @@ function SteamVRHandsEnabled() {
           onClick={disableHandTrackers}
         />
       </div>
+    </div>
+  );
+}
+
+function StandableInstalled() {
+  const { l10n } = useLocalization();
+
+  return (
+    <div className="space-y-2.5">
+      {l10n
+        .getString('tracking_checklist-STANDABLE_INSTALLED-desc')
+        .split('\n')
+        .map((line, i) => (
+          <Typography key={i}>{line}</Typography>
+        ))}
     </div>
   );
 }
@@ -224,28 +299,8 @@ const stepContentLookup: Record<
       </div>
     );
   },
-  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]: (step, { toggleSession }) => {
-    return (
-      <>
-        <div className="space-y-2.5">
-          <Typography id="tracking_checklist-STEAMVR_DISCONNECTED-desc" />
-          <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-            <Button
-              id="tracking_checklist-STEAMVR_DISCONNECTED-open"
-              variant="primary"
-              onClick={() => openUrl('steam://run/250820')}
-            />
-            {step.ignorable && (
-              <Button
-                id="tracking_checklist-ignore"
-                variant="secondary"
-                onClick={() => toggleSession(step.id)}
-              />
-            )}
-          </div>
-        </div>
-      </>
-    );
+  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]: (step, context) => {
+    return <SteamVRDisconnected step={step} context={context} />;
   },
   [TrackingChecklistStepId.TRACKER_ERROR]: () => {
     return <Typography id="tracking_checklist-TRACKER_ERROR-desc" />;
@@ -409,6 +464,9 @@ const stepContentLookup: Record<
   },
   [TrackingChecklistStepId.STEAMVR_HANDS_ENABLED]: () => {
     return <SteamVRHandsEnabled />;
+  },
+  [TrackingChecklistStepId.STANDABLE_INSTALLED]: () => {
+    return <StandableInstalled />;
   },
 };
 

@@ -1,0 +1,250 @@
+package dev.slimevr.hid
+
+import dev.slimevr.AppLogger
+import dev.slimevr.VRServerActions
+import dev.slimevr.device.Device
+import dev.slimevr.device.DeviceActions
+import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.util.safeLaunch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import solarxr_protocol.datatypes.TrackerStatus
+
+class HIDRegistrationBehaviour : HIDReceiverBehaviour {
+	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions) = when (action) {
+		is HIDReceiverActions.DeviceRegistered -> state.copy(
+			trackers = state.trackers +
+				(
+					action.hidId to HIDTrackerRecord(
+						hidId = action.hidId,
+						address = action.address,
+						deviceId = action.deviceId,
+						trackerId = null,
+					)
+					),
+		)
+
+		else -> state
+	}
+
+	override fun observe(receiver: HIDReceiver) {
+		receiver.packetEvents.onPacket<HIDDeviceRegister> { packet ->
+			val state = receiver.context.state.value
+			val existing = state.trackers[packet.hidId]
+			if (existing != null) return@onPacket
+
+			val existingDevice = receiver.appContext.server.context.state.value.devices.values
+				.find { it.context.state.value.macAddress == packet.address && it.context.state.value.origin == DeviceOrigin.HID }
+
+			if (existingDevice != null) {
+				receiver.context.dispatch(HIDReceiverActions.DeviceRegistered(packet.hidId, packet.address, existingDevice.context.state.value.id))
+				AppLogger.hid.info("Reconnected HID device ${packet.address} (hidId=${packet.hidId})")
+				return@onPacket
+			}
+
+			val deviceId = receiver.appContext.server.nextHandle()
+			val device = Device.create(
+				scope = receiver.appContext.server.context.scope,
+				appContext = receiver.appContext,
+				id = deviceId,
+				address = packet.address,
+				macAddress = packet.address,
+				origin = DeviceOrigin.HID,
+				protocolVersion = 0,
+			)
+			receiver.appContext.server.context.dispatch(VRServerActions.NewDevice(deviceId, device))
+			receiver.context.dispatch(HIDReceiverActions.DeviceRegistered(packet.hidId, packet.address, deviceId))
+			AppLogger.hid.info("Registered HID device ${packet.address} (hidId=${packet.hidId})")
+		}
+	}
+}
+
+class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
+	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions): HIDReceiverState = when (action) {
+		is HIDReceiverActions.TrackerRegistered -> {
+			val existing = state.trackers[action.hidId] ?: return state
+			state.copy(trackers = state.trackers + (action.hidId to existing.copy(trackerId = action.trackerId)))
+		}
+
+		else -> state
+	}
+
+	override fun observe(receiver: HIDReceiver) {
+		receiver.packetEvents.onPacket<HIDDeviceInfo> { packet ->
+			val device = receiver.getDevice(packet.hidId) ?: return@onPacket
+			val deviceState = device.context.state.value
+
+			device.context.dispatch(
+				DeviceActions.Update {
+					copy(
+						boardType = packet.boardType,
+						mcuType = packet.mcuType,
+						firmware = packet.firmware,
+						batteryLevel = packet.batteryLevel,
+						batteryVoltage = packet.batteryVoltage,
+						signalStrength = packet.rssi,
+					)
+				},
+			)
+
+			val tracker = receiver.getTracker(packet.hidId)
+				?: receiver.appContext.server.context.state.value.trackers.values
+					.find { it.context.state.value.hardwareId == deviceState.address && it.context.state.value.origin == DeviceOrigin.HID }
+				?: run {
+					val trackerId = receiver.appContext.server.nextHandle()
+					val newTracker = Tracker.create(
+						scope = receiver.appContext.server.context.scope,
+						id = trackerId,
+						deviceId = deviceState.id,
+						sensorType = packet.imuType,
+						hardwareId = deviceState.address,
+						origin = DeviceOrigin.HID,
+						appContext = receiver.appContext,
+					)
+					receiver.appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, newTracker))
+					newTracker
+				}
+			receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, tracker.context.state.value.id))
+			// HID does not have a rest calibration signal
+			tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true, magStatus = packet.magStatus) })
+			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+		}
+	}
+}
+
+class HIDRotationBehaviour : HIDReceiverBehaviour {
+	override fun observe(receiver: HIDReceiver) {
+		receiver.packetEvents.onPacket<HIDRotation> { packet ->
+			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
+		}
+
+		receiver.packetEvents.onPacket<HIDRotationBattery> { packet ->
+			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
+		}
+
+		receiver.packetEvents.onPacket<HIDRotationMag> { packet ->
+			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, magnetometer = packet.magnetometer))
+		}
+
+		receiver.packetEvents.onPacket<HIDRotationButton> { packet ->
+			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
+		}
+	}
+}
+
+class HIDBatteryBehaviour : HIDReceiverBehaviour {
+	override fun observe(receiver: HIDReceiver) {
+		receiver.packetEvents.onPacket<HIDRotationBattery> { packet ->
+			receiver.getDevice(packet.hidId)?.context?.dispatch(
+				DeviceActions.Update {
+					copy(batteryLevel = packet.batteryLevel, batteryVoltage = packet.batteryVoltage, signalStrength = packet.rssi)
+				},
+			)
+		}
+
+		receiver.packetEvents.onPacket<HIDRotationButton> { packet ->
+			receiver.getDevice(packet.hidId)?.context?.dispatch(
+				DeviceActions.Update { copy(signalStrength = packet.rssi) },
+			)
+		}
+
+		receiver.packetEvents.onPacket<HIDData> { packet ->
+			receiver.getDevice(packet.hidId)?.context?.dispatch(
+				DeviceActions.Update { copy(signalStrength = packet.rssi) },
+			)
+		}
+
+		receiver.packetEvents.onPacket<HIDRuntime> { packet ->
+			// -1: not yet known (keep existing value); 0: N/A (e.g. charging)
+			if (packet.runtime >= 0) {
+				receiver.getDevice(packet.hidId)?.context?.dispatch(
+					DeviceActions.Update { copy(batteryRemainingRuntime = packet.runtime) },
+				)
+			}
+		}
+	}
+}
+
+private const val HID_TIMEOUT_MS = 2_000L
+
+class HIDSleepBehaviour : HIDReceiverBehaviour {
+	override fun observe(receiver: HIDReceiver) {
+		val sleepJobs = mutableMapOf<Int, Job>()
+		val idleJobs = mutableMapOf<Int, Job>()
+
+		fun scheduleSleep(hidId: Int, timeoutMs: Int) {
+			if (timeoutMs == 0) return
+			sleepJobs[hidId]?.cancel()
+			if (timeoutMs == 65535) {
+				sleepJobs.remove(hidId)
+				return
+			}
+			sleepJobs[hidId] = receiver.context.scope.safeLaunch {
+				delay(timeoutMs.toLong())
+				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
+			}
+		}
+
+		fun armIdleTimeout(hidId: Int) {
+			idleJobs[hidId]?.cancel()
+			idleJobs[hidId] = receiver.context.scope.safeLaunch {
+				delay(HID_TIMEOUT_MS)
+				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
+			}
+		}
+
+		fun onPacket(hidId: Int) {
+			val tracker = receiver.getTracker(hidId) ?: return
+			if (tracker.context.state.value.status == TrackerStatus.TIMED_OUT) {
+				sleepJobs[hidId]?.cancel()
+				sleepJobs.remove(hidId)
+				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+			}
+			armIdleTimeout(hidId)
+		}
+
+		receiver.packetEvents.onPacket<HIDRotationButton> { packet ->
+			onPacket(packet.hidId)
+			scheduleSleep(packet.hidId, packet.timeout)
+		}
+
+		receiver.packetEvents.onPacket<HIDData> { packet ->
+			onPacket(packet.hidId)
+			scheduleSleep(packet.hidId, packet.timeout)
+		}
+
+		receiver.packetEvents.onPacket<HIDRotation> { packet -> onPacket(packet.hidId) }
+		receiver.packetEvents.onPacket<HIDRotationBattery> { packet -> onPacket(packet.hidId) }
+		receiver.packetEvents.onPacket<HIDRotationMag> { packet -> onPacket(packet.hidId) }
+		receiver.packetEvents.onPacket<HIDStatus> { packet -> onPacket(packet.hidId) }
+		receiver.packetEvents.onPacket<HIDRuntime> { packet -> onPacket(packet.hidId) }
+	}
+}
+
+class HIDStatusBehaviour : HIDReceiverBehaviour {
+	override fun observe(receiver: HIDReceiver) {
+		receiver.packetEvents.onPacket<HIDStatus> { packet ->
+			if (receiver.getTracker(packet.hidId) == null) return@onPacket
+			receiver.getDevice(packet.hidId)?.context?.dispatch(
+				DeviceActions.Update { copy(status = packet.status, signalStrength = packet.rssi) },
+			)
+		}
+	}
+}
+
+class HIDPacketLossBehaviour : HIDReceiverBehaviour {
+	override fun observe(receiver: HIDReceiver) {
+		receiver.packetEvents.onPacket<HIDStatus> { packet ->
+			receiver.getDevice(packet.hidId)?.context?.dispatch(
+				DeviceActions.PacketStats(packetsReceived = packet.packetsReceived.toLong(), packetsLost = packet.packetsLost.toLong()),
+			)
+		}
+	}
+}

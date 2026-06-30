@@ -1,0 +1,158 @@
+package dev.slimevr.udp
+
+import dev.slimevr.AppContextProvider
+import dev.slimevr.EventDispatcher
+import dev.slimevr.context.Behaviour
+import dev.slimevr.context.Context
+import dev.slimevr.device.Device
+import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerIdNum
+import dev.slimevr.util.safeLaunch
+import io.ktor.network.sockets.BoundDatagramSocket
+import io.ktor.network.sockets.Datagram
+import io.ktor.network.sockets.InetSocketAddress
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.io.Buffer
+import kotlinx.io.readByteArray
+import solarxr_protocol.datatypes.MagnetometerStatus
+
+data class LastPing(
+	val id: Int,
+	val startTime: Long,
+)
+
+data class SensorConfigFlags(
+	val magStatus: MagnetometerStatus,
+)
+
+data class UDPConnectionState(
+	// Pre-resolved IP string. InetSocketAddress.hostname triggers a reverse DNS lookup so we
+	// can't derive this on demand; it must be resolved once by the platform (see UdpServer.addressResolver)
+	// and cached here. remoteAddress is kept separately on UDPConnection only for sending datagrams.
+	val address: String,
+	val lastPacket: Long,
+	val lastPacketNum: Long,
+	val lastPing: LastPing,
+	val didHandshake: Boolean,
+	val deviceId: Int?,
+	val trackerIds: List<TrackerIdNum>,
+	val features: FirmwareFeatures?,
+	val sensorConfigFlags: Map<Int, SensorConfigFlags>,
+)
+
+sealed interface UDPConnectionActions {
+	data class StartPing(val startTime: Long, val pingId: Int) : UDPConnectionActions
+	data class Handshake(val deviceId: Int) : UDPConnectionActions
+	data class LastPacket(val packetNum: Long? = null, val time: Long) : UDPConnectionActions
+	data class AssignTracker(val trackerId: TrackerIdNum) : UDPConnectionActions
+	data class FirmwareFeatures(val features: dev.slimevr.udp.FirmwareFeatures) : UDPConnectionActions
+	data class SetSensorConfig(val sensorId: Int, val flags: SensorConfigFlags) : UDPConnectionActions
+	data object TimedOut : UDPConnectionActions
+}
+
+typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
+typealias UDPConnectionBehaviour = Behaviour<UDPConnectionState, UDPConnectionActions, UDPConnection>
+
+class UDPConnection(
+	val context: UDPConnectionContext,
+	val appContext: AppContextProvider,
+	val packetEvents: UDPPacketDispatcher,
+	val packetChannel: Channel<PacketEvent<UDPPacket>>,
+	private val socket: BoundDatagramSocket,
+	private val remoteAddress: InetSocketAddress,
+	private val scope: CoroutineScope,
+) {
+	fun send(packet: UDPPacket) {
+		scope.safeLaunch {
+			val buf = Buffer()
+			writePacket(buf, packet)
+			socket.send(Datagram(buf, remoteAddress))
+		}
+	}
+
+	fun startObserving() = context.observeAll(this)
+
+	fun getDevice(): Device? {
+		val deviceId = context.state.value.deviceId
+		return if (deviceId != null) appContext.server.getDevice(deviceId) else null
+	}
+
+	fun getTracker(id: Int): Tracker? {
+		val trackerId = context.state.value.trackerIds.find { it.trackerNum == id }
+		return if (trackerId != null) appContext.server.getTracker(trackerId.id) else null
+	}
+
+	companion object {
+		fun create(
+			address: String,
+			socket: BoundDatagramSocket,
+			remoteAddress: InetSocketAddress,
+			appContext: AppContextProvider,
+			scope: CoroutineScope,
+		): UDPConnection {
+			val behaviours = listOf(
+				PacketBehaviour(),
+				PacketLossBehaviour(),
+				HandshakeBehaviour(),
+				TimeoutBehaviour(),
+				DisconnectBehaviour(),
+				PingBehaviour(),
+				DeviceStatsBehaviour(),
+				SensorInfoBehaviour(),
+				SensorRotationBehaviour(),
+				BundledPacketBehaviour(),
+				FlagsBehaviour(),
+				TemperatureBehaviour(),
+				SensorConfigBehaviour(),
+				AckConfigBehaviour(),
+			)
+
+			val context = Context.create(
+				initialState = UDPConnectionState(
+					address = address,
+					lastPacket = System.currentTimeMillis(),
+					lastPacketNum = 0,
+					lastPing = LastPing(id = 0, startTime = 0),
+					didHandshake = false,
+					deviceId = null,
+					trackerIds = listOf(),
+					features = null,
+					sensorConfigFlags = emptyMap(),
+				),
+				scope = scope,
+				behaviours = behaviours,
+				name = "UDPConnection[$address]",
+			)
+
+			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>> { it.data::class }
+			val packetChannel = Channel<PacketEvent<UDPPacket>>(capacity = 256)
+
+			val conn = UDPConnection(
+				context = context,
+				appContext = appContext,
+				packetEvents = dispatcher,
+				packetChannel = packetChannel,
+				socket = socket,
+				remoteAddress = remoteAddress,
+				scope = scope,
+			)
+			conn.startObserving()
+
+			// Dedicated coroutine per connection so the receive loop is never blocked by packet processing
+			scope.safeLaunch {
+				for (event in packetChannel) {
+					// We skip any packet from the tracker that are not handshake packets
+					// if we didn't do a handshake with the server
+					// this prevents from receiving packets if the server does not know about the
+					// tracker yet. This usually happen when you restart the server with already
+					// connected trackers
+					if (!context.state.value.didHandshake && event.data !is PreHandshakePacket) continue
+					dispatcher.emit(event)
+				}
+			}
+
+			return conn
+		}
+	}
+}

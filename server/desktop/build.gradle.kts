@@ -13,22 +13,22 @@ plugins {
 	application
 	id("com.gradleup.shadow")
 	id("com.github.gmazzo.buildconfig")
-	id("org.ajoberstar.grgit")
+	id("com.squareup.wire")
 }
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(24))
 	}
 }
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_17)
+		jvmTarget.set(JvmTarget.JVM_24)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
@@ -54,19 +54,44 @@ allprojects {
 	}
 }
 
+val downloadDriverProto = tasks.register("downloadDriverProto") {
+	val protoFile = layout.buildDirectory.file("proto/ProtobufMessages.proto")
+	outputs.file(protoFile)
+	doLast {
+		val url = "https://raw.githubusercontent.com/SlimeVR/SlimeVR-OpenVR-Driver/main/src/bridge/ProtobufMessages.proto"
+		protoFile.get().asFile.parentFile.mkdirs()
+		uri(url).toURL().openStream().use { it.copyTo(protoFile.get().asFile.outputStream()) }
+	}
+}
+
+wire {
+	sourcePath {
+		srcDir(downloadDriverProto.map { layout.buildDirectory.dir("proto") })
+	}
+	kotlin { }
+}
+
 dependencies {
 	implementation(project(":server:core"))
-	implementation(project(":solarxr-protocol"))
+	implementation(project(":solarxr-protocol:generated"))
+	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
+	implementation("com.github.loucass003:EspflashKotlin:v0.11.0")
 
-	implementation("commons-cli:commons-cli:1.11.0")
-	implementation("org.apache.commons:commons-lang3:3.20.0")
-	implementation("com.google.protobuf:protobuf-java:4.31.1")
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 	implementation("com.fazecast:jSerialComm:2.11.3") {
 		exclude(group = "com.fazecast", module = "android")
 	}
 	implementation("org.hid4java:hid4java:0.8.0")
+	implementation("io.klogging:klogging:0.11.7")
+
+	val ktorVersion = "3.4.1"
+	implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+	implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+	implementation("io.ktor:ktor-server-websockets-jvm:$ktorVersion")
+
+	testImplementation(kotlin("test"))
 }
 
 tasks.shadowJar {
@@ -75,7 +100,7 @@ tasks.shadowJar {
 		exclude(dependency("net.java.dev.jna:.*:.*"))
 		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
 
-		exclude(project(":solarxr-protocol"))
+		exclude(project(":solarxr-protocol:generated"))
 	}
 	archiveBaseName.set("slimevr")
 	archiveClassifier.set("")
@@ -83,18 +108,25 @@ tasks.shadowJar {
 }
 application {
 	mainClass.set("dev.slimevr.desktop.Main")
+	applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
 }
 
 buildConfig {
 	useKotlinOutput { topLevelConstants = true }
 	packageName("dev.slimevr.desktop")
 
+	val gitCommitHash = providers.exec {
+		commandLine("git", "rev-parse", "--short=8", "HEAD")
+	}.standardOutput.asText.get().trim()
 	val gitVersionTag = providers.exec {
 		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD")
-	}.standardOutput.asText.get().split('\n').first()
-	buildConfigField("String", "GIT_COMMIT_HASH", "\"${grgit.head().abbreviatedId}\"")
-	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag.trim()}\"")
-	buildConfigField("boolean", "GIT_CLEAN", grgit.status().isClean.toString())
+	}.standardOutput.asText.get().trim()
+	val gitIsClean = providers.exec {
+		commandLine("git", "status", "--porcelain")
+	}.standardOutput.asText.get().trim().isEmpty()
+	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
+	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
+	buildConfigField("boolean", "GIT_CLEAN", gitIsClean.toString())
 }
 
 tasks.run<JavaExec> {

@@ -1,0 +1,113 @@
+@file:OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+
+package dev.slimevr.heightcalibration
+
+import dev.slimevr.Phase1ContextProvider
+import dev.slimevr.VRServer
+import dev.slimevr.config.UserConfig
+import dev.slimevr.context.Behaviour
+import dev.slimevr.context.Context
+import dev.slimevr.util.safeLaunch
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.UserHeightCalibrationStatus
+
+data class TrackerSnapshot(val position: Vector3, val rotation: Quaternion)
+
+data class HeightCalibrationState(
+	val status: UserHeightCalibrationStatus,
+	val currentHeight: Float,
+)
+
+sealed interface HeightCalibrationActions {
+	data class Update(val status: UserHeightCalibrationStatus, val currentHeight: Float) : HeightCalibrationActions
+}
+
+typealias HeightCalibrationContext = Context<HeightCalibrationState, HeightCalibrationActions>
+typealias HeightCalibrationBehaviourType = Behaviour<HeightCalibrationState, HeightCalibrationActions, HeightCalibrationManager>
+
+val INITIAL_HEIGHT_CALIBRATION_STATE = HeightCalibrationState(
+	status = UserHeightCalibrationStatus.NONE,
+	currentHeight = 0f,
+)
+
+class HeightCalibrationManager(
+	val context: HeightCalibrationContext,
+	val serverContext: VRServer,
+	private val userConfig: UserConfig,
+) {
+	fun startObserving() = context.observeAll(this)
+
+	private var sessionJob: Job? = null
+
+	// These Flows do nothing until the calibration use collect on it
+	val hmdUpdates: Flow<TrackerSnapshot> = serverContext.context.state
+		.flatMapLatest { state ->
+			val hmd = state.trackers.values
+				.find {
+					val state = it.context.state.value
+					state.bodyPart == BodyPart.HEAD && state.status == TrackerStatus.OK && state.position != null
+				}
+				?: return@flatMapLatest emptyFlow()
+			hmd.context.state.map { s ->
+				TrackerSnapshot(
+					position = s.position ?: error("head (or HMD) will always have a position in this case"),
+					rotation = s.rawRotation,
+				)
+			}
+		}
+
+	val controllerUpdates: Flow<TrackerSnapshot> = serverContext.context.state
+		.flatMapLatest { state ->
+			val controllers = state.trackers.values.filter {
+				val state = it.context.state.value
+				val bodyPart = state.bodyPart
+				(bodyPart == BodyPart.LEFT_HAND || bodyPart == BodyPart.RIGHT_HAND) && state.status == TrackerStatus.OK && state.position != null
+			}
+			if (controllers.isEmpty()) return@flatMapLatest emptyFlow()
+			combine(
+				controllers.map { controller ->
+					controller.context.state.map { s ->
+						val position = s.position ?: error("hands (or Controller) will always have a position in this case")
+						TrackerSnapshot(position = position, rotation = s.rawRotation)
+					}
+				},
+			) { snapshots -> snapshots.minByOrNull { it.position.y } ?: error("snapshots is empty; controllers check above should have prevented this") }
+		}
+
+	fun start() {
+		sessionJob?.cancel()
+		sessionJob = context.scope.safeLaunch { runCalibrationSession(context, userConfig, hmdUpdates, controllerUpdates) }
+	}
+
+	fun cancel() {
+		sessionJob?.cancel()
+		sessionJob = null
+		context.dispatch(HeightCalibrationActions.Update(UserHeightCalibrationStatus.NONE, 0f))
+	}
+
+	companion object {
+		fun create(
+			ctx: Phase1ContextProvider,
+			scope: CoroutineScope,
+		): HeightCalibrationManager {
+			val behaviours = listOf(CalibrationBehaviour())
+			val context = Context.create(
+				initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
+				scope = scope,
+				behaviours = behaviours,
+				name = "HeightCalibration",
+			)
+			return HeightCalibrationManager(context = context, serverContext = ctx.server, userConfig = ctx.config.userConfig)
+		}
+	}
+}

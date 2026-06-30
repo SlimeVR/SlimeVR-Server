@@ -292,9 +292,6 @@ widget-overlay = Overlay
 widget-overlay-is_visible_label = Show Overlay in SteamVR
 widget-overlay-is_mirrored_label = Display Overlay as Mirror
 
-## Widget: Drift compensation
-widget-drift_compensation-clear = Clear drift compensation
-
 ## Widget: Clear Mounting calibration
 widget-clear_mounting = Clear mounting calibration
 
@@ -389,9 +386,6 @@ tracker-settings-assignment_section-edit = Edit assignment
 tracker-settings-mounting_section = Mounting orientation
 tracker-settings-mounting_section-description = Where is the tracker mounted?
 tracker-settings-mounting_section-edit = Edit mounting
-tracker-settings-drift_compensation_section = Allow drift compensation
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
-tracker-settings-drift_compensation_section-edit = Allow drift compensation
 tracker-settings-use_mag = Allow magnetometer on this tracker
 # Multiline!
 tracker-settings-use_mag-description =
@@ -481,13 +475,12 @@ mounting_selection_menu-close = Close
 ## Sidebar settings
 settings-sidebar-title = Settings
 settings-sidebar-general = General
-settings-sidebar-steamvr = SteamVR
+settings-sidebar-output = Output
 settings-sidebar-tracker_mechanics = Tracker mechanics
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = Tracking settings
 settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = Interface
-settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
@@ -501,15 +494,16 @@ settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = Advanced
 
-## SteamVR settings
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = SteamVR trackers
+## Output settings
+# Some keys have steamvr in them as we switched to output but want to keep existing translations
+settings-general-output = Output
+settings-general-output_trackers = Output trackers
 # Not all translation keys support multiline, only the ones that specify it will actually
 # split it in lines (that also means you can split in lines however you want in those).
 # The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
 # This one is one of this cases that cares about multilines
-settings-general-steamvr-description =
-    Enable or disable specific SteamVR trackers.
+settings-general-output_trackers-description =
+    Enable or disable specific trackers to output.
     Useful for games or apps that only support certain trackers.
 settings-general-steamvr-trackers-waist = Waist
 settings-general-steamvr-trackers-chest = Chest
@@ -522,10 +516,9 @@ settings-general-steamvr-trackers-right_elbow = Right elbow
 settings-general-steamvr-trackers-left_hand = Left hand
 settings-general-steamvr-trackers-right_hand = Right hand
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
-settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments.
+settings-general-output-trackers-tracker_toggling-description = Automatically handles toggling output trackers on or off depending on your current tracker assignments.
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
-settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> Enabling the SteamVR hand trackers will disable inputs from real controllers.
-    This should only be enabled if you are using SlimeVR for hand tracking.
+settings-general-output-trackers-hands-warning = <b>Warning:</b> Enabling the hand trackers will disable inputs from real controllers in SteamVR.
 
     Are you sure you want to do this?
 settings-general-steamvr-trackers-hands-warning-cancel = Cancel
@@ -547,25 +540,6 @@ settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-filtering-amount = Amount
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time (0s disables smoothing)
-settings-general-tracker_mechanics-drift_compensation = Drift compensation
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates for IMU yaw drift by applying an inverse rotation.
-    Change the amount of compensation and the number of resets taken into account.
-    This should only be used if you need to reset very often!
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-prediction = Drift compensation prediction
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    Predicts yaw drift compensation beyond previously measured range.
-    Enable this if your trackers are continuously spinning on the yaw axis.
-settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift compensation prediction
-settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>Warning:</b> Only use drift compensation if you need to reset
-    very often (every ~5-10 minutes).
-
-    Some IMUs prone to frequent resets include:
-    Joy-Cons, owoTrack, and MPUs (without recent firmware).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancel
 settings-general-tracker_mechanics-drift_compensation_warning-done = I understand
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
@@ -589,9 +563,8 @@ settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
 settings-stay_aligned-setup-label = Setup Stay Aligned
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
-settings-stay_aligned-warnings-drift_compensation = ⚠ Please turn off Drift Compensation! Drift Compensation will conflict with Stay Aligned.
 settings-stay_aligned-enabled-label = Adjust trackers
-settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare with no Stay Aligned)
+settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare without Stay Aligned)
 settings-stay_aligned-general-label = General
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
 settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
@@ -653,17 +626,10 @@ settings-general-fk_settings-arm_fk-tpose_down = T-pose (down)
 settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down at your sides during Mounting Calibration.
 settings-general-fk_settings-arm_fk-forward = Forward
 settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be raised forward at 90 degrees. Useful for VTubing.
-settings-general-fk_settings-skeleton_settings-toggles = Skeleton toggles
-settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
-settings-general-fk_settings-skeleton_settings-extended_spine_model = Extended spine model
-settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Extended pelvis model
-settings-general-fk_settings-skeleton_settings-extended_knees_model = Extended knee model
 settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Impute waist from chest to hip
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Impute waist from chest to legs
-settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Impute hip from chest to legs
-settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Impute hip from waist to legs
+settings-general-fk_settings-skeleton_settings-impute_spine_from_top_down = Impute missing spine trackers from upper to lower
+settings-general-fk_settings-skeleton_settings-impute_spine_curvature = How much to curve the spine with at least 2 adjacent spine trackers
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Average the hip's yaw and roll with the legs'
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Average the knee trackers' yaw and roll with the ankles'
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Average the knees' yaw and roll with the ankles'
@@ -695,7 +661,7 @@ settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
 settings-general-gesture_control-fullResetDelay = Full reset delay
 settings-general-gesture_control-fullResetTaps = Taps for full reset
 settings-general-gesture_control-fullResetTracker = Full Reset Tracker
-settings-general-gesture_control-mountingResetEnabled = Enable tap to perform mounting calibration
+settings-general-gesture_control-mountingResetEnabled = Enable tap to mounting reset
 settings-general-gesture_control-mountingResetDelay = Mounting calibration delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting calibration
 settings-general-gesture_control-mountingResetTracker = Mounting Reset Tracker
@@ -790,6 +756,12 @@ settings-serial-factory_reset-warning-cancel = Cancel
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Get WiFi Scan
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = Plain text
 settings-serial-save_logs = Save To File
 settings-serial-send_command = Send
@@ -798,30 +770,6 @@ settings-serial-send_command-warning =
     <b>Warning:</b> Running serial commands can lead to data loss or brick the trackers.
 settings-serial-send_command-warning-ok = I know what I'm doing
 settings-serial-send_command-warning-cancel = Cancel
-
-## OSC router settings
-settings-osc-router = OSC router
-# This cares about multilines
-settings-osc-router-description =
-    Forward OSC messages from another program.
-    Useful for using another OSC program with VRChat, for example.
-settings-osc-router-enable = Enable
-settings-osc-router-enable-description = Toggle the forwarding of messages.
-settings-osc-router-enable-label = Enable
-settings-osc-router-network = Network ports
-# This cares about multilines
-settings-osc-router-network-description =
-    Set the ports for listening and sending data.
-    These can be the same as other ports used in the SlimeVR server.
-settings-osc-router-network-port_in =
-    .label = Port In
-    .placeholder = Port in (default: 9002)
-settings-osc-router-network-port_out =
-    .label = Port Out
-    .placeholder = Port out (default: 9000)
-settings-osc-router-network-address = Network address
-settings-osc-router-network-address-description = Set the address to send out data at.
-settings-osc-router-network-address-placeholder = IPV4 address
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
@@ -851,13 +799,40 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Network address
 settings-osc-vrchat-network-address-description-v1 = Choose which address to send out data to. Can be left untouched for VRChat.
 settings-osc-vrchat-network-address-placeholder = VRChat ip address
-settings-osc-vrchat-network-trackers = Trackers
-settings-osc-vrchat-network-trackers-description = Toggle the sending of specific trackers via OSC.
-settings-osc-vrchat-network-trackers-chest = Chest
-settings-osc-vrchat-network-trackers-hip = Hip
-settings-osc-vrchat-network-trackers-knees = Knees
-settings-osc-vrchat-network-trackers-feet = Feet
-settings-osc-vrchat-network-trackers-elbows = Elbows
+
+## VRChat OSC status
+settings-osc-vrchat-status-title = Status
+settings-osc-vrchat-status-disabled = Disabled
+settings-osc-vrchat-status-input = Input
+settings-osc-vrchat-status-output = Output
+settings-osc-vrchat-status-oscquery = OSCQuery
+settings-osc-vrchat-status-input-idle = Not listening
+settings-osc-vrchat-status-input-listening = Listening on port {$port}
+settings-osc-vrchat-status-input-last-data = Last data from VRChat: {$elapsed}
+settings-osc-vrchat-status-input-no-data = No data received from VRChat yet
+settings-osc-vrchat-status-output-idle = No target
+settings-osc-vrchat-status-output-sending = Sending to {$address}:{$port} ({$source})
+settings-osc-vrchat-status-output-target = Target {$address}:{$port} ({$source})
+settings-osc-vrchat-status-output-last-frame = Last frame sent: {$elapsed}
+settings-osc-vrchat-status-output-no-frame = No frame sent yet
+settings-osc-vrchat-status-source-manual = manual
+settings-osc-vrchat-status-source-auto = auto-detected
+settings-osc-vrchat-status-oscquery-disabled = OSCQuery off (manual network mode)
+settings-osc-vrchat-status-oscquery-advertising = Advertising on port {$port}
+settings-osc-vrchat-status-oscquery-searching = No VRChat clients found yet
+settings-osc-vrchat-status-oscquery-discovered-title = Discovered VRChat clients:
+settings-osc-vrchat-status-oscquery-switch = Switch
+settings-osc-vrchat-status-network-mode = Network mode
+settings-osc-vrchat-status-network-mode-description = Automatic mode discovers VRChat through OSCQuery. Manual mode uses the configured address and ports.
+settings-osc-vrchat-status-network-mode-toggle = Manual network settings
+settings-osc-vrchat-status-network-manual-description = Configure the local input port and the VRChat OSC target manually.
+settings-osc-vrchat-status-badge-idle = Idle
+settings-osc-vrchat-status-badge-listening = Listening
+settings-osc-vrchat-status-badge-ready = Ready
+settings-osc-vrchat-status-badge-found = Found
+settings-osc-vrchat-status-badge-searching = Searching
+settings-osc-vrchat-status-badge-disabled = Disabled
+settings-osc-vrchat-status-badge-error = Error
 
 ## VMC OSC settings
 settings-osc-vmc = Virtual Motion Capture
@@ -891,7 +866,7 @@ settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
 settings-osc-vmc-mirror_tracking-label = Mirror tracking
 
 ## Common OSC settings
-settings-osc-common-network-ports_match_error = The OSC Router in and out ports can't be the same!
+settings-osc-common-network-ports_match_error-v2 = The in and out ports can't be the same!
 settings-osc-common-network-port_banned_error = The port { $port } can't be used!
 
 ## Advanced settings
@@ -1659,12 +1634,20 @@ tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
 tracking_checklist-FULL_RESET = Perform a full reset
 tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR not running
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR disconnected
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
 tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
 tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
 tracking_checklist-TRACKER_ERROR = Trackers with Errors

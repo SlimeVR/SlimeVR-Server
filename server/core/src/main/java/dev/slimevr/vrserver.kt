@@ -1,0 +1,67 @@
+package dev.slimevr
+
+import dev.slimevr.context.Behaviour
+import dev.slimevr.context.Context
+import dev.slimevr.device.Device
+import dev.slimevr.driver.DriverBridge
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.tracker.Tracker
+import kotlinx.coroutines.CoroutineScope
+import solarxr_protocol.rpc.RpcMessage
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.incrementAndFetch
+
+data class VRServerState(
+	val trackers: Map<Int, Tracker>,
+	val devices: Map<Int, Device>,
+	val drivers: Map<Int, DriverBridge>,
+	val solarxr: Map<Int, SolarXRBridge>,
+)
+
+sealed interface VRServerActions {
+	data class NewTracker(val trackerId: Int, val context: Tracker) : VRServerActions
+	data class NewDevice(val deviceId: Int, val context: Device) : VRServerActions
+	data class DriverConnected(val bridge: DriverBridge) : VRServerActions
+	data class DriverDisconnected(val bridgeId: Int) : VRServerActions
+	data class SolarXRConnected(val connection: SolarXRBridge) : VRServerActions
+	data class SolarXRDisconnected(val connectionId: Int) : VRServerActions
+}
+
+typealias VRServerContext = Context<VRServerState, VRServerActions>
+typealias VRServerBehaviour = Behaviour<VRServerState, VRServerActions, VRServer>
+
+@OptIn(ExperimentalAtomicApi::class)
+class VRServer(
+	val context: VRServerContext,
+) {
+	private val handleCounter: AtomicInt = AtomicInt(0)
+
+	fun startObserving() = context.observeAll(this)
+
+	fun nextHandle() = handleCounter.incrementAndFetch()
+	fun getTracker(id: Int) = context.state.value.trackers[id]
+	fun getDevice(id: Int) = context.state.value.devices[id]
+
+	suspend fun sendSolarxrRpc(message: RpcMessage) = context.state.value.solarxr.values.forEach { it.sendRpc(message) }
+
+	companion object {
+		fun create(scope: CoroutineScope): VRServer {
+			val behaviours = listOf(BaseBehaviour())
+			val context = Context.create(
+				initialState = VRServerState(
+					trackers = emptyMap(),
+					devices = emptyMap(),
+					drivers = emptyMap(),
+					solarxr = emptyMap(),
+				),
+				scope = scope,
+				behaviours = behaviours,
+				name = "VRServer",
+			)
+			val server = VRServer(context = context)
+			server.startObserving()
+			return server
+		}
+	}
+}

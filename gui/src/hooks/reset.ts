@@ -48,6 +48,17 @@ export function useReset(
     const req = new ResetRequestT();
     req.resetType = options.type;
     req.bodyParts = parts;
+    switch (options.type) {
+      case ResetType.Yaw:
+        req.delay = 0;
+        break;
+      case ResetType.Full:
+        req.delay = 3;
+        break;
+      case ResetType.Mounting:
+        req.delay = 3;
+        break;
+    }
     sendRPCPacket(RpcMessage.ResetRequest, req);
 
     Sentry.metrics.count('reset_click', 1, {

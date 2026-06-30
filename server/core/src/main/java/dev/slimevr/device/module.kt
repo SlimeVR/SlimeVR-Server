@@ -1,0 +1,105 @@
+package dev.slimevr.device
+
+import dev.slimevr.AppContextProvider
+import dev.slimevr.context.Behaviour
+import dev.slimevr.context.Context
+import dev.slimevr.context.debug.DiffStyle
+import dev.slimevr.context.debug.LoggingMiddleware
+import kotlinx.coroutines.CoroutineScope
+import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.datatypes.hardware_info.BoardType
+import solarxr_protocol.datatypes.hardware_info.McuType
+
+enum class DeviceOrigin {
+	DRIVER,
+	UDP,
+	HID,
+	OSC,
+	VRC,
+}
+
+data class DeviceState(
+	val id: Int,
+	val name: String,
+	val manufacturer: String,
+	val address: String,
+	val macAddress: String?,
+	val batteryLevel: Float?,
+	val batteryVoltage: Float?,
+	val batteryRemainingRuntime: Long?,
+	val ping: Long?,
+	val signalStrength: Int?,
+	val firmware: String?,
+	val boardType: BoardType,
+	val mcuType: McuType,
+	val protocolVersion: Int,
+	val status: TrackerStatus,
+	val origin: DeviceOrigin,
+	val packetsReceived: Long,
+	val packetsLost: Long,
+)
+
+sealed interface DeviceActions {
+	data class Update(val transform: DeviceState.() -> DeviceState) : DeviceActions
+	data class PacketStats(val packetsReceived: Long, val packetsLost: Long) : DeviceActions
+}
+
+typealias DeviceContext = Context<DeviceState, DeviceActions>
+typealias DeviceBehaviour = Behaviour<DeviceState, DeviceActions, Device>
+
+class Device(
+	val context: DeviceContext,
+	val appContext: AppContextProvider,
+) {
+	fun startObserving() = context.observeAll(this)
+
+	companion object {
+		fun create(
+			scope: CoroutineScope,
+			appContext: AppContextProvider,
+			id: Int,
+			name: String = "Device $id",
+			manufacturer: String = "SlimeVR",
+			address: String,
+			macAddress: String? = null,
+			origin: DeviceOrigin,
+			protocolVersion: Int,
+		): Device {
+			val deviceState = DeviceState(
+				id = id,
+				name = name,
+				manufacturer = manufacturer,
+				batteryLevel = null,
+				batteryVoltage = null,
+				batteryRemainingRuntime = null,
+				origin = origin,
+				address = address,
+				macAddress = macAddress,
+				protocolVersion = protocolVersion,
+				ping = null,
+				signalStrength = null,
+				status = TrackerStatus.DISCONNECTED,
+				mcuType = McuType.Other,
+				boardType = BoardType.UNKNOWN,
+				firmware = null,
+				packetsReceived = 0L,
+				packetsLost = 0L,
+			)
+
+			val behaviours = listOf(DeviceStatsBehaviour())
+			val context = Context.create(
+				initialState = deviceState,
+				scope = scope,
+				behaviours = behaviours,
+				debugMiddleware = LoggingMiddleware(
+					block = setOf(DeviceActions.PacketStats::class),
+					diffStyle = DiffStyle.MULTILINE,
+				),
+				name = "Device[$address]",
+			)
+			val device = Device(context = context, appContext = appContext)
+			device.startObserving()
+			return device
+		}
+	}
+}

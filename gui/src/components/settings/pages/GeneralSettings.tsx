@@ -12,18 +12,17 @@ import {
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,
-  SteamVRTrackersSettingT,
   TapDetectionSettingsT,
   HIDSettingsT,
   VelocitySettingsT,
   BodyPart,
+  OutputTrackersSettingT,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocaleConfig } from '@/i18n/config';
 import { CheckBox } from '@/components/commons/Checkbox';
-import { SteamIcon } from '@/components/commons/icon/SteamIcon';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
+import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
@@ -50,12 +49,15 @@ import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
+import { OutputIcon } from '@/components/commons/icon/OutputIcon';
+import { TouchDoubleIcon } from '@/components/commons/icon/TouchDoubleIcon';
+import { MartialArtsIcon } from '@/components/commons/icon/MartialArtsIcon';
 
 export type SettingsForm = {
   trackers: {
+    automaticTrackerToggle: boolean;
     waist: boolean;
     chest: boolean;
-    automaticTrackerToggle: boolean;
     leftFoot: boolean;
     rightFoot: boolean;
     leftKnee: boolean;
@@ -70,9 +72,6 @@ export type SettingsForm = {
     amount: number;
   };
   toggles: {
-    extendedSpine: boolean;
-    extendedPelvis: boolean;
-    extendedKnee: boolean;
     forceArmsFromHmd: boolean;
     floorClip: boolean;
     skatingCorrection: boolean;
@@ -84,10 +83,8 @@ export type SettingsForm = {
     correctConstraints: boolean;
   };
   ratios: {
-    imputeWaistFromChestHip: number;
-    imputeWaistFromChestLegs: number;
-    imputeHipFromChestLegs: number;
-    imputeHipFromWaistLegs: number;
+    imputeSpineFromTopDown: number;
+    imputeSpineCurvature: number;
     interpHipLegs: number;
     interpKneeTrackerAnkle: number;
     interpKneeAnkle: number;
@@ -122,9 +119,9 @@ export type SettingsForm = {
 
 const defaultValues: SettingsForm = {
   trackers: {
+    automaticTrackerToggle: true,
     waist: false,
     chest: false,
-    automaticTrackerToggle: true,
     leftFoot: false,
     rightFoot: false,
     leftElbow: false,
@@ -135,9 +132,6 @@ const defaultValues: SettingsForm = {
     rightKnee: false,
   },
   toggles: {
-    extendedSpine: true,
-    extendedPelvis: true,
-    extendedKnee: true,
     forceArmsFromHmd: false,
     floorClip: false,
     skatingCorrection: false,
@@ -149,10 +143,8 @@ const defaultValues: SettingsForm = {
     correctConstraints: true,
   },
   ratios: {
-    imputeWaistFromChestHip: 0.3,
-    imputeWaistFromChestLegs: 0.2,
-    imputeHipFromChestLegs: 0.45,
-    imputeHipFromWaistLegs: 0.4,
+    imputeSpineFromTopDown: 0.5,
+    imputeSpineCurvature: 0.5,
     interpHipLegs: 0.25,
     interpKneeTrackerAnkle: 0.85,
     interpKneeAnkle: 0.2,
@@ -235,44 +227,58 @@ export function GeneralSettings() {
     const settingsReq = new ChangeSettingsRequestT();
 
     if (values.trackers) {
-      const trackers = new SteamVRTrackersSettingT();
-      trackers.waist = values.trackers.waist;
-      trackers.chest = values.trackers.chest;
-      trackers.leftFoot = values.trackers.leftFoot;
-      trackers.rightFoot = values.trackers.rightFoot;
+      const outputTrackers = new OutputTrackersSettingT();
 
-      trackers.leftKnee = values.trackers.leftKnee;
-      trackers.rightKnee = values.trackers.rightKnee;
+      // The tracker is at the tail of the bone.
+      // Example, the waist tracker is at the tail of the hip bone so we use the hip BodyPart
+      const enabledBodyParts: [boolean, BodyPart][] = [
+        [values.trackers.waist, BodyPart.HIP],
+        [values.trackers.chest, BodyPart.CHEST],
+        [values.trackers.leftFoot, BodyPart.LEFT_FOOT],
+        [values.trackers.rightFoot, BodyPart.RIGHT_FOOT],
+        [values.trackers.leftKnee, BodyPart.LEFT_UPPER_LEG],
+        [values.trackers.rightKnee, BodyPart.RIGHT_UPPER_LEG],
+        [values.trackers.leftElbow, BodyPart.LEFT_UPPER_ARM],
+        [values.trackers.rightElbow, BodyPart.RIGHT_UPPER_ARM],
+        [values.trackers.leftHand, BodyPart.LEFT_HAND],
+        [values.trackers.rightHand, BodyPart.RIGHT_HAND],
+      ];
+      outputTrackers.trackers = enabledBodyParts
+        .filter(([enabled]) => enabled)
+        .map(([, part]) => part);
 
-      trackers.leftElbow = values.trackers.leftElbow;
-      trackers.rightElbow = values.trackers.rightElbow;
-
-      trackers.leftHand = values.trackers.leftHand;
-      trackers.rightHand = values.trackers.rightHand;
-
+      const leftHandEnabled = outputTrackers.trackers.includes(
+        BodyPart.LEFT_HAND
+      );
+      const rightHandEnabled = outputTrackers.trackers.includes(
+        BodyPart.RIGHT_HAND
+      );
       if (
         !blockHandsWarning.current &&
         !showHandsWarning &&
-        !settings.steamVrTrackers?.leftHand &&
-        !settings.steamVrTrackers?.rightHand &&
-        (trackers.leftHand || trackers.rightHand)
+        !settings?.outputTrackers?.trackers.includes(BodyPart.LEFT_HAND) &&
+        !settings?.outputTrackers?.trackers.includes(BodyPart.RIGHT_HAND) &&
+        (leftHandEnabled || rightHandEnabled)
       ) {
         // We have just toggled on one of the hand trackers, show the user a warning
-        setShowHandsWarning([trackers.leftHand, trackers.rightHand]);
-        trackers.leftHand = false;
-        trackers.rightHand = false;
+        setShowHandsWarning([leftHandEnabled, rightHandEnabled]);
+        outputTrackers.trackers = outputTrackers.trackers.filter(
+          (tracker) =>
+            tracker != BodyPart.LEFT_HAND && tracker != BodyPart.RIGHT_HAND
+        );
       } else if (
         blockHandsWarning.current &&
-        !trackers.leftHand &&
-        !trackers.rightHand
+        !outputTrackers.trackers.includes(BodyPart.LEFT_HAND) &&
+        !outputTrackers.trackers.includes(BodyPart.RIGHT_HAND)
       ) {
         // Both hand trackers have just been disabled, make sure the warning shows up
         // again next time the user toggles one back on
         blockHandsWarning.current = false;
       }
 
-      trackers.automaticTrackerToggle = values.trackers.automaticTrackerToggle;
-      settingsReq.steamVrTrackers = trackers;
+      outputTrackers.automaticTrackerToggle =
+        values.trackers.automaticTrackerToggle;
+      settingsReq.outputTrackers = outputTrackers;
     }
 
     const modelSettings = new ModelSettingsT();
@@ -281,9 +287,6 @@ export function GeneralSettings() {
       const toggles = new ModelTogglesT();
       toggles.floorClip = values.toggles.floorClip;
       toggles.skatingCorrection = values.toggles.skatingCorrection;
-      toggles.extendedKnee = values.toggles.extendedKnee;
-      toggles.extendedPelvis = values.toggles.extendedPelvis;
-      toggles.extendedSpine = values.toggles.extendedSpine;
       toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
       toggles.toeSnap = values.toggles.toeSnap;
       toggles.footPlant = values.toggles.footPlant;
@@ -296,14 +299,9 @@ export function GeneralSettings() {
 
     if (values.ratios) {
       const ratios = new ModelRatiosT();
-      ratios.imputeWaistFromChestHip =
-        values.ratios.imputeWaistFromChestHip || -1;
-      ratios.imputeWaistFromChestLegs =
-        values.ratios.imputeWaistFromChestLegs || -1;
-      ratios.imputeHipFromChestLegs =
-        values.ratios.imputeHipFromChestLegs || -1;
-      ratios.imputeHipFromWaistLegs =
-        values.ratios.imputeHipFromWaistLegs || -1;
+      ratios.imputeSpineFromTopDown =
+        values.ratios.imputeSpineFromTopDown || -1;
+      ratios.imputeSpineCurvature = values.ratios.imputeSpineCurvature || -1;
       ratios.interpHipLegs = values.ratios.interpHipLegs || -1;
       ratios.interpKneeTrackerAnkle =
         values.ratios.interpKneeTrackerAnkle || -1;
@@ -383,12 +381,12 @@ export function GeneralSettings() {
       formData.filtering = settings.filtering;
     }
 
-    if (settings.steamVrTrackers) {
-      formData.trackers = settings.steamVrTrackers;
+    if (settings.outputTrackers) {
+      formData.trackers = settings.outputTrackers;
       if (
         !blockHandsWarning.current &&
-        (settings.steamVrTrackers.leftHand ||
-          settings.steamVrTrackers.rightHand)
+        (settings.outputTrackers.trackers.includes(BodyPart.LEFT_HAND) ||
+          settings.outputTrackers.trackers.includes(BodyPart.RIGHT_HAND))
       ) {
         blockHandsWarning.current = true;
       }
@@ -522,32 +520,22 @@ export function GeneralSettings() {
         }}
       />
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<SteamIcon />} id="steamvr">
+        <SettingsPagePaneLayout icon={<OutputIcon />} id="output">
           <>
             <Typography variant="main-title">
-              {l10n.getString('settings-general-steamvr')}
+              {l10n.getString('settings-general-output')}
             </Typography>
-            <Typography variant="section-title">
-              {l10n.getString('settings-general-steamvr-subtitle')}
-            </Typography>
-            <div className="flex flex-col py-2">
-              {l10n
-                .getString('settings-general-steamvr-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography key={i}>{line}</Typography>
-                ))}
-            </div>
+
             <div className="flex flex-col pt-4" />
             <Typography variant="section-title">
               {l10n.getString(
                 'settings-general-steamvr-trackers-tracker_toggling'
               )}
             </Typography>
-            <div className="flex flex-col pt-2 pb-4">
+            <div className="flex flex-col py-2">
               {l10n
                 .getString(
-                  'settings-general-steamvr-trackers-tracker_toggling-description'
+                  'settings-general-output-trackers-tracker_toggling-description'
                 )
                 .split('\n')
                 .map((line, i) => (
@@ -564,6 +552,18 @@ export function GeneralSettings() {
               )}
             />
             <div className="flex flex-col pt-4" />
+
+            <Typography variant="section-title">
+              {l10n.getString('settings-general-output_trackers')}
+            </Typography>
+            <div className="flex flex-col py-2">
+              {l10n
+                .getString('settings-general-output_trackers-description')
+                .split('\n')
+                .map((line, i) => (
+                  <Typography key={i}>{line}</Typography>
+                ))}
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <CheckBox
                 variant="toggle"
@@ -661,6 +661,33 @@ export function GeneralSettings() {
                 name="trackers.rightHand"
                 label={l10n.getString(
                   'settings-general-steamvr-trackers-right_hand'
+                )}
+              />
+            </div>
+            <div className="flex flex-col pt-4" />
+
+            <div className="flex flex-col pt-2 pb-1">
+              <Typography variant="section-title">
+                {l10n.getString(
+                  'settings-general-fk_settings-velocity_settings'
+                )}
+              </Typography>
+              <div className="pt-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-general-fk_settings-velocity_settings-description'
+                  )}
+                </Typography>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-1 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="velocitySettings.sendDerivedVelocity"
+                label={l10n.getString(
+                  'settings-general-fk_settings-velocity_settings-send_derived_velocity'
                 )}
               />
             </div>
@@ -801,7 +828,7 @@ export function GeneralSettings() {
             />
           </>
         </SettingsPagePaneLayout>
-        <SettingsPagePaneLayout icon={<WrenchIcon />} id="fksettings">
+        <SettingsPagePaneLayout icon={<MartialArtsIcon />} id="fksettings">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-fk_settings')}
@@ -1067,75 +1094,8 @@ export function GeneralSettings() {
               />
             </div>
 
-            <div className="flex flex-col pt-2 pb-1">
-              <Typography variant="section-title">
-                {l10n.getString(
-                  'settings-general-fk_settings-velocity_settings'
-                )}
-              </Typography>
-              <div className="pt-2">
-                <Typography>
-                  {l10n.getString(
-                    'settings-general-fk_settings-velocity_settings-description'
-                  )}
-                </Typography>
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-1 pb-3">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="velocitySettings.sendDerivedVelocity"
-                label={l10n.getString(
-                  'settings-general-fk_settings-velocity_settings-send_derived_velocity'
-                )}
-              />
-            </div>
-
             {config?.debug && (
               <>
-                <div className="flex flex-col pt-2 pb-3">
-                  <Typography variant="section-title">
-                    {l10n.getString(
-                      'settings-general-fk_settings-skeleton_settings-toggles'
-                    )}
-                  </Typography>
-                  <Typography>
-                    {l10n.getString(
-                      'settings-general-fk_settings-skeleton_settings-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-3 pb-3">
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    control={control}
-                    name="toggles.extendedSpine"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-skeleton_settings-extended_spine_model'
-                    )}
-                  />
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    control={control}
-                    name="toggles.extendedPelvis"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-skeleton_settings-extended_pelvis_model'
-                    )}
-                  />
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    control={control}
-                    name="toggles.extendedKnee"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-skeleton_settings-extended_knees_model'
-                    )}
-                  />
-                </div>
                 <div className="flex flex-col">
                   <div className="flex flex-col pt-2 pb-3 gap-2">
                     <Typography variant="section-title">
@@ -1152,9 +1112,9 @@ export function GeneralSettings() {
                   <div className="grid sm:grid-cols-2 gap-3 pb-3">
                     <NumberSelector
                       control={control}
-                      name="ratios.imputeWaistFromChestHip"
+                      name="ratios.imputeSpineFromTopDown"
                       label={l10n.getString(
-                        'settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip'
+                        'settings-general-fk_settings-skeleton_settings-impute_spine_from_top_down'
                       )}
                       valueLabelFormat={(value) =>
                         percentageFormat.format(value)
@@ -1165,35 +1125,9 @@ export function GeneralSettings() {
                     />
                     <NumberSelector
                       control={control}
-                      name="ratios.imputeWaistFromChestLegs"
+                      name="ratios.imputeSpineCurvature"
                       label={l10n.getString(
-                        'settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs'
-                      )}
-                      valueLabelFormat={(value) =>
-                        percentageFormat.format(value)
-                      }
-                      min={0.0}
-                      max={1.0}
-                      step={0.05}
-                    />
-                    <NumberSelector
-                      control={control}
-                      name="ratios.imputeHipFromChestLegs"
-                      label={l10n.getString(
-                        'settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs'
-                      )}
-                      valueLabelFormat={(value) =>
-                        percentageFormat.format(value)
-                      }
-                      min={0.0}
-                      max={1.0}
-                      step={0.05}
-                    />
-                    <NumberSelector
-                      control={control}
-                      name="ratios.imputeHipFromWaistLegs"
-                      label={l10n.getString(
-                        'settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs'
+                        'settings-general-fk_settings-skeleton_settings-impute_spine_curvature'
                       )}
                       valueLabelFormat={(value) =>
                         percentageFormat.format(value)
@@ -1271,7 +1205,7 @@ export function GeneralSettings() {
           </>
         </SettingsPagePaneLayout>
 
-        <SettingsPagePaneLayout icon={<WrenchIcon />} id="gestureControl">
+        <SettingsPagePaneLayout icon={<TouchDoubleIcon />} id="gestureControl">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-gesture_control')}

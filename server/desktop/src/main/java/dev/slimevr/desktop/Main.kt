@@ -2,280 +2,127 @@
 
 package dev.slimevr.desktop
 
+import dev.slimevr.AppContext
+import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.FeatureFlags
-import dev.slimevr.Keybinding
-import dev.slimevr.SLIMEVR_IDENTIFIER
+import dev.slimevr.Phase1Context
+import dev.slimevr.Platform
 import dev.slimevr.VRServer
-import dev.slimevr.bridge.Bridge
-import dev.slimevr.config.ConfigManager
-import dev.slimevr.desktop.firmware.DesktopSerialFlashingHandler
-import dev.slimevr.desktop.games.vrchat.DesktopVRCConfigHandler
-import dev.slimevr.desktop.install.drivers.InstallDrivers
-import dev.slimevr.desktop.platform.SteamVRBridge
-import dev.slimevr.desktop.platform.linux.UnixSocketBridge
-import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
-import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
-import dev.slimevr.desktop.platform.windows.WindowsNamedPipeRpcBridge
-import dev.slimevr.desktop.serial.DesktopSerialHandler
-import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDManager
-import dev.slimevr.tracking.trackers.Tracker
-import io.eiren.util.OperatingSystem
-import io.eiren.util.collections.FastList
-import io.eiren.util.logging.LogManager
-import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.CommandLineParser
-import org.apache.commons.cli.DefaultParser
-import org.apache.commons.cli.HelpFormatter
-import org.apache.commons.cli.Options
-import org.apache.commons.lang3.SystemUtils
-import java.io.File
-import java.io.IOException
-import java.lang.System
-import java.net.DatagramSocket
-import java.net.ServerSocket
-import java.nio.file.Files
-import java.nio.file.Paths
-import javax.swing.JOptionPane
-import kotlin.concurrent.thread
-import kotlin.io.path.Path
-import kotlin.io.path.exists
-import kotlin.io.path.pathString
-import kotlin.system.exitProcess
+import dev.slimevr.bvh.BVHManager
+import dev.slimevr.config.AppConfig
+import dev.slimevr.context.debug.contextDebugEnabled
+import dev.slimevr.desktop.config.DesktopConfigStorage
+import dev.slimevr.desktop.hid.createDesktopHIDManager
+import dev.slimevr.desktop.install.executeShellCommand
+import dev.slimevr.desktop.install.runInstaller
+import dev.slimevr.desktop.ipc.createIpcServers
+import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
+import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
+import dev.slimevr.desktop.serial.DesktopFirmwareFlasher
+import dev.slimevr.desktop.serial.createDesktopSerialServer
+import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
+import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
+import dev.slimevr.desktop.vrchat.resolveDesktopOscQueryAddress
+import dev.slimevr.firmware.FirmwareManager
+import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.networkprofile.NetworkProfileManager
+import dev.slimevr.provisioning.ProvisioningManager
+import dev.slimevr.resets.ResetsManager
+import dev.slimevr.resolveConfigDirectory
+import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.trackingchecklist.TrackingChecklist
+import dev.slimevr.udp.UdpServer
+import dev.slimevr.util.safeLaunch
+import dev.slimevr.vmc.VMCManager
+import dev.slimevr.vrcosc.VRCOSCManager
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.runBlocking
 
-val VERSION =
-	(GIT_VERSION_TAG.ifEmpty { GIT_COMMIT_HASH }) +
-		if (GIT_CLEAN) "" else "-dirty"
+fun main(args: Array<String>) = runBlocking<Unit> {
+	contextDebugEnabled = System.getProperty("slimevr.debug.context") == "true" ||
+		System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
 
-val featureFlags = FeatureFlags()
+	val featureFlags = FeatureFlags()
+	for (arg in args) {
+		when (arg) {
+			"--steam", "-s" -> featureFlags.steam = true
 
-fun main(args: Array<String>) {
-	System.setProperty("awt.useSystemAAFontSettings", "on")
-	System.setProperty("swing.aatext", "true")
-
-	val parser: CommandLineParser = DefaultParser()
-	val formatter = HelpFormatter()
-	val options = Options()
-	val isLinux = OperatingSystem.currentPlatform == OperatingSystem.LINUX
-	options.addOption("h", "help", false, "Show help")
-	options.addOption("V", "version", false, "Show version")
-	options.addOption("i", "install", false, "Run the driver install")
-	options.addOption("s", "steam", false, "Run the server in steam mode")
-	if (isLinux) {
-		options.addOption("u", "no-udev", false, "Skip checking if udev rules are installed")
-	}
-
-	val cmd: CommandLine = try {
-		parser.parse(options, args, true)
-	} catch (e: org.apache.commons.cli.ParseException) {
-		formatter.printHelp("slimevr.jar", options)
-		exitProcess(1)
-	}
-	if (cmd.hasOption("help")) {
-		formatter.printHelp("slimevr.jar", options)
-		exitProcess(0)
-	}
-	if (cmd.hasOption("version")) {
-		LogManager.info("SlimeVR Server $VERSION")
-		exitProcess(0)
-	}
-	if (cmd.hasOption("install")) {
-		val installDrivers = InstallDrivers()
-		installDrivers.runInstaller()
-		exitProcess(0)
-	}
-	if (cmd.hasOption("steam")) {
-		featureFlags.steam = true
-	}
-	featureFlags.skipCheckUdev = !isLinux || cmd.hasOption("no-udev")
-
-	if (cmd.args.isEmpty()) {
-		System.err.println("No command specified, expected 'run'")
-		exitProcess(1)
-	}
-	if (!cmd.args[0].equals("run", true)) {
-		System.err.println("Unknown command: ${cmd.args[0]}, expected 'run'")
-		exitProcess(1)
-	}
-
-	val dir = OperatingSystem.resolveLogDirectory(SLIMEVR_IDENTIFIER)?.toFile()?.absoluteFile
-		?: File("").absoluteFile
-	try {
-		LogManager.initialize(dir)
-	} catch (e1: java.lang.Exception) {
-		e1.printStackTrace()
-	}
-	LogManager.info("Using log folder: $dir")
-	LogManager.info("Running version $VERSION")
-	if (!SystemUtils.isJavaVersionAtLeast(org.apache.commons.lang3.JavaVersion.JAVA_17)) {
-		LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.")
-		JOptionPane
-			.showMessageDialog(
-				null,
-				"SlimeVR start-up error! A minimum of Java 17 is required.",
-				"SlimeVR: Java Runtime Mismatch",
-				JOptionPane.ERROR_MESSAGE,
-			)
-		LogManager.closeLogger()
-		return
-	}
-
-	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toInt()
-	if (featureFlags.steam && isInstallDisabled != 1) {
-		val installDrivers = InstallDrivers()
-		installDrivers.runInstaller()
-	}
-
-	val configDir = resolveConfig()
-	LogManager.info("Using config dir: $configDir")
-
-	val configManager = ConfigManager(configDir)
-	configManager.loadConfig()
-
-	try {
-		DatagramSocket(configManager.vrConfig.server.trackerPort).close()
-		ServerSocket(21110).close()
-	} catch (e: IOException) {
-		val message = "SlimeVR start-up error! A required port (${configManager.vrConfig.server.trackerPort} and 21110) is busy. " +
-			"Make sure there is no other instance of SlimeVR Server running."
-		LogManager
-			.severe(message)
-		JOptionPane
-			.showMessageDialog(
-				null,
-				message,
-				"SlimeVR: Ports are busy",
-				JOptionPane.ERROR_MESSAGE,
-			)
-		LogManager.closeLogger()
-		return
-	}
-	try {
-		val vrServer = VRServer(
-			::provideBridges,
-			{ _ -> featureFlags },
-			{ _ -> DesktopSerialHandler() },
-			{ _ -> DesktopSerialFlashingHandler() },
-			{ _ -> DesktopVRCConfigHandler() },
-			{ _ -> DesktopNetworkProfileChecker() },
-			configManager = configManager,
-		)
-		vrServer.start()
-		// Start service for USB HID trackers
-		DesktopHIDManager(
-			"Sensors HID service",
-		) { tracker: Tracker -> vrServer.registerTracker(tracker) }
-
-		Keybinding(vrServer)
-		val scanner = thread {
-			while (true) {
-				if (readln() == "exit") {
-					vrServer.interrupt()
-					break
-				}
-			}
-		}
-
-		vrServer.join()
-		scanner.join()
-		LogManager.closeLogger()
-		exitProcess(0)
-	} catch (e: Throwable) {
-		e.printStackTrace()
-		exitProcess(1)
-	}
-}
-
-fun provideBridges(
-	server: VRServer,
-	computedTrackers: List<Tracker>,
-): Sequence<Bridge> = sequence {
-	when (OperatingSystem.currentPlatform) {
-		OperatingSystem.WINDOWS -> {
-			// Create named pipe bridge for SteamVR driver
-			yield(
-				WindowsNamedPipeBridge(
-					server,
-					"steamvr",
-					"SteamVR Driver Bridge",
-					"""\\.\pipe\SlimeVRDriver""",
-					computedTrackers,
-				),
-			)
-
-			// Create named pipe bridge for SteamVR input
-			yield(
-				WindowsNamedPipeBridge(
-					server,
-					"steamvr_feeder",
-					"SteamVR Feeder Bridge",
-					"""\\.\pipe\SlimeVRInput""",
-					FastList(),
-				),
-			)
-
-			yield(
-				WindowsNamedPipeRpcBridge(
-					server,
-					"""\\.\pipe\SlimeVRRpc""",
-				),
-			)
-		}
-
-		OperatingSystem.LINUX -> {
-			try {
-				yield(
-					UnixSocketBridge(
-						server,
-						"steamvr",
-						"SteamVR Driver Bridge",
-						Paths.get(OperatingSystem.socketDirectory, "SlimeVRDriver")
-							.toString(),
-						computedTrackers,
-					),
-				)
-			} catch (ex: Exception) {
-				LogManager.severe(
-					"Failed to initiate Unix socket, disabling driver bridge...",
-					ex,
-				)
+			"--install", "-i" -> {
+				runInstaller()
+				return@runBlocking
 			}
 
-			yield(
-				UnixSocketBridge(
-					server,
-					"steamvr_feeder",
-					"SteamVR Feeder Bridge",
-					Paths.get(OperatingSystem.socketDirectory, "SlimeVRInput")
-						.toString(),
-					FastList(),
-				),
-			)
-
-			yield(
-				UnixSocketRpcBridge(
-					server,
-					Paths.get(OperatingSystem.socketDirectory, "SlimeVRRpc")
-						.toString(),
-					computedTrackers,
-				),
-			)
+			"--no-udev", "-u" -> featureFlags.skipCheckUdev = true
 		}
-
-		else -> {}
 	}
-}
+	if (CURRENT_PLATFORM != Platform.LINUX) featureFlags.skipCheckUdev = true
 
-const val CONFIG_FILENAME = "vrconfig.yml"
-fun resolveConfig(): String {
-	// If config folder exists, then save config on relative path
-	if (Path("config/").exists()) {
-		return CONFIG_FILENAME
+	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toIntOrNull()
+	if (featureFlags.steam && isInstallDisabled != 1) runInstaller()
+
+	if (!featureFlags.skipCheckUdev) {
+		val command = if (featureFlags.steam) {
+			arrayOf("steam-runtime-launch-client", "--alongside-steam", "--", "udevadm", "cat")
+		} else {
+			arrayOf("udevadm", "cat")
+		}
+		featureFlags.udevRulesInstalled = executeShellCommand(*command)?.second?.contains("slime")
 	}
 
-	val configFile = OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(CONFIG_FILENAME) ?: return CONFIG_FILENAME
-	if (!configFile.exists() && Path(CONFIG_FILENAME).exists()) {
-		LogManager.info("Moved local config file to appdata folder")
-		Files.move(Path(CONFIG_FILENAME), configFile)
+	val configFolder = resolveConfigDirectory() ?: error("Unable to resolve config folder")
+	val storage = DesktopConfigStorage(configFolder.toFile())
+	val config = AppConfig.create(this, storage = storage)
+	val server = VRServer.create(this)
+	val serialServer = createDesktopSerialServer(this)
+
+	val phase1 = Phase1Context(server = server, config = config, serialServer = serialServer)
+
+	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this, flasher = DesktopFirmwareFlasher)
+	val vrcConfigManager = createDesktopVRCConfigManager(ctx = phase1, scope = this)
+	val networkProfileManager = NetworkProfileManager.create(scope = this, isSupported = CURRENT_PLATFORM == Platform.WINDOWS)
+	val skeleton = Skeleton.create(scope = this, ctx = phase1)
+	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
+	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
+	val trackingChecklist = TrackingChecklist.create(scope = this)
+	val udpServer = UdpServer.create(scope = this, addressResolver = ::resolveDesktopUdpAddress)
+	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
+	val vmcManager = VMCManager.create(skeleton = skeleton, ctx = phase1, scope = this)
+	val vrcOscManager = VRCOSCManager.create(
+		ctx = phase1,
+		scope = this,
+		oscQueryAddress = resolveDesktopOscQueryAddress(),
+	)
+	val resetsManager = ResetsManager.create(server = server, scope = this)
+
+	val appContext = AppContext(
+		server = server,
+		config = config,
+		serialServer = serialServer,
+		featureFlags = featureFlags,
+		skeleton = skeleton,
+		firmwareManager = firmwareManager,
+		vrcConfigManager = vrcConfigManager,
+		networkProfileManager = networkProfileManager,
+		provisioningManager = provisioningManager,
+		heightCalibrationManager = heightCalibrationManager,
+		trackingChecklist = trackingChecklist,
+		udpServer = udpServer,
+		bvhManager = bvhManager,
+		vmcManager = vmcManager,
+		vrcOscManager = vrcOscManager,
+		resetsManager = resetsManager,
+	)
+
+	try {
+		appContext.startObserving()
+
+		safeLaunch { createDesktopHIDManager(appContext, this) }
+		safeLaunch { createSolarXRWebsocketServer(appContext) }
+		safeLaunch { createIpcServers(appContext) }
+		safeLaunch { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
+
+		awaitCancellation()
+	} finally {
+		appContext.dispose()
 	}
-	return configFile.pathString
 }

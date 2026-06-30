@@ -3,7 +3,6 @@ import { StayAlignedSettingsT } from 'solarxr-protocol';
 import { SettingsForm } from '@/components/settings/pages/GeneralSettings';
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout';
 import { Localized, useLocalization } from '@fluent/react';
@@ -17,6 +16,7 @@ import {
   StandingRelaxedPoseModal,
 } from './StayAlignedPoseModal';
 import { useState } from 'react';
+import { HorizontalAlignIcon } from '@/components/commons/icon/HorizontalAlignIcon';
 
 export type StayAlignedSettingsForm = {
   enabled: boolean;
@@ -177,7 +177,7 @@ export function StayAlignedSettings({
 
   return (
     <>
-      <SettingsPagePaneLayout icon={<WrenchIcon />} id="stayaligned">
+      <SettingsPagePaneLayout icon={<HorizontalAlignIcon />} id="stayaligned">
         <Typography variant="main-title">
           {l10n.getString('settings-stay_aligned')}
         </Typography>
