@@ -126,7 +126,7 @@ export function HeightSelectionInput({
   const { l10n } = useLocalization();
   const isSubmitting = useRef(false);
 
-  let formattedHeight = useMemo(() => {
+  const formattedHeight = useMemo(() => {
     if (!hmdHeight) return '--';
 
     const fullHeight = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
@@ -160,7 +160,7 @@ export function HeightSelectionInput({
     let newFullHeight: number;
     clearErrors('height');
 
-    //convert formatted height to raw number in meters
+    // convert formatted height to raw number in meters
     if (unit == 'meter') {
       newFullHeight = Number(values.height.replace(/[ m]/g, ''));
 
@@ -184,10 +184,10 @@ export function HeightSelectionInput({
       }
     } else {
       const match = values.height.match(
-        /^(\d+)(?:[′'.,\s]+(\d+(?:\.\d+)?)?["”]?)?$/ //regex to convert the formatted text to feet and inches individually in an array
+        /^(\d+)(?:[′'.,\s]+(\d+(?:\.\d+)?)?["”]?)?$/ // regex to convert the formatted text to feet and inches individually in an array
       );
 
-      if (!values.height) return; //this is to allow for blank inputs, so that the user can type their height from scratch
+      if (!values.height) return; // this is to allow for blank inputs, so that the user can type their height from scratch
 
       if (!match) {
         setTimeout(() => {
@@ -203,7 +203,7 @@ export function HeightSelectionInput({
       const inches = Number(match[2] || 0);
       newFullHeight = convert(feet + inches / 12, 'foot').to('meter');
 
-      //bounds detection
+      // bounds detection
       if ((feet > 8 && inches > 4) || feet > 8) {
         setTimeout(() => {
           reset({ height: formattedHeight });
