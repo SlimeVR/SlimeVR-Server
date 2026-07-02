@@ -1,6 +1,10 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
-import { RpcMessage, SettingsRequestT, SettingsResponseT } from 'solarxr-protocol';
+import {
+  RpcMessage,
+  SkeletonSettingsRequestT,
+  UserHeightResponseT,
+} from 'solarxr-protocol';
 import { MIN_HEIGHT } from './manual-proportions';
 
 export interface HeightContext {
@@ -17,12 +21,13 @@ export function useProvideHeightContext(): HeightContext {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   useEffect(
-    () => sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT()),
+    () =>
+      sendRPCPacket(RpcMessage.SkeletonSettingsRequest, new SkeletonSettingsRequestT()),
     []
   );
-  useRPCPacket(RpcMessage.SettingsResponse, (res: SettingsResponseT) => {
-    const hmd = res.modelSettings?.skeletonHeight?.hmdHeight;
-    const floor = res.modelSettings?.skeletonHeight?.floorHeight;
+  useRPCPacket(RpcMessage.UserHeightResponse, (res: UserHeightResponseT) => {
+    const hmd = res.hmdHeight;
+    const floor = res.floorHeight;
 
     if (validateHeight(hmd, floor)) {
       setHmdHeight(hmd ?? null);

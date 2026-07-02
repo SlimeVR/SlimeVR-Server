@@ -66,7 +66,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
   const name = options.customName || resetName;
 
   const skiReset =
-    options.type === ResetType.Mounting && options.group === 'default';
+    options.type === ResetType.MOUNTING && options.group === 'default';
 
   return (
     <Tooltip
@@ -175,8 +175,8 @@ export function Toolbar() {
           <div className="flex-col flex gap-1 md:w-[60%]">
             <Typography variant="section-title" id="toolbar-drift_reset" />
             <div className="gap-2 md:h-[72px] h-[62px] w-full grid-cols-2 grid">
-              <BasicResetButton type={ResetType.Full} />
-              <BasicResetButton type={ResetType.Yaw} />
+              <BasicResetButton type={ResetType.FULL} />
+              <BasicResetButton type={ResetType.YAW} />
             </div>
           </div>
           <div className="flex-col flex gap-1 md:flex-grow">
@@ -191,18 +191,18 @@ export function Toolbar() {
               }}
             >
               <BasicResetButton
-                type={ResetType.Mounting}
+                type={ResetType.MOUNTING}
                 group={'default'}
                 customName="toolbar-mounting_calibration-default"
               />
               <BasicResetButton
-                type={ResetType.Mounting}
+                type={ResetType.MOUNTING}
                 group={'feet'}
                 customName="toolbar-mounting_calibration-feet"
               />
               {groupVisibility['fingers'] && (
                 <BasicResetButton
-                  type={ResetType.Mounting}
+                  type={ResetType.MOUNTING}
                   group={'fingers'}
                   customName="toolbar-mounting_calibration-fingers"
                 />

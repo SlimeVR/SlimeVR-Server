@@ -18,8 +18,8 @@ export type ResetBtnStatus = 'idle' | 'counting' | 'finished';
 
 export type MountingResetGroup = 'default' | 'feet' | 'fingers';
 export type UseResetOptions =
-  | { type: ResetType.Full | ResetType.Yaw }
-  | { type: ResetType.Mounting; group: MountingResetGroup };
+  | { type: ResetType.FULL | ResetType.YAW }
+  | { type: ResetType.MOUNTING; group: MountingResetGroup };
 
 export const BODY_PARTS_GROUPS: Record<MountingResetGroup, BodyPart[]> = {
   default: [],
@@ -32,7 +32,7 @@ export function useReset(
   onReseted?: () => void,
   onFailed?: () => void
 ) {
-  if (options.type === ResetType.Mounting && !options.group) options.group = 'default';
+  if (options.type === ResetType.MOUNTING && !options.group) options.group = 'default';
 
   const serverGuards = useAtomValue(serverGuardsAtom);
   const { currentLocales } = useLocaleConfig();
@@ -48,12 +48,23 @@ export function useReset(
     const req = new ResetRequestT();
     req.resetType = options.type;
     req.bodyParts = parts;
+    switch (options.type) {
+      case ResetType.YAW:
+        req.delay = 0;
+        break;
+      case ResetType.FULL:
+        req.delay = 3;
+        break;
+      case ResetType.MOUNTING:
+        req.delay = 3;
+        break;
+    }
     sendRPCPacket(RpcMessage.ResetRequest, req);
 
     Sentry.metrics.count('reset_click', 1, {
       attributes: {
         resetType: ResetType[options.type],
-        group: options.type === ResetType.Mounting ? options.group : undefined,
+        group: options.type === ResetType.MOUNTING ? options.group : undefined,
       },
     });
   };
@@ -91,7 +102,7 @@ export function useReset(
     ({ status, resetType, progress, duration, bodyParts }: ResetResponseT) => {
       if (
         resetType !== options.type ||
-        (resetType == ResetType.Mounting &&
+        (resetType == ResetType.MOUNTING &&
           JSON.stringify(parts) !== JSON.stringify(bodyParts))
       ) {
         onResetCanceled();
@@ -113,11 +124,11 @@ export function useReset(
 
   const name = useMemo(() => {
     switch (options.type) {
-      case ResetType.Yaw:
+      case ResetType.YAW:
         return 'reset-yaw';
-      case ResetType.Full:
+      case ResetType.FULL:
         return 'reset-full';
-      case ResetType.Mounting:
+      case ResetType.MOUNTING:
         if (options.group !== 'default') return `reset-mounting-${options.group}`;
         return 'reset-mounting';
       default:
@@ -127,7 +138,7 @@ export function useReset(
 
   let disabled = status === 'counting';
   let error = null;
-  if (options.type === ResetType.Mounting && options.group !== 'default') {
+  if (options.type === ResetType.MOUNTING && options.group !== 'default') {
     const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
     if (
@@ -140,10 +151,10 @@ export function useReset(
       disabled = true;
       error = `reset-error-no_${options.group}_tracker`;
     }
-  } else if (options.type === ResetType.Mounting && !serverGuards?.canDoMounting) {
+  } else if (options.type === ResetType.MOUNTING && !serverGuards?.canDoMountingReset) {
     disabled = true;
     error = 'reset-error-mounting-need_full_reset';
-  } else if (options.type === ResetType.Yaw && !serverGuards?.canDoYawReset) {
+  } else if (options.type === ResetType.YAW && !serverGuards?.canDoYawReset) {
     disabled = true;
     error = 'reset-error-yaw-need_full_reset';
   }

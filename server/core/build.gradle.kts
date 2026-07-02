@@ -5,42 +5,9 @@
  * For more details take a look at the Java Libraries chapter in the Gradle
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-	kotlin("jvm")
+	kotlin("multiplatform")
 	kotlin("plugin.serialization")
-	`java-library`
-}
-
-// FIXME: Please replace these to Java 11 as that's what they actually are
-kotlin {
-	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
-	}
-}
-java {
-	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
-	}
-}
-tasks.withType<KotlinCompile> {
-	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_17)
-		freeCompilerArgs.set(listOf("-Xvalue-classes"))
-	}
-}
-
-// Set compiler to use UTF-8
-tasks.withType<JavaCompile> {
-	options.encoding = "UTF-8"
-}
-tasks.withType<Test> {
-	systemProperty("file.encoding", "UTF-8")
-}
-tasks.withType<Javadoc> {
-	options.encoding = "UTF-8"
 }
 
 tasks.withType<Jar> {
@@ -57,51 +24,53 @@ allprojects {
 	}
 }
 
-dependencies {
-	implementation(project(":solarxr-protocol"))
+kotlin {
+	jvmToolchain(24)
+	jvm()
 
-	// This dependency is used internally,
-	// and not exposed to consumers on their own compile classpath.
-	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
-	implementation("commons-cli:commons-cli:1.11.0")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.21.0")
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.0")
+	sourceSets {
+		val commonMain = getByName("commonMain") {
+			kotlin.srcDir("src/main/java")
+			dependencies {
+				api(project(":solarxr-protocol:generated"))
+				api("com.google.flatbuffers:flatbuffers-java:22.10.26")
+				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+				implementation("com.mayakapps.kache:kache:2.1.1")
+				implementation("io.klogging:klogging:0.11.7")
+				implementation("com.appstractive:dns-sd-kt:1.1.0")
 
-	implementation("com.github.jonpeterson:jackson-module-model-versioning:1.2.2")
-	implementation("org.apache.commons:commons-math3:3.6.1")
-	implementation("org.apache.commons:commons-lang3:3.20.0")
-	implementation("org.apache.commons:commons-collections4:4.5.0")
+				val ktorVersion = "3.4.1"
+				implementation("io.ktor:ktor-client-core:$ktorVersion")
+				implementation("io.ktor:ktor-client-cio:$ktorVersion")
+				implementation("io.ktor:ktor-server-core:$ktorVersion")
+				implementation("io.ktor:ktor-server-cio:$ktorVersion")
+				implementation("io.ktor:ktor-network:$ktorVersion")
+				implementation("io.ktor:ktor-utils:$ktorVersion")
 
-	implementation("com.illposed.osc:javaosc-core:0.8")
-	implementation("org.java-websocket:Java-WebSocket:1.+")
-	implementation("com.melloware:jintellitype:1.+")
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+				// Allow the use of reflection
+				implementation(kotlin("reflect"))
 
-	// 2.1.1 - of kache cause OSCQuery to fail on android.
-	// Same goes for upgrading coroutines. kache prob upgrade coroutines too.
-	// proceed with caution if you plan on upgrading that library
-	implementation("com.mayakapps.kache:kache:2.1.0")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
-
-	api("com.github.loucass003:EspflashKotlin:v0.11.0")
-
-	// Allow the use of reflection
-	implementation(kotlin("reflect"))
-
-	// Jitpack
-	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
-
-	// For SteamVR driver detection
-	implementation("io.ktor:ktor-client-core:2.3.13")
-	implementation("io.ktor:ktor-client-cio:2.3.13")
-
-	testImplementation(kotlin("test"))
-	// Use JUnit test framework
-	testImplementation(platform("org.junit:junit-bom:6.0.2"))
-	testImplementation("org.junit.jupiter:junit-jupiter")
-	testImplementation("org.junit.platform:junit-platform-launcher")
+				implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+			}
+		}
+		val commonTest = getByName("commonTest") {
+			kotlin.srcDir("src/test/java")
+			dependencies {
+				implementation(kotlin("test"))
+				implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+			}
+		}
+	}
 }
 
-tasks.test {
+tasks.withType<JavaCompile> {
+	options.encoding = "UTF-8"
+}
+tasks.withType<Test> {
+	systemProperty("file.encoding", "UTF-8")
 	useJUnitPlatform()
+}
+tasks.withType<Javadoc> {
+	options.encoding = "UTF-8"
 }

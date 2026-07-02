@@ -6,7 +6,6 @@ import {
   TrackingChecklistStepVisibility,
   IgnoreTrackingChecklistStepRequestT,
   RpcMessage,
-  TrackerIdT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -47,7 +46,7 @@ export type TrackingChecklistStep = TrackingChecklistStepT & {
 };
 export type highlightedTrackers = {
   step: TrackingChecklistStep;
-  trackers: Array<TrackerIdT>;
+  trackers: Array<number>;
 };
 
 const stepVisibility = ({ visibility, status, firstRequired }: TrackingChecklistStep) =>

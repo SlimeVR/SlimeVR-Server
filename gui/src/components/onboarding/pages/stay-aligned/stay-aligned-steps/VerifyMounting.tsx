@@ -78,7 +78,7 @@ export function VerifyMountingStep({
 
           <ResetButton
             onClick={() => setDisableMounting(true)}
-            type={ResetType.Mounting}
+            type={ResetType.MOUNTING}
             group="default"
             onReseted={() => {
               if (isActive) {

@@ -26,9 +26,7 @@ export function Home() {
   const navigate = useNavigate();
 
   const sendToSettings = (tracker: TrackerDataT) => {
-    navigate(
-      `/tracker/${tracker.trackerId?.trackerNum}/${tracker.trackerId?.deviceId?.id}`
-    );
+    navigate(`/tracker/${tracker.trackerId}/${tracker.deviceId}`);
   };
 
   const settingsOpenState = useState(false);
@@ -85,9 +83,7 @@ export function Home() {
                 interactable
                 warning={
                   !!highlightedTrackers?.trackers.find(
-                    (t) =>
-                      t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
-                      t?.trackerNum === tracker.trackerId?.trackerNum
+                    (t) => t === tracker.trackerId
                   ) && highlightedTrackers.step
                 }
               />
@@ -127,9 +123,7 @@ export function Home() {
                     interactable
                     warning={
                       !!highlightedTrackers?.trackers.find(
-                        (t) =>
-                          t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
-                          t?.trackerNum === tracker.trackerId?.trackerNum
+                        (t) => t === tracker.trackerId
                       ) && highlightedTrackers.step
                     }
                   />

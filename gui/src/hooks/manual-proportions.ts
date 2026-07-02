@@ -1,9 +1,9 @@
 import {
-  SkeletonConfigResponseT,
   SkeletonBone,
   RpcMessage,
-  SkeletonConfigRequestT,
-  ChangeSkeletonConfigRequestT,
+  ChangeSkeletonProportionsRequestT,
+  SkeletonProportionsRequestT,
+  SkeletonProportionsResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useEffect, useMemo, useState } from 'react';
@@ -60,7 +60,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const { setConfig } = useConfig();
   const [skeleton, setSkeleton] = useState<Omit<
-    SkeletonConfigResponseT,
+    SkeletonProportionsResponseT,
     'pack'
   > | null>(null);
   const bodyPartsGrouped: Label[] = useMemo(() => {
@@ -121,12 +121,18 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
     ];
   }, [skeleton, type]);
 
-  useRPCPacket(RpcMessage.SkeletonConfigResponse, (data: SkeletonConfigResponseT) => {
-    setSkeleton(data);
-  });
+  useRPCPacket(
+    RpcMessage.SkeletonProportionsResponse,
+    (data: SkeletonProportionsResponseT) => {
+      setSkeleton(data);
+    }
+  );
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.SkeletonConfigRequest, new SkeletonConfigRequestT());
+    sendRPCPacket(
+      RpcMessage.SkeletonProportionsRequest,
+      new SkeletonProportionsRequestT()
+    );
   }, []);
 
   return {
@@ -144,8 +150,8 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
           if (!currentValue) throw 'invalid state - the bone should exists';
           const currentRatio = currentValue.value / oldGroupTotal;
           sendRPCPacket(
-            RpcMessage.ChangeSkeletonConfigRequest,
-            new ChangeSkeletonConfigRequestT(part, params.newValue * currentRatio)
+            RpcMessage.ChangeSkeletonProportionsRequest,
+            new ChangeSkeletonProportionsRequestT(part, params.newValue * currentRatio)
           );
         }
       }
@@ -164,8 +170,8 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
           newValue = 0;
 
         sendRPCPacket(
-          RpcMessage.ChangeSkeletonConfigRequest,
-          new ChangeSkeletonConfigRequestT(params.bone, newValue)
+          RpcMessage.ChangeSkeletonProportionsRequest,
+          new ChangeSkeletonProportionsRequestT(params.bone, newValue)
         );
 
         // Update percent from other bones ratios so the total stays 100%
@@ -177,8 +183,8 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
           const currentValue = skeleton.skeletonParts.find(({ bone }) => bone === part);
           if (!currentValue) throw 'invalid state - the bone should exists';
           sendRPCPacket(
-            RpcMessage.ChangeSkeletonConfigRequest,
-            new ChangeSkeletonConfigRequestT(
+            RpcMessage.ChangeSkeletonProportionsRequest,
+            new ChangeSkeletonProportionsRequestT(
               part,
               currentValue.value - (diffValue / (group.length - 1)) * signDiff
             )
@@ -188,11 +194,14 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
 
       if (params.type === 'bone') {
         sendRPCPacket(
-          RpcMessage.ChangeSkeletonConfigRequest,
-          new ChangeSkeletonConfigRequestT(params.bone, params.newValue)
+          RpcMessage.ChangeSkeletonProportionsRequest,
+          new ChangeSkeletonProportionsRequestT(params.bone, params.newValue)
         );
       }
-      sendRPCPacket(RpcMessage.SkeletonConfigRequest, new SkeletonConfigRequestT());
+      sendRPCPacket(
+        RpcMessage.SkeletonProportionsRequest,
+        new SkeletonProportionsRequestT()
+      );
       setConfig({ lastUsedProportions: 'manual' });
       Sentry.metrics.count('manual_proportions_change', 1, { attributes: params });
     },

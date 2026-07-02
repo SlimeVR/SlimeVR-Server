@@ -208,7 +208,7 @@ export function TopBar({
             <NavLink
               to="/settings/trackers"
               className="flex justify-around flex-col select-all fill-background-50"
-              state={{ scrollTo: 'steamvr' }}
+              state={{ scrollTo: 'output' }}
             >
               <GearIcon />
             </NavLink>

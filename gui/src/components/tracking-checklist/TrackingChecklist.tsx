@@ -6,16 +6,16 @@ import {
 } from '@/hooks/tracking-checklist';
 import classNames from 'classnames';
 import {
-  ChangeSettingsRequestT,
   EnableSteamVRDriverRequestT,
   ResetType,
   RpcMessage,
-  SettingsRequestT,
-  SettingsResponseT,
-  SteamVRTrackersSettingT,
   TrackingChecklistPublicNetworksT,
   TrackingChecklistSteamVRDisconnectedT,
   TrackingChecklistStepId,
+  BodyPart,
+  ChangeOutputTrackersSettingsRequestT,
+  OutputTrackersSettingsResponseT,
+  OutputTrackersSettingsRequestT,
 } from 'solarxr-protocol';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
@@ -31,7 +31,7 @@ import {
   ArrowRightIcon,
 } from '@/components/commons/icon/ArrowIcons';
 import { Localized, useLocalization } from '@fluent/react';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
+import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
 import { TrackingChecklistModal } from './TrackingChecklistModal';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '@/hooks/breakpoint';
@@ -176,36 +176,41 @@ function SteamVRDisconnected({
 function SteamVRHandsEnabled() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [steamVrTrackers, setSteamVrTrackers] = useState<Omit<
-    SteamVRTrackersSettingT,
+    ChangeOutputTrackersSettingsRequestT,
     'pack'
   > | null>(null);
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+    sendRPCPacket(
+      RpcMessage.OutputTrackersSettingsRequest,
+      new OutputTrackersSettingsRequestT()
+    );
   }, []);
 
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    if (settings.steamVrTrackers) {
-      setSteamVrTrackers(settings.steamVrTrackers);
+  useRPCPacket(
+    RpcMessage.OutputTrackersSettingsResponse,
+    (settings: OutputTrackersSettingsResponseT) => {
+      if (settings.trackers) {
+        setSteamVrTrackers(settings);
+      }
     }
-  });
+  );
 
   const disableHandTrackers = () => {
-    const settings = new ChangeSettingsRequestT();
-    settings.steamVrTrackers = new SteamVRTrackersSettingT(
-      steamVrTrackers?.waist,
-      steamVrTrackers?.chest,
-      steamVrTrackers?.automaticTrackerToggle,
-      steamVrTrackers?.leftFoot,
-      steamVrTrackers?.rightFoot,
-      steamVrTrackers?.leftKnee,
-      steamVrTrackers?.rightKnee,
-      steamVrTrackers?.leftElbow,
-      steamVrTrackers?.rightElbow,
-      false,
-      false
+    const req = new ChangeOutputTrackersSettingsRequestT();
+
+    const newTrackers = steamVrTrackers?.trackers.filter(
+      (tracker) =>
+        tracker != BodyPart.LEFT_HAND && tracker != BodyPart.RIGHT_HAND
     );
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
+    if (newTrackers !== undefined) {
+      req.trackers = newTrackers;
+    }
+    req.automaticTrackerToggle =
+      steamVrTrackers?.automaticTrackerToggle === true;
+    req.sendDerivedVelocity = steamVrTrackers?.sendDerivedVelocity === true;
+
+    sendRPCPacket(RpcMessage.ChangeOutputTrackersSettingsRequest, req);
   };
 
   return (
@@ -299,7 +304,7 @@ const stepContentLookup: Record<
           </div>
         </div>
         <div className="flex">
-          <ResetButton type={ResetType.Full} />
+          <ResetButton type={ResetType.FULL} />
         </div>
       </div>
     );
@@ -391,7 +396,7 @@ const stepContentLookup: Record<
           />
         </div>
         <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton type={ResetType.Mounting} group="default" />
+          <ResetButton type={ResetType.MOUNTING} group="default" />
           {step.ignorable && (
             <Button
               id="tracking_checklist-ignore"
@@ -428,7 +433,7 @@ const stepContentLookup: Record<
           </div>
         </div>
         <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton type={ResetType.Mounting} group="feet" />
+          <ResetButton type={ResetType.MOUNTING} group="feet" />
           {step.ignorable && (
             <Button
               id="tracking_checklist-ignore"

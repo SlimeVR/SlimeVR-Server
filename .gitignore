@@ -4,8 +4,10 @@
 # Syncthing ignore file
 .stignore
 
-# Ignore .idea
-.idea
+# Ignore .idea, except shared project inspection profiles
+.idea/*
+!.idea/inspectionProfiles/
+!.idea/inspectionProfiles/*.xml
 
 # Ignore .fleet
 .fleet

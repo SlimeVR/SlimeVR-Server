@@ -68,7 +68,7 @@ export function getSentryOrCompute(enabled = false, uuid: string, isSteam: boole
   });
 
   if (!newClient) {
-    error('Couldnt initialize Sentry for error logging');
+    error("Couldn't initialize Sentry for error logging");
   } else {
     log('Initialized the Sentry client');
   }
@@ -77,15 +77,15 @@ export function getSentryOrCompute(enabled = false, uuid: string, isSteam: boole
 }
 
 export function updateSentryContext(devices: DeviceDataT[]) {
-  // We filter out the shit we dont want. We dont need rotation data or ip addresses
+  // We filter out what we don't want (rotations and ip addresses).
   const trackers = (devices || []).map(({ hardwareInfo, trackers, id }) => ({
-    id: id?.id,
+    id: id,
     hardwareInfo: { ...hardwareInfo, ipAddress: undefined },
-    trackers: trackers.map(({ info, trackerId }) => ({
+    trackers: trackers.map(({ info, trackerId, deviceId }) => ({
       info,
       trackerId: {
-        trackerNum: trackerId?.trackerNum,
-        deviceId: trackerId?.deviceId?.id,
+        trackerNum: trackerId,
+        deviceId: deviceId,
       },
     })),
   }));

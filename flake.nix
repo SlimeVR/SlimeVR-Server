@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Pinned to a revision that still ships temurin jdk-24
+    nixpkgs-jdk24.url = "github:NixOS/nixpkgs/d0fc30899600b9b3466ddb260fd83deb486c32f1";
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
@@ -10,6 +12,7 @@
     inputs@{
       self,
       nixpkgs,
+      nixpkgs-jdk24,
       flake-parts,
       ...
     }:
@@ -20,8 +23,15 @@
       ];
 
       perSystem =
-        { lib, pkgs, ... }:
+        {
+          system,
+          lib,
+          pkgs,
+          ...
+        }:
         let
+          java = (import nixpkgs-jdk24 { inherit system; }).jdk24;
+
           runtimeLibs = [
             pkgs.alsa-lib
             pkgs.libpulseaudio
@@ -114,7 +124,8 @@
           devShells.default = pkgs.mkShell {
             packages = [
               # for running the jar
-              pkgs.jdk17
+              java
+
               # for build
               pkgs.electron
               pkgs.rpm
@@ -139,7 +150,7 @@
             ];
             buildInputs = runtimeLibs;
 
-            JAVA_HOME = "${pkgs.jdk17}/lib/openjdk";
+            JAVA_HOME = "${java}/lib/openjdk";
             USE_SYSTEM_FPM = "true";
             ELECTRON_BUILDER_7ZIP_PATH = "${pkgs.p7zip}/bin/7za";
             APPIMAGE_TOOLS_PATH = "${appImageTools}";

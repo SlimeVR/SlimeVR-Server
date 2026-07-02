@@ -1,0 +1,11 @@
+style:
+  ForbiddenImport:
+    active: true
+    imports:
+      - reason: 'Use dev.slimevr.util.safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly.'
+        value: 'kotlinx.coroutines.launch'
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true

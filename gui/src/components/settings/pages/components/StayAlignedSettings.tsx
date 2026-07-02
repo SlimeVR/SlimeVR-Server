@@ -1,26 +1,33 @@
-import { Control } from 'react-hook-form';
-import { StayAlignedSettingsT } from 'solarxr-protocol';
-import { SettingsForm } from '@/components/settings/pages/GeneralSettings';
+import { Localized, useLocalization } from '@fluent/react';
+import { useEffect, useState } from 'react';
+import { DefaultValues, useForm } from 'react-hook-form';
+import {
+  ChangeStayAlignedSettingsRequestT,
+  RpcMessage,
+  StayAlignedSettingsRequestT,
+  StayAlignedSettingsResponseT,
+} from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout';
-import { Localized, useLocalization } from '@fluent/react';
-import { useAtomValue } from 'jotai';
+import { HorizontalAlignIcon } from '@/components/commons/icon/HorizontalAlignIcon';
+import { useAtomValue, atom, useSetAtom } from 'jotai';
+import { selectAtom } from 'jotai/utils';
+import { isEqual } from '@react-hookz/deep-equal';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { bodypartToString } from '@/utils/formatting';
 import { useLocaleConfig } from '@/i18n/config';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
   FlatRelaxedPoseModal,
   SittingRelaxedPoseModal,
   StandingRelaxedPoseModal,
 } from './StayAlignedPoseModal';
-import { useState } from 'react';
 
+// TODO hide_yaw_correction + setup_complete are now in their own requests
 export type StayAlignedSettingsForm = {
   enabled: boolean;
-  extraYawCorrection: boolean;
   hideYawCorrection: boolean;
   standingEnabled: boolean;
   standingUpperLegAngle: number;
@@ -39,7 +46,6 @@ export type StayAlignedSettingsForm = {
 
 export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
   enabled: false,
-  extraYawCorrection: false,
   hideYawCorrection: false,
   standingEnabled: false,
   standingUpperLegAngle: 0.0,
@@ -56,35 +62,14 @@ export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
   setupComplete: false,
 };
 
-export function serializeStayAlignedSettings(
-  settings: StayAlignedSettingsForm
-): StayAlignedSettingsT {
-  const serialized = new StayAlignedSettingsT();
-  serialized.enabled = settings.enabled;
-  serialized.extraYawCorrection = settings.extraYawCorrection;
-  serialized.hideYawCorrection = settings.hideYawCorrection;
-  serialized.standingEnabled = settings.standingEnabled;
-  serialized.standingUpperLegAngle = settings.standingUpperLegAngle;
-  serialized.standingLowerLegAngle = settings.standingLowerLegAngle;
-  serialized.standingFootAngle = settings.standingFootAngle;
-  serialized.sittingEnabled = settings.sittingEnabled;
-  serialized.sittingUpperLegAngle = settings.sittingUpperLegAngle;
-  serialized.sittingLowerLegAngle = settings.sittingLowerLegAngle;
-  serialized.sittingFootAngle = settings.sittingFootAngle;
-  serialized.flatEnabled = settings.flatEnabled;
-  serialized.flatUpperLegAngle = settings.flatUpperLegAngle;
-  serialized.flatLowerLegAngle = settings.flatLowerLegAngle;
-  serialized.flatFootAngle = settings.flatFootAngle;
-  return serialized;
-}
+const stayAlignedSettingsAtom = atom(new StayAlignedSettingsResponseT());
+const stayAlignedSettingsValueAtom = selectAtom(
+  stayAlignedSettingsAtom,
+  (settings) => settings,
+  isEqual
+);
 
-export function deserializeStayAlignedSettings(
-  serialized: StayAlignedSettingsT
-): StayAlignedSettingsForm {
-  return serialized;
-}
-
-function CopySettingsButton({ values }: { values: SettingsForm }) {
+function CopySettingsButton({ values }: { values: StayAlignedSettingsForm }) {
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
   const numberFormat = new Intl.NumberFormat(currentLocales, {
@@ -99,7 +84,7 @@ function CopySettingsButton({ values }: { values: SettingsForm }) {
   }
 
   const copySettings = () => {
-    const config = values.stayAligned;
+    const config = values;
 
     const debug = `
 Stay Aligned
@@ -107,7 +92,6 @@ Stay Aligned
 GENERAL
 =======
 Enabled: ${config.enabled ? 'true' : 'false'}
-Extra yaw correction: ${boolify(config.extraYawCorrection)}
 Setup complete: ${boolify(config.setupComplete)}
 
 RELAXED POSES
@@ -127,12 +111,6 @@ ${trackers
     }
   })
   .join('\n')}
-
-OTHER
-=====
-Filtering: type=${values.filtering.type} amount=${numberFormat.format(values.filtering.amount)}
-Enforce constraints: ${boolify(values.toggles.enforceConstraints)}
-Skating correction: ${boolify(values.toggles.skatingCorrection)}
 `;
 
     navigator.clipboard.writeText(debug);
@@ -145,16 +123,90 @@ Skating correction: ${boolify(values.toggles.skatingCorrection)}
   );
 }
 
-export function StayAlignedSettings({
-  values,
-  control,
-}: {
-  values: SettingsForm;
-  control: Control<SettingsForm, any>;
-}) {
+export function StayAlignedSettings() {
+  const setSettings = useSetAtom(stayAlignedSettingsAtom);
+  const settings = useAtomValue(stayAlignedSettingsValueAtom);
   const { l10n } = useLocalization();
+  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
-  const config = values.stayAligned;
+  const { control, watch, handleSubmit, getValues, reset } =
+    useForm<StayAlignedSettingsForm>({
+      defaultValues: defaultStayAlignedSettings,
+      mode: 'onChange',
+      reValidateMode: 'onChange',
+    });
+
+  const values = watch();
+
+  const onSubmit = (values: StayAlignedSettingsForm) => {
+    const settingsReq = new ChangeStayAlignedSettingsRequestT();
+    settingsReq.enabled = values.enabled;
+    settingsReq.standingEnabled = values.standingEnabled;
+    settingsReq.standingUpperLegAngle = values.standingUpperLegAngle;
+    settingsReq.standingLowerLegAngle = values.standingLowerLegAngle;
+    settingsReq.standingFootAngle = values.standingFootAngle;
+    settingsReq.sittingEnabled = values.sittingEnabled;
+    settingsReq.sittingUpperLegAngle = values.sittingUpperLegAngle;
+    settingsReq.sittingLowerLegAngle = values.sittingLowerLegAngle;
+    settingsReq.sittingFootAngle = values.sittingFootAngle;
+    settingsReq.flatEnabled = values.flatEnabled;
+    settingsReq.flatUpperLegAngle = values.flatUpperLegAngle;
+    settingsReq.flatLowerLegAngle = values.flatLowerLegAngle;
+    settingsReq.flatFootAngle = values.flatFootAngle;
+
+    sendRPCPacket(RpcMessage.ChangeStayAlignedSettingsRequest, settingsReq);
+  };
+
+  useEffect(() => {
+    const subscription = watch((_, { type }) => {
+      if (type === 'change') handleSubmit(onSubmit)();
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    sendRPCPacket(
+      RpcMessage.StayAlignedSettingsRequest,
+      new StayAlignedSettingsRequestT()
+    );
+  }, []);
+
+  useEffect(() => {
+    const formData: DefaultValues<StayAlignedSettingsForm> = {};
+
+    if (settings.enabled !== undefined) formData.enabled = settings.enabled;
+
+    formData.standingEnabled = settings.standingEnabled ?? false;
+    formData.standingUpperLegAngle = settings.standingUpperLegAngle ?? 0.0;
+    formData.standingLowerLegAngle = settings.standingLowerLegAngle ?? 0.0;
+    formData.standingFootAngle = settings.standingFootAngle ?? 0.0;
+
+    formData.sittingEnabled = settings.sittingEnabled ?? false;
+    formData.sittingUpperLegAngle = settings.sittingUpperLegAngle ?? 0.0;
+    formData.sittingLowerLegAngle = settings.sittingLowerLegAngle ?? 0.0;
+    formData.sittingFootAngle = settings.sittingFootAngle ?? 0.0;
+
+    formData.flatEnabled = settings.flatEnabled ?? false;
+    formData.flatUpperLegAngle = settings.flatUpperLegAngle ?? 0.0;
+    formData.flatLowerLegAngle = settings.flatLowerLegAngle ?? 0.0;
+    formData.flatFootAngle = settings.flatFootAngle ?? 0.0;
+
+    formData.setupComplete =
+      (formData.standingUpperLegAngle ?? 0) !== 0 ||
+      (formData.sittingUpperLegAngle ?? 0) !== 0 ||
+      (formData.flatUpperLegAngle ?? 0) !== 0;
+
+    reset({ ...getValues(), ...formData });
+  }, [settings]);
+
+  useRPCPacket(
+    RpcMessage.StayAlignedSettingsResponse,
+    (settings: StayAlignedSettingsResponseT) => {
+      setSettings(settings);
+    }
+  );
+
+  const config = values;
   const hasStandingPose =
     config.standingEnabled ||
     config.standingUpperLegAngle !== 0.0 ||
@@ -176,144 +228,138 @@ export function StayAlignedSettings({
   const openFlat = useState(false);
 
   return (
-    <>
-      <SettingsPagePaneLayout icon={<WrenchIcon />} id="stayaligned">
-        <Typography variant="main-title">
-          {l10n.getString('settings-stay_aligned')}
+    <SettingsPagePaneLayout icon={<HorizontalAlignIcon />} id="stayAligned">
+      <Typography variant="main-title">
+        {l10n.getString('settings-stay_aligned')}
+      </Typography>
+      <div className="pt-3">
+        <Typography>
+          {l10n.getString('settings-stay_aligned-description')}
         </Typography>
-        <div className="mt-2">
-          <Typography>
-            {l10n.getString('settings-stay_aligned-description')}
-          </Typography>
-          <Typography>
-            {l10n.getString('settings-stay_aligned-setup-description')}
-          </Typography>
-          <div className="flex mt-2">
-            <Button
-              variant="primary"
-              to="/onboarding/stay-aligned"
-              state={{ alonePage: true }}
-            >
-              {l10n.getString('settings-stay_aligned-setup-label')}
-            </Button>
-          </div>
+        <Typography>
+          {l10n.getString('settings-stay_aligned-setup-description')}
+        </Typography>
+        <div className="flex pt-2">
+          <Button
+            variant="primary"
+            to="/onboarding/stay-aligned"
+            state={{ alonePage: true }}
+          >
+            {l10n.getString('settings-stay_aligned-setup-label')}
+          </Button>
         </div>
-        <div className="mt-6">
-          <Typography variant="section-title">
-            {l10n.getString('settings-stay_aligned-general-label')}
+      </div>
+      <div className="pt-6">
+        <Typography variant="section-title">
+          {l10n.getString('settings-stay_aligned-general-label')}
+        </Typography>
+        <div className="grid sm:grid-cols-2 gap-3 pt-2">
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="enabled"
+            label={l10n.getString('settings-stay_aligned-enabled-label')}
+            disabled={!config.setupComplete}
+          />
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="hideYawCorrection"
+            label={l10n.getString(
+              'settings-stay_aligned-hide_yaw_correction-label'
+            )}
+            disabled={!config.setupComplete}
+          />
+        </div>
+      </div>
+      <div className="pt-6">
+        <Typography variant="section-title">
+          {l10n.getString('settings-stay_aligned-relaxed_poses-label')}
+        </Typography>
+        <div className="pt-1">
+          <Typography>
+            {l10n.getString('settings-stay_aligned-relaxed_poses-description')}
           </Typography>
-          <div className="grid sm:grid-cols-2 gap-3 mt-2">
+        </div>
+        <div className="grid sm:grid-cols-1 gap-3 pt-2">
+          <div className="flex gap-2">
             <CheckBox
               variant="toggle"
               outlined
               control={control}
-              name="stayAligned.enabled"
-              label={l10n.getString('settings-stay_aligned-enabled-label')}
-              disabled={!config.setupComplete}
-            />
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="stayAligned.hideYawCorrection"
+              name="standingEnabled"
               label={l10n.getString(
-                'settings-stay_aligned-hide_yaw_correction-label'
+                'settings-stay_aligned-relaxed_poses-standing'
               )}
-              disabled={!config.setupComplete}
+              disabled={!config.setupComplete || !hasStandingPose}
             />
+            <StandingRelaxedPoseModal open={openStanding} />
+            <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
+              <Button
+                variant="primary"
+                className="w-full max-w-32"
+                disabled={!config.setupComplete}
+                onClick={() => openStanding[1](true)}
+              />
+            </Localized>
           </div>
-        </div>
-        <div className="mt-6">
-          <Typography variant="section-title">
-            {l10n.getString('settings-stay_aligned-relaxed_poses-label')}
-          </Typography>
-          <div className="mt-2">
-            <Typography>
-              {l10n.getString(
-                'settings-stay_aligned-relaxed_poses-description'
+          <div className="flex gap-2">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="sittingEnabled"
+              label={l10n.getString(
+                'settings-stay_aligned-relaxed_poses-sitting'
               )}
-            </Typography>
+              disabled={!config.setupComplete || !hasSittingPose}
+            />
+            <SittingRelaxedPoseModal open={openSitting} />
+            <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
+              <Button
+                variant="primary"
+                className="w-full max-w-32"
+                disabled={!config.setupComplete}
+                onClick={() => openSitting[1](true)}
+              />
+            </Localized>
           </div>
-          <div className="grid sm:grid-cols-1 gap-3 mt-2">
-            <div className="flex gap-2">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="stayAligned.standingEnabled"
-                label={l10n.getString(
-                  'settings-stay_aligned-relaxed_poses-standing'
-                )}
-                disabled={!config.setupComplete || !hasStandingPose}
+          <div className="flex gap-2">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="flatEnabled"
+              label={l10n.getString('settings-stay_aligned-relaxed_poses-flat')}
+              disabled={!config.setupComplete || !hasFlatPose}
+            />
+            <FlatRelaxedPoseModal open={openFlat} />
+            <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
+              <Button
+                variant="primary"
+                className="w-full max-w-32"
+                disabled={!config.setupComplete}
+                onClick={() => openFlat[1](true)}
               />
-              <StandingRelaxedPoseModal open={openStanding} />
-              <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-                <Button
-                  variant="primary"
-                  className="w-full max-w-32"
-                  disabled={!config.setupComplete}
-                  onClick={() => openStanding[1](true)}
-                />
-              </Localized>
-            </div>
-            <div className="flex gap-2">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="stayAligned.sittingEnabled"
-                label={l10n.getString(
-                  'settings-stay_aligned-relaxed_poses-sitting'
-                )}
-                disabled={!config.setupComplete || !hasSittingPose}
-              />
-              <SittingRelaxedPoseModal open={openSitting} />
-              <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-                <Button
-                  variant="primary"
-                  className="w-full max-w-32"
-                  disabled={!config.setupComplete}
-                  onClick={() => openSitting[1](true)}
-                />
-              </Localized>
-            </div>
-            <div className="flex gap-2">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="stayAligned.flatEnabled"
-                label={l10n.getString(
-                  'settings-stay_aligned-relaxed_poses-flat'
-                )}
-                disabled={!config.setupComplete || !hasFlatPose}
-              />
-              <FlatRelaxedPoseModal open={openFlat} />
-              <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-                <Button
-                  variant="primary"
-                  className="w-full max-w-32"
-                  disabled={!config.setupComplete}
-                  onClick={() => openFlat[1](true)}
-                />
-              </Localized>
-            </div>
+            </Localized>
           </div>
         </div>
-        <div className="mt-6">
-          <Typography variant="section-title">
-            {l10n.getString('settings-stay_aligned-debug-label')}
+      </div>
+      <div className="pt-6">
+        <Typography variant="section-title">
+          {l10n.getString('settings-stay_aligned-debug-label')}
+        </Typography>
+        <div className="pt-1">
+          <Typography>
+            {l10n.getString('settings-stay_aligned-debug-description')}
           </Typography>
-          <div className="mt-2">
-            <Typography>
-              {l10n.getString('settings-stay_aligned-debug-description')}
-            </Typography>
-          </div>
-          <div className="mt-2">
-            <CopySettingsButton values={values} />
-          </div>
         </div>
-      </SettingsPagePaneLayout>
-    </>
+        <div className="pt-2">
+          <CopySettingsButton values={values} />
+        </div>
+      </div>
+    </SettingsPagePaneLayout>
   );
 }

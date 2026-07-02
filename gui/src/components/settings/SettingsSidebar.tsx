@@ -50,28 +50,28 @@ export function SettingsSidebar() {
         <div className="flex flex-col gap-2">
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="steamvr"
-            id="settings-sidebar-steamvr"
+            scrollTo="output"
+            id="settings-sidebar-output"
           />
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="stayaligned"
+            scrollTo="stayAligned"
             id="settings-sidebar-stay_aligned"
           />
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="mechanics"
-            id="settings-sidebar-tracker_mechanics"
+            scrollTo="tracking"
+            id="settings-sidebar-tracking"
           />
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="fksettings"
-            id="settings-sidebar-fk_settings"
+            scrollTo="resets"
+            id="settings-sidebar-resets"
           />
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="gestureControl"
-            id="settings-sidebar-gesture_control"
+            scrollTo="trackers"
+            id="settings-sidebar-trackers"
           />
         </div>
       </div>
@@ -93,6 +93,11 @@ export function SettingsSidebar() {
             scrollTo="appearance"
             id="settings-sidebar-appearance"
           />
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Typography variant="section-title" id="settings-sidebar-home" />
+        <div className="flex flex-col gap-2">
           <SettingsLink
             to="/settings/interface/home"
             scrollTo="home"
@@ -104,46 +109,41 @@ export function SettingsSidebar() {
             id="settings-sidebar-checklist"
           />
         </div>
-        <div className="flex flex-col gap-3">
-          <Typography variant="section-title">OSC</Typography>
-          <div className="flex flex-col gap-2">
-            <SettingsLink
-              to="/settings/osc/router"
-              scrollTo="router"
-              id="settings-sidebar-osc_router"
-            />
-            <SettingsLink
-              to="/settings/osc/vrchat"
-              scrollTo="vrchat"
-              id="settings-sidebar-osc_trackers"
-            />
-            <SettingsLink
-              to="/settings/osc/vmc"
-              scrollTo="vmc"
-              id="settings-sidebar-osc_vmc"
-            />
-          </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Typography variant="section-title">OSC</Typography>
+        <div className="flex flex-col gap-2">
+          <SettingsLink
+            to="/settings/osc/vrchat"
+            scrollTo="vrchat"
+            id="settings-sidebar-osc_trackers"
+          />
+          <SettingsLink
+            to="/settings/osc/vmc"
+            scrollTo="vmc"
+            id="settings-sidebar-osc_vmc"
+          />
         </div>
-        <div className="flex flex-col gap-3">
-          <Typography variant="section-title" id="settings-sidebar-utils" />
-          <div className="flex flex-col gap-2">
-            <SettingsLink to="/settings/serial" id="settings-sidebar-serial" />
+      </div>
+      <div className="flex flex-col gap-3">
+        <Typography variant="section-title" id="settings-sidebar-utils" />
+        <div className="flex flex-col gap-2">
+          <SettingsLink to="/settings/serial" id="settings-sidebar-serial" />
+          <SettingsLink
+            to="/settings/firmware-tool"
+            id="settings-sidebar-firmware-tool"
+          />
+          <SettingsLink to="/onboarding/home" id="navbar-onboarding" />
+          {vrcConfigState?.isSupported && (
             <SettingsLink
-              to="/settings/firmware-tool"
-              id="settings-sidebar-firmware-tool"
+              to="/vrc-warnings"
+              id="settings-sidebar-vrc_warnings"
             />
-            <SettingsLink to="/onboarding/home" id="navbar-onboarding" />
-            {vrcConfigState?.isSupported && (
-              <SettingsLink
-                to="/vrc-warnings"
-                id="settings-sidebar-vrc_warnings"
-              />
-            )}
-            <SettingsLink
-              to="/settings/advanced"
-              id="settings-sidebar-advanced"
-            />
-          </div>
+          )}
+          <SettingsLink
+            to="/settings/advanced"
+            id="settings-sidebar-advanced"
+          />
         </div>
       </div>
     </div>

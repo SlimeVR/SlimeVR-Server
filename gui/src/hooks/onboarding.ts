@@ -11,16 +11,17 @@ import { useLocation } from 'react-router-dom';
 import { useConfig } from './config';
 import { useWebsocketAPI } from './websocket-api';
 import {
-  ChangeSettingsRequestT,
-  ModelSettingsT,
-  ModelTogglesT,
-  OSCSettingsT,
-  ResetsSettingsT,
+  ChangeResetsSettingsRequestT,
+  ChangeSkeletonSettingsRequestT,
+  ResetsSettingsRequestT,
+  ResetsSettingsResponseT,
   RpcMessage,
-  SettingsRequestT,
-  SettingsResponseT,
   SkeletonBone,
-  VRCOSCSettingsT,
+  SkeletonSettingsRequestT,
+  SkeletonSettingsResponseT,
+  SkeletonTogglesT,
+  VRCOSCSettingsRequestT,
+  VRCOSCSettingsResponseT,
 } from 'solarxr-protocol';
 import { useManualProportions } from './manual-proportions';
 
@@ -79,7 +80,9 @@ export function useProvideOnboarding() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { state: locatioState } = useLocation();
-  const [settings, setSettings] = useState<SettingsResponseT>();
+  const [skeletonSettings, setSkeletonSettings] = useState<SkeletonSettingsResponseT>();
+  const [resetsSettings, setResetsSettings] = useState<ResetsSettingsResponseT>();
+  const [vrcOscSettings, setVrcOscSettings] = useState<VRCOSCSettingsResponseT>();
 
   useLayoutEffect(() => {
     const { alonePage = false }: { alonePage?: boolean } = (locatioState as any) || {};
@@ -89,12 +92,29 @@ export function useProvideOnboarding() {
   }, [locatioState, state]);
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+    sendRPCPacket(RpcMessage.SkeletonSettingsRequest, new SkeletonSettingsRequestT());
+    sendRPCPacket(RpcMessage.ResetsSettingsRequest, new ResetsSettingsRequestT());
+    sendRPCPacket(RpcMessage.VRCOSCSettingsRequest, new VRCOSCSettingsRequestT());
   }, []);
 
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    setSettings(settings);
-  });
+  useRPCPacket(
+    RpcMessage.SkeletonSettingsResponse,
+    (settings: SkeletonSettingsResponseT) => {
+      setSkeletonSettings(settings);
+    }
+  );
+  useRPCPacket(
+    RpcMessage.ResetsSettingsResponse,
+    (settings: ResetsSettingsResponseT) => {
+      setResetsSettings(settings);
+    }
+  );
+  useRPCPacket(
+    RpcMessage.VRCOSCSettingsResponse,
+    (settings: VRCOSCSettingsResponseT) => {
+      setVrcOscSettings(settings);
+    }
+  );
 
   const { changeBoneValue } = useManualProportions({
     type: 'linear',
@@ -102,28 +122,26 @@ export function useProvideOnboarding() {
 
   const onboardingEnded = () => {
     setConfig({ doneOnboarding: true });
-    if (!settings?.modelSettings || !settings?.vrcOsc) return;
-    const req = new ChangeSettingsRequestT();
-    const modelSettings = new ModelSettingsT();
-    const oscSettings = new VRCOSCSettingsT();
+    if (!skeletonSettings || !resetsSettings || !vrcOscSettings) return;
 
     const mocap = usage === 'mocap' || usage === 'vtubing';
 
-    const toggles = Object.assign(new ModelTogglesT(), settings.modelSettings.toggles);
-    toggles.selfLocalization = mocap && playspace === 'standing';
-    modelSettings.toggles = toggles;
-    req.modelSettings = modelSettings;
+    const toggles = Object.assign(new SkeletonTogglesT(), skeletonSettings.toggles);
+    toggles.mocapMode = mocap && playspace === 'standing';
 
-    const resets = Object.assign(new ResetsSettingsT(), settings.resetsSettings);
-    resets.resetHmdPitch = mocapPos === 'forehead';
-    req.resetsSettings = resets;
+    const skeletonReq = new ChangeSkeletonSettingsRequestT();
+    skeletonReq.toggles = toggles;
+    skeletonReq.ratios = skeletonSettings.ratios;
+    skeletonReq.filtering = skeletonSettings.filtering;
+    sendRPCPacket(RpcMessage.ChangeSkeletonSettingsRequest, skeletonReq);
 
-    const osc = Object.assign(new OSCSettingsT(), settings.vrcOsc.oscSettings);
+    const resetsReq = Object.assign(new ChangeResetsSettingsRequestT(), resetsSettings);
+    resetsReq.resetHmdPitch = mocapPos === 'forehead';
+    sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsReq);
+
+    const osc = Object.assign(new VRCOSCSettingsResponseT(), vrcOscSettings);
     osc.enabled = vrcOsc ?? false;
-    oscSettings.oscSettings = osc;
-    req.vrcOsc = oscSettings;
-
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
+    sendRPCPacket(RpcMessage.ChangeVRCOSCSettingsRequest, osc);
 
     if (mocap) {
       changeBoneValue({ bone: SkeletonBone.HAND_Z, type: 'bone', newValue: 0 });
