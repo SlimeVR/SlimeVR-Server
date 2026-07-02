@@ -14,20 +14,6 @@ import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { FullResetIcon } from '@/components/commons/icon/ResetIcon';
 
-export function GeneralSettings() {
-  return (
-    <SettingsPageLayout>
-      <form className="flex flex-col gap-2 w-full">
-        <OutputTrackersSettings />
-        <StayAlignedSettings />
-        <TrackingSettings />
-        <GroupedResetsSettings />
-        <GroupedTrackersSettings />
-      </form>
-    </SettingsPageLayout>
-  );
-}
-
 export function GroupedResetsSettings() {
   const { l10n } = useLocalization();
 
@@ -66,5 +52,19 @@ export function GroupedTrackersSettings() {
         />
       </>
     </SettingsPagePaneLayout>
+  );
+}
+
+export function GeneralSettings() {
+  return (
+      <SettingsPageLayout>
+        <div className="flex flex-col gap-2 w-full">
+          <OutputTrackersSettings />
+          <StayAlignedSettings />
+          <TrackingSettings />
+          <GroupedResetsSettings />
+          <GroupedTrackersSettings />
+        </div>
+      </SettingsPageLayout>
   );
 }
