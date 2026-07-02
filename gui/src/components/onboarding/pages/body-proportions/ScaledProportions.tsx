@@ -7,10 +7,9 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useEffect, useState } from 'react';
 import {
   CancelUserHeightCalibrationT,
-  ChangeSkeletonSettingsRequestT,
+  ChangeUserHeightRequestT,
   ResetType,
   RpcMessage,
-  SkeletonHeightT,
   SkeletonProportionsRequestT,
   SkeletonProportionsResetAllRequestT,
   SkeletonProportionsResponseT,
@@ -285,8 +284,9 @@ export function ScaledProportionsPage() {
 
   const applyHeight = (newHeight: number) => {
     setHmdHeight(newHeight);
-    const skeletonSettingsRequest = new ChangeSkeletonSettingsRequestT();
-    skeletonSettingsRequest.skeletonHeight = new SkeletonHeightT(newHeight, 0);
+    const skeletonSettingsRequest = new ChangeUserHeightRequestT();
+    skeletonSettingsRequest.hmdHeight = newHeight;
+    skeletonSettingsRequest.floorHeight = 0;
     sendRPCPacket(
       RpcMessage.ChangeSkeletonSettingsRequest,
       skeletonSettingsRequest
@@ -319,7 +319,7 @@ export function ScaledProportionsPage() {
   useRPCPacket(
     RpcMessage.SkeletonProportionsResponse,
     (res: SkeletonProportionsResponseT) => {
-      setHmdHeight(res.userHeight);
+      setHmdHeight(res.skeletonHeight);
     }
   );
 

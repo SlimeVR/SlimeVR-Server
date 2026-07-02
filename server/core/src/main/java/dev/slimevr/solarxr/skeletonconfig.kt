@@ -9,7 +9,7 @@ import dev.slimevr.skeleton.configToBoneValues
 import dev.slimevr.skeleton.height
 import dev.slimevr.skeleton.toBoneValues
 import solarxr_protocol.rpc.ChangeSkeletonProportionsRequest
-import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
+import solarxr_protocol.rpc.ChangeUserHeightRequest
 import solarxr_protocol.rpc.SkeletonPart
 import solarxr_protocol.rpc.SkeletonProportionsRequest
 import solarxr_protocol.rpc.SkeletonProportionsResetAllRequest
@@ -30,9 +30,9 @@ class SkeletonBehaviour(
 		val userHeight = if (expanded.isNotEmpty()) {
 			expanded.height()
 		} else {
-			skeleton.context.state.value.userHeight
+			skeleton.context.state.value.skeletonHeight
 		}
-		return SkeletonProportionsResponse(skeletonParts = skeletonParts, userHeight = userHeight)
+		return SkeletonProportionsResponse(skeletonParts = skeletonParts, skeletonHeight = userHeight)
 	}
 
 	override fun observe(receiver: SolarXRBridge) {
@@ -40,18 +40,16 @@ class SkeletonBehaviour(
 			receiver.sendRpc(buildConfigResponse())
 		}
 
-		receiver.rpcDispatcher.on<ChangeSkeletonSettingsRequest> { req ->
-			req.skeletonHeight?.let { skeletonHeight ->
-				val hmdHeight = skeletonHeight.hmdHeight ?: return@let
-				val floorHeight = skeletonHeight.floorHeight ?: 0f
-				val height = hmdHeight - floorHeight
-				if (height >= MIN_HEIGHT) {
-					userConfig.context.dispatch(
-						UserConfigActions.Update {
-							copy(userHeight = height, proportions = computeDefaultProportionsByBone(height))
-						},
-					)
-				}
+		receiver.rpcDispatcher.on<ChangeUserHeightRequest> { req ->
+			val hmdHeight = req.hmdHeight ?: return@on
+			val floorHeight = req.floorHeight ?: 0f
+			val height = hmdHeight - floorHeight
+			if (height >= MIN_HEIGHT) {
+				userConfig.context.dispatch(
+					UserConfigActions.Update {
+						copy(userHeight = height, proportions = computeDefaultProportionsByBone(height))
+					},
+				)
 			}
 		}
 
@@ -64,7 +62,7 @@ class SkeletonBehaviour(
 			receiver.sendRpc(buildConfigResponse())
 		}
 
-		receiver.rpcDispatcher.on< ChangeSkeletonProportionsRequest> { req ->
+		receiver.rpcDispatcher.on<ChangeSkeletonProportionsRequest> { req ->
 			val bone = req.bone ?: return@on
 			val value = req.value ?: return@on
 

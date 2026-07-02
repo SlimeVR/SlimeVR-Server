@@ -15,13 +15,11 @@ import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
 
 type HIDForm = {
-  hidSettings: {
-    trackersOverHID: boolean;
-  };
+  trackersOverHID: boolean;
 };
 
 const defaultValues: HIDForm = {
-  hidSettings: { trackersOverHID: false },
+  trackersOverHID: false,
 };
 
 const hidSettingsAtom = atom(new HIDSettingsResponseT());
@@ -45,7 +43,7 @@ export function HIDSettings() {
 
   const onSubmit = (values: HIDForm) => {
     const settingsReq = new ChangeHIDSettingsRequestT();
-    settingsReq.trackersOverHid = values.hidSettings.trackersOverHID;
+    settingsReq.trackersOverHid = values.trackersOverHID;
     sendRPCPacket(RpcMessage.ChangeHIDSettingsRequest, settingsReq);
   };
 
@@ -61,8 +59,7 @@ export function HIDSettings() {
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<HIDForm> = {};
-    formData.hidSettings = {
+    const formData: DefaultValues<HIDForm> = {
       trackersOverHID: settings.trackersOverHid,
     };
     reset({ ...getValues(), ...formData });
@@ -94,7 +91,7 @@ export function HIDSettings() {
         variant="toggle"
         outlined
         control={control}
-        name="hidSettings.trackersOverHID"
+        name="trackersOverHID"
         label={l10n.getString(
           'settings-general-tracker_mechanics-trackers_over_usb-enabled-label'
         )}

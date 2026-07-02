@@ -176,7 +176,7 @@ export function StayAlignedSettings() {
     const formData: DefaultValues<StayAlignedSettingsForm> = {};
 
     if (settings.enabled !== undefined) formData.enabled = settings.enabled;
-    // TODO hideYawCorrection
+    // TODO hide_yaw_correction + setup_complete
 
     formData.standingEnabled = settings.standingEnabled ?? false;
     formData.standingUpperLegAngle = settings.standingUpperLegAngle ?? 0.0;

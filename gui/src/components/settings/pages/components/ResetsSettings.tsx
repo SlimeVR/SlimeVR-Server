@@ -1,6 +1,6 @@
 import { useLocalization, Localized } from '@fluent/react';
 import { useEffect } from 'react';
-import { DefaultValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   ResetsSettingsRequestT,
   ResetsSettingsResponseT,
@@ -12,21 +12,24 @@ import { CheckBox } from '@/components/commons/Checkbox';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
-import {
-  defaultResetSettings,
-  loadResetSettings,
-  ResetSettingsForm,
-} from '@/hooks/reset-settings';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
 
-type ResetsForm = {
-  resetsSettings: ResetSettingsForm;
+type ResetsSettingsForm = {
+  resetMountingFeet: boolean;
+  armsResetMode: number;
+  yawResetSmoothTime: number;
+  saveMountingReset: boolean;
+  resetHmdPitch: boolean;
 };
 
-const defaultValues: ResetsForm = {
-  resetsSettings: defaultResetSettings,
+const defaultValues: ResetsSettingsForm = {
+  resetMountingFeet: false,
+  armsResetMode: 0,
+  yawResetSmoothTime: 0.0,
+  saveMountingReset: false,
+  resetHmdPitch: false,
 };
 
 const resetsSettingsAtom = atom(new ResetsSettingsResponseT());
@@ -51,15 +54,21 @@ export function ResetsSettings() {
   });
 
   const { control, watch, handleSubmit, getValues, reset } =
-    useForm<ResetsForm>({
+    useForm<ResetsSettingsForm>({
       defaultValues,
       mode: 'onChange',
       reValidateMode: 'onChange',
     });
 
-  const onSubmit = (values: ResetsForm) => {
-    const settingsReq = loadResetSettings(values.resetsSettings);
-    sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, settingsReq);
+  const onSubmit = (values: ResetsSettingsForm) => {
+    const resetsSettings = new ResetsSettingsResponseT();
+    resetsSettings.resetMountingFeet = values.resetMountingFeet;
+    resetsSettings.armsResetMode = values.armsResetMode;
+    resetsSettings.yawResetSmoothTime = values.yawResetSmoothTime;
+    resetsSettings.saveMountingReset = values.saveMountingReset;
+    resetsSettings.resetHmdPitch = values.resetHmdPitch;
+
+    sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsSettings);
   };
 
   useEffect(() => {
@@ -77,9 +86,7 @@ export function ResetsSettings() {
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<ResetsForm> = {};
-    formData.resetsSettings = settings;
-    reset({ ...getValues(), ...formData });
+    reset({ ...getValues(), ...settings });
   }, [settings]);
 
   useRPCPacket(
@@ -101,7 +108,7 @@ export function ResetsSettings() {
 
       <NumberSelector
         control={control}
-        name="resetsSettings.yawResetSmoothTime"
+        name="yawResetSmoothTime"
         valueLabelFormat={(value) => secondsFormat.format(value)}
         min={0.0}
         max={0.5}
@@ -125,7 +132,7 @@ export function ResetsSettings() {
         variant="toggle"
         outlined
         control={control}
-        name="resetsSettings.saveMountingReset"
+        name="saveMountingReset"
         label={l10n.getString(
           'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
         )}
@@ -143,7 +150,7 @@ export function ResetsSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="resetsSettings.resetHmdPitch"
+              name="resetHmdPitch"
               label={l10n.getString(
                 'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
               )}
@@ -159,7 +166,7 @@ export function ResetsSettings() {
               variant="toggle"
               outlined
               control={control}
-              name="resetsSettings.resetMountingFeet"
+              name="resetMountingFeet"
               label={l10n.getString(
                 'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
               )}
@@ -177,7 +184,7 @@ export function ResetsSettings() {
         <div className="grid md:grid-cols-2 flex-col gap-3 pt-2 pb-3">
           <Radio
             control={control}
-            name="resetsSettings.armsResetMode"
+            name="armsResetMode"
             label={l10n.getString('settings-general-fk_settings-arm_fk-back')}
             description={l10n.getString(
               'settings-general-fk_settings-arm_fk-back-description'
@@ -186,7 +193,7 @@ export function ResetsSettings() {
           />
           <Radio
             control={control}
-            name="resetsSettings.armsResetMode"
+            name="armsResetMode"
             label={l10n.getString(
               'settings-general-fk_settings-arm_fk-forward'
             )}
@@ -197,7 +204,7 @@ export function ResetsSettings() {
           />
           <Radio
             control={control}
-            name="resetsSettings.armsResetMode"
+            name="armsResetMode"
             label={l10n.getString(
               'settings-general-fk_settings-arm_fk-tpose_up'
             )}
@@ -208,7 +215,7 @@ export function ResetsSettings() {
           />
           <Radio
             control={control}
-            name="resetsSettings.armsResetMode"
+            name="armsResetMode"
             label={l10n.getString(
               'settings-general-fk_settings-arm_fk-tpose_down'
             )}

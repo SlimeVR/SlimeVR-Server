@@ -23,21 +23,27 @@ class TapDetectionBehaviour(
 
 		val oldConfig = settings.context.state.value.data.tapDetectionConfig
 		receiver.rpcDispatcher.on<ChangeTapDetectionSettingsRequest> { req ->
-			settings.context.dispatch(SettingsActions.Update { copy(tapDetectionConfig = TapDetectionConfig(
-				yawResetDelay = req.yawResetDelay ?: oldConfig.yawResetDelay,
-				fullResetDelay = req.fullResetDelay ?: oldConfig.fullResetDelay,
-				mountingResetDelay = req.mountingResetDelay ?: oldConfig.mountingResetDelay,
-				yawResetEnabled = req.yawResetEnabled == true,
-				fullResetEnabled = req.fullResetEnabled == true,
-				mountingResetEnabled = req.mountingResetEnabled == true,
-				yawResetTaps = req.yawResetTaps?.toInt() ?: oldConfig.yawResetTaps,
-				fullResetTaps = req.fullResetTaps?.toInt() ?: oldConfig.fullResetTaps,
-				mountingResetTaps = req.mountingResetTaps?.toInt() ?: oldConfig.mountingResetTaps,
-				yawResetBodyPart = req.yawResetTracker ?: oldConfig.yawResetBodyPart,
-				fullResetBodyPart = req.fullResetTracker ?: oldConfig.fullResetBodyPart,
-				mountingResetBodyPart = req.mountingResetTracker ?: oldConfig.mountingResetBodyPart,
-				numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: oldConfig.numberTrackersOverThreshold,
-			))})
+			settings.context.dispatch(
+				SettingsActions.Update {
+					copy(
+						tapDetectionConfig = TapDetectionConfig(
+							yawResetDelay = req.yawResetDelay ?: oldConfig.yawResetDelay,
+							fullResetDelay = req.fullResetDelay ?: oldConfig.fullResetDelay,
+							mountingResetDelay = req.mountingResetDelay ?: oldConfig.mountingResetDelay,
+							yawResetEnabled = req.yawResetEnabled == true,
+							fullResetEnabled = req.fullResetEnabled == true,
+							mountingResetEnabled = req.mountingResetEnabled == true,
+							yawResetTaps = req.yawResetTaps?.toInt() ?: oldConfig.yawResetTaps,
+							fullResetTaps = req.fullResetTaps?.toInt() ?: oldConfig.fullResetTaps,
+							mountingResetTaps = req.mountingResetTaps?.toInt() ?: oldConfig.mountingResetTaps,
+							yawResetBodyPart = req.yawResetTracker ?: oldConfig.yawResetBodyPart,
+							fullResetBodyPart = req.fullResetTracker ?: oldConfig.fullResetBodyPart,
+							mountingResetBodyPart = req.mountingResetTracker ?: oldConfig.mountingResetBodyPart,
+							numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: oldConfig.numberTrackersOverThreshold,
+						),
+					)
+				},
+			)
 		}
 	}
 

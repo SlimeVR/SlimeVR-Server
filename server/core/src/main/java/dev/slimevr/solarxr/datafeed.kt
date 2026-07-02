@@ -169,14 +169,16 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 					val minTime = config.minimumTimeSinceLast.toLong()
 					while (isActive) {
 						try {
-							receiver.sendDataFeed(createDatafeedFrame(
-								server = server,
-								datafeedConfig = config,
-								skeleton = skeleton,
-								resetsManager = receiver.appContext.resetsManager,
-								heightCalibrationManager = receiver.appContext.heightCalibrationManager,
-								index = index
-							))
+							receiver.sendDataFeed(
+								createDatafeedFrame(
+									server = server,
+									datafeedConfig = config,
+									skeleton = skeleton,
+									resetsManager = receiver.appContext.resetsManager,
+									heightCalibrationManager = receiver.appContext.heightCalibrationManager,
+									index = index,
+								),
+							)
 						} catch (e: Exception) {
 							AppLogger.solarxr.error(e, "Error sending data feed")
 						}
@@ -191,13 +193,15 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 
 		receiver.dataFeedDispatcher.on<PollDataFeed> { event ->
 			val config = event.config ?: return@on
-			receiver.sendDataFeed(createDatafeedFrame(
-				server = server,
-				datafeedConfig = config,
-				skeleton = skeleton,
-				resetsManager = receiver.appContext.resetsManager,
-				heightCalibrationManager = receiver.appContext.heightCalibrationManager
-			))
+			receiver.sendDataFeed(
+				createDatafeedFrame(
+					server = server,
+					datafeedConfig = config,
+					skeleton = skeleton,
+					resetsManager = receiver.appContext.resetsManager,
+					heightCalibrationManager = receiver.appContext.heightCalibrationManager,
+				),
+			)
 		}
 	}
 }

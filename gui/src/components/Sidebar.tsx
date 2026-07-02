@@ -45,8 +45,8 @@ export function PreviewControls({ open }: { open: boolean }) {
   useRPCPacket(
     RpcMessage.SkeletonProportionsResponse,
     (data: SkeletonProportionsResponseT) => {
-      if (data.userHeight)
-        setUserHeight(cmFormat.format((data.userHeight * 100) / 0.936));
+      if (data.skeletonHeight)
+        setUserHeight(cmFormat.format((data.skeletonHeight * 100) / 0.936));
     }
   );
 

@@ -36,7 +36,7 @@ suspend fun waitForConnected(
 	macAddress: String,
 	timeoutMs: Long = 30_000,
 ): Boolean? = withTimeoutOrNull(timeoutMs) {
-    deviceStatusFlow(server) { _, deviceMac -> deviceMac?.uppercase() == macAddress }.first(::isOnlineStatus)
+	deviceStatusFlow(server) { _, deviceMac -> deviceMac?.uppercase() == macAddress }.first(::isOnlineStatus)
 	true
 }
 

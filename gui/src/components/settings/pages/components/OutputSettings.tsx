@@ -77,7 +77,7 @@ function trackersToBodyPartList(
 
 function bodyPartListToTrackers(
   bodyParts: BodyPart[]
-): Omit<OutputTrackersForm['trackers'], 'automaticTrackerToggle'> {
+): OutputTrackersForm['trackers'] {
   const set = new Set(bodyParts);
   return {
     waist: set.has(BodyPart.HIP),

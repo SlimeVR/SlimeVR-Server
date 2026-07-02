@@ -51,7 +51,7 @@ data class VMCConfig(
 	val enabled: Boolean = true,
 	val portOut: Int = 39539,
 	val portIn: Int = 39540,
-	val address: String = "172.17.0.1", // TODO why not 127.0.0.1?
+	val address: String = "127.0.0.1",
 	/** Mirror the tracking before sending it (turn left <=> turn right, left leg <=> right leg) */
 	val mirrorTracking: Boolean = false,
 	/** Anchor the tracking at the hip (sitting down)? */

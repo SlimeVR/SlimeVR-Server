@@ -34,7 +34,7 @@ data class BoneState(
 // 		get() = tailPosition - headPosition
 }
 
-data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val userHeight: Float)
+data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val skeletonHeight: Float)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = run {
 	val bones = DEFAULT_BONE_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
@@ -44,7 +44,7 @@ val DEFAULT_SKELETON_STATE: SkeletonState = run {
 		}
 		bodyPart to BoneState(bodyPart = bodyPart, offset = tailOffset, rotation = restRotation)
 	}
-	SkeletonState(rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL) }, userHeight = DEFAULT_HEIGHT)
+	SkeletonState(rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL) }, skeletonHeight = DEFAULT_HEIGHT)
 }
 
 fun buildBones(

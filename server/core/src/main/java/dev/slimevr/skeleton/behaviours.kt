@@ -41,7 +41,7 @@ class ProportionsBehaviour : SkeletonBehaviour {
 			val newBones = state.rawBones.mapValues { (bodyPart, bone) ->
 				bone.copy(offset = bones[bodyPart] ?: bone.offset)
 			}
-			state.copy(rawBones = newBones, userHeight = action.lengths.height())
+			state.copy(rawBones = newBones, skeletonHeight = action.lengths.height())
 		}
 
 		else -> state
@@ -66,7 +66,7 @@ class HeightLogBehaviour : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.safeLaunch {
 			receiver.context.state
-				.map { state -> state.userHeight }
+				.map { state -> state.skeletonHeight }
 				.distinctUntilChanged()
 				.collect { height -> println("User height changed: ${"%.2f".format(height)}m") }
 		}
@@ -103,7 +103,7 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 				receiver.context.dispatch(
 					SkeletonActions.SetBonePosition(
 						BodyPart.HEAD,
-						Vector3(circleX, state.userHeight + jumpHeight, circleZ),
+						Vector3(circleX, state.skeletonHeight + jumpHeight, circleZ),
 					),
 				)
 			}
@@ -125,7 +125,7 @@ class ComputedSkeletonBehaviour(
 					val processed = processors
 						.filter { processor -> processor.enabled }
 						.fold(targetState) { state, processor -> processor.process(state) }
-					val rootHead = Vector3(0f, targetState.userHeight, 0f) // FIXME WRONG
+					val rootHead = Vector3(0f, targetState.skeletonHeight, 0f) // FIXME WRONG
 					receiver.computed.value = buildBones(processed, rootHead = rootHead)
 				} catch (e: CancellationException) {
 					throw e

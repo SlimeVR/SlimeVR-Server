@@ -421,7 +421,7 @@ export function ManualProportionsPage() {
   useRPCPacket(
     RpcMessage.SkeletonProportionsResponse,
     (data: SkeletonProportionsResponseT) => {
-      if (data.userHeight) setUserHeight(data.userHeight);
+      if (data.skeletonHeight) setUserHeight(data.skeletonHeight);
     }
   );
 

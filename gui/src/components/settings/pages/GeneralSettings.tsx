@@ -57,14 +57,14 @@ export function GroupedTrackersSettings() {
 
 export function GeneralSettings() {
   return (
-      <SettingsPageLayout>
-        <div className="flex flex-col gap-2 w-full">
-          <OutputTrackersSettings />
-          <StayAlignedSettings />
-          <TrackingSettings />
-          <GroupedResetsSettings />
-          <GroupedTrackersSettings />
-        </div>
-      </SettingsPageLayout>
+    <SettingsPageLayout>
+      <div className="flex flex-col gap-2 w-full">
+        <OutputTrackersSettings />
+        <StayAlignedSettings />
+        <TrackingSettings />
+        <GroupedResetsSettings />
+        <GroupedTrackersSettings />
+      </div>
+    </SettingsPageLayout>
   );
 }

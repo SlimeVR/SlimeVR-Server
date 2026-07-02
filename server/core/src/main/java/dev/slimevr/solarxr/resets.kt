@@ -17,13 +17,17 @@ class ResetsBehaviour(
 
 		val oldConfig = resetsManager.context.state.value.config
 		receiver.rpcDispatcher.on<ChangeResetsSettingsRequest> { req ->
-			resetsManager.context.dispatch(ResetsActions.UpdateConfig(ResetsConfig(
-				resetMountingFeet = req.resetMountingFeet == true,
-				armsResetMode = req.armsResetMode ?: oldConfig.armsResetMode,
-				yawResetSmoothTime = req.yawResetSmoothTime ?: oldConfig.yawResetSmoothTime,
-				saveMountingReset = req.saveMountingReset == true,
-				resetHmdPitch = req.resetHmdPitch == true,
-			)))
+			resetsManager.context.dispatch(
+				ResetsActions.UpdateConfig(
+					ResetsConfig(
+						resetMountingFeet = req.resetMountingFeet == true,
+						armsResetMode = req.armsResetMode ?: oldConfig.armsResetMode,
+						yawResetSmoothTime = req.yawResetSmoothTime ?: oldConfig.yawResetSmoothTime,
+						saveMountingReset = req.saveMountingReset == true,
+						resetHmdPitch = req.resetHmdPitch == true,
+					),
+				),
+			)
 		}
 	}
 
