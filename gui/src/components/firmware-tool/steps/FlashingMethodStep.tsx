@@ -119,7 +119,7 @@ function SerialDevicesList({
       selectDevices([
         {
           type: FirmwareUpdateMethod.SerialFirmwareUpdate,
-          deviceId: serialValues.selectedDevicePort,
+          deviceIdPort: serialValues.selectedDevicePort,
           deviceNames: [
             devices[serialValues.selectedDevicePort].name?.toString() ??
               'unknown',
@@ -283,7 +283,7 @@ function OTADevicesList({
             ...curr,
             {
               type: FirmwareUpdateMethod.OTAFirmwareUpdate,
-              deviceId,
+              deviceIdPort: deviceId,
               deviceNames: deviceNames(device),
             },
           ];

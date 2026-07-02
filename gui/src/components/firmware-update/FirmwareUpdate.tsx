@@ -133,7 +133,7 @@ export function FirmwareUpdate() {
       if (!id) throw new Error('invalid device id');
 
       const selectedDevice = pendingDevicesRef.current.find(
-        ({ deviceId }) => deviceId === id.toString()
+        ({ deviceIdPort }) => deviceIdPort === id.toString()
       );
 
       // We skip the status as it can be old trackers still sending status
@@ -304,7 +304,7 @@ export function FirmwareUpdate() {
           ...curr,
           {
             type: FirmwareUpdateMethod.OTAFirmwareUpdate,
-            deviceId: id,
+            deviceIdPort: id,
             board: device.hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN,
             deviceNames: deviceNames(device, l10n),
           },

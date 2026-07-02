@@ -25,7 +25,7 @@ export type SelectedSouce = {
 
 export type SelectedDevice = {
   type: FirmwareUpdateMethod;
-  deviceId: string | number;
+  deviceIdPort: string | number;
   deviceNames: string[];
 };
 
@@ -115,7 +115,7 @@ export const getFlashingRequests = (
   for (const device of devices) {
     switch (device.type) {
       case FirmwareUpdateMethod.OTAFirmwareUpdate: {
-        const dId = +device.deviceId;
+        const dId = +device.deviceIdPort;
 
         const part = new FirmwarePartT();
         part.offset = 0;
@@ -134,7 +134,7 @@ export const getFlashingRequests = (
       }
       case FirmwareUpdateMethod.SerialFirmwareUpdate: {
         const id = new SerialDevicePortT();
-        id.port = device.deviceId.toString();
+        id.port = device.deviceIdPort.toString();
 
         if (!onboardingState.wifi?.ssid)
           throw new Error('invalid state, wifi should be set');

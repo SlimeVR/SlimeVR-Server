@@ -20,39 +20,35 @@ import { selectAtom } from 'jotai/utils';
 import { useLocaleConfig } from '@/i18n/config';
 
 type TapDetectionForm = {
-  tapDetection: {
-    mountingResetEnabled: boolean;
-    yawResetEnabled: boolean;
-    fullResetEnabled: boolean;
-    yawResetDelay: number;
-    fullResetDelay: number;
-    mountingResetDelay: number;
-    yawResetTaps: number;
-    fullResetTaps: number;
-    mountingResetTaps: number;
-    numberTrackersOverThreshold: number;
-    yawResetTracker: string;
-    mountingResetTracker: string;
-    fullResetTracker: string;
-  };
+  mountingResetEnabled: boolean;
+  yawResetEnabled: boolean;
+  fullResetEnabled: boolean;
+  yawResetDelay: number;
+  fullResetDelay: number;
+  mountingResetDelay: number;
+  yawResetTaps: number;
+  fullResetTaps: number;
+  mountingResetTaps: number;
+  numberTrackersOverThreshold: number;
+  yawResetTracker: string;
+  mountingResetTracker: string;
+  fullResetTracker: string;
 };
 
 const defaultValues: TapDetectionForm = {
-  tapDetection: {
-    mountingResetEnabled: false,
-    yawResetEnabled: false,
-    fullResetEnabled: false,
-    yawResetDelay: 0.2,
-    fullResetDelay: 1.0,
-    mountingResetDelay: 1.0,
-    yawResetTaps: 2,
-    fullResetTaps: 3,
-    mountingResetTaps: 3,
-    numberTrackersOverThreshold: 1,
-    yawResetTracker: String(BodyPart.CHEST),
-    mountingResetTracker: String(BodyPart.RIGHT_UPPER_LEG),
-    fullResetTracker: String(BodyPart.LEFT_UPPER_LEG),
-  },
+  mountingResetEnabled: false,
+  yawResetEnabled: false,
+  fullResetEnabled: false,
+  yawResetDelay: 0.2,
+  fullResetDelay: 1.0,
+  mountingResetDelay: 1.0,
+  yawResetTaps: 2,
+  fullResetTaps: 3,
+  mountingResetTaps: 3,
+  numberTrackersOverThreshold: 1,
+  yawResetTracker: String(BodyPart.CHEST),
+  mountingResetTracker: String(BodyPart.RIGHT_UPPER_LEG),
+  fullResetTracker: String(BodyPart.LEFT_UPPER_LEG),
 };
 
 const tapDetectionSettingsAtom = atom(new TapDetectionSettingsResponseT());
@@ -93,22 +89,22 @@ export function TapDetectionSettings() {
 
   const onSubmit = (values: TapDetectionForm) => {
     const settingsReq = new ChangeTapDetectionSettingsRequestT();
-    settingsReq.fullResetDelay = values.tapDetection.fullResetDelay;
-    settingsReq.fullResetEnabled = values.tapDetection.fullResetEnabled;
-    settingsReq.fullResetTaps = values.tapDetection.fullResetTaps;
-    settingsReq.yawResetDelay = values.tapDetection.yawResetDelay;
-    settingsReq.yawResetEnabled = values.tapDetection.yawResetEnabled;
-    settingsReq.yawResetTaps = values.tapDetection.yawResetTaps;
-    settingsReq.yawResetTracker = Number(values.tapDetection.yawResetTracker);
+    settingsReq.fullResetDelay = values.fullResetDelay;
+    settingsReq.fullResetEnabled = values.fullResetEnabled;
+    settingsReq.fullResetTaps = values.fullResetTaps;
+    settingsReq.yawResetDelay = values.yawResetDelay;
+    settingsReq.yawResetEnabled = values.yawResetEnabled;
+    settingsReq.yawResetTaps = values.yawResetTaps;
+    settingsReq.yawResetTracker = Number(values.yawResetTracker);
     settingsReq.mountingResetTracker = Number(
-      values.tapDetection.mountingResetTracker
+      values.mountingResetTracker
     );
-    settingsReq.fullResetTracker = Number(values.tapDetection.fullResetTracker);
-    settingsReq.mountingResetEnabled = values.tapDetection.mountingResetEnabled;
-    settingsReq.mountingResetDelay = values.tapDetection.mountingResetDelay;
-    settingsReq.mountingResetTaps = values.tapDetection.mountingResetTaps;
+    settingsReq.fullResetTracker = Number(values.fullResetTracker);
+    settingsReq.mountingResetEnabled = values.mountingResetEnabled;
+    settingsReq.mountingResetDelay = values.mountingResetDelay;
+    settingsReq.mountingResetTaps = values.mountingResetTaps;
     settingsReq.numberTrackersOverThreshold =
-      values.tapDetection.numberTrackersOverThreshold;
+      values.numberTrackersOverThreshold;
 
     sendRPCPacket(RpcMessage.ChangeTapDetectionSettingsRequest, settingsReq);
   };
@@ -128,43 +124,42 @@ export function TapDetectionSettings() {
   }, []);
 
   useEffect(() => {
-    const formData: DefaultValues<TapDetectionForm> = {};
-    formData.tapDetection = {
+    const formData: DefaultValues<TapDetectionForm> = {
       yawResetEnabled:
-        settings.yawResetEnabled || defaultValues.tapDetection.yawResetEnabled,
+          settings.yawResetEnabled || defaultValues.yawResetEnabled,
       fullResetEnabled:
-        settings.fullResetEnabled ||
-        defaultValues.tapDetection.fullResetEnabled,
+          settings.fullResetEnabled ||
+          defaultValues.fullResetEnabled,
       mountingResetEnabled:
-        settings.mountingResetEnabled ||
-        defaultValues.tapDetection.mountingResetEnabled,
+          settings.mountingResetEnabled ||
+          defaultValues.mountingResetEnabled,
       yawResetDelay:
-        settings.yawResetDelay || defaultValues.tapDetection.yawResetDelay,
+          settings.yawResetDelay || defaultValues.yawResetDelay,
       fullResetDelay:
-        settings.fullResetDelay || defaultValues.tapDetection.fullResetDelay,
+          settings.fullResetDelay || defaultValues.fullResetDelay,
       mountingResetDelay:
-        settings.mountingResetDelay ||
-        defaultValues.tapDetection.mountingResetDelay,
+          settings.mountingResetDelay ||
+          defaultValues.mountingResetDelay,
       yawResetTaps:
-        settings.yawResetTaps || defaultValues.tapDetection.yawResetTaps,
+          settings.yawResetTaps || defaultValues.yawResetTaps,
       fullResetTaps:
-        settings.fullResetTaps || defaultValues.tapDetection.fullResetTaps,
+          settings.fullResetTaps || defaultValues.fullResetTaps,
       mountingResetTaps:
-        settings.mountingResetTaps ||
-        defaultValues.tapDetection.mountingResetTaps,
+          settings.mountingResetTaps ||
+          defaultValues.mountingResetTaps,
       yawResetTracker: String(
-        settings.yawResetTracker || defaultValues.tapDetection.yawResetTracker
+          settings.yawResetTracker || defaultValues.yawResetTracker
       ),
       fullResetTracker: String(
-        settings.fullResetTracker || defaultValues.tapDetection.fullResetTracker
+          settings.fullResetTracker || defaultValues.fullResetTracker
       ),
       mountingResetTracker: String(
-        settings.mountingResetTracker ||
-          defaultValues.tapDetection.mountingResetTracker
+          settings.mountingResetTracker ||
+          defaultValues.mountingResetTracker
       ),
       numberTrackersOverThreshold:
-        settings.numberTrackersOverThreshold ||
-        defaultValues.tapDetection.numberTrackersOverThreshold,
+          settings.numberTrackersOverThreshold ||
+          defaultValues.numberTrackersOverThreshold,
     };
     reset({ ...getValues(), ...formData });
   }, [settings]);
@@ -192,7 +187,7 @@ export function TapDetectionSettings() {
             variant="toggle"
             outlined
             control={control}
-            name="tapDetection.yawResetEnabled"
+            name="yawResetEnabled"
             label={l10n.getString(
               'settings-general-gesture_control-yawResetEnabled'
             )}
@@ -201,7 +196,7 @@ export function TapDetectionSettings() {
             variant="toggle"
             outlined
             control={control}
-            name="tapDetection.fullResetEnabled"
+            name="fullResetEnabled"
             label={l10n.getString(
               'settings-general-gesture_control-fullResetEnabled'
             )}
@@ -210,7 +205,7 @@ export function TapDetectionSettings() {
             variant="toggle"
             outlined
             control={control}
-            name="tapDetection.mountingResetEnabled"
+            name="mountingResetEnabled"
             label={l10n.getString(
               'settings-general-gesture_control-mountingResetEnabled'
             )}
@@ -227,7 +222,7 @@ export function TapDetectionSettings() {
               display="block"
               control={control}
               placeholder={''}
-              name="tapDetection.yawResetTracker"
+              name="yawResetTracker"
               items={bodyParts}
             />
           </div>
@@ -241,7 +236,7 @@ export function TapDetectionSettings() {
               display="block"
               control={control}
               placeholder={''}
-              name="tapDetection.mountingResetTracker"
+              name="mountingResetTracker"
               items={bodyParts}
             />
           </div>
@@ -255,7 +250,7 @@ export function TapDetectionSettings() {
               display="block"
               control={control}
               placeholder={''}
-              name="tapDetection.fullResetTracker"
+              name="fullResetTracker"
               items={bodyParts}
             />
           </div>
@@ -264,7 +259,7 @@ export function TapDetectionSettings() {
       <div className="grid sm:grid-cols-3 gap-5 pb-2">
         <NumberSelector
           control={control}
-          name="tapDetection.yawResetDelay"
+          name="yawResetDelay"
           label={l10n.getString(
             'settings-general-gesture_control-yawResetDelay'
           )}
@@ -275,7 +270,7 @@ export function TapDetectionSettings() {
         />
         <NumberSelector
           control={control}
-          name="tapDetection.fullResetDelay"
+          name="fullResetDelay"
           label={l10n.getString(
             'settings-general-gesture_control-fullResetDelay'
           )}
@@ -286,7 +281,7 @@ export function TapDetectionSettings() {
         />
         <NumberSelector
           control={control}
-          name="tapDetection.mountingResetDelay"
+          name="mountingResetDelay"
           label={l10n.getString(
             'settings-general-gesture_control-mountingResetDelay'
           )}
@@ -299,7 +294,7 @@ export function TapDetectionSettings() {
       <div className="grid sm:grid-cols-3 gap-5">
         <NumberSelector
           control={control}
-          name="tapDetection.yawResetTaps"
+          name="yawResetTaps"
           label={l10n.getString(
             'settings-general-gesture_control-yawResetTaps'
           )}
@@ -314,7 +309,7 @@ export function TapDetectionSettings() {
         />
         <NumberSelector
           control={control}
-          name="tapDetection.fullResetTaps"
+          name="fullResetTaps"
           label={l10n.getString(
             'settings-general-gesture_control-fullResetTaps'
           )}
@@ -329,7 +324,7 @@ export function TapDetectionSettings() {
         />
         <NumberSelector
           control={control}
-          name="tapDetection.mountingResetTaps"
+          name="mountingResetTaps"
           label={l10n.getString(
             'settings-general-gesture_control-mountingResetTaps'
           )}
@@ -359,7 +354,7 @@ export function TapDetectionSettings() {
         <div>
           <NumberSelector
             control={control}
-            name="tapDetection.numberTrackersOverThreshold"
+            name="numberTrackersOverThreshold"
             valueLabelFormat={(value) =>
               l10n.getString('settings-general-gesture_control-trackers', {
                 amount: Math.round(value),

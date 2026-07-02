@@ -25,6 +25,7 @@ import {
   StandingRelaxedPoseModal,
 } from './StayAlignedPoseModal';
 
+// TODO hide_yaw_correction + setup_complete are now in their own requests
 export type StayAlignedSettingsForm = {
   enabled: boolean;
   hideYawCorrection: boolean;
@@ -40,8 +41,6 @@ export type StayAlignedSettingsForm = {
   flatUpperLegAngle: number;
   flatLowerLegAngle: number;
   flatFootAngle: number;
-  // Not part of StayAlignedSettingsResponse — tracked client-side/derived
-  // from whether setup has produced non-zero relaxed pose angles.
   setupComplete: boolean;
 };
 
@@ -176,7 +175,6 @@ export function StayAlignedSettings() {
     const formData: DefaultValues<StayAlignedSettingsForm> = {};
 
     if (settings.enabled !== undefined) formData.enabled = settings.enabled;
-    // TODO hide_yaw_correction + setup_complete
 
     formData.standingEnabled = settings.standingEnabled ?? false;
     formData.standingUpperLegAngle = settings.standingUpperLegAngle ?? 0.0;

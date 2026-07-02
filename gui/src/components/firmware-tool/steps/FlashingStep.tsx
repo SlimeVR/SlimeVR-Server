@@ -93,7 +93,7 @@ export function FlashingStep({
       if (!id) throw new Error('invalid device id');
 
       const selectedDevice = selectedDevices?.find(
-        ({ deviceId }) => deviceId == id.toString()
+        ({ deviceIdPort }) => deviceIdPort == id.toString()
       );
 
       // We skip the status as it can be old trackers still sending status
