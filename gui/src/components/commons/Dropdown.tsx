@@ -222,10 +222,6 @@ export function DropdownInside({
 }: DropdownProps & { value: string; onChange: (value: string) => void }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  useLayoutEffect(() => {
-    ref.current?.focus();
-  }, [value]);
-
   const variantStyles = {
     primary: 'bg-background-60 hover:bg-background-50',
     secondary: 'bg-background-70 hover:bg-background-60',

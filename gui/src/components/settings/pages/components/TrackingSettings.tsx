@@ -22,6 +22,7 @@ import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
+import {MartialArtsIcon} from "@/components/commons/icon/MartialArtsIcon";
 
 type SkeletonForm = {
   toggles: {
@@ -30,7 +31,7 @@ type SkeletonForm = {
     skatingCorrection: boolean;
     toeSnap: boolean;
     footPlant: boolean;
-    selfLocalization: boolean;
+    mocapMode: boolean;
     usePosition: boolean;
     enforceConstraints: boolean;
     correctConstraints: boolean;
@@ -65,7 +66,7 @@ const defaultValues: SkeletonForm = {
     skatingCorrection: false,
     toeSnap: false,
     footPlant: true,
-    selfLocalization: false,
+    mocapMode: false,
     usePosition: true,
     enforceConstraints: true,
     correctConstraints: true,
@@ -81,7 +82,7 @@ const defaultValues: SkeletonForm = {
   filtering: { amount: 0.1, type: FilteringType.NONE },
 };
 
-export function SkeletonSettings() {
+export function TrackingSettings() {
   const setSettings = useSetAtom(skeletonSettingsAtom);
   const settings = useAtomValue(skeletonSettingsValueAtom);
   const { l10n } = useLocalization();
@@ -109,7 +110,7 @@ export function SkeletonSettings() {
     toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
     toggles.toeSnap = values.toggles.toeSnap;
     toggles.footPlant = values.toggles.footPlant;
-    toggles.selfLocalization = values.toggles.selfLocalization;
+    toggles.mocapMode = values.toggles.mocapMode;
     toggles.usePosition = values.toggles.usePosition;
     toggles.enforceConstraints = values.toggles.enforceConstraints;
     toggles.correctConstraints = values.toggles.correctConstraints;
@@ -187,16 +188,19 @@ export function SkeletonSettings() {
   );
 
   return (
-    <SettingsPagePaneLayout icon={<WrenchIcon />} id="fksettings">
+    <SettingsPagePaneLayout icon={<MartialArtsIcon />} id="tracking">
       <>
         <Typography variant="main-title">
           {l10n.getString('settings-general-fk_settings')}
         </Typography>
 
-        <Typography variant="section-title">
-          {l10n.getString('settings-general-tracker_mechanics-filtering')}
-        </Typography>
-        <div className="flex flex-col pt-2 pb-4">
+        <div className="flex flex-col pt-3">
+          <Typography variant="section-title">
+            {l10n.getString('settings-general-tracker_mechanics-filtering')}
+          </Typography>
+        </div>
+
+        <div className="flex flex-col pt-1 pb-3">
           {l10n
             .getString(
               'settings-general-tracker_mechanics-filtering-description'
@@ -206,7 +210,7 @@ export function SkeletonSettings() {
               <Typography key={i}>{line}</Typography>
             ))}
         </div>
-        <Typography>
+        <Typography bold>
           {l10n.getString('settings-general-tracker_mechanics-filtering-type')}
         </Typography>
         <div className="flex md:flex-row flex-col gap-3 pt-2">
@@ -244,7 +248,7 @@ export function SkeletonSettings() {
             value={FilteringType.PREDICTION.toString()}
           />
         </div>
-        <div className="flex gap-5 pt-5 md:flex-row flex-col pb-4">
+        <div className="flex pt-3 md:flex-row flex-col">
           <NumberSelector
             control={control}
             name="filtering.amount"
@@ -258,7 +262,7 @@ export function SkeletonSettings() {
           />
         </div>
 
-        <div className="flex flex-col pt-2 pb-4 gap-2">
+        <div className="flex flex-col pt-6 pb-2 gap-1">
           <Typography variant="section-title">
             {l10n.getString(
               'settings-general-fk_settings-leg_tweak-skating_correction'
@@ -270,7 +274,7 @@ export function SkeletonSettings() {
             )}
           </Typography>
         </div>
-        <div className="grid sm:grid-cols-1 gap-2 pb-4">
+        <div className="grid sm:grid-cols-1 gap-2">
           <CheckBox
             variant="toggle"
             outlined
@@ -293,19 +297,19 @@ export function SkeletonSettings() {
           />
         </div>
 
-        <div className="flex flex-col pt-2 pb-2">
+        <div className="flex flex-col pt-6 pb-1">
           <Typography variant="section-title">
             {l10n.getString('settings-general-fk_settings-leg_fk')}
           </Typography>
         </div>
-        <div className="grid sm:grid-cols-1 gap-3 pb-3">
+        <div className="grid sm:grid-cols-1 pb-2">
           <Typography>
             {l10n.getString(
               'settings-general-fk_settings-leg_tweak-floor_clip-description'
             )}
           </Typography>
         </div>
-        <div className="grid sm:grid-cols-1 gap-2 pb-3">
+        <div className="grid sm:grid-cols-1">
           <CheckBox
             variant="toggle"
             outlined
@@ -316,14 +320,14 @@ export function SkeletonSettings() {
             )}
           />
         </div>
-        <div className="flex flex-col pt-2 pb-3">
+        <div className="flex flex-col pt-5 pb-2">
           <Typography>
             {l10n.getString(
               'settings-general-fk_settings-leg_tweak-foot_plant-description'
             )}
           </Typography>
         </div>
-        <div className="grid sm:grid-cols-1 gap-3 pb-3">
+        <div className="grid sm:grid-cols-1">
           <CheckBox
             variant="toggle"
             outlined
@@ -334,14 +338,14 @@ export function SkeletonSettings() {
             )}
           />
         </div>
-        <div className="flex flex-col pt-2 pb-3">
+        <div className="flex flex-col pt-5">
           <Typography>
             {l10n.getString(
               'settings-general-fk_settings-leg_tweak-toe_snap-description'
             )}
           </Typography>
         </div>
-        <div className="grid sm:grid-cols-1 gap-3 pb-3">
+        <div className="grid sm:grid-cols-1 gap-3 pt-2">
           <CheckBox
             variant="toggle"
             outlined
@@ -353,7 +357,7 @@ export function SkeletonSettings() {
           />
         </div>
 
-        <div className="flex flex-col pt-2 pb-3">
+        <div className="flex flex-col pt-5">
           <Typography variant="section-title">
             {l10n.getString('settings-general-fk_settings-arm_fk')}
           </Typography>
@@ -361,7 +365,7 @@ export function SkeletonSettings() {
             {l10n.getString('settings-general-fk_settings-arm_fk-description')}
           </Typography>
         </div>
-        <div className="grid sm:grid-cols-1 pb-3">
+        <div className="grid sm:grid-cols-1 pt-2">
           <CheckBox
             variant="toggle"
             outlined
@@ -373,21 +377,19 @@ export function SkeletonSettings() {
           />
         </div>
 
-        <div className="flex flex-col pt-2 pb-1">
+        <div className="flex flex-col pt-5">
           <Typography variant="section-title">
             {l10n.getString(
               'settings-general-fk_settings-enforce_joint_constraints'
             )}
           </Typography>
-          <div className="pt-2">
-            <Typography>
-              {l10n.getString(
+          <Typography>
+            {l10n.getString(
                 'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description'
-              )}
-            </Typography>
-          </div>
+            )}
+          </Typography>
         </div>
-        <div className="grid sm:grid-cols-1 pb-3">
+        <div className="grid sm:grid-cols-1 pt-2">
           <CheckBox
             variant="toggle"
             outlined
@@ -399,17 +401,17 @@ export function SkeletonSettings() {
           />
         </div>
 
-        <div className="flex flex-col pt-2 pb-3">
-          <Typography bold>
+        <div className="flex flex-col pt-5">
+          <Typography variant="section-title">
             {l10n.getString('settings-general-fk_settings-ik')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString(
               'settings-general-fk_settings-ik-use_position-description'
             )}
           </Typography>
         </div>
-        <div className="grid sm:grid-cols-1 pb-3">
+        <div className="grid sm:grid-cols-1 pt-2">
           <CheckBox
             variant="toggle"
             outlined
@@ -421,7 +423,31 @@ export function SkeletonSettings() {
           />
         </div>
 
-        <div className="flex flex-col pt-2 pb-3">
+        <div className="flex flex-col pt-5">
+          <Typography variant="section-title">
+            {l10n.getString(
+                'settings-general-fk_settings-self_localization-title'
+            )}
+          </Typography>
+          <Typography>
+            {l10n.getString(
+                'settings-general-fk_settings-self_localization-description'
+            )}
+          </Typography>
+        </div>
+        <div className="grid sm:grid-cols-1 pt-2">
+          <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="toggles.mocapMode"
+              label={l10n.getString(
+                  'settings-general-fk_settings-self_localization-title'
+              )}
+          />
+        </div>
+
+        <div className="flex flex-col pt-5">
           <Typography variant="section-title">
             {l10n.getString(
               'settings-general-fk_settings-skeleton_settings-ratios'
@@ -433,7 +459,7 @@ export function SkeletonSettings() {
             )}
           </Typography>
         </div>
-        <div className="grid sm:grid-cols-2 gap-3 pb-3">
+        <div className="grid sm:grid-cols-2 gap-3 pt-2">
           <NumberSelector
             control={control}
             name="ratios.imputeSpineFromUpperLower"
@@ -488,30 +514,6 @@ export function SkeletonSettings() {
             min={0.0}
             max={1.0}
             step={0.05}
-          />
-        </div>
-
-        <div className="flex flex-col pt-2 pb-3">
-          <Typography variant="section-title">
-            {l10n.getString(
-              'settings-general-fk_settings-self_localization-title'
-            )}
-          </Typography>
-          <Typography>
-            {l10n.getString(
-              'settings-general-fk_settings-self_localization-description'
-            )}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 gap3 pb5">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.selfLocalization"
-            label={l10n.getString(
-              'settings-general-fk_settings-self_localization-title'
-            )}
           />
         </div>
       </>

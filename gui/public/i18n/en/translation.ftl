@@ -476,10 +476,10 @@ mounting_selection_menu-close = Close
 settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-output = Output
-settings-sidebar-tracker_mechanics = Tracker mechanics
+settings-sidebar-resets = Resets
 settings-sidebar-stay_aligned = Stay Aligned
-settings-sidebar-fk_settings = Tracking settings
-settings-sidebar-gesture_control = Gesture control
+settings-sidebar-tracking = Tracking
+settings-sidebar-trackers = Trackers
 settings-sidebar-interface = Interface
 settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-osc_vmc = VMC
@@ -496,7 +496,7 @@ settings-sidebar-advanced = Advanced
 
 ## Output settings
 # Some keys have steamvr in them as we switched to output but want to keep existing translations
-settings-general-output = Output
+settings-general-output = Output Settings
 settings-general-output_trackers = Output trackers
 # Not all translation keys support multiline, only the ones that specify it will actually
 # split it in lines (that also means you can split in lines however you want in those).
@@ -526,7 +526,7 @@ settings-general-steamvr-trackers-hands-warning-cancel = Cancel
 settings-general-steamvr-trackers-hands-warning-done = Yes
 
 ## Tracker mechanics
-settings-general-tracker_mechanics = Tracker mechanics
+settings-general-trackers_settings = Trackers Settings
 settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -560,7 +560,7 @@ settings-general-tracker_mechanics-trackers_over_usb-description =
     Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
 
-settings-stay_aligned = Stay Aligned
+settings-stay_aligned = Stay Aligned Settings
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
 settings-stay_aligned-setup-label = Setup Stay Aligned
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
@@ -580,7 +580,7 @@ settings-stay_aligned-debug-description = Please include your settings when repo
 settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 
 ## FK/Tracking settings
-settings-general-fk_settings = Tracking settings
+settings-general-fk_settings = Tracking Settings
 
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
@@ -615,7 +615,7 @@ settings-general-fk_settings-velocity_settings-send_derived_velocity = Send deri
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
-settings-general-fk_settings-reset_settings = Reset settings
+settings-general-fk_settings-resets_settings = Resets Settings
 settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Reset the HMD's pitch (vertical rotation) upon doing a full reset. Useful if wearing an HMD on the forehead for VTubing or mocap. Do not enable for VR.
 settings-general-fk_settings-reset_settings-reset_hmd_pitch = Reset HMD pitch
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for mounting calibration.
@@ -629,17 +629,15 @@ settings-general-fk_settings-arm_fk-forward = Forward
 settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be raised forward at 90 degrees. Useful for VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
-settings-general-fk_settings-skeleton_settings-impute_spine_from_top_down = Impute missing spine trackers from upper to lower
-settings-general-fk_settings-skeleton_settings-impute_spine_curvature = How much to curve the spine with at least 2 adjacent spine trackers
+settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_lower = Impute missing spine trackers from upper to lower
+settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature when missing adjacent spine trackers
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Average the hip's yaw and roll with the legs'
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Average the knee trackers' yaw and roll with the ankles'
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Average the knees' yaw and roll with the ankles'
-
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
 
 ## Gesture control settings (tracker tapping)
-settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Tap based resets
 settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
 # This is a unit: 3 taps, 2 taps, 1 tap

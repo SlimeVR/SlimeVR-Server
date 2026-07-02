@@ -80,7 +80,7 @@ export function MagnetometerToggleSetting({
   return settingType === 'general' ? (
     <>
       <div
-        className="flex flex-col pt-5 pb-3 scroll-mt-12 mobile:scroll-mt-20"
+        className="flex flex-col pt-5 pb-2 scroll-mt-12 mobile:scroll-mt-20"
         id={id}
       >
         <Typography variant="section-title">

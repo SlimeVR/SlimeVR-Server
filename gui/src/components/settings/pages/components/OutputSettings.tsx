@@ -221,14 +221,14 @@ export function OutputTrackersSettings() {
         <>
           <Typography variant="main-title">
             {l10n.getString('settings-general-output')}
-            <div className="flex flex-col pb-2" />
+            <div className="flex flex-col pb-3" />
 
             <Typography variant="section-title">
               {l10n.getString(
                 'settings-general-steamvr-trackers-tracker_toggling'
               )}
             </Typography>
-            <div className="flex flex-col py-2">
+            <div className="flex flex-col pt-1 pb-2">
               {l10n
                 .getString(
                   'settings-general-output-trackers-tracker_toggling-description'
@@ -249,11 +249,11 @@ export function OutputTrackersSettings() {
             />
           </Typography>
 
-          <div className="flex flex-col pt-4" />
+          <div className="flex flex-col pt-6" />
           <Typography variant="section-title">
             {l10n.getString('settings-general-output_trackers')}
           </Typography>
-          <div className="flex flex-col py-2">
+          <div className="flex flex-col pt-1 pb-2">
             {l10n
               .getString('settings-general-output_trackers-description')
               .split('\n')
@@ -359,18 +359,18 @@ export function OutputTrackersSettings() {
             />
           </div>
 
-          <div className="flex flex-col pt-4" />
+          <div className="flex flex-col pt-6" />
           <Typography variant="section-title">
             {l10n.getString('settings-general-fk_settings-velocity_settings')}
           </Typography>
-          <div className="pt-2">
+          <div className="pt-1">
             <Typography>
               {l10n.getString(
                 'settings-general-fk_settings-velocity_settings-description'
               )}
             </Typography>
           </div>
-          <div className="grid sm:grid-cols-1 py-2">
+          <div className="grid sm:grid-cols-1 pt-2">
             <CheckBox
               variant="toggle"
               outlined

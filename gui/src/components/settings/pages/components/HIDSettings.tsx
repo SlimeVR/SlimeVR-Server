@@ -78,9 +78,8 @@ export function HIDSettings() {
   );
 
   return (
-    <SettingsPagePaneLayout icon={<WrenchIcon />} id="mechanics-hid">
       <>
-        <div className="flex flex-col pt-5 pb-3">
+        <div className="flex flex-col pb-2">
           <Typography variant="section-title">
             {l10n.getString(
               'settings-general-tracker_mechanics-trackers_over_usb'
@@ -103,6 +102,5 @@ export function HIDSettings() {
           )}
         />
       </>
-    </SettingsPagePaneLayout>
   );
 }

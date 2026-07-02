@@ -179,12 +179,8 @@ export function TapDetectionSettings() {
   );
 
   return (
-    <SettingsPagePaneLayout icon={<WrenchIcon />} id="gestureControl">
       <>
-        <Typography variant="main-title">
-          {l10n.getString('settings-general-gesture_control')}
-        </Typography>
-        <div className="flex flex-col pt-2 pb-4 gap-2">
+        <div className="flex flex-col pb-2 gap-1">
           <Typography variant="section-title">
             {l10n.getString('settings-general-gesture_control-subtitle')}
           </Typography>
@@ -302,7 +298,7 @@ export function TapDetectionSettings() {
             step={0.2}
           />
         </div>
-        <div className="grid sm:grid-cols-3 gap-5 pb-2">
+        <div className="grid sm:grid-cols-3 gap-5">
           <NumberSelector
             control={control}
             name="tapDetection.yawResetTaps"
@@ -349,7 +345,8 @@ export function TapDetectionSettings() {
             step={1}
           />
         </div>
-        <div className="grid sm:grid-cols-1 gap-2 pt-2">
+
+        <div className="grid sm:grid-cols-1 gap-1 pt-3">
           <Typography variant="section-title">
             {l10n.getString(
               'settings-general-gesture_control-numberTrackersOverThreshold'
@@ -360,23 +357,22 @@ export function TapDetectionSettings() {
               'settings-general-gesture_control-numberTrackersOverThreshold-description'
             )}
           </Typography>
-          <NumberSelector
-            control={control}
-            name="tapDetection.numberTrackersOverThreshold"
-            label={l10n.getString(
-              'settings-general-gesture_control-numberTrackersOverThreshold'
-            )}
-            valueLabelFormat={(value) =>
-              l10n.getString('settings-general-gesture_control-trackers', {
-                amount: Math.round(value),
-              })
-            }
-            min={1}
-            max={20}
-            step={1}
-          />
+
+          <div>
+            <NumberSelector
+                control={control}
+                name="tapDetection.numberTrackersOverThreshold"
+                valueLabelFormat={(value) =>
+                    l10n.getString('settings-general-gesture_control-trackers', {
+                      amount: Math.round(value),
+                    })
+                }
+                min={1}
+                max={20}
+                step={1}
+            />
+          </div>
         </div>
       </>
-    </SettingsPagePaneLayout>
   );
 }

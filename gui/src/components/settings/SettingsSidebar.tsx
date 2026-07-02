@@ -55,23 +55,23 @@ export function SettingsSidebar() {
           />
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="stayaligned"
+            scrollTo="stayAligned"
             id="settings-sidebar-stay_aligned"
           />
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="mechanics"
-            id="settings-sidebar-tracker_mechanics"
+            scrollTo="tracking"
+            id="settings-sidebar-tracking"
           />
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="fksettings"
-            id="settings-sidebar-fk_settings"
+            scrollTo="resets"
+            id="settings-sidebar-resets"
           />
           <SettingsLink
-            to="/settings/trackers"
-            scrollTo="gestureControl"
-            id="settings-sidebar-gesture_control"
+              to="/settings/trackers"
+              scrollTo="trackers"
+              id="settings-sidebar-trackers"
           />
         </div>
       </div>

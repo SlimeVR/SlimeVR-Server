@@ -64,6 +64,7 @@ export default defineConfig({
     esbuildOptions: {
       target: 'es2022',
     },
+    needsInterop: ['solarxr-protocol'],
     include: ['solarxr-protocol'],
   },
   resolve: {

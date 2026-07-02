@@ -230,18 +230,18 @@ export function StayAlignedSettings() {
   const openFlat = useState(false);
 
   return (
-    <SettingsPagePaneLayout icon={<HorizontalAlignIcon />} id="stayaligned">
+    <SettingsPagePaneLayout icon={<HorizontalAlignIcon />} id="stayAligned">
       <Typography variant="main-title">
         {l10n.getString('settings-stay_aligned')}
       </Typography>
-      <div className="mt-2">
+      <div className="pt-3">
         <Typography>
           {l10n.getString('settings-stay_aligned-description')}
         </Typography>
         <Typography>
           {l10n.getString('settings-stay_aligned-setup-description')}
         </Typography>
-        <div className="flex mt-2">
+        <div className="flex pt-2">
           <Button
             variant="primary"
             to="/onboarding/stay-aligned"
@@ -251,11 +251,11 @@ export function StayAlignedSettings() {
           </Button>
         </div>
       </div>
-      <div className="mt-6">
+      <div className="pt-6">
         <Typography variant="section-title">
           {l10n.getString('settings-stay_aligned-general-label')}
         </Typography>
-        <div className="grid sm:grid-cols-2 gap-3 mt-2">
+        <div className="grid sm:grid-cols-2 gap-3 pt-2">
           <CheckBox
             variant="toggle"
             outlined
@@ -276,16 +276,16 @@ export function StayAlignedSettings() {
           />
         </div>
       </div>
-      <div className="mt-6">
+      <div className="pt-6">
         <Typography variant="section-title">
           {l10n.getString('settings-stay_aligned-relaxed_poses-label')}
         </Typography>
-        <div className="mt-2">
+        <div className="pt-1">
           <Typography>
             {l10n.getString('settings-stay_aligned-relaxed_poses-description')}
           </Typography>
         </div>
-        <div className="grid sm:grid-cols-1 gap-3 mt-2">
+        <div className="grid sm:grid-cols-1 gap-3 pt-2">
           <div className="flex gap-2">
             <CheckBox
               variant="toggle"
@@ -349,16 +349,16 @@ export function StayAlignedSettings() {
           </div>
         </div>
       </div>
-      <div className="mt-6">
+      <div className="pt-6">
         <Typography variant="section-title">
           {l10n.getString('settings-stay_aligned-debug-label')}
         </Typography>
-        <div className="mt-2">
+        <div className="pt-1">
           <Typography>
             {l10n.getString('settings-stay_aligned-debug-description')}
           </Typography>
         </div>
-        <div className="mt-2">
+        <div className="pt-2">
           <CopySettingsButton values={values} />
         </div>
       </div>

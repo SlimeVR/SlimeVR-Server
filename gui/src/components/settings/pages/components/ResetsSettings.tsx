@@ -94,22 +94,24 @@ export function ResetsSettings() {
 
   return (
     <>
-      <SettingsPagePaneLayout icon={<WrenchIcon />} id="mechanics-resets">
-        <>
-          <div className="flex gap-5 pt-5 md:flex-row flex-col">
-            <NumberSelector
-              control={control}
-              name="resetsSettings.yawResetSmoothTime"
-              label={l10n.getString(
-                'settings-general-tracker_mechanics-yaw-reset-smooth-time'
+          <div className="flex md:flex-row flex-col pt-5 pb-1">
+            <Typography variant="section-title">
+              {l10n.getString(
+                  'settings-general-tracker_mechanics-yaw-reset-smooth-time'
               )}
-              valueLabelFormat={(value) => secondsFormat.format(value)}
-              min={0.0}
-              max={0.5}
-              step={0.05}
-            />
+            </Typography>
           </div>
-          <div className="flex flex-col pt-5 pb-3">
+
+      <NumberSelector
+          control={control}
+          name="resetsSettings.yawResetSmoothTime"
+          valueLabelFormat={(value) => secondsFormat.format(value)}
+          min={0.0}
+          max={0.5}
+          step={0.05}
+      />
+
+          <div className="flex flex-col pt-5 pb-2">
             <Typography variant="section-title">
               {l10n.getString(
                 'settings-general-tracker_mechanics-save_mounting_reset'
@@ -131,20 +133,8 @@ export function ResetsSettings() {
               'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
             )}
           />
-          <MagnetometerToggleSetting
-            settingType="general"
-            id="mechanics-magnetometer"
-          />
-        </>
-      </SettingsPagePaneLayout>
-      <SettingsPagePaneLayout icon={<WrenchIcon />} id="fksettings-resets">
-        <>
-          <div className="flex flex-col pt-2">
-            <Typography variant="section-title">
-              {l10n.getString('settings-general-fk_settings-reset_settings')}
-            </Typography>
-          </div>
-          <div className="flex flex-col pt-2 pb-3">
+
+          <div className="flex flex-col pt-5">
             <div className="grid grid-cols-2 gap-2">
               <div className="flex flex-col gap-2">
                 <Typography>
@@ -180,7 +170,8 @@ export function ResetsSettings() {
               </div>
             </div>
           </div>
-          <div>
+
+      <div className="flex flex-col pt-5">
             <Typography>
               {l10n.getString(
                 'settings-general-fk_settings-arm_fk-reset_mode-description'
@@ -233,8 +224,6 @@ export function ResetsSettings() {
               />
             </div>
           </div>
-        </>
-      </SettingsPagePaneLayout>
     </>
   );
 }
