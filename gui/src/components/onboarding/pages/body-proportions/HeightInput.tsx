@@ -1,11 +1,13 @@
+import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { EYE_HEIGHT_TO_HEIGHT_RATIO } from '@/hooks/height';
 import { useLocaleConfig } from '@/i18n/config';
 import classNames from 'classnames';
 import convert from 'convert';
-import { useMemo, useState } from 'react';
-
+import { useMemo, useState, useEffect, useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { useLocalization } from '@fluent/react';
 function IncrementButton({
   value,
   unit,
@@ -121,6 +123,8 @@ export function HeightSelectionInput({
   const { isXs } = useBreakpoint('xs');
   const [unit, setUnit] = useState<'meter' | 'foot'>('meter');
   const { currentLocales } = useLocaleConfig();
+  const { l10n } = useLocalization();
+  const isSubmitting = useRef(false);
 
   const formattedHeight = useMemo(() => {
     if (!hmdHeight) return '--';
@@ -139,6 +143,104 @@ export function HeightSelectionInput({
 
     return formatInFoot(displayHeight, currentLocales);
   }, [hmdHeight, unit]);
+
+  const defaultValues: { height: string } = {
+    height: formattedHeight,
+  };
+
+  const { reset, control, watch, getValues, setError, clearErrors } = useForm<{
+    height: string;
+  }>({
+    defaultValues,
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+  });
+
+  const onSubmit = (values: { height: string }) => {
+    let newFullHeight: number;
+    clearErrors('height');
+
+    // convert formatted height to raw number in meters
+    if (unit == 'meter') {
+      newFullHeight = Number(values.height.replace(/[ m]/g, ''));
+
+      if (isNaN(newFullHeight)) {
+        setTimeout(() => {
+          reset({ height: formattedHeight });
+          setError('height', {
+            message: l10n.getString('onboarding-user_height-error_format'),
+          });
+        }, 0);
+      } else if (newFullHeight > 2.56) {
+        setTimeout(() => {
+          reset({ height: formattedHeight });
+          setError('height', {
+            message: l10n.getString('onboarding-user_height-error_bounds'),
+          });
+        }, 0);
+      } else if (newFullHeight != 0) {
+        isSubmitting.current = true;
+        setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
+      }
+    } else {
+      const match = values.height.match(
+        /^(\d+)(?:[′'.,\s]+(\d+(?:\.\d+)?)?["”]?)?$/ // regex to convert the formatted text to feet and inches individually in an array
+      );
+
+      if (!values.height) return; // this is to allow for blank inputs, so that the user can type their height from scratch
+
+      if (!match) {
+        setTimeout(() => {
+          reset({ height: formattedHeight });
+          setError('height', {
+            message: l10n.getString('onboarding-user_height-error_format'),
+          });
+        }, 0);
+        return;
+      }
+
+      const feet = Number(match[1]);
+      const inches = Number(match[2] || 0);
+      newFullHeight = convert(feet + inches / 12, 'foot').to('meter');
+
+      // bounds detection
+      if ((feet > 8 && inches > 4) || feet > 8) {
+        setTimeout(() => {
+          reset({ height: formattedHeight });
+          setError('height', {
+            message: l10n.getString('onboarding-user_height-error_bounds'),
+          });
+        }, 0);
+      } else if (feet != 0) {
+        isSubmitting.current = true;
+        setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
+      }
+    }
+  };
+
+  const onSubmitRef = useRef(onSubmit);
+  onSubmitRef.current = onSubmit;
+
+  useEffect(() => {
+    const subscription = watch((value, { type }) => {
+      if (type === 'change') {
+        onSubmitRef.current({ height: value.height ?? '' });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (isSubmitting.current) {
+      isSubmitting.current = false;
+      return;
+    }
+    reset({ ...getValues(), height: defaultValues.height });
+  }, [defaultValues.height]);
+
+  useEffect(() => {
+    setTimeout(() => reset({ height: formattedHeight }), 0);
+  }, [unit]);
 
   const incrementMath = (unit: 'inch' | 'cm' | 'foot', value: number) => {
     const incrementInMeters = convert(value, unit).to('meter');
@@ -182,6 +284,7 @@ export function HeightSelectionInput({
     const newEyeHeight = round4Digit(
       snappedHeight * EYE_HEIGHT_TO_HEIGHT_RATIO
     );
+
     setHmdHeight(newEyeHeight);
     setUnit(newUnit);
   };
@@ -222,11 +325,16 @@ export function HeightSelectionInput({
           </>
         )}
       </div>
-      <div className="flex w-full xs:w-auto xs:flex-grow bg-background-50 rounded-md px-2 py-2 h-full">
-        <div className="h-full flex items-center flex-grow justify-center min-w-24">
-          <Typography variant="main-title">{formattedHeight}</Typography>
-        </div>
-        <div className="w-[60px] xs:w-20 h-full gap-2 grid p-1">
+      <div className="flex w-full xs:w-auto xs:flex-grow bg-background-50 rounded-md px-2 py-2 h-full gap-1 items-center">
+        <Input
+          name="height"
+          control={control}
+          variant="secondary"
+          className="text-center !text-3xl !font-bold !w-[210px]"
+          errorClassName="text-center top-[47px] "
+          onBlur={() => clearErrors('height')}
+        />
+        <div className="w-[70px] xs:w-20 h-full gap-2 grid p-1">
           <UnitSelector
             active={unit === 'meter'}
             name={isXs ? 'unit-meter' : 'unit-cm'}
