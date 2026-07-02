@@ -14,7 +14,6 @@ import {
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocaleConfig } from '@/i18n/config';
 import { CheckBox } from '@/components/commons/Checkbox';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
@@ -22,7 +21,7 @@ import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
-import {MartialArtsIcon} from "@/components/commons/icon/MartialArtsIcon";
+import { MartialArtsIcon } from '@/components/commons/icon/MartialArtsIcon';
 
 type SkeletonForm = {
   toggles: {
@@ -385,7 +384,7 @@ export function TrackingSettings() {
           </Typography>
           <Typography>
             {l10n.getString(
-                'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description'
+              'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description'
             )}
           </Typography>
         </div>
@@ -426,24 +425,24 @@ export function TrackingSettings() {
         <div className="flex flex-col pt-5">
           <Typography variant="section-title">
             {l10n.getString(
-                'settings-general-fk_settings-self_localization-title'
+              'settings-general-fk_settings-self_localization-title'
             )}
           </Typography>
           <Typography>
             {l10n.getString(
-                'settings-general-fk_settings-self_localization-description'
+              'settings-general-fk_settings-self_localization-description'
             )}
           </Typography>
         </div>
         <div className="grid sm:grid-cols-1 pt-2">
           <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="toggles.mocapMode"
-              label={l10n.getString(
-                  'settings-general-fk_settings-self_localization-title'
-              )}
+            variant="toggle"
+            outlined
+            control={control}
+            name="toggles.mocapMode"
+            label={l10n.getString(
+              'settings-general-fk_settings-self_localization-title'
+            )}
           />
         </div>
 

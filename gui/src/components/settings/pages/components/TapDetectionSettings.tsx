@@ -9,12 +9,10 @@ import {
   TapDetectionSettingsResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Typography } from '@/components/commons/Typography';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Dropdown } from '@/components/commons/Dropdown';
-import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout';
 import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
@@ -179,200 +177,200 @@ export function TapDetectionSettings() {
   );
 
   return (
-      <>
-        <div className="flex flex-col pb-2 gap-1">
-          <Typography variant="section-title">
-            {l10n.getString('settings-general-gesture_control-subtitle')}
-          </Typography>
-          <Typography>
-            {l10n.getString('settings-general-gesture_control-description')}
-          </Typography>
-        </div>
-        <div>
-          <div className="grid sm:grid-cols-3 gap-5 pb-2">
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="tapDetection.yawResetEnabled"
-              label={l10n.getString(
-                'settings-general-gesture_control-yawResetEnabled'
-              )}
-            />
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="tapDetection.fullResetEnabled"
-              label={l10n.getString(
-                'settings-general-gesture_control-fullResetEnabled'
-              )}
-            />
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="tapDetection.mountingResetEnabled"
-              label={l10n.getString(
-                'settings-general-gesture_control-mountingResetEnabled'
-              )}
-            />
-          </div>
-          <div className="grid sm:grid-cols-3 gap-5 pb-2">
-            <div>
-              <Typography variant="section-title">
-                {l10n.getString(
-                  'settings-general-gesture_control-yawResetTracker'
-                )}
-              </Typography>
-              <Dropdown
-                display="block"
-                control={control}
-                placeholder={''}
-                name="tapDetection.yawResetTracker"
-                items={bodyParts}
-              />
-            </div>
-            <div>
-              <Typography variant="section-title">
-                {l10n.getString(
-                  'settings-general-gesture_control-mountingResetTracker'
-                )}
-              </Typography>
-              <Dropdown
-                display="block"
-                control={control}
-                placeholder={''}
-                name="tapDetection.mountingResetTracker"
-                items={bodyParts}
-              />
-            </div>
-            <div>
-              <Typography variant="section-title">
-                {l10n.getString(
-                  'settings-general-gesture_control-fullResetTracker'
-                )}
-              </Typography>
-              <Dropdown
-                display="block"
-                control={control}
-                placeholder={''}
-                name="tapDetection.fullResetTracker"
-                items={bodyParts}
-              />
-            </div>
-          </div>
+    <>
+      <div className="flex flex-col pb-2 gap-1">
+        <Typography variant="section-title">
+          {l10n.getString('settings-general-gesture_control-subtitle')}
+        </Typography>
+        <Typography>
+          {l10n.getString('settings-general-gesture_control-description')}
+        </Typography>
+      </div>
+      <div>
+        <div className="grid sm:grid-cols-3 gap-5 pb-2">
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="tapDetection.yawResetEnabled"
+            label={l10n.getString(
+              'settings-general-gesture_control-yawResetEnabled'
+            )}
+          />
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="tapDetection.fullResetEnabled"
+            label={l10n.getString(
+              'settings-general-gesture_control-fullResetEnabled'
+            )}
+          />
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="tapDetection.mountingResetEnabled"
+            label={l10n.getString(
+              'settings-general-gesture_control-mountingResetEnabled'
+            )}
+          />
         </div>
         <div className="grid sm:grid-cols-3 gap-5 pb-2">
-          <NumberSelector
-            control={control}
-            name="tapDetection.yawResetDelay"
-            label={l10n.getString(
-              'settings-general-gesture_control-yawResetDelay'
-            )}
-            valueLabelFormat={(value) => secondsFormat.format(value)}
-            min={0.2}
-            max={3.0}
-            step={0.2}
-          />
-          <NumberSelector
-            control={control}
-            name="tapDetection.fullResetDelay"
-            label={l10n.getString(
-              'settings-general-gesture_control-fullResetDelay'
-            )}
-            valueLabelFormat={(value) => secondsFormat.format(value)}
-            min={0.2}
-            max={3.0}
-            step={0.2}
-          />
-          <NumberSelector
-            control={control}
-            name="tapDetection.mountingResetDelay"
-            label={l10n.getString(
-              'settings-general-gesture_control-mountingResetDelay'
-            )}
-            valueLabelFormat={(value) => secondsFormat.format(value)}
-            min={0.2}
-            max={3.0}
-            step={0.2}
-          />
-        </div>
-        <div className="grid sm:grid-cols-3 gap-5">
-          <NumberSelector
-            control={control}
-            name="tapDetection.yawResetTaps"
-            label={l10n.getString(
-              'settings-general-gesture_control-yawResetTaps'
-            )}
-            valueLabelFormat={(value) =>
-              l10n.getString('settings-general-gesture_control-taps', {
-                amount: Math.round(value),
-              })
-            }
-            min={2}
-            max={10}
-            step={1}
-          />
-          <NumberSelector
-            control={control}
-            name="tapDetection.fullResetTaps"
-            label={l10n.getString(
-              'settings-general-gesture_control-fullResetTaps'
-            )}
-            valueLabelFormat={(value) =>
-              l10n.getString('settings-general-gesture_control-taps', {
-                amount: Math.round(value),
-              })
-            }
-            min={2}
-            max={10}
-            step={1}
-          />
-          <NumberSelector
-            control={control}
-            name="tapDetection.mountingResetTaps"
-            label={l10n.getString(
-              'settings-general-gesture_control-mountingResetTaps'
-            )}
-            valueLabelFormat={(value) =>
-              l10n.getString('settings-general-gesture_control-taps', {
-                amount: Math.round(value),
-              })
-            }
-            min={2}
-            max={10}
-            step={1}
-          />
-        </div>
-
-        <div className="grid sm:grid-cols-1 gap-1 pt-3">
-          <Typography variant="section-title">
-            {l10n.getString(
-              'settings-general-gesture_control-numberTrackersOverThreshold'
-            )}
-          </Typography>
-          <Typography>
-            {l10n.getString(
-              'settings-general-gesture_control-numberTrackersOverThreshold-description'
-            )}
-          </Typography>
-
           <div>
-            <NumberSelector
-                control={control}
-                name="tapDetection.numberTrackersOverThreshold"
-                valueLabelFormat={(value) =>
-                    l10n.getString('settings-general-gesture_control-trackers', {
-                      amount: Math.round(value),
-                    })
-                }
-                min={1}
-                max={20}
-                step={1}
+            <Typography variant="section-title">
+              {l10n.getString(
+                'settings-general-gesture_control-yawResetTracker'
+              )}
+            </Typography>
+            <Dropdown
+              display="block"
+              control={control}
+              placeholder={''}
+              name="tapDetection.yawResetTracker"
+              items={bodyParts}
+            />
+          </div>
+          <div>
+            <Typography variant="section-title">
+              {l10n.getString(
+                'settings-general-gesture_control-mountingResetTracker'
+              )}
+            </Typography>
+            <Dropdown
+              display="block"
+              control={control}
+              placeholder={''}
+              name="tapDetection.mountingResetTracker"
+              items={bodyParts}
+            />
+          </div>
+          <div>
+            <Typography variant="section-title">
+              {l10n.getString(
+                'settings-general-gesture_control-fullResetTracker'
+              )}
+            </Typography>
+            <Dropdown
+              display="block"
+              control={control}
+              placeholder={''}
+              name="tapDetection.fullResetTracker"
+              items={bodyParts}
             />
           </div>
         </div>
-      </>
+      </div>
+      <div className="grid sm:grid-cols-3 gap-5 pb-2">
+        <NumberSelector
+          control={control}
+          name="tapDetection.yawResetDelay"
+          label={l10n.getString(
+            'settings-general-gesture_control-yawResetDelay'
+          )}
+          valueLabelFormat={(value) => secondsFormat.format(value)}
+          min={0.2}
+          max={3.0}
+          step={0.2}
+        />
+        <NumberSelector
+          control={control}
+          name="tapDetection.fullResetDelay"
+          label={l10n.getString(
+            'settings-general-gesture_control-fullResetDelay'
+          )}
+          valueLabelFormat={(value) => secondsFormat.format(value)}
+          min={0.2}
+          max={3.0}
+          step={0.2}
+        />
+        <NumberSelector
+          control={control}
+          name="tapDetection.mountingResetDelay"
+          label={l10n.getString(
+            'settings-general-gesture_control-mountingResetDelay'
+          )}
+          valueLabelFormat={(value) => secondsFormat.format(value)}
+          min={0.2}
+          max={3.0}
+          step={0.2}
+        />
+      </div>
+      <div className="grid sm:grid-cols-3 gap-5">
+        <NumberSelector
+          control={control}
+          name="tapDetection.yawResetTaps"
+          label={l10n.getString(
+            'settings-general-gesture_control-yawResetTaps'
+          )}
+          valueLabelFormat={(value) =>
+            l10n.getString('settings-general-gesture_control-taps', {
+              amount: Math.round(value),
+            })
+          }
+          min={2}
+          max={10}
+          step={1}
+        />
+        <NumberSelector
+          control={control}
+          name="tapDetection.fullResetTaps"
+          label={l10n.getString(
+            'settings-general-gesture_control-fullResetTaps'
+          )}
+          valueLabelFormat={(value) =>
+            l10n.getString('settings-general-gesture_control-taps', {
+              amount: Math.round(value),
+            })
+          }
+          min={2}
+          max={10}
+          step={1}
+        />
+        <NumberSelector
+          control={control}
+          name="tapDetection.mountingResetTaps"
+          label={l10n.getString(
+            'settings-general-gesture_control-mountingResetTaps'
+          )}
+          valueLabelFormat={(value) =>
+            l10n.getString('settings-general-gesture_control-taps', {
+              amount: Math.round(value),
+            })
+          }
+          min={2}
+          max={10}
+          step={1}
+        />
+      </div>
+
+      <div className="grid sm:grid-cols-1 gap-1 pt-3">
+        <Typography variant="section-title">
+          {l10n.getString(
+            'settings-general-gesture_control-numberTrackersOverThreshold'
+          )}
+        </Typography>
+        <Typography>
+          {l10n.getString(
+            'settings-general-gesture_control-numberTrackersOverThreshold-description'
+          )}
+        </Typography>
+
+        <div>
+          <NumberSelector
+            control={control}
+            name="tapDetection.numberTrackersOverThreshold"
+            valueLabelFormat={(value) =>
+              l10n.getString('settings-general-gesture_control-trackers', {
+                amount: Math.round(value),
+              })
+            }
+            min={1}
+            max={20}
+            step={1}
+          />
+        </div>
+      </div>
+    </>
   );
 }

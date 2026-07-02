@@ -10,11 +10,9 @@ import {
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
-import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
 
 type HIDForm = {
   hidSettings: {
@@ -78,29 +76,29 @@ export function HIDSettings() {
   );
 
   return (
-      <>
-        <div className="flex flex-col pb-2">
-          <Typography variant="section-title">
-            {l10n.getString(
-              'settings-general-tracker_mechanics-trackers_over_usb'
-            )}
-          </Typography>
-          <Localized
-            id="settings-general-tracker_mechanics-trackers_over_usb-description"
-            elems={{ b: <b /> }}
-          >
-            <Typography />
-          </Localized>
-        </div>
-        <CheckBox
-          variant="toggle"
-          outlined
-          control={control}
-          name="hidSettings.trackersOverHID"
-          label={l10n.getString(
-            'settings-general-tracker_mechanics-trackers_over_usb-enabled-label'
+    <>
+      <div className="flex flex-col pb-2">
+        <Typography variant="section-title">
+          {l10n.getString(
+            'settings-general-tracker_mechanics-trackers_over_usb'
           )}
-        />
-      </>
+        </Typography>
+        <Localized
+          id="settings-general-tracker_mechanics-trackers_over_usb-description"
+          elems={{ b: <b /> }}
+        >
+          <Typography />
+        </Localized>
+      </div>
+      <CheckBox
+        variant="toggle"
+        outlined
+        control={control}
+        name="hidSettings.trackersOverHID"
+        label={l10n.getString(
+          'settings-general-tracker_mechanics-trackers_over_usb-enabled-label'
+        )}
+      />
+    </>
   );
 }

@@ -69,9 +69,9 @@ export function SettingsSidebar() {
             id="settings-sidebar-resets"
           />
           <SettingsLink
-              to="/settings/trackers"
-              scrollTo="trackers"
-              id="settings-sidebar-trackers"
+            to="/settings/trackers"
+            scrollTo="trackers"
+            id="settings-sidebar-trackers"
           />
         </div>
       </div>

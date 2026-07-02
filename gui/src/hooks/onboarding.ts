@@ -127,7 +127,7 @@ export function useProvideOnboarding() {
     const mocap = usage === 'mocap' || usage === 'vtubing';
 
     const toggles = Object.assign(new SkeletonTogglesT(), skeletonSettings.toggles);
-    toggles.selfLocalization = mocap && playspace === 'standing';
+    toggles.mocapMode = mocap && playspace === 'standing';
 
     const skeletonReq = new ChangeSkeletonSettingsRequestT();
     skeletonReq.toggles = toggles;

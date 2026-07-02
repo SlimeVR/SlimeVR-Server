@@ -10,14 +10,13 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CheckBox } from '@/components/commons/Checkbox';
-import { SteamIcon } from '@/components/commons/icon/SteamIcon';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
 import { HandsWarningModal } from './HandsWarningModal';
-import {OutputIcon} from "@/components/commons/icon/OutputIcon";
+import { OutputIcon } from '@/components/commons/icon/OutputIcon';
 
 type OutputTrackersForm = {
   automaticTrackerToggle: boolean;
