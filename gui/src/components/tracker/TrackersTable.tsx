@@ -184,11 +184,8 @@ function Row({
   const { tracker, device } = data;
 
   const warning =
-    !!highlightedTrackers?.trackers.find(
-      (t) =>
-        t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
-        t?.trackerNum === tracker.trackerId?.trackerNum
-    ) && highlightedTrackers.step;
+    !!highlightedTrackers?.trackers.find((t) => t === tracker.trackerId) &&
+    highlightedTrackers.step;
 
   return (
     <TrackerRowProvider.Provider value={data}>

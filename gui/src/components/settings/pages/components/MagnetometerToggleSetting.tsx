@@ -6,11 +6,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   ChangeMagToggleRequestT,
-  DeviceIdT,
   MagToggleRequestT,
   MagToggleResponseT,
   RpcMessage,
-  TrackerIdT,
 } from 'solarxr-protocol';
 import { Link } from 'react-router-dom';
 
@@ -19,13 +17,11 @@ interface MagnetometerToggleForm {
 }
 
 export function MagnetometerToggleSetting({
-  trackerNum,
-  deviceId,
+  trackerId,
   settingType,
   id,
 }: {
-  trackerNum?: number;
-  deviceId?: number;
+  trackerId?: number;
   settingType: 'general' | 'tracker';
   id?: string;
 }) {
@@ -45,18 +41,14 @@ export function MagnetometerToggleSetting({
       if (originalValue.current === values.magToggle) return;
       setWaitingMag(true);
       const req = new ChangeMagToggleRequestT();
-      if (trackerNum !== undefined) {
-        const id = new TrackerIdT(
-          deviceId ? new DeviceIdT(deviceId) : undefined,
-          trackerNum
-        );
-        req.trackerId = id;
+      if (trackerId !== undefined) {
+        req.trackerId = trackerId;
       }
 
       req.enable = values.magToggle;
       sendRPCPacket(RpcMessage.ChangeMagToggleRequest, req);
     },
-    [trackerNum, deviceId]
+    [trackerId]
   );
 
   useEffect(() => {
@@ -66,25 +58,18 @@ export function MagnetometerToggleSetting({
 
   useEffect(() => {
     const req = new MagToggleRequestT();
-    if (trackerNum !== undefined) {
-      const id = new TrackerIdT(
-        deviceId ? new DeviceIdT(deviceId) : undefined,
-        trackerNum
-      );
-      req.trackerId = id;
+    if (trackerId !== undefined) {
+      req.trackerId = trackerId;
       sendRPCPacket(RpcMessage.MagToggleRequest, new MagToggleRequestT());
     }
     sendRPCPacket(RpcMessage.MagToggleRequest, req);
-  }, [trackerNum, deviceId]);
+  }, [trackerId]);
 
   useRPCPacket(RpcMessage.MagToggleResponse, (mag: MagToggleResponseT) => {
-    if (trackerNum !== undefined && mag.trackerId?.trackerNum === undefined) {
+    if (trackerId !== undefined && mag.trackerId === undefined) {
       setGlobalToggle(mag.enable);
     }
-    if (
-      mag.trackerId?.trackerNum !== trackerNum ||
-      mag.trackerId?.deviceId?.id !== deviceId
-    ) {
+    if (mag.trackerId !== trackerId) {
       return;
     }
     originalValue.current = mag.enable;

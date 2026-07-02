@@ -259,7 +259,7 @@ function OTADevicesList({
         flashingMethod: FirmwareUpdateMethod.OTAFirmwareUpdate.toString(),
         ota: {
           selectedDevices: devices.reduce(
-            (curr, { id }) => ({ ...curr, [id?.id ?? 0]: false }),
+            (curr, { id }) => ({ ...curr, [id]: false }),
             {}
           ),
         },
@@ -276,7 +276,7 @@ function OTADevicesList({
           if (!selectedDevices[id]) return curr;
           const deviceId = id.substring('id-'.length);
           const device = devices.find(
-            ({ id: dId }) => deviceId === dId?.id.toString()
+            ({ id: dId }) => deviceId === dId.toString()
           );
           if (!device) return curr;
           return [
@@ -312,8 +312,8 @@ function OTADevicesList({
         {devices.map((device) => (
           <DeviceCardControl
             control={control}
-            key={device.id?.id ?? 0}
-            name={`ota.selectedDevices.id-${device.id?.id ?? 0}`}
+            key={device.id}
+            name={`ota.selectedDevices.id-${device.id ?? 0}`}
             deviceNames={deviceNames(device)}
             color="bg-background-70"
           />

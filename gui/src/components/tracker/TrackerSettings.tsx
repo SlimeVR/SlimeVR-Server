@@ -35,7 +35,7 @@ import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMe
 import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
-import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
+import { MagnetometerToggleSetting } from '@/components/settings/pages/components/MagnetometerToggleSetting';
 import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
@@ -506,8 +506,7 @@ export function TrackerSettingsPage() {
               MagnetometerStatus.NOT_SUPPORTED && (
               <MagnetometerToggleSetting
                 settingType="tracker"
-                trackerNum={tracker.tracker.trackerId?.trackerNum}
-                deviceId={tracker.tracker.trackerId?.deviceId?.id}
+                trackerId={tracker.tracker.trackerId}
               />
             )}
           <div className="flex flex-col gap-2 w-full mt-3 sentry-mask">

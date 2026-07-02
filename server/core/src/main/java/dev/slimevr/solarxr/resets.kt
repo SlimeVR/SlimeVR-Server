@@ -29,7 +29,7 @@ class ResetsBehaviour(
 
 	private fun buildResetsSettings(config: ResetsConfig): ResetsSettingsResponse = ResetsSettingsResponse(
 		resetMountingFeet = config.resetMountingFeet,
-		armsMountingResetMode = config.armsResetMode,
+		armsResetMode = config.armsResetMode,
 		yawResetSmoothTime = config.yawResetSmoothTime,
 		saveMountingReset = config.saveMountingReset,
 		resetHmdPitch = config.resetHmdPitch,

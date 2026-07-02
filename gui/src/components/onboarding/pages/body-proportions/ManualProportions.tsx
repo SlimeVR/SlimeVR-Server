@@ -1,12 +1,12 @@
 import { Control, Controller, useForm } from 'react-hook-form';
 import {
-  ChangeSkeletonConfigRequestT,
+  ChangeSkeletonProportionsRequestT,
   ResetType,
   RpcMessage,
   SkeletonBone,
-  SkeletonConfigRequestT,
-  SkeletonConfigResponseT,
-  SkeletonResetAllRequestT,
+  SkeletonProportionsRequestT,
+  SkeletonProportionsResetAllRequestT,
+  SkeletonProportionsResponseT,
 } from 'solarxr-protocol';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -85,7 +85,7 @@ function IconButton({
 
 function parseConfigImport(
   config: SkeletonConfigExport
-): ChangeSkeletonConfigRequestT[] {
+): ChangeSkeletonProportionsRequestT[] {
   if (!config.version) config.version = 1;
   if (config.version < 1) {
     // Add config migration stuff here, this one is just an example.
@@ -95,7 +95,7 @@ function parseConfigImport(
     const bone =
       typeof part.bone === 'string' ? SkeletonBone[part.bone] : part.bone;
 
-    return new ChangeSkeletonConfigRequestT(bone, part.value);
+    return new ChangeSkeletonProportionsRequestT(bone, part.value);
   });
 }
 
@@ -121,7 +121,7 @@ function ImportExportButtons() {
   const exporting = useRef(false);
 
   useRPCPacket(
-    RpcMessage.SkeletonConfigResponse,
+    RpcMessage.SkeletonProportionsResponse,
     (data: SkeletonConfigExport) => {
       if (!exporting.current) return;
       exporting.current = false;
@@ -183,11 +183,11 @@ function ImportExportButtons() {
     }
 
     parseConfigImport(config).forEach((req) =>
-      sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, req)
+      sendRPCPacket(RpcMessage.ChangeSkeletonProportionsRequest, req)
     );
     sendRPCPacket(
-      RpcMessage.SkeletonConfigRequest,
-      new SkeletonConfigRequestT()
+      RpcMessage.SkeletonProportionsRequest,
+      new SkeletonProportionsRequestT()
     );
     setImportState(ImportStatus.SUCCESS);
     setTimeout(() => {
@@ -219,8 +219,8 @@ function ImportExportButtons() {
             exporting.current = true;
 
             sendRPCPacket(
-              RpcMessage.SkeletonConfigRequest,
-              new SkeletonConfigRequestT()
+              RpcMessage.SkeletonProportionsRequest,
+              new SkeletonProportionsRequestT()
             );
           }}
         >
@@ -311,16 +311,17 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
   const [showWarning, setShowWarning] = useState(false);
   const resetAll = () => {
     sendRPCPacket(
-      RpcMessage.SkeletonResetAllRequest,
-      new SkeletonResetAllRequestT()
+      RpcMessage.SkeletonProportionsResetAllRequest,
+      new SkeletonProportionsResetAllRequestT()
     );
   };
 
   const beneathFloor = useMemo(() => {
+    // TODO I think this needs to be rewritten with rewrite but it also just may be unneeded
     const hmd = computedTrackers.find(
       (tracker) =>
-        tracker.tracker.trackerId?.trackerNum === 1 &&
-        tracker.tracker.trackerId.deviceId?.id === undefined
+        tracker.tracker.trackerId === 1 &&
+        tracker.tracker.deviceId === undefined
     );
     return !(hmd?.tracker.position && hmd.tracker.position.y >= MIN_HEIGHT);
   }, [computedTrackers]);
@@ -418,8 +419,8 @@ export function ManualProportionsPage() {
   }, [ratio]);
 
   useRPCPacket(
-    RpcMessage.SkeletonConfigResponse,
-    (data: SkeletonConfigResponseT) => {
+    RpcMessage.SkeletonProportionsResponse,
+    (data: SkeletonProportionsResponseT) => {
       if (data.userHeight) setUserHeight(data.userHeight);
     }
   );
@@ -470,7 +471,7 @@ export function ManualProportionsPage() {
           <div className="top-4 w-full px-4 absolute flex gap-2 flex-col lg:flex-row md:flex-wrap">
             <div className="h-14 flex flex-grow items-center">
               <ResetButton
-                type={ResetType.Full}
+                type={ResetType.FULL}
                 className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
               />
             </div>

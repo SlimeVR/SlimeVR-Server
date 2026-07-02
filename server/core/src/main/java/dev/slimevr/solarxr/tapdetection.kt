@@ -18,7 +18,7 @@ class TapDetectionBehaviour(
 		}
 
 		receiver.rpcDispatcher.on<TapDetectionSetupModeRequest> { req ->
-			println(req.setupMode) // TODO
+			println("req.setupMode " + req.setupMode) // TODO
 		}
 
 		val oldConfig = settings.context.state.value.data.tapDetectionConfig

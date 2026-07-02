@@ -5,7 +5,7 @@ import { HumanIcon } from '@/components/commons/icon/HumanIcon';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 import { useState } from 'react';
 import { SittingIcon } from '@/components/commons/icon/SittingIcon';
-import { VMCFileUpload } from '@/components/settings/pages/VMCSettings';
+import { VRMFileUpload } from '@/components/settings/pages/VMCSettings';
 import { QuizButton } from './SlimeSetQuestion';
 import { useNavigate } from 'react-router-dom';
 
@@ -81,7 +81,7 @@ export function QuizMocapPosQuestion() {
               />
               <Typography id="onboarding-quiz-mocap_preferences-vrm_model-desc" />
             </div>
-            <VMCFileUpload />
+            <VRMFileUpload />
           </div>
         </div>
 

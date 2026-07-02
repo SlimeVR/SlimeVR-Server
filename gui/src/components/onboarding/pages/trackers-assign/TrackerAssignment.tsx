@@ -7,11 +7,7 @@ import {
   BodyPart,
   QuatT,
   RpcMessage,
-  TrackerIdT,
-  SettingsRequestT,
-  SettingsResponseT,
-  TapDetectionSettingsT,
-  ChangeSettingsRequestT,
+  TapDetectionSetupModeRequestT,
   TapDetectionSetupNotificationT,
 } from 'solarxr-protocol';
 import { useChokerWarning } from '@/hooks/choker-warning';
@@ -46,7 +42,7 @@ export type BodyPartError = {
 
 interface FlatDeviceTrackerDummy {
   tracker: {
-    trackerId: TrackerIdT;
+    trackerId: number;
     info: undefined;
   };
 }
@@ -73,53 +69,19 @@ export function TrackersAssignPage() {
     setConfig({ mirrorView });
   }, [mirrorView]);
 
-  const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
-    TapDetectionSettingsT,
-    'pack'
-  > | null>(null);
-
   useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
-  }, []);
-
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    if (settings.tapDetectionSettings) {
-      setTapDetectionSettings(settings.tapDetectionSettings);
-    }
-  });
-
-  useEffect(() => {
-    if (!tapDetectionSettings) return;
-    const newTapSettings = new TapDetectionSettingsT(
-      tapDetectionSettings.fullResetDelay,
-      tapDetectionSettings.fullResetEnabled,
-      tapDetectionSettings.fullResetTaps,
-      tapDetectionSettings.yawResetDelay,
-      tapDetectionSettings.yawResetEnabled,
-      tapDetectionSettings.yawResetTaps,
-      tapDetectionSettings.mountingResetDelay,
-      tapDetectionSettings.mountingResetEnabled,
-      tapDetectionSettings.mountingResetTaps,
-      true,
-      null,
-      tapDetectionSettings.yawResetTracker,
-      tapDetectionSettings.fullResetTracker,
-      tapDetectionSettings.mountingResetTracker
-    );
-
     sendRPCPacket(
-      RpcMessage.ChangeSettingsRequest,
-      new ChangeSettingsRequestT(null, null, null, null, null, newTapSettings)
+      RpcMessage.TapDetectionSetupModeRequest,
+      new TapDetectionSetupModeRequestT(true)
     );
 
     return () => {
-      newTapSettings.setupMode = false;
       sendRPCPacket(
-        RpcMessage.ChangeSettingsRequest,
-        new ChangeSettingsRequestT(null, null, null, null, null, newTapSettings)
+        RpcMessage.TapDetectionSetupModeRequest,
+        new TapDetectionSetupModeRequestT(false)
       );
     };
-  }, [tapDetectionSettings]);
+  });
 
   const trackerPartGrouped = useMemo(
     () =>
@@ -195,7 +157,7 @@ export function TrackersAssignPage() {
     const assign = (
       role: BodyPart,
       rotation: QuatT | null,
-      trackerId: TrackerIdT | null
+      trackerId: number
     ) => {
       const assignreq = new AssignTrackerRequestT();
 

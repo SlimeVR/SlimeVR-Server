@@ -1,6 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
-import { RpcMessage, SettingsRequestT, SettingsResponseT } from 'solarxr-protocol';
+import {
+  RpcMessage,
+  SkeletonSettingsRequestT,
+  SkeletonSettingsResponseT,
+} from 'solarxr-protocol';
 import { MIN_HEIGHT } from './manual-proportions';
 
 export interface HeightContext {
@@ -17,18 +21,22 @@ export function useProvideHeightContext(): HeightContext {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   useEffect(
-    () => sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT()),
+    () =>
+      sendRPCPacket(RpcMessage.SkeletonSettingsRequest, new SkeletonSettingsRequestT()),
     []
   );
-  useRPCPacket(RpcMessage.SettingsResponse, (res: SettingsResponseT) => {
-    const hmd = res.modelSettings?.skeletonHeight?.hmdHeight;
-    const floor = res.modelSettings?.skeletonHeight?.floorHeight;
+  useRPCPacket(
+    RpcMessage.SkeletonSettingsResponse,
+    (res: SkeletonSettingsResponseT) => {
+      const hmd = res.skeletonHeight?.hmdHeight;
+      const floor = res.skeletonHeight?.floorHeight;
 
-    if (validateHeight(hmd, floor)) {
-      setHmdHeight(hmd ?? null);
-      setFloorHeight(floor ?? null);
+      if (validateHeight(hmd, floor)) {
+        setHmdHeight(hmd ?? null);
+        setFloorHeight(floor ?? null);
+      }
     }
-  });
+  );
 
   const currentHeight = useMemo(
     () => computeHeight(hmdHeight, floorHeight),

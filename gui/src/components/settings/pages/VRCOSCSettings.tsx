@@ -1,9 +1,9 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
-import { useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { boolean, number, object, string } from 'yup';
+import { boolean, object } from 'yup';
 import {
   ChangeVRCOSCSettingsRequestT,
   RpcMessage,
@@ -13,7 +13,6 @@ import {
   VRCOSCOutputState,
   VRCOSCSettingsRequestT,
   VRCOSCSettingsResponseT,
-  VRCOSCSettingsT,
   VRCOSCStatusChangeResponseT,
   VRCOSCStatusRequestT,
   VRCOSCTargetSource,
@@ -29,30 +28,26 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import {
+  OSCPortsAddress,
+  useOscPortsAddressValidator,
+} from '@/hooks/osc-setting-validator';
 
 interface VRCOSCSettingsForm {
-  vrchat: {
-    enabled: boolean;
-    useManualNetwork: boolean;
-    manualNetwork: {
-      portIn: number;
-      portOut: number;
-      address: string;
-    };
-  };
+  enabled: boolean;
+  useManualNetwork: boolean;
+  manualNetwork: OSCPortsAddress;
 }
 
-const createDefaultValues = (): VRCOSCSettingsForm => ({
-  vrchat: {
-    enabled: false,
-    useManualNetwork: false,
-    manualNetwork: {
-      portIn: 9001,
-      portOut: 9000,
-      address: '127.0.0.1',
-    },
+const defaultVRCOSCSettings: VRCOSCSettingsForm = {
+  enabled: false,
+  useManualNetwork: false,
+  manualNetwork: {
+    portIn: 9001,
+    portOut: 9000,
+    address: '127.0.0.1',
   },
-});
+};
 
 function asString(value: string | Uint8Array | null | undefined): string {
   return typeof value === 'string' ? value : '';
@@ -126,7 +121,7 @@ function StatusRow({
 }: {
   label: string;
   badge: BadgeKind;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-1 py-2">
@@ -358,52 +353,23 @@ export function VRCOSCSettings() {
   );
   const [now, setNow] = useState(() => Date.now());
 
-  const bannedPorts = [6969, 21110];
-  const portValidator = useMemo(
-    () =>
-      number()
-        .typeError(' ')
-        .required()
-        .test(
-          'ports-dont-match',
-          l10n.getString('settings-osc-common-network-ports_match_error-v2'),
-          (_port, context) => context.parent.portIn != context.parent.portOut
-        )
-        .notOneOf(bannedPorts, (context) =>
-          l10n.getString('settings-osc-common-network-port_banned_error', {
-            port: context.originalValue,
-          })
-        ),
-    [l10n]
-  );
-
+  const { oscValidator } = useOscPortsAddressValidator();
   const { reset, control, watch, handleSubmit, setValue } =
     useForm<VRCOSCSettingsForm>({
-      defaultValues: createDefaultValues(),
+      defaultValues: defaultVRCOSCSettings,
       reValidateMode: 'onChange',
       mode: 'onChange',
       resolver: yupResolver(
         object({
-          vrchat: object({
-            enabled: boolean().required(),
-            useManualNetwork: boolean().required(),
-            manualNetwork: object({
-              portIn: portValidator,
-              portOut: portValidator,
-              address: string()
-                .required(' ')
-                .matches(
-                  /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-                  { message: ' ' }
-                ),
-            }),
-          }),
+          enabled: boolean().required(),
+          useManualNetwork: boolean().required(),
+          manualNetwork: oscValidator,
         })
       ),
     });
 
-  const enabled = watch('vrchat.enabled');
-  const useManualNetwork = watch('vrchat.useManualNetwork');
+  const enabled = watch('enabled');
+  const useManualNetwork = watch('useManualNetwork');
 
   useEffect(() => {
     const interval = window.setInterval(() => setNow(Date.now()), 1_000);
@@ -412,14 +378,12 @@ export function VRCOSCSettings() {
 
   const onSubmit = (values: VRCOSCSettingsForm) => {
     const req = new ChangeVRCOSCSettingsRequestT();
-    const vrcOsc = new VRCOSCSettingsT();
 
-    vrcOsc.enabled = values.vrchat.enabled;
-    vrcOsc.manualNetwork = values.vrchat.useManualNetwork
-      ? Object.assign(new VRCOSCNetworkSettingsT(), values.vrchat.manualNetwork)
+    req.enabled = values.enabled;
+    req.manualNetwork = values.useManualNetwork
+      ? Object.assign(new VRCOSCNetworkSettingsT(), values.manualNetwork)
       : null;
 
-    req.settings = vrcOsc;
     sendRPCPacket(RpcMessage.ChangeVRCOSCSettingsRequest, req);
   };
 
@@ -439,18 +403,16 @@ export function VRCOSCSettings() {
   useRPCPacket(
     RpcMessage.VRCOSCSettingsResponse,
     (response: VRCOSCSettingsResponseT) => {
-      const settings = response.settings;
-      const formData = createDefaultValues();
-      if (settings) {
-        formData.vrchat.enabled = settings.enabled;
-        if (settings.manualNetwork) {
-          formData.vrchat.useManualNetwork = true;
-          formData.vrchat.manualNetwork.portIn = settings.manualNetwork.portIn;
-          formData.vrchat.manualNetwork.portOut =
-            settings.manualNetwork.portOut;
-          if (settings.manualNetwork.address) {
-            formData.vrchat.manualNetwork.address = asString(
-              settings.manualNetwork.address
+      const formData = defaultVRCOSCSettings;
+      if (response) {
+        formData.enabled = response.enabled;
+        if (response.manualNetwork) {
+          formData.useManualNetwork = true;
+          formData.manualNetwork.portIn = response.manualNetwork.portIn;
+          formData.manualNetwork.portOut = response.manualNetwork.portOut;
+          if (response.manualNetwork.address) {
+            formData.manualNetwork.address = asString(
+              response.manualNetwork.address
             );
           }
         }
@@ -499,7 +461,7 @@ export function VRCOSCSettings() {
                 variant="toggle"
                 outlined
                 control={control}
-                name="vrchat.enabled"
+                name="enabled"
                 label={l10n.getString('settings-osc-vrchat-enable-label')}
               />
             </div>
@@ -513,15 +475,15 @@ export function VRCOSCSettings() {
                   status={status}
                   now={now}
                   onSwitchToTarget={(target) => {
-                    setValue('vrchat.useManualNetwork', true, {
+                    setValue('useManualNetwork', true, {
                       shouldDirty: true,
                     });
                     setValue(
-                      'vrchat.manualNetwork.address',
+                      'manualNetwork.address',
                       asString(target.address),
                       { shouldDirty: true }
                     );
-                    setValue('vrchat.manualNetwork.portOut', target.portOut, {
+                    setValue('manualNetwork.portOut', target.portOut, {
                       shouldDirty: true,
                     });
                   }}
@@ -544,7 +506,7 @@ export function VRCOSCSettings() {
                 variant="toggle"
                 outlined
                 control={control}
-                name="vrchat.useManualNetwork"
+                name="useManualNetwork"
                 label={l10n.getString(
                   'settings-osc-vrchat-status-network-mode-toggle'
                 )}
@@ -571,7 +533,7 @@ export function VRCOSCSettings() {
                     <Input
                       type="number"
                       control={control}
-                      name="vrchat.manualNetwork.portIn"
+                      name="manualNetwork.portIn"
                       placeholder="9001"
                       label=""
                     />
@@ -583,7 +545,7 @@ export function VRCOSCSettings() {
                     <Input
                       type="number"
                       control={control}
-                      name="vrchat.manualNetwork.portOut"
+                      name="manualNetwork.portOut"
                       placeholder="9000"
                       label=""
                     />
@@ -603,7 +565,7 @@ export function VRCOSCSettings() {
                   <Input
                     type="text"
                     control={control}
-                    name="vrchat.manualNetwork.address"
+                    name="manualNetwork.address"
                     placeholder={l10n.getString(
                       'settings-osc-vrchat-network-address-placeholder'
                     )}

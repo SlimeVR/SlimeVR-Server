@@ -8,8 +8,8 @@ import { useLocaleConfig } from '@/i18n/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
   RpcMessage,
-  SkeletonConfigRequestT,
-  SkeletonConfigResponseT,
+  SkeletonProportionsRequestT,
+  SkeletonProportionsResponseT,
 } from 'solarxr-protocol';
 import { Tooltip } from './commons/Tooltip';
 import { Vector3 } from 'three';
@@ -43,8 +43,8 @@ export function PreviewControls({ open }: { open: boolean }) {
     return { cmFormat };
   }, [currentLocales]);
   useRPCPacket(
-    RpcMessage.SkeletonConfigResponse,
-    (data: SkeletonConfigResponseT) => {
+    RpcMessage.SkeletonProportionsResponse,
+    (data: SkeletonProportionsResponseT) => {
       if (data.userHeight)
         setUserHeight(cmFormat.format((data.userHeight * 100) / 0.936));
     }
@@ -52,8 +52,8 @@ export function PreviewControls({ open }: { open: boolean }) {
 
   useEffect(() => {
     sendRPCPacket(
-      RpcMessage.SkeletonConfigRequest,
-      new SkeletonConfigRequestT()
+      RpcMessage.SkeletonProportionsRequest,
+      new SkeletonProportionsRequestT()
     );
   }, []);
 

@@ -4,7 +4,6 @@ import {
   LegTweaksTmpChangeT,
   LegTweaksTmpClearT,
   RpcMessage,
-  SettingsRequestT,
 } from 'solarxr-protocol';
 import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
@@ -30,10 +29,6 @@ export function MainLayout({
   const { completion } = useTrackingChecklist();
   const { sendRPCPacket } = useWebsocketAPI();
   const [ProportionsLastPageOpen, setProportionsLastPageOpen] = useState(true);
-
-  useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
-  }, []);
 
   function usePageChanged(callback: () => void) {
     useEffect(() => {

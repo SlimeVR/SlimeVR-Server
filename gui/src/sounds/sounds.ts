@@ -23,7 +23,7 @@ const resetSounds: Record<
     mew: HTMLAudioElement | null;
   }
 > = {
-  [ResetType.Full]: {
+  [ResetType.FULL]: {
     initial: createAudio('/sounds/full-reset/init-full-reset-with-tail.ogg'),
     tick: [
       createAudio('/sounds/full-reset/full-click-1.ogg'),
@@ -33,13 +33,13 @@ const resetSounds: Record<
     end: createAudio('/sounds/full-reset/end-full-reset-with-tail.ogg'),
     mew,
   },
-  [ResetType.Yaw]: {
+  [ResetType.YAW]: {
     initial: null,
     tick: null,
     end: createAudio('/sounds/yaw-reset/yaw-reset.ogg'),
     mew: null,
   },
-  [ResetType.Mounting]: {
+  [ResetType.MOUNTING]: {
     initial: createAudio('/sounds/mounting-reset/init-mounting-reset-with-tail.ogg'),
     tick: [
       createAudio('/sounds/mounting-reset/mount-click-1.ogg'),

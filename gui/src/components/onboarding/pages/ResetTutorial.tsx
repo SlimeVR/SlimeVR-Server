@@ -9,8 +9,8 @@ import {
   ResetStatus,
   ResetType,
   RpcMessage,
-  SettingsRequestT,
-  SettingsResponseT,
+  TapDetectionSettingsRequestT,
+  TapDetectionSettingsResponseT,
 } from 'solarxr-protocol';
 import { BodyDisplay } from '@/components/commons/BodyDisplay';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -83,12 +83,15 @@ export function ResetTutorialPage() {
   );
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+    sendRPCPacket(
+      RpcMessage.TapDetectionSettingsRequest,
+      new TapDetectionSettingsRequestT()
+    );
   }, []);
 
   useRPCPacket(
-    RpcMessage.SettingsResponse,
-    ({ tapDetectionSettings }: SettingsResponseT) => {
+    RpcMessage.TapDetectionSettingsResponse,
+    (tapDetectionSettings: TapDetectionSettingsResponseT) => {
       if (
         !tapDetectionSettings ||
         !tapDetectionSettings.yawResetTaps ||
@@ -200,7 +203,7 @@ export const RIGHT_LEG_PARTS = [
 ];
 
 export const RESET_TYPE_ORDER = [
-  ResetType.Yaw,
-  ResetType.Full,
-  ResetType.Mounting,
+  ResetType.YAW,
+  ResetType.FULL,
+  ResetType.MOUNTING,
 ];

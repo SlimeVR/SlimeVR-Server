@@ -9,7 +9,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
-  DeviceIdTableT,
+  FirmwareDeviceIdTableT,
   FirmwareUpdateMethod,
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
@@ -87,8 +87,8 @@ export function FlashingStep({
     (data: FirmwareUpdateStatusResponseT) => {
       if (!data.deviceId) throw new Error('no device id');
       const id =
-        data.deviceId instanceof DeviceIdTableT
-          ? data.deviceId.id?.id
+        data.deviceId instanceof FirmwareDeviceIdTableT
+          ? data.deviceId.id
           : data.deviceId.port;
       if (!id) throw new Error('invalid device id');
 

@@ -11,16 +11,17 @@ import { useLocation } from 'react-router-dom';
 import { useConfig } from './config';
 import { useWebsocketAPI } from './websocket-api';
 import {
-  ChangeSettingsRequestT,
-  ModelSettingsT,
-  ModelTogglesT,
-  ResetsSettingsT,
+  ChangeResetsSettingsRequestT,
+  ChangeSkeletonSettingsRequestT,
+  ResetsSettingsRequestT,
+  ResetsSettingsResponseT,
   RpcMessage,
-  SettingsRequestT,
-  SettingsResponseT,
   SkeletonBone,
+  SkeletonSettingsRequestT,
+  SkeletonSettingsResponseT,
+  SkeletonTogglesT,
   VRCOSCSettingsRequestT,
-  VRCOSCSettingsT,
+  VRCOSCSettingsResponseT,
 } from 'solarxr-protocol';
 import { useManualProportions } from './manual-proportions';
 
@@ -79,8 +80,9 @@ export function useProvideOnboarding() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { state: locatioState } = useLocation();
-  const [settings, setSettings] = useState<SettingsResponseT>();
-  const [vrcOscSettings, setVrcOscSettings] = useState<VRCOSCSettingsT>();
+  const [skeletonSettings, setSkeletonSettings] = useState<SkeletonSettingsResponseT>();
+  const [resetsSettings, setResetsSettings] = useState<ResetsSettingsResponseT>();
+  const [vrcOscSettings, setVrcOscSettings] = useState<VRCOSCSettingsResponseT>();
 
   useLayoutEffect(() => {
     const { alonePage = false }: { alonePage?: boolean } = (locatioState as any) || {};
@@ -90,16 +92,29 @@ export function useProvideOnboarding() {
   }, [locatioState, state]);
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+    sendRPCPacket(RpcMessage.SkeletonSettingsRequest, new SkeletonSettingsRequestT());
+    sendRPCPacket(RpcMessage.ResetsSettingsRequest, new ResetsSettingsRequestT());
     sendRPCPacket(RpcMessage.VRCOSCSettingsRequest, new VRCOSCSettingsRequestT());
   }, []);
 
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    setSettings(settings);
-  });
-  useRPCPacket(RpcMessage.VRCOSCSettingsResponse, (settings: VRCOSCSettingsT) => {
-    setVrcOscSettings(settings);
-  });
+  useRPCPacket(
+    RpcMessage.SkeletonSettingsResponse,
+    (settings: SkeletonSettingsResponseT) => {
+      setSkeletonSettings(settings);
+    }
+  );
+  useRPCPacket(
+    RpcMessage.ResetsSettingsResponse,
+    (settings: ResetsSettingsResponseT) => {
+      setResetsSettings(settings);
+    }
+  );
+  useRPCPacket(
+    RpcMessage.VRCOSCSettingsResponse,
+    (settings: VRCOSCSettingsResponseT) => {
+      setVrcOscSettings(settings);
+    }
+  );
 
   const { changeBoneValue } = useManualProportions({
     type: 'linear',
@@ -107,23 +122,25 @@ export function useProvideOnboarding() {
 
   const onboardingEnded = () => {
     setConfig({ doneOnboarding: true });
-    if (!settings?.modelSettings || !vrcOscSettings) return;
-    const req = new ChangeSettingsRequestT();
-    const modelSettings = new ModelSettingsT();
+    if (!skeletonSettings || !resetsSettings || !vrcOscSettings) return;
 
     const mocap = usage === 'mocap' || usage === 'vtubing';
 
-    const toggles = Object.assign(new ModelTogglesT(), settings.modelSettings.toggles);
+    const toggles = Object.assign(new SkeletonTogglesT(), skeletonSettings.toggles);
     toggles.selfLocalization = mocap && playspace === 'standing';
-    modelSettings.toggles = toggles;
-    req.modelSettings = modelSettings;
 
-    const resets = Object.assign(new ResetsSettingsT(), settings.resetsSettings);
-    resets.resetHmdPitch = mocapPos === 'forehead';
-    req.resetsSettings = resets;
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, req);
+    const skeletonReq = new ChangeSkeletonSettingsRequestT();
+    skeletonReq.toggles = toggles;
+    skeletonReq.ratios = skeletonSettings.ratios;
+    skeletonReq.filtering = skeletonSettings.filtering;
+    skeletonReq.skeletonHeight = skeletonSettings.skeletonHeight;
+    sendRPCPacket(RpcMessage.ChangeSkeletonSettingsRequest, skeletonReq);
 
-    const osc = Object.assign(new VRCOSCSettingsT(), vrcOscSettings);
+    const resetsReq = Object.assign(new ChangeResetsSettingsRequestT(), resetsSettings);
+    resetsReq.resetHmdPitch = mocapPos === 'forehead';
+    sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsReq);
+
+    const osc = Object.assign(new VRCOSCSettingsResponseT(), vrcOscSettings);
     osc.enabled = vrcOsc ?? false;
     sendRPCPacket(RpcMessage.ChangeVRCOSCSettingsRequest, osc);
 

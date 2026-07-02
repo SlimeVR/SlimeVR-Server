@@ -5,7 +5,7 @@ import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
   BoardType,
   DeviceDataT,
-  DeviceIdTableT,
+  FirmwareDeviceIdTableT,
   FirmwareUpdateMethod,
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
@@ -67,7 +67,7 @@ const DeviceList = ({
     <DeviceCardControl
       key={index}
       control={control}
-      name={`selectedDevices.${device.id?.id ?? 0}`}
+      name={`selectedDevices.${device.id}`}
       deviceNames={deviceNames(device, l10n)}
     />
   ));
@@ -82,7 +82,7 @@ const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
 
     if (!val) throw new Error('there should always be a val');
 
-    const device = devices.find(({ id: dId }) => id === dId?.id.toString());
+    const device = devices.find(({ id: dId }) => id === dId.toString());
 
     return (
       <DeviceCardControl
@@ -127,8 +127,8 @@ export function FirmwareUpdate() {
     (data: FirmwareUpdateStatusResponseT) => {
       if (!data.deviceId) throw new Error('no device id');
       const id =
-        data.deviceId instanceof DeviceIdTableT
-          ? data.deviceId.id?.id
+        data.deviceId instanceof FirmwareDeviceIdTableT
+          ? data.deviceId.id
           : data.deviceId.port;
       if (!id) throw new Error('invalid device id');
 
@@ -161,7 +161,7 @@ export function FirmwareUpdate() {
     mode: 'onChange',
     defaultValues: {
       selectedDevices: devices.reduce(
-        (curr, { id }) => ({ ...curr, [id?.id ?? 0]: false }),
+        (curr, { id }) => ({ ...curr, [id]: false }),
         {}
       ),
     },
@@ -298,7 +298,7 @@ export function FirmwareUpdate() {
     const selectedDevices = Object.keys(selectedDevicesForm).reduce(
       (curr, id) => {
         if (!selectedDevicesForm[id]) return curr;
-        const device = devices.find(({ id: dId }) => id === dId?.id.toString());
+        const device = devices.find(({ id: dId }) => id === dId?.toString());
         if (!device) return curr;
         return [
           ...curr,

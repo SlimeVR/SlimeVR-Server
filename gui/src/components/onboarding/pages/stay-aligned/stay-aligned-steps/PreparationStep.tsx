@@ -55,7 +55,7 @@ export function PreparationStep({
         </Localized>
 
         <ResetButton
-          type={ResetType.Full}
+          type={ResetType.FULL}
           onReseted={() => {
             if (isActive) {
               nextStep();
