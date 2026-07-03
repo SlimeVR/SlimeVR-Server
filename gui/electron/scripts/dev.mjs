@@ -1,7 +1,3 @@
-// Dev orchestrator: start the renderer (gui/app) Vite dev server, then run
-// electron-vite in watch mode pointed at that dev URL. Electron loads the live
-// renderer (HMR) via ELECTRON_RENDERER_URL, while main/preload rebuild and the
-// app auto-restarts on changes.
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join, delimiter } from 'node:path';
@@ -10,10 +6,6 @@ const HOST = '127.0.0.1';
 const PORT = 5173;
 const RENDERER_URL = `http://${HOST}:${PORT}`;
 
-// electron-vite launches electron via process.env.ELECTRON_EXEC_PATH, else it
-// reads the npm electron binary's path.txt (absent here - the nix devShell
-// provides electron on PATH). Resolve it from PATH, skipping node_modules/.bin
-// (pnpm prepends that, where the uninstalled npm `electron` shim lives).
 function resolveElectronExecPath() {
   if (process.env.ELECTRON_EXEC_PATH) return process.env.ELECTRON_EXEC_PATH;
   const exe = process.platform === 'win32' ? 'electron.exe' : 'electron';
