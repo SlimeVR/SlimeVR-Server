@@ -43,16 +43,18 @@ internal class VrcOscBehaviour(
 
 		receiver.rpcDispatcher.on<VRCOSCSettingsRequest> {
 			val config = settings.context.state.value.data.vrcOscConfig
-			receiver.sendRpc(VRCOSCSettingsResponse(
-				enabled = config.enabled,
-				manualNetwork = config.manualNetwork?.let { manual ->
-					VRCOSCNetworkSettings(
-						portIn = manual.portIn.toUShort(),
-						portOut = manual.portOut.toUShort(),
-						address = manual.address,
-					)
-				},
-			))
+			receiver.sendRpc(
+				VRCOSCSettingsResponse(
+					enabled = config.enabled,
+					manualNetwork = config.manualNetwork?.let { manual ->
+						VRCOSCNetworkSettings(
+							portIn = manual.portIn.toUShort(),
+							portOut = manual.portOut.toUShort(),
+							address = manual.address,
+						)
+					},
+				),
+			)
 		}
 
 		receiver.rpcDispatcher.on<VRCOSCStatusRequest> {
@@ -77,7 +79,7 @@ internal class VrcOscBehaviour(
 								},
 						),
 					)
-				}
+				},
 			)
 		}
 	}

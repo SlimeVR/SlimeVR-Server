@@ -8,8 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 
 object VMCState
 
-sealed interface VMCActions {
-}
+sealed interface VMCActions
 
 typealias VMCContext = Context<VMCState, VMCActions>
 typealias VMCBehaviourType = Behaviour<VMCState, VMCActions, VMCManager>

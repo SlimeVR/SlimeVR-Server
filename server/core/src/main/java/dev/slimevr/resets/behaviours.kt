@@ -29,7 +29,6 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 			}
 		}
 	}
-
 }
 
 class ResetsMountingTimeoutBehaviour : ResetsBehaviour {

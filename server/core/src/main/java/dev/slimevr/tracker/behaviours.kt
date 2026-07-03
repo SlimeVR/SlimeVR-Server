@@ -86,7 +86,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		// If setupMode is true, double tap to assign
 		// TODO setupMode
 		if (false) {
-			//setupModeAssign = true
+			// setupModeAssign = true
 			resetType = null
 			tapsNeeded = 2
 			actionDelay = 0f
@@ -174,7 +174,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 				// Taps completed!
 				receiver.context.scope.safeLaunch {
 					// If it's in setup mode, tap to assign
-					if (false) { //setupModeAssign
+					if (false) { // setupModeAssign
 						receiver.appContext.server.sendSolarxrRpc(
 							TapDetectionSetupNotification(currentTracker.id.toUShort()),
 						)

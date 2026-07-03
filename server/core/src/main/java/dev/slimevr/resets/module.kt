@@ -75,7 +75,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 
 			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
 
-			settings.context.dispatch(SettingsActions.Update {copy(resetsConfig = resetsConfig.copy(lastMountingMethod = MountingMethods.MANUAL))})
+			settings.context.dispatch(SettingsActions.Update { copy(resetsConfig = resetsConfig.copy(lastMountingMethod = MountingMethods.MANUAL)) })
 
 			AppLogger.resets.info("${resetType.name} Reset from $resetSourceName")
 

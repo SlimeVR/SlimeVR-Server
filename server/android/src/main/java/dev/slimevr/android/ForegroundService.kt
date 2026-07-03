@@ -152,7 +152,7 @@ class ForegroundService : Service() {
 			scope = scope,
 			oscQueryAddress = resolveAndroidOscQueryAddress(),
 		)
-		val resetsManager = ResetsManager.create(server = server, scope = scope, settings =  config.settings)
+		val resetsManager = ResetsManager.create(server = server, scope = scope, settings = config.settings)
 		val tapDetectionManager = TapDetectionManager.create(server = server, scope = this, settings = config.settings)
 
 		val appContext = AppContext(

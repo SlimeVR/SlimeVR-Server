@@ -14,13 +14,15 @@ class ResetsBehaviour(
 		// Send config
 		receiver.rpcDispatcher.on<ResetsSettingsRequest> {
 			val config = settings.context.state.value.data.resetsConfig
-			receiver.sendRpc(ResetsSettingsResponse(
-				resetMountingFeet = config.resetMountingFeet,
-				armsResetMode = config.armsResetMode,
-				yawResetSmoothTime = config.yawResetSmoothTime,
-				saveMountingReset = config.saveMountingReset,
-				resetHmdPitch = config.resetHmdPitch,
-			))
+			receiver.sendRpc(
+				ResetsSettingsResponse(
+					resetMountingFeet = config.resetMountingFeet,
+					armsResetMode = config.armsResetMode,
+					yawResetSmoothTime = config.yawResetSmoothTime,
+					saveMountingReset = config.saveMountingReset,
+					resetHmdPitch = config.resetHmdPitch,
+				),
+			)
 		}
 
 		// Receive config
@@ -29,15 +31,15 @@ class ResetsBehaviour(
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
-						resetsConfig = ResetsConfig (
+						resetsConfig = ResetsConfig(
 							resetMountingFeet = req.resetMountingFeet == true,
 							armsResetMode = req.armsResetMode ?: oldConfig.armsResetMode,
 							yawResetSmoothTime = req.yawResetSmoothTime ?: oldConfig.yawResetSmoothTime,
 							saveMountingReset = req.saveMountingReset == true,
 							resetHmdPitch = req.resetHmdPitch == true,
-						)
+						),
 					)
-				}
+				},
 			)
 		}
 	}

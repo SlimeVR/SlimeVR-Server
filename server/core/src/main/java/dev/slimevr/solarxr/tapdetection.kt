@@ -18,21 +18,23 @@ class TapDetectionBehaviour(
 		// Send config
 		receiver.rpcDispatcher.on<TapDetectionSettingsRequest> {
 			val config = settings.context.state.value.data.tapDetectionConfig
-			receiver.sendRpc(TapDetectionSettingsResponse(
-				yawResetDelay = config.yawResetDelay,
-				fullResetDelay = config.fullResetDelay,
-				mountingResetDelay = config.mountingResetDelay,
-				yawResetEnabled = config.yawResetEnabled,
-				fullResetEnabled = config.fullResetEnabled,
-				mountingResetEnabled = config.mountingResetEnabled,
-				yawResetTaps = config.yawResetTaps.toUByte(),
-				fullResetTaps = config.fullResetTaps.toUByte(),
-				mountingResetTaps = config.mountingResetTaps.toUByte(),
-				yawResetTracker = config.yawResetBodyPart,
-				fullResetTracker = config.fullResetBodyPart,
-				mountingResetTracker = config.mountingResetBodyPart,
-				numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
-			))
+			receiver.sendRpc(
+				TapDetectionSettingsResponse(
+					yawResetDelay = config.yawResetDelay,
+					fullResetDelay = config.fullResetDelay,
+					mountingResetDelay = config.mountingResetDelay,
+					yawResetEnabled = config.yawResetEnabled,
+					fullResetEnabled = config.fullResetEnabled,
+					mountingResetEnabled = config.mountingResetEnabled,
+					yawResetTaps = config.yawResetTaps.toUByte(),
+					fullResetTaps = config.fullResetTaps.toUByte(),
+					mountingResetTaps = config.mountingResetTaps.toUByte(),
+					yawResetTracker = config.yawResetBodyPart,
+					fullResetTracker = config.fullResetBodyPart,
+					mountingResetTracker = config.mountingResetBodyPart,
+					numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
+				),
+			)
 		}
 
 		// Receive config
@@ -41,7 +43,7 @@ class TapDetectionBehaviour(
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
-						tapDetectionConfig = TapDetectionConfig (
+						tapDetectionConfig = TapDetectionConfig(
 							yawResetDelay = req.yawResetDelay ?: oldConfig.yawResetDelay,
 							fullResetDelay = req.fullResetDelay ?: oldConfig.fullResetDelay,
 							mountingResetDelay = req.mountingResetDelay ?: oldConfig.mountingResetDelay,
