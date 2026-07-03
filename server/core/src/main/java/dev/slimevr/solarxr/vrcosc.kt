@@ -1,5 +1,8 @@
 package dev.slimevr.solarxr
 
+import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.TapDetectionConfig
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.config.VRCOSCManualNetworkConfig
 import dev.slimevr.vrcosc.VRCOSCActions
@@ -22,6 +25,7 @@ import solarxr_protocol.rpc.VRCOSCDiscoveredTarget as RpcVRCOSCDiscoveredTarget
 private const val STATUS_SAMPLE_MS = 300L
 
 internal class VrcOscBehaviour(
+	private val settings: Settings,
 	private val vrcOscManager: VRCOSCManager,
 ) : SolarXRBridgeBehaviour {
 	@OptIn(FlowPreview::class)
@@ -34,32 +38,46 @@ internal class VrcOscBehaviour(
 			.map { state -> state.status }
 			.drop(1)
 			.sample(STATUS_SAMPLE_MS)
-			.onEach { status -> receiver.sendRpc(buildStatusResponse(status, vrcOscManager.context.state.value.config.enabled)) }
+			.onEach { status -> receiver.sendRpc(buildStatusResponse(status, settings.context.state.value.data.vrcOscConfig.enabled)) }
 			.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCOSCSettingsRequest> {
-			receiver.sendRpc(buildVrcOscSettings(vrcOscManager.context.state.value.config))
+			val config = settings.context.state.value.data.vrcOscConfig
+			receiver.sendRpc(VRCOSCSettingsResponse(
+				enabled = config.enabled,
+				manualNetwork = config.manualNetwork?.let { manual ->
+					VRCOSCNetworkSettings(
+						portIn = manual.portIn.toUShort(),
+						portOut = manual.portOut.toUShort(),
+						address = manual.address,
+					)
+				},
+			))
 		}
 
 		receiver.rpcDispatcher.on<VRCOSCStatusRequest> {
 			val state = vrcOscManager.context.state.value
-			receiver.sendRpc(buildStatusResponse(state.status, state.config.enabled))
+			val config = settings.context.state.value.data.vrcOscConfig
+			receiver.sendRpc(buildStatusResponse(state.status, config.enabled))
 		}
 
 		receiver.rpcDispatcher.on<ChangeVRCOSCSettingsRequest> { req ->
-			vrcOscManager.context.dispatch(
-				VRCOSCActions.UpdateConfig(
-					VRCOSCConfig(
-						enabled = req.enabled == true,
-						manualNetwork = req.manualNetwork?.takeIf { it.portIn !== null && it.portOut !== null && it.address !== null }?.let { network ->
-							VRCOSCManualNetworkConfig(
-								portIn = network.portIn?.toInt() ?: error("portIn should be set"),
-								portOut = network.portOut?.toInt() ?: error("portOut should be set"),
-								address = network.address ?: error("address should be set"),
-							)
-						},
-					),
-				),
+			settings.context.dispatch(
+				SettingsActions.Update {
+					copy(
+						vrcOscConfig = VRCOSCConfig(
+							enabled = req.enabled == true,
+							manualNetwork = req.manualNetwork?.takeIf { it.portIn !== null && it.portOut !== null && it.address !== null }
+								?.let { network ->
+									VRCOSCManualNetworkConfig(
+										portIn = network.portIn?.toInt() ?: error("portIn should be set"),
+										portOut = network.portOut?.toInt() ?: error("portOut should be set"),
+										address = network.address ?: error("address should be set"),
+									)
+								},
+						),
+					)
+				}
 			)
 		}
 	}
@@ -81,17 +99,6 @@ internal class VrcOscBehaviour(
 		oscqueryError = status.oscQueryError,
 		discoveredTargets = status.discoveredTargets.map { target ->
 			RpcVRCOSCDiscoveredTarget(name = target.name, address = target.address, portOut = target.portOut.toUShort())
-		},
-	)
-
-	private fun buildVrcOscSettings(config: VRCOSCConfig): VRCOSCSettingsResponse = VRCOSCSettingsResponse(
-		enabled = config.enabled,
-		manualNetwork = config.manualNetwork?.let { manual ->
-			VRCOSCNetworkSettings(
-				portIn = manual.portIn.toUShort(),
-				portOut = manual.portOut.toUShort(),
-				address = manual.address,
-			)
 		},
 	)
 }

@@ -32,6 +32,7 @@ import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.safeLaunch
@@ -145,13 +146,14 @@ class ForegroundService : Service() {
 		val trackingChecklist = TrackingChecklist.create(scope = scope)
 		val udpServer = UdpServer.create(scope = scope, addressResolver = ::resolveAndroidUdpAddress)
 		val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = scope)
-		val vmcManager = VMCManager.create(skeleton = skeleton, ctx = phase1, scope = scope)
+		val vmcManager = VMCManager.create(ctx = phase1, skeleton = skeleton, scope = this)
 		val vrcOscManager = VRCOSCManager.create(
 			ctx = phase1,
 			scope = scope,
 			oscQueryAddress = resolveAndroidOscQueryAddress(),
 		)
-		val resetsManager = ResetsManager.create(server = server, scope = scope)
+		val resetsManager = ResetsManager.create(server = server, scope = scope, settings =  config.settings)
+		val tapDetectionManager = TapDetectionManager.create(server = server, scope = this, settings = config.settings)
 
 		val appContext = AppContext(
 			server = server,
@@ -170,6 +172,7 @@ class ForegroundService : Service() {
 			vmcManager = vmcManager,
 			vrcOscManager = vrcOscManager,
 			resetsManager = resetsManager,
+			tapDetectionManager = tapDetectionManager,
 		)
 
 		acquireLocks()

@@ -71,10 +71,10 @@ class SolarXRBridge(
 			appContext.vrcConfigManager?.let { vrc ->
 				add(VrcBehaviour(vrc, appContext.server, userHeight = { appContext.skeleton.context.state.value.skeletonHeight }))
 			}
-			add(ResetsBehaviour(appContext.resetsManager))
-			add(TapDetectionBehaviour(appContext.config.settings))
-			add(VrcOscBehaviour(appContext.vrcOscManager))
-			add(VmcBehaviour(appContext.vmcManager))
+			add(ResetsBehaviour(appContext.config.settings))
+			add(TapDetectionBehaviour(appContext.config.settings, appContext.tapDetectionManager))
+			add(VrcOscBehaviour(appContext.config.settings, appContext.vrcOscManager))
+			add(VmcBehaviour(appContext.config.settings))
 			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))
 			add(ProvisioningBehaviour(appContext.server, appContext.provisioningManager))
 			add(SkeletonBehaviour(appContext.config.userConfig, appContext.skeleton))

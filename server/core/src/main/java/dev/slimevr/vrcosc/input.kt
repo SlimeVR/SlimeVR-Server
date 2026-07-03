@@ -132,8 +132,8 @@ class VRCOSCInputBehaviour(
 		val registry = VRSystemTrackerRegistry(appContext, receiver)
 		var oscReceiver: OscReceiver? = null
 
-		receiver.context.state
-			.map { state -> Pair(state.config.enabled, vrcOscPortIn(state.config)) }
+		receiver.settings.context.state
+			.map { state -> Pair(state.data.vrcOscConfig.enabled, vrcOscPortIn(state.data.vrcOscConfig)) }
 			.distinctUntilChanged()
 			.onEach { (enabled, portIn) ->
 				oscReceiver?.close()

@@ -1,16 +1,14 @@
 package dev.slimevr.vmc
 
 import dev.slimevr.Phase1ContextProvider
-import dev.slimevr.config.VMCConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.Skeleton
 import kotlinx.coroutines.CoroutineScope
 
-data class VMCState(val config: VMCConfig = VMCConfig())
+object VMCState
 
 sealed interface VMCActions {
-	data class UpdateConfig(val config: VMCConfig) : VMCActions
 }
 
 typealias VMCContext = Context<VMCState, VMCActions>
@@ -20,14 +18,14 @@ class VMCManager(val context: VMCContext) {
 	fun startObserving() = context.observeAll(this)
 
 	companion object {
-		fun create(skeleton: Skeleton, ctx: Phase1ContextProvider, scope: CoroutineScope): VMCManager {
+		fun create(ctx: Phase1ContextProvider, skeleton: Skeleton, scope: CoroutineScope): VMCManager {
 			val settings = ctx.config.settings
 			val context = Context.create(
-				initialState = VMCState(config = settings.context.state.value.data.vmcConfig),
+				initialState = VMCState,
 				scope = scope,
 				behaviours = listOf(
 					VMCOutputBehaviour(skeleton, settings),
-					VMCInputBehaviour(),
+					VMCInputBehaviour(settings),
 				),
 				name = "VMC",
 			)

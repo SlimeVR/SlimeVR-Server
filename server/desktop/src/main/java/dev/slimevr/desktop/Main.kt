@@ -30,6 +30,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.safeLaunch
@@ -86,13 +87,14 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 	val trackingChecklist = TrackingChecklist.create(scope = this)
 	val udpServer = UdpServer.create(scope = this, addressResolver = ::resolveDesktopUdpAddress)
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
-	val vmcManager = VMCManager.create(skeleton = skeleton, ctx = phase1, scope = this)
+	val vmcManager = VMCManager.create(ctx = phase1, skeleton = skeleton, scope = this)
 	val vrcOscManager = VRCOSCManager.create(
 		ctx = phase1,
 		scope = this,
 		oscQueryAddress = resolveDesktopOscQueryAddress(),
 	)
-	val resetsManager = ResetsManager.create(server = server, scope = this)
+	val resetsManager = ResetsManager.create(server = server, scope = this, settings = config.settings)
+	val tapDetectionManager = TapDetectionManager.create(server = server, scope = this, settings = config.settings)
 
 	val appContext = AppContext(
 		server = server,
@@ -111,6 +113,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		vmcManager = vmcManager,
 		vrcOscManager = vrcOscManager,
 		resetsManager = resetsManager,
+		tapDetectionManager = tapDetectionManager,
 	)
 
 	try {

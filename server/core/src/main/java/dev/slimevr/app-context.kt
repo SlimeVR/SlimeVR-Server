@@ -9,6 +9,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
@@ -41,6 +42,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val vmcManager: VMCManager
 	val vrcOscManager: VRCOSCManager
 	val resetsManager: ResetsManager
+	val tapDetectionManager: TapDetectionManager
 	fun startObserving()
 	suspend fun dispose()
 }
@@ -62,6 +64,7 @@ class AppContext(
 	override val vmcManager: VMCManager,
 	override val vrcOscManager: VRCOSCManager,
 	override val resetsManager: ResetsManager,
+	override val tapDetectionManager: TapDetectionManager,
 ) : AppContextProvider {
 	override fun startObserving() {
 		skeleton.startObserving()
@@ -75,6 +78,7 @@ class AppContext(
 		vmcManager.startObserving()
 		vrcOscManager.startObserving(this)
 		resetsManager.startObserving()
+		tapDetectionManager.startObserving()
 	}
 
 	override suspend fun dispose() {

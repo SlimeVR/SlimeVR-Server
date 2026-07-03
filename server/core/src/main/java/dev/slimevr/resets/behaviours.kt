@@ -12,8 +12,6 @@ const val MOUNTING_RESET_TIMEOUT = 120 * 1000L // 120 seconds
 
 class ResetsBasicBehaviour : ResetsBehaviour {
 	override fun reduce(state: ResetsState, action: ResetsActions) = when (action) {
-		is ResetsActions.UpdateConfig -> state.copy(config = action.config)
-
 		// Clear the states of the `canDoXReset`s to false
 		is ResetsActions.ClearResets -> {
 			state.copy(
@@ -26,13 +24,12 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 		is ResetsActions.EndReset -> {
 			if (action.resetType == ResetType.FULL) {
 				state.copy(canDoYawReset = true, canDoMountingReset = true, lastFullResetTime = System.nanoTime())
-			} else if (action.resetType == ResetType.MOUNTING) {
-				state.copy(config = state.config.copy(lastMountingMethod = MountingMethods.AUTOMATIC))
 			} else {
 				state.copy()
 			}
 		}
 	}
+
 }
 
 class ResetsMountingTimeoutBehaviour : ResetsBehaviour {

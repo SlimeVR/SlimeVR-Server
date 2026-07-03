@@ -36,7 +36,6 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 	private val tapTimestamps = ArrayDeque<Long>()
 	private var waitForLowAccel = false
 	private var resetType: ResetType? = null
-	private var setupModeAssign = false
 	private var tapsNeeded = 0
 	private var actionDelay = 0f
 	private var numberTrackersOverThreshold = 0
@@ -66,7 +65,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 			// Inner flow (process) is refreshed everytime this tracker's acceleration is updated
 			.flatMapLatest {
 				receiver.context.state
-					.filter { resetType != null || setupModeAssign }
+					.filter { resetType != null || false } // setupModeAssign
 					.distinctUntilChangedBy { it.rawAcceleration }
 			}
 			.onEach { currentTracker ->
@@ -87,7 +86,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 		// If setupMode is true, double tap to assign
 		// TODO setupMode
 		if (false) {
-			setupModeAssign = true
+			//setupModeAssign = true
 			resetType = null
 			tapsNeeded = 2
 			actionDelay = 0f
@@ -175,7 +174,7 @@ class TrackerTapDetectionBehaviour : TrackerBehaviour {
 				// Taps completed!
 				receiver.context.scope.safeLaunch {
 					// If it's in setup mode, tap to assign
-					if (setupModeAssign) {
+					if (false) { //setupModeAssign
 						receiver.appContext.server.sendSolarxrRpc(
 							TapDetectionSetupNotification(currentTracker.id.toUShort()),
 						)

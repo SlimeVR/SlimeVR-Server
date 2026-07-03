@@ -3,6 +3,7 @@ package dev.slimevr.vrcosc
 import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
 import dev.slimevr.Phase1ContextProvider
+import dev.slimevr.config.Settings
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
@@ -50,7 +51,6 @@ data class VRCOSCStatus(
 )
 
 data class VRCOSCState(
-	val config: VRCOSCConfig = VRCOSCConfig(),
 	val status: VRCOSCStatus = VRCOSCStatus(),
 )
 
@@ -61,8 +61,6 @@ enum class VRSystemTracker {
 }
 
 sealed interface VRCOSCActions {
-	data class UpdateConfig(val config: VRCOSCConfig) : VRCOSCActions
-
 	data class SetInput(
 		val state: VRCOSCInputState,
 		val port: Int? = null,
@@ -97,12 +95,12 @@ typealias VRCOSCBehaviour = Behaviour<VRCOSCState, VRCOSCActions, VRCOSCManager>
 class VRCOSCManager(
 	val context: VRCOSCContext,
 	val oscQueryAddress: String,
+	val settings: Settings,
 ) {
 	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher()
 
 	fun startObserving(appContext: AppContextProvider) {
 		val behaviours = listOf(
-			VRCOSCSettingsBehaviour(appContext.config.settings),
 			VRCOSCOutputBehaviour(appContext.skeleton),
 			VRCOSCInputBehaviour(appContext),
 			VRCOSCOscQueryBehaviour(localIp = oscQueryAddress),
@@ -125,17 +123,15 @@ class VRCOSCManager(
 			oscQueryAddress: String,
 		): VRCOSCManager {
 			val settings = ctx.config.settings
-			val initialConfig = settings.context.state.value.data.vrcOscConfig
 			val context = Context.create(
 				initialState = VRCOSCState(
-					config = initialConfig,
 					status = VRCOSCStatus(),
 				),
 				behaviours = emptyList<VRCOSCBehaviour>(),
 				scope = scope,
 				name = "VRCOSC",
 			)
-			return VRCOSCManager(context, oscQueryAddress)
+			return VRCOSCManager(context, oscQueryAddress, settings)
 		}
 	}
 }

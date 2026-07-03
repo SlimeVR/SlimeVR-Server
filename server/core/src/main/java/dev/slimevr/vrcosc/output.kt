@@ -53,7 +53,7 @@ class VRCOSCOutputBehaviour(
 	}
 
 	private fun observeTargetChanges(receiver: VRCOSCManager, runtime: OutputRuntime) {
-		val configFlow = receiver.context.state.map { state -> state.config }.distinctUntilChanged()
+		val configFlow = receiver.settings.context.state.map { it.data.vrcOscConfig }.distinctUntilChanged()
 		val discoveredFlow = receiver.context.state.map { state -> state.status.discoveredTargets }.distinctUntilChanged()
 
 		configFlow.combine(discoveredFlow) { config, discoveredTargets ->
@@ -142,12 +142,13 @@ class VRCOSCOutputBehaviour(
 	) {
 		val sender = runtime.sender ?: return
 		val state = receiver.context.state.value
-		if (!state.config.enabled) return
+		val vrcOscConfig = receiver.settings.context.state.value.data.vrcOscConfig
+		if (!vrcOscConfig.enabled) return
 
 		val now = System.currentTimeMillis()
 		if (runtime.frameSendFailureActive && now < runtime.nextFrameRetryAt) return
 
-		val bundle = buildOutgoingBundle(bones, state.config) ?: return
+		val bundle = buildOutgoingBundle(bones, vrcOscConfig) ?: return
 
 		try {
 			sender.send(bundle)

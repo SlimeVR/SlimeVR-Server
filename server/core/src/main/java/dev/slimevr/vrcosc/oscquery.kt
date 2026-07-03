@@ -47,8 +47,8 @@ class VRCOSCOscQueryBehaviour(
 	override fun observe(receiver: VRCOSCManager) {
 		val runtime = OscQueryRuntime(localIp)
 
-		receiver.context.state
-			.map { state -> Triple(state.config.enabled, state.config.manualNetwork == null, vrcOscPortIn(state.config)) }
+		receiver.settings.context.state
+			.map { state -> Triple(state.data.vrcOscConfig.enabled, state.data.vrcOscConfig.manualNetwork == null, vrcOscPortIn(state.data.vrcOscConfig)) }
 			.distinctUntilChanged()
 			.onEach { (enabled, automatic, portIn) ->
 				if (!enabled || !automatic) {

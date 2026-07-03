@@ -2,7 +2,12 @@ package dev.slimevr.resets
 
 import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
+import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.ResetsConfig
+import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
+import dev.slimevr.config.SettingsConfigState
+import dev.slimevr.config.SettingsContext
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.tracker.TrackerActions
@@ -20,14 +25,12 @@ import solarxr_protocol.rpc.ResetType
 import kotlin.collections.listOf
 
 data class ResetsState(
-	val config: ResetsConfig = ResetsConfig(),
 	val canDoYawReset: Boolean,
 	val canDoMountingReset: Boolean,
 	val lastFullResetTime: Long,
 )
 
 sealed interface ResetsActions {
-	data class UpdateConfig(val config: ResetsConfig) : ResetsActions
 	data class ClearResets(val resetType: List<ResetType>) : ResetsActions
 	data class EndReset(val resetType: ResetType) : ResetsActions
 }
@@ -35,7 +38,7 @@ sealed interface ResetsActions {
 typealias ResetsContext = Context<ResetsState, ResetsActions>
 typealias ResetsBehaviour = Behaviour<ResetsState, ResetsActions, ResetsManager>
 
-class ResetsManager(val context: ResetsContext, val server: VRServer) {
+class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
 
 	private var resetJob: Job = Job()
@@ -70,9 +73,9 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 			}
 			delay((remainder).toLong())
 
-			executeTrackerResets(resetType, bodyParts, context.state.value.config)
+			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
 
-			context.dispatch(ResetsActions.EndReset(resetType))
+			settings.context.dispatch(SettingsActions.Update {copy(resetsConfig = resetsConfig.copy(lastMountingMethod = MountingMethods.MANUAL))})
 
 			AppLogger.resets.info("${resetType.name} Reset from $resetSourceName")
 
@@ -118,7 +121,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 	}
 
 	companion object {
-		fun create(server: VRServer, scope: CoroutineScope): ResetsManager {
+		fun create(server: VRServer, scope: CoroutineScope, settings: Settings): ResetsManager {
 			val context = Context.create(
 				initialState = ResetsState(
 					canDoYawReset = false,
@@ -129,7 +132,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer) {
 				behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),
 				name = "ResetsManager",
 			)
-			return ResetsManager(context, server)
+			return ResetsManager(context, server, settings)
 		}
 	}
 }

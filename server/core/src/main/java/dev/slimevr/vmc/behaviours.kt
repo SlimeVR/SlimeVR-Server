@@ -2,7 +2,6 @@ package dev.slimevr.vmc
 
 import dev.slimevr.AppLogger
 import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.osc.OscArg
@@ -28,26 +27,15 @@ class VMCOutputBehaviour(
 ) : VMCBehaviourType {
 	private val initTime = System.currentTimeMillis()
 
-	override fun reduce(state: VMCState, action: VMCActions) = when (action) {
-		is VMCActions.UpdateConfig -> state.copy(config = action.config)
-	}
-
 	override fun observe(receiver: VMCManager) {
 		var sender: OscSender? = null
 		var vrmGeometry: VrmGeometry? = null
 
-		receiver.context.state
-			.map { it.config }
+		settings.context.state
+			.map { it.data.vmcConfig.vrmJson }
 			.distinctUntilChanged()
-			.onEach { config ->
-				settings.context.dispatch(SettingsActions.Update { copy(vmcConfig = config) })
-			}.launchIn(receiver.context.scope)
-
-		receiver.context.state
-			.map { it.config.vrmJson }
-			.distinctUntilChanged()
-			.onEach { json ->
-				vrmGeometry = json?.takeIf { value -> value.isNotEmpty() }?.let { value ->
+			.onEach { vrmJson ->
+				vrmGeometry = vrmJson?.takeIf { value -> value.isNotEmpty() }?.let { value ->
 					try {
 						buildVrmGeometry(VrmReader(value))
 					} catch (e: Exception) {
@@ -57,8 +45,8 @@ class VMCOutputBehaviour(
 				}
 			}.launchIn(receiver.context.scope)
 
-		receiver.context.state
-			.map { Triple(it.config.enabled, it.config.portOut, it.config.address) }
+		settings.context.state
+			.map { Triple(it.data.vmcConfig.enabled, it.data.vmcConfig.portOut, it.data.vmcConfig.address) }
 			.distinctUntilChanged()
 			.onEach { (enabled, port, addr) ->
 				sender?.close()
@@ -79,7 +67,7 @@ class VMCOutputBehaviour(
 		skeleton.computed
 			.onEach { bones ->
 				val s = sender ?: return@onEach
-				val config = receiver.context.state.value.config
+				val config = settings.context.state.value.data.vmcConfig
 				val currentTime = System.currentTimeMillis()
 				val vrm = vrmGeometry
 				receiver.context.scope.safeLaunch {
@@ -92,7 +80,9 @@ class VMCOutputBehaviour(
 			}.launchIn(receiver.context.scope)
 	}
 
-	private fun buildBundle(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?): OscBundle = OscBundle(1L, buildMessages(bones, config, currentTime, vrm).map { msg -> OscContent.Message(msg) }.toList())
+	private fun buildBundle(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?): OscBundle {
+		return OscBundle(1L, buildMessages(bones, config, currentTime, vrm).map { msg -> OscContent.Message(msg) }.toList())
+	}
 
 	private fun transformMessage(address: String, name: String, pos: Vector3, rot: Quaternion): OscMessage = OscMessage(
 		address,
@@ -152,21 +142,17 @@ class VMCOutputBehaviour(
 	}
 }
 
-class VMCInputBehaviour : Behaviour<VMCState, VMCActions, VMCManager> {
-	override fun reduce(state: VMCState, action: VMCActions) = when (action) {
-		is VMCActions.UpdateConfig -> state.copy(config = action.config)
-	}
-
+class VMCInputBehaviour(private val settings: Settings) : Behaviour<VMCState, VMCActions, VMCManager> {
 	override fun observe(receiver: VMCManager) {
 		var oscReceiver: OscReceiver? = null
 
-		receiver.context.state
-			.map { it.config.portIn }
+		settings.context.state
+			.map { it.data.vmcConfig.portIn }
 			.distinctUntilChanged()
 			.onEach { portIn ->
 				oscReceiver?.close()
 				oscReceiver = null
-				if (receiver.context.state.value.config.enabled) {
+				if (settings.context.state.value.data.vmcConfig.enabled) {
 					oscReceiver = OscReceiver(portIn)
 					AppLogger.vmc.info("VMC input listening on port $portIn")
 					receiver.context.scope.safeLaunch {
