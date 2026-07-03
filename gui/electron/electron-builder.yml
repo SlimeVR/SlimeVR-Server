@@ -1,0 +1,84 @@
+appId: dev.slimevr.SlimeVR
+productName: SlimeVR
+# The package is named @slimevr/gui-electron; pin the executable name so
+# electron-builder doesn't derive an invalid one from the scoped package name.
+executableName: slimevr
+# Global naming pattern
+artifactName: "${productName}-${version}-${os}-${arch}.${ext}"
+
+directories:
+  output: dist/artifacts/${os}
+
+asar: true
+asarUnpack:
+  # JavaVersion.jar is spawned as an external `java -jar` process, so it must
+  # live outside the asar. electron-vite references ?asset files under the
+  # main-process public dir (resources/) at runtime as ../../resources/...
+  - resources/java-version/*.jar
+
+electronLanguages:
+  - en-US
+
+files:
+  - out/**/*
+  - resources/**/*
+  - package.json
+  - node_modules/**
+  - "!node_modules/*/{README,readme,README.md,readme.md,CHANGELOG,CHANGELOG.md,changelog.md}"
+  - "!node_modules/*/{test,tests,__tests__,docs,doc,example,examples}"
+  - "!node_modules/*/.{git,github,vscode,editorconfig,eslintrc,prettierrc}"
+  - "!node_modules/**/*.{map,ts,tsx,d.ts}"
+  - "!**/.DS_Store"
+
+
+linux:
+  category: Game
+  artifactName: "${productName}-${arch}.${ext}"
+  target:
+    - target: AppImage
+    - target: deb
+    - target: rpm
+  extraFiles:
+    - from: "../../server/desktop/build/libs/slimevr.jar"
+      to: "."
+    - from: "../../bindings-provider/build/linux-${arch}/slimevr-bindings-provider"
+      to: "."
+    - from: "../../bindings-provider/build/linux-${arch}/libopenvr_api.so"
+      to: "."
+    - from: "./resources/69-slimevr-devices.rules"
+      to: "."
+  icon: "./resources/icons"
+
+deb:
+  depends: [openjdk-17-jre-headless, udev]
+  afterInstall: "./resources/scripts/postinstall.sh"
+  afterRemove: "./resources/scripts/postremove.sh"
+
+rpm:
+  depends: [java-latest-openjdk, udev]
+  afterInstall: "./resources/scripts/postinstall.sh"
+  afterRemove: "./resources/scripts/postremove.sh"
+
+win:
+  artifactName: "${productName}-${os}-${arch}.${ext}"
+  target: zip
+  icon: "./resources/icons/icon.ico"
+  extraFiles:
+    - from: "../../server/desktop/build/libs/slimevr.jar"
+      to: "."
+    - from: "../../server/core/resources"
+      to: "."
+      filter: ["**/*"]
+    - from: "../../bindings-provider/build/${os}-${arch}/Release/SlimeVR-Bindings-Provider.exe"
+      to: "."
+    - from: "../../bindings-provider/build/${os}-${arch}/openvr_api.dll"
+      to: "."
+
+mac:
+  target: dmg
+  artifactName: "SlimeVR-mac.${ext}"
+  x64ArchFiles: "**/register-protocol-handler.node"
+  icon: "./resources/icons/icon.icns"
+  extraFiles:
+    - from: "../../server/desktop/build/libs/slimevr.jar"
+      to: "Resources/slimevr.jar"

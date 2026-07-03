@@ -10,7 +10,7 @@ import {
   shell,
   Tray,
 } from 'electron';
-import { IPC_CHANNELS } from '../shared';
+import { IPC_CHANNELS } from '@slimevr/gui-shared';
 import path, { dirname, join } from 'path';
 import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
@@ -33,7 +33,7 @@ import { closeLogger, logger } from './logger';
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
-import { ServerStatusEvent } from 'electron/preload/interface';
+import { ServerStatusEvent } from '@slimevr/gui-shared';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 

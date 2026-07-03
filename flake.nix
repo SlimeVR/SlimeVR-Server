@@ -119,56 +119,101 @@
               ln -s ${runtime}/lib $out/lib
             '';
           };
-        in
-        {
-          devShells.default = pkgs.mkShell {
-            packages = [
-              # for running the jar
-              java
 
-              # for build
-              pkgs.electron
-              pkgs.rpm
-              pkgs.fpm
-              pkgs.p7zip
-              pkgs.wineWow64Packages.stable
-              pkgs.zlib
-              pkgs.squashfsTools
-              pkgs.desktop-file-utils
-              pkgs.fakeroot
-              pkgs.libarchive
-              pkgs.icu
-              pkgs.nodejs_22
-              pkgs.pnpm
-              pkgs.pkg-config
-              pkgs.python3
-              pkgs.gcc
-              pkgs.gnumake
-              pkgs.binutils
-              pkgs.git
-              pkgs.node-gyp-build
-            ];
-            buildInputs = runtimeLibs;
+          # Toolchain shared by the dev shell and the packaging FHS env.
+          commonPackages = [
+            # for running the jar
+            java
 
+            # for build
+            pkgs.electron
+            pkgs.rpm
+            pkgs.fpm
+            pkgs.p7zip
+            pkgs.wineWow64Packages.stable
+            pkgs.zlib
+            pkgs.squashfsTools
+            pkgs.desktop-file-utils
+            pkgs.fakeroot
+            pkgs.libarchive
+            pkgs.icu
+            pkgs.nodejs_22
+            pkgs.pnpm
+            pkgs.pkg-config
+            pkgs.python3
+            pkgs.gcc
+            pkgs.gnumake
+            pkgs.binutils
+            pkgs.git
+            pkgs.node-gyp-build
+          ];
+
+          buildEnv = {
             JAVA_HOME = "${java}/lib/openjdk";
             USE_SYSTEM_FPM = "true";
             ELECTRON_BUILDER_7ZIP_PATH = "${pkgs.p7zip}/bin/7za";
             APPIMAGE_TOOLS_PATH = "${appImageTools}";
-            #ELECTRON_SKIP_BINARY_DOWNLOAD = true;
-            #ELECTRON_DIST = "${pkgs.electron.dist}";
-            #ELECTRON_VERSION = "${pkgs.electron.version}";
-
             # for electron-vite, so `pnpm gui` works
             ELECTRON_EXEC_PATH = "${pkgs.electron}/bin/electron";
+          };
 
-            shellHook = ''
-              export LD_LIBRARY_PATH="${
-                lib.makeLibraryPath [
-                  pkgs.systemd
-                  pkgs.hidapi
-                ]
-              }:$LD_LIBRARY_PATH"
-            '';
+          # electron-builder produces generic dynamically-linked binaries that
+          # NixOS can't run (no /lib64 loader). Building and running the packaged
+          # app inside an FHS sandbox provides that standard loader, so the final
+          # electron build works. `nix run .#package` runs `pnpm package:build`.
+          packageBuildScript = pkgs.writeShellScript "slimevr-package-build" ''
+            set -eu
+            cd "$(${pkgs.git}/bin/git rev-parse --show-toplevel)"
+            ${lib.concatStringsSep "\n" (
+              lib.mapAttrsToList (name: value: "export ${name}=${lib.escapeShellArg value}") buildEnv
+            )}
+            export LD_LIBRARY_PATH="${lib.makeLibraryPath (runtimeLibs ++ [ pkgs.hidapi ])}:''${LD_LIBRARY_PATH:-}"
+            pnpm install
+            pnpm --filter @slimevr/gui-electron run package:build
+          '';
+
+          packageBuildFhs = pkgs.buildFHSEnv {
+            name = "slimevr-package-build";
+            targetPkgs = _: commonPackages ++ runtimeLibs;
+            runScript = "${packageBuildScript}";
+          };
+        in
+        {
+          devShells.default = pkgs.mkShell (
+            buildEnv
+            // {
+              packages = commonPackages;
+              buildInputs = runtimeLibs;
+
+              shellHook = ''
+                export LD_LIBRARY_PATH="${
+                  lib.makeLibraryPath [
+                    pkgs.systemd
+                    pkgs.hidapi
+                  ]
+                }:$LD_LIBRARY_PATH"
+              '';
+            }
+          );
+
+          # Build the desktop package inside an FHS sandbox:
+          #   nix run .#package
+          apps.package = {
+            type = "app";
+            program = "${packageBuildFhs}/bin/slimevr-package-build";
+          };
+
+          # Interactive FHS shell for manual packaging / running the built app:
+          #   nix run .#package-shell
+          apps.package-shell = {
+            type = "app";
+            program = "${
+              pkgs.buildFHSEnv {
+                name = "slimevr-fhs";
+                targetPkgs = _: commonPackages ++ runtimeLibs;
+                runScript = "bash";
+              }
+            }/bin/slimevr-fhs";
           };
         };
     };

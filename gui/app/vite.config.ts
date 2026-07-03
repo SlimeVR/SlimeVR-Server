@@ -53,19 +53,12 @@ export default defineConfig({
   build: {
     target: 'es2022',
     emptyOutDir: true,
-
-    commonjsOptions: {
-      include: [/solarxr-protocol/, /node_modules/],
-    },
-
     sourcemap: true,
   },
   optimizeDeps: {
     esbuildOptions: {
       target: 'es2022',
     },
-    needsInterop: ['solarxr-protocol'],
-    include: ['solarxr-protocol'],
   },
   resolve: {
     alias: {

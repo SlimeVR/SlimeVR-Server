@@ -82,7 +82,7 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
       - name: GUI Lint
-        run: pnpm i && cd gui && pnpm run lint
+        run: pnpm i && pnpm run lint
 
   server-checks:
     name: Server Checks
@@ -154,9 +154,9 @@ jobs:
       - name: Build JS
         env:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        run: pnpm i && cd gui && pnpm run build
+        run: pnpm i && pnpm run build
       - name: Tar GUI Dist
-        run: tar -czf slimevr-gui-dist.tar.gz -C gui/out .
+        run: tar -czf slimevr-gui-dist.tar.gz -C gui/electron/out .
       - name: Upload GUI Dist
         uses: actions/upload-artifact@v7
         with:
@@ -201,21 +201,21 @@ jobs:
           name: gui-dist
       - name: Extract GUI for Electron
         shell: bash
-        run: mkdir -p gui/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/out
+        run: mkdir -p gui/electron/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/electron/out
       - name: Run Electron Builder
         shell: bash
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          mkdir -p gui/dist/artifacts/linux/ \
-                   gui/dist/artifacts/win \
-                   gui/dist/artifacts/mac
+          mkdir -p gui/electron/dist/artifacts/linux/ \
+                   gui/electron/dist/artifacts/win \
+                   gui/electron/dist/artifacts/mac
           VERSION=$(git --no-pager tag --sort -taggerdate --points-at HEAD | head -1)
           [ -z "$VERSION" ] && VERSION="0.0.0"
           VERSION="${VERSION#v}"
           echo "Building version: $VERSION"
           pnpm i
-          cd gui
+          cd gui/electron
           pnpm exec electron-builder --${{ matrix.platform }} \
             ${{ matrix.platform == 'macos' && '--universal' || '' }} \
             --config.extraMetadata.version="$VERSION" \
@@ -223,7 +223,7 @@ jobs:
       - name: Collect and Rename Artifacts
         shell: bash
         run: |
-          SRC_DIR="${{ github.workspace }}/gui/dist/artifacts"
+          SRC_DIR="${{ github.workspace }}/gui/electron/dist/artifacts"
           DEST_DIR="${{ github.workspace }}/release-out"
           mkdir -p "$DEST_DIR"
 
@@ -274,7 +274,7 @@ jobs:
         with:
           name: gui-dist
       - name: Extract GUI for Android
-        run: mkdir -p gui/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/out
+        run: mkdir -p gui/electron/out && tar -xzf slimevr-gui-dist.tar.gz -C gui/electron/out
       - name: Build APK
         run: ./gradlew :server:android:build --build-cache
         env:

@@ -4,7 +4,7 @@ import { useDebouncedEffect } from './timeout';
 import { waitUntil } from '@/utils/a11y';
 import { v4 as uuidv4 } from 'uuid';
 import { useElectron } from './electron';
-import { CrossStorage } from 'electron/preload/interface';
+import { CrossStorage } from '@slimevr/gui-shared';
 
 export interface WindowConfig {
   width: number;

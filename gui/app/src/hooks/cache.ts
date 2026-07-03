@@ -1,4 +1,4 @@
-import { CrossStorage } from 'electron/preload/interface';
+import { CrossStorage } from '@slimevr/gui-shared';
 
 const localStore: CrossStorage = {
   get: async <T>(key: string) =>

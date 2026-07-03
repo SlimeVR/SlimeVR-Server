@@ -1,4 +1,4 @@
-import { IElectronAPI, OSStats } from 'electron/preload/interface';
+import { IElectronAPI, OSStats } from '@slimevr/gui-shared';
 import { createContext, useContext, useLayoutEffect, useState } from 'react';
 
 type CachedData = {
