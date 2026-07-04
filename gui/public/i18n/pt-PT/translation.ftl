@@ -33,6 +33,10 @@ tips-failed_webgl = Não foi possível inicializar o WebGL.
 
 ## Units
 
+unit-meter = Metro
+unit-foot = Pé
+unit-inch = Polegada
+unit-cm = cm
 
 ## Body parts
 
@@ -98,6 +102,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -109,6 +115,11 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = Luva SlimeVR Dev IMU
+board_type-GESTURES = Gestos
+board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
+board_type-GENERIC_NRF = nRF Genérico
+board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
+board_type-SLIMEVR_BUTTERFLY = SlimeVR Butterfly
 
 ## Proportions
 
@@ -245,7 +256,13 @@ reset-reset_all_warning_default-v2 =
     Tem a certeza de que quer fazer isto?
 reset-full = Repor tudo
 reset-mounting = Calibração de montagem
+reset-mounting-feet = Calibração dos pés
+reset-mounting-fingers = Calibração dos dedos
 reset-yaw = Reposição horizontal
+reset-error-no_feet_tracker = Nenhum tracker de pés atribuído
+reset-error-no_fingers_tracker = Nenhum tracker de dedos atribuído
+reset-error-mounting-need_full_reset = É necessário fazer uma redefinição completa antes da montagem
+reset-error-yaw-need_full_reset = É necessário Redefinir Tudo antes de Redefinir Horizontalmente
 
 ## Serial detection stuff
 
@@ -459,25 +476,34 @@ tracker_selection_menu-dont_assign = Desatribuir
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
-    <b>Aviso:</b> Um tracker de pescoço pode ser fatal se ajustado com demasiada força;
+    <b>Aviso:</b> Um tracker de pescoço pode ser fatal se estiver muito justo;
     a tira pode cortar a circulação para a sua cabeça!
 tracker_selection_menu-neck_warning-done = Eu compreendo os riscos
 tracker_selection_menu-neck_warning-cancel = Cancelar
 
 ## Mounting menu
 
+mounting_selection_menu = Onde quer que este tracker esteja?
+mounting_selection_menu-close = Fechar
 
 ## Sidebar settings
 
+settings-sidebar-title = Definições
+settings-sidebar-general = Geral
+settings-sidebar-steamvr = SteamVR
+settings-sidebar-tracker_mechanics = Mecânicas do tracker
 settings-sidebar-stay_aligned = Continue alinhado
 settings-sidebar-fk_settings = Definições do rastreio
 settings-sidebar-gesture_control = Controlo de gestos
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = Router OSC
 settings-sidebar-osc_trackers = Trackers OSC do VRChat
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilitários
 settings-sidebar-serial = Consola Serial
 settings-sidebar-appearance = Aparência
+settings-sidebar-home = Ecrã Inicial
+settings-sidebar-checklist = Lista de Tarefas
 settings-sidebar-notifications = Notificações
 settings-sidebar-behavior = Comportamento
 settings-sidebar-firmware-tool = Ferramenta de firmware DIY
@@ -505,10 +531,20 @@ settings-general-steamvr-trackers-left_elbow = Cotovelo esquerdo
 settings-general-steamvr-trackers-right_elbow = Cotovelo direito
 settings-general-steamvr-trackers-left_hand = Mão esquerda
 settings-general-steamvr-trackers-right_hand = Mão Direita
+settings-general-steamvr-trackers-tracker_toggling = Atribuição automática do tracker
+settings-general-steamvr-trackers-tracker_toggling-description = Lida automaticamente com a ativação ou desativação dos trackers no SteamVR, dependendo das suas atribuições atuais de trackers.
+settings-general-steamvr-trackers-tracker_toggling-label = Atribuição automática de trackers
+settings-general-steamvr-trackers-hands-warning =
+    <b>Aviso:</b> Ativar os trackers de mão no SteamVR desativará as entradas de comandos reais.
+    Isto só deve ser ativado se você estiver a utilizar o SlimeVR para tracking de mãos
+    Tem a certeza de que quer fazer isto?
+settings-general-steamvr-trackers-hands-warning-cancel = Cancelar
+settings-general-steamvr-trackers-hands-warning-done = Sim
 
 ## Tracker mechanics
 
 settings-general-tracker_mechanics = Mecânicas do tracker
+settings-general-tracker_mechanics-filtering = Filtramento
 
 ## FK/Tracking settings
 
