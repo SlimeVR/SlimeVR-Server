@@ -268,21 +268,37 @@ navbar-settings = Definições
 
 ## Biovision hierarchy recording
 
+bvh-start_recording = Gravar BVH
+bvh-recording = A gravar...
+bvh-save_title = Guardar a gravação BVH
 
 ## Tracking pause
 
+tracking-unpaused = Pausar rastreamento
+tracking-paused = Retomar rastreamento
 
 ## Widget: Overlay settings
 
+widget-overlay = Sobreposição
+widget-overlay-is_visible_label = Mostrar a sobreposição no SteamVR
+widget-overlay-is_mirrored_label = Exibir sobreposição como espelho
 
 ## Widget: Drift compensation
 
+widget-drift_compensation-clear = Remover a compensação de desvio
 
 ## Widget: Clear Mounting calibration
 
+widget-clear_mounting = Limpar a calibração de montagem
 
 ## Widget: Developer settings
 
+widget-developer_mode = Modo de desenvolvedor
+widget-developer_mode-high_contrast = Alto contraste
+widget-developer_mode-precise_rotation = Rotação precisa
+widget-developer_mode-fast_data_feed = Alimentação rápida de dados
+widget-developer_mode-filter_slimes_and_hmd = Filtrar os Slimes e HMD
+widget-developer_mode-sort_by_name = Ordenar por nome
 widget-developer_mode-raw_slime_rotation = Rotação bruta
 widget-developer_mode-more_info = Mais informação
 
@@ -351,18 +367,102 @@ tracker-infos-hardware_identifier = ID do hardware
 tracker-infos-data_support = Suporte de dados
 tracker-infos-imu = Sensor IMU
 tracker-infos-board_type = Placa principal
+tracker-infos-network_version = Versão do protocolo
+tracker-infos-magnetometer = Magnetómetro
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] Inativo
+        [ENABLED] Ativo
+       *[NOT_SUPPORTED] Não suportado
+    }
 
 ## Tracker settings
 
+tracker-settings-back = Voltar à lista de trackers
+tracker-settings-title = Definições dos tracker
+tracker-settings-assignment_section = Atribuição
+tracker-settings-assignment_section-description = A que parte do corpo está atribuído o tracker.
+tracker-settings-assignment_section-edit = Editar atribuição
+tracker-settings-mounting_section = Orientação de montagem
+tracker-settings-mounting_section-description = Onde é que o tracker está montado?
+tracker-settings-mounting_section-edit = Editar posição
+tracker-settings-drift_compensation_section = Permitir compensação de desvio
+tracker-settings-drift_compensation_section-description = Este tracker deve compensar pelo o seu desvio quando a compensação de desvio está ativada?
+tracker-settings-drift_compensation_section-edit = Permitir compensação de desvio
+tracker-settings-use_mag = Permitir magnetómetro neste tracker
+# Multiline!
+tracker-settings-use_mag-description =
+    Este tracker deve utilizar o magnetómetro para reduzir o desvio quando o uso do magnetómetro é permitido? <b>Por favor não desligue o tracker enquanto estiver a ativar esta opção!</b>
+    Precisa de permitir o uso do magnetómetro primeiro, <magSetting>clique aqui para aceder à configuração</magSetting>.
+tracker-settings-use_mag-label = Permitir magnetómetro
+# The .<name> means it's an attribute and it's related to the top key.
+# In this case that is the settings for the assignment section.
+tracker-settings-name_section = Nome do tracker
+tracker-settings-name_section-description = Dê-lhe um apelido fofo :)
+tracker-settings-name_section-placeholder = Perna esquerda de NightyBeast
+tracker-settings-name_section-label = Nome do tracker
+tracker-settings-forget = Esquecer tracker
+tracker-settings-forget-description = Remove o tracker do servidor do SlimeVR e impede a ligação até que o servidor seja reiniciado. A configuração do tracker não será apagada.
+tracker-settings-forget-label = Esquecer tracker
+tracker-settings-update-low-battery = Não é possível atualizar. Bateria com menos de 50%
+tracker-settings-update-up_to_date = Atualizado
+tracker-settings-update = Atualizar agora
+tracker-settings-update-title = Versão do firmware
 
 ## Tracker part card info
 
+tracker-part_card-no_name = Nenhum nome
+tracker-part_card-unassigned = Não atribuído
 
 ## Body assignment menu
 
+body_assignment_menu = Onde quer que este tracker esteja?
+body_assignment_menu-description = Selecione o local onde pretende que este tracker seja atribuído. Em alternativa, pode optar por gerir todos os trackers de uma só vez, em vez de um a um.
+body_assignment_menu-show_advanced_locations = Mostrar locais de atribuição avançados
+body_assignment_menu-manage_trackers = Gerir todos os trackers
+body_assignment_menu-unassign_tracker = Desatribuir tracker
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
+-tracker_selection-part = Qual o tracker a atribuir ao seu
+tracker_selection_menu-NONE = Qual é o tracker que pretende que seja desatribuído?
+tracker_selection_menu-HEAD = { -tracker_selection-part } cabeça?
+tracker_selection_menu-NECK = { -tracker_selection-part } pescoço?
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } ombro direito?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } braço direito?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } braço inferior direito?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } mão direita?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } coxa direita?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } tornozelo direito?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } pé direito?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } comando direito?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } peitoral superior?
+tracker_selection_menu-CHEST = { -tracker_selection-part } peito?
+tracker_selection_menu-WAIST = { -tracker_selection-part } cintura?
+tracker_selection_menu-HIP = { -tracker_selection-part } anca?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } ombro esquerdo?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } braço esquerdo?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } braço inferior esquerdo?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } mão esquerda?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } coxa esquerda?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } tornozelo esquerdo?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } pé esquerdo?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } comando esquerdo?
+tracker_selection_menu-unassigned = Trackers não atribuídos
+tracker_selection_menu-assigned = Trackers atribuídos
+tracker_selection_menu-dont_assign = Desatribuir
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning =
+    <b>Aviso:</b> Um tracker de pescoço pode ser fatal se ajustado com demasiada força;
+    a tira pode cortar a circulação para a sua cabeça!
+tracker_selection_menu-neck_warning-done = Eu compreendo os riscos
+tracker_selection_menu-neck_warning-cancel = Cancelar
 
 ## Mounting menu
 
@@ -408,6 +508,7 @@ settings-general-steamvr-trackers-right_hand = Mão Direita
 
 ## Tracker mechanics
 
+settings-general-tracker_mechanics = Mecânicas do tracker
 
 ## FK/Tracking settings
 
