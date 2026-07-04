@@ -7,7 +7,7 @@
 
 ## Websocket (server) status
 
-websocket-connecting = Serveriga ühendamine
+websocket-connecting = Laadimine...
 websocket-connection_lost = Ühendus serveriga ebaõnnetus!
 websocket-connection_lost-desc = Nähtav, et SlimeVR serveril toimus ebaõnnetus. Kontrollige logid ja käivitage programm uuesti.
 websocket-timedout = Ei saanud ühendama serveriga
