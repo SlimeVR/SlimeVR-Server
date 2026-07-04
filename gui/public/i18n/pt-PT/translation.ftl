@@ -262,7 +262,7 @@ reset-yaw = Reposição horizontal
 reset-error-no_feet_tracker = Nenhum tracker de pés atribuído
 reset-error-no_fingers_tracker = Nenhum tracker de dedos atribuído
 reset-error-mounting-need_full_reset = É necessário fazer uma redefinição completa antes da montagem
-reset-error-yaw-need_full_reset = É necessário Redefinir Tudo antes de Redefinir Horizontalmente
+reset-error-yaw-need_full_reset = É necessário fazer uma reposição completa antes de repor   horizontalmente
 
 ## Serial detection stuff
 
