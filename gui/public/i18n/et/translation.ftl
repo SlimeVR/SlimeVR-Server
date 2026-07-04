@@ -8,7 +8,7 @@
 ## Websocket (server) status
 
 websocket-connecting = Serveriga ühendamine
-websocket-connection_lost = Ühendus serveriga on kaotatud. Ühenduse taastamine...
+websocket-connection_lost = Ühendus serveriga tõrge!
 websocket-timedout = Ei saanud ühendama serveriga
 websocket-error-close = Välju SlimeVR-ist
 websocket-error-logs = Ava logide kaust
