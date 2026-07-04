@@ -36,6 +36,7 @@ be at `server/desktop/build/libs/slimevr.jar` (you can ignore `server.jar`).
 
 - Activate corepack (included with Node.js) via `corepack enable` 
 (might require launching Git Bash as administrator on Windows)
+- Make sure you're at the root of the repository.
 - Run `pnpm i` in your IDE's terminal to download and install dependencies.
 - To launch the GUI in dev mode, run `pnpm gui`.
 - Finally, to compile for production, run `pnpm package:build`. 
@@ -88,7 +89,7 @@ Eclipse will only do a subset of the checks in `spotless`, so you may still want
 ### Electron (gui)
 
 We use ESLint and Prettier to format GUI code.
-- First, go into the GUI's directory with your terminal by running `cd gui`.
+- Make sure you're at the root of the repository.
 - To check code formatting, run `pnpm run lint`.
 - To fix code formatting, run `pnpm run lint:fix` and `pnpm run format`
 

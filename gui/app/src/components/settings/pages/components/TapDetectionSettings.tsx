@@ -96,9 +96,7 @@ export function TapDetectionSettings() {
     settingsReq.yawResetEnabled = values.yawResetEnabled;
     settingsReq.yawResetTaps = values.yawResetTaps;
     settingsReq.yawResetTracker = Number(values.yawResetTracker);
-    settingsReq.mountingResetTracker = Number(
-      values.mountingResetTracker
-    );
+    settingsReq.mountingResetTracker = Number(values.mountingResetTracker);
     settingsReq.fullResetTracker = Number(values.fullResetTracker);
     settingsReq.mountingResetEnabled = values.mountingResetEnabled;
     settingsReq.mountingResetDelay = values.mountingResetDelay;
@@ -126,40 +124,31 @@ export function TapDetectionSettings() {
   useEffect(() => {
     const formData: DefaultValues<TapDetectionForm> = {
       yawResetEnabled:
-          settings.yawResetEnabled || defaultValues.yawResetEnabled,
+        settings.yawResetEnabled || defaultValues.yawResetEnabled,
       fullResetEnabled:
-          settings.fullResetEnabled ||
-          defaultValues.fullResetEnabled,
+        settings.fullResetEnabled || defaultValues.fullResetEnabled,
       mountingResetEnabled:
-          settings.mountingResetEnabled ||
-          defaultValues.mountingResetEnabled,
-      yawResetDelay:
-          settings.yawResetDelay || defaultValues.yawResetDelay,
-      fullResetDelay:
-          settings.fullResetDelay || defaultValues.fullResetDelay,
+        settings.mountingResetEnabled || defaultValues.mountingResetEnabled,
+      yawResetDelay: settings.yawResetDelay || defaultValues.yawResetDelay,
+      fullResetDelay: settings.fullResetDelay || defaultValues.fullResetDelay,
       mountingResetDelay:
-          settings.mountingResetDelay ||
-          defaultValues.mountingResetDelay,
-      yawResetTaps:
-          settings.yawResetTaps || defaultValues.yawResetTaps,
-      fullResetTaps:
-          settings.fullResetTaps || defaultValues.fullResetTaps,
+        settings.mountingResetDelay || defaultValues.mountingResetDelay,
+      yawResetTaps: settings.yawResetTaps || defaultValues.yawResetTaps,
+      fullResetTaps: settings.fullResetTaps || defaultValues.fullResetTaps,
       mountingResetTaps:
-          settings.mountingResetTaps ||
-          defaultValues.mountingResetTaps,
+        settings.mountingResetTaps || defaultValues.mountingResetTaps,
       yawResetTracker: String(
-          settings.yawResetTracker || defaultValues.yawResetTracker
+        settings.yawResetTracker || defaultValues.yawResetTracker
       ),
       fullResetTracker: String(
-          settings.fullResetTracker || defaultValues.fullResetTracker
+        settings.fullResetTracker || defaultValues.fullResetTracker
       ),
       mountingResetTracker: String(
-          settings.mountingResetTracker ||
-          defaultValues.mountingResetTracker
+        settings.mountingResetTracker || defaultValues.mountingResetTracker
       ),
       numberTrackersOverThreshold:
-          settings.numberTrackersOverThreshold ||
-          defaultValues.numberTrackersOverThreshold,
+        settings.numberTrackersOverThreshold ||
+        defaultValues.numberTrackersOverThreshold,
     };
     reset({ ...getValues(), ...formData });
   }, [settings]);

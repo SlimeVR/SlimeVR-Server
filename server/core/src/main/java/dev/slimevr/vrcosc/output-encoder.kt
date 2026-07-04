@@ -68,12 +68,13 @@ internal fun buildYawAlignMessage(headRotation: Quaternion): OscMessage {
 	)
 }
 
+// TODO read from Output Settings
 private fun shouldSendTracker(bodyPart: BodyPart, config: VRCOSCConfig): Boolean = when (bodyPart) {
-	BodyPart.HIP -> config.trackers.waist
-	BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT -> config.trackers.feet
-	BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG -> config.trackers.knees
-	BodyPart.UPPER_CHEST -> config.trackers.chest
-	BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM -> config.trackers.elbows
+	BodyPart.HIP -> true
+	BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT -> true
+	BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG -> true
+	BodyPart.UPPER_CHEST -> true // TODO why UPPER_CHEST instead of CHEST?
+	BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM -> false
 	else -> false
 }
 

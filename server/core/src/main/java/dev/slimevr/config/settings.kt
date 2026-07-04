@@ -49,8 +49,8 @@ data class TapDetectionConfig(
 @Serializable
 data class VMCConfig(
 	val enabled: Boolean = true,
-	val portOut: Int = 39539,
 	val portIn: Int = 39540,
+	val portOut: Int = 39539,
 	val address: String = "127.0.0.1",
 	/** Mirror the tracking before sending it (turn left <=> turn right, left leg <=> right leg) */
 	val mirrorTracking: Boolean = false,
@@ -58,6 +58,16 @@ data class VMCConfig(
 	val anchorAtHips: Boolean = false,
 	/** JSON part of the VRM to be used */
 	val vrmJson: String? = null,
+)
+
+const val DEFAULT_VRC_OSC_PORT_OUT: Int = 9000
+@Serializable
+data class VRCOSCConfig(
+	val enabled: Boolean = false,
+	val useManualNetwork: Boolean = false,
+	val portIn: Int = 9001,
+	val portOut: Int = DEFAULT_VRC_OSC_PORT_OUT,
+	val address: String = "127.0.0.1",
 )
 
 @Serializable

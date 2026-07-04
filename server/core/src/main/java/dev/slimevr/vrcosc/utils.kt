@@ -1,6 +1,5 @@
 package dev.slimevr.vrcosc
 
-import dev.slimevr.config.DEFAULT_VRC_OSC_PORT_IN
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.osc.OscArg
 import io.github.axisangles.ktmath.EulerAngles
@@ -11,7 +10,7 @@ import kotlin.math.PI
 
 internal const val TRACKING_VRSYSTEM_PATH: String = "/tracking/vrsystem"
 
-internal fun vrcOscPortIn(config: VRCOSCConfig): Int = config.manualNetwork?.portIn ?: DEFAULT_VRC_OSC_PORT_IN
+internal fun vrcOscPortIn(config: VRCOSCConfig): Int = config.portIn
 
 internal fun parsePosition(args: List<OscArg>, startIndex: Int = 0): Vector3? {
 	val x = args.getOrNull(startIndex)?.asFloatOrNull() ?: return null

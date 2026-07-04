@@ -124,7 +124,7 @@ export function FlashingStep({
       const device = status[id];
       return {
         type: device.type,
-        deviceId: id,
+        deviceIdPort: id,
         deviceNames: device.deviceNames,
       };
     });

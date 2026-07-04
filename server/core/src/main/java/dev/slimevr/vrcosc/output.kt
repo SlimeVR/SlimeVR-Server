@@ -228,8 +228,8 @@ class VRCOSCOutputBehaviour(
 		config: VRCOSCConfig,
 		discoveredTargets: List<VRCOSCDiscoveredTargetInfo>,
 	): OscSenderTarget? {
-		config.manualNetwork?.let { manual ->
-			return OscSenderTarget(address = manual.address, port = manual.portOut)
+		if (config.useManualNetwork) {
+			return OscSenderTarget(address = config.address, port = config.portOut)
 		}
 
 		val discoveredTarget = discoveredTargets.firstOrNull() ?: return null
@@ -243,7 +243,7 @@ class VRCOSCOutputBehaviour(
 		config: VRCOSCConfig,
 		discoveredTargets: List<VRCOSCDiscoveredTargetInfo>,
 	): VRCOSCTargetSource = when {
-		config.manualNetwork != null -> VRCOSCTargetSource.MANUAL
+		config.useManualNetwork -> VRCOSCTargetSource.MANUAL
 		discoveredTargets.isNotEmpty() -> VRCOSCTargetSource.DISCOVERED
 		else -> VRCOSCTargetSource.NONE
 	}

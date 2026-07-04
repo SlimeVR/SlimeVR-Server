@@ -57,7 +57,9 @@ async function waitForServer(url, timeoutMs = 30000) {
       await new Promise((r) => setTimeout(r, 250));
     }
   }
-  throw new Error(`Renderer dev server did not start at ${url} within ${timeoutMs}ms`);
+  throw new Error(
+    `Renderer dev server did not start at ${url} within ${timeoutMs}ms`
+  );
 }
 
 // 1. Start the renderer dev server (fixed port so the URL is deterministic).
@@ -77,6 +79,13 @@ run('pnpm', [
 await waitForServer(RENDERER_URL);
 run(
   'pnpm',
-  ['exec', 'electron-vite', 'dev', '--watch', '--config', 'electron.vite.config.ts'],
+  [
+    'exec',
+    'electron-vite',
+    'dev',
+    '--watch',
+    '--config',
+    'electron.vite.config.ts',
+  ],
   { ELECTRON_RENDERER_URL: RENDERER_URL, ELECTRON_EXEC_PATH }
 );

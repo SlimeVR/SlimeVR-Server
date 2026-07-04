@@ -48,10 +48,10 @@ class VRCOSCOscQueryBehaviour(
 		val runtime = OscQueryRuntime(localIp)
 
 		receiver.settings.context.state
-			.map { state -> Triple(state.data.vrcOscConfig.enabled, state.data.vrcOscConfig.manualNetwork == null, vrcOscPortIn(state.data.vrcOscConfig)) }
+			.map { state -> Triple(state.data.vrcOscConfig.enabled, state.data.vrcOscConfig.useManualNetwork, vrcOscPortIn(state.data.vrcOscConfig)) }
 			.distinctUntilChanged()
-			.onEach { (enabled, automatic, portIn) ->
-				if (!enabled || !automatic) {
+			.onEach { (enabled, useManualNetwork, portIn) ->
+				if (!enabled || useManualNetwork) {
 					stopOscQuery(receiver, runtime)
 					return@onEach
 				}

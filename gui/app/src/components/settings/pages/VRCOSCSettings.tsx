@@ -8,7 +8,6 @@ import {
   ChangeVRCOSCSettingsRequestT,
   RpcMessage,
   VRCOSCInputState,
-  VRCOSCNetworkSettingsT,
   VRCOSCOscQueryState,
   VRCOSCOutputState,
   VRCOSCSettingsRequestT,
@@ -36,13 +35,13 @@ import {
 interface VRCOSCSettingsForm {
   enabled: boolean;
   useManualNetwork: boolean;
-  manualNetwork: OSCPortsAddress;
+  portsAddress: OSCPortsAddress;
 }
 
 const defaultVRCOSCSettings: VRCOSCSettingsForm = {
   enabled: false,
   useManualNetwork: false,
-  manualNetwork: {
+  portsAddress: {
     portIn: 9001,
     portOut: 9000,
     address: '127.0.0.1',
@@ -363,7 +362,7 @@ export function VRCOSCSettings() {
         object({
           enabled: boolean().required(),
           useManualNetwork: boolean().required(),
-          manualNetwork: oscValidator,
+          portsAddress: oscValidator,
         })
       ),
     });
@@ -380,9 +379,10 @@ export function VRCOSCSettings() {
     const req = new ChangeVRCOSCSettingsRequestT();
 
     req.enabled = values.enabled;
-    req.manualNetwork = values.useManualNetwork
-      ? Object.assign(new VRCOSCNetworkSettingsT(), values.manualNetwork)
-      : null;
+    req.useManualNetwork = values.useManualNetwork;
+    req.portIn = values.portsAddress.portIn;
+    req.portOut = values.portsAddress.portOut;
+    req.address = values.portsAddress.address;
 
     sendRPCPacket(RpcMessage.ChangeVRCOSCSettingsRequest, req);
   };
@@ -406,16 +406,10 @@ export function VRCOSCSettings() {
       const formData = defaultVRCOSCSettings;
       if (response) {
         formData.enabled = response.enabled;
-        if (response.manualNetwork) {
-          formData.useManualNetwork = true;
-          formData.manualNetwork.portIn = response.manualNetwork.portIn;
-          formData.manualNetwork.portOut = response.manualNetwork.portOut;
-          if (response.manualNetwork.address) {
-            formData.manualNetwork.address = asString(
-              response.manualNetwork.address
-            );
-          }
-        }
+        formData.useManualNetwork = response.useManualNetwork;
+        formData.portsAddress.portIn = response.portIn;
+        formData.portsAddress.portOut = response.portOut;
+        formData.portsAddress.address = asString(response.address);
 
         reset(formData);
       }
@@ -478,12 +472,10 @@ export function VRCOSCSettings() {
                     setValue('useManualNetwork', true, {
                       shouldDirty: true,
                     });
-                    setValue(
-                      'manualNetwork.address',
-                      asString(target.address),
-                      { shouldDirty: true }
-                    );
-                    setValue('manualNetwork.portOut', target.portOut, {
+                    setValue('portsAddress.address', asString(target.address), {
+                      shouldDirty: true,
+                    });
+                    setValue('portsAddress.portOut', target.portOut, {
                       shouldDirty: true,
                     });
                   }}
@@ -533,7 +525,7 @@ export function VRCOSCSettings() {
                     <Input
                       type="number"
                       control={control}
-                      name="manualNetwork.portIn"
+                      name="portsAddress.portIn"
                       placeholder="9001"
                       label=""
                     />
@@ -545,7 +537,7 @@ export function VRCOSCSettings() {
                     <Input
                       type="number"
                       control={control}
-                      name="manualNetwork.portOut"
+                      name="portsAddress.portOut"
                       placeholder="9000"
                       label=""
                     />
@@ -565,7 +557,7 @@ export function VRCOSCSettings() {
                   <Input
                     type="text"
                     control={control}
-                    name="manualNetwork.address"
+                    name="portsAddress.address"
                     placeholder={l10n.getString(
                       'settings-osc-vrchat-network-address-placeholder'
                     )}

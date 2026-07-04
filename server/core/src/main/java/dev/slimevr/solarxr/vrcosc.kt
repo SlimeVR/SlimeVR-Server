@@ -2,10 +2,7 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
-import dev.slimevr.config.TapDetectionConfig
 import dev.slimevr.config.VRCOSCConfig
-import dev.slimevr.config.VRCOSCManualNetworkConfig
-import dev.slimevr.vrcosc.VRCOSCActions
 import dev.slimevr.vrcosc.VRCOSCManager
 import dev.slimevr.vrcosc.VRCOSCStatus
 import kotlinx.coroutines.FlowPreview
@@ -15,7 +12,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.sample
 import solarxr_protocol.rpc.ChangeVRCOSCSettingsRequest
-import solarxr_protocol.rpc.VRCOSCNetworkSettings
 import solarxr_protocol.rpc.VRCOSCSettingsRequest
 import solarxr_protocol.rpc.VRCOSCSettingsResponse
 import solarxr_protocol.rpc.VRCOSCStatusChangeResponse
@@ -46,13 +42,10 @@ internal class VrcOscBehaviour(
 			receiver.sendRpc(
 				VRCOSCSettingsResponse(
 					enabled = config.enabled,
-					manualNetwork = config.manualNetwork?.let { manual ->
-						VRCOSCNetworkSettings(
-							portIn = manual.portIn.toUShort(),
-							portOut = manual.portOut.toUShort(),
-							address = manual.address,
-						)
-					},
+					useManualNetwork = config.useManualNetwork,
+					portIn = config.portIn.toUShort(),
+					portOut = config.portOut.toUShort(),
+					address = config.address,
 				),
 			)
 		}
@@ -64,19 +57,16 @@ internal class VrcOscBehaviour(
 		}
 
 		receiver.rpcDispatcher.on<ChangeVRCOSCSettingsRequest> { req ->
+			val oldConfig = settings.context.state.value.data.vrcOscConfig
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
 						vrcOscConfig = VRCOSCConfig(
 							enabled = req.enabled == true,
-							manualNetwork = req.manualNetwork?.takeIf { it.portIn !== null && it.portOut !== null && it.address !== null }
-								?.let { network ->
-									VRCOSCManualNetworkConfig(
-										portIn = network.portIn?.toInt() ?: error("portIn should be set"),
-										portOut = network.portOut?.toInt() ?: error("portOut should be set"),
-										address = network.address ?: error("address should be set"),
-									)
-								},
+							useManualNetwork = req.useManualNetwork == true,
+							portIn = req.portIn?.toInt() ?: oldConfig.portIn,
+							portOut = req.portOut?.toInt() ?: oldConfig.portOut,
+							address = req.address ?: oldConfig.address,
 						),
 					)
 				},

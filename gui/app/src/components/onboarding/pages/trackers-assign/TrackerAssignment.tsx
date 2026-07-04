@@ -81,7 +81,7 @@ export function TrackersAssignPage() {
         new TapDetectionSetupModeRequestT(false)
       );
     };
-  }, [] );
+  }, []);
 
   const trackerPartGrouped = useMemo(
     () =>
