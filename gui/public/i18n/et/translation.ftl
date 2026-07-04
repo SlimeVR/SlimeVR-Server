@@ -8,8 +8,10 @@
 ## Websocket (server) status
 
 websocket-connecting = Serveriga ühendamine
-websocket-connection_lost = Ühendus serveriga tõrge!
+websocket-connection_lost = Ühendus serveriga ebaõnnetus!
+websocket-connection_lost-desc = Nähtav, et SlimeVR serveril toimus ebaõnnetus. Kontrollige logid ja käivitage programm uuesti.
 websocket-timedout = Ei saanud ühendama serveriga
+websocket-timedout-desc = Nähtav, et SlimeVR serveril toimus ebaõnnetus või aegus ära. Kontrollige logid ja käivitage programm uuesti.
 websocket-error-close = Välju SlimeVR-ist
 websocket-error-logs = Ava logide kaust
 
@@ -27,6 +29,7 @@ tips-do_not_move_heels = Veenduge, et teie kannad ei liigu salvestamise ajal!
 tips-file_select = Pukseerige failid kasutamiseks, või <u>sirvi</u>.
 tips-tap_setup = Saate jälgija valimiseks menüüst valimise asemel aeglaselt oma jälgijat 2 korda puudutada.
 tips-turn_on_tracker = Kas kasutate ofitsiaalseid SlimeVR jälgijaid? Ärge unustage <b><em>käivitama oma jälgijat</em></b> pärast ühendamist arvutiga!
+tips-failed_webgl = WebGL initsialiseerimine ebaõnnestus.
 
 ## Units
 
@@ -93,11 +96,13 @@ body_part-RIGHT_LITTLE_DISTAL = Parem väike sõrm (distaal)
 
 board_type-UNKNOWN = Tundmatu
 board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Custom Board
 board_type-WROOM32 = WROOM32
 board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
 board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
@@ -109,6 +114,7 @@ board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
 board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 board_type-GESTURES = Žestid
 board_type-ESP32S3_SUPERMINI = ESP32-S3 Supermini
 board_type-SLIMEVR_BUTTERFLY_DEV = SlimeVR Dev Butterfly
@@ -675,6 +681,7 @@ onboarding-quiz-runtime-answer-steamvr = SteamVR
 onboarding-quiz-runtime-answer-standalone = Standalone
 onboarding-quiz-mocap_preferences-playspace-sitting = Istumine
 onboarding-quiz-mocap_preferences-playspace-standing = Seismine
+onboarding-quiz-mocap_preferences-head_tracker-title = Kas kannate peas jälgijat või VR-peakomplekti?
 onboarding-quiz-mocap_preferences-head_tracker-yes = Jah
 onboarding-quiz-mocap_preferences-head_tracker-no = Ei
 
