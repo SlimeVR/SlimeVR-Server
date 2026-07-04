@@ -1,6 +1,7 @@
 package dev.slimevr.resets
 
 import dev.slimevr.AppLogger
+import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.ResetsConfig
@@ -121,7 +122,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 	}
 
 	companion object {
-		fun create(server: VRServer, scope: CoroutineScope, settings: Settings): ResetsManager {
+		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope): ResetsManager {
 			val context = Context.create(
 				initialState = ResetsState(
 					canDoYawReset = false,
@@ -132,7 +133,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),
 				name = "ResetsManager",
 			)
-			return ResetsManager(context, server, settings)
+			return ResetsManager(context, ctx.server, ctx.config.settings)
 		}
 	}
 }

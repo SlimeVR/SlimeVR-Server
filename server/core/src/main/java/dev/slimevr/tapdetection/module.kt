@@ -1,9 +1,11 @@
 package dev.slimevr.tapdetection
 
+import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.resets.ResetsManager
 import kotlinx.coroutines.CoroutineScope
 import kotlin.collections.listOf
 
@@ -18,11 +20,11 @@ sealed interface TapDetectionActions {
 typealias TapDetectionContext = Context<TapDetectionState, TapDetectionActions>
 typealias TapDetectionBehaviour = Behaviour<TapDetectionState, TapDetectionActions, TapDetectionManager>
 
-class TapDetectionManager(val context: TapDetectionContext, val server: VRServer) {
+class TapDetectionManager(val context: TapDetectionContext, val server: VRServer, val resetsManager: ResetsManager, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
 
 	companion object {
-		fun create(server: VRServer, scope: CoroutineScope, settings: Settings): TapDetectionManager {
+		fun create(ctx: Phase1ContextProvider, resetsManager: ResetsManager, scope: CoroutineScope): TapDetectionManager {
 			val context = Context.create(
 				initialState = TapDetectionState(
 					setupMode = false,
@@ -31,7 +33,7 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 				behaviours = listOf(TapDetectionBasicBehaviour()),
 				name = "TapDetectionManager",
 			)
-			return TapDetectionManager(context, server)
+			return TapDetectionManager(context, ctx.server, resetsManager, ctx.config.settings)
 		}
 	}
 }

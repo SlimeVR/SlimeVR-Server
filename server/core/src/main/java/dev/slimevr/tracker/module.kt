@@ -106,7 +106,6 @@ class Tracker(
 				TrackerBasicBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerTPSBehaviour(),
-				TrackerTapDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
 			)
 			val context = Context.create(

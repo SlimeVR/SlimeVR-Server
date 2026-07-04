@@ -93,8 +93,8 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		scope = this,
 		oscQueryAddress = resolveDesktopOscQueryAddress(),
 	)
-	val resetsManager = ResetsManager.create(server = server, scope = this, settings = config.settings)
-	val tapDetectionManager = TapDetectionManager.create(server = server, scope = this, settings = config.settings)
+	val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
+	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
 
 	val appContext = AppContext(
 		server = server,
