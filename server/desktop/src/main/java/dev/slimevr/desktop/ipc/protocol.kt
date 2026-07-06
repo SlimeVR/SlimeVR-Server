@@ -59,6 +59,7 @@ suspend fun startBindingProvider() = withContext(Dispatchers.IO) {
 		return@withContext
 	}
 
+	AppLogger.steamvr.info("Found bindings provider at $path")
 	val proc = try {
 		ProcessBuilder(path.toString()).start()
 	} catch (e: Exception) {
