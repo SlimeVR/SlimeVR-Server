@@ -1,5 +1,9 @@
 package dev.slimevr
 
+import com.sun.jna.platform.win32.Kernel32
+import com.sun.jna.platform.win32.Kernel32Util
+import com.sun.jna.platform.win32.Shell32
+import com.sun.jna.platform.win32.WinUser
 import java.io.File
 import java.nio.file.Path
 import java.util.*
@@ -35,6 +39,40 @@ fun getJavaExecutable(forceConsole: Boolean): String {
 
 	if (CURRENT_PLATFORM == Platform.WINDOWS) return bin + "java.exe"
 	return bin + "java"
+}
+
+fun tryOpenUri(uri: String) {
+	when (CURRENT_PLATFORM) {
+		Platform.LINUX -> {
+			ProcessBuilder("xdg-open", uri).start()
+		}
+
+		Platform.WINDOWS -> {
+			val ret = Shell32.INSTANCE.ShellExecute(
+				null,
+				null,
+				uri,
+				null,
+				null,
+				WinUser.SW_SHOWNORMAL,
+			).toLong()
+			// According to Win32 documentation:
+			// If the function succeeds, it returns a value greater than 32.
+			// If the function fails, it returns an error value that indicates the cause of the failure.
+			if (ret <= 32) {
+				val err = Kernel32.INSTANCE.GetLastError()
+				throw RuntimeException(
+					"Failed to open URI $uri: ${
+						Kernel32Util.formatMessage(
+							err,
+						)
+					} (ret $ret)",
+				)
+			}
+		}
+
+		else -> Unit
+	}
 }
 
 fun getSocketDirectory(): String {

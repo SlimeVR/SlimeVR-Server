@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm")
+	kotlin("plugin.serialization")
 	application
 	id("com.gradleup.shadow")
 	id("com.github.gmazzo.buildconfig")
@@ -80,6 +81,7 @@ dependencies {
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 	implementation("com.fazecast:jSerialComm:2.11.3") {
 		exclude(group = "com.fazecast", module = "android")
 	}
@@ -87,6 +89,8 @@ dependencies {
 	implementation("io.klogging:klogging:0.11.7")
 
 	val ktorVersion = "3.4.1"
+	implementation("io.ktor:ktor-client-core:$ktorVersion")
+	implementation("io.ktor:ktor-client-cio:$ktorVersion")
 	implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
 	implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 	implementation("io.ktor:ktor-server-websockets-jvm:$ktorVersion")

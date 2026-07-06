@@ -48,24 +48,6 @@ private fun trackerStatesFlow(server: VRServer): Flow<List<TrackerState>> = allC
 
 private fun deviceStatesFlow(server: VRServer): Flow<List<DeviceState>> = allContextStates(server, { state -> state.devices.values }) { device -> device.context.state }
 
-class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
-	override fun observe(receiver: TrackingChecklist) {
-		server.context.state
-			.map { state ->
-				val connected = state.drivers.isNotEmpty()
-				TrackingChecklistStep(
-					valid = connected,
-					enabled = true,
-					ignorable = true,
-					extraData = if (!connected) TrackingChecklistSteamVRDisconnected() else null,
-				)
-			}
-			.distinctUntilChanged()
-			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STEAMVR_DISCONNECTED, step)) }
-			.launchIn(receiver.context.scope)
-	}
-}
-
 class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
 	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
 		// FIXME: Most likely incomplete

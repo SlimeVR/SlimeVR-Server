@@ -91,11 +91,12 @@ class SolarXRBridge(
 			id: Int,
 			appContext: AppContextProvider,
 			scope: CoroutineScope,
+			extraBehaviours: (AppContextProvider) -> List<SolarXRBridgeBehaviour> = { emptyList() },
 		): SolarXRBridge {
 			val managedContext = ManagedContext.create(
 				initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
 				scope = scope,
-				behaviours = buildBehaviours(appContext),
+				behaviours = buildBehaviours(appContext) + extraBehaviours(appContext),
 				name = "SolarXR[$id]",
 			)
 

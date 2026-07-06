@@ -26,25 +26,24 @@ class ChecklistBaseBehaviour : TrackingChecklistBehaviourType {
 
 class TrackingChecklist(
 	val context: TrackingChecklistContext,
+	val extraBehaviours: (AppContextProvider) -> List<TrackingChecklistBehaviourType>,
 ) {
 	fun startObserving(appContext: AppContextProvider) {
 		val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
-			if (appContext.featureFlags.supportsSteamVR) {
-				add(SteamVRCheckBehaviour(appContext.server))
-			}
 			add(HMDCheckBehaviour(appContext.server))
 			add(TrackerRestCheckBehaviour(appContext.server))
 			add(TrackerErrorCheckBehaviour(appContext.server))
 
 			appContext.vrcConfigManager?.let { add(VRChatSettingsCheckBehaviour(appContext.server, appContext.skeleton, it)) }
 			appContext.networkProfileManager?.let { add(NetworkProfileCheckBehaviour(it)) }
-		}
+		} +
+			extraBehaviours(appContext)
 		context.behaviours.addAll(stepBehaviours)
 		context.observeAll(this)
 	}
 
 	companion object {
-		fun create(scope: CoroutineScope): TrackingChecklist {
+		fun create(scope: CoroutineScope, extraBehaviours: (AppContextProvider) -> List<TrackingChecklistBehaviourType> = { emptyList() }): TrackingChecklist {
 			val initialBehaviours = listOf(ChecklistBaseBehaviour())
 			val context = Context.create(
 				initialState = TrackingChecklistState(),
@@ -52,7 +51,7 @@ class TrackingChecklist(
 				behaviours = initialBehaviours,
 				name = "TrackingChecklist",
 			)
-			val checklist = TrackingChecklist(context)
+			val checklist = TrackingChecklist(context, extraBehaviours)
 			return checklist
 		}
 	}

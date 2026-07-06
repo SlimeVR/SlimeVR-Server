@@ -13,6 +13,7 @@ object AppLogger {
 	val udp = logger("UDPConnection")
 	val ipc = logger("IPC")
 	val solarxr = logger("SolarXR")
+	val checklist = logger("Checklist")
 	val steamvr = logger("SteamVR")
 	val hid = logger("HID")
 	val serial = logger("Serial")

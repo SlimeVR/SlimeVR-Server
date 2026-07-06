@@ -20,6 +20,7 @@ import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
 import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
 import dev.slimevr.desktop.serial.DesktopFirmwareFlasher
 import dev.slimevr.desktop.serial.createDesktopSerialServer
+import dev.slimevr.desktop.trackingchecklist.SteamVRCheckBehaviour
 import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
 import dev.slimevr.desktop.vrchat.resolveDesktopOscQueryAddress
@@ -84,7 +85,11 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 	val skeleton = Skeleton.create(scope = this, ctx = phase1)
 	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
-	val trackingChecklist = TrackingChecklist.create(scope = this)
+	val trackingChecklist = TrackingChecklist.create(scope = this, extraBehaviours = { appContext ->
+		buildList {
+			add(SteamVRCheckBehaviour(appContext.server))
+		}
+	})
 	val udpServer = UdpServer.create(scope = this, addressResolver = ::resolveDesktopUdpAddress)
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(ctx = phase1, skeleton = skeleton, scope = this)
