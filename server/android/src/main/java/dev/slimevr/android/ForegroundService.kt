@@ -146,20 +146,20 @@ class ForegroundService : Service() {
 		val trackingChecklist = TrackingChecklist.create(scope = scope)
 		val udpServer = UdpServer.create(scope = scope, addressResolver = ::resolveAndroidUdpAddress)
 		val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = scope)
-		val vmcManager = VMCManager.create(ctx = phase1, skeleton = skeleton, scope = this)
+		val vmcManager = VMCManager.create(ctx = phase1, skeleton = skeleton, scope = scope)
 		val vrcOscManager = VRCOSCManager.create(
 			ctx = phase1,
 			scope = scope,
 			oscQueryAddress = resolveAndroidOscQueryAddress(),
 		)
-		val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
-		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
+		val resetsManager = ResetsManager.create(ctx = phase1, scope = scope)
+		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
 
 		val appContext = AppContext(
 			server = server,
 			config = config,
 			serialServer = serialServer,
-			featureFlags = FeatureFlags(supportsSteamVR = false),
+			featureFlags = FeatureFlags(),
 			skeleton = skeleton,
 			firmwareManager = firmwareManager,
 			vrcConfigManager = null,

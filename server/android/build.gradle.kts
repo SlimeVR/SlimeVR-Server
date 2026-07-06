@@ -32,10 +32,10 @@ java {
 val copyGuiAssets = tasks.register<Copy>("copyGuiAssets") {
 	val target = layout.projectDirectory.dir("src/main/assets/web-gui")
 	delete(target)
-	from(rootProject.layout.projectDirectory.dir("gui/electron/out/renderer"))
+	from(rootProject.layout.projectDirectory.dir("gui/app/dist"))
 	into(target)
 	if (inputs.sourceFiles.isEmpty) {
-		throw GradleException("You need to run \"pnpm run build\" on the gui folder first!")
+		throw GradleException("You need to run \"pnpm run build\" in the gui/app folder first!")
 	}
 }
 tasks.preBuild {
