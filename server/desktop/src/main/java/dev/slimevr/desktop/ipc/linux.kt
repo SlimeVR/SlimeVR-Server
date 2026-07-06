@@ -81,6 +81,7 @@ private suspend fun acceptUnixClients(
 	handle: suspend (SocketChannel) -> Unit,
 ) = withContext(Dispatchers.IO) {
 	val path = Path(getSocketDirectory(), name)
+	AppLogger.ipc.info("Creating $name socket at $path")
 	val file = path.toFile()
 	if (file.exists()) {
 		check(!isSocketInUse(path.toString())) {
