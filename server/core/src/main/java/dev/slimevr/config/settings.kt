@@ -61,6 +61,7 @@ data class VMCConfig(
 )
 
 const val DEFAULT_VRC_OSC_PORT_OUT: Int = 9000
+
 @Serializable
 data class VRCOSCConfig(
 	val enabled: Boolean = false,
