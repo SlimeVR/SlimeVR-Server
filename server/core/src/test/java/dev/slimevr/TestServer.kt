@@ -27,6 +27,7 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
+import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
@@ -86,7 +87,7 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 	return skeleton
 }
 
-fun buildTestResetsManager(server: VRServer, scope: CoroutineScope): ResetsManager {
+fun buildTestResetsManager(server: VRServer, settings: Settings, scope: CoroutineScope): ResetsManager {
 	val context = Context.create(
 		initialState = ResetsState(
 			canDoYawReset = true,
@@ -97,7 +98,7 @@ fun buildTestResetsManager(server: VRServer, scope: CoroutineScope): ResetsManag
 		behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),
 		name = "TestResetsManager",
 	)
-	val resetsManager = ResetsManager(context, server)
+	val resetsManager = ResetsManager(context, server, settings)
 	resetsManager.startObserving()
 	return resetsManager
 }
@@ -142,6 +143,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val vmcManager: VMCManager get() = error("not used in test")
 	override val vrcOscManager: VRCOSCManager get() = error("not used in test")
 	override val resetsManager: ResetsManager get() = error("not used in test")
+	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }

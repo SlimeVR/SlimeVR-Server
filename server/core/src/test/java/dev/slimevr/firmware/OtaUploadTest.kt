@@ -15,7 +15,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.readByteArray
-import solarxr_protocol.datatypes.DeviceId
 import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -105,7 +104,7 @@ class OtaUploadTest {
 		val job = backgroundScope.safeLaunch {
 			result = waitForReconnected(
 				vrServer,
-				DeviceId(device.context.state.value.id.toUByte()),
+				device.context.state.value.id.toUShort(),
 				timeoutMs = 1_000,
 			)
 		}
