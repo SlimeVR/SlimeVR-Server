@@ -8,9 +8,11 @@ import dev.slimevr.degreeToRadian
 import dev.slimevr.quaternionApproxEqual
 import dev.slimevr.quaternionAssertEquals
 import dev.slimevr.quaternionAssertNotEquals
+import dev.slimevr.vectorAssertEquals
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 import kotlin.math.abs
@@ -323,6 +325,52 @@ class SessionCalibrationTest {
 			estimateHeadingAlign.twinNearest(headingAlign),
 			message = "Estimated heading alignment is wrong",
 		)
+	}
+
+	@TestFactory
+	fun makeRawAccelerationTests(): List<DynamicTest> = heading.flatMap { hC ->
+		attitude.flatMap { aA ->
+			heading.map { hA ->
+				DynamicTest.dynamicTest(
+					"( hC: $hC, aA: $aA, hA: $hA )",
+				) {
+					testMakeRawAcceleration(Vector3.POS_X, Quaternion.IDENTITY, hC, aA, hA)
+				}
+			}
+		}
+	}
+
+	/**
+	 * Prove that we can transform acceleration to world space from tracker space, and
+	 * back to tracker space from world space.
+	 */
+	fun testMakeRawAcceleration(
+		acceleration: Vector3,
+		boneOrientation: Quaternion,
+		headingCorrect: Quaternion,
+		attitudeAlign: Quaternion,
+		headingAlign: Quaternion,
+	) {
+		val rawOrientation = undoCalibration(
+			boneOrientation,
+			headingCorrect,
+			attitudeAlign,
+			headingAlign,
+		)
+		val rawAcceleration = undoCalibration(
+			acceleration,
+			rawOrientation,
+			headingCorrect,
+			headingAlign,
+		)
+		val newAcceleration = applyCalibration(
+			rawAcceleration,
+			rawOrientation,
+			headingCorrect,
+			headingAlign,
+		)
+		// Now that we re-applied the calibrations, let's see if it matches!
+		vectorAssertEquals(acceleration, newAcceleration)
 	}
 
 	companion object {
