@@ -26,7 +26,7 @@ Before contributing to the server, read [server/README.md](server/README.md) for
 
 The Java code is built with `gradle`, a CLI tool that manages java projects and their
 dependencies.
-- You can run the server by running `./gradlew run` in your IDE's terminal.
+- You can run the server by running `./gradlew :server:desktop:run` in your IDE's terminal.
 - To compile the code, run `./gradlew shadowJar`. The result will
 be at `server/desktop/build/libs/slimevr.jar` (you can ignore `server.jar`).
 
@@ -39,7 +39,7 @@ be at `server/desktop/build/libs/slimevr.jar` (you can ignore `server.jar`).
 - Make sure you're at the root of the repository.
 - Run `pnpm i` in your IDE's terminal to download and install dependencies.
 - To launch the GUI in dev mode, run `pnpm gui`.
-- Finally, to compile for production, run `pnpm package:build`. 
+- Finally, to compile for production, run `pnpm package:build` under `gui/electron`. 
 The result will be in `gui/dist/artifacts/`. Content will change depending on the platform.
 
 ## Code style
