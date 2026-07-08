@@ -19,6 +19,13 @@ data class VelocityState(
 	val acceleration: Vector3,
 )
 
+data class COMState(
+	val time: ComparableTimeMark,
+	val position: Vector3,
+	val velocity: Vector3,
+	val acceleration: Vector3,
+)
+
 val VELOCITY_BODY_PARTS = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
 val FOOT_VELOCITY_SENSITIVITY = 1f
@@ -50,6 +57,7 @@ val BODY_PART_MASSES = mapOf(
 	BodyPart.RIGHT_LOWER_LEG to 0.0620f,
 )
 
+// TODO Implement feet accel/velocity sensitivity calculation
 fun shouldLock(
 	velocity: VelocityState,
 	thresholdMultiplier: Float,
@@ -59,8 +67,11 @@ fun shouldLock(
 	(velocity.position.y - FLOOR_LEVEL <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier) &&
 	(velocity.acceleration.len() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier)
 
-fun centerOfMass(bones: Map<BodyPart, BoneState>) {
-	// TODO Compute center of mass using BODY_PART_MASSES
+// TODO Use this to calculate feet pressure
+fun centerOfMass(bones: Map<BodyPart, BoneState>): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.NULL) { acc: Vector3, massEntry ->
+	val bone = bones[massEntry.key] ?: return@fold acc
+	val boneCenter = (bone.headPosition + bone.tailPosition) / 2f
+	return@fold acc + (boneCenter * massEntry.value)
 }
 
 // Probably not a SkeletonProcessor, maybe computed processor or smth
@@ -75,12 +86,55 @@ class SkatingCorrectionProcessor : SkeletonProcessor {
 	val velocity: MutableMap<BodyPart, VelocityState> = mutableMapOf()
 	val lockStates: MutableMap<BodyPart, Boolean> = mutableMapOf()
 
+	var comState: COMState? = null
+
 	override fun process(state: SkeletonState): SkeletonState {
+		val curTime = TimeSource.Monotonic.markNow()
+
+		val lastComState = comState
+		val com = centerOfMass(curPositions)
+		val newComState = if (lastComState != null) {
+			val deltaT = (curTime - lastComState.time).toDouble(DurationUnit.SECONDS).toFloat()
+				.coerceAtLeast(0.001f)
+			val comVelocity = (com - lastComState.position) / deltaT
+			val comAcceleration = (comVelocity - lastComState.velocity) / deltaT
+			COMState(
+				curTime,
+				com,
+				comVelocity,
+				comAcceleration,
+			)
+		} else {
+			COMState(
+				curTime,
+				com,
+				Vector3.NULL,
+				Vector3.NULL,
+			)
+		}
+		comState = newComState
+
 		for (bodyPart in VELOCITY_BODY_PARTS) {
-			// Pull data
 			val curBone = curPositions[bodyPart] ?: continue
-			val curTime = TimeSource.Monotonic.markNow()
-			val lastVel = velocity.getOrElse(bodyPart) {
+			val lastVel = velocity[bodyPart]
+
+			// Calculate velocity state
+			val newVel = if (lastVel != null) {
+				val deltaP = curBone.tailPosition - lastVel.position
+				val deltaT =
+					(curTime - lastVel.time).toDouble(DurationUnit.SECONDS).toFloat()
+						.coerceAtLeast(0.001f)
+				VelocityState(
+					curTime,
+					curBone.tailPosition,
+					curBone.rotation,
+					deltaP.len(),
+					deltaP / deltaT,
+					// May need to be `angleToR` while polarity tracking is not implemented
+					lastVel.rotation.angleToQ(curBone.rotation) / deltaT,
+					Vector3.NULL,
+				)
+			} else {
 				VelocityState(
 					curTime,
 					curBone.tailPosition,
@@ -91,24 +145,9 @@ class SkatingCorrectionProcessor : SkeletonProcessor {
 					Vector3.NULL,
 				)
 			}
-
-			// Calculate velocity
-			val deltaP = curBone.tailPosition - lastVel.position
-			val deltaT =
-				(curTime - lastVel.time).toDouble(DurationUnit.SECONDS).toFloat()
-			val newVel = VelocityState(
-				curTime,
-				curBone.tailPosition,
-				curBone.rotation,
-				deltaP.len(),
-				deltaP / deltaT,
-				// May need to be `angleToR` while polarity tracking is not implemented
-				lastVel.rotation.angleToQ(curBone.rotation) / deltaT,
-				Vector3.NULL,
-			)
 			velocity[bodyPart] = newVel
 
-			// Consider locking
+			// Consider locking BodyPart
 			val wasLocked = lockStates.getOrDefault(bodyPart, false)
 			val isLocked = shouldLock(
 				newVel,
