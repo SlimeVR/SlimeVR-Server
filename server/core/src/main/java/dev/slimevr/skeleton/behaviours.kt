@@ -124,9 +124,21 @@ class ComputedSkeletonBehaviour(
 					val targetState = receiver.context.state.value
 					val processed = processors
 						.filter { processor -> processor.enabled }
-						.fold(targetState) { state, processor -> processor.process(state) }
+						.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
+
 					val rootHead = Vector3(0f, targetState.skeletonHeight, 0f) // FIXME WRONG
-					receiver.computed.value = buildBones(processed, rootHead = rootHead)
+					val fk = buildBones(processed, rootHead = rootHead)
+
+//					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
+//
+//					val targets = targetProcessors
+//						.filter { targetProcessors -> targetProcessors.enabled }
+//						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
+//
+//					val ikOutput = solver.solve(fk, targets)
+
+//					receiver.computed.value = ikOutput
+					receiver.computed.value = fk
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {
