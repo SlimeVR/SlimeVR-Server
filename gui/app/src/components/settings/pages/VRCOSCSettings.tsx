@@ -388,7 +388,11 @@ export function VRCOSCSettings() {
   };
 
   useEffect(() => {
-    const subscription = watch(() => handleSubmit(onSubmit)());
+    const subscription = watch((_value, { type }) => {
+      if (type === 'change') {
+        handleSubmit(onSubmit)();
+      }
+    });
     return () => subscription.unsubscribe();
   }, []);
 
@@ -403,16 +407,18 @@ export function VRCOSCSettings() {
   useRPCPacket(
     RpcMessage.VRCOSCSettingsResponse,
     (response: VRCOSCSettingsResponseT) => {
-      const formData = defaultVRCOSCSettings;
-      if (response) {
-        formData.enabled = response.enabled;
-        formData.useManualNetwork = response.useManualNetwork;
-        formData.portsAddress.portIn = response.portIn;
-        formData.portsAddress.portOut = response.portOut;
-        formData.portsAddress.address = asString(response.address);
+      const formData: VRCOSCSettingsForm = {
+        ...defaultVRCOSCSettings,
+        portsAddress: { ...defaultVRCOSCSettings.portsAddress },
+      };
 
-        reset(formData);
-      }
+      formData.enabled = response.enabled;
+      formData.useManualNetwork = response.useManualNetwork;
+      formData.portsAddress.portIn = response.portIn;
+      formData.portsAddress.portOut = response.portOut;
+      formData.portsAddress.address = asString(response.address);
+
+      reset(formData);
     }
   );
 
