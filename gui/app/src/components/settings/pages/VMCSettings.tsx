@@ -52,7 +52,7 @@ export function VRMFileUpload() {
   const { l10n } = useLocalization();
   const [modelName, setModelName] = useState<string | null>(null);
 
-  const { control, watch } = useForm<{
+  const { control, watch, getValues } = useForm<{
     vrmJson?: FileList;
   }>({
     defaultValues: { vrmJson: undefined },
@@ -60,9 +60,8 @@ export function VRMFileUpload() {
     mode: 'onChange',
   });
 
-  const vrmJson = watch('vrmJson');
-
   const updateVRMJson = async () => {
+    const vrmJson = getValues('vrmJson');
     const req = new ChangeVRMSettingsRequestT();
     if (vrmJson !== undefined) {
       if (vrmJson.length > 0) {
@@ -80,8 +79,13 @@ export function VRMFileUpload() {
   };
 
   useEffect(() => {
-    updateVRMJson();
-  }, [vrmJson]);
+    const subscription = watch((_value, { name, type }) => {
+      if (type === 'change') {
+        updateVRMJson();
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     sendRPCPacket(
@@ -160,26 +164,32 @@ export function VMCSettings() {
   };
 
   useEffect(() => {
-    const subscription = watch(() => handleSubmit(onSubmit)());
+    const subscription = watch((_value, { type }) => {
+      if (type === 'change') {
+        handleSubmit(onSubmit)();
+      }
+    });
     return () => subscription.unsubscribe();
   }, []);
 
   useRPCPacket(
     RpcMessage.VMCOSCSettingsResponse,
     (settings: VMCOSCSettingsResponseT) => {
-      const formData: VMCSettingsForm = defaultVMCSettings;
-      if (settings) {
-        formData.enabled = settings.enabled;
-        if (settings.portIn) formData.portsAddress.portIn = settings.portIn;
-        if (settings.portOut) formData.portsAddress.portOut = settings.portOut;
-        if (settings.address)
-          formData.portsAddress.address = settings.address.toString();
+      const formData: VMCSettingsForm = {
+        ...defaultVMCSettings,
+        portsAddress: { ...defaultVMCSettings.portsAddress },
+      };
 
-        formData.anchorHip = settings.anchorHip;
-        formData.mirrorTracking = settings.mirrorTracking;
+      formData.enabled = settings.enabled;
+      if (settings.portIn) formData.portsAddress.portIn = settings.portIn;
+      if (settings.portOut) formData.portsAddress.portOut = settings.portOut;
+      if (settings.address)
+        formData.portsAddress.address = settings.address.toString();
 
-        reset(formData);
-      }
+      formData.anchorHip = settings.anchorHip;
+      formData.mirrorTracking = settings.mirrorTracking;
+
+      reset(formData);
     }
   );
 
