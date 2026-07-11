@@ -8,6 +8,9 @@ import convert from 'convert';
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocalization } from '@fluent/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { string, object } from 'yup';
+
 function IncrementButton({
   value,
   unit,
@@ -125,6 +128,7 @@ export function HeightSelectionInput({
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
   const isSubmitting = useRef(false);
+  const footRegex = /^(\d+)(?:[′'.,\s]+(\d+(?:\.\d+)?)?["”]?)?$/;
 
   const formattedHeight = useMemo(() => {
     if (!hmdHeight) return '--';
@@ -148,73 +152,66 @@ export function HeightSelectionInput({
     height: formattedHeight,
   };
 
-  const { reset, control, watch, getValues, setError, clearErrors } = useForm<{
+  const { reset, control, watch, getValues } = useForm<{
     height: string;
   }>({
     defaultValues,
     mode: 'onChange',
     reValidateMode: 'onChange',
+
+    resolver: yupResolver(
+      object({
+        height: string()
+          .defined()
+          .test(
+            'format',
+            l10n.getString('onboarding-user_height-error_format'),
+            function (value) {
+              if (unit === 'meter') {
+                return !isNaN(Number(value.replace(/[ m]/g, '')));
+              } else {
+                return footRegex.test(value);
+              }
+            }
+          )
+          .test(
+            'bounds',
+            l10n.getString('onboarding-user_height-error_bounds'),
+            function (value) {
+              if (unit === 'meter') {
+                return Number(value.replace(/[ m]/g, '')) <= 2.56;
+              } else {
+                const match = value.match(footRegex);
+                if (!match) return;
+                const feet = Number(match[1]);
+                const inches = Number(match[2] || 0);
+                return !(feet > 8 || (feet === 8 && inches > 4));
+              }
+            }
+          ),
+      })
+    ),
   });
 
-  const onSubmit = (values: { height: string }) => {
-    let newFullHeight: number;
-    clearErrors('height');
+  const onSubmit = async (values: { height: string }) => {
+    console.log('asd');
 
-    // convert formatted height to raw number in meters
-    if (unit == 'meter') {
-      newFullHeight = Number(values.height.replace(/[ m]/g, ''));
+    if (unit === 'meter') {
+      const newFullHeight = Number(values.height.replace(/[ m]/g, ''));
 
-      if (isNaN(newFullHeight)) {
-        setTimeout(() => {
-          reset({ height: formattedHeight });
-          setError('height', {
-            message: l10n.getString('onboarding-user_height-error_format'),
-          });
-        }, 0);
-      } else if (newFullHeight > 2.56) {
-        setTimeout(() => {
-          reset({ height: formattedHeight });
-          setError('height', {
-            message: l10n.getString('onboarding-user_height-error_bounds'),
-          });
-        }, 0);
-      } else if (newFullHeight != 0) {
-        isSubmitting.current = true;
-        setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
-      }
+      isSubmitting.current = true;
+      //setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
     } else {
-      const match = values.height.match(
-        /^(\d+)(?:[′'.,\s]+(\d+(?:\.\d+)?)?["”]?)?$/ // regex to convert the formatted text to feet and inches individually in an array
-      );
-
-      if (!values.height) return; // this is to allow for blank inputs, so that the user can type their height from scratch
-
-      if (!match) {
-        setTimeout(() => {
-          reset({ height: formattedHeight });
-          setError('height', {
-            message: l10n.getString('onboarding-user_height-error_format'),
-          });
-        }, 0);
-        return;
-      }
+      const match = values.height.match(footRegex);
+      if (!match) return;
 
       const feet = Number(match[1]);
       const inches = Number(match[2] || 0);
-      newFullHeight = convert(feet + inches / 12, 'foot').to('meter');
 
-      // bounds detection
-      if ((feet > 8 && inches > 4) || feet > 8) {
-        setTimeout(() => {
-          reset({ height: formattedHeight });
-          setError('height', {
-            message: l10n.getString('onboarding-user_height-error_bounds'),
-          });
-        }, 0);
-      } else if (feet != 0) {
-        isSubmitting.current = true;
-        setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
-      }
+      const newFullHeight = convert(feet + inches / 12, 'foot').to('meter');
+
+      isSubmitting.current = true;
+      //setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
     }
   };
 
@@ -332,7 +329,7 @@ export function HeightSelectionInput({
           variant="secondary"
           className="text-center !text-3xl !font-bold !w-[210px]"
           errorClassName="text-center top-[47px] "
-          onBlur={() => clearErrors('height')}
+          onBlur={() => reset({ height: formattedHeight })}
         />
         <div className="w-[70px] xs:w-20 h-full gap-2 grid p-1">
           <UnitSelector
