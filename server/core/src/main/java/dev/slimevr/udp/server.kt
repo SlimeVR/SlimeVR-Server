@@ -49,7 +49,7 @@ class UdpServer(val context: UdpServerContext, private val addressResolver: (Ine
 	fun startReceiving(appContext: AppContextProvider, scope: CoroutineScope) {
 		if (receiveJob != null) return
 		receiveJob = scope.safeLaunch {
-			val port = appContext.config.settings.context.state.value.data.trackerPort
+			val port = appContext.config.settings.context.state.value.data.trackersConfig.trackerPort
 			val selectorManager = SelectorManager(Dispatchers.IO)
 			val socket = aSocket(selectorManager).udp().bind(port = port)
 			this@UdpServer.selectorManager = selectorManager

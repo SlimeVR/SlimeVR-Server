@@ -31,16 +31,16 @@ type SkeletonForm = {
     toeSnap: boolean;
     footPlant: boolean;
     mocapMode: boolean;
-    usePosition: boolean;
+    useTrackerPositions: boolean;
     enforceConstraints: boolean;
     correctConstraints: boolean;
   };
   ratios: {
-    imputeSpineFromUpperLower: number;
+    imputeSpineFromUpperToLower: number;
     imputeSpineCurvature: number;
-    interpHipLegs: number;
-    interpKneeTrackerAnkle: number;
-    interpKneeAnkle: number;
+    interpolateHipWithKnees: number;
+    interpolateComputedKneesWithAnkles: number;
+    interpolateKneesWithAnkles: number;
     skatingCorrectionStrength: number;
   };
   filtering: {
@@ -66,16 +66,16 @@ const defaultValues: SkeletonForm = {
     toeSnap: false,
     footPlant: true,
     mocapMode: false,
-    usePosition: true,
+    useTrackerPositions: true,
     enforceConstraints: true,
     correctConstraints: true,
   },
   ratios: {
-    imputeSpineFromUpperLower: 0.5,
+    imputeSpineFromUpperToLower: 0.5,
     imputeSpineCurvature: 0.5,
-    interpHipLegs: 0.25,
-    interpKneeTrackerAnkle: 0.85,
-    interpKneeAnkle: 0.2,
+    interpolateHipWithKnees: 0.25,
+    interpolateComputedKneesWithAnkles: 0.85,
+    interpolateKneesWithAnkles: 0.2,
     skatingCorrectionStrength: 0.3,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
@@ -110,17 +110,20 @@ export function TrackingSettings() {
     toggles.toeSnap = values.toggles.toeSnap;
     toggles.footPlant = values.toggles.footPlant;
     toggles.mocapMode = values.toggles.mocapMode;
-    toggles.usePosition = values.toggles.usePosition;
+    toggles.useTrackerPositions = values.toggles.useTrackerPositions;
     toggles.enforceConstraints = values.toggles.enforceConstraints;
     toggles.correctConstraints = values.toggles.correctConstraints;
     settingsReq.toggles = toggles;
 
     const ratios = new SkeletonRatiosT();
-    ratios.imputeSpineFromUpperLower = values.ratios.imputeSpineFromUpperLower;
+    ratios.imputeSpineFromUpperToLower =
+      values.ratios.imputeSpineFromUpperToLower;
     ratios.imputeSpineCurvature = values.ratios.imputeSpineCurvature;
-    ratios.interpHipLegs = values.ratios.interpHipLegs;
-    ratios.interpKneeTrackerAnkle = values.ratios.interpKneeTrackerAnkle;
-    ratios.interpKneeAnkle = values.ratios.interpKneeAnkle;
+    ratios.interpolateHipWithKnees = values.ratios.interpolateHipWithKnees;
+    ratios.interpolateComputedKneesWithAnkles =
+      values.ratios.interpolateComputedKneesWithAnkles;
+    ratios.interpolateKneesWithAnkles =
+      values.ratios.interpolateKneesWithAnkles;
     ratios.skatingCorrectionStrength = values.ratios.skatingCorrectionStrength;
     settingsReq.ratios = ratios;
 
@@ -415,7 +418,7 @@ export function TrackingSettings() {
             variant="toggle"
             outlined
             control={control}
-            name="toggles.usePosition"
+            name="toggles.useTrackerPositions"
             label={l10n.getString(
               'settings-general-fk_settings-ik-use_position'
             )}
@@ -461,7 +464,7 @@ export function TrackingSettings() {
         <div className="grid sm:grid-cols-2 gap-3 pt-2">
           <NumberSelector
             control={control}
-            name="ratios.imputeSpineFromUpperLower"
+            name="ratios.imputeSpineFromUpperToLower"
             label={l10n.getString(
               'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_lower'
             )}
@@ -483,7 +486,7 @@ export function TrackingSettings() {
           />
           <NumberSelector
             control={control}
-            name="ratios.interpHipLegs"
+            name="ratios.interpolateHipWithKnees"
             label={l10n.getString(
               'settings-general-fk_settings-skeleton_settings-interp_hip_legs'
             )}
@@ -494,7 +497,7 @@ export function TrackingSettings() {
           />
           <NumberSelector
             control={control}
-            name="ratios.interpKneeTrackerAnkle"
+            name="ratios.interpolateComputedKneesWithAnkles"
             label={l10n.getString(
               'settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle'
             )}
@@ -505,7 +508,7 @@ export function TrackingSettings() {
           />
           <NumberSelector
             control={control}
-            name="ratios.interpKneeAnkle"
+            name="ratios.interpolateKneesWithAnkles"
             label={l10n.getString(
               'settings-general-fk_settings-skeleton_settings-interp_knee_ankle'
             )}

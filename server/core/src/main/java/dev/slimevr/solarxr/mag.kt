@@ -36,7 +36,10 @@ class MagBehaviour(
 			val enable = req.enable == true
 
 			if (trackerId == null) {
-				receiver.appContext.config.settings.context.dispatch(SettingsActions.Update { copy(globalMagEnabled = enable) })
+				val settings = receiver.appContext.config.settings
+				val oldTrackersConfig = settings.context.state.value.data.trackersConfig
+				settings.context.dispatch(SettingsActions.Update { copy(trackersConfig = oldTrackersConfig.copy(globalMagEnabled = enable)) })
+
 				appContext.server.context.state.value.trackers.values.forEach { tracker ->
 					val state = tracker.context.state.value
 					if (state.magStatus == MagnetometerStatus.NOT_SUPPORTED) return@forEach
@@ -86,7 +89,7 @@ class MagBehaviour(
 				receiver.sendRpc(
 					MagToggleResponse(
 						trackerId = null,
-						enable = receiver.appContext.config.settings.context.state.value.data.globalMagEnabled,
+						enable = receiver.appContext.config.settings.context.state.value.data.trackersConfig.globalMagEnabled,
 					),
 				)
 				return@on

@@ -4,6 +4,7 @@ import io.github.axisangles.ktmath.Quaternion
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.nullable
@@ -35,6 +36,8 @@ object BodyPartSerializer : KSerializer<BodyPart?> {
 		return BodyPart.entries.firstOrNull { it.name == element.jsonPrimitive.content }
 	}
 }
+
+object BodyPartListSerializer : KSerializer<List<BodyPart?>> by ListSerializer(BodyPartSerializer)
 
 @Serializable
 private data class QuaternionSurrogate(val w: Float, val x: Float, val y: Float, val z: Float)

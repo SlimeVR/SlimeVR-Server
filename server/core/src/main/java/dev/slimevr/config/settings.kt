@@ -3,6 +3,7 @@ package dev.slimevr.config
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import io.github.axisangles.ktmath.Quaternion
+import io.ktor.utils.io.core.Output
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -13,6 +14,8 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.ArmsResetMode
+import solarxr_protocol.rpc.FilteringType
 
 private const val SETTINGS_CONFIG_VERSION = 2
 
@@ -24,6 +27,25 @@ data class TrackerConfig(
 	@Serializable(with = QuaternionSerializer::class)
 	val mountingOrientation: Quaternion? = null,
 	val magEnabled: Boolean? = null,
+)
+
+@Serializable
+data class TrackersConfig(
+	val trackerPort: Int = 6969, // Not in SolarXR
+	val globalMagEnabled: Boolean = false,
+)
+
+@Serializable
+data class HidConfig(
+	val trackersOverHid: Boolean = false,
+)
+
+@Serializable
+data class OutputTrackersConfig(
+	val automaticTrackerToggle: Boolean = true,
+	@Serializable(with = BodyPartListSerializer::class)
+	val trackers: List<BodyPart> = listOf(),
+	val sendDerivedVelocity: Boolean = false,
 )
 
 @Serializable
@@ -46,18 +68,63 @@ data class TapDetectionConfig(
 	var numberTrackersOverThreshold: Int = 1,
 )
 
+enum class MountingMethods(val id: Int) {
+	MANUAL(0),
+	AUTOMATIC(1),
+}
+
 @Serializable
-data class VMCConfig(
-	val enabled: Boolean = true,
-	val portIn: Int = 39540,
-	val portOut: Int = 39539,
-	val address: String = "127.0.0.1",
-	/** Mirror the tracking before sending it (turn left <=> turn right, left leg <=> right leg) */
-	val mirrorTracking: Boolean = false,
-	/** Anchor the tracking at the hip (sitting down)? */
-	val anchorAtHips: Boolean = false,
-	/** JSON part of the VRM to be used */
-	val vrmJson: String? = null,
+data class ResetsConfig(
+	/** Always reset mounting for feet */
+	val resetMountingFeet: Boolean = false,
+	/** Reset mode used for the arms */
+	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
+	/** Yaw reset smoothing time in seconds */
+	val yawResetSmoothTime: Float = 0.0f,
+	/** Save automatic mounting reset calibration */
+	val saveMountingReset: Boolean = false,
+	/** Reset the HMD's pitch upon full reset */
+	val resetHmdPitch: Boolean = false,
+	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC,
+)
+
+// Used in SkeletonConfig
+@Serializable
+data class SkeletonTogglesConfig(
+	val forceArmsFromHmd: Boolean = true,
+	val floorClip: Boolean = true,
+	val skatingCorrection: Boolean = true,
+	val toeSnap: Boolean = false,
+	val footPlant: Boolean = true,
+	val mocapMode: Boolean = false,
+	val useTrackerPositions: Boolean = true,
+	val enforceConstraints: Boolean = true,
+	val correctConstraints: Boolean = true,
+)
+
+// Used in SkeletonConfig
+@Serializable
+data class SkeletonRatiosConfig(
+	val imputeSpineFromUpperToLower: Float = 0.5f,
+	val imputeSpineCurvature: Float = 0.5f,
+	val interpolateHipWithKnees: Float = 0.25f,
+	val interpolateComputedKneesWithAnkles: Float = 0.85f,
+	val interpolateKneesWithAnkles: Float = 0.00f,
+	val skatingCorrectionStrength: Float = 0.3f,
+)
+
+// Used in SkeletonConfig
+@Serializable
+data class SkeletonFilteringConfig(
+	val type: FilteringType = FilteringType.PREDICTION,
+	val amount: Float = 0.2f,
+)
+
+@Serializable
+data class SkeletonConfig(
+	val toggles: SkeletonTogglesConfig = SkeletonTogglesConfig(),
+	val ratios: SkeletonRatiosConfig = SkeletonRatiosConfig(),
+	val filtering: SkeletonFilteringConfig = SkeletonFilteringConfig(),
 )
 
 const val DEFAULT_VRC_OSC_PORT_OUT: Int = 9000
@@ -72,18 +139,34 @@ data class VRCOSCConfig(
 )
 
 @Serializable
+data class VMCConfig(
+	val enabled: Boolean = true,
+	val portIn: Int = 39540,
+	val portOut: Int = 39539,
+	val address: String = "127.0.0.1",
+	/** Mirror the tracking before sending it (turn left <=> turn right, left leg <=> right leg) */
+	val mirrorTracking: Boolean = false,
+	/** Anchor the tracking at the hip (sitting down)? */
+	val anchorAtHips: Boolean = false,
+	/** JSON part of the VRM to be used */
+	val vrmJson: String? = null,
+)
+
+@Serializable
 data class SettingsConfigState(
 	val version: Int = SETTINGS_CONFIG_VERSION,
-	val trackerPort: Int = 6969,
-	val globalMagEnabled: Boolean = true,
 	val mutedVRCWarnings: List<String> = listOf(),
 	val mutedChecklistSteps: Set<String> = emptySet(),
 	val allowedUdpDevices: Set<String> = emptySet(),
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
-	val vrcOscConfig: VRCOSCConfig = VRCOSCConfig(),
-	val vmcConfig: VMCConfig = VMCConfig(),
+	val trackersConfig: TrackersConfig = TrackersConfig(),
+	val hidConfig: HidConfig = HidConfig(),
+	val outputTrackersConfig: OutputTrackersConfig = OutputTrackersConfig(),
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
+	val skeletonConfig: SkeletonConfig = SkeletonConfig(),
+	val vrcOscConfig: VRCOSCConfig = VRCOSCConfig(),
+	val vmcConfig: VMCConfig = VMCConfig(),
 )
 
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {

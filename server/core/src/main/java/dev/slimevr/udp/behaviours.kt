@@ -370,7 +370,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 			} ?: MagnetometerStatus.NOT_SUPPORTED
 
 			var desiredMagStatus = tracker.context.state.value.magStatus
-			val globalMagEnabled = receiver.appContext.config.settings.context.state.value.data.globalMagEnabled
+			val globalMagEnabled = receiver.appContext.config.settings.context.state.value.data.trackersConfig.globalMagEnabled
 			if (remoteMagStatus != desiredMagStatus) {
 				if (globalMagEnabled && remoteMagStatus != MagnetometerStatus.ENABLED && desiredMagStatus != MagnetometerStatus.NOT_SUPPORTED) {
 					desiredMagStatus = MagnetometerStatus.ENABLED

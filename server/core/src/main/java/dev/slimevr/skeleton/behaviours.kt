@@ -129,15 +129,15 @@ class ComputedSkeletonBehaviour(
 					val rootHead = Vector3(0f, targetState.skeletonHeight, 0f) // FIXME WRONG
 					val fk = buildBones(processed, rootHead = rootHead)
 
-//					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
+// 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
 //
-//					val targets = targetProcessors
-//						.filter { targetProcessors -> targetProcessors.enabled }
-//						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
+// 					val targets = targetProcessors
+// 						.filter { targetProcessors -> targetProcessors.enabled }
+// 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
 //
-//					val ikOutput = solver.solve(fk, targets)
+// 					val ikOutput = solver.solve(fk, targets)
 
-//					receiver.computed.value = ikOutput
+// 					receiver.computed.value = ikOutput
 					receiver.computed.value = fk
 				} catch (e: CancellationException) {
 					throw e
