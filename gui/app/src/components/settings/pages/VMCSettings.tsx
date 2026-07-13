@@ -79,7 +79,7 @@ export function VRMFileUpload() {
   };
 
   useEffect(() => {
-    const subscription = watch((_value, { name, type }) => {
+    const subscription = watch((_value, { type }) => {
       if (type === 'change') {
         updateVRMJson();
       }
