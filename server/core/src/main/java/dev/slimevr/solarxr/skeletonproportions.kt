@@ -17,7 +17,7 @@ import solarxr_protocol.rpc.SkeletonProportionsResponse
 
 private const val MIN_HEIGHT = 1.0f
 
-class SkeletonBehaviour(
+class SkeletonProportionsBehaviour(
 	private val userConfig: UserConfig,
 	private val skeleton: Skeleton,
 ) : SolarXRBridgeBehaviour {

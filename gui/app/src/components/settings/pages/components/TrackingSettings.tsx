@@ -75,7 +75,7 @@ const defaultValues: SkeletonForm = {
     imputeSpineCurvature: 0.5,
     interpolateHipWithKnees: 0.25,
     interpolateComputedKneesWithAnkles: 0.85,
-    interpolateKneesWithAnkles: 0.2,
+    interpolateKneesWithAnkles: 0.0,
     skatingCorrectionStrength: 0.3,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
@@ -466,7 +466,7 @@ export function TrackingSettings() {
             control={control}
             name="ratios.imputeSpineFromUpperToLower"
             label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_lower'
+              'settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower'
             )}
             valueLabelFormat={(value) => percentageFormat.format(value)}
             min={0.0}
@@ -488,7 +488,7 @@ export function TrackingSettings() {
             control={control}
             name="ratios.interpolateHipWithKnees"
             label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interp_hip_legs'
+              'settings-general-fk_settings-skeleton_settings-interpolate_hip_with_knees'
             )}
             valueLabelFormat={(value) => percentageFormat.format(value)}
             min={0.0}
@@ -499,7 +499,7 @@ export function TrackingSettings() {
             control={control}
             name="ratios.interpolateComputedKneesWithAnkles"
             label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle'
+              'settings-general-fk_settings-skeleton_settings-interpolate_computed_knees_with_ankles'
             )}
             valueLabelFormat={(value) => percentageFormat.format(value)}
             min={0.0}
@@ -510,7 +510,7 @@ export function TrackingSettings() {
             control={control}
             name="ratios.interpolateKneesWithAnkles"
             label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interp_knee_ankle'
+              'settings-general-fk_settings-skeleton_settings-interpolate_knees_with_ankles'
             )}
             valueLabelFormat={(value) => percentageFormat.format(value)}
             min={0.0}
