@@ -10,7 +10,7 @@ import {
   shell,
   Tray,
 } from 'electron';
-import { IPC_CHANNELS } from '@slimevr/gui-shared';
+import { GHGet, GHReturn, IPC_CHANNELS } from '@slimevr/gui-shared';
 import path, { dirname, join } from 'path';
 import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
@@ -65,22 +65,31 @@ protocol.registerSchemesAsPrivileged([
 
 let mainWindow: BrowserWindow | null = null;
 
-handleIpc(IPC_CHANNELS.GH_FETCH, async (e, options) => {
-  if (options.type === 'fw-releases') {
-    return fetch(
-      'https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases'
-    ).then((res) => res.json());
+handleIpc(
+  IPC_CHANNELS.GH_FETCH,
+  async <T extends GHGet>(_e: unknown, options: T): Promise<GHReturn[T['type']]> => {
+    switch (options.type) {
+      case 'fw-releases': {
+        return fetch(
+          'https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases'
+        ).then((res) => res.json()) as Promise<GHReturn[T['type']]>;
+      }
+      case 'asset': {
+        if (
+          !options.url.startsWith(
+            'https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download'
+          )
+        )
+          return null;
+        return fetch(options.url).then((res) => res.json()) as Promise<
+          GHReturn[T['type']]
+        >;
+      }
+      default:
+        throw 'unhandled type';
+    }
   }
-  if (options.type === 'asset') {
-    if (
-      !options.url.startsWith(
-        'https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download'
-      )
-    )
-      return null;
-    return fetch(options.url).then((res) => res.json());
-  }
-});
+);
 
 handleIpc(IPC_CHANNELS.OS_STATS, async () => {
   return {

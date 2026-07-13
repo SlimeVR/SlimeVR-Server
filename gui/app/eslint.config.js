@@ -2,7 +2,8 @@ import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import stylistic from '@stylistic/eslint-plugin';
+import react from 'eslint-plugin-react';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 const compat = new FlatCompat();
 
@@ -10,7 +11,6 @@ export const gui = [
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...compat.extends('plugin:@dword-design/import-alias/recommended'),
-  ...compat.plugins('eslint-plugin-react-hooks'),
   // Add import-alias rule inside compat because plugin doesn't like flat configs
   ...compat.config({
     rules: {
@@ -39,20 +39,28 @@ export const gui = [
         ...globals.jest,
       },
     },
-    files: ['{electron,src}/**/*.{js,jsx,ts,tsx,json}'],
+    files: ['{electron,src}/**/*.{js,jsx,ts,tsx}'],
     plugins: {
       '@typescript-eslint': tseslint.plugin,
-      '@stylistic': stylistic,
+      react,
     },
     rules: {
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
-      'spaced-comment': 'error',
-      quotes: ['error', 'single'],
-      'no-duplicate-imports': 'error',
-      'no-inline-styles': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
       'react/no-unescaped-entities': 'off',
+      // effect on every render (a common infinite-loop / perf footgun).
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            'CallExpression[callee.name=/^use(Effect|LayoutEffect|InsertionEffect)$/][arguments.length<2]',
+          message:
+            'Pass a dependency array to this hook (use [] to run it once). Omitting it re-runs on every render.',
+        },
+      ],
+      'spaced-comment': 'error',
+      'no-duplicate-imports': 'error',
+      '@typescript-eslint/no-explicit-any': 'off',
       camelcase: 'error',
       '@typescript-eslint/no-unused-vars': [
         'warn',
@@ -62,7 +70,6 @@ export const gui = [
           ignoreRestSiblings: true,
         },
       ],
-      '@stylistic/jsx-self-closing-comp': 'error',
     },
     settings: {
       'import/resolver': {
@@ -73,6 +80,7 @@ export const gui = [
       },
     },
   },
+  eslintPluginPrettierRecommended,
   // Global ignore
   {
     ignores: ['**/firmware-tool-api/'],

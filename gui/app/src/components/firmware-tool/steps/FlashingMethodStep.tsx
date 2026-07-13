@@ -144,7 +144,7 @@ function SerialDevicesList({
         clearInterval(id);
       };
     }
-  });
+  }, [isActive]);
 
   return (
     <div className="p-4 rounded-lg bg-background-60 w-full flex flex-col gap-3">
