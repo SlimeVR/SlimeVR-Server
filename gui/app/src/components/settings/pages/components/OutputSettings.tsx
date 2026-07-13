@@ -220,33 +220,33 @@ export function OutputTrackersSettings() {
         <>
           <Typography variant="main-title">
             {l10n.getString('settings-general-output')}
-            <div className="flex flex-col pb-3" />
-
-            <Typography variant="section-title">
-              {l10n.getString(
-                'settings-general-steamvr-trackers-tracker_toggling'
-              )}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              {l10n
-                .getString(
-                  'settings-general-output-trackers-tracker_toggling-description'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <Typography key={i}>{line}</Typography>
-                ))}
-            </div>
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="automaticTrackerToggle"
-              label={l10n.getString(
-                'settings-general-steamvr-trackers-tracker_toggling-label'
-              )}
-            />
           </Typography>
+          <div className="flex flex-col pb-3" />
+
+          <Typography variant="section-title">
+            {l10n.getString(
+              'settings-general-steamvr-trackers-tracker_toggling'
+            )}
+          </Typography>
+          <div className="flex flex-col pt-1 pb-2">
+            {l10n
+              .getString(
+                'settings-general-output-trackers-tracker_toggling-description'
+              )
+              .split('\n')
+              .map((line, i) => (
+                <Typography key={i}>{line}</Typography>
+              ))}
+          </div>
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="automaticTrackerToggle"
+            label={l10n.getString(
+              'settings-general-steamvr-trackers-tracker_toggling-label'
+            )}
+          />
 
           <div className="flex flex-col pt-6" />
           <Typography variant="section-title">
