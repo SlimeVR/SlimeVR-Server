@@ -43,6 +43,9 @@ data class HidConfig(
 @Serializable
 data class OutputTrackersConfig(
 	val automaticTrackerToggle: Boolean = true,
+	/**
+	 * Do not read from directly, instead use
+	 */
 	@Serializable(with = BodyPartListSerializer::class)
 	val trackers: List<BodyPart> = listOf(),
 	val sendDerivedVelocity: Boolean = false,

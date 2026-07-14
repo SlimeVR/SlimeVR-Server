@@ -54,10 +54,10 @@ const defaultValues: OutputTrackersForm = {
 
 // The tracker is at the tail of the bone.
 // Example, the waist tracker is at the tail of the hip bone so we use the hip BodyPart
-function trackersToBodyPartList(
+function togglesToBodyParts(
   trackers: OutputTrackersForm['trackers']
 ): BodyPart[] {
-  const enabledBodyParts: [boolean, BodyPart][] = [
+  const toggleToBodyPart: [boolean, BodyPart][] = [
     [trackers.waist, BodyPart.HIP],
     [trackers.chest, BodyPart.CHEST],
     [trackers.leftFoot, BodyPart.LEFT_FOOT],
@@ -70,12 +70,12 @@ function trackersToBodyPartList(
     [trackers.rightHand, BodyPart.RIGHT_HAND],
   ];
 
-  return enabledBodyParts
+  return toggleToBodyPart
     .filter(([enabled]) => enabled)
     .map(([, part]) => part);
 }
 
-function bodyPartListToTrackers(
+function bodyPartsToTrackers(
   bodyParts: BodyPart[]
 ): OutputTrackersForm['trackers'] {
   const set = new Set(bodyParts);
@@ -146,7 +146,7 @@ export function OutputTrackersSettings() {
       blockHandsWarning.current = false;
     }
 
-    settingsReq.trackers = trackersToBodyPartList({
+    settingsReq.trackers = togglesToBodyParts({
       ...values.trackers,
       leftHand,
       rightHand,
@@ -176,14 +176,14 @@ export function OutputTrackersSettings() {
 
     if (settings.trackers) {
       formData = {
-        ...bodyPartListToTrackers(settings.trackers),
+        trackers: bodyPartsToTrackers(settings.trackers),
         automaticTrackerToggle: settings.automaticTrackerToggle,
         sendDerivedVelocity: settings.sendDerivedVelocity,
       };
       if (
-        !blockHandsWarning.current &&
-        (settings.trackers.includes(BodyPart.LEFT_HAND) ||
-          settings.trackers.includes(BodyPart.RIGHT_HAND))
+          !blockHandsWarning.current &&
+          (settings.trackers.includes(BodyPart.LEFT_HAND) ||
+              settings.trackers.includes(BodyPart.RIGHT_HAND))
       ) {
         blockHandsWarning.current = true;
       }

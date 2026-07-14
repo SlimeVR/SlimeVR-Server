@@ -1,5 +1,6 @@
 package dev.slimevr
 
+import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
@@ -38,6 +39,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val heightCalibrationManager: HeightCalibrationManager
 	val trackingChecklist: TrackingChecklist
 	val udpServer: UdpServer
+	val outputTrackerToggle: OutputTrackerToggleManager
 	val bvhManager: BVHManager
 	val vmcManager: VMCManager
 	val vrcOscManager: VRCOSCManager
@@ -60,6 +62,7 @@ class AppContext(
 	override val heightCalibrationManager: HeightCalibrationManager,
 	override val trackingChecklist: TrackingChecklist,
 	override val udpServer: UdpServer,
+	override val outputTrackerToggle: OutputTrackerToggleManager,
 	override val bvhManager: BVHManager,
 	override val vmcManager: VMCManager,
 	override val vrcOscManager: VRCOSCManager,
@@ -75,6 +78,7 @@ class AppContext(
 		networkProfileManager?.startObserving()
 		trackingChecklist.startObserving(this)
 		udpServer.startReceiving(this, server.context.scope)
+		outputTrackerToggle.startObserving()
 		vmcManager.startObserving()
 		vrcOscManager.startObserving(this)
 		resetsManager.startObserving()

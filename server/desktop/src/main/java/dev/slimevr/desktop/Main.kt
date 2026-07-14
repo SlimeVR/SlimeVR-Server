@@ -27,6 +27,7 @@ import dev.slimevr.desktop.vrchat.resolveDesktopOscQueryAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.networkprofile.NetworkProfileManager
+import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
@@ -91,6 +92,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		}
 	})
 	val udpServer = UdpServer.create(scope = this, addressResolver = ::resolveDesktopUdpAddress)
+	val outputTrackerToggle = OutputTrackerToggleManager.create(ctx = phase1, scope = this)
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(ctx = phase1, skeleton = skeleton, scope = this)
 	val vrcOscManager = VRCOSCManager.create(
@@ -114,6 +116,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		heightCalibrationManager = heightCalibrationManager,
 		trackingChecklist = trackingChecklist,
 		udpServer = udpServer,
+		outputTrackerToggle = outputTrackerToggle,
 		bvhManager = bvhManager,
 		vmcManager = vmcManager,
 		vrcOscManager = vrcOscManager,

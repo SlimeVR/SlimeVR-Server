@@ -77,6 +77,7 @@ class SolarXRBridge(
 			add(VmcBehaviour(appContext.config.settings))
 			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))
 			add(ProvisioningBehaviour(appContext.server, appContext.provisioningManager))
+			add(OutputTrackersBehaviour(appContext.config.settings, appContext.outputTrackerToggle))
 			add(SkeletonSettingsBehaviour(appContext.config.settings))
 			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))
