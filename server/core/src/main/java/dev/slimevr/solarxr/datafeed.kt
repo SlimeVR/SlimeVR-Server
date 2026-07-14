@@ -22,9 +22,7 @@ import solarxr_protocol.data_feed.server.ServerGuards
 import solarxr_protocol.data_feed.tracker_data.TrackerData
 import solarxr_protocol.data_feed.tracker_data.TrackerDataMask
 import solarxr_protocol.data_feed.tracker_data.TrackerInfo
-import solarxr_protocol.datatypes.Ipv4Address
 import solarxr_protocol.datatypes.MagnetometerStatus
-import solarxr_protocol.datatypes.Temperature
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.math.Quat
@@ -59,7 +57,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 		null
 	},
 	tps = if (trackerMask.tps == true) tracker.tps else null,
-	temp = if (trackerMask.temp == true && tracker.imuTemp != null) Temperature(temp = tracker.imuTemp) else null,
+	temp = if (trackerMask.temp == true && tracker.imuTemp != null) tracker.imuTemp else null,
 	rawAcceleration = if (trackerMask.rawAcceleration == true) tracker.rawAcceleration.let { Vec3f(it.x, it.y, it.z) } else null,
 	linearAcceleration = if (trackerMask.linearAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
 	rotationReferenceAdjusted = if (trackerMask.rotationReferenceAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
@@ -93,7 +91,7 @@ private fun createDevice(
 			officialBoardType = device.boardType,
 			model = device.mcuType.toString(),
 			firmwareVersion = device.firmware,
-			ipAddress = Ipv4Address(ipv4AddressFromString(device.address)),
+			ipAddress = ipv4AddressFromString(device.address),
 		),
 		trackers = if (trackerMask != null) {
 			trackers.filter { it.deviceId == device.id }

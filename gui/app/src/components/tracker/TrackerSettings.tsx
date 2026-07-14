@@ -318,9 +318,9 @@ export function TrackerSettingsPage() {
             <div className="flex justify-between">
               <Typography>{l10n.getString('tracker-infos-url')}</Typography>
               <Typography>
-                {tracker?.device?.hardwareInfo?.ipAddress?.addr
+                {tracker?.device?.hardwareInfo?.ipAddress
                   ? `udp://${IPv4.fromNumber(
-                      tracker?.device?.hardwareInfo?.ipAddress?.addr || 0
+                      tracker?.device?.hardwareInfo?.ipAddress || 0
                     ).toString()}`
                   : '--'}
               </Typography>

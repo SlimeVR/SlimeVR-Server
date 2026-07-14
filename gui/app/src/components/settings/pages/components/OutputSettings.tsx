@@ -181,9 +181,9 @@ export function OutputTrackersSettings() {
         sendDerivedVelocity: settings.sendDerivedVelocity,
       };
       if (
-          !blockHandsWarning.current &&
-          (settings.trackers.includes(BodyPart.LEFT_HAND) ||
-              settings.trackers.includes(BodyPart.RIGHT_HAND))
+        !blockHandsWarning.current &&
+        (settings.trackers.includes(BodyPart.LEFT_HAND) ||
+          settings.trackers.includes(BodyPart.RIGHT_HAND))
       ) {
         blockHandsWarning.current = true;
       }

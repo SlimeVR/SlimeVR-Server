@@ -263,9 +263,9 @@ function Row({
               />
             </Cell>
             <Cell last={!moreInfo}>
-              {tracker?.temp && tracker?.temp?.temp != 0 && (
+              {tracker?.temp && tracker?.temp != 0 && (
                 <Typography color={fontColor} whitespace="whitespace-nowrap">
-                  {tracker.temp.temp.toFixed(2)}
+                  {tracker.temp.toFixed(2)}
                 </Typography>
               )}
             </Cell>
@@ -290,7 +290,7 @@ function Row({
               <Typography color={fontColor} whitespace="whitespace-nowrap">
                 udp://
                 {IPv4.fromNumber(
-                  device?.hardwareInfo?.ipAddress?.addr || 0
+                  device?.hardwareInfo?.ipAddress || 0
                 ).toString()}
               </Typography>
             </Cell>
