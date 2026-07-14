@@ -137,10 +137,6 @@ skeleton_bone-UPPER_CHEST-desc =
     This is the distance from the base of your neck to the middle of your chest.
     To adjust it, adjust your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
-skeleton_bone-CHEST_OFFSET = Chest Offset
-skeleton_bone-CHEST_OFFSET-desc =
-    This can be adjusted to move your virtual chest tracker up or down in order to aid
-    with calibration in certain games or applications that may expect it to be higher or lower.
 skeleton_bone-CHEST = Chest Length
 skeleton_bone-CHEST-desc =
     This is the distance from the middle of your chest to the middle of your spine.
@@ -156,10 +152,6 @@ skeleton_bone-HIP-desc =
     This is the distance from your belly button to your hips.
     To adjust it, set your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
-skeleton_bone-HIP_OFFSET = Hip Offset
-skeleton_bone-HIP_OFFSET-desc =
-    This can be adjusted to move your virtual hip tracker up or down in order to aid
-    with calibration in certain games or applications that may expect it to be on your waist.
 skeleton_bone-HIPS_WIDTH = Hips Width
 skeleton_bone-HIPS_WIDTH-desc =
     This is the distance between the start of your legs.
@@ -190,11 +182,6 @@ skeleton_bone-FOOT_SHIFT-desc =
     It accounts for your lower legs going backwards when standing up straight.
     To adjust it, set Foot Length to 0, perform a full reset and modify it until your virtual
     feet line up with the middle of your ankles.
-skeleton_bone-SKELETON_OFFSET = Skeleton Offset
-skeleton_bone-SKELETON_OFFSET-desc =
-    This can be adjusted to offset all your trackers forward or backward.
-    It can be used to help with calibration in certain games or applications
-    that may expect your trackers to be more forward.
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
 skeleton_bone-SHOULDERS_DISTANCE-desc =
     This is the vertical distance from the base of your neck to your shoulders.
@@ -233,10 +220,6 @@ skeleton_bone-HAND_Z-desc =
     To adjust it for motion capture, set it to 0.
     To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
     modify it until your elbow trackers line up horizontally with your wrists.
-skeleton_bone-ELBOW_OFFSET = Elbow Offset
-skeleton_bone-ELBOW_OFFSET-desc =
-    This can be adjusted to move your virtual elbow trackers up or down in order to aid
-    with VRChat accidentally binding an elbow tracker to the chest.
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions

@@ -287,10 +287,7 @@ export function ScaledProportionsPage() {
     const skeletonSettingsRequest = new ChangeUserHeightRequestT();
     skeletonSettingsRequest.hmdHeight = newHeight;
     skeletonSettingsRequest.floorHeight = 0;
-    sendRPCPacket(
-      RpcMessage.ChangeSkeletonSettingsRequest,
-      skeletonSettingsRequest
-    );
+    sendRPCPacket(RpcMessage.ChangeUserHeightRequest, skeletonSettingsRequest);
     sendRPCPacket(
       RpcMessage.SkeletonProportionsResetAllRequest,
       new SkeletonProportionsResetAllRequestT()

@@ -7,29 +7,25 @@ import solarxr_protocol.rpc.SkeletonBone
 import kotlin.collections.map
 import kotlin.collections.plus
 
-// Placeholder, move this to config defaults somehow
+// TODO : Placeholder, move this to config defaults somehow
 val DEFAULT_PROPORTIONS = mapOf(
 	SkeletonBone.HEAD to 0.1f,
 	SkeletonBone.NECK to 0.1f,
 	SkeletonBone.UPPER_CHEST to 0.16f,
 	SkeletonBone.CHEST to 0.16f,
-	SkeletonBone.CHEST_OFFSET to 0f,
 	SkeletonBone.WAIST to 0.2f,
 	SkeletonBone.HIP to 0.04f,
-	SkeletonBone.HIP_OFFSET to 0f,
 	SkeletonBone.HIPS_WIDTH to 0.26f,
 	SkeletonBone.UPPER_LEG to 0.42f,
 	SkeletonBone.LOWER_LEG to 0.5f,
 	SkeletonBone.FOOT_LENGTH to 0.05f,
 	SkeletonBone.FOOT_SHIFT to -0.05f,
-	SkeletonBone.SKELETON_OFFSET to 0f,
 	SkeletonBone.SHOULDERS_DISTANCE to 0.08f,
 	SkeletonBone.SHOULDERS_WIDTH to 0.35f,
 	SkeletonBone.UPPER_ARM to 0.26f,
 	SkeletonBone.LOWER_ARM to 0.26f,
 	SkeletonBone.HAND_Y to 0.035f,
 	SkeletonBone.HAND_Z to 0.13f,
-	SkeletonBone.ELBOW_OFFSET to 0f,
 )
 
 // Set of SkeletonBones whose lengths sum to standing height (spine + legs).
@@ -50,23 +46,19 @@ private val BONE_VALUE_TO_OFFSETS: Map<SkeletonBone, Map<BodyPart, Vector3>> = m
 	SkeletonBone.NECK to mapOf(BodyPart.NECK to Vector3.NEG_Y),
 	SkeletonBone.UPPER_CHEST to mapOf(BodyPart.UPPER_CHEST to Vector3.NEG_Y),
 	SkeletonBone.CHEST to mapOf(BodyPart.CHEST to Vector3.NEG_Y),
-	SkeletonBone.CHEST_OFFSET to mapOf(),
 	SkeletonBone.WAIST to mapOf(BodyPart.WAIST to Vector3.NEG_Y),
 	SkeletonBone.HIP to mapOf(BodyPart.HIP to Vector3.NEG_Y),
-	SkeletonBone.HIP_OFFSET to mapOf(),
 	SkeletonBone.HIPS_WIDTH to mapOf(BodyPart.LEFT_HIP to Vector3.NEG_X / 2f, BodyPart.RIGHT_HIP to Vector3.POS_X / 2f),
 	SkeletonBone.UPPER_LEG to mapOf(BodyPart.LEFT_UPPER_LEG to Vector3.NEG_Y, BodyPart.RIGHT_UPPER_LEG to Vector3.NEG_Y),
 	SkeletonBone.LOWER_LEG to mapOf(BodyPart.LEFT_LOWER_LEG to Vector3.NEG_Y, BodyPart.RIGHT_LOWER_LEG to Vector3.NEG_Y),
 	SkeletonBone.FOOT_LENGTH to mapOf(BodyPart.LEFT_FOOT to Vector3.NEG_Z, BodyPart.RIGHT_FOOT to Vector3.NEG_Z),
 	SkeletonBone.FOOT_SHIFT to mapOf(BodyPart.LEFT_LOWER_LEG to Vector3.NEG_Z, BodyPart.RIGHT_LOWER_LEG to Vector3.NEG_Z),
-	SkeletonBone.SKELETON_OFFSET to mapOf(),
 	SkeletonBone.SHOULDERS_DISTANCE to mapOf(BodyPart.LEFT_SHOULDER to Vector3.NEG_Y, BodyPart.RIGHT_SHOULDER to Vector3.NEG_Y),
 	SkeletonBone.SHOULDERS_WIDTH to mapOf(BodyPart.LEFT_SHOULDER to Vector3.NEG_X / 2f, BodyPart.RIGHT_SHOULDER to Vector3.POS_X / 2f),
 	SkeletonBone.UPPER_ARM to mapOf(BodyPart.LEFT_UPPER_ARM to Vector3.NEG_Y, BodyPart.RIGHT_UPPER_ARM to Vector3.NEG_Y),
 	SkeletonBone.LOWER_ARM to mapOf(BodyPart.LEFT_LOWER_ARM to Vector3.NEG_Y, BodyPart.RIGHT_LOWER_ARM to Vector3.NEG_Y),
 	SkeletonBone.HAND_Y to mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Y, BodyPart.RIGHT_HAND to Vector3.NEG_Y),
 	SkeletonBone.HAND_Z to mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Z, BodyPart.RIGHT_HAND to Vector3.NEG_Z),
-	SkeletonBone.ELBOW_OFFSET to mapOf(),
 )
 
 private val BONE_OFFSET_TO_VALUES: Map<BodyPart, Map<SkeletonBone, Vector3>> = BONE_VALUE_TO_OFFSETS

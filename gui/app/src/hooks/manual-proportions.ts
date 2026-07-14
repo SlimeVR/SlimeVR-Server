@@ -145,6 +145,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
         const oldGroupTotal = skeleton.skeletonParts
           .filter(({ bone }) => group.includes(bone))
           .reduce((acc, cur) => cur.value + acc, 0);
+
         for (const part of group) {
           const currentValue = skeleton.skeletonParts.find(({ bone }) => bone === part);
           if (!currentValue) throw 'invalid state - the bone should exists';
@@ -164,10 +165,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
         const oldGroupTotal = skeleton.skeletonParts
           .filter(({ bone }) => group.includes(bone))
           .reduce((acc, cur) => cur.value + acc, 0);
-        let newValue = part.value + oldGroupTotal * params.newValue; // the new ratio is computed from the group size and not the bone
-        if (newValue <= 0)
-          // Prevent ratios from getting below zero
-          newValue = 0;
+        const newValue = Math.max(part.value + oldGroupTotal * params.newValue, 0); // the new ratio is computed from the group size and not the bone
 
         sendRPCPacket(
           RpcMessage.ChangeSkeletonProportionsRequest,
