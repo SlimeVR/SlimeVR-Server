@@ -3,6 +3,7 @@ package dev.slimevr.vrcosc
 import dev.slimevr.AppLogger
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.osc.OscSender
+import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
 import io.github.axisangles.ktmath.Quaternion
@@ -148,7 +149,7 @@ class VRCOSCOutputBehaviour(
 		val now = System.currentTimeMillis()
 		if (runtime.frameSendFailureActive && now < runtime.nextFrameRetryAt) return
 
-		val bundle = buildOutgoingBundle(bones, vrcOscConfig) ?: return
+		val bundle = buildOutgoingBundle(bones, receiver.outputTrackerToggle) ?: return
 
 		try {
 			sender.send(bundle)

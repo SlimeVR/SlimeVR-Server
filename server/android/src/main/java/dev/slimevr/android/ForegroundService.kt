@@ -153,6 +153,7 @@ class ForegroundService : Service() {
 			ctx = phase1,
 			scope = scope,
 			oscQueryAddress = resolveAndroidOscQueryAddress(),
+			outputTrackerToggle = outputTrackerToggle,
 		)
 		val resetsManager = ResetsManager.create(ctx = phase1, scope = scope)
 		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)

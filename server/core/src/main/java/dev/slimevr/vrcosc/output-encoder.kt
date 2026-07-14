@@ -5,6 +5,7 @@ import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
+import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.skeleton.BoneState
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -18,18 +19,18 @@ private val trackerIdsByBodyPart = mapOf(
 	BodyPart.RIGHT_FOOT to 3,
 	BodyPart.LEFT_UPPER_LEG to 4,
 	BodyPart.RIGHT_UPPER_LEG to 5,
-	BodyPart.UPPER_CHEST to 6,
+	BodyPart.CHEST to 6,
 	BodyPart.LEFT_UPPER_ARM to 7,
 	BodyPart.RIGHT_UPPER_ARM to 8,
 )
 
 internal fun buildOutgoingBundle(
 	bones: Map<BodyPart, BoneState>,
-	config: VRCOSCConfig,
+	outputTrackerToggle: OutputTrackerToggleManager,
 ): OscBundle? {
 	val messages = buildList {
 		for ((bodyPart, trackerId) in trackerIdsByBodyPart) {
-			if (!shouldSendTracker(bodyPart, config)) continue
+			if (bodyPart !in outputTrackerToggle.context.state.value.trackers) continue
 
 			val bone = bones[bodyPart] ?: continue
 			add(
@@ -66,22 +67,6 @@ internal fun buildYawAlignMessage(headRotation: Quaternion): OscMessage {
 			OscArg.Float(0f),
 		),
 	)
-}
-
-// TODO read from Output Settings
-private fun shouldSendTracker(bodyPart: BodyPart, config: VRCOSCConfig): Boolean = when (bodyPart) {
-	BodyPart.HIP -> true
-
-	BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT -> true
-
-	BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG -> true
-
-	// TODO why UPPER_CHEST instead of CHEST?
-	BodyPart.UPPER_CHEST -> true
-
-	BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM -> false
-
-	else -> false
 }
 
 private fun positionMessage(address: String, position: Vector3) = OscMessage(

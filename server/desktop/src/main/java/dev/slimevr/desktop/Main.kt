@@ -99,6 +99,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		ctx = phase1,
 		scope = this,
 		oscQueryAddress = resolveDesktopOscQueryAddress(),
+		outputTrackerToggle = outputTrackerToggle,
 	)
 	val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
