@@ -44,17 +44,14 @@ class PacketBehaviour : UDPConnectionBehaviour {
 		receiver.packetEvents.onAny { packet ->
 			val state = receiver.context.state.value
 			val now = System.currentTimeMillis()
-			if (now - state.lastPacket > CONNECTION_TIMEOUT_MS && packet.packetNumber == 0L) {
-				receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = 0, time = now))
+			val num = packet.packetNumber
+			if (num == 0L && now - state.lastPacket > CONNECTION_TIMEOUT_MS) {
 				AppLogger.udp.info("[${state.address}] Reconnecting")
-			} else if (packet.packetNumber != null && packet.packetNumber < state.lastPacketNum) {
-				// Note: Packet number is nullable for bundled packets, as only the bundle packet itself has the number
-				// the packets inside of it do not
-				AppLogger.udp.warn("[${state.address}] WARN: Received packet with wrong packet number")
+			} else if (num != null && num != 0L && num <= state.lastPacketNum) {
+				AppLogger.udp.warn("[${state.address}] Received packet with wrong packet number")
 				return@onAny
-			} else {
-				receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = packet.packetNumber, time = now))
 			}
+			receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = num, time = now))
 		}
 	}
 }
