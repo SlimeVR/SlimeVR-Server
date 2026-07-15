@@ -46,6 +46,12 @@ if (process.platform === 'linux') {
   app.commandLine.appendSwitch('force-color-profile', 'srgb');
 }
 
+// SteamVR will not see the application if this is not enabled
+if (options.steam) {
+  app.commandLine.appendSwitch('enable-features', 'WebXR,WebXROpenXR');
+  app.commandLine.appendSwitch('enable-xr-sandbox');
+}
+
 app.setPath('userData', getGuiDataFolder());
 app.setPath('sessionData', join(getGuiDataFolder(), 'electron'));
 
