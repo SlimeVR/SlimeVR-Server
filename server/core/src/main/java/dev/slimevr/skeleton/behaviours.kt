@@ -111,6 +111,13 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 	}
 }
 
+class PauseTrackingBehaviour : SkeletonBehaviour {
+	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
+		is SkeletonActions.PauseTracking -> state.copy(paused = action.pause)
+		else -> state
+	}
+}
+
 class ComputedSkeletonBehaviour(
 	val hz: Float = 100f, // TODO behaviours like smoothing will behave different based on hz
 	val processors: List<SkeletonProcessor> = emptyList(),
@@ -138,7 +145,10 @@ class ComputedSkeletonBehaviour(
 // 					val ikOutput = solver.solve(fk, targets)
 
 // 					receiver.computed.value = ikOutput
-					receiver.computed.value = fk
+
+					if (!targetState.paused) {
+						receiver.computed.value = fk
+					}
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {

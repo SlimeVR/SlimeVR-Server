@@ -6,12 +6,16 @@ import dev.slimevr.config.SkeletonConfig
 import dev.slimevr.config.SkeletonFilteringConfig
 import dev.slimevr.config.SkeletonRatiosConfig
 import dev.slimevr.config.SkeletonTogglesConfig
+import dev.slimevr.skeleton.SkeletonActions
 import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
+import solarxr_protocol.rpc.SetPauseTrackingRequest
 import solarxr_protocol.rpc.SkeletonFiltering
 import solarxr_protocol.rpc.SkeletonRatios
 import solarxr_protocol.rpc.SkeletonSettingsRequest
 import solarxr_protocol.rpc.SkeletonSettingsResponse
 import solarxr_protocol.rpc.SkeletonToggles
+import solarxr_protocol.rpc.TrackingPauseStateRequest
+import solarxr_protocol.rpc.TrackingPauseStateResponse
 
 class SkeletonSettingsBehaviour(
 	private val settings: Settings,
@@ -71,12 +75,18 @@ class SkeletonSettingsBehaviour(
 							} ?: oldConfig.toggles,
 							ratios = req.ratios?.let {
 								SkeletonRatiosConfig(
-									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower ?: oldConfig.ratios.imputeSpineFromUpperToLower,
-									imputeSpineCurvature = it.imputeSpineCurvature ?: oldConfig.ratios.imputeSpineCurvature,
-									interpolateHipWithKnees = it.interpolateHipWithKnees ?: oldConfig.ratios.interpolateHipWithKnees,
-									interpolateComputedKneesWithAnkles = it.interpolateComputedKneesWithAnkles ?: oldConfig.ratios.interpolateComputedKneesWithAnkles,
-									interpolateKneesWithAnkles = it.interpolateKneesWithAnkles ?: oldConfig.ratios.interpolateKneesWithAnkles,
-									skatingCorrectionStrength = it.skatingCorrectionStrength ?: oldConfig.ratios.skatingCorrectionStrength,
+									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower
+										?: oldConfig.ratios.imputeSpineFromUpperToLower,
+									imputeSpineCurvature = it.imputeSpineCurvature
+										?: oldConfig.ratios.imputeSpineCurvature,
+									interpolateHipWithKnees = it.interpolateHipWithKnees
+										?: oldConfig.ratios.interpolateHipWithKnees,
+									interpolateComputedKneesWithAnkles = it.interpolateComputedKneesWithAnkles
+										?: oldConfig.ratios.interpolateComputedKneesWithAnkles,
+									interpolateKneesWithAnkles = it.interpolateKneesWithAnkles
+										?: oldConfig.ratios.interpolateKneesWithAnkles,
+									skatingCorrectionStrength = it.skatingCorrectionStrength
+										?: oldConfig.ratios.skatingCorrectionStrength,
 								)
 							} ?: oldConfig.ratios,
 							filtering = req.filtering?.let {
@@ -88,6 +98,28 @@ class SkeletonSettingsBehaviour(
 						),
 					)
 				},
+			)
+		}
+
+		receiver.rpcDispatcher.on<SetPauseTrackingRequest> {
+			receiver.appContext.skeleton.context.dispatch(
+				SkeletonActions.PauseTracking(
+					it.pauseTracking ?: false,
+				),
+			)
+
+			receiver.sendRpc(
+				TrackingPauseStateResponse(
+					trackingPaused = it.pauseTracking,
+				),
+			)
+		}
+
+		receiver.rpcDispatcher.on<TrackingPauseStateRequest> {
+			receiver.sendRpc(
+				TrackingPauseStateResponse(
+					trackingPaused = receiver.appContext.skeleton.context.state.value.paused,
+				),
 			)
 		}
 	}
