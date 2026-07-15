@@ -1,14 +1,22 @@
-@file:OptIn(kotlinx.coroutines.FlowPreview::class)
+@file:OptIn(kotlinx.coroutines.FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 
 package dev.slimevr.heightcalibration
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
+import dev.slimevr.tracker.TrackerState
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withTimeoutOrNull
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 import kotlin.math.PI
 import kotlin.math.cos
@@ -54,12 +62,37 @@ private fun isHmdLeveled(snapshot: TrackerSnapshot): Boolean {
 	return (up dot Vector3.POS_Y) >= HEAD_ANGLE_THRESHOLD
 }
 
-class CalibrationBehaviour : HeightCalibrationBehaviourType {
+class BaseCalibrationBehaviour : HeightCalibrationBehaviourType {
 	override fun reduce(state: HeightCalibrationState, action: HeightCalibrationActions) = when (action) {
 		is HeightCalibrationActions.Update -> state.copy(
 			status = action.status,
 			currentHeight = action.currentHeight,
 		)
+
+		is HeightCalibrationActions.SetCanCalibrate -> state.copy(
+			canDoUserHeightCalibration = action.canDo,
+		)
+	}
+
+	fun canCalibrate(trackers: List<TrackerState>): Boolean {
+		val hasHmd = trackers.any { it.bodyPart == BodyPart.HEAD && it.position != null }
+		val hasHand = trackers.any {
+			(it.bodyPart == BodyPart.LEFT_HAND || it.bodyPart == BodyPart.RIGHT_HAND) && it.position != null
+		}
+		return hasHmd && hasHand
+	}
+
+	override fun observe(receiver: HeightCalibrationManager) {
+		receiver.serverContext.context.state
+			.flatMapLatest { state ->
+				val trackers = state.trackers.values.toList()
+				if (trackers.isEmpty()) return@flatMapLatest flowOf(false)
+				// React to per-tracker position/bodyPart changes, not just tracker add/remove.
+				combine(trackers.map { it.context.state }) { states -> canCalibrate(states.toList()) }
+			}
+			.distinctUntilChanged()
+			.onEach { receiver.context.dispatch(HeightCalibrationActions.SetCanCalibrate(it)) }
+			.launchIn(receiver.context.scope)
 	}
 }
 

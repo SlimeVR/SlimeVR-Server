@@ -41,7 +41,7 @@ private val STANDING_POSITION = Vector3(0f, 1.7f, 0f)
 fun testHeightCalibrationContext(scope: kotlinx.coroutines.CoroutineScope) = HeightCalibrationContext.create(
 	initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
 	scope = scope,
-	behaviours = listOf(CalibrationBehaviour()),
+	behaviours = listOf(BaseCalibrationBehaviour()),
 	name = "HeightCalibrationTest",
 )
 

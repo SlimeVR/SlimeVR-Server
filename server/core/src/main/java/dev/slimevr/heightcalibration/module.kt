@@ -31,6 +31,7 @@ data class HeightCalibrationState(
 
 sealed interface HeightCalibrationActions {
 	data class Update(val status: UserHeightCalibrationStatus, val currentHeight: Float) : HeightCalibrationActions
+	data class SetCanCalibrate(val canDo: Boolean) : HeightCalibrationActions
 }
 
 typealias HeightCalibrationContext = Context<HeightCalibrationState, HeightCalibrationActions>
@@ -39,7 +40,7 @@ typealias HeightCalibrationBehaviourType = Behaviour<HeightCalibrationState, Hei
 val INITIAL_HEIGHT_CALIBRATION_STATE = HeightCalibrationState(
 	status = UserHeightCalibrationStatus.NONE,
 	currentHeight = 0f,
-	canDoUserHeightCalibration = true, // TODO make the logic in behaviour for this
+	canDoUserHeightCalibration = false,
 )
 
 class HeightCalibrationManager(
@@ -102,7 +103,7 @@ class HeightCalibrationManager(
 			ctx: Phase1ContextProvider,
 			scope: CoroutineScope,
 		): HeightCalibrationManager {
-			val behaviours = listOf(CalibrationBehaviour())
+			val behaviours = listOf(BaseCalibrationBehaviour())
 			val context = Context.create(
 				initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
 				scope = scope,
