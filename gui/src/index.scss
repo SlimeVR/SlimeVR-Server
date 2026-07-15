@@ -428,10 +428,11 @@ div {
 }
 
 a,
-.no-user-drag {
+.nav-link {
   -webkit-user-drag: none;
   -webkit-user-select: none;
   user-select: none;
+  touch-action: none;
 }
 
 .nav-link {
