@@ -23,6 +23,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import solarxr_protocol.datatypes.BodyPart
+import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
@@ -30,8 +31,8 @@ import kotlin.io.path.exists
 /**
  * SteamVR tracker roles to protobuf enum
  */
-public enum class TrackerRole(
-	public val `value`: UByte,
+enum class TrackerRole(
+	val value: UByte,
 ) {
 	NONE(0.toUByte()),
 	WAIST(1.toUByte()),
@@ -57,8 +58,8 @@ public enum class TrackerRole(
 	GENERIC_CONTROLLER(21.toUByte()),
 	;
 
-	public companion object {
-		public fun fromValue(`value`: UByte): TrackerRole? = entries.firstOrNull { it.value == value }
+	companion object {
+		fun fromValue(value: UByte): TrackerRole? = entries.firstOrNull { it.value == value }
 	}
 }
 
@@ -91,8 +92,7 @@ private fun getBindingsProviderPath(): Path? {
 	// Then look through PATH to find the binary.
 	// PATH shouldn't be null, but if it is just gracefully fail
 	val path = System.getenv("PATH") ?: return null
-	val separator = System.getProperty("path.separator")
-	for (path in path.split(separator)) {
+	for (path in path.split(File.pathSeparator)) {
 		val binaryPath = Path(path, executableName)
 		if (binaryPath.exists()) return binaryPath
 	}

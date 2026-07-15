@@ -18,12 +18,12 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 		// Should be safe: StateFlow never delivers two emissions concurrently to the same collector.
 		val subscribedTrackers = mutableSetOf<UByte>()
 
-		receiver.appContext.skeleton.computed.onEach { skeleton ->
+		receiver.appContext.skeleton.computed.onEach { computedBones ->
 			val enabledBodyParts =
 				receiver.appContext.outputTrackerToggle.context.state.value.trackers
 			val serverState = receiver.appContext.server.context.state.value
 
-			skeleton.forEach { (part, state) ->
+			computedBones.forEach { (part, state) ->
 				val closestTracker =
 					serverState.trackers.values.find { it.context.state.value.bodyPart == part }?.context?.state?.value
 						?: return@forEach
