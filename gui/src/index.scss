@@ -433,3 +433,10 @@ a,
   -webkit-user-select: none;
   user-select: none;
 }
+
+.vr-button {
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
