@@ -60,11 +60,15 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 		synchronized(this.devices) {
 			for (id in deviceList) {
 				val device = this.devices[id]
+				// Slot ids are ephemeral; invalidate until registration (0xff) rebinds by MAC.
+				device.hidId = -1
 				for (value in device.trackers.values) {
-					if (value.status == TrackerStatus.DISCONNECTED) {
-						value.status = TrackerStatus.OK
+					// Stay disconnected until motion/info packets arrive — hub reboot needs
+					// BLE reconnect time, and faking OK here causes a brief flash then TIMED_OUT.
+					if (value.status == TrackerStatus.OK || value.status == TrackerStatus.TIMED_OUT) {
+						value.status = TrackerStatus.DISCONNECTED
 					}
-					value.heartbeat()
+					value.setSleepTime(Long.MAX_VALUE)
 				}
 			}
 		}
@@ -103,15 +107,16 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 			synchronized(this.devices) {
 				for (id in it) {
 					val device = this.devices[id]
+					device.hidId = -1
 					for (value in device.trackers.values) {
-						if (value.status == TrackerStatus.OK) {
-							value.status =
-								TrackerStatus.DISCONNECTED
+						if (value.status == TrackerStatus.OK || value.status == TrackerStatus.TIMED_OUT) {
+							value.status = TrackerStatus.DISCONNECTED
 						}
 					}
 				}
 			}
 			this.devicesByHID.remove(hidDevice)
+			this.lastDataByHID.remove(hidDevice)
 			LogManager.info("[TrackerServer] Linked HID device removed: ${hidDevice.serialNumber}")
 		}
 	}
@@ -260,7 +265,9 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 			for (device in devicesByHID.keys) {
 				val lastData = lastDataByHID.getOrDefault(device, 0)
 				// a receiver sends keep-alive data at 10 packets/s
-				if (lastData > 100) { // try to reopen device if no data was received recently (about >100ms)
+				// Only reopen closed handles. Calling open() on an already-open device every
+				// second during hub BLE reconnect (many seconds of no HID data) breaks the session.
+				if (lastData > 100 && device.isClosed) {
 					if (lastData < 10000) {
 						LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
 						lastDataByHID[device] = 10000 // flag once

@@ -7,7 +7,7 @@ import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.MCUType
 import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 
-class HIDDevice(val hidId: Int) : Device(DeviceOrigin.HID) {
+class HIDDevice(var hidId: Int) : Device(DeviceOrigin.HID) {
 	override var hardwareIdentifier: String = "Unknown"
 	override var boardType: BoardType = BoardType.UNKNOWN
 	override var mcuType: MCUType = MCUType.UNKNOWN
