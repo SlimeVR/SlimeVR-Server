@@ -30,6 +30,7 @@ import kotlinx.coroutines.withContext
 import solarxr_protocol.rpc.TrackingChecklistSteamVRDisconnected
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
+import solarxr_protocol.rpc.TrackingChecklistStepVisibility
 import java.io.IOException
 
 data class Process(val pid: ULong, val name: String)
@@ -150,7 +151,7 @@ class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBeh
 			.launchIn(receiver.context.scope)
 		standableState
 			.map { installed ->
-				TrackingChecklistStep(valid = !installed, enabled = true)
+				TrackingChecklistStep(valid = !installed, enabled = true, visibility = TrackingChecklistStepVisibility.WHEN_INVALID)
 			}
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STANDABLE_INSTALLED, step)) }

@@ -13,8 +13,11 @@ import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
 import dev.slimevr.firmware.FirmwareManager
+import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.networkprofile.NetworkProfileManager
+import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsBasicBehaviour
 import dev.slimevr.resets.ResetsManager
@@ -35,6 +38,7 @@ import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import solarxr_protocol.rpc.UserHeightCalibrationStatus
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
 	openPort = { loc, _, _ -> SerialPortHandle(loc, "Fake $loc", {}, {}) },
@@ -114,6 +118,17 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 	return Settings(context, scope, NoopConfigStorage, "settings")
 }
 
+fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: CoroutineScope): HeightCalibrationManager {
+	val initialState = HeightCalibrationState(status = UserHeightCalibrationStatus.NONE, currentHeight = 1.6f, canDoUserHeightCalibration = true)
+	val context = Context.create<HeightCalibrationState, HeightCalibrationActions>(
+		initialState = initialState,
+		scope = scope,
+		behaviours = emptyList(),
+		name = "Settings[test]",
+	)
+	return HeightCalibrationManager(context, server, userConfig)
+}
+
 private object NoopConfigStorage : ConfigStorage {
 	override suspend fun read(path: String): String? = null
 	override suspend fun write(path: String, content: String) = Unit
@@ -144,6 +159,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val vrcOscManager: VRCOSCManager get() = error("not used in test")
 	override val resetsManager: ResetsManager get() = error("not used in test")
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
+	override val outputTrackerToggle: OutputTrackerToggleManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }

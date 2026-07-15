@@ -2,9 +2,11 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.EventDispatcher
 import dev.slimevr.TestAppContext
+import dev.slimevr.buildTestHeightCalibration
 import dev.slimevr.buildTestResetsManager
 import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestSkeleton
+import dev.slimevr.buildTestUserConfig
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,11 +23,14 @@ private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend:
 	val server = buildTestVrServer(backgroundScope)
 	val skeleton = buildTestSkeleton(backgroundScope)
 	val settings = buildTestSettings(backgroundScope)
+	val userSettings = buildTestUserConfig(backgroundScope)
 	val resetsManager = buildTestResetsManager(server, settings, backgroundScope)
+	val heightCalibrationManager = buildTestHeightCalibration(server, userSettings, backgroundScope)
 	val appContext = object : TestAppContext() {
 		override val server = server
 		override val skeleton = skeleton
 		override val resetsManager = resetsManager
+		override val heightCalibrationManager = heightCalibrationManager
 	}
 	val context = Context.create(
 		initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
