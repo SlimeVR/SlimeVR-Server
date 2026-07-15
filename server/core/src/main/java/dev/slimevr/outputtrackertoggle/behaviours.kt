@@ -1,5 +1,6 @@
 package dev.slimevr.outputtrackertoggle
 
+import dev.slimevr.config.OutputTrackersConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -14,18 +15,32 @@ import solarxr_protocol.rpc.OutputTrackersSettingsResponse
 import kotlin.collections.filter
 import kotlin.collections.map
 
-private val automaticToggleToTracker = mapOf(
-	BodyPart.CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
-	BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
-	BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
-	BodyPart.HIP to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP),
-	BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
-	BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
-	BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_LOWER_LEG, BodyPart.LEFT_FOOT),
-	BodyPart.RIGHT_FOOT to setOf(BodyPart.RIGHT_LOWER_LEG, BodyPart.RIGHT_FOOT),
-)
-
 class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
+	private val automaticToggleToTracker = mapOf(
+		BodyPart.CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
+		BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
+		BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
+		BodyPart.HIP to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP),
+		BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
+		BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
+		BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG, BodyPart.LEFT_FOOT),
+		BodyPart.RIGHT_FOOT to setOf(BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG, BodyPart.RIGHT_FOOT),
+	)
+
+	fun determineAutomaticOutputTrackers(
+		config: OutputTrackersConfig,
+		okBodyParts: Set<BodyPart?>,
+	): List<BodyPart> {
+		val automaticTrackers = automaticToggleToTracker
+			.filterValues { it.any { bp -> bp in okBodyParts } }
+			.keys
+		// Hands aren't toggled automatically
+		val handTrackers = config.trackers.filter {
+			it == BodyPart.LEFT_HAND || it == BodyPart.RIGHT_HAND
+		}
+		return (automaticTrackers + handTrackers).toList()
+	}
+
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: OutputTrackerToggleManager) {
 		receiver.settings.context.state
@@ -56,14 +71,8 @@ class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 					.map { okBodyParts -> config to okBodyParts }
 			}
 			.onEach { (config, okBodyParts) ->
-				val automaticTrackers = automaticToggleToTracker
-					.filterValues { it.any { bp -> bp in okBodyParts } }
-					.keys
-				// Hands aren't toggled automatically
-				val handTrackers = config.trackers.filter {
-					it == BodyPart.LEFT_HAND || it == BodyPart.RIGHT_HAND
-				}
-				val outputTrackers = (automaticTrackers + handTrackers).toList()
+				// Get the output trackers based on body parts
+				val outputTrackers = determineAutomaticOutputTrackers(config, okBodyParts)
 
 				// Update state
 				receiver.context.dispatch(OutputTrackerToggleActions.SetOutputTrackers(outputTrackers))
