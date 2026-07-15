@@ -4,11 +4,11 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.firmware.waitForConnected
-import dev.slimevr.hid.isCompatibleHidDevice
 import dev.slimevr.serial.MAC_REGEX
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialConnectionActions
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.serial.isKnownSerialBoard
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
@@ -31,7 +31,7 @@ internal suspend fun selectAndOpenPort(
 		serialServer.context.state
 			.mapNotNull { state ->
 				state.availablePorts.entries.firstOrNull { (_, info) ->
-					isCompatibleHidDevice(
+					isKnownSerialBoard(
 						info.vendorId,
 						info.productId,
 					)
