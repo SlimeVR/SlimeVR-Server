@@ -35,6 +35,7 @@ export function NavButton({
         'flex flex-col justify-center xs:gap-4 mobile:gap-2',
         'mobile:w-[65px] mobile:h-[65px]',
         'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
+        'vr-button',
         {
           'bg-accent-background-50 fill-accent-background-20': doesMatch,
           'hover:bg-background-70': !doesMatch,
