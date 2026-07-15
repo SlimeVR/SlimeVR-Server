@@ -79,7 +79,7 @@ export function ResetButton({
         variant="primary"
         disabled={disabled}
       >
-        <div className="flex flex-col">
+        <div className="flex flex-col vr-button">
           <div className="opacity-0 h-0">
             {children || <Localized id={name} />}
           </div>

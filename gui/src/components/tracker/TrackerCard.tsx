@@ -173,7 +173,7 @@ export function TrackerCard({
       <div
         onClick={onClick}
         className={classNames(
-          'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear',
+          'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear vr-button',
           interactable && 'hover:bg-background-50 cursor-pointer',
           outlined && 'outline outline-2 outline-accent-background-40',
           bg

@@ -98,7 +98,8 @@ export function Button({
         'rounded-full p-2 text-center min-h-[35px] min-w-[35px]': rounded,
         'rounded-md px-5 py-2.5': !rounded,
       },
-      props.className
+      props.className,
+      'vr-button'
     );
   }, [variant, disabled, rounded, props.className]);
 

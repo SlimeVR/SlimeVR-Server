@@ -160,7 +160,7 @@ export function BodyAssignment({
       highlightedRoles={highlightedRoles}
       onSelectRole={onRoleSelected}
       leftControls={
-        <div className="flex flex-col justify-between h-full text-right">
+        <div className="flex flex-col justify-between h-full text-right vr-button">
           <div className="flex flex-col gap-2">
             {hasBodyPart(BodyPart.HEAD) && (
               <TrackerPartCard
