@@ -1,11 +1,11 @@
 package dev.slimevr
 
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.networkprofile.NetworkProfileManager
+import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.serial.SerialServer

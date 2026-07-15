@@ -1,9 +1,9 @@
 package dev.slimevr.solarxr
 
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.config.OutputTrackersConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import solarxr_protocol.rpc.ChangeOutputTrackersSettingsRequest
 import solarxr_protocol.rpc.OutputTrackersSettingsRequest
 import solarxr_protocol.rpc.OutputTrackersSettingsResponse

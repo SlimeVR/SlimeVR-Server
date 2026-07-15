@@ -4,9 +4,11 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
+import dev.slimevr.desktop.platform.Battery
 import dev.slimevr.desktop.platform.Position
 import dev.slimevr.desktop.platform.ProtobufMessage
 import dev.slimevr.desktop.platform.TrackerAdded
+import dev.slimevr.desktop.platform.TrackerStatus
 import dev.slimevr.desktop.platform.Version
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
@@ -20,9 +22,56 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import solarxr_protocol.datatypes.BodyPart
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
+
+/**
+ * SteamVR tracker roles to protobuf enum
+ */
+public enum class TrackerRole(
+	public val `value`: UByte,
+) {
+	NONE(0.toUByte()),
+	WAIST(1.toUByte()),
+	LEFT_FOOT(2.toUByte()),
+	RIGHT_FOOT(3.toUByte()),
+	CHEST(4.toUByte()),
+	LEFT_KNEE(5.toUByte()),
+	RIGHT_KNEE(6.toUByte()),
+	LEFT_ELBOW(7.toUByte()),
+	RIGHT_ELBOW(8.toUByte()),
+	LEFT_SHOULDER(9.toUByte()),
+	RIGHT_SHOULDER(10.toUByte()),
+	LEFT_HAND(11.toUByte()),
+	RIGHT_HAND(12.toUByte()),
+	LEFT_CONTROLLER(13.toUByte()),
+	RIGHT_CONTROLLER(14.toUByte()),
+	HEAD(15.toUByte()),
+	NECK(16.toUByte()),
+	CAMERA(17.toUByte()),
+	KEYBOARD(18.toUByte()),
+	HMD(19.toUByte()),
+	BEACON(20.toUByte()),
+	GENERIC_CONTROLLER(21.toUByte()),
+	;
+
+	public companion object {
+		public fun fromValue(`value`: UByte): TrackerRole? = entries.firstOrNull { it.value == value }
+	}
+}
+
+val bodyPartToRole = mapOf(
+	BodyPart.CHEST to TrackerRole.CHEST,
+	BodyPart.LEFT_UPPER_ARM to TrackerRole.LEFT_ELBOW,
+	BodyPart.RIGHT_UPPER_ARM to TrackerRole.RIGHT_ELBOW,
+	BodyPart.HIP to TrackerRole.WAIST,
+	BodyPart.LEFT_UPPER_LEG to TrackerRole.LEFT_KNEE,
+	BodyPart.RIGHT_UPPER_LEG to TrackerRole.RIGHT_KNEE,
+	BodyPart.LEFT_FOOT to TrackerRole.LEFT_FOOT,
+	BodyPart.RIGHT_FOOT to TrackerRole.RIGHT_FOOT,
+)
 
 const val PROTOCOL_VERSION = 2
 
@@ -83,13 +132,63 @@ suspend fun handleDriverConnection(
 		send(ProtobufMessage.ADAPTER.encode(msg))
 	}
 
-	val bridge = DriverBridge.create(id = appContext.server.nextHandle(), appContext = appContext, scope = this)
+	val bridge = DriverBridge.create(
+		id = appContext.server.nextHandle(),
+		appContext = appContext,
+		scope = this,
+	)
 
 	bridge.outbound.on<DriverBridgeOutbound.TrackerAdded> { event ->
-		sendMsg(ProtobufMessage(tracker_added = TrackerAdded(tracker_id = event.trackerId, tracker_serial = event.serial, tracker_name = event.name)))
+		sendMsg(
+			ProtobufMessage(
+				tracker_added = TrackerAdded(
+					tracker_id = event.trackerId,
+					tracker_serial = event.serial,
+					tracker_name = event.name,
+					tracker_role = bodyPartToRole.getOrDefault(event.part, TrackerRole.NONE).value.toInt(),
+					manufacturer = event.manufacturer,
+				),
+			),
+		)
 	}
 	bridge.outbound.on<DriverBridgeOutbound.TrackerPosition> { event ->
-		sendMsg(ProtobufMessage(position = Position(tracker_id = event.trackerId, qx = event.rotation.x, qy = event.rotation.y, qz = event.rotation.z, qw = event.rotation.w)))
+		sendMsg(
+			ProtobufMessage(
+				position = Position(
+					tracker_id = event.trackerId,
+					qx = event.rotation.x,
+					qy = event.rotation.y,
+					qz = event.rotation.z,
+					qw = event.rotation.w,
+					x = event.position?.x,
+					y = event.position?.y,
+					z = event.position?.z,
+				),
+			),
+		)
+	}
+
+	bridge.outbound.on<DriverBridgeOutbound.TrackerStatus> { event ->
+		sendMsg(
+			ProtobufMessage(
+				tracker_status = TrackerStatus(
+					tracker_id = event.trackerId,
+					status = when (event.status) {
+						solarxr_protocol.datatypes.TrackerStatus.OK -> TrackerStatus.Status.OK
+						solarxr_protocol.datatypes.TrackerStatus.ERROR -> TrackerStatus.Status.ERROR
+						solarxr_protocol.datatypes.TrackerStatus.OCCLUDED -> TrackerStatus.Status.OCCLUDED
+						solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED, solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT -> TrackerStatus.Status.DISCONNECTED
+						solarxr_protocol.datatypes.TrackerStatus.BUSY -> TrackerStatus.Status.BUSY
+						else -> TrackerStatus.Status.ERROR
+					},
+				),
+				battery = Battery(
+					tracker_id = event.trackerId,
+					battery_level = event.battery ?: 0f,
+					is_charging = event.charging,
+				),
+			),
+		)
 	}
 
 	sendMsg(ProtobufMessage(version = Version(protocol_version = PROTOCOL_VERSION)))
@@ -100,6 +199,8 @@ suspend fun handleDriverConnection(
 			msg.version?.let { ver ->
 				bridge.inbound.emit(DriverBridgeInbound.Version(ver.protocol_version))
 				if (ver.protocol_version >= 2) {
+					// FIXME: multiple launch could be created here bc nothing prevent protocol from changing or getting called again during runtime
+					// causing a memory leak
 					safeLaunch {
 						startBindingProvider()
 					}
@@ -116,14 +217,33 @@ suspend fun handleDriverConnection(
 				)
 			}
 			msg.battery?.let { bat ->
-				bridge.inbound.emit(DriverBridgeInbound.TrackerBattery(id = bat.tracker_id, batteryLevel = bat.battery_level, charging = bat.is_charging))
+				bridge.inbound.emit(
+					DriverBridgeInbound.TrackerBattery(
+						id = bat.tracker_id,
+						batteryLevel = bat.battery_level * 100,
+						charging = bat.is_charging,
+					),
+				)
 			}
 			msg.position?.let { pos ->
 				bridge.inbound.emit(
 					DriverBridgeInbound.TrackerPosition(
 						id = pos.tracker_id,
-						rotation = Quaternion(w = pos.qw, x = pos.qx, y = pos.qy, z = pos.qz),
-						position = if (pos.x != null && pos.y != null && pos.z != null) Vector3(pos.x, pos.y, pos.z) else null,
+						rotation = Quaternion(
+							w = pos.qw,
+							x = pos.qx,
+							y = pos.qy,
+							z = pos.qz,
+						),
+						position = if (pos.x != null && pos.y != null && pos.z != null) {
+							Vector3(
+								pos.x,
+								pos.y,
+								pos.z,
+							)
+						} else {
+							null
+						},
 					),
 				)
 			}

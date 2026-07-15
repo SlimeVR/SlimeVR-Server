@@ -10,6 +10,7 @@ import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 
 data class DriverBridgeState(
@@ -31,7 +32,8 @@ sealed interface DriverBridgeInbound {
 }
 
 sealed interface DriverBridgeOutbound {
-	data class TrackerAdded(val trackerId: Int, val serial: String, val name: String) : DriverBridgeOutbound
+	data class TrackerAdded(val trackerId: Int, val part: BodyPart, val serial: String, val name: String, val manufacturer: String) : DriverBridgeOutbound
+	data class TrackerStatus(val trackerId: Int, val status: solarxr_protocol.datatypes.TrackerStatus, val battery: Float?, val charging: Boolean) : DriverBridgeOutbound
 	data class TrackerPosition(val trackerId: Int, val rotation: Quaternion, val position: Vector3?) : DriverBridgeOutbound
 }
 
@@ -54,15 +56,13 @@ class DriverBridge(
 		dispose()
 		appContext.server.context.dispatch(VRServerActions.DriverDisconnected(id))
 		context.state.value.trackers.forEach { (_, id) ->
-			appContext.server.getTracker(id)?.let {
-				it.context.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
-			}
+			appContext.server.getTracker(id)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
 		}
 	}
 
 	companion object {
 		fun create(id: Int, appContext: AppContextProvider, scope: CoroutineScope): DriverBridge {
-			val behaviours = listOf(DriverBaseBehaviour())
+			val behaviours = listOf(DriverOutgoingTrackersBehaviour(), DriverIncomingTrackersBehaviour())
 
 			val managedContext = ManagedContext.create(
 				initialState = DriverBridgeState(

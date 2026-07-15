@@ -69,11 +69,13 @@ class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 				receiver.context.dispatch(OutputTrackerToggleActions.SetOutputTrackers(outputTrackers))
 
 				// Update SolarXR
-				receiver.server.sendSolarxrRpc(OutputTrackersSettingsResponse(
-					automaticTrackerToggle = true,
-					trackers = outputTrackers,
-					sendDerivedVelocity = config.sendDerivedVelocity,
-				),)
+				receiver.server.sendSolarxrRpc(
+					OutputTrackersSettingsResponse(
+						automaticTrackerToggle = true,
+						trackers = outputTrackers,
+						sendDerivedVelocity = config.sendDerivedVelocity,
+					),
+				)
 			}
 			.launchIn(receiver.context.scope)
 	}
@@ -82,5 +84,5 @@ class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 		is OutputTrackerToggleActions.SetOutputTrackers -> {
 			state.copy(trackers = action.trackers)
 		}
-    }
+	}
 }
