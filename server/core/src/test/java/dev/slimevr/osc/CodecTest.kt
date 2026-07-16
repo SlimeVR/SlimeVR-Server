@@ -145,7 +145,7 @@ class CodecTest {
 		assertTrue(decodedMsg.args.isNotEmpty(), "Message has no args!")
 		val arg = decodedMsg.args[0]
 		assertTrue(arg is OscArg.Int, "First arg is not Int, got: ${arg::class.simpleName}")
-		assertEquals(99, (arg as OscArg.Int).value, "Int arg value mismatch")
+		assertEquals(99, (arg).value, "Int arg value mismatch")
 	}
 
 	@Test
