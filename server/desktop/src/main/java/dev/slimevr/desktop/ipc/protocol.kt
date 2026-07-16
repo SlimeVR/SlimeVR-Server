@@ -139,13 +139,14 @@ suspend fun handleDriverConnection(
 	)
 
 	bridge.outbound.on<DriverBridgeOutbound.TrackerAdded> { event ->
+		val trackerRole = bodyPartToRole.getOrDefault(event.part, TrackerRole.NONE)
 		sendMsg(
 			ProtobufMessage(
 				tracker_added = TrackerAdded(
 					tracker_id = event.trackerId,
-					tracker_serial = event.serial,
+					tracker_serial = "human://${trackerRole}",
 					tracker_name = event.name,
-					tracker_role = bodyPartToRole.getOrDefault(event.part, TrackerRole.NONE).value.toInt(),
+					tracker_role = trackerRole.value.toInt(),
 					manufacturer = event.manufacturer,
 				),
 			),

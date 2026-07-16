@@ -32,7 +32,7 @@ sealed interface DriverBridgeInbound {
 }
 
 sealed interface DriverBridgeOutbound {
-	data class TrackerAdded(val trackerId: Int, val part: BodyPart, val serial: String, val name: String, val manufacturer: String) : DriverBridgeOutbound
+	data class TrackerAdded(val trackerId: Int, val part: BodyPart, val name: String, val manufacturer: String) : DriverBridgeOutbound
 	data class TrackerStatus(val trackerId: Int, val status: solarxr_protocol.datatypes.TrackerStatus, val battery: Float?, val charging: Boolean) : DriverBridgeOutbound
 	data class TrackerPosition(val trackerId: Int, val rotation: Quaternion, val position: Vector3?) : DriverBridgeOutbound
 }

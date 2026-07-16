@@ -40,7 +40,6 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 						DriverBridgeOutbound.TrackerAdded(
 							trackerId = part.value.toInt(),
 							part = part,
-							serial = closestTracker.hardwareId,
 							name = closestTracker.customName ?: closestTracker.name,
 							manufacturer = closestDevice.manufacturer,
 						),
