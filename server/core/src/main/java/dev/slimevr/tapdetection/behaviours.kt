@@ -18,17 +18,11 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.TapDetectionSetupNotification
 
-private const val NS_CONVERTER = 1.0e9f
-private const val CLUMP_TIME_NS = 0.06f * NS_CONVERTER
-private const val NEEDED_ACCEL_DELTA = 6.0f
-private const val ALLOWED_BODY_ACCEL = 2.5f
-private const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
-private const val TAP_WINDOW_PER_TAP_NS = 0.3f * NS_CONVERTER
-
 class TapDetectionBasicBehaviour : TapDetectionBehaviour {
+
 	data class TrackerTapDetectionState(
 		var trackerId: Int,
-		var numberTrackersOverThreshold: Int = 0,
+		var numberTrackersOverThreshold: Int = 1,
 		var resetType: ResetType? = null,
 		var tapsNeeded: Int = 2,
 		var actionDelay: Float = 0f,
@@ -83,7 +77,36 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 						.filter { trackerTapDetectionState.resetType != null || setupMode }
 						.map { it.rawAcceleration }
 						.distinctUntilChanged()
-						.onEach { processTapDetection(receiver, setupMode, trackersOverThreshold, trackerTapDetectionState, it) }
+						.onEach {
+							val tapTriggered = runTapDetection(
+								System.nanoTime(),
+								trackersOverThreshold,
+								trackerTapDetectionState,
+								it,
+							)
+
+							if (tapTriggered) {
+								receiver.context.scope.safeLaunch {
+									// If it's in setup mode, tap to assign
+									if (setupMode) {
+										receiver.server.sendSolarxrRpc(
+											TapDetectionSetupNotification(
+												trackerTapDetectionState.trackerId.toUShort()
+											)
+										)
+									}
+
+									// If it has a reset to execute
+									trackerTapDetectionState.resetType?.let { reset ->
+										receiver.resetsManager.scheduleReset(
+											"TapDetection",
+											reset,
+											trackerTapDetectionState.actionDelay,
+										)
+									}
+								}
+							}
+						}
 				}.merge()
 			}
 			.launchIn(receiver.context.scope)
@@ -131,20 +154,17 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 	}
 
 	// Logic loop for tap detection
-	private fun processTapDetection(
-		receiver: TapDetectionManager,
-		setupMode: Boolean,
+	fun runTapDetection(
+		now: Long,
 		trackersOverThreshold: MutableSet<Int>,
 		trackerTapDetectionState: TrackerTapDetectionState,
 		trackerAcceleration: Vector3,
-	) {
-		val now = System.nanoTime()
-
+	): Boolean {
 		// Get the acceleration of the tracker and store it
 		trackerTapDetectionState.accelList.add(trackerAcceleration.len() to now)
 
 		// Remove old stored accelerations (if they are too old)
-		while (trackerTapDetectionState.accelList.isNotEmpty() && now - trackerTapDetectionState.accelList.first().second > CLUMP_TIME_NS) {
+		while (trackerTapDetectionState.accelList.isNotEmpty() && now - trackerTapDetectionState.accelList.first().second > ACCEL_WINDOW_NS) {
 			trackerTapDetectionState.accelList.removeFirst()
 		}
 
@@ -174,32 +194,21 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 
 		if (trackerTapDetectionState.tapTimestamps.isNotEmpty()) {
 			// Remove old stored taps (if they are too old)
-			val totalWindowNs = (TAP_WINDOW_PER_TAP_NS * trackerTapDetectionState.tapTimestamps.size).toLong()
-			while (trackerTapDetectionState.tapTimestamps.isNotEmpty() && now - trackerTapDetectionState.tapTimestamps.first() > totalWindowNs) {
+			val totalTapWindowNs = (TAP_WINDOW_PER_TAP_NS * trackerTapDetectionState.tapTimestamps.size).toLong()
+			while (trackerTapDetectionState.tapTimestamps.isNotEmpty() && now - trackerTapDetectionState.tapTimestamps.first() > totalTapWindowNs) {
 				trackerTapDetectionState.tapTimestamps.removeFirst()
 			}
 
 			if (trackerTapDetectionState.tapTimestamps.size >= trackerTapDetectionState.tapsNeeded) {
-				// Taps completed!
-				receiver.context.scope.safeLaunch {
-					// If it's in setup mode, tap to assign
-					if (setupMode) {
-						receiver.server.sendSolarxrRpc(
-							TapDetectionSetupNotification(trackerTapDetectionState.trackerId.toUShort()),
-						)
-					}
-
-					// If it has a reset to execute
-					trackerTapDetectionState.resetType?.let { reset ->
-						receiver.resetsManager.scheduleReset("TapDetection", reset, trackerTapDetectionState.actionDelay)
-					}
-				}
-
 				trackerTapDetectionState.accelList.clear()
 				trackerTapDetectionState.tapTimestamps.clear()
 				trackerTapDetectionState.waitForLowAccel = false
+
+				return true
 			}
 		}
+
+		return false
 	}
 
 	override fun reduce(state: TapDetectionState, action: TapDetectionActions) = when (action) {
@@ -207,4 +216,13 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 			state.copy(setupMode = action.setupMode)
 		}
 	}
+
+    companion object {
+        const val NS_CONVERTER = 1.0e9f
+		const val ACCEL_WINDOW_NS = 0.06f * NS_CONVERTER
+		const val TAP_WINDOW_PER_TAP_NS = 0.3f * NS_CONVERTER
+		const val NEEDED_ACCEL_DELTA = 6.0f
+		const val ALLOWED_BODY_ACCEL = 2.5f
+		const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
+    }
 }
