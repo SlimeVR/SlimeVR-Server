@@ -21,11 +21,17 @@ class AssignTrackerBehaviour(
 				TrackerActions.Update {
 					copy(
 						bodyPart = bodyPart,
-						customName = req.displayName,
-						mountingOrientation = mountingOrientation,
+						customName = req.displayName ?: customName,
 					)
 				},
 			)
+
+			// Override default mounting orientation set from changing the bodyPart
+			if (mountingOrientation != null) {
+				tracker.context.dispatch(
+					TrackerActions.SetMountingOrientation(mountingOrientation),
+				)
+			}
 		}
 	}
 }

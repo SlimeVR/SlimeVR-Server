@@ -109,8 +109,7 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 				}
 			receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, tracker.context.state.value.id))
 			// HID does not have a rest calibration signal
-			tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true, magStatus = packet.magStatus) })
-			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+			tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true, magStatus = packet.magStatus, status = TrackerStatus.OK) })
 		}
 	}
 }

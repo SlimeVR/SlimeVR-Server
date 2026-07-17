@@ -334,21 +334,15 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 
 			val existingTracker = receiver.getTracker(event.data.sensorId)
 			if (existingTracker != null) {
-				existingTracker.context.dispatchAll(
-					listOf(
-						TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
-						TrackerActions.SetStatus(event.data.status),
-					),
+				existingTracker.context.dispatch(
+					TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration, status = event.data.status) },
 				)
 				return@onPacket
 			}
 
 			val (tracker, isNew) = assignTracker(receiver, device, event)
-			tracker.context.dispatchAll(
-				listOf(
-					TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
-					TrackerActions.SetStatus(event.data.status),
-				),
+			tracker.context.dispatch(
+				TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration, status = event.data.status) },
 			)
 			if (isNew && tracker.context.state.value.magStatus == MagnetometerStatus.NOT_SUPPORTED) {
 				tracker.context.dispatch(

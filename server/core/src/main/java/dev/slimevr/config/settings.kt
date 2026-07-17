@@ -37,7 +37,7 @@ data class TrackersConfig(
 
 @Serializable
 data class HidConfig(
-	val trackersOverHid: Boolean = false,
+	val trackersOverHid: Boolean = false, // TODO
 )
 
 @Serializable
@@ -48,7 +48,7 @@ data class OutputTrackersConfig(
 	 */
 	@Serializable(with = BodyPartListSerializer::class)
 	val trackers: List<BodyPart> = listOf(),
-	val sendDerivedVelocity: Boolean = false,
+	val sendDerivedVelocity: Boolean = false, // TODO
 )
 
 @Serializable
@@ -81,14 +81,14 @@ data class ResetsConfig(
 	/** Always reset mounting for feet */
 	val resetMountingFeet: Boolean = false,
 	/** Reset mode used for the arms */
-	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
+	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK, // TODO
 	/** Yaw reset smoothing time in seconds */
-	val yawResetSmoothTime: Float = 0.0f,
+	val yawResetSmoothTime: Float = 0.0f, // TODO
 	/** Save automatic mounting reset calibration */
-	val saveMountingReset: Boolean = false,
+	val saveMountingReset: Boolean = false, // TODO
 	/** Reset the HMD's pitch upon full reset */
-	val resetHmdPitch: Boolean = false,
-	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC,
+	val resetHmdPitch: Boolean = false, // TODO
+	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC, // TODO
 )
 
 // Used in SkeletonConfig
