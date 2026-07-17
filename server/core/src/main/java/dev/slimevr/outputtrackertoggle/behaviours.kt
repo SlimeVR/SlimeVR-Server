@@ -17,7 +17,7 @@ import kotlin.collections.map
 
 class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 	private val automaticToggleToTracker = mapOf(
-		BodyPart.CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
+		BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
 		BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
 		BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
 		BodyPart.HIP to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP),

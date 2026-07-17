@@ -19,7 +19,7 @@ private val trackerIdsByBodyPart = mapOf(
 	BodyPart.RIGHT_FOOT to 3,
 	BodyPart.LEFT_UPPER_LEG to 4,
 	BodyPart.RIGHT_UPPER_LEG to 5,
-	BodyPart.CHEST to 6,
+	BodyPart.UPPER_CHEST to 6,
 	BodyPart.LEFT_UPPER_ARM to 7,
 	BodyPart.RIGHT_UPPER_ARM to 8,
 )

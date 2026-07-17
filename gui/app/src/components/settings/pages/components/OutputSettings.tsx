@@ -59,7 +59,7 @@ function togglesToBodyParts(
 ): BodyPart[] {
   const toggleToBodyPart: [boolean, BodyPart][] = [
     [trackers.waist, BodyPart.HIP],
-    [trackers.chest, BodyPart.CHEST],
+    [trackers.chest, BodyPart.UPPER_CHEST],
     [trackers.leftFoot, BodyPart.LEFT_FOOT],
     [trackers.rightFoot, BodyPart.RIGHT_FOOT],
     [trackers.leftKnee, BodyPart.LEFT_UPPER_LEG],
@@ -81,7 +81,7 @@ function bodyPartsToTrackers(
   const set = new Set(bodyParts);
   return {
     waist: set.has(BodyPart.HIP),
-    chest: set.has(BodyPart.CHEST),
+    chest: set.has(BodyPart.UPPER_CHEST),
     leftFoot: set.has(BodyPart.LEFT_FOOT),
     rightFoot: set.has(BodyPart.RIGHT_FOOT),
     leftKnee: set.has(BodyPart.LEFT_UPPER_LEG),

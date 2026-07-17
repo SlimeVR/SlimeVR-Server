@@ -23,20 +23,20 @@ class OutputTrackerToggleTest {
 				expected = emptySet(),
 			),
 			TestCase(
-				name = "upper chest enables chest and hip",
+				name = "upper chest enables upper chest and hip",
 				okBodyParts = setOf(BodyPart.UPPER_CHEST),
 				configuredTrackers = emptyList(),
 				expected = setOf(
-					BodyPart.CHEST,
+					BodyPart.UPPER_CHEST,
 					BodyPart.HIP,
 				),
 			),
 			TestCase(
-				name = "chest enables chest and hip",
+				name = "chest enables upper chest and hip",
 				okBodyParts = setOf(BodyPart.CHEST),
 				configuredTrackers = emptyList(),
 				expected = setOf(
-					BodyPart.CHEST,
+					BodyPart.UPPER_CHEST,
 					BodyPart.HIP,
 				),
 			),

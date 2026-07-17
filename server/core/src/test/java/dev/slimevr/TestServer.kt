@@ -83,7 +83,7 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 	val context = Context.create(
 		initialState = DEFAULT_SKELETON_STATE,
 		scope = scope,
-		behaviours = listOf(ProportionsBehaviour()),
+		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
 		name = "TestSkeleton",
 	)
 	val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))

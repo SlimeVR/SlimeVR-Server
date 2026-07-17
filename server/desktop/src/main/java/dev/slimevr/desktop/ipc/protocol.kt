@@ -64,7 +64,7 @@ enum class TrackerRole(
 }
 
 val bodyPartToRole = mapOf(
-	BodyPart.CHEST to TrackerRole.CHEST,
+	BodyPart.UPPER_CHEST to TrackerRole.CHEST,
 	BodyPart.LEFT_UPPER_ARM to TrackerRole.LEFT_ELBOW,
 	BodyPart.RIGHT_UPPER_ARM to TrackerRole.RIGHT_ELBOW,
 	BodyPart.HIP to TrackerRole.WAIST,
