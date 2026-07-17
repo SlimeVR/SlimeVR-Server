@@ -41,15 +41,14 @@ class VmcBehaviour(
 
 		// Receive VMC config
 		receiver.rpcDispatcher.on<ChangeVMCOSCSettingsRequest> { req ->
-			val oldConfig = settings.context.state.value.data.vmcConfig
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
-						vmcConfig = oldConfig.copy(
+						vmcConfig = vmcConfig.copy(
 							enabled = req.enabled == true,
-							portIn = req.portIn?.toInt() ?: oldConfig.portIn,
-							portOut = req.portOut?.toInt() ?: oldConfig.portOut,
-							address = req.address ?: oldConfig.address,
+							portIn = req.portIn?.toInt() ?: vmcConfig.portIn,
+							portOut = req.portOut?.toInt() ?: vmcConfig.portOut,
+							address = req.address ?: vmcConfig.address,
 							mirrorTracking = req.mirrorTracking == true,
 							anchorAtHips = req.anchorHip == true,
 						),
@@ -60,11 +59,10 @@ class VmcBehaviour(
 
 		// Receive VRM json
 		receiver.rpcDispatcher.on<ChangeVRMSettingsRequest> { req ->
-			val oldConfig = settings.context.state.value.data.vmcConfig
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
-						vmcConfig = oldConfig.copy(vrmJson = req.vrmJson),
+						vmcConfig = vmcConfig.copy(vrmJson = req.vrmJson),
 					)
 				},
 			)

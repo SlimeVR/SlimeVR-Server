@@ -27,13 +27,12 @@ class OutputTrackersBehaviour(
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeOutputTrackersSettingsRequest> { req ->
-			val oldConfig = settings.context.state.value.data.outputTrackersConfig
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
 						outputTrackersConfig = OutputTrackersConfig(
 							automaticTrackerToggle = req.automaticTrackerToggle == true,
-							trackers = req.trackers ?: oldConfig.trackers,
+							trackers = req.trackers ?: listOf(),
 							sendDerivedVelocity = req.sendDerivedVelocity == true,
 						),
 					)

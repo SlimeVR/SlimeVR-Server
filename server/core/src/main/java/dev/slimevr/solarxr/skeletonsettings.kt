@@ -56,7 +56,6 @@ class SkeletonSettingsBehaviour(
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeSkeletonSettingsRequest> { req ->
-			val oldConfig = settings.context.state.value.data.skeletonConfig
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
@@ -73,29 +72,23 @@ class SkeletonSettingsBehaviour(
 									enforceConstraints = it.enforceConstraints == true,
 									correctConstraints = it.correctConstraints == true,
 								)
-							} ?: oldConfig.toggles,
+							} ?: skeletonConfig.toggles,
 							ratios = req.ratios?.let {
 								SkeletonRatiosConfig(
-									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower
-										?: oldConfig.ratios.imputeSpineFromUpperToLower,
-									imputeSpineCurvature = it.imputeSpineCurvature
-										?: oldConfig.ratios.imputeSpineCurvature,
-									interpolateHipWithKnees = it.interpolateHipWithKnees
-										?: oldConfig.ratios.interpolateHipWithKnees,
-									interpolateComputedKneesWithAnkles = it.interpolateComputedKneesWithAnkles
-										?: oldConfig.ratios.interpolateComputedKneesWithAnkles,
-									interpolateKneesWithAnkles = it.interpolateKneesWithAnkles
-										?: oldConfig.ratios.interpolateKneesWithAnkles,
-									skatingCorrectionStrength = it.skatingCorrectionStrength
-										?: oldConfig.ratios.skatingCorrectionStrength,
+									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower ?: 0f,
+									imputeSpineCurvature = it.imputeSpineCurvature ?: 0f,
+									interpolateHipWithKnees = it.interpolateHipWithKnees ?: 0f,
+									interpolateComputedKneesWithAnkles = it.interpolateComputedKneesWithAnkles ?: 0f,
+									interpolateKneesWithAnkles = it.interpolateKneesWithAnkles ?: 0f,
+									skatingCorrectionStrength = it.skatingCorrectionStrength ?: 0f,
 								)
-							} ?: oldConfig.ratios,
+							} ?: skeletonConfig.ratios,
 							filtering = req.filtering?.let {
 								SkeletonFilteringConfig(
 									type = it.type ?: FilteringType.NONE,
-									amount = it.amount ?: oldConfig.filtering.amount,
+									amount = it.amount ?: 0f,
 								)
-							} ?: oldConfig.filtering,
+							} ?: skeletonConfig.filtering,
 						),
 					)
 				},

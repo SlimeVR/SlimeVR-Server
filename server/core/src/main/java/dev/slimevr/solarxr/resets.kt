@@ -3,6 +3,7 @@ package dev.slimevr.solarxr
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.ChangeResetsSettingsRequest
 import solarxr_protocol.rpc.ResetsSettingsRequest
 import solarxr_protocol.rpc.ResetsSettingsResponse
@@ -27,14 +28,13 @@ class ResetsBehaviour(
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeResetsSettingsRequest> { req ->
-			val oldConfig = settings.context.state.value.data.resetsConfig
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
 						resetsConfig = ResetsConfig(
 							resetMountingFeet = req.resetMountingFeet == true,
-							armsResetMode = req.armsResetMode ?: oldConfig.armsResetMode,
-							yawResetSmoothTime = req.yawResetSmoothTime ?: oldConfig.yawResetSmoothTime,
+							armsResetMode = req.armsResetMode ?: ArmsResetMode.BACK,
+							yawResetSmoothTime = req.yawResetSmoothTime ?: 0f,
 							saveMountingReset = req.saveMountingReset == true,
 							resetHmdPitch = req.resetHmdPitch == true,
 						),

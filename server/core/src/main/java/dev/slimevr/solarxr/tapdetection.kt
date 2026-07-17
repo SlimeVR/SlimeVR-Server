@@ -39,24 +39,23 @@ class TapDetectionBehaviour(
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeTapDetectionSettingsRequest> { req ->
-			val oldConfig = settings.context.state.value.data.tapDetectionConfig
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
 						tapDetectionConfig = TapDetectionConfig(
-							yawResetDelay = req.yawResetDelay ?: oldConfig.yawResetDelay,
-							fullResetDelay = req.fullResetDelay ?: oldConfig.fullResetDelay,
-							mountingResetDelay = req.mountingResetDelay ?: oldConfig.mountingResetDelay,
+							yawResetDelay = req.yawResetDelay ?: 0f,
+							fullResetDelay = req.fullResetDelay ?: 0f,
+							mountingResetDelay = req.mountingResetDelay ?: 0f,
 							yawResetEnabled = req.yawResetEnabled == true,
 							fullResetEnabled = req.fullResetEnabled == true,
 							mountingResetEnabled = req.mountingResetEnabled == true,
-							yawResetTaps = req.yawResetTaps?.toInt() ?: oldConfig.yawResetTaps,
-							fullResetTaps = req.fullResetTaps?.toInt() ?: oldConfig.fullResetTaps,
-							mountingResetTaps = req.mountingResetTaps?.toInt() ?: oldConfig.mountingResetTaps,
-							yawResetBodyPart = req.yawResetTracker ?: oldConfig.yawResetBodyPart,
-							fullResetBodyPart = req.fullResetTracker ?: oldConfig.fullResetBodyPart,
-							mountingResetBodyPart = req.mountingResetTracker ?: oldConfig.mountingResetBodyPart,
-							numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: oldConfig.numberTrackersOverThreshold,
+							yawResetTaps = req.yawResetTaps?.toInt() ?: 2,
+							fullResetTaps = req.fullResetTaps?.toInt() ?: 2,
+							mountingResetTaps = req.mountingResetTaps?.toInt() ?: 2,
+							yawResetBodyPart = req.yawResetTracker,
+							fullResetBodyPart = req.fullResetTracker,
+							mountingResetBodyPart = req.mountingResetTracker,
+							numberTrackersOverThreshold = req.numberTrackersOverThreshold?.toInt() ?: 1,
 						),
 					)
 				},

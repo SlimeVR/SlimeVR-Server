@@ -57,16 +57,15 @@ internal class VrcOscBehaviour(
 		}
 
 		receiver.rpcDispatcher.on<ChangeVRCOSCSettingsRequest> { req ->
-			val oldConfig = settings.context.state.value.data.vrcOscConfig
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
 						vrcOscConfig = VRCOSCConfig(
 							enabled = req.enabled == true,
 							useManualNetwork = req.useManualNetwork == true,
-							portIn = req.portIn?.toInt() ?: oldConfig.portIn,
-							portOut = req.portOut?.toInt() ?: oldConfig.portOut,
-							address = req.address ?: oldConfig.address,
+							portIn = req.portIn?.toInt() ?: vrcOscConfig.portIn,
+							portOut = req.portOut?.toInt() ?: vrcOscConfig.portOut,
+							address = req.address ?: vrcOscConfig.address,
 						),
 					)
 				},
