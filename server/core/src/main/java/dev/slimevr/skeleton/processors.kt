@@ -11,15 +11,11 @@ interface SkeletonProcessor {
 }
 
 class FallbackProcessor : SkeletonProcessor {
-	override fun process(state: SkeletonState): SkeletonState {
-		return state
-	}
+	override fun process(state: SkeletonState): SkeletonState = state
 }
 
 class ImputeSpineProcessor(val settings: Settings) : SkeletonProcessor {
-	override fun process(state: SkeletonState): SkeletonState {
-		return state
-	}
+	override fun process(state: SkeletonState): SkeletonState = state
 }
 
 class SmoothingProcessor(val settings: Settings) : SkeletonProcessor {
@@ -50,10 +46,10 @@ class SmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 		)
 	}
 
-    companion object {
-        private const val SMOOTH_MIN = 0.7f
-		private const val SMOOTH_MAX = 0.95f
-    }
+	companion object {
+		private const val SMOOTH_MIN = 0.63f
+		private const val SMOOTH_MAX = 0.94f
+	}
 }
 
 class PredictionProcessor(val settings: Settings) : SkeletonProcessor {

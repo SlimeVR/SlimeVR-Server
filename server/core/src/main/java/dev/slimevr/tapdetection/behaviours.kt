@@ -91,8 +91,8 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 									if (setupMode) {
 										receiver.server.sendSolarxrRpc(
 											TapDetectionSetupNotification(
-												trackerTapDetectionState.trackerId.toUShort()
-											)
+												trackerTapDetectionState.trackerId.toUShort(),
+											),
 										)
 									}
 
@@ -217,12 +217,12 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		}
 	}
 
-    companion object {
-        const val NS_CONVERTER = 1.0e9f
+	companion object {
+		const val NS_CONVERTER = 1.0e9f
 		const val ACCEL_WINDOW_NS = 0.06f * NS_CONVERTER
 		const val TAP_WINDOW_PER_TAP_NS = 0.3f * NS_CONVERTER
 		const val NEEDED_ACCEL_DELTA = 6.0f
 		const val ALLOWED_BODY_ACCEL = 2.5f
 		const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
-    }
+	}
 }

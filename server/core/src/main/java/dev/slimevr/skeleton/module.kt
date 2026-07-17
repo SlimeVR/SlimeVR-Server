@@ -16,7 +16,7 @@ data class RawBone(
 	val offset: Vector3,
 	val rawRotation: Quaternion,
 	val rawPosition: Vector3,
-	val isReceivingData : Boolean, // TODO set it with an action or whatever
+	val isReceivingData: Boolean, // TODO set it with an action or whatever
 )
 
 data class BoneState(
@@ -102,7 +102,7 @@ class Skeleton(
 					processors = listOf(
 						FallbackProcessor(),
 						ImputeSpineProcessor(ctx.config.settings),
- 						PredictionProcessor(ctx.config.settings),
+						PredictionProcessor(ctx.config.settings),
 						SmoothingProcessor(ctx.config.settings),
 					),
 				),

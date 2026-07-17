@@ -144,7 +144,7 @@ suspend fun handleDriverConnection(
 			ProtobufMessage(
 				tracker_added = TrackerAdded(
 					tracker_id = event.trackerId,
-					tracker_serial = "human://${trackerRole}",
+					tracker_serial = "human://$trackerRole",
 					tracker_name = event.name,
 					tracker_role = trackerRole.value.toInt(),
 					manufacturer = event.manufacturer,
