@@ -76,8 +76,6 @@ fun centerOfMass(bones: Map<BodyPart, BoneState>): Vector3 = BODY_PART_MASSES.en
 
 // Probably not a SkeletonProcessor, maybe computed processor or smth
 class SkatingCorrectionProcessor : SkeletonProcessor {
-	override var enabled: Boolean = true
-
 	// Placeholder
 	val curPositions: Map<BodyPart, BoneState> = emptyMap()
 
@@ -160,8 +158,6 @@ class SkatingCorrectionProcessor : SkeletonProcessor {
 }
 
 class FloorClipProcessor : SkeletonProcessor {
-	override var enabled: Boolean = true
-
 	fun getDisplacement(footPos: Vector3): Vector3 = Vector3(0f, footPos.y.coerceAtMost(0f), 0f)
 
 	override fun process(state: SkeletonState): SkeletonState {

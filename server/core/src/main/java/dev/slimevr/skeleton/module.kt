@@ -16,6 +16,7 @@ data class RawBone(
 	val offset: Vector3,
 	val rawRotation: Quaternion,
 	val rawPosition: Vector3,
+	val isReceivingData : Boolean, // TODO set it with an action or whatever
 )
 
 data class BoneState(
@@ -45,7 +46,7 @@ val DEFAULT_SKELETON_STATE: SkeletonState = run {
 		bodyPart to BoneState(bodyPart = bodyPart, offset = tailOffset, rotation = restRotation)
 	}
 	SkeletonState(
-		rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL) },
+		rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL, isReceivingData = false) },
 		skeletonHeight = DEFAULT_HEIGHT,
 		paused = false,
 	)
@@ -94,14 +95,15 @@ class Skeleton(
 			val behaviours = listOf(
 				PauseTrackingBehaviour(),
 				BoneTransformBehaviour(),
-				ProportionsBehaviour(),
-				ScaledProportionsBehaviour(ctx.config.userConfig),
+				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 				// YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					processors = listOf(
-// 					PredictionProcessor(predictionAmount = 0.3f),
-						SmoothingProcessor(smoothing = 0.3f),
+						FallbackProcessor(),
+						ImputeSpineProcessor(ctx.config.settings),
+ 						PredictionProcessor(ctx.config.settings),
+						SmoothingProcessor(ctx.config.settings),
 					),
 				),
 			)

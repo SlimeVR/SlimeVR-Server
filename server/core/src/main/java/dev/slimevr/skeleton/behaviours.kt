@@ -34,7 +34,7 @@ class BoneTransformBehaviour : SkeletonBehaviour {
 	}
 }
 
-class ProportionsBehaviour : SkeletonBehaviour {
+class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetProportions -> {
 			val bones = action.lengths.toBoneOffsets()
@@ -46,9 +46,7 @@ class ProportionsBehaviour : SkeletonBehaviour {
 
 		else -> state
 	}
-}
 
-class ScaledProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		userConfig.context.state
 			.map { state -> state.data.proportions }
@@ -130,7 +128,6 @@ class ComputedSkeletonBehaviour(
 					delay(intervalMs)
 					val targetState = receiver.context.state.value
 					val processed = processors
-						.filter { processor -> processor.enabled }
 						.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
 
 					val rootHead = Vector3(0f, targetState.skeletonHeight, 0f) // FIXME WRONG

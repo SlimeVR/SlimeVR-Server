@@ -1,24 +1,37 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.config.Settings
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.FilteringType
 
 interface SkeletonProcessor {
-	var enabled: Boolean
 	fun process(state: SkeletonState): SkeletonState
 }
 
-private const val SMOOTH_MIN = 0.66f
-private const val SMOOTH_MAX = 0.99f
-class SmoothingProcessor(var smoothing: Float) : SkeletonProcessor {
-	override var enabled: Boolean = true
+class FallbackProcessor : SkeletonProcessor {
+	override fun process(state: SkeletonState): SkeletonState {
+		return state
+	}
+}
+
+class ImputeSpineProcessor(val settings: Settings) : SkeletonProcessor {
+	override fun process(state: SkeletonState): SkeletonState {
+		return state
+	}
+}
+
+class SmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 	private var smoothedRotations: Map<BodyPart, Quaternion> = emptyMap()
 	private var smoothedLengths: Map<BodyPart, Vector3> = emptyMap()
 
 	// TODO this isn't linear. Do we want linear smoothing like in main?
 	override fun process(state: SkeletonState): SkeletonState {
-		val alpha = 1 - (SMOOTH_MIN + smoothing.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN))
+		val config = settings.context.state.value.data.skeletonConfig.filtering
+		if (config.type == FilteringType.NONE) return state
+
+		val alpha = 1 - (SMOOTH_MIN + config.amount.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN))
 
 		smoothedRotations = state.rawBones.mapValues { (bodyPart, bone) ->
 			(smoothedRotations[bodyPart] ?: bone.rawRotation).lerpR(bone.rawRotation, alpha).unit()
@@ -36,11 +49,14 @@ class SmoothingProcessor(var smoothing: Float) : SkeletonProcessor {
 			},
 		)
 	}
+
+    companion object {
+        private const val SMOOTH_MIN = 0.66f
+		private const val SMOOTH_MAX = 0.99f
+    }
 }
 
-class PredictionProcessor(var predictionAmount: Float) : SkeletonProcessor {
-	override var enabled: Boolean = true
-
+class PredictionProcessor(val settings: Settings) : SkeletonProcessor {
 	private data class BoneVelocity(
 		val lastRotation: Quaternion,
 		val rotationDelta: Quaternion,
@@ -51,6 +67,9 @@ class PredictionProcessor(var predictionAmount: Float) : SkeletonProcessor {
 	private var velocities: Map<BodyPart, BoneVelocity> = emptyMap()
 
 	override fun process(state: SkeletonState): SkeletonState {
+		val config = settings.context.state.value.data.skeletonConfig.filtering
+		if (config.type == FilteringType.NONE) return state
+
 		val newVelocities = mutableMapOf<BodyPart, BoneVelocity>()
 		val newBones = state.rawBones.mapValues { (bodyPart, bone) ->
 			val prev = velocities[bodyPart]
@@ -69,10 +88,10 @@ class PredictionProcessor(var predictionAmount: Float) : SkeletonProcessor {
 				prev.offsetDelta
 			}
 			newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, rotationDelta, bone.offset, lengthDelta)
-			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, predictionAmount).unit()
+			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, config.amount).unit()
 			bone.copy(
 				rawRotation = (scaledDelta * bone.rawRotation).unit(),
-				offset = bone.offset + lengthDelta * predictionAmount,
+				offset = bone.offset + lengthDelta * config.amount,
 			)
 		}
 		velocities = newVelocities
