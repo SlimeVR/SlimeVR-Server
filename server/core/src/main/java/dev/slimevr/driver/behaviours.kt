@@ -10,43 +10,52 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 
 class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
+	// Keys should match with protocol.kt:bodyPartToRole
+	val bodyPartToNearest: Map<BodyPart, Set<BodyPart>> = mapOf(
+		BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
+		BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
+		BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
+		BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
+		BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
+		BodyPart.RIGHT_FOOT to setOf(BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
+		BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
+		BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
+		BodyPart.LEFT_HAND to setOf(BodyPart.LEFT_HAND, BodyPart.LEFT_LOWER_ARM),
+		BodyPart.RIGHT_HAND to setOf(BodyPart.RIGHT_HAND, BodyPart.RIGHT_LOWER_ARM),
+	)
 
 	override fun observe(receiver: DriverBridge) {
 		// Should be safe: StateFlow never delivers two emissions concurrently to the same collector.
 		val subscribedTrackers = mutableSetOf<UByte>()
 
 		receiver.appContext.skeleton.computed.onEach { computedBones ->
-			val enabledBodyParts =
-				receiver.appContext.outputTrackerToggle.context.state.value.trackers
+			val enabledBodyParts = receiver.appContext.outputTrackerToggle.context.state.value.trackers
 			val serverState = receiver.appContext.server.context.state.value
 
 			computedBones.forEach { (part, state) ->
-				val closestTracker =
-					serverState.trackers.values.find { it.context.state.value.bodyPart == part }?.context?.state?.value
-						?: return@forEach
-				val enabled =
-					enabledBodyParts.contains(part) // TODO: add paused tracking here
-				if (closestTracker.origin == DeviceOrigin.DRIVER) return@forEach
-				val closestDevice =
-					serverState.devices[closestTracker.deviceId]?.context?.state?.value
-						?: error("device should exists")
+				if (enabledBodyParts.contains(part)) {
+					val closestTracker = bodyPartToNearest[part].orEmpty()
+						.firstNotNullOfOrNull { fallbackPart ->
+							serverState.trackers.values
+								.find { it.context.state.value.bodyPart == fallbackPart && it.context.state.value.origin != DeviceOrigin.DRIVER }
+								?.context?.state?.value
+						}
+					val closestDevice = serverState.devices[closestTracker?.deviceId]?.context?.state?.value
 
-				val newTracker = subscribedTrackers.add(part.value)
-				if (newTracker) {
-					receiver.outbound.emit(
-						DriverBridgeOutbound.TrackerAdded(
-							trackerId = part.value.toInt(),
-							part = part,
-							name = closestTracker.customName ?: closestTracker.name,
-							manufacturer = closestDevice.manufacturer,
-						),
-					)
-				}
+					val newTracker = subscribedTrackers.add(part.value)
+					if (newTracker) {
+						receiver.outbound.emit(
+							DriverBridgeOutbound.TrackerAdded(
+								trackerId = part.value.toInt(),
+								part = part,
+							),
+						)
+					}
 
-				if (enabled) {
 					receiver.outbound.emit(
 						DriverBridgeOutbound.TrackerPosition(
 							trackerId = part.value.toInt(),
@@ -58,26 +67,18 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 					receiver.outbound.emit(
 						DriverBridgeOutbound.TrackerStatus(
 							trackerId = part.value.toInt(),
-							battery = closestDevice.batteryLevel,
-							charging = closestDevice.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
-							status = closestTracker.status,
+							battery = closestDevice?.batteryLevel,
+							charging = closestDevice?.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
+							status = closestTracker?.status ?: TrackerStatus.OK,
 						),
 					)
 				} else {
 					receiver.outbound.emit(
-						DriverBridgeOutbound.TrackerPosition(
-							trackerId = part.value.toInt(),
-							rotation = Quaternion.NULL,
-							position = Vector3.NULL,
-						),
-					)
-
-					receiver.outbound.emit(
 						DriverBridgeOutbound.TrackerStatus(
 							trackerId = part.value.toInt(),
-							status = TrackerStatus.DISCONNECTED,
 							battery = 0f,
 							charging = false,
+							status = TrackerStatus.DISCONNECTED,
 						),
 					)
 				}
