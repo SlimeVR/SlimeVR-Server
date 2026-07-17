@@ -29,7 +29,7 @@ class SmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 	// TODO this isn't linear. Do we want linear smoothing like in main?
 	override fun process(state: SkeletonState): SkeletonState {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
-		if (config.type == FilteringType.NONE) return state
+		if (config.type != FilteringType.SMOOTHING) return state
 
 		val alpha = 1 - (SMOOTH_MIN + config.amount.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN))
 
@@ -51,8 +51,8 @@ class SmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 	}
 
     companion object {
-        private const val SMOOTH_MIN = 0.66f
-		private const val SMOOTH_MAX = 0.99f
+        private const val SMOOTH_MIN = 0.7f
+		private const val SMOOTH_MAX = 0.95f
     }
 }
 
@@ -68,7 +68,7 @@ class PredictionProcessor(val settings: Settings) : SkeletonProcessor {
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
-		if (config.type == FilteringType.NONE) return state
+		if (config.type != FilteringType.PREDICTION) return state
 
 		val newVelocities = mutableMapOf<BodyPart, BoneVelocity>()
 		val newBones = state.rawBones.mapValues { (bodyPart, bone) ->

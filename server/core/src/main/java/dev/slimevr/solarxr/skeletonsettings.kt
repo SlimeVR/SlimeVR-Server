@@ -8,6 +8,7 @@ import dev.slimevr.config.SkeletonRatiosConfig
 import dev.slimevr.config.SkeletonTogglesConfig
 import dev.slimevr.skeleton.SkeletonActions
 import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
+import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.SetPauseTrackingRequest
 import solarxr_protocol.rpc.SkeletonFiltering
 import solarxr_protocol.rpc.SkeletonRatios
@@ -91,7 +92,7 @@ class SkeletonSettingsBehaviour(
 							} ?: oldConfig.ratios,
 							filtering = req.filtering?.let {
 								SkeletonFilteringConfig(
-									type = it.type ?: oldConfig.filtering.type,
+									type = it.type ?: FilteringType.NONE,
 									amount = it.amount ?: oldConfig.filtering.amount,
 								)
 							} ?: oldConfig.filtering,
