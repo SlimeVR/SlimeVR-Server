@@ -70,7 +70,14 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 					.firstOrNull { it in trackersBodyParts } ?: BodyPart.RIGHT_UPPER_LEG
 
 				trackers.map { tracker ->
-					val trackerTapDetectionState = createTrackerTapDetectionState(tapDetectionConfig, setupMode, tracker, yawResetBodyPart, fullResetBodyPart, mountingResetBodyPart)
+					val trackerTapDetectionState = createTrackerTapDetectionState(
+						tapDetectionConfig,
+						setupMode,
+						tracker,
+						yawResetBodyPart,
+						fullResetBodyPart,
+						mountingResetBodyPart,
+					)
 
 					// Inner flow emits whenever a tracker's rawAcceleration is updated
 					tracker.context.state

@@ -19,14 +19,21 @@ class BoneTransformBehaviour : SkeletonBehaviour {
 		is SkeletonActions.SetBoneRotation -> {
 			val bones = state.rawBones.toMutableMap()
 			val bone = bones[action.bodyPart] ?: return state
-			bones[action.bodyPart] = bone.copy(rawRotation = action.rotation)
+			bones[action.bodyPart] = bone.copy(rawRotation = action.rotation, isActive = true)
 			state.copy(rawBones = bones)
 		}
 
 		is SkeletonActions.SetBonePosition -> {
 			val bones = state.rawBones.toMutableMap()
 			val bone = bones[action.bodyPart] ?: return state
-			bones[action.bodyPart] = bone.copy(rawPosition = action.position)
+			bones[action.bodyPart] = bone.copy(rawPosition = action.position, isActive = true)
+			state.copy(rawBones = bones)
+		}
+
+		is SkeletonActions.DisableBone -> {
+			val bones = state.rawBones.toMutableMap()
+			val bone = bones[action.bodyPart] ?: return state
+			bones[action.bodyPart] = bone.copy(isActive = false)
 			state.copy(rawBones = bones)
 		}
 

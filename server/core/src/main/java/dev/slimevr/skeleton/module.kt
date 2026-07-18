@@ -16,7 +16,7 @@ data class RawBone(
 	val offset: Vector3,
 	val rawRotation: Quaternion,
 	val rawPosition: Vector3,
-	val isReceivingData: Boolean, // TODO set it with an action or whatever
+	val isActive: Boolean,
 )
 
 data class BoneState(
@@ -39,14 +39,10 @@ data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val skeletonHeigh
 
 val DEFAULT_SKELETON_STATE: SkeletonState = run {
 	val bones = DEFAULT_BONE_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
-		val restRotation = when (bodyPart) {
-			BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT -> Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
-			else -> Quaternion.IDENTITY
-		}
-		bodyPart to BoneState(bodyPart = bodyPart, offset = tailOffset, rotation = restRotation)
+		bodyPart to BoneState(bodyPart = bodyPart, offset = tailOffset)
 	}
 	SkeletonState(
-		rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL, isReceivingData = false) },
+		rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL, isActive = false) },
 		skeletonHeight = DEFAULT_HEIGHT,
 		paused = false,
 	)
@@ -77,6 +73,7 @@ fun buildBones(
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
 	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3) : SkeletonActions
+	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 }

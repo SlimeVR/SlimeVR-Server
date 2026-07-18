@@ -64,6 +64,19 @@ val BODY_PART_HIERARCHY_MAP = mapOf(
 	BodyPart.RIGHT_LOWER_LEG to arrayOf(BodyPart.RIGHT_FOOT),
 )
 
+val BODY_PART_PARENT_MAP: Map<BodyPart, BodyPart> = BODY_PART_HIERARCHY_MAP
+	.flatMap { (parent, children) -> children.map { child -> child to parent } }
+	.toMap()
+
+inline fun findBodyPartParent(rootChild: BodyPart, predicate: (BodyPart) -> Boolean): BodyPart? {
+	var current = BODY_PART_PARENT_MAP[rootChild]
+	while (current != null) {
+		if (predicate(current)) return current
+		current = BODY_PART_PARENT_MAP[current]
+	}
+	return null
+}
+
 private suspend fun SequenceScope<Pair<BodyPart?, BodyPart>>.visitBodyPart(parentBone: BodyPart?, bone: BodyPart, onlyChildren: Boolean) {
 	if (!onlyChildren) {
 		yield(Pair(parentBone, bone))

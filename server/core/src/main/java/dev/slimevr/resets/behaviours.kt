@@ -1,14 +1,11 @@
 package dev.slimevr.resets
 
-import dev.slimevr.config.MountingMethods
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import solarxr_protocol.rpc.ResetType
-
-const val MOUNTING_RESET_TIMEOUT = 120 * 1000L // 120 seconds
 
 class ResetsBasicBehaviour : ResetsBehaviour {
 	override fun reduce(state: ResetsState, action: ResetsActions) = when (action) {
@@ -41,5 +38,9 @@ class ResetsMountingTimeoutBehaviour : ResetsBehaviour {
 				receiver.context.dispatch(ResetsActions.ClearResets(listOf(ResetType.MOUNTING)))
 			}
 			.launchIn(receiver.context.scope)
+	}
+
+	companion object {
+		const val MOUNTING_RESET_TIMEOUT = 120 * 1000L // 120 seconds
 	}
 }

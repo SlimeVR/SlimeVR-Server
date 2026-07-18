@@ -3,15 +3,18 @@ package dev.slimevr.tracker
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
@@ -201,17 +204,34 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 }
 
 class TrackerToSkeletonBehaviour : TrackerBehaviour {
+	var lastBodyPartSent: BodyPart? = null
+
+	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
-			.filter { it.bodyPart != null }
-			.map { Pair(it.bodyPart, it.rotation) }
-			.distinctUntilChanged()
-			.onEach { (bodyPart, rotation) ->
-				bodyPart?.let {
+			.distinctUntilChangedBy { it.status to it.bodyPart }
+			.onEach { _ ->
+				// Tell the skeleton the tracker has stopped sending data to the last bone it was sending data to.
+				lastBodyPartSent?.let {
 					receiver.appContext.skeleton.context.dispatch(
-						SkeletonActions.SetBoneRotation(it, rotation),
+						SkeletonActions.DisableBone(it),
 					)
+					lastBodyPartSent = null
 				}
-			}.launchIn(receiver.context.scope)
+			}
+			.flatMapLatest { _ ->
+				receiver.context.state
+					.distinctUntilChangedBy { it.rotation }
+					.onEach { trackerState ->
+						if (trackerState.bodyPart != null && trackerState.status == TrackerStatus.OK) {
+							// Send data to the skeleton
+							receiver.appContext.skeleton.context.dispatch(
+								SkeletonActions.SetBoneRotation(trackerState.bodyPart, trackerState.rotation),
+							)
+							lastBodyPartSent = trackerState.bodyPart
+						}
+					}
+			}
+			.launchIn(receiver.context.scope)
 	}
 }
