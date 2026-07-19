@@ -1689,7 +1689,9 @@ tracking_checklist-STEAMVR_HANDS_ENABLED = 手部追蹤器已開啟
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = 你啟用了 SteamVR 虛擬手部追蹤器，這會導致在 SteamVR 及遊戲中無法使用按鍵輸入。
 tracking_checklist-STEAMVR_HANDS_ENABLED-go = 關閉手部追蹤器
 tracking_checklist-STANDABLE_INSTALLED = 偵測到 Standable 已安裝
-tracking_checklist-STANDABLE_INSTALLED-desc = Standable 與 SlimeVR 一併使用時，容易造成追蹤上的問題。為了確保此問題不會發生，請從 Steam 中完全移除 Standable。
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable 與 SlimeVR 一併使用時，容易造成追蹤上的問題。請從 Steam 中完全移除 Standable 來避免這類問題發生。
+    移除 Standable 前，必須先關閉 SteamVR。
 tracking_checklist-TRACKERS_REST_CALIBRATION = 校正追蹤器
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = 追蹤器尚未進行校正。請將以黃色標記的追蹤器放置在平面上幾秒鐘。
 tracking_checklist-TRACKER_ERROR = 追蹤器出現錯誤
