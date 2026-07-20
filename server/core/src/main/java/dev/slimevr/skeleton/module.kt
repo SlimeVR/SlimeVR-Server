@@ -108,6 +108,7 @@ class Skeleton(
 					processors = listOf(
 						FallbackProcessor(),
 						ImputeSpineProcessor(ctx.config.settings),
+						BoneLinkProcessor(),
 						PredictionProcessor(ctx.config.settings),
 						SmoothingProcessor(ctx.config.settings),
 					),
