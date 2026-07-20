@@ -33,7 +33,7 @@ fun ccdIk(boneInputs: Map<BodyPart, BoneInput>, bones: Map<BodyPart, BoneState>,
 		val localTarget = target - currentBone.headPosition
 		val rotationChange = Quaternion.fromTo(localOffset, localTarget).pow(
 			(i.toFloat() / chain.size) * 0.5f,
-		)
+		).unit()
 
 		workingBones[bodyPart] = currentRawBone.copy(
 			rawRotation = currentBone.rotation * rotationChange,
