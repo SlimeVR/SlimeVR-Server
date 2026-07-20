@@ -31,8 +31,8 @@ data class BoneState(
 		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
 	val localHeadPosition: Vector3
 		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
-// 	val localTailPosition: Vector3
-// 		get() = tailPosition - headPosition
+	val localTailPosition: Vector3
+		get() = tailPosition - headPosition
 }
 
 data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val skeletonHeight: Float, val paused: Boolean)
@@ -48,27 +48,37 @@ val DEFAULT_SKELETON_STATE: SkeletonState = run {
 	)
 }
 
+fun buildBone(bone: RawBone, parentBone: BoneState?, originPosition: Vector3 = Vector3.NULL): BoneState {
+	val head = parentBone?.tailPosition ?: originPosition
+	return BoneState(
+		bodyPart = bone.bodyPart,
+		offset = bone.offset,
+		headPosition = head,
+		rotation = bone.rawRotation,
+		tailPosition = head + bone.rawRotation.sandwich(bone.offset),
+		parentBone = parentBone,
+	)
+}
+
 fun buildBones(
-	state: SkeletonState,
+	state: Map<BodyPart, RawBone>,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
 ): Map<BodyPart, BoneState> {
 	val result = mutableMapOf<BodyPart, BoneState>()
 	hierarchy.forEach { (parentPart, childPart) ->
-		val rawBone = state.rawBones[childPart] ?: return@forEach
+		val rawBone = state[childPart] ?: return@forEach
 		val parentBone = parentPart?.let { result[it] }
-		val head = parentBone?.tailPosition ?: rootHead
-		result[childPart] = BoneState(
-			bodyPart = rawBone.bodyPart,
-			offset = rawBone.offset,
-			headPosition = head,
-			rotation = rawBone.rawRotation,
-			tailPosition = head + rawBone.rawRotation.sandwich(rawBone.offset),
-			parentBone = parentBone,
-		)
+		result[childPart] = buildBone(rawBone, parentBone, rootHead)
 	}
 	return result
 }
+
+fun buildBones(
+	state: SkeletonState,
+	rootHead: Vector3 = Vector3.NULL,
+	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
+): Map<BodyPart, BoneState> = buildBones(state.rawBones, rootHead, hierarchy)
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
