@@ -68,8 +68,8 @@ val BODY_PART_PARENT_MAP: Map<BodyPart, BodyPart> = BODY_PART_HIERARCHY_MAP
 	.flatMap { (parent, children) -> children.map { child -> child to parent } }
 	.toMap()
 
-inline fun findBodyPartParent(rootChild: BodyPart, predicate: (BodyPart) -> Boolean): BodyPart? {
-	var current = BODY_PART_PARENT_MAP[rootChild]
+inline fun BodyPart.findFirstParent(predicate: (BodyPart) -> Boolean): BodyPart? {
+	var current = BODY_PART_PARENT_MAP[this]
 	while (current != null) {
 		if (predicate(current)) return current
 		current = BODY_PART_PARENT_MAP[current]

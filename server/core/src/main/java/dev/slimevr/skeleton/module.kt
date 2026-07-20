@@ -107,8 +107,8 @@ class Skeleton(
 				ComputedSkeletonBehaviour(
 					processors = listOf(
 						FallbackProcessor(),
-						ImputeSpineProcessor(ctx.config.settings),
 						BoneLinkProcessor(),
+						ImputeSpineProcessor(ctx.config.settings),
 						ImputeFingersProcessor(),
 						PredictionProcessor(ctx.config.settings),
 						SmoothingProcessor(ctx.config.settings),

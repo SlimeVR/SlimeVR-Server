@@ -93,6 +93,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 
 			// TODO: Immediately apply calibration on `state.rawRotation` so we don't
 			//  need to worry about desync of `state.rotation`
+			//  (+1 from Erimel)
 			state.copy(sessionCalibration = sessionCalibration)
 		}
 
