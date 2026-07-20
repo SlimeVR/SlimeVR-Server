@@ -52,6 +52,8 @@ export const KeybindRecorder = forwardRef<
       return;
     }
 
+    setErrorText('');
+
     if (displayKeys.length < maxKeybindLength) {
       const updatedKeys = [...displayKeys, key];
       setLocalKeys(updatedKeys);
@@ -120,7 +122,7 @@ export const KeybindRecorder = forwardRef<
       </div>
       {displayError && (
         <div className="isInvalid keyslot-invalid">
-          <Typography color="text-status-critical">{`${errorText} ${error}`}</Typography>
+          <Typography color="text-status-critical">{displayError}</Typography>
         </div>
       )}
     </div>

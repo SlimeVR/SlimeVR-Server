@@ -11,12 +11,15 @@ import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.config.KeybindConfig
+import dev.slimevr.config.SettingsActions
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -31,9 +34,16 @@ private val FEET_BODY_PARTS = listOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
 private fun currentKeybinds(appContext: AppContextProvider): List<KeybindConfig> = appContext.config.settings.context.state.value.data.keybinds
 
+// The gui sends one request per keybind, so changing several at once (or resetting them all) arrives
+// as a burst. Recreating a portal session for each one makes GNOME reject the bind and leaves
+// nothing grabbed, so settle first and apply the burst as a single change.
+private const val BINDING_SETTLE_MS = 300L
+
+@OptIn(FlowPreview::class)
 private fun bindingsFlow(appContext: AppContextProvider): Flow<List<KeybindConfig>> = appContext.config.settings.context.state
 	.map { it.data.keybinds }
 	.distinctUntilChangedBy { keybinds -> keybinds.map { it.id to it.binding } }
+	.debounce(BINDING_SETTLE_MS)
 
 fun keybindLabel(id: KeybindId): String = id.name
 	.split('_')
@@ -102,7 +112,17 @@ private suspend fun setupWindowsKeybinds(appContext: AppContextProvider, scope: 
 }
 
 private suspend fun setupLinuxKeybinds(appContext: AppContextProvider, scope: CoroutineScope) {
+	val gnomeAppId = if (isGnome()) resolveGnomeAppId() else null
 	var handler: GlobalShortcutsHandler? = null
+
+	suspend fun adoptGnomeShortcuts(appId: String) {
+		val stored = readGnomeShortcuts(appId).ifEmpty { return }
+		appContext.config.settings.context.dispatch(
+			SettingsActions.Update {
+				copy(keybinds = keybinds.map { keybind -> stored[keybind.id]?.let { keybind.copy(binding = it) } ?: keybind })
+			},
+		)
+	}
 
 	// Closing a handler disconnects its dbus connection, so every session gets its own manager
 	suspend fun bind(keybinds: List<KeybindConfig>) {
@@ -116,32 +136,26 @@ private suspend fun setupLinuxKeybinds(appContext: AppContextProvider, scope: Co
 				onShortcutActivated = { shortcutId ->
 					KeybindId.entries.firstOrNull { it.name == shortcutId }?.let { triggerKeybind(appContext, scope, it) }
 				}
+				if (gnomeAppId != null) {
+					onShortcutsChanged = { scope.safeLaunch { adoptGnomeShortcuts(gnomeAppId) } }
+				}
 			}
 		}.onFailure {
 			AppLogger.keybind.error(it, "Failed to register global shortcuts, keybinds will not work")
 		}.getOrNull()
 	}
 
-	val gnomeAppId = if (isGnome()) resolveGnomeAppId() else null
-	if (gnomeAppId == null) {
-		// The compositor owns the triggers and we have no way to change them, so bind once and
-		// leave it alone. The user rebinds from their system settings instead.
-		bind(currentKeybinds(appContext))
-	} else {
-		// GNOME keeps the triggers in dconf and only reads them when a session is created, so a
-		// change means rewriting dconf and starting a new session. Its stored values also win over
-		// the ones we pass, so push the config on startup too or the gui would disagree with what
-		// actually fires. The exception is a first run, where the portal seeds them and prompts.
-		val needsSeeding = !gnomeShortcutsExist(gnomeAppId)
+	bind(currentKeybinds(appContext))
 
-		var isInitialBind = true
-		bindingsFlow(appContext).onEach { keybinds ->
-			if (!(isInitialBind && needsSeeding)) {
+	if (gnomeAppId != null) {
+		adoptGnomeShortcuts(gnomeAppId)
+
+		bindingsFlow(appContext)
+			.onEach { keybinds ->
 				writeGnomeShortcuts(gnomeAppId, keybinds)
+				bind(keybinds)
 			}
-			bind(keybinds)
-			isInitialBind = false
-		}.launchIn(scope)
+			.launchIn(scope)
 	}
 
 	scope.safeLaunch {

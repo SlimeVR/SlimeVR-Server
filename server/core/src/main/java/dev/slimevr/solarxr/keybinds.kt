@@ -4,6 +4,11 @@ import dev.slimevr.config.KeybindConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.defaultKeybinds
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.ChangeKeybindRequest
 import solarxr_protocol.rpc.Keybind
 import solarxr_protocol.rpc.KeybindId
@@ -19,20 +24,33 @@ private fun keybindConfigToProto(config: KeybindConfig): Keybind = Keybind(
 	keybindDelay = config.delay,
 )
 
+private val MODIFIER_ORDER = listOf("CTRL", "ALT", "SHIFT", "SUPER")
+
+fun canonicalKeybind(binding: String): String {
+	val parts = binding.split('+').map { it.trim().uppercase() }.filter { it.isNotEmpty() }
+	return (MODIFIER_ORDER.filter { it in parts } + parts.filterNot { it in MODIFIER_ORDER }).joinToString("+")
+}
+
 class KeybindsBehaviour(
 	private val settings: Settings,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
+		fun buildResponse(keybinds: List<KeybindConfig>) = KeybindResponse(
+			keybind = keybinds.map { keybindConfigToProto(it) },
+			defaultKeybinds = defaultKeybinds().map { keybindConfigToProto(it) },
+			support = receiver.appContext.featureFlags.keybindSupport,
+		)
+
 		receiver.rpcDispatcher.on<KeybindRequest> {
-			val keybinds = settings.context.state.value.data.keybinds
-			receiver.sendRpc(
-				KeybindResponse(
-					keybind = keybinds.map { keybindConfigToProto(it) },
-					defaultKeybinds = defaultKeybinds().map { keybindConfigToProto(it) },
-					support = receiver.appContext.featureFlags.keybindSupport,
-				),
-			)
+			receiver.sendRpc(buildResponse(settings.context.state.value.data.keybinds))
 		}
+
+		settings.context.state
+			.map { it.data.keybinds }
+			.distinctUntilChanged()
+			.drop(1)
+			.onEach { receiver.sendRpc(buildResponse(it)) }
+			.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeKeybindRequest> { req ->
 			val keybind = req.keybind ?: return@on
@@ -43,7 +61,7 @@ class KeybindsBehaviour(
 						keybinds = keybinds.map {
 							if (it.id == id) {
 								it.copy(
-									binding = keybind.keybindValue ?: it.binding,
+									binding = keybind.keybindValue?.let(::canonicalKeybind) ?: it.binding,
 									delay = keybind.keybindDelay ?: 0f,
 								)
 							} else {
