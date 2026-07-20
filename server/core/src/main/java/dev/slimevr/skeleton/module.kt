@@ -109,6 +109,7 @@ class Skeleton(
 						FallbackProcessor(),
 						ImputeSpineProcessor(ctx.config.settings),
 						BoneLinkProcessor(),
+						ImputeFingersProcessor(),
 						PredictionProcessor(ctx.config.settings),
 						SmoothingProcessor(ctx.config.settings),
 					),
