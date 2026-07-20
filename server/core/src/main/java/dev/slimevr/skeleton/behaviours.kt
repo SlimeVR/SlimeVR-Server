@@ -17,24 +17,24 @@ import kotlin.math.sin
 class BoneTransformBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetBoneRotation -> {
-			val bones = state.rawBones.toMutableMap()
+			val bones = state.boneInputs.toMutableMap()
 			val bone = bones[action.bodyPart] ?: return state
 			bones[action.bodyPart] = bone.copy(rawRotation = action.rotation, isActive = true)
-			state.copy(rawBones = bones)
+			state.copy(boneInputs = bones)
 		}
 
 		is SkeletonActions.SetBonePosition -> {
-			val bones = state.rawBones.toMutableMap()
+			val bones = state.boneInputs.toMutableMap()
 			val bone = bones[action.bodyPart] ?: return state
 			bones[action.bodyPart] = bone.copy(rawPosition = action.position, isActive = true)
-			state.copy(rawBones = bones)
+			state.copy(boneInputs = bones)
 		}
 
 		is SkeletonActions.DisableBone -> {
-			val bones = state.rawBones.toMutableMap()
+			val bones = state.boneInputs.toMutableMap()
 			val bone = bones[action.bodyPart] ?: return state
 			bones[action.bodyPart] = bone.copy(isActive = false)
-			state.copy(rawBones = bones)
+			state.copy(boneInputs = bones)
 		}
 
 		else -> state
@@ -45,10 +45,10 @@ class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehavio
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetProportions -> {
 			val bones = action.lengths.toBoneOffsets()
-			val newBones = state.rawBones.mapValues { (bodyPart, bone) ->
+			val newBones = state.boneInputs.mapValues { (bodyPart, bone) ->
 				bone.copy(offset = bones[bodyPart] ?: bone.offset)
 			}
-			state.copy(rawBones = newBones, skeletonHeight = action.lengths.height())
+			state.copy(boneInputs = newBones, skeletonHeight = action.lengths.height())
 		}
 
 		else -> state

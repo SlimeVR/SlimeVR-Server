@@ -21,12 +21,12 @@ fun chainCanReach(bones: Map<BodyPart, BoneState>, chain: List<BodyPart>, target
 }
 
 // Single loop over a chain
-fun ccdIk(rawBones: Map<BodyPart, RawBone>, bones: Map<BodyPart, BoneState>, chain: List<BodyPart>, target: Vector3): Map<BodyPart, BoneState> {
-	val workingBones = rawBones.toMutableMap()
+fun ccdIk(boneInputs: Map<BodyPart, BoneInput>, bones: Map<BodyPart, BoneState>, chain: List<BodyPart>, target: Vector3): Map<BodyPart, BoneState> {
+	val workingBones = boneInputs.toMutableMap()
 
 	// Reversed index, i increases backwards up the chain
 	for ((i, bodyPart) in chain.reversed().withIndex()) {
-		val currentRawBone = requireNotNull(rawBones[bodyPart])
+		val currentRawBone = requireNotNull(boneInputs[bodyPart])
 		val currentBone = requireNotNull(bones[bodyPart])
 
 		val localOffset = currentBone.localTailPosition

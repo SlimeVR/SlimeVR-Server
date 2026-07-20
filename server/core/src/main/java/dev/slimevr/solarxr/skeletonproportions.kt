@@ -24,7 +24,7 @@ class SkeletonProportionsBehaviour(
 
 	private fun buildConfigResponse(): SkeletonProportionsResponse {
 		val proportions = userConfig.context.state.value.data.proportions
-		val bones = skeleton.context.state.value.rawBones
+		val bones = skeleton.context.state.value.boneInputs
 		val skeletonParts = bones.mapValues { it.value.offset }.toBoneValues().map { (offset, bone) -> SkeletonPart(offset, bone) }
 		val expanded = configToBoneValues(proportions)
 		val userHeight = if (expanded.isNotEmpty()) {

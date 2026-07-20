@@ -1,6 +1,5 @@
 package dev.slimevr.skeleton
 
-import com.jme3.math.FastMath
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.SkeletonBone
 
-data class RawBone(
+data class BoneInput(
 	val bodyPart: BodyPart,
 	val offset: Vector3,
 	val rawRotation: Quaternion,
@@ -35,20 +34,20 @@ data class BoneState(
 		get() = tailPosition - headPosition
 }
 
-data class SkeletonState(val rawBones: Map<BodyPart, RawBone>, val skeletonHeight: Float, val paused: Boolean)
+data class SkeletonState(val boneInputs: Map<BodyPart, BoneInput>, val skeletonHeight: Float, val paused: Boolean)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = run {
 	val bones = DEFAULT_BONE_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
 		bodyPart to BoneState(bodyPart = bodyPart, offset = tailOffset)
 	}
 	SkeletonState(
-		rawBones = bones.mapValues { (_, bone) -> RawBone(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL, isActive = false) },
+		boneInputs = bones.mapValues { (_, bone) -> BoneInput(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL, isActive = false) },
 		skeletonHeight = DEFAULT_HEIGHT,
 		paused = false,
 	)
 }
 
-fun buildBone(bone: RawBone, parentBone: BoneState?, originPosition: Vector3 = Vector3.NULL): BoneState {
+fun buildBone(bone: BoneInput, parentBone: BoneState?, originPosition: Vector3 = Vector3.NULL): BoneState {
 	val head = parentBone?.tailPosition ?: originPosition
 	return BoneState(
 		bodyPart = bone.bodyPart,
@@ -61,7 +60,7 @@ fun buildBone(bone: RawBone, parentBone: BoneState?, originPosition: Vector3 = V
 }
 
 fun buildBones(
-	state: Map<BodyPart, RawBone>,
+	state: Map<BodyPart, BoneInput>,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
 ): Map<BodyPart, BoneState> {
@@ -78,7 +77,7 @@ fun buildBones(
 	state: SkeletonState,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
-): Map<BodyPart, BoneState> = buildBones(state.rawBones, rootHead, hierarchy)
+): Map<BodyPart, BoneState> = buildBones(state.boneInputs, rootHead, hierarchy)
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions

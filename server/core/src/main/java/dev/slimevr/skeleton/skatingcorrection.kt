@@ -161,8 +161,8 @@ class FloorClipProcessor : SkeletonProcessor {
 	fun getDisplacement(footPos: Vector3): Vector3 = Vector3(0f, footPos.y.coerceAtMost(0f), 0f)
 
 	override fun process(state: SkeletonState): SkeletonState {
-		val newBones = state.rawBones.mapValues { (bodyPart, bone) -> }
-		state.rawBones[BodyPart.LEFT_FOOT]?.let {
+		val newBones = state.boneInputs.mapValues { (bodyPart, bone) -> }
+		state.boneInputs[BodyPart.LEFT_FOOT]?.let {
 			val correction = getDisplacement(it.offset)
 			// TODO Apply displacement onto skeleton
 		}

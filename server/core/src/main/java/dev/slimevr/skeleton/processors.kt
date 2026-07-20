@@ -101,10 +101,10 @@ class FallbackProcessor : SkeletonProcessor {
 	)
 
 	override fun process(state: SkeletonState): SkeletonState {
-		val rawBones = state.rawBones
+		val rawBones = state.boneInputs
 
 		return state.copy(
-			rawBones = rawBones.mapValues { (bodyPart, bone) ->
+			boneInputs = rawBones.mapValues { (bodyPart, bone) ->
 				if (bone.isActive) return@mapValues bone
 
 				bone.copy(rawRotation = computeFallbackRotation(rawBones, bodyPart))
@@ -112,18 +112,18 @@ class FallbackProcessor : SkeletonProcessor {
 		)
 	}
 
-	private fun computeFallbackRotation(rawBones: Map<BodyPart, RawBone>, bodyPart: BodyPart): Quaternion {
+	private fun computeFallbackRotation(boneInputs: Map<BodyPart, BoneInput>, bodyPart: BodyPart): Quaternion {
 		// Fallback bone's rotation
 		missingToFallbacks[bodyPart]
 			?.firstNotNullOfOrNull { part ->
-				rawBones[part]?.takeIf { it.isActive }
+				boneInputs[part]?.takeIf { it.isActive }
 			}
 			?.let { return it.rawRotation }
 
 		// First active parent bone's yaw
-		rawBones[
+		boneInputs[
 			findBodyPartParent(bodyPart) { part ->
-				rawBones[part]?.isActive == true
+				boneInputs[part]?.isActive == true
 			},
 		]?.let { return it.rawRotation.project(Vector3.POS_Y).unit() }
 
@@ -153,15 +153,15 @@ class SmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 
 		val alpha = 1 - (SMOOTH_MIN + config.amount.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN))
 
-		smoothedRotations = state.rawBones.mapValues { (bodyPart, bone) ->
+		smoothedRotations = state.boneInputs.mapValues { (bodyPart, bone) ->
 			(smoothedRotations[bodyPart] ?: bone.rawRotation).lerpR(bone.rawRotation, alpha).unit()
 		}
-		smoothedLengths = state.rawBones.mapValues { (bodyPart, bone) ->
+		smoothedLengths = state.boneInputs.mapValues { (bodyPart, bone) ->
 			val prev = smoothedLengths[bodyPart] ?: bone.offset
 			prev + (bone.offset - prev) * alpha
 		}
 		return state.copy(
-			rawBones = state.rawBones.mapValues { (bodyPart, bone) ->
+			boneInputs = state.boneInputs.mapValues { (bodyPart, bone) ->
 				bone.copy(
 					rawRotation = smoothedRotations[bodyPart] ?: bone.rawRotation,
 					offset = smoothedLengths[bodyPart] ?: bone.offset,
@@ -191,7 +191,7 @@ class PredictionProcessor(val settings: Settings) : SkeletonProcessor {
 		if (config.type != FilteringType.PREDICTION) return state
 
 		val newVelocities = mutableMapOf<BodyPart, BoneVelocity>()
-		val newBones = state.rawBones.mapValues { (bodyPart, bone) ->
+		val newBones = state.boneInputs.mapValues { (bodyPart, bone) ->
 			val prev = velocities[bodyPart]
 			if (prev == null) {
 				newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, Quaternion.IDENTITY, bone.offset, Vector3.NULL)
@@ -215,6 +215,6 @@ class PredictionProcessor(val settings: Settings) : SkeletonProcessor {
 			)
 		}
 		velocities = newVelocities
-		return state.copy(rawBones = newBones)
+		return state.copy(boneInputs = newBones)
 	}
 }
