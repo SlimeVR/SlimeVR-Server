@@ -16,6 +16,22 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.KeybindId
+
+object KeybindIdSerializer : KSerializer<KeybindId> {
+	override val descriptor = PrimitiveSerialDescriptor("KeybindId", PrimitiveKind.STRING)
+
+	override fun serialize(encoder: Encoder, value: KeybindId) {
+		(encoder as JsonEncoder).encodeJsonElement(JsonPrimitive(value.name))
+	}
+
+	override fun deserialize(decoder: Decoder): KeybindId {
+		val element = (decoder as JsonDecoder).decodeJsonElement()
+		// Falling back to a real keybind would silently turn an unknown entry into a duplicate
+		return KeybindId.entries.firstOrNull { it.name == element.jsonPrimitive.content }
+			?: KeybindId.NONE
+	}
+}
 
 object BodyPartSerializer : KSerializer<BodyPart?> {
 	@OptIn(ExperimentalSerializationApi::class)

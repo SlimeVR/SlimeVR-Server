@@ -16,6 +16,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.FilteringType
+import solarxr_protocol.rpc.KeybindId
 
 private const val SETTINGS_CONFIG_VERSION = 2
 
@@ -89,6 +90,24 @@ data class ResetsConfig(
 	/** Reset the HMD's pitch upon full reset */
 	val resetHmdPitch: Boolean = false, // TODO
 	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC, // TODO
+)
+
+@Serializable
+data class KeybindConfig(
+	@Serializable(with = KeybindIdSerializer::class)
+	val id: KeybindId,
+	/** Key combination, keys joined with '+' (e.g. "CTRL+ALT+SHIFT+Y") */
+	val binding: String,
+	/** Delay in seconds before the keybind triggers */
+	val delay: Float = 0f,
+)
+
+fun defaultKeybinds(): List<KeybindConfig> = listOf(
+	KeybindConfig(KeybindId.FULL_RESET, "CTRL+ALT+SHIFT+Y"),
+	KeybindConfig(KeybindId.YAW_RESET, "CTRL+ALT+SHIFT+U"),
+	KeybindConfig(KeybindId.MOUNTING_RESET, "CTRL+ALT+SHIFT+I"),
+	KeybindConfig(KeybindId.FEET_MOUNTING_RESET, "CTRL+ALT+SHIFT+P"),
+	KeybindConfig(KeybindId.PAUSE_TRACKING, "CTRL+ALT+SHIFT+O"),
 )
 
 // Used in SkeletonConfig
@@ -170,6 +189,7 @@ data class SettingsConfigState(
 	val skeletonConfig: SkeletonConfig = SkeletonConfig(),
 	val vrcOscConfig: VRCOSCConfig = VRCOSCConfig(),
 	val vmcConfig: VMCConfig = VMCConfig(),
+	val keybinds: List<KeybindConfig> = defaultKeybinds(),
 )
 
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {

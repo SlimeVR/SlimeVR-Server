@@ -1,5 +1,6 @@
 package dev.slimevr.tracker
 
+import dev.slimevr.AppLogger
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
@@ -7,7 +8,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -196,7 +196,7 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 					receiver.context.dispatch(TrackerActions.Update { copy(tps = tps.toUShort()) })
 					mark = TimeSource.Monotonic.markNow()
 				} catch (e: Exception) {
-					dev.slimevr.AppLogger.coroutines.error(e, "Error in TrackerTPSBehaviour")
+					AppLogger.coroutines.error(e, "Error in TrackerTPSBehaviour")
 				}
 			}
 		}

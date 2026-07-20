@@ -44,6 +44,7 @@ import { useDiscordPresence } from './hooks/discord-presence';
 import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
+import { KeybindSettings } from './components/settings/pages/KeybindSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
@@ -143,6 +144,7 @@ function Layout() {
             <Route path="interface" element={<InterfaceSettings />} />
             <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />
+            <Route path="keybinds" element={<KeybindSettings />} />
           </Route>
           <Route
             path="/onboarding"

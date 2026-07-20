@@ -88,6 +88,10 @@ dependencies {
 	implementation("org.hid4java:hid4java:0.8.0")
 	implementation("io.klogging:klogging:0.11.7")
 
+	// Global keybinds: JIntellitype on Windows, dbus xdg-desktop-portal on Linux
+	implementation("com.melloware:jintellitype:1.+")
+	implementation("com.github.HannahPadd:DbusGlobalShortcutsWayland:v0.1.0")
+
 	val ktorVersion = "3.4.1"
 	implementation("io.ktor:ktor-client-core:$ktorVersion")
 	implementation("io.ktor:ktor-client-cio:$ktorVersion")
@@ -103,6 +107,8 @@ tasks.shadowJar {
 		exclude(dependency("com.fazecast:jSerialComm:.*"))
 		exclude(dependency("net.java.dev.jna:.*:.*"))
 		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
+		exclude(dependency("com.melloware:jintellitype:.*"))
+		exclude(dependency("com.github.HannahPadd:DbusGlobalShortcutsWayland:.*"))
 
 		exclude(project(":solarxr-protocol:generated"))
 	}

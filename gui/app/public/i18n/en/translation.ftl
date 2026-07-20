@@ -562,6 +562,27 @@ settings-stay_aligned-debug-label = Debugging
 settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
 settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 
+## Keybinds Page
+settings-keybinds = Keybind settings
+settings-keybinds-description = Change keybinds for various shortcuts
+keybind_config-keybind_name = Keybind
+keybind_config-keybind_value = Combination
+keybind_config-keybind_delay = Delay before trigger (s)
+settings-keybinds_full-reset = Full Reset
+settings-keybinds_yaw-reset = Yaw Reset
+settings-keybinds_mounting-reset = Mounting Reset
+settings-keybinds_feet-mounting-reset = Feet Mounting Reset
+settings-keybinds_pause-tracking = Pause Tracking
+settings-keybinds_reset-all-button = Reset all
+settings-keybinds-system-managed-description = Your desktop manages global shortcuts itself, so they have to be changed from your system settings.
+settings-keybinds-open-system-settings-button = Open system settings
+settings-keybinds-unsupported-description = Global keybinds are not supported on this platform.
+settings-sidebar-keybinds = Keybinds
+settings-keybinds-recorder-modal-title = Assign keybind for
+settings-keybinds-recorder-modal-reset-button = Reset
+settings-keybinds-recorder-modal-unbind-button = Unbind
+settings-keybinds-recorder-modal-done-button = Done
+
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking Settings
 

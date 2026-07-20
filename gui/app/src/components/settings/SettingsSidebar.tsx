@@ -144,6 +144,11 @@ export function SettingsSidebar() {
             to="/settings/advanced"
             id="settings-sidebar-advanced"
           />
+          <SettingsLink
+            to="/settings/keybinds"
+            scrollTo="keybinds"
+            id="settings-sidebar-keybinds"
+          />
         </div>
       </div>
     </div>

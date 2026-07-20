@@ -24,6 +24,7 @@ object AppLogger {
 	val oscQuery = logger("OSCQuery")
 	val install = logger("Install")
 	val resets = logger("Resets")
+	val keybind = logger("Keybind")
 	val coroutines = noCoLogger("Coroutines")
 
 	init {

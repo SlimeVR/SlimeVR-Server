@@ -183,6 +183,7 @@ const config = {
       lg: '1300px',
       xl: '1600px',
       tall: { raw: '(min-height: 860px)' },
+      'keybinds-small': { raw: 'not (min-width: 1230px)' },
     },
     extend: {
       colors: {
@@ -236,10 +237,10 @@ const config = {
           },
         },
         'timer-tick': {
-          "0%, 40%": {
+          '0%, 40%': {
             transform: 'scale(1)',
           },
-          "20%": {
+          '20%': {
             transform: 'scale(1.3)',
           },
         },
@@ -294,7 +295,7 @@ const config = {
         light: `linear-gradient(135deg, ${colors['light-accent'][100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
         'asexual-flag': `linear-gradient(135deg, ${colors['asexual'][100]} 30%, ${colors['asexual'][200]} 30% 50%, ${colors['asexual'][300]} 50% 70%, ${colors['asexual'][400]} 70% 100%)`,
-        'snep': `linear-gradient(135deg, ${colors['snep'][100]} 40%, ${colors['snep'][200]} 40% 70%, ${colors['snep'][300]} 70% 100%)`,
+        snep: `linear-gradient(135deg, ${colors['snep'][100]} 40%, ${colors['snep'][200]} 40% 70%, ${colors['snep'][300]} 70% 100%)`,
       },
       animation: {
         'spin-ccw': 'spin-ccw 1s linear infinite',

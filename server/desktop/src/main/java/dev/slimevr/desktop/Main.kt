@@ -17,6 +17,9 @@ import dev.slimevr.desktop.install.executeShellCommand
 import dev.slimevr.desktop.install.runInstaller
 import dev.slimevr.desktop.ipc.createIpcServers
 import dev.slimevr.desktop.ipc.createSolarXRWebsocketServer
+import dev.slimevr.desktop.keybind.createDesktopKeybindManager
+import dev.slimevr.desktop.keybind.isGnome
+import dev.slimevr.desktop.keybind.resolveGnomeAppId
 import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
 import dev.slimevr.desktop.serial.DesktopFirmwareFlasher
 import dev.slimevr.desktop.serial.createDesktopSerialServer
@@ -38,8 +41,12 @@ import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.safeLaunch
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrcosc.VRCOSCManager
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import solarxr_protocol.rpc.KeybindSupport
 
 fun main(args: Array<String>) = runBlocking<Unit> {
 	contextDebugEnabled = System.getProperty("slimevr.debug.context") == "true" ||
@@ -59,6 +66,20 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		}
 	}
 	if (CURRENT_PLATFORM != Platform.LINUX) featureFlags.skipCheckUdev = true
+
+	// Windows registers hotkeys itself, and on GNOME we can rewrite the triggers it stores in dconf.
+	// Other compositors own the bindings, so there the user rebinds from the system settings.
+	featureFlags.keybindSupport = when (CURRENT_PLATFORM) {
+		Platform.WINDOWS -> KeybindSupport.APP_MANAGED
+
+		Platform.LINUX -> if (isGnome() && resolveGnomeAppId() != null) {
+			KeybindSupport.APP_MANAGED
+		} else {
+			KeybindSupport.SYSTEM_MANAGED
+		}
+
+		else -> KeybindSupport.UNSUPPORTED
+	}
 
 	val isInstallDisabled = System.getenv("SLIME_SERVER_DISABLE_INSTALLER")?.toIntOrNull()
 	if (featureFlags.steam && isInstallDisabled != 1) runInstaller()
@@ -125,16 +146,27 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		tapDetectionManager = tapDetectionManager,
 	)
 
+	// JVM shutdown hooks fire on SIGINT/SIGTERM but coroutine `finally` blocks do not,
+	// so cancel the root scope on shutdown to let structured concurrency run every cleanup.
+	val rootJob = coroutineContext[Job]!!
+	Runtime.getRuntime().addShutdownHook(
+		Thread {
+			rootJob.cancel()
+			runBlocking { rootJob.join() }
+		},
+	)
+
 	try {
 		appContext.startObserving()
 
 		safeLaunch { createDesktopHIDManager(appContext, this) }
+		safeLaunch { createDesktopKeybindManager(appContext, this) }
 		safeLaunch { createSolarXRWebsocketServer(appContext) }
 		safeLaunch { createIpcServers(appContext) }
 		safeLaunch { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
 
 		awaitCancellation()
 	} finally {
-		appContext.dispose()
+		withContext(NonCancellable) { appContext.dispose() }
 	}
 }
