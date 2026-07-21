@@ -7,9 +7,9 @@ import kotlin.collections.get
 import kotlin.collections.iterator
 
 /**
- * Handles the finger tracking logic.
+ * Handles rotations of inactive finger bones.
  */
-class FingersImputeProcessor : SkeletonProcessor {
+class FingerImputeProcessor : SkeletonProcessor {
 	/**
 	 * First element is the linked BodyPart.
 	 *
