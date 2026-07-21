@@ -128,7 +128,7 @@ export function HeightSelectionInput({
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
   const isSubmitting = useRef(false);
-  const footRegex = /^(\d+)(?:[′'.,\s]+(\d+(?:\.\d+)?)?["”]?)?$/;
+  const footRegex = /^(\d+)(?:[′'.,\s]+(\d+(?:\.\d+)?)?[″"”]?)?$/;
 
   const formattedHeight = useMemo(() => {
     if (!hmdHeight) return '--';
@@ -152,7 +152,7 @@ export function HeightSelectionInput({
     height: formattedHeight,
   };
 
-  const { reset, control, watch, getValues } = useForm<{
+  const { reset, control, watch, trigger, handleSubmit } = useForm<{
     height: string;
   }>({
     defaultValues,
@@ -179,13 +179,17 @@ export function HeightSelectionInput({
             l10n.getString('onboarding-user_height-error_bounds'),
             function (value) {
               if (unit === 'meter') {
-                return Number(value.replace(/[ m]/g, '')) <= 2.56;
+                const newNum = Number(value.replace(/[ m]/g, ''));
+                return newNum >= 0.97 && newNum <= 2.56;
               } else {
                 const match = value.match(footRegex);
                 if (!match) return;
                 const feet = Number(match[1]);
                 const inches = Number(match[2] || 0);
-                return !(feet > 8 || (feet === 8 && inches > 4));
+                return (
+                  !(feet > 8 || (feet === 8 && inches > 4)) &&
+                  !(feet < 3 || (feet === 3 && inches < 2))
+                );
               }
             }
           ),
@@ -194,13 +198,13 @@ export function HeightSelectionInput({
   });
 
   const onSubmit = async (values: { height: string }) => {
-    console.log('asd');
+    if (!(await trigger('height'))) return;
+    isSubmitting.current = true;
 
     if (unit === 'meter') {
       const newFullHeight = Number(values.height.replace(/[ m]/g, ''));
 
-      isSubmitting.current = true;
-      //setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
+      setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
     } else {
       const match = values.height.match(footRegex);
       if (!match) return;
@@ -210,33 +214,27 @@ export function HeightSelectionInput({
 
       const newFullHeight = convert(feet + inches / 12, 'foot').to('meter');
 
-      isSubmitting.current = true;
-      //setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
+      setHmdHeight(round4Digit(newFullHeight * EYE_HEIGHT_TO_HEIGHT_RATIO));
     }
   };
-
-  const onSubmitRef = useRef(onSubmit);
-  onSubmitRef.current = onSubmit;
 
   useEffect(() => {
     const subscription = watch((value, { type }) => {
       if (type === 'change') {
-        onSubmitRef.current({ height: value.height ?? '' });
+        handleSubmit(onSubmit)();
       }
     });
     return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
-    if (isSubmitting.current) {
-      isSubmitting.current = false;
-      return;
-    }
-    reset({ ...getValues(), height: defaultValues.height });
+    if (isSubmitting.current) return;
+
+    reset({ height: defaultValues.height });
   }, [defaultValues.height]);
 
   useEffect(() => {
-    setTimeout(() => reset({ height: formattedHeight }), 0);
+    reset({ height: formattedHeight });
   }, [unit]);
 
   const incrementMath = (unit: 'inch' | 'cm' | 'foot', value: number) => {
@@ -329,7 +327,10 @@ export function HeightSelectionInput({
           variant="secondary"
           className="text-center !text-3xl !font-bold !w-[210px]"
           errorClassName="text-center top-[47px] "
-          onBlur={() => reset({ height: formattedHeight })}
+          onBlur={() => {
+            reset({ height: formattedHeight });
+            isSubmitting.current = false;
+          }}
         />
         <div className="w-[70px] xs:w-20 h-full gap-2 grid p-1">
           <UnitSelector

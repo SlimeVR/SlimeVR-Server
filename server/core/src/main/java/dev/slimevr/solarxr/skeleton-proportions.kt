@@ -16,7 +16,7 @@ import solarxr_protocol.rpc.SkeletonProportionsRequest
 import solarxr_protocol.rpc.SkeletonProportionsResetAllRequest
 import solarxr_protocol.rpc.SkeletonProportionsResponse
 
-private const val MIN_HEIGHT = 1.0f
+private const val MIN_HEIGHT = 0.9f
 
 class SkeletonProportionsBehaviour(
 	private val userConfig: UserConfig,
