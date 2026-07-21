@@ -3,6 +3,13 @@ package dev.slimevr.skeleton
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.processors.BoneFallbackProcessor
+import dev.slimevr.skeleton.processors.BoneLinkProcessor
+import dev.slimevr.skeleton.processors.BonePredictionProcessor
+import dev.slimevr.skeleton.processors.BoneSmoothingProcessor
+import dev.slimevr.skeleton.processors.FingersImputeProcessor
+import dev.slimevr.skeleton.processors.SpineImputeProcessor
+import dev.slimevr.skeleton.processors.SpineLinkProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -114,8 +121,8 @@ class Skeleton(
 						BoneLinkProcessor(),
 						SpineImputeProcessor(ctx.config.settings),
 						FingersImputeProcessor(),
-						PredictionProcessor(ctx.config.settings),
-						SmoothingProcessor(ctx.config.settings),
+						BonePredictionProcessor(ctx.config.settings),
+						BoneSmoothingProcessor(ctx.config.settings),
 					),
 				),
 			)
