@@ -6,7 +6,7 @@ import kotlin.collections.get
 /**
  * Handles the finger tracking logic.
  */
-class ImputeFingersProcessor : SkeletonProcessor {
+class FingersImputeProcessor : SkeletonProcessor {
 	/**
 	 * First element is the linked BodyPart.
 	 *

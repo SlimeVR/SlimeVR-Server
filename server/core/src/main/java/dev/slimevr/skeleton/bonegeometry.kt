@@ -3,6 +3,7 @@ package dev.slimevr.skeleton
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
+// TODO Make fingers not all the same lengths https://github.com/SlimeVR/SlimeVR-Server/pull/1781
 private val FINGER_OFFSETS = (
 	iterateBodyPartHierarchy(BodyPart.LEFT_HAND, true) +
 		iterateBodyPartHierarchy(BodyPart.RIGHT_HAND, true)

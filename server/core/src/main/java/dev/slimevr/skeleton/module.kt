@@ -89,6 +89,9 @@ sealed interface SkeletonActions {
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
 typealias SkeletonBehaviour = Behaviour<SkeletonState, SkeletonActions, Skeleton>
+interface SkeletonProcessor {
+	fun process(state: SkeletonState): SkeletonState
+}
 
 class Skeleton(
 	val context: SkeletonContext,
@@ -106,10 +109,11 @@ class Skeleton(
 				// YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					processors = listOf(
-						FallbackProcessor(),
+						BoneFallbackProcessor(),
+						SpineLinkProcessor(),
 						BoneLinkProcessor(),
-						ImputeSpineProcessor(ctx.config.settings),
-						ImputeFingersProcessor(),
+						SpineImputeProcessor(ctx.config.settings),
+						FingersImputeProcessor(),
 						PredictionProcessor(ctx.config.settings),
 						SmoothingProcessor(ctx.config.settings),
 					),
