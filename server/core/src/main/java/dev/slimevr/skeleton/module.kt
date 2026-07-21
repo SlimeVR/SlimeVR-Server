@@ -6,7 +6,7 @@ import dev.slimevr.context.Context
 import dev.slimevr.skeleton.processors.BoneDirectLinkProcessor
 import dev.slimevr.skeleton.processors.BoneFallbackProcessor
 import dev.slimevr.skeleton.processors.BonePredictionProcessor
-import dev.slimevr.skeleton.processors.BonePriorityLinkProcessor
+import dev.slimevr.skeleton.processors.BoneActiveLinkProcessor
 import dev.slimevr.skeleton.processors.BoneSmoothingProcessor
 import dev.slimevr.skeleton.processors.BoneYawRollAlignProcessor
 import dev.slimevr.skeleton.processors.FingerImputeProcessor
@@ -128,7 +128,7 @@ class Skeleton(
 				ComputedSkeletonBehaviour(
 					processors = listOf(
 						BoneFallbackProcessor(),
-						BonePriorityLinkProcessor(),
+						BoneActiveLinkProcessor(),
 						SpineImputeProcessor(ctx.config.settings),
 						BoneYawRollAlignProcessor(ctx.config.settings),
 						BoneDirectLinkProcessor(),

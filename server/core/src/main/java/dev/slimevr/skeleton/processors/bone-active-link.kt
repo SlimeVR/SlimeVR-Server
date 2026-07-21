@@ -8,10 +8,12 @@ import solarxr_protocol.datatypes.BodyPart
  * Handles setting the rotation of an inactive bone with the first active bone in its sources, or keeps
  * the old rotation if none of them are active.
  */
-class BonePriorityLinkProcessor : SkeletonProcessor {
+class BoneActiveLinkProcessor : SkeletonProcessor {
 	/**
 	 * First element is the BodyPart whose rawBone is not actively receiving data.
+	 *
 	 * Second element contains a set of BodyParts whose rotation should be used as a fallback prioritized from first to last.
+	 * Only active bones will be used.
 	 */
 	private val linkedToSources = mapOf(
 		BodyPart.UPPER_CHEST to setOf(BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP),

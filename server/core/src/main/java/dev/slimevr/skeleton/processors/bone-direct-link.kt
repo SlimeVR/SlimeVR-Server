@@ -30,8 +30,8 @@ class BoneDirectLinkProcessor : SkeletonProcessor {
 		BodyPart.LEFT_SHOULDER to BodyPart.UPPER_CHEST,
 		BodyPart.RIGHT_SHOULDER to BodyPart.UPPER_CHEST,
 
-		BodyPart.LEFT_UPPER_ARM to BodyPart.LEFT_LOWER_ARM,
-		BodyPart.RIGHT_UPPER_ARM to BodyPart.RIGHT_LOWER_ARM,
+		BodyPart.LEFT_UPPER_ARM to BodyPart.LEFT_SHOULDER,
+		BodyPart.RIGHT_UPPER_ARM to BodyPart.RIGHT_SHOULDER,
 
 		BodyPart.LEFT_LOWER_ARM to BodyPart.LEFT_UPPER_ARM,
 		BodyPart.RIGHT_LOWER_ARM to BodyPart.RIGHT_UPPER_ARM,
