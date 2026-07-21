@@ -3,7 +3,6 @@ package dev.slimevr.config
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import io.github.axisangles.ktmath.Quaternion
-import io.ktor.utils.io.core.Output
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -129,9 +128,8 @@ data class SkeletonTogglesConfig(
 data class SkeletonRatiosConfig(
 	val imputeSpineFromUpperToLower: Float = 0.5f,
 	val imputeSpineCurvature: Float = 0.5f,
-	val interpolateHipWithKnees: Float = 0.25f,
-	val interpolateComputedKneesWithAnkles: Float = 0.85f,
-	val interpolateKneesWithAnkles: Float = 0.00f,
+	val interpolateHipWithUpperLegs: Float = 0.25f,
+	val interpolateUpperLegsWithLowerLegs: Float = 0.8f,
 	val skatingCorrectionStrength: Float = 0.3f,
 )
 

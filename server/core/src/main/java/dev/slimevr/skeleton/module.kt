@@ -3,13 +3,14 @@ package dev.slimevr.skeleton
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.skeleton.processors.BoneFallbackProcessor
 import dev.slimevr.skeleton.processors.BoneDirectLinkProcessor
+import dev.slimevr.skeleton.processors.BoneFallbackProcessor
 import dev.slimevr.skeleton.processors.BonePredictionProcessor
+import dev.slimevr.skeleton.processors.BonePriorityLinkProcessor
 import dev.slimevr.skeleton.processors.BoneSmoothingProcessor
+import dev.slimevr.skeleton.processors.BoneYawRollAlignProcessor
 import dev.slimevr.skeleton.processors.FingerImputeProcessor
 import dev.slimevr.skeleton.processors.SpineImputeProcessor
-import dev.slimevr.skeleton.processors.BonePriorityLinkProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +40,16 @@ data class BoneState(
 		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
 	val localTailPosition: Vector3
 		get() = tailPosition - headPosition
+}
+
+/**
+ * Returns the average rotation of the BodyParts.
+ */
+fun Map<BodyPart, BoneInput>.resolveRotationFor(bodyParts: Set<BodyPart>): Quaternion {
+	val rotations = bodyParts.mapNotNull { this[it]?.rawRotation }
+	return rotations.reduceIndexedOrNull { index, acc, rotation ->
+		acc.lerpQ(rotation, 1f / (index + 1))
+	} ?: Quaternion.IDENTITY
 }
 
 data class SkeletonState(val boneInputs: Map<BodyPart, BoneInput>, val skeletonHeight: Float, val paused: Boolean)
@@ -118,8 +129,9 @@ class Skeleton(
 					processors = listOf(
 						BoneFallbackProcessor(),
 						BonePriorityLinkProcessor(),
-						BoneDirectLinkProcessor(),
 						SpineImputeProcessor(ctx.config.settings),
+						BoneYawRollAlignProcessor(ctx.config.settings),
+						BoneDirectLinkProcessor(),
 						FingerImputeProcessor(),
 						BonePredictionProcessor(ctx.config.settings),
 						BoneSmoothingProcessor(ctx.config.settings),
