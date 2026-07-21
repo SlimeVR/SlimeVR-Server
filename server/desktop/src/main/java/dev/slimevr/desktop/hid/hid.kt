@@ -2,19 +2,15 @@ package dev.slimevr.desktop.hid
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
+import dev.slimevr.VRServerActions
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.isCompatibleHidDevice
 import dev.slimevr.hid.parseHIDPackets
 import dev.slimevr.util.safeLaunch
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.io.Buffer
+import kotlinx.io.readByteArray
 import org.hid4java.HidDevice
 import org.hid4java.HidManager
 import org.hid4java.HidServicesSpecification
@@ -31,18 +27,15 @@ private val hidServices by lazy { HidManager.getHidServices(hidSpec) }
 
 private fun enumerateCompatibleDevices(): Map<String, HidDevice> {
 	hidServices // ensure native lib is loaded
-	val root = HidApi.enumerateDevices(0, 0) ?: return emptyMap()
+	hidServices.start()
 	val result = mutableMapOf<String, HidDevice>()
-	var info: HidDeviceInfoStructure? = root
-	while (info != null) {
-		if (isCompatibleHidDevice(info.vendor_id.toInt(), info.product_id.toInt())) {
-			val device = HidDevice(info, null, hidSpec)
-			// Use path as key, unique per physical device, available without opening
-			result[info.path] = device
+
+	for (device in hidServices.attachedHidDevices) {
+		if (isCompatibleHidDevice(device.vendorId, device.productId)) {
+			result[device.path] = device
 		}
-		info = info.next()
 	}
-	HidApi.freeEnumeration(root)
+
 	return result
 }
 
@@ -93,6 +86,20 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 					scope = deviceScope,
 				)
 
+				val dongleId = appContext.server.nextHandle()
+				appContext.server.context.dispatch(VRServerActions.NewDongle(dongleId, receiver))
+
+				deviceScope.safeLaunch {
+					receiver.outboundPackets.onAny{ packet ->
+						deviceScope.safeLaunch {
+							val buf = Buffer()
+							AppLogger.hid.info("Received packet: $packet")
+							packet.write(buf)
+							hidDevice.write(buf.readByteArray(), buf.size.toInt(), 0)
+						}
+					}
+				}
+
 				deviceScope.safeLaunch {
 					try {
 						while (isActive) {
@@ -107,7 +114,7 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 								data == null -> return@safeLaunch
 
 								// read error, device gone
-								data.isNotEmpty() -> parseHIDPackets(data).forEach { receiver.packetEvents.emit(it) }
+								data.isNotEmpty() -> parseHIDPackets(data).forEach { receiver.inboundPackets.emit(it) }
 
 								else -> delay(1) // no data yet, yield without busy-spinning
 							}

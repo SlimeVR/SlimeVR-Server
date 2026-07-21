@@ -27,18 +27,21 @@ sealed interface HIDReceiverActions {
 
 typealias HIDReceiverContext = Context<HIDReceiverState, HIDReceiverActions>
 typealias HIDReceiverBehaviour = Behaviour<HIDReceiverState, HIDReceiverActions, HIDReceiver>
-typealias HIDPacketDispatcher = EventDispatcher<HIDPacket>
+typealias HIDInboundPacketDispatcher = EventDispatcher<HIDInboundPacket>
+typealias HIDOutboundPacketDispatcher = EventDispatcher<HIDOutboundPacket>
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T : HIDPacket> HIDPacketDispatcher.onPacket(crossinline callback: suspend (T) -> Unit) {
+inline fun <reified T : HIDInboundPacket> HIDInboundPacketDispatcher.onPacket(crossinline callback: suspend (T) -> Unit) {
 	register(T::class) { callback(it as T) }
 }
 
 class HIDReceiver(
 	val context: HIDReceiverContext,
 	val appContext: AppContextProvider,
-	val packetEvents: HIDPacketDispatcher,
 ) {
+	val outboundPackets: HIDOutboundPacketDispatcher = HIDOutboundPacketDispatcher()
+	val inboundPackets: HIDInboundPacketDispatcher = HIDInboundPacketDispatcher()
+
 	fun startObserving() = context.observeAll(this)
 
 	fun getDevice(hidId: Int): Device? {
@@ -50,6 +53,10 @@ class HIDReceiver(
 		val record = context.state.value.trackers[hidId] ?: return null
 		val trackerId = record.trackerId ?: return null
 		return appContext.server.getTracker(trackerId)
+	}
+
+	suspend fun send(hidOutboundPacket: HIDOutboundPacket) {
+		outboundPackets.emit(hidOutboundPacket)
 	}
 
 	companion object {
@@ -75,12 +82,9 @@ class HIDReceiver(
 				name = "HIDReceiver[$serialNumber]",
 			)
 
-			val dispatcher = HIDPacketDispatcher()
-
 			val receiver = HIDReceiver(
 				context = context,
-				appContext = appContext,
-				packetEvents = dispatcher,
+				appContext = appContext
 			)
 			receiver.startObserving()
 			return receiver

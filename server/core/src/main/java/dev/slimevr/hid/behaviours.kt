@@ -10,7 +10,6 @@ import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import solarxr_protocol.datatypes.TrackerStatus
 
 class HIDRegistrationBehaviour : HIDReceiverBehaviour {
@@ -31,7 +30,7 @@ class HIDRegistrationBehaviour : HIDReceiverBehaviour {
 	}
 
 	override fun observe(receiver: HIDReceiver) {
-		receiver.packetEvents.onPacket<HIDDeviceRegister> { packet ->
+		receiver.inboundPackets.onPacket<HIDDeviceRegister> { packet ->
 			val state = receiver.context.state.value
 			val existing = state.trackers[packet.hidId]
 			if (existing != null) return@onPacket
@@ -73,7 +72,7 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 	}
 
 	override fun observe(receiver: HIDReceiver) {
-		receiver.packetEvents.onPacket<HIDDeviceInfo> { packet ->
+		receiver.inboundPackets.onPacket<HIDDeviceInfo> { packet ->
 			val device = receiver.getDevice(packet.hidId) ?: return@onPacket
 			val deviceState = device.context.state.value
 
@@ -117,22 +116,22 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 
 class HIDRotationBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
-		receiver.packetEvents.onPacket<HIDRotation> { packet ->
+		receiver.inboundPackets.onPacket<HIDRotation> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
 		}
 
-		receiver.packetEvents.onPacket<HIDRotationBattery> { packet ->
+		receiver.inboundPackets.onPacket<HIDRotationBattery> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
 		}
 
-		receiver.packetEvents.onPacket<HIDRotationMag> { packet ->
+		receiver.inboundPackets.onPacket<HIDRotationMag> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, magnetometer = packet.magnetometer))
 		}
 
-		receiver.packetEvents.onPacket<HIDRotationButton> { packet ->
+		receiver.inboundPackets.onPacket<HIDRotationButton> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
 		}
@@ -141,7 +140,7 @@ class HIDRotationBehaviour : HIDReceiverBehaviour {
 
 class HIDBatteryBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
-		receiver.packetEvents.onPacket<HIDRotationBattery> { packet ->
+		receiver.inboundPackets.onPacket<HIDRotationBattery> { packet ->
 			receiver.getDevice(packet.hidId)?.context?.dispatch(
 				DeviceActions.Update {
 					copy(batteryLevel = packet.batteryLevel, batteryVoltage = packet.batteryVoltage, signalStrength = packet.rssi)
@@ -149,19 +148,19 @@ class HIDBatteryBehaviour : HIDReceiverBehaviour {
 			)
 		}
 
-		receiver.packetEvents.onPacket<HIDRotationButton> { packet ->
+		receiver.inboundPackets.onPacket<HIDRotationButton> { packet ->
 			receiver.getDevice(packet.hidId)?.context?.dispatch(
 				DeviceActions.Update { copy(signalStrength = packet.rssi) },
 			)
 		}
 
-		receiver.packetEvents.onPacket<HIDData> { packet ->
+		receiver.inboundPackets.onPacket<HIDData> { packet ->
 			receiver.getDevice(packet.hidId)?.context?.dispatch(
 				DeviceActions.Update { copy(signalStrength = packet.rssi) },
 			)
 		}
 
-		receiver.packetEvents.onPacket<HIDRuntime> { packet ->
+		receiver.inboundPackets.onPacket<HIDRuntime> { packet ->
 			// -1: not yet known (keep existing value); 0: N/A (e.g. charging)
 			if (packet.runtime >= 0) {
 				receiver.getDevice(packet.hidId)?.context?.dispatch(
@@ -210,27 +209,27 @@ class HIDSleepBehaviour : HIDReceiverBehaviour {
 			armIdleTimeout(hidId)
 		}
 
-		receiver.packetEvents.onPacket<HIDRotationButton> { packet ->
+		receiver.inboundPackets.onPacket<HIDRotationButton> { packet ->
 			onPacket(packet.hidId)
 			scheduleSleep(packet.hidId, packet.timeout)
 		}
 
-		receiver.packetEvents.onPacket<HIDData> { packet ->
+		receiver.inboundPackets.onPacket<HIDData> { packet ->
 			onPacket(packet.hidId)
 			scheduleSleep(packet.hidId, packet.timeout)
 		}
 
-		receiver.packetEvents.onPacket<HIDRotation> { packet -> onPacket(packet.hidId) }
-		receiver.packetEvents.onPacket<HIDRotationBattery> { packet -> onPacket(packet.hidId) }
-		receiver.packetEvents.onPacket<HIDRotationMag> { packet -> onPacket(packet.hidId) }
-		receiver.packetEvents.onPacket<HIDStatus> { packet -> onPacket(packet.hidId) }
-		receiver.packetEvents.onPacket<HIDRuntime> { packet -> onPacket(packet.hidId) }
+		receiver.inboundPackets.onPacket<HIDRotation> { packet -> onPacket(packet.hidId) }
+		receiver.inboundPackets.onPacket<HIDRotationBattery> { packet -> onPacket(packet.hidId) }
+		receiver.inboundPackets.onPacket<HIDRotationMag> { packet -> onPacket(packet.hidId) }
+		receiver.inboundPackets.onPacket<HIDStatus> { packet -> onPacket(packet.hidId) }
+		receiver.inboundPackets.onPacket<HIDRuntime> { packet -> onPacket(packet.hidId) }
 	}
 }
 
 class HIDStatusBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
-		receiver.packetEvents.onPacket<HIDStatus> { packet ->
+		receiver.inboundPackets.onPacket<HIDStatus> { packet ->
 			if (receiver.getTracker(packet.hidId) == null) return@onPacket
 			receiver.getDevice(packet.hidId)?.context?.dispatch(
 				DeviceActions.Update { copy(status = packet.status, signalStrength = packet.rssi) },
@@ -241,7 +240,7 @@ class HIDStatusBehaviour : HIDReceiverBehaviour {
 
 class HIDPacketLossBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
-		receiver.packetEvents.onPacket<HIDStatus> { packet ->
+		receiver.inboundPackets.onPacket<HIDStatus> { packet ->
 			receiver.getDevice(packet.hidId)?.context?.dispatch(
 				DeviceActions.PacketStats(packetsReceived = packet.packetsReceived.toLong(), packetsLost = packet.packetsLost.toLong()),
 			)

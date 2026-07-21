@@ -4,6 +4,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.driver.DriverBridge
+import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +18,7 @@ data class VRServerState(
 	val devices: Map<Int, Device>,
 	val drivers: Map<Int, DriverBridge>,
 	val solarxr: Map<Int, SolarXRBridge>,
+	val receiverDongles: Map<Int, HIDReceiver>
 )
 
 sealed interface VRServerActions {
@@ -26,6 +28,7 @@ sealed interface VRServerActions {
 	data class DriverDisconnected(val bridgeId: Int) : VRServerActions
 	data class SolarXRConnected(val connection: SolarXRBridge) : VRServerActions
 	data class SolarXRDisconnected(val connectionId: Int) : VRServerActions
+	data class NewDongle(val receiverDongleId: Int, val context: HIDReceiver) : VRServerActions
 }
 
 typealias VRServerContext = Context<VRServerState, VRServerActions>
@@ -46,6 +49,7 @@ class VRServer(
 		val deviceId = getTracker(id)?.context?.state?.value?.deviceId ?: return null
 		return getDevice(deviceId)
 	}
+	fun getDongle(id: Int) = context.state.value.receiverDongles[id]
 
 	suspend fun sendSolarxrRpc(message: RpcMessage) = context.state.value.solarxr.values.forEach { it.sendRpc(message) }
 
@@ -58,6 +62,7 @@ class VRServer(
 					devices = emptyMap(),
 					drivers = emptyMap(),
 					solarxr = emptyMap(),
+					receiverDongles = emptyMap(),
 				),
 				scope = scope,
 				behaviours = behaviours,

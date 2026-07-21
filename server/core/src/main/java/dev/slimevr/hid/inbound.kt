@@ -12,12 +12,12 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-sealed interface HIDPacket {
+sealed interface HIDInboundPacket {
 	val hidId: Int
 }
 
 /** Receiver associates a wireless tracker ID with its 6-byte address (type 255). */
-data class HIDDeviceRegister(override val hidId: Int, val address: String) : HIDPacket
+data class HIDDeviceRegister(override val hidId: Int, val address: String) : HIDInboundPacket
 
 /** Board/MCU/firmware/battery + IMU type for tracker registration (type 0). */
 data class HIDDeviceInfo(
@@ -30,14 +30,14 @@ data class HIDDeviceInfo(
 	val batteryVoltage: Float,
 	val rssi: Int,
 	val magStatus: MagnetometerStatus,
-) : HIDPacket
+) : HIDInboundPacket
 
 /** Full-precision Q15 quaternion + Q7 acceleration (type 1). */
 data class HIDRotation(
 	override val hidId: Int,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
-) : HIDPacket
+) : HIDInboundPacket
 
 /** Compact exp-map quaternion + Q7 acceleration + battery level + rssi (type 2). */
 data class HIDRotationBattery(
@@ -47,7 +47,7 @@ data class HIDRotationBattery(
 	val batteryLevel: Float?,
 	val batteryVoltage: Float,
 	val rssi: Int,
-) : HIDPacket
+) : HIDInboundPacket
 
 /** Tracker status report + rssi (type 3). */
 data class HIDStatus(
@@ -56,14 +56,14 @@ data class HIDStatus(
 	val rssi: Int,
 	val packetsReceived: Int,
 	val packetsLost: Int,
-) : HIDPacket
+) : HIDInboundPacket
 
 /** Full-precision Q15 quaternion + Q10 magnetometer (type 4). */
 data class HIDRotationMag(
 	override val hidId: Int,
 	val rotation: Quaternion,
 	val magnetometer: Vector3,
-) : HIDPacket
+) : HIDInboundPacket
 
 /** Button state + timeout hint + compact exp-map quaternion + Q7 acceleration + rssi (type 7). */
 data class HIDRotationButton(
@@ -73,10 +73,10 @@ data class HIDRotationButton(
 	val rotation: Quaternion,
 	val acceleration: Vector3,
 	val rssi: Int,
-) : HIDPacket
+) : HIDInboundPacket
 
 /** Battery remaining runtime in milliseconds (type 5). -1 = unknown, 0 = N/A (e.g. charging). */
-data class HIDRuntime(override val hidId: Int, val runtime: Long) : HIDPacket
+data class HIDRuntime(override val hidId: Int, val runtime: Long) : HIDInboundPacket
 
 /** Button state + timeout hint + rssi, no rotation (type 6). */
 data class HIDData(
@@ -84,7 +84,8 @@ data class HIDData(
 	val button: Int,
 	val timeout: Int,
 	val rssi: Int,
-) : HIDPacket
+) : HIDInboundPacket
+
 
 private const val HID_PACKET_SIZE = 16
 
@@ -148,7 +149,7 @@ private fun decodeBattery(raw: Int): Float? = if (raw == 128) null else (raw and
 
 private fun decodeBatteryVoltage(raw: Int): Float = (raw.toFloat() + 245f) / 100f
 
-private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
+private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDInboundPacket? {
 	val packetType = data[i].toUByte().toInt()
 	val hidId = data[i + 1].toUByte().toInt()
 
@@ -247,7 +248,7 @@ private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
 	}
 }
 
-fun parseHIDPackets(data: ByteArray): List<HIDPacket> {
+fun parseHIDPackets(data: ByteArray): List<HIDInboundPacket> {
 	if (data.size % HID_PACKET_SIZE != 0) return emptyList()
 	return (0 until data.size / HID_PACKET_SIZE).mapNotNull { parseSingleHIDPacket(data, it * HID_PACKET_SIZE) }
 }
