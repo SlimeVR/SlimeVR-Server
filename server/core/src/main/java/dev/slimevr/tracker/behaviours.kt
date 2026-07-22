@@ -38,7 +38,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 					cal.headingCorrection,
 					cal.attitudeAlignment,
 					cal.headingAlignment,
-				)
+				).twinNearest(state.rotation)
 
 				cal != null -> state.rotation
 
@@ -91,10 +91,18 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				attitudeAlignment = attitudeAlignment,
 			)
 
-			// TODO: Immediately apply calibration on `state.rawRotation` so we don't
-			//  need to worry about desync of `state.rotation`
-			//  (+1 from Erimel)
-			state.copy(sessionCalibration = sessionCalibration)
+			// Apply calibration on rawRotation
+			val rotation = applyCalibration(
+				state.rawRotation,
+				sessionCalibration.headingCorrection,
+				sessionCalibration.attitudeAlignment,
+				sessionCalibration.headingAlignment,
+			) // don't track polarity on Full Reset
+
+			state.copy(
+				sessionCalibration = sessionCalibration,
+				rotation = rotation,
+			)
 		}
 
 		is TrackerActions.YawReset -> {
@@ -109,8 +117,18 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				headingCorrection = headingCorrection,
 			)
 
-			// TODO: Apply calibration on `state.rawRotation` -> `state.rotation`
-			state.copy(sessionCalibration = sessionCalibration)
+			// Apply calibration on rawRotation
+			val rotation = applyCalibration(
+				state.rawRotation,
+				sessionCalibration.headingCorrection,
+				sessionCalibration.attitudeAlignment,
+				sessionCalibration.headingAlignment,
+			).twinNearest(state.rotation)
+
+			state.copy(
+				sessionCalibration = sessionCalibration,
+				rotation = rotation,
+			)
 		}
 
 		is TrackerActions.MountingReset -> {
@@ -130,8 +148,18 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				headingAlignment = headingAlignment,
 			)
 
-			// TODO: Apply calibration on `state.rawRotation` -> `state.rotation`
-			state.copy(sessionCalibration = sessionCalibration)
+			// Apply calibration on rawRotation
+			val rotation = applyCalibration(
+				state.rawRotation,
+				sessionCalibration.headingCorrection,
+				sessionCalibration.attitudeAlignment,
+				sessionCalibration.headingAlignment,
+			).twinNearest(state.rotation)
+
+			state.copy(
+				sessionCalibration = sessionCalibration,
+				rotation = rotation,
+			)
 		}
 	}
 }
