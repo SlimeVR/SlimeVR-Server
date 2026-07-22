@@ -164,7 +164,11 @@ class ForegroundService : Service() {
 			server = server,
 			config = config,
 			serialServer = serialServer,
-			featureFlags = FeatureFlags(),
+			featureFlags = FeatureFlags(
+				skipCheckUdev = true,
+				keybindSupport = KeybindSupport.UNSUPPORTED,
+				udevRulesInstalled = false
+			),
 			keybindManager = keybindManager,
 			skeleton = skeleton,
 			firmwareManager = firmwareManager,
