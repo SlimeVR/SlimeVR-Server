@@ -47,54 +47,53 @@ class SpineImputeProcessor(val settings: Settings) : SkeletonProcessor {
 			if (!hasHip) add(BodyPart.HIP)
 		}
 
-		return state.copy(
-			boneInputs = boneInputs.mapValues { (bodyPart, bone) ->
-				val chainIndex = missingSpineParts.indexOf(bodyPart)
-				if (chainIndex == -1) return@mapValues bone
+		val updatedSpineBones = missingSpineParts.withIndex().associate { (chainIndex, bodyPart) ->
+			val bone = boneInputs.getValue(bodyPart)
 
-				// Get the first active bones above and below this one in the chain
-				val (fromBodyParts, toBodyParts) = when (bodyPart) {
-					BodyPart.WAIST -> {
-						val from = chestSet.takeIf { hasChest } ?: return@mapValues bone
-						val to = when {
-							hasHip -> hipSet
-							hasUpperLegs -> upperLegsSet
-							else -> return@mapValues bone
-						}
-						from to to
+			// Get the first active bones above and below this one in the chain
+			val (fromBodyParts, toBodyParts) = when (bodyPart) {
+				BodyPart.WAIST -> {
+					val from = chestSet.takeIf { hasChest } ?: return@associate bodyPart to bone
+					val to = when {
+						hasHip -> hipSet
+						hasUpperLegs -> upperLegsSet
+						else -> return@associate bodyPart to bone
 					}
-
-					BodyPart.HIP -> {
-						val from = when {
-							hasWaist -> waistSet
-							hasChest -> chestSet
-							else -> return@mapValues bone
-						}
-						val to = upperLegsSet.takeIf { hasUpperLegs } ?: return@mapValues bone
-						from to to
-					}
-
-					else -> error("Invalid missing spine body part $bodyPart")
+					from to to
 				}
 
-				val fromReliability = combinationToReliability[(bodyPart to fromBodyParts)] ?: error("Invalid from body part combination $bodyPart, $fromBodyParts")
-				val toReliability = combinationToReliability[(bodyPart to toBodyParts)] ?: error("Invalid to body part combination $bodyPart, $toBodyParts")
+				BodyPart.HIP -> {
+					val from = when {
+						hasWaist -> waistSet
+						hasChest -> chestSet
+						else -> return@associate bodyPart to bone
+					}
+					val to = upperLegsSet.takeIf { hasUpperLegs } ?: return@associate bodyPart to bone
+					from to to
+				}
 
-				val interpolateRatio = interpolateRatio(
-					chainIndex,
-					missingSpineParts.size,
-					ratios.imputeSpineFromUpperToLower,
-					ratios.imputeSpineCurvature,
-					fromReliability,
-					toReliability,
-				)
+				else -> error("Invalid missing spine body part $bodyPart")
+			}
 
-				val fromRotation = boneInputs.resolveRotationFor(fromBodyParts)
-				val toRotation = boneInputs.resolveRotationFor(toBodyParts)
+			val fromReliability = combinationToReliability[(bodyPart to fromBodyParts)] ?: error("Invalid from body part combination $bodyPart, $fromBodyParts")
+			val toReliability = combinationToReliability[(bodyPart to toBodyParts)] ?: error("Invalid to body part combination $bodyPart, $toBodyParts")
 
-				bone.copy(rawRotation = fromRotation.interpQ(toRotation, interpolateRatio))
-			},
-		)
+			val interpolateRatio = interpolateRatio(
+				chainIndex,
+				missingSpineParts.size,
+				ratios.imputeSpineFromUpperToLower,
+				ratios.imputeSpineCurvature,
+				fromReliability,
+				toReliability,
+			)
+
+			val fromRotation = boneInputs.resolveRotationFor(fromBodyParts)
+			val toRotation = boneInputs.resolveRotationFor(toBodyParts)
+
+			bodyPart to bone.copy(rawRotation = fromRotation.interpQ(toRotation, interpolateRatio))
+		}
+
+		return state.copy(boneInputs = boneInputs + updatedSpineBones)
 	}
 
 	/**

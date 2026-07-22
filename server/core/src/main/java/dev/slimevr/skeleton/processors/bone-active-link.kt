@@ -25,18 +25,19 @@ class BoneActiveLinkProcessor : SkeletonProcessor {
 	override fun process(state: SkeletonState): SkeletonState {
 		val boneInputs = state.boneInputs
 
-		return state.copy(
-			boneInputs = boneInputs.mapValues { (bodyPart, bone) ->
-				if (bone.isActive) return@mapValues bone
+		val updatedLinkedBones = linkedToSources.keys.associateWith { bodyPart ->
+			val bone = boneInputs.getValue(bodyPart)
+			if (bone.isActive) return@associateWith bone
 
-				val closestActiveBone = linkedToSources[bodyPart]
-					?.firstNotNullOfOrNull { part ->
-						boneInputs[part]?.takeIf { it.isActive }
-					}
-				bone.copy(
-					rawRotation = closestActiveBone?.rawRotation ?: bone.rawRotation,
-				)
-			},
-		)
+			val closestActiveBone = linkedToSources.getValue(bodyPart)
+				.firstNotNullOfOrNull { part ->
+					boneInputs[part]?.takeIf { it.isActive }
+				}
+			bone.copy(
+				rawRotation = closestActiveBone?.rawRotation ?: bone.rawRotation,
+			)
+		}
+
+		return state.copy(boneInputs = boneInputs + updatedLinkedBones)
 	}
 }

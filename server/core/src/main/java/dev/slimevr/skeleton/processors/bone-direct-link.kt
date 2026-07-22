@@ -43,10 +43,11 @@ class BoneDirectLinkProcessor : SkeletonProcessor {
 	override fun process(state: SkeletonState): SkeletonState {
 		val updatedBoneInputs = state.boneInputs.toMutableMap()
 
-		for ((bodyPart, bone) in state.boneInputs) {
-			if (bone.isActive || bodyPart !in linkedToSource) continue
+		for (bodyPart in linkedToSource.keys) {
+			val bone = updatedBoneInputs.getValue(bodyPart)
+			if (bone.isActive) continue
 
-			val sourceBone = updatedBoneInputs[linkedToSource[bodyPart]]
+			val sourceBone = updatedBoneInputs[linkedToSource.getValue(bodyPart)]
 			updatedBoneInputs[bodyPart] = bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
 		}
 

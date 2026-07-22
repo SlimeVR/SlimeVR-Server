@@ -52,10 +52,11 @@ class FingerImputeProcessor : SkeletonProcessor {
 	override fun process(state: SkeletonState): SkeletonState {
 		val updatedBoneInputs = state.boneInputs.toMutableMap()
 
-		for ((bodyPart, bone) in state.boneInputs) {
-			if (bone.isActive || bodyPart !in fingerToSource) continue
+		for (bodyPart in fingerToSource.keys) {
+			val bone = updatedBoneInputs.getValue(bodyPart)
+			if (bone.isActive) continue
 
-			val sourceBone = updatedBoneInputs[fingerToSource[bodyPart]]
+			val sourceBone = updatedBoneInputs[fingerToSource.getValue(bodyPart)]
 			updatedBoneInputs[bodyPart] = bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
 		}
 

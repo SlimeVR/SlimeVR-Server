@@ -3,10 +3,10 @@ package dev.slimevr.skeleton
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.processors.BoneActiveLinkProcessor
 import dev.slimevr.skeleton.processors.BoneDirectLinkProcessor
 import dev.slimevr.skeleton.processors.BoneFallbackProcessor
 import dev.slimevr.skeleton.processors.BonePredictionProcessor
-import dev.slimevr.skeleton.processors.BoneActiveLinkProcessor
 import dev.slimevr.skeleton.processors.BoneSmoothingProcessor
 import dev.slimevr.skeleton.processors.BoneYawRollAlignProcessor
 import dev.slimevr.skeleton.processors.FingerImputeProcessor
@@ -34,14 +34,10 @@ data class BoneState(
 	val tailPosition: Vector3 = Vector3.NULL,
 	val parentBone: BoneState? = null,
 ) {
-	private val orientationOffset = if (offset.len() > 0f) {
-		if (offset.unit().y == 1f) {
-			Quaternion.I
-		} else {
-			Quaternion.fromTo(Vector3.NEG_Y, offset)
-		}
-	} else {
-		Quaternion.IDENTITY
+	private val orientationOffset = when {
+		offset.len() == 0f -> Quaternion.IDENTITY
+		offset.unit().y == 1f -> Quaternion.I
+		else -> Quaternion.fromTo(Vector3.NEG_Y, offset)
 	}
 	val orientation: Quaternion = rotation * orientationOffset
 	val localRotation: Quaternion

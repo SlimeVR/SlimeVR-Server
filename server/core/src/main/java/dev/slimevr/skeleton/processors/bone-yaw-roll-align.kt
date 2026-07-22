@@ -15,7 +15,7 @@ class BoneYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 	 * First value is the BodyPart to be aligned.
 	 *
 	 * Second value is a Pair containing a list of BodyParts to align with as well as a boolean specifying
-	 * whether the BodyPart to be aligned must be active.
+	 * whether the BodyPart to be aligned must be inactive.
 	 */
 	private val bodyPartToSources = mapOf(
 		BodyPart.HIP to (setOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG) to true),
@@ -32,19 +32,20 @@ class BoneYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 			BodyPart.RIGHT_UPPER_LEG to ratios.interpolateUpperLegsWithLowerLegs,
 		)
 
-		return state.copy(
-			boneInputs = boneInputs.mapValues { (bodyPart, bone) ->
-				val sources = bodyPartToSources[bodyPart] ?: return@mapValues bone
-				if (!sources.second || bone.isActive) return@mapValues bone
-				val mixFactor = bodyPartToMixFactor[bodyPart] ?: return@mapValues bone
+		val updatedAlignedBones = bodyPartToSources.keys.associateWith { bodyPart ->
+			val bone = boneInputs.getValue(bodyPart)
+			val sources = bodyPartToSources.getValue(bodyPart)
+			if (sources.second && bone.isActive) return@associateWith bone
+			val mixFactor = bodyPartToMixFactor[bodyPart] ?: return@associateWith bone
 
-				val sourceRotation = boneInputs.resolveRotationFor(sources.first)
-				val aligned = alignYawRoll(bone.rawRotation, sourceRotation)
-				val newRotation = bone.rawRotation.interpR(aligned, mixFactor)
+			val sourceRotation = boneInputs.resolveRotationFor(sources.first)
+			val aligned = alignYawRoll(bone.rawRotation, sourceRotation)
+			val newRotation = bone.rawRotation.interpR(aligned, mixFactor)
 
-				bone.copy(rawRotation = newRotation)
-			},
-		)
+			bone.copy(rawRotation = newRotation)
+		}
+
+		return state.copy(boneInputs = boneInputs + updatedAlignedBones)
 	}
 
 	/**

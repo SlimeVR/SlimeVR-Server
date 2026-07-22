@@ -146,7 +146,6 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		tapDetectionManager = tapDetectionManager,
 	)
 
-
 	try {
 		appContext.startObserving()
 

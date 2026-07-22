@@ -167,7 +167,7 @@ class ForegroundService : Service() {
 			featureFlags = FeatureFlags(
 				skipCheckUdev = true,
 				keybindSupport = KeybindSupport.UNSUPPORTED,
-				udevRulesInstalled = false
+				udevRulesInstalled = false,
 			),
 			keybindManager = keybindManager,
 			skeleton = skeleton,
