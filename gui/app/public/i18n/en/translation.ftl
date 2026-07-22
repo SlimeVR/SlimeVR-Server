@@ -582,6 +582,22 @@ settings-keybinds-recorder-modal-title = Assign keybind for
 settings-keybinds-recorder-modal-reset-button = Reset
 settings-keybinds-recorder-modal-unbind-button = Unbind
 settings-keybinds-recorder-modal-done-button = Done
+settings-keybinds-recorder-modal-cancel-button = Cancel
+settings-keybinds-recorder-modal-key-enter = Enter
+settings-keybinds-recorder-modal-key-backspace = Backspace
+settings-keybinds-recorder-modal-key-escape = Esc
+settings-keybinds-already-assigned = Already used by { $name }
+settings-keybinds-click-to-record = Click to record shortcut
+settings-keybinds-change-shortcut = Click to change shortcut
+settings-keybinds-reset-single = Reset keybind to default
+settings-keybinds-recorder-hint-recording = Hold Ctrl, Alt, or Super, then press a letter or number
+settings-keybinds-recorder-hint-idle = Click inside the box to record a new key combination.
+settings-keybinds-error-letters-numbers-only = That key can't be used, pick a letter or number
+settings-keybinds-error-add-modifier = You can only start a combination with Ctrl, Alt, or Super
+settings-keybinds-error-duplicate = Duplicate keybind combinations are not allowed
+
+
+
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking Settings
@@ -633,11 +649,10 @@ settings-general-fk_settings-arm_fk-forward = Forward
 settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be raised forward at 90 degrees. Useful for VTubing.
 settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
-settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = Impute missing spine trackers from upper to lower
-settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature when missing adjacent spine trackers
-settings-general-fk_settings-skeleton_settings-interpolate_hip_with_knees = Interpolate the hip with the knees
-settings-general-fk_settings-skeleton_settings-interpolate_computed_knees_with_ankles = Interpolate the computed knees with the ankles
-settings-general-fk_settings-skeleton_settings-interpolate_knees_with_ankles = Interpolate the knees with the ankles
+settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = Estimate missing spine trackers from upper to lower
+settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature of adjacent missing spine trackers
+settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Interpolate the hip with the upper legs
+settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_with_lower_legs = Interpolate the upper legs with the lower legs
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
 

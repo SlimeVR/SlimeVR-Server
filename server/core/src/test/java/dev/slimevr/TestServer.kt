@@ -16,6 +16,7 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
+import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
@@ -144,6 +145,7 @@ fun buildTestAppContext(server: VRServer): AppContextProvider = object : TestApp
 
 abstract class TestAppContext : AppContextProvider {
 	override val featureFlags: FeatureFlags = FeatureFlags()
+	override val keybindManager: KeybindManager get() = error("not used in test")
 	override val skeleton: Skeleton get() = error("not used in test")
 	override val config: AppConfig get() = error("not used in test")
 	override val serialServer: SerialServer get() = error("not used in test")

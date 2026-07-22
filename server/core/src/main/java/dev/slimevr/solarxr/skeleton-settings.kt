@@ -41,9 +41,8 @@ class SkeletonSettingsBehaviour(
 					ratios = SkeletonRatios(
 						imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
 						imputeSpineCurvature = config.ratios.imputeSpineCurvature,
-						interpolateHipWithKnees = config.ratios.interpolateHipWithKnees,
-						interpolateComputedKneesWithAnkles = config.ratios.interpolateComputedKneesWithAnkles,
-						interpolateKneesWithAnkles = config.ratios.interpolateKneesWithAnkles,
+						interpolateHipWithUpperLegs = config.ratios.interpolateHipWithUpperLegs,
+						interpolateUpperLegsWithLowerLegs = config.ratios.interpolateUpperLegsWithLowerLegs,
 						skatingCorrectionStrength = config.ratios.skatingCorrectionStrength,
 					),
 					filtering = SkeletonFiltering(
@@ -77,9 +76,8 @@ class SkeletonSettingsBehaviour(
 								SkeletonRatiosConfig(
 									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower ?: 0f,
 									imputeSpineCurvature = it.imputeSpineCurvature ?: 0f,
-									interpolateHipWithKnees = it.interpolateHipWithKnees ?: 0f,
-									interpolateComputedKneesWithAnkles = it.interpolateComputedKneesWithAnkles ?: 0f,
-									interpolateKneesWithAnkles = it.interpolateKneesWithAnkles ?: 0f,
+									interpolateHipWithUpperLegs = it.interpolateHipWithUpperLegs ?: 0f,
+									interpolateUpperLegsWithLowerLegs = it.interpolateUpperLegsWithLowerLegs ?: 0f,
 									skatingCorrectionStrength = it.skatingCorrectionStrength ?: 0f,
 								)
 							} ?: skeletonConfig.ratios,

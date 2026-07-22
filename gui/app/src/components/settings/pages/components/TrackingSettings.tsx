@@ -38,9 +38,8 @@ type SkeletonForm = {
   ratios: {
     imputeSpineFromUpperToLower: number;
     imputeSpineCurvature: number;
-    interpolateHipWithKnees: number;
-    interpolateComputedKneesWithAnkles: number;
-    interpolateKneesWithAnkles: number;
+    interpolateHipWithUpperLegs: number;
+    interpolateUpperLegsWithLowerLegs: number;
     skatingCorrectionStrength: number;
   };
   filtering: {
@@ -73,9 +72,8 @@ const defaultValues: SkeletonForm = {
   ratios: {
     imputeSpineFromUpperToLower: 0.5,
     imputeSpineCurvature: 0.5,
-    interpolateHipWithKnees: 0.25,
-    interpolateComputedKneesWithAnkles: 0.85,
-    interpolateKneesWithAnkles: 0.0,
+    interpolateHipWithUpperLegs: 0.25,
+    interpolateUpperLegsWithLowerLegs: 0.0,
     skatingCorrectionStrength: 0.3,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
@@ -119,11 +117,9 @@ export function TrackingSettings() {
     ratios.imputeSpineFromUpperToLower =
       values.ratios.imputeSpineFromUpperToLower;
     ratios.imputeSpineCurvature = values.ratios.imputeSpineCurvature;
-    ratios.interpolateHipWithKnees = values.ratios.interpolateHipWithKnees;
-    ratios.interpolateComputedKneesWithAnkles =
-      values.ratios.interpolateComputedKneesWithAnkles;
-    ratios.interpolateKneesWithAnkles =
-      values.ratios.interpolateKneesWithAnkles;
+    ratios.interpolateHipWithUpperLegs = values.ratios.interpolateHipWithUpperLegs;
+    ratios.interpolateUpperLegsWithLowerLegs =
+      values.ratios.interpolateUpperLegsWithLowerLegs;
     ratios.skatingCorrectionStrength = values.ratios.skatingCorrectionStrength;
     settingsReq.ratios = ratios;
 
@@ -486,9 +482,9 @@ export function TrackingSettings() {
           />
           <NumberSelector
             control={control}
-            name="ratios.interpolateHipWithKnees"
+            name="ratios.interpolateHipWithUpperLegs"
             label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interpolate_hip_with_knees'
+              'settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs'
             )}
             valueLabelFormat={(value) => percentageFormat.format(value)}
             min={0.0}
@@ -497,20 +493,9 @@ export function TrackingSettings() {
           />
           <NumberSelector
             control={control}
-            name="ratios.interpolateComputedKneesWithAnkles"
+            name="ratios.interpolateUpperLegsWithLowerLegs"
             label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interpolate_computed_knees_with_ankles'
-            )}
-            valueLabelFormat={(value) => percentageFormat.format(value)}
-            min={0.0}
-            max={1.0}
-            step={0.05}
-          />
-          <NumberSelector
-            control={control}
-            name="ratios.interpolateKneesWithAnkles"
-            label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interpolate_knees_with_ankles'
+              'settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_with_lower_legs'
             )}
             valueLabelFormat={(value) => percentageFormat.format(value)}
             min={0.0}

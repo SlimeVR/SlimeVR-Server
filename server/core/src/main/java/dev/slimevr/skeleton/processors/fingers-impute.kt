@@ -1,12 +1,15 @@
-package dev.slimevr.skeleton
+package dev.slimevr.skeleton.processors
 
+import dev.slimevr.skeleton.SkeletonProcessor
+import dev.slimevr.skeleton.SkeletonState
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.collections.get
+import kotlin.collections.iterator
 
 /**
- * Handles the finger tracking logic.
+ * Handles rotations of inactive finger bones.
  */
-class ImputeFingersProcessor : SkeletonProcessor {
+class FingerImputeProcessor : SkeletonProcessor {
 	/**
 	 * First element is the linked BodyPart.
 	 *
