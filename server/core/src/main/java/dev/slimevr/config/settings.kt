@@ -26,6 +26,7 @@ data class TrackerConfig(
 	val customName: String? = null,
 	@Serializable(with = QuaternionSerializer::class)
 	val mountingOrientation: Quaternion? = null,
+	val mountingResetOrientation: Quaternion? = null,
 	val magEnabled: Boolean? = null,
 )
 
@@ -184,10 +185,10 @@ data class SettingsConfigState(
 	val outputTrackersConfig: OutputTrackersConfig = OutputTrackersConfig(),
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
+	val keybinds: List<KeybindConfig> = defaultKeybinds(),
 	val skeletonConfig: SkeletonConfig = SkeletonConfig(),
 	val vrcOscConfig: VRCOSCConfig = VRCOSCConfig(),
 	val vmcConfig: VMCConfig = VMCConfig(),
-	val keybinds: List<KeybindConfig> = defaultKeybinds(),
 )
 
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {
