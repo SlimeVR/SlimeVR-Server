@@ -29,6 +29,7 @@ import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
 import dev.slimevr.desktop.vrchat.resolveDesktopOscQueryAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
@@ -41,11 +42,8 @@ import dev.slimevr.udp.UdpServer
 import dev.slimevr.util.safeLaunch
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrcosc.VRCOSCManager
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import solarxr_protocol.rpc.KeybindSupport
 
 fun main(args: Array<String>) = runBlocking<Unit> {
@@ -72,7 +70,7 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 	featureFlags.keybindSupport = when (CURRENT_PLATFORM) {
 		Platform.WINDOWS -> KeybindSupport.APP_MANAGED
 
-		Platform.LINUX -> if (isGnome() && resolveGnomeAppId() != null) {
+		Platform.LINUX -> if (isGnome()) {
 			KeybindSupport.APP_MANAGED
 		} else {
 			KeybindSupport.SYSTEM_MANAGED
@@ -124,12 +122,14 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 	)
 	val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
+	val keybindManager = KeybindManager.create(scope = this)
 
 	val appContext = AppContext(
 		server = server,
 		config = config,
 		serialServer = serialServer,
 		featureFlags = featureFlags,
+		keybindManager = keybindManager,
 		skeleton = skeleton,
 		firmwareManager = firmwareManager,
 		vrcConfigManager = vrcConfigManager,
@@ -146,15 +146,6 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		tapDetectionManager = tapDetectionManager,
 	)
 
-	// JVM shutdown hooks fire on SIGINT/SIGTERM but coroutine `finally` blocks do not,
-	// so cancel the root scope on shutdown to let structured concurrency run every cleanup.
-	val rootJob = coroutineContext[Job]!!
-	Runtime.getRuntime().addShutdownHook(
-		Thread {
-			rootJob.cancel()
-			runBlocking { rootJob.join() }
-		},
-	)
 
 	try {
 		appContext.startObserving()
@@ -167,6 +158,6 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 
 		awaitCancellation()
 	} finally {
-		withContext(NonCancellable) { appContext.dispose() }
+		appContext.dispose()
 	}
 }

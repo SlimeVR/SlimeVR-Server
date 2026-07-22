@@ -93,6 +93,11 @@ export function SettingsSidebar() {
             scrollTo="appearance"
             id="settings-sidebar-appearance"
           />
+          <SettingsLink
+            to="/settings/keybinds"
+            scrollTo="keybinds"
+            id="settings-sidebar-keybinds"
+          />
         </div>
       </div>
       <div className="flex flex-col gap-3">
@@ -143,11 +148,6 @@ export function SettingsSidebar() {
           <SettingsLink
             to="/settings/advanced"
             id="settings-sidebar-advanced"
-          />
-          <SettingsLink
-            to="/settings/keybinds"
-            scrollTo="keybinds"
-            id="settings-sidebar-keybinds"
           />
         </div>
       </div>

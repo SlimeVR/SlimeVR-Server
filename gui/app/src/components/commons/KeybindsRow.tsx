@@ -1,46 +1,94 @@
 import { Typography } from './Typography';
-import './KeybindRow.scss';
-import { Control, FieldPath, FieldValues, useWatch } from 'react-hook-form';
+import { Control, useWatch } from 'react-hook-form';
+import { KeybindForm } from '@/components/settings/pages/KeybindSettings';
 import { NumberSelector } from './NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
+import { Kbd } from './Kbd';
+import { RecordIcon } from './icon/RecordIcon';
+import { ResetIcon } from './icon/ResetIcon';
+import { Tooltip } from './Tooltip';
+import classNames from 'classnames';
 
 function KeyBindKeyList({ keybind }: { keybind: string[] }) {
-  if (keybind.length <= 1) {
+  if (keybind.length === 0) {
     return (
-      <div className="flex h-full text-section-title items-center justifiy-center">
-        Click to edit keybind
+      <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl fill-background-10 border border-dashed border-background-50 bg-background-90 group-hover:border-accent-background-40 transition-all">
+        <RecordIcon width={16} />
+        <Typography id="settings-keybinds-click-to-record" />
       </div>
     );
   }
-  return keybind.map((key, i) => {
-    return (
-      <div key={i} className="flex flex-row">
-        <div className="flex flex-wrap p-2 rounded-lg min-w-[50px] text-standard-bold justify-center items-center bg-background-80 mobile:text-sm">
-          {key ?? ''}
+
+  return (
+    <div className="group flex items-center justify-start md:justify-center gap-1.5 flex-wrap">
+      {keybind.map((key, i) => (
+        <div key={i} className="flex items-center gap-1.5">
+          <Kbd className="px-2 md:px-4 py-2 min-w-[34px] md:min-w-[40px] group-hover:border-accent-background-40">
+            {key}
+          </Kbd>
+          {i < keybind.length - 1 && (
+            <Typography variant="standard" bold textAlign="text-center">
+              +
+            </Typography>
+          )}
         </div>
-        <div className="flex justify-center items-center text-section-title mobile:text-sm gap-2 pl-3">
-          {i < keybind.length - 1 ? '+' : ''}
-        </div>
-      </div>
-    );
-  });
+      ))}
+    </div>
+  );
 }
 
-export function KeybindsRow<T extends FieldValues = FieldValues>({
+function ResetButton({
+  isModified,
+  onClick,
+}: {
+  isModified?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Tooltip
+      content={<Typography id="settings-keybinds-reset-single" />}
+      preferedDirection="top"
+    >
+      <button
+        type="button"
+        disabled={!isModified}
+        className={classNames(
+          'w-7 h-7 rounded-xl flex items-center justify-center transition-all',
+          {
+            'text-accent hover:bg-background-60 cursor-pointer opacity-100':
+              isModified,
+            'text-background-40 opacity-30 cursor-not-allowed': !isModified,
+          }
+        )}
+        onClick={onClick}
+      >
+        <ResetIcon size={16} />
+      </button>
+    </Tooltip>
+  );
+}
+
+export function KeybindsRow({
   id,
   control,
   index,
   openKeybindRecorderModal,
+  onResetSingle,
+  isModified,
 }: {
   id?: string;
-  control: Control<T>;
+  control: Control<KeybindForm>;
   index: number;
   openKeybindRecorderModal: (index: number) => void;
+  onResetSingle: (index: number) => void;
+  isModified?: boolean;
 }) {
-  const binding = useWatch({
-    control,
-    name: `keybinds.${index}.binding` as FieldPath<T>,
-  }) as string[] | undefined;
+  const binding =
+    useWatch({
+      control,
+      name: `keybinds.${index}.binding`,
+    }) ?? [];
+
   const { currentLocales } = useLocaleConfig();
   const secondsFormat = new Intl.NumberFormat(currentLocales, {
     style: 'unit',
@@ -49,31 +97,67 @@ export function KeybindsRow<T extends FieldValues = FieldValues>({
     maximumFractionDigits: 2,
   });
 
-  const handleOpenModal = () => {
-    openKeybindRecorderModal(index);
-  };
-
   return (
-    <div className="keybind-row bg-background-60 rounded-xl h-full keybinds-small:flex keybinds-small:flex-col keybinds-small:justify-center keybinds-small:items-center p-2">
-      <label className="text-sm font-medium text-background-10 keybinds-small:flex keybinds-small:py-2 keybinds-small:justify-center keybinds-small:align-middle">
-        <Typography id={`settings-keybinds_${id}`} />
-      </label>
-      <div
-        className="flex gap-2 h-full items-center rounded-lg bg-background-70 hover:bg-background-50 w-full"
-        onClick={handleOpenModal}
-      >
-        <div className="flex flex-grow gap-2 justify-center p-2 h-[50px]">
-          {binding != null && <KeyBindKeyList keybind={binding} />}
+    <tr className="bg-background-80 flex flex-col md:table-row p-4 md:p-0 gap-3 md:gap-0 border-b border-background-60 md:border-b-0 relative">
+      <td className="py-2 md:py-4 pl-0 md:pl-6 pr-0 md:pr-4 block md:table-cell align-middle">
+        <div className="flex items-center justify-between md:justify-start gap-2.5">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 hidden md:flex items-center justify-center flex-shrink-0">
+              <ResetButton
+                isModified={isModified}
+                onClick={() => onResetSingle(index)}
+              />
+            </div>
+            <div className="flex items-center m-0 p-0 leading-none">
+              <Typography
+                id={`settings-keybinds_${id}`}
+                variant="standard"
+                bold
+                whitespace="whitespace-nowrap"
+              />
+            </div>
+          </div>
+
+          <div className="md:hidden">
+            <ResetButton
+              isModified={isModified}
+              onClick={() => onResetSingle(index)}
+            />
+          </div>
         </div>
-      </div>
-      <NumberSelector
-        control={control}
-        name={`keybinds.${index}.delay` as FieldPath<T>}
-        valueLabelFormat={(value) => secondsFormat.format(value)}
-        min={0}
-        max={10}
-        step={0.2}
-      />
-    </div>
+      </td>
+
+      <td className="py-2 md:py-4 px-0 md:px-4 block md:table-cell align-middle">
+        <div className="flex justify-start md:justify-center items-center">
+          <Tooltip
+            content={<Typography id="settings-keybinds-change-shortcut" />}
+            preferedDirection="top"
+          >
+            <div
+              className="cursor-pointer rounded-xl transition-all hover:scale-105 active:scale-95"
+              onClick={() => openKeybindRecorderModal(index)}
+            >
+              <KeyBindKeyList keybind={binding} />
+            </div>
+          </Tooltip>
+        </div>
+      </td>
+
+      <td className="py-2 md:py-4 px-0 md:px-6 block md:table-cell align-middle">
+        <div className="flex flex-col items-start md:items-end gap-1 pt-2 md:pt-0 justify-center">
+          <span className="md:hidden">
+            <Typography id="keybind_config-keybind_delay" />
+          </span>
+          <NumberSelector
+            control={control}
+            name={`keybinds.${index}.delay`}
+            valueLabelFormat={(value) => secondsFormat.format(value)}
+            min={0}
+            max={10}
+            step={0.2}
+          />
+        </div>
+      </td>
+    </tr>
   );
 }

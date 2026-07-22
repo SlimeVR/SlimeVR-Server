@@ -1,18 +1,86 @@
-import { useState, forwardRef, useRef } from 'react';
+import {
+  forwardRef,
+  useReducer,
+  useRef,
+  useState,
+  useEffect,
+  useImperativeHandle,
+} from 'react';
 import { Typography } from './Typography';
+import { Kbd } from './Kbd';
 import classNames from 'classnames';
-import { useFormContext } from 'react-hook-form';
+import { useLocalization } from '@fluent/react';
+import './KeybindRow.scss';
 
-const excludedKeys = [' ', 'SPACE'];
-const maxKeybindLength = 4;
-
-// KeyboardEvent.key spells some keys differently from the combinations the server stores.
-// The super/windows key comes through as Meta, or as OS on older Firefox.
-const keyAliases: Record<string, string> = {
+const MODIFIER_ORDER = ['CTRL', 'ALT', 'SHIFT', 'SUPER'];
+const NON_SHIFT_MODIFIERS = ['CTRL', 'ALT', 'SUPER'];
+const MODIFIER_KEY_NAMES: Record<string, string> = {
   CONTROL: 'CTRL',
+  ALT: 'ALT',
+  SHIFT: 'SHIFT',
   META: 'SUPER',
   OS: 'SUPER',
 };
+
+const maxKeybindLength = 5;
+
+function orderModifiers(mods: string[]): string[] {
+  return MODIFIER_ORDER.filter((m) => mods.includes(m));
+}
+
+export function isValidKeybind(keys: string[]): boolean {
+  const main = keys.filter((k) => !MODIFIER_ORDER.includes(k));
+  if (main.length !== 1 || !/^[A-Z0-9]$/.test(main[0])) return false;
+  return keys.some((k) => NON_SHIFT_MODIFIERS.includes(k));
+}
+
+export function keybindKey(keys: string[]): string {
+  return [...keys].sort().join('+');
+}
+
+function resolveMainKey(code: string): string | null {
+  if (code.startsWith('Key')) return code.slice(3);
+  if (code.startsWith('Digit')) return code.slice(5);
+  if (code.startsWith('Numpad') && code.length === 7 && /^\d$/.test(code[6]))
+    return code[6];
+  return null;
+}
+
+function modifiersFromEvent(e: React.KeyboardEvent): string[] {
+  const mods: string[] = [];
+  if (e.ctrlKey) mods.push('CTRL');
+  if (e.altKey) mods.push('ALT');
+  if (e.shiftKey) mods.push('SHIFT');
+  if (e.metaKey) mods.push('SUPER');
+  return orderModifiers(mods);
+}
+
+type RecorderState = {
+  preview: string[] | null;
+  flash: { slot: number; msgId: string } | null;
+};
+
+type RecorderAction =
+  | { type: 'preview'; keys: string[] }
+  | { type: 'clearPreview' }
+  | { type: 'flash'; slot: number; msgId: string }
+  | { type: 'clearFlash' };
+
+function recorderReducer(
+  state: RecorderState,
+  action: RecorderAction
+): RecorderState {
+  switch (action.type) {
+    case 'preview':
+      return { preview: action.keys, flash: null };
+    case 'clearPreview':
+      return { ...state, preview: null };
+    case 'flash':
+      return { ...state, flash: { slot: action.slot, msgId: action.msgId } };
+    case 'clearFlash':
+      return { ...state, flash: null };
+  }
+}
 
 export const KeybindRecorder = forwardRef<
   HTMLInputElement,
@@ -20,109 +88,155 @@ export const KeybindRecorder = forwardRef<
     keys: string[];
     onKeysChange: (v: string[]) => void;
     error?: string;
+    onSubmitModal?: () => void;
+    onUnbindModal?: () => void;
+    onCloseModal?: () => void;
   }
->(function KeybindRecorder({ keys, onKeysChange, error }) {
-  const [localKeys, setLocalKeys] = useState<string[]>(keys);
-  const [isRecording, setIsRecording] = useState(false);
-  const [oldKeys, setOldKeys] = useState<string[]>([]);
-  const [invalidSlot, setInvalidSlot] = useState<number | null>(null);
-  const [errorText, setErrorText] = useState<string>('');
+>(function KeybindRecorder(
+  { keys, onKeysChange, error, onSubmitModal, onUnbindModal, onCloseModal },
+  ref
+) {
+  const { l10n } = useLocalization();
+  const [state, dispatch] = useReducer(recorderReducer, {
+    preview: null,
+    flash: null,
+  });
+  const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const displayKeys = isRecording ? localKeys : keys;
-  const activeIndex = isRecording ? displayKeys.length : -1;
-  const displayError = errorText || error;
+  useImperativeHandle(ref, () => inputRef.current!, []);
 
-  const { clearErrors } = useFormContext();
+  const showing = state.preview ?? keys;
+  const activeIndex = showing.length;
+  const slotCount = state.preview
+    ? Math.min(showing.length + 1, maxKeybindLength)
+    : Math.max(showing.length, 1);
+  const displayError = state.flash ? l10n.getString(state.flash.msgId) : error;
+
+  useEffect(() => {
+    const timer = setTimeout(() => inputRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!state.flash) return;
+    const timer = setTimeout(() => dispatch({ type: 'clearFlash' }), 350);
+    return () => clearTimeout(timer);
+  }, [state.flash]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.preventDefault();
-    const rawKey = e.key.toUpperCase();
-    const key = keyAliases[rawKey] ?? rawKey;
-    const errorMsg = excludedKeys.includes(key)
-      ? `Cannot use ${key}!`
-      : displayKeys.includes(key)
-        ? `${key} is a Duplicate Key!`
-        : null;
-    if (errorMsg) {
-      setErrorText(errorMsg);
-      setInvalidSlot(activeIndex);
-      setTimeout(() => {
-        setInvalidSlot(null);
-      }, 350);
+    e.stopPropagation();
+
+    if (e.key === 'Escape') {
+      onCloseModal?.();
+      return;
+    }
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      onUnbindModal?.();
+      return;
+    }
+    if (e.key === 'Enter') {
+      onSubmitModal?.();
       return;
     }
 
-    setErrorText('');
+    const modifiers = modifiersFromEvent(e);
 
-    if (displayKeys.length < maxKeybindLength) {
-      const updatedKeys = [...displayKeys, key];
-      setLocalKeys(updatedKeys);
-      onKeysChange(updatedKeys);
-      if (updatedKeys.length == maxKeybindLength) {
-        inputRef.current?.blur();
-      }
+    if (MODIFIER_KEY_NAMES[e.key.toUpperCase()]) {
+      dispatch({ type: 'preview', keys: modifiers });
+      return;
     }
+
+    const mainKey = resolveMainKey(e.code);
+    if (!mainKey) {
+      dispatch({
+        type: 'flash',
+        slot: activeIndex,
+        msgId: 'settings-keybinds-error-letters-numbers-only',
+      });
+      return;
+    }
+
+    dispatch({ type: 'clearPreview' });
+    onKeysChange([...modifiers, mainKey]);
   };
 
-  const handleOnBlur = () => {
-    setIsRecording(false);
-    if (displayKeys.length < maxKeybindLength - 2 || error) {
-      onKeysChange(oldKeys);
-      setLocalKeys(oldKeys);
-    }
-  };
-
-  const handleOnFocus = () => {
-    clearErrors('keybinds');
-    const initialKeys: string[] = [];
-    setOldKeys(keys);
-    setLocalKeys(initialKeys);
-    onKeysChange(initialKeys);
-    setIsRecording(true);
+  const handleKeyUp = (e: React.KeyboardEvent) => {
+    if (state.preview === null) return;
+    if (
+      e.key === 'Escape' ||
+      e.key === 'Enter' ||
+      e.key === 'Backspace' ||
+      e.key === 'Delete'
+    )
+      return;
+    const modifiers = modifiersFromEvent(e);
+    dispatch(
+      modifiers.length > 0
+        ? { type: 'preview', keys: modifiers }
+        : { type: 'clearPreview' }
+    );
   };
 
   return (
-    <div className="w-full justify-center items-center flex flex-col gap-2">
-      <div className="flex gap-2 p-2 items-center rounded-lg relative">
+    <div className="relative w-full">
+      <div
+        className={classNames(
+          'flex flex-col gap-4 p-4 rounded-2xl bg-background-70 transition-all relative z-10 shadow-lg border',
+          displayError
+            ? 'border-status-critical'
+            : focused
+              ? 'border-accent-background-30'
+              : 'border-transparent'
+        )}
+        onClick={() => inputRef.current?.focus()}
+      >
         <input
-          autoFocus
+          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
           ref={inputRef}
-          className="opacity-0 absolute cursor-pointer w-full"
-          onFocus={handleOnFocus}
-          onBlur={handleOnBlur}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
         />
-        <div className="flex flex-grow gap-2 justify-center h-full">
-          {Array.from({ length: maxKeybindLength }).map((_, i) => {
-            const key = displayKeys[i];
-            const isActive = isRecording && i === activeIndex;
-            const isInvalid = invalidSlot === i;
+        <div className="flex flex-wrap gap-2 justify-center items-center">
+          {Array.from({ length: slotCount }).map((_, i) => {
+            const key = showing[i];
+            const isActive = i === activeIndex && key == null;
+            const isInvalid = state.flash?.slot === i;
+            const variant = isInvalid
+              ? 'invalid'
+              : isActive
+                ? 'active'
+                : key != null
+                  ? 'default'
+                  : 'empty';
             return (
-              <div key={i} className="flex flex-row">
-                <div
-                  className={classNames(
-                    'flex p-2 rounded-lg min-w-[50px] min-h-[50px] text-main-title justify-center items-center bg-background-80 mobile:text-sm',
-                    {
-                      'keyslot-invalid ring-2 ring-status-critical': isInvalid,
-                      'keyslot-animate ring-2 ring-accent':
-                        isActive && !isInvalid,
-                      'ring-accent': !isInvalid && !isInvalid,
-                    }
-                  )}
+              <div key={i} className="flex items-center gap-2">
+                <Kbd
+                  variant={variant}
+                  className="px-4 py-2 min-w-[54px] h-[48px]"
                 >
-                  {key ?? ''}
-                </div>
-                <div className="flex pl-2 text-main-title justify-center items-center mobile:text-sm">
-                  {i < maxKeybindLength - 1 ? '+' : ''}
-                </div>
+                  {key ?? (isActive ? '...' : '')}
+                </Kbd>
+                {i < slotCount - 1 && (
+                  <Typography variant="standard" bold textAlign="text-center">
+                    +
+                  </Typography>
+                )}
               </div>
             );
           })}
         </div>
+
+        <div className="text-center">
+          <Typography id="settings-keybinds-recorder-hint-recording" />
+        </div>
       </div>
+
       {displayError && (
-        <div className="isInvalid keyslot-invalid">
-          <Typography color="text-status-critical">{displayError}</Typography>
+        <div className="absolute inset-x-0 top-full z-0 -mt-4 pt-6 pb-2 px-4 bg-background-80 rounded-b-2xl text-status-critical text-sm font-medium text-center">
+          {displayError}
         </div>
       )}
     </div>

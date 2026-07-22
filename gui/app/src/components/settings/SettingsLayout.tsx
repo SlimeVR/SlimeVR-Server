@@ -27,8 +27,8 @@ export function SettingSelectorMobile() {
         value: { url: '/settings/interface', scrollTo: 'notifications' },
       },
       {
-        label: l10n.getString('settings-sidebar-osc_router'),
-        value: { url: '/settings/osc/router', scrollTo: 'router' },
+        label: l10n.getString('settings-sidebar-keybinds'),
+        value: { url: '/settings/keybinds' },
       },
       {
         label: l10n.getString('settings-sidebar-osc_trackers'),
@@ -57,10 +57,6 @@ export function SettingSelectorMobile() {
       {
         label: l10n.getString('settings-sidebar-advanced'),
         value: { url: '/settings/advanced' },
-      },
-      {
-        label: l10n.getString('settings-sidebar-keybinds'),
-        value: { url: '/settings/keybinds' },
       },
       {
         label: l10n.getString('navbar-onboarding'),

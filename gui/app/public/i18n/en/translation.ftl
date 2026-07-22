@@ -582,6 +582,22 @@ settings-keybinds-recorder-modal-title = Assign keybind for
 settings-keybinds-recorder-modal-reset-button = Reset
 settings-keybinds-recorder-modal-unbind-button = Unbind
 settings-keybinds-recorder-modal-done-button = Done
+settings-keybinds-recorder-modal-cancel-button = Cancel
+settings-keybinds-recorder-modal-key-enter = Enter
+settings-keybinds-recorder-modal-key-backspace = Backspace
+settings-keybinds-recorder-modal-key-escape = Esc
+settings-keybinds-already-assigned = Already used by { $name }
+settings-keybinds-click-to-record = Click to record shortcut
+settings-keybinds-change-shortcut = Click to change shortcut
+settings-keybinds-reset-single = Reset keybind to default
+settings-keybinds-recorder-hint-recording = Hold Ctrl, Alt, or Super, then press a letter or number
+settings-keybinds-recorder-hint-idle = Click inside the box to record a new key combination.
+settings-keybinds-error-letters-numbers-only = That key can't be used, pick a letter or number
+settings-keybinds-error-add-modifier = You can only start a combination with Ctrl, Alt, or Super
+settings-keybinds-error-duplicate = Duplicate keybind combinations are not allowed
+
+
+
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking Settings

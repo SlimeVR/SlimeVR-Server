@@ -4,6 +4,7 @@ import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
@@ -31,6 +32,7 @@ data class Phase1Context(
 
 interface AppContextProvider : Phase1ContextProvider {
 	val featureFlags: FeatureFlags
+	val keybindManager: KeybindManager
 	val skeleton: Skeleton
 	val firmwareManager: FirmwareManager
 	val vrcConfigManager: VRCConfigManager?
@@ -54,6 +56,7 @@ class AppContext(
 	override val config: AppConfig,
 	override val serialServer: SerialServer,
 	override val featureFlags: FeatureFlags,
+	override val keybindManager: KeybindManager,
 	override val skeleton: Skeleton,
 	override val firmwareManager: FirmwareManager,
 	override val vrcConfigManager: VRCConfigManager?,
@@ -70,6 +73,7 @@ class AppContext(
 	override val tapDetectionManager: TapDetectionManager,
 ) : AppContextProvider {
 	override fun startObserving() {
+		keybindManager.startObserving(this)
 		skeleton.startObserving()
 		firmwareManager.startObserving()
 		provisioningManager.startObserving()
