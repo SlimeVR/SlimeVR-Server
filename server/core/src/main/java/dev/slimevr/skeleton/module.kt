@@ -34,12 +34,21 @@ data class BoneState(
 	val tailPosition: Vector3 = Vector3.NULL,
 	val parentBone: BoneState? = null,
 ) {
+	private val orientationOffset = if (offset.len() > 0f) {
+		if (offset.unit().y == 1f) {
+			Quaternion.I
+		} else {
+			Quaternion.fromTo(Vector3.NEG_Y, offset)
+		}
+	} else {
+		Quaternion.IDENTITY
+	}
+	val orientation: Quaternion = rotation * orientationOffset
 	val localRotation: Quaternion
 		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
 	val localHeadPosition: Vector3
 		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
-	val localTailPosition: Vector3
-		get() = tailPosition - headPosition
+	val localTailPosition = tailPosition - headPosition
 }
 
 /**

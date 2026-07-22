@@ -101,15 +101,18 @@ class VMCOutputBehaviour(
 		yield(OscMessage("/VMC/Ext/T", listOf(OscArg.Float(time))))
 		yield(OscMessage("/VMC/Ext/OK", listOf(OscArg.Int(1))))
 
-		val rootPos = vmcRootPosition(bones, config, vrm)
-		yield(transformMessage("/VMC/Ext/Root/Pos", "root", rootPos, Quaternion.IDENTITY))
+		// Send the origin as root
+		yield(transformMessage("/VMC/Ext/Root/Pos", "root", Vector3.NULL, Quaternion.IDENTITY))
 
+		// TODO UpperChest + shoulders affecting arms local rot
+		// TODO Don't send fingers if we don't have any tracker for them
 		for ((targetBodyPart, unityName) in BODY_PART_TO_UNITY_BONE) {
 			val targetParentBodyPart = VMC_BONE_PARENTS[targetBodyPart]
 			val trackingBodyPart = if (config.mirrorTracking) vmcMirrorSource(targetBodyPart) else targetBodyPart
 			val trackingBone = bones[trackingBodyPart] ?: continue
 
 			if (targetParentBodyPart == null) {
+				// TODO anchorHip https://github.com/SlimeVR/SlimeVR-Server/blob/main/server/core/src/main/java/dev/slimevr/osc/VMCHandler.kt#L371
 				val pos = vrm?.hipLocalPosition ?: Vector3.NULL
 				val rot = vmcLocalRotation(trackingBone, null, targetBodyPart, null, config.mirrorTracking)
 				yield(transformMessage("/VMC/Ext/Bone/Pos", unityName, pos, rot))

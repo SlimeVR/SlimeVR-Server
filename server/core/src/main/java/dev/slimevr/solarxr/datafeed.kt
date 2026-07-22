@@ -12,6 +12,7 @@ import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import solarxr_protocol.data_feed.BoneMask
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.data_feed.DataFeedUpdate
@@ -102,11 +103,12 @@ private fun createDevice(
 	)
 }
 
-private fun createBone(bone: BoneState): solarxr_protocol.data_feed.Bone = solarxr_protocol.data_feed.Bone(
-	bodyPart = bone.bodyPart,
-	rotationG = bone.rotation.let { Quat(it.x, it.y, it.z, it.w) },
-	boneLength = bone.offset.len(),
-	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) },
+private fun createBone(bone: BoneState, mask: BoneMask): solarxr_protocol.data_feed.Bone = solarxr_protocol.data_feed.Bone(
+	bodyPart = bone.bodyPart.takeIf { mask.bodyPart == true },
+	orientationG = bone.orientation.let { Quat(it.x, it.y, it.z, it.w) }.takeIf { mask.orientationG == true },
+	rotationG = bone.rotation.let { Quat(it.x, it.y, it.z, it.w) }.takeIf { mask.rotationG == true },
+	boneLength = bone.offset.len().takeIf { mask.boneLength == true },
+	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) }.takeIf { mask.headPositionG == true },
 )
 
 private fun createServerGuards(resetsManager: ResetsManager, heightCalibrationManager: HeightCalibrationManager): ServerGuards {
@@ -129,12 +131,14 @@ fun createDatafeedFrame(
 ): DataFeedMessageHeader {
 	val serverState = server.context.state.value
 	val trackers = serverState.trackers.values.map { it.context.state.value }
-	val devices = serverState.devices.values.map { it.context.state.value }
-		.map { device -> createDevice(device, trackers, datafeedConfig) }
-	val bones = if (datafeedConfig.boneMask == true) {
-		skeleton.computed.value.values.map { createBone(it) }
+	val devices = if (datafeedConfig.dataMask?.deviceData != null) {
+		serverState.devices.values.map { it.context.state.value }
+			.map { device -> createDevice(device, trackers, datafeedConfig) }
 	} else {
 		null
+	}
+	val bones = datafeedConfig.boneMask?.let { mask ->
+		skeleton.computed.value.values.map { createBone(it, mask) }
 	}
 	val serverGuards = if (datafeedConfig.serverGuardsMask == true) {
 		createServerGuards(resetsManager, heightCalibrationManager)
@@ -143,7 +147,7 @@ fun createDatafeedFrame(
 	}
 	return DataFeedMessageHeader(
 		message = DataFeedUpdate(
-			devices = if (datafeedConfig.dataMask?.deviceData != null) devices else null,
+			devices = devices,
 			bones = bones,
 			serverGuards = serverGuards,
 			index = index.toUByte(),

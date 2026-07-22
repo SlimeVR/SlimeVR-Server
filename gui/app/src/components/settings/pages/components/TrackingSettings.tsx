@@ -117,7 +117,8 @@ export function TrackingSettings() {
     ratios.imputeSpineFromUpperToLower =
       values.ratios.imputeSpineFromUpperToLower;
     ratios.imputeSpineCurvature = values.ratios.imputeSpineCurvature;
-    ratios.interpolateHipWithUpperLegs = values.ratios.interpolateHipWithUpperLegs;
+    ratios.interpolateHipWithUpperLegs =
+      values.ratios.interpolateHipWithUpperLegs;
     ratios.interpolateUpperLegsWithLowerLegs =
       values.ratios.interpolateUpperLegsWithLowerLegs;
     ratios.skatingCorrectionStrength = values.ratios.skatingCorrectionStrength;

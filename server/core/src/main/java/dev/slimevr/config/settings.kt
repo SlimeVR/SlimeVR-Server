@@ -48,7 +48,7 @@ data class OutputTrackersConfig(
 	 */
 	@Serializable(with = BodyPartListSerializer::class)
 	val trackers: List<BodyPart> = listOf(),
-	val sendDerivedVelocity: Boolean = false, // TODO
+	val sendDerivedVelocity: Boolean = false, // TODO do we actually need that or can we disable OpenVR's prediction
 )
 
 @Serializable
@@ -112,10 +112,10 @@ fun defaultKeybinds(): List<KeybindConfig> = listOf(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonTogglesConfig(
-	val forceArmsFromHmd: Boolean = true,
+	val forceArmsFromHmd: Boolean = true, // TODO do we still need that with useTrackerPositions?
 	val floorClip: Boolean = true,
 	val skatingCorrection: Boolean = true,
-	val toeSnap: Boolean = false,
+	val toeSnap: Boolean = true,
 	val footPlant: Boolean = true,
 	val mocapMode: Boolean = false,
 	val useTrackerPositions: Boolean = true,

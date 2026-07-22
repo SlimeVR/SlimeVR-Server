@@ -1,4 +1,9 @@
-import { DataFeedConfigT, DeviceDataMaskT, TrackerDataMaskT } from 'solarxr-protocol';
+import {
+  BoneMaskT,
+  DataFeedConfigT,
+  DeviceDataMaskT,
+  TrackerDataMaskT,
+} from 'solarxr-protocol';
 import { useConfig } from './config';
 
 export function useDataFeedConfig() {
@@ -26,7 +31,7 @@ export function useDataFeedConfig() {
 
   const dataFeedConfig = new DataFeedConfigT();
   dataFeedConfig.dataMask = dataMask;
-  dataFeedConfig.boneMask = false;
+  dataFeedConfig.boneMask = null;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   dataFeedConfig.syntheticTrackersMask = trackerData;
   dataFeedConfig.stayAlignedPoseMask = true;
@@ -45,7 +50,13 @@ export function useBonesDataFeedConfig() {
   const feedMaxTps = fastDataFeed ? 90 : 40;
 
   const dataFeedConfig = new DataFeedConfigT();
-  dataFeedConfig.boneMask = true;
+  const boneMask = new BoneMaskT();
+  boneMask.bodyPart = true;
+  boneMask.orientationG = true;
+  boneMask.rotationG = false;
+  boneMask.boneLength = true;
+  boneMask.headPositionG = true;
+  dataFeedConfig.boneMask = boneMask;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   return dataFeedConfig;
 }

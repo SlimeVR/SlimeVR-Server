@@ -103,11 +103,7 @@ function initializePreview(
     scene.add(newSkeleton[0]);
 
     const hmd = bones.get(BodyPart.HEAD);
-    const chest = bones.get(BodyPart.UPPER_CHEST);
-    // Check if HMD is identity, if it's then use upper chest's rotation
-    const quat = isIdentity(hmd?.rotationG)
-      ? QuaternionFromQuatT(chest?.rotationG).normalize().invert()
-      : QuaternionFromQuatT(hmd?.rotationG).normalize().invert();
+    const quat = QuaternionFromQuatT(hmd?.orientationG).normalize().invert();
 
     // Project quat to (0x, 1y, 0z)
     const VEC_Y = new Vector3(0, 1, 0);

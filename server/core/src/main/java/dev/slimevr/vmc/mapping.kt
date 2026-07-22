@@ -225,10 +225,3 @@ fun vmcLocalPosition(
 	val localPosition = bone.headPosition - parent.headPosition
 	return parentAdjusted.inv().sandwich(if (mirror) vmcMirrorPosition(localPosition) else localPosition)
 }
-
-fun vmcRootPosition(bones: Map<BodyPart, BoneState>, config: VMCConfig, vrm: VrmGeometry?): Vector3 {
-	val userHip = bones[BodyPart.HIP]?.headPosition ?: Vector3.NULL
-	val hipLocalPosition = vrm?.hipLocalPosition ?: Vector3.NULL
-	val targetHip = if (config.anchorAtHips) Vector3.NULL else userHip
-	return (if (config.mirrorTracking) vmcMirrorPosition(targetHip) else targetHip) - hipLocalPosition
-}
