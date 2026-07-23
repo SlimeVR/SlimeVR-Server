@@ -28,7 +28,8 @@ fun applyCalibration(
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
-): CalibratedRotation = headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign
+	restOrientation: Quaternion = Quaternion.IDENTITY,
+): CalibratedRotation = headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign * restOrientation
 
 // We reverse the order of headingAlign and attitudeAlign here since our
 //  attitude alignment is within the raw heading frame of reference, so we must
@@ -84,6 +85,7 @@ fun estimateHeadingAlign(
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+	yawOffset: Float = 0.0f,
 ): HeadingAlignment {
 	val refHeading = eulerHeading(referenceRotation)
 	val rotation = applyCalibration(
@@ -93,6 +95,6 @@ fun estimateHeadingAlign(
 		headingAlign,
 	)
 	val pitchRoll = (refHeading.inv() * rotation).sandwichUnitY()
-	val yawAngle = atan2(pitchRoll.x, pitchRoll.z)
+	val yawAngle = atan2(pitchRoll.x, pitchRoll.z) + yawOffset
 	return Quaternion.rotationAroundYAxis(yawAngle)
 }

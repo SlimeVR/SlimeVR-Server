@@ -38,6 +38,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 					cal.headingCorrection,
 					cal.attitudeAlignment,
 					cal.headingAlignment,
+					state.restOrientation
 				).twinNearest(state.rotation)
 
 				cal != null -> state.rotation
@@ -97,10 +98,12 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				sessionCalibration.headingCorrection,
 				sessionCalibration.attitudeAlignment,
 				sessionCalibration.headingAlignment,
+				action.restOrientation
 			) // don't track polarity on Full Reset
 
 			state.copy(
 				sessionCalibration = sessionCalibration,
+				restOrientation = action.restOrientation,
 				rotation = rotation,
 			)
 		}
@@ -123,6 +126,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				sessionCalibration.headingCorrection,
 				sessionCalibration.attitudeAlignment,
 				sessionCalibration.headingAlignment,
+				state.restOrientation
 			).twinNearest(state.rotation)
 
 			state.copy(
@@ -140,6 +144,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				cal?.headingCorrection ?: Quaternion.IDENTITY,
 				cal?.attitudeAlignment ?: Quaternion.IDENTITY,
 				state.mountingOrientation ?: Quaternion.IDENTITY,
+				action.yawOffset,
 			)
 
 			val sessionCalibration = state.sessionCalibration?.copy(
@@ -154,6 +159,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				sessionCalibration.headingCorrection,
 				sessionCalibration.attitudeAlignment,
 				sessionCalibration.headingAlignment,
+				state.restOrientation
 			).twinNearest(state.rotation)
 
 			state.copy(
@@ -169,31 +175,33 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 	 * Returns the default mounting orientation for the body part
 	 */
 	private fun defaultMountingForBodyPart(bodyPart: BodyPart?): Quaternion = when (bodyPart) {
-		BodyPart.LEFT_LOWER_ARM, BodyPart.LEFT_HAND,
-		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE,
-		BodyPart.LEFT_INDEX_DISTAL, BodyPart.LEFT_MIDDLE_PROXIMAL,
-		BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL,
-		BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE,
-		BodyPart.LEFT_RING_DISTAL, BodyPart.LEFT_LITTLE_PROXIMAL,
-		BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL,
-		BodyPart.LEFT_SHOULDER,
-		-> Quaternion.SLIMEVR.LEFT
-
-		BodyPart.RIGHT_LOWER_ARM, BodyPart.RIGHT_HAND,
-		BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE,
-		BodyPart.RIGHT_INDEX_DISTAL, BodyPart.RIGHT_MIDDLE_PROXIMAL,
-		BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL,
-		BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE,
-		BodyPart.RIGHT_RING_DISTAL, BodyPart.RIGHT_LITTLE_PROXIMAL,
-		BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
-		BodyPart.RIGHT_SHOULDER,
-		-> Quaternion.SLIMEVR.RIGHT
-
-		BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_LEFT
-
-		BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
-
-		else -> Quaternion.SLIMEVR.FRONT
+// 		BodyPart.LEFT_LOWER_ARM, BodyPart.LEFT_HAND,
+// 		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE,
+// 		BodyPart.LEFT_INDEX_DISTAL, BodyPart.LEFT_MIDDLE_PROXIMAL,
+// 		BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL,
+// 		BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE,
+// 		BodyPart.LEFT_RING_DISTAL, BodyPart.LEFT_LITTLE_PROXIMAL,
+// 		BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL,
+// 		BodyPart.LEFT_SHOULDER,
+// 		-> Quaternion.SLIMEVR.LEFT
+//
+// 		BodyPart.RIGHT_LOWER_ARM, BodyPart.RIGHT_HAND,
+// 		BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE,
+// 		BodyPart.RIGHT_INDEX_DISTAL, BodyPart.RIGHT_MIDDLE_PROXIMAL,
+// 		BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL,
+// 		BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE,
+// 		BodyPart.RIGHT_RING_DISTAL, BodyPart.RIGHT_LITTLE_PROXIMAL,
+// 		BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
+// 		BodyPart.RIGHT_SHOULDER,
+// 		-> Quaternion.SLIMEVR.RIGHT
+//
+// 		BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_LEFT
+//
+// 		BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
+//
+// 		else -> Quaternion.SLIMEVR.FRONT
+		// TODO fix mounting reset not mixing well with anything but BACK
+		else -> Quaternion.IDENTITY
 	}
 
 	override fun observe(receiver: Tracker) {

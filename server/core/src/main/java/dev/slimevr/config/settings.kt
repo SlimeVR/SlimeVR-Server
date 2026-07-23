@@ -82,14 +82,14 @@ data class ResetsConfig(
 	/** Always reset mounting for feet */
 	val resetMountingFeet: Boolean = false,
 	/** Reset mode used for the arms */
-	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK, // TODO
+	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
 	/** Yaw reset smoothing time in seconds */
 	val yawResetSmoothTime: Float = 0.0f, // TODO
 	/** Save automatic mounting reset calibration */
-	val saveMountingReset: Boolean = false, // TODO
+	val saveMountingReset: Boolean = false,
 	/** Reset the HMD's pitch upon full reset */
 	val resetHmdPitch: Boolean = false, // TODO
-	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC, // TODO
+	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC, // TODO in trackingchecklist
 )
 
 @Serializable

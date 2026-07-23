@@ -25,6 +25,7 @@ data class TrackerState(
 	val bodyPart: BodyPart?,
 	val customName: String?,
 	val mountingOrientation: HeadingAlignment?,
+	val restOrientation: Quaternion,
 	val rawRotation: RawRotation,
 	val rotation: CalibratedRotation,
 	val rawAcceleration: RawAcceleration,
@@ -47,9 +48,9 @@ sealed interface TrackerActions {
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment?) : TrackerActions
-	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
+	data class FullReset(val referenceRotation: Quaternion, val restOrientation: Quaternion) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion) : TrackerActions
-	data class MountingReset(val referenceRotation: Quaternion) : TrackerActions
+	data class MountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
@@ -98,6 +99,7 @@ class Tracker(
 				completedRestCalibration = false,
 				magStatus = MagnetometerStatus.NOT_SUPPORTED,
 				sessionCalibration = null,
+				restOrientation = Quaternion.IDENTITY,
 			)
 			val trackerState = if (savedConfig != null) {
 				restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)

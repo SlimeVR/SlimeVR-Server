@@ -1,5 +1,6 @@
 package dev.slimevr.resets
 
+import com.jme3.math.FastMath
 import dev.slimevr.AppLogger
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
@@ -7,12 +8,12 @@ import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
-import dev.slimevr.config.SettingsConfigState
-import dev.slimevr.config.SettingsContext
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.safeLaunch
+import io.github.axisangles.ktmath.EulerAngles
+import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -20,9 +21,11 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.ResetResponse
 import solarxr_protocol.rpc.ResetStatus
 import solarxr_protocol.rpc.ResetType
+import kotlin.collections.contains
 import kotlin.collections.listOf
 
 data class ResetsState(
@@ -42,6 +45,8 @@ typealias ResetsBehaviour = Behaviour<ResetsState, ResetsActions, ResetsManager>
 class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
 
+	private val quarterRollLeft = EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
+	private val quarterRollRight = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
 	private var resetJob: Job = Job()
 
 	/**
@@ -102,7 +107,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			allTrackers.filter {
 				resetType != ResetType.MOUNTING ||
 					config.resetMountingFeet ||
-					it.context.state.value.bodyPart !in setOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
+					it.context.state.value.bodyPart !in FOOT_PARTS
 			}
 		}
 
@@ -116,11 +121,47 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			it.context.dispatch(
 				when (resetType) {
 					ResetType.YAW -> TrackerActions.YawReset(referenceRotation)
-					ResetType.FULL -> TrackerActions.FullReset(referenceRotation)
-					ResetType.MOUNTING -> TrackerActions.MountingReset(referenceRotation)
+					ResetType.FULL -> TrackerActions.FullReset(referenceRotation, getRestOrientation(it.context.state.value.bodyPart, config.armsResetMode))
+					ResetType.MOUNTING -> TrackerActions.MountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
 				},
 			)
 		}
+	}
+
+	private fun getRestOrientation(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = if (armsResetMode == ArmsResetMode.T_POSE_DOWN) {
+		when (bodyPart) {
+			in LEFT_ARM_PARTS, in LEFT_FINGER_PARTS -> quarterRollLeft
+			in RIGHT_ARM_PARTS, in RIGHT_FINGER_PARTS -> quarterRollRight
+			else -> Quaternion.IDENTITY
+		}
+	} else {
+		Quaternion.IDENTITY
+	}
+
+	private fun getYawOffset(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = when (bodyPart) {
+		// Going forward
+		in UPPER_LEG_PARTS -> 0f
+
+		in LOWER_ARM_PARTS if armsResetMode == ArmsResetMode.BACK -> 0f
+
+		in ARM_PARTS if armsResetMode == ArmsResetMode.FORWARD -> 0f
+
+		// Going left
+		in LEFT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_UP -> -FastMath.HALF_PI
+
+		in RIGHT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_DOWN -> -FastMath.HALF_PI
+
+		in RIGHT_FINGER_PARTS -> -FastMath.HALF_PI
+
+		// Going right
+		in LEFT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_DOWN -> FastMath.HALF_PI
+
+		in RIGHT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_UP -> FastMath.HALF_PI
+
+		in LEFT_FINGER_PARTS -> FastMath.HALF_PI
+
+		// Going back
+		else -> FastMath.PI
 	}
 
 	companion object {

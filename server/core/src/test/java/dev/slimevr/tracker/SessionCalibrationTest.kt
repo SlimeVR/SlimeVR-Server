@@ -290,15 +290,18 @@ class SessionCalibrationTest {
 	fun estimateHeadingAlignTests(): List<DynamicTest> {
 		val frontRot = Quaternion(0.707f, 0.707f, 0f, 0f)
 		return heading.flatMap { hA ->
-			heading.map { ref ->
-				DynamicTest.dynamicTest(
-					"( hA: $hA, ref: $ref )",
-				) {
-					testEstimateHeadingAlign(
-						ref * frontRot,
-						hA,
-						ref,
-					)
+			heading.flatMap { ref ->
+				radians.map { yawOffset ->
+					DynamicTest.dynamicTest(
+						"( hA: $hA, ref: $ref, yawOffset: $yawOffset )",
+					) {
+						testEstimateHeadingAlign(
+							ref * frontRot,
+							hA,
+							ref,
+							yawOffset
+						)
+					}
 				}
 			}
 		}
@@ -308,17 +311,22 @@ class SessionCalibrationTest {
 		calibratedRotation: CalibratedRotation,
 		headingAlign: HeadingAlignment,
 		reference: Quaternion,
+		yawOffset: Float,
 	) {
+		// To undo the yawOffset that is baked into headingAlign
+		val yawOffsetRotation = Quaternion.rotationAroundYAxis(yawOffset)
+
 		// Only undo heading
 		val rawRotation = undoCalibration(
 			calibratedRotation,
-			headingAlign = headingAlign,
+			headingAlign = headingAlign * yawOffsetRotation.inv(),
 		)
 
 		// TODO: See if we can avoid using twinNearest
 		val estimateHeadingAlign = estimateHeadingAlign(
 			rawRotation,
 			reference,
+			yawOffset = yawOffset
 		)
 		quaternionAssertEquals(
 			headingAlign,
@@ -396,6 +404,10 @@ class SessionCalibrationTest {
 
 		val heading = step.map { y ->
 			Quaternion.rotationAroundYAxis(degreeToRadian(y))
+		}
+
+		val radians = step.map { d ->
+			degreeToRadian(d)
 		}
 
 		val pitch = step.map { x ->
