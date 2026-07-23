@@ -19,6 +19,7 @@ import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -151,7 +152,8 @@ suspend fun handleDriverConnection(
 				),
 			),
 		)
-	}
+	}.launchIn(this)
+
 	bridge.outbound.on<DriverBridgeOutbound.TrackerPosition> { event ->
 		sendMsg(
 			ProtobufMessage(
@@ -167,7 +169,7 @@ suspend fun handleDriverConnection(
 				),
 			),
 		)
-	}
+	}.launchIn(this)
 
 	bridge.outbound.on<DriverBridgeOutbound.TrackerStatus> { event ->
 		sendMsg(
@@ -190,7 +192,7 @@ suspend fun handleDriverConnection(
 				),
 			),
 		)
-	}
+	}.launchIn(this)
 
 	sendMsg(ProtobufMessage(version = Version(protocol_version = PROTOCOL_VERSION)))
 

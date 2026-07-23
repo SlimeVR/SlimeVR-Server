@@ -1,6 +1,7 @@
 package dev.slimevr.solarxr
 
 import dev.slimevr.resets.ResetsManager
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ResetRequest
 import solarxr_protocol.rpc.ResetType
 
@@ -10,6 +11,6 @@ class SessionCalibrationBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<ResetRequest> { req ->
 			resetsManager.scheduleReset("SolarXRBridge", req.resetType ?: ResetType.YAW, req.delay ?: 0f, req.bodyParts)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

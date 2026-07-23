@@ -89,7 +89,7 @@ class KeybindTriggerBehaviour(
 
 				KeybindId.NONE -> Unit
 			}
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 

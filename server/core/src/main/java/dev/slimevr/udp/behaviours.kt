@@ -41,7 +41,7 @@ class PacketBehaviour : UDPConnectionBehaviour {
 	}
 
 	override fun observe(receiver: UDPConnection) {
-		receiver.packetEvents.onAny { packet ->
+		receiver.packetEvents.events.onEach { packet ->
 			val state = receiver.context.state.value
 			val now = System.currentTimeMillis()
 			val num = packet.packetNumber
@@ -49,10 +49,10 @@ class PacketBehaviour : UDPConnectionBehaviour {
 				AppLogger.udp.info("[${state.address}] Reconnecting")
 			} else if (num != null && num != 0L && num <= state.lastPacketNum) {
 				AppLogger.udp.warn("[${state.address}] Received packet with wrong packet number")
-				return@onAny
+				return@onEach
 			}
 			receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = num, time = now))
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -63,8 +63,8 @@ class PacketLossBehaviour : UDPConnectionBehaviour {
 		var lastPacketCounterReset = System.currentTimeMillis()
 		var lastPacketNumber = 0L
 
-		receiver.packetEvents.onAny { packet ->
-			val num = packet.packetNumber ?: return@onAny
+		receiver.packetEvents.events.onEach { packet ->
+			val num = packet.packetNumber ?: return@onEach
 			val now = System.currentTimeMillis()
 
 			if (now - lastPacketCounterReset >= 10_000L) {
@@ -83,7 +83,7 @@ class PacketLossBehaviour : UDPConnectionBehaviour {
 			receiver.getDevice()?.context?.dispatch(
 				DeviceActions.PacketStats(packetsReceived = totalPacketsReceived, packetsLost = totalPacketsReceived - acceptedPackets),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -120,7 +120,7 @@ class PingBehaviour : UDPConnectionBehaviour {
 			val ping = (System.currentTimeMillis() - state.lastPing.startTime) / 2
 			val device = receiver.appContext.server.getDevice(deviceId) ?: return@onPacket
 			device.context.dispatch(DeviceActions.Update { copy(ping = ping) })
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -202,7 +202,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 			)
 
 			receiver.send(Handshake())
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -276,12 +276,12 @@ class DeviceStatsBehaviour : UDPConnectionBehaviour {
 			device.context.dispatch(
 				DeviceActions.Update { copy(batteryLevel = batteryLevel, batteryVoltage = voltage) },
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<SignalStrength> { event ->
 			val device = receiver.getDevice() ?: return@onPacket
 			device.context.dispatch(DeviceActions.Update { copy(signalStrength = event.data.signal) })
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -376,7 +376,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 					UDPConnectionActions.SetSensorConfig(sensorId = event.data.sensorId, flags = SensorConfigFlags(magStatus = desiredMagStatus)),
 				)
 			}
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -385,22 +385,22 @@ class SensorRotationBehaviour : UDPConnectionBehaviour {
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration))
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Accel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = event.data.acceleration))
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -413,7 +413,7 @@ class BundledPacketBehaviour : UDPConnectionBehaviour {
 				// it should be done by the parent packet
 				receiver.packetEvents.emit(PacketEvent(packet, packetNumber = null))
 			}
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<PacketBundleCompact> { event ->
 			for (packet in event.data.packets) {
@@ -422,7 +422,7 @@ class BundledPacketBehaviour : UDPConnectionBehaviour {
 				// it should be done by the parent packet
 				receiver.packetEvents.emit(PacketEvent(packet, packetNumber = null))
 			}
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -440,7 +440,7 @@ class FlagsBehaviour : UDPConnectionBehaviour {
 			receiver.context.dispatch(UDPConnectionActions.FirmwareFeatures(event.data.firmwareFeatures))
 			// send back the server features
 			receiver.send(FeatureFlags())
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -449,7 +449,7 @@ class TemperatureBehaviour : UDPConnectionBehaviour {
 		receiver.packetEvents.onPacket<Temperature> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
 			tracker.context.dispatch(TrackerActions.Update { copy(imuTemp = event.data.temp) })
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -490,6 +490,6 @@ class AckConfigBehaviour : UDPConnectionBehaviour {
 			if (configType == SensorConfigType.MAGNETOMETER) {
 				tracker.context.dispatch(TrackerActions.SetMagStatus(flags.magStatus))
 			}
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

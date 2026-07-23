@@ -19,6 +19,7 @@ import io.ktor.websocket.Frame
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.MessageBundle
 import java.nio.ByteBuffer
 
@@ -44,7 +45,7 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 						val fbb = FlatBufferBuilder(256)
 						fbb.finish(bundle.encode(JvmFlatBufferWriter(fbb)))
 						send(Frame.Binary(fin = true, data = fbb.dataBuffer().moveToByteArray()))
-					}
+					}.launchIn(this)
 
 					try {
 						flow {

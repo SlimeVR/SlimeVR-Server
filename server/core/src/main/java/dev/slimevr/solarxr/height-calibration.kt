@@ -14,11 +14,11 @@ class HeightCalibrationBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<StartUserHeightCalibration> {
 			heightCalibrationManager.start()
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<CancelUserHeightCalibration> {
 			heightCalibrationManager.cancel()
-		}
+		}.launchIn(receiver.context.scope)
 
 		heightCalibrationManager.context.state.drop(1).onEach { state ->
 			receiver.sendRpc(

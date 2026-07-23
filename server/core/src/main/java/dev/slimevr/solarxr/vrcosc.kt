@@ -48,13 +48,13 @@ internal class VrcOscBehaviour(
 					address = config.address,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCOSCStatusRequest> {
 			val state = vrcOscManager.context.state.value
 			val config = settings.context.state.value.data.vrcOscConfig
 			receiver.sendRpc(buildStatusResponse(state.status, config.enabled))
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeVRCOSCSettingsRequest> { req ->
 			settings.context.dispatch(
@@ -70,7 +70,7 @@ internal class VrcOscBehaviour(
 					)
 				},
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 
 	private fun buildStatusResponse(status: VRCOSCStatus, enabled: Boolean) = VRCOSCStatusChangeResponse(

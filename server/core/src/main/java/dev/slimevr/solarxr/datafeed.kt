@@ -11,6 +11,7 @@ import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.isActive
 import solarxr_protocol.data_feed.BoneMask
 import solarxr_protocol.data_feed.DataFeedConfig
@@ -191,7 +192,7 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 
 			receiver.datafeedTimers = timers
 			receiver.context.dispatch(SolarXRBridgeActions.SetConfig(dataFeeds))
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.dataFeedDispatcher.on<PollDataFeed> { event ->
 			val config = event.config ?: return@on
@@ -204,6 +205,6 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 					heightCalibrationManager = receiver.appContext.heightCalibrationManager,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

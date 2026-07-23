@@ -7,6 +7,7 @@ import dev.slimevr.config.SkeletonFilteringConfig
 import dev.slimevr.config.SkeletonRatiosConfig
 import dev.slimevr.config.SkeletonTogglesConfig
 import dev.slimevr.skeleton.SkeletonActions
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
 import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.SetPauseTrackingRequest
@@ -51,7 +52,7 @@ class SkeletonSettingsBehaviour(
 					),
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeSkeletonSettingsRequest> { req ->
@@ -91,7 +92,7 @@ class SkeletonSettingsBehaviour(
 					)
 				},
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<SetPauseTrackingRequest> {
 			receiver.appContext.skeleton.context.dispatch(
@@ -105,7 +106,7 @@ class SkeletonSettingsBehaviour(
 					trackingPaused = it.pauseTracking,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<TrackingPauseStateRequest> {
 			receiver.sendRpc(
@@ -113,6 +114,6 @@ class SkeletonSettingsBehaviour(
 					trackingPaused = receiver.appContext.skeleton.context.state.value.paused,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

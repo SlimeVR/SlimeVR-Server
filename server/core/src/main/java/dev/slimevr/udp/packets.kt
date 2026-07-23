@@ -4,6 +4,9 @@ import dev.slimevr.EventDispatcher
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.core.remaining
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 import kotlinx.io.Buffer
 import kotlinx.io.Sink
 import kotlinx.io.Source
@@ -537,7 +540,8 @@ data class PacketEvent<out T : UDPPacket>(
 
 typealias UDPPacketDispatcher = EventDispatcher<PacketEvent<UDPPacket>>
 
-@Suppress("UNCHECKED_CAST")
-inline fun <reified T : UDPPacket> UDPPacketDispatcher.onPacket(crossinline callback: suspend (PacketEvent<T>) -> Unit) {
-	register(T::class) { callback(it as PacketEvent<T>) }
-}
+inline fun <reified T : UDPPacket> UDPPacketDispatcher.onPacket(): Flow<PacketEvent<T>> = events
+	.mapNotNull { event -> (event.takeIf { it.data is T }) as PacketEvent<T>? }
+
+inline fun <reified T : UDPPacket> UDPPacketDispatcher.onPacket(crossinline action: suspend (PacketEvent<T>) -> Unit): Flow<PacketEvent<T>> =
+	onPacket<T>().onEach { action(it) }

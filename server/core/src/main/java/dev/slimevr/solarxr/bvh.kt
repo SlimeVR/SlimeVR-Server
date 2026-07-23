@@ -17,11 +17,11 @@ class BvhBehaviour(private val bvhManager: BVHManager) : SolarXRBridgeBehaviour 
 				req.path?.let { path -> bvhManager.startRecording(path) }
 			}
 			receiver.sendRpc(RecordBVHStatus(recording = bvhManager.isRecording))
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<RecordBVHStatusRequest> {
 			receiver.sendRpc(RecordBVHStatus(recording = bvhManager.isRecording))
-		}
+		}.launchIn(receiver.context.scope)
 
 		bvhManager.context.state.drop(1)
 			.onEach { state -> receiver.sendRpc(RecordBVHStatus(recording = state.recording)) }

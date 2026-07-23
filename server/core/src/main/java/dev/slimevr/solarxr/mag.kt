@@ -8,6 +8,7 @@ import dev.slimevr.udp.UDPConnectionActions
 import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.withTimeout
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.rpc.ChangeMagToggleRequest
@@ -80,7 +81,7 @@ class MagBehaviour(
 
 				else -> return@on
 			}
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<MagToggleRequest> { req ->
 			val trackerId = req.trackerId
@@ -102,6 +103,6 @@ class MagBehaviour(
 					enable = trackerState.magStatus == MagnetometerStatus.ENABLED,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

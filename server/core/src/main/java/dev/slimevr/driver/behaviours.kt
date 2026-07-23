@@ -6,8 +6,6 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
@@ -99,7 +97,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 	override fun observe(receiver: DriverBridge) {
 		receiver.inbound.on<DriverBridgeInbound.Version> { event ->
 			receiver.context.dispatch(DriverBridgeActions.UpdateProtocolVersion(event.protocolVersion))
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerAdded> { event ->
 			handleTrackerAdded(
@@ -109,7 +107,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 				event.manufacturer,
 				event.serial,
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
@@ -120,7 +118,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 					},
 				)
 			}
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerBattery> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
@@ -137,7 +135,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 					},
 				)
 			}
-		}
+		}.launchIn(receiver.context.scope)
 	}
 
 	private fun handleTrackerAdded(

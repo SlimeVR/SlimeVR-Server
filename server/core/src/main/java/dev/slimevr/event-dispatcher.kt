@@ -1,33 +1,23 @@
 package dev.slimevr
 
-import kotlin.reflect.KClass
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.onEach
 
-class EventDispatcher<T : Any>(private val keyOf: (T) -> KClass<*> = { it::class }) {
-	@Volatile var listeners: Map<KClass<*>, List<suspend (T) -> Unit>> = emptyMap()
+// For now, it blocks all the time, no queue. Maybe it is a bad idea IDK. Future us problem
+class EventDispatcher<T : Any>(
+	extraBufferCapacity: Int = 0,
+	onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
+) {
+	private val flow = MutableSharedFlow<T>(extraBufferCapacity = extraBufferCapacity, onBufferOverflow = onBufferOverflow)
+	val events: SharedFlow<T> = flow.asSharedFlow()
 
-	@Volatile private var globalListeners: List<suspend (T) -> Unit> = emptyList()
+	suspend fun emit(event: T) = flow.emit(event)
 
-	fun register(key: KClass<*>, callback: suspend (T) -> Unit) {
-		synchronized(this) {
-			val updated = listeners.toMutableMap()
-			updated[key] = (updated[key] ?: emptyList()) + callback
-			listeners = updated
-		}
-	}
-
-	@Suppress("UNCHECKED_CAST")
-	inline fun <reified P : T> on(crossinline callback: suspend (P) -> Unit) {
-		register(P::class) { callback(it as P) }
-	}
-
-	fun onAny(callback: suspend (T) -> Unit) {
-		synchronized(this) {
-			globalListeners = globalListeners + callback
-		}
-	}
-
-	suspend fun emit(event: T) {
-		globalListeners.forEach { it(event) }
-		listeners[keyOf(event)]?.forEach { it(event) }
-	}
+	inline fun <reified P : Any> on(crossinline action: suspend (P) -> Unit): Flow<P> =
+		events.filterIsInstance<P>().onEach { action(it) }
 }

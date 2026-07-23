@@ -29,11 +29,6 @@ typealias HIDReceiverContext = Context<HIDReceiverState, HIDReceiverActions>
 typealias HIDReceiverBehaviour = Behaviour<HIDReceiverState, HIDReceiverActions, HIDReceiver>
 typealias HIDPacketDispatcher = EventDispatcher<HIDPacket>
 
-@Suppress("UNCHECKED_CAST")
-inline fun <reified T : HIDPacket> HIDPacketDispatcher.onPacket(crossinline callback: suspend (T) -> Unit) {
-	register(T::class) { callback(it as T) }
-}
-
 class HIDReceiver(
 	val context: HIDReceiverContext,
 	val appContext: AppContextProvider,

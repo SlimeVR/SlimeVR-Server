@@ -23,11 +23,11 @@ class ProvisioningBehaviour(
 				event.password,
 				event.port,
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<StopWifiProvisioningRequest> {
 			provisioningManager.stopProvisioning()
-		}
+		}.launchIn(receiver.context.scope)
 
 		provisioningManager.context.state.drop(1).onEach { state ->
 			receiver.sendRpc(

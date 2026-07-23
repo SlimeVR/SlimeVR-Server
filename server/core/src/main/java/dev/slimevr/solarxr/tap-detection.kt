@@ -5,6 +5,7 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.TapDetectionConfig
 import dev.slimevr.tapdetection.TapDetectionActions
 import dev.slimevr.tapdetection.TapDetectionManager
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ChangeTapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsResponse
@@ -35,7 +36,7 @@ class TapDetectionBehaviour(
 					numberTrackersOverThreshold = config.numberTrackersOverThreshold.toUByte(),
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeTapDetectionSettingsRequest> { req ->
@@ -60,11 +61,11 @@ class TapDetectionBehaviour(
 					)
 				},
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		// Setup Mode (tap to assign)
 		receiver.rpcDispatcher.on<TapDetectionSetupModeRequest> { req ->
 			tapDetectionManager.context.dispatch(TapDetectionActions.SetSetupMode(req.setupMode == true))
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

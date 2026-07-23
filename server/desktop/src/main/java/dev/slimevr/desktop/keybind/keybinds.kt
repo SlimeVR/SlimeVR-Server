@@ -75,7 +75,7 @@ private suspend fun setupWindowsKeybinds(appContext: AppContextProvider, scope: 
 	}
 
 	apply(appContext.config.settings.context.state.value.data.keybinds)
-	appContext.keybindManager.events.on<KeybindEvent.Rebind> { apply(it.keybinds) }
+	appContext.keybindManager.events.on<KeybindEvent.Rebind> { apply(it.keybinds) }.launchIn(scope)
 
 	appContext.keybindManager.context.state
 		.map { it.recording }

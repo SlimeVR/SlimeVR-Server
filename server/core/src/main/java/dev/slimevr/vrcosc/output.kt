@@ -3,7 +3,6 @@ package dev.slimevr.vrcosc
 import dev.slimevr.AppLogger
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.osc.OscSender
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
 import io.github.axisangles.ktmath.Quaternion
@@ -80,7 +79,7 @@ class VRCOSCOutputBehaviour(
 	private fun observeYawAlign(receiver: VRCOSCManager, runtime: OutputRuntime) {
 		receiver.events.on<VRCOSCEvent.YawAlign> { event ->
 			sendYawAlign(receiver, runtime, event.headRotation)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 
 	private suspend fun applyTarget(

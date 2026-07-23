@@ -39,7 +39,7 @@ class TrackingChecklistBehaviour(
 
 		receiver.rpcDispatcher.on<TrackingChecklistRequest> {
 			receiver.sendRpc(buildResponse())
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<IgnoreTrackingChecklistStepRequest> { req ->
 			val stepId = req.stepId ?: return@on
@@ -49,6 +49,6 @@ class TrackingChecklistBehaviour(
 					copy(mutedChecklistSteps = if (req.ignore == true) mutedChecklistSteps + name else mutedChecklistSteps - name)
 				},
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

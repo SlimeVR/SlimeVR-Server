@@ -10,6 +10,7 @@ import dev.slimevr.buildTestUserConfig
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.MessageBundle
@@ -46,7 +47,7 @@ private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend:
 		rpcDispatcher = EventDispatcher(),
 	)
 	bridge.startObserving()
-	bridge.outbound.on<MessageBundle> { _ -> onSend(ByteArray(0)) }
+	bridge.outbound.on<MessageBundle> { onSend(ByteArray(0)) }.launchIn(backgroundScope)
 	return bridge
 }
 

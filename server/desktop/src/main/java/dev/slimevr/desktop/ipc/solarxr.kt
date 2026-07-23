@@ -21,6 +21,7 @@ import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.withContext
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.rpc.EnableSteamVRDriverRequest
@@ -35,7 +36,7 @@ class EnableSteamVRDriverBehaviour : SolarXRBridgeBehaviour {
 				unblockSteamVRDriver(client, "slimevr")
 				client.close()
 			}
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -50,7 +51,7 @@ class OpenKeybindSettingsBehaviour : SolarXRBridgeBehaviour {
 					}.onFailure { AppLogger.keybind.error(it, "Failed to open global shortcuts settings") }
 				}
 			}
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -77,7 +78,7 @@ suspend fun handleSolarXRBridge(
 		val fbb = FlatBufferBuilder(256)
 		fbb.finish(bundle.encode(JvmFlatBufferWriter(fbb)))
 		send(fbb.dataBuffer().moveToByteArray())
-	}
+	}.launchIn(this)
 
 	try {
 		messages.collect { bytes ->

@@ -124,7 +124,7 @@ class UDPConnection(
 				name = "UDPConnection[$address]",
 			)
 
-			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>> { it.data::class }
+			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>>()
 			val packetChannel = Channel<PacketEvent<UDPPacket>>(capacity = 256)
 
 			val conn = UDPConnection(
