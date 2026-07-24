@@ -25,7 +25,7 @@ data class TrackerState(
 	val bodyPart: BodyPart?,
 	val customName: String?,
 	val mountingOrientation: HeadingAlignment?,
-	val restOrientation: Quaternion,
+	val restOrientation: RestOrientation,
 	val rawRotation: RawRotation,
 	val rotation: CalibratedRotation,
 	val rawAcceleration: RawAcceleration,
@@ -48,7 +48,8 @@ sealed interface TrackerActions {
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment?) : TrackerActions
-	data class FullReset(val referenceRotation: Quaternion, val restOrientation: Quaternion) : TrackerActions
+	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
+	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion) : TrackerActions
 	data class MountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 }
@@ -81,6 +82,7 @@ class Tracker(
 				id = id,
 				hardwareId = hardwareId,
 				name = name,
+				restOrientation = Quaternion.IDENTITY,
 				rawRotation = Quaternion.IDENTITY,
 				rotation = Quaternion.IDENTITY,
 				rawAcceleration = Vector3.NULL,
@@ -99,7 +101,6 @@ class Tracker(
 				completedRestCalibration = false,
 				magStatus = MagnetometerStatus.NOT_SUPPORTED,
 				sessionCalibration = null,
-				restOrientation = Quaternion.IDENTITY,
 			)
 			val trackerState = if (savedConfig != null) {
 				restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
@@ -110,6 +111,7 @@ class Tracker(
 			val behaviours = listOf(
 				TrackerBasicBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
+				TrackerRestOrientationBehaviour(settings),
 				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerTPSBehaviour(),
 				TrackerToSkeletonBehaviour(),

@@ -1,13 +1,24 @@
 package dev.slimevr.tracker
 
+import com.jme3.math.FastMath
 import dev.slimevr.AppLogger
+import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
+import dev.slimevr.resets.LEFT_ARM_PARTS
+import dev.slimevr.resets.LEFT_FINGER_PARTS
+import dev.slimevr.resets.RIGHT_ARM_PARTS
+import dev.slimevr.resets.RIGHT_FINGER_PARTS
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.util.safeLaunch
+import io.github.axisangles.ktmath.EulerAngles
+import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -15,6 +26,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.ArmsResetMode
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
@@ -54,6 +66,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 					rawRotation,
 					cal.headingCorrection,
 					cal.headingAlignment,
+					state.restOrientation
 				)
 
 				cal != null -> state.acceleration
@@ -74,6 +87,8 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 
 		is TrackerActions.SetMountingOrientation -> state.copy(mountingOrientation = action.mountingOrientation)
 
+		is TrackerActions.SetRestOrientation -> state.copy(restOrientation = action.restOrientation)
+
 		is TrackerActions.FullReset -> {
 			val headingCorrection = estimateHeadingCorrect(
 				state.rawRotation,
@@ -92,19 +107,12 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				attitudeAlignment = attitudeAlignment,
 			)
 
-			// Apply calibration on rawRotation
-			val rotation = applyCalibration(
-				state.rawRotation,
-				sessionCalibration.headingCorrection,
-				sessionCalibration.attitudeAlignment,
-				sessionCalibration.headingAlignment,
-				action.restOrientation
-			) // don't track polarity on Full Reset
+			// Reset polarity tracking
+			val defaultPolarityRotation = state.rotation.twinNearest(Quaternion.IDENTITY)
 
 			state.copy(
 				sessionCalibration = sessionCalibration,
-				restOrientation = action.restOrientation,
-				rotation = rotation,
+				rotation = defaultPolarityRotation,
 			)
 		}
 
@@ -120,19 +128,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				headingCorrection = headingCorrection,
 			)
 
-			// Apply calibration on rawRotation
-			val rotation = applyCalibration(
-				state.rawRotation,
-				sessionCalibration.headingCorrection,
-				sessionCalibration.attitudeAlignment,
-				sessionCalibration.headingAlignment,
-				state.restOrientation
-			).twinNearest(state.rotation)
-
-			state.copy(
-				sessionCalibration = sessionCalibration,
-				rotation = rotation,
-			)
+			state.copy(sessionCalibration = sessionCalibration)
 		}
 
 		is TrackerActions.MountingReset -> {
@@ -153,20 +149,17 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				headingAlignment = headingAlignment,
 			)
 
-			// Apply calibration on rawRotation
-			val rotation = applyCalibration(
-				state.rawRotation,
-				sessionCalibration.headingCorrection,
-				sessionCalibration.attitudeAlignment,
-				sessionCalibration.headingAlignment,
-				state.restOrientation
-			).twinNearest(state.rotation)
-
-			state.copy(
-				sessionCalibration = sessionCalibration,
-				rotation = rotation,
-			)
+			state.copy(sessionCalibration = sessionCalibration)
 		}
+	}
+
+	override fun observe(receiver: Tracker) {
+		// Refresh the tracker's rotation whenever the sessionCalibration gets updated
+		receiver.context.state
+			.distinctUntilChangedBy { it.sessionCalibration to it.restOrientation }
+			.onEach {
+			receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer))
+		}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -208,6 +201,7 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 		receiver.context.state
 			.map { it.bodyPart }
 			.distinctUntilChanged()
+			.drop(1)
 			.onEach {
 				receiver.context.dispatch(TrackerActions.SetMountingOrientation(defaultMountingForBodyPart(it)))
 			}.launchIn(receiver.context.scope)
@@ -270,5 +264,35 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 					}
 			}
 			.launchIn(receiver.context.scope)
+	}
+}
+
+class TrackerRestOrientationBehaviour(
+	private val settings: Settings,
+) : TrackerBehaviour {
+	override fun observe(receiver: Tracker) {
+		val armsResetModeFlow = settings.context.state.map { it.data.resetsConfig.armsResetMode }
+		val bodyPartFlow = receiver.context.state.map { it.bodyPart }
+
+		combine(armsResetModeFlow, bodyPartFlow) { armsResetMode, bodyPart ->
+			getRestOrientation(bodyPart, armsResetMode)
+		}
+			.distinctUntilChanged()
+			.onEach { restOrientation ->
+				receiver.context.dispatch(TrackerActions.SetRestOrientation(restOrientation))
+			}
+			.launchIn(receiver.context.scope)
+	}
+
+	private val quarterRollLeft = EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
+	private val quarterRollRight = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
+	private fun getRestOrientation(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = if (armsResetMode == ArmsResetMode.T_POSE_DOWN) {
+		when (bodyPart) {
+			in LEFT_ARM_PARTS, in LEFT_FINGER_PARTS -> quarterRollLeft
+			in RIGHT_ARM_PARTS, in RIGHT_FINGER_PARTS -> quarterRollRight
+			else -> Quaternion.IDENTITY
+		}
+	} else {
+		Quaternion.IDENTITY
 	}
 }

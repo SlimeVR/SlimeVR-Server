@@ -44,9 +44,7 @@ typealias ResetsBehaviour = Behaviour<ResetsState, ResetsActions, ResetsManager>
 
 class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
-
-	private val quarterRollLeft = EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
-	private val quarterRollRight = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
+	
 	private var resetJob: Job = Job()
 
 	/**
@@ -121,21 +119,11 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			it.context.dispatch(
 				when (resetType) {
 					ResetType.YAW -> TrackerActions.YawReset(referenceRotation)
-					ResetType.FULL -> TrackerActions.FullReset(referenceRotation, getRestOrientation(it.context.state.value.bodyPart, config.armsResetMode))
+					ResetType.FULL -> TrackerActions.FullReset(referenceRotation)
 					ResetType.MOUNTING -> TrackerActions.MountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
 				},
 			)
 		}
-	}
-
-	private fun getRestOrientation(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = if (armsResetMode == ArmsResetMode.T_POSE_DOWN) {
-		when (bodyPart) {
-			in LEFT_ARM_PARTS, in LEFT_FINGER_PARTS -> quarterRollLeft
-			in RIGHT_ARM_PARTS, in RIGHT_FINGER_PARTS -> quarterRollRight
-			else -> Quaternion.IDENTITY
-		}
-	} else {
-		Quaternion.IDENTITY
 	}
 
 	private fun getYawOffset(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = when (bodyPart) {

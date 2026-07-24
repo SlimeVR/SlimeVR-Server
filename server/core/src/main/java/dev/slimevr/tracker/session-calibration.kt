@@ -11,6 +11,7 @@ typealias RawAcceleration = Vector3
 typealias HeadingCorrection = Quaternion
 typealias AttitudeAlignment = Quaternion
 typealias HeadingAlignment = Quaternion
+typealias RestOrientation = Quaternion // TODO verify math and make unit tests
 
 typealias AccelerationRotation = Quaternion
 
@@ -21,14 +22,14 @@ data class SessionCalibration(
 	val headingCorrection: HeadingCorrection = Quaternion.IDENTITY,
 	val attitudeAlignment: AttitudeAlignment = Quaternion.IDENTITY,
 	val headingAlignment: HeadingAlignment = Quaternion.IDENTITY,
-)
+	)
 
 fun applyCalibration(
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
-	restOrientation: Quaternion = Quaternion.IDENTITY,
+	restOrientation: RestOrientation = Quaternion.IDENTITY,
 ): CalibratedRotation = headingAlign.inv() * headingCorrect * rawRotation * attitudeAlign * headingAlign * restOrientation
 
 // We reverse the order of headingAlign and attitudeAlign here since our
@@ -40,6 +41,7 @@ fun undoCalibration(
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+	restOrientation: RestOrientation = Quaternion.IDENTITY,
 ): RawRotation = headingCorrect.inv() * headingAlign * calibratedRotation * headingAlign.inv() * attitudeAlign.inv()
 
 // Acceleration needs to be rotated by raw rotation with heading corrected
@@ -47,6 +49,7 @@ private fun accelerationRotation(
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+	restOrientation: RestOrientation = Quaternion.IDENTITY,
 ): AccelerationRotation = headingAlign.inv() * headingCorrect * rawRotation
 
 fun applyCalibration(
@@ -54,6 +57,7 @@ fun applyCalibration(
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+	restOrientation: RestOrientation = Quaternion.IDENTITY,
 ): CalibratedAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).sandwich(
 	rawAcceleration,
 )
@@ -63,6 +67,7 @@ fun undoCalibration(
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
+	restOrientation: RestOrientation = Quaternion.IDENTITY,
 ): RawAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).inv()
 	.sandwich(calibratedAcceleration)
 
