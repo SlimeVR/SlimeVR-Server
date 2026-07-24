@@ -7,10 +7,10 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.TrackerStatus
 
 class HIDRegistrationBehaviour : HIDReceiverBehaviour {
@@ -186,7 +186,7 @@ class HIDSleepBehaviour : HIDReceiverBehaviour {
 				sleepJobs.remove(hidId)
 				return
 			}
-			sleepJobs[hidId] = receiver.context.scope.safeLaunch {
+			sleepJobs[hidId] = receiver.context.scope.launch {
 				delay(timeoutMs.toLong())
 				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
 			}
@@ -194,7 +194,7 @@ class HIDSleepBehaviour : HIDReceiverBehaviour {
 
 		fun armIdleTimeout(hidId: Int) {
 			idleJobs[hidId]?.cancel()
-			idleJobs[hidId] = receiver.context.scope.safeLaunch {
+			idleJobs[hidId] = receiver.context.scope.launch {
 				delay(HID_TIMEOUT_MS)
 				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
 			}

@@ -13,13 +13,14 @@ import dev.slimevr.desktop.platform.Version
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
 import dev.slimevr.driver.DriverBridgeOutbound
-import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -185,6 +186,11 @@ suspend fun handleDriverConnection(
 						else -> TrackerStatus.Status.ERROR
 					},
 				),
+			),
+		)
+
+		sendMsg(
+			ProtobufMessage(
 				battery = Battery(
 					tracker_id = event.trackerId,
 					battery_level = event.battery ?: 0f,
@@ -204,7 +210,7 @@ suspend fun handleDriverConnection(
 				if (ver.protocol_version >= 2) {
 					// FIXME: multiple launch could be created here bc nothing prevent protocol from changing or getting called again during runtime
 					// causing a memory leak
-					safeLaunch {
+					this@coroutineScope.launch {
 						startBindingProvider()
 					}
 				}
@@ -253,5 +259,9 @@ suspend fun handleDriverConnection(
 		}
 	} finally {
 		bridge.disconnect()
+		// The outbound listeners are launched into this scope and never complete on their own
+		// (they observe a SharedFlow), so coroutineScope would wait on them forever and the
+		// connection would never be released for the next client -- e.g. a SteamVR restart
+		coroutineContext.cancelChildren()
 	}
 }

@@ -7,10 +7,10 @@ import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.serial.isKnownSerialBoard
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.OutputStreamWriter
 import com.fazecast.jSerialComm.SerialPort as JSerialPort
@@ -38,11 +38,11 @@ private fun openPort(
 			when (event.eventType) {
 				JSerialPort.LISTENING_EVENT_DATA_RECEIVED -> {
 					val line = event.receivedData.toString(Charsets.UTF_8).trimEnd()
-					scope.safeLaunch { onDataReceived(portLocation, line) }
+					scope.launch { onDataReceived(portLocation, line) }
 				}
 
 				JSerialPort.LISTENING_EVENT_PORT_DISCONNECTED ->
-					scope.safeLaunch { onPortDisconnected(portLocation) }
+					scope.launch { onPortDisconnected(portLocation) }
 			}
 		}
 	})
@@ -98,6 +98,6 @@ fun createDesktopSerialServer(scope: CoroutineScope): SerialServer {
 		openFlashingPort = { DesktopFlashingHandler() },
 		scope = scope,
 	)
-	scope.safeLaunch { runSerialPoller(server) }
+	scope.launch { runSerialPoller(server) }
 	return server
 }

@@ -13,7 +13,6 @@ import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.config.KeybindConfig
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.keybind.KeybindEvent
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.awaitCancellation
@@ -26,6 +25,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.KeybindId
 
 private const val BINDING_SETTLE_MS = 300L
@@ -56,7 +56,7 @@ private suspend fun setupWindowsKeybinds(appContext: AppContextProvider, scope: 
 
 	instance.addHotKeyListener { identifier ->
 		KeybindId.fromValue(identifier.toUByte())?.let { id ->
-			scope.safeLaunch { appContext.keybindManager.events.emit(KeybindEvent.Fired(id)) }
+			scope.launch { appContext.keybindManager.events.emit(KeybindEvent.Fired(id)) }
 		}
 	}
 
@@ -114,7 +114,7 @@ private suspend fun setupLinuxKeybinds(appContext: AppContextProvider, scope: Co
 			PortalManager(SLIMEVR_IDENTIFIER).globalShortcutsRequest(shortcuts).apply {
 				onShortcutActivated = { shortcutId ->
 					KeybindId.entries.firstOrNull { it.name == shortcutId }?.let { id ->
-						scope.safeLaunch { appContext.keybindManager.events.emit(KeybindEvent.Fired(id)) }
+						scope.launch { appContext.keybindManager.events.emit(KeybindEvent.Fired(id)) }
 					}
 				}
 			}
@@ -151,7 +151,7 @@ private suspend fun setupLinuxKeybinds(appContext: AppContextProvider, scope: Co
 		}
 		.launchIn(scope)
 
-	scope.safeLaunch {
+	scope.launch {
 		try {
 			awaitCancellation()
 		} finally {

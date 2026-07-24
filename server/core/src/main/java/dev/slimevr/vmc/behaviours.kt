@@ -12,13 +12,13 @@ import dev.slimevr.osc.OscReceiver
 import dev.slimevr.osc.OscSender
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 
 class VMCOutputBehaviour(
@@ -54,7 +54,7 @@ class VMCOutputBehaviour(
 				if (enabled) {
 					sender = OscSender(addr, port)
 					AppLogger.vmc.info("VMC output started: $addr:$port")
-					receiver.context.scope.safeLaunch {
+					receiver.context.scope.launch {
 						try {
 							sender?.send(OscMessage("/VMC/Ext/Req", emptyList()))
 						} catch (e: Exception) {
@@ -70,7 +70,7 @@ class VMCOutputBehaviour(
 				val config = settings.context.state.value.data.vmcConfig
 				val currentTime = System.currentTimeMillis()
 				val vrm = vrmGeometry
-				receiver.context.scope.safeLaunch {
+				receiver.context.scope.launch {
 					try {
 						s.send(buildBundle(bones, config, currentTime, vrm))
 					} catch (e: Exception) {
@@ -156,7 +156,7 @@ class VMCInputBehaviour(private val settings: Settings) : Behaviour<VMCState, VM
 				if (settings.context.state.value.data.vmcConfig.enabled) {
 					oscReceiver = OscReceiver(portIn)
 					AppLogger.vmc.info("VMC input listening on port $portIn")
-					receiver.context.scope.safeLaunch {
+					receiver.context.scope.launch {
 						try {
 							oscReceiver?.listenBundles { bundle ->
 								for (content in bundle.contents) {

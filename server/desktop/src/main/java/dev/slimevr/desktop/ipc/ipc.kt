@@ -3,8 +3,8 @@ package dev.slimevr.desktop.ipc
 import dev.slimevr.AppContextProvider
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 const val DRIVER_SOCKET_NAME = "SlimeVRDriver"
 const val FEEDER_SOCKET_NAME = "SlimeVRInput"
@@ -17,15 +17,15 @@ const val SOLARXR_PIPE = "\\\\.\\pipe\\SlimeVRRpc"
 suspend fun createIpcServers(appContext: AppContextProvider) = coroutineScope {
 	when (CURRENT_PLATFORM) {
 		Platform.LINUX, Platform.OSX -> {
-			safeLaunch { createUnixDriverSocket(appContext) }
-			safeLaunch { createUnixFeederSocket(appContext) }
-			safeLaunch { createUnixSolarXRSocket(appContext) }
+			launch { createUnixDriverSocket(appContext) }
+			launch { createUnixFeederSocket(appContext) }
+			launch { createUnixSolarXRSocket(appContext) }
 		}
 
 		Platform.WINDOWS -> {
-			safeLaunch { createWindowsDriverPipe(appContext) }
-			safeLaunch { createWindowsFeederPipe(appContext) }
-			safeLaunch { createWindowsSolarXRPipe(appContext) }
+			launch { createWindowsDriverPipe(appContext) }
+			launch { createWindowsFeederPipe(appContext) }
+			launch { createWindowsSolarXRPipe(appContext) }
 		}
 
 		else -> Unit

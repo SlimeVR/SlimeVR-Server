@@ -4,9 +4,9 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.AppConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.VRCAvatarMeasurementType
 import solarxr_protocol.rpc.VRCConfigRecommendedValues
@@ -68,7 +68,7 @@ class VRCConfigManager(
 				name = "VRCConfig",
 			)
 
-			scope.safeLaunch {
+			scope.launch {
 				values.collect { context.dispatch(VRCConfigActions.UpdateValues(it)) }
 			}
 

@@ -2,7 +2,6 @@ package dev.slimevr.tapdetection
 
 import dev.slimevr.config.TapDetectionConfig
 import dev.slimevr.tracker.Tracker
-import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
@@ -13,6 +12,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.ResetType
@@ -93,7 +93,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 							)
 
 							if (tapTriggered) {
-								receiver.context.scope.safeLaunch {
+								receiver.context.scope.launch {
 									// If it's in setup mode, tap to assign
 									if (setupMode) {
 										receiver.server.sendSolarxrRpc(

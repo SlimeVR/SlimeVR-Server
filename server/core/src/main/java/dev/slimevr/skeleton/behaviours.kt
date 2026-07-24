@@ -1,7 +1,6 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.config.UserConfig
-import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
@@ -10,6 +9,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
 import kotlin.math.sin
@@ -69,7 +69,7 @@ class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehavio
 
 class HeightLogBehaviour : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
-		receiver.context.scope.safeLaunch {
+		receiver.context.scope.launch {
 			receiver.context.state
 				.map { state -> state.skeletonHeight }
 				.distinctUntilChanged()
@@ -80,7 +80,7 @@ class HeightLogBehaviour : SkeletonBehaviour {
 
 class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
-		receiver.context.scope.safeLaunch {
+		receiver.context.scope.launch {
 			val intervalMs = (1000f / inputHz).toLong()
 			val startTime = System.currentTimeMillis()
 			while (true) {
@@ -129,7 +129,7 @@ class ComputedSkeletonBehaviour(
 ) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		val intervalMs = (1000f / hz).toLong()
-		receiver.context.scope.safeLaunch {
+		receiver.context.scope.launch {
 			while (true) {
 				try {
 					delay(intervalMs)

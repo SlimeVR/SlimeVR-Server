@@ -14,14 +14,15 @@ import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.onSolarXRMessage
-import dev.slimevr.util.safeLaunch
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.util.moveToByteArray
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.rpc.EnableSteamVRDriverRequest
@@ -31,7 +32,7 @@ import java.nio.ByteBuffer
 class EnableSteamVRDriverBehaviour : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<EnableSteamVRDriverRequest> {
-			receiver.context.scope.safeLaunch {
+			receiver.context.scope.launch {
 				val client = HttpClient(CIO)
 				unblockSteamVRDriver(client, "slimevr")
 				client.close()
@@ -44,7 +45,7 @@ class OpenKeybindSettingsBehaviour : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<OpenKeybindSettingsRequest> {
 			if (CURRENT_PLATFORM != Platform.LINUX) return@on
-			receiver.context.scope.safeLaunch {
+			receiver.context.scope.launch {
 				withContext(Dispatchers.IO) {
 					runCatching {
 						PortalManager(SLIMEVR_IDENTIFIER).openGlobalShortcutsSettings()
@@ -87,5 +88,6 @@ suspend fun handleSolarXRBridge(
 		}
 	} finally {
 		bridge.disconnect()
+		coroutineContext.cancelChildren()
 	}
 }

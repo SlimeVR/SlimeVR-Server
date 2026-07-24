@@ -22,9 +22,9 @@ import dev.slimevr.networkprofile.NetworkCategory
 import dev.slimevr.networkprofile.NetworkInfo
 import dev.slimevr.networkprofile.NetworkProfileActions
 import dev.slimevr.networkprofile.NetworkProfileManager
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.launch
 
 @Suppress("ktlint:standard:function-naming")
 interface Iphlpapi : Library {
@@ -173,7 +173,7 @@ private fun enumerateNetworks(): List<NetworkInfo> = try {
 private class IpInterfaceChangeCallback(val scope: CoroutineScope, val manager: NetworkProfileManager) : Callback {
 	@Suppress("UNUSED")
 	fun callback(context: Pointer?, row: Pointer?, notificationType: Int) {
-		scope.safeLaunch {
+		scope.launch {
 			val networks = enumerateNetworks().filter { it.connected == true && it.category == NetworkCategory.PUBLIC }
 			manager.context.dispatch(NetworkProfileActions.UpdateNetworks(networks))
 		}

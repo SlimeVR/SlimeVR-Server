@@ -2,12 +2,12 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.CloseSerialRequest
 import solarxr_protocol.rpc.NewSerialDeviceResponse
 import solarxr_protocol.rpc.OpenSerialRequest
@@ -71,7 +71,7 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 			activePortLocation = portLocation
 			var lastSentCount = 0
 
-			logSubscription = scope.safeLaunch {
+			logSubscription = scope.launch {
 				var disconnected = false
 				try {
 					connection.context.state.collect { connState ->

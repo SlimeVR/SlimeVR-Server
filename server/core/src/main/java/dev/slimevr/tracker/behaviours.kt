@@ -3,13 +3,11 @@ package dev.slimevr.tracker
 import com.jme3.math.FastMath
 import dev.slimevr.AppLogger
 import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
 import dev.slimevr.resets.LEFT_ARM_PARTS
 import dev.slimevr.resets.LEFT_FINGER_PARTS
 import dev.slimevr.resets.RIGHT_ARM_PARTS
 import dev.slimevr.resets.RIGHT_FINGER_PARTS
 import dev.slimevr.skeleton.SkeletonActions
-import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -24,6 +22,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.ArmsResetMode
@@ -217,7 +216,7 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 			count.incrementAndFetch()
 		}.launchIn(receiver.context.scope)
 
-		receiver.context.scope.safeLaunch {
+		receiver.context.scope.launch {
 			var mark = TimeSource.Monotonic.markNow()
 			while (isActive) {
 				try {

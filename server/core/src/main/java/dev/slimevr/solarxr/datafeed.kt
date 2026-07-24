@@ -8,11 +8,11 @@ import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import solarxr_protocol.data_feed.BoneMask
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
@@ -168,7 +168,7 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 			receiver.datafeedTimers.forEach { it.cancelAndJoin() }
 
 			val timers = dataFeeds.mapIndexed { index, config ->
-				receiver.context.scope.safeLaunch {
+				receiver.context.scope.launch {
 					val minTime = config.minimumTimeSinceLast.toLong()
 					while (isActive) {
 						try {

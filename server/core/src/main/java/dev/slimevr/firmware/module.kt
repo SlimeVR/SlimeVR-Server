@@ -6,10 +6,10 @@ import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.FirmwareDeviceIdTable
 import solarxr_protocol.rpc.FirmwarePart
 import solarxr_protocol.rpc.FirmwareUpdateDeviceId
@@ -60,7 +60,7 @@ class FirmwareManager(
 		server: VRServer,
 	) {
 		runningJobs[portLocation]?.cancelAndJoin()
-		runningJobs[portLocation] = scope.safeLaunch {
+		runningJobs[portLocation] = scope.launch {
 			doSerialFlash(
 				portLocation = portLocation,
 				parts = parts,
@@ -96,7 +96,7 @@ class FirmwareManager(
 		server: VRServer,
 	) {
 		runningJobs[deviceIp]?.cancelAndJoin()
-		runningJobs[deviceIp] = scope.safeLaunch {
+		runningJobs[deviceIp] = scope.launch {
 			doOtaFlash(
 				deviceIp = deviceIp,
 				deviceId = (firmwareDeviceId as? FirmwareDeviceIdTable)?.id ?: error("device id should exist"),

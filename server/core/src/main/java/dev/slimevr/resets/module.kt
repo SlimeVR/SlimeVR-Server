@@ -11,7 +11,6 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.tracker.TrackerActions
-import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -19,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.ArmsResetMode
@@ -55,7 +55,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 	 */
 	suspend fun scheduleReset(resetSourceName: String, resetType: ResetType, delay: Float = 0f, bodyParts: List<BodyPart>? = null) {
 		resetJob.cancelAndJoin()
-		resetJob = context.scope.safeLaunch {
+		resetJob = context.scope.launch {
 			val delayMs = (delay * 1000).toInt()
 			val fullSeconds = delayMs / 1000
 			val remainder = delayMs % 1000

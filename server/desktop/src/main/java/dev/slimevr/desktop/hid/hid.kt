@@ -6,7 +6,6 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.isCompatibleHidDevice
 import dev.slimevr.hid.parseHIDPackets
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,6 +13,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.hid4java.HidDevice
 import org.hid4java.HidManager
@@ -51,7 +51,7 @@ private data class ActiveReceiver(val job: Job, val receiver: HIDReceiver)
 fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScope) {
 	val active = mutableMapOf<String, ActiveReceiver>()
 
-	scope.safeLaunch {
+	scope.launch {
 		while (isActive) {
 			val found = withContext(Dispatchers.IO) {
 				try {
@@ -93,7 +93,7 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 					scope = deviceScope,
 				)
 
-				deviceScope.safeLaunch {
+				deviceScope.launch {
 					try {
 						while (isActive) {
 							val data = withContext(Dispatchers.IO) {
@@ -104,7 +104,7 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 								}
 							}
 							when {
-								data == null -> return@safeLaunch
+								data == null -> return@launch
 
 								// read error, device gone
 								data.isNotEmpty() -> parseHIDPackets(data).forEach { receiver.packetEvents.emit(it) }

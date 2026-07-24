@@ -14,7 +14,6 @@ import dev.slimevr.desktop.getSteamVRDriversList
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.trackingchecklist.TrackingChecklistActions
 import dev.slimevr.trackingchecklist.TrackingChecklistBehaviourType
-import dev.slimevr.util.safeLaunch
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +25,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import solarxr_protocol.rpc.TrackingChecklistSteamVRDisconnected
 import solarxr_protocol.rpc.TrackingChecklistStep
@@ -91,7 +91,7 @@ class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBeh
 	private val standableState = MutableStateFlow(false)
 
 	override fun observe(receiver: TrackingChecklist) {
-		receiver.context.scope.safeLaunch {
+		receiver.context.scope.launch {
 			val client = HttpClient(CIO)
 			while (isActive) {
 				val connected = server.context.state.value.drivers.isNotEmpty()

@@ -5,10 +5,10 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.udp.SensorConfigFlags
 import dev.slimevr.udp.UDPConnectionActions
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.rpc.ChangeMagToggleRequest
@@ -61,7 +61,7 @@ class MagBehaviour(
 			when (trackerState.origin) {
 				DeviceOrigin.UDP -> {
 					if (!setUDPTrackerMag(trackerState.id, trackerState.deviceId, enable)) return@on
-					tracker.context.scope.safeLaunch {
+					tracker.context.scope.launch {
 						try {
 							withTimeout(10.seconds) {
 								tracker.context.state

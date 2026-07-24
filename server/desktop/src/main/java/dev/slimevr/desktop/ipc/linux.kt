@@ -3,12 +3,15 @@ package dev.slimevr.desktop.ipc
 import dev.slimevr.AppContextProvider
 import dev.slimevr.AppLogger
 import dev.slimevr.getSocketDirectory
-import dev.slimevr.util.safeLaunch
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.net.SocketException
 import java.net.StandardProtocolFamily
 import java.net.UnixDomainSocketAddress
@@ -93,9 +96,26 @@ private suspend fun acceptUnixClients(
 
 	ServerSocketChannel.open(StandardProtocolFamily.UNIX).use { server ->
 		server.bind(UnixDomainSocketAddress.of(path))
-		while (isActive) {
-			val client = server.accept()
-			safeLaunch { handle(client) }
+		supervisorScope {
+			while (isActive) {
+				val client = server.accept()
+				AppLogger.ipc.info("$name client connected")
+				launch {
+					try {
+						handle(client)
+					} catch (e: CancellationException) {
+						throw e
+					} catch (e: Exception) {
+						AppLogger.ipc.error(e, "Error while handling $name client, dropping connection")
+					} finally {
+						AppLogger.ipc.info("$name client disconnected")
+						try {
+							client.close()
+						} catch (ignored: IOException) {
+						}
+					}
+				}
+			}
 		}
 	}
 }

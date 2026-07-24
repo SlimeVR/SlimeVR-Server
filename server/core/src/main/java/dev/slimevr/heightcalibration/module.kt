@@ -7,7 +7,6 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.UserConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
@@ -89,7 +89,7 @@ class HeightCalibrationManager(
 
 	fun start() {
 		sessionJob?.cancel()
-		sessionJob = context.scope.safeLaunch { runCalibrationSession(context, userConfig, hmdUpdates, controllerUpdates) }
+		sessionJob = context.scope.launch { runCalibrationSession(context, userConfig, hmdUpdates, controllerUpdates) }
 	}
 
 	fun cancel() {
