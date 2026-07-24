@@ -17,9 +17,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -255,17 +257,31 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 				}
 			}
 			.flatMapLatest { _ ->
-				receiver.context.state
+				// We only want trackers that are assigned to a BodyPart and are OK.
+				val activeState = receiver.context.state
+					.filter { it.bodyPart != null && it.status == TrackerStatus.OK }
+
+				val rotationFlow = activeState
 					.distinctUntilChangedBy { it.rotation }
 					.onEach { trackerState ->
-						if (trackerState.bodyPart != null && trackerState.status == TrackerStatus.OK) {
-							// Send data to the skeleton
+						receiver.appContext.skeleton.context.dispatch(
+							SkeletonActions.SetBoneRotation(trackerState.bodyPart ?: BodyPart.NONE, trackerState.rotation),
+						)
+						lastBodyPartSent = trackerState.bodyPart
+					}
+
+				val positionFlow = activeState
+					.distinctUntilChangedBy { it.position }
+					.onEach { trackerState ->
+						trackerState.position?.let {
 							receiver.appContext.skeleton.context.dispatch(
-								SkeletonActions.SetBoneRotation(trackerState.bodyPart, trackerState.rotation),
+								SkeletonActions.SetBonePosition(trackerState.bodyPart ?: BodyPart.NONE, it),
 							)
 							lastBodyPartSent = trackerState.bodyPart
 						}
 					}
+
+				merge(rotationFlow, positionFlow)
 			}
 			.launchIn(receiver.context.scope)
 	}

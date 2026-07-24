@@ -137,7 +137,11 @@ class ComputedSkeletonBehaviour(
 					val processed = processors
 						.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
 
-					val rootHead = Vector3(0f, targetState.skeletonHeight, 0f) // FIXME WRONG
+					// Get head position
+					val rootHead = processed.boneInputs[BodyPart.HEAD]
+						?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
+						?: Vector3(0f, targetState.skeletonHeight, 0f)
+
 					val fk = buildBones(processed, rootHead = rootHead)
 
 // 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]

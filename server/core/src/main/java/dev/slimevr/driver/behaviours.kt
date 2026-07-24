@@ -6,7 +6,10 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
@@ -30,8 +33,13 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 		// Should be safe: StateFlow never delivers two emissions concurrently to the same collector.
 		val subscribedTrackers = mutableSetOf<UByte>()
 
-		receiver.appContext.skeleton.computed.onEach { computedBones ->
-			val enabledBodyParts = receiver.appContext.outputTrackerToggle.context.state.value.trackers
+		combine(
+			receiver.appContext.skeleton.computed,
+			receiver.appContext.outputTrackerToggle.context.state.map { it.trackers },
+			::Pair
+		)
+			.distinctUntilChanged()
+			.onEach { (computedBones, enabledBodyParts) ->
 			val serverState = receiver.appContext.server.context.state.value
 
 			computedBones.forEach { (part, state) ->
@@ -65,7 +73,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 					receiver.outbound.emit(
 						DriverBridgeOutbound.TrackerStatus(
 							trackerId = part.value.toInt(),
-							battery = closestDevice?.batteryLevel,
+							battery = closestDevice?.batteryLevel ?: 1f,
 							charging = closestDevice?.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
 							status = closestTracker?.status ?: TrackerStatus.OK,
 						),
@@ -74,7 +82,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 					receiver.outbound.emit(
 						DriverBridgeOutbound.TrackerStatus(
 							trackerId = part.value.toInt(),
-							battery = 0f,
+							battery = null,
 							charging = false,
 							status = TrackerStatus.DISCONNECTED,
 						),
@@ -112,9 +120,9 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
 			receiver.appContext.server.getTracker(trackerId)?.let { tracker ->
-				tracker.context.dispatch(
+				tracker.context.dispatch( // TODO should maybe use TrackerActions.SetRotation?
 					TrackerActions.Update {
-						copy(rawRotation = event.rotation, position = event.position)
+						copy(rawRotation = event.rotation, rotation = event.rotation, position = event.position)
 					},
 				)
 			}
