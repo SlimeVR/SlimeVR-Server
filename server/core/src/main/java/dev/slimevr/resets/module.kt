@@ -10,6 +10,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -85,11 +86,18 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 
 			AppLogger.resets.info("${resetType.name} Reset from $resetSourceName")
 
-			// Tell the GUI we ended a reset
+			// Tell the GUI we finished a reset
 			server.sendSolarxrRpc(
 				ResetResponse(resetType, ResetStatus.FINISHED, bodyParts, delayMs, delayMs),
 			)
 		}
+	}
+
+	suspend fun clearTrackersMountingReset(resetSourceName: String) {
+		val trackers = server.context.state.value.trackers.values
+		trackers.forEach { it.context.dispatch(TrackerActions.ClearMountingReset) }
+
+		AppLogger.resets.info("Clear Mounting Reset from $resetSourceName")
 	}
 
 	private fun executeTrackerResets(resetType: ResetType, bodyParts: List<BodyPart>? = null, config: ResetsConfig) {

@@ -13,7 +13,7 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 fun restoreFromConfig(state: TrackerState, config: TrackerConfig, saveMountingReset: Boolean): TrackerState = state.copy(
 	bodyPart = config.bodyPart?.takeIf { it != BodyPart.NONE } ?: state.bodyPart,
 	customName = config.customName ?: state.customName,
-	mountingOrientation = config.mountingOrientation ?: state.mountingOrientation,
+	mountingOrientation = config.mountingOrientation,
 	sessionCalibration = if (saveMountingReset) {
 		config.mountingResetOrientation?.let {
 			SessionCalibration(

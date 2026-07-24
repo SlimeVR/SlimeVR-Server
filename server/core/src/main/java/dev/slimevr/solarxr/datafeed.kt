@@ -51,7 +51,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 			bodyPart = tracker.bodyPart,
 			displayName = tracker.name,
 			customName = tracker.customName,
-			mountingOrientation = tracker.mountingOrientation?.let { Quat(it.x, it.y, it.z, it.w) },
+			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
 			isImu = tracker.sensorType != null,
 			magnetometer = tracker.magStatus,
 		)

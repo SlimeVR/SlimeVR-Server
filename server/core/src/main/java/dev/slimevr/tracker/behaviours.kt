@@ -48,8 +48,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 					rawRotation,
 					cal.headingCorrection,
 					cal.attitudeAlignment,
-					cal.headingAlignment,
-					state.restOrientation
+					cal.headingAlignment * state.mountingOrientation,
 				).twinNearest(state.rotation)
 
 				cal != null -> state.rotation
@@ -65,7 +64,6 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 					rawRotation,
 					cal.headingCorrection,
 					cal.headingAlignment,
-					state.restOrientation
 				)
 
 				cal != null -> state.acceleration
@@ -84,7 +82,12 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 			)
 		}
 
-		is TrackerActions.SetMountingOrientation -> state.copy(mountingOrientation = action.mountingOrientation)
+		is TrackerActions.SetMountingOrientation -> {
+			state.copy(
+				mountingOrientation = action.mountingOrientation,
+				sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY),
+			)
+		}
 
 		is TrackerActions.SetRestOrientation -> state.copy(restOrientation = action.restOrientation)
 
@@ -138,7 +141,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				action.referenceRotation,
 				cal?.headingCorrection ?: Quaternion.IDENTITY,
 				cal?.attitudeAlignment ?: Quaternion.IDENTITY,
-				state.mountingOrientation ?: Quaternion.IDENTITY,
+				state.mountingOrientation,
 				action.yawOffset,
 			)
 
@@ -150,12 +153,16 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 
 			state.copy(sessionCalibration = sessionCalibration)
 		}
+
+		is TrackerActions.ClearMountingReset -> {
+			state.copy(sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY))
+		}
 	}
 
 	override fun observe(receiver: Tracker) {
-		// Refresh the tracker's rotation whenever the sessionCalibration gets updated
+		// Refresh the tracker's rotation whenever calibration gets updated
 		receiver.context.state
-			.distinctUntilChangedBy { it.sessionCalibration to it.restOrientation }
+			.distinctUntilChangedBy { it.sessionCalibration to it.restOrientation to it.mountingOrientation }
 			.onEach {
 			receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer))
 		}.launchIn(receiver.context.scope)
@@ -167,33 +174,31 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 	 * Returns the default mounting orientation for the body part
 	 */
 	private fun defaultMountingForBodyPart(bodyPart: BodyPart?): Quaternion = when (bodyPart) {
-// 		BodyPart.LEFT_LOWER_ARM, BodyPart.LEFT_HAND,
-// 		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE,
-// 		BodyPart.LEFT_INDEX_DISTAL, BodyPart.LEFT_MIDDLE_PROXIMAL,
-// 		BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL,
-// 		BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE,
-// 		BodyPart.LEFT_RING_DISTAL, BodyPart.LEFT_LITTLE_PROXIMAL,
-// 		BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL,
-// 		BodyPart.LEFT_SHOULDER,
-// 		-> Quaternion.SLIMEVR.LEFT
-//
-// 		BodyPart.RIGHT_LOWER_ARM, BodyPart.RIGHT_HAND,
-// 		BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE,
-// 		BodyPart.RIGHT_INDEX_DISTAL, BodyPart.RIGHT_MIDDLE_PROXIMAL,
-// 		BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL,
-// 		BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE,
-// 		BodyPart.RIGHT_RING_DISTAL, BodyPart.RIGHT_LITTLE_PROXIMAL,
-// 		BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
-// 		BodyPart.RIGHT_SHOULDER,
-// 		-> Quaternion.SLIMEVR.RIGHT
-//
-// 		BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_LEFT
-//
-// 		BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
-//
-// 		else -> Quaternion.SLIMEVR.FRONT
-		// TODO fix mounting reset not mixing well with anything but BACK
-		else -> Quaternion.IDENTITY
+ 		BodyPart.LEFT_LOWER_ARM, BodyPart.LEFT_HAND,
+ 		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE,
+ 		BodyPart.LEFT_INDEX_DISTAL, BodyPart.LEFT_MIDDLE_PROXIMAL,
+ 		BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL,
+ 		BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE,
+ 		BodyPart.LEFT_RING_DISTAL, BodyPart.LEFT_LITTLE_PROXIMAL,
+ 		BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL,
+ 		BodyPart.LEFT_SHOULDER,
+ 		-> Quaternion.SLIMEVR.LEFT
+
+ 		BodyPart.RIGHT_LOWER_ARM, BodyPart.RIGHT_HAND,
+ 		BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE,
+ 		BodyPart.RIGHT_INDEX_DISTAL, BodyPart.RIGHT_MIDDLE_PROXIMAL,
+ 		BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL,
+ 		BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE,
+ 		BodyPart.RIGHT_RING_DISTAL, BodyPart.RIGHT_LITTLE_PROXIMAL,
+ 		BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
+ 		BodyPart.RIGHT_SHOULDER,
+ 		-> Quaternion.SLIMEVR.RIGHT
+
+ 		BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_LEFT
+
+ 		BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
+
+ 		else -> Quaternion.SLIMEVR.BACK
 	}
 
 	override fun observe(receiver: Tracker) {
