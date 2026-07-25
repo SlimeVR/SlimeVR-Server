@@ -164,7 +164,11 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		// Refresh the tracker's rotation whenever calibration gets updated
 		receiver.context.state
-			.distinctUntilChangedBy { it.sessionCalibration to it.restOrientation to it.mountingOrientation }
+			.distinctUntilChanged { old, new ->
+				old.sessionCalibration == new.sessionCalibration &&
+					old.restOrientation == new.restOrientation &&
+					old.mountingOrientation == new.mountingOrientation
+			}
 			.onEach {
 				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer))
 			}.launchIn(receiver.context.scope)
@@ -246,7 +250,7 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
-			.distinctUntilChangedBy { it.status to it.bodyPart }
+			.distinctUntilChanged { old, new -> old.status == new.status && old.bodyPart == new.bodyPart }
 			.onEach { _ ->
 				// Tell the skeleton the tracker has stopped sending data to the last bone it was sending data to.
 				lastBodyPartSent?.let {
@@ -292,7 +296,7 @@ class TrackerRestOrientationBehaviour(
 ) : TrackerBehaviour {
 	override fun observe(receiver: Tracker) {
 		val armsResetModeFlow = settings.context.state.map { it.data.resetsConfig.armsResetMode }
-		val bodyPartFlow = receiver.context.state.map { it.bodyPart }
+		val bodyPartFlow = receiver.context.state.map { it.bodyPart }.distinctUntilChanged()
 
 		combine(armsResetModeFlow, bodyPartFlow) { armsResetMode, bodyPart ->
 			getRestOrientation(bodyPart, armsResetMode)
