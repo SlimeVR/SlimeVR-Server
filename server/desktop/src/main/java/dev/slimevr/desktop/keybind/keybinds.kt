@@ -6,13 +6,13 @@ import dev.hannah.portals.globalShortcuts.GlobalShortcutsHandler
 import dev.hannah.portals.globalShortcuts.Shortcut
 import dev.hannah.portals.globalShortcuts.ShortcutTuple
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.config.KeybindConfig
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.keybind.KeybindEvent
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.awaitCancellation

@@ -1,6 +1,6 @@
 package dev.slimevr.util
 
-import dev.slimevr.AppLogger
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlin.coroutines.CoroutineContext

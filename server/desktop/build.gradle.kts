@@ -87,6 +87,8 @@ dependencies {
 	}
 	implementation("org.hid4java:hid4java:0.8.0")
 	implementation("io.klogging:klogging:0.11.7")
+	// SLF4J provider, so what ktor and the discovery libraries log reaches our sinks
+	runtimeOnly("io.klogging:slf4j-klogging:0.11.7")
 
 	// Global keybinds: JIntellitype on Windows, dbus xdg-desktop-portal on Linux
 	implementation("com.melloware:jintellitype:1.+")

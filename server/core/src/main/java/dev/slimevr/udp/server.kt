@@ -1,9 +1,9 @@
 package dev.slimevr.udp
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.logging.AppLogger
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.InetSocketAddress

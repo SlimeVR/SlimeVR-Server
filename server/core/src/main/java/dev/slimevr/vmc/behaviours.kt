@@ -1,9 +1,9 @@
 package dev.slimevr.vmc
 
-import dev.slimevr.AppLogger
 import dev.slimevr.config.Settings
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.context.Behaviour
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent

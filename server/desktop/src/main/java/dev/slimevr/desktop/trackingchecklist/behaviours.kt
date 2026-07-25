@@ -6,11 +6,11 @@ import com.sun.jna.platform.win32.Kernel32Util
 import com.sun.jna.platform.win32.Tlhelp32
 import com.sun.jna.platform.win32.WinBase
 import com.sun.jna.platform.win32.WinDef
-import dev.slimevr.AppLogger
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.desktop.getSteamVRDriversList
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.trackingchecklist.TrackingChecklistActions
 import dev.slimevr.trackingchecklist.TrackingChecklistBehaviourType

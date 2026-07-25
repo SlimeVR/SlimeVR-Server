@@ -90,7 +90,7 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 						}
 					}
 				} catch (e: Exception) {
-					dev.slimevr.AppLogger.solarxr.error(e, "Error streaming serial log")
+					dev.slimevr.logging.AppLogger.solarxr.error(e, "Error streaming serial log")
 				}
 			}
 		}.launchIn(scope)

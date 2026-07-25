@@ -2,7 +2,7 @@ package dev.slimevr.desktop.serial
 
 import com.fazecast.jSerialComm.SerialPortEvent
 import com.fazecast.jSerialComm.SerialPortMessageListener
-import dev.slimevr.AppLogger
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer

@@ -1,9 +1,9 @@
 package dev.slimevr.solarxr
 
-import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceState
 import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton

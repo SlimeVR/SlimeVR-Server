@@ -3,7 +3,6 @@ package dev.slimevr.desktop.ipc
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.hannah.portals.PortalManager
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.SLIMEVR_IDENTIFIER
@@ -11,6 +10,7 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.desktop.unblockSteamVRDriver
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.onSolarXRMessage

@@ -1,6 +1,6 @@
 package dev.slimevr.desktop
 
-import dev.slimevr.AppLogger
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.tryOpenUri
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

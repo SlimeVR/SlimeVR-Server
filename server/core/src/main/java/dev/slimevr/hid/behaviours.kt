@@ -1,10 +1,10 @@
 package dev.slimevr.hid
 
-import dev.slimevr.AppLogger
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import kotlinx.coroutines.Job

@@ -1,7 +1,7 @@
 package dev.slimevr.bvh
 
-import dev.slimevr.AppLogger
 import dev.slimevr.config.ConfigStorage
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.skeleton.Skeleton
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn

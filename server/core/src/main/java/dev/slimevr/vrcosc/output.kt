@@ -1,7 +1,7 @@
 package dev.slimevr.vrcosc
 
-import dev.slimevr.AppLogger
 import dev.slimevr.config.VRCOSCConfig
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscSender
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton

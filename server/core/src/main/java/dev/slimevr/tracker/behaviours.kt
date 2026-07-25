@@ -1,8 +1,8 @@
 package dev.slimevr.tracker
 
 import com.jme3.math.FastMath
-import dev.slimevr.AppLogger
 import dev.slimevr.config.Settings
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.LEFT_ARM_PARTS
 import dev.slimevr.resets.LEFT_FINGER_PARTS
 import dev.slimevr.resets.RIGHT_ARM_PARTS
@@ -166,8 +166,8 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 		receiver.context.state
 			.distinctUntilChangedBy { it.sessionCalibration to it.restOrientation to it.mountingOrientation }
 			.onEach {
-			receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer))
-		}.launchIn(receiver.context.scope)
+				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer))
+			}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -176,31 +176,31 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 	 * Returns the default mounting orientation for the body part
 	 */
 	private fun defaultMountingForBodyPart(bodyPart: BodyPart?): Quaternion = when (bodyPart) {
- 		BodyPart.LEFT_LOWER_ARM, BodyPart.LEFT_HAND,
- 		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE,
- 		BodyPart.LEFT_INDEX_DISTAL, BodyPart.LEFT_MIDDLE_PROXIMAL,
- 		BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL,
- 		BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE,
- 		BodyPart.LEFT_RING_DISTAL, BodyPart.LEFT_LITTLE_PROXIMAL,
- 		BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL,
- 		BodyPart.LEFT_SHOULDER,
- 		-> Quaternion.SLIMEVR.LEFT
+		BodyPart.LEFT_LOWER_ARM, BodyPart.LEFT_HAND,
+		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE,
+		BodyPart.LEFT_INDEX_DISTAL, BodyPart.LEFT_MIDDLE_PROXIMAL,
+		BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL,
+		BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE,
+		BodyPart.LEFT_RING_DISTAL, BodyPart.LEFT_LITTLE_PROXIMAL,
+		BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL,
+		BodyPart.LEFT_SHOULDER,
+		-> Quaternion.SLIMEVR.LEFT
 
- 		BodyPart.RIGHT_LOWER_ARM, BodyPart.RIGHT_HAND,
- 		BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE,
- 		BodyPart.RIGHT_INDEX_DISTAL, BodyPart.RIGHT_MIDDLE_PROXIMAL,
- 		BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL,
- 		BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE,
- 		BodyPart.RIGHT_RING_DISTAL, BodyPart.RIGHT_LITTLE_PROXIMAL,
- 		BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
- 		BodyPart.RIGHT_SHOULDER,
- 		-> Quaternion.SLIMEVR.RIGHT
+		BodyPart.RIGHT_LOWER_ARM, BodyPart.RIGHT_HAND,
+		BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE,
+		BodyPart.RIGHT_INDEX_DISTAL, BodyPart.RIGHT_MIDDLE_PROXIMAL,
+		BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL,
+		BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE,
+		BodyPart.RIGHT_RING_DISTAL, BodyPart.RIGHT_LITTLE_PROXIMAL,
+		BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
+		BodyPart.RIGHT_SHOULDER,
+		-> Quaternion.SLIMEVR.RIGHT
 
- 		BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_LEFT
+		BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_LEFT
 
- 		BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
+		BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
 
- 		else -> Quaternion.SLIMEVR.BACK
+		else -> Quaternion.SLIMEVR.BACK
 	}
 
 	override fun observe(receiver: Tracker) {

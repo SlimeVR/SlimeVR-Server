@@ -1,9 +1,8 @@
 package dev.slimevr.desktop.install
 
-import dev.slimevr.AppLogger
 import dev.slimevr.CURRENT_PLATFORM
-import dev.slimevr.FeatureFlags
 import dev.slimevr.Platform
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException

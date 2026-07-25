@@ -17,6 +17,7 @@ import com.sun.jna.ptr.IntByReference
 import com.sun.jna.ptr.PointerByReference
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.networkprofile.ConnectivityFlags
 import dev.slimevr.networkprofile.NetworkCategory
 import dev.slimevr.networkprofile.NetworkInfo
@@ -139,7 +140,7 @@ private class INetwork(instance: Pointer?) :
 	}
 }
 
-private fun enumerateNetworks(): List<NetworkInfo> = try {
+private suspend fun enumerateNetworks(): List<NetworkInfo> = try {
 	Ole32.INSTANCE.CoInitializeEx(null, 0)
 	val clsid = CLSID("dcb00c01-570f-4a9b-8d69-199fdba5723b")
 	val iid = IID("dcb00000-570f-4a9b-8d69-199fdba5723b")
@@ -166,7 +167,7 @@ private fun enumerateNetworks(): List<NetworkInfo> = try {
 	Ole32.INSTANCE.CoUninitialize()
 	result
 } catch (e: Exception) {
-	println(e.stackTraceToString())
+	AppLogger.networkProfile.error(e, "Failed to enumerate networks")
 	emptyList()
 }
 

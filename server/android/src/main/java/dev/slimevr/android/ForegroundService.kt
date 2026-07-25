@@ -49,6 +49,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private val logger = noCoLogger("ForegroundService")
 
@@ -78,7 +79,8 @@ class ForegroundService : Service() {
 
 	override fun onCreate() {
 		super.onCreate()
-		setupAndroidLogging()
+		// Blocking so logging is live before onStartCommand, which already reports errors.
+		runBlocking { setupAndroidLogging(filesDir) }
 		createNotificationChannel()
 	}
 

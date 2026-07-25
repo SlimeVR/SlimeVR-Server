@@ -50,6 +50,7 @@ import kotlinx.coroutines.runBlocking
 import solarxr_protocol.rpc.KeybindSupport
 
 fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler + CoroutineName("Main")) {
+	setupDesktopLogging()
 	installUncaughtExceptionReporting()
 
 	contextDebugEnabled = System.getProperty("slimevr.debug.context") == "true" ||

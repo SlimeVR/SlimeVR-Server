@@ -1,6 +1,7 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.config.UserConfig
+import dev.slimevr.logging.AppLogger
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
@@ -73,7 +74,7 @@ class HeightLogBehaviour : SkeletonBehaviour {
 			receiver.context.state
 				.map { state -> state.skeletonHeight }
 				.distinctUntilChanged()
-				.collect { height -> println("User height changed: ${"%.2f".format(height)}m") }
+				.collect { height -> AppLogger.skeleton.info("User height changed: ${"%.2f".format(height)}m") }
 		}
 	}
 }
@@ -160,7 +161,7 @@ class ComputedSkeletonBehaviour(
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {
-					dev.slimevr.AppLogger.coroutines.error(e, "Error in ComputedSkeletonBehaviour")
+					dev.slimevr.logging.AppLogger.coroutines.error(e, "Error in ComputedSkeletonBehaviour")
 				}
 			}
 		}

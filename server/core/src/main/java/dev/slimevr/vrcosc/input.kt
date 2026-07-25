@@ -1,12 +1,11 @@
 package dev.slimevr.vrcosc
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
-import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage

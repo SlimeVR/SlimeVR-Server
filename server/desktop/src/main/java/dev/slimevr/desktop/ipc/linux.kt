@@ -1,8 +1,8 @@
 package dev.slimevr.desktop.ipc
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
 import dev.slimevr.getSocketDirectory
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow

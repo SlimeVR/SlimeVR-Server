@@ -1,7 +1,6 @@
 package dev.slimevr.resets
 
 import com.jme3.math.FastMath
-import dev.slimevr.AppLogger
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
 import dev.slimevr.config.MountingMethods
@@ -10,6 +9,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.EulerAngles

@@ -3,6 +3,7 @@ package dev.slimevr.solarxr
 import dev.slimevr.AppContextProvider
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.udp.SensorConfigFlags
 import dev.slimevr.udp.UDPConnectionActions
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -70,7 +71,7 @@ class MagBehaviour(
 								receiver.sendRpc(MagToggleResponse(trackerId = trackerId, enable = enable))
 							}
 						} catch (e: kotlinx.coroutines.TimeoutCancellationException) {
-							dev.slimevr.AppLogger.solarxr.warn("Timeout waiting for mag toggle response from tracker")
+							AppLogger.solarxr.warn("Timeout waiting for mag toggle response from tracker")
 						}
 					}
 				}

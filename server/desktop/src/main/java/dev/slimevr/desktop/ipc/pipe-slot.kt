@@ -9,7 +9,7 @@ import com.sun.jna.platform.win32.WinError
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.ptr.IntByReference
 import com.sun.jna.win32.StdCallLibrary
-import dev.slimevr.AppLogger
+import dev.slimevr.logging.AppLogger
 import java.io.IOException
 
 private val k32 = Kernel32.INSTANCE
@@ -55,7 +55,9 @@ internal class PipeSlot(private val handle: WinNT.HANDLE) : AutoCloseable {
 		return when {
 			// ERROR_PIPE_CONNECTED means the client got in before we asked
 			connected || err == WinError.ERROR_PIPE_CONNECTED -> true
+
 			err == WinError.ERROR_IO_PENDING -> awaitCompletion() >= 0
+
 			else -> false
 		}
 	}
