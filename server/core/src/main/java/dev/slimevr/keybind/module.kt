@@ -96,7 +96,7 @@ class KeybindTriggerBehaviour(
 class KeybindManager(val context: KeybindContext) {
 	val recording: Boolean get() = context.state.value.recording
 
-	val events = EventDispatcher<KeybindEvent>()
+	val events = EventDispatcher<KeybindEvent>("Keybind", context.scope, capacity = 16)
 
 	fun startObserving(appContext: AppContextProvider) {
 		context.behaviours.addAll(

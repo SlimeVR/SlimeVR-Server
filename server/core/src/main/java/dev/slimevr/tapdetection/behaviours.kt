@@ -42,7 +42,13 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		val okTrackersFlow = receiver.server.context.state
 			.map { it.trackers.values }
 			.flatMapLatest { trackers ->
-				combine(trackers.map { it.context.state }) { states ->
+				// Tracker state emits on every rotation packet, but only bodyPart/status matter here.
+				// Dedup per tracker first, or combine gets resumed once per packet per tracker.
+				combine(
+					trackers.map { tracker ->
+						tracker.context.state.distinctUntilChanged { a, b -> a.bodyPart == b.bodyPart && a.status == b.status }
+					},
+				) { states ->
 					states.map { it.bodyPart to it.status }
 				}
 					.distinctUntilChanged()

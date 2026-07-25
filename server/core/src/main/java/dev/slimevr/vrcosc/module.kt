@@ -98,7 +98,7 @@ class VRCOSCManager(
 	val settings: Settings,
 	val outputTrackerToggle: OutputTrackerToggleManager,
 ) {
-	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher()
+	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher("VRCOSC", context.scope, capacity = 32)
 
 	fun startObserving(appContext: AppContextProvider) {
 		val behaviours = listOf(

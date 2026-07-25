@@ -87,8 +87,16 @@ class BaseCalibrationBehaviour : HeightCalibrationBehaviourType {
 			.flatMapLatest { state ->
 				val trackers = state.trackers.values.toList()
 				if (trackers.isEmpty()) return@flatMapLatest flowOf(false)
-				// React to per-tracker position/bodyPart changes, not just tracker add/remove.
-				combine(trackers.map { it.context.state }) { states -> canCalibrate(states.toList()) }
+				// React to per-tracker position/bodyPart changes, not just tracker add/remove. canCalibrate
+				// only looks at bodyPart and whether position is set, so dedup on that per tracker rather
+				// than letting every rotation packet resume the combine.
+				combine(
+					trackers.map { tracker ->
+						tracker.context.state.distinctUntilChanged { a, b ->
+							a.bodyPart == b.bodyPart && (a.position == null) == (b.position == null)
+						}
+					},
+				) { states -> canCalibrate(states.toList()) }
 			}
 			.distinctUntilChanged()
 			.onEach { receiver.context.dispatch(HeightCalibrationActions.SetCanCalibrate(it)) }

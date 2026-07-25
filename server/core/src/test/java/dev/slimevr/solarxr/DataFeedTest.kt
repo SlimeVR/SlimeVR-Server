@@ -46,15 +46,14 @@ private fun TestScope.testConn(onSend: suspend (ByteArray) -> Unit): SolarXRBrid
 		id = 1,
 		context = context,
 		appContext = appContext,
-		dataFeedDispatcher = EventDispatcher(),
-		rpcDispatcher = EventDispatcher(),
+		dataFeedDispatcher = EventDispatcher("test.datafeed", backgroundScope),
+		rpcDispatcher = EventDispatcher("test.rpc", backgroundScope),
 	)
 	bridge.startObserving()
 	bridge.outbound.on<MessageBundle> { onSend(ByteArray(0)) }.launchIn(backgroundScope)
 
-	// EventDispatcher is a replay-0 SharedFlow, so an emit with no subscriber yet is dropped, and
-	// launchIn above only subscribes once its coroutine is dispatched. Run those now, so the bridge
-	// this returns is actually listening.
+	// launchIn registers the handler synchronously, but the dispatcher's own drain loop still has to
+	// start before anything emitted here can reach it.
 	runCurrent()
 	return bridge
 }

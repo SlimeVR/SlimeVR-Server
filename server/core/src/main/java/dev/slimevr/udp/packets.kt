@@ -1,12 +1,10 @@
 package dev.slimevr.udp
 
 import dev.slimevr.EventDispatcher
+import dev.slimevr.Subscription
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.core.remaining
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
 import kotlinx.io.Buffer
 import kotlinx.io.Sink
 import kotlinx.io.Source
@@ -15,7 +13,6 @@ import kotlinx.io.readFloat
 import kotlinx.io.readString
 import kotlinx.io.readUByte
 import kotlinx.io.readUShort
-import kotlinx.io.write
 import kotlinx.io.writeUByte
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
@@ -540,8 +537,11 @@ data class PacketEvent<out T : UDPPacket>(
 
 typealias UDPPacketDispatcher = EventDispatcher<PacketEvent<UDPPacket>>
 
-inline fun <reified T : UDPPacket> UDPPacketDispatcher.onPacket(): Flow<PacketEvent<T>> = events
-	.mapNotNull { event -> (event.takeIf { it.data is T }) as PacketEvent<T>? }
-
-inline fun <reified T : UDPPacket> UDPPacketDispatcher.onPacket(crossinline action: suspend (PacketEvent<T>) -> Unit): Flow<PacketEvent<T>> =
-	onPacket<T>().onEach { action(it) }
+// The discriminator is the payload type, not the event type, so this filters inside the handler
+// rather than relying on the dispatcher's per-class routing.
+inline fun <reified T : UDPPacket> UDPPacketDispatcher.onPacket(
+	crossinline action: suspend (PacketEvent<T>) -> Unit,
+): Subscription<PacketEvent<UDPPacket>, PacketEvent<UDPPacket>> = on { event ->
+	@Suppress("UNCHECKED_CAST")
+	if (event.data is T) action(event as PacketEvent<T>)
+}

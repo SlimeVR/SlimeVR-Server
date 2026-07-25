@@ -44,8 +44,8 @@ class DriverBridge(
 	val id: Int,
 	val context: DriverBridgeContext,
 	val appContext: AppContextProvider,
-	val inbound: EventDispatcher<DriverBridgeInbound> = EventDispatcher(),
-	val outbound: EventDispatcher<DriverBridgeOutbound> = EventDispatcher(),
+	val inbound: EventDispatcher<DriverBridgeInbound> = EventDispatcher("Driver.inbound", context.scope, capacity = 128),
+	val outbound: EventDispatcher<DriverBridgeOutbound> = EventDispatcher("Driver.outbound", context.scope, capacity = 512),
 	private val managedContext: ManagedContext<DriverBridgeState, DriverBridgeActions>? = null,
 ) {
 	fun dispose() = managedContext?.dispose()

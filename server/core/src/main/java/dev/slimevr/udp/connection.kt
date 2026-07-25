@@ -11,6 +11,7 @@ import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.Datagram
 import io.ktor.network.sockets.InetSocketAddress
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.io.Buffer
@@ -124,7 +125,13 @@ class UDPConnection(
 				name = "UDPConnection[$address]",
 			)
 
-			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>>()
+			// Same reasoning as the HID dispatcher: these are state samples, the newest one wins.
+			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>>(
+				name = "UDP[$address]",
+				scope = context.scope,
+				capacity = 64,
+				onBufferOverflow = BufferOverflow.DROP_OLDEST,
+			)
 			val packetChannel = Channel<PacketEvent<UDPPacket>>(capacity = 256)
 
 			val conn = UDPConnection(

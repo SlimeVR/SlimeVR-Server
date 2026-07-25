@@ -30,6 +30,7 @@ object AppLogger {
 	val skeleton = logger("Skeleton")
 	val networkProfile = logger("NetworkProfile")
 	val logging = logger("Logging")
+	val events = logger("Events")
 
 	val coroutines = noCoLogger("Coroutines")
 	val console = noCoLogger("Console")

@@ -6,6 +6,7 @@ import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -33,63 +34,72 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 		// Should be safe: StateFlow never delivers two emissions concurrently to the same collector.
 		val subscribedTrackers = mutableSetOf<UByte>()
 
+		// Status and battery are rebuilt every frame but only change every few seconds, so the driver
+		// was being sent the same values at skeleton rate. Keep the last one per body part and only
+		// send on a real change, the same way subscribedTrackers already gates TrackerAdded.
+		val lastStatus = mutableMapOf<UByte, DriverBridgeOutbound.TrackerStatus>()
+
 		combine(
 			receiver.appContext.skeleton.computed,
 			receiver.appContext.outputTrackerToggle.context.state.map { it.trackers },
-			::Pair
+			::Pair,
 		)
 			.distinctUntilChanged()
 			.onEach { (computedBones, enabledBodyParts) ->
-			val serverState = receiver.appContext.server.context.state.value
+				val serverState = receiver.appContext.server.context.state.value
 
-			computedBones.forEach { (part, state) ->
-				if (enabledBodyParts.contains(part)) {
-					val closestTracker = bodyPartToNearest[part].orEmpty()
-						.firstNotNullOfOrNull { fallbackPart ->
-							serverState.trackers.values
-								.find { it.context.state.value.bodyPart == fallbackPart && it.context.state.value.origin != DeviceOrigin.DRIVER }
-								?.context?.state?.value
+				// One pass over the trackers instead of a scan per fallback part per bone.
+				// putIfAbsent keeps the first match, which is what the find { } did.
+				val trackerStateByBodyPart = mutableMapOf<BodyPart, TrackerState>()
+				for (tracker in serverState.trackers.values) {
+					val trackerState = tracker.context.state.value
+					if (trackerState.origin == DeviceOrigin.DRIVER) continue
+					val bodyPart = trackerState.bodyPart ?: continue
+					trackerStateByBodyPart.putIfAbsent(bodyPart, trackerState)
+				}
+
+				computedBones.forEach { (part, state) ->
+					if (enabledBodyParts.contains(part)) {
+						val closestTracker = bodyPartToNearest[part].orEmpty()
+							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }
+						val closestDevice = serverState.devices[closestTracker?.deviceId]?.context?.state?.value
+
+						val newTracker = subscribedTrackers.add(part.value)
+						if (newTracker) {
+							receiver.outbound.emit(
+								DriverBridgeOutbound.TrackerAdded(
+									trackerId = part.value.toInt(),
+									part = part,
+								),
+							)
 						}
-					val closestDevice = serverState.devices[closestTracker?.deviceId]?.context?.state?.value
 
-					val newTracker = subscribedTrackers.add(part.value)
-					if (newTracker) {
 						receiver.outbound.emit(
-							DriverBridgeOutbound.TrackerAdded(
+							DriverBridgeOutbound.TrackerPosition(
 								trackerId = part.value.toInt(),
-								part = part,
+								rotation = state.rotation,
+								position = state.tailPosition,
 							),
 						)
-					}
 
-					receiver.outbound.emit(
-						DriverBridgeOutbound.TrackerPosition(
-							trackerId = part.value.toInt(),
-							rotation = state.rotation,
-							position = state.tailPosition,
-						),
-					)
-
-					receiver.outbound.emit(
-						DriverBridgeOutbound.TrackerStatus(
+						val status = DriverBridgeOutbound.TrackerStatus(
 							trackerId = part.value.toInt(),
 							battery = closestDevice?.batteryLevel ?: 1f,
 							charging = closestDevice?.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
 							status = closestTracker?.status ?: TrackerStatus.OK,
-						),
-					)
-				} else {
-					receiver.outbound.emit(
-						DriverBridgeOutbound.TrackerStatus(
+						)
+						if (lastStatus.put(part.value, status) != status) receiver.outbound.emit(status)
+					} else {
+						val status = DriverBridgeOutbound.TrackerStatus(
 							trackerId = part.value.toInt(),
 							battery = null,
 							charging = false,
 							status = TrackerStatus.DISCONNECTED,
-						),
-					)
+						)
+						if (lastStatus.put(part.value, status) != status) receiver.outbound.emit(status)
+					}
 				}
-			}
-		}.launchIn(receiver.context.scope)
+			}.launchIn(receiver.context.scope)
 	}
 }
 

@@ -41,7 +41,7 @@ class PacketBehaviour : UDPConnectionBehaviour {
 	}
 
 	override fun observe(receiver: UDPConnection) {
-		receiver.packetEvents.events.onEach { packet ->
+		receiver.packetEvents.on<PacketEvent<UDPPacket>> { packet ->
 			val state = receiver.context.state.value
 			val now = System.currentTimeMillis()
 			val num = packet.packetNumber
@@ -49,7 +49,7 @@ class PacketBehaviour : UDPConnectionBehaviour {
 				AppLogger.udp.info("[${state.address}] Reconnecting")
 			} else if (num != null && num != 0L && num <= state.lastPacketNum) {
 				AppLogger.udp.warn("[${state.address}] Received packet with wrong packet number")
-				return@onEach
+				return@on
 			}
 			receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = num, time = now))
 		}.launchIn(receiver.context.scope)
@@ -63,8 +63,8 @@ class PacketLossBehaviour : UDPConnectionBehaviour {
 		var lastPacketCounterReset = System.currentTimeMillis()
 		var lastPacketNumber = 0L
 
-		receiver.packetEvents.events.onEach { packet ->
-			val num = packet.packetNumber ?: return@onEach
+		receiver.packetEvents.on<PacketEvent<UDPPacket>> { packet ->
+			val num = packet.packetNumber ?: return@on
 			val now = System.currentTimeMillis()
 
 			if (now - lastPacketCounterReset >= 10_000L) {

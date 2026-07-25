@@ -44,7 +44,7 @@ class SolarXRBridge(
 	val appContext: AppContextProvider,
 	val dataFeedDispatcher: EventDispatcher<DataFeedMessage>,
 	val rpcDispatcher: EventDispatcher<RpcMessage>,
-	val outbound: EventDispatcher<MessageBundle> = EventDispatcher(),
+	val outbound: EventDispatcher<MessageBundle> = EventDispatcher("SolarXR[$id].outbound", context.scope, capacity = 64),
 	private val managedContext: ManagedContext<SolarXRBridgeState, SolarXRBridgeActions>? = null,
 ) {
 	// Jobs are mutable handles with no meaningful equality; storing them in state
@@ -107,8 +107,8 @@ class SolarXRBridge(
 				id = id,
 				context = managedContext.context,
 				appContext = appContext,
-				dataFeedDispatcher = EventDispatcher(),
-				rpcDispatcher = EventDispatcher(),
+				dataFeedDispatcher = EventDispatcher("SolarXR[$id].datafeed", managedContext.context.scope, capacity = 32),
+				rpcDispatcher = EventDispatcher("SolarXR[$id].rpc", managedContext.context.scope, capacity = 64),
 				managedContext = managedContext,
 			)
 			bridge.startObserving()
