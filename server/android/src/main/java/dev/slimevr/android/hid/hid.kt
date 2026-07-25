@@ -150,7 +150,7 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 							}
 							when {
 								read < 0 -> return@launch
-								read > 0 -> parseHIDPackets(buffer.copyOf(read)).forEach { packet -> receiver.packetEvents.emit(packet) }
+								read > 0 -> parseHIDPackets(buffer, read).forEach { packet -> receiver.packetEvents.emit(packet) }
 								else -> delay(1)
 							}
 						}

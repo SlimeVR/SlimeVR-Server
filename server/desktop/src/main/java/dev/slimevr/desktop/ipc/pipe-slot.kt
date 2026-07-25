@@ -7,28 +7,28 @@ import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.WinBase
 import com.sun.jna.platform.win32.WinError
 import com.sun.jna.platform.win32.WinNT
-import com.sun.jna.ptr.IntByReference
 import com.sun.jna.win32.StdCallLibrary
 import dev.slimevr.logging.AppLogger
 import java.io.IOException
 
 private val k32 = Kernel32.INSTANCE
-private val k32io = Kernel32IO.INSTANCE
 
 private const val HEADER_SIZE = 4
 private const val MAX_FRAME_SIZE = 256 * 1024
 
 @Suppress("FunctionName")
-private interface Kernel32IO : StdCallLibrary {
-	fun ReadFile(h: WinNT.HANDLE, buf: Pointer, len: Int, read: IntByReference?, ov: WinBase.OVERLAPPED): Boolean
-
-	fun WriteFile(h: WinNT.HANDLE, buf: Pointer, len: Int, written: IntByReference?, ov: WinBase.OVERLAPPED): Boolean
-
-	fun GetOverlappedResult(h: WinNT.HANDLE, ov: WinBase.OVERLAPPED, moved: IntByReference, wait: Boolean): Boolean
-
-	companion object {
-		val INSTANCE: Kernel32IO = Native.load("kernel32", Kernel32IO::class.java)
+private object Kernel32IO : StdCallLibrary {
+	init {
+		Native.register(Kernel32IO::class.java, "kernel32")
 	}
+
+	external fun ReadFile(handle: Pointer, buffer: Pointer, len: Int, read: Pointer?, overlapped: Pointer): Boolean
+
+	external fun WriteFile(handle: Pointer, buffer: Pointer, len: Int, written: Pointer?, overlapped: Pointer): Boolean
+
+	external fun GetOverlappedResult(handle: Pointer, overlapped: Pointer, moved: Pointer, wait: Boolean): Boolean
+
+	external fun WaitForSingleObject(handle: Pointer, millis: Int): Int
 }
 
 /**
@@ -47,6 +47,14 @@ internal class PipeSlot(private val handle: WinNT.HANDLE) : AutoCloseable {
 	}
 
 	private val buffer = Memory(MAX_FRAME_SIZE.toLong())
+
+	// Resolved once. The wrappers have to stay referenced to keep the native memory alive anyway, so
+	// unwrapping them per call would only re-do work. `transferred` replaces an IntByReference that
+	// was allocated on every completion.
+	private val handlePointer = handle.pointer
+	private val eventPointer = event.pointer
+	private val overlappedPointer = overlapped.pointer
+	private val transferred = Memory(4)
 
 	fun awaitClient(): Boolean {
 		// On an overlapped handle ConnectNamedPipe returns straight away, so we do the waiting
@@ -76,12 +84,13 @@ internal class PipeSlot(private val handle: WinNT.HANDLE) : AutoCloseable {
 		buffer.setInt(0, total)
 		buffer.write(HEADER_SIZE.toLong(), payload, 0, payload.size)
 
-		val written = transfer { k32io.WriteFile(handle, buffer, total, null, overlapped) }
+		val written = transfer { Kernel32IO.WriteFile(handlePointer, buffer, total, null, overlappedPointer) }
 		if (written != total) throw IOException("Pipe write incomplete: $written of $total bytes")
 	}
 
 	override fun close() {
 		buffer.close()
+		transferred.close()
 		k32.CloseHandle(event)
 	}
 
@@ -90,7 +99,7 @@ internal class PipeSlot(private val handle: WinNT.HANDLE) : AutoCloseable {
 		while (done < len) {
 			val remaining = len - done
 			val moved = transfer {
-				k32io.ReadFile(handle, buffer.share((at + done).toLong(), remaining.toLong()), remaining, null, overlapped)
+				Kernel32IO.ReadFile(handlePointer, buffer.share((at + done).toLong(), remaining.toLong()), remaining, null, overlappedPointer)
 			}
 			if (moved <= 0) return false
 			done += moved
@@ -114,9 +123,8 @@ internal class PipeSlot(private val handle: WinNT.HANDLE) : AutoCloseable {
 	}
 
 	private fun awaitCompletion(): Int {
-		k32.WaitForSingleObject(event, WinBase.INFINITE)
-		val moved = IntByReference()
-		if (!k32io.GetOverlappedResult(handle, overlapped, moved, true)) return -1
-		return moved.value
+		Kernel32IO.WaitForSingleObject(eventPointer, WinBase.INFINITE)
+		if (!Kernel32IO.GetOverlappedResult(handlePointer, overlappedPointer, transferred, true)) return -1
+		return transferred.getInt(0)
 	}
 }

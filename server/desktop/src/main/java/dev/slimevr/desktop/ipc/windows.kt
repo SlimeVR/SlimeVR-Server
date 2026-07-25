@@ -84,7 +84,7 @@ private suspend fun acceptWindowsClients(
 
 			launch {
 				try {
-					handle(readFrames(pipe)) { bytes -> withContext(Dispatchers.IO) { writer.writeFrame(bytes) } }
+					handle(readFrames(pipe)) { bytes -> writer.writeFrame(bytes) }
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {

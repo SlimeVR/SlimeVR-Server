@@ -32,6 +32,10 @@ import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
 import solarxr_protocol.rpc.TrackingChecklistStepVisibility
 import java.io.IOException
+import java.net.ConnectException
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 data class Process(val pid: ULong, val name: String)
 
@@ -80,6 +84,12 @@ private suspend fun getRunningProcesses(): List<Process> = when (CURRENT_PLATFOR
 	else -> emptyList()
 }
 
+// Enumerating every process is orders of magnitude costlier than the loopback request it guards, so it
+// only runs to disambiguate a refused connection, and only this often.
+private val PROCESS_SCAN_INTERVAL = 10.seconds
+
+private fun Throwable.isConnectionRefused(): Boolean = generateSequence(this, Throwable::cause).any { it is ConnectException }
+
 data class SteamVRDriverState(val connected: Boolean = false, val installed: Boolean = true, val blocked: Boolean = false, val enabled: Boolean = true)
 
 class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
@@ -92,41 +102,51 @@ class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBeh
 
 	override fun observe(receiver: TrackingChecklist) {
 		receiver.context.scope.launch {
-			val client = HttpClient(CIO)
-			while (isActive) {
-				val connected = server.context.state.value.drivers.isNotEmpty()
-				val running = connected ||
-					getRunningProcesses().any { proc ->
-						proc.name == steamVRProcName
-					}
+			HttpClient(CIO).use { client ->
+				var scannedRunning = false
+				var lastScan: TimeMark? = null
 
-				val drivers = if (running) {
-					try {
+				while (isActive) {
+					val connected = server.context.state.value.drivers.isNotEmpty()
+
+					val drivers = try {
 						getSteamVRDriversList(client)
 					} catch (e: Exception) {
-						AppLogger.checklist.warn(e, "Failed to get SteamVR drivers list")
+						if (!e.isConnectionRefused()) {
+							AppLogger.checklist.warn(e, "Failed to get SteamVR drivers list")
+						}
 						null
 					}
-				} else {
-					null
-				}
 
-				val driver = drivers?.firstOrNull {
-					it.manifest.name == "slimevr"
-				}
-				val standableDriver = drivers?.firstOrNull {
-					it.manifest.name == "standable"
-				}
+					val scan = lastScan
+					if (drivers != null) {
+						scannedRunning = false
+						lastScan = null
+					} else if (scan == null || scan.elapsedNow() >= PROCESS_SCAN_INTERVAL) {
+						scannedRunning = getRunningProcesses().any { proc ->
+							proc.name == steamVRProcName
+						}
+						lastScan = TimeSource.Monotonic.markNow()
+					}
 
-				driverState.update {
-					SteamVRDriverState(connected = connected, installed = !running || driver != null, driver?.blockedBySafeMode ?: false, enabled = driver?.enabled ?: true)
+					val running = connected || drivers != null || scannedRunning
+
+					val driver = drivers?.firstOrNull {
+						it.manifest.name == "slimevr"
+					}
+					val standableDriver = drivers?.firstOrNull {
+						it.manifest.name == "standable"
+					}
+
+					driverState.update {
+						SteamVRDriverState(connected = connected, installed = !running || driver != null, driver?.blockedBySafeMode ?: false, enabled = driver?.enabled ?: true)
+					}
+					standableState.update {
+						standableDriver != null
+					}
+					delay(3000)
 				}
-				standableState.update {
-					standableDriver != null
-				}
-				delay(3000)
 			}
-			client.close()
 		}
 
 		driverState

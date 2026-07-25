@@ -12,6 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.TrackerStatus
+import kotlin.time.TimeSource
 
 class HIDRegistrationBehaviour : HIDReceiverBehaviour {
 	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions) = when (action) {
@@ -176,8 +177,10 @@ private const val HID_TIMEOUT_MS = 2_000L
 
 class HIDSleepBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
+		val startedAt = TimeSource.Monotonic.markNow()
 		val sleepJobs = mutableMapOf<Int, Job>()
 		val idleJobs = mutableMapOf<Int, Job>()
+		val lastSeen = mutableMapOf<Int, Long>()
 
 		fun scheduleSleep(hidId: Int, timeoutMs: Int) {
 			if (timeoutMs == 0) return
@@ -193,9 +196,14 @@ class HIDSleepBehaviour : HIDReceiverBehaviour {
 		}
 
 		fun armIdleTimeout(hidId: Int) {
-			idleJobs[hidId]?.cancel()
+			lastSeen[hidId] = startedAt.elapsedNow().inWholeMilliseconds
+			if (idleJobs[hidId]?.isActive == true) return
 			idleJobs[hidId] = receiver.context.scope.launch {
-				delay(HID_TIMEOUT_MS)
+				var remaining = HID_TIMEOUT_MS
+				while (remaining > 0) {
+					delay(remaining)
+					remaining = (lastSeen[hidId] ?: 0L) + HID_TIMEOUT_MS - startedAt.elapsedNow().inWholeMilliseconds
+				}
 				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
 			}
 		}

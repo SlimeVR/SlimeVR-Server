@@ -101,8 +101,9 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 
 				deviceScope.launch(Dispatchers.IO) {
 					try {
+						// Reused across reads: parseHIDPackets is told how much of it is live
+						val buffer = ByteArray(HID_READ_BUFFER_SIZE)
 						while (isActive) {
-							val buffer = ByteArray(HID_READ_BUFFER_SIZE)
 							val read = try {
 								hidDevice.read(buffer, HID_READ_TIMEOUT_MS)
 							} catch (_: Exception) {
@@ -112,7 +113,7 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 								// read error, device gone
 								read < 0 -> return@launch
 
-								read > 0 -> parseHIDPackets(buffer).forEach { receiver.packetEvents.emit(it) }
+								read > 0 -> parseHIDPackets(buffer, read).forEach { receiver.packetEvents.emit(it) }
 
 								// 0 is a timeout with no data: the read already blocked, so just go again
 							}

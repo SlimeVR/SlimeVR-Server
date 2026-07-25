@@ -247,7 +247,7 @@ private fun parseSingleHIDPacket(data: ByteArray, i: Int): HIDPacket? {
 	}
 }
 
-fun parseHIDPackets(data: ByteArray): List<HIDPacket> {
-	if (data.size % HID_PACKET_SIZE != 0) return emptyList()
-	return (0 until data.size / HID_PACKET_SIZE).mapNotNull { parseSingleHIDPacket(data, it * HID_PACKET_SIZE) }
+fun parseHIDPackets(data: ByteArray, length: Int = data.size): List<HIDPacket> {
+	if (length % HID_PACKET_SIZE != 0) return emptyList()
+	return (0 until length / HID_PACKET_SIZE).mapNotNull { parseSingleHIDPacket(data, it * HID_PACKET_SIZE) }
 }

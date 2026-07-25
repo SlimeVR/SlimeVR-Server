@@ -75,8 +75,13 @@ suspend fun handleSolarXRBridge(
 
 	appContext.server.context.dispatch(VRServerActions.SolarXRConnected(bridge))
 
+	// One builder for the life of the connection. clear() keeps the buffer it has already grown into,
+	// so a datafeed frame stops re-growing from 256 bytes every time. Safe to share: this collector
+	// handles one bundle at a time, and moveToByteArray copies the bytes out before send suspends.
+	val fbb = FlatBufferBuilder(256)
+
 	bridge.outbound.on<MessageBundle> { bundle ->
-		val fbb = FlatBufferBuilder(256)
+		fbb.clear()
 		fbb.finish(bundle.encode(JvmFlatBufferWriter(fbb)))
 		send(fbb.dataBuffer().moveToByteArray())
 	}.launchIn(this)

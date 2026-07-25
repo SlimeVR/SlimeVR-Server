@@ -12,8 +12,6 @@ import kotlinx.io.readByteArray
 
 private val selectorManager = SelectorManager(Dispatchers.IO)
 
-private fun ByteArray.toBuffer() = Buffer().apply { write(this@toBuffer) }
-
 class OscSender(private val address: String, private val port: Int) {
 	private var socket: ConnectedDatagramSocket? = null
 
@@ -22,8 +20,17 @@ class OscSender(private val address: String, private val port: Int) {
 		return s
 	}
 
-	suspend fun send(message: OscMessage) = socket().send(Datagram(encodeMessage(message).toBuffer(), InetSocketAddress(address, port)))
-	suspend fun send(bundle: OscBundle) = socket().send(Datagram(encodeBundle(bundle).toBuffer(), InetSocketAddress(address, port)))
+	suspend fun send(message: OscMessage) {
+		val buf = Buffer()
+		writeMessage(buf, message)
+		socket().send(Datagram(buf, InetSocketAddress(address, port)))
+	}
+
+	suspend fun send(bundle: OscBundle) {
+		val buf = Buffer()
+		writeBundle(buf, bundle)
+		socket().send(Datagram(buf, InetSocketAddress(address, port)))
+	}
 
 	fun close() {
 		socket?.close()
@@ -45,11 +52,11 @@ class OscReceiver(private val port: Int) {
 		running = true
 		while (running) {
 			try {
-				val bytes = s.receive().packet.readByteArray()
+				val packet = s.receive().packet
 				val bundle = try {
-					decodeBundle(bytes).first
+					readBundle(packet)
 				} catch (_: IllegalArgumentException) {
-					OscBundle(1, listOf(OscContent.Message(decodeMessage(bytes).first)))
+					OscBundle(1, listOf(OscContent.Message(readMessage(packet))))
 				}
 				onBundle(bundle)
 			} catch (_: Exception) {

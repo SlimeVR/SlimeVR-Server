@@ -30,7 +30,7 @@ class LoggingMiddleware<S, A : Any>(
 		contextName = context.scope.coroutineContext[CoroutineName]?.name ?: "Unknown"
 	}
 
-	private fun isAllowed(action: A): Boolean {
+	override fun isAllowed(action: A): Boolean {
 		val klass = action::class
 		if (klass in block) return false
 		if (allow != null && klass !in allow) return false

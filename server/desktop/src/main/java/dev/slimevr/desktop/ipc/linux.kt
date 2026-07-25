@@ -25,7 +25,7 @@ suspend fun createUnixDriverSocket(appContext: AppContextProvider) = acceptUnixC
 	handleDriverConnection(
 		appContext = appContext,
 		messages = readFramedMessages(channel),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
+		send = { bytes -> writeFramed(channel, bytes) },
 	)
 }
 
@@ -33,7 +33,7 @@ suspend fun createUnixFeederSocket(appContext: AppContextProvider) = acceptUnixC
 	handleDriverConnection(
 		appContext = appContext,
 		messages = readFramedMessages(channel),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
+		send = { bytes -> writeFramed(channel, bytes) },
 	)
 }
 
@@ -41,7 +41,7 @@ suspend fun createUnixSolarXRSocket(appContext: AppContextProvider) = acceptUnix
 	handleSolarXRBridge(
 		appContext = appContext,
 		messages = readFramedMessages(channel),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramed(channel, bytes) } },
+		send = { bytes -> writeFramed(channel, bytes) },
 	)
 }
 

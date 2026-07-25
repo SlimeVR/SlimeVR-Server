@@ -1,15 +1,22 @@
 package dev.slimevr.osc
 
+import kotlinx.io.Buffer
 import org.junit.jupiter.api.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+
+private fun encode(msg: OscMessage) = Buffer().also { writeMessage(it, msg) }
+
+private fun encode(bundle: OscBundle) = Buffer().also { writeBundle(it, bundle) }
 
 class CodecTest {
 	@Test
 	fun testEncodeDecodeIntMessage() {
 		val msg = OscMessage("/test", listOf(OscArg.Int(42)))
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals("/test", decoded.address)
 		assertEquals(1, decoded.args.size)
@@ -19,8 +26,8 @@ class CodecTest {
 	@Test
 	fun testEncodeDecodeFloatMessage() {
 		val msg = OscMessage("/test/float", listOf(OscArg.Float(3.14f)))
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals("/test/float", decoded.address)
 		assertEquals(1, decoded.args.size)
@@ -31,8 +38,8 @@ class CodecTest {
 	@Test
 	fun testEncodeDecodeStringMessage() {
 		val msg = OscMessage("/address", listOf(OscArg.String("hello")))
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals("/address", decoded.address)
 		assertEquals(1, decoded.args.size)
@@ -43,8 +50,8 @@ class CodecTest {
 	fun testEncodeDecodeBlobMessage() {
 		val blobData = byteArrayOf(1, 2, 3, 4, 5)
 		val msg = OscMessage("/blob", listOf(OscArg.Blob(blobData)))
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals("/blob", decoded.address)
 		assertEquals(1, decoded.args.size)
@@ -55,8 +62,8 @@ class CodecTest {
 	@Test
 	fun testEncodeDecodeLongMessage() {
 		val msg = OscMessage("/long", listOf(OscArg.Long(9876543210L)))
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals("/long", decoded.address)
 		assertEquals(1, decoded.args.size)
@@ -66,8 +73,8 @@ class CodecTest {
 	@Test
 	fun testEncodeDecodeDoubleMessage() {
 		val msg = OscMessage("/double", listOf(OscArg.Double(2.718281828)))
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals("/double", decoded.address)
 		assertEquals(1, decoded.args.size)
@@ -90,8 +97,8 @@ class CodecTest {
 				OscArg.Float(0.707f),
 			),
 		)
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals("/VMC/Ext/Bone/Pos", decoded.address)
 		assertEquals(8, decoded.args.size)
@@ -110,8 +117,8 @@ class CodecTest {
 				OscArg.Long(4L),
 			),
 		)
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals(4, decoded.args.size)
 		assertEquals(1, (decoded.args[0] as OscArg.Int).value)
@@ -124,8 +131,8 @@ class CodecTest {
 	fun testSimpleBundle() {
 		// Test with just one message to isolate the issue
 		val msg = OscMessage("/test", listOf(OscArg.Int(42)))
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 		assertEquals(42, (decoded.args[0] as OscArg.Int).value)
 	}
 
@@ -133,9 +140,9 @@ class CodecTest {
 	fun testBundleWithOneMessage() {
 		val msg = OscMessage("/single", listOf(OscArg.Int(99)))
 		val bundle = OscBundle(5, listOf(OscContent.Message(msg)))
-		val encoded = encodeBundle(bundle)
+		val encoded = encode(bundle)
 
-		val (decoded, _) = decodeBundle(encoded)
+		val decoded = readBundle(encoded)
 
 		assertEquals(5, decoded.timetag)
 		assertEquals(1, decoded.contents.size)
@@ -157,8 +164,8 @@ class CodecTest {
 				OscContent.Message(OscMessage("/msg2", listOf(OscArg.String("hello")))),
 			),
 		)
-		val encoded = encodeBundle(bundle)
-		val (decoded, _) = decodeBundle(encoded)
+		val encoded = encode(bundle)
+		val decoded = readBundle(encoded)
 
 		assertEquals(1, decoded.timetag)
 		assertEquals(2, decoded.contents.size)
@@ -186,8 +193,8 @@ class CodecTest {
 			),
 		)
 
-		val encoded = encodeBundle(outerBundle)
-		val (decoded, _) = decodeBundle(encoded)
+		val encoded = encode(outerBundle)
+		val decoded = readBundle(encoded)
 
 		assertEquals(1, decoded.timetag)
 		assertEquals(2, decoded.contents.size)
@@ -205,8 +212,8 @@ class CodecTest {
 	@Test
 	fun testEmptyMessage() {
 		val msg = OscMessage("/empty")
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals("/empty", decoded.address)
 		assertEquals(0, decoded.args.size)
@@ -218,8 +225,8 @@ class CodecTest {
 			"/special",
 			listOf(OscArg.True, OscArg.False, OscArg.Null, OscArg.Impulse),
 		)
-		val encoded = encodeMessage(msg)
-		val (decoded, _) = decodeMessage(encoded)
+		val encoded = encode(msg)
+		val decoded = readMessage(encoded)
 
 		assertEquals(4, decoded.args.size)
 		assertEquals(OscArg.True, decoded.args[0])
@@ -234,12 +241,12 @@ class CodecTest {
 		val short = OscMessage("/a", listOf(OscArg.Int(1)))
 		val long = OscMessage("/this/is/a/very/long/address", listOf(OscArg.Int(1)))
 
-		val encodedShort = encodeMessage(short)
-		val encodedLong = encodeMessage(long)
+		val encodedShort = encode(short)
+		val encodedLong = encode(long)
 
 		// Both should encode/decode correctly regardless of alignment
-		val (decodedShort, _) = decodeMessage(encodedShort)
-		val (decodedLong, _) = decodeMessage(encodedLong)
+		val decodedShort = readMessage(encodedShort)
+		val decodedLong = readMessage(encodedLong)
 
 		assertEquals("/a", decodedShort.address)
 		assertEquals("/this/is/a/very/long/address", decodedLong.address)
@@ -250,16 +257,76 @@ class CodecTest {
 		val msg1 = OscMessage("/first", listOf(OscArg.Int(1)))
 		val msg2 = OscMessage("/second", listOf(OscArg.Int(2)))
 
-		val encoded1 = encodeMessage(msg1)
-		val encoded2 = encodeMessage(msg2)
-		val combined = encoded1 + encoded2
+		// Both written back to back into one source: reading the first has to leave the second aligned
+		val combined = Buffer()
+		writeMessage(combined, msg1)
+		writeMessage(combined, msg2)
 
-		// Parse first message from combined
-		val (decoded1, offset) = decodeMessage(combined, 0)
-		assertEquals("/first", decoded1.address)
+		assertEquals("/first", readMessage(combined).address)
+		assertEquals("/second", readMessage(combined).address)
+		assertTrue(combined.exhausted(), "Reading both messages should consume the whole source")
+	}
 
-		// Parse second message from offset
-		val (decoded2, _) = decodeMessage(combined, offset)
-		assertEquals("/second", decoded2.address)
+	@Test
+	fun testStringAndBlobPaddingBoundaries() {
+		// Every length either side of a four-byte boundary, where the alignment maths is easiest to get wrong
+		for (n in 0..9) {
+			val text = "z".repeat(n)
+			val decoded = readMessage(encode(OscMessage("/s", listOf(OscArg.String(text)))))
+			assertEquals(text, (decoded.args[0] as OscArg.String).value, "string of length $n")
+
+			val blob = ByteArray(n) { it.toByte() }
+			val decodedBlob = readMessage(encode(OscMessage("/b", listOf(OscArg.Blob(blob)))))
+			assertContentEquals(blob, (decodedBlob.args[0] as OscArg.Blob).value, "blob of length $n")
+		}
+	}
+
+	@Test
+	fun testAddressLengthsAcrossBoundaries() {
+		for (n in 1..12) {
+			val address = "/" + "a".repeat(n)
+			val decoded = readMessage(encode(OscMessage(address, listOf(OscArg.Int(7)))))
+			assertEquals(address, decoded.address, "address of length ${address.length}")
+			assertEquals(7, (decoded.args[0] as OscArg.Int).value)
+		}
+	}
+
+	@Test
+	fun testLargeBundleRoundTrips() {
+		// A VMC-shaped frame: many small messages, far past any single-segment buffer
+		val contents = (0 until 55).map { i ->
+			OscContent.Message(
+				OscMessage(
+					"/VMC/Ext/Bone/Pos",
+					listOf(OscArg.String("BoneNameNumber$i")) + (0 until 7).map { OscArg.Float(i * 0.125f + it) },
+				),
+			)
+		}
+		val decoded = readBundle(encode(OscBundle(1, contents)))
+
+		assertEquals(contents.size, decoded.contents.size)
+		assertEquals(contents, decoded.contents)
+	}
+
+	@Test
+	fun testOversizedBlobRoundTrips() {
+		val blob = ByteArray(9000) { (it * 31).toByte() }
+		val msg = OscMessage("/big", listOf(OscArg.Blob(blob), OscArg.String("tail"), OscArg.Int(42)))
+		val decoded = readMessage(encode(msg))
+
+		assertContentEquals(blob, (decoded.args[0] as OscArg.Blob).value)
+		assertEquals("tail", (decoded.args[1] as OscArg.String).value)
+		assertEquals(42, (decoded.args[2] as OscArg.Int).value)
+	}
+
+	@Test
+	fun testNonBundleIsRejectedWithoutConsuming() {
+		// listenBundles relies on this to fall back to reading the same source as a plain message
+		val source = encode(OscMessage("/plain", listOf(OscArg.Int(1))))
+		val before = source.size
+
+		assertFailsWith<IllegalArgumentException> { readBundle(source) }
+		assertEquals(before, source.size, "A rejected bundle must not consume any bytes")
+		assertEquals("/plain", readMessage(source).address)
 	}
 }

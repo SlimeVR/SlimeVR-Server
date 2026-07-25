@@ -1,5 +1,6 @@
 package dev.slimevr.desktop.ipc
 
+import com.squareup.wire.ProtoWriter
 import dev.slimevr.AppContextProvider
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import okio.Buffer
 import solarxr_protocol.datatypes.BodyPart
 import java.io.File
 import java.nio.file.Path
@@ -130,8 +132,12 @@ suspend fun handleDriverConnection(
 ) = coroutineScope {
 	val sendMutex = Mutex()
 
+	val encodeBuffer = Buffer()
+	val encodeWriter = ProtoWriter(encodeBuffer)
+
 	suspend fun sendMsg(msg: ProtobufMessage) = sendMutex.withLock {
-		send(ProtobufMessage.ADAPTER.encode(msg))
+		ProtobufMessage.ADAPTER.encode(encodeWriter, msg)
+		send(encodeBuffer.readByteArray())
 	}
 
 	val bridge = DriverBridge.create(
