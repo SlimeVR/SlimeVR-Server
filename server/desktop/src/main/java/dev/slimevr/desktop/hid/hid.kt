@@ -24,6 +24,12 @@ import solarxr_protocol.datatypes.TrackerStatus
 
 private const val HID_POLL_INTERVAL_MS = 3000L
 
+// A HID report is 64 bytes, which parseHIDPackets splits into four 16-byte packets
+private const val HID_READ_BUFFER_SIZE = 64
+
+// Bounds how long cancellation waits on the uninterruptible native read when a device is idle
+private const val HID_READ_TIMEOUT_MS = 100
+
 private val hidSpec = HidServicesSpecification().apply { isAutoStart = false }
 
 // Initialize the native HID library. Must be called before enumerateDevices.
@@ -93,23 +99,22 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 					scope = deviceScope,
 				)
 
-				deviceScope.launch {
+				deviceScope.launch(Dispatchers.IO) {
 					try {
 						while (isActive) {
-							val data = withContext(Dispatchers.IO) {
-								try {
-									hidDevice.readAll(0)
-								} catch (_: Exception) {
-									null
-								}
+							val buffer = ByteArray(HID_READ_BUFFER_SIZE)
+							val read = try {
+								hidDevice.read(buffer, HID_READ_TIMEOUT_MS)
+							} catch (_: Exception) {
+								-1
 							}
 							when {
-								data == null -> return@launch
-
 								// read error, device gone
-								data.isNotEmpty() -> parseHIDPackets(data).forEach { receiver.packetEvents.emit(it) }
+								read < 0 -> return@launch
 
-								else -> delay(1) // no data yet, yield without busy-spinning
+								read > 0 -> parseHIDPackets(buffer).forEach { receiver.packetEvents.emit(it) }
+
+								// 0 is a timeout with no data: the read already blocked, so just go again
 							}
 						}
 					} finally {

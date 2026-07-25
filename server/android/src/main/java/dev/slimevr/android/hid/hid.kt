@@ -139,16 +139,14 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 					scope = deviceScope,
 				)
 
-				deviceScope.launch {
+				deviceScope.launch(Dispatchers.IO) {
 					try {
 						val buffer = ByteArray(64)
 						while (isActive) {
-							val read = withContext(Dispatchers.IO) {
-								try {
-									connection.bulkTransfer(endpoint, buffer, buffer.size, 0)
-								} catch (_: Exception) {
-									-1
-								}
+							val read = try {
+								connection.bulkTransfer(endpoint, buffer, buffer.size, 0)
+							} catch (_: Exception) {
+								-1
 							}
 							when {
 								read < 0 -> return@launch
