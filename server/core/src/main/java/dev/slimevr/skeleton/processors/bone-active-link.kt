@@ -2,6 +2,7 @@ package dev.slimevr.skeleton.processors
 
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
+import dev.slimevr.skeleton.mutate
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -15,29 +16,28 @@ class BoneActiveLinkProcessor : SkeletonProcessor {
 	 * Second element contains a set of BodyParts whose rotation should be used as a fallback prioritized from first to last.
 	 * Only active bones will be used.
 	 */
-	private val linkedToSources = mapOf(
-		BodyPart.UPPER_CHEST to setOf(BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP),
-		BodyPart.CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.WAIST, BodyPart.HIP),
-		BodyPart.WAIST to setOf(BodyPart.CHEST, BodyPart.HIP, BodyPart.UPPER_CHEST),
-		BodyPart.HIP to setOf(BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
+	private val linkedToSources = arrayOf(
+		BodyPart.UPPER_CHEST to arrayOf(BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP),
+		BodyPart.CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.WAIST, BodyPart.HIP),
+		BodyPart.WAIST to arrayOf(BodyPart.CHEST, BodyPart.HIP, BodyPart.UPPER_CHEST),
+		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
 	)
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val boneInputs = state.boneInputs
 
-		val updatedLinkedBones = linkedToSources.keys.associateWith { bodyPart ->
-			val bone = boneInputs.getValue(bodyPart)
-			if (bone.isActive) return@associateWith bone
+		val updatedLinkedBones = boneInputs.mutate { updated ->
+			for ((bodyPart, sources) in linkedToSources) {
+				val bone = boneInputs.getValue(bodyPart)
+				if (bone.isActive) continue
 
-			val closestActiveBone = linkedToSources.getValue(bodyPart)
-				.firstNotNullOfOrNull { part ->
+				val closestActiveBone = sources.firstNotNullOfOrNull { part ->
 					boneInputs[part]?.takeIf { it.isActive }
-				}
-			bone.copy(
-				rawRotation = closestActiveBone?.rawRotation ?: bone.rawRotation,
-			)
+				} ?: continue
+				updated[bodyPart] = bone.copy(rawRotation = closestActiveBone.rawRotation)
+			}
 		}
 
-		return state.copy(boneInputs = boneInputs + updatedLinkedBones)
+		return state.copy(boneInputs = updatedLinkedBones)
 	}
 }

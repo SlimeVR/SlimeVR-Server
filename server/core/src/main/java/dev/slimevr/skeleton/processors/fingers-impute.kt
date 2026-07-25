@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton.processors
 
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import solarxr_protocol.datatypes.BodyPart
@@ -15,7 +16,7 @@ class FingerImputeProcessor : SkeletonProcessor {
 	 *
 	 * Second element is the BodyPart the first element is linked to.
 	 */
-	private val fingerToSource = mapOf(
+	private val fingerToSource = arrayOf(
 		BodyPart.LEFT_THUMB_METACARPAL to BodyPart.LEFT_HAND,
 		BodyPart.LEFT_THUMB_PROXIMAL to BodyPart.LEFT_THUMB_METACARPAL,
 		BodyPart.LEFT_THUMB_DISTAL to BodyPart.LEFT_THUMB_PROXIMAL,
@@ -50,13 +51,13 @@ class FingerImputeProcessor : SkeletonProcessor {
 
 	// TODO : There's more math to do here. Reference the original code.
 	override fun process(state: SkeletonState): SkeletonState {
-		val updatedBoneInputs = state.boneInputs.toMutableMap()
+		val updatedBoneInputs = BodyPartMap(state.boneInputs)
 
-		for (bodyPart in fingerToSource.keys) {
+		for ((bodyPart, source) in fingerToSource) {
 			val bone = updatedBoneInputs.getValue(bodyPart)
 			if (bone.isActive) continue
 
-			val sourceBone = updatedBoneInputs[fingerToSource.getValue(bodyPart)]
+			val sourceBone = updatedBoneInputs[source]
 			updatedBoneInputs[bodyPart] = bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
 		}
 

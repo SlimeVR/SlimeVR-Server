@@ -1,12 +1,9 @@
 package dev.slimevr.skeleton.processors
 
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import solarxr_protocol.datatypes.BodyPart
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.get
-import kotlin.collections.iterator
 
 /**
  * Handles setting the rotation of an inactive bone with its source bone.
@@ -17,7 +14,7 @@ class BoneDirectLinkProcessor : SkeletonProcessor {
 	 *
 	 * Second element is the BodyPart the first element is linked to.
 	 */
-	private val linkedToSource = mapOf(
+	private val linkedToSource = arrayOf(
 		BodyPart.HEAD to BodyPart.NECK,
 		BodyPart.NECK to BodyPart.HEAD,
 
@@ -41,13 +38,13 @@ class BoneDirectLinkProcessor : SkeletonProcessor {
 	)
 
 	override fun process(state: SkeletonState): SkeletonState {
-		val updatedBoneInputs = state.boneInputs.toMutableMap()
+		val updatedBoneInputs = BodyPartMap(state.boneInputs)
 
-		for (bodyPart in linkedToSource.keys) {
+		for ((bodyPart, source) in linkedToSource) {
 			val bone = updatedBoneInputs.getValue(bodyPart)
 			if (bone.isActive) continue
 
-			val sourceBone = updatedBoneInputs[linkedToSource.getValue(bodyPart)]
+			val sourceBone = updatedBoneInputs[source]
 			updatedBoneInputs[bodyPart] = bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
 		}
 

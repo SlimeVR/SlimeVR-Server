@@ -3,6 +3,7 @@ package dev.slimevr.skeleton.processors
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
+import dev.slimevr.skeleton.mutate
 import dev.slimevr.skeleton.resolveRotationFor
 import solarxr_protocol.datatypes.BodyPart
 
@@ -13,26 +14,28 @@ import solarxr_protocol.datatypes.BodyPart
  * Similar to FallbackProcessor specifically for the waist and hip.
  */
 class SpineImputeProcessor(val settings: Settings) : SkeletonProcessor {
-	private val chestSet = setOf(BodyPart.CHEST)
-	private val hipSet = setOf(BodyPart.HIP)
-	private val waistSet = setOf(BodyPart.WAIST)
-	private val upperLegsSet = setOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)
+	private enum class SpineSource(val parts: Array<BodyPart>) {
+		CHEST(arrayOf(BodyPart.CHEST)),
+		HIP(arrayOf(BodyPart.HIP)),
+		WAIST(arrayOf(BodyPart.WAIST)),
+		UPPER_LEGS(arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)),
+	}
 
-	/**
-	 * Used to skew the impute ratio for certain bone combinations.
-	 *
-	 * First element is a Pair containing the missing bone to the source bones.
-	 *
-	 * Second element is how reliable that pair is. Higher = missing bone relies more on source bones.
-	 */
-	private val combinationToReliability = mapOf(
-		(BodyPart.WAIST to chestSet) to 0.6f,
-		(BodyPart.WAIST to hipSet) to 1.0f,
-		(BodyPart.WAIST to upperLegsSet) to 1.0f,
-		(BodyPart.HIP to chestSet) to 1.0f,
-		(BodyPart.HIP to waistSet) to 0.8f,
-		(BodyPart.HIP to upperLegsSet) to 1.0f,
-	)
+	private fun reliabilityOf(bodyPart: BodyPart, source: SpineSource): Float = when (bodyPart) {
+		BodyPart.WAIST -> when (source) {
+			SpineSource.CHEST -> 0.6f
+			SpineSource.HIP, SpineSource.UPPER_LEGS -> 1.0f
+			else -> error("Invalid spine combination $bodyPart, $source")
+		}
+
+		BodyPart.HIP -> when (source) {
+			SpineSource.CHEST, SpineSource.UPPER_LEGS -> 1.0f
+			SpineSource.WAIST -> 0.8f
+			else -> error("Invalid spine combination $bodyPart, $source")
+		}
+
+		else -> error("Invalid missing spine body part $bodyPart")
+	}
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val boneInputs = state.boneInputs
@@ -47,53 +50,52 @@ class SpineImputeProcessor(val settings: Settings) : SkeletonProcessor {
 			if (!hasHip) add(BodyPart.HIP)
 		}
 
-		val updatedSpineBones = missingSpineParts.withIndex().associate { (chainIndex, bodyPart) ->
-			val bone = boneInputs.getValue(bodyPart)
+		return state.copy(
+			boneInputs = boneInputs.mutate { updated ->
+				for ((chainIndex, bodyPart) in missingSpineParts.withIndex()) {
+					val bone = boneInputs.getValue(bodyPart)
 
-			// Get the first active bones above and below this one in the chain
-			val (fromBodyParts, toBodyParts) = when (bodyPart) {
-				BodyPart.WAIST -> {
-					val from = chestSet.takeIf { hasChest } ?: return@associate bodyPart to bone
-					val to = when {
-						hasHip -> hipSet
-						hasUpperLegs -> upperLegsSet
-						else -> return@associate bodyPart to bone
+					// Get the first active bones above and below this one in the chain
+					val (fromSource, toSource) = when (bodyPart) {
+						BodyPart.WAIST -> {
+							val from = SpineSource.CHEST.takeIf { hasChest } ?: continue
+							val to = when {
+								hasHip -> SpineSource.HIP
+								hasUpperLegs -> SpineSource.UPPER_LEGS
+								else -> continue
+							}
+							from to to
+						}
+
+						BodyPart.HIP -> {
+							val from = when {
+								hasWaist -> SpineSource.WAIST
+								hasChest -> SpineSource.CHEST
+								else -> continue
+							}
+							val to = SpineSource.UPPER_LEGS.takeIf { hasUpperLegs } ?: continue
+							from to to
+						}
+
+						else -> error("Invalid missing spine body part $bodyPart")
 					}
-					from to to
+
+					val interpolateRatio = interpolateRatio(
+						chainIndex,
+						missingSpineParts.size,
+						ratios.imputeSpineFromUpperToLower,
+						ratios.imputeSpineCurvature,
+						reliabilityOf(bodyPart, fromSource),
+						reliabilityOf(bodyPart, toSource),
+					)
+
+					val fromRotation = boneInputs.resolveRotationFor(fromSource.parts)
+					val toRotation = boneInputs.resolveRotationFor(toSource.parts)
+
+					updated[bodyPart] = bone.copy(rawRotation = fromRotation.interpQ(toRotation, interpolateRatio))
 				}
-
-				BodyPart.HIP -> {
-					val from = when {
-						hasWaist -> waistSet
-						hasChest -> chestSet
-						else -> return@associate bodyPart to bone
-					}
-					val to = upperLegsSet.takeIf { hasUpperLegs } ?: return@associate bodyPart to bone
-					from to to
-				}
-
-				else -> error("Invalid missing spine body part $bodyPart")
-			}
-
-			val fromReliability = combinationToReliability[(bodyPart to fromBodyParts)] ?: error("Invalid from body part combination $bodyPart, $fromBodyParts")
-			val toReliability = combinationToReliability[(bodyPart to toBodyParts)] ?: error("Invalid to body part combination $bodyPart, $toBodyParts")
-
-			val interpolateRatio = interpolateRatio(
-				chainIndex,
-				missingSpineParts.size,
-				ratios.imputeSpineFromUpperToLower,
-				ratios.imputeSpineCurvature,
-				fromReliability,
-				toReliability,
-			)
-
-			val fromRotation = boneInputs.resolveRotationFor(fromBodyParts)
-			val toRotation = boneInputs.resolveRotationFor(toBodyParts)
-
-			bodyPart to bone.copy(rawRotation = fromRotation.interpQ(toRotation, interpolateRatio))
-		}
-
-		return state.copy(boneInputs = boneInputs + updatedSpineBones)
+			},
+		)
 	}
 
 	/**

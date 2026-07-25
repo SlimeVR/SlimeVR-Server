@@ -1,11 +1,13 @@
 package dev.slimevr.skeleton.processors
 
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
+import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.mapValues
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.FilteringType
 
 /**
@@ -19,14 +21,14 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 		val offsetDelta: Vector3,
 	)
 
-	private var velocities: Map<BodyPart, BoneVelocity> = emptyMap()
+	private var velocities: BodyPartMap<BoneVelocity> = bodyPartMap()
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.PREDICTION) return state
 
-		val newVelocities = mutableMapOf<BodyPart, BoneVelocity>()
-		val newBones = state.boneInputs.mapValues { (bodyPart, bone) ->
+		val newVelocities = bodyPartMap<BoneVelocity>()
+		val newBones = state.boneInputs.mapValues { bodyPart, bone ->
 			val prev = velocities[bodyPart]
 			if (prev == null) {
 				newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, Quaternion.IDENTITY, bone.offset, Vector3.NULL)

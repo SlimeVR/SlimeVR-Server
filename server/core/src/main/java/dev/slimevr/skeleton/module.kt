@@ -50,25 +50,28 @@ data class BoneState(
 /**
  * Returns the average rotation of the BodyParts.
  */
-fun Map<BodyPart, BoneInput>.resolveRotationFor(bodyParts: Set<BodyPart>): Quaternion {
+fun Map<BodyPart, BoneInput>.resolveRotationFor(bodyParts: Array<BodyPart>): Quaternion {
 	val rotations = bodyParts.mapNotNull { this[it]?.rawRotation }
 	return rotations.reduceIndexedOrNull { index, acc, rotation ->
 		acc.lerpQ(rotation, 1f / (index + 1))
 	} ?: Quaternion.IDENTITY
 }
 
-data class SkeletonState(val boneInputs: Map<BodyPart, BoneInput>, val skeletonHeight: Float, val paused: Boolean)
+data class SkeletonState(val boneInputs: BodyPartMap<BoneInput>, val skeletonHeight: Float, val paused: Boolean)
 
-val DEFAULT_SKELETON_STATE: SkeletonState = run {
-	val bones = DEFAULT_BONE_OFFSETS.entries.associate { (bodyPart, tailOffset) ->
-		bodyPart to BoneState(bodyPart = bodyPart, offset = tailOffset)
-	}
-	SkeletonState(
-		boneInputs = bones.mapValues { (_, bone) -> BoneInput(rawRotation = bone.rotation, bodyPart = bone.bodyPart, offset = bone.offset, rawPosition = Vector3.NULL, isActive = false) },
-		skeletonHeight = DEFAULT_HEIGHT,
-		paused = false,
-	)
-}
+val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
+	boneInputs = DEFAULT_BONE_OFFSETS.mapValues { bodyPart, tailOffset ->
+		BoneInput(
+			rawRotation = Quaternion.IDENTITY,
+			bodyPart = bodyPart,
+			offset = tailOffset,
+			rawPosition = Vector3.NULL,
+			isActive = false,
+		)
+	},
+	skeletonHeight = DEFAULT_HEIGHT,
+	paused = false,
+)
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?, originPosition: Vector3 = Vector3.NULL): BoneState {
 	val head = parentBone?.tailPosition ?: originPosition
@@ -86,8 +89,8 @@ fun buildBones(
 	state: Map<BodyPart, BoneInput>,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
-): Map<BodyPart, BoneState> {
-	val result = mutableMapOf<BodyPart, BoneState>()
+): BodyPartMap<BoneState> {
+	val result = bodyPartMap<BoneState>()
 	hierarchy.forEach { (parentPart, childPart) ->
 		val rawBone = state[childPart] ?: return@forEach
 		val parentBone = parentPart?.let { result[it] }
@@ -100,7 +103,7 @@ fun buildBones(
 	state: SkeletonState,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
-): Map<BodyPart, BoneState> = buildBones(state.boneInputs, rootHead, hierarchy)
+): BodyPartMap<BoneState> = buildBones(state.boneInputs, rootHead, hierarchy)
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
@@ -118,7 +121,7 @@ interface SkeletonProcessor {
 
 class Skeleton(
 	val context: SkeletonContext,
-	val computed: MutableStateFlow<Map<BodyPart, BoneState>>,
+	val computed: MutableStateFlow<BodyPartMap<BoneState>>,
 ) {
 	fun startObserving() = context.observeAll(this)
 

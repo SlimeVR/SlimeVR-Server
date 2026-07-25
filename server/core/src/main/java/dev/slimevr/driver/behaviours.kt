@@ -4,6 +4,8 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerState
@@ -17,17 +19,19 @@ import solarxr_protocol.datatypes.TrackerStatus
 
 class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 	// Keys should match with protocol.kt:bodyPartToRole
-	val bodyPartToNearest: Map<BodyPart, Set<BodyPart>> = mapOf(
-		BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
-		BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
-		BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
-		BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
-		BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
-		BodyPart.RIGHT_FOOT to setOf(BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
-		BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
-		BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
-		BodyPart.LEFT_HAND to setOf(BodyPart.LEFT_HAND, BodyPart.LEFT_LOWER_ARM),
-		BodyPart.RIGHT_HAND to setOf(BodyPart.RIGHT_HAND, BodyPart.RIGHT_LOWER_ARM),
+	val bodyPartToNearest: BodyPartMap<Set<BodyPart>> = BodyPartMap(
+		mapOf(
+			BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
+			BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
+			BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
+			BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
+			BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
+			BodyPart.RIGHT_FOOT to setOf(BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
+			BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
+			BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
+			BodyPart.LEFT_HAND to setOf(BodyPart.LEFT_HAND, BodyPart.LEFT_LOWER_ARM),
+			BodyPart.RIGHT_HAND to setOf(BodyPart.RIGHT_HAND, BodyPart.RIGHT_LOWER_ARM),
+		),
 	)
 
 	override fun observe(receiver: DriverBridge) {
@@ -50,7 +54,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 
 				// One pass over the trackers instead of a scan per fallback part per bone.
 				// putIfAbsent keeps the first match, which is what the find { } did.
-				val trackerStateByBodyPart = mutableMapOf<BodyPart, TrackerState>()
+				val trackerStateByBodyPart = bodyPartMap<TrackerState>()
 				for (tracker in serverState.trackers.values) {
 					val trackerState = tracker.context.state.value
 					if (trackerState.origin == DeviceOrigin.DRIVER) continue

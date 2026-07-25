@@ -105,12 +105,16 @@ fun computeAllDefaultProportionsByBone(height: Float): Map<String, Float> {
 	return nonScaled + heightScaled
 }
 
-fun Map<SkeletonBone, Float>.toBoneOffsets(): Map<BodyPart, Vector3> = this
-	.flatMap { (cfg, length) ->
-		BONE_VALUE_TO_OFFSETS[cfg]?.map { (bone, vec) -> bone to length * vec } ?: emptyList()
+fun Map<SkeletonBone, Float>.toBoneOffsets(): BodyPartMap<Vector3> {
+	val offsets = bodyPartMap<Vector3>()
+	for ((cfg, length) in this) {
+		val boneOffsets = BONE_VALUE_TO_OFFSETS[cfg] ?: continue
+		for ((bone, vec) in boneOffsets) {
+			offsets[bone] = (offsets[bone] ?: Vector3.NULL) + length * vec
+		}
 	}
-	.groupBy({ it.first }, { it.second })
-	.mapValues { it.value.fold(Vector3.NULL) { acc, value -> acc + value } }
+	return offsets
+}
 
 fun Map<BodyPart, Vector3>.toBoneValues(): Map<SkeletonBone, Float> = this
 	.flatMap { (bone, vec) ->

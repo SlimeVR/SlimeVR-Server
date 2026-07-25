@@ -18,24 +18,18 @@ import kotlin.math.sin
 class BoneTransformBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetBoneRotation -> {
-			val bones = state.boneInputs.toMutableMap()
-			val bone = bones[action.bodyPart] ?: return state
-			bones[action.bodyPart] = bone.copy(rawRotation = action.rotation, isActive = true)
-			state.copy(boneInputs = bones)
+			val bone = state.boneInputs[action.bodyPart] ?: return state
+			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = action.rotation, isActive = true) })
 		}
 
 		is SkeletonActions.SetBonePosition -> {
-			val bones = state.boneInputs.toMutableMap()
-			val bone = bones[action.bodyPart] ?: return state
-			bones[action.bodyPart] = bone.copy(rawPosition = action.position, isActive = true)
-			state.copy(boneInputs = bones)
+			val bone = state.boneInputs[action.bodyPart] ?: return state
+			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawPosition = action.position, isActive = true) })
 		}
 
 		is SkeletonActions.DisableBone -> {
-			val bones = state.boneInputs.toMutableMap()
-			val bone = bones[action.bodyPart] ?: return state
-			bones[action.bodyPart] = bone.copy(isActive = false)
-			state.copy(boneInputs = bones)
+			val bone = state.boneInputs[action.bodyPart] ?: return state
+			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(isActive = false) })
 		}
 
 		else -> state
@@ -46,7 +40,7 @@ class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehavio
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetProportions -> {
 			val bones = action.lengths.toBoneOffsets()
-			val newBones = state.boneInputs.mapValues { (bodyPart, bone) ->
+			val newBones = state.boneInputs.mapValues { bodyPart, bone ->
 				bone.copy(offset = bones[bodyPart] ?: bone.offset)
 			}
 			state.copy(boneInputs = newBones, skeletonHeight = action.lengths.height())
