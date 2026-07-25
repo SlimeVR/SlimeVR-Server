@@ -22,7 +22,7 @@ data class SessionCalibration(
 	val headingCorrection: HeadingCorrection = Quaternion.IDENTITY,
 	val attitudeAlignment: AttitudeAlignment = Quaternion.IDENTITY,
 	val headingAlignment: HeadingAlignment = Quaternion.IDENTITY,
-	)
+)
 
 fun applyCalibration(
 	rawRotation: RawRotation,

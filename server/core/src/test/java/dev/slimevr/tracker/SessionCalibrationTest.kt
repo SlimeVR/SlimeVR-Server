@@ -299,7 +299,7 @@ class SessionCalibrationTest {
 							ref * frontRot,
 							hA,
 							ref,
-							yawOffset
+							yawOffset,
 						)
 					}
 				}
@@ -326,7 +326,7 @@ class SessionCalibrationTest {
 		val estimateHeadingAlign = estimateHeadingAlign(
 			rawRotation,
 			reference,
-			yawOffset = yawOffset
+			yawOffset = yawOffset,
 		)
 		quaternionAssertEquals(
 			headingAlign,
