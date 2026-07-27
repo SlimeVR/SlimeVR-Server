@@ -5,7 +5,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.processors.BoneActiveLinkProcessor
 import dev.slimevr.skeleton.processors.BoneDirectLinkProcessor
-import dev.slimevr.skeleton.processors.BoneFallbackProcessor
+import dev.slimevr.skeleton.processors.BoneYawFallbackProcessor
 import dev.slimevr.skeleton.processors.BonePredictionProcessor
 import dev.slimevr.skeleton.processors.BoneSmoothingProcessor
 import dev.slimevr.skeleton.processors.BoneYawRollAlignProcessor
@@ -127,6 +127,7 @@ class Skeleton(
 
 	companion object {
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider): Skeleton {
+			val skeletonRefreshRate = 200f
 			val behaviours = listOf(
 				PauseTrackingBehaviour(),
 				BoneTransformBehaviour(),
@@ -134,15 +135,16 @@ class Skeleton(
 				HeightLogBehaviour(),
 				// YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
+					hz = skeletonRefreshRate,
 					processors = listOf(
-						BoneFallbackProcessor(),
+						BoneYawFallbackProcessor(),
 						BoneActiveLinkProcessor(),
 						SpineImputeProcessor(ctx.config.settings),
 						BoneYawRollAlignProcessor(ctx.config.settings),
 						BoneDirectLinkProcessor(),
 						FingerImputeProcessor(),
 						BonePredictionProcessor(ctx.config.settings),
-						BoneSmoothingProcessor(ctx.config.settings),
+						BoneSmoothingProcessor(ctx.config.settings, skeletonRefreshRate),
 					),
 				),
 			)

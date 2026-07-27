@@ -13,7 +13,7 @@ import solarxr_protocol.rpc.FilteringType
 /**
  * Running average of bones to smooth them out.
  */
-class BoneSmoothingProcessor(val settings: Settings) : SkeletonProcessor {
+class BoneSmoothingProcessor(val settings: Settings, val skeletonRefreshRate: Float) : SkeletonProcessor {
 	private var smoothedRotations: BodyPartMap<Quaternion> = bodyPartMap()
 	private var smoothedLengths: BodyPartMap<Vector3> = bodyPartMap()
 
@@ -22,7 +22,8 @@ class BoneSmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.SMOOTHING) return state
 
-		val alpha = 1 - (SMOOTH_MIN + config.amount.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN))
+		val smoothingAmount = SMOOTH_MIN + config.amount.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN)
+		val alpha = (1 - smoothingAmount) / (skeletonRefreshRate / 100f)
 
 		smoothedRotations = state.boneInputs.mapValues { bodyPart, bone ->
 			(smoothedRotations[bodyPart] ?: bone.rawRotation).lerpR(bone.rawRotation, alpha).unit()
@@ -42,7 +43,7 @@ class BoneSmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 	}
 
 	companion object {
-		private const val SMOOTH_MIN = 0.63f
-		private const val SMOOTH_MAX = 0.94f
+		private const val SMOOTH_MIN = 0.62f
+		private const val SMOOTH_MAX = 0.9f
 	}
 }

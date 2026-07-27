@@ -26,6 +26,7 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 	override fun process(state: SkeletonState): SkeletonState {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.PREDICTION) return state
+		val predictionAmount = config.amount
 
 		val newVelocities = bodyPartMap<BoneVelocity>()
 		val newBones = state.boneInputs.mapValues { bodyPart, bone ->
@@ -45,10 +46,10 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 				prev.offsetDelta
 			}
 			newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, rotationDelta, bone.offset, lengthDelta)
-			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, config.amount).unit()
+			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, predictionAmount).unit()
 			bone.copy(
 				rawRotation = (scaledDelta * bone.rawRotation).unit(),
-				offset = bone.offset + lengthDelta * config.amount,
+				offset = bone.offset + lengthDelta * predictionAmount,
 			)
 		}
 		velocities = newVelocities

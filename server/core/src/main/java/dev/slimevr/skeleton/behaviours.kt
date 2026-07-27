@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import java.util.Vector
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -29,7 +30,7 @@ class BoneTransformBehaviour : SkeletonBehaviour {
 
 		is SkeletonActions.DisableBone -> {
 			val bone = state.boneInputs[action.bodyPart] ?: return state
-			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(isActive = false) })
+			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = Quaternion.IDENTITY, rawPosition = Vector3.NULL, isActive = false) })
 		}
 
 		else -> state
@@ -119,7 +120,7 @@ class PauseTrackingBehaviour : SkeletonBehaviour {
 }
 
 class ComputedSkeletonBehaviour(
-	val hz: Float = 100f, // TODO behaviours like smoothing will behave different based on hz
+	val hz: Float,
 	val processors: List<SkeletonProcessor> = emptyList(),
 ) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
