@@ -127,7 +127,7 @@ class Skeleton(
 
 	companion object {
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider): Skeleton {
-			val skeletonRefreshRate = 200f
+			val skeletonRefreshRate = 300L
 			val behaviours = listOf(
 				PauseTrackingBehaviour(),
 				BoneTransformBehaviour(),

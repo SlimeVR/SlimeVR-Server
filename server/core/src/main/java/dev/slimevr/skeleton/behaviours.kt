@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
-import java.util.Vector
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.time.Duration.Companion.nanoseconds
 
 class BoneTransformBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
@@ -120,15 +120,16 @@ class PauseTrackingBehaviour : SkeletonBehaviour {
 }
 
 class ComputedSkeletonBehaviour(
-	val hz: Float,
+	val hz: Long,
 	val processors: List<SkeletonProcessor> = emptyList(),
 ) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
-		val intervalMs = (1000f / hz).toLong()
+		val intervalNs = 1_000_000_000L / hz
 		receiver.context.scope.launch {
 			while (true) {
 				try {
-					delay(intervalMs)
+					val startTime = System.nanoTime()
+
 					val targetState = receiver.context.state.value
 					val processed = processors
 						.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
@@ -153,10 +154,13 @@ class ComputedSkeletonBehaviour(
 					if (!targetState.paused) {
 						receiver.computed.value = fk
 					}
+
+					// TODO log when we can't reach `hz`
+					delay((intervalNs - (System.nanoTime() - startTime)).nanoseconds)
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {
-					dev.slimevr.logging.AppLogger.coroutines.error(e, "Error in ComputedSkeletonBehaviour")
+					AppLogger.coroutines.error(e, "Error in ComputedSkeletonBehaviour")
 				}
 			}
 		}

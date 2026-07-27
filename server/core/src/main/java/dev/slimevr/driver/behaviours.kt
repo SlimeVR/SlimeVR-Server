@@ -52,8 +52,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 			.onEach { (computedBones, enabledBodyParts) ->
 				val serverState = receiver.appContext.server.context.state.value
 
-				// One pass over the trackers instead of a scan per fallback part per bone.
-				// putIfAbsent keeps the first match, which is what the find { } did.
+				// Map the nearest trackers to their body parts
 				val trackerStateByBodyPart = bodyPartMap<TrackerState>()
 				for (tracker in serverState.trackers.values) {
 					val trackerState = tracker.context.state.value
@@ -70,6 +69,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 
 						val newTracker = subscribedTrackers.add(part.value)
 						if (newTracker) {
+							// FIXME : sometimes doesn't work when launching SteamVR after SlimeVR
 							receiver.outbound.emit(
 								DriverBridgeOutbound.TrackerAdded(
 									trackerId = part.value.toInt(),

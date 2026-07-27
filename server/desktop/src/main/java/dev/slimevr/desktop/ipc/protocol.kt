@@ -76,6 +76,8 @@ val bodyPartToRole = mapOf(
 	BodyPart.RIGHT_UPPER_LEG to TrackerRole.RIGHT_KNEE,
 	BodyPart.LEFT_FOOT to TrackerRole.LEFT_FOOT,
 	BodyPart.RIGHT_FOOT to TrackerRole.RIGHT_FOOT,
+	BodyPart.LEFT_HAND to TrackerRole.LEFT_HAND,
+	BodyPart.RIGHT_HAND to TrackerRole.RIGHT_HAND,
 )
 
 const val PROTOCOL_VERSION = 2
