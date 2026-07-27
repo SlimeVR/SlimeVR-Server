@@ -3,6 +3,7 @@ package dev.slimevr.tracker
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import java.util.Vector
 import kotlin.math.atan2
 
 typealias RawRotation = Quaternion
@@ -64,22 +65,26 @@ fun undoCalibration(
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
-	restOrientation: RestOrientation = Quaternion.IDENTITY,
 ): RawAcceleration = accelerationRotation(rawRotation, headingCorrect, headingAlign).inv()
 	.sandwich(calibratedAcceleration)
 
+// Used to get yaw. Works better for IMU trackers.
 private fun eulerHeading(q: Quaternion): Quaternion = Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y).twinNearest(q)
+
+// Used to get yaw. Works better on an HMD.
+private fun inverseYProjection(q: Quaternion) = q.project(Vector3.POS_Y).unit().inv()
 
 fun estimateHeadingCorrect(
 	rawRotation: RawRotation,
 	referenceRotation: Quaternion,
-): HeadingCorrection = eulerHeading(eulerHeading(referenceRotation).inv() * rawRotation).inv()
+): HeadingCorrection = eulerHeading(inverseYProjection(referenceRotation) * rawRotation).inv()
 	.twinNearest(referenceRotation)
 
 fun estimateAttitudeAlign(
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection,
-): AttitudeAlignment = (headingCorrect * rawRotation).inv()
+	referenceRotation: Quaternion,
+): AttitudeAlignment = (headingCorrect * (inverseYProjection(referenceRotation) * rawRotation)).inv()
 
 fun estimateHeadingAlign(
 	rawRotation: RawRotation,
@@ -89,14 +94,13 @@ fun estimateHeadingAlign(
 	headingAlign: HeadingAlignment = Quaternion.IDENTITY,
 	yawOffset: Float = 0.0f,
 ): HeadingAlignment {
-	val refHeading = eulerHeading(referenceRotation)
 	val rotation = applyCalibration(
 		rawRotation,
 		headingCorrect,
 		attitudeAlign,
 		headingAlign,
 	)
-	val pitchRoll = (refHeading.inv() * rotation).sandwichUnitY()
+	val pitchRoll = (inverseYProjection(referenceRotation) * rotation).sandwichUnitY()
 	val yawAngle = atan2(pitchRoll.x, pitchRoll.z) + yawOffset
 	return Quaternion.rotationAroundYAxis(yawAngle)
 }

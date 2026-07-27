@@ -257,6 +257,7 @@ class SessionCalibrationTest {
 		}
 	}
 
+	// TODO test different referenceRotation
 	fun testEstimateSessionCalibration(
 		calibratedRotation: CalibratedRotation,
 		headingCorrect: HeadingCorrection,
@@ -278,7 +279,7 @@ class SessionCalibrationTest {
 
 		// TODO: See if we can avoid using twinNearest
 		val estimatedAttitudeAlign =
-			estimateAttitudeAlign(rawRotation, estimatedHeadingCorrect)
+			estimateAttitudeAlign(rawRotation, estimatedHeadingCorrect, Quaternion.IDENTITY)
 		quaternionAssertEquals(
 			attitudeAlign,
 			estimatedAttitudeAlign.twinNearest(attitudeAlign),

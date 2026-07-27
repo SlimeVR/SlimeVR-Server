@@ -101,6 +101,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 			val attitudeAlignment = estimateAttitudeAlign(
 				state.rawRotation,
 				headingCorrection,
+				action.referenceRotation,
 			)
 
 			val sessionCalibration = state.sessionCalibration?.copy(
