@@ -24,6 +24,9 @@ export const InputInside = forwardRef<
     label?: string;
     error?: FieldError;
     autocomplete?: boolean | string;
+    className?: string;
+    errorClassName?: string;
+    onBlur?: () => void;
   } & Partial<React.HTMLProps<HTMLInputElement>>
 >(function AppInput(
   {
@@ -37,6 +40,9 @@ export const InputInside = forwardRef<
     value,
     error,
     variant = 'primary',
+    className,
+    errorClassName,
+    onBlur,
   },
   ref
 ) {
@@ -90,9 +96,13 @@ export const InputInside = forwardRef<
       <div className="relative w-full">
         <input
           type={forceText ? 'text' : type}
-          className={classNames(classes, {
-            'pr-10 sentry-mask': type === 'password',
-          })}
+          className={classNames(
+            classes,
+            {
+              'pr-10 sentry-mask': type === 'password',
+            },
+            className
+          )}
           placeholder={placeholder || undefined}
           autoComplete={autocomplete ? 'off' : 'on'}
           onChange={onChange}
@@ -100,6 +110,7 @@ export const InputInside = forwardRef<
           value={computedValue} // Do we want that behaviour ?
           disabled={disabled}
           ref={ref}
+          onBlur={onBlur}
         />
         {type === 'password' && (
           <div
@@ -110,7 +121,12 @@ export const InputInside = forwardRef<
           </div>
         )}
         {error?.message && (
-          <div className="absolute top-[38px] z-0 pt-1.5 bg-background-70 px-1 w-full rounded-b-md text-status-critical">
+          <div
+            className={classNames(
+              'absolute top-[38px] z-0 pt-1.5  px-1 w-full rounded-b-md bg-dark-background-600 text-status-critical',
+              errorClassName
+            )}
+          >
             {error.message}
           </div>
         )}
@@ -129,11 +145,17 @@ export const Input = <T extends FieldValues = FieldValues>({
   disabled,
   variant = 'primary',
   rules,
+  className,
+  errorClassName,
+  onBlur,
 }: {
   rules?: UseControllerProps<T, FieldPath<T>>['rules'];
   control: Control<T>;
   name: FieldPath<T>;
   autocomplete?: boolean | string;
+  className?: string;
+  errorClassName?: string;
+  onBlur?: () => void;
 } & Omit<InputProps, 'name'> &
   Partial<React.HTMLProps<HTMLInputElement>>) => {
   return (
@@ -157,6 +179,9 @@ export const Input = <T extends FieldValues = FieldValues>({
           onChange={onChange}
           ref={ref}
           name={name}
+          className={className}
+          errorClassName={errorClassName}
+          onBlur={onBlur}
         />
       )}
     />
