@@ -12,7 +12,7 @@ import solarxr_protocol.datatypes.BodyPart
  * Handles rotating bones' yaw and roll to match other bones' yaw and roll.
  */
 class BoneYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
-	private class SourceLink(val bodyPart: BodyPart, val sources: Array<BodyPart>, val onlyWhenInactive: Boolean)
+	private class SourceLink(val bodyPart: BodyPart, val sources: Array<BodyPart>, val mustBeActive: Boolean)
 
 	/**
 	 * First value is the BodyPart to be aligned.
@@ -21,9 +21,9 @@ class BoneYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 	 * whether the BodyPart to be aligned must be inactive.
 	 */
 	private val bodyPartToSources = arrayOf(
-		SourceLink(BodyPart.HIP, arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG), onlyWhenInactive = true),
-		SourceLink(BodyPart.LEFT_UPPER_LEG, arrayOf(BodyPart.LEFT_LOWER_LEG), onlyWhenInactive = false),
-		SourceLink(BodyPart.RIGHT_UPPER_LEG, arrayOf(BodyPart.RIGHT_LOWER_LEG), onlyWhenInactive = false),
+		SourceLink(BodyPart.HIP, arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG), mustBeActive = false),
+		SourceLink(BodyPart.LEFT_UPPER_LEG, arrayOf(BodyPart.LEFT_LOWER_LEG), mustBeActive = true),
+		SourceLink(BodyPart.RIGHT_UPPER_LEG, arrayOf(BodyPart.RIGHT_LOWER_LEG), mustBeActive = true),
 	)
 
 	override fun process(state: SkeletonState): SkeletonState {
@@ -33,7 +33,7 @@ class BoneYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 		val updatedAlignedBones = boneInputs.mutate { updated ->
 			for (link in bodyPartToSources) {
 				val bone = boneInputs.getValue(link.bodyPart)
-				if (link.onlyWhenInactive && bone.isActive) continue
+				if (bone.isActive != link.mustBeActive) continue
 
 				val mixFactor = when (link.bodyPart) {
 					BodyPart.HIP -> ratios.interpolateHipWithUpperLegs
