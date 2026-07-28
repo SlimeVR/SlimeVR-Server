@@ -248,7 +248,7 @@ class SessionCalibrationTest {
 			pitch.flatMap { aA ->
 				heading.map { rR ->
 					DynamicTest.dynamicTest(
-						"( hC: $hC, aA: $aA )",
+						"( hC: $hC, aA: $aA, rR: $rR )",
 					) {
 						// We can just use identity for the target orientation as only the
 						//  calibration quaternions themselves matter.
