@@ -25,7 +25,7 @@ allprojects {
 }
 
 kotlin {
-	jvmToolchain(24)
+	jvmToolchain(25)
 	jvm()
 
 	sourceSets {

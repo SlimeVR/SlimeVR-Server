@@ -20,12 +20,12 @@ plugins {
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(24))
+		languageVersion.set(JavaLanguageVersion.of(25))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(24))
+		languageVersion.set(JavaLanguageVersion.of(25))
 	}
 }
 
@@ -81,7 +81,7 @@ val deleteTempKeyStore = tasks.register<Delete>("deleteTempKeyStore") {
 
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_24)
+		jvmTarget.set(JvmTarget.JVM_25)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
