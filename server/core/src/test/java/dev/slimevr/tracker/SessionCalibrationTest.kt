@@ -245,32 +245,34 @@ class SessionCalibrationTest {
 		// We can only estimate session calibration with yaw and pitch, roll cannot be
 		//  compensated for
 		return heading.flatMap { hC ->
-			pitch.map { aA ->
-				DynamicTest.dynamicTest(
-					"( hC: $hC, aA: $aA )",
-				) {
-					// We can just use identity for the target orientation as only the
-					//  calibration quaternions themselves matter.
-					testEstimateSessionCalibration(Quaternion.IDENTITY, hC, aA)
+			pitch.flatMap { aA ->
+				heading.map { rR ->
+					DynamicTest.dynamicTest(
+						"( hC: $hC, aA: $aA )",
+					) {
+						// We can just use identity for the target orientation as only the
+						//  calibration quaternions themselves matter.
+						testEstimateSessionCalibration(Quaternion.IDENTITY, hC, aA, rR)
+					}
 				}
 			}
 		}
 	}
 
-	// TODO test different referenceRotation
 	fun testEstimateSessionCalibration(
 		calibratedRotation: CalibratedRotation,
 		headingCorrect: HeadingCorrection,
 		attitudeAlign: AttitudeAlignment,
+		referenceRotation: Quaternion,
 	) {
 		val rawRotation =
-			undoCalibration(calibratedRotation, headingCorrect, attitudeAlign)
+			undoCalibration(referenceRotation * calibratedRotation, headingCorrect, attitudeAlign)
 
 		// TODO: Can we avoid needing to use twinNearest? It would be best if it was
 		//  just inherently in the right quaternion space (for both heading & attitude).
 		//  This might also just not be a problem, I'm not sure.
 		val estimatedHeadingCorrect =
-			estimateHeadingCorrect(rawRotation, Quaternion.IDENTITY)
+			estimateHeadingCorrect(rawRotation, referenceRotation)
 		quaternionAssertEquals(
 			headingCorrect,
 			estimatedHeadingCorrect.twinNearest(headingCorrect),
@@ -279,7 +281,7 @@ class SessionCalibrationTest {
 
 		// TODO: See if we can avoid using twinNearest
 		val estimatedAttitudeAlign =
-			estimateAttitudeAlign(rawRotation, estimatedHeadingCorrect, Quaternion.IDENTITY)
+			estimateAttitudeAlign(rawRotation, estimatedHeadingCorrect, referenceRotation)
 		quaternionAssertEquals(
 			attitudeAlign,
 			estimatedAttitudeAlign.twinNearest(attitudeAlign),
