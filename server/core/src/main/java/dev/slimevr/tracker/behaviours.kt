@@ -8,6 +8,7 @@ import dev.slimevr.resets.LEFT_FINGER_PARTS
 import dev.slimevr.resets.RIGHT_ARM_PARTS
 import dev.slimevr.resets.RIGHT_FINGER_PARTS
 import dev.slimevr.skeleton.SkeletonActions
+import dev.slimevr.timeSource
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -31,7 +32,7 @@ import solarxr_protocol.rpc.ArmsResetMode
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
-import kotlin.time.TimeSource
+import kotlin.time.Duration.Companion.seconds
 
 class TrackerBasicBehaviour : TrackerBehaviour {
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
@@ -229,14 +230,14 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 		}.launchIn(receiver.context.scope)
 
 		receiver.context.scope.launch {
-			var mark = TimeSource.Monotonic.markNow()
+			var mark = timeSource.markNow()
 			while (isActive) {
 				try {
 					delay(1000)
 					val elapsed = mark.elapsedNow()
 					val tps = count.exchange(0) * 1000L / elapsed.inWholeMilliseconds
 					receiver.context.dispatch(TrackerActions.Update { copy(tps = tps.toUShort()) })
-					mark = TimeSource.Monotonic.markNow()
+					mark = timeSource.markNow()
 				} catch (e: Exception) {
 					AppLogger.coroutines.error(e, "Error in TrackerTPSBehaviour")
 				}

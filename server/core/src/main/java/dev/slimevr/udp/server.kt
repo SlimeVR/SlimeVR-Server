@@ -86,7 +86,7 @@ class UdpServer(val context: UdpServerContext, private val addressResolver: (Ine
 							}
 						}
 						if (took.inWholeMilliseconds > 2) {
-							AppLogger.udp.warn("Packet processing took too long ${took.inWholeMilliseconds}")
+							AppLogger.udp.warn("Packet processing took too long (${took.inWholeMilliseconds}ms)")
 						}
 					} catch (e: Exception) {
 						AppLogger.udp.error(e, "Error processing UDP packet")

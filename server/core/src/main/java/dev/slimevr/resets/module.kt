@@ -10,10 +10,7 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import io.github.axisangles.ktmath.EulerAngles
-import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -28,11 +25,12 @@ import solarxr_protocol.rpc.ResetStatus
 import solarxr_protocol.rpc.ResetType
 import kotlin.collections.contains
 import kotlin.collections.listOf
+import kotlin.time.TimeMark
 
 data class ResetsState(
 	val canDoYawReset: Boolean,
 	val canDoMountingReset: Boolean,
-	val lastFullResetTime: Long,
+	val lastFullResetTime: TimeMark?,
 )
 
 sealed interface ResetsActions {
@@ -166,7 +164,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				initialState = ResetsState(
 					canDoYawReset = false,
 					canDoMountingReset = false,
-					lastFullResetTime = 0,
+					lastFullResetTime = null,
 				),
 				scope = scope,
 				behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),

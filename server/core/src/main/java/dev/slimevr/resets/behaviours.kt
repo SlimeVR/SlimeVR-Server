@@ -1,11 +1,13 @@
 package dev.slimevr.resets
 
+import dev.slimevr.timeSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import solarxr_protocol.rpc.ResetType
+import kotlin.time.Duration.Companion.seconds
 
 class ResetsBasicBehaviour : ResetsBehaviour {
 	override fun reduce(state: ResetsState, action: ResetsActions) = when (action) {
@@ -20,7 +22,7 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 		// Whenever a reset is finished
 		is ResetsActions.EndReset -> {
 			if (action.resetType == ResetType.FULL) {
-				state.copy(canDoYawReset = true, canDoMountingReset = true, lastFullResetTime = System.nanoTime())
+				state.copy(canDoYawReset = true, canDoMountingReset = true, lastFullResetTime = timeSource.markNow())
 			} else {
 				state.copy()
 			}
@@ -29,18 +31,16 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 }
 
 class ResetsMountingTimeoutBehaviour : ResetsBehaviour {
+	val mountingResetTimeout = 120.seconds
+
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: ResetsManager) {
 		receiver.context.state
 			.distinctUntilChangedBy { it.lastFullResetTime }
 			.mapLatest {
-				delay(MOUNTING_RESET_TIMEOUT)
+				delay(mountingResetTimeout)
 				receiver.context.dispatch(ResetsActions.ClearResets(listOf(ResetType.MOUNTING)))
 			}
 			.launchIn(receiver.context.scope)
-	}
-
-	companion object {
-		const val MOUNTING_RESET_TIMEOUT = 120 * 1000L // 120 seconds
 	}
 }

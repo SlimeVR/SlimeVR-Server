@@ -2,6 +2,7 @@ package dev.slimevr.skeleton
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
@@ -15,6 +16,7 @@ import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
 
 class BoneTransformBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
@@ -78,10 +80,10 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
 			val intervalMs = (1000f / inputHz).toLong()
-			val startTime = System.currentTimeMillis()
+			val startTime = timeSource.markNow()
 			while (true) {
 				delay(intervalMs)
-				val elapsed = (System.currentTimeMillis() - startTime) / 1000f
+				val elapsed = startTime.elapsedNow().inWholeMilliseconds / 1000f
 				val state = receiver.context.state.value
 
 				receiver.context.dispatch(
@@ -120,17 +122,24 @@ class PauseTrackingBehaviour : SkeletonBehaviour {
 }
 
 class ComputedSkeletonBehaviour(
-	val hz: Long,
+	val hz: Int,
 	val processors: List<SkeletonProcessor> = emptyList(),
 ) : SkeletonBehaviour {
+	val logSpamWaitDuration = 10.seconds
+	val minimumDelay = 1.nanoseconds
+
 	override fun observe(receiver: Skeleton) {
-		val intervalNs = 1_000_000_000L / hz
+		val intervalDuration = (1.0 / hz).seconds
+		var nextLogTime = timeSource.markNow()
+
 		receiver.context.scope.launch {
 			while (true) {
 				try {
-					val startTime = System.nanoTime()
+					val startTime = timeSource.markNow()
 
 					val targetState = receiver.context.state.value
+
+					// Run processors
 					val processed = processors
 						.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
 
@@ -139,6 +148,7 @@ class ComputedSkeletonBehaviour(
 						?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
 						?: Vector3(0f, targetState.skeletonHeight, 0f)
 
+					// Run FK
 					val fk = buildBones(processed, rootHead = rootHead)
 
 // 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
@@ -149,14 +159,22 @@ class ComputedSkeletonBehaviour(
 //
 // 					val ikOutput = solver.solve(fk, targets)
 
-// 					receiver.computed.value = ikOutput
-
+					// FIXME bones should still follow the head when paused
 					if (!targetState.paused) {
 						receiver.computed.value = fk
+// 						receiver.computed.value = ikOutput
 					}
 
-					// TODO log when we can't reach `hz`
-					delay((intervalNs - (System.nanoTime() - startTime)).nanoseconds)
+					val processTime = startTime.elapsedNow()
+					val delayDuration = (intervalDuration - processTime).coerceAtLeast(minimumDelay)
+
+					// Warn if the process took too long to reach the target hz.
+					if (delayDuration <= minimumDelay && nextLogTime.hasPassedNow()) {
+						AppLogger.skeleton.warn("Can't reach target hz ($hz), process time = $processTime")
+						nextLogTime = timeSource.markNow() + logSpamWaitDuration
+					}
+
+					delay(delayDuration)
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {

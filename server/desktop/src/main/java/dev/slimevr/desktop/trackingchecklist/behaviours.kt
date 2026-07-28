@@ -11,6 +11,7 @@ import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.desktop.getSteamVRDriversList
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.timeSource
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.trackingchecklist.TrackingChecklistActions
 import dev.slimevr.trackingchecklist.TrackingChecklistBehaviourType
@@ -35,7 +36,6 @@ import java.io.IOException
 import java.net.ConnectException
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
 data class Process(val pid: ULong, val name: String)
 
@@ -126,7 +126,7 @@ class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBeh
 						scannedRunning = getRunningProcesses().any { proc ->
 							proc.name == steamVRProcName
 						}
-						lastScan = TimeSource.Monotonic.markNow()
+						lastScan = timeSource.markNow()
 					}
 
 					val running = connected || drivers != null || scannedRunning

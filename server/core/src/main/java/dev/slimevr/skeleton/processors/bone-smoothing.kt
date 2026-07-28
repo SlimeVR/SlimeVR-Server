@@ -13,7 +13,9 @@ import solarxr_protocol.rpc.FilteringType
 /**
  * Running average of bones to smooth them out.
  */
-class BoneSmoothingProcessor(val settings: Settings, val skeletonRefreshRate: Long) : SkeletonProcessor {
+// TODO checking skeletonRefreshRate is not good enough
+//  since we're never gonna get that in practice. Need something more robust.
+class BoneSmoothingProcessor(val settings: Settings, val skeletonRefreshRate: Int) : SkeletonProcessor {
 	private var smoothedRotations: BodyPartMap<Quaternion> = bodyPartMap()
 	private var smoothedLengths: BodyPartMap<Vector3> = bodyPartMap()
 

@@ -1,11 +1,11 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.time.ComparableTimeMark
 import kotlin.time.DurationUnit
-import kotlin.time.TimeSource
 
 // TODO We should probably just have globally available velocity on the whole skeleton,
 //  we could do that as a processing step
@@ -87,7 +87,7 @@ class SkatingCorrectionProcessor : SkeletonProcessor {
 	var comState: COMState? = null
 
 	override fun process(state: SkeletonState): SkeletonState {
-		val curTime = TimeSource.Monotonic.markNow()
+		val curTime = timeSource.markNow()
 
 		val lastComState = comState
 		val com = centerOfMass(curPositions)
