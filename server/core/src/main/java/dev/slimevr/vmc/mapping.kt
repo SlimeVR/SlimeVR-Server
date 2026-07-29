@@ -58,6 +58,12 @@ val BODY_PART_TO_UNITY_BONE: Map<BodyPart, String> = mapOf(
 	BodyPart.RIGHT_LITTLE_PROXIMAL to "RightLittleProximal",
 	BodyPart.RIGHT_LITTLE_INTERMEDIATE to "RightLittleIntermediate",
 	BodyPart.RIGHT_LITTLE_DISTAL to "RightLittleDistal",
+	BodyPart.LEFT_ABDUCTOR_HALLUCIS to "LeftAbductorHallucis",
+	BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS to "LeftFlexorDigitorumBrevis",
+	BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI to "LeftAbductorDigitiMinimi",
+	BodyPart.RIGHT_ABDUCTOR_HALLUCIS to "RightAbductorHallucis",
+	BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS to "RightFlexorDigitorumBrevis",
+	BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI to "RightAbductorDigitiMinimi"
 )
 
 // HIP-rooted hierarchy. VMC/Unity expects this; our skeleton is HEAD-rooted.
@@ -111,6 +117,16 @@ val VMC_HIERARCHY_MAP: Map<BodyPart, Array<BodyPart>> = mapOf(
 	BodyPart.RIGHT_RING_INTERMEDIATE to arrayOf(BodyPart.RIGHT_RING_DISTAL),
 	BodyPart.RIGHT_LITTLE_PROXIMAL to arrayOf(BodyPart.RIGHT_LITTLE_INTERMEDIATE),
 	BodyPart.RIGHT_LITTLE_INTERMEDIATE to arrayOf(BodyPart.RIGHT_LITTLE_DISTAL),
+	BodyPart.LEFT_FOOT to arrayOf(
+		BodyPart.LEFT_ABDUCTOR_HALLUCIS,
+		BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS,
+		BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI,
+	),
+	BodyPart.RIGHT_FOOT to arrayOf(
+		BodyPart.RIGHT_ABDUCTOR_HALLUCIS,
+		BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS,
+		BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI,
+	)
 )
 
 private suspend fun SequenceScope<Pair<BodyPart?, BodyPart>>.visitVMC(parent: BodyPart?, bone: BodyPart) {
@@ -146,6 +162,9 @@ val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
 	BodyPart.LEFT_LITTLE_PROXIMAL to BodyPart.RIGHT_LITTLE_PROXIMAL,
 	BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
 	BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
+	BodyPart.LEFT_ABDUCTOR_HALLUCIS to BodyPart.RIGHT_ABDUCTOR_HALLUCIS,
+	BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS to BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS,
+	BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI to BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI
 )
 
 val VMC_MIRROR_BONES: BodyPartMap<BodyPart> = BodyPartMap(
@@ -177,6 +196,12 @@ val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 		BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE, BodyPart.RIGHT_RING_DISTAL,
 		BodyPart.RIGHT_LITTLE_PROXIMAL, BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
 	)
+	val leftToes = listOf(
+		BodyPart.LEFT_ABDUCTOR_HALLUCIS, BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS, BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI,
+	)
+	val rightToes = listOf(
+		BodyPart.RIGHT_ABDUCTOR_HALLUCIS, BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS, BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI,
+	)
 	BodyPartMap(
 		mapOf(
 			BodyPart.LEFT_FOOT to foot,
@@ -189,7 +214,9 @@ val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 			BodyPart.RIGHT_HAND to rightArm,
 		) +
 			leftFingers.associateWith { leftArm } +
-			rightFingers.associateWith { rightArm },
+			rightFingers.associateWith { rightArm } +
+		    leftToes.associateWith { foot } +
+			rightToes.associateWith { foot },
 	)
 }
 
