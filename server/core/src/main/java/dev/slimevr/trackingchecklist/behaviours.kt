@@ -24,19 +24,16 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.TrackingChecklistNeedCalibration
 import solarxr_protocol.rpc.TrackingChecklistPublicNetworks
-import solarxr_protocol.rpc.TrackingChecklistSteamVRDisconnected
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
 import solarxr_protocol.rpc.TrackingChecklistStepVisibility
@@ -216,18 +213,34 @@ class FullResetCheckBehaviour(
 	override fun observe(receiver: TrackingChecklist) {
 		val scope = receiver.context.scope
 
-		server.context.state
-			.flatMapLatest { state ->
-				state.trackers.map { (id, tracker) ->
-					tracker.context.state
-						.distinctUntilChangedBy { it.status to it.bodyPart }
-						.filter { isConnectedAssignedImu(it) }
-						.map { id }
-				}.merge()
+		val connected = mutableSetOf<Int>()
+		trackerStatesFlow(server)
+			.map { trackers -> trackers.filter { isConnectedAssignedImu(it) }.map { it.id }.toSet() }
+			.distinctUntilChanged()
+			.onEach { current ->
+				needsReset.update { ids -> ids + (current - connected) }
+				connected.clear()
+				connected.addAll(current)
 			}
-			.onEach { id -> needsReset.update { ids -> ids + id } }
 			.launchIn(scope)
 
+		val bodyParts = mutableMapOf<Int, BodyPart>()
+		trackerStatesFlow(server)
+			.map { trackers -> trackers.mapNotNull { tracker -> tracker.bodyPart?.let { tracker.id to it } }.toMap() }
+			.distinctUntilChanged()
+			.onEach { current ->
+				for ((id, bodyPart) in current) {
+					val previous = bodyParts[id]
+					if (previous != null && previous != bodyPart) {
+						needsReset.update { ids -> ids + id }
+					}
+				}
+				bodyParts.clear()
+				bodyParts.putAll(current)
+			}
+			.launchIn(scope)
+
+		// Clear everything on a full reset.
 		resetsManager.context.state
 			.distinctUntilChangedBy { it.lastFullResetTime }
 			.drop(1)

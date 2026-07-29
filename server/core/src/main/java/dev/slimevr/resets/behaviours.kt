@@ -34,6 +34,7 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 				val feetOnly = !bodyParts.isNullOrEmpty() && bodyParts.all { it in FOOT_PARTS }
 				when {
 					feetOnly -> state.copy(feetMountingResetCompleted = true)
+
 					bodyParts.isNullOrEmpty() -> state.copy(
 						mountingResetCompleted = true,
 						feetMountingResetCompleted = action.resetMountingFeet || state.feetMountingResetCompleted,

@@ -28,14 +28,13 @@ import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
+import solarxr_protocol.rpc.TrackingChecklistTrackerReset
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TrackingChecklistTest {
 
-	// Registers every step behaviour together, matching production wiring, so the tests also cover
-	// that the behaviours coexist without clobbering each other's steps.
 	private class Harness(scope: TestScope, networkSupported: Boolean = true) {
 		val server: VRServer = buildTestVrServer(scope.backgroundScope)
 		val settings: Settings = buildTestSettings(scope.backgroundScope)
@@ -135,6 +134,28 @@ class TrackingChecklistTest {
 		tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 		runCurrent()
 		assertEquals(false, h.step(TrackingChecklistStepId.FULL_RESET).valid)
+	}
+
+	@Test
+	fun `adding a tracker does not re-flag the existing already-reset trackers`() = runTest {
+		val h = Harness(this)
+		h.addTracker(BodyPart.CHEST)
+		runCurrent()
+		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
+		runCurrent()
+		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
+
+		// A newly discovered tracker starts disconnected; adding it must not re-flag the existing one
+		val added = h.addTracker(BodyPart.HIP, status = TrackerStatus.DISCONNECTED)
+		runCurrent()
+		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
+
+		// Only the new tracker gets flagged once it connects
+		added.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+		runCurrent()
+		assertEquals(false, h.step(TrackingChecklistStepId.FULL_RESET).valid)
+		val pending = (h.step(TrackingChecklistStepId.FULL_RESET).extraData as TrackingChecklistTrackerReset).trackersId
+		assertEquals(listOf(added.context.state.value.id.toUShort()), pending)
 	}
 
 	@Test
