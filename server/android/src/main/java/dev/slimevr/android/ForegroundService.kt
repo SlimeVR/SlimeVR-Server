@@ -50,6 +50,7 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import solarxr_protocol.rpc.KeybindSupport
 
 private val logger = noCoLogger("ForegroundService")
 
