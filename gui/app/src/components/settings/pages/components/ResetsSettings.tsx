@@ -98,90 +98,65 @@ export function ResetsSettings() {
 
   return (
     <>
-      <div className="flex md:flex-row flex-col pt-5 pb-1">
+      <div className="flex flex-col pt-5 gap-1">
+        <Typography variant="section-title">
+          {l10n.getString(
+            'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
+          )}
+        </Typography>
+
+        <Typography>
+          {l10n.getString(
+            'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1'
+          )}
+        </Typography>
+
+        <CheckBox
+          variant="toggle"
+          outlined
+          control={control}
+          name="resetMountingFeet"
+          label={l10n.getString(
+            'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
+          )}
+        />
+      </div>
+
+      <div className="flex flex-col pt-5 gap-1">
         <Typography variant="section-title">
           {l10n.getString(
             'settings-general-tracker_mechanics-yaw-reset-smooth-time'
           )}
         </Typography>
-      </div>
 
-      <NumberSelector
-        control={control}
-        name="yawResetSmoothTime"
-        valueLabelFormat={(value) => secondsFormat.format(value)}
-        min={0.0}
-        max={0.5}
-        step={0.05}
-      />
-
-      <div className="flex flex-col pt-5 pb-2">
-        <Typography variant="section-title">
+        <Typography>
           {l10n.getString(
-            'settings-general-tracker_mechanics-save_mounting_reset'
+            'settings-general-tracker_mechanics-yaw-reset-smooth-time-description'
           )}
         </Typography>
-        <Localized
-          id="settings-general-tracker_mechanics-save_mounting_reset-description"
-          elems={{ b: <b /> }}
-        >
-          <Typography />
-        </Localized>
-      </div>
-      <CheckBox
-        variant="toggle"
-        outlined
-        control={control}
-        name="saveMountingReset"
-        label={l10n.getString(
-          'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
-        )}
-      />
 
-      <div className="flex flex-col pt-5">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="flex flex-col gap-2">
-            <Typography>
-              {l10n.getString(
-                'settings-general-fk_settings-reset_settings-reset_hmd_pitch-description'
-              )}
-            </Typography>
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="resetHmdPitch"
-              label={l10n.getString(
-                'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
-              )}
-            />
-          </div>
-          <div className="flex flex-col gap-2 justify-end">
-            <Typography>
-              {l10n.getString(
-                'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1'
-              )}
-            </Typography>
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="resetMountingFeet"
-              label={l10n.getString(
-                'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
-              )}
-            />
-          </div>
-        </div>
+        <NumberSelector
+          control={control}
+          name="yawResetSmoothTime"
+          valueLabelFormat={(value) => secondsFormat.format(value)}
+          min={0.0}
+          max={0.5}
+          step={0.05}
+        />
       </div>
 
-      <div className="flex flex-col pt-5">
+      <div className="flex flex-col pt-5 pb-2 gap-1">
+        <Typography variant="section-title">
+          {l10n.getString('settings-general-fk_settings-arm_fk-reset_mode')}
+        </Typography>
+
         <Typography>
           {l10n.getString(
             'settings-general-fk_settings-arm_fk-reset_mode-description'
           )}
         </Typography>
-        <div className="grid md:grid-cols-2 flex-col gap-3 pt-2 pb-3">
+
+        <div className="grid md:grid-cols-2 flex-col gap-3">
           <Radio
             control={control}
             name="armsResetMode"
@@ -225,6 +200,55 @@ export function ResetsSettings() {
             value={'3'}
           />
         </div>
+      </div>
+
+      <div className="flex flex-col pt-5 gap-1">
+        <Typography variant="section-title">
+          {l10n.getString(
+            'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
+          )}
+        </Typography>
+
+        <Typography>
+          {l10n.getString(
+            'settings-general-fk_settings-reset_settings-reset_hmd_pitch-description'
+          )}
+        </Typography>
+
+        <CheckBox
+          variant="toggle"
+          outlined
+          control={control}
+          name="resetHmdPitch"
+          label={l10n.getString(
+            'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
+          )}
+        />
+      </div>
+
+      <div className="flex flex-col pt-5 gap-1">
+        <Typography variant="section-title">
+          {l10n.getString(
+            'settings-general-tracker_mechanics-save_mounting_reset'
+          )}
+        </Typography>
+
+        <Localized
+          id="settings-general-tracker_mechanics-save_mounting_reset-description"
+          elems={{ b: <b /> }}
+        >
+          <Typography />
+        </Localized>
+
+        <CheckBox
+          variant="toggle"
+          outlined
+          control={control}
+          name="saveMountingReset"
+          label={l10n.getString(
+            'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
+          )}
+        />
       </div>
     </>
   );

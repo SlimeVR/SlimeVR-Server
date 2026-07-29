@@ -1,8 +1,7 @@
 package dev.slimevr.desktop.install
 
-import dev.slimevr.AppLogger
-import dev.slimevr.FeatureFlags
 import dev.slimevr.desktop.linux.findAppLibraryLocation
+import dev.slimevr.logging.AppLogger
 
 private const val STEAMVR_APPID = 250820
 private const val LINUX_STEAM_DRIVER_DIRECTORY = "slimevr-openvr-driver-x64-linux"

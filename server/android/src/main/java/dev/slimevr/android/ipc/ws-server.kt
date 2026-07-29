@@ -2,10 +2,10 @@ package dev.slimevr.android.ipc
 
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
 import dev.slimevr.VRServerActions
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.onSolarXRMessage
 import io.ktor.server.application.install
@@ -19,6 +19,7 @@ import io.ktor.websocket.Frame
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.MessageBundle
 import java.nio.ByteBuffer
 
@@ -44,7 +45,7 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 						val fbb = FlatBufferBuilder(256)
 						fbb.finish(bundle.encode(JvmFlatBufferWriter(fbb)))
 						send(Frame.Binary(fin = true, data = fbb.dataBuffer().moveToByteArray()))
-					}
+					}.launchIn(this)
 
 					try {
 						flow {

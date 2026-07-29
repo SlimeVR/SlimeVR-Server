@@ -2,7 +2,7 @@ package dev.slimevr.desktop.install
 
 import com.sun.jna.platform.win32.Advapi32Util
 import com.sun.jna.platform.win32.WinReg
-import dev.slimevr.AppLogger
+import dev.slimevr.logging.AppLogger
 import kotlin.io.path.Path
 import kotlin.io.path.exists
 

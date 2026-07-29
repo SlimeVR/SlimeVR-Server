@@ -1,10 +1,9 @@
 package dev.slimevr.udp
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.util.safeLaunch
+import dev.slimevr.logging.AppLogger
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.InetSocketAddress
@@ -14,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlin.time.measureTime
 
 data class UdpServerState(
@@ -48,7 +48,7 @@ class UdpServer(val context: UdpServerContext, private val addressResolver: (Ine
 
 	fun startReceiving(appContext: AppContextProvider, scope: CoroutineScope) {
 		if (receiveJob != null) return
-		receiveJob = scope.safeLaunch {
+		receiveJob = scope.launch {
 			val port = appContext.config.settings.context.state.value.data.trackersConfig.trackerPort
 			val selectorManager = SelectorManager(Dispatchers.IO)
 			val socket = aSocket(selectorManager).udp().bind(port = port)
@@ -86,7 +86,7 @@ class UdpServer(val context: UdpServerContext, private val addressResolver: (Ine
 							}
 						}
 						if (took.inWholeMilliseconds > 2) {
-							AppLogger.udp.warn("Packet processing took too long ${took.inWholeMilliseconds}")
+							AppLogger.udp.warn("Packet processing took too long (${took.inWholeMilliseconds}ms)")
 						}
 					} catch (e: Exception) {
 						AppLogger.udp.error(e, "Error processing UDP packet")

@@ -8,6 +8,7 @@ import dev.slimevr.skeleton.computeDefaultProportionsByBone
 import dev.slimevr.skeleton.configToBoneValues
 import dev.slimevr.skeleton.height
 import dev.slimevr.skeleton.toBoneValues
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ChangeSkeletonProportionsRequest
 import solarxr_protocol.rpc.ChangeUserHeightRequest
 import solarxr_protocol.rpc.SkeletonPart
@@ -15,7 +16,7 @@ import solarxr_protocol.rpc.SkeletonProportionsRequest
 import solarxr_protocol.rpc.SkeletonProportionsResetAllRequest
 import solarxr_protocol.rpc.SkeletonProportionsResponse
 
-private const val MIN_HEIGHT = 1.0f
+private const val MIN_HEIGHT = 0.9f
 
 class SkeletonProportionsBehaviour(
 	private val userConfig: UserConfig,
@@ -38,7 +39,7 @@ class SkeletonProportionsBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<SkeletonProportionsRequest> {
 			receiver.sendRpc(buildConfigResponse())
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeUserHeightRequest> { req ->
 			val hmdHeight = req.hmdHeight ?: return@on
@@ -51,7 +52,7 @@ class SkeletonProportionsBehaviour(
 					},
 				)
 			}
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<SkeletonProportionsResetAllRequest> {
 			val height = userConfig.context.state.value.data.userHeight
@@ -60,7 +61,7 @@ class SkeletonProportionsBehaviour(
 				userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = defaults) })
 			}
 			receiver.sendRpc(buildConfigResponse())
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeSkeletonProportionsRequest> { req ->
 			val bone = req.bone ?: return@on
@@ -70,6 +71,6 @@ class SkeletonProportionsBehaviour(
 				UserConfigActions.Update { copy(proportions = proportions + (bone.name to value)) },
 			)
 			receiver.sendRpc(buildConfigResponse())
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

@@ -1,7 +1,7 @@
 package dev.slimevr.desktop.vrchat
 
-import dev.slimevr.AppLogger
 import dev.slimevr.desktop.linux.findAppLibraryLocation
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

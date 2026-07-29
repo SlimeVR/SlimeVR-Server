@@ -1,17 +1,19 @@
 package dev.slimevr.solarxr
 
-import dev.slimevr.AppLogger
 import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceState
 import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import solarxr_protocol.data_feed.BoneMask
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.data_feed.DataFeedUpdate
@@ -49,7 +51,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 			bodyPart = tracker.bodyPart,
 			displayName = tracker.name,
 			customName = tracker.customName,
-			mountingOrientation = tracker.mountingOrientation?.let { Quat(it.x, it.y, it.z, it.w) },
+			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
 			isImu = tracker.sensorType != null,
 			magnetometer = tracker.magStatus,
 		)
@@ -102,11 +104,12 @@ private fun createDevice(
 	)
 }
 
-private fun createBone(bone: BoneState): solarxr_protocol.data_feed.Bone = solarxr_protocol.data_feed.Bone(
-	bodyPart = bone.bodyPart,
-	rotationG = bone.rotation.let { Quat(it.x, it.y, it.z, it.w) },
-	boneLength = bone.offset.len(),
-	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) },
+private fun createBone(bone: BoneState, mask: BoneMask): solarxr_protocol.data_feed.Bone = solarxr_protocol.data_feed.Bone(
+	bodyPart = bone.bodyPart.takeIf { mask.bodyPart == true },
+	orientationG = bone.orientation.let { Quat(it.x, it.y, it.z, it.w) }.takeIf { mask.orientationG == true },
+	rotationG = bone.rotation.let { Quat(it.x, it.y, it.z, it.w) }.takeIf { mask.rotationG == true },
+	boneLength = bone.offset.len().takeIf { mask.boneLength == true },
+	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) }.takeIf { mask.headPositionG == true },
 )
 
 private fun createServerGuards(resetsManager: ResetsManager, heightCalibrationManager: HeightCalibrationManager): ServerGuards {
@@ -129,12 +132,14 @@ fun createDatafeedFrame(
 ): DataFeedMessageHeader {
 	val serverState = server.context.state.value
 	val trackers = serverState.trackers.values.map { it.context.state.value }
-	val devices = serverState.devices.values.map { it.context.state.value }
-		.map { device -> createDevice(device, trackers, datafeedConfig) }
-	val bones = if (datafeedConfig.boneMask == true) {
-		skeleton.computed.value.values.map { createBone(it) }
+	val devices = if (datafeedConfig.dataMask?.deviceData != null) {
+		serverState.devices.values.map { it.context.state.value }
+			.map { device -> createDevice(device, trackers, datafeedConfig) }
 	} else {
 		null
+	}
+	val bones = datafeedConfig.boneMask?.let { mask ->
+		skeleton.computed.value.bones.values.map { createBone(it, mask) }
 	}
 	val serverGuards = if (datafeedConfig.serverGuardsMask == true) {
 		createServerGuards(resetsManager, heightCalibrationManager)
@@ -143,7 +148,7 @@ fun createDatafeedFrame(
 	}
 	return DataFeedMessageHeader(
 		message = DataFeedUpdate(
-			devices = if (datafeedConfig.dataMask?.deviceData != null) devices else null,
+			devices = devices,
 			bones = bones,
 			serverGuards = serverGuards,
 			index = index.toUByte(),
@@ -163,7 +168,7 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 			receiver.datafeedTimers.forEach { it.cancelAndJoin() }
 
 			val timers = dataFeeds.mapIndexed { index, config ->
-				receiver.context.scope.safeLaunch {
+				receiver.context.scope.launch {
 					val minTime = config.minimumTimeSinceLast.toLong()
 					while (isActive) {
 						try {
@@ -187,7 +192,7 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 
 			receiver.datafeedTimers = timers
 			receiver.context.dispatch(SolarXRBridgeActions.SetConfig(dataFeeds))
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.dataFeedDispatcher.on<PollDataFeed> { event ->
 			val config = event.config ?: return@on
@@ -200,6 +205,6 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 					heightCalibrationManager = receiver.appContext.heightCalibrationManager,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

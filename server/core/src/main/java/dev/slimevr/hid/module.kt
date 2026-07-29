@@ -7,6 +7,7 @@ import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 
 data class HIDTrackerRecord(
 	val hidId: Int,
@@ -28,11 +29,6 @@ sealed interface HIDReceiverActions {
 typealias HIDReceiverContext = Context<HIDReceiverState, HIDReceiverActions>
 typealias HIDReceiverBehaviour = Behaviour<HIDReceiverState, HIDReceiverActions, HIDReceiver>
 typealias HIDPacketDispatcher = EventDispatcher<HIDPacket>
-
-@Suppress("UNCHECKED_CAST")
-inline fun <reified T : HIDPacket> HIDPacketDispatcher.onPacket(crossinline callback: suspend (T) -> Unit) {
-	register(T::class) { callback(it as T) }
-}
 
 class HIDReceiver(
 	val context: HIDReceiverContext,
@@ -75,7 +71,14 @@ class HIDReceiver(
 				name = "HIDReceiver[$serialNumber]",
 			)
 
-			val dispatcher = HIDPacketDispatcher()
+			// Every packet here is a state sample, so a backlog is worth less than the newest reading.
+			// Measured peak depth is ~55 with six trackers, so the depth warning sits clear of that.
+			val dispatcher = HIDPacketDispatcher(
+				name = "HID[$serialNumber]",
+				scope = context.scope,
+				capacity = 256,
+				onBufferOverflow = BufferOverflow.DROP_OLDEST,
+			)
 
 			val receiver = HIDReceiver(
 				context = context,

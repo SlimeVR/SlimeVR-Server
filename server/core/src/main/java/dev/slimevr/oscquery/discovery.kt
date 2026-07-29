@@ -2,8 +2,7 @@ package dev.slimevr.oscquery
 
 import com.appstractive.dnssd.DiscoveryEvent
 import com.appstractive.dnssd.discoverServices
-import dev.slimevr.AppLogger
-import dev.slimevr.util.safeLaunch
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 private const val OSC_JSON_SERVICE_TYPE = "_oscjson._tcp"
 
@@ -27,7 +26,7 @@ class OscQueryDiscovery(
 
 	fun start(scope: CoroutineScope) {
 		if (job != null) return
-		job = scope.safeLaunch {
+		job = scope.launch {
 			discoverServicesFlow(serviceType).collect { event ->
 				when (event) {
 					is DiscoveryEvent.Discovered -> {

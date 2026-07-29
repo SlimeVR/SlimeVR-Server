@@ -1,11 +1,44 @@
-style:
-  ForbiddenImport:
+# NOTE: the root build.gradle.kts sets `buildUponDefaultConfig = false`, so ONLY the rules
+# listed here are active. Nothing is inherited from detekt's defaults.
+
+exceptions:
+  active: true
+  # Silencing an exception must be a decision that shows up in the diff, not something that
+  # happens by accident. A catch block has to *use* what it caught -- log it, wrap it, rethrow
+  # it. To deliberately drop one, say so by naming it: `catch (ignored: IOException)` or
+  # `catch (_: IOException)`. That is greppable; an empty `catch (e: Exception)` is not.
+  SwallowedException:
     active: true
-    imports:
-      - reason: 'Use dev.slimevr.util.safeLaunch instead of raw launch to ensure coroutine exceptions are handled properly.'
-        value: 'kotlinx.coroutines.launch'
+    ignoredExceptionTypes:
+      - 'InterruptedException'
+      - 'MalformedURLException'
+      - 'NumberFormatException'
+      - 'ParseException'
+    allowedExceptionNameRegex: '_|(ignore|expected).*'
+  PrintStackTrace:
+    active: true
+  # Deliberately NOT enabled: TooGenericExceptionCaught. `catch (e: Exception)` that logs is
+  # coarse, but it is not silent, and this codebase has ~47 of them at IO/JNA boundaries where
+  # a broad catch is the correct call. Enable it if you ever want to tighten catch *breadth*;
+  # it is a different concern from catch *silence*.
+
+empty-blocks:
+  active: true
+  EmptyCatchBlock:
+    active: true
+    allowedExceptionNameRegex: '_|(ignore|expected).*'
 
 coroutines:
   active: true
   GlobalCoroutineUsage:
+    active: true
+  # Catching Exception/Throwable around a suspend call also catches CancellationException,
+  # which silently breaks structured concurrency: the coroutine reports success while its
+  # scope is being torn down. This is what hid the driver IPC failure.
+  #
+  # WARNING: this rule needs type resolution. Detekt is currently applied only to the root
+  # project with a manual `source.setFrom(...)`, so the `detekt` task runs WITHOUT type
+  # resolution and this rule never executes. Applying the plugin per-module gives you
+  # `detektMain`/`detektTest` tasks that do run it. Until then, treat this as aspirational.
+  SuspendFunSwallowedCancellation:
     active: true

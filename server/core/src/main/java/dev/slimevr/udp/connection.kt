@@ -7,12 +7,13 @@ import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerSensorIds
-import dev.slimevr.util.safeLaunch
 import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.Datagram
 import io.ktor.network.sockets.InetSocketAddress
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.io.Buffer
 import solarxr_protocol.datatypes.MagnetometerStatus
 
@@ -63,7 +64,7 @@ class UDPConnection(
 	private val scope: CoroutineScope,
 ) {
 	fun send(packet: UDPPacket) {
-		scope.safeLaunch {
+		scope.launch {
 			val buf = Buffer()
 			writePacket(buf, packet)
 			socket.send(Datagram(buf, remoteAddress))
@@ -124,7 +125,13 @@ class UDPConnection(
 				name = "UDPConnection[$address]",
 			)
 
-			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>> { it.data::class }
+			// Same reasoning as the HID dispatcher: these are state samples, the newest one wins.
+			val dispatcher = EventDispatcher<PacketEvent<UDPPacket>>(
+				name = "UDP[$address]",
+				scope = context.scope,
+				capacity = 64,
+				onBufferOverflow = BufferOverflow.DROP_OLDEST,
+			)
 			val packetChannel = Channel<PacketEvent<UDPPacket>>(capacity = 256)
 
 			val conn = UDPConnection(
@@ -139,7 +146,7 @@ class UDPConnection(
 			conn.startObserving()
 
 			// Dedicated coroutine per connection so the receive loop is never blocked by packet processing
-			scope.safeLaunch {
+			scope.launch {
 				for (event in packetChannel) {
 					// We skip any packet from the tracker that are not handshake packets
 					// if we didn't do a handshake with the server

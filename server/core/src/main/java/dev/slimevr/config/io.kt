@@ -1,5 +1,6 @@
 package dev.slimevr.config
 
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -56,12 +57,11 @@ suspend inline fun <reified T> loadFileWithBackup(
 	try {
 		deserialize(raw)
 	} catch (e: Exception) {
-		e.printStackTrace()
-		System.err.println("Failed to load ${storage.displayPath(path)}: ${e.message}")
+		AppLogger.config.error(e, "Failed to load ${storage.displayPath(path)}")
 		try {
 			storage.backup(path)
 		} catch (e2: Exception) {
-			System.err.println("Failed to back up corrupted file: ${e2.message}")
+			AppLogger.config.error(e2, "Failed to back up corrupted file")
 		}
 		default
 	}
@@ -90,9 +90,9 @@ fun <S> launchAutosave(
 				val path = toPath(s)
 				storage.write(path, serialize(s))
 				lastSaved = s
-				println("Saved ${storage.displayPath(path)}")
+				AppLogger.config.info("Saved ${storage.displayPath(path)}")
 			} catch (e: Exception) {
-				System.err.println("Failed to save: ${e.message}")
+				AppLogger.config.error(e, "Failed to save")
 			}
 		}
 		.launchIn(scope)

@@ -50,7 +50,7 @@ class KeybindsBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<SetKeybindRecordingRequest> { req ->
 			keybindManager.context.dispatch(KeybindActions.SetRecording(req.recording ?: false))
-		}
+		}.launchIn(receiver.context.scope)
 
 		fun buildResponse(keybinds: List<KeybindConfig>) = KeybindResponse(
 			keybind = keybinds.map { keybindConfigToProto(it) },
@@ -60,7 +60,7 @@ class KeybindsBehaviour(
 
 		receiver.rpcDispatcher.on<KeybindRequest> {
 			receiver.sendRpc(buildResponse(settings.context.state.value.data.keybinds))
-		}
+		}.launchIn(receiver.context.scope)
 
 		settings.context.state
 			.map { it.data.keybinds }
@@ -90,6 +90,6 @@ class KeybindsBehaviour(
 					)
 				},
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

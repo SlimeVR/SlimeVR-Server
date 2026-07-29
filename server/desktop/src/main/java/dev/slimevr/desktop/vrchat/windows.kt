@@ -10,7 +10,7 @@ import com.sun.jna.platform.win32.WinBase
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.platform.win32.WinReg
 import com.sun.jna.ptr.IntByReference
-import dev.slimevr.AppLogger
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

@@ -2,7 +2,7 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
-import dev.slimevr.config.VMCConfig
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ChangeVMCOSCSettingsRequest
 import solarxr_protocol.rpc.ChangeVRMSettingsRequest
 import solarxr_protocol.rpc.VMCOSCSettingsRequest
@@ -27,7 +27,7 @@ class VmcBehaviour(
 					mirrorTracking = config.mirrorTracking,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		// Send VRM json
 		receiver.rpcDispatcher.on<VRMSettingsRequest> {
@@ -37,7 +37,7 @@ class VmcBehaviour(
 					vrmJson = config.vrmJson,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		// Receive VMC config
 		receiver.rpcDispatcher.on<ChangeVMCOSCSettingsRequest> { req ->
@@ -55,7 +55,7 @@ class VmcBehaviour(
 					)
 				},
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		// Receive VRM json
 		receiver.rpcDispatcher.on<ChangeVRMSettingsRequest> { req ->
@@ -66,6 +66,6 @@ class VmcBehaviour(
 					)
 				},
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

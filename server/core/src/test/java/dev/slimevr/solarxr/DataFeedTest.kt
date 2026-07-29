@@ -10,7 +10,10 @@ import dev.slimevr.buildTestUserConfig
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
@@ -19,7 +22,8 @@ import solarxr_protocol.data_feed.StartDataFeed
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend: suspend (ByteArray) -> Unit): SolarXRBridge {
+@OptIn(ExperimentalCoroutinesApi::class)
+private fun TestScope.testConn(onSend: suspend (ByteArray) -> Unit): SolarXRBridge {
 	val server = buildTestVrServer(backgroundScope)
 	val skeleton = buildTestSkeleton(backgroundScope)
 	val settings = buildTestSettings(backgroundScope)
@@ -42,11 +46,15 @@ private fun testConn(backgroundScope: kotlinx.coroutines.CoroutineScope, onSend:
 		id = 1,
 		context = context,
 		appContext = appContext,
-		dataFeedDispatcher = EventDispatcher(),
-		rpcDispatcher = EventDispatcher(),
+		dataFeedDispatcher = EventDispatcher("test.datafeed", backgroundScope),
+		rpcDispatcher = EventDispatcher("test.rpc", backgroundScope),
 	)
 	bridge.startObserving()
-	bridge.outbound.on<MessageBundle> { _ -> onSend(ByteArray(0)) }
+	bridge.outbound.on<MessageBundle> { onSend(ByteArray(0)) }.launchIn(backgroundScope)
+
+	// launchIn registers the handler synchronously, but the dispatcher's own drain loop still has to
+	// start before anything emitted here can reach it.
+	runCurrent()
 	return bridge
 }
 
@@ -58,7 +66,7 @@ class DataFeedTest {
 	@Test
 	fun `StartDataFeed sends frames at the configured interval`() = runTest {
 		var sendCount = 0
-		val conn = testConn(backgroundScope) { sendCount++ }
+		val conn = testConn { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
 
@@ -70,7 +78,7 @@ class DataFeedTest {
 	@Test
 	fun `StartDataFeed with multiple configs runs each at its own frequency`() = runTest {
 		var sendCount = 0
-		val conn = testConn(backgroundScope) { sendCount++ }
+		val conn = testConn { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100), config(200))))
 
@@ -83,7 +91,7 @@ class DataFeedTest {
 	@Test
 	fun `PollDataFeed sends exactly one frame without starting a repeating timer`() = runTest {
 		var sendCount = 0
-		val conn = testConn(backgroundScope) { sendCount++ }
+		val conn = testConn { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(PollDataFeed(config = config(100)))
 
@@ -94,7 +102,7 @@ class DataFeedTest {
 	@Test
 	fun `StartDataFeed cancels old timers when called a second time`() = runTest {
 		var sendCount = 0
-		val conn = testConn(backgroundScope) { sendCount++ }
+		val conn = testConn { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
 		advanceTimeBy(250)
@@ -110,7 +118,7 @@ class DataFeedTest {
 	@Test
 	fun `StartDataFeed with empty list stops all existing timers`() = runTest {
 		var sendCount = 0
-		val conn = testConn(backgroundScope) { sendCount++ }
+		val conn = testConn { sendCount++ }
 
 		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
 		advanceTimeBy(250)

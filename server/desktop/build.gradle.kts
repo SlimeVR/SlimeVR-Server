@@ -19,17 +19,17 @@ plugins {
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(24))
+		languageVersion.set(JavaLanguageVersion.of(25))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(24))
+		languageVersion.set(JavaLanguageVersion.of(25))
 	}
 }
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_24)
+		jvmTarget.set(JvmTarget.JVM_25)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
@@ -87,6 +87,8 @@ dependencies {
 	}
 	implementation("org.hid4java:hid4java:0.8.0")
 	implementation("io.klogging:klogging:0.11.7")
+	// SLF4J provider, so what ktor and the discovery libraries log reaches our sinks
+	runtimeOnly("io.klogging:slf4j-klogging:0.11.7")
 
 	// Global keybinds: JIntellitype on Windows, dbus xdg-desktop-portal on Linux
 	implementation("com.melloware:jintellitype:1.+")

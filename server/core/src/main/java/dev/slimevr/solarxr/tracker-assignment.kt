@@ -3,6 +3,7 @@ package dev.slimevr.solarxr
 import dev.slimevr.VRServer
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.AssignTrackerRequest
 
@@ -32,6 +33,6 @@ class AssignTrackerBehaviour(
 					TrackerActions.SetMountingOrientation(mountingOrientation),
 				)
 			}
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

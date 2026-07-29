@@ -12,12 +12,11 @@ import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
 import androidx.core.content.ContextCompat
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.isCompatibleHidDevice
 import dev.slimevr.hid.parseHIDPackets
-import dev.slimevr.util.safeLaunch
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,6 +24,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.datatypes.TrackerStatus
@@ -75,7 +75,7 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 	}
 	ContextCompat.registerReceiver(context, usbReceiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
 
-	scope.safeLaunch {
+	scope.launch {
 		while (isActive) {
 			val found = withContext(Dispatchers.IO) {
 				try {
@@ -139,20 +139,18 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 					scope = deviceScope,
 				)
 
-				deviceScope.safeLaunch {
+				deviceScope.launch(Dispatchers.IO) {
 					try {
 						val buffer = ByteArray(64)
 						while (isActive) {
-							val read = withContext(Dispatchers.IO) {
-								try {
-									connection.bulkTransfer(endpoint, buffer, buffer.size, 0)
-								} catch (_: Exception) {
-									-1
-								}
+							val read = try {
+								connection.bulkTransfer(endpoint, buffer, buffer.size, 0)
+							} catch (_: Exception) {
+								-1
 							}
 							when {
-								read < 0 -> return@safeLaunch
-								read > 0 -> parseHIDPackets(buffer.copyOf(read)).forEach { packet -> receiver.packetEvents.emit(packet) }
+								read < 0 -> return@launch
+								read > 0 -> parseHIDPackets(buffer, read).forEach { packet -> receiver.packetEvents.emit(packet) }
 								else -> delay(1)
 							}
 						}

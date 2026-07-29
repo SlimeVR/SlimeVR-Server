@@ -1,12 +1,11 @@
 package dev.slimevr.desktop.hid
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.isCompatibleHidDevice
 import dev.slimevr.hid.parseHIDPackets
-import dev.slimevr.util.safeLaunch
+import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,6 +13,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.hid4java.HidDevice
 import org.hid4java.HidManager
@@ -23,6 +23,12 @@ import org.hid4java.jna.HidDeviceInfoStructure
 import solarxr_protocol.datatypes.TrackerStatus
 
 private const val HID_POLL_INTERVAL_MS = 3000L
+
+// A HID report is 64 bytes, which parseHIDPackets splits into four 16-byte packets
+private const val HID_READ_BUFFER_SIZE = 64
+
+// Bounds how long cancellation waits on the uninterruptible native read when a device is idle
+private const val HID_READ_TIMEOUT_MS = 100
 
 private val hidSpec = HidServicesSpecification().apply { isAutoStart = false }
 
@@ -51,7 +57,7 @@ private data class ActiveReceiver(val job: Job, val receiver: HIDReceiver)
 fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScope) {
 	val active = mutableMapOf<String, ActiveReceiver>()
 
-	scope.safeLaunch {
+	scope.launch {
 		while (isActive) {
 			val found = withContext(Dispatchers.IO) {
 				try {
@@ -93,23 +99,23 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 					scope = deviceScope,
 				)
 
-				deviceScope.safeLaunch {
+				deviceScope.launch(Dispatchers.IO) {
 					try {
+						// Reused across reads: parseHIDPackets is told how much of it is live
+						val buffer = ByteArray(HID_READ_BUFFER_SIZE)
 						while (isActive) {
-							val data = withContext(Dispatchers.IO) {
-								try {
-									hidDevice.readAll(0)
-								} catch (_: Exception) {
-									null
-								}
+							val read = try {
+								hidDevice.read(buffer, HID_READ_TIMEOUT_MS)
+							} catch (_: Exception) {
+								-1
 							}
 							when {
-								data == null -> return@safeLaunch
-
 								// read error, device gone
-								data.isNotEmpty() -> parseHIDPackets(data).forEach { receiver.packetEvents.emit(it) }
+								read < 0 -> return@launch
 
-								else -> delay(1) // no data yet, yield without busy-spinning
+								read > 0 -> parseHIDPackets(buffer, read).forEach { receiver.packetEvents.emit(it) }
+
+								// 0 is a timeout with no data: the read already blocked, so just go again
 							}
 						}
 					} finally {

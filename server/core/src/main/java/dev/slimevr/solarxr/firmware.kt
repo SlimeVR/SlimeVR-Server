@@ -64,10 +64,10 @@ class FirmwareBehaviour(private val server: VRServer, private val firmwareManage
 
 				else -> return@on
 			}
-		}
+		}.launchIn(scope)
 
 		receiver.rpcDispatcher.on<FirmwareUpdateStopQueuesRequest> {
 			firmwareManager.cancelAll()
-		}
+		}.launchIn(scope)
 	}
 }

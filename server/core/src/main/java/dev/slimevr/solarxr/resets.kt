@@ -3,6 +3,7 @@ package dev.slimevr.solarxr
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.ChangeResetsSettingsRequest
 import solarxr_protocol.rpc.ResetsSettingsRequest
@@ -24,7 +25,7 @@ class ResetsBehaviour(
 					resetHmdPitch = config.resetHmdPitch,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeResetsSettingsRequest> { req ->
@@ -41,6 +42,6 @@ class ResetsBehaviour(
 					)
 				},
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

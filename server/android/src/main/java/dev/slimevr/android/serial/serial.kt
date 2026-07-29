@@ -11,15 +11,15 @@ import androidx.core.content.ContextCompat
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
-import dev.slimevr.AppLogger
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.serial.isKnownSerialBoard
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -69,14 +69,14 @@ private fun openAndroidPort(
 				while (newlineIdx >= 0) {
 					val line = readBuffer.substring(0, newlineIdx).trimEnd()
 					readBuffer.delete(0, newlineIdx + 1)
-					scope.safeLaunch { onDataReceived(portLocation, line) }
+					scope.launch { onDataReceived(portLocation, line) }
 					newlineIdx = readBuffer.indexOf("\n")
 				}
 				if (readBuffer.length >= 1024) readBuffer.clear()
 			}
 
 			override fun onRunError(e: Exception) {
-				scope.safeLaunch { onPortDisconnected(portLocation) }
+				scope.launch { onPortDisconnected(portLocation) }
 			}
 		},
 	)
@@ -182,7 +182,7 @@ fun createAndroidSerialServer(context: Context, scope: CoroutineScope): SerialSe
 		scope = scope,
 	)
 
-	scope.safeLaunch { runAndroidSerialPoller(context, usbManager, server, wakeSignal) }
+	scope.launch { runAndroidSerialPoller(context, usbManager, server, wakeSignal) }
 
 	return server
 }

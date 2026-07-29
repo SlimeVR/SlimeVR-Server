@@ -97,7 +97,7 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 		initialState = ResetsState(
 			canDoYawReset = true,
 			canDoMountingReset = true,
-			lastFullResetTime = 0,
+			lastFullResetTime = null,
 		),
 		scope = scope,
 		behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),

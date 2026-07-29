@@ -25,7 +25,9 @@ data class TrackerConfig(
 	val bodyPart: BodyPart? = null,
 	val customName: String? = null,
 	@Serializable(with = QuaternionSerializer::class)
-	val mountingOrientation: Quaternion? = null,
+	val mountingOrientation: Quaternion = Quaternion.IDENTITY,
+	@Serializable(with = QuaternionSerializer::class)
+	val mountingResetOrientation: Quaternion? = null,
 	val magEnabled: Boolean? = null,
 )
 
@@ -48,7 +50,7 @@ data class OutputTrackersConfig(
 	 */
 	@Serializable(with = BodyPartListSerializer::class)
 	val trackers: List<BodyPart> = listOf(),
-	val sendDerivedVelocity: Boolean = false, // TODO
+	val sendDerivedVelocity: Boolean = false, // TODO do we actually need that or can we disable OpenVR's prediction
 )
 
 @Serializable
@@ -81,14 +83,14 @@ data class ResetsConfig(
 	/** Always reset mounting for feet */
 	val resetMountingFeet: Boolean = false,
 	/** Reset mode used for the arms */
-	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK, // TODO
+	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
 	/** Yaw reset smoothing time in seconds */
 	val yawResetSmoothTime: Float = 0.0f, // TODO
 	/** Save automatic mounting reset calibration */
-	val saveMountingReset: Boolean = false, // TODO
+	val saveMountingReset: Boolean = false,
 	/** Reset the HMD's pitch upon full reset */
 	val resetHmdPitch: Boolean = false, // TODO
-	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC, // TODO
+	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC, // TODO in trackingchecklist
 )
 
 @Serializable
@@ -112,10 +114,10 @@ fun defaultKeybinds(): List<KeybindConfig> = listOf(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonTogglesConfig(
-	val forceArmsFromHmd: Boolean = true,
+	val forceArmsFromHmd: Boolean = true, // TODO do we still need that with useTrackerPositions?
 	val floorClip: Boolean = true,
 	val skatingCorrection: Boolean = true,
-	val toeSnap: Boolean = false,
+	val toeSnap: Boolean = true,
 	val footPlant: Boolean = true,
 	val mocapMode: Boolean = false,
 	val useTrackerPositions: Boolean = true,
@@ -184,10 +186,10 @@ data class SettingsConfigState(
 	val outputTrackersConfig: OutputTrackersConfig = OutputTrackersConfig(),
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
+	val keybinds: List<KeybindConfig> = defaultKeybinds(),
 	val skeletonConfig: SkeletonConfig = SkeletonConfig(),
 	val vrcOscConfig: VRCOSCConfig = VRCOSCConfig(),
 	val vmcConfig: VMCConfig = VMCConfig(),
-	val keybinds: List<KeybindConfig> = defaultKeybinds(),
 )
 
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {

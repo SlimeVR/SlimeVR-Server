@@ -1,125 +1,109 @@
 package dev.slimevr.osc
 
+import kotlinx.io.Buffer
+import kotlinx.io.Sink
+import kotlinx.io.Source
+import kotlinx.io.indexOf
+import kotlinx.io.readByteArray
+import kotlinx.io.readDouble
+import kotlinx.io.readFloat
+import kotlinx.io.readString
+import kotlinx.io.write
+import kotlinx.io.writeDouble
+import kotlinx.io.writeFloat
+
 private val BUNDLE_PREFIX = "#bundle".encodeToByteArray() + byteArrayOf(0)
 
 private fun pad4(n: Int) = (n + 3) and 3.inv()
 
-private class Writer(capacity: Int = 65536) {
-	private val buf = ByteArray(capacity)
-	var pos = 0
+/** OSC aligns strings and blobs to a four-byte boundary with trailing nulls. */
+private fun Sink.writePadding(unpadded: Int) = repeat(pad4(unpadded) - unpadded) { writeByte(0) }
 
-	fun byte(v: Byte) {
-		buf[pos++] = v
-	}
-	fun bytes(v: ByteArray) {
-		v.copyInto(buf, pos)
-		pos += v.size
-	}
-	fun int(v: Int) {
-		byte((v ushr 24).toByte())
-		byte((v ushr 16).toByte())
-		byte((v ushr 8).toByte())
-		byte(v.toByte())
-	}
-	fun long(v: Long) {
-		int((v ushr 32).toInt())
-		int(v.toInt())
-	}
-	fun float(v: Float) = int(v.toBits())
-	fun double(v: Double) = long(v.toBits())
-	fun string(s: String) {
-		val b = s.encodeToByteArray()
-		bytes(b)
-		byte(0)
-		repeat(pad4(b.size + 1) - b.size - 1) { byte(0) }
-	}
-	fun result() = buf.copyOfRange(0, pos)
+private fun Sink.writeOscString(value: String) {
+	val bytes = value.encodeToByteArray()
+	write(bytes)
+	writeByte(0)
+	writePadding(bytes.size + 1)
 }
 
-private class Reader(private val bytes: ByteArray, var pos: Int = 0) {
-	private fun byte() = bytes[pos++].toInt()
-	fun int() = (byte() and 0xFF shl 24) or (byte() and 0xFF shl 16) or (byte() and 0xFF shl 8) or (byte() and 0xFF)
-	fun long() = (int().toLong() and 0xFFFFFFFFL shl 32) or (int().toLong() and 0xFFFFFFFFL)
-	fun float() = Float.fromBits(int())
-	fun double() = Double.fromBits(long())
-	fun string(): String {
-		val start = pos
-		while (pos < bytes.size && bytes[pos] != 0.toByte()) pos++
-		val s = bytes.decodeToString(start, pos)
-		pos++ // skip null
-		pos = pad4(pos)
-		return s
-	}
-	fun bytes(n: Int) = bytes.copyOfRange(pos, pos + n).also { pos += n }
-	fun hasPrefix(prefix: ByteArray) = pos + prefix.size <= bytes.size &&
-		bytes.copyOfRange(pos, pos + prefix.size).contentEquals(prefix)
+private fun Source.readOscString(): String {
+	val length = indexOf(0)
+	require(length >= 0) { "Unterminated OSC string" }
+	val value = readString(length)
+	// The null terminator counts towards the alignment it pads out to
+	skip(pad4(length.toInt() + 1) - length)
+	return value
 }
 
-fun encodeMessage(msg: OscMessage): ByteArray {
-	val w = Writer()
-	w.string(msg.address)
-	w.string("," + msg.args.joinToString("") { it.typeTag.toString() })
+private fun Source.startsWithBundlePrefix(): Boolean {
+	val peeked = peek()
+	return peeked.request(BUNDLE_PREFIX.size.toLong()) &&
+		peeked.readByteArray(BUNDLE_PREFIX.size).contentEquals(BUNDLE_PREFIX)
+}
+
+fun writeMessage(dst: Sink, msg: OscMessage) {
+	dst.writeOscString(msg.address)
+	dst.writeOscString("," + msg.args.joinToString("") { it.typeTag.toString() })
 	for (arg in msg.args) {
 		when (arg) {
-			is OscArg.Int -> w.int(arg.value)
+			is OscArg.Int -> dst.writeInt(arg.value)
 
-			is OscArg.Long -> w.long(arg.value)
+			is OscArg.Long -> dst.writeLong(arg.value)
 
-			is OscArg.Float -> w.float(arg.value)
+			is OscArg.Float -> dst.writeFloat(arg.value)
 
-			is OscArg.Double -> w.double(arg.value)
+			is OscArg.Double -> dst.writeDouble(arg.value)
 
-			is OscArg.String -> w.string(arg.value)
+			is OscArg.String -> dst.writeOscString(arg.value)
 
 			is OscArg.Blob -> {
-				w.int(arg.value.size)
-				w.bytes(arg.value)
-				repeat(pad4(arg.value.size) - arg.value.size) { w.byte(0) }
+				dst.writeInt(arg.value.size)
+				dst.write(arg.value)
+				dst.writePadding(arg.value.size)
 			}
 
 			else -> {}
 		}
 	}
-	return w.result()
 }
 
-fun encodeBundle(bundle: OscBundle): ByteArray {
-	val w = Writer()
-	w.bytes(BUNDLE_PREFIX)
-	w.long(bundle.timetag)
+fun writeBundle(dst: Sink, bundle: OscBundle) {
+	dst.write(BUNDLE_PREFIX)
+	dst.writeLong(bundle.timetag)
+	// Each element is length-prefixed, so it has to be built before its size is known. Handing it over
+	// between two Buffers moves segments rather than copying the bytes, and drains it for the next one.
+	val element = Buffer()
 	for (content in bundle.contents) {
-		val encoded = when (content) {
-			is OscContent.Message -> encodeMessage(content.msg)
-			is OscContent.Bundle -> encodeBundle(content.bundle)
+		when (content) {
+			is OscContent.Message -> writeMessage(element, content.msg)
+			is OscContent.Bundle -> writeBundle(element, content.bundle)
 		}
-		w.int(encoded.size)
-		w.bytes(encoded)
+		dst.writeInt(element.size.toInt())
+		dst.transferFrom(element)
 	}
-	return w.result()
 }
 
-fun decodeMessage(bytes: ByteArray, offset: Int = 0): Pair<OscMessage, Int> {
-	val r = Reader(bytes, offset)
-	val address = r.string()
-	val typeTag = r.string()
+fun readMessage(src: Source): OscMessage {
+	val address = src.readOscString()
+	val typeTag = src.readOscString()
 	val args = mutableListOf<OscArg>()
 	if (typeTag.startsWith(",")) {
 		for (c in typeTag.drop(1)) {
 			when (c) {
-				'i' -> args += OscArg.Int(r.int())
+				'i' -> args += OscArg.Int(src.readInt())
 
-				'h' -> args += OscArg.Long(r.long())
+				'h' -> args += OscArg.Long(src.readLong())
 
-				'f' -> args += OscArg.Float(r.float())
+				'f' -> args += OscArg.Float(src.readFloat())
 
-				'd' -> args += OscArg.Double(r.double())
+				'd' -> args += OscArg.Double(src.readDouble())
 
-				's' -> args += OscArg.String(r.string())
+				's' -> args += OscArg.String(src.readOscString())
 
 				'b' -> {
-					val size = r.int()
-					args += OscArg.Blob(r.bytes(size))
-					r.pos += pad4(size) - size
+					val size = src.readInt()
+					args += OscArg.Blob(src.readByteArray(size))
+					src.skip((pad4(size) - size).toLong())
 				}
 
 				'I' -> args += OscArg.Impulse
@@ -132,29 +116,28 @@ fun decodeMessage(bytes: ByteArray, offset: Int = 0): Pair<OscMessage, Int> {
 			}
 		}
 	}
-	return OscMessage(address, args) to r.pos
+	return OscMessage(address, args)
 }
 
-fun decodeBundle(bytes: ByteArray, offset: Int = 0): Pair<OscBundle, Int> {
-	val r = Reader(bytes, offset)
-	if (!r.hasPrefix(BUNDLE_PREFIX)) throw IllegalArgumentException("Invalid bundle prefix")
-	r.pos += 8
-	val timetag = r.long()
+fun readBundle(src: Source): OscBundle {
+	require(src.startsWithBundlePrefix()) { "Invalid bundle prefix" }
+	src.skip(BUNDLE_PREFIX.size.toLong())
+	val timetag = src.readLong()
 	val contents = mutableListOf<OscContent>()
-	while (r.pos + 4 <= bytes.size) {
-		val elementSize = r.int()
-		if (elementSize <= 0 || r.pos + elementSize > bytes.size) break
-		val elemStart = r.pos
-		try {
-			contents += if (Reader(bytes, elemStart).hasPrefix(BUNDLE_PREFIX)) {
-				OscContent.Bundle(decodeBundle(bytes, elemStart).first)
+	while (src.request(4)) {
+		val size = src.readInt()
+		if (size <= 0 || !src.request(size.toLong())) break
+		val element = Buffer()
+		src.readTo(element, size.toLong())
+		contents += try {
+			if (element.startsWithBundlePrefix()) {
+				OscContent.Bundle(readBundle(element))
 			} else {
-				OscContent.Message(decodeMessage(bytes, elemStart).first)
+				OscContent.Message(readMessage(element))
 			}
 		} catch (_: Exception) {
 			break
 		}
-		r.pos = elemStart + elementSize
 	}
-	return OscBundle(timetag, contents) to r.pos
+	return OscBundle(timetag, contents)
 }

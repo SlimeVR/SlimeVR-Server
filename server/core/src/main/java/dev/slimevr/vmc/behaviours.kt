@@ -1,9 +1,9 @@
 package dev.slimevr.vmc
 
-import dev.slimevr.AppLogger
 import dev.slimevr.config.Settings
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.context.Behaviour
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
@@ -12,13 +12,13 @@ import dev.slimevr.osc.OscReceiver
 import dev.slimevr.osc.OscSender
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 
 class VMCOutputBehaviour(
@@ -54,7 +54,7 @@ class VMCOutputBehaviour(
 				if (enabled) {
 					sender = OscSender(addr, port)
 					AppLogger.vmc.info("VMC output started: $addr:$port")
-					receiver.context.scope.safeLaunch {
+					receiver.context.scope.launch {
 						try {
 							sender?.send(OscMessage("/VMC/Ext/Req", emptyList()))
 						} catch (e: Exception) {
@@ -65,14 +65,14 @@ class VMCOutputBehaviour(
 			}.launchIn(receiver.context.scope)
 
 		skeleton.computed
-			.onEach { bones ->
+			.onEach { computedSkeleton ->
 				val s = sender ?: return@onEach
 				val config = settings.context.state.value.data.vmcConfig
 				val currentTime = System.currentTimeMillis()
 				val vrm = vrmGeometry
-				receiver.context.scope.safeLaunch {
+				receiver.context.scope.launch {
 					try {
-						s.send(buildBundle(bones, config, currentTime, vrm))
+						s.send(buildBundle(computedSkeleton.bones, config, currentTime, vrm))
 					} catch (e: Exception) {
 						AppLogger.vmc.error("Failed to send VMC frame", e)
 					}
@@ -101,15 +101,18 @@ class VMCOutputBehaviour(
 		yield(OscMessage("/VMC/Ext/T", listOf(OscArg.Float(time))))
 		yield(OscMessage("/VMC/Ext/OK", listOf(OscArg.Int(1))))
 
-		val rootPos = vmcRootPosition(bones, config, vrm)
-		yield(transformMessage("/VMC/Ext/Root/Pos", "root", rootPos, Quaternion.IDENTITY))
+		// Send the origin as root
+		yield(transformMessage("/VMC/Ext/Root/Pos", "root", Vector3.NULL, Quaternion.IDENTITY))
 
+		// TODO UpperChest + shoulders affecting arms local rot
+		// TODO Don't send fingers if we don't have any tracker for them
 		for ((targetBodyPart, unityName) in BODY_PART_TO_UNITY_BONE) {
 			val targetParentBodyPart = VMC_BONE_PARENTS[targetBodyPart]
 			val trackingBodyPart = if (config.mirrorTracking) vmcMirrorSource(targetBodyPart) else targetBodyPart
 			val trackingBone = bones[trackingBodyPart] ?: continue
 
 			if (targetParentBodyPart == null) {
+				// TODO anchorHip https://github.com/SlimeVR/SlimeVR-Server/blob/main/server/core/src/main/java/dev/slimevr/osc/VMCHandler.kt#L371
 				val pos = vrm?.hipLocalPosition ?: Vector3.NULL
 				val rot = vmcLocalRotation(trackingBone, null, targetBodyPart, null, config.mirrorTracking)
 				yield(transformMessage("/VMC/Ext/Bone/Pos", unityName, pos, rot))
@@ -153,7 +156,7 @@ class VMCInputBehaviour(private val settings: Settings) : Behaviour<VMCState, VM
 				if (settings.context.state.value.data.vmcConfig.enabled) {
 					oscReceiver = OscReceiver(portIn)
 					AppLogger.vmc.info("VMC input listening on port $portIn")
-					receiver.context.scope.safeLaunch {
+					receiver.context.scope.launch {
 						try {
 							oscReceiver?.listenBundles { bundle ->
 								for (content in bundle.contents) {

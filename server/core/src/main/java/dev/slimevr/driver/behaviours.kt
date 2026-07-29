@@ -4,86 +4,106 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
+import dev.slimevr.tracker.TrackerState
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 
 class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 	// Keys should match with protocol.kt:bodyPartToRole
-	val bodyPartToNearest: Map<BodyPart, Set<BodyPart>> = mapOf(
-		BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
-		BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
-		BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
-		BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
-		BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
-		BodyPart.RIGHT_FOOT to setOf(BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
-		BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
-		BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
-		BodyPart.LEFT_HAND to setOf(BodyPart.LEFT_HAND, BodyPart.LEFT_LOWER_ARM),
-		BodyPart.RIGHT_HAND to setOf(BodyPart.RIGHT_HAND, BodyPart.RIGHT_LOWER_ARM),
+	val bodyPartToNearest: BodyPartMap<Set<BodyPart>> = BodyPartMap(
+		mapOf(
+			BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
+			BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
+			BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
+			BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
+			BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
+			BodyPart.RIGHT_FOOT to setOf(BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
+			BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
+			BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
+			BodyPart.LEFT_HAND to setOf(BodyPart.LEFT_HAND, BodyPart.LEFT_LOWER_ARM),
+			BodyPart.RIGHT_HAND to setOf(BodyPart.RIGHT_HAND, BodyPart.RIGHT_LOWER_ARM),
+		),
 	)
 
 	override fun observe(receiver: DriverBridge) {
 		// Should be safe: StateFlow never delivers two emissions concurrently to the same collector.
 		val subscribedTrackers = mutableSetOf<UByte>()
 
-		receiver.appContext.skeleton.computed.onEach { computedBones ->
-			val enabledBodyParts = receiver.appContext.outputTrackerToggle.context.state.value.trackers
-			val serverState = receiver.appContext.server.context.state.value
+		// Status and battery are rebuilt every frame but only change every few seconds, so the driver
+		// was being sent the same values at skeleton rate. Keep the last one per body part and only
+		// send on a real change, the same way subscribedTrackers already gates TrackerAdded.
+		val lastStatus = mutableMapOf<UByte, DriverBridgeOutbound.TrackerStatus>()
 
-			computedBones.forEach { (part, state) ->
-				if (enabledBodyParts.contains(part)) {
-					val closestTracker = bodyPartToNearest[part].orEmpty()
-						.firstNotNullOfOrNull { fallbackPart ->
-							serverState.trackers.values
-								.find { it.context.state.value.bodyPart == fallbackPart && it.context.state.value.origin != DeviceOrigin.DRIVER }
-								?.context?.state?.value
+		combine(
+			receiver.appContext.skeleton.computed,
+			receiver.appContext.outputTrackerToggle.context.state.map { it.trackers },
+			::Pair,
+		)
+			.distinctUntilChanged()
+			.onEach { (computedSkeleton, enabledBodyParts) ->
+				val serverState = receiver.appContext.server.context.state.value
+
+				// Map the nearest trackers to their body parts
+				val trackerStateByBodyPart = bodyPartMap<TrackerState>()
+				for (tracker in serverState.trackers.values) {
+					val trackerState = tracker.context.state.value
+					if (trackerState.origin == DeviceOrigin.DRIVER) continue
+					val bodyPart = trackerState.bodyPart ?: continue
+					trackerStateByBodyPart.putIfAbsent(bodyPart, trackerState)
+				}
+
+				computedSkeleton.bones.forEach { (part, state) ->
+					if (enabledBodyParts.contains(part)) {
+						val closestTracker = bodyPartToNearest[part].orEmpty()
+							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }
+						val closestDevice = serverState.devices[closestTracker?.deviceId]?.context?.state?.value
+
+						val newTracker = subscribedTrackers.add(part.value)
+						if (newTracker) {
+							// FIXME : sometimes doesn't work when launching SteamVR after SlimeVR
+							receiver.outbound.emit(
+								DriverBridgeOutbound.TrackerAdded(
+									trackerId = part.value.toInt(),
+									part = part,
+								),
+							)
 						}
-					val closestDevice = serverState.devices[closestTracker?.deviceId]?.context?.state?.value
 
-					val newTracker = subscribedTrackers.add(part.value)
-					if (newTracker) {
 						receiver.outbound.emit(
-							DriverBridgeOutbound.TrackerAdded(
+							DriverBridgeOutbound.TrackerPosition(
 								trackerId = part.value.toInt(),
-								part = part,
+								rotation = state.rotation,
+								position = state.tailPosition,
 							),
 						)
-					}
 
-					receiver.outbound.emit(
-						DriverBridgeOutbound.TrackerPosition(
+						val status = DriverBridgeOutbound.TrackerStatus(
 							trackerId = part.value.toInt(),
-							rotation = state.rotation,
-							position = state.tailPosition,
-						),
-					)
-
-					receiver.outbound.emit(
-						DriverBridgeOutbound.TrackerStatus(
-							trackerId = part.value.toInt(),
-							battery = closestDevice?.batteryLevel,
+							battery = closestDevice?.batteryLevel ?: 1f,
 							charging = closestDevice?.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
 							status = closestTracker?.status ?: TrackerStatus.OK,
-						),
-					)
-				} else {
-					receiver.outbound.emit(
-						DriverBridgeOutbound.TrackerStatus(
+						)
+						if (lastStatus.put(part.value, status) != status) receiver.outbound.emit(status)
+					} else {
+						val status = DriverBridgeOutbound.TrackerStatus(
 							trackerId = part.value.toInt(),
-							battery = 0f,
+							battery = null,
 							charging = false,
 							status = TrackerStatus.DISCONNECTED,
-						),
-					)
+						)
+						if (lastStatus.put(part.value, status) != status) receiver.outbound.emit(status)
+					}
 				}
-			}
-		}.launchIn(receiver.context.scope)
+			}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -99,7 +119,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 	override fun observe(receiver: DriverBridge) {
 		receiver.inbound.on<DriverBridgeInbound.Version> { event ->
 			receiver.context.dispatch(DriverBridgeActions.UpdateProtocolVersion(event.protocolVersion))
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerAdded> { event ->
 			handleTrackerAdded(
@@ -109,18 +129,18 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 				event.manufacturer,
 				event.serial,
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
 			receiver.appContext.server.getTracker(trackerId)?.let { tracker ->
-				tracker.context.dispatch(
+				tracker.context.dispatch( // TODO should maybe use TrackerActions.SetRotation?
 					TrackerActions.Update {
-						copy(rawRotation = event.rotation, position = event.position)
+						copy(rawRotation = event.rotation, rotation = event.rotation, position = event.position)
 					},
 				)
 			}
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerBattery> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
@@ -137,7 +157,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 					},
 				)
 			}
-		}
+		}.launchIn(receiver.context.scope)
 	}
 
 	private fun handleTrackerAdded(

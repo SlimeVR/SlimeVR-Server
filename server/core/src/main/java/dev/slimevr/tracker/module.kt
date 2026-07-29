@@ -1,6 +1,7 @@
 package dev.slimevr.tracker
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
@@ -23,7 +24,8 @@ data class TrackerState(
 	val sensorType: ImuType?,
 	val bodyPart: BodyPart?,
 	val customName: String?,
-	val mountingOrientation: HeadingAlignment?,
+	val mountingOrientation: HeadingAlignment,
+	val restOrientation: RestOrientation,
 	val rawRotation: RawRotation,
 	val rotation: CalibratedRotation,
 	val rawAcceleration: RawAcceleration,
@@ -45,10 +47,12 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null) : TrackerActions
-	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment?) : TrackerActions
+	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
+	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion) : TrackerActions
-	data class MountingReset(val referenceRotation: Quaternion) : TrackerActions
+	data class MountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
+	data object ClearMountingReset : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
@@ -57,6 +61,7 @@ typealias TrackerBehaviour = Behaviour<TrackerState, TrackerActions, Tracker>
 class Tracker(
 	val context: TrackerContext,
 	val appContext: AppContextProvider,
+	val settings: Settings,
 ) {
 	fun startObserving() = context.observeAll(this)
 
@@ -72,19 +77,20 @@ class Tracker(
 			appContext: AppContextProvider,
 		): Tracker {
 			val settings = appContext.config.settings
-			val trackerConfigs = appContext.config.settings.context.state.value.data.trackers
+			val trackerConfigs = settings.context.state.value.data.trackers
 			val savedConfig = trackerConfigs[hardwareId]
 			val baseState = TrackerState(
 				id = id,
 				hardwareId = hardwareId,
 				name = name,
+				restOrientation = Quaternion.IDENTITY,
 				rawRotation = Quaternion.IDENTITY,
 				rotation = Quaternion.IDENTITY,
 				rawAcceleration = Vector3.NULL,
 				acceleration = Vector3.NULL,
 				rawMagnetometer = Vector3.NULL,
 				bodyPart = null,
-				mountingOrientation = null,
+				mountingOrientation = Quaternion.IDENTITY,
 				origin = origin,
 				deviceId = deviceId,
 				customName = null,
@@ -98,7 +104,7 @@ class Tracker(
 				sessionCalibration = null,
 			)
 			val trackerState = if (savedConfig != null) {
-				restoreFromConfig(baseState, savedConfig)
+				restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
 			} else {
 				baseState
 			}
@@ -106,6 +112,7 @@ class Tracker(
 			val behaviours = listOf(
 				TrackerBasicBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
+				TrackerRestOrientationBehaviour(settings),
 				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerTPSBehaviour(),
 				TrackerToSkeletonBehaviour(),
@@ -120,7 +127,7 @@ class Tracker(
 				),
 				name = "Tracker[$hardwareId]",
 			)
-			val tracker = Tracker(context = context, appContext)
+			val tracker = Tracker(context = context, appContext, settings)
 			tracker.startObserving()
 			return tracker
 		}

@@ -1,7 +1,7 @@
 package dev.slimevr.vrcosc
 
-import dev.slimevr.AppLogger
 import dev.slimevr.config.DEFAULT_VRC_OSC_PORT_OUT
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.oscquery.OscQueryAccess
 import dev.slimevr.oscquery.OscQueryDiscovery
 import dev.slimevr.oscquery.OscQueryNode

@@ -218,20 +218,6 @@ export function TapDetectionSettings() {
           <div>
             <Typography variant="section-title">
               {l10n.getString(
-                'settings-general-gesture_control-mountingResetTracker'
-              )}
-            </Typography>
-            <Dropdown
-              display="block"
-              control={control}
-              placeholder={''}
-              name="mountingResetTracker"
-              items={bodyParts}
-            />
-          </div>
-          <div>
-            <Typography variant="section-title">
-              {l10n.getString(
                 'settings-general-gesture_control-fullResetTracker'
               )}
             </Typography>
@@ -240,6 +226,20 @@ export function TapDetectionSettings() {
               control={control}
               placeholder={''}
               name="fullResetTracker"
+              items={bodyParts}
+            />
+          </div>
+          <div>
+            <Typography variant="section-title">
+              {l10n.getString(
+                'settings-general-gesture_control-mountingResetTracker'
+              )}
+            </Typography>
+            <Dropdown
+              display="block"
+              control={control}
+              placeholder={''}
+              name="mountingResetTracker"
               items={bodyParts}
             />
           </div>

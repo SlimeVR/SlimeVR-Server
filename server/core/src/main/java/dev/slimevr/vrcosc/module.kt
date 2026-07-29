@@ -4,13 +4,12 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.config.Settings
-import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
-import dev.slimevr.util.safeLaunch
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.VRCOSCInputState
 import solarxr_protocol.rpc.VRCOSCOscQueryState
 import solarxr_protocol.rpc.VRCOSCOutputState
@@ -99,7 +98,7 @@ class VRCOSCManager(
 	val settings: Settings,
 	val outputTrackerToggle: OutputTrackerToggleManager,
 ) {
-	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher()
+	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher("VRCOSC", context.scope, capacity = 32)
 
 	fun startObserving(appContext: AppContextProvider) {
 		val behaviours = listOf(
@@ -113,7 +112,7 @@ class VRCOSCManager(
 	}
 
 	fun yawAlign(headRotation: Quaternion) {
-		context.scope.safeLaunch {
+		context.scope.launch {
 			events.emit(VRCOSCEvent.YawAlign(headRotation))
 		}
 	}

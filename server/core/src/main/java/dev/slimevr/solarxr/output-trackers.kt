@@ -4,6 +4,7 @@ import dev.slimevr.config.OutputTrackersConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
+import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ChangeOutputTrackersSettingsRequest
 import solarxr_protocol.rpc.OutputTrackersSettingsRequest
 import solarxr_protocol.rpc.OutputTrackersSettingsResponse
@@ -23,7 +24,7 @@ class OutputTrackersBehaviour(
 					sendDerivedVelocity = config.sendDerivedVelocity,
 				),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		// Receive config
 		receiver.rpcDispatcher.on<ChangeOutputTrackersSettingsRequest> { req ->
@@ -38,6 +39,6 @@ class OutputTrackersBehaviour(
 					)
 				},
 			)
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

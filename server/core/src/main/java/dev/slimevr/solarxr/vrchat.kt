@@ -39,11 +39,11 @@ class VrcBehaviour(
 
 		receiver.rpcDispatcher.on<VRCConfigStateRequest> {
 			receiver.sendRpc(buildCurrentResponse())
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCConfigSettingToggleMute> { req ->
 			val key = req.key ?: return@on
 			vrcManager.context.dispatch(VRCConfigActions.ToggleMutedWarning(key))
-		}
+		}.launchIn(receiver.context.scope)
 	}
 }

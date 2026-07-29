@@ -4,13 +4,13 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
-fun chainDistanceFromTarget(bones: Map<BodyPart, BoneState>, chain: List<BodyPart>, target: Vector3): Float {
+fun chainDistanceFromTarget(bones: BodyPartMap<BoneState>, chain: List<BodyPart>, target: Vector3): Float {
 	val endBone = bones[chain.last()]
 	requireNotNull(endBone)
 	return (target - endBone.tailPosition).len()
 }
 
-fun chainCanReach(bones: Map<BodyPart, BoneState>, chain: List<BodyPart>, target: Vector3): Boolean {
+fun chainCanReach(bones: BodyPartMap<BoneState>, chain: List<BodyPart>, target: Vector3): Boolean {
 	val rootBone = bones[chain.first()]
 	requireNotNull(rootBone)
 	val chainLength = chain.fold(0f) { acc, bodyPart ->
@@ -20,8 +20,7 @@ fun chainCanReach(bones: Map<BodyPart, BoneState>, chain: List<BodyPart>, target
 	return (target - rootBone.headPosition).len() <= chainLength
 }
 
-// Single loop over a chain
-fun ccdIk(boneInputs: Map<BodyPart, BoneInput>, bones: Map<BodyPart, BoneState>, chain: List<BodyPart>, target: Vector3): Map<BodyPart, BoneState> {
+fun ccdIkIteration(boneInputs: BodyPartMap<BoneInput>, bones: BodyPartMap<BoneState>, chain: List<BodyPart>, target: Vector3): BodyPartMap<BoneState> {
 	val workingBones = boneInputs.toMutableMap()
 
 	// Reversed index, i increases backwards up the chain
@@ -35,6 +34,7 @@ fun ccdIk(boneInputs: Map<BodyPart, BoneInput>, bones: Map<BodyPart, BoneState>,
 			(i.toFloat() / chain.size) * 0.5f,
 		).unit()
 
+		// TODO: Apply constraints
 		workingBones[bodyPart] = currentRawBone.copy(
 			rawRotation = currentBone.rotation * rotationChange,
 		)
@@ -44,4 +44,36 @@ fun ccdIk(boneInputs: Map<BodyPart, BoneInput>, bones: Map<BodyPart, BoneState>,
 	//  independent of the bones
 	val skeletonRootPos = bones[BodyPart.HEAD]?.headPosition ?: Vector3.NULL
 	return buildBones(workingBones, skeletonRootPos)
+}
+
+data class IKChainGoal(
+	val chain: List<BodyPart>,
+	val target: Vector3,
+)
+
+data class IKOutput(
+	val bones: BodyPartMap<BoneState>,
+	val goalsReached: Map<IKChainGoal, Boolean>,
+)
+
+fun ccdIk(boneInputs: BodyPartMap<BoneInput>, bones: BodyPartMap<BoneState>, goals: List<IKChainGoal>, threshold: Float, maxIterations: Int): IKOutput {
+	var curBones = bones
+
+	for (i in 0..maxIterations) {
+		// Iterate chains not meeting the threshold
+		curBones = goals.filter {
+			chainDistanceFromTarget(bones, it.chain, it.target) > threshold
+		}.ifEmpty {
+			break
+		}.fold(curBones) { bones, goal ->
+			ccdIkIteration(boneInputs, bones, goal.chain, goal.target)
+		}
+	}
+
+	return IKOutput(
+		curBones,
+		goals.associateWith {
+			chainDistanceFromTarget(bones, it.chain, it.target) <= threshold
+		},
+	)
 }

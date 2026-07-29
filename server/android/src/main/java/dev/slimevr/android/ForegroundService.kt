@@ -37,15 +37,19 @@ import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
-import dev.slimevr.util.safeLaunch
+import dev.slimevr.util.appCoroutineExceptionHandler
+import dev.slimevr.util.installUncaughtExceptionReporting
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import io.klogging.noCoLogger
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private val logger = noCoLogger("ForegroundService")
 
@@ -75,7 +79,8 @@ class ForegroundService : Service() {
 
 	override fun onCreate() {
 		super.onCreate()
-		setupAndroidLogging()
+		// Blocking so logging is live before onStartCommand, which already reports errors.
+		runBlocking { setupAndroidLogging(filesDir) }
 		createNotificationChannel()
 	}
 
@@ -110,9 +115,12 @@ class ForegroundService : Service() {
 		}
 
 		if (serviceScope == null) {
-			val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+			installUncaughtExceptionReporting()
+			val scope = CoroutineScope(
+				SupervisorJob() + Dispatchers.Default + appCoroutineExceptionHandler + CoroutineName("ForegroundService"),
+			)
 			serviceScope = scope
-			scope.safeLaunch { startServer(scope) }
+			scope.launch { startServer(scope) }
 		}
 
 		return START_NOT_STICKY
@@ -167,7 +175,7 @@ class ForegroundService : Service() {
 			featureFlags = FeatureFlags(
 				skipCheckUdev = true,
 				keybindSupport = KeybindSupport.UNSUPPORTED,
-				udevRulesInstalled = false
+				udevRulesInstalled = false,
 			),
 			keybindManager = keybindManager,
 			skeleton = skeleton,
@@ -191,8 +199,8 @@ class ForegroundService : Service() {
 		try {
 			appContext.startObserving()
 
-			scope.safeLaunch { createAndroidHIDManager(context = this@ForegroundService, appContext = appContext, scope = this) }
-			scope.safeLaunch { createAndroidSolarXRWebsocketServer(appContext) }
+			scope.launch { createAndroidHIDManager(context = this@ForegroundService, appContext = appContext, scope = this) }
+			scope.launch { createAndroidSolarXRWebsocketServer(appContext) }
 
 			awaitCancellation()
 		} finally {

@@ -1,5 +1,6 @@
 package dev.slimevr.vmc
 
+import dev.slimevr.skeleton.BodyPartMap
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -84,14 +85,14 @@ data class Node(
 // VRM bind-pose geometry derived from a parsed VRM JSON. Used to keep the avatar's
 // local bone offsets aligned with the model's own proportions.
 data class VrmGeometry(
-	val bindOffsets: Map<BodyPart, Vector3>,
+	val bindOffsets: BodyPartMap<Vector3>,
 	val hipLocalPosition: Vector3,
 )
 
 fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
-	val bindOffsets = BODY_PART_TO_UNITY_BONE.mapValues { (_, unityName) ->
-		reader.offsetForBone(unityName) ?: Vector3.NULL
-	}
+	val bindOffsets = BodyPartMap(
+		BODY_PART_TO_UNITY_BONE.mapValues { (_, unityName) -> reader.offsetForBone(unityName) ?: Vector3.NULL },
+	)
 	fun offset(bodyPart: BodyPart) = bindOffsets[bodyPart] ?: Vector3.NULL
 
 	val hipLocalPosition = offset(BodyPart.HIP)

@@ -1,81 +1,48 @@
 package dev.slimevr.desktop.ipc
 
+import com.sun.jna.Native
 import com.sun.jna.platform.win32.Advapi32
 import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.WinBase
-import com.sun.jna.platform.win32.WinError
 import com.sun.jna.platform.win32.WinNT
-import com.sun.jna.ptr.IntByReference
 import dev.slimevr.AppContextProvider
-import dev.slimevr.util.safeLaunch
+import dev.slimevr.logging.AppLogger
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 private val k32 = Kernel32.INSTANCE
 private val adv32 = Advapi32.INSTANCE
 
-suspend fun createWindowsDriverPipe(appContext: AppContextProvider) = acceptWindowsClients(DRIVER_PIPE) { handle ->
-	handleDriverConnection(
-		appContext = appContext,
-		messages = readFramedMessages(handle),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
-	)
+private const val PIPE_BUFFER_SIZE = 64 * 1024
+
+private typealias ConnectionHandler = suspend (messages: Flow<ByteArray>, send: suspend (ByteArray) -> Unit) -> Unit
+
+suspend fun createWindowsDriverPipe(appContext: AppContextProvider) = acceptWindowsClients(DRIVER_PIPE) { messages, send ->
+	handleDriverConnection(appContext, messages, send)
 }
 
-suspend fun createWindowsFeederPipe(appContext: AppContextProvider) = acceptWindowsClients(FEEDER_PIPE) { handle ->
-	handleDriverConnection(
-		appContext = appContext,
-		messages = readFramedMessages(handle),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
-	)
+suspend fun createWindowsFeederPipe(appContext: AppContextProvider) = acceptWindowsClients(FEEDER_PIPE) { messages, send ->
+	handleDriverConnection(appContext, messages, send)
 }
 
-suspend fun createWindowsSolarXRPipe(appContext: AppContextProvider) = acceptWindowsClients(SOLARXR_PIPE) { handle ->
-	handleSolarXRBridge(
-		appContext = appContext,
-		messages = readFramedMessages(handle),
-		send = { bytes -> withContext(Dispatchers.IO) { writeFramedPipe(handle, bytes) } },
-	)
+suspend fun createWindowsSolarXRPipe(appContext: AppContextProvider) = acceptWindowsClients(SOLARXR_PIPE) { messages, send ->
+	handleSolarXRBridge(appContext, messages, send)
 }
 
-// Length field is LE u32 and includes the 4-byte header itself
-private fun readFramedMessages(handle: WinNT.HANDLE) = flow {
-	val lenBuf = ByteArray(4)
-	while (true) {
-		if (!readExact(handle, lenBuf, 4)) break
-		val totalLen = ByteBuffer.wrap(lenBuf).order(ByteOrder.LITTLE_ENDIAN).int
-
-		val dataBuf = ByteArray(totalLen - 4)
-		if (!readExact(handle, dataBuf, totalLen - 4)) break
-		emit(dataBuf)
+private fun readFrames(handle: WinNT.HANDLE) = flow {
+	PipeSlot(handle).use { reader ->
+		while (true) emit(reader.readFrame() ?: break)
 	}
 }.flowOn(Dispatchers.IO)
 
-private fun readExact(handle: WinNT.HANDLE, buf: ByteArray, len: Int): Boolean {
-	var offset = 0
-	val bytesRead = IntByReference()
-	while (offset < len) {
-		val ok = k32.ReadFile(handle, buf, len - offset, bytesRead, null)
-		if (!ok || bytesRead.value == 0) return false
-		offset += bytesRead.value
-	}
-	return true
-}
-
-private fun writeFramedPipe(handle: WinNT.HANDLE, bytes: ByteArray) {
-	val buf = ByteArray(bytes.size + 4)
-	ByteBuffer.wrap(buf).order(ByteOrder.LITTLE_ENDIAN).putInt(bytes.size + 4)
-	bytes.copyInto(buf, destinationOffset = 4)
-	k32.WriteFile(handle, buf, buf.size, IntByReference(), null)
-}
-
 private fun createSecurePipe(pipeName: String): WinNT.HANDLE {
-	// Null DACL allows any process (including SteamVR driver) to connect
 	val descriptor = WinNT.SECURITY_DESCRIPTOR(64 * 1024)
 	adv32.InitializeSecurityDescriptor(descriptor, WinNT.SECURITY_DESCRIPTOR_REVISION)
 	adv32.SetSecurityDescriptorDacl(descriptor, true, null, false)
@@ -86,40 +53,48 @@ private fun createSecurePipe(pipeName: String): WinNT.HANDLE {
 
 	val pipe = k32.CreateNamedPipe(
 		pipeName,
-		WinBase.PIPE_ACCESS_DUPLEX,
+		WinBase.PIPE_ACCESS_DUPLEX or WinNT.FILE_FLAG_OVERLAPPED,
 		WinBase.PIPE_TYPE_BYTE or WinBase.PIPE_READMODE_BYTE or WinBase.PIPE_WAIT,
 		WinBase.PIPE_UNLIMITED_INSTANCES,
-		65536,
-		65536,
+		PIPE_BUFFER_SIZE,
+		PIPE_BUFFER_SIZE,
 		0,
 		attributes,
 	)
 	check(pipe != WinNT.INVALID_HANDLE_VALUE) {
-		"CreateNamedPipe failed for $pipeName: ${k32.GetLastError()}"
+		"CreateNamedPipe failed for $pipeName: ${Native.getLastError()}"
 	}
 	return pipe
 }
 
 private suspend fun acceptWindowsClients(
 	pipeName: String,
-	handle: suspend (WinNT.HANDLE) -> Unit,
+	handle: ConnectionHandler,
 ) = withContext(Dispatchers.IO) {
-	while (isActive) {
-		val pipe = createSecurePipe(pipeName)
-
-		val ok = k32.ConnectNamedPipe(pipe, null)
-		val err = k32.GetLastError()
-		if (!ok && err != WinError.ERROR_PIPE_CONNECTED) {
-			k32.CloseHandle(pipe)
-			continue
-		}
-
-		safeLaunch {
-			try {
-				handle(pipe)
-			} finally {
-				k32.DisconnectNamedPipe(pipe)
+	supervisorScope {
+		while (isActive) {
+			val pipe = createSecurePipe(pipeName)
+			val writer = PipeSlot(pipe)
+			if (!writer.awaitClient()) {
+				writer.close()
 				k32.CloseHandle(pipe)
+				continue
+			}
+			AppLogger.ipc.info("$pipeName client connected")
+
+			launch {
+				try {
+					handle(readFrames(pipe)) { bytes -> writer.writeFrame(bytes) }
+				} catch (e: CancellationException) {
+					throw e
+				} catch (e: Exception) {
+					AppLogger.ipc.error(e, "Error while handling $pipeName client, dropping connection")
+				} finally {
+					AppLogger.ipc.info("$pipeName client disconnected")
+					writer.close()
+					k32.DisconnectNamedPipe(pipe)
+					k32.CloseHandle(pipe)
+				}
 			}
 		}
 	}

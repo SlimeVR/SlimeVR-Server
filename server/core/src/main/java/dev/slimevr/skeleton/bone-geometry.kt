@@ -9,4 +9,5 @@ private val FINGER_OFFSETS = (
 		iterateBodyPartHierarchy(BodyPart.RIGHT_HAND, true)
 	).map { it.second }.associateWith { Vector3(0f, -0.025f, 0f) }
 
-val DEFAULT_BONE_OFFSETS: Map<BodyPart, Vector3> = DEFAULT_PROPORTIONS.toBoneOffsets() + FINGER_OFFSETS
+val DEFAULT_BONE_OFFSETS: BodyPartMap<Vector3> = DEFAULT_PROPORTIONS.toBoneOffsets()
+	.mutate { offsets -> for ((bodyPart, offset) in FINGER_OFFSETS) offsets[bodyPart] = offset }

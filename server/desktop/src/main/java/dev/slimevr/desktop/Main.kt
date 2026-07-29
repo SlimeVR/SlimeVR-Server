@@ -39,14 +39,20 @@ import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
-import dev.slimevr.util.safeLaunch
+import dev.slimevr.util.appCoroutineExceptionHandler
+import dev.slimevr.util.installUncaughtExceptionReporting
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrcosc.VRCOSCManager
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import solarxr_protocol.rpc.KeybindSupport
 
-fun main(args: Array<String>) = runBlocking<Unit> {
+fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler + CoroutineName("Main")) {
+	setupDesktopLogging()
+	installUncaughtExceptionReporting()
+
 	contextDebugEnabled = System.getProperty("slimevr.debug.context") == "true" ||
 		System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
 
@@ -146,15 +152,14 @@ fun main(args: Array<String>) = runBlocking<Unit> {
 		tapDetectionManager = tapDetectionManager,
 	)
 
-
 	try {
 		appContext.startObserving()
 
-		safeLaunch { createDesktopHIDManager(appContext, this) }
-		safeLaunch { createDesktopKeybindManager(appContext, this) }
-		safeLaunch { createSolarXRWebsocketServer(appContext) }
-		safeLaunch { createIpcServers(appContext) }
-		safeLaunch { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
+		launch { createDesktopHIDManager(appContext, this) }
+		launch { createDesktopKeybindManager(appContext, this) }
+		launch { createSolarXRWebsocketServer(appContext) }
+		launch { createIpcServers(appContext) }
+		launch { setupDesktopNetworkProfileChecker(this, networkProfileManager) }
 
 		awaitCancellation()
 	} finally {

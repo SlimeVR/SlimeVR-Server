@@ -1,7 +1,7 @@
 package dev.slimevr.desktop.ipc
 
+import com.squareup.wire.ProtoWriter
 import dev.slimevr.AppContextProvider
-import dev.slimevr.AppLogger
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.desktop.platform.Battery
@@ -13,15 +13,19 @@ import dev.slimevr.desktop.platform.Version
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
 import dev.slimevr.driver.DriverBridgeOutbound
-import dev.slimevr.util.safeLaunch
+import dev.slimevr.logging.AppLogger
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import okio.Buffer
 import solarxr_protocol.datatypes.BodyPart
 import java.io.File
 import java.nio.file.Path
@@ -72,6 +76,8 @@ val bodyPartToRole = mapOf(
 	BodyPart.RIGHT_UPPER_LEG to TrackerRole.RIGHT_KNEE,
 	BodyPart.LEFT_FOOT to TrackerRole.LEFT_FOOT,
 	BodyPart.RIGHT_FOOT to TrackerRole.RIGHT_FOOT,
+	BodyPart.LEFT_HAND to TrackerRole.LEFT_HAND,
+	BodyPart.RIGHT_HAND to TrackerRole.RIGHT_HAND,
 )
 
 const val PROTOCOL_VERSION = 2
@@ -128,8 +134,12 @@ suspend fun handleDriverConnection(
 ) = coroutineScope {
 	val sendMutex = Mutex()
 
+	val encodeBuffer = Buffer()
+	val encodeWriter = ProtoWriter(encodeBuffer)
+
 	suspend fun sendMsg(msg: ProtobufMessage) = sendMutex.withLock {
-		send(ProtobufMessage.ADAPTER.encode(msg))
+		ProtobufMessage.ADAPTER.encode(encodeWriter, msg)
+		send(encodeBuffer.readByteArray())
 	}
 
 	val bridge = DriverBridge.create(
@@ -151,7 +161,8 @@ suspend fun handleDriverConnection(
 				),
 			),
 		)
-	}
+	}.launchIn(this)
+
 	bridge.outbound.on<DriverBridgeOutbound.TrackerPosition> { event ->
 		sendMsg(
 			ProtobufMessage(
@@ -167,7 +178,7 @@ suspend fun handleDriverConnection(
 				),
 			),
 		)
-	}
+	}.launchIn(this)
 
 	bridge.outbound.on<DriverBridgeOutbound.TrackerStatus> { event ->
 		sendMsg(
@@ -183,6 +194,11 @@ suspend fun handleDriverConnection(
 						else -> TrackerStatus.Status.ERROR
 					},
 				),
+			),
+		)
+
+		sendMsg(
+			ProtobufMessage(
 				battery = Battery(
 					tracker_id = event.trackerId,
 					battery_level = event.battery ?: 0f,
@@ -190,7 +206,7 @@ suspend fun handleDriverConnection(
 				),
 			),
 		)
-	}
+	}.launchIn(this)
 
 	sendMsg(ProtobufMessage(version = Version(protocol_version = PROTOCOL_VERSION)))
 
@@ -202,7 +218,7 @@ suspend fun handleDriverConnection(
 				if (ver.protocol_version >= 2) {
 					// FIXME: multiple launch could be created here bc nothing prevent protocol from changing or getting called again during runtime
 					// causing a memory leak
-					safeLaunch {
+					this@coroutineScope.launch {
 						startBindingProvider()
 					}
 				}
@@ -251,5 +267,9 @@ suspend fun handleDriverConnection(
 		}
 	} finally {
 		bridge.disconnect()
+		// The outbound listeners are launched into this scope and never complete on their own
+		// (they observe a SharedFlow), so coroutineScope would wait on them forever and the
+		// connection would never be released for the next client -- e.g. a SteamVR restart
+		coroutineContext.cancelChildren()
 	}
 }

@@ -4,8 +4,8 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.hid.isCompatibleHidReceiver
 import dev.slimevr.hid.isCompatibleHidTracker
-import dev.slimevr.util.safeLaunch
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.SerialDevice
 import solarxr_protocol.rpc.SerialDeviceType
 
@@ -120,7 +120,7 @@ class SerialServer(
 		return object : FlashingHandler by handler {
 			override fun closeSerial() {
 				handler.closeSerial()
-				context.scope.safeLaunch { context.dispatch(SerialServerActions.RemoveConnection(portLocation)) }
+				context.scope.launch { context.dispatch(SerialServerActions.RemoveConnection(portLocation)) }
 			}
 		}
 	}

@@ -1,7 +1,8 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.config.UserConfig
-import dev.slimevr.util.safeLaunch
+import dev.slimevr.logging.AppLogger
+import dev.slimevr.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
@@ -10,31 +11,30 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
 class BoneTransformBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetBoneRotation -> {
-			val bones = state.boneInputs.toMutableMap()
-			val bone = bones[action.bodyPart] ?: return state
-			bones[action.bodyPart] = bone.copy(rawRotation = action.rotation, isActive = true)
-			state.copy(boneInputs = bones)
+			val bone = state.boneInputs[action.bodyPart] ?: return state
+			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = action.rotation, isActive = true) })
 		}
 
 		is SkeletonActions.SetBonePosition -> {
-			val bones = state.boneInputs.toMutableMap()
-			val bone = bones[action.bodyPart] ?: return state
-			bones[action.bodyPart] = bone.copy(rawPosition = action.position, isActive = true)
-			state.copy(boneInputs = bones)
+			val bone = state.boneInputs[action.bodyPart] ?: return state
+			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawPosition = action.position, isActive = true) })
 		}
 
 		is SkeletonActions.DisableBone -> {
-			val bones = state.boneInputs.toMutableMap()
-			val bone = bones[action.bodyPart] ?: return state
-			bones[action.bodyPart] = bone.copy(isActive = false)
-			state.copy(boneInputs = bones)
+			val bone = state.boneInputs[action.bodyPart] ?: return state
+			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = Quaternion.IDENTITY, rawPosition = Vector3.NULL, isActive = false) })
 		}
 
 		else -> state
@@ -45,7 +45,7 @@ class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehavio
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 		is SkeletonActions.SetProportions -> {
 			val bones = action.lengths.toBoneOffsets()
-			val newBones = state.boneInputs.mapValues { (bodyPart, bone) ->
+			val newBones = state.boneInputs.mapValues { bodyPart, bone ->
 				bone.copy(offset = bones[bodyPart] ?: bone.offset)
 			}
 			state.copy(boneInputs = newBones, skeletonHeight = action.lengths.height())
@@ -69,23 +69,23 @@ class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehavio
 
 class HeightLogBehaviour : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
-		receiver.context.scope.safeLaunch {
+		receiver.context.scope.launch {
 			receiver.context.state
 				.map { state -> state.skeletonHeight }
 				.distinctUntilChanged()
-				.collect { height -> println("User height changed: ${"%.2f".format(height)}m") }
+				.collect { height -> AppLogger.skeleton.info("User height changed: ${"%.2f".format(height)}m") }
 		}
 	}
 }
 
 class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
-		receiver.context.scope.safeLaunch {
+		receiver.context.scope.launch {
 			val intervalMs = (1000f / inputHz).toLong()
-			val startTime = System.currentTimeMillis()
+			val startTime = timeSource.markNow()
 			while (true) {
 				delay(intervalMs)
-				val elapsed = (System.currentTimeMillis() - startTime) / 1000f
+				val elapsed = startTime.elapsedNow().inWholeMilliseconds / 1000f
 				val state = receiver.context.state.value
 
 				receiver.context.dispatch(
@@ -124,39 +124,72 @@ class PauseTrackingBehaviour : SkeletonBehaviour {
 }
 
 class ComputedSkeletonBehaviour(
-	val hz: Float = 100f, // TODO behaviours like smoothing will behave different based on hz
+	val hz: Int,
 	val processors: List<SkeletonProcessor> = emptyList(),
 ) : SkeletonBehaviour {
+	private val intervalDuration = (1.0 / hz).seconds
+	private val logSpamWaitDuration = 15.seconds
+	private val minimumDelay = 1.nanoseconds
+
 	override fun observe(receiver: Skeleton) {
-		val intervalMs = (1000f / hz).toLong()
-		receiver.context.scope.safeLaunch {
+		var nextLogTime = timeSource.markNow()
+		var frameStartTime = timeSource.markNow()
+		var lastFrameTime = Duration.ZERO
+
+		receiver.context.scope.launch {
 			while (true) {
 				try {
-					delay(intervalMs)
-					val targetState = receiver.context.state.value
-					val processed = processors
-						.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
+					// Process starts
+					val processTime = measureTime {
 
-					val rootHead = Vector3(0f, targetState.skeletonHeight, 0f) // FIXME WRONG
-					val fk = buildBones(processed, rootHead = rootHead)
+						val targetState = receiver.context.state.value
 
-// 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
+						// Run processors
+						val processed = processors
+							.fold(targetState) { state, processor -> processor.process(state, lastFrameTime) } // TODO: Add a constrain processor (maybe not needed)
+
+						// Get head position
+						val rootHead = processed.boneInputs[BodyPart.HEAD]
+							?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
+							?: Vector3(0f, targetState.skeletonHeight, 0f)
+
+						// Run FK
+						val fk = buildBones(processed, rootHead = rootHead)
+
+//	 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
 //
-// 					val targets = targetProcessors
-// 						.filter { targetProcessors -> targetProcessors.enabled }
-// 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
+//	 					val targets = targetProcessors
+//	 						.filter { targetProcessors -> targetProcessors.enabled }
+//	 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
 //
-// 					val ikOutput = solver.solve(fk, targets)
+//	 					val ikOutput = solver.solve(fk, targets)
 
-// 					receiver.computed.value = ikOutput
+						// Frame ends
+						lastFrameTime = frameStartTime.elapsedNow()
 
-					if (!targetState.paused) {
-						receiver.computed.value = fk
+						// Updated the computed skeleton with the result
+						if (!targetState.paused) { // FIXME : bones should still follow the head when paused
+							receiver.computed.value = ComputedSkeleton(fk, lastFrameTime)
+// 							receiver.computed.value = ComputedSkeleton(ikOutput, lastFrameTime)
+						}
 					}
+					// Process ends
+
+					// Frame starts
+					frameStartTime = timeSource.markNow()
+
+					// Wait the remainder of last process
+					val delayDuration = (intervalDuration - processTime).coerceAtLeast(minimumDelay)
+					if (delayDuration <= minimumDelay && nextLogTime.hasPassedNow()) {
+						// Warn if the frame took too long to reach the target hz.
+						AppLogger.skeleton.warn("Can't reach target hz ($hz), process time = $processTime")
+						nextLogTime = timeSource.markNow() + logSpamWaitDuration
+					}
+					delay(delayDuration)
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {
-					dev.slimevr.AppLogger.coroutines.error(e, "Error in ComputedSkeletonBehaviour")
+					AppLogger.coroutines.error(e, "Error in ComputedSkeletonBehaviour")
 				}
 			}
 		}

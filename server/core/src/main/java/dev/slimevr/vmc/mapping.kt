@@ -1,7 +1,7 @@
 package dev.slimevr.vmc
 
 import com.jme3.math.FastMath
-import dev.slimevr.config.VMCConfig
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.BoneState
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -120,8 +120,8 @@ private suspend fun SequenceScope<Pair<BodyPart?, BodyPart>>.visitVMC(parent: Bo
 
 fun iterateVMCHierarchy() = sequence { visitVMC(null, BodyPart.HIP) }
 
-val VMC_BONE_PARENTS: Map<BodyPart, BodyPart?> =
-	iterateVMCHierarchy().associate { (parent, child) -> child to parent }
+val VMC_BONE_PARENTS: BodyPartMap<BodyPart?> =
+	BodyPartMap(iterateVMCHierarchy().associate { (parent, child) -> child to parent })
 
 val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
 	BodyPart.LEFT_SHOULDER to BodyPart.RIGHT_SHOULDER,
@@ -148,16 +148,18 @@ val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
 	BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
 )
 
-val VMC_MIRROR_BONES: Map<BodyPart, BodyPart> = VMC_MIRROR_BONE_PAIRS
-	.flatMap { (left, right) -> listOf(left to right, right to left) }
-	.toMap()
+val VMC_MIRROR_BONES: BodyPartMap<BodyPart> = BodyPartMap(
+	VMC_MIRROR_BONE_PAIRS
+		.flatMap { (left, right) -> listOf(left to right, right to left) }
+		.toMap(),
+)
 
 fun vmcMirrorSource(bodyPart: BodyPart): BodyPart = VMC_MIRROR_BONES[bodyPart] ?: bodyPart
 
 // Per-bone rest offset, subtracted from the live world rotation before computing the VMC local.
 // Foot cancels R(90deg,X) baked into DEFAULT_SKELETON_STATE. Arms remap our hanging rest (NEG_Y)
 // to the VRM rig's T-pose rest direction so the avatar isn't stuck at T regardless of our pose.
-val VMC_REST_ROTATIONS: Map<BodyPart, Quaternion> = run {
+val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 	val leftArm = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 	val rightArm = Quaternion.rotationAroundZAxis(FastMath.HALF_PI)
 	val foot = Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
@@ -175,18 +177,20 @@ val VMC_REST_ROTATIONS: Map<BodyPart, Quaternion> = run {
 		BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE, BodyPart.RIGHT_RING_DISTAL,
 		BodyPart.RIGHT_LITTLE_PROXIMAL, BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
 	)
-	mapOf(
-		BodyPart.LEFT_FOOT to foot,
-		BodyPart.RIGHT_FOOT to foot,
-		BodyPart.LEFT_UPPER_ARM to leftArm,
-		BodyPart.LEFT_LOWER_ARM to leftArm,
-		BodyPart.LEFT_HAND to leftArm,
-		BodyPart.RIGHT_UPPER_ARM to rightArm,
-		BodyPart.RIGHT_LOWER_ARM to rightArm,
-		BodyPart.RIGHT_HAND to rightArm,
-	) +
-		leftFingers.associateWith { leftArm } +
-		rightFingers.associateWith { rightArm }
+	BodyPartMap(
+		mapOf(
+			BodyPart.LEFT_FOOT to foot,
+			BodyPart.RIGHT_FOOT to foot,
+			BodyPart.LEFT_UPPER_ARM to leftArm,
+			BodyPart.LEFT_LOWER_ARM to leftArm,
+			BodyPart.LEFT_HAND to leftArm,
+			BodyPart.RIGHT_UPPER_ARM to rightArm,
+			BodyPart.RIGHT_LOWER_ARM to rightArm,
+			BodyPart.RIGHT_HAND to rightArm,
+		) +
+			leftFingers.associateWith { leftArm } +
+			rightFingers.associateWith { rightArm },
+	)
 }
 
 fun vmcMirrorPosition(pos: Vector3): Vector3 = Vector3(-pos.x, pos.y, pos.z)
@@ -224,11 +228,4 @@ fun vmcLocalPosition(
 	val parentAdjusted = restAdjustedWorld(parent, restParentBodyPart, mirror)
 	val localPosition = bone.headPosition - parent.headPosition
 	return parentAdjusted.inv().sandwich(if (mirror) vmcMirrorPosition(localPosition) else localPosition)
-}
-
-fun vmcRootPosition(bones: Map<BodyPart, BoneState>, config: VMCConfig, vrm: VrmGeometry?): Vector3 {
-	val userHip = bones[BodyPart.HIP]?.headPosition ?: Vector3.NULL
-	val hipLocalPosition = vrm?.hipLocalPosition ?: Vector3.NULL
-	val targetHip = if (config.anchorAtHips) Vector3.NULL else userHip
-	return (if (config.mirrorTracking) vmcMirrorPosition(targetHip) else targetHip) - hipLocalPosition
 }
