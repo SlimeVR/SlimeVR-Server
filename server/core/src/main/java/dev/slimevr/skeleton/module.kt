@@ -144,7 +144,7 @@ class Skeleton(
 						BoneYawRollAlignProcessor(ctx.config.settings),
 						BoneDirectLinkProcessor(),
 						FingerImputeProcessor(),
-						ToesImputeProcessor(),
+						ToeDirectLinkProcessor(),
 						BonePredictionProcessor(ctx.config.settings),
 						BoneSmoothingProcessor(ctx.config.settings, skeletonRefreshRate),
 					),

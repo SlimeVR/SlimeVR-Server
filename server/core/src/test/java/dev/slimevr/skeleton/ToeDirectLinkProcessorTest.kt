@@ -1,28 +1,21 @@
-package dev.slimevr.tracker
-import dev.slimevr.skeleton.BoneInput
-import dev.slimevr.skeleton.BoneState
-import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
-import dev.slimevr.skeleton.SkeletonState
-import dev.slimevr.skeleton.bodyPartMap
-import dev.slimevr.skeleton.mutate
+package dev.slimevr.skeleton
+
 import dev.slimevr.skeleton.processors.ToesImputeProcessor
 import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
 import org.junit.jupiter.api.Test
 import solarxr_protocol.datatypes.BodyPart
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class ToesImputeProcessorTest {
+class ToeDirectLinkProcessorTest {
 	@Test
 	fun `test impute missing all toe trackers`() {
 		val processor = ToesImputeProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 		}
 
@@ -60,23 +53,23 @@ class ToesImputeProcessorTest {
 			&& rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis
 			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
 
-		assertTrue (testSucceeded)
+        assertTrue(testSucceeded)
 	}
 	@Test
 	fun `test impute missing toe trackers from flexor digitorum brevis and abductor digiti minimi`() {
 		val processor = ToesImputeProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.LEFT_ABDUCTOR_HALLUCIS] = map.getValue(BodyPart.LEFT_ABDUCTOR_HALLUCIS).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.RIGHT_ABDUCTOR_HALLUCIS] = map.getValue(BodyPart.RIGHT_ABDUCTOR_HALLUCIS).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 		}
 
@@ -105,7 +98,7 @@ class ToesImputeProcessorTest {
 			&& rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis
 			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
 
-		assertTrue (testSucceeded)
+        assertTrue(testSucceeded)
 	}
 
 	@Test
@@ -113,22 +106,22 @@ class ToesImputeProcessorTest {
 		val processor = ToesImputeProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.LEFT_ABDUCTOR_HALLUCIS] = map.getValue(BodyPart.LEFT_ABDUCTOR_HALLUCIS).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS] = map.getValue(BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.RIGHT_ABDUCTOR_HALLUCIS] = map.getValue(BodyPart.RIGHT_ABDUCTOR_HALLUCIS).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS] = map.getValue(BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 		}
 
@@ -149,6 +142,6 @@ class ToesImputeProcessorTest {
 		val testSucceeded = leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis
 			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
 
-		assertTrue (testSucceeded)
+        assertTrue(testSucceeded)
 	}
 }
