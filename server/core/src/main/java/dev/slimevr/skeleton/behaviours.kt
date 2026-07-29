@@ -15,8 +15,10 @@ import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
 class BoneTransformBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
@@ -125,55 +127,64 @@ class ComputedSkeletonBehaviour(
 	val hz: Int,
 	val processors: List<SkeletonProcessor> = emptyList(),
 ) : SkeletonBehaviour {
-	val logSpamWaitDuration = 10.seconds
-	val minimumDelay = 1.nanoseconds
+	private val intervalDuration = (1.0 / hz).seconds
+	private val logSpamWaitDuration = 15.seconds
+	private val minimumDelay = 1.nanoseconds
 
 	override fun observe(receiver: Skeleton) {
-		val intervalDuration = (1.0 / hz).seconds
 		var nextLogTime = timeSource.markNow()
+		var frameStartTime = timeSource.markNow()
+		var lastFrameTime = Duration.ZERO
 
 		receiver.context.scope.launch {
 			while (true) {
 				try {
-					val startTime = timeSource.markNow()
+					// Process starts
+					val processTime = measureTime {
 
-					val targetState = receiver.context.state.value
+						val targetState = receiver.context.state.value
 
-					// Run processors
-					val processed = processors
-						.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
+						// Run processors
+						val processed = processors
+							.fold(targetState) { state, processor -> processor.process(state, lastFrameTime) } // TODO: Add a constrain processor (maybe not needed)
 
-					// Get head position
-					val rootHead = processed.boneInputs[BodyPart.HEAD]
-						?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
-						?: Vector3(0f, targetState.skeletonHeight, 0f)
+						// Get head position
+						val rootHead = processed.boneInputs[BodyPart.HEAD]
+							?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
+							?: Vector3(0f, targetState.skeletonHeight, 0f)
 
-					// Run FK
-					val fk = buildBones(processed, rootHead = rootHead)
+						// Run FK
+						val fk = buildBones(processed, rootHead = rootHead)
 
-// 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
+//	 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
 //
-// 					val targets = targetProcessors
-// 						.filter { targetProcessors -> targetProcessors.enabled }
-// 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
+//	 					val targets = targetProcessors
+//	 						.filter { targetProcessors -> targetProcessors.enabled }
+//	 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
 //
-// 					val ikOutput = solver.solve(fk, targets)
+//	 					val ikOutput = solver.solve(fk, targets)
 
-					// FIXME bones should still follow the head when paused
-					if (!targetState.paused) {
-						receiver.computed.value = fk
-// 						receiver.computed.value = ikOutput
+						// Frame ends
+						lastFrameTime = frameStartTime.elapsedNow()
+
+						// Updated the computed skeleton with the result
+						if (!targetState.paused) { // FIXME : bones should still follow the head when paused
+							receiver.computed.value = ComputedSkeleton(fk, lastFrameTime)
+// 							receiver.computed.value = ComputedSkeleton(ikOutput, lastFrameTime)
+						}
 					}
+					// Process ends
 
-					val processTime = startTime.elapsedNow()
+					// Frame starts
+					frameStartTime = timeSource.markNow()
+
+					// Wait the remainder of last process
 					val delayDuration = (intervalDuration - processTime).coerceAtLeast(minimumDelay)
-
-					// Warn if the process took too long to reach the target hz.
 					if (delayDuration <= minimumDelay && nextLogTime.hasPassedNow()) {
+						// Warn if the frame took too long to reach the target hz.
 						AppLogger.skeleton.warn("Can't reach target hz ($hz), process time = $processTime")
 						nextLogTime = timeSource.markNow() + logSpamWaitDuration
 					}
-
 					delay(delayDuration)
 				} catch (e: CancellationException) {
 					throw e

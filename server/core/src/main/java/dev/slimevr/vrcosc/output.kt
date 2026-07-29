@@ -72,7 +72,7 @@ class VRCOSCOutputBehaviour(
 
 	private fun observeFrames(receiver: VRCOSCManager, runtime: OutputRuntime) {
 		skeleton.computed
-			.onEach { bones -> sendFrame(receiver, runtime, bones) }
+			.onEach { computedSkeleton -> sendFrame(receiver, runtime, computedSkeleton.bones) }
 			.launchIn(receiver.context.scope)
 	}
 

@@ -49,7 +49,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 			::Pair,
 		)
 			.distinctUntilChanged()
-			.onEach { (computedBones, enabledBodyParts) ->
+			.onEach { (computedSkeleton, enabledBodyParts) ->
 				val serverState = receiver.appContext.server.context.state.value
 
 				// Map the nearest trackers to their body parts
@@ -61,7 +61,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 					trackerStateByBodyPart.putIfAbsent(bodyPart, trackerState)
 				}
 
-				computedBones.forEach { (part, state) ->
+				computedSkeleton.bones.forEach { (part, state) ->
 					if (enabledBodyParts.contains(part)) {
 						val closestTracker = bodyPartToNearest[part].orEmpty()
 							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }

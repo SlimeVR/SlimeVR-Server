@@ -9,6 +9,7 @@ import dev.slimevr.skeleton.mapValues
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.FilteringType
+import kotlin.time.Duration
 
 /**
  * Tries to predict future rotations of bones.
@@ -23,7 +24,7 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 
 	private var velocities: BodyPartMap<BoneVelocity> = bodyPartMap()
 
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.PREDICTION) return state
 		val predictionAmount = config.amount

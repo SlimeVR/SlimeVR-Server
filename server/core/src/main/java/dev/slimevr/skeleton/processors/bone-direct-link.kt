@@ -4,6 +4,7 @@ import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.time.Duration
 
 /**
  * Handles setting the rotation of an inactive bone with its source bone.
@@ -37,7 +38,7 @@ class BoneDirectLinkProcessor : SkeletonProcessor {
 		BodyPart.RIGHT_HAND to BodyPart.RIGHT_LOWER_ARM,
 	)
 
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
 		val updatedBoneInputs = BodyPartMap(state.boneInputs)
 
 		for ((bodyPart, source) in linkedToSource) {

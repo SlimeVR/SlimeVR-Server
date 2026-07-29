@@ -65,14 +65,14 @@ class VMCOutputBehaviour(
 			}.launchIn(receiver.context.scope)
 
 		skeleton.computed
-			.onEach { bones ->
+			.onEach { computedSkeleton ->
 				val s = sender ?: return@onEach
 				val config = settings.context.state.value.data.vmcConfig
 				val currentTime = System.currentTimeMillis()
 				val vrm = vrmGeometry
 				receiver.context.scope.launch {
 					try {
-						s.send(buildBundle(bones, config, currentTime, vrm))
+						s.send(buildBundle(computedSkeleton.bones, config, currentTime, vrm))
 					} catch (e: Exception) {
 						AppLogger.vmc.error("Failed to send VMC frame", e)
 					}

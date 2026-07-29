@@ -5,6 +5,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.time.ComparableTimeMark
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
 // TODO We should probably just have globally available velocity on the whole skeleton,
@@ -86,7 +87,7 @@ class SkatingCorrectionProcessor : SkeletonProcessor {
 
 	var comState: COMState? = null
 
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
 		val curTime = timeSource.markNow()
 
 		val lastComState = comState
@@ -160,7 +161,7 @@ class SkatingCorrectionProcessor : SkeletonProcessor {
 class FloorClipProcessor : SkeletonProcessor {
 	fun getDisplacement(footPos: Vector3): Vector3 = Vector3(0f, footPos.y.coerceAtMost(0f), 0f)
 
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
 		val newBones = state.boneInputs.mapValues { (bodyPart, bone) -> }
 		state.boneInputs[BodyPart.LEFT_FOOT]?.let {
 			val correction = getDisplacement(it.offset)

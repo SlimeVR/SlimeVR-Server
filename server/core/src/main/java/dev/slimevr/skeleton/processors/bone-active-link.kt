@@ -4,6 +4,7 @@ import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.mutate
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.time.Duration
 
 /**
  * Handles setting the rotation of an inactive bone with the first active bone in its sources, or keeps
@@ -23,7 +24,7 @@ class BoneActiveLinkProcessor : SkeletonProcessor {
 		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
 	)
 
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
 		val boneInputs = state.boneInputs
 
 		val updatedLinkedBones = boneInputs.mutate { updated ->

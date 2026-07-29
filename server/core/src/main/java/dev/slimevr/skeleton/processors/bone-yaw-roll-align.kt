@@ -7,6 +7,7 @@ import dev.slimevr.skeleton.mutate
 import dev.slimevr.skeleton.resolveRotationFor
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.time.Duration
 
 /**
  * Handles rotating bones' yaw and roll to match other bones' yaw and roll.
@@ -26,7 +27,7 @@ class BoneYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 		SourceLink(BodyPart.RIGHT_UPPER_LEG, arrayOf(BodyPart.RIGHT_LOWER_LEG), mustBeActive = true),
 	)
 
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
 		val boneInputs = state.boneInputs
 		val ratios = settings.context.state.value.data.skeletonConfig.ratios
 

@@ -6,13 +6,14 @@ import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.mutate
 import io.github.axisangles.ktmath.Vector3
 import kotlin.collections.set
+import kotlin.time.Duration
 
 /**
  * Handles replacing rotations of boneInputs that are not actively receiving data by
  * falling back to their parent's yaw.
  */
 class BoneYawFallbackProcessor : SkeletonProcessor {
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
 		val boneInputs = state.boneInputs
 
 		val updatedFallbackBones = boneInputs.mutate { updated ->

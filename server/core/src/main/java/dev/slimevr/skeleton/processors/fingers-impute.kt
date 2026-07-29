@@ -6,6 +6,7 @@ import dev.slimevr.skeleton.SkeletonState
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.collections.get
 import kotlin.collections.iterator
+import kotlin.time.Duration
 
 /**
  * Handles rotations of inactive finger bones.
@@ -50,7 +51,7 @@ class FingerImputeProcessor : SkeletonProcessor {
 	)
 
 	// TODO : There's more math to do here. Reference the original code.
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
 		val updatedBoneInputs = BodyPartMap(state.boneInputs)
 
 		for ((bodyPart, source) in fingerToSource) {

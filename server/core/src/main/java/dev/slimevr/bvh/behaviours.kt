@@ -47,7 +47,7 @@ class BVHRecordingBehaviour(
 					try {
 						AppLogger.bvh.info("Opening BVH recording at ${storage.displayPath(resolvedPath)}")
 						stream = BvhStream(storage.openTextFile(resolvedPath)).also {
-							it.writeHeader(skeleton.computed.value)
+							it.writeHeader(skeleton.computed.value.bones)
 							// TODO: we could write the initial T-Pose or whatever here
 						}
 					} catch (e: Exception) {
@@ -66,9 +66,9 @@ class BVHRecordingBehaviour(
 				}
 			}.launchIn(receiver.context.scope)
 
-		skeleton.computed.onEach { bones ->
+		skeleton.computed.onEach { computedSkeleton ->
 			try {
-				stream?.writeFrame(bones)
+				stream?.writeFrame(computedSkeleton.bones)
 			} catch (e: Exception) {
 				AppLogger.bvh.error("Failed to write BVH frame", e)
 				receiver.context.dispatch(BVHActions.StopRecording)

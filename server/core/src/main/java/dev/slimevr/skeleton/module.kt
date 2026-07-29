@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.SkeletonBone
+import kotlin.time.Duration
 
 data class BoneInput(
 	val bodyPart: BodyPart,
@@ -116,26 +117,32 @@ sealed interface SkeletonActions {
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
 typealias SkeletonBehaviour = Behaviour<SkeletonState, SkeletonActions, Skeleton>
 interface SkeletonProcessor {
-	fun process(state: SkeletonState): SkeletonState
+	fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState
 }
+
+data class ComputedSkeleton(
+	val bones: BodyPartMap<BoneState>,
+	val frameTime: Duration,
+)
 
 class Skeleton(
 	val context: SkeletonContext,
-	val computed: MutableStateFlow<BodyPartMap<BoneState>>,
+	val computed: MutableStateFlow<ComputedSkeleton>,
 ) {
 	fun startObserving() = context.observeAll(this)
 
 	companion object {
-		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider): Skeleton {
-			val skeletonRefreshRate = 300
+		const val DEFAULT_HZ = 300
+
+		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, hz: Int = DEFAULT_HZ): Skeleton {
 			val behaviours = listOf(
 				PauseTrackingBehaviour(),
 				BoneTransformBehaviour(),
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
-				// YouSpinMeRightRoundBehaviour(inputHz = 50f),
+//				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
-					hz = skeletonRefreshRate,
+					hz = hz,
 					processors = listOf(
 						BoneYawFallbackProcessor(),
 						BoneActiveLinkProcessor(),
@@ -144,7 +151,7 @@ class Skeleton(
 						BoneDirectLinkProcessor(),
 						FingerImputeProcessor(),
 						BonePredictionProcessor(ctx.config.settings),
-						BoneSmoothingProcessor(ctx.config.settings, skeletonRefreshRate),
+						BoneSmoothingProcessor(ctx.config.settings),
 					),
 				),
 			)
@@ -156,7 +163,7 @@ class Skeleton(
 				name = "Skeleton",
 			)
 
-			return Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
+			return Skeleton(context, MutableStateFlow(ComputedSkeleton(buildBones(context.state.value), Duration.ZERO)))
 		}
 	}
 }

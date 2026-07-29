@@ -9,23 +9,22 @@ import dev.slimevr.skeleton.mapValues
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.FilteringType
+import kotlin.time.Duration
 
 /**
  * Running average of bones to smooth them out.
  */
-// TODO checking skeletonRefreshRate is not good enough
-//  since we're never gonna get that in practice. Need something more robust.
-class BoneSmoothingProcessor(val settings: Settings, val skeletonRefreshRate: Int) : SkeletonProcessor {
+class BoneSmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 	private var smoothedRotations: BodyPartMap<Quaternion> = bodyPartMap()
 	private var smoothedLengths: BodyPartMap<Vector3> = bodyPartMap()
 
 	// TODO this isn't linear. Do we want linear smoothing like in main?
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.SMOOTHING) return state
 
 		val smoothingAmount = SMOOTH_MIN + config.amount.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN)
-		val alpha = (1 - smoothingAmount) / (skeletonRefreshRate / 100f)
+		val alpha = (1 - smoothingAmount) * (lastFrameTime.inWholeMicroseconds / 10_000f)
 
 		smoothedRotations = state.boneInputs.mapValues { bodyPart, bone ->
 			(smoothedRotations[bodyPart] ?: bone.rawRotation).lerpR(bone.rawRotation, alpha).unit()
@@ -45,7 +44,7 @@ class BoneSmoothingProcessor(val settings: Settings, val skeletonRefreshRate: In
 	}
 
 	companion object {
-		private const val SMOOTH_MIN = 0.62f
-		private const val SMOOTH_MAX = 0.9f
+		private const val SMOOTH_MIN = 0.6f
+		private const val SMOOTH_MAX = 0.93f
 	}
 }
