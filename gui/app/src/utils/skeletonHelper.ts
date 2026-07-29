@@ -12,7 +12,7 @@ const _matrixWorldInv = new Matrix4();
 
 export class BasedSkeletonHelper extends LineSegments2 {
   isSkeletonHelper: boolean;
-  root: Object3D;
+  root: Object3D
   bones: Bone[];
   readonly type = 'SkeletonHelper';
 
@@ -241,9 +241,13 @@ export class BoneKind extends Bone {
         return new Color('pink');
       case BodyPart.LEFT_BIG_TOE:
       case BodyPart.LEFT_INDEX_TOE:
+      case BodyPart.LEFT_MIDDLE_TOE:
+      case BodyPart.LEFT_RING_TOE:
       case BodyPart.LEFT_PINKY_TOE:
       case BodyPart.RIGHT_BIG_TOE:
       case BodyPart.RIGHT_INDEX_TOE:
+      case BodyPart.RIGHT_MIDDLE_TOE:
+      case BodyPart.RIGHT_RING_TOE:
       case BodyPart.RIGHT_PINKY_TOE:
         return new Color('pink');
     }
@@ -284,12 +288,16 @@ export class BoneKind extends Bone {
         return [
           BodyPart.LEFT_BIG_TOE,
           BodyPart.LEFT_INDEX_TOE,
+          BodyPart.LEFT_MIDDLE_TOE,
+          BodyPart.LEFT_RING_TOE,
           BodyPart.LEFT_PINKY_TOE,
         ];
       case BodyPart.RIGHT_FOOT:
         return [
           BodyPart.RIGHT_BIG_TOE,
           BodyPart.RIGHT_INDEX_TOE,
+          BodyPart.RIGHT_MIDDLE_TOE,
+          BodyPart.RIGHT_RING_TOE,
           BodyPart.RIGHT_PINKY_TOE,
         ];
       case BodyPart.LEFT_SHOULDER:
@@ -384,9 +392,13 @@ export class BoneKind extends Bone {
         return [];
       case BodyPart.LEFT_BIG_TOE:
       case BodyPart.LEFT_INDEX_TOE:
+      case BodyPart.LEFT_MIDDLE_TOE:
+      case BodyPart.LEFT_RING_TOE:
       case BodyPart.LEFT_PINKY_TOE:
       case BodyPart.RIGHT_BIG_TOE:
       case BodyPart.RIGHT_INDEX_TOE:
+      case BodyPart.RIGHT_MIDDLE_TOE:
+      case BodyPart.RIGHT_RING_TOE:
       case BodyPart.RIGHT_PINKY_TOE:
         return [];
     }
@@ -506,11 +518,19 @@ export class BoneKind extends Bone {
         return BodyPart.LEFT_FOOT;
       case BodyPart.LEFT_INDEX_TOE:
         return BodyPart.LEFT_FOOT;
+      case BodyPart.LEFT_MIDDLE_TOE:
+        return BodyPart.LEFT_FOOT;
+      case BodyPart.LEFT_RING_TOE:
+        return BodyPart.LEFT_FOOT;
       case BodyPart.LEFT_PINKY_TOE:
         return BodyPart.LEFT_FOOT;
       case BodyPart.RIGHT_BIG_TOE:
         return BodyPart.RIGHT_FOOT;
       case BodyPart.RIGHT_INDEX_TOE:
+        return BodyPart.RIGHT_FOOT;
+      case BodyPart.RIGHT_MIDDLE_TOE:
+        return BodyPart.RIGHT_FOOT;
+      case BodyPart.RIGHT_RING_TOE:
         return BodyPart.RIGHT_FOOT;
       case BodyPart.RIGHT_PINKY_TOE:
         return BodyPart.RIGHT_FOOT;
