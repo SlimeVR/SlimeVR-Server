@@ -60,7 +60,7 @@ class ToesImputeProcessorTest {
 			&& rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis
 			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
 
-		assertTrue (testSucceeded )
+		assertTrue (testSucceeded)
 	}
 	@Test
 	fun `test impute missing toe trackers from flexor digitorum brevis and abductor digiti minimi`() {
@@ -105,7 +105,7 @@ class ToesImputeProcessorTest {
 			&& rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis
 			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
 
-		assertTrue (testSucceeded )
+		assertTrue (testSucceeded)
 	}
 
 	@Test
@@ -149,6 +149,6 @@ class ToesImputeProcessorTest {
 		val testSucceeded = leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis
 			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
 
-		assertTrue (testSucceeded )
+		assertTrue (testSucceeded)
 	}
 }
