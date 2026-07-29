@@ -6,9 +6,6 @@ import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.hid.HIDCommon
-import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_PID
-import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_PID
-import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_VID
 import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.PACKET_SIZE
 import dev.slimevr.tracking.trackers.hid.HIDDevice
 import io.eiren.util.logging.LogManager
@@ -57,8 +54,25 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 		}
 	}
 
+	private fun onHidDeviceReattached(hidDevice: HidDevice, deviceList: MutableList<Int>, serial: String) {
+		this.devicesByHID[hidDevice] = deviceList
+		this.lastDataByHID[hidDevice] = 0
+		synchronized(this.devices) {
+			for (id in deviceList) {
+				val device = this.devices[id]
+				for (value in device.trackers.values) {
+					if (value.status == TrackerStatus.DISCONNECTED) {
+						value.status = TrackerStatus.OK
+					}
+					value.heartbeat()
+				}
+			}
+		}
+		LogManager.info("[TrackerServer] Linked HID device reattached: $serial")
+	}
+
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
-		if (hidDevice.vendorId == HID_TRACKER_RECEIVER_VID && (hidDevice.productId == HID_TRACKER_RECEIVER_PID || hidDevice.productId == HID_TRACKER_PID)) { // TODO: Use list of valid ids
+		if (HIDCommon.matchesAny(hidDevice.vendorId, hidDevice.productId)) {
 			val serial = hidDevice.serialNumber ?: "Unknown HID Device"
 			if (hidDevice.isClosed) {
 				if (!hidDevice.open()) {
@@ -70,16 +84,7 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 			// val product = hidDevice.product
 			// val manufacturer = hidDevice.manufacturer
 			this.devicesBySerial[serial]?.let {
-				this.devicesByHID[hidDevice] = it
-				synchronized(this.devices) {
-					for (id in it) {
-						val device = this.devices[id]
-						for (value in device.trackers.values) {
-							if (value.status == TrackerStatus.DISCONNECTED) value.status = TrackerStatus.OK
-						}
-					}
-				}
-				LogManager.info("[TrackerServer] Linked HID device reattached: $serial")
+				onHidDeviceReattached(hidDevice, it, serial)
 				return
 			}
 
@@ -121,7 +126,11 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 					currentThread().interrupt()
 					break
 				}
-				dataRead() // not in try catch?
+				try {
+					dataRead()
+				} catch (e: Exception) {
+					LogManager.severe("[TrackerServer] HID data read failed: ${e.message}", e)
+				}
 			}
 		}
 
@@ -141,7 +150,11 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 					currentThread().interrupt()
 					break
 				}
-				deviceEnumerate() // not in try catch?
+				try {
+					deviceEnumerate()
+				} catch (e: Exception) {
+					LogManager.severe("[TrackerServer] HID device enumerate failed: ${e.message}", e)
+				}
 			}
 		}
 
@@ -201,7 +214,7 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 					}
 					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
 				} else {
-					lastDataByHID[hidDevice] = lastDataByHID[hidDevice]!! + 1 // increment last data received
+					lastDataByHID[hidDevice] = lastDataByHID.getOrDefault(hidDevice, 0) + 1
 				}
 			}
 			if (!devicesPresent) {
@@ -213,37 +226,28 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	}
 
 	private fun deviceEnumerate() {
-		var rootReceivers: HidDeviceInfoStructure? = null
-		var rootTrackers: HidDeviceInfoStructure? = null
 		val trackersOverHID: Boolean = VRServer.instance.configManager.vrConfig.hidConfig.trackersOverHID
-		try {
-			rootReceivers = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_RECEIVER_PID) // TODO: Use list of ids
-			rootTrackers = if (trackersOverHID) {
-				HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_PID)
-			} else {
-				null
-			} // TODO: Use list of ids
-		} catch (e: Throwable) {
-			LogManager.severe("[TrackerServer] Couldn't enumerate HID devices", e)
-		}
-		var root: HidDeviceInfoStructure? = rootReceivers
-		if (root == null) {
-			root = rootTrackers
-		} else {
-			var last: HidDeviceInfoStructure = root
-			while (last.hasNext()) {
-				last = last.next()
-			}
-			last.next = rootTrackers
-		}
 		val hidDeviceList: MutableList<HidDevice> = mutableListOf()
-		if (root != null) {
-			var hidDeviceInfoStructure: HidDeviceInfoStructure? = root
-			do {
-				hidDeviceList.add(HidDevice(hidDeviceInfoStructure, null, hidServicesSpecification))
-				hidDeviceInfoStructure = hidDeviceInfoStructure?.next()
-			} while (hidDeviceInfoStructure != null)
-			HidApi.freeEnumeration(root)
+		for (rule in HIDCommon.allProductRules()) {
+			var root: HidDeviceInfoStructure? = null
+			try {
+				root = HidApi.enumerateDevices(rule.vendorId, if (rule.productMask == 0xFFFF) rule.productId else 0)
+			} catch (e: Throwable) {
+				LogManager.severe("[TrackerServer] Couldn't enumerate HID devices using rule ${String.format("%04x:%04x", rule.vendorId, rule.productId)} & ${String.format("0x%04X", rule.productMask)}", e)
+			}
+			if (root != null) {
+				var hidDeviceInfoStructure: HidDeviceInfoStructure? = root
+				do {
+					val hidDevice = HidDevice(hidDeviceInfoStructure, null, hidServicesSpecification)
+					val isReceiver = HIDCommon.matchesReceiver(hidDevice.vendorId, hidDevice.productId)
+					val isTracker = HIDCommon.matchesTracker(hidDevice.vendorId, hidDevice.productId)
+					if (isReceiver || (trackersOverHID && isTracker)) {
+						hidDeviceList.add(hidDevice)
+					}
+					hidDeviceInfoStructure = hidDeviceInfoStructure?.next()
+				} while (hidDeviceInfoStructure != null)
+				HidApi.freeEnumeration(root)
+			}
 		}
 		synchronized(devicesByHID) {
 			// Work on devicesByHid and add/remove as necessary
@@ -254,12 +258,13 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 			}
 			// Quickly reattaching a device may not be detected, so always try to open existing devices
 			for (device in devicesByHID.keys) {
+				val lastData = lastDataByHID.getOrDefault(device, 0)
 				// a receiver sends keep-alive data at 10 packets/s
-				if (lastDataByHID[device]!! > 100) { // try to reopen device if no data was received recently (about >100ms)
-					if (lastDataByHID[device]!! < 10000) {
+				if (lastData > 100) { // try to reopen device if no data was received recently (about >100ms)
+					if (lastData < 10000) {
 						LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
 						lastDataByHID[device] = 10000 // flag once
-					} else if (lastDataByHID[device]!! < 20000) {
+					} else if (lastData < 20000) {
 						LogManager.info("[TrackerServer] Repeatedly reopening device ${device.serialNumber}")
 						lastDataByHID[device] = 20000 // flag twice
 					}

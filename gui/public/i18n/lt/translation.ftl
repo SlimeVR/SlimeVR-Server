@@ -609,10 +609,16 @@ settings-general-gesture_control-trackers =
 ## Setup/onboarding menu
 
 
+## Quiz
+
+
 ## Wi-Fi setup
 
 
 ## Mounting setup
+
+
+## Install info
 
 
 ## Setup start

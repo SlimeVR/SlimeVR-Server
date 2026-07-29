@@ -839,9 +839,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Hoppa över inställning
 onboarding-setup_warning-cancel = Fortsätt inställning
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Gå tillbaka till introduktion
 onboarding-wifi_creds-skip = Hoppa över Wi-Fi inställningar.
 onboarding-wifi_creds-submit = Överlämna!
 onboarding-wifi_creds-ssid =
@@ -863,6 +865,9 @@ onboarding-reset_tutorial-0 =
     Tryck { $taps } gånger på den markerade trackern för att utlösa yaw reset.
     
     Detta gör att spårarna vänds i samma riktning som ditt headset (HMD).
+
+## Install info
+
 
 ## Setup start
 

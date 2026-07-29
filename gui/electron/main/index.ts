@@ -16,6 +16,7 @@ import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
 import appleTrayIcon from '../resources/icons/Square30x30Logo.png?asset';
 import { readFile, stat } from 'fs/promises';
+import { pathToFileURL } from 'node:url';
 import { getPlatform, handleIpc, isPortAvailable } from './utils';
 import {
   findServerJar,
@@ -26,16 +27,18 @@ import {
   getServerDataFolder,
   getWindowStateFile,
 } from './paths';
-import { stores } from './store';
+import { initStores } from './store';
 import { closeLogger, logger } from './logger';
-import { writeFileSync } from 'node:fs';
 
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
 import { ServerStatusEvent } from 'electron/preload/interface';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
+
+type Stores = Awaited<ReturnType<typeof initStores>>;
+let stores: Stores;
 
 // Fixes colors looking washed on linux
 // Might affect hdr
@@ -55,6 +58,7 @@ protocol.registerSchemesAsPrivileged([
       secure: true,
       supportFetchAPI: true,
       corsEnabled: true,
+      stream: true,
     },
   },
 ]);
@@ -123,14 +127,14 @@ handleIpc(IPC_CHANNELS.LOG, (e, type, ...args) => {
 });
 
 handleIpc(IPC_CHANNELS.OPEN_URL, (e, url) => {
-  const allowed_urls = [
-    /steam:\/\/.*/,
-    /ms-settings:network$/,
-    /https:\/\/.*\.slimevr\.dev.*/,
-    /https:\/\/github\.com\/.*/,
-    /https:\/\/discord\.gg\/slimevr$/,
+  const allowedUrls = [
+    /^steam:\/\//,
+    /^ms-settings:network$/,
+    /^https:\/\/(?:.+\.)?slimevr\.dev(?:\/.+)?$/,
+    /^https:\/\/github\.com\/SlimeVR(?:\/.+)?$/,
+    /^https:\/\/discord\.gg\/slimevr$/,
   ];
-  if (allowed_urls.find((a) => url.match(a))) open(url);
+  if (allowedUrls.find((a) => url.match(a))) open(url);
   else logger.error({ url }, 'attempted to open non-whitelisted URL');
 });
 
@@ -151,10 +155,10 @@ handleIpc(IPC_CHANNELS.STORAGE, async (e, { type, method, key, value }) => {
 });
 
 handleIpc(IPC_CHANNELS.DISCORD_PRESENCE, async (e, options) => {
-  if (options.enable && !discordPresence.state.ready) {
-    await discordPresence.connect();
-    discordPresence.updateActivity(options.activity);
-  } else if (!options.enable && discordPresence.state.ready) {
+  if (options.enable) {
+    if (!discordPresence.state.ready) await discordPresence.connect();
+    discordPresence.updateActivity(options.activity, options.iconText);
+  } else if (discordPresence.state.ready) {
     discordPresence.destroy();
   }
 });
@@ -188,9 +192,9 @@ handleIpc(IPC_CHANNELS.GET_FOLDER, (e, folder) => {
   }
 });
 
-const windowStateFile = await readFile(getWindowStateFile(), {
-  encoding: 'utf-8',
-}).catch(() => null);
+handleIpc(IPC_CHANNELS.IS_STEAM, () => {
+  return options.steam;
+});
 
 const defaultWindowState: {
   width: number;
@@ -203,7 +207,15 @@ const defaultWindowState: {
   x: undefined,
   y: undefined,
 };
-const windowState = windowStateFile ? JSON.parse(windowStateFile) : defaultWindowState;
+
+const windowState = await readFile(getWindowStateFile(), {
+  encoding: 'utf-8',
+})
+  .then((data) => JSON.parse(data))
+  .catch(() => {
+    logger.error('Failed to load window state, using defaults');
+    return defaultWindowState;
+  });
 
 const MIN_WIDTH = 393;
 const MIN_HEIGHT = 667;
@@ -236,7 +248,9 @@ function validateWindowState(state: typeof defaultWindowState) {
 
 const saveWindowState = async () => {
   await mkdir(dirname(getWindowStateFile()), { recursive: true });
-  writeFileSync(getWindowStateFile(), JSON.stringify(windowState));
+  await writeFile(getWindowStateFile(), JSON.stringify(windowState), {
+    encoding: 'utf-8',
+  });
 };
 
 function createWindow() {
@@ -272,18 +286,20 @@ function createWindow() {
   });
 
   handleIpc('window-actions', (e, action) => {
+    if (mainWindow === null) return;
     switch (action) {
       case 'close':
-        mainWindow?.close();
+        mainWindow.close();
         break;
       case 'hide':
-        mainWindow?.hide();
+        mainWindow.hide();
         break;
       case 'minimize':
-        mainWindow?.minimize();
+        mainWindow.minimize();
         break;
-      case 'maximize':
-        mainWindow?.maximize();
+      case 'toggle-maximize':
+        if (mainWindow.isMaximized()) mainWindow.unmaximize();
+        else mainWindow.maximize();
         break;
     }
   });
@@ -355,9 +371,9 @@ function createWindow() {
 }
 
 const checkEnvironmentVariables = () => {
-  const to_check = ['_JAVA_OPTIONS', 'JAVA_TOOL_OPTIONS'];
+  const disallowedVars = ['_JAVA_OPTIONS', 'JAVA_TOOL_OPTIONS'];
 
-  const set = to_check.filter((env) => !!process.env[env]);
+  const set = disallowedVars.filter((env) => !!process.env[env]);
   if (set.length > 0) {
     dialog.showErrorBox(
       'SlimeVR',
@@ -388,33 +404,33 @@ const spawnServer = async () => {
   if (!javaBin) {
     dialog.showErrorBox(
       'SlimeVR',
-      `Couldn't find a compatible Java version, please download Java 17 or higher`
+      'Unable to find a compatible Java version, please download Java 17 or higher'
     );
-    app.quit()
+    app.quit();
     return;
   }
 
   logger.info({ javaBin, serverJar }, 'Found Java and server jar');
   const platform = getPlatform();
-  const serverWorkdir = getServerDataFolder()
 
-  const serverArgs = ['-Xmx128M', '-jar', serverJar]
-  if (options.steam) serverArgs.push(`--steam`)
-  if (options.install) serverArgs.push(`--install`)
-  if (options.noUdev) serverArgs.push(`--no-udev`)
+  const serverArgs = ['-Xmx128M', '-jar', serverJar];
+  if (options.steam) serverArgs.push('--steam');
+  if (options.install) serverArgs.push('--install');
+  if (options.noUdev) serverArgs.push('--no-udev');
 
-  serverArgs.push('run')
-
+  serverArgs.push('run');
 
   const serverProcess = spawn(javaBin, serverArgs, {
-    cwd: serverWorkdir,
+    cwd: sharedDir,
     shell: false,
     env:
       platform === 'windows'
         ? {
             ...process.env,
             APPDATA: app.getPath('appData'),
-            LOCALAPPDATA: process.env['USERPROFILE'] ? path.join(process.env['USERPROFILE'], 'AppData', 'Local') : undefined,
+            LOCALAPPDATA: process.env['USERPROFILE']
+              ? path.join(process.env['USERPROFILE'], 'AppData', 'Local')
+              : undefined,
           }
         : undefined,
   });
@@ -436,11 +452,11 @@ const spawnServer = async () => {
   serverProcess.on('error', (err) => {
     logger.info({ err }, 'Error launching the java server');
     if (!isQuitting) app.quit();
-  })
+  });
 
   serverProcess.on('exit', () => {
     logger.info('Server process exiting');
-  })
+  });
 
   const exited = new Promise<void>((resolve) => serverProcess.once('exit', resolve));
 
@@ -451,16 +467,33 @@ const spawnServer = async () => {
   };
 };
 
+const createFolders = async () => {
+  await mkdir(getServerDataFolder(), { recursive: true });
+  await mkdir(getGuiDataFolder(), { recursive: true });
+};
+
 let isQuitting = false;
 
 app.whenReady().then(async () => {
-  // Register protocol handler for app:// scheme to handle assets with leading slashes
   protocol.handle('app', (request) => {
-    const url = request.url.slice('app://'.length);
-    const filePath = path.normalize(join(__dirname, '../renderer', url));
-    return net.fetch('file://' + filePath);
+    const { pathname } = new URL(request.url);
+    const filePath = path.normalize(join(__dirname, '../renderer', pathname));
+    return net.fetch(pathToFileURL(filePath).toString(), { headers: request.headers });
   });
 
+  try {
+    await createFolders();
+  } catch (err) {
+    logger.error(err, 'Failed to initialize stores');
+    dialog.showErrorBox(
+      'SlimeVR',
+      'Failed to initialize application storage. Please make sure the application has write permissions to its data folder.'
+    );
+    app.quit();
+    return;
+  }
+
+  stores = await initStores();
   checkEnvironmentVariables();
   const server = await spawnServer();
 
@@ -479,8 +512,8 @@ app.whenReady().then(async () => {
     logger.info('App quitting, saving...');
     server?.close();
     await server?.waitForExit();
-    stores.settings.save();
-    stores.cache.save();
+    await stores.settings.save();
+    await stores.cache.save();
     discordPresence.destroy();
     await saveWindowState();
     await closeLogger();

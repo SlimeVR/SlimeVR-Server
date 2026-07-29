@@ -14,6 +14,7 @@ import {
   SerialUpdateResponseT,
   SerialTrackerGetWifiScanRequestT,
   SerialTrackerCustomCommandRequestT,
+  SerialDeviceType,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
@@ -41,7 +42,10 @@ export function Serial() {
   const consoleRef = useRef<HTMLDivElement>(null);
   const [consoleContent, setConsole] = useState('');
 
-  const [isSerialOpen, setSerialOpen] = useState(false);
+  const [openedSerialDevice, setOpenedSerialDevice] = useState<Omit<
+    SerialDeviceT,
+    'pack'
+  > | null>(null);
   const [serialDevices, setSerialDevices] = useState<
     Omit<SerialDeviceT, 'pack'>[]
   >([]);
@@ -87,11 +91,19 @@ export function Serial() {
   };
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
     const typedState: { serialPort: string } = state as any;
     if (typedState?.serialPort) {
       reset({ port: typedState.serialPort });
     }
+
+    sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
+    const interval = setInterval(() => {
+      sendRPCPacket(
+        RpcMessage.SerialDevicesRequest,
+        new SerialDevicesRequestT()
+      );
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -103,11 +115,8 @@ export function Serial() {
   useRPCPacket(
     RpcMessage.SerialUpdateResponse,
     (data: SerialUpdateResponseT) => {
-      if (data.closed) {
-        setSerialOpen(false);
-      } else {
-        setSerialOpen(true);
-      }
+      if (data.device) setOpenedSerialDevice(data.device);
+      else if (data.closed) setOpenedSerialDevice(null);
 
       if (data.log) {
         setConsole((console) => console + data.log);
@@ -122,6 +131,7 @@ export function Serial() {
         {
           name: l10n.getString('settings-serial-auto_dropdown_item'),
           port: 'Auto',
+          type: SerialDeviceType.ESP_TRACKER,
         },
         ...(res.devices || []),
       ]);
@@ -161,7 +171,7 @@ export function Serial() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      if (!isSerialOpen) {
+      if (openedSerialDevice === null) {
         openSerial(port ?? defaultValues.port);
       } else {
         clearInterval(id);
@@ -171,7 +181,7 @@ export function Serial() {
     return () => {
       clearInterval(id);
     };
-  }, [isSerialOpen]);
+  }, [openedSerialDevice]);
 
   const reboot = () => {
     sendRPCPacket(
@@ -179,6 +189,8 @@ export function Serial() {
       new SerialTrackerRebootRequestT()
     );
   };
+
+  // ESP
   const factoryReset = () => {
     sendRPCPacket(
       RpcMessage.SerialTrackerFactoryResetRequest,
@@ -207,6 +219,48 @@ export function Serial() {
 
     setTrySendCustomCommand(false);
     setValue('customCommand', '');
+  };
+
+  // HID
+  const enterPairing = () => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerCustomCommandRequest,
+      new SerialTrackerCustomCommandRequestT('pair')
+    );
+  };
+  const dfu = () => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerCustomCommandRequest,
+      new SerialTrackerCustomCommandRequestT('dfu')
+    );
+  };
+  const meow = () => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerCustomCommandRequest,
+      new SerialTrackerCustomCommandRequestT('meow')
+    );
+  };
+
+  // HID receiver
+  const exitPairing = () => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerCustomCommandRequest,
+      new SerialTrackerCustomCommandRequestT('exit')
+    );
+  };
+
+  // HID tracker
+  const calibrate = () => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerCustomCommandRequest,
+      new SerialTrackerCustomCommandRequestT('calibrate')
+    );
+  };
+  const sixSideCalibrate = () => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerCustomCommandRequest,
+      new SerialTrackerCustomCommandRequestT('6-side')
+    );
   };
 
   const consoleContentRef = useRef(consoleContent);
@@ -318,7 +372,7 @@ export function Serial() {
           >
             <div className="flex select-text">
               <pre>
-                {isSerialOpen
+                {openedSerialDevice !== null
                   ? consoleContent
                   : l10n.getString('settings-serial-connection_lost')}
               </pre>
@@ -326,70 +380,115 @@ export function Serial() {
           </div>
           <div className="border-t-2 pt-2 border-background-60 border-solid gap-2 flex flex-row">
             <div className="xs:flex flex-grow xs:flex-wrap gap-2 grid grid-cols-2">
-              <Button variant="quaternary" onClick={reboot}>
-                {l10n.getString('settings-serial-reboot')}
-              </Button>
-              <Button
-                variant="quaternary"
-                onClick={() => setTryFactoryReset(true)}
-              >
-                {l10n.getString('settings-serial-factory_reset')}
-              </Button>
-              <Button variant="quaternary" onClick={getWifiScan}>
-                {l10n.getString('settings-serial-get_wifi_scan')}
-              </Button>
-              <Button
-                variant="quaternary"
-                onClick={saveLogToFile}
-                disabled={!isSerialOpen || !consoleContent.trim()}
-              >
-                {l10n.getString('settings-serial-save_logs')}
-              </Button>
-              <div className="ml-auto">
-                <Button
-                  variant="quaternary"
-                  onClick={pauseScroll}
-                  icon={
-                    isPaused ? (
-                      <PlayIcon width={16} />
-                    ) : (
-                      <PauseIcon width={16} />
-                    )
-                  }
-                />
-              </div>
-              <form
-                className="w-full flex flex-row gap-2 mobile:col-span-2"
-                onSubmit={(e) => {
-                  if (!isSerialOpen) {
-                    return;
-                  }
-                  e.preventDefault();
-                  if (!acceptedCustomCommandWarning) {
-                    setTrySendCustomCommand(true);
-                  } else {
-                    sendCustomSerialCommand();
-                  }
-                }}
-              >
-                <div className="flex-grow">
-                  <Input
-                    control={control}
-                    name="customCommand"
-                    className="flex-grow"
-                    placeholder={l10n.getString(
-                      'settings-serial-send_command-placeholder'
-                    )}
-                  />
-                </div>
-                <Button
-                  variant="quaternary"
-                  disabled={!isSerialOpen}
-                  type="submit"
-                >
-                  {l10n.getString('settings-serial-send_command')}
-                </Button>
-              </form>
+              {openedSerialDevice !== null && (
+                <>
+                  <Button variant="quaternary" onClick={reboot}>
+                    {l10n.getString('settings-serial-reboot')}
+                  </Button>
+                  {openedSerialDevice?.type ===
+                    SerialDeviceType.ESP_TRACKER && (
+                    <>
+                      <Button
+                        variant="quaternary"
+                        onClick={() => setTryFactoryReset(true)}
+                      >
+                        {l10n.getString('settings-serial-factory_reset')}
+                      </Button>
+                      <Button variant="quaternary" onClick={getWifiScan}>
+                        {l10n.getString('settings-serial-get_wifi_scan')}
+                      </Button>
+                    </>
+                  )}
+                  {openedSerialDevice?.type !==
+                    SerialDeviceType.ESP_TRACKER && (
+                    <Button variant="quaternary" onClick={enterPairing}>
+                      {l10n.getString('settings-serial-enter_pairing')}
+                    </Button>
+                  )}
+                  {openedSerialDevice?.type ===
+                    SerialDeviceType.HID_RECEIVER && (
+                    <Button variant="quaternary" onClick={exitPairing}>
+                      {l10n.getString('settings-serial-exit_pairing')}
+                    </Button>
+                  )}
+                  {openedSerialDevice?.type ===
+                    SerialDeviceType.HID_TRACKER && (
+                    <>
+                      <Button variant="quaternary" onClick={calibrate}>
+                        {l10n.getString('settings-serial-calibrate')}
+                      </Button>
+                      <Button variant="quaternary" onClick={sixSideCalibrate}>
+                        {l10n.getString('settings-serial-six_side_calibrate')}
+                      </Button>
+                    </>
+                  )}
+                  {openedSerialDevice?.type !==
+                    SerialDeviceType.ESP_TRACKER && (
+                    <>
+                      <Button variant="quaternary" onClick={dfu}>
+                        {l10n.getString('settings-serial-dfu')}
+                      </Button>
+                      <Button variant="quaternary" onClick={meow}>
+                        {l10n.getString('settings-serial-meow')}
+                      </Button>
+                    </>
+                  )}
+                  <Button
+                    variant="quaternary"
+                    onClick={saveLogToFile}
+                    disabled={
+                      openedSerialDevice === null || !consoleContent.trim()
+                    }
+                  >
+                    {l10n.getString('settings-serial-save_logs')}
+                  </Button>
+                  <div className="ml-auto">
+                    <Button
+                      variant="quaternary"
+                      onClick={pauseScroll}
+                      icon={
+                        isPaused ? (
+                          <PlayIcon width={16} />
+                        ) : (
+                          <PauseIcon width={16} />
+                        )
+                      }
+                    />
+                  </div>
+                  <form
+                    className="w-full flex flex-row gap-2 mobile:col-span-2"
+                    onSubmit={(e) => {
+                      if (openedSerialDevice === null) {
+                        return;
+                      }
+                      e.preventDefault();
+                      if (!acceptedCustomCommandWarning) {
+                        setTrySendCustomCommand(true);
+                      } else {
+                        sendCustomSerialCommand();
+                      }
+                    }}
+                  >
+                    <div className="flex-grow">
+                      <Input
+                        control={control}
+                        name="customCommand"
+                        className="flex-grow"
+                        placeholder={l10n.getString(
+                          'settings-serial-send_command-placeholder'
+                        )}
+                      />
+                    </div>
+                    <Button
+                      variant="quaternary"
+                      disabled={openedSerialDevice === null}
+                      type="submit"
+                    >
+                      {l10n.getString('settings-serial-send_command')}
+                    </Button>
+                  </form>
+                </>
+              )}
 
               <div className="w-full mobile:col-span-2">
                 <Dropdown

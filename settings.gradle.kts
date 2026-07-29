@@ -20,7 +20,6 @@ pluginManagement {
 	val spotlessVersion: String by settings
 	val shadowJarVersion: String by settings
 	val buildconfigVersion: String by settings
-	val grgitVersion: String by settings
 	plugins {
 		kotlin("plugin.serialization") version kotlinVersion
 		kotlin("jvm") version kotlinVersion
@@ -28,7 +27,6 @@ pluginManagement {
 		id("com.diffplug.spotless") version spotlessVersion
 		id("com.gradleup.shadow") version shadowJarVersion
 		id("com.github.gmazzo.buildconfig") version buildconfigVersion
-		id("org.ajoberstar.grgit") version grgitVersion
 	}
 }
 

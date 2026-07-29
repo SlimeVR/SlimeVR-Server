@@ -9,7 +9,13 @@ import {
 } from 'react-router-dom';
 import { DeviceDataT } from 'solarxr-protocol';
 
-export function getSentryOrCompute(enabled = false, uuid: string) {
+export function getSentryOrCompute(enabled = false, uuid: string, isSteam: boolean) {
+  // to be considered prod it needs to be a proper version tag, non-dirty
+  const isProd = import.meta.env.PROD && __GIT_CLEAN__ && __VERSION_TAG__;
+
+  // We disable sentry for non prod environments
+  if (!isProd) enabled = false;
+
   Sentry.setUser({ id: uuid });
 
   // if sentry is already initialized - SKIP
@@ -44,10 +50,10 @@ export function getSentryOrCompute(enabled = false, uuid: string) {
       }),
     ],
     beforeSend: (ev) => (newClient?.getOptions().enabled ? ev : null),
-    environment: import.meta.env.MODE,
+    environment: isSteam ? 'steam' : 'production',
     release: (__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty'),
     // Tracing
-    tracesSampleRate: import.meta.env.PROD ? 0.5 : 1.0, // Capture 50% of the transactions
+    tracesSampleRate: 0.5, // Capture 50% of the transactions
     // Set profilesSampleRate to 1.0 to profile every transaction.
     // Since profilesSampleRate is relative to tracesSampleRate,
     // the final profiling rate can be computed as tracesSampleRate * profilesSampleRate
@@ -55,7 +61,7 @@ export function getSentryOrCompute(enabled = false, uuid: string) {
     // results in 25% of transactions being profiled (0.5*0.5=0.25)
     profilesSampleRate: 0.2,
     // Session Replay
-    replaysSessionSampleRate: import.meta.env.PROD ? 0.1 : 1.0, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+    replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
     replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
     normalizeDepth: 8,
     enabled,

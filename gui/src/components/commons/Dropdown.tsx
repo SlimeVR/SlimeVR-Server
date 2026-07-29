@@ -19,7 +19,7 @@ import { ArrowDownIcon, ArrowUpIcon } from './icon/ArrowIcons';
 import { a11yClick } from '@/utils/a11y';
 import { createPortal } from 'react-dom';
 
-type DropdownItem = {
+export type DropdownItem = {
   value: string;
   label: ReactNode;
 };

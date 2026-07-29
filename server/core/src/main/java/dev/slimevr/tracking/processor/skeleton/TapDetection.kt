@@ -6,7 +6,15 @@ import java.util.*
 // class that monitors the acceleration of the waist, hip, chest or upper chest trackers to detect taps
 // and use this to trigger a variety of resets (if your wondering why no single tap class exists, it's because
 // to many false positives)
-class TapDetection(val skeleton: HumanSkeleton, val trackerToWatch: Tracker, val numberTrackersOverThreshold: Int, val tapToComplete: Int, val onTapCompleted: () -> Unit) {
+class TapDetection(
+	val skeleton: HumanSkeleton,
+	val trackerToWatch: Tracker,
+	// The maximum number of trackers that can accelerate faster than ALLOWED_BODY_ACCEL
+	// before tap detection will deactivate
+	val maxAllowedMovingTrackers: Int,
+	val tapToComplete: Int,
+	val onTapCompleted: () -> Unit,
+) {
 
 	private val accelList = LinkedList<FloatArray>()
 	private val tapTimestamps = LinkedList<Float>()
@@ -92,64 +100,20 @@ class TapDetection(val skeleton: HumanSkeleton, val trackerToWatch: Tracker, val
 	// force on any of the torso or upper leg trackers (this sadly implies that
 	// you need two or more trackers for this feature to be reliable)
 	private fun isUserStatic(trackerToExclude: Tracker): Boolean {
-		var num = 0
-		if (skeleton.upperChestTracker != null &&
-			skeleton.upperChestTracker != trackerToExclude
-		) {
-			if (skeleton.upperChestTracker!!.getAcceleration().lenSq()
-				> ALLOWED_BODY_ACCEL_SQUARED
-			) {
-				num++
-			}
+		val trackersToCheck = arrayOf(
+			skeleton.upperChestTracker,
+			skeleton.chestTracker,
+			skeleton.hipTracker,
+			skeleton.waistTracker,
+			skeleton.leftUpperLegTracker,
+			skeleton.rightUpperLegTracker,
+			skeleton.leftFootTracker,
+			skeleton.rightFootTracker,
+		)
+		val numMovingTrackers = trackersToCheck.count {
+			it != null && it != trackerToExclude && it.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED
 		}
-		if (skeleton.chestTracker != null &&
-			skeleton.chestTracker != trackerToExclude
-		) {
-			if (skeleton.chestTracker!!.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED) num++
-		}
-		if (skeleton.hipTracker != null && skeleton.hipTracker != trackerToExclude) {
-			if (skeleton.hipTracker!!.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED) num++
-		}
-		if (skeleton.waistTracker != null &&
-			skeleton.waistTracker != trackerToExclude
-		) {
-			if (skeleton.waistTracker!!.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED) num++
-		}
-		if (skeleton.leftUpperLegTracker != null &&
-			skeleton.leftUpperLegTracker != trackerToExclude
-		) {
-			if (skeleton.leftUpperLegTracker!!.getAcceleration().lenSq()
-				> ALLOWED_BODY_ACCEL_SQUARED
-			) {
-				num++
-			}
-		}
-		if (skeleton.rightUpperLegTracker != null &&
-			skeleton.rightUpperLegTracker != trackerToExclude
-		) {
-			if (skeleton.rightUpperLegTracker!!.getAcceleration().lenSq()
-				> ALLOWED_BODY_ACCEL_SQUARED
-			) {
-				num++
-			}
-		}
-		if (skeleton.leftFootTracker != null &&
-			skeleton.leftFootTracker != trackerToExclude
-		) {
-			if (skeleton.leftFootTracker!!.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED) {
-				num++
-			}
-		}
-		if (skeleton.rightFootTracker != null &&
-			skeleton.rightFootTracker != trackerToExclude
-		) {
-			if (skeleton.rightFootTracker!!.getAcceleration().lenSq()
-				> ALLOWED_BODY_ACCEL_SQUARED
-			) {
-				num++
-			}
-		}
-		return num < numberTrackersOverThreshold
+		return numMovingTrackers < maxAllowedMovingTrackers
 	}
 
 	companion object {

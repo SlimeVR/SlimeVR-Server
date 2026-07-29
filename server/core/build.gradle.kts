@@ -91,6 +91,10 @@ dependencies {
 	// Jitpack
 	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
 
+	// For SteamVR driver detection
+	implementation("io.ktor:ktor-client-core:2.3.13")
+	implementation("io.ktor:ktor-client-cio:2.3.13")
+
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
 	testImplementation(platform("org.junit:junit-bom:6.0.2"))

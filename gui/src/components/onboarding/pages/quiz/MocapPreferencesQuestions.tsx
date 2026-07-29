@@ -7,16 +7,29 @@ import { useState } from 'react';
 import { SittingIcon } from '@/components/commons/icon/SittingIcon';
 import { VMCFileUpload } from '@/components/settings/pages/VMCSettings';
 import { QuizButton } from './SlimeSetQuestion';
+import { useNavigate } from 'react-router-dom';
 
 export function QuizMocapPosQuestion() {
-  const { applyProgress, setMocapPos, mocapPos, playspace, setPlayspace } =
-    useOnboarding();
+  const nav = useNavigate();
+  const {
+    applyProgress,
+    setMocapPos,
+    mocapPos,
+    playspace,
+    setPlayspace,
+    onboardingEnded,
+  } = useOnboarding();
 
   const [headTracker, setHeadTracker] = useState(true);
 
   applyProgress(0.9);
 
   const canContinue = (!headTracker || mocapPos) && playspace;
+
+  const end = () => {
+    onboardingEnded();
+    nav('/');
+  };
 
   return (
     <div className="grid w-full h-full justify-center items-center">
@@ -146,7 +159,7 @@ export function QuizMocapPosQuestion() {
             variant="primary"
             id="onboarding-quiz_continue"
             disabled={!canContinue}
-            to="/"
+            onClick={end}
           />
         </div>
       </div>

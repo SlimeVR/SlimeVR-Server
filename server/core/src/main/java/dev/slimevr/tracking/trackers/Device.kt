@@ -2,6 +2,7 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.MCUType
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -9,7 +10,18 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
-open class Device(val magSupport: Boolean = false) {
+enum class DeviceOrigin {
+	HID,
+	UDP,
+	VRCHAT,
+	OSC,
+	VMC,
+	STEAMVR,
+	SOLARXR,
+	WEBSOCKET,
+}
+
+open class Device(val origin: DeviceOrigin, val magSupport: Boolean = false) {
 	open val id: Int = nextLocalDeviceId.incrementAndGet()
 	open var name: String? = null
 	open var firmwareVersion: String? = null
@@ -26,9 +38,6 @@ open class Device(val magSupport: Boolean = false) {
 
 	open val hardwareIdentifier: String = "Unknown"
 
-	val isOpenVrDevice: Boolean
-		get() = manufacturer == "OpenVR"
-
 	init {
 		CoroutineScope(Job()).launch {
 			// Wait a little for device to get configured
@@ -41,7 +50,7 @@ open class Device(val magSupport: Boolean = false) {
 	 * if `sensorId` null or in the specified tracker
 	 * @param sensorId If null, every sensor will be modified
 	 */
-	open suspend fun setMag(state: Boolean, sensorId: Int = 255) {
+	open suspend fun setMag(status: MagnetometerStatus, sensorId: Int = 255) {
 		TODO("Not implemented because no mag support: $magSupport")
 	}
 

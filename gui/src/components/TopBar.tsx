@@ -234,7 +234,7 @@ export function TopBar({
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => electron.api.maximize()}
+                  onClick={() => electron.api.toggleMaximize()}
                 >
                   <MaximiseIcon />
                 </div>

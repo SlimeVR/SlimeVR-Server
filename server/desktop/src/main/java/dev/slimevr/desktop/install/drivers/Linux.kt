@@ -1,60 +1,45 @@
 package dev.slimevr.desktop.install.drivers
 
-import dev.slimevr.desktop.featureFlags
+import dev.slimevr.desktop.platform.linux.SteamUtils
 import io.eiren.util.logging.LogManager
 
 class Linux {
-
 	val path: String = System.getProperty("user.dir")
 
 	fun updateLinux() {
 		updateLinuxSteamVRDriver()
-		feeder()
 	}
 
 	fun updateLinuxSteamVRDriver() {
-		val pathRegPath = "${System.getProperty("user.home")}/.steam/steam/steamapps/common/SteamVR/bin/vrpathreg.sh"
-		val vrPathRegContents = executeShellCommand(pathRegPath)
-		if (vrPathRegContents == null) {
-			LogManager.warning("SteamVR driver installation failed")
-			return
-		}
-		if (vrPathRegContents.contains("slimevr")) {
-			LogManager.info("SteamVR driver is already installed")
+		val steamVRLocation = SteamUtils.findAppLibraryLocation(250820)?.resolve("steamapps/common/SteamVR") ?: run {
+			LogManager.warning("SteamVR driver installation failed: couldn't find SteamVR")
 			return
 		}
 
-		executeShellCommand(pathRegPath, "adddriver", "$path/$LINUX_STEAM_DRIVER_DIRECTORY")
+		val pathRegPath = "$steamVRLocation/bin/vrpathreg.sh"
+		val (findExitCode, _) = executeShellCommand(pathRegPath, "finddriver", "slimevr") ?: run {
+			LogManager.warning("SteamVR driver installation failed: couldn't run vrpathreg finddriver")
+			return
+		}
 
-		if (executeShellCommand(pathRegPath)?.contains("slimevr") != true) {
-			LogManager.warning("Failed to install SteamVR driver")
+		if (!shouldInstallDriver(findExitCode)) {
+			LogManager.info("Skipping SteamVR driver installation: ${getDriverInstallSkipReason(findExitCode)}")
+			return
+		}
+
+		val (addExitCode, _) = executeShellCommand(pathRegPath, "adddriver", "$path/$LINUX_STEAM_DRIVER_DIRECTORY") ?: run {
+			LogManager.warning("SteamVR driver installation failed: couldn't run vrpathreg adddriver")
+			return
+		}
+
+		if (addExitCode != 0) {
+			LogManager.warning("SteamVR driver installation failed: vrpathreg exited with code $addExitCode")
 			return
 		}
 		LogManager.info("SteamVR driver successfully installed")
 	}
 
-	fun feeder() {
-		executeShellCommand("chmod", "+x", "$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App")
-
-		val command = if (featureFlags.steam) {
-			arrayOf("steam-runtime-launch-client", "--alongside-steam", "--", "$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App", "--install")
-		} else {
-			arrayOf("$path/$LINUX_FEEDER_DIRECTORY/SlimeVR-Feeder-App", "--install")
-		}
-		val feederOutput = executeShellCommand(*command)
-		if (feederOutput == null) {
-			LogManager.warning("Error installing feeder")
-			return
-		}
-		if (feederOutput.lowercase().contains("manifest is not installed")) {
-			LogManager.warning("Could not install feeder application")
-		} else {
-			LogManager.info("Successfully installed feeder application")
-		}
-	}
-
 	companion object {
 		private const val LINUX_STEAM_DRIVER_DIRECTORY = "slimevr-openvr-driver-x64-linux"
-		private const val LINUX_FEEDER_DIRECTORY = "SlimeVR-Feeder-App-Linux"
 	}
 }

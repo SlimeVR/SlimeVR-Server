@@ -4,9 +4,11 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.bridge.BridgeThread
+import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.BridgeConfig
 import dev.slimevr.desktop.platform.ProtobufMessages.*
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
+import dev.slimevr.tracking.trackers.DeviceOrigin
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByTrackerRole
@@ -14,7 +16,83 @@ import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerRole.Companion.getById
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import dev.slimevr.util.ann.VRServerThread
+import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
+import io.eiren.util.logging.LogManager
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.exists
+
+class BindingsProviderManager : Runnable {
+	private var process: Process? = null
+	private var watcherThread: Thread? = null
+
+	private fun getBinaryPath(): Path? {
+		// First we want to try to find it in the working directory, its location on
+		// Steam/Windows/portable.
+		val binaryName = if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
+			"SlimeVR-Bindings-Provider.exe"
+		} else {
+			"slimevr-bindings-provider"
+		}
+		val workingDir = System.getProperty("user.dir")!!
+
+		val binaryPath = Path(workingDir, binaryName)
+		if (binaryPath.exists()) return binaryPath
+
+		// Then look through PATH to find the binary.
+		// PATH shouldn't be null, but if it is just gracefully fail
+		val path = System.getenv("PATH") ?: return null
+		val pathSeparator = System.getProperty("path.separator")!!
+		for (path in path.split(pathSeparator)) {
+			val binaryPath = Path(path, binaryName)
+			if (binaryPath.exists()) return binaryPath
+		}
+
+		// :(
+		return null
+	}
+
+	fun start() {
+		check(process == null && watcherThread == null) {
+			"BindingsProviderManager already running"
+		}
+
+		val binaryPath = getBinaryPath() ?: throw RuntimeException("Unable to find bindings provider binary")
+		process = ProcessBuilder(binaryPath.toString())
+			.redirectErrorStream(true)
+			.start()
+		LogManager.info("[BindingsProviderManager] Started process")
+		watcherThread = Thread(this, "Bindings provider watcher")
+		watcherThread!!.start()
+	}
+	fun stop() {
+		process?.let {
+			it.destroy()
+		}
+		process = null
+		watcherThread?.interrupt()
+		watcherThread = null
+	}
+
+	override fun run() {
+		try {
+			val interval = 1000L / 30L
+			while (process?.isAlive == true) {
+				Thread.sleep(interval)
+			}
+
+			val exitCode = process?.exitValue()
+			if (exitCode != null) {
+				LogManager.info("[BindingsProviderManager] Process has exited with exit code $exitCode")
+			} else {
+				LogManager.info("[BindingsProviderManager] Process has exited")
+			}
+		} catch (_: InterruptedException) {
+			// Ignore it
+		}
+	}
+}
 
 abstract class SteamVRBridge(
 	protected val server: VRServer,
@@ -25,6 +103,7 @@ abstract class SteamVRBridge(
 ) : ProtobufBridge(bridgeName),
 	Runnable {
 	protected val runnerThread: Thread = Thread(this, threadName)
+	private var bindingsProviderManager: BindingsProviderManager? = null
 	protected val config: BridgeConfig = server.configManager.vrConfig.getBridge(bridgeSettingsKey)
 	var connected: Boolean = false
 
@@ -38,6 +117,13 @@ abstract class SteamVRBridge(
 			)
 		}
 		runnerThread.start()
+	}
+
+	@VRServerThread
+	override fun stopBridge() {
+		bindingsProviderManager?.stop()
+		bindingsProviderManager = null
+		runnerThread.interrupt()
 	}
 
 	@VRServerThread
@@ -55,61 +141,33 @@ abstract class SteamVRBridge(
 		if (!config.automaticSharedTrackersToggling || server.getPauseTracking()) return false
 
 		val skeleton = instance.humanPoseManager.skeleton
-		val isWaistSteamVr = skeleton.hipTracker?.device?.isOpenVrDevice == true ||
-			skeleton.waistTracker?.device?.isOpenVrDevice == true
-		// Enable waist if skeleton has an spine tracker
-		changeShareSettings(TrackerRole.WAIST, skeleton.hasSpineTracker && !isWaistSteamVr)
-
-		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
-		val hasChest = skeleton.upperChestTracker != null || skeleton.chestTracker != null
-		val isChestSteamVr = skeleton.upperChestTracker?.device?.isOpenVrDevice == true ||
-			skeleton.chestTracker?.device?.isOpenVrDevice == true
-		changeShareSettings(
-			TrackerRole.CHEST,
-			hasChest && !isChestSteamVr,
-		)
-
-		// hasFeet if lower and/or upper leg tracker is on
-		val hasLeftFoot =
-			(skeleton.leftUpperLegTracker != null || skeleton.leftLowerLegTracker != null)
-		val isLeftFootSteamVr =
-			skeleton.leftLowerLegTracker?.device?.isOpenVrDevice == true ||
-				skeleton.leftFootTracker?.device?.isOpenVrDevice == true
-
-		val hasRightFoot =
-			(skeleton.rightUpperLegTracker != null || skeleton.rightLowerLegTracker != null)
-		val isRightFootSteamVr =
-			skeleton.rightLowerLegTracker?.device?.isOpenVrDevice == true ||
-				skeleton.rightFootTracker?.device?.isOpenVrDevice == true
-		changeShareSettings(
-			TrackerRole.LEFT_FOOT,
-			hasLeftFoot && !isLeftFootSteamVr,
-		)
-		changeShareSettings(
-			TrackerRole.RIGHT_FOOT,
-			hasRightFoot && !isRightFootSteamVr,
-		)
-
-		// hasKnees is just hasFeet
-		val isLeftKneeSteamVr = skeleton.leftUpperLegTracker?.device?.isOpenVrDevice == true
-
-		val isRightKneeSteamVr = skeleton.rightUpperLegTracker?.device?.isOpenVrDevice == true
-		changeShareSettings(TrackerRole.LEFT_KNEE, hasLeftFoot && !isLeftKneeSteamVr)
-		changeShareSettings(TrackerRole.RIGHT_KNEE, hasRightFoot && !isRightKneeSteamVr)
-
-		// hasElbows if an upper arm or a lower arm tracker is on
-		val hasLeftElbow = skeleton.hasLeftArmTracker
-		val isLeftElbowSteamVr = skeleton.leftUpperArmTracker?.device?.isOpenVrDevice == true ||
-			skeleton.leftLowerArmTracker?.device?.isOpenVrDevice == true
-
-		val hasRightElbow = skeleton.hasRightArmTracker
-		val isRightElbowSteamVr = skeleton.rightUpperArmTracker?.device?.isOpenVrDevice == true ||
-			skeleton.rightLowerArmTracker?.device?.isOpenVrDevice == true
-		changeShareSettings(TrackerRole.LEFT_ELBOW, hasLeftElbow && !isLeftElbowSteamVr)
-		changeShareSettings(TrackerRole.RIGHT_ELBOW, hasRightElbow && !isRightElbowSteamVr)
-
 		// Hands aren't touched as they will override the controller's tracking
-		// Return true to say that trackers were successfully toggled automatically
+		val roleToTrackers = mapOf(
+			TrackerRole.CHEST to setOf(skeleton.upperChestTracker, skeleton.chestTracker),
+			TrackerRole.LEFT_ELBOW to setOf(skeleton.leftUpperArmTracker),
+			TrackerRole.RIGHT_ELBOW to setOf(skeleton.rightUpperArmTracker),
+			TrackerRole.WAIST to setOf(skeleton.waistTracker, skeleton.hipTracker),
+			TrackerRole.LEFT_KNEE to setOf(skeleton.leftUpperLegTracker),
+			TrackerRole.RIGHT_KNEE to setOf(skeleton.rightUpperLegTracker),
+			TrackerRole.LEFT_FOOT to setOf(skeleton.leftLowerLegTracker, skeleton.leftFootTracker),
+			TrackerRole.RIGHT_FOOT to setOf(skeleton.rightLowerLegTracker, skeleton.rightFootTracker),
+		)
+
+		for ((role, trackers) in roleToTrackers) {
+			val shouldShare = if (role == TrackerRole.WAIST) {
+				// Waist is special, it should be enabled if there is any tracker on the spine,
+				// but ignored if the waist or hip tracker is from us
+				skeleton.hasSpineTracker &&
+					!trackers.any {
+						it?.device?.origin == DeviceOrigin.STEAMVR
+					}
+			} else {
+				trackers.any {
+					it != null && it.device?.origin != DeviceOrigin.STEAMVR
+				}
+			}
+			changeShareSettings(role, shouldShare)
+		}
 		return true
 	}
 
@@ -143,6 +201,7 @@ abstract class SteamVRBridge(
 	override fun createNewTracker(trackerAdded: TrackerAdded): Tracker {
 		val device = instance.deviceManager
 			.createDevice(
+				DeviceOrigin.STEAMVR,
 				trackerAdded.trackerName,
 				null,
 				trackerAdded.manufacturer.ifEmpty { "OpenVR" },
@@ -150,10 +209,10 @@ abstract class SteamVRBridge(
 
 		// Display name, needsReset and isHmd
 		val displayName: String = trackerAdded.trackerName
-		val isHmd = trackerAdded.trackerId == 0
 
 		// trackerPosition
 		val role = getById(trackerAdded.trackerRole)
+		val isHmd = trackerAdded.trackerId == 0
 		val trackerPosition = if (role != null) {
 			getByTrackerRole(role)
 		} else {
@@ -179,6 +238,33 @@ abstract class SteamVRBridge(
 		device.trackers[0] = tracker
 		instance.deviceManager.addDevice(device)
 		return tracker
+	}
+
+	@VRServerThread
+	override fun versionReceived(versionMessage: Version) {
+		super.versionReceived(versionMessage)
+		if (bridgeSettingsKey == "steamvr" && remoteProtocolVersion >= 2) {
+			instance.queueTask {
+				// Shut off the feeder bridge if the connected driver is recent enough
+				val bridge = instance.getVRBridge {
+					it is ISteamVRBridge && it.getBridgeConfigKey() == "steamvr_feeder"
+				} as? SteamVRBridge
+				bridge?.let {
+					LogManager.info("[$bridgeName] Driver version is new enough, deactivating feeder bridge")
+					instance.removeVRBridge(it)
+				}
+
+				// Start the bindings utility when the driver starts up
+				if (bindingsProviderManager == null) {
+					bindingsProviderManager = BindingsProviderManager()
+				}
+				try {
+					bindingsProviderManager!!.start()
+				} catch (e: Exception) {
+					LogManager.warning("[$bridgeName] Failed to start bindings provider", e)
+				}
+			}
+		}
 	}
 
 	// Battery Status
@@ -412,6 +498,7 @@ abstract class SteamVRBridge(
 
 	@BridgeThread
 	protected fun reportDisconnected() {
+		bindingsProviderManager?.stop()
 		connected = false
 	}
 

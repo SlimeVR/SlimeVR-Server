@@ -1,8 +1,4 @@
 import { createContext, useContext, useState } from 'react';
-import {
-  defaultValues as defaultDevSettings,
-  DeveloperModeWidgetForm,
-} from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
 import { waitUntil } from '@/utils/a11y';
@@ -25,13 +21,33 @@ export enum AssignMode {
   All = 'all',
 }
 
+export interface DeveloperModeConfig {
+  highContrast: boolean;
+  preciseRotation: boolean;
+  fastDataFeed: boolean;
+  filterSlimesAndHMD: boolean;
+  sortByName: boolean;
+  rawSlimeRotation: boolean;
+  moreInfo: boolean;
+}
+
+export const defaultDevSettings: DeveloperModeConfig = {
+  highContrast: false,
+  preciseRotation: false,
+  fastDataFeed: false,
+  filterSlimesAndHMD: false,
+  sortByName: false,
+  rawSlimeRotation: false,
+  moreInfo: false,
+};
+
 export interface Config {
   uuid: string;
   debug: boolean;
   lang: string;
   doneOnboarding: boolean;
   watchNewDevices: boolean;
-  devSettings: DeveloperModeWidgetForm;
+  devSettings: DeveloperModeConfig;
   feedbackSound: boolean;
   feedbackSoundVolume: number;
   connectedTrackersWarning: boolean;
@@ -105,10 +121,7 @@ function fallbackToDefaults(loadedConfig: any): Config {
 // allows to load everything before the first render
 export const loadConfig = async () => {
   try {
-    const json = await store.get<string>('config.json');
-
-    if (!json) throw new Error('Config has ceased existing for some reason');
-
+    const json = (await store.get<string>('config.json')) ?? '{}';
     const loadedConfig = fallbackToDefaults(JSON.parse(json));
 
     if (!loadedConfig.uuid) {

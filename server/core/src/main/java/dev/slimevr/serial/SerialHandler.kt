@@ -9,7 +9,7 @@ abstract class SerialHandler {
 	abstract fun addListener(channel: SerialListener)
 	abstract fun removeListener(channel: SerialListener)
 
-	abstract fun openSerial(portLocation: String?, auto: Boolean): Boolean
+	abstract fun openSerial(portLocation: String?, auto: Boolean, autoIncludeHid: Boolean = false): Boolean
 	abstract fun rebootRequest()
 	abstract fun factoryResetRequest()
 	abstract fun infoRequest()
@@ -22,7 +22,7 @@ abstract class SerialHandler {
 
 	companion object {
 		// Please also update the udev rules when updating these in:
-		// gui/src-tauri/69-slimevr-devices.rules
+		// gui/electron/resources/69-slimevr-devices.rules
 		val supportedSerial: Set<Pair<Int, Int>> = setOf(
 			// / QinHeng
 			// CH340
@@ -61,7 +61,7 @@ class SerialHandlerStub : SerialHandler() {
 
 	override fun removeListener(channel: SerialListener) {}
 
-	override fun openSerial(portLocation: String?, auto: Boolean): Boolean = false
+	override fun openSerial(portLocation: String?, auto: Boolean, autoIncludeHid: Boolean): Boolean = false
 
 	override fun rebootRequest() {}
 

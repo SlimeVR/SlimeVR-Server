@@ -31,7 +31,7 @@ class ServerConfig {
 // 							it.setMag(false)
 // 						} else {
 						trackers.map { (_, t) ->
-							async { it.setMag(false, t.trackerNum) }
+							async { it.setMag(MagnetometerStatus.DISABLED, t.trackerNum) }
 						}.awaitAll()
 // 						}
 						return@async
@@ -51,7 +51,7 @@ class ServerConfig {
 						.map { (_, t) ->
 							async {
 								// FIXME: Tracker gets restarted after each setMag, what will happen for devices with 3 trackers?
-								it.setMag(true, t.trackerNum)
+								it.setMag(MagnetometerStatus.ENABLED, t.trackerNum)
 							}
 						}.awaitAll()
 				}

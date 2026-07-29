@@ -16,6 +16,7 @@ import dev.slimevr.config.TapDetectionConfig
 import dev.slimevr.config.TimeoutConfig
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.config.VRCOSCConfig
+import dev.slimevr.config.VelocityConfig
 import dev.slimevr.filtering.TrackerFilters.Companion.getByConfigkey
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
@@ -36,6 +37,8 @@ import solarxr_protocol.rpc.TapDetectionSettings
 import solarxr_protocol.rpc.TimeoutSettings
 import solarxr_protocol.rpc.VMCOSCSettings
 import solarxr_protocol.rpc.VRCOSCSettings
+import solarxr_protocol.rpc.VRMSettings
+import solarxr_protocol.rpc.VelocitySettings
 import solarxr_protocol.rpc.settings.LegTweaksSettings
 import solarxr_protocol.rpc.settings.ModelRatios
 import solarxr_protocol.rpc.settings.ModelSettings
@@ -113,17 +116,25 @@ fun createVMCOSCSettings(
 			addressStringOffset,
 		)
 
-	val vrmJson = config.vrmJson
-	var vrmJsonOffset = 0
-	if (vrmJson != null) vrmJsonOffset = fbb.createString(vrmJson)
-
 	VMCOSCSettings.startVMCOSCSettings(fbb)
 	VMCOSCSettings.addOscSettings(fbb, generalSettingOffset)
-	if (vrmJson != null) VMCOSCSettings.addVrmJson(fbb, vrmJsonOffset)
 	VMCOSCSettings.addAnchorHip(fbb, config.anchorHip)
 	VMCOSCSettings.addMirrorTracking(fbb, config.mirrorTracking)
 
 	return VMCOSCSettings.endVMCOSCSettings(fbb)
+}
+
+fun createVRMSettings(
+	fbb: FlatBufferBuilder,
+	config: VMCConfig,
+): Int {
+	val vrmJson = config.vrmJson
+	var vrmJsonOffset = 0
+	if (vrmJson != null) vrmJsonOffset = fbb.createString(vrmJson)
+
+	VRMSettings.startVRMSettings(fbb)
+	if (vrmJson != null) VRMSettings.addVrmJson(fbb, vrmJsonOffset)
+	return VRMSettings.endVRMSettings(fbb)
 }
 
 fun createFilterSettings(
@@ -165,6 +176,9 @@ fun createTapDetectionSettings(
 		tapDetectionConfig.mountingResetTaps,
 		tapDetectionConfig.setupMode,
 		tapDetectionConfig.numberTrackersOverThreshold,
+		tapDetectionConfig.yawResetTracker.bodyPart,
+		tapDetectionConfig.fullResetTracker.bodyPart,
+		tapDetectionConfig.mountingResetTracker.bodyPart,
 	)
 
 fun createSteamVRSettings(fbb: FlatBufferBuilder, bridge: ISteamVRBridge?): Int {
@@ -374,7 +388,9 @@ fun createArmsResetModeSettings(
 	)
 
 fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
-	val bridge = server.getVRBridge(ISteamVRBridge::class.java)
+	val bridge = server.getVRBridge {
+		it is ISteamVRBridge
+	} as? ISteamVRBridge
 
 	return SettingsResponse
 		.createSettingsResponse(
@@ -427,6 +443,12 @@ fun createSettingsResponse(fbb: FlatBufferBuilder, server: VRServer): Int {
 				fbb,
 				server.configManager.vrConfig.timeout,
 			),
+			0,
+			createVelocitySettings(fbb, server.configManager.vrConfig.velocityConfig),
+			createVRMSettings(
+				fbb,
+				server.configManager.vrConfig.vmc,
+			),
 		)
 }
 
@@ -470,4 +492,13 @@ fun createTimeoutSettings(
 	.createTimeoutSettings(
 		fbb,
 		timeoutConfig.duration,
+	)
+
+fun createVelocitySettings(
+	fbb: FlatBufferBuilder,
+	config: VelocityConfig,
+): Int = VelocitySettings
+	.createVelocitySettings(
+		fbb,
+		config.sendDerivedVelocity,
 	)

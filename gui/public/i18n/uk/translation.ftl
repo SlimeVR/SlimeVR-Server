@@ -612,9 +612,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Пропустити налаштування
 onboarding-setup_warning-cancel = Продовжити налаштування
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Повернутися до вступу
 onboarding-wifi_creds-skip = Пропустити налаштування Wi-Fi
 onboarding-wifi_creds-submit = Підтвердити!
 onboarding-wifi_creds-ssid =
@@ -648,6 +650,9 @@ onboarding-reset_tutorial-2 =
     Скидання положення допомагає в тому, як трекери насправді надягнені на вас, тому, якщо ви випадково перемістили їх та змінили місце розташування, це допоможе.
     
     Вам потрібно бути в позі, ніби ви катаєтеся на лижах, як показано на майстрі автоматичної прив'язки положення. У вас є затримка у 3 секунди (можна налаштувати), перш ніж спрацює скидання.
+
+## Install info
+
 
 ## Setup start
 

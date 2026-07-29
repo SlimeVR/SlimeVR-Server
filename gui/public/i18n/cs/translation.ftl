@@ -836,9 +836,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Přeskočit nastavení
 onboarding-setup_warning-cancel = Pokračovat v nastavení
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Zpět na úvod
 onboarding-wifi_creds-v2 = Trackey používající Wi-Fi
 onboarding-wifi_creds-skip = Přeskočit nastavení Wi-Fi
 onboarding-wifi_creds-submit = Odeslat!
@@ -869,6 +871,9 @@ onboarding-reset_tutorial-1 =
     
     Pro tuto funkci musíte stát v základní pozici (ruce podél těla). Před provedením resetu je zde 3 sekundová prodleva (lze nastavit).
     Tímto se kompletně resetuje pozice a rotace všech vašich trackerů, což by mělo vyřešit většinu problémů.
+
+## Install info
+
 
 ## Setup start
 

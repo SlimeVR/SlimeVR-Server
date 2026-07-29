@@ -12,6 +12,7 @@ import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.runBlocking
 import java.nio.ByteBuffer
 import java.util.function.Consumer
 import kotlin.collections.set
@@ -26,12 +27,39 @@ import kotlin.math.sqrt
 class HIDCommon {
 	companion object {
 		const val HID_TRACKER_RECEIVER_VID = 0x1209
-		const val HID_TRACKER_RECEIVER_PID = 0x7690
+		const val HID_RECEIVER_PID = 0x7690
 		const val HID_TRACKER_PID = 0x7692
+		const val GESTURES_INC_VID = 0x4E76
+		const val GESTURES_INC_PID_D2DX = 0xD2D0
+		const val GESTURES_INC_PID_D2DX_MASK = 0xFFF0
 
 		const val PACKET_SIZE = 16
 
 		private val AXES_OFFSET = fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
+
+		data class HidProductRule(
+			val vendorId: Int,
+			val productId: Int,
+			val productMask: Int = 0xFFFF,
+		)
+
+		val receiverProductRules = listOf(
+			HidProductRule(HID_TRACKER_RECEIVER_VID, HID_RECEIVER_PID),
+			HidProductRule(GESTURES_INC_VID, GESTURES_INC_PID_D2DX, GESTURES_INC_PID_D2DX_MASK),
+		)
+		val trackerProductRules = listOf(
+			HidProductRule(HID_TRACKER_RECEIVER_VID, HID_TRACKER_PID),
+		)
+
+		private fun matchesProductRule(vendorId: Int, productId: Int, rule: HidProductRule): Boolean = vendorId == rule.vendorId && (productId and rule.productMask) == rule.productId
+
+		fun allProductRules(): List<HidProductRule> = (receiverProductRules + trackerProductRules)
+
+		fun matchesReceiver(vendorId: Int, productId: Int): Boolean = receiverProductRules.any { matchesProductRule(vendorId, productId, it) }
+
+		fun matchesTracker(vendorId: Int, productId: Int): Boolean = trackerProductRules.any { matchesProductRule(vendorId, productId, it) }
+
+		fun matchesAny(vendorId: Int, productId: Int): Boolean = allProductRules().any { matchesProductRule(vendorId, productId, it) }
 
 		fun deviceIdLookup(
 			hidDevices: MutableList<HIDDevice>,
@@ -107,6 +135,10 @@ class HIDCommon {
 					.info(
 						"[TrackerServer] Added sensor $trackerId for ${device.name}, type $sensorType",
 					)
+			} else {
+				runBlocking {
+					device.setMag(magStatus, trackerId)
+				}
 			}
 		}
 

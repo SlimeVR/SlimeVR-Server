@@ -1052,6 +1052,48 @@ public final class ProtobufMessages {
 		 * @return The dataSource.
 		 */
 		dev.slimevr.desktop.platform.ProtobufMessages.Position.DataSource getDataSource();
+
+		/**
+		 * <code>optional float vx = 10;</code>
+		 * 
+		 * @return Whether the vx field is set.
+		 */
+		boolean hasVx();
+
+		/**
+		 * <code>optional float vx = 10;</code>
+		 * 
+		 * @return The vx.
+		 */
+		float getVx();
+
+		/**
+		 * <code>optional float vy = 11;</code>
+		 * 
+		 * @return Whether the vy field is set.
+		 */
+		boolean hasVy();
+
+		/**
+		 * <code>optional float vy = 11;</code>
+		 * 
+		 * @return The vy.
+		 */
+		float getVy();
+
+		/**
+		 * <code>optional float vz = 12;</code>
+		 * 
+		 * @return Whether the vz field is set.
+		 */
+		boolean hasVz();
+
+		/**
+		 * <code>optional float vz = 12;</code>
+		 * 
+		 * @return The vz.
+		 */
+		float getVz();
 	}
 
 	/**
@@ -1416,6 +1458,75 @@ public final class ProtobufMessages {
 				: result;
 		}
 
+		public static final int VX_FIELD_NUMBER = 10;
+		private float vx_ = 0F;
+
+		/**
+		 * <code>optional float vx = 10;</code>
+		 * 
+		 * @return Whether the vx field is set.
+		 */
+		@java.lang.Override
+		public boolean hasVx() {
+			return ((bitField0_ & 0x00000010) != 0);
+		}
+
+		/**
+		 * <code>optional float vx = 10;</code>
+		 * 
+		 * @return The vx.
+		 */
+		@java.lang.Override
+		public float getVx() {
+			return vx_;
+		}
+
+		public static final int VY_FIELD_NUMBER = 11;
+		private float vy_ = 0F;
+
+		/**
+		 * <code>optional float vy = 11;</code>
+		 * 
+		 * @return Whether the vy field is set.
+		 */
+		@java.lang.Override
+		public boolean hasVy() {
+			return ((bitField0_ & 0x00000020) != 0);
+		}
+
+		/**
+		 * <code>optional float vy = 11;</code>
+		 * 
+		 * @return The vy.
+		 */
+		@java.lang.Override
+		public float getVy() {
+			return vy_;
+		}
+
+		public static final int VZ_FIELD_NUMBER = 12;
+		private float vz_ = 0F;
+
+		/**
+		 * <code>optional float vz = 12;</code>
+		 * 
+		 * @return Whether the vz field is set.
+		 */
+		@java.lang.Override
+		public boolean hasVz() {
+			return ((bitField0_ & 0x00000040) != 0);
+		}
+
+		/**
+		 * <code>optional float vz = 12;</code>
+		 * 
+		 * @return The vz.
+		 */
+		@java.lang.Override
+		public float getVz() {
+			return vz_;
+		}
+
 		private byte memoizedIsInitialized = -1;
 
 		@java.lang.Override
@@ -1459,6 +1570,15 @@ public final class ProtobufMessages {
 			}
 			if (((bitField0_ & 0x00000008) != 0)) {
 				output.writeEnum(9, dataSource_);
+			}
+			if (((bitField0_ & 0x00000010) != 0)) {
+				output.writeFloat(10, vx_);
+			}
+			if (((bitField0_ & 0x00000020) != 0)) {
+				output.writeFloat(11, vy_);
+			}
+			if (((bitField0_ & 0x00000040) != 0)) {
+				output.writeFloat(12, vz_);
 			}
 			getUnknownFields().writeTo(output);
 		}
@@ -1505,6 +1625,18 @@ public final class ProtobufMessages {
 			if (((bitField0_ & 0x00000008) != 0)) {
 				size += com.google.protobuf.CodedOutputStream
 					.computeEnumSize(9, dataSource_);
+			}
+			if (((bitField0_ & 0x00000010) != 0)) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(10, vx_);
+			}
+			if (((bitField0_ & 0x00000020) != 0)) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(11, vy_);
+			}
+			if (((bitField0_ & 0x00000040) != 0)) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(12, vz_);
 			}
 			size += getUnknownFields().getSerializedSize();
 			memoizedSize = size;
@@ -1600,6 +1732,42 @@ public final class ProtobufMessages {
 				if (dataSource_ != other.dataSource_)
 					return false;
 			}
+			if (hasVx() != other.hasVx())
+				return false;
+			if (hasVx()) {
+				if (
+					java.lang.Float.floatToIntBits(getVx())
+						!= java.lang.Float
+							.floatToIntBits(
+								other.getVx()
+							)
+				)
+					return false;
+			}
+			if (hasVy() != other.hasVy())
+				return false;
+			if (hasVy()) {
+				if (
+					java.lang.Float.floatToIntBits(getVy())
+						!= java.lang.Float
+							.floatToIntBits(
+								other.getVy()
+							)
+				)
+					return false;
+			}
+			if (hasVz() != other.hasVz())
+				return false;
+			if (hasVz()) {
+				if (
+					java.lang.Float.floatToIntBits(getVz())
+						!= java.lang.Float
+							.floatToIntBits(
+								other.getVz()
+							)
+				)
+					return false;
+			}
 			if (!getUnknownFields().equals(other.getUnknownFields()))
 				return false;
 			return true;
@@ -1665,6 +1833,30 @@ public final class ProtobufMessages {
 			if (hasDataSource()) {
 				hash = (37 * hash) + DATA_SOURCE_FIELD_NUMBER;
 				hash = (53 * hash) + dataSource_;
+			}
+			if (hasVx()) {
+				hash = (37 * hash) + VX_FIELD_NUMBER;
+				hash = (53 * hash)
+					+ java.lang.Float
+						.floatToIntBits(
+							getVx()
+						);
+			}
+			if (hasVy()) {
+				hash = (37 * hash) + VY_FIELD_NUMBER;
+				hash = (53 * hash)
+					+ java.lang.Float
+						.floatToIntBits(
+							getVy()
+						);
+			}
+			if (hasVz()) {
+				hash = (37 * hash) + VZ_FIELD_NUMBER;
+				hash = (53 * hash)
+					+ java.lang.Float
+						.floatToIntBits(
+							getVz()
+						);
 			}
 			hash = (29 * hash) + getUnknownFields().hashCode();
 			memoizedHashCode = hash;
@@ -1841,6 +2033,9 @@ public final class ProtobufMessages {
 				qz_ = 0F;
 				qw_ = 0F;
 				dataSource_ = 0;
+				vx_ = 0F;
+				vy_ = 0F;
+				vz_ = 0F;
 				return this;
 			}
 
@@ -1911,6 +2106,18 @@ public final class ProtobufMessages {
 					result.dataSource_ = dataSource_;
 					to_bitField0_ |= 0x00000008;
 				}
+				if (((from_bitField0_ & 0x00000200) != 0)) {
+					result.vx_ = vx_;
+					to_bitField0_ |= 0x00000010;
+				}
+				if (((from_bitField0_ & 0x00000400) != 0)) {
+					result.vy_ = vy_;
+					to_bitField0_ |= 0x00000020;
+				}
+				if (((from_bitField0_ & 0x00000800) != 0)) {
+					result.vz_ = vz_;
+					to_bitField0_ |= 0x00000040;
+				}
 				result.bitField0_ |= to_bitField0_;
 			}
 
@@ -1959,6 +2166,15 @@ public final class ProtobufMessages {
 				}
 				if (other.hasDataSource()) {
 					setDataSourceValue(other.getDataSourceValue());
+				}
+				if (other.hasVx()) {
+					setVx(other.getVx());
+				}
+				if (other.hasVy()) {
+					setVy(other.getVy());
+				}
+				if (other.hasVz()) {
+					setVz(other.getVz());
 				}
 				this.mergeUnknownFields(other.getUnknownFields());
 				onChanged();
@@ -2032,6 +2248,21 @@ public final class ProtobufMessages {
 								bitField0_ |= 0x00000100;
 								break;
 							} // case 72
+							case 85: {
+								vx_ = input.readFloat();
+								bitField0_ |= 0x00000200;
+								break;
+							} // case 85
+							case 93: {
+								vy_ = input.readFloat();
+								bitField0_ |= 0x00000400;
+								break;
+							} // case 93
+							case 101: {
+								vz_ = input.readFloat();
+								bitField0_ |= 0x00000800;
+								break;
+							} // case 101
 							default: {
 								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
 									done = true; // was an endgroup tag
@@ -2460,6 +2691,150 @@ public final class ProtobufMessages {
 			public Builder clearDataSource() {
 				bitField0_ = (bitField0_ & ~0x00000100);
 				dataSource_ = 0;
+				onChanged();
+				return this;
+			}
+
+			private float vx_;
+
+			/**
+			 * <code>optional float vx = 10;</code>
+			 * 
+			 * @return Whether the vx field is set.
+			 */
+			@java.lang.Override
+			public boolean hasVx() {
+				return ((bitField0_ & 0x00000200) != 0);
+			}
+
+			/**
+			 * <code>optional float vx = 10;</code>
+			 * 
+			 * @return The vx.
+			 */
+			@java.lang.Override
+			public float getVx() {
+				return vx_;
+			}
+
+			/**
+			 * <code>optional float vx = 10;</code>
+			 * 
+			 * @param value The vx to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setVx(float value) {
+
+				vx_ = value;
+				bitField0_ |= 0x00000200;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>optional float vx = 10;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearVx() {
+				bitField0_ = (bitField0_ & ~0x00000200);
+				vx_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			private float vy_;
+
+			/**
+			 * <code>optional float vy = 11;</code>
+			 * 
+			 * @return Whether the vy field is set.
+			 */
+			@java.lang.Override
+			public boolean hasVy() {
+				return ((bitField0_ & 0x00000400) != 0);
+			}
+
+			/**
+			 * <code>optional float vy = 11;</code>
+			 * 
+			 * @return The vy.
+			 */
+			@java.lang.Override
+			public float getVy() {
+				return vy_;
+			}
+
+			/**
+			 * <code>optional float vy = 11;</code>
+			 * 
+			 * @param value The vy to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setVy(float value) {
+
+				vy_ = value;
+				bitField0_ |= 0x00000400;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>optional float vy = 11;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearVy() {
+				bitField0_ = (bitField0_ & ~0x00000400);
+				vy_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			private float vz_;
+
+			/**
+			 * <code>optional float vz = 12;</code>
+			 * 
+			 * @return Whether the vz field is set.
+			 */
+			@java.lang.Override
+			public boolean hasVz() {
+				return ((bitField0_ & 0x00000800) != 0);
+			}
+
+			/**
+			 * <code>optional float vz = 12;</code>
+			 * 
+			 * @return The vz.
+			 */
+			@java.lang.Override
+			public float getVz() {
+				return vz_;
+			}
+
+			/**
+			 * <code>optional float vz = 12;</code>
+			 * 
+			 * @param value The vz to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setVz(float value) {
+
+				vz_ = value;
+				bitField0_ |= 0x00000800;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>optional float vz = 12;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearVz() {
+				bitField0_ = (bitField0_ & ~0x00000800);
+				vz_ = 0F;
 				onChanged();
 				return this;
 			}
@@ -9023,7 +9398,7 @@ public final class ProtobufMessages {
 				+
 				"ngPong\"#\n\007Version\022\030\n\020protocol_version\030\001 "
 				+
-				"\001(\005\"\223\002\n\010Position\022\022\n\ntracker_id\030\001 \001(\005\022\016\n\001"
+				"\001(\005\"\333\002\n\010Position\022\022\n\ntracker_id\030\001 \001(\005\022\016\n\001"
 				+
 				"x\030\002 \001(\002H\000\210\001\001\022\016\n\001y\030\003 \001(\002H\001\210\001\001\022\016\n\001z\030\004 \001(\002H"
 				+
@@ -9031,67 +9406,71 @@ public final class ProtobufMessages {
 				+
 				"\022\n\n\002qw\030\010 \001(\002\0227\n\013data_source\030\t \001(\0162\035.mess"
 				+
-				"ages.Position.DataSourceH\003\210\001\001\"8\n\nDataSou"
+				"ages.Position.DataSourceH\003\210\001\001\022\017\n\002vx\030\n \001("
 				+
-				"rce\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRECISION\020\002\022\010\n"
+				"\002H\004\210\001\001\022\017\n\002vy\030\013 \001(\002H\005\210\001\001\022\017\n\002vz\030\014 \001(\002H\006\210\001\001"
 				+
-				"\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014_data_sourc"
+				"\"8\n\nDataSource\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRE"
 				+
-				"e\"\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020action"
+				"CISION\020\002\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014"
 				+
-				"_arguments\030\002 \003(\0132).messages.UserAction.A"
+				"_data_sourceB\005\n\003_vxB\005\n\003_vyB\005\n\003_vz\"\227\001\n\nUs"
 				+
-				"ctionArgumentsEntry\0326\n\024ActionArgumentsEn"
+				"erAction\022\014\n\004name\030\001 \001(\t\022C\n\020action_argumen"
 				+
-				"try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"|\n\014T"
+				"ts\030\002 \003(\0132).messages.UserAction.ActionArg"
 				+
-				"rackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016track"
+				"umentsEntry\0326\n\024ActionArgumentsEntry\022\013\n\003k"
 				+
-				"er_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024\n"
+				"ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"|\n\014TrackerAd"
 				+
-				"\014tracker_role\030\004 \001(\005\022\024\n\014manufacturer\030\005 \001("
+				"ded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016tracker_seria"
 				+
-				"\t\"\374\002\n\rTrackerStatus\022\022\n\ntracker_id\030\001 \001(\005\022"
+				"l\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024\n\014tracker"
 				+
-				".\n\006status\030\002 \001(\0162\036.messages.TrackerStatus"
+				"_role\030\004 \001(\005\022\024\n\014manufacturer\030\005 \001(\t\"\374\002\n\rTr"
 				+
-				".Status\0221\n\005extra\030\003 \003(\0132\".messages.Tracke"
+				"ackerStatus\022\022\n\ntracker_id\030\001 \001(\005\022.\n\006statu"
 				+
-				"rStatus.ExtraEntry\022;\n\nconfidence\030\004 \001(\0162\""
+				"s\030\002 \001(\0162\036.messages.TrackerStatus.Status\022"
 				+
-				".messages.TrackerStatus.ConfidenceH\000\210\001\001\032"
+				"1\n\005extra\030\003 \003(\0132\".messages.TrackerStatus."
 				+
-				",\n\nExtraEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001("
+				"ExtraEntry\022;\n\nconfidence\030\004 \001(\0162\".message"
 				+
-				"\t:\0028\001\"E\n\006Status\022\020\n\014DISCONNECTED\020\000\022\006\n\002OK\020"
+				"s.TrackerStatus.ConfidenceH\000\210\001\001\032,\n\nExtra"
 				+
-				"\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED\020\004\"3\n\n"
+				"Entry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n"
 				+
-				"Confidence\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022"
+				"\006Status\022\020\n\014DISCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUS"
 				+
-				"\010\n\004HIGH\020\nB\r\n\013_confidence\"I\n\007Battery\022\022\n\nt"
+				"Y\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfiden"
 				+
-				"racker_id\030\001 \001(\005\022\025\n\rbattery_level\030\002 \001(\002\022\023"
+				"ce\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020"
 				+
-				"\n\013is_charging\030\003 \001(\010\"\241\002\n\017ProtobufMessage\022"
+				"\nB\r\n\013_confidence\"I\n\007Battery\022\022\n\ntracker_i"
 				+
-				"&\n\010position\030\001 \001(\0132\022.messages.PositionH\000\022"
+				"d\030\001 \001(\005\022\025\n\rbattery_level\030\002 \001(\002\022\023\n\013is_cha"
 				+
-				"+\n\013user_action\030\002 \001(\0132\024.messages.UserActi"
+				"rging\030\003 \001(\010\"\241\002\n\017ProtobufMessage\022&\n\010posit"
 				+
-				"onH\000\022/\n\rtracker_added\030\003 \001(\0132\026.messages.T"
+				"ion\030\001 \001(\0132\022.messages.PositionH\000\022+\n\013user_"
 				+
-				"rackerAddedH\000\0221\n\016tracker_status\030\004 \001(\0132\027."
+				"action\030\002 \001(\0132\024.messages.UserActionH\000\022/\n\r"
 				+
-				"messages.TrackerStatusH\000\022$\n\007battery\030\005 \001("
+				"tracker_added\030\003 \001(\0132\026.messages.TrackerAd"
 				+
-				"\0132\021.messages.BatteryH\000\022$\n\007version\030\006 \001(\0132"
+				"dedH\000\0221\n\016tracker_status\030\004 \001(\0132\027.messages"
 				+
-				"\021.messages.VersionH\000B\t\n\007messageB2\n\034dev.s"
+				".TrackerStatusH\000\022$\n\007battery\030\005 \001(\0132\021.mess"
 				+
-				"limevr.desktop.platformB\020ProtobufMessage"
+				"ages.BatteryH\000\022$\n\007version\030\006 \001(\0132\021.messag"
 				+
-				"sH\003b\006proto3"
+				"es.VersionH\000B\t\n\007messageB2\n\034dev.slimevr.d"
+				+
+				"esktop.platformB\020ProtobufMessagesH\003b\006pro"
+				+
+				"to3"
 		};
 		descriptor = com.google.protobuf.Descriptors.FileDescriptor
 			.internalBuildGeneratedFileFrom(
@@ -9113,7 +9492,7 @@ public final class ProtobufMessages {
 		internal_static_messages_Position_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_Position_descriptor,
 			new java.lang.String[] { "TrackerId", "X", "Y", "Z", "Qx", "Qy", "Qz", "Qw",
-				"DataSource", }
+				"DataSource", "Vx", "Vy", "Vz", }
 		);
 		internal_static_messages_UserAction_descriptor = getDescriptor().getMessageTypes().get(3);
 		internal_static_messages_UserAction_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(

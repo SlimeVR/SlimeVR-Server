@@ -17,7 +17,6 @@ plugins {
 	id("com.github.gmazzo.buildconfig")
 
 	id("com.android.application") version "8.13.2"
-	id("org.ajoberstar.grgit")
 }
 
 kotlin {
@@ -124,8 +123,14 @@ dependencies {
 
 // The android block is where you configure all your Android-specific build options.
 extra.apply {
-	set("gitVersionCode", grgit.tag.list().size)
-	set("gitVersionName", grgit.describe(mapOf("tags" to true, "always" to true)))
+	val tagCount = providers.exec {
+		commandLine("git", "--no-pager", "tag", "-l")
+	}.standardOutput.asText.get().trim().split('\n').size
+	val description = providers.exec {
+		commandLine("git", "describe", "--tags", "--abbrev=8", "--always")
+	}.standardOutput.asText.get().trim()
+	set("gitVersionCode", tagCount)
+	set("gitVersionName", description)
 }
 android {
 	// The app's namespace. Used primarily to access app resources.

@@ -1,0 +1,12 @@
+# Garbage left behind on Windows
+
+.vs/
+out/
+CMakeFiles/
+vcpkg_installed/
+src/resources/resources.hpp
+CMakeCache.txt
+build.ninja
+*.cmake
+*.dll
+*.log

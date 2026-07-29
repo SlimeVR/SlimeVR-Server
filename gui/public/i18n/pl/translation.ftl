@@ -960,9 +960,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Pomiń konfigurację
 onboarding-setup_warning-cancel = Kontynuuj konfigurację
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Cofnij się do początku
 onboarding-wifi_creds-skip = Pomiń ustawienia Wi-Fi
 onboarding-wifi_creds-submit = Potwierdź!
 onboarding-wifi_creds-ssid =
@@ -997,6 +999,9 @@ onboarding-reset_tutorial-2 =
     Resetowanie montażu pomaga w tym, w jaki sposób trackery są faktycznie zakładane na ciebie, więc jeśli przypadkowo je przeniosłeś i zmieniłeś ich orientację o dużą ilość, to pomoże.
     
     Musisz być w pozie, jakbyś jechał na nartach, tak jak jest to pokazane w kreatorze automatycznego montażu, i masz 3-sekundowe opóźnienie (konfigurowalne), zanim zostanie uruchomione.
+
+## Install info
+
 
 ## Setup start
 

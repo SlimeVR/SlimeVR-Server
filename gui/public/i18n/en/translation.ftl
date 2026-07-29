@@ -637,6 +637,9 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = Position data
 settings-general-fk_settings-ik-use_position = Use Position data
 settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
+settings-general-fk_settings-velocity_settings = Velocity Settings
+settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
@@ -673,7 +676,7 @@ settings-general-fk_settings-self_localization-description = Mocap Mode allows t
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Tap based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Calibration. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
+settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
@@ -689,12 +692,17 @@ settings-general-gesture_control-trackers = { $amount ->
 settings-general-gesture_control-yawResetEnabled = Enable tap to yaw reset
 settings-general-gesture_control-yawResetDelay = Yaw reset delay
 settings-general-gesture_control-yawResetTaps = Taps for yaw reset
+settings-general-gesture_control-yawResetTracker = Yaw Reset Tracker
 settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
 settings-general-gesture_control-fullResetDelay = Full reset delay
 settings-general-gesture_control-fullResetTaps = Taps for full reset
+settings-general-gesture_control-fullResetTracker = Full Reset Tracker
 settings-general-gesture_control-mountingResetEnabled = Enable tap to perform mounting calibration
 settings-general-gesture_control-mountingResetDelay = Mounting calibration delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting calibration
+settings-general-gesture_control-mountingResetTracker = Mounting Reset Tracker
+settings-general-gesture_control-yawResetTracker-title = Yaw Reset Tracker
+settings-general-gesture_control-fullResetTracker-title = Full Reset Tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over threshold
 settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make tap detection work as it would cause more false positives.
@@ -784,6 +792,12 @@ settings-serial-factory_reset-warning-cancel = Cancel
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Get WiFi Scan
+settings-serial-enter_pairing = Enter Pairing
+settings-serial-exit_pairing = Exit Pairing
+settings-serial-calibrate = Calibrate
+settings-serial-six_side_calibrate = 6-Side Calibrate
+settings-serial-dfu = Enter DFU
+settings-serial-meow = Meow!
 settings-serial-file_type = Plain text
 settings-serial-save_logs = Save To File
 settings-serial-send_command = Send
@@ -1651,12 +1665,20 @@ tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
 tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
 tracking_checklist-FULL_RESET = Perform a full reset
 tracking_checklist-FULL_RESET-desc = Some trackers need a reset to be performed.
-tracking_checklist-STEAMVR_DISCONNECTED = SteamVR not running
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR disconnected
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_blocked-desc = The driver has been blocked by SteamVR due to a previous SteamVR crash.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = The driver is disabled in SteamVR settings.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = The driver is not installed.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Enable driver
 tracking_checklist-STEAMVR_HANDS_ENABLED = Hand trackers toggled on
 tracking_checklist-STEAMVR_HANDS_ENABLED-desc = You have enabled the SteamVR virtual hand trackers. This will cause button inputs to not work in SteamVR and in games.
 tracking_checklist-STEAMVR_HANDS_ENABLED-go = Disable them
+tracking_checklist-STANDABLE_INSTALLED = Standable is installed
+tracking_checklist-STANDABLE_INSTALLED-desc =
+    Standable frequently causes tracking issues when used alongside SlimeVR. Standable should be fully uninstalled in Steam to ensure no issues arise.
+    You must close SteamVR before uninstalling Standable in Steam.
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didn't perform tracker calibration. Please let your trackers (highlighted in yellow) rest on a stable surface for a few seconds.
 tracking_checklist-TRACKER_ERROR = Trackers with Errors

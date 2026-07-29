@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix-cpp: ${{ steps.set-matrix.outputs.matrix-cpp }}
     steps:
       - id: set-matrix
         shell: bash
@@ -25,7 +26,44 @@ jobs:
           else
             RESULT=$(echo "$BASE" | jq -c '.')
           fi
+          RESULT_CPP=$(echo "$RESULT" | jq -c '[ .[] | select ( (.platform != "macos") and ( (.platform != "windows") or (.os | endswith("-arm") | not) ) ) ]')
+
           echo "matrix={\"include\":$RESULT}" >> "$GITHUB_OUTPUT"
+          echo "matrix-cpp={\"include\":$RESULT_CPP}" >> "$GITHUB_OUTPUT"
+
+  build-bindings-provider:
+    name: Build bindings provider for ${{ matrix.os }}
+    needs: [setup-matrix]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix-cpp) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - if: matrix.platform == 'linux'
+        name: Install GCC
+        uses: egor-tensin/setup-gcc@v2
+        with:
+          version: 16
+      - name: Get CMake
+        uses: lukka/get-cmake@latest
+      - name: Configure
+        run: cmake -S bindings-provider/ -B bindings-provider/build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build bindings-provider/build --config Release -j6
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: bindings-provider-${{ matrix.platform }}-${{ matrix.os }}
+          path: |
+            bindings-provider/build/slimevr-bindings-provider
+            bindings-provider/build/libopenvr_api.so
+            bindings-provider/build/Release/SlimeVR-Bindings-Provider.exe
+            bindings-provider/build/openvr_api.dll
+
   gui-checks:
     name: Gui Checks
     runs-on: ubuntu-latest
@@ -125,7 +163,7 @@ jobs:
 
   package-desktop:
     name: Package Desktop (${{ matrix.platform }} - ${{ matrix.os }})
-    needs: [setup-matrix, build-server-jar, build-gui-frontend]
+    needs: [setup-matrix, build-server-jar, build-gui-frontend, build-bindings-provider]
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix) }}
@@ -149,6 +187,12 @@ jobs:
         with:
           name: server-jar
           path: server
+      - if: contains(fromJson(needs.setup-matrix.outputs.matrix-cpp).include.*.os, matrix.os)
+        name: Download bindings provider artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: bindings-provider-${{ matrix.platform }}-${{ matrix.os }}
+          path: bindings-provider/build/${{ matrix.platform == 'windows' && 'win' || 'linux' }}-${{ endsWith(matrix.os, '-arm') && 'arm64' || 'x64' }}
       - name: Download GUI Dist
         uses: actions/download-artifact@v8
         with:

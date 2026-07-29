@@ -19,13 +19,16 @@ export const IPC_CHANNELS = {
   OPEN_FILE: 'open-file',
   GET_FOLDER: 'get-folder',
   GH_FETCH: 'gh-fetch',
-  DISCORD_PRESENCE: 'discord-presence'
+  DISCORD_PRESENCE: 'discord-presence',
+  IS_STEAM: 'is-steam',
 } as const;
 
 export interface IpcInvokeMap {
   [IPC_CHANNELS.OPEN_URL]: (url: string) => void;
   [IPC_CHANNELS.OS_STATS]: () => Promise<OSStats>;
-  [IPC_CHANNELS.WINDOW_ACTIONS]: (action: 'close' | 'minimize' | 'maximize' | 'hide') => void;
+  [IPC_CHANNELS.WINDOW_ACTIONS]: (
+    action: 'close' | 'minimize' | 'toggle-maximize' | 'hide'
+  ) => void;
   [IPC_CHANNELS.LOG]: (type: 'info' | 'error' | 'warn', ...args: unknown[]) => void;
   [IPC_CHANNELS.OPEN_DIALOG]: (
     options: OpenDialogOptions
@@ -46,4 +49,5 @@ export interface IpcInvokeMap {
     options: T
   ) => Promise<GHReturn[T['type']]>;
   [IPC_CHANNELS.DISCORD_PRESENCE]: (options: DiscordPresence) => void;
+  [IPC_CHANNELS.IS_STEAM]: () => boolean;
 }

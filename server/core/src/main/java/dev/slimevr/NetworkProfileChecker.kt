@@ -5,7 +5,7 @@ data class NetworkInfo(
 	val description: String?,
 	val category: NetworkCategory?,
 	val connectivity: Set<ConnectivityFlags>?,
-	val connected: Boolean?,
+	val connected: Boolean,
 )
 
 /**
@@ -18,7 +18,7 @@ enum class NetworkCategory(val value: Int) {
 	;
 
 	companion object {
-		fun fromInt(value: Int) = values().find { it.value == value }
+		fun fromInt(value: Int) = entries.find { it.value == value }
 	}
 }
 
@@ -41,7 +41,7 @@ enum class ConnectivityFlags(val value: Int) {
 		fun fromInt(value: Int): Set<ConnectivityFlags> = if (value == 0) {
 			setOf(DISCONNECTED)
 		} else {
-			values().filter { it != DISCONNECTED && (value and it.value) != 0 }.toSet()
+			entries.filter { it != DISCONNECTED && (value and it.value) != 0 }.toSet()
 		}
 	}
 }
@@ -51,7 +51,7 @@ abstract class NetworkProfileChecker {
 	abstract val publicNetworks: List<NetworkInfo>
 }
 
-class NetworkProfileCheckerStub : NetworkProfileChecker() {
+class StubNetworkProfileChecker : NetworkProfileChecker() {
 	override val isSupported: Boolean
 		get() = false
 	override val publicNetworks: List<NetworkInfo>

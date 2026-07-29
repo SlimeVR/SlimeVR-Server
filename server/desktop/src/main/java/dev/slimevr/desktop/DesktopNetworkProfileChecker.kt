@@ -1,26 +1,31 @@
 package dev.slimevr.desktop
 
+import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.platform.win32.COM.COMException
 import com.sun.jna.platform.win32.COM.COMUtils
 import com.sun.jna.platform.win32.COM.Dispatch
 import com.sun.jna.platform.win32.Guid.CLSID
 import com.sun.jna.platform.win32.Guid.IID
+import com.sun.jna.platform.win32.IPHlpAPI
+import com.sun.jna.platform.win32.IPHlpAPI.AF_UNSPEC
 import com.sun.jna.platform.win32.OaIdl.VARIANT_BOOLByReference
 import com.sun.jna.platform.win32.Ole32
 import com.sun.jna.platform.win32.OleAuto
 import com.sun.jna.platform.win32.WTypes
+import com.sun.jna.platform.win32.WinDef
+import com.sun.jna.platform.win32.WinError
+import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.platform.win32.WinNT.HRESULT
 import com.sun.jna.ptr.IntByReference
 import com.sun.jna.ptr.PointerByReference
+import com.sun.jna.win32.StdCallLibrary
 import dev.slimevr.ConnectivityFlags
 import dev.slimevr.NetworkCategory
 import dev.slimevr.NetworkInfo
 import dev.slimevr.NetworkProfileChecker
-import dev.slimevr.VRServer
 import io.eiren.util.OperatingSystem
-import java.util.*
-import kotlin.concurrent.scheduleAtFixedRate
+import io.eiren.util.logging.LogManager
 
 /**
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-inetworkconnection">INetworkConnection interface (netlistmgr.h)</a>
@@ -234,13 +239,44 @@ constructor() : AutoCloseable {
 	}
 }
 
+@Suppress("ktlint:standard:function-naming", "ktlint:standard:class-naming")
+interface NetIOAPI : IPHlpAPI {
+	enum class MIB_NOTIFICATION_TYPE(val native: Int) {
+		MibParameterNotification(0),
+		MibAddInstance(1),
+		MibDeleteInstance(2),
+		MibInitialNotification(3),
+		;
+
+		companion object {
+			fun fromNative(native: Int) = byNative[native]
+			private val byNative = entries.associateBy { it.native }
+		}
+	}
+	interface IPINTERFACE_CHANGE_CALLBACK : StdCallLibrary.StdCallCallback {
+		fun callback(
+			context: Pointer?,
+			row: Pointer?,
+			/* MIB_NOTIFICATION_TYPE */
+			notificationType: Int,
+		)
+	}
+
+	fun NotifyIpInterfaceChange(family: Int, callback: IPINTERFACE_CHANGE_CALLBACK, context: Pointer?, initialNotification: WinDef.BOOL, notificationHandle: WinNT.HANDLEByReference): Long
+	fun CancelMibChangeNotify2(notificationHandle: WinNT.HANDLE): Long
+
+	companion object {
+		val INSTANCE: NetIOAPI = Native.load("Iphlpapi", NetIOAPI::class.java)
+	}
+}
+
 fun enumerateNetworks(): List<NetworkInfo>? {
 	if (OperatingSystem.currentPlatform != OperatingSystem.WINDOWS) {
 		return null
 	}
 	try {
-		COMNetworkManager().use { netmgr ->
-			netmgr.instance.GetNetworkConnections().use { conns ->
+		COMNetworkManager().use { netMgr ->
+			netMgr.instance.GetNetworkConnections().use { conns ->
 				return generateSequence { conns.Next() }
 					.map { conn ->
 						conn.use {
@@ -257,14 +293,16 @@ fun enumerateNetworks(): List<NetworkInfo>? {
 					}.toList()
 			}
 		}
-	} catch (err: Exception) {
-		println(err.stackTraceToString())
+	} catch (e: Exception) {
+		LogManager.severe("[DesktopNetworkProfileChecker] Exception when enumerating networks", e)
 	}
 	return null
 }
 
-class DesktopNetworkProfileChecker(private val server: VRServer) : NetworkProfileChecker() {
-	private val updateTickTimer = Timer("NetworkProfileCheck")
+class DesktopNetworkProfileChecker :
+	NetworkProfileChecker(),
+	Runnable {
+	private val thread = Thread(this, "DesktopNetworkProfileChecker runner")
 	private var publicNetworksLocal: List<NetworkInfo> = listOf()
 
 	override val isSupported: Boolean
@@ -274,11 +312,40 @@ class DesktopNetworkProfileChecker(private val server: VRServer) : NetworkProfil
 		get() = publicNetworksLocal
 
 	init {
-		if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
-			this.updateTickTimer.scheduleAtFixedRate(0, 3000) {
-				publicNetworksLocal = enumerateNetworks()?.filter { net ->
-					net.connected == true && net.category == NetworkCategory.PUBLIC
-				} ?: listOf()
+		if (isSupported) {
+			thread.start()
+		}
+	}
+
+	override fun run() {
+		val handle = WinNT.HANDLEByReference()
+		val callback = object : NetIOAPI.IPINTERFACE_CHANGE_CALLBACK {
+			override fun callback(
+				context: Pointer?,
+				row: Pointer?,
+				notificationType: Int,
+			) {
+				synchronized(publicNetworksLocal) {
+					publicNetworksLocal = enumerateNetworks()?.filter { net ->
+						net.connected && net.category == NetworkCategory.PUBLIC
+					} ?: listOf()
+				}
+			}
+		}
+
+		val ret = NetIOAPI.INSTANCE.NotifyIpInterfaceChange(AF_UNSPEC, callback, null, WinDef.BOOL(true), handle)
+		if (ret != WinError.ERROR_SUCCESS.toLong()) {
+			LogManager.warning("[DesktopNetworkProfileChecker] Error registering network interface change callback, public interface detection will not work: $ret")
+			return
+		}
+
+		try {
+			while (true) Thread.sleep(Long.MAX_VALUE)
+		} catch (_: InterruptedException) {} finally {
+			handle.value?.let {
+				try {
+					NetIOAPI.INSTANCE.CancelMibChangeNotify2(it)
+				} catch (_: Exception) {}
 			}
 		}
 	}

@@ -14,6 +14,7 @@ import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
 import dev.slimevr.serial.SerialHandler
 import dev.slimevr.serial.SerialListener
+import dev.slimevr.tracking.trackers.hid.HIDCommon
 import io.eiren.util.logging.LogManager
 import java.io.IOException
 import java.nio.ByteBuffer
@@ -57,7 +58,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		get() = getPorts()
 			.asSequence()
 			.map { SerialPortWrapper(it.ports[0]) }
-			.filter { isKnownBoard(it) }
+			.filter { isKnownBoard(it) || HIDCommon.matchesAny(it.vendorId, it.productId) }
 			.asStream()
 
 	val usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -144,11 +145,11 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	}
 
 	@Synchronized
-	override fun openSerial(portLocation: String?, auto: Boolean): Boolean {
+	override fun openSerial(portLocation: String?, auto: Boolean, autoIncludeHid: Boolean): Boolean {
 		LogManager.info("[SerialHandler] Trying to open: $portLocation, auto: $auto")
 		lastKnownPorts = knownPorts.asSequence().toSet()
 		val newPort = lastKnownPorts.find {
-			(!auto && it.portLocation == portLocation) || (auto && isKnownBoard(it))
+			(!auto && it.portLocation == portLocation) || (auto && isKnownBoard(it)) || (auto && autoIncludeHid && HIDCommon.matchesAny(it.vendorId, it.productId))
 		}
 
 		if (newPort == null) {

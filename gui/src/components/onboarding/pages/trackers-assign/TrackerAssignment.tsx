@@ -100,7 +100,11 @@ export function TrackersAssignPage() {
       tapDetectionSettings.mountingResetDelay,
       tapDetectionSettings.mountingResetEnabled,
       tapDetectionSettings.mountingResetTaps,
-      true
+      true,
+      null,
+      tapDetectionSettings.yawResetTracker,
+      tapDetectionSettings.fullResetTracker,
+      tapDetectionSettings.mountingResetTracker
     );
 
     sendRPCPacket(

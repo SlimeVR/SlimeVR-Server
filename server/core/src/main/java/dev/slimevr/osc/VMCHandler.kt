@@ -16,6 +16,7 @@ import dev.slimevr.osc.UnityBone.Companion.getByStringVal
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Device
+import dev.slimevr.tracking.trackers.DeviceOrigin
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -270,7 +271,7 @@ class VMCHandler(
 		// Create device if it doesn't exist
 		var rot = rotation
 		if (trackerDevice == null) {
-			trackerDevice = server.deviceManager.createDevice("VMC receiver", "1.0", "VMC")
+			trackerDevice = server.deviceManager.createDevice(DeviceOrigin.VMC, "VMC receiver", "1.0", "VMC")
 			server.deviceManager.addDevice(trackerDevice!!)
 		}
 

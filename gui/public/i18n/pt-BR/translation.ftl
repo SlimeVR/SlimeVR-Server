@@ -654,6 +654,8 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints-descr
 settings-general-fk_settings-ik = Dados de posição
 settings-general-fk_settings-ik-use_position = Usar dados de posição
 settings-general-fk_settings-ik-use_position-description = Ativa o uso de dados de posição dos trackers que os fornecem. Ao ativar isso, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
+settings-general-fk_settings-velocity_settings = Configurações de Velocidade
+settings-general-fk_settings-velocity_settings-description = Envia dados de velocidade derivados para o SteamVR. Necessário para suporte ao Natural Locomotion. Pode causar instabilidade no FBT.
 settings-general-fk_settings-arm_fk = Rastreamento dos braços
 settings-general-fk_settings-arm_fk-description = Forçar o rastreamento dos braços a partir do headset (HMD), mesmo que dados posicionais das mãos estejam disponíveis.
 settings-general-fk_settings-arm_fk-force_arms = Forçar braços do HMD
@@ -970,9 +972,47 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Pular configurações
 onboarding-setup_warning-cancel = Continuar configurações
 
+## Quiz
+
+onboarding-quiz_continue = Continuar
+onboarding-quiz_back = Voltar
+onboarding-quiz-more_sets_modal-title = Você conectou todos os seus trackers?
+onboarding-quiz-more_sets_modal-desc = Se você tiver conjuntos de modelos diferentes, podemos conectá-los agora mesmo!
+onboarding-quiz-more_sets_modal-confirm = Eu conectei todos os meus trackers
+onboarding-quiz-more_sets_modal-cancel = Quero conectar mais trackers
+onboarding-quiz-slimeset-title = Que tipo de trackers você está conectando?
+onboarding-quiz-slimeset-description = Se você tiver vários conjuntos, você será solicitado novamente mais tarde no processo
+onboarding-quiz-slimeset-official-sets = Trackers Oficiais do SlimeVR
+onboarding-quiz-slimeset-thirdparty-sets = Trackers de Terceiros ou Feitos por Você.
+onboarding-quiz-slimeset-answer-regular = SlimeVR V1.0 e V1.2
+onboarding-quiz-slimeset-answer-butterfly = Butterfly
+onboarding-quiz-slimeset-answer-wifi = Slime baseado em Wi-Fi
+onboarding-quiz-slimeset-answer-dongle = Slime baseado em Dongle
+onboarding-quiz-usage-title = Para que você está usando seus trackers?
+onboarding-quiz-usage-description = Se você pretende usar o SlimeVR para múltiplas finalidades, você pode alterar as configurações afetadas mais tarde.
+onboarding-quiz-usage-answer-VRC = Jogos em VR (ex.: VRChat)
+onboarding-quiz-usage-answer-mocap_vtubing = Mocap e VTubing
+onboarding-quiz-runtime-title = Você executa jogos via SteamVR ou diretamente no headset (standalone)?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-runtime-answer-standalone = Standalone
+onboarding-quiz-mocap_preferences-title = Preferências de Mocap
+onboarding-quiz-mocap_preferences-desc = Especifique como você pretende usar o SlimeVR para mocap ou VTubing
+onboarding-quiz-mocap_preferences-playspace-title = Qual é o seu espaço de jogo?
+onboarding-quiz-mocap_preferences-playspace-desc = Se estiver em pé, o SlimeVR tentará rastrear o movimento de caminhada em vez de manter você ancorado em um único lugar.
+onboarding-quiz-mocap_preferences-playspace-sitting = Sentado
+onboarding-quiz-mocap_preferences-playspace-standing = Em Pé
+onboarding-quiz-mocap_preferences-vrm_model-title = Você tem um modelo VRM? (Opcional)
+onboarding-quiz-mocap_preferences-vrm_model-desc = Carregar um modelo VRM melhorará a qualidade do rastreamento e a compatibilidade com aplicativos que usam VMC.
+onboarding-quiz-mocap_preferences-head_tracker-title = Você está usando um tracker ou um headset VR na cabeça?
+onboarding-quiz-mocap_preferences-head_tracker-yes = Sim
+onboarding-quiz-mocap_preferences-head_tracker-no = Não
+onboarding-quiz-mocap_preferences-head_tracker_location-title = Onde está localizado o seu rastreador de cabeça?
+onboarding-quiz-mocap_preferences-head_tracker_location-forehead = Testa
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Rosto
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Voltar para introdução
+onboarding-wifi_creds-back-v2 = Voltar
 onboarding-wifi_creds-v2 = Trackers conectados via Wi-Fi
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1017,6 +1057,13 @@ onboarding-reset_tutorial-2 =
     A calibração de montagem ajusta conforme os trackers estão fixados no seu corpo. Se eles tiverem se movido ou girado significativamente, isso ajuda a recalibrar a orientação deles.
     
     Você precisa estar em uma pose como se estivesse esquiando, conforme mostrado no assistente de montagem automática, e há um atraso de 3 segundos (configurável) antes que ela seja acionada.
+
+## Install info
+
+install-info_udev-rules_modal_title = Regras de acesso udev de hardware não encontradas
+install-info_udev-rules_warning = Regras de acesso via udev são necessárias para acesso ao console serial e conexão do dongle. Cole o seguinte comando no seu terminal para adicionar as regras do udev.
+install-info_udev-rules_modal_button = Fechar
+install-info_udev-rules_modal-dont-show-again_checkbox = Não mostrar novamente
 
 ## Setup start
 
@@ -1360,6 +1407,7 @@ onboarding-user_height-description = Precisamos da sua altura para calcular as p
 onboarding-user_height-need_head_tracker = É necessário um headset e controles com rastreamento posicional para realizar a calibração.
 onboarding-user_height-calculate = Calcular minha altura automaticamente
 onboarding-user_height-next_step = Continuar e salvar
+onboarding-user_height-prev_step = Voltar
 onboarding-user_height-manual-proportions = Proporções Manuais
 onboarding-user_height-calibration-title = Progresso da Calibração
 onboarding-user_height-calibration-RECORDING_FLOOR = Toque o chão com a ponta do seu controle
@@ -1515,6 +1563,7 @@ firmware_tool-flashing_step-description = Seus trackers estão atualizando, por 
 firmware_tool-flashing_step-warning-v2 = Não desconecte nem desligue o tracker durante o processo de envio, a menos que seja instruído a fazê-lo, pois isso pode tornar sua placa inutilizável
 firmware_tool-flashing_step-flash_more = Atualizar mais trackers
 firmware_tool-flashing_step-exit = Sair
+firmware_tool-flashing_step-onboarding_continue = Continuar
 
 ## firmware tool build status
 
@@ -1655,6 +1704,8 @@ tracking_checklist-FULL_RESET-desc = Alguns trackers precisam que uma redefiniç
 tracking_checklist-STEAMVR_DISCONNECTED = O SteamVR não está em execução
 tracking_checklist-STEAMVR_DISCONNECTED-desc = O SteamVR não está em execução. Você está usando ele para VR?
 tracking_checklist-STEAMVR_DISCONNECTED-open = Iniciar o SteamVR
+tracking_checklist-STEAMVR_HANDS_ENABLED-desc = Você ativou os Trackers de mãos virtuais do SteamVR. Isso fará com que os comandos feitos por meio de botões não funcionem no SteamVR e nos jogos.
+tracking_checklist-STEAMVR_HANDS_ENABLED-go = Desabilitá-los
 tracking_checklist-TRACKERS_REST_CALIBRATION = Calibre seus trackers
 tracking_checklist-TRACKERS_REST_CALIBRATION-desc = Você não realizou a calibração dos trackers. Por favor, deixe os trackers (destacados em amarelo) repousarem sobre uma superfície estável por alguns segundos.
 tracking_checklist-TRACKER_ERROR = Trackers com Erros

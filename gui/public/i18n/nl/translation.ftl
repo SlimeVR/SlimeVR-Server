@@ -962,9 +962,11 @@ onboarding-setup_warning =
 onboarding-setup_warning-skip = Setupgids overslaan
 onboarding-setup_warning-cancel = Doorgaan met setupgids
 
+## Quiz
+
+
 ## Wi-Fi setup
 
-onboarding-wifi_creds-back = Ga terug naar de introductie
 onboarding-wifi_creds-v2 = Trackers die Wi-Fi gebruiken
 # This cares about multilines
 onboarding-wifi_creds-description-v2 =
@@ -1010,6 +1012,9 @@ onboarding-reset_tutorial-2 =
     Montage-reset helpt bij hoe de trackers daadwerkelijk op je worden geplaatst, dus als je ze per ongeluk hebt verplaatst en de oriëntatie ervan voor een groot deel hebt veranderd, zal dit helpen.
     
     Je moet in een houding staan alsof je aan het skiën bent, zoals wordt weergegeven in de Automatische montage wizard, je hebt een vertraging van 3 seconden (instelbaar) voordat deze wordt geactiveerd.
+
+## Install info
+
 
 ## Setup start
 

@@ -35,6 +35,7 @@ import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.trackingchecklist.TrackingChecklistManager
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
+import io.eiren.util.Process
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.ann.ThreadSecure
 import io.eiren.util.collections.FastList
@@ -61,7 +62,9 @@ class VRServer @JvmOverloads constructor(
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
 	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
-	networkProfileProvider: (VRServer) -> NetworkProfileChecker = { _ -> NetworkProfileCheckerStub() },
+	networkProfileProvider: (VRServer) -> NetworkProfileChecker = { _ -> StubNetworkProfileChecker() },
+	val processListProvider: () -> Sequence<Process> = { emptySequence() },
+	val tryOpenUri: (String) -> Unit = {},
 	acquireMulticastLock: () -> Any? = { null },
 	@JvmField val configManager: ConfigManager,
 ) : Thread("VRServer") {
@@ -195,17 +198,18 @@ class VRServer @JvmOverloads constructor(
 		return false
 	}
 
-	// FIXME: Code using this function normally uses this to get the SteamVR driver but
-	// 		that's because we first save the SteamVR driver bridge and then the feeder in the array.
-	// 		Not really a great thing to have.
 	@ThreadSafe
-	fun <E : Bridge?> getVRBridge(bridgeClass: Class<E>): E? {
+	fun getVRBridge(pred: (Bridge) -> Boolean): Bridge? {
 		for (bridge in bridges) {
-			if (bridgeClass.isAssignableFrom(bridge.javaClass)) {
-				return bridgeClass.cast(bridge)
-			}
+			if (pred(bridge)) return bridge
 		}
 		return null
+	}
+
+	@ThreadSafe
+	fun removeVRBridge(bridge: Bridge) {
+		bridge.stopBridge()
+		bridges.remove(bridge)
 	}
 
 	fun addOnTick(runnable: Runnable) {
@@ -305,7 +309,11 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.updateSkeletonModelFromServer()
 			vrcOSCHandler.setHeadTracker(TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD))
-			this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically()
+
+			val bridge = this.getVRBridge {
+				it is ISteamVRBridge
+			} as? ISteamVRBridge
+			bridge?.updateShareSettingsAutomatically()
 			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 	}
@@ -332,7 +340,10 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.setPauseTracking(pauseTracking, sourceName)
 			// Toggle trackers as they don't toggle when tracking is paused
-			this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically()
+			val bridge = this.getVRBridge {
+				it is ISteamVRBridge
+			} as? ISteamVRBridge
+			bridge?.updateShareSettingsAutomatically()
 			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 	}
@@ -341,7 +352,10 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.togglePauseTracking(sourceName)
 			// Toggle trackers as they don't toggle when tracking is paused
-			this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically()
+			val bridge = this.getVRBridge {
+				it is ISteamVRBridge
+			} as? ISteamVRBridge
+			bridge?.updateShareSettingsAutomatically()
 			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 	}

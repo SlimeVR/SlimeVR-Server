@@ -102,9 +102,9 @@ export function OSCRouterSettings() {
           formData.router.oscSettings.address =
             settings.oscRouter.oscSettings.address.toString();
       }
-    }
 
-    reset(formData);
+      reset(formData);
+    }
   });
 
   return (
