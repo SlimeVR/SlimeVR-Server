@@ -311,7 +311,7 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
-			.distinctUntilChangedBy { it.status to it.bodyPart }
+			.distinctUntilChanged { old, new -> old.status == new.status && old.bodyPart == new.bodyPart }
 			.onEach { _ ->
 				// Tell the skeleton the tracker has stopped sending data to the last bone it was sending data to.
 				lastBodyPartSent?.let {
@@ -322,9 +322,9 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 				}
 			}
 			.flatMapLatest { _ ->
-				// We only want trackers that are assigned to a BodyPart and are OK.
+				// We only want trackers that are assigned to a BodyPart and are OK or TIMED_OUT (needed for HID).
 				val activeState = receiver.context.state
-					.filter { it.bodyPart != null && it.status == TrackerStatus.OK }
+					.filter { it.bodyPart != null && (it.status == TrackerStatus.OK || it.status == TrackerStatus.TIMED_OUT) }
 
 				val rotationFlow = activeState
 					.distinctUntilChangedBy { it.rotation }

@@ -10,7 +10,7 @@ class OutputTrackerToggleTest {
 	fun `Output trackers are automatically determined based off body parts`() {
 		data class TestCase(
 			val name: String,
-			val okBodyParts: Set<BodyPart?>,
+			val fineBodyParts: Set<BodyPart?>,
 			val configuredTrackers: List<BodyPart>,
 			val expected: Set<BodyPart>,
 		)
@@ -18,13 +18,13 @@ class OutputTrackerToggleTest {
 		val testCases = listOf(
 			TestCase(
 				name = "no body part",
-				okBodyParts = emptySet(),
+				fineBodyParts = emptySet(),
 				configuredTrackers = emptyList(),
 				expected = emptySet(),
 			),
 			TestCase(
 				name = "upper chest enables upper chest and hip",
-				okBodyParts = setOf(BodyPart.UPPER_CHEST),
+				fineBodyParts = setOf(BodyPart.UPPER_CHEST),
 				configuredTrackers = emptyList(),
 				expected = setOf(
 					BodyPart.UPPER_CHEST,
@@ -33,7 +33,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "chest enables upper chest and hip",
-				okBodyParts = setOf(BodyPart.CHEST),
+				fineBodyParts = setOf(BodyPart.CHEST),
 				configuredTrackers = emptyList(),
 				expected = setOf(
 					BodyPart.UPPER_CHEST,
@@ -42,7 +42,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "waist enables hip",
-				okBodyParts = setOf(BodyPart.WAIST),
+				fineBodyParts = setOf(BodyPart.WAIST),
 				configuredTrackers = emptyList(),
 				expected = setOf(
 					BodyPart.HIP,
@@ -50,7 +50,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "hip enables hip",
-				okBodyParts = setOf(BodyPart.HIP),
+				fineBodyParts = setOf(BodyPart.HIP),
 				configuredTrackers = emptyList(),
 				expected = setOf(
 					BodyPart.HIP,
@@ -58,7 +58,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "left lower arm enables left upper arm",
-				okBodyParts = setOf(BodyPart.LEFT_LOWER_ARM),
+				fineBodyParts = setOf(BodyPart.LEFT_LOWER_ARM),
 				configuredTrackers = emptyList(),
 				expected = setOf(
 					BodyPart.LEFT_UPPER_ARM,
@@ -66,7 +66,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "right lower arm enables right upper arm",
-				okBodyParts = setOf(BodyPart.RIGHT_LOWER_ARM),
+				fineBodyParts = setOf(BodyPart.RIGHT_LOWER_ARM),
 				configuredTrackers = emptyList(),
 				expected = setOf(
 					BodyPart.RIGHT_UPPER_ARM,
@@ -74,7 +74,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "left lower leg enables left foot",
-				okBodyParts = setOf(BodyPart.LEFT_LOWER_LEG),
+				fineBodyParts = setOf(BodyPart.LEFT_LOWER_LEG),
 				configuredTrackers = emptyList(),
 				expected = setOf(
 					BodyPart.LEFT_FOOT,
@@ -82,7 +82,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "right lower leg enables right foot",
-				okBodyParts = setOf(BodyPart.RIGHT_LOWER_LEG),
+				fineBodyParts = setOf(BodyPart.RIGHT_LOWER_LEG),
 				configuredTrackers = emptyList(),
 				expected = setOf(
 					BodyPart.RIGHT_FOOT,
@@ -90,7 +90,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "multiple automatic trackers",
-				okBodyParts = setOf(
+				fineBodyParts = setOf(
 					BodyPart.LEFT_UPPER_ARM,
 					BodyPart.RIGHT_FOOT,
 					BodyPart.HIP,
@@ -104,7 +104,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "hands are always included from config",
-				okBodyParts = emptySet(),
+				fineBodyParts = emptySet(),
 				configuredTrackers = listOf(
 					BodyPart.LEFT_HAND,
 					BodyPart.RIGHT_HAND,
@@ -116,7 +116,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "non-hand manual trackers are ignored",
-				okBodyParts = emptySet(),
+				fineBodyParts = emptySet(),
 				configuredTrackers = listOf(
 					BodyPart.CHEST,
 					BodyPart.WAIST,
@@ -128,7 +128,7 @@ class OutputTrackerToggleTest {
 			),
 			TestCase(
 				name = "automatic trackers combined with hands",
-				okBodyParts = setOf(
+				fineBodyParts = setOf(
 					BodyPart.LEFT_FOOT,
 				),
 				configuredTrackers = listOf(
@@ -145,7 +145,7 @@ class OutputTrackerToggleTest {
 		testCases.forEach { case ->
 			val result = behaviour.determineAutomaticOutputTrackers(
 				config = OutputTrackersConfig(trackers = case.configuredTrackers),
-				okBodyParts = case.okBodyParts,
+				fineBodyParts = case.fineBodyParts,
 			)
 
 			assertEquals(

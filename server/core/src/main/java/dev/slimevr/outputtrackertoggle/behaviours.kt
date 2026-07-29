@@ -1,6 +1,7 @@
 package dev.slimevr.outputtrackertoggle
 
 import dev.slimevr.config.OutputTrackersConfig
+import dev.slimevr.device.DeviceOrigin
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -30,10 +31,10 @@ class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 	// TODO filter out DeviceOrigin.STEAMVR
 	fun determineAutomaticOutputTrackers(
 		config: OutputTrackersConfig,
-		okBodyParts: Set<BodyPart?>,
+		fineBodyParts: Set<BodyPart?>,
 	): List<BodyPart> {
 		val automaticTrackers = automaticToggleToTracker
-			.filterValues { it.any { bp -> bp in okBodyParts } }
+			.filterValues { it.any { bp -> bp in fineBodyParts } }
 			.keys
 		// Hands aren't toggled automatically
 		val handTrackers = config.trackers.filter {
@@ -65,21 +66,16 @@ class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 								tracker.context.state.distinctUntilChanged { a, b -> a.bodyPart == b.bodyPart && a.status == b.status }
 							},
 						) { states ->
-							states.map { it.bodyPart to it.status }
-						}
-							.distinctUntilChanged()
-							.map { trackerStates ->
-								trackerStates
-									.filter { it.second == TrackerStatus.OK }
-									.map { it.first }
-									.toSet()
-							}
+							states.filter { (it.status == TrackerStatus.OK || it.status == TrackerStatus.TIMED_OUT) && it.origin != DeviceOrigin.DRIVER && it.origin != DeviceOrigin.VRC }
+								.map { it.bodyPart }
+								.toSet()
+						}.distinctUntilChanged()
 					}
-					.map { okBodyParts -> config to okBodyParts }
+					.map { fineBodyParts -> config to fineBodyParts }
 			}
-			.onEach { (config, okBodyParts) ->
+			.onEach { (config, fineBodyParts) ->
 				// Get the output trackers based on body parts
-				val outputTrackers = determineAutomaticOutputTrackers(config, okBodyParts)
+				val outputTrackers = determineAutomaticOutputTrackers(config, fineBodyParts)
 
 				// Update state
 				receiver.context.dispatch(OutputTrackerToggleActions.SetOutputTrackers(outputTrackers))

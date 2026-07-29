@@ -186,10 +186,10 @@ suspend fun handleDriverConnection(
 				tracker_status = TrackerStatus(
 					tracker_id = event.trackerId,
 					status = when (event.status) {
-						solarxr_protocol.datatypes.TrackerStatus.OK -> TrackerStatus.Status.OK
+						solarxr_protocol.datatypes.TrackerStatus.OK, solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT -> TrackerStatus.Status.OK
 						solarxr_protocol.datatypes.TrackerStatus.ERROR -> TrackerStatus.Status.ERROR
 						solarxr_protocol.datatypes.TrackerStatus.OCCLUDED -> TrackerStatus.Status.OCCLUDED
-						solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED, solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT -> TrackerStatus.Status.DISCONNECTED
+						solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED -> TrackerStatus.Status.DISCONNECTED
 						solarxr_protocol.datatypes.TrackerStatus.BUSY -> TrackerStatus.Status.BUSY
 						else -> TrackerStatus.Status.ERROR
 					},
