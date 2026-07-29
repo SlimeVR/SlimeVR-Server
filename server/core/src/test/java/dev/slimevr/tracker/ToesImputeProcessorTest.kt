@@ -34,31 +34,31 @@ class ToesImputeProcessorTest {
 
 		val newInputs = processor.process(state)
 
-		val leftAbductorDigitorumBrevisIsSameAsLeftFoot =
+		val leftAbductorDigitorumBrevisIsSameRotationAsLeftFoot =
 			newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_HALLUCIS]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_FOOT]?.rawRotation
 
-		val leftFlexorDigitorumBrevisDigitiMinimiIsSameAsLeftAbductorHallucis =
+		val leftFlexorDigitorumBrevisDigitiMinimiIsSameRotationAsLeftAbductorHallucis =
 			newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_HALLUCIS]?.rawRotation
 
-		val leftAbductorDigitiMinimiIsSameAsLeftFlexorDigitorumBrevis =
+		val leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis =
 			newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
 
-		val rightAbductorDigitorumBrevisIsSameAsRightFoot =
+		val rightAbductorDigitorumBrevisIsSameRotationAsRightFoot =
 			newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_HALLUCIS]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_FOOT]?.rawRotation
 
 		val rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis =
 			newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_HALLUCIS]?.rawRotation
 
-		val rightAbductorDigitiMinimiIsSameAsRightFlexorDigitorumBrevis =
+		val rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis =
 			newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
 
 		val testSucceeded =
-			leftAbductorDigitorumBrevisIsSameAsLeftFoot
-			&& leftFlexorDigitorumBrevisDigitiMinimiIsSameAsLeftAbductorHallucis
-			&& leftAbductorDigitiMinimiIsSameAsLeftFlexorDigitorumBrevis
-			&& rightAbductorDigitorumBrevisIsSameAsRightFoot
+			leftAbductorDigitorumBrevisIsSameRotationAsLeftFoot
+			&& leftFlexorDigitorumBrevisDigitiMinimiIsSameRotationAsLeftAbductorHallucis
+			&& leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis
+			&& rightAbductorDigitorumBrevisIsSameRotationAsRightFoot
 			&& rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis
-			&& rightAbductorDigitiMinimiIsSameAsRightFlexorDigitorumBrevis
+			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
 
 		assertTrue (testSucceeded )
 	}
@@ -88,22 +88,22 @@ class ToesImputeProcessorTest {
 
 		val newInputs = processor.process(state)
 
-		val leftFlexorDigitorumBrevisDigitiMinimiIsSameAsLeftAbductorHallucis =
+		val leftFlexorDigitorumBrevisDigitiMinimiIsSameRotationAsLeftAbductorHallucis =
 			newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_HALLUCIS]?.rawRotation
 
-		val leftAbductorDigitiMinimiIsSameAsLeftFlexorDigitorumBrevis =
+		val leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis =
 			 newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
 
 		val rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis =
 			newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_HALLUCIS]?.rawRotation
 
-		val rightAbductorDigitiMinimiIsSameAsRightFlexorDigitorumBrevis =
+		val rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis =
 			newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
 
-		val testSucceeded = leftFlexorDigitorumBrevisDigitiMinimiIsSameAsLeftAbductorHallucis
-			&& leftAbductorDigitiMinimiIsSameAsLeftFlexorDigitorumBrevis
+		val testSucceeded = leftFlexorDigitorumBrevisDigitiMinimiIsSameRotationAsLeftAbductorHallucis
+			&& leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis
 			&& rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis
-			&& rightAbductorDigitiMinimiIsSameAsRightFlexorDigitorumBrevis
+			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
 
 		assertTrue (testSucceeded )
 	}
@@ -140,14 +140,14 @@ class ToesImputeProcessorTest {
 
 		val newInputs = processor.process(state)
 
-		val leftAbductorDigitiMinimiIsSameAsLeftFlexorDigitorumBrevis =
+		val leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis =
 			newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
 
-		val rightAbductorDigitiMinimiIsSameAsRightFlexorDigitorumBrevis =
+		val rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis =
 			newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
 
-		val testSucceeded = leftAbductorDigitiMinimiIsSameAsLeftFlexorDigitorumBrevis
-			&& rightAbductorDigitiMinimiIsSameAsRightFlexorDigitorumBrevis
+		val testSucceeded = leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis
+			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
 
 		assertTrue (testSucceeded )
 	}
