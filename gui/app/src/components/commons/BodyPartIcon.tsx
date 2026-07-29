@@ -125,21 +125,33 @@ export const mapPart: Record<
     <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS]: renderFootLeft,
-  [BodyPart.LEFT_TOES_DIGITORUM_BREVIS]: renderFootLeft,
-  [BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderFootLeft,
-  [BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS]: renderFootRight,
-  [BodyPart.RIGHT_TOES_DIGITORUM_BREVIS]: renderFootRight,
-  [BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderFootRight,
+  [BodyPart.LEFT_ABDUCTOR_HALLUCIS]: renderFootLeft,
+  [BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]: renderFootLeft,
+  [BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]: renderFootLeft,
+  [BodyPart.RIGHT_ABDUCTOR_HALLUCIS]: renderFootRight,
+  [BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]: renderFootRight,
+  [BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]: renderFootRight,
 };
-function renderFootLeft({ width, currentLocales }) {
+function renderFootLeft({
+  width,
+  currentLocales,
+}: {
+  width?: number;
+  currentLocales: string[];
+}) {
   if (currentLocales.includes('en-x-owo')) {
     return <PawIcon />;
   }
   return <FootIcon width={width} />;
 }
 
-function renderFootRight({ width, currentLocales }) {
+function renderFootRight({
+  width,
+  currentLocales,
+}: {
+  width?: number;
+  currentLocales: string[];
+}) {
   if (currentLocales.includes('en-x-owo')) {
     return <PawIcon />;
   }
@@ -156,7 +168,7 @@ export function BodyPartIcon({
   return (
     <svg width={width} height={width}>
       <rect width={width} height={width} rx="2" fill="#56407B" />
-      {mapPart[bodyPart]({ width, currentLocales })}
+      {mapPart[bodyPart]?.({ width, currentLocales })}
     </svg>
   );
 }

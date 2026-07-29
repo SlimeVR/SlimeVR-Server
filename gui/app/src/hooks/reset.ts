@@ -16,7 +16,7 @@ import * as Sentry from '@sentry/react';
 
 export type ResetBtnStatus = 'idle' | 'counting' | 'finished';
 
-export type MountingResetGroup = 'default' | 'feet' | 'fingers';
+export type MountingResetGroup = 'default' | 'feet' | 'fingers' | 'toes';
 export type UseResetOptions =
   | { type: ResetType.FULL | ResetType.YAW }
   | { type: ResetType.MOUNTING; group: MountingResetGroup };
