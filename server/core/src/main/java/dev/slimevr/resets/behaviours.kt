@@ -25,8 +25,6 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 				canDoYawReset = true,
 				canDoMountingReset = true,
 				lastFullResetTime = timeSource.markNow(),
-				mountingResetCompleted = false,
-				feetMountingResetCompleted = false,
 			)
 
 			ResetType.MOUNTING -> {
