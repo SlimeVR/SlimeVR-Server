@@ -34,12 +34,12 @@ export function ToeAssignmentModal({
   // (Vite's CJS-to-ESM dep cache may not include newly added enum values)
   const TOE_LABELS: Record<number, string> = useMemo(
     () => ({
-      [BodyPart.LEFT_ABDUCTOR_HALLUCIS]: 'Left Big Toe',
-      [BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]: 'Left Middle Toes',
-      [BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]: 'Left Pinky Toe',
-      [BodyPart.RIGHT_ABDUCTOR_HALLUCIS]: 'Right Big Toe',
-      [BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]: 'Right Middle Toes',
-      [BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]: 'Right Pinky Toe',
+      [BodyPart.LEFT_BIG_TOE]: 'Left Big Toe',
+      [BodyPart.LEFT_INDEX_TOE]: 'Left Middle Toes',
+      [BodyPart.LEFT_PINKY_TOE]: 'Left Pinky Toe',
+      [BodyPart.RIGHT_BIG_TOE]: 'Right Big Toe',
+      [BodyPart.RIGHT_INDEX_TOE]: 'Right Middle Toes',
+      [BodyPart.RIGHT_PINKY_TOE]: 'Right Pinky Toe',
     }),
     []
   );
@@ -48,34 +48,34 @@ export function ToeAssignmentModal({
     () => ({
       left: [
         {
-          part: BodyPart.LEFT_ABDUCTOR_HALLUCIS,
+          part: BodyPart.LEFT_BIG_TOE,
           cx: 110,
           cy: 30,
         },
         {
-          part: BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS,
+          part: BodyPart.LEFT_INDEX_TOE,
           cx: 73,
           cy: 40,
         },
         {
-          part: BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI,
+          part: BodyPart.LEFT_PINKY_TOE,
           cx: 50,
           cy: 62,
         },
       ],
       right: [
         {
-          part: BodyPart.RIGHT_ABDUCTOR_HALLUCIS,
+          part: BodyPart.RIGHT_BIG_TOE,
           cx: 77,
           cy: 30,
         },
         {
-          part: BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS,
+          part: BodyPart.RIGHT_INDEX_TOE,
           cx: 114,
           cy: 40,
         },
         {
-          part: BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI,
+          part: BodyPart.RIGHT_PINKY_TOE,
           cx: 137,
           cy: 62,
         },

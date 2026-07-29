@@ -1,6 +1,6 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.skeleton.processors.ToesImputeProcessor
+import dev.slimevr.skeleton.processors.ToeDirectLinkProcessor
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.Test
 import solarxr_protocol.datatypes.BodyPart
@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 class ToeDirectLinkProcessorTest {
 	@Test
 	fun `test impute missing all toe trackers`() {
-		val processor = ToesImputeProcessor()
+		val processor = ToeDirectLinkProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
@@ -27,48 +27,48 @@ class ToeDirectLinkProcessorTest {
 
 		val newInputs = processor.process(state)
 
-		val leftAbductorDigitorumBrevisIsSameRotationAsLeftFoot =
-			newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_HALLUCIS]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_FOOT]?.rawRotation
+		val leftBigToeIsSameRotationAsLeftFoot =
+			newInputs.boneInputs[BodyPart.LEFT_BIG_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_FOOT]?.rawRotation
 
-		val leftFlexorDigitorumBrevisDigitiMinimiIsSameRotationAsLeftAbductorHallucis =
-			newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_HALLUCIS]?.rawRotation
+		val leftIndexToeIsSameRotationAsLeftBigToe =
+			newInputs.boneInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_BIG_TOE]?.rawRotation
 
-		val leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis =
-			newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
+		val leftPinkyToesIsSameRotationAsLeftIndexToe =
+			newInputs.boneInputs[BodyPart.LEFT_PINKY_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation
 
 		val rightAbductorDigitorumBrevisIsSameRotationAsRightFoot =
-			newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_HALLUCIS]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_FOOT]?.rawRotation
+			newInputs.boneInputs[BodyPart.RIGHT_BIG_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_FOOT]?.rawRotation
 
-		val rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis =
-			newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_HALLUCIS]?.rawRotation
+		val rightIndexToeIsDigitiMinimiSameAsRightBigToe =
+			newInputs.boneInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_BIG_TOE]?.rawRotation
 
-		val rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis =
-			newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
+		val rightPinkyToesIsSameRotationAsRightIndexToe =
+			newInputs.boneInputs[BodyPart.RIGHT_PINKY_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation
 
 		val testSucceeded =
-			leftAbductorDigitorumBrevisIsSameRotationAsLeftFoot
-			&& leftFlexorDigitorumBrevisDigitiMinimiIsSameRotationAsLeftAbductorHallucis
-			&& leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis
+			leftBigToeIsSameRotationAsLeftFoot
+			&& leftIndexToeIsSameRotationAsLeftBigToe
+			&& leftPinkyToesIsSameRotationAsLeftIndexToe
 			&& rightAbductorDigitorumBrevisIsSameRotationAsRightFoot
-			&& rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis
-			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
+			&& rightIndexToeIsDigitiMinimiSameAsRightBigToe
+			&& rightPinkyToesIsSameRotationAsRightIndexToe
 
         assertTrue(testSucceeded)
 	}
 	@Test
-	fun `test impute missing toe trackers from flexor digitorum brevis and abductor digiti minimi`() {
-		val processor = ToesImputeProcessor()
+	fun `test impute missing toe trackers from index toe and pinky toe`() {
+		val processor = ToeDirectLinkProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
-			map[BodyPart.LEFT_ABDUCTOR_HALLUCIS] = map.getValue(BodyPart.LEFT_ABDUCTOR_HALLUCIS).copy(
+			map[BodyPart.LEFT_BIG_TOE] = map.getValue(BodyPart.LEFT_BIG_TOE).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
-			map[BodyPart.RIGHT_ABDUCTOR_HALLUCIS] = map.getValue(BodyPart.RIGHT_ABDUCTOR_HALLUCIS).copy(
+			map[BodyPart.RIGHT_BIG_TOE] = map.getValue(BodyPart.RIGHT_BIG_TOE).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 		}
@@ -81,46 +81,46 @@ class ToeDirectLinkProcessorTest {
 
 		val newInputs = processor.process(state)
 
-		val leftFlexorDigitorumBrevisDigitiMinimiIsSameRotationAsLeftAbductorHallucis =
-			newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_HALLUCIS]?.rawRotation
+		val leftIndexToeIsSameRotationAsLeftBigToe =
+			newInputs.boneInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_BIG_TOE]?.rawRotation
 
-		val leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis =
-			 newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
+		val leftPinkyToesIsSameRotationAsLeftIndexToe =
+			 newInputs.boneInputs[BodyPart.LEFT_PINKY_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation
 
-		val rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis =
-			newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_HALLUCIS]?.rawRotation
+		val rightIndexToeIsDigitiMinimiSameAsRightBigToe =
+			newInputs.boneInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_BIG_TOE]?.rawRotation
 
-		val rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis =
-			newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
+		val rightPinkyToesIsSameRotationAsRightIndexToe =
+			newInputs.boneInputs[BodyPart.RIGHT_PINKY_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation
 
-		val testSucceeded = leftFlexorDigitorumBrevisDigitiMinimiIsSameRotationAsLeftAbductorHallucis
-			&& leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis
-			&& rightFlexorDigitorumBrevisIsDigitiMinimiSameAsRightAbductorHallucis
-			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
+		val testSucceeded = leftIndexToeIsSameRotationAsLeftBigToe
+			&& leftPinkyToesIsSameRotationAsLeftIndexToe
+			&& rightIndexToeIsDigitiMinimiSameAsRightBigToe
+			&& rightPinkyToesIsSameRotationAsRightIndexToe
 
         assertTrue(testSucceeded)
 	}
 
 	@Test
-	fun `test impute missing toe tracker from abductor digiti minimi`() {
-		val processor = ToesImputeProcessor()
+	fun `test impute missing toe tracker from pinky toe`() {
+		val processor = ToeDirectLinkProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
-			map[BodyPart.LEFT_ABDUCTOR_HALLUCIS] = map.getValue(BodyPart.LEFT_ABDUCTOR_HALLUCIS).copy(
+			map[BodyPart.LEFT_BIG_TOE] = map.getValue(BodyPart.LEFT_BIG_TOE).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
-			map[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS] = map.getValue(BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS).copy(
+			map[BodyPart.LEFT_INDEX_TOE] = map.getValue(BodyPart.LEFT_INDEX_TOE).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
-			map[BodyPart.RIGHT_ABDUCTOR_HALLUCIS] = map.getValue(BodyPart.RIGHT_ABDUCTOR_HALLUCIS).copy(
+			map[BodyPart.RIGHT_BIG_TOE] = map.getValue(BodyPart.RIGHT_BIG_TOE).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
-			map[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS] = map.getValue(BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS).copy(
+			map[BodyPart.RIGHT_INDEX_TOE] = map.getValue(BodyPart.RIGHT_INDEX_TOE).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
 				isActive = true)
 		}
@@ -133,14 +133,14 @@ class ToeDirectLinkProcessorTest {
 
 		val newInputs = processor.process(state)
 
-		val leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis =
-			newInputs.boneInputs[BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
+		val leftPinkyToesIsSameRotationAsLeftIndexToe =
+			newInputs.boneInputs[BodyPart.LEFT_PINKY_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation
 
-		val rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis =
-			newInputs.boneInputs[BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]?.rawRotation
+		val rightPinkyToesIsSameRotationAsRightIndexToe =
+			newInputs.boneInputs[BodyPart.RIGHT_PINKY_TOE]?.rawRotation == newInputs.boneInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation
 
-		val testSucceeded = leftAbductorDigitiMinimiIsSameRotationAsLeftFlexorDigitorumBrevis
-			&& rightAbductorDigitiMinimiIsSameRotationAsRightFlexorDigitorumBrevis
+		val testSucceeded = leftPinkyToesIsSameRotationAsLeftIndexToe
+			&& rightPinkyToesIsSameRotationAsRightIndexToe
 
         assertTrue(testSucceeded)
 	}

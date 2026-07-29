@@ -15,12 +15,17 @@ class ToeDirectLinkProcessor : SkeletonProcessor {
 	 * Second element is the BodyPart the first element is linked to.
 	 */
 	private val toesToSource = arrayOf(
-		BodyPart.LEFT_ABDUCTOR_HALLUCIS to BodyPart.LEFT_FOOT,
-		BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS to BodyPart.LEFT_ABDUCTOR_HALLUCIS,
-		BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI to BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS,
-		BodyPart.RIGHT_ABDUCTOR_HALLUCIS to BodyPart.RIGHT_FOOT,
-		BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS to BodyPart.RIGHT_ABDUCTOR_HALLUCIS,
-		BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI to BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS,
+		BodyPart.LEFT_BIG_TOE to BodyPart.LEFT_FOOT,
+		BodyPart.LEFT_INDEX_TOE to BodyPart.LEFT_BIG_TOE,
+		BodyPart.LEFT_MIDDLE_TOE to BodyPart.LEFT_INDEX_TOE,
+		BodyPart.LEFT_RING_TOE to BodyPart.LEFT_INDEX_TOE,
+		BodyPart.LEFT_PINKY_TOE to BodyPart.LEFT_INDEX_TOE,
+
+		BodyPart.RIGHT_BIG_TOE to BodyPart.RIGHT_FOOT,
+		BodyPart.RIGHT_INDEX_TOE to BodyPart.RIGHT_BIG_TOE,
+		BodyPart.RIGHT_MIDDLE_TOE to BodyPart.LEFT_INDEX_TOE,
+		BodyPart.RIGHT_RING_TOE to BodyPart.LEFT_INDEX_TOE,
+		BodyPart.RIGHT_PINKY_TOE to BodyPart.RIGHT_INDEX_TOE,
 	)
 
 	override fun process(state: SkeletonState): SkeletonState {

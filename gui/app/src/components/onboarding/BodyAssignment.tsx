@@ -28,12 +28,12 @@ export const LOWER_BODY = new Set([
 ]);
 
 export const TOES_PARTS = new Set([
-  BodyPart.LEFT_ABDUCTOR_HALLUCIS,
-  BodyPart.RIGHT_ABDUCTOR_HALLUCIS,
-  BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS,
-  BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS,
-  BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI,
-  BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI,
+  BodyPart.LEFT_BIG_TOE,
+  BodyPart.RIGHT_BIG_TOE,
+  BodyPart.LEFT_INDEX_TOE,
+  BodyPart.RIGHT_INDEX_TOE,
+  BodyPart.LEFT_PINKY_TOE,
+  BodyPart.RIGHT_PINKY_TOE,
 ]);
 
 export const SPINE_PARTS = [
@@ -45,12 +45,12 @@ export const SPINE_PARTS = [
 export const ASSIGNMENT_RULES: Partial<
   Record<BodyPart, (BodyPart | BodyPart[])[]>
 > = {
-  [BodyPart.LEFT_ABDUCTOR_HALLUCIS]: [BodyPart.LEFT_FOOT],
-  [BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]: [BodyPart.LEFT_FOOT],
-  [BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]: [BodyPart.LEFT_FOOT],
-  [BodyPart.RIGHT_ABDUCTOR_HALLUCIS]: [BodyPart.RIGHT_FOOT],
-  [BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]: [BodyPart.RIGHT_FOOT],
-  [BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]: [BodyPart.RIGHT_FOOT],
+  [BodyPart.LEFT_BIG_TOE]: [BodyPart.LEFT_FOOT],
+  [BodyPart.LEFT_INDEX_TOE]: [BodyPart.LEFT_FOOT],
+  [BodyPart.LEFT_PINKY_TOE]: [BodyPart.LEFT_FOOT],
+  [BodyPart.RIGHT_BIG_TOE]: [BodyPart.RIGHT_FOOT],
+  [BodyPart.RIGHT_INDEX_TOE]: [BodyPart.RIGHT_FOOT],
+  [BodyPart.RIGHT_PINKY_TOE]: [BodyPart.RIGHT_FOOT],
   [BodyPart.LEFT_FOOT]: [
     BodyPart.LEFT_LOWER_LEG,
     BodyPart.LEFT_UPPER_LEG,

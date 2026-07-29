@@ -148,7 +148,7 @@ export const mapPart: Record<
     <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_ABDUCTOR_HALLUCIS]: ({ width, currentLocales }) =>
+  [BodyPart.LEFT_BIG_TOE]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
@@ -157,7 +157,7 @@ export const mapPart: Record<
     ) : (
       <FootIcon width={width} />
     ),
-  [BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS]: ({ width, currentLocales }) =>
+  [BodyPart.LEFT_INDEX_TOE]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
@@ -166,7 +166,7 @@ export const mapPart: Record<
     ) : (
       <FootIcon width={width} />
     ),
-  [BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI]: ({ width, currentLocales }) =>
+  [BodyPart.LEFT_PINKY_TOE]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
@@ -175,7 +175,7 @@ export const mapPart: Record<
     ) : (
       <FootIcon width={width} />
     ),
-  [BodyPart.RIGHT_ABDUCTOR_HALLUCIS]: ({ width, currentLocales }) =>
+  [BodyPart.RIGHT_BIG_TOE]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
@@ -184,7 +184,7 @@ export const mapPart: Record<
     ) : (
       <FootIcon width={width} flipped />
     ),
-  [BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS]: ({ width, currentLocales }) =>
+  [BodyPart.RIGHT_INDEX_TOE]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
@@ -193,7 +193,7 @@ export const mapPart: Record<
     ) : (
       <FootIcon width={width} flipped />
     ),
-  [BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI]: ({ width, currentLocales }) =>
+  [BodyPart.RIGHT_PINKY_TOE]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}

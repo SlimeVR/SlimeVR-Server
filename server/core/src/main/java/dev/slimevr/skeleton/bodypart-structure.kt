@@ -65,15 +65,19 @@ val BODY_PART_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 		BodyPart.RIGHT_LOWER_LEG to arrayOf(BodyPart.RIGHT_FOOT),
 
 		BodyPart.LEFT_FOOT to arrayOf(
-			BodyPart.LEFT_ABDUCTOR_HALLUCIS,
-			BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS,
-			BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI,
+			BodyPart.LEFT_BIG_TOE,
+			BodyPart.LEFT_INDEX_TOE,
+			BodyPart.LEFT_MIDDLE_TOE,
+			BodyPart.LEFT_RING_TOE,
+			BodyPart.LEFT_PINKY_TOE,
 		),
 
 		BodyPart.RIGHT_FOOT to arrayOf(
-			BodyPart.RIGHT_ABDUCTOR_HALLUCIS,
-			BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS,
-			BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI,
+			BodyPart.RIGHT_BIG_TOE,
+			BodyPart.RIGHT_INDEX_TOE,
+			BodyPart.RIGHT_MIDDLE_TOE,
+			BodyPart.RIGHT_RING_TOE,
+			BodyPart.RIGHT_PINKY_TOE,
 		),
 	),
 )

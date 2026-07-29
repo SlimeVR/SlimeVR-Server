@@ -10,7 +10,6 @@ import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.*
 
 private enum class FootSide { Left, Right }
-
 internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent> {
 	val messages = mutableListOf<OscContent>()
 
@@ -18,9 +17,9 @@ internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent>
 	val leftFoot = bones[BodyPart.LEFT_FOOT]
 	if (leftFoot != null) {
 		val leftToes = listOf(
-			bones[BodyPart.LEFT_ABDUCTOR_HALLUCIS],
-			bones[BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS],
-			bones[BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI],
+			bones[BodyPart.LEFT_BIG_TOE],
+			bones[BodyPart.LEFT_INDEX_TOE],
+			bones[BodyPart.LEFT_PINKY_TOE],
 		)
 		processToesForFoot(leftFoot, leftToes, FootSide.Left, messages)
 	}
@@ -29,9 +28,9 @@ internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent>
 	val rightFoot = bones[BodyPart.RIGHT_FOOT]
 	if (rightFoot != null) {
 		val rightToes = listOf(
-			bones[BodyPart.RIGHT_ABDUCTOR_HALLUCIS],
-			bones[BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS],
-			bones[BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI],
+			bones[BodyPart.RIGHT_BIG_TOE],
+			bones[BodyPart.RIGHT_INDEX_TOE],
+			bones[BodyPart.RIGHT_PINKY_TOE],
 		)
 		processToesForFoot(rightFoot, rightToes, FootSide.Right, messages)
 	}
@@ -101,7 +100,7 @@ private fun processToe(
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/TipToes${side.name}", listOf(if (tipToe) OscArg.True else OscArg.False))))
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.name}${toeNumber + 1}Bool", listOf(if (bending) OscArg.True else OscArg.False))))
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.name}${toeNumber + 1}", listOf(if (splayed) OscArg.True else OscArg.False))))
-	
+
 	val floatValue = (pitch / 90f).coerceIn(-1f, 1f)
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/Toe${side.name}${toeNumber + 1}Float", listOf(OscArg.Float(floatValue)))))
 }

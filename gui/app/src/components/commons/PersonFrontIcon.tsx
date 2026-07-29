@@ -9,9 +9,9 @@ export const SIDES = [
     upperLeg: BodyPart.LEFT_UPPER_LEG,
     lowerLeg: BodyPart.LEFT_LOWER_LEG,
     foot: BodyPart.LEFT_FOOT,
-    toesAbductorHallucis: BodyPart.LEFT_ABDUCTOR_HALLUCIS,
-    toesDigitorumBrevis: BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS,
-    toesAbductorDigitiMinimi: BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI,
+    bigToe: BodyPart.LEFT_BIG_TOE,
+    indexToe: BodyPart.LEFT_INDEX_TOE,
+    pinkyToe: BodyPart.LEFT_PINKY_TOE,
   },
   {
     shoulder: BodyPart.RIGHT_SHOULDER,
@@ -21,9 +21,9 @@ export const SIDES = [
     upperLeg: BodyPart.RIGHT_UPPER_LEG,
     lowerLeg: BodyPart.RIGHT_LOWER_LEG,
     foot: BodyPart.RIGHT_FOOT,
-    toesAbductorHallucis: BodyPart.RIGHT_ABDUCTOR_HALLUCIS,
-    toesDigitorumBrevis: BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS,
-    toesAbductorDigitiMinimi: BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI,
+    bigToe: BodyPart.RIGHT_BIG_TOE,
+    indexToe: BodyPart.RIGHT_INDEX_TOE,
+    pinkyToe: BodyPart.RIGHT_PINKY_TOE,
   },
 ];
 

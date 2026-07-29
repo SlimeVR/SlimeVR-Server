@@ -11,7 +11,7 @@ import dev.slimevr.skeleton.processors.BoneYawFallbackProcessor
 import dev.slimevr.skeleton.processors.BoneYawRollAlignProcessor
 import dev.slimevr.skeleton.processors.FingerImputeProcessor
 import dev.slimevr.skeleton.processors.SpineImputeProcessor
-import dev.slimevr.skeleton.processors.ToesImputeProcessor
+import dev.slimevr.skeleton.processors.ToeDirectLinkProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope

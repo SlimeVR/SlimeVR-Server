@@ -239,12 +239,12 @@ export class BoneKind extends Bone {
       case BodyPart.RIGHT_LITTLE_INTERMEDIATE:
       case BodyPart.RIGHT_LITTLE_DISTAL:
         return new Color('pink');
-      case BodyPart.LEFT_ABDUCTOR_HALLUCIS:
-      case BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS:
-      case BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI:
-      case BodyPart.RIGHT_ABDUCTOR_HALLUCIS:
-      case BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS:
-      case BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI:
+      case BodyPart.LEFT_BIG_TOE:
+      case BodyPart.LEFT_INDEX_TOE:
+      case BodyPart.LEFT_PINKY_TOE:
+      case BodyPart.RIGHT_BIG_TOE:
+      case BodyPart.RIGHT_INDEX_TOE:
+      case BodyPart.RIGHT_PINKY_TOE:
         return new Color('pink');
     }
   }
@@ -282,15 +282,15 @@ export class BoneKind extends Bone {
         return [BodyPart.RIGHT_FOOT];
       case BodyPart.LEFT_FOOT:
         return [
-          BodyPart.LEFT_ABDUCTOR_HALLUCIS,
-          BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS,
-          BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI,
+          BodyPart.LEFT_BIG_TOE,
+          BodyPart.LEFT_INDEX_TOE,
+          BodyPart.LEFT_PINKY_TOE,
         ];
       case BodyPart.RIGHT_FOOT:
         return [
-          BodyPart.RIGHT_ABDUCTOR_HALLUCIS,
-          BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS,
-          BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI,
+          BodyPart.RIGHT_BIG_TOE,
+          BodyPart.RIGHT_INDEX_TOE,
+          BodyPart.RIGHT_PINKY_TOE,
         ];
       case BodyPart.LEFT_SHOULDER:
         return [BodyPart.LEFT_UPPER_ARM];
@@ -382,12 +382,12 @@ export class BoneKind extends Bone {
       case BodyPart.RIGHT_LITTLE_DISTAL:
         return [];
         return [];
-      case BodyPart.LEFT_ABDUCTOR_HALLUCIS:
-      case BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS:
-      case BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI:
-      case BodyPart.RIGHT_ABDUCTOR_HALLUCIS:
-      case BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS:
-      case BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI:
+      case BodyPart.LEFT_BIG_TOE:
+      case BodyPart.LEFT_INDEX_TOE:
+      case BodyPart.LEFT_PINKY_TOE:
+      case BodyPart.RIGHT_BIG_TOE:
+      case BodyPart.RIGHT_INDEX_TOE:
+      case BodyPart.RIGHT_PINKY_TOE:
         return [];
     }
   }
@@ -502,17 +502,17 @@ export class BoneKind extends Bone {
       case BodyPart.RIGHT_LITTLE_DISTAL:
         return BodyPart.RIGHT_LITTLE_INTERMEDIATE;
 
-      case BodyPart.LEFT_ABDUCTOR_HALLUCIS:
+      case BodyPart.LEFT_BIG_TOE:
         return BodyPart.LEFT_FOOT;
-      case BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS:
+      case BodyPart.LEFT_INDEX_TOE:
         return BodyPart.LEFT_FOOT;
-      case BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI:
+      case BodyPart.LEFT_PINKY_TOE:
         return BodyPart.LEFT_FOOT;
-      case BodyPart.RIGHT_ABDUCTOR_HALLUCIS:
+      case BodyPart.RIGHT_BIG_TOE:
         return BodyPart.RIGHT_FOOT;
-      case BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS:
+      case BodyPart.RIGHT_INDEX_TOE:
         return BodyPart.RIGHT_FOOT;
-      case BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI:
+      case BodyPart.RIGHT_PINKY_TOE:
         return BodyPart.RIGHT_FOOT;
     }
   }
