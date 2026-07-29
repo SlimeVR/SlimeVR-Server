@@ -34,8 +34,10 @@ import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.tapdetection.TapDetectionManager
+import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBasicBehaviour
+import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -131,13 +133,16 @@ fun buildTestTracker(
 	sensorType: ImuType? = ImuType.BNO085,
 	position: Vector3? = null,
 	completedRestCalibration: Boolean? = true,
+	rawRotation: Quaternion = Quaternion.IDENTITY,
+	additionalBehaviours: List<TrackerBehaviour> = listOf(),
+	sessionCalibration: SessionCalibration? = null,
 ): Tracker {
 	val state = TrackerState(
 		id = id,
 		hardwareId = "test-$id",
 		name = "Tracker $id",
 		restOrientation = Quaternion.IDENTITY,
-		rawRotation = Quaternion.IDENTITY,
+		rawRotation = rawRotation,
 		rotation = Quaternion.IDENTITY,
 		rawAcceleration = Vector3.NULL,
 		acceleration = Vector3.NULL,
@@ -154,12 +159,12 @@ fun buildTestTracker(
 		status = status,
 		completedRestCalibration = completedRestCalibration,
 		magStatus = MagnetometerStatus.NOT_SUPPORTED,
-		sessionCalibration = null,
+		sessionCalibration = sessionCalibration,
 	)
 	val context = Context.create(
 		initialState = state,
 		scope = scope,
-		behaviours = listOf(TrackerBasicBehaviour()),
+		behaviours = listOf(TrackerBasicBehaviour()) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)
