@@ -14,6 +14,7 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -32,7 +33,8 @@ import solarxr_protocol.rpc.ArmsResetMode
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class TrackerBasicBehaviour : TrackerBehaviour {
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
@@ -119,22 +121,37 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 			state.copy(
 				sessionCalibration = sessionCalibration,
 				rotation = defaultPolarityRotation,
+				// Full reset snaps: cancel any in-progress yaw smoothing.
+				yawResetSmoothing = null,
 			)
 		}
 
 		is TrackerActions.YawReset -> {
-			val headingCorrection = estimateHeadingCorrect(
+			val newHeading = estimateHeadingCorrect(
 				state.rawRotation,
 				action.referenceRotation,
 			)
+			val cal = state.sessionCalibration
 
-			val sessionCalibration = state.sessionCalibration?.copy(
-				headingCorrection = headingCorrection,
-			) ?: SessionCalibration(
-				headingCorrection = headingCorrection,
-			)
-
-			state.copy(sessionCalibration = sessionCalibration)
+			if (action.smoothTime > Duration.ZERO && cal != null && cal.headingCorrection != newHeading) {
+				// Smooth: only set the target. Leave the applied heading where it is
+				// TrackerYawResetSmoothingBehaviour eases sessionCalibration.headingCorrection
+				// to newHeading over smoothTime. A reset mid-ease just replaces the seed.
+				state.copy(
+					yawResetSmoothing = YawResetSmoothing(
+						from = cal.headingCorrection,
+						to = newHeading,
+						duration = action.smoothTime,
+					),
+				)
+			} else {
+				// Snap: apply the new heading immediately (default, no smoothing configured).
+				state.copy(
+					sessionCalibration = cal?.copy(headingCorrection = newHeading)
+						?: SessionCalibration(headingCorrection = newHeading),
+					yawResetSmoothing = null,
+				)
+			}
 		}
 
 		is TrackerActions.MountingReset -> {
@@ -161,6 +178,23 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 		is TrackerActions.ClearMountingReset -> {
 			state.copy(sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY))
 		}
+
+		is TrackerActions.TickYawResetSmoothing -> {
+			val cal = state.sessionCalibration
+			if (cal == null || state.yawResetSmoothing == null) {
+				// Nothing to advance.
+				state.copy(yawResetSmoothing = null)
+			} else {
+				// The behaviour computed the interpolated heading; store it in the session
+				// calibration. TrackerBasicBehaviour.observe re-applies it to the rotation
+				// (using the last raw rotation), so this progresses even with no new IMU
+				// data. On `done` the seed is cleared, leaving the target heading in place.
+				state.copy(
+					sessionCalibration = cal.copy(headingCorrection = action.heading),
+					yawResetSmoothing = if (action.done) null else state.yawResetSmoothing,
+				)
+			}
+		}
 	}
 
 	override fun observe(receiver: Tracker) {
@@ -174,6 +208,37 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 			.onEach {
 				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer))
 			}.launchIn(receiver.context.scope)
+	}
+}
+
+class TrackerYawResetSmoothingBehaviour : TrackerBehaviour {
+
+	private fun animateEase(t: Float) = (3f - 2f * t) * t * t
+
+	override fun observe(receiver: Tracker) {
+		receiver.context.scope.launch {
+			receiver.context.state
+				.map { it.yawResetSmoothing }
+				.distinctUntilChanged()
+				.collectLatest { smoothing ->
+					smoothing ?: return@collectLatest
+					val start = timeSource.markNow()
+					while (isActive) {
+						val t = (start.elapsedNow() / smoothing.duration).toFloat().coerceIn(0f, 1f)
+						val done = t >= 1f
+						val heading = if (done) smoothing.to else smoothing.from.interpR(smoothing.to, animateEase(t))
+						receiver.context.dispatch(TrackerActions.TickYawResetSmoothing(heading, done))
+						if (done) break
+						delay(YAW_RESET_SMOOTH_TICK)
+					}
+				}
+		}
+	}
+
+	companion object {
+		// based over tracking rate not skeleton rate. tracking smoothing and shit
+		// should be able to compensate. Maybe its not the right call idk - Futura
+		private val YAW_RESET_SMOOTH_TICK = 10.milliseconds
 	}
 }
 

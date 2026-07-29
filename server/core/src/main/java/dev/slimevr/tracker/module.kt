@@ -14,8 +14,15 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import kotlin.time.Duration
 
 data class TrackerSensorIds(val trackerId: Int, val sensorId: Int)
+
+data class YawResetSmoothing(
+	val from: HeadingCorrection,
+	val to: HeadingCorrection,
+	val duration: Duration,
+)
 
 data class TrackerState(
 	val id: Int,
@@ -40,6 +47,7 @@ data class TrackerState(
 	val completedRestCalibration: Boolean?,
 	val magStatus: MagnetometerStatus,
 	val sessionCalibration: SessionCalibration?,
+	val yawResetSmoothing: YawResetSmoothing? = null,
 )
 
 sealed interface TrackerActions {
@@ -50,7 +58,8 @@ sealed interface TrackerActions {
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
-	data class YawReset(val referenceRotation: Quaternion) : TrackerActions
+	data class YawReset(val referenceRotation: Quaternion, val smoothTime: Duration = Duration.ZERO) : TrackerActions
+	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class MountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
 }
@@ -111,6 +120,7 @@ class Tracker(
 
 			val behaviours = listOf(
 				TrackerBasicBehaviour(),
+				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerRestOrientationBehaviour(settings),
 				TrackerConfigBehaviour(settings, hardwareId),

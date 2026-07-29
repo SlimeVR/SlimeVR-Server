@@ -25,6 +25,7 @@ import solarxr_protocol.rpc.ResetStatus
 import solarxr_protocol.rpc.ResetType
 import kotlin.collections.contains
 import kotlin.collections.listOf
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeMark
 
 data class ResetsState(
@@ -143,7 +144,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		trackers.forEach {
 			it.context.dispatch(
 				when (resetType) {
-					ResetType.YAW -> TrackerActions.YawReset(referenceRotation)
+					ResetType.YAW -> TrackerActions.YawReset(referenceRotation, config.yawResetSmoothTime.toDouble().seconds)
 					ResetType.FULL -> TrackerActions.FullReset(referenceRotation)
 					ResetType.MOUNTING -> TrackerActions.MountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
 				},

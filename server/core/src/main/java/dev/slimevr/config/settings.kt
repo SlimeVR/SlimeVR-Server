@@ -85,7 +85,7 @@ data class ResetsConfig(
 	/** Reset mode used for the arms */
 	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
 	/** Yaw reset smoothing time in seconds */
-	val yawResetSmoothTime: Float = 0.0f, // TODO
+	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
 	/** Reset the HMD's pitch upon full reset */
