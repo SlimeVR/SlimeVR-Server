@@ -239,6 +239,13 @@ export class BoneKind extends Bone {
       case BodyPart.RIGHT_LITTLE_INTERMEDIATE:
       case BodyPart.RIGHT_LITTLE_DISTAL:
         return new Color('pink');
+      case BodyPart.LEFT_ABDUCTOR_HALLUCIS:
+      case BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS:
+      case BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI:
+      case BodyPart.RIGHT_ABDUCTOR_HALLUCIS:
+      case BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS:
+      case BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI:
+        return new Color('pink');
     }
   }
 
@@ -274,10 +281,17 @@ export class BoneKind extends Bone {
       case BodyPart.RIGHT_LOWER_LEG:
         return [BodyPart.RIGHT_FOOT];
       case BodyPart.LEFT_FOOT:
-        return [];
+        return [
+          BodyPart.LEFT_ABDUCTOR_HALLUCIS,
+          BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS,
+          BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI,
+        ];
       case BodyPart.RIGHT_FOOT:
-        return [];
-
+        return [
+          BodyPart.RIGHT_ABDUCTOR_HALLUCIS,
+          BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS,
+          BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI,
+        ];
       case BodyPart.LEFT_SHOULDER:
         return [BodyPart.LEFT_UPPER_ARM];
       case BodyPart.RIGHT_SHOULDER:
@@ -366,6 +380,14 @@ export class BoneKind extends Bone {
       case BodyPart.RIGHT_LITTLE_INTERMEDIATE:
         return [BodyPart.RIGHT_LITTLE_DISTAL];
       case BodyPart.RIGHT_LITTLE_DISTAL:
+        return [];
+        return [];
+      case BodyPart.LEFT_ABDUCTOR_HALLUCIS:
+      case BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS:
+      case BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI:
+      case BodyPart.RIGHT_ABDUCTOR_HALLUCIS:
+      case BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS:
+      case BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI:
         return [];
     }
   }
@@ -479,6 +501,19 @@ export class BoneKind extends Bone {
         return BodyPart.RIGHT_LITTLE_PROXIMAL;
       case BodyPart.RIGHT_LITTLE_DISTAL:
         return BodyPart.RIGHT_LITTLE_INTERMEDIATE;
+
+      case BodyPart.LEFT_ABDUCTOR_HALLUCIS:
+        return BodyPart.LEFT_FOOT;
+      case BodyPart.LEFT_FLEXOR_DIGITORUM_BREVIS:
+        return BodyPart.LEFT_FOOT;
+      case BodyPart.LEFT_ABDUCTOR_DIGITI_MINIMI:
+        return BodyPart.LEFT_FOOT;
+      case BodyPart.RIGHT_ABDUCTOR_HALLUCIS:
+        return BodyPart.RIGHT_FOOT;
+      case BodyPart.RIGHT_FLEXOR_DIGITORUM_BREVIS:
+        return BodyPart.RIGHT_FOOT;
+      case BodyPart.RIGHT_ABDUCTOR_DIGITI_MINIMI:
+        return BodyPart.RIGHT_FOOT;
     }
   }
 }

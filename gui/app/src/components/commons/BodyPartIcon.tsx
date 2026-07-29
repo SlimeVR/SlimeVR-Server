@@ -125,8 +125,26 @@ export const mapPart: Record<
     <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS]: renderFootLeft,
+  [BodyPart.LEFT_TOES_DIGITORUM_BREVIS]: renderFootLeft,
+  [BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderFootLeft,
+  [BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS]: renderFootRight,
+  [BodyPart.RIGHT_TOES_DIGITORUM_BREVIS]: renderFootRight,
+  [BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderFootRight,
 };
+function renderFootLeft({ width, currentLocales }) {
+  if (currentLocales.includes('en-x-owo')) {
+    return <PawIcon />;
+  }
+  return <FootIcon width={width} />;
+}
 
+function renderFootRight({ width, currentLocales }) {
+  if (currentLocales.includes('en-x-owo')) {
+    return <PawIcon />;
+  }
+  return <FootIcon width={width} flipped />;
+}
 export function BodyPartIcon({
   bodyPart = BodyPart.NONE,
   width = 24,
