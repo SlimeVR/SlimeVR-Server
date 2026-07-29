@@ -271,7 +271,7 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 
 		BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
 
-		else -> Quaternion.SLIMEVR.BACK
+		else -> Quaternion.SLIMEVR.FRONT
 	}
 
 	override fun observe(receiver: Tracker) {
