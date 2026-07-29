@@ -1,6 +1,5 @@
 package dev.slimevr.tapdetection
 
-import dev.slimevr.timeSource
 import io.github.axisangles.ktmath.Vector3
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,13 +20,13 @@ class TapDetectionTest {
 	val lowAccel = Vector3.NULL
 
 	// Accelerations needed for a tap happen with this delay
-	val accelDelay = TapDetectionBasicBehaviour.accelWindow * 0.9
+	val accelDelay = TapDetectionBasicBehaviour.ACCEL_WINDOW * 0.9
 
 	// Delay between several taps
-	val tapDelay = TapDetectionBasicBehaviour.tapWindowPerTap * 0.9
+	val tapDelay = TapDetectionBasicBehaviour.TAP_WINDOW_PER_TAP * 0.9
 
 	// Too long of a delay between several taps
-	val tapTimeoutDelay = TapDetectionBasicBehaviour.tapWindowPerTap * 1.1
+	val tapTimeoutDelay = TapDetectionBasicBehaviour.TAP_WINDOW_PER_TAP * 1.1
 
 	/**
 	 * Runs a sequence of tap events through TapDetection, asserting the results.

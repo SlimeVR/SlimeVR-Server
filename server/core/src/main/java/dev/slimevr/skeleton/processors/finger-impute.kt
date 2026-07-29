@@ -4,8 +4,6 @@ import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import solarxr_protocol.datatypes.BodyPart
-import kotlin.collections.get
-import kotlin.collections.iterator
 import kotlin.time.Duration
 
 /**

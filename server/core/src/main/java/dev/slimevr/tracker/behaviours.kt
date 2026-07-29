@@ -14,11 +14,11 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
@@ -34,7 +34,6 @@ import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 class TrackerBasicBehaviour : TrackerBehaviour {
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
@@ -213,32 +212,27 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 
 class TrackerYawResetSmoothingBehaviour : TrackerBehaviour {
 
-	private fun animateEase(t: Float) = (3f - 2f * t) * t * t
+	private fun animateEase(t: Float) = t * t
 
+	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: Tracker) {
-		receiver.context.scope.launch {
-			receiver.context.state
-				.map { it.yawResetSmoothing }
-				.distinctUntilChanged()
-				.collectLatest { smoothing ->
-					smoothing ?: return@collectLatest
-					val start = timeSource.markNow()
-					while (isActive) {
-						val t = (start.elapsedNow() / smoothing.duration).toFloat().coerceIn(0f, 1f)
-						val done = t >= 1f
-						val heading = if (done) smoothing.to else smoothing.from.interpR(smoothing.to, animateEase(t))
-						receiver.context.dispatch(TrackerActions.TickYawResetSmoothing(heading, done))
-						if (done) break
-						delay(YAW_RESET_SMOOTH_TICK)
-					}
-				}
-		}
-	}
+		receiver.context.state
+			.map { it.yawResetSmoothing }
+			.distinctUntilChanged()
+			.flatMapLatest { yawResetSmoothing ->
+				yawResetSmoothing ?: return@flatMapLatest emptyFlow()
+				val startTime = timeSource.markNow()
 
-	companion object {
-		// based over tracking rate not skeleton rate. tracking smoothing and shit
-		// should be able to compensate. Maybe its not the right call idk - Futura
-		private val YAW_RESET_SMOOTH_TICK = 10.milliseconds
+				receiver.appContext.skeleton.computed
+					.onEach {
+						val t = (startTime.elapsedNow() / yawResetSmoothing.duration).toFloat().coerceIn(0f, 1f)
+						val done = t >= 1f
+						val heading = if (done) yawResetSmoothing.to else yawResetSmoothing.from.interpR(yawResetSmoothing.to, animateEase(t))
+						receiver.context.dispatch(TrackerActions.TickYawResetSmoothing(heading, done))
+						if (done) return@onEach
+					}
+			}
+			.launchIn(receiver.context.scope)
 	}
 }
 
@@ -317,7 +311,7 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: Tracker) {
 		receiver.context.state
-			.distinctUntilChanged { old, new -> old.status == new.status && old.bodyPart == new.bodyPart }
+			.distinctUntilChangedBy { it.status to it.bodyPart }
 			.onEach { _ ->
 				// Tell the skeleton the tracker has stopped sending data to the last bone it was sending data to.
 				lastBodyPartSent?.let {

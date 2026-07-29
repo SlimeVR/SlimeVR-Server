@@ -176,7 +176,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		trackerAcceleration: Vector3,
 	): Boolean {
 		// Remove old stored accelerations (if they are too old)
-		while (trackerTapDetectionState.accelList.isNotEmpty() && (trackerTapDetectionState.accelList.first().second + accelWindow).hasPassedNow()) {
+		while (trackerTapDetectionState.accelList.isNotEmpty() && (trackerTapDetectionState.accelList.first().second + ACCEL_WINDOW).hasPassedNow()) {
 			trackerTapDetectionState.accelList.removeFirst()
 		}
 
@@ -209,7 +209,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 
 		if (trackerTapDetectionState.tapTimestamps.isNotEmpty()) {
 			// Remove old stored taps (if they are too old)
-			val totalTapWindow = tapWindowPerTap * trackerTapDetectionState.tapTimestamps.size
+			val totalTapWindow = TAP_WINDOW_PER_TAP * trackerTapDetectionState.tapTimestamps.size
 			while (trackerTapDetectionState.tapTimestamps.isNotEmpty() && (trackerTapDetectionState.tapTimestamps.first() + totalTapWindow).hasPassedNow()) {
 				trackerTapDetectionState.tapTimestamps.removeFirst()
 			}
@@ -236,7 +236,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		const val NEEDED_ACCEL_DELTA = 6.0f
 		const val ALLOWED_BODY_ACCEL = 2.5f
 		const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
-		val accelWindow = 0.06.seconds
-		val tapWindowPerTap = 0.3.seconds
+		val ACCEL_WINDOW = 0.06.seconds
+		val TAP_WINDOW_PER_TAP = 0.3.seconds
 	}
 }
