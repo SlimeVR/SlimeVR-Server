@@ -31,11 +31,17 @@ data class ResetsState(
 	val canDoYawReset: Boolean,
 	val canDoMountingReset: Boolean,
 	val lastFullResetTime: TimeMark?,
+
+	// Session-only flags: whether a mounting reset (and a feet mounting reset) has been done at
+	// least once since the last full reset
+	val mountingResetCompleted: Boolean = false,
+	val feetMountingResetCompleted: Boolean = false,
 )
 
 sealed interface ResetsActions {
 	data class ClearResets(val resetType: List<ResetType>) : ResetsActions
-	data class EndReset(val resetType: ResetType) : ResetsActions
+	data class EndReset(val resetType: ResetType, val bodyParts: List<BodyPart>? = null, val resetMountingFeet: Boolean = false) : ResetsActions
+	data object ClearMountingCompleted : ResetsActions
 }
 
 typealias ResetsContext = Context<ResetsState, ResetsActions>
@@ -43,7 +49,7 @@ typealias ResetsBehaviour = Behaviour<ResetsState, ResetsActions, ResetsManager>
 
 class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
-	
+
 	private var resetJob: Job = Job()
 
 	/**
@@ -79,8 +85,20 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
 
 			// Update state and config
-			context.dispatch(ResetsActions.EndReset(resetType))
-			settings.context.dispatch(SettingsActions.Update { copy(resetsConfig = resetsConfig.copy(lastMountingMethod = MountingMethods.MANUAL)) })
+			context.dispatch(ResetsActions.EndReset(resetType, bodyParts, settings.context.state.value.data.resetsConfig.resetMountingFeet))
+			settings.context.dispatch(
+				SettingsActions.Update {
+					copy(
+						resetsConfig = resetsConfig.copy(
+							lastMountingMethod = if (resetType == ResetType.MOUNTING) {
+								MountingMethods.AUTOMATIC
+							} else {
+								resetsConfig.lastMountingMethod
+							},
+						),
+					)
+				},
+			)
 
 			AppLogger.resets.info("${resetType.name} Reset from $resetSourceName")
 
@@ -94,6 +112,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 	suspend fun clearTrackersMountingReset(resetSourceName: String) {
 		val trackers = server.context.state.value.trackers.values
 		trackers.forEach { it.context.dispatch(TrackerActions.ClearMountingReset) }
+		context.dispatch(ResetsActions.ClearMountingCompleted)
 
 		AppLogger.resets.info("Clear Mounting Reset from $resetSourceName")
 	}

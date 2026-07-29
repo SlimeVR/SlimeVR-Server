@@ -20,13 +20,38 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 		}
 
 		// Whenever a reset is finished
-		is ResetsActions.EndReset -> {
-			if (action.resetType == ResetType.FULL) {
-				state.copy(canDoYawReset = true, canDoMountingReset = true, lastFullResetTime = timeSource.markNow())
-			} else {
-				state.copy()
+		is ResetsActions.EndReset -> when (action.resetType) {
+			ResetType.FULL -> state.copy(
+				canDoYawReset = true,
+				canDoMountingReset = true,
+				lastFullResetTime = timeSource.markNow(),
+				mountingResetCompleted = false,
+				feetMountingResetCompleted = false,
+			)
+
+			ResetType.MOUNTING -> {
+				val bodyParts = action.bodyParts
+				val feetOnly = !bodyParts.isNullOrEmpty() && bodyParts.all { it in FOOT_PARTS }
+				when {
+					feetOnly -> state.copy(feetMountingResetCompleted = true)
+
+					bodyParts == null -> state.copy(
+						mountingResetCompleted = true,
+						feetMountingResetCompleted = action.resetMountingFeet || state.feetMountingResetCompleted,
+					)
+
+					else -> state
+				}
 			}
+
+			else -> state
 		}
+
+		// Mounting calibration was cleared, reset the session completion flags
+		is ResetsActions.ClearMountingCompleted -> state.copy(
+			mountingResetCompleted = false,
+			feetMountingResetCompleted = false,
+		)
 	}
 }
 

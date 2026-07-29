@@ -90,7 +90,7 @@ data class ResetsConfig(
 	val saveMountingReset: Boolean = false,
 	/** Reset the HMD's pitch upon full reset */
 	val resetHmdPitch: Boolean = false, // TODO
-	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC, // TODO in trackingchecklist
+	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC,
 )
 
 @Serializable

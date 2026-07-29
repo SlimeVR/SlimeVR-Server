@@ -12,6 +12,27 @@ import solarxr_protocol.rpc.TrackingChecklistRequest
 import solarxr_protocol.rpc.TrackingChecklistResponse
 import solarxr_protocol.rpc.TrackingChecklistStepId
 
+private val CHECKLIST_STEP_ORDER: List<TrackingChecklistStepId> = listOf(
+	TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC,
+	TrackingChecklistStepId.STEAMVR_DISCONNECTED,
+	TrackingChecklistStepId.STANDABLE_INSTALLED,
+	TrackingChecklistStepId.STEAMVR_HANDS_ENABLED,
+	TrackingChecklistStepId.TRACKER_ERROR,
+	TrackingChecklistStepId.TRACKERS_REST_CALIBRATION,
+	TrackingChecklistStepId.FULL_RESET,
+	TrackingChecklistStepId.MOUNTING_CALIBRATION,
+	TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION,
+	TrackingChecklistStepId.UNASSIGNED_HMD,
+	TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED,
+	TrackingChecklistStepId.VRCHAT_SETTINGS,
+)
+
+private fun stepOrder(id: TrackingChecklistStepId): Int {
+	val order = CHECKLIST_STEP_ORDER.indexOf(id)
+	require(order >= 0) { "Checklist step $id is missing from CHECKLIST_STEP_ORDER" }
+	return order
+}
+
 class TrackingChecklistBehaviour(
 	private val checklist: TrackingChecklist,
 	private val settings: Settings,
@@ -22,7 +43,9 @@ class TrackingChecklistBehaviour(
 		.toSet()
 
 	private fun buildResponse(): TrackingChecklistResponse {
-		val steps = checklist.context.state.value.steps.mapValues { it.value.copy(id = it.key) }.values.toList()
+		val steps = checklist.context.state.value.steps.entries
+			.sortedBy { stepOrder(it.key) }
+			.map { it.value.copy(id = it.key) }
 		return TrackingChecklistResponse(
 			steps = steps,
 			ignoredSteps = parseMutedSteps().toList(),

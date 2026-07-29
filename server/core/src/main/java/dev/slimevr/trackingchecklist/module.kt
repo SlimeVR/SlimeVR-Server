@@ -32,7 +32,11 @@ class TrackingChecklist(
 		val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
 			add(HMDCheckBehaviour(appContext.server))
 			add(TrackerRestCheckBehaviour(appContext.server))
+			add(FullResetCheckBehaviour(appContext.server, appContext.resetsManager))
+			add(MountingCalibrationCheckBehaviour(appContext.server, appContext.resetsManager, appContext.config.settings))
 			add(TrackerErrorCheckBehaviour(appContext.server))
+			add(FeetMountingCalibrationCheckBehaviour(appContext.server, appContext.resetsManager, appContext.config.settings))
+			// TODO: STAY_ALIGNED_CONFIGURED
 
 			appContext.vrcConfigManager?.let { add(VRChatSettingsCheckBehaviour(appContext.server, appContext.skeleton, it)) }
 			appContext.networkProfileManager?.let { add(NetworkProfileCheckBehaviour(it)) }

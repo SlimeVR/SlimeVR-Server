@@ -141,7 +141,6 @@ class ComputedSkeletonBehaviour(
 				try {
 					// Process starts
 					val processTime = measureTime {
-
 						val targetState = receiver.context.state.value
 
 						// Run processors
@@ -156,13 +155,13 @@ class ComputedSkeletonBehaviour(
 						// Run FK
 						val fk = buildBones(processed, rootHead = rootHead)
 
-//	 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
+// 	 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
 //
-//	 					val targets = targetProcessors
-//	 						.filter { targetProcessors -> targetProcessors.enabled }
-//	 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
+// 	 					val targets = targetProcessors
+// 	 						.filter { targetProcessors -> targetProcessors.enabled }
+// 	 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
 //
-//	 					val ikOutput = solver.solve(fk, targets)
+// 	 					val ikOutput = solver.solve(fk, targets)
 
 						// Frame ends
 						lastFrameTime = frameStartTime.elapsedNow()
