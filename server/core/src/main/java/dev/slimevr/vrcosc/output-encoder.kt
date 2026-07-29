@@ -28,7 +28,7 @@ internal fun buildOutgoingBundle(
 	bones: Map<BodyPart, BoneState>,
 	outputTrackerToggle: OutputTrackerToggleManager,
 ): OscBundle? {
-	val messages = buildList {
+	val messages = buildList<OscContent> {
 		for ((bodyPart, trackerId) in trackerIdsByBodyPart) {
 			if (bodyPart !in outputTrackerToggle.context.state.value.trackers) continue
 
@@ -52,6 +52,8 @@ internal fun buildOutgoingBundle(
 				),
 			)
 		}
+		
+		addAll(buildToeMessages(bones))
 	}
 
 	return messages.takeIf { it.isNotEmpty() }?.let { OscBundle(1L, it) }

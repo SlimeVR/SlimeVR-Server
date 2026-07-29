@@ -8,7 +8,7 @@ import kotlin.collections.get
 import kotlin.collections.iterator
 
 /**
- * Handles rotations of inactive finger bones.
+ * Handles rotations of inactive toe bones.
  */
 class ToesImputeProcessor : SkeletonProcessor {
 	/**
