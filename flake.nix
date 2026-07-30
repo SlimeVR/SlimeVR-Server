@@ -115,6 +115,16 @@
             '';
           };
 
+          buildToolsVersion = "36.0.0";
+          androidComposition = pkgs.androidenv.composeAndroidPackages {
+            buildToolsVersions = [
+              buildToolsVersion
+            ];
+            platformVersions = [
+              "36"
+            ];
+          };
+
           # Toolchain shared by the dev shell and the packaging FHS env.
           commonPackages = [
             # for running the jar
@@ -141,15 +151,18 @@
             pkgs.binutils
             pkgs.git
             pkgs.node-gyp-build
+            androidComposition.androidsdk
           ];
 
-          buildEnv = {
+          buildEnv = rec {
             JAVA_HOME = "${pkgs.jdk25}/lib/openjdk";
             USE_SYSTEM_FPM = "true";
             ELECTRON_BUILDER_7ZIP_PATH = "${pkgs.p7zip}/bin/7za";
             APPIMAGE_TOOLS_PATH = "${appImageTools}";
             # for electron-vite, so `pnpm gui` works
             ELECTRON_EXEC_PATH = "${pkgs.electron}/bin/electron";
+            ANDROID_HOME = "${androidComposition.androidsdk}/libexec/android-sdk";
+            GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolsVersion}/aapt2";
           };
 
           # electron-builder produces generic dynamically-linked binaries that
@@ -174,6 +187,13 @@
           };
         in
         {
+          # For Android SDK
+          _module.args.pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            config.android_sdk.accept_license = true;
+          };
+
           devShells.default = pkgs.mkShell (
             buildEnv
             // {
