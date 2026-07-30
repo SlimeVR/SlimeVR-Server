@@ -23,8 +23,8 @@ class ToeDirectLinkProcessor : SkeletonProcessor {
 
 		BodyPart.RIGHT_BIG_TOE to BodyPart.RIGHT_FOOT,
 		BodyPart.RIGHT_INDEX_TOE to BodyPart.RIGHT_BIG_TOE,
-		BodyPart.RIGHT_MIDDLE_TOE to BodyPart.LEFT_INDEX_TOE,
-		BodyPart.RIGHT_RING_TOE to BodyPart.LEFT_INDEX_TOE,
+		BodyPart.RIGHT_MIDDLE_TOE to BodyPart.RIGHT_INDEX_TOE,
+		BodyPart.RIGHT_RING_TOE to BodyPart.RIGHT_INDEX_TOE,
 		BodyPart.RIGHT_PINKY_TOE to BodyPart.RIGHT_INDEX_TOE,
 	)
 
