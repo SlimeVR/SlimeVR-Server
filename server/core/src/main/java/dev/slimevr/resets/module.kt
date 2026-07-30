@@ -45,7 +45,7 @@ typealias ResetsBehaviour = Behaviour<ResetsState, ResetsActions, ResetsManager>
 
 class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
-	
+
 	private var resetJob: Job = Job()
 
 	/**
@@ -148,6 +148,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		in RIGHT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_DOWN -> -FastMath.HALF_PI
 
 		in RIGHT_FINGER_PARTS -> -FastMath.HALF_PI
+
 
 		// Going right
 		in LEFT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_DOWN -> FastMath.HALF_PI
