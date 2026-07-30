@@ -12,6 +12,10 @@ import kotlin.math.*
 import dev.slimevr.util.Side
 import dev.slimevr.util.opposite
 
+private const val Absolute_Splay_Threshold_Angle = 7
+private const val Minimum_Tip_Toe_Pitch = -14
+private const val Maximum_Bending_Pitch = 15
+private const val Maximum_Absolute_Toe_Range = 90
 internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent> {
 	val messages = mutableListOf<OscContent>()
 
@@ -93,10 +97,6 @@ private fun processToe(
 	splayDirection: Side,
 	messages: MutableList<OscContent>,
 ) {
-	val absoluteSplayThresholdAngle = 7
-	val minimumTipToePitch = -14
-	val maximumBendingPitch = 15
-	val maximumAbsoluteToeRange = 90
 
 	val footRot = foot.rotation
 	val toeRot = toe.rotation
@@ -106,17 +106,17 @@ private fun processToe(
 
 	val pitch = euler.z
 	val yaw = euler.y
-	val tipToe = pitch < minimumTipToePitch
-	val bending = pitch > maximumBendingPitch && !tipToe
+	val tipToe = pitch < Minimum_Tip_Toe_Pitch
+	val bending = pitch > Maximum_Bending_Pitch && !tipToe
 	val splayed = when (splayDirection) {
-		Side.LEFT -> yaw < -absoluteSplayThresholdAngle
-		Side.RIGHT -> yaw > absoluteSplayThresholdAngle
+		Side.LEFT -> yaw < -Absolute_Splay_Threshold_Angle
+		Side.RIGHT -> yaw > Absolute_Splay_Threshold_Angle
 	}
 
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/TipToes${side.oscName}", listOf(if (tipToe) OscArg.True else OscArg.False))))
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.oscName}${toeNumber + 1}Bool", listOf(if (bending) OscArg.True else OscArg.False))))
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}${toeNumber + 1}", listOf(if (splayed) OscArg.True else OscArg.False))))
 
-	val floatValue = (pitch / maximumAbsoluteToeRange).coerceIn(-1f, 1f)
+	val floatValue = (pitch / Maximum_Absolute_Toe_Range).coerceIn(-1f, 1f)
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/Toe${side.oscName}${toeNumber + 1}Float", listOf(OscArg.Float(floatValue)))))
 }
