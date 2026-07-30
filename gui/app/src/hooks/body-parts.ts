@@ -56,19 +56,19 @@ export const ALL_BODY_PARTS = [
   BodyPart.RIGHT_LITTLE_DISTAL,
   BodyPart.LEFT_BIG_TOE,
   BodyPart.LEFT_INDEX_TOE,
-  BodyPart.LEFT_PINKY_TOE,
+  BodyPart.LEFT_LITTLE_TOE,
   BodyPart.RIGHT_BIG_TOE,
   BodyPart.RIGHT_INDEX_TOE,
-  BodyPart.RIGHT_PINKY_TOE,
+  BodyPart.RIGHT_LITTLE_TOE,
 ];
 
 export const TOE_BODY_PARTS = [
   BodyPart.LEFT_BIG_TOE,
   BodyPart.LEFT_INDEX_TOE,
-  BodyPart.LEFT_PINKY_TOE,
+  BodyPart.LEFT_LITTLE_TOE,
   BodyPart.RIGHT_BIG_TOE,
   BodyPart.RIGHT_INDEX_TOE,
-  BodyPart.RIGHT_PINKY_TOE,
+  BodyPart.RIGHT_LITTLE_TOE,
 ];
 export const FEET_BODY_PARTS = [BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT];
 export const FINGER_BODY_PARTS = [

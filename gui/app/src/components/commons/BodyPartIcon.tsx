@@ -127,10 +127,10 @@ export const mapPart: Record<
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_BIG_TOE]: renderFootLeft,
   [BodyPart.LEFT_INDEX_TOE]: renderFootLeft,
-  [BodyPart.LEFT_PINKY_TOE]: renderFootLeft,
+  [BodyPart.LEFT_LITTLE_TOE]: renderFootLeft,
   [BodyPart.RIGHT_BIG_TOE]: renderFootRight,
   [BodyPart.RIGHT_INDEX_TOE]: renderFootRight,
-  [BodyPart.RIGHT_PINKY_TOE]: renderFootRight,
+  [BodyPart.RIGHT_LITTLE_TOE]: renderFootRight,
 };
 function renderFootLeft({
   width,

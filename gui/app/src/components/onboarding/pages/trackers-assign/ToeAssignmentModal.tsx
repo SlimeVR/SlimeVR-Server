@@ -36,10 +36,10 @@ export function ToeAssignmentModal({
     () => ({
       [BodyPart.LEFT_BIG_TOE]: 'Left Big Toe',
       [BodyPart.LEFT_INDEX_TOE]: 'Left Index Toe',
-      [BodyPart.LEFT_PINKY_TOE]: 'Left Pinky Toe',
+      [BodyPart.LEFT_LITTLE_TOE]: 'Left little toe',
       [BodyPart.RIGHT_BIG_TOE]: 'Right Big Toe',
       [BodyPart.RIGHT_INDEX_TOE]: 'Right Index Toe',
-      [BodyPart.RIGHT_PINKY_TOE]: 'Right Pinky Toe',
+      [BodyPart.RIGHT_LITTLE_TOE]: 'Right little toe',
     }),
     []
   );
@@ -58,7 +58,7 @@ export function ToeAssignmentModal({
           cy: 40,
         },
         {
-          part: BodyPart.LEFT_PINKY_TOE,
+          part: BodyPart.LEFT_LITTLE_TOE,
           cx: 50,
           cy: 62,
         },
@@ -75,7 +75,7 @@ export function ToeAssignmentModal({
           cy: 40,
         },
         {
-          part: BodyPart.RIGHT_PINKY_TOE,
+          part: BodyPart.RIGHT_LITTLE_TOE,
           cx: 137,
           cy: 62,
         },

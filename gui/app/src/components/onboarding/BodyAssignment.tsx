@@ -32,8 +32,8 @@ export const TOES_PARTS = new Set([
   BodyPart.RIGHT_BIG_TOE,
   BodyPart.LEFT_INDEX_TOE,
   BodyPart.RIGHT_INDEX_TOE,
-  BodyPart.LEFT_PINKY_TOE,
-  BodyPart.RIGHT_PINKY_TOE,
+  BodyPart.LEFT_LITTLE_TOE,
+  BodyPart.RIGHT_LITTLE_TOE,
 ]);
 
 export const SPINE_PARTS = [
@@ -47,10 +47,10 @@ export const ASSIGNMENT_RULES: Partial<
 > = {
   [BodyPart.LEFT_BIG_TOE]: [BodyPart.LEFT_FOOT],
   [BodyPart.LEFT_INDEX_TOE]: [BodyPart.LEFT_FOOT],
-  [BodyPart.LEFT_PINKY_TOE]: [BodyPart.LEFT_FOOT],
+  [BodyPart.LEFT_LITTLE_TOE]: [BodyPart.LEFT_FOOT],
   [BodyPart.RIGHT_BIG_TOE]: [BodyPart.RIGHT_FOOT],
   [BodyPart.RIGHT_INDEX_TOE]: [BodyPart.RIGHT_FOOT],
-  [BodyPart.RIGHT_PINKY_TOE]: [BodyPart.RIGHT_FOOT],
+  [BodyPart.RIGHT_LITTLE_TOE]: [BodyPart.RIGHT_FOOT],
   [BodyPart.LEFT_FOOT]: [
     BodyPart.LEFT_LOWER_LEG,
     BodyPart.LEFT_UPPER_LEG,

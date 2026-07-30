@@ -442,12 +442,12 @@ tracker_selection_menu-LEFT_BIG_TOE = { -tracker_selection-part } left big toe?
 tracker_selection_menu-LEFT_INDEX_TOE = { -tracker_selection-part } left index toe?
 tracker_selection_menu-LEFT_MIDDLE_TOE = { -tracker_selection-part } left middle toe?
 tracker_selection_menu-LEFT_RING_TOE = { -tracker_selection-part } left ring toe?
-tracker_selection_menu-LEFT_PINKY_TOE = { -tracker_selection-part } left pinky toe?
+tracker_selection_menu-LEFT_LITTLE_TOE = { -tracker_selection-part } left little toe?
 tracker_selection_menu-RIGHT_BIG_TOE = { -tracker_selection-part } right big toe?
 tracker_selection_menu-RIGHT_INDEX_TOE = { -tracker_selection-part } right index toe?
 tracker_selection_menu-RIGHT_MIDDLE_TOE = { -tracker_selection-part } right middle toe?
 tracker_selection_menu-RIGHT_RING_TOE = { -tracker_selection-part } right ring toe?
-tracker_selection_menu-RIGHT_PINKY_TOE = { -tracker_selection-part } right pinky toe?
+tracker_selection_menu-RIGHT_LITTLE_TOE = { -tracker_selection-part } right little toe?
 
 
 tracker_selection_menu-unassigned = Unassigned Trackers

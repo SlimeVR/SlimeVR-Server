@@ -11,7 +11,7 @@ export const SIDES = [
     foot: BodyPart.LEFT_FOOT,
     bigToe: BodyPart.LEFT_BIG_TOE,
     indexToe: BodyPart.LEFT_INDEX_TOE,
-    pinkyToe: BodyPart.LEFT_PINKY_TOE,
+    littleToe: BodyPart.LEFT_LITTLE_TOE,
   },
   {
     shoulder: BodyPart.RIGHT_SHOULDER,
@@ -23,7 +23,7 @@ export const SIDES = [
     foot: BodyPart.RIGHT_FOOT,
     bigToe: BodyPart.RIGHT_BIG_TOE,
     indexToe: BodyPart.RIGHT_INDEX_TOE,
-    pinkyToe: BodyPart.RIGHT_PINKY_TOE,
+    littleToe: BodyPart.RIGHT_LITTLE_TOE,
   },
 ];
 

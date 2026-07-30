@@ -19,13 +19,13 @@ class ToeDirectLinkProcessor : SkeletonProcessor {
 		BodyPart.LEFT_INDEX_TOE to BodyPart.LEFT_BIG_TOE,
 		BodyPart.LEFT_MIDDLE_TOE to BodyPart.LEFT_INDEX_TOE,
 		BodyPart.LEFT_RING_TOE to BodyPart.LEFT_MIDDLE_TOE,
-		BodyPart.LEFT_PINKY_TOE to BodyPart.LEFT_RING_TOE,
+		BodyPart.LEFT_LITTLE_TOE to BodyPart.LEFT_RING_TOE,
 
 		BodyPart.RIGHT_BIG_TOE to BodyPart.RIGHT_FOOT,
 		BodyPart.RIGHT_INDEX_TOE to BodyPart.RIGHT_BIG_TOE,
 		BodyPart.RIGHT_MIDDLE_TOE to BodyPart.RIGHT_INDEX_TOE,
 		BodyPart.RIGHT_RING_TOE to BodyPart.RIGHT_MIDDLE_TOE,
-		BodyPart.RIGHT_PINKY_TOE to BodyPart.RIGHT_RING_TOE,
+		BodyPart.RIGHT_LITTLE_TOE to BodyPart.RIGHT_RING_TOE,
 	)
 
 	override fun process(state: SkeletonState): SkeletonState {

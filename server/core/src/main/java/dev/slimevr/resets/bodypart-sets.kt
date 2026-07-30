@@ -79,10 +79,10 @@ val RIGHT_FINGER_PARTS = setOf(
 val LEFT_TOE_PARTS = setOf(
 	BodyPart.LEFT_BIG_TOE,
 	BodyPart.LEFT_INDEX_TOE,
-	BodyPart.LEFT_PINKY_TOE,
+	BodyPart.LEFT_LITTLE_TOE,
 )
 val RIGHT_TOE_PARTS = setOf(
 	BodyPart.RIGHT_BIG_TOE,
 	BodyPart.RIGHT_INDEX_TOE,
-	BodyPart.RIGHT_PINKY_TOE,
+	BodyPart.RIGHT_LITTLE_TOE,
 )

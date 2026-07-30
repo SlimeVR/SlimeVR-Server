@@ -166,7 +166,7 @@ export const mapPart: Record<
     ) : (
       <FootIcon width={width} />
     ),
-  [BodyPart.LEFT_PINKY_TOE]: ({ width, currentLocales }) =>
+  [BodyPart.LEFT_LITTLE_TOE]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
@@ -193,7 +193,7 @@ export const mapPart: Record<
     ) : (
       <FootIcon width={width} flipped />
     ),
-  [BodyPart.RIGHT_PINKY_TOE]: ({ width, currentLocales }) =>
+  [BodyPart.RIGHT_LITTLE_TOE]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}

@@ -69,7 +69,7 @@ val BODY_PART_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 			BodyPart.LEFT_INDEX_TOE,
 			BodyPart.LEFT_MIDDLE_TOE,
 			BodyPart.LEFT_RING_TOE,
-			BodyPart.LEFT_PINKY_TOE,
+			BodyPart.LEFT_LITTLE_TOE,
 		),
 
 		BodyPart.RIGHT_FOOT to arrayOf(
@@ -77,7 +77,7 @@ val BODY_PART_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 			BodyPart.RIGHT_INDEX_TOE,
 			BodyPart.RIGHT_MIDDLE_TOE,
 			BodyPart.RIGHT_RING_TOE,
-			BodyPart.RIGHT_PINKY_TOE,
+			BodyPart.RIGHT_LITTLE_TOE,
 		),
 	),
 )

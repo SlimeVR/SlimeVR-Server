@@ -19,7 +19,7 @@ internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent>
 		val leftToes = listOf(
 			bones[BodyPart.LEFT_BIG_TOE],
 			bones[BodyPart.LEFT_INDEX_TOE],
-			bones[BodyPart.LEFT_PINKY_TOE],
+			bones[BodyPart.LEFT_LITTLE_TOE],
 		)
 		processToesForFoot(leftFoot, leftToes, FootSide.Left, messages)
 	}
@@ -30,7 +30,7 @@ internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent>
 		val rightToes = listOf(
 			bones[BodyPart.RIGHT_BIG_TOE],
 			bones[BodyPart.RIGHT_INDEX_TOE],
-			bones[BodyPart.RIGHT_PINKY_TOE],
+			bones[BodyPart.RIGHT_LITTLE_TOE],
 		)
 		processToesForFoot(rightFoot, rightToes, FootSide.Right, messages)
 	}
