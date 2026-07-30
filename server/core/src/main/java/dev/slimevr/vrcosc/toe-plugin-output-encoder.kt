@@ -86,7 +86,7 @@ private fun processToe(
 	val toeRot = toe.rotation
 	val currentRelative = footRot.inv() * toeRot
 
-	val euler = quaternionToEulerDegrees(currentRelative)
+	val euler = currentRelative.toEulerAngles(EulerOrder.YZX)
 
 	val pitch = euler.z
 	val yaw = euler.y
