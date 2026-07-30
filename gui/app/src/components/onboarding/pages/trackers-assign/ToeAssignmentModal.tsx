@@ -35,10 +35,10 @@ export function ToeAssignmentModal({
   const TOE_LABELS: Record<number, string> = useMemo(
     () => ({
       [BodyPart.LEFT_BIG_TOE]: 'Left Big Toe',
-      [BodyPart.LEFT_INDEX_TOE]: 'Left Middle Toes',
+      [BodyPart.LEFT_INDEX_TOE]: 'Left Index Toe',
       [BodyPart.LEFT_PINKY_TOE]: 'Left Pinky Toe',
       [BodyPart.RIGHT_BIG_TOE]: 'Right Big Toe',
-      [BodyPart.RIGHT_INDEX_TOE]: 'Right Middle Toes',
+      [BodyPart.RIGHT_INDEX_TOE]: 'Right Index Toe',
       [BodyPart.RIGHT_PINKY_TOE]: 'Right Pinky Toe',
     }),
     []
