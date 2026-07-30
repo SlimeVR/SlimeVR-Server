@@ -425,7 +425,6 @@ tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
 tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
 tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } upper chest?
 tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
 tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
@@ -437,7 +436,6 @@ tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
 tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
 
 tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
@@ -775,7 +773,7 @@ settings-serial-factory_reset-warning-ok = I know what I'm doing
 settings-serial-factory_reset-warning-cancel = Cancel
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
-settings-serial-get_wifi_scan = Get WiFi Scan
+settings-serial-get_wifi_scan = Get Wi-Fi Scan
 settings-serial-enter_pairing = Enter Pairing
 settings-serial-exit_pairing = Exit Pairing
 settings-serial-calibrate = Calibrate
@@ -924,7 +922,7 @@ settings-home-list-layout-desc = Select one of the possible layouts of the home 
 settings-home-list-layout-grid = Grid
 settings-home-list-layout-table = Table
 
-## Tracking Checlist
+## Tracking Checklist
 settings-tracking_checklist-active_steps = Active Steps
 settings-tracking_checklist-active_steps-desc = List of all the steps in the tracking checklist. You can choose to disable specific steps.
 
@@ -1051,7 +1049,7 @@ onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Looking for trackers
 onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker mac address
+onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker's mac address
 onboarding-connect_tracker-connection_status-provisioning = Sending Wi-Fi credentials
 onboarding-connect_tracker-connection_status-connecting = Trying to connect to Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Looking for server
@@ -1484,8 +1482,8 @@ firmware_tool-flash_method_step-ota-v2 =
     .label = Wi-Fi
     .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Only works on trackers that have been set up.
 firmware_tool-flash_method_step-ota-info =
-    We use your wifi credentials to flash the tracker and confirm that everything worked correctly.
-    <b>We do not store your wifi credentials!</b>
+    We use your Wi-Fi credentials to flash the tracker and confirm that everything worked correctly.
+    <b>We do not store your Wi-Fi credentials!</b>
 firmware_tool-flash_method_step-serial-v2 =
     .label = USB
     .description = Use a USB cable to update your tracker.
