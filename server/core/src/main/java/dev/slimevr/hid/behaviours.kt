@@ -192,7 +192,7 @@ class HIDSleepBehaviour : HIDReceiverBehaviour {
 			}
 			sleepJobs[hidId] = receiver.context.scope.launch {
 				delay(timeoutMs.toLong())
-				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
+				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.SLEEPING))
 			}
 		}
 
@@ -205,13 +205,13 @@ class HIDSleepBehaviour : HIDReceiverBehaviour {
 					delay(remaining)
 					remaining = (lastSeen[hidId] ?: Duration.ZERO) + hidTimeout - startedAt.elapsedNow()
 				}
-				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
+				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.SLEEPING))
 			}
 		}
 
 		fun onPacket(hidId: Int) {
 			val tracker = receiver.getTracker(hidId) ?: return
-			if (tracker.context.state.value.status == TrackerStatus.TIMED_OUT) {
+			if (tracker.context.state.value.status == TrackerStatus.SLEEPING) {
 				sleepJobs[hidId]?.cancel()
 				sleepJobs.remove(hidId)
 				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))

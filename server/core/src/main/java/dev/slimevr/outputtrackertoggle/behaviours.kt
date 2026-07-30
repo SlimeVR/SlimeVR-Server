@@ -66,7 +66,7 @@ class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 								tracker.context.state.distinctUntilChanged { a, b -> a.bodyPart == b.bodyPart && a.status == b.status }
 							},
 						) { states ->
-							states.filter { (it.status == TrackerStatus.OK || it.status == TrackerStatus.TIMED_OUT) && it.origin != DeviceOrigin.DRIVER && it.origin != DeviceOrigin.VRC }
+							states.filter { (it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING) && it.origin != DeviceOrigin.DRIVER && it.origin != DeviceOrigin.VRC }
 								.map { it.bodyPart }
 								.toSet()
 						}.distinctUntilChanged()

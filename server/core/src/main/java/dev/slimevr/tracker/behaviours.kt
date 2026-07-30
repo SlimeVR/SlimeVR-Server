@@ -322,9 +322,9 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 				}
 			}
 			.flatMapLatest { _ ->
-				// We only want trackers that are assigned to a BodyPart and are OK or TIMED_OUT (needed for HID).
+				// We only want trackers that are assigned to a BodyPart and are OK or SLEEPING.
 				val activeState = receiver.context.state
-					.filter { it.bodyPart != null && (it.status == TrackerStatus.OK || it.status == TrackerStatus.TIMED_OUT) }
+					.filter { it.bodyPart != null && (it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING) }
 
 				val rotationFlow = activeState
 					.distinctUntilChangedBy { it.rotation }
