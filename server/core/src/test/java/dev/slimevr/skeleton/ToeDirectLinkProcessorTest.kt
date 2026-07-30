@@ -224,7 +224,7 @@ class ToeDirectLinkProcessorTest {
 	}
 
 	@Test
-	fun `test impute missing pinky toe tracker`() {
+	fun `test missing pinky toe tracker`() {
 		val processor = ToeDirectLinkProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
