@@ -131,7 +131,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			allTrackers.filter {
 				resetType != ResetType.MOUNTING ||
 					config.resetMountingFeet ||
-					it.context.state.value.bodyPart !in FOOT_PARTS
+					it.context.state.value.bodyPart !in ResetBodyParts.FEET
 			}
 		}.filter { it.context.state.value.position == null }
 
@@ -154,25 +154,25 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 
 	private fun getYawOffset(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = when (bodyPart) {
 		// Going forward
-		in UPPER_LEG_PARTS -> 0f
+		in ResetBodyParts.UPPER_LEGS -> 0f
 
-		in LOWER_ARM_PARTS if armsResetMode == ArmsResetMode.BACK -> 0f
+		in ResetBodyParts.LOWER_ARMS if armsResetMode == ArmsResetMode.BACK -> 0f
 
-		in ARM_PARTS if armsResetMode == ArmsResetMode.FORWARD -> 0f
+		in ResetBodyParts.ARMS if armsResetMode == ArmsResetMode.FORWARD -> 0f
 
 		// Going left
-		in LEFT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_UP -> -FastMath.HALF_PI
+		in ResetBodyParts.LEFT_ARM if armsResetMode == ArmsResetMode.T_POSE_UP -> -FastMath.HALF_PI
 
-		in RIGHT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_DOWN -> -FastMath.HALF_PI
+		in ResetBodyParts.RIGHT_ARM if armsResetMode == ArmsResetMode.T_POSE_DOWN -> -FastMath.HALF_PI
 
-		in RIGHT_FINGER_PARTS -> -FastMath.HALF_PI
+		in ResetBodyParts.RIGHT_FINGERS -> -FastMath.HALF_PI
 
 		// Going right
-		in LEFT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_DOWN -> FastMath.HALF_PI
+		in ResetBodyParts.LEFT_ARM if armsResetMode == ArmsResetMode.T_POSE_DOWN -> FastMath.HALF_PI
 
-		in RIGHT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_UP -> FastMath.HALF_PI
+		in ResetBodyParts.RIGHT_ARM if armsResetMode == ArmsResetMode.T_POSE_UP -> FastMath.HALF_PI
 
-		in LEFT_FINGER_PARTS -> FastMath.HALF_PI
+		in ResetBodyParts.LEFT_FINGERS -> FastMath.HALF_PI
 
 		// Going back
 		else -> FastMath.PI

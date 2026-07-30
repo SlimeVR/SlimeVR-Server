@@ -9,7 +9,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.device.DeviceState
 import dev.slimevr.networkprofile.NetworkProfileManager
-import dev.slimevr.resets.FOOT_PARTS
+import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
@@ -310,7 +310,7 @@ class FeetMountingCalibrationCheckBehaviour(
 				valid = resetsState.feetMountingResetCompleted,
 				enabled = resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC &&
 					!resetsConfig.resetMountingFeet &&
-					imuTrackers.any { it.bodyPart in FOOT_PARTS },
+					imuTrackers.any { it.bodyPart in ResetBodyParts.FEET },
 				ignorable = true,
 				visibility = TrackingChecklistStepVisibility.ALWAYS,
 			)

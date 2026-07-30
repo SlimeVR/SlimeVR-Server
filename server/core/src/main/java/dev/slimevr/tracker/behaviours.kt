@@ -3,10 +3,7 @@ package dev.slimevr.tracker
 import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.resets.LEFT_ARM_PARTS
-import dev.slimevr.resets.LEFT_FINGER_PARTS
-import dev.slimevr.resets.RIGHT_ARM_PARTS
-import dev.slimevr.resets.RIGHT_FINGER_PARTS
+import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.timeSource
 import io.github.axisangles.ktmath.EulerAngles
@@ -373,8 +370,8 @@ class TrackerRestOrientationBehaviour(
 	private val quarterRollRight = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
 	private fun getRestOrientation(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = if (armsResetMode == ArmsResetMode.T_POSE_DOWN) {
 		when (bodyPart) {
-			in LEFT_ARM_PARTS, in LEFT_FINGER_PARTS -> quarterRollLeft
-			in RIGHT_ARM_PARTS, in RIGHT_FINGER_PARTS -> quarterRollRight
+			in ResetBodyParts.LEFT_ARM, in ResetBodyParts.LEFT_FINGERS -> quarterRollLeft
+			in ResetBodyParts.RIGHT_ARM, in ResetBodyParts.RIGHT_FINGERS -> quarterRollRight
 			else -> Quaternion.IDENTITY
 		}
 	} else {
