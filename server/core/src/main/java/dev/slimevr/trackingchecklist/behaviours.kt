@@ -194,13 +194,13 @@ class NetworkProfileCheckBehaviour(
 
 private fun isImuAssigned(tracker: TrackerState): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
 	tracker.position == null &&
-	tracker.sensorType !== null &&
+	tracker.imuType !== null &&
 	tracker.status != TrackerStatus.ERROR &&
 	tracker.bodyPart != null
 
 private fun isConnectedAssignedImu(tracker: TrackerState): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
 	tracker.position == null &&
-	tracker.sensorType !== null &&
+	tracker.imuType !== null &&
 	tracker.status == TrackerStatus.OK &&
 	tracker.bodyPart != null
 

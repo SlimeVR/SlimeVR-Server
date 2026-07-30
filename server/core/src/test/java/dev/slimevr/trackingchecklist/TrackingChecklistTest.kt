@@ -12,7 +12,7 @@ import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.networkprofile.NetworkInfo
 import dev.slimevr.networkprofile.NetworkProfileActions
 import dev.slimevr.networkprofile.NetworkProfileManager
-import dev.slimevr.resets.FOOT_PARTS
+import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsActions
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.tracker.Tracker
@@ -181,7 +181,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.MOUNTING, bodyParts = FOOT_PARTS.toList()))
+		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.MOUNTING, bodyParts = ResetBodyParts.FEET.toList()))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 	}

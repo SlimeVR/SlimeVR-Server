@@ -33,6 +33,7 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
+import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.Tracker
@@ -152,7 +153,7 @@ fun buildTestTracker(
 		origin = origin,
 		deviceId = 0,
 		customName = null,
-		sensorType = sensorType,
+		imuType = sensorType,
 		position = position,
 		tps = 0u,
 		imuTemp = null,

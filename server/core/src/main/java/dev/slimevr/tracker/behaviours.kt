@@ -41,10 +41,18 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 		is TrackerActions.SetStatus -> state.copy(status = action.status)
 
 		is TrackerActions.SetRotation -> {
+			val rawRotation: RawRotation = action.rotation ?: state.rawRotation
+			val rawAcceleration: RawAcceleration = action.acceleration ?: state.rawAcceleration
+			val rawMagnetometer = action.magnetometer ?: state.rawMagnetometer
+			val rawPosition = action.position ?: state.position
+
+			// TODO non-IMU trackers still want some form of calibration applied
 			val cal = state.sessionCalibration
 
-			val rawRotation: RawRotation = action.rotation ?: state.rawRotation
+			// Rotation calibration
 			val rotation: CalibratedRotation = when {
+				state.imuType == null -> rawRotation
+
 				cal != null && action.rotation != null -> applyCalibration(
 					rawRotation,
 					cal.headingCorrection,
@@ -57,9 +65,10 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				else -> rawRotation
 			}
 
-			val rawAcceleration: RawAcceleration =
-				action.acceleration ?: state.rawAcceleration
+			// Accel calibration
 			val acceleration: CalibratedAcceleration = when {
+				state.imuType == null -> rawAcceleration
+
 				cal != null && action.acceleration != null -> applyCalibration(
 					rawAcceleration,
 					rawRotation,
@@ -72,14 +81,13 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 				else -> rawAcceleration
 			}
 
-			val rawMagnetometer = action.magnetometer ?: state.rawMagnetometer
-
 			state.copy(
 				rawRotation = rawRotation,
 				rotation = rotation,
 				rawAcceleration = rawAcceleration,
 				acceleration = acceleration,
 				rawMagnetometer = rawMagnetometer,
+				position = rawPosition,
 			)
 		}
 
@@ -202,7 +210,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 					old.mountingOrientation == new.mountingOrientation
 			}
 			.onEach {
-				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer))
+				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, it.position))
 			}.launchIn(receiver.context.scope)
 	}
 }

@@ -28,7 +28,7 @@ data class TrackerState(
 	val id: Int,
 	val name: String,
 	val hardwareId: String,
-	val sensorType: ImuType?,
+	val imuType: ImuType?,
 	val bodyPart: BodyPart?,
 	val customName: String?,
 	val mountingOrientation: HeadingAlignment,
@@ -54,7 +54,7 @@ sealed interface TrackerActions {
 	data class Update(val transform: TrackerState.() -> TrackerState) : TrackerActions
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
-	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null) : TrackerActions
+	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
@@ -103,7 +103,7 @@ class Tracker(
 				origin = origin,
 				deviceId = deviceId,
 				customName = null,
-				sensorType = sensorType,
+				imuType = sensorType,
 				position = null,
 				tps = 0u,
 				imuTemp = null,
