@@ -12,6 +12,7 @@ import dev.slimevr.osc.OscReceiver
 import dev.slimevr.osc.OscSender
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -20,14 +21,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.time.Duration.Companion.seconds
 
 class VMCOutputBehaviour(
 	private val skeleton: Skeleton,
 	private val settings: Settings,
 ) : VMCBehaviourType {
+	private val logSpamWaitDuration = 1.seconds
 	private val initTime = System.currentTimeMillis()
 
 	override fun observe(receiver: VMCManager) {
+		var nextLogTime = timeSource.markNow()
 		var sender: OscSender? = null
 		var vrmGeometry: VrmGeometry? = null
 
@@ -74,7 +78,10 @@ class VMCOutputBehaviour(
 					try {
 						s.send(buildBundle(computedSkeleton.bones, config, currentTime, vrm))
 					} catch (e: Exception) {
-						AppLogger.vmc.error("Failed to send VMC frame", e)
+						if (nextLogTime.hasPassedNow()) {
+							AppLogger.vmc.error("Failed to send VMC frame", e)
+							nextLogTime = timeSource.markNow() + logSpamWaitDuration
+						}
 					}
 				}
 			}.launchIn(receiver.context.scope)

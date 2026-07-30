@@ -16,6 +16,7 @@ import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
@@ -128,13 +129,14 @@ class ComputedSkeletonBehaviour(
 	val processors: List<SkeletonProcessor> = emptyList(),
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
-	private val logSpamWaitDuration = 15.seconds
 	private val minimumDelay = 1.nanoseconds
+	private val logSpamWait = 3.minutes
 
 	override fun observe(receiver: Skeleton) {
 		var nextLogTime = timeSource.markNow()
 		var frameStartTime = timeSource.markNow()
 		var lastFrameTime = Duration.ZERO
+		var processTooLongCount = 0
 
 		receiver.context.scope.launch {
 			while (true) {
@@ -163,8 +165,9 @@ class ComputedSkeletonBehaviour(
 //
 // 	 					val ikOutput = solver.solve(fk, targets)
 
-						// Frame ends
+						// Frame time tracking ends and restarts here
 						lastFrameTime = frameStartTime.elapsedNow()
+						frameStartTime = timeSource.markNow()
 
 						// Updated the computed skeleton with the result
 						if (!targetState.paused) { // FIXME : bones should still follow the head when paused
@@ -174,17 +177,18 @@ class ComputedSkeletonBehaviour(
 					}
 					// Process ends
 
-					// Frame starts
-					frameStartTime = timeSource.markNow()
-
 					// Wait the remainder of last process
-					val delayDuration = (intervalDuration - processTime).coerceAtLeast(minimumDelay)
-					if (delayDuration <= minimumDelay && nextLogTime.hasPassedNow()) {
-						// Warn if the frame took too long to reach the target hz.
-						AppLogger.skeleton.warn("Can't reach target hz ($hz), process time = $processTime")
-						nextLogTime = timeSource.markNow() + logSpamWaitDuration
+					val delayDuration = intervalDuration - processTime
+					if (delayDuration <= Duration.ZERO) {
+						// Skeleton took to long to compute this frame
+						processTooLongCount++
+						if (nextLogTime.hasPassedNow()) {
+							AppLogger.skeleton.warn("Couldn't reach ${hz}Hz $processTooLongCount ${if (processTooLongCount > 1) "times" else "time"} in the last $logSpamWait")
+							processTooLongCount = 0
+							nextLogTime = timeSource.markNow() + logSpamWait
+						}
 					}
-					delay(delayDuration)
+					delay(delayDuration.coerceAtLeast(minimumDelay))
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {
