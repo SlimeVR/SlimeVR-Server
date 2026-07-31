@@ -90,7 +90,7 @@ class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklis
 	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
 		val uncalibratedTrackers = trackers.filter { tracker ->
 			(tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
-				tracker.status == TrackerStatus.OK &&
+				(tracker.status == TrackerStatus.OK || tracker.status == TrackerStatus.SLEEPING) &&
 				(tracker.completedRestCalibration != null && !tracker.completedRestCalibration)
 		}
 		return TrackingChecklistStep(
@@ -201,7 +201,7 @@ private fun isImuAssigned(tracker: TrackerState): Boolean = (tracker.origin == D
 private fun isConnectedAssignedImu(tracker: TrackerState): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
 	tracker.position == null &&
 	tracker.imuType !== null &&
-	tracker.status == TrackerStatus.OK &&
+	(tracker.status == TrackerStatus.OK || tracker.status == TrackerStatus.SLEEPING) &&
 	tracker.bodyPart != null
 
 class FullResetCheckBehaviour(
