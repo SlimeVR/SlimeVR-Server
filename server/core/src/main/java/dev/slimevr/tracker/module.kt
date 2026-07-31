@@ -20,13 +20,11 @@ import kotlin.time.Duration
 
 data class TrackerSensorIds(val trackerId: Int, val sensorId: Int)
 
-/**
- * Indicates if the tracker is moving, at rest or recently at rest.
- */
+// TODO maybe have more states, like ROTATING_FAST for TapDetection?
 enum class Motion {
-	MOVING,
+	ROTATING,
 	RESTING,
-	STARTED_MOVING,
+	STARTED_ROTATING,
 }
 
 data class YawResetSmoothing(
@@ -93,7 +91,7 @@ sealed interface TrackerActions {
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class MountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
-	data class SetRestState(val restState: Motion) : TrackerActions
+	data class SetMotion(val motion: Motion) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>

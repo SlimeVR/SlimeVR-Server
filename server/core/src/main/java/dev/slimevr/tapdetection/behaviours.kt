@@ -66,12 +66,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 					states.map { it.bodyPart to it.status }
 				}
 					.distinctUntilChanged()
-					.map {
-						trackers.filter { tracker ->
-							val status = tracker.context.state.value.status
-							status == TrackerStatus.OK
-						}
-					}
+					.map { trackers.filter { it.context.state.value.status == TrackerStatus.OK } }
 			}
 
 		// Outer flow is refreshed whenever TapDetection config, setupMode, or a tracker's bodyPart or status changes
@@ -92,9 +87,9 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 					.firstOrNull { it in trackersBodyParts } ?: BodyPart.RIGHT_UPPER_LEG
 
 				// To keep track of which trackers are moving
-				val bodyPartsToCheck = falsePositiveBodyParts + yawResetBodyPart + fullResetBodyPart + mountingResetBodyPart
-				val movingTrackers = mutableSetOf<Int>()
 				val numberTrackersOverThreshold = tapDetectionConfig.numberTrackersOverThreshold
+				val bodyPartsToCheck = falsePositiveBodyParts + yawResetBodyPart + fullResetBodyPart + mountingResetBodyPart
+				val trackersOverThreshold = mutableSetOf<Int>()
 
 				trackers.map { tracker ->
 					val trackerTapDetectionState = createTrackerTapDetectionState(
@@ -112,18 +107,24 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 						.map { it.rawAcceleration to it.motion }
 						.distinctUntilChanged()
 						.onEach { (rawAcceleration, motionState) ->
-							if (motionState == Motion.MOVING) {
-								movingTrackers.add(trackerTapDetectionState.trackerId)
+							// Is this tracker over threshold for false positive prevention?
+							val isOverThreshold = if (rawAcceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED) {
+								trackersOverThreshold.add(trackerTapDetectionState.trackerId)
+								true
 							} else {
-								movingTrackers.remove(trackerTapDetectionState.trackerId)
+								trackersOverThreshold.remove(trackerTapDetectionState.trackerId)
+								false
 							}
 
+							// Only trackers that actually have to detect taps
 							if (trackerTapDetectionState.resetType != null || setupMode) {
+								val othersOverThreshold = trackersOverThreshold.count() - if (isOverThreshold) 1 else 0
 								val tapTriggered = runTapDetection(
 									timeSource.markNow(),
-									movingTrackers.count() > numberTrackersOverThreshold,
+									othersOverThreshold >= numberTrackersOverThreshold,
 									trackerTapDetectionState,
 									rawAcceleration,
+									motionState,
 								)
 
 								if (tapTriggered) {
@@ -197,9 +198,10 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 	// Logic loop for tap detection
 	fun runTapDetection(
 		now: TimeMark,
-		bodyMoving: Boolean,
+		bodyAccelerating: Boolean,
 		trackerTapDetectionState: TrackerTapDetectionState,
 		trackerAcceleration: Vector3,
+		trackerMotion: Motion,
 	): Boolean {
 		// Remove old stored accelerations (if they are too old)
 		while (trackerTapDetectionState.accelList.isNotEmpty() && (trackerTapDetectionState.accelList.first().second + ACCEL_WINDOW).hasPassedNow()) {
@@ -214,13 +216,13 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		val accelDelta = max - min
 
 		// Check for a single tap
-		if (!bodyMoving && accelDelta > NEEDED_ACCEL_DELTA && !trackerTapDetectionState.waitForLowAccel) {
+		if (!bodyAccelerating && trackerMotion != Motion.ROTATING && accelDelta > NEEDED_ACCEL_DELTA && !trackerTapDetectionState.waitForLowAccel) {
 			trackerTapDetectionState.tapTimestamps.add(now)
 			trackerTapDetectionState.waitForLowAccel = true
 		}
 
 		// Achieved low accel?
-		if (max < LOW_ACCEL_THRESHOLD) trackerTapDetectionState.waitForLowAccel = false
+		if (max < ALLOWED_BODY_ACCEL) trackerTapDetectionState.waitForLowAccel = false
 
 		if (trackerTapDetectionState.tapTimestamps.isNotEmpty()) {
 			// Remove old stored taps (if they are too old)
@@ -249,7 +251,8 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 
 	companion object {
 		const val NEEDED_ACCEL_DELTA = 6.0f
-		const val LOW_ACCEL_THRESHOLD = 2.5f
+		const val ALLOWED_BODY_ACCEL = 2.5f
+		const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
 		val ACCEL_WINDOW = 0.06.seconds
 		val TAP_WINDOW_PER_TAP = 0.3.seconds
 	}

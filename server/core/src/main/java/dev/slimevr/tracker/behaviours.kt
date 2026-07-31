@@ -38,7 +38,6 @@ import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class TrackerBasicBehaviour : TrackerBehaviour {
@@ -317,11 +316,11 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 					val tps = count.exchange(0) * 1000L / elapsed.inWholeMilliseconds
 
 					// Tracker is at rest if it hasn't been updated in the last second
-					val updateRestStateAction = if (tps == 0L && receiver.context.state.value.motion != Motion.RESTING) TrackerActions.SetRestState(Motion.RESTING) else null
+					val updateMotionAction = if (tps == 0L && receiver.context.state.value.motion != Motion.RESTING) TrackerActions.SetMotion(Motion.RESTING) else null
 					receiver.context.dispatchAll(
 						listOfNotNull(
 							TrackerActions.Update { copy(tps = tps.toUShort()) },
-							updateRestStateAction,
+							updateMotionAction,
 						),
 					)
 
@@ -336,9 +335,6 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 
 /**
  * Detects whether a tracker is at rest or moving.
- *
- * A tracker is at rest when it stays within a certain rotational range and acceleration for a given
- * amount of time. If it rotates past that range or accelerates too fast, it is no longer at rest.
  */
 class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 
@@ -349,47 +345,45 @@ class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 
 		// For update loop
 		receiver.context.state
-			.map { it.rawRotation to it.rawAcceleration }
+			.map { it.rawRotation }
 			.distinctUntilChanged()
-			.onEach { (rotation, acceleration) ->
+			.onEach { rotation ->
 				val now = timeSource.markNow()
 				val motionState = receiver.context.state.value.motion
 				val isRotating = isRotating(lastRotation, rotation)
-				val isAccelerating = isAccelerating(acceleration)
-				val isMoving = isRotating || isAccelerating
 
 				when (motionState) {
 					// Detect if tracker is at rest
-					Motion.MOVING,
-					Motion.STARTED_MOVING,
+					Motion.ROTATING,
+					Motion.STARTED_ROTATING,
 					->
-						if (!isMoving) {
+						if (!isRotating) {
 							if (now > lastRotationTime + ENTER_REST_TIME) {
 								// Been not moving for long enough; set as at rest.
-								receiver.context.dispatch(TrackerActions.SetRestState(Motion.RESTING))
+								receiver.context.dispatch(TrackerActions.SetMotion(Motion.RESTING))
 								lastStateChangeTime = now
 
 								// Update the rotation to continue detecting if the tracker is at rest
 								lastRotation = rotation
 								lastRotationTime = now
 							}
-						} else if (motionState == Motion.STARTED_MOVING && (now > lastStateChangeTime + ENTER_MOVING_ROTATION_TIME || isAccelerating)) {
-							// Been moving for long enough or accel high; set as moving.
-							receiver.context.dispatch(TrackerActions.SetRestState(Motion.MOVING))
+						} else if (motionState == Motion.STARTED_ROTATING && (now > lastStateChangeTime + ENTER_MOVING_TIME)) {
+							// Been moving for long enough; set as moving.
+							receiver.context.dispatch(TrackerActions.SetMotion(Motion.ROTATING))
 							lastStateChangeTime = now
 						}
 
 					// Detect if tracker is moving
 					Motion.RESTING ->
-						if (isMoving) {
+						if (isRotating) {
 							// Started moving; set as recently at rest.
-							receiver.context.dispatch(TrackerActions.SetRestState(Motion.STARTED_MOVING))
+							receiver.context.dispatch(TrackerActions.SetMotion(Motion.STARTED_ROTATING))
 							lastStateChangeTime = now
 						}
 				}
 
 				// Update rotation if the tracker is moving
-				if (isMoving) {
+				if (isRotating) {
 					lastRotation = rotation
 					lastRotationTime = now
 				}
@@ -397,21 +391,21 @@ class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 			.launchIn(receiver.context.scope)
 	}
 
+	/**
+	 * Tracker is moving if rotating or accelerating past certain thresholds.
+	 */
 	private fun isRotating(lastRotation: RawRotation, rotation: RawRotation) = Angle.absBetween(lastRotation, rotation) > MAX_ROTATION
 
-	private fun isAccelerating(acceleration: RawAcceleration) = acceleration.lenSq() > MAX_SQUARED_ACCEL
-
 	override fun reduce(state: TrackerState, action: TrackerActions): TrackerState = when (action) {
-		is TrackerActions.SetRestState -> state.copy(motion = action.restState)
+		is TrackerActions.SetMotion -> state.copy(motion = action.motion)
 		else -> state
 	}
 
 	// TODO : these values may need fine-tuning
 	companion object {
-		const val MAX_SQUARED_ACCEL = 16f
 		val MAX_ROTATION = Angle.ofDeg(2.5f)
-		val ENTER_REST_TIME = 600.milliseconds
-		val ENTER_MOVING_ROTATION_TIME = 3.seconds
+		val ENTER_REST_TIME = 0.8.seconds
+		val ENTER_MOVING_TIME = 3.seconds
 	}
 }
 
