@@ -63,12 +63,8 @@ private fun processToesForFoot(
 
 		if (lastAssigned == null) continue
 
-		val splayDirection = when (segmentIndex) {
-			0, 1, 2 -> side.opposite
-			
-			3, 4 -> side
-		}
-		
+		val splayDirection = if (segmentIndex <= 2) side.opposite else side
+
 		processToe(foot, lastAssigned, side, segmentIndex, splayDirection, messages)
 	}
 }
