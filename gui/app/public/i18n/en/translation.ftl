@@ -310,6 +310,7 @@ tracker-status-disconnected = Disconnected
 tracker-status-occluded = Occluded
 tracker-status-ok = OK
 tracker-status-timed_out = Timed out
+tracker-status-sleeping = Sleeping
 
 ## Tracker status columns
 tracker-table-column-name = Name
@@ -425,7 +426,6 @@ tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
 tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
 tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } upper chest?
 tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
 tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
@@ -437,7 +437,6 @@ tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
 tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } left controller?
 tracker_selection_menu-LEFT_BIG_TOE = { -tracker_selection-part } left big toe?
 tracker_selection_menu-LEFT_INDEX_TOE = { -tracker_selection-part } left index toe?
 tracker_selection_menu-LEFT_MIDDLE_TOE = { -tracker_selection-part } left middle toe?
@@ -786,7 +785,7 @@ settings-serial-factory_reset-warning-ok = I know what I'm doing
 settings-serial-factory_reset-warning-cancel = Cancel
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
-settings-serial-get_wifi_scan = Get WiFi Scan
+settings-serial-get_wifi_scan = Get Wi-Fi Scan
 settings-serial-enter_pairing = Enter Pairing
 settings-serial-exit_pairing = Exit Pairing
 settings-serial-calibrate = Calibrate
@@ -935,7 +934,7 @@ settings-home-list-layout-desc = Select one of the possible layouts of the home 
 settings-home-list-layout-grid = Grid
 settings-home-list-layout-table = Table
 
-## Tracking Checlist
+## Tracking Checklist
 settings-tracking_checklist-active_steps = Active Steps
 settings-tracking_checklist-active_steps-desc = List of all the steps in the tracking checklist. You can choose to disable specific steps.
 
@@ -1062,7 +1061,7 @@ onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Looking for trackers
 onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device
-onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker mac address
+onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker's mac address
 onboarding-connect_tracker-connection_status-provisioning = Sending Wi-Fi credentials
 onboarding-connect_tracker-connection_status-connecting = Trying to connect to Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Looking for server
@@ -1219,7 +1218,7 @@ onboarding-assign_trackers-warning-LEFT_MIDDLE_TOE = Left Middle Toe is assigned
 onboarding-assign_trackers-warning-LEFT_RING_TOE = Left Ring Toe is assigned but you need { $unassigned ->
     [0] the left foot
     *[unknown] Unknown unassigned body part} to also be assigned!
-onboarding-assign_trackers-warning-LEFT_PINKY_TOE = Left Pinky Toe is assigned but you need { $unassigned ->
+onboarding-assign_trackers-warning-LEFT_LITTLE_TOE = Left Little Toe is assigned but you need { $unassigned ->
     [0] the left foot
     *[unknown] Unknown unassigned body part} to also be assigned!
 onboarding-assign_trackers-warning-RIGHT_BIG_TOE = Left Big Toe is assigned but you need { $unassigned ->
@@ -1236,7 +1235,7 @@ onboarding-assign_trackers-warning-RIGHT_MIDDLE_TOE = Right Middle Toe is assign
 onboarding-assign_trackers-warning-RIGHT_RING_TOE = Right Ring Toe is assigned but you need { $unassigned ->
     [0] the right foot
     *[unknown] Unknown unassigned body part} to also be assigned!
-onboarding-assign_trackers-warning-RIGHT_PINKY_TOE = Right Pinky Toe is assigned but you need { $unassigned ->
+onboarding-assign_trackers-warning-RIGHT_LITTLE_TOE = Right Little Toe is assigned but you need { $unassigned ->
     [0] the right foot
     *[unknown] Unknown unassigned body part} to also be assigned!
 
@@ -1404,6 +1403,8 @@ onboarding-user_height-title = What is your height?
 onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR calculate it, or input your height manually.
 onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
 onboarding-user_height-calculate = Calculate my height automatically
+onboarding-user_height-error_bounds = Input too high or too low
+onboarding-user_height-error_format = Input wrong format
 onboarding-user_height-next_step = Continue and save
 onboarding-user_height-prev_step = Back
 onboarding-user_height-manual-proportions = Manual Proportions
@@ -1529,8 +1530,8 @@ firmware_tool-flash_method_step-ota-v2 =
     .label = Wi-Fi
     .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Only works on trackers that have been set up.
 firmware_tool-flash_method_step-ota-info =
-    We use your wifi credentials to flash the tracker and confirm that everything worked correctly.
-    <b>We do not store your wifi credentials!</b>
+    We use your Wi-Fi credentials to flash the tracker and confirm that everything worked correctly.
+    <b>We do not store your Wi-Fi credentials!</b>
 firmware_tool-flash_method_step-serial-v2 =
     .label = USB
     .description = Use a USB cable to update your tracker.
@@ -1754,11 +1755,11 @@ body_part-LEFT_BIG_TOE = Left Big Toe
 body_part-LEFT_INDEX_TOE = Left Index Toe
 body_part-LEFT_MIDDLE_TOE = Left Middle Toe
 body_part-LEFT_RING_TOE = Left Ring Toe
-body_part-LEFT_PINKY_TOE = Left Pinky Toe
+body_part-LEFT_LITTLE_TOE = Left Little Toe
 
 body_part-RIGHT_TOES = Right Toes
 body_part-RIGHT_BIG_TOE = Right Big Toe
 body_part-RIGHT_INDEX_TOE = Right Index Toe
 body_part-RIGHT_MIDDLE_TOE = Right Middle Toe
 body_part-RIGHT_RING_TOE = Right Ring Toe
-body_part-RIGHT_PINKY_TOE = Right Pinky Toe
+body_part-RIGHT_LITTLE_TOE = Right Little Toe

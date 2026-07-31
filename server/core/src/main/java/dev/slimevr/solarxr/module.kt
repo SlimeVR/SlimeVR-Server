@@ -88,6 +88,7 @@ class SolarXRBridge(
 			add(InstalledInfoBehaviour())
 			add(KeybindsBehaviour(appContext.config.settings, appContext.keybindManager))
 			add(SessionCalibrationBehaviour(appContext.resetsManager))
+			add(StayAlignedBehaviour(appContext.config.settings, appContext.stayAlignedManager))
 		}
 
 		fun create(

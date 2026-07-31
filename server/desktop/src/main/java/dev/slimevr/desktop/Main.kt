@@ -36,6 +36,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -129,6 +130,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
 	val keybindManager = KeybindManager.create(scope = this)
+	val stayAlignedManager = StayAlignedManager.create(ctx = phase1, skeleton = skeleton, scope = this)
 
 	val appContext = AppContext(
 		server = server,
@@ -150,6 +152,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		vrcOscManager = vrcOscManager,
 		resetsManager = resetsManager,
 		tapDetectionManager = tapDetectionManager,
+		stayAlignedManager = stayAlignedManager,
 	)
 
 	try {

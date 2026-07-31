@@ -5,14 +5,15 @@ import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.util.timeSource
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.TrackerStatus
-import kotlin.time.TimeSource
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class HIDRegistrationBehaviour : HIDReceiverBehaviour {
 	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions) = when (action) {
@@ -110,7 +111,7 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 				}
 			receiver.context.dispatch(HIDReceiverActions.TrackerRegistered(packet.hidId, tracker.context.state.value.id))
 			// HID does not have a rest calibration signal
-			tracker.context.dispatch(TrackerActions.Update { copy(sensorType = packet.imuType, completedRestCalibration = true, magStatus = packet.magStatus) })
+			tracker.context.dispatch(TrackerActions.Update { copy(imuType = packet.imuType, completedRestCalibration = true, magStatus = packet.magStatus) })
 			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 		}.launchIn(receiver.context.scope)
 	}
@@ -173,14 +174,14 @@ class HIDBatteryBehaviour : HIDReceiverBehaviour {
 	}
 }
 
-private const val HID_TIMEOUT_MS = 2_000L
+private val hidTimeout = 2.seconds
 
 class HIDSleepBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
-		val startedAt = TimeSource.Monotonic.markNow()
+		val startedAt = timeSource.markNow()
 		val sleepJobs = mutableMapOf<Int, Job>()
 		val idleJobs = mutableMapOf<Int, Job>()
-		val lastSeen = mutableMapOf<Int, Long>()
+		val lastSeen = mutableMapOf<Int, Duration>()
 
 		fun scheduleSleep(hidId: Int, timeoutMs: Int) {
 			if (timeoutMs == 0) return
@@ -191,26 +192,26 @@ class HIDSleepBehaviour : HIDReceiverBehaviour {
 			}
 			sleepJobs[hidId] = receiver.context.scope.launch {
 				delay(timeoutMs.toLong())
-				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
+				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.SLEEPING))
 			}
 		}
 
 		fun armIdleTimeout(hidId: Int) {
-			lastSeen[hidId] = startedAt.elapsedNow().inWholeMilliseconds
+			lastSeen[hidId] = startedAt.elapsedNow()
 			if (idleJobs[hidId]?.isActive == true) return
 			idleJobs[hidId] = receiver.context.scope.launch {
-				var remaining = HID_TIMEOUT_MS
-				while (remaining > 0) {
+				var remaining = hidTimeout
+				while (remaining > Duration.ZERO) {
 					delay(remaining)
-					remaining = (lastSeen[hidId] ?: 0L) + HID_TIMEOUT_MS - startedAt.elapsedNow().inWholeMilliseconds
+					remaining = (lastSeen[hidId] ?: Duration.ZERO) + hidTimeout - startedAt.elapsedNow()
 				}
-				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
+				receiver.getTracker(hidId)?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.SLEEPING))
 			}
 		}
 
 		fun onPacket(hidId: Int) {
 			val tracker = receiver.getTracker(hidId) ?: return
-			if (tracker.context.state.value.status == TrackerStatus.TIMED_OUT) {
+			if (tracker.context.state.value.status == TrackerStatus.SLEEPING) {
 				sleepJobs[hidId]?.cancel()
 				sleepJobs.remove(hidId)
 				tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))

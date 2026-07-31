@@ -48,17 +48,26 @@ data class BoneState(
 	val localTailPosition = tailPosition - headPosition
 }
 
-/**
- * Returns the average rotation of the BodyParts.
- */
-fun Map<BodyPart, BoneInput>.resolveRotationFor(bodyParts: Array<BodyPart>): Quaternion {
+typealias InputSkeleton = BodyPartMap<BoneInput>
+typealias ComputedSkeleton = BodyPartMap<BoneState>
+
+@JvmName("resolveAverageRotationForInput")
+fun InputSkeleton.resolveAverageRotationFor(bodyParts: Array<BodyPart>): Quaternion {
 	val rotations = bodyParts.mapNotNull { this[it]?.rawRotation }
 	return rotations.reduceIndexedOrNull { index, acc, rotation ->
 		acc.lerpQ(rotation, 1f / (index + 1))
 	} ?: Quaternion.IDENTITY
 }
 
-data class SkeletonState(val boneInputs: BodyPartMap<BoneInput>, val skeletonHeight: Float, val paused: Boolean)
+@JvmName("resolveAverageRotationForComputed")
+fun ComputedSkeleton.resolveAverageRotationFor(bodyParts: Array<BodyPart>): Quaternion {
+	val rotations = bodyParts.mapNotNull { this[it]?.rotation }
+	return rotations.reduceIndexedOrNull { index, acc, rotation ->
+		acc.lerpQ(rotation, 1f / (index + 1))
+	} ?: Quaternion.IDENTITY
+}
+
+data class SkeletonState(val boneInputs: InputSkeleton, val skeletonHeight: Float, val paused: Boolean)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 	boneInputs = DEFAULT_BONE_OFFSETS.mapValues { bodyPart, tailOffset ->
@@ -90,7 +99,7 @@ fun buildBones(
 	state: Map<BodyPart, BoneInput>,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
-): BodyPartMap<BoneState> {
+): ComputedSkeleton {
 	val result = bodyPartMap<BoneState>()
 	hierarchy.forEach { (parentPart, childPart) ->
 		val rawBone = state[childPart] ?: return@forEach
@@ -104,7 +113,7 @@ fun buildBones(
 	state: SkeletonState,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
-): BodyPartMap<BoneState> = buildBones(state.boneInputs, rootHead, hierarchy)
+): ComputedSkeleton = buildBones(state.boneInputs, rootHead, hierarchy)
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
@@ -122,21 +131,22 @@ interface SkeletonProcessor {
 
 class Skeleton(
 	val context: SkeletonContext,
-	val computed: MutableStateFlow<BodyPartMap<BoneState>>,
+	val computed: MutableStateFlow<ComputedSkeleton>,
 ) {
 	fun startObserving() = context.observeAll(this)
 
 	companion object {
-		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider): Skeleton {
-			val skeletonRefreshRate = 300L
+		const val DEFAULT_HZ = 300
+
+		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, hz: Int = DEFAULT_HZ): Skeleton {
 			val behaviours = listOf(
 				PauseTrackingBehaviour(),
 				BoneTransformBehaviour(),
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
-				// YouSpinMeRightRoundBehaviour(inputHz = 50f),
+//				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
-					hz = skeletonRefreshRate,
+					hz = hz,
 					processors = listOf(
 						BoneYawFallbackProcessor(),
 						BoneActiveLinkProcessor(),
@@ -146,7 +156,7 @@ class Skeleton(
 						FingerImputeProcessor(),
 						ToeDirectLinkProcessor(),
 						BonePredictionProcessor(ctx.config.settings),
-						BoneSmoothingProcessor(ctx.config.settings, skeletonRefreshRate),
+						BoneSmoothingProcessor(ctx.config.settings),
 					),
 				),
 			)

@@ -1,6 +1,7 @@
 package dev.slimevr.tapdetection
 
 import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.util.timeSource
 import dev.slimevr.tracker.Tracker
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,17 +18,18 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.TapDetectionSetupNotification
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeMark
 
 class TapDetectionBasicBehaviour : TapDetectionBehaviour {
-
 	data class TrackerTapDetectionState(
 		var trackerId: Int,
 		var numberTrackersOverThreshold: Int = 1,
 		var resetType: ResetType? = null,
 		var tapsNeeded: Int = 2,
 		var actionDelay: Float = 0f,
-		val accelList: ArrayDeque<Pair<Float, Long>> = ArrayDeque(),
-		val tapTimestamps: ArrayDeque<Long> = ArrayDeque(),
+		val accelList: ArrayDeque<Pair<Float, TimeMark>> = ArrayDeque(),
+		val tapTimestamps: ArrayDeque<TimeMark> = ArrayDeque(),
 		var waitForLowAccel: Boolean = false,
 	)
 
@@ -92,7 +94,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 						.distinctUntilChanged()
 						.onEach {
 							val tapTriggered = runTapDetection(
-								System.nanoTime(),
+								timeSource.markNow(),
 								trackersOverThreshold,
 								trackerTapDetectionState,
 								it,
@@ -168,21 +170,21 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 
 	// Logic loop for tap detection
 	fun runTapDetection(
-		now: Long,
+		now: TimeMark,
 		trackersOverThreshold: MutableSet<Int>,
 		trackerTapDetectionState: TrackerTapDetectionState,
 		trackerAcceleration: Vector3,
 	): Boolean {
-		// Get the acceleration of the tracker and store it
-		trackerTapDetectionState.accelList.add(trackerAcceleration.len() to now)
-
 		// Remove old stored accelerations (if they are too old)
-		while (trackerTapDetectionState.accelList.isNotEmpty() && now - trackerTapDetectionState.accelList.first().second > ACCEL_WINDOW_NS) {
+		while (trackerTapDetectionState.accelList.isNotEmpty() && (trackerTapDetectionState.accelList.first().second + ACCEL_WINDOW).hasPassedNow()) {
 			trackerTapDetectionState.accelList.removeFirst()
 		}
 
-		val max = trackerTapDetectionState.accelList.maxOfOrNull { it.first } ?: 0f
-		val min = trackerTapDetectionState.accelList.minOfOrNull { it.first } ?: 0f
+		// Get the acceleration of the tracker and store it
+		trackerTapDetectionState.accelList.add(trackerAcceleration.len() to now)
+
+		val max = trackerTapDetectionState.accelList.maxOf { it.first }
+		val min = trackerTapDetectionState.accelList.minOf { it.first }
 		val accelDelta = max - min
 
 		// Is this tracker over threshold for false positive prevention?
@@ -207,8 +209,8 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 
 		if (trackerTapDetectionState.tapTimestamps.isNotEmpty()) {
 			// Remove old stored taps (if they are too old)
-			val totalTapWindowNs = (TAP_WINDOW_PER_TAP_NS * trackerTapDetectionState.tapTimestamps.size).toLong()
-			while (trackerTapDetectionState.tapTimestamps.isNotEmpty() && now - trackerTapDetectionState.tapTimestamps.first() > totalTapWindowNs) {
+			val totalTapWindow = TAP_WINDOW_PER_TAP * trackerTapDetectionState.tapTimestamps.size
+			while (trackerTapDetectionState.tapTimestamps.isNotEmpty() && (trackerTapDetectionState.tapTimestamps.first() + totalTapWindow).hasPassedNow()) {
 				trackerTapDetectionState.tapTimestamps.removeFirst()
 			}
 
@@ -231,11 +233,10 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 	}
 
 	companion object {
-		const val NS_CONVERTER = 1.0e9f
-		const val ACCEL_WINDOW_NS = 0.06f * NS_CONVERTER
-		const val TAP_WINDOW_PER_TAP_NS = 0.3f * NS_CONVERTER
 		const val NEEDED_ACCEL_DELTA = 6.0f
 		const val ALLOWED_BODY_ACCEL = 2.5f
 		const val ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL
+		val ACCEL_WINDOW = 0.06.seconds
+		val TAP_WINDOW_PER_TAP = 0.3.seconds
 	}
 }

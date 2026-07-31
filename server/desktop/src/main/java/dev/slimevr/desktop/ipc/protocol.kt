@@ -68,6 +68,7 @@ enum class TrackerRole(
 }
 
 val bodyPartToRole = mapOf(
+	BodyPart.HEAD to TrackerRole.HMD,
 	BodyPart.UPPER_CHEST to TrackerRole.CHEST,
 	BodyPart.LEFT_UPPER_ARM to TrackerRole.LEFT_ELBOW,
 	BodyPart.RIGHT_UPPER_ARM to TrackerRole.RIGHT_ELBOW,
@@ -76,9 +77,12 @@ val bodyPartToRole = mapOf(
 	BodyPart.RIGHT_UPPER_LEG to TrackerRole.RIGHT_KNEE,
 	BodyPart.LEFT_FOOT to TrackerRole.LEFT_FOOT,
 	BodyPart.RIGHT_FOOT to TrackerRole.RIGHT_FOOT,
+	BodyPart.LEFT_SHOULDER to TrackerRole.LEFT_SHOULDER,
+	BodyPart.RIGHT_SHOULDER to TrackerRole.RIGHT_SHOULDER,
 	BodyPart.LEFT_HAND to TrackerRole.LEFT_HAND,
 	BodyPart.RIGHT_HAND to TrackerRole.RIGHT_HAND,
 )
+val roleToBodyPart = bodyPartToRole.entries.associate { (k, v) -> v to k }
 
 const val PROTOCOL_VERSION = 2
 
@@ -186,7 +190,7 @@ suspend fun handleDriverConnection(
 				tracker_status = TrackerStatus(
 					tracker_id = event.trackerId,
 					status = when (event.status) {
-						solarxr_protocol.datatypes.TrackerStatus.OK -> TrackerStatus.Status.OK
+						solarxr_protocol.datatypes.TrackerStatus.OK, solarxr_protocol.datatypes.TrackerStatus.SLEEPING -> TrackerStatus.Status.OK
 						solarxr_protocol.datatypes.TrackerStatus.ERROR -> TrackerStatus.Status.ERROR
 						solarxr_protocol.datatypes.TrackerStatus.OCCLUDED -> TrackerStatus.Status.OCCLUDED
 						solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED, solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT -> TrackerStatus.Status.DISCONNECTED
@@ -230,6 +234,7 @@ suspend fun handleDriverConnection(
 						name = ta.tracker_name,
 						manufacturer = ta.manufacturer.ifEmpty { "OpenVR" },
 						serial = ta.tracker_serial,
+						bodyPart = TrackerRole.fromValue(ta.tracker_role.toUByte())?.let { role -> roleToBodyPart[role] },
 					),
 				)
 			}

@@ -12,6 +12,7 @@ const statusLabelMap: { [key: number]: string } = {
   [TrackerStatusEnum.OCCLUDED]: 'tracker-status-occluded',
   [TrackerStatusEnum.OK]: 'tracker-status-ok',
   [TrackerStatusEnum.TIMED_OUT]: 'tracker-status-timed_out',
+  [TrackerStatusEnum.SLEEPING]: 'tracker-status-sleeping',
 };
 
 const statusClassMap: { [key: number]: string } = {
@@ -22,6 +23,7 @@ const statusClassMap: { [key: number]: string } = {
   [TrackerStatusEnum.OCCLUDED]: 'bg-status-warning',
   [TrackerStatusEnum.OK]: 'bg-status-success',
   [TrackerStatusEnum.TIMED_OUT]: 'bg-status-warning',
+  [TrackerStatusEnum.SLEEPING]: 'bg-cyan-500',
 };
 
 export function TrackerStatus({ status }: { status: number }) {

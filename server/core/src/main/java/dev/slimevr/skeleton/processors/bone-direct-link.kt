@@ -4,6 +4,7 @@ import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.time.Duration
 
 /**
  * Handles setting the rotation of an inactive bone with its source bone.

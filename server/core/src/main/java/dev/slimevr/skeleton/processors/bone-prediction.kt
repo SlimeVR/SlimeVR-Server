@@ -9,6 +9,7 @@ import dev.slimevr.skeleton.mapValues
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.FilteringType
+import kotlin.time.Duration
 
 /**
  * Tries to predict future rotations of bones.

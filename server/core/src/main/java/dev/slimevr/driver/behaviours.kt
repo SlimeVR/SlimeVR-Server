@@ -49,7 +49,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 			::Pair,
 		)
 			.distinctUntilChanged()
-			.onEach { (computedBones, enabledBodyParts) ->
+			.onEach { (computedSkeleton, enabledBodyParts) ->
 				val serverState = receiver.appContext.server.context.state.value
 
 				// Map the nearest trackers to their body parts
@@ -61,7 +61,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 					trackerStateByBodyPart.putIfAbsent(bodyPart, trackerState)
 				}
 
-				computedBones.forEach { (part, state) ->
+				computedSkeleton.forEach { (part, state) ->
 					if (enabledBodyParts.contains(part)) {
 						val closestTracker = bodyPartToNearest[part].orEmpty()
 							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }
@@ -128,18 +128,15 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 				event.name,
 				event.manufacturer,
 				event.serial,
+				event.bodyPart,
 			)
 		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
-			receiver.appContext.server.getTracker(trackerId)?.let { tracker ->
-				tracker.context.dispatch( // TODO should maybe use TrackerActions.SetRotation?
-					TrackerActions.Update {
-						copy(rawRotation = event.rotation, rotation = event.rotation, position = event.position)
-					},
-				)
-			}
+            receiver.appContext.server.getTracker(trackerId)?.context?.dispatch(
+                TrackerActions.SetRotation(rotation = event.rotation, position = event.position),
+            )
 		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerBattery> { event ->
@@ -166,6 +163,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 		name: String,
 		manufacturer: String,
 		serial: String,
+		bodyPart: BodyPart?,
 	) {
 		val server = receiver.appContext.server
 		val scope = server.context.scope
@@ -196,8 +194,8 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 				scope = scope,
 				id = trackerId,
 				name = name,
+				bodyPart = bodyPart,
 				deviceId = deviceId,
-				sensorType = null,
 				hardwareId = serial,
 				origin = DeviceOrigin.DRIVER,
 				appContext = receiver.appContext,

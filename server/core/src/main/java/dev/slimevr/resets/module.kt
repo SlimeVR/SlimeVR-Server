@@ -10,10 +10,7 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import io.github.axisangles.ktmath.EulerAngles
-import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -28,16 +25,24 @@ import solarxr_protocol.rpc.ResetStatus
 import solarxr_protocol.rpc.ResetType
 import kotlin.collections.contains
 import kotlin.collections.listOf
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeMark
 
 data class ResetsState(
 	val canDoYawReset: Boolean,
 	val canDoMountingReset: Boolean,
-	val lastFullResetTime: Long,
+	val lastFullResetTime: TimeMark?,
+
+	// Session-only flags: whether a mounting reset (and a feet mounting reset) has been done at
+	// least once since the last full reset
+	val mountingResetCompleted: Boolean = false,
+	val feetMountingResetCompleted: Boolean = false,
 )
 
 sealed interface ResetsActions {
 	data class ClearResets(val resetType: List<ResetType>) : ResetsActions
-	data class EndReset(val resetType: ResetType) : ResetsActions
+	data class EndReset(val resetType: ResetType, val bodyParts: List<BodyPart>? = null, val resetMountingFeet: Boolean = false) : ResetsActions
+	data object ClearMountingCompleted : ResetsActions
 }
 
 typealias ResetsContext = Context<ResetsState, ResetsActions>
@@ -81,8 +86,20 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
 
 			// Update state and config
-			context.dispatch(ResetsActions.EndReset(resetType))
-			settings.context.dispatch(SettingsActions.Update { copy(resetsConfig = resetsConfig.copy(lastMountingMethod = MountingMethods.MANUAL)) })
+			context.dispatch(ResetsActions.EndReset(resetType, bodyParts, settings.context.state.value.data.resetsConfig.resetMountingFeet))
+			settings.context.dispatch(
+				SettingsActions.Update {
+					copy(
+						resetsConfig = resetsConfig.copy(
+							lastMountingMethod = if (resetType == ResetType.MOUNTING) {
+								MountingMethods.AUTOMATIC
+							} else {
+								resetsConfig.lastMountingMethod
+							},
+						),
+					)
+				},
+			)
 
 			AppLogger.resets.info("${resetType.name} Reset from $resetSourceName")
 
@@ -96,6 +113,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 	suspend fun clearTrackersMountingReset(resetSourceName: String) {
 		val trackers = server.context.state.value.trackers.values
 		trackers.forEach { it.context.dispatch(TrackerActions.ClearMountingReset) }
+		context.dispatch(ResetsActions.ClearMountingCompleted)
 
 		AppLogger.resets.info("Clear Mounting Reset from $resetSourceName")
 	}
@@ -113,7 +131,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			allTrackers.filter {
 				resetType != ResetType.MOUNTING ||
 					config.resetMountingFeet ||
-					it.context.state.value.bodyPart !in FOOT_PARTS
+					it.context.state.value.bodyPart !in ResetBodyParts.FEET
 			}
 		}.filter { it.context.state.value.position == null }
 
@@ -126,7 +144,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		trackers.forEach {
 			it.context.dispatch(
 				when (resetType) {
-					ResetType.YAW -> TrackerActions.YawReset(referenceRotation)
+					ResetType.YAW -> TrackerActions.YawReset(referenceRotation, config.yawResetSmoothTime.toDouble().seconds)
 					ResetType.FULL -> TrackerActions.FullReset(referenceRotation)
 					ResetType.MOUNTING -> TrackerActions.MountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
 				},
@@ -136,26 +154,26 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 
 	private fun getYawOffset(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = when (bodyPart) {
 		// Going forward
-		in UPPER_LEG_PARTS -> 0f
+		in ResetBodyParts.UPPER_LEGS -> 0f
 
-		in LOWER_ARM_PARTS if armsResetMode == ArmsResetMode.BACK -> 0f
+		in ResetBodyParts.LOWER_ARMS if armsResetMode == ArmsResetMode.BACK -> 0f
 
-		in ARM_PARTS if armsResetMode == ArmsResetMode.FORWARD -> 0f
+		in ResetBodyParts.ARMS if armsResetMode == ArmsResetMode.FORWARD -> 0f
 
 		// Going left
-		in LEFT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_UP -> -FastMath.HALF_PI
+		in ResetBodyParts.LEFT_ARM if armsResetMode == ArmsResetMode.T_POSE_UP -> -FastMath.HALF_PI
 
-		in RIGHT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_DOWN -> -FastMath.HALF_PI
+		in ResetBodyParts.RIGHT_ARM if armsResetMode == ArmsResetMode.T_POSE_DOWN -> -FastMath.HALF_PI
 
-		in RIGHT_FINGER_PARTS -> -FastMath.HALF_PI
+		in ResetBodyParts.RIGHT_FINGERS -> -FastMath.HALF_PI
 
 
 		// Going right
-		in LEFT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_DOWN -> FastMath.HALF_PI
+		in ResetBodyParts.LEFT_ARM if armsResetMode == ArmsResetMode.T_POSE_DOWN -> FastMath.HALF_PI
 
-		in RIGHT_ARM_PARTS if armsResetMode == ArmsResetMode.T_POSE_UP -> FastMath.HALF_PI
+		in ResetBodyParts.RIGHT_ARM if armsResetMode == ArmsResetMode.T_POSE_UP -> FastMath.HALF_PI
 
-		in LEFT_FINGER_PARTS -> FastMath.HALF_PI
+		in ResetBodyParts.LEFT_FINGERS -> FastMath.HALF_PI
 
 		// Going back
 		else -> FastMath.PI
@@ -167,7 +185,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				initialState = ResetsState(
 					canDoYawReset = false,
 					canDoMountingReset = false,
-					lastFullResetTime = 0,
+					lastFullResetTime = null,
 				),
 				scope = scope,
 				behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),

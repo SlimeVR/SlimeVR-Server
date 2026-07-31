@@ -1,5 +1,7 @@
 # Contributing to SlimeVR
 
+Please follow general contribution guidelines: [CONTRIBUTING.md](https://github.com/SlimeVR/.github/blob/main/profile/CONTRIBUTING.md).
+
 This document describes essential knowledge required to contribute to the SlimeVR Server.
 
 ### Prerequisites

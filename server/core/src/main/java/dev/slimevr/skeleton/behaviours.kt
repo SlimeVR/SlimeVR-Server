@@ -2,6 +2,7 @@ package dev.slimevr.skeleton
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
@@ -14,7 +15,11 @@ import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
 class BoneTransformBehaviour : SkeletonBehaviour {
 	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
@@ -78,10 +83,10 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
 			val intervalMs = (1000f / inputHz).toLong()
-			val startTime = System.currentTimeMillis()
+			val startTime = timeSource.markNow()
 			while (true) {
 				delay(intervalMs)
-				val elapsed = (System.currentTimeMillis() - startTime) / 1000f
+				val elapsed = startTime.elapsedNow().inWholeMilliseconds / 1000f
 				val state = receiver.context.state.value
 
 				receiver.context.dispatch(
@@ -120,43 +125,72 @@ class PauseTrackingBehaviour : SkeletonBehaviour {
 }
 
 class ComputedSkeletonBehaviour(
-	val hz: Long,
+	val hz: Int,
 	val processors: List<SkeletonProcessor> = emptyList(),
 ) : SkeletonBehaviour {
+	private val intervalDuration = (1.0 / hz).seconds
+	private val minimumDelay = 1.nanoseconds
+	private val logSpamWait = 1.minutes
+	private val minimumFramesToLog = 10
+
 	override fun observe(receiver: Skeleton) {
-		val intervalNs = 1_000_000_000L / hz
+		var nextLogTime = timeSource.markNow() + logSpamWait
+		var frameStartTime = timeSource.markNow()
+		var lastFrameTime = Duration.ZERO
+		var processTooLongCount = 0
+
 		receiver.context.scope.launch {
 			while (true) {
 				try {
-					val startTime = System.nanoTime()
+					// Process starts
+					val processTime = measureTime {
+						val targetState = receiver.context.state.value
 
-					val targetState = receiver.context.state.value
-					val processed = processors
-						.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
+						// Run processors
+						val processed = processors
+							.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
 
-					// Get head position
-					val rootHead = processed.boneInputs[BodyPart.HEAD]
-						?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
-						?: Vector3(0f, targetState.skeletonHeight, 0f)
+						// Get head position
+						val rootHead = processed.boneInputs[BodyPart.HEAD]
+							?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
+							?: Vector3(0f, targetState.skeletonHeight, 0f)
 
-					val fk = buildBones(processed, rootHead = rootHead)
+						// Run FK
+						val fk = buildBones(processed, rootHead = rootHead)
 
-// 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
+// 	 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
 //
-// 					val targets = targetProcessors
-// 						.filter { targetProcessors -> targetProcessors.enabled }
-// 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
+// 	 					val targets = targetProcessors
+// 	 						.filter { targetProcessors -> targetProcessors.enabled }
+// 	 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
 //
-// 					val ikOutput = solver.solve(fk, targets)
+// 	 					val ikOutput = solver.solve(fk, targets)
 
-// 					receiver.computed.value = ikOutput
+						// Frame time tracking ends and restarts here
+						lastFrameTime = frameStartTime.elapsedNow()
+						frameStartTime = timeSource.markNow()
 
-					if (!targetState.paused) {
-						receiver.computed.value = fk
+						// Updated the computed skeleton with the result
+						if (!targetState.paused) { // FIXME : bones should still follow the head when paused
+							receiver.computed.value = fk
+// 							receiver.computed.value = ikOutput
+						}
 					}
+					// Process ends
 
-					// TODO log when we can't reach `hz`
-					delay((intervalNs - (System.nanoTime() - startTime)).nanoseconds)
+					// Wait the remainder of last process
+					val delayDuration = intervalDuration - processTime
+					if (delayDuration <= Duration.ZERO) {
+						// Skeleton took to long to compute this frame
+						processTooLongCount++
+						if (nextLogTime.hasPassedNow()) {
+							if (processTooLongCount >= minimumFramesToLog)
+								AppLogger.skeleton.warn("Couldn't reach ${hz}Hz $processTooLongCount times in the last $logSpamWait")
+							processTooLongCount = 0
+							nextLogTime = timeSource.markNow() + logSpamWait
+						}
+					}
+					delay(delayDuration.coerceAtLeast(minimumDelay))
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {

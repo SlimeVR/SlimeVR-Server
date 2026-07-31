@@ -336,7 +336,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 			if (existingTracker != null) {
 				existingTracker.context.dispatchAll(
 					listOf(
-						TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
+						TrackerActions.Update { copy(imuType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
 						TrackerActions.SetStatus(event.data.status),
 					),
 				)
@@ -346,7 +346,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 			val (tracker, isNew) = assignTracker(receiver, device, event)
 			tracker.context.dispatchAll(
 				listOf(
-					TrackerActions.Update { copy(sensorType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
+					TrackerActions.Update { copy(imuType = event.data.imuType, completedRestCalibration = event.data.hasCompletedRestCalibration) },
 					TrackerActions.SetStatus(event.data.status),
 				),
 			)

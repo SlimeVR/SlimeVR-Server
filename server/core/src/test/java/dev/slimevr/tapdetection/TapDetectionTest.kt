@@ -3,10 +3,12 @@ package dev.slimevr.tapdetection
 import io.github.axisangles.ktmath.Vector3
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration
+import kotlin.time.TestTimeSource
 
 class TapDetectionTest {
 	data class AccelEvent(
-		val delaySincePrevious: Long,
+		val delaySincePrevious: Duration,
 		val accel: Vector3,
 		val expectedTap: Boolean,
 	)
@@ -15,16 +17,16 @@ class TapDetectionTest {
 	val highAccel = Vector3(0f, 0f, TapDetectionBasicBehaviour.NEEDED_ACCEL_DELTA * 3f)
 
 	// Low accel needed as rest between taps
-	val lowAccel = Vector3(0f, 0f, 0f)
+	val lowAccel = Vector3.NULL
 
 	// Accelerations needed for a tap happen with this delay
-	val accelDelay = (TapDetectionBasicBehaviour.ACCEL_WINDOW_NS * 0.9f).toLong()
+	val accelDelay = TapDetectionBasicBehaviour.ACCEL_WINDOW * 0.9
 
 	// Delay between several taps
-	val tapDelay = (TapDetectionBasicBehaviour.TAP_WINDOW_PER_TAP_NS * 0.9f).toLong()
+	val tapDelay = TapDetectionBasicBehaviour.TAP_WINDOW_PER_TAP * 0.9
 
 	// Too long of a delay between several taps
-	val tapTimeoutDelay = (TapDetectionBasicBehaviour.TAP_WINDOW_PER_TAP_NS * 1.1f).toLong()
+	val tapTimeoutDelay = TapDetectionBasicBehaviour.TAP_WINDOW_PER_TAP * 1.1
 
 	/**
 	 * Runs a sequence of tap events through TapDetection, asserting the results.
@@ -40,13 +42,13 @@ class TapDetectionTest {
 		val trackersOverThreshold = mutableSetOf<Int>()
 		val behaviour = TapDetectionBasicBehaviour()
 
-		var now = 0L
+		val timeSource = TestTimeSource()
 		events.forEach { event ->
-			now += event.delaySincePrevious
+			timeSource += event.delaySincePrevious
 			assertEquals(
 				event.expectedTap,
 				behaviour.runTapDetection(
-					now = now,
+					now = timeSource.markNow(),
 					trackersOverThreshold = trackersOverThreshold,
 					trackerTapDetectionState = state,
 					trackerAcceleration = event.accel,
@@ -59,7 +61,7 @@ class TapDetectionTest {
 	fun `Detect double tap`() = runTapSequence(
 		tapsNeeded = 2,
 		events = listOf(
-			AccelEvent(0L, lowAccel, expectedTap = false),
+			AccelEvent(Duration.ZERO, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
 			AccelEvent(tapDelay, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = true),
@@ -70,7 +72,7 @@ class TapDetectionTest {
 	fun `Double tap timed out`() = runTapSequence(
 		tapsNeeded = 2,
 		events = listOf(
-			AccelEvent(0L, lowAccel, expectedTap = false),
+			AccelEvent(Duration.ZERO, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
 			AccelEvent(tapTimeoutDelay, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
@@ -81,7 +83,7 @@ class TapDetectionTest {
 	fun `Detect triple tap`() = runTapSequence(
 		tapsNeeded = 3,
 		events = listOf(
-			AccelEvent(0L, lowAccel, expectedTap = false),
+			AccelEvent(Duration.ZERO, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
 			AccelEvent(tapDelay, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
@@ -94,7 +96,7 @@ class TapDetectionTest {
 	fun `Triple tap timed out`() = runTapSequence(
 		tapsNeeded = 3,
 		events = listOf(
-			AccelEvent(0L, lowAccel, expectedTap = false),
+			AccelEvent(Duration.ZERO, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
 			AccelEvent(tapDelay, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
@@ -107,11 +109,11 @@ class TapDetectionTest {
 	fun `Tap not repeated while accel stays high`() = runTapSequence(
 		tapsNeeded = 2,
 		events = listOf(
-			AccelEvent(0L, lowAccel, expectedTap = false),
+			AccelEvent(Duration.ZERO, lowAccel, expectedTap = false),
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
 			AccelEvent(tapDelay, highAccel, expectedTap = false),
+			AccelEvent(accelDelay, highAccel, expectedTap = false),
 			AccelEvent(tapDelay, highAccel, expectedTap = false),
-			AccelEvent(tapTimeoutDelay, highAccel, expectedTap = false),
 		),
 	)
 }

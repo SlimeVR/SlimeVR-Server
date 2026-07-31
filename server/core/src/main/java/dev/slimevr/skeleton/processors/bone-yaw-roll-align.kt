@@ -4,7 +4,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.mutate
-import dev.slimevr.skeleton.resolveRotationFor
+import dev.slimevr.skeleton.resolveAverageRotationFor
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
@@ -39,7 +39,7 @@ class BoneYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 					BodyPart.HIP -> ratios.interpolateHipWithUpperLegs
 					else -> ratios.interpolateUpperLegsWithLowerLegs
 				}
-				val sourceRotation = boneInputs.resolveRotationFor(link.sources)
+				val sourceRotation = boneInputs.resolveAverageRotationFor(link.sources)
 				val aligned = alignYawRoll(bone.rawRotation, sourceRotation)
 				updated[link.bodyPart] = bone.copy(rawRotation = bone.rawRotation.interpR(aligned, mixFactor))
 			}

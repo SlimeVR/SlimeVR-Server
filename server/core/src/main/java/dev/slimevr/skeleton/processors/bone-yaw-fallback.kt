@@ -6,6 +6,7 @@ import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.mutate
 import io.github.axisangles.ktmath.Vector3
 import kotlin.collections.set
+import kotlin.time.Duration
 
 /**
  * Handles replacing rotations of boneInputs that are not actively receiving data by

@@ -14,8 +14,8 @@ enum class DeviceOrigin {
 	DRIVER,
 	UDP,
 	HID,
-	OSC,
 	VRC,
+	VMC,
 }
 
 data class DeviceState(

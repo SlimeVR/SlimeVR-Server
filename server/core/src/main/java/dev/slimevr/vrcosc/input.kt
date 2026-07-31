@@ -54,7 +54,6 @@ private class VRSystemTrackerRegistry(
 			scope = manager.context.scope,
 			id = trackerId,
 			deviceId = device.context.state.value.id,
-			sensorType = null,
 			hardwareId = "vrcosc:vrsystem:${tracker.name.lowercase()}",
 			origin = DeviceOrigin.VRC,
 			appContext = appContext,
@@ -236,13 +235,8 @@ class VRCOSCInputBehaviour(
 		val runtimeTracker = registry.trackerFor(tracker)
 		runtimeTracker.context.dispatchAll(
 			listOf(
-				TrackerActions.Update {
-					copy(
-						position = position,
-						status = TrackerStatus.OK,
-					)
-				},
-				TrackerActions.SetRotation(rotation = rotation),
+				TrackerActions.SetStatus(TrackerStatus.OK),
+				TrackerActions.SetRotation(rotation = rotation, position = position),
 			),
 		)
 		registry.setStatus(TrackerStatus.OK)

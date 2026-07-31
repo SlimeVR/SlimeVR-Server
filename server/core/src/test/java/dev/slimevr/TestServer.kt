@@ -12,6 +12,7 @@ import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
+import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
@@ -27,19 +28,33 @@ import dev.slimevr.resets.ResetsState
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
+import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tapdetection.TapDetectionManager
+import dev.slimevr.tracker.SessionCalibration
+import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerBasicBehaviour
+import dev.slimevr.tracker.TrackerBehaviour
+import dev.slimevr.tracker.TrackerState
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrcosc.VRCOSCManager
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MagnetometerStatus
+import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
+import kotlin.time.Duration
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
 	openPort = { loc, _, _ -> SerialPortHandle(loc, "Fake $loc", {}, {}) },
@@ -87,7 +102,7 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
 		name = "TestSkeleton",
 	)
-	val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
+	val skeleton = Skeleton(context, MutableStateFlow(ComputedSkeleton(bones = buildBones(context.state.value), frameTime = Duration.ZERO)))
 	skeleton.startObserving()
 	return skeleton
 }
@@ -97,7 +112,7 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 		initialState = ResetsState(
 			canDoYawReset = true,
 			canDoMountingReset = true,
-			lastFullResetTime = 0,
+			lastFullResetTime = null,
 		),
 		scope = scope,
 		behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),
@@ -106,6 +121,54 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 	val resetsManager = ResetsManager(context, server, settings)
 	resetsManager.startObserving()
 	return resetsManager
+}
+
+fun buildTestTracker(
+	scope: CoroutineScope,
+	appContext: AppContextProvider,
+	settings: Settings,
+	id: Int,
+	bodyPart: BodyPart? = null,
+	status: TrackerStatus = TrackerStatus.DISCONNECTED,
+	origin: DeviceOrigin = DeviceOrigin.UDP,
+	sensorType: ImuType? = ImuType.BNO085,
+	position: Vector3? = null,
+	completedRestCalibration: Boolean? = true,
+	rawRotation: Quaternion = Quaternion.IDENTITY,
+	additionalBehaviours: List<TrackerBehaviour> = listOf(),
+	sessionCalibration: SessionCalibration? = null,
+): Tracker {
+	val state = TrackerState(
+		id = id,
+		hardwareId = "test-$id",
+		name = "Tracker $id",
+		restOrientation = Quaternion.IDENTITY,
+		rawRotation = rawRotation,
+		rotation = Quaternion.IDENTITY,
+		rawAcceleration = Vector3.NULL,
+		acceleration = Vector3.NULL,
+		rawMagnetometer = Vector3.NULL,
+		bodyPart = bodyPart,
+		mountingOrientation = Quaternion.IDENTITY,
+		origin = origin,
+		deviceId = 0,
+		customName = null,
+		imuType = sensorType,
+		position = position,
+		tps = 0u,
+		imuTemp = null,
+		status = status,
+		completedRestCalibration = completedRestCalibration,
+		magStatus = MagnetometerStatus.NOT_SUPPORTED,
+		sessionCalibration = sessionCalibration,
+	)
+	val context = Context.create(
+		initialState = state,
+		scope = scope,
+		behaviours = listOf(TrackerBasicBehaviour()) + additionalBehaviours,
+		name = "TestTracker[$id]",
+	)
+	return Tracker(context, appContext, settings)
 }
 
 fun buildTestSettings(scope: CoroutineScope): Settings {
@@ -162,6 +225,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val resetsManager: ResetsManager get() = error("not used in test")
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
 	override val outputTrackerToggle: OutputTrackerToggleManager get() = error("not used in test")
+	override val stayAlignedManager: StayAlignedManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }

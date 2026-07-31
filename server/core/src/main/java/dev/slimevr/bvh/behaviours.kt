@@ -66,9 +66,9 @@ class BVHRecordingBehaviour(
 				}
 			}.launchIn(receiver.context.scope)
 
-		skeleton.computed.onEach { bones ->
+		skeleton.computed.onEach { computedSkeleton ->
 			try {
-				stream?.writeFrame(bones)
+				stream?.writeFrame(computedSkeleton)
 			} catch (e: Exception) {
 				AppLogger.bvh.error("Failed to write BVH frame", e)
 				receiver.context.dispatch(BVHActions.StopRecording)

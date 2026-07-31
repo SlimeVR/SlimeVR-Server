@@ -10,7 +10,6 @@ import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import solarxr_protocol.data_feed.BoneMask
@@ -47,12 +46,12 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	position = if (trackerMask.position == true && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
 	info = if (trackerMask.info == true) {
 		TrackerInfo(
-			imuType = tracker.sensorType,
+			imuType = tracker.imuType,
 			bodyPart = tracker.bodyPart,
 			displayName = tracker.name,
 			customName = tracker.customName,
 			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
-			isImu = tracker.sensorType != null,
+			isImu = tracker.imuType != null,
 			magnetometer = tracker.magStatus,
 		)
 	} else {
