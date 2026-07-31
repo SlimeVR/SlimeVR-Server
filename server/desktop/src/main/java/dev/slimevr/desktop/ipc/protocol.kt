@@ -82,6 +82,7 @@ val bodyPartToRole = mapOf(
 	BodyPart.LEFT_HAND to TrackerRole.LEFT_HAND,
 	BodyPart.RIGHT_HAND to TrackerRole.RIGHT_HAND,
 )
+val roleToBodyPart = bodyPartToRole.entries.associate { (k, v) -> v to k }
 
 const val PROTOCOL_VERSION = 2
 
@@ -227,7 +228,6 @@ suspend fun handleDriverConnection(
 				}
 			}
 			msg.tracker_added?.let { ta ->
-				val roleToBodyPart = bodyPartToRole.entries.associate { (k, v) -> v to k }
 				bridge.inbound.emit(
 					DriverBridgeInbound.TrackerAdded(
 						id = ta.tracker_id,
