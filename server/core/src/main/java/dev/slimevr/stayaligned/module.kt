@@ -13,64 +13,63 @@ import solarxr_protocol.rpc.StayAlignedRelaxedPose
 import kotlin.collections.listOf
 
 data class StayAlignedState(
-    /**
-     * Temporarily hides the yaw correction from Stay Aligned.
-     *
-     * Used to compare to when Stay Aligned is not enabled.
-     * Useful to verify if Stay Aligned improved the situation or is responsible for bad tracking.
-     */
-    val hideYawCorrection : Boolean,
+	/**
+	 * Temporarily hides the yaw correction from Stay Aligned.
+	 *
+	 * Used to compare to when Stay Aligned is not enabled.
+	 * Useful to verify if Stay Aligned improved the situation or is responsible for bad tracking.
+	 */
+	val hideYawCorrection: Boolean,
 )
 
 sealed interface StayAlignedActions {
-    data class SetHideYawCorrection(val hideYawCorrection: Boolean) : StayAlignedActions
+	data class SetHideYawCorrection(val hideYawCorrection: Boolean) : StayAlignedActions
 }
 
 typealias StayAlignedContext = Context<StayAlignedState, StayAlignedActions>
 typealias StayAlignedBehaviour = Behaviour<StayAlignedState, StayAlignedActions, StayAlignedManager>
 
 class StayAlignedManager(val context: StayAlignedContext, val server: VRServer, val skeleton: Skeleton, val settings: Settings) {
-    fun startObserving() = context.observeAll(this)
+	fun startObserving() = context.observeAll(this)
 
-    /**
-     * Sets and enables a relaxed pose from the user's current pose.
-     */
-    fun detectRelaxedPose(pose: StayAlignedRelaxedPose) {
-        // TODO get user pose
-        updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(true))
-    }
+	/**
+	 * Sets and enables a relaxed pose from the user's current pose.
+	 */
+	fun detectRelaxedPose(pose: StayAlignedRelaxedPose) {
+		// TODO get user pose
+		updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(true))
+	}
 
-    /**
-     * Resets and disables a relaxed pose.
-     */
-    fun resetRelaxedPose(pose: StayAlignedRelaxedPose) =
-        updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(false, 0f, 0f, 0f))
+	/**
+	 * Resets and disables a relaxed pose.
+	 */
+	fun resetRelaxedPose(pose: StayAlignedRelaxedPose) = updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(false, 0f, 0f, 0f))
 
-    private fun updatePoseInConfig(pose: StayAlignedRelaxedPose, poseConfig: StayAlignedRelaxedPoseConfig) {
-        settings.context.dispatch(SettingsActions.Update {
-            copy(
-                stayAlignedConfig = when (pose) {
-                    StayAlignedRelaxedPose.STANDING -> stayAlignedConfig.copy(standingRelaxedPose = poseConfig)
+	private fun updatePoseInConfig(pose: StayAlignedRelaxedPose, poseConfig: StayAlignedRelaxedPoseConfig) {
+		settings.context.dispatch(
+			SettingsActions.Update {
+				copy(
+					stayAlignedConfig = when (pose) {
+						StayAlignedRelaxedPose.STANDING -> stayAlignedConfig.copy(standingRelaxedPose = poseConfig)
+						StayAlignedRelaxedPose.SITTING -> stayAlignedConfig.copy(sittingRelaxedPose = poseConfig)
+						StayAlignedRelaxedPose.FLAT -> stayAlignedConfig.copy(flatRelaxedPose = poseConfig)
+					},
+				)
+			},
+		)
+	}
 
-                    StayAlignedRelaxedPose.SITTING -> stayAlignedConfig.copy(sittingRelaxedPose = poseConfig)
-
-                    StayAlignedRelaxedPose.FLAT -> stayAlignedConfig.copy(flatRelaxedPose = poseConfig)
-                }
-            )
-        })
-    }
-
-    companion object {
-        fun create(ctx: Phase1ContextProvider, skeleton: Skeleton, scope: CoroutineScope): StayAlignedManager {
-            val context = Context.create(
-                initialState = StayAlignedState(
-                    hideYawCorrection = false,
-                ),
-                scope = scope,
-                behaviours = listOf(StayAlignedBasicBehaviour()),
-                name = "StayAlignedManager",
-            )
-            return StayAlignedManager(context, ctx.server, skeleton, ctx.config.settings)
-        }
-    }
+	companion object {
+		fun create(ctx: Phase1ContextProvider, skeleton: Skeleton, scope: CoroutineScope): StayAlignedManager {
+			val context = Context.create(
+				initialState = StayAlignedState(
+					hideYawCorrection = false,
+				),
+				scope = scope,
+				behaviours = listOf(StayAlignedBasicBehaviour()),
+				name = "StayAlignedManager",
+			)
+			return StayAlignedManager(context, ctx.server, skeleton, ctx.config.settings)
+		}
+	}
 }

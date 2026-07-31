@@ -233,183 +233,183 @@ class TrackerSkeleton(skeleton: Skeleton) {
 //        }
 //    }
 
-    private fun visitUpperBodyTrackers(
-        tracker: Tracker,
-        visitor: TrackerVisitor,
-        head: Tracker?,
-        upperBody: List<Tracker>,
-        leftUpperLeg: Tracker?,
-        rightUpperLeg: Tracker?,
-    ) {
-        val index = upperBody.indexOf(tracker)
-        if (index < 0) {
-            return
-        }
+	private fun visitUpperBodyTrackers(
+		tracker: Tracker,
+		visitor: TrackerVisitor,
+		head: Tracker?,
+		upperBody: List<Tracker>,
+		leftUpperLeg: Tracker?,
+		rightUpperLeg: Tracker?,
+	) {
+		val index = upperBody.indexOf(tracker)
+		if (index < 0) {
+			return
+		}
 
-        if (index == 0) {
-            if (upperBody.size == 1) {
-                // Only upper body tracker
-                visitor.visitUpperBodyTracker(
-                    tracker,
-                    head,
-                    leftUpperLeg,
-                    rightUpperLeg,
-                )
-            } else {
-                // First upper body tracker
-                visitor.visitUpperBodyTracker(
-                    tracker,
-                    head,
-                    upperBody[1],
-                )
-            }
-        } else if (index < upperBody.size - 1) {
-            // Middle upper body tracker
-            visitor.visitUpperBodyTracker(
-                tracker,
-                upperBody[index - 1],
-                upperBody[index + 1],
-            )
-        } else {
-            // Last upper body tracker
-            visitor.visitUpperBodyTracker(
-                tracker,
-                upperBody[index - 1],
-                leftUpperLeg,
-                rightUpperLeg,
-            )
-        }
-    }
+		if (index == 0) {
+			if (upperBody.size == 1) {
+				// Only upper body tracker
+				visitor.visitUpperBodyTracker(
+					tracker,
+					head,
+					leftUpperLeg,
+					rightUpperLeg,
+				)
+			} else {
+				// First upper body tracker
+				visitor.visitUpperBodyTracker(
+					tracker,
+					head,
+					upperBody[1],
+				)
+			}
+		} else if (index < upperBody.size - 1) {
+			// Middle upper body tracker
+			visitor.visitUpperBodyTracker(
+				tracker,
+				upperBody[index - 1],
+				upperBody[index + 1],
+			)
+		} else {
+			// Last upper body tracker
+			visitor.visitUpperBodyTracker(
+				tracker,
+				upperBody[index - 1],
+				leftUpperLeg,
+				rightUpperLeg,
+			)
+		}
+	}
 
-    private fun visitArmTrackers(
-        tracker: Tracker,
-        visitor: TrackerVisitor,
-        side: Side,
-        upperBody: Tracker?,
-        arm: List<Tracker>,
-        hand: Tracker?,
-    ) {
-        val index = arm.indexOf(tracker)
-        if (index < 0) {
-            return
-        }
+	private fun visitArmTrackers(
+		tracker: Tracker,
+		visitor: TrackerVisitor,
+		side: Side,
+		upperBody: Tracker?,
+		arm: List<Tracker>,
+		hand: Tracker?,
+	) {
+		val index = arm.indexOf(tracker)
+		if (index < 0) {
+			return
+		}
 
-        if (index == 0) {
-            if (arm.size == 1) {
-                // Only arm tracker
-                visitor.visitArmTracker(
-                    side,
-                    tracker,
-                    upperBody,
-                    hand,
-                )
-            } else {
-                // First arm tracker
-                visitor.visitArmTracker(
-                    side,
-                    tracker,
-                    upperBody,
-                    arm[1],
-                )
-            }
-        } else if (index < arm.size - 1) {
-            // Middle arm tracker
-            visitor.visitArmTracker(
-                side,
-                tracker,
-                arm[index - 1],
-                arm[index + 1],
-            )
-        } else {
-            // Last arm tracker
-            visitor.visitArmTracker(
-                side,
-                tracker,
-                arm[index - 1],
-                hand,
-            )
-        }
-    }
+		if (index == 0) {
+			if (arm.size == 1) {
+				// Only arm tracker
+				visitor.visitArmTracker(
+					side,
+					tracker,
+					upperBody,
+					hand,
+				)
+			} else {
+				// First arm tracker
+				visitor.visitArmTracker(
+					side,
+					tracker,
+					upperBody,
+					arm[1],
+				)
+			}
+		} else if (index < arm.size - 1) {
+			// Middle arm tracker
+			visitor.visitArmTracker(
+				side,
+				tracker,
+				arm[index - 1],
+				arm[index + 1],
+			)
+		} else {
+			// Last arm tracker
+			visitor.visitArmTracker(
+				side,
+				tracker,
+				arm[index - 1],
+				hand,
+			)
+		}
+	}
 
-    interface TrackerVisitor {
+	interface TrackerVisitor {
 
-        /**
-         * Visits the head tracker.
-         */
-        fun visitHeadTracker(
-            tracker: Tracker,
-            belowUpperBody: Tracker?,
-        )
+		/**
+		 * Visits the head tracker.
+		 */
+		fun visitHeadTracker(
+			tracker: Tracker,
+			belowUpperBody: Tracker?,
+		)
 
-        /**
-         * Visits an upper body tracker (except for the bottom-most tracker).
-         */
-        fun visitUpperBodyTracker(
-            tracker: Tracker,
-            aboveHeadOrUpperBody: Tracker?,
-            belowUpperBody: Tracker?,
-        )
+		/**
+		 * Visits an upper body tracker (except for the bottom-most tracker).
+		 */
+		fun visitUpperBodyTracker(
+			tracker: Tracker,
+			aboveHeadOrUpperBody: Tracker?,
+			belowUpperBody: Tracker?,
+		)
 
-        /**
-         * Visits the bottom-most upper body tracker.
-         */
-        fun visitUpperBodyTracker(
-            tracker: Tracker,
-            aboveHeadOrUpperBody: Tracker?,
-            belowLeftUpperLeg: Tracker?,
-            belowRightUpperLeg: Tracker?,
-        )
+		/**
+		 * Visits the bottom-most upper body tracker.
+		 */
+		fun visitUpperBodyTracker(
+			tracker: Tracker,
+			aboveHeadOrUpperBody: Tracker?,
+			belowLeftUpperLeg: Tracker?,
+			belowRightUpperLeg: Tracker?,
+		)
 
-        /**
-         * Visits an arm tracker.
-         */
-        fun visitArmTracker(
-            side: Side,
-            tracker: Tracker,
-            aboveUpperBodyOrArm: Tracker?,
-            belowHandOrArm: Tracker?,
-        )
+		/**
+		 * Visits an arm tracker.
+		 */
+		fun visitArmTracker(
+			side: Side,
+			tracker: Tracker,
+			aboveUpperBodyOrArm: Tracker?,
+			belowHandOrArm: Tracker?,
+		)
 
-        /**
-         * Visits a hand tracker.
-         */
-        fun visitHandTracker(
-            side: Side,
-            tracker: Tracker,
-            aboveArm: Tracker?,
-            oppositeHand: Tracker?,
-        )
+		/**
+		 * Visits a hand tracker.
+		 */
+		fun visitHandTracker(
+			side: Side,
+			tracker: Tracker,
+			aboveArm: Tracker?,
+			oppositeHand: Tracker?,
+		)
 
-        /**
-         * Visits an upper leg tracker.
-         */
-        fun visitUpperLegTracker(
-            side: Side,
-            tracker: Tracker,
-            aboveUpperBody: Tracker?,
-            belowLowerLeg: Tracker?,
-            oppositeUpperLeg: Tracker?,
-        )
+		/**
+		 * Visits an upper leg tracker.
+		 */
+		fun visitUpperLegTracker(
+			side: Side,
+			tracker: Tracker,
+			aboveUpperBody: Tracker?,
+			belowLowerLeg: Tracker?,
+			oppositeUpperLeg: Tracker?,
+		)
 
-        /**
-         * Visits a lower leg tracker.
-         */
-        fun visitLowerLegTracker(
-            side: Side,
-            tracker: Tracker,
-            aboveUpperLeg: Tracker?,
-            belowFoot: Tracker?,
-            oppositeLowerLeg: Tracker?,
-        )
+		/**
+		 * Visits a lower leg tracker.
+		 */
+		fun visitLowerLegTracker(
+			side: Side,
+			tracker: Tracker,
+			aboveUpperLeg: Tracker?,
+			belowFoot: Tracker?,
+			oppositeLowerLeg: Tracker?,
+		)
 
-        /**
-         * Visits a foot tracker.
-         */
-        fun visitFootTracker(
-            side: Side,
-            tracker: Tracker,
-            aboveLowerLeg: Tracker?,
-            oppositeFoot: Tracker?,
-        )
-    }
+		/**
+		 * Visits a foot tracker.
+		 */
+		fun visitFootTracker(
+			side: Side,
+			tracker: Tracker,
+			aboveLowerLeg: Tracker?,
+			oppositeFoot: Tracker?,
+		)
+	}
 }

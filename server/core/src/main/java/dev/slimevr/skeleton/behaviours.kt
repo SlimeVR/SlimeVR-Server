@@ -184,8 +184,9 @@ class ComputedSkeletonBehaviour(
 						// Skeleton took to long to compute this frame
 						processTooLongCount++
 						if (nextLogTime.hasPassedNow()) {
-							if (processTooLongCount >= minimumFramesToLog)
+							if (processTooLongCount >= minimumFramesToLog) {
 								AppLogger.skeleton.warn("Couldn't reach ${hz}Hz $processTooLongCount times in the last $logSpamWait")
+							}
 							processTooLongCount = 0
 							nextLogTime = timeSource.markNow() + logSpamWait
 						}

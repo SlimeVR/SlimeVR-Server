@@ -1,8 +1,8 @@
 package dev.slimevr.tapdetection
 
 import dev.slimevr.config.TapDetectionConfig
-import dev.slimevr.util.timeSource
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine

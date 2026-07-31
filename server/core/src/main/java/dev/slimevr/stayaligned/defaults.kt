@@ -9,55 +9,55 @@ import solarxr_protocol.datatypes.hardware_info.ImuType
  * algorithm from a single place.
  */
 object StayAlignedDefaults {
-    // Relaxed pose for kneeling. This isn't that common, so we don't want to ask
-    // players to provide this relaxed pose during setup.
-    val RELAXED_POSE_KNEELING =
-        RelaxedPose(
-            upperLeg = Angle.ofDeg(0.0f),
-            lowerLeg = Angle.ofDeg(0.0f),
-            foot = Angle.ofDeg(0.0f),
-        )
+	// Relaxed pose for kneeling. This isn't that common, so we don't want to ask
+	// players to provide this relaxed pose during setup.
+	val RELAXED_POSE_KNEELING =
+		RelaxedPose(
+			upperLeg = Angle.ofDeg(0.0f),
+			lowerLeg = Angle.ofDeg(0.0f),
+			foot = Angle.ofDeg(0.0f),
+		)
 
-    // Weights to calculate the average yaw of the skeleton
-    const val CENTER_ERROR_HEAD_WEIGHT = 0.5f
-    const val CENTER_ERROR_UPPER_BODY_WEIGHT = 1.0f
-    const val CENTER_ERROR_UPPER_LEG_WEIGHT = 0.4f
-    const val CENTER_ERROR_LOWER_LEG_WEIGHT = 0.3f
+	// Weights to calculate the average yaw of the skeleton
+	const val CENTER_ERROR_HEAD_WEIGHT = 0.5f
+	const val CENTER_ERROR_UPPER_BODY_WEIGHT = 1.0f
+	const val CENTER_ERROR_UPPER_LEG_WEIGHT = 0.4f
+	const val CENTER_ERROR_LOWER_LEG_WEIGHT = 0.3f
 
-    // Weight of each force
-    const val YAW_ERRORS_LOCKED_ERROR_WEIGHT = 10.0f
-    const val YAW_ERRORS_CENTER_ERROR_WEIGHT = 2.0f
-    const val YAW_ERRORS_NEIGHBOR_ERROR_WEIGHT = 1.0f
+	// Weight of each force
+	const val YAW_ERRORS_LOCKED_ERROR_WEIGHT = 10.0f
+	const val YAW_ERRORS_CENTER_ERROR_WEIGHT = 2.0f
+	const val YAW_ERRORS_NEIGHBOR_ERROR_WEIGHT = 1.0f
 
-    // Yaw correction for each type of IMU
-    val YAW_CORRECTION_IMU_GOOD = Angle.ofDeg(0.15f)
-    val YAW_CORRECTION_IMU_OK = Angle.ofDeg(0.20f)
-    val YAW_CORRECTION_IMU_BAD = Angle.ofDeg(0.40f)
-    val YAW_CORRECTION_IMU_DISABLED = Angle.ZERO
+	// Yaw correction for each type of IMU
+	val YAW_CORRECTION_IMU_GOOD = Angle.ofDeg(0.15f)
+	val YAW_CORRECTION_IMU_OK = Angle.ofDeg(0.20f)
+	val YAW_CORRECTION_IMU_BAD = Angle.ofDeg(0.40f)
+	val YAW_CORRECTION_IMU_DISABLED = Angle.ZERO
 
-    val IMU_TO_YAW_CORRECTION = buildMap {
-        // Mag is enabled on MPU9250 but server doesn't know about it
-        set(ImuType.MPU9250, YAW_CORRECTION_IMU_DISABLED)
-        set(ImuType.MPU6500, YAW_CORRECTION_IMU_BAD)
-        set(ImuType.BNO080, YAW_CORRECTION_IMU_GOOD)
-        set(ImuType.BNO085, YAW_CORRECTION_IMU_GOOD)
-        set(ImuType.BNO055, YAW_CORRECTION_IMU_BAD)
-        set(ImuType.MPU6050, YAW_CORRECTION_IMU_BAD)
-        set(ImuType.BNO086, YAW_CORRECTION_IMU_GOOD)
-        set(ImuType.BMI160, YAW_CORRECTION_IMU_BAD)
-        set(ImuType.ICM20948, YAW_CORRECTION_IMU_BAD)
-        set(ImuType.ICM42688, YAW_CORRECTION_IMU_OK)
-        set(ImuType.BMI270, YAW_CORRECTION_IMU_OK)
-        set(ImuType.LSM6DS3TRC, YAW_CORRECTION_IMU_BAD)
-        set(ImuType.LSM6DSV, YAW_CORRECTION_IMU_GOOD)
-        set(ImuType.LSM6DSO, YAW_CORRECTION_IMU_OK)
-        set(ImuType.LSM6DSR, YAW_CORRECTION_IMU_GOOD)
-        set(ImuType.ICM45686, YAW_CORRECTION_IMU_GOOD)
-        set(ImuType.ICM45605, YAW_CORRECTION_IMU_GOOD)
-        set(ImuType.ICM55686, YAW_CORRECTION_IMU_GOOD)
-    }
+	val IMU_TO_YAW_CORRECTION = buildMap {
+		// Mag is enabled on MPU9250 but server doesn't know about it
+		set(ImuType.MPU9250, YAW_CORRECTION_IMU_DISABLED)
+		set(ImuType.MPU6500, YAW_CORRECTION_IMU_BAD)
+		set(ImuType.BNO080, YAW_CORRECTION_IMU_GOOD)
+		set(ImuType.BNO085, YAW_CORRECTION_IMU_GOOD)
+		set(ImuType.BNO055, YAW_CORRECTION_IMU_BAD)
+		set(ImuType.MPU6050, YAW_CORRECTION_IMU_BAD)
+		set(ImuType.BNO086, YAW_CORRECTION_IMU_GOOD)
+		set(ImuType.BMI160, YAW_CORRECTION_IMU_BAD)
+		set(ImuType.ICM20948, YAW_CORRECTION_IMU_BAD)
+		set(ImuType.ICM42688, YAW_CORRECTION_IMU_OK)
+		set(ImuType.BMI270, YAW_CORRECTION_IMU_OK)
+		set(ImuType.LSM6DS3TRC, YAW_CORRECTION_IMU_BAD)
+		set(ImuType.LSM6DSV, YAW_CORRECTION_IMU_GOOD)
+		set(ImuType.LSM6DSO, YAW_CORRECTION_IMU_OK)
+		set(ImuType.LSM6DSR, YAW_CORRECTION_IMU_GOOD)
+		set(ImuType.ICM45686, YAW_CORRECTION_IMU_GOOD)
+		set(ImuType.ICM45605, YAW_CORRECTION_IMU_GOOD)
+		set(ImuType.ICM55686, YAW_CORRECTION_IMU_GOOD)
+	}
 
-    // Assume any new IMUs are at least OK, or else we wouldn't be writing firmware to
-    // support it. Please classify and add new IMUs to the map above!
-    val YAW_CORRECTION_DEFAULT = YAW_CORRECTION_IMU_OK
+	// Assume any new IMUs are at least OK, or else we wouldn't be writing firmware to
+	// support it. Please classify and add new IMUs to the map above!
+	val YAW_CORRECTION_DEFAULT = YAW_CORRECTION_IMU_OK
 }

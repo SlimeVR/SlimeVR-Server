@@ -134,9 +134,9 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
-            receiver.appContext.server.getTracker(trackerId)?.context?.dispatch(
-                TrackerActions.SetRotation(rotation = event.rotation, position = event.position),
-            )
+			receiver.appContext.server.getTracker(trackerId)?.context?.dispatch(
+				TrackerActions.SetRotation(rotation = event.rotation, position = event.position),
+			)
 		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerBattery> { event ->

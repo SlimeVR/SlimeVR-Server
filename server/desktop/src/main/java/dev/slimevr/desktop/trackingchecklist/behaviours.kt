@@ -11,10 +11,10 @@ import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.desktop.getSteamVRDriversList
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.util.timeSource
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.trackingchecklist.TrackingChecklistActions
 import dev.slimevr.trackingchecklist.TrackingChecklistBehaviourType
+import dev.slimevr.util.timeSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.Dispatchers

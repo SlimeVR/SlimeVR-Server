@@ -38,7 +38,7 @@ data class YawResetSmoothing(
 /**
  * Aggregates the yaw errors from multiple forces.
  */
-data class YawErrors (
+data class YawErrors(
 	val lockedError: AngleErrors,
 	val centerError: AngleErrors,
 	val neighborError: AngleErrors,
@@ -152,9 +152,9 @@ class Tracker(
 					YawErrors(
 						AngleErrors(),
 						AngleErrors(),
-						AngleErrors()
-					)
-				)
+						AngleErrors(),
+					),
+				),
 			)
 			val trackerState = if (savedConfig != null) {
 				restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
