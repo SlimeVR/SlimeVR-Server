@@ -5,6 +5,7 @@ import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
 import dev.slimevr.config.DefaultUserBehaviour
 import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.SettingsConfigState
 import dev.slimevr.config.SettingsState
 import dev.slimevr.config.TextFileHandle
@@ -18,6 +19,8 @@ import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.math.angle.Angle
+import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
@@ -35,11 +38,14 @@ import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tapdetection.TapDetectionManager
+import dev.slimevr.tracker.RestState
 import dev.slimevr.tracker.SessionCalibration
+import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBasicBehaviour
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.YawErrors
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
@@ -102,7 +108,7 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
 		name = "TestSkeleton",
 	)
-	val skeleton = Skeleton(context, MutableStateFlow(ComputedSkeleton(bones = buildBones(context.state.value), frameTime = Duration.ZERO)))
+	val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
 	skeleton.startObserving()
 	return skeleton
 }
@@ -161,6 +167,9 @@ fun buildTestTracker(
 		completedRestCalibration = completedRestCalibration,
 		magStatus = MagnetometerStatus.NOT_SUPPORTED,
 		sessionCalibration = sessionCalibration,
+		restState = RestState.MOVING,
+		yawResetSmoothing = null,
+		stayAlignedData = StayAlignedData(null, Angle.ZERO, YawErrors(AngleErrors(), AngleErrors(), AngleErrors())),
 	)
 	val context = Context.create(
 		initialState = state,
@@ -173,7 +182,7 @@ fun buildTestTracker(
 
 fun buildTestSettings(scope: CoroutineScope): Settings {
 	val initialState = SettingsState(data = SettingsConfigState(), name = "test")
-	val context = Context.create<SettingsState, dev.slimevr.config.SettingsActions>(
+	val context = Context.create<SettingsState, SettingsActions>(
 		initialState = initialState,
 		scope = scope,
 		behaviours = emptyList(),
