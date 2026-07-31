@@ -1,75 +1,75 @@
 package dev.slimevr.stayaligned.todo
 
 import dev.slimevr.config.StayAlignedConfig
-import dev.slimevr.stayaligned.StayAlignedDefaults
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.stayaligned.StayAlignedDefaults
 
 class RelaxedPose(
-    val upperLeg: Angle,
-    val lowerLeg: Angle,
-    val foot: Angle,
+	val upperLeg: Angle,
+	val lowerLeg: Angle,
+	val foot: Angle,
 ) {
-    override fun toString(): String = "upperLeg=$upperLeg lowerLeg=$lowerLeg foot=$foot"
+	override fun toString(): String = "upperLeg=$upperLeg lowerLeg=$lowerLeg foot=$foot"
 
-    companion object {
+	companion object {
 
-        val ZERO = RelaxedPose(Angle.ZERO, Angle.ZERO, Angle.ZERO)
+		val ZERO = RelaxedPose(Angle.ZERO, Angle.ZERO, Angle.ZERO)
 
-        /**
-         * Gets the relaxed angles for a particular pose. May provide defaults if the
-         * angles aren't configured for the pose.
-         */
-        fun forPose(
-            playerPose: PlayerPose,
-            config: StayAlignedConfig,
-        ) = when (playerPose) {
-            PlayerPose.STANDING -> {
-                val poseConfig = config.standingRelaxedPose
-                if (poseConfig.enabled) {
-                    RelaxedPose(
-                        Angle.ofDeg(poseConfig.upperLegAngleInDeg),
-                        Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
-                        Angle.ofDeg(poseConfig.footAngleInDeg),
-                    )
-                } else {
-                    null
-                }
-            }
+		/**
+		 * Gets the relaxed angles for a particular pose. May provide defaults if the
+		 * angles aren't configured for the pose.
+		 */
+		fun forPose(
+			playerPose: PlayerPose,
+			config: StayAlignedConfig,
+		) = when (playerPose) {
+			PlayerPose.STANDING -> {
+				val poseConfig = config.standingRelaxedPose
+				if (poseConfig.enabled) {
+					RelaxedPose(
+						Angle.ofDeg(poseConfig.upperLegAngleInDeg),
+						Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
+						Angle.ofDeg(poseConfig.footAngleInDeg),
+					)
+				} else {
+					null
+				}
+			}
 
-            PlayerPose.SITTING_IN_CHAIR -> {
-                val poseConfig = config.sittingRelaxedPose
-                if (poseConfig.enabled) {
-                    RelaxedPose(
-                        Angle.ofDeg(poseConfig.upperLegAngleInDeg),
-                        Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
-                        Angle.ofDeg(poseConfig.footAngleInDeg),
-                    )
-                } else {
-                    null
-                }
-            }
+			PlayerPose.SITTING_IN_CHAIR -> {
+				val poseConfig = config.sittingRelaxedPose
+				if (poseConfig.enabled) {
+					RelaxedPose(
+						Angle.ofDeg(poseConfig.upperLegAngleInDeg),
+						Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
+						Angle.ofDeg(poseConfig.footAngleInDeg),
+					)
+				} else {
+					null
+				}
+			}
 
-            PlayerPose.SITTING_ON_GROUND,
-            PlayerPose.LYING_ON_BACK,
-                -> {
-                val poseConfig = config.flatRelaxedPose
-                if (poseConfig.enabled) {
-                    RelaxedPose(
-                        Angle.ofDeg(poseConfig.upperLegAngleInDeg),
-                        Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
-                        Angle.ofDeg(poseConfig.footAngleInDeg),
-                    )
-                } else {
-                    null
-                }
-            }
+			PlayerPose.SITTING_ON_GROUND,
+			PlayerPose.LYING_ON_BACK,
+			-> {
+				val poseConfig = config.flatRelaxedPose
+				if (poseConfig.enabled) {
+					RelaxedPose(
+						Angle.ofDeg(poseConfig.upperLegAngleInDeg),
+						Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
+						Angle.ofDeg(poseConfig.footAngleInDeg),
+					)
+				} else {
+					null
+				}
+			}
 
-            PlayerPose.KNEELING ->
-                StayAlignedDefaults.RELAXED_POSE_KNEELING
+			PlayerPose.KNEELING ->
+				StayAlignedDefaults.RELAXED_POSE_KNEELING
 
-            else ->
-                null
-        }
+			else ->
+				null
+		}
 
 //        /**
 //         * Gets the relaxed angles from the trackers.
@@ -102,5 +102,5 @@ class RelaxedPose(
 //
 //            return RelaxedPose(upperLegAngle, lowerLegAngle, footAngle)
 //        }
-    }
+	}
 }

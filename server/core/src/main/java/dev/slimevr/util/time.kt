@@ -18,4 +18,4 @@ const val nanosecondsInSecond = 1_000_000_000L
  * Microseconds are used under the hood due to Float precision being limited.
  */
 val Duration.inFloatingSeconds: Float
-    get() = this.inWholeMicroseconds / microsecondsInSecond.toFloat()
+	get() = this.inWholeMicroseconds / microsecondsInSecond.toFloat()

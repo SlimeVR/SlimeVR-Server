@@ -1,8 +1,8 @@
 package dev.slimevr.stayaligned.todo
 
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.util.Side
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Vector3
 
@@ -17,39 +17,39 @@ import io.github.axisangles.ktmath.Vector3
  * left is positive yaw, right is negative yaw.
  */
 object TrackerYaw {
-    /**
-     * Whether we can get the yaw of a tracker.
-     */
-    fun hasTrackerYaw(tracker: Tracker) = Angle.absBetween(
-        tracker.context.state.value.rotation.sandwichUnitX(), // TODO tracker.getAdjustedRotationForceStayAligned()
-        Vector3.POS_Y,
-    ) > MIN_ON_SIDE_ANGLE
+	/**
+	 * Whether we can get the yaw of a tracker.
+	 */
+	fun hasTrackerYaw(tracker: Tracker) = Angle.absBetween(
+		tracker.context.state.value.rotation.sandwichUnitX(), // TODO tracker.getAdjustedRotationForceStayAligned()
+		Vector3.POS_Y,
+	) > MIN_ON_SIDE_ANGLE
 
-    /**
-     * Gets the yaw of the tracker, for trackers that are not on its side.
-     *
-     * WARNING: DO NOT USE for a tracker that is on its side. Euler YZX angles have a
-     * singularity for a tracker that is on its side, and can yield arbitrary yaws.
-     * For example, the Euler YZX angles (Y=0°, Z=90°, X=30°) and (Y=30°, Z=90°, X=0°)
-     * are equivalent but yield completely different yaws.
-     *
-     * WARNING: It is possible to use another EulerOrder which does not have a
-     * singularity for this rotation to get "some" yaw, but this yaw will be very
-     * different from the from YZX. DO NOT ATTEMPT!
-     */
-    fun trackerYaw(tracker: Tracker) = Angle.ofRad(
-        tracker.context.state.value.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
-            .toEulerAngles(EulerOrder.YZX)
-            .y,
-    )
+	/**
+	 * Gets the yaw of the tracker, for trackers that are not on its side.
+	 *
+	 * WARNING: DO NOT USE for a tracker that is on its side. Euler YZX angles have a
+	 * singularity for a tracker that is on its side, and can yield arbitrary yaws.
+	 * For example, the Euler YZX angles (Y=0°, Z=90°, X=30°) and (Y=30°, Z=90°, X=0°)
+	 * are equivalent but yield completely different yaws.
+	 *
+	 * WARNING: It is possible to use another EulerOrder which does not have a
+	 * singularity for this rotation to get "some" yaw, but this yaw will be very
+	 * different from the from YZX. DO NOT ATTEMPT!
+	 */
+	fun trackerYaw(tracker: Tracker) = Angle.ofRad(
+		tracker.context.state.value.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
+			.toEulerAngles(EulerOrder.YZX)
+			.y,
+	)
 
-    /**
-     * Applies an extra yaw in the specified direction.
-     */
-    fun extraYaw(direction: Side, angle: Angle) = when (direction) {
-        Side.LEFT -> angle
-        Side.RIGHT -> -angle
-    }
+	/**
+	 * Applies an extra yaw in the specified direction.
+	 */
+	fun extraYaw(direction: Side, angle: Angle) = when (direction) {
+		Side.LEFT -> angle
+		Side.RIGHT -> -angle
+	}
 
-    private val MIN_ON_SIDE_ANGLE = Angle.ofDeg(30.0f)
+	private val MIN_ON_SIDE_ANGLE = Angle.ofDeg(30.0f)
 }

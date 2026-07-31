@@ -144,7 +144,7 @@ class Skeleton(
 				BoneTransformBehaviour(),
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
-//				YouSpinMeRightRoundBehaviour(inputHz = 50f),
+// 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					processors = listOf(

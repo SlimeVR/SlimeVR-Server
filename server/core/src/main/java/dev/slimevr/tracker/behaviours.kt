@@ -2,15 +2,15 @@ package dev.slimevr.tracker
 
 import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
-import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.math.angle.Angle
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
 import dev.slimevr.stayaligned.StayAlignedDefaults.YAW_CORRECTION_DEFAULT
 import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.stayaligned.todo.AdjustTrackerYaw
-import dev.slimevr.math.angle.Angle
+import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -190,8 +190,8 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 			state.copy(sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY))
 		}
 
-        else -> state
-    }
+		else -> state
+	}
 
 	override fun observe(receiver: Tracker) {
 		// Refresh the tracker's rotation whenever calibration gets updated
@@ -351,8 +351,8 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 							receiver.appContext.skeleton.context.dispatchAll(
 								listOfNotNull(
 									SkeletonActions.SetBoneRotation(bodyPart, trackerState.rotation),
-									if (trackerState.position != null) SkeletonActions.SetBonePosition(bodyPart, trackerState.position) else null
-								)
+									if (trackerState.position != null) SkeletonActions.SetBonePosition(bodyPart, trackerState.position) else null,
+								),
 							)
 							lastBodyPartSent = trackerState.bodyPart
 						}
@@ -438,7 +438,7 @@ class TrackerRestDetectionBehaviour : TrackerBehaviour {
 				when (receiver.context.state.value.restState) {
 					RestState.MOVING,
 					RestState.RECENTLY_AT_REST,
-						->
+					->
 						if (Angle.absBetween(lastRotation, rotation) > MAX_ROTATION) {
 							lastRotation = rotation
 							lastUpdateTime = now
@@ -467,7 +467,6 @@ class TrackerRestDetectionBehaviour : TrackerBehaviour {
 
 	override fun reduce(state: TrackerState, action: TrackerActions): TrackerState = when (action) {
 		is TrackerActions.SetRestState -> state.copy(restState = action.restState)
-
 		else -> state
 	}
 
@@ -485,16 +484,15 @@ class TrackerStayAlignedBehaviour(
 	private var lastRotationTime = timeSource.markNow()
 
 	@OptIn(ExperimentalCoroutinesApi::class)
-    override fun observe(receiver: Tracker) {
+	override fun observe(receiver: Tracker) {
 		receiver.context.state
 			.distinctUntilChanged { old, new -> old.sessionCalibration == new.sessionCalibration }
 			.onEach {
-//				lockedRotation = null
-//				yawCorrection = Angle.ZERO
-//				yawErrors = YawErrors()
-//				receiver.context.dispatch(TrackerActions.)
+// 				lockedRotation = null
+// 				yawCorrection = Angle.ZERO
+// 				yawErrors = YawErrors()
+// 				receiver.context.dispatch(TrackerActions.)
 			}.launchIn(receiver.context.scope)
-
 
 		val stayAlignedConfigFlow = settings.context.state.map { it.data.stayAlignedConfig }.distinctUntilChanged()
 		val imuTypeFlow = receiver.context.state.map { it.imuType }.distinctUntilChanged()
@@ -525,13 +523,13 @@ class TrackerStayAlignedBehaviour(
 							stayAlignedConfig,
 						)
 
-//						if (receiver.context.state.value.restState == RestDetector.State.AT_REST) {
-//							if (lockedRotation == null) {
-//								lockedRotation = receiver.context.state.value.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
-//							}
-//						} else {
-//							lockedRotation = null
-//						}
+// 						if (receiver.context.state.value.restState == RestDetector.State.AT_REST) {
+// 							if (lockedRotation == null) {
+// 								lockedRotation = receiver.context.state.value.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
+// 							}
+// 						} else {
+// 							lockedRotation = null
+// 						}
 					}
 			}
 			.launchIn(receiver.context.scope)

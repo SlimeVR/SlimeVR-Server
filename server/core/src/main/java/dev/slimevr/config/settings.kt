@@ -188,7 +188,7 @@ data class StayAlignedRelaxedPoseConfig(
 )
 
 @Serializable
-data class StayAlignedConfig (
+data class StayAlignedConfig(
 	/** Global enable toggle for all poses */
 	var enabled: Boolean = false,
 	/** Standing relaxed pose */

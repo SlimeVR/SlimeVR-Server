@@ -1,12 +1,12 @@
 package dev.slimevr.skeleton.processors
 
 import dev.slimevr.config.Settings
-import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.mapValues
+import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
