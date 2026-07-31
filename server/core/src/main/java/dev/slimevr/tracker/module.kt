@@ -23,10 +23,10 @@ data class TrackerSensorIds(val trackerId: Int, val sensorId: Int)
 /**
  * Indicates if the tracker is moving, at rest or recently at rest.
  */
-enum class RestState {
+enum class Motion {
 	MOVING,
-	AT_REST,
-	RECENTLY_AT_REST,
+	RESTING,
+	STARTED_MOVING,
 }
 
 data class YawResetSmoothing(
@@ -76,7 +76,7 @@ data class TrackerState(
 	val completedRestCalibration: Boolean?,
 	val magStatus: MagnetometerStatus,
 	val sessionCalibration: SessionCalibration?,
-	val restState: RestState,
+	val motion: Motion,
 	val yawResetSmoothing: YawResetSmoothing?,
 	val stayAlignedData: StayAlignedData,
 )
@@ -93,7 +93,7 @@ sealed interface TrackerActions {
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class MountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
-	data class SetRestState(val restState: RestState) : TrackerActions
+	data class SetRestState(val restState: Motion) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
@@ -144,7 +144,7 @@ class Tracker(
 				completedRestCalibration = false,
 				magStatus = MagnetometerStatus.NOT_SUPPORTED,
 				sessionCalibration = null,
-				restState = RestState.MOVING, // TODO : should this be AT_REST?
+				motion = Motion.RESTING,
 				yawResetSmoothing = null,
 				stayAlignedData = StayAlignedData(
 					null,
@@ -168,9 +168,9 @@ class Tracker(
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerTPSBehaviour(),
+				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
 				TrackerRestOrientationBehaviour(settings),
-				TrackerRestDetectionBehaviour(),
 				TrackerStayAlignedBehaviour(settings, appContext.stayAlignedManager),
 			)
 			val context = Context.create(

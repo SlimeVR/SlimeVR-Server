@@ -34,6 +34,7 @@ class TapDetectionTest {
 	private fun runTapSequence(
 		tapsNeeded: Int,
 		events: List<AccelEvent>,
+		bodyMoving: Boolean = false,
 	) {
 		val state = TapDetectionBasicBehaviour.TrackerTapDetectionState(
 			trackerId = 1,
@@ -49,7 +50,7 @@ class TapDetectionTest {
 				event.expectedTap,
 				behaviour.runTapDetection(
 					now = timeSource.markNow(),
-					trackersOverThreshold = trackersOverThreshold,
+					bodyMoving = bodyMoving,
 					trackerTapDetectionState = state,
 					trackerAcceleration = event.accel,
 				),
@@ -115,5 +116,17 @@ class TapDetectionTest {
 			AccelEvent(accelDelay, highAccel, expectedTap = false),
 			AccelEvent(tapDelay, highAccel, expectedTap = false),
 		),
+	)
+
+	@Test
+	fun `Tap not detected while body is moving`() = runTapSequence(
+		tapsNeeded = 2,
+		events = listOf(
+			AccelEvent(Duration.ZERO, lowAccel, expectedTap = false),
+			AccelEvent(accelDelay, highAccel, expectedTap = false),
+			AccelEvent(tapDelay, lowAccel, expectedTap = false),
+			AccelEvent(accelDelay, highAccel, expectedTap = false),
+		),
+		true,
 	)
 }

@@ -31,14 +31,13 @@ import dev.slimevr.resets.ResetsState
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
-import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
 import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tapdetection.TapDetectionManager
-import dev.slimevr.tracker.RestState
+import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
@@ -60,7 +59,6 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
-import kotlin.time.Duration
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
 	openPort = { loc, _, _ -> SerialPortHandle(loc, "Fake $loc", {}, {}) },
@@ -167,7 +165,7 @@ fun buildTestTracker(
 		completedRestCalibration = completedRestCalibration,
 		magStatus = MagnetometerStatus.NOT_SUPPORTED,
 		sessionCalibration = sessionCalibration,
-		restState = RestState.MOVING,
+		motion = Motion.RESTING,
 		yawResetSmoothing = null,
 		stayAlignedData = StayAlignedData(null, Angle.ZERO, YawErrors(AngleErrors(), AngleErrors(), AngleErrors())),
 	)
