@@ -99,13 +99,15 @@ private fun processToe(
 		Side.LEFT -> yaw < -ABSOLUTE_SPLAY_THRESHOLD_ANGLE
 		Side.RIGHT -> yaw > ABSOLUTE_SPLAY_THRESHOLD_ANGLE
 	}
-	val floatValue = (pitch / MAXIMUM_ABSOLUTE_TOE_RANGE).coerceIn(-1f, 1f)
+	val toeCurlValue = (pitch / MAXIMUM_ABSOLUTE_TOE_RANGE).coerceIn(-1f, 1f)
+	val toeSplayValue = (yaw / MAXIMUM_ABSOLUTE_TOE_RANGE).coerceIn(-1f, 1f)
 	messages.addAll(
 		listOf(
 			OscContent.Message(OscMessage("/avatar/parameters/TipToes${side.oscName}", listOf(if (tipToe) OscArg.True else OscArg.False))),
 			OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.oscName}${oscToeNumber}Bool", listOf(if (bending) OscArg.True else OscArg.False))),
 			OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}$oscToeNumber", listOf(if (splayed) OscArg.True else OscArg.False))),
-			OscContent.Message(OscMessage("/avatar/parameters/Toe${side.oscName}${oscToeNumber}Float", listOf(OscArg.Float(floatValue)))),
+			OscContent.Message(OscMessage("/avatar/parameters/Toe${side.oscName}${oscToeNumber}Float", listOf(OscArg.Float(toeCurlValue)))),
+			OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}${oscToeNumber}Float", listOf(OscArg.Float(toeSplayValue)))),
 		),
 	)
 }
