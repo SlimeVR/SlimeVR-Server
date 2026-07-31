@@ -4,13 +4,13 @@ import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
+import dev.slimevr.util.Side
+import dev.slimevr.util.opposite
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.*
-import dev.slimevr.util.Side
-import dev.slimevr.util.opposite
 
 private const val ABSOLUTE_SPLAY_THRESHOLD_ANGLE = 7
 private const val MINIMUM_TIP_TOE_PITCH = -14
@@ -84,8 +84,7 @@ private fun processToe(
 	splayDirection: Side,
 	messages: MutableList<OscContent>,
 ) {
-
-	val oscToeNumber = toeNumber + 1;
+	val oscToeNumber = toeNumber + 1
 	val footRot = foot.rotation
 	val toeRot = toe.rotation
 	val currentRelative = footRot.inv() * toeRot
@@ -101,10 +100,12 @@ private fun processToe(
 		Side.RIGHT -> yaw > ABSOLUTE_SPLAY_THRESHOLD_ANGLE
 	}
 	val floatValue = (pitch / MAXIMUM_ABSOLUTE_TOE_RANGE).coerceIn(-1f, 1f)
-	messages.addAll(listOf(OscContent.Message(
-		OscMessage("/avatar/parameters/TipToes${side.oscName}", listOf(if (tipToe) OscArg.True else OscArg.False))),
-		OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.oscName}${oscToeNumber}Bool", listOf(if (bending) OscArg.True else OscArg.False))),
-		OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}${oscToeNumber}", listOf(if (splayed) OscArg.True else OscArg.False))),
-		OscContent.Message(OscMessage("/avatar/parameters/Toe${side.oscName}${oscToeNumber}Float", listOf(OscArg.Float(floatValue))))))
-
+	messages.addAll(
+		listOf(
+			OscContent.Message(OscMessage("/avatar/parameters/TipToes${side.oscName}", listOf(if (tipToe) OscArg.True else OscArg.False))),
+			OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.oscName}${oscToeNumber}Bool", listOf(if (bending) OscArg.True else OscArg.False))),
+			OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}$oscToeNumber", listOf(if (splayed) OscArg.True else OscArg.False))),
+			OscContent.Message(OscMessage("/avatar/parameters/Toe${side.oscName}${oscToeNumber}Float", listOf(OscArg.Float(floatValue)))),
+		),
+	)
 }

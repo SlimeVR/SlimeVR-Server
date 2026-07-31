@@ -1,8 +1,5 @@
 package dev.slimevr.util
 
-/**
- * Used to represent the side of a bone.
- */
 enum class Side {
 	LEFT,
 	RIGHT,
