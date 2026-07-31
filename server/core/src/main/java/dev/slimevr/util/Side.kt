@@ -13,8 +13,3 @@ val Side.opposite: Side
 		Side.LEFT -> Side.RIGHT
 		Side.RIGHT -> Side.LEFT
 	}
-val Side.oscName: String
-	get() = when (this) {
-		Side.LEFT -> "Left"
-		Side.RIGHT -> "Right"
-	}

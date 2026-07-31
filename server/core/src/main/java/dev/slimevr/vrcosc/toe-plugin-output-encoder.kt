@@ -11,11 +11,12 @@ import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.*
 import dev.slimevr.util.Side
 import dev.slimevr.util.opposite
-import dev.slimevr.util.oscName
+
 private const val ABSOLUTE_SPLAY_THRESHOLD_ANGLE = 7
 private const val MINIMUM_TIP_TOE_PITCH = -14
 private const val MINIMUM_BENDING_PITCH = 15
 private const val MAXIMUM_ABSOLUTE_TOE_RANGE = 90
+
 internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent> {
 	val messages = mutableListOf<OscContent>()
 
@@ -68,6 +69,12 @@ private fun processToesForFoot(
 		processToe(foot, lastAssigned, side, segmentIndex, splayDirection, messages)
 	}
 }
+
+private val Side.oscName: String
+	get() = when (this) {
+		Side.LEFT -> "Left"
+		Side.RIGHT -> "Right"
+	}
 
 private fun processToe(
 	foot: BoneState,
