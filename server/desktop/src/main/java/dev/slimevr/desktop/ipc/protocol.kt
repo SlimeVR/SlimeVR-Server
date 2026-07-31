@@ -68,6 +68,7 @@ enum class TrackerRole(
 }
 
 val bodyPartToRole = mapOf(
+	BodyPart.HEAD to TrackerRole.HMD,
 	BodyPart.UPPER_CHEST to TrackerRole.CHEST,
 	BodyPart.LEFT_UPPER_ARM to TrackerRole.LEFT_ELBOW,
 	BodyPart.RIGHT_UPPER_ARM to TrackerRole.RIGHT_ELBOW,
@@ -76,6 +77,8 @@ val bodyPartToRole = mapOf(
 	BodyPart.RIGHT_UPPER_LEG to TrackerRole.RIGHT_KNEE,
 	BodyPart.LEFT_FOOT to TrackerRole.LEFT_FOOT,
 	BodyPart.RIGHT_FOOT to TrackerRole.RIGHT_FOOT,
+	BodyPart.LEFT_SHOULDER to TrackerRole.LEFT_SHOULDER,
+	BodyPart.RIGHT_SHOULDER to TrackerRole.RIGHT_SHOULDER,
 	BodyPart.LEFT_HAND to TrackerRole.LEFT_HAND,
 	BodyPart.RIGHT_HAND to TrackerRole.RIGHT_HAND,
 )
@@ -224,12 +227,14 @@ suspend fun handleDriverConnection(
 				}
 			}
 			msg.tracker_added?.let { ta ->
+				val roleToBodyPart = bodyPartToRole.entries.associate { (k, v) -> v to k }
 				bridge.inbound.emit(
 					DriverBridgeInbound.TrackerAdded(
 						id = ta.tracker_id,
 						name = ta.tracker_name,
 						manufacturer = ta.manufacturer.ifEmpty { "OpenVR" },
 						serial = ta.tracker_serial,
+						bodyPart = TrackerRole.fromValue(ta.tracker_role.toUByte())?.let { role -> roleToBodyPart[role] },
 					),
 				)
 			}

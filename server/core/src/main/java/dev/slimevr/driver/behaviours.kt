@@ -128,6 +128,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 				event.name,
 				event.manufacturer,
 				event.serial,
+				event.bodyPart,
 			)
 		}.launchIn(receiver.context.scope)
 
@@ -162,6 +163,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 		name: String,
 		manufacturer: String,
 		serial: String,
+		bodyPart: BodyPart?,
 	) {
 		val server = receiver.appContext.server
 		val scope = server.context.scope
@@ -192,8 +194,8 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 				scope = scope,
 				id = trackerId,
 				name = name,
+				bodyPart = bodyPart,
 				deviceId = deviceId,
-				sensorType = null,
 				hardwareId = serial,
 				origin = DeviceOrigin.DRIVER,
 				appContext = receiver.appContext,
