@@ -4,6 +4,7 @@ import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
@@ -401,11 +402,7 @@ class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 	private fun isAccelerating(acceleration: RawAcceleration) = acceleration.lenSq() > MAX_SQUARED_ACCEL
 
 	override fun reduce(state: TrackerState, action: TrackerActions): TrackerState = when (action) {
-		is TrackerActions.SetRestState -> {
-			println(action.restState)
-			state.copy(motion = action.restState)
-		}
-
+		is TrackerActions.SetRestState -> state.copy(motion = action.restState)
 		else -> state
 	}
 
@@ -502,10 +499,14 @@ class TrackerStayAlignedBehaviour(
 		receiver.context.state
 			.distinctUntilChanged { old, new -> old.sessionCalibration == new.sessionCalibration }
 			.onEach {
-// 				lockedRotation = null
-// 				yawCorrection = Angle.ZERO
-// 				yawErrors = YawErrors()
-// 				receiver.context.dispatch(TrackerActions.)
+				// TODO use state
+ 				lockedRotation = null
+ 				yawCorrection = Angle.ZERO
+ 				yawErrors = YawErrors(
+					lockedError = AngleErrors(),
+					centerError = AngleErrors(),
+					neighborError = AngleErrors()
+				)
 			}.launchIn(receiver.context.scope)
 
 		val stayAlignedConfigFlow = settings.context.state.map { it.data.stayAlignedConfig }.distinctUntilChanged()
@@ -519,33 +520,47 @@ class TrackerStayAlignedBehaviour(
 
 				receiver.context.state
 					.distinctUntilChangedBy { it.rawRotation }
-					.onEach {
-						val yawCorrectionPerSec = IMU_TO_YAW_CORRECTION.getOrDefault(receiver.context.state.value.imuType, YAW_CORRECTION_DEFAULT)
+					.onEach { state ->
+						val yawCorrectionPerSec = IMU_TO_YAW_CORRECTION.getOrDefault(state.imuType, YAW_CORRECTION_DEFAULT)
 						if (yawCorrectionPerSec == Angle.ZERO) return@onEach
 
 						val lastFrameTimeSeconds = lastRotationTime.elapsedNow().inFloatingSeconds
 						lastRotationTime = timeSource.markNow()
 
 						val normalizedYawCorrection = yawCorrectionPerSec * lastFrameTimeSeconds
+
+						// TODO
 						val hideYawCorrection = stayAlignedManager.context.state.value.hideYawCorrection
 
 						// TODO
 						AdjustTrackerYaw.adjust(
-							receiver,
+							state,
 							skeleton.computed.value,
 							normalizedYawCorrection,
 							stayAlignedConfig,
 						)
 
-// 						if (receiver.context.state.value.restState == RestDetector.State.AT_REST) {
-// 							if (lockedRotation == null) {
-// 								lockedRotation = receiver.context.state.value.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
-// 							}
-// 						} else {
-// 							lockedRotation = null
-// 						}
-					}
+						// TODO
+ 						if (lockedRotation == null && state.motion == Motion.RESTING) {
+							lockedRotation = state.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
+ 						} else if (lockedRotation != null) {
+							lockedRotation = null
+ 						}
+				}
 			}
 			.launchIn(receiver.context.scope)
+	}
+
+	// TODO use state for these
+	var yawCorrection = Angle.ZERO
+	var yawErrors = YawErrors(
+        lockedError = AngleErrors(),
+        centerError = AngleErrors(),
+        neighborError = AngleErrors()
+    )
+	var lockedRotation: Quaternion? = Quaternion.IDENTITY
+
+	override fun reduce(state: TrackerState, action: TrackerActions): TrackerState = when (action) {
+		else -> state
 	}
 }

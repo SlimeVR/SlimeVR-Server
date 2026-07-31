@@ -1,6 +1,6 @@
 package dev.slimevr.stayaligned.todo
 
-import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerState
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.abs
 
@@ -18,12 +18,12 @@ enum class TrackerPose {
 
 	companion object {
 
-		fun ofTracker(tracker: Tracker?): TrackerPose {
-			if (tracker == null) {
+		fun ofTracker(trackerState: TrackerState?): TrackerPose {
+			if (trackerState == null) {
 				return NONE
 			}
 
-			val rotation = tracker.context.state.value.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
+			val rotation = trackerState.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
 
 			val x = rotation.sandwichUnitX()
 			val y = rotation.sandwichUnitY()

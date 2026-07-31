@@ -2,6 +2,7 @@ package dev.slimevr.stayaligned.todo
 
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Vector3
@@ -20,8 +21,8 @@ object TrackerYaw {
 	/**
 	 * Whether we can get the yaw of a tracker.
 	 */
-	fun hasTrackerYaw(tracker: Tracker) = Angle.absBetween(
-		tracker.context.state.value.rotation.sandwichUnitX(), // TODO tracker.getAdjustedRotationForceStayAligned()
+	fun hasTrackerYaw(tracker: TrackerState) = Angle.absBetween(
+		tracker.rotation.sandwichUnitX(), // TODO tracker.getAdjustedRotationForceStayAligned()
 		Vector3.POS_Y,
 	) > MIN_ON_SIDE_ANGLE
 
@@ -37,8 +38,8 @@ object TrackerYaw {
 	 * singularity for this rotation to get "some" yaw, but this yaw will be very
 	 * different from the from YZX. DO NOT ATTEMPT!
 	 */
-	fun trackerYaw(tracker: Tracker) = Angle.ofRad(
-		tracker.context.state.value.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
+	fun trackerYaw(trackerState: TrackerState) = Angle.ofRad(
+		trackerState.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
 			.toEulerAngles(EulerOrder.YZX)
 			.y,
 	)

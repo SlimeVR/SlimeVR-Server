@@ -1,7 +1,8 @@
 package dev.slimevr
 
-import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 class BaseBehaviour : VRServerBehaviour {
@@ -15,8 +16,8 @@ class BaseBehaviour : VRServerBehaviour {
 	}
 
 	override fun observe(receiver: VRServer) {
-		receiver.context.state.distinctUntilChangedBy { it.trackers.size }.onEach {
-			println("tracker list size changed")
+		receiver.context.state.map { it.trackers.size }.distinctUntilChanged().onEach {
+			println("Tracker list size changed to $it")
 		}.launchIn(receiver.context.scope)
 	}
 }

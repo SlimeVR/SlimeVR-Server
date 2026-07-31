@@ -5,6 +5,7 @@ import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.stayaligned.todo.TrackerYaw.extraYaw
 import dev.slimevr.stayaligned.todo.TrackerYaw.trackerYaw
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.Side
 
 /**
@@ -15,75 +16,75 @@ class CenterErrorVisitor(
 	val centerYaw: Angle,
 	val relaxedPose: RelaxedPose,
 	val errors: AngleErrors,
-) : TrackerSkeleton.TrackerVisitor {
+) : TrackerGroup.TrackerVisitor {
 
 	override fun visitHeadTracker(
-		tracker: Tracker,
-		belowUpperBody: Tracker?,
+		trackerState: TrackerState,
+		belowUpperBody: TrackerState?,
 	) {
-		errors.add(centerYaw - trackerYaw(tracker))
+		errors.add(centerYaw - trackerYaw(trackerState))
 	}
 
 	override fun visitUpperBodyTracker(
-		tracker: Tracker,
-		aboveHeadOrUpperBody: Tracker?,
-		belowUpperBody: Tracker?,
+		trackerState: TrackerState,
+		aboveHeadOrUpperBody: TrackerState?,
+		belowUpperBody: TrackerState?,
 	) {
-		errors.add(centerYaw - trackerYaw(tracker))
+		errors.add(centerYaw - trackerYaw(trackerState))
 	}
 
 	override fun visitUpperBodyTracker(
-		tracker: Tracker,
-		aboveHeadOrUpperBody: Tracker?,
-		belowLeftUpperLeg: Tracker?,
-		belowRightUpperLeg: Tracker?,
+		trackerState: TrackerState,
+		aboveHeadOrUpperBody: TrackerState?,
+		belowLeftUpperLeg: TrackerState?,
+		belowRightUpperLeg: TrackerState?,
 	) {
-		errors.add(centerYaw - trackerYaw(tracker))
+		errors.add(centerYaw - trackerYaw(trackerState))
 	}
 
 	override fun visitArmTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveUpperBodyOrArm: Tracker?,
-		belowHandOrArm: Tracker?,
+		tracker: TrackerState,
+		aboveUpperBodyOrArm: TrackerState?,
+		belowHandOrArm: TrackerState?,
 	) {
 		// No error because arms can go anywhere
 	}
 
 	override fun visitHandTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveArm: Tracker?,
-		oppositeHand: Tracker?,
+		tracker: TrackerState,
+		aboveArm: TrackerState?,
+		oppositeHand: TrackerState?,
 	) {
 		// No error because hands can go anywhere
 	}
 
 	override fun visitUpperLegTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveUpperBody: Tracker?,
-		belowLowerLeg: Tracker?,
-		oppositeUpperLeg: Tracker?,
+		tracker: TrackerState,
+		aboveUpperBody: TrackerState?,
+		belowLowerLeg: TrackerState?,
+		oppositeUpperLeg: TrackerState?,
 	) {
 		errors.add(centerYaw + extraYaw(side, relaxedPose.upperLeg) - trackerYaw(tracker))
 	}
 
 	override fun visitLowerLegTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveUpperLeg: Tracker?,
-		belowFoot: Tracker?,
-		oppositeLowerLeg: Tracker?,
+		tracker: TrackerState,
+		aboveUpperLeg: TrackerState?,
+		belowFoot: TrackerState?,
+		oppositeLowerLeg: TrackerState?,
 	) {
 		errors.add(centerYaw + extraYaw(side, relaxedPose.lowerLeg) - trackerYaw(tracker))
 	}
 
 	override fun visitFootTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveLowerLeg: Tracker?,
-		oppositeFoot: Tracker?,
+		tracker: TrackerState,
+		aboveLowerLeg: TrackerState?,
+		oppositeFoot: TrackerState?,
 	) {
 		errors.add(centerYaw + extraYaw(side, relaxedPose.foot) - trackerYaw(tracker))
 	}

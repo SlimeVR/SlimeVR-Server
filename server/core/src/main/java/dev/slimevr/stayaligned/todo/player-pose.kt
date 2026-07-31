@@ -14,32 +14,32 @@ enum class PlayerPose {
 
 	companion object {
 
-//        fun ofTrackers(trackers: TrackerSkeleton): PlayerPose {
-//            val poses =
-//                TrackerPoses(
-//                    trackers.upperBody.map(TrackerPose.Companion::ofTracker),
-//                    TrackerPose.ofTracker(trackers.leftUpperLeg),
-//                    TrackerPose.ofTracker(trackers.rightUpperLeg),
-//                    TrackerPose.ofTracker(trackers.leftLowerLeg),
-//                    TrackerPose.ofTracker(trackers.rightLowerLeg),
-//                )
-//
-//            return (
-//                    if (isStanding(poses)) {
-//                        STANDING
-//                    } else if (isSittingInChair(poses)) {
-//                        SITTING_IN_CHAIR
-//                    } else if (isSittingOnGround(poses)) {
-//                        SITTING_ON_GROUND
-//                    } else if (isLyingOnBack(poses)) {
-//                        LYING_ON_BACK
-//                    } else if (isKneeling(poses)) {
-//                        KNEELING
-//                    } else {
-//                        UNKNOWN
-//                    }
-//                    )
-//        }
+        fun ofTrackers(trackers: TrackerGroup): PlayerPose {
+            val poses =
+                TrackerPoses(
+                    trackers.upperBody.map(TrackerPose.Companion::ofTracker),
+                    TrackerPose.ofTracker(trackers.leftUpperLeg),
+                    TrackerPose.ofTracker(trackers.rightUpperLeg),
+                    TrackerPose.ofTracker(trackers.leftLowerLeg),
+                    TrackerPose.ofTracker(trackers.rightLowerLeg),
+                )
+
+            return (
+                    if (isStanding(poses)) {
+                        STANDING
+                    } else if (isSittingInChair(poses)) {
+                        SITTING_IN_CHAIR
+                    } else if (isSittingOnGround(poses)) {
+                        SITTING_ON_GROUND
+                    } else if (isLyingOnBack(poses)) {
+                        LYING_ON_BACK
+                    } else if (isKneeling(poses)) {
+                        KNEELING
+                    } else {
+                        UNKNOWN
+                    }
+                    )
+        }
 
 		private class TrackerPoses(
 			val upperBody: List<TrackerPose>,

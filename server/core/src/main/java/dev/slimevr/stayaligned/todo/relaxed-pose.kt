@@ -2,7 +2,12 @@ package dev.slimevr.stayaligned.todo
 
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.stayaligned.StayAlignedDefaults
+import dev.slimevr.stayaligned.todo.TrackerYaw.trackerYaw
+import dev.slimevr.tracker.TrackerState
+import solarxr_protocol.datatypes.BodyPart
 
 class RelaxedPose(
 	val upperLeg: Angle,
@@ -71,36 +76,19 @@ class RelaxedPose(
 				null
 		}
 
-//        /**
-//         * Gets the relaxed angles from the trackers.
-//         */
-//        fun fromTrackers(humanSkeleton: HumanSkeleton): RelaxedPose {
-//            val halfAngleBetween = { left: Tracker, right: Tracker ->
-//                (trackerYaw(left) - trackerYaw(right)) * 0.5f
-//            }
-//
-//            var upperLegAngle = Angle.ZERO
-//            humanSkeleton.leftUpperLegTracker?.let { left ->
-//                humanSkeleton.rightUpperLegTracker?.let { right ->
-//                    upperLegAngle = halfAngleBetween(left, right)
-//                }
-//            }
-//
-//            var lowerLegAngle = Angle.ZERO
-//            humanSkeleton.leftLowerLegTracker?.let { left ->
-//                humanSkeleton.rightLowerLegTracker?.let { right ->
-//                    lowerLegAngle = halfAngleBetween(left, right)
-//                }
-//            }
-//
-//            var footAngle = Angle.ZERO
-//            humanSkeleton.leftFootTracker?.let { left ->
-//                humanSkeleton.rightFootTracker?.let { right ->
-//                    footAngle = halfAngleBetween(left, right)
-//                }
-//            }
-//
-//            return RelaxedPose(upperLegAngle, lowerLegAngle, footAngle)
-//        }
+        /**
+         * Gets the relaxed angles from the trackers.
+         */
+        fun fromTrackers(trackerStates: List<TrackerState>): RelaxedPose {
+            val halfAngleBetween = { left: TrackerState, right: TrackerState ->
+                (trackerYaw(left) - trackerYaw(right)) * 0.5f
+            }
+
+            val upperLegAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_UPPER_LEG }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_UPPER_LEG })
+			val lowerLegAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_LOWER_LEG }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_LOWER_LEG })
+			val footAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_FOOT }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_FOOT })
+
+            return RelaxedPose(upperLegAngle, lowerLegAngle, footAngle)
+        }
 	}
 }

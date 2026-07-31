@@ -36,7 +36,7 @@ class StayAlignedManager(val context: StayAlignedContext, val server: VRServer, 
 	 * Sets and enables a relaxed pose from the user's current pose.
 	 */
 	fun detectRelaxedPose(pose: StayAlignedRelaxedPose) {
-		// TODO get user pose
+		// TODO get user pose fromTrackers
 		updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(true))
 	}
 

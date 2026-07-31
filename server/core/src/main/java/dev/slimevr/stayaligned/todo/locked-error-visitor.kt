@@ -3,6 +3,7 @@ package dev.slimevr.stayaligned.todo
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -15,75 +16,75 @@ import kotlin.math.atan2
 class LockedErrorVisitor(
 	val lockedRotation: Quaternion,
 	val errors: AngleErrors,
-) : TrackerSkeleton.TrackerVisitor {
+) : TrackerGroup.TrackerVisitor {
 
 	override fun visitHeadTracker(
-		tracker: Tracker,
-		belowUpperBody: Tracker?,
+		trackerState: TrackerState,
+		belowUpperBody: TrackerState?,
 	) {
-		errors.add(error(tracker))
+		errors.add(error(trackerState))
 	}
 
 	override fun visitUpperBodyTracker(
-		tracker: Tracker,
-		aboveHeadOrUpperBody: Tracker?,
-		belowUpperBody: Tracker?,
+		trackerState: TrackerState,
+		aboveHeadOrUpperBody: TrackerState?,
+		belowUpperBody: TrackerState?,
 	) {
-		errors.add(error(tracker))
+		errors.add(error(trackerState))
 	}
 
 	override fun visitUpperBodyTracker(
-		tracker: Tracker,
-		aboveHeadOrUpperBody: Tracker?,
-		belowLeftUpperLeg: Tracker?,
-		belowRightUpperLeg: Tracker?,
+		trackerState: TrackerState,
+		aboveHeadOrUpperBody: TrackerState?,
+		belowLeftUpperLeg: TrackerState?,
+		belowRightUpperLeg: TrackerState?,
 	) {
-		errors.add(error(tracker))
+		errors.add(error(trackerState))
 	}
 
 	override fun visitArmTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveUpperBodyOrArm: Tracker?,
-		belowHandOrArm: Tracker?,
+		tracker: TrackerState,
+		aboveUpperBodyOrArm: TrackerState?,
+		belowHandOrArm: TrackerState?,
 	) {
 		errors.add(error(tracker))
 	}
 
 	override fun visitHandTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveArm: Tracker?,
-		oppositeHand: Tracker?,
+		tracker: TrackerState,
+		aboveArm: TrackerState?,
+		oppositeHand: TrackerState?,
 	) {
 		errors.add(error(tracker))
 	}
 
 	override fun visitUpperLegTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveUpperBody: Tracker?,
-		belowLowerLeg: Tracker?,
-		oppositeUpperLeg: Tracker?,
+		tracker: TrackerState,
+		aboveUpperBody: TrackerState?,
+		belowLowerLeg: TrackerState?,
+		oppositeUpperLeg: TrackerState?,
 	) {
 		errors.add(error(tracker))
 	}
 
 	override fun visitLowerLegTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveUpperLeg: Tracker?,
-		belowFoot: Tracker?,
-		oppositeLowerLeg: Tracker?,
+		tracker: TrackerState,
+		aboveUpperLeg: TrackerState?,
+		belowFoot: TrackerState?,
+		oppositeLowerLeg: TrackerState?,
 	) {
 		errors.add(error(tracker))
 	}
 
 	override fun visitFootTracker(
 		side: Side,
-		tracker: Tracker,
-		aboveLowerLeg: Tracker?,
-		oppositeFoot: Tracker?,
+		tracker: TrackerState,
+		aboveLowerLeg: TrackerState?,
+		oppositeFoot: TrackerState?,
 	) {
 		errors.add(error(tracker))
 	}

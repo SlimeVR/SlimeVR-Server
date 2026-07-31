@@ -4,7 +4,9 @@ import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.stayaligned.StayAlignedDefaults
+import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.YawErrors
 
 object AdjustTrackerYaw {
@@ -55,26 +57,24 @@ object AdjustTrackerYaw {
 	 * alignment.
 	 */
 	fun adjust(
-		tracker: Tracker,
-		trackers: ComputedSkeleton,
+		trackerState: TrackerState,
+		computedSkeleton: ComputedSkeleton,
 		yawCorrection: Angle,
 		config: StayAlignedConfig,
 	) {
-//        // Clear errors, in case we don't adjust the tracker
-//        var state = tracker.context.state.value.stayAlignedData
-//        state.yawErrors = YawErrors()
+        // Clear errors, in case we don't adjust the tracker
+//        trackerState.stayAlignedData.yawErrors = YawErrors()
+
+//        when (trackerState.motion) {
+//            Motion.MOVING ->
+//                adjustMovingTracker(trackerState, computedSkeleton, yawCorrection, config)
 //
-//        val restDetector = state.restDetector
-//        when (restDetector.state) {
-//            RestDetector.State.MOVING ->
-//                adjustMovingTracker(tracker, trackers, yawCorrection, config)
+//            Motion.RESTING ->
+//                adjustLockedTracker(trackerState, computedSkeleton, yawCorrection)
 //
-//            RestDetector.State.AT_REST ->
-//                adjustLockedTracker(tracker, trackers, yawCorrection)
-//
-//            RestDetector.State.RECENTLY_AT_REST -> {
-//                // Do not adjust trackers that were recently at rest, to support play
-//                // styles that are primarily at rest
+//            Motion.STARTED_MOVING -> {
+//                // Do not adjust trackers that were recently at rest
+//				// to support play styles that are primarily at rest
 //            }
 //        }
 	}
@@ -83,15 +83,15 @@ object AdjustTrackerYaw {
 	 * Adjusts a locked tracker.
 	 */
 	private fun adjustLockedTracker(
-		tracker: Tracker,
-		trackers: TrackerSkeleton,
+		trackerState: TrackerState,
+		computedSkeleton: ComputedSkeleton,
 		yawCorrection: Angle,
 	) {
-//        val lockedRotation = tracker.stayAligned.lockedRotation ?: return
-//
-//        adjustByError(tracker, yawCorrection) {
+        val lockedRotation = trackerState.stayAlignedData.lockedRotation ?: return
+
+//        adjustByError(trackerState, yawCorrection) {
 //            YawErrors().also {
-//                trackers.visit(tracker, LockedErrorVisitor(lockedRotation, it.lockedError))
+//				computedSkeleton.visit(trackerState, LockedErrorVisitor(lockedRotation, it.lockedError))
 //            }
 //        }
 	}
@@ -100,20 +100,20 @@ object AdjustTrackerYaw {
 	 * Adjusts a tracker that is moving.
 	 */
 	private fun adjustMovingTracker(
-		tracker: Tracker,
-		trackers: TrackerSkeleton,
+		trackerState: TrackerState,
+		trackerGroup: TrackerGroup,
 		yawCorrection: Angle,
 		config: StayAlignedConfig,
 	) {
-//        val centerYaw = CenterYaw.ofSkeleton(trackers) ?: return
-//
-//        val pose = PlayerPose.ofTrackers(trackers)
+        val centerYaw = CenterYaw.ofTrackerGroup(trackerGroup) ?: return
+
+//        val pose = PlayerPose.of(trackers)
 //        val relaxedPose = RelaxedPose.forPose(pose, config) ?: return
 //
-//        adjustByError(tracker, yawCorrection) {
+//        adjustByError(trackerState, yawCorrection) {
 //            YawErrors().also {
-//                trackers.visit(tracker, CenterErrorVisitor(centerYaw, relaxedPose, it.centerError))
-//                trackers.visit(tracker, NeighborErrorVisitor(relaxedPose, it.neighborError))
+//				trackerGroup.visit(trackerState, CenterErrorVisitor(centerYaw, relaxedPose, it.centerError))
+//				trackerGroup.visit(trackerState, NeighborErrorVisitor(relaxedPose, it.neighborError))
 //            }
 //        }
 	}
@@ -122,37 +122,37 @@ object AdjustTrackerYaw {
 	 * Adjusts the yaw by applying gradient descent.
 	 */
 	private fun adjustByError(
-		tracker: Tracker,
+		trackerState: TrackerState,
 		yawCorrection: Angle,
-		errorFn: (tracker: Tracker) -> YawErrors,
+		errorFn: (tracker: TrackerState) -> YawErrors,
 	) {
-//        val state = tracker.stayAligned
-//
-//        val curYaw = state.yawCorrection
-//        val curError = errorFn(tracker)
-//
-//        val posYaw = curYaw + yawCorrection
-//        state.yawCorrection = posYaw
-//        val posError = errorFn(tracker)
-//
-//        val negYaw = curYaw - yawCorrection
-//        state.yawCorrection = negYaw
-//        val negError = errorFn(tracker)
-//
-//        val posYawDelta = gradient(posError, curError)
-//        val negYawDelta = gradient(negError, curError)
-//
-//        // Pick the yaw correction that minimizes the error
-//        if ((posYawDelta < Angle.ZERO) && (posYawDelta < negYawDelta)) {
-//            state.yawCorrection = posYaw
-//            state.yawErrors = posError
-//        } else if (negYawDelta < Angle.ZERO) {
-//            state.yawCorrection = negYaw
-//            state.yawErrors = negError
-//        } else {
-//            state.yawCorrection = curYaw
-//            state.yawErrors = curError
-//        }
+        val stayAlignedState = trackerState.stayAlignedData
+
+        val curYaw = stayAlignedState.yawCorrection
+        val curError = errorFn(trackerState)
+
+        val posYaw = curYaw + yawCorrection
+//        stayAlignedState.yawCorrection = posYaw
+        val posError = errorFn(trackerState)
+
+        val negYaw = curYaw - yawCorrection
+//        stayAlignedState.yawCorrection = negYaw
+        val negError = errorFn(trackerState)
+
+        val posYawDelta = gradient(posError, curError)
+        val negYawDelta = gradient(negError, curError)
+
+        // Pick the yaw correction that minimizes the error
+        if ((posYawDelta < Angle.ZERO) && (posYawDelta < negYawDelta)) {
+//            stayAlignedState.yawCorrection = posYaw
+//            stayAlignedState.yawErrors = posError
+        } else if (negYawDelta < Angle.ZERO) {
+//            stayAlignedState.yawCorrection = negYaw
+//            stayAlignedState.yawErrors = negError
+        } else {
+//            stayAlignedState.yawCorrection = curYaw
+//			stayAlignedState.yawErrors = curError
+        }
 	}
 
 	/**
