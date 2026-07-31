@@ -58,16 +58,8 @@ val BODY_PART_TO_UNITY_BONE: Map<BodyPart, String> = mapOf(
 	BodyPart.RIGHT_LITTLE_PROXIMAL to "RightLittleProximal",
 	BodyPart.RIGHT_LITTLE_INTERMEDIATE to "RightLittleIntermediate",
 	BodyPart.RIGHT_LITTLE_DISTAL to "RightLittleDistal",
-	BodyPart.LEFT_BIG_TOE to "LeftBigToe",
-	BodyPart.LEFT_INDEX_TOE to "LeftIndexToe",
-	BodyPart.LEFT_MIDDLE_TOE to "LeftMiddleToe",
-	BodyPart.LEFT_RING_TOE to "LeftRingToe",
-	BodyPart.LEFT_LITTLE_TOE to "LeftLittleToe",
-	BodyPart.RIGHT_BIG_TOE to "RightBigToe",
-	BodyPart.RIGHT_INDEX_TOE to "RightIndexToe",
-	BodyPart.RIGHT_MIDDLE_TOE to "RightMiddleToe",
-	BodyPart.RIGHT_RING_TOE to "RightRingToe",
-	BodyPart.RIGHT_LITTLE_TOE to "RightLittleToe",
+	BodyPart.LEFT_BIG_TOE to "LeftToes",
+	BodyPart.RIGHT_BIG_TOE to "RightToes",
 )
 
 // HIP-rooted hierarchy. VMC/Unity expects this; our skeleton is HEAD-rooted.
@@ -123,13 +115,9 @@ val VMC_HIERARCHY_MAP: Map<BodyPart, Array<BodyPart>> = mapOf(
 	BodyPart.RIGHT_LITTLE_INTERMEDIATE to arrayOf(BodyPart.RIGHT_LITTLE_DISTAL),
 	BodyPart.LEFT_FOOT to arrayOf(
 		BodyPart.LEFT_BIG_TOE,
-		BodyPart.LEFT_INDEX_TOE,
-		BodyPart.LEFT_LITTLE_TOE,
 	),
 	BodyPart.RIGHT_FOOT to arrayOf(
 		BodyPart.RIGHT_BIG_TOE,
-		BodyPart.RIGHT_INDEX_TOE,
-		BodyPart.RIGHT_LITTLE_TOE,
 	),
 )
 
@@ -202,13 +190,9 @@ val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 	)
 	val leftToes = listOf(
 		BodyPart.LEFT_BIG_TOE,
-		BodyPart.LEFT_INDEX_TOE,
-		BodyPart.LEFT_LITTLE_TOE,
 	)
 	val rightToes = listOf(
 		BodyPart.RIGHT_BIG_TOE,
-		BodyPart.RIGHT_INDEX_TOE,
-		BodyPart.RIGHT_LITTLE_TOE,
 	)
 	BodyPartMap(
 		mapOf(

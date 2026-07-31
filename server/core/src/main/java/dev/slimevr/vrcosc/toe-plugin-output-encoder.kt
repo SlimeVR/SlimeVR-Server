@@ -11,11 +11,11 @@ import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.*
 import dev.slimevr.util.Side
 import dev.slimevr.util.opposite
-
-private const val Absolute_Splay_Threshold_Angle = 7
-private const val Minimum_Tip_Toe_Pitch = -14
-private const val Maximum_Bending_Pitch = 15
-private const val Maximum_Absolute_Toe_Range = 90
+import dev.slimevr.util.oscName
+private const val ABSOLUTE_SPLAY_THRESHOLD_ANGLE = 7
+private const val MINIMUM_TIP_TOE_PITCH = -14
+private const val MINIMUM_BENDING_PITCH = 15
+private const val MAXIMUM_ABSOLUTE_TOE_RANGE = 90
 internal fun buildToeMessages(bones: Map<BodyPart, BoneState>): List<OscContent> {
 	val messages = mutableListOf<OscContent>()
 
@@ -83,12 +83,6 @@ private fun processToesForFoot(
 	}
 }
 
-private val Side.oscName: String
-	get() = when (this) {
-		Side.LEFT -> "Left"
-		Side.RIGHT -> "Right"
-	}
-
 private fun processToe(
 	foot: BoneState,
 	toe: BoneState,
@@ -106,17 +100,17 @@ private fun processToe(
 
 	val pitch = euler.z
 	val yaw = euler.y
-	val tipToe = pitch < Minimum_Tip_Toe_Pitch
-	val bending = pitch > Maximum_Bending_Pitch && !tipToe
+	val tipToe = pitch < MINIMUM_TIP_TOE_PITCH
+	val bending = pitch > MINIMUM_BENDING_PITCH && !tipToe
 	val splayed = when (splayDirection) {
-		Side.LEFT -> yaw < -Absolute_Splay_Threshold_Angle
-		Side.RIGHT -> yaw > Absolute_Splay_Threshold_Angle
+		Side.LEFT -> yaw < -ABSOLUTE_SPLAY_THRESHOLD_ANGLE
+		Side.RIGHT -> yaw > ABSOLUTE_SPLAY_THRESHOLD_ANGLE
 	}
 
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/TipToes${side.oscName}", listOf(if (tipToe) OscArg.True else OscArg.False))))
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.oscName}${toeNumber + 1}Bool", listOf(if (bending) OscArg.True else OscArg.False))))
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}${toeNumber + 1}", listOf(if (splayed) OscArg.True else OscArg.False))))
 
-	val floatValue = (pitch / Maximum_Absolute_Toe_Range).coerceIn(-1f, 1f)
+	val floatValue = (pitch / MAXIMUM_ABSOLUTE_TOE_RANGE).coerceIn(-1f, 1f)
 	messages.add(OscContent.Message(OscMessage("/avatar/parameters/Toe${side.oscName}${toeNumber + 1}Float", listOf(OscArg.Float(floatValue)))))
 }
