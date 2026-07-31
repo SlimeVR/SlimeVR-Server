@@ -85,6 +85,7 @@ private fun processToe(
 	messages: MutableList<OscContent>,
 ) {
 
+	val oscToeNumber = toeNumber + 1;
 	val footRot = foot.rotation
 	val toeRot = toe.rotation
 	val currentRelative = footRot.inv() * toeRot
@@ -102,8 +103,8 @@ private fun processToe(
 	val floatValue = (pitch / MAXIMUM_ABSOLUTE_TOE_RANGE).coerceIn(-1f, 1f)
 	messages.addAll(listOf(OscContent.Message(
 		OscMessage("/avatar/parameters/TipToes${side.oscName}", listOf(if (tipToe) OscArg.True else OscArg.False))),
-		OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.oscName}${toeNumber + 1}Bool", listOf(if (bending) OscArg.True else OscArg.False))),
-		OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}${toeNumber + 1}", listOf(if (splayed) OscArg.True else OscArg.False))),
-		OscContent.Message(OscMessage("/avatar/parameters/Toe${side.oscName}${toeNumber + 1}Float", listOf(OscArg.Float(floatValue))))))
-		
+		OscContent.Message(OscMessage("/avatar/parameters/ToeBent${side.oscName}${oscToeNumber}Bool", listOf(if (bending) OscArg.True else OscArg.False))),
+		OscContent.Message(OscMessage("/avatar/parameters/ToeSplay${side.oscName}${oscToeNumber}", listOf(if (splayed) OscArg.True else OscArg.False))),
+		OscContent.Message(OscMessage("/avatar/parameters/Toe${side.oscName}${oscToeNumber}Float", listOf(OscArg.Float(floatValue))))))
+
 }
