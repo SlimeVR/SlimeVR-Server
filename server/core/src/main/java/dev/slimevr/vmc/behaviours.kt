@@ -12,7 +12,7 @@ import dev.slimevr.osc.OscReceiver
 import dev.slimevr.osc.OscSender
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.timeSource
+import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -76,7 +76,7 @@ class VMCOutputBehaviour(
 				val vrm = vrmGeometry
 				receiver.context.scope.launch {
 					try {
-						s.send(buildBundle(computedSkeleton.bones, config, currentTime, vrm))
+						s.send(buildBundle(computedSkeleton, config, currentTime, vrm))
 					} catch (e: Exception) {
 						if (nextLogTime.hasPassedNow()) {
 							AppLogger.vmc.error("Failed to send VMC frame", e)

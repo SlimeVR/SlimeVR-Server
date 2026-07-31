@@ -24,7 +24,7 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 
 	private var velocities: BodyPartMap<BoneVelocity> = bodyPartMap()
 
-	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
+	override fun process(state: SkeletonState): SkeletonState {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.PREDICTION) return state
 		val predictionAmount = config.amount

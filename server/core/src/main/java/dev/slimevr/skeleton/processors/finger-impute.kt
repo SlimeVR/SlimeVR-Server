@@ -49,7 +49,7 @@ class FingerImputeProcessor : SkeletonProcessor {
 	)
 
 	// TODO : There's more math to do here. Reference the original code.
-	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
+	override fun process(state: SkeletonState): SkeletonState {
 		val updatedBoneInputs = BodyPartMap(state.boneInputs)
 
 		for ((bodyPart, source) in fingerToSource) {

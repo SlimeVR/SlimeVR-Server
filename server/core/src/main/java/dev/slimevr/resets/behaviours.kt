@@ -1,6 +1,6 @@
 package dev.slimevr.resets
 
-import dev.slimevr.timeSource
+import dev.slimevr.util.timeSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy

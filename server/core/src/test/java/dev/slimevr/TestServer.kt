@@ -225,6 +225,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val resetsManager: ResetsManager get() = error("not used in test")
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
 	override val outputTrackerToggle: OutputTrackerToggleManager get() = error("not used in test")
+	override val stayAlignedManager: StayAlignedManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }

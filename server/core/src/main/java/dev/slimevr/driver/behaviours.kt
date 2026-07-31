@@ -61,7 +61,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 					trackerStateByBodyPart.putIfAbsent(bodyPart, trackerState)
 				}
 
-				computedSkeleton.bones.forEach { (part, state) ->
+				computedSkeleton.forEach { (part, state) ->
 					if (enabledBodyParts.contains(part)) {
 						val closestTracker = bodyPartToNearest[part].orEmpty()
 							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }

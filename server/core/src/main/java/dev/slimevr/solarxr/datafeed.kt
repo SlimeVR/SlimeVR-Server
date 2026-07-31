@@ -138,7 +138,7 @@ fun createDatafeedFrame(
 		null
 	}
 	val bones = datafeedConfig.boneMask?.let { mask ->
-		skeleton.computed.value.bones.values.map { createBone(it, mask) }
+		skeleton.computed.value.values.map { createBone(it, mask) }
 	}
 	val serverGuards = if (datafeedConfig.serverGuardsMask == true) {
 		createServerGuards(resetsManager, heightCalibrationManager)

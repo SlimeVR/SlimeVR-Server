@@ -4,9 +4,8 @@ import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.mutate
-import dev.slimevr.skeleton.resolveRotationFor
+import dev.slimevr.skeleton.resolveAverageRotationFor
 import solarxr_protocol.datatypes.BodyPart
-import kotlin.time.Duration
 
 /**
  * Handles imputing the rotation of spine bones that are not actively receiving data from the rotations
@@ -38,7 +37,7 @@ class SpineImputeProcessor(val settings: Settings) : SkeletonProcessor {
 		else -> error("Invalid missing spine body part $bodyPart")
 	}
 
-	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
+	override fun process(state: SkeletonState): SkeletonState {
 		val boneInputs = state.boneInputs
 		val ratios = settings.context.state.value.data.skeletonConfig.ratios
 
@@ -90,8 +89,8 @@ class SpineImputeProcessor(val settings: Settings) : SkeletonProcessor {
 						reliabilityOf(bodyPart, toSource),
 					)
 
-					val fromRotation = boneInputs.resolveRotationFor(fromSource.parts)
-					val toRotation = boneInputs.resolveRotationFor(toSource.parts)
+					val fromRotation = boneInputs.resolveAverageRotationFor(fromSource.parts)
+					val toRotation = boneInputs.resolveAverageRotationFor(toSource.parts)
 
 					updated[bodyPart] = bone.copy(rawRotation = fromRotation.interpQ(toRotation, interpolateRatio))
 				}

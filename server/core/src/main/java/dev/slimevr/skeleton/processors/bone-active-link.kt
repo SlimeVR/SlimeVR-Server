@@ -24,7 +24,7 @@ class BoneActiveLinkProcessor : SkeletonProcessor {
 		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
 	)
 
-	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
+	override fun process(state: SkeletonState): SkeletonState {
 		val boneInputs = state.boneInputs
 
 		val updatedLinkedBones = boneInputs.mutate { updated ->

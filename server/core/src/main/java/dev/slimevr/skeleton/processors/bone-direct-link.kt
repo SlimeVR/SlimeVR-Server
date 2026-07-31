@@ -38,7 +38,7 @@ class BoneDirectLinkProcessor : SkeletonProcessor {
 		BodyPart.RIGHT_HAND to BodyPart.RIGHT_LOWER_ARM,
 	)
 
-	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
+	override fun process(state: SkeletonState): SkeletonState {
 		val updatedBoneInputs = BodyPartMap(state.boneInputs)
 
 		for ((bodyPart, source) in linkedToSource) {

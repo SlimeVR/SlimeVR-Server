@@ -1,6 +1,5 @@
 package dev.slimevr.vrcosc
 
-import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent

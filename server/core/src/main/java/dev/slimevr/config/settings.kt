@@ -174,6 +174,33 @@ data class VMCConfig(
 	val vrmJson: String? = null,
 )
 
+// Used in StayAlignedConfig
+@Serializable
+data class StayAlignedRelaxedPoseConfig(
+	/** Whether Stay Aligned should adjust the tracker yaws when the player is in this pose. */
+	var enabled: Boolean = false,
+	/** Angle between the upper leg yaw and the center yaw. */
+	var upperLegAngleInDeg: Float = 0.0f,
+	/** Angle between the lower leg yaw and the center yaw. */
+	var lowerLegAngleInDeg: Float = 0.0f,
+	/** Angle between the foot and the center yaw. */
+	var footAngleInDeg: Float = 0.0f,
+)
+
+@Serializable
+data class StayAlignedConfig (
+	/** Global enable toggle for all poses */
+	var enabled: Boolean = false,
+	/** Standing relaxed pose */
+	val standingRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
+	/** Sitting relaxed pose */
+	val sittingRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
+	/** Flat relaxed pose */
+	val flatRelaxedPose: StayAlignedRelaxedPoseConfig = StayAlignedRelaxedPoseConfig(),
+	/** Whether setup has been completed */
+	var setupComplete: Boolean = false,
+)
+
 @Serializable
 data class SettingsConfigState(
 	val version: Int = SETTINGS_CONFIG_VERSION,
@@ -190,6 +217,7 @@ data class SettingsConfigState(
 	val skeletonConfig: SkeletonConfig = SkeletonConfig(),
 	val vrcOscConfig: VRCOSCConfig = VRCOSCConfig(),
 	val vmcConfig: VMCConfig = VMCConfig(),
+	val stayAlignedConfig: StayAlignedConfig = StayAlignedConfig(),
 )
 
 private fun migrateSettingsConfig(json: JsonObject): JsonObject {

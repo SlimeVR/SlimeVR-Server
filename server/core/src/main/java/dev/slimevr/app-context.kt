@@ -11,6 +11,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -47,6 +48,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val vrcOscManager: VRCOSCManager
 	val resetsManager: ResetsManager
 	val tapDetectionManager: TapDetectionManager
+	val stayAlignedManager: StayAlignedManager
 	fun startObserving()
 	suspend fun dispose()
 }
@@ -71,6 +73,7 @@ class AppContext(
 	override val vrcOscManager: VRCOSCManager,
 	override val resetsManager: ResetsManager,
 	override val tapDetectionManager: TapDetectionManager,
+	override val stayAlignedManager: StayAlignedManager,
 ) : AppContextProvider {
 	override fun startObserving() {
 		keybindManager.startObserving(this)
@@ -87,6 +90,7 @@ class AppContext(
 		vrcOscManager.startObserving(this)
 		resetsManager.startObserving()
 		tapDetectionManager.startObserving()
+		stayAlignedManager.startObserving()
 	}
 
 	override suspend fun dispose() {

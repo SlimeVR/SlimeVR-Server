@@ -2,7 +2,7 @@ package dev.slimevr.skeleton
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.timeSource
+import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
@@ -130,10 +130,11 @@ class ComputedSkeletonBehaviour(
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
 	private val minimumDelay = 1.nanoseconds
-	private val logSpamWait = 3.minutes
+	private val logSpamWait = 1.minutes
+	private val minimumFramesToLog = 10
 
 	override fun observe(receiver: Skeleton) {
-		var nextLogTime = timeSource.markNow()
+		var nextLogTime = timeSource.markNow() + logSpamWait
 		var frameStartTime = timeSource.markNow()
 		var lastFrameTime = Duration.ZERO
 		var processTooLongCount = 0
@@ -147,7 +148,7 @@ class ComputedSkeletonBehaviour(
 
 						// Run processors
 						val processed = processors
-							.fold(targetState) { state, processor -> processor.process(state, lastFrameTime) } // TODO: Add a constrain processor (maybe not needed)
+							.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
 
 						// Get head position
 						val rootHead = processed.boneInputs[BodyPart.HEAD]
@@ -171,8 +172,8 @@ class ComputedSkeletonBehaviour(
 
 						// Updated the computed skeleton with the result
 						if (!targetState.paused) { // FIXME : bones should still follow the head when paused
-							receiver.computed.value = ComputedSkeleton(fk, lastFrameTime)
-// 							receiver.computed.value = ComputedSkeleton(ikOutput, lastFrameTime)
+							receiver.computed.value = fk
+// 							receiver.computed.value = ikOutput
 						}
 					}
 					// Process ends
@@ -183,7 +184,8 @@ class ComputedSkeletonBehaviour(
 						// Skeleton took to long to compute this frame
 						processTooLongCount++
 						if (nextLogTime.hasPassedNow()) {
-							AppLogger.skeleton.warn("Couldn't reach ${hz}Hz $processTooLongCount ${if (processTooLongCount > 1) "times" else "time"} in the last $logSpamWait")
+							if (processTooLongCount >= minimumFramesToLog)
+								AppLogger.skeleton.warn("Couldn't reach ${hz}Hz $processTooLongCount times in the last $logSpamWait")
 							processTooLongCount = 0
 							nextLogTime = timeSource.markNow() + logSpamWait
 						}

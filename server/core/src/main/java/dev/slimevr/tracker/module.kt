@@ -7,6 +7,8 @@ import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.math.angle.Angle
+import dev.slimevr.math.angle.AngleErrors
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -18,10 +20,37 @@ import kotlin.time.Duration
 
 data class TrackerSensorIds(val trackerId: Int, val sensorId: Int)
 
+/**
+ * Indicates if the tracker is moving, at rest or recently at rest.
+ */
+enum class RestState {
+	MOVING,
+	AT_REST,
+	RECENTLY_AT_REST,
+}
+
 data class YawResetSmoothing(
 	val from: HeadingCorrection,
 	val to: HeadingCorrection,
 	val duration: Duration,
+)
+
+/**
+ * Aggregates the yaw errors from multiple forces.
+ */
+data class YawErrors (
+	val lockedError: AngleErrors,
+	val centerError: AngleErrors,
+	val neighborError: AngleErrors,
+)
+
+data class StayAlignedData(
+	// Rotation of the tracker when it was locked
+	val lockedRotation: Quaternion?,
+	// Yaw correction to apply to tracker rotation
+	val yawCorrection: Angle,
+	// Alignment error that yaw correction attempts to minimize
+	val yawErrors: YawErrors,
 )
 
 data class TrackerState(
@@ -47,7 +76,9 @@ data class TrackerState(
 	val completedRestCalibration: Boolean?,
 	val magStatus: MagnetometerStatus,
 	val sessionCalibration: SessionCalibration?,
-	val yawResetSmoothing: YawResetSmoothing? = null,
+	val restState: RestState,
+	val yawResetSmoothing: YawResetSmoothing?,
+	val stayAlignedData: StayAlignedData,
 )
 
 sealed interface TrackerActions {
@@ -62,6 +93,7 @@ sealed interface TrackerActions {
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class MountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
+	data class SetRestState(val restState: RestState) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
@@ -112,6 +144,17 @@ class Tracker(
 				completedRestCalibration = false,
 				magStatus = MagnetometerStatus.NOT_SUPPORTED,
 				sessionCalibration = null,
+				restState = RestState.MOVING, // TODO : should this be AT_REST?
+				yawResetSmoothing = null,
+				stayAlignedData = StayAlignedData(
+					null,
+					Angle.ZERO,
+					YawErrors(
+						AngleErrors(),
+						AngleErrors(),
+						AngleErrors()
+					)
+				)
 			)
 			val trackerState = if (savedConfig != null) {
 				restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
@@ -123,10 +166,12 @@ class Tracker(
 				TrackerBasicBehaviour(),
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
-				TrackerRestOrientationBehaviour(settings),
 				TrackerConfigBehaviour(settings, hardwareId),
 				TrackerTPSBehaviour(),
 				TrackerToSkeletonBehaviour(),
+				TrackerRestOrientationBehaviour(settings),
+				TrackerRestDetectionBehaviour(),
+				TrackerStayAlignedBehaviour(settings, appContext.stayAlignedManager),
 			)
 			val context = Context.create(
 				initialState = trackerState,

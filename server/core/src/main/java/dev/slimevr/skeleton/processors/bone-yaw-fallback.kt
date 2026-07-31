@@ -13,7 +13,7 @@ import kotlin.time.Duration
  * falling back to their parent's yaw.
  */
 class BoneYawFallbackProcessor : SkeletonProcessor {
-	override fun process(state: SkeletonState, lastFrameTime: Duration): SkeletonState {
+	override fun process(state: SkeletonState): SkeletonState {
 		val boneInputs = state.boneInputs
 
 		val updatedFallbackBones = boneInputs.mutate { updated ->

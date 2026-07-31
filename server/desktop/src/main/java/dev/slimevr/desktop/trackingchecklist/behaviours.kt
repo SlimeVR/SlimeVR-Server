@@ -11,7 +11,7 @@ import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.desktop.getSteamVRDriversList
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.timeSource
+import dev.slimevr.util.timeSource
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.trackingchecklist.TrackingChecklistActions
 import dev.slimevr.trackingchecklist.TrackingChecklistBehaviourType

@@ -2,10 +2,16 @@ package dev.slimevr.tracker
 
 import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
+import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.SkeletonActions
-import dev.slimevr.timeSource
+import dev.slimevr.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
+import dev.slimevr.stayaligned.StayAlignedDefaults.YAW_CORRECTION_DEFAULT
+import dev.slimevr.stayaligned.StayAlignedManager
+import dev.slimevr.stayaligned.todo.AdjustTrackerYaw
+import dev.slimevr.math.angle.Angle
+import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -20,17 +26,18 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.ArmsResetMode
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class TrackerBasicBehaviour : TrackerBehaviour {
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
@@ -183,23 +190,8 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 			state.copy(sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY))
 		}
 
-		is TrackerActions.TickYawResetSmoothing -> {
-			val cal = state.sessionCalibration
-			if (cal == null || state.yawResetSmoothing == null) {
-				// Nothing to advance.
-				state.copy(yawResetSmoothing = null)
-			} else {
-				// The behaviour computed the interpolated heading; store it in the session
-				// calibration. TrackerBasicBehaviour.observe re-applies it to the rotation
-				// (using the last raw rotation), so this progresses even with no new IMU
-				// data. On `done` the seed is cleared, leaving the target heading in place.
-				state.copy(
-					sessionCalibration = cal.copy(headingCorrection = action.heading),
-					yawResetSmoothing = if (action.done) null else state.yawResetSmoothing,
-				)
-			}
-		}
-	}
+        else -> state
+    }
 
 	override fun observe(receiver: Tracker) {
 		// Refresh the tracker's rotation whenever calibration gets updated
@@ -238,6 +230,27 @@ class TrackerYawResetSmoothingBehaviour : TrackerBehaviour {
 					}
 			}
 			.launchIn(receiver.context.scope)
+	}
+
+	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
+		is TrackerActions.TickYawResetSmoothing -> {
+			val cal = state.sessionCalibration
+			if (cal == null || state.yawResetSmoothing == null) {
+				// Nothing to advance.
+				state.copy(yawResetSmoothing = null)
+			} else {
+				// The behaviour computed the interpolated heading; store it in the session
+				// calibration. TrackerBasicBehaviour.observe re-applies it to the rotation
+				// (using the last raw rotation), so this progresses even with no new IMU
+				// data. On `done` the seed is cleared, leaving the target heading in place.
+				state.copy(
+					sessionCalibration = cal.copy(headingCorrection = action.heading),
+					yawResetSmoothing = if (action.done) null else state.yawResetSmoothing,
+				)
+			}
+		}
+
+		else -> state
 	}
 }
 
@@ -331,27 +344,19 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 				val activeState = receiver.context.state
 					.filter { it.bodyPart != null && (it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING) }
 
-				val rotationFlow = activeState
-					.distinctUntilChangedBy { it.rotation }
+				activeState
+					.distinctUntilChangedBy { it.rotation to it.position }
 					.onEach { trackerState ->
-						receiver.appContext.skeleton.context.dispatch(
-							SkeletonActions.SetBoneRotation(trackerState.bodyPart ?: BodyPart.NONE, trackerState.rotation),
-						)
-						lastBodyPartSent = trackerState.bodyPart
-					}
-
-				val positionFlow = activeState
-					.distinctUntilChangedBy { it.position }
-					.onEach { trackerState ->
-						trackerState.position?.let {
-							receiver.appContext.skeleton.context.dispatch(
-								SkeletonActions.SetBonePosition(trackerState.bodyPart ?: BodyPart.NONE, it),
+						trackerState.bodyPart?.let { bodyPart ->
+							receiver.appContext.skeleton.context.dispatchAll(
+								listOfNotNull(
+									SkeletonActions.SetBoneRotation(bodyPart, trackerState.rotation),
+									if (trackerState.position != null) SkeletonActions.SetBonePosition(bodyPart, trackerState.position) else null
+								)
 							)
 							lastBodyPartSent = trackerState.bodyPart
 						}
 					}
-
-				merge(rotationFlow, positionFlow)
 			}
 			.launchIn(receiver.context.scope)
 	}
@@ -384,5 +389,151 @@ class TrackerRestOrientationBehaviour(
 		}
 	} else {
 		Quaternion.IDENTITY
+	}
+}
+
+/**
+ * Detects whether a tracker is at rest.
+ *
+ * A tracker is at rest when it stays within a certain rotational range for a given
+ * amount of time. If it rotates past that range, it is no longer at rest.
+ *
+ * TODO: Consider accel and use for tap detection as well
+ */
+class TrackerRestDetectionBehaviour : TrackerBehaviour {
+
+	override fun observe(receiver: Tracker) {
+		var startTime = timeSource.markNow()
+		var lastUpdateTime = timeSource.markNow()
+		var lastRotation = Quaternion.IDENTITY
+
+		// To reset rest detection
+		receiver.context.state
+			.distinctUntilChanged { old, new -> old.sessionCalibration == new.sessionCalibration }
+			.onEach {
+				lastRotation = Quaternion.IDENTITY
+				val now = timeSource.markNow()
+				startTime = now
+				lastUpdateTime = now
+				receiver.context.dispatch(TrackerActions.SetRestState(RestState.MOVING)) // TODO : should this be AT_REST?
+			}.launchIn(receiver.context.scope)
+
+		// For update loop
+		receiver.context.state
+			.map { it.rotation to it.acceleration }
+			.distinctUntilChanged()
+			.onEach { (rotation, acceleration) ->
+				val now = timeSource.markNow()
+
+				if (
+					receiver.context.state.value.restState == RestState.RECENTLY_AT_REST &&
+					now > startTime.plus(ENTER_MOVING_TIME)
+				) {
+					receiver.context.dispatch(TrackerActions.SetRestState(RestState.MOVING))
+					startTime = now
+					lastRotation = rotation
+					lastUpdateTime = now
+				}
+
+				when (receiver.context.state.value.restState) {
+					RestState.MOVING,
+					RestState.RECENTLY_AT_REST,
+						->
+						if (Angle.absBetween(lastRotation, rotation) > MAX_ROTATION) {
+							lastRotation = rotation
+							lastUpdateTime = now
+						} else {
+							// When we detect the tracker is at rest, use the current rotation as the
+							// new start rotation for continuing to detect the tracker is at rest
+							if (now > lastUpdateTime.plus(ENTER_REST_TIME)) {
+								receiver.context.dispatch(TrackerActions.SetRestState(RestState.AT_REST))
+								startTime = now
+								lastRotation = rotation
+								lastUpdateTime = now
+							}
+						}
+
+					RestState.AT_REST ->
+						if (Angle.absBetween(lastRotation, rotation) > MAX_ROTATION) {
+							receiver.context.dispatch(TrackerActions.SetRestState(RestState.RECENTLY_AT_REST))
+							startTime = now
+							lastRotation = rotation
+							lastUpdateTime = now
+						}
+				}
+			}
+			.launchIn(receiver.context.scope)
+	}
+
+	override fun reduce(state: TrackerState, action: TrackerActions): TrackerState = when (action) {
+		is TrackerActions.SetRestState -> state.copy(restState = action.restState)
+
+		else -> state
+	}
+
+	companion object {
+		val MAX_ROTATION = Angle.ofDeg(2.0f)
+		val ENTER_REST_TIME = 1.seconds
+		val ENTER_MOVING_TIME = 3.seconds
+	}
+}
+
+class TrackerStayAlignedBehaviour(
+	private val settings: Settings,
+	private val stayAlignedManager: StayAlignedManager,
+) : TrackerBehaviour {
+	private var lastRotationTime = timeSource.markNow()
+
+	@OptIn(ExperimentalCoroutinesApi::class)
+    override fun observe(receiver: Tracker) {
+		receiver.context.state
+			.distinctUntilChanged { old, new -> old.sessionCalibration == new.sessionCalibration }
+			.onEach {
+//				lockedRotation = null
+//				yawCorrection = Angle.ZERO
+//				yawErrors = YawErrors()
+//				receiver.context.dispatch(TrackerActions.)
+			}.launchIn(receiver.context.scope)
+
+
+		val stayAlignedConfigFlow = settings.context.state.map { it.data.stayAlignedConfig }.distinctUntilChanged()
+		val imuTypeFlow = receiver.context.state.map { it.imuType }.distinctUntilChanged()
+		val magStatusFlow = receiver.context.state.map { it.magStatus }.distinctUntilChanged()
+		val skeleton = receiver.appContext.skeleton
+
+		combine(stayAlignedConfigFlow, imuTypeFlow, magStatusFlow, ::Triple)
+			.flatMapLatest { (stayAlignedConfig, imuType, magStatus) ->
+				if (magStatus == MagnetometerStatus.ENABLED || imuType == null || !stayAlignedConfig.enabled) return@flatMapLatest emptyFlow()
+
+				receiver.context.state
+					.distinctUntilChangedBy { it.rawRotation }
+					.onEach {
+						val yawCorrectionPerSec = IMU_TO_YAW_CORRECTION.getOrDefault(receiver.context.state.value.imuType, YAW_CORRECTION_DEFAULT)
+						if (yawCorrectionPerSec == Angle.ZERO) return@onEach
+
+						val lastFrameTimeSeconds = lastRotationTime.elapsedNow().inFloatingSeconds
+						lastRotationTime = timeSource.markNow()
+
+						val normalizedYawCorrection = yawCorrectionPerSec * lastFrameTimeSeconds
+						val hideYawCorrection = stayAlignedManager.context.state.value.hideYawCorrection
+
+						// TODO
+						AdjustTrackerYaw.adjust(
+							receiver,
+							skeleton.computed.value,
+							normalizedYawCorrection,
+							stayAlignedConfig,
+						)
+
+//						if (receiver.context.state.value.restState == RestDetector.State.AT_REST) {
+//							if (lockedRotation == null) {
+//								lockedRotation = receiver.context.state.value.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
+//							}
+//						} else {
+//							lockedRotation = null
+//						}
+					}
+			}
+			.launchIn(receiver.context.scope)
 	}
 }
