@@ -63,23 +63,13 @@ private fun processToesForFoot(
 
 		if (lastAssigned == null) continue
 
-		when (segmentIndex) {
-			0 -> {
-				processToe(foot, lastAssigned, side, 0, side.opposite, messages)
-			}
-			1 -> {
-				processToe(foot, lastAssigned, side, 1, side.opposite, messages)
-			}
-			2 -> {
-				processToe(foot, lastAssigned, side, 2, side.opposite, messages)
-			}
-			3 -> {
-				processToe(foot, lastAssigned, side, 3, side, messages)
-			}
-			4 -> {
-				processToe(foot, lastAssigned, side, 4, side, messages)
-			}
+		val splayDirection = when (segmentIndex) {
+			0, 1, 2 -> side.opposite
+			
+			3, 4 -> side
 		}
+		
+		processToe(foot, lastAssigned, side, segmentIndex, splayDirection, messages)
 	}
 }
 
