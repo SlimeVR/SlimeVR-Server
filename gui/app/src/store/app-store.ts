@@ -64,12 +64,6 @@ export const connectedIMUTrackersAtom = atom((get) => {
   return trackers.filter(({ tracker }) => tracker.info?.isImu);
 });
 
-export const computedTrackersAtom = selectAtom(
-  datafeedAtom,
-  (datafeed) => datafeed.syntheticTrackers.map((tracker) => ({ tracker })),
-  isEqual
-);
-
 export const hasHMDTrackerAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
 
