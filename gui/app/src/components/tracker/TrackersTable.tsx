@@ -250,8 +250,10 @@ function Row({
               )}
             </Cell>
             <Cell>
-              {tracker.tps && (
-                <Typography color={fontColor}>{tracker.tps}</Typography>
+              {tracker.tps !== null && (
+                <Typography color={fontColor}>
+                  {tracker.tps.toString()}
+                </Typography>
               )}
             </Cell>
             <Cell>
