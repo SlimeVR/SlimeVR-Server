@@ -64,54 +64,27 @@
             pkgs.libxcrypt-legacy
           ];
 
-          toolDirectoryName =
-            if pkgs.stdenv.hostPlatform.isDarwin then
-              "darwin"
-            else if pkgs.stdenv.hostPlatform.isLinux then
-              {
-                "armv7l-linux" = "linux-arm32";
-                "aarch64-linux" = "linux-arm64";
-                "i686-linux" = "linux-ia32";
-                "x86_64-linux" = "linux-x64";
-              }
-              ."${pkgs.stdenv.hostPlatform.system}"
-            else
-              throw "Unsupported platform";
-
-          # we use fuse2
+          # we use static runtime
           # https://github.com/electron-userland/electron-builder/blob/a6117b3011a105204af8cc2eca02a56976d1ef29/packages/app-builder-lib/src/toolsets/linux.ts#L122
-          runtime = pkgs.stdenvNoCC.mkDerivation {
+          appImageTools = pkgs.stdenvNoCC.mkDerivation {
             name = "electron-builder-appimage-runtime";
-            src = pkgs.fetchurl {
-              url = "https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage-12.0.1/appimage-12.0.1.7z";
-              hash = "sha256-0S/3648dHsRlLKUjen+9yjOswMdYBFY2/spi3G7LjsQ=";
-            };
-            # https://github.com/NixOS/nixpkgs/blob/7890ba0a99c064446fe2178ef2f8e3abdf6ec42a/pkgs/by-name/lo/losslesscut-bin/build-from-windows.nix#L20
-            nativeBuildInputs = [ pkgs.p7zip ];
-            unpackPhase = ''
-              runHook preUnpack
-              7z x "$src"
-              runHook postUnpack
-            '';
+            src =
+              let
+                # Keep in sync with "appimage" toolset version in gui/electron/electron-builder.yml
+                appimageToolsVersion = "1.0.3";
+              in
+              pkgs.fetchzip {
+                url = "https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage@${appimageToolsVersion}/appimage-tools-runtime-20251108.tar.gz";
+                hash = "sha256-Iqhvyp6BNpH+tXvVO7MLgYbsJ6va4lXO7El3wtyWBII=";
+                stripRoot = false;
+              };
+
             installPhase = ''
               mkdir $out
-              cp -r -t $out/ \
-                lib/ \
-                runtime-*
-            '';
-          };
-
-          appImageTools = pkgs.stdenvNoCC.mkDerivation {
-            name = "electron-builder-appimage-tools";
-            dontUnpack = true;
-
-            installPhase = ''
-              mkdir -p "$out/${toolDirectoryName}"
-              ln -s -t $out/${toolDirectoryName} \
+              cp -r -t $out/ lib/ runtimes/
+              ln -s -t $out \
                 "${pkgs.desktop-file-utils}/bin/desktop-file-validate" \
                 "${pkgs.squashfsTools}/bin/mksquashfs"
-              ln -s ${runtime}/runtime-* $out/
-              ln -s ${runtime}/lib $out/lib
             '';
           };
 

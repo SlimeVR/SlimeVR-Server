@@ -19,6 +19,9 @@ asarUnpack:
 electronLanguages:
   - en-US
 
+toolsets:
+  appimage: "1.0.3"
+
 files:
   - out/**/*
   - resources/**/*
