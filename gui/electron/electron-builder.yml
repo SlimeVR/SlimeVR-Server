@@ -37,6 +37,7 @@ files:
 linux:
   category: Game
   artifactName: "${productName}-${arch}.${ext}"
+  syncDesktopName: true
   target:
     - target: AppImage
     - target: deb

@@ -6,6 +6,7 @@
   "private": true,
   "type": "module",
   "main": "./out/main/index.js",
+  "desktopName": "dev.slimevr.SlimeVR",
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "electron-vite build --config electron.vite.config.ts && pnpm --filter @slimevr/gui-app exec vite build --outDir ../electron/out/renderer --emptyOutDir",
