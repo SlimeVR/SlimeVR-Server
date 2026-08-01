@@ -84,6 +84,17 @@ val bodyPartToRole = mapOf(
 )
 val roleToBodyPart = bodyPartToRole.entries.associate { (k, v) -> v to k }
 
+val solarxrToProtoStatus = mapOf(
+	solarxr_protocol.datatypes.TrackerStatus.OK to TrackerStatus.Status.OK,
+	solarxr_protocol.datatypes.TrackerStatus.SLEEPING to TrackerStatus.Status.OK,
+	solarxr_protocol.datatypes.TrackerStatus.ERROR to TrackerStatus.Status.ERROR,
+	solarxr_protocol.datatypes.TrackerStatus.OCCLUDED to TrackerStatus.Status.OCCLUDED,
+	solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT to TrackerStatus.Status.DISCONNECTED,
+	solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED to TrackerStatus.Status.DISCONNECTED,
+	solarxr_protocol.datatypes.TrackerStatus.BUSY to TrackerStatus.Status.BUSY,
+)
+val protoToSolarxrStatus = solarxrToProtoStatus.entries.associate { (k, v) -> v to k }
+
 const val PROTOCOL_VERSION = 2
 
 private fun getBindingsProviderPath(): Path? {
@@ -189,14 +200,7 @@ suspend fun handleDriverConnection(
 			ProtobufMessage(
 				tracker_status = TrackerStatus(
 					tracker_id = event.trackerId,
-					status = when (event.status) {
-						solarxr_protocol.datatypes.TrackerStatus.OK, solarxr_protocol.datatypes.TrackerStatus.SLEEPING -> TrackerStatus.Status.OK
-						solarxr_protocol.datatypes.TrackerStatus.ERROR -> TrackerStatus.Status.ERROR
-						solarxr_protocol.datatypes.TrackerStatus.OCCLUDED -> TrackerStatus.Status.OCCLUDED
-						solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED, solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT -> TrackerStatus.Status.DISCONNECTED
-						solarxr_protocol.datatypes.TrackerStatus.BUSY -> TrackerStatus.Status.BUSY
-						else -> TrackerStatus.Status.ERROR
-					},
+					status = solarxrToProtoStatus.getOrDefault(event.status, TrackerStatus.Status.ERROR),
 				),
 			),
 		)
@@ -237,6 +241,9 @@ suspend fun handleDriverConnection(
 						bodyPart = TrackerRole.fromValue(ta.tracker_role.toUByte())?.let { role -> roleToBodyPart[role] },
 					),
 				)
+			}
+			msg.tracker_status?.let { status ->
+				bridge.inbound.emit(DriverBridgeInbound.TrackerStatus(id = status.tracker_id, status = protoToSolarxrStatus.getOrDefault(status.status, solarxr_protocol.datatypes.TrackerStatus.ERROR)))
 			}
 			msg.battery?.let { bat ->
 				bridge.inbound.emit(
