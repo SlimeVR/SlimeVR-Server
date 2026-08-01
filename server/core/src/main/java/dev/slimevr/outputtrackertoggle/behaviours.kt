@@ -6,14 +6,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
-import solarxr_protocol.rpc.OutputTrackersSettingsResponse
 import kotlin.collections.filter
 import kotlin.collections.map
 
@@ -80,15 +78,6 @@ class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 
 				// Update state
 				receiver.context.dispatch(OutputTrackerToggleActions.SetOutputTrackers(outputTrackers))
-
-				// Update SolarXR
-				receiver.server.sendSolarxrRpc(
-					OutputTrackersSettingsResponse(
-						automaticTrackerToggle = true,
-						trackers = outputTrackers,
-						sendDerivedVelocity = config.sendDerivedVelocity,
-					),
-				)
 			}
 			.launchIn(receiver.context.scope)
 	}
