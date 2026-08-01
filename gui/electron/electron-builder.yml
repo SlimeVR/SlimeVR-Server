@@ -53,7 +53,7 @@ linux:
   icon: "./resources/icons"
 
 deb:
-  depends: [openjdk-17-jre-headless, udev]
+  depends: [openjdk-25-jre-headless, udev]
   afterInstall: "./resources/scripts/postinstall.sh"
   afterRemove: "./resources/scripts/postremove.sh"
 
