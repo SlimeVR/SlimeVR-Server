@@ -5,6 +5,7 @@ import dev.slimevr.device.DeviceOrigin
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
@@ -28,7 +29,6 @@ class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 		BodyPart.RIGHT_FOOT to setOf(BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG, BodyPart.RIGHT_UPPER_LEG),
 	)
 
-	// TODO filter out DeviceOrigin.STEAMVR
 	fun determineAutomaticOutputTrackers(
 		config: OutputTrackersConfig,
 		fineBodyParts: Set<BodyPart?>,
@@ -54,8 +54,9 @@ class OutputTrackerToggleBasicBehaviour : OutputTrackerToggleBehaviour {
 					receiver.context.dispatch(OutputTrackerToggleActions.SetOutputTrackers(config.trackers))
 				}
 			}
-			.filter { it.automaticTrackerToggle } // Automatic
 			.flatMapLatest { config ->
+				if (!config.automaticTrackerToggle) return@flatMapLatest emptyFlow()
+
 				receiver.server.context.state
 					.map { it.trackers.values }
 					.flatMapLatest { trackers ->
