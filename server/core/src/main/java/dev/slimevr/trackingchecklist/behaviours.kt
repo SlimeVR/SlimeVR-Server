@@ -67,6 +67,7 @@ class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehavio
 			valid = isAssigned,
 			enabled = hasSteamVR,
 			ignorable = true,
+			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
 			extraData = if (!isAssigned) {
 				TrackingChecklistUnassignedHMD(
 					trackerId = hmdTracker?.id?.toUShort(),
