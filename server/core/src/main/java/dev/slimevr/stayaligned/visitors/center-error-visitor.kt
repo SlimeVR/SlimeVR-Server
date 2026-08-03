@@ -1,8 +1,11 @@
-package dev.slimevr.stayaligned.todo
+package dev.slimevr.stayaligned.visitors
 
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleErrors
-import dev.slimevr.stayaligned.todo.TrackerYaw.trackerYaw
+import dev.slimevr.stayaligned.TrackerGroups
+import dev.slimevr.stayaligned.YawUtils.extraYaw
+import dev.slimevr.stayaligned.YawUtils.trackerYaw
+import dev.slimevr.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.Side
 
@@ -14,7 +17,7 @@ class CenterErrorVisitor(
 	val centerYaw: Angle,
 	val relaxedPose: RelaxedPose,
 	val errors: AngleErrors,
-) : TrackerGroup.TrackerVisitor {
+) : TrackerGroups.TrackerVisitor {
 
 	override fun visitHeadTracker(
 		trackerState: TrackerState,
@@ -65,7 +68,7 @@ class CenterErrorVisitor(
 		belowLowerLeg: TrackerState?,
 		oppositeUpperLeg: TrackerState?,
 	) {
-		errors.add(centerYaw + relaxedPose.upperLeg.towards(side) - trackerYaw(tracker))
+		errors.add(centerYaw + extraYaw(side, relaxedPose.upperLeg) - trackerYaw(tracker))
 	}
 
 	override fun visitLowerLegTracker(
@@ -75,7 +78,7 @@ class CenterErrorVisitor(
 		belowFoot: TrackerState?,
 		oppositeLowerLeg: TrackerState?,
 	) {
-		errors.add(centerYaw + relaxedPose.lowerLeg.towards(side) - trackerYaw(tracker))
+		errors.add(centerYaw + extraYaw(side, relaxedPose.lowerLeg) - trackerYaw(tracker))
 	}
 
 	override fun visitFootTracker(
@@ -84,6 +87,6 @@ class CenterErrorVisitor(
 		aboveLowerLeg: TrackerState?,
 		oppositeFoot: TrackerState?,
 	) {
-		errors.add(centerYaw + relaxedPose.foot.towards(side) - trackerYaw(tracker))
+		errors.add(centerYaw + extraYaw(side, relaxedPose.foot) - trackerYaw(tracker))
 	}
 }

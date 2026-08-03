@@ -1,4 +1,6 @@
-package dev.slimevr.stayaligned.todo
+package dev.slimevr.stayaligned.poses
+
+import dev.slimevr.stayaligned.TrackerGroups
 
 /**
  * The pose of the player.
@@ -14,14 +16,14 @@ enum class PlayerPose {
 
 	companion object {
 
-		fun of(trackers: TrackerGroup): PlayerPose {
+		fun of(trackerStateGroups: TrackerGroups): PlayerPose {
 			val poses =
 				TrackerPoses(
-					trackers.upperBody.map(TrackerPose::ofTracker),
-					TrackerPose.ofTracker(trackers.leftUpperLeg),
-					TrackerPose.ofTracker(trackers.rightUpperLeg),
-					TrackerPose.ofTracker(trackers.leftLowerLeg),
-					TrackerPose.ofTracker(trackers.rightLowerLeg),
+					trackerStateGroups.upperBody.map(TrackerPose.Companion::ofTracker),
+					TrackerPose.ofTracker(trackerStateGroups.leftUpperLeg),
+					TrackerPose.ofTracker(trackerStateGroups.rightUpperLeg),
+					TrackerPose.ofTracker(trackerStateGroups.leftLowerLeg),
+					TrackerPose.ofTracker(trackerStateGroups.rightLowerLeg),
 				)
 
 			return (

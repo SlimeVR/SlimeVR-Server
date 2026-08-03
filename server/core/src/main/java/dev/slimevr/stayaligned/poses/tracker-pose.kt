@@ -1,4 +1,4 @@
-package dev.slimevr.stayaligned.todo
+package dev.slimevr.stayaligned.poses
 
 import dev.slimevr.tracker.TrackerState
 import io.github.axisangles.ktmath.Vector3

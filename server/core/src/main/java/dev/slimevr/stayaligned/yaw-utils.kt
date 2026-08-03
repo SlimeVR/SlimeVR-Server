@@ -1,4 +1,4 @@
-package dev.slimevr.stayaligned.todo
+package dev.slimevr.stayaligned
 
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.TrackerState
@@ -7,7 +7,7 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Vector3
 
 /**
- * Utilities for tracker yaw.
+ * Utilities for trackers' yaw.
  *
  * The SlimeVR coordinate system is x-right, y-up, z-back, which is a right-handed
  * coordinate system.
@@ -16,7 +16,7 @@ import io.github.axisangles.ktmath.Vector3
  * y-axis is a counter-clockwise rotation from z to x. From the perspective of a player,
  * left is positive yaw, right is negative yaw.
  */
-object TrackerYaw {
+object YawUtils {
 
 	/**
 	 * Whether we can reliably get the yaw of a tracker.
@@ -43,6 +43,14 @@ object TrackerYaw {
 			.toEulerAngles(EulerOrder.YZX)
 			.y,
 	)
+
+	/**
+	 * Applies an extra yaw in the specified direction.
+	 */
+	fun extraYaw(direction: Side, angle: Angle) = when (direction) {
+		Side.LEFT -> angle
+		Side.RIGHT -> -angle
+	}
 
 	private val MIN_ON_SIDE_ANGLE = Angle.ofDeg(30.0f)
 }

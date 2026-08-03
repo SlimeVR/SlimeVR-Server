@@ -68,6 +68,14 @@ data class TrackerState(
 	val stayAlignedData: StayAlignedData,
 )
 
+/**
+ * Returns the first OK or SLEEPING tracker state that matches the body part, or null
+ */
+fun List<TrackerState>.getFineFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull {
+	it.bodyPart == bodyPart &&
+		(it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING)
+}
+
 sealed interface TrackerActions {
 	data class Update(val transform: TrackerState.() -> TrackerState) : TrackerActions
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions

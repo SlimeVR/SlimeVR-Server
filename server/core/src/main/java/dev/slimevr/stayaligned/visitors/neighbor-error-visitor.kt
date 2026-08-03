@@ -1,7 +1,10 @@
-package dev.slimevr.stayaligned.todo
+package dev.slimevr.stayaligned.visitors
 
 import dev.slimevr.math.angle.AngleErrors
-import dev.slimevr.stayaligned.todo.TrackerYaw.trackerYaw
+import dev.slimevr.stayaligned.TrackerGroups
+import dev.slimevr.stayaligned.YawUtils.extraYaw
+import dev.slimevr.stayaligned.YawUtils.trackerYaw
+import dev.slimevr.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.Side
 import solarxr_protocol.datatypes.BodyPart
@@ -12,7 +15,7 @@ import solarxr_protocol.datatypes.BodyPart
 class NeighborErrorVisitor(
 	val relaxedPose: RelaxedPose,
 	val errors: AngleErrors,
-) : TrackerGroup.TrackerVisitor {
+) : TrackerGroups.TrackerVisitor {
 
 	override fun visitHeadTracker(
 		trackerState: TrackerState,
@@ -63,12 +66,12 @@ class NeighborErrorVisitor(
 		) {
 			errors.add(
 				trackerYaw(belowLeftUpperLeg) -
-					relaxedPose.upperLeg.towards(Side.LEFT) -
+					extraYaw(Side.LEFT, relaxedPose.upperLeg) -
 					trackerYaw(trackerState),
 			)
 			errors.add(
 				trackerYaw(belowRightUpperLeg) -
-					relaxedPose.upperLeg.towards(Side.RIGHT) -
+					extraYaw(Side.RIGHT, relaxedPose.upperLeg) -
 					trackerYaw(trackerState),
 			)
 		}
@@ -102,7 +105,7 @@ class NeighborErrorVisitor(
 		if (aboveUpperBody != null) {
 			errors.add(
 				trackerYaw(aboveUpperBody) +
-					relaxedPose.upperLeg.towards(side) -
+					extraYaw(side, relaxedPose.upperLeg) -
 					trackerYaw(tracker),
 			)
 		}
@@ -110,8 +113,8 @@ class NeighborErrorVisitor(
 		if (belowLowerLeg != null) {
 			errors.add(
 				trackerYaw(belowLowerLeg) -
-					relaxedPose.lowerLeg.towards(side) +
-					relaxedPose.upperLeg.towards(side) -
+					extraYaw(side, relaxedPose.lowerLeg) +
+					extraYaw(side, relaxedPose.upperLeg) -
 					trackerYaw(tracker),
 			)
 		}
@@ -127,8 +130,8 @@ class NeighborErrorVisitor(
 		if (aboveUpperLeg != null) {
 			errors.add(
 				trackerYaw(aboveUpperLeg) -
-					relaxedPose.upperLeg.towards(side) +
-					relaxedPose.lowerLeg.towards(side) -
+					extraYaw(side, relaxedPose.upperLeg) +
+					extraYaw(side, relaxedPose.lowerLeg) -
 					trackerYaw(tracker),
 			)
 		}
@@ -136,8 +139,8 @@ class NeighborErrorVisitor(
 		if (belowFoot != null) {
 			errors.add(
 				trackerYaw(belowFoot) -
-					relaxedPose.foot.towards(side) +
-					relaxedPose.lowerLeg.towards(side) -
+					extraYaw(side, relaxedPose.foot) +
+					extraYaw(side, relaxedPose.lowerLeg) -
 					trackerYaw(tracker),
 			)
 		}
@@ -152,8 +155,8 @@ class NeighborErrorVisitor(
 		if (aboveLowerLeg != null) {
 			errors.add(
 				trackerYaw(aboveLowerLeg) -
-					relaxedPose.lowerLeg.towards(side) +
-					relaxedPose.foot.towards(side) -
+					extraYaw(side, relaxedPose.lowerLeg) +
+					extraYaw(side, relaxedPose.foot) -
 					trackerYaw(tracker),
 			)
 		}

@@ -1,57 +1,59 @@
-package dev.slimevr.stayaligned.todo
+package dev.slimevr.stayaligned
 
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.getFineFor
 import dev.slimevr.util.Side
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.TrackerStatus
 
 /**
- * Represents a skeleton of trackers.
+ * Represents groups of trackers.
  *
- * The skeleton consists of:
- * - An upper body group
- * - A head tracker, connected to the top of the upper body group
- * - Two arm groups, connected to the top of the upper body group
- * - Two hands connected to the bottom of the corresponding arm group
- * - Two upper legs, connected to the bottom of the upper body group
- * - Two lower legs, connected to the bottom of each corresponding upper leg
- * - Two feet, connected to the bottom of each corresponding lower leg
+ * The groups are made of the following:
+ * - The upper body
+ * - The left arm
+ * - The right arm
+ * - The head
+ * - The left hand
+ * - The right hand
+ * - The left upper leg
+ * - The right upper leg
+ * - The left lower leg
+ * - The right lower leg
+ * - The left foot
+ * - The right foot
  */
-class TrackerGroup(trackerStates: List<TrackerState>) {
-
-	private fun List<TrackerState>.get(bodyPart: BodyPart): TrackerState? = this.firstOrNull { it.bodyPart == bodyPart }
+class TrackerGroups(trackerStates: List<TrackerState>) {
 
 	val upperBody = listOfNotNull(
-		trackerStates.get(BodyPart.UPPER_CHEST),
-		trackerStates.get(BodyPart.CHEST),
-		trackerStates.get(BodyPart.WAIST),
-		trackerStates.get(BodyPart.HIP),
+		trackerStates.getFineFor(BodyPart.NECK),
+		trackerStates.getFineFor(BodyPart.UPPER_CHEST),
+		trackerStates.getFineFor(BodyPart.CHEST),
+		trackerStates.getFineFor(BodyPart.WAIST),
+		trackerStates.getFineFor(BodyPart.HIP),
 	)
-
 	val leftArm = listOfNotNull(
-		trackerStates.get(BodyPart.LEFT_SHOULDER),
-		trackerStates.get(BodyPart.LEFT_UPPER_ARM),
-		trackerStates.get(BodyPart.LEFT_LOWER_ARM),
+		trackerStates.getFineFor(BodyPart.LEFT_SHOULDER),
+		trackerStates.getFineFor(BodyPart.LEFT_UPPER_ARM),
+		trackerStates.getFineFor(BodyPart.LEFT_LOWER_ARM),
 	)
-
 	val rightArm = listOfNotNull(
-		trackerStates.get(BodyPart.RIGHT_SHOULDER),
-		trackerStates.get(BodyPart.RIGHT_UPPER_ARM),
-		trackerStates.get(BodyPart.RIGHT_LOWER_ARM),
+		trackerStates.getFineFor(BodyPart.RIGHT_SHOULDER),
+		trackerStates.getFineFor(BodyPart.RIGHT_UPPER_ARM),
+		trackerStates.getFineFor(BodyPart.RIGHT_LOWER_ARM),
 	)
-
-	// Individual trackers
-	val head = trackerStates.get(BodyPart.HEAD)
-	val leftHand = trackerStates.get(BodyPart.LEFT_HAND)
-	val rightHand = trackerStates.get(BodyPart.RIGHT_HAND)
-	val leftUpperLeg = trackerStates.get(BodyPart.LEFT_UPPER_LEG)
-	val leftLowerLeg = trackerStates.get(BodyPart.LEFT_LOWER_LEG)
-	val leftFoot = trackerStates.get(BodyPart.LEFT_FOOT)
-	val rightUpperLeg = trackerStates.get(BodyPart.RIGHT_UPPER_LEG)
-	val rightLowerLeg = trackerStates.get(BodyPart.RIGHT_LOWER_LEG)
-	val rightFoot = trackerStates.get(BodyPart.RIGHT_FOOT)
+	val head = trackerStates.getFineFor(BodyPart.HEAD)
+	val leftHand = trackerStates.getFineFor(BodyPart.LEFT_HAND)
+	val rightHand = trackerStates.getFineFor(BodyPart.RIGHT_HAND)
+	val leftUpperLeg = trackerStates.getFineFor(BodyPart.LEFT_UPPER_LEG)
+	val leftLowerLeg = trackerStates.getFineFor(BodyPart.LEFT_LOWER_LEG)
+	val leftFoot = trackerStates.getFineFor(BodyPart.LEFT_FOOT)
+	val rightUpperLeg = trackerStates.getFineFor(BodyPart.RIGHT_UPPER_LEG)
+	val rightLowerLeg = trackerStates.getFineFor(BodyPart.RIGHT_LOWER_LEG)
+	val rightFoot = trackerStates.getFineFor(BodyPart.RIGHT_FOOT)
 
 	/**
-	 * Visits a tracker within the skeleton.
+	 * Visits a tracker within the groups.
 	 */
 	fun visit(
 		trackerState: TrackerState,
@@ -203,7 +205,7 @@ class TrackerGroup(trackerStates: List<TrackerState>) {
 		leftUpperLeg: TrackerState?,
 		rightUpperLeg: TrackerState?,
 	) {
-		val index = upperBody.map { it?.bodyPart }.indexOf(tracker.bodyPart)
+		val index = upperBody.indexOf(tracker)
 		if (index < 0) {
 			return
 		}
@@ -251,7 +253,7 @@ class TrackerGroup(trackerStates: List<TrackerState>) {
 		arm: List<TrackerState?>,
 		hand: TrackerState?,
 	) {
-		val index = arm.map { it?.bodyPart }.indexOf(tracker.bodyPart)
+		val index = arm.indexOf(tracker)
 		if (index < 0) {
 			return
 		}

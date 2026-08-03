@@ -31,11 +31,6 @@ value class Angle(private val rad: Float) {
 
 	override fun toString() = "${toDeg()} deg"
 
-	fun towards(direction: Side) = when (direction) {
-		Side.LEFT -> this
-		Side.RIGHT -> -this
-	}
-
 	companion object {
 		val ZERO = Angle(0.0f)
 

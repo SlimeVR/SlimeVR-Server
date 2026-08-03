@@ -6,10 +6,10 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.SkeletonActions
+import dev.slimevr.stayaligned.CorrectTrackerYaw
 import dev.slimevr.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
 import dev.slimevr.stayaligned.StayAlignedDefaults.YAW_CORRECTION_DEFAULT
 import dev.slimevr.stayaligned.StayAlignedManager
-import dev.slimevr.stayaligned.todo.AdjustTrackerYaw
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.EulerAngles
@@ -344,7 +344,7 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 
 /**
  * Detects whether a tracker is at rest or rotating.
- * Used for StayAligned and TapDetection.
+ * Used for Stay Aligned and TapDetection.
  */
 class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 
@@ -417,10 +417,11 @@ class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 		else -> state
 	}
 
-	// TODO : these values may need fine-tuning
+	// TODO : these values may need fine-tuning for TapDetection
+	//  or maybe need multiple motion detector with an abstract class
 	companion object {
 		val MAX_ROTATION = Angle.ofDeg(2f)
-		val ENTER_REST_TIME = 0.8.seconds
+		val ENTER_REST_TIME = 1.seconds
 		val ENTER_MOVING_TIME = 3.seconds
 	}
 }
@@ -533,15 +534,15 @@ class TrackerStayAlignedBehaviour(
 						lastRotationTime = timeSource.markNow()
 
 						val normalizedYawCorrection = yawCorrectionPerSec * lastFrameTimeSeconds
-						val yawCorrectionRot = AdjustTrackerYaw.computeYawCorrection(
+						val yawCorrectionResult = CorrectTrackerYaw.computeYawCorrection(
 							state,
 							serverFlow.value.trackers.values.map { it.context.state.value },
 							normalizedYawCorrection,
 							stayAlignedConfig,
 						)
 
-						if (yawCorrectionRot != null) {
-							receiver.context.dispatch(TrackerActions.SetYawCorrection(yawCorrectionRot))
+						if (yawCorrectionResult != null) {
+							receiver.context.dispatch(TrackerActions.SetYawCorrection(yawCorrectionResult))
 						}
 					}
 			}

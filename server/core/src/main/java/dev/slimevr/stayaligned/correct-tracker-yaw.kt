@@ -1,22 +1,32 @@
-package dev.slimevr.stayaligned.todo
+package dev.slimevr.stayaligned
 
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.math.angle.AngleAverage
 import dev.slimevr.math.angle.AngleErrors
-import dev.slimevr.stayaligned.StayAlignedDefaults
+import dev.slimevr.stayaligned.YawUtils.hasTrackerYaw
+import dev.slimevr.stayaligned.YawUtils.trackerYaw
+import dev.slimevr.stayaligned.poses.PlayerPose
+import dev.slimevr.stayaligned.poses.RelaxedPose
+import dev.slimevr.stayaligned.visitors.CenterErrorVisitor
+import dev.slimevr.stayaligned.visitors.LockedErrorVisitor
+import dev.slimevr.stayaligned.visitors.NeighborErrorVisitor
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 
-object AdjustTrackerYaw {
+object CorrectTrackerYaw {
 
 	/**
 	 * Aggregates the yaw errors from multiple forces.
 	 */
-	data class YawErrors(
-		val lockedError: AngleErrors = AngleErrors(),
-		val centerError: AngleErrors = AngleErrors(),
-		val neighborError: AngleErrors = AngleErrors(),
+	private data class YawErrors(
+		var lockedError: AngleErrors = AngleErrors(),
+		var centerError: AngleErrors = AngleErrors(),
+		var neighborError: AngleErrors = AngleErrors(),
 	)
+
+	private var yawErrors = YawErrors()
+	private var yawCorrectionResult: Angle? = null
 
 	/**
 	 * Adjusts the yaw of a tracker depending on its motion.
@@ -27,17 +37,22 @@ object AdjustTrackerYaw {
 		yawCorrection: Angle,
 		config: StayAlignedConfig,
 	): Angle? {
-		val trackerGroup = TrackerGroup(trackerStates)
+		// Create groups from the tracker states
+		val trackerStateGroups = TrackerGroups(trackerStates)
+		yawErrors = YawErrors()
+		yawCorrectionResult = null
 
-		return when (trackerState.motion) {
-			Motion.ROTATING -> adjustMovingTracker(trackerState, trackerGroup, yawCorrection, config)
+		when (trackerState.motion) {
+			Motion.ROTATING -> adjustMovingTracker(trackerState, trackerStateGroups, yawCorrection, config)
 
-			Motion.RESTING -> adjustLockedTracker(trackerState, trackerGroup, yawCorrection)
+			Motion.RESTING -> adjustLockedTracker(trackerState, trackerStateGroups, yawCorrection)
 
 			// Do not adjust trackers that were recently resting
 			// to support play styles that are primarily at rest
-			Motion.STARTED_ROTATING -> null
+			Motion.STARTED_ROTATING -> {}
 		}
+
+		return yawCorrectionResult
 	}
 
 	/**
@@ -56,18 +71,16 @@ object AdjustTrackerYaw {
 	 */
 	private fun adjustLockedTracker(
 		trackerState: TrackerState,
-		trackerGroup: TrackerGroup,
+		trackerGroup: TrackerGroups,
 		yawCorrection: Angle,
-	): Angle? {
-		val lockedRotation = trackerState.stayAlignedData.lockedRotation ?: return null
+	) {
+		val lockedRotation = trackerState.stayAlignedData.lockedRotation ?: return
 
 		adjustByError(trackerState, yawCorrection) {
 			YawErrors().also {
 				trackerGroup.visit(trackerState, LockedErrorVisitor(lockedRotation, it.lockedError))
 			}
 		}
-
-		return null
 	}
 
 	/**
@@ -90,14 +103,14 @@ object AdjustTrackerYaw {
 	 */
 	private fun adjustMovingTracker(
 		trackerState: TrackerState,
-		trackers: TrackerGroup,
+		trackers: TrackerGroups,
 		yawCorrection: Angle,
 		config: StayAlignedConfig,
-	): Angle? {
-		val centerYaw = CenterYaw.ofTrackerGroup(trackers) ?: return null
+	) {
+		val centerYaw = centerYawOfTrackers(trackers) ?: return
 
 		val pose = PlayerPose.of(trackers)
-		val relaxedPose = RelaxedPose.forPose(pose, config) ?: return null
+		val relaxedPose = RelaxedPose.forPose(pose, config) ?: return
 
 		adjustByError(trackerState, yawCorrection) {
 			YawErrors().also {
@@ -105,8 +118,59 @@ object AdjustTrackerYaw {
 				trackers.visit(trackerState, NeighborErrorVisitor(relaxedPose, it.neighborError))
 			}
 		}
+	}
 
-		return null
+	private fun centerYawOfTrackers(
+		trackerGroups: TrackerGroups,
+	): Angle? {
+		val head = trackerGroups.head
+		val upperBody = trackerGroups.upperBody
+		val leftUpperLeg = trackerGroups.leftUpperLeg
+		val rightUpperLeg = trackerGroups.rightUpperLeg
+		val leftLowerLeg = trackerGroups.leftLowerLeg
+		val rightLowerLeg = trackerGroups.rightLowerLeg
+
+		if (
+			// Head optional, because some mocap scenarios don't use one
+			upperBody.isEmpty() ||
+			leftUpperLeg == null ||
+			rightUpperLeg == null ||
+			leftLowerLeg == null ||
+			rightLowerLeg == null
+		) {
+			return null
+		}
+
+		// Need a minimum set of trackers, and the trackers need to be oriented in a
+		// way where we can actually calculate its yaw.
+		val hasCenterYaw =
+			upperBody.all(::hasTrackerYaw) &&
+				hasTrackerYaw(leftUpperLeg) &&
+				hasTrackerYaw(rightUpperLeg) &&
+				hasTrackerYaw(leftLowerLeg) &&
+				hasTrackerYaw(rightLowerLeg)
+		if (!hasCenterYaw) {
+			return null
+		}
+
+		// Calculate average yaw of the body
+		val averageYaw = AngleAverage()
+
+		if (head != null && hasTrackerYaw(head)) {
+			averageYaw.add(trackerYaw(head), StayAlignedDefaults.CENTER_ERROR_HEAD_WEIGHT)
+		}
+
+		upperBody.forEach {
+			averageYaw.add(trackerYaw(it), StayAlignedDefaults.CENTER_ERROR_UPPER_BODY_WEIGHT)
+		}
+
+		averageYaw.add(trackerYaw(leftUpperLeg), StayAlignedDefaults.CENTER_ERROR_UPPER_LEG_WEIGHT)
+		averageYaw.add(trackerYaw(rightUpperLeg), StayAlignedDefaults.CENTER_ERROR_UPPER_LEG_WEIGHT)
+
+		averageYaw.add(trackerYaw(leftLowerLeg), StayAlignedDefaults.CENTER_ERROR_LOWER_LEG_WEIGHT)
+		averageYaw.add(trackerYaw(rightLowerLeg), StayAlignedDefaults.CENTER_ERROR_LOWER_LEG_WEIGHT)
+
+		return averageYaw.toAngle()
 	}
 
 	/**
@@ -127,33 +191,31 @@ object AdjustTrackerYaw {
 		yawCorrection: Angle,
 		errorFn: (tracker: TrackerState) -> YawErrors,
 	) {
-		val stayAlignedState = trackerState.stayAlignedData
+		val curYaw = trackerState.stayAlignedData.yawCorrection
+		val curError = errorFn(trackerState)
 
-//        val curYaw = stayAlignedState.yawCorrection
-//        val curError = errorFn(trackerState)
-//
-//        val posYaw = curYaw + yawCorrection
-// 		stayAlignedState.yawCorrection = posYaw
-//        val posError = errorFn(trackerState)
-//
-//        val negYaw = curYaw - yawCorrection
-// 		stayAlignedState.yawCorrection = negYaw
-//        val negError = errorFn(trackerState)
-//
-//        val posYawDelta = gradient(posError, curError)
-//        val negYawDelta = gradient(negError, curError)
-//
-// 		// Pick the yaw correction that minimizes the error
-// 		if ((posYawDelta < Angle.ZERO) && (posYawDelta < negYawDelta)) {
-//            stayAlignedState.yawCorrection = posYaw
-//            stayAlignedState.yawErrors = posError
-// 		} else if (negYawDelta < Angle.ZERO) {
-//            stayAlignedState.yawCorrection = negYaw
-//            stayAlignedState.yawErrors = negError
-// 		} else {
-//            stayAlignedState.yawCorrection = curYaw
-// 			stayAlignedState.yawErrors = curError
-// 		}
+		val posYaw = curYaw + yawCorrection
+		yawCorrectionResult = posYaw
+		val posError = errorFn(trackerState)
+
+		val negYaw = curYaw - yawCorrection
+		yawCorrectionResult = negYaw
+		val negError = errorFn(trackerState)
+
+		val posYawDelta = gradient(posError, curError)
+		val negYawDelta = gradient(negError, curError)
+
+		// Pick the yaw correction that minimizes the error
+		if ((posYawDelta < Angle.ZERO) && (posYawDelta < negYawDelta)) {
+			yawCorrectionResult = posYaw
+			yawErrors = posError
+		} else if (negYawDelta < Angle.ZERO) {
+			yawCorrectionResult = negYaw
+			yawErrors = negError
+		} else {
+			yawCorrectionResult = curYaw
+			yawErrors = curError
+		}
 	}
 
 	/**

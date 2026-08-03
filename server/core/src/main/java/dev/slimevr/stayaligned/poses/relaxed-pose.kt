@@ -1,12 +1,11 @@
-package dev.slimevr.stayaligned.todo
+package dev.slimevr.stayaligned.poses
 
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.skeleton.BoneState
-import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.stayaligned.StayAlignedDefaults
-import dev.slimevr.stayaligned.todo.TrackerYaw.trackerYaw
+import dev.slimevr.stayaligned.YawUtils.trackerYaw
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.getFineFor
 import solarxr_protocol.datatypes.BodyPart
 
 class RelaxedPose(
@@ -84,9 +83,23 @@ class RelaxedPose(
 				(trackerYaw(left) - trackerYaw(right)) * 0.5f
 			}
 
-			val upperLegAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_UPPER_LEG }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_UPPER_LEG })
-			val lowerLegAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_LOWER_LEG }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_LOWER_LEG })
-			val footAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_FOOT }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_FOOT })
+			val upperLegAngle: Angle = trackerStates.getFineFor(BodyPart.LEFT_UPPER_LEG)?.let { left ->
+				trackerStates.getFineFor(BodyPart.RIGHT_UPPER_LEG)?.let { right ->
+					halfAngleBetween(left, right)
+				}
+			} ?: Angle.ZERO
+
+			val lowerLegAngle: Angle = trackerStates.getFineFor(BodyPart.LEFT_LOWER_LEG)?.let { left ->
+				trackerStates.getFineFor(BodyPart.RIGHT_LOWER_LEG)?.let { right ->
+					halfAngleBetween(left, right)
+				}
+			} ?: Angle.ZERO
+
+			val footAngle: Angle = trackerStates.getFineFor(BodyPart.LEFT_FOOT)?.let { left ->
+				trackerStates.getFineFor(BodyPart.RIGHT_FOOT)?.let { right ->
+					halfAngleBetween(left, right)
+				}
+			} ?: Angle.ZERO
 
 			return RelaxedPose(upperLegAngle, lowerLegAngle, footAngle)
 		}
