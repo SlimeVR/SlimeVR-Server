@@ -8,6 +8,7 @@ import dev.slimevr.config.StayAlignedRelaxedPoseConfig
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.stayaligned.todo.RelaxedPose
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.rpc.StayAlignedRelaxedPose
 import kotlin.collections.listOf
@@ -36,8 +37,9 @@ class StayAlignedManager(val context: StayAlignedContext, val server: VRServer, 
 	 * Sets and enables a relaxed pose from the user's current pose.
 	 */
 	fun detectRelaxedPose(pose: StayAlignedRelaxedPose) {
-		// TODO get user pose fromTrackers
-		updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(true))
+		val trackerStates = server.context.state.value.trackers.values.map { it.context.state.value }
+		val relaxedPose = RelaxedPose.fromTrackers(trackerStates)
+		updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(true, relaxedPose.upperLeg.toDeg(), relaxedPose.lowerLeg.toDeg(), relaxedPose.foot.toDeg()))
 	}
 
 	/**

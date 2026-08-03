@@ -1,6 +1,7 @@
 package dev.slimevr.math.angle
 
 import com.jme3.math.FastMath
+import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.floor
@@ -29,6 +30,11 @@ value class Angle(private val rad: Float) {
 	operator fun compareTo(other: Angle) = rad.compareTo(other.rad)
 
 	override fun toString() = "${toDeg()} deg"
+
+	fun towards(direction: Side) = when (direction) {
+		Side.LEFT -> this
+		Side.RIGHT -> -this
+	}
 
 	companion object {
 		val ZERO = Angle(0.0f)

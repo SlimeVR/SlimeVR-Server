@@ -17,13 +17,12 @@ enum class TrackerPose {
 	;
 
 	companion object {
-
 		fun ofTracker(trackerState: TrackerState?): TrackerPose {
 			if (trackerState == null) {
 				return NONE
 			}
 
-			val rotation = trackerState.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
+			val rotation = trackerState.stayAlignedData.forceStayAlignedRotation
 
 			val x = rotation.sandwichUnitX()
 			val y = rotation.sandwichUnitY()

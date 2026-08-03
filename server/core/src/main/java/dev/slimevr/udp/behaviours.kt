@@ -8,7 +8,6 @@ import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import dev.slimevr.tracker.TrackerSensorIds
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

@@ -76,19 +76,19 @@ class RelaxedPose(
 				null
 		}
 
-        /**
-         * Gets the relaxed angles from the trackers.
-         */
-        fun fromTrackers(trackerStates: List<TrackerState>): RelaxedPose {
-            val halfAngleBetween = { left: TrackerState, right: TrackerState ->
-                (trackerYaw(left) - trackerYaw(right)) * 0.5f
-            }
+		/**
+		 * Gets the relaxed angles from the trackers.
+		 */
+		fun fromTrackers(trackerStates: List<TrackerState>): RelaxedPose {
+			val halfAngleBetween = { left: TrackerState, right: TrackerState ->
+				(trackerYaw(left) - trackerYaw(right)) * 0.5f
+			}
 
-            val upperLegAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_UPPER_LEG }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_UPPER_LEG })
+			val upperLegAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_UPPER_LEG }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_UPPER_LEG })
 			val lowerLegAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_LOWER_LEG }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_LOWER_LEG })
 			val footAngle = halfAngleBetween(trackerStates.first { it.bodyPart == BodyPart.LEFT_FOOT }, trackerStates.first { it.bodyPart == BodyPart.RIGHT_FOOT })
 
-            return RelaxedPose(upperLegAngle, lowerLegAngle, footAngle)
-        }
+			return RelaxedPose(upperLegAngle, lowerLegAngle, footAngle)
+		}
 	}
 }

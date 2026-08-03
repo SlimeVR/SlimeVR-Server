@@ -8,7 +8,6 @@ import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.math.angle.AngleErrors
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -18,9 +17,8 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import kotlin.time.Duration
 
-data class TrackerSensorIds(val trackerId: Int, val sensorId: Int)
-
 // TODO maybe have more states, like ROTATING_FAST for TapDetection?
+// A tracker is initialized ROTATING to prevent TapDetection and Stay Aligned from running immediately.
 enum class Motion {
 	ROTATING,
 	RESTING,
@@ -33,22 +31,13 @@ data class YawResetSmoothing(
 	val duration: Duration,
 )
 
-/**
- * Aggregates the yaw errors from multiple forces.
- */
-data class YawErrors(
-	val lockedError: AngleErrors,
-	val centerError: AngleErrors,
-	val neighborError: AngleErrors,
-)
-
 data class StayAlignedData(
-	// Rotation of the tracker when it was locked
+	// Calibrated rotation of the tracker with StayAligned always applied
+	val forceStayAlignedRotation: CalibratedRotation,
+	// Rotation of the tracker when it started resting
 	val lockedRotation: Quaternion?,
-	// Yaw correction to apply to tracker rotation
+	// Yaw correction to apply to the tracker's rotation
 	val yawCorrection: Angle,
-	// Alignment error that yaw correction attempts to minimize
-	val yawErrors: YawErrors,
 )
 
 data class TrackerState(
@@ -92,6 +81,7 @@ sealed interface TrackerActions {
 	data class MountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
 	data class SetMotion(val motion: Motion) : TrackerActions
+	data class SetYawCorrection(val yawCorrection: Angle) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
@@ -142,17 +132,9 @@ class Tracker(
 				completedRestCalibration = false,
 				magStatus = MagnetometerStatus.NOT_SUPPORTED,
 				sessionCalibration = null,
-				motion = Motion.RESTING,
+				motion = Motion.ROTATING,
 				yawResetSmoothing = null,
-				stayAlignedData = StayAlignedData(
-					null,
-					Angle.ZERO,
-					YawErrors(
-						AngleErrors(),
-						AngleErrors(),
-						AngleErrors(),
-					),
-				),
+				stayAlignedData = StayAlignedData(Quaternion.IDENTITY, null, Angle.ZERO),
 			)
 			val trackerState = if (savedConfig != null) {
 				restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
@@ -161,7 +143,7 @@ class Tracker(
 			}
 
 			val behaviours = listOf(
-				TrackerBasicBehaviour(),
+				TrackerBasicBehaviour(appContext.stayAlignedManager),
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
@@ -169,7 +151,7 @@ class Tracker(
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
 				TrackerRestOrientationBehaviour(settings),
-				TrackerStayAlignedBehaviour(settings, appContext.stayAlignedManager),
+				TrackerStayAlignedBehaviour(settings),
 			)
 			val context = Context.create(
 				initialState = trackerState,

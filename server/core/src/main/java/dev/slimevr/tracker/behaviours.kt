@@ -4,7 +4,6 @@ import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
@@ -40,7 +39,7 @@ import kotlin.concurrent.atomics.incrementAndFetch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class TrackerBasicBehaviour : TrackerBehaviour {
+class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) : TrackerBehaviour {
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
 		is TrackerActions.Update -> action.transform(state)
 
@@ -52,25 +51,33 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 			val rawRotation: RawRotation = action.rotation ?: state.rawRotation
 			val rawAcceleration: RawAcceleration = action.acceleration ?: state.rawAcceleration
 			val rawMagnetometer = action.magnetometer ?: state.rawMagnetometer
-			val rawPosition = action.position ?: state.position
+			val position = action.position ?: state.position
 
-			// TODO non-IMU trackers still want some form of calibration applied
 			val cal = state.sessionCalibration
 
+			val hideYawCorrection = stayAlignedManager.context.state.value.hideYawCorrection
+			val yawCorrectedRawRotation = Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawRotation
+
 			// Rotation calibration
-			val rotation: CalibratedRotation = when {
-				state.imuType == null -> rawRotation
+			val (rotation: CalibratedRotation, forceStayAlignedRotation: CalibratedRotation) = when {
+				state.imuType == null -> rawRotation to rawRotation
 
-				cal != null && action.rotation != null -> applyCalibration(
-					rawRotation,
-					cal.headingCorrection,
-					cal.attitudeAlignment,
-					cal.headingAlignment * state.mountingOrientation,
-				).twinNearest(state.rotation)
+				// TODO non-IMU trackers still want some form of calibration applied
 
-				cal != null -> state.rotation
+				cal != null && action.rotation != null -> {
+					fun calibrate(rot: RawRotation) = applyCalibration(
+						rot,
+						cal.headingCorrection,
+						cal.attitudeAlignment,
+						cal.headingAlignment * state.mountingOrientation,
+					).twinNearest(state.rotation)
+					val yawCorrectCalibratedRotation = calibrate(yawCorrectedRawRotation)
+					(if (hideYawCorrection) calibrate(rawRotation) else yawCorrectCalibratedRotation) to yawCorrectCalibratedRotation
+				}
 
-				else -> rawRotation
+				cal != null -> state.rotation to state.stayAlignedData.forceStayAlignedRotation
+
+				else -> rawRotation to rawRotation
 			}
 
 			// Accel calibration
@@ -79,7 +86,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 
 				cal != null && action.acceleration != null -> applyCalibration(
 					rawAcceleration,
-					rawRotation,
+					if (hideYawCorrection) rawRotation else yawCorrectedRawRotation,
 					cal.headingCorrection,
 					cal.headingAlignment,
 				)
@@ -92,10 +99,11 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 			state.copy(
 				rawRotation = rawRotation,
 				rotation = rotation,
+				stayAlignedData = state.stayAlignedData.copy(forceStayAlignedRotation = forceStayAlignedRotation),
 				rawAcceleration = rawAcceleration,
 				acceleration = acceleration,
 				rawMagnetometer = rawMagnetometer,
-				position = rawPosition,
+				position = position,
 			)
 		}
 
@@ -203,7 +211,8 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 					old.mountingOrientation == new.mountingOrientation
 			}
 			.onEach {
-				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, it.position))
+				// Make sure to send the raw data to have calibration re-apply
+				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer))
 			}.launchIn(receiver.context.scope)
 	}
 }
@@ -334,7 +343,8 @@ class TrackerTPSBehaviour : TrackerBehaviour {
 }
 
 /**
- * Detects whether a tracker is at rest or moving.
+ * Detects whether a tracker is at rest or rotating.
+ * Used for StayAligned and TapDetection.
  */
 class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 
@@ -397,13 +407,19 @@ class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 	private fun isRotating(lastRotation: RawRotation, rotation: RawRotation) = Angle.absBetween(lastRotation, rotation) > MAX_ROTATION
 
 	override fun reduce(state: TrackerState, action: TrackerActions): TrackerState = when (action) {
-		is TrackerActions.SetMotion -> state.copy(motion = action.motion)
+		is TrackerActions.SetMotion -> {
+			state.copy(
+				motion = action.motion,
+				stayAlignedData = state.stayAlignedData.copy(lockedRotation = if (action.motion == Motion.RESTING) state.stayAlignedData.forceStayAlignedRotation else null),
+			)
+		}
+
 		else -> state
 	}
 
 	// TODO : these values may need fine-tuning
 	companion object {
-		val MAX_ROTATION = Angle.ofDeg(2.5f)
+		val MAX_ROTATION = Angle.ofDeg(2f)
 		val ENTER_REST_TIME = 0.8.seconds
 		val ENTER_MOVING_TIME = 3.seconds
 	}
@@ -484,7 +500,6 @@ class TrackerRestOrientationBehaviour(
 
 class TrackerStayAlignedBehaviour(
 	private val settings: Settings,
-	private val stayAlignedManager: StayAlignedManager,
 ) : TrackerBehaviour {
 	private var lastRotationTime = timeSource.markNow()
 
@@ -493,27 +508,23 @@ class TrackerStayAlignedBehaviour(
 		receiver.context.state
 			.distinctUntilChanged { old, new -> old.sessionCalibration == new.sessionCalibration }
 			.onEach {
-				// TODO use state
- 				lockedRotation = null
- 				yawCorrection = Angle.ZERO
- 				yawErrors = YawErrors(
-					lockedError = AngleErrors(),
-					centerError = AngleErrors(),
-					neighborError = AngleErrors()
-				)
+				receiver.context.dispatch(TrackerActions.SetYawCorrection(Angle.ZERO))
 			}.launchIn(receiver.context.scope)
+
+		val serverFlow = receiver.appContext.server.context.state
 
 		val stayAlignedConfigFlow = settings.context.state.map { it.data.stayAlignedConfig }.distinctUntilChanged()
 		val imuTypeFlow = receiver.context.state.map { it.imuType }.distinctUntilChanged()
 		val magStatusFlow = receiver.context.state.map { it.magStatus }.distinctUntilChanged()
-		val skeleton = receiver.appContext.skeleton
-
 		combine(stayAlignedConfigFlow, imuTypeFlow, magStatusFlow, ::Triple)
 			.flatMapLatest { (stayAlignedConfig, imuType, magStatus) ->
 				if (magStatus == MagnetometerStatus.ENABLED || imuType == null || !stayAlignedConfig.enabled) return@flatMapLatest emptyFlow()
 
+				// Ignore every other emission for performance (50FPS instead of 100FPS at peak)
+				var index = 0
 				receiver.context.state
 					.distinctUntilChangedBy { it.rawRotation }
+					.filter { index++ % 2 == 0 }
 					.onEach { state ->
 						val yawCorrectionPerSec = IMU_TO_YAW_CORRECTION.getOrDefault(state.imuType, YAW_CORRECTION_DEFAULT)
 						if (yawCorrectionPerSec == Angle.ZERO) return@onEach
@@ -522,39 +533,23 @@ class TrackerStayAlignedBehaviour(
 						lastRotationTime = timeSource.markNow()
 
 						val normalizedYawCorrection = yawCorrectionPerSec * lastFrameTimeSeconds
-
-						// TODO
-						val hideYawCorrection = stayAlignedManager.context.state.value.hideYawCorrection
-
-						// TODO
-						AdjustTrackerYaw.adjust(
+						val yawCorrectionRot = AdjustTrackerYaw.computeYawCorrection(
 							state,
-							skeleton.computed.value,
+							serverFlow.value.trackers.values.map { it.context.state.value },
 							normalizedYawCorrection,
 							stayAlignedConfig,
 						)
 
-						// TODO
- 						if (lockedRotation == null && state.motion == Motion.RESTING) {
-							lockedRotation = state.rotation // TODO tracker.getAdjustedRotationForceStayAligned()
- 						} else if (lockedRotation != null) {
-							lockedRotation = null
- 						}
-				}
+						if (yawCorrectionRot != null) {
+							receiver.context.dispatch(TrackerActions.SetYawCorrection(yawCorrectionRot))
+						}
+					}
 			}
 			.launchIn(receiver.context.scope)
 	}
 
-	// TODO use state for these
-	var yawCorrection = Angle.ZERO
-	var yawErrors = YawErrors(
-        lockedError = AngleErrors(),
-        centerError = AngleErrors(),
-        neighborError = AngleErrors()
-    )
-	var lockedRotation: Quaternion? = Quaternion.IDENTITY
-
 	override fun reduce(state: TrackerState, action: TrackerActions): TrackerState = when (action) {
+		is TrackerActions.SetYawCorrection -> state.copy(stayAlignedData = state.stayAlignedData.copy(yawCorrection = action.yawCorrection))
 		else -> state
 	}
 }

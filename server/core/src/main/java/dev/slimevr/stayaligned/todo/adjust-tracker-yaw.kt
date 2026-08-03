@@ -2,20 +2,47 @@ package dev.slimevr.stayaligned.todo
 
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.skeleton.ComputedSkeleton
+import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.stayaligned.StayAlignedDefaults
 import dev.slimevr.tracker.Motion
-import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.YawErrors
 
 object AdjustTrackerYaw {
 
 	/**
-	 * Adjusts the yaw of a tracker.
+	 * Aggregates the yaw errors from multiple forces.
+	 */
+	data class YawErrors(
+		val lockedError: AngleErrors = AngleErrors(),
+		val centerError: AngleErrors = AngleErrors(),
+		val neighborError: AngleErrors = AngleErrors(),
+	)
+
+	/**
+	 * Adjusts the yaw of a tracker depending on its motion.
+	 */
+	fun computeYawCorrection(
+		trackerState: TrackerState,
+		trackerStates: List<TrackerState>,
+		yawCorrection: Angle,
+		config: StayAlignedConfig,
+	): Angle? {
+		val trackerGroup = TrackerGroup(trackerStates)
+
+		return when (trackerState.motion) {
+			Motion.ROTATING -> adjustMovingTracker(trackerState, trackerGroup, yawCorrection, config)
+
+			Motion.RESTING -> adjustLockedTracker(trackerState, trackerGroup, yawCorrection)
+
+			// Do not adjust trackers that were recently resting
+			// to support play styles that are primarily at rest
+			Motion.STARTED_ROTATING -> null
+		}
+	}
+
+	/**
+	 * Adjusts a locked tracker.
 	 *
-	 * Locked Trackers
-	 * ---------------
 	 * After a tracker is at rest for a short time, we lock it and save its initial
 	 * rotation. We assume that locked trackers really are at rest, and that any
 	 * rotation is due to drift. We adjust the tracker's yaw towards its initial
@@ -26,9 +53,26 @@ object AdjustTrackerYaw {
 	 * some surface, e.g. sitting in a chair or lying in a bed. However, it does not
 	 * work well when the player is standing or moving around because the trackers
 	 * will never lock.
+	 */
+	private fun adjustLockedTracker(
+		trackerState: TrackerState,
+		trackerGroup: TrackerGroup,
+		yawCorrection: Angle,
+	): Angle? {
+		val lockedRotation = trackerState.stayAlignedData.lockedRotation ?: return null
+
+		adjustByError(trackerState, yawCorrection) {
+			YawErrors().also {
+				trackerGroup.visit(trackerState, LockedErrorVisitor(lockedRotation, it.lockedError))
+			}
+		}
+
+		return null
+	}
+
+	/**
+	 * Adjusts a tracker that is moving.
 	 *
-	 * Centering Force
-	 * ---------------
 	 * When the player is moving around, we assume that the player will often be in
 	 * a relaxed pose, or will eventually return to a relaxed pose. During setup, we
 	 * collect the player's relaxed posed when standing, sitting and lying on their
@@ -43,116 +87,73 @@ object AdjustTrackerYaw {
 	 * well when some of the trackers are locked, and others are moving. The locked
 	 * trackers will stay in place, while the moving trackers will pull towards the
 	 * relaxed pose, which can result in imbalanced poses.
-	 *
-	 * Neighbor Trackers
-	 * -----------------
-	 * The neighboring force adjusts the tracker's yaw so that it is balanced
-	 * between its neighboring trackers. For example, if the player is standing in a
-	 * very wide stance, the neighboring force will push the upper leg tracker to a
-	 * position that is proportional to their relaxed pose. This keeps the poses
-	 * balanced.
-	 *
-	 * We use gradient descent to find the direction to apply a yaw correction. By
-	 * applying this 50 times a second, the whole body is nudged into a reasonable
-	 * alignment.
-	 */
-	fun adjust(
-		trackerState: TrackerState,
-		computedSkeleton: ComputedSkeleton,
-		yawCorrection: Angle,
-		config: StayAlignedConfig,
-	) {
-        // Clear errors, in case we don't adjust the tracker
-//        trackerState.stayAlignedData.yawErrors = YawErrors()
-
-//        when (trackerState.motion) {
-//            Motion.MOVING ->
-//                adjustMovingTracker(trackerState, computedSkeleton, yawCorrection, config)
-//
-//            Motion.RESTING ->
-//                adjustLockedTracker(trackerState, computedSkeleton, yawCorrection)
-//
-//            Motion.STARTED_MOVING -> {
-//                // Do not adjust trackers that were recently at rest
-//				// to support play styles that are primarily at rest
-//            }
-//        }
-	}
-
-	/**
-	 * Adjusts a locked tracker.
-	 */
-	private fun adjustLockedTracker(
-		trackerState: TrackerState,
-		computedSkeleton: ComputedSkeleton,
-		yawCorrection: Angle,
-	) {
-        val lockedRotation = trackerState.stayAlignedData.lockedRotation ?: return
-
-//        adjustByError(trackerState, yawCorrection) {
-//            YawErrors().also {
-//				computedSkeleton.visit(trackerState, LockedErrorVisitor(lockedRotation, it.lockedError))
-//            }
-//        }
-	}
-
-	/**
-	 * Adjusts a tracker that is moving.
 	 */
 	private fun adjustMovingTracker(
 		trackerState: TrackerState,
-		trackerGroup: TrackerGroup,
+		trackers: TrackerGroup,
 		yawCorrection: Angle,
 		config: StayAlignedConfig,
-	) {
-        val centerYaw = CenterYaw.ofTrackerGroup(trackerGroup) ?: return
+	): Angle? {
+		val centerYaw = CenterYaw.ofTrackerGroup(trackers) ?: return null
 
-//        val pose = PlayerPose.of(trackers)
-//        val relaxedPose = RelaxedPose.forPose(pose, config) ?: return
-//
-//        adjustByError(trackerState, yawCorrection) {
-//            YawErrors().also {
-//				trackerGroup.visit(trackerState, CenterErrorVisitor(centerYaw, relaxedPose, it.centerError))
-//				trackerGroup.visit(trackerState, NeighborErrorVisitor(relaxedPose, it.neighborError))
-//            }
-//        }
+		val pose = PlayerPose.of(trackers)
+		val relaxedPose = RelaxedPose.forPose(pose, config) ?: return null
+
+		adjustByError(trackerState, yawCorrection) {
+			YawErrors().also {
+				trackers.visit(trackerState, CenterErrorVisitor(centerYaw, relaxedPose, it.centerError))
+				trackers.visit(trackerState, NeighborErrorVisitor(relaxedPose, it.neighborError))
+			}
+		}
+
+		return null
 	}
 
 	/**
 	 * Adjusts the yaw by applying gradient descent.
+	 *
+	 * The neighbouring force adjusts the tracker's yaw so that it is balanced
+	 * between its neighbouring trackers. For example, if the player is standing in a
+	 * very wide stance, the neighbouring force will push the upper leg tracker to a
+	 * position that is proportional to their relaxed pose. This keeps the poses
+	 * balanced.
+	 *
+	 * We use gradient descent to find the direction to apply a yaw correction. By
+	 * applying this several times a second, the whole body is nudged into a reasonable
+	 * alignment.
 	 */
 	private fun adjustByError(
 		trackerState: TrackerState,
 		yawCorrection: Angle,
 		errorFn: (tracker: TrackerState) -> YawErrors,
 	) {
-        val stayAlignedState = trackerState.stayAlignedData
+		val stayAlignedState = trackerState.stayAlignedData
 
-        val curYaw = stayAlignedState.yawCorrection
-        val curError = errorFn(trackerState)
-
-        val posYaw = curYaw + yawCorrection
-//        stayAlignedState.yawCorrection = posYaw
-        val posError = errorFn(trackerState)
-
-        val negYaw = curYaw - yawCorrection
-//        stayAlignedState.yawCorrection = negYaw
-        val negError = errorFn(trackerState)
-
-        val posYawDelta = gradient(posError, curError)
-        val negYawDelta = gradient(negError, curError)
-
-        // Pick the yaw correction that minimizes the error
-        if ((posYawDelta < Angle.ZERO) && (posYawDelta < negYawDelta)) {
+//        val curYaw = stayAlignedState.yawCorrection
+//        val curError = errorFn(trackerState)
+//
+//        val posYaw = curYaw + yawCorrection
+// 		stayAlignedState.yawCorrection = posYaw
+//        val posError = errorFn(trackerState)
+//
+//        val negYaw = curYaw - yawCorrection
+// 		stayAlignedState.yawCorrection = negYaw
+//        val negError = errorFn(trackerState)
+//
+//        val posYawDelta = gradient(posError, curError)
+//        val negYawDelta = gradient(negError, curError)
+//
+// 		// Pick the yaw correction that minimizes the error
+// 		if ((posYawDelta < Angle.ZERO) && (posYawDelta < negYawDelta)) {
 //            stayAlignedState.yawCorrection = posYaw
 //            stayAlignedState.yawErrors = posError
-        } else if (negYawDelta < Angle.ZERO) {
+// 		} else if (negYawDelta < Angle.ZERO) {
 //            stayAlignedState.yawCorrection = negYaw
 //            stayAlignedState.yawErrors = negError
-        } else {
+// 		} else {
 //            stayAlignedState.yawCorrection = curYaw
-//			stayAlignedState.yawErrors = curError
-        }
+// 			stayAlignedState.yawErrors = curError
+// 		}
 	}
 
 	/**

@@ -35,7 +35,9 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
+import dev.slimevr.stayaligned.StayAlignedActions
 import dev.slimevr.stayaligned.StayAlignedManager
+import dev.slimevr.stayaligned.StayAlignedState
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
@@ -44,7 +46,6 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBasicBehaviour
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.YawErrors
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
@@ -165,14 +166,14 @@ fun buildTestTracker(
 		completedRestCalibration = completedRestCalibration,
 		magStatus = MagnetometerStatus.NOT_SUPPORTED,
 		sessionCalibration = sessionCalibration,
-		motion = Motion.RESTING,
+		motion = Motion.ROTATING,
 		yawResetSmoothing = null,
-		stayAlignedData = StayAlignedData(null, Angle.ZERO, YawErrors(AngleErrors(), AngleErrors(), AngleErrors())),
+		stayAlignedData = StayAlignedData(Quaternion.IDENTITY, null, Angle.ZERO),
 	)
 	val context = Context.create(
 		initialState = state,
 		scope = scope,
-		behaviours = listOf(TrackerBasicBehaviour()) + additionalBehaviours,
+		behaviours = listOf(TrackerBasicBehaviour(buildTestStayAlignedManager(appContext.server, scope))) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)
@@ -195,9 +196,20 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 		initialState = initialState,
 		scope = scope,
 		behaviours = emptyList(),
-		name = "Settings[test]",
+		name = "HeightCalibration[test]",
 	)
 	return HeightCalibrationManager(context, server, userConfig)
+}
+
+fun buildTestStayAlignedManager(server: VRServer, scope: CoroutineScope): StayAlignedManager {
+	val initialState = StayAlignedState(hideYawCorrection = false)
+	val context = Context.create<StayAlignedState, StayAlignedActions>(
+		initialState = initialState,
+		scope = scope,
+		behaviours = emptyList(),
+		name = "StayAligned[test]",
+	)
+	return StayAlignedManager(context, server, buildTestSkeleton(scope), buildTestSettings(scope))
 }
 
 private object NoopConfigStorage : ConfigStorage {
