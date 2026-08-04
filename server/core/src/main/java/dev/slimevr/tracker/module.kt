@@ -14,7 +14,6 @@ import dev.slimevr.tracker.behaviours.TrackerDefaultMountingOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerMotionDetectionBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRestOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStayAlignedBehaviour
-import dev.slimevr.tracker.behaviours.TrackerTPSBehaviour
 import dev.slimevr.tracker.behaviours.TrackerToSkeletonBehaviour
 import dev.slimevr.tracker.behaviours.TrackerYawResetSmoothingBehaviour
 import io.github.axisangles.ktmath.Quaternion
@@ -89,7 +88,7 @@ sealed interface TrackerActions {
 	data class Update(val transform: TrackerState.() -> TrackerState) : TrackerActions
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
-	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null) : TrackerActions
+	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val newData: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
@@ -164,7 +163,6 @@ class Tracker(
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
-				TrackerTPSBehaviour(),
 				TrackerMotionDetectionBehaviour(),
 				TrackerToSkeletonBehaviour(),
 				TrackerRestOrientationBehaviour(settings),

@@ -1,8 +1,10 @@
 package dev.slimevr.tracker.behaviours
 
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tracker.CalibratedAcceleration
 import dev.slimevr.tracker.CalibratedRotation
+import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.RawAcceleration
 import dev.slimevr.tracker.RawRotation
 import dev.slimevr.tracker.SessionCalibration
@@ -15,13 +17,23 @@ import dev.slimevr.tracker.applyCalibration
 import dev.slimevr.tracker.estimateAttitudeAlign
 import dev.slimevr.tracker.estimateHeadingAlign
 import dev.slimevr.tracker.estimateHeadingCorrect
+import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.incrementAndFetch
 import kotlin.time.Duration
 
+@OptIn(ExperimentalAtomicApi::class)
 class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) : TrackerBehaviour {
+	val tpsCount = AtomicInt(0)
+
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
 		is TrackerActions.Update -> action.transform(state)
 
@@ -30,6 +42,9 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 		is TrackerActions.SetStatus -> state.copy(status = action.status)
 
 		is TrackerActions.SetRotation -> {
+			// This action counts as a tick towards TPS if the data is new.
+			if (action.newData) tpsCount.incrementAndFetch()
+
 			val rawRotation: RawRotation = action.rotation ?: state.rawRotation
 			val rawAcceleration: RawAcceleration = action.acceleration ?: state.rawAcceleration
 			val rawMagnetometer = action.magnetometer ?: state.rawMagnetometer
@@ -184,7 +199,14 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 	}
 
 	override fun observe(receiver: Tracker) {
-		// Refresh the tracker's rotation whenever calibration gets updated
+		observeCalibration(receiver)
+		observeTps(receiver)
+	}
+
+	/**
+	 * Refreshes the tracker's rotation whenever calibration gets updated
+	 */
+	private fun observeCalibration(receiver: Tracker) {
 		receiver.context.state
 			.distinctUntilChanged { old, new ->
 				old.sessionCalibration == new.sessionCalibration &&
@@ -193,7 +215,38 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 			}
 			.onEach {
 				// Make sure to send the raw data to have calibration re-apply
-				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer))
+				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, newData = false))
 			}.launchIn(receiver.context.scope)
+	}
+
+	/**
+	 * Sets the tracker's Ticks Per Second (TPS) every second.
+	 *
+	 * One tick = one new rotation data
+	 */
+	private fun observeTps(receiver: Tracker) {
+		receiver.context.scope.launch {
+			var mark = timeSource.markNow()
+			while (isActive) {
+				try {
+					delay(1000)
+					val elapsed = mark.elapsedNow()
+					val tps = tpsCount.exchange(0) * 1000L / elapsed.inWholeMilliseconds
+
+					// Tracker is at rest if it hasn't been updated in the last second
+					val updateMotionAction = if (tps == 0L && receiver.context.state.value.motion != Motion.RESTING) TrackerActions.SetMotion(Motion.RESTING) else null
+					receiver.context.dispatchAll(
+						listOfNotNull(
+							TrackerActions.Update { copy(tps = tps.toUShort()) },
+							updateMotionAction,
+						),
+					)
+
+					mark = timeSource.markNow()
+				} catch (e: Exception) {
+					AppLogger.coroutines.error(e, "Error in TrackerTPSBehaviour")
+				}
+			}
+		}
 	}
 }
