@@ -7,4 +7,5 @@ data class FeatureFlags(
 	var skipCheckUdev: Boolean = false,
 	var udevRulesInstalled: Boolean? = null,
 	var keybindSupport: KeybindSupport = KeybindSupport.UNSUPPORTED,
+	var supportsDriver: Boolean = true,
 )

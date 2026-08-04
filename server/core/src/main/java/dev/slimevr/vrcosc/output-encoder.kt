@@ -4,7 +4,6 @@ import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.skeleton.BoneState
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -23,13 +22,16 @@ private val trackerIdsByBodyPart = mapOf(
 	BodyPart.RIGHT_UPPER_ARM to 8,
 )
 
+/** Bones VRChat OSC can accept. Used by the routing module. */
+val VRC_OSC_SUPPORTED_BONES: Set<BodyPart> = trackerIdsByBodyPart.keys
+
 internal fun buildOutgoingBundle(
 	bones: Map<BodyPart, BoneState>,
-	outputTrackerToggle: OutputTrackerToggleManager,
+	routedBones: Set<BodyPart>,
 ): OscBundle? {
 	val messages = buildList {
 		for ((bodyPart, trackerId) in trackerIdsByBodyPart) {
-			if (bodyPart !in outputTrackerToggle.context.state.value.trackers) continue
+			if (bodyPart !in routedBones) continue
 
 			val bone = bones[bodyPart] ?: continue
 			add(

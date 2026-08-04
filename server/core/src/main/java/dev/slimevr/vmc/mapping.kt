@@ -60,6 +60,9 @@ val BODY_PART_TO_UNITY_BONE: Map<BodyPart, String> = mapOf(
 	BodyPart.RIGHT_LITTLE_DISTAL to "RightLittleDistal",
 )
 
+// Bones VMC can accept. Used by the routing module.
+val VMC_SUPPORTED_BONES: Set<BodyPart> = BODY_PART_TO_UNITY_BONE.keys
+
 // HIP-rooted hierarchy. VMC/Unity expects this; our skeleton is HEAD-rooted.
 val VMC_HIERARCHY_MAP: Map<BodyPart, Array<BodyPart>> = mapOf(
 	BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG),

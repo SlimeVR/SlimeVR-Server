@@ -457,7 +457,9 @@ mounting_selection_menu-close = Close
 ## Sidebar settings
 settings-sidebar-title = Settings
 settings-sidebar-general = General
-settings-sidebar-output = Output
+settings-sidebar-outputs = Outputs
+settings-sidebar-routing = Bone Routing
+settings-sidebar-driver = SteamVR / Monado
 settings-sidebar-resets = Resets
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-tracking = Tracking
@@ -476,36 +478,60 @@ settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = Advanced
 
-## Output settings
-# Some keys have steamvr in them as we switched to output but want to keep existing translations
-settings-general-output = Output Settings
-settings-general-output_trackers = Output trackers
-# Not all translation keys support multiline, only the ones that specify it will actually
-# split it in lines (that also means you can split in lines however you want in those).
-# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines
-settings-general-output_trackers-description =
-    Enable or disable specific trackers to output.
-    Useful for games or apps that only support certain trackers.
-settings-general-steamvr-trackers-waist = Waist
-settings-general-steamvr-trackers-chest = Chest
-settings-general-steamvr-trackers-left_foot = Left foot
-settings-general-steamvr-trackers-right_foot = Right foot
-settings-general-steamvr-trackers-left_knee = Left knee
-settings-general-steamvr-trackers-right_knee = Right knee
-settings-general-steamvr-trackers-left_elbow = Left elbow
-settings-general-steamvr-trackers-right_elbow = Right elbow
-settings-general-steamvr-trackers-left_hand = Left hand
-settings-general-steamvr-trackers-right_hand = Right hand
-settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
-settings-general-output-trackers-tracker_toggling-description = Automatically handles toggling output trackers on or off depending on your current tracker assignments.
-settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
-settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> Enabling the SteamVR hand trackers will disable inputs from real controllers.
-    This should only be enabled if you are using SlimeVR for hand tracking.
+## Bone routing settings
+settings-routing = Bone Routing
+settings-routing-description =
+    Choose what each output receives.
+    SteamVR/Monado, VRChat OSC and VMC can each get a different set of body parts.
+settings-routing-mode = Routing mode
+settings-routing-automatic-label = Automatic routing
+settings-routing-mode-description =
+    While Automatic is on, SlimeVR picks the best output for every bone so nothing is sent twice: SteamVR/Monado is preferred, VRChat OSC covers the bones it cannot take, and VMC always gets the full skeleton.
+    Turn it off to decide where every bone goes yourself, including sending one bone to several outputs at once.
+settings-routing-bone = Bone
+settings-routing-cell-required = This output needs this bone to work, so it is always sent.
+settings-routing-cell-unavailable = This output is not available on this platform.
+settings-routing-cell-duplicate = This bone reaches the same app through another output too, so it arrives twice.
+settings-routing-duplicate-warning = { $bones } go to { $outputs } at the same time. Both might end up in the same app or game, which would see two trackers for each.
+settings-routing-outputs = Outputs
+settings-routing-bones = Bones
+settings-routing-bones-description = A tick means the bone is sent to that output. A dash means the output does not support that bone. Turn off Automatic to pick them yourself.
+settings-routing-output-driver = SteamVR / Monado
+settings-routing-output-vrc_osc = VRChat OSC
+settings-routing-output-vmc = VMC
+settings-routing-output-bone-count = { $routed } of { $accepts } bones routed
+settings-routing-output-badge-sending = Sending
+settings-routing-output-sending-description = Connected and receiving the bones below.
+settings-routing-output-badge-stopped = Not running
+settings-routing-output-stopped-description = No SteamVR or Monado driver is connected, so nothing routed to it is sent.
+settings-routing-output-badge-idle = Idle
+settings-routing-output-idle-description = Turned on, but it has not found anything to send to yet, so those bones are not going out.
+settings-routing-output-idle-automatic-description = Turned on, but it has not found anything to send to yet, so its bones go to another output until it does.
+settings-routing-output-badge-off = Off
+settings-routing-output-off-description = Turned off in its own settings, so nothing routed to it is sent.
+settings-routing-output-badge-empty = Nothing routed
+settings-routing-output-empty-description = No bone is routed to it, so it has nothing to send.
+settings-routing-output-badge-unavailable = Unavailable
+settings-routing-output-unavailable-description = This output does not exist on this platform.
+settings-routing-group-spine = Spine & torso
+settings-routing-group-legs = Legs
+settings-routing-group-arms = Arms
+settings-routing-group-left_fingers = Left hand fingers
+settings-routing-group-right_fingers = Right hand fingers
+settings-routing-hands-warning = <b>Warning:</b> Routing your hands to SteamVR/Monado replaces the input from your real controllers.
+    Only do this if you want SlimeVR trackers to track your hands.
 
-    Are you sure you want to do this?
-settings-general-steamvr-trackers-hands-warning-cancel = Cancel
-settings-general-steamvr-trackers-hands-warning-done = Yes
+    Route hands there anyway?
+settings-routing-hands-warning-cancel = Cancel
+settings-routing-hands-warning-done = Route hands
+
+## SteamVR / Monado output settings
+
+settings-driver = SteamVR / Monado
+settings-driver-description = Settings for the SlimeVR driver, used by SteamVR and Monado alike.
+settings-driver-bones = Bones sent
+settings-driver-bones-description = Which bones this output receives is configured in Bone Routing.
+settings-driver-bones-link = Open Bone Routing
 
 ## Tracker mechanics
 settings-general-trackers_settings = Trackers Settings

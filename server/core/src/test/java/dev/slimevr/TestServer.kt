@@ -3,6 +3,7 @@ package dev.slimevr
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
+import dev.slimevr.config.DefaultSettingsBehaviour
 import dev.slimevr.config.DefaultUserBehaviour
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
@@ -14,6 +15,9 @@ import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.driver.DriverBridge
+import dev.slimevr.driver.DriverBridgeActions
+import dev.slimevr.driver.DriverBridgeState
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
@@ -22,12 +26,12 @@ import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.networkprofile.NetworkProfileManager
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsBasicBehaviour
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
 import dev.slimevr.resets.ResetsState
+import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
@@ -184,10 +188,20 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 	val context = Context.create<SettingsState, SettingsActions>(
 		initialState = initialState,
 		scope = scope,
-		behaviours = emptyList(),
+		behaviours = listOf(DefaultSettingsBehaviour()),
 		name = "Settings[test]",
 	)
 	return Settings(context, scope, NoopConfigStorage, "settings")
+}
+
+fun buildTestDriverBridge(server: VRServer, appContext: AppContextProvider, id: Int): DriverBridge {
+	val context = Context.create<DriverBridgeState, DriverBridgeActions>(
+		initialState = DriverBridgeState(protocolVersion = 0, trackers = emptyMap()),
+		scope = server.context.scope,
+		behaviours = emptyList(),
+		name = "TestDriver[$id]",
+	)
+	return DriverBridge(id = id, context = context, appContext = appContext)
 }
 
 fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: CoroutineScope): HeightCalibrationManager {
@@ -243,7 +257,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val vrcOscManager: VRCOSCManager get() = error("not used in test")
 	override val resetsManager: ResetsManager get() = error("not used in test")
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
-	override val outputTrackerToggle: OutputTrackerToggleManager get() = error("not used in test")
+	override val boneRouting: BoneRoutingManager get() = error("not used in test")
 	override val stayAlignedManager: StayAlignedManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit

@@ -3,11 +3,13 @@ package dev.slimevr.trackingchecklist
 import dev.slimevr.TestAppContext
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
+import dev.slimevr.buildTestDriverBridge
 import dev.slimevr.buildTestResetsManager
 import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.networkprofile.NetworkInfo
 import dev.slimevr.networkprofile.NetworkProfileActions
@@ -15,6 +17,8 @@ import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsActions
 import dev.slimevr.resets.ResetsManager
+import dev.slimevr.routing.BoneRoutingActions
+import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Vector3
@@ -26,6 +30,7 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.ResetType
+import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
 import solarxr_protocol.rpc.TrackingChecklistTrackerReset
@@ -45,6 +50,7 @@ class TrackingChecklistTest {
 			override val resetsManager = this@Harness.resetsManager
 		}
 		private val checklist = TrackingChecklist.create(scope.backgroundScope)
+		private val boneRouting: BoneRoutingManager = BoneRoutingManager.create(scope.backgroundScope)
 		private var nextId = 1
 
 		init {
@@ -57,9 +63,26 @@ class TrackingChecklistTest {
 					MountingCalibrationCheckBehaviour(server, resetsManager, settings),
 					FeetMountingCalibrationCheckBehaviour(server, resetsManager, settings),
 					NetworkProfileCheckBehaviour(networkProfileManager),
+					SteamVRHandsCheckBehaviour(server, settings, boneRouting),
 				),
 			)
 			checklist.context.observeAll(checklist)
+		}
+
+		fun connectDriver() {
+			val bridge = buildTestDriverBridge(server, appContext, id = nextId++)
+			server.context.dispatch(VRServerActions.DriverConnected(bridge))
+		}
+
+		fun routeToDriver(vararg bones: BodyPart) {
+			val routes = bones.associateWith { setOf(RoutingOutput.DRIVER) }
+			boneRouting.context.dispatch(BoneRoutingActions.SetRoutes(routes))
+		}
+
+		fun setAutomatic(automatic: Boolean) {
+			settings.context.dispatch(
+				SettingsActions.Update { copy(boneRoutingConfig = boneRoutingConfig.copy(automatic = automatic)) },
+			)
 		}
 
 		fun addTracker(
@@ -268,5 +291,79 @@ class TrackingChecklistTest {
 		runCurrent()
 
 		assertEquals(false, h.step(TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC).enabled)
+	}
+	@Test
+	fun `STEAMVR_HANDS_ENABLED is disabled without a driver`() = runTest {
+		val h = Harness(this)
+		h.setAutomatic(false)
+		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+		runCurrent()
+
+		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).enabled)
+	}
+
+	@Test
+	fun `STEAMVR_HANDS_ENABLED flags hands sent to the driver while a controller is held`() = runTest {
+		val h = Harness(this)
+		h.setAutomatic(false)
+		h.connectDriver()
+		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
+		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
+		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+		runCurrent()
+
+		assertEquals(true, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).enabled)
+		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
+	}
+
+	@Test
+	fun `STEAMVR_HANDS_ENABLED flags hands sent to the driver with no hand tracker worn`() = runTest {
+		val h = Harness(this)
+		h.setAutomatic(false)
+		h.connectDriver()
+		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+		runCurrent()
+
+		// The hand bone is computed from the arm chain, so this is sent regardless. Turning
+		// it on by accident is the usual way to end up here.
+		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
+	}
+
+	@Test
+	fun `STEAMVR_HANDS_ENABLED accepts hand trackers when no controller is held`() = runTest {
+		val h = Harness(this)
+		h.setAutomatic(false)
+		h.connectDriver()
+		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
+		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+		runCurrent()
+
+		assertEquals(true, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
+	}
+
+	@Test
+	fun `STEAMVR_HANDS_ENABLED ignores hands that are not routed to the driver`() = runTest {
+		val h = Harness(this)
+		h.setAutomatic(false)
+		h.connectDriver()
+		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
+		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
+		runCurrent()
+
+		assertEquals(true, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
+	}
+
+	@Test
+	fun `STEAMVR_HANDS_ENABLED is disabled in automatic mode`() = runTest {
+		val h = Harness(this)
+		h.setAutomatic(true)
+		h.connectDriver()
+		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
+		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
+		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+		runCurrent()
+
+		// Automatic owns the routes, so there is nothing the user could undo.
+		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).enabled)
 	}
 }

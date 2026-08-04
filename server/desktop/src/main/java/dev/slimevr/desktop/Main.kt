@@ -31,10 +31,10 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
+import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tapdetection.TapDetectionManager
@@ -118,14 +118,13 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		}
 	})
 	val udpServer = UdpServer.create(scope = this, addressResolver = ::resolveDesktopUdpAddress)
-	val outputTrackerToggle = OutputTrackerToggleManager.create(ctx = phase1, scope = this)
+	val boneRouting = BoneRoutingManager.create(scope = this)
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
-	val vmcManager = VMCManager.create(ctx = phase1, skeleton = skeleton, scope = this)
+	val vmcManager = VMCManager.create(scope = this)
 	val vrcOscManager = VRCOSCManager.create(
 		ctx = phase1,
 		scope = this,
 		oscQueryAddress = resolveDesktopOscQueryAddress(),
-		outputTrackerToggle = outputTrackerToggle,
 	)
 	val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
@@ -146,7 +145,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		heightCalibrationManager = heightCalibrationManager,
 		trackingChecklist = trackingChecklist,
 		udpServer = udpServer,
-		outputTrackerToggle = outputTrackerToggle,
+		boneRouting = boneRouting,
 		bvhManager = bvhManager,
 		vmcManager = vmcManager,
 		vrcOscManager = vrcOscManager,

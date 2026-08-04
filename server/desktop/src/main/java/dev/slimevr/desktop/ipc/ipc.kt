@@ -15,16 +15,22 @@ const val FEEDER_PIPE = "\\\\.\\pipe\\SlimeVRInput"
 const val SOLARXR_PIPE = "\\\\.\\pipe\\SlimeVRRpc"
 
 suspend fun createIpcServers(appContext: AppContextProvider) = coroutineScope {
+	val driver = appContext.featureFlags.supportsDriver
+
 	when (CURRENT_PLATFORM) {
 		Platform.LINUX, Platform.OSX -> {
-			launch { createUnixDriverSocket(appContext) }
-			launch { createUnixFeederSocket(appContext) }
+			if (driver) {
+				launch { createUnixDriverSocket(appContext) }
+				launch { createUnixFeederSocket(appContext) }
+			}
 			launch { createUnixSolarXRSocket(appContext) }
 		}
 
 		Platform.WINDOWS -> {
-			launch { createWindowsDriverPipe(appContext) }
-			launch { createWindowsFeederPipe(appContext) }
+			if (driver) {
+				launch { createWindowsDriverPipe(appContext) }
+				launch { createWindowsFeederPipe(appContext) }
+			}
 			launch { createWindowsSolarXRPipe(appContext) }
 		}
 

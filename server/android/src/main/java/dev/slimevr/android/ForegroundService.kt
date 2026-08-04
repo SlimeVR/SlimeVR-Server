@@ -30,9 +30,9 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
+import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tapdetection.TapDetectionManager
@@ -157,14 +157,13 @@ class ForegroundService : Service() {
 		val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = scope)
 		val trackingChecklist = TrackingChecklist.create(scope = scope)
 		val udpServer = UdpServer.create(scope = scope, addressResolver = ::resolveAndroidUdpAddress)
-		val outputTrackerToggle = OutputTrackerToggleManager.create(ctx = phase1, scope = scope)
+		val boneRouting = BoneRoutingManager.create(scope = scope)
 		val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = scope)
-		val vmcManager = VMCManager.create(ctx = phase1, skeleton = skeleton, scope = scope)
+		val vmcManager = VMCManager.create(scope = scope)
 		val vrcOscManager = VRCOSCManager.create(
 			ctx = phase1,
 			scope = scope,
 			oscQueryAddress = resolveAndroidOscQueryAddress(),
-			outputTrackerToggle = outputTrackerToggle,
 		)
 		val resetsManager = ResetsManager.create(ctx = phase1, scope = scope)
 		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
@@ -179,6 +178,7 @@ class ForegroundService : Service() {
 				skipCheckUdev = true,
 				keybindSupport = KeybindSupport.UNSUPPORTED,
 				udevRulesInstalled = false,
+				supportsDriver = false,
 			),
 			keybindManager = keybindManager,
 			skeleton = skeleton,
@@ -189,7 +189,7 @@ class ForegroundService : Service() {
 			heightCalibrationManager = heightCalibrationManager,
 			trackingChecklist = trackingChecklist,
 			udpServer = udpServer,
-			outputTrackerToggle = outputTrackerToggle,
+			boneRouting = boneRouting,
 			bvhManager = bvhManager,
 			vmcManager = vmcManager,
 			vrcOscManager = vrcOscManager,

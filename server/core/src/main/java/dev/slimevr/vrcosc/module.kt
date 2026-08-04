@@ -6,7 +6,6 @@ import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -96,13 +95,12 @@ class VRCOSCManager(
 	val context: VRCOSCContext,
 	val oscQueryAddress: String,
 	val settings: Settings,
-	val outputTrackerToggle: OutputTrackerToggleManager,
 ) {
 	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher("VRCOSC", context.scope, capacity = 32)
 
 	fun startObserving(appContext: AppContextProvider) {
 		val behaviours = listOf(
-			VRCOSCOutputBehaviour(appContext.skeleton),
+			VRCOSCOutputBehaviour(appContext.skeleton, appContext.boneRouting),
 			VRCOSCInputBehaviour(appContext),
 			VRCOSCOscQueryBehaviour(localIp = oscQueryAddress),
 		)
@@ -122,7 +120,6 @@ class VRCOSCManager(
 			ctx: Phase1ContextProvider,
 			scope: CoroutineScope,
 			oscQueryAddress: String,
-			outputTrackerToggle: OutputTrackerToggleManager,
 		): VRCOSCManager {
 			val settings = ctx.config.settings
 			val context = Context.create(
@@ -133,7 +130,7 @@ class VRCOSCManager(
 				scope = scope,
 				name = "VRCOSC",
 			)
-			return VRCOSCManager(context, oscQueryAddress, settings, outputTrackerToggle)
+			return VRCOSCManager(context, oscQueryAddress, settings)
 		}
 	}
 }

@@ -11,6 +11,8 @@ import dev.slimevr.device.DeviceState
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsManager
+import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.routing.Routes
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.vrchat.VRCConfigManager
@@ -32,6 +34,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistNeedCalibration
 import solarxr_protocol.rpc.TrackingChecklistPublicNetworks
 import solarxr_protocol.rpc.TrackingChecklistStep
@@ -139,6 +142,52 @@ class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingCheckli
 			.map { trackers -> computeStep(trackers) }
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.TRACKER_ERROR, step)) }
+			.launchIn(receiver.context.scope)
+	}
+}
+
+class SteamVRHandsCheckBehaviour(
+	private val server: VRServer,
+	private val settings: Settings,
+	private val boneRouting: BoneRoutingManager,
+) : TrackingChecklistBehaviourType {
+	private val HAND_BONES = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+
+	private fun computeStep(
+		trackers: List<TrackerState>,
+		routes: Routes,
+		driverConnected: Boolean,
+		automatic: Boolean,
+	): TrackingChecklistStep {
+		// The skeleton computes a hand bone from the arm chain, so routing one sends a hand
+		// tracker to SteamVR whether or not the user wears anything on that hand.
+		val handsSentToDriver = HAND_BONES.any { hand -> routes[hand]?.contains(RoutingOutput.DRIVER) == true }
+		val handTrackers = trackers.filter { tracker -> tracker.bodyPart in HAND_BONES }
+		// Controllers reach us back through the driver, anything else on a hand is a
+		// tracker the user actually wears.
+		val hasControllers = handTrackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
+		val hasHandTrackers = handTrackers.any { tracker ->
+			tracker.origin != DeviceOrigin.DRIVER && tracker.origin != DeviceOrigin.VRC
+		}
+
+		return TrackingChecklistStep(
+			valid = !handsSentToDriver || (!hasControllers && hasHandTrackers),
+			enabled = driverConnected && !automatic,
+			ignorable = true,
+			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
+		)
+	}
+
+	override fun observe(receiver: TrackingChecklist) {
+		combine(
+			trackerStatesFlow(server),
+			boneRouting.context.state.map { state -> state.routes },
+			server.context.state.map { state -> state.drivers.isNotEmpty() }.distinctUntilChanged(),
+			settings.context.state.map { state -> state.data.boneRoutingConfig.automatic }.distinctUntilChanged(),
+			::computeStep,
+		)
+			.distinctUntilChanged()
+			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED, step)) }
 			.launchIn(receiver.context.scope)
 	}
 }

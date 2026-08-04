@@ -35,6 +35,7 @@ class TrackingChecklist(
 			add(FullResetCheckBehaviour(appContext.server, appContext.resetsManager))
 			add(MountingCalibrationCheckBehaviour(appContext.server, appContext.resetsManager, appContext.config.settings))
 			add(TrackerErrorCheckBehaviour(appContext.server))
+			add(SteamVRHandsCheckBehaviour(appContext.server, appContext.config.settings, appContext.boneRouting))
 			add(FeetMountingCalibrationCheckBehaviour(appContext.server, appContext.resetsManager, appContext.config.settings))
 			// TODO: STAY_ALIGNED_CONFIGURED
 

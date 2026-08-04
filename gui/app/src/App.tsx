@@ -26,6 +26,8 @@ import { DonglePage } from './components/onboarding/pages/Dongle';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
 import { SerialDetectionModal } from './components/SerialDetectionModal';
 import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
+import { BoneRoutingSettings } from './components/settings/pages/BoneRoutingSettings';
+import { DriverSettings } from './components/settings/pages/DriverSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
@@ -139,6 +141,8 @@ function Layout() {
             <Route path="firmware-tool" element={<FirmwareToolSettings />} />
             <Route path="trackers" element={<GeneralSettings />} />
             <Route path="serial" element={<Serial />} />
+            <Route path="routing" element={<BoneRoutingSettings />} />
+            <Route path="driver" element={<DriverSettings />} />
             <Route path="osc/vrchat" element={<VRCOSCSettings />} />
             <Route path="osc/vmc" element={<VMCSettings />} />
             <Route path="interface" element={<InterfaceSettings />} />

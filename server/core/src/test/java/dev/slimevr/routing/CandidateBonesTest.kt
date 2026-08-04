@@ -1,13 +1,14 @@
-package dev.slimevr.outputtrackertoggle
+package dev.slimevr.routing
 
-import dev.slimevr.config.OutputTrackersConfig
+import dev.slimevr.config.BoneRoutingConfig
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.RoutingOutput
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class OutputTrackerToggleTest {
+class CandidateBonesTest {
 	@Test
-	fun `Output trackers are automatically determined based off body parts`() {
+	fun `Candidate bones are automatically determined based off body parts`() {
 		data class TestCase(
 			val name: String,
 			val fineBodyParts: Set<BodyPart?>,
@@ -141,10 +142,12 @@ class OutputTrackerToggleTest {
 			),
 		)
 
-		val behaviour = OutputTrackerToggleBasicBehaviour()
+
 		testCases.forEach { case ->
-			val result = behaviour.determineAutomaticOutputTrackers(
-				config = OutputTrackersConfig(trackers = case.configuredTrackers),
+			val result = determineCandidateBones(
+				config = BoneRoutingConfig(
+					manualRoutes = case.configuredTrackers.associateWith { setOf(RoutingOutput.DRIVER) },
+				),
 				fineBodyParts = case.fineBodyParts,
 			)
 
@@ -154,5 +157,17 @@ class OutputTrackerToggleTest {
 				message = case.name,
 			)
 		}
+	}
+
+	@Test
+	fun `hands stay routable manually while never auto enabling`() {
+		val candidates = determineCandidateBones(
+			config = BoneRoutingConfig(
+				manualRoutes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.DRIVER)),
+			),
+			fineBodyParts = emptySet(),
+		)
+
+		assertEquals(setOf(BodyPart.LEFT_HAND), candidates)
 	}
 }

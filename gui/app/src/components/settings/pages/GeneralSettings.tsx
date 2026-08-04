@@ -2,7 +2,6 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
-import { OutputTrackersSettings } from './components/OutputSettings';
 import { StayAlignedSettings } from './components/StayAlignedSettings';
 import { ResetsSettings } from './components/ResetsSettings';
 import { HIDSettings } from './components/HIDSettings';
@@ -59,7 +58,6 @@ export function GeneralSettings() {
   return (
     <SettingsPageLayout>
       <div className="flex flex-col gap-2 w-full">
-        <OutputTrackersSettings />
         <StayAlignedSettings />
         <TrackingSettings />
         <GroupedResetsSettings />

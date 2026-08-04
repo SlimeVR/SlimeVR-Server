@@ -16,6 +16,7 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.KeybindId
+import solarxr_protocol.rpc.RoutingOutput
 
 private const val SETTINGS_CONFIG_VERSION = 2
 
@@ -43,13 +44,17 @@ data class HidConfig(
 )
 
 @Serializable
-data class OutputTrackersConfig(
-	val automaticTrackerToggle: Boolean = true,
+data class BoneRoutingConfig(
+	/** Generate the routes from the connected trackers and the output priority. */
+	val automatic: Boolean = true,
 	/**
-	 * Do not read from directly, instead use
+	 * Explicit routes, ignored while [automatic]. Do not read directly, use BoneRoutingManager.
 	 */
-	@Serializable(with = BodyPartListSerializer::class)
-	val trackers: List<BodyPart> = listOf(),
+	val manualRoutes: Map<BodyPart, Set<RoutingOutput>>? = null,
+)
+
+@Serializable
+data class DriverConfig(
 	val sendDerivedVelocity: Boolean = false, // TODO do we actually need that or can we disable OpenVR's prediction
 )
 
@@ -210,7 +215,8 @@ data class SettingsConfigState(
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
 	val trackersConfig: TrackersConfig = TrackersConfig(),
 	val hidConfig: HidConfig = HidConfig(),
-	val outputTrackersConfig: OutputTrackersConfig = OutputTrackersConfig(),
+	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
+	val driverConfig: DriverConfig = DriverConfig(),
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
 	val keybinds: List<KeybindConfig> = defaultKeybinds(),

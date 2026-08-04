@@ -13,9 +13,11 @@ import {
   TrackingChecklistSteamVRDisconnectedT,
   TrackingChecklistStepId,
   BodyPart,
-  ChangeOutputTrackersSettingsRequestT,
-  OutputTrackersSettingsResponseT,
-  OutputTrackersSettingsRequestT,
+  RoutingOutput,
+  BoneRoutingSettingsRequestT,
+  BoneRoutingSettingsResponseT,
+  BoneRouteT,
+  ChangeBoneRoutingSettingsRequestT,
 } from 'solarxr-protocol';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
@@ -175,42 +177,43 @@ function SteamVRDisconnected({
 
 function SteamVRHandsEnabled() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [steamVrTrackers, setSteamVrTrackers] = useState<Omit<
-    ChangeOutputTrackersSettingsRequestT,
-    'pack'
-  > | null>(null);
+  const [routing, setRouting] = useState<BoneRoutingSettingsResponseT | null>(
+    null
+  );
 
   useEffect(() => {
     sendRPCPacket(
-      RpcMessage.OutputTrackersSettingsRequest,
-      new OutputTrackersSettingsRequestT()
+      RpcMessage.BoneRoutingSettingsRequest,
+      new BoneRoutingSettingsRequestT()
     );
   }, []);
 
   useRPCPacket(
-    RpcMessage.OutputTrackersSettingsResponse,
-    (settings: OutputTrackersSettingsResponseT) => {
-      if (settings.trackers) {
-        setSteamVrTrackers(settings);
-      }
-    }
+    RpcMessage.BoneRoutingSettingsResponse,
+    (settings: BoneRoutingSettingsResponseT) => setRouting(settings)
   );
 
   const disableHandTrackers = () => {
-    const req = new ChangeOutputTrackersSettingsRequestT();
+    if (!routing) return;
 
-    const newTrackers = steamVrTrackers?.trackers.filter(
-      (tracker) =>
-        tracker != BodyPart.LEFT_HAND && tracker != BodyPart.RIGHT_HAND
-    );
-    if (newTrackers !== undefined) {
-      req.trackers = newTrackers;
-    }
-    req.automaticTrackerToggle =
-      steamVrTrackers?.automaticTrackerToggle === true;
-    req.sendDerivedVelocity = steamVrTrackers?.sendDerivedVelocity === true;
+    const req = new ChangeBoneRoutingSettingsRequestT();
+    req.automatic = routing.automatic;
+    req.routes = (routing.routes ?? [])
+      .map((route) => {
+        const next = new BoneRouteT();
+        next.bone = route.bone;
+        next.outputs =
+          route.bone === BodyPart.LEFT_HAND ||
+          route.bone === BodyPart.RIGHT_HAND
+            ? (route.outputs ?? []).filter(
+                (output) => output !== RoutingOutput.DRIVER
+              )
+            : (route.outputs ?? []);
+        return next;
+      })
+      .filter((route) => route.outputs.length > 0);
 
-    sendRPCPacket(RpcMessage.ChangeOutputTrackersSettingsRequest, req);
+    sendRPCPacket(RpcMessage.ChangeBoneRoutingSettingsRequest, req);
   };
 
   return (

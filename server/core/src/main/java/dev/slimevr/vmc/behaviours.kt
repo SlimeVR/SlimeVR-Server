@@ -10,22 +10,26 @@ import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.osc.OscReceiver
 import dev.slimevr.osc.OscSender
+import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.RoutingOutput
 import kotlin.time.Duration.Companion.seconds
 
 class VMCOutputBehaviour(
 	private val skeleton: Skeleton,
 	private val settings: Settings,
+	private val boneRouting: BoneRoutingManager,
 ) : VMCBehaviourType {
 	private val logSpamWaitDuration = 1.seconds
 	private val initTime = System.currentTimeMillis()
@@ -68,15 +72,19 @@ class VMCOutputBehaviour(
 				}
 			}.launchIn(receiver.context.scope)
 
-		skeleton.computed
-			.onEach { computedSkeleton ->
+		val routedBonesFlow = boneRouting.context.state
+			.map { state -> state.routes.filterValues { RoutingOutput.VMC in it }.keys }
+			.distinctUntilChanged()
+
+		combine(skeleton.computed, routedBonesFlow, ::Pair)
+			.onEach { (computedSkeleton, routedBones) ->
 				val s = sender ?: return@onEach
 				val config = settings.context.state.value.data.vmcConfig
 				val currentTime = System.currentTimeMillis()
 				val vrm = vrmGeometry
 				receiver.context.scope.launch {
 					try {
-						s.send(buildBundle(computedSkeleton, config, currentTime, vrm))
+						s.send(buildBundle(computedSkeleton, config, currentTime, vrm, routedBones))
 					} catch (e: Exception) {
 						if (nextLogTime.hasPassedNow()) {
 							AppLogger.vmc.error("Failed to send VMC frame", e)
@@ -87,7 +95,7 @@ class VMCOutputBehaviour(
 			}.launchIn(receiver.context.scope)
 	}
 
-	private fun buildBundle(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?): OscBundle = OscBundle(1L, buildMessages(bones, config, currentTime, vrm).map { msg -> OscContent.Message(msg) }.toList())
+	private fun buildBundle(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?, routedBones: Set<BodyPart>): OscBundle = OscBundle(1L, buildMessages(bones, config, currentTime, vrm, routedBones).map { msg -> OscContent.Message(msg) }.toList())
 
 	private fun transformMessage(address: String, name: String, pos: Vector3, rot: Quaternion): OscMessage = OscMessage(
 		address,
@@ -103,7 +111,7 @@ class VMCOutputBehaviour(
 		),
 	)
 
-	private fun buildMessages(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?): Sequence<OscMessage> = sequence {
+	private fun buildMessages(bones: Map<BodyPart, BoneState>, config: VMCConfig, currentTime: Long, vrm: VrmGeometry?, routedBones: Set<BodyPart>): Sequence<OscMessage> = sequence {
 		val time = (currentTime - initTime) / 1000f
 		yield(OscMessage("/VMC/Ext/T", listOf(OscArg.Float(time))))
 		yield(OscMessage("/VMC/Ext/OK", listOf(OscArg.Int(1))))
@@ -112,8 +120,9 @@ class VMCOutputBehaviour(
 		yield(transformMessage("/VMC/Ext/Root/Pos", "root", Vector3.NULL, Quaternion.IDENTITY))
 
 		// TODO UpperChest + shoulders affecting arms local rot
-		// TODO Don't send fingers if we don't have any tracker for them
 		for ((targetBodyPart, unityName) in BODY_PART_TO_UNITY_BONE) {
+			if (targetBodyPart !in routedBones) continue
+
 			val targetParentBodyPart = VMC_BONE_PARENTS[targetBodyPart]
 			val trackingBodyPart = if (config.mirrorTracking) vmcMirrorSource(targetBodyPart) else targetBodyPart
 			val trackingBone = bones[trackingBodyPart] ?: continue

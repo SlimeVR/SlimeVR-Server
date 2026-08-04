@@ -57,7 +57,7 @@ export function SettingsPagePaneLayout({
           {icon}
         </div>
       </div>
-      <div className="flex-col w-full">{children}</div>
+      <div className="flex-col w-full min-w-0">{children}</div>
     </div>
   );
 }

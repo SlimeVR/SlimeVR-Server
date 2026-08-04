@@ -20,7 +20,7 @@ export function SettingSelectorMobile() {
     [
       {
         label: l10n.getString('settings-sidebar-general'),
-        value: { url: '/settings/trackers', scrollTo: 'output' },
+        value: { url: '/settings/trackers', scrollTo: 'stayAligned' },
       },
       {
         label: l10n.getString('settings-sidebar-interface'),
@@ -29,6 +29,14 @@ export function SettingSelectorMobile() {
       {
         label: l10n.getString('settings-sidebar-keybinds'),
         value: { url: '/settings/keybinds' },
+      },
+      {
+        label: l10n.getString('settings-sidebar-routing'),
+        value: { url: '/settings/routing', scrollTo: 'routing' },
+      },
+      {
+        label: l10n.getString('settings-sidebar-driver'),
+        value: { url: '/settings/driver', scrollTo: 'driver' },
       },
       {
         label: l10n.getString('settings-sidebar-osc_trackers'),
