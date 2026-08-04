@@ -75,6 +75,8 @@ class RelaxedPose(
 				null
 		}
 
+		// TODO only used for this module, move it?
+
 		/**
 		 * Gets the relaxed angles from the trackers.
 		 */

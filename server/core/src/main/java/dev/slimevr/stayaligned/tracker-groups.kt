@@ -4,7 +4,6 @@ import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.getFineFor
 import dev.slimevr.util.Side
 import solarxr_protocol.datatypes.BodyPart
-import solarxr_protocol.datatypes.TrackerStatus
 
 /**
  * Represents groups of trackers.

@@ -142,7 +142,6 @@ class CandidateBonesTest {
 			),
 		)
 
-
 		testCases.forEach { case ->
 			val result = determineCandidateBones(
 				config = BoneRoutingConfig(

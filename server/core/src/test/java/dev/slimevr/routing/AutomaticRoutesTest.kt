@@ -11,10 +11,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /** Builds an OutputStates with only the named outputs ACTIVE. */
-private fun active(vararg outputs: RoutingOutput): OutputStates =
-	RoutingOutput.entries.associateWith {
-		if (it in outputs) RoutingOutputState.ACTIVE else RoutingOutputState.INACTIVE
-	}
+private fun active(vararg outputs: RoutingOutput): OutputStates = RoutingOutput.entries.associateWith {
+	if (it in outputs) RoutingOutputState.ACTIVE else RoutingOutputState.INACTIVE
+}
 
 private val NONE_ACTIVE = active()
 

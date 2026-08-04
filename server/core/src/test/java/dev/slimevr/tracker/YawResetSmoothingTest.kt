@@ -8,6 +8,7 @@ import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.degreeToRadian
 import dev.slimevr.quaternionAssertEquals
+import dev.slimevr.tracker.behaviours.TrackerYawResetSmoothingBehaviour
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest

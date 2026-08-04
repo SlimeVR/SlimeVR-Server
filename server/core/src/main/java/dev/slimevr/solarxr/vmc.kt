@@ -27,7 +27,6 @@ class VmcBehaviour(
 ) : SolarXRBridgeBehaviour {
 	@OptIn(FlowPreview::class)
 	override fun observe(receiver: SolarXRBridge) {
-
 		vmcManager.context.state
 			.map { state -> state.status }
 			.drop(1)

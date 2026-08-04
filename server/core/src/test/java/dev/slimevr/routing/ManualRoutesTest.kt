@@ -8,10 +8,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-private fun active(vararg outputs: RoutingOutput): OutputStates =
-	RoutingOutput.entries.associateWith {
-		if (it in outputs) RoutingOutputState.ACTIVE else RoutingOutputState.INACTIVE
-	}
+private fun active(vararg outputs: RoutingOutput): OutputStates = RoutingOutput.entries.associateWith {
+	if (it in outputs) RoutingOutputState.ACTIVE else RoutingOutputState.INACTIVE
+}
 
 private val NONE_ACTIVE = active()
 private val ALL_ON = active(*RoutingOutput.entries.toTypedArray())

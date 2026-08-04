@@ -67,11 +67,13 @@ fun outputStatesFlow(appContext: AppContextProvider): Flow<OutputStates> {
 			} else {
 				when (output) {
 					RoutingOutput.DRIVER -> if (driverConnected) RoutingOutputState.ACTIVE else RoutingOutputState.INACTIVE
+
 					RoutingOutput.VRC_OSC -> when {
 						!vrcOscEnabled -> RoutingOutputState.INACTIVE
 						vrcOscHasTarget -> RoutingOutputState.ACTIVE
 						else -> RoutingOutputState.ENABLED
 					}
+
 					// Writes to a fixed address whether or not anything is there, so being
 					// on is the same as transmitting.
 					// FIXME: Maybe we should assume that we need to receive data from VMC for it to be considered working?

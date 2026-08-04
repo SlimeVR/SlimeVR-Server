@@ -25,6 +25,7 @@ object CorrectTrackerYaw {
 		var neighborError: AngleErrors = AngleErrors(),
 	)
 
+	// TODO make this immutable
 	private var yawErrors = YawErrors()
 	private var yawCorrectionResult: Angle? = null
 

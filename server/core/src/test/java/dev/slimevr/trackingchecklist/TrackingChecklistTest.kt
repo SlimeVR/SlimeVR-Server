@@ -292,6 +292,7 @@ class TrackingChecklistTest {
 
 		assertEquals(false, h.step(TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC).enabled)
 	}
+
 	@Test
 	fun `STEAMVR_HANDS_ENABLED is disabled without a driver`() = runTest {
 		val h = Harness(this)
