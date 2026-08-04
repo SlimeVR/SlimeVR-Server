@@ -481,13 +481,13 @@ settings-sidebar-advanced = Advanced
 ## Bone routing settings
 settings-routing = Bone Routing
 settings-routing-description =
-    Choose what each output receives.
+    Choose what each output sends.
     SteamVR/Monado, VRChat OSC and VMC can each get a different set of body parts.
 settings-routing-mode = Routing mode
 settings-routing-automatic-label = Automatic routing
 settings-routing-mode-description =
-    While Automatic is on, SlimeVR picks the best output for every bone so nothing is sent twice: SteamVR/Monado is preferred, VRChat OSC covers the bones it cannot take, and VMC always gets the full skeleton.
-    Turn it off to decide where every bone goes yourself, including sending one bone to several outputs at once.
+    While Automatic routing is on, SlimeVR picks the best output for every bone so nothing is sent twice: SteamVR/Monado is preferred, VRChat OSC covers the bones it cannot take, and VMC always gets the full skeleton.
+    Turn it off to decide where every bone goes yourself, including sending a bone to several outputs at once.
 settings-routing-bone = Bone
 settings-routing-cell-required = This output needs this bone to work, so it is always sent.
 settings-routing-cell-unavailable = This output is not available on this platform.
@@ -516,8 +516,11 @@ settings-routing-output-unavailable-description = This output does not exist on 
 settings-routing-group-spine = Spine & torso
 settings-routing-group-legs = Legs
 settings-routing-group-arms = Arms
-settings-routing-group-left_fingers = Left hand fingers
-settings-routing-group-right_fingers = Right hand fingers
+settings-routing-group-fingers = Fingers
+# Remove
+settings-routing-group-left_fingers = Left fingers
+settings-routing-group-right_fingers = Right fingers
+# Remove
 settings-routing-hands-warning = <b>Warning:</b> Routing your hands to SteamVR/Monado replaces the input from your real controllers.
     Only do this if you want SlimeVR trackers to track your hands.
 
@@ -530,7 +533,7 @@ settings-routing-hands-warning-done = Route hands
 settings-driver = SteamVR / Monado
 settings-driver-description = Settings for the SlimeVR driver, used by SteamVR and Monado alike.
 settings-driver-bones = Bones sent
-settings-driver-bones-description = Which bones this output receives is configured in Bone Routing.
+settings-driver-bones-description = Which bones this output sends is configured in Bone Routing.
 settings-driver-bones-link = Open Bone Routing
 
 ## Tracker mechanics

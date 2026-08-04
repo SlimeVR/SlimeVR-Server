@@ -500,7 +500,6 @@ export function BoneRoutingSettings() {
             <Typography variant="main-title" id="settings-routing" />
             <div className="flex flex-col pt-1 pb-4">
               <Typography
-                color="secondary"
                 id="settings-routing-description"
                 whitespace="whitespace-pre-line"
               />
@@ -509,7 +508,6 @@ export function BoneRoutingSettings() {
             <Typography variant="section-title" id="settings-routing-mode" />
             <div className="flex flex-col gap-2 pt-1 pb-5">
               <Typography
-                color="secondary"
                 id="settings-routing-mode-description"
                 whitespace="whitespace-pre-line"
               />
@@ -537,10 +535,7 @@ export function BoneRoutingSettings() {
 
             <Typography variant="section-title" id="settings-routing-bones" />
             <div className="pt-1 pb-2">
-              <Typography
-                color="secondary"
-                id="settings-routing-bones-description"
-              />
+              <Typography id="settings-routing-bones-description" />
             </div>
             {duplicated.size > 0 && (
               <div className="pb-2">

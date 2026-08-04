@@ -446,6 +446,18 @@ export function VRCOSCSettings() {
               </>
             )}
 
+            <Typography variant="section-title" id="settings-driver-bones" />
+            <div className="flex flex-col gap-2 pt-1 pb-4">
+              <Typography id="settings-driver-bones-description" />
+              <div className="w-fit">
+                <Button
+                  variant="secondary"
+                  to="/settings/routing"
+                  id="settings-driver-bones-link"
+                />
+              </div>
+            </div>
+
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vrchat-status-network-mode')}
             </Typography>

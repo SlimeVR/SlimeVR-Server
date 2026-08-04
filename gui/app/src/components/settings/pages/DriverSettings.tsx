@@ -75,15 +75,12 @@ export function DriverSettings() {
         <>
           <Typography variant="main-title" id="settings-driver" />
           <div className="flex flex-col pt-1 pb-4">
-            <Typography color="secondary" id="settings-driver-description" />
+            <Typography id="settings-driver-description" />
           </div>
 
           <Typography variant="section-title" id="settings-driver-bones" />
           <div className="flex flex-col gap-2 pt-1 pb-4">
-            <Typography
-              color="secondary"
-              id="settings-driver-bones-description"
-            />
+            <Typography id="settings-driver-bones-description" />
             <div className="w-fit">
               <Button
                 variant="secondary"
@@ -98,10 +95,7 @@ export function DriverSettings() {
             id="settings-general-fk_settings-velocity_settings"
           />
           <div className="pt-1 pb-2">
-            <Typography
-              color="secondary"
-              id="settings-general-fk_settings-velocity_settings-description"
-            />
+            <Typography id="settings-general-fk_settings-velocity_settings-description" />
           </div>
           <CheckBox
             variant="toggle"
