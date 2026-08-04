@@ -34,7 +34,7 @@ internal class VrcOscBehaviour(
 			.map { state -> state.status }
 			.drop(1)
 			.sample(STATUS_SAMPLE_MS)
-			.onEach { status -> receiver.sendRpc(buildStatusResponse(status, settings.context.state.value.data.vrcOscConfig.enabled)) }
+			.onEach { status -> receiver.sendRpc(buildStatusResponse(status)) }
 			.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCOSCSettingsRequest> {
@@ -51,9 +51,7 @@ internal class VrcOscBehaviour(
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<VRCOSCStatusRequest> {
-			val state = vrcOscManager.context.state.value
-			val config = settings.context.state.value.data.vrcOscConfig
-			receiver.sendRpc(buildStatusResponse(state.status, config.enabled))
+			receiver.sendRpc(buildStatusResponse(vrcOscManager.context.state.value.status))
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeVRCOSCSettingsRequest> { req ->
@@ -73,8 +71,7 @@ internal class VrcOscBehaviour(
 		}.launchIn(receiver.context.scope)
 	}
 
-	private fun buildStatusResponse(status: VRCOSCStatus, enabled: Boolean) = VRCOSCStatusChangeResponse(
-		enabled = enabled,
+	private fun buildStatusResponse(status: VRCOSCStatus) = VRCOSCStatusChangeResponse(
 		inputState = status.inputState,
 		inputPort = status.inputPort?.toUShort(),
 		inputError = status.inputError,

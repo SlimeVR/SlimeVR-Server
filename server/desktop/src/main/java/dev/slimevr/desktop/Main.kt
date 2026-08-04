@@ -122,7 +122,6 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = this)
 	val vmcManager = VMCManager.create(scope = this)
 	val vrcOscManager = VRCOSCManager.create(
-		ctx = phase1,
 		scope = this,
 		oscQueryAddress = resolveDesktopOscQueryAddress(),
 	)

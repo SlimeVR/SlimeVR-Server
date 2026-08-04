@@ -1,7 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import classNames from 'classnames';
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { boolean, object } from 'yup';
 import {
@@ -21,12 +20,18 @@ import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
+import {
+  StatusBadge,
+  StatusRow,
+  type StatusVariant,
+} from '@/components/commons/StatusBadge';
 import { VRCIcon } from '@/components/commons/icon/VRCIcon';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useRelativeTime } from '@/hooks/relative-time';
 import {
   OSCPortsAddress,
   useOscPortsAddressValidator,
@@ -48,139 +53,67 @@ const defaultVRCOSCSettings: VRCOSCSettingsForm = {
   },
 };
 
-function asString(value: string | Uint8Array | null | undefined): string {
-  return typeof value === 'string' ? value : '';
-}
-
-function formatElapsedTime(timestamp: bigint | null | undefined, now: number) {
-  if (!timestamp) return null;
-
-  const elapsedSeconds = Math.max(
-    0,
-    Math.floor((now - Number(timestamp)) / 1000)
-  );
-  if (elapsedSeconds < 5) return 'just now';
-  if (elapsedSeconds < 60) return `${elapsedSeconds}s ago`;
-
-  const elapsedMinutes = Math.floor(elapsedSeconds / 60);
-  if (elapsedMinutes < 60) return `${elapsedMinutes}m ago`;
-
-  const elapsedHours = Math.floor(elapsedMinutes / 60);
-  return `${elapsedHours}h ago`;
-}
-
-type BadgeKind =
-  | 'idle'
+type Badge =
   | 'listening'
   | 'ready'
   | 'found'
   | 'searching'
+  | 'idle'
   | 'disabled'
   | 'error';
 
-const BADGE_LABEL_KEY: Record<BadgeKind, string> = {
-  idle: 'settings-osc-vrchat-status-badge-idle',
-  listening: 'settings-osc-vrchat-status-badge-listening',
-  ready: 'settings-osc-vrchat-status-badge-ready',
-  found: 'settings-osc-vrchat-status-badge-found',
-  searching: 'settings-osc-vrchat-status-badge-searching',
-  disabled: 'settings-osc-vrchat-status-badge-disabled',
-  error: 'settings-osc-vrchat-status-badge-error',
+const BADGE_VARIANTS: Record<Badge, StatusVariant> = {
+  listening: 'success',
+  ready: 'success',
+  found: 'success',
+  searching: 'special',
+  idle: 'neutral',
+  disabled: 'neutral',
+  error: 'critical',
 };
 
-const BADGE_CLASSES: Record<BadgeKind, string> = {
-  idle: 'bg-background-50',
-  listening: 'bg-status-success',
-  ready: 'bg-status-success',
-  found: 'bg-status-success',
-  searching: 'bg-status-special',
-  disabled: 'bg-background-50',
-  error: 'bg-status-critical',
-};
-
-function StatusBadge({ kind }: { kind: BadgeKind }) {
+function VrcBadge({ badge }: { badge: Badge }) {
   return (
-    <span
-      className={classNames(
-        'rounded-md px-2 py-1 bg-background-70 flex gap-2 items-center'
-      )}
-    >
-      <div
-        className={classNames('h-2 w-2 rounded-full', BADGE_CLASSES[kind])}
-      />
-      <Typography id={BADGE_LABEL_KEY[kind]} bold />
-    </span>
+    <StatusBadge
+      variant={BADGE_VARIANTS[badge]}
+      id={`settings-osc-vrchat-status-badge-${badge}`}
+    />
   );
 }
 
-function StatusRow({
-  label,
-  badge,
-  children,
-}: {
-  label: string;
-  badge: BadgeKind;
-  children?: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1 py-2">
-      <div className="flex items-center justify-between gap-2">
-        <Typography variant="section-title">{label}</Typography>
-        <StatusBadge kind={badge} />
-      </div>
-      {children}
-    </div>
-  );
-}
+const INPUT_BADGES: Record<VRCOSCInputState, Badge> = {
+  [VRCOSCInputState.IDLE]: 'idle',
+  [VRCOSCInputState.LISTENING]: 'ready',
+  [VRCOSCInputState.ERROR]: 'error',
+};
 
-function inputBadge(
-  state: VRCOSCInputState,
-  lastReceivedMillis: bigint | null | undefined
-): BadgeKind {
-  switch (state) {
-    case VRCOSCInputState.LISTENING:
-      return lastReceivedMillis ? 'listening' : 'ready';
-    case VRCOSCInputState.ERROR:
-      return 'error';
-    default:
-      return 'idle';
-  }
-}
+const OUTPUT_BADGES: Record<VRCOSCOutputState, Badge> = {
+  [VRCOSCOutputState.IDLE]: 'idle',
+  [VRCOSCOutputState.READY]: 'ready',
+  [VRCOSCOutputState.ERROR]: 'error',
+};
 
-function outputBadge(state: VRCOSCOutputState): BadgeKind {
-  switch (state) {
-    case VRCOSCOutputState.READY:
-      return 'ready';
-    case VRCOSCOutputState.ERROR:
-      return 'error';
-    default:
-      return 'idle';
-  }
-}
+const OSCQUERY_BADGES: Record<VRCOSCOscQueryState, Badge> = {
+  [VRCOSCOscQueryState.DISABLED]: 'disabled',
+  [VRCOSCOscQueryState.SEARCHING]: 'searching',
+  [VRCOSCOscQueryState.FOUND]: 'found',
+  [VRCOSCOscQueryState.ERROR]: 'error',
+};
 
-function oscQueryBadge(state: VRCOSCOscQueryState): BadgeKind {
-  switch (state) {
-    case VRCOSCOscQueryState.FOUND:
-      return 'found';
-    case VRCOSCOscQueryState.SEARCHING:
-      return 'searching';
-    case VRCOSCOscQueryState.ERROR:
-      return 'error';
-    default:
-      return 'disabled';
-  }
+function inputBadge(state: VRCOSCInputState, received: boolean): Badge {
+  if (state === VRCOSCInputState.LISTENING && received) return 'listening';
+  return INPUT_BADGES[state];
 }
 
 function StatusCard({
   status,
-  now,
   onSwitchToTarget,
 }: {
   status: VRCOSCStatusChangeResponseT;
-  now: number;
   onSwitchToTarget: (target: VRCOSCDiscoveredTargetT) => void;
 }) {
   const { l10n } = useLocalization();
+  const relativeTime = useRelativeTime();
 
   const inputState = status.inputState ?? VRCOSCInputState.IDLE;
   const outputState = status.outputState ?? VRCOSCOutputState.IDLE;
@@ -194,118 +127,146 @@ function StatusCard({
         ? l10n.getString('settings-osc-vrchat-status-source-auto')
         : '';
 
-  const lastInputElapsed = formatElapsedTime(
-    status.lastReceivedInputMillis,
-    now
-  );
-  const lastFrameElapsed = formatElapsedTime(status.lastFrameSentMillis, now);
+  const lastInputElapsed = relativeTime(status.lastReceivedInputMillis);
+  const lastFrameElapsed = relativeTime(status.lastFrameSentMillis);
 
   return (
     <div className="flex flex-col bg-background-80 px-4 py-2 mb-5 rounded-md divide-y divide-background-60">
       <StatusRow
-        label={l10n.getString('settings-osc-vrchat-status-input')}
-        badge={inputBadge(inputState, status.lastReceivedInputMillis)}
+        label={
+          <Typography
+            variant="section-title"
+            id="settings-osc-vrchat-status-input"
+          />
+        }
+        badge={
+          <VrcBadge
+            badge={inputBadge(inputState, !!status.lastReceivedInputMillis)}
+          />
+        }
       >
         {inputState === VRCOSCInputState.IDLE ? (
-          <Typography color="secondary">
-            {l10n.getString('settings-osc-vrchat-status-input-idle')}
-          </Typography>
+          <Typography
+            color="secondary"
+            id="settings-osc-vrchat-status-input-idle"
+          />
         ) : (
           <>
-            <Typography color="secondary">
-              {l10n.getString('settings-osc-vrchat-status-input-listening', {
-                port: `${status.inputPort ?? 0}`,
-              })}
-            </Typography>
+            <Typography
+              color="secondary"
+              id="settings-osc-vrchat-status-input-listening"
+              vars={{ port: status.inputPort ?? 0 }}
+            />
             {inputState === VRCOSCInputState.ERROR && status.inputError ? (
               <Typography color="secondary">
-                {asString(status.inputError)}
+                {status.inputError?.toString() ?? ''}
               </Typography>
             ) : lastInputElapsed ? (
-              <Typography color="secondary">
-                {l10n.getString('settings-osc-vrchat-status-input-last-data', {
-                  elapsed: lastInputElapsed,
-                })}
-              </Typography>
+              <Typography
+                color="secondary"
+                id="settings-osc-vrchat-status-input-last-data"
+                vars={{ elapsed: lastInputElapsed }}
+              />
             ) : (
-              <Typography color="secondary">
-                {l10n.getString('settings-osc-vrchat-status-input-no-data')}
-              </Typography>
+              <Typography
+                color="secondary"
+                id="settings-osc-vrchat-status-input-no-data"
+              />
             )}
           </>
         )}
       </StatusRow>
 
       <StatusRow
-        label={l10n.getString('settings-osc-vrchat-status-output')}
-        badge={outputBadge(outputState)}
+        label={
+          <Typography
+            variant="section-title"
+            id="settings-osc-vrchat-status-output"
+          />
+        }
+        badge={<VrcBadge badge={OUTPUT_BADGES[outputState]} />}
       >
         {outputState === VRCOSCOutputState.IDLE ? (
-          <Typography color="secondary">
-            {l10n.getString('settings-osc-vrchat-status-output-idle')}
-          </Typography>
+          <Typography
+            color="secondary"
+            id={
+              status.targetAddress
+                ? 'settings-osc-vrchat-status-output-waiting'
+                : 'settings-osc-vrchat-status-output-idle'
+            }
+            vars={{
+              address: status.targetAddress?.toString() ?? '',
+              port: status.targetPort ?? 0,
+              source: sourceLabel,
+            }}
+          />
         ) : (
           <>
-            <Typography color="secondary">
-              {l10n.getString(
+            <Typography
+              color="secondary"
+              id={
                 outputState === VRCOSCOutputState.READY
                   ? 'settings-osc-vrchat-status-output-sending'
-                  : 'settings-osc-vrchat-status-output-target',
-                {
-                  address: asString(status.targetAddress),
-                  port: `${status.targetPort ?? 0}`,
-                  source: sourceLabel,
-                }
-              )}
-            </Typography>
+                  : 'settings-osc-vrchat-status-output-target'
+              }
+              vars={{
+                address: status.targetAddress?.toString() ?? '',
+                port: status.targetPort ?? 0,
+                source: sourceLabel,
+              }}
+            />
             {outputState === VRCOSCOutputState.ERROR && status.outputError ? (
               <Typography color="secondary">
-                {asString(status.outputError)}
+                {status.outputError?.toString() ?? ''}
               </Typography>
             ) : lastFrameElapsed ? (
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-osc-vrchat-status-output-last-frame',
-                  { elapsed: lastFrameElapsed }
-                )}
-              </Typography>
+              <Typography
+                color="secondary"
+                id="settings-osc-vrchat-status-output-last-frame"
+                vars={{ elapsed: lastFrameElapsed }}
+              />
             ) : (
-              <Typography color="secondary">
-                {l10n.getString('settings-osc-vrchat-status-output-no-frame')}
-              </Typography>
+              <Typography
+                color="secondary"
+                id="settings-osc-vrchat-status-output-no-frame"
+              />
             )}
           </>
         )}
       </StatusRow>
 
       <StatusRow
-        label={l10n.getString('settings-osc-vrchat-status-oscquery')}
-        badge={oscQueryBadge(oscQueryState)}
+        label={
+          <Typography
+            variant="section-title"
+            id="settings-osc-vrchat-status-oscquery"
+          />
+        }
+        badge={<VrcBadge badge={OSCQUERY_BADGES[oscQueryState]} />}
       >
         {oscQueryState === VRCOSCOscQueryState.DISABLED ? (
-          <Typography color="secondary">
-            {l10n.getString('settings-osc-vrchat-status-oscquery-disabled')}
-          </Typography>
+          <Typography
+            color="secondary"
+            id="settings-osc-vrchat-status-oscquery-disabled"
+          />
         ) : oscQueryState === VRCOSCOscQueryState.ERROR ? (
           <Typography color="secondary">
-            {asString(status.oscqueryError)}
+            {status.oscqueryError?.toString() ?? ''}
           </Typography>
         ) : (
           <>
-            <Typography color="secondary">
-              {l10n.getString(
-                'settings-osc-vrchat-status-oscquery-advertising',
-                { port: `${status.oscqueryAdvertisedPort ?? 0}` }
-              )}
-            </Typography>
+            <Typography
+              color="secondary"
+              id="settings-osc-vrchat-status-oscquery-advertising"
+              vars={{ port: status.oscqueryAdvertisedPort ?? 0 }}
+            />
             {oscQueryState === VRCOSCOscQueryState.FOUND &&
             status.discoveredTargets.length > 0 ? (
               <>
-                <Typography color="secondary">
-                  {l10n.getString(
-                    'settings-osc-vrchat-status-oscquery-discovered-title'
-                  )}
-                </Typography>
+                <Typography
+                  color="secondary"
+                  id="settings-osc-vrchat-status-oscquery-discovered-title"
+                />
                 <ul className="flex flex-col gap-1">
                   {status.discoveredTargets.map((target, index) => (
                     <li
@@ -313,8 +274,8 @@ function StatusCard({
                       className="flex items-center justify-between gap-2"
                     >
                       <Typography color="secondary">
-                        {asString(target.name)} ({asString(target.address)}:
-                        {target.portOut})
+                        {target.name?.toString() ?? ''} (
+                        {target.address?.toString() ?? ''}:{target.portOut})
                       </Typography>
                       {status.discoveredTargets.length > 1 && (
                         <Button
@@ -331,11 +292,10 @@ function StatusCard({
                 </ul>
               </>
             ) : (
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-osc-vrchat-status-oscquery-searching'
-                )}
-              </Typography>
+              <Typography
+                color="secondary"
+                id="settings-osc-vrchat-status-oscquery-searching"
+              />
             )}
           </>
         )}
@@ -350,7 +310,6 @@ export function VRCOSCSettings() {
   const [status, setStatus] = useState<VRCOSCStatusChangeResponseT | null>(
     null
   );
-  const [now, setNow] = useState(() => Date.now());
 
   const { oscValidator } = useOscPortsAddressValidator();
   const { reset, control, watch, handleSubmit, setValue } =
@@ -369,11 +328,6 @@ export function VRCOSCSettings() {
 
   const enabled = watch('enabled');
   const useManualNetwork = watch('useManualNetwork');
-
-  useEffect(() => {
-    const interval = window.setInterval(() => setNow(Date.now()), 1_000);
-    return () => window.clearInterval(interval);
-  }, []);
 
   const onSubmit = (values: VRCOSCSettingsForm) => {
     const req = new ChangeVRCOSCSettingsRequestT();
@@ -416,7 +370,7 @@ export function VRCOSCSettings() {
       formData.useManualNetwork = response.useManualNetwork;
       formData.portsAddress.portIn = response.portIn;
       formData.portsAddress.portOut = response.portOut;
-      formData.portsAddress.address = asString(response.address);
+      formData.portsAddress.address = response.address?.toString() ?? '';
 
       reset(formData);
     }
@@ -473,14 +427,17 @@ export function VRCOSCSettings() {
                 </Typography>
                 <StatusCard
                   status={status}
-                  now={now}
                   onSwitchToTarget={(target) => {
                     setValue('useManualNetwork', true, {
                       shouldDirty: true,
                     });
-                    setValue('portsAddress.address', asString(target.address), {
-                      shouldDirty: true,
-                    });
+                    setValue(
+                      'portsAddress.address',
+                      target.address?.toString() ?? '',
+                      {
+                        shouldDirty: true,
+                      }
+                    );
                     setValue('portsAddress.portOut', target.portOut, {
                       shouldDirty: true,
                     });

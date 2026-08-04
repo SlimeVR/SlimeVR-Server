@@ -47,3 +47,12 @@ sealed interface OscContent {
 	data class Message(val msg: OscMessage) : OscContent
 	data class Bundle(val bundle: OscBundle) : OscContent
 }
+
+fun forEachOscMessage(bundle: OscBundle, action: (OscMessage) -> Unit) {
+	for (content in bundle.contents) {
+		when (content) {
+			is OscContent.Message -> action(content.msg)
+			is OscContent.Bundle -> forEachOscMessage(content.bundle, action)
+		}
+	}
+}

@@ -1,11 +1,13 @@
 package dev.slimevr.vrcosc
 
 import dev.slimevr.config.DEFAULT_VRC_OSC_PORT_OUT
+import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.oscquery.OscQueryAccess
 import dev.slimevr.oscquery.OscQueryDiscovery
 import dev.slimevr.oscquery.OscQueryNode
 import dev.slimevr.oscquery.OscQueryServer
+import dev.slimevr.util.formatExceptionMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -18,6 +20,7 @@ import solarxr_protocol.rpc.VRCOSCOscQueryState
 private const val VRCHAT_SERVICE_PREFIX = "VRChat-Client"
 
 class VRCOSCOscQueryBehaviour(
+	private val settings: Settings,
 	private val localIp: String,
 ) : VRCOSCBehaviour {
 	private class OscQueryRuntime(
@@ -47,8 +50,8 @@ class VRCOSCOscQueryBehaviour(
 	override fun observe(receiver: VRCOSCManager) {
 		val runtime = OscQueryRuntime(localIp)
 
-		receiver.settings.context.state
-			.map { state -> Triple(state.data.vrcOscConfig.enabled, state.data.vrcOscConfig.useManualNetwork, vrcOscPortIn(state.data.vrcOscConfig)) }
+		settings.context.state
+			.map { state -> Triple(state.data.vrcOscConfig.enabled, state.data.vrcOscConfig.useManualNetwork, state.data.vrcOscConfig.portIn) }
 			.distinctUntilChanged()
 			.onEach { (enabled, useManualNetwork, portIn) ->
 				if (!enabled || useManualNetwork) {

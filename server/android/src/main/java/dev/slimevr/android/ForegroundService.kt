@@ -161,7 +161,6 @@ class ForegroundService : Service() {
 		val bvhManager = BVHManager.create(skeleton = skeleton, storage = storage, scope = scope)
 		val vmcManager = VMCManager.create(scope = scope)
 		val vrcOscManager = VRCOSCManager.create(
-			ctx = phase1,
 			scope = scope,
 			oscQueryAddress = resolveAndroidOscQueryAddress(),
 		)

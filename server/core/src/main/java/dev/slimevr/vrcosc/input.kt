@@ -2,16 +2,17 @@ package dev.slimevr.vrcosc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
+import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.osc.OscBundle
-import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.osc.OscReceiver
+import dev.slimevr.osc.forEachOscMessage
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.util.formatExceptionMessage
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -111,6 +112,7 @@ private class VRSystemTrackerRegistry(
 
 class VRCOSCInputBehaviour(
 	private val appContext: AppContextProvider,
+	private val settings: Settings,
 ) : VRCOSCBehaviour {
 	override fun reduce(state: VRCOSCState, action: VRCOSCActions) = when (action) {
 		is VRCOSCActions.SetInput -> state.copy(
@@ -132,8 +134,8 @@ class VRCOSCInputBehaviour(
 		val registry = VRSystemTrackerRegistry(appContext, receiver)
 		var oscReceiver: OscReceiver? = null
 
-		receiver.settings.context.state
-			.map { state -> Pair(state.data.vrcOscConfig.enabled, vrcOscPortIn(state.data.vrcOscConfig)) }
+		settings.context.state
+			.map { state -> Pair(state.data.vrcOscConfig.enabled, state.data.vrcOscConfig.portIn) }
 			.distinctUntilChanged()
 			.onEach { (enabled, portIn) ->
 				oscReceiver?.close()
@@ -164,7 +166,9 @@ class VRCOSCInputBehaviour(
 
 				receiver.context.scope.launch {
 					try {
-						newReceiver.listenBundles { bundle -> handleBundle(bundle, registry, receiver, portIn) }
+						newReceiver.listenBundles { bundle ->
+							forEachOscMessage(bundle) { msg -> handleIncomingMessage(msg, registry, receiver, portIn) }
+						}
 					} catch (e: Exception) {
 						dispatchInputError(
 							receiver = receiver,
@@ -191,29 +195,6 @@ class VRCOSCInputBehaviour(
 				error = formatExceptionMessage(message, throwable),
 			),
 		)
-	}
-
-	private fun handleBundle(
-		bundle: OscBundle,
-		registry: VRSystemTrackerRegistry,
-		receiver: VRCOSCManager,
-		portIn: Int,
-	) {
-		handleBundleContents(bundle.contents, registry, receiver, portIn)
-	}
-
-	private fun handleBundleContents(
-		contents: List<OscContent>,
-		registry: VRSystemTrackerRegistry,
-		receiver: VRCOSCManager,
-		portIn: Int,
-	) {
-		for (content in contents) {
-			when (content) {
-				is OscContent.Message -> handleIncomingMessage(content.msg, registry, receiver, portIn)
-				is OscContent.Bundle -> handleBundleContents(content.bundle.contents, registry, receiver, portIn)
-			}
-		}
 	}
 
 	private fun handleIncomingMessage(

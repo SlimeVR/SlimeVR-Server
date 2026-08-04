@@ -74,7 +74,7 @@ class SolarXRBridge(
 			add(ResetsBehaviour(appContext.config.settings))
 			add(TapDetectionBehaviour(appContext.config.settings, appContext.tapDetectionManager))
 			add(VrcOscBehaviour(appContext.config.settings, appContext.vrcOscManager))
-			add(VmcBehaviour(appContext.config.settings))
+			add(VmcBehaviour(appContext.config.settings, appContext.vmcManager))
 			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))
 			add(ProvisioningBehaviour(appContext.server, appContext.provisioningManager))
 			add(BoneRoutingBehaviour(appContext))

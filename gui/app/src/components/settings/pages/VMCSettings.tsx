@@ -5,16 +5,27 @@ import {
   ChangeVMCOSCSettingsRequestT,
   ChangeVRMSettingsRequestT,
   RpcMessage,
+  VMCOSCInputState,
+  VMCOSCOutputState,
   VMCOSCSettingsRequestT,
   VMCOSCSettingsResponseT,
+  VMCOSCStatusChangeResponseT,
+  VMCOSCStatusRequestT,
+  VMCOSCVrmState,
   VRMSettingsRequestT,
   VRMSettingsResponseT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useRelativeTime } from '@/hooks/relative-time';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { FileInput } from '@/components/commons/FileInput';
 import { VMCIcon } from '@/components/commons/icon/VMCIcon';
 import { Input } from '@/components/commons/Input';
+import {
+  StatusBadge,
+  StatusRow,
+  type StatusVariant,
+} from '@/components/commons/StatusBadge';
 import { Typography } from '@/components/commons/Typography';
 import { magic } from '@/utils/formatting';
 import {
@@ -131,10 +142,199 @@ export function VRMFileUpload() {
   );
 }
 
+type Badge = 'listening' | 'ready' | 'idle' | 'disabled' | 'error';
+
+const BADGE_VARIANTS: Record<Badge, StatusVariant> = {
+  listening: 'success',
+  ready: 'success',
+  idle: 'neutral',
+  disabled: 'neutral',
+  error: 'critical',
+};
+
+function VmcBadge({ badge }: { badge: Badge }) {
+  return (
+    <StatusBadge
+      variant={BADGE_VARIANTS[badge]}
+      id={`settings-osc-vmc-status-badge-${badge}`}
+    />
+  );
+}
+
+const INPUT_BADGES: Record<VMCOSCInputState, Badge> = {
+  [VMCOSCInputState.IDLE]: 'idle',
+  [VMCOSCInputState.LISTENING]: 'ready',
+  [VMCOSCInputState.ERROR]: 'error',
+};
+
+const OUTPUT_BADGES: Record<VMCOSCOutputState, Badge> = {
+  [VMCOSCOutputState.IDLE]: 'idle',
+  [VMCOSCOutputState.READY]: 'ready',
+  [VMCOSCOutputState.ERROR]: 'error',
+};
+
+const VRM_BADGES: Record<VMCOSCVrmState, Badge> = {
+  [VMCOSCVrmState.NONE]: 'disabled',
+  [VMCOSCVrmState.LOADED]: 'ready',
+  [VMCOSCVrmState.ERROR]: 'error',
+};
+
+function inputBadge(state: VMCOSCInputState, received: boolean): Badge {
+  if (state === VMCOSCInputState.LISTENING && received) return 'listening';
+  return INPUT_BADGES[state];
+}
+
+function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
+  const relativeTime = useRelativeTime();
+
+  const inputState = status.inputState ?? VMCOSCInputState.IDLE;
+  const outputState = status.outputState ?? VMCOSCOutputState.IDLE;
+  const vrmState = status.vrmState ?? VMCOSCVrmState.NONE;
+
+  const lastInputElapsed = relativeTime(status.lastReceivedInputMillis);
+  const lastFrameElapsed = relativeTime(status.lastFrameSentMillis);
+
+  return (
+    <div className="flex flex-col bg-background-80 px-4 py-2 mb-5 rounded-md divide-y divide-background-60">
+      <StatusRow
+        label={
+          <Typography
+            variant="section-title"
+            id="settings-osc-vmc-status-input"
+          />
+        }
+        badge={
+          <VmcBadge
+            badge={inputBadge(inputState, !!status.lastReceivedInputMillis)}
+          />
+        }
+      >
+        {inputState === VMCOSCInputState.IDLE ? (
+          <Typography
+            color="secondary"
+            id="settings-osc-vmc-status-input-idle"
+          />
+        ) : (
+          <>
+            <Typography
+              color="secondary"
+              id="settings-osc-vmc-status-input-listening"
+              vars={{ port: status.inputPort ?? 0 }}
+            />
+            {inputState === VMCOSCInputState.ERROR && status.inputError ? (
+              <Typography color="secondary">
+                {status.inputError?.toString() ?? ''}
+              </Typography>
+            ) : lastInputElapsed ? (
+              <Typography
+                color="secondary"
+                id="settings-osc-vmc-status-input-last-data"
+                vars={{ elapsed: lastInputElapsed }}
+              />
+            ) : (
+              <Typography
+                color="secondary"
+                id="settings-osc-vmc-status-input-no-data"
+              />
+            )}
+          </>
+        )}
+      </StatusRow>
+
+      <StatusRow
+        label={
+          <Typography
+            variant="section-title"
+            id="settings-osc-vmc-status-output"
+          />
+        }
+        badge={<VmcBadge badge={OUTPUT_BADGES[outputState]} />}
+      >
+        {outputState === VMCOSCOutputState.IDLE ? (
+          status.targetAddress ? (
+            <Typography
+              color="secondary"
+              id="settings-osc-vmc-status-output-waiting"
+              vars={{
+                address: status.targetAddress.toString(),
+                port: status.targetPort ?? 0,
+              }}
+            />
+          ) : (
+            <Typography
+              color="secondary"
+              id="settings-osc-vmc-status-output-idle"
+            />
+          )
+        ) : (
+          <>
+            <Typography
+              color="secondary"
+              id={
+                outputState === VMCOSCOutputState.READY
+                  ? 'settings-osc-vmc-status-output-sending'
+                  : 'settings-osc-vmc-status-output-target'
+              }
+              vars={{
+                address: status.targetAddress?.toString() ?? '',
+                port: status.targetPort ?? 0,
+              }}
+            />
+            {outputState === VMCOSCOutputState.ERROR && status.outputError ? (
+              <Typography color="secondary">
+                {status.outputError?.toString() ?? ''}
+              </Typography>
+            ) : lastFrameElapsed ? (
+              <Typography
+                color="secondary"
+                id="settings-osc-vmc-status-output-last-frame"
+                vars={{ elapsed: lastFrameElapsed }}
+              />
+            ) : (
+              <Typography
+                color="secondary"
+                id="settings-osc-vmc-status-output-no-frame"
+              />
+            )}
+          </>
+        )}
+      </StatusRow>
+
+      <StatusRow
+        label={
+          <Typography
+            variant="section-title"
+            id="settings-osc-vmc-status-vrm"
+          />
+        }
+        badge={<VmcBadge badge={VRM_BADGES[vrmState]} />}
+      >
+        {vrmState === VMCOSCVrmState.ERROR && status.vrmError ? (
+          <Typography color="secondary">
+            {status.vrmError?.toString() ?? ''}
+          </Typography>
+        ) : (
+          <Typography
+            color="secondary"
+            id={
+              vrmState === VMCOSCVrmState.LOADED
+                ? 'settings-osc-vmc-status-vrm-loaded'
+                : 'settings-osc-vmc-status-vrm-none'
+            }
+          />
+        )}
+      </StatusRow>
+    </div>
+  );
+}
+
 export function VMCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { oscValidator } = useOscPortsAddressValidator();
+  const [status, setStatus] = useState<VMCOSCStatusChangeResponseT | null>(
+    null
+  );
 
   const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
     defaultValues: defaultVMCSettings,
@@ -163,6 +363,8 @@ export function VMCSettings() {
     sendRPCPacket(RpcMessage.ChangeVMCOSCSettingsRequest, req);
   };
 
+  const enabled = watch('enabled');
+
   useEffect(() => {
     const subscription = watch((_value, { type }) => {
       if (type === 'change') {
@@ -171,6 +373,17 @@ export function VMCSettings() {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.VMCOSCStatusRequest, new VMCOSCStatusRequestT());
+  }, []);
+
+  useRPCPacket(
+    RpcMessage.VMCOSCStatusChangeResponse,
+    (response: VMCOSCStatusChangeResponseT) => {
+      setStatus(response);
+    }
+  );
 
   useRPCPacket(
     RpcMessage.VMCOSCSettingsResponse,
@@ -228,6 +441,17 @@ export function VMCSettings() {
                 label={l10n.getString('settings-osc-vmc-enable-label')}
               />
             </div>
+
+            {enabled && status && (
+              <>
+                <Typography
+                  variant="section-title"
+                  id="settings-osc-vmc-status-title"
+                />
+                <StatusCard status={status} />
+              </>
+            )}
+
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-network')}
             </Typography>

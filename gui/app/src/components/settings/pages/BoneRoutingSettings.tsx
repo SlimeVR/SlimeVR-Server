@@ -18,6 +18,11 @@ import {
   CHECKBOX_CLASSES,
   CheckboxInternal,
 } from '@/components/commons/Checkbox';
+import {
+  StatusBadge,
+  StatusRow,
+  type StatusVariant,
+} from '@/components/commons/StatusBadge';
 import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
@@ -176,29 +181,14 @@ type OutputSummary =
   | 'off'
   | 'unavailable';
 
-const BADGE_CLASSES: Record<OutputSummary, string> = {
-  sending: 'bg-status-success',
-  idle: 'bg-status-special',
-  empty: 'bg-status-warning',
-  stopped: 'bg-background-50',
-  off: 'bg-background-50',
-  unavailable: 'bg-background-50',
+const BADGE_VARIANTS: Record<OutputSummary, StatusVariant> = {
+  sending: 'success',
+  idle: 'special',
+  empty: 'warning',
+  stopped: 'neutral',
+  off: 'neutral',
+  unavailable: 'neutral',
 };
-
-function StatusBadge({ summary }: { summary: OutputSummary }) {
-  return (
-    <span className="rounded-md px-2 py-1 bg-background-70 flex gap-2 items-center">
-      <div
-        className={classNames('h-2 w-2 rounded-full', BADGE_CLASSES[summary])}
-      />
-      <Typography
-        id={`settings-routing-output-badge-${summary}`}
-        bold
-        whitespace="whitespace-nowrap"
-      />
-    </span>
-  );
-}
 
 function OutputStatusRow({
   status,
@@ -224,17 +214,20 @@ function OutputStatusRow({
   }, [status, routed]);
 
   return (
-    <div className="flex flex-col gap-1 py-2">
-      <div className="flex items-center justify-between gap-2 min-w-0">
-        <div className="min-w-0">
-          <Typography
-            variant="section-title"
-            id={OUTPUT_LABEL_ID[status.output]}
-          />
-        </div>
-        <StatusBadge summary={summary} />
-      </div>
-
+    <StatusRow
+      label={
+        <Typography
+          variant="section-title"
+          id={OUTPUT_LABEL_ID[status.output]}
+        />
+      }
+      badge={
+        <StatusBadge
+          variant={BADGE_VARIANTS[summary]}
+          id={`settings-routing-output-badge-${summary}`}
+        />
+      }
+    >
       <div className="flex items-baseline justify-between gap-3 mobile:flex-col mobile:gap-0">
         <Typography
           color="secondary"
@@ -255,7 +248,7 @@ function OutputStatusRow({
           />
         )}
       </div>
-    </div>
+    </StatusRow>
   );
 }
 

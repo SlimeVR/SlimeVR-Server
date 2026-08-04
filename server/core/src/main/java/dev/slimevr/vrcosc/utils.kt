@@ -1,6 +1,5 @@
 package dev.slimevr.vrcosc
 
-import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.osc.OscArg
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -9,8 +8,6 @@ import io.github.axisangles.ktmath.Vector3
 import kotlin.math.PI
 
 internal const val TRACKING_VRSYSTEM_PATH: String = "/tracking/vrsystem"
-
-internal fun vrcOscPortIn(config: VRCOSCConfig): Int = config.portIn
 
 internal fun parsePosition(args: List<OscArg>, startIndex: Int = 0): Vector3? {
 	val x = args.getOrNull(startIndex)?.asFloatOrNull() ?: return null
@@ -30,10 +27,4 @@ internal fun parseVrcEulerRotation(args: List<OscArg>, startIndex: Int = 0): Qua
 		z * PI.toFloat() / 180f,
 	).toQuaternion()
 	return Quaternion(w, -rx, -ry, rz)
-}
-
-internal fun formatExceptionMessage(prefix: String, throwable: Throwable): String {
-	val detail = throwable.message?.takeIf { it.isNotBlank() }
-		?: throwable::class.simpleName.orEmpty()
-	return if (detail.isBlank()) prefix else "$prefix: $detail"
 }

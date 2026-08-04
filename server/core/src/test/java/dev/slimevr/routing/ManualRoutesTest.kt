@@ -51,7 +51,6 @@ class ManualRoutesTest {
 
 	@Test
 	fun `an output that cannot take the bone is dropped`() {
-		// OSC has no slot for the neck, VMC does.
 		val routes = routesOf(BodyPart.NECK to setOf(RoutingOutput.VRC_OSC, RoutingOutput.VMC))
 
 		val sanitized = effectiveRoutes(routes, active(RoutingOutput.DRIVER, RoutingOutput.VRC_OSC, RoutingOutput.VMC))
@@ -90,7 +89,6 @@ class RoutingChangeTest {
 	fun `switching to manual again keeps the table the user built`() {
 		val config = BoneRoutingConfig(automatic = true, manualRoutes = HAND_TABLE)
 
-		// The page was showing the automatic routes, so the request carries those.
 		val next = applyRoutingChange(config, automatic = false, routes = AUTO_ROUTES, seed = AUTO_ROUTES)
 
 		assertEquals(HAND_TABLE, next.manualRoutes)
@@ -148,7 +146,6 @@ class RoutingChangeTest {
 
 	@Test
 	fun `the seed carries outputs that are merely off`() {
-		// What seedManualRoutes builds: automatic run with every output treated as on.
 		val allOn = RoutingOutput.entries.associateWith { RoutingOutputState.ACTIVE }
 		val seed = computeAutomaticRoutes(setOf(BodyPart.HIP), allOn)
 
@@ -159,8 +156,6 @@ class RoutingChangeTest {
 			seed = seed,
 		)
 
-		// The driver was not connected at the time, but the bone is in the table so
-		// starting SteamVR later actually sends something.
 		assertEquals(setOf(RoutingOutput.DRIVER), config.manualRoutes.orEmpty()[BodyPart.HIP])
 	}
 }
@@ -180,7 +175,6 @@ class ForcedRoutesTest {
 
 	@Test
 	fun `a bone the user cannot edit is dropped entirely from storage`() {
-		// The neck is VMC only, and VMC is forced, so there is nothing to store.
 		val config = applyRoutingChange(
 			BoneRoutingConfig(automatic = false, manualRoutes = emptyMap()),
 			automatic = false,

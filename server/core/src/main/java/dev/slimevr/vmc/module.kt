@@ -4,13 +4,54 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import kotlinx.coroutines.CoroutineScope
+import solarxr_protocol.rpc.VMCOSCInputState
+import solarxr_protocol.rpc.VMCOSCOutputState
+import solarxr_protocol.rpc.VMCOSCVrmState
 
-object VMCState
+data class VMCStatus(
+	val inputState: VMCOSCInputState = VMCOSCInputState.IDLE,
+	val inputPort: Int? = null,
+	val inputError: String? = null,
+	val lastReceivedInputMillis: Long? = null,
 
-sealed interface VMCActions
+	val outputState: VMCOSCOutputState = VMCOSCOutputState.IDLE,
+	val outputError: String? = null,
+	val targetAddress: String? = null,
+	val targetPort: Int? = null,
+	val lastFrameSentMillis: Long? = null,
+
+	val vrmState: VMCOSCVrmState = VMCOSCVrmState.NONE,
+	val vrmError: String? = null,
+)
+
+data class VMCState(
+	val status: VMCStatus = VMCStatus(),
+)
+
+sealed interface VMCActions {
+	data class SetInput(
+		val state: VMCOSCInputState,
+		val port: Int? = null,
+		val error: String? = null,
+	) : VMCActions
+	data class SetLastReceivedInput(val millis: Long) : VMCActions
+
+	data class SetOutput(
+		val state: VMCOSCOutputState,
+		val targetAddress: String? = null,
+		val targetPort: Int? = null,
+		val error: String? = null,
+	) : VMCActions
+	data class SetLastFrameSent(val millis: Long) : VMCActions
+
+	data class SetVrm(
+		val state: VMCOSCVrmState,
+		val error: String? = null,
+	) : VMCActions
+}
 
 typealias VMCContext = Context<VMCState, VMCActions>
-typealias VMCBehaviourType = Behaviour<VMCState, VMCActions, VMCManager>
+typealias VMCBehaviour = Behaviour<VMCState, VMCActions, VMCManager>
 
 class VMCManager(val context: VMCContext) {
 	fun startObserving(appContext: AppContextProvider) {
@@ -27,9 +68,9 @@ class VMCManager(val context: VMCContext) {
 	companion object {
 		fun create(scope: CoroutineScope): VMCManager {
 			val context = Context.create(
-				initialState = VMCState,
+				initialState = VMCState(),
 				scope = scope,
-				behaviours = emptyList<VMCBehaviourType>(),
+				behaviours = emptyList<VMCBehaviour>(),
 				name = "VMC",
 			)
 			return VMCManager(context)
