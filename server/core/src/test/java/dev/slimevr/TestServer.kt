@@ -63,8 +63,10 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
+import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.datatypes.hardware_info.TrackerDataType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
@@ -156,27 +158,29 @@ fun buildTestTracker(
 ): Tracker {
 	val state = TrackerState(
 		id = id,
+		deviceId = 0,
+		origin = origin,
 		hardwareId = "test-$id",
 		name = "Tracker $id",
+		imuType = sensorType,
+		bodyPart = bodyPart,
+		customName = null,
+		trackerDataType = TrackerDataType.ROTATION,
+		lastMountingMethod = MountingMethod.MANUAL,
+		mountingOrientation = Quaternion.IDENTITY,
 		restOrientation = Quaternion.IDENTITY,
+		sessionCalibration = sessionCalibration,
 		rawRotation = rawRotation,
 		rotation = Quaternion.IDENTITY,
 		rawAcceleration = Vector3.NULL,
 		acceleration = Vector3.NULL,
 		rawMagnetometer = Vector3.NULL,
-		bodyPart = bodyPart,
-		mountingOrientation = Quaternion.IDENTITY,
-		origin = origin,
-		deviceId = 0,
-		customName = null,
-		imuType = sensorType,
 		position = position,
-		tps = 0u,
 		imuTemp = null,
+		tps = 0u,
 		status = status,
 		completedRestCalibration = completedRestCalibration,
 		magStatus = MagnetometerStatus.NOT_SUPPORTED,
-		sessionCalibration = sessionCalibration,
 		motion = Motion.ROTATING,
 		yawResetSmoothing = null,
 		stayAlignedData = StayAlignedData(Quaternion.IDENTITY, null, Angle.ZERO),

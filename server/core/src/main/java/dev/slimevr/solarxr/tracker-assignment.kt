@@ -17,7 +17,6 @@ class AssignTrackerBehaviour(
 				?: return@on
 
 			val bodyPart = req.bodyPosition?.takeIf { it != BodyPart.NONE }
-			val mountingOrientation = req.mountingOrientation?.let { Quaternion(it.w, it.x, it.y, it.z) }
 			tracker.context.dispatch(
 				TrackerActions.Update {
 					copy(
@@ -28,6 +27,7 @@ class AssignTrackerBehaviour(
 			)
 
 			// Override default mounting orientation set from changing the bodyPart
+			val mountingOrientation = req.mountingOrientation?.let { Quaternion(it.w, it.x, it.y, it.z) }
 			if (mountingOrientation != null) {
 				tracker.context.dispatch(
 					TrackerActions.SetMountingOrientation(mountingOrientation),

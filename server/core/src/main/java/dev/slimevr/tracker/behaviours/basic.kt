@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.MountingMethod
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
@@ -107,6 +108,7 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 			state.copy(
 				mountingOrientation = action.mountingOrientation,
 				sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY),
+				lastMountingMethod = MountingMethod.MANUAL,
 			)
 		}
 
@@ -188,11 +190,17 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 				headingAlignment = headingAlignment,
 			)
 
-			state.copy(sessionCalibration = sessionCalibration)
+			state.copy(
+				sessionCalibration = sessionCalibration,
+				lastMountingMethod = MountingMethod.POSE,
+			)
 		}
 
 		is TrackerActions.ClearMountingReset -> {
-			state.copy(sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY))
+			state.copy(
+				sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY),
+				lastMountingMethod = MountingMethod.MANUAL,
+			)
 		}
 
 		else -> state

@@ -3,7 +3,6 @@ package dev.slimevr.resets
 import com.jme3.math.FastMath
 import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.VRServer
-import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
@@ -18,6 +17,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.ResetResponse
@@ -81,7 +81,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 					)
 				}
 			}
-			delay((remainder).toLong())
+			delay(remainder.toLong())
 
 			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
 
@@ -92,7 +92,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 					copy(
 						resetsConfig = resetsConfig.copy(
 							lastMountingMethod = if (resetType == ResetType.MOUNTING) {
-								MountingMethods.AUTOMATIC
+								MountingMethod.POSE
 							} else {
 								resetsConfig.lastMountingMethod
 							},

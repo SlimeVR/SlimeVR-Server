@@ -37,7 +37,7 @@ class StayAlignedManager(val context: StayAlignedContext, val server: VRServer, 
 	/**
 	 * Sets and enables a relaxed pose from the user's current pose.
 	 */
-    suspend fun detectRelaxedPose(pose: StayAlignedRelaxedPose) {
+	suspend fun detectRelaxedPose(pose: StayAlignedRelaxedPose) {
 		val trackerStates = server.context.state.value.trackers.values.map { it.context.state.value }
 		val relaxedPose = RelaxedPose.fromTrackers(trackerStates)
 		updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(true, relaxedPose.upperLeg.toDeg(), relaxedPose.lowerLeg.toDeg(), relaxedPose.foot.toDeg()))
@@ -47,7 +47,7 @@ class StayAlignedManager(val context: StayAlignedContext, val server: VRServer, 
 	/**
 	 * Resets and disables a relaxed pose.
 	 */
-    suspend fun resetRelaxedPose(pose: StayAlignedRelaxedPose) {
+	suspend fun resetRelaxedPose(pose: StayAlignedRelaxedPose) {
 		updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(false, 0f, 0f, 0f))
 		AppLogger.stayAligned.info("Reset relaxed pose $pose")
 	}

@@ -155,7 +155,7 @@ function StatusCard({
             <Typography
               color="secondary"
               id="settings-osc-vrchat-status-input-listening"
-              vars={{ port: status.inputPort ?? 0 }}
+              vars={{ port: status.inputPort?.toString() ?? 'null' }}
             />
             {inputState === VRCOSCInputState.ERROR && status.inputError ? (
               <Typography color="secondary">
@@ -196,7 +196,7 @@ function StatusCard({
             }
             vars={{
               address: status.targetAddress?.toString() ?? '',
-              port: status.targetPort ?? 0,
+              port: status.targetPort?.toString() ?? 'null',
               source: sourceLabel,
             }}
           />
@@ -211,7 +211,7 @@ function StatusCard({
               }
               vars={{
                 address: status.targetAddress?.toString() ?? '',
-                port: status.targetPort ?? 0,
+                port: status.targetPort?.toString() ?? 'null',
                 source: sourceLabel,
               }}
             />
@@ -258,7 +258,9 @@ function StatusCard({
             <Typography
               color="secondary"
               id="settings-osc-vrchat-status-oscquery-advertising"
-              vars={{ port: status.oscqueryAdvertisedPort ?? 0 }}
+              vars={{
+                port: status.oscqueryAdvertisedPort?.toString() ?? 'null',
+              }}
             />
             {oscQueryState === VRCOSCOscQueryState.FOUND &&
             status.discoveredTargets.length > 0 ? (

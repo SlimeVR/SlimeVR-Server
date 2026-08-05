@@ -220,7 +220,7 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
             <Typography
               color="secondary"
               id="settings-osc-vmc-status-input-listening"
-              vars={{ port: status.inputPort ?? 0 }}
+              vars={{ port: status.inputPort?.toString() ?? 'null' }}
             />
             {inputState === VMCOSCInputState.ERROR && status.inputError ? (
               <Typography color="secondary">
@@ -258,7 +258,7 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
               id="settings-osc-vmc-status-output-waiting"
               vars={{
                 address: status.targetAddress.toString(),
-                port: status.targetPort ?? 0,
+                port: status.targetPort?.toString() ?? 'null',
               }}
             />
           ) : (
@@ -278,7 +278,7 @@ function StatusCard({ status }: { status: VMCOSCStatusChangeResponseT }) {
               }
               vars={{
                 address: status.targetAddress?.toString() ?? '',
-                port: status.targetPort ?? 0,
+                port: status.targetPort?.toString() ?? 'null',
               }}
             />
             {outputState === VMCOSCOutputState.ERROR && status.outputError ? (

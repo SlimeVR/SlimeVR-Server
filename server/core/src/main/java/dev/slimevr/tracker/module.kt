@@ -21,8 +21,10 @@ import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
+import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.datatypes.hardware_info.TrackerDataType
 import kotlin.time.Duration
 
 // TODO maybe have more states, like ROTATING_FAST for TapDetection?
@@ -50,27 +52,29 @@ data class StayAlignedData(
 
 data class TrackerState(
 	val id: Int,
-	val name: String,
+	val deviceId: Int,
+	val origin: DeviceOrigin,
 	val hardwareId: String,
+	val name: String,
 	val imuType: ImuType?,
 	val bodyPart: BodyPart?,
 	val customName: String?,
+	val trackerDataType: TrackerDataType = TrackerDataType.ROTATION, // TODO
+	val lastMountingMethod: MountingMethod,
 	val mountingOrientation: HeadingAlignment,
 	val restOrientation: RestOrientation,
+	val sessionCalibration: SessionCalibration?,
 	val rawRotation: RawRotation,
 	val rotation: CalibratedRotation,
 	val rawAcceleration: RawAcceleration,
 	val acceleration: CalibratedAcceleration,
-	val rawMagnetometer: Vector3, // TODO apply calibration
-	val deviceId: Int,
-	val origin: DeviceOrigin,
-	val tps: UShort,
-	val imuTemp: Float?,
+	val rawMagnetometer: Vector3,
 	val position: Vector3?,
+	val imuTemp: Float?,
+	val tps: UShort,
 	val status: TrackerStatus,
 	val completedRestCalibration: Boolean?,
 	val magStatus: MagnetometerStatus,
-	val sessionCalibration: SessionCalibration?,
 	val motion: Motion,
 	val yawResetSmoothing: YawResetSmoothing?,
 	val stayAlignedData: StayAlignedData,
@@ -127,27 +131,29 @@ class Tracker(
 			val savedConfig = trackerConfigs[hardwareId]
 			val baseState = TrackerState(
 				id = id,
+				deviceId = deviceId,
+				origin = origin,
 				hardwareId = hardwareId,
 				name = name,
+				imuType = sensorType,
+				bodyPart = bodyPart,
+				customName = null,
+				trackerDataType = TrackerDataType.ROTATION,
+				lastMountingMethod = MountingMethod.MANUAL,
+				mountingOrientation = Quaternion.IDENTITY,
 				restOrientation = Quaternion.IDENTITY,
+				sessionCalibration = null,
 				rawRotation = Quaternion.IDENTITY,
 				rotation = Quaternion.IDENTITY,
 				rawAcceleration = Vector3.NULL,
 				acceleration = Vector3.NULL,
 				rawMagnetometer = Vector3.NULL,
-				bodyPart = bodyPart,
-				mountingOrientation = Quaternion.IDENTITY,
-				origin = origin,
-				deviceId = deviceId,
-				customName = null,
-				imuType = sensorType,
 				position = null,
-				tps = 0u,
 				imuTemp = null,
+				tps = 0u,
 				status = TrackerStatus.DISCONNECTED,
 				completedRestCalibration = false,
 				magStatus = MagnetometerStatus.NOT_SUPPORTED,
-				sessionCalibration = null,
 				motion = Motion.ROTATING,
 				yawResetSmoothing = null,
 				stayAlignedData = StayAlignedData(Quaternion.IDENTITY, null, Angle.ZERO),

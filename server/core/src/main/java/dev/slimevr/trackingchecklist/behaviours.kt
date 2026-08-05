@@ -4,7 +4,6 @@ package dev.slimevr.trackingchecklist
 
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerState
-import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.Settings
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.device.DeviceState
@@ -34,6 +33,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistNeedCalibration
@@ -332,7 +332,7 @@ class MountingCalibrationCheckBehaviour(
 			val imuTrackers = trackers.filter { isImuAssigned(it) }
 			TrackingChecklistStep(
 				valid = resetsState.mountingResetCompleted,
-				enabled = settingsState.data.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC && imuTrackers.isNotEmpty(),
+				enabled = settingsState.data.resetsConfig.lastMountingMethod == MountingMethod.POSE && imuTrackers.isNotEmpty(),
 				ignorable = true,
 				visibility = TrackingChecklistStepVisibility.ALWAYS,
 			)
@@ -358,7 +358,7 @@ class FeetMountingCalibrationCheckBehaviour(
 			val imuTrackers = trackers.filter { isImuAssigned(it) }
 			TrackingChecklistStep(
 				valid = resetsState.feetMountingResetCompleted,
-				enabled = resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC &&
+				enabled = resetsConfig.lastMountingMethod == MountingMethod.POSE &&
 					!resetsConfig.resetMountingFeet &&
 					imuTrackers.any { it.bodyPart in ResetBodyParts.FEET },
 				ignorable = true,

@@ -36,13 +36,13 @@ class StayAlignedBehaviour(
 							setupComplete = if (req.enabled == true) true else stayAlignedConfig.setupComplete,
 							enabled = req.enabled == true,
 							standingRelaxedPose = stayAlignedConfig.standingRelaxedPose.copy(
-								enabled = req.standingEnabled == true
+								enabled = req.standingEnabled == true,
 							),
 							sittingRelaxedPose = stayAlignedConfig.sittingRelaxedPose.copy(
-								enabled = req.sittingEnabled == true
+								enabled = req.sittingEnabled == true,
 							),
 							flatRelaxedPose = stayAlignedConfig.flatRelaxedPose.copy(
-								enabled = req.flatEnabled == true
+								enabled = req.flatEnabled == true,
 							),
 						),
 					)
@@ -55,10 +55,12 @@ class StayAlignedBehaviour(
 		receiver.rpcDispatcher.on<ChangeStayAlignedEnabledRequest> { req ->
 			settings.context.dispatch(
 				SettingsActions.Update {
-					copy(stayAlignedConfig = stayAlignedConfig.copy(
-						setupComplete = if (req.enabled == true) true else stayAlignedConfig.setupComplete,
-						enabled = req.enabled == true,
-					))
+					copy(
+						stayAlignedConfig = stayAlignedConfig.copy(
+							setupComplete = if (req.enabled == true) true else stayAlignedConfig.setupComplete,
+							enabled = req.enabled == true,
+						),
+					)
 				},
 			)
 		}.launchIn(receiver.context.scope)

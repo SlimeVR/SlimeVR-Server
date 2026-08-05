@@ -12,8 +12,8 @@ import dev.slimevr.desktop.platform.TrackerStatus
 import dev.slimevr.desktop.platform.Version
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
-import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.driver.DriverBridgeOutbound
+import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.driver.TrackerRole
 import dev.slimevr.driver.bodyPartToRole
 import dev.slimevr.driver.roleToBodyPart

@@ -13,6 +13,7 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.KeybindId
@@ -80,11 +81,6 @@ data class TapDetectionConfig(
 	var numberTrackersOverThreshold: Int = 1,
 )
 
-enum class MountingMethods(val id: Int) {
-	MANUAL(0),
-	AUTOMATIC(1),
-}
-
 @Serializable
 data class ResetsConfig(
 	/** Always reset mounting for feet */
@@ -95,9 +91,10 @@ data class ResetsConfig(
 	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
-	/** Reset the HMD's pitch upon full reset */
-	val resetHmdPitch: Boolean = false, // TODO
-	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC,
+	/** Reset a positional tracker's pitch upon full reset */
+	val resetPositionalHeadPitch: Boolean = false, // TODO
+	/** Used as preferred mounting method and tracking checklist */
+	val lastMountingMethod: MountingMethod = MountingMethod.POSE,
 )
 
 @Serializable

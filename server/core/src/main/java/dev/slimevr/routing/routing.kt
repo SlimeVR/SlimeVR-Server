@@ -49,8 +49,7 @@ fun requiredBones(output: RoutingOutput): Set<BodyPart> = when (output) {
  */
 val OVERRIDABLE_BONES: Set<BodyPart> = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
 
-fun overridableBones(output: RoutingOutput): Set<BodyPart> =
-	OVERRIDABLE_BONES intersect acceptedBones(output) subtract requiredBones(output)
+fun overridableBones(output: RoutingOutput): Set<BodyPart> = OVERRIDABLE_BONES intersect acceptedBones(output) subtract requiredBones(output)
 
 fun overrideRoutes(config: BoneRoutingConfig): Routes = config.manualRoutes.orEmpty().filterKeys { it in OVERRIDABLE_BONES }
 

@@ -283,7 +283,6 @@ widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
 widget-developer_mode-precise_rotation = Precise rotation
 widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter Slimes and HMD
 widget-developer_mode-sort_by_name = Sort by name
 widget-developer_mode-raw_slime_rotation = Raw rotation
 widget-developer_mode-more_info = More info
@@ -336,7 +335,7 @@ tracker-rotation-back = Back
 tracker-rotation-back_left = Back-Left
 tracker-rotation-back_right = Back-Right
 tracker-rotation-custom = Custom
-tracker-rotation-overriden = (overridden by mounting calibration)
+tracker-rotation-mounting_reset = (using mounting reset orientation)
 
 ## Tracker information
 tracker-infos-manufacturer = Manufacturer
@@ -346,7 +345,7 @@ tracker-infos-url = Tracker URL
 tracker-infos-version = Firmware Version
 tracker-infos-hardware_rev = Hardware Revision
 tracker-infos-hardware_identifier = Hardware ID
-tracker-infos-data_support = Data support
+tracker-infos-data_type = Data type
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board
 tracker-infos-network_version = Protocol Version
@@ -380,7 +379,7 @@ tracker-settings-use_mag-label = Allow magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker name
-tracker-settings-name_section-description = Give it a cute nickname :)
+tracker-settings-name_section-description = Give it a cute nickname :3
 tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
