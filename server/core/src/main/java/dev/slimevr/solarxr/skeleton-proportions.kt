@@ -2,6 +2,7 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
+import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
@@ -24,24 +25,29 @@ import solarxr_protocol.rpc.SkeletonProportionsResponse
 
 private const val MIN_HEIGHT = 0.9f
 
-class SkeletonProportionsBehaviour(private val userConfig: UserConfig) : SolarXRBridgeBehaviour {
-	private fun buildConfigResponse(boneValues: Map<SkeletonBone, Float>): SkeletonProportionsResponse {
+class SkeletonProportionsBehaviour(
+	private val userConfig: UserConfig,
+	private val skeleton: Skeleton,
+) : SolarXRBridgeBehaviour {
+	private fun buildConfigResponse(boneInputs: InputSkeleton): SkeletonProportionsResponse {
+		val boneOffsets = boneInputs.mapValues { it.value.offset }
+		val boneValues = boneOffsets.toBoneValues()
 		val skeletonParts = boneValues.map { (offset, bone) -> SkeletonPart(offset, bone) }
 		return SkeletonProportionsResponse(skeletonParts = skeletonParts, skeletonHeight = boneValues.height())
 	}
 
 	override fun observe(receiver: SolarXRBridge) {
-		userConfig.context.state
-			.map { it.data }
-			.distinctUntilChangedBy { it.proportions to it.userHeight }
-			.drop(1)
-			.onEach { config ->
-				val configResponse = buildConfigResponse(configToBoneValues(config.proportions))
+		skeleton.context.state
+			.map { it.boneInputs }
+			.distinctUntilChangedBy { boneInputs -> boneInputs.entries.map { it.key to it.value.offset } }
+			.onEach { boneInputs ->
+				val configResponse = buildConfigResponse(boneInputs)
 				receiver.sendRpc(configResponse)
 			}
+			.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<SkeletonProportionsRequest> {
-			receiver.sendRpc(buildConfigResponse(configToBoneValues(userConfig.context.state.value.data.proportions)))
+			receiver.sendRpc(buildConfigResponse(skeleton.context.state.value.boneInputs))
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeUserHeightRequest> { req ->

@@ -80,7 +80,7 @@ class SolarXRBridge(
 			add(BoneRoutingBehaviour(appContext))
 			add(DriverSettingsBehaviour(appContext.config.settings))
 			add(SkeletonSettingsBehaviour(appContext.config.settings))
-			add(SkeletonProportionsBehaviour(appContext.config.userConfig))
+			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))
 			add(AssignTrackerBehaviour(appContext.server))
 			add(MagBehaviour(appContext))
