@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton
 
+import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
@@ -23,21 +24,26 @@ fun chainCanReach(bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector
 fun ccdIkIteration(boneInputs: InputSkeleton, bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector3): ComputedSkeleton {
 	val workingBones = boneInputs.toMutableMap()
 
-	// Reversed index, i increases backwards up the chain
-	for ((i, bodyPart) in chain.reversed().withIndex()) {
+	var runningRotation = Quaternion.NULL
+	for (bodyPart in chain) {
 		val currentRawBone = requireNotNull(boneInputs[bodyPart])
 		val currentBone = requireNotNull(bones[bodyPart])
 
-		val localOffset = currentBone.localTailPosition
-		val localTarget = target - currentBone.headPosition
-		val rotationChange = Quaternion.fromTo(localOffset, localTarget).pow(
-			(i.toFloat() / chain.size) * 0.5f,
-		).unit()
+		val localOffset = currentBone.localTailPosition.unit()
+		val localTarget = (target - currentBone.headPosition).unit()
+
+		if (!FastMath.isApproxEqual(localTarget.lenSq(), 1f)) {
+			// Avoid impossible condition where the target is at the origin
+			continue
+		}
+
+		val rotationChange = Quaternion.fromTo(localOffset, localTarget)
 
 		// TODO: Apply constraints
 		workingBones[bodyPart] = currentRawBone.copy(
-			rawRotation = currentBone.rotation * rotationChange,
+			rawRotation = runningRotation * currentBone.rotation * rotationChange,
 		)
+		runningRotation *= rotationChange
 	}
 
 	// FIXME: This feels weird, we should probably consume the skeleton root position
