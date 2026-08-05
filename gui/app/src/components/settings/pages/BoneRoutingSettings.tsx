@@ -222,11 +222,7 @@ function OutputStatusRow({
       <div className="flex items-baseline justify-between gap-3 mobile:flex-col mobile:gap-0">
         <Typography
           color="secondary"
-          id={
-            summary === 'idle' && automatic
-              ? 'settings-routing-output-idle-automatic-description'
-              : `settings-routing-output-${summary}-description`
-          }
+          id={`settings-routing-output-${summary}-description`}
         />
         {(summary === 'sending' ||
           summary === 'idle' ||
@@ -564,6 +560,7 @@ export function BoneRoutingSettings() {
               <div className="pb-2">
                 <WarningBox whitespace={false}>
                   {l10n.getString('settings-routing-duplicate-warning', {
+                    boneCount: duplicated.size,
                     bones: duplicatedNames.bones,
                     outputs: duplicatedNames.outputs,
                   })}
