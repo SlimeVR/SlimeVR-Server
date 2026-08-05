@@ -9,12 +9,18 @@ import com.sun.jna.platform.win32.WinError
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.win32.StdCallLibrary
 import dev.slimevr.logging.AppLogger
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.isActive
 import java.io.IOException
 
 private val k32 = Kernel32.INSTANCE
 
 private const val HEADER_SIZE = 4
 private const val MAX_FRAME_SIZE = 256 * 1024
+
+private const val WAIT_SLICE_MILLIS = 200
+private const val WAIT_TIMEOUT = 0x102
 
 @Suppress("FunctionName")
 private object Kernel32IO : StdCallLibrary {
@@ -29,6 +35,8 @@ private object Kernel32IO : StdCallLibrary {
 	external fun GetOverlappedResult(handle: Pointer, overlapped: Pointer, moved: Pointer, wait: Boolean): Boolean
 
 	external fun WaitForSingleObject(handle: Pointer, millis: Int): Int
+
+	external fun CancelIoEx(handle: Pointer, overlapped: Pointer?): Boolean
 }
 
 /**
@@ -56,7 +64,7 @@ internal class PipeSlot(private val handle: WinNT.HANDLE) : AutoCloseable {
 	private val overlappedPointer = overlapped.pointer
 	private val transferred = Memory(4)
 
-	fun awaitClient(): Boolean {
+	suspend fun awaitClient(): Boolean {
 		// On an overlapped handle ConnectNamedPipe returns straight away, so we do the waiting
 		val connected = k32.ConnectNamedPipe(handle, overlapped)
 		val err = Native.getLastError()
@@ -122,8 +130,14 @@ internal class PipeSlot(private val handle: WinNT.HANDLE) : AutoCloseable {
 		return awaitCompletion()
 	}
 
-	private fun awaitCompletion(): Int {
-		Kernel32IO.WaitForSingleObject(eventPointer, WinBase.INFINITE)
+	private suspend fun awaitCompletion(): Int {
+		while (Kernel32IO.WaitForSingleObject(eventPointer, WAIT_SLICE_MILLIS) == WAIT_TIMEOUT) {
+			if (currentCoroutineContext().isActive) continue
+
+			Kernel32IO.CancelIoEx(handlePointer, overlappedPointer)
+			Kernel32IO.GetOverlappedResult(handlePointer, overlappedPointer, transferred, true)
+			currentCoroutineContext().ensureActive()
+		}
 		if (!Kernel32IO.GetOverlappedResult(handlePointer, overlappedPointer, transferred, true)) return -1
 		return transferred.getInt(0)
 	}

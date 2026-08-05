@@ -196,9 +196,9 @@ function OutputStatusRow({
       case RoutingOutputState.UNSUPPORTED:
         return 'unavailable';
       case RoutingOutputState.INACTIVE:
-        return status.output === RoutingOutput.DRIVER ? 'stopped' : 'off';
+        return 'off';
       case RoutingOutputState.ENABLED:
-        return 'idle';
+        return status.output === RoutingOutput.DRIVER ? 'stopped' : 'idle';
       default:
         return routed === 0 ? 'empty' : 'sending';
     }

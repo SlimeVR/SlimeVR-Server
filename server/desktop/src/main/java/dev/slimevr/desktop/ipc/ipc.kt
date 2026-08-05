@@ -4,6 +4,9 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 const val DRIVER_SOCKET_NAME = "SlimeVRDriver"
@@ -15,25 +18,38 @@ const val FEEDER_PIPE = "\\\\.\\pipe\\SlimeVRInput"
 const val SOLARXR_PIPE = "\\\\.\\pipe\\SlimeVRRpc"
 
 suspend fun createIpcServers(appContext: AppContextProvider) = coroutineScope {
-	val driver = appContext.featureFlags.supportsDriver
+	if (appContext.featureFlags.supportsDriver) {
+		launch { createDriverServers(appContext) }
+	}
 
 	when (CURRENT_PLATFORM) {
-		Platform.LINUX, Platform.OSX -> {
-			if (driver) {
-				launch { createUnixDriverSocket(appContext) }
-				launch { createUnixFeederSocket(appContext) }
-			}
-			launch { createUnixSolarXRSocket(appContext) }
-		}
-
-		Platform.WINDOWS -> {
-			if (driver) {
-				launch { createWindowsDriverPipe(appContext) }
-				launch { createWindowsFeederPipe(appContext) }
-			}
-			launch { createWindowsSolarXRPipe(appContext) }
-		}
-
+		Platform.LINUX, Platform.OSX -> launch { createUnixSolarXRSocket(appContext) }
+		Platform.WINDOWS -> launch { createWindowsSolarXRPipe(appContext) }
 		else -> Unit
 	}
+}
+
+private suspend fun createDriverServers(appContext: AppContextProvider) {
+	appContext.config.settings.context.state
+		.map { it.data.driverConfig.enabled }
+		.distinctUntilChanged()
+		.collectLatest { enabled ->
+			if (!enabled) return@collectLatest
+
+			coroutineScope {
+				when (CURRENT_PLATFORM) {
+					Platform.LINUX, Platform.OSX -> {
+						launch { createUnixDriverSocket(appContext) }
+						launch { createUnixFeederSocket(appContext) }
+					}
+
+					Platform.WINDOWS -> {
+						launch { createWindowsDriverPipe(appContext) }
+						launch { createWindowsFeederPipe(appContext) }
+					}
+
+					else -> Unit
+				}
+			}
+		}
 }

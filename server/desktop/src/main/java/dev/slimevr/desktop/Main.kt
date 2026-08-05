@@ -114,7 +114,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
 	val trackingChecklist = TrackingChecklist.create(scope = this, extraBehaviours = { appContext ->
 		buildList {
-			add(SteamVRCheckBehaviour(appContext.server))
+			add(SteamVRCheckBehaviour(appContext.server, appContext.config.settings))
 		}
 	})
 	val udpServer = UdpServer.create(scope = this, addressResolver = ::resolveDesktopUdpAddress)

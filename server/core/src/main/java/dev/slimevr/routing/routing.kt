@@ -4,6 +4,7 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.config.BoneRoutingConfig
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.driver.DRIVER_SUPPORTED_BONES
+import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.vmc.VMC_SUPPORTED_BONES
 import dev.slimevr.vrcosc.VRC_OSC_SUPPORTED_BONES
@@ -55,44 +56,46 @@ fun overrideRoutes(config: BoneRoutingConfig): Routes = config.manualRoutes.orEm
 
 fun isActive(states: OutputStates, output: RoutingOutput): Boolean = states[output] == RoutingOutputState.ACTIVE
 
-fun platformSupports(appContext: AppContextProvider, output: RoutingOutput): Boolean = when (output) {
-	RoutingOutput.DRIVER -> appContext.featureFlags.supportsDriver
-	RoutingOutput.VRC_OSC, RoutingOutput.VMC -> true
-}
+fun driverStateFlow(appContext: AppContextProvider): Flow<RoutingOutputState> = combine(
+	appContext.config.settings.context.state.map { it.data.driverConfig.enabled },
+	appContext.server.context.state.map { state ->
+		state.drivers.values.any { it.source == DriverBridgeSource.DRIVER }
+	},
+) { enabled, connected ->
+	when {
+		!appContext.featureFlags.supportsDriver -> RoutingOutputState.UNSUPPORTED
+		!enabled -> RoutingOutputState.INACTIVE
+		connected -> RoutingOutputState.ACTIVE
+		else -> RoutingOutputState.ENABLED
+	}
+}.distinctUntilChanged()
+
+private fun vrcOscStateFlow(appContext: AppContextProvider): Flow<RoutingOutputState> = combine(
+	appContext.config.settings.context.state.map { it.data.vrcOscConfig.enabled },
+	appContext.vrcOscManager.context.state.map { it.status.outputState == VRCOSCOutputState.READY },
+) { enabled, hasTarget ->
+	when {
+		!enabled -> RoutingOutputState.INACTIVE
+		hasTarget -> RoutingOutputState.ACTIVE
+		else -> RoutingOutputState.ENABLED
+	}
+}.distinctUntilChanged()
+
+private fun vmcStateFlow(appContext: AppContextProvider): Flow<RoutingOutputState> = appContext.config.settings.context.state
+	.map { if (it.data.vmcConfig.enabled) RoutingOutputState.ACTIVE else RoutingOutputState.INACTIVE }
+	.distinctUntilChanged()
 
 /** Emits the output states as the driver connects and the output configs change. */
-fun outputStatesFlow(appContext: AppContextProvider): Flow<OutputStates> {
-	val settings = appContext.config.settings
-
-	return combine(
-		appContext.server.context.state.map { it.drivers.isNotEmpty() }.distinctUntilChanged(),
-		settings.context.state.map { it.data.vrcOscConfig.enabled }.distinctUntilChanged(),
-		settings.context.state.map { it.data.vmcConfig.enabled }.distinctUntilChanged(),
-		appContext.vrcOscManager.context.state
-			.map { it.status.outputState == VRCOSCOutputState.READY }
-			.distinctUntilChanged(),
-	) { driverConnected, vrcOscEnabled, vmcEnabled, vrcOscHasTarget ->
-		RoutingOutput.entries.associateWith { output ->
-			if (!platformSupports(appContext, output)) {
-				RoutingOutputState.UNSUPPORTED
-			} else {
-				when (output) {
-					RoutingOutput.DRIVER -> if (driverConnected) RoutingOutputState.ACTIVE else RoutingOutputState.INACTIVE
-
-					RoutingOutput.VRC_OSC -> when {
-						!vrcOscEnabled -> RoutingOutputState.INACTIVE
-						vrcOscHasTarget -> RoutingOutputState.ACTIVE
-						else -> RoutingOutputState.ENABLED
-					}
-
-					// Writes to a fixed address whether or not anything is there, so being
-					// on is the same as transmitting.
-					// FIXME: Maybe we should assume that we need to receive data from VMC for it to be considered working?
-					RoutingOutput.VMC -> if (vmcEnabled) RoutingOutputState.ACTIVE else RoutingOutputState.INACTIVE
-				}
-			}
-		}
-	}
+fun outputStatesFlow(appContext: AppContextProvider): Flow<OutputStates> = combine(
+	driverStateFlow(appContext),
+	vrcOscStateFlow(appContext),
+	vmcStateFlow(appContext),
+) { driver, vrcOsc, vmc ->
+	mapOf(
+		RoutingOutput.DRIVER to driver,
+		RoutingOutput.VRC_OSC to vrcOsc,
+		RoutingOutput.VMC to vmc,
+	)
 }
 
 /** What the user asked for, including outputs that are switched off. */

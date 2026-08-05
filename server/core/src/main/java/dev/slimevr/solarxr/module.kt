@@ -78,7 +78,7 @@ class SolarXRBridge(
 			add(HeightCalibrationBehaviour(appContext.heightCalibrationManager))
 			add(ProvisioningBehaviour(appContext.server, appContext.provisioningManager))
 			add(BoneRoutingBehaviour(appContext))
-			add(DriverSettingsBehaviour(appContext.config.settings))
+			add(DriverSettingsBehaviour(appContext))
 			add(SkeletonSettingsBehaviour(appContext.config.settings))
 			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))

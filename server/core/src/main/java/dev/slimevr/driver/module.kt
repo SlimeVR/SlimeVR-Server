@@ -41,8 +41,14 @@ sealed interface DriverBridgeOutbound {
 typealias DriverBridgeContext = Context<DriverBridgeState, DriverBridgeActions>
 typealias DriverBridgeBehaviour = Behaviour<DriverBridgeState, DriverBridgeActions, DriverBridge>
 
+enum class DriverBridgeSource {
+	DRIVER,
+	FEEDER,
+}
+
 class DriverBridge(
 	val id: Int,
+	val source: DriverBridgeSource,
 	val context: DriverBridgeContext,
 	val appContext: AppContextProvider,
 	val inbound: EventDispatcher<DriverBridgeInbound> = EventDispatcher("Driver.inbound", context.scope, capacity = 128),
@@ -62,7 +68,7 @@ class DriverBridge(
 	}
 
 	companion object {
-		fun create(id: Int, appContext: AppContextProvider, scope: CoroutineScope): DriverBridge {
+		fun create(id: Int, source: DriverBridgeSource, appContext: AppContextProvider, scope: CoroutineScope): DriverBridge {
 			val behaviours = listOf(DriverOutgoingTrackersBehaviour(), DriverIncomingTrackersBehaviour())
 
 			val managedContext = ManagedContext.create(
@@ -75,7 +81,7 @@ class DriverBridge(
 				name = "Driver[$id]",
 			)
 
-			val bridge = DriverBridge(id = id, context = managedContext.context, appContext = appContext, managedContext = managedContext)
+			val bridge = DriverBridge(id = id, source = source, context = managedContext.context, appContext = appContext, managedContext = managedContext)
 			bridge.startObserving()
 			appContext.server.context.dispatch(VRServerActions.DriverConnected(bridge))
 

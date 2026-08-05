@@ -8,6 +8,7 @@ import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.Settings
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.device.DeviceState
+import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsManager
@@ -180,7 +181,9 @@ class SteamVRHandsCheckBehaviour(
 		combine(
 			trackerStatesFlow(server),
 			boneRouting.context.state.map { state -> state.routes },
-			server.context.state.map { state -> state.drivers.isNotEmpty() }.distinctUntilChanged(),
+			server.context.state
+				.map { state -> state.drivers.values.any { it.source == DriverBridgeSource.DRIVER } }
+				.distinctUntilChanged(),
 			::computeStep,
 		)
 			.distinctUntilChanged()

@@ -17,6 +17,7 @@ import dev.slimevr.context.Context
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeActions
+import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.driver.DriverBridgeState
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationActions
@@ -200,7 +201,7 @@ fun buildTestDriverBridge(server: VRServer, appContext: AppContextProvider, id: 
 		behaviours = emptyList(),
 		name = "TestDriver[$id]",
 	)
-	return DriverBridge(id = id, context = context, appContext = appContext)
+	return DriverBridge(id = id, source = DriverBridgeSource.DRIVER, context = context, appContext = appContext)
 }
 
 fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: CoroutineScope): HeightCalibrationManager {
