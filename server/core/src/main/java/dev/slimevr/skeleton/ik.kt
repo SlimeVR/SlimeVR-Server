@@ -73,7 +73,7 @@ fun ccdIk(boneInputs: InputSkeleton, bones: ComputedSkeleton, goals: List<IKChai
 	return IKOutput(
 		curBones,
 		goals.associateWith {
-			chainDistanceFromTarget(bones, it.chain, it.target) <= threshold
+			chainDistanceFromTarget(curBones, it.chain, it.target) <= threshold
 		},
 	)
 }
