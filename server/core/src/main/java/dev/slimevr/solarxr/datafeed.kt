@@ -7,6 +7,7 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -20,6 +21,7 @@ import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
 import solarxr_protocol.data_feed.device_data.DeviceData
 import solarxr_protocol.data_feed.server.ServerGuards
+import solarxr_protocol.data_feed.tracker_data.StayAlignedTracker
 import solarxr_protocol.data_feed.tracker_data.TrackerData
 import solarxr_protocol.data_feed.tracker_data.TrackerDataMask
 import solarxr_protocol.data_feed.tracker_data.TrackerInfo
@@ -53,6 +55,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
 			isImu = tracker.imuType != null,
 			magnetometer = tracker.magStatus,
+			// TODO missing fields
 		)
 	} else {
 		null
@@ -64,6 +67,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	rotationReferenceAdjusted = if (trackerMask.rotationReferenceAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
 	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null, // FIXME: uses reference adjusted
 	rawMagneticVector = if (trackerMask.rawMagneticVector == true && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.let { Vec3f(it.x, it.y, it.z) } else null,
+	stayAligned = if (trackerMask.stayAligned == true) StayAlignedTracker(tracker.stayAlignedData.yawCorrection.toDeg(), tracker.motion == Motion.RESTING) else null
 )
 
 private fun createDevice(

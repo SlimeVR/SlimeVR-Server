@@ -2,8 +2,11 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
+  ChangeStayAlignedHideCorrectionRequestT,
   ChangeStayAlignedSettingsRequestT,
   RpcMessage,
+  StayAlignedHideCorrectionRequestT,
+  StayAlignedHideCorrectionResponseT,
   StayAlignedSettingsRequestT,
   StayAlignedSettingsResponseT,
 } from 'solarxr-protocol';
@@ -25,10 +28,9 @@ import {
   StandingRelaxedPoseModal,
 } from './StayAlignedPoseModal';
 
-// TODO hide_yaw_correction + setup_complete are now in their own requests
 export type StayAlignedSettingsForm = {
+  setupComplete: boolean;
   enabled: boolean;
-  hideYawCorrection: boolean;
   standingEnabled: boolean;
   standingUpperLegAngle: number;
   standingLowerLegAngle: number;
@@ -41,12 +43,12 @@ export type StayAlignedSettingsForm = {
   flatUpperLegAngle: number;
   flatLowerLegAngle: number;
   flatFootAngle: number;
-  setupComplete: boolean;
+  hideCorrection: boolean;
 };
 
 export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
+  setupComplete: false,
   enabled: false,
-  hideYawCorrection: false,
   standingEnabled: false,
   standingUpperLegAngle: 0.0,
   standingLowerLegAngle: 0.0,
@@ -59,13 +61,22 @@ export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
   flatUpperLegAngle: 0.0,
   flatLowerLegAngle: 0.0,
   flatFootAngle: 0.0,
-  setupComplete: false,
+  hideCorrection: false,
 };
 
 const stayAlignedSettingsAtom = atom(new StayAlignedSettingsResponseT());
 const stayAlignedSettingsValueAtom = selectAtom(
   stayAlignedSettingsAtom,
   (settings) => settings,
+  isEqual
+);
+
+const stayAlignedHideCorrectionAtom = atom(
+  new StayAlignedHideCorrectionResponseT()
+);
+const stayAlignedHideCorrectionValueAtom = selectAtom(
+  stayAlignedHideCorrectionAtom,
+  (hideCorrection) => hideCorrection,
   isEqual
 );
 
@@ -79,20 +90,16 @@ function CopySettingsButton({ values }: { values: StayAlignedSettingsForm }) {
 
   const trackers = useAtomValue(connectedIMUTrackersAtom);
 
-  function boolify(value: boolean) {
-    return value ? 'true' : 'false';
-  }
-
   const copySettings = () => {
     const config = values;
 
     const debug = `
-Stay Aligned
+Stay Aligned debug info:
 
 GENERAL
 =======
-Enabled: ${config.enabled ? 'true' : 'false'}
-Setup complete: ${boolify(config.setupComplete)}
+Enabled: ${config.enabled}
+Setup complete: ${config.setupComplete}
 
 RELAXED POSES
 =============
@@ -107,7 +114,7 @@ ${trackers
     const info = t.tracker.info;
     const stayAligned = t.tracker.stayAligned;
     if (info && stayAligned) {
-      return `${bodypartToString(info.bodyPart)}: correction=${numberFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked ? `true locked_error=${numberFormat.format(stayAligned.lockedErrorInDeg)}` : 'false'} center_error=${numberFormat.format(stayAligned.centerErrorInDeg)} neighbor_error=${numberFormat.format(stayAligned.neighborErrorInDeg)}`;
+      return `${bodypartToString(info.bodyPart)}: correction=${numberFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked}`;
     }
   })
   .join('\n')}
@@ -126,6 +133,8 @@ ${trackers
 export function StayAlignedSettings() {
   const setSettings = useSetAtom(stayAlignedSettingsAtom);
   const settings = useAtomValue(stayAlignedSettingsValueAtom);
+  const setHideCorrection = useSetAtom(stayAlignedHideCorrectionAtom);
+  const hideCorrection = useAtomValue(stayAlignedHideCorrectionValueAtom);
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
@@ -142,19 +151,17 @@ export function StayAlignedSettings() {
     const settingsReq = new ChangeStayAlignedSettingsRequestT();
     settingsReq.enabled = values.enabled;
     settingsReq.standingEnabled = values.standingEnabled;
-    settingsReq.standingUpperLegAngle = values.standingUpperLegAngle;
-    settingsReq.standingLowerLegAngle = values.standingLowerLegAngle;
-    settingsReq.standingFootAngle = values.standingFootAngle;
     settingsReq.sittingEnabled = values.sittingEnabled;
-    settingsReq.sittingUpperLegAngle = values.sittingUpperLegAngle;
-    settingsReq.sittingLowerLegAngle = values.sittingLowerLegAngle;
-    settingsReq.sittingFootAngle = values.sittingFootAngle;
     settingsReq.flatEnabled = values.flatEnabled;
-    settingsReq.flatUpperLegAngle = values.flatUpperLegAngle;
-    settingsReq.flatLowerLegAngle = values.flatLowerLegAngle;
-    settingsReq.flatFootAngle = values.flatFootAngle;
+
+    const hideCorrectionReq = new ChangeStayAlignedHideCorrectionRequestT();
+    hideCorrectionReq.hideCorrection = values.hideCorrection;
 
     sendRPCPacket(RpcMessage.ChangeStayAlignedSettingsRequest, settingsReq);
+    sendRPCPacket(
+      RpcMessage.ChangeStayAlignedHideCorrectionRequest,
+      hideCorrectionReq
+    );
   };
 
   useEffect(() => {
@@ -169,40 +176,51 @@ export function StayAlignedSettings() {
       RpcMessage.StayAlignedSettingsRequest,
       new StayAlignedSettingsRequestT()
     );
+    sendRPCPacket(
+      RpcMessage.StayAlignedHideCorrectionRequest,
+      new StayAlignedHideCorrectionRequestT()
+    );
   }, []);
 
   useEffect(() => {
     const formData: DefaultValues<StayAlignedSettingsForm> = {};
 
-    if (settings.enabled !== undefined) formData.enabled = settings.enabled;
+    formData.setupComplete = settings.setupComplete;
+    formData.enabled = settings.enabled;
 
-    formData.standingEnabled = settings.standingEnabled ?? false;
-    formData.standingUpperLegAngle = settings.standingUpperLegAngle ?? 0.0;
-    formData.standingLowerLegAngle = settings.standingLowerLegAngle ?? 0.0;
-    formData.standingFootAngle = settings.standingFootAngle ?? 0.0;
+    formData.standingEnabled = settings.standingEnabled;
+    formData.standingUpperLegAngle = settings.standingUpperLegAngle;
+    formData.standingLowerLegAngle = settings.standingLowerLegAngle;
+    formData.standingFootAngle = settings.standingFootAngle;
 
-    formData.sittingEnabled = settings.sittingEnabled ?? false;
-    formData.sittingUpperLegAngle = settings.sittingUpperLegAngle ?? 0.0;
-    formData.sittingLowerLegAngle = settings.sittingLowerLegAngle ?? 0.0;
-    formData.sittingFootAngle = settings.sittingFootAngle ?? 0.0;
+    formData.sittingEnabled = settings.sittingEnabled;
+    formData.sittingUpperLegAngle = settings.sittingUpperLegAngle;
+    formData.sittingLowerLegAngle = settings.sittingLowerLegAngle;
+    formData.sittingFootAngle = settings.sittingFootAngle;
 
-    formData.flatEnabled = settings.flatEnabled ?? false;
-    formData.flatUpperLegAngle = settings.flatUpperLegAngle ?? 0.0;
-    formData.flatLowerLegAngle = settings.flatLowerLegAngle ?? 0.0;
-    formData.flatFootAngle = settings.flatFootAngle ?? 0.0;
-
-    formData.setupComplete =
-      (formData.standingUpperLegAngle ?? 0) !== 0 ||
-      (formData.sittingUpperLegAngle ?? 0) !== 0 ||
-      (formData.flatUpperLegAngle ?? 0) !== 0;
+    formData.flatEnabled = settings.flatEnabled;
+    formData.flatUpperLegAngle = settings.flatUpperLegAngle;
+    formData.flatLowerLegAngle = settings.flatLowerLegAngle;
+    formData.flatFootAngle = settings.flatFootAngle;
 
     reset({ ...getValues(), ...formData });
   }, [settings]);
+
+  useEffect(() => {
+    reset({ ...getValues(), hideCorrection: hideCorrection.hideCorrection });
+  }, [hideCorrection]);
 
   useRPCPacket(
     RpcMessage.StayAlignedSettingsResponse,
     (settings: StayAlignedSettingsResponseT) => {
       setSettings(settings);
+    }
+  );
+
+  useRPCPacket(
+    RpcMessage.StayAlignedHideCorrectionResponse,
+    (response: StayAlignedHideCorrectionResponseT) => {
+      setHideCorrection(response);
     }
   );
 
@@ -266,7 +284,7 @@ export function StayAlignedSettings() {
             variant="toggle"
             outlined
             control={control}
-            name="hideYawCorrection"
+            name="hideCorrection"
             label={l10n.getString(
               'settings-stay_aligned-hide_yaw_correction-label'
             )}

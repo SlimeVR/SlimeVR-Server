@@ -74,12 +74,6 @@ export const hasHMDTrackerAtom = atom((get) => {
   );
 });
 
-export const stayAlignedPoseAtom = selectAtom(
-  datafeedAtom,
-  (datafeed) => datafeed.stayAlignedPose,
-  isEqual
-);
-
 export const trackerFromIdAtom = ({
   trackerNum,
   deviceId,

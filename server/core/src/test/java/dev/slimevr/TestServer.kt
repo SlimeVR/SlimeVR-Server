@@ -215,7 +215,7 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 }
 
 fun buildTestStayAlignedManager(server: VRServer, scope: CoroutineScope): StayAlignedManager {
-	val initialState = StayAlignedState(hideYawCorrection = false)
+	val initialState = StayAlignedState(hideCorrection = false)
 	val context = Context.create<StayAlignedState, StayAlignedActions>(
 		initialState = initialState,
 		scope = scope,

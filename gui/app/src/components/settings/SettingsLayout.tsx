@@ -79,7 +79,7 @@ export function SettingSelectorMobile() {
   });
 
   useEffect(() => {
-    // This works because the component gets mounted/unmounted when switching beween desktop or mobile layout
+    // This works because the component gets mounted/unmounted when switching between desktop or mobile layout
     setValue('link', pathname, { shouldDirty: false, shouldTouch: false });
   }, []);
 
@@ -106,7 +106,7 @@ export function SettingSelectorMobile() {
         }))}
         variant="tertiary"
         direction="down"
-        // There is always an option selected placholder is not used
+        // There is always an option selected; placeholder is not used.
         placeholder=""
         name="link"
       />

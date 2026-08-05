@@ -55,8 +55,8 @@ const defaultVMCSettings: VMCSettingsForm = {
     portOut: 39539,
     address: '127.0.0.1',
   },
-  anchorHip: true,
-  mirrorTracking: true,
+  anchorHip: false,
+  mirrorTracking: false,
 };
 
 export function VRMFileUpload() {
@@ -395,8 +395,9 @@ export function VMCSettings() {
       };
 
       formData.enabled = settings.enabled;
-      if (settings.portIn) formData.portsAddress.portIn = settings.portIn;
-      if (settings.portOut) formData.portsAddress.portOut = settings.portOut;
+      if (settings.portIn != 0) formData.portsAddress.portIn = settings.portIn;
+      if (settings.portOut != 0)
+        formData.portsAddress.portOut = settings.portOut;
       if (settings.address)
         formData.portsAddress.address = settings.address.toString();
 

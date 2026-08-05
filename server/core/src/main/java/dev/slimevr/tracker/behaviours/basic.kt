@@ -52,7 +52,7 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 
 			val cal = state.sessionCalibration
 
-			val hideYawCorrection = stayAlignedManager.context.state.value.hideYawCorrection
+			val hideYawCorrection = stayAlignedManager.context.state.value.hideCorrection
 			val yawCorrectedRawRotation = Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawRotation
 
 			// TODO non-IMU trackers still want some form of calibration applied
