@@ -48,7 +48,8 @@ data class BoneRoutingConfig(
 	/** Generate the routes from the connected trackers and the output priority. */
 	val automatic: Boolean = true,
 	/**
-	 * Explicit routes, ignored while [automatic]. Do not read directly, use BoneRoutingManager.
+	 * Explicit routes. Ignored while [automatic], apart from the overridable bones, which
+	 * the user owns in either mode. Do not read directly, use BoneRoutingManager.
 	 */
 	val manualRoutes: Map<BodyPart, Set<RoutingOutput>>? = null,
 )

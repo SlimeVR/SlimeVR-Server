@@ -63,7 +63,7 @@ class TrackingChecklistTest {
 					MountingCalibrationCheckBehaviour(server, resetsManager, settings),
 					FeetMountingCalibrationCheckBehaviour(server, resetsManager, settings),
 					NetworkProfileCheckBehaviour(networkProfileManager),
-					SteamVRHandsCheckBehaviour(server, settings, boneRouting),
+					SteamVRHandsCheckBehaviour(server, boneRouting),
 				),
 			)
 			checklist.context.observeAll(checklist)
@@ -296,7 +296,6 @@ class TrackingChecklistTest {
 	@Test
 	fun `STEAMVR_HANDS_ENABLED is disabled without a driver`() = runTest {
 		val h = Harness(this)
-		h.setAutomatic(false)
 		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
 		runCurrent()
 
@@ -320,7 +319,6 @@ class TrackingChecklistTest {
 	@Test
 	fun `STEAMVR_HANDS_ENABLED flags hands sent to the driver with no hand tracker worn`() = runTest {
 		val h = Harness(this)
-		h.setAutomatic(false)
 		h.connectDriver()
 		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
 		runCurrent()
@@ -333,7 +331,6 @@ class TrackingChecklistTest {
 	@Test
 	fun `STEAMVR_HANDS_ENABLED accepts hand trackers when no controller is held`() = runTest {
 		val h = Harness(this)
-		h.setAutomatic(false)
 		h.connectDriver()
 		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
 		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
@@ -345,7 +342,6 @@ class TrackingChecklistTest {
 	@Test
 	fun `STEAMVR_HANDS_ENABLED ignores hands that are not routed to the driver`() = runTest {
 		val h = Harness(this)
-		h.setAutomatic(false)
 		h.connectDriver()
 		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
 		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
@@ -355,7 +351,7 @@ class TrackingChecklistTest {
 	}
 
 	@Test
-	fun `STEAMVR_HANDS_ENABLED is disabled in automatic mode`() = runTest {
+	fun `STEAMVR_HANDS_ENABLED flags hands in automatic mode too`() = runTest {
 		val h = Harness(this)
 		h.setAutomatic(true)
 		h.connectDriver()
@@ -364,7 +360,8 @@ class TrackingChecklistTest {
 		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
 		runCurrent()
 
-		// Automatic owns the routes, so there is nothing the user could undo.
-		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).enabled)
+		// Hands are the user's call in either mode, so there is always something to undo.
+		assertEquals(true, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).enabled)
+		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
 	}
 }

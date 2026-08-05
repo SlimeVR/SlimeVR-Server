@@ -148,7 +148,6 @@ class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingCheckli
 
 class SteamVRHandsCheckBehaviour(
 	private val server: VRServer,
-	private val settings: Settings,
 	private val boneRouting: BoneRoutingManager,
 ) : TrackingChecklistBehaviourType {
 	private val HAND_BONES = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
@@ -157,7 +156,6 @@ class SteamVRHandsCheckBehaviour(
 		trackers: List<TrackerState>,
 		routes: Routes,
 		driverConnected: Boolean,
-		automatic: Boolean,
 	): TrackingChecklistStep {
 		// The skeleton computes a hand bone from the arm chain, so routing one sends a hand
 		// tracker to SteamVR whether or not the user wears anything on that hand.
@@ -172,7 +170,7 @@ class SteamVRHandsCheckBehaviour(
 
 		return TrackingChecklistStep(
 			valid = !handsSentToDriver || (!hasControllers && hasHandTrackers),
-			enabled = driverConnected && !automatic,
+			enabled = driverConnected,
 			ignorable = true,
 			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
 		)
@@ -183,7 +181,6 @@ class SteamVRHandsCheckBehaviour(
 			trackerStatesFlow(server),
 			boneRouting.context.state.map { state -> state.routes },
 			server.context.state.map { state -> state.drivers.isNotEmpty() }.distinctUntilChanged(),
-			settings.context.state.map { state -> state.data.boneRoutingConfig.automatic }.distinctUntilChanged(),
 			::computeStep,
 		)
 			.distinctUntilChanged()

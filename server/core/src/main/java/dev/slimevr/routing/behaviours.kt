@@ -54,10 +54,13 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 					.map { fineBodyParts -> Triple(config, outputStates, fineBodyParts) }
 			}
 			.onEach { (config, outputStates, fineBodyParts) ->
-				val candidates = determineCandidateBones(config, fineBodyParts)
+				val candidates = determineCandidateBones(fineBodyParts)
 				receiver.context.dispatch(
 					BoneRoutingActions.SetRoutes(
-						effectiveRoutes(computeAutomaticRoutes(candidates, outputStates), outputStates),
+						effectiveRoutes(
+							computeAutomaticRoutes(candidates, outputStates) + overrideRoutes(config),
+							outputStates,
+						),
 					),
 				)
 			}

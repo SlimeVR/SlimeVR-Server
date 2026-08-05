@@ -75,31 +75,23 @@ class RoutingChangeTest {
 	}
 
 	@Test
-	fun `switching to manual the first time seeds from the automatic routes`() {
+	fun `switching to manual the first time starts from an empty table`() {
 		val config = BoneRoutingConfig(automatic = true, manualRoutes = null)
 
-		val next = applyRoutingChange(config, automatic = false, routes = emptyMap(), seed = AUTO_ROUTES)
+		val next = applyRoutingChange(config, automatic = false, routes = AUTO_ROUTES)
 
 		assertEquals(false, next.automatic)
-		assertEquals(AUTO_ROUTES, next.manualRoutes.orEmpty())
+		assertEquals(emptyMap(), next.manualRoutes.orEmpty())
 	}
 
 	@Test
 	fun `switching to manual again keeps the table the user built`() {
-		val config = BoneRoutingConfig(automatic = true, manualRoutes = HAND_TABLE)
+		val built = routesOf(BodyPart.HIP to setOf(RoutingOutput.VRC_OSC))
+		val config = BoneRoutingConfig(automatic = true, manualRoutes = built)
 
-		val next = applyRoutingChange(config, automatic = false, routes = AUTO_ROUTES, seed = AUTO_ROUTES)
+		val next = applyRoutingChange(config, automatic = false, routes = AUTO_ROUTES)
 
-		assertEquals(HAND_TABLE, next.manualRoutes)
-	}
-
-	@Test
-	fun `switching to manual again keeps an empty table the user cleared`() {
-		val config = BoneRoutingConfig(automatic = true, manualRoutes = emptyMap())
-
-		val next = applyRoutingChange(config, automatic = false, routes = AUTO_ROUTES, seed = AUTO_ROUTES)
-
-		assertEquals(emptyMap(), next.manualRoutes)
+		assertEquals(built, next.manualRoutes)
 	}
 
 	@Test
@@ -107,7 +99,7 @@ class RoutingChangeTest {
 		val config = BoneRoutingConfig(automatic = false, manualRoutes = HAND_TABLE)
 		val edited = mapOf(BodyPart.HIP to setOf(RoutingOutput.VRC_OSC))
 
-		val next = applyRoutingChange(config, automatic = false, routes = edited, seed = AUTO_ROUTES)
+		val next = applyRoutingChange(config, automatic = false, routes = edited)
 
 		assertEquals(edited, next.manualRoutes)
 	}
@@ -116,7 +108,7 @@ class RoutingChangeTest {
 	fun `switching back to automatic keeps the manual table`() {
 		val config = BoneRoutingConfig(automatic = false, manualRoutes = HAND_TABLE)
 
-		val next = applyRoutingChange(config, automatic = true, routes = emptyMap(), seed = AUTO_ROUTES)
+		val next = applyRoutingChange(config, automatic = true, routes = emptyMap())
 
 		assertEquals(true, next.automatic)
 		assertEquals(HAND_TABLE, next.manualRoutes)
@@ -126,36 +118,22 @@ class RoutingChangeTest {
 	fun `staying automatic never creates a manual table`() {
 		val config = BoneRoutingConfig(automatic = true, manualRoutes = null)
 
-		val next = applyRoutingChange(config, automatic = true, routes = AUTO_ROUTES, seed = AUTO_ROUTES)
+		val next = applyRoutingChange(config, automatic = true, routes = AUTO_ROUTES)
 
-		assertNull(next.manualRoutes)
+		assertEquals(emptyMap(), next.manualRoutes)
 	}
 
 	@Test
 	fun `a full round trip through automatic does not lose the manual table`() {
 		var config = BoneRoutingConfig(automatic = true, manualRoutes = null)
+		val built = AUTO_ROUTES + HAND_TABLE
 
-		config = applyRoutingChange(config, automatic = false, routes = emptyMap(), seed = AUTO_ROUTES)
-		config = applyRoutingChange(config, automatic = false, routes = HAND_TABLE, seed = AUTO_ROUTES)
-		config = applyRoutingChange(config, automatic = true, routes = HAND_TABLE, seed = AUTO_ROUTES)
-		config = applyRoutingChange(config, automatic = false, routes = AUTO_ROUTES, seed = AUTO_ROUTES)
+		config = applyRoutingChange(config, automatic = false, routes = emptyMap())
+		config = applyRoutingChange(config, automatic = false, routes = built)
+		config = applyRoutingChange(config, automatic = true, routes = emptyMap())
+		config = applyRoutingChange(config, automatic = false, routes = emptyMap())
 
-		assertEquals(HAND_TABLE, config.manualRoutes)
-	}
-
-	@Test
-	fun `the seed carries outputs that are merely off`() {
-		val allOn = RoutingOutput.entries.associateWith { RoutingOutputState.ACTIVE }
-		val seed = computeAutomaticRoutes(setOf(BodyPart.HIP), allOn)
-
-		val config = applyRoutingChange(
-			BoneRoutingConfig(automatic = true, manualRoutes = null),
-			automatic = false,
-			routes = emptyMap(),
-			seed = seed,
-		)
-
-		assertEquals(setOf(RoutingOutput.DRIVER), config.manualRoutes.orEmpty()[BodyPart.HIP])
+		assertEquals(built, config.manualRoutes)
 	}
 }
 
@@ -166,7 +144,6 @@ class ForcedRoutesTest {
 			BoneRoutingConfig(automatic = false, manualRoutes = emptyMap()),
 			automatic = false,
 			routes = mapOf(BodyPart.HIP to setOf(RoutingOutput.DRIVER, RoutingOutput.VMC)),
-			seed = AUTO_ROUTES,
 		)
 
 		assertEquals(mapOf(BodyPart.HIP to setOf(RoutingOutput.DRIVER)), config.manualRoutes)
@@ -178,7 +155,6 @@ class ForcedRoutesTest {
 			BoneRoutingConfig(automatic = false, manualRoutes = emptyMap()),
 			automatic = false,
 			routes = mapOf(BodyPart.NECK to setOf(RoutingOutput.VMC)),
-			seed = AUTO_ROUTES,
 		)
 
 		assertEquals(emptyMap(), config.manualRoutes)
@@ -231,5 +207,93 @@ class ForcedRoutesTest {
 	fun `everything VMC accepts it also requires`() {
 		assertEquals(acceptedBones(RoutingOutput.VMC), requiredBones(RoutingOutput.VMC))
 		assertEquals(emptySet(), requiredBones(RoutingOutput.DRIVER))
+	}
+}
+
+class OverrideRoutesTest {
+	@Test
+	fun `hands are the user's call on the driver only`() {
+		assertEquals(OVERRIDABLE_BONES, overridableBones(RoutingOutput.DRIVER))
+		// Never accepted there.
+		assertEquals(emptySet(), overridableBones(RoutingOutput.VRC_OSC))
+		// Accepted, but required, so it is always on.
+		assertEquals(emptySet(), overridableBones(RoutingOutput.VMC))
+	}
+
+	@Test
+	fun `automatic routes no hands on its own`() {
+		val candidates = determineCandidateBones(setOf(BodyPart.LEFT_HAND, BodyPart.HIP))
+
+		val routes = computeAutomaticRoutes(candidates, ALL_ON)
+
+		assertNull(routes[BodyPart.LEFT_HAND])
+	}
+
+	@Test
+	fun `an override routes the hand while automatic`() {
+		val config = BoneRoutingConfig(automatic = true, manualRoutes = HAND_TABLE)
+
+		val routes = computeAutomaticRoutes(determineCandidateBones(emptySet()), ALL_ON) + overrideRoutes(config)
+
+		assertEquals(setOf(RoutingOutput.DRIVER), routes[BodyPart.LEFT_HAND])
+	}
+
+	@Test
+	fun `only the overridable bones of a stored table count as overrides`() {
+		val config = BoneRoutingConfig(automatic = true, manualRoutes = AUTO_ROUTES + HAND_TABLE)
+
+		assertEquals(HAND_TABLE, overrideRoutes(config))
+	}
+
+	@Test
+	fun `an output that requires the hand cannot be overridden`() {
+		val config = BoneRoutingConfig(automatic = true, manualRoutes = null)
+
+		val next = applyRoutingChange(
+			config,
+			automatic = true,
+			routes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.VMC)),
+		)
+
+		assertEquals(emptyMap(), next.manualRoutes)
+	}
+
+	@Test
+	fun `editing while automatic stores the override and nothing else`() {
+		val config = BoneRoutingConfig(automatic = true, manualRoutes = null)
+
+		val next = applyRoutingChange(config, automatic = true, routes = AUTO_ROUTES + HAND_TABLE)
+
+		assertEquals(HAND_TABLE, next.manualRoutes)
+	}
+
+	@Test
+	fun `editing while automatic leaves a stored manual table alone`() {
+		val stored = routesOf(BodyPart.HIP to setOf(RoutingOutput.VRC_OSC))
+		val config = BoneRoutingConfig(automatic = true, manualRoutes = stored)
+
+		val next = applyRoutingChange(config, automatic = true, routes = HAND_TABLE)
+
+		assertEquals(stored + HAND_TABLE, next.manualRoutes)
+	}
+
+	@Test
+	fun `dropping the hand from the request clears the override`() {
+		val config = BoneRoutingConfig(automatic = true, manualRoutes = HAND_TABLE)
+
+		val next = applyRoutingChange(config, automatic = true, routes = AUTO_ROUTES)
+
+		assertEquals(emptyMap(), next.manualRoutes)
+	}
+
+	@Test
+	fun `the override survives a round trip through manual`() {
+		var config = BoneRoutingConfig(automatic = true, manualRoutes = null)
+
+		config = applyRoutingChange(config, automatic = true, routes = HAND_TABLE)
+		config = applyRoutingChange(config, automatic = false, routes = emptyMap())
+		config = applyRoutingChange(config, automatic = true, routes = emptyMap())
+
+		assertEquals(setOf(RoutingOutput.DRIVER), overrideRoutes(config)[BodyPart.LEFT_HAND])
 	}
 }

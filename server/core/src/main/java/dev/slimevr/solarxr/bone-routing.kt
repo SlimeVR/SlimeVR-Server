@@ -9,8 +9,8 @@ import dev.slimevr.routing.applyRoutingChange
 import dev.slimevr.routing.conflictingOutputs
 import dev.slimevr.routing.intendedRoutesFlow
 import dev.slimevr.routing.outputStatesFlow
+import dev.slimevr.routing.overridableBones
 import dev.slimevr.routing.requiredBones
-import dev.slimevr.routing.seedManualRoutes
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -43,6 +43,7 @@ private fun buildResponse(
 			output = output,
 			accepts = acceptedBones(output).toList(),
 			requires = requiredBones(output).toList(),
+			overridable = overridableBones(output).toList(),
 			conflicts = conflictingOutputs(output).toList(),
 			state = outputStates[output],
 		)
@@ -79,7 +80,6 @@ class BoneRoutingBehaviour(
 					bone to outputs
 				}
 				.toMap()
-			val seed = seedManualRoutes(appContext)
 
 			settings.context.dispatch(
 				SettingsActions.Update {
@@ -88,7 +88,6 @@ class BoneRoutingBehaviour(
 							config = boneRoutingConfig,
 							automatic = req.automatic == true,
 							routes = requested,
-							seed = seed,
 						),
 					)
 				},

@@ -42,6 +42,17 @@ fun requiredBones(output: RoutingOutput): Set<BodyPart> = when (output) {
 	RoutingOutput.VMC -> VMC_SUPPORTED_BONES
 }
 
+/**
+ * Bones automatic never routes on its own. Sending a hand to the driver takes over the
+ * real controllers, so it stays the user's call whatever the mode.
+ */
+val OVERRIDABLE_BONES: Set<BodyPart> = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+
+fun overridableBones(output: RoutingOutput): Set<BodyPart> =
+	OVERRIDABLE_BONES intersect acceptedBones(output) subtract requiredBones(output)
+
+fun overrideRoutes(config: BoneRoutingConfig): Routes = config.manualRoutes.orEmpty().filterKeys { it in OVERRIDABLE_BONES }
+
 fun isActive(states: OutputStates, output: RoutingOutput): Boolean = states[output] == RoutingOutputState.ACTIVE
 
 fun platformSupports(appContext: AppContextProvider, output: RoutingOutput): Boolean = when (output) {
@@ -89,7 +100,8 @@ fun intendedRoutesFlow(appContext: AppContextProvider): Flow<Routes> = combine(
 	appContext.config.settings.context.state.map { it.data.boneRoutingConfig }.distinctUntilChanged(),
 	appContext.boneRouting.context.state.map { it.routes },
 ) { config, sent ->
-	effectiveRoutes(if (config.automatic) sent else config.manualRoutes.orEmpty(), ALL_ACTIVE)
+	val requested = if (config.automatic) sent else config.manualRoutes.orEmpty()
+	effectiveRoutes(requested + overrideRoutes(config), ALL_ACTIVE)
 }.distinctUntilChanged()
 
 /**
@@ -113,41 +125,27 @@ fun effectiveRoutes(routes: Routes, outputStates: OutputStates): Routes {
 	return result
 }
 
-/**
- * The table a first switch to manual starts from: what automatic would route if every
- * output this platform has were switched on. An output that is merely off still gets its
- * bones, so switching it on later actually sends something.
- *
- * TODO: maybe this is bad, or annoying logic. we could default to just empty routes when switching to manual
- */
-fun seedManualRoutes(appContext: AppContextProvider): Routes {
-	val config = appContext.config.settings.context.state.value.data.boneRoutingConfig
-	val trackers = appContext.server.context.state.value.trackers.values.map { it.context.state.value }
-	val allEnabled = RoutingOutput.entries.associateWith {
-		if (platformSupports(appContext, it)) RoutingOutputState.ACTIVE else RoutingOutputState.UNSUPPORTED
-	}
-
-	return computeAutomaticRoutes(determineCandidateBones(config, trackedBodyParts(trackers)), allEnabled)
-}
-
 fun applyRoutingChange(
 	config: BoneRoutingConfig,
 	automatic: Boolean,
 	routes: Routes,
-	seed: Routes,
 ): BoneRoutingConfig {
-	fun sanitized(source: Routes): Routes = source
+	// Switching modes only flips the switch: each mode keeps the picks left in it.
+	if (automatic != config.automatic) return config.copy(automatic = automatic)
+
+	val requested = routes
 		.mapValues { (bone, outputs) ->
 			outputs.filterTo(mutableSetOf()) { bone in acceptedBones(it) && bone !in requiredBones(it) }
 		}
 		.filterValues { it.isNotEmpty() }
 
 	return config.copy(
-		automatic = automatic,
-		manualRoutes = when {
-			automatic -> config.manualRoutes
-			config.automatic -> config.manualRoutes ?: sanitized(seed)
-			else -> sanitized(routes)
+		manualRoutes = if (automatic) {
+			// Automatic owns every other bone, so only the overrides come from the request.
+			config.manualRoutes.orEmpty().filterKeys { it !in OVERRIDABLE_BONES } +
+				requested.filterKeys { it in OVERRIDABLE_BONES }
+		} else {
+			requested
 		},
 	)
 }
@@ -173,16 +171,9 @@ fun trackedBodyParts(trackers: Collection<TrackerState>): Set<BodyPart?> = track
 	.map { it.bodyPart }
 	.toSet()
 
-fun determineCandidateBones(config: BoneRoutingConfig, fineBodyParts: Set<BodyPart?>): Set<BodyPart> {
-	val candidates = candidateToFineBodyParts
-		.filterValues { it.any { bp -> bp in fineBodyParts } }
-		.keys
-	// Hands aren't toggled automatically
-	val handBones = config.manualRoutes.orEmpty().keys.filter {
-		it == BodyPart.LEFT_HAND || it == BodyPart.RIGHT_HAND
-	}
-	return candidates + handBones
-}
+fun determineCandidateBones(fineBodyParts: Set<BodyPart?>): Set<BodyPart> = candidateToFineBodyParts
+	.filterValues { it.any { bp -> bp in fineBodyParts } }
+	.keys
 
 /** Hands each bone to the best output that is on and can take it, so nothing is sent twice. */
 fun computeAutomaticRoutes(candidateBones: Set<BodyPart>, outputStates: OutputStates): Routes {

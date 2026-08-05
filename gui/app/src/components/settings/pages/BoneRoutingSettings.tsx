@@ -141,6 +141,7 @@ type BoneTables = {
   routes: RouteMap;
   accepts: Map<RoutingOutput, Set<BodyPart>>;
   requires: Map<RoutingOutput, Set<BodyPart>>;
+  overridable: Map<RoutingOutput, Set<BodyPart>>;
   duplicated: Map<BodyPart, Set<RoutingOutput>>;
 };
 
@@ -153,6 +154,9 @@ function cellState(row: BoneRow, output: RoutingOutput, tables: BoneTables) {
     required:
       accepted.length > 0 &&
       accepted.every((bone) => tables.requires.get(output)?.has(bone)),
+    overridable:
+      accepted.length > 0 &&
+      accepted.every((bone) => tables.overridable.get(output)?.has(bone)),
     routed: row.bones.some((bone) => tables.routes.get(bone)?.has(output)),
     duplicate: row.bones.some((bone) =>
       tables.duplicated.get(bone)?.has(output)
@@ -245,6 +249,7 @@ function RouteCell({
   automatic,
   accepted,
   required,
+  overridable,
   unavailable,
   routed,
   duplicate,
@@ -255,6 +260,7 @@ function RouteCell({
   automatic: boolean;
   accepted: boolean;
   required: boolean;
+  overridable: boolean;
   unavailable: boolean;
   routed: boolean;
   duplicate: boolean;
@@ -272,7 +278,7 @@ function RouteCell({
     return cell(<div className="w-2.5 h-0.5 rounded bg-background-40" />);
   }
 
-  if (automatic) {
+  if (automatic && !overridable) {
     return routed
       ? cell(<CheckIcon size={13} />, 'fill-accent-background-20')
       : cell(<div className="w-1.5 h-1.5 rounded-full bg-background-50" />);
@@ -346,6 +352,17 @@ export function BoneRoutingSettings() {
     [outputs]
   );
 
+  const overridable = useMemo(
+    () =>
+      new Map(
+        outputs.map((status) => [
+          status.output,
+          new Set(status.overridable ?? []),
+        ])
+      ),
+    [outputs]
+  );
+
   const conflicts = useMemo(
     () =>
       new Map(
@@ -387,8 +404,8 @@ export function BoneRoutingSettings() {
   }, [routes, conflicts]);
 
   const tables = useMemo(
-    () => ({ routes, accepts, requires, duplicated }),
-    [routes, accepts, requires, duplicated]
+    () => ({ routes, accepts, requires, overridable, duplicated }),
+    [routes, accepts, requires, overridable, duplicated]
   );
 
   const duplicatedNames = useMemo(() => {
@@ -479,7 +496,7 @@ export function BoneRoutingSettings() {
 
   const setMode = (nextAutomatic: boolean) => {
     setAutomatic(nextAutomatic);
-    submit(nextAutomatic, routes);
+    submit(nextAutomatic, new Map());
   };
 
   const toggleGroup = (id: string) => {
