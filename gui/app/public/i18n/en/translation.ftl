@@ -517,10 +517,8 @@ settings-routing-group-spine = Spine & torso
 settings-routing-group-legs = Legs
 settings-routing-group-arms = Arms
 settings-routing-group-fingers = Fingers
-# Remove
-settings-routing-group-left_fingers = Left fingers
-settings-routing-group-right_fingers = Right fingers
-# Remove
+settings-routing-row-left_fingers = Left fingers
+settings-routing-row-right_fingers = Right fingers
 settings-routing-hands-warning = <b>Warning:</b> Routing your hands to SteamVR/Monado replaces the input from your real controllers.
     Only do this if you want SlimeVR trackers to track your hands.
 

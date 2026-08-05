@@ -12,6 +12,14 @@ import {
   RoutingOutputStatusT,
   RpcMessage,
 } from 'solarxr-protocol';
+import {
+  ARM_BODY_PARTS,
+  HAND_BODY_PARTS,
+  LEFT_FINGER_BODY_PARTS,
+  LEG_BODY_PARTS,
+  RIGHT_FINGER_BODY_PARTS,
+  SPINE_BODY_PARTS,
+} from '@/hooks/body-parts';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocaleConfig } from '@/i18n/config';
 import {
@@ -48,104 +56,60 @@ const OUTPUT_LABEL_ID: Record<number, string> = {
   [RoutingOutput.VMC]: 'settings-routing-output-vmc',
 };
 
+type BoneRow = { id: string; labelId: string; bones: BodyPart[] };
+
+function boneRow(bone: BodyPart): BoneRow {
+  return {
+    id: BodyPart[bone],
+    labelId: `body_part-${BodyPart[bone]}`,
+    bones: [bone],
+  };
+}
+
+function bundleRow(id: string, bones: BodyPart[]): BoneRow {
+  return { id, labelId: `settings-routing-row-${id}`, bones };
+}
+
 const BONE_GROUPS: {
   id: string;
   icon: ReactNode;
-  bones: BodyPart[];
+  rows: BoneRow[];
   defaultOpen: boolean;
 }[] = [
   {
     id: 'spine',
     icon: <ChestIcon width={20} />,
     defaultOpen: true,
-    bones: [
-      BodyPart.HEAD,
-      BodyPart.NECK,
-      BodyPart.UPPER_CHEST,
-      BodyPart.CHEST,
-      BodyPart.WAIST,
-      BodyPart.HIP,
-    ],
+    rows: SPINE_BODY_PARTS.map(boneRow),
   },
   {
     id: 'legs',
-    icon: <FootIcon width={20} />,
+    icon: <FootIcon width={28} />,
     defaultOpen: true,
-    bones: [
-      BodyPart.LEFT_UPPER_LEG,
-      BodyPart.LEFT_LOWER_LEG,
-      BodyPart.LEFT_FOOT,
-      BodyPart.RIGHT_UPPER_LEG,
-      BodyPart.RIGHT_LOWER_LEG,
-      BodyPart.RIGHT_FOOT,
-    ],
+    rows: LEG_BODY_PARTS.map(boneRow),
   },
   {
     id: 'arms',
-    icon: <UpperArmIcon width={20} />,
+    icon: <UpperArmIcon width={25} />,
     defaultOpen: true,
-    bones: [
-      BodyPart.LEFT_SHOULDER,
-      BodyPart.LEFT_UPPER_ARM,
-      BodyPart.LEFT_LOWER_ARM,
-      BodyPart.LEFT_HAND,
-      BodyPart.RIGHT_SHOULDER,
-      BodyPart.RIGHT_UPPER_ARM,
-      BodyPart.RIGHT_LOWER_ARM,
-      BodyPart.RIGHT_HAND,
-    ],
+    rows: ARM_BODY_PARTS.map(boneRow),
   },
   {
-    id: 'left_fingers',
-    icon: (
-      <span className="-scale-x-100">
-        <FingersIcon width={22} />
-      </span>
-    ),
+    id: 'fingers',
+    icon: <FingersIcon width={18} />,
     defaultOpen: false,
-    bones: [
-      BodyPart.LEFT_THUMB_METACARPAL,
-      BodyPart.LEFT_THUMB_PROXIMAL,
-      BodyPart.LEFT_THUMB_DISTAL,
-      BodyPart.LEFT_INDEX_PROXIMAL,
-      BodyPart.LEFT_INDEX_INTERMEDIATE,
-      BodyPart.LEFT_INDEX_DISTAL,
-      BodyPart.LEFT_MIDDLE_PROXIMAL,
-      BodyPart.LEFT_MIDDLE_INTERMEDIATE,
-      BodyPart.LEFT_MIDDLE_DISTAL,
-      BodyPart.LEFT_RING_PROXIMAL,
-      BodyPart.LEFT_RING_INTERMEDIATE,
-      BodyPart.LEFT_RING_DISTAL,
-      BodyPart.LEFT_LITTLE_PROXIMAL,
-      BodyPart.LEFT_LITTLE_INTERMEDIATE,
-      BodyPart.LEFT_LITTLE_DISTAL,
-    ],
-  },
-  {
-    id: 'right_fingers',
-    icon: <FingersIcon width={22} />,
-    defaultOpen: false,
-    bones: [
-      BodyPart.RIGHT_THUMB_METACARPAL,
-      BodyPart.RIGHT_THUMB_PROXIMAL,
-      BodyPart.RIGHT_THUMB_DISTAL,
-      BodyPart.RIGHT_INDEX_PROXIMAL,
-      BodyPart.RIGHT_INDEX_INTERMEDIATE,
-      BodyPart.RIGHT_INDEX_DISTAL,
-      BodyPart.RIGHT_MIDDLE_PROXIMAL,
-      BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
-      BodyPart.RIGHT_MIDDLE_DISTAL,
-      BodyPart.RIGHT_RING_PROXIMAL,
-      BodyPart.RIGHT_RING_INTERMEDIATE,
-      BodyPart.RIGHT_RING_DISTAL,
-      BodyPart.RIGHT_LITTLE_PROXIMAL,
-      BodyPart.RIGHT_LITTLE_INTERMEDIATE,
-      BodyPart.RIGHT_LITTLE_DISTAL,
+    rows: [
+      bundleRow('left_fingers', LEFT_FINGER_BODY_PARTS),
+      bundleRow('right_fingers', RIGHT_FINGER_BODY_PARTS),
     ],
   },
 ];
 
-const HAND_BONES = new Set([BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND]);
+const ROW_BY_BONE = new Map(
+  BONE_GROUPS.flatMap((group) => group.rows).flatMap((row) =>
+    row.bones.map((bone) => [bone, row] as const)
+  )
+);
 
 const ROW_CLASSES = 'flex items-center pl-4 pr-3 mobile:pl-3 mobile:pr-2';
 
@@ -171,6 +135,29 @@ function toBoneRoutes(routes: RouteMap): BoneRouteT[] {
       route.outputs = Array.from(outputs);
       return route;
     });
+}
+
+type BoneTables = {
+  routes: RouteMap;
+  accepts: Map<RoutingOutput, Set<BodyPart>>;
+  requires: Map<RoutingOutput, Set<BodyPart>>;
+  duplicated: Map<BodyPart, Set<RoutingOutput>>;
+};
+
+function cellState(row: BoneRow, output: RoutingOutput, tables: BoneTables) {
+  const accepted = row.bones.filter((bone) =>
+    tables.accepts.get(output)?.has(bone)
+  );
+  return {
+    accepted: accepted.length > 0,
+    required:
+      accepted.length > 0 &&
+      accepted.every((bone) => tables.requires.get(output)?.has(bone)),
+    routed: row.bones.some((bone) => tables.routes.get(bone)?.has(output)),
+    duplicate: row.bones.some((bone) =>
+      tables.duplicated.get(bone)?.has(output)
+    ),
+  };
 }
 
 type OutputSummary =
@@ -253,7 +240,7 @@ function OutputStatusRow({
 }
 
 function RouteCell({
-  bone,
+  row,
   output,
   automatic,
   accepted,
@@ -263,7 +250,7 @@ function RouteCell({
   duplicate,
   onToggle,
 }: {
-  bone: BodyPart;
+  row: BoneRow;
   output: RoutingOutput;
   automatic: boolean;
   accepted: boolean;
@@ -271,7 +258,7 @@ function RouteCell({
   unavailable: boolean;
   routed: boolean;
   duplicate: boolean;
-  onToggle: (bone: BodyPart, output: RoutingOutput) => void;
+  onToggle: (row: BoneRow, output: RoutingOutput) => void;
 }) {
   const cell = (content: ReactNode, className?: string) => (
     <div
@@ -307,10 +294,10 @@ function RouteCell({
         lockedId && 'brightness-50 hover:cursor-not-allowed',
         duplicate && 'outline outline-2 outline-status-warning'
       )}
-      name={`${bone}-${output}`}
+      name={`${row.id}-${output}`}
       checked={routed}
       disabled={lockedId !== null}
-      onChange={() => onToggle(bone, output)}
+      onChange={() => onToggle(row, output)}
     />
   );
 
@@ -337,7 +324,7 @@ export function BoneRoutingSettings() {
     () => new Set(BONE_GROUPS.filter((g) => g.defaultOpen).map((g) => g.id))
   );
   const [handsWarning, setHandsWarning] = useState<
-    [BodyPart, RoutingOutput] | null
+    [BoneRow, RoutingOutput] | null
   >(null);
   const [handsWarningAccepted, setHandsWarningAccepted] = useState(false);
 
@@ -399,16 +386,25 @@ export function BoneRoutingSettings() {
     return result;
   }, [routes, conflicts]);
 
+  const tables = useMemo(
+    () => ({ routes, accepts, requires, duplicated }),
+    [routes, accepts, requires, duplicated]
+  );
+
   const duplicatedNames = useMemo(() => {
     const list = new Intl.ListFormat(currentLocales, { type: 'conjunction' });
     const outputs = new Set(
       Array.from(duplicated.values()).flatMap((clashed) => Array.from(clashed))
     );
+    const labels = new Map(
+      Array.from(duplicated.keys()).map((bone) => {
+        const row = ROW_BY_BONE.get(bone) ?? boneRow(bone);
+        return [row.id, row.labelId];
+      })
+    );
     return {
       bones: list.format(
-        Array.from(duplicated.keys()).map((bone) =>
-          l10n.getString(`body_part-${BodyPart[bone]}`)
-        )
+        Array.from(labels.values()).map((labelId) => l10n.getString(labelId))
       ),
       outputs: list.format(
         Array.from(outputs).map((output) =>
@@ -431,7 +427,7 @@ export function BoneRoutingSettings() {
 
     const handsAlreadyOnDriver = (settings.routes ?? []).some(
       (route) =>
-        HAND_BONES.has(route.bone) &&
+        HAND_BODY_PARTS.includes(route.bone) &&
         (route.outputs ?? []).includes(RoutingOutput.DRIVER)
     );
     if (handsAlreadyOnDriver) setHandsWarningAccepted(true);
@@ -449,26 +445,36 @@ export function BoneRoutingSettings() {
     sendRPCPacket(RpcMessage.ChangeBoneRoutingSettingsRequest, req);
   };
 
-  const applyToggle = (bone: BodyPart, output: RoutingOutput) => {
+  const applyToggle = (
+    row: BoneRow,
+    output: RoutingOutput,
+    enable: boolean
+  ) => {
     const next = new Map(routes);
-    const boneOutputs = new Set(next.get(bone) ?? []);
-    if (boneOutputs.has(output)) boneOutputs.delete(output);
-    else boneOutputs.add(output);
-    next.set(bone, boneOutputs);
+    for (const bone of row.bones) {
+      if (!accepts.get(output)?.has(bone)) continue;
+      if (requires.get(output)?.has(bone)) continue;
+      const boneOutputs = new Set(next.get(bone) ?? []);
+      if (enable) boneOutputs.add(output);
+      else boneOutputs.delete(output);
+      next.set(bone, boneOutputs);
+    }
     setRoutes(next);
     submit(automatic, next);
   };
 
-  const toggle = (bone: BodyPart, output: RoutingOutput) => {
-    const enabling = !routes.get(bone)?.has(output);
+  const toggle = (row: BoneRow, output: RoutingOutput) => {
+    const enabling = !cellState(row, output, tables).routed;
     const takesOverControllers =
-      enabling && output === RoutingOutput.DRIVER && HAND_BONES.has(bone);
+      enabling &&
+      output === RoutingOutput.DRIVER &&
+      row.bones.some((bone) => HAND_BODY_PARTS.includes(bone));
 
     if (takesOverControllers && !handsWarningAccepted) {
-      setHandsWarning([bone, output]);
+      setHandsWarning([row, output]);
       return;
     }
-    applyToggle(bone, output);
+    applyToggle(row, output, enabling);
   };
 
   const setMode = (nextAutomatic: boolean) => {
@@ -490,7 +496,7 @@ export function BoneRoutingSettings() {
         onClose={() => setHandsWarning(null)}
         accept={() => {
           setHandsWarningAccepted(true);
-          if (handsWarning) applyToggle(handsWarning[0], handsWarning[1]);
+          if (handsWarning) applyToggle(handsWarning[0], handsWarning[1], true);
           setHandsWarning(null);
         }}
       />
@@ -585,65 +591,46 @@ export function BoneRoutingSettings() {
                           type="button"
                           onClick={() => toggleGroup(group.id)}
                           className={classNames(
-                            'w-full flex items-center gap-2 py-2 pl-4 pr-3 bg-background-60 hover:bg-background-50 fill-background-10 transition-colors',
+                            'w-full flex items-center gap-4 pl-4 pr-4 h-12 bg-background-60 hover:bg-background-50 fill-background-10 transition-colors',
                             open && 'border-b border-background-50'
                           )}
                         >
-                          {group.icon}
+                          <div className="w-6">{group.icon}</div>
                           <Typography
                             bold
                             id={`settings-routing-group-${group.id}`}
                           />
                           <div className="ml-auto fill-background-10">
                             {open ? (
-                              <ArrowUpIcon size={16} />
+                              <ArrowUpIcon size={20} />
                             ) : (
-                              <ArrowDownIcon size={16} />
+                              <ArrowDownIcon size={20} />
                             )}
                           </div>
                         </button>
 
                         {open && (
                           <div className="divide-y divide-background-60">
-                            {group.bones.map((bone) => (
+                            {group.rows.map((row) => (
                               <div
-                                key={bone}
+                                key={row.id}
                                 className={classNames(ROW_CLASSES, 'py-1.5')}
                               >
                                 <div className={BONE_CELL_CLASSES}>
-                                  <Typography
-                                    truncate
-                                    id={`body_part-${BodyPart[bone]}`}
-                                  />
+                                  <Typography truncate id={row.labelId} />
                                 </div>
 
                                 {outputs.map((status) => (
                                   <RouteCell
                                     key={status.output}
-                                    bone={bone}
+                                    row={row}
                                     output={status.output}
                                     automatic={automatic}
-                                    accepted={
-                                      accepts.get(status.output)?.has(bone) ??
-                                      false
-                                    }
-                                    required={
-                                      requires.get(status.output)?.has(bone) ??
-                                      false
-                                    }
                                     unavailable={
                                       status.state ===
                                       RoutingOutputState.UNSUPPORTED
                                     }
-                                    routed={
-                                      routes.get(bone)?.has(status.output) ??
-                                      false
-                                    }
-                                    duplicate={
-                                      duplicated
-                                        .get(bone)
-                                        ?.has(status.output) ?? false
-                                    }
+                                    {...cellState(row, status.output, tables)}
                                     onToggle={toggle}
                                   />
                                 ))}
