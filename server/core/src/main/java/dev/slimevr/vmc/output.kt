@@ -5,7 +5,7 @@ import dev.slimevr.config.VMCConfig
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscSender
 import dev.slimevr.routing.BoneRoutingManager
-import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.util.formatExceptionMessage
 import dev.slimevr.util.timeSource
@@ -105,7 +105,6 @@ class VMCOutputBehaviour(
 			.launchIn(receiver.context.scope)
 	}
 
-	// TODO: VSeeFace used to crash if we send data too fast. idk if that still apply so lets try without for now
 	private fun observeFrames(receiver: VMCManager, runtime: OutputRuntime) {
 		val startedAt = timeSource.markNow()
 
@@ -182,7 +181,7 @@ class VMCOutputBehaviour(
 	private suspend fun sendFrame(
 		receiver: VMCManager,
 		runtime: OutputRuntime,
-		bones: Map<BodyPart, BoneState>,
+		bones: ComputedSkeleton,
 		routedBones: Set<BodyPart>,
 		config: VMCConfig,
 		startedAt: TimeSource.Monotonic.ValueTimeMark,
@@ -215,6 +214,7 @@ class VMCOutputBehaviour(
 			runtime.healthySince = null
 			runtime.nextFrameRetryAt = timeSource.markNow() + FRAME_RETRY_DELAY
 			runtime.sendFailing = true
+			sender.close()
 			// Report once per transition. The refusal is only raised every other send, so gating
 			// on the previous attempt instead would log again on each one that fails.
 			if (status.outputState == VMCOSCOutputState.ERROR) return

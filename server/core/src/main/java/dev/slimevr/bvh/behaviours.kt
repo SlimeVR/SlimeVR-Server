@@ -47,7 +47,7 @@ class BVHRecordingBehaviour(
 					try {
 						AppLogger.bvh.info("Opening BVH recording at ${storage.displayPath(resolvedPath)}")
 						stream = BvhStream(storage.openTextFile(resolvedPath)).also {
-							it.writeHeader(skeleton.computed.value)
+							it.writeHeader(skeleton.currentComputed)
 							// TODO: we could write the initial T-Pose or whatever here
 						}
 					} catch (e: Exception) {

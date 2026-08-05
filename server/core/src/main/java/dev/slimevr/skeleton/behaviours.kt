@@ -172,7 +172,7 @@ class ComputedSkeletonBehaviour(
 
 						// Updated the computed skeleton with the result
 						if (!targetState.paused) { // FIXME : bones should still follow the head when paused
-							receiver.computed.value = fk
+							receiver.computed.tryEmit(fk)
 // 							receiver.computed.value = ikOutput
 						}
 					}

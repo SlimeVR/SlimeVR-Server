@@ -35,6 +35,7 @@ import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
@@ -58,7 +59,8 @@ import dev.slimevr.vrcosc.VRCOSCManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
@@ -111,7 +113,12 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
 		name = "TestSkeleton",
 	)
-	val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
+	val computed = MutableSharedFlow<ComputedSkeleton>(
+		replay = 1,
+		onBufferOverflow = BufferOverflow.DROP_OLDEST,
+	)
+	computed.tryEmit(buildBones(context.state.value))
+	val skeleton = Skeleton(context, computed)
 	skeleton.startObserving()
 	return skeleton
 }
