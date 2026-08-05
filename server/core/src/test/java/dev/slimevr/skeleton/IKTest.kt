@@ -48,25 +48,23 @@ class IKTest {
 
 		val bones = buildBones(boneInputs)
 		val target = Vector3.POS_X * 4f
-		val goals = listOf(
-			IKChainGoal(
-				listOf(
-					BodyPart.NECK,
-					BodyPart.UPPER_CHEST,
-					BodyPart.CHEST,
-					BodyPart.WAIST,
-					BodyPart.HIP,
-				),
-				target,
+		val goal = IKChainGoal(
+			listOf(
+				BodyPart.NECK,
+				BodyPart.UPPER_CHEST,
+				BodyPart.CHEST,
+				BodyPart.WAIST,
+				BodyPart.HIP,
 			),
+			target,
 		)
 
-		val ikOut = ccdIk(boneInputs, bones, goals, 0.01f, 100)
+		val ikOut = ccdIk(boneInputs, bones, listOf(goal), 0.01f, 100)
 		assert(ikOut.goalsReached.all { it.value }) {
 			val boneRots = ikOut.bones.values.joinToString {
 				"${it.bodyPart}: ${it.rotation.toEulerAngles(EulerOrder.YZX)}"
 			}
-			val targetDist = (target - ikOut.bones[BodyPart.HIP]!!.tailPosition).len()
+			val targetDist = chainDistanceFromTarget(ikOut.bones, goal.chain, goal.target)
 			"Failed to reach target:\nDistance from target: $targetDist\nBone rotations: $boneRots"
 		}
 	}
