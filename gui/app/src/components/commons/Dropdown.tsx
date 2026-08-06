@@ -288,7 +288,7 @@ export function DropdownInside({
     <>
       <div
         className={classNames(
-          'min-h-[42px] text-background-10 text-left dropdown',
+          'min-h-[42px] min-w-0 text-background-10 text-left dropdown',
           displayStyles[display]
         )}
         onClick={() => setIsOpen(!isOpen)}
@@ -361,7 +361,7 @@ export function DropdownInside({
       >
         <div
           className={classNames(
-            'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md cursor-pointer focus:ring-4 relative',
+            'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md cursor-pointer focus:ring-4 relative min-w-0',
             variantStyles[variant]
           )}
           tabIndex={0}
@@ -374,8 +374,8 @@ export function DropdownInside({
           }
           role="combobox"
         >
-          {getShownValue(value)}
-          <div className="fill-background-10">
+          <span className="min-w-0 truncate">{getShownValue(value)}</span>
+          <div className="fill-background-10 shrink-0">
             {direction === 'up' ? (
               <ArrowUpIcon size={16} />
             ) : (

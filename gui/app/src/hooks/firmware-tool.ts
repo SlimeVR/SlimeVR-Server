@@ -184,6 +184,12 @@ type TraversalContext = {
   propertySchema?: SomeJSONSchema; // The original property schema (before ref resolution)
 };
 
+type ComponentLayout = {
+  itemGridList?: boolean;
+  compactGroupChildren?: boolean;
+  spanTwoColumns?: boolean;
+};
+
 export type ComponentNode =
   | {
       type: 'checkbox';
@@ -215,15 +221,45 @@ export type ComponentNode =
       label: string | undefined;
       childrens: ComponentNode[];
       path: Path;
+      layout?: ComponentLayout;
     }
   | {
       type: 'list';
       childrens: ComponentNode[];
       label: string;
       path: Path;
+      layout?: ComponentLayout;
       add?: () => void;
       del?: (index: number) => void;
     };
+
+const layoutForPath = (path: Path): ComponentLayout | undefined => {
+  const lastPathSegment = path[path.length - 1];
+
+  if (typeof lastPathSegment !== 'string') {
+    return undefined;
+  }
+
+  switch (lastPathSegment) {
+    case 'imus':
+      return {
+        itemGridList: true,
+        compactGroupChildren: true,
+        spanTwoColumns: true,
+      };
+    case 'sensors':
+      return {
+        itemGridList: true,
+        spanTwoColumns: true,
+      };
+    case 'buses':
+      return {
+        spanTwoColumns: true,
+      };
+  }
+
+  return undefined;
+};
 
 const setAtPath = (obj: any, path: Path, value: any): void => {
   let current = obj;
@@ -340,6 +376,7 @@ const handleObjectNode = (
         childrens: childs,
         path: ctx.path,
         label: resolveLabel(ctx, node, ctx.propertySchema) ?? undefined,
+        layout: layoutForPath(ctx.path),
       },
     ];
   }
@@ -365,6 +402,25 @@ const handleDiscriminatedOneOf = (
   );
 
   const discriminatorPath = [...ctx.path, discriminator];
+
+  const getCandidate = (value: string): SomeJSONSchema | undefined => {
+    if (mapping[value]) {
+      return ctx.defs[refToKey(mapping[value])];
+    }
+
+    return node.oneOf!.find((o: SomeJSONSchema) => {
+      const target = o.$ref ? ctx.defs[refToKey(o.$ref)] : o;
+      const prop = target?.properties?.[discriminator];
+
+      if (!prop) return false;
+
+      if (prop.const === value) return true;
+      if (Array.isArray(prop.enum) && prop.enum.includes(value)) return true;
+
+      return false;
+    });
+  };
+
   const discriminatorDropdown: ComponentNode = {
     type: 'dropdown',
     label: discriminator,
@@ -372,8 +428,13 @@ const handleDiscriminatedOneOf = (
     value: discriminatorValue ?? possibleValues[0] ?? '',
     path: discriminatorPath,
     onMutate: (newValue: string) => {
-      setAtPath(ctx.rootData, discriminatorPath, newValue);
-      ctx.onChange(discriminatorPath, newValue, ctx.rootData);
+      const candidate = getCandidate(newValue);
+      const payload = candidate
+        ? createDefaultDataFromSchema(ctx, candidate)
+        : { [discriminator]: newValue };
+
+      setAtPath(ctx.rootData, ctx.path, payload);
+      ctx.onChange(ctx.path, payload, ctx.rootData);
     },
   };
 
@@ -384,26 +445,7 @@ const handleDiscriminatedOneOf = (
     return [];
   }
 
-  let candidate: SomeJSONSchema | undefined;
-
-  if (mapping[activeValue]) {
-    const mappedKey = refToKey(mapping[activeValue]);
-    candidate = ctx.defs[mappedKey];
-  }
-
-  if (!candidate) {
-    candidate = node.oneOf!.find((o: SomeJSONSchema) => {
-      const target = o.$ref ? ctx.defs[refToKey(o.$ref)] : o;
-      const prop = target?.properties?.[discriminator];
-
-      if (!prop) return false;
-
-      if (prop.const === activeValue) return true;
-      if (Array.isArray(prop.enum) && prop.enum.includes(activeValue)) return true;
-
-      return false;
-    });
-  }
+  const candidate = getCandidate(activeValue);
 
   if (!candidate) {
     console.warn(`No matching discriminator found for ${activeValue}, skipping`);
@@ -445,8 +487,93 @@ const handleDiscriminatedOneOf = (
         resolveLabel(ctx, resolvedCandidate) ??
         resolveLabel(ctx, node, ctx.propertySchema) ??
         undefined,
+      layout: layoutForPath(ctx.path),
     },
   ];
+};
+
+const cloneSchemaDefault = (node: SomeJSONSchema): any => {
+  const defaultValue = (node as { default?: unknown }).default;
+
+  if (defaultValue === undefined) {
+    return undefined;
+  }
+
+  if (defaultValue === null || typeof defaultValue !== 'object') {
+    return defaultValue;
+  }
+
+  return JSON.parse(JSON.stringify(defaultValue));
+};
+
+const createDefaultDataFromSchema = (
+  ctx: TraversalContext,
+  node: SomeJSONSchema
+): any => {
+  if (!ctx.defs) throw new Error('Board defaults schema is missing $defs');
+
+  if (node.$ref) {
+    return createDefaultDataFromSchema(ctx, ctx.defs[refToKey(node.$ref)]);
+  }
+
+  const schemaDefault = cloneSchemaDefault(node);
+  if (schemaDefault !== undefined) {
+    return schemaDefault;
+  }
+
+  if (node.const !== undefined) {
+    return node.const;
+  }
+
+  if (node.enum?.length) {
+    return node.enum[0];
+  }
+
+  if (node.oneOf && Array.isArray(node.oneOf) && node.discriminator?.propertyName) {
+    const discriminator = node.discriminator.propertyName;
+    const mapping = node.discriminator.mapping ?? {};
+    const discriminatorValue = extractDiscriminatorValues(
+      ctx,
+      node.oneOf,
+      discriminator,
+      mapping
+    )[0];
+    const mappedCandidate = discriminatorValue ? mapping[discriminatorValue] : null;
+    const candidate = mappedCandidate
+      ? ctx.defs[refToKey(mappedCandidate)]
+      : node.oneOf[0];
+
+    return candidate ? createDefaultDataFromSchema(ctx, candidate) : {};
+  }
+
+  if (node.type === 'object' && node.properties) {
+    const data: Record<string, any> = {};
+
+    for (const property of Object.keys(node.properties)) {
+      const propertySchema = node.properties[property];
+      if (propertySchema) {
+        data[property] = createDefaultDataFromSchema(ctx, propertySchema);
+      }
+    }
+
+    return data;
+  }
+
+  if (node.type === 'array') {
+    return Array.from({ length: node.minItems ?? 0 }, () =>
+      createDefaultDataFromSchema(ctx, node.items)
+    );
+  }
+
+  if (node.type === 'boolean') {
+    return false;
+  }
+
+  if (node.type === 'number') {
+    return 0;
+  }
+
+  return '';
 };
 
 const handleArrayNode = (
@@ -494,19 +621,24 @@ const handleArrayNode = (
         })
         .find((o: string) => !!o);
       if (discriminatorValue) {
-        const payload = {
-          [discriminator]: discriminatorValue,
-        };
+        const discriminatorCandidate = item.oneOf.find((o: SomeJSONSchema) => {
+          const target = o.$ref ? ctx.defs[refToKey(o.$ref)] : o;
+          return target?.properties?.[discriminator]?.const === discriminatorValue;
+        });
 
         add = () => {
+          const payload = discriminatorCandidate
+            ? createDefaultDataFromSchema(ctx, discriminatorCandidate)
+            : { [discriminator]: discriminatorValue };
           setAtPath(ctx.rootData, discriminatorPath, payload);
           ctx.onChange(discriminatorPath, payload, ctx.rootData);
         };
       }
     } else {
       add = () => {
-        setAtPath(ctx.rootData, discriminatorPath, item);
-        ctx.onChange(discriminatorPath, item, ctx.rootData);
+        const payload = createDefaultDataFromSchema(ctx, item);
+        setAtPath(ctx.rootData, discriminatorPath, payload);
+        ctx.onChange(discriminatorPath, payload, ctx.rootData);
       };
     }
   }
@@ -526,6 +658,7 @@ const handleArrayNode = (
       childrens: childs,
       path: ctx.path,
       label: resolveLabel(ctx, node, ctx.propertySchema) ?? 'unknown label',
+      layout: layoutForPath(ctx.path),
       add,
       del,
     },
@@ -641,6 +774,11 @@ const handleNode = (
   // When we encounter a $ref, resolve it but keep the same ownerSchema and propertySchema
   if (node.$ref) {
     return handleNode(ctx, ctx.defs[refToKey(node.$ref)]);
+  }
+
+  // Const only schema should not render form controls
+  if (node.const !== undefined) {
+    return [];
   }
 
   switch (node.type) {
