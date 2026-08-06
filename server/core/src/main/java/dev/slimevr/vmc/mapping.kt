@@ -195,8 +195,8 @@ val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 		) +
 			ResetBodyParts.LEFT_FINGERS.associateWith { leftArm } +
 			ResetBodyParts.RIGHT_FINGERS.associateWith { rightArm } +
-			leftToes.associateWith { foot } +
-			rightToes.associateWith { foot },
+			ResetBodyParts.LEFT_TOES.associateWith { foot } +
+			ResetBodyParts.RIGHT_TOES.associateWith { foot },
 	)
 }
 
