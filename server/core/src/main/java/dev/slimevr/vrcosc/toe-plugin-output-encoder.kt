@@ -94,7 +94,7 @@ private fun processToe(
 	val pitch = euler.z
 	val yaw = euler.y
 	val tipToe = pitch < MINIMUM_TIP_TOE_PITCH
-	val bending = pitch > MINIMUM_BENDING_PITCH && !tipToe
+	val bending = pitch > MINIMUM_BENDING_PITCH
 	val splayed = when (splayDirection) {
 		Side.LEFT -> yaw < -ABSOLUTE_SPLAY_THRESHOLD_ANGLE
 		Side.RIGHT -> yaw > ABSOLUTE_SPLAY_THRESHOLD_ANGLE
