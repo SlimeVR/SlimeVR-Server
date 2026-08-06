@@ -4,13 +4,15 @@ package dev.slimevr.trackingchecklist
 
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerState
-import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.Settings
 import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.device.DeviceState
+import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsManager
+import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.routing.Routes
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.vrchat.VRCConfigManager
@@ -31,7 +33,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistNeedCalibration
 import solarxr_protocol.rpc.TrackingChecklistPublicNetworks
 import solarxr_protocol.rpc.TrackingChecklistStep
@@ -67,6 +71,7 @@ class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehavio
 			valid = isAssigned,
 			enabled = hasSteamVR,
 			ignorable = true,
+			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
 			extraData = if (!isAssigned) {
 				TrackingChecklistUnassignedHMD(
 					trackerId = hmdTracker?.id?.toUShort(),
@@ -90,7 +95,7 @@ class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklis
 	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
 		val uncalibratedTrackers = trackers.filter { tracker ->
 			(tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
-				tracker.status == TrackerStatus.OK &&
+				(tracker.status == TrackerStatus.OK || tracker.status == TrackerStatus.SLEEPING) &&
 				(tracker.completedRestCalibration != null && !tracker.completedRestCalibration)
 		}
 		return TrackingChecklistStep(
@@ -138,6 +143,51 @@ class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingCheckli
 			.map { trackers -> computeStep(trackers) }
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.TRACKER_ERROR, step)) }
+			.launchIn(receiver.context.scope)
+	}
+}
+
+class SteamVRHandsCheckBehaviour(
+	private val server: VRServer,
+	private val boneRouting: BoneRoutingManager,
+) : TrackingChecklistBehaviourType {
+	private val HAND_BONES = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+
+	private fun computeStep(
+		trackers: List<TrackerState>,
+		routes: Routes,
+		driverConnected: Boolean,
+	): TrackingChecklistStep {
+		// The skeleton computes a hand bone from the arm chain, so routing one sends a hand
+		// tracker to SteamVR whether or not the user wears anything on that hand.
+		val handsSentToDriver = HAND_BONES.any { hand -> routes[hand]?.contains(RoutingOutput.DRIVER) == true }
+		val handTrackers = trackers.filter { tracker -> tracker.bodyPart in HAND_BONES }
+		// Controllers reach us back through the driver, anything else on a hand is a
+		// tracker the user actually wears.
+		val hasControllers = handTrackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
+		val hasHandTrackers = handTrackers.any { tracker ->
+			tracker.origin != DeviceOrigin.DRIVER && tracker.origin != DeviceOrigin.VRC
+		}
+
+		return TrackingChecklistStep(
+			valid = !handsSentToDriver || (!hasControllers && hasHandTrackers),
+			enabled = driverConnected,
+			ignorable = true,
+			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
+		)
+	}
+
+	override fun observe(receiver: TrackingChecklist) {
+		combine(
+			trackerStatesFlow(server),
+			boneRouting.context.state.map { state -> state.routes },
+			server.context.state
+				.map { state -> state.drivers.values.any { it.source == DriverBridgeSource.DRIVER } }
+				.distinctUntilChanged(),
+			::computeStep,
+		)
+			.distinctUntilChanged()
+			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED, step)) }
 			.launchIn(receiver.context.scope)
 	}
 }
@@ -201,7 +251,7 @@ private fun isImuAssigned(tracker: TrackerState): Boolean = (tracker.origin == D
 private fun isConnectedAssignedImu(tracker: TrackerState): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
 	tracker.position == null &&
 	tracker.imuType !== null &&
-	tracker.status == TrackerStatus.OK &&
+	(tracker.status == TrackerStatus.OK || tracker.status == TrackerStatus.SLEEPING) &&
 	tracker.bodyPart != null
 
 class FullResetCheckBehaviour(
@@ -282,7 +332,7 @@ class MountingCalibrationCheckBehaviour(
 			val imuTrackers = trackers.filter { isImuAssigned(it) }
 			TrackingChecklistStep(
 				valid = resetsState.mountingResetCompleted,
-				enabled = settingsState.data.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC && imuTrackers.isNotEmpty(),
+				enabled = settingsState.data.resetsConfig.lastMountingMethod == MountingMethod.POSE && imuTrackers.isNotEmpty(),
 				ignorable = true,
 				visibility = TrackingChecklistStepVisibility.ALWAYS,
 			)
@@ -308,7 +358,7 @@ class FeetMountingCalibrationCheckBehaviour(
 			val imuTrackers = trackers.filter { isImuAssigned(it) }
 			TrackingChecklistStep(
 				valid = resetsState.feetMountingResetCompleted,
-				enabled = resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC &&
+				enabled = resetsConfig.lastMountingMethod == MountingMethod.POSE &&
 					!resetsConfig.resetMountingFeet &&
 					imuTrackers.any { it.bodyPart in ResetBodyParts.FEET },
 				ignorable = true,

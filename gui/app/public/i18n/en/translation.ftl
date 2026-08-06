@@ -283,7 +283,6 @@ widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
 widget-developer_mode-precise_rotation = Precise rotation
 widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter Slimes and HMD
 widget-developer_mode-sort_by_name = Sort by name
 widget-developer_mode-raw_slime_rotation = Raw rotation
 widget-developer_mode-more_info = More info
@@ -336,7 +335,7 @@ tracker-rotation-back = Back
 tracker-rotation-back_left = Back-Left
 tracker-rotation-back_right = Back-Right
 tracker-rotation-custom = Custom
-tracker-rotation-overriden = (overridden by mounting calibration)
+tracker-rotation-mounting_reset = (using mounting reset orientation)
 
 ## Tracker information
 tracker-infos-manufacturer = Manufacturer
@@ -346,7 +345,7 @@ tracker-infos-url = Tracker URL
 tracker-infos-version = Firmware Version
 tracker-infos-hardware_rev = Hardware Revision
 tracker-infos-hardware_identifier = Hardware ID
-tracker-infos-data_support = Data support
+tracker-infos-data_type = Data type
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board
 tracker-infos-network_version = Protocol Version
@@ -380,7 +379,7 @@ tracker-settings-use_mag-label = Allow magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker name
-tracker-settings-name_section-description = Give it a cute nickname :)
+tracker-settings-name_section-description = Give it a cute nickname :3
 tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
@@ -468,7 +467,9 @@ mounting_selection_menu-close = Close
 ## Sidebar settings
 settings-sidebar-title = Settings
 settings-sidebar-general = General
-settings-sidebar-output = Output
+settings-sidebar-outputs = Outputs
+settings-sidebar-routing = Bone Routing
+settings-sidebar-driver = SteamVR / Monado
 settings-sidebar-resets = Resets
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-tracking = Tracking
@@ -487,36 +488,77 @@ settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = Advanced
 
-## Output settings
-# Some keys have steamvr in them as we switched to output but want to keep existing translations
-settings-general-output = Output Settings
-settings-general-output_trackers = Output trackers
-# Not all translation keys support multiline, only the ones that specify it will actually
-# split it in lines (that also means you can split in lines however you want in those).
-# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines
-settings-general-output_trackers-description =
-    Enable or disable specific trackers to output.
-    Useful for games or apps that only support certain trackers.
-settings-general-steamvr-trackers-waist = Waist
-settings-general-steamvr-trackers-chest = Chest
-settings-general-steamvr-trackers-left_foot = Left foot
-settings-general-steamvr-trackers-right_foot = Right foot
-settings-general-steamvr-trackers-left_knee = Left knee
-settings-general-steamvr-trackers-right_knee = Right knee
-settings-general-steamvr-trackers-left_elbow = Left elbow
-settings-general-steamvr-trackers-right_elbow = Right elbow
-settings-general-steamvr-trackers-left_hand = Left hand
-settings-general-steamvr-trackers-right_hand = Right hand
-settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
-settings-general-output-trackers-tracker_toggling-description = Automatically handles toggling output trackers on or off depending on your current tracker assignments.
-settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
-settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> Enabling the SteamVR hand trackers will disable inputs from real controllers.
-    This should only be enabled if you are using SlimeVR for hand tracking.
+## Bone routing settings
+settings-routing = Bone Routing
+settings-routing-description =
+    Choose what each output sends.
+    SteamVR/Monado, VRChat OSC and VMC can each get a different set of body parts.
+settings-routing-mode = Routing mode
+settings-routing-automatic-label = Automatic routing
+settings-routing-mode-description =
+    While Automatic routing is on, SlimeVR picks the best output for every bone so nothing is sent twice: SteamVR/Monado is preferred, VRChat OSC covers the bones it cannot take, and VMC always gets the full skeleton.
+    Turn it off to decide where every bone goes yourself, including sending a bone to several outputs at once.
+settings-routing-bone = Bone
+settings-routing-cell-required = Mandatory for this output
+settings-routing-cell-unavailable = Output is unavailable on this platform
+settings-routing-cell-duplicate = Bone is routed to multiple outputs, which may show duplicate trackers in applications
+settings-routing-duplicate-warning =
+    { $bones } { $boneCount ->
+        [one] is
+        *[many] are
+    } routed to multiple outputs ({ $outputs }), which may show duplicate trackers in applications.
+settings-routing-outputs = Outputs
+settings-routing-bones = Bones
+settings-routing-bones-description = A tick means the bone is sent to that output. A dash means the output does not support that bone. Turn off Automatic to pick them yourself.
+settings-routing-output-driver = SteamVR / Monado
+settings-routing-output-vrc_osc = VRChat OSC
+settings-routing-output-vmc = VMC
+settings-routing-output-bone-count = { $routed } of { $accepts } bones routed
+settings-routing-output-badge-sending = Sending
+settings-routing-output-sending-description = Connected and receiving bones.
+settings-routing-output-badge-stopped = Not running
+settings-routing-output-stopped-description = SteamVR or Monado driver not connected.
+settings-routing-output-badge-idle = Idle
+settings-routing-output-idle-description = Enabled, but a remote endpoint has not been found.
+settings-routing-output-badge-off = Off
+settings-routing-output-off-description = Disabled in its settings.
+settings-routing-output-badge-empty = Nothing routed
+settings-routing-output-empty-description = Enabled, but no bones have been routed to it.
+settings-routing-output-badge-unavailable = Unavailable
+settings-routing-output-unavailable-description = Output is unavailable on this platform.
+settings-routing-group-spine = Spine & torso
+settings-routing-group-legs = Legs
+settings-routing-group-arms = Arms
+settings-routing-group-fingers = Fingers
+settings-routing-row-left_fingers = Left fingers
+settings-routing-row-right_fingers = Right fingers
+settings-routing-hands-warning = <b>Warning:</b> Routing your hands to SteamVR/Monado replaces the input from your real controllers.
+    Only do this if you want SlimeVR trackers to track your hands.
 
-    Are you sure you want to do this?
-settings-general-steamvr-trackers-hands-warning-cancel = Cancel
-settings-general-steamvr-trackers-hands-warning-done = Yes
+    Route hands there anyway?
+settings-routing-hands-warning-cancel = Cancel
+settings-routing-hands-warning-done = Route hands
+
+## SteamVR / Monado output settings
+
+settings-driver = SteamVR / Monado
+settings-driver-description = Settings for the SlimeVR driver, used by SteamVR and Monado alike.
+settings-driver-enable = Enable
+settings-driver-enable-description = Send your trackers to SteamVR or Monado through the SlimeVR driver. While this is off, they cannot connect to SlimeVR at all.
+settings-driver-enable-label = Enable SteamVR / Monado
+settings-driver-status-title = Status
+settings-driver-status-connection = Driver connection
+settings-driver-status-badge-connected = Connected
+settings-driver-status-badge-waiting = Waiting
+settings-driver-status-badge-disabled = Off
+settings-driver-status-badge-unavailable = Unavailable
+settings-driver-status-connection-connected = A driver is connected and receiving your trackers.
+settings-driver-status-connection-waiting = Waiting for SteamVR or Monado to connect through the SlimeVR driver.
+settings-driver-status-connection-disabled = Turned off, so nothing can connect.
+settings-driver-status-connection-unavailable = This output does not exist on this platform.
+settings-driver-bones = Bones sent
+settings-driver-bones-description = Which bones this output sends is configured in Bone Routing.
+settings-driver-bones-link = Open Bone Routing
 
 ## Tracker mechanics
 settings-general-trackers_settings = Trackers Settings
@@ -838,9 +880,10 @@ settings-osc-vrchat-status-output = Output
 settings-osc-vrchat-status-oscquery = OSCQuery
 settings-osc-vrchat-status-input-idle = Not listening
 settings-osc-vrchat-status-input-listening = Listening on port {$port}
-settings-osc-vrchat-status-input-last-data = Last data from VRChat: {$elapsed}
-settings-osc-vrchat-status-input-no-data = No data received from VRChat yet
+settings-osc-vrchat-status-input-last-data = Last data from VRChat: {$elapsed}.
+settings-osc-vrchat-status-input-no-data = No data received from VRChat yet.
 settings-osc-vrchat-status-output-idle = No target
+settings-osc-vrchat-status-output-waiting = Target {$address}:{$port} ({$source}), no frame sent yet
 settings-osc-vrchat-status-output-sending = Sending to {$address}:{$port} ({$source})
 settings-osc-vrchat-status-output-target = Target {$address}:{$port} ({$source})
 settings-osc-vrchat-status-output-last-frame = Last frame sent: {$elapsed}
@@ -849,13 +892,14 @@ settings-osc-vrchat-status-source-manual = manual
 settings-osc-vrchat-status-source-auto = auto-detected
 settings-osc-vrchat-status-oscquery-disabled = OSCQuery off (manual network mode)
 settings-osc-vrchat-status-oscquery-advertising = Advertising on port {$port}
-settings-osc-vrchat-status-oscquery-searching = No VRChat clients found yet
+settings-osc-vrchat-status-oscquery-searching = No VRChat clients found yet.
 settings-osc-vrchat-status-oscquery-discovered-title = Discovered VRChat clients:
 settings-osc-vrchat-status-oscquery-switch = Switch
 settings-osc-vrchat-status-network-mode = Network mode
 settings-osc-vrchat-status-network-mode-description = Automatic mode discovers VRChat through OSCQuery. Manual mode uses the configured address and ports.
 settings-osc-vrchat-status-network-mode-toggle = Manual network settings
 settings-osc-vrchat-status-network-manual-description = Configure the local input port and the VRChat OSC target manually.
+
 settings-osc-vrchat-status-badge-idle = Idle
 settings-osc-vrchat-status-badge-listening = Listening
 settings-osc-vrchat-status-badge-ready = Ready
@@ -894,6 +938,27 @@ settings-osc-vmc-anchor_hip-label = Anchor at hips
 settings-osc-vmc-mirror_tracking = Mirror tracking
 settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
 settings-osc-vmc-mirror_tracking-label = Mirror tracking
+settings-osc-vmc-status-title = Status
+settings-osc-vmc-status-input = Input
+settings-osc-vmc-status-output = Output
+settings-osc-vmc-status-vrm = VRM model
+settings-osc-vmc-status-input-idle = Not listening
+settings-osc-vmc-status-input-listening = Listening on port {$port}
+settings-osc-vmc-status-input-last-data = Last data received: {$elapsed}.
+settings-osc-vmc-status-input-no-data = No data received yet.
+settings-osc-vmc-status-output-idle = No target
+settings-osc-vmc-status-output-waiting = Target {$address}:{$port}, no frame sent yet
+settings-osc-vmc-status-output-sending = Sending to {$address}:{$port}
+settings-osc-vmc-status-output-target = Target {$address}:{$port}
+settings-osc-vmc-status-output-last-frame = Last frame sent: {$elapsed}.
+settings-osc-vmc-status-output-no-frame = No frame sent yet.
+settings-osc-vmc-status-vrm-none = No model loaded, using estimated bone offsets.
+settings-osc-vmc-status-vrm-loaded = Model loaded, using its bone offsets.
+settings-osc-vmc-status-badge-idle = Idle
+settings-osc-vmc-status-badge-listening = Listening
+settings-osc-vmc-status-badge-ready = Ready
+settings-osc-vmc-status-badge-disabled = Disabled
+settings-osc-vmc-status-badge-error = Error
 
 ## Common OSC settings
 settings-osc-common-network-ports_match_error-v2 = The in and out ports can't be the same!

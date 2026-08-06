@@ -121,7 +121,11 @@ fun Map<BodyPart, Vector3>.toBoneValues(): Map<SkeletonBone, Float> = this
 		BONE_OFFSET_TO_VALUES[bone]?.map { (cfg, cfgVec) -> cfg to vec.hadamard(cfgVec).len() } ?: emptyList()
 	}
 	.groupBy({ it.first }, { it.second })
-	.mapValues { it.value.sum() }
+	.mapValues { it.value.first() }
+// TODO: ?? ^ I don't really know what's going on here, or understand the original intent behind the code,
+// but the doubling of proportions was caused by this. It used to be .mapValues { it.value.sum() }, but for `SkeletonBone`s
+// that contribute to the offsets of multiple `BodyPart`s (e.g. HIP_WIDTH contributes to LEFT_HIP and RIGHT_HIP,
+// UPPER_ARM contributes to LEFT_UPPER_ARM and RIGHT_UPPER_ARM) the offsets are in the values twice.
 
 fun configToBoneValues(proportions: Map<String, Float>): Map<SkeletonBone, Float> = proportions.mapKeys {
 	SkeletonBone.entries.firstOrNull { cfg -> cfg.name == it.key } ?: SkeletonBone.NONE

@@ -20,7 +20,7 @@ export function SettingSelectorMobile() {
     [
       {
         label: l10n.getString('settings-sidebar-general'),
-        value: { url: '/settings/trackers', scrollTo: 'output' },
+        value: { url: '/settings/trackers', scrollTo: 'stayAligned' },
       },
       {
         label: l10n.getString('settings-sidebar-interface'),
@@ -29,6 +29,14 @@ export function SettingSelectorMobile() {
       {
         label: l10n.getString('settings-sidebar-keybinds'),
         value: { url: '/settings/keybinds' },
+      },
+      {
+        label: l10n.getString('settings-sidebar-routing'),
+        value: { url: '/settings/routing', scrollTo: 'routing' },
+      },
+      {
+        label: l10n.getString('settings-sidebar-driver'),
+        value: { url: '/settings/driver', scrollTo: 'driver' },
       },
       {
         label: l10n.getString('settings-sidebar-osc_trackers'),
@@ -71,7 +79,7 @@ export function SettingSelectorMobile() {
   });
 
   useEffect(() => {
-    // This works because the component gets mounted/unmounted when switching beween desktop or mobile layout
+    // This works because the component gets mounted/unmounted when switching between desktop or mobile layout
     setValue('link', pathname, { shouldDirty: false, shouldTouch: false });
   }, []);
 
@@ -98,7 +106,7 @@ export function SettingSelectorMobile() {
         }))}
         variant="tertiary"
         direction="down"
-        // There is always an option selected placholder is not used
+        // There is always an option selected; placeholder is not used.
         placeholder=""
         name="link"
       />

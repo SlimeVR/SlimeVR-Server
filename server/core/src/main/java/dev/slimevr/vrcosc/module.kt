@@ -2,11 +2,8 @@ package dev.slimevr.vrcosc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
-import dev.slimevr.Phase1ContextProvider
-import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -95,16 +92,15 @@ typealias VRCOSCBehaviour = Behaviour<VRCOSCState, VRCOSCActions, VRCOSCManager>
 class VRCOSCManager(
 	val context: VRCOSCContext,
 	val oscQueryAddress: String,
-	val settings: Settings,
-	val outputTrackerToggle: OutputTrackerToggleManager,
 ) {
 	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher("VRCOSC", context.scope, capacity = 32)
 
 	fun startObserving(appContext: AppContextProvider) {
+		val settings = appContext.config.settings
 		val behaviours = listOf(
-			VRCOSCOutputBehaviour(appContext.skeleton),
-			VRCOSCInputBehaviour(appContext),
-			VRCOSCOscQueryBehaviour(localIp = oscQueryAddress),
+			VRCOSCOutputBehaviour(appContext.skeleton, settings, appContext.boneRouting),
+			VRCOSCInputBehaviour(appContext, settings),
+			VRCOSCOscQueryBehaviour(settings, localIp = oscQueryAddress),
 		)
 
 		context.behaviours.addAll(behaviours)
@@ -119,21 +115,16 @@ class VRCOSCManager(
 
 	companion object {
 		fun create(
-			ctx: Phase1ContextProvider,
 			scope: CoroutineScope,
 			oscQueryAddress: String,
-			outputTrackerToggle: OutputTrackerToggleManager,
 		): VRCOSCManager {
-			val settings = ctx.config.settings
 			val context = Context.create(
-				initialState = VRCOSCState(
-					status = VRCOSCStatus(),
-				),
+				initialState = VRCOSCState(),
 				behaviours = emptyList<VRCOSCBehaviour>(),
 				scope = scope,
 				name = "VRCOSC",
 			)
-			return VRCOSCManager(context, oscQueryAddress, settings, outputTrackerToggle)
+			return VRCOSCManager(context, oscQueryAddress)
 		}
 	}
 }

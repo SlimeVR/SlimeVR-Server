@@ -64,54 +64,27 @@
             pkgs.libxcrypt-legacy
           ];
 
-          toolDirectoryName =
-            if pkgs.stdenv.hostPlatform.isDarwin then
-              "darwin"
-            else if pkgs.stdenv.hostPlatform.isLinux then
-              {
-                "armv7l-linux" = "linux-arm32";
-                "aarch64-linux" = "linux-arm64";
-                "i686-linux" = "linux-ia32";
-                "x86_64-linux" = "linux-x64";
-              }
-              ."${pkgs.stdenv.hostPlatform.system}"
-            else
-              throw "Unsupported platform";
-
-          # we use fuse2
+          # we use static runtime
           # https://github.com/electron-userland/electron-builder/blob/a6117b3011a105204af8cc2eca02a56976d1ef29/packages/app-builder-lib/src/toolsets/linux.ts#L122
-          runtime = pkgs.stdenvNoCC.mkDerivation {
+          appImageTools = pkgs.stdenvNoCC.mkDerivation {
             name = "electron-builder-appimage-runtime";
-            src = pkgs.fetchurl {
-              url = "https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage-12.0.1/appimage-12.0.1.7z";
-              hash = "sha256-0S/3648dHsRlLKUjen+9yjOswMdYBFY2/spi3G7LjsQ=";
-            };
-            # https://github.com/NixOS/nixpkgs/blob/7890ba0a99c064446fe2178ef2f8e3abdf6ec42a/pkgs/by-name/lo/losslesscut-bin/build-from-windows.nix#L20
-            nativeBuildInputs = [ pkgs.p7zip ];
-            unpackPhase = ''
-              runHook preUnpack
-              7z x "$src"
-              runHook postUnpack
-            '';
+            src =
+              let
+                # Keep in sync with "appimage" toolset version in gui/electron/electron-builder.yml
+                appimageToolsVersion = "1.0.3";
+              in
+              pkgs.fetchzip {
+                url = "https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage@${appimageToolsVersion}/appimage-tools-runtime-20251108.tar.gz";
+                hash = "sha256-Iqhvyp6BNpH+tXvVO7MLgYbsJ6va4lXO7El3wtyWBII=";
+                stripRoot = false;
+              };
+
             installPhase = ''
               mkdir $out
-              cp -r -t $out/ \
-                lib/ \
-                runtime-*
-            '';
-          };
-
-          appImageTools = pkgs.stdenvNoCC.mkDerivation {
-            name = "electron-builder-appimage-tools";
-            dontUnpack = true;
-
-            installPhase = ''
-              mkdir -p "$out/${toolDirectoryName}"
-              ln -s -t $out/${toolDirectoryName} \
+              cp -r -t $out/ lib/ runtimes/
+              ln -s -t $out \
                 "${pkgs.desktop-file-utils}/bin/desktop-file-validate" \
                 "${pkgs.squashfsTools}/bin/mksquashfs"
-              ln -s ${runtime}/runtime-* $out/
-              ln -s ${runtime}/lib $out/lib
             '';
           };
 
@@ -124,67 +97,6 @@
               "36"
             ];
           };
-
-          # Toolchain shared by the dev shell and the packaging FHS env.
-          commonPackages = [
-            # for running the jar
-            pkgs.jdk25
-
-            # for build
-            pkgs.electron
-            pkgs.rpm
-            pkgs.fpm
-            pkgs.p7zip
-            pkgs.wineWow64Packages.stable
-            pkgs.zlib
-            pkgs.squashfsTools
-            pkgs.desktop-file-utils
-            pkgs.fakeroot
-            pkgs.libarchive
-            pkgs.icu
-            pkgs.nodejs_22
-            pkgs.pnpm
-            pkgs.pkg-config
-            pkgs.python3
-            pkgs.gcc
-            pkgs.gnumake
-            pkgs.binutils
-            pkgs.git
-            pkgs.node-gyp-build
-            androidComposition.androidsdk
-          ];
-
-          buildEnv = rec {
-            JAVA_HOME = "${pkgs.jdk25}/lib/openjdk";
-            USE_SYSTEM_FPM = "true";
-            ELECTRON_BUILDER_7ZIP_PATH = "${pkgs.p7zip}/bin/7za";
-            APPIMAGE_TOOLS_PATH = "${appImageTools}";
-            # for electron-vite, so `pnpm gui` works
-            ELECTRON_EXEC_PATH = "${pkgs.electron}/bin/electron";
-            ANDROID_HOME = "${androidComposition.androidsdk}/libexec/android-sdk";
-            GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolsVersion}/aapt2";
-          };
-
-          # electron-builder produces generic dynamically-linked binaries that
-          # NixOS can't run (no /lib64 loader). Building and running the packaged
-          # app inside an FHS sandbox provides that standard loader, so the final
-          # electron build works. `nix run .#package` runs `pnpm package:build`.
-          packageBuildScript = pkgs.writeShellScript "slimevr-package-build" ''
-            set -eu
-            cd "$(${pkgs.git}/bin/git rev-parse --show-toplevel)"
-            ${lib.concatStringsSep "\n" (
-              lib.mapAttrsToList (name: value: "export ${name}=${lib.escapeShellArg value}") buildEnv
-            )}
-            export LD_LIBRARY_PATH="${lib.makeLibraryPath (runtimeLibs ++ [ pkgs.hidapi ])}:''${LD_LIBRARY_PATH:-}"
-            pnpm install
-            pnpm --filter @slimevr/gui-electron run package:build
-          '';
-
-          packageBuildFhs = pkgs.buildFHSEnv {
-            name = "slimevr-package-build";
-            targetPkgs = _: commonPackages ++ runtimeLibs;
-            runScript = "${packageBuildScript}";
-          };
         in
         {
           # For Android SDK
@@ -194,41 +106,54 @@
             config.android_sdk.accept_license = true;
           };
 
-          devShells.default = pkgs.mkShell (
-            buildEnv
-            // {
-              packages = commonPackages;
-              buildInputs = runtimeLibs;
+          devShells.default = pkgs.mkShell rec {
+            packages = [
+              # for running the jar
+              pkgs.jdk25
 
-              shellHook = ''
-                export LD_LIBRARY_PATH="${
-                  lib.makeLibraryPath [
-                    pkgs.systemd
-                    pkgs.hidapi
-                  ]
-                }:$LD_LIBRARY_PATH"
-              '';
-            }
-          );
+              # for build
+              pkgs.electron
+              pkgs.rpm
+              pkgs.fpm
+              pkgs.p7zip
+              # For Windows GUI cross-build
+              pkgs.wineWow64Packages.stable
+              pkgs.zlib
+              pkgs.squashfsTools
+              pkgs.desktop-file-utils
+              pkgs.fakeroot
+              pkgs.libarchive
+              pkgs.icu
+              pkgs.nodejs_22
+              pkgs.pnpm
+              pkgs.pkg-config
+              pkgs.python3
+              pkgs.gcc
+              pkgs.gnumake
+              pkgs.binutils
+              pkgs.git
+              pkgs.node-gyp-build
+              androidComposition.androidsdk
+            ];
+            buildInputs = runtimeLibs;
 
-          # Build the desktop package inside an FHS sandbox:
-          #   nix run .#package
-          apps.package = {
-            type = "app";
-            program = "${packageBuildFhs}/bin/slimevr-package-build";
-          };
+            shellHook = ''
+              export LD_LIBRARY_PATH="${
+                lib.makeLibraryPath [
+                  pkgs.systemd
+                  pkgs.hidapi
+                ]
+              }:$LD_LIBRARY_PATH"
+            '';
 
-          # Interactive FHS shell for manual packaging / running the built app:
-          #   nix run .#package-shell
-          apps.package-shell = {
-            type = "app";
-            program = "${
-              pkgs.buildFHSEnv {
-                name = "slimevr-fhs";
-                targetPkgs = _: commonPackages ++ runtimeLibs;
-                runScript = "bash";
-              }
-            }/bin/slimevr-fhs";
+            JAVA_HOME = "${pkgs.jdk25}/lib/openjdk";
+            USE_SYSTEM_FPM = "true";
+            ELECTRON_BUILDER_7ZIP_PATH = "${pkgs.p7zip}/bin/7za";
+            APPIMAGE_TOOLS_PATH = "${appImageTools}";
+            # for electron-vite, so `pnpm gui` works
+            ELECTRON_EXEC_PATH = "${pkgs.electron}/bin/electron";
+            ANDROID_HOME = "${androidComposition.androidsdk}/libexec/android-sdk";
+            GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolsVersion}/aapt2";
           };
         };
     };

@@ -8,7 +8,6 @@ import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
-import dev.slimevr.tracker.TrackerSensorIds
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -194,7 +193,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 						macAddress = packet.data.macString ?: macAddress,
 						boardType = packet.data.boardType,
 						mcuType = packet.data.mcuType,
-						firmware = packet.data.firmware ?: firmware,
+						firmwareVersion = packet.data.firmware ?: firmwareVersion,
 						protocolVersion = packet.data.protocolVersion,
 						status = TrackerStatus.OK,
 					)

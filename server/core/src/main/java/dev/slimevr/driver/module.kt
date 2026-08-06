@@ -27,6 +27,7 @@ sealed interface DriverBridgeActions {
 sealed interface DriverBridgeInbound {
 	data class Version(val protocolVersion: Int) : DriverBridgeInbound
 	data class TrackerAdded(val id: Int, val name: String, val manufacturer: String, val serial: String, val bodyPart: BodyPart?) : DriverBridgeInbound
+	data class TrackerStatus(val id: Int, val status: solarxr_protocol.datatypes.TrackerStatus) : DriverBridgeInbound
 	data class TrackerPosition(val id: Int, val rotation: Quaternion, val position: Vector3?) : DriverBridgeInbound
 	data class TrackerBattery(val id: Int, val batteryLevel: Float, val charging: Boolean) : DriverBridgeInbound
 }
@@ -40,8 +41,14 @@ sealed interface DriverBridgeOutbound {
 typealias DriverBridgeContext = Context<DriverBridgeState, DriverBridgeActions>
 typealias DriverBridgeBehaviour = Behaviour<DriverBridgeState, DriverBridgeActions, DriverBridge>
 
+enum class DriverBridgeSource {
+	DRIVER,
+	FEEDER,
+}
+
 class DriverBridge(
 	val id: Int,
+	val source: DriverBridgeSource,
 	val context: DriverBridgeContext,
 	val appContext: AppContextProvider,
 	val inbound: EventDispatcher<DriverBridgeInbound> = EventDispatcher("Driver.inbound", context.scope, capacity = 128),
@@ -61,7 +68,7 @@ class DriverBridge(
 	}
 
 	companion object {
-		fun create(id: Int, appContext: AppContextProvider, scope: CoroutineScope): DriverBridge {
+		fun create(id: Int, source: DriverBridgeSource, appContext: AppContextProvider, scope: CoroutineScope): DriverBridge {
 			val behaviours = listOf(DriverOutgoingTrackersBehaviour(), DriverIncomingTrackersBehaviour())
 
 			val managedContext = ManagedContext.create(
@@ -74,7 +81,7 @@ class DriverBridge(
 				name = "Driver[$id]",
 			)
 
-			val bridge = DriverBridge(id = id, context = managedContext.context, appContext = appContext, managedContext = managedContext)
+			val bridge = DriverBridge(id = id, source = source, context = managedContext.context, appContext = appContext, managedContext = managedContext)
 			bridge.startObserving()
 			appContext.server.context.dispatch(VRServerActions.DriverConnected(bridge))
 

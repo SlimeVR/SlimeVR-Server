@@ -33,8 +33,6 @@ export function useDataFeedConfig() {
   dataFeedConfig.dataMask = dataMask;
   dataFeedConfig.boneMask = null;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
-  dataFeedConfig.syntheticTrackersMask = trackerData;
-  dataFeedConfig.stayAlignedPoseMask = true;
   dataFeedConfig.serverGuardsMask = true;
 
   return {

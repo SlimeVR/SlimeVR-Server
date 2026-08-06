@@ -1,6 +1,7 @@
 package dev.slimevr.vmc
 
 import com.jme3.math.FastMath
+import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.BoneState
 import io.github.axisangles.ktmath.Quaternion
@@ -61,6 +62,9 @@ val BODY_PART_TO_UNITY_BONE: Map<BodyPart, String> = mapOf(
 	BodyPart.LEFT_BIG_TOE to "LeftToes",
 	BodyPart.RIGHT_BIG_TOE to "RightToes",
 )
+
+// Bones VMC can accept. Used by the routing module.
+val VMC_SUPPORTED_BONES: Set<BodyPart> = BODY_PART_TO_UNITY_BONE.keys
 
 // HIP-rooted hierarchy. VMC/Unity expects this; our skeleton is HEAD-rooted.
 val VMC_HIERARCHY_MAP: Map<BodyPart, Array<BodyPart>> = mapOf(
@@ -172,20 +176,6 @@ val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 	val leftArm = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 	val rightArm = Quaternion.rotationAroundZAxis(FastMath.HALF_PI)
 	val foot = Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
-	val leftFingers = listOf(
-		BodyPart.LEFT_THUMB_METACARPAL, BodyPart.LEFT_THUMB_PROXIMAL, BodyPart.LEFT_THUMB_DISTAL,
-		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.LEFT_INDEX_INTERMEDIATE, BodyPart.LEFT_INDEX_DISTAL,
-		BodyPart.LEFT_MIDDLE_PROXIMAL, BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.LEFT_MIDDLE_DISTAL,
-		BodyPart.LEFT_RING_PROXIMAL, BodyPart.LEFT_RING_INTERMEDIATE, BodyPart.LEFT_RING_DISTAL,
-		BodyPart.LEFT_LITTLE_PROXIMAL, BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.LEFT_LITTLE_DISTAL,
-	)
-	val rightFingers = listOf(
-		BodyPart.RIGHT_THUMB_METACARPAL, BodyPart.RIGHT_THUMB_PROXIMAL, BodyPart.RIGHT_THUMB_DISTAL,
-		BodyPart.RIGHT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_INTERMEDIATE, BodyPart.RIGHT_INDEX_DISTAL,
-		BodyPart.RIGHT_MIDDLE_PROXIMAL, BodyPart.RIGHT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_DISTAL,
-		BodyPart.RIGHT_RING_PROXIMAL, BodyPart.RIGHT_RING_INTERMEDIATE, BodyPart.RIGHT_RING_DISTAL,
-		BodyPart.RIGHT_LITTLE_PROXIMAL, BodyPart.RIGHT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_DISTAL,
-	)
 	val leftToes = listOf(
 		BodyPart.LEFT_BIG_TOE,
 	)
@@ -203,6 +193,8 @@ val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 			BodyPart.RIGHT_LOWER_ARM to rightArm,
 			BodyPart.RIGHT_HAND to rightArm,
 		) +
+			ResetBodyParts.LEFT_FINGERS.associateWith { leftArm } +
+			ResetBodyParts.RIGHT_FINGERS.associateWith { rightArm },
 			leftFingers.associateWith { leftArm } +
 			rightFingers.associateWith { rightArm } +
 			leftToes.associateWith { foot } +

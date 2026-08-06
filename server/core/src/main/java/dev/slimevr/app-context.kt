@@ -6,9 +6,9 @@ import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
+import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.stayaligned.StayAlignedManager
@@ -42,7 +42,7 @@ interface AppContextProvider : Phase1ContextProvider {
 	val heightCalibrationManager: HeightCalibrationManager
 	val trackingChecklist: TrackingChecklist
 	val udpServer: UdpServer
-	val outputTrackerToggle: OutputTrackerToggleManager
+	val boneRouting: BoneRoutingManager
 	val bvhManager: BVHManager
 	val vmcManager: VMCManager
 	val vrcOscManager: VRCOSCManager
@@ -67,7 +67,7 @@ class AppContext(
 	override val heightCalibrationManager: HeightCalibrationManager,
 	override val trackingChecklist: TrackingChecklist,
 	override val udpServer: UdpServer,
-	override val outputTrackerToggle: OutputTrackerToggleManager,
+	override val boneRouting: BoneRoutingManager,
 	override val bvhManager: BVHManager,
 	override val vmcManager: VMCManager,
 	override val vrcOscManager: VRCOSCManager,
@@ -85,8 +85,8 @@ class AppContext(
 		networkProfileManager?.startObserving()
 		trackingChecklist.startObserving(this)
 		udpServer.startReceiving(this, server.context.scope)
-		outputTrackerToggle.startObserving()
-		vmcManager.startObserving()
+		boneRouting.startObserving(this)
+		vmcManager.startObserving(this)
 		vrcOscManager.startObserving(this)
 		resetsManager.startObserving()
 		tapDetectionManager.startObserving()

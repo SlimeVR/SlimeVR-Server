@@ -13,9 +13,11 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.KeybindId
+import solarxr_protocol.rpc.RoutingOutput
 
 private const val SETTINGS_CONFIG_VERSION = 2
 
@@ -43,13 +45,19 @@ data class HidConfig(
 )
 
 @Serializable
-data class OutputTrackersConfig(
-	val automaticTrackerToggle: Boolean = true,
+data class BoneRoutingConfig(
+	/** Generate the routes from the connected trackers and the output priority. */
+	val automatic: Boolean = true,
 	/**
-	 * Do not read from directly, instead use
+	 * Explicit routes. Ignored while [automatic], apart from the overridable bones, which
+	 * the user owns in either mode. Do not read directly, use BoneRoutingManager.
 	 */
-	@Serializable(with = BodyPartListSerializer::class)
-	val trackers: List<BodyPart> = listOf(),
+	val manualRoutes: Map<BodyPart, Set<RoutingOutput>>? = null,
+)
+
+@Serializable
+data class DriverConfig(
+	val enabled: Boolean = true,
 	val sendDerivedVelocity: Boolean = false, // TODO do we actually need that or can we disable OpenVR's prediction
 )
 
@@ -73,11 +81,6 @@ data class TapDetectionConfig(
 	var numberTrackersOverThreshold: Int = 1,
 )
 
-enum class MountingMethods(val id: Int) {
-	MANUAL(0),
-	AUTOMATIC(1),
-}
-
 @Serializable
 data class ResetsConfig(
 	/** Always reset mounting for feet */
@@ -88,9 +91,10 @@ data class ResetsConfig(
 	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
-	/** Reset the HMD's pitch upon full reset */
-	val resetHmdPitch: Boolean = false, // TODO
-	val lastMountingMethod: MountingMethods = MountingMethods.AUTOMATIC,
+	/** Reset a positional tracker's pitch upon full reset */
+	val resetPositionalHeadPitch: Boolean = false, // TODO
+	/** Used as preferred mounting method and tracking checklist */
+	val lastMountingMethod: MountingMethod = MountingMethod.POSE,
 )
 
 @Serializable
@@ -210,7 +214,8 @@ data class SettingsConfigState(
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
 	val trackersConfig: TrackersConfig = TrackersConfig(),
 	val hidConfig: HidConfig = HidConfig(),
-	val outputTrackersConfig: OutputTrackersConfig = OutputTrackersConfig(),
+	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
+	val driverConfig: DriverConfig = DriverConfig(),
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
 	val keybinds: List<KeybindConfig> = defaultKeybinds(),

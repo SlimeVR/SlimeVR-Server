@@ -6,7 +6,6 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
-import dev.slimevr.tracker.TrackerSensorIds
 import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.Datagram
 import io.ktor.network.sockets.InetSocketAddress
@@ -25,6 +24,8 @@ data class LastPing(
 data class SensorConfigFlags(
 	val magStatus: MagnetometerStatus,
 )
+
+data class TrackerSensorIds(val trackerId: Int, val sensorId: Int)
 
 data class UDPConnectionState(
 	// Pre-resolved IP string. InetSocketAddress.hostname triggers a reverse DNS lookup so we
@@ -145,7 +146,7 @@ class UDPConnection(
 			)
 			conn.startObserving()
 
-			// Dedicated coroutine per connection so the receive loop is never blocked by packet processing
+			// Dedicated coroutine per connection so the reception loop is never blocked by packet processing
 			scope.launch {
 				for (event in packetChannel) {
 					// We skip any packet from the tracker that are not handshake packets

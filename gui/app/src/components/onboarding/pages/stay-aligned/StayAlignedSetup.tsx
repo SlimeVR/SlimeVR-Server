@@ -6,7 +6,7 @@ import {
   SittingRelaxedPoseStep,
   StandingRelaxedPoseStep,
 } from './stay-aligned-steps/RelaxedPoseSteps';
-import { EnableStayAlignedRequestT, RpcMessage } from 'solarxr-protocol';
+import { ChangeStayAlignedEnabledRequestT, RpcMessage } from 'solarxr-protocol';
 import { RPCPacketType, useWebsocketAPI } from '@/hooks/websocket-api';
 import { useEffect, useRef } from 'react';
 import VerticalStepper from '@/components/commons/VerticalStepper';
@@ -25,9 +25,9 @@ export function enableStayAligned(
   enable: boolean,
   sendRPCPacket: (type: RpcMessage, data: RPCPacketType) => void
 ) {
-  const req = new EnableStayAlignedRequestT();
-  req.enable = enable;
-  sendRPCPacket(RpcMessage.EnableStayAlignedRequest, req);
+  const req = new ChangeStayAlignedEnabledRequestT();
+  req.enabled = enable;
+  sendRPCPacket(RpcMessage.ChangeStayAlignedEnabledRequest, req);
 }
 
 export function StayAlignedSetup() {

@@ -11,6 +11,7 @@ import {
   ForgetDeviceRequestT,
   ImuType,
   MagnetometerStatus,
+  MountingMethod,
   RpcMessage,
   TrackerDataType,
 } from 'solarxr-protocol';
@@ -57,7 +58,7 @@ export function TrackerSettingsPage() {
 
   const { sendRPCPacket } = useWebsocketAPI();
   const [selectRotation, setSelectRotation] = useState<boolean>(false);
-  const [selectBodypart, setSelectBodypart] = useState<boolean>(false);
+  const [selectBodyPart, setSelectBodyPart] = useState<boolean>(false);
   const { trackernum, deviceid } = useParams<{
     trackernum: string;
     deviceid: string;
@@ -78,25 +79,25 @@ export function TrackerSettingsPage() {
   const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
     if (!tracker) return;
 
-    const assignreq = new AssignTrackerRequestT();
+    const assignReq = new AssignTrackerRequestT();
 
-    assignreq.mountingOrientation = MountingOrientationDegreesToQuatT(
+    assignReq.mountingOrientation = MountingOrientationDegreesToQuatT(
       mountingOrientationDegrees
     );
-    assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-    assignreq.trackerId = tracker?.tracker.trackerId;
-    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+    assignReq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
+    assignReq.trackerId = tracker?.tracker.trackerId;
+    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignReq);
     setSelectRotation(false);
   };
 
   const onRoleSelected = (role: BodyPart) => {
     if (!tracker) return;
 
-    const assignreq = new AssignTrackerRequestT();
-    assignreq.bodyPosition = role;
-    assignreq.trackerId = tracker?.tracker.trackerId;
-    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
-    setSelectBodypart(false);
+    const assignReq = new AssignTrackerRequestT();
+    assignReq.bodyPosition = role;
+    assignReq.trackerId = tracker?.tracker.trackerId;
+    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignReq);
+    setSelectBodyPart(false);
   };
 
   const currRotation = useMemo(() => {
@@ -106,15 +107,12 @@ export function TrackerSettingsPage() {
   const updateTrackerSettings = () => {
     if (!tracker) return;
     if (trackerName == tracker.tracker.info?.customName) return;
-    const assignreq = new AssignTrackerRequestT();
-    assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-    assignreq.mountingOrientation = currRotation
-      ? MountingOrientationDegreesToQuatT(currRotation)
-      : null;
 
-    assignreq.displayName = trackerName ?? null;
-    assignreq.trackerId = tracker?.tracker.trackerId;
-    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+    const assignReq = new AssignTrackerRequestT();
+    assignReq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
+    assignReq.displayName = trackerName ?? null;
+    assignReq.trackerId = tracker?.tracker.trackerId;
+    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignReq);
   };
 
   const onSettingsSubmit = () => {
@@ -175,8 +173,8 @@ export function TrackerSettingsPage() {
       onSubmit={handleSubmit(onSettingsSubmit)}
     >
       <SingleTrackerBodyAssignmentMenu
-        isOpen={selectBodypart}
-        onClose={() => setSelectBodypart(false)}
+        isOpen={selectBodyPart}
+        onClose={() => setSelectBodyPart(false)}
         onRoleSelected={onRoleSelected}
       />
       <MountingSelectionMenu
@@ -335,12 +333,10 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography>
-                {l10n.getString('tracker-infos-data_support')}
+                {l10n.getString('tracker-infos-data_type')}
               </Typography>
               <Typography>
-                {tracker?.tracker.info?.dataSupport
-                  ? TrackerDataType[tracker?.tracker.info?.dataSupport]
-                  : '--'}
+                {TrackerDataType[tracker?.tracker.info?.dataType ?? 0]}
               </Typography>
             </div>
             <div className="flex justify-between">
@@ -453,7 +449,7 @@ export function TrackerSettingsPage() {
               <div className="flex">
                 <Button
                   variant="secondary"
-                  onClick={() => setSelectBodypart(true)}
+                  onClick={() => setSelectBodyPart(true)}
                 >
                   {l10n.getString('tracker-settings-assignment_section-edit')}
                 </Button>
@@ -475,19 +471,13 @@ export function TrackerSettingsPage() {
                   <BodyPartIcon bodyPart={BodyPart.NONE} />
                   <Typography>
                     {l10n.getString(
-                      (rotationsLabels.find((q) =>
-                        similarQuaternions(q[0], currRotation)
-                      ) || [])[1] || 'tracker-rotation-custom'
-                    ) +
-                      (tracker?.tracker.info?.mountingResetOrientation &&
-                      !similarQuaternions(
-                        QuaternionFromQuatT(
-                          tracker.tracker.info.mountingResetOrientation
-                        ),
-                        new Quaternion()
-                      )
-                        ? ` ${l10n.getString('tracker-rotation-overriden')}`
-                        : '')}
+                      tracker.tracker.info?.lastMountingMethod !=
+                        MountingMethod.MANUAL
+                        ? `${l10n.getString('tracker-rotation-custom')} ${l10n.getString('tracker-rotation-mounting_reset')}`
+                        : (rotationsLabels.find((q) =>
+                            similarQuaternions(q[0], currRotation)
+                          ) || [])[1] || 'tracker-rotation-custom'
+                    )}
                   </Typography>
                 </div>
                 <div className="flex">

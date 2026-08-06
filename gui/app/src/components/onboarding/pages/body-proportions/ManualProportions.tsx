@@ -1,5 +1,6 @@
 import { Control, Controller, useForm } from 'react-hook-form';
 import {
+  BodyPart,
   ChangeSkeletonProportionsRequestT,
   ResetType,
   RpcMessage,
@@ -22,7 +23,7 @@ import { error } from '@/utils/logging';
 import classNames from 'classnames';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { useAtomValue } from 'jotai';
-import { computedTrackersAtom } from '@/store/app-store';
+import { bonesAtom } from '@/store/app-store';
 import { RulerIcon } from '@/components/commons/icon/RulerIcon';
 import { PercentIcon } from '@/components/commons/icon/PercentIcon';
 import { UploadFileIcon } from '@/components/commons/icon/UploadFileIcon';
@@ -305,7 +306,7 @@ function PreciseToggle({ control }: { control: ManualProportionControls }) {
 function ButtonsControl({ control }: { control: ManualProportionControls }) {
   const { state } = useOnboarding();
   const nav = useNavigate();
-  const computedTrackers = useAtomValue(computedTrackersAtom);
+  const bones = useAtomValue(bonesAtom);
   const { sendRPCPacket } = useWebsocketAPI();
 
   const [showWarning, setShowWarning] = useState(false);
@@ -315,16 +316,10 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
       new SkeletonProportionsResetAllRequestT()
     );
   };
-
   const beneathFloor = useMemo(() => {
-    // TODO I think this needs to be rewritten with rewrite but it also just may be unneeded
-    const hmd = computedTrackers.find(
-      (tracker) =>
-        tracker.tracker.trackerId === 1 &&
-        tracker.tracker.deviceId === undefined
-    );
-    return !(hmd?.tracker.position && hmd.tracker.position.y >= MIN_HEIGHT);
-  }, [computedTrackers]);
+    const head = bones.find((bone) => bone.bodyPart === BodyPart.HEAD);
+    return !(head?.headPositionG && head.headPositionG.y >= MIN_HEIGHT);
+  }, [bones]);
 
   const canUseFineTuning = !beneathFloor || import.meta.env.DEV;
 

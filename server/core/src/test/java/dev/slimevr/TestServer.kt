@@ -3,6 +3,7 @@ package dev.slimevr
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
+import dev.slimevr.config.DefaultSettingsBehaviour
 import dev.slimevr.config.DefaultUserBehaviour
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
@@ -14,20 +15,23 @@ import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
 import dev.slimevr.device.DeviceOrigin
+import dev.slimevr.driver.DriverBridge
+import dev.slimevr.driver.DriverBridgeActions
+import dev.slimevr.driver.DriverBridgeSource
+import dev.slimevr.driver.DriverBridgeState
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.networkprofile.NetworkProfileManager
-import dev.slimevr.outputtrackertoggle.OutputTrackerToggleManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsBasicBehaviour
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
 import dev.slimevr.resets.ResetsState
+import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialServer
@@ -36,16 +40,17 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
+import dev.slimevr.stayaligned.StayAlignedActions
 import dev.slimevr.stayaligned.StayAlignedManager
+import dev.slimevr.stayaligned.StayAlignedState
 import dev.slimevr.tapdetection.TapDetectionManager
-import dev.slimevr.tracker.RestState
+import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
-import dev.slimevr.tracker.TrackerBasicBehaviour
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.YawErrors
+import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
@@ -54,13 +59,15 @@ import dev.slimevr.vrcosc.VRCOSCManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
+import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.datatypes.hardware_info.TrackerDataType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
-import kotlin.time.Duration
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
 	openPort = { loc, _, _ -> SerialPortHandle(loc, "Fake $loc", {}, {}) },
@@ -108,7 +115,12 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
 		name = "TestSkeleton",
 	)
-	val skeleton = Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
+	val computed = MutableSharedFlow<ComputedSkeleton>(
+		replay = 1,
+		onBufferOverflow = BufferOverflow.DROP_OLDEST,
+	)
+	computed.tryEmit(buildBones(context.state.value))
+	val skeleton = Skeleton(context, computed)
 	skeleton.startObserving()
 	return skeleton
 }
@@ -146,35 +158,37 @@ fun buildTestTracker(
 ): Tracker {
 	val state = TrackerState(
 		id = id,
+		deviceId = 0,
+		origin = origin,
 		hardwareId = "test-$id",
 		name = "Tracker $id",
+		imuType = sensorType,
+		bodyPart = bodyPart,
+		customName = null,
+		trackerDataType = TrackerDataType.ROTATION,
+		lastMountingMethod = MountingMethod.MANUAL,
+		mountingOrientation = Quaternion.IDENTITY,
 		restOrientation = Quaternion.IDENTITY,
+		sessionCalibration = sessionCalibration,
 		rawRotation = rawRotation,
 		rotation = Quaternion.IDENTITY,
 		rawAcceleration = Vector3.NULL,
 		acceleration = Vector3.NULL,
 		rawMagnetometer = Vector3.NULL,
-		bodyPart = bodyPart,
-		mountingOrientation = Quaternion.IDENTITY,
-		origin = origin,
-		deviceId = 0,
-		customName = null,
-		imuType = sensorType,
 		position = position,
-		tps = 0u,
 		imuTemp = null,
+		tps = 0u,
 		status = status,
 		completedRestCalibration = completedRestCalibration,
 		magStatus = MagnetometerStatus.NOT_SUPPORTED,
-		sessionCalibration = sessionCalibration,
-		restState = RestState.MOVING,
+		motion = Motion.ROTATING,
 		yawResetSmoothing = null,
-		stayAlignedData = StayAlignedData(null, Angle.ZERO, YawErrors(AngleErrors(), AngleErrors(), AngleErrors())),
+		stayAlignedData = StayAlignedData(Quaternion.IDENTITY, null, Angle.ZERO),
 	)
 	val context = Context.create(
 		initialState = state,
 		scope = scope,
-		behaviours = listOf(TrackerBasicBehaviour()) + additionalBehaviours,
+		behaviours = listOf(TrackerBasicBehaviour(buildTestStayAlignedManager(appContext.server, scope))) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)
@@ -185,10 +199,20 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 	val context = Context.create<SettingsState, SettingsActions>(
 		initialState = initialState,
 		scope = scope,
-		behaviours = emptyList(),
+		behaviours = listOf(DefaultSettingsBehaviour()),
 		name = "Settings[test]",
 	)
 	return Settings(context, scope, NoopConfigStorage, "settings")
+}
+
+fun buildTestDriverBridge(server: VRServer, appContext: AppContextProvider, id: Int): DriverBridge {
+	val context = Context.create<DriverBridgeState, DriverBridgeActions>(
+		initialState = DriverBridgeState(protocolVersion = 0, trackers = emptyMap()),
+		scope = server.context.scope,
+		behaviours = emptyList(),
+		name = "TestDriver[$id]",
+	)
+	return DriverBridge(id = id, source = DriverBridgeSource.DRIVER, context = context, appContext = appContext)
 }
 
 fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: CoroutineScope): HeightCalibrationManager {
@@ -197,9 +221,20 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 		initialState = initialState,
 		scope = scope,
 		behaviours = emptyList(),
-		name = "Settings[test]",
+		name = "HeightCalibration[test]",
 	)
 	return HeightCalibrationManager(context, server, userConfig)
+}
+
+fun buildTestStayAlignedManager(server: VRServer, scope: CoroutineScope): StayAlignedManager {
+	val initialState = StayAlignedState(hideCorrection = false)
+	val context = Context.create<StayAlignedState, StayAlignedActions>(
+		initialState = initialState,
+		scope = scope,
+		behaviours = emptyList(),
+		name = "StayAligned[test]",
+	)
+	return StayAlignedManager(context, server, buildTestSkeleton(scope), buildTestSettings(scope))
 }
 
 private object NoopConfigStorage : ConfigStorage {
@@ -233,7 +268,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val vrcOscManager: VRCOSCManager get() = error("not used in test")
 	override val resetsManager: ResetsManager get() = error("not used in test")
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
-	override val outputTrackerToggle: OutputTrackerToggleManager get() = error("not used in test")
+	override val boneRouting: BoneRoutingManager get() = error("not used in test")
 	override val stayAlignedManager: StayAlignedManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit

@@ -13,6 +13,10 @@ import dev.slimevr.desktop.platform.Version
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeInbound
 import dev.slimevr.driver.DriverBridgeOutbound
+import dev.slimevr.driver.DriverBridgeSource
+import dev.slimevr.driver.TrackerRole
+import dev.slimevr.driver.bodyPartToRole
+import dev.slimevr.driver.roleToBodyPart
 import dev.slimevr.logging.AppLogger
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -20,69 +24,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okio.Buffer
-import solarxr_protocol.datatypes.BodyPart
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
 
-/**
- * SteamVR tracker roles to protobuf enum
- */
-enum class TrackerRole(
-	val value: UByte,
-) {
-	NONE(0.toUByte()),
-	WAIST(1.toUByte()),
-	LEFT_FOOT(2.toUByte()),
-	RIGHT_FOOT(3.toUByte()),
-	CHEST(4.toUByte()),
-	LEFT_KNEE(5.toUByte()),
-	RIGHT_KNEE(6.toUByte()),
-	LEFT_ELBOW(7.toUByte()),
-	RIGHT_ELBOW(8.toUByte()),
-	LEFT_SHOULDER(9.toUByte()),
-	RIGHT_SHOULDER(10.toUByte()),
-	LEFT_HAND(11.toUByte()),
-	RIGHT_HAND(12.toUByte()),
-	LEFT_CONTROLLER(13.toUByte()),
-	RIGHT_CONTROLLER(14.toUByte()),
-	HEAD(15.toUByte()),
-	NECK(16.toUByte()),
-	CAMERA(17.toUByte()),
-	KEYBOARD(18.toUByte()),
-	HMD(19.toUByte()),
-	BEACON(20.toUByte()),
-	GENERIC_CONTROLLER(21.toUByte()),
-	;
-
-	companion object {
-		fun fromValue(value: UByte): TrackerRole? = entries.firstOrNull { it.value == value }
-	}
-}
-
-val bodyPartToRole = mapOf(
-	BodyPart.HEAD to TrackerRole.HMD,
-	BodyPart.UPPER_CHEST to TrackerRole.CHEST,
-	BodyPart.LEFT_UPPER_ARM to TrackerRole.LEFT_ELBOW,
-	BodyPart.RIGHT_UPPER_ARM to TrackerRole.RIGHT_ELBOW,
-	BodyPart.HIP to TrackerRole.WAIST,
-	BodyPart.LEFT_UPPER_LEG to TrackerRole.LEFT_KNEE,
-	BodyPart.RIGHT_UPPER_LEG to TrackerRole.RIGHT_KNEE,
-	BodyPart.LEFT_FOOT to TrackerRole.LEFT_FOOT,
-	BodyPart.RIGHT_FOOT to TrackerRole.RIGHT_FOOT,
-	BodyPart.LEFT_SHOULDER to TrackerRole.LEFT_SHOULDER,
-	BodyPart.RIGHT_SHOULDER to TrackerRole.RIGHT_SHOULDER,
-	BodyPart.LEFT_HAND to TrackerRole.LEFT_HAND,
-	BodyPart.RIGHT_HAND to TrackerRole.RIGHT_HAND,
+val solarxrToProtoStatus = mapOf(
+	solarxr_protocol.datatypes.TrackerStatus.OK to TrackerStatus.Status.OK,
+	solarxr_protocol.datatypes.TrackerStatus.SLEEPING to TrackerStatus.Status.OK,
+	solarxr_protocol.datatypes.TrackerStatus.ERROR to TrackerStatus.Status.ERROR,
+	solarxr_protocol.datatypes.TrackerStatus.OCCLUDED to TrackerStatus.Status.OCCLUDED,
+	solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT to TrackerStatus.Status.DISCONNECTED,
+	solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED to TrackerStatus.Status.DISCONNECTED,
+	solarxr_protocol.datatypes.TrackerStatus.BUSY to TrackerStatus.Status.BUSY,
 )
-val roleToBodyPart = bodyPartToRole.entries.associate { (k, v) -> v to k }
+val protoToSolarxrStatus = solarxrToProtoStatus.entries.associate { (k, v) -> v to k }
 
 const val PROTOCOL_VERSION = 2
 
@@ -133,6 +94,7 @@ suspend fun startBindingProvider() = withContext(Dispatchers.IO) {
 
 suspend fun handleDriverConnection(
 	appContext: AppContextProvider,
+	source: DriverBridgeSource,
 	messages: Flow<ByteArray>,
 	send: suspend (ByteArray) -> Unit,
 ) = coroutineScope {
@@ -148,6 +110,7 @@ suspend fun handleDriverConnection(
 
 	val bridge = DriverBridge.create(
 		id = appContext.server.nextHandle(),
+		source = source,
 		appContext = appContext,
 		scope = this,
 	)
@@ -189,14 +152,7 @@ suspend fun handleDriverConnection(
 			ProtobufMessage(
 				tracker_status = TrackerStatus(
 					tracker_id = event.trackerId,
-					status = when (event.status) {
-						solarxr_protocol.datatypes.TrackerStatus.OK, solarxr_protocol.datatypes.TrackerStatus.SLEEPING -> TrackerStatus.Status.OK
-						solarxr_protocol.datatypes.TrackerStatus.ERROR -> TrackerStatus.Status.ERROR
-						solarxr_protocol.datatypes.TrackerStatus.OCCLUDED -> TrackerStatus.Status.OCCLUDED
-						solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED, solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT -> TrackerStatus.Status.DISCONNECTED
-						solarxr_protocol.datatypes.TrackerStatus.BUSY -> TrackerStatus.Status.BUSY
-						else -> TrackerStatus.Status.ERROR
-					},
+					status = solarxrToProtoStatus.getOrDefault(event.status, TrackerStatus.Status.ERROR),
 				),
 			),
 		)
@@ -237,6 +193,9 @@ suspend fun handleDriverConnection(
 						bodyPart = TrackerRole.fromValue(ta.tracker_role.toUByte())?.let { role -> roleToBodyPart[role] },
 					),
 				)
+			}
+			msg.tracker_status?.let { status ->
+				bridge.inbound.emit(DriverBridgeInbound.TrackerStatus(id = status.tracker_id, status = protoToSolarxrStatus.getOrDefault(status.status, solarxr_protocol.datatypes.TrackerStatus.ERROR)))
 			}
 			msg.battery?.let { bat ->
 				bridge.inbound.emit(

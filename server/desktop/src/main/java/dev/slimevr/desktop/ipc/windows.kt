@@ -6,6 +6,7 @@ import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.WinBase
 import com.sun.jna.platform.win32.WinNT
 import dev.slimevr.AppContextProvider
+import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -25,11 +26,11 @@ private const val PIPE_BUFFER_SIZE = 64 * 1024
 private typealias ConnectionHandler = suspend (messages: Flow<ByteArray>, send: suspend (ByteArray) -> Unit) -> Unit
 
 suspend fun createWindowsDriverPipe(appContext: AppContextProvider) = acceptWindowsClients(DRIVER_PIPE) { messages, send ->
-	handleDriverConnection(appContext, messages, send)
+	handleDriverConnection(appContext, DriverBridgeSource.DRIVER, messages, send)
 }
 
 suspend fun createWindowsFeederPipe(appContext: AppContextProvider) = acceptWindowsClients(FEEDER_PIPE) { messages, send ->
-	handleDriverConnection(appContext, messages, send)
+	handleDriverConnection(appContext, DriverBridgeSource.FEEDER, messages, send)
 }
 
 suspend fun createWindowsSolarXRPipe(appContext: AppContextProvider) = acceptWindowsClients(SOLARXR_PIPE) { messages, send ->
@@ -75,7 +76,16 @@ private suspend fun acceptWindowsClients(
 		while (isActive) {
 			val pipe = createSecurePipe(pipeName)
 			val writer = PipeSlot(pipe)
-			if (!writer.awaitClient()) {
+			val connected = try {
+				writer.awaitClient()
+			} catch (e: CancellationException) {
+				// The pipe goes down with the driver output, so the one waiting for a client has to
+				// be released here: no handler owns it yet
+				writer.close()
+				k32.CloseHandle(pipe)
+				throw e
+			}
+			if (!connected) {
 				writer.close()
 				k32.CloseHandle(pipe)
 				continue

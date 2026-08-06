@@ -18,37 +18,38 @@ import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
 import { useLocaleConfig } from '@/i18n/config';
+import { StayAlignedSettingsForm } from './StayAlignedSettings';
 
 type TapDetectionForm = {
-  mountingResetEnabled: boolean;
   yawResetEnabled: boolean;
   fullResetEnabled: boolean;
+  mountingResetEnabled: boolean;
   yawResetDelay: number;
   fullResetDelay: number;
   mountingResetDelay: number;
   yawResetTaps: number;
   fullResetTaps: number;
   mountingResetTaps: number;
-  numberTrackersOverThreshold: number;
   yawResetTracker: string;
-  mountingResetTracker: string;
   fullResetTracker: string;
+  mountingResetTracker: string;
+  numberTrackersOverThreshold: number;
 };
 
 const defaultValues: TapDetectionForm = {
-  mountingResetEnabled: false,
   yawResetEnabled: false,
   fullResetEnabled: false,
+  mountingResetEnabled: false,
   yawResetDelay: 0.2,
-  fullResetDelay: 1.0,
-  mountingResetDelay: 1.0,
+  fullResetDelay: 0.2,
+  mountingResetDelay: 0.2,
   yawResetTaps: 2,
-  fullResetTaps: 3,
-  mountingResetTaps: 3,
-  numberTrackersOverThreshold: 1,
+  fullResetTaps: 2,
+  mountingResetTaps: 2,
   yawResetTracker: String(BodyPart.CHEST),
-  mountingResetTracker: String(BodyPart.RIGHT_UPPER_LEG),
   fullResetTracker: String(BodyPart.LEFT_UPPER_LEG),
+  mountingResetTracker: String(BodyPart.RIGHT_UPPER_LEG),
+  numberTrackersOverThreshold: 1,
 };
 
 const tapDetectionSettingsAtom = atom(new TapDetectionSettingsResponseT());
@@ -124,30 +125,30 @@ export function TapDetectionSettings() {
   useEffect(() => {
     const formData: DefaultValues<TapDetectionForm> = {
       yawResetEnabled:
-        settings.yawResetEnabled || defaultValues.yawResetEnabled,
+        settings.yawResetEnabled ?? defaultValues.yawResetEnabled,
       fullResetEnabled:
-        settings.fullResetEnabled || defaultValues.fullResetEnabled,
+        settings.fullResetEnabled ?? defaultValues.fullResetEnabled,
       mountingResetEnabled:
-        settings.mountingResetEnabled || defaultValues.mountingResetEnabled,
-      yawResetDelay: settings.yawResetDelay || defaultValues.yawResetDelay,
-      fullResetDelay: settings.fullResetDelay || defaultValues.fullResetDelay,
+        settings.mountingResetEnabled ?? defaultValues.mountingResetEnabled,
+      yawResetDelay: settings.yawResetDelay ?? defaultValues.yawResetDelay,
+      fullResetDelay: settings.fullResetDelay ?? defaultValues.fullResetDelay,
       mountingResetDelay:
-        settings.mountingResetDelay || defaultValues.mountingResetDelay,
-      yawResetTaps: settings.yawResetTaps || defaultValues.yawResetTaps,
-      fullResetTaps: settings.fullResetTaps || defaultValues.fullResetTaps,
+        settings.mountingResetDelay ?? defaultValues.mountingResetDelay,
+      yawResetTaps: settings.yawResetTaps ?? defaultValues.yawResetTaps,
+      fullResetTaps: settings.fullResetTaps ?? defaultValues.fullResetTaps,
       mountingResetTaps:
-        settings.mountingResetTaps || defaultValues.mountingResetTaps,
+        settings.mountingResetTaps ?? defaultValues.mountingResetTaps,
       yawResetTracker: String(
-        settings.yawResetTracker || defaultValues.yawResetTracker
+        settings.yawResetTracker ?? defaultValues.yawResetTracker
       ),
       fullResetTracker: String(
-        settings.fullResetTracker || defaultValues.fullResetTracker
+        settings.fullResetTracker ?? defaultValues.fullResetTracker
       ),
       mountingResetTracker: String(
-        settings.mountingResetTracker || defaultValues.mountingResetTracker
+        settings.mountingResetTracker ?? defaultValues.mountingResetTracker
       ),
       numberTrackersOverThreshold:
-        settings.numberTrackersOverThreshold ||
+        settings.numberTrackersOverThreshold ??
         defaultValues.numberTrackersOverThreshold,
     };
     reset({ ...getValues(), ...formData });

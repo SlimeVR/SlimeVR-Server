@@ -121,7 +121,7 @@ export function Navbar() {
       <NavButton
         to="/settings/trackers"
         match="/settings/*"
-        state={{ scrollTo: 'output' }}
+        state={{ scrollTo: 'stayAligned' }}
         icon={<GearIcon />}
       >
         {l10n.getString('navbar-settings')}

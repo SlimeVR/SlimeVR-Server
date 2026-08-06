@@ -25,7 +25,6 @@ export interface DeveloperModeConfig {
   highContrast: boolean;
   preciseRotation: boolean;
   fastDataFeed: boolean;
-  filterSlimesAndHMD: boolean;
   sortByName: boolean;
   rawSlimeRotation: boolean;
   moreInfo: boolean;
@@ -35,7 +34,6 @@ export const defaultDevSettings: DeveloperModeConfig = {
   highContrast: false,
   preciseRotation: false,
   fastDataFeed: false,
-  filterSlimesAndHMD: false,
   sortByName: false,
   rawSlimeRotation: false,
   moreInfo: false,

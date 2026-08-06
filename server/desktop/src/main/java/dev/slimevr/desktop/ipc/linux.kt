@@ -1,6 +1,7 @@
 package dev.slimevr.desktop.ipc
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.getSocketDirectory
 import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CancellationException
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -17,6 +19,7 @@ import java.net.StandardProtocolFamily
 import java.net.UnixDomainSocketAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.nio.channels.ClosedByInterruptException
 import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
 import kotlin.io.path.Path
@@ -24,6 +27,7 @@ import kotlin.io.path.Path
 suspend fun createUnixDriverSocket(appContext: AppContextProvider) = acceptUnixClients(DRIVER_SOCKET_NAME) { channel ->
 	handleDriverConnection(
 		appContext = appContext,
+		source = DriverBridgeSource.DRIVER,
 		messages = readFramedMessages(channel),
 		send = { bytes -> writeFramed(channel, bytes) },
 	)
@@ -32,6 +36,7 @@ suspend fun createUnixDriverSocket(appContext: AppContextProvider) = acceptUnixC
 suspend fun createUnixFeederSocket(appContext: AppContextProvider) = acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
 	handleDriverConnection(
 		appContext = appContext,
+		source = DriverBridgeSource.FEEDER,
 		messages = readFramedMessages(channel),
 		send = { bytes -> writeFramed(channel, bytes) },
 	)
@@ -60,17 +65,19 @@ private fun readFramedMessages(channel: SocketChannel) = flow {
 	try {
 		while (true) {
 			lenBuf.clear()
-			if (channel.read(lenBuf) == -1) break
+			if (runInterruptible { channel.read(lenBuf) } == -1) break
 			lenBuf.flip()
 
 			val dataBuf = ByteBuffer.allocate(lenBuf.int - 4)
 			while (dataBuf.hasRemaining()) {
-				if (channel.read(dataBuf) == -1) break
+				if (runInterruptible { channel.read(dataBuf) } == -1) break
 			}
 			emit(dataBuf.array())
 		}
 	} catch (e: SocketException) {
 		AppLogger.ipc.warn("Exception on socket: ${e.message}")
+	} catch (e: ClosedByInterruptException) {
+		AppLogger.ipc.info("Socket read interrupted, dropping connection")
 	}
 }.flowOn(Dispatchers.IO)
 
@@ -98,7 +105,11 @@ private suspend fun acceptUnixClients(
 		server.bind(UnixDomainSocketAddress.of(path))
 		supervisorScope {
 			while (isActive) {
-				val client = server.accept()
+				val client = try {
+					runInterruptible { server.accept() }
+				} catch (e: ClosedByInterruptException) {
+					break
+				}
 				AppLogger.ipc.info("$name client connected")
 				launch {
 					try {

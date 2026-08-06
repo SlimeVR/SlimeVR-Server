@@ -19,6 +19,9 @@ asarUnpack:
 electronLanguages:
   - en-US
 
+toolsets:
+  appimage: "1.0.3"
+
 files:
   - out/**/*
   - resources/**/*
@@ -34,6 +37,7 @@ files:
 linux:
   category: Game
   artifactName: "${productName}-${arch}.${ext}"
+  syncDesktopName: true
   target:
     - target: AppImage
     - target: deb
@@ -50,7 +54,7 @@ linux:
   icon: "./resources/icons"
 
 deb:
-  depends: [openjdk-17-jre-headless, udev]
+  depends: [openjdk-25-jre-headless, udev]
   afterInstall: "./resources/scripts/postinstall.sh"
   afterRemove: "./resources/scripts/postremove.sh"
 

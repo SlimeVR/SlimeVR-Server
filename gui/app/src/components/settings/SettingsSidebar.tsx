@@ -50,11 +50,6 @@ export function SettingsSidebar() {
         <div className="flex flex-col gap-2">
           <SettingsLink
             to="/settings/trackers"
-            scrollTo="output"
-            id="settings-sidebar-output"
-          />
-          <SettingsLink
-            to="/settings/trackers"
             scrollTo="stayAligned"
             id="settings-sidebar-stay_aligned"
           />
@@ -72,6 +67,31 @@ export function SettingsSidebar() {
             to="/settings/trackers"
             scrollTo="trackers"
             id="settings-sidebar-trackers"
+          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Typography variant="section-title" id="settings-sidebar-outputs" />
+        <div className="flex flex-col gap-2">
+          <SettingsLink
+            to="/settings/routing"
+            scrollTo="routing"
+            id="settings-sidebar-routing"
+          />
+          <SettingsLink
+            to="/settings/driver"
+            scrollTo="driver"
+            id="settings-sidebar-driver"
+          />
+          <SettingsLink
+            to="/settings/osc/vrchat"
+            scrollTo="vrchat"
+            id="settings-sidebar-osc_trackers"
+          />
+          <SettingsLink
+            to="/settings/osc/vmc"
+            scrollTo="vmc"
+            id="settings-sidebar-osc_vmc"
           />
         </div>
       </div>
@@ -112,21 +132,6 @@ export function SettingsSidebar() {
             to="/settings/interface/home"
             scrollTo="checklist"
             id="settings-sidebar-checklist"
-          />
-        </div>
-      </div>
-      <div className="flex flex-col gap-3">
-        <Typography variant="section-title">OSC</Typography>
-        <div className="flex flex-col gap-2">
-          <SettingsLink
-            to="/settings/osc/vrchat"
-            scrollTo="vrchat"
-            id="settings-sidebar-osc_trackers"
-          />
-          <SettingsLink
-            to="/settings/osc/vmc"
-            scrollTo="vmc"
-            id="settings-sidebar-osc_vmc"
           />
         </div>
       </div>

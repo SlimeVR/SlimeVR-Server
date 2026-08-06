@@ -9,7 +9,9 @@ import com.sun.jna.platform.win32.WinDef
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.VRServer
+import dev.slimevr.config.Settings
 import dev.slimevr.desktop.getSteamVRDriversList
+import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.trackingchecklist.TrackingChecklistActions
@@ -20,6 +22,7 @@ import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -92,13 +95,15 @@ private fun Throwable.isConnectionRefused(): Boolean = generateSequence(this, Th
 
 data class SteamVRDriverState(val connected: Boolean = false, val installed: Boolean = true, val blocked: Boolean = false, val enabled: Boolean = true)
 
-class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
+class SteamVRCheckBehaviour(private val server: VRServer, private val settings: Settings) : TrackingChecklistBehaviourType {
 	private val steamVRProcName = when (CURRENT_PLATFORM) {
 		Platform.WINDOWS -> "vrserver.exe"
 		else -> "vrserver"
 	}
 	private val driverState = MutableStateFlow(SteamVRDriverState())
 	private val standableState = MutableStateFlow(false)
+
+	private fun driverEnabled() = settings.context.state.value.data.driverConfig.enabled
 
 	override fun observe(receiver: TrackingChecklist) {
 		receiver.context.scope.launch {
@@ -107,7 +112,16 @@ class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBeh
 				var lastScan: TimeMark? = null
 
 				while (isActive) {
-					val connected = server.context.state.value.drivers.isNotEmpty()
+					// Nothing to look at while the output is off: no driver can connect, and the step
+					// below is switched off anyway. Reset so switching it back on does not report
+					// whatever SteamVR was doing beforehand.
+					if (!driverEnabled()) {
+						driverState.value = SteamVRDriverState()
+						delay(3000)
+						continue
+					}
+
+					val connected = server.context.state.value.drivers.values.any { it.source == DriverBridgeSource.DRIVER }
 
 					val drivers = try {
 						getSteamVRDriversList(client)
@@ -149,11 +163,15 @@ class SteamVRCheckBehaviour(private val server: VRServer) : TrackingChecklistBeh
 			}
 		}
 
-		driverState
-			.map { state ->
+		combine(
+			driverState,
+			settings.context.state.map { it.data.driverConfig.enabled }.distinctUntilChanged(),
+			::Pair,
+		)
+			.map { (state, outputEnabled) ->
 				TrackingChecklistStep(
 					valid = state.connected,
-					enabled = true,
+					enabled = outputEnabled,
 					ignorable = true,
 					extraData = if (!state.connected) {
 						TrackingChecklistSteamVRDisconnected(

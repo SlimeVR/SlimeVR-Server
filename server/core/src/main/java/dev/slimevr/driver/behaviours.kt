@@ -16,9 +16,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.rpc.RoutingOutput
 
 class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
-	// Keys should match with protocol.kt:bodyPartToRole
+	// Fallback chain per bone, used to attribute battery and status to the nearest
+	// physical tracker. Bones without an entry just report no battery.
 	val bodyPartToNearest: BodyPartMap<Set<BodyPart>> = BodyPartMap(
 		mapOf(
 			BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
@@ -45,7 +47,9 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 
 		combine(
 			receiver.appContext.skeleton.computed,
-			receiver.appContext.outputTrackerToggle.context.state.map { it.trackers },
+			receiver.appContext.boneRouting.context.state
+				.map { state -> state.routes.filterValues { RoutingOutput.DRIVER in it }.keys }
+				.distinctUntilChanged(),
 			::Pair,
 		)
 			.distinctUntilChanged()
@@ -131,6 +135,13 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 				event.bodyPart,
 			)
 		}.launchIn(receiver.context.scope)
+
+		receiver.inbound.on<DriverBridgeInbound.TrackerStatus> { event ->
+			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
+			receiver.appContext.server.getTracker(trackerId)?.context?.dispatch(
+				TrackerActions.SetStatus(status = event.status),
+			)
+		}
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on

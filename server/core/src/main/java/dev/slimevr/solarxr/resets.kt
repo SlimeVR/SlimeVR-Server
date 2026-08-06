@@ -3,7 +3,6 @@ package dev.slimevr.solarxr
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
-import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.ChangeResetsSettingsRequest
 import solarxr_protocol.rpc.ResetsSettingsRequest
@@ -22,7 +21,7 @@ class ResetsBehaviour(
 					armsResetMode = config.armsResetMode,
 					yawResetSmoothTime = config.yawResetSmoothTime,
 					saveMountingReset = config.saveMountingReset,
-					resetHmdPitch = config.resetHmdPitch,
+					resetHmdPitch = config.resetPositionalHeadPitch,
 				),
 			)
 		}.launchIn(receiver.context.scope)
@@ -37,7 +36,7 @@ class ResetsBehaviour(
 							armsResetMode = req.armsResetMode ?: ArmsResetMode.BACK,
 							yawResetSmoothTime = req.yawResetSmoothTime ?: 0f,
 							saveMountingReset = req.saveMountingReset == true,
-							resetHmdPitch = req.resetHmdPitch == true,
+							resetPositionalHeadPitch = req.resetHmdPitch == true,
 						),
 					)
 				},

@@ -84,7 +84,8 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 					copy(
 						boardType = packet.boardType,
 						mcuType = packet.mcuType,
-						firmware = packet.firmware,
+						firmwareVersion = packet.firmwareVersion,
+						firmwareDate = packet.firmwareDate,
 						batteryLevel = packet.batteryLevel,
 						batteryVoltage = packet.batteryVoltage,
 						signalStrength = packet.rssi,

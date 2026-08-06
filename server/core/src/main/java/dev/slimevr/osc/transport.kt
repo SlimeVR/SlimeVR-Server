@@ -51,17 +51,22 @@ class OscReceiver(private val port: Int) {
 		val s = socket()
 		running = true
 		while (running) {
-			try {
-				val packet = s.receive().packet
-				val bundle = try {
-					readBundle(packet)
-				} catch (_: IllegalArgumentException) {
-					OscBundle(1, listOf(OscContent.Message(readMessage(packet))))
-				}
-				onBundle(bundle)
-			} catch (_: Exception) {
+			val packet = try {
+				s.receive().packet
+			} catch (e: Exception) {
 				if (!running) break
+				throw e
 			}
+			val bundle = try {
+				readBundle(packet)
+			} catch (_: IllegalArgumentException) {
+				try {
+					OscBundle(1, listOf(OscContent.Message(readMessage(packet))))
+				} catch (_: Exception) {
+					continue
+				}
+			}
+			onBundle(bundle)
 		}
 	}
 

@@ -41,3 +41,9 @@ fun installUncaughtExceptionReporting() {
 		previous?.uncaughtException(thread, throwable)
 	}
 }
+
+fun formatExceptionMessage(prefix: String, throwable: Throwable): String {
+	val detail = throwable.message?.takeIf { it.isNotBlank() }
+		?: throwable::class.simpleName.orEmpty()
+	return if (detail.isBlank()) prefix else "$prefix: $detail"
+}

@@ -7,6 +7,7 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -20,6 +21,7 @@ import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
 import solarxr_protocol.data_feed.device_data.DeviceData
 import solarxr_protocol.data_feed.server.ServerGuards
+import solarxr_protocol.data_feed.tracker_data.StayAlignedTracker
 import solarxr_protocol.data_feed.tracker_data.TrackerData
 import solarxr_protocol.data_feed.tracker_data.TrackerDataMask
 import solarxr_protocol.data_feed.tracker_data.TrackerInfo
@@ -46,13 +48,15 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	position = if (trackerMask.position == true && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
 	info = if (trackerMask.info == true) {
 		TrackerInfo(
+			isImu = tracker.imuType != null,
 			imuType = tracker.imuType,
 			bodyPart = tracker.bodyPart,
+			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
 			displayName = tracker.name,
 			customName = tracker.customName,
-			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
-			isImu = tracker.imuType != null,
+			lastMountingMethod = tracker.lastMountingMethod,
 			magnetometer = tracker.magStatus,
+			dataType = tracker.trackerDataType,
 		)
 	} else {
 		null
@@ -64,6 +68,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	rotationReferenceAdjusted = if (trackerMask.rotationReferenceAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
 	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null, // FIXME: uses reference adjusted
 	rawMagneticVector = if (trackerMask.rawMagneticVector == true && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.let { Vec3f(it.x, it.y, it.z) } else null,
+	stayAligned = if (trackerMask.stayAligned == true) StayAlignedTracker(tracker.stayAlignedData.yawCorrection.toDeg(), tracker.motion == Motion.RESTING) else null,
 )
 
 private fun createDevice(
@@ -84,6 +89,7 @@ private fun createDevice(
 			packetsReceived = device.packetsReceived.toInt(),
 			packetsLost = device.packetsLost.toInt(),
 			packetLoss = if (device.packetsReceived > 0) device.packetsLost.toFloat() / device.packetsReceived.toFloat() else null,
+			// TODO missing fields
 		),
 		hardwareInfo = HardwareInfo(
 			mcuId = device.mcuType,
@@ -91,8 +97,11 @@ private fun createDevice(
 			boardType = device.boardType.toString(),
 			officialBoardType = device.boardType,
 			model = device.mcuType.toString(),
-			firmwareVersion = device.firmware,
+			firmwareVersion = device.firmwareVersion,
+			firmwareDate = device.firmwareDate,
 			ipAddress = ipv4AddressFromString(device.address),
+			hardwareIdentifier = device.macAddress,
+			// TODO missing fields
 		),
 		trackers = if (trackerMask != null) {
 			trackers.filter { it.deviceId == device.id }
@@ -138,7 +147,7 @@ fun createDatafeedFrame(
 		null
 	}
 	val bones = datafeedConfig.boneMask?.let { mask ->
-		skeleton.computed.value.values.map { createBone(it, mask) }
+		skeleton.currentComputed.values.map { createBone(it, mask) }
 	}
 	val serverGuards = if (datafeedConfig.serverGuardsMask == true) {
 		createServerGuards(resetsManager, heightCalibrationManager)

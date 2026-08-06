@@ -1,7 +1,8 @@
 package dev.slimevr.tapdetection
 
 import dev.slimevr.config.TapDetectionConfig
-import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.Motion
+import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,13 +25,24 @@ import kotlin.time.TimeMark
 class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 	data class TrackerTapDetectionState(
 		var trackerId: Int,
-		var numberTrackersOverThreshold: Int = 1,
 		var resetType: ResetType? = null,
 		var tapsNeeded: Int = 2,
 		var actionDelay: Float = 0f,
 		val accelList: ArrayDeque<Pair<Float, TimeMark>> = ArrayDeque(),
 		val tapTimestamps: ArrayDeque<TimeMark> = ArrayDeque(),
 		var waitForLowAccel: Boolean = false,
+	)
+
+	// This vvv + the assigned tap body parts are used.
+	private val falsePositiveBodyParts = setOf(
+		BodyPart.UPPER_CHEST,
+		BodyPart.CHEST,
+		BodyPart.WAIST,
+		BodyPart.HIP,
+		BodyPart.LEFT_UPPER_LEG,
+		BodyPart.RIGHT_UPPER_LEG,
+		BodyPart.LEFT_LOWER_LEG,
+		BodyPart.RIGHT_LOWER_LEG,
 	)
 
 	@OptIn(ExperimentalCoroutinesApi::class)
@@ -54,7 +66,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 					states.map { it.bodyPart to it.status }
 				}
 					.distinctUntilChanged()
-					.map { trackers.filter { tracker -> tracker.context.state.value.status == TrackerStatus.OK } }
+					.map { trackers.filter { it.context.state.value.status == TrackerStatus.OK } }
 			}
 
 		// Outer flow is refreshed whenever TapDetection config, setupMode, or a tracker's bodyPart or status changes
@@ -65,9 +77,6 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 			::Triple,
 		)
 			.flatMapLatest { (tapDetectionConfig, setupMode, trackers) ->
-				// To keep track of which trackers are over threshold
-				val trackersOverThreshold = mutableSetOf<Int>()
-
 				// Computed once per outer-flow refresh for all trackers
 				val trackersBodyParts = trackers.map { it.context.state.value.bodyPart }.toSet()
 				val yawResetBodyPart = listOf(tapDetectionConfig.yawResetBodyPart, BodyPart.UPPER_CHEST, BodyPart.CHEST, BodyPart.HIP, BodyPart.WAIST)
@@ -77,11 +86,16 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 				val mountingResetBodyPart = listOf(tapDetectionConfig.mountingResetBodyPart, BodyPart.RIGHT_UPPER_LEG, BodyPart.RIGHT_LOWER_LEG)
 					.firstOrNull { it in trackersBodyParts } ?: BodyPart.RIGHT_UPPER_LEG
 
+				// To keep track of which trackers are moving
+				val numberTrackersOverThreshold = tapDetectionConfig.numberTrackersOverThreshold
+				val bodyPartsToCheck = falsePositiveBodyParts + yawResetBodyPart + fullResetBodyPart + mountingResetBodyPart
+				val trackersOverThreshold = mutableSetOf<Int>()
+
 				trackers.map { tracker ->
 					val trackerTapDetectionState = createTrackerTapDetectionState(
 						tapDetectionConfig,
 						setupMode,
-						tracker,
+						tracker.context.state.value,
 						yawResetBodyPart,
 						fullResetBodyPart,
 						mountingResetBodyPart,
@@ -89,35 +103,49 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 
 					// Inner flow emits whenever a tracker's rawAcceleration is updated
 					tracker.context.state
-						.filter { trackerTapDetectionState.resetType != null || setupMode }
-						.map { it.rawAcceleration }
+						.filter { it.bodyPart in bodyPartsToCheck || setupMode }
+						.map { it.rawAcceleration to it.motion }
 						.distinctUntilChanged()
-						.onEach {
-							val tapTriggered = runTapDetection(
-								timeSource.markNow(),
-								trackersOverThreshold,
-								trackerTapDetectionState,
-								it,
-							)
+						.onEach { (rawAcceleration, motionState) ->
+							// Is this tracker over threshold for false positive prevention?
+							val isOverThreshold = if (rawAcceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED) {
+								trackersOverThreshold.add(trackerTapDetectionState.trackerId)
+								true
+							} else {
+								trackersOverThreshold.remove(trackerTapDetectionState.trackerId)
+								false
+							}
 
-							if (tapTriggered) {
-								receiver.context.scope.launch {
-									// If it's in setup mode, tap to assign
-									if (setupMode) {
-										receiver.server.sendSolarxrRpc(
-											TapDetectionSetupNotification(
-												trackerTapDetectionState.trackerId.toUShort(),
-											),
-										)
-									}
+							// Only trackers that actually have to detect taps
+							if (trackerTapDetectionState.resetType != null || setupMode) {
+								val othersOverThreshold = trackersOverThreshold.count() - if (isOverThreshold) 1 else 0
+								val tapTriggered = runTapDetection(
+									timeSource.markNow(),
+									othersOverThreshold >= numberTrackersOverThreshold,
+									trackerTapDetectionState,
+									rawAcceleration,
+									motionState,
+								)
 
-									// If it has a reset to execute
-									trackerTapDetectionState.resetType?.let { reset ->
-										receiver.resetsManager.scheduleReset(
-											"TapDetection",
-											reset,
-											trackerTapDetectionState.actionDelay,
-										)
+								if (tapTriggered) {
+									receiver.context.scope.launch {
+										// If it's in setup mode, tap to assign
+										if (setupMode) {
+											receiver.server.sendSolarxrRpc(
+												TapDetectionSetupNotification(
+													trackerTapDetectionState.trackerId.toUShort(),
+												),
+											)
+										}
+
+										// If it has a reset to execute
+										trackerTapDetectionState.resetType?.let { reset ->
+											receiver.resetsManager.scheduleReset(
+												"TapDetection",
+												reset,
+												trackerTapDetectionState.actionDelay,
+											)
+										}
 									}
 								}
 							}
@@ -131,18 +159,17 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 	private fun createTrackerTapDetectionState(
 		tapDetectionConfig: TapDetectionConfig,
 		setupMode: Boolean,
-		tracker: Tracker,
+		trackerState: TrackerState,
 		yawResetBodyPart: BodyPart,
 		fullResetBodyPart: BodyPart,
 		mountingResetBodyPart: BodyPart,
 	): TrackerTapDetectionState {
 		// This holds a tracker's config and state for tap detection
-		val trackerTapDetectionState = TrackerTapDetectionState(tracker.context.state.value.id)
-		trackerTapDetectionState.numberTrackersOverThreshold = tapDetectionConfig.numberTrackersOverThreshold
+		val trackerTapDetectionState = TrackerTapDetectionState(trackerState.id)
 
 		// setupMode uses defaults
 		if (!setupMode) {
-			when (tracker.context.state.value.bodyPart) {
+			when (trackerState.bodyPart) {
 				yawResetBodyPart if tapDetectionConfig.yawResetEnabled -> {
 					trackerTapDetectionState.resetType = ResetType.YAW
 					trackerTapDetectionState.tapsNeeded = tapDetectionConfig.yawResetTaps
@@ -171,9 +198,10 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 	// Logic loop for tap detection
 	fun runTapDetection(
 		now: TimeMark,
-		trackersOverThreshold: MutableSet<Int>,
+		bodyAccelerating: Boolean,
 		trackerTapDetectionState: TrackerTapDetectionState,
 		trackerAcceleration: Vector3,
+		trackerMotion: Motion,
 	): Boolean {
 		// Remove old stored accelerations (if they are too old)
 		while (trackerTapDetectionState.accelList.isNotEmpty() && (trackerTapDetectionState.accelList.first().second + ACCEL_WINDOW).hasPassedNow()) {
@@ -187,21 +215,10 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		val min = trackerTapDetectionState.accelList.minOf { it.first }
 		val accelDelta = max - min
 
-		// Is this tracker over threshold for false positive prevention?
-		val isOverThreshold = trackerAcceleration.lenSq() > ALLOWED_BODY_ACCEL_SQUARED
-		if (isOverThreshold) {
-			trackersOverThreshold.add(trackerTapDetectionState.trackerId)
-		} else {
-			trackersOverThreshold.remove(trackerTapDetectionState.trackerId)
-		}
-
 		// Check for a single tap
-		if (accelDelta > NEEDED_ACCEL_DELTA && !trackerTapDetectionState.waitForLowAccel) {
-			val othersOverThreshold = trackersOverThreshold.size - if (isOverThreshold) 1 else 0
-			if (othersOverThreshold < trackerTapDetectionState.numberTrackersOverThreshold) {
-				trackerTapDetectionState.tapTimestamps.add(now)
-				trackerTapDetectionState.waitForLowAccel = true
-			}
+		if (!bodyAccelerating && trackerMotion != Motion.ROTATING && accelDelta > NEEDED_ACCEL_DELTA && !trackerTapDetectionState.waitForLowAccel) {
+			trackerTapDetectionState.tapTimestamps.add(now)
+			trackerTapDetectionState.waitForLowAccel = true
 		}
 
 		// Achieved low accel?

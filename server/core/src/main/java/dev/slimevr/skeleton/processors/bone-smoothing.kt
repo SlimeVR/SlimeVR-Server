@@ -52,6 +52,6 @@ class BoneSmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 	companion object {
 		private const val SMOOTHING_MULTIPLIER = 100f
 		private const val SMOOTH_MIN = 0.6f
-		private const val SMOOTH_MAX = 0.93f
+		private const val SMOOTH_MAX = 0.95f
 	}
 }

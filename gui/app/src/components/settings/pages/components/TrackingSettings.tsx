@@ -63,18 +63,18 @@ const defaultValues: SkeletonForm = {
     floorClip: false,
     skatingCorrection: false,
     toeSnap: false,
-    footPlant: true,
+    footPlant: false,
     mocapMode: false,
-    useTrackerPositions: true,
-    enforceConstraints: true,
-    correctConstraints: true,
+    useTrackerPositions: false,
+    enforceConstraints: false,
+    correctConstraints: false,
   },
   ratios: {
-    imputeSpineFromUpperToLower: 0.5,
-    imputeSpineCurvature: 0.5,
-    interpolateHipWithUpperLegs: 0.25,
+    imputeSpineFromUpperToLower: 0.0,
+    imputeSpineCurvature: 0.0,
+    interpolateHipWithUpperLegs: 0.0,
     interpolateUpperLegsWithLowerLegs: 0.0,
-    skatingCorrectionStrength: 0.3,
+    skatingCorrectionStrength: 0.0,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
 };
@@ -153,7 +153,7 @@ export function TrackingSettings() {
       formData.toggles = Object.keys(settings.toggles).reduce(
         (curr, key: string) => ({
           ...curr,
-          [key]: (settings.toggles && (settings.toggles as any)[key]) || false,
+          [key]: (settings.toggles && (settings.toggles as any)[key]) ?? false,
         }),
         {}
       );
@@ -163,7 +163,7 @@ export function TrackingSettings() {
       formData.ratios = Object.keys(settings.ratios).reduce(
         (curr, key: string) => ({
           ...curr,
-          [key]: (settings.ratios && (settings.ratios as any)[key]) || 0.0,
+          [key]: (settings.ratios && (settings.ratios as any)[key]) ?? 0.0,
         }),
         {}
       );
@@ -171,8 +171,8 @@ export function TrackingSettings() {
 
     if (settings.filtering) {
       formData.filtering = {
-        type: settings.filtering.type ?? defaultValues.filtering.type,
-        amount: settings.filtering.amount ?? defaultValues.filtering.amount,
+        type: settings.filtering.type,
+        amount: settings.filtering.amount,
       };
     }
 

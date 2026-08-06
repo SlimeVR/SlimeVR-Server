@@ -31,6 +31,7 @@ object AppLogger {
 	val networkProfile = logger("NetworkProfile")
 	val logging = logger("Logging")
 	val events = logger("Events")
+	val stayAligned = logger("Stay Aligned")
 
 	val coroutines = noCoLogger("Coroutines")
 	val console = noCoLogger("Console")

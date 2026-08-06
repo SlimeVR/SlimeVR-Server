@@ -26,13 +26,6 @@ import {
   useTrackingChecklist,
 } from '@/hooks/tracking-checklist';
 
-const isHMD = ({ tracker }: FlatDeviceTracker) =>
-  tracker.info?.isHmd || tracker.info?.bodyPart === BodyPart.HEAD;
-
-const isSlime = ({ device }: FlatDeviceTracker) =>
-  device?.hardwareInfo?.manufacturer === 'SlimeVR' ||
-  device?.hardwareInfo?.manufacturer === 'HID Device';
-
 const getTrackerName = ({ tracker }: FlatDeviceTracker) =>
   tracker?.info?.customName?.toString() || '';
 
@@ -250,8 +243,10 @@ function Row({
               )}
             </Cell>
             <Cell>
-              {tracker.tps && (
-                <Typography color={fontColor}>{tracker.tps}</Typography>
+              {tracker.tps !== null && (
+                <Typography color={fontColor}>
+                  {tracker.tps.toString()}
+                </Typography>
               )}
             </Cell>
             <Cell>
@@ -311,20 +306,16 @@ export function TrackersTable({
   const { config } = useConfig();
   const { highlightedTrackers } = useTrackingChecklist();
 
-  const filteringEnabled =
-    config?.debug && config?.devSettings?.filterSlimesAndHMD;
   const sortingEnabled = config?.debug && config?.devSettings?.sortByName;
 
   const filteredSortedTrackers = useMemo(() => {
-    const list = filteringEnabled
-      ? flatTrackers.filter((t) => isHMD(t) || isSlime(t))
-      : flatTrackers;
-
     if (sortingEnabled) {
-      list.sort((a, b) => getTrackerName(a).localeCompare(getTrackerName(b)));
+      return flatTrackers.toSorted((a, b) =>
+        getTrackerName(a).localeCompare(getTrackerName(b))
+      );
     }
-    return list;
-  }, [flatTrackers, filteringEnabled, sortingEnabled]);
+    return flatTrackers;
+  }, [flatTrackers, sortingEnabled]);
 
   const moreInfo = config?.devSettings?.moreInfo;
 

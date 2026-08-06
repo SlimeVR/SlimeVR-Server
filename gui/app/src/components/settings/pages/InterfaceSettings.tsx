@@ -83,9 +83,6 @@ export function InterfaceSettings() {
         fastDataFeed:
           config?.devSettings?.fastDataFeed ??
           defaultConfig.devSettings.fastDataFeed,
-        filterSlimesAndHMD:
-          config?.devSettings?.filterSlimesAndHMD ??
-          defaultConfig.devSettings.filterSlimesAndHMD,
         sortByName:
           config?.devSettings?.sortByName ??
           defaultConfig.devSettings.sortByName,
@@ -157,7 +154,6 @@ export function InterfaceSettings() {
     highContrast: 'high_contrast',
     preciseRotation: 'precise_rotation',
     fastDataFeed: 'fast_data_feed',
-    filterSlimesAndHMD: 'filter_slimes_and_hmd',
     sortByName: 'sort_by_name',
     rawSlimeRotation: 'raw_slime_rotation',
     moreInfo: 'more_info',

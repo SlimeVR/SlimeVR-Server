@@ -15,7 +15,8 @@ import dev.slimevr.skeleton.processors.ToeDirectLinkProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.SkeletonBone
 
@@ -131,8 +132,10 @@ interface SkeletonProcessor {
 
 class Skeleton(
 	val context: SkeletonContext,
-	val computed: MutableStateFlow<ComputedSkeleton>,
+	val computed: MutableSharedFlow<ComputedSkeleton>,
 ) {
+	val currentComputed: ComputedSkeleton get() = computed.replayCache.first()
+
 	fun startObserving() = context.observeAll(this)
 
 	companion object {
@@ -168,7 +171,13 @@ class Skeleton(
 				name = "Skeleton",
 			)
 
-			return Skeleton(context, MutableStateFlow(buildBones(context.state.value)))
+			val computed = MutableSharedFlow<ComputedSkeleton>(
+				replay = 1,
+				onBufferOverflow = BufferOverflow.DROP_OLDEST,
+			)
+			computed.tryEmit(buildBones(context.state.value))
+
+			return Skeleton(context, computed)
 		}
 	}
 }

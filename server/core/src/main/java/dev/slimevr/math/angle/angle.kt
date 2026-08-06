@@ -1,6 +1,7 @@
 package dev.slimevr.math.angle
 
 import com.jme3.math.FastMath
+import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.floor
