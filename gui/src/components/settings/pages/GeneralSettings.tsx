@@ -1333,20 +1333,6 @@ export function GeneralSettings() {
                 <div>
                   <Typography variant="section-title">
                     {l10n.getString(
-                      'settings-general-gesture_control-mountingResetTracker'
-                    )}
-                  </Typography>
-                  <Dropdown
-                    display="block"
-                    control={control}
-                    placeholder={''}
-                    name="tapDetection.mountingResetTracker"
-                    items={bodyParts}
-                  />
-                </div>
-                <div>
-                  <Typography variant="section-title">
-                    {l10n.getString(
                       'settings-general-gesture_control-fullResetTracker'
                     )}
                   </Typography>
@@ -1355,6 +1341,20 @@ export function GeneralSettings() {
                     control={control}
                     placeholder={''}
                     name="tapDetection.fullResetTracker"
+                    items={bodyParts}
+                  />
+                </div>
+                <div>
+                  <Typography variant="section-title">
+                    {l10n.getString(
+                      'settings-general-gesture_control-mountingResetTracker'
+                    )}
+                  </Typography>
+                  <Dropdown
+                    display="block"
+                    control={control}
+                    placeholder={''}
+                    name="tapDetection.mountingResetTracker"
                     items={bodyParts}
                   />
                 </div>
