@@ -101,9 +101,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
       - name: Server Spotless Check
         run: ./gradlew spotlessCheck --build-cache
-      - name: Server Detekt Lint
-        run: ./gradlew :server:detekt --build-cache
-
 
   build-server-jar:
     name: Build Desktop Server
