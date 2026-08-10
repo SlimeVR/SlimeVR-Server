@@ -24,26 +24,29 @@ fun chainCanReach(bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector
 fun ccdIkIteration(boneInputs: InputSkeleton, bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector3): ComputedSkeleton {
 	val workingBones = boneInputs.toMutableMap()
 
-	var runningRotation = Quaternion.NULL
 	for (bodyPart in chain) {
 		val currentRawBone = requireNotNull(boneInputs[bodyPart])
 		val currentBone = requireNotNull(bones[bodyPart])
 
 		val localOffset = currentBone.localTailPosition.unit()
 		val localTarget = (target - currentBone.headPosition).unit()
-
 		if (!FastMath.isApproxEqual(localTarget.lenSq(), 1f)) {
 			// Avoid impossible condition where the target is at the origin
 			continue
 		}
 
 		val rotationChange = Quaternion.fromTo(localOffset, localTarget)
+		if (!FastMath.isApproxEqual(rotationChange.lenSq(), 1f)) {
+			// No change?
+			continue
+		}
 
 		// TODO: Apply constraints
 		workingBones[bodyPart] = currentRawBone.copy(
-			rawRotation = runningRotation * currentBone.rotation * rotationChange,
+			rawRotation = currentBone.rotation * rotationChange,
 		)
-		runningRotation *= rotationChange
+		// TODO: Rotation of parent is supposed to affect child? But that is not
+		//  happening here
 	}
 
 	// FIXME: This feels weird, we should probably consume the skeleton root position
