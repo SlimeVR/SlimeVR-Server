@@ -21,10 +21,10 @@ fun chainCanReach(bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector
 	return (target - rootBone.headPosition).len() <= chainLength
 }
 
-fun ccdIkIteration(boneInputs: InputSkeleton, bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector3): ComputedSkeleton {
+fun ccdIkIteration(boneInputs: InputSkeleton, bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector3, constraints: BodyPartMap<Constraint>?): ComputedSkeleton {
 	val workingBones = boneInputs.toMutableMap()
 
-	var runningRotation = Quaternion.IDENTITY
+	var running = Quaternion.IDENTITY
 	for (bodyPart in chain) {
 		val currentRawBone = requireNotNull(boneInputs[bodyPart])
 		val currentBone = requireNotNull(bones[bodyPart])
@@ -36,17 +36,25 @@ fun ccdIkIteration(boneInputs: InputSkeleton, bones: ComputedSkeleton, chain: Li
 			continue
 		}
 
-		val rotationChange = Quaternion.fromTo(localOffset, localTarget)
-		if (!FastMath.isApproxEqual(rotationChange.lenSq(), 1f)) {
-			// No change?
+		val change = Quaternion.fromTo(localOffset, localTarget)
+		if (!FastMath.isApproxEqual(change.lenSq(), 1f)) {
+			// No change? wtf =w=
 			continue
 		}
 
-		// TODO: Apply constraints
+		val adjusted = running * currentBone.rotation * change
+		val constrained = constraints?.get(bodyPart)?.let { constraint ->
+			val parent = parentOf(bodyPart)?.let { parent ->
+				workingBones[parent]?.rawRotation
+			} ?: Quaternion.IDENTITY
+			val local = parent.inv() * adjusted
+			constraint.apply(local)
+		} ?: adjusted
+
 		workingBones[bodyPart] = currentRawBone.copy(
-			rawRotation = runningRotation * currentBone.rotation * rotationChange,
+			rawRotation = constrained,
 		)
-		runningRotation *= rotationChange
+		running *= change
 	}
 
 	// FIXME: This feels weird, we should probably consume the skeleton root position
@@ -65,7 +73,7 @@ data class IKOutput(
 	val goalsReached: Map<IKChainGoal, Boolean>,
 )
 
-fun ccdIk(boneInputs: InputSkeleton, bones: ComputedSkeleton, goals: List<IKChainGoal>, threshold: Float, maxIterations: Int): IKOutput {
+fun ccdIk(boneInputs: InputSkeleton, bones: ComputedSkeleton, goals: List<IKChainGoal>, constraints: BodyPartMap<Constraint>?, threshold: Float, maxIterations: Int): IKOutput {
 	var curBones = bones
 
 	for (i in 0..maxIterations) {
@@ -75,7 +83,7 @@ fun ccdIk(boneInputs: InputSkeleton, bones: ComputedSkeleton, goals: List<IKChai
 		}.ifEmpty {
 			break
 		}.fold(curBones) { bones, goal ->
-			ccdIkIteration(boneInputs, bones, goal.chain, goal.target)
+			ccdIkIteration(boneInputs, bones, goal.chain, goal.target, constraints)
 		}
 	}
 
