@@ -3,3 +3,5 @@
 *.png binary
 *.webp binary
 *.gif binary
+
+gui/public/i18n/** -linguist-detectable
