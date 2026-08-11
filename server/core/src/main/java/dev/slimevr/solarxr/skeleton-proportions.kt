@@ -40,6 +40,7 @@ class SkeletonProportionsBehaviour(
 		skeleton.context.state
 			.map { it.boneInputs }
 			.distinctUntilChangedBy { boneInputs -> boneInputs.entries.map { it.key to it.value.offset } }
+			.drop(1)
 			.onEach { boneInputs ->
 				val configResponse = buildConfigResponse(boneInputs)
 				receiver.sendRpc(configResponse)
