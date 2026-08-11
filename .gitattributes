@@ -4,4 +4,4 @@
 *.webp binary
 *.gif binary
 
-**.ftl -linguist-detectable
+*.ftl -linguist-detectable
