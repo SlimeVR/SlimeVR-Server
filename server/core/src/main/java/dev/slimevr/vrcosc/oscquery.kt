@@ -1,5 +1,6 @@
 package dev.slimevr.vrcosc
 
+import com.appstractive.dnssd.DiscoveryEvent
 import dev.slimevr.config.DEFAULT_VRC_OSC_PORT_OUT
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
@@ -7,9 +8,11 @@ import dev.slimevr.oscquery.OscQueryAccess
 import dev.slimevr.oscquery.OscQueryDiscovery
 import dev.slimevr.oscquery.OscQueryNode
 import dev.slimevr.oscquery.OscQueryServer
+import dev.slimevr.oscquery.OscQueryServiceFactory
 import dev.slimevr.util.formatExceptionMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -22,6 +25,8 @@ private const val VRCHAT_SERVICE_PREFIX = "VRChat-Client"
 class VRCOSCOscQueryBehaviour(
 	private val settings: Settings,
 	private val localIp: String,
+	private val discoverServicesFlow: (String) -> Flow<DiscoveryEvent>,
+	private val serviceFactory: OscQueryServiceFactory,
 ) : VRCOSCBehaviour {
 	private class OscQueryRuntime(
 		val localIp: String,
@@ -92,6 +97,7 @@ class VRCOSCOscQueryBehaviour(
 					name = "SlimeVR-Server",
 					address = runtime.localIp,
 					oscPort = portIn.toUShort(),
+					serviceFactory = serviceFactory,
 				)
 				newServer.addNode(OscQueryNode(TRACKING_VRSYSTEM_PATH, access = OscQueryAccess.WRITE))
 				withContext(Dispatchers.IO) { newServer.start(receiver.context.scope) }
@@ -129,7 +135,10 @@ class VRCOSCOscQueryBehaviour(
 	private suspend fun startDiscovery(receiver: VRCOSCManager, runtime: OscQueryRuntime) {
 		if (runtime.discovery != null) return
 
-		val discovery = OscQueryDiscovery(serviceFilter = { serviceName -> serviceName.startsWith(VRCHAT_SERVICE_PREFIX) })
+		val discovery = OscQueryDiscovery(
+			discoverServicesFlow = discoverServicesFlow,
+			serviceFilter = { serviceName -> serviceName.startsWith(VRCHAT_SERVICE_PREFIX) },
+		)
 		runtime.discovery = discovery
 
 		try {

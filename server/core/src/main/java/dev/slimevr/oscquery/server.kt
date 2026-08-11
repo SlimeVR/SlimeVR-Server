@@ -1,7 +1,6 @@
 package dev.slimevr.oscquery
 
 import com.appstractive.dnssd.NetService
-import com.appstractive.dnssd.createNetService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
@@ -23,9 +22,9 @@ class OscQueryServer(
 	private val name: String,
 	private val address: String,
 	private var oscPort: UShort,
+	private val serviceFactory: OscQueryServiceFactory,
 	private val tree: OscQueryTree = OscQueryTree(),
 	private val transport: OscQueryTransport = OscQueryTransport.UDP,
-	private val serviceFactory: OscQueryServiceFactory = ::createNetService,
 ) {
 	private val httpServer = OscQueryHttpServer(hostInfo = ::buildHostInfo, tree = tree)
 	private var oscQueryService: NetService? = null

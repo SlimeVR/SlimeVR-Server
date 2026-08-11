@@ -2,6 +2,8 @@
 
 package dev.slimevr.desktop
 
+import com.appstractive.dnssd.createNetService
+import com.appstractive.dnssd.discoverServices
 import dev.slimevr.AppContext
 import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.FeatureFlags
@@ -124,6 +126,8 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val vrcOscManager = VRCOSCManager.create(
 		scope = this,
 		oscQueryAddress = resolveDesktopOscQueryAddress(),
+		discoverServicesFlow = ::discoverServices,
+		serviceFactory = ::createNetService,
 	)
 	val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
