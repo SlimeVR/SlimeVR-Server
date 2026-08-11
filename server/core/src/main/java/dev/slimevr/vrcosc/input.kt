@@ -54,22 +54,15 @@ private class VRSystemTrackerRegistry(
 		val runtimeTracker = Tracker.create(
 			scope = manager.context.scope,
 			id = trackerId,
+			name = trackerName,
+			bodyPart = bodyPart,
 			deviceId = device.context.state.value.id,
 			hardwareId = "vrcosc:vrsystem:${tracker.name.lowercase()}",
 			origin = DeviceOrigin.VRC,
 			appContext = appContext,
 		)
 		appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, runtimeTracker))
-		runtimeTracker.context.dispatch(
-			TrackerActions.Update {
-				copy(
-					name = trackerName,
-					customName = trackerName,
-					bodyPart = bodyPart,
-					status = TrackerStatus.OK,
-				)
-			},
-		)
+		runtimeTracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 		// TODO : what's the mounting orientation of these trackers, or is it even used?
 		// setting the bodyPart will automatically set it, which may or may not be a problem.
 		trackerIds[tracker] = trackerId
