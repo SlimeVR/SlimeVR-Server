@@ -1,7 +1,9 @@
 #include "solarxr.hpp"
 #include "logger.hpp"
+#include "paths.hpp"
 
 #include <stdexcept>
+#include <string>
 
 #if defined(__linux__)
 #include <sys/socket.h>
@@ -14,15 +16,24 @@
 
 namespace fs = std::filesystem;
 
+static std::string getenvSafe(const char *env) {
+    char *v = getenv(env);
+    if (v == nullptr)
+        return {};
+
+    return v;
+}
+
 fs::path SolarXRConnection::getSocketPath() {
     using namespace std::string_view_literals;
 #if defined(__linux__)
 #define MAKE_SOCKET_PATH(PATH) \
-    std::make_pair(PATH##sv, static_cast<const char *>(getenv(PATH)))
+    std::make_pair(PATH##sv, getenvSafe(PATH))
 
     constexpr std::string_view socketName = "SlimeVRRpc";
-    std::array<std::pair<std::string_view, const char *>, 4> socketPaths{
+    std::array<std::pair<std::string_view, fs::path>, 5> socketPaths{
         MAKE_SOCKET_PATH("SLIMEVR_SOCKET_DIR"),
+        { "Steam socket path", Paths::getDataPath() },
         MAKE_SOCKET_PATH("XDG_RUNTIME_DIR"),
         MAKE_SOCKET_PATH("TMPDIR"),
         { "/tmp", "/tmp" }
@@ -31,17 +42,17 @@ fs::path SolarXRConnection::getSocketPath() {
 #undef MAKE_SOCKET_PATH
 
     for (auto [name, path] : socketPaths) {
-        if (path == nullptr) {
+        if (path.empty()) {
             Logger::get().info(
-                "Skipping socket directory {} because it doesn't exist", name);
+                "Skipping socket directory '{}' because it doesn't exist", name);
             continue;
         }
-        fs::path socketPath = fs::path(path) / socketName;
+        fs::path socketPath = path / socketName;
         if (fs::exists(socketPath))
             return socketPath;
 
         Logger::get().info(
-            "Skipping socket directory {} because socket does not exist", name);
+            "Skipping socket directory '{}' because socket does not exist", name);
     }
 #elif defined(_WIN32)
     throw std::logic_error(
