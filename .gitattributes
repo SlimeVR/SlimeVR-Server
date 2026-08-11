@@ -4,4 +4,4 @@
 *.webp binary
 *.gif binary
 
-gui/public/i18n/** -linguist-detectable
+**.ftl -linguist-detectable
