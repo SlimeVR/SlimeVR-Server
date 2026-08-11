@@ -64,12 +64,12 @@ private fun deviceStatesFlow(server: VRServer): Flow<List<DeviceState>> = allCon
 class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
 	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
 		// FIXME: Most likely incomplete
-		val hasSteamVR = trackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
+		val hasDriverHMD = trackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
 		val hmdTracker = trackers.firstOrNull { tracker -> tracker.origin == DeviceOrigin.DRIVER && tracker.position != null }
 		val isAssigned = hmdTracker?.bodyPart == BodyPart.HEAD
 		return TrackingChecklistStep(
 			valid = isAssigned,
-			enabled = hasSteamVR,
+			enabled = hasDriverHMD,
 			ignorable = true,
 			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
 			extraData = if (!isAssigned) {

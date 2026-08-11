@@ -167,6 +167,7 @@ fun createDatafeedFrame(
 class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : SolarXRBridgeBehaviour {
 	override fun reduce(state: SolarXRBridgeState, action: SolarXRBridgeActions) = when (action) {
 		is SolarXRBridgeActions.SetConfig -> state.copy(dataFeedConfigs = action.configs)
+		else -> state
 	}
 
 	override fun observe(receiver: SolarXRBridge) {
