@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import solarxr_protocol.datatypes.BodyPart
 
 class IKTest {
-	@Test
+//	@Test
 //	fun testCcdIk() {
 //		val boneInputs: InputSkeleton = bodyPartMap()
 //		boneInputs[BodyPart.NECK] = BoneInput(
