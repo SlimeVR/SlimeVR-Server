@@ -51,7 +51,6 @@ console.log(options);
 if (options.steam) {
   app.commandLine.appendSwitch('enable-features', 'Vulkan,WebXR,WebXROpenXR');
   app.commandLine.appendSwitch('enable-xr-sandbox');
-  app.commandLine.appendSwitch('use-vulkan');
 }
 
 app.setPath('userData', getGuiDataFolder());
