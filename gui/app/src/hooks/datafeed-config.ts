@@ -2,6 +2,7 @@ import {
   BoneMaskT,
   DataFeedConfigT,
   DeviceDataMaskT,
+  DongleDataMaskT,
   TrackerDataMaskT,
 } from 'solarxr-protocol';
 import { useConfig } from './config';
@@ -34,6 +35,18 @@ export function useDataFeedConfig() {
   dataFeedConfig.boneMask = null;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   dataFeedConfig.serverGuardsMask = true;
+
+  const dongleMask = new DongleDataMaskT();
+  dongleMask.boardType = true;
+  dongleMask.devicesIds = true;
+  dongleMask.displayName = true;
+  dongleMask.firmwareDate = true;
+  dongleMask.firmwareVersion = true;
+  dongleMask.hardwareAddress = true;
+  dongleMask.hardwareRevision = true;
+  dongleMask.manufacturer = true;
+  dongleMask.model = true;
+  dataFeedConfig.dongleMask = dongleMask;
 
   return {
     dataFeedConfig,

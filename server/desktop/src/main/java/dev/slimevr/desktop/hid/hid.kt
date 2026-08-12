@@ -1,6 +1,7 @@
 package dev.slimevr.desktop.hid
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.VRServerActions
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.isCompatibleHidReceiver
@@ -97,12 +98,15 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 				val deviceJob = SupervisorJob(scope.coroutineContext[Job])
 				val deviceScope = CoroutineScope(scope.coroutineContext + deviceJob)
 
+				val id = appContext.server.nextHandle()
 				val receiver = HIDReceiver.create(
+					id = id,
 					serialNumber = serial,
 					isDirect = isCompatibleHidTracker(hidDevice.vendorId, hidDevice.productId),
 					appContext = appContext,
 					scope = deviceScope,
 				)
+				appContext.server.context.dispatch(VRServerActions.NewDongle(id, receiver))
 
 				deviceScope.launch(Dispatchers.IO) {
 					try {
@@ -131,6 +135,7 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 									DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
 								)
 							}
+							appContext.server.context.dispatch(VRServerActions.RemoveDongle(receiver.context.state.value.id))
 						}
 					}
 				}

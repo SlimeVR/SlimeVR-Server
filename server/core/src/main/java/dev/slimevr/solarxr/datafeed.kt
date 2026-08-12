@@ -3,6 +3,7 @@ package dev.slimevr.solarxr
 import dev.slimevr.VRServer
 import dev.slimevr.device.DeviceState
 import dev.slimevr.heightcalibration.HeightCalibrationManager
+import dev.slimevr.hid.HIDReceiverState
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.BoneState
@@ -20,6 +21,8 @@ import solarxr_protocol.data_feed.DataFeedUpdate
 import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
 import solarxr_protocol.data_feed.device_data.DeviceData
+import solarxr_protocol.data_feed.dongle_data.DongleData
+import solarxr_protocol.data_feed.dongle_data.DongleDataMask
 import solarxr_protocol.data_feed.server.ServerGuards
 import solarxr_protocol.data_feed.tracker_data.StayAlignedTracker
 import solarxr_protocol.data_feed.tracker_data.TrackerData
@@ -130,6 +133,21 @@ private fun createServerGuards(resetsManager: ResetsManager, heightCalibrationMa
 	)
 }
 
+private fun createDongle(dongle: HIDReceiverState, mask: DongleDataMask): DongleData {
+	return DongleData(
+		id = dongle.id.toUShort(),
+		displayName = dongle.displayName.takeIf { mask.displayName == true },
+		hardwareRevision = dongle.hardwareRevision.takeIf { mask.hardwareRevision == true },
+		hardwareAddress = null, // FIXME: send me
+		model = dongle.model.takeIf { mask.model == true },
+		manufacturer = dongle.manufacturer.takeIf { mask.manufacturer == true },
+		firmwareVersion = dongle.firmwareVersion.takeIf { mask.firmwareVersion == true },
+		firmwareDate = dongle.firmwareDate.takeIf { mask.firmwareDate == true },
+		boardType = dongle.boardType.takeIf { mask.boardType == true },
+		devicesIds = dongle.trackers.keys.map { it.toUShort() }.takeIf { mask.devicesIds == true }
+	)
+}
+
 fun createDatafeedFrame(
 	server: VRServer,
 	datafeedConfig: DataFeedConfig,
@@ -154,11 +172,16 @@ fun createDatafeedFrame(
 	} else {
 		null
 	}
+
+	val dongles = datafeedConfig.dongleMask?.let { mask ->
+		serverState.dongles.values.map { it.context.state.value }.map { createDongle(it, mask) }
+	}
 	return DataFeedMessageHeader(
 		message = DataFeedUpdate(
 			devices = devices,
 			bones = bones,
 			serverGuards = serverGuards,
+			dongles = dongles,
 			index = index.toUByte(),
 		),
 	)

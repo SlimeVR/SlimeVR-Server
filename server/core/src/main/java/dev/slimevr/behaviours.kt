@@ -13,6 +13,8 @@ class BaseBehaviour : VRServerBehaviour {
 		is VRServerActions.DriverDisconnected -> state.copy(drivers = state.drivers - action.bridgeId)
 		is VRServerActions.SolarXRConnected -> state.copy(solarxr = state.solarxr + (action.connection.id to action.connection))
 		is VRServerActions.SolarXRDisconnected -> state.copy(solarxr = state.solarxr - action.connectionId)
+		is VRServerActions.NewDongle -> state.copy(dongles = state.dongles + (action.dongleId to action.context))
+		is VRServerActions.RemoveDongle -> state.copy(dongles = state.dongles - action.dongleId)
 	}
 
 	override fun observe(receiver: VRServer) {
