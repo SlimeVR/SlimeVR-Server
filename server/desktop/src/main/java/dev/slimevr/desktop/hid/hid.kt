@@ -3,7 +3,8 @@ package dev.slimevr.desktop.hid
 import dev.slimevr.AppContextProvider
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
-import dev.slimevr.hid.isCompatibleHidDevice
+import dev.slimevr.hid.isCompatibleHidReceiver
+import dev.slimevr.hid.isCompatibleHidTracker
 import dev.slimevr.hid.parseHIDPackets
 import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
@@ -35,13 +36,15 @@ private val hidSpec = HidServicesSpecification().apply { isAutoStart = false }
 // Initialize the native HID library. Must be called before enumerateDevices.
 private val hidServices by lazy { HidManager.getHidServices(hidSpec) }
 
-private fun enumerateCompatibleDevices(): Map<String, HidDevice> {
+private fun enumerateCompatibleDevices(directTrackersEnabled: Boolean): Map<String, HidDevice> {
 	hidServices // ensure native lib is loaded
 	val root = HidApi.enumerateDevices(0, 0) ?: return emptyMap()
 	val result = mutableMapOf<String, HidDevice>()
 	var info: HidDeviceInfoStructure? = root
 	while (info != null) {
-		if (isCompatibleHidDevice(info.vendor_id.toInt(), info.product_id.toInt())) {
+		val vid = info.vendor_id.toInt()
+		val pid = info.product_id.toInt()
+		if (isCompatibleHidReceiver(vid, pid) || (directTrackersEnabled && isCompatibleHidTracker(vid, pid))) {
 			val device = HidDevice(info, null, hidSpec)
 			// Use path as key, unique per physical device, available without opening
 			result[info.path] = device
@@ -59,9 +62,10 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 
 	scope.launch {
 		while (isActive) {
+			val directTrackersEnabled = appContext.config.settings.context.state.value.data.hidConfig.trackersOverHid
 			val found = withContext(Dispatchers.IO) {
 				try {
-					enumerateCompatibleDevices()
+					enumerateCompatibleDevices(directTrackersEnabled)
 				} catch (e: Exception) {
 					AppLogger.hid.error(e, "HID enumeration failed")
 					emptyMap()
@@ -95,6 +99,7 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 
 				val receiver = HIDReceiver.create(
 					serialNumber = serial,
+					isDirect = isCompatibleHidTracker(hidDevice.vendorId, hidDevice.productId),
 					appContext = appContext,
 					scope = deviceScope,
 				)

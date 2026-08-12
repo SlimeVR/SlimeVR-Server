@@ -41,7 +41,7 @@ data class TrackersConfig(
 
 @Serializable
 data class HidConfig(
-	val trackersOverHid: Boolean = false, // TODO
+	val trackersOverHid: Boolean = false,
 )
 
 @Serializable

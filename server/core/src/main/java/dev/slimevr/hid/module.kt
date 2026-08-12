@@ -18,6 +18,7 @@ data class HIDTrackerRecord(
 
 data class HIDReceiverState(
 	val serialNumber: String,
+	val isDirect: Boolean, // True if this HID device is a tracker connected directly over USB
 	val trackers: Map<Int, HIDTrackerRecord>,
 )
 
@@ -51,6 +52,7 @@ class HIDReceiver(
 	companion object {
 		fun create(
 			serialNumber: String,
+			isDirect: Boolean,
 			appContext: AppContextProvider,
 			scope: CoroutineScope,
 		): HIDReceiver {
@@ -65,7 +67,7 @@ class HIDReceiver(
 			)
 
 			val context = Context.create(
-				initialState = HIDReceiverState(serialNumber = serialNumber, trackers = mapOf()),
+				initialState = HIDReceiverState(serialNumber = serialNumber, isDirect = isDirect, trackers = mapOf()),
 				scope = scope,
 				behaviours = behaviours,
 				name = "HIDReceiver[$serialNumber]",

@@ -14,7 +14,8 @@ import androidx.core.content.ContextCompat
 import dev.slimevr.AppContextProvider
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
-import dev.slimevr.hid.isCompatibleHidDevice
+import dev.slimevr.hid.isCompatibleHidReceiver
+import dev.slimevr.hid.isCompatibleHidTracker
 import dev.slimevr.hid.parseHIDPackets
 import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
@@ -77,10 +78,14 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 
 	scope.launch {
 		while (isActive) {
+			val directTrackersEnabled = appContext.config.settings.context.state.value.data.hidConfig.trackersOverHid
 			val found = withContext(Dispatchers.IO) {
 				try {
 					usbManager.deviceList.values
-						.filter { device -> isCompatibleHidDevice(device.vendorId, device.productId) }
+						.filter { device ->
+							isCompatibleHidReceiver(device.vendorId, device.productId) ||
+								(directTrackersEnabled && isCompatibleHidTracker(device.vendorId, device.productId))
+						}
 						.associate { device -> device.deviceName to device }
 				} catch (e: Exception) {
 					AppLogger.hid.error(e, "HID enumeration failed")
@@ -135,6 +140,7 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 
 				val receiver = HIDReceiver.create(
 					serialNumber = serial,
+					isDirect = isCompatibleHidTracker(device.vendorId, device.productId),
 					appContext = appContext,
 					scope = deviceScope,
 				)
