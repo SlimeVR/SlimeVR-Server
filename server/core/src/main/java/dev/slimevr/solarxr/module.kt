@@ -7,15 +7,18 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
+import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.driver.DriverIncomingTrackersBehaviour
 import dev.slimevr.solarxr.driver.DriverOutgoingTrackersBehaviour
+import dev.slimevr.tracker.TrackerActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.data_feed.DataFeedMessageHeader
+import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.driver_protocol.DriverMessage
 import solarxr_protocol.driver_protocol.DriverMessageHeader
 import solarxr_protocol.rpc.RpcMessage
@@ -104,6 +107,13 @@ class SolarXRBridge(
 	fun disconnect() {
 		dispose()
 		appContext.server.context.dispatch(VRServerActions.SolarXRDisconnected(id))
+
+		// if the connection was a driver connection. we set the trackers status to disconnected
+		if (context.state.value.driverName.isNullOrEmpty()) {
+			appContext.server.context.state.value.trackers.values.filter { it.context.state.value.origin == DeviceOrigin.DRIVER }.forEach {
+				it.context.dispatch(TrackerActions.SetStatus(status = TrackerStatus.DISCONNECTED))
+			}
+		}
 	}
 
 	fun startObserving() = context.observeAll(this)
