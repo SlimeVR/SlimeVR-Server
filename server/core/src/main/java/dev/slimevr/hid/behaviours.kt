@@ -102,7 +102,7 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 						scope = receiver.appContext.server.context.scope,
 						id = trackerId,
 						deviceId = deviceState.id,
-						sensorType = packet.imuType,
+						imuType = packet.imuType,
 						hardwareId = deviceState.address,
 						origin = DeviceOrigin.HID,
 						appContext = receiver.appContext,

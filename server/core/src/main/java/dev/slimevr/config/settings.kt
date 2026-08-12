@@ -166,7 +166,7 @@ data class VRCOSCConfig(
 
 @Serializable
 data class VMCConfig(
-	val enabled: Boolean = true,
+	val enabled: Boolean = false,
 	val portIn: Int = 39540,
 	val portOut: Int = 39539,
 	val address: String = "127.0.0.1",

@@ -89,7 +89,7 @@ class TrackingChecklistTest {
 			bodyPart: BodyPart?,
 			status: TrackerStatus = TrackerStatus.OK,
 			origin: DeviceOrigin = DeviceOrigin.UDP,
-			sensorType: ImuType? = ImuType.BNO085,
+			imuType: ImuType? = ImuType.BNO085,
 			position: Vector3? = null,
 			completedRestCalibration: Boolean? = true,
 		): Tracker {
@@ -102,7 +102,7 @@ class TrackingChecklistTest {
 				bodyPart = bodyPart,
 				status = status,
 				origin = origin,
-				sensorType = sensorType,
+				imuType = imuType,
 				position = position,
 				completedRestCalibration = completedRestCalibration,
 			)
@@ -222,7 +222,7 @@ class TrackingChecklistTest {
 	fun `UNASSIGNED_HMD is invalid until the HMD is assigned to the head`() = runTest {
 		val h = Harness(this)
 		// An HMD is a DRIVER-origin tracker with a computed position
-		val hmd = h.addTracker(bodyPart = null, origin = DeviceOrigin.DRIVER, sensorType = null, position = Vector3.NULL)
+		val hmd = h.addTracker(bodyPart = null, origin = DeviceOrigin.DRIVER, imuType = null, position = Vector3.NULL)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)

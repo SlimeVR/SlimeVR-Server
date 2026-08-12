@@ -6,7 +6,6 @@ import dev.slimevr.config.ConfigStorage
 import dev.slimevr.config.DefaultSettingsBehaviour
 import dev.slimevr.config.DefaultUserBehaviour
 import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.SettingsConfigState
 import dev.slimevr.config.SettingsState
 import dev.slimevr.config.TextFileHandle
@@ -149,41 +148,27 @@ fun buildTestTracker(
 	bodyPart: BodyPart? = null,
 	status: TrackerStatus = TrackerStatus.DISCONNECTED,
 	origin: DeviceOrigin = DeviceOrigin.UDP,
-	sensorType: ImuType? = ImuType.BNO085,
+	imuType: ImuType? = ImuType.BNO085,
 	position: Vector3? = null,
 	completedRestCalibration: Boolean? = true,
 	rawRotation: Quaternion = Quaternion.IDENTITY,
 	additionalBehaviours: List<TrackerBehaviour> = listOf(),
 	sessionCalibration: SessionCalibration? = null,
 ): Tracker {
-	val state = TrackerState(
+	val state = Tracker.DEFAULT_STATE.copy(
 		id = id,
 		deviceId = 0,
 		origin = origin,
 		hardwareId = "test-$id",
 		name = "Tracker $id",
-		imuType = sensorType,
+		imuType = imuType,
 		bodyPart = bodyPart,
 		customName = null,
-		trackerDataType = TrackerDataType.ROTATION,
-		lastMountingMethod = MountingMethod.MANUAL,
-		mountingOrientation = Quaternion.IDENTITY,
-		restOrientation = Quaternion.IDENTITY,
 		sessionCalibration = sessionCalibration,
 		rawRotation = rawRotation,
-		rotation = Quaternion.IDENTITY,
-		rawAcceleration = Vector3.NULL,
-		acceleration = Vector3.NULL,
-		rawMagnetometer = Vector3.NULL,
 		position = position,
-		imuTemp = null,
-		tps = 0u,
 		status = status,
 		completedRestCalibration = completedRestCalibration,
-		magStatus = MagnetometerStatus.NOT_SUPPORTED,
-		motion = Motion.ROTATING,
-		yawResetSmoothing = null,
-		stayAlignedData = StayAlignedData(Quaternion.IDENTITY, null, Angle.ZERO),
 	)
 	val context = Context.create(
 		initialState = state,
@@ -196,7 +181,7 @@ fun buildTestTracker(
 
 fun buildTestSettings(scope: CoroutineScope): Settings {
 	val initialState = SettingsState(data = SettingsConfigState(), name = "test")
-	val context = Context.create<SettingsState, SettingsActions>(
+	val context = Context.create(
 		initialState = initialState,
 		scope = scope,
 		behaviours = listOf(DefaultSettingsBehaviour()),

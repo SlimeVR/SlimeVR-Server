@@ -309,7 +309,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 		val newTracker = Tracker.create(
 			id = trackerId,
 			hardwareId = hardwareId,
-			sensorType = event.data.imuType,
+			imuType = event.data.imuType,
 			deviceId = deviceState.id,
 			origin = DeviceOrigin.UDP,
 			scope = receiver.appContext.server.context.scope,
