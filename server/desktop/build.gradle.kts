@@ -135,8 +135,8 @@ buildConfig {
 		commandLine("git", "rev-parse", "--short=8", "HEAD")
 	}.standardOutput.asText.get().trim()
 	val gitVersionTag = providers.exec {
-		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD")
-	}.standardOutput.asText.get().trim()
+		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD", "-l", "v*")
+	}.standardOutput.asText.get().trim().lineSequence().firstOrNull() ?: ""
 	val gitIsClean = providers.exec {
 		commandLine("git", "status", "--porcelain")
 	}.standardOutput.asText.get().trim().isEmpty()
