@@ -25,6 +25,14 @@ data class SessionCalibration(
 	val headingAlignment: HeadingAlignment = Quaternion.IDENTITY,
 )
 
+fun applyCalibration(rawRotation: RawRotation, state: TrackerState): CalibratedRotation = applyCalibration(
+	rawRotation,
+	state.sessionCalibration?.headingCorrection ?: Quaternion.IDENTITY,
+	state.sessionCalibration?.attitudeAlignment ?: Quaternion.IDENTITY,
+	(state.sessionCalibration?.headingAlignment ?: Quaternion.IDENTITY) * state.mountingOrientation,
+	state.restOrientation
+)
+
 fun applyCalibration(
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,

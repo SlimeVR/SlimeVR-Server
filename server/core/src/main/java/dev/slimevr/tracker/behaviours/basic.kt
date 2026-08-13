@@ -1,6 +1,5 @@
 package dev.slimevr.tracker.behaviours
 
-import com.jme3.math.FastMath
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.stayaligned.StayAlignedManager
@@ -50,36 +49,30 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager, 
 			// This action counts as a tick towards TPS if the data is new.
 			if (action.newData) tpsCount.incrementAndFetch()
 
-			val rawRotation: RawRotation = action.rotation ?: state.rawRotation
+			// Rotation
+			val rawPolarityTrackedRotation: RawRotation = action.rotation?.twinNearest(state.rawRotation) ?: state.rawRotation
+			val hideYawCorrection = stayAlignedManager.context.state.value.hideCorrection
+			val stayAlignedEnabled = settings.context.state.value.data.stayAlignedConfig.enabled
+			val yawCorrectedRawPolarityTrackedRotation = Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawPolarityTrackedRotation
+			val adjustedRawRotation = if (hideYawCorrection || !stayAlignedEnabled) rawPolarityTrackedRotation else yawCorrectedRawPolarityTrackedRotation
+
+			// Other data
 			val rawAcceleration: RawAcceleration = action.acceleration ?: state.rawAcceleration
 			val rawMagnetometer = action.magnetometer ?: state.rawMagnetometer
 			val position = action.position ?: state.position
 
 			val cal = state.sessionCalibration
 
-			val hideYawCorrection = stayAlignedManager.context.state.value.hideCorrection
-			val stayAlignedEnabled = settings.context.state.value.data.stayAlignedConfig.enabled // TODO do we need to check?
-			val yawCorrectedRawRotation = Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawRotation
-
 			// TODO non-IMU trackers still want some form of calibration applied
 			// Rotation calibration
-			val (rotation: CalibratedRotation, forceStayAlignedRotation: CalibratedRotation) = when {
-				state.imuType == null -> rawRotation to rawRotation
+			val rotation: CalibratedRotation = when {
+				state.imuType == null -> rawPolarityTrackedRotation
 
-				cal != null && action.rotation != null -> {
-					fun calibrate(rot: RawRotation) = applyCalibration(
-						rot,
-						cal.headingCorrection,
-						cal.attitudeAlignment,
-						cal.headingAlignment * state.mountingOrientation,
-					)
-					val yawCorrectCalibratedRotation = calibrate(yawCorrectedRawRotation).twinNearest(state.stayAlignedData.forceStayAlignedRotation)
-					(if (hideYawCorrection || !stayAlignedEnabled) calibrate(rawRotation).twinNearest(state.rotation) else yawCorrectCalibratedRotation) to yawCorrectCalibratedRotation
-				}
+				cal != null && action.rotation != null -> applyCalibration(adjustedRawRotation, state)
 
-				cal != null -> state.rotation to state.stayAlignedData.forceStayAlignedRotation
+				cal != null -> state.rotation
 
-				else -> rawRotation to rawRotation
+				else -> rawPolarityTrackedRotation
 			}
 
 			// Accel calibration
@@ -88,7 +81,7 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager, 
 
 				cal != null && action.acceleration != null -> applyCalibration(
 					rawAcceleration,
-					if (hideYawCorrection) rawRotation else yawCorrectedRawRotation,
+					adjustedRawRotation,
 					cal.headingCorrection,
 					cal.headingAlignment,
 				)
@@ -99,9 +92,8 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager, 
 			}
 
 			state.copy(
-				rawRotation = rawRotation,
+				rawRotation = rawPolarityTrackedRotation,
 				rotation = rotation,
-				stayAlignedData = state.stayAlignedData.copy(forceStayAlignedRotation = forceStayAlignedRotation),
 				rawAcceleration = rawAcceleration,
 				acceleration = acceleration,
 				rawMagnetometer = rawMagnetometer,
@@ -120,12 +112,15 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager, 
 		is TrackerActions.SetRestOrientation -> state.copy(restOrientation = action.restOrientation)
 
 		is TrackerActions.FullReset -> {
+			// Align the raw rotation to the default polarity we use
+			val defaultPolarityRotation = state.rawRotation.twinNearest(Quaternion.IDENTITY)
+
 			val headingCorrection = estimateHeadingCorrect(
-				state.rawRotation,
+				defaultPolarityRotation,
 				action.referenceRotation,
 			)
 			val attitudeAlignment = estimateAttitudeAlign(
-				state.rawRotation,
+				defaultPolarityRotation,
 				headingCorrection,
 				action.referenceRotation,
 			)
@@ -138,14 +133,10 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager, 
 				attitudeAlignment = attitudeAlignment,
 			)
 
-			// Align the rotation to the default polarity we use
-			val defaultPolarityRotation = state.rotation.twinNearest(Quaternion.IDENTITY)
-
 			state.copy(
 				sessionCalibration = sessionCalibration,
 				// Reset polarity tracking
-				rotation = defaultPolarityRotation,
-				stayAlignedData = state.stayAlignedData.copy(forceStayAlignedRotation = defaultPolarityRotation),
+				rawRotation = defaultPolarityRotation,
 				// Full reset snaps: cancel any in-progress yaw smoothing.
 				yawResetSmoothing = null,
 			)

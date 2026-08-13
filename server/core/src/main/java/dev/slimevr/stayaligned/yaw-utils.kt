@@ -22,7 +22,7 @@ object YawUtils {
 	 * Whether we can reliably get the yaw of a tracker.
 	 */
 	fun hasTrackerYaw(trackerState: TrackerState) = Angle.absBetween(
-		trackerState.stayAlignedData.forceStayAlignedRotation.sandwichUnitX(),
+		trackerState.stayAlignedData.correctedRotation.sandwichUnitX(),
 		Vector3.POS_Y,
 	) > MIN_ON_SIDE_ANGLE
 
@@ -39,7 +39,7 @@ object YawUtils {
 	 * different from the from YZX. DO NOT ATTEMPT!
 	 */
 	fun trackerYaw(trackerState: TrackerState) = Angle.ofRad(
-		trackerState.stayAlignedData.forceStayAlignedRotation
+		trackerState.stayAlignedData.correctedRotation
 			.toEulerAngles(EulerOrder.YZX)
 			.y,
 	)

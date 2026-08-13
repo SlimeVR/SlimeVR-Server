@@ -41,7 +41,9 @@ import dev.slimevr.stayaligned.StayAlignedActions
 import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.stayaligned.StayAlignedState
 import dev.slimevr.tapdetection.TapDetectionManager
+import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
+import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
@@ -147,6 +149,8 @@ fun buildTestTracker(
 	rawRotation: Quaternion = Quaternion.IDENTITY,
 	additionalBehaviours: List<TrackerBehaviour> = listOf(),
 	sessionCalibration: SessionCalibration? = null,
+	motion: Motion = Tracker.DEFAULT_STATE.motion,
+	stayAlignedData: StayAlignedData = Tracker.DEFAULT_STATE.stayAlignedData,
 ): Tracker {
 	val state = Tracker.DEFAULT_STATE.copy(
 		id = id,
@@ -162,6 +166,8 @@ fun buildTestTracker(
 		position = position,
 		status = status,
 		completedRestCalibration = completedRestCalibration,
+		motion = motion,
+		stayAlignedData = stayAlignedData,
 	)
 	val context = Context.create(
 		initialState = state,

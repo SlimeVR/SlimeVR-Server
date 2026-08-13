@@ -22,7 +22,7 @@ enum class TrackerPose {
 				return NONE
 			}
 
-			val rotation = trackerState.stayAlignedData.forceStayAlignedRotation
+			val rotation = trackerState.stayAlignedData.correctedRotation
 
 			val x = rotation.sandwichUnitX()
 			val y = rotation.sandwichUnitY()

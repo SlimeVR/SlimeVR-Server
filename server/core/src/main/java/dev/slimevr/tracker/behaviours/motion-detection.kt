@@ -83,7 +83,7 @@ class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 		is TrackerActions.SetMotion -> {
 			state.copy(
 				motion = action.motion,
-				stayAlignedData = state.stayAlignedData.copy(lockedRotation = if (action.motion == Motion.RESTING) state.stayAlignedData.forceStayAlignedRotation else null),
+				stayAlignedData = state.stayAlignedData.copy(lockedRotation = if (action.motion == Motion.RESTING) state.stayAlignedData.correctedRotation else null),
 			)
 		}
 

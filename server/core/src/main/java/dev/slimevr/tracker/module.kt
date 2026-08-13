@@ -43,7 +43,7 @@ data class YawResetSmoothing(
 
 data class StayAlignedData(
 	// Calibrated rotation of the tracker with StayAligned always applied
-	val forceStayAlignedRotation: CalibratedRotation,
+	val correctedRotation: CalibratedRotation,
 	// Rotation of the tracker when it started resting
 	val lockedRotation: Quaternion?,
 	// Yaw correction to apply to the tracker's rotation
@@ -102,6 +102,7 @@ sealed interface TrackerActions {
 	data object ClearMountingReset : TrackerActions
 	data class SetMotion(val motion: Motion) : TrackerActions
 	data class SetYawCorrection(val yawCorrection: Angle) : TrackerActions
+	data class SetCorrectedRotation(val correctedRotation: CalibratedRotation) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
