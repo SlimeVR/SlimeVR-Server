@@ -91,8 +91,8 @@ data class ResetsConfig(
 	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
-	/** Reset a positional tracker's pitch upon full reset */
-	val resetPositionalHeadPitch: Boolean = false, // TODO
+	/** Reset a positional tracker's attitude full reset */
+	val resetPositionalHeadAttitude: Boolean = false, // TODO also rename in GUI and solarxr
 	/** Used as preferred mounting method and tracking checklist */
 	val lastMountingMethod: MountingMethod = MountingMethod.POSE,
 )
