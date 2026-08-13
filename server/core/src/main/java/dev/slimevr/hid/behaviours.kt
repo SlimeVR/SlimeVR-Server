@@ -29,6 +29,8 @@ class HIDRegistrationBehaviour : HIDReceiverBehaviour {
 					),
 		)
 
+		is HIDReceiverActions.SetStatus -> state.copy(status = action.status)
+
 		else -> state
 	}
 

@@ -46,6 +46,7 @@ export function useDataFeedConfig() {
   dongleMask.hardwareRevision = true;
   dongleMask.manufacturer = true;
   dongleMask.model = true;
+  dongleMask.status = true;
   dataFeedConfig.dongleMask = dongleMask;
 
   return {

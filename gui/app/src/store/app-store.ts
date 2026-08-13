@@ -4,6 +4,8 @@ import {
   BoneT,
   DataFeedUpdateT,
   DeviceDataT,
+  DongleDataT,
+  DongleStatus,
   TrackerDataT,
   TrackerStatus,
 } from 'solarxr-protocol';
@@ -32,6 +34,85 @@ export const serverGuardsAtom = selectAtom(
   (datafeed) => datafeed.serverGuards,
   isEqual
 );
+
+export const donglesAtom = selectAtom(
+  datafeedAtom,
+  (datafeed) => datafeed.dongles,
+  isEqual
+);
+
+export type TrackerConnectionGroup = {
+  key: string;
+  assigned: FlatDeviceTracker[];
+  unassigned: FlatDeviceTracker[];
+} & (
+  | {
+      kind: 'dongle';
+      dongleId: number;
+      dongleName: string | null;
+      status: DongleStatus;
+    }
+  | { kind: 'wifi' }
+);
+
+export function groupTrackersByConnection(
+  trackers: FlatDeviceTracker[],
+  dongles: DongleDataT[]
+): TrackerConnectionGroup[] {
+  const dongleByDeviceId = new Map<number, DongleDataT>();
+  for (const dongle of dongles) {
+    for (const deviceId of dongle.devicesIds) {
+      dongleByDeviceId.set(deviceId, dongle);
+    }
+  }
+
+  const dongleGroups = new Map<
+    number,
+    Extract<TrackerConnectionGroup, { kind: 'dongle' }>
+  >();
+  const wifiGroup: Extract<TrackerConnectionGroup, { kind: 'wifi' }> = {
+    key: 'wifi',
+    kind: 'wifi',
+    assigned: [],
+    unassigned: [],
+  };
+
+  for (const flatTracker of trackers) {
+    const dongle =
+      flatTracker.device?.id != null
+        ? dongleByDeviceId.get(flatTracker.device.id)
+        : undefined;
+
+    let group: TrackerConnectionGroup = wifiGroup;
+    if (dongle) {
+      const dongleGroup = dongleGroups.get(dongle.id) ?? {
+        key: `dongle-${dongle.id}`,
+        kind: 'dongle' as const,
+        dongleId: dongle.id,
+        dongleName: dongle.displayName?.toString() ?? null,
+        status: dongle.status,
+        assigned: [],
+        unassigned: [],
+      };
+      dongleGroups.set(dongle.id, dongleGroup);
+      group = dongleGroup;
+    }
+
+    if (flatTracker.tracker.info?.bodyPart === BodyPart.NONE) {
+      group.unassigned.push(flatTracker);
+    } else {
+      group.assigned.push(flatTracker);
+    }
+  }
+
+  const groups: TrackerConnectionGroup[] = [...dongleGroups.values()];
+
+  if (wifiGroup.assigned.length > 0 || wifiGroup.unassigned.length > 0) {
+    groups.push(wifiGroup);
+  }
+
+  return groups;
+}
 
 export const flatTrackersAtom = atom((get) => {
   const devices = get(devicesAtom);

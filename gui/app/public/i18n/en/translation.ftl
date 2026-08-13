@@ -1482,6 +1482,7 @@ onboarding-stay_aligned-manual_mounting-done = Done
 home-no_trackers = No trackers detected or assigned
 home-settings = Home Page Settings
 home-settings-close = Close
+home-connection_group-wifi = Wi-Fi Trackers
 
 ## Trackers Still On notification
 trackers_still_on-modal-title = Trackers still on

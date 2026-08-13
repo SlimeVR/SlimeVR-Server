@@ -184,11 +184,9 @@ const BADGE_VARIANTS: Record<OutputSummary, StatusVariant> = {
 function OutputStatusRow({
   status,
   routed,
-  automatic,
 }: {
   status: RoutingOutputStatusT;
   routed: number;
-  automatic: boolean;
 }) {
   const accepts = status.accepts?.length ?? 0;
   const summary = useMemo(() => {
@@ -547,7 +545,6 @@ export function BoneRoutingSettings() {
                   key={status.output}
                   status={status}
                   routed={routedCounts.get(status.output) ?? 0}
-                  automatic={automatic}
                 />
               ))}
             </div>

@@ -4,6 +4,7 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
+import dev.slimevr.hid.HIDReceiverActions
 import dev.slimevr.hid.isCompatibleHidReceiver
 import dev.slimevr.hid.isCompatibleHidTracker
 import dev.slimevr.hid.parseHIDPackets
@@ -22,6 +23,7 @@ import org.hid4java.HidManager
 import org.hid4java.HidServicesSpecification
 import org.hid4java.jna.HidApi
 import org.hid4java.jna.HidDeviceInfoStructure
+import solarxr_protocol.data_feed.dongle_data.DongleStatus
 import solarxr_protocol.datatypes.TrackerStatus
 
 private const val HID_POLL_INTERVAL_MS = 3000L
@@ -98,15 +100,21 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 				val deviceJob = SupervisorJob(scope.coroutineContext[Job])
 				val deviceScope = CoroutineScope(scope.coroutineContext + deviceJob)
 
-				val id = appContext.server.nextHandle()
-				val receiver = HIDReceiver.create(
-					id = id,
-					serialNumber = serial,
-					isDirect = isCompatibleHidTracker(hidDevice.vendorId, hidDevice.productId),
-					appContext = appContext,
-					scope = deviceScope,
-				)
-				appContext.server.context.dispatch(VRServerActions.NewDongle(id, receiver))
+				val receiver = appContext.server.context.state.value.dongles.values
+					.find { it.context.state.value.serialNumber == serial }
+					?: run {
+						val id = appContext.server.nextHandle()
+						val created = HIDReceiver.create(
+							id = id,
+							serialNumber = serial,
+							isDirect = isCompatibleHidTracker(hidDevice.vendorId, hidDevice.productId),
+							appContext = appContext,
+							scope = scope,
+						)
+						appContext.server.context.dispatch(VRServerActions.NewDongle(id, created))
+						created
+					}
+				receiver.context.dispatch(HIDReceiverActions.SetStatus(DongleStatus.CONNECTED))
 
 				deviceScope.launch(Dispatchers.IO) {
 					try {
@@ -135,7 +143,7 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 									DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
 								)
 							}
-							appContext.server.context.dispatch(VRServerActions.RemoveDongle(receiver.context.state.value.id))
+							receiver.context.dispatch(HIDReceiverActions.SetStatus(DongleStatus.DISCONNECTED))
 						}
 					}
 				}

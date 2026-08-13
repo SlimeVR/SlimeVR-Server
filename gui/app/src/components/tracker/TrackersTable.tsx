@@ -9,13 +9,16 @@ import { formatVector3 } from '@/utils/formatting';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
-import { FlatDeviceTracker } from '@/store/app-store';
+import { FlatDeviceTracker, TrackerConnectionGroup } from '@/store/app-store';
+import {
+  TrackerConnectionGroupSection,
+  TrackerConnectionGroupUnassignedDivider,
+} from './TrackerConnectionGroup';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
 import {
-  BodyPart,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
   TrackingChecklistStepT,
@@ -138,7 +141,7 @@ function Cell({
 
   return (
     <div
-      className={classNames('py-2 group overflow-hidden', { hidden: !show })}
+      className={classNames('py-0.5 group overflow-hidden', { hidden: !show })}
     >
       <div
         style={{
@@ -147,7 +150,7 @@ function Cell({
           )}px rgb(var(--accent-background-30))`,
         }}
         className={classNames(
-          { 'rounded-l-md ml-3': first, 'rounded-r-md mr-3': last },
+          { 'rounded-l-md ml-1': first, 'rounded-r-md mr-1': last },
           'bg-background-60 group-hover:bg-background-50 hover:cursor-pointer p-2 h-[50px] flex items-center'
         )}
       >
@@ -297,25 +300,27 @@ function Row({
 }
 
 export function TrackersTable({
-  flatTrackers,
+  groups,
   clickedTracker,
 }: {
   clickedTracker: (tracker: TrackerDataT) => void;
-  flatTrackers: FlatDeviceTracker[];
+  groups: TrackerConnectionGroup[];
 }) {
   const { config } = useConfig();
   const { highlightedTrackers } = useTrackingChecklist();
 
   const sortingEnabled = config?.debug && config?.devSettings?.sortByName;
 
-  const filteredSortedTrackers = useMemo(() => {
-    if (sortingEnabled) {
-      return flatTrackers.toSorted((a, b) =>
-        getTrackerName(a).localeCompare(getTrackerName(b))
-      );
-    }
-    return flatTrackers;
-  }, [flatTrackers, sortingEnabled]);
+  const sortedGroups = useMemo(() => {
+    if (!sortingEnabled) return groups;
+    const byName = (a: FlatDeviceTracker, b: FlatDeviceTracker) =>
+      getTrackerName(a).localeCompare(getTrackerName(b));
+    return groups.map((group) => ({
+      ...group,
+      assigned: group.assigned.toSorted(byName),
+      unassigned: group.unassigned.toSorted(byName),
+    }));
+  }, [groups, sortingEnabled]);
 
   const moreInfo = config?.devSettings?.moreInfo;
 
@@ -341,37 +346,73 @@ export function TrackersTable({
   }, [config?.devSettings?.preciseRotation, moreInfo]);
 
   return (
-    <div className="w-full overflow-x-auto py-2 px-2">
+    <div className="w-full flex-grow overflow-x-auto py-2 px-2 [container-type:inline-size]">
       <div className="min-w-fit">
-        <div className="grid items-center mb-1" style={{ gridTemplateColumns }}>
-          <Header name={'tracker-table-column-name'} first />
-          <Header name={'tracker-table-column-type'} />
-          <Header name={'tracker-table-column-battery'} />
-          <Header name={'tracker-table-column-ping'} />
-          <Header name={'tracker-table-column-tps'} />
-          <Header name={'tracker-table-column-rotation'} />
-          <Header name={'tracker-table-column-temperature'} last={!moreInfo} />
-          <Header
-            name={'tracker-table-column-linear-acceleration'}
-            show={moreInfo}
-          />
-          <Header name={'tracker-table-column-position'} show={moreInfo} />
-          <Header name={'tracker-table-column-stay_aligned'} show={moreInfo} />
-          <Header
-            name={'tracker-table-column-url'}
-            show={moreInfo}
-            last={moreInfo}
-          />
-        </div>
-        <div className="flex flex-col gap-y-0">
-          {filteredSortedTrackers.map((data, index) => (
-            <Row
-              key={index}
-              clickedTracker={clickedTracker}
-              data={data}
-              highlightedTrackers={highlightedTrackers}
-              gridTemplateColumns={gridTemplateColumns}
+        <div
+          className={classNames('ml-2 pl-2 border-l-2', 'border-transparent')}
+        >
+          <div
+            className="grid items-center mb-1"
+            style={{ gridTemplateColumns }}
+          >
+            <Header name={'tracker-table-column-name'} first />
+            <Header name={'tracker-table-column-type'} />
+            <Header name={'tracker-table-column-battery'} />
+            <Header name={'tracker-table-column-ping'} />
+            <Header name={'tracker-table-column-tps'} />
+            <Header name={'tracker-table-column-rotation'} />
+            <Header
+              name={'tracker-table-column-temperature'}
+              last={!moreInfo}
             />
+            <Header
+              name={'tracker-table-column-linear-acceleration'}
+              show={moreInfo}
+            />
+            <Header name={'tracker-table-column-position'} show={moreInfo} />
+            <Header
+              name={'tracker-table-column-stay_aligned'}
+              show={moreInfo}
+            />
+            <Header
+              name={'tracker-table-column-url'}
+              show={moreInfo}
+              last={moreInfo}
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-3">
+          {sortedGroups.map((group) => (
+            <TrackerConnectionGroupSection key={group.key} group={group}>
+              <div className="flex flex-col gap-y-0">
+                {group.assigned.map((data, index) => (
+                  <Row
+                    key={index}
+                    clickedTracker={clickedTracker}
+                    data={data}
+                    highlightedTrackers={highlightedTrackers}
+                    gridTemplateColumns={gridTemplateColumns}
+                  />
+                ))}
+                {group.assigned.length > 0 && group.unassigned.length > 0 && (
+                  <div className="py-2">
+                    <TrackerConnectionGroupUnassignedDivider
+                      count={group.unassigned.length}
+                      stickyLabel
+                    />
+                  </div>
+                )}
+                {group.unassigned.map((data, index) => (
+                  <Row
+                    key={index}
+                    clickedTracker={clickedTracker}
+                    data={data}
+                    highlightedTrackers={highlightedTrackers}
+                    gridTemplateColumns={gridTemplateColumns}
+                  />
+                ))}
+              </div>
+            </TrackerConnectionGroupSection>
           ))}
         </div>
       </div>

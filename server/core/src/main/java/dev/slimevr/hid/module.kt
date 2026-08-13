@@ -8,6 +8,7 @@ import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
+import solarxr_protocol.data_feed.dongle_data.DongleStatus
 
 data class HIDTrackerRecord(
 	val hidId: Int,
@@ -20,7 +21,7 @@ data class HIDReceiverState(
 	val id: Int,
 	val serialNumber: String,
 	val isDirect: Boolean, // True if this HID device is a tracker connected directly over USB
-
+	val status: DongleStatus,
 	val displayName: String,
 	val hardwareRevision: String,
 	val model: String,
@@ -36,6 +37,7 @@ data class HIDReceiverState(
 sealed interface HIDReceiverActions {
 	data class DeviceRegistered(val hidId: Int, val address: String, val deviceId: Int) : HIDReceiverActions
 	data class TrackerRegistered(val hidId: Int, val trackerId: Int) : HIDReceiverActions
+	data class SetStatus(val status: DongleStatus) : HIDReceiverActions
 }
 
 typealias HIDReceiverContext = Context<HIDReceiverState, HIDReceiverActions>
@@ -83,6 +85,7 @@ class HIDReceiver(
 					id = id,
 					serialNumber = serialNumber,
 					isDirect = isDirect,
+					status = DongleStatus.DISCONNECTED,
 					trackers = emptyMap(),
 					displayName = "Dongle #${serialNumber}",
 					hardwareRevision = "1",

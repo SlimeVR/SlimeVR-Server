@@ -144,7 +144,8 @@ private fun createDongle(dongle: HIDReceiverState, mask: DongleDataMask): Dongle
 		firmwareVersion = dongle.firmwareVersion.takeIf { mask.firmwareVersion == true },
 		firmwareDate = dongle.firmwareDate.takeIf { mask.firmwareDate == true },
 		boardType = dongle.boardType.takeIf { mask.boardType == true },
-		devicesIds = dongle.trackers.keys.map { it.toUShort() }.takeIf { mask.devicesIds == true }
+		devicesIds = dongle.trackers.values.map { it.deviceId.toUShort() }.distinct().takeIf { mask.devicesIds == true },
+		status = dongle.status.takeIf { mask.status == true }
 	)
 }
 
