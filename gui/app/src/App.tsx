@@ -30,6 +30,7 @@ import { BoneRoutingSettings } from './components/settings/pages/BoneRoutingSett
 import { DriverSettings } from './components/settings/pages/DriverSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
+import { DongleSettingsPage } from './components/tracker/DongleSettings';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
@@ -119,6 +120,14 @@ function Layout() {
             element={
               <MainLayout background={false} isMobile={isMobile}>
                 <TrackerSettingsPage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/dongle/:dongleid"
+            element={
+              <MainLayout background={false} isMobile={isMobile}>
+                <DongleSettingsPage />
               </MainLayout>
             }
           />

@@ -83,7 +83,7 @@ export function Home() {
         )}
 
         {config?.homeLayout == 'default' && groups.length > 0 && (
-          <div className="pl-2 pr-2 my-5 flex flex-col gap-5">
+          <div className="pl-2 pr-2 flex flex-col gap-4">
             {groups.map((group) => (
               <TrackerConnectionGroupSection key={group.key} group={group}>
                 <div className="flex flex-col gap-3">

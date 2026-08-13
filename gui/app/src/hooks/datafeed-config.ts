@@ -38,6 +38,7 @@ export function useDataFeedConfig() {
 
   const dongleMask = new DongleDataMaskT();
   dongleMask.boardType = true;
+  dongleMask.customName = true;
   dongleMask.devicesIds = true;
   dongleMask.displayName = true;
   dongleMask.firmwareDate = true;

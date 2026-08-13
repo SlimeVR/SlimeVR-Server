@@ -139,6 +139,7 @@ private fun createDongle(dongle: HIDReceiverState, mask: DongleDataMask): Dongle
 	return DongleData(
 		id = dongle.id.toUShort(),
 		displayName = dongle.displayName.takeIf { mask.displayName == true },
+		customName = dongle.customName.takeIf { mask.customName == true },
 		hardwareRevision = dongle.hardwareRevision.takeIf { mask.hardwareRevision == true },
 		hardwareAddress = null, // FIXME: send me
 		model = dongle.model.takeIf { mask.model == true },

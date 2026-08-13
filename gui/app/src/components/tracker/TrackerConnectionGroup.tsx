@@ -1,5 +1,7 @@
 import classNames from 'classnames';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
+import { NavLink } from 'react-router-dom';
+import { useConfig } from '@/hooks/config';
 import { TrackerConnectionGroup as TrackerConnectionGroupData } from '@/store/app-store';
 import { Typography } from '@/components/commons/Typography';
 import { USBIcon } from '@/components/commons/icon/UsbIcon';
@@ -16,23 +18,36 @@ function isGroupDisconnected(group: TrackerConnectionGroupData) {
   return group.kind === 'dongle' && group.status === DongleStatus.DISCONNECTED;
 }
 
-function ConnectionGroupIcon({
+function getConnectionGroupStorageKey(
+  group: TrackerConnectionGroupData
+): string {
+  return group.kind === 'dongle' ? (group.dongleName ?? group.key) : group.kind;
+}
+
+export function ConnectionGroupIcon({
   kind,
   disconnected,
+  size = 32,
 }: {
   kind: TrackerConnectionGroupData['kind'];
   disconnected: boolean;
+  size?: number;
 }) {
+  const iconSize = Math.round(size * 0.56);
+
   return (
     <div
       className={classNames(
-        'h-8 w-8 shrink-0 rounded-full fill-background-10 flex items-center justify-center',
+        'shrink-0 rounded-full fill-background-10 flex items-center justify-center',
         disconnected ? 'bg-background-50' : 'bg-accent-background-30'
       )}
+      style={{ width: size, height: size }}
     >
-      {kind === 'dongle' && <USBIcon size={18} />}
-      {kind === 'wifi' && <WifiIcon variant="navbar" value={100} size={16} />}
-      {kind === 'driver' && <HeadsetIcon width={18} />}
+      {kind === 'dongle' && <USBIcon size={iconSize} />}
+      {kind === 'wifi' && (
+        <WifiIcon variant="navbar" value={100} size={iconSize} />
+      )}
+      {kind === 'driver' && <HeadsetIcon width={iconSize} />}
     </div>
   );
 }
@@ -45,7 +60,7 @@ export function TrackerConnectionGroupUnassignedDivider({
   stickyLabel?: boolean;
 }) {
   return (
-    <div className="relative flex w-full justify-center items-center h-5 px-3">
+    <div className="relative flex w-full justify-center items-center h-2 px-3">
       <div className="absolute inset-x-3 bg-background-50 h-[2px] rounded-lg" />
       <div
         className={classNames(
@@ -71,7 +86,16 @@ export function TrackerConnectionGroupSection({
   group: TrackerConnectionGroupData;
   children: ReactNode;
 }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const { config, setConfig } = useConfig();
+  const storageKey = getConnectionGroupStorageKey(group);
+  const collapsed = config?.collapsedConnectionGroups[storageKey] ?? false;
+  const setCollapsed = (next: boolean) =>
+    setConfig({
+      collapsedConnectionGroups: {
+        ...config?.collapsedConnectionGroups,
+        [storageKey]: next,
+      },
+    });
 
   const disconnected = isGroupDisconnected(group);
   const lineColor = disconnected
@@ -80,35 +104,48 @@ export function TrackerConnectionGroupSection({
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center gap-4 h-8">
-        <ConnectionGroupIcon kind={group.kind} disconnected={disconnected} />
+      <div className="flex items-center gap-2 h-8">
         {group.kind === 'dongle' ? (
-          <div
-            className="min-w-0 flex-shrink"
+          <NavLink
+            to={`/dongle/${group.dongleId}`}
+            className="flex items-center gap-2 min-w-0 flex-shrink hover:opacity-80"
             title={group.dongleName || undefined}
           >
+            <ConnectionGroupIcon
+              kind={group.kind}
+              disconnected={disconnected}
+            />
             <Typography bold truncate>
               {group.dongleName}
             </Typography>
-          </div>
+          </NavLink>
         ) : (
-          <Typography
-            bold
-            whitespace="whitespace-nowrap"
-            id={`home-connection_group-${group.kind}`}
-          />
+          <>
+            <ConnectionGroupIcon
+              kind={group.kind}
+              disconnected={disconnected}
+            />
+            <Typography
+              bold
+              whitespace="whitespace-nowrap"
+              id={`home-connection_group-${group.kind}`}
+            />
+          </>
         )}
         <div className="flex-grow border-t-2 border-dashed border-background-60" />
         <div className="sticky -right-2 z-20 flex items-center bg-background-70 pl-4 -ml-4">
           <div className="flex items-center bg-background-80 rounded-full px-1">
             {group.kind === 'dongle' && (
-              <div className="flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9">
+              <NavLink
+                to={`/dongle/${group.dongleId}`}
+                className="flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9"
+              >
                 <WrenchIcon width={15} />
-              </div>
+              </NavLink>
             )}
             <div
               className="flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9"
-              onClick={() => setCollapsed((c) => !c)}
+              onClick={() => setCollapsed(!collapsed)}
             >
               {collapsed ? (
                 <ArrowDownIcon size={30} />
@@ -123,7 +160,7 @@ export function TrackerConnectionGroupSection({
         <div className="flex flex-col">
           <div
             className={classNames(
-              'ml-[15px] pl-2 border-l-2 pt-3 border-dashed',
+              'ml-[15px] pl-2 border-l-2 pt-2 border-dashed',
               lineColor
             )}
           >

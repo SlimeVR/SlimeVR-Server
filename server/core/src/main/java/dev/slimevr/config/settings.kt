@@ -34,6 +34,11 @@ data class TrackerConfig(
 )
 
 @Serializable
+data class DongleConfig(
+	val customName: String? = null,
+)
+
+@Serializable
 data class TrackersConfig(
 	val trackerPort: Int = 6969, // Not in SolarXR
 	val globalMagEnabled: Boolean = false,
@@ -212,6 +217,7 @@ data class SettingsConfigState(
 	val mutedChecklistSteps: Set<String> = emptySet(),
 	val allowedUdpDevices: Set<String> = emptySet(),
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
+	val dongles: Map<String, DongleConfig> = emptyMap(),
 	val trackersConfig: TrackersConfig = TrackersConfig(),
 	val hidConfig: HidConfig = HidConfig(),
 	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
@@ -246,6 +252,7 @@ sealed interface SettingsActions {
 	data class Update(val transform: SettingsConfigState.() -> SettingsConfigState) : SettingsActions
 	data class LoadProfile(val newState: SettingsState) : SettingsActions
 	data class UpdateTracker(val hardwareId: String, val transform: TrackerConfig.() -> TrackerConfig) : SettingsActions
+	data class UpdateDongle(val serialNumber: String, val transform: DongleConfig.() -> DongleConfig) : SettingsActions
 	data class AddAllowedUdpDevice(val mac: String) : SettingsActions
 	data class RemoveAllowedUdpDevice(val mac: String) : SettingsActions
 }

@@ -396,6 +396,24 @@ tracker-settings-current-version = Current
 tracker-settings-latest-version = Latest
 tracker-settings-build-date = Build Date
 
+## Dongle settings
+dongle-infos-model = Model
+dongle-infos-hardware_revision = Hardware Revision
+dongle-status-connected = Connected
+dongle-status-disconnected = Disconnected
+dongle-settings-back = Go back to trackers list
+dongle-settings-title = Dongle settings
+dongle-settings-name_section = Dongle name
+dongle-settings-name_section-description = Give it a cute nickname :3
+dongle-settings-name_section-placeholder = Futura's usb thingie
+dongle-settings-name_section-label = Dongle name
+dongle-settings-update = Update now
+dongle-settings-update-title = Firmware version
+dongle-settings-paired_trackers = Paired Trackers
+dongle-settings-paired_trackers-empty = No trackers paired to this dongle yet.
+dongle-settings-pair = Pair Tracker
+dongle-settings-forget_tracker = Forget
+
 
 ## Tracker part card info
 tracker-part_card-no_name = No name

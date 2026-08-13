@@ -103,7 +103,8 @@ export function groupTrackersByConnection(
         key: `dongle-${dongle.id}`,
         kind: 'dongle',
         dongleId: dongle.id,
-        dongleName: dongle.displayName?.toString() ?? null,
+        dongleName:
+          dongle.customName?.toString() || dongle.displayName?.toString() || null,
         status: dongle.status,
         assigned: [],
         unassigned: [],

@@ -381,10 +381,10 @@ export function TrackersTable({
             />
           </div>
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           {sortedGroups.map((group) => (
             <TrackerConnectionGroupSection key={group.key} group={group}>
-              <div className="flex flex-col gap-y-0">
+              <div className="flex flex-col gap-0.5">
                 {group.assigned.map((data, index) => (
                   <Row
                     key={index}
@@ -395,12 +395,10 @@ export function TrackersTable({
                   />
                 ))}
                 {group.assigned.length > 0 && group.unassigned.length > 0 && (
-                  <div className="py-2">
-                    <TrackerConnectionGroupUnassignedDivider
-                      count={group.unassigned.length}
-                      stickyLabel
-                    />
-                  </div>
+                  <TrackerConnectionGroupUnassignedDivider
+                    count={group.unassigned.length}
+                    stickyLabel
+                  />
                 )}
                 {group.unassigned.map((data, index) => (
                   <Row

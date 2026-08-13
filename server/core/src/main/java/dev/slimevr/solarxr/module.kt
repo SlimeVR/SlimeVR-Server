@@ -139,6 +139,7 @@ class SolarXRBridge(
 			add(SkeletonProportionsBehaviour(appContext.config.userConfig, appContext.skeleton))
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))
 			add(AssignTrackerBehaviour(appContext.server))
+			add(DongleSettingsBehaviour(appContext.server))
 			add(DriverHandshakeBehaviour(appContext.server))
 			add(DriverOutgoingTrackersBehaviour(appContext))
 			add(DriverIncomingTrackersBehaviour(appContext.server))

@@ -23,6 +23,7 @@ data class HIDReceiverState(
 	val isDirect: Boolean, // True if this HID device is a tracker connected directly over USB
 	val status: DongleStatus,
 	val displayName: String,
+	val customName: String?,
 	val hardwareRevision: String,
 	val model: String,
 	val manufacturer: String,
@@ -38,6 +39,7 @@ sealed interface HIDReceiverActions {
 	data class DeviceRegistered(val hidId: Int, val address: String, val deviceId: Int) : HIDReceiverActions
 	data class TrackerRegistered(val hidId: Int, val trackerId: Int) : HIDReceiverActions
 	data class SetStatus(val status: DongleStatus) : HIDReceiverActions
+	data class SetCustomName(val customName: String?) : HIDReceiverActions
 }
 
 typealias HIDReceiverContext = Context<HIDReceiverState, HIDReceiverActions>
@@ -70,6 +72,9 @@ class HIDReceiver(
 			appContext: AppContextProvider,
 			scope: CoroutineScope,
 		): HIDReceiver {
+			val settings = appContext.config.settings
+			val savedConfig = settings.context.state.value.data.dongles[serialNumber]
+
 			val behaviours = listOf(
 				HIDRegistrationBehaviour(),
 				HIDDeviceInfoBehaviour(),
@@ -78,6 +83,7 @@ class HIDReceiver(
 				HIDStatusBehaviour(),
 				HIDPacketLossBehaviour(),
 				HIDSleepBehaviour(),
+				HIDReceiverConfigBehaviour(settings, serialNumber),
 			)
 
 			val context = Context.create(
@@ -88,6 +94,7 @@ class HIDReceiver(
 					status = DongleStatus.DISCONNECTED,
 					trackers = emptyMap(),
 					displayName = "Dongle #${serialNumber}",
+					customName = savedConfig?.customName,
 					hardwareRevision = "1",
 					manufacturer = "SlimeVR",
 					model = "SuperCool",
