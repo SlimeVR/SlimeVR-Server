@@ -13,7 +13,6 @@ import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeActions
 import dev.slimevr.driver.DriverBridgeSource
@@ -57,6 +56,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus

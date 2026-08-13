@@ -2,7 +2,6 @@ package dev.slimevr.routing
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.config.BoneRoutingConfig
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.driver.DRIVER_SUPPORTED_BONES
 import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.tracker.TrackerState
@@ -13,6 +12,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.RoutingOutputState

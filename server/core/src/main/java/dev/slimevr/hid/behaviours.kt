@@ -3,7 +3,6 @@ package dev.slimevr.hid
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
@@ -11,6 +10,7 @@ import dev.slimevr.util.timeSource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds

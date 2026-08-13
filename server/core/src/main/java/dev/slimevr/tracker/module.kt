@@ -6,7 +6,6 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
@@ -20,6 +19,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus

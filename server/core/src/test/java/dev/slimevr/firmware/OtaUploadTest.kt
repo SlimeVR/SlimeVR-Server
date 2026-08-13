@@ -6,7 +6,7 @@ import dev.slimevr.buildTestAppContext
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
+import solarxr_protocol.datatypes.DeviceOrigin
 import io.ktor.utils.io.ByteChannel
 import io.ktor.utils.io.readRemaining
 import io.ktor.utils.io.writeFully

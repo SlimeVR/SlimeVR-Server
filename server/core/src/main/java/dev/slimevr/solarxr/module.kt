@@ -7,7 +7,7 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
-import dev.slimevr.device.DeviceOrigin
+import solarxr_protocol.datatypes.DeviceOrigin
 import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.driver.DriverIncomingTrackersBehaviour
 import dev.slimevr.solarxr.driver.DriverOutgoingTrackersBehaviour

@@ -4,13 +4,13 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.driver_protocol.AddTrackerStatus
 import solarxr_protocol.driver_protocol.InboundAddTrackerRequest

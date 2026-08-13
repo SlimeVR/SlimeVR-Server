@@ -10,6 +10,7 @@ import {
 } from '@/components/commons/icon/ArrowIcons';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
 import { DongleStatus } from 'solarxr-protocol';
+import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 
 function isGroupDisconnected(group: TrackerConnectionGroupData) {
   return group.kind === 'dongle' && group.status === DongleStatus.DISCONNECTED;
@@ -29,11 +30,9 @@ function ConnectionGroupIcon({
         disconnected ? 'bg-background-50' : 'bg-accent-background-30'
       )}
     >
-      {kind === 'dongle' ? (
-        <USBIcon size={18} />
-      ) : (
-        <WifiIcon variant="navbar" value={100} size={16} />
-      )}
+      {kind === 'dongle' && <USBIcon size={18} />}
+      {kind === 'wifi' && <WifiIcon variant="navbar" value={100} size={16} />}
+      {kind === 'driver' && <HeadsetIcon width={18} />}
     </div>
   );
 }
@@ -96,7 +95,7 @@ export function TrackerConnectionGroupSection({
           <Typography
             bold
             whitespace="whitespace-nowrap"
-            id="home-connection_group-wifi"
+            id={`home-connection_group-${group.kind}`}
           />
         )}
         <div className="flex-grow border-t-2 border-dashed border-background-60" />

@@ -1483,6 +1483,7 @@ home-no_trackers = No trackers detected or assigned
 home-settings = Home Page Settings
 home-settings-close = Close
 home-connection_group-wifi = Wi-Fi Trackers
+home-connection_group-driver = VR Devices
 
 ## Trackers Still On notification
 trackers_still_on-modal-title = Trackers still on
@@ -1768,5 +1769,11 @@ toolbar-mounting_calibration-default = Body
 toolbar-mounting_calibration-feet = Feet
 toolbar-mounting_calibration-fingers = Fingers
 toolbar-drift_reset = Drift Reset
-toolbar-assigned_trackers = {$count} trackers assigned
-toolbar-unassigned_trackers = {$count} trackers unassigned
+toolbar-assigned_trackers = { $count ->
+    [one] { $count } tracker assigned
+    *[other] { $count } trackers assigned
+}
+toolbar-unassigned_trackers = { $count ->
+    [one] { $count } tracker unassigned
+    *[other] { $count } trackers unassigned
+}

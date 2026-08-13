@@ -7,7 +7,7 @@ import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
+import solarxr_protocol.datatypes.DeviceOrigin
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo

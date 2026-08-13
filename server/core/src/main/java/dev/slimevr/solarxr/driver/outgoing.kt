@@ -1,7 +1,7 @@
 package dev.slimevr.solarxr.driver
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.device.DeviceOrigin
+import solarxr_protocol.datatypes.DeviceOrigin
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.bodyPartMap

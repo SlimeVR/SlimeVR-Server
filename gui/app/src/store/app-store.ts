@@ -4,6 +4,7 @@ import {
   BoneT,
   DataFeedUpdateT,
   DeviceDataT,
+  DeviceOrigin,
   DongleDataT,
   DongleStatus,
   TrackerDataT,
@@ -53,23 +54,22 @@ export type TrackerConnectionGroup = {
       status: DongleStatus;
     }
   | { kind: 'wifi' }
+  | { kind: 'driver' }
 );
 
 export function groupTrackersByConnection(
   trackers: FlatDeviceTracker[],
   dongles: DongleDataT[]
 ): TrackerConnectionGroup[] {
-  const dongleByDeviceId = new Map<number, DongleDataT>();
-  for (const dongle of dongles) {
-    for (const deviceId of dongle.devicesIds) {
-      dongleByDeviceId.set(deviceId, dongle);
-    }
-  }
+  const dongleByDeviceId = new Map<number, DongleDataT>(
+    dongles.flatMap((dongle) => dongle.devicesIds.map((id) => [id, dongle]))
+  );
 
   const dongleGroups = new Map<
     number,
     Extract<TrackerConnectionGroup, { kind: 'dongle' }>
   >();
+
   const wifiGroup: Extract<TrackerConnectionGroup, { kind: 'wifi' }> = {
     key: 'wifi',
     kind: 'wifi',
@@ -77,17 +77,31 @@ export function groupTrackersByConnection(
     unassigned: [],
   };
 
-  for (const flatTracker of trackers) {
-    const dongle =
-      flatTracker.device?.id != null
-        ? dongleByDeviceId.get(flatTracker.device.id)
-        : undefined;
+  const driverGroup: Extract<TrackerConnectionGroup, { kind: 'driver' }> = {
+    key: 'driver',
+    kind: 'driver',
+    assigned: [],
+    unassigned: [],
+  };
 
-    let group: TrackerConnectionGroup = wifiGroup;
-    if (dongle) {
-      const dongleGroup = dongleGroups.get(dongle.id) ?? {
+  const getGroup = (flatTracker: FlatDeviceTracker): TrackerConnectionGroup => {
+    if (flatTracker.tracker.origin == DeviceOrigin.DRIVER) {
+      return driverGroup;
+    }
+
+    // 2. Dongle check
+    const deviceId = flatTracker.device?.id;
+    const dongle = deviceId != null ? dongleByDeviceId.get(deviceId) : undefined;
+
+    if (!dongle) {
+      return wifiGroup;
+    }
+
+    let dongleGroup = dongleGroups.get(dongle.id);
+    if (!dongleGroup) {
+      dongleGroup = {
         key: `dongle-${dongle.id}`,
-        kind: 'dongle' as const,
+        kind: 'dongle',
         dongleId: dongle.id,
         dongleName: dongle.displayName?.toString() ?? null,
         status: dongle.status,
@@ -95,23 +109,39 @@ export function groupTrackersByConnection(
         unassigned: [],
       };
       dongleGroups.set(dongle.id, dongleGroup);
-      group = dongleGroup;
     }
 
-    if (flatTracker.tracker.info?.bodyPart === BodyPart.NONE) {
-      group.unassigned.push(flatTracker);
-    } else {
-      group.assigned.push(flatTracker);
-    }
+    return dongleGroup;
+  };
+
+  for (const flatTracker of trackers) {
+    const group = getGroup(flatTracker);
+    const isUnassigned = flatTracker.tracker.info?.bodyPart === BodyPart.NONE;
+    const targetList = isUnassigned ? group.unassigned : group.assigned;
+
+    targetList.push(flatTracker);
   }
 
-  const groups: TrackerConnectionGroup[] = [...dongleGroups.values()];
+  const isNotEmpty = (group: TrackerConnectionGroup) =>
+    group.assigned.length > 0 || group.unassigned.length > 0;
 
-  if (wifiGroup.assigned.length > 0 || wifiGroup.unassigned.length > 0) {
-    groups.push(wifiGroup);
-  }
+  const getTrackerCount = (group: TrackerConnectionGroup) =>
+    group.assigned.length + group.unassigned.length;
 
-  return groups;
+  const activeGroups = [
+    ...dongleGroups.values(),
+    ...(isNotEmpty(wifiGroup) ? [wifiGroup] : []),
+    ...(isNotEmpty(driverGroup) ? [driverGroup] : []),
+  ];
+
+  return activeGroups.sort((a, b) => {
+    // Driver group always goes last
+    if (a.kind === 'driver') return 1;
+    if (b.kind === 'driver') return -1;
+
+    // Otherwise sort descending by total tracker count
+    return getTrackerCount(b) - getTrackerCount(a);
+  });
 }
 
 export const flatTrackersAtom = atom((get) => {

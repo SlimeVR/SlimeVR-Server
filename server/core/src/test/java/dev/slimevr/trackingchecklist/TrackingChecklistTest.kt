@@ -10,7 +10,6 @@ import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.networkprofile.NetworkInfo
 import dev.slimevr.networkprofile.NetworkProfileActions
 import dev.slimevr.networkprofile.NetworkProfileManager
@@ -27,6 +26,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.ResetType

@@ -5,7 +5,6 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.config.Settings
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.osc.OscReceiver
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.VRCOSCInputState
 

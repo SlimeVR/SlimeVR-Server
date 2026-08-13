@@ -2,15 +2,14 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.config.SettingsActions
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.udp.SensorConfigFlags
 import dev.slimevr.udp.UDPConnectionActions
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.rpc.ChangeMagToggleRequest
 import solarxr_protocol.rpc.MagToggleRequest

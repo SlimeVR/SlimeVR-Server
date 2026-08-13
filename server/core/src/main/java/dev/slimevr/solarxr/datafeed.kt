@@ -72,6 +72,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null, // FIXME: uses reference adjusted
 	rawMagneticVector = if (trackerMask.rawMagneticVector == true && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.let { Vec3f(it.x, it.y, it.z) } else null,
 	stayAligned = if (trackerMask.stayAligned == true) StayAlignedTracker(tracker.stayAlignedData.yawCorrection.toDeg(), tracker.motion == Motion.RESTING) else null,
+	origin = tracker.origin,
 )
 
 private fun createDevice(
@@ -112,6 +113,7 @@ private fun createDevice(
 		} else {
 			null
 		},
+		origin = device.origin
 	)
 }
 

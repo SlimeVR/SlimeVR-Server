@@ -9,7 +9,7 @@ import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
+import solarxr_protocol.datatypes.DeviceOrigin
 import dev.slimevr.serial.SerialPortInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
