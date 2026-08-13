@@ -145,7 +145,7 @@ class Tracker(
 			}
 
 			val behaviours = listOf(
-				TrackerBasicBehaviour(appContext.stayAlignedManager),
+				TrackerBasicBehaviour(appContext.stayAlignedManager, settings),
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),

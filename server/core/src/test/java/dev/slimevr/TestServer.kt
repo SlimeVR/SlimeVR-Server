@@ -23,7 +23,6 @@ import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.keybind.KeybindManager
-import dev.slimevr.math.angle.Angle
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsBasicBehaviour
@@ -43,12 +42,9 @@ import dev.slimevr.stayaligned.StayAlignedActions
 import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.stayaligned.StayAlignedState
 import dev.slimevr.tapdetection.TapDetectionManager
-import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
-import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
-import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -61,11 +57,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
-import solarxr_protocol.datatypes.MagnetometerStatus
-import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
-import solarxr_protocol.datatypes.hardware_info.TrackerDataType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
@@ -173,7 +166,7 @@ fun buildTestTracker(
 	val context = Context.create(
 		initialState = state,
 		scope = scope,
-		behaviours = listOf(TrackerBasicBehaviour(buildTestStayAlignedManager(appContext.server, scope))) + additionalBehaviours,
+		behaviours = listOf(TrackerBasicBehaviour(buildTestStayAlignedManager(appContext.server, scope), settings)) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)

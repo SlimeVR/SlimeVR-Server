@@ -1,5 +1,7 @@
 package dev.slimevr.tracker.behaviours
 
+import com.jme3.math.FastMath
+import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tracker.CalibratedAcceleration
@@ -32,7 +34,7 @@ import kotlin.concurrent.atomics.incrementAndFetch
 import kotlin.time.Duration
 
 @OptIn(ExperimentalAtomicApi::class)
-class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) : TrackerBehaviour {
+class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager, private val settings: Settings) : TrackerBehaviour {
 	val tpsCount = AtomicInt(0)
 
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
@@ -43,6 +45,8 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 		is TrackerActions.SetStatus -> state.copy(status = action.status)
 
 		is TrackerActions.SetRotation -> {
+			// TODO refactor this spaghetti
+
 			// This action counts as a tick towards TPS if the data is new.
 			if (action.newData) tpsCount.incrementAndFetch()
 
@@ -54,6 +58,7 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 			val cal = state.sessionCalibration
 
 			val hideYawCorrection = stayAlignedManager.context.state.value.hideCorrection
+			val stayAlignedEnabled = settings.context.state.value.data.stayAlignedConfig.enabled // TODO do we need to check?
 			val yawCorrectedRawRotation = Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawRotation
 
 			// TODO non-IMU trackers still want some form of calibration applied
@@ -69,7 +74,7 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 						cal.headingAlignment * state.mountingOrientation,
 					)
 					val yawCorrectCalibratedRotation = calibrate(yawCorrectedRawRotation).twinNearest(state.stayAlignedData.forceStayAlignedRotation)
-					(if (hideYawCorrection) calibrate(rawRotation).twinNearest(state.rotation) else yawCorrectCalibratedRotation) to yawCorrectCalibratedRotation
+					(if (hideYawCorrection || !stayAlignedEnabled) calibrate(rawRotation).twinNearest(state.rotation) else yawCorrectCalibratedRotation) to yawCorrectCalibratedRotation
 				}
 
 				cal != null -> state.rotation to state.stayAlignedData.forceStayAlignedRotation
@@ -133,12 +138,14 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager) 
 				attitudeAlignment = attitudeAlignment,
 			)
 
-			// Reset polarity tracking
+			// Align the rotation to the default polarity we use
 			val defaultPolarityRotation = state.rotation.twinNearest(Quaternion.IDENTITY)
 
 			state.copy(
 				sessionCalibration = sessionCalibration,
+				// Reset polarity tracking
 				rotation = defaultPolarityRotation,
+				stayAlignedData = state.stayAlignedData.copy(forceStayAlignedRotation = defaultPolarityRotation),
 				// Full reset snaps: cancel any in-progress yaw smoothing.
 				yawResetSmoothing = null,
 			)
