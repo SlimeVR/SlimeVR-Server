@@ -5,21 +5,24 @@ import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeActions
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.SolarXRBridgeState
-import solarxr_protocol.driver_protocol.DriverHandshakeStatus
-import solarxr_protocol.driver_protocol.InboundHandshakeRequest
-import solarxr_protocol.driver_protocol.InboundHandshakeResponse
+import solarxr_protocol.driver_protocol.HandshakeStatus
+import solarxr_protocol.driver_protocol.HandshakeRequest
+import solarxr_protocol.driver_protocol.HandshakeResponse
 
 class DriverHandshakeBehaviour(
 	private val server: VRServer,
 ) : SolarXRBridgeBehaviour {
 	override fun reduce(state: SolarXRBridgeState, action: SolarXRBridgeActions) = when (action) {
-		is SolarXRBridgeActions.SetDriverName -> state.copy(driverName = action.name)
+		is SolarXRBridgeActions.SetDriverInfo -> state.copy(driverName = action.name, boneMask = action.boneMask)
 		else -> state
 	}
 
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.onDriverMessage<InboundHandshakeRequest> { req, replyTo ->
-			val name = req.driverName
+		receiver.onDriverMessage<HandshakeRequest> { req, replyTo ->
+			val name = req.driverName ?: run {
+				receiver.sendDriverMessage(HandshakeResponse(status = HandshakeStatus.REJECTED_UNNAMED), replyTo = replyTo)
+				return@onDriverMessage
+			}
 
 			val duplicate = name != null &&
 				server.context.state.value.solarxr.values.any {
@@ -28,16 +31,16 @@ class DriverHandshakeBehaviour(
 
 			if (duplicate) {
 				receiver.sendDriverMessage(
-					InboundHandshakeResponse(status = DriverHandshakeStatus.REJECTED_DUPLICATE),
+					HandshakeResponse(status = HandshakeStatus.REJECTED_DUPLICATE),
 					replyTo = replyTo,
 				)
-				receiver.disconnect()
+				receiver.context.dispatch(SolarXRBridgeActions.SetDriverInfo(null, null))
 				return@onDriverMessage
 			}
 
-			if (name != null) receiver.context.dispatch(SolarXRBridgeActions.SetDriverName(name))
+			receiver.context.dispatch(SolarXRBridgeActions.SetDriverInfo(name, req.boneMask))
 			receiver.sendDriverMessage(
-				InboundHandshakeResponse(status = DriverHandshakeStatus.ACCEPTED),
+				HandshakeResponse(status = HandshakeStatus.ACCEPTED),
 				replyTo = replyTo,
 			)
 		}.launchIn(receiver.context.scope)

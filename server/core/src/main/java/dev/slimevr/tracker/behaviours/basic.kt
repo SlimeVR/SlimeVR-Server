@@ -43,6 +43,8 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 
 		is TrackerActions.SetStatus -> state.copy(status = action.status)
 
+		is TrackerActions.SetDriverName -> state.copy(driverName = action.driverName)
+
 		is TrackerActions.SetRotation -> {
 			// This action counts as a tick towards TPS if the data is new.
 			if (action.newData) tpsCount.incrementAndFetch()

@@ -51,6 +51,7 @@ data class TrackerState(
 	val id: Int,
 	val deviceId: Int,
 	val origin: DeviceOrigin,
+	val driverName: String? = null,
 	val hardwareId: String,
 	val name: String,
 	val imuType: ImuType?,
@@ -97,6 +98,7 @@ sealed interface TrackerActions {
 	data class Update(val transform: TrackerState.() -> TrackerState) : TrackerActions
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
+	data class SetDriverName(val driverName: String?) : TrackerActions
 	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val newData: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions

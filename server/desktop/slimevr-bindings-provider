@@ -1,0 +1,2 @@
+#!/bin/bash
+steam-run $(realpath ../../bindings-provider/build/slimevr-bindings-provider)

@@ -17,6 +17,7 @@ import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.data_feed.DataFeedMessageHeader
+import solarxr_protocol.datatypes.BoneMask
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.driver_protocol.DriverMessage
@@ -29,11 +30,12 @@ import kotlin.time.Duration.Companion.seconds
 data class SolarXRBridgeState(
 	val dataFeedConfigs: List<DataFeedConfig>,
 	val driverName: String? = null,
+	val boneMask: BoneMask? = null,
 )
 
 sealed interface SolarXRBridgeActions {
 	data class SetConfig(val configs: List<DataFeedConfig>) : SolarXRBridgeActions
-	data class SetDriverName(val name: String) : SolarXRBridgeActions
+	data class SetDriverInfo(val name: String?, val boneMask: BoneMask?) : SolarXRBridgeActions
 }
 
 typealias SolarXRBridgeContext = Context<SolarXRBridgeState, SolarXRBridgeActions>
@@ -72,8 +74,8 @@ class SolarXRBridge(
 	val id: Int,
 	val context: SolarXRBridgeContext,
 	val appContext: AppContextProvider,
-	val dataFeedDispatcher: EventDispatcher<DataFeedMessage>,
-	val rpcDispatcher: EventDispatcher<RpcMessage>,
+	val dataFeedDispatcher: EventDispatcher<DataFeedMessage> = EventDispatcher("SolarXR[$id].dataFeed", context.scope, capacity = 32),
+	val rpcDispatcher: EventDispatcher<RpcMessage> = EventDispatcher("SolarXR[$id].rpc", context.scope, capacity = 64),
 	val driverDispatcher: EventDispatcher<DriverMessage> = EventDispatcher("SolarXR[$id].driver", context.scope, capacity = 64),
 	val outbound: EventDispatcher<MessageBundle> = EventDispatcher("SolarXR[$id].outbound", context.scope, capacity = 64),
 	private val managedContext: ManagedContext<SolarXRBridgeState, SolarXRBridgeActions>? = null,
@@ -108,11 +110,19 @@ class SolarXRBridge(
 		dispose()
 		appContext.server.context.dispatch(VRServerActions.SolarXRDisconnected(id))
 
-		// if the connection was a driver connection. we set the trackers status to disconnected
-		if (context.state.value.driverName.isNullOrEmpty()) {
-			appContext.server.context.state.value.trackers.values.filter { it.context.state.value.origin == DeviceOrigin.DRIVER }.forEach {
-				it.context.dispatch(TrackerActions.SetStatus(status = TrackerStatus.DISCONNECTED))
-			}
+		val driverName = context.state.value.driverName
+		// If the connection was a driver connection, we set the status of its trackers to disconnected
+		if (!driverName.isNullOrEmpty()) {
+			appContext.server.context.state.value.trackers.values
+				.filter {
+					val state = it.context.state.value
+					state.origin == DeviceOrigin.DRIVER && state.driverName == driverName
+				}
+				.forEach {
+					it.context.dispatch(TrackerActions.Update {
+						copy(status = TrackerStatus.DISCONNECTED, driverName = null)
+					})
+				}
 		}
 	}
 
@@ -142,7 +152,7 @@ class SolarXRBridge(
 			add(DongleSettingsBehaviour(appContext.server))
 			add(DriverHandshakeBehaviour(appContext.server))
 			add(DriverOutgoingTrackersBehaviour(appContext))
-			add(DriverIncomingTrackersBehaviour(appContext.server))
+			add(DriverIncomingTrackersBehaviour(appContext))
 			add(MagBehaviour(appContext))
 			add(KnownTrackersBehaviour(appContext.config.settings))
 			add(BvhBehaviour(appContext.bvhManager))
@@ -169,8 +179,6 @@ class SolarXRBridge(
 				id = id,
 				context = managedContext.context,
 				appContext = appContext,
-				dataFeedDispatcher = EventDispatcher("SolarXR[$id].datafeed", managedContext.context.scope, capacity = 32),
-				rpcDispatcher = EventDispatcher("SolarXR[$id].rpc", managedContext.context.scope, capacity = 64),
 				managedContext = managedContext,
 			)
 			bridge.startObserving()
