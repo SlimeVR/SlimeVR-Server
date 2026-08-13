@@ -93,7 +93,7 @@ class HIDReceiver(
 					isDirect = isDirect,
 					status = DongleStatus.DISCONNECTED,
 					trackers = emptyMap(),
-					displayName = "Dongle #${serialNumber}",
+					displayName = "Dongle #$serialNumber",
 					customName = savedConfig?.customName,
 					hardwareRevision = "1",
 					manufacturer = "SlimeVR",
@@ -101,7 +101,7 @@ class HIDReceiver(
 					firmwareVersion = "67",
 					firmwareDate = "2000 BC",
 					hardwareAddress = "10:2A:23:34:1F",
-					boardType = "Nya_a"
+					boardType = "Nya_a",
 				),
 				scope = scope,
 				behaviours = behaviours,

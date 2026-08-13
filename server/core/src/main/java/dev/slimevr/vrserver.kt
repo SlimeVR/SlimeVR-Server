@@ -61,7 +61,7 @@ class VRServer(
 					devices = emptyMap(),
 					drivers = emptyMap(),
 					solarxr = emptyMap(),
-					dongles = emptyMap()
+					dongles = emptyMap(),
 				),
 				scope = scope,
 				behaviours = behaviours,

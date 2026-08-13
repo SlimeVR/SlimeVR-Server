@@ -7,7 +7,6 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
-import solarxr_protocol.datatypes.DeviceOrigin
 import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.driver.DriverIncomingTrackersBehaviour
 import dev.slimevr.solarxr.driver.DriverOutgoingTrackersBehaviour
@@ -18,6 +17,7 @@ import solarxr_protocol.MessageBundle
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessage
 import solarxr_protocol.data_feed.DataFeedMessageHeader
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.driver_protocol.DriverMessage
 import solarxr_protocol.driver_protocol.DriverMessageHeader

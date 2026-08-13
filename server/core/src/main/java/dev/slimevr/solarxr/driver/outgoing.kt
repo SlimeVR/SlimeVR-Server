@@ -1,7 +1,6 @@
 package dev.slimevr.solarxr.driver
 
 import dev.slimevr.AppContextProvider
-import solarxr_protocol.datatypes.DeviceOrigin
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.bodyPartMap
@@ -16,6 +15,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
