@@ -21,15 +21,19 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
   const renderComponent = (
     c: ComponentNode,
     depth = 0,
-    onDelete?: () => void
+    onDelete?: () => void,
+    layoutContext = { compactGroupChildren: false }
   ) => {
     if (c.type === 'group') {
+      const hasListChild = c.childrens.some((child) => child.type === 'list');
+
       return (
         <div
           key={c.path.join('/')}
           className={classNames('flex flex-col rounded-lg', {
             'p-4 ': depth !== 0,
             'bg-background-80': depth >= 1,
+            'sm:col-span-2': depth > 1 && c.layout?.spanTwoColumns,
           })}
         >
           <div className="flex justify-between items-center">
@@ -45,11 +49,21 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
           </div>
           <div
             className={classNames({
-              'flex flex-col gap-4': depth + 1 <= 1,
-              'grid sm:grid-cols-2 gap-2 items-end': depth + 1 > 1,
+              'flex flex-col gap-4':
+                layoutContext.compactGroupChildren || depth + 1 <= 1,
+              'grid sm:grid-cols-2 gap-2 items-start':
+                !layoutContext.compactGroupChildren &&
+                depth + 1 > 1 &&
+                hasListChild,
+              'grid sm:grid-cols-2 gap-2 items-end':
+                !layoutContext.compactGroupChildren &&
+                depth + 1 > 1 &&
+                !hasListChild,
             })}
           >
-            {c.childrens.map((c) => renderComponent(c, depth + 1))}
+            {c.childrens.map((c) =>
+              renderComponent(c, depth + 1, undefined, layoutContext)
+            )}
           </div>
         </div>
       );
@@ -72,7 +86,7 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
 
     if (c.type === 'text') {
       return (
-        <div className="flex flex-col pt-2" key={c.path.join('/')}>
+        <div className="flex flex-col pt-2 min-w-0" key={c.path.join('/')}>
           <InputInside
             name={c.label}
             label={c.label}
@@ -93,7 +107,10 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
 
     if (c.type === 'dropdown') {
       return (
-        <div className="flex flex-col pt-2 gap-1" key={c.path.join('/')}>
+        <div
+          className="flex flex-col pt-2 gap-1 min-w-0"
+          key={c.path.join('/')}
+        >
           <Typography>{c.label}</Typography>
           <DropdownInside
             items={c.items.map((i) => ({ value: i, label: i }))}
@@ -115,25 +132,31 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
     }
 
     if (c.type === 'list') {
+      const itemGridList = c.layout?.itemGridList ?? false;
+      const compactGroupChildren = c.layout?.compactGroupChildren ?? false;
+
       return (
         <div
           key={c.path.join('/')}
           className={classNames('flex flex-col gap-2 rounded-lg', {
             'p-4': depth >= 2,
             'bg-background-70': depth >= 1,
+            'sm:col-span-2': depth > 1 && c.layout?.spanTwoColumns,
           })}
         >
           <Typography variant="section-title">{c.label}</Typography>
           <div
             className={classNames({
-              'grid sm:grid-cols-2 gap-2': true,
+              'grid sm:grid-cols-2 gap-2': itemGridList,
+              'flex flex-col gap-2': !itemGridList,
             })}
           >
             {c.childrens.map((c2, index) =>
               renderComponent(
                 c2,
                 depth + 1,
-                c.del ? () => c.del?.(index) : undefined
+                c.del ? () => c.del?.(index) : undefined,
+                { compactGroupChildren }
               )
             )}
             {c.add && (
