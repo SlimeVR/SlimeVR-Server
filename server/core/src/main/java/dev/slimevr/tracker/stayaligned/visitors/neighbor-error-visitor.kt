@@ -1,11 +1,11 @@
-package dev.slimevr.stayaligned.visitors
+package dev.slimevr.tracker.stayaligned.visitors
 
 import dev.slimevr.math.angle.AngleErrors
-import dev.slimevr.stayaligned.TrackerGroups
-import dev.slimevr.stayaligned.YawUtils.extraYaw
-import dev.slimevr.stayaligned.YawUtils.trackerYaw
-import dev.slimevr.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.stayaligned.TrackerGroups
+import dev.slimevr.tracker.stayaligned.YawUtils.extraYaw
+import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
+import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
 import dev.slimevr.util.Side
 import solarxr_protocol.datatypes.BodyPart
 

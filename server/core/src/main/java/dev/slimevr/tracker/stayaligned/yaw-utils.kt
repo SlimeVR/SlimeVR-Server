@@ -1,9 +1,11 @@
-package dev.slimevr.stayaligned
+package dev.slimevr.tracker.stayaligned
 
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.applyCalibration
 import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.EulerOrder
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
 /**
@@ -22,7 +24,7 @@ object YawUtils {
 	 * Whether we can reliably get the yaw of a tracker.
 	 */
 	fun hasTrackerYaw(trackerState: TrackerState) = Angle.absBetween(
-		trackerState.stayAlignedData.correctedRotation.sandwichUnitX(),
+		getStayAlignedRotation(trackerState).sandwichUnitX(),
 		Vector3.POS_Y,
 	) > MIN_ON_SIDE_ANGLE
 
@@ -39,7 +41,7 @@ object YawUtils {
 	 * different from the from YZX. DO NOT ATTEMPT!
 	 */
 	fun trackerYaw(trackerState: TrackerState) = Angle.ofRad(
-		trackerState.stayAlignedData.correctedRotation
+		getStayAlignedRotation(trackerState)
 			.toEulerAngles(EulerOrder.YZX)
 			.y,
 	)

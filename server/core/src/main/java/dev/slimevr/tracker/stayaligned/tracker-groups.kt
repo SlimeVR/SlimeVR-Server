@@ -1,4 +1,4 @@
-package dev.slimevr.stayaligned
+package dev.slimevr.tracker.stayaligned
 
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.getFineFor

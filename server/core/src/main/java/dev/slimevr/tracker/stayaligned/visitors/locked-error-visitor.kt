@@ -1,9 +1,11 @@
-package dev.slimevr.stayaligned.visitors
+package dev.slimevr.tracker.stayaligned.visitors
 
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleErrors
-import dev.slimevr.stayaligned.TrackerGroups
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.applyCalibration
+import dev.slimevr.tracker.stayaligned.TrackerGroups
+import dev.slimevr.tracker.stayaligned.getStayAlignedRotation
 import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -89,7 +91,7 @@ class LockedErrorVisitor(
 		errors.add(error(tracker))
 	}
 
-	private fun error(trackerState: TrackerState): Angle = yawDifference(trackerState.stayAlignedData.correctedRotation, lockedRotation)
+	private fun error(trackerState: TrackerState): Angle = yawDifference(getStayAlignedRotation(trackerState), lockedRotation)
 
 	/**
 	 * Gets the yaw between two rotations, for small rotations.

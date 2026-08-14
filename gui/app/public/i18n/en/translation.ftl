@@ -608,7 +608,6 @@ settings-stay_aligned-description = Stay Aligned reduces drift by gradually adju
 settings-stay_aligned-setup-label = Setup Stay Aligned
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
 settings-stay_aligned-enabled-label = Adjust trackers
-settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare without Stay Aligned)
 settings-stay_aligned-general-label = General
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
 settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.

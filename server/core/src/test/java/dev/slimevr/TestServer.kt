@@ -37,9 +37,6 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
-import dev.slimevr.stayaligned.StayAlignedActions
-import dev.slimevr.stayaligned.StayAlignedManager
-import dev.slimevr.stayaligned.StayAlignedState
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
@@ -172,7 +169,7 @@ fun buildTestTracker(
 	val context = Context.create(
 		initialState = state,
 		scope = scope,
-		behaviours = listOf(TrackerBasicBehaviour(buildTestStayAlignedManager(appContext.server, scope), settings)) + additionalBehaviours,
+		behaviours = listOf(TrackerBasicBehaviour(settings)) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)
@@ -210,17 +207,6 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 	return HeightCalibrationManager(context, server, userConfig)
 }
 
-fun buildTestStayAlignedManager(server: VRServer, scope: CoroutineScope): StayAlignedManager {
-	val initialState = StayAlignedState(hideCorrection = false)
-	val context = Context.create<StayAlignedState, StayAlignedActions>(
-		initialState = initialState,
-		scope = scope,
-		behaviours = emptyList(),
-		name = "StayAligned[test]",
-	)
-	return StayAlignedManager(context, server, buildTestSkeleton(scope), buildTestSettings(scope))
-}
-
 private object NoopConfigStorage : ConfigStorage {
 	override suspend fun read(path: String): String? = null
 	override suspend fun write(path: String, content: String) = Unit
@@ -253,7 +239,6 @@ abstract class TestAppContext : AppContextProvider {
 	override val resetsManager: ResetsManager get() = error("not used in test")
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
 	override val boneRouting: BoneRoutingManager get() = error("not used in test")
-	override val stayAlignedManager: StayAlignedManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }

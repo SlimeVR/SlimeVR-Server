@@ -42,8 +42,6 @@ data class YawResetSmoothing(
 )
 
 data class StayAlignedData(
-	// Calibrated rotation of the tracker with StayAligned always applied
-	val correctedRotation: CalibratedRotation,
 	// Rotation of the tracker when it started resting
 	val lockedRotation: Quaternion?,
 	// Yaw correction to apply to the tracker's rotation
@@ -102,7 +100,6 @@ sealed interface TrackerActions {
 	data object ClearMountingReset : TrackerActions
 	data class SetMotion(val motion: Motion) : TrackerActions
 	data class SetYawCorrection(val yawCorrection: Angle) : TrackerActions
-	data class SetCorrectedRotation(val correctedRotation: CalibratedRotation) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
@@ -146,7 +143,7 @@ class Tracker(
 			}
 
 			val behaviours = listOf(
-				TrackerBasicBehaviour(appContext.stayAlignedManager, settings),
+				TrackerBasicBehaviour(settings),
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
@@ -197,7 +194,7 @@ class Tracker(
 			magStatus = MagnetometerStatus.NOT_SUPPORTED,
 			motion = Motion.ROTATING,
 			yawResetSmoothing = null,
-			stayAlignedData = StayAlignedData(Quaternion.IDENTITY, null, Angle.ZERO),
+			stayAlignedData = StayAlignedData(null, Angle.ZERO),
 		)
 	}
 }

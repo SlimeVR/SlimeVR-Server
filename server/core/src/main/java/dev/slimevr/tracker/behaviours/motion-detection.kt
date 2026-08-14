@@ -79,11 +79,11 @@ class TrackerMotionDetectionBehaviour : TrackerBehaviour {
 	 */
 	private fun isRotating(lastRotation: RawRotation, rotation: RawRotation) = Angle.absBetween(lastRotation, rotation) > MAX_ROTATION
 
-	override fun reduce(state: TrackerState, action: TrackerActions): TrackerState = when (action) {
+	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
 		is TrackerActions.SetMotion -> {
 			state.copy(
 				motion = action.motion,
-				stayAlignedData = state.stayAlignedData.copy(lockedRotation = if (action.motion == Motion.RESTING) state.stayAlignedData.correctedRotation else null),
+				stayAlignedData = state.stayAlignedData.copy(lockedRotation = if (action.motion == Motion.RESTING) state.rotation else null),
 			)
 		}
 

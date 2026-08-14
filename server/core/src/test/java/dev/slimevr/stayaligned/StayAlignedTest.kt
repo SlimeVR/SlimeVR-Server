@@ -11,6 +11,7 @@ import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.behaviours.TrackerStayAlignedBehaviour
+import dev.slimevr.tracker.stayaligned.CorrectTrackerYaw
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +19,6 @@ import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 class StayAlignedTest {
@@ -67,10 +67,10 @@ class StayAlignedTest {
 		CorrectTrackerYaw.adjust(
 			tracker,
 			listOf(tracker.context.state.value, aTrackerState, bTrackerState),
-			Angle(0.007f),
+			Angle(0.002f),
 			enabledStayAlignedConfig,
 		)
 
-//		assertNotEquals(0f, tracker.context.state.value.stayAlignedData.yawCorrection.toDeg())
+		assertNotEquals(0f, tracker.context.state.value.stayAlignedData.yawCorrection.toDeg())
 	}
 }

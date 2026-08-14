@@ -1,20 +1,22 @@
-package dev.slimevr.stayaligned
+package dev.slimevr.tracker.stayaligned
 
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleAverage
 import dev.slimevr.math.angle.AngleErrors
-import dev.slimevr.stayaligned.YawUtils.hasTrackerYaw
-import dev.slimevr.stayaligned.YawUtils.trackerYaw
-import dev.slimevr.stayaligned.poses.PlayerPose
-import dev.slimevr.stayaligned.poses.RelaxedPose
-import dev.slimevr.stayaligned.visitors.CenterErrorVisitor
-import dev.slimevr.stayaligned.visitors.LockedErrorVisitor
-import dev.slimevr.stayaligned.visitors.NeighborErrorVisitor
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.applyCalibration
+import dev.slimevr.tracker.stayaligned.YawUtils.hasTrackerYaw
+import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
+import dev.slimevr.tracker.stayaligned.poses.PlayerPose
+import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
+import dev.slimevr.tracker.stayaligned.visitors.CenterErrorVisitor
+import dev.slimevr.tracker.stayaligned.visitors.LockedErrorVisitor
+import dev.slimevr.tracker.stayaligned.visitors.NeighborErrorVisitor
+import io.github.axisangles.ktmath.Quaternion
 
 object CorrectTrackerYaw {
 
@@ -227,3 +229,5 @@ object CorrectTrackerYaw {
 		(errors.neighborError.toL2Norm() - base.neighborError.toL2Norm()) *
 		StayAlignedDefaults.YAW_ERRORS_NEIGHBOR_ERROR_WEIGHT
 }
+
+fun getStayAlignedRotation(state: TrackerState) = applyCalibration(Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * state.rawRotation, state)

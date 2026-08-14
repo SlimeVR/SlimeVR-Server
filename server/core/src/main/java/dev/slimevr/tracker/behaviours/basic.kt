@@ -2,7 +2,6 @@ package dev.slimevr.tracker.behaviours
 
 import dev.slimevr.config.Settings
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.stayaligned.StayAlignedManager
 import dev.slimevr.tracker.CalibratedAcceleration
 import dev.slimevr.tracker.CalibratedRotation
 import dev.slimevr.tracker.Motion
@@ -33,7 +32,7 @@ import kotlin.concurrent.atomics.incrementAndFetch
 import kotlin.time.Duration
 
 @OptIn(ExperimentalAtomicApi::class)
-class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager, private val settings: Settings) : TrackerBehaviour {
+class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 	val tpsCount = AtomicInt(0)
 
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
@@ -44,17 +43,14 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager, 
 		is TrackerActions.SetStatus -> state.copy(status = action.status)
 
 		is TrackerActions.SetRotation -> {
-			// TODO refactor this spaghetti
-
 			// This action counts as a tick towards TPS if the data is new.
 			if (action.newData) tpsCount.incrementAndFetch()
 
 			// Rotation
 			val rawPolarityTrackedRotation: RawRotation = action.rotation?.twinNearest(state.rawRotation) ?: state.rawRotation
-			val hideYawCorrection = stayAlignedManager.context.state.value.hideCorrection
-			val stayAlignedEnabled = settings.context.state.value.data.stayAlignedConfig.enabled
 			val yawCorrectedRawPolarityTrackedRotation = Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawPolarityTrackedRotation
-			val adjustedRawRotation = if (hideYawCorrection || !stayAlignedEnabled) rawPolarityTrackedRotation else yawCorrectedRawPolarityTrackedRotation
+			val stayAlignedEnabled = settings.context.state.value.data.stayAlignedConfig.enabled
+			val adjustedRawRotation = if (stayAlignedEnabled) yawCorrectedRawPolarityTrackedRotation else rawPolarityTrackedRotation
 
 			// Other data
 			val rawAcceleration: RawAcceleration = action.acceleration ?: state.rawAcceleration
@@ -67,11 +63,8 @@ class TrackerBasicBehaviour(private val stayAlignedManager: StayAlignedManager, 
 			// Rotation calibration
 			val rotation: CalibratedRotation = when {
 				state.imuType == null -> rawPolarityTrackedRotation
-
 				cal != null && action.rotation != null -> applyCalibration(adjustedRawRotation, state)
-
 				cal != null -> state.rotation
-
 				else -> rawPolarityTrackedRotation
 			}
 

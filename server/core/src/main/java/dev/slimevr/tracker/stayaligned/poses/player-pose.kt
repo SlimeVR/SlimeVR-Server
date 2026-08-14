@@ -1,6 +1,6 @@
-package dev.slimevr.stayaligned.poses
+package dev.slimevr.tracker.stayaligned.poses
 
-import dev.slimevr.stayaligned.TrackerGroups
+import dev.slimevr.tracker.stayaligned.TrackerGroups
 
 /**
  * The pose of the player.

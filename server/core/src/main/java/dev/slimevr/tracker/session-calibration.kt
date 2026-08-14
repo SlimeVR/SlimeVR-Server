@@ -30,7 +30,7 @@ fun applyCalibration(rawRotation: RawRotation, state: TrackerState): CalibratedR
 	state.sessionCalibration?.headingCorrection ?: Quaternion.IDENTITY,
 	state.sessionCalibration?.attitudeAlignment ?: Quaternion.IDENTITY,
 	(state.sessionCalibration?.headingAlignment ?: Quaternion.IDENTITY) * state.mountingOrientation,
-	state.restOrientation
+	state.restOrientation,
 )
 
 fun applyCalibration(
