@@ -1,4 +1,4 @@
-package dev.slimevr.tracker.stayaligned
+package dev.slimevr.tracker.stayaligned.visitors
 
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.getFineFor
@@ -328,7 +328,7 @@ class TrackerGroups(trackerStates: List<TrackerState>) {
 		 */
 		fun visitArmTracker(
 			side: Side,
-			tracker: TrackerState,
+			trackerState: TrackerState,
 			aboveUpperBodyOrArm: TrackerState?,
 			belowHandOrArm: TrackerState?,
 		)
@@ -338,7 +338,7 @@ class TrackerGroups(trackerStates: List<TrackerState>) {
 		 */
 		fun visitHandTracker(
 			side: Side,
-			tracker: TrackerState,
+			trackerState: TrackerState,
 			aboveArm: TrackerState?,
 			oppositeHand: TrackerState?,
 		)
@@ -348,7 +348,7 @@ class TrackerGroups(trackerStates: List<TrackerState>) {
 		 */
 		fun visitUpperLegTracker(
 			side: Side,
-			tracker: TrackerState,
+			trackerState: TrackerState,
 			aboveUpperBody: TrackerState?,
 			belowLowerLeg: TrackerState?,
 			oppositeUpperLeg: TrackerState?,
@@ -359,7 +359,7 @@ class TrackerGroups(trackerStates: List<TrackerState>) {
 		 */
 		fun visitLowerLegTracker(
 			side: Side,
-			tracker: TrackerState,
+			trackerState: TrackerState,
 			aboveUpperLeg: TrackerState?,
 			belowFoot: TrackerState?,
 			oppositeLowerLeg: TrackerState?,
@@ -370,7 +370,7 @@ class TrackerGroups(trackerStates: List<TrackerState>) {
 		 */
 		fun visitFootTracker(
 			side: Side,
-			tracker: TrackerState,
+			trackerState: TrackerState,
 			aboveLowerLeg: TrackerState?,
 			oppositeFoot: TrackerState?,
 		)

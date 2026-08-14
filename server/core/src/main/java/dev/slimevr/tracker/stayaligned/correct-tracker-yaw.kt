@@ -14,8 +14,8 @@ import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
 import dev.slimevr.tracker.stayaligned.poses.PlayerPose
 import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracker.stayaligned.visitors.CenterErrorVisitor
-import dev.slimevr.tracker.stayaligned.visitors.LockedErrorVisitor
 import dev.slimevr.tracker.stayaligned.visitors.NeighborErrorVisitor
+import dev.slimevr.tracker.stayaligned.visitors.TrackerGroups
 import io.github.axisangles.ktmath.Quaternion
 
 object CorrectTrackerYaw {
@@ -38,13 +38,10 @@ object CorrectTrackerYaw {
 		yawCorrection: Angle,
 		config: StayAlignedConfig,
 	) {
-		// Create groups from the tracker states
-		val trackerStateGroups = TrackerGroups(trackerStates)
-
 		when (tracker.context.state.value.motion) {
-			Motion.ROTATING -> adjustMovingTracker(tracker, trackerStateGroups, yawCorrection, config)
+			Motion.ROTATING -> adjustMovingTracker(tracker, trackerStates, yawCorrection, config)
 
-			Motion.RESTING -> adjustLockedTracker(tracker, trackerStateGroups, yawCorrection)
+			Motion.RESTING -> adjustLockedTracker(tracker, yawCorrection)
 
 			// Do not adjust trackers that were recently resting
 			// to support play styles that are primarily at rest
@@ -67,17 +64,15 @@ object CorrectTrackerYaw {
 	 * will never lock.
 	 */
 	private fun adjustLockedTracker(
-		tracker: Tracker,
-		trackerGroup: TrackerGroups,
-		yawCorrection: Angle,
+        tracker: Tracker,
+        yawCorrection: Angle,
 	) {
 		val trackerState = tracker.context.state.value
-
 		val lockedRotation = trackerState.stayAlignedData.lockedRotation ?: return
 
 		adjustByError(tracker, yawCorrection) {
 			YawErrors().also {
-				trackerGroup.visit(trackerState, LockedErrorVisitor(lockedRotation, it.lockedError))
+				it.lockedError.add(YawUtils.yawDifference(getStayAlignedRotation(trackerState), lockedRotation))
 			}
 		}
 	}
@@ -101,11 +96,14 @@ object CorrectTrackerYaw {
 	 * relaxed pose, which can result in imbalanced poses.
 	 */
 	private fun adjustMovingTracker(
-		tracker: Tracker,
-		trackers: TrackerGroups,
-		yawCorrection: Angle,
-		config: StayAlignedConfig,
+        tracker: Tracker,
+		trackerStates: List<TrackerState>,
+        yawCorrection: Angle,
+        config: StayAlignedConfig,
 	) {
+		// Create groups from the tracker states
+		val trackers = TrackerGroups(trackerStates)
+
 		val trackerState = tracker.context.state.value
 
 		val centerYaw = centerYawOfTrackers(trackers) ?: return
@@ -122,7 +120,7 @@ object CorrectTrackerYaw {
 	}
 
 	private fun centerYawOfTrackers(
-		trackerGroups: TrackerGroups,
+        trackerGroups: TrackerGroups,
 	): Angle? {
 		val head = trackerGroups.head
 		val upperBody = trackerGroups.upperBody
