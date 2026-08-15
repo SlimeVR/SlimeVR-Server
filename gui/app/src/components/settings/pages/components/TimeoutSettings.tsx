@@ -1,5 +1,5 @@
 import { useLocalization, Localized } from '@fluent/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
   ChangeTimeoutSettingsRequestT,
@@ -9,9 +9,6 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Typography } from '@/components/commons/Typography';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { isEqual } from '@react-hookz/deep-equal';
-import { selectAtom } from 'jotai/utils';
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
 
@@ -23,16 +20,8 @@ const defaultValues: TimeoutForm = {
   duration: 30.0,
 };
 
-const timeoutSettingsAtom = atom(new TimeoutSettingsResponseT());
-const timeoutSettingsValueAtom = selectAtom(
-  timeoutSettingsAtom,
-  (settings) => settings,
-  isEqual
-);
-
 export function TimeoutSettings() {
-  const setSettings = useSetAtom(timeoutSettingsAtom);
-  const settings = useAtomValue(timeoutSettingsValueAtom);
+  const [ settings, setSettings ] = useState(new TimeoutSettingsResponseT());
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
