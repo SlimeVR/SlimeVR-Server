@@ -144,6 +144,7 @@ class SolarXRBridge(
 			add(DriverOutgoingTrackersBehaviour(appContext))
 			add(DriverIncomingTrackersBehaviour(appContext.server))
 			add(MagBehaviour(appContext))
+			add(TimeoutSettingsBehaviour(appContext.config.settings))
 			add(KnownTrackersBehaviour(appContext.config.settings))
 			add(BvhBehaviour(appContext.bvhManager))
 			add(InstalledInfoBehaviour())
