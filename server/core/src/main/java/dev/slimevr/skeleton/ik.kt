@@ -4,63 +4,112 @@ import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import java.util.EnumMap
 
-fun chainDistanceFromTarget(bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector3): Float {
-	val endBone = bones[chain.last()]
-	requireNotNull(endBone)
-	return (target - endBone.tailPosition).len()
+private fun requireBone(bones: ComputedSkeleton, bodyPart: BodyPart) = requireNotNull(bones[bodyPart]) {
+	"The computed skeleton is missing \"${bodyPart}\" from the IK chain."
 }
 
-fun chainCanReach(bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector3): Boolean {
-	val rootBone = bones[chain.first()]
-	requireNotNull(rootBone)
+fun chainDistanceFromTarget(
+	bones: ComputedSkeleton,
+	chain: List<BodyPart>,
+	target: Vector3,
+): Float {
+	val chainTail = requireBone(bones, chain.last()).tailPosition
+	return (target - chainTail).len()
+}
+
+fun chainCanReach(
+	bones: ComputedSkeleton,
+	chain: List<BodyPart>,
+	target: Vector3,
+): Boolean {
+	val chainHead = requireBone(bones, chain.first()).headPosition
+
 	val chainLength = chain.fold(0f) { acc, bodyPart ->
-		val currentBone = requireNotNull(bones[bodyPart])
-		acc + currentBone.offset.len()
+		val boneLength = requireBone(bones, bodyPart).offset.len()
+		acc + boneLength
 	}
-	return (target - rootBone.headPosition).len() <= chainLength
+	return (target - chainHead).len() <= chainLength
 }
 
-fun ccdIkIteration(boneInputs: InputSkeleton, bones: ComputedSkeleton, chain: List<BodyPart>, target: Vector3, constraints: BodyPartMap<Constraint>?): ComputedSkeleton {
-	val workingBones = boneInputs.toMutableMap()
+private val oppositeRotation = Quaternion.rotationAroundZAxis(FastMath.PI)
+fun fromChainToTarget(
+	bodyPart: BodyPart,
+	bones: ComputedSkeleton,
+	chain: List<BodyPart>,
+	target: Vector3,
+): Quaternion? {
+	val boneHead = requireBone(bones, bodyPart).headPosition
+	val chainTail = requireBone(bones, chain.last()).tailPosition
 
-	var running = Quaternion.IDENTITY
-	for (bodyPart in chain) {
-		val currentRawBone = requireNotNull(boneInputs[bodyPart])
-		val currentBone = requireNotNull(bones[bodyPart])
-
-		val localOffset = currentBone.localTailPosition.unit()
-		val localTarget = (target - currentBone.headPosition).unit()
-		if (!FastMath.isApproxEqual(localTarget.lenSq(), 1f)) {
-			// Avoid impossible condition where the target is at the origin
-			continue
-		}
-
-		val change = Quaternion.fromTo(localOffset, localTarget)
-		if (!FastMath.isApproxEqual(change.lenSq(), 1f)) {
-			// No change? wtf =w=
-			continue
-		}
-
-		val adjusted = running * currentBone.rotation * change
-		val constrained = constraints?.get(bodyPart)?.let { constraint ->
-			val parent = parentOf(bodyPart)?.let { parent ->
-				workingBones[parent]?.rawRotation
-			} ?: Quaternion.IDENTITY
-			val local = parent.inv() * adjusted
-			constraint.apply(local)
-		} ?: adjusted
-
-		workingBones[bodyPart] = currentRawBone.copy(
-			rawRotation = constrained,
-		)
-		running *= change
+	val localChainTail = (chainTail - boneHead).unit()
+	if (FastMath.isApproxEqual(localChainTail.lenSq(), 0f)) {
+		// Chain tail is at the origin
+		return null
 	}
+
+	val localTarget = (target - boneHead).unit()
+	if (FastMath.isApproxEqual(localTarget.lenSq(), 0f)) {
+		// Target is at the origin
+		return null
+	}
+
+	val offset = Quaternion.fromTo(localChainTail, localTarget)
+	return if (FastMath.isApproxEqual(offset.lenSq(), 1f)) {
+		offset
+	} else {
+		// When the vectors are exactly opposite, arbitrarily choose an axis
+		oppositeRotation
+	}
+}
+
+fun rotateChain(
+	boneInputs: InputSkeleton,
+	chain: List<BodyPart>,
+	rotation: Quaternion,
+) {
+	for (bodyPart in chain) {
+		boneInputs.compute(bodyPart) { _, boneInput ->
+			requireNotNull(boneInput) {
+				"The provided bone inputs are missing \"${bodyPart}\" from the IK chain."
+			}.copy(
+				rawRotation = rotation * boneInput.rawRotation,
+			)
+		}
+	}
+}
+
+fun ccdIkIteration(
+	boneInputs: InputSkeleton,
+	bones: ComputedSkeleton,
+	chain: List<BodyPart>,
+	target: Vector3,
+	constraints: BodyPartMap<Constraint>?,
+): ComputedSkeleton {
+	// TODO: Do we need annealing and/or dampening?
+	// The first bone in the chain is the one we are adjusting in this iteration
+	val bodyPart = chain.first()
+	val offset = fromChainToTarget(bodyPart, bones, chain, target) ?: return bones
+
+	// We only need to constrain the bone that we are adjusting
+	val constrainedOffset = constraints?.get(bodyPart)?.let { constraint ->
+		val bone = requireBone(bones, bodyPart).rotation
+		val parent = parentOf(bodyPart)?.let { parent ->
+			bones[parent]?.rotation
+		} ?: Quaternion.IDENTITY
+		// TODO: Ensure the quaternion multiplication order is correct here
+		val local = parent.inv() * offset * bone
+		parent * constraint.apply(local) * bone.inv()
+	} ?: offset
+
+	// Mutate the input skeleton
+	rotateChain(boneInputs, chain, constrainedOffset)
 
 	// FIXME: This feels weird, we should probably consume the skeleton root position
 	//  independent of the bones
 	val skeletonRootPos = bones[BodyPart.HEAD]?.headPosition ?: Vector3.NULL
-	return buildBones(workingBones, skeletonRootPos)
+	return buildBones(boneInputs, skeletonRootPos)
 }
 
 data class IKChainGoal(
@@ -73,24 +122,40 @@ data class IKOutput(
 	val goalsReached: Map<IKChainGoal, Boolean>,
 )
 
-fun ccdIk(boneInputs: InputSkeleton, bones: ComputedSkeleton, goals: List<IKChainGoal>, constraints: BodyPartMap<Constraint>?, threshold: Float, maxIterations: Int): IKOutput {
-	var curBones = bones
+fun ccdIk(
+	boneInputs: InputSkeleton,
+	bones: ComputedSkeleton,
+	goals: List<IKChainGoal>,
+	constraints: BodyPartMap<Constraint>?,
+	threshold: Float,
+	maxIterations: Int,
+): IKOutput {
+	val workingBoneInputs = EnumMap(boneInputs)
+	var boneOutputs = bones
 
 	for (i in 0..maxIterations) {
 		// Iterate chains not meeting the threshold
-		curBones = goals.filter {
+		boneOutputs = goals.filter {
 			chainDistanceFromTarget(bones, it.chain, it.target) > threshold
 		}.ifEmpty {
 			break
-		}.fold(curBones) { bones, goal ->
-			ccdIkIteration(boneInputs, bones, goal.chain, goal.target, constraints)
+		}.fold(boneOutputs) { bones, goal ->
+			// The chain from the current bone to the end, iterating backwards
+			val iterationChain = goal.chain.takeLast((i % goal.chain.size) + 1)
+			ccdIkIteration(
+				workingBoneInputs,
+				bones,
+				iterationChain,
+				goal.target,
+				constraints,
+			)
 		}
 	}
 
 	return IKOutput(
-		curBones,
+		boneOutputs,
 		goals.associateWith {
-			chainDistanceFromTarget(curBones, it.chain, it.target) <= threshold
+			chainDistanceFromTarget(boneOutputs, it.chain, it.target) <= threshold
 		},
 	)
 }
