@@ -10,7 +10,17 @@ import kotlin.math.sqrt
 
 // TODO Actually rewrite, currently still using original server code
 interface Constraint {
+	/**
+	 * Applies the constraint to a local rotation.
+	 * @return The constrained local rotation.
+	 */
 	fun apply(localRotation: Quaternion): Quaternion
+
+	/**
+	 * Applies the constraint to a global rotation using its parent rotation.
+	 * @return The constrained global rotation.
+	 */
+	fun apply(parentRotation: Quaternion, childRotation: Quaternion): Quaternion = parentRotation * apply(parentRotation.inv() * childRotation)
 }
 
 class CompleteConstraint : Constraint {

@@ -6,7 +6,7 @@ import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import java.util.EnumMap
 
-private fun requireBone(bones: ComputedSkeleton, bodyPart: BodyPart) = requireNotNull(bones[bodyPart]) {
+fun requireBone(bones: ComputedSkeleton, bodyPart: BodyPart) = requireNotNull(bones[bodyPart]) {
 	"The computed skeleton is missing \"${bodyPart}\" from the IK chain."
 }
 
@@ -64,6 +64,16 @@ fun fromChainToTarget(
 	}
 }
 
+fun constrainOffset(
+	constraint: Constraint,
+	parent: Quaternion,
+	bone: Quaternion,
+	offset: Quaternion,
+): Quaternion {
+	// TODO: Ensure the quaternion multiplication order is correct here
+	return constraint.apply(parent, offset * bone) * bone.inv()
+}
+
 fun rotateChain(
 	boneInputs: InputSkeleton,
 	chain: List<BodyPart>,
@@ -94,13 +104,14 @@ fun ccdIkIteration(
 
 	// We only need to constrain the bone that we are adjusting
 	val constrainedOffset = constraints?.get(bodyPart)?.let { constraint ->
-		val bone = requireBone(bones, bodyPart).rotation
-		val parent = parentOf(bodyPart)?.let { parent ->
-			bones[parent]?.rotation
-		} ?: Quaternion.IDENTITY
-		// TODO: Ensure the quaternion multiplication order is correct here
-		val local = parent.inv() * offset * bone
-		parent * constraint.apply(local) * bone.inv()
+		constrainOffset(
+			constraint,
+			parentOf(bodyPart)?.let { parent ->
+				bones[parent]?.rotation
+			} ?: Quaternion.IDENTITY,
+			requireBone(bones, bodyPart).rotation,
+			offset,
+		)
 	} ?: offset
 
 	// Mutate the input skeleton
