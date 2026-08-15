@@ -64,8 +64,8 @@ object CorrectTrackerYaw {
 	 * will never lock.
 	 */
 	private fun adjustLockedTracker(
-        tracker: Tracker,
-        yawCorrection: Angle,
+		tracker: Tracker,
+		yawCorrection: Angle,
 	) {
 		val trackerState = tracker.context.state.value
 		val lockedRotation = trackerState.stayAlignedData.lockedRotation ?: return
@@ -96,10 +96,10 @@ object CorrectTrackerYaw {
 	 * relaxed pose, which can result in imbalanced poses.
 	 */
 	private fun adjustMovingTracker(
-        tracker: Tracker,
+		tracker: Tracker,
 		trackerStates: List<TrackerState>,
-        yawCorrection: Angle,
-        config: StayAlignedConfig,
+		yawCorrection: Angle,
+		config: StayAlignedConfig,
 	) {
 		// Create groups from the tracker states
 		val trackers = TrackerGroups(trackerStates)
@@ -120,7 +120,7 @@ object CorrectTrackerYaw {
 	}
 
 	private fun centerYawOfTrackers(
-        trackerGroups: TrackerGroups,
+		trackerGroups: TrackerGroups,
 	): Angle? {
 		val head = trackerGroups.head
 		val upperBody = trackerGroups.upperBody

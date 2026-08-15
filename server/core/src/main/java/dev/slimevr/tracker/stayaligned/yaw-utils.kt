@@ -35,7 +35,7 @@ object YawUtils {
 	 * TODO: It might be possible to pick a different EulerOrder when we encounter
 	 * 		singularities, but I wasn't able to get this working correctly.
 	 */
-    fun yawDifference(
+	fun yawDifference(
 		rotation: Quaternion,
 		targetRotation: Quaternion,
 	): Angle {
