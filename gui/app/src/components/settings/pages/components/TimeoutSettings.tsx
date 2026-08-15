@@ -65,7 +65,7 @@ export function TimeoutSettings() {
 
   useRPCPacket(
     RpcMessage.TimeoutSettingsResponse,
-    (settings: TimeoutSettingsRequestT) => {
+    (settings: TimeoutSettingsResponseT) => {
       setSettings(settings);
     }
   );
