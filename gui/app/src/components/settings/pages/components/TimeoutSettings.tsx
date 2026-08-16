@@ -21,7 +21,7 @@ const defaultValues: TimeoutForm = {
 };
 
 export function TimeoutSettings() {
-  const [ settings, setSettings ] = useState(new TimeoutSettingsResponseT());
+  const [settings, setSettings] = useState(new TimeoutSettingsResponseT());
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
@@ -33,11 +33,12 @@ export function TimeoutSettings() {
     maximumFractionDigits: 2,
   });
 
-  const { control, watch, handleSubmit, getValues, reset } = useForm<TimeoutForm>({
-    defaultValues,
-    mode: 'onChange',
-    reValidateMode: 'onChange',
-  });
+  const { control, watch, handleSubmit, getValues, reset } =
+    useForm<TimeoutForm>({
+      defaultValues,
+      mode: 'onChange',
+      reValidateMode: 'onChange',
+    });
 
   const onSubmit = (values: TimeoutForm) => {
     const settingsReq = new ChangeTimeoutSettingsRequestT();
@@ -53,7 +54,10 @@ export function TimeoutSettings() {
   }, []);
 
   useEffect(() => {
-    sendRPCPacket(RpcMessage.TimeoutSettingsRequest, new TimeoutSettingsRequestT());
+    sendRPCPacket(
+      RpcMessage.TimeoutSettingsRequest,
+      new TimeoutSettingsRequestT()
+    );
   }, []);
 
   useEffect(() => {
@@ -86,13 +90,13 @@ export function TimeoutSettings() {
         </Localized>
       </div>
       <NumberSelector
-          control={control}
-          name="duration"
-          valueLabelFormat={(value) => secondsFormat.format(value)}
-          min={0.0}
-          max={Infinity}
-          step={0.5}
-        />
+        control={control}
+        name="duration"
+        valueLabelFormat={(value) => secondsFormat.format(value)}
+        min={0.0}
+        max={Infinity}
+        step={0.5}
+      />
     </>
   );
 }
