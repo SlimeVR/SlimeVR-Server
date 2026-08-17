@@ -81,8 +81,16 @@ data class TrackerState(
 /**
  * Returns the first OK or SLEEPING tracker state that matches the body part, or null
  */
-fun List<TrackerState>.getFineFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull {
+fun List<TrackerState>.getFirstFineFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull {
 	it.bodyPart == bodyPart &&
+		(it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING)
+}
+
+/**
+ * Returns all the OK or SLEEPING tracker states that matches the body parts
+ */
+fun List<TrackerState>.getAllFineFor(bodyParts: List<BodyPart>): List<TrackerState> = this.filter {
+	it.bodyPart in bodyParts &&
 		(it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING)
 }
 

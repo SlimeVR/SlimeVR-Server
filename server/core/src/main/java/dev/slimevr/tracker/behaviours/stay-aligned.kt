@@ -6,9 +6,9 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.stayaligned.CorrectTrackerYaw
 import dev.slimevr.tracker.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
 import dev.slimevr.tracker.stayaligned.StayAlignedDefaults.YAW_CORRECTION_DEFAULT
+import dev.slimevr.tracker.stayaligned.TrackerYawCorrection
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -71,14 +71,17 @@ class TrackerStayAlignedBehaviour(
 						val lastFrameTimeSeconds = lastRotationTime.elapsedNow().inFloatingSeconds
 						lastRotationTime = timeSource.markNow()
 
-						val normalizedYawCorrection = yawCorrectionPerSec * lastFrameTimeSeconds
+						val applyYawCorrection = yawCorrectionPerSec * lastFrameTimeSeconds
 
-						CorrectTrackerYaw.adjust(
-							receiver,
+						val yawCorrectionResult = TrackerYawCorrection.computeYawCorrection(
+							state,
 							serverFlow.value.trackers.values.map { it.context.state.value },
-							normalizedYawCorrection,
+							applyYawCorrection,
 							stayAlignedConfig,
 						)
+						if (yawCorrectionResult != null) {
+							receiver.context.dispatch(TrackerActions.SetYawCorrection(yawCorrectionResult))
+						}
 					}
 			}
 			.launchIn(receiver.context.scope)

@@ -1,9 +1,6 @@
 package dev.slimevr.tracker.stayaligned.poses
 
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.applyCalibration
-import dev.slimevr.tracker.stayaligned.getStayAlignedRotation
-import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.abs
 
@@ -25,8 +22,7 @@ enum class TrackerPose {
 				return NONE
 			}
 
-			val rotation = getStayAlignedRotation(trackerState)
-
+			val rotation = trackerState.rotation
 			val x = rotation.sandwichUnitX()
 			val y = rotation.sandwichUnitY()
 			val z = rotation.sandwichUnitZ()
