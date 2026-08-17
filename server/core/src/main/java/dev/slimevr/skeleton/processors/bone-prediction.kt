@@ -1,6 +1,7 @@
 package dev.slimevr.skeleton.processors
 
 import dev.slimevr.config.Settings
+import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
@@ -8,6 +9,7 @@ import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.mapValues
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.FilteringType
 import kotlin.time.Duration
 
@@ -22,6 +24,18 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 	)
 
 	private var velocities: BodyPartMap<BoneVelocity> = bodyPartMap()
+
+	private fun getMultiplier(bodyPart: BodyPart) = when (bodyPart) {
+		BodyPart.LEFT_SHOULDER,
+		BodyPart.RIGHT_SHOULDER,
+		BodyPart.LEFT_UPPER_ARM,
+		BodyPart.RIGHT_UPPER_ARM,
+		BodyPart.LEFT_LOWER_ARM,
+		BodyPart.RIGHT_LOWER_ARM,
+		-> 1.5f
+
+		else -> 1f
+	}
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
@@ -39,6 +53,9 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 				newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, Quaternion.IDENTITY, bone.offset)
 				return@mapValues bone
 			}
+
+			val bonePredictionAmount = predictionAmount * getMultiplier(bodyPart)
+
 			val rotationDelta = if (bone.rawRotation !== prev.lastRotation) {
 				bone.rawRotation * prev.lastRotation.inv()
 			} else {
