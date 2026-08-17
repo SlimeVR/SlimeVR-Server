@@ -370,3 +370,22 @@ class FeetMountingCalibrationCheckBehaviour(
 			.launchIn(receiver.context.scope)
 	}
 }
+
+class StayAlignedCheckBehaviour(
+	private val settings: Settings,
+) : TrackingChecklistBehaviourType {
+	override fun observe(receiver: TrackingChecklist) {
+		settings.context.state.map { settingsState ->
+			TrackingChecklistStep(
+				valid = settingsState.data.stayAlignedConfig.enabled,
+				enabled = true,
+				optional = true,
+				ignorable = true,
+				visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
+			)
+		}
+			.distinctUntilChanged()
+			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED, step)) }
+			.launchIn(receiver.context.scope)
+	}
+}

@@ -37,7 +37,7 @@ class TrackingChecklist(
 			add(TrackerErrorCheckBehaviour(appContext.server))
 			add(SteamVRHandsCheckBehaviour(appContext.server, appContext.boneRouting))
 			add(FeetMountingCalibrationCheckBehaviour(appContext.server, appContext.resetsManager, appContext.config.settings))
-			// TODO: STAY_ALIGNED_CONFIGURED
+			add(StayAlignedCheckBehaviour(appContext.config.settings))
 
 			appContext.vrcConfigManager?.let { add(VRChatSettingsCheckBehaviour(appContext.server, appContext.skeleton, it)) }
 			appContext.networkProfileManager?.let { add(NetworkProfileCheckBehaviour(it)) }
