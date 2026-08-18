@@ -723,8 +723,6 @@ settings-general-gesture_control-mountingResetEnabled = Tapoter pour réinitiali
 settings-general-gesture_control-mountingResetDelay = Délai de réinitialisation de l’alignement
 settings-general-gesture_control-mountingResetTaps = Nombre de tapes pour la réinitialisation de l’alignement
 settings-general-gesture_control-mountingResetTracker = Capteur de réinitialisation de l’alignement
-settings-general-gesture_control-yawResetTracker-title = Capteur de réinitialisation horizontale
-settings-general-gesture_control-fullResetTracker-title = Capteur de réinitialisation complète
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Capteurs au-dessus du seuil
 settings-general-gesture_control-numberTrackersOverThreshold-description = Augmentez cette valeur si la détection des tapotements ne fonctionne pas. N’augmentez pas cette valeur au-delà de ce qui est nécessaire pour que la détection des tapotements fonctionne, car cela pourrait entraîner des faux positifs.
