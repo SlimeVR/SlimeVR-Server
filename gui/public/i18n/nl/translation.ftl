@@ -718,8 +718,6 @@ settings-general-gesture_control-mountingResetEnabled = Activeer tikken voor mon
 settings-general-gesture_control-mountingResetDelay = Vertraging montage-kalibratie
 settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor montage-kalibratie
 settings-general-gesture_control-mountingResetTracker = Montage resettracker
-settings-general-gesture_control-yawResetTracker-title = Yaw Reset Tracker
-settings-general-gesture_control-fullResetTracker-title = Volledige resettracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over drempelwaarde
 settings-general-gesture_control-numberTrackersOverThreshold-description = Verhoog deze waarde als de tik detectie niet werkt. Zet deze waarde niet te hoog om tik detectie te laten werken, dit kan vals positieve resultaten creëren.

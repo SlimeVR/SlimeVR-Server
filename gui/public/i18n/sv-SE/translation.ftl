@@ -720,8 +720,6 @@ settings-general-gesture_control-mountingResetEnabled = Aktivera tryck för att 
 settings-general-gesture_control-mountingResetDelay = Fördröjning av återställning av montering
 settings-general-gesture_control-mountingResetTaps = Gängtappar för montering av återställning
 settings-general-gesture_control-mountingResetTracker = Montering Återställ spårare
-settings-general-gesture_control-yawResetTracker-title = Gir återställning spårare
-settings-general-gesture_control-fullResetTracker-title = Fullständig återställning av spårare
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers över tröskelvärdet
 settings-general-gesture_control-numberTrackersOverThreshold-description = Öka detta värde om avkänningen inte fungerar. Öka inte värdet mer än vad som krävs för att detekteringen ska fungera, eftersom det kan leda till fler falska positiva resultat.

@@ -722,7 +722,6 @@ settings-general-gesture_control-mountingResetEnabled = Activar toques para rein
 settings-general-gesture_control-mountingResetDelay = Retraso del reinicio de montura
 settings-general-gesture_control-mountingResetTaps = Toques para reinicio de montura
 settings-general-gesture_control-mountingResetTracker = Reinicio de Montura del Tracker
-settings-general-gesture_control-fullResetTracker-title = Reinicio Completo del Tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers sobre el límite
 settings-general-gesture_control-numberTrackersOverThreshold-description = Aumente este valor si la detección de toques no funciona. No lo aumente mas de lo necesario para que funciona ya que puede causar que la detección tenga más falsas positivas.
