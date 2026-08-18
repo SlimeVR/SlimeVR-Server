@@ -127,6 +127,7 @@ class PauseTrackingBehaviour : SkeletonBehaviour {
 class ComputedSkeletonBehaviour(
 	val hz: Int,
 	val processors: List<SkeletonProcessor> = emptyList(),
+	val targetProcessors: List<SkeletonTargetProcessor> = emptyList(),
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
 	private val minimumDelay = 1.nanoseconds
@@ -158,13 +159,23 @@ class ComputedSkeletonBehaviour(
 						// Run FK
 						val fk = buildBones(processed, rootHead = rootHead)
 
-// 	 					val targetProcessors = [FloorClip, FloorSkating, ToePlant, FootPlant]
+// 						val targets = targetProcessors
+// 							.filter { targetProcessors -> targetProcessors.enabled }
+// 							.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets) }
 //
-// 	 					val targets = targetProcessors
-// 	 						.filter { targetProcessors -> targetProcessors.enabled }
-// 	 						.fold(emptyList<Target>()) { targets, processor -> processor.process(fk, targets) }
-//
-// 	 					val ikOutput = solver.solve(fk, targets)
+// 						val ikOutput = ccdIk(
+// 							processed.boneInputs,
+// 							fk,
+// 							targets.map { (bodyPart, target) ->
+// 								IKChainGoal(
+// 									listOf(bodyPart),
+// 									target,
+// 								)
+// 							},
+// 							null,
+// 							0.01f,
+// 							1000,
+// 						)
 
 						// Frame time tracking ends and restarts here
 						lastFrameTime = frameStartTime.elapsedNow()
@@ -173,7 +184,7 @@ class ComputedSkeletonBehaviour(
 						// Updated the computed skeleton with the result
 						if (!targetState.paused) { // FIXME : bones should still follow the head when paused
 							receiver.computed.tryEmit(fk)
-// 							receiver.computed.value = ikOutput
+							// receiver.computed.tryEmit(ikOutput.bones)
 						}
 					}
 					// Process ends

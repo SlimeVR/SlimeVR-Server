@@ -75,9 +75,8 @@ fun centerOfMass(bones: Map<BodyPart, BoneState>): Vector3 = BODY_PART_MASSES.en
 }
 
 // Probably not a SkeletonProcessor, maybe computed processor or smth
-class SkatingCorrectionProcessor : SkeletonProcessor {
-	// Placeholder
-	val curPositions: Map<BodyPart, BoneState> = emptyMap()
+class SkatingCorrectionProcessor : SkeletonTargetProcessor {
+	override var enabled: Boolean = true
 
 	// Do we need to store this or do we just want velocity? We can probably just pull
 	//  the last state
@@ -86,11 +85,11 @@ class SkatingCorrectionProcessor : SkeletonProcessor {
 
 	var comState: COMState? = null
 
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(fk: ComputedSkeleton, ikTarget: IKTargets): IKTargets {
 		val curTime = timeSource.markNow()
 
 		val lastComState = comState
-		val com = centerOfMass(curPositions)
+		val com = centerOfMass(fk)
 		val newComState = if (lastComState != null) {
 			val deltaT = (curTime - lastComState.time).toDouble(DurationUnit.SECONDS).toFloat()
 				.coerceAtLeast(0.001f)
@@ -113,7 +112,7 @@ class SkatingCorrectionProcessor : SkeletonProcessor {
 		comState = newComState
 
 		for (bodyPart in VELOCITY_BODY_PARTS) {
-			val curBone = curPositions[bodyPart] ?: continue
+			val curBone = fk[bodyPart] ?: continue
 			val lastVel = velocity[bodyPart]
 
 			// Calculate velocity state
@@ -153,19 +152,23 @@ class SkatingCorrectionProcessor : SkeletonProcessor {
 			)
 			lockStates[bodyPart] = isLocked
 		}
-		return state
+
+		// TODO: Actually add IK targets
+		return ikTarget
 	}
 }
 
-class FloorClipProcessor : SkeletonProcessor {
-	fun getDisplacement(footPos: Vector3): Vector3 = Vector3(0f, footPos.y.coerceAtMost(0f), 0f)
+class FloorClipProcessor(
+	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG),
+) : SkeletonTargetProcessor {
+	override var enabled: Boolean = true
 
-	override fun process(state: SkeletonState): SkeletonState {
-		val newBones = state.boneInputs.mapValues { (bodyPart, bone) -> }
-		state.boneInputs[BodyPart.LEFT_FOOT]?.let {
-			val correction = getDisplacement(it.offset)
-			// TODO Apply displacement onto skeleton
+	override fun process(fk: ComputedSkeleton, ikTarget: IKTargets): IKTargets = ikTarget.mutate { targets ->
+		for (bodyPart in bodyParts) {
+			// Get existing target or make a new one at the current bone position
+			val target = targets[bodyPart] ?: fk[bodyPart]?.tailPosition ?: continue
+			// Snap the target up to the floor if it's under
+			targets[bodyPart] = Vector3(target.x, target.y.coerceAtLeast(0f), target.z)
 		}
-		return state
 	}
 }

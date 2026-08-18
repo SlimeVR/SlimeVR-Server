@@ -128,6 +128,11 @@ typealias SkeletonBehaviour = Behaviour<SkeletonState, SkeletonActions, Skeleton
 interface SkeletonProcessor {
 	fun process(state: SkeletonState): SkeletonState
 }
+typealias IKTargets = BodyPartMap<Vector3>
+interface SkeletonTargetProcessor {
+	val enabled: Boolean
+	fun process(fk: ComputedSkeleton, ikTarget: IKTargets): IKTargets
+}
 
 class Skeleton(
 	val context: SkeletonContext,
