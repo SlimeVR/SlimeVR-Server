@@ -721,8 +721,6 @@ settings-general-gesture_control-mountingResetEnabled = Ativar toque para realiz
 settings-general-gesture_control-mountingResetDelay = Atraso da calibração da montagem
 settings-general-gesture_control-mountingResetTaps = Toques para calibração de montagem
 settings-general-gesture_control-mountingResetTracker = Redefinir Montagem dos Trackers
-settings-general-gesture_control-yawResetTracker-title = Redefinir Tracker Rápido
-settings-general-gesture_control-fullResetTracker-title = Redefinir Todos os Trackers
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers acima do limite
 settings-general-gesture_control-numberTrackersOverThreshold-description = Aumente esse valor se a detecção de toque não estiver funcionando. Não aumente o valor acima do necessário para que a detecção de toque funcione, pois isso causaria mais falsos positivos.

@@ -707,8 +707,6 @@ settings-general-gesture_control-mountingResetEnabled = 开启敲击重置佩戴
 settings-general-gesture_control-mountingResetDelay = 敲击重置佩戴延迟
 settings-general-gesture_control-mountingResetTaps = 重置佩戴敲击次数
 settings-general-gesture_control-mountingResetTracker = 佩戴校准追踪器
-settings-general-gesture_control-yawResetTracker-title = 航向轴重置追踪器
-settings-general-gesture_control-fullResetTracker-title = 完整重置追踪器
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = 可触发敲击重置的追踪器数量
 settings-general-gesture_control-numberTrackersOverThreshold-description = 如敲击重置不起作用请增加此值。请在保证敲击重置可用的情况下将此值设置的尽可能低，否则会导致误报。
