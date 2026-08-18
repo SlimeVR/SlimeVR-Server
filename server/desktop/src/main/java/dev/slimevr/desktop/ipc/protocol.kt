@@ -201,7 +201,7 @@ suspend fun handleDriverConnection(
 				bridge.inbound.emit(
 					DriverBridgeInbound.TrackerBattery(
 						id = bat.tracker_id,
-						batteryLevel = bat.battery_level * 100,
+						batteryLevel = bat.battery_level,
 						charging = bat.is_charging,
 					),
 				)
