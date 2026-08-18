@@ -2,7 +2,7 @@ import ar from '@twemoji/svg/1f1e6-1f1ea.svg';
 import cs from '@twemoji/svg/1f1e8-1f1ff.svg';
 import da from '@twemoji/svg/1f1e9-1f1f0.svg';
 import de from '@twemoji/svg/1f1e9-1f1ea.svg';
-import en from '@twemoji/svg/1f1fa-1f1f8.svg';
+import ca from '@twemoji/svg/1f1e8-1f1e6.svg';
 import americas from '@twemoji/svg/1f30e.svg';
 import es from '@twemoji/svg/1f1ea-1f1f8.svg';
 import et from '@twemoji/svg/1f1ea-1f1ea.svg';
@@ -46,7 +46,7 @@ export const langs = [
     key: 'de',
   },
   {
-    emoji: en,
+    emoji: ca,
     name: 'English',
     key: 'en',
   },

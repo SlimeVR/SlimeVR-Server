@@ -490,7 +490,7 @@ settings-sidebar-appearance = Appearance
 settings-sidebar-home = Home Screen
 settings-sidebar-checklist = Tracking checklist
 settings-sidebar-notifications = Notifications
-settings-sidebar-behavior = Behavior
+settings-sidebar-behavior = Behaviour
 settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = Advanced
@@ -754,7 +754,7 @@ settings-interface-appearance = Appearance
 settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
-settings-general-interface-theme = Color theme
+settings-general-interface-theme = Colour theme
 settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
 settings-general-interface-show-navbar-onboarding-description = This changes whether the "{ navbar-onboarding }" button shows on the navigation bar.
 settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
@@ -787,7 +787,7 @@ settings-general-interface-connected_trackers_warning-description = This option 
 settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
 
 ## Behavior settings
-settings-interface-behavior = Behavior
+settings-interface-behavior = Behaviour
 settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
@@ -1447,7 +1447,7 @@ onboarding-user_height-calibration-title = Calibration Progress
 onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
 onboarding-user_height-calibration-WAITING_FOR_RISE = Stand back up
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stand back up and look forward
-onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Make sure your head is leveled
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Make sure your head is levelled
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Do not look at the floor
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Do not look too high up
 onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Make sure the controller is pointing down
@@ -1719,7 +1719,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 error_collection_modal-title = Can we collect errors?
 error_collection_modal-description_v2 = { settings-interface-behavior-error_tracking-description_v2 }
 
-    You can change this setting later in the Behavior section of the settings page.
+    You can change this setting later in the Behaviour section of the settings page.
 error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
 
