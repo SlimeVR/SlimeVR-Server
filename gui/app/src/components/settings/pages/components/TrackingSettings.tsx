@@ -25,7 +25,6 @@ import { MartialArtsIcon } from '@/components/commons/icon/MartialArtsIcon';
 
 type SkeletonForm = {
   toggles: {
-    forceArmsFromHmd: boolean;
     floorClip: boolean;
     skatingCorrection: boolean;
     toeSnap: boolean;
@@ -59,7 +58,6 @@ const skeletonSettingsValueAtom = selectAtom(
 
 const defaultValues: SkeletonForm = {
   toggles: {
-    forceArmsFromHmd: false,
     floorClip: false,
     skatingCorrection: false,
     toeSnap: false,
@@ -104,7 +102,6 @@ export function TrackingSettings() {
     const toggles = new SkeletonTogglesT();
     toggles.floorClip = values.toggles.floorClip;
     toggles.skatingCorrection = values.toggles.skatingCorrection;
-    toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
     toggles.toeSnap = values.toggles.toeSnap;
     toggles.footPlant = values.toggles.footPlant;
     toggles.mocapMode = values.toggles.mocapMode;
@@ -352,26 +349,6 @@ export function TrackingSettings() {
             name="toggles.toeSnap"
             label={l10n.getString(
               'settings-general-fk_settings-leg_tweak-toe_snap'
-            )}
-          />
-        </div>
-
-        <div className="flex flex-col pt-5">
-          <Typography variant="section-title">
-            {l10n.getString('settings-general-fk_settings-arm_fk')}
-          </Typography>
-          <Typography>
-            {l10n.getString('settings-general-fk_settings-arm_fk-description')}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 pt-2">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.forceArmsFromHmd"
-            label={l10n.getString(
-              'settings-general-fk_settings-arm_fk-force_arms'
             )}
           />
         </div>

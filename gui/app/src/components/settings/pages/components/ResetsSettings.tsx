@@ -21,7 +21,7 @@ type ResetsSettingsForm = {
   armsResetMode: number;
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
-  resetHmdPitch: boolean;
+  resetPositionalHeadAttitude: boolean;
 };
 
 const defaultValues: ResetsSettingsForm = {
@@ -29,7 +29,7 @@ const defaultValues: ResetsSettingsForm = {
   armsResetMode: 0,
   yawResetSmoothTime: 0.0,
   saveMountingReset: false,
-  resetHmdPitch: false,
+  resetPositionalHeadAttitude: false,
 };
 
 const resetsSettingsAtom = atom(new ResetsSettingsResponseT());
@@ -66,7 +66,7 @@ export function ResetsSettings() {
     resetsSettings.armsResetMode = values.armsResetMode;
     resetsSettings.yawResetSmoothTime = values.yawResetSmoothTime;
     resetsSettings.saveMountingReset = values.saveMountingReset;
-    resetsSettings.resetHmdPitch = values.resetHmdPitch;
+    resetsSettings.resetPositionalHeadAttitude = values.resetPositionalHeadAttitude;
 
     sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsSettings);
   };
@@ -205,13 +205,13 @@ export function ResetsSettings() {
       <div className="flex flex-col pt-5 gap-1">
         <Typography variant="section-title">
           {l10n.getString(
-            'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
+            'settings-general-fk_settings-reset_settings-reset_positional_head_attitude'
           )}
         </Typography>
 
         <Typography>
           {l10n.getString(
-            'settings-general-fk_settings-reset_settings-reset_hmd_pitch-description'
+            'settings-general-fk_settings-reset_settings-reset_positional_head_attitude-description'
           )}
         </Typography>
 
@@ -219,9 +219,9 @@ export function ResetsSettings() {
           variant="toggle"
           outlined
           control={control}
-          name="resetHmdPitch"
+          name="resetPositionalHeadAttitude"
           label={l10n.getString(
-            'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
+            'settings-general-fk_settings-reset_settings-reset_positional_head_attitude'
           )}
         />
       </div>
