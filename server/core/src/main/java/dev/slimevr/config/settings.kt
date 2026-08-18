@@ -61,14 +61,14 @@ data class BoneRoutingConfig(
 )
 
 @Serializable
-data class TimeoutConfig(
-	val duration: Float = 30.0f,
-)
-
-@Serializable
 data class DriverConfig(
 	val enabled: Boolean = true,
 	val sendDerivedVelocity: Boolean = false, // TODO do we actually need that or can we disable OpenVR's prediction
+)
+
+@Serializable
+data class TimeoutConfig(
+	val duration: Float = 30.0f,
 )
 
 @Serializable
