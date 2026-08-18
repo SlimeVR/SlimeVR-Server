@@ -102,19 +102,34 @@ static void signal_handler(int signal) {
 
 int main() {
     auto &logger = Logger::get();
-    // Steam and SteamVR sets these environment variables on applications that it
-    // spawns, but if an app spawned by Steam then spawns a child that initialises
-    // OpenVR, SteamVR will give the child the appkey of the root application it
-    // is a descendant of, e.g. if SteamVR launches SlimeVR as an overlay,
-    // it will set SteamAppId="3245490" and STEAMVR_APPKEY="steam.overlay.3245490"
-    // which breaks our bindings. We want SteamVR to use a generated appkey if
-    // possible.
+
+    // Steam and SteamVR respectively set these environment variables on applications that
+    // they spawn, which the SteamVR client library (vrclient) will then use as the
+    // application key when initiating the connection with vrserver. This may not
+    // be ideal if we are launched by another Steam or OpenVR application, as we will inherit
+    // their app key through the environment, which means SteamVR will load the wrong bindings.
+    // A real-world example of this is if someone uses an application such as OpenVR-Autostarter
+    // to start the SlimeVR Server. OpenVR-Autostarter installs an application manifest with the
+    // app key "dreiekk.openvr-autostarter", so when it starts SlimeVR Server, which then starts us,
+    // the STEAMVR_APPKEY="dreiekk.openvr-autostarter" environment variable will be set.
+    //
+    // We want SteamVR to use the appkey of the Steam version of our application if possible.
+    // Unfortunately, we cannot install an application vrmanifest to force the app key,
+    // as SteamVR requires a binary path in the manifest to consider it valid. We do not want to install
+    // a manifest with a binary path because we want the SlimeVR Server to start us when the
+    // driver initiates a connection, rather than getting auto-started by SteamVR.
+    //
+    // This is not documented anywhere publicly, see CVRClient::SendConnectMessage in vrclient instead.
+
+    constexpr const char *STEAM_APPID = "3245490";
+    constexpr const char *STEAMVR_APPKEY = "steam.overlay.3245490";
+
 #ifdef _WIN32
-    SetEnvironmentVariableA("SteamAppId", nullptr);
-    SetEnvironmentVariableA("STEAMVR_APPKEY", nullptr);
+    SetEnvironmentVariableA("SteamAppId", STEAM_APPID);
+    SetEnvironmentVariableA("STEAMVR_APPKEY", STEAMVR_APPKEY);
 #else
-    unsetenv("SteamAppId");
-    unsetenv("STEAMVR_APPKEY");
+    setenv("SteamAppId", STEAM_APPID, 1);
+    setenv("STEAMVR_APPKEY", STEAMVR_APPKEY, 1);
 #endif
 
     try {
