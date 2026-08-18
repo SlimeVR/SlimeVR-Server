@@ -74,7 +74,7 @@ class SkeletonProportionsBehaviour(
 
 		receiver.rpcDispatcher.on<ChangeSkeletonProportionsRequest> { req ->
 			val bone = req.bone ?: return@on
-			val value = req.value ?: return@on
+			val value = req.value?.coerceAtLeast(0f) ?: 0f
 
 			userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = proportions + (bone.name to value)) })
 		}.launchIn(receiver.context.scope)
