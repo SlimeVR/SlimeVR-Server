@@ -119,9 +119,17 @@ val VMC_HIERARCHY_MAP: Map<BodyPart, Array<BodyPart>> = mapOf(
 	BodyPart.RIGHT_LITTLE_INTERMEDIATE to arrayOf(BodyPart.RIGHT_LITTLE_DISTAL),
 	BodyPart.LEFT_FOOT to arrayOf(
 		BodyPart.LEFT_BIG_TOE,
+		BodyPart.LEFT_INDEX_TOE,
+		BodyPart.LEFT_MIDDLE_TOE,
+		BodyPart.LEFT_RING_TOE,
+		BodyPart.LEFT_LITTLE_TOE
 	),
 	BodyPart.RIGHT_FOOT to arrayOf(
 		BodyPart.RIGHT_BIG_TOE,
+		BodyPart.RIGHT_INDEX_TOE,
+		BodyPart.RIGHT_MIDDLE_TOE,
+		BodyPart.RIGHT_RING_TOE,
+		BodyPart.RIGHT_LITTLE_TOE
 	),
 )
 
@@ -159,6 +167,11 @@ val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
 	BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
 	BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
 	BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
+	BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
+	BodyPart.LEFT_INDEX_TOE to BodyPart.RIGHT_INDEX_TOE,
+	BodyPart.LEFT_MIDDLE_TOE to BodyPart.RIGHT_MIDDLE_TOE,
+	BodyPart.LEFT_RING_TOE to BodyPart.RIGHT_RING_TOE,
+	BodyPart.LEFT_LITTLE_TOE to BodyPart.RIGHT_LITTLE_TOE
 )
 
 val VMC_MIRROR_BONES: BodyPartMap<BodyPart> = BodyPartMap(
@@ -176,12 +189,6 @@ val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 	val leftArm = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 	val rightArm = Quaternion.rotationAroundZAxis(FastMath.HALF_PI)
 	val foot = Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
-	val leftToes = listOf(
-		BodyPart.LEFT_BIG_TOE,
-	)
-	val rightToes = listOf(
-		BodyPart.RIGHT_BIG_TOE,
-	)
 	BodyPartMap(
 		mapOf(
 			BodyPart.LEFT_FOOT to foot,
