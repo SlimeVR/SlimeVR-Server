@@ -61,6 +61,11 @@ data class BoneRoutingConfig(
 )
 
 @Serializable
+data class TimeoutConfig(
+	val duration: Float = 30.0f,
+)
+
+@Serializable
 data class DriverConfig(
 	val enabled: Boolean = true,
 	val sendDerivedVelocity: Boolean = false, // TODO do we actually need that or can we disable OpenVR's prediction
@@ -222,6 +227,7 @@ data class SettingsConfigState(
 	val hidConfig: HidConfig = HidConfig(),
 	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
 	val driverConfig: DriverConfig = DriverConfig(),
+	val timeoutConfig: TimeoutConfig = TimeoutConfig(),
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
 	val keybinds: List<KeybindConfig> = defaultKeybinds(),
