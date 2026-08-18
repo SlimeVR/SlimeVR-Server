@@ -2,13 +2,13 @@ package dev.slimevr.tracker.behaviours
 
 import dev.slimevr.config.Settings
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.stayaligned.CorrectTrackerYaw
-import dev.slimevr.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
-import dev.slimevr.stayaligned.StayAlignedDefaults.YAW_CORRECTION_DEFAULT
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.stayaligned.CorrectTrackerYaw
+import dev.slimevr.tracker.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
+import dev.slimevr.tracker.stayaligned.StayAlignedDefaults.YAW_CORRECTION_DEFAULT
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,15 +26,29 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 class TrackerStayAlignedBehaviour(
 	private val settings: Settings,
 ) : TrackerBehaviour {
-	private var lastRotationTime = timeSource.markNow()
 
-	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: Tracker) {
+		observeReset(receiver)
+		observeRun(receiver)
+	}
+
+	/**
+	 * Reset Stay Aligned on calibration
+	 */
+	private fun observeReset(receiver: Tracker) {
 		receiver.context.state
 			.distinctUntilChanged { old, new -> old.sessionCalibration == new.sessionCalibration }
 			.onEach {
 				receiver.context.dispatch(TrackerActions.SetYawCorrection(Angle.ZERO))
 			}.launchIn(receiver.context.scope)
+	}
+
+	/**
+	 * Run StayAligned
+	 */
+	@OptIn(ExperimentalCoroutinesApi::class)
+	private fun observeRun(receiver: Tracker) {
+		var lastRotationTime = timeSource.markNow()
 
 		val serverFlow = receiver.appContext.server.context.state
 
@@ -45,7 +59,7 @@ class TrackerStayAlignedBehaviour(
 			.flatMapLatest { (stayAlignedConfig, imuType, magStatus) ->
 				if (magStatus == MagnetometerStatus.ENABLED || imuType == null || !stayAlignedConfig.enabled) return@flatMapLatest emptyFlow()
 
-				// Ignore every other emission for performance (50FPS instead of 100FPS at peak)
+				// Ignore every other emission for performance (50FPS instead of 100FPS when at 100TPS)
 				var index = 0
 				receiver.context.state
 					.distinctUntilChangedBy { it.rawRotation }
@@ -58,22 +72,19 @@ class TrackerStayAlignedBehaviour(
 						lastRotationTime = timeSource.markNow()
 
 						val normalizedYawCorrection = yawCorrectionPerSec * lastFrameTimeSeconds
-						val yawCorrectionResult = CorrectTrackerYaw.computeYawCorrection(
-							state,
+
+						CorrectTrackerYaw.adjust(
+							receiver,
 							serverFlow.value.trackers.values.map { it.context.state.value },
 							normalizedYawCorrection,
 							stayAlignedConfig,
 						)
-
-						if (yawCorrectionResult != null) {
-							receiver.context.dispatch(TrackerActions.SetYawCorrection(yawCorrectionResult))
-						}
 					}
 			}
 			.launchIn(receiver.context.scope)
 	}
 
-	override fun reduce(state: TrackerState, action: TrackerActions): TrackerState = when (action) {
+	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
 		is TrackerActions.SetYawCorrection -> state.copy(stayAlignedData = state.stayAlignedData.copy(yawCorrection = action.yawCorrection))
 		else -> state
 	}

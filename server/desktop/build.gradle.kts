@@ -86,6 +86,10 @@ dependencies {
 		exclude(group = "com.fazecast", module = "android")
 	}
 	implementation("org.hid4java:hid4java:0.8.0")
+
+	// mDNS for OSCQuery, resolves to the JmDNS-backed jvm variant
+	implementation("com.appstractive:dns-sd-kt:1.1.0")
+
 	implementation("io.klogging:klogging:0.11.7")
 	// SLF4J provider, so what ktor and the discovery libraries log reaches our sinks
 	runtimeOnly("io.klogging:slf4j-klogging:0.11.7")
@@ -131,8 +135,8 @@ buildConfig {
 		commandLine("git", "rev-parse", "--short=8", "HEAD")
 	}.standardOutput.asText.get().trim()
 	val gitVersionTag = providers.exec {
-		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD")
-	}.standardOutput.asText.get().trim()
+		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD", "-l", "v*")
+	}.standardOutput.asText.get().trim().lineSequence().firstOrNull() ?: ""
 	val gitIsClean = providers.exec {
 		commandLine("git", "status", "--porcelain")
 	}.standardOutput.asText.get().trim().isEmpty()

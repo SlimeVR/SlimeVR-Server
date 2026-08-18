@@ -1,25 +1,23 @@
 package dev.slimevr.solarxr
 
+import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.StayAlignedConfig
-import dev.slimevr.stayaligned.StayAlignedActions
-import dev.slimevr.stayaligned.StayAlignedManager
-import kotlinx.coroutines.delay
+import dev.slimevr.config.StayAlignedRelaxedPoseConfig
+import dev.slimevr.logging.AppLogger
+import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
 import solarxr_protocol.rpc.ChangeStayAlignedEnabledRequest
-import solarxr_protocol.rpc.ChangeStayAlignedHideCorrectionRequest
 import solarxr_protocol.rpc.ChangeStayAlignedSettingsRequest
 import solarxr_protocol.rpc.DetectStayAlignedRelaxedPoseRequest
 import solarxr_protocol.rpc.ResetStayAlignedRelaxedPoseRequest
-import solarxr_protocol.rpc.StayAlignedHideCorrectionRequest
-import solarxr_protocol.rpc.StayAlignedHideCorrectionResponse
 import solarxr_protocol.rpc.StayAlignedRelaxedPose
 import solarxr_protocol.rpc.StayAlignedSettingsRequest
 import solarxr_protocol.rpc.StayAlignedSettingsResponse
 
 class StayAlignedBehaviour(
 	private val settings: Settings,
-	private val stayAlignedManager: StayAlignedManager,
+	private val server: VRServer,
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		// Send config
@@ -65,29 +63,21 @@ class StayAlignedBehaviour(
 			)
 		}.launchIn(receiver.context.scope)
 
-		// Send hideYawCorrection
-		receiver.rpcDispatcher.on<StayAlignedHideCorrectionRequest> {
-			receiver.sendRpc(
-				StayAlignedHideCorrectionResponse(
-					hideCorrection = stayAlignedManager.context.state.value.hideCorrection,
-				),
-			)
-		}.launchIn(receiver.context.scope)
-
-		// Receive hideYawCorrection
-		receiver.rpcDispatcher.on<ChangeStayAlignedHideCorrectionRequest> { req ->
-			stayAlignedManager.context.dispatch(StayAlignedActions.SetHideYawCorrection(req.hideCorrection == true))
-		}.launchIn(receiver.context.scope)
-
 		// Detect pose
 		receiver.rpcDispatcher.on<DetectStayAlignedRelaxedPoseRequest> { req ->
-			stayAlignedManager.detectRelaxedPose(req.pose ?: StayAlignedRelaxedPose.STANDING)
+			val pose = req.pose ?: StayAlignedRelaxedPose.STANDING
+			val trackerStates = server.context.state.value.trackers.values.map { it.context.state.value }
+			val relaxedPose = RelaxedPose.fromTrackers(trackerStates)
+			updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(true, relaxedPose.upperLeg.toDeg(), relaxedPose.lowerLeg.toDeg(), relaxedPose.foot.toDeg()))
+			AppLogger.stayAligned.info("Set relaxed pose $pose with $relaxedPose")
 			sendConfig(receiver, settings)
 		}.launchIn(receiver.context.scope)
 
 		// Reset pose
 		receiver.rpcDispatcher.on<ResetStayAlignedRelaxedPoseRequest> { req ->
-			stayAlignedManager.resetRelaxedPose(req.pose ?: StayAlignedRelaxedPose.STANDING)
+			val pose = req.pose ?: StayAlignedRelaxedPose.STANDING
+			updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(false, 0f, 0f, 0f))
+			AppLogger.stayAligned.info("Reset relaxed pose $pose")
 			sendConfig(receiver, settings)
 		}.launchIn(receiver.context.scope)
 	}
@@ -111,6 +101,20 @@ class StayAlignedBehaviour(
 				flatFootAngle = config.flatRelaxedPose.footAngleInDeg,
 				setupComplete = config.setupComplete,
 			),
+		)
+	}
+
+	private fun updatePoseInConfig(pose: StayAlignedRelaxedPose, poseConfig: StayAlignedRelaxedPoseConfig) {
+		settings.context.dispatch(
+			SettingsActions.Update {
+				copy(
+					stayAlignedConfig = when (pose) {
+						StayAlignedRelaxedPose.STANDING -> stayAlignedConfig.copy(standingRelaxedPose = poseConfig)
+						StayAlignedRelaxedPose.SITTING -> stayAlignedConfig.copy(sittingRelaxedPose = poseConfig)
+						StayAlignedRelaxedPose.FLAT -> stayAlignedConfig.copy(flatRelaxedPose = poseConfig)
+					},
+				)
+			},
 		)
 	}
 }

@@ -6,7 +6,6 @@ import dev.slimevr.config.ConfigStorage
 import dev.slimevr.config.DefaultSettingsBehaviour
 import dev.slimevr.config.DefaultUserBehaviour
 import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.SettingsConfigState
 import dev.slimevr.config.SettingsState
 import dev.slimevr.config.TextFileHandle
@@ -14,7 +13,6 @@ import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeActions
 import dev.slimevr.driver.DriverBridgeSource
@@ -24,7 +22,6 @@ import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.keybind.KeybindManager
-import dev.slimevr.math.angle.Angle
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsBasicBehaviour
@@ -40,16 +37,12 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
-import dev.slimevr.stayaligned.StayAlignedActions
-import dev.slimevr.stayaligned.StayAlignedManager
-import dev.slimevr.stayaligned.StayAlignedState
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
-import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -62,11 +55,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
-import solarxr_protocol.datatypes.MagnetometerStatus
-import solarxr_protocol.datatypes.MountingMethod
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
-import solarxr_protocol.datatypes.hardware_info.TrackerDataType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
@@ -149,46 +140,36 @@ fun buildTestTracker(
 	bodyPart: BodyPart? = null,
 	status: TrackerStatus = TrackerStatus.DISCONNECTED,
 	origin: DeviceOrigin = DeviceOrigin.UDP,
-	sensorType: ImuType? = ImuType.BNO085,
+	imuType: ImuType? = ImuType.BNO085,
 	position: Vector3? = null,
 	completedRestCalibration: Boolean? = true,
 	rawRotation: Quaternion = Quaternion.IDENTITY,
 	additionalBehaviours: List<TrackerBehaviour> = listOf(),
 	sessionCalibration: SessionCalibration? = null,
+	motion: Motion = Tracker.DEFAULT_STATE.motion,
+	stayAlignedData: StayAlignedData = Tracker.DEFAULT_STATE.stayAlignedData,
 ): Tracker {
-	val state = TrackerState(
+	val state = Tracker.DEFAULT_STATE.copy(
 		id = id,
 		deviceId = 0,
 		origin = origin,
 		hardwareId = "test-$id",
 		name = "Tracker $id",
-		imuType = sensorType,
+		imuType = imuType,
 		bodyPart = bodyPart,
 		customName = null,
-		trackerDataType = TrackerDataType.ROTATION,
-		lastMountingMethod = MountingMethod.MANUAL,
-		mountingOrientation = Quaternion.IDENTITY,
-		restOrientation = Quaternion.IDENTITY,
 		sessionCalibration = sessionCalibration,
 		rawRotation = rawRotation,
-		rotation = Quaternion.IDENTITY,
-		rawAcceleration = Vector3.NULL,
-		acceleration = Vector3.NULL,
-		rawMagnetometer = Vector3.NULL,
 		position = position,
-		imuTemp = null,
-		tps = 0u,
 		status = status,
 		completedRestCalibration = completedRestCalibration,
-		magStatus = MagnetometerStatus.NOT_SUPPORTED,
-		motion = Motion.ROTATING,
-		yawResetSmoothing = null,
-		stayAlignedData = StayAlignedData(Quaternion.IDENTITY, null, Angle.ZERO),
+		motion = motion,
+		stayAlignedData = stayAlignedData,
 	)
 	val context = Context.create(
 		initialState = state,
 		scope = scope,
-		behaviours = listOf(TrackerBasicBehaviour(buildTestStayAlignedManager(appContext.server, scope))) + additionalBehaviours,
+		behaviours = listOf(TrackerBasicBehaviour(settings)) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)
@@ -196,7 +177,7 @@ fun buildTestTracker(
 
 fun buildTestSettings(scope: CoroutineScope): Settings {
 	val initialState = SettingsState(data = SettingsConfigState(), name = "test")
-	val context = Context.create<SettingsState, SettingsActions>(
+	val context = Context.create(
 		initialState = initialState,
 		scope = scope,
 		behaviours = listOf(DefaultSettingsBehaviour()),
@@ -224,17 +205,6 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 		name = "HeightCalibration[test]",
 	)
 	return HeightCalibrationManager(context, server, userConfig)
-}
-
-fun buildTestStayAlignedManager(server: VRServer, scope: CoroutineScope): StayAlignedManager {
-	val initialState = StayAlignedState(hideCorrection = false)
-	val context = Context.create<StayAlignedState, StayAlignedActions>(
-		initialState = initialState,
-		scope = scope,
-		behaviours = emptyList(),
-		name = "StayAligned[test]",
-	)
-	return StayAlignedManager(context, server, buildTestSkeleton(scope), buildTestSettings(scope))
 }
 
 private object NoopConfigStorage : ConfigStorage {
@@ -269,7 +239,6 @@ abstract class TestAppContext : AppContextProvider {
 	override val resetsManager: ResetsManager get() = error("not used in test")
 	override val tapDetectionManager: TapDetectionManager get() = error("not used in test")
 	override val boneRouting: BoneRoutingManager get() = error("not used in test")
-	override val stayAlignedManager: StayAlignedManager get() = error("not used in test")
 	override fun startObserving() {}
 	override suspend fun dispose() = Unit
 }

@@ -10,7 +10,7 @@ import kotlin.math.floor
  * An angle between [-PI, PI).
  */
 @JvmInline
-value class Angle(private val rad: Float) {
+value class Angle(private val rad: Float) : Comparable<Angle> {
 	fun toRad() = rad
 
 	fun toDeg() = rad * FastMath.RAD_TO_DEG
@@ -27,7 +27,7 @@ value class Angle(private val rad: Float) {
 
 	operator fun div(scale: Float) = Angle(normalize(rad / scale))
 
-	operator fun compareTo(other: Angle) = rad.compareTo(other.rad)
+	override operator fun compareTo(other: Angle) = rad.compareTo(other.rad)
 
 	override fun toString() = "${toDeg()} deg"
 

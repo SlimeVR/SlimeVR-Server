@@ -8,7 +8,6 @@ import kotlin.math.*
 @Serializable
 class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
-		val NULL = Quaternion(0f, 0f, 0f, 0f)
 		val IDENTITY = Quaternion(1f, 0f, 0f, 0f)
 		val I = Quaternion(0f, 1f, 0f, 0f)
 		val J = Quaternion(0f, 0f, 1f, 0f)
@@ -160,7 +159,7 @@ class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun unit(): Quaternion {
 		val m = len()
-		return if (m == 0f) NULL else (this / m)
+		return if (m == 0f) this else (this / m)
 	}
 
 	operator fun times(that: Float): Quaternion = Quaternion(

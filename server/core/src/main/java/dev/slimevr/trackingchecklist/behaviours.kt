@@ -5,7 +5,6 @@ package dev.slimevr.trackingchecklist
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerState
 import dev.slimevr.config.Settings
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.device.DeviceState
 import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.networkprofile.NetworkProfileManager
@@ -33,6 +32,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.RoutingOutput
@@ -64,12 +64,12 @@ private fun deviceStatesFlow(server: VRServer): Flow<List<DeviceState>> = allCon
 class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
 	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
 		// FIXME: Most likely incomplete
-		val hasSteamVR = trackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
+		val hasDriverHMD = trackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
 		val hmdTracker = trackers.firstOrNull { tracker -> tracker.origin == DeviceOrigin.DRIVER && tracker.position != null }
 		val isAssigned = hmdTracker?.bodyPart == BodyPart.HEAD
 		return TrackingChecklistStep(
 			valid = isAssigned,
-			enabled = hasSteamVR,
+			enabled = hasDriverHMD,
 			ignorable = true,
 			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
 			extraData = if (!isAssigned) {

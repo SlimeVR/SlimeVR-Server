@@ -1,11 +1,14 @@
 package dev.slimevr.vrcosc
 
+import com.appstractive.dnssd.DiscoveryEvent
 import dev.slimevr.AppContextProvider
 import dev.slimevr.EventDispatcher
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.oscquery.OscQueryServiceFactory
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.VRCOSCInputState
 import solarxr_protocol.rpc.VRCOSCOscQueryState
@@ -92,6 +95,8 @@ typealias VRCOSCBehaviour = Behaviour<VRCOSCState, VRCOSCActions, VRCOSCManager>
 class VRCOSCManager(
 	val context: VRCOSCContext,
 	val oscQueryAddress: String,
+	private val discoverServicesFlow: (String) -> Flow<DiscoveryEvent>,
+	private val serviceFactory: OscQueryServiceFactory,
 ) {
 	val events: EventDispatcher<VRCOSCEvent> = EventDispatcher("VRCOSC", context.scope, capacity = 32)
 
@@ -100,7 +105,12 @@ class VRCOSCManager(
 		val behaviours = listOf(
 			VRCOSCOutputBehaviour(appContext.skeleton, settings, appContext.boneRouting),
 			VRCOSCInputBehaviour(appContext, settings),
-			VRCOSCOscQueryBehaviour(settings, localIp = oscQueryAddress),
+			VRCOSCOscQueryBehaviour(
+				settings,
+				localIp = oscQueryAddress,
+				discoverServicesFlow = discoverServicesFlow,
+				serviceFactory = serviceFactory,
+			),
 		)
 
 		context.behaviours.addAll(behaviours)
@@ -117,6 +127,8 @@ class VRCOSCManager(
 		fun create(
 			scope: CoroutineScope,
 			oscQueryAddress: String,
+			discoverServicesFlow: (String) -> Flow<DiscoveryEvent>,
+			serviceFactory: OscQueryServiceFactory,
 		): VRCOSCManager {
 			val context = Context.create(
 				initialState = VRCOSCState(),
@@ -124,7 +136,7 @@ class VRCOSCManager(
 				scope = scope,
 				name = "VRCOSC",
 			)
-			return VRCOSCManager(context, oscQueryAddress)
+			return VRCOSCManager(context, oscQueryAddress, discoverServicesFlow, serviceFactory)
 		}
 	}
 }

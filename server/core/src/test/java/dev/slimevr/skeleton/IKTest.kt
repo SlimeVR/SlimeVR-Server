@@ -3,8 +3,8 @@ package dev.slimevr.skeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import org.junit.jupiter.api.Test
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.test.Test
 
 class IKTest {
 	@Test
@@ -59,7 +59,7 @@ class IKTest {
 			target,
 		)
 
-		val ikOut = ccdIk(boneInputs, bones, listOf(goal), 0.01f, 100)
+		val ikOut = ccdIk(boneInputs, bones, listOf(goal), null, 0.01f, 100)
 		assert(ikOut.goalsReached.all { it.value }) {
 			val boneRots = ikOut.bones.values.joinToString {
 				"${it.bodyPart}: ${it.rotation.toEulerAngles(EulerOrder.YZX)}"

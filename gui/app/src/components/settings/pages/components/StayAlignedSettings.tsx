@@ -2,11 +2,8 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
-  ChangeStayAlignedHideCorrectionRequestT,
   ChangeStayAlignedSettingsRequestT,
   RpcMessage,
-  StayAlignedHideCorrectionRequestT,
-  StayAlignedHideCorrectionResponseT,
   StayAlignedSettingsRequestT,
   StayAlignedSettingsResponseT,
 } from 'solarxr-protocol';
@@ -43,7 +40,6 @@ export type StayAlignedSettingsForm = {
   flatUpperLegAngle: number;
   flatLowerLegAngle: number;
   flatFootAngle: number;
-  hideCorrection: boolean;
 };
 
 export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
@@ -61,22 +57,12 @@ export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
   flatUpperLegAngle: 0.0,
   flatLowerLegAngle: 0.0,
   flatFootAngle: 0.0,
-  hideCorrection: false,
 };
 
 const stayAlignedSettingsAtom = atom(new StayAlignedSettingsResponseT());
 const stayAlignedSettingsValueAtom = selectAtom(
   stayAlignedSettingsAtom,
   (settings) => settings,
-  isEqual
-);
-
-const stayAlignedHideCorrectionAtom = atom(
-  new StayAlignedHideCorrectionResponseT()
-);
-const stayAlignedHideCorrectionValueAtom = selectAtom(
-  stayAlignedHideCorrectionAtom,
-  (hideCorrection) => hideCorrection,
   isEqual
 );
 
@@ -133,8 +119,6 @@ ${trackers
 export function StayAlignedSettings() {
   const setSettings = useSetAtom(stayAlignedSettingsAtom);
   const settings = useAtomValue(stayAlignedSettingsValueAtom);
-  const setHideCorrection = useSetAtom(stayAlignedHideCorrectionAtom);
-  const hideCorrection = useAtomValue(stayAlignedHideCorrectionValueAtom);
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
@@ -154,14 +138,7 @@ export function StayAlignedSettings() {
     settingsReq.sittingEnabled = values.sittingEnabled;
     settingsReq.flatEnabled = values.flatEnabled;
 
-    const hideCorrectionReq = new ChangeStayAlignedHideCorrectionRequestT();
-    hideCorrectionReq.hideCorrection = values.hideCorrection;
-
     sendRPCPacket(RpcMessage.ChangeStayAlignedSettingsRequest, settingsReq);
-    sendRPCPacket(
-      RpcMessage.ChangeStayAlignedHideCorrectionRequest,
-      hideCorrectionReq
-    );
   };
 
   useEffect(() => {
@@ -175,10 +152,6 @@ export function StayAlignedSettings() {
     sendRPCPacket(
       RpcMessage.StayAlignedSettingsRequest,
       new StayAlignedSettingsRequestT()
-    );
-    sendRPCPacket(
-      RpcMessage.StayAlignedHideCorrectionRequest,
-      new StayAlignedHideCorrectionRequestT()
     );
   }, []);
 
@@ -206,21 +179,10 @@ export function StayAlignedSettings() {
     reset({ ...getValues(), ...formData });
   }, [settings]);
 
-  useEffect(() => {
-    reset({ ...getValues(), hideCorrection: hideCorrection.hideCorrection });
-  }, [hideCorrection]);
-
   useRPCPacket(
     RpcMessage.StayAlignedSettingsResponse,
     (settings: StayAlignedSettingsResponseT) => {
       setSettings(settings);
-    }
-  );
-
-  useRPCPacket(
-    RpcMessage.StayAlignedHideCorrectionResponse,
-    (response: StayAlignedHideCorrectionResponseT) => {
-      setHideCorrection(response);
     }
   );
 
@@ -271,23 +233,13 @@ export function StayAlignedSettings() {
         <Typography variant="section-title">
           {l10n.getString('settings-stay_aligned-general-label')}
         </Typography>
-        <div className="grid sm:grid-cols-2 gap-3 pt-2">
+        <div className="pt-2">
           <CheckBox
             variant="toggle"
             outlined
             control={control}
             name="enabled"
             label={l10n.getString('settings-stay_aligned-enabled-label')}
-            disabled={!config.setupComplete}
-          />
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="hideCorrection"
-            label={l10n.getString(
-              'settings-stay_aligned-hide_yaw_correction-label'
-            )}
             disabled={!config.setupComplete}
           />
         </div>

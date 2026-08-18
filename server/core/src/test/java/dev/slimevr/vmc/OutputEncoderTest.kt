@@ -8,8 +8,8 @@ import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import org.junit.jupiter.api.Test
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull

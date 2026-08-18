@@ -2,6 +2,7 @@ package dev.slimevr
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -19,6 +20,7 @@ private sealed interface TestEvent {
 	data class B(val n: Int) : TestEvent
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class EventDispatcherTest {
 
 	@Test

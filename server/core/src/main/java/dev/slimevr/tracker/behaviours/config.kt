@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
+import solarxr_protocol.datatypes.MountingMethod
 
 class TrackerConfigBehaviour(
 	private val settings: Settings,
@@ -36,6 +37,7 @@ class TrackerConfigBehaviour(
 		fun restoreFromConfig(state: TrackerState, config: TrackerConfig, saveMountingReset: Boolean): TrackerState = state.copy(
 			bodyPart = config.bodyPart?.takeIf { it != BodyPart.NONE } ?: state.bodyPart,
 			customName = config.customName ?: state.customName,
+			lastMountingMethod = if (saveMountingReset && config.mountingResetOrientation != null) MountingMethod.POSE else MountingMethod.MANUAL,
 			mountingOrientation = config.mountingOrientation,
 			sessionCalibration = if (saveMountingReset) {
 				config.mountingResetOrientation?.let {

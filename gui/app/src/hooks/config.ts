@@ -63,6 +63,7 @@ export interface Config {
   skeletonPreview: boolean;
   lastUsedProportions: 'manual' | 'autobone' | 'scaled' | null;
   dontShowUdevModal: boolean;
+  collapsedConnectionGroups: Record<string, boolean>;
 }
 
 export interface ConfigContext {
@@ -95,6 +96,7 @@ export const defaultConfig: Config = {
   skeletonPreview: true,
   lastUsedProportions: null,
   dontShowUdevModal: false,
+  collapsedConnectionGroups: {},
 };
 
 const localStore: CrossStorage = {

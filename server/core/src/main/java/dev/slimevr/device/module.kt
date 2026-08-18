@@ -6,17 +6,10 @@ import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
 import kotlinx.coroutines.CoroutineScope
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.BoardType
 import solarxr_protocol.datatypes.hardware_info.McuType
-
-enum class DeviceOrigin {
-	DRIVER,
-	UDP,
-	HID,
-	VRC,
-	VMC,
-}
 
 data class DeviceState(
 	val id: Int,

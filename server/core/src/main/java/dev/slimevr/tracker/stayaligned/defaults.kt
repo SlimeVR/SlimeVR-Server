@@ -1,7 +1,7 @@
-package dev.slimevr.stayaligned
+package dev.slimevr.tracker.stayaligned
 
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.stayaligned.poses.RelaxedPose
+import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
 /**

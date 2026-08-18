@@ -1,11 +1,11 @@
-package dev.slimevr.stayaligned.poses
+package dev.slimevr.tracker.stayaligned.poses
 
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.stayaligned.StayAlignedDefaults
-import dev.slimevr.stayaligned.YawUtils.trackerYaw
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.getFineFor
+import dev.slimevr.tracker.stayaligned.StayAlignedDefaults
+import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
 import solarxr_protocol.datatypes.BodyPart
 
 class RelaxedPose(

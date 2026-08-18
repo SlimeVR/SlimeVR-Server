@@ -34,6 +34,11 @@ data class TrackerConfig(
 )
 
 @Serializable
+data class DongleConfig(
+	val customName: String? = null,
+)
+
+@Serializable
 data class TrackersConfig(
 	val trackerPort: Int = 6969, // Not in SolarXR
 	val globalMagEnabled: Boolean = false,
@@ -41,7 +46,7 @@ data class TrackersConfig(
 
 @Serializable
 data class HidConfig(
-	val trackersOverHid: Boolean = false, // TODO
+	val trackersOverHid: Boolean = false,
 )
 
 @Serializable
@@ -91,8 +96,8 @@ data class ResetsConfig(
 	val yawResetSmoothTime: Float = 0.0f,
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
-	/** Reset a positional tracker's pitch upon full reset */
-	val resetPositionalHeadPitch: Boolean = false, // TODO
+	/** Reset a positional tracker's attitude full reset */
+	val resetPositionalHeadAttitude: Boolean = false, // TODO also rename in GUI and solarxr
 	/** Used as preferred mounting method and tracking checklist */
 	val lastMountingMethod: MountingMethod = MountingMethod.POSE,
 )
@@ -166,7 +171,7 @@ data class VRCOSCConfig(
 
 @Serializable
 data class VMCConfig(
-	val enabled: Boolean = true,
+	val enabled: Boolean = false,
 	val portIn: Int = 39540,
 	val portOut: Int = 39539,
 	val address: String = "127.0.0.1",
@@ -212,6 +217,7 @@ data class SettingsConfigState(
 	val mutedChecklistSteps: Set<String> = emptySet(),
 	val allowedUdpDevices: Set<String> = emptySet(),
 	val trackers: Map<String, TrackerConfig> = emptyMap(),
+	val dongles: Map<String, DongleConfig> = emptyMap(),
 	val trackersConfig: TrackersConfig = TrackersConfig(),
 	val hidConfig: HidConfig = HidConfig(),
 	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
@@ -246,6 +252,7 @@ sealed interface SettingsActions {
 	data class Update(val transform: SettingsConfigState.() -> SettingsConfigState) : SettingsActions
 	data class LoadProfile(val newState: SettingsState) : SettingsActions
 	data class UpdateTracker(val hardwareId: String, val transform: TrackerConfig.() -> TrackerConfig) : SettingsActions
+	data class UpdateDongle(val serialNumber: String, val transform: DongleConfig.() -> DongleConfig) : SettingsActions
 	data class AddAllowedUdpDevice(val mac: String) : SettingsActions
 	data class RemoveAllowedUdpDevice(val mac: String) : SettingsActions
 }

@@ -413,7 +413,7 @@ const spawnServer = async () => {
   if (!javaBin) {
     dialog.showErrorBox(
       'SlimeVR',
-      'Unable to find a compatible Java version, please download Java 25 or higher'
+      'Unable to find a compatible Java version, Make sure to use the latest SlimeVR installer. Or install java 25 or higher'
     );
     app.quit();
     return;

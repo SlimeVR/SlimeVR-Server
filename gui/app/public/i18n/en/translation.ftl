@@ -396,6 +396,24 @@ tracker-settings-current-version = Current
 tracker-settings-latest-version = Latest
 tracker-settings-build-date = Build Date
 
+## Dongle settings
+dongle-infos-model = Model
+dongle-infos-hardware_revision = Hardware Revision
+dongle-status-connected = Connected
+dongle-status-disconnected = Disconnected
+dongle-settings-back = Go back to trackers list
+dongle-settings-title = Dongle settings
+dongle-settings-name_section = Dongle name
+dongle-settings-name_section-description = Give it a cute nickname :3
+dongle-settings-name_section-placeholder = Futura's usb thingie
+dongle-settings-name_section-label = Dongle name
+dongle-settings-update = Update now
+dongle-settings-update-title = Firmware version
+dongle-settings-paired_trackers = Paired Trackers
+dongle-settings-paired_trackers-empty = No trackers paired to this dongle yet.
+dongle-settings-pair = Pair Tracker
+dongle-settings-forget_tracker = Forget
+
 
 ## Tracker part card info
 tracker-part_card-no_name = No name
@@ -446,8 +464,6 @@ tracker_selection_menu-RIGHT_INDEX_TOE = { -tracker_selection-part } right index
 tracker_selection_menu-RIGHT_MIDDLE_TOE = { -tracker_selection-part } right middle toe?
 tracker_selection_menu-RIGHT_RING_TOE = { -tracker_selection-part } right ring toe?
 tracker_selection_menu-RIGHT_LITTLE_TOE = { -tracker_selection-part } right little toe?
-
-
 tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
 tracker_selection_menu-dont_assign = Unassign
@@ -1529,6 +1545,8 @@ onboarding-stay_aligned-manual_mounting-done = Done
 home-no_trackers = No trackers detected or assigned
 home-settings = Home Page Settings
 home-settings-close = Close
+home-connection_group-wifi = Wi-Fi Trackers
+home-connection_group-driver = VR Devices
 
 ## Trackers Still On notification
 trackers_still_on-modal-title = Trackers still on
@@ -1814,6 +1832,16 @@ toolbar-mounting_calibration-default = Body
 toolbar-mounting_calibration-feet = Feet
 toolbar-mounting_calibration-fingers = Fingers
 toolbar-drift_reset = Drift Reset
+toolbar-assigned_trackers = {$count} trackers assigned
+toolbar-unassigned_trackers = {$count} trackers unassigned
+toolbar-assigned_trackers = { $count ->
+    [one] { $count } tracker assigned
+    *[other] { $count } trackers assigned
+}
+toolbar-unassigned_trackers = { $count ->
+    [one] { $count } tracker unassigned
+    *[other] { $count } trackers unassigned
+}
 toolbar-assigned_trackers = {$count} trackers assigned
 toolbar-unassigned_trackers = {$count} trackers unassigned
 body_part-LEFT_BIG_TOE = Left Big Toe

@@ -9,7 +9,6 @@ import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.serial.SerialPortInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.WifiProvisioningStatus
 import kotlin.test.Test

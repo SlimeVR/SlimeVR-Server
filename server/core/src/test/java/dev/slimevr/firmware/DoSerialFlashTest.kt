@@ -7,7 +7,6 @@ import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestVrServerStub
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
@@ -18,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 import kotlin.test.Test

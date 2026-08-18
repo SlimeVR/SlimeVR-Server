@@ -1,16 +1,22 @@
 package dev.slimevr.hid
 
 import dev.slimevr.VRServerActions
+import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.timeSource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -28,6 +34,10 @@ class HIDRegistrationBehaviour : HIDReceiverBehaviour {
 					)
 					),
 		)
+
+		is HIDReceiverActions.SetStatus -> state.copy(status = action.status)
+
+		is HIDReceiverActions.SetCustomName -> state.copy(customName = action.customName)
 
 		else -> state
 	}
@@ -61,6 +71,21 @@ class HIDRegistrationBehaviour : HIDReceiverBehaviour {
 			receiver.context.dispatch(HIDReceiverActions.DeviceRegistered(packet.hidId, packet.address, deviceId))
 			AppLogger.hid.info("Registered HID device ${packet.address} (hidId=${packet.hidId})")
 		}.launchIn(receiver.context.scope)
+	}
+}
+
+class HIDReceiverConfigBehaviour(
+	private val settings: Settings,
+	private val serialNumber: String,
+) : HIDReceiverBehaviour {
+	override fun observe(receiver: HIDReceiver) {
+		receiver.context.state
+			.distinctUntilChangedBy { it.customName }
+			.drop(1)
+			.onEach { state ->
+				settings.context.dispatch(SettingsActions.UpdateDongle(serialNumber) { copy(customName = state.customName) })
+			}
+			.launchIn(receiver.context.scope)
 	}
 }
 
@@ -102,7 +127,7 @@ class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
 						scope = receiver.appContext.server.context.scope,
 						id = trackerId,
 						deviceId = deviceState.id,
-						sensorType = packet.imuType,
+						imuType = packet.imuType,
 						hardwareId = deviceState.address,
 						origin = DeviceOrigin.HID,
 						appContext = receiver.appContext,

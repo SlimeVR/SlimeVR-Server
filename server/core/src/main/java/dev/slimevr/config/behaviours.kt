@@ -18,6 +18,11 @@ class DefaultSettingsBehaviour : SettingsBehaviour {
 			state.copy(data = state.data.copy(trackers = state.data.trackers + (action.hardwareId to action.transform(existing))))
 		}
 
+		is SettingsActions.UpdateDongle -> {
+			val existing = state.data.dongles[action.serialNumber] ?: DongleConfig()
+			state.copy(data = state.data.copy(dongles = state.data.dongles + (action.serialNumber to action.transform(existing))))
+		}
+
 		is SettingsActions.AddAllowedUdpDevice -> state.copy(data = state.data.copy(allowedUdpDevices = state.data.allowedUdpDevices + action.mac))
 
 		is SettingsActions.RemoveAllowedUdpDevice -> state.copy(data = state.data.copy(allowedUdpDevices = state.data.allowedUdpDevices - action.mac))

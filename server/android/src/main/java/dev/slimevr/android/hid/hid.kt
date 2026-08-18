@@ -12,9 +12,12 @@ import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
 import androidx.core.content.ContextCompat
 import dev.slimevr.AppContextProvider
+import dev.slimevr.VRServerActions
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
-import dev.slimevr.hid.isCompatibleHidDevice
+import dev.slimevr.hid.HIDReceiverActions
+import dev.slimevr.hid.isCompatibleHidReceiver
+import dev.slimevr.hid.isCompatibleHidTracker
 import dev.slimevr.hid.parseHIDPackets
 import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +30,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import solarxr_protocol.data_feed.dongle_data.DongleStatus
 import solarxr_protocol.datatypes.TrackerStatus
 
 private const val ACTION_USB_HID_PERMISSION = "dev.slimevr.android.USB_HID_PERMISSION"
@@ -77,10 +81,14 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 
 	scope.launch {
 		while (isActive) {
+			val directTrackersEnabled = appContext.config.settings.context.state.value.data.hidConfig.trackersOverHid
 			val found = withContext(Dispatchers.IO) {
 				try {
 					usbManager.deviceList.values
-						.filter { device -> isCompatibleHidDevice(device.vendorId, device.productId) }
+						.filter { device ->
+							isCompatibleHidReceiver(device.vendorId, device.productId) ||
+								(directTrackersEnabled && isCompatibleHidTracker(device.vendorId, device.productId))
+						}
 						.associate { device -> device.deviceName to device }
 				} catch (e: Exception) {
 					AppLogger.hid.error(e, "HID enumeration failed")
@@ -133,11 +141,21 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 				val deviceJob = Job(scope.coroutineContext[Job])
 				val deviceScope = CoroutineScope(scope.coroutineContext + deviceJob)
 
-				val receiver = HIDReceiver.create(
-					serialNumber = serial,
-					appContext = appContext,
-					scope = deviceScope,
-				)
+				val receiver = appContext.server.context.state.value.dongles.values
+					.find { it.context.state.value.serialNumber == serial }
+					?: run {
+						val id = appContext.server.nextHandle()
+						val created = HIDReceiver.create(
+							id = id,
+							serialNumber = serial,
+							isDirect = isCompatibleHidTracker(device.vendorId, device.productId),
+							appContext = appContext,
+							scope = scope,
+						)
+						appContext.server.context.dispatch(VRServerActions.NewDongle(id, created))
+						created
+					}
+				receiver.context.dispatch(HIDReceiverActions.SetStatus(DongleStatus.CONNECTED))
 
 				deviceScope.launch(Dispatchers.IO) {
 					try {

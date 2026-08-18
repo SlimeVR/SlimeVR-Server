@@ -1,11 +1,10 @@
-package dev.slimevr.stayaligned.visitors
+package dev.slimevr.tracker.stayaligned.visitors
 
 import dev.slimevr.math.angle.AngleErrors
-import dev.slimevr.stayaligned.TrackerGroups
-import dev.slimevr.stayaligned.YawUtils.extraYaw
-import dev.slimevr.stayaligned.YawUtils.trackerYaw
-import dev.slimevr.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.stayaligned.YawUtils.extraYaw
+import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
+import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
 import dev.slimevr.util.Side
 import solarxr_protocol.datatypes.BodyPart
 
@@ -79,7 +78,7 @@ class NeighborErrorVisitor(
 
 	override fun visitArmTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveUpperBodyOrArm: TrackerState?,
 		belowHandOrArm: TrackerState?,
 	) {
@@ -88,7 +87,7 @@ class NeighborErrorVisitor(
 
 	override fun visitHandTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveArm: TrackerState?,
 		oppositeHand: TrackerState?,
 	) {
@@ -97,7 +96,7 @@ class NeighborErrorVisitor(
 
 	override fun visitUpperLegTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveUpperBody: TrackerState?,
 		belowLowerLeg: TrackerState?,
 		oppositeUpperLeg: TrackerState?,
@@ -106,7 +105,7 @@ class NeighborErrorVisitor(
 			errors.add(
 				trackerYaw(aboveUpperBody) +
 					extraYaw(side, relaxedPose.upperLeg) -
-					trackerYaw(tracker),
+					trackerYaw(trackerState),
 			)
 		}
 
@@ -115,14 +114,14 @@ class NeighborErrorVisitor(
 				trackerYaw(belowLowerLeg) -
 					extraYaw(side, relaxedPose.lowerLeg) +
 					extraYaw(side, relaxedPose.upperLeg) -
-					trackerYaw(tracker),
+					trackerYaw(trackerState),
 			)
 		}
 	}
 
 	override fun visitLowerLegTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveUpperLeg: TrackerState?,
 		belowFoot: TrackerState?,
 		oppositeLowerLeg: TrackerState?,
@@ -132,7 +131,7 @@ class NeighborErrorVisitor(
 				trackerYaw(aboveUpperLeg) -
 					extraYaw(side, relaxedPose.upperLeg) +
 					extraYaw(side, relaxedPose.lowerLeg) -
-					trackerYaw(tracker),
+					trackerYaw(trackerState),
 			)
 		}
 
@@ -141,14 +140,14 @@ class NeighborErrorVisitor(
 				trackerYaw(belowFoot) -
 					extraYaw(side, relaxedPose.foot) +
 					extraYaw(side, relaxedPose.lowerLeg) -
-					trackerYaw(tracker),
+					trackerYaw(trackerState),
 			)
 		}
 	}
 
 	override fun visitFootTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveLowerLeg: TrackerState?,
 		oppositeFoot: TrackerState?,
 	) {
@@ -157,7 +156,7 @@ class NeighborErrorVisitor(
 				trackerYaw(aboveLowerLeg) -
 					extraYaw(side, relaxedPose.lowerLeg) +
 					extraYaw(side, relaxedPose.foot) -
-					trackerYaw(tracker),
+					trackerYaw(trackerState),
 			)
 		}
 	}

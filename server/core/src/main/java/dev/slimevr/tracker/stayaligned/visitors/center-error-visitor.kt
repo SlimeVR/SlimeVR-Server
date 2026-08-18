@@ -1,12 +1,11 @@
-package dev.slimevr.stayaligned.visitors
+package dev.slimevr.tracker.stayaligned.visitors
 
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleErrors
-import dev.slimevr.stayaligned.TrackerGroups
-import dev.slimevr.stayaligned.YawUtils.extraYaw
-import dev.slimevr.stayaligned.YawUtils.trackerYaw
-import dev.slimevr.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.tracker.stayaligned.YawUtils.extraYaw
+import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
+import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
 import dev.slimevr.util.Side
 
 /**
@@ -45,7 +44,7 @@ class CenterErrorVisitor(
 
 	override fun visitArmTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveUpperBodyOrArm: TrackerState?,
 		belowHandOrArm: TrackerState?,
 	) {
@@ -54,7 +53,7 @@ class CenterErrorVisitor(
 
 	override fun visitHandTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveArm: TrackerState?,
 		oppositeHand: TrackerState?,
 	) {
@@ -63,30 +62,30 @@ class CenterErrorVisitor(
 
 	override fun visitUpperLegTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveUpperBody: TrackerState?,
 		belowLowerLeg: TrackerState?,
 		oppositeUpperLeg: TrackerState?,
 	) {
-		errors.add(centerYaw + extraYaw(side, relaxedPose.upperLeg) - trackerYaw(tracker))
+		errors.add(centerYaw + extraYaw(side, relaxedPose.upperLeg) - trackerYaw(trackerState))
 	}
 
 	override fun visitLowerLegTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveUpperLeg: TrackerState?,
 		belowFoot: TrackerState?,
 		oppositeLowerLeg: TrackerState?,
 	) {
-		errors.add(centerYaw + extraYaw(side, relaxedPose.lowerLeg) - trackerYaw(tracker))
+		errors.add(centerYaw + extraYaw(side, relaxedPose.lowerLeg) - trackerYaw(trackerState))
 	}
 
 	override fun visitFootTracker(
 		side: Side,
-		tracker: TrackerState,
+		trackerState: TrackerState,
 		aboveLowerLeg: TrackerState?,
 		oppositeFoot: TrackerState?,
 	) {
-		errors.add(centerYaw + extraYaw(side, relaxedPose.foot) - trackerYaw(tracker))
+		errors.add(centerYaw + extraYaw(side, relaxedPose.foot) - trackerYaw(trackerState))
 	}
 }

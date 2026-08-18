@@ -8,6 +8,7 @@ import dev.slimevr.device.Device
 import dev.slimevr.tracker.Tracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
+import solarxr_protocol.data_feed.dongle_data.DongleStatus
 
 data class HIDTrackerRecord(
 	val hidId: Int,
@@ -17,13 +18,28 @@ data class HIDTrackerRecord(
 )
 
 data class HIDReceiverState(
+	val id: Int,
 	val serialNumber: String,
+	val isDirect: Boolean, // True if this HID device is a tracker connected directly over USB
+	val status: DongleStatus,
+	val displayName: String,
+	val customName: String?,
+	val hardwareRevision: String,
+	val model: String,
+	val manufacturer: String,
+	val firmwareVersion: String,
+	val firmwareDate: String,
+	val hardwareAddress: String,
+	val boardType: String,
+
 	val trackers: Map<Int, HIDTrackerRecord>,
 )
 
 sealed interface HIDReceiverActions {
 	data class DeviceRegistered(val hidId: Int, val address: String, val deviceId: Int) : HIDReceiverActions
 	data class TrackerRegistered(val hidId: Int, val trackerId: Int) : HIDReceiverActions
+	data class SetStatus(val status: DongleStatus) : HIDReceiverActions
+	data class SetCustomName(val customName: String?) : HIDReceiverActions
 }
 
 typealias HIDReceiverContext = Context<HIDReceiverState, HIDReceiverActions>
@@ -50,10 +66,15 @@ class HIDReceiver(
 
 	companion object {
 		fun create(
+			id: Int,
 			serialNumber: String,
+			isDirect: Boolean,
 			appContext: AppContextProvider,
 			scope: CoroutineScope,
 		): HIDReceiver {
+			val settings = appContext.config.settings
+			val savedConfig = settings.context.state.value.data.dongles[serialNumber]
+
 			val behaviours = listOf(
 				HIDRegistrationBehaviour(),
 				HIDDeviceInfoBehaviour(),
@@ -62,10 +83,26 @@ class HIDReceiver(
 				HIDStatusBehaviour(),
 				HIDPacketLossBehaviour(),
 				HIDSleepBehaviour(),
+				HIDReceiverConfigBehaviour(settings, serialNumber),
 			)
 
 			val context = Context.create(
-				initialState = HIDReceiverState(serialNumber = serialNumber, trackers = mapOf()),
+				initialState = HIDReceiverState(
+					id = id,
+					serialNumber = serialNumber,
+					isDirect = isDirect,
+					status = DongleStatus.DISCONNECTED,
+					trackers = emptyMap(),
+					displayName = "Dongle #$serialNumber",
+					customName = savedConfig?.customName,
+					hardwareRevision = "1",
+					manufacturer = "SlimeVR",
+					model = "SuperCool",
+					firmwareVersion = "67",
+					firmwareDate = "2000 BC",
+					hardwareAddress = "10:2A:23:34:1F",
+					boardType = "Nya_a",
+				),
 				scope = scope,
 				behaviours = behaviours,
 				name = "HIDReceiver[$serialNumber]",

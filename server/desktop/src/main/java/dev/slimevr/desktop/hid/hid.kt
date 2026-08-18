@@ -1,9 +1,12 @@
 package dev.slimevr.desktop.hid
 
 import dev.slimevr.AppContextProvider
+import dev.slimevr.VRServerActions
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
-import dev.slimevr.hid.isCompatibleHidDevice
+import dev.slimevr.hid.HIDReceiverActions
+import dev.slimevr.hid.isCompatibleHidReceiver
+import dev.slimevr.hid.isCompatibleHidTracker
 import dev.slimevr.hid.parseHIDPackets
 import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +23,7 @@ import org.hid4java.HidManager
 import org.hid4java.HidServicesSpecification
 import org.hid4java.jna.HidApi
 import org.hid4java.jna.HidDeviceInfoStructure
+import solarxr_protocol.data_feed.dongle_data.DongleStatus
 import solarxr_protocol.datatypes.TrackerStatus
 
 private const val HID_POLL_INTERVAL_MS = 3000L
@@ -35,13 +39,15 @@ private val hidSpec = HidServicesSpecification().apply { isAutoStart = false }
 // Initialize the native HID library. Must be called before enumerateDevices.
 private val hidServices by lazy { HidManager.getHidServices(hidSpec) }
 
-private fun enumerateCompatibleDevices(): Map<String, HidDevice> {
+private fun enumerateCompatibleDevices(directTrackersEnabled: Boolean): Map<String, HidDevice> {
 	hidServices // ensure native lib is loaded
 	val root = HidApi.enumerateDevices(0, 0) ?: return emptyMap()
 	val result = mutableMapOf<String, HidDevice>()
 	var info: HidDeviceInfoStructure? = root
 	while (info != null) {
-		if (isCompatibleHidDevice(info.vendor_id.toInt(), info.product_id.toInt())) {
+		val vid = info.vendor_id.toInt()
+		val pid = info.product_id.toInt()
+		if (isCompatibleHidReceiver(vid, pid) || (directTrackersEnabled && isCompatibleHidTracker(vid, pid))) {
 			val device = HidDevice(info, null, hidSpec)
 			// Use path as key, unique per physical device, available without opening
 			result[info.path] = device
@@ -59,9 +65,10 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 
 	scope.launch {
 		while (isActive) {
+			val directTrackersEnabled = appContext.config.settings.context.state.value.data.hidConfig.trackersOverHid
 			val found = withContext(Dispatchers.IO) {
 				try {
-					enumerateCompatibleDevices()
+					enumerateCompatibleDevices(directTrackersEnabled)
 				} catch (e: Exception) {
 					AppLogger.hid.error(e, "HID enumeration failed")
 					emptyMap()
@@ -93,11 +100,21 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 				val deviceJob = SupervisorJob(scope.coroutineContext[Job])
 				val deviceScope = CoroutineScope(scope.coroutineContext + deviceJob)
 
-				val receiver = HIDReceiver.create(
-					serialNumber = serial,
-					appContext = appContext,
-					scope = deviceScope,
-				)
+				val receiver = appContext.server.context.state.value.dongles.values
+					.find { it.context.state.value.serialNumber == serial }
+					?: run {
+						val id = appContext.server.nextHandle()
+						val created = HIDReceiver.create(
+							id = id,
+							serialNumber = serial,
+							isDirect = isCompatibleHidTracker(hidDevice.vendorId, hidDevice.productId),
+							appContext = appContext,
+							scope = scope,
+						)
+						appContext.server.context.dispatch(VRServerActions.NewDongle(id, created))
+						created
+					}
+				receiver.context.dispatch(HIDReceiverActions.SetStatus(DongleStatus.CONNECTED))
 
 				deviceScope.launch(Dispatchers.IO) {
 					try {
@@ -126,6 +143,7 @@ fun createDesktopHIDManager(appContext: AppContextProvider, scope: CoroutineScop
 									DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
 								)
 							}
+							receiver.context.dispatch(HIDReceiverActions.SetStatus(DongleStatus.DISCONNECTED))
 						}
 					}
 				}

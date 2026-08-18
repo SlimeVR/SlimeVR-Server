@@ -13,6 +13,8 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
+import com.appstractive.dnssd.createNetService
+import com.appstractive.dnssd.discoverServices
 import dev.slimevr.AppContext
 import dev.slimevr.FeatureFlags
 import dev.slimevr.Phase1Context
@@ -163,6 +165,8 @@ class ForegroundService : Service() {
 		val vrcOscManager = VRCOSCManager.create(
 			scope = scope,
 			oscQueryAddress = resolveAndroidOscQueryAddress(),
+			discoverServicesFlow = ::discoverServices,
+			serviceFactory = ::createNetService,
 		)
 		val resetsManager = ResetsManager.create(ctx = phase1, scope = scope)
 		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)

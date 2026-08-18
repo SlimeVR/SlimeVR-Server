@@ -32,7 +32,7 @@ static void onYawReset(SolarXRConnection &conn) {
 
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::YAW, 0, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
+        fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
@@ -44,7 +44,7 @@ static void onFullReset(SolarXRConnection &conn) {
 
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::FULL, 0, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
+        fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
@@ -56,7 +56,7 @@ static void onMountingCalibration(SolarXRConnection &conn) {
 
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::MOUNTING, 0, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
+        fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
@@ -70,7 +70,7 @@ static void onFeetMountingCalibration(SolarXRConnection &conn) {
         { datatypes::BodyPart::LEFT_FOOT, datatypes::BodyPart::RIGHT_FOOT });
     auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::MOUNTING, bodyParts, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
+        fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
     auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
@@ -84,7 +84,7 @@ static void onToggleTracking(SolarXRConnection &conn) {
     shouldPause = !shouldPause;
     auto toggleReq = rpc::CreateSetPauseTrackingRequest(fbb, shouldPause);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, 0, rpc::RpcMessage::SetPauseTrackingRequest,
+        fbb, 0, 0, rpc::RpcMessage::SetPauseTrackingRequest,
         toggleReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });

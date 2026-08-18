@@ -4,7 +4,6 @@ import com.jme3.math.FastMath
 import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
-import dev.slimevr.device.DeviceOrigin
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
@@ -16,6 +15,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
@@ -309,7 +309,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 		val newTracker = Tracker.create(
 			id = trackerId,
 			hardwareId = hardwareId,
-			sensorType = event.data.imuType,
+			imuType = event.data.imuType,
 			deviceId = deviceState.id,
 			origin = DeviceOrigin.UDP,
 			scope = receiver.appContext.server.context.scope,
