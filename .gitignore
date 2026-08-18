@@ -34,6 +34,9 @@
 # ignore gradle build folder
 build/
 
+# created by clangd for index cache
+.cache/
+
 # direnv has been claimed for Nix usage
 .direnv/
 .devenv
