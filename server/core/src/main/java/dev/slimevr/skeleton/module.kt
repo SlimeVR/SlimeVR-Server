@@ -70,7 +70,7 @@ fun ComputedSkeleton.resolveAverageRotationFor(bodyParts: Array<BodyPart>): Quat
 data class SkeletonState(val boneInputs: InputSkeleton, val skeletonHeight: Float, val paused: Boolean)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
-	boneInputs = DEFAULT_BONE_OFFSETS.mapValues { bodyPart, tailOffset ->
+	boneInputs = DEFAULT_PROPORTIONS.toBoneOffsets().mapValues { bodyPart, tailOffset ->
 		BoneInput(
 			rawRotation = Quaternion.IDENTITY,
 			bodyPart = bodyPart,
