@@ -2,22 +2,20 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
+import dev.slimevr.skeleton.ALL_BODY_PARTS
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
 import dev.slimevr.skeleton.computeDefaultProportionsByBone
-import dev.slimevr.skeleton.configToBoneValues
 import dev.slimevr.skeleton.height
 import dev.slimevr.skeleton.toBoneValues
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.ChangeSkeletonProportionsRequest
 import solarxr_protocol.rpc.ChangeUserHeightRequest
-import solarxr_protocol.rpc.SkeletonBone
 import solarxr_protocol.rpc.SkeletonPart
 import solarxr_protocol.rpc.SkeletonProportionsRequest
 import solarxr_protocol.rpc.SkeletonProportionsResetAllRequest
@@ -39,7 +37,7 @@ class SkeletonProportionsBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		skeleton.context.state
 			.map { it.boneInputs }
-			.distinctUntilChangedBy { boneInputs -> boneInputs.entries.map { it.key to it.value.offset } }
+			.distinctUntilChanged { old, new -> ALL_BODY_PARTS.all { part -> old[part]?.offset == new[part]?.offset } }
 			.drop(1)
 			.onEach { boneInputs ->
 				val configResponse = buildConfigResponse(boneInputs)

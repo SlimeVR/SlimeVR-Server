@@ -98,7 +98,7 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, originPosition: Vector3 =
 fun buildBones(
 	state: Map<BodyPart, BoneInput>,
 	rootHead: Vector3 = Vector3.NULL,
-	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
+	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
 ): ComputedSkeleton {
 	val result = bodyPartMap<BoneState>()
 	hierarchy.forEach { (parentPart, childPart) ->
@@ -112,7 +112,7 @@ fun buildBones(
 fun buildBones(
 	state: SkeletonState,
 	rootHead: Vector3 = Vector3.NULL,
-	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
+	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
 ): ComputedSkeleton = buildBones(state.boneInputs, rootHead, hierarchy)
 
 sealed interface SkeletonActions {
