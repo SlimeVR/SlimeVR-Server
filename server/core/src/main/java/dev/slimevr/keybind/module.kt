@@ -77,10 +77,10 @@ class KeybindTriggerBehaviour(
 
 				KeybindId.YAW_RESET -> resetsManager.scheduleReset(KEYBIND_SOURCE, ResetType.YAW, delaySeconds)
 
-				KeybindId.MOUNTING_RESET -> resetsManager.scheduleReset(KEYBIND_SOURCE, ResetType.MOUNTING, delaySeconds)
+				KeybindId.MOUNTING_RESET -> resetsManager.scheduleReset(KEYBIND_SOURCE, ResetType.POSE_MOUNTING, delaySeconds)
 
 				KeybindId.FEET_MOUNTING_RESET ->
-					resetsManager.scheduleReset(KEYBIND_SOURCE, ResetType.MOUNTING, delaySeconds, FEET_BODY_PARTS)
+					resetsManager.scheduleReset(KEYBIND_SOURCE, ResetType.POSE_MOUNTING, delaySeconds, FEET_BODY_PARTS)
 
 				KeybindId.PAUSE_TRACKING -> {
 					if (delaySeconds > 0f) delay((delaySeconds * 1000).toLong())

@@ -190,7 +190,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.MOUNTING, bodyParts = null))
+		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, bodyParts = null))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
 	}
@@ -204,7 +204,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.MOUNTING, bodyParts = ResetBodyParts.FEET.toList()))
+		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, bodyParts = ResetBodyParts.FEET.toList()))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 	}

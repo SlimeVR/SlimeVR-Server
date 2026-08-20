@@ -65,7 +65,7 @@ class TrackerStayAlignedBehaviour(
 					.distinctUntilChangedBy { it.rawRotation }
 					.filter { index++ % 2 == 0 }
 					.onEach { state ->
-						val yawCorrectionPerSec = IMU_TO_YAW_CORRECTION.getOrDefault(state.imuType, YAW_CORRECTION_DEFAULT)
+						val yawCorrectionPerSec = IMU_TO_YAW_CORRECTION.getOrDefault(imuType, YAW_CORRECTION_DEFAULT)
 						if (yawCorrectionPerSec == Angle.ZERO) return@onEach
 
 						val lastFrameTimeSeconds = lastRotationTime.elapsedNow().inFloatingSeconds

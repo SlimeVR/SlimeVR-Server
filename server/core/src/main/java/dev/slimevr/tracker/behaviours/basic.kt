@@ -180,7 +180,7 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 			}
 		}
 
-		is TrackerActions.MountingReset -> {
+		is TrackerActions.PoseMountingReset -> {
 			val cal = state.sessionCalibration
 
 			val headingAlignment = estimateHeadingAlign(

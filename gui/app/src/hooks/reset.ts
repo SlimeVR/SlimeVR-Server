@@ -19,7 +19,7 @@ export type ResetBtnStatus = 'idle' | 'counting' | 'finished';
 export type MountingResetGroup = 'default' | 'feet' | 'fingers';
 export type UseResetOptions =
   | { type: ResetType.FULL | ResetType.YAW }
-  | { type: ResetType.MOUNTING; group: MountingResetGroup };
+  | { type: ResetType.POSE_MOUNTING; group: MountingResetGroup };
 
 export const BODY_PARTS_GROUPS: Record<MountingResetGroup, BodyPart[]> = {
   default: [],
@@ -32,7 +32,8 @@ export function useReset(
   onReseted?: () => void,
   onFailed?: () => void
 ) {
-  if (options.type === ResetType.MOUNTING && !options.group) options.group = 'default';
+  if (options.type === ResetType.POSE_MOUNTING && !options.group)
+    options.group = 'default';
 
   const serverGuards = useAtomValue(serverGuardsAtom);
   const { currentLocales } = useLocaleConfig();
@@ -55,7 +56,7 @@ export function useReset(
       case ResetType.FULL:
         req.delay = 3;
         break;
-      case ResetType.MOUNTING:
+      case ResetType.POSE_MOUNTING:
         req.delay = 3;
         break;
     }
@@ -64,7 +65,7 @@ export function useReset(
     Sentry.metrics.count('reset_click', 1, {
       attributes: {
         resetType: ResetType[options.type],
-        group: options.type === ResetType.MOUNTING ? options.group : undefined,
+        group: options.type === ResetType.POSE_MOUNTING ? options.group : undefined,
       },
     });
   };
@@ -102,7 +103,7 @@ export function useReset(
     ({ status, resetType, progress, duration, bodyParts }: ResetResponseT) => {
       if (
         resetType !== options.type ||
-        (resetType == ResetType.MOUNTING &&
+        (resetType == ResetType.POSE_MOUNTING &&
           JSON.stringify(parts) !== JSON.stringify(bodyParts))
       ) {
         onResetCanceled();
@@ -128,7 +129,7 @@ export function useReset(
         return 'reset-yaw';
       case ResetType.FULL:
         return 'reset-full';
-      case ResetType.MOUNTING:
+      case ResetType.POSE_MOUNTING:
         if (options.group !== 'default') return `reset-mounting-${options.group}`;
         return 'reset-mounting';
       default:
@@ -138,7 +139,7 @@ export function useReset(
 
   let disabled = status === 'counting';
   let error = null;
-  if (options.type === ResetType.MOUNTING && options.group !== 'default') {
+  if (options.type === ResetType.POSE_MOUNTING && options.group !== 'default') {
     const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
     if (
@@ -151,7 +152,10 @@ export function useReset(
       disabled = true;
       error = `reset-error-no_${options.group}_tracker`;
     }
-  } else if (options.type === ResetType.MOUNTING && !serverGuards?.canDoMountingReset) {
+  } else if (
+    options.type === ResetType.POSE_MOUNTING &&
+    !serverGuards?.canDoMountingReset
+  ) {
     disabled = true;
     error = 'reset-error-mounting-need_full_reset';
   } else if (options.type === ResetType.YAW && !serverGuards?.canDoYawReset) {

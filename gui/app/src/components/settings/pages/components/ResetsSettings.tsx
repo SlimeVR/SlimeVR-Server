@@ -66,7 +66,8 @@ export function ResetsSettings() {
     resetsSettings.armsResetMode = values.armsResetMode;
     resetsSettings.yawResetSmoothTime = values.yawResetSmoothTime;
     resetsSettings.saveMountingReset = values.saveMountingReset;
-    resetsSettings.resetPositionalHeadAttitude = values.resetPositionalHeadAttitude;
+    resetsSettings.resetPositionalHeadAttitude =
+      values.resetPositionalHeadAttitude;
 
     sendRPCPacket(RpcMessage.ChangeResetsSettingsRequest, resetsSettings);
   };
