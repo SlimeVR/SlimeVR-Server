@@ -101,8 +101,8 @@ suspend fun startBindingProvider() = withContext(Dispatchers.IO) {
 suspend fun handleDriverConnection(
 	appContext: AppContextProvider,
 	source: DriverBridgeSource,
-	messages: Flow<ByteArray>,
-	send: suspend (ByteArray) -> Unit,
+	messages: Flow<Buffer>,
+	send: suspend (Buffer) -> Unit,
 ) = coroutineScope {
 	val sendMutex = Mutex()
 
@@ -111,7 +111,7 @@ suspend fun handleDriverConnection(
 
 	suspend fun sendMsg(msg: ProtobufMessage) = sendMutex.withLock {
 		ProtobufMessage.ADAPTER.encode(encodeWriter, msg)
-		send(encodeBuffer.readByteArray())
+		send(encodeBuffer)
 	}
 
 	val bridge = DriverBridge.create(
