@@ -134,7 +134,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 					config.resetMountingFeet ||
 					it.context.state.value.bodyPart !in ResetBodyParts.FEET
 			}
-		}
+		}.filter { resetType == ResetType.FULL || it.context.state.value.position == null } // Positional trackers only full reset
 
 		val referenceRotation = allTrackers
 			.map { it.context.state.value }

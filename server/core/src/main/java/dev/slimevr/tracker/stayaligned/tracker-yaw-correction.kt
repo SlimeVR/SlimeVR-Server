@@ -299,6 +299,6 @@ object TrackerYawCorrection {
 	private fun computeYawCorrectedRotation(yawCorrection: Angle, state: TrackerState): Quaternion {
 		val yawCorrectedRawRotation = Quaternion.rotationAroundYAxis(yawCorrection.toRad()) * state.rawRotation
 		val cal = state.sessionCalibration ?: return yawCorrectedRawRotation
-		return applyCalibration(yawCorrectedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment * state.mountingOrientation, state.restOrientation)
+		return applyCalibration(yawCorrectedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation)
 	}
 }

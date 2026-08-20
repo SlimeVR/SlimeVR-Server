@@ -50,8 +50,7 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 			.distinctUntilChanged()
 			.drop(1)
 			.onEach {
-				val state = receiver.context.state.value
-				if (state.position != null && state.lastMountingMethod == MountingMethod.MANUAL) {
+				if (receiver.context.state.value.lastMountingMethod == MountingMethod.MANUAL) {
 					receiver.context.dispatch(TrackerActions.SetMountingOrientation(defaultMountingForBodyPart(it)))
 				}
 			}.launchIn(receiver.context.scope)
