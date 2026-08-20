@@ -111,7 +111,7 @@ private suspend fun acceptUnixClients(
 					break
 				}
 				AppLogger.ipc.info("$name client connected")
-				launch {
+				launch(Dispatchers.Default) {
 					try {
 						handle(client)
 					} catch (e: CancellationException) {

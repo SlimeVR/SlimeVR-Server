@@ -92,7 +92,7 @@ private suspend fun acceptWindowsClients(
 			}
 			AppLogger.ipc.info("$pipeName client connected")
 
-			launch {
+			launch(Dispatchers.Default) {
 				try {
 					handle(readFrames(pipe)) { bytes -> writer.writeFrame(bytes) }
 				} catch (e: CancellationException) {
