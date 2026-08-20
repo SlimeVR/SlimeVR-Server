@@ -22,7 +22,7 @@ class BoneYawFallbackProcessor : SkeletonProcessor {
 				if (!parentBone.isActive) continue // Parent needs to be active
 				val children = iterateBodyPartHierarchy(parentPart, true)
 
-				for (childPart in children ) {
+				for (childPart in children) {
 					val childBone = boneInputs.getValue(childPart.second)
 					if (childBone.isActive) continue // Child needs to be inactive
 

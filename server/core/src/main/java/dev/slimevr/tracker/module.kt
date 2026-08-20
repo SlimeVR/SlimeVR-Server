@@ -27,8 +27,7 @@ import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.hardware_info.TrackerDataType
 import kotlin.time.Duration
 
-// TODO maybe have more states, like ROTATING_FAST for TapDetection?
-// A tracker is initialized ROTATING to prevent TapDetection and Stay Aligned from running immediately.
+// A tracker is initialized as ROTATING to prevent TapDetection and Stay Aligned from running immediately.
 enum class Motion {
 	ROTATING,
 	RESTING,

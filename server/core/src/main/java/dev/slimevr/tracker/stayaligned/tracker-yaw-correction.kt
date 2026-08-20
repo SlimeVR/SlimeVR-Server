@@ -296,5 +296,9 @@ object TrackerYawCorrection {
 	/**
 	 * Returns the calibrated tracker rotation with the yawCorrection applied.
 	 */
-	private fun computeYawCorrectedRotation(yawCorrection: Angle, state: TrackerState) = applyCalibration(Quaternion.rotationAroundYAxis(yawCorrection.toRad()) * state.rawRotation, state)
+	private fun computeYawCorrectedRotation(yawCorrection: Angle, state: TrackerState): Quaternion {
+		val yawCorrectedRawRotation = Quaternion.rotationAroundYAxis(yawCorrection.toRad()) * state.rawRotation
+		val cal = state.sessionCalibration ?: return yawCorrectedRawRotation
+		return applyCalibration(yawCorrectedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment * state.mountingOrientation, state.restOrientation)
+	}
 }

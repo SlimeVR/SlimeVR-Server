@@ -10,6 +10,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.getFirstFineFor
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -133,12 +134,12 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 					config.resetMountingFeet ||
 					it.context.state.value.bodyPart !in ResetBodyParts.FEET
 			}
-		}.filter { it.context.state.value.position == null }
+		}
 
 		val referenceRotation = allTrackers
 			.map { it.context.state.value }
-			.firstOrNull { it.status == TrackerStatus.OK && it.bodyPart == BodyPart.HEAD }
-			?.rotation ?: Quaternion.IDENTITY
+			.getFirstFineFor(BodyPart.HEAD)
+			?.rawRotation ?: Quaternion.IDENTITY
 
 		// Dispatch the reset action to the trackers
 		trackers.forEach {
