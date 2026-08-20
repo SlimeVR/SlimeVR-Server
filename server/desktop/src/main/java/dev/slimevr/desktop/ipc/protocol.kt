@@ -43,7 +43,13 @@ val solarxrToProtoStatus = mapOf(
 	solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED to TrackerStatus.Status.DISCONNECTED,
 	solarxr_protocol.datatypes.TrackerStatus.BUSY to TrackerStatus.Status.BUSY,
 )
-val protoToSolarxrStatus = solarxrToProtoStatus.entries.associate { (k, v) -> v to k }
+val protoToSolarxrStatus = mapOf(
+	TrackerStatus.Status.OK to solarxr_protocol.datatypes.TrackerStatus.OK,
+	TrackerStatus.Status.ERROR to solarxr_protocol.datatypes.TrackerStatus.ERROR,
+	TrackerStatus.Status.OCCLUDED to solarxr_protocol.datatypes.TrackerStatus.OCCLUDED,
+	TrackerStatus.Status.DISCONNECTED to solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED,
+	TrackerStatus.Status.BUSY to solarxr_protocol.datatypes.TrackerStatus.BUSY,
+)
 
 const val PROTOCOL_VERSION = 2
 
