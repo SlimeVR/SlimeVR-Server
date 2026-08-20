@@ -138,6 +138,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 
 		val referenceRotation = allTrackers
 			.map { it.context.state.value }
+			.filter { it.position != null }
 			.getFirstFineFor(BodyPart.HEAD)
 			?.rawRotation ?: Quaternion.IDENTITY
 
