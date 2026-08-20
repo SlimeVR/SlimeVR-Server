@@ -35,7 +35,7 @@ class TrackerConfigBehaviour(
 
 	companion object {
 		fun restoreFromConfig(state: TrackerState, config: TrackerConfig, saveMountingReset: Boolean): TrackerState = state.copy(
-			bodyPart = config.bodyPart?.takeIf { it != BodyPart.NONE } ?: state.bodyPart,
+			bodyPart = config.bodyPart ?: BodyPart.NONE,
 			customName = config.customName ?: state.customName,
 			lastMountingMethod = if (saveMountingReset && config.mountingResetOrientation != null) MountingMethod.POSE else MountingMethod.MANUAL,
 			mountingOrientation = config.mountingOrientation,
