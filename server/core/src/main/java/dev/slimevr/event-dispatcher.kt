@@ -60,8 +60,11 @@ class EventDispatcher<T : Any>(
 	scope: CoroutineScope,
 	private val capacity: Int = 64,
 	onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
+	private val verboseMetrics: Boolean = false,
 ) {
 	private class Sub<T : Any>(val type: KClass<*>, val action: suspend (T) -> Unit)
+
+	private class Envelope<T>(val payload: T, val enqueuedAtNanos: Long)
 
 	private val subs = CopyOnWriteArrayList<Sub<T>>()
 
@@ -79,16 +82,38 @@ class EventDispatcher<T : Any>(
 	// pause without that also delaying the warning.
 	private val warnDepth = (capacity / 4).coerceAtLeast(1)
 
-	private val mailbox = Channel<T>(capacity, onBufferOverflow) {
+	private val lastEmitAtNanos = AtomicLong(0L)
+	private val arrivalGapSumNanos = AtomicLong(0L)
+	private val arrivalGapMaxNanos = AtomicLong(0L)
+	private val arrivalGapCount = AtomicLong(0L)
+
+	private val queueWaitSumNanos = AtomicLong(0L)
+	private val queueWaitMaxNanos = AtomicLong(0L)
+	private val queueWaitCount = AtomicLong(0L)
+
+	private val handlerSumNanos = AtomicLong(0L)
+	private val handlerMaxNanos = AtomicLong(0L)
+	private val handlerCount = AtomicLong(0L)
+
+	private val mailbox = Channel<Envelope<T>>(capacity, onBufferOverflow) {
 		dropped.incrementAndGet()
 		depth.decrementAndGet()
 	}
 
 	init {
 		scope.launch {
-			for (event in mailbox) {
+			for (envelope in mailbox) {
 				depth.decrementAndGet()
-				for (sub in handlersFor(event::class)) sub.action(event)
+				if (verboseMetrics) recordQueueWait(System.nanoTime() - envelope.enqueuedAtNanos)
+				for (sub in handlersFor(envelope.payload::class)) {
+					if (!verboseMetrics) {
+						sub.action(envelope.payload)
+						continue
+					}
+					val start = System.nanoTime()
+					sub.action(envelope.payload)
+					recordHandlerTime(System.nanoTime() - start)
+				}
 			}
 		}
 
@@ -96,6 +121,7 @@ class EventDispatcher<T : Any>(
 			while (true) {
 				delay(SATURATION_REPORT_INTERVAL)
 				reportSaturation()
+				if (verboseMetrics) reportMetrics()
 			}
 		}
 
@@ -105,17 +131,42 @@ class EventDispatcher<T : Any>(
 	}
 
 	suspend fun emit(event: T) {
-		val result = mailbox.trySend(event)
+		val now = System.nanoTime()
+		if (verboseMetrics) recordArrivalGap(now)
+
+		val envelope = Envelope(event, now)
+		val result = mailbox.trySend(envelope)
 		if (result.isSuccess) return recordDepth()
 		if (result.isClosed) return
 
 		stalled.incrementAndGet()
 		try {
-			mailbox.send(event)
+			mailbox.send(envelope)
 			recordDepth()
 		} catch (_: ClosedSendChannelException) {
 			// The owner can go away between the trySend above and here.
 		}
+	}
+
+	private fun recordArrivalGap(now: Long) {
+		val previous = lastEmitAtNanos.getAndSet(now)
+		if (previous == 0L) return
+		val gap = now - previous
+		arrivalGapSumNanos.addAndGet(gap)
+		arrivalGapMaxNanos.updateAndGet { seen -> if (gap > seen) gap else seen }
+		arrivalGapCount.incrementAndGet()
+	}
+
+	private fun recordQueueWait(waitNanos: Long) {
+		queueWaitSumNanos.addAndGet(waitNanos)
+		queueWaitMaxNanos.updateAndGet { seen -> if (waitNanos > seen) waitNanos else seen }
+		queueWaitCount.incrementAndGet()
+	}
+
+	private fun recordHandlerTime(durationNanos: Long) {
+		handlerSumNanos.addAndGet(durationNanos)
+		handlerMaxNanos.updateAndGet { seen -> if (durationNanos > seen) durationNanos else seen }
+		handlerCount.incrementAndGet()
 	}
 
 	private fun recordDepth() {
@@ -148,6 +199,35 @@ class EventDispatcher<T : Any>(
 	private fun handlersFor(cls: KClass<*>): List<Sub<T>> = resolved.getOrPut(cls) { subs.filter { sub -> sub.type.java.isAssignableFrom(cls.java) } }
 
 	private suspend fun reportSaturation() = saturationReport()?.let { AppLogger.events.warn(it) }
+
+	private suspend fun reportMetrics() = metricsReport()?.let { AppLogger.events.info(it) }
+
+	internal fun metricsReport(): String? {
+		val arrivals = arrivalGapCount.getAndSet(0)
+		val arrivalSum = arrivalGapSumNanos.getAndSet(0)
+		val arrivalMax = arrivalGapMaxNanos.getAndSet(0)
+
+		val waits = queueWaitCount.getAndSet(0)
+		val waitSum = queueWaitSumNanos.getAndSet(0)
+		val waitMax = queueWaitMaxNanos.getAndSet(0)
+
+		val handled = handlerCount.getAndSet(0)
+		val handlerSum = handlerSumNanos.getAndSet(0)
+		val handlerMax = handlerMaxNanos.getAndSet(0)
+
+		if (waits == 0L) return null
+
+		fun us(nanos: Long) = "%.1f".format(nanos / 1000.0)
+
+		val avgArrivalUs = if (arrivals > 0) us(arrivalSum / arrivals) else "n/a"
+		val avgWaitUs = us(waitSum / waits)
+		val avgHandlerUs = if (handled > 0) us(handlerSum / handled) else "n/a"
+
+		return "$name: $waits events in the last $SATURATION_REPORT_INTERVAL - " +
+			"arrival gap avg ${avgArrivalUs}us max ${us(arrivalMax)}us, " +
+			"queue wait avg ${avgWaitUs}us max ${us(waitMax)}us, " +
+			"handler time avg ${avgHandlerUs}us max ${us(handlerMax)}us over $handled invocations"
+	}
 
 	internal fun saturationReport(): String? {
 		val peak = peakDepth.getAndSet(depth.get().coerceAtLeast(0))
