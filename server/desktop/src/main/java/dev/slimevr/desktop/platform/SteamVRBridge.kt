@@ -58,11 +58,6 @@ class BindingsProviderManager : Runnable {
 			"BindingsProviderManager already running"
 		}
 
-		val binaryPath = getBinaryPath() ?: throw RuntimeException("Unable to find bindings provider binary")
-		process = ProcessBuilder(binaryPath.toString())
-			.redirectErrorStream(true)
-			.start()
-		LogManager.info("[BindingsProviderManager] Started process")
 		watcherThread = Thread(this, "Bindings provider watcher")
 		watcherThread!!.start()
 	}
@@ -77,6 +72,17 @@ class BindingsProviderManager : Runnable {
 
 	override fun run() {
 		try {
+			// Give SteamVR a bit more time to initialise everything
+			// For some users, starting the executable immediately may cause startup failures
+			// This feels like a bit of a hack, but whatever
+			Thread.sleep(3000L)
+
+			val binaryPath = getBinaryPath() ?: throw RuntimeException("Unable to find bindings provider binary")
+			process = ProcessBuilder(binaryPath.toString())
+				.redirectErrorStream(true)
+				.start()
+			LogManager.info("[BindingsProviderManager] Started process")
+
 			val interval = 1000L / 30L
 			while (process?.isAlive == true) {
 				Thread.sleep(interval)
