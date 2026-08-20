@@ -25,7 +25,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
@@ -56,7 +56,7 @@ class TrackingChecklistTest {
 		private var nextId = 1
 
 		private val trackerStates = trackerStatesFlow(server)
-			.shareIn(scope.backgroundScope, SharingStarted.Eagerly, replay = 1)
+			.stateIn(scope.backgroundScope, SharingStarted.Eagerly, initialValue = emptyList())
 
 		init {
 			checklist.context.behaviours.addAll(

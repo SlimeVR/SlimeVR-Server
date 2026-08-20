@@ -5,7 +5,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
 
@@ -31,9 +31,8 @@ class TrackingChecklist(
 	val extraBehaviours: (AppContextProvider) -> List<TrackingChecklistBehaviourType>,
 ) {
 	fun startObserving(appContext: AppContextProvider) {
-		// Replay 1 because we only care about latest
 		val trackerStates = trackerStatesFlow(appContext.server)
-			.shareIn(context.scope, SharingStarted.Eagerly, replay = 1)
+			.stateIn(context.scope, SharingStarted.Eagerly, initialValue = emptyList())
 
 		val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
 			add(HMDCheckBehaviour(trackerStates))
