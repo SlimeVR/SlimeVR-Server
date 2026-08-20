@@ -24,6 +24,8 @@ import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
@@ -53,17 +55,20 @@ class TrackingChecklistTest {
 		private val boneRouting: BoneRoutingManager = BoneRoutingManager.create(scope.backgroundScope)
 		private var nextId = 1
 
+		private val trackerStates = trackerStatesFlow(server)
+			.shareIn(scope.backgroundScope, SharingStarted.Eagerly, replay = 1)
+
 		init {
 			checklist.context.behaviours.addAll(
 				listOf(
-					HMDCheckBehaviour(server),
-					TrackerRestCheckBehaviour(server),
-					TrackerErrorCheckBehaviour(server),
-					FullResetCheckBehaviour(server, resetsManager),
-					MountingCalibrationCheckBehaviour(server, resetsManager, settings),
-					FeetMountingCalibrationCheckBehaviour(server, resetsManager, settings),
+					HMDCheckBehaviour(trackerStates),
+					TrackerRestCheckBehaviour(trackerStates),
+					TrackerErrorCheckBehaviour(trackerStates),
+					FullResetCheckBehaviour(trackerStates, resetsManager),
+					MountingCalibrationCheckBehaviour(trackerStates, resetsManager, settings),
+					FeetMountingCalibrationCheckBehaviour(trackerStates, resetsManager, settings),
 					NetworkProfileCheckBehaviour(networkProfileManager),
-					SteamVRHandsCheckBehaviour(server, boneRouting),
+					SteamVRHandsCheckBehaviour(trackerStates, server, boneRouting),
 				),
 			)
 			checklist.context.observeAll(checklist)

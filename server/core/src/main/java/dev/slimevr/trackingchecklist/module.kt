@@ -4,6 +4,8 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.shareIn
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
 
@@ -29,14 +31,18 @@ class TrackingChecklist(
 	val extraBehaviours: (AppContextProvider) -> List<TrackingChecklistBehaviourType>,
 ) {
 	fun startObserving(appContext: AppContextProvider) {
+		// Replay 1 because we only care about latest
+		val trackerStates = trackerStatesFlow(appContext.server)
+			.shareIn(context.scope, SharingStarted.Eagerly, replay = 1)
+
 		val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
-			add(HMDCheckBehaviour(appContext.server))
-			add(TrackerRestCheckBehaviour(appContext.server))
-			add(FullResetCheckBehaviour(appContext.server, appContext.resetsManager))
-			add(MountingCalibrationCheckBehaviour(appContext.server, appContext.resetsManager, appContext.config.settings))
-			add(TrackerErrorCheckBehaviour(appContext.server))
-			add(SteamVRHandsCheckBehaviour(appContext.server, appContext.boneRouting))
-			add(FeetMountingCalibrationCheckBehaviour(appContext.server, appContext.resetsManager, appContext.config.settings))
+			add(HMDCheckBehaviour(trackerStates))
+			add(TrackerRestCheckBehaviour(trackerStates))
+			add(FullResetCheckBehaviour(trackerStates, appContext.resetsManager))
+			add(MountingCalibrationCheckBehaviour(trackerStates, appContext.resetsManager, appContext.config.settings))
+			add(TrackerErrorCheckBehaviour(trackerStates))
+			add(SteamVRHandsCheckBehaviour(trackerStates, appContext.server, appContext.boneRouting))
+			add(FeetMountingCalibrationCheckBehaviour(trackerStates, appContext.resetsManager, appContext.config.settings))
 			add(StayAlignedCheckBehaviour(appContext.config.settings))
 
 			appContext.vrcConfigManager?.let { add(VRChatSettingsCheckBehaviour(appContext.server, appContext.skeleton, it)) }
