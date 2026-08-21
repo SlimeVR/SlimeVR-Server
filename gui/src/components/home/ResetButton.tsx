@@ -41,11 +41,16 @@ export function ResetButton({
   onReseted?: () => void;
   onFailed?: () => void;
 } & UseResetOptions) {
-  const { triggerReset, status, timer, disabled, name, error } = useReset(
-    options,
-    onReseted,
-    onFailed
-  );
+  const {
+    triggerReset,
+    status,
+    timer,
+    disabled,
+    name,
+    error,
+    waitingStill,
+    velocity,
+  } = useReset(options, onReseted, onFailed);
 
   return (
     <Tooltip
@@ -73,9 +78,18 @@ export function ResetButton({
           'border-2 py-[5px]',
           status === 'finished'
             ? 'border-status-success'
-            : 'transition-[border-color] duration-500 ease-in-out border-transparent',
+            : 'transition-[box-shadow,border-color] duration-500 ease-in-out border-transparent',
           className
         )}
+        style={
+          waitingStill
+            ? {
+                boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
+                  velocity * 8
+                )}px rgb(var(--accent-background-30))`,
+              }
+            : undefined
+        }
         variant="primary"
         disabled={disabled}
       >
@@ -83,9 +97,13 @@ export function ResetButton({
           <div className="opacity-0 h-0">
             {children || <Localized id={name} />}
           </div>
-          {status !== 'counting' || options.type === ResetType.Yaw
-            ? children || <Localized id={name} />
-            : String(timer)}
+          {status !== 'counting' || options.type === ResetType.Yaw ? (
+            children || <Localized id={name} />
+          ) : waitingStill ? (
+            <Localized id="reset-wait_still" />
+          ) : (
+            String(timer)
+          )}
         </div>
       </Button>
     </Tooltip>

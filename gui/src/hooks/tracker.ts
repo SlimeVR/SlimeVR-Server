@@ -5,9 +5,10 @@ import { ReactLocalization, useLocalization } from '@fluent/react';
 import { useDataFeedConfig } from './datafeed-config';
 import { Quaternion, Vector3 } from 'three';
 import { Vector3FromVec3fT } from '@/maths/vector3';
-import { useAtomValue } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { trackerFromIdAtom } from '@/store/app-store';
 
+export const trackerCardVelocitiesAtom = atom(new Map<string, number>());
 export function getTrackerName(l10n: ReactLocalization, info: TrackerInfoT | null) {
   if (info?.customName) return info?.customName;
   if (info?.bodyPart) return l10n.getString('body_part-' + BodyPart[info?.bodyPart]);
@@ -44,6 +45,7 @@ export function useTracker(tracker: TrackerDataT) {
       );
       const [velocity, setVelocity] = useState<number>(0);
       const [deltas] = useState<number[]>([]);
+      const setCardVelocities = useSetAtom(trackerCardVelocitiesAtom);
 
       useEffect(() => {
         if (tracker.rotation) {
@@ -77,6 +79,24 @@ export function useTracker(tracker: TrackerDataT) {
           previousAcc.current = Vector3FromVec3fT(tracker.linearAcceleration);
         }
       }, [tracker.rotation]);
+
+      // Store the velocity for reset buttons to use
+      const key = `${tracker.trackerId?.deviceId}-${tracker.trackerId?.trackerNum}`;
+      useEffect(() => {
+        setCardVelocities((prev) => {
+          const next = new Map(prev);
+          next.set(key, velocity);
+          return next;
+        });
+        return () => {
+          setCardVelocities((prev) => {
+            if (!prev.has(key)) return prev;
+            const next = new Map(prev);
+            next.delete(key);
+            return next;
+          });
+        };
+      }, [velocity, key]);
 
       return velocity;
     },

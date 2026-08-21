@@ -12,6 +12,7 @@ import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom, serverGuardsAtom } from '@/store/app-store';
 import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from './body-parts';
 import { useLocaleConfig } from '@/i18n/config';
+import { trackerCardVelocitiesAtom } from './tracker';
 import * as Sentry from '@sentry/react';
 
 export type ResetBtnStatus = 'idle' | 'counting' | 'finished';
@@ -41,10 +42,18 @@ export function useReset(
   const [status, setStatus] = useState<ResetBtnStatus>('idle');
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [waitingStill, setWaitingStill] = useState(false);
 
   const parts = BODY_PARTS_GROUPS['group' in options ? options.group : 'default'];
 
+  const cardVelocities = useAtomValue(trackerCardVelocitiesAtom);
+  const velocity = useMemo(
+    () => Math.max(0, ...cardVelocities.values()),
+    [cardVelocities]
+  );
+
   const triggerReset = () => {
+    setWaitingStill(false);
     const req = new ResetRequestT();
     req.resetType = options.type;
     req.bodyParts = parts;
@@ -65,6 +74,7 @@ export function useReset(
 
   const onResetCanceled = () => {
     if (status !== 'finished') setStatus('idle');
+    setWaitingStill(false);
     if (onFailed) onFailed();
   };
 
@@ -82,7 +92,7 @@ export function useReset(
   }, [status]);
 
   const onResetProgress = (progress: number, duration: number) => {
-    setProgress(progress / 1000);
+    setProgress(Math.max(progress / 1000, 0));
     setDuration(duration / 1000);
   };
 
@@ -100,11 +110,13 @@ export function useReset(
       onResetProgress(progress, duration);
       switch (status) {
         case ResetStatus.FINISHED: {
+          setWaitingStill(false);
           onResetFinished();
           break;
         }
         case ResetStatus.STARTED: {
           setStatus('counting');
+          setWaitingStill(progress < 0);
           break;
         }
       }
@@ -167,6 +179,8 @@ export function useReset(
     disabled,
     name,
     error,
-    timer: localized.format(duration - progress),
+    waitingStill,
+    velocity,
+    timer: localized.format(Math.ceil(duration - Math.max(progress, 0))),
   };
 }

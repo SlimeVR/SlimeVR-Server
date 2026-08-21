@@ -21,6 +21,7 @@ import dev.slimevr.protocol.rpc.TransactionInfo
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.reset.ResetHandler
 import dev.slimevr.reset.ResetTimerManager
+import dev.slimevr.reset.TrackerMotionDetector
 import dev.slimevr.reset.resetTimer
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
@@ -113,6 +114,7 @@ class VRServer @JvmOverloads constructor(
 	val protocolAPI: ProtocolAPI
 	private val timer = Timer()
 	private val resetTimerManager = ResetTimerManager()
+	private val trackerMotionDetector = TrackerMotionDetector { trackers.filter { it.trackerPosition != null } }
 	val fpsTimer = NanoTimer()
 
 	@JvmField
@@ -363,7 +365,9 @@ class VRServer @JvmOverloads constructor(
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList(), tx: TransactionInfo? = null) {
 		resetTimer(
 			resetTimerManager,
+			if (delay > 0) (configManager.vrConfig.resetsConfig.keepStillDelay * 1000).toLong() else 0,
 			delay,
+			isUserStatic = { !trackerMotionDetector.isMoving() },
 			onTick = { progress ->
 				resetHandler.sendStarted(ResetType.Full, tx, bodyParts, progress, delay.toInt())
 			},
@@ -379,7 +383,9 @@ class VRServer @JvmOverloads constructor(
 	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers, tx: TransactionInfo? = null) {
 		resetTimer(
 			resetTimerManager,
+			if (delay > 0) (configManager.vrConfig.resetsConfig.keepStillDelay * 1000).toLong() else 0,
 			delay,
+			isUserStatic = { !trackerMotionDetector.isMoving() },
 			onTick = { progress ->
 				resetHandler.sendStarted(ResetType.Yaw, tx, bodyParts, progress, delay.toInt())
 			},
@@ -395,7 +401,9 @@ class VRServer @JvmOverloads constructor(
 	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<Int>? = null, tx: TransactionInfo? = null) {
 		resetTimer(
 			resetTimerManager,
+			if (delay > 0) (configManager.vrConfig.resetsConfig.keepStillDelay * 1000).toLong() else 0,
 			delay,
+			isUserStatic = { !trackerMotionDetector.isMoving() },
 			onTick = { progress ->
 				resetHandler.sendStarted(ResetType.Mounting, tx, bodyParts, progress, delay.toInt())
 			},

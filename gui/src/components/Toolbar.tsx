@@ -1,5 +1,6 @@
 import { Typography } from './commons/Typography';
 import classNames from 'classnames';
+import { Localized } from '@fluent/react';
 import { ResetType } from 'solarxr-protocol';
 import {
   BODY_PARTS_GROUPS,
@@ -59,6 +60,8 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
     disabled,
     duration,
     error,
+    waitingStill,
+    velocity,
   } = useReset(options);
 
   const progress = status === 'counting' ? resetProress / duration : 0;
@@ -91,10 +94,16 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
         className={classNames(
           MAINBUTTON_CLASSES({ disabled }),
           'rounded-lg',
-          'absolute'
+          'absolute',
+          'transition-[box-shadow] duration-500 ease-in-out'
         )}
         style={{
           animationIterationCount: 1,
+          ...(waitingStill && {
+            boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
+              velocity * 8
+            )}px rgb(var(--accent-background-30))`,
+          }),
         }}
         onClick={() => !disabled && triggerReset()}
       >
@@ -128,14 +137,20 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
           className={classNames(
             {
               'opacity-0': status !== 'counting',
-              'animate-timer-tick': status === 'counting',
+              'animate-timer-tick': status === 'counting' && !waitingStill,
             },
             'absolute top-0 h-full flex items-center justify-center'
           )}
         >
-          <Typography variant="main-title" textAlign="text-center">
-            {timer}
-          </Typography>
+          {waitingStill ? (
+            <Typography variant="section-title" textAlign="text-center">
+              <Localized id="reset-wait_still" />
+            </Typography>
+          ) : (
+            <Typography variant="main-title" textAlign="text-center">
+              {timer}
+            </Typography>
+          )}
         </div>
       </button>
     </Tooltip>

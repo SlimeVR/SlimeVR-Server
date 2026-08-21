@@ -254,6 +254,7 @@ reset-mounting = Mounting Calibration
 reset-mounting-feet = Feet Calibration
 reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
+reset-wait_still = Keep Still !
 reset-error-no_feet_tracker = No feet tracker assigned
 reset-error-no_fingers_tracker = No finger tracker assigned
 reset-error-mounting-need_full_reset = Need a full reset before mounting

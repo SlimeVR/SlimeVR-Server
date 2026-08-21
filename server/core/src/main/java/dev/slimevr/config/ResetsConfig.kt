@@ -66,6 +66,7 @@ class ResetsConfig {
 
 	var lastMountingMethod = MountingMethods.AUTOMATIC
 
+	var keepStillDelay = 1.0f
 	var yawResetDelay = 0.0f
 	var fullResetDelay = 3.0f
 	var mountingResetDelay = 3.0f
