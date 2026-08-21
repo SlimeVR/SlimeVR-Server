@@ -23,7 +23,7 @@ class UpperLegsRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 
 	override fun process(state: SkeletonState): SkeletonState {
 		val boneInputs = state.boneInputs
-		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsWithLowerLegs
+		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsTwistWithLowerLegs
 
 		val updatedAlignedBones = boneInputs.mutate { updated ->
 			for (bodyPartToSource in bodyPartToSources) {

@@ -38,7 +38,7 @@ type SkeletonForm = {
     imputeSpineFromUpperToLower: number;
     imputeSpineCurvature: number;
     interpolateHipWithUpperLegs: number;
-    interpolateUpperLegsWithLowerLegs: number;
+    interpolateUpperLegsTwistWithLowerLegs: number;
     skatingCorrectionStrength: number;
   };
   filtering: {
@@ -71,7 +71,7 @@ const defaultValues: SkeletonForm = {
     imputeSpineFromUpperToLower: 0.0,
     imputeSpineCurvature: 0.0,
     interpolateHipWithUpperLegs: 0.0,
-    interpolateUpperLegsWithLowerLegs: 0.0,
+    interpolateUpperLegsTwistWithLowerLegs: 0.0,
     skatingCorrectionStrength: 0.0,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
@@ -116,8 +116,8 @@ export function TrackingSettings() {
     ratios.imputeSpineCurvature = values.ratios.imputeSpineCurvature;
     ratios.interpolateHipWithUpperLegs =
       values.ratios.interpolateHipWithUpperLegs;
-    ratios.interpolateUpperLegsWithLowerLegs =
-      values.ratios.interpolateUpperLegsWithLowerLegs;
+    ratios.interpolateUpperLegsTwistWithLowerLegs =
+      values.ratios.interpolateUpperLegsTwistWithLowerLegs;
     ratios.skatingCorrectionStrength = values.ratios.skatingCorrectionStrength;
     settingsReq.ratios = ratios;
 
@@ -471,9 +471,9 @@ export function TrackingSettings() {
           />
           <NumberSelector
             control={control}
-            name="ratios.interpolateUpperLegsWithLowerLegs"
+            name="ratios.interpolateUpperLegsTwistWithLowerLegs"
             label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_with_lower_legs'
+              'settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs'
             )}
             valueLabelFormat={(value) => percentageFormat.format(value)}
             min={0.0}

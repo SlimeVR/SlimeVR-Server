@@ -7,7 +7,6 @@ import dev.slimevr.config.SkeletonFilteringConfig
 import dev.slimevr.config.SkeletonRatiosConfig
 import dev.slimevr.config.SkeletonTogglesConfig
 import dev.slimevr.skeleton.SkeletonActions
-import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
 import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.SetPauseTrackingRequest
@@ -42,7 +41,7 @@ class SkeletonSettingsBehaviour(
 						imputeSpineFromUpperToLower = config.ratios.imputeSpineFromUpperToLower,
 						imputeSpineCurvature = config.ratios.imputeSpineCurvature,
 						interpolateHipWithUpperLegs = config.ratios.interpolateHipWithUpperLegs,
-						interpolateUpperLegsWithLowerLegs = config.ratios.interpolateUpperLegsWithLowerLegs,
+						interpolateUpperLegsTwistWithLowerLegs = config.ratios.interpolateUpperLegsTwistWithLowerLegs,
 						skatingCorrectionStrength = config.ratios.skatingCorrectionStrength,
 					),
 					filtering = SkeletonFiltering(
@@ -76,7 +75,7 @@ class SkeletonSettingsBehaviour(
 									imputeSpineFromUpperToLower = it.imputeSpineFromUpperToLower ?: 0f,
 									imputeSpineCurvature = it.imputeSpineCurvature ?: 0f,
 									interpolateHipWithUpperLegs = it.interpolateHipWithUpperLegs ?: 0f,
-									interpolateUpperLegsWithLowerLegs = it.interpolateUpperLegsWithLowerLegs ?: 0f,
+									interpolateUpperLegsTwistWithLowerLegs = it.interpolateUpperLegsTwistWithLowerLegs ?: 0f,
 									skatingCorrectionStrength = it.skatingCorrectionStrength ?: 0f,
 								)
 							} ?: skeletonConfig.ratios,

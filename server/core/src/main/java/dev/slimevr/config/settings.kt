@@ -139,7 +139,7 @@ data class SkeletonRatiosConfig(
 	val imputeSpineFromUpperToLower: Float = 0.5f,
 	val imputeSpineCurvature: Float = 0.5f,
 	val interpolateHipWithUpperLegs: Float = 0.25f,
-	val interpolateUpperLegsWithLowerLegs: Float = 1f,
+	val interpolateUpperLegsTwistWithLowerLegs: Float = 0.85f,
 	val skatingCorrectionStrength: Float = 0.3f,
 )
 
