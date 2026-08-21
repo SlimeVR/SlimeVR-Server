@@ -54,7 +54,7 @@ static void onFullReset(SolarXRConnection &conn) {
 static void onMountingCalibration(SolarXRConnection &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::MOUNTING, 0, 0.f);
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::POSE_MOUNTING, 0, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
         fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
@@ -68,7 +68,7 @@ static void onFeetMountingCalibration(SolarXRConnection &conn) {
 
     auto bodyParts = fbb.CreateVector(
         { datatypes::BodyPart::LEFT_FOOT, datatypes::BodyPart::RIGHT_FOOT });
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::MOUNTING, bodyParts, 0.f);
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::POSE_MOUNTING, bodyParts, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
         fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
