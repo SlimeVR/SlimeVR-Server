@@ -76,8 +76,10 @@ class TrackerMotionDetector(private val trackersProvider: () -> List<Tracker>) {
 			val rot = tracker.getRawRotation() * state.rot.inv()
 			val acc = tracker.getAcceleration() - state.acc
 			val dif = (
-				(rot.x * rot.x + rot.y * rot.y + rot.z * rot.z) * 50f +
-					(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z) / 1000f
+				(rot.x * rot.x + rot.y * rot.y + rot.z * rot.z) *
+					50f +
+					(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z) /
+					1000f
 				).coerceAtMost(1f)
 			if (state.deltas.size >= WINDOW_SAMPLES) state.deltas.removeFirst()
 			state.deltas.addLast(dif)
@@ -95,6 +97,6 @@ class TrackerMotionDetector(private val trackersProvider: () -> List<Tracker>) {
 		private const val SAMPLE_MS = 100L
 		private const val WINDOW_SAMPLES = 5
 		private const val IDLE_STOP_MS = 5000L
-		private const val MOVEMENT_THRESHOLD = 0.125f
+		private const val MOVEMENT_THRESHOLD = 4 * 0.125f
 	}
 }
