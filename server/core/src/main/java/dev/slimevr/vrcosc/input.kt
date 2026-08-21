@@ -71,7 +71,7 @@ private class VRSystemTrackerRegistry(
 		deviceId?.let { id -> appContext.server.getDevice(id) }
 			?.context?.dispatch(DeviceActions.Update { copy(status = status) })
 		for ((_, trackerId) in trackerIds) {
-			appContext.server.getTracker(trackerId)?.context?.dispatch(TrackerActions.Update { copy(status = status) })
+			appContext.server.getTracker(trackerId)?.context?.dispatch(TrackerActions.SetStatus(status))
 		}
 	}
 
