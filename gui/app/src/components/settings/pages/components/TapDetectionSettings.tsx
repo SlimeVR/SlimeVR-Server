@@ -18,7 +18,6 @@ import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
 import { useLocaleConfig } from '@/i18n/config';
-import { StayAlignedSettingsForm } from './StayAlignedSettings';
 
 type TapDetectionForm = {
   yawResetEnabled: boolean;

@@ -18,7 +18,7 @@ import {
   WebGLRenderer,
 } from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
-import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
+import { QuaternionFromQuatT } from '@/maths/quaternion';
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
