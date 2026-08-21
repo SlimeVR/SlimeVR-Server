@@ -12,6 +12,7 @@
     "lint:fix": "cd gui && pnpm lint:fix",
     "skipbundler": "cd gui && pnpm run skipbundler",
     "build": "cd gui && pnpm build",
+    "package:build": "cd gui && pnpm package:build",
     "update-solarxr": "cd solarxr-protocol && pnpm run build",
     "prepare": "husky && pnpm run update-solarxr",
     "preinstall": "npx only-allow pnpm"
