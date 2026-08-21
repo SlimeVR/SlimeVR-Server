@@ -39,7 +39,7 @@ const resetSounds: Record<
     end: createAudio('/sounds/yaw-reset/yaw-reset.ogg'),
     mew: null,
   },
-  [ResetType.MOUNTING]: {
+  [ResetType.POSE_MOUNTING]: {
     initial: createAudio('/sounds/mounting-reset/init-mounting-reset-with-tail.ogg'),
     tick: [
       createAudio('/sounds/mounting-reset/mount-click-1.ogg'),

@@ -17,6 +17,9 @@ const val DRIVER_PIPE = "\\\\.\\pipe\\SlimeVRDriver"
 const val FEEDER_PIPE = "\\\\.\\pipe\\SlimeVRInput"
 const val SOLARXR_PIPE = "\\\\.\\pipe\\SlimeVRRpc"
 
+// Frames larger than this are refused: nothing in either protocol comes close
+internal const val MAX_FRAME_SIZE = 256 * 1024
+
 suspend fun createIpcServers(appContext: AppContextProvider) = coroutineScope {
 	if (appContext.featureFlags.supportsDriver) {
 		launch { createDriverServers(appContext) }

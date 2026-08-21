@@ -13,19 +13,19 @@ val DEFAULT_PROPORTIONS = mapOf(
 	SkeletonBone.NECK to 0.1f,
 	SkeletonBone.UPPER_CHEST to 0.16f,
 	SkeletonBone.CHEST to 0.16f,
-	SkeletonBone.WAIST to 0.2f,
-	SkeletonBone.HIP to 0.04f,
+	SkeletonBone.WAIST to 0.18f,
+	SkeletonBone.HIP to 0.06f,
 	SkeletonBone.HIPS_WIDTH to 0.26f,
 	SkeletonBone.UPPER_LEG to 0.42f,
 	SkeletonBone.LOWER_LEG to 0.5f,
-	SkeletonBone.FOOT_LENGTH to 0.05f,
+	SkeletonBone.FOOT_LENGTH to 0.12f,
 	SkeletonBone.FOOT_SHIFT to -0.05f,
-	SkeletonBone.SHOULDERS_DISTANCE to 0.08f,
+	SkeletonBone.SHOULDERS_DISTANCE to 0.06f,
 	SkeletonBone.SHOULDERS_WIDTH to 0.35f,
 	SkeletonBone.UPPER_ARM to 0.26f,
 	SkeletonBone.LOWER_ARM to 0.26f,
-	SkeletonBone.HAND_Y to 0.035f,
-	SkeletonBone.HAND_Z to 0.13f,
+	SkeletonBone.HAND_Y to 0.08f,
+	SkeletonBone.HAND_Z to 0f,
 )
 
 // Set of SkeletonBones whose lengths sum to standing height (spine + legs).
@@ -78,13 +78,13 @@ val SKELETON_BONE_TO_BODY_PARTS: Map<SkeletonBone, Set<BodyPart>> = BONE_VALUE_T
 
 // Sum of default bone lengths for height-contributing bones
 // Used to normalize HEIGHT_SCALED_BONE_RATIOS.
-val DEFAULT_HEIGHT = DEFAULT_PROPORTIONS.height() // = 1.58f
+val DEFAULT_HEIGHT = DEFAULT_PROPORTIONS.height()
 
 // Per-bone fraction of total standing height, includes spine, legs, and arms, all bones
 // whose length scales with user height.
-// Non-height bones (HEAD, FOOT_LENGTH) are absent; they keep fixed defaults from DEFAULT_SKELETON_STATE.
+// Non-height bones (HEAD, HIPS_WIDTH) are absent; they keep fixed defaults from DEFAULT_SKELETON_STATE.
 private val HEIGHT_SCALED_BONE_RATIOS: Map<SkeletonBone, Float> = (
-	HEIGHT_CONTRIBUTING_BONES + setOf(SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM)
+	HEIGHT_CONTRIBUTING_BONES + setOf(SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM, SkeletonBone.HAND_Y, SkeletonBone.FOOT_LENGTH)
 	).associateWith { (DEFAULT_PROPORTIONS[it] ?: 0f) / DEFAULT_HEIGHT }
 
 // Sums the HEIGHT_CONTRIBUTING_BONES lengths to derive standing height.
@@ -107,12 +107,15 @@ fun computeAllDefaultProportionsByBone(height: Float): Map<String, Float> {
 
 fun Map<SkeletonBone, Float>.toBoneOffsets(): BodyPartMap<Vector3> {
 	val offsets = bodyPartMap<Vector3>()
+	// Normal bones
 	for ((cfg, length) in this) {
 		val boneOffsets = BONE_VALUE_TO_OFFSETS[cfg] ?: continue
 		for ((bone, vec) in boneOffsets) {
 			offsets[bone] = (offsets[bone] ?: Vector3.NULL) + length * vec
 		}
 	}
+	// Fingers
+	this[SkeletonBone.HAND_Y]?.let { offsets.putAll(getFingerOffsets(it)) }
 	return offsets
 }
 
@@ -130,3 +133,74 @@ fun Map<BodyPart, Vector3>.toBoneValues(): Map<SkeletonBone, Float> = this
 fun configToBoneValues(proportions: Map<String, Float>): Map<SkeletonBone, Float> = proportions.mapKeys {
 	SkeletonBone.entries.firstOrNull { cfg -> cfg.name == it.key } ?: SkeletonBone.NONE
 }
+
+/**
+ * Returns the offsets for the finger bones scaled from the handLength.
+ */
+private fun getFingerOffsets(handLength: Float) = (
+	iterateBodyPartHierarchy(BodyPart.LEFT_HAND, true) +
+		iterateBodyPartHierarchy(BodyPart.RIGHT_HAND, true)
+	).map { it.second }.associateWith {
+	when (it) {
+		BodyPart.LEFT_THUMB_METACARPAL, BodyPart.RIGHT_THUMB_METACARPAL,
+		-> {
+			val length = handLength * 0.72f * PROXIMAL_RATIO
+			Vector3(0f, -length, -length * 0.5f)
+		}
+
+		BodyPart.LEFT_THUMB_PROXIMAL, BodyPart.RIGHT_THUMB_PROXIMAL,
+		-> {
+			val length = handLength * 0.72f * INTERMEDIATE_RATIO
+			Vector3(0f, -length, -length * 0.5f)
+		}
+
+		BodyPart.LEFT_THUMB_DISTAL, BodyPart.RIGHT_THUMB_DISTAL,
+		-> {
+			val length = handLength * 0.72f * DISTAL_RATIO
+			Vector3(0f, -length, -length * 0.5f)
+		}
+
+		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_PROXIMAL,
+		-> Vector3(0f, -handLength * 0.805f * PROXIMAL_RATIO, 0f)
+
+		BodyPart.LEFT_INDEX_INTERMEDIATE, BodyPart.RIGHT_INDEX_INTERMEDIATE,
+		-> Vector3(0f, -handLength * 0.805f * INTERMEDIATE_RATIO, 0f)
+
+		BodyPart.LEFT_INDEX_DISTAL, BodyPart.RIGHT_INDEX_DISTAL,
+		-> Vector3(0f, -handLength * 0.805f * DISTAL_RATIO, 0f)
+
+		BodyPart.LEFT_MIDDLE_PROXIMAL, BodyPart.RIGHT_MIDDLE_PROXIMAL,
+		-> Vector3(0f, -handLength * 0.92f * PROXIMAL_RATIO, 0f)
+
+		BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
+		-> Vector3(0f, -handLength * 0.92f * INTERMEDIATE_RATIO, 0f)
+
+		BodyPart.LEFT_MIDDLE_DISTAL, BodyPart.RIGHT_MIDDLE_DISTAL,
+		-> Vector3(0f, -handLength * 0.92f * DISTAL_RATIO, 0f)
+
+		BodyPart.LEFT_RING_PROXIMAL, BodyPart.RIGHT_RING_PROXIMAL,
+		-> Vector3(0f, -handLength * 0.805f * PROXIMAL_RATIO, 0f)
+
+		BodyPart.LEFT_RING_INTERMEDIATE, BodyPart.RIGHT_RING_INTERMEDIATE,
+		-> Vector3(0f, -handLength * 0.805f * INTERMEDIATE_RATIO, 0f)
+
+		BodyPart.LEFT_RING_DISTAL, BodyPart.RIGHT_RING_DISTAL,
+		-> Vector3(0f, -handLength * 0.805f * DISTAL_RATIO, 0f)
+
+		BodyPart.LEFT_LITTLE_PROXIMAL, BodyPart.RIGHT_LITTLE_PROXIMAL,
+		-> Vector3(0f, -handLength * 0.69f * PROXIMAL_RATIO, 0f)
+
+		BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_INTERMEDIATE,
+		-> Vector3(0f, -handLength * 0.69f * INTERMEDIATE_RATIO, 0f)
+
+		BodyPart.LEFT_LITTLE_DISTAL, BodyPart.RIGHT_LITTLE_DISTAL,
+		-> Vector3(0f, -handLength * 0.69f * DISTAL_RATIO, 0f)
+
+		else -> error("$it is not expected as child of hands.")
+	}
+}
+
+// Ratios for finger lengths. They should sum up to 1.
+private const val PROXIMAL_RATIO = 0.5f
+private const val INTERMEDIATE_RATIO = 0.283f
+private const val DISTAL_RATIO = 0.217f

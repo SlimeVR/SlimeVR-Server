@@ -15,12 +15,12 @@ import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
 
 export function ResetButtonIcon(options: UseResetOptions) {
-  if (options.type === ResetType.MOUNTING && !options.group)
+  if (options.type === ResetType.POSE_MOUNTING && !options.group)
     options.group = 'default';
 
   if (options.type === ResetType.YAW) return <YawResetIcon width={18} />;
   if (options.type === ResetType.FULL) return <FullResetIcon width={18} />;
-  if (options.type === ResetType.MOUNTING) {
+  if (options.type === ResetType.POSE_MOUNTING) {
     if (options.group === 'default') return <SkiIcon />;
     if (options.group === 'feet') return <FootIcon />;
     if (options.group === 'toes') return <FootIcon />;

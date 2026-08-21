@@ -4,7 +4,6 @@ import com.jme3.math.FastMath
 import dev.slimevr.config.TextFileHandle
 import dev.slimevr.skeleton.BODY_PART_HIERARCHY_MAP
 import dev.slimevr.skeleton.BoneState
-import dev.slimevr.skeleton.DEFAULT_BONE_OFFSETS
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3

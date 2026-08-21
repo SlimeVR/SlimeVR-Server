@@ -1,8 +1,10 @@
 package dev.slimevr.tracker.stayaligned
 
 import dev.slimevr.math.angle.Angle
+import dev.slimevr.math.angle.AngleAverage
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.applyCalibration
+import dev.slimevr.tracker.getAllFineFor
+import dev.slimevr.tracker.getFirstFineFor
 import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -26,14 +28,11 @@ object YawUtils {
 	 * Gets the yaw between two rotations, for small rotations.
 	 *
 	 * A locked tracker can be in any rotation, so we cannot use
-	 * YawUtils::trackerYaw, which doesn't work for a tracker that is on its
+	 * trackerYaw(), which doesn't work for a tracker that is on its
 	 * side.
 	 *
 	 * WARNING: DO NOT USE for large rotations because the chosen axis might have
 	 * a very small projection on the yaw plane, which yields a low confidence yaw.
-	 *
-	 * TODO: It might be possible to pick a different EulerOrder when we encounter
-	 * 		singularities, but I wasn't able to get this working correctly.
 	 */
 	fun yawDifference(
 		rotation: Quaternion,
@@ -70,13 +69,53 @@ object YawUtils {
 		return targetYaw - yaw
 	}
 
+	fun centerYawOfTrackers(
+		trackerStates: List<TrackerState>,
+	): Angle? {
+		val head = trackerStates.getFirstFineFor(StayAlignedBodyParts.head) // Optional
+		val upperBody = trackerStates.getAllFineFor(StayAlignedBodyParts.upperBodyGroup)
+		if (upperBody.isEmpty()) return null
+		val leftUpperLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftUpperLeg) ?: return null
+		val rightUpperLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.rightUpperLeg) ?: return null
+		val leftLowerLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftLowerLeg) ?: return null
+		val rightLowerLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.rightLowerLeg) ?: return null
+
+		// Need a minimum set of trackers, and the trackers need to be oriented in a
+		// way where we can actually calculate its yaw.
+		val hasCenterYaw =
+			upperBody.map { it.rotation }.all(::hasTrackerYaw) &&
+				hasTrackerYaw(leftUpperLeg.rotation) &&
+				hasTrackerYaw(rightUpperLeg.rotation) &&
+				hasTrackerYaw(leftLowerLeg.rotation) &&
+				hasTrackerYaw(rightLowerLeg.rotation)
+		if (!hasCenterYaw) return null
+
+		// Calculate average yaw of the body
+		val averageYaw = AngleAverage()
+
+		if (head != null && hasTrackerYaw(head.rotation)) {
+			averageYaw.add(trackerYaw(head.rotation), StayAlignedDefaults.CENTER_ERROR_HEAD_WEIGHT)
+		}
+
+		upperBody.forEach {
+			averageYaw.add(trackerYaw(it.rotation), StayAlignedDefaults.CENTER_ERROR_UPPER_BODY_WEIGHT)
+		}
+
+		averageYaw.add(trackerYaw(leftUpperLeg.rotation), StayAlignedDefaults.CENTER_ERROR_UPPER_LEG_WEIGHT)
+		averageYaw.add(trackerYaw(rightUpperLeg.rotation), StayAlignedDefaults.CENTER_ERROR_UPPER_LEG_WEIGHT)
+
+		averageYaw.add(trackerYaw(leftLowerLeg.rotation), StayAlignedDefaults.CENTER_ERROR_LOWER_LEG_WEIGHT)
+		averageYaw.add(trackerYaw(rightLowerLeg.rotation), StayAlignedDefaults.CENTER_ERROR_LOWER_LEG_WEIGHT)
+
+		return averageYaw.toAngle()
+	}
+
 	/**
 	 * Whether we can reliably get the yaw of a tracker.
+	 *
+	 * This uses the yawCorrection stored in the tracker state since that method is only used on the list of tracker states.
 	 */
-	fun hasTrackerYaw(trackerState: TrackerState) = Angle.absBetween(
-		getStayAlignedRotation(trackerState).sandwichUnitX(),
-		Vector3.POS_Y,
-	) > MIN_ON_SIDE_ANGLE
+	fun hasTrackerYaw(rotation: Quaternion) = Angle.absBetween(rotation.sandwichUnitX(), Vector3.POS_Y) > MIN_ON_SIDE_ANGLE
 
 	/**
 	 * Gets the yaw of the tracker, for trackers that are not on its side.
@@ -90,16 +129,12 @@ object YawUtils {
 	 * singularity for this rotation to get "some" yaw, but this yaw will be very
 	 * different from the from YZX. DO NOT ATTEMPT!
 	 */
-	fun trackerYaw(trackerState: TrackerState) = Angle.ofRad(
-		getStayAlignedRotation(trackerState)
-			.toEulerAngles(EulerOrder.YZX)
-			.y,
-	)
+	fun trackerYaw(rotation: Quaternion) = Angle.ofRad(rotation.toEulerAngles(EulerOrder.YZX).y)
 
 	/**
 	 * Applies an extra yaw in the specified direction.
 	 */
-	fun extraYaw(direction: Side, angle: Angle) = when (direction) {
+	fun sideYaw(direction: Side, angle: Angle) = when (direction) {
 		Side.LEFT -> angle
 		Side.RIGHT -> -angle
 	}

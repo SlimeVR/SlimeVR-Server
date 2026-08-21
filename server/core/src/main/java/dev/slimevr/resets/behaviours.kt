@@ -14,8 +14,8 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 		// Clear the states of the `canDoXReset`s to false
 		is ResetsActions.ClearResets -> {
 			state.copy(
-				canDoYawReset = if (ResetType.YAW in action.resetType) false else state.canDoYawReset,
-				canDoMountingReset = if (ResetType.MOUNTING in action.resetType) false else state.canDoMountingReset,
+				canDoYawReset = if (ResetType.YAW in action.resetTypes) false else state.canDoYawReset,
+				canDoMountingReset = if (ResetType.POSE_MOUNTING in action.resetTypes) false else state.canDoMountingReset,
 			)
 		}
 
@@ -27,7 +27,7 @@ class ResetsBasicBehaviour : ResetsBehaviour {
 				lastFullResetTime = timeSource.markNow(),
 			)
 
-			ResetType.MOUNTING -> {
+			ResetType.POSE_MOUNTING -> {
 				val bodyParts = action.bodyParts
 				val feetOnly = !bodyParts.isNullOrEmpty() && bodyParts.all { it in ResetBodyParts.FEET }
 				when {
@@ -62,7 +62,7 @@ class ResetsMountingTimeoutBehaviour : ResetsBehaviour {
 			.distinctUntilChangedBy { it.lastFullResetTime }
 			.mapLatest {
 				delay(mountingResetTimeout)
-				receiver.context.dispatch(ResetsActions.ClearResets(listOf(ResetType.MOUNTING)))
+				receiver.context.dispatch(ResetsActions.ClearResets(listOf(ResetType.POSE_MOUNTING)))
 			}
 			.launchIn(receiver.context.scope)
 	}

@@ -51,7 +51,7 @@ class DriverBridge(
 	val source: DriverBridgeSource,
 	val context: DriverBridgeContext,
 	val appContext: AppContextProvider,
-	val inbound: EventDispatcher<DriverBridgeInbound> = EventDispatcher("Driver.inbound", context.scope, capacity = 128),
+	val inbound: EventDispatcher<DriverBridgeInbound> = EventDispatcher("Driver.inbound", context.scope, capacity = 128, verboseMetrics = true),
 	val outbound: EventDispatcher<DriverBridgeOutbound> = EventDispatcher("Driver.outbound", context.scope, capacity = 512),
 	private val managedContext: ManagedContext<DriverBridgeState, DriverBridgeActions>? = null,
 ) {

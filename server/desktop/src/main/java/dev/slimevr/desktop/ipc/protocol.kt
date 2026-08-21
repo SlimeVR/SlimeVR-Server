@@ -43,7 +43,13 @@ val solarxrToProtoStatus = mapOf(
 	solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED to TrackerStatus.Status.DISCONNECTED,
 	solarxr_protocol.datatypes.TrackerStatus.BUSY to TrackerStatus.Status.BUSY,
 )
-val protoToSolarxrStatus = solarxrToProtoStatus.entries.associate { (k, v) -> v to k }
+val protoToSolarxrStatus = mapOf(
+	TrackerStatus.Status.OK to solarxr_protocol.datatypes.TrackerStatus.OK,
+	TrackerStatus.Status.ERROR to solarxr_protocol.datatypes.TrackerStatus.ERROR,
+	TrackerStatus.Status.OCCLUDED to solarxr_protocol.datatypes.TrackerStatus.OCCLUDED,
+	TrackerStatus.Status.DISCONNECTED to solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED,
+	TrackerStatus.Status.BUSY to solarxr_protocol.datatypes.TrackerStatus.BUSY,
+)
 
 const val PROTOCOL_VERSION = 2
 
@@ -95,8 +101,8 @@ suspend fun startBindingProvider() = withContext(Dispatchers.IO) {
 suspend fun handleDriverConnection(
 	appContext: AppContextProvider,
 	source: DriverBridgeSource,
-	messages: Flow<ByteArray>,
-	send: suspend (ByteArray) -> Unit,
+	messages: Flow<Buffer>,
+	send: suspend (Buffer) -> Unit,
 ) = coroutineScope {
 	val sendMutex = Mutex()
 
@@ -105,7 +111,7 @@ suspend fun handleDriverConnection(
 
 	suspend fun sendMsg(msg: ProtobufMessage) = sendMutex.withLock {
 		ProtobufMessage.ADAPTER.encode(encodeWriter, msg)
-		send(encodeBuffer.readByteArray())
+		send(encodeBuffer)
 	}
 
 	val bridge = DriverBridge.create(
@@ -201,7 +207,7 @@ suspend fun handleDriverConnection(
 				bridge.inbound.emit(
 					DriverBridgeInbound.TrackerBattery(
 						id = bat.tracker_id,
-						batteryLevel = bat.battery_level * 100,
+						batteryLevel = bat.battery_level,
 						charging = bat.is_charging,
 					),
 				)

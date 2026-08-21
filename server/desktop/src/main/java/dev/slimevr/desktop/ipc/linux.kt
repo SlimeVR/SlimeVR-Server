@@ -7,12 +7,12 @@ import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
+import okio.Buffer
 import java.io.IOException
 import java.net.SocketException
 import java.net.StandardProtocolFamily
@@ -25,28 +25,31 @@ import java.nio.channels.SocketChannel
 import kotlin.io.path.Path
 
 suspend fun createUnixDriverSocket(appContext: AppContextProvider) = acceptUnixClients(DRIVER_SOCKET_NAME) { channel ->
+	val writer = FramedWriter(channel)
 	handleDriverConnection(
 		appContext = appContext,
 		source = DriverBridgeSource.DRIVER,
 		messages = readFramedMessages(channel),
-		send = { bytes -> writeFramed(channel, bytes) },
+		send = { frame -> writer.write(frame) },
 	)
 }
 
 suspend fun createUnixFeederSocket(appContext: AppContextProvider) = acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
+	val writer = FramedWriter(channel)
 	handleDriverConnection(
 		appContext = appContext,
 		source = DriverBridgeSource.FEEDER,
 		messages = readFramedMessages(channel),
-		send = { bytes -> writeFramed(channel, bytes) },
+		send = { frame -> writer.write(frame) },
 	)
 }
 
 suspend fun createUnixSolarXRSocket(appContext: AppContextProvider) = acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
+	val writer = FramedWriter(channel)
 	handleSolarXRBridge(
 		appContext = appContext,
 		messages = readFramedMessages(channel),
-		send = { bytes -> writeFramed(channel, bytes) },
+		send = { frame -> writer.write(frame) },
 	)
 }
 
@@ -59,31 +62,61 @@ private fun isSocketInUse(socketPath: String): Boolean = try {
 	false
 }
 
-// Length field is LE u32 and includes the 4-byte header itself
+// Length field is LE u32 and includes the 4-byte header itself.
+// The payload lands in one Buffer that every frame reuses
 private fun readFramedMessages(channel: SocketChannel) = flow {
 	val lenBuf = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
+	val dataBuf = ByteBuffer.allocate(MAX_FRAME_SIZE)
+	val frame = Buffer()
 	try {
 		while (true) {
-			lenBuf.clear()
-			if (runInterruptible { channel.read(lenBuf) } == -1) break
-			lenBuf.flip()
-
-			val dataBuf = ByteBuffer.allocate(lenBuf.int - 4)
-			while (dataBuf.hasRemaining()) {
-				if (runInterruptible { channel.read(dataBuf) } == -1) break
-			}
-			emit(dataBuf.array())
+			val len = runInterruptible(Dispatchers.IO) { readFrame(channel, lenBuf, dataBuf) }
+			if (len < 0) break
+			frame.clear()
+			frame.write(dataBuf.array(), 0, len)
+			emit(frame)
 		}
 	} catch (e: SocketException) {
 		AppLogger.ipc.warn("Exception on socket: ${e.message}")
 	} catch (e: ClosedByInterruptException) {
 		AppLogger.ipc.info("Socket read interrupted, dropping connection")
 	}
-}.flowOn(Dispatchers.IO)
+}
 
-private fun writeFramed(channel: SocketChannel, bytes: ByteArray) {
-	val header = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(bytes.size + 4).flip()
-	channel.write(arrayOf(header, ByteBuffer.wrap(bytes)))
+private fun readFrame(channel: SocketChannel, lenBuf: ByteBuffer, dataBuf: ByteBuffer): Int {
+	lenBuf.clear()
+	if (!readFully(channel, lenBuf)) return -1
+	lenBuf.flip()
+
+	val len = lenBuf.int - 4
+	if (len !in 0..MAX_FRAME_SIZE) throw IOException("Frame length out of range: ${len + 4}")
+	dataBuf.clear().limit(len)
+	return if (readFully(channel, dataBuf)) len else -1
+}
+
+private fun readFully(channel: SocketChannel, buf: ByteBuffer): Boolean {
+	while (buf.hasRemaining()) {
+		if (channel.read(buf) == -1) return false
+	}
+	return true
+}
+
+private class FramedWriter(private val channel: SocketChannel) {
+	private val header = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
+	private val payload = ByteBuffer.allocate(MAX_FRAME_SIZE)
+	private val gather = arrayOf(header, payload)
+
+	fun write(frame: Buffer) {
+		val len = frame.size.toInt()
+		if (len > MAX_FRAME_SIZE) throw IOException("Frame too large to send: ${len + 4} bytes")
+		payload.clear().limit(len)
+		frame.read(payload.array(), 0, len)
+
+		header.clear()
+		header.putInt(len + 4)
+		header.flip()
+		while (header.hasRemaining() || payload.hasRemaining()) channel.write(gather)
+	}
 }
 
 private suspend fun acceptUnixClients(
@@ -111,7 +144,7 @@ private suspend fun acceptUnixClients(
 					break
 				}
 				AppLogger.ipc.info("$name client connected")
-				launch {
+				launch(Dispatchers.Default) {
 					try {
 						handle(client)
 					} catch (e: CancellationException) {

@@ -9,14 +9,19 @@ import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
+import io.ktor.websocket.WebSocketSession
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.flow
+import okio.Buffer
 
 const val SOLARXR_PORT = 21110
 
 suspend fun createSolarXRWebsocketServer(appContext: AppContextProvider) {
 	val engine = embeddedServer(Netty, port = SOLARXR_PORT) {
-		install(WebSockets)
+		install(WebSockets) {
+			// Frames land in a fixed buffer downstream, and ktor would otherwise take any size
+			maxFrameSize = MAX_FRAME_SIZE.toLong()
+		}
 
 		routing {
 			webSocket {
@@ -24,15 +29,17 @@ suspend fun createSolarXRWebsocketServer(appContext: AppContextProvider) {
 				handleSolarXRBridge(
 					appContext = appContext,
 					messages = flow {
+						val buffer = Buffer()
 						for (frame in incoming) {
-							when (frame) {
-								is Frame.Binary -> emit(frame.data)
-								is Frame.Close -> AppLogger.solarxr.info("[WS] Connection closed")
-								else -> {}
-							}
+							if (frame is Frame.Close) AppLogger.solarxr.info("[WS] Connection closed")
+							if (frame !is Frame.Binary) continue
+
+							buffer.clear()
+							buffer.write(frame.data)
+							emit(buffer)
 						}
 					},
-					send = { bytes -> send(Frame.Binary(fin = true, data = bytes)) },
+					send = { frame -> send(Frame.Binary(fin = true, data = frame.readByteArray())) },
 				)
 			}
 		}

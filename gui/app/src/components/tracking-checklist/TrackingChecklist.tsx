@@ -399,7 +399,7 @@ const stepContentLookup: Record<
           />
         </div>
         <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton type={ResetType.MOUNTING} group="default" />
+          <ResetButton type={ResetType.POSE_MOUNTING} group="default" />
           {step.ignorable && (
             <Button
               id="tracking_checklist-ignore"
@@ -436,7 +436,7 @@ const stepContentLookup: Record<
           </div>
         </div>
         <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton type={ResetType.MOUNTING} group="feet" />
+          <ResetButton type={ResetType.POSE_MOUNTING} group="feet" />
           {step.ignorable && (
             <Button
               id="tracking_checklist-ignore"

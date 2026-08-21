@@ -71,7 +71,7 @@ fun ComputedSkeleton.resolveAverageRotationFor(bodyParts: Array<BodyPart>): Quat
 data class SkeletonState(val boneInputs: InputSkeleton, val skeletonHeight: Float, val paused: Boolean)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
-	boneInputs = DEFAULT_BONE_OFFSETS.mapValues { bodyPart, tailOffset ->
+	boneInputs = DEFAULT_PROPORTIONS.toBoneOffsets().mapValues { bodyPart, tailOffset ->
 		BoneInput(
 			rawRotation = Quaternion.IDENTITY,
 			bodyPart = bodyPart,
@@ -99,7 +99,7 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, originPosition: Vector3 =
 fun buildBones(
 	state: Map<BodyPart, BoneInput>,
 	rootHead: Vector3 = Vector3.NULL,
-	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
+	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
 ): ComputedSkeleton {
 	val result = bodyPartMap<BoneState>()
 	hierarchy.forEach { (parentPart, childPart) ->
@@ -113,7 +113,7 @@ fun buildBones(
 fun buildBones(
 	state: SkeletonState,
 	rootHead: Vector3 = Vector3.NULL,
-	hierarchy: Sequence<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
+	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
 ): ComputedSkeleton = buildBones(state.boneInputs, rootHead, hierarchy)
 
 sealed interface SkeletonActions {
@@ -128,6 +128,11 @@ typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
 typealias SkeletonBehaviour = Behaviour<SkeletonState, SkeletonActions, Skeleton>
 interface SkeletonProcessor {
 	fun process(state: SkeletonState): SkeletonState
+}
+typealias IKTargets = BodyPartMap<Vector3>
+interface SkeletonTargetProcessor {
+	val enabled: Boolean
+	fun process(fk: ComputedSkeleton, ikTarget: IKTargets): IKTargets
 }
 
 class Skeleton(

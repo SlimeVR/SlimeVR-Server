@@ -66,7 +66,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
   const name = options.customName || resetName;
 
   const skiReset =
-    options.type === ResetType.MOUNTING && options.group === 'default';
+    options.type === ResetType.POSE_MOUNTING && options.group === 'default';
 
   return (
     <Tooltip
@@ -191,12 +191,12 @@ export function Toolbar() {
               }}
             >
               <BasicResetButton
-                type={ResetType.MOUNTING}
+                type={ResetType.POSE_MOUNTING}
                 group={'default'}
                 customName="toolbar-mounting_calibration-default"
               />
               <BasicResetButton
-                type={ResetType.MOUNTING}
+                type={ResetType.POSE_MOUNTING}
                 group={'feet'}
                 customName="toolbar-mounting_calibration-feet"
               />
@@ -209,7 +209,7 @@ export function Toolbar() {
               )}
               {groupVisibility['fingers'] && (
                 <BasicResetButton
-                  type={ResetType.MOUNTING}
+                  type={ResetType.POSE_MOUNTING}
                   group={'fingers'}
                   customName="toolbar-mounting_calibration-fingers"
                 />

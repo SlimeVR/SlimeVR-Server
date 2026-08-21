@@ -29,7 +29,6 @@ class SkeletonSettingsBehaviour(
 			receiver.sendRpc(
 				SkeletonSettingsResponse(
 					toggles = SkeletonToggles(
-						forceArmsFromHmd = config.toggles.forceArmsFromHmd,
 						floorClip = config.toggles.floorClip,
 						skatingCorrection = config.toggles.skatingCorrection,
 						toeSnap = config.toggles.toeSnap,
@@ -62,7 +61,6 @@ class SkeletonSettingsBehaviour(
 						skeletonConfig = SkeletonConfig(
 							toggles = req.toggles?.let {
 								SkeletonTogglesConfig(
-									forceArmsFromHmd = it.forceArmsFromHmd == true,
 									floorClip = it.floorClip == true,
 									skatingCorrection = it.skatingCorrection == true,
 									toeSnap = it.toeSnap == true,

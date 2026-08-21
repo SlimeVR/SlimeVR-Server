@@ -99,14 +99,24 @@ inline fun BodyPart.findFirstParent(predicate: (BodyPart) -> Boolean): BodyPart?
 	return null
 }
 
-private suspend fun SequenceScope<Pair<BodyPart?, BodyPart>>.visitBodyPart(parentBone: BodyPart?, bone: BodyPart, onlyChildren: Boolean) {
-	if (!onlyChildren) {
-		yield(Pair(parentBone, bone))
+private fun buildHierarchy(root: BodyPart, onlyChildren: Boolean): List<Pair<BodyPart?, BodyPart>> {
+	val result = mutableListOf<Pair<BodyPart?, BodyPart>>()
+	fun visit(parentBone: BodyPart?, bone: BodyPart, skipSelf: Boolean) {
+		if (!skipSelf) result += parentBone to bone
+		val children = BODY_PART_HIERARCHY_MAP[bone] ?: return
+		for (child in children) visit(bone, child, false)
 	}
-	val children = BODY_PART_HIERARCHY_MAP[bone] ?: return
-	for (child in children) visitBodyPart(bone, child, false)
+	visit(null, root, onlyChildren)
+	return result
 }
 
-fun iterateBodyPartHierarchy(root: BodyPart = BodyPart.HEAD, onlyChildren: Boolean = false) = sequence {
-	visitBodyPart(null, root, onlyChildren)
-}
+// The hierarchy is constant, so every traversal of it is too. Derived once for the same reason
+// BODY_PART_PARENTS is: walking it lazily per call cost a continuation and a Pair per bone, and
+// BoneYawFallbackProcessor asks for one per active bone per frame.
+private val BODY_PART_HIERARCHIES: Array<List<Pair<BodyPart?, BodyPart>>> =
+	Array(ALL_BODY_PARTS.size * 2) { index -> buildHierarchy(ALL_BODY_PARTS[index / 2], index % 2 == 1) }
+
+fun iterateBodyPartHierarchy(
+	root: BodyPart = BodyPart.HEAD,
+	onlyChildren: Boolean = false,
+): List<Pair<BodyPart?, BodyPart>> = BODY_PART_HIERARCHIES[root.ordinal * 2 + if (onlyChildren) 1 else 0]

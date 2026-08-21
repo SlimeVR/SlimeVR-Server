@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.datatypes.MountingMethod
 
 class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 	/**
@@ -49,7 +50,9 @@ class TrackerDefaultMountingOrientationBehaviour : TrackerBehaviour {
 			.distinctUntilChanged()
 			.drop(1)
 			.onEach {
-				receiver.context.dispatch(TrackerActions.SetMountingOrientation(defaultMountingForBodyPart(it)))
+				if (receiver.context.state.value.lastMountingMethod == MountingMethod.MANUAL) {
+					receiver.context.dispatch(TrackerActions.SetMountingOrientation(defaultMountingForBodyPart(it)))
+				}
 			}.launchIn(receiver.context.scope)
 	}
 }

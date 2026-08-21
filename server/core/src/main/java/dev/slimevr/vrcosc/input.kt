@@ -63,8 +63,6 @@ private class VRSystemTrackerRegistry(
 		)
 		appContext.server.context.dispatch(VRServerActions.NewTracker(trackerId, runtimeTracker))
 		runtimeTracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
-		// TODO : what's the mounting orientation of these trackers, or is it even used?
-		// setting the bodyPart will automatically set it, which may or may not be a problem.
 		trackerIds[tracker] = trackerId
 		return runtimeTracker
 	}

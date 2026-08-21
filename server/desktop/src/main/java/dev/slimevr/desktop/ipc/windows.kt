@@ -10,38 +10,42 @@ import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
+import okio.Buffer
 
 private val k32 = Kernel32.INSTANCE
 private val adv32 = Advapi32.INSTANCE
 
 private const val PIPE_BUFFER_SIZE = 64 * 1024
 
-private typealias ConnectionHandler = suspend (messages: Flow<ByteArray>, send: suspend (ByteArray) -> Unit) -> Unit
+private typealias ConnectionHandler = suspend (pipe: WinNT.HANDLE, writer: PipeSlot) -> Unit
 
-suspend fun createWindowsDriverPipe(appContext: AppContextProvider) = acceptWindowsClients(DRIVER_PIPE) { messages, send ->
-	handleDriverConnection(appContext, DriverBridgeSource.DRIVER, messages, send)
+suspend fun createWindowsDriverPipe(appContext: AppContextProvider) = acceptWindowsClients(DRIVER_PIPE) { pipe, writer ->
+	handleDriverConnection(appContext, DriverBridgeSource.DRIVER, readFrames(pipe)) { frame -> writer.writeFrame(frame) }
 }
 
-suspend fun createWindowsFeederPipe(appContext: AppContextProvider) = acceptWindowsClients(FEEDER_PIPE) { messages, send ->
-	handleDriverConnection(appContext, DriverBridgeSource.FEEDER, messages, send)
+suspend fun createWindowsFeederPipe(appContext: AppContextProvider) = acceptWindowsClients(FEEDER_PIPE) { pipe, writer ->
+	handleDriverConnection(appContext, DriverBridgeSource.FEEDER, readFrames(pipe)) { frame -> writer.writeFrame(frame) }
 }
 
-suspend fun createWindowsSolarXRPipe(appContext: AppContextProvider) = acceptWindowsClients(SOLARXR_PIPE) { messages, send ->
-	handleSolarXRBridge(appContext, messages, send)
+suspend fun createWindowsSolarXRPipe(appContext: AppContextProvider) = acceptWindowsClients(SOLARXR_PIPE) { pipe, writer ->
+	handleSolarXRBridge(appContext, readFrames(pipe)) { frame -> writer.writeFrame(frame) }
 }
 
 private fun readFrames(handle: WinNT.HANDLE) = flow {
 	PipeSlot(handle).use { reader ->
-		while (true) emit(reader.readFrame() ?: break)
+		val frame = Buffer()
+		while (true) {
+			frame.clear()
+			if (!reader.readFrameInto(frame)) break
+			emit(frame)
+		}
 	}
-}.flowOn(Dispatchers.IO)
+}
 
 private fun createSecurePipe(pipeName: String): WinNT.HANDLE {
 	val descriptor = WinNT.SECURITY_DESCRIPTOR(64 * 1024)
@@ -92,9 +96,9 @@ private suspend fun acceptWindowsClients(
 			}
 			AppLogger.ipc.info("$pipeName client connected")
 
-			launch {
+			launch(Dispatchers.Default) {
 				try {
-					handle(readFrames(pipe)) { bytes -> writer.writeFrame(bytes) }
+					handle(pipe, writer)
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {

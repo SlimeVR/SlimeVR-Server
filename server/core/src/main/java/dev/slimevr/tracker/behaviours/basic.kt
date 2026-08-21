@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -50,38 +51,27 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 			val rawPolarityTrackedRotation: RawRotation = action.rotation?.twinNearest(state.rawRotation) ?: state.rawRotation
 			val yawCorrectedRawPolarityTrackedRotation = Quaternion.rotationAroundYAxis(state.stayAlignedData.yawCorrection.toRad()) * rawPolarityTrackedRotation
 			val stayAlignedEnabled = settings.context.state.value.data.stayAlignedConfig.enabled
-			val adjustedRawRotation = if (stayAlignedEnabled) yawCorrectedRawPolarityTrackedRotation else rawPolarityTrackedRotation
+			val correctedRawRotation = if (stayAlignedEnabled) yawCorrectedRawPolarityTrackedRotation else rawPolarityTrackedRotation
 
-			// Other data
+			// Other inputs
 			val rawAcceleration: RawAcceleration = action.acceleration ?: state.rawAcceleration
 			val rawMagnetometer = action.magnetometer ?: state.rawMagnetometer
 			val position = action.position ?: state.position
 
 			val cal = state.sessionCalibration
 
-			// TODO non-IMU trackers still want some form of calibration applied
 			// Rotation calibration
 			val rotation: CalibratedRotation = when {
-				state.imuType == null -> rawPolarityTrackedRotation
-				cal != null && action.rotation != null -> applyCalibration(adjustedRawRotation, state)
-				cal != null -> state.rotation
-				else -> rawPolarityTrackedRotation
+				cal == null -> rawPolarityTrackedRotation
+				action.rotation != null -> applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation)
+				else -> state.rotation
 			}
 
 			// Accel calibration
 			val acceleration: CalibratedAcceleration = when {
-				state.imuType == null -> rawAcceleration
-
-				cal != null && action.acceleration != null -> applyCalibration(
-					rawAcceleration,
-					adjustedRawRotation,
-					cal.headingCorrection,
-					cal.headingAlignment,
-				)
-
-				cal != null -> state.acceleration
-
-				else -> rawAcceleration
+				cal == null -> rawAcceleration
+				action.acceleration != null -> applyCalibration(rawAcceleration, correctedRawRotation, cal.headingCorrection, cal.headingAlignment)
+				else -> state.acceleration
 			}
 
 			state.copy(
@@ -95,39 +85,66 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 		}
 
 		is TrackerActions.SetMountingOrientation -> {
-			state.copy(
-				mountingOrientation = action.mountingOrientation,
-				sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY),
-				lastMountingMethod = MountingMethod.MANUAL,
-			)
+			if (state.position != null) {
+				// Don't set mounting orientation for positional trackers
+				state
+			} else {
+				state.copy(
+					mountingOrientation = action.mountingOrientation,
+					sessionCalibration = state.sessionCalibration?.copy(headingAlignment = action.mountingOrientation)
+						?: SessionCalibration(headingAlignment = action.mountingOrientation),
+					lastMountingMethod = MountingMethod.MANUAL,
+				)
+			}
 		}
 
 		is TrackerActions.SetRestOrientation -> state.copy(restOrientation = action.restOrientation)
 
 		is TrackerActions.FullReset -> {
+			val isPositional = state.position != null
+			val isHead = state.bodyPart == BodyPart.HEAD
+			val shouldAlignAttitude = !isHead || !isPositional || settings.context.state.value.data.resetsConfig.resetPositionalHeadAttitude
+			val shouldAlignHeadingWithReference = !isHead && isPositional
+
 			// Align the raw rotation to the default polarity we use
 			val defaultPolarityRotation = state.rawRotation.twinNearest(Quaternion.IDENTITY)
 
-			val headingCorrection = estimateHeadingCorrect(
-				defaultPolarityRotation,
-				action.referenceRotation,
-			)
-			val attitudeAlignment = estimateAttitudeAlign(
-				defaultPolarityRotation,
-				headingCorrection,
-				action.referenceRotation,
-			)
-
-			val sessionCalibration = state.sessionCalibration?.copy(
-				headingCorrection = headingCorrection,
-				attitudeAlignment = attitudeAlignment,
-			) ?: SessionCalibration(
-				headingCorrection = headingCorrection,
-				attitudeAlignment = attitudeAlignment,
-			)
+			val headingCorrection =
+				if (shouldAlignAttitude) {
+					estimateHeadingCorrect(
+						defaultPolarityRotation,
+						action.referenceRotation,
+					)
+				} else {
+					state.sessionCalibration?.attitudeAlignment ?: Quaternion.IDENTITY
+				}
+			val attitudeAlignment =
+				if (shouldAlignAttitude) {
+					estimateAttitudeAlign(
+						defaultPolarityRotation,
+						headingCorrection,
+						action.referenceRotation,
+					)
+				} else {
+					state.sessionCalibration?.attitudeAlignment ?: Quaternion.IDENTITY
+				}
+			val headingAlignment =
+				if (shouldAlignHeadingWithReference) {
+					headingCorrection
+				} else {
+					state.sessionCalibration?.headingAlignment ?: Quaternion.IDENTITY
+				}
 
 			state.copy(
-				sessionCalibration = sessionCalibration,
+				sessionCalibration = state.sessionCalibration?.copy(
+					headingCorrection = headingCorrection,
+					attitudeAlignment = attitudeAlignment,
+					headingAlignment = headingAlignment,
+				) ?: SessionCalibration(
+					headingCorrection = headingCorrection,
+					attitudeAlignment = attitudeAlignment,
+					headingAlignment = headingAlignment,
+				),
 				// Reset polarity tracking
 				rawRotation = defaultPolarityRotation,
 				// Full reset snaps: cancel any in-progress yaw smoothing.
@@ -163,7 +180,7 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 			}
 		}
 
-		is TrackerActions.MountingReset -> {
+		is TrackerActions.PoseMountingReset -> {
 			val cal = state.sessionCalibration
 
 			val headingAlignment = estimateHeadingAlign(
@@ -173,23 +190,19 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 				cal?.attitudeAlignment ?: Quaternion.IDENTITY,
 				state.mountingOrientation,
 				action.yawOffset,
-			)
-
-			val sessionCalibration = state.sessionCalibration?.copy(
-				headingAlignment = headingAlignment,
-			) ?: SessionCalibration(
-				headingAlignment = headingAlignment,
-			)
+			) *
+				state.mountingOrientation
 
 			state.copy(
-				sessionCalibration = sessionCalibration,
+				sessionCalibration = state.sessionCalibration?.copy(headingAlignment = headingAlignment)
+					?: SessionCalibration(headingAlignment = headingAlignment),
 				lastMountingMethod = MountingMethod.POSE,
 			)
 		}
 
 		is TrackerActions.ClearMountingReset -> {
 			state.copy(
-				sessionCalibration = state.sessionCalibration?.copy(headingAlignment = Quaternion.IDENTITY),
+				sessionCalibration = state.sessionCalibration?.copy(headingAlignment = state.mountingOrientation),
 				lastMountingMethod = MountingMethod.MANUAL,
 			)
 		}
