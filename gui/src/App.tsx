@@ -56,6 +56,7 @@ import { QuizSlimeSetQuestion } from './components/onboarding/pages/quiz/SlimeSe
 import { QuizUsageQuestion } from './components/onboarding/pages/quiz/UsageQuestion';
 import { QuizRuntimeQuestion } from './components/onboarding/pages/quiz/RuntimeQuestion';
 import { QuizMocapPosQuestion } from './components/onboarding/pages/quiz/MocapPreferencesQuestions';
+import { KeybindSettings } from './components/settings/pages/KeybindSettings';
 import { ElectronContextC, provideElectron } from './hooks/electron';
 import { AppLocalizationProvider } from './i18n/config';
 import { openUrl } from './hooks/crossplatform';
@@ -145,6 +146,7 @@ function Layout() {
             <Route path="interface" element={<InterfaceSettings />} />
             <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />
+            <Route path="keybinds" element={<KeybindSettings />} />
           </Route>
           <Route
             path="/onboarding"
