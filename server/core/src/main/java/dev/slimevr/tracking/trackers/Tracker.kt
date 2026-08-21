@@ -17,9 +17,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 import kotlin.time.TimeSource
 
-const val TIMEOUT_MS = 2_000L
-const val DISCONNECT_MS = 3_000L + TIMEOUT_MS
-
 /**
  * Generic tracker class for input and output tracker,
  * with flags on instantiation.
@@ -112,6 +109,11 @@ class Tracker @JvmOverloads constructor(
 	 */
 	val usesSleep: Boolean = false,
 ) {
+	companion object {
+		const val TIMEOUT_MS = 2_000L
+		var DISCONNECT_MS = 3_000L + TIMEOUT_MS
+	}
+
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
 	private var timeScheduledSleep: Long = Long.MAX_VALUE

@@ -19,6 +19,8 @@ class VRConfig {
 
 	val filters: FiltersConfig = FiltersConfig()
 
+	val timeout: TimeoutConfig = TimeoutConfig()
+
 	val driftCompensation: DriftCompensationConfig = DriftCompensationConfig()
 
 	val oscRouter: OSCConfig = OSCConfig()
