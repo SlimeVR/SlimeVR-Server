@@ -203,7 +203,7 @@ export function TapDetectionSettings() {
         </div>
         <div className="grid sm:grid-cols-3 gap-5 pb-2">
           <div>
-            <Typography variant="section-title">
+            <Typography bold>
               {l10n.getString(
                 'settings-general-gesture_control-yawResetTracker'
               )}
@@ -217,7 +217,7 @@ export function TapDetectionSettings() {
             />
           </div>
           <div>
-            <Typography variant="section-title">
+            <Typography bold>
               {l10n.getString(
                 'settings-general-gesture_control-fullResetTracker'
               )}
@@ -231,7 +231,7 @@ export function TapDetectionSettings() {
             />
           </div>
           <div>
-            <Typography variant="section-title">
+            <Typography bold>
               {l10n.getString(
                 'settings-general-gesture_control-mountingResetTracker'
               )}
