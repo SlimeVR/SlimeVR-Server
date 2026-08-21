@@ -60,7 +60,17 @@ val BODY_PART_TO_UNITY_BONE: Map<BodyPart, String> = mapOf(
 	BodyPart.RIGHT_LITTLE_INTERMEDIATE to "RightLittleIntermediate",
 	BodyPart.RIGHT_LITTLE_DISTAL to "RightLittleDistal",
 	BodyPart.LEFT_BIG_TOE to "LeftToes",
+	BodyPart.LEFT_BIG_TOE to "LeftBigToe",
+	BodyPart.LEFT_INDEX_TOE to "LeftIndexToe",
+	BodyPart.LEFT_MIDDLE_TOE to "LeftMiddleToe",
+	BodyPart.LEFT_RING_TOE to "LeftRingToe",
+	BodyPart.LEFT_LITTLE_TOE to "LeftLittleToe",
 	BodyPart.RIGHT_BIG_TOE to "RightToes",
+	BodyPart.RIGHT_BIG_TOE to "RightBigToe",
+	BodyPart.RIGHT_INDEX_TOE to "RightIndexToe",
+	BodyPart.RIGHT_MIDDLE_TOE to "RightMiddleToe",
+	BodyPart.RIGHT_RING_TOE to "RightRingToe",
+	BodyPart.RIGHT_LITTLE_TOE to "RightLittleToe",
 )
 
 // Bones VMC can accept. Used by the routing module.
