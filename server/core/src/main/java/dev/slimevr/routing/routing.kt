@@ -60,11 +60,12 @@ fun driverStateFlow(appContext: AppContextProvider): Flow<RoutingOutputState> = 
 	appContext.server.context.state.map { state ->
 		state.drivers.values.any { it.source == DriverBridgeSource.DRIVER }
 	},
-) { enabled, connected ->
+	appContext.server.context.state.map { state -> state.solarxr.values.any { it.context.state.value.driverName != null } }.distinctUntilChanged()
+) { enabled, driverConnected, solarxrDriverConnected ->
 	when {
 		!appContext.featureFlags.supportsDriver -> RoutingOutputState.UNSUPPORTED
 		!enabled -> RoutingOutputState.INACTIVE
-		connected -> RoutingOutputState.ACTIVE
+		driverConnected || solarxrDriverConnected -> RoutingOutputState.ACTIVE
 		else -> RoutingOutputState.ENABLED
 	}
 }.distinctUntilChanged()
