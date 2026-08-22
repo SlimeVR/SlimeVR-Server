@@ -22,6 +22,7 @@ import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
+import solarxr_protocol.driver_protocol.BoneBatteryUpdate
 import solarxr_protocol.driver_protocol.BoneStatusUpdate
 import solarxr_protocol.driver_protocol.SkeletonUpdate
 import solarxr_protocol.rpc.RoutingOutput
@@ -51,7 +52,8 @@ class DriverOutgoingTrackersBehaviour(
 		val server = appContext.server
 		val settings = appContext.config.settings
 
-		val boneStatuses = bodyPartMap<BoneStatusUpdate>()
+		val boneStatuses = bodyPartMap<TrackerStatus>()
+		val boneBatteries = bodyPartMap<BoneBatteryUpdate>()
 
 		combine(settings.context.state.map { it.data.driverConfig.enabled }, receiver.context.state) { enabled, state ->
 			Triple(
@@ -85,15 +87,20 @@ class DriverOutgoingTrackersBehaviour(
 						val closestDevice =
 							server.context.state.value.devices[closestTracker?.deviceId]?.context?.state?.value
 
-						val status = BoneStatusUpdate(
+						val status = closestTracker?.status ?: TrackerStatus.OK
+						if (boneStatuses.put(bodyPart, status) != status) {
+							AppLogger.solarxr.debug("Sending BoneStatusUpdate for $bodyPart")
+							receiver.sendDriverMessage(BoneStatusUpdate(bone = bodyPart, status = status))
+						}
+
+						val battery = BoneBatteryUpdate(
 							bone = bodyPart,
-							status = closestTracker?.status ?: TrackerStatus.OK,
 							batteryLevel = closestDevice?.batteryLevel ?: 1f,
 							charging = closestDevice?.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
 						)
-						if (boneStatuses.put(bodyPart, status) != status) {
-							AppLogger.solarxr.debug("Sending BoneStatusUpdate for $bodyPart")
-							receiver.sendDriverMessage(status)
+						if (boneBatteries.put(bodyPart, battery) != battery) {
+							AppLogger.solarxr.debug("Sending BoneBatteryUpdate for $bodyPart")
+							receiver.sendDriverMessage(battery)
 						}
 					}
 
