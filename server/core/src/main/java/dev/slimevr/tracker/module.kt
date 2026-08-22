@@ -51,7 +51,7 @@ data class TrackerState(
 	val id: Int,
 	val deviceId: Int,
 	val origin: DeviceOrigin,
-	val driverName: String? = null,
+	val driverName: String?,
 	val hardwareId: String,
 	val name: String,
 	val imuType: ImuType?,
@@ -131,6 +131,7 @@ class Tracker(
 			imuType: ImuType? = null,
 			hardwareId: String,
 			origin: DeviceOrigin,
+			driverName: String? = null,
 			appContext: AppContextProvider,
 		): Tracker {
 			val settings = appContext.config.settings
@@ -140,6 +141,7 @@ class Tracker(
 				id = id,
 				deviceId = deviceId,
 				origin = origin,
+				driverName = driverName,
 				hardwareId = hardwareId,
 				name = name,
 				imuType = imuType,
@@ -180,6 +182,7 @@ class Tracker(
 			id = 0,
 			deviceId = 0,
 			origin = DeviceOrigin.UDP,
+			driverName = null,
 			hardwareId = "defaultHardwareId",
 			name = "defaultTracker",
 			imuType = ImuType.BNO085,

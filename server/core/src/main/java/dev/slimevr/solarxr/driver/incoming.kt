@@ -85,6 +85,7 @@ class DriverIncomingTrackersBehaviour(
 				deviceId = deviceId,
 				hardwareId = hardwareId,
 				origin = DeviceOrigin.DRIVER,
+				driverName = driverName,
 				appContext = appContext,
 			)
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
