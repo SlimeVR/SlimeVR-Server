@@ -91,8 +91,8 @@ private fun processToe(
 
 	val euler = currentRelative.toEulerAngles(EulerOrder.XYZ)
 
-	val pitch = euler.z
-	val yaw = euler.y
+	val pitch = Math.toDegrees(euler.x.toDouble()).toFloat()
+	val yaw = Math.toDegrees(euler.z.toDouble()).toFloat()
 	val tipToe = pitch < MINIMUM_TIP_TOE_PITCH
 	val bending = pitch > MINIMUM_BENDING_PITCH
 	val splayed = when (splayDirection) {
