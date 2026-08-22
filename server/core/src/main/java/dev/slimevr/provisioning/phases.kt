@@ -171,12 +171,11 @@ internal suspend fun selectAndOpenPort(
 		return false
 	}
 
-	context.dispatchAll(
-		listOf(
-			ProvisioningActions.ScanPortSelected(portEntry.key),
-			ProvisioningActions.ScanStatusChanged(WifiScanStatus.SERIAL_INIT),
-		),
-	)
+	val actions = mutableListOf<ProvisioningActions>(ProvisioningActions.ScanPortSelected(portEntry.key))
+	if (context.state.value.scan.networks.isEmpty()) {
+		actions += ProvisioningActions.ScanStatusChanged(WifiScanStatus.SERIAL_INIT)
+	}
+	context.dispatchAll(actions)
 	serialServer.openConnection(portEntry.key)
 	return true
 }
@@ -366,9 +365,23 @@ internal suspend fun provisionPort(
 
 	settings.context.dispatch(SettingsActions.AddAllowedUdpDevice(macAddress))
 
+	// Remove old UDP connection for this MAC before rebooting to prevent false inactivity timeouts
+	val existingDevice = server.context.state.value.devices.values.find { d ->
+		d.context.state.value.macAddress?.uppercase() == macAddress.uppercase()
+	}
+	if (existingDevice != null) {
+		val oldConn = existingDevice.appContext.udpServer.context.state.value.connections.values.find { c ->
+			c.context.state.value.deviceId == existingDevice.context.state.value.id
+		}
+		if (oldConn != null) {
+			existingDevice.appContext.udpServer.removeConnection(oldConn.context.state.value.address)
+		}
+	}
+
+	val provisionStartTime = System.currentTimeMillis()
 	if (!sendCredentials(context, serialConn, ssid, password)) return
 	if (!waitForWifiConnect(context, serialConn)) return
-	if (!waitForServerConnect(context, server, portLocation, macAddress)) return
+	if (!waitForServerConnect(context, server, portLocation, macAddress, provisionStartTime)) return
 
 	context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.DONE))
 }
@@ -380,9 +393,10 @@ internal suspend fun waitForServerConnect(
 	server: VRServer,
 	portLocation: String,
 	macAddress: String,
+	minPacketTime: Long = 0L,
 ): Boolean {
 	context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.LOOKING_FOR_SERVER))
-	val connected = waitForConnected(server, macAddress)
+	val connected = waitForConnected(server, macAddress, minPacketTime)
 
 	if (connected == null) {
 		context.dispatch(ProvisioningActions.TrackerStatusChanged(portLocation, TrackerProvisioningStatus.COULD_NOT_FIND_SERVER))

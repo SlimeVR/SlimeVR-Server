@@ -45,9 +45,10 @@ private fun ProvisioningManager.trackerMac(port: String = "COM1") = context.stat
 
 // Injects a fully connected device into the VRServer, simulating a tracker appearing on the network.
 private fun connectDevice(vrServer: VRServer, mac: String, scope: CoroutineScope) {
+	val appContext = buildTestAppContext(vrServer)
 	val device = Device.create(
 		scope = scope,
-		appContext = buildTestAppContext(vrServer),
+		appContext = appContext,
 		id = vrServer.nextHandle(),
 		address = "192.168.1.100",
 		macAddress = mac,
@@ -56,6 +57,33 @@ private fun connectDevice(vrServer: VRServer, mac: String, scope: CoroutineScope
 	)
 	vrServer.context.dispatch(VRServerActions.NewDevice(device.context.state.value.id, device))
 	device.context.dispatch(DeviceActions.Update { copy(status = TrackerStatus.OK) })
+
+	val conn = dev.slimevr.udp.UDPConnection(
+		context = dev.slimevr.context.Context.create(
+			initialState = dev.slimevr.udp.UDPConnectionState(
+				address = "192.168.1.100",
+				lastPacket = System.currentTimeMillis(),
+				lastPacketNum = 0,
+				lastHandshake = System.currentTimeMillis(),
+				lastPing = dev.slimevr.udp.LastPing(0, 0),
+				didHandshake = true,
+				deviceId = device.context.state.value.id,
+				trackerIds = emptyList(),
+				features = null,
+				sensorConfigFlags = emptyMap(),
+			),
+			scope = scope,
+			behaviours = emptyList(),
+			name = "TestConn",
+		),
+		appContext = appContext,
+		packetEvents = dev.slimevr.EventDispatcher(name = "TestEvents", scope = scope),
+		packetChannel = kotlinx.coroutines.channels.Channel(),
+		socket = dev.slimevr.FakeDatagramSocket(),
+		remoteAddress = io.ktor.network.sockets.InetSocketAddress("192.168.1.100", 6969),
+		scope = scope,
+	)
+	appContext.udpServer.addConnection("192.168.1.100", conn)
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -183,7 +211,7 @@ class ProvisioningManagerTest {
 	}
 
 	@Test
-	fun `DONE when full provisioning succeeds`() = runTest {
+	fun `DONE when scanner succeeds and tracker sends handshake`() = runTest {
 		val serialServer = buildTestSerialServer(backgroundScope)
 		val vrServer = buildTestVrServer(backgroundScope)
 		val manager = buildManager(serialServer, backgroundScope)
@@ -202,7 +230,34 @@ class ProvisioningManagerTest {
 			connectDevice(vrServer, "AA:BB:CC:DD:EE:FF", backgroundScope)
 		}
 
-		// Advance past the device connection but well before the 30s device connection timeout
+		advanceTimeBy(5_000)
+
+		assertEquals(TrackerProvisioningStatus.DONE, manager.trackerStatus())
+	}
+
+	@Test
+	fun `DONE when device was previously connected and goes offline before reconnecting`() = runTest {
+		val serialServer = buildTestSerialServer(backgroundScope)
+		val vrServer = buildTestVrServer(backgroundScope)
+		val manager = buildManager(serialServer, backgroundScope)
+
+		// Device was already connected to VRServer prior to provisioning
+		connectDevice(vrServer, "AA:BB:CC:DD:EE:FF", backgroundScope)
+
+		manager.startProvisioning(vrServer, "wifi", "pass")
+		serialServer.onPortDetected(fakePort())
+
+		launch {
+			delay(2_100)
+			serialServer.onDataReceived("COM1", "mac: AA:BB:CC:DD:EE:FF")
+			delay(100)
+			serialServer.onDataReceived("COM1", "new wifi credentials set")
+			delay(100)
+			serialServer.onDataReceived("COM1", "looking for the server")
+			delay(100)
+			connectDevice(vrServer, "AA:BB:CC:DD:EE:FF", backgroundScope)
+		}
+
 		advanceTimeBy(5_000)
 
 		assertEquals(TrackerProvisioningStatus.DONE, manager.trackerStatus())

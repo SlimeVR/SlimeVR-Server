@@ -133,8 +133,8 @@ data class ProvisioningManager(
 		val currentJob = scanJob
 		if (currentJob != null) {
 			currentJob.cancelAndJoin()
-			context.dispatch(ProvisioningActions.ScanClear)
 		}
+		context.dispatch(ProvisioningActions.ScanClear)
 		scanJob = scope.launch {
 			while (isActive) {
 				if (!selectAndOpenPort(context, serialServer)) continue
@@ -153,7 +153,9 @@ data class ProvisioningManager(
 
 				coroutineScope {
 					val work = async {
-						scanWifiNetworks(context, serialConn)
+						if (context.state.value.scan.networks.isEmpty()) {
+							scanWifiNetworks(context, serialConn)
+						}
 						awaitCancellation()
 					}
 					val disconnect = async {
@@ -167,12 +169,16 @@ data class ProvisioningManager(
 					disconnect.cancel()
 				}
 
-				context.dispatchAll(
-					listOf(
-						ProvisioningActions.ScanClear,
-						ProvisioningActions.TrackerRemoved(portLocation),
-					),
-				)
+				if (context.state.value.scan.networks.isEmpty()) {
+					context.dispatchAll(
+						listOf(
+							ProvisioningActions.ScanClear,
+							ProvisioningActions.TrackerRemoved(portLocation),
+						),
+					)
+				} else {
+					context.dispatch(ProvisioningActions.TrackerRemoved(portLocation))
+				}
 			}
 		}
 	}

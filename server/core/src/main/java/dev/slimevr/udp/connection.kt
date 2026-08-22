@@ -34,6 +34,7 @@ data class UDPConnectionState(
 	val address: String,
 	val lastPacket: Long,
 	val lastPacketNum: Long,
+	val lastHandshake: Long = 0L,
 	val lastPing: LastPing,
 	val didHandshake: Boolean,
 	val deviceId: Int?,
@@ -74,6 +75,11 @@ class UDPConnection(
 
 	fun startObserving() = context.observeAll(this)
 
+	fun dispose() {
+		context.scope.coroutineContext[kotlinx.coroutines.Job]?.cancel()
+		packetChannel.close()
+	}
+
 	fun getDevice(): Device? {
 		val deviceId = context.state.value.deviceId
 		return if (deviceId != null) appContext.server.getDevice(deviceId) else null
@@ -109,6 +115,9 @@ class UDPConnection(
 				AckConfigBehaviour(),
 			)
 
+			val connJob = kotlinx.coroutines.SupervisorJob(scope.coroutineContext[kotlinx.coroutines.Job])
+			val connScope = CoroutineScope(scope.coroutineContext + connJob + kotlinx.coroutines.Dispatchers.Default)
+
 			val context = Context.create(
 				initialState = UDPConnectionState(
 					address = address,
@@ -121,7 +130,7 @@ class UDPConnection(
 					features = null,
 					sensorConfigFlags = emptyMap(),
 				),
-				scope = scope,
+				scope = connScope,
 				behaviours = behaviours,
 				name = "UDPConnection[$address]",
 			)
@@ -142,12 +151,12 @@ class UDPConnection(
 				packetChannel = packetChannel,
 				socket = socket,
 				remoteAddress = remoteAddress,
-				scope = scope,
+				scope = connScope,
 			)
 			conn.startObserving()
 
 			// Dedicated coroutine per connection so the reception loop is never blocked by packet processing
-			scope.launch {
+			connScope.launch {
 				for (event in packetChannel) {
 					// We skip any packet from the tracker that are not handshake packets
 					// if we didn't do a handshake with the server
