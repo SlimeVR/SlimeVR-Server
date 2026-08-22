@@ -8,6 +8,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
+// TODO Make these use BodyPartMap
 val BODY_PART_TO_UNITY_BONE: Map<BodyPart, String> = mapOf(
 	BodyPart.HEAD to "Head",
 	BodyPart.NECK to "Neck",
@@ -77,12 +78,13 @@ val BODY_PART_TO_UNITY_BONE: Map<BodyPart, String> = mapOf(
 val VMC_SUPPORTED_BONES: Set<BodyPart> = BODY_PART_TO_UNITY_BONE.keys
 
 // HIP-rooted hierarchy. VMC/Unity expects this; our skeleton is HEAD-rooted.
+// TODO Test with a model that has UPPER_CHEST
+//  and figure out how to deal with it (check if present in VRM?)
 val VMC_HIERARCHY_MAP: Map<BodyPart, Array<BodyPart>> = mapOf(
 	BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG),
 	BodyPart.WAIST to arrayOf(BodyPart.CHEST),
-	BodyPart.CHEST to arrayOf(BodyPart.UPPER_CHEST),
-	BodyPart.UPPER_CHEST to arrayOf(BodyPart.NECK),
-	BodyPart.NECK to arrayOf(BodyPart.HEAD, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
+	BodyPart.CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
+	BodyPart.NECK to arrayOf(BodyPart.HEAD),
 	BodyPart.LEFT_UPPER_LEG to arrayOf(BodyPart.LEFT_LOWER_LEG),
 	BodyPart.RIGHT_UPPER_LEG to arrayOf(BodyPart.RIGHT_LOWER_LEG),
 	BodyPart.LEFT_LOWER_LEG to arrayOf(BodyPart.LEFT_FOOT),
@@ -193,16 +195,12 @@ val VMC_MIRROR_BONES: BodyPartMap<BodyPart> = BodyPartMap(
 fun vmcMirrorSource(bodyPart: BodyPart): BodyPart = VMC_MIRROR_BONES[bodyPart] ?: bodyPart
 
 // Per-bone rest offset, subtracted from the live world rotation before computing the VMC local.
-// Foot cancels R(90deg,X) baked into DEFAULT_SKELETON_STATE. Arms remap our hanging rest (NEG_Y)
-// to the VRM rig's T-pose rest direction so the avatar isn't stuck at T regardless of our pose.
+// Arms remap our hanging rest (NEG_Y) to the VRM rig's T-pose rest direction so the avatar isn't stuck at T regardless of our pose.
 val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 	val leftArm = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 	val rightArm = Quaternion.rotationAroundZAxis(FastMath.HALF_PI)
-	val foot = Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
 	BodyPartMap(
 		mapOf(
-			BodyPart.LEFT_FOOT to foot,
-			BodyPart.RIGHT_FOOT to foot,
 			BodyPart.LEFT_UPPER_ARM to leftArm,
 			BodyPart.LEFT_LOWER_ARM to leftArm,
 			BodyPart.LEFT_HAND to leftArm,

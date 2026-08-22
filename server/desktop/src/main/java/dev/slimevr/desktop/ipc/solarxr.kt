@@ -87,14 +87,17 @@ suspend fun handleSolarXRBridge(
 		send(sendBuffer)
 	}.launchIn(this)
 
-	val receiveBuffer = ByteBuffer.wrap(ByteArray(MAX_FRAME_SIZE))
-	val reader = JvmFlatBufferReader(receiveBuffer)
+
+	val receiveArray = ByteArray(MAX_FRAME_SIZE)
 
 	try {
 		messages.collect { frame ->
 			val size = frame.size.toInt()
-			frame.read(receiveBuffer.array(), 0, size)
-			receiveBuffer.clear().limit(size)
+			// read(array, offset, count) only copies from one internal segment (up to 8k) per call
+			// and returns however much that was, so filling a fixed array takes a loop
+			var done = 0
+			while (done < size) done += frame.read(receiveArray, done, size - done)
+			val reader = JvmFlatBufferReader(ByteBuffer.wrap(receiveArray, 0, size))
 			onSolarXRMessage(MessageBundle.decode(reader, reader.getInt(0)), bridge)
 		}
 	} finally {

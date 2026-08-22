@@ -93,10 +93,9 @@ internal fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
 	hasPosition = tracker.position != null,
 )
 
-internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> =
-	allContextStates(server, { state -> state.trackers.values }) { tracker ->
-		tracker.context.state.map { state -> checklistTracker(state) }.distinctUntilChanged()
-	}
+internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> = allContextStates(server, { state -> state.trackers.values }) { tracker ->
+	tracker.context.state.map { state -> checklistTracker(state) }.distinctUntilChanged()
+}
 
 class HMDCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
 	private fun computeStep(trackers: List<ChecklistTracker>): TrackingChecklistStep {

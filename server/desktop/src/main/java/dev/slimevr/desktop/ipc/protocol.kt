@@ -23,6 +23,7 @@ import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -86,6 +87,9 @@ suspend fun startBindingProvider() = withContext(Dispatchers.IO) {
 	}
 
 	AppLogger.steamvr.info("Found bindings provider at $path")
+	// Give SteamVR a bit more time to initialise everything
+	// For some users, starting the executable immediately may cause startup failures
+	delay(3000L)
 	val proc = try {
 		ProcessBuilder(path.toString()).start()
 	} catch (e: Exception) {

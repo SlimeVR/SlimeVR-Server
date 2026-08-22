@@ -53,7 +53,7 @@ class BodyPartHierarchyTest {
 		assertSame(
 			iterateBodyPartHierarchy(BodyPart.LEFT_HAND, true),
 			iterateBodyPartHierarchy(BodyPart.LEFT_HAND, true),
-			"the traversal is meant to be derived once, not rebuilt per call"
+			"the traversal is meant to be derived once, not rebuilt per call",
 		)
 	}
 }

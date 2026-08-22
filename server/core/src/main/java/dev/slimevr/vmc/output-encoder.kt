@@ -22,7 +22,7 @@ internal fun buildOutgoingBundle(
 		add(OscContent.Message(OscMessage("/VMC/Ext/T", listOf(OscArg.Float(elapsed.inWholeMilliseconds / 1000f)))))
 		add(OscContent.Message(OscMessage("/VMC/Ext/OK", listOf(OscArg.Int(1)))))
 
-		// Send the origin as root
+		// Send the origin (0, 0, 0) as root
 		add(OscContent.Message(transformMessage("/VMC/Ext/Root/Pos", "root", Vector3.NULL, Quaternion.IDENTITY)))
 
 		// TODO UpperChest + shoulders affecting arms local rot

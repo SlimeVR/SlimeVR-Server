@@ -8,9 +8,10 @@ import dev.slimevr.skeleton.processors.BoneDirectLinkProcessor
 import dev.slimevr.skeleton.processors.BonePredictionProcessor
 import dev.slimevr.skeleton.processors.BoneSmoothingProcessor
 import dev.slimevr.skeleton.processors.BoneYawFallbackProcessor
-import dev.slimevr.skeleton.processors.BoneYawRollAlignProcessor
 import dev.slimevr.skeleton.processors.FingerImputeProcessor
+import dev.slimevr.skeleton.processors.HipYawRollAlignProcessor
 import dev.slimevr.skeleton.processors.SpineImputeProcessor
+import dev.slimevr.skeleton.processors.UpperLegsRollAlignProcessor
 import dev.slimevr.skeleton.processors.ToeDirectLinkProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -159,7 +160,8 @@ class Skeleton(
 						BoneYawFallbackProcessor(),
 						BoneActiveLinkProcessor(),
 						SpineImputeProcessor(ctx.config.settings),
-						BoneYawRollAlignProcessor(ctx.config.settings),
+						HipYawRollAlignProcessor(ctx.config.settings),
+						UpperLegsRollAlignProcessor(ctx.config.settings),
 						BoneDirectLinkProcessor(),
 						FingerImputeProcessor(),
 						ToeDirectLinkProcessor(),
