@@ -454,7 +454,16 @@ tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
 tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-
+tracker_selection_menu-LEFT_BIG_TOE = { -tracker_selection-part } left big toe?
+tracker_selection_menu-LEFT_INDEX_TOE = { -tracker_selection-part } left index toe?
+tracker_selection_menu-LEFT_MIDDLE_TOE = { -tracker_selection-part } left middle toe?
+tracker_selection_menu-LEFT_RING_TOE = { -tracker_selection-part } left ring toe?
+tracker_selection_menu-LEFT_LITTLE_TOE = { -tracker_selection-part } left little toe?
+tracker_selection_menu-RIGHT_BIG_TOE = { -tracker_selection-part } right big toe?
+tracker_selection_menu-RIGHT_INDEX_TOE = { -tracker_selection-part } right index toe?
+tracker_selection_menu-RIGHT_MIDDLE_TOE = { -tracker_selection-part } right middle toe?
+tracker_selection_menu-RIGHT_RING_TOE = { -tracker_selection-part } right ring toe?
+tracker_selection_menu-RIGHT_LITTLE_TOE = { -tracker_selection-part } right little toe?
 tracker_selection_menu-unassigned = Unassigned Trackers
 tracker_selection_menu-assigned = Assigned Trackers
 tracker_selection_menu-dont_assign = Unassign
@@ -608,6 +617,7 @@ settings-stay_aligned-description = Stay Aligned reduces drift by gradually adju
 settings-stay_aligned-setup-label = Setup Stay Aligned
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
 settings-stay_aligned-enabled-label = Adjust trackers
+settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare without Stay Aligned)
 settings-stay_aligned-general-label = General
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
 settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
@@ -1270,6 +1280,42 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
     *[unknown] Unknown unassigned body part
 } to also be assigned!
 
+onboarding-assign_trackers-warning-LEFT_BIG_TOE = Left Big Toe is assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-LEFT_INDEX_TOE = Left Index Toe is assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-LEFT_MIDDLE_TOE = Left Middle Toe is assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part} to also be assigned!
+onboarding-assign_trackers-warning-LEFT_RING_TOE = Left Ring Toe is assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part} to also be assigned!
+onboarding-assign_trackers-warning-LEFT_LITTLE_TOE = Left Little Toe is assigned but you need { $unassigned ->
+    [0] the left foot
+    *[unknown] Unknown unassigned body part} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_BIG_TOE = Left Big Toe is assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_INDEX_TOE = Right Index Toe is assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_MIDDLE_TOE = Right Middle Toe is assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_RING_TOE = Right Ring Toe is assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part} to also be assigned!
+onboarding-assign_trackers-warning-RIGHT_LITTLE_TOE = Right Little Toe is assigned but you need { $unassigned ->
+    [0] the right foot
+    *[unknown] Unknown unassigned body part} to also be assigned!
+
+
 ## Tracker mounting method choose
 onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
@@ -1781,6 +1827,8 @@ toolbar-mounting_calibration-default = Body
 toolbar-mounting_calibration-feet = Feet
 toolbar-mounting_calibration-fingers = Fingers
 toolbar-drift_reset = Drift Reset
+toolbar-assigned_trackers = {$count} trackers assigned
+toolbar-unassigned_trackers = {$count} trackers unassigned
 toolbar-assigned_trackers = { $count ->
     [one] { $count } tracker assigned
     *[other] { $count } trackers assigned
@@ -1789,3 +1837,17 @@ toolbar-unassigned_trackers = { $count ->
     [one] { $count } tracker unassigned
     *[other] { $count } trackers unassigned
 }
+toolbar-assigned_trackers = {$count} trackers assigned
+toolbar-unassigned_trackers = {$count} trackers unassigned
+body_part-LEFT_BIG_TOE = Left Big Toe
+body_part-LEFT_INDEX_TOE = Left Index Toe
+body_part-LEFT_MIDDLE_TOE = Left Middle Toe
+body_part-LEFT_RING_TOE = Left Ring Toe
+body_part-LEFT_LITTLE_TOE = Left Little Toe
+
+body_part-RIGHT_TOES = Right Toes
+body_part-RIGHT_BIG_TOE = Right Big Toe
+body_part-RIGHT_INDEX_TOE = Right Index Toe
+body_part-RIGHT_MIDDLE_TOE = Right Middle Toe
+body_part-RIGHT_RING_TOE = Right Ring Toe
+body_part-RIGHT_LITTLE_TOE = Right Little Toe

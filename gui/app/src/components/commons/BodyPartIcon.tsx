@@ -125,8 +125,38 @@ export const mapPart: Record<
     <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_BIG_TOE]: renderFootLeft,
+  [BodyPart.LEFT_INDEX_TOE]: renderFootLeft,
+  [BodyPart.LEFT_LITTLE_TOE]: renderFootLeft,
+  [BodyPart.RIGHT_BIG_TOE]: renderFootRight,
+  [BodyPart.RIGHT_INDEX_TOE]: renderFootRight,
+  [BodyPart.RIGHT_LITTLE_TOE]: renderFootRight,
 };
+function renderFootLeft({
+  width,
+  currentLocales,
+}: {
+  width?: number;
+  currentLocales: string[];
+}) {
+  if (currentLocales.includes('en-x-owo')) {
+    return <PawIcon />;
+  }
+  return <FootIcon width={width} />;
+}
 
+function renderFootRight({
+  width,
+  currentLocales,
+}: {
+  width?: number;
+  currentLocales: string[];
+}) {
+  if (currentLocales.includes('en-x-owo')) {
+    return <PawIcon />;
+  }
+  return <FootIcon width={width} flipped />;
+}
 export function BodyPartIcon({
   bodyPart = BodyPart.NONE,
   width = 24,
@@ -138,7 +168,7 @@ export function BodyPartIcon({
   return (
     <svg width={width} height={width}>
       <rect width={width} height={width} rx="2" fill="#56407B" />
-      {mapPart[bodyPart]({ width, currentLocales })}
+      {mapPart[bodyPart]?.({ width, currentLocales })}
     </svg>
   );
 }

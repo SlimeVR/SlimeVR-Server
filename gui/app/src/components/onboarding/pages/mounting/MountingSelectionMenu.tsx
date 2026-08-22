@@ -148,6 +148,60 @@ export const mapPart: Record<
     <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_BIG_TOE]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      />
+    ) : (
+      <FootIcon width={width} />
+    ),
+  [BodyPart.LEFT_INDEX_TOE]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      />
+    ) : (
+      <FootIcon width={width} />
+    ),
+  [BodyPart.LEFT_LITTLE_TOE]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      />
+    ) : (
+      <FootIcon width={width} />
+    ),
+  [BodyPart.RIGHT_BIG_TOE]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      />
+    ) : (
+      <FootIcon width={width} flipped />
+    ),
+  [BodyPart.RIGHT_INDEX_TOE]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      />
+    ) : (
+      <FootIcon width={width} flipped />
+    ),
+  [BodyPart.RIGHT_LITTLE_TOE]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      />
+    ) : (
+      <FootIcon width={width} flipped />
+    ),
 };
 
 export function MountingBodyPartIcon({
@@ -158,7 +212,9 @@ export function MountingBodyPartIcon({
   width?: number;
 }) {
   const { currentLocales } = useLocaleConfig();
-  return mapPart[bodyPart]({ width, currentLocales });
+  return (
+    mapPart[bodyPart]?.({ width, currentLocales }) || <FootIcon width={width} />
+  );
 }
 
 function PieSliceOfFeet({

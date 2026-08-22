@@ -26,6 +26,16 @@ export const LOWER_BODY = new Set([
   BodyPart.RIGHT_FOOT,
   ...LEGS_PARTS,
 ]);
+
+export const TOES_PARTS = new Set([
+  BodyPart.LEFT_BIG_TOE,
+  BodyPart.RIGHT_BIG_TOE,
+  BodyPart.LEFT_INDEX_TOE,
+  BodyPart.RIGHT_INDEX_TOE,
+  BodyPart.LEFT_LITTLE_TOE,
+  BodyPart.RIGHT_LITTLE_TOE,
+]);
+
 export const SPINE_PARTS = [
   BodyPart.UPPER_CHEST,
   BodyPart.CHEST,
@@ -35,6 +45,12 @@ export const SPINE_PARTS = [
 export const ASSIGNMENT_RULES: Partial<
   Record<BodyPart, (BodyPart | BodyPart[])[]>
 > = {
+  [BodyPart.LEFT_BIG_TOE]: [BodyPart.LEFT_FOOT],
+  [BodyPart.LEFT_INDEX_TOE]: [BodyPart.LEFT_FOOT],
+  [BodyPart.LEFT_LITTLE_TOE]: [BodyPart.LEFT_FOOT],
+  [BodyPart.RIGHT_BIG_TOE]: [BodyPart.RIGHT_FOOT],
+  [BodyPart.RIGHT_INDEX_TOE]: [BodyPart.RIGHT_FOOT],
+  [BodyPart.RIGHT_LITTLE_TOE]: [BodyPart.RIGHT_FOOT],
   [BodyPart.LEFT_FOOT]: [
     BodyPart.LEFT_LOWER_LEG,
     BodyPart.LEFT_UPPER_LEG,
@@ -93,6 +109,7 @@ export const ASSIGNMENT_MODES: Record<AssignMode, BodyPart[]> = {
     ...SPINE_PARTS,
     ...ARMS_PARTS,
     ...LEGS_PARTS,
+    ...TOES_PARTS,
   ],
 };
 
@@ -100,6 +117,7 @@ export function BodyAssignment({
   assignMode,
   mirror,
   onRoleSelected,
+  onToesSelected,
   rolesWithErrors = {},
   highlightedRoles = [],
   onlyAssigned = false,
@@ -111,6 +129,7 @@ export function BodyAssignment({
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
   highlightedRoles?: BodyPart[];
   onRoleSelected: (role: BodyPart) => void;
+  onToesSelected?: (side: 'left' | 'right') => void;
   width?: number;
   dotSize?: number;
 }) {
@@ -159,6 +178,7 @@ export function BodyAssignment({
       assignedRoles={assignedRoles}
       highlightedRoles={highlightedRoles}
       onSelectRole={onRoleSelected}
+      onToesSelected={onToesSelected}
       leftControls={
         <div className="flex flex-col justify-between h-full text-right">
           <div className="flex flex-col gap-2">

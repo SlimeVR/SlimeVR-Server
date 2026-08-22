@@ -60,6 +60,18 @@ val BODY_PART_TO_UNITY_BONE: Map<BodyPart, String> = mapOf(
 	BodyPart.RIGHT_LITTLE_PROXIMAL to "RightLittleProximal",
 	BodyPart.RIGHT_LITTLE_INTERMEDIATE to "RightLittleIntermediate",
 	BodyPart.RIGHT_LITTLE_DISTAL to "RightLittleDistal",
+	BodyPart.LEFT_BIG_TOE to "LeftToes",
+	BodyPart.LEFT_BIG_TOE to "LeftBigToe",
+	BodyPart.LEFT_INDEX_TOE to "LeftIndexToe",
+	BodyPart.LEFT_MIDDLE_TOE to "LeftMiddleToe",
+	BodyPart.LEFT_RING_TOE to "LeftRingToe",
+	BodyPart.LEFT_LITTLE_TOE to "LeftLittleToe",
+	BodyPart.RIGHT_BIG_TOE to "RightToes",
+	BodyPart.RIGHT_BIG_TOE to "RightBigToe",
+	BodyPart.RIGHT_INDEX_TOE to "RightIndexToe",
+	BodyPart.RIGHT_MIDDLE_TOE to "RightMiddleToe",
+	BodyPart.RIGHT_RING_TOE to "RightRingToe",
+	BodyPart.RIGHT_LITTLE_TOE to "RightLittleToe",
 )
 
 // Bones VMC can accept. Used by the routing module.
@@ -117,6 +129,20 @@ val VMC_HIERARCHY_MAP: Map<BodyPart, Array<BodyPart>> = mapOf(
 	BodyPart.RIGHT_RING_INTERMEDIATE to arrayOf(BodyPart.RIGHT_RING_DISTAL),
 	BodyPart.RIGHT_LITTLE_PROXIMAL to arrayOf(BodyPart.RIGHT_LITTLE_INTERMEDIATE),
 	BodyPart.RIGHT_LITTLE_INTERMEDIATE to arrayOf(BodyPart.RIGHT_LITTLE_DISTAL),
+	BodyPart.LEFT_FOOT to arrayOf(
+		BodyPart.LEFT_BIG_TOE,
+		BodyPart.LEFT_INDEX_TOE,
+		BodyPart.LEFT_MIDDLE_TOE,
+		BodyPart.LEFT_RING_TOE,
+		BodyPart.LEFT_LITTLE_TOE
+	),
+	BodyPart.RIGHT_FOOT to arrayOf(
+		BodyPart.RIGHT_BIG_TOE,
+		BodyPart.RIGHT_INDEX_TOE,
+		BodyPart.RIGHT_MIDDLE_TOE,
+		BodyPart.RIGHT_RING_TOE,
+		BodyPart.RIGHT_LITTLE_TOE
+	),
 )
 
 private suspend fun SequenceScope<Pair<BodyPart?, BodyPart>>.visitVMC(parent: BodyPart?, bone: BodyPart) {
@@ -152,6 +178,12 @@ val VMC_MIRROR_BONE_PAIRS: List<Pair<BodyPart, BodyPart>> = listOf(
 	BodyPart.LEFT_LITTLE_PROXIMAL to BodyPart.RIGHT_LITTLE_PROXIMAL,
 	BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
 	BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
+	BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
+	BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
+	BodyPart.LEFT_INDEX_TOE to BodyPart.RIGHT_INDEX_TOE,
+	BodyPart.LEFT_MIDDLE_TOE to BodyPart.RIGHT_MIDDLE_TOE,
+	BodyPart.LEFT_RING_TOE to BodyPart.RIGHT_RING_TOE,
+	BodyPart.LEFT_LITTLE_TOE to BodyPart.RIGHT_LITTLE_TOE
 )
 
 val VMC_MIRROR_BONES: BodyPartMap<BodyPart> = BodyPartMap(
@@ -177,7 +209,9 @@ val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 			BodyPart.RIGHT_HAND to rightArm,
 		) +
 			ResetBodyParts.LEFT_FINGERS.associateWith { leftArm } +
-			ResetBodyParts.RIGHT_FINGERS.associateWith { rightArm },
+			ResetBodyParts.RIGHT_FINGERS.associateWith { rightArm } +
+			ResetBodyParts.LEFT_TOES.associateWith { foot } +
+			ResetBodyParts.RIGHT_TOES.associateWith { foot },
 	)
 }
 

@@ -13,6 +13,7 @@ export function BodyInteractions({
   variant = 'tracker-select',
   mirror,
   onSelectRole,
+  onToesSelected,
 }: {
   leftControls?: ReactNode;
   rightControls?: ReactNode;
@@ -21,6 +22,7 @@ export function BodyInteractions({
   variant?: 'dots' | 'tracker-select';
   assignedRoles: BodyPart[];
   onSelectRole: (role: BodyPart) => void;
+  onToesSelected?: (side: 'left' | 'right') => void;
   highlightedRoles: BodyPart[];
   mirror: boolean;
 }) {
@@ -114,7 +116,10 @@ export function BodyInteractions({
         ...slotPosition,
         id: slot.id,
         hidden:
-          variant === 'tracker-select' && !controlsPosIds.includes(slot.id),
+          variant === 'tracker-select' &&
+          !controlsPosIds.includes(slot.id) &&
+          slot.id !== 'left-toes' &&
+          slot.id !== 'right-toes',
         buttonOffset: {
           left: canvasBox.left - personBox.left,
           top: canvasBox.top - personBox.top,
@@ -211,8 +216,14 @@ export function BodyInteractions({
             ({ top, left, height, width, id, hidden, buttonOffset }) => (
               <div
                 key={id}
-                className={classNames('absolute z-10')}
-                onClick={() => onSelectRole((BodyPart as any)[id])}
+                className={classNames('absolute z-10', 'cursor-pointer')}
+                onClick={() => {
+                  if (id === 'left-toes' || id === 'right-toes') {
+                    onToesSelected?.(id === 'left-toes' ? 'left' : 'right');
+                    return;
+                  }
+                  onSelectRole((BodyPart as any)[id]);
+                }}
                 style={{
                   top: top + height / 2 - dotsSize / 2 + buttonOffset.top,
                   left: left + width / 2 - dotsSize / 2 + buttonOffset.left,
