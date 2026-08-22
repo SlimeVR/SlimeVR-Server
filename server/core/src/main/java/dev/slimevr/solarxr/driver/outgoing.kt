@@ -51,7 +51,7 @@ class DriverOutgoingTrackersBehaviour(
 			Triple(
 				enabled,
 				state.driverName,
-				state.boneMask
+				state.boneMask,
 			)
 		}
 			.distinctUntilChanged()

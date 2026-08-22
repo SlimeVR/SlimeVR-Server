@@ -48,7 +48,7 @@ class DriverIncomingTrackersBehaviour(
 					listOf(
 						TrackerActions.SetDriverName(driverName),
 						TrackerActions.SetStatus(TrackerStatus.OK),
-					)
+					),
 				)
 				receiver.sendDriverMessage(
 					AddTrackerResponse(

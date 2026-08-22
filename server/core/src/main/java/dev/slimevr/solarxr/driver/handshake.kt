@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.driver_protocol.HandshakeAvailable
-import solarxr_protocol.driver_protocol.HandshakeStatus
 import solarxr_protocol.driver_protocol.HandshakeRequest
 import solarxr_protocol.driver_protocol.HandshakeResponse
+import solarxr_protocol.driver_protocol.HandshakeStatus
 
 class DriverHandshakeBehaviour(
 	private val appContext: AppContextProvider,

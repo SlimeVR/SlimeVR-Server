@@ -119,7 +119,7 @@ class SolarXRBridge(
 					listOf(
 						TrackerActions.SetDriverName(null),
 						TrackerActions.SetStatus(TrackerStatus.DISCONNECTED),
-					)
+					),
 				)
 			}
 	}
