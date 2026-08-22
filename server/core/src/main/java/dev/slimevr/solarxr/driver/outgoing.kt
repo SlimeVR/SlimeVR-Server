@@ -8,7 +8,6 @@ import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.createBone
 import dev.slimevr.tracker.TrackerState
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -16,17 +15,12 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
-import solarxr_protocol.datatypes.math.Quat
-import solarxr_protocol.datatypes.math.Vec3f
 import solarxr_protocol.driver_protocol.BoneBatteryUpdate
 import solarxr_protocol.driver_protocol.BoneStatusUpdate
 import solarxr_protocol.driver_protocol.SkeletonUpdate
-import solarxr_protocol.rpc.RoutingOutput
-import java.util.concurrent.ConcurrentHashMap
 
 class DriverOutgoingTrackersBehaviour(
 	private val appContext: AppContextProvider,

@@ -5,23 +5,16 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.solarxr.SolarXRBridge
-import dev.slimevr.solarxr.SolarXRBridgeActions
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.driver_protocol.AddTrackerRequest
 import solarxr_protocol.driver_protocol.AddTrackerResponse
 import solarxr_protocol.driver_protocol.AddTrackerStatus
-import solarxr_protocol.driver_protocol.HandshakeAvailable
-import solarxr_protocol.driver_protocol.HandshakeResponse
-import solarxr_protocol.driver_protocol.HandshakeStatus
 import solarxr_protocol.driver_protocol.UpdateTrackerBattery
 import solarxr_protocol.driver_protocol.UpdateTrackerPosition
 import solarxr_protocol.driver_protocol.UpdateTrackerStatus
@@ -31,32 +24,6 @@ class DriverIncomingTrackersBehaviour(
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		val server = appContext.server
-
-		appContext.config.settings.context.state
-			.map { it.data.driverConfig.enabled }
-			.distinctUntilChanged()
-			.onEach { enabled ->
-				if (enabled) {
-					receiver.sendDriverMessage(HandshakeAvailable())
-				} else {
-					val driverName = receiver.context.state.value.driverName ?: return@onEach
-					val trackers = server.context.state.value.trackers.values.filter {
-						val state = it.context.state.value
-						state.origin == DeviceOrigin.DRIVER && state.driverName == driverName
-					}
-					trackers.forEach {
-						it.context.dispatchAll(
-							listOf(
-								TrackerActions.SetDriverName(null),
-								TrackerActions.SetStatus(TrackerStatus.DISCONNECTED),
-							)
-						)
-					}
-
-					receiver.context.dispatch(SolarXRBridgeActions.SetDriverInfo(null, null))
-					receiver.sendDriverMessage(HandshakeResponse(status = HandshakeStatus.REJECTED_DISABLED))
-				}
-			}
 
 		receiver.onDriverMessage<AddTrackerRequest> { req, replyTo ->
 			val driverName = receiver.context.state.value.driverName
@@ -97,10 +64,10 @@ class DriverIncomingTrackersBehaviour(
 			val deviceId = server.nextHandle()
 			val device = Device.create(
 				scope = scope,
-				appContext = receiver.appContext,
+				appContext = appContext,
 				id = deviceId,
-				name = req.displayName ?: "Tracker",
-				manufacturer = req.manufacturer ?: "SlimeVR",
+				name = req.displayName ?: "Device #$deviceId",
+				manufacturer = req.manufacturer ?: "External",
 				address = hardwareId,
 				macAddress = hardwareId,
 				origin = DeviceOrigin.DRIVER,
@@ -118,7 +85,7 @@ class DriverIncomingTrackersBehaviour(
 				deviceId = deviceId,
 				hardwareId = hardwareId,
 				origin = DeviceOrigin.DRIVER,
-				appContext = receiver.appContext,
+				appContext = appContext,
 			)
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
 			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))

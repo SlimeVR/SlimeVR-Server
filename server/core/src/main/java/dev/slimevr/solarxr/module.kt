@@ -106,24 +106,29 @@ class SolarXRBridge(
 
 	suspend fun sendDataFeed(frame: DataFeedMessageHeader) = outbound.emit(MessageBundle(dataFeedMsgs = listOf(frame)))
 
+	fun disconnectDriverTrackers() {
+		val driverName = context.state.value.driverName ?: return
+		// If the connection was a driver connection, we set the status of its trackers to disconnected
+		appContext.server.context.state.value.trackers.values
+			.filter {
+				val state = it.context.state.value
+				state.origin == DeviceOrigin.DRIVER && state.driverName == driverName
+			}
+			.forEach {
+				it.context.dispatchAll(
+					listOf(
+						TrackerActions.SetDriverName(null),
+						TrackerActions.SetStatus(TrackerStatus.DISCONNECTED),
+					)
+				)
+			}
+	}
+
 	fun disconnect() {
 		dispose()
 		appContext.server.context.dispatch(VRServerActions.SolarXRDisconnected(id))
 
-		val driverName = context.state.value.driverName
-		// If the connection was a driver connection, we set the status of its trackers to disconnected
-		if (!driverName.isNullOrEmpty()) {
-			appContext.server.context.state.value.trackers.values
-				.filter {
-					val state = it.context.state.value
-					state.origin == DeviceOrigin.DRIVER && state.driverName == driverName
-				}
-				.forEach {
-					it.context.dispatch(TrackerActions.Update {
-						copy(status = TrackerStatus.DISCONNECTED, driverName = null)
-					})
-				}
-		}
+		disconnectDriverTrackers()
 	}
 
 	fun startObserving() = context.observeAll(this)
@@ -150,7 +155,7 @@ class SolarXRBridge(
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))
 			add(AssignTrackerBehaviour(appContext.server))
 			add(DongleSettingsBehaviour(appContext.server))
-			add(DriverHandshakeBehaviour(appContext.server))
+			add(DriverHandshakeBehaviour(appContext))
 			add(DriverOutgoingTrackersBehaviour(appContext))
 			add(DriverIncomingTrackersBehaviour(appContext))
 			add(MagBehaviour(appContext))
