@@ -1,0 +1,21 @@
+.dropdown-popover {
+  opacity: 0;
+  transform: scale(0.98);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease,
+    display 120ms allow-discrete,
+    overlay 120ms allow-discrete;
+
+  &:popover-open {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @starting-style {
+    &:popover-open {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  }
+}

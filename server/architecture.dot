@@ -1,0 +1,123 @@
+digraph module_architecture {
+    rankdir=TB
+    splines=false
+    nodesep=0.8
+    ranksep=0.8
+    forcelabels=true
+    fontname="monospace"
+    node [fontname="monospace", fontsize=11, style="filled,rounded", shape=box, margin="0.3,0.2"]
+    edge [fontname="monospace", fontsize=10]
+
+    ext [
+        label="external events\n(packets · messages)"
+        shape=ellipse fillcolor="#dae8fc" color="#6c8ebf"
+    ]
+
+    subgraph cluster_A {
+        label="Module A"
+        style="rounded" bgcolor="#fafafa" color="#999999" penwidth=1.5
+
+        subgraph cluster_A_beh {
+            label="Behaviours"
+            style="dashed" color="#aaaaaa" bgcolor="#fffff8"
+
+            bA1 [label="BehaviourA1\n────────────────────\nobserve(receiver)\n  subscribes to flows\n  calls dispatch()\n────────────────────\nreduce(state, action)\n  pure: State -> State"
+                fillcolor="#fff9db" color="#d6ae00"]
+
+            bA2 [label="BehaviourA2\n────────────────────\nobserve(receiver)\n  ...\n────────────────────\nreduce(state, action)\n  ..."
+                fillcolor="#fff9db" color="#d6ae00"]
+
+            bAmore [label="···\n────────────────────\nobserve(receiver)\n  ...\n────────────────────\nreduce(state, action)\n  ..."
+                fillcolor="#fff9db" color="#d6ae00"]
+        }
+
+        foldA [
+            label="reduce fold\n──────────────────────────────────\nstate = BehaviourA1.reduce(state, a)\nstate = BehaviourA2.reduce(state, a)\nstate = ···"
+            fillcolor="#d5e8d4" color="#82b366"
+        ]
+
+        sfA [
+            label="StateFlow<StateA>"
+            shape=cylinder fillcolor="#dae8fc" color="#6c8ebf"
+        ]
+
+    }
+
+    subgraph cluster_B {
+        label="Module B"
+        style="rounded" bgcolor="#fafafa" color="#999999" penwidth=1.5
+
+        subgraph cluster_B_beh {
+            label="Behaviours"
+            style="dashed" color="#aaaaaa" bgcolor="#fffff8"
+
+            bBmore [label="···\n────────────────────\nobserve(receiver)\n  ...\n────────────────────\nreduce(state, action)\n  ..."
+                fillcolor="#fff9db" color="#d6ae00"]
+        }
+
+        foldB [
+            label="reduce fold"
+            fillcolor="#d5e8d4" color="#82b366"
+        ]
+
+        sfB [
+            label="StateFlow<StateB>"
+            shape=cylinder fillcolor="#dae8fc" color="#6c8ebf"
+        ]
+    }
+
+    subgraph cluster_C {
+        label="Module C"
+        style="rounded" bgcolor="#fafafa" color="#999999" penwidth=1.5
+
+        subgraph cluster_C_beh {
+            label="Behaviours"
+            style="dashed" color="#aaaaaa" bgcolor="#fffff8"
+
+            bCmore [label="···\n────────────────────\nobserve(receiver)\n  ...\n────────────────────\nreduce(state, action)\n  ..."
+                fillcolor="#fff9db" color="#d6ae00"]
+        }
+
+        foldC [
+            label="reduce fold"
+            fillcolor="#d5e8d4" color="#82b366"
+        ]
+
+        sfC [
+            label="StateFlow<StateC>"
+            shape=cylinder fillcolor="#dae8fc" color="#6c8ebf"
+        ]
+
+    }
+
+    // ext -> all modules
+    ext -> bA1    [color="#6c8ebf" fontcolor="#6c8ebf" weight=1]
+    ext -> bA2    [color="#6c8ebf" weight=1]
+    ext -> bAmore [color="#6c8ebf" weight=1]
+    ext -> bBmore [color="#6c8ebf" weight=1]
+    ext -> bCmore [color="#6c8ebf" weight=1]
+
+    // Module A internal flow
+    bA1    -> foldA  [xlabel="dispatch(action)" color="#d6ae00" fontcolor="#d6ae00"]
+    bA2    -> foldA  [xlabel="dispatch(action)" color="#d6ae00" fontcolor="#d6ae00"]
+    bAmore -> foldA  [xlabel="dispatch(action)" color="#d6ae00" fontcolor="#d6ae00"]
+    foldA  -> sfA    [xlabel="new state" color="#82b366" fontcolor="#82b366"]
+
+    // Module B internal flow
+    bBmore -> foldB  [xlabel="dispatch(action)" color="#d6ae00" fontcolor="#d6ae00"]
+    foldB  -> sfB    [color="#82b366"]
+
+    // Module C internal flow
+    bCmore -> foldC  [xlabel="dispatch(action)" color="#d6ae00" fontcolor="#d6ae00"]
+    foldC  -> sfC    [color="#82b366"]
+    // Within-module feedback (gray)
+    bA1 -> sfA       [xlabel="collect()" dir=back style=dashed color="#888888" fontcolor="#888888" constraint=true]
+    bBmore -> sfB    [xlabel="collect()" dir=back style=dashed color="#888888" fontcolor="#888888" constraint=true]
+    bCmore -> sfC    [xlabel="collect()" dir=back style=dashed color="#888888" fontcolor="#888888" constraint=true]
+
+
+    // Cross-module: routed via waypoints at rank 4 — exits downward, travels below all modules
+    bBmore -> sfA [xlabel="collect()" dir=back style=dashed color="#FF0000" fontcolor="#FF0000" constraint=false]
+    bCmore -> sfA [xlabel="collect()" dir=back style=dashed color="#FF0000" fontcolor="#FF0000" constraint=false]
+    bCmore -> sfB [xlabel="collect()" dir=back style=dashed color="#FF0000" fontcolor="#FF0000" constraint=false]
+}

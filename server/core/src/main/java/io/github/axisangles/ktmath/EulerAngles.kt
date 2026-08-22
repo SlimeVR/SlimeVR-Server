@@ -8,9 +8,8 @@ import kotlin.math.sin
 
 enum class EulerOrder { XYZ, YZX, ZXY, ZYX, YXZ, XZY }
 
-@JvmInline
 @Serializable
-value class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z: Float) {
+class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z: Float) {
 	operator fun component1(): EulerOrder = order
 	operator fun component2(): Float = x
 	operator fun component3(): Float = y
@@ -72,6 +71,22 @@ value class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z
 			)
 		}
 	}
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is EulerAngles) return false
+		return order == other.order && x == other.x && y == other.y && z == other.z
+	}
+
+	override fun hashCode(): Int {
+		var result = order.hashCode()
+		result = 31 * result + x.hashCode()
+		result = 31 * result + y.hashCode()
+		result = 31 * result + z.hashCode()
+		return result
+	}
+
+	override fun toString(): String = "EulerAngles(order=$order, x=$x, y=$y, z=$z)"
 
 	// temp, replace with direct conversion later
 	// fun toMatrix(): Matrix3 = this.toQuaternion().toMatrix()

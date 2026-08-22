@@ -1,6 +1,8 @@
 packages:
   - "solarxr-protocol"
-  - "gui"
+  - "gui/app"
+  - "gui/electron"
+  - "gui/shared"
   - "!solarxr-protocol/lib/flatbuffers/**"
 
 onlyBuiltDependencies:

@@ -1,0 +1,14 @@
+package dev.slimevr.solarxr
+
+import kotlinx.coroutines.flow.launchIn
+import solarxr_protocol.rpc.InstalledInfoRequest
+import solarxr_protocol.rpc.InstalledInfoResponse
+
+class InstalledInfoBehaviour : SolarXRBridgeBehaviour {
+	override fun observe(receiver: SolarXRBridge) {
+		receiver.rpcDispatcher.on<InstalledInfoRequest> {
+			val udevRulesInstalled = receiver.appContext.featureFlags.udevRulesInstalled ?: return@on
+			receiver.sendRpc(InstalledInfoResponse(isUdevInstalled = udevRulesInstalled))
+		}.launchIn(receiver.context.scope)
+	}
+}

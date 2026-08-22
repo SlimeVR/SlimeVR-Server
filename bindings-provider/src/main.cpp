@@ -30,36 +30,36 @@ static void shutdown_vr(vr::IVRSystem *_sys) { vr::VR_Shutdown(); }
 static void onYawReset(SolarXRConnection &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::Yaw, 0, 0.f);
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::YAW, 0, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::ResetRequest, resetReq.Union());
+        fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
 static void onFullReset(SolarXRConnection &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::Full, 0, 0.f);
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::FULL, 0, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::ResetRequest, resetReq.Union());
+        fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
 static void onMountingCalibration(SolarXRConnection &conn) {
     flatbuffers::FlatBufferBuilder fbb;
 
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::Mounting, 0, 0.f);
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::POSE_MOUNTING, 0, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::ResetRequest, resetReq.Union());
+        fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
@@ -68,12 +68,12 @@ static void onFeetMountingCalibration(SolarXRConnection &conn) {
 
     auto bodyParts = fbb.CreateVector(
         { datatypes::BodyPart::LEFT_FOOT, datatypes::BodyPart::RIGHT_FOOT });
-    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::Mounting, bodyParts, 0.f);
+    auto resetReq = rpc::CreateResetRequest(fbb, rpc::ResetType::POSE_MOUNTING, bodyParts, 0.f);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::ResetRequest, resetReq.Union());
+        fbb, 0, 0, rpc::RpcMessage::ResetRequest, resetReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
@@ -84,11 +84,11 @@ static void onToggleTracking(SolarXRConnection &conn) {
     shouldPause = !shouldPause;
     auto toggleReq = rpc::CreateSetPauseTrackingRequest(fbb, shouldPause);
     auto msgHeader = rpc::CreateRpcMessageHeader(
-        fbb, nullptr, rpc::RpcMessage::SetPauseTrackingRequest,
+        fbb, 0, 0, rpc::RpcMessage::SetPauseTrackingRequest,
         toggleReq.Union());
 
     auto rpcMsgs = fbb.CreateVector({ msgHeader });
-    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs, 0);
+    auto bundle = CreateMessageBundle(fbb, 0, rpcMsgs);
     fbb.Finish(bundle);
     conn.sendMsg(fbb);
 }
