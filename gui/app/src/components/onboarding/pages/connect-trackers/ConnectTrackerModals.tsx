@@ -90,7 +90,7 @@ export function NoSerialLogsModal({
 
         <div className="w-full aspect-video rounded-lg overflow-hidden my-1 bg-background-90">
           <video
-            src="/videos/troubleshoot.mp4"
+            src="/videos/turn-on-tracker.webm"
             autoPlay
             loop
             muted

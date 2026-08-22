@@ -370,7 +370,11 @@ export function ConnectTrackersPage() {
   );
 
   const totalTrackersCount = rows.length;
-  const connectedCount = rows.filter((r) => r.kind === 'connected').length;
+  const connectedCount = rows.filter(
+    (r) =>
+      r.kind === 'connected' ||
+      r.tracker.status === TrackerProvisioningStatus.DONE
+  ).length;
   const connectingCount = rows.filter(
     (row) =>
       row.kind === 'provisioning' &&

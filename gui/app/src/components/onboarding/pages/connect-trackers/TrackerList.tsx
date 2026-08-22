@@ -5,6 +5,7 @@ import {
   DeviceDataT,
   TrackerProvisioningStateT,
   TrackerProvisioningStatus,
+  TrackerStatus,
   WifiNetworkT,
   WifiScanStatus,
 } from 'solarxr-protocol';
@@ -79,6 +80,7 @@ export function TrackerRow({
   progress = 1,
   isError = false,
   isConnected = false,
+  isOffline = false,
   descId,
   docsAnchor,
   onLearnMore,
@@ -90,6 +92,7 @@ export function TrackerRow({
   progress?: number;
   isError?: boolean;
   isConnected?: boolean;
+  isOffline?: boolean;
   descId?: string;
   docsAnchor?: string;
   onLearnMore?: () => void;
@@ -111,7 +114,10 @@ export function TrackerRow({
   return (
     <>
       <div
-        className="relative flex flex-col justify-between rounded-lg bg-background-60 overflow-hidden w-full transition-[box-shadow] duration-200 ease-linear shrink-0"
+        className={classNames(
+          'relative flex flex-col justify-between rounded-lg bg-background-60 overflow-hidden w-full transition-[box-shadow,opacity] duration-200 ease-linear shrink-0',
+          isOffline && 'opacity-50'
+        )}
         style={shakeShadow}
       >
         <div className="flex items-center gap-3 w-full px-4 py-3 min-h-[46px]">
@@ -122,7 +128,9 @@ export function TrackerRow({
                 ? 'bg-status-critical'
                 : isConnected
                   ? 'bg-status-success'
-                  : 'bg-status-warning animate-pulse'
+                  : isOffline
+                    ? 'bg-background-30'
+                    : 'bg-status-warning animate-pulse'
             )}
           />
           <div className="flex flex-col flex-grow justify-center min-w-0">
@@ -177,14 +185,14 @@ export function TrackerRow({
                 </>
               )}
             </div>
-          ) : (
+          ) : isOffline ? null : (
             <span className="text-xs font-mono font-semibold text-background-30 shrink-0">
               {pct}%
             </span>
           )}
         </div>
 
-        {!isError && (
+        {!isError && !isOffline && (
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-background-90 overflow-hidden">
             <div
               className={classNames(
@@ -266,12 +274,18 @@ export function ConnectedTrackerRow({
   const { useName, useVelocity } = useTracker(tracker.tracker);
   const name = useName();
   const velocity = useVelocity();
+  const isTimedOut = tracker.tracker.status === TrackerStatus.TIMED_OUT;
 
   return (
     <TrackerRow
       title={(name as string) || ''}
-      labelId={trackerStatusLabelMap[TrackerProvisioningStatus.DONE]}
-      isConnected
+      labelId={
+        isTimedOut
+          ? 'tracker-status-timed_out'
+          : trackerStatusLabelMap[TrackerProvisioningStatus.DONE]
+      }
+      isOffline={isTimedOut}
+      isConnected={!isTimedOut}
       velocity={velocity}
       device={tracker.device}
     />
@@ -361,7 +375,7 @@ export function NoSerialLogsModal({
 
         <div className="w-full aspect-video rounded-lg overflow-hidden my-1 bg-background-90">
           <video
-            src="/videos/troubleshoot.mp4"
+            src="/videos/turn-on-tracker.webm"
             autoPlay
             loop
             muted
@@ -517,7 +531,7 @@ export type TrackerRow =
   | { kind: 'provisioning'; key: string; tracker: TrackerProvisioningStateT }
   | { kind: 'connected'; key: string; tracker: FlatDeviceTracker };
 
-function normalizeMac(mac: string | Uint8Array | null | undefined) {
+export function normalizeMac(mac: string | Uint8Array | null | undefined) {
   return typeof mac === 'string' && mac.length > 0
     ? mac.toUpperCase().replace(/-/g, ':')
     : undefined;
@@ -549,10 +563,8 @@ export function mergeTrackerList(
     const key = (t.port as string) || mac || `prov-${t.port}`;
     const liveMatch = mac ? connectedByMac.get(mac) : undefined;
 
-    if (t.status === TrackerProvisioningStatus.DONE) {
-      if (liveMatch) {
-        rows.push({ kind: 'connected', key, tracker: liveMatch });
-      }
+    if (t.status === TrackerProvisioningStatus.DONE && liveMatch) {
+      rows.push({ kind: 'connected', key, tracker: liveMatch });
     } else {
       rows.push({ kind: 'provisioning', key, tracker: t });
     }
