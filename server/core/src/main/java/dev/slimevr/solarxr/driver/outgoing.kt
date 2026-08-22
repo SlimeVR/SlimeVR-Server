@@ -19,7 +19,6 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.driver_protocol.BoneBatteryUpdate
-import solarxr_protocol.driver_protocol.BoneStatusUpdate
 import solarxr_protocol.driver_protocol.SkeletonUpdate
 
 class DriverOutgoingTrackersBehaviour(
@@ -46,7 +45,6 @@ class DriverOutgoingTrackersBehaviour(
 		val server = appContext.server
 		val settings = appContext.config.settings
 
-		val boneStatuses = bodyPartMap<TrackerStatus>()
 		val boneBatteries = bodyPartMap<BoneBatteryUpdate>()
 
 		combine(settings.context.state.map { it.data.driverConfig.enabled }, receiver.context.state) { enabled, state ->
@@ -75,30 +73,26 @@ class DriverOutgoingTrackersBehaviour(
 						}
 					}
 
-					computedSkeleton.forEach { (bodyPart, boneState) ->
+					receiver.sendDriverMessage(SkeletonUpdate(bones = bones))
+
+					computedSkeleton.keys.forEach { bodyPart ->
 						val closestTracker = bodyPartToNearest[bodyPart].orEmpty()
 							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }
 						val closestDevice =
 							server.context.state.value.devices[closestTracker?.deviceId]?.context?.state?.value
 
-						val status = closestTracker?.status ?: TrackerStatus.OK
-						if (boneStatuses.put(bodyPart, status) != status) {
-							AppLogger.solarxr.debug("Sending BoneStatusUpdate for $bodyPart")
-							receiver.sendDriverMessage(BoneStatusUpdate(bone = bodyPart, status = status))
-						}
-
-						val battery = BoneBatteryUpdate(
-							bone = bodyPart,
-							batteryLevel = closestDevice?.batteryLevel ?: 1f,
-							charging = closestDevice?.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
-						)
-						if (boneBatteries.put(bodyPart, battery) != battery) {
-							AppLogger.solarxr.debug("Sending BoneBatteryUpdate for $bodyPart")
-							receiver.sendDriverMessage(battery)
+						if (closestDevice?.batteryLevel != null) {
+							val battery = BoneBatteryUpdate(
+								bone = bodyPart,
+								batteryLevel = closestDevice.batteryLevel,
+								charging = closestDevice.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
+							)
+							if (boneBatteries.put(bodyPart, battery) != battery) {
+								AppLogger.solarxr.debug("Sending BoneBatteryUpdate for $bodyPart")
+								receiver.sendDriverMessage(battery)
+							}
 						}
 					}
-
-					receiver.sendDriverMessage(SkeletonUpdate(bones = bones))
 				}
 			}.launchIn(receiver.context.scope)
 	}
