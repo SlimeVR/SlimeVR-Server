@@ -181,7 +181,6 @@ class SolarXRBridge(
 				appContext = appContext,
 				managedContext = managedContext,
 			)
-			bridge.startObserving()
 			return bridge
 		}
 	}
