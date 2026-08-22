@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.datatypes.TrackerStatus
 
-private fun isOnlineStatus(status: TrackerStatus): Boolean = when (status) {
+fun isOnlineStatus(status: TrackerStatus): Boolean = when (status) {
 	TrackerStatus.NONE,
 	TrackerStatus.DISCONNECTED,
 	TrackerStatus.TIMED_OUT,

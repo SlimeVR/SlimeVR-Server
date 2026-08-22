@@ -49,7 +49,7 @@ export function QuizSlimeSetQuestion() {
         break;
       case 'slime-v1':
       case 'wifi-slime':
-        nav('/onboarding/wifi-creds');
+        nav('/onboarding/connect-trackers');
         break;
     }
   };

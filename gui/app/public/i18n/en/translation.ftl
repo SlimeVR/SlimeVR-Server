@@ -1064,17 +1064,33 @@ onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 onboarding-wifi_creds-description-v2 =
     Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
     Please use the credentials of the Wi-Fi network your device is currently connected to.
-
-    Make sure to use a 2.4GHz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Skip Wi-Fi settings
+onboarding-wifi_creds-continue = Continue with Wi-Fi
 onboarding-wifi_creds-submit = Submit!
+onboarding-wifi_creds-retry = Retry
+onboarding-wifi_creds-provisioning_failed_connect = Connection failed for all trackers. Double-check your Wi-Fi name and password, then try again.
+onboarding-wifi_creds-provisioning_failed_server = Trackers connected to Wi-Fi but couldn't find the SlimeVR server. Check your firewall and network settings, then try again.
+onboarding-wifi_creds-ssid-label = Wi-Fi name
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi name
     .placeholder = Enter Wi-Fi name
 onboarding-wifi_creds-ssid-required = Wi-Fi name is required
+onboarding-wifi_creds-ssid-scan =
+    .placeholder = Select Wi-Fi network
+onboarding-wifi_creds-network_band_tip = Only 2.4GHz Wi-Fi networks can be used by trackers. If your network doesn't appear in the list, make sure a 2.4GHz band is enabled on your router.
+onboarding-wifi_creds-scan_idle = Plug in a tracker via USB to scan for nearby Wi-Fi networks.
+onboarding-wifi_creds-scanning = Scanning for Wi-Fi networks...
+onboarding-wifi_creds-scan_unsupported = Wi-Fi scanning isn't supported on this tracker's firmware yet. Enter your network name manually.
+onboarding-wifi_creds-scan_results = Wi-Fi networks found. Pick yours below.
+onboarding-wifi_creds-scan_failed = Wi-Fi scan failed on the tracker.
+onboarding-wifi_creds-scan_error_no_device = Could not find a tracker over USB to scan for Wi-Fi networks.
+onboarding-wifi_creds-scan_error_no_logs = Could not read serial logs from the tracker during Wi-Fi scan.
+onboarding-wifi_creds-scan_retry = Try again
+onboarding-wifi_creds-rescan = Rescan
+onboarding-wifi_creds-enter_manually = Don't see your network? Enter it manually
+onboarding-wifi_creds-use_scanned = Choose from scanned networks instead
 onboarding-wifi_creds-password =
     .label = Password
-    .placeholder = Enter password
+    .placeholder = Enter your WI-FI password
 
 onboarding-wifi_creds-dongle-title = Trackers using a dongle
 onboarding-wifi_creds-dongle-description =
@@ -1120,11 +1136,24 @@ onboarding-done-close = Close setup
 
 ## Tracker connection setup
 onboarding-connect_tracker-back = Go back to Wi-Fi credentials
-onboarding-connect_tracker-title = Connect trackers
+onboarding-connect_tracker-title = Let's connect your trackers
+onboarding-connect_tracker-description = Enter your Wi-Fi network below and submit once. every tracker you connect via USB, now or later, will automatically use those credentials.
+onboarding-connect_tracker-continue_hint = Finish connecting all your trackers to continue
+onboarding-connect_tracker-learn_more = Learn more
 onboarding-connect_tracker-description-p0-v1 = Now onto the fun part, connecting trackers!
 onboarding-connect_tracker-description-p1-v1 = Connect each tracker one at a time through a USB port.
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
+onboarding-connect_tracker-tracker_mac_name = SlimeVR Tracker ({ $suffix })
+onboarding-connect_tracker-tracker_port_name = USB Tracker ({ $port })
+onboarding-connect_tracker-network_profile-ignore = I configured my firewall and know what I'm doing
+onboarding-connect_tracker-waiting_first_title = Waiting for your first tracker
+onboarding-connect_tracker-waiting_first_desc = Plug one in over USB to get started.
+onboarding-connect_tracker-scan_results_title = Select network & enter password
+onboarding-connect_tracker-scan_results_desc = Enter your Wi-Fi credentials on the left to connect your trackers.
+onboarding-connect_tracker-all_caught_up = All caught up. Plug in more any time
+onboarding-connect_tracker-shake_tip = Not sure which tracker is which? Shake a tracker to see it light up in the list.
+onboarding-connect_tracker-close = Close
 onboarding-connect_tracker-connection_status-none = Looking for trackers
 onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker's mac address
@@ -1136,6 +1165,8 @@ onboarding-connect_tracker-connection_status-could_not_find_server = Could not f
 onboarding-connect_tracker-connection_status-done = Connected to the Server
 onboarding-connect_tracker-connection_status-no_serial_log = Could not get logs from the tracker
 onboarding-connect_tracker-connection_status-no_serial_device_found = Could not find a tracker from USB
+onboarding-connect_tracker-connection_error-desc = Make sure your Wi-Fi SSID and password are entered correctly and that your 2.4GHz network is active.
+onboarding-connect_tracker-could_not_find_server-desc = The tracker connected to Wi-Fi, but could not find the SlimeVR server on your local network. Check your firewall settings.
 onboarding-connect_serial-error-modal-no_serial_log = Is the tracker turned on?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer.
 onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detected
@@ -1155,6 +1186,10 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
     [one] 1 tracker
     *[other] { $amount } trackers
 } connected
+onboarding-connect_tracker-setting_up = Setting up ({ $amount })
+onboarding-connect_tracker-connected_section = Connected trackers ({ $amount })
+onboarding-connect_tracker-connected_title = USB Tracker Connected
+onboarding-connect_tracker-connected_desc = Enter your Wi-Fi credentials on the left and click Submit to send settings to your tracker.
 onboarding-connect_tracker-next = I connected all my trackers
 
 ## Tracker calibration tutorial

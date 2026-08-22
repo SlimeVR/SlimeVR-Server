@@ -2,6 +2,7 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -89,6 +90,8 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 							receiver.sendRpc(SerialUpdateResponse(closed = true))
 						}
 					}
+				} catch (e: CancellationException) {
+					throw e
 				} catch (e: Exception) {
 					dev.slimevr.logging.AppLogger.solarxr.error(e, "Error streaming serial log")
 				}

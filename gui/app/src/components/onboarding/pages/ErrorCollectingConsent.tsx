@@ -32,13 +32,13 @@ export function ErrorCollectingConsentPage() {
         <div className="flex flex-row gap-2 justify-between">
           <Button
             variant="tertiary"
-            to="/onboarding/wifi-creds"
+            to="/onboarding/connect-trackers"
             onClick={cancel}
             id="error_collection_modal-cancel"
           />
           <Button
             variant="primary"
-            to="/onboarding/wifi-creds"
+            to="/onboarding/connect-trackers"
             onClick={accept}
             id="error_collection_modal-confirm"
           />

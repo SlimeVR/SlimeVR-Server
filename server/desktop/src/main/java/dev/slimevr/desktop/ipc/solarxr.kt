@@ -87,7 +87,6 @@ suspend fun handleSolarXRBridge(
 		send(sendBuffer)
 	}.launchIn(this)
 
-
 	val receiveArray = ByteArray(MAX_FRAME_SIZE)
 
 	try {

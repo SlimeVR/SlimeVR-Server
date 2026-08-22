@@ -7,7 +7,7 @@ body {
   font-family: var(--font-name), 'Noto Sans CJK', sans-serif, emoji;
   width: 100vw;
   height: 100vh;
-  background: theme('colors.background.20');
+  background: theme('colors.background.90');
 
   /*Scrollbar for firefox */
   scrollbar-color: theme('colors.background.50') transparent;
@@ -61,7 +61,7 @@ body {
 
 :root {
   // overflow: hidden; -- NEVER EVER BRING THIS BACK <3
-  background: theme('colors.background.20');
+  background: theme('colors.background.90');
   overscroll-behavior: none;
 
   --navbar-w: 110px;
