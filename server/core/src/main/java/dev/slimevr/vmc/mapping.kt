@@ -199,19 +199,27 @@ fun vmcMirrorSource(bodyPart: BodyPart): BodyPart = VMC_MIRROR_BONES[bodyPart] ?
 val VMC_REST_ROTATIONS: BodyPartMap<Quaternion> = run {
 	val leftArm = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 	val rightArm = Quaternion.rotationAroundZAxis(FastMath.HALF_PI)
+	val leftLeg = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
+	val rightLeg = Quaternion.rotationAroundZAxis(FastMath.HALF_PI)
 	BodyPartMap(
 		mapOf(
 			BodyPart.LEFT_UPPER_ARM to leftArm,
 			BodyPart.LEFT_LOWER_ARM to leftArm,
 			BodyPart.LEFT_HAND to leftArm,
+			BodyPart.LEFT_UPPER_LEG to leftLeg,
+			BodyPart.LEFT_LOWER_LEG to leftLeg,
+			BodyPart.LEFT_FOOT to leftLeg,
 			BodyPart.RIGHT_UPPER_ARM to rightArm,
 			BodyPart.RIGHT_LOWER_ARM to rightArm,
 			BodyPart.RIGHT_HAND to rightArm,
+			BodyPart.RIGHT_UPPER_LEG to rightLeg,
+			BodyPart.RIGHT_LOWER_LEG to rightLeg,
+			BodyPart.RIGHT_FOOT to rightLeg,
 		) +
 			ResetBodyParts.LEFT_FINGERS.associateWith { leftArm } +
 			ResetBodyParts.RIGHT_FINGERS.associateWith { rightArm } +
-			ResetBodyParts.LEFT_TOES.associateWith { foot } +
-			ResetBodyParts.RIGHT_TOES.associateWith { foot },
+			ResetBodyParts.LEFT_TOES.associateWith { leftLeg } +
+			ResetBodyParts.RIGHT_TOES.associateWith { rightLeg },
 	)
 }
 
