@@ -1,5 +1,7 @@
 package dev.slimevr.desktop
 
+import dev.slimevr.CURRENT_PLATFORM
+import dev.slimevr.Platform
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tryOpenUri
 import io.ktor.client.HttpClient
@@ -10,10 +12,16 @@ import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpMethod
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 @Serializable
 data class DriverManifest(
@@ -99,4 +107,52 @@ suspend fun unblockSteamVRDriver(client: HttpClient, driver: String) {
 	delay(500)
 
 	tryOpenUri("vrmonitor://restartsystem")
+}
+
+private fun getBindingsProviderPath(): Path? {
+	val executableName = when (CURRENT_PLATFORM) {
+		Platform.WINDOWS -> "SlimeVR-Bindings-Provider.exe"
+		Platform.LINUX -> "slimevr-bindings-provider"
+		else -> return null
+	}
+
+	// First we want to try to find it in the working directory, its location on
+	// Steam/Windows/portable.
+	val workingDir = System.getProperty("user.dir")
+	val binaryPath = Path(workingDir, executableName)
+	if (binaryPath.exists()) return binaryPath
+
+	// Then look through PATH to find the binary.
+	// PATH shouldn't be null, but if it is just gracefully fail
+	val path = System.getenv("PATH") ?: return null
+	for (path in path.split(File.pathSeparator)) {
+		val binaryPath = Path(path, executableName)
+		if (binaryPath.exists()) return binaryPath
+	}
+
+	// :(
+	return null
+}
+
+suspend fun startBindingsProvider() = withContext(Dispatchers.IO) {
+	val path = getBindingsProviderPath()
+	if (path == null) {
+		AppLogger.steamvr.warn("Failed to find bindings provider")
+		return@withContext
+	}
+
+	AppLogger.steamvr.info("Found bindings provider at $path")
+	// Give SteamVR a bit more time to initialise everything
+	// For some users, starting the executable immediately may cause startup failures
+	delay(3000L)
+	val proc = try {
+		ProcessBuilder(path.toString()).start()
+	} catch (e: Exception) {
+		AppLogger.steamvr.error(e, "Failed to start bindings provider")
+		return@withContext
+	}
+	AppLogger.steamvr.info("Started bindings provider (PID ${proc.pid()})")
+	proc.waitFor()
+
+	AppLogger.steamvr.info("Bindings provider exited with code ${proc.exitValue()}")
 }

@@ -7,15 +7,19 @@ import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServerActions
+import dev.slimevr.desktop.startBindingsProvider
 import dev.slimevr.desktop.unblockSteamVRDriver
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeActions
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import dev.slimevr.solarxr.SolarXRBridgeState
 import dev.slimevr.solarxr.onSolarXRMessage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
@@ -55,6 +59,18 @@ class OpenKeybindSettingsBehaviour : SolarXRBridgeBehaviour {
 	}
 }
 
+class OpenBindingsProviderBehaviour(val scope: CoroutineScope) : SolarXRBridgeBehaviour {
+	override fun reduce(
+		state: SolarXRBridgeState,
+		action: SolarXRBridgeActions,
+	): SolarXRBridgeState {
+		if (action is SolarXRBridgeActions.SetDriverInfo && action.name == "SteamVR") {
+			scope.launch { startBindingsProvider() }
+		}
+		return state
+	}
+}
+
 suspend fun handleSolarXRBridge(
 	appContext: AppContextProvider,
 	messages: Flow<Buffer>,
@@ -68,6 +84,7 @@ suspend fun handleSolarXRBridge(
 			buildList {
 				add(EnableSteamVRDriverBehaviour())
 				add(OpenKeybindSettingsBehaviour())
+				add(OpenBindingsProviderBehaviour(this@coroutineScope))
 			}
 		},
 	)
