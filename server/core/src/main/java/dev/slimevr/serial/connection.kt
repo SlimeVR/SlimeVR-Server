@@ -9,8 +9,8 @@ val MAC_REGEX = Regex("mac: (([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2})", RegexOptio
 data class SerialPortHandle(
 	val portLocation: String,
 	val descriptivePortName: String,
-	val writeCommand: (String) -> Unit,
-	val close: () -> Unit,
+	val writeCommand: suspend (String) -> Unit,
+	val close: suspend () -> Unit,
 )
 
 data class SerialConnectionState(

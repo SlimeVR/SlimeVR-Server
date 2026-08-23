@@ -10,6 +10,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.tracker.getFirstFineFor
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -18,7 +19,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
-import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.ArmsResetMode
 import solarxr_protocol.rpc.ResetResponse
 import solarxr_protocol.rpc.ResetStatus
@@ -40,7 +40,7 @@ data class ResetsState(
 )
 
 sealed interface ResetsActions {
-	data class ClearResets(val resetType: List<ResetType>) : ResetsActions
+	data class ClearResets(val resetTypes: List<ResetType>) : ResetsActions
 	data class EndReset(val resetType: ResetType, val bodyParts: List<BodyPart>? = null, val resetMountingFeet: Boolean = false) : ResetsActions
 	data object ClearMountingCompleted : ResetsActions
 }
@@ -91,7 +91,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				SettingsActions.Update {
 					copy(
 						resetsConfig = resetsConfig.copy(
-							lastMountingMethod = if (resetType == ResetType.MOUNTING) {
+							lastMountingMethod = if (resetType == ResetType.POSE_MOUNTING) {
 								MountingMethod.POSE
 							} else {
 								resetsConfig.lastMountingMethod
@@ -129,16 +129,17 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		} else {
 			// Exclude feet trackers from mounting reset if resetMountingFeet = false
 			allTrackers.filter {
-				resetType != ResetType.MOUNTING ||
+				resetType != ResetType.POSE_MOUNTING ||
 					config.resetMountingFeet ||
 					it.context.state.value.bodyPart !in ResetBodyParts.FEET
 			}
-		}.filter { it.context.state.value.position == null }
+		}.filter { resetType == ResetType.FULL || it.context.state.value.position == null } // Positional trackers only full reset
 
 		val referenceRotation = allTrackers
 			.map { it.context.state.value }
-			.firstOrNull { it.status == TrackerStatus.OK && it.bodyPart == BodyPart.HEAD }
-			?.rotation ?: Quaternion.IDENTITY
+			.filter { it.position != null }
+			.getFirstFineFor(BodyPart.HEAD)
+			?.rawRotation ?: Quaternion.IDENTITY
 
 		// Dispatch the reset action to the trackers
 		trackers.forEach {
@@ -146,7 +147,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				when (resetType) {
 					ResetType.YAW -> TrackerActions.YawReset(referenceRotation, config.yawResetSmoothTime.toDouble().seconds)
 					ResetType.FULL -> TrackerActions.FullReset(referenceRotation)
-					ResetType.MOUNTING -> TrackerActions.MountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
+					ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
 				},
 			)
 		}

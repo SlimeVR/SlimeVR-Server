@@ -4,6 +4,8 @@ import dev.slimevr.AppContextProvider
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import solarxr_protocol.rpc.TrackingChecklistStep
 import solarxr_protocol.rpc.TrackingChecklistStepId
 
@@ -29,15 +31,18 @@ class TrackingChecklist(
 	val extraBehaviours: (AppContextProvider) -> List<TrackingChecklistBehaviourType>,
 ) {
 	fun startObserving(appContext: AppContextProvider) {
+		val trackerStates = trackerStatesFlow(appContext.server)
+			.stateIn(context.scope, SharingStarted.Eagerly, initialValue = emptyList())
+
 		val stepBehaviours: List<TrackingChecklistBehaviourType> = buildList {
-			add(HMDCheckBehaviour(appContext.server))
-			add(TrackerRestCheckBehaviour(appContext.server))
-			add(FullResetCheckBehaviour(appContext.server, appContext.resetsManager))
-			add(MountingCalibrationCheckBehaviour(appContext.server, appContext.resetsManager, appContext.config.settings))
-			add(TrackerErrorCheckBehaviour(appContext.server))
-			add(SteamVRHandsCheckBehaviour(appContext.server, appContext.boneRouting))
-			add(FeetMountingCalibrationCheckBehaviour(appContext.server, appContext.resetsManager, appContext.config.settings))
-			// TODO: STAY_ALIGNED_CONFIGURED
+			add(HMDCheckBehaviour(trackerStates))
+			add(TrackerRestCheckBehaviour(trackerStates))
+			add(FullResetCheckBehaviour(trackerStates, appContext.resetsManager))
+			add(MountingCalibrationCheckBehaviour(trackerStates, appContext.resetsManager, appContext.config.settings))
+			add(TrackerErrorCheckBehaviour(trackerStates))
+			add(SteamVRHandsCheckBehaviour(trackerStates, appContext.server, appContext.boneRouting))
+			add(FeetMountingCalibrationCheckBehaviour(trackerStates, appContext.resetsManager, appContext.config.settings))
+			add(StayAlignedCheckBehaviour(appContext.config.settings))
 
 			appContext.vrcConfigManager?.let { add(VRChatSettingsCheckBehaviour(appContext.server, appContext.skeleton, it)) }
 			appContext.networkProfileManager?.let { add(NetworkProfileCheckBehaviour(it)) }

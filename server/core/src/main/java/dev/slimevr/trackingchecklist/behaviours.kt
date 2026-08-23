@@ -21,6 +21,7 @@ import dev.slimevr.vrchat.computeValidity
 import dev.slimevr.vrchat.isVRCConfigValid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -35,6 +36,7 @@ import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MountingMethod
 import solarxr_protocol.datatypes.TrackerStatus
+import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistNeedCalibration
 import solarxr_protocol.rpc.TrackingChecklistPublicNetworks
@@ -57,19 +59,51 @@ private inline fun <C, reified S> allContextStates(
 	combine(items.map { item -> stateOf(item) }) { states -> states.toList() }
 }
 
-private fun trackerStatesFlow(server: VRServer): Flow<List<TrackerState>> = allContextStates(server, { state -> state.trackers.values }) { tracker -> tracker.context.state }
+/**
+ * Everything about a tracker the checklist reasons about, and nothing else.
+ *
+ * A tracker emits on every rotation update, hundreds of times a second, while the answers the
+ * checklist computes change a couple of times a minute. Projecting to this before the combine below
+ * is what separates the two: rotation does not appear here, so a rotation update projects to an equal
+ * value and [distinctUntilChanged] drops it before any check runs.
+ *
+ * The dependency is declared rather than remembered. A check that needs another field adds it here,
+ * and the compiler points at every place that has to change. nothing can silently stop updating
+ * because someone read a field the projection forgot to carry.
+ */
+data class ChecklistTracker(
+	val id: Int,
+	val origin: DeviceOrigin,
+	val status: TrackerStatus,
+	val bodyPart: BodyPart?,
+	val imuType: ImuType?,
+	val completedRestCalibration: Boolean?,
+	// Deliberately not the position itself: the checks only ask whether there is one, and carrying the
+	// value would put this back on the rotation update rate.
+	val hasPosition: Boolean,
+)
 
-private fun deviceStatesFlow(server: VRServer): Flow<List<DeviceState>> = allContextStates(server, { state -> state.devices.values }) { device -> device.context.state }
+internal fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
+	id = tracker.id,
+	origin = tracker.origin,
+	status = tracker.status,
+	bodyPart = tracker.bodyPart,
+	imuType = tracker.imuType,
+	completedRestCalibration = tracker.completedRestCalibration,
+	hasPosition = tracker.position != null,
+)
 
-class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
-	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
-		// FIXME: Most likely incomplete
-		val hasDriverHMD = trackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
-		val hmdTracker = trackers.firstOrNull { tracker -> tracker.origin == DeviceOrigin.DRIVER && tracker.position != null }
+internal fun trackerStatesFlow(server: VRServer): Flow<List<ChecklistTracker>> = allContextStates(server, { state -> state.trackers.values }) { tracker ->
+	tracker.context.state.map { state -> checklistTracker(state) }.distinctUntilChanged()
+}
+
+class HMDCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
+	private fun computeStep(trackers: List<ChecklistTracker>): TrackingChecklistStep {
+		val hmdTracker = trackers.firstOrNull { tracker -> tracker.origin == DeviceOrigin.DRIVER }
 		val isAssigned = hmdTracker?.bodyPart == BodyPart.HEAD
 		return TrackingChecklistStep(
 			valid = isAssigned,
-			enabled = hasDriverHMD,
+			enabled = hmdTracker != null,
 			ignorable = true,
 			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
 			extraData = if (!isAssigned) {
@@ -83,7 +117,7 @@ class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehavio
 	}
 
 	override fun observe(receiver: TrackingChecklist) {
-		trackerStatesFlow(server)
+		trackerStates
 			.map { trackers -> computeStep(trackers) }
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.UNASSIGNED_HMD, step)) }
@@ -91,8 +125,8 @@ class HMDCheckBehaviour(private val server: VRServer) : TrackingChecklistBehavio
 	}
 }
 
-class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
-	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
+class TrackerRestCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
+	private fun computeStep(trackers: List<ChecklistTracker>): TrackingChecklistStep {
 		val uncalibratedTrackers = trackers.filter { tracker ->
 			(tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
 				(tracker.status == TrackerStatus.OK || tracker.status == TrackerStatus.SLEEPING) &&
@@ -101,7 +135,7 @@ class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklis
 		return TrackingChecklistStep(
 			valid = uncalibratedTrackers.isEmpty(),
 			enabled = trackers.isNotEmpty(),
-			extraData = if (!uncalibratedTrackers.isEmpty()) {
+			extraData = if (uncalibratedTrackers.isNotEmpty()) {
 				TrackingChecklistNeedCalibration(
 					trackersId = uncalibratedTrackers.map { tracker -> tracker.id.toUShort() },
 				)
@@ -112,7 +146,7 @@ class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklis
 	}
 
 	override fun observe(receiver: TrackingChecklist) {
-		trackerStatesFlow(server)
+		trackerStates
 			.map { trackers -> computeStep(trackers) }
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.TRACKERS_REST_CALIBRATION, step)) }
@@ -120,8 +154,8 @@ class TrackerRestCheckBehaviour(private val server: VRServer) : TrackingChecklis
 	}
 }
 
-class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingChecklistBehaviourType {
-	private fun computeStep(trackers: List<TrackerState>): TrackingChecklistStep {
+class TrackerErrorCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTracker>>) : TrackingChecklistBehaviourType {
+	private fun computeStep(trackers: List<ChecklistTracker>): TrackingChecklistStep {
 		val errorTrackers = trackers
 			.filter { tracker -> tracker.status == TrackerStatus.ERROR && tracker.bodyPart != null }
 			.toSet()
@@ -139,7 +173,7 @@ class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingCheckli
 	}
 
 	override fun observe(receiver: TrackingChecklist) {
-		trackerStatesFlow(server)
+		trackerStates
 			.map { trackers -> computeStep(trackers) }
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.TRACKER_ERROR, step)) }
@@ -148,13 +182,14 @@ class TrackerErrorCheckBehaviour(private val server: VRServer) : TrackingCheckli
 }
 
 class SteamVRHandsCheckBehaviour(
+	private val trackerStates: StateFlow<List<ChecklistTracker>>,
 	private val server: VRServer,
 	private val boneRouting: BoneRoutingManager,
 ) : TrackingChecklistBehaviourType {
 	private val HAND_BONES = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
 
 	private fun computeStep(
-		trackers: List<TrackerState>,
+		trackers: List<ChecklistTracker>,
 		routes: Routes,
 		driverConnected: Boolean,
 	): TrackingChecklistStep {
@@ -179,7 +214,7 @@ class SteamVRHandsCheckBehaviour(
 
 	override fun observe(receiver: TrackingChecklist) {
 		combine(
-			trackerStatesFlow(server),
+			trackerStates,
 			boneRouting.context.state.map { state -> state.routes },
 			server.context.state
 				.map { state -> state.drivers.values.any { it.source == DriverBridgeSource.DRIVER } }
@@ -242,20 +277,20 @@ class NetworkProfileCheckBehaviour(
 	}
 }
 
-private fun isImuAssigned(tracker: TrackerState): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
-	tracker.position == null &&
+private fun isImuAssigned(tracker: ChecklistTracker): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
+	!tracker.hasPosition &&
 	tracker.imuType !== null &&
 	tracker.status != TrackerStatus.ERROR &&
 	tracker.bodyPart != null
 
-private fun isConnectedAssignedImu(tracker: TrackerState): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
-	tracker.position == null &&
+private fun isConnectedAssignedImu(tracker: ChecklistTracker): Boolean = (tracker.origin == DeviceOrigin.UDP || tracker.origin == DeviceOrigin.HID) &&
+	!tracker.hasPosition &&
 	tracker.imuType !== null &&
 	(tracker.status == TrackerStatus.OK || tracker.status == TrackerStatus.SLEEPING) &&
 	tracker.bodyPart != null
 
 class FullResetCheckBehaviour(
-	private val server: VRServer,
+	private val trackerStates: StateFlow<List<ChecklistTracker>>,
 	private val resetsManager: ResetsManager,
 ) : TrackingChecklistBehaviourType {
 	private val needsReset = MutableStateFlow<Set<Int>>(emptySet())
@@ -264,7 +299,7 @@ class FullResetCheckBehaviour(
 		val scope = receiver.context.scope
 
 		val connected = mutableSetOf<Int>()
-		trackerStatesFlow(server)
+		trackerStates
 			.map { trackers -> trackers.filter { isConnectedAssignedImu(it) }.map { it.id }.toSet() }
 			.distinctUntilChanged()
 			.onEach { current ->
@@ -275,7 +310,7 @@ class FullResetCheckBehaviour(
 			.launchIn(scope)
 
 		val bodyParts = mutableMapOf<Int, BodyPart>()
-		trackerStatesFlow(server)
+		trackerStates
 			.map { trackers -> trackers.mapNotNull { tracker -> tracker.bodyPart?.let { tracker.id to it } }.toMap() }
 			.distinctUntilChanged()
 			.onEach { current ->
@@ -297,7 +332,7 @@ class FullResetCheckBehaviour(
 			.onEach { needsReset.value = emptySet() }
 			.launchIn(scope)
 
-		combine(needsReset, trackerStatesFlow(server)) { ids, trackers ->
+		combine(needsReset, trackerStates) { ids, trackers ->
 			val assignedIds = trackers.filter { isImuAssigned(it) }.map { it.id }.toSet()
 			val pending = ids intersect assignedIds
 			TrackingChecklistStep(
@@ -319,13 +354,13 @@ class FullResetCheckBehaviour(
 }
 
 class MountingCalibrationCheckBehaviour(
-	private val server: VRServer,
+	private val trackerStates: StateFlow<List<ChecklistTracker>>,
 	private val resetsManager: ResetsManager,
 	private val settings: Settings,
 ) : TrackingChecklistBehaviourType {
 	override fun observe(receiver: TrackingChecklist) {
 		combine(
-			trackerStatesFlow(server),
+			trackerStates,
 			resetsManager.context.state,
 			settings.context.state,
 		) { trackers, resetsState, settingsState ->
@@ -344,13 +379,13 @@ class MountingCalibrationCheckBehaviour(
 }
 
 class FeetMountingCalibrationCheckBehaviour(
-	private val server: VRServer,
+	private val trackerStates: StateFlow<List<ChecklistTracker>>,
 	private val resetsManager: ResetsManager,
 	private val settings: Settings,
 ) : TrackingChecklistBehaviourType {
 	override fun observe(receiver: TrackingChecklist) {
 		combine(
-			trackerStatesFlow(server),
+			trackerStates,
 			resetsManager.context.state,
 			settings.context.state,
 		) { trackers, resetsState, settingsState ->
@@ -367,6 +402,25 @@ class FeetMountingCalibrationCheckBehaviour(
 		}
 			.distinctUntilChanged()
 			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION, step)) }
+			.launchIn(receiver.context.scope)
+	}
+}
+
+class StayAlignedCheckBehaviour(
+	private val settings: Settings,
+) : TrackingChecklistBehaviourType {
+	override fun observe(receiver: TrackingChecklist) {
+		settings.context.state.map { settingsState ->
+			TrackingChecklistStep(
+				valid = settingsState.data.stayAlignedConfig.enabled,
+				enabled = true,
+				optional = true,
+				ignorable = true,
+				visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
+			)
+		}
+			.distinctUntilChanged()
+			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED, step)) }
 			.launchIn(receiver.context.scope)
 	}
 }

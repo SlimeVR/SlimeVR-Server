@@ -25,7 +25,6 @@ import { MartialArtsIcon } from '@/components/commons/icon/MartialArtsIcon';
 
 type SkeletonForm = {
   toggles: {
-    forceArmsFromHmd: boolean;
     floorClip: boolean;
     skatingCorrection: boolean;
     toeSnap: boolean;
@@ -39,7 +38,7 @@ type SkeletonForm = {
     imputeSpineFromUpperToLower: number;
     imputeSpineCurvature: number;
     interpolateHipWithUpperLegs: number;
-    interpolateUpperLegsWithLowerLegs: number;
+    interpolateUpperLegsTwistWithLowerLegs: number;
     skatingCorrectionStrength: number;
   };
   filtering: {
@@ -59,7 +58,6 @@ const skeletonSettingsValueAtom = selectAtom(
 
 const defaultValues: SkeletonForm = {
   toggles: {
-    forceArmsFromHmd: false,
     floorClip: false,
     skatingCorrection: false,
     toeSnap: false,
@@ -73,7 +71,7 @@ const defaultValues: SkeletonForm = {
     imputeSpineFromUpperToLower: 0.0,
     imputeSpineCurvature: 0.0,
     interpolateHipWithUpperLegs: 0.0,
-    interpolateUpperLegsWithLowerLegs: 0.0,
+    interpolateUpperLegsTwistWithLowerLegs: 0.0,
     skatingCorrectionStrength: 0.0,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
@@ -104,7 +102,6 @@ export function TrackingSettings() {
     const toggles = new SkeletonTogglesT();
     toggles.floorClip = values.toggles.floorClip;
     toggles.skatingCorrection = values.toggles.skatingCorrection;
-    toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
     toggles.toeSnap = values.toggles.toeSnap;
     toggles.footPlant = values.toggles.footPlant;
     toggles.mocapMode = values.toggles.mocapMode;
@@ -119,8 +116,8 @@ export function TrackingSettings() {
     ratios.imputeSpineCurvature = values.ratios.imputeSpineCurvature;
     ratios.interpolateHipWithUpperLegs =
       values.ratios.interpolateHipWithUpperLegs;
-    ratios.interpolateUpperLegsWithLowerLegs =
-      values.ratios.interpolateUpperLegsWithLowerLegs;
+    ratios.interpolateUpperLegsTwistWithLowerLegs =
+      values.ratios.interpolateUpperLegsTwistWithLowerLegs;
     ratios.skatingCorrectionStrength = values.ratios.skatingCorrectionStrength;
     settingsReq.ratios = ratios;
 
@@ -358,26 +355,6 @@ export function TrackingSettings() {
 
         <div className="flex flex-col pt-5">
           <Typography variant="section-title">
-            {l10n.getString('settings-general-fk_settings-arm_fk')}
-          </Typography>
-          <Typography>
-            {l10n.getString('settings-general-fk_settings-arm_fk-description')}
-          </Typography>
-        </div>
-        <div className="grid sm:grid-cols-1 pt-2">
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="toggles.forceArmsFromHmd"
-            label={l10n.getString(
-              'settings-general-fk_settings-arm_fk-force_arms'
-            )}
-          />
-        </div>
-
-        <div className="flex flex-col pt-5">
-          <Typography variant="section-title">
             {l10n.getString(
               'settings-general-fk_settings-enforce_joint_constraints'
             )}
@@ -494,9 +471,9 @@ export function TrackingSettings() {
           />
           <NumberSelector
             control={control}
-            name="ratios.interpolateUpperLegsWithLowerLegs"
+            name="ratios.interpolateUpperLegsTwistWithLowerLegs"
             label={l10n.getString(
-              'settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_with_lower_legs'
+              'settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs'
             )}
             valueLabelFormat={(value) => percentageFormat.format(value)}
             min={0.0}

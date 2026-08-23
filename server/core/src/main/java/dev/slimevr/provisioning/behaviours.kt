@@ -1,22 +1,46 @@
 package dev.slimevr.provisioning
 
-import dev.slimevr.provisioning.ProvisioningManager.Companion.INITIAL_STATE
+import solarxr_protocol.rpc.TrackerProvisioningStatus
+import solarxr_protocol.rpc.WifiScanStatus
+
+private fun ProvisioningManagerState.updateTracker(
+	portLocation: String,
+	transform: (TrackerProvisioningState) -> TrackerProvisioningState,
+) = copy(
+	trackers = trackers +
+		(
+			portLocation to transform(
+				trackers[portLocation] ?: TrackerProvisioningState(portLocation, TrackerProvisioningStatus.SERIAL_INIT),
+			)
+			),
+)
 
 class ProvisioningManagerBaseBehaviour : ProvisioningManagerBehaviour {
 	override fun reduce(state: ProvisioningManagerState, action: ProvisioningActions) = when (action) {
-		is ProvisioningActions.PortSelected -> state.copy(
-			portLocation = action.portLocation,
-			macAddress = null,
+		is ProvisioningActions.ScanPortSelected -> state.copy(
+			scan = state.scan.copy(portLocation = action.portLocation),
 		)
 
-		is ProvisioningActions.StatusChanged -> state.copy(
-			status = action.status,
+		is ProvisioningActions.ScanStatusChanged -> state.copy(
+			scan = state.scan.copy(status = action.status),
 		)
 
-		is ProvisioningActions.MacAddressObtained -> state.copy(
-			macAddress = action.mac,
+		is ProvisioningActions.ScanResults -> state.copy(
+			scan = state.scan.copy(networks = action.networks),
 		)
 
-		is ProvisioningActions.Clear -> INITIAL_STATE
+		is ProvisioningActions.ScanClear -> state.copy(scan = ScanState(status = WifiScanStatus.NONE))
+
+		is ProvisioningActions.TrackerStatusChanged -> state.updateTracker(action.portLocation) {
+			it.copy(status = action.status)
+		}
+
+		is ProvisioningActions.TrackerMacAddressObtained -> state.updateTracker(action.portLocation) {
+			it.copy(macAddress = action.mac)
+		}
+
+		is ProvisioningActions.TrackerRemoved -> state.copy(trackers = state.trackers - action.portLocation)
+
+		is ProvisioningActions.TrackersClear -> state.copy(trackers = emptyMap())
 	}
 }

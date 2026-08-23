@@ -2,13 +2,14 @@ import { ButtonConfirmModal } from '@/components/commons/ButtonConfirmModal';
 import { Typography } from '@/components/commons/Typography';
 import { useNavigate } from 'react-router-dom';
 
-export function MoreSetsConfirm() {
+export function MoreSetsConfirm({ disabled }: { disabled?: boolean }) {
   const navigate = useNavigate();
 
   return (
     <ButtonConfirmModal
       variant="primary"
       className="ml-auto"
+      disabled={disabled}
       id="onboarding-connect_tracker-next"
       cancelLabel="onboarding-quiz-more_sets_modal-cancel"
       confirmLabel="onboarding-quiz-more_sets_modal-confirm"

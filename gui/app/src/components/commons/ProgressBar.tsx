@@ -8,21 +8,42 @@ export function ProgressBar({
   colorClass = 'bg-accent-background-20',
   animated = false,
   bottom = false,
+  indeterminate = false,
 }: {
-  progress: number;
+  progress?: number;
   parts?: number;
   height?: number;
   colorClass?: string;
   animated?: boolean;
   bottom?: boolean;
+  indeterminate?: boolean;
 }) {
+  if (indeterminate) {
+    return (
+      <div
+        className={classNames(
+          'flex relative w-full bg-background-50 rounded-lg overflow-hidden',
+          bottom && 'rounded-t-none'
+        )}
+        style={{ height: `${height}px` }}
+      >
+        <div
+          className={classNames(
+            'absolute top-0 left-0 w-1/3 h-full rounded-lg animate-indeterminate-bar',
+            colorClass
+          )}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-full flex-row gap-2">
       {Array.from({ length: parts }).map((_, key) => (
         <Bar
           index={key}
           key={key}
-          progress={progress}
+          progress={progress ?? 0}
           height={height}
           colorClass={colorClass}
           animated={animated}

@@ -25,14 +25,6 @@ data class SessionCalibration(
 	val headingAlignment: HeadingAlignment = Quaternion.IDENTITY,
 )
 
-fun applyCalibration(rawRotation: RawRotation, state: TrackerState): CalibratedRotation = applyCalibration(
-	rawRotation,
-	state.sessionCalibration?.headingCorrection ?: Quaternion.IDENTITY,
-	state.sessionCalibration?.attitudeAlignment ?: Quaternion.IDENTITY,
-	(state.sessionCalibration?.headingAlignment ?: Quaternion.IDENTITY) * state.mountingOrientation,
-	state.restOrientation,
-)
-
 fun applyCalibration(
 	rawRotation: RawRotation,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
@@ -82,6 +74,7 @@ private fun eulerHeading(q: Quaternion): Quaternion = Quaternion.rotationAroundY
 // Used to get yaw. Works better on an HMD.
 private fun inverseYProjection(q: Quaternion) = q.project(Vector3.POS_Y).unit().inv()
 
+// FIXME yaw reset is off when sitting down
 fun estimateHeadingCorrect(
 	rawRotation: RawRotation,
 	referenceRotation: Quaternion,

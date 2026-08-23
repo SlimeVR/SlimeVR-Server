@@ -313,9 +313,10 @@ class DoSerialFlashTest {
 			delay(200)
 			server.onDataReceived("COM1", "looking for the server")
 			delay(300)
+			val appContext = buildTestAppContext(vrServer)
 			val device = Device.create(
 				scope = backgroundScope,
-				appContext = buildTestAppContext(vrServer),
+				appContext = appContext,
 				id = vrServer.nextHandle(),
 				address = "192.168.1.100",
 				macAddress = "AA:BB:CC:DD:EE:FF",
@@ -324,6 +325,33 @@ class DoSerialFlashTest {
 			)
 			vrServer.context.dispatch(VRServerActions.NewDevice(device.context.state.value.id, device))
 			device.context.dispatch(DeviceActions.Update { copy(status = TrackerStatus.OK) })
+
+			val conn = dev.slimevr.udp.UDPConnection(
+				context = dev.slimevr.context.Context.create(
+					initialState = dev.slimevr.udp.UDPConnectionState(
+						address = "192.168.1.100",
+						lastPacket = System.currentTimeMillis(),
+						lastPacketNum = 0,
+						lastHandshake = System.currentTimeMillis(),
+						lastPing = dev.slimevr.udp.LastPing(0, 0),
+						didHandshake = true,
+						deviceId = device.context.state.value.id,
+						trackerIds = emptyList(),
+						features = null,
+						sensorConfigFlags = emptyMap(),
+					),
+					scope = backgroundScope,
+					behaviours = emptyList(),
+					name = "TestConn",
+				),
+				appContext = appContext,
+				packetEvents = dev.slimevr.EventDispatcher(name = "TestEvents", scope = backgroundScope),
+				packetChannel = kotlinx.coroutines.channels.Channel(),
+				socket = dev.slimevr.FakeDatagramSocket(),
+				remoteAddress = io.ktor.network.sockets.InetSocketAddress("192.168.1.100", 6969),
+				scope = backgroundScope,
+			)
+			appContext.udpServer.addConnection("192.168.1.100", conn)
 		}
 
 		advanceTimeBy(1000)

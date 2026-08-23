@@ -9,15 +9,17 @@ import com.sun.jna.platform.win32.WinError
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.win32.StdCallLibrary
 import dev.slimevr.logging.AppLogger
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
+import okio.Buffer
 import java.io.IOException
 
 private val k32 = Kernel32.INSTANCE
 
 private const val HEADER_SIZE = 4
-private const val MAX_FRAME_SIZE = 256 * 1024
 
 private const val WAIT_SLICE_MILLIS = 200
 private const val WAIT_TIMEOUT = 0x102
@@ -56,6 +58,9 @@ internal class PipeSlot(private val handle: WinNT.HANDLE) : AutoCloseable {
 
 	private val buffer = Memory(MAX_FRAME_SIZE.toLong())
 
+	// Staging area between the pinned native buffer and okio, reused so a frame costs no allocation
+	private val scratch = ByteArray(MAX_FRAME_SIZE)
+
 	// Resolved once. The wrappers have to stay referenced to keep the native memory alive anyway, so
 	// unwrapping them per call would only re-do work. `transferred` replaces an IntByReference that
 	// was allocated on every completion.
@@ -78,21 +83,31 @@ internal class PipeSlot(private val handle: WinNT.HANDLE) : AutoCloseable {
 		}
 	}
 
-	suspend fun readFrame(): ByteArray? {
-		if (!readInto(0, HEADER_SIZE)) return null
+	// Returns false once the peer closed. The overlapped wait blocks the thread it runs on, so both
+	// sides of the pipe stay on Dispatchers.IO
+	suspend fun readFrameInto(out: Buffer): Boolean = withContext(Dispatchers.IO) {
+		if (!readInto(0, HEADER_SIZE)) return@withContext false
 		val total = buffer.getInt(0)
 		if (total !in HEADER_SIZE..MAX_FRAME_SIZE) throw IOException("Frame length out of range: $total")
-		if (!readInto(HEADER_SIZE, total - HEADER_SIZE)) return null
-		return buffer.getByteArray(HEADER_SIZE.toLong(), total - HEADER_SIZE)
+		if (!readInto(HEADER_SIZE, total - HEADER_SIZE)) return@withContext false
+
+		val payload = total - HEADER_SIZE
+		buffer.read(HEADER_SIZE.toLong(), scratch, 0, payload)
+		out.write(scratch, 0, payload)
+		true
 	}
 
-	suspend fun writeFrame(payload: ByteArray) {
-		val total = payload.size + HEADER_SIZE
+	suspend fun writeFrame(payload: Buffer) {
+		val size = payload.size.toInt()
+		val total = size + HEADER_SIZE
 		if (total > MAX_FRAME_SIZE) throw IOException("Frame too large to send: $total bytes")
+		payload.read(scratch, 0, size)
 		buffer.setInt(0, total)
-		buffer.write(HEADER_SIZE.toLong(), payload, 0, payload.size)
+		buffer.write(HEADER_SIZE.toLong(), scratch, 0, size)
 
-		val written = transfer { Kernel32IO.WriteFile(handlePointer, buffer, total, null, overlappedPointer) }
+		val written = withContext(Dispatchers.IO) {
+			transfer { Kernel32IO.WriteFile(handlePointer, buffer, total, null, overlappedPointer) }
+		}
 		if (written != total) throw IOException("Pipe write incomplete: $written of $total bytes")
 	}
 

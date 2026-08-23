@@ -21,7 +21,7 @@ class ResetsBehaviour(
 					armsResetMode = config.armsResetMode,
 					yawResetSmoothTime = config.yawResetSmoothTime,
 					saveMountingReset = config.saveMountingReset,
-					resetHmdPitch = config.resetPositionalHeadAttitude,
+					resetPositionalHeadAttitude = config.resetPositionalHeadAttitude,
 				),
 			)
 		}.launchIn(receiver.context.scope)
@@ -36,7 +36,7 @@ class ResetsBehaviour(
 							armsResetMode = req.armsResetMode ?: ArmsResetMode.BACK,
 							yawResetSmoothTime = req.yawResetSmoothTime ?: 0f,
 							saveMountingReset = req.saveMountingReset == true,
-							resetPositionalHeadAttitude = req.resetHmdPitch == true,
+							resetPositionalHeadAttitude = req.resetPositionalHeadAttitude == true,
 						),
 					)
 				},

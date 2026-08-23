@@ -15,47 +15,76 @@ import kotlinx.coroutines.withContext
 import java.io.OutputStreamWriter
 import com.fazecast.jSerialComm.SerialPort as JSerialPort
 
-private fun openPort(
+private suspend fun openPort(
 	portLocation: String,
 	scope: CoroutineScope,
 	onDataReceived: suspend (String, String) -> Unit,
 	onPortDisconnected: suspend (String) -> Unit,
 ): SerialPortHandle? {
 	val port = JSerialPort.getCommPorts().find { it.portLocation == portLocation } ?: return null
-	port.baudRate = 115200
-	port.clearRTS()
-	port.clearDTR()
-	if (!port.openPort(1000)) return null
 
-	// Anonymous object is required by the jSerialComm API
-	port.addDataListener(object : SerialPortMessageListener {
-		override fun getListeningEvents() = JSerialPort.LISTENING_EVENT_DATA_RECEIVED or JSerialPort.LISTENING_EVENT_PORT_DISCONNECTED
+	try {
+		port.baudRate = 115200
+		port.clearRTS()
+		port.clearDTR()
+		if (!port.openPort(1000)) return null
+	} catch (e: Exception) {
+		AppLogger.serial.error(e, "Failed to open serial port: $portLocation")
+		return null
+	}
 
-		override fun getMessageDelimiter() = byteArrayOf(0x0A)
-		override fun delimiterIndicatesEndOfMessage() = true
+	try {
+		// Anonymous object is required by the jSerialComm API
+		port.addDataListener(object : SerialPortMessageListener {
+			override fun getListeningEvents() = JSerialPort.LISTENING_EVENT_DATA_RECEIVED or JSerialPort.LISTENING_EVENT_PORT_DISCONNECTED
 
-		override fun serialEvent(event: SerialPortEvent) {
-			when (event.eventType) {
-				JSerialPort.LISTENING_EVENT_DATA_RECEIVED -> {
-					val line = event.receivedData.toString(Charsets.UTF_8).trimEnd()
-					scope.launch { onDataReceived(portLocation, line) }
+			override fun getMessageDelimiter() = byteArrayOf(0x0A)
+			override fun delimiterIndicatesEndOfMessage() = true
+
+			override fun serialEvent(event: SerialPortEvent) {
+				when (event.eventType) {
+					JSerialPort.LISTENING_EVENT_DATA_RECEIVED -> {
+						try {
+							val data = event.receivedData
+							if (data != null) {
+								val line = data.toString(Charsets.UTF_8).trimEnd()
+								scope.launch { onDataReceived(portLocation, line) }
+							}
+						} catch (e: Exception) {
+							scope.launch { AppLogger.serial.error(e, "Error reading serial data from $portLocation") }
+						}
+					}
+
+					JSerialPort.LISTENING_EVENT_PORT_DISCONNECTED ->
+						scope.launch { onPortDisconnected(portLocation) }
 				}
-
-				JSerialPort.LISTENING_EVENT_PORT_DISCONNECTED ->
-					scope.launch { onPortDisconnected(portLocation) }
 			}
-		}
-	})
+		})
+	} catch (e: Exception) {
+		AppLogger.serial.error(e, "Failed to add serial listener for $portLocation")
+		try {
+			port.closePort()
+		} catch (_: Exception) {}
+		return null
+	}
 
 	return SerialPortHandle(
 		portLocation = portLocation,
 		descriptivePortName = port.descriptivePortName,
 		writeCommand = { text ->
-			OutputStreamWriter(port.outputStream).append(text).append("\n").flush()
+			try {
+				OutputStreamWriter(port.outputStream).append(text).append("\n").flush()
+			} catch (e: Exception) {
+				AppLogger.serial.error(e, "Error writing to serial port $portLocation")
+			}
 		},
 		close = {
-			port.removeDataListener()
-			port.closePort()
+			try {
+				port.removeDataListener()
+				port.closePort()
+			} catch (e: Exception) {
+				AppLogger.serial.error(e, "Error closing serial port $portLocation")
+			}
 		},
 	)
 }

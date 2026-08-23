@@ -42,13 +42,27 @@ class UdpServer(val context: UdpServerContext, private val addressResolver: (Ine
 
 	fun startObserving() = context.observeAll(this)
 
+	fun addConnection(address: String, conn: UDPConnection) {
+		val oldConn = context.state.value.connections[address]
+		context.dispatch(UdpServerActions.ConnectionAdded(address, conn))
+		oldConn?.dispose()
+	}
+
+	fun removeConnection(address: String) {
+		val oldConn = context.state.value.connections[address]
+		if (oldConn != null) {
+			context.dispatch(UdpServerActions.ConnectionRemoved(address))
+			oldConn.dispose()
+		}
+	}
+
 	fun findConnectionForDevice(deviceId: Int): UDPConnection? = context.state.value.connections.values.find { conn ->
 		conn.context.state.value.deviceId == deviceId
 	}
 
 	fun startReceiving(appContext: AppContextProvider, scope: CoroutineScope) {
 		if (receiveJob != null) return
-		receiveJob = scope.launch {
+		receiveJob = scope.launch(Dispatchers.IO) {
 			val port = appContext.config.settings.context.state.value.data.trackersConfig.trackerPort
 			val selectorManager = SelectorManager(Dispatchers.IO)
 			val socket = aSocket(selectorManager).udp().bind(port = port)
@@ -81,7 +95,7 @@ class UdpServer(val context: UdpServerContext, private val addressResolver: (Ine
 									appContext = appContext,
 									scope = scope,
 								)
-								context.dispatch(UdpServerActions.ConnectionAdded(address, newConn))
+								addConnection(address, newConn)
 								newConn.packetChannel.trySend(event)
 							}
 						}

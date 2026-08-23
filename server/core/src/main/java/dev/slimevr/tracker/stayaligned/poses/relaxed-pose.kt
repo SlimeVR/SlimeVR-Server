@@ -3,10 +3,10 @@ package dev.slimevr.tracker.stayaligned.poses
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.getFineFor
+import dev.slimevr.tracker.getFirstFineFor
+import dev.slimevr.tracker.stayaligned.StayAlignedBodyParts
 import dev.slimevr.tracker.stayaligned.StayAlignedDefaults
 import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
-import solarxr_protocol.datatypes.BodyPart
 
 class RelaxedPose(
 	val upperLeg: Angle,
@@ -75,30 +75,28 @@ class RelaxedPose(
 				null
 		}
 
-		// TODO only used for this module, move it?
-
 		/**
 		 * Gets the relaxed angles from the trackers.
 		 */
 		fun fromTrackers(trackerStates: List<TrackerState>): RelaxedPose {
 			val halfAngleBetween = { left: TrackerState, right: TrackerState ->
-				(trackerYaw(left) - trackerYaw(right)) * 0.5f
+				(trackerYaw(left.rotation) - trackerYaw(right.rotation)) * 0.5f
 			}
 
-			val upperLegAngle: Angle = trackerStates.getFineFor(BodyPart.LEFT_UPPER_LEG)?.let { left ->
-				trackerStates.getFineFor(BodyPart.RIGHT_UPPER_LEG)?.let { right ->
+			val upperLegAngle: Angle = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftUpperLeg)?.let { left ->
+				trackerStates.getFirstFineFor(StayAlignedBodyParts.rightUpperLeg)?.let { right ->
 					halfAngleBetween(left, right)
 				}
 			} ?: Angle.ZERO
 
-			val lowerLegAngle: Angle = trackerStates.getFineFor(BodyPart.LEFT_LOWER_LEG)?.let { left ->
-				trackerStates.getFineFor(BodyPart.RIGHT_LOWER_LEG)?.let { right ->
+			val lowerLegAngle: Angle = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftLowerLeg)?.let { left ->
+				trackerStates.getFirstFineFor(StayAlignedBodyParts.rightLowerLeg)?.let { right ->
 					halfAngleBetween(left, right)
 				}
 			} ?: Angle.ZERO
 
-			val footAngle: Angle = trackerStates.getFineFor(BodyPart.LEFT_FOOT)?.let { left ->
-				trackerStates.getFineFor(BodyPart.RIGHT_FOOT)?.let { right ->
+			val footAngle: Angle = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftFoot)?.let { left ->
+				trackerStates.getFirstFineFor(StayAlignedBodyParts.rightFoot)?.let { right ->
 					halfAngleBetween(left, right)
 				}
 			} ?: Angle.ZERO

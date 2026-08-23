@@ -2,6 +2,7 @@ package dev.slimevr.tracker.stayaligned
 
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
 /**
@@ -27,7 +28,7 @@ object StayAlignedDefaults {
 	// Weight of each force
 	const val YAW_ERRORS_LOCKED_ERROR_WEIGHT = 10.0f
 	const val YAW_ERRORS_CENTER_ERROR_WEIGHT = 2.0f
-	const val YAW_ERRORS_NEIGHBOR_ERROR_WEIGHT = 1.0f
+	const val YAW_ERRORS_NEIGHBOUR_ERROR_WEIGHT = 1.0f
 
 	// Yaw correction for each type of IMU
 	val YAW_CORRECTION_IMU_GOOD = Angle.ofDeg(0.15f)

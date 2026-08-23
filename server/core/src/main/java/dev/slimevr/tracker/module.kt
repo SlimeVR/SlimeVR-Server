@@ -27,8 +27,7 @@ import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.hardware_info.TrackerDataType
 import kotlin.time.Duration
 
-// TODO maybe have more states, like ROTATING_FAST for TapDetection?
-// A tracker is initialized ROTATING to prevent TapDetection and Stay Aligned from running immediately.
+// A tracker is initialized as ROTATING to prevent TapDetection and Stay Aligned from running immediately.
 enum class Motion {
 	ROTATING,
 	RESTING,
@@ -81,8 +80,16 @@ data class TrackerState(
 /**
  * Returns the first OK or SLEEPING tracker state that matches the body part, or null
  */
-fun List<TrackerState>.getFineFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull {
+fun List<TrackerState>.getFirstFineFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull {
 	it.bodyPart == bodyPart &&
+		(it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING)
+}
+
+/**
+ * Returns all the OK or SLEEPING tracker states that matches the body parts
+ */
+fun List<TrackerState>.getAllFineFor(bodyParts: List<BodyPart>): List<TrackerState> = this.filter {
+	it.bodyPart in bodyParts &&
 		(it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING)
 }
 
@@ -96,7 +103,7 @@ sealed interface TrackerActions {
 	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion, val smoothTime: Duration = Duration.ZERO) : TrackerActions
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
-	data class MountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
+	data class PoseMountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
 	data class SetMotion(val motion: Motion) : TrackerActions
 	data class SetYawCorrection(val yawCorrection: Angle) : TrackerActions

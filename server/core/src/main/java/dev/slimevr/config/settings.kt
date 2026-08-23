@@ -102,7 +102,7 @@ data class ResetsConfig(
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
 	/** Reset a positional tracker's attitude full reset */
-	val resetPositionalHeadAttitude: Boolean = false, // TODO also rename in GUI and solarxr
+	val resetPositionalHeadAttitude: Boolean = false, // TODO
 	/** Used as preferred mounting method and tracking checklist */
 	val lastMountingMethod: MountingMethod = MountingMethod.POSE,
 )
@@ -128,7 +128,6 @@ fun defaultKeybinds(): List<KeybindConfig> = listOf(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonTogglesConfig(
-	val forceArmsFromHmd: Boolean = true, // TODO do we still need that with useTrackerPositions?
 	val floorClip: Boolean = true,
 	val skatingCorrection: Boolean = true,
 	val toeSnap: Boolean = true,
@@ -145,7 +144,7 @@ data class SkeletonRatiosConfig(
 	val imputeSpineFromUpperToLower: Float = 0.5f,
 	val imputeSpineCurvature: Float = 0.5f,
 	val interpolateHipWithUpperLegs: Float = 0.25f,
-	val interpolateUpperLegsWithLowerLegs: Float = 0.8f,
+	val interpolateUpperLegsTwistWithLowerLegs: Float = 0.85f,
 	val skatingCorrectionStrength: Float = 0.3f,
 )
 
@@ -193,11 +192,11 @@ data class VMCConfig(
 data class StayAlignedRelaxedPoseConfig(
 	/** Whether Stay Aligned should adjust the tracker yaws when the player is in this pose. */
 	var enabled: Boolean = false,
-	/** Angle between the upper leg yaw and the center yaw. */
+	/** Angle between the upper leg yaw and the centre yaw. */
 	var upperLegAngleInDeg: Float = 0.0f,
-	/** Angle between the lower leg yaw and the center yaw. */
+	/** Angle between the lower leg yaw and the centre yaw. */
 	var lowerLegAngleInDeg: Float = 0.0f,
-	/** Angle between the foot and the center yaw. */
+	/** Angle between the foot and the centre yaw. */
 	var footAngleInDeg: Float = 0.0f,
 )
 

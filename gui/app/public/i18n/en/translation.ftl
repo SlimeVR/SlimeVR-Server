@@ -490,7 +490,7 @@ settings-sidebar-appearance = Appearance
 settings-sidebar-home = Home Screen
 settings-sidebar-checklist = Tracking checklist
 settings-sidebar-notifications = Notifications
-settings-sidebar-behavior = Behavior
+settings-sidebar-behavior = Behaviour
 settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = Advanced
@@ -693,12 +693,9 @@ settings-general-fk_settings-ik-use_position-description = Enables the use of po
 settings-general-fk_settings-velocity_settings = Velocity Settings
 settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
 settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
-settings-general-fk_settings-arm_fk = Arm tracking
-settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
-settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-resets_settings = Resets Settings
-settings-general-fk_settings-reset_settings-reset_hmd_pitch = Reset HMD pitch
-settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Reset the HMD's vertical rotation upon doing a full reset. Useful if wearing an HMD on the forehead for VTubing or mocap. Do not enable for VR.
+settings-general-fk_settings-reset_settings-reset_positional_head_attitude = Reset positional head attitude
+settings-general-fk_settings-reset_settings-reset_positional_head_attitude-description = Reset a positional head tracker's vertical rotation upon doing a full reset. Useful if wearing a Vive tracker or HMD on the forehead for VTubing or mocap. Do not enable for VR.
 settings-general-fk_settings-arm_fk-reset_mode = Arms reset mode
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for resets.
 settings-general-fk_settings-arm_fk-back = Back
@@ -714,7 +711,7 @@ settings-general-fk_settings-skeleton_settings-ratios-description = Change the v
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = Estimate missing spine trackers from upper to lower
 settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature of adjacent missing spine trackers
 settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Interpolate the hip with the upper legs
-settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_with_lower_legs = Interpolate the upper legs with the lower legs
+settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
 
@@ -736,17 +733,15 @@ settings-general-gesture_control-trackers = { $amount ->
 settings-general-gesture_control-yawResetEnabled = Enable tap to yaw reset
 settings-general-gesture_control-yawResetDelay = Yaw reset delay
 settings-general-gesture_control-yawResetTaps = Taps for yaw reset
-settings-general-gesture_control-yawResetTracker = Yaw Reset Tracker
+settings-general-gesture_control-yawResetTracker = Yaw reset tracker
 settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
 settings-general-gesture_control-fullResetDelay = Full reset delay
 settings-general-gesture_control-fullResetTaps = Taps for full reset
-settings-general-gesture_control-fullResetTracker = Full Reset Tracker
-settings-general-gesture_control-mountingResetEnabled = Enable tap to mounting reset
+settings-general-gesture_control-fullResetTracker = Full reset tracker
+settings-general-gesture_control-mountingResetEnabled = Enable tap to perform mounting calibration
 settings-general-gesture_control-mountingResetDelay = Mounting calibration delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting calibration
-settings-general-gesture_control-mountingResetTracker = Mounting Reset Tracker
-settings-general-gesture_control-yawResetTracker-title = Yaw Reset Tracker
-settings-general-gesture_control-fullResetTracker-title = Full Reset Tracker
+settings-general-gesture_control-mountingResetTracker = Mounting reset tracker
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over threshold
 settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make tap detection work as it would cause more false positives.
@@ -756,7 +751,7 @@ settings-interface-appearance = Appearance
 settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
-settings-general-interface-theme = Color theme
+settings-general-interface-theme = Colour theme
 settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
 settings-general-interface-show-navbar-onboarding-description = This changes whether the "{ navbar-onboarding }" button shows on the navigation bar.
 settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
@@ -789,7 +784,7 @@ settings-general-interface-connected_trackers_warning-description = This option 
 settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
 
 ## Behavior settings
-settings-interface-behavior = Behavior
+settings-interface-behavior = Behaviour
 settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
@@ -1071,17 +1066,33 @@ onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 onboarding-wifi_creds-description-v2 =
     Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
     Please use the credentials of the Wi-Fi network your device is currently connected to.
-
-    Make sure to use a 2.4GHz Wi-Fi connection for your trackers!
 onboarding-wifi_creds-skip = Skip Wi-Fi settings
+onboarding-wifi_creds-continue = Continue with Wi-Fi
 onboarding-wifi_creds-submit = Submit!
+onboarding-wifi_creds-retry = Retry
+onboarding-wifi_creds-provisioning_failed_connect = Connection failed for all trackers. Double-check your Wi-Fi name and password, then try again.
+onboarding-wifi_creds-provisioning_failed_server = Trackers connected to Wi-Fi but couldn't find the SlimeVR server. Check your firewall and network settings, then try again.
+onboarding-wifi_creds-ssid-label = Wi-Fi name
 onboarding-wifi_creds-ssid =
-    .label = Wi-Fi name
     .placeholder = Enter Wi-Fi name
 onboarding-wifi_creds-ssid-required = Wi-Fi name is required
+onboarding-wifi_creds-ssid-scan =
+    .placeholder = Select Wi-Fi network
+onboarding-wifi_creds-network_band_tip = Only 2.4GHz Wi-Fi networks can be used by trackers. If your network doesn't appear in the list, make sure a 2.4GHz band is enabled on your router.
+onboarding-wifi_creds-scan_idle = Plug in a tracker via USB to scan for nearby Wi-Fi networks.
+onboarding-wifi_creds-scanning = Scanning for Wi-Fi networks...
+onboarding-wifi_creds-scan_unsupported = Wi-Fi scanning isn't supported on this tracker's firmware yet. Enter your network name manually.
+onboarding-wifi_creds-scan_results = Wi-Fi networks found. Pick yours below.
+onboarding-wifi_creds-scan_failed = Wi-Fi scan failed on the tracker.
+onboarding-wifi_creds-scan_error_no_device = Could not find a tracker over USB to scan for Wi-Fi networks.
+onboarding-wifi_creds-scan_error_no_logs = Could not read serial logs from the tracker during Wi-Fi scan.
+onboarding-wifi_creds-scan_retry = Try again
+onboarding-wifi_creds-rescan = Rescan
+onboarding-wifi_creds-enter_manually = Don't see your network? Enter it manually
+onboarding-wifi_creds-use_scanned = Choose from scanned networks instead
 onboarding-wifi_creds-password =
     .label = Password
-    .placeholder = Enter password
+    .placeholder = Enter your WI-FI password
 
 onboarding-wifi_creds-dongle-title = Trackers using a dongle
 onboarding-wifi_creds-dongle-description =
@@ -1127,11 +1138,24 @@ onboarding-done-close = Close setup
 
 ## Tracker connection setup
 onboarding-connect_tracker-back = Go back to Wi-Fi credentials
-onboarding-connect_tracker-title = Connect trackers
+onboarding-connect_tracker-title = Let's connect your trackers
+onboarding-connect_tracker-description = Enter your Wi-Fi network below and submit once. every tracker you connect via USB, now or later, will automatically use those credentials.
+onboarding-connect_tracker-continue_hint = Finish connecting all your trackers to continue
+onboarding-connect_tracker-learn_more = Learn more
 onboarding-connect_tracker-description-p0-v1 = Now onto the fun part, connecting trackers!
 onboarding-connect_tracker-description-p1-v1 = Connect each tracker one at a time through a USB port.
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
+onboarding-connect_tracker-tracker_mac_name = SlimeVR Tracker ({ $suffix })
+onboarding-connect_tracker-tracker_port_name = USB Tracker ({ $port })
+onboarding-connect_tracker-network_profile-ignore = I configured my firewall and know what I'm doing
+onboarding-connect_tracker-waiting_first_title = Waiting for your first tracker
+onboarding-connect_tracker-waiting_first_desc = Plug one in over USB to get started.
+onboarding-connect_tracker-scan_results_title = Select network & enter password
+onboarding-connect_tracker-scan_results_desc = Enter your Wi-Fi credentials on the left to connect your trackers.
+onboarding-connect_tracker-all_caught_up = All caught up. Plug in more any time
+onboarding-connect_tracker-shake_tip = Not sure which tracker is which? Shake a tracker to see it light up in the list.
+onboarding-connect_tracker-close = Close
 onboarding-connect_tracker-connection_status-none = Looking for trackers
 onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker's mac address
@@ -1143,6 +1167,8 @@ onboarding-connect_tracker-connection_status-could_not_find_server = Could not f
 onboarding-connect_tracker-connection_status-done = Connected to the Server
 onboarding-connect_tracker-connection_status-no_serial_log = Could not get logs from the tracker
 onboarding-connect_tracker-connection_status-no_serial_device_found = Could not find a tracker from USB
+onboarding-connect_tracker-connection_error-desc = Make sure your Wi-Fi SSID and password are entered correctly and that your 2.4GHz network is active.
+onboarding-connect_tracker-could_not_find_server-desc = The tracker connected to Wi-Fi, but could not find the SlimeVR server on your local network. Check your firewall settings.
 onboarding-connect_serial-error-modal-no_serial_log = Is the tracker turned on?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer.
 onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detected
@@ -1162,6 +1188,10 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
     [one] 1 tracker
     *[other] { $amount } trackers
 } connected
+onboarding-connect_tracker-setting_up = Setting up ({ $amount })
+onboarding-connect_tracker-connected_section = Connected trackers ({ $amount })
+onboarding-connect_tracker-connected_title = USB Tracker Connected
+onboarding-connect_tracker-connected_desc = Enter your Wi-Fi credentials on the left and click Submit to send settings to your tracker.
 onboarding-connect_tracker-next = I connected all my trackers
 
 ## Tracker calibration tutorial
@@ -1449,7 +1479,7 @@ onboarding-user_height-calibration-title = Calibration Progress
 onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
 onboarding-user_height-calibration-WAITING_FOR_RISE = Stand back up
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Stand back up and look forward
-onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Make sure your head is leveled
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok = Make sure your head is levelled
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low = Do not look at the floor
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high = Do not look too high up
 onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH = Make sure the controller is pointing down
@@ -1721,7 +1751,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 error_collection_modal-title = Can we collect errors?
 error_collection_modal-description_v2 = { settings-interface-behavior-error_tracking-description_v2 }
 
-    You can change this setting later in the Behavior section of the settings page.
+    You can change this setting later in the Behaviour section of the settings page.
 error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
 

@@ -22,6 +22,8 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -53,17 +55,20 @@ class TrackingChecklistTest {
 		private val boneRouting: BoneRoutingManager = BoneRoutingManager.create(scope.backgroundScope)
 		private var nextId = 1
 
+		private val trackerStates = trackerStatesFlow(server)
+			.stateIn(scope.backgroundScope, SharingStarted.Eagerly, initialValue = emptyList())
+
 		init {
 			checklist.context.behaviours.addAll(
 				listOf(
-					HMDCheckBehaviour(server),
-					TrackerRestCheckBehaviour(server),
-					TrackerErrorCheckBehaviour(server),
-					FullResetCheckBehaviour(server, resetsManager),
-					MountingCalibrationCheckBehaviour(server, resetsManager, settings),
-					FeetMountingCalibrationCheckBehaviour(server, resetsManager, settings),
+					HMDCheckBehaviour(trackerStates),
+					TrackerRestCheckBehaviour(trackerStates),
+					TrackerErrorCheckBehaviour(trackerStates),
+					FullResetCheckBehaviour(trackerStates, resetsManager),
+					MountingCalibrationCheckBehaviour(trackerStates, resetsManager, settings),
+					FeetMountingCalibrationCheckBehaviour(trackerStates, resetsManager, settings),
 					NetworkProfileCheckBehaviour(networkProfileManager),
-					SteamVRHandsCheckBehaviour(server, boneRouting),
+					SteamVRHandsCheckBehaviour(trackerStates, server, boneRouting),
 				),
 			)
 			checklist.context.observeAll(checklist)
@@ -190,7 +195,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.MOUNTING, bodyParts = null))
+		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, bodyParts = null))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).valid)
 	}
@@ -204,7 +209,7 @@ class TrackingChecklistTest {
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
 		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 
-		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.MOUNTING, bodyParts = ResetBodyParts.FEET.toList()))
+		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.POSE_MOUNTING, bodyParts = ResetBodyParts.FEET.toList()))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).valid)
 	}

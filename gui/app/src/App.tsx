@@ -15,13 +15,13 @@ import { OnboardingContextProvider } from './components/onboarding/OnboardingCon
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
 import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
-import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
+import { ConnectTrackersPage } from './components/onboarding/pages/connect-trackers/ConnectTrackers';
+import { AddTrackersPage } from './components/onboarding/pages/AddTrackers';
 import { HomePage } from './components/onboarding/pages/Home';
 import { ErrorCollectingConsentPage } from './components/onboarding/pages/ErrorCollectingConsent';
 import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
-import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
 import { DonglePage } from './components/onboarding/pages/Dongle';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
 import { SerialDetectionModal } from './components/SerialDetectionModal';
@@ -172,13 +172,13 @@ function Layout() {
               path="error-collecting-consent"
               element={<ErrorCollectingConsentPage />}
             />
-            <Route path="wifi-creds" element={<WifiCredsPage />} />
             <Route path="quiz/slime-set" element={<QuizSlimeSetQuestion />} />
             <Route path="quiz/usage" element={<QuizUsageQuestion />} />
             <Route path="quiz/runtime" element={<QuizRuntimeQuestion />} />
             <Route path="quiz/mocap-pos" element={<QuizMocapPosQuestion />} />
             <Route path="dongle" element={<DonglePage />} />
             <Route path="firmware-tool" element={<FirmwareToolSettings />} />
+            <Route path="add-trackers" element={<AddTrackersPage />} />
             <Route path="connect-trackers" element={<ConnectTrackersPage />} />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="mounting/choose" element={<MountingChoose />} />

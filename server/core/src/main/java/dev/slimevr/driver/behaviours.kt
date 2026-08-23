@@ -5,6 +5,7 @@ import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerState
@@ -65,7 +66,7 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 					trackerStateByBodyPart.putIfAbsent(bodyPart, trackerState)
 				}
 
-				computedSkeleton.forEach { (part, state) ->
+				computedSkeleton.forEachBone { part, state ->
 					if (enabledBodyParts.contains(part)) {
 						val closestTracker = bodyPartToNearest[part].orEmpty()
 							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }
@@ -141,7 +142,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 			receiver.appContext.server.getTracker(trackerId)?.context?.dispatch(
 				TrackerActions.SetStatus(status = event.status),
 			)
-		}
+		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on

@@ -9,7 +9,7 @@ import {
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useWifiForm, WifiFormData } from '@/hooks/wifi-form';
+import { useWifiCredsForm, WifiFormData } from '@/hooks/wifi-form';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { BulbIcon } from './commons/icon/BulbIcon';
@@ -26,7 +26,8 @@ export function SerialDetectionModal() {
   const [isOpen, setOpen] = useState<SerialDeviceT | null>(null);
   const [showWifiForm, setShowWifiForm] = useState(false);
 
-  const { handleSubmit, submitWifiCreds, formState, control } = useWifiForm();
+  const { handleSubmit, submitWifiCreds, formState, control } =
+    useWifiCredsForm();
 
   const closeModal = () => {
     setOpen(null);
@@ -55,6 +56,7 @@ export function SerialDetectionModal() {
         config?.watchNewDevices &&
         ![
           '/settings/serial',
+          '/onboarding/add-trackers',
           '/onboarding/connect-trackers',
           '/settings/firmware-tool',
         ].includes(pathname) &&
@@ -133,6 +135,12 @@ export function SerialDetectionModal() {
               >
                 <Input
                   control={control}
+                  rules={{
+                    validate: {
+                      validPassword: (v: string | undefined) =>
+                        !v || new TextEncoder().encode(v).length >= 8, // WPA2 min password is 8 bytes
+                    },
+                  }}
                   name="password"
                   type="password"
                   label="Password"

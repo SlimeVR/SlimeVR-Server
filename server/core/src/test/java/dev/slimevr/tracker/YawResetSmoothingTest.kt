@@ -97,7 +97,7 @@ class YawResetSmoothingTest {
 		tracker.context.dispatch(TrackerActions.YawReset(Quaternion.IDENTITY, 500.milliseconds))
 		val seed = assertNotNull(tracker.context.state.value.yawResetSmoothing)
 
-		tracker.context.dispatch(TrackerActions.MountingReset(Quaternion.IDENTITY, 0f))
+		tracker.context.dispatch(TrackerActions.PoseMountingReset(Quaternion.IDENTITY, 0f))
 
 		assertEquals(seed, tracker.context.state.value.yawResetSmoothing)
 	}
