@@ -5,6 +5,7 @@ import {
 import { StayAlignedSettings } from './components/StayAlignedSettings';
 import { ResetsSettings } from './components/ResetsSettings';
 import { HIDSettings } from './components/HIDSettings';
+import { TimeoutSettings } from './components/TimeoutSettings';
 import { TrackingSettings } from './components/TrackingSettings';
 import { TapDetectionSettings } from './components/TapDetectionSettings';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
@@ -49,6 +50,7 @@ export function GroupedTrackersSettings() {
           settingType="general"
           id="mechanics-magnetometer"
         />
+        <TimeoutSettings />
       </>
     </SettingsPagePaneLayout>
   );

@@ -20,13 +20,14 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Change between IMU axes and OpenGL/SteamVR axes
  */
 internal val AXES_OFFSET = Quaternion.fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
 internal const val CONNECTION_TIMEOUT_MS = 5000L
-internal const val CONNECTION_REMOVAL_MS = 30_000L
 
 class PacketBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
@@ -259,14 +260,14 @@ class DisconnectBehaviour : UDPConnectionBehaviour {
 					delay(500)
 					continue
 				}
-				val timeUntilRemoval = CONNECTION_REMOVAL_MS - (System.currentTimeMillis() - state.lastPacket)
-				if (timeUntilRemoval <= 0) {
+				val timeUntilRemoval = receiver.appContext.config.settings.context.state.value.data.timeoutConfig.duration.toDouble().seconds - (System.currentTimeMillis() - state.lastPacket).milliseconds
+				if (timeUntilRemoval <= 0.milliseconds) {
 					AppLogger.udp.info("[${state.address}] Connection removed after extended timeout")
 					receiver.appContext.udpServer.removeConnection(state.address)
 					updateConnectionStatus(receiver, TrackerStatus.DISCONNECTED)
 					break
 				} else {
-					delay(timeUntilRemoval + 1)
+					delay(timeUntilRemoval + 1.milliseconds)
 				}
 			}
 		}
