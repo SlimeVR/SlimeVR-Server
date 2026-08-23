@@ -6,26 +6,20 @@ import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import dev.slimevr.solarxr.createBone
 import dev.slimevr.tracker.TrackerState
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
-import solarxr_protocol.datatypes.math.Quat
-import solarxr_protocol.datatypes.math.Vec3f
-import solarxr_protocol.driver_protocol.AddTrackerStatus
-import solarxr_protocol.driver_protocol.OutboundAddTrackerRequest
-import solarxr_protocol.driver_protocol.OutboundAddTrackerResponse
-import solarxr_protocol.driver_protocol.OutboundTrackerPositionNotification
-import solarxr_protocol.driver_protocol.OutboundTrackerStatusNotification
-import solarxr_protocol.rpc.RoutingOutput
-import java.util.concurrent.ConcurrentHashMap
+import solarxr_protocol.driver_protocol.BoneBatteryUpdate
+import solarxr_protocol.driver_protocol.SkeletonUpdate
 
 class DriverOutgoingTrackersBehaviour(
 	private val appContext: AppContextProvider,
@@ -48,89 +42,52 @@ class DriverOutgoingTrackersBehaviour(
 	)
 
 	override fun observe(receiver: SolarXRBridge) {
-		val requestedTrackers = ConcurrentHashMap.newKeySet<UByte>()
-		val confirmedTrackers = ConcurrentHashMap.newKeySet<UByte>()
+		val server = appContext.server
+		val settings = appContext.config.settings
 
-		// Status and battery are rebuilt every frame but only change every few seconds, so the driver
-		// was being sent the same values at skeleton rate. Keep the last one per body part and only
-		// send on a real change, the same way subscribedTrackers already gates TrackerAdded.
-		val lastStatus = mutableMapOf<UByte, OutboundTrackerStatusNotification>()
+		val boneBatteries = bodyPartMap<BoneBatteryUpdate>()
 
-		combine(
-			appContext.skeleton.computed,
-			appContext.boneRouting.context.state
-				.map { state -> state.routes.filterValues { RoutingOutput.DRIVER in it }.keys }
-				.distinctUntilChanged(),
-			::Pair,
-		)
+		combine(settings.context.state.map { it.data.driverConfig.enabled }, receiver.context.state) { enabled, state ->
+			Triple(
+				enabled,
+				state.driverName,
+				state.boneMask,
+			)
+		}
 			.distinctUntilChanged()
-			.onEach { (computedSkeleton, enabledBodyParts) ->
-				if (receiver.context.state.value.driverName == null) return@onEach
-
-				val serverState = appContext.server.context.state.value
-
+			.flatMapLatest { (enabled, driverName, boneMask) ->
+				if (!enabled || driverName == null || boneMask == null) return@flatMapLatest emptyFlow()
 				// Map the nearest trackers to their body parts
 				val trackerStateByBodyPart = bodyPartMap<TrackerState>()
-				for (tracker in serverState.trackers.values) {
+				for (tracker in server.context.state.value.trackers.values) {
 					val trackerState = tracker.context.state.value
 					if (trackerState.origin == DeviceOrigin.DRIVER) continue
 					val bodyPart = trackerState.bodyPart ?: continue
 					trackerStateByBodyPart.putIfAbsent(bodyPart, trackerState)
 				}
 
-				computedSkeleton.forEach { (part, state) ->
-					if (enabledBodyParts.contains(part)) {
-						val closestTracker = bodyPartToNearest[part].orEmpty()
-							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }
-						val closestDevice = serverState.devices[closestTracker?.deviceId]?.context?.state?.value
+				appContext.skeleton.computed.onEach { computedSkeleton ->
+					val bones = computedSkeleton.values.map { createBone(it, boneMask) }
 
-						if (requestedTrackers.add(part.value)) {
-							receiver.context.scope.launch {
-								try {
-									val response = receiver.requestDriverMessage<OutboundAddTrackerResponse>(
-										OutboundAddTrackerRequest(trackerId = part.value.toUShort(), bodyPart = part),
-									)
-									if (response.status == AddTrackerStatus.ERROR) {
-										AppLogger.solarxr.warn("Driver rejected adding tracker for body part $part")
-										requestedTrackers.remove(part.value) // Should we retry on the next frame?
-									} else {
-										confirmedTrackers.add(part.value)
-									}
-								} catch (e: TimeoutCancellationException) {
-									AppLogger.solarxr.warn("Timeout waiting for driver to add tracker for body part $part")
-									requestedTrackers.remove(part.value)
-								}
+					receiver.sendDriverMessage(SkeletonUpdate(bones = bones))
+
+					computedSkeleton.keys.forEach { bodyPart ->
+						val closestTracker = bodyPartToNearest[bodyPart].orEmpty()
+							.firstNotNullOfOrNull { fallbackPart -> trackerStateByBodyPart[fallbackPart] }
+						val closestDevice =
+							server.context.state.value.devices[closestTracker?.deviceId]?.context?.state?.value
+
+						if (closestDevice?.batteryLevel != null) {
+							val battery = BoneBatteryUpdate(
+								bone = bodyPart,
+								batteryLevel = (closestDevice.batteryLevel * 100).toUInt().toUByte(),
+								charging = closestDevice.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
+							)
+							if (boneBatteries.put(bodyPart, battery) != battery) {
+								AppLogger.solarxr.debug("Sending BoneBatteryUpdate for $bodyPart")
+								receiver.sendDriverMessage(battery)
 							}
 						}
-
-						if (part.value !in confirmedTrackers) return@forEach
-
-						receiver.sendDriverMessage(
-							OutboundTrackerPositionNotification(
-								trackerId = part.value.toUShort(),
-								rotation = Quat(state.rotation.x, state.rotation.y, state.rotation.z, state.rotation.w),
-								position = Vec3f(state.tailPosition.x, state.tailPosition.y, state.tailPosition.z),
-								// TODO add veliocity data
-							),
-						)
-
-						val status = OutboundTrackerStatusNotification(
-							trackerId = part.value.toUShort(),
-							status = closestTracker?.status ?: TrackerStatus.OK,
-							batteryLevel = closestDevice?.batteryLevel ?: 1f,
-							charging = closestDevice?.batteryVoltage != null && closestDevice.batteryVoltage >= 4.3f,
-						)
-						if (lastStatus.put(part.value, status) != status) receiver.sendDriverMessage(status)
-					} else {
-						if (part.value !in confirmedTrackers) return@forEach
-
-						val status = OutboundTrackerStatusNotification(
-							trackerId = part.value.toUShort(),
-							status = TrackerStatus.DISCONNECTED,
-							batteryLevel = null,
-							charging = false,
-						)
-						if (lastStatus.put(part.value, status) != status) receiver.sendDriverMessage(status)
 					}
 				}
 			}.launchIn(receiver.context.scope)

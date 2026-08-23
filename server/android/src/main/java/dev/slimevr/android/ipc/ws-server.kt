@@ -47,6 +47,8 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 						send(Frame.Binary(fin = true, data = fbb.dataBuffer().moveToByteArray()))
 					}.launchIn(this)
 
+					bridge.startObserving()
+
 					try {
 						flow {
 							for (frame in incoming) {

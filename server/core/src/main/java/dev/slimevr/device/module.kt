@@ -29,6 +29,7 @@ data class DeviceState(
 	val protocolVersion: Int,
 	val status: TrackerStatus,
 	val origin: DeviceOrigin,
+	val driverName: String? = null,
 	val packetsReceived: Long,
 	val packetsLost: Long,
 )
@@ -57,6 +58,7 @@ class Device(
 			address: String,
 			macAddress: String? = null,
 			origin: DeviceOrigin,
+			driverName: String? = null,
 			protocolVersion: Int,
 		): Device {
 			val deviceState = DeviceState(
@@ -67,6 +69,7 @@ class Device(
 				batteryVoltage = null,
 				batteryRemainingRuntime = null,
 				origin = origin,
+				driverName = driverName,
 				address = address,
 				macAddress = macAddress,
 				protocolVersion = protocolVersion,

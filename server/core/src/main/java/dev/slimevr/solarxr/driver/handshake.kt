@@ -1,43 +1,72 @@
 package dev.slimevr.solarxr.driver
 
-import dev.slimevr.VRServer
+import dev.slimevr.AppContextProvider
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeActions
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.SolarXRBridgeState
-import solarxr_protocol.driver_protocol.DriverHandshakeStatus
-import solarxr_protocol.driver_protocol.InboundHandshakeRequest
-import solarxr_protocol.driver_protocol.InboundHandshakeResponse
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.driver_protocol.HandshakeAvailable
+import solarxr_protocol.driver_protocol.HandshakeRequest
+import solarxr_protocol.driver_protocol.HandshakeResponse
+import solarxr_protocol.driver_protocol.HandshakeStatus
 
 class DriverHandshakeBehaviour(
-	private val server: VRServer,
+	private val appContext: AppContextProvider,
 ) : SolarXRBridgeBehaviour {
 	override fun reduce(state: SolarXRBridgeState, action: SolarXRBridgeActions) = when (action) {
-		is SolarXRBridgeActions.SetDriverName -> state.copy(driverName = action.name)
+		is SolarXRBridgeActions.SetDriverInfo -> state.copy(driverName = action.name, boneMask = action.boneMask)
 		else -> state
 	}
 
 	override fun observe(receiver: SolarXRBridge) {
-		receiver.onDriverMessage<InboundHandshakeRequest> { req, replyTo ->
-			val name = req.driverName
+		val server = appContext.server
 
-			val duplicate = name != null &&
-				server.context.state.value.solarxr.values.any {
-					it.id != receiver.id && it.context.state.value.driverName == name
+		appContext.config.settings.context.state
+			.map { it.data.driverConfig.enabled }
+			.distinctUntilChanged()
+			.onEach { enabled ->
+				if (enabled) {
+					receiver.sendDriverMessage(HandshakeAvailable())
+				} else {
+					val driverName = receiver.context.state.value.driverName ?: return@onEach
+
+					AppLogger.solarxr.info("Disconnecting driver \"$driverName\"")
+					receiver.disconnectDriverTrackers()
+					receiver.context.dispatch(SolarXRBridgeActions.SetDriverInfo(null, null))
+					receiver.sendDriverMessage(HandshakeResponse(status = HandshakeStatus.REJECTED_DISABLED))
 				}
+			}.launchIn(receiver.context.scope)
 
-			if (duplicate) {
-				receiver.sendDriverMessage(
-					InboundHandshakeResponse(status = DriverHandshakeStatus.REJECTED_DUPLICATE),
-					replyTo = replyTo,
-				)
-				receiver.disconnect()
+		receiver.onDriverMessage<HandshakeRequest> { req, replyTo ->
+			val name = req.driverName?.takeIf { it.isNotEmpty() } ?: run {
+				AppLogger.solarxr.info("Rejecting driver handshake because it's unnamed")
+				receiver.sendDriverMessage(HandshakeResponse(status = HandshakeStatus.REJECTED_UNNAMED), replyTo = replyTo)
 				return@onDriverMessage
 			}
 
-			if (name != null) receiver.context.dispatch(SolarXRBridgeActions.SetDriverName(name))
+			val duplicate = server.context.state.value.solarxr.values.any {
+				it.id != receiver.id && it.context.state.value.driverName == name
+			}
+
+			if (duplicate) {
+				AppLogger.solarxr.info("Rejecting handshake from \"$name\" because it's a duplicate")
+				receiver.sendDriverMessage(
+					HandshakeResponse(status = HandshakeStatus.REJECTED_DUPLICATE),
+					replyTo = replyTo,
+				)
+				receiver.context.dispatch(SolarXRBridgeActions.SetDriverInfo(null, null))
+				return@onDriverMessage
+			}
+
+			AppLogger.solarxr.info("Shook hands with \"$name\"")
+			receiver.context.dispatch(SolarXRBridgeActions.SetDriverInfo(name, req.boneMask))
 			receiver.sendDriverMessage(
-				InboundHandshakeResponse(status = DriverHandshakeStatus.ACCEPTED),
+				HandshakeResponse(status = HandshakeStatus.ACCEPTED),
 				replyTo = replyTo,
 			)
 		}.launchIn(receiver.context.scope)
