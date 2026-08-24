@@ -3,6 +3,7 @@ package dev.slimevr.solarxr
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigActions
 import dev.slimevr.skeleton.ALL_BODY_PARTS
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.computeAllDefaultProportionsByBone
@@ -29,7 +30,7 @@ class SkeletonProportionsBehaviour(
 	private val skeleton: Skeleton,
 ) : SolarXRBridgeBehaviour {
 	private fun buildConfigResponse(boneInputs: InputSkeleton): SkeletonProportionsResponse {
-		val boneOffsets = boneInputs.mapValues { it.value.offset }
+		val boneOffsets = BodyPartMap(boneInputs.mapValues { it.value.offset })
 		val boneValues = boneOffsets.toBoneValues()
 		val skeletonParts = boneValues.map { (offset, bone) -> SkeletonPart(offset, bone) }
 		return SkeletonProportionsResponse(skeletonParts = skeletonParts, skeletonHeight = boneValues.height())
