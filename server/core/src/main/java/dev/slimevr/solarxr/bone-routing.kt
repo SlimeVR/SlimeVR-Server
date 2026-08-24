@@ -77,7 +77,7 @@ class BoneRoutingBehaviour(
 		receiver.rpcDispatcher.on<ChangeBoneRoutingSettingsRequest> { req ->
 			val requested = req.routes.orEmpty()
 				.mapNotNull { route ->
-					val bone = route.bone ?: return@mapNotNull null
+					val bone = route.bone
 					if (bone == BodyPart.NONE) return@mapNotNull null
 					val outputs = route.outputs.orEmpty().toSet().ifEmpty { return@mapNotNull null }
 					bone to outputs

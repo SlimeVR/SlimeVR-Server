@@ -36,7 +36,7 @@ class ResetsBehaviour(
 							resetMountingFeet = req.resetMountingFeet,
 							resetMountingFingers = req.resetMountingFingers,
 							armsResetMode = req.armsResetMode,
-							yawResetSmoothTime = req.yawResetSmoothTime ?: 0f,
+							yawResetSmoothTime = req.yawResetSmoothTime,
 							saveMountingReset = req.saveMountingReset,
 							resetPositionalHeadAttitude = req.resetPositionalHeadAttitude,
 						),
