@@ -186,48 +186,48 @@ export function ResetsSettings() {
         <div className="flex flex-col gap-1">
           <Typography variant="section-title">
             {l10n.getString(
-                'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
+              'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
             )}
           </Typography>
 
           <Typography>
             {l10n.getString(
-                'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1'
+              'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1'
             )}
           </Typography>
 
           <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="resetMountingFeet"
-              label={l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
-              )}
+            variant="toggle"
+            outlined
+            control={control}
+            name="resetMountingFeet"
+            label={l10n.getString(
+              'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
+            )}
           />
         </div>
 
         <div className="flex flex-col gap-1">
           <Typography variant="section-title">
             {l10n.getString(
-                'settings-general-fk_settings-leg_fk-reset_mounting_fingers'
+              'settings-general-fk_settings-leg_fk-reset_mounting_fingers'
             )}
           </Typography>
 
           <Typography>
             {l10n.getString(
-                'settings-general-fk_settings-leg_fk-reset_mounting_fingers-description'
+              'settings-general-fk_settings-leg_fk-reset_mounting_fingers-description'
             )}
           </Typography>
 
           <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="resetMountingFingers"
-              label={l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_fingers'
-              )}
+            variant="toggle"
+            outlined
+            control={control}
+            name="resetMountingFingers"
+            label={l10n.getString(
+              'settings-general-fk_settings-leg_fk-reset_mounting_fingers'
+            )}
           />
         </div>
       </div>
