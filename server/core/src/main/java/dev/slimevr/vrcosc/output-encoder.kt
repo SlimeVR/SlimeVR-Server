@@ -5,6 +5,7 @@ import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -26,7 +27,7 @@ private val trackerIdsByBodyPart = mapOf(
 val VRC_OSC_SUPPORTED_BONES: Set<BodyPart> = trackerIdsByBodyPart.keys
 
 internal fun buildOutgoingBundle(
-	bones: Map<BodyPart, BoneState>,
+	bones: ComputedSkeleton,
 	routedBones: Set<BodyPart>,
 ): OscBundle? {
 	val messages = buildList {

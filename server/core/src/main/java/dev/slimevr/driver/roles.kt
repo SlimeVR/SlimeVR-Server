@@ -1,5 +1,6 @@
 package dev.slimevr.driver
 
+import dev.slimevr.skeleton.BodyPartMap
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -38,20 +39,22 @@ enum class TrackerRole(
 	}
 }
 
-val bodyPartToRole: Map<BodyPart, TrackerRole> = mapOf(
-	BodyPart.HEAD to TrackerRole.HMD,
-	BodyPart.UPPER_CHEST to TrackerRole.CHEST,
-	BodyPart.LEFT_UPPER_ARM to TrackerRole.LEFT_ELBOW,
-	BodyPart.RIGHT_UPPER_ARM to TrackerRole.RIGHT_ELBOW,
-	BodyPart.HIP to TrackerRole.WAIST,
-	BodyPart.LEFT_UPPER_LEG to TrackerRole.LEFT_KNEE,
-	BodyPart.RIGHT_UPPER_LEG to TrackerRole.RIGHT_KNEE,
-	BodyPart.LEFT_FOOT to TrackerRole.LEFT_FOOT,
-	BodyPart.RIGHT_FOOT to TrackerRole.RIGHT_FOOT,
-	BodyPart.LEFT_SHOULDER to TrackerRole.LEFT_SHOULDER,
-	BodyPart.RIGHT_SHOULDER to TrackerRole.RIGHT_SHOULDER,
-	BodyPart.LEFT_HAND to TrackerRole.LEFT_HAND,
-	BodyPart.RIGHT_HAND to TrackerRole.RIGHT_HAND,
+val bodyPartToRole: BodyPartMap<TrackerRole> = BodyPartMap(
+	mapOf(
+		BodyPart.HEAD to TrackerRole.HMD,
+		BodyPart.UPPER_CHEST to TrackerRole.CHEST,
+		BodyPart.LEFT_UPPER_ARM to TrackerRole.LEFT_ELBOW,
+		BodyPart.RIGHT_UPPER_ARM to TrackerRole.RIGHT_ELBOW,
+		BodyPart.HIP to TrackerRole.WAIST,
+		BodyPart.LEFT_UPPER_LEG to TrackerRole.LEFT_KNEE,
+		BodyPart.RIGHT_UPPER_LEG to TrackerRole.RIGHT_KNEE,
+		BodyPart.LEFT_FOOT to TrackerRole.LEFT_FOOT,
+		BodyPart.RIGHT_FOOT to TrackerRole.RIGHT_FOOT,
+		BodyPart.LEFT_SHOULDER to TrackerRole.LEFT_SHOULDER,
+		BodyPart.RIGHT_SHOULDER to TrackerRole.RIGHT_SHOULDER,
+		BodyPart.LEFT_HAND to TrackerRole.LEFT_HAND,
+		BodyPart.RIGHT_HAND to TrackerRole.RIGHT_HAND,
+	),
 )
 
 val roleToBodyPart = bodyPartToRole.entries.associate { (k, v) -> v to k }

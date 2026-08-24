@@ -97,7 +97,7 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, originPosition: Vector3 =
 }
 
 fun buildBones(
-	state: Map<BodyPart, BoneInput>,
+	state: InputSkeleton,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
 ): ComputedSkeleton {
