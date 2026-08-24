@@ -7,6 +7,7 @@
  */
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 
 plugins {
 	kotlin("jvm")
@@ -61,7 +62,7 @@ val downloadDriverProto = tasks.register("downloadDriverProto") {
 	doLast {
 		val url = "https://raw.githubusercontent.com/SlimeVR/SlimeVR-OpenVR-Driver/main/src/bridge/ProtobufMessages.proto"
 		protoFile.get().asFile.parentFile.mkdirs()
-		uri(url).toURL().openStream().use { it.copyTo(protoFile.get().asFile.outputStream()) }
+		URI(url).toURL().openStream().use { it.copyTo(protoFile.get().asFile.outputStream()) }
 	}
 }
 
@@ -133,16 +134,16 @@ buildConfig {
 
 	val gitCommitHash = providers.exec {
 		commandLine("git", "rev-parse", "--short=8", "HEAD")
-	}.standardOutput.asText.get().trim()
+	}.standardOutput.asText.map { it.trim() }
 	val gitVersionTag = providers.exec {
 		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD", "-l", "v*")
-	}.standardOutput.asText.get().trim().lineSequence().firstOrNull() ?: ""
+	}.standardOutput.asText.map { it.trim().lineSequence().firstOrNull() ?: "" }
 	val gitIsClean = providers.exec {
 		commandLine("git", "status", "--porcelain")
-	}.standardOutput.asText.get().trim().isEmpty()
-	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
-	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
-	buildConfigField("boolean", "GIT_CLEAN", gitIsClean.toString())
+	}.standardOutput.asText.map { it.trim().isEmpty() }
+	buildConfigField("String", "GIT_COMMIT_HASH", gitCommitHash.map { "\"$it\"" })
+	buildConfigField("String", "GIT_VERSION_TAG", gitVersionTag.map { "\"$it\"" })
+	buildConfigField("boolean", "GIT_CLEAN", gitIsClean.map { it.toString() })
 }
 
 tasks.run<JavaExec> {

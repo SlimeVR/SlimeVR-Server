@@ -20,13 +20,14 @@ import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Change between IMU axes and OpenGL/SteamVR axes
  */
 internal val AXES_OFFSET = Quaternion.fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
 internal const val CONNECTION_TIMEOUT_MS = 5000L
-internal const val CONNECTION_REMOVAL_MS = 30_000L
 
 class PacketBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
@@ -125,8 +126,7 @@ class PingBehaviour : UDPConnectionBehaviour {
 
 class HandshakeBehaviour : UDPConnectionBehaviour {
 	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
-		is UDPConnectionActions.Handshake -> state.copy(didHandshake = true, deviceId = action.deviceId)
-		is UDPConnectionActions.TimedOut -> state.copy(didHandshake = false)
+		is UDPConnectionActions.Handshake -> state.copy(didHandshake = true, lastHandshake = System.currentTimeMillis(), deviceId = action.deviceId)
 		else -> state
 	}
 
@@ -139,7 +139,13 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 			}
 		}
 		if (existing != null) {
-			receiver.context.dispatch(UDPConnectionActions.Handshake(existing.context.state.value.id))
+			val existingId = existing.context.state.value.id
+			receiver.appContext.udpServer.context.state.value.connections.values
+				.filter { c -> c.context.state.value.address != state.address && c.context.state.value.deviceId == existingId }
+				.forEach { oldConn ->
+					receiver.appContext.udpServer.removeConnection(oldConn.context.state.value.address)
+				}
+			receiver.context.dispatch(UDPConnectionActions.Handshake(existingId))
 			return existing
 		}
 		val deviceId = receiver.appContext.server.nextHandle()
@@ -186,6 +192,11 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 				}
 			}
 
+			val previousStatus = device.context.state.value.status
+			if (previousStatus != TrackerStatus.OK) {
+				AppLogger.udp.info("[${state.address}] Handshake from ${device.context.state.value.macAddress}, was $previousStatus")
+			}
+
 			// Apply handshake fields to device, always, for both first connect and reconnect
 			device.context.dispatch(
 				DeviceActions.Update {
@@ -205,6 +216,18 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 	}
 }
 
+private fun updateConnectionStatus(receiver: UDPConnection, status: TrackerStatus): Boolean {
+	val state = receiver.context.state.value
+	val device = receiver.getDevice() ?: return false
+	if (device.context.state.value.status == status) return false
+
+	device.context.dispatch(DeviceActions.Update { copy(status = status) })
+	state.trackerIds
+		.mapNotNull { receiver.appContext.server.getTracker(it.trackerId) }
+		.forEach { tracker -> tracker.context.dispatch(TrackerActions.SetStatus(status)) }
+	return true
+}
+
 class TimeoutBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.context.scope.launch {
@@ -216,14 +239,10 @@ class TimeoutBehaviour : UDPConnectionBehaviour {
 				}
 				val timeUntilTimeout = CONNECTION_TIMEOUT_MS - (System.currentTimeMillis() - state.lastPacket)
 				if (timeUntilTimeout <= 0) {
-					AppLogger.udp.info("[${state.address}] Connection timed out")
-					receiver.context.dispatch(UDPConnectionActions.TimedOut)
-					receiver.getDevice()?.context?.dispatch(
-						DeviceActions.Update { copy(status = TrackerStatus.TIMED_OUT) },
-					)
-					state.trackerIds.mapNotNull { receiver.appContext.server.getTracker(it.trackerId) }.forEach { tracker ->
-						tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.TIMED_OUT))
+					if (updateConnectionStatus(receiver, TrackerStatus.TIMED_OUT)) {
+						AppLogger.udp.info("[${state.address}] Connection timed out")
 					}
+					delay(500)
 				} else {
 					delay(timeUntilTimeout + 1)
 				}
@@ -234,29 +253,24 @@ class TimeoutBehaviour : UDPConnectionBehaviour {
 
 class DisconnectBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
-		var removalJob: Job? = null
-		receiver.context.state
-			.distinctUntilChangedBy { it.didHandshake }
-			.onEach { state ->
+		receiver.context.scope.launch {
+			while (isActive) {
+				val state = receiver.context.state.value
 				if (!state.didHandshake) {
-					removalJob = receiver.context.scope.launch {
-						delay(CONNECTION_REMOVAL_MS)
-						val currentState = receiver.context.state.value
-						AppLogger.udp.info("[${currentState.address}] Connection removed after extended timeout")
-						receiver.appContext.udpServer.context.dispatch(UdpServerActions.ConnectionRemoved(currentState.address))
-						receiver.getDevice()?.context?.dispatch(
-							DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
-						)
-						currentState.trackerIds.mapNotNull { receiver.appContext.server.getTracker(it.trackerId) }.forEach { tracker ->
-							tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
-						}
-					}
+					delay(500)
+					continue
+				}
+				val timeUntilRemoval = receiver.appContext.config.settings.context.state.value.data.timeoutConfig.duration.toDouble().seconds - (System.currentTimeMillis() - state.lastPacket).milliseconds
+				if (timeUntilRemoval <= 0.milliseconds) {
+					AppLogger.udp.info("[${state.address}] Connection removed after extended timeout")
+					receiver.appContext.udpServer.removeConnection(state.address)
+					updateConnectionStatus(receiver, TrackerStatus.DISCONNECTED)
+					break
 				} else {
-					removalJob?.cancel()
-					removalJob = null
+					delay(timeUntilRemoval + 1.milliseconds)
 				}
 			}
-			.launchIn(receiver.context.scope)
+		}
 	}
 }
 

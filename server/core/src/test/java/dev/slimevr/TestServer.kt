@@ -220,7 +220,28 @@ fun buildTestAppContext(server: VRServer): AppContextProvider = object : TestApp
 	override val server: VRServer = server
 }
 
+private fun buildTestUdpServer(): dev.slimevr.udp.UdpServer {
+	val context = Context.create(
+		initialState = dev.slimevr.udp.UdpServerState(emptyMap()),
+		scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Job()),
+		behaviours = listOf(dev.slimevr.udp.UdpServerBaseBehaviour()),
+		name = "TestUdpServer",
+	)
+	return dev.slimevr.udp.UdpServer(context) { "127.0.0.1" }.also { it.startObserving() }
+}
+
+class FakeDatagramSocket : io.ktor.network.sockets.BoundDatagramSocket {
+	override val localAddress: io.ktor.network.sockets.InetSocketAddress = io.ktor.network.sockets.InetSocketAddress("127.0.0.1", 6969)
+	override val socketContext: kotlinx.coroutines.Job = kotlinx.coroutines.Job()
+	override val incoming: kotlinx.coroutines.channels.ReceiveChannel<io.ktor.network.sockets.Datagram> = kotlinx.coroutines.channels.Channel()
+	override val outgoing: kotlinx.coroutines.channels.SendChannel<io.ktor.network.sockets.Datagram> = kotlinx.coroutines.channels.Channel()
+	override fun close() {}
+	override suspend fun receive(): io.ktor.network.sockets.Datagram = error("not used")
+	override suspend fun send(datagram: io.ktor.network.sockets.Datagram) {}
+}
+
 abstract class TestAppContext : AppContextProvider {
+	open override val server: VRServer get() = error("not used in test")
 	override val featureFlags: FeatureFlags = FeatureFlags()
 	override val keybindManager: KeybindManager get() = error("not used in test")
 	override val skeleton: Skeleton get() = error("not used in test")
@@ -231,7 +252,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val provisioningManager: ProvisioningManager get() = error("not used in test")
 	override val heightCalibrationManager: HeightCalibrationManager get() = error("not used in test")
 	override val trackingChecklist: TrackingChecklist get() = error("not used in test")
-	override val udpServer: UdpServer get() = error("not used in test")
+	override val udpServer: dev.slimevr.udp.UdpServer = buildTestUdpServer()
 	override val networkProfileManager: NetworkProfileManager? = null
 	override val bvhManager: BVHManager get() = error("not used in test")
 	override val vmcManager: VMCManager get() = error("not used in test")

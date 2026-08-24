@@ -43,9 +43,11 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 
 		is TrackerActions.SetStatus -> state.copy(status = action.status)
 
+		is TrackerActions.SetDriverName -> state.copy(driverName = action.driverName)
+
 		is TrackerActions.SetRotation -> {
-			// This action counts as a tick towards TPS if the data is new.
-			if (action.newData) tpsCount.incrementAndFetch()
+			// This action counts as a tick towards TPS if it has new rotation data.
+			if (action.newData && action.rotation != null) tpsCount.incrementAndFetch()
 
 			// Rotation
 			val rawPolarityTrackedRotation: RawRotation = action.rotation?.twinNearest(state.rawRotation) ?: state.rawRotation
@@ -153,11 +155,12 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 		}
 
 		is TrackerActions.YawReset -> {
+			val cal = state.sessionCalibration
+
 			val newHeading = estimateHeadingCorrect(
-				state.rawRotation,
+				applyCalibration(state.rawRotation, attitudeAlign = cal?.attitudeAlignment ?: Quaternion.IDENTITY, headingAlign = cal?.headingAlignment ?: Quaternion.IDENTITY),
 				action.referenceRotation,
 			)
-			val cal = state.sessionCalibration
 
 			if (action.smoothTime > Duration.ZERO && cal != null && cal.headingCorrection != newHeading) {
 				// Smooth: only set the target. Leave the applied heading where it is

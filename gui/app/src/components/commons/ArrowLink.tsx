@@ -1,3 +1,4 @@
+import { openUrl } from '@/hooks/crossplatform';
 import classNames from 'classnames';
 import { ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -32,8 +33,8 @@ export function ArrowLink({
     );
   }, [variant]);
 
-  return (
-    <NavLink to={to} state={state} className={classes}>
+  const content = (
+    <>
       {direction === 'left' && (
         <div className="flex flex-col justify-center">
           <ArrowLeftIcon />
@@ -45,6 +46,25 @@ export function ArrowLink({
           <ArrowRightIcon />
         </div>
       )}
+    </>
+  );
+
+  const isExternal = /^https?:\/\//.test(to);
+
+  if (isExternal) {
+    return (
+      <span
+        onClick={() => openUrl(to)}
+        className={classNames(classes, 'cursor-pointer')}
+      >
+        {content}
+      </span>
+    );
+  }
+
+  return (
+    <NavLink to={to} state={state} className={classes}>
+      {content}
     </NavLink>
   );
 }

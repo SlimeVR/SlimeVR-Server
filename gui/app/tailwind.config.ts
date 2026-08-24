@@ -284,6 +284,14 @@ const config = {
             transform: 'rotate(10deg) translateX(-5%) translateY(5%)',
           },
         },
+        'indeterminate-bar': {
+          '0%': {
+            transform: 'translateX(-100%)',
+          },
+          '100%': {
+            transform: 'translateX(400%)',
+          },
+        },
       },
       backgroundImage: {
         slime: `linear-gradient(135deg, ${colors.purple[100]} 50%, ${colors['blue-gray'][700]} 50% 100%)`,
@@ -301,6 +309,7 @@ const config = {
         'spin-ccw': 'spin-ccw 1s linear infinite',
         'timer-tick': 'timer-tick 1s linear infinite',
         skiing: 'skiing 1s linear infinite',
+        'indeterminate-bar': 'indeterminate-bar 1.2s ease-in-out infinite',
       },
     },
     data: {

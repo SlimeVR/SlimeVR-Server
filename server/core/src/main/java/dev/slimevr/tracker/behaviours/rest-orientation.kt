@@ -42,8 +42,8 @@ class TrackerRestOrientationBehaviour(
 	private val quarterRollRight = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
 	private fun getRestOrientation(bodyPart: BodyPart?, armsResetMode: ArmsResetMode) = if (armsResetMode == ArmsResetMode.T_POSE_DOWN) {
 		when (bodyPart) {
-			in ResetBodyParts.LEFT_ARM, in ResetBodyParts.LEFT_FINGERS -> quarterRollLeft
-			in ResetBodyParts.RIGHT_ARM, in ResetBodyParts.RIGHT_FINGERS -> quarterRollRight
+			in ResetBodyParts.LEFT_ARM -> quarterRollLeft
+			in ResetBodyParts.RIGHT_ARM -> quarterRollRight
 			else -> Quaternion.IDENTITY
 		}
 	} else {

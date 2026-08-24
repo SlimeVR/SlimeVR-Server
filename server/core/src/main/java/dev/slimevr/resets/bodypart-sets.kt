@@ -30,34 +30,6 @@ object ResetBodyParts {
 		LEFT_TOES +
 		RIGHT_TOES
 
-	val LEFT_ARM = setOf(
-		BodyPart.LEFT_SHOULDER,
-		BodyPart.LEFT_UPPER_ARM,
-		BodyPart.LEFT_LOWER_ARM,
-		BodyPart.LEFT_HAND,
-	)
-
-	val RIGHT_ARM = setOf(
-		BodyPart.RIGHT_SHOULDER,
-		BodyPart.RIGHT_UPPER_ARM,
-		BodyPart.RIGHT_LOWER_ARM,
-		BodyPart.RIGHT_HAND,
-	)
-
-	val ARMS = LEFT_ARM + RIGHT_ARM
-
-	val LEFT_LOWER_ARM = setOf(
-		BodyPart.LEFT_LOWER_ARM,
-		BodyPart.LEFT_HAND,
-	)
-
-	val RIGHT_LOWER_ARM = setOf(
-		BodyPart.RIGHT_LOWER_ARM,
-		BodyPart.RIGHT_HAND,
-	)
-
-	val LOWER_ARMS = LEFT_LOWER_ARM + RIGHT_LOWER_ARM
-
 	val LEFT_FINGERS = setOf(
 		BodyPart.LEFT_THUMB_METACARPAL,
 		BodyPart.LEFT_THUMB_PROXIMAL,
@@ -93,4 +65,34 @@ object ResetBodyParts {
 		BodyPart.RIGHT_LITTLE_INTERMEDIATE,
 		BodyPart.RIGHT_LITTLE_DISTAL,
 	)
+
+	val FINGERS = LEFT_FINGERS + RIGHT_FINGERS
+
+	val LEFT_LOWER_ARM = setOf(
+		BodyPart.LEFT_LOWER_ARM,
+		BodyPart.LEFT_HAND,
+	) +
+		LEFT_FINGERS
+
+	val RIGHT_LOWER_ARM = setOf(
+		BodyPart.RIGHT_LOWER_ARM,
+		BodyPart.RIGHT_HAND,
+	) +
+		RIGHT_FINGERS
+
+	val LOWER_ARMS = LEFT_LOWER_ARM + RIGHT_LOWER_ARM
+
+	val LEFT_ARM = setOf(
+		BodyPart.LEFT_SHOULDER,
+		BodyPart.LEFT_UPPER_ARM,
+	) +
+		LEFT_LOWER_ARM
+
+	val RIGHT_ARM = setOf(
+		BodyPart.RIGHT_SHOULDER,
+		BodyPart.RIGHT_UPPER_ARM,
+	) +
+		RIGHT_LOWER_ARM
+
+	val ARMS = LEFT_ARM + RIGHT_ARM
 }

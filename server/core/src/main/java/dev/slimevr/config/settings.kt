@@ -67,6 +67,11 @@ data class DriverConfig(
 )
 
 @Serializable
+data class TimeoutConfig(
+	val duration: Float = 30.0f,
+)
+
+@Serializable
 data class TapDetectionConfig(
 	var yawResetDelay: Float = 0.2f,
 	var fullResetDelay: Float = 1.0f,
@@ -90,6 +95,8 @@ data class TapDetectionConfig(
 data class ResetsConfig(
 	/** Always reset mounting for feet */
 	val resetMountingFeet: Boolean = false,
+	/** Always reset mounting for fingers */
+	val resetMountingFingers: Boolean = false,
 	/** Reset mode used for the arms */
 	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
 	/** Yaw reset smoothing time in seconds */
@@ -221,6 +228,7 @@ data class SettingsConfigState(
 	val hidConfig: HidConfig = HidConfig(),
 	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
 	val driverConfig: DriverConfig = DriverConfig(),
+	val timeoutConfig: TimeoutConfig = TimeoutConfig(),
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
 	val keybinds: List<KeybindConfig> = defaultKeybinds(),

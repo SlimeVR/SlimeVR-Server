@@ -7,6 +7,7 @@ import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServerActions
+import dev.slimevr.desktop.startBindingsProvider
 import dev.slimevr.desktop.unblockSteamVRDriver
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
@@ -20,6 +21,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.Buffer
@@ -55,6 +60,18 @@ class OpenKeybindSettingsBehaviour : SolarXRBridgeBehaviour {
 	}
 }
 
+class OpenBindingsProviderBehaviour : SolarXRBridgeBehaviour {
+	override fun observe(receiver: SolarXRBridge) {
+		receiver.context.state
+			.mapNotNull { it.driverName }
+			.distinctUntilChanged()
+			.onEach { driverName ->
+				AppLogger.solarxr.info("Driver name changed to $driverName")
+				receiver.context.scope.launch { startBindingsProvider() }
+			}.launchIn(receiver.context.scope)
+	}
+}
+
 suspend fun handleSolarXRBridge(
 	appContext: AppContextProvider,
 	messages: Flow<Buffer>,
@@ -68,6 +85,7 @@ suspend fun handleSolarXRBridge(
 			buildList {
 				add(EnableSteamVRDriverBehaviour())
 				add(OpenKeybindSettingsBehaviour())
+				add(OpenBindingsProviderBehaviour())
 			}
 		},
 	)
@@ -87,6 +105,7 @@ suspend fun handleSolarXRBridge(
 		send(sendBuffer)
 	}.launchIn(this)
 
+	bridge.startObserving()
 
 	val receiveArray = ByteArray(MAX_FRAME_SIZE)
 

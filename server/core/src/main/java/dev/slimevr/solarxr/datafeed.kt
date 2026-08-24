@@ -6,7 +6,6 @@ import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.hid.HIDReceiverState
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.ResetsManager
-import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
@@ -14,7 +13,6 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import solarxr_protocol.data_feed.BoneMask
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
 import solarxr_protocol.data_feed.DataFeedUpdate
@@ -116,14 +114,6 @@ private fun createDevice(
 		origin = device.origin,
 	)
 }
-
-private fun createBone(bone: BoneState, mask: BoneMask): solarxr_protocol.data_feed.Bone = solarxr_protocol.data_feed.Bone(
-	bodyPart = bone.bodyPart.takeIf { mask.bodyPart == true },
-	orientationG = bone.orientation.let { Quat(it.x, it.y, it.z, it.w) }.takeIf { mask.orientationG == true },
-	rotationG = bone.rotation.let { Quat(it.x, it.y, it.z, it.w) }.takeIf { mask.rotationG == true },
-	boneLength = bone.offset.len().takeIf { mask.boneLength == true },
-	headPositionG = bone.headPosition.let { Vec3f(it.x, it.y, it.z) }.takeIf { mask.headPositionG == true },
-)
 
 private fun createServerGuards(resetsManager: ResetsManager, heightCalibrationManager: HeightCalibrationManager): ServerGuards {
 	val resetsState = resetsManager.context.state.value

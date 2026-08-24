@@ -165,6 +165,19 @@ internal suspend fun doSerialFlashPostFlash(
 
 	settings.context.dispatch(SettingsActions.AddAllowedUdpDevice(macAddress))
 
+	// Remove old UDP connection for this MAC before rebooting to prevent false inactivity timeouts
+	val existingDevice = server.context.state.value.devices.values.find { d ->
+		d.context.state.value.macAddress?.uppercase() == macAddress.uppercase()
+	}
+	if (existingDevice != null) {
+		val oldConn = existingDevice.appContext.udpServer.context.state.value.connections.values.find { c ->
+			c.context.state.value.deviceId == existingDevice.context.state.value.id
+		}
+		if (oldConn != null) {
+			existingDevice.appContext.udpServer.removeConnection(oldConn.context.state.value.address)
+		}
+	}
+
 	// provision with Wi-Fi credentials
 	if (ssid == null || password == null) {
 		onStatus(FirmwareUpdateStatus.ERROR_PROVISIONING_FAILED, 0)
@@ -172,6 +185,7 @@ internal suspend fun doSerialFlashPostFlash(
 	}
 
 	onStatus(FirmwareUpdateStatus.PROVISIONING, 0)
+	val provisionStartTime = System.currentTimeMillis()
 	serialConn.handle.writeCommand("SET WIFI \"$ssid\" \"$password\"\n")
 
 	// Wait for Wi-Fi to connect ("looking for the server")
@@ -189,7 +203,7 @@ internal suspend fun doSerialFlashPostFlash(
 	}
 
 	// wait for the tracker with that MAC to connect to the server via UDP
-	val connected = waitForConnected(server, macAddress)
+	val connected = waitForConnected(server, macAddress, provisionStartTime)
 
 	if (connected == null) {
 		onStatus(FirmwareUpdateStatus.ERROR_TIMEOUT, 0)

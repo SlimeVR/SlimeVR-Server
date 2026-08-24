@@ -28,7 +28,7 @@ private const val TAG = "SerialServer"
 private const val ACTION_USB_SERIAL_PERMISSION = "dev.slimevr.android.USB_SERIAL_PERMISSION"
 private const val POLL_INTERVAL_MS = 3000L
 
-private fun openAndroidPort(
+private suspend fun openAndroidPort(
 	portLocation: String,
 	usbManager: UsbManager,
 	scope: CoroutineScope,

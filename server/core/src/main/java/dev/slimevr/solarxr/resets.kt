@@ -18,6 +18,7 @@ class ResetsBehaviour(
 			receiver.sendRpc(
 				ResetsSettingsResponse(
 					resetMountingFeet = config.resetMountingFeet,
+					resetMountingFingers = config.resetMountingFingers,
 					armsResetMode = config.armsResetMode,
 					yawResetSmoothTime = config.yawResetSmoothTime,
 					saveMountingReset = config.saveMountingReset,
@@ -33,6 +34,7 @@ class ResetsBehaviour(
 					copy(
 						resetsConfig = ResetsConfig(
 							resetMountingFeet = req.resetMountingFeet == true,
+							resetMountingFingers = req.resetMountingFingers == true,
 							armsResetMode = req.armsResetMode ?: ArmsResetMode.BACK,
 							yawResetSmoothTime = req.yawResetSmoothTime ?: 0f,
 							saveMountingReset = req.saveMountingReset == true,
