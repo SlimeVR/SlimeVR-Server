@@ -13,17 +13,18 @@ import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.solarxr.SolarXRBridge
-import dev.slimevr.solarxr.SolarXRBridgeActions
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
-import dev.slimevr.solarxr.SolarXRBridgeState
 import dev.slimevr.solarxr.onSolarXRMessage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.Buffer
@@ -59,15 +60,15 @@ class OpenKeybindSettingsBehaviour : SolarXRBridgeBehaviour {
 	}
 }
 
-class OpenBindingsProviderBehaviour(val scope: CoroutineScope) : SolarXRBridgeBehaviour {
-	override fun reduce(
-		state: SolarXRBridgeState,
-		action: SolarXRBridgeActions,
-	): SolarXRBridgeState {
-		if (action is SolarXRBridgeActions.SetDriverInfo && action.name == "SteamVR") {
-			scope.launch { startBindingsProvider() }
-		}
-		return state
+class OpenBindingsProviderBehaviour : SolarXRBridgeBehaviour {
+	override fun observe(receiver: SolarXRBridge) {
+		receiver.context.state
+			.mapNotNull { it.driverName }
+			.distinctUntilChanged()
+			.onEach { driverName ->
+				AppLogger.solarxr.info("Driver name changed to $driverName")
+				receiver.context.scope.launch { startBindingsProvider() }
+			}.launchIn(receiver.context.scope)
 	}
 }
 
@@ -84,7 +85,7 @@ suspend fun handleSolarXRBridge(
 			buildList {
 				add(EnableSteamVRDriverBehaviour())
 				add(OpenKeybindSettingsBehaviour())
-				add(OpenBindingsProviderBehaviour(this@coroutineScope))
+				add(OpenBindingsProviderBehaviour())
 			}
 		},
 	)
