@@ -33,12 +33,12 @@ class ResetsBehaviour(
 				SettingsActions.Update {
 					copy(
 						resetsConfig = ResetsConfig(
-							resetMountingFeet = req.resetMountingFeet == true,
-							resetMountingFingers = req.resetMountingFingers == true,
-							armsResetMode = req.armsResetMode ?: ArmsResetMode.BACK,
+							resetMountingFeet = req.resetMountingFeet,
+							resetMountingFingers = req.resetMountingFingers,
+							armsResetMode = req.armsResetMode,
 							yawResetSmoothTime = req.yawResetSmoothTime ?: 0f,
-							saveMountingReset = req.saveMountingReset == true,
-							resetPositionalHeadAttitude = req.resetPositionalHeadAttitude == true,
+							saveMountingReset = req.saveMountingReset,
+							resetPositionalHeadAttitude = req.resetPositionalHeadAttitude,
 						),
 					)
 				},

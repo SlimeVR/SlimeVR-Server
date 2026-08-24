@@ -69,12 +69,12 @@ class VmcBehaviour(
 				SettingsActions.Update {
 					copy(
 						vmcConfig = vmcConfig.copy(
-							enabled = req.enabled == true,
-							portIn = req.portIn?.toInt() ?: vmcConfig.portIn,
-							portOut = req.portOut?.toInt() ?: vmcConfig.portOut,
+							enabled = req.enabled,
+							portIn = req.portIn.takeIf { it > 0u }?.toInt() ?: vmcConfig.portIn,
+							portOut = req.portOut.takeIf { it > 0u }?.toInt() ?: vmcConfig.portOut,
 							address = req.address ?: vmcConfig.address,
-							mirrorTracking = req.mirrorTracking == true,
-							anchorAtHips = req.anchorHip == true,
+							mirrorTracking = req.mirrorTracking,
+							anchorAtHips = req.anchorHip,
 						),
 					)
 				},

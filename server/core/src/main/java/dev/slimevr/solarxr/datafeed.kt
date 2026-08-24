@@ -21,14 +21,18 @@ import solarxr_protocol.data_feed.StartDataFeed
 import solarxr_protocol.data_feed.device_data.DeviceData
 import solarxr_protocol.data_feed.dongle_data.DongleData
 import solarxr_protocol.data_feed.dongle_data.DongleDataMask
+import solarxr_protocol.data_feed.dongle_data.DongleStatus
 import solarxr_protocol.data_feed.server.ServerGuards
 import solarxr_protocol.data_feed.tracker_data.StayAlignedTracker
 import solarxr_protocol.data_feed.tracker_data.TrackerData
 import solarxr_protocol.data_feed.tracker_data.TrackerDataMask
 import solarxr_protocol.data_feed.tracker_data.TrackerInfo
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MagnetometerStatus
+import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.HardwareInfo
 import solarxr_protocol.datatypes.hardware_info.HardwareStatus
+import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
 
@@ -44,14 +48,14 @@ private fun ipv4AddressFromString(address: String): UInt {
 private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMask: TrackerDataMask): TrackerData = TrackerData(
 	deviceId = device.id.toUShort(),
 	trackerId = tracker.id.toUShort(),
-	status = if (trackerMask.status == true) tracker.status else null,
-	rotation = if (trackerMask.rotation == true) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
-	position = if (trackerMask.position == true && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
-	info = if (trackerMask.info == true) {
+	status = if (trackerMask.status) tracker.status else TrackerStatus.NONE,
+	rotation = if (trackerMask.rotation) tracker.rawRotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
+	position = if (trackerMask.position && tracker.position != null) tracker.position.let { Vec3f(it.x, it.y, it.z) } else null,
+	info = if (trackerMask.info) {
 		TrackerInfo(
 			isImu = tracker.imuType != null,
-			imuType = tracker.imuType,
-			bodyPart = tracker.bodyPart,
+			imuType = tracker.imuType ?: ImuType.UNKNOWN,
+			bodyPart = tracker.bodyPart ?: BodyPart.NONE,
 			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
 			displayName = tracker.name,
 			customName = tracker.customName,
@@ -127,17 +131,17 @@ private fun createServerGuards(resetsManager: ResetsManager, heightCalibrationMa
 
 private fun createDongle(dongle: HIDReceiverState, mask: DongleDataMask): DongleData = DongleData(
 	id = dongle.id.toUShort(),
-	displayName = dongle.displayName.takeIf { mask.displayName == true },
-	customName = dongle.customName.takeIf { mask.customName == true },
-	hardwareRevision = dongle.hardwareRevision.takeIf { mask.hardwareRevision == true },
+	displayName = dongle.displayName.takeIf { mask.displayName },
+	customName = dongle.customName.takeIf { mask.customName },
+	hardwareRevision = dongle.hardwareRevision.takeIf { mask.hardwareRevision },
 	hardwareAddress = null, // FIXME: send me
-	model = dongle.model.takeIf { mask.model == true },
-	manufacturer = dongle.manufacturer.takeIf { mask.manufacturer == true },
-	firmwareVersion = dongle.firmwareVersion.takeIf { mask.firmwareVersion == true },
-	firmwareDate = dongle.firmwareDate.takeIf { mask.firmwareDate == true },
-	boardType = dongle.boardType.takeIf { mask.boardType == true },
-	devicesIds = dongle.trackers.values.map { it.deviceId.toUShort() }.distinct().takeIf { mask.devicesIds == true },
-	status = dongle.status.takeIf { mask.status == true },
+	model = dongle.model.takeIf { mask.model },
+	manufacturer = dongle.manufacturer.takeIf { mask.manufacturer },
+	firmwareVersion = dongle.firmwareVersion.takeIf { mask.firmwareVersion },
+	firmwareDate = dongle.firmwareDate.takeIf { mask.firmwareDate },
+	boardType = dongle.boardType.takeIf { mask.boardType },
+	devicesIds = dongle.trackers.values.map { it.deviceId.toUShort() }.distinct().takeIf { mask.devicesIds },
+	status = dongle.status.takeIf { mask.status } ?: DongleStatus.NONE,
 )
 
 fun createDatafeedFrame(
@@ -159,7 +163,7 @@ fun createDatafeedFrame(
 	val bones = datafeedConfig.boneMask?.let { mask ->
 		skeleton.currentComputed.values.map { createBone(it, mask) }
 	}
-	val serverGuards = if (datafeedConfig.serverGuardsMask == true) {
+	val serverGuards = if (datafeedConfig.serverGuardsMask) {
 		createServerGuards(resetsManager, heightCalibrationManager)
 	} else {
 		null

@@ -67,7 +67,7 @@ private fun parseWifiScanOutcome(lines: List<String>): WifiScanOutcome? {
 
 	val networks = (0 until expectedCount).mapNotNull { i -> entriesByIndex[i] }
 		.groupBy { it.ssid }
-		.map { (_, duplicates) -> duplicates.maxBy { it.rssi ?: Byte.MIN_VALUE } }
+		.map { (_, duplicates) -> duplicates.maxBy { it.rssi } }
 		.sortedByDescending { it.rssi }
 	return WifiScanOutcome.Results(networks)
 }

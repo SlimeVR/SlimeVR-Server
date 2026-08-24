@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import solarxr_protocol.rpc.ChangeSkeletonProportionsRequest
 import solarxr_protocol.rpc.ChangeUserHeightRequest
+import solarxr_protocol.rpc.SkeletonBone
 import solarxr_protocol.rpc.SkeletonPart
 import solarxr_protocol.rpc.SkeletonProportionsRequest
 import solarxr_protocol.rpc.SkeletonProportionsResetAllRequest
@@ -71,8 +72,9 @@ class SkeletonProportionsBehaviour(
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<ChangeSkeletonProportionsRequest> { req ->
-			val bone = req.bone ?: return@on
-			val value = req.value?.coerceAtLeast(0f) ?: 0f
+			val bone = req.bone
+			if (bone == SkeletonBone.NONE) return@on
+			val value = req.value.coerceAtLeast(0f)
 
 			userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = proportions + (bone.name to value)) })
 		}.launchIn(receiver.context.scope)

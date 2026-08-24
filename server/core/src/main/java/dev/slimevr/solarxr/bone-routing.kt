@@ -18,11 +18,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.BoneRoute
 import solarxr_protocol.rpc.BoneRoutingSettingsRequest
 import solarxr_protocol.rpc.BoneRoutingSettingsResponse
 import solarxr_protocol.rpc.ChangeBoneRoutingSettingsRequest
 import solarxr_protocol.rpc.RoutingOutput
+import solarxr_protocol.rpc.RoutingOutputState
 import solarxr_protocol.rpc.RoutingOutputStatus
 
 // Every bone any output can take gets a row, so the GUI can draw the whole table
@@ -45,7 +47,7 @@ private fun buildResponse(
 			requires = requiredBones(output).toList(),
 			overridable = overridableBones(output).toList(),
 			conflicts = conflictingOutputs(output).toList(),
-			state = outputStates[output],
+			state = outputStates[output] ?: RoutingOutputState.UNSUPPORTED,
 		)
 	},
 )
@@ -76,6 +78,7 @@ class BoneRoutingBehaviour(
 			val requested = req.routes.orEmpty()
 				.mapNotNull { route ->
 					val bone = route.bone ?: return@mapNotNull null
+					if (bone == BodyPart.NONE) return@mapNotNull null
 					val outputs = route.outputs.orEmpty().toSet().ifEmpty { return@mapNotNull null }
 					bone to outputs
 				}
@@ -86,7 +89,7 @@ class BoneRoutingBehaviour(
 					copy(
 						boneRoutingConfig = applyRoutingChange(
 							config = boneRoutingConfig,
-							automatic = req.automatic == true,
+							automatic = req.automatic,
 							routes = requested,
 						),
 					)

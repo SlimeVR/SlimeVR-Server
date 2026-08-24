@@ -47,7 +47,7 @@ class FirmwareBehaviour(private val server: VRServer, private val firmwareManage
 					firmwareManager.flash(
 						portLocation,
 						parts,
-						method.needManualReboot == true,
+						method.needManualReboot,
 						method.ssid,
 						method.password,
 						server,
@@ -55,11 +55,12 @@ class FirmwareBehaviour(private val server: VRServer, private val firmwareManage
 				}
 
 				is OTAFirmwareUpdate -> {
-					val deviceId = method.deviceId ?: return@on
+					val deviceId = method.deviceId.toInt()
+					if (deviceId == 0) return@on
 					val part = method.firmwarePart ?: return@on
-					val device = server.getDevice(deviceId.toInt()) ?: return@on
+					val device = server.getDevice(deviceId) ?: return@on
 					val deviceIp = device.context.state.value.address
-					firmwareManager.otaFlash(deviceIp, FirmwareDeviceIdTable(id = deviceId), part, server)
+					firmwareManager.otaFlash(deviceIp, FirmwareDeviceIdTable(id = deviceId.toUShort()), part, server)
 				}
 
 				else -> return@on

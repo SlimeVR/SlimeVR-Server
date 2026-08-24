@@ -65,7 +65,7 @@ class StayAlignedBehaviour(
 
 		// Detect pose
 		receiver.rpcDispatcher.on<DetectStayAlignedRelaxedPoseRequest> { req ->
-			val pose = req.pose ?: StayAlignedRelaxedPose.STANDING
+			val pose = req.pose
 			val trackerStates = server.context.state.value.trackers.values.map { it.context.state.value }
 			val relaxedPose = RelaxedPose.fromTrackers(trackerStates)
 			updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(true, relaxedPose.upperLeg.toDeg(), relaxedPose.lowerLeg.toDeg(), relaxedPose.foot.toDeg()))
@@ -75,7 +75,7 @@ class StayAlignedBehaviour(
 
 		// Reset pose
 		receiver.rpcDispatcher.on<ResetStayAlignedRelaxedPoseRequest> { req ->
-			val pose = req.pose ?: StayAlignedRelaxedPose.STANDING
+			val pose = req.pose
 			updatePoseInConfig(pose, StayAlignedRelaxedPoseConfig(false, 0f, 0f, 0f))
 			AppLogger.stayAligned.info("Reset relaxed pose $pose")
 			sendConfig(receiver, settings)

@@ -28,7 +28,7 @@ class TimeoutSettingsBehaviour(
 				SettingsActions.Update {
 					copy(
 						timeoutConfig = TimeoutConfig(
-							duration = req.duration ?: 0f,
+							duration = req.duration,
 						),
 					)
 				},

@@ -12,7 +12,7 @@ class SessionCalibrationBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		// Reset request
 		receiver.rpcDispatcher.on<ResetRequest> { req ->
-			resetsManager.scheduleReset("SolarXRBridge", req.resetType ?: ResetType.YAW, req.delay ?: 0f, req.bodyParts)
+			resetsManager.scheduleReset("SolarXRBridge", req.resetType, req.delay ?: 0f, req.bodyParts)
 		}.launchIn(receiver.context.scope)
 
 		// Clear mounting reset request
