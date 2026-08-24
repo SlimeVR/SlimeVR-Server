@@ -3,7 +3,6 @@ package dev.slimevr.tracker
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import java.util.Vector
 import kotlin.math.atan2
 
 typealias RawRotation = Quaternion
@@ -74,21 +73,20 @@ private fun eulerHeading(q: Quaternion): Quaternion = Quaternion.rotationAroundY
 // Used to get yaw. Works better on an HMD.
 private fun inverseYProjection(q: Quaternion) = q.project(Vector3.POS_Y).unit().inv()
 
-// FIXME yaw reset is off when sitting down
 fun estimateHeadingCorrect(
-	rawRotation: RawRotation,
+	rotation: Quaternion,
 	referenceRotation: Quaternion,
-): HeadingCorrection = eulerHeading(inverseYProjection(referenceRotation) * rawRotation).inv()
+): HeadingCorrection = eulerHeading(inverseYProjection(referenceRotation) * rotation).inv()
 	.twinNearest(referenceRotation)
 
 fun estimateAttitudeAlign(
-	rawRotation: RawRotation,
+	rotation: Quaternion,
 	headingCorrect: HeadingCorrection,
 	referenceRotation: Quaternion,
-): AttitudeAlignment = (headingCorrect * (inverseYProjection(referenceRotation) * rawRotation)).inv()
+): AttitudeAlignment = (headingCorrect * (inverseYProjection(referenceRotation) * rotation)).inv()
 
 fun estimateHeadingAlign(
-	rawRotation: RawRotation,
+	rotation: Quaternion,
 	referenceRotation: Quaternion,
 	headingCorrect: HeadingCorrection = Quaternion.IDENTITY,
 	attitudeAlign: AttitudeAlignment = Quaternion.IDENTITY,
@@ -96,7 +94,7 @@ fun estimateHeadingAlign(
 	yawOffset: Float = 0.0f,
 ): HeadingAlignment {
 	val rotation = applyCalibration(
-		rawRotation,
+		rotation,
 		headingCorrect,
 		attitudeAlign,
 		headingAlign,

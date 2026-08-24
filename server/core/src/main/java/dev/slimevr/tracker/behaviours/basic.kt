@@ -155,11 +155,12 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 		}
 
 		is TrackerActions.YawReset -> {
+			val cal = state.sessionCalibration
+
 			val newHeading = estimateHeadingCorrect(
-				state.rawRotation,
+				applyCalibration(state.rawRotation, attitudeAlign = cal?.attitudeAlignment ?: Quaternion.IDENTITY, headingAlign = cal?.headingAlignment ?: Quaternion.IDENTITY),
 				action.referenceRotation,
 			)
-			val cal = state.sessionCalibration
 
 			if (action.smoothTime > Duration.ZERO && cal != null && cal.headingCorrection != newHeading) {
 				// Smooth: only set the target. Leave the applied heading where it is
