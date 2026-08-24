@@ -182,17 +182,18 @@ function WifiFormFields({
     }
   }, [scanStatus, l10n]);
 
-  const dropdownPlaceholder = useMemo(
-    () =>
-      isScanning && networks.length === 0
-        ? l10n.getString('onboarding-wifi_creds-scanning')
-        : scanErrorNotice && networks.length === 0
-          ? scanErrorNotice
-          : networks.length === 0
-            ? l10n.getString('onboarding-wifi_creds-scan_idle')
-            : l10n.getString('onboarding-wifi_creds-ssid-scan'),
-    [isScanning, networks.length, scanErrorNotice, l10n]
-  );
+  const dropdownPlaceholder = useMemo(() => {
+    if (networks.length > 0) {
+      return l10n.getString('onboarding-wifi_creds-ssid-scan');
+    }
+    if (isScanning) {
+      return l10n.getString('onboarding-wifi_creds-scanning');
+    }
+    if (scanErrorNotice) {
+      return scanErrorNotice;
+    }
+    return l10n.getString('onboarding-wifi_creds-scan_idle');
+  }, [isScanning, networks.length, scanErrorNotice, l10n]);
 
   const dropdownItems = useMemo(
     () =>
@@ -438,22 +439,24 @@ export function ConnectTrackersPage() {
   return (
     <>
       <div className="w-full h-full flex flex-col xs:flex-row overflow-hidden min-h-0">
-        <div className="w-full xs:w-[340px] sm:w-[380px] lg:w-[400px] xl:w-[440px] p-5 flex flex-col gap-4 shrink-0 overflow-y-auto border-b xs:border-b-0 xs:border-r border-background-60">
-          <div className="flex flex-col gap-1">
-            <Typography
-              variant="main-title"
-              id="onboarding-connect_tracker-title"
-            />
-            <Typography
-              variant="standard"
-              whitespace="whitespace-pre-wrap"
-              id="onboarding-connect_tracker-description"
-            />
+        <div className="w-full xs:w-[340px] sm:w-[380px] lg:w-[400px] xl:w-[440px] p-5 flex flex-col gap-4 shrink-0 overflow-y-auto border-b xs:border-b-0 xs:border-r border-background-60 justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
+              <Typography
+                variant="mobile-title"
+                id="onboarding-connect_tracker-title"
+              />
+              <Typography
+                variant="standard"
+                whitespace="whitespace-pre-wrap"
+                id="onboarding-connect_tracker-description"
+              />
+            </div>
+            {!isMobile && <WifiFormFields {...wifiFormFieldsProps} />}
           </div>
 
           {!isMobile && (
-            <>
-              <WifiFormFields {...wifiFormFieldsProps} />
+            <div className="flex flex-col gap-2">
               <TipBox>
                 <Typography
                   variant="standard"
@@ -464,11 +467,11 @@ export function ConnectTrackersPage() {
               <TroubleshootingLinks
                 networkProfileBanner={networkProfileBanner}
               />
-            </>
+            </div>
           )}
         </div>
 
-        <div className="flex-1 flex flex-col gap-4 p-5 min-h-0 overflow-hidden justify-between mobile:pb-28">
+        <div className="flex-1 flex flex-col gap-4 px-4 pt-4 min-h-0 overflow-hidden justify-between mobile:pb-14">
           <div className="flex flex-col gap-4 min-h-0 flex-1">
             <TrackerList
               rows={rows}
@@ -484,7 +487,7 @@ export function ConnectTrackersPage() {
               </div>
             )}
           </div>
-          <div className="flex flex-row justify-between items-center shrink-0 pt-3 border-t border-background-60">
+          <div className="flex flex-row justify-between items-center shrink-0 py-4 border-t border-background-60">
             <Button
               variant="secondary"
               state={{ alonePage: state.alonePage }}

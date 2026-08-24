@@ -612,17 +612,17 @@ export function TrackerList({
         />
       )}
 
-      {isMobile && rows.length > 0 && (
-        <TipBox>
-          <Typography
-            variant="standard"
-            color="text-accent-background-10"
-            id="onboarding-connect_tracker-shake_tip"
-          />
-        </TipBox>
-      )}
-
       <div className="flex flex-col gap-2 min-h-0 flex-1 overflow-y-auto p-3 -m-3">
+        {isMobile && rows.length > 0 && (
+          <TipBox>
+            <Typography
+              variant="standard"
+              color="text-accent-background-10"
+              id="onboarding-connect_tracker-shake_tip"
+            />
+          </TipBox>
+        )}
+
         {rows.length > 0 ? (
           rows.map((row) =>
             row.kind === 'connected' ? (
