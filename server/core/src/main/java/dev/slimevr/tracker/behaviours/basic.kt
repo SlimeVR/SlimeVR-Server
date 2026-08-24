@@ -44,8 +44,8 @@ class TrackerBasicBehaviour(private val settings: Settings) : TrackerBehaviour {
 		is TrackerActions.SetStatus -> state.copy(status = action.status)
 
 		is TrackerActions.SetRotation -> {
-			// This action counts as a tick towards TPS if the data is new.
-			if (action.newData) tpsCount.incrementAndFetch()
+			// This action counts as a tick towards TPS if it is new data and is new
+			if (action.newData && action.rotation != null) tpsCount.incrementAndFetch()
 
 			// Rotation
 			val rawPolarityTrackedRotation: RawRotation = action.rotation?.twinNearest(state.rawRotation) ?: state.rawRotation
