@@ -5,7 +5,9 @@ import dev.slimevr.osc.OscArg
 import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.bodyPartMap
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
@@ -35,7 +37,7 @@ class OutputEncoderTest {
 	@Test
 	fun testAlwaysSendsTimeAndOkAndRoot() {
 		val bundle = buildOutgoingBundle(
-			bones = emptyMap(),
+			bones = bodyPartMap(),
 			routedBones = emptySet(),
 			config = defaultConfig,
 			vrm = null,
@@ -50,9 +52,11 @@ class OutputEncoderTest {
 
 	@Test
 	fun testSkipsBonesThatAreNotRouted() {
-		val bones = mapOf(
-			BodyPart.HIP to bone(BodyPart.HIP),
-			BodyPart.WAIST to bone(BodyPart.WAIST),
+		val bones = BodyPartMap(
+			mapOf(
+				BodyPart.HIP to bone(BodyPart.HIP),
+				BodyPart.WAIST to bone(BodyPart.WAIST),
+			),
 		)
 
 		val bundle = buildOutgoingBundle(
@@ -70,7 +74,7 @@ class OutputEncoderTest {
 	@Test
 	fun testSkipsRoutedBonesMissingFromTheSkeleton() {
 		val bundle = buildOutgoingBundle(
-			bones = mapOf(BodyPart.HIP to bone(BodyPart.HIP)),
+			bones = BodyPartMap(mapOf(BodyPart.HIP to bone(BodyPart.HIP))),
 			routedBones = setOf(BodyPart.HIP, BodyPart.WAIST),
 			config = defaultConfig,
 			vrm = null,
@@ -84,10 +88,12 @@ class OutputEncoderTest {
 	@Test
 	fun testMirrorTrackingReadsTheOppositeSideBone() {
 		val leftRotation = Quaternion.rotationAroundXAxis(0.5f)
-		val bones = mapOf(
-			BodyPart.LEFT_UPPER_LEG to bone(BodyPart.LEFT_UPPER_LEG, leftRotation),
-			BodyPart.RIGHT_UPPER_LEG to bone(BodyPart.RIGHT_UPPER_LEG),
-			BodyPart.HIP to bone(BodyPart.HIP),
+		val bones = BodyPartMap(
+			mapOf(
+				BodyPart.LEFT_UPPER_LEG to bone(BodyPart.LEFT_UPPER_LEG, leftRotation),
+				BodyPart.RIGHT_UPPER_LEG to bone(BodyPart.RIGHT_UPPER_LEG),
+				BodyPart.HIP to bone(BodyPart.HIP),
+			),
 		)
 		val routed = setOf(BodyPart.HIP, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)
 
@@ -108,9 +114,11 @@ class OutputEncoderTest {
 
 	@Test
 	fun testVrmBindOffsetsReplaceComputedPositions() {
-		val bones = mapOf(
-			BodyPart.HIP to bone(BodyPart.HIP),
-			BodyPart.WAIST to bone(BodyPart.WAIST),
+		val bones = BodyPartMap(
+			mapOf(
+				BodyPart.HIP to bone(BodyPart.HIP),
+				BodyPart.WAIST to bone(BodyPart.WAIST),
+			),
 		)
 		val routed = setOf(BodyPart.HIP, BodyPart.WAIST)
 		val vrm = buildVrmGeometry(VrmReader(VRM_JSON))
