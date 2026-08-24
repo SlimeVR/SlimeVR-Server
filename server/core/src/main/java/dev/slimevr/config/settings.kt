@@ -95,6 +95,8 @@ data class TapDetectionConfig(
 data class ResetsConfig(
 	/** Always reset mounting for feet */
 	val resetMountingFeet: Boolean = false,
+	/** Always reset mounting for fingers */
+	val resetMountingFingers: Boolean = false,
 	/** Reset mode used for the arms */
 	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
 	/** Yaw reset smoothing time in seconds */
