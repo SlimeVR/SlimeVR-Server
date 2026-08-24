@@ -1354,6 +1354,7 @@ onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
 onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until the 3s timer ends.
+onboarding-automatic_mounting-preparation-v2-done = Looks like youve already performed a full reset recently!
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
