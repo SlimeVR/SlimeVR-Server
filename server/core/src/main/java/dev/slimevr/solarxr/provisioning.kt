@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.rpc.StartWifiProvisioningRequest
 import solarxr_protocol.rpc.StartWifiScanRequest
 import solarxr_protocol.rpc.StopWifiProvisioningRequest
@@ -77,6 +78,7 @@ private fun buildUnifiedTrackerList(
 	val onlineMacs = devices.values.mapNotNull { device ->
 		val state = device.context.state.value
 		val mac = state.macAddress?.uppercase() ?: return@mapNotNull null
+		if (state.origin != DeviceOrigin.UDP) return@mapNotNull null
 		if (!isOnlineStatus(state.status)) return@mapNotNull null
 		mac
 	}.toSet()
