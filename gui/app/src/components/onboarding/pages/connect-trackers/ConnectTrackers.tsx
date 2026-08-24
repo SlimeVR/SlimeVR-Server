@@ -383,6 +383,31 @@ export function ConnectTrackersPage() {
   ).length;
   const allTrackersDone = totalTrackersCount > 0 && connectingCount === 0;
 
+  const hasScanResults =
+    scanStatus === WifiScanStatus.RESULTS || networks.length > 0;
+  const summaryTitleId =
+    totalTrackersCount === 0
+      ? hasScanResults
+        ? 'onboarding-connect_tracker-scan_results_title'
+        : 'onboarding-connect_tracker-waiting_first_title'
+      : 'onboarding-connect_tracker-connected_trackers';
+  const summaryDescId =
+    totalTrackersCount === 0
+      ? hasScanResults
+        ? 'onboarding-connect_tracker-scan_results_desc'
+        : 'onboarding-connect_tracker-waiting_first_desc'
+      : connectingCount > 0
+        ? 'onboarding-connect_tracker-setting_up'
+        : 'onboarding-connect_tracker-all_caught_up';
+  const summaryStatusColor =
+    totalTrackersCount === 0
+      ? hasScanResults
+        ? 'bg-status-warning animate-pulse'
+        : 'bg-background-40'
+      : connectingCount > 0
+        ? 'bg-status-warning animate-pulse'
+        : 'bg-status-success';
+
   applyProgress(0.4);
 
   const invalidNetworkProfile = useMemo(() => {
@@ -519,29 +544,13 @@ export function ConnectTrackersPage() {
               <Typography
                 bold
                 truncate
-                id={
-                  totalTrackersCount === 0
-                    ? scanStatus === WifiScanStatus.RESULTS ||
-                      networks.length > 0
-                      ? 'onboarding-connect_tracker-scan_results_title'
-                      : 'onboarding-connect_tracker-waiting_first_title'
-                    : 'onboarding-connect_tracker-connected_trackers'
-                }
+                id={summaryTitleId}
                 vars={{ amount: connectedCount }}
               />
               <Typography
                 variant="standard"
                 truncate
-                id={
-                  totalTrackersCount === 0
-                    ? scanStatus === WifiScanStatus.RESULTS ||
-                      networks.length > 0
-                      ? 'onboarding-connect_tracker-scan_results_desc'
-                      : 'onboarding-connect_tracker-waiting_first_desc'
-                    : connectingCount > 0
-                      ? 'onboarding-connect_tracker-setting_up'
-                      : 'onboarding-connect_tracker-all_caught_up'
-                }
+                id={summaryDescId}
                 vars={{ amount: connectingCount }}
               />
             </div>
@@ -550,13 +559,7 @@ export function ConnectTrackersPage() {
             <div
               className={classNames(
                 'w-3.5 h-3.5 rounded-full shrink-0',
-                totalTrackersCount === 0
-                  ? scanStatus === WifiScanStatus.RESULTS || networks.length > 0
-                    ? 'bg-status-warning animate-pulse'
-                    : 'bg-background-40'
-                  : connectingCount > 0
-                    ? 'bg-status-warning animate-pulse'
-                    : 'bg-status-success'
+                summaryStatusColor
               )}
             />
           }
@@ -566,8 +569,7 @@ export function ConnectTrackersPage() {
             provisioningTrackers.length > 0 ||
             scanStatus === WifiScanStatus.SERIAL_INIT ||
             scanStatus === WifiScanStatus.SCANNING ||
-            scanStatus === WifiScanStatus.RESULTS ||
-            networks.length > 0
+            hasScanResults
           }
         >
           <WifiFormFields {...wifiFormFieldsProps} />
