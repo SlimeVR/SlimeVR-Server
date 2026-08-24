@@ -8,7 +8,6 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
-// TODO Make these use BodyPartMap
 val BODY_PART_TO_UNITY_BONE: BodyPartMap<String> = BodyPartMap(
 	mapOf(
 		BodyPart.HEAD to "Head",
