@@ -27,7 +27,7 @@ internal fun buildOutgoingBundle(
 		add(OscContent.Message(transformMessage("/VMC/Ext/Root/Pos", "root", Vector3.NULL, Quaternion.IDENTITY)))
 
 		// TODO UpperChest + shoulders affecting arms local rot
-		for ((targetBodyPart, unityName) in BODY_PART_TO_UNITY_BONE) {
+		for ((targetBodyPart, unityNames) in BODY_PART_TO_UNITY_BONE) {
 			if (targetBodyPart !in routedBones) continue
 
 			val targetParentBodyPart = VMC_BONE_PARENTS[targetBodyPart]
@@ -38,7 +38,7 @@ internal fun buildOutgoingBundle(
 				// TODO anchorHip https://github.com/SlimeVR/SlimeVR-Server/blob/main/server/core/src/main/java/dev/slimevr/osc/VMCHandler.kt#L371
 				val pos = vrm?.hipLocalPosition ?: Vector3.NULL
 				val rot = vmcLocalRotation(trackingBone, null, targetBodyPart, null, config.mirrorTracking)
-				add(OscContent.Message(transformMessage("/VMC/Ext/Bone/Pos", unityName, pos, rot)))
+				add(OscContent.Message(transformMessage("/VMC/Ext/Bone/Pos", unityNames.first(), pos, rot)))
 				continue
 			}
 
@@ -61,7 +61,9 @@ internal fun buildOutgoingBundle(
 				targetParentBodyPart,
 				config.mirrorTracking,
 			)
-			add(OscContent.Message(transformMessage("/VMC/Ext/Bone/Pos", unityName, pos, rot)))
+			for (outputName in unityNames) {
+				add(OscContent.Message(transformMessage("/VMC/Ext/Bone/Pos", outputName, pos, rot)))
+			}
 		}
 	}
 
