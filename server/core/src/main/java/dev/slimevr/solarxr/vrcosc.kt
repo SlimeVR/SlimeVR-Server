@@ -59,10 +59,10 @@ internal class VrcOscBehaviour(
 				SettingsActions.Update {
 					copy(
 						vrcOscConfig = VRCOSCConfig(
-							enabled = req.enabled == true,
-							useManualNetwork = req.useManualNetwork == true,
-							portIn = req.portIn?.toInt() ?: vrcOscConfig.portIn,
-							portOut = req.portOut?.toInt() ?: vrcOscConfig.portOut,
+							enabled = req.enabled,
+							useManualNetwork = req.useManualNetwork,
+							portIn = req.portIn.takeIf { it > 0u }?.toInt() ?: vrcOscConfig.portIn,
+							portOut = req.portOut.takeIf { it > 0u }?.toInt() ?: vrcOscConfig.portOut,
 							address = req.address ?: vrcOscConfig.address,
 						),
 					)

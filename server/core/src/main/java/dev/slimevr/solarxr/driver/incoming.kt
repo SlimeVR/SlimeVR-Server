@@ -99,31 +99,32 @@ class DriverIncomingTrackersBehaviour(
 
 		receiver.driverDispatcher.on<UpdateTrackerStatus> { event ->
 			if (receiver.context.state.value.driverName == null) return@on
-			val trackerId = event.trackerId ?: return@on
-			val status = event.status ?: return@on
-			server.getTracker(trackerId.toInt())?.context?.dispatch(TrackerActions.SetStatus(status))
+			val trackerId = event.trackerId.toInt()
+			if (trackerId == 0) return@on
+			val status = event.status
+			server.getTracker(trackerId)?.context?.dispatch(TrackerActions.SetStatus(status))
 		}.launchIn(receiver.context.scope)
 
 		receiver.driverDispatcher.on<UpdateTrackerBattery> { event ->
 			if (receiver.context.state.value.driverName == null) return@on
-			val trackerId = event.trackerId ?: return@on
-			val tracker = server.getTracker(trackerId.toInt()) ?: return@on
+			val trackerId = event.trackerId.toInt()
+			if (trackerId == 0) return@on
+			val tracker = server.getTracker(trackerId) ?: return@on
 			val device = server.getDevice(tracker.context.state.value.deviceId) ?: return@on
 
-			val batteryLevel = event.batteryLevel ?: return@on
-			val charging = event.charging ?: false
 			device.context.dispatch(
 				DeviceActions.Update {
-					copy(batteryLevel = batteryLevel.toFloat() / 100f, batteryVoltage = if (charging) 4.3f else 3.7f)
+					copy(batteryLevel = event.batteryLevel.toFloat() / 100f, batteryVoltage = if (event.charging) 4.3f else 3.7f)
 				},
 			)
 		}.launchIn(receiver.context.scope)
 
 		receiver.driverDispatcher.on<UpdateTrackerPosition> { event ->
 			if (receiver.context.state.value.driverName == null) return@on
-			val trackerId = event.trackerId ?: return@on
+			val trackerId = event.trackerId.toInt()
+			if (trackerId == 0) return@on
 
-			server.getTracker(trackerId.toInt())?.context?.dispatch(
+			server.getTracker(trackerId)?.context?.dispatch(
 				TrackerActions.SetRotation(
 					rotation = event.rotation?.let { Quaternion(it.w, it.x, it.y, it.z) },
 					position = event.position?.let { Vector3(it.x, it.y, it.z) },

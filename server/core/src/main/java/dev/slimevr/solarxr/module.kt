@@ -50,7 +50,7 @@ suspend fun onSolarXRMessage(message: MessageBundle, context: SolarXRBridge) {
 	message.rpcMsgs?.forEach {
 		val msg = it.message ?: return
 		val replyTo = it.replyTo
-		if (replyTo != null) {
+		if (replyTo != 0u) {
 			context.rpcRequests.tryResolve(replyTo, msg)
 			return@forEach
 		}
@@ -61,7 +61,7 @@ suspend fun onSolarXRMessage(message: MessageBundle, context: SolarXRBridge) {
 	message.driverMsgs?.forEach {
 		val msg = it.message ?: return
 		val replyTo = it.replyTo
-		if (replyTo != null) {
+		if (replyTo != 0u) {
 			context.driverRequests.tryResolve(replyTo, msg)
 			return@forEach
 		}
@@ -98,8 +98,8 @@ class SolarXRBridge(
 	inline fun <reified P : RpcMessage> onRpc(noinline action: suspend (P, UInt?) -> Unit): Subscription<RpcMessage, P> = rpcDispatcher.on<P> { msg -> action(msg, txIdFor(msg)) }
 	inline fun <reified P : DriverMessage> onDriverMessage(noinline action: suspend (P, UInt?) -> Unit): Subscription<DriverMessage, P> = driverDispatcher.on<P> { msg -> action(msg, driverTxIdFor(msg)) }
 
-	suspend fun sendRpc(message: RpcMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(txId = txId, replyTo = replyTo, message = message))))
-	suspend fun sendDriverMessage(message: DriverMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(driverMsgs = listOf(DriverMessageHeader(txId = txId, replyTo = replyTo, message = message))))
+	suspend fun sendRpc(message: RpcMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
+	suspend fun sendDriverMessage(message: DriverMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(driverMsgs = listOf(DriverMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
 
 	suspend inline fun <reified R : RpcMessage> requestRpc(message: RpcMessage, timeout: Duration = 10.seconds): R = rpcRequests.request(timeout, message) { msg, newTxId -> sendRpc(msg, txId = newTxId) }
 	suspend inline fun <reified R : DriverMessage> requestDriverMessage(message: DriverMessage, timeout: Duration = 10.seconds): R = driverRequests.request(timeout, message) { msg, newTxId -> sendDriverMessage(msg, txId = newTxId) }

@@ -81,8 +81,8 @@ class SkeletonSettingsBehaviour(
 							} ?: skeletonConfig.ratios,
 							filtering = req.filtering?.let {
 								SkeletonFilteringConfig(
-									type = it.type ?: FilteringType.NONE,
-									amount = it.amount ?: 0f,
+									type = it.type,
+									amount = it.amount,
 								)
 							} ?: skeletonConfig.filtering,
 						),
@@ -94,7 +94,7 @@ class SkeletonSettingsBehaviour(
 		receiver.rpcDispatcher.on<SetPauseTrackingRequest> {
 			receiver.appContext.skeleton.context.dispatch(
 				SkeletonActions.PauseTracking(
-					it.pauseTracking ?: false,
+					it.pauseTracking,
 				),
 			)
 

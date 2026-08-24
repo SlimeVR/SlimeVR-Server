@@ -6,6 +6,7 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.osc.OscSender
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.util.formatExceptionMessage
 import dev.slimevr.util.timeSource
@@ -155,7 +156,7 @@ class VRCOSCOutputBehaviour(
 	private suspend fun sendFrame(
 		receiver: VRCOSCManager,
 		runtime: OutputRuntime,
-		bones: Map<BodyPart, BoneState>,
+		bones: ComputedSkeleton,
 		routedBones: Set<BodyPart>,
 	) {
 		val sender = runtime.sender ?: return

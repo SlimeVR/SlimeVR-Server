@@ -49,7 +49,7 @@ class KeybindsBehaviour(
 ) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<SetKeybindRecordingRequest> { req ->
-			keybindManager.context.dispatch(KeybindActions.SetRecording(req.recording ?: false))
+			keybindManager.context.dispatch(KeybindActions.SetRecording(req.recording))
 		}.launchIn(receiver.context.scope)
 
 		fun buildResponse(keybinds: List<KeybindConfig>) = KeybindResponse(
@@ -71,7 +71,7 @@ class KeybindsBehaviour(
 
 		receiver.rpcDispatcher.on<ChangeKeybindRequest> { req ->
 			val keybind = req.keybind ?: return@on
-			val id = keybind.keybindId?.takeUnless { it == KeybindId.NONE } ?: return@on
+			val id = keybind.keybindId.takeUnless { it == KeybindId.NONE } ?: return@on
 			val newBinding = keybind.keybindValue?.let(::canonicalKeybind)
 			if (!newBinding.isNullOrEmpty() && !isValidKeybind(newBinding)) return@on
 			settings.context.dispatch(
@@ -81,7 +81,7 @@ class KeybindsBehaviour(
 							if (it.id == id) {
 								it.copy(
 									binding = newBinding ?: it.binding,
-									delay = keybind.keybindDelay ?: 0f,
+									delay = keybind.keybindDelay,
 								)
 							} else {
 								it

@@ -65,11 +65,12 @@ class TrackingChecklistBehaviour(
 		}.launchIn(receiver.context.scope)
 
 		receiver.rpcDispatcher.on<IgnoreTrackingChecklistStepRequest> { req ->
-			val stepId = req.stepId ?: return@on
+			val stepId = req.stepId
+			if (stepId == TrackingChecklistStepId.UNKNOWN) return@on
 			val name = stepId.name
 			settings.context.dispatch(
 				SettingsActions.Update {
-					copy(mutedChecklistSteps = if (req.ignore == true) mutedChecklistSteps + name else mutedChecklistSteps - name)
+					copy(mutedChecklistSteps = if (req.ignore) mutedChecklistSteps + name else mutedChecklistSteps - name)
 				},
 			)
 		}.launchIn(receiver.context.scope)

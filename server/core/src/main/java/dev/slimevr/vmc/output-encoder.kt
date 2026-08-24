@@ -6,13 +6,14 @@ import dev.slimevr.osc.OscBundle
 import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.time.Duration
 
 internal fun buildOutgoingBundle(
-	bones: Map<BodyPart, BoneState>,
+	bones: ComputedSkeleton,
 	routedBones: Set<BodyPart>,
 	config: VMCConfig,
 	vrm: VrmGeometry?,

@@ -41,36 +41,38 @@ private val HEIGHT_CONTRIBUTING_BONES: Set<SkeletonBone> = setOf(
 )
 
 // Maps each SolarXR SkeletonBone to the BodyPart(s) it controls in the skeleton with vectors for offset directions.
-private val BONE_VALUE_TO_OFFSETS: Map<SkeletonBone, Map<BodyPart, Vector3>> = mapOf(
-	SkeletonBone.HEAD to mapOf(BodyPart.HEAD to Vector3.POS_Z),
-	SkeletonBone.NECK to mapOf(BodyPart.NECK to Vector3.NEG_Y),
-	SkeletonBone.UPPER_CHEST to mapOf(BodyPart.UPPER_CHEST to Vector3.NEG_Y),
-	SkeletonBone.CHEST to mapOf(BodyPart.CHEST to Vector3.NEG_Y),
-	SkeletonBone.WAIST to mapOf(BodyPart.WAIST to Vector3.NEG_Y),
-	SkeletonBone.HIP to mapOf(BodyPart.HIP to Vector3.NEG_Y),
-	SkeletonBone.HIPS_WIDTH to mapOf(BodyPart.LEFT_HIP to Vector3.NEG_X / 2f, BodyPart.RIGHT_HIP to Vector3.POS_X / 2f),
-	SkeletonBone.UPPER_LEG to mapOf(BodyPart.LEFT_UPPER_LEG to Vector3.NEG_Y, BodyPart.RIGHT_UPPER_LEG to Vector3.NEG_Y),
-	SkeletonBone.LOWER_LEG to mapOf(BodyPart.LEFT_LOWER_LEG to Vector3.NEG_Y, BodyPart.RIGHT_LOWER_LEG to Vector3.NEG_Y),
-	SkeletonBone.FOOT_LENGTH to mapOf(BodyPart.LEFT_FOOT to Vector3.NEG_Z, BodyPart.RIGHT_FOOT to Vector3.NEG_Z),
-	SkeletonBone.FOOT_SHIFT to mapOf(BodyPart.LEFT_LOWER_LEG to Vector3.NEG_Z, BodyPart.RIGHT_LOWER_LEG to Vector3.NEG_Z),
-	SkeletonBone.SHOULDERS_DISTANCE to mapOf(BodyPart.LEFT_SHOULDER to Vector3.NEG_Y, BodyPart.RIGHT_SHOULDER to Vector3.NEG_Y),
-	SkeletonBone.SHOULDERS_WIDTH to mapOf(BodyPart.LEFT_SHOULDER to Vector3.NEG_X / 2f, BodyPart.RIGHT_SHOULDER to Vector3.POS_X / 2f),
-	SkeletonBone.UPPER_ARM to mapOf(BodyPart.LEFT_UPPER_ARM to Vector3.NEG_Y, BodyPart.RIGHT_UPPER_ARM to Vector3.NEG_Y),
-	SkeletonBone.LOWER_ARM to mapOf(BodyPart.LEFT_LOWER_ARM to Vector3.NEG_Y, BodyPart.RIGHT_LOWER_ARM to Vector3.NEG_Y),
-	SkeletonBone.HAND_Y to mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Y, BodyPart.RIGHT_HAND to Vector3.NEG_Y),
-	SkeletonBone.HAND_Z to mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Z, BodyPart.RIGHT_HAND to Vector3.NEG_Z),
+private val BONE_VALUE_TO_OFFSETS: Map<SkeletonBone, BodyPartMap<Vector3>> = mapOf(
+	SkeletonBone.HEAD to BodyPartMap(mapOf(BodyPart.HEAD to Vector3.POS_Z)),
+	SkeletonBone.NECK to BodyPartMap(mapOf(BodyPart.NECK to Vector3.NEG_Y)),
+	SkeletonBone.UPPER_CHEST to BodyPartMap(mapOf(BodyPart.UPPER_CHEST to Vector3.NEG_Y)),
+	SkeletonBone.CHEST to BodyPartMap(mapOf(BodyPart.CHEST to Vector3.NEG_Y)),
+	SkeletonBone.WAIST to BodyPartMap(mapOf(BodyPart.WAIST to Vector3.NEG_Y)),
+	SkeletonBone.HIP to BodyPartMap(mapOf(BodyPart.HIP to Vector3.NEG_Y)),
+	SkeletonBone.HIPS_WIDTH to BodyPartMap(mapOf(BodyPart.LEFT_HIP to Vector3.NEG_X / 2f, BodyPart.RIGHT_HIP to Vector3.POS_X / 2f)),
+	SkeletonBone.UPPER_LEG to BodyPartMap(mapOf(BodyPart.LEFT_UPPER_LEG to Vector3.NEG_Y, BodyPart.RIGHT_UPPER_LEG to Vector3.NEG_Y)),
+	SkeletonBone.LOWER_LEG to BodyPartMap(mapOf(BodyPart.LEFT_LOWER_LEG to Vector3.NEG_Y, BodyPart.RIGHT_LOWER_LEG to Vector3.NEG_Y)),
+	SkeletonBone.FOOT_LENGTH to BodyPartMap(mapOf(BodyPart.LEFT_FOOT to Vector3.NEG_Z, BodyPart.RIGHT_FOOT to Vector3.NEG_Z)),
+	SkeletonBone.FOOT_SHIFT to BodyPartMap(mapOf(BodyPart.LEFT_LOWER_LEG to Vector3.NEG_Z, BodyPart.RIGHT_LOWER_LEG to Vector3.NEG_Z)),
+	SkeletonBone.SHOULDERS_DISTANCE to BodyPartMap(mapOf(BodyPart.LEFT_SHOULDER to Vector3.NEG_Y, BodyPart.RIGHT_SHOULDER to Vector3.NEG_Y)),
+	SkeletonBone.SHOULDERS_WIDTH to BodyPartMap(mapOf(BodyPart.LEFT_SHOULDER to Vector3.NEG_X / 2f, BodyPart.RIGHT_SHOULDER to Vector3.POS_X / 2f)),
+	SkeletonBone.UPPER_ARM to BodyPartMap(mapOf(BodyPart.LEFT_UPPER_ARM to Vector3.NEG_Y, BodyPart.RIGHT_UPPER_ARM to Vector3.NEG_Y)),
+	SkeletonBone.LOWER_ARM to BodyPartMap(mapOf(BodyPart.LEFT_LOWER_ARM to Vector3.NEG_Y, BodyPart.RIGHT_LOWER_ARM to Vector3.NEG_Y)),
+	SkeletonBone.HAND_Y to BodyPartMap(mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Y, BodyPart.RIGHT_HAND to Vector3.NEG_Y)),
+	SkeletonBone.HAND_Z to BodyPartMap(mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Z, BodyPart.RIGHT_HAND to Vector3.NEG_Z)),
 )
 
-private val BONE_OFFSET_TO_VALUES: Map<BodyPart, Map<SkeletonBone, Vector3>> = BONE_VALUE_TO_OFFSETS
-	.flatMap { (cfg, bones) ->
-		// Invert map, splitting entries [ List<Pair<BodyPart, Pair<SkeletonBone, Vector3>>> ]
-		// Vector also needs to be inverted ((vec/len)/len)==(1/vec)
-		bones.map { (bone, vec) -> bone to (cfg to vec / vec.lenSq()) }
-	}
-	// Merge entries, creating a map again [ Map<BodyPart, List<Pair<SkeletonBone, Vector3>>> ]
-	.groupBy({ it.first }, { it.second })
-	// Transform the values into maps [ Map<BodyPart, Map<SkeletonBone, Vector3>> ]
-	.mapValues { it.value.toMap() }
+private val BONE_OFFSET_TO_VALUES: BodyPartMap<Map<SkeletonBone, Vector3>> = BodyPartMap(
+	BONE_VALUE_TO_OFFSETS
+		.flatMap { (cfg, bones) ->
+			// Invert map, splitting entries [ List<Pair<BodyPart, Pair<SkeletonBone, Vector3>>> ]
+			// Vector also needs to be inverted ((vec/len)/len)==(1/vec)
+			bones.map { (bone, vec) -> bone to (cfg to vec / vec.lenSq()) }
+		}
+		// Merge entries, creating a map again [ Map<BodyPart, List<Pair<SkeletonBone, Vector3>>> ]
+		.groupBy({ it.first }, { it.second })
+		// Transform the values into maps [ Map<BodyPart, Map<SkeletonBone, Vector3>> ]
+		.mapValues { it.value.toMap() },
+)
 
 // Maps each SolarXR SkeletonBone to the BodyPart(s) it controls in the skeleton.
 // Symmetric bones (legs, arms) map to both left and right sides.
@@ -121,7 +123,7 @@ fun Map<SkeletonBone, Float>.toBoneOffsets(): BodyPartMap<Vector3> {
 	return offsets
 }
 
-fun Map<BodyPart, Vector3>.toBoneValues(): Map<SkeletonBone, Float> = this
+fun BodyPartMap<Vector3>.toBoneValues(): Map<SkeletonBone, Float> = this
 	.flatMap { (bone, vec) ->
 		BONE_OFFSET_TO_VALUES[bone]?.map { (cfg, cfgVec) -> cfg to vec.hadamard(cfgVec).len() } ?: emptyList()
 	}

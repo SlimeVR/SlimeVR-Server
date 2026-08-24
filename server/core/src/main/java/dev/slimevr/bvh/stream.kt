@@ -3,7 +3,9 @@ package dev.slimevr.bvh
 import com.jme3.math.FastMath
 import dev.slimevr.config.TextFileHandle
 import dev.slimevr.skeleton.BODY_PART_HIERARCHY_MAP
+import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.ComputedSkeleton
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -26,7 +28,7 @@ class BvhStream(
 	private val frameIntervals = mutableListOf<Float>()
 	private var closed = false
 
-	suspend fun writeHeader(bones: Map<BodyPart, BoneState>) {
+	suspend fun writeHeader(bones: ComputedSkeleton) {
 		mutex.withLock {
 			check(!closed) { "BVH stream is closed" }
 			file.write("HIERARCHY\n")
@@ -45,7 +47,7 @@ class BvhStream(
 		}
 	}
 
-	suspend fun writeFrame(bones: Map<BodyPart, BoneState>) {
+	suspend fun writeFrame(bones: ComputedSkeleton) {
 		mutex.withLock {
 			if (closed) return
 
@@ -95,12 +97,12 @@ class BvhStream(
 		return intervalString.padEnd(9)
 	}
 
-	private fun getBvhOffset(parentPart: BodyPart, bones: Map<BodyPart, BoneState>): Vector3 {
+	private fun getBvhOffset(parentPart: BodyPart, bones: ComputedSkeleton): Vector3 {
 		val offset = bones[parentPart]?.offset ?: return Vector3.NULL
 		return offset * OFFSET_SCALE
 	}
 
-	private suspend fun writeRotations(part: BodyPart, bones: Map<BodyPart, BoneState>) {
+	private suspend fun writeRotations(part: BodyPart, bones: ComputedSkeleton) {
 		val bone = bones[part]
 		val rot = bone?.localRotation ?: Quaternion.IDENTITY
 		val angles = rot.toEulerAngles(EulerOrder.ZXY)
@@ -108,7 +110,7 @@ class BvhStream(
 		BODY_PART_HIERARCHY_MAP[part]?.forEach { child -> writeRotations(child, bones) }
 	}
 
-	private suspend fun writeBone(part: BodyPart, parent: BodyPart?, bones: Map<BodyPart, BoneState>, depth: Int) {
+	private suspend fun writeBone(part: BodyPart, parent: BodyPart?, bones: ComputedSkeleton, depth: Int) {
 		val indent = "\t".repeat(depth)
 		val childIndent = "\t".repeat(depth + 1)
 		file.write("$indent${if (parent == null) "ROOT" else "JOINT"} $part\n")

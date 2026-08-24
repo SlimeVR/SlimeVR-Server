@@ -68,7 +68,7 @@ fun shouldLock(
 	(velocity.acceleration.len() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier)
 
 // TODO Use this to calculate feet pressure
-fun centerOfMass(bones: Map<BodyPart, BoneState>): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.NULL) { acc: Vector3, massEntry ->
+fun centerOfMass(bones: ComputedSkeleton): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.NULL) { acc: Vector3, massEntry ->
 	val bone = bones[massEntry.key] ?: return@fold acc
 	val boneCenter = (bone.headPosition + bone.tailPosition) / 2f
 	return@fold acc + (boneCenter * massEntry.value)
