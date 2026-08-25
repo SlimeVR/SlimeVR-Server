@@ -34,6 +34,11 @@ unit-inch = Inch
 unit-cm = cm
 
 
+## Dropdown
+dropdown_select-all = Select All
+dropdown_unselect-all = Unselect All
+
+
 ## Body parts
 body_part-NONE = Unassigned
 body_part-HEAD = Head
@@ -413,6 +418,13 @@ dongle-settings-paired_trackers = Paired Trackers
 dongle-settings-paired_trackers-empty = No trackers paired to this dongle yet.
 dongle-settings-pair = Pair Tracker
 dongle-settings-forget_tracker = Forget
+dongle-settings-telemetry-title = Live telemetry
+dongle-settings-telemetry-select_trackers = Select trackers
+dongle-settings-telemetry-select_trackers-summary = { $count } of { $total } trackers
+dongle-settings-telemetry-chart_rssi = RSSI · dBm
+dongle-settings-telemetry-chart_loss = Packet loss · %
+dongle-settings-telemetry-chart_gaps = Loss gap events · packet gaps >20ms
+dongle-settings-telemetry-footnote = Loss gap events mark regions where packets were missing for more than 20ms. Darker and wider marks indicate longer packet drop durations.
 
 
 ## Tracker part card info

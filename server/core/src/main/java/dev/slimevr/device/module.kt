@@ -32,6 +32,8 @@ data class DeviceState(
 	val driverName: String? = null,
 	val packetsReceived: Long,
 	val packetsLost: Long,
+	val packetLossRecent: Float? = null,
+	val samples: List<DevicePacketSample> = emptyList(),
 )
 
 sealed interface DeviceActions {
@@ -46,6 +48,8 @@ class Device(
 	val context: DeviceContext,
 	val appContext: AppContextProvider,
 ) {
+	fun getStatsForWindow(windowMs: Long, now: Long = System.currentTimeMillis()): WindowedDeviceStats = computeWindowedStats(context.state.value.samples, windowMs, now)
+
 	fun startObserving() = context.observeAll(this)
 
 	companion object {
@@ -82,9 +86,10 @@ class Device(
 				firmwareDate = null,
 				packetsReceived = 0L,
 				packetsLost = 0L,
+				packetLossRecent = null,
 			)
 
-			val behaviours = listOf(DeviceStatsBehaviour())
+			val behaviours = listOf(DeviceStatsBehaviour(), DeviceTelemetryBehaviour())
 			val context = Context.create(
 				initialState = deviceState,
 				scope = scope,

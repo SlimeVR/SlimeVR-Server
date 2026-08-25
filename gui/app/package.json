@@ -17,6 +17,7 @@
   "dependencies": {
     "@fluent/bundle": "^0.18.0",
     "@fluent/react": "^0.15.2",
+    "@fontsource/jetbrains-mono": "^5.1.0",
     "@fontsource/poppins": "^5.1.0",
     "@formatjs/intl-localematcher": "^0.2.32",
     "@hookform/resolvers": "^3.6.0",
@@ -43,6 +44,7 @@
     "react-modal": "^3.16.1",
     "react-responsive": "^10.0.0",
     "react-router-dom": "^6.26.2",
+    "recharts": "^2.15.0",
     "remark-gfm": "^4.0.0",
     "semver": "^7.6.3",
     "solarxr-protocol": "workspace:*",

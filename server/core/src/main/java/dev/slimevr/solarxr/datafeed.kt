@@ -1,6 +1,7 @@
 package dev.slimevr.solarxr
 
 import dev.slimevr.VRServer
+import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceState
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.hid.HIDReceiverState
@@ -78,44 +79,49 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 )
 
 private fun createDevice(
-	device: DeviceState,
+	device: Device,
 	trackers: List<TrackerState>,
 	datafeedConfig: DataFeedConfig,
+	windowMs: Long,
 ): DeviceData {
+	val deviceState = device.context.state.value
+	val stats = device.getStatsForWindow(windowMs)
 	val trackerMask = datafeedConfig.dataMask?.trackerData
 
 	return DeviceData(
-		id = device.id.toUShort(),
+		id = deviceState.id.toUShort(),
 		hardwareStatus = HardwareStatus(
-			batteryVoltage = device.batteryVoltage,
-			batteryPctEstimate = device.batteryLevel?.let { (it * 100).toUInt().toUByte() },
-			batteryRuntimeEstimate = device.batteryRemainingRuntime,
-			ping = device.ping?.toUShort(),
-			rssi = device.signalStrength?.toShort(),
-			packetsReceived = device.packetsReceived.toInt(),
-			packetsLost = device.packetsLost.toInt(),
-			packetLoss = if (device.packetsReceived > 0) device.packetsLost.toFloat() / device.packetsReceived.toFloat() else null,
+			batteryVoltage = deviceState.batteryVoltage,
+			batteryPctEstimate = deviceState.batteryLevel?.let { (it * 100).toUInt().toUByte() },
+			batteryRuntimeEstimate = deviceState.batteryRemainingRuntime,
+			ping = deviceState.ping?.toUShort(),
+			rssi = stats.rssiAvg?.toShort(),
+			rssiMin = stats.rssiMin?.toShort(),
+			rssiMax = stats.rssiMax?.toShort(),
+			packetsReceived = deviceState.packetsReceived.toInt(),
+			packetsLost = deviceState.packetsLost.toInt(),
+			packetLoss = stats.packetLoss,
 			// TODO missing fields
 		),
 		hardwareInfo = HardwareInfo(
-			mcuId = device.mcuType,
-			manufacturer = device.manufacturer,
-			boardType = device.boardType.toString(),
-			officialBoardType = device.boardType,
-			model = device.mcuType.toString(),
-			firmwareVersion = device.firmwareVersion,
-			firmwareDate = device.firmwareDate,
-			ipAddress = ipv4AddressFromString(device.address),
-			hardwareIdentifier = device.macAddress,
+			mcuId = deviceState.mcuType,
+			manufacturer = deviceState.manufacturer,
+			boardType = deviceState.boardType.toString(),
+			officialBoardType = deviceState.boardType,
+			model = deviceState.mcuType.toString(),
+			firmwareVersion = deviceState.firmwareVersion,
+			firmwareDate = deviceState.firmwareDate,
+			ipAddress = ipv4AddressFromString(deviceState.address),
+			hardwareIdentifier = deviceState.macAddress,
 			// TODO missing fields
 		),
 		trackers = if (trackerMask != null) {
-			trackers.filter { it.deviceId == device.id }
-				.map { tracker -> createTracker(device, tracker, trackerMask) }
+			trackers.filter { it.deviceId == deviceState.id }
+				.map { tracker -> createTracker(deviceState, tracker, trackerMask) }
 		} else {
 			null
 		},
-		origin = device.origin,
+		origin = deviceState.origin,
 	)
 }
 
@@ -154,9 +160,9 @@ fun createDatafeedFrame(
 ): DataFeedMessageHeader {
 	val serverState = server.context.state.value
 	val trackers = serverState.trackers.values.map { it.context.state.value }
+	val windowMs = datafeedConfig.minimumTimeSinceLast.toLong().coerceAtLeast(50L)
 	val devices = if (datafeedConfig.dataMask?.deviceData != null) {
-		serverState.devices.values.map { it.context.state.value }
-			.map { device -> createDevice(device, trackers, datafeedConfig) }
+		serverState.devices.values.map { device -> createDevice(device, trackers, datafeedConfig, windowMs) }
 	} else {
 		null
 	}

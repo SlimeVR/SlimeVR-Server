@@ -216,6 +216,9 @@ const config = {
           50: 'rgb(var(--accent-background-50), <alpha-value>)',
         },
       },
+      fontFamily: {
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+      },
       fontSize: {
         DEFAULT: 'calc(var(--font-size-standard) / 16)',
       },

@@ -1,0 +1,331 @@
+import classNames from 'classnames';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocalization } from '@fluent/react';
+import { Typography } from '@/components/commons/Typography';
+import { PauseIcon } from '@/components/commons/icon/PauseIcon';
+import { PlayIcon } from '@/components/commons/icon/PlayIcon';
+import { DropdownInside } from '@/components/commons/Dropdown';
+import { getTrackerName } from '@/hooks/tracker';
+import { useDongleTelemetryFeed } from '@/hooks/dongle-telemetry-feed';
+import { FlatDeviceTracker } from '@/store/app-store';
+import { RssiLossChart } from './RssiLossChart';
+import { GapEventsChart } from './GapEventsChart';
+
+import { GapEvent } from '@/hooks/telemetry-history';
+
+export interface TelemetryTracker {
+  deviceId: number;
+  name: string;
+  color: string;
+}
+
+export type HoveredChart = 'rssi' | 'gap' | null;
+
+export const SERIES_COLORS = [
+  '#3987e5',
+  '#d95926',
+  '#199e70',
+  '#c98500',
+  '#d55181',
+  '#008300',
+  '#9085e9',
+  '#e66767',
+  '#00a3e0',
+  '#e59400',
+];
+
+export const WINDOW_OPTIONS = [
+  { sec: 10, label: '10s', step: 5 },
+  { sec: 30, label: '30s', step: 10 },
+  { sec: 60, label: '1m', step: 15 },
+  { sec: 120, label: '2m', step: 30 },
+  { sec: 300, label: '5m', step: 60 },
+];
+
+export const CHART_MARGIN = { top: 8, right: 12, bottom: 4, left: 0 };
+export const Y_AXIS_WIDTH = 64;
+export const RIGHT_AXIS_WIDTH = 48;
+
+export function relativeTimeTick(v: number, endSec: number) {
+  const diff = Math.round(v - endSec);
+  if (diff === 0) return '0s';
+  if (Math.abs(diff) >= 60 && Math.abs(diff) % 60 === 0) {
+    return `${diff / 60}m`;
+  }
+  return `${diff}s`;
+}
+
+export function pxToTimeSec(
+  clientX: number,
+  rect: DOMRect,
+  startSec: number,
+  endSec: number
+): number {
+  const plotLeft = Y_AXIS_WIDTH + CHART_MARGIN.left;
+  const plotWidth =
+    rect.width -
+    Y_AXIS_WIDTH -
+    CHART_MARGIN.left -
+    RIGHT_AXIS_WIDTH -
+    CHART_MARGIN.right;
+  const pct = Math.max(
+    0,
+    Math.min(1, (clientX - rect.left - plotLeft) / plotWidth)
+  );
+  return startSec + pct * (endSec - startSec);
+}
+
+export function timeSecToPx(
+  t: number,
+  rectWidth: number,
+  startSec: number,
+  endSec: number
+): number {
+  const plotLeft = Y_AXIS_WIDTH + CHART_MARGIN.left;
+  const plotWidth =
+    rectWidth -
+    Y_AXIS_WIDTH -
+    CHART_MARGIN.left -
+    RIGHT_AXIS_WIDTH -
+    CHART_MARGIN.right;
+  const pct = Math.max(0, Math.min(1, (t - startSec) / (endSec - startSec)));
+  return plotLeft + pct * plotWidth;
+}
+
+export function flipTooltipLeft(
+  hoveredPx: number,
+  containerWidth: number,
+  tooltipWidth: number,
+  offset: number
+): number {
+  const wouldOverflow = hoveredPx + offset + tooltipWidth > containerWidth;
+  return wouldOverflow ? hoveredPx - offset - tooltipWidth : hoveredPx + offset;
+}
+
+export function isGapEventActive(ev: GapEvent, hoveredTime: number): boolean {
+  const tStartSec = (ev.t - ev.durationMs) / 1000;
+  const tEndSec = ev.t / 1000;
+  return hoveredTime >= tStartSec - 0.5 && hoveredTime <= tEndSec + 0.5;
+}
+
+export function gapSeverityTier(
+  durationMs: number
+): 'critical' | 'warning' | 'mild' {
+  if (durationMs >= 100) return 'critical';
+  if (durationMs >= 50) return 'warning';
+  return 'mild';
+}
+
+export function DongleTelemetry({
+  trackers,
+}: {
+  trackers: FlatDeviceTracker[];
+}) {
+  const { l10n } = useLocalization();
+
+  const colorsRef = useRef<Map<number, string>>(new Map());
+  const colorFor = (deviceId: number): string => {
+    const colors = colorsRef.current;
+    let color = colors.get(deviceId);
+    if (!color) {
+      color = SERIES_COLORS[colors.size % SERIES_COLORS.length];
+      colors.set(deviceId, color);
+    }
+    return color;
+  };
+
+  const list = useMemo<TelemetryTracker[]>(
+    () =>
+      trackers
+        .filter((t) => t.device)
+        .map((t) => ({
+          deviceId: t.device!.id,
+          name: String(getTrackerName(l10n, t.tracker.info)),
+          color: colorFor(t.device!.id),
+        })),
+    [trackers, l10n]
+  );
+
+  const trackerKey = list
+    .map((t) => t.deviceId)
+    .sort((a, b) => a - b)
+    .join(',');
+
+  const knownIdsRef = useRef<Set<number>>(new Set(list.map((t) => t.deviceId)));
+  const [visibleIds, setVisibleIds] = useState<number[]>(() =>
+    list.map((t) => t.deviceId)
+  );
+  useEffect(() => {
+    const known = knownIdsRef.current;
+    const newIds = list.map((t) => t.deviceId).filter((id) => !known.has(id));
+    if (newIds.length === 0) return;
+    newIds.forEach((id) => known.add(id));
+    setVisibleIds((prev) => [...prev, ...newIds]);
+  }, [trackerKey]);
+
+  const [windowSec, setWindowSec] = useState(30);
+  const [live, setLive] = useState(true);
+  const [hoveredTime, setHoveredTime] = useState<number | null>(null);
+  const [hoveredChart, setHoveredChart] = useState<HoveredChart>(null);
+
+  const trackerIds = useMemo(() => list.map((t) => t.deviceId), [trackerKey]);
+  const { chartData, gapEvents, displayStats, nowSec } = useDongleTelemetryFeed(
+    trackerIds,
+    windowSec,
+    live
+  );
+
+  const stepSec = WINDOW_OPTIONS.find((w) => w.sec === windowSec)?.step ?? 60;
+  const endSec = nowSec;
+  const startSec = endSec - windowSec;
+
+  const fixedEndTick = Math.floor(endSec / stepSec) * stepSec;
+  const xAxisTicks = useMemo(() => {
+    const ticks: number[] = [];
+    for (
+      let t = fixedEndTick - windowSec;
+      t <= fixedEndTick + stepSec;
+      t += stepSec
+    ) {
+      ticks.push(t);
+    }
+    return ticks;
+  }, [fixedEndTick, windowSec, stepSec]);
+
+  if (list.length === 0) return null;
+
+  return (
+    <div className="flex flex-col bg-background-70 rounded-lg p-5 gap-3">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <Typography
+          variant="section-title"
+          id="dongle-settings-telemetry-title"
+        />
+        <div className="flex items-center gap-3 flex-wrap">
+          <DropdownInside
+            name="dongle-telemetry-trackers"
+            variant="quaternary"
+            display="fit"
+            multiple
+            value={visibleIds.map(String)}
+            onChange={(values) => setVisibleIds(values.map(Number))}
+            items={list.map((t) => ({
+              value: String(t.deviceId),
+              label: (
+                <div className="flex items-center gap-2 min-w-[160px]">
+                  <span
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ background: t.color }}
+                  />
+                  <span className="flex-1 truncate">{t.name}</span>
+                  <span className="text-background-30 font-mono tabular-nums">
+                    {displayStats[t.deviceId]?.rssi != null
+                      ? `${displayStats[t.deviceId]!.rssi} dBm`
+                      : '--'}
+                  </span>
+                </div>
+              ),
+            }))}
+            placeholder={l10n.getString(
+              'dongle-settings-telemetry-select_trackers'
+            )}
+            renderValue={() => (
+              <div className="flex items-center gap-2">
+                <div className="flex gap-[3px]">
+                  {list.map((t) => (
+                    <span
+                      key={t.deviceId}
+                      className={classNames(
+                        'w-1.5 h-1.5 rounded-full transition-opacity',
+                        {
+                          'opacity-100': visibleIds.includes(t.deviceId),
+                          'opacity-25': !visibleIds.includes(t.deviceId),
+                        }
+                      )}
+                      style={{ background: t.color }}
+                    />
+                  ))}
+                </div>
+                <Typography
+                  id="dongle-settings-telemetry-select_trackers-summary"
+                  vars={{ count: visibleIds.length, total: list.length }}
+                />
+              </div>
+            )}
+          />
+
+          <div className="flex bg-background-80 rounded-md p-2 gap-0.5">
+            {WINDOW_OPTIONS.map((w) => (
+              <button
+                key={w.sec}
+                type="button"
+                onClick={() => setWindowSec(w.sec)}
+                className={classNames(
+                  'text-standard-bold px-2.5 py-1.5 rounded',
+                  windowSec === w.sec
+                    ? 'bg-accent-background-30 text-background-10'
+                    : 'text-background-30 hover:text-background-10'
+                )}
+              >
+                {w.label}
+              </button>
+            ))}
+          </div>
+
+          <div
+            className="bg-background-50 hover:bg-background-40 rounded-full cursor-pointer w-10 h-10 flex items-center justify-center fill-background-10"
+            onClick={() => setLive((v) => !v)}
+          >
+            {live ? <PauseIcon width={12} /> : <PlayIcon width={12} />}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <div className="bg-background-80 rounded-xl p-4">
+          <div className="flex items-center justify-between pl-[64px] pr-[48px] pb-2">
+            <Typography
+              variant="section-title"
+              id="dongle-settings-telemetry-chart_rssi"
+            />
+            <Typography
+              variant="section-title"
+              id="dongle-settings-telemetry-chart_loss"
+            />
+          </div>
+          <div className="h-[440px]">
+            <RssiLossChart
+              chartData={chartData}
+              trackers={list}
+              visibleIds={visibleIds}
+              eventsByTracker={gapEvents}
+              startSec={startSec}
+              endSec={endSec}
+              xAxisTicks={xAxisTicks}
+              hoveredTime={hoveredTime}
+              onHoveredTimeChange={setHoveredTime}
+              isActive={hoveredChart === 'rssi'}
+              onActiveChange={setHoveredChart}
+            />
+          </div>
+        </div>
+
+        <GapEventsChart
+          chartData={chartData}
+          trackers={list}
+          visibleIds={visibleIds}
+          eventsByTracker={gapEvents}
+          startSec={startSec}
+          endSec={endSec}
+          xAxisTicks={xAxisTicks}
+          hoveredTime={hoveredTime}
+          onHoveredTimeChange={setHoveredTime}
+          isActive={hoveredChart === 'gap'}
+          onActiveChange={setHoveredChart}
+        />
+      </div>
+
+      <Typography color="secondary" id="dongle-settings-telemetry-footnote" />
+    </div>
+  );
+}
