@@ -271,7 +271,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 	)
 
 	private val queues: MutableMap<Triple<SocketAddress, ConfigTypeId, Int>, Deque<ConfigStateWaiter>> = ConcurrentHashMap()
-	suspend fun setConfigFlag(device: UDPDevice, configTypeId: ConfigTypeId, state: Boolean, sensorId: Int = 255) {
+	suspend fun setConfigFlag(device: UDPDevice, configTypeId: ConfigTypeId, state: Boolean, sensorId: Int = TRACKER_ID_ALL) {
 		if (device.timedOut) return
 		val triple = Triple(device.address, configTypeId, sensorId)
 		val queue = queues.computeIfAbsent(triple) { _ -> ConcurrentLinkedDeque() }
@@ -533,8 +533,20 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				)
 			}
 
-			is UDPPacket19SignalStrength -> connection?.trackers?.values?.forEach {
-				it.signalStrength = packet.signalStrength
+			is UDPPacket19SignalStrength -> {
+				// Id 255 addresses the device as a whole rather than one of its trackers: that
+				// is what the ESP firmware sends for signal strength, since a device has one
+				// radio however many trackers it exposes. Any other id names a single tracker,
+				// and applying the value to all of them let whichever tracker reported last
+				// overwrite the rest.
+				if (packet.sensorId == TRACKER_ID_ALL) {
+					connection?.trackers?.values?.forEach {
+						it.signalStrength = packet.signalStrength
+					}
+				} else {
+					val tracker = connection?.getTracker(packet.sensorId) ?: return
+					tracker.signalStrength = packet.signalStrength
+				}
 			}
 
 			is UDPPacket20Temperature -> {
@@ -656,6 +668,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		// 270 deg (-90 deg) default for officials
 		private val SENSOR_OFFSET_CORRECTION = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 		private const val RESET_SOURCE_NAME = "TrackerServer"
+
+		/**
+		 * Id meaning "every tracker on this device" rather than one of them.
+		 *
+		 * Signal strength is the only packet the ESP firmware sends this way
+		 * (`Connection::sendSignalStrength`): a device has one radio however many trackers it
+		 * exposes. Device-wide values that need no id at all simply carry none — the battery
+		 * packet has no id field. [setConfigFlag] defaults to this to address a whole device.
+		 */
+		const val TRACKER_ID_ALL = 255
 
 		private val hexFormat = HexFormat {
 			bytes.byteSeparator = ","
