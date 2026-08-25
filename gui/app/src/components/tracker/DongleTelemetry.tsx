@@ -57,51 +57,38 @@ export function relativeTimeTick(v: number, endSec: number) {
   return `${diff}s`;
 }
 
-export function pxToTimeSec(
+export function screenXToTimeSec(
   clientX: number,
-  rect: DOMRect,
+  plotLeftScreen: number,
+  plotWidth: number,
   startSec: number,
   endSec: number
 ): number {
-  const plotLeft = Y_AXIS_WIDTH + CHART_MARGIN.left;
-  const plotWidth =
-    rect.width -
-    Y_AXIS_WIDTH -
-    CHART_MARGIN.left -
-    RIGHT_AXIS_WIDTH -
-    CHART_MARGIN.right;
-  const pct = Math.max(
-    0,
-    Math.min(1, (clientX - rect.left - plotLeft) / plotWidth)
-  );
+  if (plotWidth <= 0) return startSec;
+  const pct = Math.max(0, Math.min(1, (clientX - plotLeftScreen) / plotWidth));
   return startSec + pct * (endSec - startSec);
 }
 
-export function timeSecToPx(
+export function timeSecToScreenX(
   t: number,
-  rectWidth: number,
+  plotLeftScreen: number,
+  plotWidth: number,
   startSec: number,
   endSec: number
 ): number {
-  const plotLeft = Y_AXIS_WIDTH + CHART_MARGIN.left;
-  const plotWidth =
-    rectWidth -
-    Y_AXIS_WIDTH -
-    CHART_MARGIN.left -
-    RIGHT_AXIS_WIDTH -
-    CHART_MARGIN.right;
+  if (endSec <= startSec) return plotLeftScreen;
   const pct = Math.max(0, Math.min(1, (t - startSec) / (endSec - startSec)));
-  return plotLeft + pct * plotWidth;
+  return plotLeftScreen + pct * plotWidth;
 }
 
 export function flipTooltipLeft(
-  hoveredPx: number,
-  containerWidth: number,
+  clientX: number,
+  screenWidth: number,
   tooltipWidth: number,
   offset: number
 ): number {
-  const wouldOverflow = hoveredPx + offset + tooltipWidth > containerWidth;
-  return wouldOverflow ? hoveredPx - offset - tooltipWidth : hoveredPx + offset;
+  const wouldOverflow = clientX + offset + tooltipWidth > screenWidth;
+  return wouldOverflow ? clientX - offset - tooltipWidth : clientX + offset;
 }
 
 export function isGapEventActive(

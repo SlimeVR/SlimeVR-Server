@@ -10,10 +10,10 @@ import { ChartRow, GapEvent } from '@/hooks/telemetry-history';
 import {
   flipTooltipLeft,
   HoveredChart,
-  pxToTimeSec,
   relativeTimeTick,
+  screenXToTimeSec,
   TelemetryTracker,
-  timeSecToPx,
+  timeSecToScreenX,
 } from './DongleTelemetry';
 import {
   TelemetryPopoverTooltip,
@@ -364,26 +364,39 @@ function RssiLossChartComponent({
   const [hoveredY, setHoveredY] = useState<number | null>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!wrapperRef.current) return;
-    const rect = wrapperRef.current.getBoundingClientRect();
-    onHoveredTimeChange(pxToTimeSec(e.clientX, rect, startSec, endSec));
-    setHoveredY(e.clientY - rect.top);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const canvasRect = canvas.getBoundingClientRect();
+    const plotLeftScreen = canvasRect.left + Y_AXIS_WIDTH;
+    const plotWidth = canvasRect.width - Y_AXIS_WIDTH - RIGHT_AXIS_WIDTH;
+    onHoveredTimeChange(
+      screenXToTimeSec(e.clientX, plotLeftScreen, plotWidth, startSec, endSec)
+    );
+    setHoveredY(e.clientY);
     onActiveChange('rssi');
   };
 
   let clientPos: { x: number; y: number } | null = null;
-  if (hoveredTime != null && wrapperRef.current) {
-    const rect = wrapperRef.current.getBoundingClientRect();
-    const hoveredPx = timeSecToPx(hoveredTime, rect.width, startSec, endSec);
-    const tooltipLeftPx = flipTooltipLeft(
-      hoveredPx,
-      rect.width,
+  if (hoveredTime != null && canvasRef.current) {
+    const canvasRect = canvasRef.current.getBoundingClientRect();
+    const plotLeftScreen = canvasRect.left + Y_AXIS_WIDTH;
+    const plotWidth = canvasRect.width - Y_AXIS_WIDTH - RIGHT_AXIS_WIDTH;
+    const screenX = timeSecToScreenX(
+      hoveredTime,
+      plotLeftScreen,
+      plotWidth,
+      startSec,
+      endSec
+    );
+    const tooltipX = flipTooltipLeft(
+      screenX,
+      window.innerWidth,
       TOOLTIP_WIDTH,
       TOOLTIP_OFFSET
     );
     clientPos = {
-      x: rect.left + tooltipLeftPx,
-      y: rect.top + (hoveredY ?? 8) + TOOLTIP_OFFSET,
+      x: tooltipX,
+      y: (hoveredY ?? canvasRect.top) + TOOLTIP_OFFSET,
     };
   }
 
