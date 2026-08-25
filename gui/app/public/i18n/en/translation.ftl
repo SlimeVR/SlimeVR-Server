@@ -497,7 +497,7 @@ settings-sidebar-interface = Interface
 settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
-settings-sidebar-serial = Serial console
+settings-sidebar-serial = USB Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-home = Home Screen
 settings-sidebar-checklist = Tracking checklist
@@ -827,10 +827,10 @@ settings-interface-behavior-bvh_directory-description = Choose a directory to sa
 settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 
 ## Serial settings
-settings-serial = Serial Console
+settings-serial = USB Serial Console
 # This cares about multilines
 settings-serial-description =
-    This is a live information feed for serial communication.
+    This is a live information feed for serial communication via USB.
     May be useful to debug firmware or hardware issues.
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
