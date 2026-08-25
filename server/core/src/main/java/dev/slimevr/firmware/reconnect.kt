@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withTimeoutOrNull
+import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 
 fun isOnlineStatus(status: TrackerStatus): Boolean = when (status) {
@@ -27,7 +28,7 @@ private fun deviceStatusFlow(
 ) = server.context.state.flatMapLatest { state ->
 	val device = state.devices.values.find { device ->
 		val deviceState = device.context.state.value
-		matches(deviceState.id, deviceState.macAddress)
+		deviceState.origin == DeviceOrigin.UDP && matches(deviceState.id, deviceState.macAddress)
 	}
 	device?.context?.state?.map { it.status } ?: flowOf(TrackerStatus.DISCONNECTED)
 }
@@ -37,25 +38,22 @@ private fun deviceAndConnectionStateFlow(
 	server: VRServer,
 	mac: String,
 ) = server.context.state.flatMapLatest { serverState ->
-	val device = serverState.devices.values.filter { d ->
-		d.context.state.value.macAddress?.uppercase() == mac
-	}.lastOrNull()
-	if (device == null) {
-		flowOf(Pair(TrackerStatus.DISCONNECTED, null))
-	} else {
-		device.appContext.udpServer.context.state.flatMapLatest { udpState ->
-			val conn = udpState.connections.values.find { c ->
-				c.context.state.value.deviceId == device.context.state.value.id
-			}
-			if (conn == null) {
-				device.context.state.map { dState -> Pair(dState.status, null) }
-			} else {
-				combine(device.context.state, conn.context.state) { dState, cState ->
-					Pair(dState.status, cState)
-				}
+	val device = serverState.devices.values.lastOrNull { d ->
+		val dState = d.context.state.value
+		dState.origin == DeviceOrigin.UDP && dState.macAddress?.uppercase() == mac
+	}
+	device?.appContext?.udpServer?.context?.state?.flatMapLatest { udpState ->
+		val conn = udpState.connections.values.find { c ->
+			c.context.state.value.deviceId == device.context.state.value.id
+		}
+		if (conn == null) {
+			device.context.state.map { dState -> Pair(dState.status, null) }
+		} else {
+			combine(device.context.state, conn.context.state) { dState, cState ->
+				Pair(dState.status, cState)
 			}
 		}
-	}
+	} ?: flowOf(Pair(TrackerStatus.DISCONNECTED, null))
 }
 
 suspend fun waitForConnected(

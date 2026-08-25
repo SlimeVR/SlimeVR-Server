@@ -106,9 +106,9 @@ class HMDCheckBehaviour(private val trackerStates: StateFlow<List<ChecklistTrack
 			enabled = hmdTracker != null,
 			ignorable = true,
 			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
-			extraData = if (!isAssigned) {
+			extraData = if (hmdTracker != null && !isAssigned) {
 				TrackingChecklistUnassignedHMD(
-					trackerId = hmdTracker?.id?.toUShort() ?: error("trackerId should not be set if hmdTracker"),
+					trackerId = hmdTracker.id.toUShort(),
 				)
 			} else {
 				null
