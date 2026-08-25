@@ -423,8 +423,8 @@ dongle-settings-telemetry-select_trackers = Select trackers
 dongle-settings-telemetry-select_trackers-summary = { $count } of { $total } trackers
 dongle-settings-telemetry-chart_rssi = RSSI · dBm
 dongle-settings-telemetry-chart_loss = Packet loss · %
-dongle-settings-telemetry-chart_gaps = Loss gap events · packet gaps >20ms
-dongle-settings-telemetry-footnote = Loss gap events mark regions where packets were missing for more than 20ms. Darker and wider marks indicate longer packet drop durations.
+dongle-settings-telemetry-chart_gaps = Loss gap events · TPS-relative packet gaps
+dongle-settings-telemetry-footnote = Loss gap events mark regions where packet updates were delayed relative to the tracker's TPS rate. Darker and wider marks indicate longer drop durations.
 
 
 ## Tracker part card info

@@ -342,6 +342,7 @@ export function DropdownInside(
       );
     } else {
       props.onChange(item.value);
+      setIsOpen(false);
     }
   };
 

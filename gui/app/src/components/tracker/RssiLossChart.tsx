@@ -1,25 +1,19 @@
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import {
-  CartesianGrid,
-  ComposedChart,
-  Line,
-  ReferenceLine,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from 'recharts';
-import { GapEvent } from '@/hooks/telemetry-history';
-import { ChartRow } from '@/hooks/dongle-telemetry-feed';
+  Dispatch,
+  memo,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { ChartRow, GapEvent } from '@/hooks/telemetry-history';
 import {
-  CHART_MARGIN,
   flipTooltipLeft,
   HoveredChart,
   pxToTimeSec,
-  RIGHT_AXIS_WIDTH,
   relativeTimeTick,
   TelemetryTracker,
   timeSecToPx,
-  Y_AXIS_WIDTH,
 } from './DongleTelemetry';
 import {
   estimatedTooltipHeight,
@@ -28,7 +22,12 @@ import {
   TOOLTIP_WIDTH,
 } from './TelemetryTooltip';
 
-export function RssiLossChart({
+const Y_AXIS_WIDTH = 48;
+const RIGHT_AXIS_WIDTH = 40;
+const XAXIS_HEIGHT = 20;
+const TOP_PADDING = 12;
+
+function RssiLossChartComponent({
   chartData,
   trackers,
   visibleIds,
@@ -55,7 +54,184 @@ export function RssiLossChart({
 }) {
   const visible = trackers.filter((t) => visibleIds.includes(t.deviceId));
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredY, setHoveredY] = useState<number | null>(null);
+
+  // High-performance Canvas 2D rendering loop (ultra-low CPU)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const width = rect.width;
+    const height = rect.height;
+
+    if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+    }
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, width, height);
+
+    const plotLeft = Y_AXIS_WIDTH;
+    const plotRight = width - RIGHT_AXIS_WIDTH;
+    const plotWidth = plotRight - plotLeft;
+    const plotTop = TOP_PADDING;
+    const plotBottom = height - XAXIS_HEIGHT;
+    const plotHeight = plotBottom - plotTop;
+
+    const timeToPx = (t: number) => {
+      const ratio = (t - startSec) / (endSec - startSec);
+      return plotLeft + ratio * plotWidth;
+    };
+
+    const rssiToPy = (rssi: number) => {
+      const clamped = Math.max(-80, Math.min(-20, rssi));
+      const ratio = (clamped - -80) / (-20 - -80);
+      return plotBottom - ratio * plotHeight;
+    };
+
+    const lossToPy = (loss: number) => {
+      const clamped = Math.max(0, Math.min(100, loss));
+      const ratio = clamped / 100;
+      return plotBottom - ratio * plotHeight;
+    };
+
+    // 1. Draw horizontal grid lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = 1;
+    const rssiTicks = [-80, -60, -40, -20];
+    rssiTicks.forEach((val) => {
+      const y = rssiToPy(val);
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, y);
+      ctx.lineTo(plotRight, y);
+      ctx.stroke();
+    });
+
+    // 2. Draw Y-axis tick labels
+    ctx.font = '11px Poppins, sans-serif';
+    ctx.textBaseline = 'middle';
+
+    // Left Y-axis (RSSI)
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'right';
+    rssiTicks.forEach((val) => {
+      const y = rssiToPy(val);
+      ctx.fillText(`${val}dBm`, plotLeft - 6, y);
+    });
+
+    // Right Y-axis (Packet Loss)
+    ctx.textAlign = 'left';
+    const lossTicks = [0, 25, 50, 75, 100];
+    lossTicks.forEach((val) => {
+      const y = lossToPy(val);
+      ctx.fillText(`${val}%`, plotRight + 6, y);
+    });
+
+    // 3. Draw X-axis tick labels
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#ffffff';
+    xAxisTicks.forEach((tSec) => {
+      const x = timeToPx(tSec);
+      if (x >= plotLeft && x <= plotRight) {
+        ctx.fillText(relativeTimeTick(tSec, endSec), x, plotBottom + 4);
+      }
+    });
+
+    // 4. Clip plot area to prevent line spillover on left and right margins
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(plotLeft, plotTop, plotWidth, plotHeight);
+    ctx.clip();
+
+    // Draw RSSI lines (solid 2px)
+    visible.forEach((t) => {
+      const key = `${t.deviceId}_avg`;
+      ctx.strokeStyle = t.color;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      ctx.beginPath();
+
+      let drawing = false;
+      for (let i = 0; i < chartData.length; i++) {
+        const row = chartData[i];
+        const val = row[key];
+        if (val != null) {
+          const x = timeToPx(row.t);
+          const y = rssiToPy(Number(val));
+          if (!drawing) {
+            ctx.moveTo(x, y);
+            drawing = true;
+          } else {
+            ctx.lineTo(x, y);
+          }
+        } else if (drawing) {
+          ctx.stroke();
+          ctx.beginPath();
+          drawing = false;
+        }
+      }
+      if (drawing) {
+        ctx.stroke();
+      }
+    });
+
+    // Draw Packet Loss lines (dashed 1.5px)
+    visible.forEach((t) => {
+      const key = `${t.deviceId}_loss`;
+      ctx.strokeStyle = t.color;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+
+      let drawing = false;
+      for (let i = 0; i < chartData.length; i++) {
+        const row = chartData[i];
+        const val = row[key];
+        if (val != null) {
+          const x = timeToPx(row.t);
+          const y = lossToPy(Number(val));
+          if (!drawing) {
+            ctx.moveTo(x, y);
+            drawing = true;
+          } else {
+            ctx.lineTo(x, y);
+          }
+        } else if (drawing) {
+          ctx.stroke();
+          ctx.beginPath();
+          drawing = false;
+        }
+      }
+      if (drawing) {
+        ctx.stroke();
+      }
+    });
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // 6. Draw vertical hover line
+    if (hoveredTime != null) {
+      const hoverX = timeToPx(hoveredTime);
+      if (hoverX >= plotLeft && hoverX <= plotRight) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(hoverX, plotTop);
+        ctx.lineTo(hoverX, plotBottom);
+        ctx.stroke();
+      }
+    }
+
+    ctx.restore();
+  }, [chartData, visible, startSec, endSec, xAxisTicks, hoveredTime]);
 
   let tooltipLeftPx: number | null = null;
   let tooltipTopPx = 8;
@@ -79,6 +255,7 @@ export function RssiLossChart({
       );
     }
   }
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!wrapperRef.current) return;
     const rect = wrapperRef.current.getBoundingClientRect();
@@ -98,116 +275,7 @@ export function RssiLossChart({
         onActiveChange((prev) => (prev === 'rssi' ? null : prev));
       }}
     >
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={chartData} margin={CHART_MARGIN}>
-          <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
-          <XAxis
-            dataKey="t"
-            type="number"
-            domain={[startSec, endSec]}
-            allowDataOverflow
-            ticks={xAxisTicks}
-            tickFormatter={(v: number) => relativeTimeTick(v, endSec)}
-            stroke="rgb(var(--background-10))"
-            fontSize={11}
-            fontFamily="Poppins, sans-serif"
-            tickLine={false}
-            axisLine={false}
-          />
-          <YAxis
-            yAxisId="rssi"
-            orientation="left"
-            domain={[-80, -20]}
-            ticks={[-80, -60, -40, -20]}
-            width={Y_AXIS_WIDTH}
-            stroke="rgb(var(--background-10))"
-            fontSize={11}
-            fontFamily="Poppins, sans-serif"
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(v: number) => `${v}dBm`}
-          />
-          <YAxis
-            yAxisId="loss"
-            orientation="right"
-            domain={[0, 100]}
-            ticks={[0, 25, 50, 75, 100]}
-            width={RIGHT_AXIS_WIDTH}
-            stroke="rgb(var(--background-10))"
-            fontSize={11}
-            fontFamily="Poppins, sans-serif"
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(v: number) => `${v}%`}
-          />
-          {hoveredTime != null && (
-            <ReferenceLine
-              yAxisId="rssi"
-              x={hoveredTime}
-              stroke="rgba(255,255,255,0.4)"
-              strokeWidth={1.5}
-              isFront
-            />
-          )}
-          {visible.map((t) => (
-            <Line
-              key={`${t.deviceId}-min-line`}
-              yAxisId="rssi"
-              dataKey={`${t.deviceId}_min`}
-              stroke={t.color}
-              strokeWidth={1}
-              strokeDasharray="2 2"
-              opacity={0.45}
-              dot={false}
-              activeDot={false}
-              connectNulls
-              isAnimationActive={false}
-            />
-          ))}
-          {visible.map((t) => (
-            <Line
-              key={`${t.deviceId}-max-line`}
-              yAxisId="rssi"
-              dataKey={`${t.deviceId}_max`}
-              stroke={t.color}
-              strokeWidth={1}
-              strokeDasharray="2 2"
-              opacity={0.45}
-              dot={false}
-              activeDot={false}
-              connectNulls
-              isAnimationActive={false}
-            />
-          ))}
-          {visible.map((t) => (
-            <Line
-              key={`${t.deviceId}-avg`}
-              yAxisId="rssi"
-              dataKey={`${t.deviceId}_avg`}
-              stroke={t.color}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 4, strokeWidth: 0 }}
-              connectNulls
-              isAnimationActive={false}
-            />
-          ))}
-          {visible.map((t) => (
-            <Line
-              key={`${t.deviceId}-loss`}
-              yAxisId="loss"
-              dataKey={`${t.deviceId}_loss`}
-              stroke={t.color}
-              strokeWidth={1.5}
-              strokeDasharray="3 3"
-              dot={false}
-              activeDot={{ r: 4, strokeWidth: 0 }}
-              connectNulls
-              isAnimationActive={false}
-            />
-          ))}
-        </ComposedChart>
-      </ResponsiveContainer>
+      <canvas ref={canvasRef} className="w-full h-full block" />
 
       {isActive && hoveredTime != null && tooltipLeftPx != null && (
         <div
@@ -232,3 +300,5 @@ export function RssiLossChart({
     </div>
   );
 }
+
+export const RssiLossChart = memo(RssiLossChartComponent);

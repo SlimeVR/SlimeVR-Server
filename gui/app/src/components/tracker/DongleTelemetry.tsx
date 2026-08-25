@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { PauseIcon } from '@/components/commons/icon/PauseIcon';
@@ -10,6 +10,7 @@ import { useDongleTelemetryFeed } from '@/hooks/dongle-telemetry-feed';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { RssiLossChart } from './RssiLossChart';
 import { GapEventsChart } from './GapEventsChart';
+import { defaultDongleTelemetryConfig, useConfig } from '@/hooks/config';
 
 import { GapEvent } from '@/hooks/telemetry-history';
 
@@ -102,18 +103,44 @@ export function flipTooltipLeft(
   return wouldOverflow ? hoveredPx - offset - tooltipWidth : hoveredPx + offset;
 }
 
-export function isGapEventActive(ev: GapEvent, hoveredTime: number): boolean {
+export function isGapEventActive(
+  ev: GapEvent,
+  hoveredTime: number,
+  paddingSec = 0.25
+): boolean {
   const tStartSec = (ev.t - ev.durationMs) / 1000;
   const tEndSec = ev.t / 1000;
-  return hoveredTime >= tStartSec - 0.5 && hoveredTime <= tEndSec + 0.5;
+  return (
+    hoveredTime >= tStartSec - paddingSec && hoveredTime <= tEndSec + paddingSec
+  );
 }
 
-export function gapSeverityTier(
-  durationMs: number
-): 'critical' | 'warning' | 'mild' {
-  if (durationMs >= 100) return 'critical';
-  if (durationMs >= 50) return 'warning';
-  return 'mild';
+export function getGapColor(durationMs: number): string {
+  if (durationMs <= 30) {
+    return 'hsl(48, 95%, 52%)'; // Amber Yellow
+  }
+  if (durationMs <= 200) {
+    const ratio = (durationMs - 30) / 170;
+    const hue = 48 - ratio * 48; // Amber -> Orange -> Red
+    return `hsl(${Math.round(hue)}, 92%, 50%)`;
+  }
+  const ratio = Math.min(1, (durationMs - 200) / 800);
+  const hue = (360 - ratio * 50) % 360; // Red -> Crimson -> Magenta
+  return `hsl(${Math.round(hue)}, 85%, 48%)`;
+}
+
+export function getGapTextColor(durationMs: number): string {
+  if (durationMs <= 30) {
+    return 'hsl(48, 95%, 65%)'; // High-contrast Amber Yellow
+  }
+  if (durationMs <= 200) {
+    const ratio = (durationMs - 30) / 170;
+    const hue = 48 - ratio * 48; // Amber -> Orange -> Light Red
+    return `hsl(${Math.round(hue)}, 95%, 65%)`;
+  }
+  const ratio = Math.min(1, (durationMs - 200) / 800);
+  const hue = (360 - ratio * 50) % 360; // Light Red -> Vibrant Coral -> Bright Magenta
+  return `hsl(${Math.round(hue)}, 90%, 68%)`;
 }
 
 export function DongleTelemetry({
@@ -151,19 +178,41 @@ export function DongleTelemetry({
     .sort((a, b) => a - b)
     .join(',');
 
-  const knownIdsRef = useRef<Set<number>>(new Set(list.map((t) => t.deviceId)));
-  const [visibleIds, setVisibleIds] = useState<number[]>(() =>
-    list.map((t) => t.deviceId)
-  );
-  useEffect(() => {
-    const known = knownIdsRef.current;
-    const newIds = list.map((t) => t.deviceId).filter((id) => !known.has(id));
-    if (newIds.length === 0) return;
-    newIds.forEach((id) => known.add(id));
-    setVisibleIds((prev) => [...prev, ...newIds]);
-  }, [trackerKey]);
+  const { config, setConfig } = useConfig();
+  const telemetryConfig =
+    config?.dongleTelemetry ?? defaultDongleTelemetryConfig;
 
-  const [windowSec, setWindowSec] = useState(30);
+  const windowSec = telemetryConfig.windowSec;
+  const disabledTrackerIds = telemetryConfig.disabledTrackerIds ?? [];
+
+  const visibleIds = useMemo(
+    () =>
+      list
+        .map((t) => t.deviceId)
+        .filter((id) => !disabledTrackerIds.includes(id)),
+    [list, disabledTrackerIds]
+  );
+
+  const handleSetVisibleIds = (values: number[]) => {
+    const allIds = list.map((t) => t.deviceId);
+    const disabled = allIds.filter((id) => !values.includes(id));
+    setConfig({
+      dongleTelemetry: {
+        ...telemetryConfig,
+        disabledTrackerIds: disabled,
+      },
+    });
+  };
+
+  const handleSetWindowSec = (sec: number) => {
+    setConfig({
+      dongleTelemetry: {
+        ...telemetryConfig,
+        windowSec: sec,
+      },
+    });
+  };
+
   const [live, setLive] = useState(true);
   const [hoveredTime, setHoveredTime] = useState<number | null>(null);
   const [hoveredChart, setHoveredChart] = useState<HoveredChart>(null);
@@ -171,6 +220,7 @@ export function DongleTelemetry({
   const trackerIds = useMemo(() => list.map((t) => t.deviceId), [trackerKey]);
   const { chartData, gapEvents, displayStats, nowSec } = useDongleTelemetryFeed(
     trackerIds,
+    visibleIds,
     windowSec,
     live
   );
@@ -208,7 +258,7 @@ export function DongleTelemetry({
             display="fit"
             multiple
             value={visibleIds.map(String)}
-            onChange={(values) => setVisibleIds(values.map(Number))}
+            onChange={(values) => handleSetVisibleIds(values.map(Number))}
             items={list.map((t) => ({
               value: String(t.deviceId),
               label: (
@@ -259,7 +309,7 @@ export function DongleTelemetry({
               <button
                 key={w.sec}
                 type="button"
-                onClick={() => setWindowSec(w.sec)}
+                onClick={() => handleSetWindowSec(w.sec)}
                 className={classNames(
                   'text-standard-bold px-2.5 py-1.5 rounded',
                   windowSec === w.sec

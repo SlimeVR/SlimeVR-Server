@@ -16,7 +16,8 @@ data class WindowedDeviceStats(
 	val packetLoss: Float?,
 )
 
-private const val MAX_SAMPLE_RETENTION_MS = 2_000L
+private const val MAX_SAMPLE_RETENTION_MS = 5_000L
+private const val MIN_SAMPLES_FOR_LOSS = 20
 
 fun trimSamples(samples: List<DevicePacketSample>, now: Long = System.currentTimeMillis()): List<DevicePacketSample> {
 	val cutoff = now - MAX_SAMPLE_RETENTION_MS
@@ -26,7 +27,7 @@ fun trimSamples(samples: List<DevicePacketSample>, now: Long = System.currentTim
 
 fun computeWindowedStats(
 	samples: List<DevicePacketSample>,
-	windowMs: Long,
+	windowMs: Long = 1000L,
 	now: Long = System.currentTimeMillis(),
 ): WindowedDeviceStats {
 	if (samples.isEmpty()) {
@@ -56,10 +57,17 @@ fun computeWindowedStats(
 		rssiMax = latestRssi
 	}
 
-	val samplesWithCounters = windowSamples.filter { it.packetsReceived != null && it.packetsLost != null }
-	val packetLoss: Float? = if (samplesWithCounters.size >= 2) {
-		val first = samplesWithCounters.first()
-		val last = samplesWithCounters.last()
+	var lossSamples = samples.filter { it.packetsReceived != null && it.packetsLost != null }
+	val recentLossSamples = lossSamples.filter { it.time >= cutoff }
+	if (recentLossSamples.size >= MIN_SAMPLES_FOR_LOSS) {
+		lossSamples = recentLossSamples
+	} else if (lossSamples.size > MIN_SAMPLES_FOR_LOSS) {
+		lossSamples = lossSamples.takeLast(MIN_SAMPLES_FOR_LOSS)
+	}
+
+	val packetLoss: Float? = if (lossSamples.size >= 2) {
+		val first = lossSamples.first()
+		val last = lossSamples.last()
 		val dRec = last.packetsReceived!! - first.packetsReceived!!
 		val dLost = last.packetsLost!! - first.packetsLost!!
 		val total = dRec + dLost
@@ -67,21 +75,6 @@ fun computeWindowedStats(
 			(dLost.toFloat() / total.toFloat()).coerceIn(0f, 1f)
 		} else {
 			0f
-		}
-	} else if (samplesWithCounters.isNotEmpty()) {
-		val current = samplesWithCounters.first()
-		val prev = samples.lastOrNull { it.time < current.time && it.packetsReceived != null && it.packetsLost != null }
-		if (prev != null) {
-			val dRec = current.packetsReceived!! - prev.packetsReceived!!
-			val dLost = current.packetsLost!! - prev.packetsLost!!
-			val total = dRec + dLost
-			if (total > 0) {
-				(dLost.toFloat() / total.toFloat()).coerceIn(0f, 1f)
-			} else {
-				0f
-			}
-		} else {
-			null
 		}
 	} else {
 		null

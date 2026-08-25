@@ -1,27 +1,16 @@
 import classNames from 'classnames';
-import { Dispatch, SetStateAction, useId, useRef } from 'react';
-import {
-  ComposedChart,
-  Customized,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Dispatch, memo, SetStateAction, useEffect, useRef } from 'react';
 import { Typography } from '@/components/commons/Typography';
-import { GapEvent } from '@/hooks/telemetry-history';
-import { ChartRow } from '@/hooks/dongle-telemetry-feed';
+import { ChartRow, GapEvent } from '@/hooks/telemetry-history';
 import {
-  CHART_MARGIN,
   flipTooltipLeft,
-  gapSeverityTier,
+  getGapColor,
   HoveredChart,
   isGapEventActive,
   pxToTimeSec,
   relativeTimeTick,
-  RIGHT_AXIS_WIDTH,
   TelemetryTracker,
   timeSecToPx,
-  Y_AXIS_WIDTH,
 } from './DongleTelemetry';
 import {
   estimatedTooltipHeight,
@@ -30,15 +19,12 @@ import {
   TOOLTIP_WIDTH,
 } from './TelemetryTooltip';
 
+const Y_AXIS_WIDTH = 64;
+const RIGHT_AXIS_WIDTH = 48;
 const ROW_HEIGHT = 24;
 const BAR_HEIGHT = 14;
 const XAXIS_HEIGHT = 20;
-
-const GAP_FILL_COLOR: Record<ReturnType<typeof gapSeverityTier>, string> = {
-  critical: 'rgb(var(--critical))',
-  warning: 'rgb(var(--warning))',
-  mild: 'rgba(var(--warning),0.85)',
-};
+const TOP_PADDING = 8;
 
 function RowLabels({
   trackers,
@@ -53,7 +39,7 @@ function RowLabels({
         <div
           key={t.deviceId}
           className={classNames(
-            'flex items-center gap-2 pl-1 text-[9.5px] font-bold text-background-30 uppercase transition-opacity',
+            'flex items-center gap-2 pl-1 text-[9.5px] font-bold text-white uppercase transition-opacity',
             { 'opacity-[0.28]': !visibleIds.includes(t.deviceId) }
           )}
           style={{ height: ROW_HEIGHT }}
@@ -70,102 +56,7 @@ function RowLabels({
   );
 }
 
-interface GapBarsLayerProps {
-  trackers: TelemetryTracker[];
-  visibleIds: number[];
-  eventsByTracker: Record<number, GapEvent[]>;
-  clipId: string;
-  hoveredTime: number | null;
-  xAxisMap?: Record<string, { scale: (v: number) => number }>;
-  offset?: { top: number; left: number; width: number; height: number };
-}
-
-function GapBarsLayer({
-  trackers,
-  visibleIds,
-  eventsByTracker,
-  clipId,
-  hoveredTime,
-  xAxisMap,
-  offset,
-}: GapBarsLayerProps) {
-  if (!offset) return null;
-  const scale = Object.values(xAxisMap ?? {})[0]?.scale;
-  if (!scale) return null;
-
-  return (
-    <g>
-      <defs>
-        <clipPath id={clipId}>
-          <rect
-            x={offset.left}
-            y={offset.top}
-            width={offset.width}
-            height={offset.height}
-          />
-        </clipPath>
-      </defs>
-
-      {trackers.map((_, i) => (
-        <line
-          key={`sep-${i}`}
-          x1={offset.left}
-          x2={offset.left + offset.width}
-          y1={offset.top + (i + 1) * ROW_HEIGHT}
-          y2={offset.top + (i + 1) * ROW_HEIGHT}
-          stroke="rgb(var(--background-10))"
-          strokeOpacity={0.04}
-        />
-      ))}
-
-      <g clipPath={`url(#${clipId})`}>
-        {trackers.map((t, rowIdx) => {
-          if (!visibleIds.includes(t.deviceId)) return null;
-          const yCenter = offset.top + rowIdx * ROW_HEIGHT + ROW_HEIGHT / 2;
-          return (eventsByTracker[t.deviceId] ?? []).map((ev) => {
-            const tStartSec = (ev.t - ev.durationMs) / 1000;
-            const tEndSec = ev.t / 1000;
-            const x1 = scale(tStartSec);
-            const x2 = scale(tEndSec);
-            const width = Math.max(3, x2 - x1);
-
-            const color = GAP_FILL_COLOR[gapSeverityTier(ev.durationMs)];
-            const isHovered =
-              hoveredTime != null && isGapEventActive(ev, hoveredTime);
-
-            return (
-              <rect
-                key={`${t.deviceId}-${ev.t}`}
-                x={x1}
-                y={yCenter - BAR_HEIGHT / 2}
-                width={width}
-                height={BAR_HEIGHT}
-                rx={2}
-                fill={color}
-                fillOpacity={isHovered ? 1 : 0.85}
-                stroke={isHovered ? '#fff' : 'none'}
-                strokeWidth={isHovered ? 2 : 0}
-              />
-            );
-          });
-        })}
-      </g>
-
-      {hoveredTime != null && (
-        <line
-          x1={scale(hoveredTime)}
-          x2={scale(hoveredTime)}
-          y1={offset.top}
-          y2={offset.top + offset.height}
-          stroke="#fff"
-          strokeOpacity={0.6}
-        />
-      )}
-    </g>
-  );
-}
-
-export function GapEventsChart({
+function GapEventsChartComponent({
   chartData,
   trackers,
   visibleIds,
@@ -190,8 +81,125 @@ export function GapEventsChart({
   isActive: boolean;
   onActiveChange: Dispatch<SetStateAction<HoveredChart>>;
 }) {
-  const clipId = `gap-plot-clip-${useId()}`;
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const width = rect.width;
+    const height = rect.height;
+
+    if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+    }
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, width, height);
+
+    const plotLeft = 0;
+    const plotRight = width - RIGHT_AXIS_WIDTH;
+    const plotWidth = plotRight - plotLeft;
+    const plotTop = TOP_PADDING;
+    const plotBottom = height - XAXIS_HEIGHT;
+
+    const timeToPx = (t: number) => {
+      const ratio = (t - startSec) / (endSec - startSec);
+      return plotLeft + ratio * plotWidth;
+    };
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.lineWidth = 1;
+    trackers.forEach((_, i) => {
+      const y = plotTop + (i + 1) * ROW_HEIGHT;
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, y);
+      ctx.lineTo(plotRight, y);
+      ctx.stroke();
+    });
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(plotLeft, plotTop, plotWidth, plotBottom - plotTop);
+    ctx.clip();
+
+    trackers.forEach((t, rowIdx) => {
+      if (!visibleIds.includes(t.deviceId)) return;
+      const yCenter = plotTop + rowIdx * ROW_HEIGHT + ROW_HEIGHT / 2;
+      const yTop = yCenter - BAR_HEIGHT / 2;
+      const events = eventsByTracker[t.deviceId] ?? [];
+
+      events.forEach((ev) => {
+        const tStartSec = (ev.t - ev.durationMs) / 1000;
+        const tEndSec = ev.t / 1000;
+        const x1 = timeToPx(tStartSec);
+        const x2 = timeToPx(tEndSec);
+        const w = Math.max(4, x2 - x1);
+
+        if (x2 < plotLeft || x1 > plotRight) return;
+
+        const isHovered =
+          hoveredTime != null && isGapEventActive(ev, hoveredTime);
+
+        ctx.fillStyle = getGapColor(ev.durationMs);
+        ctx.globalAlpha = isHovered ? 1.0 : 0.85;
+
+        ctx.beginPath();
+        const r = 2;
+        ctx.roundRect(x1, yTop, w, BAR_HEIGHT, r);
+        ctx.fill();
+
+        if (isHovered) {
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      });
+    });
+    ctx.globalAlpha = 1.0;
+    ctx.restore();
+
+    // 3. Draw X-axis tick labels
+    ctx.font = '11px Poppins, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    xAxisTicks.forEach((tSec) => {
+      const x = timeToPx(tSec);
+      if (x >= plotLeft && x <= plotRight) {
+        ctx.fillText(relativeTimeTick(tSec, endSec), x, plotBottom + 4);
+      }
+    });
+
+    if (hoveredTime != null) {
+      const hoverX = timeToPx(hoveredTime);
+      if (hoverX >= plotLeft && hoverX <= plotRight) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(hoverX, plotTop);
+        ctx.lineTo(hoverX, plotBottom);
+        ctx.stroke();
+      }
+    }
+
+    ctx.restore();
+  }, [
+    trackers,
+    visibleIds,
+    eventsByTracker,
+    startSec,
+    endSec,
+    xAxisTicks,
+    hoveredTime,
+  ]);
 
   let tooltipLeftPx: number | null = null;
   let tooltipTopPx: number | null = null;
@@ -235,7 +243,9 @@ export function GapEventsChart({
         <div
           ref={wrapperRef}
           className="flex"
-          style={{ height: trackers.length * ROW_HEIGHT + XAXIS_HEIGHT }}
+          style={{
+            height: trackers.length * ROW_HEIGHT + XAXIS_HEIGHT + TOP_PADDING,
+          }}
           onMouseMove={handleMouseMove}
           onMouseLeave={() => {
             onHoveredTimeChange(null);
@@ -243,42 +253,8 @@ export function GapEventsChart({
           }}
         >
           <RowLabels trackers={trackers} visibleIds={visibleIds} />
-          <div className="flex-1">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={chartData} margin={CHART_MARGIN}>
-                <XAxis
-                  dataKey="t"
-                  type="number"
-                  domain={[startSec, endSec]}
-                  allowDataOverflow
-                  ticks={xAxisTicks}
-                  tickFormatter={(v: number) => relativeTimeTick(v, endSec)}
-                  height={XAXIS_HEIGHT}
-                  stroke="rgb(var(--background-10))"
-                  fontSize={11}
-                  fontFamily="Poppins, sans-serif"
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  yAxisId="spacer"
-                  orientation="right"
-                  width={RIGHT_AXIS_WIDTH}
-                  domain={[0, 1]}
-                  tick={false}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <Customized
-                  component={GapBarsLayer}
-                  trackers={trackers}
-                  visibleIds={visibleIds}
-                  eventsByTracker={eventsByTracker}
-                  clipId={clipId}
-                  hoveredTime={hoveredTime}
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
+          <div className="flex-1 relative">
+            <canvas ref={canvasRef} className="w-full h-full block" />
           </div>
         </div>
 
@@ -305,3 +281,5 @@ export function GapEventsChart({
     </div>
   );
 }
+
+export const GapEventsChart = memo(GapEventsChartComponent);

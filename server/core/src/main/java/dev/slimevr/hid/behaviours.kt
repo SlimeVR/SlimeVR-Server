@@ -266,20 +266,26 @@ class HIDSleepBehaviour : HIDReceiverBehaviour {
 class HIDStatusBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.on<HIDStatus> { packet ->
-			if (receiver.getTracker(packet.hidId) == null) return@on
-			receiver.getDevice(packet.hidId)?.context?.dispatch(
-				DeviceActions.Update { copy(status = packet.status, signalStrength = packet.rssi) },
-			)
-		}.launchIn(receiver.context.scope)
-	}
-}
+			val device = receiver.getDevice(packet.hidId) ?: return@on
+			val packetsReceived = packet.packetsReceived.toLong()
+			val packetsLost = packet.packetsLost.toLong()
 
-class HIDPacketLossBehaviour : HIDReceiverBehaviour {
-	override fun observe(receiver: HIDReceiver) {
-		receiver.packetEvents.on<HIDStatus> { packet ->
-			receiver.getDevice(packet.hidId)?.context?.dispatch(
-				DeviceActions.PacketStats(packetsReceived = packet.packetsReceived.toLong(), packetsLost = packet.packetsLost.toLong()),
-			)
+			// Dispatched together so DeviceTelemetryBehaviour sees one atomic
+			// state change per packet, not two separate samples microseconds apart.
+			if (receiver.getTracker(packet.hidId) != null) {
+				device.context.dispatch(
+					DeviceActions.Update {
+						copy(
+							status = packet.status,
+							signalStrength = packet.rssi,
+							packetsReceived = packetsReceived,
+							packetsLost = packetsLost,
+						)
+					},
+				)
+			} else {
+				device.context.dispatch(DeviceActions.PacketStats(packetsReceived, packetsLost))
+			}
 		}.launchIn(receiver.context.scope)
 	}
 }

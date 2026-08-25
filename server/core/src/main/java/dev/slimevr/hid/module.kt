@@ -81,7 +81,6 @@ class HIDReceiver(
 				HIDRotationBehaviour(),
 				HIDBatteryBehaviour(),
 				HIDStatusBehaviour(),
-				HIDPacketLossBehaviour(),
 				HIDSleepBehaviour(),
 				HIDReceiverConfigBehaviour(settings, serialNumber),
 			)

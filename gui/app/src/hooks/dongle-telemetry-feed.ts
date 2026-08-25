@@ -1,16 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import {
-  computeGapEvents,
-  computeLossPctSeries,
-  computeRssiStats,
-  GapEvent,
-  useTelemetryHistory,
-} from './telemetry-history';
-
-export interface ChartRow {
-  t: number;
-  [key: string]: number | null;
-}
+import { useEffect, useState } from 'react';
+import { ChartRow, GapEvent, useTelemetryHistory } from './telemetry-history';
 
 export interface TrackerDisplayStat {
   rssi: number | null;
@@ -23,107 +12,106 @@ export interface DongleTelemetryFeed {
   nowSec: number;
 }
 
-/**
- * Polls `useTelemetryHistory` at ~10Hz and recomputes chart rows, gap events,
- * and summary stats for the given trackers. `trackerIds` is read through a
- * ref so the animation loop keeps running across renders without needing the
- * array to be referentially stable.
- */
+const TARGET_FPS = 20;
+const FRAME_INTERVAL_MS = 1000 / TARGET_FPS; // 50ms interval for smooth 20 FPS rolling
+const MAX_DISPLAY_POINTS = 250; // Cap rendered chart points to guarantee flat, constant CPU usage over time
+
+function downsampleChartRows(
+  rows: ChartRow[],
+  windowSec: number,
+  maxPoints = MAX_DISPLAY_POINTS
+): ChartRow[] {
+  if (rows.length <= maxPoints) return rows;
+
+  const slotSec = Math.max(0.1, windowSec / maxPoints);
+  const result: ChartRow[] = [];
+  let lastSlot = -1;
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const slot = Math.floor(row.t / slotSec);
+    if (slot !== lastSlot) {
+      result.push(row);
+      lastSlot = slot;
+    }
+  }
+
+  return result;
+}
+
 export function useDongleTelemetryFeed(
   trackerIds: number[],
+  visibleIds: number[],
   windowSec: number,
   live: boolean
 ): DongleTelemetryFeed {
-  const { getSamples } = useTelemetryHistory();
+  const { getChartRows, getGapEvents, lastUpdateTick } =
+    useTelemetryHistory(trackerIds);
 
-  const trackerIdsKey = trackerIds
-    .slice()
-    .sort((a, b) => a - b)
-    .join(',');
-  const trackerIdsRef = useRef(trackerIds);
-  trackerIdsRef.current = trackerIds;
-
-  const [chartData, setChartData] = useState<ChartRow[]>([]);
-  const [gapEvents, setGapEvents] = useState<Record<number, GapEvent[]>>({});
-  const [displayStats, setDisplayStats] = useState<Record<number, TrackerDisplayStat>>(
-    {}
-  );
-  const [nowSec, setNowSec] = useState(() => Date.now() / 1000);
+  const [feedState, setFeedState] = useState<DongleTelemetryFeed>(() => ({
+    chartData: [],
+    gapEvents: {},
+    displayStats: {},
+    nowSec: Date.now() / 1000,
+  }));
 
   useEffect(() => {
     if (!live) return;
 
     let animId: number;
-    let lastCompute = 0;
+    let lastRenderTime = 0;
 
-    const tick = () => {
-      const now = Date.now();
-      const nowSecVal = now / 1000;
-      setNowSec(nowSecVal);
+    const renderFrame = () => {
+      const nowMs = Date.now();
+      if (nowMs - lastRenderTime >= FRAME_INTERVAL_MS) {
+        lastRenderTime = nowMs;
+        const now = nowMs / 1000;
 
-      if (now - lastCompute >= 100) {
-        lastCompute = now;
-        const ids = trackerIdsRef.current;
+        const rows = getChartRows();
+        const cutoff = now - windowSec - 5;
+        const windowRows = rows.filter((r) => r.t >= cutoff);
+        const sampledRows = downsampleChartRows(
+          windowRows,
+          windowSec,
+          MAX_DISPLAY_POINTS
+        );
 
-        if (ids.length > 0) {
-          const nextGapEvents: Record<number, GapEvent[]> = {};
-          const nextStats: Record<number, TrackerDisplayStat> = {};
-          const timeRowsMap = new Map<number, ChartRow>();
+        const nextGapEvents: Record<number, GapEvent[]> = {};
+        const nextStats: Record<number, TrackerDisplayStat> = {};
+        const visible = new Set(visibleIds);
+        const lastRow = rows.length > 0 ? rows[rows.length - 1] : null;
 
-          const getRow = (t: number) => {
-            let row = timeRowsMap.get(t);
-            if (!row) {
-              row = { t };
-              timeRowsMap.set(t, row);
-            }
-            return row;
-          };
+        trackerIds.forEach((deviceId) => {
+          const rssiVal = lastRow ? (lastRow[`${deviceId}_avg`] ?? null) : null;
+          nextStats[deviceId] = { rssi: rssiVal };
 
-          const liveRow = getRow(nowSecVal);
+          if (visible.has(deviceId)) {
+            nextGapEvents[deviceId] = getGapEvents(deviceId, windowSec, now);
+          }
+        });
 
-          ids.forEach((deviceId) => {
-            const samples = getSamples(deviceId);
-
-            computeRssiStats(samples, windowSec).forEach((b) => {
-              const row = getRow(b.t);
-              row[`${deviceId}_avg`] = b.avg;
-              row[`${deviceId}_min`] = b.min;
-              row[`${deviceId}_max`] = b.max;
-            });
-
-            computeLossPctSeries(samples, windowSec).forEach((b) => {
-              getRow(b.t)[`${deviceId}_loss`] = b.lossPct;
-            });
-
-            nextGapEvents[deviceId] = computeGapEvents(samples, windowSec);
-
-            const last = samples[samples.length - 1];
-            nextStats[deviceId] = { rssi: last?.rssi ?? null };
-            if (last) {
-              liveRow[`${deviceId}_avg`] = last.rssi;
-              liveRow[`${deviceId}_min`] = last.rssiMin ?? last.rssi;
-              liveRow[`${deviceId}_max`] = last.rssiMax ?? last.rssi;
-              liveRow[`${deviceId}_loss`] =
-                last.packetLoss != null ? last.packetLoss * 100 : null;
-            }
-          });
-
-          const nextChartData = Array.from(timeRowsMap.values()).sort(
-            (a, b) => a.t - b.t
-          );
-
-          setChartData(nextChartData);
-          setGapEvents(nextGapEvents);
-          setDisplayStats(nextStats);
-        }
+        setFeedState({
+          chartData: sampledRows,
+          gapEvents: nextGapEvents,
+          displayStats: nextStats,
+          nowSec: now,
+        });
       }
 
-      animId = requestAnimationFrame(tick);
+      animId = requestAnimationFrame(renderFrame);
     };
 
-    animId = requestAnimationFrame(tick);
+    animId = requestAnimationFrame(renderFrame);
     return () => cancelAnimationFrame(animId);
-  }, [windowSec, live, trackerIdsKey, getSamples]);
+  }, [
+    trackerIds,
+    visibleIds,
+    windowSec,
+    live,
+    lastUpdateTick,
+    getChartRows,
+    getGapEvents,
+  ]);
 
-  return { chartData, gapEvents, displayStats, nowSec };
+  return feedState;
 }

@@ -1,7 +1,7 @@
-import { GapEvent } from '@/hooks/telemetry-history';
-import { ChartRow } from '@/hooks/dongle-telemetry-feed';
+import { memo } from 'react';
+import { ChartRow, GapEvent } from '@/hooks/telemetry-history';
 import {
-  gapSeverityTier,
+  getGapTextColor,
   isGapEventActive,
   TelemetryTracker,
 } from './DongleTelemetry';
@@ -15,7 +15,8 @@ export function estimatedTooltipHeight(trackerCount: number): number {
   return TOOLTIP_HEADER_HEIGHT + trackerCount * TOOLTIP_ROW_HEIGHT;
 }
 
-function lowerBound(chartData: ChartRow[], t: number): number {
+export function nearestRow(chartData: ChartRow[], t: number): ChartRow | null {
+  if (chartData.length === 0) return null;
   let lo = 0;
   let hi = chartData.length;
   while (lo < hi) {
@@ -23,36 +24,14 @@ function lowerBound(chartData: ChartRow[], t: number): number {
     if (chartData[mid].t < t) lo = mid + 1;
     else hi = mid;
   }
-  return lo;
+  if (lo === 0) return chartData[0];
+  if (lo >= chartData.length) return chartData[chartData.length - 1];
+  const d1 = Math.abs(chartData[lo - 1].t - t);
+  const d2 = Math.abs(chartData[lo].t - t);
+  return d1 < d2 ? chartData[lo - 1] : chartData[lo];
 }
 
-export function nearestValue(
-  chartData: ChartRow[],
-  t: number,
-  key: string
-): number | null {
-  if (chartData.length === 0) return null;
-  const idx = lowerBound(chartData, t);
-  const atOrBeforeStart = chartData[idx]?.t === t ? idx : idx - 1;
-
-  for (let i = atOrBeforeStart; i >= 0; i--) {
-    const v = chartData[i][key];
-    if (v != null) return v;
-  }
-  for (let i = atOrBeforeStart + 1; i < chartData.length; i++) {
-    const v = chartData[i][key];
-    if (v != null) return v;
-  }
-  return null;
-}
-
-const GAP_SEVERITY_CLASS: Record<ReturnType<typeof gapSeverityTier>, string> = {
-  critical: 'text-status-critical',
-  warning: 'text-status-warning',
-  mild: 'text-status-warning/85',
-};
-
-export function TelemetryTooltipTable({
+function TelemetryTooltipTableComponent({
   trackers,
   chartData,
   hoveredTime,
@@ -63,6 +42,8 @@ export function TelemetryTooltipTable({
   hoveredTime: number;
   eventsByTracker: Record<number, GapEvent[]>;
 }) {
+  const row = nearestRow(chartData, hoveredTime);
+
   return (
     <table className="w-full text-xs table-fixed">
       <colgroup>
@@ -84,26 +65,10 @@ export function TelemetryTooltipTable({
       </thead>
       <tbody>
         {trackers.map((t) => {
-          const rssiAvg = nearestValue(
-            chartData,
-            hoveredTime,
-            `${t.deviceId}_avg`
-          );
-          const rssiMin = nearestValue(
-            chartData,
-            hoveredTime,
-            `${t.deviceId}_min`
-          );
-          const rssiMax = nearestValue(
-            chartData,
-            hoveredTime,
-            `${t.deviceId}_max`
-          );
-          const lossPct = nearestValue(
-            chartData,
-            hoveredTime,
-            `${t.deviceId}_loss`
-          );
+          const rssiAvg = row ? row[`${t.deviceId}_avg`] : null;
+          const rssiMin = row ? row[`${t.deviceId}_min`] : null;
+          const rssiMax = row ? row[`${t.deviceId}_max`] : null;
+          const lossPct = row ? row[`${t.deviceId}_loss`] : null;
           const gapEvent = (eventsByTracker[t.deviceId] ?? []).find((ev) =>
             isGapEventActive(ev, hoveredTime)
           );
@@ -128,7 +93,12 @@ export function TelemetryTooltipTable({
                 {lossPct != null ? `${lossPct.toFixed(1)}%` : '--'}
               </td>
               <td
-                className={`text-right font-bold font-mono tabular-nums py-1 pl-1 whitespace-nowrap ${gapEvent ? GAP_SEVERITY_CLASS[gapSeverityTier(gapEvent.durationMs)] : 'text-background-30'}`}
+                className="text-right font-bold font-mono tabular-nums py-1 pl-1 whitespace-nowrap text-background-30"
+                style={{
+                  color: gapEvent
+                    ? getGapTextColor(gapEvent.durationMs)
+                    : undefined,
+                }}
               >
                 {gapEvent ? `${gapEvent.durationMs}ms` : '--'}
               </td>
@@ -139,3 +109,5 @@ export function TelemetryTooltipTable({
     </table>
   );
 }
+
+export const TelemetryTooltipTable = memo(TelemetryTooltipTableComponent);

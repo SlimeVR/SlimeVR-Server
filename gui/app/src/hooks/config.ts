@@ -39,6 +39,16 @@ export const defaultDevSettings: DeveloperModeConfig = {
   moreInfo: false,
 };
 
+export interface DongleTelemetryConfig {
+  windowSec: number;
+  disabledTrackerIds: number[];
+}
+
+export const defaultDongleTelemetryConfig: DongleTelemetryConfig = {
+  windowSec: 30,
+  disabledTrackerIds: [],
+};
+
 export interface Config {
   uuid: string;
   debug: boolean;
@@ -46,6 +56,7 @@ export interface Config {
   doneOnboarding: boolean;
   watchNewDevices: boolean;
   devSettings: DeveloperModeConfig;
+  dongleTelemetry: DongleTelemetryConfig;
   feedbackSound: boolean;
   feedbackSoundVolume: number;
   connectedTrackersWarning: boolean;
@@ -91,6 +102,7 @@ export const defaultConfig: Config = {
   errorTracking: null,
   vrcMutedWarnings: [],
   devSettings: defaultDevSettings,
+  dongleTelemetry: defaultDongleTelemetryConfig,
   bvhDirectory: null,
   homeLayout: 'default',
   skeletonPreview: true,
@@ -114,7 +126,18 @@ const store: CrossStorage = window.electronAPI
   : localStore;
 
 function fallbackToDefaults(loadedConfig: any): Config {
-  return Object.assign({}, defaultConfig, loadedConfig);
+  return {
+    ...defaultConfig,
+    ...loadedConfig,
+    devSettings: {
+      ...defaultDevSettings,
+      ...(loadedConfig?.devSettings ?? {}),
+    },
+    dongleTelemetry: {
+      ...defaultDongleTelemetryConfig,
+      ...(loadedConfig?.dongleTelemetry ?? loadedConfig?.telemetry ?? {}),
+    },
+  };
 }
 
 // Move the load of the config ouside of react
