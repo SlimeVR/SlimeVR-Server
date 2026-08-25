@@ -57,7 +57,6 @@ function RssiLossChartComponent({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredY, setHoveredY] = useState<number | null>(null);
 
-  // High-performance Canvas 2D rendering loop (ultra-low CPU)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -102,7 +101,7 @@ function RssiLossChartComponent({
       return plotBottom - ratio * plotHeight;
     };
 
-    // 1. Draw horizontal grid lines
+    // horizontal grid lines
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
     ctx.lineWidth = 1;
     const rssiTicks = [-80, -60, -40, -20];
@@ -114,7 +113,7 @@ function RssiLossChartComponent({
       ctx.stroke();
     });
 
-    // 2. Draw Y-axis tick labels
+    // Y-axis tick labels
     ctx.font = '11px Poppins, sans-serif';
     ctx.textBaseline = 'middle';
 
@@ -134,7 +133,7 @@ function RssiLossChartComponent({
       ctx.fillText(`${val}%`, plotRight + 6, y);
     });
 
-    // 3. Draw X-axis tick labels
+    // X-axis tick labels
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillStyle = '#ffffff';
@@ -145,13 +144,12 @@ function RssiLossChartComponent({
       }
     });
 
-    // 4. Clip plot area to prevent line spillover on left and right margins
     ctx.save();
     ctx.beginPath();
     ctx.rect(plotLeft, plotTop, plotWidth, plotHeight);
     ctx.clip();
 
-    // Draw RSSI lines (solid 2px)
+    // RSSI lines
     visible.forEach((t) => {
       const key = `${t.deviceId}_avg`;
       ctx.strokeStyle = t.color;
@@ -183,7 +181,7 @@ function RssiLossChartComponent({
       }
     });
 
-    // Draw Packet Loss lines (dashed 1.5px)
+    // Packet Loss lines
     visible.forEach((t) => {
       const key = `${t.deviceId}_loss`;
       ctx.strokeStyle = t.color;
@@ -217,7 +215,7 @@ function RssiLossChartComponent({
     ctx.setLineDash([]);
     ctx.restore();
 
-    // 6. Draw vertical hover line
+    // vertical hover line
     if (hoveredTime != null) {
       const hoverX = timeToPx(hoveredTime);
       if (hoverX >= plotLeft && hoverX <= plotRight) {
