@@ -73,10 +73,85 @@ fun shouldLock(
 	(velocity.acceleration.len() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier)
 
 // TODO Use this to calculate feet pressure
-fun centerOfMass(bones: ComputedSkeleton): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.NULL) { acc: Vector3, massEntry ->
+fun centerOfMass(
+	bones: ComputedSkeleton,
+): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.NULL) { acc: Vector3, massEntry ->
 	val bone = bones[massEntry.key] ?: return@fold acc
 	val boneCenter = (bone.headPosition + bone.tailPosition) / 2f
 	return@fold acc + (boneCenter * massEntry.value)
+}
+
+fun limitedDeltaTime(
+	from: ComparableTimeMark,
+	to: ComparableTimeMark,
+): Float = (to - from).toDouble(DurationUnit.SECONDS).toFloat()
+	.coerceAtLeast(0.001f)
+
+fun computeComState(time: ComparableTimeMark, last: COMState?, com: Vector3): COMState = if (last != null) {
+	val deltaTime = limitedDeltaTime(last.time, time)
+	val comVelocity = (com - last.position) / deltaTime
+	val comAcceleration = (comVelocity - last.velocity) / deltaTime
+	COMState(
+		time,
+		com,
+		comVelocity,
+		comAcceleration,
+	)
+} else {
+	COMState(
+		time,
+		com,
+		Vector3.NULL,
+		Vector3.NULL,
+	)
+}
+
+fun computeVelocityState(
+	time: ComparableTimeMark,
+	last: VelocityState?,
+	bone: BoneState,
+): VelocityState = if (last != null) {
+	val deltaPosition = bone.tailPosition - last.position
+	val deltaTime = limitedDeltaTime(last.time, time)
+	VelocityState(
+		time,
+		bone.tailPosition,
+		bone.rotation,
+		deltaPosition.len(),
+		deltaPosition / deltaTime,
+		// May need to be `angleToR` while polarity tracking is not implemented
+		last.rotation.angleToQ(bone.rotation) / deltaTime,
+		Vector3.NULL,
+	)
+} else {
+	VelocityState(
+		time,
+		bone.tailPosition,
+		bone.rotation,
+		0f,
+		Vector3.NULL,
+		0f,
+		Vector3.NULL,
+	)
+}
+
+fun computeLockState(
+	wasLocked: Boolean,
+	isLocked: Boolean,
+	position: Vector3,
+): LockState? = if (isLocked && !wasLocked) {
+	LockState(
+		true,
+		position,
+	)
+} else if (!isLocked && wasLocked) {
+	// Last locked position could be retained if needed, but I can't think
+	//  of a use
+	LockState(
+		false,
+	)
+} else {
+	null
 }
 
 // Probably not a SkeletonProcessor, maybe computed processor or smth
@@ -95,57 +170,20 @@ class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 		val curTime = timeSource.markNow()
 
 		// Update center of mass
-		val lastComState = comState
-		val com = centerOfMass(fk)
-		val newComState = if (lastComState != null) {
-			val deltaT = (curTime - lastComState.time).toDouble(DurationUnit.SECONDS).toFloat()
-				.coerceAtLeast(0.001f)
-			val comVelocity = (com - lastComState.position) / deltaT
-			val comAcceleration = (comVelocity - lastComState.velocity) / deltaT
-			COMState(
-				curTime,
-				com,
-				comVelocity,
-				comAcceleration,
-			)
-		} else {
-			COMState(
-				curTime,
-				com,
-				Vector3.NULL,
-				Vector3.NULL,
-			)
-		}
-		comState = newComState
+		comState = computeComState(
+			curTime,
+			comState,
+			centerOfMass(fk),
+		)
 
 		for (bodyPart in VELOCITY_BODY_PARTS) {
 			val curBone = fk[bodyPart] ?: continue
 
 			// TODO Pull velocity out into the base skeleton, we need it elsewhere too
-			// Calculate velocity state
-			val newVel = velocity[bodyPart]?.let { lastVel ->
-				val deltaP = curBone.tailPosition - lastVel.position
-				val deltaT =
-					(curTime - lastVel.time).toDouble(DurationUnit.SECONDS).toFloat()
-						.coerceAtLeast(0.001f)
-				VelocityState(
-					curTime,
-					curBone.tailPosition,
-					curBone.rotation,
-					deltaP.len(),
-					deltaP / deltaT,
-					// May need to be `angleToR` while polarity tracking is not implemented
-					lastVel.rotation.angleToQ(curBone.rotation) / deltaT,
-					Vector3.NULL,
-				)
-			} ?: VelocityState(
+			val newVel = computeVelocityState(
 				curTime,
-				curBone.tailPosition,
-				curBone.rotation,
-				0f,
-				Vector3.NULL,
-				0f,
-				Vector3.NULL,
+				velocity[bodyPart],
+				curBone,
 			)
 			velocity[bodyPart] = newVel
 
@@ -157,25 +195,18 @@ class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 				if (wasLocked) SKATING_LOCK_ENGAGE_PERCENT else 1f,
 			)
 
-			// Toggle the locked state if changing lock state
-			if (isLocked) {
-				val lockState = if (!wasLocked) {
-					LockState(
-						true,
-						curBone.tailPosition,
-					).also {
-						lockState[bodyPart] = it
-					}
-				} else {
-					lastState
-				}
-				ikTargets[bodyPart] = lockState.position
-			} else if (wasLocked) {
-				// Last locked position could be retained if needed, but I can't think
-				//  of a use
-				lockState[bodyPart] = LockState(
-					false,
-				)
+			val activeState = computeLockState(
+				wasLocked,
+				isLocked,
+				curBone.tailPosition,
+			)?.also {
+				// Track lock state changes
+				lockState[bodyPart] = it
+				// Otherwise pull the last state
+			} ?: lastState ?: continue
+
+			if (activeState.locked) {
+				ikTargets[bodyPart] = activeState.position
 			}
 		}
 		return ikTargets
