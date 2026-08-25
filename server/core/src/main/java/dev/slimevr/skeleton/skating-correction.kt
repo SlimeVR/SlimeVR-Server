@@ -26,6 +26,11 @@ data class COMState(
 	val acceleration: Vector3,
 )
 
+data class LockState(
+	val locked: Boolean,
+	val position: Vector3 = Vector3.NULL,
+)
+
 val VELOCITY_BODY_PARTS = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
 val FOOT_VELOCITY_SENSITIVITY = 1f
@@ -37,7 +42,7 @@ val SKATING_VELOCITY_THRESHOLD = 2.4f
 val SKATING_ROTATIONAL_VELOCITY_THRESHOLD = 4.5f
 val SKATING_ACCELERATION_THRESHOLD = 0.7f
 
-// TODO Floor level needs to be calibrated in some way
+// TODO Floor level needs to be calibrated in some way; originally done on full reset
 val FLOOR_LEVEL = 0f
 val FLOOR_DISTANCE_THRESHOLD = 0.065f
 
@@ -78,16 +83,18 @@ fun centerOfMass(bones: ComputedSkeleton): Vector3 = BODY_PART_MASSES.entries.fo
 class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 	override var enabled: Boolean = true
 
-	// Do we need to store this or do we just want velocity? We can probably just pull
-	//  the last state
-	val velocity: MutableMap<BodyPart, VelocityState> = mutableMapOf()
-	val lockStates: MutableMap<BodyPart, Boolean> = mutableMapOf()
-
+	// Center of mass
 	var comState: COMState? = null
 
-	override fun process(fk: ComputedSkeleton, ikTarget: IKTargets): IKTargets {
+	// Do we need to store this or do we just want velocity? We can probably just pull
+	//  the last state
+	val velocity: BodyPartMap<VelocityState> = bodyPartMap()
+	val lockState: BodyPartMap<LockState> = bodyPartMap()
+
+	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets {
 		val curTime = timeSource.markNow()
 
+		// Update center of mass
 		val lastComState = comState
 		val com = centerOfMass(fk)
 		val newComState = if (lastComState != null) {
@@ -113,10 +120,10 @@ class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 
 		for (bodyPart in VELOCITY_BODY_PARTS) {
 			val curBone = fk[bodyPart] ?: continue
-			val lastVel = velocity[bodyPart]
 
+			// TODO Pull velocity out into the base skeleton, we need it elsewhere too
 			// Calculate velocity state
-			val newVel = if (lastVel != null) {
+			val newVel = velocity[bodyPart]?.let { lastVel ->
 				val deltaP = curBone.tailPosition - lastVel.position
 				val deltaT =
 					(curTime - lastVel.time).toDouble(DurationUnit.SECONDS).toFloat()
@@ -131,30 +138,47 @@ class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 					lastVel.rotation.angleToQ(curBone.rotation) / deltaT,
 					Vector3.NULL,
 				)
-			} else {
-				VelocityState(
-					curTime,
-					curBone.tailPosition,
-					curBone.rotation,
-					0f,
-					Vector3.NULL,
-					0f,
-					Vector3.NULL,
-				)
-			}
+			} ?: VelocityState(
+				curTime,
+				curBone.tailPosition,
+				curBone.rotation,
+				0f,
+				Vector3.NULL,
+				0f,
+				Vector3.NULL,
+			)
 			velocity[bodyPart] = newVel
 
 			// Consider locking BodyPart
-			val wasLocked = lockStates.getOrDefault(bodyPart, false)
+			val lastState = lockState[bodyPart]
+			val wasLocked = lastState?.locked ?: false
 			val isLocked = shouldLock(
 				newVel,
 				if (wasLocked) SKATING_LOCK_ENGAGE_PERCENT else 1f,
 			)
-			lockStates[bodyPart] = isLocked
-		}
 
-		// TODO: Actually add IK targets
-		return ikTarget
+			// Toggle the locked state if changing lock state
+			if (isLocked) {
+				val lockState = if (!wasLocked) {
+					LockState(
+						true,
+						curBone.tailPosition,
+					).also {
+						lockState[bodyPart] = it
+					}
+				} else {
+					lastState
+				}
+				ikTargets[bodyPart] = lockState.position
+			} else if (wasLocked) {
+				// Last locked position could be retained if needed, but I can't think
+				//  of a use
+				lockState[bodyPart] = LockState(
+					false,
+				)
+			}
+		}
+		return ikTargets
 	}
 }
 
@@ -163,12 +187,13 @@ class FloorClipProcessor(
 ) : SkeletonTargetProcessor {
 	override var enabled: Boolean = true
 
-	override fun process(fk: ComputedSkeleton, ikTarget: IKTargets): IKTargets = ikTarget.mutate { targets ->
+	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets {
 		for (bodyPart in bodyParts) {
 			// Get existing target or make a new one at the current bone position
-			val target = targets[bodyPart] ?: fk[bodyPart]?.tailPosition ?: continue
+			val target = ikTargets[bodyPart] ?: fk[bodyPart]?.tailPosition ?: continue
 			// Snap the target up to the floor if it's under
-			targets[bodyPart] = Vector3(target.x, target.y.coerceAtLeast(0f), target.z)
+			ikTargets[bodyPart] = Vector3(target.x, target.y.coerceAtLeast(0f), target.z)
 		}
+		return ikTargets
 	}
 }

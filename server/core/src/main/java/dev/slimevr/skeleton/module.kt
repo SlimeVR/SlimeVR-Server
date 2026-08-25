@@ -132,7 +132,7 @@ interface SkeletonProcessor {
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
 	val enabled: Boolean
-	fun process(fk: ComputedSkeleton, ikTarget: IKTargets): IKTargets
+	fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets
 }
 
 class Skeleton(
