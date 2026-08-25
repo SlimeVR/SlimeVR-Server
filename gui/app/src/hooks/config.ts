@@ -42,11 +42,13 @@ export const defaultDevSettings: DeveloperModeConfig = {
 export interface DongleTelemetryConfig {
   windowSec: number;
   disabledTrackerIds: number[];
+  showMinMax: boolean;
 }
 
 export const defaultDongleTelemetryConfig: DongleTelemetryConfig = {
   windowSec: 30,
   disabledTrackerIds: [],
+  showMinMax: true,
 };
 
 export interface Config {

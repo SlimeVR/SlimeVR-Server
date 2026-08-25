@@ -5,6 +5,7 @@ import { Typography } from '@/components/commons/Typography';
 import { PauseIcon } from '@/components/commons/icon/PauseIcon';
 import { PlayIcon } from '@/components/commons/icon/PlayIcon';
 import { DropdownInside } from '@/components/commons/Dropdown';
+import { CheckboxInternal } from '@/components/commons/Checkbox';
 import { getTrackerName } from '@/hooks/tracker';
 import { useDongleTelemetryFeed } from '@/hooks/dongle-telemetry-feed';
 import { FlatDeviceTracker } from '@/store/app-store';
@@ -213,6 +214,17 @@ export function DongleTelemetry({
     });
   };
 
+  const showMinMax = telemetryConfig.showMinMax ?? true;
+
+  const handleToggleMinMax = () => {
+    setConfig({
+      dongleTelemetry: {
+        ...telemetryConfig,
+        showMinMax: !showMinMax,
+      },
+    });
+  };
+
   const [live, setLive] = useState(true);
   const [hoveredTime, setHoveredTime] = useState<number | null>(null);
   const [hoveredChart, setHoveredChart] = useState<HoveredChart>(null);
@@ -304,6 +316,16 @@ export function DongleTelemetry({
             )}
           />
 
+          <div className="flex items-center px-2">
+            <CheckboxInternal
+              name="showMinMax"
+              variant="toggle"
+              label={l10n.getString('dongle-settings-telemetry-show_min_max')}
+              checked={showMinMax}
+              onChange={handleToggleMinMax}
+            />
+          </div>
+
           <div className="flex bg-background-80 rounded-md p-2 gap-0.5">
             {WINDOW_OPTIONS.map((w) => (
               <button
@@ -334,14 +356,39 @@ export function DongleTelemetry({
       <div className="flex flex-col gap-4">
         <div className="bg-background-80 rounded-xl p-4">
           <div className="flex items-center justify-between pl-[64px] pr-[48px] pb-2">
-            <Typography
-              variant="section-title"
-              id="dongle-settings-telemetry-chart_rssi"
-            />
-            <Typography
-              variant="section-title"
-              id="dongle-settings-telemetry-chart_loss"
-            />
+            <div className="flex items-center gap-2">
+              <svg width={20} height={10} className="shrink-0">
+                <line
+                  x1={0}
+                  y1={5}
+                  x2={20}
+                  y2={5}
+                  stroke="rgb(var(--background-10))"
+                  strokeWidth={2}
+                />
+              </svg>
+              <Typography
+                variant="section-title"
+                id="dongle-settings-telemetry-chart_rssi"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <svg width={20} height={10} className="shrink-0">
+                <line
+                  x1={0}
+                  y1={5}
+                  x2={20}
+                  y2={5}
+                  stroke="rgb(var(--background-10))"
+                  strokeWidth={1.5}
+                  strokeDasharray="4 3"
+                />
+              </svg>
+              <Typography
+                variant="section-title"
+                id="dongle-settings-telemetry-chart_loss"
+              />
+            </div>
           </div>
           <div className="h-[440px]">
             <RssiLossChart
@@ -356,6 +403,7 @@ export function DongleTelemetry({
               onHoveredTimeChange={setHoveredTime}
               isActive={hoveredChart === 'rssi'}
               onActiveChange={setHoveredChart}
+              showMinMax={showMinMax}
             />
           </div>
         </div>

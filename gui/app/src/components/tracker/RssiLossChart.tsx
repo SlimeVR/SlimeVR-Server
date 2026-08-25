@@ -27,6 +27,101 @@ const RIGHT_AXIS_WIDTH = 40;
 const XAXIS_HEIGHT = 20;
 const TOP_PADDING = 12;
 
+function drawLine(
+  ctx: CanvasRenderingContext2D,
+  points: { x: number; y: number }[]
+) {
+  if (points.length < 2) return;
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  for (let i = 1; i < points.length; i++) {
+    ctx.lineTo(points[i].x, points[i].y);
+  }
+  ctx.stroke();
+}
+
+function drawCustomDashedPath(
+  ctx: CanvasRenderingContext2D,
+  points: { x: number; y: number }[],
+  t0Px: number,
+  dashLen = 5,
+  gapLen = 4
+) {
+  if (points.length < 2) return;
+
+  const period = dashLen + gapLen;
+  const startDist = points[0].x - t0Px;
+  let accumulated = ((startDist % period) + period) % period;
+  let isDash = accumulated < dashLen;
+  if (!isDash) {
+    accumulated -= dashLen;
+  }
+
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const dist = Math.hypot(dx, dy);
+
+    if (dist === 0) continue;
+
+    const ux = dx / dist;
+    const uy = dy / dist;
+
+    let progress = 0;
+    while (progress < dist) {
+      const targetLen = isDash ? dashLen : gapLen;
+      const step = Math.min(dist - progress, targetLen - accumulated);
+
+      progress += step;
+      accumulated += step;
+
+      const currX = p1.x + progress * ux;
+      const currY = p1.y + progress * uy;
+
+      if (isDash) {
+        ctx.lineTo(currX, currY);
+      } else {
+        ctx.moveTo(currX, currY);
+      }
+
+      if (accumulated >= targetLen) {
+        accumulated = 0;
+        isDash = !isDash;
+      }
+    }
+  }
+
+  ctx.stroke();
+}
+
+function drawTrackerSeries(
+  chartData: ChartRow[],
+  key: string,
+  timeToPx: (t: number) => number,
+  valToPy: (v: number) => number,
+  drawPath: (points: { x: number; y: number }[]) => void
+) {
+  let pts: { x: number; y: number }[] = [];
+  for (let i = 0; i < chartData.length; i++) {
+    const row = chartData[i];
+    const val = row[key];
+    if (val != null) {
+      pts.push({ x: timeToPx(row.t), y: valToPy(Number(val)) });
+    } else if (pts.length > 0) {
+      drawPath(pts);
+      pts = [];
+    }
+  }
+  if (pts.length > 0) {
+    drawPath(pts);
+  }
+}
+
 function RssiLossChartComponent({
   chartData,
   trackers,
@@ -39,6 +134,7 @@ function RssiLossChartComponent({
   onHoveredTimeChange,
   isActive,
   onActiveChange,
+  showMinMax = true,
 }: {
   chartData: ChartRow[];
   trackers: TelemetryTracker[];
@@ -51,6 +147,7 @@ function RssiLossChartComponent({
   onHoveredTimeChange: (t: number | null) => void;
   isActive: boolean;
   onActiveChange: Dispatch<SetStateAction<HoveredChart>>;
+  showMinMax?: boolean;
 }) {
   const visible = trackers.filter((t) => visibleIds.includes(t.deviceId));
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -149,70 +246,97 @@ function RssiLossChartComponent({
     ctx.rect(plotLeft, plotTop, plotWidth, plotHeight);
     ctx.clip();
 
-    // RSSI lines
-    visible.forEach((t) => {
-      const key = `${t.deviceId}_avg`;
-      ctx.strokeStyle = t.color;
-      ctx.lineWidth = 2;
-      ctx.setLineDash([]);
-      ctx.beginPath();
+    const t0Px = timeToPx(0);
 
-      let drawing = false;
-      for (let i = 0; i < chartData.length; i++) {
-        const row = chartData[i];
-        const val = row[key];
-        if (val != null) {
-          const x = timeToPx(row.t);
-          const y = rssiToPy(Number(val));
-          if (!drawing) {
-            ctx.moveTo(x, y);
-            drawing = true;
-          } else {
-            ctx.lineTo(x, y);
+    // RSSI Min/Max Range Band
+    if (showMinMax) {
+      visible.forEach((t) => {
+        const minKey = `${t.deviceId}_min`;
+        const maxKey = `${t.deviceId}_max`;
+
+        ctx.fillStyle = t.color;
+        ctx.globalAlpha = 0.15;
+
+        let inPoly = false;
+        const polyMinPoints: { x: number; y: number }[] = [];
+
+        for (let i = 0; i < chartData.length; i++) {
+          const row = chartData[i];
+          const minVal = row[minKey];
+          const maxVal = row[maxKey];
+          if (minVal != null && maxVal != null) {
+            const x = timeToPx(row.t);
+            const yMax = rssiToPy(Number(maxVal));
+            const yMin = rssiToPy(Number(minVal));
+
+            if (!inPoly) {
+              ctx.beginPath();
+              ctx.moveTo(x, yMax);
+              inPoly = true;
+            } else {
+              ctx.lineTo(x, yMax);
+            }
+            polyMinPoints.push({ x, y: yMin });
+          } else if (inPoly) {
+            for (let j = polyMinPoints.length - 1; j >= 0; j--) {
+              ctx.lineTo(polyMinPoints[j].x, polyMinPoints[j].y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            polyMinPoints.length = 0;
+            inPoly = false;
           }
-        } else if (drawing) {
-          ctx.stroke();
-          ctx.beginPath();
-          drawing = false;
         }
-      }
-      if (drawing) {
-        ctx.stroke();
-      }
+        if (inPoly) {
+          for (let j = polyMinPoints.length - 1; j >= 0; j--) {
+            ctx.lineTo(polyMinPoints[j].x, polyMinPoints[j].y);
+          }
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        ctx.strokeStyle = t.color;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.35;
+        drawTrackerSeries(chartData, minKey, timeToPx, rssiToPy, (pts) =>
+          drawLine(ctx, pts)
+        );
+        drawTrackerSeries(chartData, maxKey, timeToPx, rssiToPy, (pts) =>
+          drawLine(ctx, pts)
+        );
+      });
+
+      ctx.globalAlpha = 1.0;
+    }
+
+    // RSSI Avg lines
+    visible.forEach((t) => {
+      ctx.strokeStyle = t.color;
+      ctx.lineWidth = 2.5;
+      ctx.globalAlpha = 1.0;
+      drawTrackerSeries(
+        chartData,
+        `${t.deviceId}_avg`,
+        timeToPx,
+        rssiToPy,
+        (pts) => drawLine(ctx, pts)
+      );
     });
 
     // Packet Loss lines
     visible.forEach((t) => {
-      const key = `${t.deviceId}_loss`;
       ctx.strokeStyle = t.color;
       ctx.lineWidth = 1.5;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-
-      let drawing = false;
-      for (let i = 0; i < chartData.length; i++) {
-        const row = chartData[i];
-        const val = row[key];
-        if (val != null) {
-          const x = timeToPx(row.t);
-          const y = lossToPy(Number(val));
-          if (!drawing) {
-            ctx.moveTo(x, y);
-            drawing = true;
-          } else {
-            ctx.lineTo(x, y);
-          }
-        } else if (drawing) {
-          ctx.stroke();
-          ctx.beginPath();
-          drawing = false;
-        }
-      }
-      if (drawing) {
-        ctx.stroke();
-      }
+      ctx.globalAlpha = 1.0;
+      drawTrackerSeries(
+        chartData,
+        `${t.deviceId}_loss`,
+        timeToPx,
+        lossToPy,
+        (pts) => drawCustomDashedPath(ctx, pts, t0Px, 5, 4)
+      );
     });
-    ctx.setLineDash([]);
+
     ctx.restore();
 
     // vertical hover line
@@ -229,7 +353,15 @@ function RssiLossChartComponent({
     }
 
     ctx.restore();
-  }, [chartData, visible, startSec, endSec, xAxisTicks, hoveredTime]);
+  }, [
+    chartData,
+    visible,
+    startSec,
+    endSec,
+    xAxisTicks,
+    hoveredTime,
+    showMinMax,
+  ]);
 
   let tooltipLeftPx: number | null = null;
   let tooltipTopPx = 8;

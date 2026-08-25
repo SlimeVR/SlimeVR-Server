@@ -421,6 +421,7 @@ dongle-settings-forget_tracker = Forget
 dongle-settings-telemetry-title = Live telemetry
 dongle-settings-telemetry-select_trackers = Select trackers
 dongle-settings-telemetry-select_trackers-summary = { $count } of { $total } trackers
+dongle-settings-telemetry-show_min_max = Min/Max
 dongle-settings-telemetry-chart_rssi = RSSI · dBm
 dongle-settings-telemetry-chart_loss = Packet loss · %
 dongle-settings-telemetry-chart_gaps = Loss gap events · TPS-relative packet gaps
