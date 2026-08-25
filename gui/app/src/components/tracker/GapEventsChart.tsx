@@ -1,5 +1,12 @@
 import classNames from 'classnames';
-import { Dispatch, memo, SetStateAction, useEffect, useRef } from 'react';
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Typography } from '@/components/commons/Typography';
 import { ChartRow, GapEvent } from '@/hooks/telemetry-history';
 import {
@@ -13,8 +20,7 @@ import {
   timeSecToPx,
 } from './DongleTelemetry';
 import {
-  estimatedTooltipHeight,
-  TelemetryTooltipTable,
+  TelemetryPopoverTooltip,
   TOOLTIP_OFFSET,
   TOOLTIP_WIDTH,
 } from './TelemetryTooltip';
@@ -68,6 +74,7 @@ function GapEventsChartComponent({
   onHoveredTimeChange,
   isActive,
   onActiveChange,
+  variant = 'default',
 }: {
   chartData: ChartRow[];
   trackers: TelemetryTracker[];
@@ -80,6 +87,7 @@ function GapEventsChartComponent({
   onHoveredTimeChange: (t: number | null) => void;
   isActive: boolean;
   onActiveChange: Dispatch<SetStateAction<HoveredChart>>;
+  variant?: 'default' | 'modal';
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -201,38 +209,40 @@ function GapEventsChartComponent({
     hoveredTime,
   ]);
 
-  let tooltipLeftPx: number | null = null;
-  let tooltipTopPx: number | null = null;
+  const [hoveredY, setHoveredY] = useState<number | null>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!wrapperRef.current) return;
+    const rect = wrapperRef.current.getBoundingClientRect();
+    onHoveredTimeChange(pxToTimeSec(e.clientX, rect, startSec, endSec));
+    setHoveredY(e.clientY - rect.top);
+    onActiveChange('gap');
+  };
+
+  let clientPos: { x: number; y: number } | null = null;
   if (hoveredTime != null && wrapperRef.current) {
     const rect = wrapperRef.current.getBoundingClientRect();
     const hoveredPx = timeSecToPx(hoveredTime, rect.width, startSec, endSec);
-    tooltipLeftPx = flipTooltipLeft(
+    const tooltipLeftPx = flipTooltipLeft(
       hoveredPx,
       rect.width,
       TOOLTIP_WIDTH,
       TOOLTIP_OFFSET
     );
 
-    const estimatedHeight = estimatedTooltipHeight(trackers.length);
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const spaceAbove = rect.top;
-    const fitsBelow = spaceBelow >= estimatedHeight + TOOLTIP_OFFSET;
-    const fitsAbove = spaceAbove >= estimatedHeight + TOOLTIP_OFFSET;
-    const placeBelow = fitsBelow || (!fitsAbove && spaceBelow >= spaceAbove);
-    tooltipTopPx = placeBelow
-      ? rect.height + TOOLTIP_OFFSET
-      : -(estimatedHeight + TOOLTIP_OFFSET);
+    clientPos = {
+      x: rect.left + tooltipLeftPx,
+      y: rect.top + (hoveredY ?? 8) + TOOLTIP_OFFSET,
+    };
   }
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!wrapperRef.current) return;
-    const rect = wrapperRef.current.getBoundingClientRect();
-    onHoveredTimeChange(pxToTimeSec(e.clientX, rect, startSec, endSec));
-    onActiveChange('gap');
-  };
-
   return (
-    <div className="bg-background-80 rounded-xl p-4">
+    <div
+      className={classNames(
+        'bg-background-80 rounded-xl',
+        variant === 'modal' ? 'p-3' : 'p-4'
+      )}
+    >
       <div className="pl-[64px] pb-2">
         <Typography
           variant="section-title"
@@ -249,6 +259,7 @@ function GapEventsChartComponent({
           onMouseMove={handleMouseMove}
           onMouseLeave={() => {
             onHoveredTimeChange(null);
+            setHoveredY(null);
             onActiveChange((prev) => (prev === 'gap' ? null : prev));
           }}
         >
@@ -258,25 +269,14 @@ function GapEventsChartComponent({
           </div>
         </div>
 
-        {isActive &&
-          hoveredTime != null &&
-          tooltipLeftPx != null &&
-          tooltipTopPx != null && (
-            <div
-              className="absolute top-0 left-0 rounded-lg border border-background-10/10 bg-background-90/95 px-3 py-2 shadow-md pointer-events-none z-30"
-              style={{
-                width: TOOLTIP_WIDTH,
-                transform: `translate(${tooltipLeftPx}px, ${tooltipTopPx}px)`,
-              }}
-            >
-              <TelemetryTooltipTable
-                trackers={trackers}
-                chartData={chartData}
-                hoveredTime={hoveredTime}
-                eventsByTracker={eventsByTracker}
-              />
-            </div>
-          )}
+        <TelemetryPopoverTooltip
+          isOpen={isActive && hoveredTime != null && clientPos != null}
+          clientPos={clientPos}
+          trackers={trackers}
+          chartData={chartData}
+          hoveredTime={hoveredTime}
+          eventsByTracker={eventsByTracker}
+        />
       </div>
     </div>
   );

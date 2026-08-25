@@ -302,9 +302,11 @@ function Row({
 export function TrackersTable({
   groups,
   clickedTracker,
+  onOpenMetrics,
 }: {
   clickedTracker: (tracker: TrackerDataT) => void;
   groups: TrackerConnectionGroup[];
+  onOpenMetrics?: (group: TrackerConnectionGroup) => void;
 }) {
   const { config } = useConfig();
   const { highlightedTrackers } = useTrackingChecklist();
@@ -383,7 +385,11 @@ export function TrackersTable({
         </div>
         <div className="flex flex-col gap-2.5">
           {sortedGroups.map((group) => (
-            <TrackerConnectionGroupSection key={group.key} group={group}>
+            <TrackerConnectionGroupSection
+              key={group.key}
+              group={group}
+              onOpenMetrics={onOpenMetrics}
+            >
               <div className="flex flex-col gap-0.5">
                 {group.assigned.map((data, index) => (
                   <Row

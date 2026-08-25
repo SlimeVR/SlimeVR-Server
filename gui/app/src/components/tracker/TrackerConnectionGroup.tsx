@@ -11,6 +11,7 @@ import {
   ArrowUpIcon,
 } from '@/components/commons/icon/ArrowIcons';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
+import { MetricsIcon } from '@/components/commons/icon/MetricsIcon';
 import { DongleStatus } from 'solarxr-protocol';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 
@@ -81,9 +82,11 @@ export function TrackerConnectionGroupUnassignedDivider({
 
 export function TrackerConnectionGroupSection({
   group,
+  onOpenMetrics,
   children,
 }: {
   group: TrackerConnectionGroupData;
+  onOpenMetrics?: (group: TrackerConnectionGroupData) => void;
   children: ReactNode;
 }) {
   const { config, setConfig } = useConfig();
@@ -135,6 +138,14 @@ export function TrackerConnectionGroupSection({
         <div className="flex-grow border-t-2 border-dashed border-background-60" />
         <div className="sticky -right-2 z-20 flex items-center bg-background-70 pl-4 -ml-4">
           <div className="flex items-center bg-background-80 rounded-full px-1">
+            {onOpenMetrics && (
+              <div
+                className="flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9"
+                onClick={() => onOpenMetrics(group)}
+              >
+                <MetricsIcon size={16} />
+              </div>
+            )}
             {group.kind === 'dongle' && (
               <NavLink
                 to={`/dongle/${group.dongleId}`}

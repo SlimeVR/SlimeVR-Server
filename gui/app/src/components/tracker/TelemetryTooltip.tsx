@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { ChartRow, GapEvent } from '@/hooks/telemetry-history';
 import {
   getGapTextColor,
@@ -111,3 +111,89 @@ function TelemetryTooltipTableComponent({
 }
 
 export const TelemetryTooltipTable = memo(TelemetryTooltipTableComponent);
+
+export function TelemetryPopoverTooltip({
+  isOpen,
+  clientPos,
+  trackers,
+  chartData,
+  hoveredTime,
+  eventsByTracker,
+}: {
+  isOpen: boolean;
+  clientPos: { x: number; y: number } | null;
+  trackers: TelemetryTracker[];
+  chartData: ChartRow[];
+  hoveredTime: number | null;
+  eventsByTracker: Record<number, GapEvent[]>;
+}) {
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = popoverRef.current as
+      | (HTMLDivElement & {
+          showPopover?: () => void;
+          hidePopover?: () => void;
+        })
+      | null;
+    if (!el?.showPopover) return;
+
+    try {
+      const shouldBeOpen = Boolean(isOpen && clientPos && hoveredTime != null);
+      const isOpenNow = el.matches(':popover-open');
+
+      if (shouldBeOpen && !isOpenNow) {
+        el.showPopover();
+      } else if (!shouldBeOpen && isOpenNow) {
+        el.hidePopover?.();
+      }
+    } catch {
+      // Safe fallback if popover API fails or is unsupported
+    }
+  }, [isOpen, clientPos, hoveredTime]);
+
+  const active = isOpen && clientPos != null && hoveredTime != null;
+  const estimatedHeight = Math.min(
+    360,
+    estimatedTooltipHeight(trackers.length)
+  );
+
+  const clampedX = clientPos
+    ? Math.max(
+        10,
+        Math.min(clientPos.x, window.innerWidth - TOOLTIP_WIDTH - 10)
+      )
+    : -9999;
+  const clampedY = clientPos
+    ? Math.max(
+        10,
+        Math.min(clientPos.y, window.innerHeight - estimatedHeight - 10)
+      )
+    : -9999;
+
+  return (
+    <div
+      ref={popoverRef}
+      {...({ popover: 'manual' } as any)}
+      style={{
+        position: 'fixed',
+        left: `${clampedX}px`,
+        top: `${clampedY}px`,
+        margin: 0,
+        inset: 'unset',
+      }}
+      className="border-0 bg-transparent p-0 outline-none backdrop:bg-transparent pointer-events-none"
+    >
+      {active && (
+        <div className="bg-background-90/95 border border-background-10/10 rounded-lg px-3 py-2 shadow-2xl max-h-[360px] overflow-y-auto w-[380px] text-background-10">
+          <TelemetryTooltipTable
+            trackers={trackers}
+            chartData={chartData}
+            hoveredTime={hoveredTime}
+            eventsByTracker={eventsByTracker}
+          />
+        </div>
+      )}
+    </div>
+  );
+}

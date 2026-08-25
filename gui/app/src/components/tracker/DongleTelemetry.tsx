@@ -146,8 +146,10 @@ export function getGapTextColor(durationMs: number): string {
 
 export function DongleTelemetry({
   trackers,
+  variant = 'default',
 }: {
   trackers: FlatDeviceTracker[];
+  variant?: 'default' | 'modal';
 }) {
   const { l10n } = useLocalization();
 
@@ -257,7 +259,12 @@ export function DongleTelemetry({
   if (list.length === 0) return null;
 
   return (
-    <div className="flex flex-col bg-background-70 rounded-lg p-5 gap-3">
+    <div
+      className={classNames(
+        'flex flex-col bg-background-70 rounded-lg  gap-3',
+        { 'p-5': variant == 'default' }
+      )}
+    >
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <Typography
           variant="section-title"
@@ -353,8 +360,18 @@ export function DongleTelemetry({
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="bg-background-80 rounded-xl p-4">
+      <div
+        className={classNames(
+          'flex flex-col',
+          variant === 'modal' ? 'gap-4' : 'gap-4'
+        )}
+      >
+        <div
+          className={classNames(
+            'bg-background-80 rounded-xl',
+            variant === 'modal' ? 'p-3' : 'p-4'
+          )}
+        >
           <div className="flex items-center justify-between pl-[64px] pr-[48px] pb-2">
             <div className="flex items-center gap-2">
               <svg width={20} height={10} className="shrink-0">
@@ -390,7 +407,13 @@ export function DongleTelemetry({
               />
             </div>
           </div>
-          <div className="h-[440px]">
+          <div
+            className={
+              variant === 'modal'
+                ? 'h-[min(440px,45vh)] min-h-[220px]'
+                : 'h-[440px]'
+            }
+          >
             <RssiLossChart
               chartData={chartData}
               trackers={list}
@@ -420,6 +443,7 @@ export function DongleTelemetry({
           onHoveredTimeChange={setHoveredTime}
           isActive={hoveredChart === 'gap'}
           onActiveChange={setHoveredChart}
+          variant={variant}
         />
       </div>
 

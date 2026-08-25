@@ -16,11 +16,13 @@ import {
   donglesAtom,
   flatTrackersAtom,
   groupTrackersByConnection,
+  TrackerConnectionGroup,
 } from '@/store/app-store';
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 import { Checklist } from '@/components/commons/icon/ChecklistIcon';
 import { useMemo, useState } from 'react';
 import { HomeSettingsModal } from './HomeSettingsModal';
+import { GroupTelemetryOverlay } from './GroupTelemetryOverlay';
 import { LayoutIcon } from '@/components/commons/icon/LayoutIcon';
 
 export function Home() {
@@ -43,10 +45,16 @@ export function Home() {
 
   const settingsOpenState = useState(false);
   const [, setSettingsOpen] = settingsOpenState;
+  const [telemetryGroup, setTelemetryGroup] =
+    useState<TrackerConnectionGroup | null>(null);
 
   return (
     <div className="relative h-full">
       <HomeSettingsModal open={settingsOpenState} />
+      <GroupTelemetryOverlay
+        group={telemetryGroup}
+        onClose={() => setTelemetryGroup(null)}
+      />
       <NavLink
         to="/vr-mode"
         className="xs:hidden absolute z-50 h-12 w-12 rounded-full bg-accent-background-30 bottom-3 right-3 flex justify-center items-center fill-background-10"
@@ -85,7 +93,11 @@ export function Home() {
         {config?.homeLayout == 'default' && groups.length > 0 && (
           <div className="pl-2 pr-2 flex flex-col gap-4">
             {groups.map((group) => (
-              <TrackerConnectionGroupSection key={group.key} group={group}>
+              <TrackerConnectionGroupSection
+                key={group.key}
+                group={group}
+                onOpenMetrics={(g) => setTelemetryGroup(g)}
+              >
                 <div className="flex flex-col gap-3">
                   {group.assigned.length > 0 && (
                     <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-2">
@@ -145,6 +157,7 @@ export function Home() {
             <TrackersTable
               groups={groups}
               clickedTracker={(tracker) => sendToSettings(tracker)}
+              onOpenMetrics={(g) => setTelemetryGroup(g)}
             />
           </div>
         )}

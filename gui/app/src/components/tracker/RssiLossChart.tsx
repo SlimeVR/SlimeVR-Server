@@ -16,8 +16,7 @@ import {
   timeSecToPx,
 } from './DongleTelemetry';
 import {
-  estimatedTooltipHeight,
-  TelemetryTooltipTable,
+  TelemetryPopoverTooltip,
   TOOLTIP_OFFSET,
   TOOLTIP_WIDTH,
 } from './TelemetryTooltip';
@@ -152,7 +151,6 @@ function RssiLossChartComponent({
   const visible = trackers.filter((t) => visibleIds.includes(t.deviceId));
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [hoveredY, setHoveredY] = useState<number | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -363,28 +361,7 @@ function RssiLossChartComponent({
     showMinMax,
   ]);
 
-  let tooltipLeftPx: number | null = null;
-  let tooltipTopPx = 8;
-  if (hoveredTime != null && wrapperRef.current) {
-    const rect = wrapperRef.current.getBoundingClientRect();
-    const hoveredPx = timeSecToPx(hoveredTime, rect.width, startSec, endSec);
-    tooltipLeftPx = flipTooltipLeft(
-      hoveredPx,
-      rect.width,
-      TOOLTIP_WIDTH,
-      TOOLTIP_OFFSET
-    );
-
-    if (hoveredY != null) {
-      tooltipTopPx = Math.max(
-        0,
-        Math.min(
-          hoveredY + TOOLTIP_OFFSET,
-          rect.height - estimatedTooltipHeight(trackers.length)
-        )
-      );
-    }
-  }
+  const [hoveredY, setHoveredY] = useState<number | null>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!wrapperRef.current) return;
@@ -393,6 +370,22 @@ function RssiLossChartComponent({
     setHoveredY(e.clientY - rect.top);
     onActiveChange('rssi');
   };
+
+  let clientPos: { x: number; y: number } | null = null;
+  if (hoveredTime != null && wrapperRef.current) {
+    const rect = wrapperRef.current.getBoundingClientRect();
+    const hoveredPx = timeSecToPx(hoveredTime, rect.width, startSec, endSec);
+    const tooltipLeftPx = flipTooltipLeft(
+      hoveredPx,
+      rect.width,
+      TOOLTIP_WIDTH,
+      TOOLTIP_OFFSET
+    );
+    clientPos = {
+      x: rect.left + tooltipLeftPx,
+      y: rect.top + (hoveredY ?? 8) + TOOLTIP_OFFSET,
+    };
+  }
 
   return (
     <div
@@ -407,26 +400,14 @@ function RssiLossChartComponent({
     >
       <canvas ref={canvasRef} className="w-full h-full block" />
 
-      {isActive && hoveredTime != null && tooltipLeftPx != null && (
-        <div
-          className="absolute top-0 left-0 pointer-events-none z-30"
-          style={{
-            transform: `translate(${tooltipLeftPx}px, ${tooltipTopPx}px)`,
-          }}
-        >
-          <div
-            className="bg-background-90/95 border border-background-10/10 rounded-lg px-3 py-2 max-h-[360px] overflow-y-auto"
-            style={{ width: TOOLTIP_WIDTH }}
-          >
-            <TelemetryTooltipTable
-              trackers={trackers}
-              chartData={chartData}
-              hoveredTime={hoveredTime}
-              eventsByTracker={eventsByTracker}
-            />
-          </div>
-        </div>
-      )}
+      <TelemetryPopoverTooltip
+        isOpen={isActive && hoveredTime != null && clientPos != null}
+        clientPos={clientPos}
+        trackers={trackers}
+        chartData={chartData}
+        hoveredTime={hoveredTime}
+        eventsByTracker={eventsByTracker}
+      />
     </div>
   );
 }
