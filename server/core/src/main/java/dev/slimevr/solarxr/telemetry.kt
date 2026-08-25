@@ -78,7 +78,7 @@ class TelemetryBehaviour(private val server: VRServer) : SolarXRBridgeBehaviour 
 									packetLossPct = if (!isOk) null else stats.packetLoss,
 									packetsLost = lastSample?.packetsLost?.toInt(),
 									packetsReceived = lastSample?.packetsReceived?.toInt(),
-								)
+								),
 							)
 						}
 
@@ -88,7 +88,7 @@ class TelemetryBehaviour(private val server: VRServer) : SolarXRBridgeBehaviour 
 
 						delay(100L)
 					}
-				}
+				},
 			)
 
 			deviceIds.forEach { id ->
@@ -120,15 +120,15 @@ class TelemetryBehaviour(private val server: VRServer) : SolarXRBridgeBehaviour 
 														time = cur.time.toULong(),
 														durationMs = durationMs.toUInt(),
 														packetsLost = lostDiff,
-													)
-												)
-											)
+													),
+												),
+											),
 										)
 									}
 								}
 								prevSample = cur
 							}
-					}
+					},
 				)
 			}
 
