@@ -106,10 +106,12 @@ sealed interface TrackerActions {
 	/**
 	 * Do not instantiate [SetRotation] directly. Use [Tracker.setRotation] instead so `headTrackerRotation` is automatically included.
 	 */
-	data class SetRotation @Deprecated(
+	data class SetRotation
+	@Deprecated(
 		message = "Do not instantiate SetRotation directly. Use tracker.setRotation(...) instead so headTrackerRotation is automatically included.",
 		level = DeprecationLevel.ERROR,
-	) constructor(
+	)
+	constructor(
 		val rotation: Quaternion? = null,
 		val acceleration: Vector3? = null,
 		val magnetometer: Vector3? = null,
@@ -138,7 +140,6 @@ class Tracker(
 	val settings: Settings,
 ) {
 	fun startObserving() = context.observeAll(this)
-
 
 	fun setRotation(
 		rotation: Quaternion? = null,

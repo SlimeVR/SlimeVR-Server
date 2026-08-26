@@ -12,25 +12,21 @@ import dev.slimevr.config.TextFileHandle
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
-import dev.slimevr.config.reduce as reduceConfig
 import dev.slimevr.context.Context
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeActions
 import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.driver.DriverBridgeState
-import dev.slimevr.driver.reduce as reduceDriverBridge
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
-import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
 import dev.slimevr.resets.ResetsState
-import dev.slimevr.resets.reduce as reduceResets
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
@@ -40,7 +36,6 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
-import dev.slimevr.skeleton.reduce as reduceSkeleton
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
@@ -49,9 +44,7 @@ import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
-import dev.slimevr.tracker.reduce as reduceTracker
 import dev.slimevr.trackingchecklist.TrackingChecklist
-import dev.slimevr.udp.reduce as reduceUdpServer
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrcosc.VRCOSCManager
@@ -65,6 +58,13 @@ import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
+import dev.slimevr.config.reduce as reduceConfig
+import dev.slimevr.driver.reduce as reduceDriverBridge
+import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration
+import dev.slimevr.resets.reduce as reduceResets
+import dev.slimevr.skeleton.reduce as reduceSkeleton
+import dev.slimevr.tracker.reduce as reduceTracker
+import dev.slimevr.udp.reduce as reduceUdpServer
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
 	openPort = { loc, _, _ -> SerialPortHandle(loc, "Fake $loc", {}, {}) },
