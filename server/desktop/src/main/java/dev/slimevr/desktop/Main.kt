@@ -46,14 +46,30 @@ import dev.slimevr.util.installUncaughtExceptionReporting
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.rpc.KeybindSupport
 
 fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler + CoroutineName("Main")) {
 	setupDesktopLogging()
 	installUncaughtExceptionReporting()
+
+	// Electron (and Ctrl+C) terminate us with SIGTERM, which the JVM turns into a plain
+	// process halt once every registered shutdown hook thread finishes. Without this hook,
+	// awaitCancellation() below is never unblocked and the `finally { appContext.dispose() }`
+	// never runs, so cleanup only happens by accident (e.g. a library's own shutdown hook).
+	val rootJob = coroutineContext[Job]!!
+	Runtime.getRuntime().addShutdownHook(
+		Thread({
+			runBlocking { withTimeoutOrNull(5000) { rootJob.cancelAndJoin() } }
+		}, "graceful-shutdown"),
+	)
 
 	contextDebugEnabled = System.getProperty("slimevr.debug.context") == "true" ||
 		System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
@@ -157,7 +173,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	try {
 		appContext.startObserving()
 
-		launch { createDesktopHIDManager(appContext, this) }
+		createDesktopHIDManager(appContext, this)
 		launch { createDesktopKeybindManager(appContext, this) }
 		launch { createSolarXRWebsocketServer(appContext) }
 		launch { createIpcServers(appContext) }
@@ -165,6 +181,8 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 
 		awaitCancellation()
 	} finally {
-		appContext.dispose()
+		// A suspend call here would throw immediately otherwise: this finally
+		// runs after our own Job is already cancelled.
+		withContext(NonCancellable) { appContext.dispose() }
 	}
 }
