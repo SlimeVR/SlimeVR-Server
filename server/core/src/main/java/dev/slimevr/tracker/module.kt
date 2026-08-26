@@ -102,7 +102,14 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetDriverName(val driverName: String?) : TrackerActions
-	data class SetRotation(
+
+	/**
+	 * Do not instantiate [SetRotation] directly. Use [Tracker.setRotation] instead so `headTrackerRotation` is automatically included.
+	 */
+	data class SetRotation @Deprecated(
+		message = "Do not instantiate SetRotation directly. Use tracker.setRotation(...) instead so headTrackerRotation is automatically included.",
+		level = DeprecationLevel.ERROR,
+	) constructor(
 		val rotation: Quaternion? = null,
 		val acceleration: Vector3? = null,
 		val magnetometer: Vector3? = null,
@@ -131,6 +138,30 @@ class Tracker(
 	val settings: Settings,
 ) {
 	fun startObserving() = context.observeAll(this)
+
+
+	fun setRotation(
+		rotation: Quaternion? = null,
+		acceleration: Vector3? = null,
+		magnetometer: Vector3? = null,
+		position: Vector3? = null,
+		newData: Boolean = true,
+	) {
+		val headTrackerRotation = appContext.server.context.state.value.trackers.values
+			.map { it.context.state.value }
+			.getFirstFineFor(BodyPart.HEAD)?.rotation
+		context.dispatch(
+			@Suppress("DEPRECATION_ERROR")
+			TrackerActions.SetRotation(
+				rotation = rotation,
+				acceleration = acceleration,
+				magnetometer = magnetometer,
+				position = position,
+				newData = newData,
+				headTrackerRotation = headTrackerRotation,
+			),
+		)
+	}
 
 	companion object {
 		fun create(

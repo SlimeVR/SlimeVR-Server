@@ -31,7 +31,7 @@ class TrackerBasicBehaviour : TrackerBehaviour {
 			}
 			.onEach {
 				// Make sure to send the raw data to have calibration re-apply
-				receiver.context.dispatch(TrackerActions.SetRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, newData = false))
+				receiver.setRotation(it.rawRotation, it.rawAcceleration, it.rawMagnetometer, newData = false)
 			}.launchIn(receiver.context.scope)
 	}
 

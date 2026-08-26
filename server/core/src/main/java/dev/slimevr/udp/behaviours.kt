@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import solarxr_protocol.datatypes.BodyPart
+import dev.slimevr.tracker.getFirstFineFor
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.MagnetometerStatus
 import solarxr_protocol.datatypes.TrackerStatus
@@ -371,22 +373,22 @@ class SensorRotationBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
+			tracker.setRotation(rotation = AXES_OFFSET * event.data.rotation)
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration))
+			tracker.setRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration)
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Accel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = event.data.acceleration))
+			tracker.setRotation(acceleration = event.data.acceleration)
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
+			tracker.setRotation(rotation = AXES_OFFSET * event.data.rotation)
 		}.launchIn(receiver.context.scope)
 	}
 }
