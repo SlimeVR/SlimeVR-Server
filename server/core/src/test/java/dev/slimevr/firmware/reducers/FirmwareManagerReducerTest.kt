@@ -3,8 +3,8 @@ package dev.slimevr.firmware.reducers
 import dev.slimevr.context.Context
 import dev.slimevr.firmware.FirmwareJobStatus
 import dev.slimevr.firmware.FirmwareManagerActions
-import dev.slimevr.firmware.FirmwareManagerBaseBehaviour
 import dev.slimevr.firmware.FirmwareManagerState
+import dev.slimevr.firmware.reduce
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 import solarxr_protocol.rpc.SerialDevicePort
@@ -26,8 +26,8 @@ private fun serialJob(port: String, status: FirmwareUpdateStatus, progress: Int 
 class FirmwareManagerReducerTest {
 	private fun makeContext(scope: kotlinx.coroutines.CoroutineScope) = Context.create(
 		initialState = FirmwareManagerState(jobs = mapOf()),
-		behaviours = listOf(FirmwareManagerBaseBehaviour()),
 		scope = scope,
+		reducer = ::reduce,
 		name = "FirmwareManagerReducerTest",
 	)
 

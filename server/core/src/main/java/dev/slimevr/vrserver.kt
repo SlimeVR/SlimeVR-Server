@@ -32,7 +32,7 @@ sealed interface VRServerActions {
 }
 
 typealias VRServerContext = Context<VRServerState, VRServerActions>
-typealias VRServerBehaviour = Behaviour<VRServerState, VRServerActions, VRServer>
+typealias VRServerBehaviour = Behaviour<VRServer>
 
 @OptIn(ExperimentalAtomicApi::class)
 class VRServer(
@@ -64,6 +64,7 @@ class VRServer(
 					dongles = emptyMap(),
 				),
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = behaviours,
 				name = "VRServer",
 			)

@@ -42,7 +42,7 @@ sealed interface DeviceActions {
 }
 
 typealias DeviceContext = Context<DeviceState, DeviceActions>
-typealias DeviceBehaviour = Behaviour<DeviceState, DeviceActions, Device>
+typealias DeviceBehaviour = Behaviour<Device>
 
 class Device(
 	val context: DeviceContext,
@@ -89,11 +89,10 @@ class Device(
 				packetLossRecent = null,
 			)
 
-			val behaviours = listOf(DeviceStatsBehaviour(), DeviceTelemetryBehaviour())
 			val context = Context.create(
 				initialState = deviceState,
 				scope = scope,
-				behaviours = behaviours,
+				reducer = ::reduce,
 				debugMiddleware = LoggingMiddleware(
 					block = setOf(DeviceActions.PacketStats::class),
 					diffStyle = DiffStyle.MULTILINE,

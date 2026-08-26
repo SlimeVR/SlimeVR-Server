@@ -39,7 +39,7 @@ sealed interface SolarXRBridgeActions {
 }
 
 typealias SolarXRBridgeContext = Context<SolarXRBridgeState, SolarXRBridgeActions>
-typealias SolarXRBridgeBehaviour = Behaviour<SolarXRBridgeState, SolarXRBridgeActions, SolarXRBridge>
+typealias SolarXRBridgeBehaviour = Behaviour<SolarXRBridge>
 
 suspend fun onSolarXRMessage(message: MessageBundle, context: SolarXRBridge) {
 	message.dataFeedMsgs?.forEach {
@@ -178,6 +178,7 @@ class SolarXRBridge(
 			val managedContext = ManagedContext.create(
 				initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = buildBehaviours(appContext) + extraBehaviours(appContext),
 				name = "SolarXR[$id]",
 			)

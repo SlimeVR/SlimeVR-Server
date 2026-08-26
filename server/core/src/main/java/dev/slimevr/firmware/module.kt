@@ -38,7 +38,7 @@ sealed interface FirmwareManagerActions {
 }
 
 typealias FirmwareManagerContext = Context<FirmwareManagerState, FirmwareManagerActions>
-typealias FirmwareManagerBehaviour = Behaviour<FirmwareManagerState, FirmwareManagerActions, FirmwareManager>
+typealias FirmwareManagerBehaviour = Behaviour<FirmwareManager>
 
 class FirmwareManager(
 	val context: FirmwareManagerContext,
@@ -127,11 +127,10 @@ class FirmwareManager(
 
 	companion object {
 		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope, flasher: FirmwareFlasher): FirmwareManager {
-			val behaviours = listOf(FirmwareManagerBaseBehaviour())
 			val context = Context.create(
 				initialState = FirmwareManagerState(jobs = mapOf()),
 				scope = scope,
-				behaviours = behaviours,
+				reducer = ::reduce,
 				name = "FirmwareManager",
 			)
 			return FirmwareManager(

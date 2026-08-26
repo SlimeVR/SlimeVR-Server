@@ -59,7 +59,7 @@ sealed interface ProvisioningActions {
 }
 
 typealias ProvisioningManagerContext = Context<ProvisioningManagerState, ProvisioningActions>
-typealias ProvisioningManagerBehaviour = Behaviour<ProvisioningManagerState, ProvisioningActions, ProvisioningManager>
+typealias ProvisioningManagerBehaviour = Behaviour<ProvisioningManager>
 
 data class ProvisioningManager(
 	val context: ProvisioningManagerContext,
@@ -187,11 +187,10 @@ data class ProvisioningManager(
 		val INITIAL_STATE = ProvisioningManagerState()
 
 		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope): ProvisioningManager {
-			val behaviours = listOf(ProvisioningManagerBaseBehaviour())
 			val context = Context.create(
 				initialState = INITIAL_STATE,
 				scope = scope,
-				behaviours = behaviours,
+				reducer = ::reduce,
 				name = "ProvisioningManager",
 			)
 			return ProvisioningManager(

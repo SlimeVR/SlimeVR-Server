@@ -125,7 +125,7 @@ sealed interface SkeletonActions {
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
-typealias SkeletonBehaviour = Behaviour<SkeletonState, SkeletonActions, Skeleton>
+typealias SkeletonBehaviour = Behaviour<Skeleton>
 interface SkeletonProcessor {
 	fun process(state: SkeletonState): SkeletonState
 }
@@ -148,8 +148,6 @@ class Skeleton(
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, hz: Int = DEFAULT_HZ): Skeleton {
 			val behaviours = listOf(
-				PauseTrackingBehaviour(),
-				BoneTransformBehaviour(),
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
 // 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
@@ -172,6 +170,7 @@ class Skeleton(
 			val context = Context.create(
 				initialState = DEFAULT_SKELETON_STATE,
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = behaviours,
 				name = "Skeleton",
 			)

@@ -22,26 +22,6 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class HIDRegistrationBehaviour : HIDReceiverBehaviour {
-	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions) = when (action) {
-		is HIDReceiverActions.DeviceRegistered -> state.copy(
-			trackers = state.trackers +
-				(
-					action.hidId to HIDTrackerRecord(
-						hidId = action.hidId,
-						address = action.address,
-						deviceId = action.deviceId,
-						trackerId = null,
-					)
-					),
-		)
-
-		is HIDReceiverActions.SetStatus -> state.copy(status = action.status)
-
-		is HIDReceiverActions.SetCustomName -> state.copy(customName = action.customName)
-
-		else -> state
-	}
-
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.on<HIDDeviceRegister> { packet ->
 			val state = receiver.context.state.value
@@ -90,15 +70,6 @@ class HIDReceiverConfigBehaviour(
 }
 
 class HIDDeviceInfoBehaviour : HIDReceiverBehaviour {
-	override fun reduce(state: HIDReceiverState, action: HIDReceiverActions): HIDReceiverState = when (action) {
-		is HIDReceiverActions.TrackerRegistered -> {
-			val existing = state.trackers[action.hidId] ?: return state
-			state.copy(trackers = state.trackers + (action.hidId to existing.copy(trackerId = action.trackerId)))
-		}
-
-		else -> state
-	}
-
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.on<HIDDeviceInfo> { packet ->
 			val device = receiver.getDevice(packet.hidId) ?: return@on

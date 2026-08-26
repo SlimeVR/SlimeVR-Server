@@ -105,22 +105,6 @@ class VRCOSCInputBehaviour(
 	private val appContext: AppContextProvider,
 	private val settings: Settings,
 ) : VRCOSCBehaviour {
-	override fun reduce(state: VRCOSCState, action: VRCOSCActions) = when (action) {
-		is VRCOSCActions.SetInput -> state.copy(
-			status = state.status.copy(
-				inputState = action.state,
-				inputPort = action.port,
-				inputError = action.error,
-			),
-		)
-
-		is VRCOSCActions.SetLastReceivedInput -> state.copy(
-			status = state.status.copy(lastReceivedInputMillis = action.millis),
-		)
-
-		else -> state
-	}
-
 	override fun observe(receiver: VRCOSCManager) {
 		val registry = VRSystemTrackerRegistry(appContext, receiver)
 		var oscReceiver: OscReceiver? = null

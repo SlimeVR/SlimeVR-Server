@@ -40,7 +40,7 @@ sealed interface VRCConfigActions {
 }
 
 typealias VRCConfigContext = Context<VRCConfigState, VRCConfigActions>
-typealias VRCConfigBehaviour = Behaviour<VRCConfigState, VRCConfigActions, VRCConfigManager>
+typealias VRCConfigBehaviourType = Behaviour<VRCConfigManager>
 
 class VRCConfigManager(
 	val context: VRCConfigContext,
@@ -55,8 +55,6 @@ class VRCConfigManager(
 			isSupported: Boolean,
 			values: Flow<VRCConfigValues?>,
 		): VRCConfigManager {
-			val behaviours = listOf(DefaultVRCConfigBehaviour())
-
 			val context = Context.create(
 				initialState = VRCConfigState(
 					currentValues = null,
@@ -64,7 +62,8 @@ class VRCConfigManager(
 					mutedWarnings = listOf(),
 				),
 				scope = scope,
-				behaviours = behaviours,
+				reducer = ::reduce,
+				behaviours = listOf(DefaultVRCConfigBehaviour()),
 				name = "VRCConfig",
 			)
 

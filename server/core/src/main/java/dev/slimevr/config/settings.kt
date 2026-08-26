@@ -265,7 +265,7 @@ sealed interface SettingsActions {
 }
 
 typealias SettingsContext = Context<SettingsState, SettingsActions>
-typealias SettingsBehaviour = Behaviour<SettingsState, SettingsActions, Settings>
+typealias SettingsBehaviour = Behaviour<Settings>
 
 class Settings(
 	val context: SettingsContext,
@@ -306,11 +306,10 @@ class Settings(
 			}
 			val initialState = SettingsState(name = name, data = initialData)
 
-			val behaviours = listOf(DefaultSettingsBehaviour())
 			val context = Context.create(
 				initialState = initialState,
 				scope = scope,
-				behaviours = behaviours,
+				reducer = ::reduce,
 				name = "Settings[$name]",
 			)
 			val settings = Settings(context, scope = scope, storage = storage, settingsDir = settingsDir)

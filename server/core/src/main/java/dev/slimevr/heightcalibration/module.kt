@@ -35,7 +35,7 @@ sealed interface HeightCalibrationActions {
 }
 
 typealias HeightCalibrationContext = Context<HeightCalibrationState, HeightCalibrationActions>
-typealias HeightCalibrationBehaviourType = Behaviour<HeightCalibrationState, HeightCalibrationActions, HeightCalibrationManager>
+typealias HeightCalibrationBehaviourType = Behaviour<HeightCalibrationManager>
 
 val INITIAL_HEIGHT_CALIBRATION_STATE = HeightCalibrationState(
 	status = UserHeightCalibrationStatus.NONE,
@@ -103,11 +103,11 @@ class HeightCalibrationManager(
 			ctx: Phase1ContextProvider,
 			scope: CoroutineScope,
 		): HeightCalibrationManager {
-			val behaviours = listOf(BaseCalibrationBehaviour())
 			val context = Context.create(
 				initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
 				scope = scope,
-				behaviours = behaviours,
+				reducer = ::reduce,
+				behaviours = listOf(BaseCalibrationBehaviour()),
 				name = "HeightCalibration",
 			)
 			return HeightCalibrationManager(context = context, serverContext = ctx.server, userConfig = ctx.config.userConfig)

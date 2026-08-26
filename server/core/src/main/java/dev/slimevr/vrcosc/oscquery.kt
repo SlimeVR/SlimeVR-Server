@@ -36,22 +36,6 @@ class VRCOSCOscQueryBehaviour(
 		var discoveryJob: Job? = null
 	}
 
-	override fun reduce(state: VRCOSCState, action: VRCOSCActions) = when (action) {
-		is VRCOSCActions.SetOscQuery -> state.copy(
-			status = state.status.copy(
-				oscQueryState = action.state,
-				oscQueryAdvertisedPort = action.advertisedPort,
-				oscQueryError = action.error,
-			),
-		)
-
-		is VRCOSCActions.SetDiscoveredTargets -> state.copy(
-			status = state.status.copy(discoveredTargets = action.targets),
-		)
-
-		else -> state
-	}
-
 	override fun observe(receiver: VRCOSCManager) {
 		val runtime = OscQueryRuntime(localIp)
 

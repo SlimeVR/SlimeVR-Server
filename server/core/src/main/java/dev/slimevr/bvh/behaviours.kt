@@ -26,11 +26,6 @@ class BVHRecordingBehaviour(
 	private val skeleton: Skeleton,
 	private val storage: ConfigStorage,
 ) : BVHBehaviourType {
-	override fun reduce(state: BVHState, action: BVHActions) = when (action) {
-		is BVHActions.StartRecording -> state.copy(recording = true, recordingPath = action.path)
-		is BVHActions.StopRecording -> state.copy(recording = false, recordingPath = null)
-	}
-
 	override fun observe(receiver: BVHManager) {
 		var stream: BvhStream? = null
 

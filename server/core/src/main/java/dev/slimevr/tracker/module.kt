@@ -41,10 +41,12 @@ data class YawResetSmoothing(
 )
 
 data class StayAlignedData(
+	// Whether stay aligned is enabled
+	val enabled: Boolean = false,
 	// Rotation of the tracker when it started resting
-	val lockedRotation: Quaternion?,
+	val lockedRotation: Quaternion? = null,
 	// Yaw correction to apply to the tracker's rotation
-	val yawCorrection: Angle,
+	val yawCorrection: Angle = Angle.ZERO,
 )
 
 data class TrackerState(
@@ -100,20 +102,28 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetDriverName(val driverName: String?) : TrackerActions
-	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val newData: Boolean = true) : TrackerActions
+	data class SetRotation(
+		val rotation: Quaternion? = null,
+		val acceleration: Vector3? = null,
+		val magnetometer: Vector3? = null,
+		val position: Vector3? = null,
+		val newData: Boolean = true,
+		val headTrackerRotation: Quaternion? = null,
+	) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
-	data class FullReset(val referenceRotation: Quaternion) : TrackerActions
+	data class FullReset(val referenceRotation: Quaternion, val resetPositionalHeadAttitude: Boolean = false) : TrackerActions
 	data class YawReset(val referenceRotation: Quaternion, val smoothTime: Duration = Duration.ZERO) : TrackerActions
 	data class TickYawResetSmoothing(val heading: HeadingCorrection, val done: Boolean) : TrackerActions
 	data class PoseMountingReset(val referenceRotation: Quaternion, val yawOffset: Float) : TrackerActions
 	data object ClearMountingReset : TrackerActions
 	data class SetMotion(val motion: Motion) : TrackerActions
 	data class SetYawCorrection(val yawCorrection: Angle) : TrackerActions
+	data class SetStayAlignedEnabled(val enabled: Boolean) : TrackerActions
 }
 
 typealias TrackerContext = Context<TrackerState, TrackerActions>
-typealias TrackerBehaviour = Behaviour<TrackerState, TrackerActions, Tracker>
+typealias TrackerBehaviour = Behaviour<Tracker>
 
 class Tracker(
 	val context: TrackerContext,
@@ -147,6 +157,7 @@ class Tracker(
 				name = name,
 				imuType = imuType,
 				bodyPart = bodyPart,
+				stayAlignedData = DEFAULT_STATE.stayAlignedData.copy(enabled = settings.context.state.value.data.stayAlignedConfig.enabled),
 			)
 			val trackerState = if (savedConfig != null) {
 				TrackerConfigBehaviour.restoreFromConfig(baseState, savedConfig, settings.context.state.value.data.resetsConfig.saveMountingReset)
@@ -155,7 +166,7 @@ class Tracker(
 			}
 
 			val behaviours = listOf(
-				TrackerBasicBehaviour(settings, appContext.server),
+				TrackerBasicBehaviour(),
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
@@ -167,6 +178,7 @@ class Tracker(
 			val context = Context.create(
 				initialState = trackerState,
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = behaviours,
 				debugMiddleware = LoggingMiddleware(
 					block = setOf(TrackerActions.SetRotation::class),
@@ -208,7 +220,7 @@ class Tracker(
 			magStatus = MagnetometerStatus.NOT_SUPPORTED,
 			motion = Motion.ROTATING,
 			yawResetSmoothing = null,
-			stayAlignedData = StayAlignedData(null, Angle.ZERO),
+			stayAlignedData = StayAlignedData(),
 		)
 	}
 }

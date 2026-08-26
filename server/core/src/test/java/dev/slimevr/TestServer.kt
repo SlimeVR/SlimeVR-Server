@@ -1,10 +1,10 @@
+@file:OptIn(kotlin.concurrent.atomics.ExperimentalAtomicApi::class)
+
 package dev.slimevr
 
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
-import dev.slimevr.config.DefaultSettingsBehaviour
-import dev.slimevr.config.DefaultUserBehaviour
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsConfigState
 import dev.slimevr.config.SettingsState
@@ -12,22 +12,25 @@ import dev.slimevr.config.TextFileHandle
 import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
+import dev.slimevr.config.reduce as reduceConfig
 import dev.slimevr.context.Context
 import dev.slimevr.driver.DriverBridge
 import dev.slimevr.driver.DriverBridgeActions
 import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.driver.DriverBridgeState
+import dev.slimevr.driver.reduce as reduceDriverBridge
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.heightcalibration.HeightCalibrationState
+import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
-import dev.slimevr.resets.ResetsBasicBehaviour
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
 import dev.slimevr.resets.ResetsState
+import dev.slimevr.resets.reduce as reduceResets
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
@@ -37,15 +40,18 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
+import dev.slimevr.skeleton.reduce as reduceSkeleton
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
+import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
+import dev.slimevr.tracker.reduce as reduceTracker
 import dev.slimevr.trackingchecklist.TrackingChecklist
-import dev.slimevr.udp.UdpServer
+import dev.slimevr.udp.reduce as reduceUdpServer
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrcosc.VRCOSCManager
@@ -91,7 +97,7 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	val context = Context.create(
 		initialState = UserConfigState(data = UserConfigData(), name = "test"),
 		scope = scope,
-		behaviours = listOf(DefaultUserBehaviour()),
+		reducer = ::reduceConfig,
 		name = "TestUserConfig",
 	)
 	val userConfig = UserConfig(context, scope = scope, storage = NoopConfigStorage, userConfigDir = "user")
@@ -103,6 +109,7 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 	val context = Context.create(
 		initialState = DEFAULT_SKELETON_STATE,
 		scope = scope,
+		reducer = ::reduceSkeleton,
 		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
 		name = "TestSkeleton",
 	)
@@ -124,7 +131,8 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 			lastFullResetTime = null,
 		),
 		scope = scope,
-		behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),
+		reducer = ::reduceResets,
+		behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 		name = "TestResetsManager",
 	)
 	val resetsManager = ResetsManager(context, server, settings)
@@ -166,10 +174,12 @@ fun buildTestTracker(
 		motion = motion,
 		stayAlignedData = stayAlignedData,
 	)
+	val basicBehaviour = TrackerBasicBehaviour()
 	val context = Context.create(
 		initialState = state,
 		scope = scope,
-		behaviours = listOf(TrackerBasicBehaviour(settings)) + additionalBehaviours,
+		reducer = ::reduceTracker,
+		behaviours = listOf(basicBehaviour) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)
@@ -180,7 +190,7 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 	val context = Context.create(
 		initialState = initialState,
 		scope = scope,
-		behaviours = listOf(DefaultSettingsBehaviour()),
+		reducer = ::reduceConfig,
 		name = "Settings[test]",
 	)
 	return Settings(context, scope, NoopConfigStorage, "settings")
@@ -190,6 +200,7 @@ fun buildTestDriverBridge(server: VRServer, appContext: AppContextProvider, id: 
 	val context = Context.create<DriverBridgeState, DriverBridgeActions>(
 		initialState = DriverBridgeState(protocolVersion = 0, trackers = emptyMap()),
 		scope = server.context.scope,
+		reducer = ::reduceDriverBridge,
 		behaviours = emptyList(),
 		name = "TestDriver[$id]",
 	)
@@ -201,6 +212,7 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 	val context = Context.create<HeightCalibrationState, HeightCalibrationActions>(
 		initialState = initialState,
 		scope = scope,
+		reducer = ::reduceHeightCalibration,
 		behaviours = emptyList(),
 		name = "HeightCalibration[test]",
 	)
@@ -224,7 +236,7 @@ private fun buildTestUdpServer(): dev.slimevr.udp.UdpServer {
 	val context = Context.create(
 		initialState = dev.slimevr.udp.UdpServerState(emptyMap()),
 		scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Job()),
-		behaviours = listOf(dev.slimevr.udp.UdpServerBaseBehaviour()),
+		reducer = ::reduceUdpServer,
 		name = "TestUdpServer",
 	)
 	return dev.slimevr.udp.UdpServer(context) { "127.0.0.1" }.also { it.startObserving() }

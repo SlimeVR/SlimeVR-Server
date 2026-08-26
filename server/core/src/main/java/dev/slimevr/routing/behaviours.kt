@@ -10,12 +10,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
-class BoneRoutingBaseBehaviour : BoneRoutingBehaviour {
-	override fun reduce(state: BoneRoutingState, action: BoneRoutingActions) = when (action) {
-		is BoneRoutingActions.SetRoutes -> state.copy(routes = action.routes)
-	}
-}
-
 class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : BoneRoutingBehaviour {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: BoneRoutingManager) {

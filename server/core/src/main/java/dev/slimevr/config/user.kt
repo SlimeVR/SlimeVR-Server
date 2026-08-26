@@ -45,7 +45,7 @@ sealed interface UserConfigActions {
 }
 
 typealias UserConfigContext = Context<UserConfigState, UserConfigActions>
-typealias UserConfigBehaviour = Behaviour<UserConfigState, UserConfigActions, UserConfig>
+typealias UserConfigBehaviour = Behaviour<UserConfig>
 
 class UserConfig(
 	val context: UserConfigContext,
@@ -87,7 +87,7 @@ class UserConfig(
 			val context = Context.create(
 				initialState = initialState,
 				scope = scope,
-				behaviours = listOf(DefaultUserBehaviour()),
+				reducer = ::reduce,
 				name = "UserConfig[$name]",
 			)
 			val userConfig = UserConfig(context, scope = scope, storage = storage, userConfigDir = userConfigDir)

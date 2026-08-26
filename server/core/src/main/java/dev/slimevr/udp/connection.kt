@@ -54,7 +54,7 @@ sealed interface UDPConnectionActions {
 }
 
 typealias UDPConnectionContext = Context<UDPConnectionState, UDPConnectionActions>
-typealias UDPConnectionBehaviour = Behaviour<UDPConnectionState, UDPConnectionActions, UDPConnection>
+typealias UDPConnectionBehaviour = Behaviour<UDPConnection>
 
 class UDPConnection(
 	val context: UDPConnectionContext,
@@ -131,6 +131,7 @@ class UDPConnection(
 					sensorConfigFlags = emptyMap(),
 				),
 				scope = connScope,
+				reducer = ::reduce,
 				behaviours = behaviours,
 				name = "UDPConnection[$address]",
 			)

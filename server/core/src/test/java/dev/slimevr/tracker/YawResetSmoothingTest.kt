@@ -38,7 +38,7 @@ class YawResetSmoothingTest {
 			TrackerStatus.OK,
 			rawRotation = raw,
 			additionalBehaviours = listOf(TrackerYawResetSmoothingBehaviour()),
-			sessionCalibration = if (withCalibration) SessionCalibration(headingCorrection = prevHeading) else null,
+			sessionCalibration = if (withCalibration) SessionCalibration(headingCorrection = prevHeading) else SessionCalibration(),
 		)
 	}
 

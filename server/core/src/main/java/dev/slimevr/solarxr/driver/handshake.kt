@@ -18,11 +18,6 @@ import solarxr_protocol.driver_protocol.HandshakeStatus
 class DriverHandshakeBehaviour(
 	private val appContext: AppContextProvider,
 ) : SolarXRBridgeBehaviour {
-	override fun reduce(state: SolarXRBridgeState, action: SolarXRBridgeActions) = when (action) {
-		is SolarXRBridgeActions.SetDriverInfo -> state.copy(driverName = action.name, boneMask = action.boneMask)
-		else -> state
-	}
-
 	override fun observe(receiver: SolarXRBridge) {
 		val server = appContext.server
 

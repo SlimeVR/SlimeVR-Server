@@ -52,7 +52,7 @@ sealed interface SerialServerActions {
 }
 
 typealias SerialServerContext = Context<SerialServerState, SerialServerActions>
-typealias SerialServerBehaviour = Behaviour<SerialServerState, SerialServerActions, SerialServer>
+typealias SerialServerBehaviour = Behaviour<SerialServer>
 
 class SerialServer(
 	val context: SerialServerContext,
@@ -131,11 +131,10 @@ class SerialServer(
 			openFlashingPort: () -> FlashingHandler,
 			scope: CoroutineScope,
 		): SerialServer {
-			val behaviours = listOf(SerialServerBaseBehaviour())
 			val context = Context.create(
 				initialState = SerialServerState(availablePorts = mapOf(), connections = mapOf()),
 				scope = scope,
-				behaviours = behaviours,
+				reducer = ::reduce,
 				name = "SerialServer",
 			)
 			val server = SerialServer(

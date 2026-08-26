@@ -46,7 +46,7 @@ sealed interface ResetsActions {
 }
 
 typealias ResetsContext = Context<ResetsState, ResetsActions>
-typealias ResetsBehaviour = Behaviour<ResetsState, ResetsActions, ResetsManager>
+typealias ResetsBehaviour = Behaviour<ResetsManager>
 
 class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
@@ -149,7 +149,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			it.context.dispatch(
 				when (resetType) {
 					ResetType.YAW -> TrackerActions.YawReset(referenceRotation, config.yawResetSmoothTime.toDouble().seconds)
-					ResetType.FULL -> TrackerActions.FullReset(referenceRotation)
+					ResetType.FULL -> TrackerActions.FullReset(referenceRotation, config.resetPositionalHeadAttitude)
 					ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
 				},
 			)
@@ -187,7 +187,8 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 					lastFullResetTime = null,
 				),
 				scope = scope,
-				behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),
+				reducer = ::reduce,
+				behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 				name = "ResetsManager",
 			)
 			return ResetsManager(context, ctx.server, ctx.config.settings)

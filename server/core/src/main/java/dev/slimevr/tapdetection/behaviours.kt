@@ -243,12 +243,6 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		return false
 	}
 
-	override fun reduce(state: TapDetectionState, action: TapDetectionActions) = when (action) {
-		is TapDetectionActions.SetSetupMode -> {
-			state.copy(setupMode = action.setupMode)
-		}
-	}
-
 	companion object {
 		const val NEEDED_ACCEL_DELTA = 6.0f
 		const val ALLOWED_BODY_ACCEL = 2.5f

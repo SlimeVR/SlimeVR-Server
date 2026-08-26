@@ -10,6 +10,7 @@ import dev.slimevr.context.Context
 import dev.slimevr.device.Device
 import dev.slimevr.device.DeviceActions
 import dev.slimevr.serial.SerialPortInfo
+import dev.slimevr.udp.reduce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -25,6 +26,7 @@ import solarxr_protocol.rpc.WifiScanStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import dev.slimevr.provisioning.reduce as reduceProvisioning
 
 private fun fakePort(loc: String = "COM1") = SerialPortInfo(loc, "Fake $loc", 0x1A86, 0x7523)
 
@@ -34,7 +36,7 @@ private fun buildManager(serialServer: dev.slimevr.serial.SerialServer, scope: C
 	val context = Context.create(
 		initialState = ProvisioningManager.INITIAL_STATE,
 		scope = scope,
-		behaviours = listOf(ProvisioningManagerBaseBehaviour()),
+		reducer = ::reduceProvisioning,
 		name = "ProvisioningManagerTest",
 	)
 	return ProvisioningManager(context = context, serialServer = serialServer, settings = buildTestSettings(scope), scope = scope).also { it.startObserving() }
@@ -73,6 +75,7 @@ private fun connectDevice(vrServer: VRServer, mac: String, scope: CoroutineScope
 				sensorConfigFlags = emptyMap(),
 			),
 			scope = scope,
+			reducer = ::reduce,
 			behaviours = emptyList(),
 			name = "TestConn",
 		),

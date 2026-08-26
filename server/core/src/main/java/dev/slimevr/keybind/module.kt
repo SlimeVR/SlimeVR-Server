@@ -42,13 +42,7 @@ sealed interface KeybindEvent {
 }
 
 typealias KeybindContext = Context<KeybindState, KeybindActions>
-typealias KeybindBehaviour = Behaviour<KeybindState, KeybindActions, KeybindManager>
-
-class KeybindBasicBehaviour : KeybindBehaviour {
-	override fun reduce(state: KeybindState, action: KeybindActions): KeybindState = when (action) {
-		is KeybindActions.SetRecording -> state.copy(recording = action.recording)
-	}
-}
+typealias KeybindBehaviour = Behaviour<KeybindManager>
 
 class KeybindConfigBehaviour(private val settings: Settings) : KeybindBehaviour {
 	@OptIn(FlowPreview::class)
@@ -113,7 +107,7 @@ class KeybindManager(val context: KeybindContext) {
 			val context = Context.create(
 				initialState = KeybindState(recording = false),
 				scope = scope,
-				behaviours = listOf(KeybindBasicBehaviour()),
+				reducer = ::reduce,
 				name = "KeybindManager",
 			)
 			return KeybindManager(context)

@@ -113,14 +113,6 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 }
 
 class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
-	override fun reduce(
-		state: DriverBridgeState,
-		action: DriverBridgeActions,
-	): DriverBridgeState = when (action) {
-		is DriverBridgeActions.AddTracker -> state.copy(trackers = state.trackers + (action.id to action.trackerId))
-		is DriverBridgeActions.UpdateProtocolVersion -> state.copy(protocolVersion = action.version)
-	}
-
 	override fun observe(receiver: DriverBridge) {
 		receiver.inbound.on<DriverBridgeInbound.Version> { event ->
 			receiver.context.dispatch(DriverBridgeActions.UpdateProtocolVersion(event.protocolVersion))

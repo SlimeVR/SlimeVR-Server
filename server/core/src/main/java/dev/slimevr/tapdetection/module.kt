@@ -18,7 +18,7 @@ sealed interface TapDetectionActions {
 }
 
 typealias TapDetectionContext = Context<TapDetectionState, TapDetectionActions>
-typealias TapDetectionBehaviour = Behaviour<TapDetectionState, TapDetectionActions, TapDetectionManager>
+typealias TapDetectionBehaviour = Behaviour<TapDetectionManager>
 
 class TapDetectionManager(val context: TapDetectionContext, val server: VRServer, val resetsManager: ResetsManager, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
@@ -30,6 +30,7 @@ class TapDetectionManager(val context: TapDetectionContext, val server: VRServer
 					setupMode = false,
 				),
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = listOf(TapDetectionBasicBehaviour()),
 				name = "TapDetectionManager",
 			)
