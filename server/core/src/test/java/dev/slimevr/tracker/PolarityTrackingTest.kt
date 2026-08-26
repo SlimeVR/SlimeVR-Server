@@ -24,12 +24,12 @@ class PolarityTrackingTest {
     }
 
     @Test
-    fun `twinNearest IDENTITY rests polarity`() {
+    fun `twinNearest IDENTITY resets polarity`() {
         assertEquals(ninetyYaw, ninetyYaw.unaryMinus().twinNearest(Quaternion.IDENTITY))
     }
 
     @Test
-    fun `Session Calibration aligns raw rotation polarity with IDENTITY up to 180 degrees of calibrated rotation`() {
+    fun `Session Calibration aligns raw rotation polarity with IDENTITY's within 180 degrees of Session Calibration compute`() {
         // almostOneEightyYaw is aligned with IDENTITY
         assertEquals(ninetyYaw, ninetyYaw.twinNearest(Quaternion.IDENTITY))
         val headingCorrection = estimateHeadingCorrect(ninetyYaw, Quaternion.IDENTITY)
