@@ -111,7 +111,7 @@ class TelemetryBehaviour(private val server: VRServer) : SolarXRBridgeBehaviour 
 									val thresholdMs = max(3.0 * expectedIntervalMs, 30.0)
 
 									if (hasPacketLoss && durationMs.toDouble() >= thresholdMs) {
-										val lostDiff = (cur.packetsLost!! - p.packetsLost!!).toUInt()
+										val lostDiff = (cur.packetsLost - p.packetsLost).toUInt()
 										receiver.sendRpc(
 											TelemetryGapResponse(
 												events = listOf(

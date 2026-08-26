@@ -231,7 +231,7 @@ class Tracker(
 			hardwareId = "defaultHardwareId",
 			name = "defaultTracker",
 			imuType = ImuType.BNO085,
-			bodyPart = BodyPart.NONE,
+			bodyPart = null,
 			customName = null,
 			trackerDataType = TrackerDataType.ROTATION,
 			lastMountingMethod = MountingMethod.MANUAL,

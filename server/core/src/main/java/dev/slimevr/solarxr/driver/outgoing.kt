@@ -8,6 +8,7 @@ import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.solarxr.createBone
 import dev.slimevr.tracker.TrackerState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -41,7 +42,8 @@ class DriverOutgoingTrackersBehaviour(
 		),
 	)
 
-	override fun observe(receiver: SolarXRBridge) {
+	@OptIn(ExperimentalCoroutinesApi::class)
+    override fun observe(receiver: SolarXRBridge) {
 		val server = appContext.server
 		val settings = appContext.config.settings
 
