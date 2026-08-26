@@ -44,12 +44,7 @@ class DriverIncomingTrackersBehaviour(
 					return@onDriverMessage
 				}
 
-				existing.context.dispatchAll(
-					listOf(
-						TrackerActions.SetDriverName(driverName),
-						TrackerActions.SetStatus(TrackerStatus.OK),
-					),
-				)
+				existing.context.dispatch(TrackerActions.SetDriverName(driverName))
 				receiver.sendDriverMessage(
 					AddTrackerResponse(
 						status = AddTrackerStatus.ALREADY_EXISTS,
@@ -89,7 +84,6 @@ class DriverIncomingTrackersBehaviour(
 				appContext = appContext,
 			)
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
-			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 
 			receiver.sendDriverMessage(
 				AddTrackerResponse(status = AddTrackerStatus.CREATED, trackerId = trackerId.toUShort()),
