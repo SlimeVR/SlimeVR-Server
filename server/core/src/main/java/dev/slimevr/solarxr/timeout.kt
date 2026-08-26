@@ -2,8 +2,6 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
-import dev.slimevr.config.TimeoutConfig
-import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ChangeTimeoutSettingsRequest
 import solarxr_protocol.rpc.TimeoutSettingsRequest
 import solarxr_protocol.rpc.TimeoutSettingsResponse
@@ -14,10 +12,10 @@ class TimeoutSettingsBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		// Send config
 		receiver.rpcDispatcher.on<TimeoutSettingsRequest> {
-			val config = settings.context.state.value.data.timeoutConfig
+			val config = settings.context.state.value.data.trackersConfig
 			receiver.sendRpc(
 				TimeoutSettingsResponse(
-					duration = config.duration,
+					delay= config.timeoutDelay,
 				),
 			)
 		}.launchIn(receiver.context.scope)
@@ -27,8 +25,8 @@ class TimeoutSettingsBehaviour(
 			settings.context.dispatch(
 				SettingsActions.Update {
 					copy(
-						timeoutConfig = TimeoutConfig(
-							duration = req.duration,
+						trackersConfig = trackersConfig.copy(
+							timeoutDelay = req.delay
 						),
 					)
 				},

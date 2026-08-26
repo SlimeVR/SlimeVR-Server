@@ -17,7 +17,7 @@ type TimeoutForm = {
 };
 
 const defaultValues: TimeoutForm = {
-  duration: 30.0,
+  duration: 0.0,
 };
 
 export function TimeoutSettings() {
@@ -79,11 +79,11 @@ export function TimeoutSettings() {
       <div className="flex flex-col pb-2 pt-5">
         <Typography variant="section-title">
           {l10n.getString(
-            'settings-general-tracker_mechanics-timeout_duration'
+            'settings-general-tracker_mechanics-timeout_delay'
           )}
         </Typography>
         <Localized
-          id="settings-general-tracker_mechanics-timeout_duration-description"
+          id="settings-general-tracker_mechanics-timeout_delay-description"
           elems={{ b: <b /> }}
         >
           <Typography />
@@ -94,8 +94,8 @@ export function TimeoutSettings() {
         name="duration"
         valueLabelFormat={(value) => secondsFormat.format(value)}
         min={0.0}
-        max={Infinity}
-        step={0.5}
+        max={3600}
+        step={1.0}
       />
     </>
   );

@@ -42,6 +42,7 @@ data class DongleConfig(
 data class TrackersConfig(
 	val trackerPort: Int = 6969, // Not in SolarXR
 	val globalMagEnabled: Boolean = false,
+	val timeoutDelay: Float = 20.0f,
 )
 
 @Serializable
@@ -64,11 +65,6 @@ data class BoneRoutingConfig(
 data class DriverConfig(
 	val enabled: Boolean = true,
 	val sendDerivedVelocity: Boolean = false, // TODO do we actually need that or can we disable OpenVR's prediction
-)
-
-@Serializable
-data class TimeoutConfig(
-	val duration: Float = 30.0f,
 )
 
 @Serializable
@@ -228,7 +224,6 @@ data class SettingsConfigState(
 	val hidConfig: HidConfig = HidConfig(),
 	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
 	val driverConfig: DriverConfig = DriverConfig(),
-	val timeoutConfig: TimeoutConfig = TimeoutConfig(),
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
 	val keybinds: List<KeybindConfig> = defaultKeybinds(),
