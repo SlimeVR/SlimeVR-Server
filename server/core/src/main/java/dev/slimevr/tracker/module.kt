@@ -61,7 +61,7 @@ data class TrackerState(
 	val lastMountingMethod: MountingMethod,
 	val mountingOrientation: HeadingAlignment,
 	val restOrientation: RestOrientation,
-	val sessionCalibration: SessionCalibration?,
+	val sessionCalibration: SessionCalibration,
 	val rawRotation: RawRotation,
 	val rotation: CalibratedRotation,
 	val rawAcceleration: RawAcceleration,
@@ -69,6 +69,7 @@ data class TrackerState(
 	val rawMagnetometer: Vector3,
 	val position: Vector3?,
 	val imuTemp: Float?,
+	val accumulatedTicks: UShort,
 	val tps: UShort,
 	val status: TrackerStatus,
 	val completedRestCalibration: Boolean?,
@@ -154,7 +155,7 @@ class Tracker(
 			}
 
 			val behaviours = listOf(
-				TrackerBasicBehaviour(settings),
+				TrackerBasicBehaviour(settings, appContext.server),
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
@@ -192,7 +193,7 @@ class Tracker(
 			lastMountingMethod = MountingMethod.MANUAL,
 			mountingOrientation = Quaternion.IDENTITY,
 			restOrientation = Quaternion.IDENTITY,
-			sessionCalibration = null,
+			sessionCalibration = SessionCalibration(),
 			rawRotation = Quaternion.IDENTITY,
 			rotation = Quaternion.IDENTITY,
 			rawAcceleration = Vector3.NULL,
@@ -200,6 +201,7 @@ class Tracker(
 			rawMagnetometer = Vector3.NULL,
 			position = null,
 			imuTemp = null,
+			accumulatedTicks = 0u,
 			tps = 0u,
 			status = TrackerStatus.DISCONNECTED,
 			completedRestCalibration = false,

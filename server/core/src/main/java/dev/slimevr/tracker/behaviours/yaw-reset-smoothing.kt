@@ -41,7 +41,7 @@ class TrackerYawResetSmoothingBehaviour : TrackerBehaviour {
 	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
 		is TrackerActions.TickYawResetSmoothing -> {
 			val cal = state.sessionCalibration
-			if (cal == null || state.yawResetSmoothing == null) {
+			if (state.yawResetSmoothing == null) {
 				// Nothing to advance.
 				state.copy(yawResetSmoothing = null)
 			} else {

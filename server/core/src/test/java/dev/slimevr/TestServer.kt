@@ -145,7 +145,7 @@ fun buildTestTracker(
 	completedRestCalibration: Boolean? = true,
 	rawRotation: Quaternion = Quaternion.IDENTITY,
 	additionalBehaviours: List<TrackerBehaviour> = listOf(),
-	sessionCalibration: SessionCalibration? = null,
+	sessionCalibration: SessionCalibration = SessionCalibration(),
 	motion: Motion = Tracker.DEFAULT_STATE.motion,
 	stayAlignedData: StayAlignedData = Tracker.DEFAULT_STATE.stayAlignedData,
 ): Tracker {

@@ -153,7 +153,7 @@ data class SkeletonRatiosConfig(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonFilteringConfig(
-	val type: FilteringType = FilteringType.PREDICTION,
+	val type: FilteringType = FilteringType.NONE,
 	val amount: Float = 0.2f,
 )
 
