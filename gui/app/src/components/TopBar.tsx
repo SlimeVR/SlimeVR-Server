@@ -85,7 +85,9 @@ export function TopBar({
     } else if (
       config?.connectedTrackersWarning &&
       connectedIMUTrackers.filter(
-        (t) => t.tracker.status !== TrackerStatus.TIMED_OUT && t.tracker.status !== TrackerStatus.SLEEPING
+        (t) =>
+          t.tracker.status !== TrackerStatus.TIMED_OUT &&
+          t.tracker.status !== TrackerStatus.SLEEPING
       ).length > 0
     ) {
       setConnectedTrackerWarning(true);
@@ -268,7 +270,9 @@ export function TopBar({
             } else if (
               config?.connectedTrackersWarning &&
               connectedIMUTrackers.filter(
-                (t) => t.tracker.status !== TrackerStatus.TIMED_OUT && t.tracker.status !== TrackerStatus.SLEEPING
+                (t) =>
+                  t.tracker.status !== TrackerStatus.TIMED_OUT &&
+                  t.tracker.status !== TrackerStatus.SLEEPING
               ).length > 0
             ) {
               setConnectedTrackerWarning(true);
