@@ -43,7 +43,7 @@ class DriverOutgoingTrackersBehaviour(
 	)
 
 	@OptIn(ExperimentalCoroutinesApi::class)
-    override fun observe(receiver: SolarXRBridge) {
+	override fun observe(receiver: SolarXRBridge) {
 		val server = appContext.server
 		val settings = appContext.config.settings
 
