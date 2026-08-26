@@ -28,7 +28,7 @@ import dev.slimevr.desktop.serial.createDesktopSerialServer
 import dev.slimevr.desktop.trackingchecklist.SteamVRCheckBehaviour
 import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
-import dev.slimevr.desktop.vrchat.resolveDesktopOscQueryAddress
+import dev.slimevr.desktop.vrchat.resolveDesktopLocalIpAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
@@ -38,6 +38,7 @@ import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.solarxr.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -140,18 +141,20 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val vmcManager = VMCManager.create(scope = this)
 	val vrcOscManager = VRCOSCManager.create(
 		scope = this,
-		oscQueryAddress = resolveDesktopOscQueryAddress(),
+		oscQueryAddress = resolveDesktopLocalIpAddress(),
 		discoverServicesFlow = ::discoverServices,
 		serviceFactory = ::createNetService,
 	)
 	val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
 	val keybindManager = KeybindManager.create(scope = this)
+	val serverInfos = ServerInfos(::resolveDesktopLocalIpAddress)
 
 	val appContext = AppContext(
 		server = server,
 		config = config,
 		serialServer = serialServer,
+		serverInfos = serverInfos,
 		featureFlags = featureFlags,
 		keybindManager = keybindManager,
 		skeleton = skeleton,

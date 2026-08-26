@@ -164,6 +164,7 @@ class SolarXRBridge(
 			add(KnownTrackersBehaviour(appContext.config.settings))
 			add(BvhBehaviour(appContext.bvhManager))
 			add(InstalledInfoBehaviour())
+			add(ServerInfosBehaviour(appContext.serverInfos))
 			add(KeybindsBehaviour(appContext.config.settings, appContext.keybindManager))
 			add(SessionCalibrationBehaviour(appContext.resetsManager))
 			add(StayAlignedBehaviour(appContext.config.settings, appContext.server))

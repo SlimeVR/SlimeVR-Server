@@ -36,6 +36,7 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
+import dev.slimevr.solarxr.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
@@ -260,6 +261,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val skeleton: Skeleton get() = error("not used in test")
 	override val config: AppConfig get() = error("not used in test")
 	override val serialServer: SerialServer get() = error("not used in test")
+	override val serverInfos: ServerInfos get() = error("not used in test")
 	override val firmwareManager: FirmwareManager get() = error("not used in test")
 	override val vrcConfigManager: VRCConfigManager? = null
 	override val provisioningManager: ProvisioningManager get() = error("not used in test")

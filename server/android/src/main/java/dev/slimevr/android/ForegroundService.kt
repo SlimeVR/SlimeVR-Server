@@ -25,7 +25,7 @@ import dev.slimevr.android.ipc.createAndroidSolarXRWebsocketServer
 import dev.slimevr.android.serial.AndroidFirmwareFlasher
 import dev.slimevr.android.serial.createAndroidSerialServer
 import dev.slimevr.android.udp.resolveAndroidUdpAddress
-import dev.slimevr.android.vrchat.resolveAndroidOscQueryAddress
+import dev.slimevr.android.vrchat.resolveAndroidLocalIpAddress
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
@@ -36,6 +36,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.solarxr.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -163,18 +164,20 @@ class ForegroundService : Service() {
 		val vmcManager = VMCManager.create(scope = scope)
 		val vrcOscManager = VRCOSCManager.create(
 			scope = scope,
-			oscQueryAddress = resolveAndroidOscQueryAddress(),
+			oscQueryAddress = resolveAndroidLocalIpAddress(),
 			discoverServicesFlow = ::discoverServices,
 			serviceFactory = ::createNetService,
 		)
 		val resetsManager = ResetsManager.create(ctx = phase1, scope = scope)
 		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
 		val keybindManager = KeybindManager.create(scope = scope)
+		val serverInfos = ServerInfos(::resolveAndroidLocalIpAddress)
 
 		val appContext = AppContext(
 			server = server,
 			config = config,
 			serialServer = serialServer,
+			serverInfos = serverInfos,
 			featureFlags = FeatureFlags(
 				skipCheckUdev = true,
 				keybindSupport = KeybindSupport.UNSUPPORTED,

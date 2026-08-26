@@ -15,7 +15,7 @@ class TimeoutSettingsBehaviour(
 			val config = settings.context.state.value.data.trackersConfig
 			receiver.sendRpc(
 				TimeoutSettingsResponse(
-					delay= config.timeoutDelay,
+					delay = config.timeoutDelay,
 				),
 			)
 		}.launchIn(receiver.context.scope)
@@ -26,7 +26,7 @@ class TimeoutSettingsBehaviour(
 				SettingsActions.Update {
 					copy(
 						trackersConfig = trackersConfig.copy(
-							timeoutDelay = req.delay
+							timeoutDelay = req.delay,
 						),
 					)
 				},
