@@ -587,20 +587,16 @@ settings-general-tracker_mechanics-filtering = Filtering
 settings-general-tracker_mechanics-filtering-description =
     Choose the filtering type for your trackers.
     Prediction predicts movement while smoothing smooths movement.
-settings-general-tracker_mechanics-filtering-type = Filtering type
+settings-general-tracker_mechanics-filtering-type = Filter type
 settings-general-tracker_mechanics-filtering-type-none = No filtering
 settings-general-tracker_mechanics-filtering-type-none-description = Use rotations as is. Will not do any filtering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooths movements but adds some latency.
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
-settings-general-tracker_mechanics-filtering-amount = Amount
+settings-general-tracker_mechanics-filtering-amount = Filter strength
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = Smooths the trackers' rotations upon doing a yaw reset. 0s disables smoothing.
-settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancel
-settings-general-tracker_mechanics-drift_compensation_warning-done = I understand
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting calibration
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Saves the automatic mounting calibration for the trackers between restarts. Useful
