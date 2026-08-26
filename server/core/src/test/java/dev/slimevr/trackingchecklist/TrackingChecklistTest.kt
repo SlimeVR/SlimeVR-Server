@@ -92,6 +92,7 @@ class TrackingChecklistTest {
 
 		fun addTracker(
 			bodyPart: BodyPart?,
+			intendedBodyPart: BodyPart? = null,
 			status: TrackerStatus = TrackerStatus.OK,
 			origin: DeviceOrigin = DeviceOrigin.UDP,
 			imuType: ImuType? = ImuType.BNO085,
@@ -105,6 +106,7 @@ class TrackingChecklistTest {
 				settings,
 				id = id,
 				bodyPart = bodyPart,
+				intendedBodyPart = intendedBodyPart,
 				status = status,
 				origin = origin,
 				imuType = imuType,
@@ -130,7 +132,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `FULL_RESET flags a connected assigned tracker and clears on full reset`() = runTest {
 		val h = Harness(this)
-		val tracker = h.addTracker(BodyPart.CHEST)
+		val tracker = h.addTracker(bodyPart = BodyPart.CHEST)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).enabled)
@@ -149,7 +151,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `FULL_RESET flags a tracker that reconnects`() = runTest {
 		val h = Harness(this)
-		val tracker = h.addTracker(BodyPart.CHEST)
+		val tracker = h.addTracker(bodyPart = BodyPart.CHEST)
 		runCurrent()
 		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
 		runCurrent()
@@ -167,14 +169,14 @@ class TrackingChecklistTest {
 	@Test
 	fun `adding a tracker does not re-flag the existing already-reset trackers`() = runTest {
 		val h = Harness(this)
-		h.addTracker(BodyPart.CHEST)
+		h.addTracker(bodyPart = BodyPart.CHEST)
 		runCurrent()
 		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 
 		// A newly discovered tracker starts disconnected; adding it must not re-flag the existing one
-		val added = h.addTracker(BodyPart.HIP, status = TrackerStatus.DISCONNECTED)
+		val added = h.addTracker(bodyPart = BodyPart.HIP, status = TrackerStatus.DISCONNECTED)
 		runCurrent()
 		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).valid)
 
@@ -189,7 +191,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `MOUNTING_CALIBRATION is enabled with an IMU tracker and valid after a mounting reset`() = runTest {
 		val h = Harness(this)
-		h.addTracker(BodyPart.CHEST)
+		h.addTracker(bodyPart = BodyPart.CHEST)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).enabled)
@@ -203,7 +205,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `FEET_MOUNTING_CALIBRATION enables with a foot tracker and validates after a feet mounting reset`() = runTest {
 		val h = Harness(this)
-		h.addTracker(BodyPart.LEFT_FOOT)
+		h.addTracker(bodyPart = BodyPart.LEFT_FOOT)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
@@ -217,7 +219,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `FEET_MOUNTING_CALIBRATION is disabled without a foot tracker`() = runTest {
 		val h = Harness(this)
-		h.addTracker(BodyPart.CHEST)
+		h.addTracker(bodyPart = BodyPart.CHEST)
 		runCurrent()
 
 		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
@@ -227,7 +229,7 @@ class TrackingChecklistTest {
 	fun `UNASSIGNED_HMD is invalid until the HMD is assigned to the head`() = runTest {
 		val h = Harness(this)
 		// An HMD is a DRIVER-origin tracker with a computed position
-		val hmd = h.addTracker(bodyPart = null, origin = DeviceOrigin.DRIVER, imuType = null, position = Vector3.NULL)
+		val hmd = h.addTracker(bodyPart = null, intendedBodyPart = BodyPart.HEAD, origin = DeviceOrigin.DRIVER, imuType = null, position = Vector3.NULL)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)
@@ -241,7 +243,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `UNASSIGNED_HMD is disabled without a driver tracker`() = runTest {
 		val h = Harness(this)
-		h.addTracker(BodyPart.CHEST)
+		h.addTracker(bodyPart = BodyPart.CHEST)
 		runCurrent()
 
 		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)
@@ -250,7 +252,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `TRACKER_ERROR is invalid while an assigned tracker is in error`() = runTest {
 		val h = Harness(this)
-		val tracker = h.addTracker(BodyPart.CHEST, status = TrackerStatus.ERROR)
+		val tracker = h.addTracker(bodyPart = BodyPart.CHEST, status = TrackerStatus.ERROR)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.TRACKER_ERROR).enabled)
@@ -264,7 +266,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `TRACKERS_REST_CALIBRATION is invalid until an uncalibrated tracker finishes rest calibration`() = runTest {
 		val h = Harness(this)
-		val tracker = h.addTracker(BodyPart.CHEST, completedRestCalibration = false)
+		val tracker = h.addTracker(bodyPart = BodyPart.CHEST, completedRestCalibration = false)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.TRACKERS_REST_CALIBRATION).enabled)
@@ -312,8 +314,8 @@ class TrackingChecklistTest {
 		val h = Harness(this)
 		h.setAutomatic(false)
 		h.connectDriver()
-		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
-		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
+		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
+		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
 		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
 		runCurrent()
 
@@ -337,7 +339,7 @@ class TrackingChecklistTest {
 	fun `STEAMVR_HANDS_ENABLED accepts hand trackers when no controller is held`() = runTest {
 		val h = Harness(this)
 		h.connectDriver()
-		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
+		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
 		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
 		runCurrent()
 
@@ -348,8 +350,8 @@ class TrackingChecklistTest {
 	fun `STEAMVR_HANDS_ENABLED ignores hands that are not routed to the driver`() = runTest {
 		val h = Harness(this)
 		h.connectDriver()
-		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
-		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
+		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
+		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
@@ -360,8 +362,8 @@ class TrackingChecklistTest {
 		val h = Harness(this)
 		h.setAutomatic(true)
 		h.connectDriver()
-		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
-		h.addTracker(BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
+		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
+		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
 		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
 		runCurrent()
 
