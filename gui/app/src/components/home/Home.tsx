@@ -67,8 +67,8 @@ export function Home() {
       >
         <Checklist />
       </NavLink>
-      <div className="overflow-y-auto flex flex-col gap-3 h-full">
-        <div className="flex w-full gap-2 items-center px-4 h-5">
+      <div className="flex flex-col gap-3 h-full">
+        <div className="sticky top-0 z-30 flex w-full gap-2 items-center px-4 h-5 bg-background-70">
           <Typography
             color="secondary"
             id="toolbar-assigned_trackers"
@@ -91,7 +91,7 @@ export function Home() {
         )}
 
         {config?.homeLayout == 'default' && groups.length > 0 && (
-          <div className="pl-2 pr-2 flex flex-col gap-4">
+          <div className="pl-2 pr-2 flex flex-col gap-4 pb-4">
             {groups.map((group) => (
               <TrackerConnectionGroupSection
                 key={group.key}
@@ -153,7 +153,7 @@ export function Home() {
         )}
 
         {config?.homeLayout === 'table' && groups.length > 0 && (
-          <div className="mx-2 flex flex-col flex-grow min-h-0">
+          <div className="mx-2 flex flex-col">
             <TrackersTable
               groups={groups}
               clickedTracker={(tracker) => sendToSettings(tracker)}

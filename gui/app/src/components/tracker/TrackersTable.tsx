@@ -344,7 +344,7 @@ export function TrackersTable({
   }, [config?.devSettings?.preciseRotation, moreInfo]);
 
   return (
-    <div className="w-full flex-grow overflow-x-auto py-2 px-2 [container-type:inline-size]">
+    <div className="w-full py-2 px-2">
       <div className="min-w-fit">
         <div
           className={classNames('ml-2 pl-2 border-l-2', 'border-transparent')}
