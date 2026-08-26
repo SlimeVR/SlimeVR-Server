@@ -44,7 +44,7 @@ class DriverIncomingTrackersBehaviour(
 					return@onDriverMessage
 				}
 
-				existing.context.dispatch(TrackerActions.SetDriverName(driverName))
+				existing.context.dispatchAll(listOf(TrackerActions.SetDriverName(driverName), TrackerActions.Update { copy(intendedBodyPart = req.bodyPart) }))
 				receiver.sendDriverMessage(
 					AddTrackerResponse(
 						status = AddTrackerStatus.ALREADY_EXISTS,
@@ -77,6 +77,7 @@ class DriverIncomingTrackersBehaviour(
 				id = trackerId,
 				name = req.displayName ?: "Tracker #$trackerId",
 				bodyPart = req.bodyPart,
+				intendedBodyPart = req.bodyPart,
 				deviceId = deviceId,
 				hardwareId = hardwareId,
 				origin = DeviceOrigin.DRIVER,

@@ -175,6 +175,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 		val (device, tracker) = if (existingTracker != null) {
 			val device = server.getDevice(existingTracker.context.state.value.deviceId)
 				?: error("could not find existing device for serial $serial")
+			existingTracker.context.dispatch(TrackerActions.Update { copy(intendedBodyPart = bodyPart) })
 			Pair(device, existingTracker)
 		} else {
 			val deviceId = server.nextHandle()
@@ -197,6 +198,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 				id = trackerId,
 				name = name,
 				bodyPart = bodyPart,
+				intendedBodyPart = bodyPart,
 				deviceId = deviceId,
 				hardwareId = serial,
 				origin = DeviceOrigin.DRIVER,

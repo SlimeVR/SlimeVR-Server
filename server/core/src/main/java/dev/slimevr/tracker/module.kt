@@ -58,6 +58,8 @@ data class TrackerState(
 	val name: String,
 	val imuType: ImuType?,
 	val bodyPart: BodyPart?,
+	// The default body part given by e.g. driver, VMC, etc.
+	val intendedBodyPart: BodyPart?,
 	val customName: String?,
 	val trackerDataType: TrackerDataType, // TODO
 	val lastMountingMethod: MountingMethod,
@@ -170,6 +172,7 @@ class Tracker(
 			id: Int,
 			name: String = "Tracker #$id",
 			bodyPart: BodyPart? = null,
+			intendedBodyPart: BodyPart? = null,
 			deviceId: Int,
 			imuType: ImuType? = null,
 			hardwareId: String,
@@ -189,6 +192,7 @@ class Tracker(
 				name = name,
 				imuType = imuType,
 				bodyPart = bodyPart,
+				intendedBodyPart = intendedBodyPart,
 				stayAlignedData = DEFAULT_STATE.stayAlignedData.copy(enabled = settings.context.state.value.data.stayAlignedConfig.enabled),
 			)
 			val trackerState = if (savedConfig != null) {
@@ -232,6 +236,7 @@ class Tracker(
 			name = "defaultTracker",
 			imuType = ImuType.BNO085,
 			bodyPart = null,
+			intendedBodyPart = null,
 			customName = null,
 			trackerDataType = TrackerDataType.ROTATION,
 			lastMountingMethod = MountingMethod.MANUAL,

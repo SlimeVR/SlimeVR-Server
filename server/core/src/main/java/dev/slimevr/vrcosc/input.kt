@@ -56,6 +56,7 @@ private class VRSystemTrackerRegistry(
 			id = trackerId,
 			name = trackerName,
 			bodyPart = bodyPart,
+			intendedBodyPart = bodyPart,
 			deviceId = device.context.state.value.id,
 			hardwareId = "vrcosc:vrsystem:${tracker.name.lowercase()}",
 			origin = DeviceOrigin.VRC,
