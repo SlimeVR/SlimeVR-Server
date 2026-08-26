@@ -29,9 +29,9 @@ import okio.Buffer
 val solarxrToProtoStatus = mapOf(
 	solarxr_protocol.datatypes.TrackerStatus.OK to TrackerStatus.Status.OK,
 	solarxr_protocol.datatypes.TrackerStatus.SLEEPING to TrackerStatus.Status.OK,
+	solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT to TrackerStatus.Status.OK,
 	solarxr_protocol.datatypes.TrackerStatus.ERROR to TrackerStatus.Status.ERROR,
 	solarxr_protocol.datatypes.TrackerStatus.OCCLUDED to TrackerStatus.Status.OCCLUDED,
-	solarxr_protocol.datatypes.TrackerStatus.TIMED_OUT to TrackerStatus.Status.DISCONNECTED,
 	solarxr_protocol.datatypes.TrackerStatus.DISCONNECTED to TrackerStatus.Status.DISCONNECTED,
 	solarxr_protocol.datatypes.TrackerStatus.BUSY to TrackerStatus.Status.BUSY,
 )

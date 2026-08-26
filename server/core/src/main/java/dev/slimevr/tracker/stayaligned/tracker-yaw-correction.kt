@@ -6,8 +6,8 @@ import dev.slimevr.math.angle.AngleErrors
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.applyCalibration
-import dev.slimevr.tracker.getAllFineFor
-import dev.slimevr.tracker.getFirstFineFor
+import dev.slimevr.tracker.getAllActiveFor
+import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.tracker.stayaligned.YawUtils.sideYaw
 import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
 import dev.slimevr.tracker.stayaligned.poses.PlayerPose
@@ -147,7 +147,7 @@ object TrackerYawCorrection {
 	 */
 	private fun getNeighbourError(yawCorrectedRotation: Quaternion, trackerState: TrackerState, relaxedPose: RelaxedPose, trackerStates: List<TrackerState>): Angle {
 		fun neighbourError(rotation: Quaternion) = trackerYaw(rotation) - trackerYaw(yawCorrectedRotation)
-		val upperBodyTrackers = trackerStates.getAllFineFor(StayAlignedBodyParts.upperBodyGroup).sortedBy { StayAlignedBodyParts.upperBodyOrder[it.bodyPart] }
+		val upperBodyTrackers = trackerStates.getAllActiveFor(StayAlignedBodyParts.upperBodyGroup).sortedBy { StayAlignedBodyParts.upperBodyOrder[it.bodyPart] }
 		val bodyPart = trackerState.bodyPart
 		val side = bodyPart?.side ?: Side.LEFT
 
@@ -159,8 +159,8 @@ object TrackerYawCorrection {
 				val trackerUpperBodyIndex = upperBodyTrackers.map { it.bodyPart }.indexOf(trackerState.bodyPart)
 
 				// Compute upper legs error
-				val leftUpperLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftUpperLeg)
-				val rightUpperLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.rightUpperLeg)
+				val leftUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftUpperLeg)
+				val rightUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightUpperLeg)
 				val upperLegsError = if (leftUpperLeg != null && rightUpperLeg != null) {
 					neighbourError(leftUpperLeg.rotation) -
 						sideYaw(Side.LEFT, relaxedPose.upperLeg) +
@@ -196,7 +196,7 @@ object TrackerYawCorrection {
 					Angle.ZERO
 				}
 
-				val lowerLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.lowerLeg(side))
+				val lowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.lowerLeg(side))
 				val lowerLegError = if (lowerLeg != null) {
 					neighbourError(lowerLeg.rotation) - sideYaw(side, relaxedPose.lowerLeg) + sideYaw(side, relaxedPose.upperLeg)
 				} else {
@@ -209,14 +209,14 @@ object TrackerYawCorrection {
 			StayAlignedBodyParts.leftLowerLeg,
 			StayAlignedBodyParts.rightLowerLeg,
 			-> {
-				val upperLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.upperLeg(side))
+				val upperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.upperLeg(side))
 				val upperLegError = if (upperLeg != null) {
 					neighbourError(upperLeg.rotation) - sideYaw(side, relaxedPose.upperLeg) + sideYaw(side, relaxedPose.lowerLeg)
 				} else {
 					Angle.ZERO
 				}
 
-				val foot = trackerStates.getFirstFineFor(StayAlignedBodyParts.foot(side))
+				val foot = trackerStates.getFirstActiveFor(StayAlignedBodyParts.foot(side))
 				val footError = if (foot != null) {
 					neighbourError(foot.rotation) - sideYaw(side, relaxedPose.foot) + sideYaw(side, relaxedPose.lowerLeg)
 				} else {
@@ -229,7 +229,7 @@ object TrackerYawCorrection {
 			StayAlignedBodyParts.leftFoot,
 			StayAlignedBodyParts.rightFoot,
 			-> {
-				val lowerLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.lowerLeg(side))
+				val lowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.lowerLeg(side))
 				if (lowerLeg != null) {
 					neighbourError(lowerLeg.rotation) - sideYaw(side, relaxedPose.lowerLeg) + sideYaw(side, relaxedPose.foot)
 				} else {

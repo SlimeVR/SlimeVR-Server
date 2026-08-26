@@ -17,6 +17,7 @@ import dev.slimevr.tracker.behaviours.TrackerStayAlignedBehaviour
 import dev.slimevr.tracker.behaviours.TrackerToSkeletonBehaviour
 import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
 import dev.slimevr.tracker.behaviours.TrackerYawResetSmoothingBehaviour
+import dev.slimevr.util.isActive
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -60,7 +61,7 @@ data class TrackerState(
 	val name: String,
 	val imuType: ImuType?,
 	val bodyPart: BodyPart?,
-	// The default body part given by e.g. driver, VMC, etc.
+	/** The default body part given by e.g. driver, VMC, etc. */
 	val intendedBodyPart: BodyPart?,
 	val customName: String?,
 	val trackerDataType: TrackerDataType, // TODO
@@ -85,21 +86,9 @@ data class TrackerState(
 	val stayAlignedData: StayAlignedData,
 )
 
-/**
- * Returns the first OK or SLEEPING tracker state that matches the body part, or null
- */
-fun List<TrackerState>.getFirstFineFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull {
-	it.bodyPart == bodyPart &&
-		(it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING)
-}
+fun List<TrackerState>.getFirstActiveFor(bodyPart: BodyPart): TrackerState? = this.firstOrNull { it.bodyPart == bodyPart && it.status.isActive() }
 
-/**
- * Returns all the OK or SLEEPING tracker states that matches the body parts
- */
-fun List<TrackerState>.getAllFineFor(bodyParts: List<BodyPart>): List<TrackerState> = this.filter {
-	it.bodyPart in bodyParts &&
-		(it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING)
-}
+fun List<TrackerState>.getAllActiveFor(bodyParts: List<BodyPart>): List<TrackerState> = this.filter { it.bodyPart in bodyParts && it.status.isActive() }
 
 sealed interface TrackerActions {
 	data class Update(val transform: TrackerState.() -> TrackerState) : TrackerActions
@@ -154,7 +143,7 @@ class Tracker(
 	) {
 		val headTrackerRotation = appContext.server.context.state.value.trackers.values
 			.map { it.context.state.value }
-			.getFirstFineFor(BodyPart.HEAD)?.rotation
+			.getFirstActiveFor(BodyPart.HEAD)?.rotation
 		context.dispatch(
 			@Suppress("DEPRECATION_ERROR")
 			TrackerActions.SetRotation(

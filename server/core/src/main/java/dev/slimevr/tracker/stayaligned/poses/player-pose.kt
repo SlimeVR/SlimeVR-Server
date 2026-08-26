@@ -1,8 +1,8 @@
 package dev.slimevr.tracker.stayaligned.poses
 
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.getAllFineFor
-import dev.slimevr.tracker.getFirstFineFor
+import dev.slimevr.tracker.getAllActiveFor
+import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.tracker.stayaligned.StayAlignedBodyParts
 
 /**
@@ -22,11 +22,11 @@ enum class PlayerPose {
 		fun of(trackerStates: List<TrackerState>): PlayerPose {
 			val poses =
 				TrackerPoses(
-					trackerStates.getAllFineFor(StayAlignedBodyParts.upperBodyGroup).sortedBy { StayAlignedBodyParts.upperBodyOrder[it.bodyPart] }.map(TrackerPose.Companion::ofTracker),
-					TrackerPose.ofTracker(trackerStates.getFirstFineFor(StayAlignedBodyParts.leftUpperLeg)),
-					TrackerPose.ofTracker(trackerStates.getFirstFineFor(StayAlignedBodyParts.rightUpperLeg)),
-					TrackerPose.ofTracker(trackerStates.getFirstFineFor(StayAlignedBodyParts.leftLowerLeg)),
-					TrackerPose.ofTracker(trackerStates.getFirstFineFor(StayAlignedBodyParts.rightLowerLeg)),
+					trackerStates.getAllActiveFor(StayAlignedBodyParts.upperBodyGroup).sortedBy { StayAlignedBodyParts.upperBodyOrder[it.bodyPart] }.map(TrackerPose.Companion::ofTracker),
+					TrackerPose.ofTracker(trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftUpperLeg)),
+					TrackerPose.ofTracker(trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightUpperLeg)),
+					TrackerPose.ofTracker(trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftLowerLeg)),
+					TrackerPose.ofTracker(trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightLowerLeg)),
 				)
 
 			return (

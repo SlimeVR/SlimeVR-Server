@@ -5,6 +5,7 @@ import dev.slimevr.config.BoneRoutingConfig
 import dev.slimevr.driver.DRIVER_SUPPORTED_BONES
 import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.tracker.TrackerState
+import dev.slimevr.util.isActive
 import dev.slimevr.vmc.VMC_SUPPORTED_BONES
 import dev.slimevr.vrcosc.VRC_OSC_SUPPORTED_BONES
 import kotlinx.coroutines.flow.Flow
@@ -167,9 +168,10 @@ private val candidateToFineBodyParts = mapOf(
 /** Tracker body parts that count as present. Loopback trackers never enable an output. */
 fun trackedBodyParts(trackers: Collection<TrackerState>): Set<BodyPart?> = trackers
 	.filter {
-		(it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING) &&
+		it.status.isActive() &&
 			it.origin != DeviceOrigin.DRIVER &&
-			it.origin != DeviceOrigin.VRC
+			it.origin != DeviceOrigin.VRC &&
+			it.origin != DeviceOrigin.VMC
 	}
 	.map { it.bodyPart }
 	.toSet()

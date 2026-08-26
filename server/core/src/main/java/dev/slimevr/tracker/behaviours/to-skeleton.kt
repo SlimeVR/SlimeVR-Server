@@ -3,6 +3,7 @@ package dev.slimevr.tracker.behaviours
 import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
+import dev.slimevr.util.isActive
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -30,9 +31,9 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 				}
 			}
 			.flatMapLatest { _ ->
-				// We only want trackers that are assigned to a BodyPart and are OK or SLEEPING.
+				// We only want trackers that are assigned to a BodyPart and are active
 				val activeState = receiver.context.state
-					.filter { it.bodyPart != null && (it.status == TrackerStatus.OK || it.status == TrackerStatus.SLEEPING) }
+					.filter { it.bodyPart != null && it.status.isActive() }
 
 				activeState
 					.distinctUntilChangedBy { it.rotation to it.position }
