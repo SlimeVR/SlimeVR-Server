@@ -217,7 +217,7 @@ fun reduce(
 			state.copy(yawResetSmoothing = null)
 		} else {
 			// The behaviour computed the interpolated heading; store it in the session
-			// calibration. TrackerBasicBehaviour.observe re-applies it to the rotation
+			// calibration. TrackerCalibrationRefreshBehaviour.observe re-applies it to the rotation
 			// (using the last raw rotation), so this progresses even with no new IMU
 			// data. On `done` the seed is cleared, leaving the target heading in place.
 			state.copy(

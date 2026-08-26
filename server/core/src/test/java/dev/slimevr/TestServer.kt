@@ -42,8 +42,8 @@ import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
-import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
+import dev.slimevr.tracker.behaviours.TrackerCalibrationRefreshBehaviour
+import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
@@ -176,12 +176,11 @@ fun buildTestTracker(
 		motion = motion,
 		stayAlignedData = stayAlignedData,
 	)
-	val basicBehaviour = TrackerBasicBehaviour()
 	val context = Context.create(
 		initialState = state,
 		scope = scope,
 		reducer = ::reduceTracker,
-		behaviours = listOf(basicBehaviour) + additionalBehaviours,
+		behaviours = listOf(TrackerCalibrationRefreshBehaviour(), TrackerTpsBehaviour()) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)

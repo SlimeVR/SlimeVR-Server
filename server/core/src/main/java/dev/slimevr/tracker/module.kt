@@ -7,13 +7,15 @@ import dev.slimevr.context.Context
 import dev.slimevr.context.debug.DiffStyle
 import dev.slimevr.context.debug.LoggingMiddleware
 import dev.slimevr.math.angle.Angle
-import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
+import dev.slimevr.tracker.behaviours.TrackerAssignmentConflictBehaviour
+import dev.slimevr.tracker.behaviours.TrackerCalibrationRefreshBehaviour
 import dev.slimevr.tracker.behaviours.TrackerConfigBehaviour
 import dev.slimevr.tracker.behaviours.TrackerDefaultMountingOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerMotionDetectionBehaviour
 import dev.slimevr.tracker.behaviours.TrackerRestOrientationBehaviour
 import dev.slimevr.tracker.behaviours.TrackerStayAlignedBehaviour
 import dev.slimevr.tracker.behaviours.TrackerToSkeletonBehaviour
+import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
 import dev.slimevr.tracker.behaviours.TrackerYawResetSmoothingBehaviour
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -202,7 +204,9 @@ class Tracker(
 			}
 
 			val behaviours = listOf(
-				TrackerBasicBehaviour(),
+				TrackerCalibrationRefreshBehaviour(),
+				TrackerTpsBehaviour(),
+				TrackerAssignmentConflictBehaviour(),
 				TrackerYawResetSmoothingBehaviour(),
 				TrackerDefaultMountingOrientationBehaviour(),
 				TrackerConfigBehaviour(settings, hardwareId),
