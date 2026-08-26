@@ -61,20 +61,23 @@ export function TrackerConnectionGroupUnassignedDivider({
   stickyLabel?: boolean;
 }) {
   return (
-    <div className="relative flex w-full justify-center items-center h-2 px-3">
+    <div className="relative flex w-full justify-center items-center h-[15px] px-3">
       <div className="absolute inset-x-3 bg-background-50 h-[2px] rounded-lg" />
       <div
         className={classNames(
-          'relative whitespace-nowrap bg-background-70 px-2',
+          'relative whitespace-nowrap px-2',
           stickyLabel &&
             'sticky left-[calc(50cqi+8px)] right-[calc(50cqi+8px)] -translate-x-1/2'
         )}
       >
-        <Typography
-          color="secondary"
-          id="toolbar-unassigned_trackers"
-          vars={{ count }}
-        />
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[2px] bg-background-70 rounded-lg" />
+        <div className="relative">
+          <Typography
+            color="secondary"
+            id="toolbar-unassigned_trackers"
+            vars={{ count }}
+          />
+        </div>
       </div>
     </div>
   );
@@ -86,7 +89,7 @@ export function TrackerConnectionGroupSection({
   children,
 }: {
   group: TrackerConnectionGroupData;
-  onOpenMetrics?: (group: TrackerConnectionGroupData) => void;
+  onOpenMetrics: (group: TrackerConnectionGroupData) => void;
   children: ReactNode;
 }) {
   const { config, setConfig } = useConfig();
@@ -138,7 +141,7 @@ export function TrackerConnectionGroupSection({
         <div className="flex-grow border-t-2 border-dashed border-background-60" />
         <div className="sticky -right-2 z-20 flex items-center bg-background-70 pl-4 -ml-4">
           <div className="flex items-center bg-background-80 rounded-full px-1">
-            {onOpenMetrics && (
+            {group.kind !== 'driver' && (
               <div
                 className="flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9"
                 onClick={() => onOpenMetrics(group)}

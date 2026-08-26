@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num';
-import { createContext, ReactNode, useContext, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { useConfig } from '@/hooks/config';
 import { useTracker } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
@@ -134,24 +134,12 @@ function Cell({
   last?: boolean;
   show?: boolean;
 }) {
-  const { tracker } = useContext(TrackerRowProvider);
-  const { useVelocity } = useTracker(tracker);
-
-  const velocity = useVelocity();
-
   return (
-    <div
-      className={classNames('py-0.5 group overflow-hidden', { hidden: !show })}
-    >
+    <div className={classNames('py-0.5 group', { hidden: !show })}>
       <div
-        style={{
-          boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
-            velocity * 8
-          )}px rgb(var(--accent-background-30))`,
-        }}
         className={classNames(
           { 'rounded-l-md ml-1': first, 'rounded-r-md mr-1': last },
-          'bg-background-60 group-hover:bg-background-50 hover:cursor-pointer p-2 h-[50px] flex items-center'
+          'bg-background-60 group-hover:bg-background-50 hover:cursor-pointer p-2 h-[50px] flex items-center overflow-hidden'
         )}
       >
         {children}
@@ -159,8 +147,6 @@ function Cell({
     </div>
   );
 }
-
-const TrackerRowProvider = createContext<FlatDeviceTracker>(undefined as never);
 
 function Row({
   data,
@@ -178,13 +164,15 @@ function Row({
   const moreInfo = config?.devSettings?.moreInfo;
 
   const { tracker, device } = data;
+  const { useVelocity } = useTracker(tracker);
+  const velocity = useVelocity();
 
   const warning =
     !!highlightedTrackers?.trackers.find((t) => t === tracker.trackerId) &&
     highlightedTrackers.step;
 
   return (
-    <TrackerRowProvider.Provider value={data}>
+    <>
       <div className="relative z-10">
         <div className="absolute top-2 left-5">
           <FirmwareIcon tracker={tracker} device={device} />
@@ -203,7 +191,15 @@ function Row({
         }
         spacing={-5}
       >
-        <>
+        <div className="relative">
+          <div
+            className="pointer-events-none absolute inset-y-0.5 inset-x-1 rounded-md transition-[box-shadow] duration-200 ease-linear"
+            style={{
+              boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
+                velocity * 8
+              )}px rgb(var(--accent-background-30))`,
+            }}
+          />
           <div
             className="group grid items-center"
             style={{ gridTemplateColumns }}
@@ -293,9 +289,9 @@ function Row({
               </Typography>
             </Cell>
           </div>
-        </>
+        </div>
       </Tooltip>
-    </TrackerRowProvider.Provider>
+    </>
   );
 }
 
@@ -306,7 +302,7 @@ export function TrackersTable({
 }: {
   clickedTracker: (tracker: TrackerDataT) => void;
   groups: TrackerConnectionGroup[];
-  onOpenMetrics?: (group: TrackerConnectionGroup) => void;
+  onOpenMetrics: (group: TrackerConnectionGroup) => void;
 }) {
   const { config } = useConfig();
   const { highlightedTrackers } = useTrackingChecklist();
