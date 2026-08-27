@@ -7,7 +7,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -24,8 +24,8 @@ import kotlin.time.measureTime
 class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		userConfig.context.state
-			.map { state -> state.data.proportions }
-			.distinctUntilChanged()
+			.distinctUntilChangedBy { it.data.proportions }
+			.map { it.data.proportions }
 			.onEach { proportions ->
 				if (proportions.isNotEmpty()) {
 					receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
@@ -39,8 +39,8 @@ class HeightLogBehaviour : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
 			receiver.context.state
-				.map { state -> state.skeletonHeight }
-				.distinctUntilChanged()
+				.distinctUntilChangedBy { it.skeletonHeight }
+				.map { it.skeletonHeight }
 				.collect { height -> AppLogger.skeleton.info("User height changed: ${"%.2f".format(height)}m") }
 		}
 	}
@@ -104,29 +104,34 @@ class ComputedSkeletonBehaviour(
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
 
-						// TODO: Add a constrain processor (maybe not needed)
-						val processedInputs = if (!targetState.paused) {
-							// Run pre-FK processors
-							processors.fold(targetState.boneInputs) { state, processor -> processor.process(state) }
+						val boneInputs = if (targetState.pausedBoneInputs != null) {
+							// Use already-processed paused tracking data except for the head
+							targetState.pausedBoneInputs.mutate { it[BodyPart.HEAD] = targetState.boneInputs[BodyPart.HEAD] }
 						} else {
-							// TODO pause tracking
-							targetState.boneInputs
+							// Run pre-FK processors
+							// TODO: Add a constrain processor (maybe not needed)
+							val processedInputs = processors.fold(targetState.boneInputs) { state, processor -> processor.process(state) }
+							if (targetState.paused) {
+								// We just paused tracking and this is the last frame before we rely on paused bone inputs
+								receiver.context.dispatch(SkeletonActions.SetPausedBoneInputs(processedInputs))
+							}
+							processedInputs
 						}
 
 						// Get head position
-						val rootHead = processedInputs[BodyPart.HEAD]
+						val rootHead = boneInputs[BodyPart.HEAD]
 							?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
 							?: Vector3(0f, targetState.skeletonHeight, 0f)
 
 						// Run FK
-						val fk = buildBones(processedInputs, rootHead)
+						val fk = buildBones(boneInputs, rootHead)
 
 						// Run IK processors
 						val ikTargets = targetProcessors.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets) }
 
 						// Run IK
 						val ikOutput = ccdIk(
-							processedInputs,
+							boneInputs,
 							fk,
 							ikTargets.map { (bodyPart, target) ->
 								IKChainGoal(

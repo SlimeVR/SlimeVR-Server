@@ -137,8 +137,7 @@ internal suspend fun doSerialFlashPostFlash(
 		// wait for the device to reboot
 		val rebooted = withTimeoutOrNull(60_000) {
 			serialConn.context.state.map { it.logLines }
-				.filter { logLines -> logLines.any { "starting up" in it.lowercase() } }
-				.first()
+				.first { logLines -> logLines.any { "starting up" in it.lowercase() } }
 		}
 
 		if (rebooted == null) {
@@ -190,11 +189,11 @@ internal suspend fun doSerialFlashPostFlash(
 
 	// Wait for Wi-Fi to connect ("looking for the server")
 	val provisioned = withTimeoutOrNull(30_000) {
-		serialConn.context.state.map { it.logLines }.filter { logLines ->
+		serialConn.context.state.map { it.logLines }.first { logLines ->
 			logLines.any {
 				"looking for the server" in it.lowercase() || "searching for the server" in it.lowercase()
 			}
-		}.first()
+		}
 	}
 
 	if (provisioned == null) {

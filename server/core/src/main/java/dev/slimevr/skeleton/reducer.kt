@@ -27,5 +27,11 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 		state.copy(boneInputs = newBones, skeletonHeight = action.lengths.height())
 	}
 
-	is SkeletonActions.PauseTracking -> state.copy(paused = action.pause)
+	is SkeletonActions.PauseTracking -> {
+		state.copy(paused = action.pause, pausedBoneInputs = null)
+	}
+
+	is SkeletonActions.SetPausedBoneInputs -> {
+		state.copy(pausedBoneInputs = action.pausedBoneInputs)
+	}
 }

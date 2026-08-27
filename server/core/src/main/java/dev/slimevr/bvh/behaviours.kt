@@ -30,11 +30,10 @@ class BVHRecordingBehaviour(
 		var stream: BvhStream? = null
 
 		receiver.context.state
-			.map { it.recording to it.recordingPath }
-			.distinctUntilChanged()
-			.onEach { (recording, path) ->
-				if (recording && stream == null) {
-					val resolvedPath = resolveBvhPath(storage, path ?: return@onEach)
+			.distinctUntilChanged { old, new -> old.recording == new.recording && old.recordingPath == new.recordingPath }
+			.onEach {
+				if (it.recording && stream == null) {
+					val resolvedPath = resolveBvhPath(storage, it.recordingPath ?: return@onEach)
 					if (resolvedPath == null) {
 						receiver.context.dispatch(BVHActions.StopRecording)
 						return@onEach
@@ -49,7 +48,7 @@ class BVHRecordingBehaviour(
 						AppLogger.bvh.error("Failed to start BVH recording", e)
 						receiver.context.dispatch(BVHActions.StopRecording)
 					}
-				} else if (!recording && stream != null) {
+				} else if (!it.recording && stream != null) {
 					try {
 						AppLogger.bvh.info("Finalizing BVH recording")
 						stream?.close()

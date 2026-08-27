@@ -68,7 +68,7 @@ fun ComputedSkeleton.resolveAverageRotationFor(bodyParts: Array<BodyPart>): Quat
 	} ?: Quaternion.IDENTITY
 }
 
-data class SkeletonState(val boneInputs: InputSkeleton, val skeletonHeight: Float, val paused: Boolean)
+data class SkeletonState(val boneInputs: InputSkeleton, val skeletonHeight: Float, val paused: Boolean, val pausedBoneInputs: InputSkeleton?)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 	boneInputs = DEFAULT_PROPORTIONS.toBoneOffsets().mapValues { bodyPart, tailOffset ->
@@ -82,6 +82,7 @@ val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 	},
 	skeletonHeight = DEFAULT_HEIGHT,
 	paused = false,
+	pausedBoneInputs = null,
 )
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?, originPosition: Vector3 = Vector3.NULL): BoneState {
@@ -116,6 +117,7 @@ sealed interface SkeletonActions {
 	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
+	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>

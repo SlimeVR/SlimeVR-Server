@@ -8,6 +8,7 @@ import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.isActive
 import dev.slimevr.vmc.VMC_SUPPORTED_BONES
 import dev.slimevr.vrcosc.VRC_OSC_SUPPORTED_BONES
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -58,6 +59,7 @@ fun overrideRoutes(config: BoneRoutingConfig): Routes = config.manualRoutes.orEm
 
 fun isActive(states: OutputStates, output: RoutingOutput): Boolean = states[output] == RoutingOutputState.ACTIVE
 
+@OptIn(ExperimentalCoroutinesApi::class)
 fun driverStateFlow(appContext: AppContextProvider): Flow<RoutingOutputState> = combine(
 	appContext.config.settings.context.state.map { it.data.driverConfig.enabled },
 	appContext.server.context.state.map { state ->
