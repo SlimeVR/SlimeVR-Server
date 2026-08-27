@@ -32,6 +32,7 @@ import dev.slimevr.desktop.vrchat.resolveDesktopLocalIpAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.localizer.LocalizerManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -145,6 +146,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		discoverServicesFlow = ::discoverServices,
 		serviceFactory = ::createNetService,
 	)
+	val localizerManager = LocalizerManager.create(settings = config.settings, skeleton = skeleton, scope = this)
 	val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
 	val keybindManager = KeybindManager.create(scope = this)
@@ -169,6 +171,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		bvhManager = bvhManager,
 		vmcManager = vmcManager,
 		vrcOscManager = vrcOscManager,
+		localizerManager = localizerManager,
 		resetsManager = resetsManager,
 		tapDetectionManager = tapDetectionManager,
 	)

@@ -168,6 +168,7 @@ class ForegroundService : Service() {
 			discoverServicesFlow = ::discoverServices,
 			serviceFactory = ::createNetService,
 		)
+		val localizerManager = LocalizerManager.create(settings = config.settings, skeleton = skeleton, scope = this)
 		val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, scope = scope)
 		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
 		val keybindManager = KeybindManager.create(scope = scope)
@@ -197,6 +198,7 @@ class ForegroundService : Service() {
 			bvhManager = bvhManager,
 			vmcManager = vmcManager,
 			vrcOscManager = vrcOscManager,
+			localizerManager = localizerManager,
 			resetsManager = resetsManager,
 			tapDetectionManager = tapDetectionManager,
 		)
