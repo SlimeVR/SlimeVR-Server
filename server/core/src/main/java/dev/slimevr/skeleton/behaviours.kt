@@ -96,8 +96,6 @@ class ComputedSkeletonBehaviour(
 
 	override fun observe(receiver: Skeleton) {
 		var nextLogTime = timeSource.markNow() + logSpamWait
-		var frameStartTime = timeSource.markNow()
-		var lastFrameTime = Duration.ZERO
 		var processTooLongCount = 0
 
 		receiver.context.scope.launch {
@@ -136,10 +134,6 @@ class ComputedSkeletonBehaviour(
 // 							0.01f,
 // 							1000,
 // 						)
-
-						// Frame time tracking ends and restarts here
-						lastFrameTime = frameStartTime.elapsedNow()
-						frameStartTime = timeSource.markNow()
 
 						// Updated the computed skeleton with the result
 						if (!targetState.paused) { // FIXME : bones should still follow the head when paused
