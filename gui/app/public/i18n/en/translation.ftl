@@ -252,7 +252,7 @@ serial_detection-new_device-p0 = New serial device detected!
 serial_detection-new_device-p1 = Enter your Wi-Fi credentials!
 serial_detection-new_device-p2 = Please select what you want to do with it
 serial_detection-open_wifi = Connect to Wi-Fi
-serial_detection-open_serial = Open Serial Console
+serial_detection-open_serial = Open USB Serial Console
 serial_detection-submit = Submit!
 serial_detection-close = Close
 

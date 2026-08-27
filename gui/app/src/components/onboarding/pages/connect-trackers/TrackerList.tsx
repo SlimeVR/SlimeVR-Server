@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import {
   DeviceDataT,
   TrackerProvisioningStateT,
@@ -585,11 +585,13 @@ export function TrackerList({
   scanStatus,
   networks,
   onOpenNoSerialLogsModal,
+  children,
 }: {
   rows: TrackerRow[];
   scanStatus: WifiScanStatus;
   networks: WifiNetworkT[];
   onOpenNoSerialLogsModal: () => void;
+  children: ReactNode;
 }) {
   const { isMobile } = useBreakpoint('mobile');
   const connectedCount = useMemo(
@@ -642,6 +644,7 @@ export function TrackerList({
             onOpenNoSerialLogsModal={onOpenNoSerialLogsModal}
           />
         )}
+        {children}
       </div>
     </div>
   );
