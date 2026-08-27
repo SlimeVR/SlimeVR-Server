@@ -127,7 +127,7 @@ class ComputedSkeletonBehaviour(
 						val fk = buildBones(boneInputs, rootHead)
 
 						// Run IK processors
-						val ikTargets = targetProcessors.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets) }
+						val ikTargets = targetProcessors.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets, targetState.floorLevel) }
 
 						// Run IK
 						val ikOutput = ccdIk(

@@ -68,7 +68,13 @@ fun ComputedSkeleton.resolveAverageRotationFor(bodyParts: Array<BodyPart>): Quat
 	} ?: Quaternion.IDENTITY
 }
 
-data class SkeletonState(val boneInputs: InputSkeleton, val skeletonHeight: Float, val paused: Boolean, val pausedBoneInputs: InputSkeleton?)
+data class SkeletonState(
+	val boneInputs: InputSkeleton,
+	val skeletonHeight: Float,
+	val floorLevel: Float,
+	val paused: Boolean,
+	val pausedBoneInputs: InputSkeleton?,
+)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 	boneInputs = DEFAULT_PROPORTIONS.toBoneOffsets().mapValues { bodyPart, tailOffset ->
@@ -81,6 +87,7 @@ val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 		)
 	},
 	skeletonHeight = DEFAULT_HEIGHT,
+	floorLevel = 0f,
 	paused = false,
 	pausedBoneInputs = null,
 )
@@ -118,6 +125,7 @@ sealed interface SkeletonActions {
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
+	data object SetFloorLevel : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
@@ -127,7 +135,7 @@ interface SkeletonProcessor {
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
-	fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets
+	fun process(fk: ComputedSkeleton, ikTargets: IKTargets, floorLevel: Float): IKTargets
 }
 
 class Skeleton(

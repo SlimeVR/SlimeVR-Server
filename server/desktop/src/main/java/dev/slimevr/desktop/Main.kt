@@ -145,7 +145,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 		discoverServicesFlow = ::discoverServices,
 		serviceFactory = ::createNetService,
 	)
-	val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
+	val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
 	val keybindManager = KeybindManager.create(scope = this)
 	val serverInfos = ServerInfos(::resolveDesktopLocalIpAddress)

@@ -2,6 +2,7 @@ package dev.slimevr.skeleton
 
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 
 fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 	is SkeletonActions.SetBoneRotation -> {
@@ -27,11 +28,13 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 		state.copy(boneInputs = newBones, skeletonHeight = action.lengths.height())
 	}
 
-	is SkeletonActions.PauseTracking -> {
-		state.copy(paused = action.pause, pausedBoneInputs = null)
-	}
+	is SkeletonActions.PauseTracking -> state.copy(paused = action.pause, pausedBoneInputs = null)
 
-	is SkeletonActions.SetPausedBoneInputs -> {
-		state.copy(pausedBoneInputs = action.pausedBoneInputs)
+	is SkeletonActions.SetPausedBoneInputs -> state.copy(pausedBoneInputs = action.pausedBoneInputs)
+
+	is SkeletonActions.SetFloorLevel -> {
+		val leftFootHeight = state.boneInputs[BodyPart.LEFT_FOOT]?.rawPosition?.y ?: 0f
+		val rightFootHeight = state.boneInputs[BodyPart.RIGHT_FOOT]?.rawPosition?.y ?: 0f
+		state.copy(floorLevel = (leftFootHeight + rightFootHeight) / 2f)
 	}
 }

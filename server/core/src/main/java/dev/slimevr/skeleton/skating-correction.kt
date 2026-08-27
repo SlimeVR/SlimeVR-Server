@@ -33,18 +33,17 @@ data class LockState(
 
 val VELOCITY_BODY_PARTS = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
-val FOOT_VELOCITY_SENSITIVITY = 1f
-val FOOT_ACCELERATION_SENSITIVITY = 1f
+const val FOOT_VELOCITY_SENSITIVITY = 1f
+const val FOOT_ACCELERATION_SENSITIVITY = 1f
 
-val SKATING_LOCK_ENGAGE_PERCENT = 1.1f
-val SKATING_DISTANCE_THRESHOLD = 0.5f
-val SKATING_VELOCITY_THRESHOLD = 2.4f
-val SKATING_ROTATIONAL_VELOCITY_THRESHOLD = 4.5f
-val SKATING_ACCELERATION_THRESHOLD = 0.7f
+const val SKATING_LOCK_ENGAGE_PERCENT = 1.1f
+const val SKATING_DISTANCE_THRESHOLD = 0.5f
+const val SKATING_VELOCITY_THRESHOLD = 2.4f
+const val SKATING_ROTATIONAL_VELOCITY_THRESHOLD = 4.5f
+const val SKATING_ACCELERATION_THRESHOLD = 0.7f
 
-// TODO Floor level needs to be calibrated in some way; originally done on full reset
-val FLOOR_LEVEL = 0f
-val FLOOR_DISTANCE_THRESHOLD = 0.065f
+const val FLOOR_CALIBRATION_OFFSET = 0.0025f // TODO: This was added to floorLevel. Do we want to do this?
+const val FLOOR_DISTANCE_THRESHOLD = 0.065f
 
 // TODO Where are these numbers from?
 val BODY_PART_MASSES = mapOf(
@@ -66,10 +65,11 @@ val BODY_PART_MASSES = mapOf(
 fun shouldLock(
 	velocity: VelocityState,
 	thresholdMultiplier: Float,
+	floorLevel: Float,
 ): Boolean = (velocity.horizontalDistance <= SKATING_DISTANCE_THRESHOLD * thresholdMultiplier) &&
 	(velocity.velocity.len() <= SKATING_VELOCITY_THRESHOLD * thresholdMultiplier) &&
 	(velocity.angularVelocityMagnitude <= SKATING_ROTATIONAL_VELOCITY_THRESHOLD * thresholdMultiplier) &&
-	(velocity.position.y - FLOOR_LEVEL <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier) &&
+	(velocity.position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier) &&
 	(velocity.acceleration.len() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier)
 
 // TODO Use this to calculate feet pressure
@@ -156,7 +156,7 @@ fun computeLockState(
 
 // Probably not a SkeletonProcessor, maybe computed processor or smth
 class SkatingCorrectionProcessor : SkeletonTargetProcessor {
-	// Center of mass
+	// Centre of mass
 	var comState: COMState? = null
 
 	// Do we need to store this or do we just want velocity? We can probably just pull
@@ -164,7 +164,7 @@ class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 	val velocity: BodyPartMap<VelocityState> = bodyPartMap()
 	val lockState: BodyPartMap<LockState> = bodyPartMap()
 
-	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets {
+	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets, floorLevel: Float): IKTargets {
 		val curTime = timeSource.markNow()
 
 		// Update center of mass
@@ -191,6 +191,7 @@ class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 			val isLocked = shouldLock(
 				newVel,
 				if (wasLocked) SKATING_LOCK_ENGAGE_PERCENT else 1f,
+				floorLevel,
 			)
 
 			val activeState = computeLockState(
@@ -214,7 +215,7 @@ class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 class FloorClipProcessor(
 	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG),
 ) : SkeletonTargetProcessor {
-	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets {
+	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets, floorLevel: Float): IKTargets {
 		for (bodyPart in bodyParts) {
 			// Get existing target or make a new one at the current bone position
 			val target = ikTargets[bodyPart] ?: fk[bodyPart]?.tailPosition ?: continue
