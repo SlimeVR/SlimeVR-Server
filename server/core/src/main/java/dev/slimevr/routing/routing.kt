@@ -11,6 +11,7 @@ import dev.slimevr.vrcosc.VRC_OSC_SUPPORTED_BONES
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
@@ -18,6 +19,7 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.RoutingOutputState
 import solarxr_protocol.rpc.VRCOSCOutputState
+import kotlin.collections.map
 
 typealias Routes = Map<BodyPart, Set<RoutingOutput>>
 typealias OutputStates = Map<RoutingOutput, RoutingOutputState>
@@ -61,12 +63,16 @@ fun driverStateFlow(appContext: AppContextProvider): Flow<RoutingOutputState> = 
 	appContext.server.context.state.map { state ->
 		state.drivers.values.any { it.source == DriverBridgeSource.DRIVER }
 	},
-	appContext.server.context.state.map { state -> state.solarxr.values.any { it.context.state.value.driverName != null } }.distinctUntilChanged(),
-) { enabled, driverConnected, solarxrDriverConnected ->
+	appContext.server.context.state.flatMapLatest { state ->
+		combine(state.solarxr.values.map { it.context.state }) { states ->
+			states.any { it.driverName != null }
+		}
+	},
+) { enabled, driverConnected, solarXRDriverConnected ->
 	when {
 		!appContext.featureFlags.supportsDriver -> RoutingOutputState.UNSUPPORTED
 		!enabled -> RoutingOutputState.INACTIVE
-		driverConnected || solarxrDriverConnected -> RoutingOutputState.ACTIVE
+		driverConnected || solarXRDriverConnected -> RoutingOutputState.ACTIVE
 		else -> RoutingOutputState.ENABLED
 	}
 }.distinctUntilChanged()
