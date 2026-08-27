@@ -10,6 +10,7 @@ import dev.slimevr.CURRENT_PLATFORM
 import dev.slimevr.Platform
 import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
+import dev.slimevr.desktop.Driver
 import dev.slimevr.desktop.getSteamVRDriversList
 import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.logging.AppLogger
@@ -19,13 +20,20 @@ import dev.slimevr.trackingchecklist.TrackingChecklistBehaviourType
 import dev.slimevr.util.timeSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
@@ -93,106 +101,124 @@ private val PROCESS_SCAN_INTERVAL = 10.seconds
 
 private fun Throwable.isConnectionRefused(): Boolean = generateSequence(this, Throwable::cause).any { it is ConnectException }
 
-data class SteamVRDriverState(val connected: Boolean = false, val installed: Boolean = true, val blocked: Boolean = false, val enabled: Boolean = true)
+private inline fun buildSteamVRDriverStep(driverEnabled: Boolean = true, connected: Boolean = false, installed: Boolean = true, blocked: Boolean = false, enabledInSteamVR: Boolean = true) = TrackingChecklistStep(
+	valid = connected,
+	enabled = driverEnabled,
+	ignorable = true,
+	extraData = if (!connected) {
+		TrackingChecklistSteamVRDisconnected(
+			driverInstalled = installed,
+			driverBlockedBySafeMode = blocked,
+			driverEnabled = enabledInSteamVR,
+		)
+	} else {
+		null
+	},
+)
+private inline fun buildStandableStep(supported: Boolean = true, installed: Boolean = false) = TrackingChecklistStep(valid = !installed, enabled = supported, visibility = TrackingChecklistStepVisibility.WHEN_INVALID)
 
 class SteamVRCheckBehaviour(private val server: VRServer, private val settings: Settings) : TrackingChecklistBehaviourType {
 	private val steamVRProcName = when (CURRENT_PLATFORM) {
 		Platform.WINDOWS -> "vrserver.exe"
 		else -> "vrserver"
 	}
-	private val driverState = MutableStateFlow(SteamVRDriverState())
-	private val standableState = MutableStateFlow(false)
 
-	private fun driverEnabled() = settings.context.state.value.data.driverConfig.enabled
+	@JvmInline
+	private value class SteamVRState(val running: Boolean, val drivers: List<Driver>?)
 
 	override fun observe(receiver: TrackingChecklist) {
+		val steamVRStateFlow = MutableStateFlow<SteamVRState>(SteamVRState(false, null))
+
+		// Job to update steamVRStateFlow
 		receiver.context.scope.launch {
-			HttpClient(CIO).use { client ->
-				var scannedRunning = false
-				var lastScan: TimeMark? = null
-
-				while (isActive) {
-					// Nothing to look at while the output is off: no driver can connect, and the step
-					// below is switched off anyway. Reset so switching it back on does not report
-					// whatever SteamVR was doing beforehand.
-					if (!driverEnabled()) {
-						driverState.value = SteamVRDriverState()
-						delay(3000)
-						continue
+			val steamVRRunningFlow = flow {
+				AppLogger.checklist.debug("steamVRRunningFlow started")
+				while (true) {
+					val running = getRunningProcesses().any { proc ->
+						proc.name == steamVRProcName
 					}
-
-					val connected = server.context.state.value.drivers.values.any { it.source == DriverBridgeSource.DRIVER }
-
-					val drivers = try {
-						getSteamVRDriversList(client)
-					} catch (e: Exception) {
-						if (!e.isConnectionRefused()) {
-							AppLogger.checklist.warn(e, "Failed to get SteamVR drivers list")
-						}
-						null
-					}
-
-					val scan = lastScan
-					if (drivers != null) {
-						scannedRunning = false
-						lastScan = null
-					} else if (scan == null || scan.elapsedNow() >= PROCESS_SCAN_INTERVAL) {
-						scannedRunning = getRunningProcesses().any { proc ->
-							proc.name == steamVRProcName
-						}
-						lastScan = timeSource.markNow()
-					}
-
-					val running = connected || drivers != null || scannedRunning
-
-					val driver = drivers?.firstOrNull {
-						it.manifest.name == "slimevr"
-					}
-					val standableDriver = drivers?.firstOrNull {
-						it.manifest.name == "standable"
-					}
-
-					driverState.update {
-						SteamVRDriverState(connected = connected, installed = !running || driver != null, driver?.blockedBySafeMode ?: false, enabled = driver?.enabled ?: true)
-					}
-					standableState.update {
-						standableDriver != null
-					}
+					AppLogger.checklist.debug("steamVRRunning=$running")
+					emit(running)
 					delay(3000)
 				}
 			}
+
+			HttpClient(CIO).use { client ->
+				steamVRRunningFlow.onEach { running ->
+					if (!running) {
+						steamVRStateFlow.update { SteamVRState(false, null) }
+						return@onEach
+					}
+
+					delay(500)
+// 					val start = timeSource.markNow()
+					// TODO: make this actually work! the job is getting cancelled for some reason?
+					// DEBUG [main @TrackingChecklist#93+TrackingChecklist] Checklist : steamVRRunning=true
+					// ERROR [main @TrackingChecklist#93+TrackingChecklist] Checklist : Drivers list request cancelled after 1615μs
+					// kotlinx.coroutines.JobCancellationException: Parent job is Completed; job=SupervisorJobImpl{Completed}@71bf367b
+					val drivers = try {
+						getSteamVRDriversList(client)
+					} catch (e: CancellationException) {
+// 						AppLogger.checklist.error(e, "Drivers list request cancelled after ${start.elapsedNow().inWholeMicroseconds}μs")
+						null
+					} catch (e: Exception) {
+						AppLogger.checklist.warn(
+							e,
+							"Failed to get SteamVR drivers list",
+						)
+						null
+					}
+
+					steamVRStateFlow.update { SteamVRState(true, drivers) }
+				}.launchIn(this)
+			}
 		}
 
-		combine(
-			driverState,
-			settings.context.state.map { it.data.driverConfig.enabled }.distinctUntilChanged(),
-			::Pair,
-		)
-			.map { (state, outputEnabled) ->
-				TrackingChecklistStep(
-					valid = state.connected,
-					enabled = outputEnabled,
-					ignorable = true,
-					extraData = if (!state.connected) {
-						TrackingChecklistSteamVRDisconnected(
-							driverInstalled = state.installed,
-							driverBlockedBySafeMode = state.blocked,
-							driverEnabled = state.enabled,
-						)
-					} else {
-						null
-					},
+		// Job to listen on driver states and steamVRStateFlow
+		settings.context.state.map { it.data.driverConfig.enabled }.flatMapLatest { enabled ->
+			if (!enabled) {
+				return@flatMapLatest flowOf(buildSteamVRDriverStep(driverEnabled = false) to buildStandableStep(supported = false))
+			}
+
+			val protoDriverActiveFlow = server.context.state.map { state ->
+				state.drivers.values.any { it.source == DriverBridgeSource.DRIVER }
+			}
+			val solarXRDriverActiveFlow = server.context.state.flatMapLatest { state ->
+				combine(state.solarxr.values.map { it.context.state }) { states ->
+					states.any { it.driverName != null } to states.any { it.driverName == "SteamVR" }
+				}
+			}
+			combine(protoDriverActiveFlow, solarXRDriverActiveFlow, steamVRStateFlow) { protoDriverActive, (anySolarXRDriverActive, steamVRSolarXRDriverActive), steamVRState ->
+				// if a non-SteamVR driver is connected, we shouldn't try to fetch the drivers list
+				if (anySolarXRDriverActive && !steamVRSolarXRDriverActive) {
+					return@combine buildSteamVRDriverStep(connected = true) to buildStandableStep(supported = false)
+				}
+				// for output state
+				val anyDriverActive = protoDriverActive || anySolarXRDriverActive
+
+				if (steamVRState.drivers == null) {
+					return@combine buildSteamVRDriverStep(connected = anyDriverActive) to buildStandableStep()
+				}
+
+				val driver = steamVRState.drivers?.firstOrNull {
+					it.manifest.name == "slimevr"
+				}
+				val standableDriver = steamVRState.drivers?.firstOrNull {
+					it.manifest.name == "standable"
+				}
+
+				buildSteamVRDriverStep(connected = anyDriverActive, installed = !steamVRState.running || driver != null, blocked = driver?.blockedBySafeMode ?: false, enabledInSteamVR = driver?.enabled ?: true) to buildStandableStep(installed = standableDriver != null)
+			}
+		}
+			.distinctUntilChanged()
+			.onEach { (steamVRDriverStep, standableStep) ->
+				receiver.context.dispatchAll(
+					listOf(
+						TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STEAMVR_DISCONNECTED, steamVRDriverStep),
+						TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STANDABLE_INSTALLED, standableStep),
+					),
 				)
 			}
-			.distinctUntilChanged()
-			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STEAMVR_DISCONNECTED, step)) }
-			.launchIn(receiver.context.scope)
-		standableState
-			.map { installed ->
-				TrackingChecklistStep(valid = !installed, enabled = true, visibility = TrackingChecklistStepVisibility.WHEN_INVALID)
-			}
-			.distinctUntilChanged()
-			.onEach { step -> receiver.context.dispatch(TrackingChecklistActions.UpdateStep(TrackingChecklistStepId.STANDABLE_INSTALLED, step)) }
 			.launchIn(receiver.context.scope)
 	}
 }
