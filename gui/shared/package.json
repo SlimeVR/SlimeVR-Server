@@ -12,7 +12,7 @@
     "lint": "tsc --noEmit"
   },
   "devDependencies": {
-    "electron": "^44.0.0",
+    "electron": "^42.10.1",
     "typescript": "^5.6.3"
   }
 }
