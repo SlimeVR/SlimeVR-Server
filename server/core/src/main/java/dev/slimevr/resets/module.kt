@@ -159,7 +159,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 
 		if (resetType == ResetType.FULL) {
 			// Tell the skeleton to set the floor level
-			skeleton.context.dispatch(SkeletonActions.SetFloorLevel)
+			skeleton.context.dispatch(SkeletonActions.ComputeFloorLevel)
 		}
 	}
 

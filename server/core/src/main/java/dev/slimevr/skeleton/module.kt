@@ -125,7 +125,7 @@ sealed interface SkeletonActions {
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
-	data object SetFloorLevel : SkeletonActions
+	data object ComputeFloorLevel : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
