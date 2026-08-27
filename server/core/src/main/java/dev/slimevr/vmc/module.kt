@@ -51,7 +51,7 @@ sealed interface VMCActions {
 }
 
 typealias VMCContext = Context<VMCState, VMCActions>
-typealias VMCBehaviour = Behaviour<VMCState, VMCActions, VMCManager>
+typealias VMCBehaviour = Behaviour<VMCManager>
 
 class VMCManager(val context: VMCContext) {
 	fun startObserving(appContext: AppContextProvider) {
@@ -70,6 +70,7 @@ class VMCManager(val context: VMCContext) {
 			val context = Context.create(
 				initialState = VMCState(),
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = emptyList<VMCBehaviour>(),
 				name = "VMC",
 			)

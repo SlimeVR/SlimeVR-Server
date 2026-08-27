@@ -90,7 +90,7 @@ sealed interface VRCOSCEvent {
 }
 
 typealias VRCOSCContext = Context<VRCOSCState, VRCOSCActions>
-typealias VRCOSCBehaviour = Behaviour<VRCOSCState, VRCOSCActions, VRCOSCManager>
+typealias VRCOSCBehaviour = Behaviour<VRCOSCManager>
 
 class VRCOSCManager(
 	val context: VRCOSCContext,
@@ -132,8 +132,9 @@ class VRCOSCManager(
 		): VRCOSCManager {
 			val context = Context.create(
 				initialState = VRCOSCState(),
-				behaviours = emptyList<VRCOSCBehaviour>(),
 				scope = scope,
+				reducer = ::reduce,
+				behaviours = emptyList<VRCOSCBehaviour>(),
 				name = "VRCOSC",
 			)
 			return VRCOSCManager(context, oscQueryAddress, discoverServicesFlow, serviceFactory)

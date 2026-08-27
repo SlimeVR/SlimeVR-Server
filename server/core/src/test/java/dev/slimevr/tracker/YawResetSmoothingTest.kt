@@ -34,11 +34,11 @@ class YawResetSmoothingTest {
 			appContext,
 			settings,
 			id = 0,
-			BodyPart.CHEST,
-			TrackerStatus.OK,
+			bodyPart = BodyPart.CHEST,
+			status = TrackerStatus.OK,
 			rawRotation = raw,
 			additionalBehaviours = listOf(TrackerYawResetSmoothingBehaviour()),
-			sessionCalibration = if (withCalibration) SessionCalibration(headingCorrection = prevHeading) else null,
+			sessionCalibration = if (withCalibration) SessionCalibration(headingCorrection = prevHeading) else SessionCalibration(),
 		)
 	}
 

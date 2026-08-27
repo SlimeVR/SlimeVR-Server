@@ -25,7 +25,7 @@ sealed interface GlobalConfigActions {
 }
 
 typealias GlobalConfigContext = Context<GlobalConfigState, GlobalConfigActions>
-typealias GlobalConfigBehaviour = Behaviour<GlobalConfigState, GlobalConfigActions, GlobalConfig>
+typealias GlobalConfigBehaviour = Behaviour<GlobalConfig>
 
 class GlobalConfig(
 	val context: GlobalConfigContext,
@@ -37,11 +37,10 @@ class GlobalConfig(
 			val initialState = loadFileWithBackup(storage, "global.json", GlobalConfigState()) {
 				parseAndMigrateGlobalConfig(it)
 			}
-			val behaviours = listOf(DefaultGlobalConfigBehaviour())
 			val context = Context.create(
 				initialState = initialState,
 				scope = scope,
-				behaviours = behaviours,
+				reducer = ::reduce,
 				name = "GlobalConfig",
 			)
 			val globalConfig = GlobalConfig(context)

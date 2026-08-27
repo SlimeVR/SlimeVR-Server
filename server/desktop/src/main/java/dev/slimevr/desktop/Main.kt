@@ -28,7 +28,7 @@ import dev.slimevr.desktop.serial.createDesktopSerialServer
 import dev.slimevr.desktop.trackingchecklist.SteamVRCheckBehaviour
 import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
-import dev.slimevr.desktop.vrchat.resolveDesktopOscQueryAddress
+import dev.slimevr.desktop.vrchat.resolveDesktopLocalIpAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
@@ -38,6 +38,7 @@ import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resolveConfigDirectory
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.solarxr.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -46,14 +47,30 @@ import dev.slimevr.util.installUncaughtExceptionReporting
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrcosc.VRCOSCManager
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.rpc.KeybindSupport
 
 fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler + CoroutineName("Main")) {
 	setupDesktopLogging()
 	installUncaughtExceptionReporting()
+
+	// Electron (and Ctrl+C) terminate us with SIGTERM, which the JVM turns into a plain
+	// process halt once every registered shutdown hook thread finishes. Without this hook,
+	// awaitCancellation() below is never unblocked and the `finally { appContext.dispose() }`
+	// never runs, so cleanup only happens by accident (e.g. a library's own shutdown hook).
+	val rootJob = coroutineContext[Job]!!
+	Runtime.getRuntime().addShutdownHook(
+		Thread({
+			runBlocking { withTimeoutOrNull(5000) { rootJob.cancelAndJoin() } }
+		}, "graceful-shutdown"),
+	)
 
 	contextDebugEnabled = System.getProperty("slimevr.debug.context") == "true" ||
 		System.getenv("SLIMEVR_DEBUG_CONTEXT") == "true"
@@ -124,18 +141,20 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val vmcManager = VMCManager.create(scope = this)
 	val vrcOscManager = VRCOSCManager.create(
 		scope = this,
-		oscQueryAddress = resolveDesktopOscQueryAddress(),
+		oscQueryAddress = resolveDesktopLocalIpAddress(),
 		discoverServicesFlow = ::discoverServices,
 		serviceFactory = ::createNetService,
 	)
 	val resetsManager = ResetsManager.create(ctx = phase1, scope = this)
 	val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = this)
 	val keybindManager = KeybindManager.create(scope = this)
+	val serverInfos = ServerInfos(::resolveDesktopLocalIpAddress)
 
 	val appContext = AppContext(
 		server = server,
 		config = config,
 		serialServer = serialServer,
+		serverInfos = serverInfos,
 		featureFlags = featureFlags,
 		keybindManager = keybindManager,
 		skeleton = skeleton,
@@ -157,7 +176,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	try {
 		appContext.startObserving()
 
-		launch { createDesktopHIDManager(appContext, this) }
+		createDesktopHIDManager(appContext, this)
 		launch { createDesktopKeybindManager(appContext, this) }
 		launch { createSolarXRWebsocketServer(appContext) }
 		launch { createIpcServers(appContext) }
@@ -165,6 +184,8 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 
 		awaitCancellation()
 	} finally {
-		appContext.dispose()
+		// A suspend call here would throw immediately otherwise: this finally
+		// runs after our own Job is already cancelled.
+		withContext(NonCancellable) { appContext.dispose() }
 	}
 }

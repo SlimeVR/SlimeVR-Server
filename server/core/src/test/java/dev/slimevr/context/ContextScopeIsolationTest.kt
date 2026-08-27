@@ -12,7 +12,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-private class NoopBehaviour : Behaviour<Int, Int, Unit>
+private class NoopBehaviour : Behaviour<Unit>
 
 class ContextScopeIsolationTest {
 	@Test
@@ -22,7 +22,7 @@ class ContextScopeIsolationTest {
 		val handler = CoroutineExceptionHandler { _, throwable -> uncaught += throwable }
 		val parentJob = Job()
 		val parentScope = CoroutineScope(StandardTestDispatcher(testScheduler) + parentJob + handler)
-		val context = Context.create(
+		val context = Context.create<Int, Int>(
 			initialState = 0,
 			scope = parentScope,
 			behaviours = listOf(NoopBehaviour()),

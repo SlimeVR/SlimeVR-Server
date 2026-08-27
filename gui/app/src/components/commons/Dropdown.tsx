@@ -18,9 +18,11 @@ import {
   UseControllerProps,
 } from 'react-hook-form';
 import { ArrowDownIcon, ArrowUpIcon } from './icon/ArrowIcons';
+import { CheckIcon } from './icon/CheckIcon';
 import { ProgressBar } from './ProgressBar';
 import { a11yClick } from '@/utils/a11y';
 import './Dropdown.scss';
+import { Typography } from './Typography';
 
 export type DropdownItem = {
   value: string;
@@ -28,6 +30,15 @@ export type DropdownItem = {
 };
 
 export type DropdownDirection = 'up' | 'down';
+
+function isItemSelected(
+  selection: DropdownSingleSelection | DropdownMultipleSelection,
+  itemValue: string
+): boolean {
+  return selection.multiple
+    ? selection.value.includes(itemValue)
+    : selection.value === itemValue;
+}
 
 type DropdownProps = {
   direction?: DropdownDirection;
@@ -40,6 +51,19 @@ type DropdownProps = {
   maxHeight?: string | number;
   error?: FieldError;
   loading?: boolean;
+  renderValue?: () => ReactNode;
+};
+
+type DropdownSingleSelection = {
+  multiple?: false;
+  value: string;
+  onChange: (value: string) => void;
+};
+
+type DropdownMultipleSelection = {
+  multiple: true;
+  value: string[];
+  onChange: (value: string[]) => void;
 };
 
 function DropdownItem({
@@ -47,7 +71,8 @@ function DropdownItem({
   variant,
   onSelected,
   isOpen,
-  value,
+  checked,
+  multiple,
   innerFocusValue,
   name,
 }: {
@@ -55,7 +80,8 @@ function DropdownItem({
   variant: Required<DropdownProps>['variant'];
   onSelected: () => void;
   isOpen: boolean;
-  value: string;
+  checked: boolean;
+  multiple?: boolean;
   innerFocusValue: string | null;
   name: string;
 }) {
@@ -86,10 +112,7 @@ function DropdownItem({
       return;
     }
 
-    if (
-      innerFocusValue === item.value ||
-      (!innerFocusValue && item.value === value)
-    ) {
+    if (innerFocusValue === item.value || (!innerFocusValue && checked)) {
       ref.current?.scrollIntoView({ block: 'nearest' });
     }
   }, [isOpen]);
@@ -97,19 +120,35 @@ function DropdownItem({
   return (
     <div
       className={classNames(
-        'py-2 px-4 min-w-max cursor-pointer',
+        'py-2 px-2 min-w-max cursor-pointer text-standard-bold transition-colors select-none',
         variantStyles[variant],
         innerFocusValue === item.value && 'ring-inset ring-4'
       )}
-      onClick={onSelected}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelected();
+      }}
       onKeyDown={(e) => a11yClick(e) && onSelected()}
       tabIndex={-1}
       aria-hidden={!isOpen}
-      data-checked={item.value === value}
       ref={ref}
       id={`__dropdownList-${name}-item-${item.value}`}
     >
-      {item.label}
+      <div className="flex items-center gap-2.5">
+        {multiple && (
+          <div
+            className={classNames(
+              'w-4 h-4 rounded flex items-center justify-center transition-colors shrink-0',
+              checked
+                ? 'bg-accent-background-30 text-background-10'
+                : 'bg-background-50 border border-background-40'
+            )}
+          >
+            {checked && <CheckIcon size={9} className="fill-current" />}
+          </div>
+        )}
+        <div className="flex-1 min-w-0">{item.label}</div>
+      </div>
     </div>
   );
 }
@@ -117,7 +156,10 @@ function DropdownItem({
 type DropdownListProps = {
   isOpen: boolean;
   onSelect: (item: DropdownItem) => void;
-  value: string;
+  isSelected: (value: string) => boolean;
+  multiple?: boolean;
+  onSelectAll?: () => void;
+  onDeselectAll?: () => void;
   innerFocusValue: string | null;
   anchorName: string;
 } & Pick<
@@ -135,7 +177,10 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
   {
     isOpen,
     onSelect,
-    value,
+    isSelected,
+    multiple,
+    onSelectAll,
+    onDeselectAll,
     innerFocusValue,
     display,
     alignment,
@@ -177,7 +222,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
   return (
     <div
       className={classNames(
-        'dropdown-popover fixed inset-auto m-0 border-0 p-0 rounded overflow-hidden',
+        'dropdown-popover fixed inset-auto m-0 border-0 p-0 rounded overflow-hidden flex flex-col',
         direction === 'up' ? 'mb-3' : 'mt-3',
         variantStyles[variant],
         display === 'block' ? 'w-full' : 'w-fit'
@@ -197,6 +242,30 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
       ref={setDivRef}
       id={`__dropdownList-${name}`}
     >
+      {multiple && (onSelectAll || onDeselectAll) && (
+        <div className="flex items-center justify-between px-3 py-2 border-b border-background-10/10 text-xs font-bold bg-background-80/60 select-none">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectAll?.();
+            }}
+            className="text-background-10 hover:text-background-20 transition-colors"
+          >
+            <Typography id="dropdown_select-all" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeselectAll?.();
+            }}
+            className="text-background-30 hover:text-background-10 transition-colors"
+          >
+            <Typography id="dropdown_unselect-all" />
+          </button>
+        </div>
+      )}
       <ul
         ref={ulRef}
         className="flex flex-col min-h-0 text-sm overflow-y-scroll dropdown-scroll overscroll-contain"
@@ -209,7 +278,8 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
             onSelected={() => onSelect(item)}
             isOpen={isOpen}
             key={item.value}
-            value={value}
+            checked={isSelected(item.value)}
+            multiple={multiple}
             innerFocusValue={innerFocusValue}
             name={name}
           />
@@ -219,20 +289,23 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
   );
 });
 
-export function DropdownInside({
-  direction = 'up',
-  variant = 'primary',
-  alignment = 'right',
-  display = 'fit',
-  placeholder,
-  name,
-  items,
-  maxHeight = '50vh',
-  value,
-  onChange,
-  error,
-  loading,
-}: DropdownProps & { value: string; onChange: (value: string) => void }) {
+export function DropdownInside(
+  props: DropdownProps & (DropdownSingleSelection | DropdownMultipleSelection)
+) {
+  const {
+    direction = 'up',
+    variant = 'primary',
+    alignment = 'right',
+    display = 'fit',
+    placeholder,
+    name,
+    items,
+    maxHeight = '50vh',
+    error,
+    loading,
+    renderValue,
+  } = props;
+
   const [isOpen, setIsOpen] = useState(false);
 
   const variantStyles = {
@@ -247,10 +320,31 @@ export function DropdownInside({
     block: 'w-full',
   };
 
-  const getShownValue = (value: string) =>
-    value
-      ? (items.find((item) => item.value === value)?.label ?? placeholder)
+  const getShownValue = (): ReactNode => {
+    if (renderValue) return renderValue();
+    if (props.multiple) {
+      return props.value.length > 0
+        ? `${props.value.length} selected`
+        : placeholder;
+    }
+    return props.value
+      ? (items.find((item) => item.value === props.value)?.label ?? placeholder)
       : placeholder;
+  };
+
+  const selectItem = (item: DropdownItem) => {
+    if (props.multiple) {
+      const exists = props.value.includes(item.value);
+      props.onChange(
+        exists
+          ? props.value.filter((v) => v !== item.value)
+          : [...props.value, item.value]
+      );
+    } else {
+      props.onChange(item.value);
+      setIsOpen(false);
+    }
+  };
 
   const ref = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -259,7 +353,9 @@ export function DropdownInside({
 
   const [innerFocusIndex, setInnerFocusIndex] = useState<number | null>(null);
   const getCurrentActiveIndex = () => {
-    return items.findIndex((item) => item.value === value);
+    return props.multiple
+      ? items.findIndex((item) => props.value.includes(item.value))
+      : items.findIndex((item) => item.value === props.value);
   };
   const innerFocusPrev = () => {
     const current = innerFocusIndex ?? getCurrentActiveIndex();
@@ -303,16 +399,13 @@ export function DropdownInside({
           'min-h-[42px] min-w-0 text-background-10 text-left dropdown',
           displayStyles[display]
         )}
-        onClick={() => !loading && setIsOpen(!isOpen)}
         onKeyDown={(e) => {
           if (loading) {
             return;
           }
           if (!isOpen) {
             if (a11yClick(e)) {
-              setInnerFocusIndex(
-                items.findIndex((item) => item.value === value)
-              );
+              setInnerFocusIndex(getCurrentActiveIndex());
               setIsOpen(!isOpen);
               e.preventDefault();
               return;
@@ -339,8 +432,8 @@ export function DropdownInside({
                 return;
               }
 
-              onChange(items[innerFocusIndex].value);
-              setIsOpen(false);
+              selectItem(items[innerFocusIndex]);
+              if (!props.multiple) setIsOpen(false);
             }
             switch (e.key) {
               case 'ArrowUp':
@@ -372,6 +465,10 @@ export function DropdownInside({
         }}
       >
         <div
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!loading) setIsOpen((o) => !o);
+          }}
           className={classNames(
             'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md focus:ring-4 relative min-w-0 overflow-hidden',
             loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
@@ -389,7 +486,7 @@ export function DropdownInside({
           }
           role="combobox"
         >
-          <span className="min-w-0 truncate">{getShownValue(value)}</span>
+          <span className="min-w-0 truncate">{getShownValue()}</span>
           <div className="fill-background-10 shrink-0">
             {direction === 'up' ? (
               <ArrowUpIcon size={16} />
@@ -412,13 +509,18 @@ export function DropdownInside({
           display={display}
           isOpen={isOpen}
           items={items}
+          multiple={props.multiple}
+          onSelectAll={() =>
+            props.multiple && props.onChange(items.map((i) => i.value))
+          }
+          onDeselectAll={() => props.multiple && props.onChange([])}
           onSelect={(item: DropdownItem) => {
             ref.current?.focus();
-            onChange(item.value);
+            selectItem(item);
           }}
           variant={variant}
           maxHeight={maxHeight}
-          value={value}
+          isSelected={(value) => isItemSelected(props, value)}
           ref={listRef}
           anchorName={anchorName}
           innerFocusValue={

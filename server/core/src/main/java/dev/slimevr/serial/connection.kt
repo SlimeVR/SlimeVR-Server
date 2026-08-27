@@ -27,7 +27,7 @@ sealed interface SerialConnectionActions {
 }
 
 typealias SerialConnectionContext = Context<SerialConnectionState, SerialConnectionActions>
-typealias SerialConnectionBehaviour = Behaviour<SerialConnectionState, SerialConnectionActions, SerialConnection.Console>
+typealias SerialConnectionBehaviour = Behaviour<SerialConnection.Console>
 
 sealed interface SerialConnection {
 	class Console(
@@ -38,7 +38,7 @@ sealed interface SerialConnection {
 
 		companion object {
 			fun create(handle: SerialPortHandle, scope: CoroutineScope): Console {
-				val behaviours = listOf(SerialLogBehaviour())
+				val behaviours = emptyList<SerialConnectionBehaviour>()
 				val context = Context.create(
 					initialState = SerialConnectionState(
 						portLocation = handle.portLocation,
@@ -47,6 +47,7 @@ sealed interface SerialConnection {
 						logLines = listOf(),
 					),
 					scope = scope,
+					reducer = ::reduce,
 					behaviours = behaviours,
 					name = "SerialConnection[${handle.descriptivePortName}]",
 				)

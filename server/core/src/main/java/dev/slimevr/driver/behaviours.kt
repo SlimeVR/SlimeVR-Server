@@ -113,14 +113,6 @@ class DriverOutgoingTrackersBehaviour : DriverBridgeBehaviour {
 }
 
 class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
-	override fun reduce(
-		state: DriverBridgeState,
-		action: DriverBridgeActions,
-	): DriverBridgeState = when (action) {
-		is DriverBridgeActions.AddTracker -> state.copy(trackers = state.trackers + (action.id to action.trackerId))
-		is DriverBridgeActions.UpdateProtocolVersion -> state.copy(protocolVersion = action.version)
-	}
-
 	override fun observe(receiver: DriverBridge) {
 		receiver.inbound.on<DriverBridgeInbound.Version> { event ->
 			receiver.context.dispatch(DriverBridgeActions.UpdateProtocolVersion(event.protocolVersion))
@@ -146,9 +138,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerPosition> { event ->
 			val trackerId = receiver.context.state.value.trackers[event.id] ?: return@on
-			receiver.appContext.server.getTracker(trackerId)?.context?.dispatch(
-				TrackerActions.SetRotation(rotation = event.rotation, position = event.position),
-			)
+			receiver.appContext.server.getTracker(trackerId)?.setRotation(rotation = event.rotation, position = event.position)
 		}.launchIn(receiver.context.scope)
 
 		receiver.inbound.on<DriverBridgeInbound.TrackerBattery> { event ->
@@ -185,6 +175,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 		val (device, tracker) = if (existingTracker != null) {
 			val device = server.getDevice(existingTracker.context.state.value.deviceId)
 				?: error("could not find existing device for serial $serial")
+			existingTracker.context.dispatch(TrackerActions.Update { copy(intendedBodyPart = bodyPart) })
 			Pair(device, existingTracker)
 		} else {
 			val deviceId = server.nextHandle()
@@ -207,6 +198,7 @@ class DriverIncomingTrackersBehaviour : DriverBridgeBehaviour {
 				id = trackerId,
 				name = name,
 				bodyPart = bodyPart,
+				intendedBodyPart = bodyPart,
 				deviceId = deviceId,
 				hardwareId = serial,
 				origin = DeviceOrigin.DRIVER,

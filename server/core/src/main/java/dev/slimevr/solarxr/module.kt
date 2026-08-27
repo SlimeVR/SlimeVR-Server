@@ -39,7 +39,7 @@ sealed interface SolarXRBridgeActions {
 }
 
 typealias SolarXRBridgeContext = Context<SolarXRBridgeState, SolarXRBridgeActions>
-typealias SolarXRBridgeBehaviour = Behaviour<SolarXRBridgeState, SolarXRBridgeActions, SolarXRBridge>
+typealias SolarXRBridgeBehaviour = Behaviour<SolarXRBridge>
 
 suspend fun onSolarXRMessage(message: MessageBundle, context: SolarXRBridge) {
 	message.dataFeedMsgs?.forEach {
@@ -155,6 +155,7 @@ class SolarXRBridge(
 			add(TrackingChecklistBehaviour(appContext.trackingChecklist, appContext.config.settings))
 			add(AssignTrackerBehaviour(appContext.server))
 			add(DongleSettingsBehaviour(appContext.server))
+			add(TelemetryBehaviour(appContext.server))
 			add(DriverHandshakeBehaviour(appContext))
 			add(DriverOutgoingTrackersBehaviour(appContext))
 			add(DriverIncomingTrackersBehaviour(appContext))
@@ -163,6 +164,7 @@ class SolarXRBridge(
 			add(KnownTrackersBehaviour(appContext.config.settings))
 			add(BvhBehaviour(appContext.bvhManager))
 			add(InstalledInfoBehaviour())
+			add(ServerInfosBehaviour(appContext.serverInfos))
 			add(KeybindsBehaviour(appContext.config.settings, appContext.keybindManager))
 			add(SessionCalibrationBehaviour(appContext.resetsManager))
 			add(StayAlignedBehaviour(appContext.config.settings, appContext.server))
@@ -177,6 +179,7 @@ class SolarXRBridge(
 			val managedContext = ManagedContext.create(
 				initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = buildBehaviours(appContext) + extraBehaviours(appContext),
 				name = "SolarXR[$id]",
 			)

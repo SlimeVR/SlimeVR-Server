@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
+@file:OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 
 package dev.slimevr.heightcalibration
 
@@ -41,6 +41,7 @@ private val STANDING_POSITION = Vector3(0f, 1.7f, 0f)
 fun testHeightCalibrationContext(scope: kotlinx.coroutines.CoroutineScope) = HeightCalibrationContext.create(
 	initialState = INITIAL_HEIGHT_CALIBRATION_STATE,
 	scope = scope,
+	reducer = ::reduce,
 	behaviours = listOf(BaseCalibrationBehaviour()),
 	name = "HeightCalibrationTest",
 )

@@ -44,12 +44,7 @@ class DriverIncomingTrackersBehaviour(
 					return@onDriverMessage
 				}
 
-				existing.context.dispatchAll(
-					listOf(
-						TrackerActions.SetDriverName(driverName),
-						TrackerActions.SetStatus(TrackerStatus.OK),
-					),
-				)
+				existing.context.dispatchAll(listOf(TrackerActions.SetDriverName(driverName), TrackerActions.Update { copy(intendedBodyPart = req.bodyPart) }))
 				receiver.sendDriverMessage(
 					AddTrackerResponse(
 						status = AddTrackerStatus.ALREADY_EXISTS,
@@ -82,6 +77,7 @@ class DriverIncomingTrackersBehaviour(
 				id = trackerId,
 				name = req.displayName ?: "Tracker #$trackerId",
 				bodyPart = req.bodyPart,
+				intendedBodyPart = req.bodyPart,
 				deviceId = deviceId,
 				hardwareId = hardwareId,
 				origin = DeviceOrigin.DRIVER,
@@ -89,7 +85,6 @@ class DriverIncomingTrackersBehaviour(
 				appContext = appContext,
 			)
 			server.context.dispatch(VRServerActions.NewTracker(trackerId, tracker))
-			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
 
 			receiver.sendDriverMessage(
 				AddTrackerResponse(status = AddTrackerStatus.CREATED, trackerId = trackerId.toUShort()),
@@ -124,12 +119,10 @@ class DriverIncomingTrackersBehaviour(
 			val trackerId = event.trackerId.toInt()
 			if (trackerId == 0) return@on
 
-			server.getTracker(trackerId)?.context?.dispatch(
-				TrackerActions.SetRotation(
-					rotation = event.rotation?.let { Quaternion(it.w, it.x, it.y, it.z) },
-					position = event.position?.let { Vector3(it.x, it.y, it.z) },
-					// TODO: send velocity?
-				),
+			server.getTracker(trackerId)?.setRotation(
+				rotation = event.rotation?.let { Quaternion(it.w, it.x, it.y, it.z) },
+				position = event.position?.let { Vector3(it.x, it.y, it.z) },
+				// TODO: send velocity?
 			)
 		}.launchIn(receiver.context.scope)
 	}

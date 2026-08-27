@@ -11,24 +11,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-interface Behaviour<S, A, C> {
-	fun reduce(state: S, action: A): S = state
+interface Behaviour<in C> {
 	fun observe(receiver: C) {}
 }
 
-// TODO: missing remove + prob a unobserve or something to clear the stuff launched
-// in a observe -> each behaviour is prob gonna need its own scope
-class BehaviourList<S, A>(
-	initial: List<Behaviour<S, A, *>>,
+class BehaviourList(
+	initial: List<Behaviour<*>> = emptyList(),
 ) {
 	@Volatile
-	private var items: List<Behaviour<S, A, *>> = initial.toList()
+	private var items: List<Behaviour<*>> = initial.toList()
 
-	fun addAll(newItems: List<Behaviour<S, A, *>>) {
+	fun addAll(newItems: List<Behaviour<*>>) {
 		items = items + newItems
 	}
 
-	fun snapshot(): List<Behaviour<S, A, *>> = items
+	fun snapshot(): List<Behaviour<*>> = items
 }
 
 class ManagedContext<S, A>(
@@ -41,13 +38,14 @@ class ManagedContext<S, A>(
 		fun <S, A> create(
 			initialState: S,
 			scope: CoroutineScope,
-			behaviours: List<Behaviour<S, A, *>>,
+			reducer: (S, A) -> S = { state, _ -> state },
+			behaviours: List<Behaviour<*>> = emptyList(),
 			debugMiddleware: DebugMiddleware<S, A>? = null,
 			name: String,
 		): ManagedContext<S, A> {
 			val job = SupervisorJob(scope.coroutineContext[Job])
 			val scopeWithJob = CoroutineScope(scope.coroutineContext + job)
-			val context = Context.create(initialState, scopeWithJob, behaviours, debugMiddleware, name)
+			val context = Context.create(initialState, scopeWithJob, reducer, behaviours, debugMiddleware, name)
 			return ManagedContext(context, job)
 		}
 	}
@@ -56,44 +54,41 @@ class ManagedContext<S, A>(
 class Context<S, A>(
 	private val mutableStateFlow: MutableStateFlow<S>,
 	val scope: CoroutineScope,
-	val behaviours: BehaviourList<S, A>,
+	val reducer: (S, A) -> S = { state, _ -> state },
+	val behaviours: BehaviourList,
 	private val debugMiddleware: DebugMiddleware<S, A>? = null,
 ) {
 	val state: StateFlow<S> = mutableStateFlow.asStateFlow()
 
 	fun dispatch(action: A) {
 		if (debugMiddleware == null) {
-			mutableStateFlow.update { currentState -> reduce(currentState, action) }
+			mutableStateFlow.update { currentState -> reducer(currentState, action) }
 			return
 		}
 		val caller = captureCallerBehaviour()
 		val before = mutableStateFlow.value
-		mutableStateFlow.update { currentState -> reduce(currentState, action) }
+		mutableStateFlow.update { currentState -> reducer(currentState, action) }
 		debugMiddleware.onDispatch(caller, before, action, mutableStateFlow.value)
 	}
 
 	fun dispatchAll(actions: List<A>) {
 		if (debugMiddleware == null) {
 			mutableStateFlow.update { currentState ->
-				actions.fold(currentState) { s, action -> reduce(s, action) }
+				actions.fold(currentState) { s, action -> reducer(s, action) }
 			}
 			return
 		}
 		val caller = captureCallerBehaviour()
 		val before = mutableStateFlow.value
 		mutableStateFlow.update { currentState ->
-			actions.fold(currentState) { s, action -> reduce(s, action) }
+			actions.fold(currentState) { s, action -> reducer(s, action) }
 		}
 		debugMiddleware.onDispatchAll(caller, before, actions, mutableStateFlow.value)
 	}
 
 	fun <C> observeAll(receiver: C) = behaviours.snapshot().forEach { behaviour ->
 		@Suppress("UNCHECKED_CAST")
-		(behaviour as Behaviour<S, A, C>).observe(receiver)
-	}
-
-	private fun reduce(currentState: S, action: A): S = behaviours.snapshot().fold(currentState) { state, behaviour ->
-		behaviour.reduce(state, action)
+		(behaviour as Behaviour<C>).observe(receiver)
 	}
 
 	private fun captureCallerBehaviour(): String? {
@@ -110,7 +105,8 @@ class Context<S, A>(
 		fun <S, A> create(
 			initialState: S,
 			scope: CoroutineScope,
-			behaviours: List<Behaviour<S, A, *>>,
+			reducer: (S, A) -> S = { state, _ -> state },
+			behaviours: List<Behaviour<*>> = emptyList(),
 			debugMiddleware: DebugMiddleware<S, A>? = null,
 			name: String,
 		): Context<S, A> {
@@ -121,6 +117,7 @@ class Context<S, A>(
 			val context = Context(
 				mutableStateFlow,
 				scopeWithName,
+				reducer,
 				BehaviourList(behaviours),
 				effectiveDebugMiddleware,
 			)

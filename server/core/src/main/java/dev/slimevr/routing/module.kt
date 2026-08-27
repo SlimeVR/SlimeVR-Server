@@ -22,7 +22,7 @@ sealed interface BoneRoutingActions {
 }
 
 typealias BoneRoutingContext = Context<BoneRoutingState, BoneRoutingActions>
-typealias BoneRoutingBehaviour = Behaviour<BoneRoutingState, BoneRoutingActions, BoneRoutingManager>
+typealias BoneRoutingBehaviour = Behaviour<BoneRoutingManager>
 
 class BoneRoutingManager(val context: BoneRoutingContext) {
 	fun startObserving(appContext: AppContextProvider) {
@@ -35,7 +35,7 @@ class BoneRoutingManager(val context: BoneRoutingContext) {
 			val context = Context.create(
 				initialState = BoneRoutingState(routes = emptyMap()),
 				scope = scope,
-				behaviours = listOf(BoneRoutingBaseBehaviour()),
+				reducer = ::reduce,
 				name = "BoneRoutingManager",
 			)
 			return BoneRoutingManager(context)

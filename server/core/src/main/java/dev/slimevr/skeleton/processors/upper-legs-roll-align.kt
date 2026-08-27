@@ -32,7 +32,7 @@ class UpperLegsRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 
 				val sourceRotation = boneInputs.getValue(bodyPartToSource.second).rawRotation
 				val alignedRotation = alignRoll(bone.rawRotation, sourceRotation)
-				updated[bodyPartToSource.first] = bone.copy(rawRotation = bone.rawRotation.interpR(alignedRotation, ratio))
+				updated[bodyPartToSource.first] = bone.copy(rawRotation = bone.rawRotation.interpQ(alignedRotation, ratio))
 			}
 		}
 

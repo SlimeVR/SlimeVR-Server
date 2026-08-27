@@ -11,6 +11,7 @@ import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.solarxr.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -31,6 +32,7 @@ data class Phase1Context(
 ) : Phase1ContextProvider
 
 interface AppContextProvider : Phase1ContextProvider {
+	val serverInfos: ServerInfos
 	val featureFlags: FeatureFlags
 	val keybindManager: KeybindManager
 	val skeleton: Skeleton
@@ -55,6 +57,7 @@ class AppContext(
 	override val server: VRServer,
 	override val config: AppConfig,
 	override val serialServer: SerialServer,
+	override val serverInfos: ServerInfos,
 	override val featureFlags: FeatureFlags,
 	override val keybindManager: KeybindManager,
 	override val skeleton: Skeleton,

@@ -1,10 +1,10 @@
+@file:OptIn(kotlin.concurrent.atomics.ExperimentalAtomicApi::class)
+
 package dev.slimevr
 
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
-import dev.slimevr.config.DefaultSettingsBehaviour
-import dev.slimevr.config.DefaultUserBehaviour
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsConfigState
 import dev.slimevr.config.SettingsState
@@ -24,7 +24,6 @@ import dev.slimevr.heightcalibration.HeightCalibrationState
 import dev.slimevr.keybind.KeybindManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
-import dev.slimevr.resets.ResetsBasicBehaviour
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.resets.ResetsMountingTimeoutBehaviour
 import dev.slimevr.resets.ResetsState
@@ -37,15 +36,16 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
+import dev.slimevr.solarxr.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
 import dev.slimevr.tracker.StayAlignedData
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerBehaviour
-import dev.slimevr.tracker.behaviours.TrackerBasicBehaviour
+import dev.slimevr.tracker.behaviours.TrackerCalibrationRefreshBehaviour
+import dev.slimevr.tracker.behaviours.TrackerTpsBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
-import dev.slimevr.udp.UdpServer
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrcosc.VRCOSCManager
@@ -59,6 +59,13 @@ import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
+import dev.slimevr.config.reduce as reduceConfig
+import dev.slimevr.driver.reduce as reduceDriverBridge
+import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration
+import dev.slimevr.resets.reduce as reduceResets
+import dev.slimevr.skeleton.reduce as reduceSkeleton
+import dev.slimevr.tracker.reduce as reduceTracker
+import dev.slimevr.udp.reduce as reduceUdpServer
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
 	openPort = { loc, _, _ -> SerialPortHandle(loc, "Fake $loc", {}, {}) },
@@ -91,7 +98,7 @@ fun buildTestUserConfig(scope: CoroutineScope): UserConfig {
 	val context = Context.create(
 		initialState = UserConfigState(data = UserConfigData(), name = "test"),
 		scope = scope,
-		behaviours = listOf(DefaultUserBehaviour()),
+		reducer = ::reduceConfig,
 		name = "TestUserConfig",
 	)
 	val userConfig = UserConfig(context, scope = scope, storage = NoopConfigStorage, userConfigDir = "user")
@@ -103,6 +110,7 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 	val context = Context.create(
 		initialState = DEFAULT_SKELETON_STATE,
 		scope = scope,
+		reducer = ::reduceSkeleton,
 		behaviours = listOf(ProportionsBehaviour(buildTestUserConfig(scope))),
 		name = "TestSkeleton",
 	)
@@ -124,7 +132,8 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 			lastFullResetTime = null,
 		),
 		scope = scope,
-		behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),
+		reducer = ::reduceResets,
+		behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 		name = "TestResetsManager",
 	)
 	val resetsManager = ResetsManager(context, server, settings)
@@ -138,6 +147,7 @@ fun buildTestTracker(
 	settings: Settings,
 	id: Int,
 	bodyPart: BodyPart? = null,
+	intendedBodyPart: BodyPart? = null,
 	status: TrackerStatus = TrackerStatus.DISCONNECTED,
 	origin: DeviceOrigin = DeviceOrigin.UDP,
 	imuType: ImuType? = ImuType.BNO085,
@@ -145,7 +155,7 @@ fun buildTestTracker(
 	completedRestCalibration: Boolean? = true,
 	rawRotation: Quaternion = Quaternion.IDENTITY,
 	additionalBehaviours: List<TrackerBehaviour> = listOf(),
-	sessionCalibration: SessionCalibration? = null,
+	sessionCalibration: SessionCalibration = SessionCalibration(),
 	motion: Motion = Tracker.DEFAULT_STATE.motion,
 	stayAlignedData: StayAlignedData = Tracker.DEFAULT_STATE.stayAlignedData,
 ): Tracker {
@@ -157,6 +167,7 @@ fun buildTestTracker(
 		name = "Tracker $id",
 		imuType = imuType,
 		bodyPart = bodyPart,
+		intendedBodyPart = intendedBodyPart,
 		customName = null,
 		sessionCalibration = sessionCalibration,
 		rawRotation = rawRotation,
@@ -169,7 +180,8 @@ fun buildTestTracker(
 	val context = Context.create(
 		initialState = state,
 		scope = scope,
-		behaviours = listOf(TrackerBasicBehaviour(settings)) + additionalBehaviours,
+		reducer = ::reduceTracker,
+		behaviours = listOf(TrackerCalibrationRefreshBehaviour(), TrackerTpsBehaviour()) + additionalBehaviours,
 		name = "TestTracker[$id]",
 	)
 	return Tracker(context, appContext, settings)
@@ -180,7 +192,7 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 	val context = Context.create(
 		initialState = initialState,
 		scope = scope,
-		behaviours = listOf(DefaultSettingsBehaviour()),
+		reducer = ::reduceConfig,
 		name = "Settings[test]",
 	)
 	return Settings(context, scope, NoopConfigStorage, "settings")
@@ -190,6 +202,7 @@ fun buildTestDriverBridge(server: VRServer, appContext: AppContextProvider, id: 
 	val context = Context.create<DriverBridgeState, DriverBridgeActions>(
 		initialState = DriverBridgeState(protocolVersion = 0, trackers = emptyMap()),
 		scope = server.context.scope,
+		reducer = ::reduceDriverBridge,
 		behaviours = emptyList(),
 		name = "TestDriver[$id]",
 	)
@@ -201,6 +214,7 @@ fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: 
 	val context = Context.create<HeightCalibrationState, HeightCalibrationActions>(
 		initialState = initialState,
 		scope = scope,
+		reducer = ::reduceHeightCalibration,
 		behaviours = emptyList(),
 		name = "HeightCalibration[test]",
 	)
@@ -224,7 +238,7 @@ private fun buildTestUdpServer(): dev.slimevr.udp.UdpServer {
 	val context = Context.create(
 		initialState = dev.slimevr.udp.UdpServerState(emptyMap()),
 		scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Job()),
-		behaviours = listOf(dev.slimevr.udp.UdpServerBaseBehaviour()),
+		reducer = ::reduceUdpServer,
 		name = "TestUdpServer",
 	)
 	return dev.slimevr.udp.UdpServer(context) { "127.0.0.1" }.also { it.startObserving() }
@@ -247,6 +261,7 @@ abstract class TestAppContext : AppContextProvider {
 	override val skeleton: Skeleton get() = error("not used in test")
 	override val config: AppConfig get() = error("not used in test")
 	override val serialServer: SerialServer get() = error("not used in test")
+	override val serverInfos: ServerInfos get() = error("not used in test")
 	override val firmwareManager: FirmwareManager get() = error("not used in test")
 	override val vrcConfigManager: VRCConfigManager? = null
 	override val provisioningManager: ProvisioningManager get() = error("not used in test")

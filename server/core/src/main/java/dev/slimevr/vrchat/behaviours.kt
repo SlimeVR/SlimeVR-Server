@@ -6,21 +6,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
-class DefaultVRCConfigBehaviour : VRCConfigBehaviour {
-	override fun reduce(state: VRCConfigState, action: VRCConfigActions) = when (action) {
-		is VRCConfigActions.UpdateValues -> state.copy(currentValues = action.values)
-
-		is VRCConfigActions.ToggleMutedWarning -> {
-			if (action.key !in VRC_VALID_KEYS) {
-				state
-			} else if (action.key in state.mutedWarnings) {
-				state.copy(mutedWarnings = state.mutedWarnings - action.key)
-			} else {
-				state.copy(mutedWarnings = state.mutedWarnings + action.key)
-			}
-		}
-	}
-
+class DefaultVRCConfigBehaviour : VRCConfigBehaviourType {
 	override fun observe(receiver: VRCConfigManager) {
 		receiver.context.state.map { it.mutedWarnings }.distinctUntilChanged().onEach { warnings ->
 			receiver.config.settings.context.dispatch(

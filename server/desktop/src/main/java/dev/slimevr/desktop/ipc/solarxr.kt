@@ -66,8 +66,9 @@ class OpenBindingsProviderBehaviour : SolarXRBridgeBehaviour {
 			.mapNotNull { it.driverName }
 			.distinctUntilChanged()
 			.onEach { driverName ->
-				AppLogger.solarxr.info("Driver name changed to $driverName")
-				receiver.context.scope.launch { startBindingsProvider() }
+				if (driverName == "SteamVR") {
+					receiver.context.scope.launch { startBindingsProvider() }
+				}
 			}.launchIn(receiver.context.scope)
 	}
 }

@@ -14,22 +14,6 @@ import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.VMCOSCInputState
 
 class VMCInputBehaviour(private val settings: Settings) : VMCBehaviour {
-	override fun reduce(state: VMCState, action: VMCActions) = when (action) {
-		is VMCActions.SetInput -> state.copy(
-			status = state.status.copy(
-				inputState = action.state,
-				inputPort = action.port,
-				inputError = action.error,
-			),
-		)
-
-		is VMCActions.SetLastReceivedInput -> state.copy(
-			status = state.status.copy(lastReceivedInputMillis = action.millis),
-		)
-
-		else -> state
-	}
-
 	override fun observe(receiver: VMCManager) {
 		var oscReceiver: OscReceiver? = null
 

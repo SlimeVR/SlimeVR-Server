@@ -42,24 +42,6 @@ class VRCOSCOutputBehaviour(
 		var healthySince: TimeSource.Monotonic.ValueTimeMark? = null
 	}
 
-	override fun reduce(state: VRCOSCState, action: VRCOSCActions) = when (action) {
-		is VRCOSCActions.SetOutput -> state.copy(
-			status = state.status.copy(
-				outputState = action.state,
-				targetAddress = action.targetAddress,
-				targetPort = action.targetPort,
-				targetSource = action.targetSource,
-				outputError = action.error,
-			),
-		)
-
-		is VRCOSCActions.SetLastFrameSent -> state.copy(
-			status = state.status.copy(lastFrameSentMillis = action.millis),
-		)
-
-		else -> state
-	}
-
 	override fun observe(receiver: VRCOSCManager) {
 		val runtime = OutputRuntime()
 

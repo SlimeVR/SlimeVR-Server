@@ -10,7 +10,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.TrackerActions
-import dev.slimevr.tracker.getFirstFineFor
+import dev.slimevr.tracker.getFirstActiveFor
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -46,7 +46,7 @@ sealed interface ResetsActions {
 }
 
 typealias ResetsContext = Context<ResetsState, ResetsActions>
-typealias ResetsBehaviour = Behaviour<ResetsState, ResetsActions, ResetsManager>
+typealias ResetsBehaviour = Behaviour<ResetsManager>
 
 class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings) {
 	fun startObserving() = context.observeAll(this)
@@ -141,7 +141,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 		val referenceRotation = allTrackers
 			.map { it.context.state.value }
 			.filter { it.position != null }
-			.getFirstFineFor(BodyPart.HEAD)
+			.getFirstActiveFor(BodyPart.HEAD)
 			?.rawRotation ?: Quaternion.IDENTITY
 
 		// Dispatch the reset action to the trackers
@@ -149,7 +149,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			it.context.dispatch(
 				when (resetType) {
 					ResetType.YAW -> TrackerActions.YawReset(referenceRotation, config.yawResetSmoothTime.toDouble().seconds)
-					ResetType.FULL -> TrackerActions.FullReset(referenceRotation)
+					ResetType.FULL -> TrackerActions.FullReset(referenceRotation, config.resetPositionalHeadAttitude)
 					ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
 				},
 			)
@@ -187,7 +187,8 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 					lastFullResetTime = null,
 				),
 				scope = scope,
-				behaviours = listOf(ResetsBasicBehaviour(), ResetsMountingTimeoutBehaviour()),
+				reducer = ::reduce,
+				behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 				name = "ResetsManager",
 			)
 			return ResetsManager(context, ctx.server, ctx.config.settings)

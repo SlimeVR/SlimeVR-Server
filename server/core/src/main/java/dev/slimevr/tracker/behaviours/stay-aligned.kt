@@ -5,7 +5,6 @@ import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
-import dev.slimevr.tracker.TrackerState
 import dev.slimevr.tracker.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
 import dev.slimevr.tracker.stayaligned.StayAlignedDefaults.YAW_CORRECTION_DEFAULT
 import dev.slimevr.tracker.stayaligned.TrackerYawCorrection
@@ -28,8 +27,22 @@ class TrackerStayAlignedBehaviour(
 ) : TrackerBehaviour {
 
 	override fun observe(receiver: Tracker) {
+		observeConfig(receiver)
 		observeReset(receiver)
 		observeRun(receiver)
+	}
+
+	/**
+	 * Sync stay aligned enabled state from settings
+	 */
+	private fun observeConfig(receiver: Tracker) {
+		settings.context.state
+			.map { it.data.stayAlignedConfig.enabled }
+			.distinctUntilChanged()
+			.onEach { enabled ->
+				receiver.context.dispatch(TrackerActions.SetStayAlignedEnabled(enabled))
+			}
+			.launchIn(receiver.context.scope)
 	}
 
 	/**
@@ -85,10 +98,5 @@ class TrackerStayAlignedBehaviour(
 					}
 			}
 			.launchIn(receiver.context.scope)
-	}
-
-	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
-		is TrackerActions.SetYawCorrection -> state.copy(stayAlignedData = state.stayAlignedData.copy(yawCorrection = action.yawCorrection))
-		else -> state
 	}
 }

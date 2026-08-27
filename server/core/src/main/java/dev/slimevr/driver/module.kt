@@ -39,7 +39,7 @@ sealed interface DriverBridgeOutbound {
 }
 
 typealias DriverBridgeContext = Context<DriverBridgeState, DriverBridgeActions>
-typealias DriverBridgeBehaviour = Behaviour<DriverBridgeState, DriverBridgeActions, DriverBridge>
+typealias DriverBridgeBehaviour = Behaviour<DriverBridge>
 
 enum class DriverBridgeSource {
 	DRIVER,
@@ -77,6 +77,7 @@ class DriverBridge(
 					trackers = emptyMap(),
 				),
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = behaviours,
 				name = "Driver[$id]",
 			)

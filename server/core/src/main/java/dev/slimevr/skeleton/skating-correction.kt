@@ -26,6 +26,11 @@ data class COMState(
 	val acceleration: Vector3,
 )
 
+data class LockState(
+	val locked: Boolean,
+	val position: Vector3 = Vector3.NULL,
+)
+
 val VELOCITY_BODY_PARTS = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
 val FOOT_VELOCITY_SENSITIVITY = 1f
@@ -37,7 +42,7 @@ val SKATING_VELOCITY_THRESHOLD = 2.4f
 val SKATING_ROTATIONAL_VELOCITY_THRESHOLD = 4.5f
 val SKATING_ACCELERATION_THRESHOLD = 0.7f
 
-// TODO Floor level needs to be calibrated in some way
+// TODO Floor level needs to be calibrated in some way; originally done on full reset
 val FLOOR_LEVEL = 0f
 val FLOOR_DISTANCE_THRESHOLD = 0.065f
 
@@ -68,93 +73,143 @@ fun shouldLock(
 	(velocity.acceleration.len() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier)
 
 // TODO Use this to calculate feet pressure
-fun centerOfMass(bones: ComputedSkeleton): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.NULL) { acc: Vector3, massEntry ->
+fun centerOfMass(
+	bones: ComputedSkeleton,
+): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.NULL) { acc: Vector3, massEntry ->
 	val bone = bones[massEntry.key] ?: return@fold acc
 	val boneCenter = (bone.headPosition + bone.tailPosition) / 2f
 	return@fold acc + (boneCenter * massEntry.value)
+}
+
+fun limitedDeltaTime(
+	from: ComparableTimeMark,
+	to: ComparableTimeMark,
+): Float = (to - from).toDouble(DurationUnit.SECONDS).toFloat()
+	.coerceAtLeast(0.001f)
+
+fun computeComState(time: ComparableTimeMark, last: COMState?, com: Vector3): COMState = if (last != null) {
+	val deltaTime = limitedDeltaTime(last.time, time)
+	val comVelocity = (com - last.position) / deltaTime
+	val comAcceleration = (comVelocity - last.velocity) / deltaTime
+	COMState(
+		time,
+		com,
+		comVelocity,
+		comAcceleration,
+	)
+} else {
+	COMState(
+		time,
+		com,
+		Vector3.NULL,
+		Vector3.NULL,
+	)
+}
+
+fun computeVelocityState(
+	time: ComparableTimeMark,
+	last: VelocityState?,
+	bone: BoneState,
+): VelocityState = if (last != null) {
+	val deltaPosition = bone.tailPosition - last.position
+	val deltaTime = limitedDeltaTime(last.time, time)
+	VelocityState(
+		time,
+		bone.tailPosition,
+		bone.rotation,
+		deltaPosition.len(),
+		deltaPosition / deltaTime,
+		// May need to be `angleToR` while polarity tracking is not implemented
+		last.rotation.angleToQ(bone.rotation) / deltaTime,
+		Vector3.NULL,
+	)
+} else {
+	VelocityState(
+		time,
+		bone.tailPosition,
+		bone.rotation,
+		0f,
+		Vector3.NULL,
+		0f,
+		Vector3.NULL,
+	)
+}
+
+fun computeLockState(
+	wasLocked: Boolean,
+	isLocked: Boolean,
+	position: Vector3,
+): LockState? = if (isLocked && !wasLocked) {
+	LockState(
+		true,
+		position,
+	)
+} else if (!isLocked && wasLocked) {
+	// Last locked position could be retained if needed, but I can't think
+	//  of a use
+	LockState(
+		false,
+	)
+} else {
+	null
 }
 
 // Probably not a SkeletonProcessor, maybe computed processor or smth
 class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 	override var enabled: Boolean = true
 
-	// Do we need to store this or do we just want velocity? We can probably just pull
-	//  the last state
-	val velocity: MutableMap<BodyPart, VelocityState> = mutableMapOf()
-	val lockStates: MutableMap<BodyPart, Boolean> = mutableMapOf()
-
+	// Center of mass
 	var comState: COMState? = null
 
-	override fun process(fk: ComputedSkeleton, ikTarget: IKTargets): IKTargets {
+	// Do we need to store this or do we just want velocity? We can probably just pull
+	//  the last state
+	val velocity: BodyPartMap<VelocityState> = bodyPartMap()
+	val lockState: BodyPartMap<LockState> = bodyPartMap()
+
+	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets {
 		val curTime = timeSource.markNow()
 
-		val lastComState = comState
-		val com = centerOfMass(fk)
-		val newComState = if (lastComState != null) {
-			val deltaT = (curTime - lastComState.time).toDouble(DurationUnit.SECONDS).toFloat()
-				.coerceAtLeast(0.001f)
-			val comVelocity = (com - lastComState.position) / deltaT
-			val comAcceleration = (comVelocity - lastComState.velocity) / deltaT
-			COMState(
-				curTime,
-				com,
-				comVelocity,
-				comAcceleration,
-			)
-		} else {
-			COMState(
-				curTime,
-				com,
-				Vector3.NULL,
-				Vector3.NULL,
-			)
-		}
-		comState = newComState
+		// Update center of mass
+		comState = computeComState(
+			curTime,
+			comState,
+			centerOfMass(fk),
+		)
 
 		for (bodyPart in VELOCITY_BODY_PARTS) {
 			val curBone = fk[bodyPart] ?: continue
-			val lastVel = velocity[bodyPart]
 
-			// Calculate velocity state
-			val newVel = if (lastVel != null) {
-				val deltaP = curBone.tailPosition - lastVel.position
-				val deltaT =
-					(curTime - lastVel.time).toDouble(DurationUnit.SECONDS).toFloat()
-						.coerceAtLeast(0.001f)
-				VelocityState(
-					curTime,
-					curBone.tailPosition,
-					curBone.rotation,
-					deltaP.len(),
-					deltaP / deltaT,
-					// May need to be `angleToR` while polarity tracking is not implemented
-					lastVel.rotation.angleToQ(curBone.rotation) / deltaT,
-					Vector3.NULL,
-				)
-			} else {
-				VelocityState(
-					curTime,
-					curBone.tailPosition,
-					curBone.rotation,
-					0f,
-					Vector3.NULL,
-					0f,
-					Vector3.NULL,
-				)
-			}
+			// TODO Pull velocity out into the base skeleton, we need it elsewhere too
+			val newVel = computeVelocityState(
+				curTime,
+				velocity[bodyPart],
+				curBone,
+			)
 			velocity[bodyPart] = newVel
 
 			// Consider locking BodyPart
-			val wasLocked = lockStates.getOrDefault(bodyPart, false)
+			val lastState = lockState[bodyPart]
+			val wasLocked = lastState?.locked ?: false
 			val isLocked = shouldLock(
 				newVel,
 				if (wasLocked) SKATING_LOCK_ENGAGE_PERCENT else 1f,
 			)
-			lockStates[bodyPart] = isLocked
-		}
 
-		// TODO: Actually add IK targets
-		return ikTarget
+			val activeState = computeLockState(
+				wasLocked,
+				isLocked,
+				curBone.tailPosition,
+			)?.also {
+				// Track lock state changes
+				lockState[bodyPart] = it
+				// Otherwise pull the last state
+			} ?: lastState ?: continue
+
+			if (activeState.locked) {
+				ikTargets[bodyPart] = activeState.position
+			}
+		}
+		return ikTargets
 	}
 }
 
@@ -163,12 +218,13 @@ class FloorClipProcessor(
 ) : SkeletonTargetProcessor {
 	override var enabled: Boolean = true
 
-	override fun process(fk: ComputedSkeleton, ikTarget: IKTargets): IKTargets = ikTarget.mutate { targets ->
+	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets {
 		for (bodyPart in bodyParts) {
 			// Get existing target or make a new one at the current bone position
-			val target = targets[bodyPart] ?: fk[bodyPart]?.tailPosition ?: continue
+			val target = ikTargets[bodyPart] ?: fk[bodyPart]?.tailPosition ?: continue
 			// Snap the target up to the floor if it's under
-			targets[bodyPart] = Vector3(target.x, target.y.coerceAtLeast(0f), target.z)
+			ikTargets[bodyPart] = Vector3(target.x, target.y.coerceAtLeast(0f), target.z)
 		}
+		return ikTargets
 	}
 }

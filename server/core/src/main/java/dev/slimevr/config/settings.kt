@@ -42,6 +42,7 @@ data class DongleConfig(
 data class TrackersConfig(
 	val trackerPort: Int = 6969, // Not in SolarXR
 	val globalMagEnabled: Boolean = false,
+	val timeoutDelay: Float = 20.0f,
 )
 
 @Serializable
@@ -64,11 +65,6 @@ data class BoneRoutingConfig(
 data class DriverConfig(
 	val enabled: Boolean = true,
 	val sendDerivedVelocity: Boolean = false, // TODO do we actually need that or can we disable OpenVR's prediction
-)
-
-@Serializable
-data class TimeoutConfig(
-	val duration: Float = 30.0f,
 )
 
 @Serializable
@@ -153,7 +149,7 @@ data class SkeletonRatiosConfig(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonFilteringConfig(
-	val type: FilteringType = FilteringType.PREDICTION,
+	val type: FilteringType = FilteringType.NONE,
 	val amount: Float = 0.2f,
 )
 
@@ -228,7 +224,6 @@ data class SettingsConfigState(
 	val hidConfig: HidConfig = HidConfig(),
 	val boneRoutingConfig: BoneRoutingConfig = BoneRoutingConfig(),
 	val driverConfig: DriverConfig = DriverConfig(),
-	val timeoutConfig: TimeoutConfig = TimeoutConfig(),
 	val tapDetectionConfig: TapDetectionConfig = TapDetectionConfig(),
 	val resetsConfig: ResetsConfig = ResetsConfig(),
 	val keybinds: List<KeybindConfig> = defaultKeybinds(),
@@ -265,7 +260,7 @@ sealed interface SettingsActions {
 }
 
 typealias SettingsContext = Context<SettingsState, SettingsActions>
-typealias SettingsBehaviour = Behaviour<SettingsState, SettingsActions, Settings>
+typealias SettingsBehaviour = Behaviour<Settings>
 
 class Settings(
 	val context: SettingsContext,
@@ -306,11 +301,10 @@ class Settings(
 			}
 			val initialState = SettingsState(name = name, data = initialData)
 
-			val behaviours = listOf(DefaultSettingsBehaviour())
 			val context = Context.create(
 				initialState = initialState,
 				scope = scope,
-				behaviours = behaviours,
+				reducer = ::reduce,
 				name = "Settings[$name]",
 			)
 			val settings = Settings(context, scope = scope, storage = storage, settingsDir = settingsDir)

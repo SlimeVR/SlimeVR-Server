@@ -63,17 +63,6 @@ private fun isHmdLeveled(snapshot: TrackerSnapshot): Boolean {
 }
 
 class BaseCalibrationBehaviour : HeightCalibrationBehaviourType {
-	override fun reduce(state: HeightCalibrationState, action: HeightCalibrationActions) = when (action) {
-		is HeightCalibrationActions.Update -> state.copy(
-			status = action.status,
-			currentHeight = action.currentHeight,
-		)
-
-		is HeightCalibrationActions.SetCanCalibrate -> state.copy(
-			canDoUserHeightCalibration = action.canDo,
-		)
-	}
-
 	fun canCalibrate(trackers: List<TrackerState>): Boolean {
 		val hasHmd = trackers.any { it.bodyPart == BodyPart.HEAD && it.position != null }
 		val hasHand = trackers.any {

@@ -43,7 +43,7 @@ sealed interface HIDReceiverActions {
 }
 
 typealias HIDReceiverContext = Context<HIDReceiverState, HIDReceiverActions>
-typealias HIDReceiverBehaviour = Behaviour<HIDReceiverState, HIDReceiverActions, HIDReceiver>
+typealias HIDReceiverBehaviour = Behaviour<HIDReceiver>
 typealias HIDPacketDispatcher = EventDispatcher<HIDPacket>
 
 class HIDReceiver(
@@ -81,7 +81,6 @@ class HIDReceiver(
 				HIDRotationBehaviour(),
 				HIDBatteryBehaviour(),
 				HIDStatusBehaviour(),
-				HIDPacketLossBehaviour(),
 				HIDSleepBehaviour(),
 				HIDReceiverConfigBehaviour(settings, serialNumber),
 			)
@@ -104,6 +103,7 @@ class HIDReceiver(
 					boardType = "Nya_a",
 				),
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = behaviours,
 				name = "HIDReceiver[$serialNumber]",
 			)

@@ -3,7 +3,7 @@ package dev.slimevr.tracker.stayaligned.poses
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.getFirstFineFor
+import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.tracker.stayaligned.StayAlignedBodyParts
 import dev.slimevr.tracker.stayaligned.StayAlignedDefaults
 import dev.slimevr.tracker.stayaligned.YawUtils.trackerYaw
@@ -83,20 +83,20 @@ class RelaxedPose(
 				(trackerYaw(left.rotation) - trackerYaw(right.rotation)) * 0.5f
 			}
 
-			val upperLegAngle: Angle = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftUpperLeg)?.let { left ->
-				trackerStates.getFirstFineFor(StayAlignedBodyParts.rightUpperLeg)?.let { right ->
+			val upperLegAngle: Angle = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftUpperLeg)?.let { left ->
+				trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightUpperLeg)?.let { right ->
 					halfAngleBetween(left, right)
 				}
 			} ?: Angle.ZERO
 
-			val lowerLegAngle: Angle = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftLowerLeg)?.let { left ->
-				trackerStates.getFirstFineFor(StayAlignedBodyParts.rightLowerLeg)?.let { right ->
+			val lowerLegAngle: Angle = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftLowerLeg)?.let { left ->
+				trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightLowerLeg)?.let { right ->
 					halfAngleBetween(left, right)
 				}
 			} ?: Angle.ZERO
 
-			val footAngle: Angle = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftFoot)?.let { left ->
-				trackerStates.getFirstFineFor(StayAlignedBodyParts.rightFoot)?.let { right ->
+			val footAngle: Angle = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftFoot)?.let { left ->
+				trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightFoot)?.let { right ->
 					halfAngleBetween(left, right)
 				}
 			} ?: Angle.ZERO

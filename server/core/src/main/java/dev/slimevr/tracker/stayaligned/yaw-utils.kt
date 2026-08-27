@@ -3,8 +3,8 @@ package dev.slimevr.tracker.stayaligned
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.math.angle.AngleAverage
 import dev.slimevr.tracker.TrackerState
-import dev.slimevr.tracker.getAllFineFor
-import dev.slimevr.tracker.getFirstFineFor
+import dev.slimevr.tracker.getAllActiveFor
+import dev.slimevr.tracker.getFirstActiveFor
 import dev.slimevr.util.Side
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -72,13 +72,13 @@ object YawUtils {
 	fun centerYawOfTrackers(
 		trackerStates: List<TrackerState>,
 	): Angle? {
-		val head = trackerStates.getFirstFineFor(StayAlignedBodyParts.head) // Optional
-		val upperBody = trackerStates.getAllFineFor(StayAlignedBodyParts.upperBodyGroup)
+		val head = trackerStates.getFirstActiveFor(StayAlignedBodyParts.head) // Optional
+		val upperBody = trackerStates.getAllActiveFor(StayAlignedBodyParts.upperBodyGroup)
 		if (upperBody.isEmpty()) return null
-		val leftUpperLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftUpperLeg) ?: return null
-		val rightUpperLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.rightUpperLeg) ?: return null
-		val leftLowerLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.leftLowerLeg) ?: return null
-		val rightLowerLeg = trackerStates.getFirstFineFor(StayAlignedBodyParts.rightLowerLeg) ?: return null
+		val leftUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftUpperLeg) ?: return null
+		val rightUpperLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightUpperLeg) ?: return null
+		val leftLowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.leftLowerLeg) ?: return null
+		val rightLowerLeg = trackerStates.getFirstActiveFor(StayAlignedBodyParts.rightLowerLeg) ?: return null
 
 		// Need a minimum set of trackers, and the trackers need to be oriented in a
 		// way where we can actually calculate its yaw.

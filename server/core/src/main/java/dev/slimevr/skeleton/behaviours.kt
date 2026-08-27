@@ -21,40 +21,7 @@ import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 
-class BoneTransformBehaviour : SkeletonBehaviour {
-	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
-		is SkeletonActions.SetBoneRotation -> {
-			val bone = state.boneInputs[action.bodyPart] ?: return state
-			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = action.rotation, isActive = true) })
-		}
-
-		is SkeletonActions.SetBonePosition -> {
-			val bone = state.boneInputs[action.bodyPart] ?: return state
-			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawPosition = action.position, isActive = true) })
-		}
-
-		is SkeletonActions.DisableBone -> {
-			val bone = state.boneInputs[action.bodyPart] ?: return state
-			state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = Quaternion.IDENTITY, rawPosition = Vector3.NULL, isActive = false) })
-		}
-
-		else -> state
-	}
-}
-
 class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
-	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
-		is SkeletonActions.SetProportions -> {
-			val bones = action.lengths.toBoneOffsets()
-			val newBones = state.boneInputs.mapValues { bodyPart, bone ->
-				bone.copy(offset = bones[bodyPart] ?: bone.offset)
-			}
-			state.copy(boneInputs = newBones, skeletonHeight = action.lengths.height())
-		}
-
-		else -> state
-	}
-
 	override fun observe(receiver: Skeleton) {
 		userConfig.context.state
 			.map { state -> state.data.proportions }
@@ -117,13 +84,6 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 	}
 }
 
-class PauseTrackingBehaviour : SkeletonBehaviour {
-	override fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
-		is SkeletonActions.PauseTracking -> state.copy(paused = action.pause)
-		else -> state
-	}
-}
-
 class ComputedSkeletonBehaviour(
 	val hz: Int,
 	val processors: List<SkeletonProcessor> = emptyList(),
@@ -136,8 +96,6 @@ class ComputedSkeletonBehaviour(
 
 	override fun observe(receiver: Skeleton) {
 		var nextLogTime = timeSource.markNow() + logSpamWait
-		var frameStartTime = timeSource.markNow()
-		var lastFrameTime = Duration.ZERO
 		var processTooLongCount = 0
 
 		receiver.context.scope.launch {
@@ -176,10 +134,6 @@ class ComputedSkeletonBehaviour(
 // 							0.01f,
 // 							1000,
 // 						)
-
-						// Frame time tracking ends and restarts here
-						lastFrameTime = frameStartTime.elapsedNow()
-						frameStartTime = timeSource.markNow()
 
 						// Updated the computed skeleton with the result
 						if (!targetState.paused) { // FIXME : bones should still follow the head when paused

@@ -3,7 +3,6 @@ package dev.slimevr.tracker.behaviours
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.TrackerBehaviour
-import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.timeSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -36,26 +35,5 @@ class TrackerYawResetSmoothingBehaviour : TrackerBehaviour {
 					}
 			}
 			.launchIn(receiver.context.scope)
-	}
-
-	override fun reduce(state: TrackerState, action: TrackerActions) = when (action) {
-		is TrackerActions.TickYawResetSmoothing -> {
-			val cal = state.sessionCalibration
-			if (cal == null || state.yawResetSmoothing == null) {
-				// Nothing to advance.
-				state.copy(yawResetSmoothing = null)
-			} else {
-				// The behaviour computed the interpolated heading; store it in the session
-				// calibration. TrackerBasicBehaviour.observe re-applies it to the rotation
-				// (using the last raw rotation), so this progresses even with no new IMU
-				// data. On `done` the seed is cleared, leaving the target heading in place.
-				state.copy(
-					sessionCalibration = cal.copy(headingCorrection = action.heading),
-					yawResetSmoothing = if (action.done) null else state.yawResetSmoothing,
-				)
-			}
-		}
-
-		else -> state
 	}
 }

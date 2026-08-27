@@ -16,6 +16,7 @@ import { Button } from '@/components/commons/Button';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
+import { DongleTelemetry } from './DongleTelemetry';
 import { TrackerStatus } from './TrackerStatus';
 import { ConnectionGroupIcon } from './TrackerConnectionGroup';
 import {
@@ -249,6 +250,7 @@ export function DongleSettingsPage() {
               </div>
             </div>
           </div>
+          <DongleTelemetry trackers={pairedTrackers} />
         </div>
       </div>
     </div>

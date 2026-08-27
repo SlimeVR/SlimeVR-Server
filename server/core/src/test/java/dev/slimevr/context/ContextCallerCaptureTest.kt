@@ -2,7 +2,6 @@ package dev.slimevr.context
 
 import dev.slimevr.context.debug.DebugMiddleware
 import dev.slimevr.context.debug.contextDebugEnabled
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -10,11 +9,7 @@ private sealed interface TestAction {
 	object Increment : TestAction
 }
 
-private class DispatchingBehaviour : Behaviour<Int, TestAction, Context<Int, TestAction>> {
-	override fun reduce(state: Int, action: TestAction): Int = when (action) {
-		TestAction.Increment -> state + 1
-	}
-
+private class DispatchingBehaviour : Behaviour<Context<Int, TestAction>> {
 	fun trigger(context: Context<Int, TestAction>) {
 		context.dispatch(TestAction.Increment)
 	}
@@ -44,6 +39,11 @@ class ContextCallerCaptureTest {
 		val context = Context.create(
 			initialState = 0,
 			scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined),
+			reducer = { state, action ->
+				when (action) {
+					TestAction.Increment -> state + 1
+				}
+			},
 			behaviours = listOf(DispatchingBehaviour()),
 			debugMiddleware = middleware,
 			name = "TestContext",

@@ -41,27 +41,6 @@ class VMCOutputBehaviour(
 		var healthySince: TimeSource.Monotonic.ValueTimeMark? = null
 	}
 
-	override fun reduce(state: VMCState, action: VMCActions) = when (action) {
-		is VMCActions.SetOutput -> state.copy(
-			status = state.status.copy(
-				outputState = action.state,
-				targetAddress = action.targetAddress,
-				targetPort = action.targetPort,
-				outputError = action.error,
-			),
-		)
-
-		is VMCActions.SetLastFrameSent -> state.copy(
-			status = state.status.copy(lastFrameSentMillis = action.millis),
-		)
-
-		is VMCActions.SetVrm -> state.copy(
-			status = state.status.copy(vrmState = action.state, vrmError = action.error),
-		)
-
-		else -> state
-	}
-
 	override fun observe(receiver: VMCManager) {
 		val runtime = OutputRuntime()
 

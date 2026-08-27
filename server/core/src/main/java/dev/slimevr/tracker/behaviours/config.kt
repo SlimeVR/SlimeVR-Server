@@ -23,7 +23,7 @@ class TrackerConfigBehaviour(
 		receiver.context.state
 			.distinctUntilChangedBy {
 				val saveMountingReset = receiver.settings.context.state.value.data.resetsConfig.saveMountingReset
-				val headingAlignment = if (saveMountingReset) it.sessionCalibration?.headingAlignment else null
+				val headingAlignment = if (saveMountingReset) it.sessionCalibration.headingAlignment else null
 				it.bodyPart to it.customName to it.mountingOrientation to it.magStatus to headingAlignment
 			}
 			.drop(1)
@@ -39,14 +39,10 @@ class TrackerConfigBehaviour(
 			customName = config.customName ?: state.customName,
 			lastMountingMethod = if (saveMountingReset && config.mountingResetOrientation != null) MountingMethod.POSE else MountingMethod.MANUAL,
 			mountingOrientation = config.mountingOrientation,
-			sessionCalibration = if (saveMountingReset) {
-				config.mountingResetOrientation?.let {
-					SessionCalibration(
-						headingAlignment = it,
-					)
-				}
+			sessionCalibration = if (saveMountingReset && config.mountingResetOrientation != null) {
+				state.sessionCalibration.copy(headingAlignment = config.mountingResetOrientation)
 			} else {
-				null
+				state.sessionCalibration
 			},
 			magStatus = when (config.magEnabled) {
 				true -> MagnetometerStatus.ENABLED
@@ -59,7 +55,7 @@ class TrackerConfigBehaviour(
 			bodyPart = state.bodyPart,
 			customName = state.customName,
 			mountingOrientation = state.mountingOrientation,
-			mountingResetOrientation = if (saveMountingReset) state.sessionCalibration?.headingAlignment else null,
+			mountingResetOrientation = if (saveMountingReset) state.sessionCalibration.headingAlignment else null,
 			magEnabled = when (state.magStatus) {
 				MagnetometerStatus.ENABLED -> true
 				MagnetometerStatus.DISABLED -> false

@@ -2,8 +2,8 @@ package dev.slimevr.solarxr
 
 import dev.slimevr.VRServer
 import dev.slimevr.tracker.TrackerActions
+import dev.slimevr.util.isActive
 import io.github.axisangles.ktmath.Quaternion
-import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.AssignTrackerRequest
 
@@ -17,6 +17,18 @@ class AssignTrackerBehaviour(
 				?: return@on
 
 			val bodyPart = req.bodyPosition.takeIf { it != BodyPart.NONE }
+			if (bodyPart != null) {
+				server.context.state.value.trackers.values.filter {
+					val state = it.context.state.value
+					state.id != id.toInt() &&
+						state.bodyPart == bodyPart &&
+						state.status.isActive()
+				}.forEach {
+					it.context.dispatch(
+						TrackerActions.Update { copy(bodyPart = null) },
+					)
+				}
+			}
 			tracker.context.dispatch(
 				TrackerActions.Update {
 					copy(

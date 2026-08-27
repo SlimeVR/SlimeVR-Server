@@ -56,6 +56,7 @@ private class VRSystemTrackerRegistry(
 			id = trackerId,
 			name = trackerName,
 			bodyPart = bodyPart,
+			intendedBodyPart = bodyPart,
 			deviceId = device.context.state.value.id,
 			hardwareId = "vrcosc:vrsystem:${tracker.name.lowercase()}",
 			origin = DeviceOrigin.VRC,
@@ -105,22 +106,6 @@ class VRCOSCInputBehaviour(
 	private val appContext: AppContextProvider,
 	private val settings: Settings,
 ) : VRCOSCBehaviour {
-	override fun reduce(state: VRCOSCState, action: VRCOSCActions) = when (action) {
-		is VRCOSCActions.SetInput -> state.copy(
-			status = state.status.copy(
-				inputState = action.state,
-				inputPort = action.port,
-				inputError = action.error,
-			),
-		)
-
-		is VRCOSCActions.SetLastReceivedInput -> state.copy(
-			status = state.status.copy(lastReceivedInputMillis = action.millis),
-		)
-
-		else -> state
-	}
-
 	override fun observe(receiver: VRCOSCManager) {
 		val registry = VRSystemTrackerRegistry(appContext, receiver)
 		var oscReceiver: OscReceiver? = null
@@ -205,12 +190,8 @@ class VRCOSCInputBehaviour(
 		val position = parsePosition(message.args) ?: return
 		val rotation = parseVrcEulerRotation(message.args, startIndex = 3) ?: return
 		val runtimeTracker = registry.trackerFor(tracker)
-		runtimeTracker.context.dispatchAll(
-			listOf(
-				TrackerActions.SetStatus(TrackerStatus.OK),
-				TrackerActions.SetRotation(rotation = rotation, position = position),
-			),
-		)
+		runtimeTracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
+		runtimeTracker.setRotation(rotation = rotation, position = position)
 		registry.setStatus(TrackerStatus.OK)
 		receiver.context.dispatchAll(
 			listOf(

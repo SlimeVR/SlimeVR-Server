@@ -18,13 +18,7 @@ sealed interface TrackingChecklistActions {
 }
 
 typealias TrackingChecklistContext = Context<TrackingChecklistState, TrackingChecklistActions>
-typealias TrackingChecklistBehaviourType = Behaviour<TrackingChecklistState, TrackingChecklistActions, TrackingChecklist>
-
-class ChecklistBaseBehaviour : TrackingChecklistBehaviourType {
-	override fun reduce(state: TrackingChecklistState, action: TrackingChecklistActions): TrackingChecklistState = when (action) {
-		is TrackingChecklistActions.UpdateStep -> state.copy(steps = state.steps + (action.id to action.step))
-	}
-}
+typealias TrackingChecklistBehaviourType = Behaviour<TrackingChecklist>
 
 class TrackingChecklist(
 	val context: TrackingChecklistContext,
@@ -54,11 +48,10 @@ class TrackingChecklist(
 
 	companion object {
 		fun create(scope: CoroutineScope, extraBehaviours: (AppContextProvider) -> List<TrackingChecklistBehaviourType> = { emptyList() }): TrackingChecklist {
-			val initialBehaviours = listOf(ChecklistBaseBehaviour())
 			val context = Context.create(
 				initialState = TrackingChecklistState(),
 				scope = scope,
-				behaviours = initialBehaviours,
+				reducer = ::reduce,
 				name = "TrackingChecklist",
 			)
 			val checklist = TrackingChecklist(context, extraBehaviours)

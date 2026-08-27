@@ -4,7 +4,7 @@ import java.net.InetAddress
 import java.net.NetworkInterface
 import java.util.Collections
 
-fun resolveDesktopOscQueryAddress(): String = try {
+fun resolveDesktopLocalIpAddress(): String = try {
 	val candidates = Collections.list(NetworkInterface.getNetworkInterfaces())
 		.asSequence()
 		.filter { iface -> iface.isUp && !iface.isLoopback && !iface.isVirtual }

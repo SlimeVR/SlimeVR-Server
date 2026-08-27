@@ -23,7 +23,7 @@ class HipYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 			val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
 			val sourceRotation = boneInputs.resolveAverageRotationFor(source)
 			val alignedRotation = alignYawRoll(hipBone.rawRotation, sourceRotation)
-			return state.copy(boneInputs = boneInputs.mutate { it[BodyPart.HIP] = hipBone.copy(rawRotation = hipBone.rawRotation.interpR(alignedRotation, ratio)) })
+			return state.copy(boneInputs = boneInputs.mutate { it[BodyPart.HIP] = hipBone.copy(rawRotation = hipBone.rawRotation.interpQ(alignedRotation, ratio)) })
 		}
 
 		return state

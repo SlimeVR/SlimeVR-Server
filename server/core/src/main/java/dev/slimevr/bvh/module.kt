@@ -17,7 +17,7 @@ sealed interface BVHActions {
 }
 
 typealias BVHContext = Context<BVHState, BVHActions>
-typealias BVHBehaviourType = Behaviour<BVHState, BVHActions, BVHManager>
+typealias BVHBehaviourType = Behaviour<BVHManager>
 
 class BVHManager(val context: BVHContext) {
 	val isRecording get() = context.state.value.recording
@@ -31,6 +31,7 @@ class BVHManager(val context: BVHContext) {
 			val context = Context.create(
 				initialState = BVHState(),
 				scope = scope,
+				reducer = ::reduce,
 				behaviours = listOf(BVHRecordingBehaviour(skeleton, storage)),
 				name = "BVH",
 			)

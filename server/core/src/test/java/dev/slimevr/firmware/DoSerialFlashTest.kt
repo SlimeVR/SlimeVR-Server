@@ -11,6 +11,7 @@ import dev.slimevr.serial.FlashingHandler
 import dev.slimevr.serial.SerialPortHandle
 import dev.slimevr.serial.SerialPortInfo
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.udp.reduce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -341,6 +342,7 @@ class DoSerialFlashTest {
 						sensorConfigFlags = emptyMap(),
 					),
 					scope = backgroundScope,
+					reducer = ::reduce,
 					behaviours = emptyList(),
 					name = "TestConn",
 				),

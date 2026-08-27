@@ -8,7 +8,6 @@ import dev.slimevr.logging.AppLogger
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Quaternion
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
@@ -30,16 +29,6 @@ internal val AXES_OFFSET = Quaternion.fromRotationVector(-FastMath.HALF_PI, 0f, 
 internal const val CONNECTION_TIMEOUT_MS = 5000L
 
 class PacketBehaviour : UDPConnectionBehaviour {
-	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
-		is UDPConnectionActions.LastPacket -> {
-			var newState = state.copy(lastPacket = action.time)
-			if (action.packetNum != null) newState = newState.copy(lastPacketNum = action.packetNum)
-			newState
-		}
-
-		else -> state
-	}
-
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.on<PacketEvent<UDPPacket>> { packet ->
 			val state = receiver.context.state.value
@@ -88,11 +77,6 @@ class PacketLossBehaviour : UDPConnectionBehaviour {
 }
 
 class PingBehaviour : UDPConnectionBehaviour {
-	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
-		is UDPConnectionActions.StartPing -> state.copy(lastPing = state.lastPing.copy(startTime = action.startTime, id = action.pingId))
-		else -> state
-	}
-
 	override fun observe(receiver: UDPConnection) {
 		// Send the ping every 1s
 		receiver.context.scope.launch {
@@ -125,11 +109,6 @@ class PingBehaviour : UDPConnectionBehaviour {
 }
 
 class HandshakeBehaviour : UDPConnectionBehaviour {
-	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
-		is UDPConnectionActions.Handshake -> state.copy(didHandshake = true, lastHandshake = System.currentTimeMillis(), deviceId = action.deviceId)
-		else -> state
-	}
-
 	private fun findOrCreateDevice(receiver: UDPConnection, state: UDPConnectionState, data: Handshake): Device {
 		val devices = receiver.appContext.server.context.state.value.devices.values
 		val existing = data.macString?.let { mac ->
@@ -260,7 +239,7 @@ class DisconnectBehaviour : UDPConnectionBehaviour {
 					delay(500)
 					continue
 				}
-				val timeUntilRemoval = receiver.appContext.config.settings.context.state.value.data.timeoutConfig.duration.toDouble().seconds - (System.currentTimeMillis() - state.lastPacket).milliseconds
+				val timeUntilRemoval = receiver.appContext.config.settings.context.state.value.data.trackersConfig.timeoutDelay.toDouble().seconds - (System.currentTimeMillis() - state.lastPacket).milliseconds
 				if (timeUntilRemoval <= 0.milliseconds) {
 					AppLogger.udp.info("[${state.address}] Connection removed after extended timeout")
 					receiver.appContext.udpServer.removeConnection(state.address)
@@ -336,11 +315,6 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 		return newTracker to true
 	}
 
-	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
-		is UDPConnectionActions.AssignTracker -> state.copy(trackerIds = state.trackerIds + action.trackerId)
-		else -> state
-	}
-
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<SensorInfo> { event ->
 			val device = receiver.getDevice() ?: error("invalid state - a device should exist at this point")
@@ -397,22 +371,22 @@ class SensorRotationBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<RotationData> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
+			tracker.setRotation(rotation = AXES_OFFSET * event.data.rotation)
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<RotationAndAccel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration))
+			tracker.setRotation(rotation = AXES_OFFSET * event.data.rotation, acceleration = event.data.acceleration)
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Accel> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(acceleration = event.data.acceleration))
+			tracker.setRotation(acceleration = event.data.acceleration)
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.onPacket<Rotation2> { event ->
 			val tracker = receiver.getTracker(event.data.sensorId) ?: return@onPacket
-			tracker.context.dispatch(TrackerActions.SetRotation(rotation = AXES_OFFSET * event.data.rotation))
+			tracker.setRotation(rotation = AXES_OFFSET * event.data.rotation)
 		}.launchIn(receiver.context.scope)
 	}
 }
@@ -440,14 +414,6 @@ class BundledPacketBehaviour : UDPConnectionBehaviour {
 }
 
 class FlagsBehaviour : UDPConnectionBehaviour {
-	override fun reduce(
-		state: UDPConnectionState,
-		action: UDPConnectionActions,
-	): UDPConnectionState = when (action) {
-		is UDPConnectionActions.FirmwareFeatures -> state.copy(features = action.features)
-		else -> state
-	}
-
 	override fun observe(receiver: UDPConnection) {
 		receiver.packetEvents.onPacket<FeatureFlags> { event ->
 			receiver.context.dispatch(UDPConnectionActions.FirmwareFeatures(event.data.firmwareFeatures))
@@ -467,14 +433,6 @@ class TemperatureBehaviour : UDPConnectionBehaviour {
 }
 
 class SensorConfigBehaviour : UDPConnectionBehaviour {
-	override fun reduce(state: UDPConnectionState, action: UDPConnectionActions) = when (action) {
-		is UDPConnectionActions.SetSensorConfig -> state.copy(
-			sensorConfigFlags = state.sensorConfigFlags + (action.sensorId to action.flags),
-		)
-
-		else -> state
-	}
-
 	override fun observe(receiver: UDPConnection) {
 		receiver.context.state
 			.distinctUntilChangedBy { it.sensorConfigFlags }

@@ -39,6 +39,7 @@ private fun TestScope.testConn(onSend: suspend (ByteArray) -> Unit): SolarXRBrid
 	val context = Context.create(
 		initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
 		scope = backgroundScope,
+		reducer = ::reduce,
 		behaviours = listOf(DataFeedInitBehaviour(server, skeleton)),
 		name = "SolarXRDataFeedTest",
 	)

@@ -73,7 +73,7 @@ export function MainLayout({
       <div
         style={{ gridArea: 'c' }}
         className={classNames(
-          'overflow-y-auto mr-2 my-2 mobile:m-0',
+          'overflow-auto mr-2 my-2 mobile:m-0 [container-type:inline-size]',
           'flex flex-col rounded-md',
           background && 'bg-background-70',
           { 'rounded-t-none': !isMobile && full }

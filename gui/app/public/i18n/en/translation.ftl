@@ -34,6 +34,11 @@ unit-inch = Inch
 unit-cm = cm
 
 
+## Dropdown
+dropdown_select-all = Select All
+dropdown_unselect-all = Unselect All
+
+
 ## Body parts
 body_part-NONE = Unassigned
 body_part-HEAD = Head
@@ -413,6 +418,14 @@ dongle-settings-paired_trackers = Paired Trackers
 dongle-settings-paired_trackers-empty = No trackers paired to this dongle yet.
 dongle-settings-pair = Pair Tracker
 dongle-settings-forget_tracker = Forget
+dongle-settings-telemetry-title = Live telemetry
+dongle-settings-telemetry-select_trackers = Select trackers
+dongle-settings-telemetry-select_trackers-summary = { $count } of { $total } trackers
+dongle-settings-telemetry-show_min_max = Min/Max
+dongle-settings-telemetry-chart_rssi = RSSI · dBm
+dongle-settings-telemetry-chart_loss = Packet loss · %
+dongle-settings-telemetry-chart_gaps = Loss gap events · TPS-relative packet gaps
+dongle-settings-telemetry-footnote = Loss gap events mark regions where packet updates were delayed relative to the tracker's TPS rate. Darker and wider marks indicate longer drop durations.
 
 
 ## Tracker part card info
@@ -494,7 +507,7 @@ settings-sidebar-interface = Interface
 settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
-settings-sidebar-serial = Serial console
+settings-sidebar-serial = USB Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-home = Home Screen
 settings-sidebar-checklist = Tracking checklist
@@ -583,20 +596,16 @@ settings-general-tracker_mechanics-filtering = Filtering
 settings-general-tracker_mechanics-filtering-description =
     Choose the filtering type for your trackers.
     Prediction predicts movement while smoothing smooths movement.
-settings-general-tracker_mechanics-filtering-type = Filtering type
+settings-general-tracker_mechanics-filtering-type = Filter type
 settings-general-tracker_mechanics-filtering-type-none = No filtering
 settings-general-tracker_mechanics-filtering-type-none-description = Use rotations as is. Will not do any filtering.
 settings-general-tracker_mechanics-filtering-type-smoothing = Smoothing
 settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooths movements but adds some latency.
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
-settings-general-tracker_mechanics-filtering-amount = Amount
+settings-general-tracker_mechanics-filtering-amount = Filter strength
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time
 settings-general-tracker_mechanics-yaw-reset-smooth-time-description = Smooths the trackers' rotations upon doing a yaw reset. 0s disables smoothing.
-settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancel
-settings-general-tracker_mechanics-drift_compensation_warning-done = I understand
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting calibration
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Saves the automatic mounting calibration for the trackers between restarts. Useful
@@ -611,8 +620,8 @@ settings-general-tracker_mechanics-trackers_over_usb = Trackers over USB
 settings-general-tracker_mechanics-trackers_over_usb-description =
     Enables receiving HID tracker data over USB. Make sure connected trackers have <b>connection over HID</b> enabled!
 settings-general-tracker_mechanics-trackers_over_usb-enabled-label = Allow HID trackers to connect directly over USB
-settings-general-tracker_mechanics-timeout_duration = Timeout duration
-settings-general-tracker_mechanics-timeout_duration-description = How long until a tracker is marked as '{ tracker-status-disconnected }' when the connection is lost.
+settings-general-tracker_mechanics-timeout_delay = Timeout delay
+settings-general-tracker_mechanics-timeout_delay-description = How long until a tracker is marked as '{ tracker-status-disconnected }' when the connection is lost.
 
 settings-stay_aligned = Stay Aligned Settings
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
@@ -825,10 +834,10 @@ settings-interface-behavior-bvh_directory-description = Choose a directory to sa
 settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 
 ## Serial settings
-settings-serial = Serial Console
+settings-serial = USB Serial Console
 # This cares about multilines
 settings-serial-description =
-    This is a live information feed for serial communication.
+    This is a live information feed for serial communication via USB.
     May be useful to debug firmware or hardware issues.
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
