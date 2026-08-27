@@ -19,6 +19,8 @@ import { Dropdown } from '@/components/commons/Dropdown';
 import { ArrowRightLeftIcon } from '@/components/commons/icon/ArrowIcons';
 import { SystemFileInput } from '@/components/commons/SystemFileInput';
 import { useElectron } from '@/hooks/electron';
+import { handleResetSounds } from '@/sounds/sounds';
+import { ResetStatus, ResetType } from 'solarxr-protocol';
 
 interface InterfaceSettingsForm {
   appearance: {
@@ -120,6 +122,17 @@ export function InterfaceSettings() {
   ];
 
   const onSubmit = (values: InterfaceSettingsForm) => {
+    if (
+      config?.feedbackSoundVolume != values.notifications.feedbackSoundVolume
+    ) {
+      handleResetSounds(values.notifications.feedbackSoundVolume, {
+        resetType: ResetType.FULL,
+        status: ResetStatus.FINISHED,
+        bodyParts: [],
+        progress: 0,
+        duration: 0,
+      });
+    }
     setConfig({
       watchNewDevices: values.notifications.watchNewDevices,
       feedbackSound: values.notifications.feedbackSound,
