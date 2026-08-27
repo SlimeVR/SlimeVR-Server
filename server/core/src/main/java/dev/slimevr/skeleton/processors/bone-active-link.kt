@@ -23,17 +23,15 @@ class BoneActiveLinkProcessor : SkeletonProcessor {
 		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
 	)
 
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
-		return inputSkeleton.mutate { updated ->
-			for ((bodyPart, sources) in linkedToSources) {
-				val bone = inputSkeleton.getValue(bodyPart)
-				if (bone.isActive) continue
+	override fun process(inputSkeleton: InputSkeleton): InputSkeleton = inputSkeleton.mutate { updated ->
+		for ((bodyPart, sources) in linkedToSources) {
+			val bone = inputSkeleton.getValue(bodyPart)
+			if (bone.isActive) continue
 
-				val closestActiveBone = sources.firstNotNullOfOrNull { part ->
-					inputSkeleton[part]?.takeIf { it.isActive }
-				} ?: continue
-				updated[bodyPart] = bone.copy(rawRotation = closestActiveBone.rawRotation)
-			}
+			val closestActiveBone = sources.firstNotNullOfOrNull { part ->
+				inputSkeleton[part]?.takeIf { it.isActive }
+			} ?: continue
+			updated[bodyPart] = bone.copy(rawRotation = closestActiveBone.rawRotation)
 		}
 	}
 }

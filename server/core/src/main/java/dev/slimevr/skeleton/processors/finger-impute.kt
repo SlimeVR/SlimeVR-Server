@@ -48,15 +48,13 @@ class FingerImputeProcessor : SkeletonProcessor {
 	)
 
 	// TODO : There's more math to do here. Reference the original code.
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
-		return inputSkeleton.mutate { updated ->
-			for ((bodyPart, source) in fingerToSource) {
-				val bone = updated.getValue(bodyPart)
-				if (bone.isActive) continue
+	override fun process(inputSkeleton: InputSkeleton): InputSkeleton = inputSkeleton.mutate { updated ->
+		for ((bodyPart, source) in fingerToSource) {
+			val bone = updated.getValue(bodyPart)
+			if (bone.isActive) continue
 
-				val sourceBone = updated[source]
-				updated[bodyPart] = bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
-			}
+			val sourceBone = updated[source]
+			updated[bodyPart] = bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
 		}
 	}
 }

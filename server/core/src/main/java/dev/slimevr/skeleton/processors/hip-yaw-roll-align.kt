@@ -15,15 +15,13 @@ class HipYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 
 	val source = arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)
 
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
-		return inputSkeleton.mutate { updated ->
-			val hipBone = updated.getValue(BodyPart.HIP)
-			if (!hipBone.isActive) {
-				val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
-				val sourceRotation = updated.resolveAverageRotationFor(source)
-				val alignedRotation = alignYawRoll(hipBone.rawRotation, sourceRotation)
-				updated[BodyPart.HIP] = hipBone.copy(rawRotation = hipBone.rawRotation.interpQ(alignedRotation, ratio))
-			}
+	override fun process(inputSkeleton: InputSkeleton): InputSkeleton = inputSkeleton.mutate { updated ->
+		val hipBone = updated.getValue(BodyPart.HIP)
+		if (!hipBone.isActive) {
+			val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
+			val sourceRotation = updated.resolveAverageRotationFor(source)
+			val alignedRotation = alignYawRoll(hipBone.rawRotation, sourceRotation)
+			updated[BodyPart.HIP] = hipBone.copy(rawRotation = hipBone.rawRotation.interpQ(alignedRotation, ratio))
 		}
 	}
 

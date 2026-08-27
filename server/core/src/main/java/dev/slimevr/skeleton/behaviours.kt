@@ -122,22 +122,22 @@ class ComputedSkeletonBehaviour(
 						val fk = buildBones(processedInputs, rootHead)
 
 						// Run IK processors
- 						val ikTargets = targetProcessors.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets) }
+						val ikTargets = targetProcessors.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets) }
 
 						// Run IK
- 						val ikOutput = ccdIk(
- 							processedInputs,
- 							fk,
- 							ikTargets.map { (bodyPart, target) ->
- 								IKChainGoal(
- 									listOf(bodyPart),
- 									target,
- 								)
- 							},
- 							null,
- 							0.01f,
- 							100,
- 						)
+						val ikOutput = ccdIk(
+							processedInputs,
+							fk,
+							ikTargets.map { (bodyPart, target) ->
+								IKChainGoal(
+									listOf(bodyPart),
+									target,
+								)
+							},
+							null,
+							0.01f,
+							100,
+						)
 
 						// Updated the computed skeleton with the result
 						receiver.computed.tryEmit(ikOutput.bones)
