@@ -85,8 +85,8 @@ class SolarXRBridge(
 	internal var datafeedTimers: List<Job> = emptyList()
 	fun dispose() = managedContext?.dispose()
 
-	internal val rpcReplies = PendingReplies<RpcMessage>()
-	internal val driverReplies = PendingReplies<DriverMessage>()
+	val rpcReplies = PendingReplies<RpcMessage>()
+	val driverReplies = PendingReplies<DriverMessage>()
 
 	@PublishedApi internal val rpcRequests = PendingRequests<RpcMessage>()
 
@@ -95,8 +95,14 @@ class SolarXRBridge(
 	fun txIdFor(message: RpcMessage): UInt? = rpcReplies.consume(message)
 	fun driverTxIdFor(message: DriverMessage): UInt? = driverReplies.consume(message)
 
-	inline fun <reified P : RpcMessage> onRpc(noinline action: suspend (P, UInt?) -> Unit): Subscription<RpcMessage, P> = rpcDispatcher.on<P> { msg -> action(msg, txIdFor(msg)) }
-	inline fun <reified P : DriverMessage> onDriverMessage(noinline action: suspend (P, UInt?) -> Unit): Subscription<DriverMessage, P> = driverDispatcher.on<P> { msg -> action(msg, driverTxIdFor(msg)) }
+	inline fun <reified P : RpcMessage> onRpc(noinline action: suspend (P, UInt?) -> Unit): Subscription<RpcMessage, P> {
+		rpcReplies.registerConsumer(P::class)
+		return rpcDispatcher.on<P> { msg -> action(msg, txIdFor(msg)) }
+	}
+	inline fun <reified P : DriverMessage> onDriverMessage(noinline action: suspend (P, UInt?) -> Unit): Subscription<DriverMessage, P> {
+		driverReplies.registerConsumer(P::class)
+		return driverDispatcher.on<P> { msg -> action(msg, driverTxIdFor(msg)) }
+	}
 
 	suspend fun sendRpc(message: RpcMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
 	suspend fun sendDriverMessage(message: DriverMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(driverMsgs = listOf(DriverMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
