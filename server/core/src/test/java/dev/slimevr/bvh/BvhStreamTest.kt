@@ -14,9 +14,9 @@ class BvhStreamTest {
 	fun `close persists header and frame data`() = runTest {
 		val file = InMemoryBvhFile()
 		val stream = BvhStream(file)
-		val initialBones = buildBones(DEFAULT_SKELETON_STATE)
-		val firstFrame = buildBones(DEFAULT_SKELETON_STATE, rootHead = Vector3(1f, 2f, 3f))
-		val secondFrame = buildBones(DEFAULT_SKELETON_STATE, rootHead = Vector3(4f, 5f, 6f))
+		val initialBones = buildBones(DEFAULT_SKELETON_STATE.boneInputs)
+		val firstFrame = buildBones(DEFAULT_SKELETON_STATE.boneInputs, rootHead = Vector3(1f, 2f, 3f))
+		val secondFrame = buildBones(DEFAULT_SKELETON_STATE.boneInputs, rootHead = Vector3(4f, 5f, 6f))
 
 		stream.writeHeader(initialBones)
 		stream.writeFrame(firstFrame)
@@ -35,13 +35,13 @@ class BvhStreamTest {
 	fun `writeFrame after close is ignored`() = runTest {
 		val file = InMemoryBvhFile()
 		val stream = BvhStream(file)
-		val bones = buildBones(DEFAULT_SKELETON_STATE)
+		val bones = buildBones(DEFAULT_SKELETON_STATE.boneInputs)
 
 		stream.writeHeader(bones)
 		stream.close()
 		val before = file.content()
 
-		stream.writeFrame(buildBones(DEFAULT_SKELETON_STATE, rootHead = Vector3(7f, 8f, 9f)))
+		stream.writeFrame(buildBones(DEFAULT_SKELETON_STATE.boneInputs, rootHead = Vector3(7f, 8f, 9f)))
 
 		assertEquals(before, file.content())
 	}

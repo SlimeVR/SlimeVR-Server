@@ -1,6 +1,7 @@
 package dev.slimevr.skeleton.processors
 
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonProcessor
 import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.mutate
@@ -21,22 +22,19 @@ class UpperLegsRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 		BodyPart.RIGHT_UPPER_LEG to BodyPart.RIGHT_LOWER_LEG,
 	)
 
-	override fun process(state: SkeletonState): SkeletonState {
-		val boneInputs = state.boneInputs
+	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
 		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsTwistWithLowerLegs
 
-		val updatedAlignedBones = boneInputs.mutate { updated ->
+		return inputSkeleton.mutate { updated ->
 			for (bodyPartToSource in bodyPartToSources) {
-				val bone = boneInputs.getValue(bodyPartToSource.first)
+				val bone = inputSkeleton.getValue(bodyPartToSource.first)
 				if (!bone.isActive) continue
 
-				val sourceRotation = boneInputs.getValue(bodyPartToSource.second).rawRotation
+				val sourceRotation = inputSkeleton.getValue(bodyPartToSource.second).rawRotation
 				val alignedRotation = alignRoll(bone.rawRotation, sourceRotation)
 				updated[bodyPartToSource.first] = bone.copy(rawRotation = bone.rawRotation.interpQ(alignedRotation, ratio))
 			}
 		}
-
-		return state.copy(boneInputs = updatedAlignedBones)
 	}
 
 	/**

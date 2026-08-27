@@ -97,24 +97,18 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?, originPosition: Vector3 =
 }
 
 fun buildBones(
-	state: InputSkeleton,
+	boneInputs: InputSkeleton,
 	rootHead: Vector3 = Vector3.NULL,
 	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
 ): ComputedSkeleton {
 	val result = bodyPartMap<BoneState>()
 	hierarchy.forEach { (parentPart, childPart) ->
-		val rawBone = state[childPart] ?: return@forEach
+		val rawBone = boneInputs[childPart] ?: return@forEach
 		val parentBone = parentPart?.let { result[it] }
 		result[childPart] = buildBone(rawBone, parentBone, rootHead)
 	}
 	return result
 }
-
-fun buildBones(
-	state: SkeletonState,
-	rootHead: Vector3 = Vector3.NULL,
-	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
-): ComputedSkeleton = buildBones(state.boneInputs, rootHead, hierarchy)
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
@@ -127,11 +121,10 @@ sealed interface SkeletonActions {
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
 typealias SkeletonBehaviour = Behaviour<Skeleton>
 interface SkeletonProcessor {
-	fun process(state: SkeletonState): SkeletonState
+	fun process(inputSkeleton: InputSkeleton): InputSkeleton
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
-	val enabled: Boolean
 	fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets
 }
 
@@ -179,7 +172,7 @@ class Skeleton(
 				replay = 1,
 				onBufferOverflow = BufferOverflow.DROP_OLDEST,
 			)
-			computed.tryEmit(buildBones(context.state.value))
+			computed.tryEmit(buildBones(context.state.value.boneInputs))
 
 			return Skeleton(context, computed)
 		}

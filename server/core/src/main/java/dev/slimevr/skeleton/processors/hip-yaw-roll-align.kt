@@ -1,8 +1,8 @@
 package dev.slimevr.skeleton.processors
 
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonProcessor
-import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.mutate
 import dev.slimevr.skeleton.resolveAverageRotationFor
 import io.github.axisangles.ktmath.Quaternion
@@ -15,18 +15,16 @@ class HipYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 
 	val source = arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)
 
-	override fun process(state: SkeletonState): SkeletonState {
-		val boneInputs = state.boneInputs
-
-		val hipBone = boneInputs.getValue(BodyPart.HIP)
-		if (!hipBone.isActive) {
-			val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
-			val sourceRotation = boneInputs.resolveAverageRotationFor(source)
-			val alignedRotation = alignYawRoll(hipBone.rawRotation, sourceRotation)
-			return state.copy(boneInputs = boneInputs.mutate { it[BodyPart.HIP] = hipBone.copy(rawRotation = hipBone.rawRotation.interpQ(alignedRotation, ratio)) })
+	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
+		return inputSkeleton.mutate { updated ->
+			val hipBone = updated.getValue(BodyPart.HIP)
+			if (!hipBone.isActive) {
+				val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
+				val sourceRotation = updated.resolveAverageRotationFor(source)
+				val alignedRotation = alignYawRoll(hipBone.rawRotation, sourceRotation)
+				updated[BodyPart.HIP] = hipBone.copy(rawRotation = hipBone.rawRotation.interpQ(alignedRotation, ratio))
+			}
 		}
-
-		return state
 	}
 
 	/**

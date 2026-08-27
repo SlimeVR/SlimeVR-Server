@@ -101,47 +101,47 @@ class ComputedSkeletonBehaviour(
 		receiver.context.scope.launch {
 			while (true) {
 				try {
-					// Process starts
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
 
-						// Run processors
-						val processed = processors
-							.fold(targetState) { state, processor -> processor.process(state) } // TODO: Add a constrain processor (maybe not needed)
+						// TODO: Add a constrain processor (maybe not needed)
+						val processedInputs = if (!targetState.paused) {
+							// Run pre-FK processors
+							processors.fold(targetState.boneInputs) { state, processor -> processor.process(state) }
+						} else {
+							// TODO pause tracking
+							targetState.boneInputs
+						}
 
 						// Get head position
-						val rootHead = processed.boneInputs[BodyPart.HEAD]
+						val rootHead = processedInputs[BodyPart.HEAD]
 							?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
 							?: Vector3(0f, targetState.skeletonHeight, 0f)
 
 						// Run FK
-						val fk = buildBones(processed, rootHead = rootHead)
+						val fk = buildBones(processedInputs, rootHead)
 
-// 						val targets = targetProcessors
-// 							.filter { targetProcessors -> targetProcessors.enabled }
-// 							.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets) }
-//
-// 						val ikOutput = ccdIk(
-// 							processed.boneInputs,
-// 							fk,
-// 							targets.map { (bodyPart, target) ->
-// 								IKChainGoal(
-// 									listOf(bodyPart),
-// 									target,
-// 								)
-// 							},
-// 							null,
-// 							0.01f,
-// 							1000,
-// 						)
+						// Run IK processors
+ 						val ikTargets = targetProcessors.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets) }
+
+						// Run IK
+ 						val ikOutput = ccdIk(
+ 							processedInputs,
+ 							fk,
+ 							ikTargets.map { (bodyPart, target) ->
+ 								IKChainGoal(
+ 									listOf(bodyPart),
+ 									target,
+ 								)
+ 							},
+ 							null,
+ 							0.01f,
+ 							100,
+ 						)
 
 						// Updated the computed skeleton with the result
-						if (!targetState.paused) { // FIXME : bones should still follow the head when paused
-							receiver.computed.tryEmit(fk)
-							// receiver.computed.tryEmit(ikOutput.bones)
-						}
+						receiver.computed.tryEmit(ikOutput.bones)
 					}
-					// Process ends
 
 					// Wait the remainder of last process
 					val delayDuration = intervalDuration - processTime

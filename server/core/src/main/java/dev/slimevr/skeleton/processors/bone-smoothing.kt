@@ -2,8 +2,8 @@ package dev.slimevr.skeleton.processors
 
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonProcessor
-import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.mapValues
 import dev.slimevr.util.inFloatingSeconds
@@ -22,13 +22,13 @@ class BoneSmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 	private var lastProcessTime = timeSource.markNow()
 
 	// TODO this isn't linear. Do we want linear smoothing like in main?
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.SMOOTHING) {
 			// Drop stale poses so re-enabling doesn't blend out of an outdated frame
 			if (smoothed.isNotEmpty()) smoothed.clear()
 			lastProcessTime = timeSource.markNow()
-			return state
+			return inputSkeleton
 		}
 
 		// Normalize with frame time
@@ -39,7 +39,7 @@ class BoneSmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 		val alpha = ((1 - smoothingAmount) * lastFrameTimeSeconds * SMOOTHING_MULTIPLIER).coerceIn(0f, 1f)
 
 		val newSmoothed = bodyPartMap<SmoothedBone>()
-		val newBones = state.boneInputs.mapValues { bodyPart, bone ->
+		val newBones = inputSkeleton.mapValues { bodyPart, bone ->
 			val prev = smoothed[bodyPart] ?: SmoothedBone(bone.rawRotation, bone.offset)
 			val rotation = prev.rotation.lerpR(bone.rawRotation, alpha).unit()
 			val offset = prev.offset + (bone.offset - prev.offset) * alpha
@@ -47,7 +47,7 @@ class BoneSmoothingProcessor(val settings: Settings) : SkeletonProcessor {
 			bone.copy(rawRotation = rotation, offset = offset)
 		}
 		smoothed = newSmoothed
-		return state.copy(boneInputs = newBones)
+		return newBones
 	}
 
 	companion object {

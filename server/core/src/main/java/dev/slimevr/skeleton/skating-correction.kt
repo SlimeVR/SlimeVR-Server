@@ -156,8 +156,6 @@ fun computeLockState(
 
 // Probably not a SkeletonProcessor, maybe computed processor or smth
 class SkatingCorrectionProcessor : SkeletonTargetProcessor {
-	override var enabled: Boolean = true
-
 	// Center of mass
 	var comState: COMState? = null
 
@@ -216,8 +214,6 @@ class SkatingCorrectionProcessor : SkeletonTargetProcessor {
 class FloorClipProcessor(
 	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG),
 ) : SkeletonTargetProcessor {
-	override var enabled: Boolean = true
-
 	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets {
 		for (bodyPart in bodyParts) {
 			// Get existing target or make a new one at the current bone position

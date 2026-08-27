@@ -1,8 +1,8 @@
 package dev.slimevr.skeleton.processors
 
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonProcessor
-import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.mutate
 import dev.slimevr.skeleton.resolveAverageRotationFor
 import solarxr_protocol.datatypes.BodyPart
@@ -37,65 +37,62 @@ class SpineImputeProcessor(val settings: Settings) : SkeletonProcessor {
 		else -> error("Invalid missing spine body part $bodyPart")
 	}
 
-	override fun process(state: SkeletonState): SkeletonState {
-		val boneInputs = state.boneInputs
+	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
 		val ratios = settings.context.state.value.data.skeletonConfig.ratios
 
-		val hasChest = boneInputs[BodyPart.UPPER_CHEST]?.isActive == true || boneInputs[BodyPart.CHEST]?.isActive == true
-		val hasWaist = boneInputs[BodyPart.WAIST]?.isActive == true
-		val hasHip = boneInputs[BodyPart.HIP]?.isActive == true
-		val hasUpperLegs = boneInputs[BodyPart.LEFT_UPPER_LEG]?.isActive == true && boneInputs[BodyPart.RIGHT_UPPER_LEG]?.isActive == true
+		val hasChest = inputSkeleton[BodyPart.UPPER_CHEST]?.isActive == true || inputSkeleton[BodyPart.CHEST]?.isActive == true
+		val hasWaist = inputSkeleton[BodyPart.WAIST]?.isActive == true
+		val hasHip = inputSkeleton[BodyPart.HIP]?.isActive == true
+		val hasUpperLegs = inputSkeleton[BodyPart.LEFT_UPPER_LEG]?.isActive == true && inputSkeleton[BodyPart.RIGHT_UPPER_LEG]?.isActive == true
 		val missingSpineParts = buildList {
 			if (!hasWaist) add(BodyPart.WAIST)
 			if (!hasHip) add(BodyPart.HIP)
 		}
 
-		return state.copy(
-			boneInputs = boneInputs.mutate { updated ->
-				for ((chainIndex, bodyPart) in missingSpineParts.withIndex()) {
-					val bone = boneInputs.getValue(bodyPart)
+		return inputSkeleton.mutate { updated ->
+			for ((chainIndex, bodyPart) in missingSpineParts.withIndex()) {
+				val bone = inputSkeleton.getValue(bodyPart)
 
-					// Get the first active bones above and below this one in the chain
-					val (fromSource, toSource) = when (bodyPart) {
-						BodyPart.WAIST -> {
-							val from = SpineSource.CHEST.takeIf { hasChest } ?: continue
-							val to = when {
-								hasHip -> SpineSource.HIP
-								hasUpperLegs -> SpineSource.UPPER_LEGS
-								else -> continue
-							}
-							from to to
+				// Get the first active bones above and below this one in the chain
+				val (fromSource, toSource) = when (bodyPart) {
+					BodyPart.WAIST -> {
+						val from = SpineSource.CHEST.takeIf { hasChest } ?: continue
+						val to = when {
+							hasHip -> SpineSource.HIP
+							hasUpperLegs -> SpineSource.UPPER_LEGS
+							else -> continue
 						}
-
-						BodyPart.HIP -> {
-							val from = when {
-								hasWaist -> SpineSource.WAIST
-								hasChest -> SpineSource.CHEST
-								else -> continue
-							}
-							val to = SpineSource.UPPER_LEGS.takeIf { hasUpperLegs } ?: continue
-							from to to
-						}
-
-						else -> error("Invalid missing spine body part $bodyPart")
+						from to to
 					}
 
-					val interpolateRatio = interpolateRatio(
-						chainIndex,
-						missingSpineParts.size,
-						ratios.imputeSpineFromUpperToLower,
-						ratios.imputeSpineCurvature,
-						reliabilityOf(bodyPart, fromSource),
-						reliabilityOf(bodyPart, toSource),
-					)
+					BodyPart.HIP -> {
+						val from = when {
+							hasWaist -> SpineSource.WAIST
+							hasChest -> SpineSource.CHEST
+							else -> continue
+						}
+						val to = SpineSource.UPPER_LEGS.takeIf { hasUpperLegs } ?: continue
+						from to to
+					}
 
-					val fromRotation = boneInputs.resolveAverageRotationFor(fromSource.parts)
-					val toRotation = boneInputs.resolveAverageRotationFor(toSource.parts)
-
-					updated[bodyPart] = bone.copy(rawRotation = fromRotation.interpQ(toRotation, interpolateRatio))
+					else -> error("Invalid missing spine body part $bodyPart")
 				}
-			},
-		)
+
+				val interpolateRatio = interpolateRatio(
+					chainIndex,
+					missingSpineParts.size,
+					ratios.imputeSpineFromUpperToLower,
+					ratios.imputeSpineCurvature,
+					reliabilityOf(bodyPart, fromSource),
+					reliabilityOf(bodyPart, toSource),
+				)
+
+				val fromRotation = inputSkeleton.resolveAverageRotationFor(fromSource.parts)
+				val toRotation = inputSkeleton.resolveAverageRotationFor(toSource.parts)
+
+				updated[bodyPart] = bone.copy(rawRotation = fromRotation.interpQ(toRotation, interpolateRatio))
+			}
+		}
 	}
 
 	/**

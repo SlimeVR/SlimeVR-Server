@@ -1,17 +1,15 @@
 package dev.slimevr.skeleton.processors
 
 import dev.slimevr.config.Settings
-import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonProcessor
-import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.mapValues
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.FilteringType
-import kotlin.time.Duration
 
 /**
  * Tries to predict future rotations of bones.
@@ -37,17 +35,17 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 		else -> 1f
 	}
 
-	override fun process(state: SkeletonState): SkeletonState {
+	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.PREDICTION) {
 			// Drop stale velocities so re-enabling doesn't diff against a long outdated pose
 			if (velocities.isNotEmpty()) velocities.clear()
-			return state
+			return inputSkeleton
 		}
 		val predictionAmount = config.amount
 
 		val newVelocities = bodyPartMap<BoneVelocity>()
-		val newBones = state.boneInputs.mapValues { bodyPart, bone ->
+		val newBones = inputSkeleton.mapValues { bodyPart, bone ->
 			val prev = velocities[bodyPart]
 			if (prev == null) {
 				newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, Quaternion.IDENTITY, bone.offset)
@@ -68,13 +66,13 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 				Vector3.NULL
 			}
 			newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, rotationDelta, bone.offset)
-			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, predictionAmount).unit()
+			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, bonePredictionAmount).unit()
 			bone.copy(
 				rawRotation = (scaledDelta * bone.rawRotation).unit(),
-				offset = bone.offset + lengthDelta * predictionAmount,
+				offset = bone.offset + lengthDelta * bonePredictionAmount,
 			)
 		}
 		velocities = newVelocities
-		return state.copy(boneInputs = newBones)
+		return newBones
 	}
 }
