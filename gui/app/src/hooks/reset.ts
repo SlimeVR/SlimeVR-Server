@@ -139,7 +139,10 @@ export function useReset(
 
   let disabled = status === 'counting';
   let error = null;
-  if (options.type === ResetType.POSE_MOUNTING && options.group !== 'default') {
+  if (options.type === ResetType.POSE_MOUNTING && !serverGuards?.canDoMountingReset) {
+    disabled = true;
+    error = 'reset-error-mounting-need_full_reset';
+  } else if (options.type === ResetType.POSE_MOUNTING && options.group !== 'default') {
     const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
     if (
@@ -152,12 +155,6 @@ export function useReset(
       disabled = true;
       error = `reset-error-no_${options.group}_tracker`;
     }
-  } else if (
-    options.type === ResetType.POSE_MOUNTING &&
-    !serverGuards?.canDoMountingReset
-  ) {
-    disabled = true;
-    error = 'reset-error-mounting-need_full_reset';
   } else if (options.type === ResetType.YAW && !serverGuards?.canDoYawReset) {
     disabled = true;
     error = 'reset-error-yaw-need_full_reset';
