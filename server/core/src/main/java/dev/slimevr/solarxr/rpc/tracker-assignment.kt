@@ -1,7 +1,9 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.VRServer
 import dev.slimevr.skeleton.bodyPartMap
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.util.isActive

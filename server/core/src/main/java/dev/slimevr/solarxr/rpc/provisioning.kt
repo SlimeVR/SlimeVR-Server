@@ -1,9 +1,11 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.VRServer
 import dev.slimevr.device.Device
 import dev.slimevr.firmware.isOnlineStatus
 import dev.slimevr.provisioning.ProvisioningManager
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop

@@ -1,7 +1,9 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
@@ -29,7 +31,7 @@ class HIDSettingsBehaviour(
 		receiver.rpcDispatcher.on<ChangeHIDSettingsRequest> { req ->
 			settings.context.dispatch(
 				SettingsActions.Update {
-					copy(hidConfig = hidConfig.copy(trackersOverHid = req.trackersOverHid == true))
+					copy(hidConfig = hidConfig.copy(trackersOverHid = req.trackersOverHid))
 				},
 			)
 		}.launchIn(receiver.context.scope)

@@ -1,10 +1,13 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.udp.SensorConfigFlags
 import dev.slimevr.udp.UDPConnectionActions
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -69,7 +72,7 @@ class MagBehaviour(
 									.first { it.magStatus == if (enable) MagnetometerStatus.ENABLED else MagnetometerStatus.DISABLED }
 								receiver.sendRpc(MagToggleResponse(trackerId = trackerId.toUShort(), enable = enable))
 							}
-						} catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+						} catch (_: TimeoutCancellationException) {
 							AppLogger.solarxr.warn("Timeout waiting for mag toggle response from tracker")
 						}
 					}

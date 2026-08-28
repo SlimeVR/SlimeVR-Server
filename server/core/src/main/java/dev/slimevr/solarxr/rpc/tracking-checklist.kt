@@ -1,7 +1,9 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn

@@ -1,10 +1,10 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.resets.ResetsManager
-import kotlinx.coroutines.flow.launchIn
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import solarxr_protocol.rpc.ClearMountingResetRequest
 import solarxr_protocol.rpc.ResetRequest
-import solarxr_protocol.rpc.ResetType
 
 class SessionCalibrationBehaviour(
 	private val resetsManager: ResetsManager,

@@ -1,4 +1,4 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
@@ -7,8 +7,9 @@ import dev.slimevr.config.SkeletonFilteringConfig
 import dev.slimevr.config.SkeletonRatiosConfig
 import dev.slimevr.config.SkeletonTogglesConfig
 import dev.slimevr.skeleton.SkeletonActions
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import solarxr_protocol.rpc.ChangeSkeletonSettingsRequest
-import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.SetPauseTrackingRequest
 import solarxr_protocol.rpc.SkeletonFiltering
 import solarxr_protocol.rpc.SkeletonRatios

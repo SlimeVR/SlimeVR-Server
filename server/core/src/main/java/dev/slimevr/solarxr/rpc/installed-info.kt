@@ -1,6 +1,7 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
-import kotlinx.coroutines.flow.launchIn
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import solarxr_protocol.rpc.InstalledInfoRequest
 import solarxr_protocol.rpc.InstalledInfoResponse
 

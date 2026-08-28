@@ -7,9 +7,37 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
+import dev.slimevr.solarxr.datafeed.DataFeedInitBehaviour
 import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.driver.DriverIncomingTrackersBehaviour
 import dev.slimevr.solarxr.driver.DriverOutgoingTrackersBehaviour
+import dev.slimevr.solarxr.rpc.AssignTrackerBehaviour
+import dev.slimevr.solarxr.rpc.BoneRoutingBehaviour
+import dev.slimevr.solarxr.rpc.BvhBehaviour
+import dev.slimevr.solarxr.rpc.DongleSettingsBehaviour
+import dev.slimevr.solarxr.rpc.DriverSettingsBehaviour
+import dev.slimevr.solarxr.rpc.FirmwareBehaviour
+import dev.slimevr.solarxr.rpc.HIDSettingsBehaviour
+import dev.slimevr.solarxr.rpc.HeightCalibrationBehaviour
+import dev.slimevr.solarxr.rpc.InstalledInfoBehaviour
+import dev.slimevr.solarxr.rpc.KeybindsBehaviour
+import dev.slimevr.solarxr.rpc.KnownTrackersBehaviour
+import dev.slimevr.solarxr.rpc.MagBehaviour
+import dev.slimevr.solarxr.rpc.ProvisioningBehaviour
+import dev.slimevr.solarxr.rpc.ResetsBehaviour
+import dev.slimevr.solarxr.rpc.SerialBehaviour
+import dev.slimevr.solarxr.rpc.ServerInfosBehaviour
+import dev.slimevr.solarxr.rpc.SessionCalibrationBehaviour
+import dev.slimevr.solarxr.rpc.SkeletonProportionsBehaviour
+import dev.slimevr.solarxr.rpc.SkeletonSettingsBehaviour
+import dev.slimevr.solarxr.rpc.StayAlignedBehaviour
+import dev.slimevr.solarxr.rpc.TapDetectionBehaviour
+import dev.slimevr.solarxr.rpc.TelemetryBehaviour
+import dev.slimevr.solarxr.rpc.TimeoutSettingsBehaviour
+import dev.slimevr.solarxr.rpc.TrackingChecklistBehaviour
+import dev.slimevr.solarxr.rpc.VmcBehaviour
+import dev.slimevr.solarxr.rpc.VrcBehaviour
+import dev.slimevr.solarxr.rpc.VrcOscBehaviour
 import dev.slimevr.tracker.TrackerActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -145,7 +173,12 @@ class SolarXRBridge(
 			add(SerialBehaviour(appContext.serialServer))
 			add(FirmwareBehaviour(appContext.server, appContext.firmwareManager))
 			appContext.vrcConfigManager?.let { vrc ->
-				add(VrcBehaviour(vrc, appContext.server, userHeight = { appContext.skeleton.context.state.value.skeletonHeight }))
+				add(
+					VrcBehaviour(
+						vrc,
+						appContext.server,
+						userHeight = { appContext.skeleton.context.state.value.skeletonHeight })
+				)
 			}
 			add(ResetsBehaviour(appContext.config.settings))
 			add(TapDetectionBehaviour(appContext.config.settings, appContext.tapDetectionManager))

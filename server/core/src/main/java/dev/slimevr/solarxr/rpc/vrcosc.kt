@@ -1,8 +1,10 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.VRCOSCConfig
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.vrcosc.VRCOSCManager
 import dev.slimevr.vrcosc.VRCOSCStatus
 import kotlinx.coroutines.FlowPreview
@@ -18,7 +20,7 @@ import solarxr_protocol.rpc.VRCOSCStatusChangeResponse
 import solarxr_protocol.rpc.VRCOSCStatusRequest
 import solarxr_protocol.rpc.VRCOSCDiscoveredTarget as RpcVRCOSCDiscoveredTarget
 
-private const val STATUS_SAMPLE_MS = 300L
+private const val VRC_STATUS_SAMPLE_MS = 300L
 
 internal class VrcOscBehaviour(
 	private val settings: Settings,
@@ -33,7 +35,7 @@ internal class VrcOscBehaviour(
 		vrcOscManager.context.state
 			.map { state -> state.status }
 			.drop(1)
-			.sample(STATUS_SAMPLE_MS)
+			.sample(VRC_STATUS_SAMPLE_MS)
 			.onEach { status -> receiver.sendRpc(buildStatusResponse(status)) }
 			.launchIn(receiver.context.scope)
 

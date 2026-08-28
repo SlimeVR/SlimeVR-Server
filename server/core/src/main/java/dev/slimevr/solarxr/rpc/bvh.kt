@@ -1,6 +1,8 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.bvh.BVHManager
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -11,7 +13,7 @@ import solarxr_protocol.rpc.RecordBVHStatusRequest
 class BvhBehaviour(private val bvhManager: BVHManager) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.rpcDispatcher.on<RecordBVHRequest> { req ->
-			if (req.stop == true) {
+			if (req.stop) {
 				bvhManager.stopRecording()
 			} else {
 				req.path?.let { path -> bvhManager.startRecording(path) }

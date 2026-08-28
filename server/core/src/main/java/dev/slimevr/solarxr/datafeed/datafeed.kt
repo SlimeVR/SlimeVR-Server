@@ -1,4 +1,4 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.datafeed
 
 import dev.slimevr.VRServer
 import dev.slimevr.device.Device
@@ -8,6 +8,10 @@ import dev.slimevr.hid.HIDReceiverState
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeActions
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import dev.slimevr.solarxr.createBone
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.cancelAndJoin
@@ -67,14 +71,14 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	} else {
 		null
 	},
-	tps = if (trackerMask.tps == true) tracker.tps else null,
-	temp = if (trackerMask.temp == true && tracker.imuTemp != null) tracker.imuTemp else null,
-	rawAcceleration = if (trackerMask.rawAcceleration == true) tracker.rawAcceleration.let { Vec3f(it.x, it.y, it.z) } else null,
-	linearAcceleration = if (trackerMask.linearAcceleration == true) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
-	rotationReferenceAdjusted = if (trackerMask.rotationReferenceAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
-	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted == true) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null, // FIXME: uses reference adjusted
-	rawMagneticVector = if (trackerMask.rawMagneticVector == true && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.let { Vec3f(it.x, it.y, it.z) } else null,
-	stayAligned = if (trackerMask.stayAligned == true) StayAlignedTracker(tracker.stayAlignedData.yawCorrection.toDeg(), tracker.motion == Motion.RESTING) else null,
+	tps = if (trackerMask.tps) tracker.tps else null,
+	temp = if (trackerMask.temp && tracker.imuTemp != null) tracker.imuTemp else null,
+	rawAcceleration = if (trackerMask.rawAcceleration) tracker.rawAcceleration.let { Vec3f(it.x, it.y, it.z) } else null,
+	linearAcceleration = if (trackerMask.linearAcceleration) tracker.acceleration.let { Vec3f(it.x, it.y, it.z) } else null,
+	rotationReferenceAdjusted = if (trackerMask.rotationReferenceAdjusted) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null,
+	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null, // FIXME: uses reference adjusted
+	rawMagneticVector = if (trackerMask.rawMagneticVector && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.let { Vec3f(it.x, it.y, it.z) } else null,
+	stayAligned = if (trackerMask.stayAligned) StayAlignedTracker(tracker.stayAlignedData.yawCorrection.toDeg(), tracker.motion == Motion.RESTING) else null,
 	origin = tracker.origin,
 )
 

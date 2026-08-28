@@ -1,4 +1,4 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
@@ -6,6 +6,8 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.config.StayAlignedRelaxedPoseConfig
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
 import solarxr_protocol.rpc.ChangeStayAlignedEnabledRequest
 import solarxr_protocol.rpc.ChangeStayAlignedSettingsRequest
@@ -31,16 +33,16 @@ class StayAlignedBehaviour(
 				SettingsActions.Update {
 					copy(
 						stayAlignedConfig = StayAlignedConfig(
-							setupComplete = if (req.enabled == true) true else stayAlignedConfig.setupComplete,
-							enabled = req.enabled == true,
+							setupComplete = if (req.enabled) true else stayAlignedConfig.setupComplete,
+							enabled = req.enabled,
 							standingRelaxedPose = stayAlignedConfig.standingRelaxedPose.copy(
-								enabled = req.standingEnabled == true,
+								enabled = req.standingEnabled,
 							),
 							sittingRelaxedPose = stayAlignedConfig.sittingRelaxedPose.copy(
-								enabled = req.sittingEnabled == true,
+								enabled = req.sittingEnabled,
 							),
 							flatRelaxedPose = stayAlignedConfig.flatRelaxedPose.copy(
-								enabled = req.flatEnabled == true,
+								enabled = req.flatEnabled,
 							),
 						),
 					)
@@ -55,8 +57,8 @@ class StayAlignedBehaviour(
 				SettingsActions.Update {
 					copy(
 						stayAlignedConfig = stayAlignedConfig.copy(
-							setupComplete = if (req.enabled == true) true else stayAlignedConfig.setupComplete,
-							enabled = req.enabled == true,
+							setupComplete = if (req.enabled) true else stayAlignedConfig.setupComplete,
+							enabled = req.enabled,
 						),
 					)
 				},

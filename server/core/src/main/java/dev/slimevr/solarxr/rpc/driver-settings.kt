@@ -1,9 +1,11 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.routing.driverStateFlow
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
@@ -51,8 +53,8 @@ class DriverSettingsBehaviour(
 				SettingsActions.Update {
 					copy(
 						driverConfig = driverConfig.copy(
-							sendDerivedVelocity = req.sendDerivedVelocity == true,
-							enabled = req.enabled == true,
+							sendDerivedVelocity = req.sendDerivedVelocity,
+							enabled = req.enabled,
 						),
 					)
 				},

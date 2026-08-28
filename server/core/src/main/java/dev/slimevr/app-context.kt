@@ -11,7 +11,7 @@ import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.serial.SerialServer
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.solarxr.ServerInfos
+import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer

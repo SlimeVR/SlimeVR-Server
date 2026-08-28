@@ -1,4 +1,4 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.config.SettingsActions
@@ -11,6 +11,8 @@ import dev.slimevr.routing.intendedRoutesFlow
 import dev.slimevr.routing.outputStatesFlow
 import dev.slimevr.routing.overridableBones
 import dev.slimevr.routing.requiredBones
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop

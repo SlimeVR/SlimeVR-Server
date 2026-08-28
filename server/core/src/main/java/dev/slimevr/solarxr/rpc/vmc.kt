@@ -1,7 +1,9 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.vmc.VMCManager
 import dev.slimevr.vmc.VMCStatus
 import kotlinx.coroutines.FlowPreview
@@ -19,7 +21,7 @@ import solarxr_protocol.rpc.VMCOSCStatusRequest
 import solarxr_protocol.rpc.VRMSettingsRequest
 import solarxr_protocol.rpc.VRMSettingsResponse
 
-private const val STATUS_SAMPLE_MS = 300L
+private const val VMC_STATUS_SAMPLE_MS = 300L
 
 class VmcBehaviour(
 	private val settings: Settings,
@@ -30,7 +32,7 @@ class VmcBehaviour(
 		vmcManager.context.state
 			.map { state -> state.status }
 			.drop(1)
-			.sample(STATUS_SAMPLE_MS)
+			.sample(VMC_STATUS_SAMPLE_MS)
 			.onEach { status -> receiver.sendRpc(buildStatusResponse(status)) }
 			.launchIn(receiver.context.scope)
 

@@ -1,8 +1,9 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
-import kotlinx.coroutines.flow.launchIn
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import solarxr_protocol.rpc.AddUnknownDeviceRequest
 import solarxr_protocol.rpc.ForgetDeviceRequest
 

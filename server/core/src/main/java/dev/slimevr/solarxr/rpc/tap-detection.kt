@@ -1,11 +1,12 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.TapDetectionConfig
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.tapdetection.TapDetectionActions
 import dev.slimevr.tapdetection.TapDetectionManager
-import kotlinx.coroutines.flow.launchIn
 import solarxr_protocol.rpc.ChangeTapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsRequest
 import solarxr_protocol.rpc.TapDetectionSettingsResponse

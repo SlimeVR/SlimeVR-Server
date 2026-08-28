@@ -1,7 +1,10 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.serial.SerialConnection
 import dev.slimevr.serial.SerialServer
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -54,7 +57,7 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 		}.launchIn(scope)
 
 		receiver.rpcDispatcher.on<OpenSerialRequest> { req ->
-			val portLocation = if (req.auto == true) {
+			val portLocation = if (req.auto) {
 				serialServer.context.state.value.availablePorts.keys.firstOrNull()
 			} else {
 				req.port
@@ -93,7 +96,7 @@ class SerialBehaviour(private val serialServer: SerialServer) : SolarXRBridgeBeh
 				} catch (e: CancellationException) {
 					throw e
 				} catch (e: Exception) {
-					dev.slimevr.logging.AppLogger.solarxr.error(e, "Error streaming serial log")
+					AppLogger.solarxr.error(e, "Error streaming serial log")
 				}
 			}
 		}.launchIn(scope)

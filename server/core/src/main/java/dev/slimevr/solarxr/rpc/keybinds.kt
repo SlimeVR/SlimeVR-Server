@@ -1,4 +1,4 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.config.KeybindConfig
 import dev.slimevr.config.Settings
@@ -6,6 +6,8 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.config.defaultKeybinds
 import dev.slimevr.keybind.KeybindActions
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn

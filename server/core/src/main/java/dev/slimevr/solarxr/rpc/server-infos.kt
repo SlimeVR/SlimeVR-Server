@@ -1,5 +1,7 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import solarxr_protocol.rpc.ServerInfosRequest
 import solarxr_protocol.rpc.ServerInfosResponse
 

@@ -1,9 +1,11 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.VRServer
 import dev.slimevr.device.Device
 import dev.slimevr.device.DevicePacketSample
 import dev.slimevr.device.computeWindowedStats
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay

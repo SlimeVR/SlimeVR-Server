@@ -1,8 +1,10 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.VRServer
 import dev.slimevr.firmware.FirmwareJobStatus
 import dev.slimevr.firmware.FirmwareManager
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -14,7 +16,8 @@ import solarxr_protocol.rpc.FirmwareUpdateStopQueuesRequest
 import solarxr_protocol.rpc.OTAFirmwareUpdate
 import solarxr_protocol.rpc.SerialFirmwareUpdate
 
-class FirmwareBehaviour(private val server: VRServer, private val firmwareManager: FirmwareManager) : SolarXRBridgeBehaviour {
+class FirmwareBehaviour(private val server: VRServer, private val firmwareManager: FirmwareManager) :
+	SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		val scope = receiver.context.scope
 

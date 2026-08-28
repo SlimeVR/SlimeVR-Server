@@ -1,6 +1,8 @@
-package dev.slimevr.solarxr
+package dev.slimevr.solarxr.rpc
 
 import dev.slimevr.VRServer
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import dev.slimevr.vrchat.VRCConfigActions
 import dev.slimevr.vrchat.VRCConfigManager
 import dev.slimevr.vrchat.computeRecommendedValues
