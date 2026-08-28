@@ -5,10 +5,13 @@ import dev.slimevr.EventDispatcher
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
+import dev.slimevr.device.DeviceActions
 import dev.slimevr.tracker.Tracker
+import dev.slimevr.tracker.TrackerActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import solarxr_protocol.data_feed.dongle_data.DongleStatus
+import solarxr_protocol.datatypes.TrackerStatus
 
 data class HIDTrackerRecord(
 	val hidId: Int,
@@ -43,7 +46,9 @@ sealed interface HIDReceiverActions {
 }
 
 typealias HIDReceiverContext = Context<HIDReceiverState, HIDReceiverActions>
-typealias HIDReceiverBehaviour = Behaviour<HIDReceiver>
+interface HIDReceiverBehaviour : Behaviour<HIDReceiver> {
+	fun onDisconnect() {}
+}
 typealias HIDPacketDispatcher = EventDispatcher<HIDPacket>
 
 class HIDReceiver(
@@ -52,6 +57,21 @@ class HIDReceiver(
 	val packetEvents: HIDPacketDispatcher,
 ) {
 	fun startObserving() = context.observeAll(this)
+
+	fun onDisconnected() {
+		context.behaviours.snapshot().forEach {
+			(it as HIDReceiverBehaviour).onDisconnect()
+		}
+
+		for (record in context.state.value.trackers.values) {
+			record.trackerId?.let { id -> appContext.server.getTracker(id) }?.context?.dispatch(TrackerActions.SetStatus(TrackerStatus.DISCONNECTED))
+			val device = appContext.server.getDevice(record.deviceId) ?: continue
+			device.context.dispatch(
+				DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
+			)
+		}
+		context.dispatch(HIDReceiverActions.SetStatus(DongleStatus.DISCONNECTED))
+	}
 
 	fun getDevice(hidId: Int): Device? {
 		val record = context.state.value.trackers[hidId] ?: return null

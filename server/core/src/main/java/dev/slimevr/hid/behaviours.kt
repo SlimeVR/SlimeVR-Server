@@ -174,12 +174,12 @@ class HIDBatteryBehaviour : HIDReceiverBehaviour {
 private val hidTimeout = 2.seconds
 
 class HIDSleepBehaviour : HIDReceiverBehaviour {
-	override fun observe(receiver: HIDReceiver) {
-		val startedAt = timeSource.markNow()
-		val sleepJobs = mutableMapOf<Int, Job>()
-		val idleJobs = mutableMapOf<Int, Job>()
-		val lastSeen = mutableMapOf<Int, Duration>()
+	val startedAt = timeSource.markNow()
+	val sleepJobs = mutableMapOf<Int, Job>()
+	val idleJobs = mutableMapOf<Int, Job>()
+	val lastSeen = mutableMapOf<Int, Duration>()
 
+	override fun observe(receiver: HIDReceiver) {
 		fun scheduleSleep(hidId: Int, timeoutMs: Int) {
 			if (timeoutMs == 0) return
 			sleepJobs[hidId]?.cancel()
@@ -231,6 +231,14 @@ class HIDSleepBehaviour : HIDReceiverBehaviour {
 		receiver.packetEvents.on<HIDRotationMag> { packet -> onPacket(packet.hidId) }.launchIn(receiver.context.scope)
 		receiver.packetEvents.on<HIDStatus> { packet -> onPacket(packet.hidId) }.launchIn(receiver.context.scope)
 		receiver.packetEvents.on<HIDRuntime> { packet -> onPacket(packet.hidId) }.launchIn(receiver.context.scope)
+	}
+
+	override fun onDisconnect() {
+		for (job in sleepJobs.values + idleJobs.values) {
+			job.cancel()
+		}
+		sleepJobs.clear()
+		idleJobs.clear()
 	}
 }
 
