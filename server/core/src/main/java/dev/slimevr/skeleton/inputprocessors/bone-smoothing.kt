@@ -1,9 +1,9 @@
-package dev.slimevr.skeleton.processors
+package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
-import dev.slimevr.skeleton.SkeletonProcessor
+import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.mapValues
 import dev.slimevr.util.inFloatingSeconds
@@ -15,14 +15,14 @@ import solarxr_protocol.rpc.FilteringType
 /**
  * Running average of bones to smooth them out.
  */
-class BoneSmoothingProcessor(val settings: Settings) : SkeletonProcessor {
+class BoneSmoothingInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 	private data class SmoothedBone(val rotation: Quaternion, val offset: Vector3)
 
 	private var smoothed: BodyPartMap<SmoothedBone> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
 	// TODO this isn't linear. Do we want linear smoothing like in main?
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.SMOOTHING) {
 			// Drop stale poses so re-enabling doesn't blend out of an outdated frame

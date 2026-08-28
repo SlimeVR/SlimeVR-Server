@@ -16,8 +16,7 @@ import solarxr_protocol.rpc.FirmwareUpdateStopQueuesRequest
 import solarxr_protocol.rpc.OTAFirmwareUpdate
 import solarxr_protocol.rpc.SerialFirmwareUpdate
 
-class FirmwareBehaviour(private val server: VRServer, private val firmwareManager: FirmwareManager) :
-	SolarXRBridgeBehaviour {
+class FirmwareBehaviour(private val server: VRServer, private val firmwareManager: FirmwareManager) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		val scope = receiver.context.scope
 

@@ -1,14 +1,14 @@
-package dev.slimevr.skeleton.processors
+package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.skeleton.InputSkeleton
-import dev.slimevr.skeleton.SkeletonProcessor
+import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.mutate
 import solarxr_protocol.datatypes.BodyPart
 
 /**
  * Handles rotations of inactive finger bones.
  */
-class FingerImputeProcessor : SkeletonProcessor {
+class FingerImputeInputProcessor : SkeletonInputProcessor {
 	/**
 	 * First element is the linked BodyPart.
 	 *
@@ -48,10 +48,10 @@ class FingerImputeProcessor : SkeletonProcessor {
 	)
 
 	// TODO : There's more math to do here. Reference the original code.
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton = inputSkeleton.mutate { updated ->
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutate { updated ->
 		for ((bodyPart, source) in fingerToSource) {
 			val bone = updated.getValue(bodyPart)
-			if (bone.isActive) continue
+			if (bone.isRotationActive) continue
 
 			val sourceBone = updated[source]
 			updated[bodyPart] = bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)

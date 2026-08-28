@@ -177,7 +177,8 @@ class SolarXRBridge(
 					VrcBehaviour(
 						vrc,
 						appContext.server,
-						userHeight = { appContext.skeleton.context.state.value.skeletonHeight })
+						userHeight = { appContext.skeleton.context.state.value.skeletonHeight },
+					),
 				)
 			}
 			add(ResetsBehaviour(appContext.config.settings))

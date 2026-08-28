@@ -1,9 +1,8 @@
-package dev.slimevr.skeleton.processors
+package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
-import dev.slimevr.skeleton.SkeletonProcessor
-import dev.slimevr.skeleton.SkeletonState
+import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.mutate
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
@@ -11,7 +10,7 @@ import solarxr_protocol.datatypes.BodyPart
 /**
  * Handles rotating the upper legs' roll to match the lower legs' roll.
  */
-class UpperLegsRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
+class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 	/**
 	 * First value is the BodyPart to be aligned.
 	 *
@@ -22,13 +21,14 @@ class UpperLegsRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
 		BodyPart.RIGHT_UPPER_LEG to BodyPart.RIGHT_LOWER_LEG,
 	)
 
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
 		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsTwistWithLowerLegs
+		if (ratio == 0f) return inputSkeleton
 
 		return inputSkeleton.mutate { updated ->
 			for (bodyPartToSource in bodyPartToSources) {
 				val bone = inputSkeleton.getValue(bodyPartToSource.first)
-				if (!bone.isActive) continue
+				if (!bone.isRotationActive) continue
 
 				val sourceRotation = inputSkeleton.getValue(bodyPartToSource.second).rawRotation
 				val alignedRotation = alignRoll(bone.rawRotation, sourceRotation)

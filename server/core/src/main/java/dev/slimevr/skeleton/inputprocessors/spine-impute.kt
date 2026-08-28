@@ -1,8 +1,8 @@
-package dev.slimevr.skeleton.processors
+package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
-import dev.slimevr.skeleton.SkeletonProcessor
+import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.mutate
 import dev.slimevr.skeleton.resolveAverageRotationFor
 import solarxr_protocol.datatypes.BodyPart
@@ -13,7 +13,7 @@ import solarxr_protocol.datatypes.BodyPart
  *
  * Similar to FallbackProcessor specifically for the waist and hip.
  */
-class SpineImputeProcessor(val settings: Settings) : SkeletonProcessor {
+class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 	private enum class SpineSource(val parts: Array<BodyPart>) {
 		CHEST(arrayOf(BodyPart.CHEST)),
 		HIP(arrayOf(BodyPart.HIP)),
@@ -37,13 +37,13 @@ class SpineImputeProcessor(val settings: Settings) : SkeletonProcessor {
 		else -> error("Invalid missing spine body part $bodyPart")
 	}
 
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
 		val ratios = settings.context.state.value.data.skeletonConfig.ratios
 
-		val hasChest = inputSkeleton[BodyPart.UPPER_CHEST]?.isActive == true || inputSkeleton[BodyPart.CHEST]?.isActive == true
-		val hasWaist = inputSkeleton[BodyPart.WAIST]?.isActive == true
-		val hasHip = inputSkeleton[BodyPart.HIP]?.isActive == true
-		val hasUpperLegs = inputSkeleton[BodyPart.LEFT_UPPER_LEG]?.isActive == true && inputSkeleton[BodyPart.RIGHT_UPPER_LEG]?.isActive == true
+		val hasChest = inputSkeleton[BodyPart.UPPER_CHEST]?.isRotationActive == true || inputSkeleton[BodyPart.CHEST]?.isRotationActive == true
+		val hasWaist = inputSkeleton[BodyPart.WAIST]?.isRotationActive == true
+		val hasHip = inputSkeleton[BodyPart.HIP]?.isRotationActive == true
+		val hasUpperLegs = inputSkeleton[BodyPart.LEFT_UPPER_LEG]?.isRotationActive == true && inputSkeleton[BodyPart.RIGHT_UPPER_LEG]?.isRotationActive == true
 		val missingSpineParts = buildList {
 			if (!hasWaist) add(BodyPart.WAIST)
 			if (!hasHip) add(BodyPart.HIP)

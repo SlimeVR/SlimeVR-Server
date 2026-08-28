@@ -15,35 +15,40 @@ class IKTest {
 			offset = Vector3.NEG_Y,
 			rawRotation = Quaternion.IDENTITY,
 			rawPosition = Vector3.NULL,
-			isActive = false,
+			isRotationActive = false,
+			isPositionActive = false,
 		)
 		boneInputs[BodyPart.UPPER_CHEST] = BoneInput(
 			bodyPart = BodyPart.UPPER_CHEST,
 			offset = Vector3.NEG_Y,
 			rawRotation = Quaternion.IDENTITY,
 			rawPosition = Vector3.NULL,
-			isActive = false,
+			isRotationActive = false,
+			isPositionActive = false,
 		)
 		boneInputs[BodyPart.CHEST] = BoneInput(
 			bodyPart = BodyPart.CHEST,
 			offset = Vector3.NEG_Y,
 			rawRotation = Quaternion.IDENTITY,
 			rawPosition = Vector3.NULL,
-			isActive = false,
+			isRotationActive = false,
+			isPositionActive = false,
 		)
 		boneInputs[BodyPart.WAIST] = BoneInput(
 			bodyPart = BodyPart.WAIST,
 			offset = Vector3.NEG_Y,
 			rawRotation = Quaternion.IDENTITY,
 			rawPosition = Vector3.NULL,
-			isActive = false,
+			isRotationActive = false,
+			isPositionActive = false,
 		)
 		boneInputs[BodyPart.HIP] = BoneInput(
 			bodyPart = BodyPart.HIP,
 			offset = Vector3.NEG_Y,
 			rawRotation = Quaternion.IDENTITY,
 			rawPosition = Vector3.NULL,
-			isActive = false,
+			isRotationActive = false,
+			isPositionActive = false,
 		)
 
 		val bones = buildBones(boneInputs)

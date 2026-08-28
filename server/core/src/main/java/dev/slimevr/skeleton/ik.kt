@@ -117,10 +117,7 @@ fun ccdIkIteration(
 	// Mutate the input skeleton
 	rotateChain(boneInputs, chain, constrainedOffset)
 
-	// FIXME: This feels weird, we should probably consume the skeleton root position
-	//  independent of the bones
-	val skeletonRootPos = bones[BodyPart.HEAD]?.headPosition ?: Vector3.NULL
-	return buildBones(boneInputs, skeletonRootPos)
+	return buildBones(boneInputs)
 }
 
 data class IKChainGoal(

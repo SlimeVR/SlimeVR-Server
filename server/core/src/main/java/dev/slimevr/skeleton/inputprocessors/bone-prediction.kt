@@ -1,9 +1,9 @@
-package dev.slimevr.skeleton.processors
+package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
-import dev.slimevr.skeleton.SkeletonProcessor
+import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.mapValues
 import io.github.axisangles.ktmath.Quaternion
@@ -14,7 +14,7 @@ import solarxr_protocol.rpc.FilteringType
 /**
  * Tries to predict future rotations of bones.
  */
-class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
+class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 	private data class BoneVelocity(
 		val lastRotation: Quaternion,
 		val rotationDelta: Quaternion,
@@ -35,7 +35,7 @@ class BonePredictionProcessor(val settings: Settings) : SkeletonProcessor {
 		else -> 1f
 	}
 
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton {
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.PREDICTION) {
 			// Drop stale velocities so re-enabling doesn't diff against a long outdated pose

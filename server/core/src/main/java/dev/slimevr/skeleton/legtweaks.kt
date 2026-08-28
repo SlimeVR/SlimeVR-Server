@@ -1,6 +1,5 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
@@ -42,7 +41,7 @@ const val SKATING_VELOCITY_THRESHOLD = 2.4f
 const val SKATING_ROTATIONAL_VELOCITY_THRESHOLD = 4.5f
 const val SKATING_ACCELERATION_THRESHOLD = 0.7f
 
-const val FLOOR_CALIBRATION_OFFSET = 0.0025f // TODO: This was added to floorLevel. Do we want to do this?
+const val FLOOR_CALIBRATION_OFFSET = 0.0025f
 const val FLOOR_DISTANCE_THRESHOLD = 0.065f
 
 // TODO Where are these numbers from?
@@ -152,76 +151,4 @@ fun computeLockState(
 	)
 } else {
 	null
-}
-
-// Probably not a SkeletonProcessor, maybe computed processor or smth
-class SkatingCorrectionProcessor : SkeletonTargetProcessor {
-	// Centre of mass
-	var comState: COMState? = null
-
-	// Do we need to store this or do we just want velocity? We can probably just pull
-	//  the last state
-	val velocity: BodyPartMap<VelocityState> = bodyPartMap()
-	val lockState: BodyPartMap<LockState> = bodyPartMap()
-
-	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets, floorLevel: Float): IKTargets {
-		val curTime = timeSource.markNow()
-
-		// Update center of mass
-		comState = computeComState(
-			curTime,
-			comState,
-			centerOfMass(fk),
-		)
-
-		for (bodyPart in VELOCITY_BODY_PARTS) {
-			val curBone = fk[bodyPart] ?: continue
-
-			// TODO Pull velocity out into the base skeleton, we need it elsewhere too
-			val newVel = computeVelocityState(
-				curTime,
-				velocity[bodyPart],
-				curBone,
-			)
-			velocity[bodyPart] = newVel
-
-			// Consider locking BodyPart
-			val lastState = lockState[bodyPart]
-			val wasLocked = lastState?.locked ?: false
-			val isLocked = shouldLock(
-				newVel,
-				if (wasLocked) SKATING_LOCK_ENGAGE_PERCENT else 1f,
-				floorLevel,
-			)
-
-			val activeState = computeLockState(
-				wasLocked,
-				isLocked,
-				curBone.tailPosition,
-			)?.also {
-				// Track lock state changes
-				lockState[bodyPart] = it
-				// Otherwise pull the last state
-			} ?: lastState ?: continue
-
-			if (activeState.locked) {
-				ikTargets[bodyPart] = activeState.position
-			}
-		}
-		return ikTargets
-	}
-}
-
-class FloorClipProcessor(
-	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG),
-) : SkeletonTargetProcessor {
-	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets, floorLevel: Float): IKTargets {
-		for (bodyPart in bodyParts) {
-			// Get existing target or make a new one at the current bone position
-			val target = ikTargets[bodyPart] ?: fk[bodyPart]?.tailPosition ?: continue
-			// Snap the target up to the floor if it's under
-			ikTargets[bodyPart] = Vector3(target.x, target.y.coerceAtLeast(0f), target.z)
-		}
-		return ikTargets
-	}
 }

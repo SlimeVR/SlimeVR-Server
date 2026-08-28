@@ -1,15 +1,17 @@
-package dev.slimevr.skeleton.processors
+package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.skeleton.InputSkeleton
-import dev.slimevr.skeleton.SkeletonProcessor
+import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.mutate
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.collections.copy
+import kotlin.collections.get
 
 /**
  * Handles setting the rotation of an inactive bone with the first active bone in its sources, or keeps
  * the old rotation if none of them are active.
  */
-class BoneActiveLinkProcessor : SkeletonProcessor {
+class BoneActiveLinkInputProcessor : SkeletonInputProcessor {
 	/**
 	 * First element is the BodyPart whose rawBone is not actively receiving data.
 	 *
@@ -23,13 +25,13 @@ class BoneActiveLinkProcessor : SkeletonProcessor {
 		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
 	)
 
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton = inputSkeleton.mutate { updated ->
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutate { updated ->
 		for ((bodyPart, sources) in linkedToSources) {
 			val bone = inputSkeleton.getValue(bodyPart)
-			if (bone.isActive) continue
+			if (bone.isRotationActive) continue
 
 			val closestActiveBone = sources.firstNotNullOfOrNull { part ->
-				inputSkeleton[part]?.takeIf { it.isActive }
+				inputSkeleton[part]?.takeIf { it.isRotationActive }
 			} ?: continue
 			updated[bodyPart] = bone.copy(rawRotation = closestActiveBone.rawRotation)
 		}

@@ -128,7 +128,7 @@ fun defaultKeybinds(): List<KeybindConfig> = listOf(
 data class SkeletonTogglesConfig(
 	val floorClip: Boolean = true,
 	val skatingCorrection: Boolean = true,
-	val toeSnap: Boolean = true,
+	val toeSnap: Boolean = true, // TODO this was false in main
 	val footPlant: Boolean = true,
 	val mocapMode: Boolean = false,
 	val useTrackerPositions: Boolean = true,

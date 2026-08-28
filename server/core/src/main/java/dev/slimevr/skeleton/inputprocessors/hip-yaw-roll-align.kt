@@ -1,8 +1,8 @@
-package dev.slimevr.skeleton.processors
+package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
-import dev.slimevr.skeleton.SkeletonProcessor
+import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.mutate
 import dev.slimevr.skeleton.resolveAverageRotationFor
 import io.github.axisangles.ktmath.Quaternion
@@ -11,13 +11,15 @@ import solarxr_protocol.datatypes.BodyPart
 /**
  * Handles rotating the hip' yaw and roll to match the upper legs' yaw and roll.
  */
-class HipYawRollAlignProcessor(val settings: Settings) : SkeletonProcessor {
+class HipYawRollAlignInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 
 	val source = arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)
 
-	override fun process(inputSkeleton: InputSkeleton): InputSkeleton = inputSkeleton.mutate { updated ->
-		val hipBone = updated.getValue(BodyPart.HIP)
-		if (!hipBone.isActive) {
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
+		val hipBone = inputSkeleton.getValue(BodyPart.HIP)
+		if (hipBone.isRotationActive) return inputSkeleton
+
+		return inputSkeleton.mutate { updated ->
 			val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
 			val sourceRotation = updated.resolveAverageRotationFor(source)
 			val alignedRotation = alignYawRoll(hipBone.rawRotation, sourceRotation)

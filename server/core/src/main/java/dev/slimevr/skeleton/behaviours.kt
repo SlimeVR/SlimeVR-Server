@@ -86,7 +86,8 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 
 class ComputedSkeletonBehaviour(
 	val hz: Int,
-	val processors: List<SkeletonProcessor> = emptyList(),
+	val inputProcessors: List<SkeletonInputProcessor> = emptyList(),
+	val fkProcessors: List<SkeletonFkProcessor> = emptyList(),
 	val targetProcessors: List<SkeletonTargetProcessor> = emptyList(),
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
@@ -104,13 +105,14 @@ class ComputedSkeletonBehaviour(
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
 
+						// TODO find out a cleaner way to pause tracking that doesn't add 1 frame latency (not a priority)
 						val boneInputs = if (targetState.pausedBoneInputs != null) {
 							// Use already-processed paused tracking data except for the head
 							targetState.pausedBoneInputs.mutate { it[BodyPart.HEAD] = targetState.boneInputs[BodyPart.HEAD] }
 						} else {
 							// Run pre-FK processors
 							// TODO: Add a constrain processor (maybe not needed)
-							val processedInputs = processors.fold(targetState.boneInputs) { state, processor -> processor.process(state) }
+							val processedInputs = inputProcessors.fold(targetState.boneInputs) { boneInputs, processor -> processor.process(boneInputs, targetState.skeletonHeight) }
 							if (targetState.paused) {
 								// We just paused tracking and this is the last frame before we rely on paused bone inputs
 								receiver.context.dispatch(SkeletonActions.SetPausedBoneInputs(processedInputs))
@@ -118,13 +120,26 @@ class ComputedSkeletonBehaviour(
 							processedInputs
 						}
 
-						// Get head position
-						val rootHead = boneInputs[BodyPart.HEAD]
-							?.let { Vector3(it.rawPosition.x, it.rawPosition.y, it.rawPosition.z) }
-							?: Vector3(0f, targetState.skeletonHeight, 0f)
+						// Run initial FK
+						var fk = buildBones(boneInputs)
 
-						// Run FK
-						val fk = buildBones(boneInputs, rootHead)
+						// Run FK processors
+						fkProcessors.fold(boneInputs) { inputs, processor ->
+							val newInputs = processor.process(inputs, fk, targetState.floorLevel)
+							if (newInputs != inputs) {
+								// Inputs changed; re-run FK
+								// TODO only run FK for what changed `val changedInputs = newInputs.filter { (part, boneInput) -> boneInput != inputs.getValue(part) }`
+								fk = buildBones(newInputs)
+
+								// For bones with inactive position, update their input's position in state (needed for Localizer)
+								// TODO figure out if we want nullable position. should this set active? activePosition? idk raahhhh - Erimel
+								val changedPositionInputs = newInputs.filter { (part, boneInput) -> boneInput.rawPosition != inputs.getValue(part).rawPosition }
+								for (input in changedPositionInputs) {
+									receiver.context.dispatch(SkeletonActions.SetBonePosition(input.key, input.value.rawPosition, false))
+								}
+							}
+							newInputs
+						}
 
 						// Run IK processors
 						val ikTargets = targetProcessors.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets, targetState.floorLevel) }

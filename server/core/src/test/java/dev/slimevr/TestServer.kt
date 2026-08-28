@@ -119,7 +119,7 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 		onBufferOverflow = BufferOverflow.DROP_OLDEST,
 	)
 	computed.tryEmit(buildBones(context.state.value.boneInputs))
-	val skeleton = Skeleton(context, computed)
+	val skeleton = Skeleton(context, buildTestSettings(scope), computed)
 	skeleton.startObserving()
 	return skeleton
 }
@@ -136,7 +136,7 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 		behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 		name = "TestResetsManager",
 	)
-	val resetsManager = ResetsManager(context, server, settings)
+	val resetsManager = ResetsManager(context, server, settings, buildTestSkeleton(scope))
 	resetsManager.startObserving()
 	return resetsManager
 }
