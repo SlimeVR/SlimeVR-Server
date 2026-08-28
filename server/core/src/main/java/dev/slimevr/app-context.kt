@@ -5,7 +5,6 @@ import dev.slimevr.config.AppConfig
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
-import dev.slimevr.localizer.LocalizerManager
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -48,7 +47,6 @@ interface AppContextProvider : Phase1ContextProvider {
 	val bvhManager: BVHManager
 	val vmcManager: VMCManager
 	val vrcOscManager: VRCOSCManager
-	val localizerManager: LocalizerManager
 	val resetsManager: ResetsManager
 	val tapDetectionManager: TapDetectionManager
 	fun startObserving()
@@ -74,7 +72,6 @@ class AppContext(
 	override val bvhManager: BVHManager,
 	override val vmcManager: VMCManager,
 	override val vrcOscManager: VRCOSCManager,
-	override val localizerManager: LocalizerManager,
 	override val resetsManager: ResetsManager,
 	override val tapDetectionManager: TapDetectionManager,
 ) : AppContextProvider {
@@ -91,7 +88,6 @@ class AppContext(
 		boneRouting.startObserving(this)
 		vmcManager.startObserving(this)
 		vrcOscManager.startObserving(this)
-		localizerManager.startObserving()
 		resetsManager.startObserving()
 		tapDetectionManager.startObserving()
 	}
