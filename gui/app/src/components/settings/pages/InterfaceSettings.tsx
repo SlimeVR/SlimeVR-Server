@@ -33,6 +33,7 @@ interface InterfaceSettingsForm {
     discordPresence: boolean;
     errorTracking: boolean;
     bvhDirectory: string | null;
+    skeletonMesh: boolean;
   };
   notifications: {
     watchNewDevices: boolean;
@@ -73,6 +74,9 @@ export function InterfaceSettings() {
           config?.discordPresence ?? defaultConfig.discordPresence,
         errorTracking: config?.errorTracking ?? false,
         bvhDirectory: config?.bvhDirectory ?? defaultConfig.bvhDirectory,
+        skeletonMesh:
+          (config?.skeletonPreviewStyle ??
+            defaultConfig.skeletonPreviewStyle) === 'mesh',
       },
       developer: {
         enabled: config?.debug ?? defaultConfig.debug,
@@ -147,6 +151,7 @@ export function InterfaceSettings() {
       discordPresence: values.behavior.discordPresence,
       errorTracking: values.behavior.errorTracking,
       bvhDirectory: values.behavior.bvhDirectory,
+      skeletonPreviewStyle: values.behavior.skeletonMesh ? 'mesh' : 'lines',
 
       debug: values.developer.enabled,
       devSettings: values.developer,
@@ -328,6 +333,28 @@ export function InterfaceSettings() {
                   name="behavior.discordPresence"
                   label={l10n.getString(
                     'settings-general-interface-discord_presence-label'
+                  )}
+                />
+              </div>
+
+              <Typography variant="section-title">
+                {l10n.getString('settings-interface-behavior-skeleton_mesh')}
+              </Typography>
+              <div className="flex flex-col pt-1 pb-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-interface-behavior-skeleton_mesh-description'
+                  )}
+                </Typography>
+              </div>
+              <div className="grid sm:grid-cols-2 pb-4">
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  outlined
+                  name="behavior.skeletonMesh"
+                  label={l10n.getString(
+                    'settings-interface-behavior-skeleton_mesh-label'
                   )}
                 />
               </div>

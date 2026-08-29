@@ -822,6 +822,9 @@ settings-interface-behavior-error_tracking-label = Send errors to developers
 settings-interface-behavior-bvh_directory = Directory to save BVH recordings
 settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
 settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
+settings-interface-behavior-skeleton_mesh = Skeleton preview style
+settings-interface-behavior-skeleton_mesh-description = Draw the body preview with solid 3D shapes instead of simple lines. Turn this off on low-end machines.
+settings-interface-behavior-skeleton_mesh-label = Use 3D shapes
 
 ## Serial settings
 settings-serial = USB Serial Console

@@ -111,7 +111,7 @@ export class BasedSkeletonHelper extends LineSegments2 {
   }
 }
 
-function getBoneList(object: Object3D): Bone[] {
+export function getBoneList(object: Object3D): Bone[] {
   const boneList: Bone[] = [];
 
   if ((object as Bone).isBone) {
