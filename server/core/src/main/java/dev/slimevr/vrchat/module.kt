@@ -16,6 +16,11 @@ import solarxr_protocol.rpc.VRCSpineMode
 import solarxr_protocol.rpc.VRCTrackerModel
 import kotlin.math.abs
 
+// The HMD height is taken from the HMD pose, which is between the eyes.
+// This compensates for the offset to the full height (top of the head).
+// From Drillis and Contini (1966)
+const val EYE_HEIGHT_TO_HEIGHT_RATIO = 0.936f
+
 val VRC_VALID_KEYS = setOf(
 	"legacyModeOk",
 	"shoulderTrackingOk",
@@ -96,7 +101,7 @@ fun computeRecommendedValues(server: VRServer, userHeight: Float): VRCConfigReco
 		shoulderTrackingDisabled =
 		(!hasLeftHandWithPosition || !hasRightHandWithPosition || isMissingAnArmTracker) &&
 			((hasLeftHandWithPosition && hasRightHandWithPosition) || isMissingAShoulderTracker),
-		userHeight = userHeight,
+		userHeight = userHeight / EYE_HEIGHT_TO_HEIGHT_RATIO,
 		calibrationRange = 0.2f,
 		trackerModel = VRCTrackerModel.AXIS,
 		spineMode = listOf(VRCSpineMode.LOCK_HIP, VRCSpineMode.LOCK_HEAD),
