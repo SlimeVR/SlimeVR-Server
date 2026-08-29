@@ -14,8 +14,16 @@ fun computeToeSnapRatio(
 	ankleHeight: Float,
 	footLength: Float,
 	floorHeight: Float,
-	// Normalized distance
-): Float = 1f - ((ankleHeight - floorHeight - footLength) / (footLength * TOE_SNAP_RANGE_MULTIPLE)).coerceIn(0f, 1f)
+): Float {
+	val ankleHeightAboveFloor = ankleHeight - floorHeight
+	// Toe height if the foot is pointing directly down to the floor
+	val potentialToeHeightAboveFloor = ankleHeightAboveFloor - footLength
+	// The range over which the toes snap to the floor
+	val toeSnapRange = footLength * TOE_SNAP_RANGE_MULTIPLE
+	val ratioOfRangeFromFloor = (potentialToeHeightAboveFloor / toeSnapRange).coerceIn(0f, 1f)
+	// Ratio of range *to* floor
+	return 1f - ratioOfRangeFromFloor
+}
 
 fun snapToes(
 	rotation: Quaternion,
