@@ -19,7 +19,7 @@ class FloorClipTargetProcessor(
 			// Get existing target or make a new one at the current bone position
 			val target = ikTargets[bodyPart] ?: fk[bodyPart]?.tailPosition ?: continue
 			// Snap the target up to the floor if it's under
-			ikTargets[bodyPart] = Vector3(target.x, target.y.coerceAtLeast(0f), target.z)
+			ikTargets[bodyPart] = Vector3(target.x, target.y.coerceAtLeast(floorLevel), target.z)
 		}
 		return ikTargets
 	}
