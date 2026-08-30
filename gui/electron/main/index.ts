@@ -15,6 +15,7 @@ import path, { dirname, join } from 'path';
 import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
 import appleTrayIcon from '../resources/icons/Square30x30Logo.png?asset';
+import linuxTrayIcon from '../resources/icons/32x32.png?asset';
 import { readFile, stat } from 'fs/promises';
 import { pathToFileURL } from 'node:url';
 import { getPlatform, handleIpc, isPortAvailable } from './utils';
@@ -308,7 +309,11 @@ function createWindow() {
   handleIpc('save-dialog', (e, options) => dialog.showSaveDialog(options));
 
   const icon = nativeImage.createFromPath(
-    getPlatform() === 'macos' ? appleTrayIcon : trayIcon
+    getPlatform() === 'macos'
+      ? appleTrayIcon
+      : getPlatform() === 'linux'
+        ? linuxTrayIcon
+        : trayIcon
   );
   const tray = new Tray(icon);
   tray.setToolTip('SlimeVR');
