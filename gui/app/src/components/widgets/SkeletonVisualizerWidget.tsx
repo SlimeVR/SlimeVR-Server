@@ -8,7 +8,7 @@ import {
 } from '@/utils/skeletonHelper';
 import { BasedSkeletonMeshHelper } from '@/utils/skeletonMeshHelper';
 import {
-  computeUserHeight,
+  computeHeadYOffset,
   deriveSkeletonProportions,
 } from '@/utils/skeletonProportions';
 import {
@@ -296,7 +296,7 @@ function initializePreview(
       if (skeletonHelper instanceof BasedSkeletonMeshHelper) {
         skeletonHelper.setProportions(deriveSkeletonProportions(bones));
       }
-      const newHeight = computeUserHeight(bones);
+      const newHeight = computeHeadYOffset(bones);
       if (newHeight !== heightOffset) {
         heightOffset = newHeight;
         views.forEach((v) => {
