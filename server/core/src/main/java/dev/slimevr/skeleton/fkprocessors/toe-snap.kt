@@ -8,9 +8,11 @@ import dev.slimevr.skeleton.mutate
 import dev.slimevr.tracker.eulerHeading
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
+import kotlin.math.abs
+import kotlin.math.asin
 
 val TOE_SNAP_RANGE_MULTIPLE = 2f
-val MAX_TOE_SNAP_ANGLE = 0.8f
+val MAX_TOE_SNAP_ANGLE = -0.8f
 
 fun computeToeSnapRatio(
 	ankleHeight: Float,
@@ -23,8 +25,13 @@ fun computeToeSnapRatio(
 	// The range over which the toes snap to the floor
 	val toeSnapRange = footLength * TOE_SNAP_RANGE_MULTIPLE
 	val ratioOfRangeFromFloor = (potentialToeHeightAboveFloor / toeSnapRange).coerceIn(0f, 1f)
+
+	// Reduce the range back down as we touch the floor
+	val footAngleToFloor = asin(ankleHeightAboveFloor.coerceIn(0f, footLength) / footLength)
+	val ratioOfMaxAngleToFloor = abs(footAngleToFloor / MAX_TOE_SNAP_ANGLE).coerceIn(0f, 1f)
+
 	// Ratio of range *to* floor
-	return 1f - ratioOfRangeFromFloor
+	return (1f - ratioOfRangeFromFloor) * ratioOfMaxAngleToFloor
 }
 
 fun snapToes(
@@ -34,10 +41,10 @@ fun snapToes(
 	// TODO Do we want to retain roll?
 	val heading = eulerHeading(rotation)
 	// TODO Not yet tested if this is the right method & math
-	val maxPitch = Quaternion.rotationAroundZAxis(MAX_TOE_SNAP_ANGLE * correctionRatio)
+	val maxPitch = Quaternion.rotationAroundXAxis(MAX_TOE_SNAP_ANGLE * correctionRatio)
 	// Pitch must be applied first
 	val maxCorrection = maxPitch * heading
-	return rotation.interpR(maxCorrection, correctionRatio)
+	return rotation.interpQ(maxCorrection, correctionRatio)
 }
 
 class ToeSnapFkProcessor(val settings: Settings) : SkeletonFkProcessor {
