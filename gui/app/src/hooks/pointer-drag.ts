@@ -38,7 +38,8 @@ export const createPointerDrag = <P, T>(codec: DropTargetCodec<T>) => {
     [codec.attribute]: codec.serialize(target),
   });
 
-  const useDraggable = (payload: P, onDrop: (target: T | null) => void) => {
+  /** A null payload means there is nothing to drag here. */
+  const useDraggable = (payload: P | null, onDrop: (target: T | null) => void) => {
     const setDrag = useSetAtom(stateAtom);
     const [start, setStart] = useState<{ x: number; y: number } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
@@ -53,7 +54,7 @@ export const createPointerDrag = <P, T>(codec: DropTargetCodec<T>) => {
     };
 
     const onPointerDown = (e: PointerEvent) => {
-      if (e.button !== 0) return;
+      if (e.button !== 0 || !payloadRef.current) return;
       setStart({ x: e.clientX, y: e.clientY });
       e.currentTarget.setPointerCapture(e.pointerId);
     };
@@ -67,6 +68,8 @@ export const createPointerDrag = <P, T>(codec: DropTargetCodec<T>) => {
         if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
         setIsDragging(true);
       }
+
+      if (!payloadRef.current) return;
 
       setDrag({
         payload: payloadRef.current,

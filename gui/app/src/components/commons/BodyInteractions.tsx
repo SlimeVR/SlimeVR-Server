@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import {
   HTMLAttributes,
+  PointerEvent,
   ReactNode,
   useEffect,
   useMemo,
@@ -69,6 +70,8 @@ export function BodyInteractions({
       ),
     };
   }, [mirror]);
+
+  const [hoveredControl, setHoveredControl] = useState<string | null>(null);
 
   const personRef = useRef<HTMLDivElement | null>(null);
   const leftContainerRef = useRef<HTMLDivElement | null>(null);
@@ -177,6 +180,7 @@ export function BodyInteractions({
         const isAssigned = assignedRoles.includes((BodyPart as any)[slot.id]);
         const { connected } = slotStyle?.((BodyPart as any)[slot.id]) ?? {};
 
+        ctx.lineWidth = slot.id === hoveredControl || connected ? 4 : 2;
         ctx.strokeStyle =
           isAssigned || connected
             ? leftPartNames.has(slot.id)
@@ -214,6 +218,13 @@ export function BodyInteractions({
     setSlotsButtonPos(slots);
   };
 
+  const onControlPointerOver = (event: PointerEvent<HTMLDivElement>) => {
+    const control = (event.target as HTMLElement).closest<HTMLElement>(
+      '.control'
+    );
+    setHoveredControl(control?.id || null);
+  };
+
   updateSlotsRef.current = updateSlots;
   const assignedKey = useMemo(
     () => [...assignedRoles].sort((a, b) => a - b).join(','),
@@ -222,7 +233,7 @@ export function BodyInteractions({
 
   useEffect(() => {
     updateSlots();
-  }, [variant, mirror, assignedKey, slotStyle]);
+  }, [variant, mirror, assignedKey, slotStyle, hoveredControl]);
 
   useEffect(() => {
     if (
@@ -266,7 +277,12 @@ export function BodyInteractions({
         height="100%"
       />
       <div className="flex w-full h-full gap-5">
-        <div ref={leftContainerRef} className="z-10">
+        <div
+          ref={leftContainerRef}
+          className="z-10"
+          onPointerOver={onControlPointerOver}
+          onPointerLeave={() => setHoveredControl(null)}
+        >
           {leftControls}
         </div>
         <div ref={personRef} className="relative flex justify-center flex-grow">
@@ -335,7 +351,12 @@ export function BodyInteractions({
             }
           )}
         </div>
-        <div ref={rightContainerRef} className="z-10">
+        <div
+          ref={rightContainerRef}
+          className="z-10"
+          onPointerOver={onControlPointerOver}
+          onPointerLeave={() => setHoveredControl(null)}
+        >
           {rightControls}
         </div>
       </div>

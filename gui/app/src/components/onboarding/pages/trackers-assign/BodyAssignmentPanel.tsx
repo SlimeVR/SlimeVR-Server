@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { ReactNode } from 'react';
+import { MouseEvent, ReactNode } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import {
   BodyAssignment,
@@ -11,10 +11,13 @@ import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { useConfig } from '@/hooks/config';
-import { getTrackerName, useTracker, velocityGlowStyle } from '@/hooks/tracker';
+import {
+  getTrackerName,
+  useVelocity,
+  velocityGlowStyle,
+} from '@/hooks/tracker';
 import { bodyPartDropProps, trackerDrag } from '@/hooks/tracker-drag';
 import { FlatDeviceTracker } from '@/store/app-store';
-import { DraggableTracker } from './TrackerAssignmentList';
 import { BodyPartError } from '@/hooks/tracker-assignment';
 
 export function BodyAssignmentPanel({
@@ -47,7 +50,7 @@ export function BodyAssignmentPanel({
   );
 
   return (
-    <div className="flex-1 min-h-0 flex flex-col gap-4">
+    <div className="flex-1 min-h-0 flex flex-col gap-2">
       {!mobile && (
         <div className="flex items-center justify-between gap-2 shrink-0 px-2">
           <TrackerAssignmentTabs />
@@ -68,7 +71,7 @@ export function BodyAssignmentPanel({
         </div>
       )}
       <div className="flex-1 min-h-0 overflow-y-auto px-2 flex flex-col fill-background-50">
-        <div className="w-full max-w-[770px] m-auto flex-1 min-h-fit flex flex-col tall:py-10">
+        <div className="w-full max-w-[770px] m-auto flex-1 min-h-fit flex flex-col tall:py-6">
           <BodyAssignment
             dotSize={dotSize}
             fillHeight
@@ -156,7 +159,7 @@ function SideLegend({
 type SharedCardProps = {
   role: BodyPart;
   direction: 'left' | 'right';
-  td: FlatDeviceTracker[] | undefined;
+  td: FlatDeviceTracker | undefined;
   roleError: string | undefined;
   armed: boolean;
 };
@@ -194,15 +197,45 @@ function DragBodyPartCard({
 }: DragCardProps) {
   const isHovering = trackerDrag.useIsDragHovering(role);
   const isDragActive = trackerDrag.useIsDragActive();
-  const isAssigned = !!td && td.length > 0;
+  const { dragProps, isDragging } = trackerDrag.useDraggable(
+    td
+      ? {
+          trackerId: td.tracker.trackerId,
+          label: getTrackerName(td.tracker.info),
+        }
+      : null,
+    (bodyPart) => {
+      if (td) onDropTracker(td.tracker.trackerId, bodyPart ?? BodyPart.NONE);
+    }
+  );
+
+  const onClick = (event: MouseEvent<HTMLDivElement>) => {
+    dragProps.onClick(event);
+    if (event.defaultPrevented) return;
+
+    if (td) onUnassign(role);
+    else onSlotClick(role);
+  };
 
   return (
     <div
       {...bodyPartDropProps(role)}
+      {...dragProps}
       id={BodyPart[role]}
+      onClick={onClick}
       className={classNames(
-        'flex flex-col gap-1 control w-40 px-2 py-1 rounded-md relative',
-        direction === 'left' ? 'items-start' : 'items-end'
+        'flex flex-col gap-1 control w-40 px-2 py-1 rounded-md relative touch-none select-none',
+        'transition-colors duration-150 ease-linear',
+        td ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer',
+        isDragging && 'opacity-40',
+        direction === 'left' ? 'items-start' : 'items-end',
+        isHovering
+          ? 'bg-background-50'
+          : armed
+            ? 'bg-accent-background-30/40'
+            : isDragActive
+              ? 'bg-background-50/50'
+              : 'hover:bg-background-50'
       )}
     >
       {roleError && (
@@ -227,33 +260,10 @@ function DragBodyPartCard({
       )}
       <Typography variant="standard" bold id={'body_part-' + BodyPart[role]} />
       <div className="min-h-10">
-        {isAssigned ? (
-          <div
-            onClick={() => onUnassign(role)}
-            className="flex flex-col gap-1 cursor-pointer"
-          >
-            {td!.map((tracker, index) => (
-              <AssignedTrackerLabel
-                key={index}
-                tracker={tracker}
-                onDropTracker={onDropTracker}
-              />
-            ))}
-          </div>
+        {td ? (
+          <AssignedTrackerLabel tracker={td} />
         ) : (
-          <div
-            onClick={() => onSlotClick(role)}
-            className={classNames(
-              'flex items-center h-8 px-2 rounded-md cursor-pointer transition-colors duration-150 ease-linear',
-              isHovering
-                ? 'bg-background-50'
-                : armed
-                  ? 'bg-accent-background-30/40'
-                  : isDragActive
-                    ? 'bg-background-50/50'
-                    : 'hover:bg-background-50'
-            )}
-          >
+          <div className="flex items-center h-8">
             <Typography color="text-background-30" id="body_part-NONE" />
           </div>
         )}
@@ -262,25 +272,12 @@ function DragBodyPartCard({
   );
 }
 
-function AssignedTrackerLabel({
-  tracker,
-  onDropTracker,
-}: {
-  tracker: FlatDeviceTracker;
-  onDropTracker: (trackerId: number, bodyPart: BodyPart) => void;
-}) {
-  const { useVelocity } = useTracker(tracker.tracker);
-  const velocity = useVelocity();
+function AssignedTrackerLabel({ tracker }: { tracker: FlatDeviceTracker }) {
+  const velocity = useVelocity(tracker.tracker);
   const name = getTrackerName(tracker.tracker.info);
 
   return (
-    <DraggableTracker
-      trackerId={tracker.tracker.trackerId}
-      label={name?.toString() || ''}
-      // Dropping outside any body part unassigns.
-      onDrop={(bodyPart) =>
-        onDropTracker(tracker.tracker.trackerId, bodyPart ?? BodyPart.NONE)
-      }
+    <div
       className="flex items-center gap-2 rounded-md bg-background-80 px-2"
       style={velocityGlowStyle(velocity)}
     >
@@ -294,7 +291,7 @@ function AssignedTrackerLabel({
       <div className="py-2">
         <Typography>{name}</Typography>
       </div>
-    </DraggableTracker>
+    </div>
   );
 }
 
@@ -307,13 +304,14 @@ function TapBodyPartCard({
   awaitingTracker,
   onSelect,
 }: TapCardProps) {
-  const isAssigned = !!td && td.length > 0;
+  const velocity = useVelocity(td?.tracker);
 
   return (
     <button
       type="button"
       id={BodyPart[role]}
       onClick={() => onSelect(role)}
+      style={velocityGlowStyle(velocity)}
       className={classNames(
         'flex flex-col gap-1 control w-[88px] smol:w-[120px] sm:w-[150px] px-2 py-1 rounded-md relative overflow-hidden transition-colors duration-150 ease-linear',
         direction === 'left' ? 'text-left' : 'text-right',
@@ -324,7 +322,7 @@ function TapBodyPartCard({
             : undefined
       )}
     >
-      {awaitingTracker && !armed && !isAssigned && (
+      {awaitingTracker && !armed && !td && (
         <div className="absolute inset-0 rounded-md border border-accent-background-20/70 animate-pulse pointer-events-none" />
       )}
       {roleError && (
@@ -338,12 +336,10 @@ function TapBodyPartCard({
         </div>
       )}
       <Typography variant="standard" bold id={'body_part-' + BodyPart[role]} />
-      {isAssigned ? (
-        td!.map((tracker, index) => (
-          <Typography key={index} variant="standard" truncate>
-            {getTrackerName(tracker.tracker.info)}
-          </Typography>
-        ))
+      {td ? (
+        <Typography variant="standard" truncate>
+          {getTrackerName(td.tracker.info)}
+        </Typography>
       ) : (
         <Typography
           variant="standard"

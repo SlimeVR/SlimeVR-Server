@@ -36,6 +36,7 @@ export function TrackerAssignmentList({
   trackers,
   dongles,
   assignedCount,
+  assignedPartsCount,
   expectedTrackersCount,
   onOpenSettings,
   onDropTracker,
@@ -43,6 +44,7 @@ export function TrackerAssignmentList({
   trackers: FlatDeviceTracker[];
   dongles: DongleDataT[];
   assignedCount: number;
+  assignedPartsCount: number;
   expectedTrackersCount: number;
   onOpenSettings: () => void;
   onDropTracker: (trackerId: number, bodyPart: BodyPart) => void;
@@ -72,12 +74,17 @@ export function TrackerAssignmentList({
         <Typography
           color="secondary"
           id="onboarding-assign_trackers-assigned"
-          vars={{ assigned: assignedCount, trackers: expectedTrackersCount }}
+          vars={{
+            assigned: assignedPartsCount,
+            trackers: expectedTrackersCount,
+          }}
         />
         <div className="flex-grow">
           <ProgressBar
             progress={
-              expectedTrackersCount ? assignedCount / expectedTrackersCount : 0
+              expectedTrackersCount
+                ? assignedPartsCount / expectedTrackersCount
+                : 0
             }
             height={4}
           />

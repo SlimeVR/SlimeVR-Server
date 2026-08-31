@@ -78,7 +78,6 @@ function DesktopTrackerAssign({
   assignment: TrackerAssignment;
   onOpenSettings: () => void;
 }) {
-  const { state } = useOnboarding();
   const hoveredBodyPart = useAtomValue(hoveredBodyPartAtom);
 
   const slotStyle: BodySlotStyler = useCallback(
@@ -124,6 +123,7 @@ function DesktopTrackerAssign({
           trackers={assignment.flatTrackers}
           dongles={assignment.dongles}
           assignedCount={assignment.assignedTrackers.length}
+          assignedPartsCount={assignment.assignedPartsCount}
           expectedTrackersCount={assignment.expectedTrackersCount}
           onOpenSettings={onOpenSettings}
           onDropTracker={assignment.handleDropTracker}

@@ -12,6 +12,7 @@ import { useChokerWarning } from './choker-warning';
 import { useWebsocketAPI } from './websocket-api';
 import {
   ASSIGN_MODE_OPTIONS,
+  ASSIGNMENT_MODES,
   ASSIGNMENT_RULES,
   getPreferredAssignMode,
   LOWER_BODY,
@@ -23,8 +24,8 @@ import {
   assignedTrackersAtom,
   connectedIMUTrackersAtom,
   donglesAtom,
-  FlatDeviceTracker,
   flatTrackersAtom,
+  trackerByBodyPartAtom,
 } from '@/store/app-store';
 
 export type BodyPartError = {
@@ -40,6 +41,7 @@ export function useTrackerAssignment() {
   const [armedPart, setArmedPart] = useState<BodyPart>(BodyPart.NONE);
 
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
+  const trackerByPart = useAtomValue(trackerByBodyPartAtom);
   const flatTrackers = useAtomValue(flatTrackersAtom);
   const dongles = useAtomValue(donglesAtom);
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
@@ -58,20 +60,18 @@ export function useTrackerAssignment() {
     };
   }, []);
 
-  const trackersByPart = useMemo(() => {
-    const map: Partial<Record<BodyPart, FlatDeviceTracker[]>> = {};
-    assignedTrackers.forEach((td) => {
-      const part = td.tracker.info?.bodyPart ?? BodyPart.NONE;
-      map[part] = [...(map[part] || []), td];
-    });
-    return map;
-  }, [assignedTrackers]);
-
   const currentAssignMode = config?.assignShowAllBodyParts
     ? AssignMode.All
     : getPreferredAssignMode(connectedIMUTrackers.length);
 
   const expectedTrackersCount = ASSIGN_MODE_OPTIONS[currentAssignMode];
+
+  const assignedPartsCount = useMemo(
+    () =>
+      ASSIGNMENT_MODES[currentAssignMode].filter((part) => !!trackerByPart[part])
+        .length,
+    [currentAssignMode, trackerByPart]
+  );
 
   const rolesWithErrors = useMemo(() => {
     const trackerRoles = flatTrackers.map(
@@ -139,19 +139,17 @@ export function useTrackerAssignment() {
   };
 
   const moveTrackerToBodyPart = (trackerId: number, bodyPart: BodyPart) => {
-    if (bodyPart !== BodyPart.NONE) {
-      assignedTrackers
-        .filter(
-          (td) =>
-            td.tracker.info?.bodyPart === bodyPart && td.tracker.trackerId !== trackerId
-        )
-        .forEach((occupant) =>
-          sendAssign(
-            occupant.tracker.trackerId,
-            BodyPart.NONE,
-            occupant.tracker.info?.mountingOrientation ?? null
-          )
-        );
+    const occupant = trackerByPart[bodyPart];
+    if (
+      bodyPart !== BodyPart.NONE &&
+      occupant &&
+      occupant.tracker.trackerId !== trackerId
+    ) {
+      sendAssign(
+        occupant.tracker.trackerId,
+        BodyPart.NONE,
+        occupant.tracker.info?.mountingOrientation ?? null
+      );
     }
 
     const moved = flatTrackers.find((td) => td.tracker.trackerId === trackerId);
@@ -183,13 +181,14 @@ export function useTrackerAssignment() {
   };
 
   const unassignPart = (part: BodyPart) => {
-    (trackersByPart[part] || []).forEach((td) =>
+    const td = trackerByPart[part];
+    if (td) {
       sendAssign(
         td.tracker.trackerId,
         BodyPart.NONE,
         td.tracker.info?.mountingOrientation ?? null
-      )
-    );
+      );
+    }
     if (armedPart === part) setArmedPart(BodyPart.NONE);
   };
 
@@ -201,7 +200,7 @@ export function useTrackerAssignment() {
   };
 
   const onDotSelected = (role: BodyPart) => {
-    if ((trackersByPart[role] || []).length > 0) {
+    if (trackerByPart[role]) {
       unassignPart(role);
     } else {
       armForTap(role);
@@ -225,8 +224,9 @@ export function useTrackerAssignment() {
     connectedIMUTrackers,
     armedPart,
     setArmedPart,
-    trackersByPart,
+    trackerByPart,
     expectedTrackersCount,
+    assignedPartsCount,
     rolesWithErrors,
     firstError,
     armForTap,

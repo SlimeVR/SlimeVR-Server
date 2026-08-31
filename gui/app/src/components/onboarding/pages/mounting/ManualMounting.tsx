@@ -1,11 +1,10 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
   MountingOrientationDegreesToQuatT,
   QuaternionFromQuatT,
-  similarQuaternions,
 } from '@/maths/quaternion';
 import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
@@ -16,7 +15,7 @@ import { Localized } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
 import { defaultConfig, useConfig } from '@/hooks/config';
-import { assignedTrackersAtom, FlatDeviceTracker } from '@/store/app-store';
+import { trackerByBodyPartAtom } from '@/store/app-store';
 import { useAtomValue } from 'jotai';
 import * as Sentry from '@sentry/react';
 
@@ -30,25 +29,11 @@ export function ManualMountingPage() {
 
   applyProgress(0.6);
 
-  const assignedTrackers = useAtomValue(assignedTrackersAtom);
-
-  const trackerPartGrouped = useMemo(
-    () =>
-      assignedTrackers.reduce<{ [key: number]: FlatDeviceTracker[] }>(
-        (curr, td) => {
-          const key = td.tracker.info?.bodyPart || BodyPart.NONE;
-          return {
-            ...curr,
-            [key]: [...(curr[key] || []), td],
-          };
-        },
-        {}
-      ),
-    [assignedTrackers]
-  );
+  const trackerByPart = useAtomValue(trackerByBodyPartAtom);
 
   const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
-    (trackerPartGrouped[selectedRole] || []).forEach((td) => {
+    const td = trackerByPart[selectedRole];
+    if (td) {
       const assignreq = new AssignTrackerRequestT();
 
       assignreq.bodyPosition = td.tracker.info?.bodyPart || BodyPart.NONE;
@@ -64,7 +49,7 @@ export function ManualMountingPage() {
           direction: assignreq.mountingOrientation,
         },
       });
-    });
+    }
 
     setSelectRole(BodyPart.NONE);
   };
@@ -73,20 +58,13 @@ export function ManualMountingPage() {
     (role: BodyPart) => {
       if (role === BodyPart.NONE) return undefined;
 
-      const trackers = trackerPartGrouped[role] || [];
-      const [mountingOrientation, ...orientation] = trackers
-        .map((td) => td.tracker.info?.mountingOrientation)
-        .filter((orientation) => !!orientation)
-        .map((orientation) => QuaternionFromQuatT(orientation));
-
-      const identicalOrientations =
-        mountingOrientation !== undefined &&
-        orientation.every((quat) =>
-          similarQuaternions(quat, mountingOrientation)
-        );
-      return identicalOrientations ? mountingOrientation : undefined;
+      const mountingOrientation =
+        trackerByPart[role]?.tracker.info?.mountingOrientation;
+      return mountingOrientation
+        ? QuaternionFromQuatT(mountingOrientation)
+        : undefined;
     },
-    [trackerPartGrouped]
+    [trackerByPart]
   );
 
   return (
@@ -149,25 +127,11 @@ export function ManualMountingPageStayAligned({
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
 
-  const assignedTrackers = useAtomValue(assignedTrackersAtom);
-
-  const trackerPartGrouped = useMemo(
-    () =>
-      assignedTrackers.reduce<{ [key: number]: FlatDeviceTracker[] }>(
-        (curr, td) => {
-          const key = td.tracker.info?.bodyPart || BodyPart.NONE;
-          return {
-            ...curr,
-            [key]: [...(curr[key] || []), td],
-          };
-        },
-        {}
-      ),
-    [assignedTrackers]
-  );
+  const trackerByPart = useAtomValue(trackerByBodyPartAtom);
 
   const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
-    (trackerPartGrouped[selectedRole] || []).forEach((td) => {
+    const td = trackerByPart[selectedRole];
+    if (td) {
       const assignreq = new AssignTrackerRequestT();
 
       assignreq.bodyPosition = td.tracker.info?.bodyPart || BodyPart.NONE;
@@ -183,7 +147,7 @@ export function ManualMountingPageStayAligned({
           direction: assignreq.mountingOrientation,
         },
       });
-    });
+    }
 
     setSelectRole(BodyPart.NONE);
   };
@@ -192,20 +156,13 @@ export function ManualMountingPageStayAligned({
     (role: BodyPart) => {
       if (role === BodyPart.NONE) return undefined;
 
-      const trackers = trackerPartGrouped[role] || [];
-      const [mountingOrientation, ...orientation] = trackers
-        .map((td) => td.tracker.info?.mountingOrientation)
-        .filter((orientation) => !!orientation)
-        .map((orientation) => QuaternionFromQuatT(orientation));
-
-      const identicalOrientations =
-        mountingOrientation !== undefined &&
-        orientation.every((quat) =>
-          similarQuaternions(quat, mountingOrientation)
-        );
-      return identicalOrientations ? mountingOrientation : undefined;
+      const mountingOrientation =
+        trackerByPart[role]?.tracker.info?.mountingOrientation;
+      return mountingOrientation
+        ? QuaternionFromQuatT(mountingOrientation)
+        : undefined;
     },
-    [trackerPartGrouped]
+    [trackerByPart]
   );
 
   return (

@@ -13,6 +13,7 @@ import {
   assignedTrackersAtom,
   connectedIMUTrackersAtom,
   FlatDeviceTracker,
+  trackerByBodyPartAtom,
 } from '@/store/app-store';
 
 const HANDS_PARTS = new Set([BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND]);
@@ -124,7 +125,7 @@ export const getPreferredAssignMode = (
 export type BodyPartCardRenderer = (args: {
   role: BodyPart;
   direction: 'left' | 'right';
-  td: FlatDeviceTracker[];
+  td: FlatDeviceTracker | undefined;
   roleError: string | undefined;
 }) => ReactNode;
 
@@ -152,28 +153,12 @@ export function BodyAssignment({
 }) {
   const { config } = useConfig();
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
+  const trackerByPart = useAtomValue(trackerByBodyPartAtom);
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
 
   const assignMode = config?.assignShowAllBodyParts
     ? AssignMode.All
     : getPreferredAssignMode(connectedIMUTrackers.length);
-
-  const trackerPartGrouped = useMemo(
-    () =>
-      assignedTrackers.reduce<{ [key: number]: FlatDeviceTracker[] }>(
-        (curr, td) => {
-          if (!td && onlyAssigned) return curr;
-
-          const key = td.tracker.info?.bodyPart || BodyPart.NONE;
-          return {
-            ...curr,
-            [key]: [...(curr[key] || []), td],
-          };
-        },
-        {}
-      ),
-    [assignedTrackers]
-  );
 
   const assignedRoles = useMemo(
     () =>
@@ -223,7 +208,7 @@ export function BodyAssignment({
               card({
                 role: BodyPart.HEAD,
                 direction: 'right',
-                td: trackerPartGrouped[BodyPart.HEAD],
+                td: trackerByPart[BodyPart.HEAD],
                 roleError: rolesWithErrors[BodyPart.HEAD]?.label,
               })}
 
@@ -231,7 +216,7 @@ export function BodyAssignment({
               card({
                 role: BodyPart.NECK,
                 direction: 'right',
-                td: trackerPartGrouped[BodyPart.NECK],
+                td: trackerByPart[BodyPart.NECK],
                 roleError: rolesWithErrors[BodyPart.NECK]?.label,
               })}
           </div>
@@ -240,7 +225,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[left].shoulder,
                 direction: 'right',
-                td: trackerPartGrouped[SIDES[left].shoulder],
+                td: trackerByPart[SIDES[left].shoulder],
                 roleError: rolesWithErrors[SIDES[left].shoulder]?.label,
               })}
 
@@ -248,7 +233,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[left].upperArm,
                 direction: 'right',
-                td: trackerPartGrouped[SIDES[left].upperArm],
+                td: trackerByPart[SIDES[left].upperArm],
                 roleError: rolesWithErrors[SIDES[left].upperArm]?.label,
               })}
           </div>
@@ -257,7 +242,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[left].lowerArm,
                 direction: 'right',
-                td: trackerPartGrouped[SIDES[left].lowerArm],
+                td: trackerByPart[SIDES[left].lowerArm],
                 roleError: rolesWithErrors[SIDES[left].lowerArm]?.label,
               })}
 
@@ -265,7 +250,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[left].hand,
                 direction: 'right',
-                td: trackerPartGrouped[SIDES[left].hand],
+                td: trackerByPart[SIDES[left].hand],
                 roleError: rolesWithErrors[SIDES[left].hand]?.label,
               })}
           </div>
@@ -274,7 +259,7 @@ export function BodyAssignment({
               card({
                 role: BodyPart.HIP,
                 direction: 'right',
-                td: trackerPartGrouped[BodyPart.HIP],
+                td: trackerByPart[BodyPart.HIP],
                 roleError: rolesWithErrors[BodyPart.HIP]?.label,
               })}
           </div>
@@ -283,7 +268,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[left].upperLeg,
                 direction: 'right',
-                td: trackerPartGrouped[SIDES[left].upperLeg],
+                td: trackerByPart[SIDES[left].upperLeg],
                 roleError: rolesWithErrors[SIDES[left].upperLeg]?.label,
               })}
 
@@ -291,7 +276,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[left].lowerLeg,
                 direction: 'right',
-                td: trackerPartGrouped[SIDES[left].lowerLeg],
+                td: trackerByPart[SIDES[left].lowerLeg],
                 roleError: rolesWithErrors[SIDES[left].lowerLeg]?.label,
               })}
 
@@ -299,7 +284,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[left].foot,
                 direction: 'right',
-                td: trackerPartGrouped[SIDES[left].foot],
+                td: trackerByPart[SIDES[left].foot],
                 roleError: rolesWithErrors[SIDES[left].foot]?.label,
               })}
           </div>
@@ -312,7 +297,7 @@ export function BodyAssignment({
               card({
                 role: BodyPart.UPPER_CHEST,
                 direction: 'left',
-                td: trackerPartGrouped[BodyPart.UPPER_CHEST],
+                td: trackerByPart[BodyPart.UPPER_CHEST],
                 roleError: rolesWithErrors[BodyPart.UPPER_CHEST]?.label,
               })}
 
@@ -320,7 +305,7 @@ export function BodyAssignment({
               card({
                 role: BodyPart.CHEST,
                 direction: 'left',
-                td: trackerPartGrouped[BodyPart.CHEST],
+                td: trackerByPart[BodyPart.CHEST],
                 roleError: rolesWithErrors[BodyPart.CHEST]?.label,
               })}
           </div>
@@ -330,7 +315,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[right].shoulder,
                 direction: 'left',
-                td: trackerPartGrouped[SIDES[right].shoulder],
+                td: trackerByPart[SIDES[right].shoulder],
                 roleError: rolesWithErrors[SIDES[right].shoulder]?.label,
               })}
 
@@ -338,7 +323,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[right].upperArm,
                 direction: 'left',
-                td: trackerPartGrouped[SIDES[right].upperArm],
+                td: trackerByPart[SIDES[right].upperArm],
                 roleError: rolesWithErrors[SIDES[right].upperArm]?.label,
               })}
           </div>
@@ -348,7 +333,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[right].lowerArm,
                 direction: 'left',
-                td: trackerPartGrouped[SIDES[right].lowerArm],
+                td: trackerByPart[SIDES[right].lowerArm],
                 roleError: rolesWithErrors[SIDES[right].lowerArm]?.label,
               })}
 
@@ -356,7 +341,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[right].hand,
                 direction: 'left',
-                td: trackerPartGrouped[SIDES[right].hand],
+                td: trackerByPart[SIDES[right].hand],
                 roleError: rolesWithErrors[SIDES[right].hand]?.label,
               })}
           </div>
@@ -365,7 +350,7 @@ export function BodyAssignment({
               card({
                 role: BodyPart.WAIST,
                 direction: 'left',
-                td: trackerPartGrouped[BodyPart.WAIST],
+                td: trackerByPart[BodyPart.WAIST],
                 roleError: rolesWithErrors[BodyPart.WAIST]?.label,
               })}
           </div>
@@ -374,7 +359,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[right].upperLeg,
                 direction: 'left',
-                td: trackerPartGrouped[SIDES[right].upperLeg],
+                td: trackerByPart[SIDES[right].upperLeg],
                 roleError: rolesWithErrors[SIDES[right].upperLeg]?.label,
               })}
 
@@ -382,7 +367,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[right].lowerLeg,
                 direction: 'left',
-                td: trackerPartGrouped[SIDES[right].lowerLeg],
+                td: trackerByPart[SIDES[right].lowerLeg],
                 roleError: rolesWithErrors[SIDES[right].lowerLeg]?.label,
               })}
 
@@ -390,7 +375,7 @@ export function BodyAssignment({
               card({
                 role: SIDES[right].foot,
                 direction: 'left',
-                td: trackerPartGrouped[SIDES[right].foot],
+                td: trackerByPart[SIDES[right].foot],
                 roleError: rolesWithErrors[SIDES[right].foot]?.label,
               })}
           </div>

@@ -58,7 +58,7 @@ function MobileAssignPanel({
   description: ReactNode;
   headerAction?: ReactNode;
   progress: number;
-  footer: ReactNode;
+  footer?: ReactNode;
   children: ReactNode;
 }) {
   const headerRow = (
@@ -81,13 +81,15 @@ function MobileAssignPanel({
       </button>
     </div>
   );
-  const footerRow = <div className="px-2 pb-2.5 pt-2 shrink-0">{footer}</div>;
+  const footerRow = footer && (
+    <div className="px-2 pb-2.5 pt-2 shrink-0">{footer}</div>
+  );
 
   return (
     <>
       <div
         className={classNames(
-          'fixed inset-0 z-10 bg-black/50 transition-opacity duration-200',
+          'fixed inset-0 z-10 bg-background-90/50 transition-opacity duration-200',
           open
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
@@ -171,7 +173,7 @@ export function MobileTrackerAssign({
       : undefined;
   const armedTracker =
     armedPart !== BodyPart.NONE
-      ? (assignment.trackersByPart[armedPart] || [])[0]
+      ? assignment.trackerByPart[armedPart]
       : undefined;
 
   const partName = (part: BodyPart) =>
@@ -357,7 +359,7 @@ export function MobileTrackerAssign({
         }
         progress={
           assignment.expectedTrackersCount
-            ? assignedTrackers.length / assignment.expectedTrackersCount
+            ? assignment.assignedPartsCount / assignment.expectedTrackersCount
             : 0
         }
         footer={
@@ -366,9 +368,7 @@ export function MobileTrackerAssign({
               assignedCount={assignedTrackers.length}
               trackerCount={flatTrackers.length}
             />
-          ) : (
-            <></>
-          )
+          ) : undefined
         }
       >
         {noTrackers ? (

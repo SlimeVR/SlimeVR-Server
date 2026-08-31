@@ -161,6 +161,16 @@ export function groupTrackersByDevice(
   return order.map((key) => byDevice.get(key)!);
 }
 
+export function groupTrackerByBodyPart(
+  trackers: FlatDeviceTracker[]
+): Partial<Record<BodyPart, FlatDeviceTracker>> {
+  const byPart: Partial<Record<BodyPart, FlatDeviceTracker>> = {};
+  trackers.forEach((td) => {
+    byPart[td.tracker.info?.bodyPart ?? BodyPart.NONE] = td;
+  });
+  return byPart;
+}
+
 export const flatTrackersAtom = atom((get) => {
   const devices = get(devicesAtom);
 
@@ -173,6 +183,10 @@ export const assignedTrackersAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
   return trackers.filter(({ tracker }) => tracker.info?.bodyPart !== BodyPart.NONE);
 });
+
+export const trackerByBodyPartAtom = atom((get) =>
+  groupTrackerByBodyPart(get(assignedTrackersAtom))
+);
 
 export const unassignedTrackersAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
