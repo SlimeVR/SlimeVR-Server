@@ -10,7 +10,6 @@ import {
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
-import { GearIcon } from '@/components/commons/icon/GearIcon';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerStatus } from '@/components/tracker/TrackerStatus';
@@ -31,6 +30,7 @@ import {
   groupTrackersByDevice,
   TrackerConnectionGroup,
 } from '@/store/app-store';
+import { ShowAllPartsToggle } from './BodyAssignmentPanel';
 
 export function TrackerAssignmentList({
   trackers,
@@ -38,7 +38,6 @@ export function TrackerAssignmentList({
   assignedCount,
   assignedPartsCount,
   expectedTrackersCount,
-  onOpenSettings,
   onDropTracker,
 }: {
   trackers: FlatDeviceTracker[];
@@ -46,7 +45,6 @@ export function TrackerAssignmentList({
   assignedCount: number;
   assignedPartsCount: number;
   expectedTrackersCount: number;
-  onOpenSettings: () => void;
   onDropTracker: (trackerId: number, bodyPart: BodyPart) => void;
 }) {
   const { state } = useOnboarding();
@@ -89,14 +87,9 @@ export function TrackerAssignmentList({
             height={4}
           />
         </div>
-        <button
-          type="button"
-          className="fill-background-30 hover:fill-background-20 cursor-pointer shrink-0"
-          onClick={onOpenSettings}
-        >
-          <GearIcon size={18} />
-        </button>
       </div>
+
+      <ShowAllPartsToggle />
 
       <div
         {...bodyPartDropProps(BodyPart.NONE)}

@@ -21,7 +21,6 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
 } from '@/components/commons/icon/ArrowIcons';
-import { GearIcon } from '@/components/commons/icon/GearIcon';
 import { BodyPartCardRenderer } from '@/components/onboarding/BodyAssignment';
 import { useOnboarding } from '@/hooks/onboarding';
 import { getTrackerName } from '@/hooks/tracker';
@@ -29,7 +28,11 @@ import {
   FlatDeviceTracker,
   groupTrackersByConnection,
 } from '@/store/app-store';
-import { BodyAssignmentPanel, BodyPartCard } from './BodyAssignmentPanel';
+import {
+  BodyAssignmentPanel,
+  BodyPartCard,
+  ShowAllPartsToggle,
+} from './BodyAssignmentPanel';
 import {
   AssignmentEmptyState,
   AssignmentNavFooter,
@@ -131,10 +134,8 @@ function MobileAssignPanel({
 
 export function MobileTrackerAssign({
   assignment,
-  onOpenSettings,
 }: {
   assignment: TrackerAssignment;
-  onOpenSettings: () => void;
 }) {
   const { l10n } = useLocalization();
   const { state } = useOnboarding();
@@ -299,19 +300,12 @@ export function MobileTrackerAssign({
           <BodyAssignmentPanel
             dotSize={12}
             mobile
-            headerAction={
-              <button
-                type="button"
-                className="fill-background-30 hover:fill-background-20 cursor-pointer shrink-0 p-1"
-                onClick={onOpenSettings}
-              >
-                <GearIcon size={18} />
-              </button>
-            }
+            headerAction={<ShowAllPartsToggle compact />}
             legendAction={
               state.alonePage && (
                 <Button
                   variant="secondary"
+                  className="whitespace-nowrap !px-3 !py-1.5"
                   onClick={assignment.unassignAll}
                   id="onboarding-assign_trackers-unassign_all"
                 />

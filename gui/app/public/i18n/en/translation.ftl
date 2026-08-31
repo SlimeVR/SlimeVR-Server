@@ -1220,6 +1220,7 @@ onboarding-assign_trackers-mirror_view = Mirror view
 onboarding-assign_trackers-settings = Assignment settings
 onboarding-assign_trackers-settings-close = Close
 onboarding-assign_trackers-show_all = Show all body parts
+onboarding-assign_trackers-show_all-short = Show all parts
 onboarding-assign_trackers-tap_modal-title = Tap to assign
 onboarding-assign_trackers-tap_modal-description = Tap the tracker you want to assign twice. You can also drag a tracker from the list instead.
 onboarding-assign_trackers-tap_modal-cancel = Cancel

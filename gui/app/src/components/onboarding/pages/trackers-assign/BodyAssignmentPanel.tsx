@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { useLocalization } from '@fluent/react';
 import { MouseEvent, ReactNode } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import {
@@ -7,6 +8,7 @@ import {
 } from '@/components/onboarding/BodyAssignment';
 import { BodySlotStyler } from '@/components/commons/BodyInteractions';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
+import { CheckboxInternal } from '@/components/commons/Checkbox';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
@@ -19,7 +21,6 @@ import {
 import { bodyPartDropProps, trackerDrag } from '@/hooks/tracker-drag';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { BodyPartError } from '@/hooks/tracker-assignment';
-import { FootIcon } from '@/components/commons/icon/FootIcon';
 import { CompareIcon } from '@/components/commons/icon/CompareIcon';
 
 export function BodyAssignmentPanel({
@@ -46,13 +47,14 @@ export function BodyAssignmentPanel({
   const { config, setConfig } = useConfig();
   const legend = (
     <SideLegend
+      compact={mobile}
       mirror={config?.mirrorView ?? false}
       toggleMirror={() => setConfig({ mirrorView: !config?.mirrorView })}
     />
   );
 
   return (
-    <div className="flex-1 min-h-0 flex flex-col gap-2">
+    <div className="flex-1 min-h-0 flex flex-col gap-2 mobile:gap-1">
       {!mobile && (
         <div className="flex items-center justify-between gap-2 shrink-0 px-2">
           <TrackerAssignmentTabs />
@@ -61,12 +63,12 @@ export function BodyAssignmentPanel({
         </div>
       )}
       {mobile && (
-        <div className="flex flex-col gap-2 shrink-0">
-          <div className="flex items-center justify-between gap-2 px-2">
-            <TrackerAssignmentTabs />
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-2 shrink-0">
+          <div className="flex grow items-center justify-between gap-2">
+            <TrackerAssignmentTabs compact />
             {headerAction}
           </div>
-          <div className="flex items-center justify-between gap-2 px-2">
+          <div className="flex grow items-center justify-between gap-2">
             {legend}
             {legendAction}
           </div>
@@ -91,29 +93,37 @@ export function BodyAssignmentPanel({
   );
 }
 
-function TrackerAssignmentTabs() {
+function TrackerAssignmentTabs({ compact }: { compact?: boolean }) {
   return (
-    <div className="flex items-center gap-1 bg-background-70 rounded-lg p-1 w-fit">
-      <Tab id="tracker_assignment-tab-body" active />
-      <Tab id="tracker_assignment-tab-fingers" disabled />
-      <Tab id="tracker_assignment-tab-toes" disabled />
+    <div
+      className={classNames(
+        'flex items-center bg-background-70 rounded-lg w-fit',
+        compact ? 'gap-0.5 p-0.5' : 'gap-1 p-1'
+      )}
+    >
+      <Tab id="tracker_assignment-tab-body" compact={compact} active />
+      <Tab id="tracker_assignment-tab-fingers" compact={compact} disabled />
+      <Tab id="tracker_assignment-tab-toes" compact={compact} disabled />
     </div>
   );
 }
 
 function Tab({
   id,
+  compact,
   active,
   disabled,
 }: {
   id: string;
+  compact?: boolean;
   active?: boolean;
   disabled?: boolean;
 }) {
   return (
     <div
       className={classNames(
-        'px-4 py-2 rounded-md',
+        'rounded-md',
+        compact ? 'px-3 py-1' : 'px-4 py-2',
         active && 'bg-background-50',
         disabled && 'opacity-40 cursor-not-allowed',
         !disabled && !active && 'cursor-pointer hover:bg-background-60'
@@ -124,19 +134,54 @@ function Tab({
   );
 }
 
+export function ShowAllPartsToggle({ compact }: { compact?: boolean }) {
+  const { l10n } = useLocalization();
+  const { config, setConfig } = useConfig();
+
+  return (
+    <div className={classNames('w-fit shrink-0', compact && '[&_label]:h-fit')}>
+      <CheckboxInternal
+        variant="toggle"
+        name="showAllBodyParts"
+        checked={config?.assignShowAllBodyParts ?? false}
+        onChange={() =>
+          setConfig({
+            assignShowAllBodyParts: !config?.assignShowAllBodyParts,
+          })
+        }
+        label={l10n.getString(
+          compact
+            ? 'onboarding-assign_trackers-show_all-short'
+            : 'onboarding-assign_trackers-show_all'
+        )}
+      />
+    </div>
+  );
+}
+
 function SideLegend({
+  compact,
   mirror,
   toggleMirror,
 }: {
+  compact?: boolean;
   mirror: boolean;
   toggleMirror: () => void;
 }) {
+  const side = classNames(
+    'flex items-center rounded-full',
+    compact ? 'gap-1.5 px-2 py-0.5' : 'gap-2 px-3 py-1'
+  );
+
   return (
     <div
-      className="flex items-center gap-1 bg-background-80 rounded-full p-1 w-fit cursor-pointer"
+      className={classNames(
+        'flex items-center gap-1 bg-background-80 rounded-full w-fit cursor-pointer',
+        compact ? 'p-0.5' : 'p-1'
+      )}
       onClick={toggleMirror}
     >
-      <div className="flex items-center gap-2 px-3 py-1">
+      <div className={side}>
         <span className="w-2.5 h-2.5 rounded-full bg-background-10 outline outline-4 outline-assign-left" />
         <Typography
           bold
@@ -150,7 +195,7 @@ function SideLegend({
 
       <CompareIcon width={22} />
 
-      <div className="flex items-center gap-2 px-3 py-1 rounded-full">
+      <div className={side}>
         <span className="w-2.5 h-2.5 rounded-full  bg-background-10 outline outline-4 outline-assign-right" />
         <Typography
           bold

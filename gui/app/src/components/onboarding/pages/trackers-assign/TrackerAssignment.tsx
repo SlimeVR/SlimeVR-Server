@@ -1,9 +1,7 @@
 import classNames from 'classnames';
-import { useLocalization } from '@fluent/react';
 import { useAtomValue } from 'jotai';
 import { selectAtom } from 'jotai/utils';
-import { useCallback, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { BodyPart } from 'solarxr-protocol';
 import { BaseModal } from '@/components/commons/BaseModal';
@@ -12,12 +10,10 @@ import {
   BodySlotStyler,
 } from '@/components/commons/BodyInteractions';
 import { Button } from '@/components/commons/Button';
-import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { BodyPartCardRenderer } from '@/components/onboarding/BodyAssignment';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { useConfig } from '@/hooks/config';
 import { useOnboarding } from '@/hooks/onboarding';
 import { bodyPartDropProps, trackerDrag } from '@/hooks/tracker-drag';
 import { BodyAssignmentPanel, BodyPartCard } from './BodyAssignmentPanel';
@@ -32,7 +28,6 @@ export function TrackersAssignPage() {
   const { isMobileAssign } = useBreakpoint('mobileAssign');
   const { applyProgress } = useOnboarding();
   const assignment = useTrackerAssignment();
-  const [settingsOpen, setSettingsOpen] = useState(false);
   applyProgress(0.5);
 
   return (
@@ -45,22 +40,10 @@ export function TrackersAssignPage() {
         onClose={() => assignment.closeChokerWarning(true)}
         accept={() => assignment.closeChokerWarning(false)}
       />
-      {settingsOpen && (
-        <AssignmentSettingsModal
-          isOpen={settingsOpen}
-          onClose={() => setSettingsOpen(false)}
-        />
-      )}
       {isMobileAssign ? (
-        <MobileTrackerAssign
-          assignment={assignment}
-          onOpenSettings={() => setSettingsOpen(true)}
-        />
+        <MobileTrackerAssign assignment={assignment} />
       ) : (
-        <DesktopTrackerAssign
-          assignment={assignment}
-          onOpenSettings={() => setSettingsOpen(true)}
-        />
+        <DesktopTrackerAssign assignment={assignment} />
       )}
     </>
   );
@@ -73,10 +56,8 @@ const hoveredBodyPartAtom = selectAtom(
 
 function DesktopTrackerAssign({
   assignment,
-  onOpenSettings,
 }: {
   assignment: TrackerAssignment;
-  onOpenSettings: () => void;
 }) {
   const hoveredBodyPart = useAtomValue(hoveredBodyPartAtom);
 
@@ -125,7 +106,6 @@ function DesktopTrackerAssign({
           assignedCount={assignment.assignedTrackers.length}
           assignedPartsCount={assignment.assignedPartsCount}
           expectedTrackersCount={assignment.expectedTrackersCount}
-          onOpenSettings={onOpenSettings}
           onDropTracker={assignment.handleDropTracker}
         />
 
@@ -203,70 +183,6 @@ function TapAssignModal({
           onClick={onClose}
           id="onboarding-assign_trackers-tap_modal-cancel"
         />
-      </div>
-    </BaseModal>
-  );
-}
-
-function AssignmentSettingsModal({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
-  const { l10n } = useLocalization();
-  const { config, setConfig } = useConfig();
-
-  const { control, watch } = useForm<{
-    showAllBodyParts: boolean;
-    mirrorView: boolean;
-  }>({
-    defaultValues: {
-      showAllBodyParts: config?.assignShowAllBodyParts ?? false,
-      mirrorView: config?.mirrorView ?? false,
-    },
-  });
-  const { showAllBodyParts, mirrorView } = watch();
-
-  useEffect(() => {
-    setConfig({
-      assignShowAllBodyParts: showAllBodyParts,
-      mirrorView: mirrorView,
-    });
-  }, [showAllBodyParts, mirrorView]);
-
-  return (
-    <BaseModal
-      isOpen={isOpen}
-      appendClasses="max-w-md w-full"
-      closeable
-      onRequestClose={onClose}
-    >
-      <div className="flex flex-col gap-2">
-        <Typography
-          variant="main-title"
-          id="onboarding-assign_trackers-settings"
-        />
-        <CheckBox
-          control={control}
-          label={l10n.getString('onboarding-assign_trackers-mirror_view')}
-          name="mirrorView"
-          variant="toggle"
-        />
-        <CheckBox
-          control={control}
-          label={l10n.getString('onboarding-assign_trackers-show_all')}
-          name="showAllBodyParts"
-          variant="toggle"
-        />
-        <div className="flex justify-end">
-          <Button
-            variant="tertiary"
-            onClick={onClose}
-            id="onboarding-assign_trackers-settings-close"
-          />
-        </div>
       </div>
     </BaseModal>
   );
