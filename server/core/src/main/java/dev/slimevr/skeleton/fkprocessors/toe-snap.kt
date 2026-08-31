@@ -11,8 +11,8 @@ import solarxr_protocol.datatypes.BodyPart
 import kotlin.math.abs
 import kotlin.math.asin
 
-val TOE_SNAP_RANGE_MULTIPLE = 2f
-val MAX_TOE_SNAP_ANGLE = -0.8f
+const val TOE_SNAP_RANGE_MULTIPLE = 2f
+const val MAX_TOE_SNAP_ANGLE = -0.8f
 
 fun computeToeSnapRatio(
 	ankleHeight: Float,
