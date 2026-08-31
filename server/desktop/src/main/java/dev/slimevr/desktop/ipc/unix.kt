@@ -1,7 +1,6 @@
 package dev.slimevr.desktop.ipc
 
 import dev.slimevr.AppContextProvider
-import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.getSocketDirectory
 import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CancellationException
@@ -23,26 +22,6 @@ import java.nio.channels.ClosedByInterruptException
 import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
 import kotlin.io.path.Path
-
-suspend fun createUnixDriverSocket(appContext: AppContextProvider) = acceptUnixClients(DRIVER_SOCKET_NAME) { channel ->
-	val writer = FramedWriter(channel)
-	handleDriverConnection(
-		appContext = appContext,
-		source = DriverBridgeSource.DRIVER,
-		messages = readFramedMessages(channel),
-		send = { frame -> writer.write(frame) },
-	)
-}
-
-suspend fun createUnixFeederSocket(appContext: AppContextProvider) = acceptUnixClients(FEEDER_SOCKET_NAME) { channel ->
-	val writer = FramedWriter(channel)
-	handleDriverConnection(
-		appContext = appContext,
-		source = DriverBridgeSource.FEEDER,
-		messages = readFramedMessages(channel),
-		send = { frame -> writer.write(frame) },
-	)
-}
 
 suspend fun createUnixSolarXRSocket(appContext: AppContextProvider) = acceptUnixClients(SOLARXR_SOCKET_NAME) { channel ->
 	val writer = FramedWriter(channel)

@@ -3,9 +3,9 @@ package dev.slimevr.trackingchecklist
 import dev.slimevr.TestAppContext
 import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
-import dev.slimevr.buildTestDriverBridge
 import dev.slimevr.buildTestResetsManager
 import dev.slimevr.buildTestSettings
+import dev.slimevr.buildTestSolarXR
 import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.config.Settings
@@ -18,6 +18,7 @@ import dev.slimevr.resets.ResetsActions
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingActions
 import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.solarxr.onSolarXRMessage
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Vector3
@@ -27,10 +28,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
+import solarxr_protocol.driver_protocol.DriverMessageHeader
+import solarxr_protocol.driver_protocol.HandshakeRequest
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistStep
@@ -74,9 +78,11 @@ class TrackingChecklistTest {
 			checklist.context.observeAll(checklist)
 		}
 
-		fun connectDriver() {
-			val bridge = buildTestDriverBridge(server, appContext, id = nextId++)
-			server.context.dispatch(VRServerActions.DriverConnected(bridge))
+		suspend fun connectDriver() {
+			val bridge = buildTestSolarXR(server.context.scope, appContext)
+			server.context.dispatch(VRServerActions.SolarXRConnected(bridge))
+
+			onSolarXRMessage(MessageBundle(driverMsgs = listOf(DriverMessageHeader(message = HandshakeRequest(driverName = "TestDriver")))), bridge)
 		}
 
 		fun routeToDriver(vararg bones: BodyPart) {

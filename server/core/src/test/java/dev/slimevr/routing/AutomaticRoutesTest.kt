@@ -1,6 +1,6 @@
 package dev.slimevr.routing
 
-import dev.slimevr.driver.DRIVER_SUPPORTED_BONES
+import dev.slimevr.solarxr.driver.DRIVER_SUPPORTED_BONES
 import dev.slimevr.vmc.VMC_SUPPORTED_BONES
 import dev.slimevr.vrcosc.VRC_OSC_SUPPORTED_BONES
 import solarxr_protocol.datatypes.BodyPart

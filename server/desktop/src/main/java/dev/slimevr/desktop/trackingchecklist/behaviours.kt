@@ -12,32 +12,23 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.Settings
 import dev.slimevr.desktop.Driver
 import dev.slimevr.desktop.getSteamVRDriversList
-import dev.slimevr.driver.DriverBridgeSource
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.trackingchecklist.TrackingChecklistActions
 import dev.slimevr.trackingchecklist.TrackingChecklistBehaviourType
-import dev.slimevr.util.timeSource
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
-import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import solarxr_protocol.rpc.TrackingChecklistSteamVRDisconnected
 import solarxr_protocol.rpc.TrackingChecklistStep
@@ -46,7 +37,6 @@ import solarxr_protocol.rpc.TrackingChecklistStepVisibility
 import java.io.IOException
 import java.net.ConnectException
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeMark
 
 data class Process(val pid: ULong, val name: String)
 
@@ -127,6 +117,7 @@ class SteamVRCheckBehaviour(private val server: VRServer, private val settings: 
 	@JvmInline
 	private value class SteamVRState(val running: Boolean, val drivers: List<Driver>?)
 
+	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun observe(receiver: TrackingChecklist) {
 		settings.context.state.map { it.data.driverConfig.enabled }.flatMapLatest { enabled ->
 			if (!enabled) {
@@ -161,22 +152,17 @@ class SteamVRCheckBehaviour(private val server: VRServer, private val settings: 
 				return@map SteamVRState(true, drivers)
 			}
 
-			val protoDriverActiveFlow = server.context.state.map { state ->
-				state.drivers.values.any { it.source == DriverBridgeSource.DRIVER }
-			}
-			val solarXRDriverActiveFlow = server.context.state.flatMapLatest { state ->
-				combine(state.solarxr.values.map { it.context.state }) { states ->
+			val solarXRDriverActiveFlow = server.context.state.map { it.solarxr }.distinctUntilChanged().flatMapLatest { solarXRBridges ->
+				combine(solarXRBridges.values.map { it.context.state }) { states ->
 					states.any { it.driverName != null } to states.any { it.driverName == "SteamVR" }
 				}
 			}
 
-			combine(protoDriverActiveFlow, solarXRDriverActiveFlow, steamVRState) { protoDriverActive, (anySolarXRDriverActive, steamVRSolarXRDriverActive), steamVRState ->
+			combine(solarXRDriverActiveFlow, steamVRState) { (anyDriverActive, steamVRDriverActive), steamVRState ->
 				// if a non-SteamVR driver is connected, we shouldn't try to fetch the drivers list
-				if (anySolarXRDriverActive && !steamVRSolarXRDriverActive) {
+				if (anyDriverActive && !steamVRDriverActive) {
 					return@combine buildSteamVRDriverStep(connected = true) to buildStandableStep(supported = false)
 				}
-				// for output state
-				val anyDriverActive = protoDriverActive || anySolarXRDriverActive
 
 				if (steamVRState.drivers == null) {
 					return@combine buildSteamVRDriverStep(connected = anyDriverActive) to buildStandableStep()

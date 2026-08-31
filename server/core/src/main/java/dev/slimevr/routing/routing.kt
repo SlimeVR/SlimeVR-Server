@@ -2,8 +2,7 @@ package dev.slimevr.routing
 
 import dev.slimevr.AppContextProvider
 import dev.slimevr.config.BoneRoutingConfig
-import dev.slimevr.driver.DRIVER_SUPPORTED_BONES
-import dev.slimevr.driver.DriverBridgeSource
+import dev.slimevr.solarxr.driver.DRIVER_SUPPORTED_BONES
 import dev.slimevr.tracker.TrackerState
 import dev.slimevr.util.isActive
 import dev.slimevr.vmc.VMC_SUPPORTED_BONES
@@ -62,19 +61,16 @@ fun isActive(states: OutputStates, output: RoutingOutput): Boolean = states[outp
 @OptIn(ExperimentalCoroutinesApi::class)
 fun driverStateFlow(appContext: AppContextProvider): Flow<RoutingOutputState> = combine(
 	appContext.config.settings.context.state.map { it.data.driverConfig.enabled },
-	appContext.server.context.state.map { state ->
-		state.drivers.values.any { it.source == DriverBridgeSource.DRIVER }
-	},
-	appContext.server.context.state.flatMapLatest { state ->
-		combine(state.solarxr.values.map { it.context.state }) { states ->
+	appContext.server.context.state.map { it.solarxr }.distinctUntilChanged().flatMapLatest { solarXRBridges ->
+		combine(solarXRBridges.values.map { it.context.state }) { states ->
 			states.any { it.driverName != null }
 		}
 	},
-) { enabled, driverConnected, solarXRDriverConnected ->
+) { enabled, solarXRDriverConnected ->
 	when {
 		!appContext.featureFlags.supportsDriver -> RoutingOutputState.UNSUPPORTED
 		!enabled -> RoutingOutputState.INACTIVE
-		driverConnected || solarXRDriverConnected -> RoutingOutputState.ACTIVE
+		solarXRDriverConnected -> RoutingOutputState.ACTIVE
 		else -> RoutingOutputState.ENABLED
 	}
 }.distinctUntilChanged()

@@ -343,16 +343,14 @@ The server exposes four connection points:
 
 | Transport | Client | Protocol |
 |---|---|---|
-| Unix socket / named pipe `SlimeVRDriver` | OpenVR driver | Protobuf (Wire) |
-| Unix socket / named pipe `SlimeVRInput` | External feeder | Protobuf (Wire) |
-| Unix socket / named pipe `SlimeVRRpc` | SolarXR (IPC path) | FlatBuffers |
+| Unix socket `SlimeVRRpc` | SolarXR (IPC path) | FlatBuffers |
 | WebSocket port 21110 | GUI / third-party (SolarXR) | FlatBuffers |
 
 **Why separate transport from protocol?**
 
-Platform files (`linux.kt`, `windows.kt`) own reading frames off a socket and produce a `Flow<ByteArray>` + a `send` function. Protocol handlers (`protocol.kt`, `ipc.kt`) are plain `suspend fun`s that take those two things and know nothing about Unix sockets or named pipes.
+Platform files (e.g. `unix.kt`) own reading frames off a socket and produce a `Flow<ByteArray>` + a `send` function. Protocol handlers (`protocol.kt`, `ipc.kt`) are plain `suspend fun`s that take those two things and know nothing about the specific transport being used.
 
-The same `handleSolarXRBridge` function runs on Linux sockets, Windows pipes, and WebSocket. The WebSocket adapter in `ws-server.kt` converts Ktor frames to the same `Flow<ByteArray>` + `send` abstraction. The handler never changes.
+The same `handleSolarXRBridge` function runs on Unix domain sockets, and WebSocket. The WebSocket adapter in `ws-server.kt` converts Ktor frames to the same `Flow<ByteArray>` + `send` abstraction. The handler never changes.
 
 **Why events for IPC message routing?**
 

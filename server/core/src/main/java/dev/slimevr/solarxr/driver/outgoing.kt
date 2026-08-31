@@ -21,6 +21,21 @@ import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.driver_protocol.BoneBatteryUpdate
 import solarxr_protocol.driver_protocol.SkeletonUpdate
 
+val DRIVER_SUPPORTED_BONES = setOf(
+	BodyPart.UPPER_CHEST,
+	BodyPart.LEFT_UPPER_ARM,
+	BodyPart.RIGHT_UPPER_ARM,
+	BodyPart.HIP,
+	BodyPart.LEFT_UPPER_LEG,
+	BodyPart.RIGHT_UPPER_LEG,
+	BodyPart.LEFT_FOOT,
+	BodyPart.RIGHT_FOOT,
+	BodyPart.LEFT_SHOULDER,
+	BodyPart.RIGHT_SHOULDER,
+	BodyPart.LEFT_HAND,
+	BodyPart.RIGHT_HAND,
+)
+
 class DriverOutgoingTrackersBehaviour(
 	private val appContext: AppContextProvider,
 ) : SolarXRBridgeBehaviour {

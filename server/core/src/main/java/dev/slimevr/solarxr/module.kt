@@ -56,7 +56,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 data class SolarXRBridgeState(
-	val dataFeedConfigs: List<DataFeedConfig>,
+	val dataFeedConfigs: List<DataFeedConfig> = emptyList(),
 	val driverName: String? = null,
 	val boneMask: BoneMask? = null,
 )
@@ -217,7 +217,7 @@ class SolarXRBridge(
 			extraBehaviours: (AppContextProvider) -> List<SolarXRBridgeBehaviour> = { emptyList() },
 		): SolarXRBridge {
 			val managedContext = ManagedContext.create(
-				initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
+				initialState = SolarXRBridgeState(),
 				scope = scope,
 				reducer = ::reduce,
 				behaviours = buildBehaviours(appContext) + extraBehaviours(appContext),
