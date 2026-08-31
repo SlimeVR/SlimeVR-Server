@@ -8,7 +8,6 @@ import {
 } from '@/utils/skeletonHelper';
 import { BasedSkeletonMeshHelper } from '@/utils/skeletonMeshHelper';
 import {
-  computeSkeletonOffset,
   computeUserHeight,
   deriveSkeletonProportions,
 } from '@/utils/skeletonProportions';
@@ -192,7 +191,6 @@ function initializePreview(
   scene.add(skeleton[0]);
 
   let heightOffset = 0;
-  let skeletonOffset = 0;
 
   const rebuildSkeleton = (
     newSkeleton: (BoneKind | Bone)[],
@@ -304,12 +302,6 @@ function initializePreview(
         views.forEach((v) => {
           v.onHeightChange(v, heightOffset);
         });
-      }
-
-      const newSkeletonOffset = computeSkeletonOffset(bones);
-      if (newSkeletonOffset !== skeletonOffset) {
-        skeletonOffset = newSkeletonOffset;
-        skeletonGroup.position.set(0, skeletonOffset, 0);
       }
     },
     destroy: () => {

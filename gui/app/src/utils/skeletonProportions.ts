@@ -46,15 +46,6 @@ export function computeUserHeight(bones: Map<BodyPart, BoneT>) {
   return yLength / EYE_HEIGHT_TO_HEIGHT_RATIO;
 }
 
-export function computeSkeletonOffset(bones: Map<BodyPart, BoneT>) {
-  const hmd = bones.get(BodyPart.HEAD);
-  // If I know the head position, don't use an offset
-  if (hmd?.headPositionG?.y !== undefined && hmd.headPositionG?.y > 0) {
-    return 0;
-  }
-  return sumBoneLengths(bones, Y_PARTS) ?? 0;
-}
-
 /**
  * Derives the few body measurements the mesh preview needs from the skeleton.
  *
