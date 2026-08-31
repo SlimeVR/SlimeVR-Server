@@ -21,13 +21,24 @@ export const SIDES = [
   },
 ];
 
-export function PersonFrontIcon({ mirror = true }: { mirror?: boolean }) {
+export function PersonFrontIcon({
+  mirror = true,
+  className,
+}: {
+  mirror?: boolean;
+  className?: string;
+}) {
   const CIRCLE_RADIUS = 0.0001;
   const left = +!mirror;
   const right = +mirror;
 
   return (
-    <svg width="100%" viewBox="0 0 163 392" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="100%"
+      className={className}
+      viewBox="0 0 163 392"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <image
         className="h-full w-full"
         transform={`translate(${mirror ? 163.5 : 0},0) scale(${mirror ? -1 : 1},1)`}

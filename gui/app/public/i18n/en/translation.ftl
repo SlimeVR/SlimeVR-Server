@@ -1223,29 +1223,23 @@ onboarding-assign_trackers-show_all = Show all body parts
 onboarding-assign_trackers-tap_modal-title = Tap to assign
 onboarding-assign_trackers-tap_modal-description = Tap the tracker you want to assign twice. You can also drag a tracker from the list instead.
 onboarding-assign_trackers-tap_modal-cancel = Cancel
+onboarding-assign_trackers-mobile-idle_title = { $remaining ->
+    [one] 1 tracker left to assign
+   *[other] { $remaining } trackers left to assign
+}
+onboarding-assign_trackers-mobile-idle_hint = Press a spot on the body, or open the list below
+onboarding-assign_trackers-mobile-idle_hint-open = Pick a tracker, then press its spot on the body
+onboarding-assign_trackers-mobile-choose_tracker = Choose a tracker for { $part }
+onboarding-assign_trackers-mobile-choose_tracker-hint = Or double-tap it on your body
+onboarding-assign_trackers-mobile-choose_tracker-current = Currently { $tracker }
+onboarding-assign_trackers-mobile-choose_spot = Choose a spot for { $tracker }
+onboarding-assign_trackers-mobile-choose_spot-hint = Press a spot on the body above
+onboarding-assign_trackers-mobile-unassign = Unassign { $part }
 tracker_assignment-tab-body = Body
 tracker_assignment-tab-fingers = Fingers
 tracker_assignment-tab-toes = Toes
 tracker_assignment-side-right = Right
 tracker_assignment-side-left = Left
-onboarding-assign_trackers-option-amount = { $trackersCount ->
-    [one] x{ $trackersCount }
-    *[other] x{ $trackersCount }
-}
-onboarding-assign_trackers-option-label = { $mode ->
-    [lower-body] Lower-Body Set
-    [core] Core Set
-    [enhanced-core] Enhanced Core Set
-    [full-body] Full-Body Set
-    *[all] All Trackers
-}
-onboarding-assign_trackers-option-description = { $mode ->
-    [lower-body] Minimum for VR full-body tracking
-    [core] + Enhanced spine tracking
-    [enhanced-core] + Foot rotation
-    [full-body] + Elbow tracking
-    *[all] All available tracker assignments
-}
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.

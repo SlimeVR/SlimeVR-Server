@@ -15,16 +15,18 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
   return !state.alonePage ? (
     <div className="onboarding-layout h-full">
       <div style={{ gridArea: 't' }}>
-        <TopBar progress={state.progress} />
+        <TopBar
+          progress={state.progress}
+          actions={
+            <SkipSetupButton
+              visible={true}
+              modalVisible={showWarning}
+              onClick={() => setShowWarning(true)}
+            />
+          }
+        />
       </div>
       <div style={{ gridArea: 'c' }} className="mt-2 relative">
-        <div className="absolute top-12 mobile:top-0 right-2 z-50">
-          <SkipSetupButton
-            visible={true}
-            modalVisible={showWarning}
-            onClick={() => setShowWarning(true)}
-          />
-        </div>
         <div className="h-full w-full overflow-y-auto">{children}</div>
         <SkipSetupWarningModal
           accept={skipSetup}

@@ -1,6 +1,6 @@
-import classNames from 'classnames';
 import { useEffect } from 'react';
-import { EscapeIcon } from '@/components/commons/icon/EscapeIcon';
+import { useLocalization } from '@fluent/react';
+import { ArrowRightIcon } from '@/components/commons/icon/ArrowIcons';
 
 export function SkipSetupButton({
   modalVisible,
@@ -11,9 +11,10 @@ export function SkipSetupButton({
   modalVisible: boolean;
   visible: boolean;
 }) {
-  if (!visible) return <></>;
+  const { l10n } = useLocalization();
+
   useEffect(() => {
-    if (modalVisible) return;
+    if (modalVisible || !visible) return;
 
     function onEscape(ev: KeyboardEvent) {
       if (ev.key === 'Escape') onClick();
@@ -22,22 +23,19 @@ export function SkipSetupButton({
     document.addEventListener('keydown', onEscape, { passive: true });
 
     return () => document.removeEventListener('keydown', onEscape);
-  }, [modalVisible]);
+  }, [modalVisible, visible]);
+
+  if (!visible) return null;
 
   return (
     <button
       type="button"
-      className={classNames(
-        'text-background-10 hover:text-background-20',
-        'stroke-background-10 hover:stroke-background-20',
-        'absolute xs:-top-10 xs:right-4 mobile:top-0 mobile:right-0'
-      )}
+      title={l10n.getString('onboarding-skip')}
+      className="flex items-center gap-1 shrink-0 whitespace-nowrap rounded-md px-2 smol:px-3 h-7 bg-background-60 hover:bg-background-50 text-standard text-background-10 fill-background-10"
       onClick={onClick}
     >
-      <div className="flex flex-col justify-center items-center">
-        <EscapeIcon size={42} />
-        <p className="text-standard">ESC</p>
-      </div>
+      {l10n.getString('onboarding-skip')}
+      <ArrowRightIcon size={14} />
     </button>
   );
 }

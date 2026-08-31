@@ -39,6 +39,7 @@ export function BodyInteractions({
   dotsSize = 15,
   variant = 'tracker-select',
   mirror,
+  fillHeight = false,
   onSelectRole,
   slotStyle,
 }: {
@@ -51,6 +52,7 @@ export function BodyInteractions({
   onSelectRole: (role: BodyPart) => void;
   highlightedRoles: BodyPart[];
   mirror: boolean;
+  fillHeight?: boolean;
   slotStyle?: BodySlotStyler;
 }) {
   const { isMobile } = useBreakpoint('mobile');
@@ -267,11 +269,11 @@ export function BodyInteractions({
         <div ref={leftContainerRef} className="z-10">
           {leftControls}
         </div>
-        <div
-          ref={personRef}
-          className={classNames('relative flex justify-center flex-grow')}
-        >
-          <PersonFrontIcon mirror={mirror} />
+        <div ref={personRef} className="relative flex justify-center flex-grow">
+          <PersonFrontIcon
+            mirror={mirror}
+            className={fillHeight ? 'absolute inset-0 h-full w-full' : 'w-full'}
+          />
           {slotsButtonsPos.map(
             ({ top, left, height, width, id, hidden, buttonOffset }) => {
               const style = slotStyle?.((BodyPart as any)[id]) ?? NO_SLOT_STYLE;

@@ -173,6 +173,8 @@ const config = {
       nsmol: { raw: 'not (min-width: 525px)' },
       smol: '525px',
       mobile: { raw: 'not (min-width: 800px)' },
+      mobileAssign: { raw: 'not (min-width: 1100px)' },
+      xsAssign: '1100px',
       'xs-settings': '900px',
       xs: '800px',
       nsm: { raw: 'not (min-width: 900px)' },

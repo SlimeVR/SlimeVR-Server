@@ -1,6 +1,6 @@
 import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
-import { getTrackerName } from '@/hooks/tracker';
+import { getLocalizedTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
   BoardType,
@@ -51,7 +51,7 @@ interface UpdateStatus {
 
 const deviceNames = ({ trackers }: DeviceDataT, l10n: ReactLocalization) =>
   trackers
-    .map(({ info }) => getTrackerName(l10n, info))
+    .map(({ info }) => getLocalizedTrackerName(l10n, info))
     .filter((i): i is string => !!i);
 
 const DeviceList = ({

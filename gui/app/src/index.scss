@@ -65,11 +65,15 @@ body {
   overscroll-behavior: none;
 
   --navbar-w: 110px;
+  --navbar-h: 0px;
   --topbar-h: 38px;
+  --page-margin: 8px;
 
   @screen mobile {
     --topbar-h: 44px;
+    --navbar-w: 0px;
     --navbar-h: 73px;
+    --page-margin: 0px;
   }
 }
 

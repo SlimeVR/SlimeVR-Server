@@ -22,7 +22,7 @@ import { Button } from '@/components/commons/Button';
 import { Input } from '@/components/commons/Input';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { useOnboarding } from '@/hooks/onboarding';
-import { getTrackerName } from '@/hooks/tracker';
+import { getLocalizedTrackerName } from '@/hooks/tracker';
 import { ObjectSchema, object, string } from 'yup';
 import { useAtomValue } from 'jotai';
 import { devicesAtom } from '@/store/app-store';
@@ -248,7 +248,7 @@ function OTADevicesList({
 
   const deviceNames = ({ trackers }: DeviceDataT) =>
     trackers
-      .map(({ info }) => getTrackerName(l10n, info))
+      .map(({ info }) => getLocalizedTrackerName(l10n, info))
       .filter((i): i is string => !!i);
 
   const selectedDevices = watch('ota.selectedDevices');

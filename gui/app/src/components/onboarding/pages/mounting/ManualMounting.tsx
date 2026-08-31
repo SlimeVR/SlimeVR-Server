@@ -15,7 +15,7 @@ import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { Localized } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
-import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
+import { defaultConfig, useConfig } from '@/hooks/config';
 import { assignedTrackersAtom, FlatDeviceTracker } from '@/store/app-store';
 import { useAtomValue } from 'jotai';
 import * as Sentry from '@sentry/react';
@@ -129,7 +129,6 @@ export function ManualMountingPage() {
               width={isMobile ? 160 : undefined}
               mirror={config?.mirrorView ?? defaultConfig.mirrorView}
               onlyAssigned={true}
-              assignMode={AssignMode.All}
               onRoleSelected={setSelectRole}
             />
           </div>
@@ -234,7 +233,6 @@ export function ManualMountingPageStayAligned({
               width={isMobile ? 160 : undefined}
               mirror={config?.mirrorView ?? defaultConfig.mirrorView}
               onlyAssigned={true}
-              assignMode={AssignMode.All}
               onRoleSelected={setSelectRole}
             />
           </div>

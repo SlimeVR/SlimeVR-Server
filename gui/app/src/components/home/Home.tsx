@@ -87,6 +87,7 @@ export function Home() {
               <TrackerConnectionGroupSection
                 key={group.key}
                 group={group}
+                variant="primary"
                 toolbox={
                   <TrackerConnectionGroupDefaultToolbox
                     group={group}

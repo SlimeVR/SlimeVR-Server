@@ -10,7 +10,7 @@ import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
-import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
+import { defaultConfig, useConfig } from '@/hooks/config';
 import { useBreakpoint } from '@/hooks/breakpoint';
 
 export function SingleTrackerBodyAssignmentMenu({
@@ -24,7 +24,7 @@ export function SingleTrackerBodyAssignmentMenu({
 }) {
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { isMobile } = useBreakpoint('mobile');
+  const { isMobileAssign } = useBreakpoint('mobileAssign');
 
   const { control, watch } = useForm<{ showAllBodyParts: boolean }>({
     defaultValues: {
@@ -57,8 +57,8 @@ export function SingleTrackerBodyAssignmentMenu({
         )}
       >
         <div className="flex w-full h-full flex-col gap-10 px-3">
-          <div className="flex xs:flex-row h-full xs:gap-8 mobile:flex-col  xs:justify-center items-center">
-            <div className="flex flex-col xs:max-w-sm gap-3">
+          <div className="flex flex-col h-full items-center xsAssign:flex-row xsAssign:gap-8 xsAssign:justify-center">
+            <div className="flex flex-col gap-4 xsAssign:max-w-sm">
               <Typography variant="mobile-title" bold>
                 {l10n.getString('body_assignment_menu')}
               </Typography>
@@ -81,13 +81,11 @@ export function SingleTrackerBodyAssignmentMenu({
                 variant="toggle"
               />
             </div>
-            <div className="flex flex-col xs:flex-grow gap-3 rounded-xl fill-background-50 py-2">
+            <div className="flex flex-col gap-4 rounded-xl fill-background-50 py-2 xsAssign:flex-grow">
               <BodyAssignment
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
-                width={isMobile ? 160 : undefined}
+                width={isMobileAssign ? 160 : undefined}
                 onlyAssigned={false}
-                /* FIXME: need to use the right stuff */
-                assignMode={AssignMode.All}
                 onRoleSelected={tryOpenChokerWarning}
               />
               <div className="flex justify-center">

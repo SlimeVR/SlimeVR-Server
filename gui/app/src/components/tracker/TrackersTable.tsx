@@ -31,7 +31,7 @@ import {
   useTrackingChecklist,
 } from '@/hooks/tracking-checklist';
 
-const getTrackerName = ({ tracker }: FlatDeviceTracker) =>
+const trackerSortName = ({ tracker }: FlatDeviceTracker) =>
   tracker?.info?.customName?.toString() || '';
 
 export function TrackerNameCell({
@@ -320,7 +320,7 @@ export function TrackersTable({
   const sortedGroups = useMemo(() => {
     if (!sortingEnabled) return groups;
     const byName = (a: FlatDeviceTracker, b: FlatDeviceTracker) =>
-      getTrackerName(a).localeCompare(getTrackerName(b));
+      trackerSortName(a).localeCompare(trackerSortName(b));
     return groups.map((group) => ({
       ...group,
       assigned: group.assigned.toSorted(byName),
@@ -392,6 +392,7 @@ export function TrackersTable({
             <TrackerConnectionGroupSection
               key={group.key}
               group={group}
+              variant="primary"
               toolbox={
                 <TrackerConnectionGroupDefaultToolbox
                   group={group}

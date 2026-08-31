@@ -6,7 +6,7 @@ import { PauseIcon } from '@/components/commons/icon/PauseIcon';
 import { PlayIcon } from '@/components/commons/icon/PlayIcon';
 import { DropdownInside } from '@/components/commons/Dropdown';
 import { CheckboxInternal } from '@/components/commons/Checkbox';
-import { getTrackerName } from '@/hooks/tracker';
+import { getLocalizedTrackerName } from '@/hooks/tracker';
 import { useDongleTelemetryFeed } from '@/hooks/dongle-telemetry-feed';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { RssiLossChart } from './RssiLossChart';
@@ -157,7 +157,7 @@ export function DongleTelemetry({
         .filter((t) => t.device)
         .map((t) => ({
           deviceId: t.device!.id,
-          name: String(getTrackerName(l10n, t.tracker.info)),
+          name: String(getLocalizedTrackerName(l10n, t.tracker.info)),
           color: colorFor(t.device!.id),
         })),
     [trackers, l10n]

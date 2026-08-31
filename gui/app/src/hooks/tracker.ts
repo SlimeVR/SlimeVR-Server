@@ -8,11 +8,18 @@ import { Vector3FromVec3fT } from '@/maths/vector3';
 import { useAtomValue } from 'jotai';
 import { trackerFromIdAtom } from '@/store/app-store';
 
-export const getTrackerName = (l10n: ReactLocalization, info: TrackerInfoT | null) => {
+export const getLocalizedTrackerName = (
+  l10n: ReactLocalization,
+  info: TrackerInfoT | null
+) => {
   if (info?.customName) return info?.customName;
   if (info?.bodyPart) return l10n.getString('body_part-' + BodyPart[info?.bodyPart]);
   return info?.displayName || 'NONE';
 };
+
+export function getTrackerName(info: TrackerInfoT | null): string {
+  return (info?.customName ?? info?.displayName)?.toString() ?? '';
+}
 
 export const velocityGlowStyle = (velocity: number): CSSProperties => {
   const spread = Math.floor(velocity * 8);
@@ -27,7 +34,7 @@ export const useTracker = (tracker: TrackerDataT) => {
 
   return {
     useName: () =>
-      useMemo(() => getTrackerName(l10n, tracker.info), [tracker.info, l10n]),
+      useMemo(() => getLocalizedTrackerName(l10n, tracker.info), [tracker.info, l10n]),
     useRawRotationEulerDegrees: () =>
       useMemo(() => QuaternionToEulerDegrees(tracker?.rotation), [tracker.rotation]),
     useRefAdjRotationEulerDegrees: () =>

@@ -145,6 +145,22 @@ export function groupTrackersByConnection(
   });
 }
 
+export function groupTrackersByDevice(
+  trackers: FlatDeviceTracker[]
+): FlatDeviceTracker[][] {
+  const order: number[] = [];
+  const byDevice = new Map<number, FlatDeviceTracker[]>();
+  trackers.forEach((td) => {
+    const key = td.device?.id ?? td.tracker.trackerId;
+    if (!byDevice.has(key)) {
+      order.push(key);
+      byDevice.set(key, []);
+    }
+    byDevice.get(key)!.push(td);
+  });
+  return order.map((key) => byDevice.get(key)!);
+}
+
 export const flatTrackersAtom = atom((get) => {
   const devices = get(devicesAtom);
 

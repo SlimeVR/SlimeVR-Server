@@ -15,15 +15,15 @@ import { MetricsIcon } from '@/components/commons/icon/MetricsIcon';
 import { DongleStatus } from 'solarxr-protocol';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 
-const isGroupDisconnected = (group: TrackerConnectionGroupData) => {
+function isGroupDisconnected(group: TrackerConnectionGroupData) {
   return group.kind === 'dongle' && group.status === DongleStatus.DISCONNECTED;
-};
+}
 
-const getConnectionGroupStorageKey = (
+function getConnectionGroupStorageKey(
   group: TrackerConnectionGroupData
-): string => {
+): string {
   return group.kind === 'dongle' ? (group.dongleName ?? group.key) : group.kind;
-};
+}
 
 export function ConnectionGroupIcon({
   kind,
@@ -83,7 +83,7 @@ export function TrackerConnectionGroupUnassignedDivider({
   );
 }
 
-const useConnectionGroupCollapsed = (group: TrackerConnectionGroupData) => {
+function useConnectionGroupCollapsed(group: TrackerConnectionGroupData) {
   const { config, setConfig } = useConfig();
   const storageKey = getConnectionGroupStorageKey(group);
   const collapsed = config?.collapsedConnectionGroups[storageKey] ?? false;
@@ -95,7 +95,7 @@ const useConnectionGroupCollapsed = (group: TrackerConnectionGroupData) => {
       },
     });
   return { collapsed, toggleCollapse };
-};
+}
 
 function TrackerConnectionGroupToolboxContainer({
   children,
@@ -186,10 +186,14 @@ export function TrackerConnectionGroupSection({
   group,
   toolbox,
   children,
+  linkHeader = true,
+  variant,
 }: {
   group: TrackerConnectionGroupData;
   toolbox?: ReactNode;
   children: ReactNode;
+  linkHeader?: boolean;
+  variant: 'primary' | 'secondary' | 'tertiary';
 }) {
   const { collapsed } = useConnectionGroupCollapsed(group);
 
@@ -201,7 +205,7 @@ export function TrackerConnectionGroupSection({
   return (
     <div className="flex flex-col">
       <div className="flex items-center gap-2 h-8">
-        {group.kind === 'dongle' ? (
+        {group.kind === 'dongle' && linkHeader ? (
           <NavLink
             to={`/dongle/${group.dongleId}`}
             className="flex items-center gap-2 min-w-0 flex-shrink hover:opacity-80"
@@ -215,6 +219,19 @@ export function TrackerConnectionGroupSection({
               {group.dongleName}
             </Typography>
           </NavLink>
+        ) : group.kind === 'dongle' ? (
+          <div
+            className="flex items-center gap-2 min-w-0 flex-shrink"
+            title={group.dongleName || undefined}
+          >
+            <ConnectionGroupIcon
+              kind={group.kind}
+              disconnected={disconnected}
+            />
+            <Typography bold truncate>
+              {group.dongleName}
+            </Typography>
+          </div>
         ) : (
           <>
             <ConnectionGroupIcon
@@ -228,8 +245,19 @@ export function TrackerConnectionGroupSection({
             />
           </>
         )}
-        <div className="flex-grow border-t-2 border-dashed border-background-60" />
-        <div className="sticky -right-0 flex items-center bg-background-70 px-2">
+        <div
+          className={classNames('flex-grow border-t-2 border-dashed', {
+            'border-background-60':
+              variant === 'primary' || variant === 'tertiary',
+            'border-background-40': variant === 'secondary',
+          })}
+        />
+        <div
+          className={classNames('sticky -right-0 flex items-center px-2', {
+            'bg-background-70': variant === 'primary',
+            'bg-background-60': variant === 'secondary',
+          })}
+        >
           {toolbox ?? <TrackerConnectionGroupDefaultToolbox group={group} />}
         </div>
       </div>

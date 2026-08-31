@@ -1,15 +1,19 @@
 import { ReactNode, useCallback, useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
-import { AssignMode } from '@/hooks/config';
+import { AssignMode, useConfig } from '@/hooks/config';
 import {
   BodyInteractions,
   BodySlotStyler,
 } from '@/components/commons/BodyInteractions';
 import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';
-import { BodyPartError } from './pages/trackers-assign/TrackerAssignment';
+import { BodyPartError } from '@/hooks/tracker-assignment';
 import { SIDES } from '@/components/commons/PersonFrontIcon';
 import { useAtomValue } from 'jotai';
-import { assignedTrackersAtom, FlatDeviceTracker } from '@/store/app-store';
+import {
+  assignedTrackersAtom,
+  connectedIMUTrackersAtom,
+  FlatDeviceTracker,
+} from '@/store/app-store';
 
 const HANDS_PARTS = new Set([BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND]);
 export const ARMS_PARTS = new Set([
@@ -125,17 +129,16 @@ export type BodyPartCardRenderer = (args: {
 }) => ReactNode;
 
 export function BodyAssignment({
-  assignMode,
   mirror,
   onRoleSelected,
   rolesWithErrors = {},
   highlightedRoles = [],
   onlyAssigned = false,
   dotSize,
+  fillHeight,
   renderCard,
   slotStyle,
 }: {
-  assignMode: AssignMode | null;
   mirror: boolean;
   onlyAssigned?: boolean;
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
@@ -143,10 +146,17 @@ export function BodyAssignment({
   onRoleSelected: (role: BodyPart) => void;
   width?: number;
   dotSize?: number;
+  fillHeight?: boolean;
   renderCard?: BodyPartCardRenderer;
   slotStyle?: BodySlotStyler;
 }) {
+  const { config } = useConfig();
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
+
+  const assignMode = config?.assignShowAllBodyParts
+    ? AssignMode.All
+    : getPreferredAssignMode(connectedIMUTrackers.length);
 
   const trackerPartGrouped = useMemo(
     () =>
@@ -201,6 +211,7 @@ export function BodyAssignment({
     <BodyInteractions
       mirror={mirror}
       dotsSize={dotSize}
+      fillHeight={fillHeight}
       slotStyle={slotStyle}
       assignedRoles={assignedRoles}
       highlightedRoles={highlightedRoles}
