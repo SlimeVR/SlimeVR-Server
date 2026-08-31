@@ -238,15 +238,6 @@ bvh-recording = Inspelning...
 tracking-unpaused = Pausa spårning
 tracking-paused = Avbryt spårning
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Utvecklarläge
@@ -267,9 +258,6 @@ widget-imu_visualizer-rotation_preview = Förhandsgranska rotation
 widget-imu_visualizer-acceleration = Acceleration
 widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Behåll inriktning
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -397,9 +385,6 @@ settings-sidebar-behavior = Beteende
 settings-sidebar-firmware-tool = DIY Mjukvaroverktyg
 settings-sidebar-vrc_warnings = VRChat Config varningar
 settings-sidebar-advanced = Avancerat
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -568,9 +553,6 @@ settings-serial-auto_dropdown_item = Automatiskt
 settings-serial-get_wifi_scan = Hämta WiFi-skanning
 settings-serial-save_logs = Spara till fil
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC spårare
@@ -683,9 +665,6 @@ onboarding-wifi_creds-password =
     .label = Lösenord
     .placeholder = Ange lösenord
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -693,9 +672,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Välkommen till SlimeVR
 onboarding-home-start = Låt oss komma igång!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -726,12 +702,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } spårare anslutna
     }
 onboarding-connect_tracker-next = Jag har anslutit alla mina spårare
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 

@@ -131,10 +131,6 @@ bvh-recording = Spiller inn...
 
 ## Tracking pause
 
-
-## Widget: Overlay settings
-
-
 ## Widget: Drift compensation
 
 
@@ -247,9 +243,6 @@ settings-sidebar-interface = Grensesnitt
 settings-sidebar-utils = Verktøy
 settings-sidebar-serial = Seriell konsoll
 
-## SteamVR settings
-
-
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrering
@@ -345,9 +338,6 @@ settings-serial-factory_reset-warning-cancel = Avslutt
 settings-serial-serial_select = Velg en serieport
 settings-serial-auto_dropdown_item = Auto
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC Trackere
@@ -397,9 +387,6 @@ onboarding-wifi_creds-password =
     .label = Passord
     .placeholder = Tast inn passord
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -407,9 +394,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Velkommen til SlimeVR
 onboarding-home-start = La oss sette i gang!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -451,10 +435,6 @@ onboarding-assign_trackers-assigned =
 
 ## Tracker assignment warnings
 
-
-## Tracker mounting method choose
-
-
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting = Manuell montering
@@ -479,9 +459,6 @@ onboarding-automatic_mounting-preparation-title = Forberedning
 onboarding-automatic_mounting-put_trackers_on-title = Ta på deg dine trackere
 onboarding-automatic_mounting-put_trackers_on-description = For å kalibrere monterings-rotasjonene, må vi bruke trackerne du akkurat tildelte. Ta på deg alle dine trackere, du kan se hvem som er hvem i figuren til høyre.
 onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
-
-## Tracker manual proportions setupa
-
 
 ## Tracker automatic proportions setup
 
@@ -518,10 +495,6 @@ onboarding-automatic_proportions-done-description = Din kropps-proposisjons kali
 
 
 ## Stay Aligned setup
-
-
-## Home
-
 
 ## Trackers Still On notification
 

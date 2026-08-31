@@ -265,15 +265,6 @@ bvh-save_title = Zapisz nagranie BVH
 tracking-unpaused = Wstrzymaj śledzenie
 tracking-paused = Wznów śledzenie
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Tryb deweloperski
@@ -294,9 +285,6 @@ widget-imu_visualizer-rotation_preview = Podgląd
 widget-imu_visualizer-acceleration = Akceleracja
 widget-imu_visualizer-position = Pozycja
 widget-imu_visualizer-stay_aligned = Wyrównywanie
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -432,9 +420,6 @@ settings-sidebar-behavior = Zachowanie
 settings-sidebar-firmware-tool = Narzędzie do oprogramowania sprzętowego DIY
 settings-sidebar-vrc_warnings = Ostrzeżenia dotyczące konfiguracji VRChat
 settings-sidebar-advanced = Zaawansowany
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -645,9 +630,6 @@ settings-serial-send_command-warning = <b>Ostrzeżenie:</b> Wysyłanie poleceń 
 settings-serial-send_command-warning-ok = Wiem co robię
 settings-serial-send_command-warning-cancel = Anuluj
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC Trackers
@@ -774,9 +756,6 @@ onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -784,9 +763,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Witamy w SlimeVR
 onboarding-home-start = Zaczynajmy!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -819,12 +795,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } połączonych trackerów
     }
 onboarding-connect_tracker-next = Połączyłem już wszystkie trackery
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -1093,9 +1063,6 @@ trackers_still_on-modal-description =
     Czy nadal chcesz wyjść ze SlimeVR?
 trackers_still_on-modal-confirm = Wyjdź ze SlimeVR
 trackers_still_on-modal-cancel = Poczekaj...
-
-## Status system
-
 
 ## Firmware tool globals
 

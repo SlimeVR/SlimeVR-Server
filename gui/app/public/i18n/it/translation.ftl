@@ -250,15 +250,6 @@ bvh-recording = Registrazione in corso...
 tracking-unpaused = Pausa il Tracciamento
 tracking-paused = Riprendi il tracciamento
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Modalità sviluppatore
@@ -279,9 +270,6 @@ widget-imu_visualizer-rotation_preview = Anteprima
 widget-imu_visualizer-acceleration = Accelerazione
 widget-imu_visualizer-position = Posizione
 widget-imu_visualizer-stay_aligned = Rimani Allineato
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -409,9 +397,6 @@ settings-sidebar-behavior = Comportamento
 settings-sidebar-firmware-tool = Strumento firmware fai-da-te
 settings-sidebar-vrc_warnings = Avvertimenti per le impostazioni di VRChat
 settings-sidebar-advanced = Avanzate
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -605,9 +590,6 @@ settings-serial-auto_dropdown_item = Automatico
 settings-serial-get_wifi_scan = Elenca WiFi Network
 settings-serial-save_logs = Salva su file
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = Tracker OSC per VRChat
@@ -731,9 +713,6 @@ onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Inserisci password
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -741,9 +720,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Benvenuti a SlimeVR
 onboarding-home-start = Prepariamoci!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -774,12 +750,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } tracker connessi
     }
 onboarding-connect_tracker-next = Ho collegato tutti i miei tracker
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -1004,9 +974,6 @@ onboarding-stay_aligned-next_step = Successivo
 onboarding-stay_aligned-restart = Riavvia
 onboarding-stay_aligned-done = Fatto
 
-## Home
-
-
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = I tracker sono ancora accesi
@@ -1015,9 +982,6 @@ trackers_still_on-modal-description =
     Vuoi uscire comunque da SmileVR?
 trackers_still_on-modal-confirm = Chiudi SlimeVR
 trackers_still_on-modal-cancel = Attendi un momento...
-
-## Status system
-
 
 ## Firmware tool globals
 

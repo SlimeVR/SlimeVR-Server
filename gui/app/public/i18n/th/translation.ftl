@@ -270,15 +270,6 @@ bvh-save_title = บันทึกไฟล์ BVH
 tracking-unpaused = หยุดการติดตามชั่วคราว
 tracking-paused = ยกเลิกหยุดการติดตาม
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = โหมดนักพัฒนา
@@ -299,9 +290,6 @@ widget-imu_visualizer-rotation_preview = ค่าตัวอย่างกา
 widget-imu_visualizer-acceleration = ความเร่ง
 widget-imu_visualizer-position = ตำแหน่ง
 widget-imu_visualizer-stay_aligned = Stay Aligned
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -440,9 +428,6 @@ settings-sidebar-behavior = พฤติกรรมการทำงาน
 settings-sidebar-firmware-tool = เครื่องมือเฟิร์มแวร์ DIY
 settings-sidebar-vrc_warnings = คำเตือนการตั้งค่า VRChat
 settings-sidebar-advanced = ขั้นสูง
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -642,9 +627,6 @@ settings-serial-send_command-warning = <b>คำเตือน:</b> การ�
 settings-serial-send_command-warning-ok = ฉันรู้ว่ากำลังทำอะไร
 settings-serial-send_command-warning-cancel = ยกเลิก
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = แทร็กเกอร์ OSC VRChat
@@ -778,9 +760,6 @@ onboarding-wifi_creds-dongle-description = หากแทร็กเกอร�
 onboarding-wifi_creds-dongle-wip = ส่วนนี้กำลังอยู่ระหว่างการพัฒนา เป็นหน้าสำหรับจัดการแทร็กเกอรืที่เชื่อมต่อผ่านดองเกิลที่กำลังจะถูกทำขึ้นมาเร็วๆ นี้
 onboarding-wifi_creds-dongle-continue = ดำเนินการต่อด้วยดองเกิล
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -788,9 +767,6 @@ onboarding-wifi_creds-dongle-continue = ดำเนินการต่อด�
 
 onboarding-home = ยินดีต้อนรับสู่ SlimeVR!
 onboarding-home-start = มาเริ่มการใช้งานกันเลย!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -820,12 +796,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] แทร็กเกอร์เชื่อมต่ออยู่ { $amount } ตัว
     }
 onboarding-connect_tracker-next = ฉันเชื่อมต่อแทร็กเกอร์ทั้งหมดแล้ว
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -1081,9 +1051,6 @@ trackers_still_on-modal-description =
     คุณยังต้องการออกจาก SlimeVR หรือไม่?
 trackers_still_on-modal-confirm = ออกจาก SlimeVR
 trackers_still_on-modal-cancel = ใจเย็นๆก่อน....
-
-## Status system
-
 
 ## Firmware tool globals
 

@@ -178,15 +178,6 @@ bvh-recording = تسجيل...
 tracking-unpaused = إيقاف التعقب مؤقتا
 tracking-paused = إلغاء الإيقاف التعقب
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = وضع المطوّر
@@ -206,9 +197,6 @@ widget-imu_visualizer-rotation_raw = صافي
 widget-imu_visualizer-rotation_preview = عرض مسبق
 widget-imu_visualizer-acceleration = التسارع
 widget-imu_visualizer-position = الموضع
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -332,9 +320,6 @@ settings-sidebar-notifications = إشعارات
 settings-sidebar-behavior = سلوك
 settings-sidebar-firmware-tool = أداة برامج الجهاز المصنوع بنفسك
 settings-sidebar-advanced = متقدم
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -522,9 +507,6 @@ settings-serial-auto_dropdown_item = تلقائي
 settings-serial-get_wifi_scan = احصل على فحص WiFi
 settings-serial-save_logs = حفظ في ملف
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = أجهزة تعقب "في ار تشات أوه أس سي"
@@ -644,9 +626,6 @@ onboarding-wifi_creds-password =
     .label = كلمة السر
     .placeholder = أدخل كلمة السر
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -654,9 +633,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = مرحبا بكم في سلايم في ار
 onboarding-home-start = هيا نتجهز!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -687,12 +663,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } أجهزة تعقب متصلة
     }
 onboarding-connect_tracker-next = لقد قمت بتوصيل جميع أجهزة التعقب
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -889,10 +859,6 @@ onboarding-automatic_proportions-smol_warning-cancel = الرجوع
 
 ## Stay Aligned setup
 
-
-## Home
-
-
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = أجهزة التعقب لا تزال قيد التشغيل
@@ -901,9 +867,6 @@ trackers_still_on-modal-description =
     هل مازلت تريد الخروج من SlimeVR؟
 trackers_still_on-modal-confirm = الخروج من SlimeVR
 trackers_still_on-modal-cancel = انتظر...
-
-## Status system
-
 
 ## Firmware tool globals
 

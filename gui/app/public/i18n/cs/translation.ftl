@@ -164,15 +164,6 @@ bvh-save_title = Uložit BVH záznam
 tracking-unpaused = Pozastavit sledování
 tracking-paused = Pokračovat v sledování
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Vývojářský režim
@@ -193,9 +184,6 @@ widget-imu_visualizer-rotation_preview = Náhled
 widget-imu_visualizer-acceleration = Akcelerace
 widget-imu_visualizer-position = Pozice
 widget-imu_visualizer-stay_aligned = Zůstaň Srovnaný (Stay Aligned)
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -335,9 +323,6 @@ settings-sidebar-behavior = Chování
 settings-sidebar-firmware-tool = Nástroj pro DIY firmware
 settings-sidebar-vrc_warnings = Varovaní VRChat konfigurace
 settings-sidebar-advanced = Pokročilé
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -546,9 +531,6 @@ settings-serial-send_command-placeholder = Příkaz...
 settings-serial-send_command-warning-ok = Vím, co dělám!
 settings-serial-send_command-warning-cancel = Zrušit
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = Trackery VRChat OSC
@@ -679,9 +661,6 @@ onboarding-wifi_creds-password =
 onboarding-wifi_creds-dongle-title = Trackery používající dongle
 onboarding-wifi_creds-dongle-continue = Pokračovat s donglem
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -689,9 +668,6 @@ onboarding-wifi_creds-dongle-continue = Pokračovat s donglem
 
 onboarding-home = Vítejte ve SlimeVR
 onboarding-home-start = Pusťme se do toho!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -723,12 +699,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } připojených trackerů
     }
 onboarding-connect_tracker-next = Připojil jsem všechny své trackery
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -929,9 +899,6 @@ trackers_still_on-modal-description =
     Opravdu chcete ukončit SlimeVR?
 trackers_still_on-modal-confirm = Zavřít SlimeVR
 trackers_still_on-modal-cancel = Dejte my chvilku!
-
-## Status system
-
 
 ## Firmware tool globals
 

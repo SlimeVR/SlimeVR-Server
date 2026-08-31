@@ -170,15 +170,6 @@ bvh-recording = wecowding...
 tracking-unpaused = pauws twacking
 tracking-paused = unpauws twacking
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = devwowwewow mode
@@ -198,9 +189,6 @@ widget-imu_visualizer-rotation_raw = waw
 widget-imu_visualizer-rotation_preview = pwewiew
 widget-imu_visualizer-acceleration = accewewation
 widget-imu_visualizer-position = pawsition
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -316,9 +304,6 @@ settings-sidebar-serial = sewiaw cownsaw
 settings-sidebar-appearance = appeawance
 settings-sidebar-notifications = notificashuns
 settings-sidebar-behavior = behavur
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -485,9 +470,6 @@ settings-serial-auto_dropdown_item = awto
 settings-serial-get_wifi_scan = get wifi scan uwu
 settings-serial-save_logs = saeve to file
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChawt OSC Twayckaws
@@ -592,9 +574,6 @@ onboarding-wifi_creds-password =
     .label = passwowod
     .placeholder = entew passwowod
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -602,9 +581,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = wewcome to SwimeVR
 onboarding-home-start = wets get set up!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -631,12 +607,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } twackers cownyected
     }
 onboarding-connect_tracker-next = i cownyected awe my twackaws
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -823,10 +793,6 @@ onboarding-automatic_proportions-smol_warning-cancel = go bak
 
 ## Stay Aligned setup
 
-
-## Home
-
-
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = Twackews stiww on
@@ -835,9 +801,6 @@ trackers_still_on-modal-description =
     Do you stiww want to exit SwimeVR?
 trackers_still_on-modal-confirm = Exit SwimeVR
 trackers_still_on-modal-cancel = Howd on...
-
-## Status system
-
 
 ## Firmware tool globals
 

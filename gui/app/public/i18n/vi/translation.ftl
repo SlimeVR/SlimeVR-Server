@@ -123,15 +123,6 @@ bvh-recording = Đang ghi...
 tracking-unpaused = Tạm dừng tracking
 tracking-paused = Bỏ dừng theo dõi
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Chế độ nhà phát triển
@@ -151,9 +142,6 @@ widget-imu_visualizer-rotation_raw = Gốc
 widget-imu_visualizer-rotation_preview = Qua xử lí
 widget-imu_visualizer-acceleration = Gia tốc
 widget-imu_visualizer-position = Vị trí
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -257,9 +245,6 @@ settings-sidebar-serial = Cổng Serial
 settings-sidebar-appearance = Giao diện
 settings-sidebar-notifications = Thông báo
 settings-sidebar-advanced = Cài đặt mở rộng
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -413,9 +398,6 @@ settings-serial-auto_dropdown_item = Tự động
 settings-serial-get_wifi_scan = Quét WiFi
 settings-serial-save_logs = Lưu vào tệp
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC Trackers
@@ -513,9 +495,6 @@ onboarding-wifi_creds-password =
     .label = Mật khẩu
     .placeholder = và mật khẩu
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -523,9 +502,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Chào mừng bạn đến với SlimeVR!
 onboarding-home-start = Bắt đầu thiết lập!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -551,12 +527,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } tracker đã giao
     }
 onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -676,9 +646,6 @@ onboarding-automatic_mounting-put_trackers_on-title = Đeo tracker lên người
 onboarding-automatic_mounting-put_trackers_on-description = Để cân chỉnh hướng gắn của tracker, SlimeVR sẽ tiến hành đo góc nghiêng của tracker khi đang đeo để cân chỉnh hướng gắn, hãy đeo tracker theo đúng vị trí đã thiết lập
 onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
-## Tracker manual proportions setupa
-
-
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-back = Quay lại cân chỉnh hướng gắn
@@ -733,10 +700,6 @@ onboarding-automatic_proportions-error_modal-confirm = Đã hiểu!
 
 ## Stay Aligned setup
 
-
-## Home
-
-
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = Tracker vẫn còn bật
@@ -745,9 +708,6 @@ trackers_still_on-modal-description =
     Bạn vẫn muốn thoát khỏi SlimeVR?
 trackers_still_on-modal-confirm = Thoát SlimeVR
 trackers_still_on-modal-cancel = Vui lòng đợi...
-
-## Status system
-
 
 ## Firmware tool globals
 

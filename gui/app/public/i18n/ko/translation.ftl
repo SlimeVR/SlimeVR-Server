@@ -140,15 +140,6 @@ bvh-recording = 기록중...
 tracking-unpaused = 트래킹 일시 중지
 tracking-paused = 트래킹 재개
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = 개발자 모드
@@ -168,9 +159,6 @@ widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = 미리보기
 widget-imu_visualizer-acceleration = 가속도
 widget-imu_visualizer-position = 위치
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -293,9 +281,6 @@ settings-sidebar-appearance = 모양
 settings-sidebar-notifications = 알림
 settings-sidebar-firmware-tool = DIY 펌웨어 도구
 settings-sidebar-advanced = 고급
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -458,9 +443,6 @@ settings-serial-auto_dropdown_item = 자동
 settings-serial-get_wifi_scan = WiFi 검색
 settings-serial-save_logs = 파일에 저장
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC Trackers
@@ -574,9 +556,6 @@ onboarding-wifi_creds-password =
     .label = 암호
     .placeholder = 암호를 입력하세요
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -584,9 +563,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = SlimeVR에 어서오세요!
 onboarding-home-start = 설정하러 가보죠!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -612,12 +588,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] 트래커 { $amount }개가 연결되었어요.
     }
 onboarding-connect_tracker-next = 트래커를 모두 연결했어요
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -801,19 +771,12 @@ onboarding-automatic_proportions-smol_warning-cancel = 돌아가기
 
 ## Stay Aligned setup
 
-
-## Home
-
-
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = 트래커가 아직 켜져 있어요!
 trackers_still_on-modal-description = 하나 이상의 트래커가 여전히 켜져 있는 것으로 보여요. SlimeVR을 종료할까요?
 trackers_still_on-modal-confirm = SlimeVR 종료
 trackers_still_on-modal-cancel = 돌아가기
-
-## Status system
-
 
 ## Firmware tool globals
 

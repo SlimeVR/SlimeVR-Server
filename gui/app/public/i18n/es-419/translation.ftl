@@ -271,15 +271,6 @@ bvh-save_title = Guardar grabación BVH
 tracking-unpaused = Pausar el tracking
 tracking-paused = Reanudar el tracking
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Developer Mode
@@ -300,9 +291,6 @@ widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-acceleration = Aceleración
 widget-imu_visualizer-position = Posición
 widget-imu_visualizer-stay_aligned = Mantente Alineado
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -442,9 +430,6 @@ settings-sidebar-behavior = Comportamiento
 settings-sidebar-firmware-tool = Herramienta de firmware DIY
 settings-sidebar-vrc_warnings = Advertencias de la configuración de VRChat
 settings-sidebar-advanced = Avanzado
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -657,9 +642,6 @@ settings-serial-send_command-warning = <b>Peligro:</b> Ejecutar comandos seriale
 settings-serial-send_command-warning-ok = Sé lo que estoy haciendo
 settings-serial-send_command-warning-cancel = Cancelar
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = Sensores OSC de VRChat
@@ -835,18 +817,6 @@ onboarding-wifi_creds-dongle-description = ¡Si tus trackers llegaron con un don
 onboarding-wifi_creds-dongle-wip = Esta sección es un trabajo en progreso. Una página dedicada para administrar trackers que se conectan via dongle sera hecha pronto.
 onboarding-wifi_creds-dongle-continue = Continuar con un dongle
 
-## Mounting setup
-
-
-    Esto va a hacer que tus sensores miren para la misma dirección que tu HMD.
-
-    Se requiere que estés de pie (pose en i). Esto tiene una demora de 3 segundos (configurable) antes de que realmente suceda.
-    Esto reinicia completamente la posición y rotación de todos tus trackers. Debería de arreglar la mayoría de los problemas.
-
-    El reinicio de montura ayuda en como tus sensores están puestos en tu cuerpo, ya que si los movistes o cambiaste para donde están orientados bastante, esto debería de ayudar.
-
-    Requiere que estas en una pose como que estás esquiando, como se muestra en el tutorial de montura automática y tenes un retraso de 3 segundos (configurable) antes de que actualmente suceda.
-
 ## Install info
 
 install-info_udev-rules_modal_button = Cerrar
@@ -856,9 +826,6 @@ install-info_udev-rules_modal-dont-show-again_checkbox = No mostrar de nuevo
 
 onboarding-home = Bienvenido a SlimeVR
 onboarding-home-start = ¡Comencemos!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -889,12 +856,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } sensores conectados
     }
 onboarding-connect_tracker-next = He conectado todos mis sensores
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -1160,9 +1121,6 @@ trackers_still_on-modal-description =
     ¿Estás seguro que quieres salir de SlimeVR?
 trackers_still_on-modal-confirm = Salir de SlimeVR
 trackers_still_on-modal-cancel = Espera un momento...
-
-## Status system
-
 
 ## Firmware tool globals
 

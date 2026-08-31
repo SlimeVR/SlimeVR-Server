@@ -203,15 +203,6 @@ bvh-save_title = BVH-Aufnahme speichern
 tracking-unpaused = Tracking pausieren
 tracking-paused = Tracking fortsetzen
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Entwicklermodus
@@ -232,9 +223,6 @@ widget-imu_visualizer-rotation_preview = Vorschau
 widget-imu_visualizer-acceleration = Beschleunigung
 widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Stay Aligned
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -374,9 +362,6 @@ settings-sidebar-behavior = Verhalten
 settings-sidebar-firmware-tool = DIY Firmware-Tool
 settings-sidebar-vrc_warnings = VRChat Konfigurations-Warnungen
 settings-sidebar-advanced = Erweitert
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -580,9 +565,6 @@ settings-serial-send_command-warning = <b>Warnung:</b> Das Ausführen serieller 
 settings-serial-send_command-warning-ok = Ich weiß, was ich tue
 settings-serial-send_command-warning-cancel = Abbruch
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat-OSC-Trackers
@@ -710,9 +692,6 @@ onboarding-wifi_creds-password =
 onboarding-wifi_creds-dongle-title = Tracker mit einem Dongle
 onboarding-wifi_creds-dongle-continue = Fahre mit einem Dongle fort
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -720,9 +699,6 @@ onboarding-wifi_creds-dongle-continue = Fahre mit einem Dongle fort
 
 onboarding-home = Willkommen zu SlimeVR
 onboarding-home-start = Los geht’s!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -753,12 +729,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } Tracker verbunden
     }
 onboarding-connect_tracker-next = Ich habe alle meine Tracker verbunden.
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -1014,9 +984,6 @@ trackers_still_on-modal-description =
     Möchten Sie SlimeVR trotzdem beenden?
 trackers_still_on-modal-confirm = SlimeVR beenden
 trackers_still_on-modal-cancel = Bitte warten...
-
-## Status system
-
 
 ## Firmware tool globals
 

@@ -142,15 +142,6 @@ bvh-recording = レコーディング中...
 tracking-unpaused = トラッキング停止
 tracking-paused = トラッキング再開
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = 開発者モード
@@ -166,9 +157,6 @@ widget-developer_mode-more_info = 他情報
 widget-imu_visualizer = 回転
 widget-imu_visualizer-rotation_raw = 生
 widget-imu_visualizer-rotation_preview = 生
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -274,9 +262,6 @@ settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
 settings-sidebar-appearance = 外観
 settings-sidebar-notifications = 通知
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -396,9 +381,6 @@ settings-serial-factory_reset-warning-cancel = キャンセル
 settings-serial-serial_select = シリアルポートを選択
 settings-serial-auto_dropdown_item = 自動
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSCトラッカー
@@ -463,9 +445,6 @@ onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -473,9 +452,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = SlimeVRへようこそ
 onboarding-home-start = セットアップ開始！
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -500,12 +476,6 @@ onboarding-connect_tracker-connected_trackers =
     }
 onboarding-connect_tracker-next = すべてのトラッカーを接続しました
 
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
-
 ## Tracker assignment setup
 
 onboarding-assign_trackers-title = トラッカーを割り当てる
@@ -520,10 +490,6 @@ onboarding-assign_trackers-assigned =
     }
 
 ## Tracker assignment warnings
-
-
-## Tracker mounting method choose
-
 
 ## Tracker manual mounting setup
 
@@ -549,9 +515,6 @@ onboarding-automatic_mounting-preparation-title = 準備
 onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着する
 onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
 onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
-
-## Tracker manual proportions setupa
-
 
 ## Tracker automatic proportions setup
 
@@ -592,17 +555,10 @@ onboarding-automatic_proportions-error_modal-confirm = 了解!
 
 ## Stay Aligned setup
 
-
-## Home
-
-
 ## Trackers Still On notification
 
 trackers_still_on-modal-confirm = SlimeVRを終了する
 trackers_still_on-modal-cancel = ちょっと待って...
-
-## Status system
-
 
 ## Firmware tool globals
 

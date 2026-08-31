@@ -271,15 +271,6 @@ bvh-save_title = Sauvegarder l’enregistrement BVH
 tracking-unpaused = Pause de la capture
 tracking-paused = Arrêter la pause de la capture
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Mode développeur
@@ -300,9 +291,6 @@ widget-imu_visualizer-rotation_preview = Aperçu
 widget-imu_visualizer-acceleration = Accélération
 widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Garder Aligné
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -442,9 +430,6 @@ settings-sidebar-behavior = Comportement
 settings-sidebar-firmware-tool = Outil de micrologiciel DIY
 settings-sidebar-vrc_warnings = Avertissements de configuration VRChat
 settings-sidebar-advanced = Avancé
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -653,9 +638,6 @@ settings-serial-send_command-warning = <b>Avertissement:</b> Exécuter des comma
 settings-serial-send_command-warning-ok = Je sais ce que je fais
 settings-serial-send_command-warning-cancel = Annuler
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = Capteurs OSC VRChat
@@ -795,9 +777,6 @@ onboarding-wifi_creds-dongle-description = Si vos capteurs ont été livrés ave
 onboarding-wifi_creds-dongle-wip = Cette section est en cours de développement. Une page dédiée à la gestion des capteurs connectés via un dongle sera bientôt créée.
 onboarding-wifi_creds-dongle-continue = Continuer avec un dongle
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -805,9 +784,6 @@ onboarding-wifi_creds-dongle-continue = Continuer avec un dongle
 
 onboarding-home = Bienvenue sur SlimeVR
 onboarding-home-start = Commencer
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -838,12 +814,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } trackers connected
     }
 onboarding-connect_tracker-next = J'ai connecté tous mes capteurs
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -1109,9 +1079,6 @@ trackers_still_on-modal-description =
     Voulez-vous quand même quitter SlimeVR ?
 trackers_still_on-modal-confirm = Quitter SlimeVR
 trackers_still_on-modal-cancel = Annuler...
-
-## Status system
-
 
 ## Firmware tool globals
 

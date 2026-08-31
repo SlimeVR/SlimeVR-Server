@@ -269,15 +269,6 @@ bvh-save_title = 儲存 BVH 紀錄
 tracking-unpaused = 暫停追蹤
 tracking-paused = 解除暫停追蹤
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = 開發者選項
@@ -298,9 +289,6 @@ widget-imu_visualizer-rotation_preview = 預覽
 widget-imu_visualizer-acceleration = 加速度
 widget-imu_visualizer-position = 位置
 widget-imu_visualizer-stay_aligned = 持續校正
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -440,9 +428,6 @@ settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
 settings-sidebar-vrc_warnings = VRChat 配置警告
 settings-sidebar-advanced = 進階
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -643,9 +628,6 @@ settings-serial-send_command-warning = <b>警告：</b>執行序列埠指令可�
 settings-serial-send_command-warning-ok = 我已瞭解以上風險
 settings-serial-send_command-warning-cancel = 取消
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC 追蹤器
@@ -784,9 +766,6 @@ onboarding-wifi_creds-dongle-description = 如果你的追蹤器有接收器，�
 onboarding-wifi_creds-dongle-wip = 本部分目前仍在開發階段，將來會推出管理接收器連接追蹤器的專屬頁面。
 onboarding-wifi_creds-dongle-continue = 使用接收器繼續
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -794,9 +773,6 @@ onboarding-wifi_creds-dongle-continue = 使用接收器繼續
 
 onboarding-home = 歡迎來到 SlimeVR
 onboarding-home-start = 來開始設定吧！
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -826,12 +802,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } 個追蹤器已連線
     }
 onboarding-connect_tracker-next = 所有的追蹤器都連接好了
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -1091,9 +1061,6 @@ trackers_still_on-modal-description =
     確定要退出 SlimeVR 嗎？
 trackers_still_on-modal-confirm = 退出 SlimeVR
 trackers_still_on-modal-cancel = 先不要…
-
-## Status system
-
 
 ## Firmware tool globals
 

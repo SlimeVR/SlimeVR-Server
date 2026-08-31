@@ -108,13 +108,6 @@ bvh-recording = Optager...
 
 ## Tracking pause
 
-
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
 ## Widget: Clear Mounting calibration
 
 
@@ -226,9 +219,6 @@ settings-sidebar-osc_trackers = VRChat OSC trackere
 settings-sidebar-utils = Hjælpeprogrammer
 settings-sidebar-serial = Seriel konsol
 
-## SteamVR settings
-
-
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering = Filtrering
@@ -312,9 +302,6 @@ settings-serial-factory_reset-warning-cancel = Annuller
 settings-serial-serial_select = Vælg en seriel port
 settings-serial-auto_dropdown_item = Auto
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC trackere
@@ -391,9 +378,6 @@ onboarding-wifi_creds-password =
     .label = Kodeord
     .placeholder = Indtast Wi-Fi-kodeord
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -401,9 +385,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Velkommen til SlimeVR
 onboarding-home-start = Lad os komme i gang!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -505,10 +486,6 @@ onboarding-automatic_proportions-done-description = Kalibreringen af dine kropsp
 
 
 ## Stay Aligned setup
-
-
-## Home
-
 
 ## Trackers Still On notification
 

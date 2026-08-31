@@ -265,10 +265,6 @@ bvh-save_title = Save BVH recording
 tracking-unpaused = Pause tracking
 tracking-paused = Unpause tracking
 
-## Widget: Overlay settings
-
-## Widget: Clear Mounting calibration
-
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
@@ -287,8 +283,6 @@ widget-imu_visualizer-rotation_preview = Preview rotation
 widget-imu_visualizer-acceleration = Acceleration
 widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Stay Aligned
-
-## Widget: Skeleton Visualizer
 
 ## Tracker status
 tracker-status-none = No Status
@@ -613,8 +607,6 @@ settings-keybinds-reset-single = Reset keybind to default
 settings-keybinds-recorder-hint-recording = Hold Ctrl, Alt, or Super, then press a letter or number
 settings-keybinds-error-letters-numbers-only = That key can't be used, pick a letter or number
 settings-keybinds-error-add-modifier = You can only start a combination with Ctrl, Alt, or Super
-
-
 
 
 ## FK/Tracking settings
@@ -1038,17 +1030,6 @@ onboarding-wifi_creds-dongle-description =
 onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicated page to manage trackers that connect via a dongle will be made soon.
 onboarding-wifi_creds-dongle-continue = Continue with a dongle
 
-## Mounting setup
-
-    This will make the trackers face the same direction as your headset (HMD).
-
-    You need to be standing for this (i-pose). There is a 3 seconds delay (configurable) before it actually happens.
-    This fully resets the position and rotation of all your trackers. It should fix most issues.
-
-    Mounting calibration adjusts for how trackers are placed on your body. If they've moved or rotated significantly, this helps recalibrate their orientation.
-
-    You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
-
 ## Install info
 install-info_udev-rules_modal_title = Hardware udev access rules not found
 install-info_udev-rules_warning = Access rules via udev are required for serial console access & dongle connection. Paste the following command into your terminal to add the udev rules.
@@ -1058,8 +1039,6 @@ install-info_udev-rules_modal-dont-show-again_checkbox = Don't show again
 onboarding-home = Welcome to SlimeVR
 onboarding-home-start = Let's get set up!
 
-
-## Setup done
 
 ## Tracker connection setup
 onboarding-connect_tracker-title = Let's connect your trackers
@@ -1211,7 +1190,6 @@ onboarding-choose_mounting-auto_mounting-label-v2 = Recommended
 onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
-# Multiline text
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting = Manual Mounting
@@ -1389,11 +1367,6 @@ trackers_still_on-modal-description =
     Do you still want to exit SlimeVR?
 trackers_still_on-modal-confirm = Exit SlimeVR
 trackers_still_on-modal-cancel = Hold on...
-
-## Status system
-}
-}
-
 
 ## Firmware tool globals
 firmware_tool-next_step = Next Step

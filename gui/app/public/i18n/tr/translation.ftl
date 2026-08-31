@@ -249,9 +249,6 @@ widget-imu_visualizer-preview = Önizle
 widget-imu_visualizer-hide = Gizle
 widget-imu_visualizer-rotation_preview = Önizle
 
-## Widget: Skeleton Visualizer
-
-
 ## Tracker status
 
 tracker-status-none = Durum Yok
@@ -326,9 +323,6 @@ settings-sidebar-interface = Arayüz
 settings-sidebar-osc_trackers = VRChat OSC Takipçileri
 settings-sidebar-serial = Seri konsol
 
-## SteamVR settings
-
-
 ## Tracker mechanics
 
 settings-general-tracker_mechanics-filtering-amount = Miktar
@@ -355,9 +349,6 @@ settings-serial-reboot = Yeniden Başlat
 settings-serial-factory_reset-warning-ok = Ben ne yaptığımı biliyorum
 settings-serial-factory_reset-warning-cancel = İptal et
 settings-serial-auto_dropdown_item = Otomatik
-
-## OSC router settings
-
 
 ## OSC VRChat settings
 

@@ -113,15 +113,6 @@ bvh-recording = Salvestamine...
 tracking-unpaused = Peata jälgimine
 tracking-paused = Jätka jälgimine
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Arendaja režiim
@@ -237,9 +228,6 @@ settings-sidebar-utils = Olemus / Lisad
 settings-sidebar-serial = Jadakonsool
 settings-sidebar-appearance = Välimus
 settings-sidebar-notifications = Teavitused
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -366,9 +354,6 @@ settings-serial-factory_reset-warning-cancel = Tühista
 settings-serial-serial_select = Valige jadaport
 settings-serial-auto_dropdown_item = Auto
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC Jälgija
@@ -449,9 +434,6 @@ onboarding-wifi_creds-password =
     .label = Parool
     .placeholder = Sisesta parool
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -459,9 +441,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Tere tulemast SlimeVR-i
 onboarding-home-start = Hakkame sättima!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -487,12 +466,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } jälgijat connected
     }
 onboarding-connect_tracker-next = Olen ühendanud kõik oma jälgijad
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -542,9 +515,6 @@ onboarding-automatic_mounting-put_trackers_on-title = Pange kõik jälgijad peal
 onboarding-automatic_mounting-put_trackers_on-description = Et kalibreerida jälgijate paigaldus asendi pööret pange kõik jälgijad peale ja nüüd te näete mis on mis jälgijad paremal pool ekraani.
 onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad küljes
 
-## Tracker manual proportions setupa
-
-
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-back = Mine tagasi lähtestamise õppetusse
@@ -592,15 +562,7 @@ onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
 ## Stay Aligned setup
 
-
-## Home
-
-
 ## Trackers Still On notification
-
-
-## Status system
-
 
 ## Firmware tool globals
 

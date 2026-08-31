@@ -114,15 +114,6 @@ bvh-recording = Запис...
 tracking-unpaused = Призупинити трекінг
 tracking-paused = Продовжити трекінг
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Режим розробника
@@ -138,9 +129,6 @@ widget-developer_mode-more_info = Детальніше
 widget-imu_visualizer = Обертання
 widget-imu_visualizer-rotation_raw = Необроблене
 widget-imu_visualizer-rotation_preview = Попередній перегляд
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -243,9 +231,6 @@ settings-sidebar-utils = Утиліти
 settings-sidebar-serial = Послідовна консоль
 settings-sidebar-appearance = Зовнішність
 settings-sidebar-notifications = Сповіщення
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -393,9 +378,6 @@ settings-serial-auto_dropdown_item = Автоматично
 settings-serial-get_wifi_scan = Сканувати мережу Wi-Fi
 settings-serial-save_logs = Зберегти у файл
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC трекери
@@ -480,9 +462,6 @@ onboarding-wifi_creds-password =
     .label = Пароль
     .placeholder = Введіть Пароль
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -490,9 +469,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Ласкаво просимо до SlimeVR
 onboarding-home-start = Давайте налаштуємося!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -520,12 +496,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } трекерів підключенно
     }
 onboarding-connect_tracker-next = Я підключив усі свої трекери
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 

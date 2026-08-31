@@ -95,10 +95,6 @@ bvh-recording = מקליט...
 
 ## Tracking pause
 
-
-## Widget: Overlay settings
-
-
 ## Widget: Drift compensation
 
 
@@ -170,9 +166,6 @@ tracker-settings-name_section-placeholder = רגל שמאלית של NightyBeast
 
 tracker-part_card-unassigned = לא הוקצה
 
-## Body assignment menu
-
-
 ## Tracker assignment menu
 
 tracker_selection_menu-neck_warning-done = אני מבין את הסיכונים
@@ -189,9 +182,6 @@ settings-sidebar-general = כללי
 settings-sidebar-interface = ממשק
 settings-sidebar-utils = כלי שירות
 settings-sidebar-serial = טרמינל סידרתי
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -224,10 +214,6 @@ settings-general-tracker_mechanics-filtering-amount = כמות
 
 
 ## OSC router settings
-
-
-## OSC VRChat settings
-
 
 ## VMC OSC settings
 
@@ -308,10 +294,6 @@ onboarding-automatic_proportions-done-description = תהליך כיול פרופ
 
 
 ## Stay Aligned setup
-
-
-## Home
-
 
 ## Trackers Still On notification
 

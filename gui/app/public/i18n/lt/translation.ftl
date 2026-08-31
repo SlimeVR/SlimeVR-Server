@@ -214,15 +214,6 @@ bvh-recording = Įrašoma...
 tracking-unpaused = Pristabdyti sekimą
 tracking-paused = Tęsti sekimą
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Kūrėjo režimas
@@ -242,9 +233,6 @@ widget-imu_visualizer-rotation_raw = Neapdorota rotacija
 widget-imu_visualizer-rotation_preview = Rotacijos peržiūra
 widget-imu_visualizer-acceleration = Akceleracija
 widget-imu_visualizer-position = Pozicija
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -369,9 +357,6 @@ settings-sidebar-notifications = Pranešimai
 settings-sidebar-behavior = Elgsena
 settings-sidebar-firmware-tool = DIY sekiklių programinės įrangos įrankis
 settings-sidebar-advanced = Išplėstiniai
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 

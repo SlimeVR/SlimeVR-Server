@@ -97,13 +97,6 @@ bvh-recording = Γίνεται εγγραφή...
 
 ## Tracking pause
 
-
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
 ## Widget: Clear Mounting calibration
 
 
@@ -189,17 +182,10 @@ body_assignment_menu-description = Επιλέξτε μια θέση στην ο�
 body_assignment_menu-manage_trackers = Διαχείριση όλων των ανιχνευτών
 body_assignment_menu-unassign_tracker = Μη εκχωρημένος ανιχνευτής
 
-## Tracker assignment menu
-
-
 ## Mounting menu
 
 
 ## Sidebar settings
-
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -223,10 +209,6 @@ body_assignment_menu-unassign_tracker = Μη εκχωρημένος ανιχνε
 
 
 ## OSC router settings
-
-
-## OSC VRChat settings
-
 
 ## VMC OSC settings
 

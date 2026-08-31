@@ -255,15 +255,6 @@ bvh-recording = Запись...
 tracking-unpaused = Приостановить отслеживание
 tracking-paused = Возобновить отслеживание
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Режим разработчика
@@ -284,9 +275,6 @@ widget-imu_visualizer-rotation_preview = Предпросмотр
 widget-imu_visualizer-acceleration = Ускорение
 widget-imu_visualizer-position = Позиция
 widget-imu_visualizer-stay_aligned = Оставаться выровненным
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -411,9 +399,6 @@ settings-sidebar-behavior = Поведение
 settings-sidebar-firmware-tool = Инструмент Прошивки DIY
 settings-sidebar-vrc_warnings = Предупреждения конфигурации VRChat
 settings-sidebar-advanced = Продвинутые
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -608,9 +593,6 @@ settings-serial-auto_dropdown_item = Авто
 settings-serial-get_wifi_scan = Получить сканирование Wi-Fi
 settings-serial-save_logs = Сохранить в файл
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC Трекеры
@@ -734,9 +716,6 @@ onboarding-wifi_creds-password =
     .label = Пароль
     .placeholder = Введите пароль Wi-Fi
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -744,9 +723,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Добро пожаловать в SlimeVR
 onboarding-home-start = Давайте все настроим!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -779,12 +755,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } подключённых трекеров
     }
 onboarding-connect_tracker-next = Я подключил все трекеры
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -1009,9 +979,6 @@ onboarding-stay_aligned-next_step = Следующий
 onboarding-stay_aligned-restart = Перезапустить
 onboarding-stay_aligned-done = Выполнено
 
-## Home
-
-
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = Трекеры все еще включены
@@ -1020,9 +987,6 @@ trackers_still_on-modal-description =
     Вы точно хотите выйти из SlimeVR?
 trackers_still_on-modal-confirm = Выйти из SlimeVR
 trackers_still_on-modal-cancel = Погоди...
-
-## Status system
-
 
 ## Firmware tool globals
 

@@ -113,15 +113,6 @@ bvh-recording = Tallennetaan...
 tracking-unpaused = Keskeytä jäljitys
 tracking-paused = Jatka jäljitystä
 
-## Widget: Overlay settings
-
-
-## Widget: Drift compensation
-
-
-## Widget: Clear Mounting calibration
-
-
 ## Widget: Developer settings
 
 widget-developer_mode = Kehittäjätila
@@ -137,9 +128,6 @@ widget-developer_mode-more_info = Lisätietoja
 widget-imu_visualizer = Kierto
 widget-imu_visualizer-rotation_raw = Käsittelemätön
 widget-imu_visualizer-rotation_preview = Esikatselu
-
-## Widget: Skeleton Visualizer
-
 
 ## Tracker status
 
@@ -239,9 +227,6 @@ settings-sidebar-utils = Lisäohjelmat
 settings-sidebar-serial = Sarjakonsoli
 settings-sidebar-appearance = Ulkonäkö
 settings-sidebar-notifications = Ilmoitukset
-
-## SteamVR settings
-
 
 ## Tracker mechanics
 
@@ -382,9 +367,6 @@ settings-serial-serial_select = Valitse sarjaportti
 settings-serial-auto_dropdown_item = Autom.
 settings-serial-save_logs = Tallenna tiedostoon
 
-## OSC router settings
-
-
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC -jäljittimet
@@ -466,9 +448,6 @@ onboarding-wifi_creds-password =
     .label = Salasana
     .placeholder = Syötä salasana
 
-## Mounting setup
-
-
 ## Install info
 
 
@@ -476,9 +455,6 @@ onboarding-wifi_creds-password =
 
 onboarding-home = Tervetuloa SlimeVR:ään
 onboarding-home-start = Mennään asentamaan!
-
-## Setup done
-
 
 ## Tracker connection setup
 
@@ -504,12 +480,6 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } jäljitintä yhdistetty
     }
 onboarding-connect_tracker-next = Yhdistin kaikki jäljittimeni
-
-## Tracker calibration tutorial
-
-
-## Tracker assignment tutorial
-
 
 ## Tracker assignment setup
 
@@ -627,9 +597,6 @@ onboarding-automatic_mounting-put_trackers_on-title = Laita jäljittimet pääll
 onboarding-automatic_mounting-put_trackers_on-description = Kalibroidaksemme asennuskierrokset käytämme juuri määrittämiäsi jäljittimiä. Laita kaikki jäljittimet päällesi, näet mitkä ovat mitäkin oikealla olevassa kuvassa.
 onboarding-automatic_mounting-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
 
-## Tracker manual proportions setupa
-
-
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-title = Mittaa kehosi
@@ -666,10 +633,6 @@ onboarding-automatic_proportions-error_modal-confirm = Ymmäretty!
 
 ## Stay Aligned setup
 
-
-## Home
-
-
 ## Trackers Still On notification
 
 trackers_still_on-modal-title = Jäljittimet ovat vielä päällä
@@ -678,9 +641,6 @@ trackers_still_on-modal-description =
     Haluatko silti poistua SlimeVR:stä?
 trackers_still_on-modal-confirm = Poistu SlimeVR:stä
 trackers_still_on-modal-cancel = Odota...
-
-## Status system
-
 
 ## Firmware tool globals
 
