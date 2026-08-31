@@ -64,7 +64,7 @@ class IKTest {
 			target,
 		)
 
-		val ikOut = ccdIk(boneInputs, bones, listOf(goal), null, 0.01f, 100)
+		val ikOut = ccdIk(boneInputs, bones, listOf(goal), BODY_PART_CONSTRAINT_MAP, 0.01f, 100)
 		assert(ikOut.goalsReached.all { it.value }) {
 			val boneRots = ikOut.bones.values.joinToString {
 				"${it.bodyPart}: ${it.rotation.toEulerAngles(EulerOrder.YZX)}"

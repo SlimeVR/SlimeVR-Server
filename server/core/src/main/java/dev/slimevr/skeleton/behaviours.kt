@@ -150,11 +150,11 @@ class ComputedSkeletonBehaviour(
 							fk,
 							ikTargets.map { (bodyPart, target) ->
 								IKChainGoal(
-									listOf(bodyPart),
+									BODY_PART_IK_CHAIN_MAP[bodyPart] ?: listOf(bodyPart),
 									target,
 								)
 							},
-							null,
+							BODY_PART_CONSTRAINT_MAP,
 							0.01f,
 							100,
 						)
