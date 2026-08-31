@@ -62,9 +62,9 @@ import dev.slimevr.config.reduce as reduceConfig
 import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration
 import dev.slimevr.resets.reduce as reduceResets
 import dev.slimevr.skeleton.reduce as reduceSkeleton
+import dev.slimevr.solarxr.reduce as reduceSolarXR
 import dev.slimevr.tracker.reduce as reduceTracker
 import dev.slimevr.udp.reduce as reduceUdpServer
-import dev.slimevr.solarxr.reduce as reduceSolarXR
 
 fun buildTestSerialServer(scope: CoroutineScope) = SerialServer.create(
 	openPort = { loc, _, _ -> SerialPortHandle(loc, "Fake $loc", {}, {}) },
