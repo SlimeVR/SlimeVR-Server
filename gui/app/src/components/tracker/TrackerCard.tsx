@@ -92,7 +92,7 @@ function TrackerSmol({
   const trackerName = useName();
 
   return (
-    <div className="flex rounded-md py-3 px-4 w-full gap-4 h-[70px]">
+    <div className="flex rounded-md py-2 px-3 w-full gap-4 h-[70px]">
       <div className="flex flex-col justify-center items-center fill-background-10 relative">
         {warning && (
           <div className="absolute -right-2 -bottom-3 text-status-warning ">
@@ -110,7 +110,7 @@ function TrackerSmol({
         >
           <BodyPartIcon
             bodyPart={tracker.info?.bodyPart}
-            width={40}
+            width={38}
             device={device}
             trackerId={tracker.trackerId}
           />
