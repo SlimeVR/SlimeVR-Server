@@ -28,7 +28,13 @@ class CompleteConstraint : Constraint {
 }
 
 data class TwistSwingConstraint(
+	/**
+	 * Twist range in radians.
+	 */
 	val twist: Float = 0.0f,
+	/**
+	 * Swing range in radians.
+	 */
 	val swing: Float = 0.0f,
 	val allowedDeviation: Float = 0f,
 	val maxDeviationFromTracker: Float = 15f,
@@ -42,7 +48,13 @@ data class TwistSwingConstraint(
 }
 
 data class HingeConstraint(
+	/**
+	 * Minimum rotation in radians.
+	 */
 	val min: Float = 0.0f,
+	/**
+	 * Maximum rotation in radians.
+	 */
 	val max: Float = 0.0f,
 	val allowedDeviation: Float = 0f,
 	val maxDeviationFromTracker: Float = 15f,
@@ -54,7 +66,13 @@ data class HingeConstraint(
 }
 
 data class LooseHingeConstraint(
+	/**
+	 * Minimum rotation in radians.
+	 */
 	val min: Float = 0.0f,
+	/**
+	 * Maximum rotation in radians.
+	 */
 	val max: Float = 0.0f,
 	val allowedDeviation: Float = 0f,
 	val maxDeviationFromTracker: Float = 15f,
