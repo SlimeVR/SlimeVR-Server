@@ -67,7 +67,7 @@ export interface Config {
   fonts: string[];
   useTray: boolean | null;
   mirrorView: boolean;
-  assignMode: AssignMode | null;
+  assignShowAllBodyParts: boolean;
   discordPresence: boolean;
   errorTracking: boolean | null;
   vrcMutedWarnings: string[];
@@ -100,7 +100,7 @@ export const defaultConfig: Config = {
   fonts: ['poppins'],
   useTray: null,
   mirrorView: true,
-  assignMode: null,
+  assignShowAllBodyParts: false,
   discordPresence: false,
   errorTracking: null,
   vrcMutedWarnings: [],

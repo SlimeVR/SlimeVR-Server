@@ -215,6 +215,8 @@ const config = {
           40: 'rgb(var(--accent-background-40), <alpha-value>)',
           50: 'rgb(var(--accent-background-50), <alpha-value>)',
         },
+        'assign-left': 'rgb(var(--assign-left), <alpha-value>)',
+        'assign-right': 'rgb(var(--assign-right), <alpha-value>)',
       },
       fontFamily: {
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
@@ -295,6 +297,13 @@ const config = {
             transform: 'translateX(400%)',
           },
         },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '20%': { transform: 'rotate(-0.8deg)' },
+          '40%': { transform: 'rotate(0.8deg)' },
+          '60%': { transform: 'rotate(-0.5deg)' },
+          '80%': { transform: 'rotate(0.4deg)' },
+        },
       },
       backgroundImage: {
         slime: `linear-gradient(135deg, ${colors.purple[100]} 50%, ${colors['blue-gray'][700]} 50% 100%)`,
@@ -313,6 +322,7 @@ const config = {
         'timer-tick': 'timer-tick 1s linear infinite',
         skiing: 'skiing 1s linear infinite',
         'indeterminate-bar': 'indeterminate-bar 1.2s ease-in-out infinite',
+        wiggle: 'wiggle 0.4s ease-in-out 1',
       },
     },
     data: {

@@ -1,7 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { useMemo, useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   AssignTrackerRequestT,
   BodyPart,
@@ -14,60 +13,63 @@ import { useChokerWarning } from '@/hooks/choker-warning';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
-import { CheckBox } from '@/components/commons/Checkbox';
-import { TipBox } from '@/components/commons/TipBox';
-import { Typography } from '@/components/commons/Typography';
 import {
+  ASSIGN_MODE_OPTIONS,
   ASSIGNMENT_RULES,
   BodyAssignment,
+  BodyPartCardRenderer,
+  getPreferredAssignMode,
   LOWER_BODY,
 } from '@/components/onboarding/BodyAssignment';
+import {
+  BodySlotStyle,
+  BodySlotStyler,
+} from '@/components/commons/BodyInteractions';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
-import { TrackerSelectionMenu } from './TrackerSelectionMenu';
-import { defaultConfig, useConfig } from '@/hooks/config';
+import { AssignMode, useConfig } from '@/hooks/config';
 import { playTapSetupSound } from '@/sounds/sounds';
-import { useBreakpoint } from '@/hooks/breakpoint';
-import { TrackerAssignOptions } from './TrackerAssignOptions';
 import { useAtomValue } from 'jotai';
+import { selectAtom } from 'jotai/utils';
 import {
   assignedTrackersAtom,
+  connectedIMUTrackersAtom,
+  donglesAtom,
   FlatDeviceTracker,
   flatTrackersAtom,
 } from '@/store/app-store';
+import { bodyPartDropProps, trackerDrag } from '@/hooks/tracker-drag';
+import { TrackerAssignmentList } from './TrackerAssignmentList';
+import { DropTargetPartCard } from './DropTargetPartCard';
+import { TrackerAssignmentTabs } from './TrackerAssignmentTabs';
+import { AssignmentSettingsModal } from './AssignmentSettingsModal';
+import { DragGhostLayer } from './DragGhostLayer';
+import { SideLegend } from './SideLegend';
+import { TapAssignModal } from './TapAssignModal';
 
 export type BodyPartError = {
   label: string | undefined;
   affectedRoles: BodyPart[];
 };
 
-interface FlatDeviceTrackerDummy {
-  tracker: {
-    trackerId: number;
-    info: undefined;
-  };
-}
+const hoveredBodyPartAtom = selectAtom(
+  trackerDrag.stateAtom,
+  (s) => s?.target ?? null
+);
 
 export function TrackersAssignPage() {
-  const { isMd } = useBreakpoint('md');
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
   const { applyProgress, state, slimeSet } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const defaultValues = {
-    mirrorView: config?.mirrorView ?? defaultConfig.mirrorView,
-  };
-  const { control, watch } = useForm<{
-    mirrorView: boolean;
-  }>({ defaultValues });
-  const { mirrorView } = watch();
-  const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
+
+  const [armedPart, setArmedPart] = useState<BodyPart>(BodyPart.NONE);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const hoveredBodyPart = useAtomValue(hoveredBodyPartAtom);
 
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
-  const trackers = useAtomValue(flatTrackersAtom);
-
-  useEffect(() => {
-    setConfig({ mirrorView });
-  }, [mirrorView]);
+  const flatTrackers = useAtomValue(flatTrackersAtom);
+  const dongles = useAtomValue(donglesAtom);
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
 
   useEffect(() => {
     sendRPCPacket(
@@ -83,23 +85,23 @@ export function TrackersAssignPage() {
     };
   }, []);
 
-  const trackerPartGrouped = useMemo(
-    () =>
-      assignedTrackers.reduce<{ [key: number]: FlatDeviceTracker[] }>(
-        (curr, td) => {
-          const key = td.tracker.info?.bodyPart || BodyPart.NONE;
-          return {
-            ...curr,
-            [key]: [...(curr[key] || []), td],
-          };
-        },
-        {}
-      ),
-    [assignedTrackers]
-  );
+  const trackersByPart = useMemo(() => {
+    const map: Partial<Record<BodyPart, FlatDeviceTracker[]>> = {};
+    assignedTrackers.forEach((td) => {
+      const part = td.tracker.info?.bodyPart ?? BodyPart.NONE;
+      map[part] = [...(map[part] || []), td];
+    });
+    return map;
+  }, [assignedTrackers]);
+
+  const currentAssignMode = config?.assignShowAllBodyParts
+    ? AssignMode.All
+    : getPreferredAssignMode(connectedIMUTrackers.length);
+
+  const expectedTrackersCount = ASSIGN_MODE_OPTIONS[currentAssignMode];
 
   const rolesWithErrors = useMemo(() => {
-    const trackerRoles = trackers.map(
+    const trackerRoles = flatTrackers.map(
       ({ tracker }) => tracker.info?.bodyPart || BodyPart.NONE
     );
 
@@ -149,82 +151,141 @@ export function TrackersAssignPage() {
             : undefined,
         };
       }, {} as any);
-  }, [trackers]);
+  }, [flatTrackers]);
 
-  const onTrackerSelected = (
-    tracker: FlatDeviceTracker | FlatDeviceTrackerDummy | null
+  const firstError = Object.values(rolesWithErrors).find((r) => !!r);
+
+  const sendAssign = (
+    trackerId: number,
+    bodyPart: BodyPart,
+    mountingOrientation: QuatT | null
   ) => {
-    const assign = (
-      role: BodyPart,
-      rotation: QuatT | null,
-      trackerId: number
-    ) => {
-      const assignreq = new AssignTrackerRequestT();
+    const assignreq = new AssignTrackerRequestT();
+    assignreq.bodyPosition = bodyPart;
+    assignreq.mountingOrientation = mountingOrientation;
+    assignreq.trackerId = trackerId;
+    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+  };
 
-      assignreq.bodyPosition = role;
-      assignreq.mountingOrientation = rotation;
-      assignreq.trackerId = trackerId;
+  const moveTrackerToBodyPart = (trackerId: number, bodyPart: BodyPart) => {
+    if (bodyPart !== BodyPart.NONE) {
+      assignedTrackers
+        .filter(
+          (td) =>
+            td.tracker.info?.bodyPart === bodyPart &&
+            td.tracker.trackerId !== trackerId
+        )
+        .forEach((occupant) =>
+          sendAssign(
+            occupant.tracker.trackerId,
+            BodyPart.NONE,
+            occupant.tracker.info?.mountingOrientation ?? null
+          )
+        );
+    }
 
-      sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
-    };
-
-    (trackerPartGrouped[selectedRole] || []).forEach((td) =>
-      assign(
-        BodyPart.NONE,
-        td.tracker.info?.mountingOrientation || null,
-        td.tracker.trackerId
-      )
+    const moved = flatTrackers.find((td) => td.tracker.trackerId === trackerId);
+    sendAssign(
+      trackerId,
+      bodyPart,
+      moved?.tracker.info?.mountingOrientation ?? null
     );
+  };
 
-    if (!tracker) {
-      setSelectRole(BodyPart.NONE);
+  const { tryOpenChokerWarning, closeChokerWarning, shouldShowChokerWarn } =
+    useChokerWarning<{ bodyPart: BodyPart; trackerId?: number }>({
+      getBodyPart: (v) => v.bodyPart,
+      next: ({ bodyPart, trackerId }) => {
+        if (trackerId != null) {
+          moveTrackerToBodyPart(trackerId, bodyPart);
+        } else {
+          setArmedPart(bodyPart);
+        }
+      },
+    });
+
+  const armForTap = (part: BodyPart) => {
+    if (armedPart === part) {
+      setArmedPart(BodyPart.NONE);
       return;
     }
-    assign(
-      selectedRole,
-      tracker.tracker.info?.mountingOrientation || null,
-      tracker.tracker.trackerId
-    );
-    setSelectRole(BodyPart.NONE);
+    tryOpenChokerWarning({ bodyPart: part });
   };
+
+  const handleDropTracker = (trackerId: number, bodyPart: BodyPart) => {
+    tryOpenChokerWarning({ bodyPart, trackerId });
+  };
+
+  const unassignPart = (part: BodyPart) => {
+    (trackersByPart[part] || []).forEach((td) =>
+      sendAssign(
+        td.tracker.trackerId,
+        BodyPart.NONE,
+        td.tracker.info?.mountingOrientation ?? null
+      )
+    );
+    if (armedPart === part) setArmedPart(BodyPart.NONE);
+  };
+
+  const unassignAll = () => {
+    assignedTrackers.forEach((td) =>
+      sendAssign(td.tracker.trackerId, BodyPart.NONE, null)
+    );
+    setArmedPart(BodyPart.NONE);
+  };
+
+  const onDotSelected = (role: BodyPart) => {
+    if ((trackersByPart[role] || []).length > 0) {
+      unassignPart(role);
+    } else {
+      armForTap(role);
+    }
+  };
+
+  const slotStyle: BodySlotStyler = useCallback(
+    (part: BodyPart): BodySlotStyle => ({
+      props: bodyPartDropProps(part),
+      connected: hoveredBodyPart === part,
+      className:
+        hoveredBodyPart === part
+          ? 'scale-150 ring-3 ring-accent-background-30'
+          : undefined,
+    }),
+    [hoveredBodyPart]
+  );
+
+  const renderCard: BodyPartCardRenderer = useCallback(
+    ({ role, direction, td, roleError }) => (
+      <DropTargetPartCard
+        key={role}
+        role={role}
+        direction={direction}
+        td={td}
+        roleError={roleError}
+        armed={armedPart === role}
+        onSlotClick={armForTap}
+        onUnassign={unassignPart}
+        onDropTracker={handleDropTracker}
+      />
+    ),
+    [armedPart]
+  );
 
   useRPCPacket(
     RpcMessage.TapDetectionSetupNotification,
     (tapSetup: TapDetectionSetupNotificationT) => {
-      if (selectedRole === BodyPart.NONE || !tapSetup.trackerId) return;
-      onTrackerSelected({
-        tracker: { trackerId: tapSetup.trackerId, info: undefined },
-      });
+      if (armedPart === BodyPart.NONE || !tapSetup.trackerId) return;
+      handleDropTracker(tapSetup.trackerId, armedPart);
+      setArmedPart(BodyPart.NONE);
       playTapSetupSound(config?.feedbackSoundVolume);
     }
   );
 
-  const unassignAll = () => {
-    assignedTrackers.forEach((td) => {
-      const assignreq = new AssignTrackerRequestT();
-      assignreq.bodyPosition = BodyPart.NONE;
-      assignreq.trackerId = td.tracker.trackerId;
-      sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
-    });
-  };
-
   applyProgress(0.5);
-
-  const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
-    useChokerWarning({
-      next: setSelectRole,
-    });
-
-  const firstError = Object.values(rolesWithErrors).find((r) => !!r);
 
   return (
     <>
-      <TrackerSelectionMenu
-        bodyPart={selectedRole}
-        isOpen={selectedRole !== BodyPart.NONE}
-        onClose={() => setSelectRole(BodyPart.NONE)}
-        onTrackerSelected={onTrackerSelected}
-      />
+      <DragGhostLayer />
       <NeckWarningModal
         isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
@@ -233,87 +294,88 @@ export function TrackersAssignPage() {
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
       />
-      <div className="w-full h-full xs:p-4 p-2 flex justify-center">
-        <div className="flex xs:gap-4 w-full max-w-screen-xl flex-col md:flex-row">
-          <div className="flex flex-col xs:gap-3 gap-2 w-full md:max-w-md">
-            <Typography variant="main-title" color="accent">
-              {l10n.getString('onboarding-assign_trackers-title')}
-            </Typography>
-            <Typography>
-              {l10n.getString('onboarding-assign_trackers-description')}
-            </Typography>
-            <Typography>
-              {l10n.getString('onboarding-assign_trackers-assigned', {
-                assigned: assignedTrackers.length,
-                trackers: trackers.length,
-              })}
-            </Typography>
-            <TipBox className="xs:p-4 w-full">
-              {l10n.getString('tips-find_tracker')}
-            </TipBox>
-            {!!firstError && (
-              <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
-                <div className="flex flex-col gap-1 whitespace-normal">
-                  <span>{firstError.label}</span>
-                </div>
-              </div>
-            )}
-            <div className="flex flex-col gap-2">
-              <TrackerAssignOptions variant={!isMd ? 'dropdown' : 'radio'} />
-              <CheckBox
-                control={control}
-                label={l10n.getString('onboarding-assign_trackers-mirror_view')}
-                name="mirrorView"
-                variant="toggle"
-              />
-              {state.alonePage && (
+      {settingsOpen && (
+        <AssignmentSettingsModal
+          isOpen={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+        />
+      )}
+      <TapAssignModal
+        role={armedPart}
+        onClose={() => setArmedPart(BodyPart.NONE)}
+      />
+
+      <div className="w-full h-full flex flex-col xs:flex-row overflow-hidden min-h-0">
+        <TrackerAssignmentList
+          trackers={flatTrackers}
+          dongles={dongles}
+          assignedCount={assignedTrackers.length}
+          expectedTrackersCount={expectedTrackersCount}
+          onOpenSettings={() => setSettingsOpen(true)}
+          onDropTracker={handleDropTracker}
+          footer={
+            <div className="flex flex-row justify-between items-center">
+              {state.alonePage ? (
+                <Button variant="secondary" to="/onboarding/connect-trackers">
+                  {l10n.getString('onboarding-previous_step')}
+                </Button>
+              ) : (
                 <Button
                   variant="secondary"
-                  onClick={unassignAll}
-                  id="onboarding-assign_trackers-unassign_all"
-                />
-              )}
-              <div className="flex flex-row">
-                {state.alonePage ? (
-                  <Button variant="secondary" to="/onboarding/connect-trackers">
-                    {l10n.getString('onboarding-previous_step')}
-                  </Button>
-                ) : (
-                  <Button
-                    variant="secondary"
-                    to={
-                      slimeSet &&
-                      ['butterfly', 'dongle-slime'].includes(slimeSet)
-                        ? '/onboarding/dongle'
-                        : '/onboarding/connect-trackers'
-                    }
-                  >
-                    {l10n.getString('onboarding-previous_step')}
-                  </Button>
-                )}
-                <Button
-                  variant="primary"
-                  to="/onboarding/mounting/choose"
-                  disabled={
-                    assignedTrackers.length === 0 && trackers.length > 0
+                  to={
+                    slimeSet && ['butterfly', 'dongle-slime'].includes(slimeSet)
+                      ? '/onboarding/dongle'
+                      : '/onboarding/connect-trackers'
                   }
-                  className="ml-auto"
                 >
-                  {l10n.getString('onboarding-continue')}
+                  {l10n.getString('onboarding-previous_step')}
                 </Button>
-              </div>
+              )}
+              <Button
+                variant="primary"
+                to="/onboarding/mounting/choose"
+                disabled={
+                  assignedTrackers.length === 0 && flatTrackers.length > 0
+                }
+              >
+                {l10n.getString('onboarding-continue')}
+              </Button>
             </div>
+          }
+        />
+
+        <div className="flex-1 flex flex-col gap-4 px-4 pt-4 min-h-0 overflow-hidden">
+          <div className="flex items-center justify-between gap-2 shrink-0">
+            <TrackerAssignmentTabs />
+            <SideLegend
+              mirror={config?.mirrorView ?? false}
+              toggleMirror={() =>
+                setConfig({
+                  mirrorView: !config?.mirrorView,
+                })
+              }
+            />
+            {state.alonePage && (
+              <Button
+                variant="secondary"
+                onClick={unassignAll}
+                id="onboarding-assign_trackers-unassign_all"
+              />
+            )}
           </div>
-          <div className="flex fill-background-50 items-center justify-center flex-grow">
-            <div className="md:w-full md:h-full h-full max-w-[770px] flex flex-col overflow-y-clip tall:py-10">
+
+          <div className="flex-1 min-h-0 flex flex-col fill-background-50 items-center justify-center">
+            <div className="w-full h-full min-h-0 max-w-[770px] flex flex-col overflow-y-clip tall:py-10">
               <BodyAssignment
                 dotSize={15}
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
-                assignMode={config?.assignMode ?? null}
-                mirror={mirrorView}
-                onRoleSelected={tryOpenChokerWarning}
+                assignMode={currentAssignMode}
+                mirror={config?.mirrorView ?? false}
+                onRoleSelected={onDotSelected}
+                renderCard={renderCard}
+                slotStyle={slotStyle}
               />
             </div>
           </div>

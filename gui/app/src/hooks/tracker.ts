@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { BodyPart, TrackerDataT, TrackerInfoT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '@/maths/quaternion';
 import { ReactLocalization, useLocalization } from '@fluent/react';
@@ -8,13 +8,20 @@ import { Vector3FromVec3fT } from '@/maths/vector3';
 import { useAtomValue } from 'jotai';
 import { trackerFromIdAtom } from '@/store/app-store';
 
-export function getTrackerName(l10n: ReactLocalization, info: TrackerInfoT | null) {
+export const getTrackerName = (l10n: ReactLocalization, info: TrackerInfoT | null) => {
   if (info?.customName) return info?.customName;
   if (info?.bodyPart) return l10n.getString('body_part-' + BodyPart[info?.bodyPart]);
   return info?.displayName || 'NONE';
-}
+};
 
-export function useTracker(tracker: TrackerDataT) {
+export const velocityGlowStyle = (velocity: number): CSSProperties => {
+  const spread = Math.floor(velocity * 8);
+  return {
+    boxShadow: `0px 0px ${spread}px ${spread}px rgb(var(--accent-background-30))`,
+  };
+};
+
+export const useTracker = (tracker: TrackerDataT) => {
   const { l10n } = useLocalization();
   const { feedMaxTps } = useDataFeedConfig();
 
@@ -81,15 +88,15 @@ export function useTracker(tracker: TrackerDataT) {
       return velocity;
     },
   };
-}
+};
 
-export function useTrackerFromId(
+export const useTrackerFromId = (
   trackerNum: string | number | undefined,
   deviceId: string | number | undefined
-) {
+) => {
   const trackerAtom = useMemo(
     () => trackerFromIdAtom({ trackerNum, deviceId }),
     [trackerNum, deviceId]
   );
   return useAtomValue(trackerAtom);
-}
+};

@@ -23,7 +23,6 @@ version_update-close = Close
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
-tips-tap_setup = You can slowly tap your tracker 2 times to choose it instead of selecting it from the menu.
 tips-turn_on_tracker = Using official SlimeVR trackers? Don't forget to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
@@ -445,33 +444,6 @@ body_assignment_menu-unassign_tracker = Unassign tracker
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } upper chest?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-
-tracker_selection_menu-unassigned = Unassigned Trackers
-tracker_selection_menu-assigned = Assigned Trackers
-tracker_selection_menu-dont_assign = Unassign
-
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -1240,9 +1212,22 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
     [one] 1 tracker
     *[other] { $trackers } trackers
 } assigned
-onboarding-assign_trackers-advanced = Show advanced assign locations
-onboarding-assign_trackers-next = I assigned all the trackers
+onboarding-assign_trackers-all_assigned-title = All trackers assigned!
+onboarding-assign_trackers-all_assigned-description = You're ready to move on to the next step
+onboarding-assign_trackers-no_trackers-title = No trackers connected
+onboarding-assign_trackers-no_trackers-description = Connect a tracker to start assigning it to a body part
 onboarding-assign_trackers-mirror_view = Mirror view
+onboarding-assign_trackers-settings = Assignment settings
+onboarding-assign_trackers-settings-close = Close
+onboarding-assign_trackers-show_all = Show all body parts
+onboarding-assign_trackers-tap_modal-title = Tap to assign
+onboarding-assign_trackers-tap_modal-description = Tap the tracker you want to assign twice. You can also drag a tracker from the list instead.
+onboarding-assign_trackers-tap_modal-cancel = Cancel
+tracker_assignment-tab-body = Body
+tracker_assignment-tab-fingers = Fingers
+tracker_assignment-tab-toes = Toes
+tracker_assignment-side-right = Right
+tracker_assignment-side-left = Left
 onboarding-assign_trackers-option-amount = { $trackersCount ->
     [one] x{ $trackersCount }
     *[other] x{ $trackersCount }
@@ -1543,7 +1528,6 @@ onboarding-stay_aligned-done = Done
 onboarding-stay_aligned-manual_mounting-done = Done
 
 ## Home
-home-no_trackers = No trackers detected or assigned
 home-settings = Home Page Settings
 home-settings-close = Close
 home-connection_group-wifi = Wi-Fi Trackers

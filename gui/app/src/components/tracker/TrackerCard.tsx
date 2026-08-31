@@ -11,7 +11,7 @@ import { TrackerBattery } from './TrackerBattery';
 import { TrackerWifi } from './TrackerWifi';
 import { TrackerStatus } from './TrackerStatus';
 import classNames from 'classnames';
-import { useTracker } from '@/hooks/tracker';
+import { useTracker, velocityGlowStyle } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
@@ -34,7 +34,11 @@ function TrackerBig({
   return (
     <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border my-8 px-6 h-32">
       <div className="flex justify-center fill-background-10">
-        <BodyPartIcon bodyPart={tracker.info?.bodyPart} />
+        <BodyPartIcon
+          bodyPart={tracker.info?.bodyPart}
+          device={device}
+          trackerId={tracker.trackerId}
+        />
       </div>
       <div className="flex justify-center">
         <Typography bold truncate>
@@ -104,7 +108,12 @@ function TrackerSmol({
             }
           )}
         >
-          <BodyPartIcon bodyPart={tracker.info?.bodyPart} width={40} />
+          <BodyPartIcon
+            bodyPart={tracker.info?.bodyPart}
+            width={40}
+            device={device}
+            trackerId={tracker.trackerId}
+          />
         </div>
       </div>
 
@@ -178,15 +187,7 @@ export function TrackerCard({
           outlined && 'outline outline-2 outline-accent-background-40',
           bg
         )}
-        style={
-          shakeHighlight
-            ? {
-                boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
-                  velocity * 8
-                )}px rgb(var(--accent-background-30))`,
-              }
-            : {}
-        }
+        style={shakeHighlight ? velocityGlowStyle(velocity) : {}}
       >
         {smol && (
           <Tooltip

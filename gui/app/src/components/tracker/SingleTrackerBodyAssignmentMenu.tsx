@@ -1,15 +1,17 @@
 import classNames from 'classnames';
 import ReactModal from 'react-modal';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
+import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
+import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { defaultConfig, useConfig } from '@/hooks/config';
-import { TrackerAssignOptions } from '@/components/onboarding/pages/trackers-assign/TrackerAssignOptions';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,
@@ -20,9 +22,20 @@ export function SingleTrackerBodyAssignmentMenu({
   onClose: () => void;
   onRoleSelected: (role: BodyPart) => void;
 }) {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-  const { config } = useConfig();
+  const { config, setConfig } = useConfig();
+  const { isMobile } = useBreakpoint('mobile');
+
+  const { control, watch } = useForm<{ showAllBodyParts: boolean }>({
+    defaultValues: {
+      showAllBodyParts: config?.assignShowAllBodyParts ?? false,
+    },
+  });
+  const { showAllBodyParts } = watch();
+
+  useEffect(() => {
+    setConfig({ assignShowAllBodyParts: showAllBodyParts });
+  }, [showAllBodyParts]);
 
   const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
     useChokerWarning({
@@ -61,14 +74,20 @@ export function SingleTrackerBodyAssignmentMenu({
                   {l10n.getString('body_assignment_menu-manage_trackers')}
                 </Button>
               </div>
-              <TrackerAssignOptions variant={isMobile ? 'dropdown' : 'radio'} />
+              <CheckBox
+                control={control}
+                label={l10n.getString('onboarding-assign_trackers-show_all')}
+                name="showAllBodyParts"
+                variant="toggle"
+              />
             </div>
             <div className="flex flex-col xs:flex-grow gap-3 rounded-xl fill-background-50 py-2">
               <BodyAssignment
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
                 width={isMobile ? 160 : undefined}
                 onlyAssigned={false}
-                assignMode={config?.assignMode ?? defaultConfig.assignMode}
+                /* FIXME: need to use the right stuff */
+                assignMode={AssignMode.All}
                 onRoleSelected={tryOpenChokerWarning}
               />
               <div className="flex justify-center">

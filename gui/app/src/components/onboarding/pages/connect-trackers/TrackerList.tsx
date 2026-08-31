@@ -9,7 +9,7 @@ import {
   WifiNetworkT,
   WifiScanStatus,
 } from 'solarxr-protocol';
-import { useTracker } from '@/hooks/tracker';
+import { useTracker, velocityGlowStyle } from '@/hooks/tracker';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
@@ -102,14 +102,7 @@ export function TrackerRow({
   const [modalOpen, setModalOpen] = useState(false);
   const pct = Math.round(progress * 100);
 
-  const shakeShadow =
-    velocity > 0
-      ? {
-          boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
-            velocity * 8
-          )}px rgb(var(--accent-background-30))`,
-        }
-      : {};
+  const shakeShadow = velocity > 0 ? velocityGlowStyle(velocity) : {};
 
   return (
     <>

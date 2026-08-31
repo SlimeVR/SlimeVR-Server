@@ -216,7 +216,7 @@ export function DongleSettingsPage() {
                 <Button variant="primary" disabled id="dongle-settings-pair" />
               </div>
               <div className="flex flex-col gap-2">
-                {pairedTrackers.map(({ tracker }, index) => (
+                {pairedTrackers.map(({ tracker, device }, index) => (
                   <div
                     key={index}
                     className="flex justify-between items-center bg-background-80 w-full p-3 rounded-lg"
@@ -224,6 +224,8 @@ export function DongleSettingsPage() {
                     <div className="flex gap-3 items-center fill-background-10">
                       <BodyPartIcon
                         bodyPart={tracker.info?.bodyPart}
+                        device={device}
+                        trackerId={tracker.trackerId}
                         width={32}
                       />
                       <div className="flex flex-col">
