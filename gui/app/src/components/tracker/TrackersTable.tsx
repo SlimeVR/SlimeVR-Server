@@ -228,7 +228,7 @@ function Row({
                   voltage={device.hardwareStatus.batteryVoltage}
                   runtime={device.hardwareStatus.batteryRuntimeEstimate}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                  moreInfo={config?.devSettings.moreInfo}
+                  moreInfo={config?.debug && config?.devSettings.moreInfo}
                   textColor={fontColor}
                 />
               )}
