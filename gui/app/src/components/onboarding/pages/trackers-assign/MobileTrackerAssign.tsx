@@ -21,18 +21,17 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
 } from '@/components/commons/icon/ArrowIcons';
-import { BodyPartCardRenderer } from '@/components/onboarding/BodyAssignment';
+import {
+  BodyPartCardRenderer,
+  ShowAllPartsToggle,
+} from '@/components/onboarding/BodyAssignment';
 import { useOnboarding } from '@/hooks/onboarding';
 import { getTrackerName } from '@/hooks/tracker';
 import {
   FlatDeviceTracker,
   groupTrackersByConnection,
 } from '@/store/app-store';
-import {
-  BodyAssignmentPanel,
-  BodyPartCard,
-  ShowAllPartsToggle,
-} from './BodyAssignmentPanel';
+import { BodyAssignmentPanel, BodyPartCard } from './BodyAssignmentPanel';
 import {
   AssignmentEmptyState,
   AssignmentNavFooter,

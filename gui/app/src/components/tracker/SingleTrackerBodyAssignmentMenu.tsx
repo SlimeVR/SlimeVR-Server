@@ -1,12 +1,13 @@
 import classNames from 'classnames';
 import ReactModal from 'react-modal';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
 import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
-import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
-import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
+import {
+  BodyAssignment,
+  MirrorLegend,
+  ShowAllPartsToggle,
+} from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
@@ -23,19 +24,8 @@ export function SingleTrackerBodyAssignmentMenu({
   onRoleSelected: (role: BodyPart) => void;
 }) {
   const { l10n } = useLocalization();
-  const { config, setConfig } = useConfig();
+  const { config } = useConfig();
   const { isMobileAssign } = useBreakpoint('mobileAssign');
-
-  const { control, watch } = useForm<{ showAllBodyParts: boolean }>({
-    defaultValues: {
-      showAllBodyParts: config?.assignShowAllBodyParts ?? false,
-    },
-  });
-  const { showAllBodyParts } = watch();
-
-  useEffect(() => {
-    setConfig({ assignShowAllBodyParts: showAllBodyParts });
-  }, [showAllBodyParts]);
 
   const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
     useChokerWarning({
@@ -74,14 +64,12 @@ export function SingleTrackerBodyAssignmentMenu({
                   {l10n.getString('body_assignment_menu-manage_trackers')}
                 </Button>
               </div>
-              <CheckBox
-                control={control}
-                label={l10n.getString('onboarding-assign_trackers-show_all')}
-                name="showAllBodyParts"
-                variant="toggle"
-              />
+              <ShowAllPartsToggle />
             </div>
             <div className="flex flex-col gap-4 rounded-xl fill-background-50 py-2 xsAssign:flex-grow">
+              <div className="flex justify-center">
+                <MirrorLegend />
+              </div>
               <BodyAssignment
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
                 width={isMobileAssign ? 160 : undefined}

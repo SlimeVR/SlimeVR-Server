@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+import { useLocalization } from '@fluent/react';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { AssignMode, useConfig } from '@/hooks/config';
@@ -5,6 +7,9 @@ import {
   BodyInteractions,
   BodySlotStyler,
 } from '@/components/commons/BodyInteractions';
+import { CheckboxInternal } from '@/components/commons/Checkbox';
+import { CompareIcon } from '@/components/commons/icon/CompareIcon';
+import { Typography } from '@/components/commons/Typography';
 import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';
 import { BodyPartError } from '@/hooks/tracker-assignment';
 import { SIDES } from '@/components/commons/PersonFrontIcon';
@@ -121,6 +126,76 @@ export const getPreferredAssignMode = (
   (Object.entries(ASSIGN_MODE_OPTIONS).find(
     ([, count]) => count >= connectedIMUTrackersCount
   )?.[0] as AssignMode) ?? AssignMode.All;
+
+export function ShowAllPartsToggle({ compact }: { compact?: boolean }) {
+  const { l10n } = useLocalization();
+  const { config, setConfig } = useConfig();
+
+  return (
+    <div className={classNames('w-fit shrink-0', compact && '[&_label]:h-fit')}>
+      <CheckboxInternal
+        variant="toggle"
+        name="showAllBodyParts"
+        checked={config?.assignShowAllBodyParts ?? false}
+        onChange={() =>
+          setConfig({
+            assignShowAllBodyParts: !config?.assignShowAllBodyParts,
+          })
+        }
+        label={l10n.getString(
+          compact
+            ? 'onboarding-assign_trackers-show_all-short'
+            : 'onboarding-assign_trackers-show_all'
+        )}
+      />
+    </div>
+  );
+}
+
+export function MirrorLegend({ compact }: { compact?: boolean }) {
+  const { config, setConfig } = useConfig();
+  const mirror = config?.mirrorView ?? false;
+  const side = classNames(
+    'flex items-center rounded-full',
+    compact ? 'gap-1.5 px-2 py-0.5' : 'gap-2 px-3 py-1'
+  );
+
+  return (
+    <div
+      className={classNames(
+        'flex items-center gap-1 bg-background-80 rounded-full w-fit cursor-pointer',
+        compact ? 'p-0.5' : 'p-1'
+      )}
+      onClick={() => setConfig({ mirrorView: !mirror })}
+    >
+      <div className={side}>
+        <span className="w-2.5 h-2.5 rounded-full bg-background-10 outline outline-4 outline-assign-left" />
+        <Typography
+          bold
+          id={
+            mirror
+              ? 'tracker_assignment-side-left'
+              : 'tracker_assignment-side-right'
+          }
+        />
+      </div>
+
+      <CompareIcon width={22} />
+
+      <div className={side}>
+        <span className="w-2.5 h-2.5 rounded-full  bg-background-10 outline outline-4 outline-assign-right" />
+        <Typography
+          bold
+          id={
+            mirror
+              ? 'tracker_assignment-side-right'
+              : 'tracker_assignment-side-left'
+          }
+        />
+      </div>
+    </div>
+  );
+}
 
 export type BodyPartCardRenderer = (args: {
   role: BodyPart;

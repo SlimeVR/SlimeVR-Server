@@ -27,8 +27,6 @@ version_update-close = ปิด
 tips-find_tracker = ไม่แน่ใจว่าแทร็กเกอร์ตัวไหน? ให้ขยับแทร็กเกอร์ตัวนั้นเพื่อสังเกตว่าอุปกรณ์ใดกำลังสว่างอยู่
 tips-do_not_move_heels = ห้ามขยับส้นเท้าในระหว่างการบันทึก!
 tips-file_select = ลากและวางไฟล์ที่จะใช้ หรือ<u>เรียกดู</u>
-tips-tap_setup = คุณสามารถแตะที่แทร็กเกอร์ 2 ครั้ง เพื่อเป็นการเลือกแทนการเลือกจากเมนู
-tips-turn_on_tracker = คุณใช้แทร็กเกอร์ SlimeVR Official หรือไม่?<b><em>หากใช้ อย่าลืมเปิดแทร็กเกอร์หลังจากเชื่อมต่อกับ PC!</em></b>
 tips-failed_webgl = ไม่สามารถเริ่มต้น WebGL ได้
 
 ## Units
@@ -143,10 +141,6 @@ skeleton_bone-UPPER_CHEST-desc =
     นี่เป็นระยะห่างจากฐานของคอถึงกลางหน้าอก
     ปรับด้วยการเริ่มจากการปรับความยาวลำตัวให้เหมาะสมก่อน แล้วจึงปรับค่านี้ในท่าต่างๆ
     (นั่งลง ก้มตัว นอนราบ เป็นต้น) จนกว่ากระดูกหลังเสมือนจะตรงกับกระดูกสันหลังจริงของคุณ
-skeleton_bone-CHEST_OFFSET = การชดเชยตำแหน่งหน้าอก
-skeleton_bone-CHEST_OFFSET-desc =
-    นี่เป็นการปรับให้แทร็กเกอร์เสมือนบริเวณอกสูงขึ้น หรือต่ำลงเพื่อช่วย
-    ในการตั้งศูนย์หรือปรับเทียบสำหรับบางเกมหรือแอปพลิเคชันที่กำหนดตำแหน่งแทร็กเกอร์สูงกว่า หรือต่ำกว่า
 skeleton_bone-CHEST = ความยาวหน้าอก
 skeleton_bone-CHEST-desc =
     นี่เป็นระยะห่างจากกลางหน้าอกถึงกลางกระดูกสันหลัง
@@ -162,10 +156,6 @@ skeleton_bone-HIP-desc =
     นี่เป็นระยะห่างจากสะดือถึงสะโพก
     ปรับด้วยการเริ่มจากการปรับความยาวลำตัวให้เหมาะสม แล้วปรับค่านี้ในท่าต่างๆ
     (นั่งลง ก้มตัว นอนราบ เป็นต้น) จนกว่ากระดูกหลังเสมือนจะตรงกับกระดูกสันหลังจริงของคุณ
-skeleton_bone-HIP_OFFSET = การชดเชยตำแหน่งสะโพก
-skeleton_bone-HIP_OFFSET-desc =
-    ปรับค่านี้เพื่อขยับแทร็กเกอร์เสมือนของสะโพกขึ้นหรือลง
-    เพื่อช่วยในการตั้งศูนย์หรือปรับเทียบสำหรับบางเกมหรือแอปพลิเคชันที่กำหนดตำแหน่งแทร็กเกอร์ให้อยู่ที่สะโพก
 skeleton_bone-HIPS_WIDTH = ความกว้างสะโพก
 skeleton_bone-HIPS_WIDTH-desc =
     นี่เป็นระยะห่างจากจุดเริ่มต้นของขาทั้งสอง
@@ -196,11 +186,6 @@ skeleton_bone-FOOT_SHIFT-desc =
     ค่านี้ช่วยในการคำนวณการเอียงของขาส่วนล่างเมื่อยืนตัวตรง
     โดยเริ่มจากการตั้งความยาวเท้าเป็น 0, จากนั้นรีเซ็ตทั้งหมด
     แล้วจึงปรับค่าจนกระทั่งเท้าเสมือนตรงกับกลางข้อเท้าจริงของคุณ
-skeleton_bone-SKELETON_OFFSET = การชดเชยตำแหน่งโครงร่างรวม
-skeleton_bone-SKELETON_OFFSET-desc =
-    ปรับค่านี้เพื่อเลื่อนตำแหน่งแทร็กเกอร์ทั้งหมดไปด้านหน้าหรือด้านหลัง
-    เพื่อช่วยในการตั้งศูนย์หรือปรับเทียบสำหรับเกมหรือแอปพลิเคชันบางตัว
-    ที่อาจต้องการให้แทร็กเกอร์อยู่ด้านหน้ามากกว่าปกติ
 skeleton_bone-SHOULDERS_DISTANCE = ระยะความกว้างไหล่
 skeleton_bone-SHOULDERS_DISTANCE-desc =
     นี่คือระยะทางในแนวตั้งจากฐานคอถึงไหล่ของคุณ
@@ -239,29 +224,17 @@ skeleton_bone-HAND_Z-desc =
     หากใช้สำหรับ Motion capture ให้ตั้งค่านี้เป็น 0
     หากใช้สำหรับจับตำแหน่งข้อศอกจากคอนโทรลเลอร์ ให้เริ่มจากตั้งความยาวแขนเป็น 0 
     และปรับค่าจนกว่าแทร็กเกอร์ข้อศอกนั้นอยู่ในแนวราบเดียวกับข้อมือจริงของคุณ
-skeleton_bone-ELBOW_OFFSET = ชดเชยตำแหน่งข้อศอก
-skeleton_bone-ELBOW_OFFSET-desc =
-    สามารถปรับเพื่อเลื่อนแทร็กเกอร์ข้อศอกเสมือนของคุณขึ้นหรือลงเพื่อช่วย
-    แก้ปัญหากรณี VRChat กำหนดให้แทร็กเกอร์ข้อศอกไปผูกกับตำแหน่งอกโดยไม่ได้ตั้งใจ
 
 ## Tracker reset buttons
 
 reset-reset_all = รีเซ็ตสัดส่วนทั้งหมด
-reset-reset_all_warning-v2 =
-    <b>คำเตือน:</b> สัดส่วนของคุณจะถูกรีเซ็ตเป็นค่าเริ่มต้นตามความสูงที่ตั้งค่าไว้
-    คุณแน่ใจหรือไม่ว่าต้องการทำเช่นนี้?
 reset-reset_all_warning-reset = รีเซ็ตสัดส่วน
 reset-reset_all_warning-cancel = ยกเลิก
-reset-reset_all_warning_default-v2 =
-    <b>คำเตือน:</b> คุณยังไม่ได้ตั้งค่าความสูง สัดส่วนของคุณจะถูกรีเซ็ตเป็นค่าเริ่มต้น
-    คุณแน่ใจหรือไม่ว่าต้องการทำเช่นนี้
 reset-full = รีเซ็ตทั้งหมด
 reset-mounting = รีเซ็ตตั้งศูนย์การติดตั้ง
 reset-mounting-feet = รีเซ็ตทิศทางติดตั้งเท้า
 reset-mounting-fingers = รีเซ็ตการติดตั้งนิ้วมือ
 reset-yaw = รีเซ็ตแกนตั้ง
-reset-error-no_feet_tracker = ไม่ได้กำหนดแทร็กเกอร์เท้า
-reset-error-no_fingers_tracker = ไม่ได้กำหนดแทร็กเกอร์นิ้ว
 reset-error-mounting-need_full_reset = ต้องรีเซ็ตทั้งหมดก่อนการตั้งศูนย์การติดตั้ง
 reset-error-yaw-need_full_reset = ต้องรีเซ็ตทั้งหมดก่อนรีเซ็ตแกนตั้ง
 
@@ -299,17 +272,12 @@ tracking-paused = ยกเลิกหยุดการติดตาม
 
 ## Widget: Overlay settings
 
-widget-overlay = โอเวอร์เลย์
-widget-overlay-is_visible_label = แสดงโอเวอร์เลย์ใน SteamVR
-widget-overlay-is_mirrored_label = สะท้อนการแสดงโอเวอร์เลย์
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = ล้างการชดเชยดริฟท์
 
 ## Widget: Clear Mounting calibration
 
-widget-clear_mounting = ล้างการตั้งศูนย์การติดตั้ง
 
 ## Widget: Developer settings
 
@@ -317,7 +285,6 @@ widget-developer_mode = โหมดนักพัฒนา
 widget-developer_mode-high_contrast = สีคอนทราสต์สูง
 widget-developer_mode-precise_rotation = ค่าหมุนแบบแม่นยำ
 widget-developer_mode-fast_data_feed = ฟีดข้อมูลความเร็วสูง
-widget-developer_mode-filter_slimes_and_hmd = แยก Slime ออกจาก HMD
 widget-developer_mode-sort_by_name = เรียงตามชื่อ
 widget-developer_mode-raw_slime_rotation = ค่าการหมุนแบบดิบ
 widget-developer_mode-more_info = ข้อมูลเพิ่มเติม
@@ -335,8 +302,6 @@ widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 
-widget-skeleton_visualizer-preview = ตัวอย่างโครงกระดูก
-widget-skeleton_visualizer-hide = ซ่อน
 
 ## Tracker status
 
@@ -354,7 +319,6 @@ tracker-table-column-name = ชื่อ
 tracker-table-column-type = ชนิด
 tracker-table-column-battery = แบตเตอรี่
 tracker-table-column-ping = Ping
-tracker-table-column-packet_loss = สูญเสียแพ็คเก็ต
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = อุณหภูมิ °C
 tracker-table-column-linear-acceleration = ความเร่ง X/Y/Z
@@ -374,7 +338,6 @@ tracker-rotation-back = หลัง
 tracker-rotation-back_left = หลังซ้าย
 tracker-rotation-back_right = หลังขวา
 tracker-rotation-custom = กำหนดเอง
-tracker-rotation-overriden = (ถูกแทนที่ด้วยการตั้งศูนย์การติดตั้ง)
 
 ## Tracker information
 
@@ -382,10 +345,7 @@ tracker-infos-manufacturer = ผู้ผลิต
 tracker-infos-display_name = ชื่อที่แสดง
 tracker-infos-custom_name = ชื่อที่ตั้งเอง
 tracker-infos-url = URL แทร็กเกอร์
-tracker-infos-version = เวอร์ชันเฟิร์มแวร์
-tracker-infos-hardware_rev = เวอร์ชันฮาร์ดแวร์
 tracker-infos-hardware_identifier = ID ฮาร์ดแวร์
-tracker-infos-data_support = รูปแบบข้อมูลที่รองรับ
 tracker-infos-imu = เซ็นเซอร์ IMU
 tracker-infos-board_type = เมนบอร์ด
 tracker-infos-network_version = เวอร์ชันโปรโตคอล
@@ -410,9 +370,6 @@ tracker-settings-assignment_section-edit = แก้ไขการกำหน�
 tracker-settings-mounting_section = ทิศทางการติดตั้ง
 tracker-settings-mounting_section-description = แทร็กเกอร์นี้อยู่ด้านไหนของคุณ?
 tracker-settings-mounting_section-edit = แก้ไขการติดตั้ง
-tracker-settings-drift_compensation_section = เปิดใช้การชดเชยการดริฟท์
-tracker-settings-drift_compensation_section-description = ให้แทร็กเกอร์ตัวนี้ชดเชยการดริฟท์เมื่อมีการเปิดใช้งานการชดเชยการดริฟท์หรือไม่?
-tracker-settings-drift_compensation_section-edit = ใช้การชดเชยการดริฟท์
 tracker-settings-use_mag = เปิดใช้งานเซ็นเซอร์สนามแม่เหล็กสำหรับแทร็กเกอร์ตัวนี้
 # Multiline!
 tracker-settings-use_mag-description =
@@ -441,51 +398,17 @@ tracker-settings-build-date = วันที่สร้าง
 
 ## Tracker part card info
 
-tracker-part_card-no_name = ไม่มีชื่อ
 tracker-part_card-unassigned = ไม่ได้กำหนด
 
 ## Body assignment menu
 
 body_assignment_menu = คุณต้องการกำหนดแทร็กเกอร์นี้ไปที่ส่วนใด?
 body_assignment_menu-description = เลือกตำแหน่งที่คุณต้องการกำหนดแทร็กเกอร์นี้ หรือคุณอาจเลือกจัดการแทร็กเกอร์ทั้งหมดพร้อมกัน แทนที่จะเลือกทีละตัว
-body_assignment_menu-show_advanced_locations = แสดงตำแหน่งการกำหนดขั้นสูง
 body_assignment_menu-manage_trackers = จัดการแทร็กเกอร์ทั้งหมด
 body_assignment_menu-unassign_tracker = ยกเลิกการกำหนดแทร็กเกอร์
 
 ## Tracker assignment menu
 
-# A -translation_key (with a dash in the front) means that it's a label.
-# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-#
-# We are using it here because english doesn't require changing the text in each case but
-# maybe your language does.
--tracker_selection-part = คุณต้องการกำหนดแทร็กเกอร์นี้ไปที่
-tracker_selection_menu-NONE = คุณต้องการยกเลิกกำหนดตำแหน่งแทร็กเกอร์ตัวไหน?
-tracker_selection_menu-HEAD = { -tracker_selection-part } หัว?
-tracker_selection_menu-NECK = { -tracker_selection-part } คอ?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } ไหล่ขวา?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } แขนขวาส่วนบน?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } แขนขวาส่วนล่าง?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } มือขวา?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } ต้นขาขวา?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } ข้อเท้าขวา?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } เท้าขวา?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } คอนโทรเลอร์ด้านขวา?
-tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } หน้าอกส่วนบน?
-tracker_selection_menu-CHEST = { -tracker_selection-part } อก?
-tracker_selection_menu-WAIST = { -tracker_selection-part } เอว?
-tracker_selection_menu-HIP = { -tracker_selection-part } สะโพก?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } ไหล่ซ้าย?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } แขนซ้ายส่วนบน?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } แขนซ้ายส่วนล่าง?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } มือซ้าย?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } ต้นขาซ้าย?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } ข้อเท้าซ้าย?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } เท้าซ้าย?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } คอนโทรลเลอร์ซ้าย?
-tracker_selection_menu-unassigned = แทร็กเกอร์ที่ไม่ได้กำหนด
-tracker_selection_menu-assigned = แทร็กเกอร์ที่กำหนดแล้ว
-tracker_selection_menu-dont_assign = ยกเลิกการกำหนด
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -503,13 +426,8 @@ mounting_selection_menu-close = ปิด
 
 settings-sidebar-title = การตั้งค่า
 settings-sidebar-general = ทั่วไป
-settings-sidebar-steamvr = SteamVR
-settings-sidebar-tracker_mechanics = การทำงานแทร็กเกอร์
 settings-sidebar-stay_aligned = Stay Aligned
-settings-sidebar-fk_settings = การตั้งค่าการติดตาม
-settings-sidebar-gesture_control = การควบคุมด้วยท่าทาง
 settings-sidebar-interface = อินเทอร์เฟซ
-settings-sidebar-osc_router = เราเตอร์ OSC
 settings-sidebar-osc_trackers = แทร็กเกอร์ VRChat OSC
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = เครื่องมือ
@@ -525,37 +443,9 @@ settings-sidebar-advanced = ขั้นสูง
 
 ## SteamVR settings
 
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = แทร็กเกอร์ SteamVR
-# Not all translation keys support multiline, only the ones that specify it will actually
-# split it in lines (that also means you can split in lines however you want in those).
-# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines
-settings-general-steamvr-description =
-    เปิดหรือปิดแทร็กเกอร์ SteamVR บางตัว
-    มีประโยชน์สำหรับเกมหรือแอปที่รองรับแทร็กเกอร์เพียงบางส่วน
-settings-general-steamvr-trackers-waist = เอว
-settings-general-steamvr-trackers-chest = หน้าอก
-settings-general-steamvr-trackers-left_foot = เท้าซ้าย
-settings-general-steamvr-trackers-right_foot = เท้าขวา
-settings-general-steamvr-trackers-left_knee = หัวเข่าซ้าย
-settings-general-steamvr-trackers-right_knee = หัวเข่าขวา
-settings-general-steamvr-trackers-left_elbow = ข้อศอกซ้าย
-settings-general-steamvr-trackers-right_elbow = ข้อศอกขวา
-settings-general-steamvr-trackers-left_hand = มือซ้าย
-settings-general-steamvr-trackers-right_hand = มือขวา
-settings-general-steamvr-trackers-tracker_toggling = กำหนดแทร็กเกอร์อัตโนมัติ
-settings-general-steamvr-trackers-tracker_toggling-description = จัดการการเปิดหรือปิดแทร็กเกอร์ SteamVR โดยอัตโนมัติตามการกำหนดแทร็กเกอร์ปัจจุบันของคุณ
-settings-general-steamvr-trackers-tracker_toggling-label = กำหนดแทร็กเกอร์อัตโนมัติ
-settings-general-steamvr-trackers-hands-warning =
-    <b>คำเตือน:</b> แทร็กเกอร์มือจะแทนที่คอนโทรลเลอร์ของคุณ
-    คุณแน่ใจหรือไม่?
-settings-general-steamvr-trackers-hands-warning-cancel = ยกเลิก
-settings-general-steamvr-trackers-hands-warning-done = ตกลง
 
 ## Tracker mechanics
 
-settings-general-tracker_mechanics = การทำงานแทร็กเกอร์
 settings-general-tracker_mechanics-filtering = การกรองข้อมูล
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -570,29 +460,6 @@ settings-general-tracker_mechanics-filtering-type-prediction = คาดกา�
 settings-general-tracker_mechanics-filtering-type-prediction-description = ลดความหน่วง และทำให้การเคลื่อนไหวฉับไวขึ้น แต่อาจเพิ่มการกระตุก
 settings-general-tracker_mechanics-filtering-amount = ปริมาณ
 settings-general-tracker_mechanics-yaw-reset-smooth-time = เวลาหน่วงการรีเซ็ตแกนตั้ง(ตั้งที่ 0 วินาทีเพื่อปิดการใช้)
-settings-general-tracker_mechanics-drift_compensation = การชดเชยการดริฟท์
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    ชดเชยความคลาดเคลื่อนแกนตั้งของ IMU โดยหมุนชดเชยในทิศทางตรงข้าม
-    โดยนำปริมาณการรีเซ็ตและจำนวนครั้งในการรีเซ็ตมาพิจารณา
-    ควรใช้เฉพาะในกรณีที่คุณต้องรีเซ็ตบ่อยครั้งมากเท่านั้น!
-settings-general-tracker_mechanics-drift_compensation-enabled-label = การชดเชยการดริฟท์
-settings-general-tracker_mechanics-drift_compensation-prediction = การคาดการณ์การชดเชยการดริฟท์
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    คาดการณ์การชดเชยการดริฟท์ของแกนตั้งนอกเหนือจากช่วงที่เคยถูกวัดไว้
-    เปิดใช้งานหากแทร็กเกอร์ของคุณหมุนรอบแกนตั้งอย่างต่อเนื่อง
-settings-general-tracker_mechanics-drift_compensation-prediction-label = คาดการณ์การชดเชยการดริฟท์
-settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>คำเตือน:</b> ควรใช้การชดเชยดริฟท์เฉพาะในกรณีที่คุณต้องรีเซ็ต
-    บ่อยครั้งมากเท่านั้น (ทุก ~5-10 นาที)
-    
-    IMU บางตัวที่มีแนวโน้มที่จะต้องรีเซ็ตบ่อย ได้แก่:
-    Joy-Cons, owoTrack, และ MPU (หากเฟิร์มแวร์ไม่ได้รับการอัปเดต)
-settings-general-tracker_mechanics-drift_compensation_warning-cancel = ยกเลิก
-settings-general-tracker_mechanics-drift_compensation_warning-done = ฉันเข้าใจแล้ว
-settings-general-tracker_mechanics-drift_compensation-amount-label = ปริมาณการชดเชย
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = ใช้ค่าจากการรีเซ็ต X ครั้ง
 settings-general-tracker_mechanics-save_mounting_reset = บันทึกค่าการตั้งศูนย์การติดตั้งโดยอัตโนมัติ
 settings-general-tracker_mechanics-save_mounting_reset-description =
     บันทึกการตั้งศูนย์การติดตั้งแทร็กเกอร์อัตโนมัติ เพื่อใช้ซ้ำเมื่อรีสตาร์ท
@@ -610,9 +477,7 @@ settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned จะลดดริฟท์โดยค่อยๆ ปรับแทร็กเกอร์ให้เข้ากับท่าทางผ่อนคลายของคุณ
 settings-stay_aligned-setup-label = ตั้งค่า Stay Aligned
 settings-stay_aligned-setup-description = คุณต้องทำ "ตั้งค่า Stay Aligned" ให้เสร็จสมบูรณ์เพื่อเปิดใช้งาน Stay Aligned
-settings-stay_aligned-warnings-drift_compensation = ⚠ โปรดปิด การชดเชยการดริฟท์! เพราะมันจะขัดแย้งกับการทำงานของ Stay Aligned
 settings-stay_aligned-enabled-label = เปิดใช้งาน
-settings-stay_aligned-hide_yaw_correction-label = ซ่อนการปรับแต่ง (เพื่อเปรียบเทียบกับแบบไม่มี Stay Aligned)
 settings-stay_aligned-general-label = ทั่วไป
 settings-stay_aligned-relaxed_poses-label = ท่าทางผ่อนคลาย
 settings-stay_aligned-relaxed_poses-description = Stay Aligned ใช้ท่าทางผ่อนคลายของคุณเพื่อให้แทร็กเกอร์อยู่ในแนวที่ถูกต้อง ใช้ "ตั้งค่า Stay Aligned" เพื่ออัปเดตท่าทางเหล่านี้
@@ -651,17 +516,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = บังคับ�
 settings-general-fk_settings-enforce_joint_constraints = ขีดจำกัดโครงกระดูก
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = บังคับใช้ขีดจำกัด
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = ป้องกันไม่ให้ข้อต่อหมุนเกินขีดจำกัด
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints = แก้ไขด้วยขีดจำกัด
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = แก้ไขการหมุนของข้อต่อเมื่อมีการหมุนเกินขีดจำกัด
 settings-general-fk_settings-ik = ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position = ใช้ข้อมูลตำแหน่ง
 settings-general-fk_settings-ik-use_position-description = เปิดใช้งานการใช้ข้อมูลตำแหน่งจากแทร็กเกอร์ที่รองรับ เมื่อเปิดใช้งานแล้วโปรดทำการรีเซ็ตทั้งหมด แล้วตั้งศูนย์หรือปรับเทียบใหม่ในเกม
-settings-general-fk_settings-arm_fk = การจับตำแหน่งแขน
-settings-general-fk_settings-arm_fk-description = บังคับให้ติดตามแขนจากเฮดเซ็ต (HMD) แม้ว่าจะมีข้อมูลตำแหน่งมืออยู่ก็ตาม
-settings-general-fk_settings-arm_fk-force_arms = บังคับใช้ตำแหน่งแขนจากแว่น
-settings-general-fk_settings-reset_settings = ตั้งค่าการรีเซ็ต
-settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = รีเซ็ตความเอียง (การหมุนก้มหรือเงย) ของ HMD เมื่อทำการรีเซ็ตทั้งหมด มีประโยชน์หากสวม HMD ไว้ที่หน้าผากสำหรับ VTubing หรือ MoCap ไม่ควรเปิดใช้งานสำหรับการใช้งาน VR ทั่วไป
-settings-general-fk_settings-reset_settings-reset_hmd_pitch = รีเซ็ตความเอียงของ HMD
 settings-general-fk_settings-arm_fk-reset_mode-description = เปลี่ยนท่าทางแขนที่ใช้สำหรับการรีเซ็ตตั้งศูนย์การติดตั้ง
 settings-general-fk_settings-arm_fk-back = ยื่นไปด้านหลัง
 settings-general-fk_settings-arm_fk-back-description = โหมดค่าเริ่มต้น โดยแขนท่อนบนจะเอียงไปด้านหลัง และแขนท่อนล่างจะชี้ไปด้านหน้า
@@ -671,26 +528,13 @@ settings-general-fk_settings-arm_fk-tpose_down = ที-โพส (แขนล�
 settings-general-fk_settings-arm_fk-tpose_down-description = กำหนดให้แขนเหยียดออกด้านข้าง 90 องศา ระหว่างการรีเซ็ตทั้งหมดและแนบลำตัว ระหว่างการรีเซ็ตตั้งศูนย์การติดตั้ง
 settings-general-fk_settings-arm_fk-forward = ไปข้างหน้า
 settings-general-fk_settings-arm_fk-forward-description = กำหนดให้แขนยกไปด้านหน้าทำมุม 90 องศา มีประโยชน์สำหรับงาน VTubing
-settings-general-fk_settings-skeleton_settings-toggles = ตัวเลือกโครงกระดูก
-settings-general-fk_settings-skeleton_settings-description = เปิดหรือปิดการตั้งค่าโครงกระดูก แนะนำให้เปิดไว้
-settings-general-fk_settings-skeleton_settings-extended_spine_model = โมเดลกระดูกสันหลังแบบขยาย
-settings-general-fk_settings-skeleton_settings-extended_pelvis_model = โมเดลสะโพกแบบขยาย
-settings-general-fk_settings-skeleton_settings-extended_knees_model = โมเดลเข่าแบบขยาย
 settings-general-fk_settings-skeleton_settings-ratios = สัดส่วนโครงกระดูก
 settings-general-fk_settings-skeleton_settings-ratios-description = เปลี่ยนค่าการตั้งค่าโครงกระดูก คุณอาจต้องปรับสัดส่วนของคุณใหม่หลังจากเปลี่ยนค่าเหล่านี้
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = คำนวณตำแหน่งเอวจากอกและสะโพก
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = คำนวณตำแหน่งเอวจากอกและขา
-settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = คำนวณตำแหน่งสะโพกจากอกและขา
-settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = คำนวณตำแหน่งสะโพกจากเอวและขา
-settings-general-fk_settings-skeleton_settings-interp_hip_legs = เฉลี่ยค่าแกนตั้งและแกนยาวของสะโพกร่วมกับขา
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = เฉลี่ยค่าแกนตั้งและแกนยาวของแทร็กเกอร์เข่าร่วมกับข้อเท้า
-settings-general-fk_settings-skeleton_settings-interp_knee_ankle = เฉลี่ยค่าแกนตั้งและแกนยาวของเข่าร่วมกับข้อเท้า
 settings-general-fk_settings-self_localization-title = โหมด Mocap
 settings-general-fk_settings-self_localization-description = โหมด Mocap ช่วยให้โมเดลโครงกระดูกสามารถติดตามตำแหน่งโดยประมาณได้ โดยไม่ต้องใช้อุปกรณ์เฮดเซต (แว่น VR ) หรือแทร็กเกอร์อื่น ๆ โปรดทราบว่าฟังก์ชันนี้ต้องใช้แทร็กเกอร์ที่เท้าและศีรษะจึงจะทำงานได้ และยังอยู่ในช่วงทดลอง
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = การควบคุมด้วยท่าทาง
 settings-general-gesture_control-subtitle = การรีเซ็ตด้วยการแตะ
 settings-general-gesture_control-description = เปิดใช้การรีเซ็ตด้วยการแตะแทร็กเกอร์ แทร็กเกอร์ที่อยู่สูงที่สุดบนลำตัวจะใช้สำหรับการรีเซ็ตแกนตั้ง แทร็กเกอร์ที่อยู่สูงที่สุดบนขาซ้ายใช้สำหรับรีเซ็ตทั้งหมด และแทร็กเกอร์ที่อยู่สูงที่สุดบนขาขวาใช้สำหรับรีเซ็ตตั้งศูนย์การติดตั้ง โดยการแตะจะต้องเกิดขึ้นภายในเวลา 0.3 วินาทีคูณด้วยจำนวนครั้งของการแตะเพื่อให้ระบบรับรู้
 # This is a unit: 3 taps, 2 taps, 1 tap
@@ -719,9 +563,6 @@ settings-general-interface-dev_mode = โหมดนักพัฒนา
 settings-general-interface-dev_mode-description = โหมดนี้มีประโยชน์หากคุณต้องการข้อมูลเชิงลึก หรือต้องการโต้ตอบกับแทร็กเกอร์ที่เชื่อมต่อในระดับที่สูงขึ้น
 settings-general-interface-dev_mode-label = โหมดนักพัฒนา
 settings-general-interface-theme = ธีมสี
-settings-general-interface-show-navbar-onboarding = แสดง "{ navbar-onboarding }" บนแถบนำทาง
-settings-general-interface-show-navbar-onboarding-description = ตัวเลือกนี้เปลี่ยนว่าจะแสดงปุ่ม "{ navbar-onboarding }" บนแถบนำทางหรือไม่
-settings-general-interface-show-navbar-onboarding-label = แสดง "{ navbar-onboarding }"
 settings-general-interface-lang = เลือกภาษา
 settings-general-interface-lang-description = เปลี่ยนภาษาเริ่มต้น
 settings-general-interface-lang-placeholder = เลือกภาษาที่จะใช้
@@ -733,9 +574,6 @@ settings-interface-appearance-font-os_font = ฟอนต์ของ OS
 settings-interface-appearance-font-slime_font = Font เริ่มต้น
 settings-interface-appearance-font_size = ขนาดฟอนต์พื้นฐาน
 settings-interface-appearance-font_size-description = ตัวเลือกนี้ส่งผลต่อขนาดฟอนต์ของอินเทอร์เฟซทั้งหมด ยกเว้นแผงการตั้งค่านี้
-settings-interface-appearance-decorations = ใช้แทบอินเทอร์เฟสตามระบบปฏิบัติการ
-settings-interface-appearance-decorations-description = ตัวเลือกนี้จะไม่แสดงแถบด้านบนของอินเทอร์เฟซ และจะใช้ของระบบปฏิบัติการแทน
-settings-interface-appearance-decorations-label = ใช้แถบด้านบนตามระบบปฏิบัติการ
 
 ## Notification settings
 
@@ -797,7 +635,6 @@ settings-serial-factory_reset-warning-cancel = ยกเลิก
 settings-serial-serial_select = เลือกพอร์ต Serial
 settings-serial-auto_dropdown_item = อัตโนมัติ
 settings-serial-get_wifi_scan = สแกนเครือข่าย WiFi
-settings-serial-file_type = ข้อความล้วน
 settings-serial-save_logs = บันทึกลงไฟล์
 settings-serial-send_command = ส่ง
 settings-serial-send_command-placeholder = คำสั่ง...
@@ -807,28 +644,6 @@ settings-serial-send_command-warning-cancel = ยกเลิก
 
 ## OSC router settings
 
-settings-osc-router = เราเตอร์ OSC
-# This cares about multilines
-settings-osc-router-description =
-    ส่งต่อข้อความ OSC จากโปรแกรมอื่น 
-    ประโยชน์สำหรับการใช้โปรแกรม OSC อื่นร่วมกับ VRChat เป็นต้น
-settings-osc-router-enable = เปิดใช้งาน
-settings-osc-router-enable-description = อนุญาตการส่งต่อข้อมูล OSC
-settings-osc-router-enable-label = เปิดใช้งาน
-settings-osc-router-network = พอร์ตเครือข่าย
-# This cares about multilines
-settings-osc-router-network-description =
-    ตั้งค่าพอร์ตสำหรับการรับฟังและการส่งข้อมูล
-    อาจใช้พอร์ตเดียวกับพอร์ตอื่นที่ใช้ในเซิร์ฟเวอร์ SlimeVR ก็ได้
-settings-osc-router-network-port_in =
-    .label = พอร์ตขาเข้า
-    .placeholder = พอร์ตขาเข้า (ค่าเริ่มต้น: 9002)
-settings-osc-router-network-port_out =
-    .label = พอร์ตขาออก
-    .placeholder = พอร์ตขาออก (ค่าเริ่มต้น: 9000)
-settings-osc-router-network-address = ที่อยู่เครือข่าย
-settings-osc-router-network-address-description = ตั้งค่าที่อยู่สำหรับส่งข้อมูล
-settings-osc-router-network-address-placeholder = ที่อยู่ IPV4
 
 ## OSC VRChat settings
 
@@ -841,14 +656,7 @@ settings-osc-vrchat-description-v1 =
 settings-osc-vrchat-enable = เปิดใช้งาน
 settings-osc-vrchat-enable-description = เปิดการรับและส่งข้อมูล
 settings-osc-vrchat-enable-label = เปิดใช้งาน
-settings-osc-vrchat-oscqueryEnabled = เปิดใช้งาน OSCQuery
-settings-osc-vrchat-oscqueryEnabled-description =
-    OSCQuery จะตรวจจับอินสแตนซ์ของ VRChat ที่กำลังทำงานโดยอัตโนมัติ และส่งข้อมูลไปให้
-    และยังสามารถประกาศตัวเองเพื่อให้ได้รับข้อมูลจาก HMD และของคอนโทรเลอร์จาก VRChat ได้อีกด้วย
-    หากต้องการอนุญาตให้รับข้อมูล HMD และตัวควบคุมจาก VRChat ให้ไปที่การตั้งค่าเมนูหลัก ใต้ "การติดตาม & IK" และเปิดใช้งาน "อนุญาตให้ส่งข้อมูลการติดตามศีรษะและข้อมือ VR ผ่าน OSC"
-settings-osc-vrchat-oscqueryEnabled-label = เปิดใช้งาน OSCQuery
 settings-osc-vrchat-network = พอร์ตเครือข่าย
-settings-osc-vrchat-network-description-v1 = ตั้งค่าพอร์ตสำหรับการรับฟังและการส่งข้อมูล สามารถปล่อยว่างไว้สำหรับ VRChat
 settings-osc-vrchat-network-port_in =
     .label = พอร์ตขาเข้า
     .placeholder = พอร์ตขาเข้า (ค่าเริ่มต้น: 9001)
@@ -858,13 +666,6 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = ที่อยู่เครือข่าย
 settings-osc-vrchat-network-address-description-v1 = เลือกที่อยู่ที่จะส่งข้อมูลออกไป สามารถปล่อยว่างไว้สำหรับ VRChat
 settings-osc-vrchat-network-address-placeholder = ที่อยู่ IP VRChat
-settings-osc-vrchat-network-trackers = แทร็กเกอร์
-settings-osc-vrchat-network-trackers-description = เปิดใช้ตำแหน่งแทร็กเกอร์ที่จะใช้ผ่าน OSC
-settings-osc-vrchat-network-trackers-chest = หน้าอก
-settings-osc-vrchat-network-trackers-hip = สะโพก
-settings-osc-vrchat-network-trackers-knees = หัวเข่า
-settings-osc-vrchat-network-trackers-feet = เท้า
-settings-osc-vrchat-network-trackers-elbows = ข้อศอก
 
 ## VMC OSC settings
 
@@ -900,7 +701,6 @@ settings-osc-vmc-mirror_tracking-label = สะท้อนตำแหน่ง
 
 ## Common OSC settings
 
-settings-osc-common-network-ports_match_error = พอร์ตขาเข้าและขาออกของเราเตอร์ OSC ต้องไม่ซ้ำกัน!
 settings-osc-common-network-port_banned_error = ไม่สามารถใช้งานพอร์ต { $port } ได้!
 
 ## Advanced settings
@@ -946,7 +746,6 @@ settings-tracking_checklist-active_steps-desc = รายการขั้น�
 
 onboarding-skip = ข้ามการตั้งค่า
 onboarding-continue = ดำเนินการต่อ
-onboarding-wip = ยังไม่พร้อมใช้งาน
 onboarding-previous_step = ขั้นตอนก่อนหน้า
 onboarding-setup_warning =
     <b>คำเตือน:</b> การตั้งค่าเริ่มต้นนี้จำเป็นสำหรับการจับตำแหน่งที่ดี
@@ -966,7 +765,6 @@ onboarding-wifi_creds-description-v2 =
     โปรดใช้ข้อมูลเครือข่าย Wi-Fi ที่อุปกรณ์ของคุณกำลังเชื่อมต่ออยู่
     
     และตรวจสอบให้แน่ใจว่าคุณใช้การเชื่อมต่อ Wi-Fi  เป็นคลื่น 2.4GHz กับแทร็กเกอร์นี้
-onboarding-wifi_creds-skip = ข้ามการตั้งค่า Wi-Fi
 onboarding-wifi_creds-submit = ยืนยัน!
 onboarding-wifi_creds-ssid =
     .label = ชื่อ Wi-Fi
@@ -982,26 +780,6 @@ onboarding-wifi_creds-dongle-continue = ดำเนินการต่อด�
 
 ## Mounting setup
 
-onboarding-reset_tutorial-back = กลับไปยังการตั้งศูนย์การติดตั้งแทร็กเกอร์
-onboarding-reset_tutorial = บทช่วยสอนการรีเซ็ต
-onboarding-reset_tutorial-explanation = ขณะที่คุณใช้แทร็กเกอร์ มันอาจเกิดการคลาดเคลื่อนขึ้นได้เนื่องจากการดริฟท์ของ IMU หรือจากการที่แทร็กเกอร์บนตัวคุณนั้นขยับออกจากตำแหน่ง คุณมีหลายวิธีในการแก้ไขปัญหานี้
-onboarding-reset_tutorial-skip = ข้ามขั้นตอนนี้
-# Cares about multiline
-onboarding-reset_tutorial-0 =
-    แตะแทร็กเกอร์ที่ไฮไลท์ { $taps } ครั้ง เพื่อเรียกใช้การรีเซ็ตแกนตั้ง
-    นี่จะทำให้แทร็กเกอร์หันไปในทิศทางเดียวกับเฮดเซ็ท (HMD) ของคุณ
-# Cares about multiline
-onboarding-reset_tutorial-1 =
-    แตะแทร็กเกอร์ที่ไฮไลท์ { $taps } ครั้ง เพื่อเรียกใช้การรีเซ็ตทั้งหมด
-    คุณจำเป็นจะต้องยืนตรง แขนแนบลำตัว(i-pose) จะนับถอยหลัง 3 วินาที (สามารถปรับได้) ก่อนที่การรีเซ็ตจะเกิดขึ้น
-    นี่จะรีเซ็ตตำแหน่งและการหมุนของแทร็กเกอร์ทั้งหมดของคุณ ซึ่งช่วยแก้ปัญหาส่วนใหญ่ได้
-# Cares about multiline
-onboarding-reset_tutorial-2 =
-    แตะแทร็กเกอร์ที่ไฮไลท์ { $taps } ครั้ง เพื่อเรียกใช้การตั้งศูนย์การติดตั้ง
-    
-    การตั้งศูนย์การติดตั้งจะปรับแก้ตามวิธีการวางแทร็กเกอร์บนร่างกายของคุณ นี่จะช่วยคุณได้มากหากคุณเผลอเคลื่อนย้ายหรือเปลี่ยนทิศทางของแทร็กเกอร์จนมากเกินไป
-    
-     คุณต้องอยู่ในท่าเล่นสกีตามที่แสดงในตัวช่วยตั้งค่า โดยจะนับถอยหลังใน 3 วินาที (สามารถกำหนดได้) ก่อนที่การรีเซ็ตจะเกิดขึ้น
 
 ## Install info
 
@@ -1013,19 +791,12 @@ onboarding-home-start = มาเริ่มการใช้งานกั�
 
 ## Setup done
 
-onboarding-done-title = คุณพร้อมแล้ว!
-onboarding-done-description = ขอให้คุณสนุกกับประสบการณ์ขยับได้แบบฟูลบอดี้~!
-onboarding-done-close = ปิดการตั้งค่า
 
 ## Tracker connection setup
 
-onboarding-connect_tracker-back = กลับไปหน้าข้อมูลเครือข่าย Wi-Fi
 onboarding-connect_tracker-title = เชื่อมต่อแทร็กเกอร์
-onboarding-connect_tracker-description-p0-v1 = มาถึงส่วนที่น่าสนใจแล้ว คือการเชื่อมต่อแทร็กเกอร์!
-onboarding-connect_tracker-description-p1-v1 = เชื่อมต่อแทร็กเกอร์ทีละตัวผ่านพอร์ต USB
 onboarding-connect_tracker-issue-serial = ฉันมีปัญหาในการเชื่อมต่อ!
 onboarding-connect_tracker-usb = USB แทร็กเกอร์
-onboarding-connect_tracker-connection_status-none = กำลังค้นหาแทร็กเกอร์
 onboarding-connect_tracker-connection_status-serial_init = กำลังเชื่อมต่อกับอุปกรณ์ Serial
 onboarding-connect_tracker-connection_status-obtaining_mac_address = กำลังรับ MAC address ของแทร็กเกอร์
 onboarding-connect_tracker-connection_status-provisioning = กำลังส่งข้อมูลเครือข่าย Wi-Fi
@@ -1038,13 +809,6 @@ onboarding-connect_tracker-connection_status-no_serial_log = ไม่สาม�
 onboarding-connect_tracker-connection_status-no_serial_device_found = ไม่พบแทร็กเกอร์จาก USB
 onboarding-connect_serial-error-modal-no_serial_log = แทร็กเกอร์คุณเปิดอยู่หรือเปล่า?
 onboarding-connect_serial-error-modal-no_serial_log-desc = ตรวจสอบให้แน่ใจว่าแทร็กเกอร์เปิดอยู่และเชื่อมต่อกับคอมพิวเตอร์ของคุณ
-onboarding-connect_serial-error-modal-no_serial_device_found = ไม่พบแทร็กเกอร์
-onboarding-connect_serial-error-modal-no_serial_device_found-desc =
-    โปรดเชื่อมต่อแทร็กเกอร์ด้วยสาย USB เข้ากับคอมพิวเตอร์ของคุณและเปิดแทร็กเกอร์
-    หากยังไม่ได้ผล:
-      - ลองใช้สาย USB อื่น
-      - ลองใช้พอร์ต USB อื่น
-      - ลองติดตั้ง SlimeVR Server ใหม่และเลือก "USB Drivers" ในส่วน Components
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1059,29 +823,12 @@ onboarding-connect_tracker-next = ฉันเชื่อมต่อแทร�
 
 ## Tracker calibration tutorial
 
-onboarding-calibration_tutorial = บทเรียนการตั้งศูนย์ IMU
-onboarding-calibration_tutorial-subtitle = นี่จะช่วยลดการดริฟท์ของแทร็กเกอร์!
-onboarding-calibration_tutorial-description-v1 = หลังจากเปิดแทร็กเกอร์แล้ว ให้วางไว้บนพื้นที่เรียบนิ่งๆสักครู่เพื่อทำการตั้งศูนย์ การตั้งศูนย์ IMU สามารถทำได้ตลอดเวลาหลังจากเปิดแทร็กเกอร์—หน้าจอนี้เพียงแค่ให้บทช่วยสอน หากต้องการเริ่ม ให้คลิกปุ่ม "{ onboarding-calibration_tutorial-calibrate }" จากนั้น <b>อย่าขยับแทร็กเกอร์ของคุณ!</b>
-onboarding-calibration_tutorial-calibrate = ฉันวางแทร็กเกอร์บนโต๊ะแล้ว
-onboarding-calibration_tutorial-status-waiting = กำลังรอคุณอยู่
-onboarding-calibration_tutorial-status-calibrating = กำลังตั้งศูนย์
-onboarding-calibration_tutorial-status-success = เยี่ยม!
-onboarding-calibration_tutorial-status-error = แทร็กเกอร์มีการเคลื่อนไหว!
-onboarding-calibration_tutorial-skip = ข้ามบทช่วยสอน
 
 ## Tracker assignment tutorial
 
-onboarding-assignment_tutorial = วิธีเตรียมแทร็กเกอร์ Slime ก่อนสวมใส่
-onboarding-assignment_tutorial-first_step = 1. ติดสติกเกอร์บอกส่วนของร่างกาย (หากคุณมี) บนแทร็กเกอร์ตามที่คุณเลือก
-# This text has a character limit of around 11 characters, so please keep it short
-onboarding-assignment_tutorial-sticker = สติกเกอร์
-onboarding-assignment_tutorial-second_step-v2 = 2. ติดสายรัดเข้ากับแทร็กเกอร์ของคุณ โดยให้ด้านหนามเตยของสายรัดหันไปในทิศทางเดียวกับหน้าของแทร็กเกอร์:
-onboarding-assignment_tutorial-second_step-continuation-v2 = ด้านหนามเตยสำหรับส่วนขยายควรหงายขึ้นดังภาพต่อไปนี้:
-onboarding-assignment_tutorial-done = ฉันแปะสติกเกอร์และใส่สายรัดแล้ว!
 
 ## Tracker assignment setup
 
-onboarding-assign_trackers-back = กลับไปยังการตั้งค่าข้อมูลเครือข่าย Wi-Fi
 onboarding-assign_trackers-title = กำหนดตำแหน่งแทร็กเกอร์
 onboarding-assign_trackers-description = มาเลือกกันเลยว่าแทร็กเกอร์ไหนจะไปอยู่ตรงไหน คลิกที่ตำแหน่งที่คุณต้องการกำหนดแทร็กเกอร์ได้เลย
 onboarding-assign_trackers-unassign_all = ยกเลิกการกำหนดแทร็กเกอร์ทั้งหมด
@@ -1089,26 +836,6 @@ onboarding-assign_trackers-unassign_all = ยกเลิกการกำห�
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned = แทร็กเกอร์ { $assigned } จาก { $trackers } ตัว ได้ถูกกำหนดตำแหน่งแล้ว
-onboarding-assign_trackers-advanced = แสดงตำแหน่งที่กำหนดได้เพิ่มเติม
-onboarding-assign_trackers-next = ฉันกำหนดแทร็กเกอร์ทั้งหมดแล้ว
-onboarding-assign_trackers-mirror_view = มุมมองภาพสะท้อน
-onboarding-assign_trackers-option-amount = x{ $trackersCount }
-onboarding-assign_trackers-option-label =
-    { $mode ->
-        [lower-body] เซ็ตร่างกายส่วนล่าง
-        [core] เซ็ตหลัก
-        [enhanced-core] เซ็ตหลักเพิ่มเติม
-        [full-body] เซ็ตทั้งตัว
-       *[all] ตำแหน่งทั้งหมด
-    }
-onboarding-assign_trackers-option-description =
-    { $mode ->
-        [lower-body] ขั้นต่ำสำหรับจับตำแหน่ง Full-body ใน VR
-        [core] + การจับตำแหน่งสันหลังที่ดีขึ้น
-        [enhanced-core] + เพิ่มการหมุนของเท้า
-        [full-body] + จับตำแหน่งข้อศอก
-       *[all] ตำแหน่งที่ติดตั้งแทร็กเกอร์ได้ทั้งหมด
-    }
 
 ## Tracker assignment warnings
 
@@ -1188,20 +915,10 @@ onboarding-choose_mounting-auto_mounting = ตั้งศูนย์การ�
 onboarding-choose_mounting-auto_mounting-label-v2 = แนะนำ
 onboarding-choose_mounting-auto_mounting-description = ระบบจะตรวจจับทิศทางการติดตั้งของแทร็กเกอร์ทั้งหมดของคุณโดยอัตโนมัติ จากท่าทาง 2 ท่า
 onboarding-choose_mounting-manual_mounting = ตั้งศูนย์การติดตั้งด้วยตัวเอง
-# Italicized text
-onboarding-choose_mounting-manual_mounting-label-v2 = อาจมีความแม่นยำไม่เพียงพอ
 onboarding-choose_mounting-manual_mounting-description = คุณสามารถเลือกทิศทางการติดตั้งด้วยตนเองสำหรับแทร็กเกอร์แต่ละตัว
-# Multiline text
-onboarding-choose_mounting-manual_modal-title =
-    คุณแน่ใจหรือไม่ว่าต้องการ
-    ทำการตั้งศูนย์การติดตั้งแบบอัตโนมัติ?
-onboarding-choose_mounting-manual_modal-description = <b>แนะนำให้ผู้ใช้ใหม่ใช้การตั้งศูนย์การติดตั้งด้วยตนเอง</b> เนื่องจากท่าทางสำหรับการตั้งศูนย์แบบอัตโนมัตินั้นอาจทำได้ยากในช่วงแรกและอาจต้องอาศัยการฝึกฝน
-onboarding-choose_mounting-manual_modal-confirm = ฉันรู้ว่าฉันทำอะไรอยู่
-onboarding-choose_mounting-manual_modal-cancel = ยกเลิก
 
 ## Tracker manual mounting setup
 
-onboarding-manual_mounting-back = กลับไปยังเข้าสู่ VR
 onboarding-manual_mounting = ตั้งศูนย์การติดตั้งด้วยตนเอง
 onboarding-manual_mounting-description = ให้คลิกที่แทร็กเกอร์แต่ละตัว และเลือกทิศทางการติดตั้งที่ถูกต้อง
 onboarding-manual_mounting-auto_mounting = ตั้งศูนย์การติดตั้งแบบอัตโนมัติ
@@ -1209,7 +926,6 @@ onboarding-manual_mounting-next = ขั้นตอนถัดไป
 
 ## Tracker automatic mounting setup
 
-onboarding-automatic_mounting-back = กลับไปยังเข้าสู่ VR
 onboarding-automatic_mounting-title = ตั้งศูนย์การติดตั้งแทร็กเกอร์
 onboarding-automatic_mounting-description = เพื่อให้แทร็กเกอร์ SlimeVR ทำงานได้ เราจำเป็นต้องกำหนดทิศทางการติดตั้งให้กับแทร็กเกอร์ของคุณเพื่อจัดแนวให้ตรงกับการติดตั้งแทร็กเกอร์บนร่างกายคุณ
 onboarding-automatic_mounting-manual_mounting = ตั้งศูนย์การติดตั้งด้วยตนเอง
@@ -1235,12 +951,10 @@ onboarding-automatic_mounting-return-home = เสร็จแล้ว
 ## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back-scaled = กลับไปที่สัดส่วนที่อ้างอิงขนาด
-onboarding-manual_proportions-title = ปรับสัดส่วนร่างกายด้วยตนเอง
 onboarding-manual_proportions-fine_tuning_button = ปรับสัดส่วนโดยละเอียดอัตโนมัติ
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = โปรดเชื่อมต่อเฮดเซ็ท VR เพื่อใช้การปรับโดยละเอียดอัตโนมัติ
 onboarding-manual_proportions-export = ส่งออกค่าสัดส่วน
 onboarding-manual_proportions-import = นำเข้าค่าสัดส่วน
-onboarding-manual_proportions-file_type = ไฟล์ข้อมูลสัดส่วน
 onboarding-manual_proportions-normal_increment = เพิ่มจำนวนแบบปกติ
 onboarding-manual_proportions-precise_increment = เพิ่มจำนวนแบบละเอียด
 onboarding-manual_proportions-grouped_proportions = สัดส่วนแบบกลุ่ม
@@ -1252,7 +966,6 @@ onboarding-manual_proportions-estimated_height = ความสูงของ�
 onboarding-automatic_proportions-back = กลับไปยังการปรับสัดส่วนด้วยตัวเอง
 onboarding-automatic_proportions-title = วัดสัดส่วนร่างกายของคุณ
 onboarding-automatic_proportions-description = เพื่อให้ SlimeVR แทร็กเกอร์ทำงานได้ เราจะต้องรู้ความยาวของกระดูกของคุณ การตั้งศูนย์อย่างไวนี้จะวัดค่ามันให้คุณ
-onboarding-automatic_proportions-manual = ปรับสัดส่วนด้วยตัวเอง
 onboarding-automatic_proportions-prev_step = ขั้นตอนก่อนหน้า
 onboarding-automatic_proportions-put_trackers_on-title = ใส่แทร็กเกอร์ของคุณ
 onboarding-automatic_proportions-put_trackers_on-description = เราจะใช้แทร็กเกอร์ที่ถูกกำหนดตำแหน่งไว้แล้วในการตั้งศูนย์สัดส่วน ใส่แทร็กเกอร์ของคุณได้เลย หากไม่แน่ใจว่าแทร็กเกอร์เป็นตัวไหน สามารถดูได้จากภาพด้านขวา
@@ -1266,33 +979,6 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     แว่นของคุณกำลังส่งข้อมูลตำแหน่งไปยังเซิร์ฟเวอร์ SlimeVR (โดยทั่วไปหมายถึงการเปิดใช้งาน SteamVR และเชื่อมต่อกับ SlimeVR โดยใช้ไดรเวอร์ SteamVR ของ SlimeVR)
     แทร็กเกอร์ของคุณทำงาน และจับการเคลื่อนไหวของคุณได้อย่างแม่นยำ (เช่น คุณได้ทำการรีเซ็ตแบบเต็มแล้ว และแทร็กเกอร์เคลื่อนที่ไปในทิศทางที่ถูกต้องเมื่อเตะ, ก้มตัว, นั่ง, เป็นต้น)
 onboarding-automatic_proportions-requirements-next = ฉันได้อ่านสิ่งที่ต้องการแล้ว
-onboarding-automatic_proportions-check_height-title-v3 = วัดความสูงของเฮดเซ็ท
-onboarding-automatic_proportions-check_height-description-v2 = ความสูงเฮดเซ็ท (HMD) ควรจะต่ำกว่าความสูงจริงของคุณเล็กน้อย เนื่องจากเฮดเซ็ทจะวัดความสูงระดับสายตา การวัดนี้จะถูกใช้เป็นพื้นฐานสำหรับการคำนวณสัดส่วนร่างกายของคุณ
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v3 = ให้เริ่มต้นการวัดในขณะที่ยืนตัว <u>ตรง</u> เพื่อวัดความสูงของคุณ ระวังอย่าให้มือของคุณยกสูงเกินเฮดเซ็ท เพราะอาจส่งผลต่อการวัด!
-onboarding-automatic_proportions-check_height-guardian_tip =
-    หากคุณใช้เฮดเซ็ท VR แบบ Standalone โปรดตรวจสอบให้แน่ใจว่าได้เปิด Guardian /
-    Boundary เพื่อให้ความสูงของคุณถูกต้อง!
-# Context is that the height is unknown
-onboarding-automatic_proportions-check_height-unknown = ไม่ทราบ
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height2 = ความสูงของเฮดเซ็ทคุณคือ:
-onboarding-automatic_proportions-check_height-measure-start = เริ่มการวัด
-onboarding-automatic_proportions-check_height-measure-stop = หยุดการวัด
-onboarding-automatic_proportions-check_height-measure-reset = ทำการวัดอีกครั้ง
-onboarding-automatic_proportions-check_height-next_step = ใช้ความสูงจากเฮดเซ็ทคุณ
-onboarding-automatic_proportions-check_floor_height-title = วัดความสูงพื้นของคุณ (ไม่บังคับ)
-onboarding-automatic_proportions-check_floor_height-description = ในบางกรณี ความสูงพื้นของเฮดเซ็ทอาจไม่ได้ถูกตั้งค่าอย่างถูกต้อง ทำให้ความสูงที่วัดได้สูงเกินกว่าที่ควรจะเป็น คุณสามารถวัด "ความสูง" ของพื้นเพื่อแก้ไขความสูงของเฮดเซ็ทคุณได้
-# All the text is in bold!
-onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = เริ่มการวัดและวางคอนโทรลเลอร์ไว้บนพื้นเพื่อวัดความสูง หากคุณแน่ใจว่าความสูงพื้นถูกต้อง คุณสามารถข้ามขั้นตอนนี้ได้
-# Shows an element below it
-onboarding-automatic_proportions-check_floor_height-floor_height = ความสูงของพื้นของคุณคือ:
-onboarding-automatic_proportions-check_floor_height-full_height = ความสูงโดยประมาณของคุณคือ:
-onboarding-automatic_proportions-check_floor_height-measure-start = เริ่มการวัด
-onboarding-automatic_proportions-check_floor_height-measure-stop = หยุดการวัด
-onboarding-automatic_proportions-check_floor_height-measure-reset = ทำการวัดอีกครั้ง
-onboarding-automatic_proportions-check_floor_height-skip_step = ข้ามขั้นตอนแล้วบันทึก
-onboarding-automatic_proportions-check_floor_height-next_step = ใช้ค่าความสูงจากพื้นแล้วบันทึก
 onboarding-automatic_proportions-start_recording-title = เตรียมพร้อมสำหรับการเคลื่อนไหว
 onboarding-automatic_proportions-start_recording-description = เราจะทำการบันทึกท่าทางและการเคลื่อนไหวเฉพาะบางอย่าง ซึ่งจะปรากฏขึ้นบนหน้าจอถัดไป โปรดเตรียมพร้อมที่จะเริ่มทันทีเมื่อกดปุ่ม!
 onboarding-automatic_proportions-start_recording-next = เริ่มการบันทึก
@@ -1331,7 +1017,6 @@ onboarding-automatic_proportions-smol_warning-cancel = ย้อนกลับ
 ## User height calibration
 
 onboarding-user_height-title = ความสูงของคุณคือเท่าไหร่?
-onboarding-user_height-description = เราต้องการความสูงของคุณเพื่อคำนวณสัดส่วนร่างกายและแสดงการเคลื่อนไหวของคุณอย่างแม่นยำ คุณสามารถให้ SlimeVR คำนวณให้ หรือป้อนความสูงเองด้วยตนเอง
 onboarding-user_height-need_head_tracker = จำเป็นต้องใช้เฮดเซ็ต (หรือแทร็กเกอร์ส่วนหัว) และคอนโทรลเลอร์ที่มีการติดตามตำแหน่งเพื่อทำการตั้งศูนย์
 onboarding-user_height-calculate = คำนวณความสูงของฉันโดยอัตโนมัติ
 onboarding-user_height-next_step = บันทึกและดำเนินการต่อ
@@ -1362,11 +1047,6 @@ onboarding-stay_aligned-put_trackers_on-description = เพื่อบัน�
 onboarding-stay_aligned-put_trackers_on-trackers_warning = คุณเชื่อมต่อและระบุตำแหน่งแทร็กเกอร์ไว้น้อยกว่า 5 ตัว! ซึ่งนี่คือจำนวนขั้นต่ำที่จำเป็นเพื่อให้ระบบ Stay Aligned ทำงานได้อย่างถูกต้อง
 onboarding-stay_aligned-put_trackers_on-next = ฉันสวมแทร็กเกอร์ครบทุกตัวแล้ว
 onboarding-stay_aligned-verify_mounting-title = ตั้งศูนย์การติดตั้ง
-onboarding-stay_aligned-verify_mounting-step-0 = ระบบ Stay Aligned จำเป็นต้องมีการสวมใส่แทร็กเกอร์ในตำแหน่งที่ถูกต้อง ไม่เช่นนั้นคุณอาจได้รับประสบการณ์ที่ไม่ดีจากการใช้งานฟีเจอร์นี้
-onboarding-stay_aligned-verify_mounting-step-1 = 1. ขยับตัวไปมาขณะยืน
-onboarding-stay_aligned-verify_mounting-step-2 = 2. นั่งลง แล้วขยับขาและเท้า
-onboarding-stay_aligned-verify_mounting-step-3 = 3. หากตำแหน่งของแทร็กเกอร์ยังไม่ถูกต้อง ให้กดปุ่ม "ตั้งศูนย์การติดตั้งแทร็กเกอร์อีกครั้ง"
-onboarding-stay_aligned-verify_mounting-redo_mounting = ตั้งศูนย์การติดตั้งแทร็กเกอร์อีกครั้ง
 onboarding-stay_aligned-preparation-title = การเตรียมตัว
 onboarding-stay_aligned-preparation-tip = ให้ยืนตัวตรง มองตรงไปข้างหน้า และปล่อยแขนแนบลำตัว
 onboarding-stay_aligned-relaxed_poses-standing-title = ทำท่ายืนแบบผ่อนคลาย
@@ -1390,7 +1070,6 @@ onboarding-stay_aligned-manual_mounting-done = เสร็จแล้ว
 
 ## Home
 
-home-no_trackers = ไม่พบหรือไม่ได้กำหนดแทร็กเกอร์
 home-settings = การตั้งค่าหน้าหลัก
 home-settings-close = ปิด
 
@@ -1405,15 +1084,6 @@ trackers_still_on-modal-cancel = ใจเย็นๆก่อน....
 
 ## Status system
 
-status_system-StatusTrackerReset = แนะนำให้ทำการรีเซ็ตทั้งหมด เนื่องจากมีแทร็กเกอร์ที่ยังไม่ได้ปรับค่าตั้งแต่หนึ่งตัวขึ้นไป
-status_system-StatusSteamVRDisconnected =
-    { $type ->
-        [steamvr_feeder] ขณะนี้ยังไม่มีการเชื่อมต่อกับแอป SlimeVR Feeder
-       *[steamvr] ขณะนี้ยังไม่มีการเชื่อมต่อกับ SteamVR ผ่านไดรเวอร์ SlimeVR
-    }
-status_system-StatusTrackerError = แทร็กเกอร์ { $trackerName } เกิดข้อผิดพลาด
-status_system-StatusUnassignedHMD = เฮดเซ็ท VR ของคุณควรจะถูกกำหนดเป็นแทร็กเกอร์ส่วนหัว
-status_system-StatusPublicNetwork = โปรไฟล์เครือข่ายของคุณตอนนี้ถูกตั้งค่าเป็นสาธารณะ ({ $adapters }) ในขณะนี้ ซึ่งไม่แนะนำสำหรับการทำงานของ SlimeVR <PublicFixLink>สามารถดูวิธีการแก้ไขได้ที่นี่</PublicFixLink>
 
 ## Firmware tool globals
 
@@ -1565,8 +1235,6 @@ vrc_config-page-wrist_menu = แทร็กกิ้ง & IK (เมนูบ�
 vrc_config-page-wrist_menu-desc = การตั้งค่าเกี่ยวกับ IK ในเมนูตั้งค่าเล็ก (เมนูบนข้อมือ)
 vrc_config-on = เปิด
 vrc_config-off = ปิด
-vrc_config-invalid = คุณมีการตั้งค่าใน VRChat ที่ไม่ถูกต้อง!
-vrc_config-show_more = แสดงข้อมูลเพิ่มเติม
 vrc_config-setting_name = ชื่อการตั้งค่าใน VRChat
 vrc_config-recommended_value = การตั้งค่าที่แนะนำ
 vrc_config-current_value = การตั้งค่าปัจจุบัน

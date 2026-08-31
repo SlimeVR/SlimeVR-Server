@@ -22,7 +22,6 @@ version_update-close = Sulge
 tips-find_tracker = Ei ole kindel milline jälgija on mis? Raputage jälgijat, ning õige jälgija tõstetakse esile.
 tips-do_not_move_heels = Veenduge, et teie kannad ei liigu salvestamise ajal!
 tips-file_select = Pukseerige failid kasutamiseks, või <u>sirvi</u>.
-tips-tap_setup = Saate jälgija valimiseks menüüst valimise asemel aeglaselt oma jälgijat 2 korda puudutada.
 
 ## Units
 
@@ -61,18 +60,15 @@ skeleton_bone-HEAD = Pea Nihe
 skeleton_bone-NECK = Kaela Pikkus
 skeleton_bone-torso_group = Torso pikkus
 skeleton_bone-UPPER_CHEST = Rinna ülaosa pikkus
-skeleton_bone-CHEST_OFFSET = Rindkere nihe
 skeleton_bone-CHEST = Rinna pikkus
 skeleton_bone-WAIST = Vööümbermõõt
 skeleton_bone-HIP = Puusa pikkus
-skeleton_bone-HIP_OFFSET = Puusa Nihe
 skeleton_bone-HIPS_WIDTH = Puusa Laius
 skeleton_bone-leg_group = Jala pikkus
 skeleton_bone-UPPER_LEG = Jala ülaosa pikkus
 skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = Jala Pikkus
 skeleton_bone-FOOT_SHIFT = Jala Nihe
-skeleton_bone-SKELETON_OFFSET = Skeletti Nihe
 skeleton_bone-SHOULDERS_DISTANCE = Õlgade Kaugus
 skeleton_bone-SHOULDERS_WIDTH = Õlgade Laius
 skeleton_bone-arm_group = Käe pikkus
@@ -80,7 +76,6 @@ skeleton_bone-UPPER_ARM = Õlavarre Pikkus
 skeleton_bone-LOWER_ARM = Käsivarre Kaugus
 skeleton_bone-HAND_Y = Käte kaugus Y
 skeleton_bone-HAND_Z = Käte kaugus Z
-skeleton_bone-ELBOW_OFFSET = Küünarnuki Nihe
 
 ## Tracker reset buttons
 
@@ -120,17 +115,12 @@ tracking-paused = Jätka jälgimine
 
 ## Widget: Overlay settings
 
-widget-overlay = Ülekate
-widget-overlay-is_visible_label = Näita Ülekatet SteamVR-is
-widget-overlay-is_mirrored_label = Näita Ülekatet Peeglina
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = Selgem triivi kompenseerimine
 
 ## Widget: Clear Mounting calibration
 
-widget-clear_mounting = Lähtesta paigaldusasend
 
 ## Widget: Developer settings
 
@@ -138,7 +128,6 @@ widget-developer_mode = Arendaja režiim
 widget-developer_mode-high_contrast = Kõrge kontrastsus
 widget-developer_mode-precise_rotation = Täpne pööre
 widget-developer_mode-fast_data_feed = Kiire andmevoog
-widget-developer_mode-filter_slimes_and_hmd = Filtreerige Slimed ja HMD-d
 widget-developer_mode-sort_by_name = Sorteeri nime järgi
 widget-developer_mode-raw_slime_rotation = Toores pööre
 widget-developer_mode-more_info = Rohkem infot
@@ -185,7 +174,6 @@ tracker-rotation-back = Taga
 tracker-rotation-back_left = Taga vasakul
 tracker-rotation-back_right = Taga paremal
 tracker-rotation-custom = Kohandatud
-tracker-rotation-overriden = (tühistatud paigalduse lähtestamine tõttu)
 
 ## Tracker information
 
@@ -193,8 +181,6 @@ tracker-infos-manufacturer = Tootja
 tracker-infos-display_name = Kuvatav Nimi
 tracker-infos-custom_name = Kohandatud Nimi
 tracker-infos-url = Jälgija URL
-tracker-infos-version = Püsivara versioon
-tracker-infos-hardware_rev = Riistvara revisjon
 tracker-infos-hardware_identifier = Riistvara ID
 tracker-infos-imu = IMU sensor
 tracker-infos-board_type = Põhiplaat
@@ -209,9 +195,6 @@ tracker-settings-assignment_section-edit = Muuda jälgija asukohta
 tracker-settings-mounting_section = Paigaldusasend
 tracker-settings-mounting_section-description = Kuhu on jälgija paigaldatud.
 tracker-settings-mounting_section-edit = Muuda paigaldusasendit
-tracker-settings-drift_compensation_section = Allow drift compensation
-tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
-tracker-settings-drift_compensation_section-edit = Allow drift compensation
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Jälgija Nimi
@@ -220,51 +203,17 @@ tracker-settings-name_section-placeholder = NightyBeast-i vasak käsi
 
 ## Tracker part card info
 
-tracker-part_card-no_name = Nimi puudub
 tracker-part_card-unassigned = Määramata
 
 ## Body assignment menu
 
 body_assignment_menu = Kus te soovite, et jälgija oleks?
 body_assignment_menu-description = Vali asukoht kuhu te soovite, et jälgija määratakse. Alternatiivina saate te hallata kõiki jälgijaid korraga mitte ükshaaval.
-body_assignment_menu-show_advanced_locations = Kuva täpsem määramise asukoht
 body_assignment_menu-manage_trackers = Halda kõiki jälgijaid
 body_assignment_menu-unassign_tracker = Tühista jälgija määramine
 
 ## Tracker assignment menu
 
-# A -translation_key (with a dash in the front) means that it's a label.
-# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-#
-# We are using it here because english doesn't require changing the text in each case but
-# maybe your language does.
--tracker_selection-part = Millist jälgijat määrata teie
-tracker_selection_menu-NONE = Millise jälgija määramist soovite tühistada?
-tracker_selection_menu-HEAD = { -tracker_selection-part } peale?
-tracker_selection_menu-NECK = { -tracker_selection-part } kaelale?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } paremale õlale?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } paremale õlavarrele?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } paremale küünarvarrele?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } paremale käele?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } paremale reiele?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } paremale säärele?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } paremale jalale?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } paremale kontrollerile?
-tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } rinnale?
-tracker_selection_menu-CHEST = { -tracker_selection-part } rind?
-tracker_selection_menu-WAIST = { -tracker_selection-part } vöökoht?
-tracker_selection_menu-HIP = { -tracker_selection-part } puus?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } vasakule õlale?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } vasakule õlavarrele?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } vasakule küünarvarrele_
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } vasakule käele?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } vasakule reiele?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } vasakule säärele?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } vasakule jalale?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } vasakule kontrollerile?
-tracker_selection_menu-unassigned = Määramata Jälgijad
-tracker_selection_menu-assigned = Määratud Jälgijad
-tracker_selection_menu-dont_assign = Ära määra jälgijat
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -282,11 +231,7 @@ mounting_selection_menu-close = Sulge
 
 settings-sidebar-title = Seaded
 settings-sidebar-general = Tavaline
-settings-sidebar-tracker_mechanics = Jälgija mehaanika
-settings-sidebar-fk_settings = FK seaded
-settings-sidebar-gesture_control = Žesti juhtimine
 settings-sidebar-interface = Liides
-settings-sidebar-osc_router = OSC ruuter
 settings-sidebar-osc_trackers = VRChati OSC Jälgija
 settings-sidebar-utils = Olemus / Lisad
 settings-sidebar-serial = Jadakonsool
@@ -295,21 +240,9 @@ settings-sidebar-notifications = Teavitused
 
 ## SteamVR settings
 
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = SteamVR jälgijad
-# Not all translation keys support multiline, only the ones that specify it will actually
-# split it in lines (that also means you can split in lines however you want in those).
-# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines
-settings-general-steamvr-description =
-    Luba või keela spetsiifilised SteamVR-i jälgijad.
-    Kasulik teatud mängudele või äppidele, mis toetavad ainult teatuid jälgijaid.
-settings-general-steamvr-trackers-waist = Vöökoht
-settings-general-steamvr-trackers-chest = Rind
 
 ## Tracker mechanics
 
-settings-general-tracker_mechanics = Jälgija mehaanika
 settings-general-tracker_mechanics-filtering = Filtreerimine
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -323,14 +256,6 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Teeb l
 settings-general-tracker_mechanics-filtering-type-prediction = Ennustamine
 settings-general-tracker_mechanics-filtering-type-prediction-description = Vähendab aega jälgija ja programmi vahel ja tee liigutused kiiremaks, aga võib lisada värinat.
 settings-general-tracker_mechanics-filtering-amount = Amount
-settings-general-tracker_mechanics-drift_compensation = Drift compensation
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates IMU yaw drift by applying an inverse rotation.
-    Change amount of compensation and up to how many resets are taken into account.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 
 ## FK/Tracking settings
 
@@ -352,28 +277,13 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Põrandaklõpsat
 settings-general-fk_settings-leg_tweak-toe_snap-description = Varvaste klõpsatus maha üritab ära arvata jalgade pöörlemist, kui jalgade jälgijaid ei kasutata.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Jalg-maas pöörab jalad kokkupuutel maapinnaga paralleelseks.
 settings-general-fk_settings-leg_fk = Jalgade jälgimine
-settings-general-fk_settings-arm_fk = Käe jälgimine
-settings-general-fk_settings-arm_fk-description = Muuda viisi kuidas käsi jälgitakse.
-settings-general-fk_settings-arm_fk-force_arms = Sunni käed HMD-st
-settings-general-fk_settings-skeleton_settings-toggles = Skeleti lülitid
-settings-general-fk_settings-skeleton_settings-description = Lülita skeletti seaded sisse või välja. Soovitatud on see sisse jätta.
-settings-general-fk_settings-skeleton_settings-extended_spine_model = Laiendatud selgroo mudel
-settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Laiendatud vaagna mudel
-settings-general-fk_settings-skeleton_settings-extended_knees_model = Laiendatud põlve mudel
 settings-general-fk_settings-skeleton_settings-ratios = Skeleti suhted
 settings-general-fk_settings-skeleton_settings-ratios-description = Muutke skeleti seadete väärtusi. Võimalik, et peate pärast nende muutmist oma proportsioone kohandama.
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Imputeeri vöökoht rinnast ja puusast
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Imputeeri vöökoht rinnast ja jalgadest
-settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Imputeeri puusakoht rinnast ja jalgadest
-settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Imputeeri puusakoht vöökohast ja jalgadest
-settings-general-fk_settings-skeleton_settings-interp_hip_legs = Leia keskmine puusa lengerdus ja pöörlemine jalgade abiga
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Leia keskmine põlvede lengerdus ja pöörlemine säärte abiga
 settings-general-fk_settings-self_localization-title = Mocapi režiim
 settings-general-fk_settings-self_localization-description = Mocap-režiim võimaldab skeletil ligikaudselt jälgida oma asukohta ilma peakomplekti või muude jälgijateta. Pange tähele, et see nõuab jalgade ja peajälgijate olemasolu ning on endiselt eksperimentaalne.
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = Žesti juhtimine
 settings-general-gesture_control-subtitle = Puudutusepõhised lähtestused
 settings-general-gesture_control-description = Lubab lähtestada jälgija puudutades jälgijat. Jälgija kere kõige kõrgemal osal kasutatakse kiireks lähtestamiseks, jälgija vasaku jala kõige kõrgemal osal kasutatakse lähtestamiseks ja jälgija parema jala kõige kõrgemal osal kasutatakse paigalduse lähtestamiseks. Vajutused peavad toimuma 0.3 sekundi jooksul, et need registreeritaks.
 # This is a unit: 3 taps, 2 taps, 1 tap
@@ -458,28 +368,6 @@ settings-serial-auto_dropdown_item = Auto
 
 ## OSC router settings
 
-settings-osc-router = OSC ruuter
-# This cares about multilines
-settings-osc-router-description =
-    Edasta OSC-teated teisest programmidest.
-    Kasulik, kui kasutada teist OSC programmi näiteks VRChat-iga.
-settings-osc-router-enable = Luba
-settings-osc-router-enable-description = Lülitage andmete sisestamine sisse/välja.
-settings-osc-router-enable-label = Luba
-settings-osc-router-network = Võrgupordid
-# This cares about multilines
-settings-osc-router-network-description =
-    Lisage võrgupordid, mille pealt saata ja kuulata andmeid.
-    Need võivad olla samad võrgupordid mida kasutab SlimeVR server.
-settings-osc-router-network-port_in =
-    .label = Võrguport sisse
-    .placeholder = Võrguport sisse (vaikimisi: 9002)
-settings-osc-router-network-port_out =
-    .label = Võrguport välja
-    .placeholder = Võrguport välja (vaikimisi: 9000)
-settings-osc-router-network-address = Võrgu aadress
-settings-osc-router-network-address-description = Lisage võrgu aadress kuhu saata andmeid.
-settings-osc-router-network-address-placeholder = IPV4 aadress
 
 ## OSC VRChat settings
 
@@ -496,13 +384,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Võrguport välja (vaikimisi: 9000)
 settings-osc-vrchat-network-address = Võrgu aadress
 settings-osc-vrchat-network-address-placeholder = VRChat ip aadress
-settings-osc-vrchat-network-trackers = Jälgia
-settings-osc-vrchat-network-trackers-description = Lülita sisse/välja teatud jälgijate andmete saatmise OSC kaudu.
-settings-osc-vrchat-network-trackers-chest = Rind
-settings-osc-vrchat-network-trackers-hip = Puus
-settings-osc-vrchat-network-trackers-knees = Põlved
-settings-osc-vrchat-network-trackers-feet = Jalad
-settings-osc-vrchat-network-trackers-elbows = Küünarnukid
 
 ## VMC OSC settings
 
@@ -548,7 +429,6 @@ settings-osc-vmc-anchor_hip-label = Ankurda puusadel
 
 onboarding-skip = Jäta seadistamine vahele
 onboarding-continue = Jätka
-onboarding-wip = Töö käib
 onboarding-previous_step = Eelmine samm
 onboarding-setup_warning =
     <b>Hoiatus:</b> Hea jälgimise jaoks on vajalik esialgne seadistamine,
@@ -561,7 +441,6 @@ onboarding-setup_warning-cancel = Jätka seadistamist
 
 ## Wi-Fi setup
 
-onboarding-wifi_creds-skip = Jätke Wi-Fi seaded vahele.
 onboarding-wifi_creds-submit = Jätka!
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -572,28 +451,6 @@ onboarding-wifi_creds-password =
 
 ## Mounting setup
 
-onboarding-reset_tutorial-back = Minge tagasi paigaldus kalibreerimisse
-onboarding-reset_tutorial = Lähtesta õpetus
-onboarding-reset_tutorial-explanation = Kui kasutate oma jälgijaid, võivad need IMU lengerdamise tõttu joondusest välja tulla või kuna olete neid füüsiliselt liigutanud. Teil on selle parandamiseks mitu võimalust.
-onboarding-reset_tutorial-skip = Jäta samm vahele
-# Cares about multiline
-onboarding-reset_tutorial-0 =
-    Puudutage { $taps } korda esiletõstetud jälgijat, et käivitada lengerduse lähtestamine.
-    
-    See setib jälgijad teie HMD-ga samas suunas.
-# Cares about multiline
-onboarding-reset_tutorial-1 =
-    Täieliku lähtestamise käivitamiseks puudutage esiletõstetud jälgijat { $taps } korda.
-    
-    Sa pead seisma (i-poosis). Enne kui see juhtub, on 3-sekundiline viivitus (konfigureeritav).
-    See lähtestab täielikult kõigi teie jälgijate asukoha ja pöörlemise. See peaks lahendama enamiku probleeme.
-# Cares about multiline
-onboarding-reset_tutorial-2 =
-    Puudutage { $taps } korda esiletõstetud jälgijat, et lähtestada paigaldus.
-    
-    Paigaldamise lähtestamine aitab kaasa sellele, kuidas jälgijad teile tegelikult pannakse, nii et kui te neid kogemata liigutasite ja muutsite nende orientatsiooni suure summa võrra, aitab see.
-    
-    Peate olema poosis, nagu suusatate, nagu see on näidatud automaatse paigaldamise viisardil, ja teil on 3-sekundiline viivitus (konfigureeritav), enne kui see käivitub.
 
 ## Install info
 
@@ -605,17 +462,12 @@ onboarding-home-start = Hakkame sättima!
 
 ## Setup done
 
-onboarding-done-title = Kõik on valmis!
-onboarding-done-description = Nautige enda kogu keha jälgimis kogemust
-onboarding-done-close = Sulgege juhend
 
 ## Tracker connection setup
 
-onboarding-connect_tracker-back = Minge tagasi Wi-Fi andmetesse
 onboarding-connect_tracker-title = Ühendage jälgijad
 onboarding-connect_tracker-issue-serial = Mul on probleeme ühenduse loomisega!
 onboarding-connect_tracker-usb = USB Jälgija
-onboarding-connect_tracker-connection_status-none = Jälgijate otsimine
 onboarding-connect_tracker-connection_status-serial_init = Ühenduse loomine jadaseadmega
 onboarding-connect_tracker-connection_status-provisioning = Saadame Wi-Fi andmeid
 onboarding-connect_tracker-connection_status-connecting = Saadame Wi-Fi andmeid
@@ -638,27 +490,12 @@ onboarding-connect_tracker-next = Olen ühendanud kõik oma jälgijad
 
 ## Tracker calibration tutorial
 
-onboarding-calibration_tutorial = IMU kalibreerimise õpetus
-onboarding-calibration_tutorial-subtitle = See aitab vähendada jälgija driftimist!
-onboarding-calibration_tutorial-calibrate = Panin oma jälgijad lauale
-onboarding-calibration_tutorial-status-waiting = Ootan sind
-onboarding-calibration_tutorial-status-calibrating = Kalibreerimine
-onboarding-calibration_tutorial-status-success = Võimas!
-onboarding-calibration_tutorial-status-error = Jälgija liigutati
 
 ## Tracker assignment tutorial
 
-onboarding-assignment_tutorial = Kuidas valmistada Slime Trackerit enne selle külge panemist
-onboarding-assignment_tutorial-first_step = 1. Asetage kehaosa kleebis (kui teil see on) jälgijale vastavalt oma valikule
-# This text has a character limit of around 11 characters, so please keep it short
-onboarding-assignment_tutorial-sticker = Kleebis
-onboarding-assignment_tutorial-second_step-v2 = 2. Kinnitage rihm oma jälgija külge, hoides rihma takjakülge jälgimisseadme pealmise poolega samas suunas:
-onboarding-assignment_tutorial-second_step-continuation-v2 = Extensioni takjapaela pool peaks olema ülespoole suunatud nagu järgmine pilt:
-onboarding-assignment_tutorial-done = Panin kleepsud ja rihmad külge!
 
 ## Tracker assignment setup
 
-onboarding-assign_trackers-back = Minge tagasi Wi-Fi andmetesse
 onboarding-assign_trackers-title = Määrake jälgijad asukoht
 onboarding-assign_trackers-description = Valime mis jälgijad lähevad kuhu. Vajutage asukohale kuhu te tahate, et jälgija läheks.
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
@@ -669,8 +506,6 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } of 1 jälgija assigned
        *[other] { $assigned } of { $trackers } jälgijat assigned
     }
-onboarding-assign_trackers-advanced = Kuva täpsemad määramiskohad
-onboarding-assign_trackers-next = Määrasin kõikide jälgijate asukohad
 
 ## Tracker assignment warnings
 
@@ -684,7 +519,6 @@ onboarding-choose_mounting-manual_mounting-description = See võimaldab teil val
 
 ## Tracker manual mounting setup
 
-onboarding-manual_mounting-back = Minge tagasi, et siseneda VR-i
 onboarding-manual_mounting = Käsitsi paigaldamine
 onboarding-manual_mounting-description = Vajutage iga jälgija peale ja valige, kuidas see on paigaldatud
 onboarding-manual_mounting-auto_mounting = Automaatne paigaldamine
@@ -692,7 +526,6 @@ onboarding-manual_mounting-next = Järgmine Samm
 
 ## Tracker automatic mounting setup
 
-onboarding-automatic_mounting-back = Minge tagasi, et siseneda VR-i
 onboarding-automatic_mounting-title = Paigaldamis kalibreerimine
 onboarding-automatic_mounting-description = Et SlimeVR jälgijad töötaksid peame me nendele seadistama paigaldamise pöörde, et need joondada teie füüsilise jälgijate paigaldusega.
 onboarding-automatic_mounting-manual_mounting = Manuaalselt seadistamine
@@ -711,23 +544,18 @@ onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad kül
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-title = Käsitsi keha proportsioonid
 
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-back = Mine tagasi lähtestamise õppetusse
 onboarding-automatic_proportions-title = Mõõtke oma keha
 onboarding-automatic_proportions-description = Et SlimeVR jälgijad töötaks peame me teadma teie kontide pikkust. See lühike kalibreerimine mõõdab selle teie jaoks.
-onboarding-automatic_proportions-manual = Manuaalne Kalibreerimine
 onboarding-automatic_proportions-prev_step = Eelmine Samm
 onboarding-automatic_proportions-put_trackers_on-title = Pange kõik jälgijad peale
 onboarding-automatic_proportions-put_trackers_on-description = Et kalibreerida teie proportsioone pange kõik jälgijad peale ja te näete mis on mis jälgijad paremal pool ekraani.
 onboarding-automatic_proportions-put_trackers_on-next = Mul on kõik jälgijad küljes
 onboarding-automatic_proportions-requirements-title = Nõuded
 onboarding-automatic_proportions-requirements-next = Olen lugenud nõudeid
-# Context is that the height is unknown
-onboarding-automatic_proportions-check_height-unknown = Tundmatu
-onboarding-automatic_proportions-check_height-next_step = Nendega on kõik korras
 onboarding-automatic_proportions-start_recording-title = Olge valmis liikuma
 onboarding-automatic_proportions-start_recording-description = Me nüüd salvestame teatud poose ja liigutusi neid näete järgmisel ekraanil. Olge valmis, kui te vajutate nuppu!
 onboarding-automatic_proportions-start_recording-next = Alusta salvestamist
@@ -767,19 +595,12 @@ onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
 ## Home
 
-home-no_trackers = Jälgijaid ei tuvastatud ega määratud
 
 ## Trackers Still On notification
 
 
 ## Status system
 
-status_system-StatusSteamVRDisconnected =
-    { $type ->
-        [steamvr_feeder] Praegu ei ole SlimeVR-feeder äpiga ühendatud.
-       *[other] Praegu ei ole SlimeVR-draiveri kaudu SteamVR-iga ühendatud.
-    }
-status_system-StatusTrackerError = Jälgijal { $trackerName } on tõrge.
 
 ## Firmware tool globals
 

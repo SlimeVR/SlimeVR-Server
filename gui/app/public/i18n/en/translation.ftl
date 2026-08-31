@@ -23,7 +23,6 @@ version_update-close = Close
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
-tips-turn_on_tracker = Using official SlimeVR trackers? Don't forget to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
 ## Units
@@ -227,22 +226,14 @@ skeleton_bone-HAND_Z-desc =
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
-reset-reset_all_warning-v2 =
-    <b>Warning:</b> Your proportions will be reset to defaults scaled to your configured height.
-    Are you sure you want to do this?
 reset-reset_all_warning-reset = Reset proportions
 reset-reset_all_warning-cancel = Cancel
-reset-reset_all_warning_default-v2 =
-    <b>Warning:</b> Your height has not been configured, your proportions will be reset to defaults with the default height.
-    Are you sure you want to do this?
 
 reset-full = Full Reset
 reset-mounting = Mounting Calibration
 reset-mounting-feet = Feet Calibration
 reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
-reset-error-no_feet_tracker = No feet tracker assigned
-reset-error-no_fingers_tracker = No finger tracker assigned
 reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
 
@@ -275,12 +266,8 @@ tracking-unpaused = Pause tracking
 tracking-paused = Unpause tracking
 
 ## Widget: Overlay settings
-widget-overlay = Overlay
-widget-overlay-is_visible_label = Show Overlay in SteamVR
-widget-overlay-is_mirrored_label = Display Overlay as Mirror
 
 ## Widget: Clear Mounting calibration
-widget-clear_mounting = Clear mounting calibration
 
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
@@ -302,8 +289,6 @@ widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
-widget-skeleton_visualizer-preview = Skeleton preview
-widget-skeleton_visualizer-hide = Hide
 
 ## Tracker status
 tracker-status-none = No Status
@@ -320,7 +305,6 @@ tracker-table-column-name = Name
 tracker-table-column-type = Type
 tracker-table-column-battery = Battery
 tracker-table-column-ping = Ping
-tracker-table-column-packet_loss = Packet Loss
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
@@ -346,8 +330,6 @@ tracker-infos-manufacturer = Manufacturer
 tracker-infos-display_name = Display Name
 tracker-infos-custom_name = Custom Name
 tracker-infos-url = Tracker URL
-tracker-infos-version = Firmware Version
-tracker-infos-hardware_rev = Hardware Revision
 tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-data_type = Data type
 tracker-infos-imu = IMU Sensor
@@ -410,7 +392,6 @@ dongle-settings-title = Dongle settings
 dongle-settings-name_section = Dongle name
 dongle-settings-name_section-description = Give it a cute nickname :3
 dongle-settings-name_section-placeholder = Futura's usb thingie
-dongle-settings-name_section-label = Dongle name
 dongle-settings-update = Update now
 dongle-settings-update-title = Firmware version
 dongle-settings-paired_trackers = Paired Trackers
@@ -428,13 +409,11 @@ dongle-settings-telemetry-footnote = Loss gap events mark regions where packet u
 
 
 ## Tracker part card info
-tracker-part_card-no_name = No name
 tracker-part_card-unassigned = Unassigned
 
 ## Body assignment menu
 body_assignment_menu = Where do you want this tracker to be?
 body_assignment_menu-description = Choose a location where you want this tracker to be assigned. Alternatively, you can choose to manage all trackers at once instead of one by one.
-body_assignment_menu-show_advanced_locations = Show advanced assign locations
 body_assignment_menu-manage_trackers = Manage all trackers
 body_assignment_menu-unassign_tracker = Unassign tracker
 
@@ -621,7 +600,6 @@ settings-keybinds-open-system-settings-button = Open system settings
 settings-keybinds-unsupported-description = Global keybinds are not supported on this platform.
 settings-sidebar-keybinds = Keybinds
 settings-keybinds-recorder-modal-title = Assign keybind for
-settings-keybinds-recorder-modal-reset-button = Reset
 settings-keybinds-recorder-modal-unbind-button = Unbind
 settings-keybinds-recorder-modal-done-button = Done
 settings-keybinds-recorder-modal-cancel-button = Cancel
@@ -633,10 +611,8 @@ settings-keybinds-click-to-record = Click to record shortcut
 settings-keybinds-change-shortcut = Click to change shortcut
 settings-keybinds-reset-single = Reset keybind to default
 settings-keybinds-recorder-hint-recording = Hold Ctrl, Alt, or Super, then press a letter or number
-settings-keybinds-recorder-hint-idle = Click inside the box to record a new key combination.
 settings-keybinds-error-letters-numbers-only = That key can't be used, pick a letter or number
 settings-keybinds-error-add-modifier = You can only start a combination with Ctrl, Alt, or Super
-settings-keybinds-error-duplicate = Duplicate keybind combinations are not allowed
 
 
 
@@ -668,8 +644,6 @@ settings-general-fk_settings-leg_fk-reset_mounting_fingers-description = Force f
 settings-general-fk_settings-enforce_joint_constraints = Skeletal Limits
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Enforce constraints
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Correct with constraints
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Correct joint rotations when they push past their limit
 settings-general-fk_settings-ik = Position data
 settings-general-fk_settings-ik-use_position = Use Position data
 settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
@@ -735,9 +709,6 @@ settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-theme = Colour theme
-settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
-settings-general-interface-show-navbar-onboarding-description = This changes whether the "{ navbar-onboarding }" button shows on the navigation bar.
-settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language.
 settings-general-interface-lang-placeholder = Select the language to use
@@ -749,9 +720,6 @@ settings-interface-appearance-font-os_font = OS font
 settings-interface-appearance-font-slime_font = Default font
 settings-interface-appearance-font_size = Base font scaling
 settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel.
-settings-interface-appearance-decorations = Use the system native decorations
-settings-interface-appearance-decorations-description = This will not render the top bar of the interface and will use the operating system's instead.
-settings-interface-appearance-decorations-label = Use native decorations
 
 ## Notification settings
 settings-interface-notifications = Notifications
@@ -823,7 +791,6 @@ settings-serial-calibrate = Calibrate
 settings-serial-six_side_calibrate = 6-Side Calibrate
 settings-serial-dfu = Enter DFU
 settings-serial-meow = Meow!
-settings-serial-file_type = Plain text
 settings-serial-save_logs = Save To File
 settings-serial-send_command = Send
 settings-serial-send_command-placeholder = Command...
@@ -842,15 +809,7 @@ settings-osc-vrchat-description-v1 =
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-enable-label = Enable
-settings-osc-vrchat-oscqueryEnabled = Enable OSCQuery
-settings-osc-vrchat-oscqueryEnabled-description =
-    OSCQuery automatically detects running instances of VRChat and sends them data.
-    It can also advertise itself to them in order to receive HMD and controller data.
-    To allow receiving HMD and controller data from VRChat, go in your main menu's settings
-    under "Tracking & IK" and enable "Allow Sending Head and Wrist VR Tracking OSC Data".
-settings-osc-vrchat-oscqueryEnabled-label = Enable OSCQuery
 settings-osc-vrchat-network = Network ports
-settings-osc-vrchat-network-description-v1 = Set the ports for listening and sending data. Can be left untouched for VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port In
     .placeholder = Port in (default: 9001)
@@ -863,7 +822,6 @@ settings-osc-vrchat-network-address-placeholder = VRChat ip address
 
 ## VRChat OSC status
 settings-osc-vrchat-status-title = Status
-settings-osc-vrchat-status-disabled = Disabled
 settings-osc-vrchat-status-input = Input
 settings-osc-vrchat-status-output = Output
 settings-osc-vrchat-status-oscquery = OSCQuery
@@ -995,7 +953,6 @@ settings-tracking_checklist-active_steps-desc = List of all the steps in the tra
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
 onboarding-continue = Continue
-onboarding-wip = Work in progress
 onboarding-previous_step = Previous step
 onboarding-setup_warning =
     <b>Warning:</b> The initial setup is required for good tracking,
@@ -1052,12 +1009,9 @@ onboarding-wifi_creds-v2 = Trackers using Wi-Fi
 onboarding-wifi_creds-description-v2 =
     Most trackers (such as official SlimeVR trackers) use Wi-Fi to connect to the server.
     Please use the credentials of the Wi-Fi network your device is currently connected to.
-onboarding-wifi_creds-skip = Skip Wi-Fi settings
 onboarding-wifi_creds-continue = Continue with Wi-Fi
 onboarding-wifi_creds-submit = Submit!
 onboarding-wifi_creds-retry = Retry
-onboarding-wifi_creds-provisioning_failed_connect = Connection failed for all trackers. Double-check your Wi-Fi name and password, then try again.
-onboarding-wifi_creds-provisioning_failed_server = Trackers connected to Wi-Fi but couldn't find the SlimeVR server. Check your firewall and network settings, then try again.
 onboarding-wifi_creds-ssid-label = Wi-Fi name
 onboarding-wifi_creds-ssid =
     .placeholder = Enter Wi-Fi name
@@ -1068,11 +1022,9 @@ onboarding-wifi_creds-network_band_tip = Only 2.4GHz Wi-Fi networks can be used 
 onboarding-wifi_creds-scan_idle = Plug in a tracker via USB to scan for nearby Wi-Fi networks.
 onboarding-wifi_creds-scanning = Scanning for Wi-Fi networks...
 onboarding-wifi_creds-scan_unsupported = Wi-Fi scanning isn't supported on this tracker's firmware yet. Enter your network name manually.
-onboarding-wifi_creds-scan_results = Wi-Fi networks found. Pick yours below.
 onboarding-wifi_creds-scan_failed = Wi-Fi scan failed on the tracker.
 onboarding-wifi_creds-scan_error_no_device = Could not find a tracker over USB to scan for Wi-Fi networks.
 onboarding-wifi_creds-scan_error_no_logs = Could not read serial logs from the tracker during Wi-Fi scan.
-onboarding-wifi_creds-scan_retry = Try again
 onboarding-wifi_creds-rescan = Rescan
 onboarding-wifi_creds-enter_manually = Don't see your network? Enter it manually
 onboarding-wifi_creds-use_scanned = Choose from scanned networks instead
@@ -1087,21 +1039,11 @@ onboarding-wifi_creds-dongle-wip = This section is a work in progress. A dedicat
 onboarding-wifi_creds-dongle-continue = Continue with a dongle
 
 ## Mounting setup
-onboarding-reset_tutorial-back = Go back to Mounting calibration
-onboarding-reset_tutorial = Reset tutorial
-onboarding-reset_tutorial-explanation = While you use your trackers, they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
-onboarding-reset_tutorial-skip = Skip step
-# Cares about multiline
-onboarding-reset_tutorial-0 = Tap the highlighted tracker { $taps } times to trigger a yaw reset.
 
     This will make the trackers face the same direction as your headset (HMD).
-# Cares about multiline
-onboarding-reset_tutorial-1 = Tap the highlighted tracker { $taps } times to trigger a full reset.
 
     You need to be standing for this (i-pose). There is a 3 seconds delay (configurable) before it actually happens.
     This fully resets the position and rotation of all your trackers. It should fix most issues.
-# Cares about multiline
-onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to trigger mounting calibration.
 
     Mounting calibration adjusts for how trackers are placed on your body. If they've moved or rotated significantly, this helps recalibrate their orientation.
 
@@ -1118,18 +1060,11 @@ onboarding-home-start = Let's get set up!
 
 
 ## Setup done
-onboarding-done-title = You're all set!
-onboarding-done-description = Enjoy your full-body experience
-onboarding-done-close = Close setup
 
 ## Tracker connection setup
-onboarding-connect_tracker-back = Go back to Wi-Fi credentials
 onboarding-connect_tracker-title = Let's connect your trackers
 onboarding-connect_tracker-description = Enter your Wi-Fi network below and submit once. every tracker you connect via USB, now or later, will automatically use those credentials.
-onboarding-connect_tracker-continue_hint = Finish connecting all your trackers to continue
 onboarding-connect_tracker-learn_more = Learn more
-onboarding-connect_tracker-description-p0-v1 = Now onto the fun part, connecting trackers!
-onboarding-connect_tracker-description-p1-v1 = Connect each tracker one at a time through a USB port.
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-tracker_mac_name = SlimeVR Tracker ({ $suffix })
@@ -1142,7 +1077,6 @@ onboarding-connect_tracker-scan_results_desc = Enter your Wi-Fi credentials on t
 onboarding-connect_tracker-all_caught_up = All caught up. Plug in more any time
 onboarding-connect_tracker-shake_tip = Not sure which tracker is which? Shake a tracker to see it light up in the list.
 onboarding-connect_tracker-close = Close
-onboarding-connect_tracker-connection_status-none = Looking for trackers
 onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtaining the tracker's mac address
 onboarding-connect_tracker-connection_status-provisioning = Sending Wi-Fi credentials
@@ -1157,13 +1091,6 @@ onboarding-connect_tracker-connection_error-desc = Make sure your Wi-Fi SSID and
 onboarding-connect_tracker-could_not_find_server-desc = The tracker connected to Wi-Fi, but could not find the SlimeVR server on your local network. Check your firewall settings.
 onboarding-connect_serial-error-modal-no_serial_log = Is the tracker turned on?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer.
-onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detected
-onboarding-connect_serial-error-modal-no_serial_device_found-desc =
-    Please connect a tracker with the provided USB cable to your computer and turn the tracker on.
-    If this does not work:
-      - try using a different USB cable
-      - try using a different USB port
-      - try reinstalling the SlimeVR server and select "USB Drivers" in the components section
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1175,33 +1102,9 @@ onboarding-connect_tracker-connected_trackers = { $amount ->
     *[other] { $amount } trackers
 } connected
 onboarding-connect_tracker-setting_up = Setting up ({ $amount })
-onboarding-connect_tracker-connected_section = Connected trackers ({ $amount })
-onboarding-connect_tracker-connected_title = USB Tracker Connected
-onboarding-connect_tracker-connected_desc = Enter your Wi-Fi credentials on the left and click Submit to send settings to your tracker.
 onboarding-connect_tracker-next = I connected all my trackers
 
-## Tracker calibration tutorial
-onboarding-calibration_tutorial = IMU Calibration Tutorial
-onboarding-calibration_tutorial-subtitle = This will help reduce tracker drifting!
-onboarding-calibration_tutorial-description-v1 = After turning on your trackers, place them on a stable surface for a moment to allow for calibration. Calibration can be performed at any time after the trackers are powered on—this page simply provides a tutorial. To begin, click the "{ onboarding-calibration_tutorial-calibrate }" button, then <b>do not move your trackers!</b>
-onboarding-calibration_tutorial-calibrate = I placed my trackers on a table
-onboarding-calibration_tutorial-status-waiting = Waiting for you
-onboarding-calibration_tutorial-status-calibrating = Calibrating
-onboarding-calibration_tutorial-status-success = Nice!
-onboarding-calibration_tutorial-status-error = The tracker was moved
-onboarding-calibration_tutorial-skip = Skip tutorial
-
-## Tracker assignment tutorial
-onboarding-assignment_tutorial = How to prepare a Slime Tracker before putting it on
-onboarding-assignment_tutorial-first_step = 1. Place a body part sticker (if you have one) on the tracker according to your choosing
-# This text has a character limit of around 11 characters, so please keep it short
-onboarding-assignment_tutorial-sticker = Sticker
-onboarding-assignment_tutorial-second_step-v2 = 2. Attach the strap to your tracker, keeping the velcro side of the strap facing the same direction as the slime face of your tracker:
-onboarding-assignment_tutorial-second_step-continuation-v2 = The velcro side for the extension should be facing up like the following image:
-onboarding-assignment_tutorial-done = I put stickers and straps!
-
 ## Tracker assignment setup
-onboarding-assign_trackers-back = Go back to Wi-Fi credentials
 onboarding-assign_trackers-title = Assign trackers
 onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker
 onboarding-assign_trackers-unassign_all = Unassign all trackers
@@ -1216,9 +1119,6 @@ onboarding-assign_trackers-all_assigned-title = All trackers assigned!
 onboarding-assign_trackers-all_assigned-description = You're ready to move on to the next step
 onboarding-assign_trackers-no_trackers-title = No trackers connected
 onboarding-assign_trackers-no_trackers-description = Connect a tracker to start assigning it to a body part
-onboarding-assign_trackers-mirror_view = Mirror view
-onboarding-assign_trackers-settings = Assignment settings
-onboarding-assign_trackers-settings-close = Close
 onboarding-assign_trackers-show_all = Show all body parts
 onboarding-assign_trackers-show_all-short = Show all parts
 onboarding-assign_trackers-tap_modal-title = Tap to assign
@@ -1310,25 +1210,16 @@ onboarding-choose_mounting-auto_mounting = Automatic mounting
 onboarding-choose_mounting-auto_mounting-label-v2 = Recommended
 onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
-# Italicized text
-onboarding-choose_mounting-manual_mounting-label-v2 = Might not be precise enough
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
 # Multiline text
-onboarding-choose_mounting-manual_modal-title = Are you sure you want to do
-    the automatic mounting calibration?
-onboarding-choose_mounting-manual_modal-description = <b>The manual mounting calibration is recommended for new users</b>, as the automatic mounting calibration's poses can be hard to get right first and may require some practice.
-onboarding-choose_mounting-manual_modal-confirm = I'm sure of what I'm doing
-onboarding-choose_mounting-manual_modal-cancel = Cancel
 
 ## Tracker manual mounting setup
-onboarding-manual_mounting-back = Go back to Enter VR
 onboarding-manual_mounting = Manual Mounting
 onboarding-manual_mounting-description = Click on every tracker and select which way they are mounted
 onboarding-manual_mounting-auto_mounting = Automatic mounting
 onboarding-manual_mounting-next = Next step
 
 ## Tracker automatic mounting setup
-onboarding-automatic_mounting-back = Go back to Enter VR
 onboarding-automatic_mounting-title = Mounting Calibration
 onboarding-automatic_mounting-description = For SlimeVR trackers to work, we need to assign a mounting orientation to your trackers to align them with your physical tracker mounting.
 onboarding-automatic_mounting-manual_mounting = Manual mounting
@@ -1356,12 +1247,10 @@ onboarding-automatic_mounting-return-home = Done
 
 ## Tracker manual proportions setupa
 onboarding-manual_proportions-back-scaled = Go back to Scaled Proportions
-onboarding-manual_proportions-title = Manual Body Proportions
 onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
 onboarding-manual_proportions-export = Export proportions
 onboarding-manual_proportions-import = Import proportions
-onboarding-manual_proportions-file_type = Body proportions file
 onboarding-manual_proportions-normal_increment = Normal increment
 onboarding-manual_proportions-precise_increment = Precise increment
 onboarding-manual_proportions-grouped_proportions = Grouped proportions
@@ -1372,7 +1261,6 @@ onboarding-manual_proportions-estimated_height = Estimated user height
 onboarding-automatic_proportions-back = Go back to Manual Proportions
 onboarding-automatic_proportions-title = Measure your body
 onboarding-automatic_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.
-onboarding-automatic_proportions-manual = Manual proportions
 onboarding-automatic_proportions-prev_step = Previous step
 
 onboarding-automatic_proportions-put_trackers_on-title = Put on your trackers
@@ -1389,33 +1277,6 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Your tracking is working and is accurately representing your movements (ex. you have performed a full reset and they move the right direction when kicking, bending over, sitting, etc).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
 
-onboarding-automatic_proportions-check_height-title-v3 = Measure your headset height
-onboarding-automatic_proportions-check_height-description-v2 = Your headset (HMD) height should be slightly less than your full height because headsets measure your eye height. This measurement will be used as a baseline for your body proportions.
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v3 = Start measuring while standing <u>upright</u> to measure your height. Be careful not to raise your hands higher than your headset, as they may affect the measurement!
-onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian /
-    boundary turned on so that your height is correct!
-# Context is that the height is unknown
-onboarding-automatic_proportions-check_height-unknown = Unknown
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height2 = Your headset height is:
-onboarding-automatic_proportions-check_height-measure-start = Start measuring
-onboarding-automatic_proportions-check_height-measure-stop = Stop measuring
-onboarding-automatic_proportions-check_height-measure-reset = Retry measuring
-onboarding-automatic_proportions-check_height-next_step = Use headset height
-
-onboarding-automatic_proportions-check_floor_height-title = Measure your floor height (optional)
-onboarding-automatic_proportions-check_floor_height-description = In some cases, your floor height may not be set correctly by your headset, causing the headset height to be measured as higher than it should be. You can measure the "height" of your floor to correct your headset height.
-# All the text is in bold!
-onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Start measuring and put a controller against your floor to measure its height. If you are sure that your floor height is correct, you can skip this step.
-# Shows an element below it
-onboarding-automatic_proportions-check_floor_height-floor_height = Your floor height is:
-onboarding-automatic_proportions-check_floor_height-full_height = Your estimated full height is:
-onboarding-automatic_proportions-check_floor_height-measure-start = Start measuring
-onboarding-automatic_proportions-check_floor_height-measure-stop = Stop measuring
-onboarding-automatic_proportions-check_floor_height-measure-reset = Retry measuring
-onboarding-automatic_proportions-check_floor_height-skip_step = Skip step and save
-onboarding-automatic_proportions-check_floor_height-next_step = Use floor height and save
 
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
@@ -1462,13 +1323,11 @@ onboarding-automatic_proportions-smol_warning-cancel = Go back
 
 ## User height calibration
 onboarding-user_height-title = What is your height?
-onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR calculate it, or input your height manually.
 onboarding-user_height-need_head_tracker = A headset and controllers with positional tracking are required to perform the calibration.
 onboarding-user_height-calculate = Calculate my height automatically
 onboarding-user_height-error_bounds = Input too high or too low
 onboarding-user_height-error_format = Input wrong format
 onboarding-user_height-next_step = Continue and save
-onboarding-user_height-prev_step = Back
 onboarding-user_height-manual-proportions = Manual Proportions
 onboarding-user_height-calibration-title = Calibration Progress
 onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
@@ -1496,11 +1355,6 @@ onboarding-stay_aligned-put_trackers_on-description = To save your resting poses
 onboarding-stay_aligned-put_trackers_on-trackers_warning = You have fewer than 5 trackers currently connected and assigned! This is the minimum amount of trackers required for Stay Aligned to function properly.
 onboarding-stay_aligned-put_trackers_on-next = I have all my trackers on
 onboarding-stay_aligned-verify_mounting-title = Mounting Calibration
-onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned requires good mounting. Otherwise, you won't get a good experience with Stay Aligned.
-onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
-onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
-onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, press "Redo Mounting Calibration".
-onboarding-stay_aligned-verify_mounting-redo_mounting = Redo Mounting calibration
 onboarding-stay_aligned-preparation-title = Preparation
 onboarding-stay_aligned-preparation-tip = Make sure to stand upright. Keep looking forward with your arms down at your sides.
 onboarding-stay_aligned-relaxed_poses-standing-title = Relaxed Standing Pose
@@ -1537,16 +1391,7 @@ trackers_still_on-modal-confirm = Exit SlimeVR
 trackers_still_on-modal-cancel = Hold on...
 
 ## Status system
-status_system-StatusTrackerReset = It is recommended to perform a full reset as one or more trackers are unadjusted.
-status_system-StatusSteamVRDisconnected = { $type ->
-    *[steamvr] Currently not connected to SteamVR via the SlimeVR driver.
-    [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
-status_system-StatusTrackerError = The { $trackerName } tracker has an error.
-status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
-status_system-StatusPublicNetwork = {$count ->
-    [one] Your network profile is currently set to Public ({$adapters}). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
-    *[many] Some of your network adapters are set to public: {$adapters}. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
 }
 
 
@@ -1632,7 +1477,6 @@ firmware_tool-flashing_step-description =
 firmware_tool-flashing_step-warning-v2 = Do not unplug or turn off the tracker during the upload process unless told to, it may make your board unusable
 firmware_tool-flashing_step-flash_more = Flash more trackers
 firmware_tool-flashing_step-exit = Exit
-firmware_tool-flashing_step-onboarding_continue = Continue
 
 ## firmware tool build status
 firmware_tool-build-QUEUED = Waiting to build....
@@ -1708,8 +1552,6 @@ vrc_config-page-wrist_menu = Tracking & IK (Wrist Menu)
 vrc_config-page-wrist_menu-desc = Settings related to IK in small settings menu (wrist menu)
 vrc_config-on = On
 vrc_config-off = Off
-vrc_config-invalid = You have misconfigured VRChat settings!
-vrc_config-show_more = Show more
 vrc_config-setting_name = VRChat Setting name
 vrc_config-recommended_value = Recommended Value
 vrc_config-current_value = Current Value

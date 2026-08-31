@@ -98,9 +98,6 @@ bvh-recording = מקליט...
 
 ## Widget: Overlay settings
 
-widget-overlay = ממשק Overlay
-widget-overlay-is_visible_label = הצג Overlay ב-SteamVR
-widget-overlay-is_mirrored_label = הצג Overlay כהעתק
 
 ## Widget: Drift compensation
 
@@ -113,7 +110,6 @@ widget-overlay-is_mirrored_label = הצג Overlay כהעתק
 widget-developer_mode = מצב מפתח
 widget-developer_mode-high_contrast = ניגודיות גבוהה
 widget-developer_mode-fast_data_feed = פיד נתונים מהיר
-widget-developer_mode-filter_slimes_and_hmd = סנן slimes וHMD
 widget-developer_mode-sort_by_name = מיון לפי שם
 widget-developer_mode-more_info = הצג עוד מידע
 
@@ -172,37 +168,13 @@ tracker-settings-name_section-placeholder = רגל שמאלית של NightyBeast
 
 ## Tracker part card info
 
-tracker-part_card-no_name = אין שם
 tracker-part_card-unassigned = לא הוקצה
 
 ## Body assignment menu
 
-body_assignment_menu-show_advanced_locations = הצג מיקומים להקצאה מתקדמים
 
 ## Tracker assignment menu
 
-tracker_selection_menu-HEAD = { -tracker_selection-part } ראש?
-tracker_selection_menu-NECK = { -tracker_selection-part } צוואר?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } כתף ימין?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } זרוע עליונה ימנית?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } זרוע תחתונה ימנית?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } יד ימין?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } ירך ימין?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } קרסול ימין?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } רגל ימין?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } בקר ימין?
-tracker_selection_menu-CHEST = { -tracker_selection-part } חזה?
-tracker_selection_menu-WAIST = { -tracker_selection-part } מותניים?
-tracker_selection_menu-HIP = { -tracker_selection-part } ירכיים?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } כתף שמאל?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } זרוע עליונה שמאלית?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } זרוע תחתונה שמאלית?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } יד שמאל?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } ירך שמאל?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } קרסול שמאל?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } רגל שמאל?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } בקר שמאלי?
-tracker_selection_menu-dont_assign = אל תקצה
 tracker_selection_menu-neck_warning-done = אני מבין את הסיכונים
 tracker_selection_menu-neck_warning-cancel = ביטול
 
@@ -215,15 +187,11 @@ mounting_selection_menu-close = סגור
 settings-sidebar-title = הגדרות
 settings-sidebar-general = כללי
 settings-sidebar-interface = ממשק
-settings-sidebar-osc_router = נתב OSC
 settings-sidebar-utils = כלי שירות
 settings-sidebar-serial = טרמינל סידרתי
 
 ## SteamVR settings
 
-settings-general-steamvr = SteamVR
-settings-general-steamvr-trackers-waist = מותניים
-settings-general-steamvr-trackers-chest = חזה
 
 ## Tracker mechanics
 
@@ -236,14 +204,6 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = מחל
 settings-general-tracker_mechanics-filtering-type-prediction = חיזוי
 settings-general-tracker_mechanics-filtering-type-prediction-description = מפחית את ההשהיה ומפיק תנועות הדוקות , אך עלול להגביר את הריצוד.
 settings-general-tracker_mechanics-filtering-amount = כמות
-settings-general-tracker_mechanics-drift_compensation = פיצוי סחף
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    מפצה על סחף ציר הYaw בIMU על ידי החלת סיבוב הפוך.
-    שנה את כמות הפיצוי ועד כמה איפוסים ילקחו בחשבון.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = פיצוי סחף
-settings-general-tracker_mechanics-drift_compensation-amount-label = כמות הפיצוי
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = שימוש בעד x איפוסים אחרונים
 
 ## FK/Tracking settings
 
@@ -268,10 +228,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = שימ�
 
 ## OSC VRChat settings
 
-settings-osc-vrchat-network-trackers-chest = חזה
-settings-osc-vrchat-network-trackers-knees = ברכיים
-settings-osc-vrchat-network-trackers-feet = רגל
-settings-osc-vrchat-network-trackers-elbows = מרפקים
 
 ## VMC OSC settings
 
@@ -356,7 +312,6 @@ onboarding-automatic_proportions-done-description = תהליך כיול פרופ
 
 ## Home
 
-home-no_trackers = לא זוהו או הוקצו חיישנים
 
 ## Trackers Still On notification
 

@@ -30,7 +30,7 @@ import {
   groupTrackersByDevice,
   TrackerConnectionGroup,
 } from '@/store/app-store';
-import { ShowAllPartsToggle } from './BodyAssignmentPanel';
+import { ShowAllPartsToggle } from '@/components/onboarding/BodyAssignment';
 
 export function TrackerAssignmentList({
   trackers,

@@ -27,8 +27,6 @@ version_update-close = Atmesti
 tips-find_tracker = Neaiškų, kuris sekiklis yra kuris? Pakratykite vieną - atitinkamas elementas bus paryškintas.
 tips-do_not_move_heels = Įrašymo metu pasirūpinkite, kad kulnai nejudėtų!
 tips-file_select = Tempkite failus čia, arba <u>pasirinkite</u> rankiniu būdu.
-tips-tap_setup = Vietoj pasirinkimo iš meniu, galite du kartus švelniai bakstelėti sekiklį, kad jį pasirinkti.
-tips-turn_on_tracker = Naudojate oficialius SlimeVR sekiklius? Nepamirškite <b><em>įjungti juos</em></b> po prijungimo prie kompiuterio!
 tips-failed_webgl = Įvyko techninė klaida inicijuojant WebGL.
 
 ## Units
@@ -133,10 +131,6 @@ skeleton_bone-UPPER_CHEST-desc =
     Tai atstumas nuo kaklo pagrindo iki krūtinės vidurio.
     Pirmiausiai tinkamai nustatykite liemens ilgį, tada koreguokite įvairiose padėtyse
     (sėdint, pasilenkiant, gulint), kol virtualus stuburas tiksliai sutaps su realiuoju.
-skeleton_bone-CHEST_OFFSET = Krūtinės poslinkis
-skeleton_bone-CHEST_OFFSET-desc =
-    Koreguokite tai, jei reikia perkelti virtualų krūtinės sekiklį aukštyn ar žemyn, kad pagerinti
-    kalibravimą tam tikruose žaidimuose ar programose, kurios tikisi sekiklį matyti aukščiau ar žemiau.
 skeleton_bone-CHEST = Krūtinės ilgis
 skeleton_bone-CHEST-desc =
     Tai atstumas nuo krūtinės vidurio iki stuburo centro.
@@ -152,10 +146,6 @@ skeleton_bone-HIP-desc =
     Tai atstumas nuo bambos iki klubų.
     Pirmiausiai tinkamai nustatykite liemens ilgį, tada koreguokite įvairiose padėtyse
     (sėdint, pasilenkiant, gulint), kol virtualus stuburas tiksliai sutaps su realiuoju.
-skeleton_bone-HIP_OFFSET = Klubų poslinkis
-skeleton_bone-HIP_OFFSET-desc =
-    Koreguokite tai, jei reikia perkelti virtualų klubų sekiklį aukštyn ar žemyn, kad pagerinti
-    kalibravimą tam tikruose žaidimuose ar programose, kurios tikisi sekiklį matyti liemens lygyje.
 skeleton_bone-HIPS_WIDTH = Klubų plotis
 skeleton_bone-HIPS_WIDTH-desc =
     Tai atstumas tarp jūsų kojų pradžios taškų.
@@ -178,7 +168,6 @@ skeleton_bone-FOOT_LENGTH-desc =
     Norėdami tinkamai nustatyti, atsistokite ant pirštų galų ir koreguokite, kol
     virtualios pėdos stabiliai laikysis vietoje.
 skeleton_bone-FOOT_SHIFT = Pėdos poslinkis
-skeleton_bone-SKELETON_OFFSET = Skeletinė kompensacija
 skeleton_bone-SHOULDERS_DISTANCE = Pečių atstumas
 skeleton_bone-SHOULDERS_WIDTH = Pečių plotis
 skeleton_bone-arm_group = Rankų ilgis
@@ -186,19 +175,12 @@ skeleton_bone-UPPER_ARM = Žasto ilgis
 skeleton_bone-LOWER_ARM = Dilbio ilgis
 skeleton_bone-HAND_Y = Rankos atstumas Y
 skeleton_bone-HAND_Z = Rankos atstumas Z
-skeleton_bone-ELBOW_OFFSET = Alkūnės poslinkis
 
 ## Tracker reset buttons
 
 reset-reset_all = Atstatyti visas proporcijas
-reset-reset_all_warning-v2 =
-    <b>Dėmesio:</b> Jūsų proporcijos bus atstatytos į numatytąsias, pritaikytas pagal jūsų nustatytą ūgį.
-    Ar tikrai norite tai padaryti?
 reset-reset_all_warning-reset = Atstatyti proporcijas
 reset-reset_all_warning-cancel = Atšaukti
-reset-reset_all_warning_default-v2 =
-    <b>Dėmesio:</b> Jūs nenustatėte ūgio, todėl proporcijos bus atstatytos pagal numatytąjį ūgį.
-    Ar tikrai norite tai padaryti?
 reset-full = Pilnas atstatymas
 reset-mounting = Tvirtinimo pozicijų atstatymas
 reset-yaw = Horizontalus atstatymas
@@ -234,17 +216,12 @@ tracking-paused = Tęsti sekimą
 
 ## Widget: Overlay settings
 
-widget-overlay = Perdanga
-widget-overlay-is_visible_label = Rodyti perdangą SteamVR'e
-widget-overlay-is_mirrored_label = Rodyti perdangą kaip veidrodį
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = Išvalyti dreifo kompensavimą
 
 ## Widget: Clear Mounting calibration
 
-widget-clear_mounting = Išvalyti tvirtinimo atstatymą
 
 ## Widget: Developer settings
 
@@ -252,7 +229,6 @@ widget-developer_mode = Kūrėjo režimas
 widget-developer_mode-high_contrast = Didelis kontrastas
 widget-developer_mode-precise_rotation = Tiksli rotacija
 widget-developer_mode-fast_data_feed = Greitas duomenų perdavimas
-widget-developer_mode-filter_slimes_and_hmd = Filtruoti Slime ir HMD įrenginius
 widget-developer_mode-sort_by_name = Rikiuoti pagal pavadinimą
 widget-developer_mode-raw_slime_rotation = Neapdorota rotacija
 widget-developer_mode-more_info = Daugiau informacijos
@@ -269,8 +245,6 @@ widget-imu_visualizer-position = Pozicija
 
 ## Widget: Skeleton Visualizer
 
-widget-skeleton_visualizer-preview = Skeleto peržiūra
-widget-skeleton_visualizer-hide = Slėpti
 
 ## Tracker status
 
@@ -306,7 +280,6 @@ tracker-rotation-back = Gale
 tracker-rotation-back_left = Gale kairėje
 tracker-rotation-back_right = Gale dešinėje
 tracker-rotation-custom = Pasirinktinis
-tracker-rotation-overriden = (perstatyta pagal tvirtinimo atstatymą)
 
 ## Tracker information
 
@@ -314,10 +287,7 @@ tracker-infos-manufacturer = Gamintojas
 tracker-infos-display_name = Rodomas pavadinimas
 tracker-infos-custom_name = Pasirinktinis pavadinimas
 tracker-infos-url = Sekiklio URL
-tracker-infos-version = Programinės įrangos versija
-tracker-infos-hardware_rev = Įrenginio revizija
 tracker-infos-hardware_identifier = Įrenginio ID
-tracker-infos-data_support = Duomenų palaikymas
 tracker-infos-imu = IMU jutiklis
 tracker-infos-board_type = Pagrindinė plokštė
 tracker-infos-network_version = Protokolo versija
@@ -339,9 +309,6 @@ tracker-settings-assignment_section-edit = Keisti priskyrimą
 tracker-settings-mounting_section = Tvirtinimo kryptis
 tracker-settings-mounting_section-description = Kur sekiklis yra tvirtinamas?
 tracker-settings-mounting_section-edit = Keisti tvirtinimą
-tracker-settings-drift_compensation_section = Leisti dreifo kompensavimo naudojimą
-tracker-settings-drift_compensation_section-description = Ar šis sekiklis turėtų kompensuoti dreifą, kai dreifo kompensavimas įjungtas?
-tracker-settings-drift_compensation_section-edit = Leisti dreifo kompensavimo naudojimą
 tracker-settings-use_mag = Leisti sekiklio magnetometro naudojimą
 # Multiline!
 tracker-settings-use_mag-description =
@@ -365,51 +332,17 @@ tracker-settings-update-title = Programinės įrangos versija
 
 ## Tracker part card info
 
-tracker-part_card-no_name = Be pavadinimo
 tracker-part_card-unassigned = Nepriskirtas
 
 ## Body assignment menu
 
 body_assignment_menu = Kur norite priskirti šį sekiklį?
 body_assignment_menu-description = Pasirinkite kūno vietą, į kurią priskirti šį sekikli. Taip pat galite valdyti visus sekiklius vienu metu, o ne po vieną.
-body_assignment_menu-show_advanced_locations = Rodyti išplėstines priskyrimo vietas
 body_assignment_menu-manage_trackers = Tvarkyti visus sekiklius
 body_assignment_menu-unassign_tracker = Išvalyti sekiklio priskyrimą
 
 ## Tracker assignment menu
 
-# A -translation_key (with a dash in the front) means that it's a label.
-# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-#
-# We are using it here because english doesn't require changing the text in each case but
-# maybe your language does.
--tracker_selection-part = Kurį sekiklį norite priskirti prie jūsų
-tracker_selection_menu-NONE = Kuro sekiklio priskyrimą norite išvalyti?
-tracker_selection_menu-HEAD = { -tracker_selection-part } galvos?
-tracker_selection_menu-NECK = { -tracker_selection-part } kaklo?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } dešinio peties?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } dešinio žasto?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } dešinio dilbio?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } dešinės rankos?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } dešiniosios šlaunies?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } dešiniosios blauzdos?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } dešinės pėdos?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } dešinio kontrolerio?
-tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } viršutinės krūtinės dalies?
-tracker_selection_menu-CHEST = { -tracker_selection-part } krūtinės?
-tracker_selection_menu-WAIST = { -tracker_selection-part } liemens?
-tracker_selection_menu-HIP = { -tracker_selection-part } klubų?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } kairio peties?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } kairio žasto?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } kairio dilbio?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } kairės rankos?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } kairiosios šlaunies?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } kairiosios blauzdos?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } kairės pėdos?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } kairio kontrolerio?
-tracker_selection_menu-unassigned = Nepriskirti sekikliai
-tracker_selection_menu-assigned = Priskirti sekikliai
-tracker_selection_menu-dont_assign = Išvalyti priskyrimą
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -427,11 +360,7 @@ mounting_selection_menu-close = Uždaryti
 
 settings-sidebar-title = Nustatymai
 settings-sidebar-general = Bendrieji
-settings-sidebar-tracker_mechanics = Sekiklių mechanika
-settings-sidebar-fk_settings = Sekimo nustatymai
-settings-sidebar-gesture_control = Valdymas gestais
 settings-sidebar-interface = Sąsaja
-settings-sidebar-osc_router = OSC maršrutizatorius
 settings-sidebar-osc_trackers = VRChat OSC sekikliai
 settings-sidebar-utils = Įrankiai
 settings-sidebar-serial = Serijinė konsolė
@@ -443,37 +372,9 @@ settings-sidebar-advanced = Išplėstiniai
 
 ## SteamVR settings
 
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = SteamVR sekikliai
-# Not all translation keys support multiline, only the ones that specify it will actually
-# split it in lines (that also means you can split in lines however you want in those).
-# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines
-settings-general-steamvr-description =
-    Įjungti ar išjungti konkrečius SteamVR sekiklius.
-    Tai naudinga žaidimams ar programoms, kurios veikia tik su tam tikrais sekikliais.
-settings-general-steamvr-trackers-waist = Liemuo
-settings-general-steamvr-trackers-chest = Krūtinė
-settings-general-steamvr-trackers-left_foot = Kairė pėda
-settings-general-steamvr-trackers-right_foot = Dešinė pėda
-settings-general-steamvr-trackers-left_knee = Kairysis kelias
-settings-general-steamvr-trackers-right_knee = Dešinysis kelias
-settings-general-steamvr-trackers-left_elbow = Kairė alkūnė
-settings-general-steamvr-trackers-right_elbow = Dešinė alkūnė
-settings-general-steamvr-trackers-left_hand = Kairė ranka
-settings-general-steamvr-trackers-right_hand = Dešinė ranka
-settings-general-steamvr-trackers-tracker_toggling = Automatinis sekiklių perjungimas
-settings-general-steamvr-trackers-tracker_toggling-description = Automatiškai įjungs ar išjungs SteamVR sekiklius pagal jūsų sekiklių priskyrimą
-settings-general-steamvr-trackers-tracker_toggling-label = Automatinis sekiklių perjungimas
-settings-general-steamvr-trackers-hands-warning =
-    <b>Dėmesio:</b> rankų sekikliai atjungs jūsų kontrolerius.
-    Ar tikrai to norite?
-settings-general-steamvr-trackers-hands-warning-cancel = Atšaukti
-settings-general-steamvr-trackers-hands-warning-done = Taip
 
 ## Tracker mechanics
 
-settings-general-tracker_mechanics = Sekiklių mechanika
 settings-general-tracker_mechanics-filtering = Filtravimas
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -488,29 +389,6 @@ settings-general-tracker_mechanics-filtering-type-prediction = Prognozavimas
 settings-general-tracker_mechanics-filtering-type-prediction-description = Sumažina sekimo vėlavimą, bet gali padidinti sekimo drebėjimą.
 settings-general-tracker_mechanics-filtering-amount = Filtravimo stiprumas
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontalaus atstatymo sušvelninimo laikas (0 s išjungs švelninimą)
-settings-general-tracker_mechanics-drift_compensation = Dreifo kompensavimas
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    Kompensuoja IMU jutiklių dreifą taikant priešingą sukimąsi.
-    Galima keisti kompensavimo stiprumą, ir kiek atstatymų įtraukti į dreifo apskaičiavimą.
-    Naudokite tik jeigu jūsų sekikliams reikalinga labai dažnai atlikti atstatymus!
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Dreifo kompensavimas
-settings-general-tracker_mechanics-drift_compensation-prediction = Dreifo kompensavimo prognozavimas
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    Prognozuoja horizontalaus dreifo kompensavimą už jau pamatuoto intervalo ribų.
-    Įjunkite, jeigu jūsų sekikliai nuolat sukasi aplink vertikalią ašį.
-settings-general-tracker_mechanics-drift_compensation-prediction-label = Dreifo kompensavimo prognozavimas
-settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>Dėmesio:</b> Dreifo kompensavimo naudokite tik jeigu jūsų
-    sekikliams reikalinga labai dažnai atlikti atstatymus (kas 5, 10 min.).
-    
-    Kai kurie sekikliai, linkę į dažną atstatymą:
-    Joycon'ai, owoTrack, ir MPU IMU jutikliai be naujos programinės įrangos
-settings-general-tracker_mechanics-drift_compensation_warning-cancel = Atšaukti
-settings-general-tracker_mechanics-drift_compensation_warning-done = Suprantu
-settings-general-tracker_mechanics-drift_compensation-amount-label = Kompensavimo stiprumas
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Kiek paskutinių atstatymų naudoti, dreifo kompensavimo atstatymui
 settings-general-tracker_mechanics-save_mounting_reset = Išsaugoti automatinio tvirtinimo pozicijų kalibravimą
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Išsaugo sekiklių automatinio tvirtinimo pozicijų kalibravimą tarp paleidimų iš naujo. Tai yra naudinga,
@@ -545,13 +423,9 @@ settings-general-fk_settings-leg_fk = Kojų sekimas
 settings-general-fk_settings-enforce_joint_constraints = Skeletiniai ribojimai
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Taikyti ribojimus
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Taisyti pagal ribojimus
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Koreguoja sąnarių padėtis, kai jos viršija ribas
-settings-general-fk_settings-arm_fk = Rankų sekimas
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = Valdymas gestais
 settings-general-gesture_control-subtitle = Atstatymas bakstelėjant sekiklius
 settings-general-gesture_control-description = Leidžia atstatyti bakstelėjant sekiklį: aukščiausias krūtinės sekiklis yra naudojamas horizontaliam atstatymui; aukščiausias kairės kojos sekiklis pilnam atstatymui; o aukščiausias dešinės kojos - tvirtinimo pozicijų atstatymui. Bakstelėjimas turi būti atliktas per 0.3 sekundžių padauginus bakstelėjimų skaičiumi.
 # This is a unit: 3 taps, 2 taps, 1 tap

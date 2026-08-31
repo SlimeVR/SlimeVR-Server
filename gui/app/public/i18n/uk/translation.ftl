@@ -22,8 +22,6 @@ version_update-close = Закрити
 tips-find_tracker = Не знаєте який трекер вибирати? Потрясіть трекер і він підсвітить відповідний пункт.
 tips-do_not_move_heels = Переконайтеся, що не рухаєте п'ятами під час запису!
 tips-file_select = Перетягніть файли для використання або <u>знайдіть</u>.
-tips-tap_setup = Ви можете повільно постукати 2 рази по трекеру, щоб вибрати його, замість того, щоб вибирати його з меню.
-tips-turn_on_tracker = Використовуєте офіційні трекери SlimeVR? Не забудьте <b><em>увімкнути трекер</em></b> після підключення до ПК!
 tips-failed_webgl = Не вдалося ініціалізувати WebGL.
 
 ## Units
@@ -63,18 +61,15 @@ skeleton_bone-HEAD = Зсув голови
 skeleton_bone-NECK = Довжина шиї
 skeleton_bone-torso_group = Довжина тулуба
 skeleton_bone-UPPER_CHEST = Довжина верхньої частини грудей
-skeleton_bone-CHEST_OFFSET = Зміщення грудної клітини
 skeleton_bone-CHEST = Довжина грудей
 skeleton_bone-WAIST = Довжина талії
 skeleton_bone-HIP = Довжина стегна
-skeleton_bone-HIP_OFFSET = Зміщення стегна
 skeleton_bone-HIPS_WIDTH = Ширина стегон
 skeleton_bone-leg_group = Довжина ніг
 skeleton_bone-UPPER_LEG = Довжина верхньої частини ноги
 skeleton_bone-LOWER_LEG = Довжина гомілки
 skeleton_bone-FOOT_LENGTH = Довжина стопи
 skeleton_bone-FOOT_SHIFT = Зміщення стопи
-skeleton_bone-SKELETON_OFFSET = Зміщення скелета
 skeleton_bone-SHOULDERS_DISTANCE = Відстань між плечима
 skeleton_bone-SHOULDERS_WIDTH = Ширина плечей
 skeleton_bone-arm_group = Довжина руки
@@ -82,7 +77,6 @@ skeleton_bone-UPPER_ARM = Довжина верхньої частини рук�
 skeleton_bone-LOWER_ARM = Довжина нижньої частини руки
 skeleton_bone-HAND_Y = Відстань рук Y
 skeleton_bone-HAND_Z = Відстань руки Z
-skeleton_bone-ELBOW_OFFSET = Зміщення ліктя
 
 ## Tracker reset buttons
 
@@ -122,17 +116,12 @@ tracking-paused = Продовжити трекінг
 
 ## Widget: Overlay settings
 
-widget-overlay = Накладання
-widget-overlay-is_visible_label = Показати накладання у SteamVR
-widget-overlay-is_mirrored_label = Відображення накладання як дзеркала
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = Очистити компенсацію дрейфу
 
 ## Widget: Clear Mounting calibration
 
-widget-clear_mounting = Очистити скидання положення
 
 ## Widget: Developer settings
 
@@ -140,7 +129,6 @@ widget-developer_mode = Режим розробника
 widget-developer_mode-high_contrast = Висока контрастність
 widget-developer_mode-precise_rotation = Точне обертання
 widget-developer_mode-fast_data_feed = Швидка подача даних
-widget-developer_mode-filter_slimes_and_hmd = Фільтрація слаймів і шолому
 widget-developer_mode-sort_by_name = Сортування за назвою
 widget-developer_mode-raw_slime_rotation = Необроблене обертання
 widget-developer_mode-more_info = Детальніше
@@ -153,8 +141,6 @@ widget-imu_visualizer-rotation_preview = Попередній перегляд
 
 ## Widget: Skeleton Visualizer
 
-widget-skeleton_visualizer-preview = Перегляд скелета
-widget-skeleton_visualizer-hide = Сховати
 
 ## Tracker status
 
@@ -190,7 +176,6 @@ tracker-rotation-back = Ззаду
 tracker-rotation-back_left = Ліва сторона задньої частини
 tracker-rotation-back_right = Права сторона задньої частини
 tracker-rotation-custom = Персональне
-tracker-rotation-overriden = (замінено скиданням положення)
 
 ## Tracker information
 
@@ -198,8 +183,6 @@ tracker-infos-manufacturer = Виробник
 tracker-infos-display_name = Відображуване ім'я
 tracker-infos-custom_name = Персональне ім'я
 tracker-infos-url = URL трекера
-tracker-infos-version = Версія прошивки
-tracker-infos-hardware_rev = Ревізія обладнання
 tracker-infos-hardware_identifier = Ідентифікатор обладнання
 tracker-infos-imu = IMU Сенсор
 tracker-infos-board_type = Основна плата
@@ -215,9 +198,6 @@ tracker-settings-assignment_section-edit = Редагування признач
 tracker-settings-mounting_section = Позиція трекера
 tracker-settings-mounting_section-description = Де закріплено трекер?
 tracker-settings-mounting_section-edit = Змінити місце розташування
-tracker-settings-drift_compensation_section = Дозволити компенсацію дрейфу
-tracker-settings-drift_compensation_section-description = Чи повинен цей трекер компенсувати свій дрейф, коли включена компенсація дрейфу?
-tracker-settings-drift_compensation_section-edit = Дозволити компенсацію дрейфу
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Ім'я трекера
@@ -229,51 +209,17 @@ tracker-settings-forget-label = Забути трекери
 
 ## Tracker part card info
 
-tracker-part_card-no_name = Немає імені
 tracker-part_card-unassigned = Непризначений
 
 ## Body assignment menu
 
 body_assignment_menu = Де ви хочете, щоб був цей трекер?
 body_assignment_menu-description = Виберіть місце, куди потрібно призначити цей трекер. Крім того, ви можете керувати всіма трекерами одночасно, а не по одному.
-body_assignment_menu-show_advanced_locations = Відображення розширених точок розташувань
 body_assignment_menu-manage_trackers = Керування всіма трекерами
 body_assignment_menu-unassign_tracker = Відв'язати трекер
 
 ## Tracker assignment menu
 
-# A -translation_key (with a dash in the front) means that it's a label.
-# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-#
-# We are using it here because english doesn't require changing the text in each case but
-# maybe your language does.
--tracker_selection-part = Який трекер призначити к
-tracker_selection_menu-NONE = Який трекер ви хочете відв'язати?
-tracker_selection_menu-HEAD = { -tracker_selection-part } голові?
-tracker_selection_menu-NECK = { -tracker_selection-part } шиї?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } правому плечу?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } правій верхній частині руці?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } правій нижній частині руці?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } правій руці?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } правому стегну?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } правій щиколотці?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } правій ступні?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } правому контролеру?
-tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } верхня частина грудей?
-tracker_selection_menu-CHEST = { -tracker_selection-part } грудям?
-tracker_selection_menu-WAIST = { -tracker_selection-part } талії?
-tracker_selection_menu-HIP = { -tracker_selection-part } стегну?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } Лівому плечу?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } лівій верхній частині руки?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } лівій нижній частині руці?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } лівій руці?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } лівому стегну?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } лівій щиколотці
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } лівій ступні?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } лівому контролеру?
-tracker_selection_menu-unassigned = Непризначені трекери
-tracker_selection_menu-assigned = Призначені трекери
-tracker_selection_menu-dont_assign = Відв'язати
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -291,11 +237,7 @@ mounting_selection_menu-close = Закрити
 
 settings-sidebar-title = Параметри
 settings-sidebar-general = Загальні
-settings-sidebar-tracker_mechanics = Механіки трекера
-settings-sidebar-fk_settings = Налаштування відстеження
-settings-sidebar-gesture_control = Управління жестами
 settings-sidebar-interface = Інтерфейс
-settings-sidebar-osc_router = OSC роутер
 settings-sidebar-osc_trackers = VRChat OSC трекери
 settings-sidebar-utils = Утиліти
 settings-sidebar-serial = Послідовна консоль
@@ -304,37 +246,9 @@ settings-sidebar-notifications = Сповіщення
 
 ## SteamVR settings
 
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = SteamVR трекери
-# Not all translation keys support multiline, only the ones that specify it will actually
-# split it in lines (that also means you can split in lines however you want in those).
-# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines
-settings-general-steamvr-description =
-    Увімкніть або вимкніть певні SteamVR трекери.
-    Корисно для ігор або програм, які підтримують лише певні трекери.
-settings-general-steamvr-trackers-waist = Талія
-settings-general-steamvr-trackers-chest = Груди
-settings-general-steamvr-trackers-left_foot = Ліва ступня
-settings-general-steamvr-trackers-right_foot = Права ступня
-settings-general-steamvr-trackers-left_knee = Ліве коліно
-settings-general-steamvr-trackers-right_knee = Праве коліно
-settings-general-steamvr-trackers-left_elbow = Лівий лікоть
-settings-general-steamvr-trackers-right_elbow = Правий лікоть
-settings-general-steamvr-trackers-left_hand = Ліва рука
-settings-general-steamvr-trackers-right_hand = Права рука
-settings-general-steamvr-trackers-tracker_toggling = Автоматичне призначення трекерів
-settings-general-steamvr-trackers-tracker_toggling-description = Автоматично займається увімкненням та вимкненням трекерів SlimeVR залежно від поточних призначень ваших трекерів
-settings-general-steamvr-trackers-tracker_toggling-label = Автоматичне призначення трекерів
-settings-general-steamvr-trackers-hands-warning =
-    <b>Увага:</b> трекери рук перевизначать ваші контролери.
-    Ви впевнені?
-settings-general-steamvr-trackers-hands-warning-cancel = Скасувати
-settings-general-steamvr-trackers-hands-warning-done = Так
 
 ## Tracker mechanics
 
-settings-general-tracker_mechanics = Механіки трекера
 settings-general-tracker_mechanics-filtering = Фільтрація
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -349,14 +263,6 @@ settings-general-tracker_mechanics-filtering-type-prediction = Передбач�
 settings-general-tracker_mechanics-filtering-type-prediction-description = Зменшує затримку і робить рухи більш швидкими, але може посилити тремтіння.
 settings-general-tracker_mechanics-filtering-amount = Кількість
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Час згладжування скидання рискання (0 сек. відключає згладжування)
-settings-general-tracker_mechanics-drift_compensation = Компенсація дрейфу
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    Компенсує дрейф нахилу IMU, застосовуючи зворотне обертання.
-    Змініть суму компенсації та до того, скільки скидань враховано.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Компенсація дрейфу
-settings-general-tracker_mechanics-drift_compensation-amount-label = Сума компенсації
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Використання до x останніх скидань
 settings-general-tracker_mechanics-save_mounting_reset = Зберегти автоматичне калібрування положення трекерів
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Зберігає калібрування положення трекерів на тілі між перезавантаженнями. Корисний
@@ -383,12 +289,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Прив'язк�
 settings-general-fk_settings-leg_tweak-toe_snap-description = Корекція пальців ноги намагається вгадати обертання ваших ступень, якщо трекери для них не використовуються
 settings-general-fk_settings-leg_tweak-foot_plant-description = Корекція ступні повертає ваші ступні так, щоб вони були паралельні землі при контакті
 settings-general-fk_settings-leg_fk = Трекінг ноги
-settings-general-fk_settings-arm_fk = Трекінг руки
-settings-general-fk_settings-arm_fk-description = Намагатися відстежувати руки за допомогою шолома, навіть якщо є інформація о позиції руки
-settings-general-fk_settings-arm_fk-force_arms = Відстеження рук з шолома
-settings-general-fk_settings-reset_settings = Скинути налаштування
-settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Скидає тангаж шолому (вертикальне обертання). Корисно, якщо носити шолом на лобі для вітюбінга або мокап. Не вмикати для VR.
-settings-general-fk_settings-reset_settings-reset_hmd_pitch = Скинути тангаж шолому
 settings-general-fk_settings-arm_fk-reset_mode-description = Змініть позу руки, яка очікується для скидання налаштувань положення.
 settings-general-fk_settings-arm_fk-back = Назад
 settings-general-fk_settings-arm_fk-back-description = Стандартний режим: плечі ззаду, а передпліччя спереду.
@@ -398,26 +298,13 @@ settings-general-fk_settings-arm_fk-tpose_down = Т-поза (вниз)
 settings-general-fk_settings-arm_fk-tpose_down-description = Очікується, що ваші руки будуть піднятими в сторони на 90 градусів під час повного скидання, та опущені з боків під час скидання положення.
 settings-general-fk_settings-arm_fk-forward = Вперед
 settings-general-fk_settings-arm_fk-forward-description = Очікується, що ваші руки будуть підняті вперед на 90 градусів. Корисно для вітюбінга.
-settings-general-fk_settings-skeleton_settings-toggles = Перемикачі скелета
-settings-general-fk_settings-skeleton_settings-description = Увімкніть або вимкніть налаштування скелета. Рекомендується залишити їх увімкненими.
-settings-general-fk_settings-skeleton_settings-extended_spine_model = Подовжена модель хребта
-settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Розширена модель тазу
-settings-general-fk_settings-skeleton_settings-extended_knees_model = Подовжена модель коліна
 settings-general-fk_settings-skeleton_settings-ratios = Співвідношення скелета
 settings-general-fk_settings-skeleton_settings-ratios-description = Змініть параметри скелета. Можливо, вам доведеться скоригувати пропорції після їхньої зміни.
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Розрахувати талію від грудей до стегон
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Розрахувати талію від грудей до ніг
-settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Розрахувати стегно від грудей до ніг
-settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Розрахувати стегно від талії до ніг
-settings-general-fk_settings-skeleton_settings-interp_hip_legs = Інтерполяція рискання та крену стегн з ногами
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Інтерполяція рискання та крену трекерів на колінах та щиколотках
-settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Інтерполяція рискання та крену колін з щиколотками
 settings-general-fk_settings-self_localization-title = Режим Мокап
 settings-general-fk_settings-self_localization-description = Режим Мокап дозволяє скелету приблизно відстежувати власне положення без використання шолому або інших трекерів. Зверніть увагу, що для цього потрібні трекери ніг і голови, і це все ще експериментальний метод.
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = Управління жестами
 settings-general-gesture_control-subtitle = Скидання на основі дотику
 settings-general-gesture_control-description = Дозволяє запускати скидання, торкнувшись трекера. Трекер найвищий на вашому тулубі використовується для скидання рискання, трекер найвищий на лівій нозі використовується для повного скидання, а трекер найвищий на правій нозі використовується для скидання положення. Слід зазначити, що для реєстрації дотики мають тривати протягом 0,3 секунди.
 # This is a unit: 3 taps, 2 taps, 1 tap
@@ -504,33 +391,10 @@ settings-serial-factory_reset-warning-cancel = Скасувати
 settings-serial-serial_select = Вибір послідовного порту
 settings-serial-auto_dropdown_item = Автоматично
 settings-serial-get_wifi_scan = Сканувати мережу Wi-Fi
-settings-serial-file_type = Простий текст
 settings-serial-save_logs = Зберегти у файл
 
 ## OSC router settings
 
-settings-osc-router = OSC роутер
-# This cares about multilines
-settings-osc-router-description =
-    Пересилання повідомлень OSC з іншої програми.
-    Корисно для використання іншої програми OSC з VRChat, наприклад.
-settings-osc-router-enable = Увімкнути
-settings-osc-router-enable-description = Увімкнути пересилання повідомлень.
-settings-osc-router-enable-label = Увімкнути
-settings-osc-router-network = Мережеві порти
-# This cares about multilines
-settings-osc-router-network-description =
-    Встановіть порти для прослуховування і відправки даних.
-    Вони можуть бути такими ж, як і інші порти, що використовуються на сервері SlimeVR.
-settings-osc-router-network-port_in =
-    .label = Вхідний Порт
-    .placeholder = Вхідний Порт (зазвичай: 9002)
-settings-osc-router-network-port_out =
-    .label = Вихідний Порт
-    .placeholder = Вихідний Порт (зазвичай: 9000)
-settings-osc-router-network-address = Мережева адреса
-settings-osc-router-network-address-description = Укажіть адресу для надсилання даних за адресою.
-settings-osc-router-network-address-placeholder = IPV4-адреса
 
 ## OSC VRChat settings
 
@@ -539,7 +403,6 @@ settings-osc-vrchat-enable = Увімкнути
 settings-osc-vrchat-enable-description = Перемикайте відправку та отримання даних.
 settings-osc-vrchat-enable-label = Увімкнути
 settings-osc-vrchat-network = Мережеві порти
-settings-osc-vrchat-network-description-v1 = Встановіть порти для прослуховування і відправки даних. Можна залишити без змін для VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Вхідний Порт
     .placeholder = Вхідний Порт (зазвичай: 9001)
@@ -549,13 +412,6 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Мережева адреса
 settings-osc-vrchat-network-address-description-v1 = Виберіть, за якою адресою надсилати дані. Можна залишити без змін для VRChat.
 settings-osc-vrchat-network-address-placeholder = IP-адреса VRChat
-settings-osc-vrchat-network-trackers = Трекери
-settings-osc-vrchat-network-trackers-description = Перемикання відправку конкретних трекерів через OSC.
-settings-osc-vrchat-network-trackers-chest = Груди
-settings-osc-vrchat-network-trackers-hip = Бедро
-settings-osc-vrchat-network-trackers-knees = Коліна
-settings-osc-vrchat-network-trackers-feet = Ступні
-settings-osc-vrchat-network-trackers-elbows = Лікті
 
 ## VMC OSC settings
 
@@ -604,7 +460,6 @@ settings-osc-vmc-mirror_tracking-label = Дзеркальний трекінг
 
 onboarding-skip = Пропустити налаштування
 onboarding-continue = Продовжити
-onboarding-wip = В роботі
 onboarding-previous_step = Попередній крок
 onboarding-setup_warning =
     <b>Попередження:</b> Початкова настройка потрібна для хорошого відстеження,
@@ -617,7 +472,6 @@ onboarding-setup_warning-cancel = Продовжити налаштування
 
 ## Wi-Fi setup
 
-onboarding-wifi_creds-skip = Пропустити налаштування Wi-Fi
 onboarding-wifi_creds-submit = Підтвердити!
 onboarding-wifi_creds-ssid =
     .label = Назва Wi-Fi
@@ -628,28 +482,6 @@ onboarding-wifi_creds-password =
 
 ## Mounting setup
 
-onboarding-reset_tutorial-back = Повернутися до калібрування положення
-onboarding-reset_tutorial = Інструкція по скиданню
-onboarding-reset_tutorial-explanation = Коли ви використовуєте свої трекери, вони можуть вийти з вирівнювання через дрейф нахилу IMU або тому, що ви могли їх фізично перемістити. Це можна виправити кількома способами.
-onboarding-reset_tutorial-skip = Пропустити крок
-# Cares about multiline
-onboarding-reset_tutorial-0 =
-    Торкніться { $taps } виділеного трекера, щоб запустити скидання нахилу.
-    
-    Це змусить трекери дивитися в тому ж напрямку, що і ваш шолом.
-# Cares about multiline
-onboarding-reset_tutorial-1 =
-    Торкніться { $taps } разів виділеного трекера, щоб ініціювати повне скидання.
-    
-    Для цього потрібно стояти (i-поза). Існує затримка 3 секунди (можна налаштувати), перш ніж воно спрацює.
-    Це повністю скидає розташування всіх ваших трекерів, та має вирішити більшість проблем.
-# Cares about multiline
-onboarding-reset_tutorial-2 =
-    Торкніться { $taps } разів виділеного трекеру, щоб активувати скидання положення.
-    
-    Скидання положення допомагає в тому, як трекери насправді надягнені на вас, тому, якщо ви випадково перемістили їх та змінили місце розташування, це допоможе.
-    
-    Вам потрібно бути в позі, ніби ви катаєтеся на лижах, як показано на майстрі автоматичної прив'язки положення. У вас є затримка у 3 секунди (можна налаштувати), перш ніж спрацює скидання.
 
 ## Install info
 
@@ -661,19 +493,12 @@ onboarding-home-start = Давайте налаштуємося!
 
 ## Setup done
 
-onboarding-done-title = Все готово!
-onboarding-done-description = Насолоджуйтесь досвідом трекінгу всього тіла
-onboarding-done-close = Закрити налаштування
 
 ## Tracker connection setup
 
-onboarding-connect_tracker-back = Повернутися до даних Wi-Fi
 onboarding-connect_tracker-title = Підключіть трекери
-onboarding-connect_tracker-description-p0-v1 = Тепер найцікавіше – підключення трекерів!
-onboarding-connect_tracker-description-p1-v1 = Підключіть кожен трекер по одному через USB-порт.
 onboarding-connect_tracker-issue-serial = У мене виникли проблеми з підключенням!
 onboarding-connect_tracker-usb = USB-трекер
-onboarding-connect_tracker-connection_status-none = Шукаємо трекери
 onboarding-connect_tracker-connection_status-serial_init = Підключення до послідовного пристрою
 onboarding-connect_tracker-connection_status-provisioning = Надсилання даних Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Спроба підключення до Wi-Fi
@@ -698,27 +523,12 @@ onboarding-connect_tracker-next = Я підключив усі свої трек
 
 ## Tracker calibration tutorial
 
-onboarding-calibration_tutorial = Інструкція з калібрування IMU
-onboarding-calibration_tutorial-subtitle = Це допоможе зменшити дрейф трекера!
-onboarding-calibration_tutorial-calibrate = Я поклав свої трекери на стіл
-onboarding-calibration_tutorial-status-waiting = Чекаємо на Вас
-onboarding-calibration_tutorial-status-calibrating = Калібрування
-onboarding-calibration_tutorial-status-success = Добре!
-onboarding-calibration_tutorial-status-error = Трекер переміщено
 
 ## Tracker assignment tutorial
 
-onboarding-assignment_tutorial = Як підготувати Slime трекер перед його надяганням
-onboarding-assignment_tutorial-first_step = 1. Розмістіть наліпку з частиною тіла (якщо вона у вас є) на трекері відповідно до вашого вибору
-# This text has a character limit of around 11 characters, so please keep it short
-onboarding-assignment_tutorial-sticker = Наліпка
-onboarding-assignment_tutorial-second_step-v2 = 2. Прикріпіть ремінець до трекера, тримаючи липучку в тому ж напрямку, що й лицьова сторона вашого трекера:
-onboarding-assignment_tutorial-second_step-continuation-v2 = Сторона з липучкою додаткового модуля повинна дивитися вгору, як на зображенні нижче:
-onboarding-assignment_tutorial-done = Я наклеїв наліпки і закріпив ремінці!
 
 ## Tracker assignment setup
 
-onboarding-assign_trackers-back = Повернутися до даних Wi-Fi
 onboarding-assign_trackers-title = Призначити трекери
 onboarding-assign_trackers-description = Давайте виберемо, який трекер куди йде. Натисніть на місце, де ви хочете розмістити трекер
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
@@ -731,9 +541,6 @@ onboarding-assign_trackers-assigned =
         [many] { $assigned } з { $trackers } трекерів призначенно
        *[other] { $assigned } з { $trackers } трекерів призначенно
     }
-onboarding-assign_trackers-advanced = Відобразити розширені розташування призначень
-onboarding-assign_trackers-next = Я призначив усі трекери
-onboarding-assign_trackers-mirror_view = Дзеркальний вигляд
 
 ## Tracker assignment warnings
 
@@ -760,17 +567,9 @@ onboarding-choose_mounting-auto_mounting = Автоматична прив'яз�
 onboarding-choose_mounting-auto_mounting-description = Це автоматично визначить орієнтацію всіх ваших трекерів з 2 поз
 onboarding-choose_mounting-manual_mounting = Самостійна прив'язка
 onboarding-choose_mounting-manual_mounting-description = Це дозволить обрати орієнтацію кожного трекера самостійно
-# Multiline text
-onboarding-choose_mounting-manual_modal-title =
-    Ви впевнені, що хочете зробити
-    автоматичне калібрування положення?
-onboarding-choose_mounting-manual_modal-description = <b>Самостійне калібрування положення рекомендується для нових користувачів</b>, оскільки пози автоматичного калібрування положення можуть вимагати певної практики.
-onboarding-choose_mounting-manual_modal-confirm = Я знаю, що роблю
-onboarding-choose_mounting-manual_modal-cancel = Скасувати
 
 ## Tracker manual mounting setup
 
-onboarding-manual_mounting-back = Повернутися до VR
 onboarding-manual_mounting = Самостійна прив'язка
 onboarding-manual_mounting-description = Натисніть на кожен трекер і виберіть, як вони розташовані
 onboarding-manual_mounting-auto_mounting = Автоматична прив'язка
@@ -778,7 +577,6 @@ onboarding-manual_mounting-next = Наступний крок
 
 ## Tracker automatic mounting setup
 
-onboarding-automatic_mounting-back = Повернутися до VR
 onboarding-automatic_mounting-next = Наступний крок
 onboarding-automatic_mounting-prev_step = Попередній крок
 onboarding-automatic_mounting-done-restart = Спробуйте знову

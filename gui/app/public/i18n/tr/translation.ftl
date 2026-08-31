@@ -27,8 +27,6 @@ version_update-close = Kapat
 tips-find_tracker = Hangi takipçi hangisi emin değil misin? Takipçilerden birini hareket ettirerek belirleyebilirsin.
 tips-do_not_move_heels = Kayıt sırasında ayaklarının hareket etmediğinden emin ol!
 tips-file_select = Dosyaları sürükleyip bırak veya dosyalarından <u>seç</u>.
-tips-tap_setup = Menüden seçmek yerine takipçine 2 kez yavaşça dokunarak da seçebilirsin.
-tips-turn_on_tracker = Resmi SlimeVR takipçisi mi kullanıyorsun? Takipçilerini bilgisayara bağladıktan sonra onları <b><em>açmayı</em></b> unutma!
 tips-failed_webgl = WebGL başlatılamadı.
 
 ## Units
@@ -142,10 +140,6 @@ skeleton_bone-UPPER_CHEST-desc =
     Bu, boynunun başlangıcından göğsünün ortasına kadar olan mesafedir.
     Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
     gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-CHEST_OFFSET = Göğüs Hizası
-skeleton_bone-CHEST_OFFSET-desc =
-    Bu, bazı oyun veya uygulamalarda kalibrasyona yardımcı olmak için,
-    sanal göğüs takipçisini yukarı ya da aşağı hareket ettirmene izin verir.
 skeleton_bone-CHEST = Göğüs Uzunluğu
 skeleton_bone-CHEST-desc =
     Bu, göğsünün ortasından omurganın ortasına kadar olan mesafedir.
@@ -161,10 +155,6 @@ skeleton_bone-HIP-desc =
     Bu, göbek deliğinden kalçalarına kadar olan mesafedir.
     Gövde uzunluğunu doğru şekilde ayarlayıp (otururken, eğilirken, uzanırken vb. duruşlarda) sanal omurgan,
     gerçek omurganla eşleşene kadar bu değeri değiştir.
-skeleton_bone-HIP_OFFSET = Kalça Hizası
-skeleton_bone-HIP_OFFSET-desc =
-    Bu, bazı oyun veya uygulamalarda kalibrasyona yardımcı olmak için,
-    sanal kalça takipçisini yukarı ya da aşağı hareket ettirmene izin verir.
 skeleton_bone-HIPS_WIDTH = Kalça Genişliği
 skeleton_bone-HIPS_WIDTH-desc =
     Bu, bacaklarının başladığı noktalar arasındaki mesafedir.
@@ -195,13 +185,11 @@ skeleton_bone-FOOT_SHIFT-desc =
     Bu, dik dururken alt bacaklarının geriye doğru konumlanmasını telafi eder.
     Ayarlamak için Ayak uzunluğunu 0 olarak ayarla, tam sıfırlama yap ve,
     sanal ayakların ayak bileklerinin ortasıyla hizalanana kadar bu değeri değiştir.
-skeleton_bone-SKELETON_OFFSET = İskelet hizası
 skeleton_bone-SHOULDERS_DISTANCE = Omuz Mesafesi
 skeleton_bone-SHOULDERS_WIDTH = Omuz Genişliği
 skeleton_bone-arm_group = Kol uzunluğu
 skeleton_bone-UPPER_ARM = Üst Kol Uzunluğu
 skeleton_bone-LOWER_ARM = Alt Kol Uzunluğu
-skeleton_bone-ELBOW_OFFSET = Dirsek hizası
 
 ## Tracker reset buttons
 
@@ -263,7 +251,6 @@ widget-imu_visualizer-rotation_preview = Önizle
 
 ## Widget: Skeleton Visualizer
 
-widget-skeleton_visualizer-hide = Gizle
 
 ## Tracker status
 
@@ -298,8 +285,6 @@ tracker-infos-manufacturer = Üretici
 tracker-infos-display_name = Görünen Ad
 tracker-infos-custom_name = Özel Ad
 tracker-infos-url = Takipçi URL'si
-tracker-infos-version = Yazılım Sürümü
-tracker-infos-hardware_rev = Donanım Revizyonu
 tracker-infos-hardware_identifier = Donanım Kimliği
 tracker-infos-imu = IMU Sensör
 tracker-infos-board_type = Ana kart
@@ -316,7 +301,6 @@ tracker-settings-name_section-placeholder = NightyBeast'in sol bacağı
 
 ## Tracker part card info
 
-tracker-part_card-no_name = İsimsiz
 tracker-part_card-unassigned = Atanmamış
 
 ## Body assignment menu
@@ -326,23 +310,6 @@ body_assignment_menu-manage_trackers = Tüm takipçileri yönet
 
 ## Tracker assignment menu
 
-# A -translation_key (with a dash in the front) means that it's a label.
-# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-#
-# We are using it here because english doesn't require changing the text in each case but
-# maybe your language does.
--tracker_selection-part = hangi takipçiyi atayacaksınız?
-tracker_selection_menu-HEAD = Başınıza { -tracker_selection-part }
-tracker_selection_menu-RIGHT_SHOULDER = Sağ omuzunuza { -tracker_selection-part }
-tracker_selection_menu-RIGHT_UPPER_ARM = Sağ üst kolunuza { -tracker_selection-part }
-tracker_selection_menu-RIGHT_LOWER_ARM = Sağ alt kolunuza { -tracker_selection-part }
-tracker_selection_menu-RIGHT_HAND = Sağ elinize { -tracker_selection-part }
-tracker_selection_menu-RIGHT_UPPER_LEG = Say kalçanıza { -tracker_selection-part }
-tracker_selection_menu-RIGHT_LOWER_LEG = Sağ ayak bileğinize { -tracker_selection-part }
-tracker_selection_menu-RIGHT_FOOT = Sağ ayağınıza { -tracker_selection-part }
-tracker_selection_menu-UPPER_CHEST = Üst göğüsünüze { -tracker_selection-part }
-tracker_selection_menu-unassigned = Atanmamış takipçiler
-tracker_selection_menu-assigned = Atanan takipçiler
 tracker_selection_menu-neck_warning-done = Riskleri anlıyorum
 tracker_selection_menu-neck_warning-cancel = İptal
 
@@ -356,16 +323,11 @@ mounting_selection_menu-close = Kapat
 settings-sidebar-title = Ayarlar
 settings-sidebar-general = Genel
 settings-sidebar-interface = Arayüz
-settings-sidebar-osc_router = OSC yönlendirici
 settings-sidebar-osc_trackers = VRChat OSC Takipçileri
 settings-sidebar-serial = Seri konsol
 
 ## SteamVR settings
 
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = SteamVR takipçileri
-settings-general-steamvr-trackers-waist = Bel
-settings-general-steamvr-trackers-chest = Göğüs
 
 ## Tracker mechanics
 
@@ -374,8 +336,6 @@ settings-general-tracker_mechanics-filtering-amount = Miktar
 ## FK/Tracking settings
 
 settings-general-fk_settings-leg_fk = Bacak takibi
-settings-general-fk_settings-arm_fk = Kol takibi
-settings-general-fk_settings-skeleton_settings-description = İskelet ayarlarını açın veya kapatın. Bunları açık bırakmanız önerilir.
 
 ## Gesture control settings (tracker tapping)
 
@@ -398,9 +358,6 @@ settings-serial-auto_dropdown_item = Otomatik
 
 ## OSC router settings
 
-settings-osc-router-enable = Etkinleştir
-settings-osc-router-enable-label = Etkinleştir
-settings-osc-router-network-address = Ağ adresi
 
 ## OSC VRChat settings
 

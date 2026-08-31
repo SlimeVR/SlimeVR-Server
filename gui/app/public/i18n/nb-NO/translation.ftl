@@ -27,8 +27,6 @@ version_update-close = Lukk
 tips-find_tracker = Usikker på hvilken tracker som er hvilken? Rist en av dem! Den ristede trackeren vil bli fremhevet.
 tips-do_not_move_heels = Sørg for at dine heler ikke beveger under opptaket!
 tips-file_select = Dra og slipp filene for å enten bruke eller <u>gå igjennom</u>.
-tips-tap_setup = Du kan forsiktig trykke på din tracker 2 ganger sammenhengende istedenfor å velge den fra menyen.
-tips-turn_on_tracker = Bruker du offisielle SlimeVR trackere? Husk å <b><em>skru dem på</em></b> etter å ha koblet dem til PCen din!
 tips-failed_webgl = Feil ved initialisering av WebGL.
 
 ## Units
@@ -87,30 +85,23 @@ skeleton_bone-NONE = Ingen
 skeleton_bone-HEAD = Hode bytte
 skeleton_bone-NECK = Halslengde
 skeleton_bone-torso_group = Torsolengde
-skeleton_bone-CHEST_OFFSET = Bryst-forskyvning
 skeleton_bone-CHEST = Bryst-lengde
 skeleton_bone-WAIST = Midje-lengde
 skeleton_bone-HIP = Hofte-lengde
-skeleton_bone-HIP_OFFSET = Hofte-forskyvning
 skeleton_bone-HIPS_WIDTH = Hofte-bredde
 skeleton_bone-UPPER_LEG = Lår-lengde
 skeleton_bone-LOWER_LEG = Leg-lengde
 skeleton_bone-FOOT_LENGTH = Fot-lengde
 skeleton_bone-FOOT_SHIFT = Fot-bytte
-skeleton_bone-SKELETON_OFFSET = Skjellet-forskyvning
 skeleton_bone-SHOULDERS_DISTANCE = Skulder-distanse
 skeleton_bone-SHOULDERS_WIDTH = Skulder-bredde
 skeleton_bone-UPPER_ARM = Overarms-lengde
 skeleton_bone-LOWER_ARM = Nedre arm-lengde
-skeleton_bone-ELBOW_OFFSET = Albue-forskyvning
 
 ## Tracker reset buttons
 
 reset-reset_all = Nullstill alle proporsjoner
 reset-reset_all_warning-cancel = Avbryt
-reset-reset_all_warning_default-v2 =
-    <b>Advarsel:</b> Høyden din har ikke blitt konfigurert, proporsjonene dine vil bli tilbakestilt til standardinnstillingene med standardhøyden.
-    Er du sikker på at du vil gjøre dette?
 reset-full = Nullstill
 reset-mounting = Nullstill montering
 
@@ -143,9 +134,6 @@ bvh-recording = Spiller inn...
 
 ## Widget: Overlay settings
 
-widget-overlay = Overlegg
-widget-overlay-is_visible_label = Vis overlegg i SteamVR
-widget-overlay-is_mirrored_label = Vis overlegg som speil
 
 ## Widget: Drift compensation
 
@@ -159,7 +147,6 @@ widget-developer_mode = Utvikler modus
 widget-developer_mode-high_contrast = Høy kontrast
 widget-developer_mode-precise_rotation = Nøyaktig rotering
 widget-developer_mode-fast_data_feed = Rask data-feed
-widget-developer_mode-filter_slimes_and_hmd = Filtrer slimes og HMD
 widget-developer_mode-sort_by_name = Sorter etter navn
 widget-developer_mode-raw_slime_rotation = Rå rotering
 widget-developer_mode-more_info = Mer info
@@ -220,9 +207,6 @@ tracker-settings-assignment_section-edit = Endre tildeling
 tracker-settings-mounting_section = Monterings posisjon
 tracker-settings-mounting_section-description = Hvor er trackeren montert?
 tracker-settings-mounting_section-edit = Endre montering
-tracker-settings-drift_compensation_section = Tillat avdrifts-kompensasjon
-tracker-settings-drift_compensation_section-description = Skal denne trackeren kompensere for egen avdrift når avsdrifts-kompansasjon er aktivert?
-tracker-settings-drift_compensation_section-edit = Tillat avdrifts-kompensasjon
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker navn
@@ -231,50 +215,17 @@ tracker-settings-name_section-placeholder = ~Thͭiͪaͥsͣˢ~ venstre ben
 
 ## Tracker part card info
 
-tracker-part_card-no_name = Ingen navn
 tracker-part_card-unassigned = Utilordnet
 
 ## Body assignment menu
 
 body_assignment_menu = Hvor vil du plassere denne trackeren?
 body_assignment_menu-description = Velg den plasseringen du vil tildele denne trackeren. Alternativt kan du velge å ordne alle trackere samtidig istedenfor å ordne dem én etter én.
-body_assignment_menu-show_advanced_locations = Vis avanserte tildelings-plasseringer
 body_assignment_menu-manage_trackers = Ordne alle trackere
 body_assignment_menu-unassign_tracker = Fjern tracker-tildeling
 
 ## Tracker assignment menu
 
-# A -translation_key (with a dash in the front) means that it's a label.
-# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-#
-# We are using it here because english doesn't require changing the text in each case but
-# maybe your language does.
--tracker_selection-part = { "Hvilken tracker skal tildeles til " }
-tracker_selection_menu-NONE = Hvilken tracker vil du fjerne tildelingen på?
-tracker_selection_menu-HEAD = { -tracker_selection-part }hodet?
-tracker_selection_menu-NECK = { -tracker_selection-part }halsen?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part }høyre skulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part }høyre overarm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part }høyre nedre arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part }høyre hånd?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part }høyre lår?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part }høre ankel?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part }høyre fot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part }høyre kontroller?
-tracker_selection_menu-CHEST = { -tracker_selection-part }brystet?
-tracker_selection_menu-WAIST = { -tracker_selection-part }midjen?
-tracker_selection_menu-HIP = { -tracker_selection-part }hoften?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part }venstre skulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part }venstre overarm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part }venstre nedre arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part }venstre hånd?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part }venstre lår?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part }venstre ankel?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part }venstre fot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part }venstre kontroller?
-tracker_selection_menu-unassigned = Utilordnede trackere
-tracker_selection_menu-assigned = Tildelte trackere
-tracker_selection_menu-dont_assign = Ikke tildel
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -292,32 +243,15 @@ mounting_selection_menu-close = Lukk
 
 settings-sidebar-title = Innstillinger
 settings-sidebar-general = Generelle
-settings-sidebar-tracker_mechanics = Tracker-mekanisme
-settings-sidebar-fk_settings = Tracker-innstillinger
-settings-sidebar-gesture_control = Bevegelses-kontroll
 settings-sidebar-interface = Grensesnitt
-settings-sidebar-osc_router = OSC ruter
 settings-sidebar-utils = Verktøy
 settings-sidebar-serial = Seriell konsoll
 
 ## SteamVR settings
 
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = SteamVR trackere
-# Not all translation keys support multiline, only the ones that specify it will actually
-# split it in lines (that also means you can split in lines however you want in those).
-# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines
-settings-general-steamvr-description =
-    Skru av/på spesifikke SteamVR trackere.
-    Nyttig for spill eller programmer som bare støtter visse trackere.
-settings-general-steamvr-trackers-waist = Midje
-settings-general-steamvr-trackers-chest = Bryst
-settings-general-steamvr-trackers-hands-warning-cancel = Avbryt
 
 ## Tracker mechanics
 
-settings-general-tracker_mechanics = Tracker-mekanismer
 settings-general-tracker_mechanics-filtering = Filtrering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -331,15 +265,6 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Jevner
 settings-general-tracker_mechanics-filtering-type-prediction = Forutsigelse
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduserer forsinkelsen og gjør bevegelser skarpere, men kan påvirke stabiliteten.
 settings-general-tracker_mechanics-filtering-amount = Mengde
-settings-general-tracker_mechanics-drift_compensation = Avdrifts-kompansering
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    Kompenserer for IMU yaw avdrift ved å legge til en rotasjon av omvendt verdi.
-    Endre mengde kompensasjon og opp til hvor mange nullstillinger som skal bli gjort rede for.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Avdrifts kompansering
-settings-general-tracker_mechanics-drift_compensation_warning-cancel = Avbryt
-settings-general-tracker_mechanics-drift_compensation-amount-label = Kompanserings mengde
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Bruk opp til x siste nullstillinger
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Bruk magnetometer på alle IMU-trackere som støtter det
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Bruker magnetometer på alle trackere som har en kompatibel firmware for det, noe som reduserer drift i stabile magnetiske områder.
@@ -359,14 +284,9 @@ settings-general-fk_settings-leg_tweak-floor_clip = Gulv-clip
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating korreksjon
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-korreksjon styrke
-settings-general-fk_settings-arm_fk = Arm sporing
-settings-general-fk_settings-arm_fk-description = Endre metoden armene spores på.
-settings-general-fk_settings-arm_fk-force_arms = Tving armer fra HMD
-settings-general-fk_settings-skeleton_settings-description = Skru skjellet innstillinger av eller på. Det anbefales å la disse stå på.
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = Bevegelses-kontroll
 settings-general-gesture_control-subtitle = Trykk baserte nullstillinger
 settings-general-gesture_control-description = Tillat at nullstillinger aktiveres ved å trykke på en sporer. Den høyeste sporeren på overkroppen blir da brukt til Rask Nullstilling, den høyeste sporeren på det venstre beinet blir brukt til Nullstilling og den høyeste sporeren på det høyre beinet blir brukt til Monterings Nullstilling. Vær obs på at trykking bør skje to ganger innen 0.6 sekunder for å bli registrert.
 # This is a unit: 3 taps, 2 taps, 1 tap
@@ -427,28 +347,6 @@ settings-serial-auto_dropdown_item = Auto
 
 ## OSC router settings
 
-settings-osc-router = OSC ruter
-# This cares about multilines
-settings-osc-router-description =
-    Videresend OSC beskjeder fra andre programmer.
-    Nyttig når du bruker andre OSC programmer med VRChat for eksempel.
-settings-osc-router-enable = Aktiver
-settings-osc-router-enable-description = Skru av/på videresending av beskjeder.
-settings-osc-router-enable-label = Aktiver
-settings-osc-router-network = Nettverks-porter
-# This cares about multilines
-settings-osc-router-network-description =
-    Still inn portene som skal motta eller sende data.
-    Disse kan være lik som andre porter brukt i SlimeVR serveren.
-settings-osc-router-network-port_in =
-    .label = Port inn
-    .placeholder = Port inn (normalverdi:9002)
-settings-osc-router-network-port_out =
-    .label = Port Ut
-    .placeholder = Port ut (normalverdi: 9000)
-settings-osc-router-network-address = Nettverksadresse
-settings-osc-router-network-address-description = Tast inn adressen som skal motta data.
-settings-osc-router-network-address-placeholder = IPV4 adresse
 
 ## OSC VRChat settings
 
@@ -465,13 +363,6 @@ settings-osc-vrchat-network-port_out =
     .placeholder = Port ut (standardisering: 9000)
 settings-osc-vrchat-network-address = Nettverksadresse
 settings-osc-vrchat-network-address-placeholder = VRChat ip adresse
-settings-osc-vrchat-network-trackers = Trackere
-settings-osc-vrchat-network-trackers-description = Skru av/på sendingen av spesifikke sporere via OSC.
-settings-osc-vrchat-network-trackers-chest = Bryst
-settings-osc-vrchat-network-trackers-hip = Hofte
-settings-osc-vrchat-network-trackers-knees = Knær
-settings-osc-vrchat-network-trackers-feet = Føtter
-settings-osc-vrchat-network-trackers-elbows = Albuer
 
 ## VMC OSC settings
 
@@ -492,14 +383,12 @@ settings-osc-vrchat-network-trackers-elbows = Albuer
 
 onboarding-skip = Hopp over oppsett
 onboarding-continue = Fortsett
-onboarding-wip = Arbeid pågår
 
 ## Quiz
 
 
 ## Wi-Fi setup
 
-onboarding-wifi_creds-skip = Hopp over Wi-Fi innstillinger
 onboarding-wifi_creds-submit = Send inn!
 onboarding-wifi_creds-ssid =
     .label = Wi-Fi navn
@@ -510,9 +399,6 @@ onboarding-wifi_creds-password =
 
 ## Mounting setup
 
-onboarding-reset_tutorial-back = Gå tilbake til monterings kalibrering
-onboarding-reset_tutorial = Nullstill opplæringen
-onboarding-reset_tutorial-skip = Hopp over trinn
 
 ## Install info
 
@@ -524,13 +410,9 @@ onboarding-home-start = La oss sette i gang!
 
 ## Setup done
 
-onboarding-done-title = Nå er alt klart!
-onboarding-done-description = Nyt din hel-kropps opplevelse
-onboarding-done-close = Lukk guiden
 
 ## Tracker connection setup
 
-onboarding-connect_tracker-back = Gå tilbake til Wi-Fi legitimasjon
 onboarding-connect_tracker-title = Koble til trackere
 onboarding-connect_tracker-issue-serial = Jeg sliter med å koble til!
 onboarding-connect_tracker-usb = USB Tracker
@@ -556,7 +438,6 @@ onboarding-connect_tracker-next = Jeg har tilkoblet alle mine trackere
 
 ## Tracker assignment setup
 
-onboarding-assign_trackers-back = Gå tilbake til Wi-Fi legitimasjon
 onboarding-assign_trackers-title = Tildel trackerne
 onboarding-assign_trackers-description = La oss velge hvilke trackere som skal hvor. Trykk på stedet der du vil plassere en tracker
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
@@ -567,19 +448,15 @@ onboarding-assign_trackers-assigned =
         [one] { $assigned } av 1 tracker tildelt
        *[other] { $assigned } av { $trackers } trackere tildelt
     }
-onboarding-assign_trackers-advanced = Vis avanserte tildelings-plasseringer
-onboarding-assign_trackers-next = Jeg har tildelt alle trackerne
 
 ## Tracker assignment warnings
 
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting-manual_modal-cancel = Avbryt
 
 ## Tracker manual mounting setup
 
-onboarding-manual_mounting-back = Gå tilbake for å tre inn i VR
 onboarding-manual_mounting = Manuell montering
 onboarding-manual_mounting-description = Trykk på en hver tracker og velg hvilken vei de er montert
 onboarding-manual_mounting-auto_mounting = Automatisk montering
@@ -587,7 +464,6 @@ onboarding-manual_mounting-next = Neste steg
 
 ## Tracker automatic mounting setup
 
-onboarding-automatic_mounting-back = Gå tilbake for å tre inn i VR
 onboarding-automatic_mounting-title = Monterings Kalibrering
 onboarding-automatic_mounting-description = For at SlimeVR trackere skal funke, må vi tildele en monterings-rotasjon til dine trackere for at de skal samstemme med din fysiske tracker-montering.
 onboarding-automatic_mounting-manual_mounting = Sett opp montering manuelt
@@ -606,14 +482,12 @@ onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere 
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-title = Manuelle kropps-proporsjoner
 
 ## Tracker automatic proportions setup
 
 onboarding-automatic_proportions-back = Gå tilbake til Nullstillings opplæring
 onboarding-automatic_proportions-title = Mål opp kroppen din
 onboarding-automatic_proportions-description = For at SlimeVR trackere skal funke, må vi vite lengden på beinene dine. Denne korte kalibreringen kan måle det opp for deg.
-onboarding-automatic_proportions-manual = Manuell kalibrering
 onboarding-automatic_proportions-prev_step = Forrige steg
 onboarding-automatic_proportions-put_trackers_on-title = Ta på deg alle dine trackere
 onboarding-automatic_proportions-put_trackers_on-description = For å kalibrere dine proporsjoner, bruker vi trackerne du akkurat har tildelt. Ta på deg alle dine trackere, du kan se hvem som går hvor i figuren til høyre.
@@ -648,7 +522,6 @@ onboarding-automatic_proportions-done-description = Din kropps-proposisjons kali
 
 ## Home
 
-home-no_trackers = Ingen trackere oppdaget eller tildelt
 
 ## Trackers Still On notification
 
