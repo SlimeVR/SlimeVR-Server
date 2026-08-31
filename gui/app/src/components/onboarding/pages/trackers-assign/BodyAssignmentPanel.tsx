@@ -19,6 +19,8 @@ import {
 import { bodyPartDropProps, trackerDrag } from '@/hooks/tracker-drag';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { BodyPartError } from '@/hooks/tracker-assignment';
+import {FootIcon} from "@/components/commons/icon/FootIcon";
+import {CompareIcon} from "@/components/commons/icon/CompareIcon";
 
 export function BodyAssignmentPanel({
   dotSize,
@@ -134,23 +136,16 @@ function SideLegend({
       className="flex items-center gap-1 bg-background-80 rounded-full p-1 w-fit cursor-pointer"
       onClick={toggleMirror}
     >
-      <div
-        className={classNames(
-          'flex items-center gap-2 px-4 py-1',
-          mirror ? 'order-2' : 'order-1'
-        )}
-      >
+      <div className="flex items-center gap-2 px-3 py-1">
         <span className="w-2.5 h-2.5 rounded-full bg-background-10 outline outline-4 outline-assign-left" />
-        <Typography bold id="tracker_assignment-side-left" />
+        <Typography bold id={mirror ? "tracker_assignment-side-left" : "tracker_assignment-side-right"} />
       </div>
-      <div
-        className={classNames(
-          'flex items-center gap-2 px-4 py-1 rounded-full',
-          mirror ? 'order-1' : 'order-2'
-        )}
-      >
+
+        <CompareIcon width={22} />
+
+      <div className="flex items-center gap-2 px-3 py-1 rounded-full">
         <span className="w-2.5 h-2.5 rounded-full  bg-background-10 outline outline-4 outline-assign-right" />
-        <Typography bold id="tracker_assignment-side-right" />
+        <Typography bold id={mirror ? "tracker_assignment-side-right" : "tracker_assignment-side-left"} />
       </div>
     </div>
   );
