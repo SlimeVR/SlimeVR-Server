@@ -43,7 +43,7 @@ fun snapToes(
 	// TODO Not yet tested if this is the right method & math
 	val maxPitch = Quaternion.rotationAroundXAxis(MAX_TOE_SNAP_ANGLE * correctionRatio)
 	// Pitch must be applied first
-	val maxCorrection = maxPitch * heading
+	val maxCorrection = heading * maxPitch
 	return rotation.interpQ(maxCorrection, correctionRatio)
 }
 

@@ -4,6 +4,9 @@ import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
+import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
+import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BonePredictionInputProcessor
@@ -186,9 +189,9 @@ class Skeleton(
 						BoneSmoothingInputProcessor(settings),
 					),
 					fkProcessors = listOf(
-// 						LocalizerFkProcessor(settings),
-// 						FootPlantFkProcessor(settings),
-// 						ToeSnapFkProcessor(settings),
+						LocalizerFkProcessor(settings),
+						FootPlantFkProcessor(settings),
+						ToeSnapFkProcessor(settings),
 					),
 					targetProcessors = listOf(
 // 						FloorClipTargetProcessor(settings),
