@@ -23,8 +23,6 @@ version_update-close = Close
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
-tips-tap_setup = You can slowly tap your tracker 2 times to choose it instead of selecting it from the menu.
-tips-turn_on_tracker = Using official SlimeVR trackers? Don't forget to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
 ## Units
@@ -91,6 +89,17 @@ body_part-RIGHT_RING_DISTAL = Right ring distal
 body_part-RIGHT_LITTLE_PROXIMAL = Right little proximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = Right little intermediate
 body_part-RIGHT_LITTLE_DISTAL = Right little distal
+body_part-LEFT_BIG_TOE = Left Big Toe
+body_part-LEFT_INDEX_TOE = Left Index Toe
+body_part-LEFT_MIDDLE_TOE = Left Middle Toe
+body_part-LEFT_RING_TOE = Left Ring Toe
+body_part-LEFT_LITTLE_TOE = Left Little Toe
+body_part-RIGHT_TOES = Right Toes
+body_part-RIGHT_BIG_TOE = Right Big Toe
+body_part-RIGHT_INDEX_TOE = Right Index Toe
+body_part-RIGHT_MIDDLE_TOE = Right Middle Toe
+body_part-RIGHT_RING_TOE = Right Ring Toe
+body_part-RIGHT_LITTLE_TOE = Right Little Toe
 
 ## BoardType
 board_type-UNKNOWN = Unknown
@@ -228,22 +237,14 @@ skeleton_bone-HAND_Z-desc =
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
-reset-reset_all_warning-v2 =
-    <b>Warning:</b> Your proportions will be reset to defaults scaled to your configured height.
-    Are you sure you want to do this?
 reset-reset_all_warning-reset = Reset proportions
 reset-reset_all_warning-cancel = Cancel
-reset-reset_all_warning_default-v2 =
-    <b>Warning:</b> Your height has not been configured, your proportions will be reset to defaults with the default height.
-    Are you sure you want to do this?
 
 reset-full = Full Reset
 reset-mounting = Mounting Calibration
 reset-mounting-feet = Feet Calibration
 reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
-reset-error-no_feet_tracker = No feet tracker assigned
-reset-error-no_fingers_tracker = No finger tracker assigned
 reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
 
@@ -275,14 +276,6 @@ bvh-save_title = Save BVH recording
 tracking-unpaused = Pause tracking
 tracking-paused = Unpause tracking
 
-## Widget: Overlay settings
-widget-overlay = Overlay
-widget-overlay-is_visible_label = Show Overlay in SteamVR
-widget-overlay-is_mirrored_label = Display Overlay as Mirror
-
-## Widget: Clear Mounting calibration
-widget-clear_mounting = Clear mounting calibration
-
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
@@ -301,10 +294,6 @@ widget-imu_visualizer-rotation_preview = Preview rotation
 widget-imu_visualizer-acceleration = Acceleration
 widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Stay Aligned
-
-## Widget: Skeleton Visualizer
-widget-skeleton_visualizer-preview = Skeleton preview
-widget-skeleton_visualizer-hide = Hide
 
 ## Tracker status
 tracker-status-none = No Status
@@ -346,8 +335,6 @@ tracker-infos-manufacturer = Manufacturer
 tracker-infos-display_name = Display Name
 tracker-infos-custom_name = Custom Name
 tracker-infos-url = Tracker URL
-tracker-infos-version = Firmware Version
-tracker-infos-hardware_rev = Hardware Revision
 tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-data_type = Data type
 tracker-infos-imu = IMU Sensor
@@ -410,7 +397,6 @@ dongle-settings-title = Dongle settings
 dongle-settings-name_section = Dongle name
 dongle-settings-name_section-description = Give it a cute nickname :3
 dongle-settings-name_section-placeholder = Futura's usb thingie
-dongle-settings-name_section-label = Dongle name
 dongle-settings-update = Update now
 dongle-settings-update-title = Firmware version
 dongle-settings-paired_trackers = Paired Trackers
@@ -428,7 +414,6 @@ dongle-settings-telemetry-footnote = Loss gap events mark regions where packet u
 
 
 ## Tracker part card info
-tracker-part_card-no_name = No name
 tracker-part_card-unassigned = Unassigned
 
 ## Body assignment menu
@@ -443,69 +428,6 @@ body_assignment_menu-unassign_tracker = Unassign tracker
 #
 # We are using it here because english doesn't require changing the text in each case but
 # maybe your language does.
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } upper chest?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-
-tracker_selection_menu-unassigned = Unassigned Trackers
-tracker_selection_menu-assigned = Assigned Trackers
-tracker_selection_menu-dont_assign = Unassign
-
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Which tracker do you want to be unassigned?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
-tracker_selection_menu-NECK = { -tracker_selection-part } neck?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } right shoulder?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } right hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
-tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } upper chest?
-tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
-tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
-tracker_selection_menu-HIP = { -tracker_selection-part } hip?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } left shoulder?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } left hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } left thigh?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } left ankle?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } left foot?
-tracker_selection_menu-LEFT_BIG_TOE = { -tracker_selection-part } left big toe?
-tracker_selection_menu-LEFT_INDEX_TOE = { -tracker_selection-part } left index toe?
-tracker_selection_menu-LEFT_MIDDLE_TOE = { -tracker_selection-part } left middle toe?
-tracker_selection_menu-LEFT_RING_TOE = { -tracker_selection-part } left ring toe?
-tracker_selection_menu-LEFT_LITTLE_TOE = { -tracker_selection-part } left little toe?
-tracker_selection_menu-RIGHT_BIG_TOE = { -tracker_selection-part } right big toe?
-tracker_selection_menu-RIGHT_INDEX_TOE = { -tracker_selection-part } right index toe?
-tracker_selection_menu-RIGHT_MIDDLE_TOE = { -tracker_selection-part } right middle toe?
-tracker_selection_menu-RIGHT_RING_TOE = { -tracker_selection-part } right ring toe?
-tracker_selection_menu-RIGHT_LITTLE_TOE = { -tracker_selection-part } right little toe?
-tracker_selection_menu-unassigned = Unassigned Trackers
-tracker_selection_menu-assigned = Assigned Trackers
-tracker_selection_menu-dont_assign = Unassign
-
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -653,7 +575,6 @@ settings-stay_aligned-description = Stay Aligned reduces drift by gradually adju
 settings-stay_aligned-setup-label = Setup Stay Aligned
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
 settings-stay_aligned-enabled-label = Adjust trackers
-settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare without Stay Aligned)
 settings-stay_aligned-general-label = General
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
 settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
@@ -1285,42 +1206,6 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
     *[unknown] Unknown unassigned body part
 } to also be assigned!
 
-onboarding-assign_trackers-warning-LEFT_BIG_TOE = Left Big Toe is assigned but you need { $unassigned ->
-    [0] the left foot
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-onboarding-assign_trackers-warning-LEFT_INDEX_TOE = Left Index Toe is assigned but you need { $unassigned ->
-    [0] the left foot
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-onboarding-assign_trackers-warning-LEFT_MIDDLE_TOE = Left Middle Toe is assigned but you need { $unassigned ->
-    [0] the left foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
-onboarding-assign_trackers-warning-LEFT_RING_TOE = Left Ring Toe is assigned but you need { $unassigned ->
-    [0] the left foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
-onboarding-assign_trackers-warning-LEFT_LITTLE_TOE = Left Little Toe is assigned but you need { $unassigned ->
-    [0] the left foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
-onboarding-assign_trackers-warning-RIGHT_BIG_TOE = Left Big Toe is assigned but you need { $unassigned ->
-    [0] the right foot
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-onboarding-assign_trackers-warning-RIGHT_INDEX_TOE = Right Index Toe is assigned but you need { $unassigned ->
-    [0] the right foot
-    *[unknown] Unknown unassigned body part
-} to also be assigned!
-onboarding-assign_trackers-warning-RIGHT_MIDDLE_TOE = Right Middle Toe is assigned but you need { $unassigned ->
-    [0] the right foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
-onboarding-assign_trackers-warning-RIGHT_RING_TOE = Right Ring Toe is assigned but you need { $unassigned ->
-    [0] the right foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
-onboarding-assign_trackers-warning-RIGHT_LITTLE_TOE = Right Little Toe is assigned but you need { $unassigned ->
-    [0] the right foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
-
-
 ## Tracker mounting method choose
 onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
@@ -1769,8 +1654,6 @@ toolbar-mounting_calibration-feet = Feet
 toolbar-mounting_calibration-toes = Toes
 toolbar-mounting_calibration-fingers = Fingers
 toolbar-drift_reset = Drift Reset
-toolbar-assigned_trackers = {$count} trackers assigned
-toolbar-unassigned_trackers = {$count} trackers unassigned
 toolbar-assigned_trackers = { $count ->
     [one] { $count } tracker assigned
     *[other] { $count } trackers assigned
@@ -1779,17 +1662,4 @@ toolbar-unassigned_trackers = { $count ->
     [one] { $count } tracker unassigned
     *[other] { $count } trackers unassigned
 }
-toolbar-assigned_trackers = {$count} trackers assigned
-toolbar-unassigned_trackers = {$count} trackers unassigned
-body_part-LEFT_BIG_TOE = Left Big Toe
-body_part-LEFT_INDEX_TOE = Left Index Toe
-body_part-LEFT_MIDDLE_TOE = Left Middle Toe
-body_part-LEFT_RING_TOE = Left Ring Toe
-body_part-LEFT_LITTLE_TOE = Left Little Toe
 
-body_part-RIGHT_TOES = Right Toes
-body_part-RIGHT_BIG_TOE = Right Big Toe
-body_part-RIGHT_INDEX_TOE = Right Index Toe
-body_part-RIGHT_MIDDLE_TOE = Right Middle Toe
-body_part-RIGHT_RING_TOE = Right Ring Toe
-body_part-RIGHT_LITTLE_TOE = Right Little Toe
