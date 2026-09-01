@@ -2,7 +2,7 @@ package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.mutate
+import dev.slimevr.skeleton.mutateCopy
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -48,7 +48,7 @@ class FingerImputeInputProcessor : SkeletonInputProcessor {
 	)
 
 	// TODO : There's more math to do here. Reference the original code.
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutate { updated ->
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutateCopy { updated ->
 		for ((bodyPart, source) in fingerToSource) {
 			val bone = updated.getValue(bodyPart)
 			if (bone.isRotationActive) continue

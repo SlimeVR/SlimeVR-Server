@@ -10,7 +10,7 @@ internal val ALL_BODY_PARTS: Array<BodyPart> = BodyPart.entries.toTypedArray()
 
 fun <V> bodyPartMap(): BodyPartMap<V> = EnumMap(BodyPart::class.java)
 
-inline fun <V> BodyPartMap<V>.mutate(block: (BodyPartMap<V>) -> Unit): BodyPartMap<V> = EnumMap(this).also(block)
+inline fun <V> BodyPartMap<V>.mutateCopy(block: (BodyPartMap<V>) -> Unit): BodyPartMap<V> = EnumMap(this).also(block)
 
 inline fun <V : Any, R : Any> BodyPartMap<V>.mapValues(transform: (BodyPart, V) -> R): BodyPartMap<R> {
 	val result = bodyPartMap<R>()

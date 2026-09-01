@@ -6,17 +6,17 @@ import solarxr_protocol.datatypes.BodyPart
 fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
 	is SkeletonActions.SetBoneRotation -> {
 		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = action.rotation, isRotationActive = action.setActive) })
+		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(rawRotation = action.rotation, isRotationActive = action.setActive) })
 	}
 
 	is SkeletonActions.SetBonePosition -> {
 		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawPosition = action.position, isPositionActive = action.setActive) })
+		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(rawPosition = action.position, isPositionActive = action.setActive) })
 	}
 
 	is SkeletonActions.DisableBone -> {
 		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = Quaternion.IDENTITY, rawPosition = null, isRotationActive = false, isPositionActive = false) })
+		state.copy(boneInputs = state.boneInputs.mutateCopy { it[action.bodyPart] = bone.copy(rawRotation = Quaternion.IDENTITY, rawPosition = null, isRotationActive = false, isPositionActive = false) })
 	}
 
 	is SkeletonActions.SetProportions -> {
@@ -41,6 +41,6 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 		val boneInputs = state.boneInputs
 		val headBone = boneInputs[BodyPart.HEAD] ?: return state
 		if (headBone.isPositionActive) return state
-		state.copy(boneInputs = boneInputs.mutate { it[BodyPart.HEAD] = headBone.copy(rawPosition = null) })
+		state.copy(boneInputs = boneInputs.mutateCopy { it[BodyPart.HEAD] = headBone.copy(rawPosition = null) })
 	}
 }

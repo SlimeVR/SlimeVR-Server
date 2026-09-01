@@ -3,7 +3,7 @@ package dev.slimevr.bvh
 import dev.slimevr.config.TextFileHandle
 import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.buildBones
-import dev.slimevr.skeleton.mutate
+import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.test.runTest
 import solarxr_protocol.datatypes.BodyPart
@@ -18,12 +18,12 @@ class BvhStreamTest {
 		val stream = BvhStream(file)
 		val initialBones = buildBones(DEFAULT_SKELETON_STATE.boneInputs)
 		val firstFrame = buildBones(
-			DEFAULT_SKELETON_STATE.boneInputs.mutate {
+			DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
 				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(rawPosition = Vector3(1f, 2f, 3f))
 			},
 		)
 		val secondFrame = buildBones(
-			DEFAULT_SKELETON_STATE.boneInputs.mutate {
+			DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
 				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(rawPosition = Vector3(4f, 5f, 6f))
 			},
 		)
@@ -53,7 +53,7 @@ class BvhStreamTest {
 
 		stream.writeFrame(
 			buildBones(
-				DEFAULT_SKELETON_STATE.boneInputs.mutate {
+				DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
 					it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(rawPosition = Vector3(7f, 8f, 9f))
 				},
 			),
