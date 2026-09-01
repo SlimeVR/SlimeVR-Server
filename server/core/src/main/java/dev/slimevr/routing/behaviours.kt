@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -36,6 +37,8 @@ class BoneRoutingBasicBehaviour(private val appContext: AppContextProvider) : Bo
 				server.context.state
 					.map { it.trackers.values }
 					.flatMapLatest { trackers ->
+						if (trackers.isEmpty()) return@flatMapLatest flowOf(emptySet())
+
 						// Tracker state emits on every rotation packet, but only bodyPart/status matter here.
 						// Dedup per tracker first, or combine gets resumed once per packet per tracker.
 						combine(
