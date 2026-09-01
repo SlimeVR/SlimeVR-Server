@@ -6,13 +6,21 @@ import java.util.Collections
 import java.util.IdentityHashMap
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 class PendingReplies<T : Any> {
 	private val pending = Collections.synchronizedMap(IdentityHashMap<T, UInt>())
+	private val consumerTypes = Collections.newSetFromMap(ConcurrentHashMap<KClass<out T>, Boolean>())
 
-	fun record(message: T, txId: UInt?) {
-		if (txId != null) pending[message] = txId
+	fun registerConsumer(type: KClass<out T>) {
+		consumerTypes += type
+	}
+
+	fun record(message: T, txId: UInt) {
+		if (txId == 0u) return
+		if (message::class !in consumerTypes) return
+		pending[message] = txId
 	}
 
 	fun consume(message: T): UInt? = pending.remove(message)

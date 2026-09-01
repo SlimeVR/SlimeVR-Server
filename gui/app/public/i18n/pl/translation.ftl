@@ -27,8 +27,6 @@ version_update-close = Zamknij
 tips-find_tracker = Nie jesteś pewien, który tracker jest który? Potrząśnij trackerem, a podświetli on odpowiedni element.
 tips-do_not_move_heels = Upewnij się, aby pięty nie ruszały się podczas nagrywania.
 tips-file_select = Przeciągnij i upuść pliki, których chcesz użyć, lub <u>przeglądaj</u>.
-tips-tap_setup = Możesz powoli stuknąć 2 razy tracker, aby go wybrać, zamiast wybierać go z menu.
-tips-turn_on_tracker = Używasz oficjalnych trackerów SlimeVR? Pamiętaj, <b><em>aby włączyć tracker</em></b> po podłączeniu go do komputera!
 tips-failed_webgl = Nie udało się zainicjalizować WebGL.
 
 ## Units
@@ -138,10 +136,6 @@ skeleton_bone-UPPER_CHEST-desc =
     To jest odległość od podstawy szyi do środka klatki piersiowej.
     Aby go dostosować, odpowiednio dostosuj długość tułowia i zmodyfikuj ją w różnych pozycjach
     (Siedząc, pochylając się, leżąc itp.) Dopóki wirtualny kręgosłup nie pasuje do twojego prawdziwego.
-skeleton_bone-CHEST_OFFSET = Przesunięcie klatki piersiowej
-skeleton_bone-CHEST_OFFSET-desc =
-    Można to dostosować, aby przesunąć wirtualny tracker klatki piersiowej w górę lub w dół, aby pomóc
-    z kalibracją w niektórych grach lub aplikacjach, które mogą oczekiwać, że będzie wyższa lub niższa.
 skeleton_bone-CHEST = Długość klatki piersiowej
 skeleton_bone-CHEST-desc =
     To jest odległość od środka klatki piersiowej do środka kręgosłupa.
@@ -157,10 +151,6 @@ skeleton_bone-HIP-desc =
     To jest odległość od przycisku brzucha do bioder
     Aby go dostosować, odpowiednio dostosuj długość tułowia i zmodyfikuj ją w różnych pozycjach
     (Siedząc, pochylając się, leżąc itp.) Dopóki wirtualny kręgosłup nie pasuje do twojego prawdziwego.
-skeleton_bone-HIP_OFFSET = Przesunięcie bioder
-skeleton_bone-HIP_OFFSET-desc =
-    Można to dostosować, aby przesunąć wirtualny tracker bioder w górę lub w dół, aby pomóc
-    z kalibracją w niektórych grach lub aplikacjach, które mogą oczekiwać, że będzie w talii.
 skeleton_bone-HIPS_WIDTH = Szerokość bioder
 skeleton_bone-HIPS_WIDTH-desc =
     To jest odległość między początkiem nóg.
@@ -191,11 +181,6 @@ skeleton_bone-FOOT_SHIFT-desc =
     Opowiada o dolnych nogach cofających się, gdy stoi prosto.
     Aby go dostosować, ustaw długość stopy na 0, wykonaj pełny reset i zmodyfikuj ją, aż do wirtualnegow
     Stopy ustawiają się w środku kostek.
-skeleton_bone-SKELETON_OFFSET = Przesunięcie szkieletu
-skeleton_bone-SKELETON_OFFSET-desc =
-    Można to dostosować do przesunięcia wszystkich twoich trackerów do przodu lub do tyłu.
-    Można go użyć, aby pomóc w kalibracji w niektórych grach lub aplikacjach
-    To może oczekiwać, że twoi trackerzy będą bardziej naprzód.
 skeleton_bone-SHOULDERS_DISTANCE = Odległość ramion
 skeleton_bone-SHOULDERS_DISTANCE-desc =
     To jest pionowa odległość od podstawy szyi do ramion.
@@ -234,29 +219,17 @@ skeleton_bone-HAND_Z-desc =
     Aby dostosować go do przechwytywania ruchu, ustaw go na 0.
     Aby dostosować go do śledzenia łokcia z kontrolerów, ustaw długość ramienia na 0 i ¶
     Zmodyfikuj go, aż twoich śledzących łokcia w sposób poziomo z nadgarstkami.
-skeleton_bone-ELBOW_OFFSET = Przesunięcie łokcia
-skeleton_bone-ELBOW_OFFSET-desc =
-    Można to dostosować, aby przesunąć wirtualne urządzenia śledzące łokieć w górę lub w dół, aby pomóc
-    z VRCHAT przypadkowo wiążącą tropiciel łokcia z klatką piersiową.
 
 ## Tracker reset buttons
 
 reset-reset_all = Zresetuj wszystkie wymiary
-reset-reset_all_warning-v2 =
-    <b> Ostrzeżenie: </b> Twoje proporcje zostaną zresetowane do wartości domyślnych skalowanych do skonfigurowanego wysokości.
-    Czy na pewno chcesz to zrobić?
 reset-reset_all_warning-reset = Zresetuj proporcje
 reset-reset_all_warning-cancel = Anuluj
-reset-reset_all_warning_default-v2 =
-    <b> Ostrzeżenie: </b> Twoja wysokość nie została skonfigurowana, twoje proporcje zostaną zresetowane do domyślnych z domyślnym wysokością.
-    Czy na pewno chcesz to zrobić?
 reset-full = Pełny Reset
 reset-mounting = Zresetuj położenie
 reset-mounting-feet = Zresetuj mocowanie stóp
 reset-mounting-fingers = Zresetuj mocowanie palców
 reset-yaw = Reset odchylenia
-reset-error-no_feet_tracker = Nie przypisano urządzenia śledzenia stóp
-reset-error-no_fingers_tracker = Nie przypisano urządzenia śledzenia palcy
 reset-error-mounting-need_full_reset = Potrzebny jest pełny reset przed montażem
 reset-error-yaw-need_full_reset = Potrzebny jest pełny reset przed resetem obrotu
 
@@ -292,27 +265,12 @@ bvh-save_title = Zapisz nagranie BVH
 tracking-unpaused = Wstrzymaj śledzenie
 tracking-paused = Wznów śledzenie
 
-## Widget: Overlay settings
-
-widget-overlay = Nakładka
-widget-overlay-is_visible_label = Wyświetlaj nakładkę w SteamVR
-widget-overlay-is_mirrored_label = Wyświetlaj nakładkę w lustrzanym odbiciu
-
-## Widget: Drift compensation
-
-widget-drift_compensation-clear = Wyczyść kompensację dryfu
-
-## Widget: Clear Mounting calibration
-
-widget-clear_mounting = Wyczyść resetowanie montażu
-
 ## Widget: Developer settings
 
 widget-developer_mode = Tryb deweloperski
 widget-developer_mode-high_contrast = Wysoki kontrast
 widget-developer_mode-precise_rotation = Wyświetlanie dokładniejszej rotacji
 widget-developer_mode-fast_data_feed = Szybkie przesyłanie danych
-widget-developer_mode-filter_slimes_and_hmd = Filtruj Slime i HMD
 widget-developer_mode-sort_by_name = Sortuj według nazwy
 widget-developer_mode-raw_slime_rotation = Surowa rotacja
 widget-developer_mode-more_info = Więcej info
@@ -327,11 +285,6 @@ widget-imu_visualizer-rotation_preview = Podgląd
 widget-imu_visualizer-acceleration = Akceleracja
 widget-imu_visualizer-position = Pozycja
 widget-imu_visualizer-stay_aligned = Wyrównywanie
-
-## Widget: Skeleton Visualizer
-
-widget-skeleton_visualizer-preview = Podgląd szkieletu
-widget-skeleton_visualizer-hide = Ukryj
 
 ## Tracker status
 
@@ -368,7 +321,6 @@ tracker-rotation-back = Tył
 tracker-rotation-back_left = Lewy tył
 tracker-rotation-back_right = Prawy tył
 tracker-rotation-custom = Własne
-tracker-rotation-overriden = (nadpisany przez reset montażu)
 
 ## Tracker information
 
@@ -376,10 +328,7 @@ tracker-infos-manufacturer = Producent
 tracker-infos-display_name = Wyświetlana Nazwa
 tracker-infos-custom_name = Niestandardowa Nazwa
 tracker-infos-url = Tracker URL
-tracker-infos-version = Wersja oprogramowania
-tracker-infos-hardware_rev = Rewizja sprzętu
 tracker-infos-hardware_identifier = Identyfikator sprzętu
-tracker-infos-data_support = Wsparcie danych
 tracker-infos-imu = Czujnik IMU
 tracker-infos-board_type = Płyta główna
 tracker-infos-network_version = Wersja protokołu
@@ -401,9 +350,6 @@ tracker-settings-assignment_section-edit = Edytuj przypisanie
 tracker-settings-mounting_section = Położenie Trackera
 tracker-settings-mounting_section-description = Gdzie zamontowany jest tracker?
 tracker-settings-mounting_section-edit = Edytuj
-tracker-settings-drift_compensation_section = Pozwalaj na kompensację dryfu
-tracker-settings-drift_compensation_section-description = Czy ten tracker powinien być korygowany, gdy kompensacja dryfu jest włączona?
-tracker-settings-drift_compensation_section-edit = Pozwalaj na kompensację dryfu
 tracker-settings-use_mag = Zezwól na magnetometr na tym trackerze
 # Multiline!
 tracker-settings-use_mag-description =
@@ -432,51 +378,17 @@ tracker-settings-latest-version = Najnowszy
 
 ## Tracker part card info
 
-tracker-part_card-no_name = Bez nazwy
 tracker-part_card-unassigned = Nieprzydzielony
 
 ## Body assignment menu
 
 body_assignment_menu = Gdzie chcesz przypisać ten tracker?
 body_assignment_menu-description = Wybierz miejsce gdzie tracker będzie przydzielony. Alternatywnie możesz ustawić wszystkie na raz.
-body_assignment_menu-show_advanced_locations = Pokaż zaawansowane położenia
 body_assignment_menu-manage_trackers = Zarządzaj wszystkimi trackerami
 body_assignment_menu-unassign_tracker = Usuń przydzielenie
 
 ## Tracker assignment menu
 
-# A -translation_key (with a dash in the front) means that it's a label.
-# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-#
-# We are using it here because english doesn't require changing the text in each case but
-# maybe your language does.
--tracker_selection-part = Which tracker to assign to your
-tracker_selection_menu-NONE = Któremu trackerowi chcesz cofnąć przypisanie?
-tracker_selection_menu-HEAD = { -tracker_selection-part } głowa?
-tracker_selection_menu-NECK = { -tracker_selection-part } szyja?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } prawe ramię?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } prawe ramię?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part }prawe przedramię?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } prawa ręka?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } prawe udo?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } prawa kostka?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } prawa stopa?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } prawy kontroler?
-tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } górnej części klatki piersiowej?
-tracker_selection_menu-CHEST = { -tracker_selection-part } klatka piersiowa?
-tracker_selection_menu-WAIST = { -tracker_selection-part } talia?
-tracker_selection_menu-HIP = { -tracker_selection-part } biodro?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } lewe ramię?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } left upper arm?
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } left lower arm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } lewa ręka?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } lewe udo?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } lewa kostka?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } lewa stopa?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } lewy kontroler?
-tracker_selection_menu-unassigned = Nieprzydzielone trackery
-tracker_selection_menu-assigned = Przydzielone trackery
-tracker_selection_menu-dont_assign = Nie przydzielaj
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -494,13 +406,8 @@ mounting_selection_menu-close = Zamknij
 
 settings-sidebar-title = Ustawienia
 settings-sidebar-general = Ogólne
-settings-sidebar-steamvr = SteamVR
-settings-sidebar-tracker_mechanics = Mechanika trackerów
 settings-sidebar-stay_aligned = Wyrównywanie
-settings-sidebar-fk_settings = Ustawienia śledzenia
-settings-sidebar-gesture_control = Sterowanie gestami
 settings-sidebar-interface = Interfejs
-settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = Śledzenie VRChat OSC
 settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Narzędzia
@@ -514,39 +421,8 @@ settings-sidebar-firmware-tool = Narzędzie do oprogramowania sprzętowego DIY
 settings-sidebar-vrc_warnings = Ostrzeżenia dotyczące konfiguracji VRChat
 settings-sidebar-advanced = Zaawansowany
 
-## SteamVR settings
-
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = Trackery SteamVR
-# Not all translation keys support multiline, only the ones that specify it will actually
-# split it in lines (that also means you can split in lines however you want in those).
-# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines
-settings-general-steamvr-description =
-    Włącz lub Wyłącz specyficzne pozycje trackowania.
-    Przydatne jeżeli chcesz więcej kontroli nad SlimeVR.
-settings-general-steamvr-trackers-waist = Talia
-settings-general-steamvr-trackers-chest = Klatka Piersiowa
-settings-general-steamvr-trackers-left_foot = Lewa stopa
-settings-general-steamvr-trackers-right_foot = Prawa stopa
-settings-general-steamvr-trackers-left_knee = Lewe kolano
-settings-general-steamvr-trackers-right_knee = Prawe kolano
-settings-general-steamvr-trackers-left_elbow = Lewy łokieć
-settings-general-steamvr-trackers-right_elbow = Prawy łokieć
-settings-general-steamvr-trackers-left_hand = Lewa dłoń
-settings-general-steamvr-trackers-right_hand = Prawa dłoń
-settings-general-steamvr-trackers-tracker_toggling = Automatyczne przypisanie trackerów
-settings-general-steamvr-trackers-tracker_toggling-description = Automatycznie obsługuje włączanie i wyłączanie wirtualnych trackerów SteamVR w zależności od bieżących przypisań fizycznych trackerów
-settings-general-steamvr-trackers-tracker_toggling-label = Automatyczne przypisanie wirtualnych trackerów SteamVR
-settings-general-steamvr-trackers-hands-warning =
-    <b>Ostrzeżenie:</b> trackery na dłoniach zastąpią kontrolery.¶
-    Nie jest to typowa konfiguracja. Czy kontynuować?
-settings-general-steamvr-trackers-hands-warning-cancel = Anuluj
-settings-general-steamvr-trackers-hands-warning-done = Tak
-
 ## Tracker mechanics
 
-settings-general-tracker_mechanics = Mechanika trackerów
 settings-general-tracker_mechanics-filtering = Filtrowanie
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -561,28 +437,6 @@ settings-general-tracker_mechanics-filtering-type-prediction = Przewidywanie
 settings-general-tracker_mechanics-filtering-type-prediction-description = Zmniejsza opóźnienie i zwiększa dynamikę ruchów, ale może dodać trochę drgań.
 settings-general-tracker_mechanics-filtering-amount = Ilość
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Czas wygładzania resetu odchylenia (0s wyłącza wygładzanie)
-settings-general-tracker_mechanics-drift_compensation = Kompensacja dryfu
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-description =
-    Kompensuje dryf odchylenia IMU poprzez zastosowanie odwrotnej rotacji.
-    Zmień wysokość kompensacji i do ilu resetów jest branych pod uwagę.
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Kompensacja dryfu
-settings-general-tracker_mechanics-drift_compensation-prediction = Przewidywanie kompensacji dryfu
-# This cares about multilines
-settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    Przewiduje kompensację dryfu odchylenia poza wcześniej zmierzony zakres.¶
-    Włącz tę opcję, jeśli trackery stale obracają się wokół osi odchylenia.
-settings-general-tracker_mechanics-drift_compensation-prediction-label = Przewidywanie kompensacji dryfu
-settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>Ostrzeżenie:</b> Kompensacji dryftu używaj tylko wtedy, gdy chcesz zresetować¶
-    bardzo często (co 5-10 minut).¶
-    ¶
-    Niektóre IMU podatne na częste resetowanie obejmują:¶
-    Joy-Cons, owoTrack i MPU (bez najnowszego oprogramowania).
-settings-general-tracker_mechanics-drift_compensation_warning-cancel = Anuluj
-settings-general-tracker_mechanics-drift_compensation_warning-done = Rozumiem
-settings-general-tracker_mechanics-drift_compensation-amount-label = Ilość kompensacji
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Użyj maksymalnie x ostatnich resetów
 settings-general-tracker_mechanics-save_mounting_reset = Zapisz pozycję trackerów na ciele
 settings-general-tracker_mechanics-save_mounting_reset-description =
     Zapisuje kalibrację pozycji trackerów na ciele pomiędzy ponownymi uruchomieniami. Użyteczne¶
@@ -597,9 +451,7 @@ settings-stay_aligned = Wyrównywanie
 settings-stay_aligned-description = Wyrównywanie zmniejsza efekt driftu, stopniowo dostosowując trackery do twoich zrelaksowanych póz.
 settings-stay_aligned-setup-label = Konfiguracja Opcji Wyrównywania
 settings-stay_aligned-setup-description = Musisz ukończyć konfigurację, aby włączyć opcję Wyrównywania.
-settings-stay_aligned-warnings-drift_compensation = ⚠ Wyłącz kompensację Driftu, będzie ona kolidować z opcją Wyrównywania!
 settings-stay_aligned-enabled-label = Dostosuj trackery
-settings-stay_aligned-hide_yaw_correction-label = Ukryj dopasowanie (do porównania bez opcji Wyrównywania)
 settings-stay_aligned-general-label = Ogólne
 settings-stay_aligned-relaxed_poses-label = Zrelaksowane pozy
 settings-stay_aligned-relaxed_poses-description = Opcja Wyrównywania wykorzystuje Twoje zrelaksowane pozy, aby utrzymać trackery w jednej linii. Użyj opcji "Konfiguracja Opcji Wyrównywania", aby zaktualizować te pozy.
@@ -638,17 +490,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Wymuś kalibracje m
 settings-general-fk_settings-enforce_joint_constraints = Limity szkieletowe
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Wymuszanie ograniczeń
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zapobiega obracaniu się stawów poza ich limit
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Korygowanie za pomocą ograniczeń
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Koryguj rotacje stawów, gdy przekraczają swój limit
 settings-general-fk_settings-ik = Dane pozycji
 settings-general-fk_settings-ik-use_position = Użyj danych o pozycji
 settings-general-fk_settings-ik-use_position-description = Umożliwia wykorzystanie danych o pozycji z urządzeń, które je wspierają. Włączając to, upewnij się, że dokonałeś reset w aplikacji i skalibrowałeś położenie w grze.
-settings-general-fk_settings-arm_fk = Śledzenie ramienia
-settings-general-fk_settings-arm_fk-description = Zmień sposób śledzenia ramion.
-settings-general-fk_settings-arm_fk-force_arms = Śledź ramiona z gogli VR
-settings-general-fk_settings-reset_settings = Zresetuj ustawienia
-settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Resetuj kąt nachylenia headsetu (rotacja pionowa) podczas pełnego resetu. Przydatne, jeśli nosisz headset na czole do VTubingu lub mocapu. Nie włączaj do VR.
-settings-general-fk_settings-reset_settings-reset_hmd_pitch = Resetuj kąt nachylenia headsetu
 settings-general-fk_settings-arm_fk-reset_mode-description = Zmień pozycję ramienia oczekiwaną przy resetowaniu montażu.
 settings-general-fk_settings-arm_fk-back = Wstecz
 settings-general-fk_settings-arm_fk-back-description = Tryb domyślny, w którym górne ramiona cofają się, a dolne ramiona przesuwają się do przodu.
@@ -658,26 +502,13 @@ settings-general-fk_settings-arm_fk-tpose_down = T-pose (w dół)
 settings-general-fk_settings-arm_fk-tpose_down-description = Oczekuje, że Twoje ramiona będą ustawione pod kątem w 90 stopni na boki podczas Pełnego Resetu i w dół po bokach podczas Resetu Montażowego.
 settings-general-fk_settings-arm_fk-forward = Do przodu
 settings-general-fk_settings-arm_fk-forward-description = Oczekuje, że Twoje ramiona będą uniesione pod kątem 90 stopni do przodu. Przydatne w VTubingu.
-settings-general-fk_settings-skeleton_settings-toggles = Przełączniki szkieletowe
-settings-general-fk_settings-skeleton_settings-description = Włącz lub wyłącz ustawienia szkieletu. Zaleca się pozostawienie ich włączonych.
-settings-general-fk_settings-skeleton_settings-extended_spine_model = Wydłużony model kręgosłupa
-settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Rozszerzony model miednicy
-settings-general-fk_settings-skeleton_settings-extended_knees_model = Model z przedłużonym kolanem
 settings-general-fk_settings-skeleton_settings-ratios = Proporcje szkieletu
 settings-general-fk_settings-skeleton_settings-ratios-description = Zmień wartości ustawień szkieletu. Po zmianie może być konieczne dostosowanie proporcji.
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Przypisz talię od klatki piersiowej do bioder
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Przypisz talię od klatki piersiowej do nóg
-settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Przypisz biodro od klatki piersiowej do nóg
-settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Przypisz biodro od pasa do nóg
-settings-general-fk_settings-skeleton_settings-interp_hip_legs = Średnie odchylenie biodra i przetoczenie nogami
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Uśrednij odchylenie i przechylenie nakolanników za pomocą kostek
-settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Średnie odchylenie kolan i przechylenie kostek
 settings-general-fk_settings-self_localization-title = Tryb Mocap
 settings-general-fk_settings-self_localization-description = Tryb Mocap pozwala szkieletowi z grubsza śledzić własną pozycję bez headsetu lub innych trackerów. Pamiętaj, że wymaga to śledzenia stóp i głowy do działania i nadal jest eksperymentalne.
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = Kontrola Gestami
 settings-general-gesture_control-subtitle = Resetowanie na podstawie stuknięć
 settings-general-gesture_control-description = Umożliwia wyzwalanie resetów przez stuknięcie modułu śledzącego. Układ śledzący znajdujący się najwyżej na tułowiu służy do resetowania odchylenia, układ śledzący znajdujący się najwyżej na lewej nodze służy do pełnego resetu, a układ śledzący znajdujący się najwyżej na prawej nodze służy do resetowania montażu. Należy wspomnieć, że stuknięcia muszą nastąpić w ciągu 0,6 sekundy, aby zostały zarejestrowane.
 # This is a unit: 3 taps, 2 taps, 1 tap
@@ -718,9 +549,6 @@ settings-general-interface-dev_mode = Tryb Dewelopera
 settings-general-interface-dev_mode-description = Ten tryb przydaje się do sprawdzania większej ilości danych.
 settings-general-interface-dev_mode-label = Tryb Dewelopera
 settings-general-interface-theme = Motyw kolorystyczny
-settings-general-interface-show-navbar-onboarding = Pokaż „{ navbar-onboarding }” na pasku nawigacyjnym
-settings-general-interface-show-navbar-onboarding-description = Zmienia się to, jeśli na pasku nawigacyjnym pojawi się przycisk „{ navbar-onboarding }”.
-settings-general-interface-show-navbar-onboarding-label = Pokaż „{ navbar-onboarding }”
 settings-general-interface-lang = Wybierz Język
 settings-general-interface-lang-description = Zmień podstawowy język jaki chcesz używać
 settings-general-interface-lang-placeholder = Wybierz język, który będziesz używać
@@ -732,9 +560,6 @@ settings-interface-appearance-font-os_font = Czcionka systemu operacyjnego
 settings-interface-appearance-font-slime_font = Domyślna czcionka
 settings-interface-appearance-font_size = Skalowanie czcionki
 settings-interface-appearance-font_size-description = Wpływa to na rozmiar czcionki całego interfejsu z wyjątkiem tego panelu ustawień
-settings-interface-appearance-decorations = Skorzystaj z natywnych dekoracji systemowych
-settings-interface-appearance-decorations-description = Nie spowoduje to wyrenderowania górnego paska interfejsu i zamiast tego użyje paska systemu operacyjnego.
-settings-interface-appearance-decorations-label = Użyj domyślnych dekoracji
 
 ## Notification settings
 
@@ -798,38 +623,12 @@ settings-serial-factory_reset-warning-cancel = Anuluj
 settings-serial-serial_select = Wybierz port szeregowy
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skanuj sieci WiFi
-settings-serial-file_type = Zwykły tekst
 settings-serial-save_logs = Zapisz do pliku
 settings-serial-send_command = Wyślij
 settings-serial-send_command-placeholder = Polecenie...
 settings-serial-send_command-warning = <b>Ostrzeżenie:</b> Wysyłanie poleceń szeregowych może prowadzić do utraty danych lub zablokowania urządzenia.
 settings-serial-send_command-warning-ok = Wiem co robię
 settings-serial-send_command-warning-cancel = Anuluj
-
-## OSC router settings
-
-settings-osc-router = OSC router
-# This cares about multilines
-settings-osc-router-description =
-    Przekaż wiadomości OSC z innego programu.
-    Przydatne na przykład do używania innego programu OSC z VRChat.
-settings-osc-router-enable = Zezwól
-settings-osc-router-enable-description = Zezwól na przekazywanie wiadomości.
-settings-osc-router-enable-label = Zezwól
-settings-osc-router-network = Porty sieciowe
-# This cares about multilines
-settings-osc-router-network-description =
-    Ustaw porty do odbierania i wysyłania danych.
-    Mogą to być takie same porty, jak inne porty używane na serwerze SlimeVR.
-settings-osc-router-network-port_in =
-    .label = Port wejściowy
-    .placeholder = Port wejściowy (domyślnie: 9002)
-settings-osc-router-network-port_out =
-    .label = Port wyjściowy
-    .placeholder = Port wyjściowy (domyślnie: 9000)
-settings-osc-router-network-address = Adres sieciowy
-settings-osc-router-network-address-description = Ustaw adres, na który mają być wysyłane dane.
-settings-osc-router-network-address-placeholder = IPV4 address
 
 ## OSC VRChat settings
 
@@ -844,15 +643,7 @@ settings-osc-vrchat-description-v1 =
 settings-osc-vrchat-enable = Zezwól
 settings-osc-vrchat-enable-description = Zezwól na wysyłanie i odbieranie danych.
 settings-osc-vrchat-enable-label = Zezwól
-settings-osc-vrchat-oscqueryEnabled = Włącz OSCQuery
-settings-osc-vrchat-oscqueryEnabled-description =
-    OSCQuery automatycznie wykrywa uruchomione instancje VRChat i wysyła im dane.
-    Może również reklamować się do nich w celu otrzymania danych HMD i administratora.
-    Aby zezwolić na odbieranie danych HMD i kontrolera z VRChat, przejdź do ustawień menu głównego
-    w sekcji "Tracking & IK" i włącz opcję "Zezwalaj na wysyłanie danych OSC śledzenia głowy i nadgarstka VR".
-settings-osc-vrchat-oscqueryEnabled-label = Włącz OSCQuery
 settings-osc-vrchat-network = Porty sieciowe
-settings-osc-vrchat-network-description-v1 = Ustaw porty do odbierania i wysyłania danych. Nie trzeba tego zmieniać dla VRChata.
 settings-osc-vrchat-network-port_in =
     .label = Port In
     .placeholder = Port in (default: 9001)
@@ -862,13 +653,6 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Adres sieciowy
 settings-osc-vrchat-network-address-description-v1 = Wybierz adres, na który mają być wysyłane dane. Można pozostawić domyślnie dla VRChata.
 settings-osc-vrchat-network-address-placeholder = Adres IP VRChata
-settings-osc-vrchat-network-trackers = Trackers
-settings-osc-vrchat-network-trackers-description = Przełącz wysyłanie określonych trackerów przez OSC.
-settings-osc-vrchat-network-trackers-chest = Klatka piersiowa
-settings-osc-vrchat-network-trackers-hip = Biodro
-settings-osc-vrchat-network-trackers-knees = Kolana
-settings-osc-vrchat-network-trackers-feet = Stopy
-settings-osc-vrchat-network-trackers-elbows = Łokcie
 
 ## VMC OSC settings
 
@@ -904,7 +688,6 @@ settings-osc-vmc-mirror_tracking-label = Odbicie lustrzane śledzenia
 
 ## Common OSC settings
 
-settings-osc-common-network-ports_match_error = Porty wejściowe i wyjściowe routera OSC nie mogą być takie same!
 settings-osc-common-network-port_banned_error = Port { $port } nie może zostać użyty!
 
 ## Advanced settings
@@ -952,7 +735,6 @@ settings-tracking_checklist-active_steps-desc = Lista wszystkich kroków kontrol
 
 onboarding-skip = Pomiń wstępną konfiguracje
 onboarding-continue = Kontynuuj
-onboarding-wip = W trakcie prac
 onboarding-previous_step = Poprzedni krok
 onboarding-setup_warning =
     <b>Ostrzeżenie:</b> konfiguracja jest konieczna do dobrego śledzenia,
@@ -965,7 +747,6 @@ onboarding-setup_warning-cancel = Kontynuuj konfigurację
 
 ## Wi-Fi setup
 
-onboarding-wifi_creds-skip = Pomiń ustawienia Wi-Fi
 onboarding-wifi_creds-submit = Potwierdź!
 onboarding-wifi_creds-ssid =
     .label = SSID
@@ -975,31 +756,6 @@ onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
 
-## Mounting setup
-
-onboarding-reset_tutorial-back = Powrót do Konfiguracji Położenia trackerów
-onboarding-reset_tutorial = Zresetuj poradnik
-onboarding-reset_tutorial-explanation = Podczas korzystania z trackerów mogą się one rozregulować z powodu dryfu odchylenia IMU lub z powodu fizycznego przeniesienia ich. Możesz to naprawić na kilka sposobów.
-onboarding-reset_tutorial-skip = Pomiń krok
-# Cares about multiline
-onboarding-reset_tutorial-0 =
-    Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset odchylenia.
-    
-    Spowoduje to, że trackery będą skierowane w tym samym kierunku, co Twój HMD.
-# Cares about multiline
-onboarding-reset_tutorial-1 =
-    Stuknij { $taps } razy podświetlony tracker, aby wywołać pełny reset.
-    
-    Musisz stać, aby to zrobić (i-pozycja). Istnieje 3-sekundowe opóźnienie (konfigurowalne), zanim to nastąpi.
-    Spowoduje to całkowite zresetowanie pozycji i rotacji wszystkich trackerów. Powinien rozwiązać większość problemów.
-# Cares about multiline
-onboarding-reset_tutorial-2 =
-    Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset montażu.
-    
-    Resetowanie montażu pomaga w tym, w jaki sposób trackery są faktycznie zakładane na ciebie, więc jeśli przypadkowo je przeniosłeś i zmieniłeś ich orientację o dużą ilość, to pomoże.
-    
-    Musisz być w pozie, jakbyś jechał na nartach, tak jak jest to pokazane w kreatorze automatycznego montażu, i masz 3-sekundowe opóźnienie (konfigurowalne), zanim zostanie uruchomione.
-
 ## Install info
 
 
@@ -1008,21 +764,11 @@ onboarding-reset_tutorial-2 =
 onboarding-home = Witamy w SlimeVR
 onboarding-home-start = Zaczynajmy!
 
-## Setup done
-
-onboarding-done-title = Wszystko ustawione!
-onboarding-done-description = Ciesz się Full-Body
-onboarding-done-close = Zamknij Poradnik
-
 ## Tracker connection setup
 
-onboarding-connect_tracker-back = Cofnij się do ustawień Wi-Fi
 onboarding-connect_tracker-title = Połącz trackery
-onboarding-connect_tracker-description-p0-v1 = A teraz czas na najfajniejszą część: łączenie trackerów!
-onboarding-connect_tracker-description-p1-v1 = Podłącz każdy tracker pojedynczo przez port USB.
 onboarding-connect_tracker-issue-serial = Mam problemy z połączeniem!
 onboarding-connect_tracker-usb = USB Tracker
-onboarding-connect_tracker-connection_status-none = Szukanie Trackerów
 onboarding-connect_tracker-connection_status-serial_init = Łączenie z urządzeniem szeregowym
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Uzyskiwanie adresu MAC modułu śledzącego
 onboarding-connect_tracker-connection_status-provisioning = Wysyłanie danych Wi-Fi
@@ -1035,13 +781,6 @@ onboarding-connect_tracker-connection_status-no_serial_log = Nie można pobrać 
 onboarding-connect_tracker-connection_status-no_serial_device_found = Nie można znaleźć lokalizatora z USB
 onboarding-connect_serial-error-modal-no_serial_log = Czy tracker jest włączony?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Upewnij się, że tracker jest włączony i podłączony do komputera
-onboarding-connect_serial-error-modal-no_serial_device_found = Nie wykryto trackerów
-onboarding-connect_serial-error-modal-no_serial_device_found-desc =
-    Podłącz tracker za pomocą dostarczonego USB do komputera i włącz tracker.
-    Jeśli to nie zadziała:
-      - Spróbuj użyć innego USB
-      - Spróbuj użyć innego portu USB
-      - spróbuj ponownie zainstalować serwer SlimeVR i wybierz "Sterowniki USB" w sekcji komponentów
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1057,31 +796,8 @@ onboarding-connect_tracker-connected_trackers =
     }
 onboarding-connect_tracker-next = Połączyłem już wszystkie trackery
 
-## Tracker calibration tutorial
-
-onboarding-calibration_tutorial = Samouczek kalibracji IMU
-onboarding-calibration_tutorial-subtitle = Pomoże to ograniczyć dryf trackera!
-onboarding-calibration_tutorial-description-v1 = Po włączeniu trackerów umieść je na chwilę na stabilnej powierzchni, aby umożliwić kalibrację. Kalibrację można przeprowadzić w dowolnym momencie po włączeniu trackerów - ta strona zawiera po prostu samouczek. Aby rozpocząć, kliknij przycisk "{ onboarding-calibration_tutorial-calibrate }", a następnie <b>nie ruszaj swoich trackerów!</b>
-onboarding-calibration_tutorial-calibrate = Położyłem trackery na stole
-onboarding-calibration_tutorial-status-waiting = Czekam na Ciebie
-onboarding-calibration_tutorial-status-calibrating = Kalibracja
-onboarding-calibration_tutorial-status-success = Nieźle!
-onboarding-calibration_tutorial-status-error = Tracker został przeniesiony
-onboarding-calibration_tutorial-skip = Pomiń samouczek
-
-## Tracker assignment tutorial
-
-onboarding-assignment_tutorial = Jak przygotować Slime Tracker przed założeniem
-onboarding-assignment_tutorial-first_step = 1. Umieść naklejkę z częścią ciała (jeśli ją posiadasz) na trackerze według własnego uznania
-# This text has a character limit of around 11 characters, so please keep it short
-onboarding-assignment_tutorial-sticker = Naklejka
-onboarding-assignment_tutorial-second_step-v2 = 2. Przymocuj pasek do trackera, tak aby rzep paska był skierowany w tę samą stronę, co slime face część trackera:
-onboarding-assignment_tutorial-second_step-continuation-v2 = Strona z rzepem dla przedłużenia powinna być skierowana do góry, jak na poniższym obrazku:
-onboarding-assignment_tutorial-done = Umieszczam naklejki i paski!
-
 ## Tracker assignment setup
 
-onboarding-assign_trackers-back = Cofnij się do ustawień Wi-Fi
 onboarding-assign_trackers-title = Przydziel Trackery
 onboarding-assign_trackers-description = Wybierzmy gdzie idzie jaki tracker. Naciśnij gdzie chcesz go przydzielić
 onboarding-assign_trackers-unassign_all = Usuń przydzielenie wszystkich urządzeń
@@ -1094,31 +810,6 @@ onboarding-assign_trackers-assigned =
         [few] { $assigned } z { $trackers } przypisanych trackerów
         [many] Przypisano { $assigned } z { $trackers } trackerów
        *[other] Przypisano { $assigned } z { $trackers } trackerów
-    }
-onboarding-assign_trackers-advanced = Pokaż zaawansowane ustawienia pozycji
-onboarding-assign_trackers-next = Przydzieliłem już wszystkie trackery
-onboarding-assign_trackers-mirror_view = Widok lustrzany
-onboarding-assign_trackers-option-amount =
-    { $trackersCount ->
-        [one] x{ $trackersCount }
-        [few] x{ $trackersCount }
-       *[many] x{ $trackersCount }
-    }
-onboarding-assign_trackers-option-label =
-    { $mode ->
-        [lower-body] Zestaw na dolną część ciała
-        [core] Zestaw podstawowy
-        [enhanced-core] Rozszerzony zestaw podstawowy
-        [full-body] Pełny zestaw
-       *[all] Wszystkie trackery
-    }
-onboarding-assign_trackers-option-description =
-    { $mode ->
-        [lower-body] Minimum do śledzenia ciała w rzeczywistości wirtualnej
-        [core] + Ulepszone śledzenie kręgosłupa
-        [enhanced-core] + Śledzenie stóp
-        [full-body] + Śledzenie łokci
-       *[all] Wszystkie możliwe przypisania trackerów
     }
 
 ## Tracker assignment warnings
@@ -1199,20 +890,10 @@ onboarding-choose_mounting-auto_mounting = Automatyczne mocowanie
 onboarding-choose_mounting-auto_mounting-label-v2 = Zalecane
 onboarding-choose_mounting-auto_mounting-description = To automatycznie wykryje kierunki montażu dla wszystkich twoich trackerów z 2 pozycji
 onboarding-choose_mounting-manual_mounting = Montaż ręczny
-# Italicized text
-onboarding-choose_mounting-manual_mounting-label-v2 = Może nie być wystarczająco dokładne
 onboarding-choose_mounting-manual_mounting-description = Umożliwi to ręczne wybranie kierunku montażu dla każdego trackera
-# Multiline text
-onboarding-choose_mounting-manual_modal-title =
-    Czy na pewno chcesz to zrobić
-    automatyczna kalibracja montażu?
-onboarding-choose_mounting-manual_modal-description = <b> Ręczna kalibracja montażu jest zalecana dla nowych użytkowników </b> , ponieważ prawidłowe ustawienie pozycji automatycznej kalibracji montażu może być trudne i może wymagać pewnej praktyki.
-onboarding-choose_mounting-manual_modal-confirm = Jestem pewien tego, co robię
-onboarding-choose_mounting-manual_modal-cancel = Anuluj
 
 ## Tracker manual mounting setup
 
-onboarding-manual_mounting-back = Cofnij się żeby wejść do VR
 onboarding-manual_mounting = Pozycjonowanie Manualne
 onboarding-manual_mounting-description = Kliknij na każdy tracker i wybierz w jaki sposób są zamontowane
 onboarding-manual_mounting-auto_mounting = Automatyczne połączenie
@@ -1220,7 +901,6 @@ onboarding-manual_mounting-next = Następny krok
 
 ## Tracker automatic mounting setup
 
-onboarding-automatic_mounting-back = Cofnij się żeby wejść do VR
 onboarding-automatic_mounting-title = Kalibracja Pozycji
 onboarding-automatic_mounting-description = Aby SlimeVR działało prawidłowo, musimy przypisać rotacje trackera aby zgadzała się ona z tą w prawdziwym życiu.
 onboarding-automatic_mounting-manual_mounting = Pozycjonowanie Manualne
@@ -1246,12 +926,10 @@ onboarding-automatic_mounting-return-home = Gotowe
 ## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back-scaled = Wróć do skalowania proporcji
-onboarding-manual_proportions-title = Manualne Proporcje Ciała
 onboarding-manual_proportions-fine_tuning_button = Automatyczne dostrajanie proporcji
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Podłącz gogle VR, aby korzystać z automatycznego dostrajania
 onboarding-manual_proportions-export = Eksportuj proporcje
 onboarding-manual_proportions-import = Importuj proporcje
-onboarding-manual_proportions-file_type = Proporcje ciała
 onboarding-manual_proportions-normal_increment = Normalny przyrost
 onboarding-manual_proportions-precise_increment = Precyzyjny przyrost
 onboarding-manual_proportions-grouped_proportions = Zgrupowane proporcje
@@ -1263,7 +941,6 @@ onboarding-manual_proportions-estimated_height = Szacowany wzrost użytkownika
 onboarding-automatic_proportions-back = Wróć do samouczka resetowania
 onboarding-automatic_proportions-title = Zmierz swoje ciało
 onboarding-automatic_proportions-description = Aby SlimeVR działało poprawnie, musimy znać długość twoich kości. Ta kalibracja zrobi to za ciebie.
-onboarding-automatic_proportions-manual = Kalibracja Manualna
 onboarding-automatic_proportions-prev_step = Poprzedni krok
 onboarding-automatic_proportions-put_trackers_on-title = Załóż trackery
 onboarding-automatic_proportions-put_trackers_on-description = Aby skalibrować proporcje, użyjemy trackerów które przed chwilą przypisałeś. Załóż wszystkie trackery, będziesz widział który to który na postaci po prawej.
@@ -1277,33 +954,6 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Twój headset raportuje dane o pozycji do serwera SlimeVR (zazwyczaj oznacza to, że SteamVR jest uruchomiony i podłączony do SlimeVR za pomocą sterownika SteamVR SlimeVR).¶
     Twoje śledzenie działa i dokładnie odzwierciedla Twoje ruchy (wykonałeś pełny reset i poruszają się we właściwym kierunku podczas kopania, schylania się, siedzenia itp.).
 onboarding-automatic_proportions-requirements-next = Zapoznałem się z wymaganiami
-onboarding-automatic_proportions-check_height-title-v3 = Zmierz wysokość headsetu
-onboarding-automatic_proportions-check_height-description-v2 = Wysokość headsetu (HMD) powinna być nieco mniejsza niż pełny wzrost, ponieważ headset mierzy wysokość oczu. Pomiar ten zostanie wykorzystany jako punkt odniesienia dla proporcji Twojego ciała.
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v3 = Rozpocznij pomiar, stojąc <u>prosto</u> , aby zmierzyć swój wzrost. Uważaj, aby nie podnosić rąk wyżej niż headset, ponieważ mogą one wpłynąć na pomiar!
-onboarding-automatic_proportions-check_height-guardian_tip =
-    Jeśli korzystasz z samodzielnego zestawu VR, upewnij się, że twoja granica¶
-    bezpieczeństwa (guardian) jest włączona, aby poprawnie rozpoznać Twój wzrost!
-# Context is that the height is unknown
-onboarding-automatic_proportions-check_height-unknown = Nieznany
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height2 = Wysokość headsetu wynosi:
-onboarding-automatic_proportions-check_height-measure-start = Rozpocznij pomiar
-onboarding-automatic_proportions-check_height-measure-stop = Przestań mierzyć
-onboarding-automatic_proportions-check_height-measure-reset = Ponawianie próby pomiaru
-onboarding-automatic_proportions-check_height-next_step = Są w porządku
-onboarding-automatic_proportions-check_floor_height-title = Zmierz wysokość podłogi (opcjonalnie)
-onboarding-automatic_proportions-check_floor_height-description = W niektórych przypadkach wysokość podłogi może nie być prawidłowo ustawiona przez headset, co powoduje, że wysokość headsetu jest mierzona jako wyższa niż powinna. Możesz zmierzyć "wysokość" podłogi, aby skorygować wysokość headsetu.
-# All the text is in bold!
-onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Rozpocznij pomiar i przyłóż kontroler do podłogi, aby zmierzyć jej wysokość. Jeśli masz pewność, że wysokość podłogi jest prawidłowa, możesz pominąć ten krok.
-# Shows an element below it
-onboarding-automatic_proportions-check_floor_height-floor_height = Wysokość podłogi wynosi:
-onboarding-automatic_proportions-check_floor_height-full_height = Twój szacowany pełny wzrost to:
-onboarding-automatic_proportions-check_floor_height-measure-start = Rozpocznij pomiar
-onboarding-automatic_proportions-check_floor_height-measure-stop = Przestań mierzyć
-onboarding-automatic_proportions-check_floor_height-measure-reset = Ponawianie próby pomiaru
-onboarding-automatic_proportions-check_floor_height-skip_step = Pomiń krok i zapisz
-onboarding-automatic_proportions-check_floor_height-next_step = Wykorzystaj wysokość podłogi i zaoszczędź
 onboarding-automatic_proportions-start_recording-title = Bądź gotowy żeby się ruszać
 onboarding-automatic_proportions-start_recording-description = Będziemy teraz nagrywać specyficzne pozycje i ruchy. Będą one pokazane w następnym okienku. Bądź gotowy po naciśnięciu przycisku!
 onboarding-automatic_proportions-start_recording-next = Uruchom nagrywanie
@@ -1348,7 +998,6 @@ onboarding-automatic_proportions-smol_warning-cancel = Przejdź wstecz
 ## User height calibration
 
 onboarding-user_height-title = Jaki masz wzrost?
-onboarding-user_height-description = Potrzebujemy twojego wzrostu, aby obliczyć proporcje ciała i dokładnie oddać twoje ruchy. Możesz pozwolić SlimeVR to obliczyć albo wpisać swój wzrost ręcznie.
 onboarding-user_height-need_head_tracker = Do kalibracji wymaganę są gogle vr z kontrolerami.
 onboarding-user_height-calculate = Automatycznie oblicz mój wzrost
 onboarding-user_height-next_step = Kontynuuj i zapisz
@@ -1381,11 +1030,6 @@ onboarding-stay_aligned-put_trackers_on-description = Aby skalibrować proporcje
 onboarding-stay_aligned-put_trackers_on-trackers_warning = Masz mniej niż 5 trackerów aktualnie podłączonych i przypisanych! Jest to minimalna liczba elementów śledzących wymaganych do prawidłowego działania opcji Wyrównywania.
 onboarding-stay_aligned-put_trackers_on-next = Mam wszystkie trackery założone
 onboarding-stay_aligned-verify_mounting-title = Sprawdź swój montaż
-onboarding-stay_aligned-verify_mounting-step-0 = Opcja Wyrównywania wymaga stabilnego mocowania trackera. W innym przypadku będziesz miał złe rezultaty.
-onboarding-stay_aligned-verify_mounting-step-1 = 1. Poruszaj się podczas stania.
-onboarding-stay_aligned-verify_mounting-step-2 = 2. Usiądź i poruszaj nogami i stopami.
-onboarding-stay_aligned-verify_mounting-step-3 = 3. Jeśli Twoje trackery nie znajdują się we właściwym miejscu, naciśnij "Ponów kalibrację montażu".
-onboarding-stay_aligned-verify_mounting-redo_mounting = Ponów kalibrację montażu
 onboarding-stay_aligned-preparation-title = Przygotowania
 onboarding-stay_aligned-preparation-tip = Upewnij się, że stoisz prosto. Patrz przed siebie z rękami opuszczonymi po bokach.
 onboarding-stay_aligned-relaxed_poses-standing-title = Zrelaksowana pozycja stojąca
@@ -1408,7 +1052,6 @@ onboarding-stay_aligned-done = Gotowy
 
 ## Home
 
-home-no_trackers = Nie wykryto ani nie przypisano żadnych trackerów
 home-settings = Ustawienia strony głównej
 home-settings-close = Zamknij
 
@@ -1420,23 +1063,6 @@ trackers_still_on-modal-description =
     Czy nadal chcesz wyjść ze SlimeVR?
 trackers_still_on-modal-confirm = Wyjdź ze SlimeVR
 trackers_still_on-modal-cancel = Poczekaj...
-
-## Status system
-
-status_system-StatusTrackerReset = Zaleca się wykonanie pełnego resetu, ponieważ jeden lub więcej trackerów nie jest wyregulowanych.
-status_system-StatusSteamVRDisconnected =
-    { $type ->
-        [steamvr_feeder] Nie można połączyć się z aplikacją SlimeVR Feeder.
-       *[other] Nie można połączyć się ze SteamVR przez sterownik SlimeVR.
-    }
-status_system-StatusTrackerError = Tracker { $trackerName } ma błąd.
-status_system-StatusUnassignedHMD = Headset powinien być przypisany do śledzenia głowy.
-status_system-StatusPublicNetwork =
-    { $count ->
-        [one] Twoja karta sieciowa jest ustawiona jako publiczna: { $adapters }. Nie jest to zalecane, aby SlimeVR działał poprawnie. <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
-        [few] Niektóre karty sieciowe są ustawione jako publiczne: { $adapters }. Nie jest to zalecane, aby SlimeVR działał poprawnie. <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
-       *[many] Dużo twoich karty sieciowych jest ustawionych jako publiczne: { $adapters }. Nie jest to zalecane, aby SlimeVR działał poprawnie. <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
-    }
 
 ## Firmware tool globals
 
@@ -1588,8 +1214,6 @@ vrc_config-page-wrist_menu = Śledzenie i IK (menu na nadgarstku)
 vrc_config-page-wrist_menu-desc = Ustawienia związane z kinematyką odwrotną w małym menu ustawień (menu na nadgarstku)
 vrc_config-on = Na
 vrc_config-off = Od
-vrc_config-invalid = Źle skonfigurowałeś ustawienia VRChat!
-vrc_config-show_more = Pokaż więcej
 vrc_config-setting_name = Nazwa ustawienia VRChat
 vrc_config-recommended_value = Zalecana wartość
 vrc_config-current_value = Bieżąca wartość

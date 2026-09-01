@@ -65,11 +65,15 @@ body {
   overscroll-behavior: none;
 
   --navbar-w: 110px;
+  --navbar-h: 0px;
   --topbar-h: 38px;
+  --page-margin: 8px;
 
   @screen mobile {
     --topbar-h: 44px;
+    --navbar-w: 0px;
     --navbar-h: 73px;
+    --page-margin: 0px;
   }
 }
 
@@ -96,6 +100,9 @@ body {
   --critical: 223, 109, 140;
   --special: 164, 79, 237;
   --window-icon-stroke: 192, 161, 216;
+
+  --assign-right: 43, 131, 232;
+  --assign-left: 249, 86, 184;
 
   --default-color: 255, 255, 255;
 

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { IPv4 } from 'ip-num';
 import { ReactNode, useMemo } from 'react';
 import { useConfig } from '@/hooks/config';
-import { useTracker } from '@/hooks/tracker';
+import { useTracker, velocityGlowStyle } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Typography } from '@/components/commons/Typography';
 import { formatVector3 } from '@/utils/formatting';
@@ -11,6 +11,7 @@ import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
 import { FlatDeviceTracker, TrackerConnectionGroup } from '@/store/app-store';
 import {
+  TrackerConnectionGroupDefaultToolbox,
   TrackerConnectionGroupSection,
   TrackerConnectionGroupUnassignedDivider,
 } from './TrackerConnectionGroup';
@@ -19,6 +20,7 @@ import { Tooltip } from '@/components/commons/Tooltip';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
 import {
+  DeviceDataT,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
   TrackingChecklistStepT,
@@ -29,14 +31,16 @@ import {
   useTrackingChecklist,
 } from '@/hooks/tracking-checklist';
 
-const getTrackerName = ({ tracker }: FlatDeviceTracker) =>
+const trackerSortName = ({ tracker }: FlatDeviceTracker) =>
   tracker?.info?.customName?.toString() || '';
 
 export function TrackerNameCell({
   tracker,
+  device,
   warning,
 }: {
   tracker: TrackerDataT;
+  device?: DeviceDataT;
   warning: TrackingChecklistStepT | boolean;
 }) {
   const { useName } = useTracker(tracker);
@@ -60,7 +64,11 @@ export function TrackerNameCell({
             }
           )}
         >
-          <BodyPartIcon bodyPart={tracker.info?.bodyPart} />
+          <BodyPartIcon
+            bodyPart={tracker.info?.bodyPart}
+            device={device}
+            trackerId={tracker.trackerId}
+          />
         </div>
       </div>
       <div className="flex flex-col flex-grow">
@@ -194,11 +202,7 @@ function Row({
         <div className="relative">
           <div
             className="pointer-events-none absolute inset-y-0.5 inset-x-1 rounded-md transition-[box-shadow] duration-200 ease-linear"
-            style={{
-              boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
-                velocity * 8
-              )}px rgb(var(--accent-background-30))`,
-            }}
+            style={velocityGlowStyle(velocity)}
           />
           <div
             className="group grid items-center"
@@ -206,7 +210,11 @@ function Row({
             onClick={() => clickedTracker(tracker)}
           >
             <Cell first>
-              <TrackerNameCell tracker={tracker} warning={warning} />
+              <TrackerNameCell
+                tracker={tracker}
+                device={device}
+                warning={warning}
+              />
             </Cell>
             <Cell>
               <Typography color={fontColor}>
@@ -220,7 +228,7 @@ function Row({
                   voltage={device.hardwareStatus.batteryVoltage}
                   runtime={device.hardwareStatus.batteryRuntimeEstimate}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                  moreInfo={config?.devSettings.moreInfo}
+                  moreInfo={config?.debug && config?.devSettings.moreInfo}
                   textColor={fontColor}
                 />
               )}
@@ -312,7 +320,7 @@ export function TrackersTable({
   const sortedGroups = useMemo(() => {
     if (!sortingEnabled) return groups;
     const byName = (a: FlatDeviceTracker, b: FlatDeviceTracker) =>
-      getTrackerName(a).localeCompare(getTrackerName(b));
+      trackerSortName(a).localeCompare(trackerSortName(b));
     return groups.map((group) => ({
       ...group,
       assigned: group.assigned.toSorted(byName),
@@ -384,7 +392,13 @@ export function TrackersTable({
             <TrackerConnectionGroupSection
               key={group.key}
               group={group}
-              onOpenMetrics={onOpenMetrics}
+              variant="primary"
+              toolbox={
+                <TrackerConnectionGroupDefaultToolbox
+                  group={group}
+                  onOpenMetrics={onOpenMetrics}
+                />
+              }
             >
               <div className="flex flex-col gap-0.5">
                 {group.assigned.map((data, index) => (

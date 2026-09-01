@@ -4,7 +4,13 @@ import { BodyPart } from 'solarxr-protocol';
 /**
  * I dedicate this hook to @uriel ;)
  */
-export function useChokerWarning<T>({ next }: { next: (role: T) => void }) {
+export function useChokerWarning<T>({
+  next,
+  getBodyPart = (value: T) => value as unknown as BodyPart,
+}: {
+  next: (role: T) => void;
+  getBodyPart?: (value: T) => BodyPart;
+}) {
   const [shouldShowChokerWarn, setShouldShowChokerWarn] = useState(false);
   const [currentBodyPart, setCurrentBodyPart] = useState<T | null>(null);
 
@@ -18,7 +24,10 @@ export function useChokerWarning<T>({ next }: { next: (role: T) => void }) {
       }
     },
     tryOpenChokerWarning: (role: T) => {
-      if (role === BodyPart.NECK && !sessionStorage.getItem('neckWarning')) {
+      if (
+        getBodyPart(role) === BodyPart.NECK &&
+        !sessionStorage.getItem('neckWarning')
+      ) {
         setCurrentBodyPart(role);
         setShouldShowChokerWarn(true);
       } else {

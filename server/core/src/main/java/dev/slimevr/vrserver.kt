@@ -3,7 +3,6 @@ package dev.slimevr
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.device.Device
-import dev.slimevr.driver.DriverBridge
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.tracker.Tracker
@@ -17,15 +16,12 @@ data class VRServerState(
 	val trackers: Map<Int, Tracker>,
 	val devices: Map<Int, Device>,
 	val dongles: Map<Int, HIDReceiver>,
-	val drivers: Map<Int, DriverBridge>,
 	val solarxr: Map<Int, SolarXRBridge>,
 )
 
 sealed interface VRServerActions {
 	data class NewTracker(val trackerId: Int, val context: Tracker) : VRServerActions
 	data class NewDevice(val deviceId: Int, val context: Device) : VRServerActions
-	data class DriverConnected(val bridge: DriverBridge) : VRServerActions
-	data class DriverDisconnected(val bridgeId: Int) : VRServerActions
 	data class SolarXRConnected(val connection: SolarXRBridge) : VRServerActions
 	data class SolarXRDisconnected(val connectionId: Int) : VRServerActions
 	data class NewDongle(val dongleId: Int, val context: HIDReceiver) : VRServerActions
@@ -59,7 +55,6 @@ class VRServer(
 				initialState = VRServerState(
 					trackers = emptyMap(),
 					devices = emptyMap(),
-					drivers = emptyMap(),
 					solarxr = emptyMap(),
 					dongles = emptyMap(),
 				),

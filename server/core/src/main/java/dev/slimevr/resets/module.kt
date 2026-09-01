@@ -9,6 +9,8 @@ import dev.slimevr.config.SettingsActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.skeleton.SkeletonActions
 import dev.slimevr.tracker.TrackerActions
 import dev.slimevr.tracker.getFirstActiveFor
 import io.github.axisangles.ktmath.Quaternion
@@ -48,7 +50,7 @@ sealed interface ResetsActions {
 typealias ResetsContext = Context<ResetsState, ResetsActions>
 typealias ResetsBehaviour = Behaviour<ResetsManager>
 
-class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings) {
+class ResetsManager(val context: ResetsContext, val server: VRServer, val settings: Settings, val skeleton: Skeleton) {
 	fun startObserving() = context.observeAll(this)
 
 	private var resetJob: Job = Job()
@@ -83,7 +85,13 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			}
 			delay(remainder.toLong())
 
+			// Reset trackers
 			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
+
+			if (resetType == ResetType.FULL) {
+				// Tell the skeleton to set the floor level and try resetting the head position (for mocap mode)
+				skeleton.context.dispatchAll(listOf(SkeletonActions.ResetHeadPosition, SkeletonActions.ComputeFloorLevel))
+			}
 
 			// Update state and config
 			context.dispatch(ResetsActions.EndReset(resetType, bodyParts, settings.context.state.value.data.resetsConfig.resetMountingFeet))
@@ -179,7 +187,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 	}
 
 	companion object {
-		fun create(ctx: Phase1ContextProvider, scope: CoroutineScope): ResetsManager {
+		fun create(ctx: Phase1ContextProvider, skeleton: Skeleton, scope: CoroutineScope): ResetsManager {
 			val context = Context.create(
 				initialState = ResetsState(
 					canDoYawReset = false,
@@ -191,7 +199,7 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 				name = "ResetsManager",
 			)
-			return ResetsManager(context, ctx.server, ctx.config.settings)
+			return ResetsManager(context, ctx.server, ctx.config.settings, skeleton)
 		}
 	}
 }

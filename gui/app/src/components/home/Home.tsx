@@ -1,4 +1,3 @@
-import { useLocalization } from '@fluent/react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { TrackerDataT } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
@@ -6,6 +5,7 @@ import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { TrackersTable } from '@/components/tracker/TrackersTable';
 import {
+  TrackerConnectionGroupDefaultToolbox,
   TrackerConnectionGroupSection,
   TrackerConnectionGroupUnassignedDivider,
 } from '@/components/tracker/TrackerConnectionGroup';
@@ -26,7 +26,6 @@ import { GroupTelemetryOverlay } from './GroupTelemetryOverlay';
 import { LayoutIcon } from '@/components/commons/icon/LayoutIcon';
 
 export function Home() {
-  const { l10n } = useLocalization();
   const { config } = useConfig();
   const trackers = useAtomValue(assignedTrackersAtom);
   const allTrackers = useAtomValue(flatTrackersAtom);
@@ -82,23 +81,21 @@ export function Home() {
             <LayoutIcon size={18} />
           </div>
         </div>
-        {trackers.length === 0 && (
-          <div className="flex px-5 pt-5 justify-center">
-            <Typography variant="standard">
-              {l10n.getString('home-no_trackers')}
-            </Typography>
-          </div>
-        )}
-
         {config?.homeLayout == 'default' && groups.length > 0 && (
           <div className="pl-2 pr-2 flex flex-col gap-4 pb-4">
             {groups.map((group) => (
               <TrackerConnectionGroupSection
                 key={group.key}
                 group={group}
-                onOpenMetrics={(g) => setTelemetryGroup(g)}
+                variant="primary"
+                toolbox={
+                  <TrackerConnectionGroupDefaultToolbox
+                    group={group}
+                    onOpenMetrics={(g) => setTelemetryGroup(g)}
+                  />
+                }
               >
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 pr-2">
                   {group.assigned.length > 0 && (
                     <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-2">
                       {group.assigned.map(({ tracker, device }, index) => (

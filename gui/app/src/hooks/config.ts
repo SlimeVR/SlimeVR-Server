@@ -67,13 +67,14 @@ export interface Config {
   fonts: string[];
   useTray: boolean | null;
   mirrorView: boolean;
-  assignMode: AssignMode | null;
+  assignShowAllBodyParts: boolean;
   discordPresence: boolean;
   errorTracking: boolean | null;
   vrcMutedWarnings: string[];
   bvhDirectory: string | null;
   homeLayout: 'default' | 'table';
   skeletonPreview: boolean;
+  skeletonPreviewStyle: 'mesh' | 'lines';
   lastUsedProportions: 'manual' | 'autobone' | 'scaled' | null;
   dontShowUdevModal: boolean;
   collapsedConnectionGroups: Record<string, boolean>;
@@ -99,7 +100,7 @@ export const defaultConfig: Config = {
   fonts: ['poppins'],
   useTray: null,
   mirrorView: true,
-  assignMode: null,
+  assignShowAllBodyParts: false,
   discordPresence: false,
   errorTracking: null,
   vrcMutedWarnings: [],
@@ -108,6 +109,7 @@ export const defaultConfig: Config = {
   bvhDirectory: null,
   homeLayout: 'default',
   skeletonPreview: true,
+  skeletonPreviewStyle: 'mesh',
   lastUsedProportions: null,
   dontShowUdevModal: false,
   collapsedConnectionGroups: {},

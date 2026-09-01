@@ -27,8 +27,6 @@ version_update-close = Stäng
 tips-find_tracker = Osäker vilken spårare är vilken? Dela en spårare och den kommer markera motsvarande spårare.
 tips-do_not_move_heels = Se till att dina hälar inte rör sig under inspelningen!
 tips-file_select = Dra och släpp filer som du vill använda, eller <u>bläddra</u>.
-tips-tap_setup = Du kan långsamt trycka 2 gånger på din spårare för att välja den istället att välja den på menun.
-tips-turn_on_tracker = Använder du officiella SlimeVR spårare? Glöm inte att <b> <em>sätta på din spårare</em></b> efter du ansluter den till datorn!
 tips-failed_webgl = Misslyckades att initiera WebGL.
 
 ## Units
@@ -118,10 +116,6 @@ skeleton_bone-UPPER_CHEST-desc =
     Detta är distansen från din nackes bas till mitten av din bröstkorg.
     För att justera det, justera din torso-längd ordentligt och modifiera den i olika olika positioner.
     (sittande, böjd, liggande, osv.) Tills din virtuella ryggrad matchar med din riktiga.
-skeleton_bone-CHEST_OFFSET = Bröstkorgens förskjutning
-skeleton_bone-CHEST_OFFSET-desc =
-    Detta kan justeras för att röra din virtuella bröstkorgs-sensor upp eller ner för att assistera
-    med kalibrering i vissa spel eller applikationer som förväntar sig att den ska vara högre eller lägre.
 skeleton_bone-CHEST = Bröstkorgens längd
 skeleton_bone-CHEST-desc =
     Detta är distansen från mitten av din bröstkorg till mitten av din ryggrad.
@@ -137,10 +131,6 @@ skeleton_bone-HIP-desc =
     Detta är distansen från din navel till dina höfter.
     För att justera det, justera din torso-längd ordentligt och modifiera den i olika olika positioner.
     (sittande, böjd, liggande, osv.) Tills din virtuella ryggrad matchar med din riktiga.
-skeleton_bone-HIP_OFFSET = Höft förskjutning
-skeleton_bone-HIP_OFFSET-desc =
-    Detta kan justeras för att röra din virtuella höft-sensor upp eller ner för att assistera
-    med kalibrering i vissa spel eller applikationer som förväntar sig att den ska vara på din midja
 skeleton_bone-HIPS_WIDTH = Höftbredd
 skeleton_bone-HIPS_WIDTH-desc =
     Detta är distansen mellan början på dina ben.
@@ -171,11 +161,6 @@ skeleton_bone-FOOT_SHIFT-desc =
     den tar hänsyn till att dina underben går baklänges när du står rakt upp.
     För att justera det, ställ fotens längd till 0, utför en full återställning och modifiera den tills
     dina virtuella fötter matchar mitten av dina fotleder.
-skeleton_bone-SKELETON_OFFSET = Skelettets förskjutning
-skeleton_bone-SKELETON_OFFSET-desc =
-    Detta kan justeras för att förskjuta alla dina rörelse-sensorer framåt eller bakåt.
-    Det kan användas för att assistera med kalibrering i vissa spel eller applikationer
-    som kan förvänta att dina sensorer är längre fram.
 skeleton_bone-SHOULDERS_DISTANCE = Avstånd mellan axlar
 skeleton_bone-SHOULDERS_DISTANCE-desc =
     Detta är den vertikala distansen från din nackes bas till dina axlar.
@@ -214,22 +199,12 @@ skeleton_bone-HAND_Z-desc =
     För att justera det för Motion Capture, sätt det till 0.
     För att justera det för armbågs-spårning från dina kontroller, sätt Armlängd till 0 och
     modifiera tills dina armbågs-spårare är i linje horisontellt med dina handleder.
-skeleton_bone-ELBOW_OFFSET = Förskjutning av armbåge
-skeleton_bone-ELBOW_OFFSET-desc =
-    Detta kan justeras för att flytta dina virtuella armbågs-sensorer upp eller ner för att assistera
-    med att VRChat av misstag kopplar en armbågs-sensor till bröstkorgen.
 
 ## Tracker reset buttons
 
 reset-reset_all = Återställ alla proportioner
-reset-reset_all_warning-v2 =
-    Varning, dina proportioner kommer att återställas till standards skalade till din konfigurerade längd.
-    Är du säker på att du vill göra detta?
 reset-reset_all_warning-reset = Återställ proportioner
 reset-reset_all_warning-cancel = Avbryt
-reset-reset_all_warning_default-v2 =
-    Varning: Din längd har ej konfigurerats, dina proportioner kommer att återställas till standards med standardlängden.
-    Är du säker på att du vill göra detta?
 reset-full = Fullständig återställning
 reset-mounting = Återställning av montering
 reset-yaw = Återställning av gir
@@ -263,27 +238,12 @@ bvh-recording = Inspelning...
 tracking-unpaused = Pausa spårning
 tracking-paused = Avbryt spårning
 
-## Widget: Overlay settings
-
-widget-overlay = Överlägg
-widget-overlay-is_visible_label = Visa överlägg i SteamVR
-widget-overlay-is_mirrored_label = Visa överlägg som spegel
-
-## Widget: Drift compensation
-
-widget-drift_compensation-clear = Kompensation för clear drift
-
-## Widget: Clear Mounting calibration
-
-widget-clear_mounting = Montage med tydlig återställning
-
 ## Widget: Developer settings
 
 widget-developer_mode = Utvecklarläge
 widget-developer_mode-high_contrast = Hög kontrast
 widget-developer_mode-precise_rotation = Exakt rotation
 widget-developer_mode-fast_data_feed = Snabb dataflöde
-widget-developer_mode-filter_slimes_and_hmd = Filtrera slem och HMD
 widget-developer_mode-sort_by_name = Sortera efter namn
 widget-developer_mode-raw_slime_rotation = Rå rotation
 widget-developer_mode-more_info = Mer information
@@ -298,11 +258,6 @@ widget-imu_visualizer-rotation_preview = Förhandsgranska rotation
 widget-imu_visualizer-acceleration = Acceleration
 widget-imu_visualizer-position = Position
 widget-imu_visualizer-stay_aligned = Behåll inriktning
-
-## Widget: Skeleton Visualizer
-
-widget-skeleton_visualizer-preview = Förhandstitt på skelett
-widget-skeleton_visualizer-hide = Göm
 
 ## Tracker status
 
@@ -339,7 +294,6 @@ tracker-rotation-back = Bak
 tracker-rotation-back_left = Bak-väster
 tracker-rotation-back_right = Bak-höger
 tracker-rotation-custom = Egenanpassad
-tracker-rotation-overriden = (åsidosätts genom återställning av montering)
 
 ## Tracker information
 
@@ -347,10 +301,7 @@ tracker-infos-manufacturer = Tillverkare
 tracker-infos-display_name = Visa namn
 tracker-infos-custom_name = Anpassat namn
 tracker-infos-url = URL för spårare
-tracker-infos-version = Firmware-version
-tracker-infos-hardware_rev = Revision av hårdvara
 tracker-infos-hardware_identifier = Hårdvaru-ID
-tracker-infos-data_support = Datastöd
 tracker-infos-imu = IMU-sensor
 tracker-infos-board_type = Huvudkrets
 tracker-infos-network_version = Protokollsversion
@@ -372,9 +323,6 @@ tracker-settings-assignment_section-edit = Redigera uppdrag
 tracker-settings-mounting_section = Monteringsriktning
 tracker-settings-mounting_section-description = Var är spårningsenheten monterad?
 tracker-settings-mounting_section-edit = Redigera montering
-tracker-settings-drift_compensation_section = Tillåt driftkompensation
-tracker-settings-drift_compensation_section-description = Bör denna tracker kompensera för sin drift när driftkompensationen är aktiverad?
-tracker-settings-drift_compensation_section-edit = Tillåt driftkompensation
 tracker-settings-use_mag = Aktivera magnetometer på denna sensorn.
 # Multiline!
 tracker-settings-use_mag-description =
@@ -398,51 +346,17 @@ tracker-settings-update-title = Mjukvaroversion
 
 ## Tracker part card info
 
-tracker-part_card-no_name = Inget namn
 tracker-part_card-unassigned = Ej tilldelad
 
 ## Body assignment menu
 
 body_assignment_menu = Var vill du att den här trackern ska vara?
 body_assignment_menu-description = Välj en plats där du vill att denna tracker ska tilldelas. Alternativt kan du välja att hantera alla trackers på en gång istället för en och en.
-body_assignment_menu-show_advanced_locations = Visa avancerade tilldelade platser
 body_assignment_menu-manage_trackers = Hantera alla spårare
 body_assignment_menu-unassign_tracker = Ta bort tilldelning av spårare
 
 ## Tracker assignment menu
 
-# A -translation_key (with a dash in the front) means that it's a label.
-# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
-#
-# We are using it here because english doesn't require changing the text in each case but
-# maybe your language does.
--tracker_selection-part = Vilken tracker ska du tilldela din
-tracker_selection_menu-NONE = Vilken tracker vill du att ska avaktiveras?
-tracker_selection_menu-HEAD = { -tracker_selection-part } huvud?
-tracker_selection_menu-NECK = { -tracker_selection-part } hals?
-tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } högra axeln?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } höger överarm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } höger underarm?
-tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } höger hand?
-tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } höger lår?
-tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } höger fotled?
-tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } höger fot?
-tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } rätt styrenhet?
-tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } övre bröst?
-tracker_selection_menu-CHEST = { -tracker_selection-part } bröst?
-tracker_selection_menu-WAIST = { -tracker_selection-part } midja?
-tracker_selection_menu-HIP = { -tracker_selection-part } höft?
-tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } vänster axel?
-tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } vänster underarm
-tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } vänster underarm?
-tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } vänster hand?
-tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } vänster lår?
-tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } vänstra vristen?
-tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } vänster fot?
-tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } vänster kontroll?
-tracker_selection_menu-unassigned = Ej tilldelade trackers
-tracker_selection_menu-assigned = Tilldelade trackers
-tracker_selection_menu-dont_assign = Ej tilldelad
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
@@ -460,12 +374,8 @@ mounting_selection_menu-close = Stäng
 
 settings-sidebar-title = Inställningar
 settings-sidebar-general = Allmänt
-settings-sidebar-tracker_mechanics = Mekanik för spårning
 settings-sidebar-stay_aligned = Behåll inriktning
-settings-sidebar-fk_settings = Inställningar för spårning
-settings-sidebar-gesture_control = Geststyrning
 settings-sidebar-interface = Gränssnitt
-settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = VRChat OSC spårare
 settings-sidebar-utils = Verktyg
 settings-sidebar-serial = Seriell konsol
@@ -476,37 +386,8 @@ settings-sidebar-firmware-tool = DIY Mjukvaroverktyg
 settings-sidebar-vrc_warnings = VRChat Config varningar
 settings-sidebar-advanced = Avancerat
 
-## SteamVR settings
-
-settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = SteamVR spårare
-# Not all translation keys support multiline, only the ones that specify it will actually
-# split it in lines (that also means you can split in lines however you want in those).
-# The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
-# This one is one of this cases that cares about multilines
-settings-general-steamvr-description =
-    Aktivera eller inaktivera specifika SteamVR-trackers.
-    Användbart för spel eller appar som bara stöder vissa spårare.
-settings-general-steamvr-trackers-waist = Midja
-settings-general-steamvr-trackers-chest = Bröstkorg
-settings-general-steamvr-trackers-left_foot = Vänster fot
-settings-general-steamvr-trackers-right_foot = Höger fot
-settings-general-steamvr-trackers-left_knee = Vänster knä
-settings-general-steamvr-trackers-right_knee = Höger knä
-settings-general-steamvr-trackers-left_elbow = Vänster armbåge
-settings-general-steamvr-trackers-right_elbow = Höger armbåge
-settings-general-steamvr-trackers-left_hand = Vänster hand
-settings-general-steamvr-trackers-right_hand = Höger hand
-settings-general-steamvr-trackers-tracker_toggling = Automatisk tilldelning av spårare
-settings-general-steamvr-trackers-tracker_toggling-description = Hanterar automatiskt att växla SteamVR-trackers på eller av beroende på dina aktuella tracker-tilldelningar
-settings-general-steamvr-trackers-tracker_toggling-label = Automatisk tilldelning av spårare
-settings-general-steamvr-trackers-hands-warning = <b>Varning:</b> Handspårare kommer att åsidosätta dina styrenheter. Är du säker på det?
-settings-general-steamvr-trackers-hands-warning-cancel = Avbryt
-settings-general-steamvr-trackers-hands-warning-done = Ja
-
 ## Tracker mechanics
 
-settings-general-tracker_mechanics = Mekanik för spårning
 settings-general-tracker_mechanics-filtering = Filtrering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -521,14 +402,6 @@ settings-general-tracker_mechanics-filtering-type-prediction = Förutsägelse
 settings-general-tracker_mechanics-filtering-type-prediction-description = Minskar latensen och gör rörelserna mer snabba, men kan öka jittern.
 settings-general-tracker_mechanics-filtering-amount = Belopp
 settings-general-tracker_mechanics-yaw-reset-smooth-time = Tid för utjämning av Yaw reset (0s avaktiverar utjämning)
-settings-general-tracker_mechanics-drift_compensation = Driftkompensation
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Driftkompensation
-settings-general-tracker_mechanics-drift_compensation-prediction = Drift kompensations-förutsägelse.
-settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift kompensations-förutsägelse.
-settings-general-tracker_mechanics-drift_compensation_warning-cancel = Avbryt
-settings-general-tracker_mechanics-drift_compensation_warning-done = Jag förstår
-settings-general-tracker_mechanics-drift_compensation-amount-label = Ersättningsbelopp
-settings-general-tracker_mechanics-drift_compensation-max_resets-label = Använd upp till x sista återställningar
 settings-general-tracker_mechanics-save_mounting_reset = Spara automatisk montering återställning kalibrering
 settings-general-tracker_mechanics-save_mounting_reset-description = Sparar de automatiska kalibreringarna för återställning av montering för trackers mellan omstarter. Användbart när du bär en dräkt där trackers inte flyttas mellan sessionerna. <b>Rekommenderas inte för normala användare!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Spara återställning av montering
@@ -541,9 +414,7 @@ settings-stay_aligned = Behåll inriktning
 settings-stay_aligned-description = Behåll inriktning minskar drift genom att gradvis justera dina sensorer för att matcha dina avslappnade positioner.
 settings-stay_aligned-setup-label = Ställ in Behåll inriktning
 settings-stay_aligned-setup-description = Du måste kompletera "Ställ in Behåll inriktnining" för att kunna aktivera Behåll inriktning.
-settings-stay_aligned-warnings-drift_compensation = ⚠ Var vänlig stäng av Drift-kompensation! Drift-kompensation kommer att vara i konflikt med Behåll inriktning.
 settings-stay_aligned-enabled-label = Justera sensorer
-settings-stay_aligned-hide_yaw_correction-label = Göm justeringar (För att jämföra med ingen Behåll inriktning)
 settings-stay_aligned-general-label = Allmän
 settings-stay_aligned-relaxed_poses-label = Avslappnade positioner
 settings-stay_aligned-relaxed_poses-description = Behåll inriktning använder dina avslappnade positioner till att hålla dina sensorer inriktade. Använd "ställ in Behåll inriktning" för att uppdatera dessa positionerna.
@@ -580,14 +451,6 @@ settings-general-fk_settings-leg_fk = Spårning av ben
 settings-general-fk_settings-enforce_joint_constraints = Skelett-gränser
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Upprätthåll begränsningar
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Förhindra leder från att rotera förbi dess gränser
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Rätta med begränsningar
-settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Rätta leds-rotationer när de går förbi dess gränser
-settings-general-fk_settings-arm_fk = Spårning av arm
-settings-general-fk_settings-arm_fk-description = Tvinga armarna att spåras från headsetet (HMD) även om positionsdata för handen finns tillgänglig.
-settings-general-fk_settings-arm_fk-force_arms = Tvångsarmar från HMD
-settings-general-fk_settings-reset_settings = Återställ inställningar
-settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Återställ HMD:ns pitch (vertikal rotation) när du gör en fullständig återställning. Användbart om du bär en HMD på pannan för VTubing eller mocap. Aktivera inte för VR.
-settings-general-fk_settings-reset_settings-reset_hmd_pitch = Återställ HMD:s tonhöjd
 settings-general-fk_settings-arm_fk-reset_mode-description = Ändra vilken armställning som förväntas för återställning av montering.
 settings-general-fk_settings-arm_fk-back = Tillbaka
 settings-general-fk_settings-arm_fk-back-description = Standardläget, där överarmarna går bakåt och underarmarna framåt.
@@ -597,26 +460,13 @@ settings-general-fk_settings-arm_fk-tpose_down = T-pose (nedåt)
 settings-general-fk_settings-arm_fk-tpose_down-description = Förväntar sig att armarna ska vara 90 grader upp åt sidorna under Full Reset och nedåt på sidorna under Mounting Reset.
 settings-general-fk_settings-arm_fk-forward = Framåt
 settings-general-fk_settings-arm_fk-forward-description = Förväntar sig att dina armar är upp 90 grader framåt. Användbart för VTubing.
-settings-general-fk_settings-skeleton_settings-toggles = Skelett-växlar
-settings-general-fk_settings-skeleton_settings-description = Slå på eller av skelettinställningar. Vi rekommenderar att du låter dessa vara på.
-settings-general-fk_settings-skeleton_settings-extended_spine_model = Modell med förlängd ryggrad
-settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Förlängd bäckenmodell
-settings-general-fk_settings-skeleton_settings-extended_knees_model = Förlängd knämodell
 settings-general-fk_settings-skeleton_settings-ratios = Skelettets proportioner
 settings-general-fk_settings-skeleton_settings-ratios-description = Ändra värdena för skelettinställningarna. Du kan behöva justera dina proportioner efter att du har ändrat dessa.
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Imputera midja från bröst till höft
-settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Imputera midja från bröst till ben
-settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Imputera höft från bröst till ben
-settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Imputera höft från midja till ben
-settings-general-fk_settings-skeleton_settings-interp_hip_legs = Genomsnittlig höftrörelse och rullning med benen
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Genomsnittlig girning och rullning för knäspårarna med vristerna
-settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Knäens genomsnittliga gungning och rullning med vristerna
 settings-general-fk_settings-self_localization-title = Mocap-läge
 settings-general-fk_settings-self_localization-description = Mocap Mode gör att skelettet i stort sett kan följa sin egen position utan headset eller andra spårare. Observera att detta kräver fot- och huvudspårare för att fungera och att det fortfarande är experimentellt.
 
 ## Gesture control settings (tracker tapping)
 
-settings-general-gesture_control = Geststyrning
 settings-general-gesture_control-subtitle = Tap-baserade återställningar
 settings-general-gesture_control-description = Gör att återställningar kan utlösas genom att trycka på en tracker. Den tracker som sitter högst upp på din bål används för Yaw Reset, den tracker som sitter högst upp på ditt vänstra ben används för Full Reset och den tracker som sitter högst upp på ditt högra ben används för Mounting Reset. Taps måste ske inom tidsgränsen 0,3 sekunder gånger antalet taps som ska erkännas.
 settings-general-gesture_control-yawResetEnabled = Aktivera återställning av tap till yaw
@@ -639,9 +489,6 @@ settings-general-interface-dev_mode = Utvecklarläge
 settings-general-interface-dev_mode-description = Det här läget kan vara användbart om du behöver djupgående data eller vill interagera med anslutna trackers på en mer avancerad nivå.
 settings-general-interface-dev_mode-label = Utvecklarläge
 settings-general-interface-theme = Färg tema
-settings-general-interface-show-navbar-onboarding = Visa { navbar-onboarding } på navigeringsfältet
-settings-general-interface-show-navbar-onboarding-description = Detta förändras om { navbar-onboarding } knappen visas på navigeringsfältet
-settings-general-interface-show-navbar-onboarding-label = Visa { navbar-onboarding }
 settings-general-interface-lang = Välj språk
 settings-general-interface-lang-description = Ändra det standardspråk som du vill använda.
 settings-general-interface-lang-placeholder = Välj det språk du vill använda
@@ -653,9 +500,6 @@ settings-interface-appearance-font-os_font = OS-teckensnitt
 settings-interface-appearance-font-slime_font = Standardteckensnitt
 settings-interface-appearance-font_size = Skalning av basteckensnitt
 settings-interface-appearance-font_size-description = Detta påverkar teckenstorleken i hela gränssnittet utom i denna inställningspanel.
-settings-interface-appearance-decorations = Använd systemets inbyggda dekorationer.
-settings-interface-appearance-decorations-description = Detta kommer ej visualisera topfältet av gränssnittet och kommer att använda operativsystemets istället
-settings-interface-appearance-decorations-label = Använd inbyggda dekorationer
 
 ## Notification settings
 
@@ -707,23 +551,7 @@ settings-serial-factory_reset-warning-cancel = Avbryt
 settings-serial-serial_select = Välj en serieport
 settings-serial-auto_dropdown_item = Automatiskt
 settings-serial-get_wifi_scan = Hämta WiFi-skanning
-settings-serial-file_type = Vanlig text
 settings-serial-save_logs = Spara till fil
-
-## OSC router settings
-
-settings-osc-router = OSC router
-# This cares about multilines
-settings-osc-router-description = Vidarebefordra OSC-meddelanden från ett annat program. Användbart för att använda ett annat OSC-program med VRChat till exempel.
-settings-osc-router-enable = Aktivera
-settings-osc-router-enable-description = Växla vidarebefordran av meddelanden.
-settings-osc-router-enable-label = Aktivera
-settings-osc-router-network = Nätverksportar
-# This cares about multilines
-settings-osc-router-network-description = Ställ in portarna för att lyssna och skicka data. Dessa kan vara desamma som andra portar som används i SlimeVR-servern.
-settings-osc-router-network-address = Nätverksadress
-settings-osc-router-network-address-description = Ange den adress som data ska skickas till.
-settings-osc-router-network-address-placeholder = IPV4-adress
 
 ## OSC VRChat settings
 
@@ -731,15 +559,7 @@ settings-osc-vrchat = VRChat OSC spårare
 settings-osc-vrchat-enable = Aktivera
 settings-osc-vrchat-enable-description = Växla mellan sändning och mottagning av data.
 settings-osc-vrchat-enable-label = Aktivera
-settings-osc-vrchat-oscqueryEnabled = Aktivera OSCQuery
-settings-osc-vrchat-oscqueryEnabled-description =
-    OSCQuery känner automatiskt av körande instanser av VRChat och skickar data till OSCQuery.
-    De kan även annonsera sig själva till VRChat för att få HMD och kontrollerdata.
-    För att tillåta samling av HMD och kontrollerdata från VRChat, gå till din huvudmenys inställningar
-    under "Tracking & IK" och tillåt "Allow Sending Head and Wrist VR Tracking OSC Data"
-settings-osc-vrchat-oscqueryEnabled-label = Aktivera OSCQuery
 settings-osc-vrchat-network = Nätverksportar
-settings-osc-vrchat-network-description-v1 = Ställ in portarna för att lyssna och skicka data. Kan lämnas orörd för VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port In
     .placeholder = Port in (default: 9001)
@@ -749,13 +569,6 @@ settings-osc-vrchat-network-port_out =
 settings-osc-vrchat-network-address = Nätverksadress
 settings-osc-vrchat-network-address-description-v1 = Välj vilken adress du vill skicka data till. Kan lämnas orörd för VRChat.
 settings-osc-vrchat-network-address-placeholder = VRChat ip-adress
-settings-osc-vrchat-network-trackers = Spårare
-settings-osc-vrchat-network-trackers-description = Växla sändning av specifika trackers via OSC.
-settings-osc-vrchat-network-trackers-chest = Bröstkorg
-settings-osc-vrchat-network-trackers-hip = Höft
-settings-osc-vrchat-network-trackers-knees = Knän
-settings-osc-vrchat-network-trackers-feet = Fötter
-settings-osc-vrchat-network-trackers-elbows = Armbågar
 
 ## VMC OSC settings
 
@@ -831,7 +644,6 @@ settings-utils-advanced-open_logs-label = Öppna mapp
 
 onboarding-skip = Hoppa över inställning
 onboarding-continue = Fortsätt
-onboarding-wip = Pågående arbete
 onboarding-previous_step = Föregående steget
 onboarding-setup_warning =
     <b>Varning:</b> Den inledande installationen krävs för bra spårning,
@@ -844,7 +656,6 @@ onboarding-setup_warning-cancel = Fortsätt inställning
 
 ## Wi-Fi setup
 
-onboarding-wifi_creds-skip = Hoppa över Wi-Fi inställningar.
 onboarding-wifi_creds-submit = Överlämna!
 onboarding-wifi_creds-ssid =
     .label = Wi-Fi namn
@@ -854,18 +665,6 @@ onboarding-wifi_creds-password =
     .label = Lösenord
     .placeholder = Ange lösenord
 
-## Mounting setup
-
-onboarding-reset_tutorial-back = Gå tillbaka till monteringskalibrering
-onboarding-reset_tutorial = Börja om introduktionen
-onboarding-reset_tutorial-explanation = När du använder dina trackers kan de hamna ur linje på grund av IMU:s girdrift eller för att du har flyttat dem fysiskt. Du har flera sätt att åtgärda detta.
-onboarding-reset_tutorial-skip = Hoppa över steg
-# Cares about multiline
-onboarding-reset_tutorial-0 =
-    Tryck { $taps } gånger på den markerade trackern för att utlösa yaw reset.
-    
-    Detta gör att spårarna vänds i samma riktning som ditt headset (HMD).
-
 ## Install info
 
 
@@ -874,21 +673,11 @@ onboarding-reset_tutorial-0 =
 onboarding-home = Välkommen till SlimeVR
 onboarding-home-start = Låt oss komma igång!
 
-## Setup done
-
-onboarding-done-title = Du är klar!
-onboarding-done-description = Njut av en helkroppsupplevelse
-onboarding-done-close = Stäng inställningen
-
 ## Tracker connection setup
 
-onboarding-connect_tracker-back = Gå tillbaka till Wi-Fi-legitimation
 onboarding-connect_tracker-title = Ansluta spårare
-onboarding-connect_tracker-description-p0-v1 = Nu till den roliga delen, att ansluta trackers!
-onboarding-connect_tracker-description-p1-v1 = Anslut varje tracker en i taget via en USB-port.
 onboarding-connect_tracker-issue-serial = Jag har problem med att ansluta!
 onboarding-connect_tracker-usb = USB spårare
-onboarding-connect_tracker-connection_status-none = Letar efter spårare
 onboarding-connect_tracker-connection_status-serial_init = Anslutning till seriell enhet
 onboarding-connect_tracker-connection_status-obtaining_mac_address = Får sensorns mac adress
 onboarding-connect_tracker-connection_status-provisioning = Skicka Wi-Fi-autentiseringsuppgifter
@@ -901,13 +690,6 @@ onboarding-connect_tracker-connection_status-no_serial_log = Kunde inte få en l
 onboarding-connect_tracker-connection_status-no_serial_device_found = Kunde inte hitta en tracker från usb
 onboarding-connect_serial-error-modal-no_serial_log = Är trackern påslagen?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Säkerställ att trackern är på och är kopplad till din dator.
-onboarding-connect_serial-error-modal-no_serial_device_found = Inga trackers upptäckta
-onboarding-connect_serial-error-modal-no_serial_device_found-desc =
-    Var vänlig och koppla en tracker med inkluderade USB kabeln till din dator och slå på trackern.
-    Om detta inte fungerar:
-    -Testa med an annan USB sladd
-    -Testa med en annan USB-port
-    -Testa installera om SlimeVR servern och välj "USB Drivers" i komponentsektionen.
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -921,56 +703,10 @@ onboarding-connect_tracker-connected_trackers =
     }
 onboarding-connect_tracker-next = Jag har anslutit alla mina spårare
 
-## Tracker calibration tutorial
-
-onboarding-calibration_tutorial = Handledning för IMU-kalibrering
-onboarding-calibration_tutorial-subtitle = Detta kommer att bidra till att minska spårarens drift!
-onboarding-calibration_tutorial-calibrate = Jag placerade mina trackers på bordet
-onboarding-calibration_tutorial-status-waiting = Väntar på dig
-onboarding-calibration_tutorial-status-calibrating = Kalibrering
-onboarding-calibration_tutorial-status-success = Snyggt!
-onboarding-calibration_tutorial-status-error = Spåraren flyttades
-onboarding-calibration_tutorial-skip = Hoppa över introduktion
-
-## Tracker assignment tutorial
-
-onboarding-assignment_tutorial = Hur man förbereder en Slime Tracker innan den sätts på
-onboarding-assignment_tutorial-first_step = 1. Placera ett klistermärke för en kroppsdel (om du har ett sådant) på spåraren enligt ditt val
-# This text has a character limit of around 11 characters, so please keep it short
-onboarding-assignment_tutorial-sticker = Klistermärken
-onboarding-assignment_tutorial-second_step-v2 = 2. Fäst remmen på din tracker och håll kardborresidan av remmen vänd åt samma håll som slime-ansiktet på din tracker:
-onboarding-assignment_tutorial-second_step-continuation-v2 = Kardborresidan för förlängningen ska vara vänd uppåt som på följande bild:
-onboarding-assignment_tutorial-done = Jag sätter på klistermärken och remmar!
-
 ## Tracker assignment setup
 
-onboarding-assign_trackers-back = Gå tillbaka till Wi-Fi uppgifter
 onboarding-assign_trackers-title = Utse trackers
 onboarding-assign_trackers-description = Låt oss välja vilken tracker som ska sitta var. Klicka på en plats där du vill placera en tracker
-onboarding-assign_trackers-advanced = Visa avancerade tilldelar-positioner
-onboarding-assign_trackers-next = Jag har tilldelat alla trackers
-onboarding-assign_trackers-mirror_view = Spegla vy
-onboarding-assign_trackers-option-amount =
-    { $trackersCount ->
-        [one] x{ $trackersCount }
-       *[other] x{ $trackersCount }
-    }
-onboarding-assign_trackers-option-label =
-    { $mode ->
-        [lower-body] Lägre-kropps kit
-        [core] Kärna kit
-        [enhanced-core] Förbättrad kärna kit
-        [full-body] Full kropps kit
-       *[all] Alla kit
-    }
-onboarding-assign_trackers-option-description =
-    { $mode ->
-        [lower-body] Minimum för full kropps-spårning
-        [core] +Förbättrad ryggrads-spårning
-        [enhanced-core] +Fötters-rotation
-        [full-body] +Armbågs-spårning
-       *[all] Alla tillgängliga tracker-val
-    }
 
 ## Tracker assignment warnings
 
@@ -1050,22 +786,10 @@ onboarding-choose_mounting-auto_mounting = Automatisk montering.
 onboarding-choose_mounting-auto_mounting-label-v2 = Rekomenderad
 onboarding-choose_mounting-auto_mounting-description = Detta kommer automatiskt känna av monteringsriktningen av alla dina trackers från 2 positioner
 onboarding-choose_mounting-manual_mounting = Manuell montering
-# Italicized text
-onboarding-choose_mounting-manual_mounting-label-v2 = Detta är kanske inte tillräckligt exakt
 onboarding-choose_mounting-manual_mounting-description = Detta kommer låta dig välja monteringsriktningen manuellt för varje tracker
-# Multiline text
-onboarding-choose_mounting-manual_modal-title =
-    Är du säker på att du vill göra
-    den automatiska monterings-kalibreringen?
-onboarding-choose_mounting-manual_modal-description =
-    <b>Den manuella monterings-kalibreringen är rekommenderad för nya användare</b>, eftersom den automatiska monterings-kalibreringen kan vara svår att få rätt första gången
-    och kan behöva lite träning för att få rätt.
-onboarding-choose_mounting-manual_modal-confirm = Jag är säker på vad jag gör
-onboarding-choose_mounting-manual_modal-cancel = Avbryt
 
 ## Tracker manual mounting setup
 
-onboarding-manual_mounting-back = Gå tillbaka för att gå in i VR
 onboarding-manual_mounting = Manuell montering
 onboarding-manual_mounting-description = Klicka på varje tracker och välj vilket håll de är monterade på
 onboarding-manual_mounting-auto_mounting = Automatisk montering
@@ -1073,7 +797,6 @@ onboarding-manual_mounting-next = Nästa steg
 
 ## Tracker automatic mounting setup
 
-onboarding-automatic_mounting-back = Gå tillbaka för att gå in i VR
 onboarding-automatic_mounting-title = Monterings-Kalibrering
 onboarding-automatic_mounting-description = För att SlimeVR trackers ska fungera, so måste vi tilldela en monterings-riktning för dina trackers för att linjera de med din fysiska tracker-montering.
 onboarding-automatic_mounting-manual_mounting = Manuell montering
@@ -1095,12 +818,10 @@ onboarding-automatic_mounting-put_trackers_on-next = Jag har på mig alla tracke
 
 ## Tracker manual proportions setupa
 
-onboarding-manual_proportions-title = Manuella kropps-dimensioner
 onboarding-manual_proportions-fine_tuning_button = Finjustera automatiskt proportioner
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Var vänlig anslut ett VR-headset för att använda automatisk finjustering
 onboarding-manual_proportions-export = Exportera proportioner
 onboarding-manual_proportions-import = Importera proportioner
-onboarding-manual_proportions-file_type = Kropps-proportions fil
 onboarding-manual_proportions-normal_increment = Normal ökning
 onboarding-manual_proportions-precise_increment = Detaljerad ökning
 onboarding-manual_proportions-grouped_proportions = Grupperad ökning
@@ -1112,13 +833,9 @@ onboarding-manual_proportions-estimated_height = Uppskattad användarlängd
 onboarding-automatic_proportions-back = Gå tillbaka till manuella proportioner
 onboarding-automatic_proportions-title = Mät din kropp
 onboarding-automatic_proportions-description = För att SlimeVR-trackers ska fungera behöver vi veta längden på dina ben. Denna korta kalibrering kommer att mäta den åt dig.
-onboarding-automatic_proportions-manual = Manuella proportionern
 onboarding-automatic_proportions-prev_step = Föregående steg
 onboarding-automatic_proportions-put_trackers_on-title = Sätt på alla dina trackers
 onboarding-automatic_proportions-put_trackers_on-description = För att kalibrera proportionerna ska vi använda de trackers du just tilldelade. Sätt på dig alla dina trackers, du kan se vilka som är vilka i figuren till höger.
-onboarding-automatic_proportions-check_height-guardian_tip =
-    Om du använder ett fristående VR-headset, se till att ha din guardian /
-    boundary aktiverad så att din höjd är korrekt!
 onboarding-automatic_proportions-start_recording-description = Vi kommer nu att spela in några specifika poser och rörelser. Dessa kommer att visas på nästa skärm. Var redo att starta när du trycker på knappen!
 
 ## User height calibration
@@ -1208,8 +925,6 @@ vrc_config-page-wrist_menu = Tracking & IK (handleds-meny)
 vrc_config-page-wrist_menu-desc = Inställningar relaterade till IK i lilla inställnings-menyn (handleds-meny)
 vrc_config-on = På
 vrc_config-off = Av
-vrc_config-invalid = Du har felkonfigurerade VRChat inställningar!
-vrc_config-show_more = Visa mer
 vrc_config-setting_name = VRChat inställningsnamn
 vrc_config-recommended_value = Rekommenderat värde
 vrc_config-current_value = Nuvarande värde

@@ -3,7 +3,7 @@ package dev.slimevr.desktop.keybind
 import dev.slimevr.config.KeybindConfig
 import dev.slimevr.desktop.install.executeShellCommand
 import dev.slimevr.logging.AppLogger
-import dev.slimevr.solarxr.canonicalKeybind
+import dev.slimevr.solarxr.rpc.canonicalKeybind
 import solarxr_protocol.rpc.KeybindId
 import java.io.File
 

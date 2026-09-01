@@ -13,7 +13,6 @@ import android.hardware.usb.UsbManager
 import androidx.core.content.ContextCompat
 import dev.slimevr.AppContextProvider
 import dev.slimevr.VRServerActions
-import dev.slimevr.device.DeviceActions
 import dev.slimevr.hid.HIDReceiver
 import dev.slimevr.hid.HIDReceiverActions
 import dev.slimevr.hid.isCompatibleHidReceiver
@@ -31,7 +30,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import solarxr_protocol.data_feed.dongle_data.DongleStatus
-import solarxr_protocol.datatypes.TrackerStatus
 
 private const val ACTION_USB_HID_PERMISSION = "dev.slimevr.android.USB_HID_PERMISSION"
 private const val HID_POLL_INTERVAL_MS = 3000L
@@ -177,13 +175,7 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 							connection.releaseInterface(iface)
 							connection.close()
 						}
-						withContext(NonCancellable) {
-							for (record in receiver.context.state.value.trackers.values) {
-								appContext.server.getDevice(record.deviceId)?.context?.dispatch(
-									DeviceActions.Update { copy(status = TrackerStatus.DISCONNECTED) },
-								)
-							}
-						}
+						withContext(NonCancellable) { receiver.onDisconnected() }
 					}
 				}
 				deviceJob.complete()

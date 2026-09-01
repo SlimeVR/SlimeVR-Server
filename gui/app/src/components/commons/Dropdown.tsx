@@ -222,7 +222,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
   return (
     <div
       className={classNames(
-        'dropdown-popover fixed inset-auto m-0 border-0 p-0 rounded overflow-hidden flex flex-col',
+        'dropdown-popover fixed inset-auto m-0 border-0 p-0 rounded overflow-hidden flex-col',
         direction === 'up' ? 'mb-3' : 'mt-3',
         variantStyles[variant],
         display === 'block' ? 'w-full' : 'w-fit'

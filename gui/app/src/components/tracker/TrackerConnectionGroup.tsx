@@ -83,25 +83,119 @@ export function TrackerConnectionGroupUnassignedDivider({
   );
 }
 
-export function TrackerConnectionGroupSection({
-  group,
-  onOpenMetrics,
-  children,
-}: {
-  group: TrackerConnectionGroupData;
-  onOpenMetrics: (group: TrackerConnectionGroupData) => void;
-  children: ReactNode;
-}) {
+function useConnectionGroupCollapsed(group: TrackerConnectionGroupData) {
   const { config, setConfig } = useConfig();
   const storageKey = getConnectionGroupStorageKey(group);
   const collapsed = config?.collapsedConnectionGroups[storageKey] ?? false;
-  const setCollapsed = (next: boolean) =>
+  const toggleCollapse = () =>
     setConfig({
       collapsedConnectionGroups: {
         ...config?.collapsedConnectionGroups,
-        [storageKey]: next,
+        [storageKey]: !collapsed,
       },
     });
+  return { collapsed, toggleCollapse };
+}
+
+function TrackerConnectionGroupToolboxContainer({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex items-center bg-background-80 rounded-full px-1">
+      {children}
+    </div>
+  );
+}
+
+function TrackerConnectionGroupToolboxButton({
+  children,
+  onClick,
+  to,
+}: {
+  children: ReactNode;
+  onClick?: () => void;
+  to?: string;
+}) {
+  const className =
+    'flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9';
+
+  if (to) {
+    return (
+      <NavLink to={to} className={className}>
+        {children}
+      </NavLink>
+    );
+  }
+
+  return (
+    <div className={className} onClick={onClick}>
+      {children}
+    </div>
+  );
+}
+
+export function TrackerConnectionGroupCollapseToolbox({
+  group,
+}: {
+  group: TrackerConnectionGroupData;
+}) {
+  const { collapsed, toggleCollapse } = useConnectionGroupCollapsed(group);
+
+  return (
+    <TrackerConnectionGroupToolboxContainer>
+      <TrackerConnectionGroupToolboxButton onClick={toggleCollapse}>
+        {collapsed ? <ArrowDownIcon size={30} /> : <ArrowUpIcon size={30} />}
+      </TrackerConnectionGroupToolboxButton>
+    </TrackerConnectionGroupToolboxContainer>
+  );
+}
+
+export function TrackerConnectionGroupDefaultToolbox({
+  group,
+  onOpenMetrics,
+}: {
+  group: TrackerConnectionGroupData;
+  onOpenMetrics?: (group: TrackerConnectionGroupData) => void;
+}) {
+  const { collapsed, toggleCollapse } = useConnectionGroupCollapsed(group);
+
+  return (
+    <TrackerConnectionGroupToolboxContainer>
+      {group.kind !== 'driver' && onOpenMetrics && (
+        <TrackerConnectionGroupToolboxButton
+          onClick={() => onOpenMetrics(group)}
+        >
+          <MetricsIcon size={16} />
+        </TrackerConnectionGroupToolboxButton>
+      )}
+      {group.kind === 'dongle' && (
+        <TrackerConnectionGroupToolboxButton to={`/dongle/${group.dongleId}`}>
+          <WrenchIcon width={15} />
+        </TrackerConnectionGroupToolboxButton>
+      )}
+      <TrackerConnectionGroupToolboxButton onClick={toggleCollapse}>
+        {collapsed ? <ArrowDownIcon size={30} /> : <ArrowUpIcon size={30} />}
+      </TrackerConnectionGroupToolboxButton>
+    </TrackerConnectionGroupToolboxContainer>
+  );
+}
+
+export function TrackerConnectionGroupSection({
+  group,
+  toolbox,
+  children,
+  linkHeader = true,
+  variant,
+}: {
+  group: TrackerConnectionGroupData;
+  toolbox?: ReactNode;
+  children: ReactNode;
+  linkHeader?: boolean;
+  variant: 'primary' | 'secondary' | 'tertiary';
+}) {
+  const { collapsed } = useConnectionGroupCollapsed(group);
 
   const disconnected = isGroupDisconnected(group);
   const lineColor = disconnected
@@ -111,7 +205,7 @@ export function TrackerConnectionGroupSection({
   return (
     <div className="flex flex-col">
       <div className="flex items-center gap-2 h-8">
-        {group.kind === 'dongle' ? (
+        {group.kind === 'dongle' && linkHeader ? (
           <NavLink
             to={`/dongle/${group.dongleId}`}
             className="flex items-center gap-2 min-w-0 flex-shrink hover:opacity-80"
@@ -125,6 +219,19 @@ export function TrackerConnectionGroupSection({
               {group.dongleName}
             </Typography>
           </NavLink>
+        ) : group.kind === 'dongle' ? (
+          <div
+            className="flex items-center gap-2 min-w-0 flex-shrink"
+            title={group.dongleName || undefined}
+          >
+            <ConnectionGroupIcon
+              kind={group.kind}
+              disconnected={disconnected}
+            />
+            <Typography bold truncate>
+              {group.dongleName}
+            </Typography>
+          </div>
         ) : (
           <>
             <ConnectionGroupIcon
@@ -138,36 +245,20 @@ export function TrackerConnectionGroupSection({
             />
           </>
         )}
-        <div className="flex-grow border-t-2 border-dashed border-background-60" />
-        <div className="sticky -right-2 z-20 flex items-center bg-background-70 pl-4 -ml-4">
-          <div className="flex items-center bg-background-80 rounded-full px-1">
-            {group.kind !== 'driver' && (
-              <div
-                className="flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9"
-                onClick={() => onOpenMetrics(group)}
-              >
-                <MetricsIcon size={16} />
-              </div>
-            )}
-            {group.kind === 'dongle' && (
-              <NavLink
-                to={`/dongle/${group.dongleId}`}
-                className="flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9"
-              >
-                <WrenchIcon width={15} />
-              </NavLink>
-            )}
-            <div
-              className="flex items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-9 h-9"
-              onClick={() => setCollapsed(!collapsed)}
-            >
-              {collapsed ? (
-                <ArrowDownIcon size={30} />
-              ) : (
-                <ArrowUpIcon size={30} />
-              )}
-            </div>
-          </div>
+        <div
+          className={classNames('flex-grow border-t-2 border-dashed', {
+            'border-background-60':
+              variant === 'primary' || variant === 'tertiary',
+            'border-background-40': variant === 'secondary',
+          })}
+        />
+        <div
+          className={classNames('sticky -right-0 flex items-center px-2', {
+            'bg-background-70': variant === 'primary',
+            'bg-background-60': variant === 'secondary',
+          })}
+        >
+          {toolbox ?? <TrackerConnectionGroupDefaultToolbox group={group} />}
         </div>
       </div>
       {!collapsed && (

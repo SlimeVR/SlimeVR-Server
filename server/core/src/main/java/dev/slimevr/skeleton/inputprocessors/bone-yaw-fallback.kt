@@ -1,0 +1,29 @@
+package dev.slimevr.skeleton.inputprocessors
+
+import dev.slimevr.skeleton.InputSkeleton
+import dev.slimevr.skeleton.SkeletonInputProcessor
+import dev.slimevr.skeleton.forEachBone
+import dev.slimevr.skeleton.iterateBodyPartHierarchy
+import dev.slimevr.skeleton.mutate
+import io.github.axisangles.ktmath.Vector3
+import kotlin.collections.set
+
+/**
+ * Handles replacing rotations of boneInputs that are not actively receiving data by
+ * falling back to their parent's yaw.
+ */
+class BoneYawFallbackInputProcessor : SkeletonInputProcessor {
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutate { updated ->
+		inputSkeleton.forEachBone { parentPart, parentBone ->
+			if (!parentBone.isRotationActive) return@forEachBone // Parent needs to be active
+			val children = iterateBodyPartHierarchy(parentPart, true)
+
+			for (childPart in children) {
+				val childBone = inputSkeleton.getValue(childPart.second)
+				if (childBone.isRotationActive) continue // Child needs to be inactive
+
+				updated[childPart.second] = childBone.copy(rawRotation = parentBone.rawRotation.project(Vector3.POS_Y).unit())
+			}
+		}
+	}
+}

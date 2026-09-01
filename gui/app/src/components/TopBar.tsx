@@ -33,7 +33,7 @@ export function VersionTag() {
       className={classNames(
         'flex justify-around flex-col text-standard-bold',
         'text-status-success bg-status-success bg-opacity-20 rounded-lg',
-        'px-3 select-text cursor-pointer'
+        'px-3 select-text cursor-pointer shrink-0 whitespace-nowrap'
       )}
       onClick={() => {
         const url = `https://github.com/${GH_REPO}/releases`;
@@ -47,9 +47,11 @@ export function VersionTag() {
 
 export function TopBar({
   progress,
+  actions,
 }: {
   children?: ReactNode;
   progress?: number;
+  actions?: ReactNode;
 }) {
   const electron = useElectron();
   const { isMobile } = useBreakpoint('mobile');
@@ -207,6 +209,7 @@ export function TopBar({
             )}
           </div>
           <div className="flex justify-end items-center px-2 gap-2 z-50">
+            {actions}
             <NavLink
               to="/settings/trackers"
               className="flex justify-around flex-col select-all fill-background-50"

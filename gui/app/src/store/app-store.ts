@@ -145,6 +145,32 @@ export function groupTrackersByConnection(
   });
 }
 
+export function groupTrackersByDevice(
+  trackers: FlatDeviceTracker[]
+): FlatDeviceTracker[][] {
+  const order: number[] = [];
+  const byDevice = new Map<number, FlatDeviceTracker[]>();
+  trackers.forEach((td) => {
+    const key = td.device?.id ?? td.tracker.trackerId;
+    if (!byDevice.has(key)) {
+      order.push(key);
+      byDevice.set(key, []);
+    }
+    byDevice.get(key)!.push(td);
+  });
+  return order.map((key) => byDevice.get(key)!);
+}
+
+export function groupTrackerByBodyPart(
+  trackers: FlatDeviceTracker[]
+): Partial<Record<BodyPart, FlatDeviceTracker>> {
+  const byPart: Partial<Record<BodyPart, FlatDeviceTracker>> = {};
+  trackers.forEach((td) => {
+    byPart[td.tracker.info?.bodyPart ?? BodyPart.NONE] = td;
+  });
+  return byPart;
+}
+
 export const flatTrackersAtom = atom((get) => {
   const devices = get(devicesAtom);
 
@@ -157,6 +183,10 @@ export const assignedTrackersAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
   return trackers.filter(({ tracker }) => tracker.info?.bodyPart !== BodyPart.NONE);
 });
+
+export const trackerByBodyPartAtom = atom((get) =>
+  groupTrackerByBodyPart(get(assignedTrackersAtom))
+);
 
 export const unassignedTrackersAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);

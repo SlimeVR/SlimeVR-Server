@@ -1,9 +1,8 @@
 import classNames from 'classnames';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BodyPart, TrackerDataT } from 'solarxr-protocol';
-import { useTracker } from '@/hooks/tracker';
+import { BodyPart } from 'solarxr-protocol';
 import { PersonFrontIcon } from './PersonFrontIcon';
-import { FlatDeviceTracker } from '@/store/app-store';
+import { FlatDeviceTracker, groupTrackerByBodyPart } from '@/store/app-store';
 
 interface SlotDot {
   id: string;
@@ -19,27 +18,8 @@ interface SlotDot {
 
 type DotParams = {
   dotSize: number;
-  trackers: FlatDeviceTracker[];
   hidden: boolean;
 } & SlotDot;
-
-function Tracker({
-  tracker,
-  updateVelocity,
-}: {
-  tracker: TrackerDataT;
-  updateVelocity: (velocity: number) => void;
-}) {
-  const { useVelocity } = useTracker(tracker);
-
-  const velocity = useVelocity();
-
-  useEffect(() => {
-    updateVelocity(velocity);
-  }, [velocity]);
-
-  return <></>;
-}
 
 function Dot({
   top,
@@ -49,24 +29,8 @@ function Dot({
   id,
   left,
   dotSize,
-  trackers,
   hidden,
 }: DotParams) {
-  const [velocities, setVelocities] = useState<number[]>([]);
-
-  const updateVelocity = (vel: number) => {
-    if (velocities.length > 3) {
-      velocities.shift();
-    }
-    velocities.push(vel);
-    setVelocities(velocities);
-  };
-
-  const globalVelocity = useMemo(
-    () => velocities.reduce((curr, v) => curr + v, 0) / (trackers?.length || 1),
-    [velocities, trackers]
-  );
-
   return (
     <div
       key={id}
@@ -85,16 +49,8 @@ function Dot({
         style={{
           width: dotSize,
           height: dotSize,
-          outlineWidth: globalVelocity * 2 + 2,
         }}
       />
-      {trackers?.map(({ tracker }, index) => (
-        <Tracker
-          tracker={tracker}
-          key={index}
-          updateVelocity={(vel) => updateVelocity(vel)}
-        />
-      ))}
     </div>
   );
 }
@@ -165,17 +121,8 @@ export function BodyDisplay({
     };
   }, []);
 
-  const trackerPartGrouped = useMemo(
-    () =>
-      trackers.reduce<{ [key: number]: FlatDeviceTracker[] }>((curr, td) => {
-        if (!td) return curr;
-
-        const key = td.tracker.info?.bodyPart || BodyPart.NONE;
-        return {
-          ...curr,
-          [key]: [...(curr[key] || []), td],
-        };
-      }, {}),
+  const trackerByPart = useMemo(
+    () => groupTrackerByBodyPart(trackers),
     [trackers]
   );
 
@@ -186,18 +133,19 @@ export function BodyDisplay({
         className={classNames('relative w-full h-full flex justify-center')}
       >
         <PersonFrontIcon />
-        {slotsButtonsPos.map((dotData) => (
-          <Dot
-            {...dotData}
-            dotSize={dotsSize}
-            key={dotData.id}
-            hidden={
-              hideUnassigned &&
-              trackerPartGrouped[(BodyPart as any)[dotData.id]] === undefined
-            }
-            trackers={trackerPartGrouped[(BodyPart as any)[dotData.id]]}
-          />
-        ))}
+        {slotsButtonsPos.map((dotData) => {
+          const tracker =
+            trackerByPart[BodyPart[dotData.id as keyof typeof BodyPart]];
+
+          return (
+            <Dot
+              {...dotData}
+              dotSize={dotsSize}
+              key={dotData.id}
+              hidden={hideUnassigned && tracker === undefined}
+            />
+          );
+        })}
       </div>
     </div>
   );

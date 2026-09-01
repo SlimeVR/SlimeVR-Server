@@ -11,7 +11,6 @@ import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.DeviceOrigin
-import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.driver_protocol.AddTrackerRequest
 import solarxr_protocol.driver_protocol.AddTrackerResponse
 import solarxr_protocol.driver_protocol.AddTrackerStatus

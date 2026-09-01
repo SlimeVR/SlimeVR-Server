@@ -1,6 +1,7 @@
-import { BodyPart } from 'solarxr-protocol';
+import { BoardType, BodyPart, DeviceDataT } from 'solarxr-protocol';
 import { useLocaleConfig } from '@/i18n/config';
 import { AnkleIcon } from './icon/AnkleIcon';
+import { ButterflyIcon } from './icon/ButterflyIcon';
 import { ChestIcon } from './icon/ChestIcon';
 import { ControllerIcon } from './icon/ControllerIcon';
 import { FootIcon } from './icon/FootIcon';
@@ -10,12 +11,54 @@ import { LowerArmIcon } from './icon/LowerArmIcon';
 import { NeckIcon } from './icon/NeckIcon';
 import { PawIcon } from './icon/PawIcon';
 import { ShoulderIcon } from './icon/ShoulderIcon';
+import { SlimeExtensionIcon } from './icon/SlimeExtensionIcon';
+import { SlimeNormalIcon } from './icon/SlimeNormalIcon';
 import { SlimeVRIcon } from './icon/SlimeVRIcon';
 import { UpperArmIcon } from './icon/UpperArmIcon';
 import { UpperLegIcon } from './icon/UpperLegIcon';
 import { WaistIcon } from './icon/WaistIcon';
 import { UpperChestIcon } from './icon/UpperChestIcon';
 import { FingersIcon } from './icon/FingersIcon';
+
+const BUTTERFLY_BOARDS = new Set([
+  BoardType.SLIMEVR_BUTTERFLY,
+  BoardType.SLIMEVR_BUTTERFLY_DEV,
+]);
+
+const SLIME_BOARDS = new Set([
+  BoardType.SLIMEVR,
+  BoardType.SLIMEVR_V1_2,
+  BoardType.SLIMEVR_DEV,
+  BoardType.SLIMEVR_LEGACY,
+]);
+
+function UnassignedGlyph({
+  device,
+  trackerId,
+  width,
+}: {
+  device?: DeviceDataT;
+  trackerId?: number;
+  width?: number;
+}) {
+  const boardType = device?.hardwareInfo?.officialBoardType;
+
+  if (boardType != null && BUTTERFLY_BOARDS.has(boardType)) {
+    return <ButterflyIcon width={width} />;
+  }
+
+  if (boardType != null && SLIME_BOARDS.has(boardType)) {
+    const isExtension =
+      (device?.trackers.findIndex((t) => t.trackerId === trackerId) ?? 0) > 0;
+    return isExtension ? (
+      <SlimeExtensionIcon width={(width ?? 24) * 0.7} />
+    ) : (
+      <SlimeNormalIcon width={(width ?? 24) * 0.7} />
+    );
+  }
+
+  return <SlimeVRIcon width={width} />;
+}
 
 // All body parts that are right or left, are by default left!
 export const mapPart: Record<
@@ -160,12 +203,23 @@ function renderFootRight({
 export function BodyPartIcon({
   bodyPart = BodyPart.NONE,
   width = 24,
+  device,
+  trackerId,
 }: {
   bodyPart?: BodyPart;
   width?: number;
+  device?: DeviceDataT;
+  trackerId?: number;
 }) {
   const { currentLocales } = useLocaleConfig();
-  return (
+  return bodyPart === BodyPart.NONE && device ? (
+    <div
+      className="bg-accent-background-30 rounded-sm flex justify-center items-center"
+      style={{ width, height: width }}
+    >
+      <UnassignedGlyph device={device} trackerId={trackerId} width={width} />
+    </div>
+  ) : (
     <svg width={width} height={width}>
       <rect width={width} height={width} rx="2" fill="#56407B" />
       {mapPart[bodyPart]?.({ width, currentLocales })}

@@ -13,10 +13,6 @@ import dev.slimevr.config.UserConfig
 import dev.slimevr.config.UserConfigData
 import dev.slimevr.config.UserConfigState
 import dev.slimevr.context.Context
-import dev.slimevr.driver.DriverBridge
-import dev.slimevr.driver.DriverBridgeActions
-import dev.slimevr.driver.DriverBridgeSource
-import dev.slimevr.driver.DriverBridgeState
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationActions
 import dev.slimevr.heightcalibration.HeightCalibrationManager
@@ -36,7 +32,10 @@ import dev.slimevr.skeleton.DEFAULT_SKELETON_STATE
 import dev.slimevr.skeleton.ProportionsBehaviour
 import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.skeleton.buildBones
-import dev.slimevr.solarxr.ServerInfos
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeState
+import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
+import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.SessionCalibration
@@ -60,10 +59,10 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 import dev.slimevr.config.reduce as reduceConfig
-import dev.slimevr.driver.reduce as reduceDriverBridge
 import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration
 import dev.slimevr.resets.reduce as reduceResets
 import dev.slimevr.skeleton.reduce as reduceSkeleton
+import dev.slimevr.solarxr.reduce as reduceSolarXR
 import dev.slimevr.tracker.reduce as reduceTracker
 import dev.slimevr.udp.reduce as reduceUdpServer
 
@@ -118,8 +117,8 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 		replay = 1,
 		onBufferOverflow = BufferOverflow.DROP_OLDEST,
 	)
-	computed.tryEmit(buildBones(context.state.value))
-	val skeleton = Skeleton(context, computed)
+	computed.tryEmit(buildBones(context.state.value.boneInputs))
+	val skeleton = Skeleton(context, buildTestSettings(scope), computed)
 	skeleton.startObserving()
 	return skeleton
 }
@@ -136,7 +135,7 @@ fun buildTestResetsManager(server: VRServer, settings: Settings, scope: Coroutin
 		behaviours = listOf(ResetsMountingTimeoutBehaviour()),
 		name = "TestResetsManager",
 	)
-	val resetsManager = ResetsManager(context, server, settings)
+	val resetsManager = ResetsManager(context, server, settings, buildTestSkeleton(scope))
 	resetsManager.startObserving()
 	return resetsManager
 }
@@ -198,15 +197,15 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 	return Settings(context, scope, NoopConfigStorage, "settings")
 }
 
-fun buildTestDriverBridge(server: VRServer, appContext: AppContextProvider, id: Int): DriverBridge {
-	val context = Context.create<DriverBridgeState, DriverBridgeActions>(
-		initialState = DriverBridgeState(protocolVersion = 0, trackers = emptyMap()),
-		scope = server.context.scope,
-		reducer = ::reduceDriverBridge,
-		behaviours = emptyList(),
-		name = "TestDriver[$id]",
+fun buildTestSolarXR(scope: CoroutineScope, appContext: AppContextProvider): SolarXRBridge {
+	val context = Context.create(
+		initialState = SolarXRBridgeState(),
+		scope = scope,
+		reducer = ::reduceSolarXR,
+		behaviours = listOf(DriverHandshakeBehaviour(appContext)),
+		name = "SolarXR[test]",
 	)
-	return DriverBridge(id = id, source = DriverBridgeSource.DRIVER, context = context, appContext = appContext)
+	return SolarXRBridge(id = 0, context = context, appContext = appContext)
 }
 
 fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: CoroutineScope): HeightCalibrationManager {

@@ -15,7 +15,6 @@ plugins {
 	application
 	id("com.gradleup.shadow")
 	id("com.github.gmazzo.buildconfig")
-	id("com.squareup.wire")
 }
 
 kotlin {
@@ -56,27 +55,12 @@ allprojects {
 	}
 }
 
-val downloadDriverProto = tasks.register("downloadDriverProto") {
-	val protoFile = layout.buildDirectory.file("proto/ProtobufMessages.proto")
-	outputs.file(protoFile)
-	doLast {
-		val url = "https://raw.githubusercontent.com/SlimeVR/SlimeVR-OpenVR-Driver/main/src/bridge/ProtobufMessages.proto"
-		protoFile.get().asFile.parentFile.mkdirs()
-		URI(url).toURL().openStream().use { it.copyTo(protoFile.get().asFile.outputStream()) }
-	}
-}
-
-wire {
-	sourcePath {
-		srcDir(downloadDriverProto.map { layout.buildDirectory.dir("proto") })
-	}
-	kotlin { }
-}
-
 dependencies {
 	implementation(project(":server:core"))
 	implementation(project(":solarxr-protocol:generated"))
 	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
+	implementation("com.squareup.okio:okio:3.18.1")
+
 	implementation("com.github.loucass003:EspflashKotlin:v0.11.0")
 
 	implementation("net.java.dev.jna:jna:5.+")

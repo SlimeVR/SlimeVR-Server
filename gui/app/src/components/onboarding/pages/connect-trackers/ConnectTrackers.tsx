@@ -332,7 +332,7 @@ function TroubleshootingLinks({
   networkProfileBanner: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <ArrowLink
         to={DOCS_TROUBLESHOOTING_URL}
         direction="right"
@@ -340,8 +340,11 @@ function TroubleshootingLinks({
       >
         <Typography id="onboarding-connect_tracker-issue-serial" />
       </ArrowLink>
+      <ArrowLink to="/settings/serial" direction="right" variant="boxed-2">
+        <Typography id="settings-sidebar-serial" />
+      </ArrowLink>
       {networkProfileBanner}
-    </>
+    </div>
   );
 }
 
@@ -503,14 +506,15 @@ export function ConnectTrackersPage() {
               scanStatus={scanStatus}
               networks={networks}
               onOpenNoSerialLogsModal={() => setShowNoSerialLogsModal(true)}
-            />
-            {isMobile && (
-              <div className="pt-2 shrink-0">
-                <TroubleshootingLinks
-                  networkProfileBanner={networkProfileBanner}
-                />
-              </div>
-            )}
+            >
+              {isMobile && (
+                <div className="pt-2 shrink-0">
+                  <TroubleshootingLinks
+                    networkProfileBanner={networkProfileBanner}
+                  />
+                </div>
+              )}
+            </TrackerList>
           </div>
           <div className="flex flex-row justify-between items-center shrink-0 py-4 border-t border-background-60">
             <Button

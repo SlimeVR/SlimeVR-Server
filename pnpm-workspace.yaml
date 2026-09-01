@@ -9,8 +9,8 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@sentry/cli'
   - '@swc/core'
-  - electron
-  - electron-winstaller
-  - esbuild
-  - register-scheme
-  - unrs-resolver
+  - 'electron'
+  - 'electron-winstaller'
+  - 'esbuild'
+  - 'register-scheme'
+  - 'unrs-resolver'

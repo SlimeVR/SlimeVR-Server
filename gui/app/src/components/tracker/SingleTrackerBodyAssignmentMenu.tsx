@@ -3,13 +3,16 @@ import ReactModal from 'react-modal';
 import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
+import {
+  BodyAssignment,
+  MirrorLegend,
+  ShowAllPartsToggle,
+} from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
-import { useBreakpoint } from '@/hooks/breakpoint';
 import { defaultConfig, useConfig } from '@/hooks/config';
-import { TrackerAssignOptions } from '@/components/onboarding/pages/trackers-assign/TrackerAssignOptions';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,
@@ -20,9 +23,9 @@ export function SingleTrackerBodyAssignmentMenu({
   onClose: () => void;
   onRoleSelected: (role: BodyPart) => void;
 }) {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { config } = useConfig();
+  const { isMobileAssign } = useBreakpoint('mobileAssign');
 
   const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
     useChokerWarning({
@@ -44,8 +47,8 @@ export function SingleTrackerBodyAssignmentMenu({
         )}
       >
         <div className="flex w-full h-full flex-col gap-10 px-3">
-          <div className="flex xs:flex-row h-full xs:gap-8 mobile:flex-col  xs:justify-center items-center">
-            <div className="flex flex-col xs:max-w-sm gap-3">
+          <div className="flex flex-col h-full items-center xsAssign:flex-row xsAssign:gap-8 xsAssign:justify-center">
+            <div className="flex flex-col gap-4 xsAssign:max-w-sm">
               <Typography variant="mobile-title" bold>
                 {l10n.getString('body_assignment_menu')}
               </Typography>
@@ -61,14 +64,16 @@ export function SingleTrackerBodyAssignmentMenu({
                   {l10n.getString('body_assignment_menu-manage_trackers')}
                 </Button>
               </div>
-              <TrackerAssignOptions variant={isMobile ? 'dropdown' : 'radio'} />
+              <ShowAllPartsToggle />
             </div>
-            <div className="flex flex-col xs:flex-grow gap-3 rounded-xl fill-background-50 py-2">
+            <div className="flex flex-col gap-4 rounded-xl fill-background-50 py-2 xsAssign:flex-grow">
+              <div className="flex justify-center">
+                <MirrorLegend />
+              </div>
               <BodyAssignment
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
-                width={isMobile ? 160 : undefined}
+                width={isMobileAssign ? 160 : undefined}
                 onlyAssigned={false}
-                assignMode={config?.assignMode ?? defaultConfig.assignMode}
                 onRoleSelected={tryOpenChokerWarning}
               />
               <div className="flex justify-center">

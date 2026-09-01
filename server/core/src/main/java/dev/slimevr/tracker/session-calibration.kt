@@ -68,10 +68,10 @@ fun undoCalibration(
 	.sandwich(calibratedAcceleration)
 
 // Used to get yaw. Works better for IMU trackers.
-private fun eulerHeading(q: Quaternion): Quaternion = Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y).twinNearest(q)
+fun eulerHeading(q: Quaternion): Quaternion = Quaternion.rotationAroundYAxis(q.toEulerAngles(EulerOrder.YZX).y).twinNearest(q)
 
 // Used to get yaw. Works better on an HMD.
-private fun inverseYProjection(q: Quaternion) = q.project(Vector3.POS_Y).unit().inv()
+fun inverseYProjection(q: Quaternion) = q.project(Vector3.POS_Y).unit().inv()
 
 fun estimateHeadingCorrect(
 	rotation: Quaternion,

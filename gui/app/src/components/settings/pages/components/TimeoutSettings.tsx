@@ -13,11 +13,11 @@ import { NumberSelector } from '@/components/commons/NumberSelector';
 import { useLocaleConfig } from '@/i18n/config';
 
 type TimeoutForm = {
-  duration: number;
+  delay: number;
 };
 
 const defaultValues: TimeoutForm = {
-  duration: 0.0,
+  delay: 0.0,
 };
 
 export function TimeoutSettings() {
@@ -42,7 +42,7 @@ export function TimeoutSettings() {
 
   const onSubmit = (values: TimeoutForm) => {
     const settingsReq = new ChangeTimeoutSettingsRequestT();
-    settingsReq.duration = values.duration;
+    settingsReq.delay = values.delay;
     sendRPCPacket(RpcMessage.ChangeTimeoutSettingsRequest, settingsReq);
   };
 
@@ -62,7 +62,7 @@ export function TimeoutSettings() {
 
   useEffect(() => {
     const formData: DefaultValues<TimeoutForm> = {
-      duration: settings.duration,
+      delay: settings.delay,
     };
     reset({ ...getValues(), ...formData });
   }, [settings]);
@@ -78,9 +78,7 @@ export function TimeoutSettings() {
     <>
       <div className="flex flex-col pb-2 pt-5">
         <Typography variant="section-title">
-          {l10n.getString(
-            'settings-general-tracker_mechanics-timeout_delay'
-          )}
+          {l10n.getString('settings-general-tracker_mechanics-timeout_delay')}
         </Typography>
         <Localized
           id="settings-general-tracker_mechanics-timeout_delay-description"
@@ -91,7 +89,7 @@ export function TimeoutSettings() {
       </div>
       <NumberSelector
         control={control}
-        name="duration"
+        name="delay"
         valueLabelFormat={(value) => secondsFormat.format(value)}
         min={0.0}
         max={3600}

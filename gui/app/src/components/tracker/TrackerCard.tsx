@@ -11,7 +11,7 @@ import { TrackerBattery } from './TrackerBattery';
 import { TrackerWifi } from './TrackerWifi';
 import { TrackerStatus } from './TrackerStatus';
 import classNames from 'classnames';
-import { useTracker } from '@/hooks/tracker';
+import { useTracker, velocityGlowStyle } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
@@ -34,7 +34,11 @@ function TrackerBig({
   return (
     <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border my-8 px-6 h-32">
       <div className="flex justify-center fill-background-10">
-        <BodyPartIcon bodyPart={tracker.info?.bodyPart} />
+        <BodyPartIcon
+          bodyPart={tracker.info?.bodyPart}
+          device={device}
+          trackerId={tracker.trackerId}
+        />
       </div>
       <div className="flex justify-center">
         <Typography bold truncate>
@@ -53,7 +57,7 @@ function TrackerBig({
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 runtime={device.hardwareStatus.batteryRuntimeEstimate}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                moreInfo={true}
+                moreInfo={config?.debug && config?.devSettings.moreInfo}
               />
             )}
             <div className="flex gap-2">
@@ -61,7 +65,7 @@ function TrackerBig({
                 device.hardwareStatus.ping != null) && (
                 <TrackerWifi
                   rssi={device.hardwareStatus.rssi}
-                  rssiShowNumeric={config?.debug}
+                  rssiShowNumeric={true}
                   ping={device.hardwareStatus.ping}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
                 />
@@ -83,12 +87,14 @@ function TrackerSmol({
   device?: DeviceDataT;
   warning?: TrackingChecklistStepT | boolean;
 }) {
+  const { config } = useConfig();
+
   const { useName } = useTracker(tracker);
 
   const trackerName = useName();
 
   return (
-    <div className="flex rounded-md py-3 px-4 w-full gap-4 h-[70px]">
+    <div className="flex rounded-md py-2 px-3 w-full gap-4 h-[70px]">
       <div className="flex flex-col justify-center items-center fill-background-10 relative">
         {warning && (
           <div className="absolute -right-2 -bottom-3 text-status-warning ">
@@ -104,7 +110,12 @@ function TrackerSmol({
             }
           )}
         >
-          <BodyPartIcon bodyPart={tracker.info?.bodyPart} width={40} />
+          <BodyPartIcon
+            bodyPart={tracker.info?.bodyPart}
+            width={38}
+            device={device}
+            trackerId={tracker.trackerId}
+          />
         </div>
       </div>
 
@@ -131,6 +142,7 @@ function TrackerSmol({
               device.hardwareStatus.ping != null) && (
               <TrackerWifi
                 rssi={device.hardwareStatus.rssi}
+                rssiShowNumeric={config?.debug && config?.devSettings.moreInfo}
                 ping={device.hardwareStatus.ping}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
@@ -178,15 +190,7 @@ export function TrackerCard({
           outlined && 'outline outline-2 outline-accent-background-40',
           bg
         )}
-        style={
-          shakeHighlight
-            ? {
-                boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
-                  velocity * 8
-                )}px rgb(var(--accent-background-30))`,
-              }
-            : {}
-        }
+        style={shakeHighlight ? velocityGlowStyle(velocity) : {}}
       >
         {smol && (
           <Tooltip

@@ -7,9 +7,37 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.context.ManagedContext
+import dev.slimevr.solarxr.datafeed.DataFeedInitBehaviour
 import dev.slimevr.solarxr.driver.DriverHandshakeBehaviour
 import dev.slimevr.solarxr.driver.DriverIncomingTrackersBehaviour
 import dev.slimevr.solarxr.driver.DriverOutgoingTrackersBehaviour
+import dev.slimevr.solarxr.rpc.AssignTrackerBehaviour
+import dev.slimevr.solarxr.rpc.BoneRoutingBehaviour
+import dev.slimevr.solarxr.rpc.BvhBehaviour
+import dev.slimevr.solarxr.rpc.DongleSettingsBehaviour
+import dev.slimevr.solarxr.rpc.DriverSettingsBehaviour
+import dev.slimevr.solarxr.rpc.FirmwareBehaviour
+import dev.slimevr.solarxr.rpc.HIDSettingsBehaviour
+import dev.slimevr.solarxr.rpc.HeightCalibrationBehaviour
+import dev.slimevr.solarxr.rpc.InstalledInfoBehaviour
+import dev.slimevr.solarxr.rpc.KeybindsBehaviour
+import dev.slimevr.solarxr.rpc.KnownTrackersBehaviour
+import dev.slimevr.solarxr.rpc.MagBehaviour
+import dev.slimevr.solarxr.rpc.ProvisioningBehaviour
+import dev.slimevr.solarxr.rpc.ResetsBehaviour
+import dev.slimevr.solarxr.rpc.SerialBehaviour
+import dev.slimevr.solarxr.rpc.ServerInfosBehaviour
+import dev.slimevr.solarxr.rpc.SessionCalibrationBehaviour
+import dev.slimevr.solarxr.rpc.SkeletonProportionsBehaviour
+import dev.slimevr.solarxr.rpc.SkeletonSettingsBehaviour
+import dev.slimevr.solarxr.rpc.StayAlignedBehaviour
+import dev.slimevr.solarxr.rpc.TapDetectionBehaviour
+import dev.slimevr.solarxr.rpc.TelemetryBehaviour
+import dev.slimevr.solarxr.rpc.TimeoutSettingsBehaviour
+import dev.slimevr.solarxr.rpc.TrackingChecklistBehaviour
+import dev.slimevr.solarxr.rpc.VmcBehaviour
+import dev.slimevr.solarxr.rpc.VrcBehaviour
+import dev.slimevr.solarxr.rpc.VrcOscBehaviour
 import dev.slimevr.tracker.TrackerActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -28,7 +56,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 data class SolarXRBridgeState(
-	val dataFeedConfigs: List<DataFeedConfig>,
+	val dataFeedConfigs: List<DataFeedConfig> = emptyList(),
 	val driverName: String? = null,
 	val boneMask: BoneMask? = null,
 )
@@ -85,8 +113,8 @@ class SolarXRBridge(
 	internal var datafeedTimers: List<Job> = emptyList()
 	fun dispose() = managedContext?.dispose()
 
-	internal val rpcReplies = PendingReplies<RpcMessage>()
-	internal val driverReplies = PendingReplies<DriverMessage>()
+	val rpcReplies = PendingReplies<RpcMessage>()
+	val driverReplies = PendingReplies<DriverMessage>()
 
 	@PublishedApi internal val rpcRequests = PendingRequests<RpcMessage>()
 
@@ -95,8 +123,14 @@ class SolarXRBridge(
 	fun txIdFor(message: RpcMessage): UInt? = rpcReplies.consume(message)
 	fun driverTxIdFor(message: DriverMessage): UInt? = driverReplies.consume(message)
 
-	inline fun <reified P : RpcMessage> onRpc(noinline action: suspend (P, UInt?) -> Unit): Subscription<RpcMessage, P> = rpcDispatcher.on<P> { msg -> action(msg, txIdFor(msg)) }
-	inline fun <reified P : DriverMessage> onDriverMessage(noinline action: suspend (P, UInt?) -> Unit): Subscription<DriverMessage, P> = driverDispatcher.on<P> { msg -> action(msg, driverTxIdFor(msg)) }
+	inline fun <reified P : RpcMessage> onRpc(noinline action: suspend (P, UInt?) -> Unit): Subscription<RpcMessage, P> {
+		rpcReplies.registerConsumer(P::class)
+		return rpcDispatcher.on<P> { msg -> action(msg, txIdFor(msg)) }
+	}
+	inline fun <reified P : DriverMessage> onDriverMessage(noinline action: suspend (P, UInt?) -> Unit): Subscription<DriverMessage, P> {
+		driverReplies.registerConsumer(P::class)
+		return driverDispatcher.on<P> { msg -> action(msg, driverTxIdFor(msg)) }
+	}
 
 	suspend fun sendRpc(message: RpcMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(rpcMsgs = listOf(RpcMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
 	suspend fun sendDriverMessage(message: DriverMessage, replyTo: UInt? = null, txId: UInt? = null) = outbound.emit(MessageBundle(driverMsgs = listOf(DriverMessageHeader(txId = txId ?: 0u, replyTo = replyTo ?: 0u, message = message))))
@@ -139,7 +173,13 @@ class SolarXRBridge(
 			add(SerialBehaviour(appContext.serialServer))
 			add(FirmwareBehaviour(appContext.server, appContext.firmwareManager))
 			appContext.vrcConfigManager?.let { vrc ->
-				add(VrcBehaviour(vrc, appContext.server, userHeight = { appContext.skeleton.context.state.value.skeletonHeight }))
+				add(
+					VrcBehaviour(
+						vrc,
+						appContext.server,
+						userHeight = { appContext.skeleton.context.state.value.skeletonHeight },
+					),
+				)
 			}
 			add(ResetsBehaviour(appContext.config.settings))
 			add(TapDetectionBehaviour(appContext.config.settings, appContext.tapDetectionManager))
@@ -177,7 +217,7 @@ class SolarXRBridge(
 			extraBehaviours: (AppContextProvider) -> List<SolarXRBridgeBehaviour> = { emptyList() },
 		): SolarXRBridge {
 			val managedContext = ManagedContext.create(
-				initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
+				initialState = SolarXRBridgeState(),
 				scope = scope,
 				reducer = ::reduce,
 				behaviours = buildBehaviours(appContext) + extraBehaviours(appContext),

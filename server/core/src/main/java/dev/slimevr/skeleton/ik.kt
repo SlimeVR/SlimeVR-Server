@@ -12,7 +12,7 @@ fun requireBone(bones: ComputedSkeleton, bodyPart: BodyPart) = requireNotNull(bo
 
 fun chainDistanceFromTarget(
 	bones: ComputedSkeleton,
-	chain: List<BodyPart>,
+	chain: IKChain,
 	target: Vector3,
 ): Float {
 	val chainTail = requireBone(bones, chain.last()).tailPosition
@@ -21,7 +21,7 @@ fun chainDistanceFromTarget(
 
 fun chainCanReach(
 	bones: ComputedSkeleton,
-	chain: List<BodyPart>,
+	chain: IKChain,
 	target: Vector3,
 ): Boolean {
 	val chainHead = requireBone(bones, chain.first()).headPosition
@@ -37,7 +37,7 @@ private val oppositeRotation = Quaternion.rotationAroundZAxis(FastMath.PI)
 fun fromChainToTarget(
 	bodyPart: BodyPart,
 	bones: ComputedSkeleton,
-	chain: List<BodyPart>,
+	chain: IKChain,
 	target: Vector3,
 ): Quaternion? {
 	val boneHead = requireBone(bones, bodyPart).headPosition
@@ -76,7 +76,7 @@ fun constrainOffset(
 
 fun rotateChain(
 	boneInputs: InputSkeleton,
-	chain: List<BodyPart>,
+	chain: IKChain,
 	rotation: Quaternion,
 ) {
 	for (bodyPart in chain) {
@@ -93,7 +93,7 @@ fun rotateChain(
 fun ccdIkIteration(
 	boneInputs: InputSkeleton,
 	bones: ComputedSkeleton,
-	chain: List<BodyPart>,
+	chain: IKChain,
 	target: Vector3,
 	constraints: BodyPartMap<Constraint>?,
 ): ComputedSkeleton {
@@ -117,14 +117,12 @@ fun ccdIkIteration(
 	// Mutate the input skeleton
 	rotateChain(boneInputs, chain, constrainedOffset)
 
-	// FIXME: This feels weird, we should probably consume the skeleton root position
-	//  independent of the bones
-	val skeletonRootPos = bones[BodyPart.HEAD]?.headPosition ?: Vector3.NULL
-	return buildBones(boneInputs, skeletonRootPos)
+	return buildBones(boneInputs)
 }
 
+typealias IKChain = List<BodyPart>
 data class IKChainGoal(
-	val chain: List<BodyPart>,
+	val chain: IKChain,
 	val target: Vector3,
 )
 

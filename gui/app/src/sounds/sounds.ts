@@ -112,7 +112,7 @@ export function restartAndPlay(audio: HTMLAudioElement | null, volume: number) {
 
 export function handleResetSounds(
   volume: number,
-  { progress, status, resetType }: ResetResponseT
+  { progress, status, resetType }: Omit<ResetResponseT, 'pack'>
 ) {
   if (!resetSounds) throw 'sounds not loaded';
   const sounds = resetSounds[resetType];

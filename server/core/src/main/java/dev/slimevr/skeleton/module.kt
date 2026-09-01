@@ -1,17 +1,22 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.Phase1ContextProvider
+import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.skeleton.processors.BoneActiveLinkProcessor
-import dev.slimevr.skeleton.processors.BoneDirectLinkProcessor
-import dev.slimevr.skeleton.processors.BonePredictionProcessor
-import dev.slimevr.skeleton.processors.BoneSmoothingProcessor
-import dev.slimevr.skeleton.processors.BoneYawFallbackProcessor
-import dev.slimevr.skeleton.processors.FingerImputeProcessor
-import dev.slimevr.skeleton.processors.HipYawRollAlignProcessor
-import dev.slimevr.skeleton.processors.SpineImputeProcessor
-import dev.slimevr.skeleton.processors.UpperLegsRollAlignProcessor
+import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
+import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
+import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
+import dev.slimevr.skeleton.inputprocessors.BoneActiveLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.BonePredictionInputProcessor
+import dev.slimevr.skeleton.inputprocessors.BoneSmoothingInputProcessor
+import dev.slimevr.skeleton.inputprocessors.BoneYawFallbackInputProcessor
+import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
+import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
+import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
+import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
+import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.processors.ToeDirectLinkProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -25,8 +30,9 @@ data class BoneInput(
 	val bodyPart: BodyPart,
 	val offset: Vector3,
 	val rawRotation: Quaternion,
-	val rawPosition: Vector3,
-	val isActive: Boolean,
+	val rawPosition: Vector3?,
+	val isRotationActive: Boolean,
+	val isPositionActive: Boolean,
 )
 
 data class BoneState(
@@ -69,7 +75,13 @@ fun ComputedSkeleton.resolveAverageRotationFor(bodyParts: Array<BodyPart>): Quat
 	} ?: Quaternion.IDENTITY
 }
 
-data class SkeletonState(val boneInputs: InputSkeleton, val skeletonHeight: Float, val paused: Boolean)
+data class SkeletonState(
+	val boneInputs: InputSkeleton,
+	val skeletonHeight: Float,
+	val floorLevel: Float,
+	val paused: Boolean,
+	val pausedBoneInputs: InputSkeleton?,
+)
 
 val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 	boneInputs = DEFAULT_PROPORTIONS.toBoneOffsets().mapValues { bodyPart, tailOffset ->
@@ -77,67 +89,70 @@ val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 			rawRotation = Quaternion.IDENTITY,
 			bodyPart = bodyPart,
 			offset = tailOffset,
-			rawPosition = Vector3.NULL,
-			isActive = false,
+			rawPosition = null,
+			isRotationActive = false,
+			isPositionActive = false,
 		)
 	},
 	skeletonHeight = DEFAULT_HEIGHT,
+	floorLevel = 0f,
 	paused = false,
+	pausedBoneInputs = null,
 )
 
-fun buildBone(bone: BoneInput, parentBone: BoneState?, originPosition: Vector3 = Vector3.NULL): BoneState {
-	val head = parentBone?.tailPosition ?: originPosition
+fun buildBone(bone: BoneInput, parentBone: BoneState?): BoneState {
+	// Raw position of the bone input is used for the head bone
+	val headPosition = parentBone?.tailPosition ?: bone.rawPosition ?: Vector3.NULL
 	return BoneState(
 		bodyPart = bone.bodyPart,
 		offset = bone.offset,
-		headPosition = head,
+		headPosition = headPosition,
 		rotation = bone.rawRotation,
-		tailPosition = head + bone.rawRotation.sandwich(bone.offset),
+		tailPosition = headPosition + bone.rawRotation.sandwich(bone.offset),
 		parentBone = parentBone,
 	)
 }
 
 fun buildBones(
-	state: InputSkeleton,
-	rootHead: Vector3 = Vector3.NULL,
+	boneInputs: InputSkeleton,
 	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
 ): ComputedSkeleton {
 	val result = bodyPartMap<BoneState>()
 	hierarchy.forEach { (parentPart, childPart) ->
-		val rawBone = state[childPart] ?: return@forEach
+		val rawBone = boneInputs[childPart] ?: return@forEach
 		val parentBone = parentPart?.let { result[it] }
-		result[childPart] = buildBone(rawBone, parentBone, rootHead)
+		result[childPart] = buildBone(rawBone, parentBone)
 	}
 	return result
 }
 
-fun buildBones(
-	state: SkeletonState,
-	rootHead: Vector3 = Vector3.NULL,
-	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
-): ComputedSkeleton = buildBones(state.boneInputs, rootHead, hierarchy)
-
 sealed interface SkeletonActions {
-	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion) : SkeletonActions
-	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3) : SkeletonActions
+	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion, val setActive: Boolean = true) : SkeletonActions
+	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3?, val setActive: Boolean = true) : SkeletonActions
 	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
+	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
+	data object ComputeFloorLevel : SkeletonActions
+	data object ResetHeadPosition : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
 typealias SkeletonBehaviour = Behaviour<Skeleton>
-interface SkeletonProcessor {
-	fun process(state: SkeletonState): SkeletonState
+interface SkeletonInputProcessor {
+	fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton
+}
+interface SkeletonFkProcessor {
+	fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float): InputSkeleton
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
-	val enabled: Boolean
-	fun process(fk: ComputedSkeleton, ikTargets: IKTargets): IKTargets
+	fun process(fk: ComputedSkeleton, ikTargets: IKTargets, floorLevel: Float): IKTargets
 }
 
 class Skeleton(
 	val context: SkeletonContext,
+	val settings: Settings,
 	val computed: MutableSharedFlow<ComputedSkeleton>,
 ) {
 	val currentComputed: ComputedSkeleton get() = computed.replayCache.first()
@@ -148,23 +163,35 @@ class Skeleton(
 		const val DEFAULT_HZ = 300
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, hz: Int = DEFAULT_HZ): Skeleton {
+			val settings = ctx.config.settings
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
+				LocalizerResetBehaviour(),
 // 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					hz = hz,
-					processors = listOf(
-						BoneYawFallbackProcessor(),
-						BoneActiveLinkProcessor(),
-						SpineImputeProcessor(ctx.config.settings),
-						HipYawRollAlignProcessor(ctx.config.settings),
-						UpperLegsRollAlignProcessor(ctx.config.settings),
-						BoneDirectLinkProcessor(),
-						FingerImputeProcessor(),
+					inputProcessors = listOf(
+						HeadPositionFallbackProcessor(settings),
+						BoneYawFallbackInputProcessor(),
+						BoneActiveLinkInputProcessor(),
+						SpineImputeInputProcessor(settings),
+						HipYawRollAlignInputProcessor(settings),
+						UpperLegsRollAlignInputProcessor(settings),
+						BoneDirectLinkInputProcessor(),
+						FingerImputeInputProcessor(),
 						ToeDirectLinkProcessor(),
-						BonePredictionProcessor(ctx.config.settings),
-						BoneSmoothingProcessor(ctx.config.settings),
+						BonePredictionInputProcessor(settings),
+						BoneSmoothingInputProcessor(settings),
+					),
+					fkProcessors = listOf(
+						LocalizerFkProcessor(settings),
+						FootPlantFkProcessor(settings),
+						ToeSnapFkProcessor(settings),
+					),
+					targetProcessors = listOf(
+// 						FloorClipTargetProcessor(settings),
+// 						SkatingCorrectionTargetProcessor(settings),
 					),
 				),
 			)
@@ -181,9 +208,9 @@ class Skeleton(
 				replay = 1,
 				onBufferOverflow = BufferOverflow.DROP_OLDEST,
 			)
-			computed.tryEmit(buildBones(context.state.value))
+			computed.tryEmit(buildBones(context.state.value.boneInputs))
 
-			return Skeleton(context, computed)
+			return Skeleton(context, settings, computed)
 		}
 	}
 }

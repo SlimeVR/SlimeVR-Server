@@ -36,7 +36,7 @@ import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.Skeleton
-import dev.slimevr.solarxr.ServerInfos
+import dev.slimevr.solarxr.rpc.ServerInfos
 import dev.slimevr.tapdetection.TapDetectionManager
 import dev.slimevr.trackingchecklist.TrackingChecklist
 import dev.slimevr.udp.UdpServer
@@ -168,7 +168,7 @@ class ForegroundService : Service() {
 			discoverServicesFlow = ::discoverServices,
 			serviceFactory = ::createNetService,
 		)
-		val resetsManager = ResetsManager.create(ctx = phase1, scope = scope)
+		val resetsManager = ResetsManager.create(ctx = phase1, skeleton = skeleton, scope = scope)
 		val tapDetectionManager = TapDetectionManager.create(ctx = phase1, resetsManager = resetsManager, scope = scope)
 		val keybindManager = KeybindManager.create(scope = scope)
 		val serverInfos = ServerInfos(::resolveAndroidLocalIpAddress)
