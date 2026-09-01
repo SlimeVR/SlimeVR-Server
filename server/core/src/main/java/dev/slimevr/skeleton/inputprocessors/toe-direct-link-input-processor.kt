@@ -5,6 +5,7 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.SkeletonState
 import dev.slimevr.skeleton.mutate
+import dev.slimevr.skeleton.mutateCopy
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -31,7 +32,7 @@ class ToeDirectLinkInputProcessor : SkeletonInputProcessor {
 	)
 
 	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
-		return inputSkeleton.mutate { updated ->
+		return inputSkeleton.mutateCopy{ updated ->
 			for ((bodyPart, source) in toesToSource) {
 				val bone = updated.getValue(bodyPart)
 				if (bone.isRotationActive) continue
