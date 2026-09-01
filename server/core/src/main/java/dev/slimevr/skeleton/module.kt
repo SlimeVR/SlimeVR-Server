@@ -114,10 +114,19 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?): BoneState {
 
 fun buildBones(
 	boneInputs: InputSkeleton,
-	hierarchy: List<Pair<BodyPart?, BodyPart>> = iterateBodyPartHierarchy(),
+	lastResult: BodyPartMap<BoneState> = bodyPartMap(),
 ): ComputedSkeleton {
-	val result = bodyPartMap<BoneState>()
-	hierarchy.forEach { (parentPart, childPart) ->
+	val highestBone = if (lastResult.isEmpty()) {
+		BodyPart.HEAD
+	} else {
+		// TODO this gets the first common parent and builds bones down from it
+		//  but it may be better to separate chains and iterate each one separately.
+		//  Example: Instead of building from HIP when passing LEFT_FOOT and RIGHT_UPPER_LEG,
+		//  build LEFT_FOOT and from RIGHT_UPPER_LEG down.
+		boneInputs.keys.findFirstCommonParent()
+	}
+	val result = BodyPartMap(lastResult)
+	iterateBodyPartHierarchy(highestBone, highestBone != BodyPart.HEAD).forEach { (parentPart, childPart) ->
 		val rawBone = boneInputs[childPart] ?: return@forEach
 		val parentBone = parentPart?.let { result[it] }
 		result[childPart] = buildBone(rawBone, parentBone)
