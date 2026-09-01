@@ -85,7 +85,13 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			}
 			delay(remainder.toLong())
 
+			// Reset trackers
 			executeTrackerResets(resetType, bodyParts, settings.context.state.value.data.resetsConfig)
+
+			if (resetType == ResetType.FULL) {
+				// Tell the skeleton to set the floor level and try resetting the head position (for mocap mode)
+				skeleton.context.dispatchAll(listOf(SkeletonActions.ResetHeadPosition, SkeletonActions.ComputeFloorLevel))
+			}
 
 			// Update state and config
 			context.dispatch(ResetsActions.EndReset(resetType, bodyParts, settings.context.state.value.data.resetsConfig.resetMountingFeet))
@@ -155,11 +161,6 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 					ResetType.POSE_MOUNTING -> TrackerActions.PoseMountingReset(referenceRotation, getYawOffset(it.context.state.value.bodyPart, config.armsResetMode))
 				},
 			)
-		}
-
-		if (resetType == ResetType.FULL) {
-			// Tell the skeleton to set the floor level
-			skeleton.context.dispatch(SkeletonActions.ComputeFloorLevel)
 		}
 	}
 

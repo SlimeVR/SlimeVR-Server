@@ -142,7 +142,7 @@ function TrackerSmol({
               device.hardwareStatus.ping != null) && (
               <TrackerWifi
                 rssi={device.hardwareStatus.rssi}
-                rssiShowNumeric={config?.debug}
+                rssiShowNumeric={config?.debug && config?.devSettings.moreInfo}
                 ping={device.hardwareStatus.ping}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />

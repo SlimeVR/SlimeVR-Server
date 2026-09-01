@@ -5,6 +5,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
+import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
@@ -12,6 +13,7 @@ import dev.slimevr.skeleton.inputprocessors.BonePredictionInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneSmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneYawFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
+import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
@@ -27,7 +29,7 @@ data class BoneInput(
 	val bodyPart: BodyPart,
 	val offset: Vector3,
 	val rawRotation: Quaternion,
-	val rawPosition: Vector3,
+	val rawPosition: Vector3?,
 	val isRotationActive: Boolean,
 	val isPositionActive: Boolean,
 )
@@ -86,7 +88,7 @@ val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 			rawRotation = Quaternion.IDENTITY,
 			bodyPart = bodyPart,
 			offset = tailOffset,
-			rawPosition = Vector3.NULL,
+			rawPosition = null,
 			isRotationActive = false,
 			isPositionActive = false,
 		)
@@ -99,7 +101,7 @@ val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?): BoneState {
 	// Raw position of the bone input is used for the head bone
-	val headPosition = parentBone?.tailPosition ?: bone.rawPosition
+	val headPosition = parentBone?.tailPosition ?: bone.rawPosition ?: Vector3.NULL
 	return BoneState(
 		bodyPart = bone.bodyPart,
 		offset = bone.offset,
@@ -125,12 +127,13 @@ fun buildBones(
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion, val setActive: Boolean = true) : SkeletonActions
-	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3, val setActive: Boolean = true) : SkeletonActions
+	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3?, val setActive: Boolean = true) : SkeletonActions
 	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
 	data object ComputeFloorLevel : SkeletonActions
+	data object ResetHeadPosition : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
@@ -163,11 +166,12 @@ class Skeleton(
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
+				LocalizerResetBehaviour(),
 // 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					inputProcessors = listOf(
-// 						HeadStandInputProcessor(settings), TODO this breaks gui preview
+						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
 						BoneActiveLinkInputProcessor(),
 						SpineImputeInputProcessor(settings),
@@ -179,7 +183,7 @@ class Skeleton(
 						BoneSmoothingInputProcessor(settings),
 					),
 					fkProcessors = listOf(
-// 						LocalizerFkProcessor(settings), TODO
+						LocalizerFkProcessor(settings),
 						FootPlantFkProcessor(settings),
 						ToeSnapFkProcessor(settings),
 					),

@@ -4,8 +4,6 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.mutate
 import solarxr_protocol.datatypes.BodyPart
-import kotlin.collections.copy
-import kotlin.collections.get
 
 /**
  * Handles setting the rotation of an inactive bone with the first active bone in its sources, or keeps

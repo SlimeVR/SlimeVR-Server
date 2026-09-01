@@ -46,6 +46,17 @@ class HeightLogBehaviour : SkeletonBehaviour {
 	}
 }
 
+/**
+ * Handles resetting the head position whenever mocap mode gets disabled
+ */
+class LocalizerResetBehaviour : SkeletonBehaviour {
+	override fun observe(receiver: Skeleton) {
+		receiver.settings.context.state.distinctUntilChangedBy { it.data.skeletonConfig.toggles.mocapMode }.onEach {
+			if (!it.data.skeletonConfig.toggles.mocapMode) receiver.context.dispatch(SkeletonActions.ResetHeadPosition)
+		}.launchIn(receiver.context.scope)
+	}
+}
+
 class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
 		receiver.context.scope.launch {
@@ -124,7 +135,8 @@ class ComputedSkeletonBehaviour(
 						var fk = buildBones(boneInputs)
 
 						// Run FK processors
-						fkProcessors.fold(boneInputs) { inputs, processor ->
+						fkProcessors.fold((boneInputs)) { inputs, processor ->
+							// Process new inputs from
 							val newInputs = processor.process(inputs, fk, targetState.floorLevel)
 							if (newInputs != inputs) {
 								// Inputs changed; re-run FK
@@ -132,9 +144,7 @@ class ComputedSkeletonBehaviour(
 								fk = buildBones(newInputs)
 
 								// For bones with inactive position, update their input's position in state (needed for Localizer)
-								// TODO figure out if we want nullable position. should this set active? activePosition? idk raahhhh - Erimel
-								val changedPositionInputs = newInputs.filter { (part, boneInput) -> boneInput.rawPosition != inputs.getValue(part).rawPosition }
-								for (input in changedPositionInputs) {
+								for (input in newInputs.filter { (part, boneInput) -> boneInput.rawPosition != inputs.getValue(part).rawPosition }) {
 									receiver.context.dispatch(SkeletonActions.SetBonePosition(input.key, input.value.rawPosition, false))
 								}
 							}

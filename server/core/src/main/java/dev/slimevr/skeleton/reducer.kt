@@ -1,7 +1,6 @@
 package dev.slimevr.skeleton
 
 import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
 fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when (action) {
@@ -17,7 +16,7 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 
 	is SkeletonActions.DisableBone -> {
 		val bone = state.boneInputs[action.bodyPart] ?: return state
-		state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = Quaternion.IDENTITY, rawPosition = Vector3.NULL, isRotationActive = false, isPositionActive = false) })
+		state.copy(boneInputs = state.boneInputs.mutate { it[action.bodyPart] = bone.copy(rawRotation = Quaternion.IDENTITY, rawPosition = null, isRotationActive = false, isPositionActive = false) })
 	}
 
 	is SkeletonActions.SetProportions -> {
@@ -36,5 +35,12 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 		val skeletonHeight = state.skeletonHeight
 		val headHeight = state.boneInputs[BodyPart.HEAD]?.rawPosition?.y ?: skeletonHeight
 		state.copy(floorLevel = headHeight - skeletonHeight)
+	}
+
+	is SkeletonActions.ResetHeadPosition -> {
+		val boneInputs = state.boneInputs
+		val headBone = boneInputs[BodyPart.HEAD] ?: return state
+		if (headBone.isPositionActive) return state
+		state.copy(boneInputs = boneInputs.mutate { it[BodyPart.HEAD] = headBone.copy(rawPosition = null) })
 	}
 }
