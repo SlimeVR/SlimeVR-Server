@@ -1,12 +1,7 @@
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { CSSProperties, ReactNode, useMemo } from 'react';
-import {
-  BodyPart,
-  DeviceDataT,
-  DongleDataT,
-  TrackerDataT,
-} from 'solarxr-protocol';
+import { BodyPart, DeviceDataT, TrackerDataT } from 'solarxr-protocol';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
@@ -31,23 +26,19 @@ import {
   TrackerConnectionGroup,
 } from '@/store/app-store';
 import { ShowAllPartsToggle } from '@/components/onboarding/BodyAssignment';
+import { useAssignment } from '@/hooks/tracker-assignment';
 
-export function TrackerAssignmentList({
-  trackers,
-  dongles,
-  assignedCount,
-  assignedPartsCount,
-  expectedTrackersCount,
-  onDropTracker,
-}: {
-  trackers: FlatDeviceTracker[];
-  dongles: DongleDataT[];
-  assignedCount: number;
-  assignedPartsCount: number;
-  expectedTrackersCount: number;
-  onDropTracker: (trackerId: number, bodyPart: BodyPart) => void;
-}) {
+export function TrackerAssignmentList() {
   const { state } = useOnboarding();
+  const {
+    flatTrackers: trackers,
+    dongles,
+    assignedTrackers,
+    assignedPartsCount,
+    expectedTrackersCount,
+    handleDropTracker,
+  } = useAssignment();
+  const assignedCount = assignedTrackers.length;
   const groups = useMemo(
     () => groupTrackersByConnection(trackers, dongles),
     [trackers, dongles]
@@ -117,7 +108,7 @@ export function TrackerAssignmentList({
                 device={td.device}
                 variant={variant}
                 onDrop={(bodyPart) =>
-                  onDropTracker(td.tracker.trackerId, bodyPart)
+                  handleDropTracker(td.tracker.trackerId, bodyPart)
                 }
               />
             )}
@@ -289,13 +280,13 @@ export function SimpleTrackerRow({
   tracker,
   device,
   variant,
-  onPress,
+  onClick,
   selected = false,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
   variant: 'primary' | 'secondary' | 'tertiary';
-  onPress?: () => void;
+  onClick?: () => void;
   selected?: boolean;
 }) {
   const { useVelocity } = useTracker(tracker);
@@ -337,12 +328,12 @@ export function SimpleTrackerRow({
     </div>
   );
 
-  if (!onPress) return row;
+  if (!onClick) return row;
 
   return (
     <button
       type="button"
-      onClick={onPress}
+      onClick={onClick}
       className={classNames(
         'w-full text-left rounded-lg transition-shadow',
         selected && 'ring-2 ring-accent-background-30'

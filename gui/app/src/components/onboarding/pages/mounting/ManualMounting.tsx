@@ -1,18 +1,17 @@
 import { ReactNode, useCallback, useState } from 'react';
-import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
+import { BodyPart } from 'solarxr-protocol';
 import { useOnboarding } from '@/hooks/onboarding';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
   MountingOrientationDegreesToQuatT,
   QuaternionFromQuatT,
 } from '@/maths/quaternion';
+import { useAssignTracker } from '@/hooks/tracker-assignment';
 import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
 import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { Localized } from '@fluent/react';
-import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
 import { defaultConfig, useConfig } from '@/hooks/config';
 import { trackerByBodyPartAtom } from '@/store/app-store';
@@ -20,9 +19,8 @@ import { useAtomValue } from 'jotai';
 import * as Sentry from '@sentry/react';
 
 export function ManualMountingPage() {
-  const { isMobile } = useBreakpoint('mobile');
   const { applyProgress, state } = useOnboarding();
-  const { sendRPCPacket } = useWebsocketAPI();
+  const assignTracker = useAssignTracker();
   const { config } = useConfig();
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
@@ -34,19 +32,16 @@ export function ManualMountingPage() {
   const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
     const td = trackerByPart[selectedRole];
     if (td) {
-      const assignreq = new AssignTrackerRequestT();
-
-      assignreq.bodyPosition = td.tracker.info?.bodyPart || BodyPart.NONE;
-      assignreq.mountingOrientation = MountingOrientationDegreesToQuatT(
+      const bodyPart = td.tracker.info?.bodyPart || BodyPart.NONE;
+      const mountingOrientation = MountingOrientationDegreesToQuatT(
         mountingOrientationDegrees
       );
-      assignreq.trackerId = td.tracker.trackerId;
 
-      sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+      assignTracker(td.tracker.trackerId, bodyPart, mountingOrientation);
       Sentry.metrics.count('manual_mounting_set', 1, {
         attributes: {
-          part: BodyPart[assignreq.bodyPosition],
-          direction: assignreq.mountingOrientation,
+          part: BodyPart[bodyPart],
+          direction: mountingOrientation,
         },
       });
     }
@@ -104,7 +99,6 @@ export function ManualMountingPage() {
           </div>
           <div className="flex flex-row justify-center">
             <BodyAssignment
-              width={isMobile ? 160 : undefined}
               mirror={config?.mirrorView ?? defaultConfig.mirrorView}
               onlyAssigned={true}
               onRoleSelected={setSelectRole}
@@ -121,8 +115,7 @@ export function ManualMountingPageStayAligned({
 }: {
   children: ReactNode;
 }) {
-  const { isMobile } = useBreakpoint('mobile');
-  const { sendRPCPacket } = useWebsocketAPI();
+  const assignTracker = useAssignTracker();
   const { config } = useConfig();
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
@@ -132,19 +125,16 @@ export function ManualMountingPageStayAligned({
   const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
     const td = trackerByPart[selectedRole];
     if (td) {
-      const assignreq = new AssignTrackerRequestT();
-
-      assignreq.bodyPosition = td.tracker.info?.bodyPart || BodyPart.NONE;
-      assignreq.mountingOrientation = MountingOrientationDegreesToQuatT(
+      const bodyPart = td.tracker.info?.bodyPart || BodyPart.NONE;
+      const mountingOrientation = MountingOrientationDegreesToQuatT(
         mountingOrientationDegrees
       );
-      assignreq.trackerId = td.tracker.trackerId;
 
-      sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
+      assignTracker(td.tracker.trackerId, bodyPart, mountingOrientation);
       Sentry.metrics.count('manual_mounting_set', 1, {
         attributes: {
-          part: BodyPart[assignreq.bodyPosition],
-          direction: assignreq.mountingOrientation,
+          part: BodyPart[bodyPart],
+          direction: mountingOrientation,
         },
       });
     }
@@ -187,7 +177,6 @@ export function ManualMountingPageStayAligned({
           </div>
           <div className="flex flex-row justify-center">
             <BodyAssignment
-              width={isMobile ? 160 : undefined}
               mirror={config?.mirrorView ?? defaultConfig.mirrorView}
               onlyAssigned={true}
               onRoleSelected={setSelectRole}

@@ -1,37 +1,31 @@
 import classNames from 'classnames';
-import { useAtomValue } from 'jotai';
-import { selectAtom } from 'jotai/utils';
-import { useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { BodyPart } from 'solarxr-protocol';
 import { BaseModal } from '@/components/commons/BaseModal';
-import {
-  BodySlotStyle,
-  BodySlotStyler,
-} from '@/components/commons/BodyInteractions';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { BodyPartCardRenderer } from '@/components/onboarding/BodyAssignment';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useOnboarding } from '@/hooks/onboarding';
-import { bodyPartDropProps, trackerDrag } from '@/hooks/tracker-drag';
-import { BodyAssignmentPanel, BodyPartCard } from './BodyAssignmentPanel';
-import { MobileTrackerAssign } from './MobileTrackerAssign';
-import { TrackerAssignmentList } from './TrackerAssignmentList';
+import { trackerDrag } from '@/hooks/tracker-drag';
 import {
-  TrackerAssignment,
+  AssignmentContext,
+  useAssignment,
   useTrackerAssignment,
 } from '@/hooks/tracker-assignment';
+import { BodyAssignmentPanel } from './BodyAssignmentPanel';
+import { MobileTrackerAssign } from './MobileTrackerAssign';
+import { TrackerAssignmentList } from './TrackerAssignmentList';
 
 export function TrackersAssignPage() {
   const { isMobileAssign } = useBreakpoint('mobileAssign');
   const { applyProgress } = useOnboarding();
-  const assignment = useTrackerAssignment();
+  // The narrow layout has no room to drag, so it picks the two halves in turn
+  const assignment = useTrackerAssignment(isMobileAssign ? 'tap' : 'drag');
   applyProgress(0.5);
 
   return (
-    <>
+    <AssignmentContext.Provider value={assignment}>
       <NeckWarningModal
         isOpen={assignment.shouldShowChokerWarn}
         overlayClassName={classNames(
@@ -40,90 +34,31 @@ export function TrackersAssignPage() {
         onClose={() => assignment.closeChokerWarning(true)}
         accept={() => assignment.closeChokerWarning(false)}
       />
-      {isMobileAssign ? (
-        <MobileTrackerAssign assignment={assignment} />
-      ) : (
-        <DesktopTrackerAssign assignment={assignment} />
-      )}
-    </>
+      {isMobileAssign ? <MobileTrackerAssign /> : <DesktopTrackerAssign />}
+    </AssignmentContext.Provider>
   );
 }
 
-const hoveredBodyPartAtom = selectAtom(
-  trackerDrag.stateAtom,
-  (s) => s?.target ?? null
-);
-
-function DesktopTrackerAssign({
-  assignment,
-}: {
-  assignment: TrackerAssignment;
-}) {
-  const hoveredBodyPart = useAtomValue(hoveredBodyPartAtom);
-
-  const slotStyle: BodySlotStyler = useCallback(
-    (part: BodyPart): BodySlotStyle => ({
-      props: bodyPartDropProps(part),
-      connected: hoveredBodyPart === part,
-      className:
-        hoveredBodyPart === part
-          ? 'scale-150 ring-3 ring-accent-background-30'
-          : undefined,
-    }),
-    [hoveredBodyPart]
-  );
-
-  const renderCard: BodyPartCardRenderer = useCallback(
-    ({ role, direction, td, roleError }) => (
-      <BodyPartCard
-        key={role}
-        mode="drag"
-        role={role}
-        direction={direction}
-        td={td}
-        roleError={roleError}
-        armed={assignment.armedPart === role}
-        onSlotClick={assignment.armForTap}
-        onUnassign={assignment.unassignPart}
-        onDropTracker={assignment.handleDropTracker}
-      />
-    ),
-    [assignment.armedPart]
-  );
+function DesktopTrackerAssign() {
+  const { unassignAll } = useAssignment();
 
   return (
     <>
       <DragGhostLayer />
-      <TapAssignModal
-        role={assignment.armedPart}
-        onClose={() => assignment.setArmedPart(BodyPart.NONE)}
-      />
+      <TapAssignModal />
 
       <div className="w-full h-full flex flex-row overflow-hidden min-h-0">
-        <TrackerAssignmentList
-          trackers={assignment.flatTrackers}
-          dongles={assignment.dongles}
-          assignedCount={assignment.assignedTrackers.length}
-          assignedPartsCount={assignment.assignedPartsCount}
-          expectedTrackersCount={assignment.expectedTrackersCount}
-          onDropTracker={assignment.handleDropTracker}
-        />
+        <TrackerAssignmentList />
 
         <div className="flex-1 flex flex-col gap-4 pt-4 min-h-0 overflow-hidden">
           <BodyAssignmentPanel
-            dotSize={15}
             headerAction={
               <Button
                 variant="secondary"
-                onClick={assignment.unassignAll}
+                onClick={unassignAll}
                 id="onboarding-assign_trackers-unassign_all"
               />
             }
-            highlightedRoles={assignment.firstError?.affectedRoles || []}
-            rolesWithErrors={assignment.rolesWithErrors}
-            onRoleSelected={assignment.onDotSelected}
-            renderCard={renderCard}
-            slotStyle={slotStyle}
           />
         </div>
       </div>
@@ -148,21 +83,16 @@ function DragGhostLayer() {
   );
 }
 
-function TapAssignModal({
-  role,
-  onClose,
-}: {
-  role: BodyPart;
-  onClose: () => void;
-}) {
-  const isOpen = role !== BodyPart.NONE;
+function TapAssignModal() {
+  const { armedPart, clearPending } = useAssignment();
+  const isOpen = armedPart !== BodyPart.NONE;
 
   return (
     <BaseModal
       isOpen={isOpen}
       appendClasses="max-w-md w-full"
       closeable
-      onRequestClose={onClose}
+      onRequestClose={clearPending}
     >
       <div className="flex flex-col gap-4 items-center text-center">
         <Typography
@@ -174,13 +104,13 @@ function TapAssignModal({
             bold
             variant="section-title"
             color="text-accent-background-10"
-            id={'body_part-' + BodyPart[role]}
+            id={'body_part-' + BodyPart[armedPart]}
           />
         )}
         <Typography id="onboarding-assign_trackers-tap_modal-description" />
         <Button
           variant="secondary"
-          onClick={onClose}
+          onClick={clearPending}
           id="onboarding-assign_trackers-tap_modal-cancel"
         />
       </div>

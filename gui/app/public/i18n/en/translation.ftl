@@ -1115,11 +1115,20 @@ onboarding-assign_trackers-mobile-choose_tracker-current = Currently { $tracker 
 onboarding-assign_trackers-mobile-choose_spot = Choose a spot for { $tracker }
 onboarding-assign_trackers-mobile-choose_spot-hint = Press a spot on the body above
 onboarding-assign_trackers-mobile-unassign = Unassign { $part }
-tracker_assignment-tab-body = Body
-tracker_assignment-tab-fingers = Fingers
-tracker_assignment-tab-toes = Toes
-tracker_assignment-side-right = Right
-tracker_assignment-side-left = Left
+onboarding-assign_trackers-tab-body = Body
+onboarding-assign_trackers-tab-fingers = Fingers
+onboarding-assign_trackers-tab-toes = Toes
+onboarding-assign_trackers-side-right = Right
+onboarding-assign_trackers-side-left = Left
+onboarding-assign_trackers-finger-thumb = Thumb
+onboarding-assign_trackers-finger-index = Index finger
+onboarding-assign_trackers-finger-middle = Middle finger
+onboarding-assign_trackers-finger-ring = Ring finger
+onboarding-assign_trackers-finger-little = Pinkie finger
+onboarding-assign_trackers-joint-distal = Distal
+onboarding-assign_trackers-joint-intermediate = Medial
+onboarding-assign_trackers-joint-proximal = Proximal
+onboarding-assign_trackers-joint-metacarpal = Metacarpal
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
