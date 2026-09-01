@@ -175,8 +175,8 @@ export const mapPart: Record<
   [BodyPart.LEFT_LITTLE_TOE]: renderFootLeft,
   [BodyPart.RIGHT_BIG_TOE]: renderFootRight,
   [BodyPart.RIGHT_INDEX_TOE]: renderFootRight,
-  [BodyPart.RIGHT_MIDDLE_TOE]: renderFootLeft,
-  [BodyPart.RIGHT_RING_TOE]: renderFootLeft,
+  [BodyPart.RIGHT_MIDDLE_TOE]: renderFootRight,
+  [BodyPart.RIGHT_RING_TOE]: renderFootRight,
   [BodyPart.RIGHT_LITTLE_TOE]: renderFootRight,
 };
 export function renderFootLeft({

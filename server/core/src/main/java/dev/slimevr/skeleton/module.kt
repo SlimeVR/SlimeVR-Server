@@ -4,9 +4,6 @@ import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
-import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
-import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
-import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BonePredictionInputProcessor
@@ -16,10 +13,8 @@ import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
+import dev.slimevr.skeleton.inputprocessors.ToeDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
-import dev.slimevr.skeleton.processors.ToeDirectLinkInputProcessor
-import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
-import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -191,9 +186,9 @@ class Skeleton(
 						BoneSmoothingInputProcessor(settings),
 					),
 					fkProcessors = listOf(
-						LocalizerFkProcessor(settings),
-						FootPlantFkProcessor(settings),
-						ToeSnapFkProcessor(settings),
+// 						LocalizerFkProcessor(settings),
+// 						FootPlantFkProcessor(settings),
+// 						ToeSnapFkProcessor(settings),
 					),
 					targetProcessors = listOf(
 // 						FloorClipTargetProcessor(settings),

@@ -26,7 +26,6 @@ internal fun buildOutgoingBundle(
 		// Send the origin (0, 0, 0) as root
 		add(OscContent.Message(transformMessage("/VMC/Ext/Root/Pos", "root", Vector3.NULL, Quaternion.IDENTITY)))
 
-		// TODO UpperChest + shoulders affecting arms local rot
 		for ((targetBodyPart, unityNames) in BODY_PART_TO_UNITY_BONE) {
 			if (targetBodyPart !in routedBones) continue
 
