@@ -30,15 +30,13 @@ class ToeDirectLinkInputProcessor : SkeletonInputProcessor {
 		BodyPart.RIGHT_LITTLE_TOE to BodyPart.RIGHT_RING_TOE,
 	)
 
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
-		return inputSkeleton.mutateCopy{ updated ->
-			for ((bodyPart, source) in toesToSource) {
-				val bone = updated.getValue(bodyPart)
-				if (bone.isRotationActive) continue
-				val sourceBone = updated[source]
-				updated[bodyPart] =
-					bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
-			}
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutateCopy { updated ->
+		for ((bodyPart, source) in toesToSource) {
+			val bone = updated.getValue(bodyPart)
+			if (bone.isRotationActive) continue
+			val sourceBone = updated[source]
+			updated[bodyPart] =
+				bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
 		}
 	}
 }

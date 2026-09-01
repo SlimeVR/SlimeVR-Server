@@ -5,6 +5,8 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import java.util.EnumMap
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 fun requireBone(bones: ComputedSkeleton, bodyPart: BodyPart) = requireNotNull(bones[bodyPart]) {
 	"The computed skeleton is missing \"${bodyPart}\" from the IK chain."
@@ -115,9 +117,12 @@ fun ccdIkIteration(
 	} ?: offset
 
 	// Mutate the input skeleton
+	val lastBoneInputs = BodyPartMap(boneInputs)
 	rotateChain(boneInputs, chain, constrainedOffset)
 
-	return buildBones(boneInputs, bones)
+	// Only build bones for inputs that were changed
+	val changedInputs = BodyPartMap(boneInputs.filter { (part, boneInput) -> boneInput != lastBoneInputs.getValue(part) })
+	return buildBones(changedInputs, bones)
 }
 
 typealias IKChain = List<BodyPart>

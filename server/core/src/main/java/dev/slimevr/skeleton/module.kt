@@ -18,6 +18,8 @@ import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.processors.ToeDirectLinkInputProcessor
+import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
+import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -113,24 +115,19 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?): BoneState {
 	)
 }
 
-fun buildBones(
-	boneInputs: InputSkeleton,
-	lastResult: BodyPartMap<BoneState> = bodyPartMap(),
-): ComputedSkeleton {
-	val highestBone = if (lastResult.isEmpty() || BodyPart.HEAD in boneInputs.keys) {
-		BodyPart.HEAD
-	} else {
-		// TODO this gets the first common parent and builds bones down from it
-		//  but it may be better to separate chains and iterate each one separately.
-		//  Example: Instead of building from HIP when passing LEFT_FOOT and RIGHT_UPPER_LEG,
-		//  build LEFT_FOOT and from RIGHT_UPPER_LEG down.
-		boneInputs.keys.findFirstCommonParent()
-	}
+/**
+ * Runs FK from boneInputs.
+ *
+ * If boneInputs doesn't contain all bones, pass lastResult to fill in the gaps that won't be re-computed.
+ */
+fun buildBones(boneInputs: InputSkeleton, lastResult: BodyPartMap<BoneState> = bodyPartMap()): ComputedSkeleton {
 	val result = BodyPartMap(lastResult)
-	iterateBodyPartHierarchy(highestBone, highestBone != BodyPart.HEAD).forEach { (parentPart, childPart) ->
-		val rawBone = boneInputs[childPart] ?: return@forEach
-		val parentBone = parentPart?.let { result[it] }
-		result[childPart] = buildBone(rawBone, parentBone)
+	for (bodyPart in highestBodyParts(boneInputs.keys)) {
+		iterateBodyPartHierarchy(bodyPart, bodyPart != BodyPart.HEAD).forEach { (parentPart, childPart) ->
+			val rawBone = boneInputs[childPart] ?: return@forEach
+			val parentBone = parentPart?.let { result[it] }
+			result[childPart] = buildBone(rawBone, parentBone)
+		}
 	}
 	return result
 }

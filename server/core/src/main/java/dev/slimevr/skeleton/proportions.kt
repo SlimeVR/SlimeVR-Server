@@ -216,5 +216,5 @@ private fun getToeOffsets(footLength: Float) = (
 	iterateBodyPartHierarchy(BodyPart.LEFT_FOOT, true) +
 		iterateBodyPartHierarchy(BodyPart.RIGHT_FOOT, true)
 	).map { it.second }.associateWith {
-		Vector3(0f, 0f, -footLength * 0.2f)
-	}
+	Vector3(0f, 0f, -footLength * 0.2f)
+}
