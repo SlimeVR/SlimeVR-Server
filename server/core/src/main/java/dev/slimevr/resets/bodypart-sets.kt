@@ -8,10 +8,27 @@ object ResetBodyParts {
 		BodyPart.RIGHT_UPPER_LEG,
 	)
 
+	val LEFT_TOES = setOf(
+		BodyPart.LEFT_BIG_TOE,
+		BodyPart.LEFT_INDEX_TOE,
+		BodyPart.LEFT_MIDDLE_TOE,
+		BodyPart.LEFT_RING_TOE,
+		BodyPart.LEFT_LITTLE_TOE,
+	)
+	val RIGHT_TOES = setOf(
+		BodyPart.RIGHT_BIG_TOE,
+		BodyPart.RIGHT_INDEX_TOE,
+		BodyPart.RIGHT_MIDDLE_TOE,
+		BodyPart.RIGHT_RING_TOE,
+		BodyPart.RIGHT_LITTLE_TOE,
+	)
+
 	val FEET = setOf(
 		BodyPart.LEFT_FOOT,
 		BodyPart.RIGHT_FOOT,
-	)
+	) +
+		LEFT_TOES +
+		RIGHT_TOES
 
 	val LEFT_FINGERS = setOf(
 		BodyPart.LEFT_THUMB_METACARPAL,

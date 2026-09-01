@@ -1,11 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
   AssignTrackerRequestT,
   BodyPart,

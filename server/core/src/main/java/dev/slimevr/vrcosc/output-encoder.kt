@@ -30,7 +30,7 @@ internal fun buildOutgoingBundle(
 	bones: ComputedSkeleton,
 	routedBones: Set<BodyPart>,
 ): OscBundle? {
-	val messages = buildList {
+	val messages = buildList<OscContent> {
 		for ((bodyPart, trackerId) in trackerIdsByBodyPart) {
 			if (bodyPart !in routedBones) continue
 
@@ -54,6 +54,8 @@ internal fun buildOutgoingBundle(
 				),
 			)
 		}
+		
+		addAll(buildToeMessages(bones))
 	}
 
 	return messages.takeIf { it.isNotEmpty() }?.let { OscBundle(1L, it) }

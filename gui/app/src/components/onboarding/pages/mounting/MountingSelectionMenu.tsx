@@ -11,6 +11,10 @@ import { BodyPart } from 'solarxr-protocol';
 import { PawIcon } from '@/components/commons/icon/PawIcon';
 import { useLocaleConfig } from '@/i18n/config';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
+import {
+  renderFootLeft,
+  renderFootRight,
+} from '@/components/commons/BodyPartIcon';
 
 // All body parts that are right or left, are by default left!
 export const mapPart: Record<
@@ -148,6 +152,16 @@ export const mapPart: Record<
     <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_BIG_TOE]: renderFootLeft,
+  [BodyPart.LEFT_INDEX_TOE]: renderFootLeft,
+  [BodyPart.LEFT_MIDDLE_TOE]: renderFootLeft,
+  [BodyPart.LEFT_RING_TOE]: renderFootLeft,
+  [BodyPart.LEFT_LITTLE_TOE]: renderFootLeft,
+  [BodyPart.RIGHT_BIG_TOE]: renderFootRight,
+  [BodyPart.RIGHT_INDEX_TOE]: renderFootRight,
+  [BodyPart.RIGHT_MIDDLE_TOE]: renderFootLeft,
+  [BodyPart.RIGHT_RING_TOE]: renderFootLeft,
+  [BodyPart.RIGHT_LITTLE_TOE]: renderFootRight,
 };
 
 export function MountingBodyPartIcon({
@@ -158,7 +172,9 @@ export function MountingBodyPartIcon({
   width?: number;
 }) {
   const { currentLocales } = useLocaleConfig();
-  return mapPart[bodyPart]({ width, currentLocales });
+  return (
+    mapPart[bodyPart]?.({ width, currentLocales }) || <FootIcon width={width} />
+  );
 }
 
 function PieSliceOfFeet({

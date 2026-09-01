@@ -118,6 +118,8 @@ fun Map<SkeletonBone, Float>.toBoneOffsets(): BodyPartMap<Vector3> {
 	}
 	// Fingers
 	this[SkeletonBone.HAND_Y]?.let { offsets.putAll(getFingerOffsets(it)) }
+	// Toes
+	this[SkeletonBone.FOOT_LENGTH]?.let { offsets.putAll(getToeOffsets(it)) }
 	return offsets
 }
 
@@ -206,3 +208,13 @@ private fun getFingerOffsets(handLength: Float) = (
 private const val PROXIMAL_RATIO = 0.5f
 private const val INTERMEDIATE_RATIO = 0.283f
 private const val DISTAL_RATIO = 0.217f
+
+/**
+ * Returns the offsets for the toe bones scaled from the handLength.
+ */
+private fun getToeOffsets(footLength: Float) = (
+	iterateBodyPartHierarchy(BodyPart.LEFT_FOOT, true) +
+		iterateBodyPartHierarchy(BodyPart.RIGHT_FOOT, true)
+	).map { it.second }.associateWith {
+		Vector3(0f, 0f, -footLength * 0.2f)
+	}

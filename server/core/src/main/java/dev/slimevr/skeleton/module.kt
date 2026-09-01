@@ -17,6 +17,7 @@ import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
+import dev.slimevr.skeleton.processors.ToeDirectLinkInputProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -188,6 +189,7 @@ class Skeleton(
 						UpperLegsRollAlignInputProcessor(settings),
 						BoneDirectLinkInputProcessor(),
 						FingerImputeInputProcessor(),
+						ToeDirectLinkInputProcessor(),
 						BonePredictionInputProcessor(settings),
 						BoneSmoothingInputProcessor(settings),
 					),
