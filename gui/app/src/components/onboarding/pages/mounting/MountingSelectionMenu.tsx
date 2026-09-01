@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import ReactModal from 'react-modal';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
@@ -8,161 +7,22 @@ import { rotationToQuatMap, similarQuaternions } from '@/maths/quaternion';
 import { Quaternion } from 'three';
 import { SlimeUpIcon } from '@/components/commons/icon/SlimeUpIcon';
 import { BodyPart } from 'solarxr-protocol';
-import { PawIcon } from '@/components/commons/icon/PawIcon';
 import { useLocaleConfig } from '@/i18n/config';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
 import {
   renderFootLeft,
   renderFootRight,
 } from '@/components/commons/BodyPartIcon';
+import { FINGER_BODY_PARTS, TOE_BODY_PARTS } from '@/hooks/body-parts';
+import ReactModal from 'react-modal';
 
-// All body parts that are right or left, are by default left!
-export const mapPart: Record<
-  BodyPart,
-  ({
-    width,
-    currentLocales,
-  }: {
-    width?: number;
-    currentLocales: string[];
-  }) => JSX.Element
-> = {
-  [BodyPart.UPPER_CHEST]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.CHEST]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.HEAD]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.HIP]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.LEFT_HIP]: ({ width }) => <FootIcon width={width} />, // Unused
-  [BodyPart.RIGHT_HIP]: ({ width }) => <FootIcon width={width} />, // Unused
-  [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} />
-    ),
-  [BodyPart.LEFT_HAND]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.LEFT_LOWER_ARM]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.LEFT_LOWER_LEG]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} />
-    ),
-  [BodyPart.LEFT_SHOULDER]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.LEFT_UPPER_ARM]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.LEFT_UPPER_LEG]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} />
-    ),
-  [BodyPart.NECK]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.NONE]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.RIGHT_FOOT]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} flipped />
-    ),
-  [BodyPart.RIGHT_HAND]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.RIGHT_LOWER_LEG]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} flipped />
-    ),
-  [BodyPart.RIGHT_SHOULDER]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.RIGHT_UPPER_ARM]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.RIGHT_UPPER_LEG]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} flipped />
-    ),
-  [BodyPart.WAIST]: ({ width }) => <FootIcon width={width} />,
-  [BodyPart.LEFT_THUMB_METACARPAL]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_THUMB_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_INDEX_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_INDEX_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.LEFT_INDEX_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_MIDDLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_MIDDLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.LEFT_MIDDLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_RING_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_RING_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.LEFT_RING_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_LITTLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_LITTLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.LEFT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_THUMB_METACARPAL]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_THUMB_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_INDEX_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_INDEX_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_INDEX_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_MIDDLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_MIDDLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_MIDDLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_RING_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_RING_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_RING_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.RIGHT_LITTLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width} />
-  ),
-  [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_BIG_TOE]: renderFootLeft,
-  [BodyPart.LEFT_INDEX_TOE]: renderFootLeft,
-  [BodyPart.LEFT_MIDDLE_TOE]: renderFootLeft,
-  [BodyPart.LEFT_RING_TOE]: renderFootLeft,
-  [BodyPart.LEFT_LITTLE_TOE]: renderFootLeft,
-  [BodyPart.RIGHT_BIG_TOE]: renderFootRight,
-  [BodyPart.RIGHT_INDEX_TOE]: renderFootRight,
-  [BodyPart.RIGHT_MIDDLE_TOE]: renderFootLeft,
-  [BodyPart.RIGHT_RING_TOE]: renderFootLeft,
-  [BodyPart.RIGHT_LITTLE_TOE]: renderFootRight,
-};
+const FINGERS = new Set(FINGER_BODY_PARTS);
+const LEFT_TOES = new Set(
+  TOE_BODY_PARTS.filter((part) => BodyPart[part].startsWith('LEFT_'))
+);
+const RIGHT_TOES = new Set(
+  TOE_BODY_PARTS.filter((part) => BodyPart[part].startsWith('RIGHT_'))
+);
 
 export function MountingBodyPartIcon({
   bodyPart = BodyPart.NONE,
@@ -172,9 +32,12 @@ export function MountingBodyPartIcon({
   width?: number;
 }) {
   const { currentLocales } = useLocaleConfig();
-  return (
-    mapPart[bodyPart]?.({ width, currentLocales }) || <FootIcon width={width} />
-  );
+
+  if (FINGERS.has(bodyPart)) return <FingersIcon width={width} />;
+  if (LEFT_TOES.has(bodyPart)) return renderFootLeft({ width, currentLocales });
+  if (RIGHT_TOES.has(bodyPart))
+    return renderFootRight({ width, currentLocales });
+  return <FootIcon width={width} />;
 }
 
 function PieSliceOfFeet({

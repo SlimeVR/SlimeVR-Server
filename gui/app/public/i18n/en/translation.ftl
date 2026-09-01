@@ -434,7 +434,6 @@ tracker-part_card-unassigned = Unassigned
 ## Body assignment menu
 body_assignment_menu = Where do you want this tracker to be?
 body_assignment_menu-description = Choose a location where you want this tracker to be assigned. Alternatively, you can choose to manage all trackers at once instead of one by one.
-body_assignment_menu-show_advanced_locations = Show advanced assign locations
 body_assignment_menu-manage_trackers = Manage all trackers
 body_assignment_menu-unassign_tracker = Unassign tracker
 
@@ -516,7 +515,7 @@ tracker_selection_menu-neck_warning-done = I understand the risks
 tracker_selection_menu-neck_warning-cancel = Cancel
 
 ## Mounting menu
-mounting_selection_menu = Where do you want this tracker to be?
+mounting_selection_menu = Which way is this tracker facing?
 mounting_selection_menu-close = Close
 
 ## Sidebar settings

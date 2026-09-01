@@ -13,20 +13,16 @@ export function TrackerPartCard({
   role,
   direction,
   roleError,
-  onlyAssigned,
   onClick,
 }: {
   td: FlatDeviceTracker | undefined;
   role: BodyPart;
   roleError: string | undefined;
-  onlyAssigned: boolean;
   direction: 'left' | 'right';
   onClick?: MouseEventHandler<HTMLDivElement>;
 }) {
   const { isXs } = useBreakpoint('xs');
   const { l10n } = useLocalization();
-
-  if (onlyAssigned && !td) return <></>;
 
   const name = td && getTrackerName(td.tracker.info);
 

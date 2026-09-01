@@ -4,68 +4,97 @@ import { BodyPart } from 'solarxr-protocol';
 import { BodySlotStyler } from '@/components/commons/BodyInteractions';
 import {
   BodyAssignment,
-  BodyPartCardRenderer,
   MirrorLegend,
 } from '@/components/onboarding/BodyAssignment';
 import {
   ExtremityAssignment,
   ExtremityGroupRenderer,
-  ExtremityRow,
 } from '@/components/onboarding/ExtremityAssignment';
-import { DigitFlow } from '@/components/onboarding/extremities/ExtremityLayout';
+import {
+  AssignedTrackerLabel,
+  ExtremityGroupCard,
+  PartCardLabel,
+  PartCardProps,
+  PartCardRenderer,
+  PartCardWarning,
+} from '@/components/onboarding/parts/PartCard';
 import { ExtremityDescriptor, ExtremitySide } from '@/utils/extremities';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useConfig } from '@/hooks/config';
-import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { TogglePill, TogglePillOption } from '@/components/commons/TogglePill';
-import { Tooltip } from '@/components/commons/Tooltip';
 import { Typography } from '@/components/commons/Typography';
-import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import {
   getTrackerName,
   useVelocity,
   velocityGlowStyle,
 } from '@/hooks/tracker';
 import { bodyPartDropProps, trackerDrag } from '@/hooks/tracker-drag';
-import { FlatDeviceTracker } from '@/store/app-store';
+import { useAssignment } from '@/hooks/tracker-assignment';
 import {
-  ASSIGNMENT_TAB_ORDER,
-  ASSIGNMENT_TABS,
-  useAssignment,
-} from '@/hooks/tracker-assignment';
+  PickerContext,
+  PICKER_TAB_ORDER,
+  PICKER_TABS,
+  usePicker,
+} from '@/hooks/tracker-picker';
 
+/** Dots double as drop targets while dragging */
 function useSlotStyle(): BodySlotStyler {
-  const { mode, activePart } = useAssignment();
+  const { mode } = useAssignment();
 
   return useCallback(
     (part: BodyPart) => ({
       props: mode === 'drag' ? bodyPartDropProps(part) : undefined,
+    }),
+    [mode]
+  );
+}
+
+/**
+ * The figure and its cards, for any flow that picks a body part. What a tap
+ * does and what a card shows come from the picker in context and the renderers.
+ */
+export function PickerPanel({
+  headerAction,
+  legendAction,
+  compact,
+  dots,
+  renderCard,
+  renderGroup,
+  slotStyle,
+}: {
+  headerAction?: ReactNode;
+  legendAction?: ReactNode;
+  compact?: boolean;
+  dots: 'drag' | 'tap';
+  renderCard?: PartCardRenderer;
+  renderGroup: ExtremityGroupRenderer;
+  slotStyle?: BodySlotStyler;
+}) {
+  const { config } = useConfig();
+  const {
+    tab,
+    side,
+    setSide,
+    firstError,
+    rolesWithErrors,
+    activePart,
+    selectPart,
+  } = usePicker();
+  const { isMobile: isTight } = useBreakpoint('mobile');
+
+  const dotStyle: BodySlotStyler = useCallback(
+    (part: BodyPart) => ({
       connected: activePart === part,
       className:
         activePart === part
           ? 'scale-150 ring-3 ring-accent-background-30'
           : undefined,
+      ...slotStyle?.(part),
     }),
-    [mode, activePart]
+    [activePart, slotStyle]
   );
-}
 
-export function BodyAssignmentPanel({
-  headerAction,
-  legendAction,
-  compact,
-}: {
-  headerAction?: ReactNode;
-  legendAction?: ReactNode;
-  compact?: boolean;
-}) {
-  const { config } = useConfig();
-  const { mode, tab, side, setSide, firstError, rolesWithErrors, selectPart } =
-    useAssignment();
-  const { isMobile: isTight } = useBreakpoint('mobile');
-  const slotStyle = useSlotStyle();
-
-  const { view, dotSize } = ASSIGNMENT_TABS[tab];
+  const { view, dotSize } = PICKER_TABS[tab];
   const extremity = view.kind === 'extremity' ? view.descriptor : null;
 
   const legend = extremity ? (
@@ -78,40 +107,7 @@ export function BodyAssignmentPanel({
   ) : (
     <MirrorLegend compact={compact} />
   );
-  const tabs = <AssignmentTabs compact={compact} />;
-
-  const renderCard: BodyPartCardRenderer = ({
-    role,
-    direction,
-    td,
-    roleError,
-  }) => (
-    <BodyPartCard
-      key={role}
-      role={role}
-      direction={direction}
-      td={td}
-      roleError={roleError}
-    />
-  );
-
-  const renderGroup: ExtremityGroupRenderer = ({
-    id,
-    labelId,
-    direction,
-    rows,
-    edge,
-    flow,
-  }) => (
-    <ExtremityGroupCard
-      key={id}
-      edge={edge}
-      flow={flow}
-      labelId={labelId}
-      direction={direction}
-      rows={rows}
-    />
-  );
+  const tabs = <PickerTabs compact={compact} />;
 
   return (
     <div className="flex-1 min-h-0 flex flex-col gap-2 mobile:gap-1">
@@ -134,8 +130,6 @@ export function BodyAssignmentPanel({
           </div>
         </div>
       )}
-      {/* Gutter stays put, or the scrollbar appearing resizes the figure back
-          under the scroll threshold and the two flicker against each other */}
       <div className="flex-1 min-h-0 overflow-y-auto [scrollbar-gutter:stable] px-2 flex flex-col fill-background-50">
         <div
           className={classNames(
@@ -147,26 +141,25 @@ export function BodyAssignmentPanel({
             <ExtremityAssignment
               descriptor={extremity}
               side={side}
-              dotSize={dotSize[mode]}
+              dotSize={dotSize[dots]}
               compact={isTight}
               fillHeight
               highlightedRoles={firstError?.affectedRoles || []}
               rolesWithErrors={rolesWithErrors}
               onRoleSelected={selectPart}
               renderGroup={renderGroup}
-              slotStyle={slotStyle}
+              slotStyle={dotStyle}
             />
           ) : (
             <BodyAssignment
-              dotSize={dotSize[mode]}
+              dotSize={dotSize[dots]}
               fillHeight
-              onlyAssigned={false}
               highlightedRoles={firstError?.affectedRoles || []}
               rolesWithErrors={rolesWithErrors}
               mirror={config?.mirrorView ?? false}
               onRoleSelected={selectPart}
               renderCard={renderCard}
-              slotStyle={slotStyle}
+              slotStyle={dotStyle}
             />
           )}
         </div>
@@ -175,8 +168,58 @@ export function BodyAssignmentPanel({
   );
 }
 
-function AssignmentTabs({ compact }: { compact?: boolean }) {
-  const { tab, setTab } = useAssignment();
+export function BodyAssignmentPanel({
+  headerAction,
+  legendAction,
+  compact,
+}: {
+  headerAction?: ReactNode;
+  legendAction?: ReactNode;
+  compact?: boolean;
+}) {
+  const assignment = useAssignment();
+  const slotStyle = useSlotStyle();
+
+  const renderCard: PartCardRenderer = (props) => (
+    <BodyPartCard key={props.role} {...props} />
+  );
+
+  const renderGroup: ExtremityGroupRenderer = ({
+    id,
+    labelId,
+    direction,
+    rows,
+    edge,
+    flow,
+  }) => (
+    <ExtremityGroupCard
+      key={id}
+      edge={edge}
+      flow={flow}
+      labelId={labelId}
+      direction={direction}
+      rows={rows}
+      renderRow={(props) => <BodyPartCard key={props.role} {...props} />}
+    />
+  );
+
+  return (
+    <PickerContext.Provider value={assignment}>
+      <PickerPanel
+        headerAction={headerAction}
+        legendAction={legendAction}
+        compact={compact}
+        dots={assignment.mode}
+        renderCard={renderCard}
+        renderGroup={renderGroup}
+        slotStyle={slotStyle}
+      />
+    </PickerContext.Provider>
+  );
+}
+
+function PickerTabs({ compact }: { compact?: boolean }) {
+  const { tab, setTab } = usePicker();
 
   return (
     <div
@@ -185,13 +228,13 @@ function AssignmentTabs({ compact }: { compact?: boolean }) {
         compact ? 'gap-0.5 p-0.5' : 'gap-1 p-1'
       )}
     >
-      {ASSIGNMENT_TAB_ORDER.map((key) => (
+      {PICKER_TAB_ORDER.map((key) => (
         <Tab
           key={key}
           compact={compact}
-          labelId={ASSIGNMENT_TABS[key].labelId}
+          labelId={PICKER_TABS[key].labelId}
           active={tab === key}
-          disabled={!ASSIGNMENT_TABS[key].enabled}
+          disabled={!PICKER_TABS[key].enabled}
           onClick={() => setTab(key)}
         />
       ))}
@@ -257,102 +300,13 @@ function ExtremitySideToggle({
   );
 }
 
-type BodyPartCardProps = {
-  role: BodyPart;
-  direction: 'left' | 'right';
-  td: FlatDeviceTracker | undefined;
-  roleError: string | undefined;
-  labelId?: string;
-  compact?: boolean;
-  number?: number;
-  connector?: boolean;
-};
-
-export function BodyPartCard(props: BodyPartCardProps) {
+export function BodyPartCard(props: PartCardProps) {
   const { mode } = useAssignment();
 
   return mode === 'drag' ? (
     <DragBodyPartCard {...props} />
   ) : (
     <TapBodyPartCard {...props} />
-  );
-}
-
-const CARD_WIDTH = 'w-32 smol:w-40 xsAssign:w-44';
-const WIDE_CARD_WIDTH =
-  'w-full max-w-96 smol:max-w-[30rem] xsAssign:max-w-[33rem]';
-const SINGLE_CARD = `${CARD_WIDTH} p-1`;
-const DIGIT_CARD =
-  'gap-0.5 p-1 rounded-lg bg-background-70/40 border border-background-60';
-
-export function ExtremityGroupCard({
-  labelId,
-  direction,
-  rows,
-  edge = 'side',
-  flow = 'rows',
-  className,
-}: {
-  labelId?: string;
-  direction: 'left' | 'right';
-  rows: ExtremityRow[];
-  edge?: 'side' | 'cap';
-  flow?: DigitFlow;
-  className?: string;
-}) {
-  const single = rows.length === 1;
-  const across = flow === 'columns';
-
-  return (
-    <div
-      data-connector-group
-      data-connector-edge={edge}
-      className={classNames(
-        'flex flex-col',
-        className ??
-          (single
-            ? SINGLE_CARD
-            : `${DIGIT_CARD} ${across ? WIDE_CARD_WIDTH : CARD_WIDTH}`)
-      )}
-    >
-      {labelId && (
-        <div
-          className={classNames(
-            'px-1.5 pb-0.5 overflow-hidden',
-            direction === 'right' ? 'text-right' : 'text-left'
-          )}
-        >
-          <Typography
-            bold
-            truncate
-            variant="section-title"
-            whitespace="whitespace-nowrap"
-            id={labelId}
-          />
-        </div>
-      )}
-      <div
-        className={classNames(
-          across ? 'grid grid-cols-3 gap-1' : 'flex flex-col gap-0.5'
-        )}
-      >
-        {rows.map(
-          ({ role, td, roleError, labelId: rowLabelId, number, connector }) => (
-            <BodyPartCard
-              key={role}
-              compact
-              number={number}
-              connector={connector}
-              labelId={rowLabelId}
-              role={role}
-              direction={direction}
-              td={td}
-              roleError={roleError}
-            />
-          )
-        )}
-      </div>
-    </div>
   );
 }
 
@@ -365,7 +319,7 @@ function DragBodyPartCard({
   number,
   connector = true,
   labelId,
-}: BodyPartCardProps) {
+}: PartCardProps) {
   const { armedPart, selectPart, handleDropTracker } = useAssignment();
   const isHovering = trackerDrag.useIsDragHovering(role);
   const isDragActive = trackerDrag.useIsDragActive();
@@ -446,7 +400,7 @@ function TapBodyPartCard({
   number,
   compact,
   connector = true,
-}: BodyPartCardProps) {
+}: PartCardProps) {
   const { armedPart, pendingTrackerId, selectPart } = useAssignment();
   const velocity = useVelocity(td?.tracker);
   const armed = armedPart === role;
@@ -495,115 +449,5 @@ function TapBodyPartCard({
         />
       )}
     </button>
-  );
-}
-
-function PartCardLabel({
-  role,
-  direction,
-  number,
-  labelId,
-}: {
-  role: BodyPart;
-  direction: 'left' | 'right';
-  number?: number;
-  labelId?: string;
-}) {
-  return (
-    <div
-      className={classNames(
-        'flex items-center gap-1.5 max-w-full min-w-0 overflow-hidden',
-        direction === 'right' && 'flex-row-reverse'
-      )}
-    >
-      {number !== undefined && <JointNumber number={number} />}
-      <Typography
-        variant="standard"
-        bold
-        truncate
-        whitespace="whitespace-nowrap"
-        id={labelId ?? 'body_part-' + BodyPart[role]}
-      />
-    </div>
-  );
-}
-
-function PartCardWarning({
-  error,
-  direction,
-  tooltip,
-}: {
-  error: string | undefined;
-  direction: 'left' | 'right';
-  tooltip?: boolean;
-}) {
-  if (!error) return null;
-
-  const icon = (
-    <div
-      className={classNames(
-        'absolute text-status-warning scale-75 -top-1',
-        tooltip && 'cursor-help',
-        direction === 'right' ? '-right-6' : '-left-6'
-      )}
-    >
-      <WarningIcon />
-    </div>
-  );
-
-  if (!tooltip) return icon;
-
-  return (
-    <Tooltip
-      content={
-        <Typography variant="standard" color="text-status-warning">
-          {error}
-        </Typography>
-      }
-      preferedDirection="top"
-      spacing={8}
-    >
-      {icon}
-    </Tooltip>
-  );
-}
-
-function JointNumber({ number }: { number: number }) {
-  return (
-    <span className="shrink-0 w-4 h-4 rounded-full bg-background-10 text-background-90 text-[10px] font-bold flex items-center justify-center">
-      {number}
-    </span>
-  );
-}
-
-function AssignedTrackerLabel({
-  tracker,
-  compact,
-}: {
-  tracker: FlatDeviceTracker;
-  compact?: boolean;
-}) {
-  const velocity = useVelocity(tracker.tracker);
-  const name = getTrackerName(tracker.tracker.info);
-
-  return (
-    <div
-      className={classNames(
-        'flex items-center rounded-md bg-background-80',
-        compact ? 'gap-1 px-1' : 'gap-2 px-2'
-      )}
-      style={velocityGlowStyle(velocity)}
-    >
-      <div className="fill-background-10">
-        <BodyPartIcon
-          trackerId={tracker.tracker.trackerId}
-          device={tracker.device}
-          width={compact ? 18 : 25}
-        />
-      </div>
-      <div className={compact ? 'py-0.5 min-w-0' : 'py-2'}>
-        <Typography truncate={compact}>{name}</Typography>
-      </div>
-    </div>
   );
 }

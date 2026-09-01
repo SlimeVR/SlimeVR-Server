@@ -10,7 +10,7 @@ import {
   ExtremitySlot,
 } from './extremities/ExtremityLayout';
 import { ExtremityDescriptor, ExtremitySide } from '@/utils/extremities';
-import { BodyPartError } from '@/hooks/tracker-assignment';
+import { BodyPartError } from '@/hooks/tracker-picker';
 import {
   assignedTrackersAtom,
   FlatDeviceTracker,

@@ -70,7 +70,6 @@ export function SingleTrackerBodyAssignmentMenu({
               </div>
               <BodyAssignment
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
-                onlyAssigned={false}
                 onRoleSelected={tryOpenChokerWarning}
               />
               <div className="flex justify-center">

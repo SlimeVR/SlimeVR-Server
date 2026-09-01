@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
-import { Fragment, ReactNode, useCallback, useMemo } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import {
@@ -11,19 +11,16 @@ import { CheckboxInternal } from '@/components/commons/Checkbox';
 import { CompareIcon } from '@/components/commons/icon/CompareIcon';
 import { TogglePill, TogglePillOption } from '@/components/commons/TogglePill';
 import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';
+import { PartCardRenderer } from './parts/PartCard';
 import {
   ASSIGNMENT_MODES,
   BodyPartError,
   COMMONS,
   useAssignMode,
-} from '@/hooks/tracker-assignment';
+} from '@/hooks/tracker-picker';
 import { PersonFrontIcon, SIDES } from '@/components/commons/PersonFrontIcon';
 import { useAtomValue } from 'jotai';
-import {
-  assignedTrackersAtom,
-  FlatDeviceTracker,
-  trackerByBodyPartAtom,
-} from '@/store/app-store';
+import { assignedTrackersAtom, trackerByBodyPartAtom } from '@/store/app-store';
 
 type BodySide = (typeof SIDES)[number];
 
@@ -100,32 +97,23 @@ export function MirrorLegend({ compact }: { compact?: boolean }) {
   );
 }
 
-export type BodyPartCardRenderer = (args: {
-  role: BodyPart;
-  direction: 'left' | 'right';
-  td: FlatDeviceTracker | undefined;
-  roleError: string | undefined;
-}) => ReactNode;
-
 export function BodyAssignment({
   mirror,
   onRoleSelected,
   rolesWithErrors = {},
   highlightedRoles = [],
-  onlyAssigned = false,
   dotSize,
   fillHeight,
   renderCard,
   slotStyle,
 }: {
   mirror: boolean;
-  onlyAssigned?: boolean;
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
   highlightedRoles?: BodyPart[];
   onRoleSelected: (role: BodyPart) => void;
   dotSize?: number;
   fillHeight?: boolean;
-  renderCard?: BodyPartCardRenderer;
+  renderCard?: PartCardRenderer;
   slotStyle?: BodySlotStyler;
 }) {
   const assignMode = useAssignMode();
@@ -157,11 +145,10 @@ export function BodyAssignment({
     [assignMode]
   );
 
-  const card: BodyPartCardRenderer =
+  const card: PartCardRenderer =
     renderCard ??
     (({ role, direction, td, roleError }) => (
       <TrackerPartCard
-        onlyAssigned={onlyAssigned}
         roleError={roleError}
         td={td}
         role={role}

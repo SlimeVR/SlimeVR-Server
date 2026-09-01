@@ -19,12 +19,8 @@ import { useDebouncedEffect } from '@/hooks/timeout';
 import { useTrackerFromId } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useAssignTracker } from '@/hooks/tracker-assignment';
-import {
-  MountingOrientationDegreesToQuatT,
-  QuaternionFromQuatT,
-  rotationToQuatMap,
-  similarQuaternions,
-} from '@/maths/quaternion';
+import { useMountingOrientation } from '@/hooks/tracker-mounting';
+import { rotationToQuatMap, similarQuaternions } from '@/maths/quaternion';
 import { ArrowLink } from '@/components/commons/ArrowLink';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
@@ -78,14 +74,10 @@ export function TrackerSettingsPage() {
   const tracker = useTrackerFromId(trackernum, deviceid);
   const assignTracker = useAssignTracker();
 
-  const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
-    if (!tracker) return;
+  const { currRotation, setDirection } = useMountingOrientation(tracker);
 
-    assignTracker(
-      tracker.tracker.trackerId,
-      tracker.tracker.info?.bodyPart || BodyPart.NONE,
-      MountingOrientationDegreesToQuatT(mountingOrientationDegrees)
-    );
+  const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
+    setDirection(mountingOrientationDegrees);
     setSelectRotation(false);
   };
 
@@ -95,10 +87,6 @@ export function TrackerSettingsPage() {
     assignTracker(tracker.tracker.trackerId, role);
     setSelectBodyPart(false);
   };
-
-  const currRotation = useMemo(() => {
-    return QuaternionFromQuatT(tracker?.tracker.info?.mountingOrientation);
-  }, [tracker?.tracker.info?.mountingOrientation]);
 
   const updateTrackerSettings = () => {
     if (!tracker) return;
@@ -470,8 +458,10 @@ export function TrackerSettingsPage() {
                       tracker.tracker.info?.lastMountingMethod !=
                         MountingMethod.MANUAL
                         ? `${l10n.getString('tracker-rotation-custom')} ${l10n.getString('tracker-rotation-mounting_reset')}`
-                        : (rotationsLabels.find((q) =>
-                            similarQuaternions(q[0], currRotation)
+                        : (rotationsLabels.find(
+                            (q) =>
+                              currRotation &&
+                              similarQuaternions(q[0], currRotation)
                           ) || [])[1] || 'tracker-rotation-custom'
                     )}
                   </Typography>

@@ -6,7 +6,7 @@ import { ResetButton } from '@/components/home/ResetButton';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
 import { BaseModal } from '@/components/commons/BaseModal';
-import { ManualMountingPageStayAligned } from '@/components/onboarding/pages/mounting/ManualMounting';
+import { ManualMounting } from '@/components/onboarding/pages/mounting/ManualMounting';
 export function VerifyMountingStep({
   nextStep,
   prevStep,
@@ -65,15 +65,19 @@ export function VerifyMountingStep({
             id="onboarding-automatic_mounting-manual_mounting"
           />
           <BaseModal isOpen={isOpen} onRequestClose={() => setOpen(false)}>
-            <ManualMountingPageStayAligned>
-              <div className="flex flex-row gap-3 mt-auto">
-                <Button
-                  variant="primary"
-                  onClick={goNextStep}
-                  id="onboarding-stay_aligned-manual_mounting-done"
-                />
-              </div>
-            </ManualMountingPageStayAligned>
+            <div className="w-[min(90vw,1000px)] h-[min(80vh,700px)]">
+              <ManualMounting
+                footer={
+                  <div className="flex flex-row gap-3 mt-auto">
+                    <Button
+                      variant="primary"
+                      onClick={goNextStep}
+                      id="onboarding-stay_aligned-manual_mounting-done"
+                    />
+                  </div>
+                }
+              />
+            </div>
           </BaseModal>
 
           <ResetButton
