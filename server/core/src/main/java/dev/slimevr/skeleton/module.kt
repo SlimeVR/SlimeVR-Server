@@ -116,7 +116,7 @@ fun buildBones(
 	boneInputs: InputSkeleton,
 	lastResult: BodyPartMap<BoneState> = bodyPartMap(),
 ): ComputedSkeleton {
-	val highestBone = if (lastResult.isEmpty()) {
+	val highestBone = if (lastResult.isEmpty() || BodyPart.HEAD in boneInputs.keys) {
 		BodyPart.HEAD
 	} else {
 		// TODO this gets the first common parent and builds bones down from it
