@@ -19,7 +19,7 @@ class BoneYawFallbackInputProcessor : SkeletonInputProcessor {
 			val children = iterateBodyPartHierarchy(parentPart, true)
 
 			for (childPart in children) {
-				val childBone = inputSkeleton.getValue(childPart.second)
+				val childBone = inputSkeleton[childPart.second] ?: continue
 				if (childBone.isRotationActive) continue // Child needs to be inactive
 
 				updated[childPart.second] = childBone.copy(rawRotation = parentBone.rawRotation.project(Vector3.POS_Y).unit())

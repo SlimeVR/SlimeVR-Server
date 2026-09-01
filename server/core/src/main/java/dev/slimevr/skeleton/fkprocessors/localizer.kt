@@ -10,7 +10,7 @@ import solarxr_protocol.datatypes.BodyPart
 
 class LocalizerFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 	override fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float): InputSkeleton {
-		val headInput = inputSkeleton.getValue(BodyPart.HEAD)
+		val headInput = inputSkeleton[BodyPart.HEAD] ?: return inputSkeleton
 		if (headInput.isPositionActive || !settings.context.state.value.data.skeletonConfig.toggles.mocapMode) {
 			return inputSkeleton
 		}

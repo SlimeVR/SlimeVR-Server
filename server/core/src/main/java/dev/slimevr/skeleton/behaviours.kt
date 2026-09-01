@@ -140,11 +140,11 @@ class ComputedSkeletonBehaviour(
 							val newInputs = processor.process(inputs, fk, targetState.floorLevel)
 							if (newInputs != inputs) {
 								// Inputs changed; re-run FK
-								val changedParts = newInputs.filter { (part, boneInput) -> boneInput != inputs.getValue(part) }.keys
-								fk = buildBones(newInputs, changedParts, fk)
+								val changedInputs = newInputs.filter { (part, boneInput) -> boneInput != inputs[part] }
+								fk = buildBones(newInputs, changedInputs.keys, fk)
 
 								// For bones with inactive position, update their input's position in state (needed for Localizer)
-								val changedPositionInputs = newInputs.filter { (part, boneInput) -> boneInput.rawPosition != inputs.getValue(part).rawPosition }
+								val changedPositionInputs = changedInputs.filter { (part, boneInput) -> boneInput.rawPosition != inputs[part]?.rawPosition }
 								for (input in changedPositionInputs) {
 									receiver.context.dispatch(SkeletonActions.SetBonePosition(input.key, input.value.rawPosition, false))
 								}

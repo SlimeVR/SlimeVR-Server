@@ -39,7 +39,7 @@ class BoneDirectLinkInputProcessor : SkeletonInputProcessor {
 
 	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutateCopy { updated ->
 		for ((bodyPart, source) in linkedToSource) {
-			val bone = updated.getValue(bodyPart)
+			val bone = updated[bodyPart] ?: continue
 			if (bone.isRotationActive) continue
 
 			val sourceBone = updated[source]

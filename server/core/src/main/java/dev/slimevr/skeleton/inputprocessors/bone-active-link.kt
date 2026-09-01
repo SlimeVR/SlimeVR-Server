@@ -25,7 +25,7 @@ class BoneActiveLinkInputProcessor : SkeletonInputProcessor {
 
 	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutateCopy { updated ->
 		for ((bodyPart, sources) in linkedToSources) {
-			val bone = inputSkeleton.getValue(bodyPart)
+			val bone = inputSkeleton[bodyPart] ?: continue
 			if (bone.isRotationActive) continue
 
 			val closestActiveBone = sources.firstNotNullOfOrNull { part ->

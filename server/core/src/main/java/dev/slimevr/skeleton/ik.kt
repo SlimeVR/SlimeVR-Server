@@ -121,7 +121,7 @@ fun ccdIkIteration(
 	rotateChain(boneInputs, chain, constrainedOffset)
 
 	// Only build bones for inputs that were changed
-	val changedParts = boneInputs.filter { (part, boneInput) -> boneInput != lastBoneInputs.getValue(part) }.keys
+	val changedParts = boneInputs.filter { (part, boneInput) -> boneInput != lastBoneInputs[part] }.keys
 	return buildBones(boneInputs, changedParts, bones)
 }
 

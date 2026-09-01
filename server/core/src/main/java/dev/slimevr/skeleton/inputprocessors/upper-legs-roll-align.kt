@@ -27,10 +27,10 @@ class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputPr
 
 		return inputSkeleton.mutateCopy { updated ->
 			for (bodyPartToSource in bodyPartToSources) {
-				val bone = inputSkeleton.getValue(bodyPartToSource.first)
+				val bone = inputSkeleton[bodyPartToSource.first] ?: continue
 				if (!bone.isRotationActive) continue
 
-				val sourceRotation = inputSkeleton.getValue(bodyPartToSource.second).rawRotation
+				val sourceRotation = inputSkeleton[bodyPartToSource.second]?.rawRotation ?: continue
 				val alignedRotation = alignRoll(bone.rawRotation, sourceRotation)
 				updated[bodyPartToSource.first] = bone.copy(rawRotation = bone.rawRotation.interpQ(alignedRotation, ratio))
 			}

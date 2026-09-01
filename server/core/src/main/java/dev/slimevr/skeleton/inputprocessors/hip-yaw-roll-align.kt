@@ -16,7 +16,7 @@ class HipYawRollAlignInputProcessor(val settings: Settings) : SkeletonInputProce
 	val source = arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)
 
 	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
-		val hipBone = inputSkeleton.getValue(BodyPart.HIP)
+		val hipBone = inputSkeleton[BodyPart.HIP] ?: return inputSkeleton
 		if (hipBone.isRotationActive) return inputSkeleton
 
 		return inputSkeleton.mutateCopy { updated ->

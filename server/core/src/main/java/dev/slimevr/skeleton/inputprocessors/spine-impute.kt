@@ -51,7 +51,7 @@ class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor
 
 		return inputSkeleton.mutateCopy { updated ->
 			for ((chainIndex, bodyPart) in missingSpineParts.withIndex()) {
-				val bone = inputSkeleton.getValue(bodyPart)
+				val bone = inputSkeleton[bodyPart] ?: continue
 
 				// Get the first active bones above and below this one in the chain
 				val (fromSource, toSource) = when (bodyPart) {
