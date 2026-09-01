@@ -10,7 +10,7 @@ import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
 // The max height to plant feet by
-val ROTATION_CORRECTION_VERTICAL = 0.1f
+const val ROTATION_CORRECTION_VERTICAL = 0.1f
 
 fun computeFootPlantRatio(
 	ankleHeight: Float,
