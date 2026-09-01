@@ -118,18 +118,18 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?): BoneState {
 /**
  * Runs FK from boneInputs.
  *
- * If boneInputs doesn't contain all bones, pass lastResult to fill in the gaps that won't be re-computed.
+ * If changedParts is used, pass lastResult to fill in the gaps that won't be re-computed.
  */
-fun buildBones(boneInputs: InputSkeleton, lastResult: BodyPartMap<BoneState> = bodyPartMap()): ComputedSkeleton {
-	val result = BodyPartMap(lastResult)
-	for (bodyPart in highestBodyParts(boneInputs.keys)) {
-		iterateBodyPartHierarchy(bodyPart, bodyPart != BodyPart.HEAD).forEach { (parentPart, childPart) ->
-			val rawBone = boneInputs[childPart] ?: return@forEach
-			val parentBone = parentPart?.let { result[it] }
-			result[childPart] = buildBone(rawBone, parentBone)
+fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPartSet, lastResult: BodyPartMap<BoneState> = bodyPartMap()): ComputedSkeleton {
+	return lastResult.mutateCopy { result ->
+		for (bodyPart in highestBodyParts(changedParts)) {
+			iterateBodyPartHierarchy(parentOf(bodyPart) ?: bodyPart, bodyPart != BodyPart.HEAD).forEach { (parentPart, childPart) ->
+				val rawBone = boneInputs[childPart] ?: return@forEach
+				val parentBone = parentPart?.let { result[it] }
+				result[childPart] = buildBone(rawBone, parentBone)
+			}
 		}
 	}
-	return result
 }
 
 sealed interface SkeletonActions {

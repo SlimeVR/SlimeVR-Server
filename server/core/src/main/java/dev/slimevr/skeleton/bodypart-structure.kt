@@ -99,7 +99,7 @@ inline fun BodyPart.findFirstParent(predicate: (BodyPart) -> Boolean): BodyPart?
 	return null
 }
 
-private val headPartSet = setOf(BodyPart.HEAD)
+val headPartSet = setOf(BodyPart.HEAD)
 fun highestBodyParts(bodyParts: Set<BodyPart>): Set<BodyPart> {
 	if (BodyPart.HEAD in bodyParts) return headPartSet
 	val result = bodyParts.toMutableSet()
