@@ -12,7 +12,6 @@ import { useLocalization } from '@fluent/react';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
 import { defaultConfig, useConfig } from '@/hooks/config';
-import { useBreakpoint } from '@/hooks/breakpoint';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,
@@ -25,7 +24,6 @@ export function SingleTrackerBodyAssignmentMenu({
 }) {
   const { l10n } = useLocalization();
   const { config } = useConfig();
-  const { isMobileAssign } = useBreakpoint('mobileAssign');
 
   const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
     useChokerWarning({
@@ -72,7 +70,6 @@ export function SingleTrackerBodyAssignmentMenu({
               </div>
               <BodyAssignment
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
-                width={isMobileAssign ? 160 : undefined}
                 onlyAssigned={false}
                 onRoleSelected={tryOpenChokerWarning}
               />

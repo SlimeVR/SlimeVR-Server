@@ -12,7 +12,7 @@ const _matrixWorldInv = new Matrix4();
 
 export class BasedSkeletonHelper extends LineSegments2 {
   isSkeletonHelper: boolean;
-  root: Object3D
+  root: Object3D;
   bones: Bone[];
   readonly type = 'SkeletonHelper';
 

@@ -202,7 +202,7 @@ export function Toolbar() {
               />
               {groupVisibility['toes'] && (
                 <BasicResetButton
-                  type={ResetType.MOUNTING}
+                  type={ResetType.POSE_MOUNTING}
                   group={'toes'}
                   customName="toolbar-mounting_calibration-toes"
                 />

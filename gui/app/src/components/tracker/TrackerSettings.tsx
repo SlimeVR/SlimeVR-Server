@@ -18,6 +18,7 @@ import {
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { useTrackerFromId } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useAssignTracker } from '@/hooks/tracker-assignment';
 import {
   MountingOrientationDegreesToQuatT,
   QuaternionFromQuatT,
@@ -75,28 +76,23 @@ export function TrackerSettingsPage() {
   const { trackerName } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
+  const assignTracker = useAssignTracker();
 
   const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
     if (!tracker) return;
 
-    const assignReq = new AssignTrackerRequestT();
-
-    assignReq.mountingOrientation = MountingOrientationDegreesToQuatT(
-      mountingOrientationDegrees
+    assignTracker(
+      tracker.tracker.trackerId,
+      tracker.tracker.info?.bodyPart || BodyPart.NONE,
+      MountingOrientationDegreesToQuatT(mountingOrientationDegrees)
     );
-    assignReq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-    assignReq.trackerId = tracker?.tracker.trackerId;
-    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignReq);
     setSelectRotation(false);
   };
 
   const onRoleSelected = (role: BodyPart) => {
     if (!tracker) return;
 
-    const assignReq = new AssignTrackerRequestT();
-    assignReq.bodyPosition = role;
-    assignReq.trackerId = tracker?.tracker.trackerId;
-    sendRPCPacket(RpcMessage.AssignTrackerRequest, assignReq);
+    assignTracker(tracker.tracker.trackerId, role);
     setSelectBodyPart(false);
   };
 

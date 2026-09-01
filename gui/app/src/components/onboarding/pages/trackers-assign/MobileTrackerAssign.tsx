@@ -1,19 +1,8 @@
 import type { FluentVariable } from '@fluent/bundle';
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
-import {
-  BodySlotStyle,
-  BodySlotStyler,
-} from '@/components/commons/BodyInteractions';
 import { Button } from '@/components/commons/Button';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { Typography } from '@/components/commons/Typography';
@@ -21,24 +10,21 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
 } from '@/components/commons/icon/ArrowIcons';
-import {
-  BodyPartCardRenderer,
-  ShowAllPartsToggle,
-} from '@/components/onboarding/BodyAssignment';
+import { ShowAllPartsToggle } from '@/components/onboarding/BodyAssignment';
 import { useOnboarding } from '@/hooks/onboarding';
 import { getTrackerName } from '@/hooks/tracker';
 import {
   FlatDeviceTracker,
   groupTrackersByConnection,
 } from '@/store/app-store';
-import { BodyAssignmentPanel, BodyPartCard } from './BodyAssignmentPanel';
+import { BodyAssignmentPanel } from './BodyAssignmentPanel';
 import {
   AssignmentEmptyState,
   AssignmentNavFooter,
   SimpleTrackerRow,
   UnassignedTrackerList,
 } from './TrackerAssignmentList';
-import { TrackerAssignment } from '@/hooks/tracker-assignment';
+import { useAssignment } from '@/hooks/tracker-assignment';
 
 function MobileAssignPanel({
   open,
@@ -131,113 +117,41 @@ function MobileAssignPanel({
   );
 }
 
-export function MobileTrackerAssign({
-  assignment,
-}: {
-  assignment: TrackerAssignment;
-}) {
+export function MobileTrackerAssign() {
   const { l10n } = useLocalization();
   const { state } = useOnboarding();
-
-  const { armedPart, setArmedPart, flatTrackers, assignedTrackers } =
-    assignment;
+  const assignment = useAssignment();
+  const {
+    tab,
+    armedPart,
+    pendingTrackerId,
+    clearPending,
+    panelOpen,
+    togglePanel,
+    flatTrackers,
+    assignedTrackers,
+    dongles,
+    trackerByPart,
+    selectTracker,
+  } = assignment;
 
   const groups = useMemo(
-    () => groupTrackersByConnection(flatTrackers, assignment.dongles),
-    [flatTrackers, assignment.dongles]
+    () => groupTrackersByConnection(flatTrackers, dongles),
+    [flatTrackers, dongles]
   );
   const unassignedCount = flatTrackers.length - assignedTrackers.length;
 
-  const [selectedTrackerId, setSelectedTrackerId] = useState<number | null>(
-    null
-  );
-  const [panelOpen, setPanelOpen] = useState(false);
-
-  const prevArmedRef = useRef(armedPart);
-  useEffect(() => {
-    const prev = prevArmedRef.current;
-    if (armedPart !== BodyPart.NONE && prev !== armedPart) setPanelOpen(true);
-    if (armedPart === BodyPart.NONE && prev !== BodyPart.NONE) {
-      setPanelOpen(false);
-    }
-    prevArmedRef.current = armedPart;
-  }, [armedPart]);
-
-  useEffect(() => {
-    if (selectedTrackerId !== null) setPanelOpen(false);
-  }, [selectedTrackerId]);
-
   const selectedTracker =
-    selectedTrackerId != null
-      ? flatTrackers.find((td) => td.tracker.trackerId === selectedTrackerId)
+    pendingTrackerId != null
+      ? flatTrackers.find((td) => td.tracker.trackerId === pendingTrackerId)
       : undefined;
   const armedTracker =
-    armedPart !== BodyPart.NONE
-      ? assignment.trackerByPart[armedPart]
-      : undefined;
+    armedPart !== BodyPart.NONE ? trackerByPart[armedPart] : undefined;
 
   const partName = (part: BodyPart) =>
     l10n.getString('body_part-' + BodyPart[part]);
   const trackerName = (td: FlatDeviceTracker) =>
     getTrackerName(td.tracker.info);
-
-  const cancelSelection = () => {
-    setSelectedTrackerId(null);
-    setArmedPart(BodyPart.NONE);
-  };
-
-  const dismissPanel = () => {
-    cancelSelection();
-    setPanelOpen(false);
-  };
-
-  const onPartSelected = (role: BodyPart) => {
-    if (selectedTrackerId != null) {
-      assignment.handleDropTracker(selectedTrackerId, role);
-      setSelectedTrackerId(null);
-      return;
-    }
-    assignment.armForTap(role);
-  };
-
-  const onTrackerSelected = (td: FlatDeviceTracker) => {
-    const id = td.tracker.trackerId;
-    if (armedPart !== BodyPart.NONE) {
-      assignment.handleDropTracker(id, armedPart);
-      setArmedPart(BodyPart.NONE);
-      setSelectedTrackerId(null);
-      return;
-    }
-    setSelectedTrackerId((prev) => (prev === id ? null : id));
-  };
-
-  const renderCard: BodyPartCardRenderer = useCallback(
-    ({ role, direction, td, roleError }) => (
-      <BodyPartCard
-        key={role}
-        mode="tap"
-        role={role}
-        direction={direction}
-        td={td}
-        roleError={roleError}
-        armed={armedPart === role}
-        awaitingTracker={selectedTrackerId != null}
-        onSelect={onPartSelected}
-      />
-    ),
-    [armedPart, selectedTrackerId]
-  );
-
-  const slotStyle: BodySlotStyler = useCallback(
-    (part: BodyPart): BodySlotStyle =>
-      armedPart === part
-        ? {
-            connected: true,
-            className: 'scale-150 ring-3 ring-accent-background-30',
-          }
-        : {},
-    [armedPart]
-  );
 
   const noTrackers = flatTrackers.length === 0;
   const allAssigned =
@@ -297,9 +211,8 @@ export function MobileTrackerAssign({
       <div className="min-h-0 overflow-hidden pt-1">
         <div className="h-full flex flex-col">
           <BodyAssignmentPanel
-            dotSize={12}
-            mobile
-            headerAction={<ShowAllPartsToggle compact />}
+            compact
+            headerAction={tab === 'body' && <ShowAllPartsToggle compact />}
             legendAction={
               state.alonePage && (
                 <Button
@@ -310,11 +223,6 @@ export function MobileTrackerAssign({
                 />
               )
             }
-            highlightedRoles={assignment.firstError?.affectedRoles || []}
-            rolesWithErrors={assignment.rolesWithErrors}
-            onRoleSelected={onPartSelected}
-            renderCard={renderCard}
-            slotStyle={slotStyle}
           />
         </div>
       </div>
@@ -322,8 +230,8 @@ export function MobileTrackerAssign({
       <MobileAssignPanel
         open={panelOpen}
         alonePage={state.alonePage}
-        onToggle={() => setPanelOpen((o) => !o)}
-        onBackdropPress={dismissPanel}
+        onToggle={togglePanel}
+        onBackdropPress={clearPending}
         title={
           <Typography
             bold
@@ -379,8 +287,8 @@ export function MobileTrackerAssign({
                   tracker={td.tracker}
                   device={td.device}
                   variant="secondary"
-                  onPress={() => onTrackerSelected(td)}
-                  selected={selectedTrackerId === td.tracker.trackerId}
+                  onClick={() => selectTracker(td.tracker.trackerId)}
+                  selected={pendingTrackerId === td.tracker.trackerId}
                 />
               )}
             />

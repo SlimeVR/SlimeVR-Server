@@ -197,6 +197,17 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
   [BodyPart.RIGHT_LITTLE_PROXIMAL]: finger(),
   [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: finger(),
   [BodyPart.RIGHT_LITTLE_DISTAL]: finger(),
+
+  [BodyPart.LEFT_BIG_TOE]: finger(),
+  [BodyPart.LEFT_INDEX_TOE]: finger(),
+  [BodyPart.LEFT_MIDDLE_TOE]: finger(),
+  [BodyPart.LEFT_RING_TOE]: finger(),
+  [BodyPart.LEFT_LITTLE_TOE]: finger(),
+  [BodyPart.RIGHT_BIG_TOE]: finger(),
+  [BodyPart.RIGHT_MIDDLE_TOE]: finger(),
+  [BodyPart.RIGHT_INDEX_TOE]: finger(),
+  [BodyPart.RIGHT_RING_TOE]: finger(),
+  [BodyPart.RIGHT_LITTLE_TOE]: finger(),
 };
 
 export function computeShapeScale(

@@ -26,3 +26,8 @@ const draggedTrackerIdAtom = selectAtom(
 
 export const useIsTrackerBeingDragged = (trackerId: number) =>
   useAtomValue(draggedTrackerIdAtom) === trackerId;
+
+export const hoveredBodyPartAtom = selectAtom(
+  trackerDrag.stateAtom,
+  (state) => state?.target ?? null
+);

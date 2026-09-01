@@ -13,7 +13,7 @@ import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Typography } from '@/components/commons/Typography';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Dropdown } from '@/components/commons/Dropdown';
-import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
+import { ASSIGNMENT_MODES } from '@/hooks/tracker-assignment';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';

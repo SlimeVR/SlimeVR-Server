@@ -99,6 +99,15 @@ inline fun BodyPart.findFirstParent(predicate: (BodyPart) -> Boolean): BodyPart?
 	return null
 }
 
+fun Set<BodyPart>.findFirstCommonParent(): BodyPart {
+	val bodyPartSequence = generateSequence(this.first()) { child -> parentOf(child) }
+	return bodyPartSequence.first { sequenceBodyPart ->
+		this.all { bodyPart ->
+			generateSequence(bodyPart) { parentOf(it) }.any { it == sequenceBodyPart }
+		}
+	}
+}
+
 private fun buildHierarchy(root: BodyPart, onlyChildren: Boolean): List<Pair<BodyPart?, BodyPart>> {
 	val result = mutableListOf<Pair<BodyPart?, BodyPart>>()
 	fun visit(parentBone: BodyPart?, bone: BodyPart, skipSelf: Boolean) {

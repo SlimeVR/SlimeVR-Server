@@ -170,12 +170,16 @@ export const mapPart: Record<
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_BIG_TOE]: renderFootLeft,
   [BodyPart.LEFT_INDEX_TOE]: renderFootLeft,
+  [BodyPart.LEFT_MIDDLE_TOE]: renderFootLeft,
+  [BodyPart.LEFT_RING_TOE]: renderFootLeft,
   [BodyPart.LEFT_LITTLE_TOE]: renderFootLeft,
   [BodyPart.RIGHT_BIG_TOE]: renderFootRight,
   [BodyPart.RIGHT_INDEX_TOE]: renderFootRight,
+  [BodyPart.RIGHT_MIDDLE_TOE]: renderFootLeft,
+  [BodyPart.RIGHT_RING_TOE]: renderFootLeft,
   [BodyPart.RIGHT_LITTLE_TOE]: renderFootRight,
 };
-function renderFootLeft({
+export function renderFootLeft({
   width,
   currentLocales,
 }: {
@@ -188,7 +192,7 @@ function renderFootLeft({
   return <FootIcon width={width} />;
 }
 
-function renderFootRight({
+export function renderFootRight({
   width,
   currentLocales,
 }: {

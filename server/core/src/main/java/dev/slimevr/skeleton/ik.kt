@@ -117,7 +117,7 @@ fun ccdIkIteration(
 	// Mutate the input skeleton
 	rotateChain(boneInputs, chain, constrainedOffset)
 
-	return buildBones(boneInputs)
+	return buildBones(boneInputs, bones)
 }
 
 typealias IKChain = List<BodyPart>

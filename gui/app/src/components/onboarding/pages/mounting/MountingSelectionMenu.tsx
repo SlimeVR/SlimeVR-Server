@@ -11,6 +11,10 @@ import { BodyPart } from 'solarxr-protocol';
 import { PawIcon } from '@/components/commons/icon/PawIcon';
 import { useLocaleConfig } from '@/i18n/config';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
+import {
+  renderFootLeft,
+  renderFootRight,
+} from '@/components/commons/BodyPartIcon';
 
 // All body parts that are right or left, are by default left!
 export const mapPart: Record<
@@ -148,60 +152,16 @@ export const mapPart: Record<
     <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
-  [BodyPart.LEFT_BIG_TOE]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} />
-    ),
-  [BodyPart.LEFT_INDEX_TOE]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} />
-    ),
-  [BodyPart.LEFT_LITTLE_TOE]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} />
-    ),
-  [BodyPart.RIGHT_BIG_TOE]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} flipped />
-    ),
-  [BodyPart.RIGHT_INDEX_TOE]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} flipped />
-    ),
-  [BodyPart.RIGHT_LITTLE_TOE]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      />
-    ) : (
-      <FootIcon width={width} flipped />
-    ),
+  [BodyPart.LEFT_BIG_TOE]: renderFootLeft,
+  [BodyPart.LEFT_INDEX_TOE]: renderFootLeft,
+  [BodyPart.LEFT_MIDDLE_TOE]: renderFootLeft,
+  [BodyPart.LEFT_RING_TOE]: renderFootLeft,
+  [BodyPart.LEFT_LITTLE_TOE]: renderFootLeft,
+  [BodyPart.RIGHT_BIG_TOE]: renderFootRight,
+  [BodyPart.RIGHT_INDEX_TOE]: renderFootRight,
+  [BodyPart.RIGHT_MIDDLE_TOE]: renderFootLeft,
+  [BodyPart.RIGHT_RING_TOE]: renderFootLeft,
+  [BodyPart.RIGHT_LITTLE_TOE]: renderFootRight,
 };
 
 export function MountingBodyPartIcon({
