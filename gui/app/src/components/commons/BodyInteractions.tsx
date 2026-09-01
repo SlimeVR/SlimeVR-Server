@@ -76,21 +76,11 @@ const readCssVarColor = (varName: string, fallback: string) => {
   return raw ? `rgb(${raw})` : fallback;
 };
 
-export function BodyInteractions({
-  leftControls,
-  rightControls,
-  topControls,
-  highlightedRoles,
-  assignedRoles,
-  dotsSize = 15,
-  onSelectRole,
-  slotStyle,
-  figure,
-  sideNames,
-}: {
+export interface BodyInteractionsProps {
   leftControls?: ReactNode;
   rightControls?: ReactNode;
   topControls?: ReactNode;
+  bottomControls?: ReactNode;
   dotsSize?: number;
   assignedRoles: BodyPart[];
   onSelectRole: (role: BodyPart) => void;
@@ -98,7 +88,21 @@ export function BodyInteractions({
   slotStyle?: BodySlotStyler;
   figure: ReactNode;
   sideNames: BodySideNames;
-}) {
+}
+
+export function BodyInteractions({
+  leftControls,
+  rightControls,
+  topControls,
+  bottomControls,
+  highlightedRoles,
+  assignedRoles,
+  dotsSize = 15,
+  onSelectRole,
+  slotStyle,
+  figure,
+  sideNames,
+}: BodyInteractionsProps) {
   const { isMobile } = useBreakpoint('mobile');
   const { left: leftPartNames, right: rightPartNames } = sideNames;
 
@@ -108,6 +112,7 @@ export function BodyInteractions({
   const leftContainerRef = useRef<HTMLDivElement | null>(null);
   const rightContainerRef = useRef<HTMLDivElement | null>(null);
   const topContainerRef = useRef<HTMLDivElement | null>(null);
+  const bottomContainerRef = useRef<HTMLDivElement | null>(null);
   const updateSlotsRef = useRef<() => void>(() => {});
   const mutationObserverRef = useRef<MutationObserver>(
     new MutationObserver(() => updateSlotsRef.current())
@@ -151,7 +156,9 @@ export function BodyInteractions({
     const right =
       (rightContainerRef.current && pos(rightContainerRef.current)) || [];
     const top = (topContainerRef.current && pos(topContainerRef.current)) || [];
-    return [...left, ...right, ...top];
+    const bottom =
+      (bottomContainerRef.current && pos(bottomContainerRef.current)) || [];
+    return [...left, ...right, ...top, ...bottom];
   };
 
   const getOffset = (el: HTMLDivElement, offset = { left: 0, top: 0 }) => {
@@ -314,6 +321,12 @@ export function BodyInteractions({
         childList: true,
         subtree: true,
       });
+    if (bottomContainerRef.current)
+      mutationObserverRef.current.observe(bottomContainerRef.current, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      });
 
     return () => {
       if (
@@ -432,6 +445,14 @@ export function BodyInteractions({
           >
             {rightControls}
           </div>
+        </div>
+        <div
+          ref={bottomContainerRef}
+          className="z-10"
+          onPointerOver={onControlPointerOver}
+          onPointerLeave={() => setHoveredControl(null)}
+        >
+          {bottomControls}
         </div>
       </div>
     </div>

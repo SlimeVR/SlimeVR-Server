@@ -10,13 +10,10 @@ import {
 import {
   ExtremityAssignment,
   ExtremityGroupRenderer,
-  ExtremityJoint,
+  ExtremityRow,
 } from '@/components/onboarding/ExtremityAssignment';
-import {
-  ExtremityDescriptor,
-  ExtremitySide,
-  jointLabelId,
-} from '@/utils/extremities';
+import { DigitFlow } from '@/components/onboarding/extremities/ExtremityLayout';
+import { ExtremityDescriptor, ExtremitySide } from '@/utils/extremities';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useConfig } from '@/hooks/config';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
@@ -99,18 +96,20 @@ export function BodyAssignmentPanel({
   );
 
   const renderGroup: ExtremityGroupRenderer = ({
-    digit,
+    id,
     labelId,
     direction,
-    joints,
+    rows,
     edge,
+    flow,
   }) => (
     <ExtremityGroupCard
-      key={digit}
+      key={id}
       edge={edge}
+      flow={flow}
       labelId={labelId}
       direction={direction}
-      joints={joints}
+      rows={rows}
     />
   );
 
@@ -135,7 +134,9 @@ export function BodyAssignmentPanel({
           </div>
         </div>
       )}
-      <div className="flex-1 min-h-0 overflow-y-auto px-2 flex flex-col fill-background-50">
+      {/* Gutter stays put, or the scrollbar appearing resizes the figure back
+          under the scroll threshold and the two flicker against each other */}
+      <div className="flex-1 min-h-0 overflow-y-auto [scrollbar-gutter:stable] px-2 flex flex-col fill-background-50">
         <div
           className={classNames(
             'w-full m-auto flex-1 min-h-fit flex flex-col tall:py-6',
@@ -277,24 +278,30 @@ export function BodyPartCard(props: BodyPartCardProps) {
   );
 }
 
-const ROOT_CARD = 'w-32 smol:w-40 xsAssign:w-44 p-1';
+const CARD_WIDTH = 'w-32 smol:w-40 xsAssign:w-44';
+const WIDE_CARD_WIDTH =
+  'w-full max-w-96 smol:max-w-[30rem] xsAssign:max-w-[33rem]';
+const SINGLE_CARD = `${CARD_WIDTH} p-1`;
 const DIGIT_CARD =
-  'w-32 smol:w-40 xsAssign:w-44 gap-0.5 p-1 rounded-lg bg-background-70/40 border border-background-60';
+  'gap-0.5 p-1 rounded-lg bg-background-70/40 border border-background-60';
 
 export function ExtremityGroupCard({
   labelId,
   direction,
-  joints,
+  rows,
   edge = 'side',
+  flow = 'rows',
   className,
 }: {
   labelId?: string;
   direction: 'left' | 'right';
-  joints: ExtremityJoint[];
+  rows: ExtremityRow[];
   edge?: 'side' | 'cap';
+  flow?: DigitFlow;
   className?: string;
 }) {
-  const root = labelId === undefined;
+  const single = rows.length === 1;
+  const across = flow === 'columns';
 
   return (
     <div
@@ -302,10 +309,13 @@ export function ExtremityGroupCard({
       data-connector-edge={edge}
       className={classNames(
         'flex flex-col',
-        className ?? (root ? ROOT_CARD : DIGIT_CARD)
+        className ??
+          (single
+            ? SINGLE_CARD
+            : `${DIGIT_CARD} ${across ? WIDE_CARD_WIDTH : CARD_WIDTH}`)
       )}
     >
-      {!root && (
+      {labelId && (
         <div
           className={classNames(
             'px-1.5 pb-0.5 overflow-hidden',
@@ -321,19 +331,27 @@ export function ExtremityGroupCard({
           />
         </div>
       )}
-      {joints.map(({ role, td, roleError }, i) => (
-        <BodyPartCard
-          key={role}
-          compact
-          number={root ? undefined : i + 1}
-          connector={i === 0}
-          labelId={root ? undefined : jointLabelId(role)}
-          role={role}
-          direction={direction}
-          td={td}
-          roleError={roleError}
-        />
-      ))}
+      <div
+        className={classNames(
+          across ? 'grid grid-cols-3 gap-1' : 'flex flex-col gap-0.5'
+        )}
+      >
+        {rows.map(
+          ({ role, td, roleError, labelId: rowLabelId, number, connector }) => (
+            <BodyPartCard
+              key={role}
+              compact
+              number={number}
+              connector={connector}
+              labelId={rowLabelId}
+              role={role}
+              direction={direction}
+              td={td}
+              roleError={roleError}
+            />
+          )
+        )}
+      </div>
     </div>
   );
 }

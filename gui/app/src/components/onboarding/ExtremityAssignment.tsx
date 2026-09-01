@@ -1,12 +1,14 @@
-import classNames from 'classnames';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { BodyPart } from 'solarxr-protocol';
-import {
-  BodyInteractions,
-  BodySlotStyler,
-} from '@/components/commons/BodyInteractions';
+import { BodySlotStyler } from '@/components/commons/BodyInteractions';
 import { ExtremityFigure } from '@/components/commons/ExtremityFigure';
+import {
+  DigitFlow,
+  ExtremityLayoutProvider,
+  ExtremityLayoutValue,
+  ExtremitySlot,
+} from './extremities/ExtremityLayout';
 import { ExtremityDescriptor, ExtremitySide } from '@/utils/extremities';
 import { BodyPartError } from '@/hooks/tracker-assignment';
 import {
@@ -15,18 +17,23 @@ import {
   trackerByBodyPartAtom,
 } from '@/store/app-store';
 
-export type ExtremityJoint = {
+export type ExtremityRow = {
   role: BodyPart;
   td: FlatDeviceTracker | undefined;
   roleError: string | undefined;
+  labelId?: string;
+  number?: number;
+  /** Whether this row draws a line to its dot */
+  connector: boolean;
 };
 
 export type ExtremityGroupRenderer = (args: {
-  digit: string;
+  id: string;
   labelId?: string;
   direction: 'left' | 'right';
-  joints: ExtremityJoint[];
+  rows: ExtremityRow[];
   edge?: 'side' | 'cap';
+  flow?: DigitFlow;
 }) => ReactNode;
 
 export function ExtremityAssignment({
@@ -55,7 +62,6 @@ export function ExtremityAssignment({
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
   const trackerByPart = useAtomValue(trackerByBodyPartAtom);
   const { digits, root } = descriptor.sides[side];
-  const { layout } = descriptor;
 
   const assignedRoles = useMemo(
     () =>
@@ -75,17 +81,19 @@ export function ExtremityAssignment({
     };
   }, [side, digits, root]);
 
-  const jointNumbers = useMemo(() => {
+  /** Parts of a digit share one line, so their dots go by number */
+  const partNumbers = useMemo(() => {
     const numbers = new Map<BodyPart, number>();
-    descriptor.digits.forEach((digit) =>
-      digits[digit].forEach((part, joint) => numbers.set(part, joint + 1))
-    );
+    descriptor.digits.forEach((digit) => {
+      if (digits[digit].length < 2) return;
+      digits[digit].forEach((part, i) => numbers.set(part, i + 1));
+    });
     return numbers;
   }, [descriptor, digits]);
 
   const numberedSlotStyle: BodySlotStyler = useCallback(
     (part: BodyPart) => {
-      const number = jointNumbers.get(part);
+      const number = partNumbers.get(part);
       return {
         ...slotStyle?.(part),
         content: number && (
@@ -95,107 +103,100 @@ export function ExtremityAssignment({
         ),
       };
     },
-    [jointNumbers, slotStyle]
+    [partNumbers, slotStyle]
   );
 
-  const joints = useCallback(
-    (parts: BodyPart[]): ExtremityJoint[] =>
-      parts.map((role) => ({
-        role,
-        td: trackerByPart[role],
-        roleError: rolesWithErrors[role]?.label,
-      })),
+  const cell = useCallback(
+    (role: BodyPart) => ({
+      role,
+      td: trackerByPart[role],
+      roleError: rolesWithErrors[role]?.label,
+    }),
     [trackerByPart, rolesWithErrors]
   );
 
   const mirrored = side === 'left';
 
-  const column = ({
-    group,
-    direction,
-    withRoot,
-    className,
-  }: {
-    group: string[];
-    direction: 'left' | 'right';
-    withRoot: boolean;
-    className: string;
-  }) => (
-    <div className={classNames('flex flex-col gap-2 h-full', className)}>
-      {group.map((digit) =>
-        renderGroup({
-          digit,
-          labelId: descriptor.digitLabelId(digit),
+  const digit = useCallback(
+    (name: string, { direction, edge }: ExtremitySlot, flow: DigitFlow) => {
+      if (name === 'root')
+        return renderGroup({
+          id: name,
           direction,
-          joints: joints(digits[digit]),
-        })
-      )}
-      {withRoot &&
-        renderGroup({ digit: 'root', direction, joints: joints([root]) })}
-    </div>
+          edge,
+          rows: [{ ...cell(root), connector: true }],
+        });
+
+      const parts = digits[name];
+      const main = descriptor.mainPart(parts);
+      const rows = parts.map((part, i) => ({
+        ...cell(part),
+        labelId: descriptor.partLabelId(part),
+        number: parts.length > 1 ? i + 1 : undefined,
+        connector: part === main,
+      }));
+
+      return renderGroup({
+        id: name,
+        // rows of a single part carry their own name already
+        labelId: parts.length > 1 ? descriptor.digitLabelId(name) : undefined,
+        direction,
+        edge,
+        flow,
+        // spread across the figure, so they follow the mirrored dots
+        rows: flow === 'columns' && mirrored ? [...rows].reverse() : rows,
+      });
+    },
+    [descriptor, digits, root, cell, renderGroup, mirrored]
   );
 
-  const sideColumn = (direction: 'left' | 'right', nearSide: boolean) => {
-    if (compact && !nearSide) return null;
+  const figure = useCallback(
+    (height?: number) => (
+      <ExtremityFigure
+        spec={descriptor.figure}
+        parts={descriptor.sides[side]}
+        side={side}
+        height={height}
+        className={fillHeight ? 'absolute inset-0 h-full w-full' : 'w-full'}
+      />
+    ),
+    [descriptor, side, fillHeight]
+  );
 
-    return (
-      <div
-        className={classNames('h-full', direction === 'right' && 'text-right')}
-      >
-        {compact
-          ? column({
-              group: layout.compact.side,
-              direction,
-              withRoot: true,
-              className: 'justify-end',
-            })
-          : column({
-              group: nearSide ? layout.roomy.nearSide : layout.roomy.farSide,
-              direction,
-              withRoot: !nearSide,
-              className: `justify-between ${layout.roomy.jointsBand}`,
-            })}
-      </div>
-    );
-  };
+  const layout = useMemo<ExtremityLayoutValue>(
+    () => ({
+      compact,
+      mirrored,
+      digit,
+      figure,
+      interactions: {
+        dotsSize: dotSize,
+        slotStyle: numberedSlotStyle,
+        sideNames,
+        assignedRoles,
+        highlightedRoles,
+        onSelectRole: onRoleSelected,
+      },
+    }),
+    [
+      compact,
+      mirrored,
+      digit,
+      figure,
+      dotSize,
+      numberedSlotStyle,
+      sideNames,
+      assignedRoles,
+      highlightedRoles,
+      onRoleSelected,
+    ]
+  );
+
+  const { Layout } = descriptor;
 
   return (
-    <BodyInteractions
-      dotsSize={dotSize}
-      slotStyle={numberedSlotStyle}
-      sideNames={sideNames}
-      assignedRoles={assignedRoles}
-      highlightedRoles={highlightedRoles}
-      onSelectRole={onRoleSelected}
-      figure={
-        <ExtremityFigure
-          spec={descriptor.figure}
-          parts={descriptor.sides[side]}
-          side={side}
-          height={compact ? layout.compact.figureHeight : undefined}
-          className={fillHeight ? 'absolute inset-0 h-full w-full' : 'w-full'}
-        />
-      }
-      topControls={
-        compact && (
-          <div className="grid grid-cols-3 gap-1 smol:gap-2 pb-1 [&>*]:w-full">
-            {(mirrored
-              ? [...layout.compact.top].reverse()
-              : layout.compact.top
-            ).map((digit) =>
-              renderGroup({
-                digit,
-                labelId: descriptor.digitLabelId(digit),
-                direction: 'left',
-                joints: joints(digits[digit]),
-                edge: 'cap',
-              })
-            )}
-          </div>
-        )
-      }
-      leftControls={sideColumn('right', !mirrored)}
-      rightControls={sideColumn('left', mirrored)}
-    />
+    <ExtremityLayoutProvider value={layout}>
+      <Layout />
+    </ExtremityLayoutProvider>
   );
 }

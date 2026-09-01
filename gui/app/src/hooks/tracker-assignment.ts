@@ -21,11 +21,9 @@ import {
   trackerByBodyPartAtom,
 } from '@/store/app-store';
 import { hoveredBodyPartAtom } from './tracker-drag';
-import {
-  ExtremityDescriptor,
-  ExtremitySide,
-  HAND_EXTREMITY,
-} from '@/utils/extremities';
+import { ExtremityDescriptor, ExtremitySide } from '@/utils/extremities';
+import { HAND_EXTREMITY } from '@/components/onboarding/extremities/hand';
+import { FOOT_EXTREMITY } from '@/components/onboarding/extremities/foot';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -164,9 +162,9 @@ export const ASSIGNMENT_TABS: Record<AssignmentTab, AssignmentTabSpec> = {
   },
   toes: {
     labelId: 'onboarding-assign_trackers-tab-toes',
-    enabled: false,
-    dotSize: { drag: 22, tap: 20 },
-    view: { kind: 'body' },
+    enabled: true,
+    dotSize: { drag: 20, tap: 18 },
+    view: { kind: 'extremity', descriptor: FOOT_EXTREMITY },
   },
 };
 
