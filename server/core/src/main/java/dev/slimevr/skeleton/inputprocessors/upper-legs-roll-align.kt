@@ -3,7 +3,7 @@ package dev.slimevr.skeleton.inputprocessors
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.mutate
+import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
@@ -25,7 +25,7 @@ class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputPr
 		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsTwistWithLowerLegs
 		if (ratio == 0f) return inputSkeleton
 
-		return inputSkeleton.mutate { updated ->
+		return inputSkeleton.mutateCopy { updated ->
 			for (bodyPartToSource in bodyPartToSources) {
 				val bone = inputSkeleton.getValue(bodyPartToSource.first)
 				if (!bone.isRotationActive) continue

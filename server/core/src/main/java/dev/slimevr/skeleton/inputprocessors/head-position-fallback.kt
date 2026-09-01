@@ -3,7 +3,7 @@ package dev.slimevr.skeleton.inputprocessors
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.mutate
+import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
@@ -16,6 +16,6 @@ class HeadPositionFallbackProcessor(val settings: Settings) : SkeletonInputProce
 		if (headBone.rawPosition != null) return inputSkeleton
 
 		// Set the head position to the be standing up at the origin
-		return inputSkeleton.mutate { it[BodyPart.HEAD] = headBone.copy(rawPosition = Vector3(0f, skeletonHeight, 0f)) }
+		return inputSkeleton.mutateCopy { it[BodyPart.HEAD] = headBone.copy(rawPosition = Vector3(0f, skeletonHeight, 0f)) }
 	}
 }

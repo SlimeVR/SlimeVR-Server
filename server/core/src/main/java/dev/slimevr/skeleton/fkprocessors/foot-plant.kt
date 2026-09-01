@@ -4,7 +4,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
-import dev.slimevr.skeleton.mutate
+import dev.slimevr.skeleton.mutateCopy
 import dev.slimevr.tracker.eulerHeading
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
@@ -34,7 +34,7 @@ class FootPlantFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 	override fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float): InputSkeleton {
 		if (!settings.context.state.value.data.skeletonConfig.toggles.footPlant) return inputSkeleton
 
-		return inputSkeleton.mutate {
+		return inputSkeleton.mutateCopy {
 			for (bodyPart in bodyParts) {
 				val input = it[bodyPart] ?: continue
 				val output = fk[bodyPart] ?: continue

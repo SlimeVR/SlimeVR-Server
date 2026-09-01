@@ -4,7 +4,7 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.skeleton.iterateBodyPartHierarchy
-import dev.slimevr.skeleton.mutate
+import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Vector3
 import kotlin.collections.set
 
@@ -13,7 +13,7 @@ import kotlin.collections.set
  * falling back to their parent's yaw.
  */
 class BoneYawFallbackInputProcessor : SkeletonInputProcessor {
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutate { updated ->
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutateCopy { updated ->
 		inputSkeleton.forEachBone { parentPart, parentBone ->
 			if (!parentBone.isRotationActive) return@forEachBone // Parent needs to be active
 			val children = iterateBodyPartHierarchy(parentPart, true)

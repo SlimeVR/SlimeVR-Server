@@ -3,7 +3,7 @@ package dev.slimevr.skeleton.inputprocessors
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.mutate
+import dev.slimevr.skeleton.mutateCopy
 import dev.slimevr.skeleton.resolveAverageRotationFor
 import solarxr_protocol.datatypes.BodyPart
 
@@ -49,7 +49,7 @@ class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor
 			if (!hasHip) add(BodyPart.HIP)
 		}
 
-		return inputSkeleton.mutate { updated ->
+		return inputSkeleton.mutateCopy { updated ->
 			for ((chainIndex, bodyPart) in missingSpineParts.withIndex()) {
 				val bone = inputSkeleton.getValue(bodyPart)
 

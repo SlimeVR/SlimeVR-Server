@@ -4,7 +4,7 @@ import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
-import dev.slimevr.skeleton.mutate
+import dev.slimevr.skeleton.mutateCopy
 import dev.slimevr.tracker.eulerHeading
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
@@ -53,7 +53,7 @@ class ToeSnapFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 	override fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float): InputSkeleton {
 		if (!settings.context.state.value.data.skeletonConfig.toggles.toeSnap) return inputSkeleton
 
-		return inputSkeleton.mutate {
+		return inputSkeleton.mutateCopy {
 			// TODO This loop format should be turned into a function
 			for (bodyPart in bodyParts) {
 				val input = it[bodyPart] ?: continue

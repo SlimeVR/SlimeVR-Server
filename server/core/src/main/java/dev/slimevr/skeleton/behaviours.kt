@@ -119,7 +119,7 @@ class ComputedSkeletonBehaviour(
 						// TODO find out a cleaner way to pause tracking that doesn't add 1 frame latency (not a priority)
 						val boneInputs = if (targetState.pausedBoneInputs != null) {
 							// Use already-processed paused tracking data except for the head
-							targetState.pausedBoneInputs.mutate { it[BodyPart.HEAD] = targetState.boneInputs[BodyPart.HEAD] }
+							targetState.pausedBoneInputs.mutateCopy { it[BodyPart.HEAD] = targetState.boneInputs[BodyPart.HEAD] }
 						} else {
 							// Run pre-FK processors
 							// TODO: Add a constrain processor (maybe not needed)
