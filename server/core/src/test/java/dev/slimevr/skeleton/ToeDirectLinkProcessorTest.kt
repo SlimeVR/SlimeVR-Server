@@ -1,6 +1,6 @@
 package dev.slimevr.skeleton
 
-import dev.slimevr.skeleton.processors.ToeDirectLinkProcessor
+import dev.slimevr.skeleton.processors.ToeDirectLinkInputProcessor
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.Test
 import solarxr_protocol.datatypes.BodyPart
@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 class ToeDirectLinkProcessorTest {
 	@Test
 	fun `test missing all toe trackers`() {
-		val processor = ToeDirectLinkProcessor()
+		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
@@ -69,7 +69,7 @@ class ToeDirectLinkProcessorTest {
 
 	@Test
 	fun `test missing toe trackers from index toe downwards`() {
-		val processor = ToeDirectLinkProcessor()
+		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
@@ -131,7 +131,7 @@ class ToeDirectLinkProcessorTest {
 
 	@Test
 	fun `test missing toe trackers from middle toe downwards`() {
-		val processor = ToeDirectLinkProcessor()
+		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
@@ -196,7 +196,7 @@ class ToeDirectLinkProcessorTest {
 
 	@Test
 	fun `test missing toe trackers from ring toe downwards`() {
-		val processor = ToeDirectLinkProcessor()
+		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),
@@ -257,7 +257,7 @@ class ToeDirectLinkProcessorTest {
 
 	@Test
 	fun `test missing little toe tracker`() {
-		val processor = ToeDirectLinkProcessor()
+		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutate { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
 				rawRotation = Quaternion.Companion.fromRotationVector(10f, 40f, 15f),

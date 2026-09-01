@@ -1,14 +1,16 @@
 package dev.slimevr.skeleton.processors
 
 import dev.slimevr.skeleton.BodyPartMap
-import dev.slimevr.skeleton.SkeletonProcessor
+import dev.slimevr.skeleton.InputSkeleton
+import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.SkeletonState
+import dev.slimevr.skeleton.mutate
 import solarxr_protocol.datatypes.BodyPart
 
 /**
  * Handles rotations of inactive toe bones.
  */
-class ToeDirectLinkProcessor : SkeletonProcessor {
+class ToeDirectLinkInputProcessor : SkeletonInputProcessor {
 	/**
 	 * First element is the linked BodyPart.
 	 *
@@ -28,17 +30,15 @@ class ToeDirectLinkProcessor : SkeletonProcessor {
 		BodyPart.RIGHT_LITTLE_TOE to BodyPart.RIGHT_RING_TOE,
 	)
 
-	override fun process(state: SkeletonState): SkeletonState {
-		val updatedBoneInputs = BodyPartMap(state.boneInputs)
-
-		for ((bodyPart, source) in toesToSource) {
-			val bone = updatedBoneInputs.getValue(bodyPart)
-			if (bone.isActive) continue
-
-			val sourceBone = updatedBoneInputs[source]
-			updatedBoneInputs[bodyPart] = bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
+		return inputSkeleton.mutate { updated ->
+			for ((bodyPart, source) in toesToSource) {
+				val bone = updated.getValue(bodyPart)
+				if (bone.isRotationActive) continue
+				val sourceBone = updated[source]
+				updated[bodyPart] =
+					bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
+			}
 		}
-
-		return state.copy(boneInputs = updatedBoneInputs)
 	}
 }
