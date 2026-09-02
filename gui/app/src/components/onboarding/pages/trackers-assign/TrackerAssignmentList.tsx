@@ -64,7 +64,7 @@ export function TrackerAssignmentList() {
           color="secondary"
           id="onboarding-assign_trackers-assigned"
           vars={{
-            assigned: assignedPartsCount,
+            assigned: assignedCount,
             trackers: expectedTrackersCount,
           }}
         />

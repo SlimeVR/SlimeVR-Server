@@ -20,7 +20,6 @@ import { TrackerAssignmentList } from './TrackerAssignmentList';
 export function TrackersAssignPage() {
   const { isMobileAssign } = useBreakpoint('mobileAssign');
   const { applyProgress } = useOnboarding();
-  // The narrow layout has no room to drag, so it picks the two halves in turn
   const assignment = useTrackerAssignment(isMobileAssign ? 'tap' : 'drag');
   applyProgress(0.5);
 
