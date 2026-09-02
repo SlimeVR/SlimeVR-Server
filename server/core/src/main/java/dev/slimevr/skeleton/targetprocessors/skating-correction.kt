@@ -38,7 +38,7 @@ data class LockState(
 	val position: Vector3 = Vector3.NULL,
 )
 
-val VELOCITY_BODY_PARTS = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
+val VELOCITY_BODY_PARTS = arrayOf(BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG)
 
 const val FOOT_VELOCITY_SENSITIVITY = 1f
 const val FOOT_ACCELERATION_SENSITIVITY = 1f

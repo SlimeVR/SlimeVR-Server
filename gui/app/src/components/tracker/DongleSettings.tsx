@@ -54,7 +54,9 @@ export function DongleSettingsPage() {
   const { dongleid } = useParams<{ dongleid: string }>();
   const dongleId = dongleid ? +dongleid : undefined;
 
-  const { control, watch, reset } = useForm<{ dongleName: string }>({
+  const { control, watch, reset, handleSubmit } = useForm<{
+    dongleName: string;
+  }>({
     defaultValues: { dongleName: '' },
     reValidateMode: 'onSubmit',
   });
@@ -89,6 +91,10 @@ export function DongleSettingsPage() {
 
     const req = new ChangeDongleSettingsRequestT(dongle.id, dongleName || null);
     sendRPCPacket(RpcMessage.ChangeDongleSettingsRequest, req);
+  };
+
+  const onSettingsSubmit = () => {
+    updateDongleSettings();
   };
 
   useDebouncedEffect(() => updateDongleSettings(), [dongleName], 1000);
@@ -194,16 +200,21 @@ export function DongleSettingsPage() {
                 id="dongle-settings-name_section"
               />
               <Typography id="dongle-settings-name_section-description" />
-              <Input
-                placeholder={l10n.getString(
-                  'dongle-settings-name_section-placeholder'
-                )}
-                type="text"
-                name="dongleName"
-                control={control}
-                autocomplete="off"
-                rules={undefined}
-              />
+              <form
+                className="h-full overflow-y-auto"
+                onSubmit={handleSubmit(onSettingsSubmit)}
+              >
+                <Input
+                  placeholder={l10n.getString(
+                    'dongle-settings-name_section-placeholder'
+                  )}
+                  type="text"
+                  name="dongleName"
+                  control={control}
+                  autocomplete="off"
+                  rules={undefined}
+                />
+              </form>
             </div>
           </div>
           <div className="flex flex-col flex-grow bg-background-70 rounded-lg p-5 gap-3">

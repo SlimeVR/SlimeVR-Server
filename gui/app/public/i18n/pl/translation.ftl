@@ -800,7 +800,6 @@ onboarding-connect_tracker-next = Połączyłem już wszystkie trackery
 
 onboarding-assign_trackers-title = Przydziel Trackery
 onboarding-assign_trackers-description = Wybierzmy gdzie idzie jaki tracker. Naciśnij gdzie chcesz go przydzielić
-onboarding-assign_trackers-unassign_all = Usuń przydzielenie wszystkich urządzeń
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server

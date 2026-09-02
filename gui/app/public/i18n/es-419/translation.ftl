@@ -861,7 +861,6 @@ onboarding-connect_tracker-next = He conectado todos mis sensores
 
 onboarding-assign_trackers-title = Asignación de sensores
 onboarding-assign_trackers-description = Debes escoger dónde van los sensores. Has clic en la ubicación donde quieras colocar un sensor
-onboarding-assign_trackers-unassign_all = Des-asignar todos los trackers
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server

@@ -819,7 +819,6 @@ onboarding-connect_tracker-next = J'ai connecté tous mes capteurs
 
 onboarding-assign_trackers-title = Attribuer des capteurs
 onboarding-assign_trackers-description = Choisissons où mettre chaque capteur.
-onboarding-assign_trackers-unassign_all = Désattribuer tout les capteurs
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server

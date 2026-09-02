@@ -20,7 +20,7 @@ import { WaistIcon } from './icon/WaistIcon';
 import { UpperChestIcon } from './icon/UpperChestIcon';
 import { FingersIcon } from './icon/FingersIcon';
 
-const BUTTERFLY_BOARDS = new Set([
+export const BUTTERFLY_BOARDS = new Set([
   BoardType.SLIMEVR_BUTTERFLY,
   BoardType.SLIMEVR_BUTTERFLY_DEV,
 ]);

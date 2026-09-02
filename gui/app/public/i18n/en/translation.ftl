@@ -247,6 +247,7 @@ reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
 reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
+reset-error-no_feet_tracker = No feet tracker assigned / available
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = New serial device detected!
@@ -1097,7 +1098,7 @@ onboarding-connect_tracker-next = I connected all my trackers
 ## Tracker assignment setup
 onboarding-assign_trackers-title = Assign trackers
 onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker
-onboarding-assign_trackers-unassign_all = Unassign all trackers
+onboarding-assign_trackers-reset_assignments = Reset all assignments
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server

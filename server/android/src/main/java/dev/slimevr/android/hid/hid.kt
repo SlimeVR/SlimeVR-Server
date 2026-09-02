@@ -7,56 +7,154 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbEndpoint
 import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
 import androidx.core.content.ContextCompat
 import dev.slimevr.AppContextProvider
-import dev.slimevr.VRServerActions
-import dev.slimevr.hid.HIDReceiver
-import dev.slimevr.hid.HIDReceiverActions
+import dev.slimevr.hid.HidConnection
+import dev.slimevr.hid.HidDeviceDescriptor
+import dev.slimevr.hid.HidTransport
 import dev.slimevr.hid.isCompatibleHidReceiver
 import dev.slimevr.hid.isCompatibleHidTracker
-import dev.slimevr.hid.parseHIDPackets
+import dev.slimevr.hid.runHidManager
 import dev.slimevr.logging.AppLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
-import solarxr_protocol.data_feed.dongle_data.DongleStatus
 
 private const val ACTION_USB_HID_PERMISSION = "dev.slimevr.android.USB_HID_PERMISSION"
-private const val HID_POLL_INTERVAL_MS = 3000L
+private const val HID_WRITE_TIMEOUT_MS = 1000
 
-private fun findHidInputEndpoint(device: UsbDevice): Pair<UsbInterface, UsbEndpoint>? {
+private data class HidEndpoints(val iface: UsbInterface, val input: UsbEndpoint, val output: UsbEndpoint?)
+
+private fun findHidEndpoints(device: UsbDevice): HidEndpoints? {
 	for (ifaceIdx in 0 until device.interfaceCount) {
 		val iface = device.getInterface(ifaceIdx)
 		if (iface.interfaceClass != UsbConstants.USB_CLASS_HID) continue
+
+		var input: UsbEndpoint? = null
+		var output: UsbEndpoint? = null
 		for (epIdx in 0 until iface.endpointCount) {
 			val endpoint = iface.getEndpoint(epIdx)
-			if (endpoint.type == UsbConstants.USB_ENDPOINT_XFER_INT &&
-				endpoint.direction == UsbConstants.USB_DIR_IN
-			) {
-				return iface to endpoint
+			if (endpoint.type != UsbConstants.USB_ENDPOINT_XFER_INT) continue
+			when (endpoint.direction) {
+				UsbConstants.USB_DIR_IN -> if (input == null) input = endpoint
+				UsbConstants.USB_DIR_OUT -> if (output == null) output = endpoint
 			}
 		}
+
+		if (input != null) return HidEndpoints(iface, input, output)
 	}
 	return null
 }
 
-private data class ActiveReceiver(val job: Job, val receiver: HIDReceiver)
+private class AndroidHidConnection(
+	private val connection: UsbDeviceConnection,
+	private val endpoints: HidEndpoints,
+) : HidConnection {
+	private val writeLock = Mutex()
 
-fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, scope: CoroutineScope) {
+	@Volatile
+	private var closed = false
+
+	override suspend fun read(buffer: ByteArray, timeoutMs: Int): Int = withContext(Dispatchers.IO) {
+		if (closed) return@withContext -1
+		connection.bulkTransfer(endpoints.input, buffer, buffer.size, timeoutMs).coerceAtLeast(0)
+	}
+
+	override suspend fun write(data: ByteArray): Int = writeLock.withLock {
+		val output = endpoints.output ?: return@withLock -1
+		if (closed) return@withLock -1
+		withContext(Dispatchers.IO) {
+			connection.bulkTransfer(output, data, data.size, HID_WRITE_TIMEOUT_MS)
+		}
+	}
+
+	override suspend fun close() {
+		writeLock.withLock {
+			if (closed) return@withLock
+			closed = true
+			withContext(Dispatchers.IO) {
+				connection.releaseInterface(endpoints.iface)
+				connection.close()
+			}
+		}
+	}
+}
+
+private class AndroidHidTransport(
+	private val context: Context,
+	private val usbManager: UsbManager,
+	private val permissionIntent: PendingIntent,
+	private val usbReceiver: BroadcastReceiver,
+	private val wakeChannel: Channel<Unit>,
+) : HidTransport {
+	private val permissionRequested = mutableSetOf<String>()
+
+	override val wakeSignal: ReceiveChannel<Unit> = wakeChannel
+
+	override suspend fun enumerate(directTrackersEnabled: Boolean): Map<String, HidDeviceDescriptor> = withContext(Dispatchers.IO) {
+		val compatible = usbManager.deviceList.values.filter { device ->
+			isCompatibleHidReceiver(device.vendorId, device.productId) ||
+				(directTrackersEnabled && isCompatibleHidTracker(device.vendorId, device.productId))
+		}
+
+		for (device in compatible) {
+			if (usbManager.hasPermission(device) || device.deviceName in permissionRequested) continue
+			AppLogger.hid.info("Requesting USB HID permission for ${device.deviceName}")
+			usbManager.requestPermission(device, permissionIntent)
+			permissionRequested.add(device.deviceName)
+		}
+		permissionRequested.retainAll(compatible.mapTo(mutableSetOf()) { device -> device.deviceName })
+
+		// Only permitted devices are handed up, so the manager never tries to open one it cannot
+		compatible
+			.filter { device -> usbManager.hasPermission(device) }
+			.associate { device ->
+				device.deviceName to HidDeviceDescriptor(
+					key = device.deviceName,
+					vendorId = device.vendorId,
+					productId = device.productId,
+					serialNumber = device.serialNumber,
+				)
+			}
+	}
+
+	override suspend fun open(descriptor: HidDeviceDescriptor): HidConnection? = withContext(Dispatchers.IO) {
+		val device = usbManager.deviceList[descriptor.key] ?: return@withContext null
+
+		val endpoints = findHidEndpoints(device)
+		if (endpoints == null) {
+			AppLogger.hid.warn("No HID input endpoint found for ${descriptor.key}")
+			return@withContext null
+		}
+
+		val connection = usbManager.openDevice(device) ?: return@withContext null
+		if (!connection.claimInterface(endpoints.iface, true)) {
+			connection.close()
+			AppLogger.hid.warn("Failed to claim HID interface for ${descriptor.key}")
+			return@withContext null
+		}
+
+		AndroidHidConnection(connection, endpoints)
+	}
+
+	override suspend fun shutdown() {
+		context.unregisterReceiver(usbReceiver)
+		wakeChannel.close()
+	}
+}
+
+fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, scope: CoroutineScope): Job {
 	val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
-	val wakeSignal = Channel<Unit>(Channel.CONFLATED)
-	val permissionRequested = mutableSetOf<String>()
-	val active = mutableMapOf<String, ActiveReceiver>()
+	val wakeChannel = Channel<Unit>(Channel.CONFLATED)
 
 	val permissionIntent = PendingIntent.getBroadcast(
 		context,
@@ -67,7 +165,7 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 
 	val usbReceiver = object : BroadcastReceiver() {
 		override fun onReceive(ctx: Context, intent: Intent) {
-			wakeSignal.trySend(Unit)
+			wakeChannel.trySend(Unit)
 		}
 	}
 
@@ -77,114 +175,6 @@ fun createAndroidHIDManager(context: Context, appContext: AppContextProvider, sc
 	}
 	ContextCompat.registerReceiver(context, usbReceiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
 
-	scope.launch {
-		while (isActive) {
-			val directTrackersEnabled = appContext.config.settings.context.state.value.data.hidConfig.trackersOverHid
-			val found = withContext(Dispatchers.IO) {
-				try {
-					usbManager.deviceList.values
-						.filter { device ->
-							isCompatibleHidReceiver(device.vendorId, device.productId) ||
-								(directTrackersEnabled && isCompatibleHidTracker(device.vendorId, device.productId))
-						}
-						.associate { device -> device.deviceName to device }
-				} catch (e: Exception) {
-					AppLogger.hid.error(e, "HID enumeration failed")
-					emptyMap()
-				}
-			}
-
-			for ((deviceName, device) in found) {
-				if (!usbManager.hasPermission(device) && deviceName !in permissionRequested) {
-					AppLogger.hid.info("Requesting USB HID permission for $deviceName")
-					usbManager.requestPermission(device, permissionIntent)
-					permissionRequested.add(deviceName)
-				}
-			}
-
-			val authorized = found.filter { (_, device) -> usbManager.hasPermission(device) }
-
-			val toRemove = (active.keys - authorized.keys) +
-				active.entries.filter { (_, entry) -> !entry.job.isActive }.map { (key, _) -> key }
-			for (deviceName in toRemove) {
-				val entry = active.remove(deviceName) ?: continue
-				entry.job.cancel()
-				entry.job.join()
-				permissionRequested.remove(deviceName)
-				AppLogger.hid.info("HID device removed: $deviceName")
-			}
-
-			for ((deviceName, device) in authorized) {
-				if (deviceName in active) continue
-				permissionRequested.remove(deviceName)
-
-				val hidEndpoint = findHidInputEndpoint(device)
-				if (hidEndpoint == null) {
-					AppLogger.hid.warn("No HID input endpoint found for $deviceName")
-					continue
-				}
-				val (iface, endpoint) = hidEndpoint
-
-				val connection = withContext(Dispatchers.IO) { usbManager.openDevice(device) }
-				if (connection == null) {
-					AppLogger.hid.warn("Failed to open HID device $deviceName")
-					continue
-				}
-
-				connection.claimInterface(iface, true)
-
-				val serial = device.serialNumber ?: deviceName
-				AppLogger.hid.info("HID device detected: $serial")
-
-				val deviceJob = Job(scope.coroutineContext[Job])
-				val deviceScope = CoroutineScope(scope.coroutineContext + deviceJob)
-
-				val receiver = appContext.server.context.state.value.dongles.values
-					.find { it.context.state.value.serialNumber == serial }
-					?: run {
-						val id = appContext.server.nextHandle()
-						val created = HIDReceiver.create(
-							id = id,
-							serialNumber = serial,
-							isDirect = isCompatibleHidTracker(device.vendorId, device.productId),
-							appContext = appContext,
-							scope = scope,
-						)
-						appContext.server.context.dispatch(VRServerActions.NewDongle(id, created))
-						created
-					}
-				receiver.context.dispatch(HIDReceiverActions.SetStatus(DongleStatus.CONNECTED))
-
-				deviceScope.launch(Dispatchers.IO) {
-					try {
-						val buffer = ByteArray(64)
-						while (isActive) {
-							val read = try {
-								connection.bulkTransfer(endpoint, buffer, buffer.size, 0)
-							} catch (_: Exception) {
-								-1
-							}
-							when {
-								read < 0 -> return@launch
-								read > 0 -> parseHIDPackets(buffer, read).forEach { packet -> receiver.packetEvents.emit(packet) }
-								else -> delay(1)
-							}
-						}
-					} finally {
-						withContext(NonCancellable + Dispatchers.IO) {
-							connection.releaseInterface(iface)
-							connection.close()
-						}
-						withContext(NonCancellable) { receiver.onDisconnected() }
-					}
-				}
-				deviceJob.complete()
-
-				active[deviceName] = ActiveReceiver(deviceJob, receiver)
-			}
-
-			permissionRequested.retainAll(found.keys)
-			withTimeoutOrNull(HID_POLL_INTERVAL_MS) { wakeSignal.receive() }
-		}
-	}
+	val transport = AndroidHidTransport(context, usbManager, permissionIntent, usbReceiver, wakeChannel)
+	return runHidManager(appContext, transport, scope)
 }

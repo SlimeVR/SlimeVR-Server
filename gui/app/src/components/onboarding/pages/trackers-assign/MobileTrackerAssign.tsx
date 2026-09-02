@@ -219,7 +219,7 @@ export function MobileTrackerAssign() {
                   variant="secondary"
                   className="whitespace-nowrap !px-3 !py-1.5"
                   onClick={assignment.unassignAll}
-                  id="onboarding-assign_trackers-unassign_all"
+                  id="onboarding-assign_trackers-reset_assignments"
                 />
               )
             }
