@@ -20,9 +20,12 @@ import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
+import java.util.concurrent.Executors
 import solarxr_protocol.rpc.SkeletonBone
 
 data class BoneInput(
@@ -48,18 +51,23 @@ data class BoneState(
 	val angularVelocity: Vector3,
 	val linearVelocity: Vector3,
 ) {
-	private val orientationOffset = when {
-		offset.len() == 0f -> Quaternion.IDENTITY
-		offset.unit().y == 1f -> Quaternion.I
-		else -> Quaternion.fromTo(Vector3.NEG_Y, offset)
-	}
-	val orientation: Quaternion = rotation * orientationOffset
+	// FK rebuilds most of the skeleton every frame, so anything read less often than that is
+	// computed on demand rather than per bone
+	private val orientationOffset: Quaternion
+		get() = when {
+			offset.len() == 0f -> Quaternion.IDENTITY
+			offset.unit().y == 1f -> Quaternion.I
+			else -> Quaternion.fromTo(Vector3.NEG_Y, offset)
+		}
+	val orientation: Quaternion
+		get() = rotation * orientationOffset
 
 	val localRotation: Quaternion
 		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
 	val localHeadPosition: Vector3
 		get() = parentBone?.let { headPosition - it.tailPosition } ?: headPosition
-	val localTailPosition = tailPosition - headPosition
+	val localTailPosition: Vector3
+		get() = tailPosition - headPosition
 }
 
 typealias InputSkeleton = BodyPartMap<BoneInput>
@@ -141,10 +149,10 @@ sealed interface SkeletonActions {
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
 typealias SkeletonBehaviour = Behaviour<Skeleton>
 interface SkeletonInputProcessor {
-	fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton
+	fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float)
 }
 interface SkeletonFkProcessor {
-	fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float): InputSkeleton
+	fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
@@ -164,6 +172,14 @@ class Skeleton(
 		const val DEFAULT_HZ = 500
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, hz: Int = DEFAULT_HZ): Skeleton {
+			// The tick loop parks its thread to hit its interval, so the module gets a thread of its
+			// own rather than holding up whatever else shares the caller's dispatcher
+			val dispatcher = Executors.newSingleThreadExecutor { runnable ->
+				Thread(runnable, "Skeleton").apply { isDaemon = true }
+			}.asCoroutineDispatcher()
+			scope.coroutineContext[Job]?.invokeOnCompletion { dispatcher.close() }
+			val moduleScope = CoroutineScope(scope.coroutineContext + dispatcher)
+
 			val settings = ctx.config.settings
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
@@ -199,7 +215,7 @@ class Skeleton(
 
 			val context = Context.create(
 				initialState = DEFAULT_SKELETON_STATE,
-				scope = scope,
+				scope = moduleScope,
 				reducer = ::reduce,
 				behaviours = behaviours,
 				name = "Skeleton",

@@ -3,7 +3,6 @@ package dev.slimevr.skeleton.inputprocessors
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
@@ -11,18 +10,16 @@ import solarxr_protocol.datatypes.BodyPart
  * Handles rotating the hip' yaw and roll to match the upper legs' yaw and roll.
  */
 class HipYawRollAlignInputProcessor(val settings: Settings) : SkeletonInputProcessor {
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
-		val hipBone = inputSkeleton[BodyPart.HIP] ?: return inputSkeleton
-		if (hipBone.isRotationActive) return inputSkeleton
-		val leftUpperLegBone = inputSkeleton[BodyPart.LEFT_UPPER_LEG] ?: return inputSkeleton
-		val rightUpperLegBone = inputSkeleton[BodyPart.RIGHT_UPPER_LEG] ?: return inputSkeleton
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
+		val hipBone = inputSkeleton[BodyPart.HIP] ?: return
+		if (hipBone.isRotationActive) return
+		val leftUpperLegBone = inputSkeleton[BodyPart.LEFT_UPPER_LEG] ?: return
+		val rightUpperLegBone = inputSkeleton[BodyPart.RIGHT_UPPER_LEG] ?: return
 
-		return inputSkeleton.mutateCopy { updated ->
-			val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
-			val sourceRotation = leftUpperLegBone.rotation.lerpQ(rightUpperLegBone.rotation, 0.5f)
-			val alignedRotation = alignYawRoll(hipBone.rotation, sourceRotation)
-			updated[BodyPart.HIP] = hipBone.copy(rotation = hipBone.rotation.interpQ(alignedRotation, ratio))
-		}
+		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
+		val sourceRotation = leftUpperLegBone.rotation.lerpQ(rightUpperLegBone.rotation, 0.5f)
+		val alignedRotation = alignYawRoll(hipBone.rotation, sourceRotation)
+		inputSkeleton[BodyPart.HIP] = hipBone.copy(rotation = hipBone.rotation.interpQ(alignedRotation, ratio))
 	}
 
 	/**

@@ -5,7 +5,6 @@ import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonFkProcessor
-import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
@@ -100,10 +99,10 @@ private fun isUserSitting(fk: ComputedSkeleton): Boolean {
 }
 
 class LocalizerFkProcessor(val settings: Settings) : SkeletonFkProcessor {
-	override fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float): InputSkeleton {
-		val headInput = inputSkeleton[BodyPart.HEAD] ?: return inputSkeleton
+	override fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
+		val headInput = inputSkeleton[BodyPart.HEAD] ?: return
 		if (headInput.isPositionActive || !settings.context.state.value.data.skeletonConfig.toggles.mocapMode) {
-			return inputSkeleton
+			return
 		}
 
 		val travel = when (getWorldReference(fk)) {
@@ -117,6 +116,6 @@ class LocalizerFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 		}
 
 		val newHeadPosition = (headInput.position ?: Vector3.NULL) - travel
-		return inputSkeleton.mutateCopy { updated -> updated[BodyPart.HEAD] = headInput.copy(position = newHeadPosition) }
+		inputSkeleton[BodyPart.HEAD] = headInput.copy(position = newHeadPosition)
 	}
 }

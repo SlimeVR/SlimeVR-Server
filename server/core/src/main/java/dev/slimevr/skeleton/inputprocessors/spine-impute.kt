@@ -1,10 +1,8 @@
 package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
-import dev.slimevr.skeleton.BoneInput
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
@@ -38,7 +36,7 @@ class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor
 		else -> error("Invalid missing spine body part $bodyPart")
 	}
 
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val ratios = settings.context.state.value.data.skeletonConfig.ratios
 
 		val hasChest = inputSkeleton[BodyPart.UPPER_CHEST]?.isRotationActive == true || inputSkeleton[BodyPart.CHEST]?.isRotationActive == true
@@ -50,49 +48,47 @@ class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor
 			if (!hasHip) add(BodyPart.HIP)
 		}
 
-		return inputSkeleton.mutateCopy { updated ->
-			for ((chainIndex, bodyPart) in missingSpineParts.withIndex()) {
-				val bone = inputSkeleton[bodyPart] ?: continue
+		for ((chainIndex, bodyPart) in missingSpineParts.withIndex()) {
+			val bone = inputSkeleton[bodyPart] ?: continue
 
-				// Get the first active bones above and below this one in the chain
-				val (fromSource, toSource) = when (bodyPart) {
-					BodyPart.WAIST -> {
-						val from = SpineSource.CHEST.takeIf { hasChest } ?: continue
-						val to = when {
-							hasHip -> SpineSource.HIP
-							hasUpperLegs -> SpineSource.UPPER_LEGS
-							else -> continue
-						}
-						from to to
+			// Get the first active inputSkeleton above and below this one in the chain
+			val (fromSource, toSource) = when (bodyPart) {
+				BodyPart.WAIST -> {
+					val from = SpineSource.CHEST.takeIf { hasChest } ?: continue
+					val to = when {
+						hasHip -> SpineSource.HIP
+						hasUpperLegs -> SpineSource.UPPER_LEGS
+						else -> continue
 					}
-
-					BodyPart.HIP -> {
-						val from = when {
-							hasWaist -> SpineSource.WAIST
-							hasChest -> SpineSource.CHEST
-							else -> continue
-						}
-						val to = SpineSource.UPPER_LEGS.takeIf { hasUpperLegs } ?: continue
-						from to to
-					}
-
-					else -> error("Invalid missing spine body part $bodyPart")
+					from to to
 				}
 
-				val interpolateRatio = interpolateRatio(
-					chainIndex,
-					missingSpineParts.size,
-					ratios.imputeSpineFromUpperToLower,
-					ratios.imputeSpineCurvature,
-					reliabilityOf(bodyPart, fromSource),
-					reliabilityOf(bodyPart, toSource),
-				)
+				BodyPart.HIP -> {
+					val from = when {
+						hasWaist -> SpineSource.WAIST
+						hasChest -> SpineSource.CHEST
+						else -> continue
+					}
+					val to = SpineSource.UPPER_LEGS.takeIf { hasUpperLegs } ?: continue
+					from to to
+				}
 
-				val fromRotation = averageRotation(inputSkeleton, fromSource.parts)
-				val toRotation = averageRotation(inputSkeleton, toSource.parts)
-
-				updated[bodyPart] = bone.copy(rotation = fromRotation.interpQ(toRotation, interpolateRatio))
+				else -> error("Invalid missing spine body part $bodyPart")
 			}
+
+			val interpolateRatio = interpolateRatio(
+				chainIndex,
+				missingSpineParts.size,
+				ratios.imputeSpineFromUpperToLower,
+				ratios.imputeSpineCurvature,
+				reliabilityOf(bodyPart, fromSource),
+				reliabilityOf(bodyPart, toSource),
+			)
+
+			val fromRotation = averageRotation(inputSkeleton, fromSource.parts)
+			val toRotation = averageRotation(inputSkeleton, toSource.parts)
+
+			inputSkeleton[bodyPart] = bone.copy(rotation = fromRotation.interpQ(toRotation, interpolateRatio))
 		}
 	}
 

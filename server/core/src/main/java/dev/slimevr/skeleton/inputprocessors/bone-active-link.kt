@@ -2,7 +2,6 @@ package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.mutateCopy
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -23,15 +22,19 @@ class BoneActiveLinkInputProcessor : SkeletonInputProcessor {
 		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
 	)
 
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton = inputSkeleton.mutateCopy { updated ->
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		for ((bodyPart, sources) in linkedToSources) {
 			val bone = inputSkeleton[bodyPart] ?: continue
 			if (bone.isRotationActive) continue
 
+			// Only inactive inputSkeleton are written, so one written here can never become a source below
 			val closestActiveBone = sources.firstNotNullOfOrNull { part ->
 				inputSkeleton[part]?.takeIf { it.isRotationActive }
 			} ?: continue
-			updated[bodyPart] = bone.copy(rotation = closestActiveBone.rotation)
+			// Writing back the rotation the bone already carries would only allocate a new BoneInput
+			if (closestActiveBone.rotation == bone.rotation) continue
+
+			inputSkeleton[bodyPart] = bone.copy(rotation = closestActiveBone.rotation)
 		}
 	}
 }

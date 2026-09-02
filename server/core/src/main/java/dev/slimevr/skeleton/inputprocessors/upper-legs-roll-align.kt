@@ -3,7 +3,6 @@ package dev.slimevr.skeleton.inputprocessors
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
-import dev.slimevr.skeleton.mutateCopy
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
@@ -21,19 +20,18 @@ class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputPr
 		BodyPart.RIGHT_UPPER_LEG to BodyPart.RIGHT_LOWER_LEG,
 	)
 
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
+	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsTwistWithLowerLegs
-		if (ratio == 0f) return inputSkeleton
+		if (ratio == 0f) return
 
-		return inputSkeleton.mutateCopy { updated ->
-			for (bodyPartToSource in bodyPartToSources) {
-				val bone = inputSkeleton[bodyPartToSource.first] ?: continue
-				if (!bone.isRotationActive) continue
+		// Upper legs are written, lower legs are read, so the two never overlap
+		for (bodyPartToSource in bodyPartToSources) {
+			val bone = inputSkeleton[bodyPartToSource.first] ?: continue
+			if (!bone.isRotationActive) continue
 
-				val sourceRotation = inputSkeleton[bodyPartToSource.second]?.rotation ?: continue
-				val alignedRotation = alignRoll(bone.rotation, sourceRotation)
-				updated[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpQ(alignedRotation, ratio))
-			}
+			val sourceRotation = inputSkeleton[bodyPartToSource.second]?.rotation ?: continue
+			val alignedRotation = alignRoll(bone.rotation, sourceRotation)
+			inputSkeleton[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpQ(alignedRotation, ratio))
 		}
 	}
 

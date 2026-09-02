@@ -40,58 +40,54 @@ import kotlin.time.Duration.Companion.seconds
 
 data class Process(val pid: ULong, val name: String)
 
-private suspend fun getRunningProcesses(): List<Process> = when (CURRENT_PLATFORM) {
-	Platform.LINUX -> buildList {
-		val psProc = try {
-			ProcessBuilder("ps", "-eo", "pid,comm").redirectErrorStream(true).start()
-		} catch (_: IOException) {
-			return@buildList
-		}
-
-		val lines = withContext(Dispatchers.IO) { psProc.inputStream.bufferedReader().readLines() }
-		// skip the header
-		for (line in lines.slice(1 until lines.size)) {
-			val data = line.trimStart().split(' ')
-			add(Process(data[0].toULong(), data[1]))
-		}
-	}
-
-	Platform.WINDOWS -> buildList {
-		val k32 = Kernel32.INSTANCE
-		val snapshot = k32.CreateToolhelp32Snapshot(
-			Tlhelp32.TH32CS_SNAPPROCESS,
-			WinDef.DWORD(0),
-		)
-		if (WinBase.INVALID_HANDLE_VALUE.equals(snapshot)) {
-			return@buildList
-		}
-
-		try {
-			val entry = Tlhelp32.PROCESSENTRY32()
-			if (!k32.Process32First(snapshot, entry)) {
-				val err = k32.GetLastError()
-				AppLogger.checklist.warn("Failed to retrieve process information: ${Kernel32Util.formatMessage(err)} (code $err)")
+private suspend fun getRunningProcesses(): List<Process> = withContext(Dispatchers.IO) {
+	when (CURRENT_PLATFORM) {
+		Platform.LINUX -> buildList {
+			val psProc = try {
+				ProcessBuilder("ps", "-eo", "pid,comm").redirectErrorStream(true).start()
+			} catch (_: IOException) {
 				return@buildList
 			}
 
-			do {
-				add(Process(entry.th32ProcessID.toLong().toULong(), Native.toString(entry.szExeFile)))
-			} while (k32.Process32Next(snapshot, entry))
-		} finally {
-			k32.CloseHandle(snapshot)
+			val lines = psProc.inputStream.bufferedReader().readLines()
+			// skip the header
+			for (line in lines.slice(1 until lines.size)) {
+				val data = line.trimStart().split(' ')
+				add(Process(data[0].toULong(), data[1]))
+			}
 		}
-	}
 
-	else -> emptyList()
+		Platform.WINDOWS -> buildList {
+			val k32 = Kernel32.INSTANCE
+			val snapshot = k32.CreateToolhelp32Snapshot(
+				Tlhelp32.TH32CS_SNAPPROCESS,
+				WinDef.DWORD(0),
+			)
+			if (WinBase.INVALID_HANDLE_VALUE.equals(snapshot)) {
+				return@buildList
+			}
+
+			try {
+				val entry = Tlhelp32.PROCESSENTRY32()
+				if (!k32.Process32First(snapshot, entry)) {
+					val err = k32.GetLastError()
+					AppLogger.checklist.warn("Failed to retrieve process information: ${Kernel32Util.formatMessage(err)} (code $err)")
+					return@buildList
+				}
+
+				do {
+					add(Process(entry.th32ProcessID.toLong().toULong(), Native.toString(entry.szExeFile)))
+				} while (k32.Process32Next(snapshot, entry))
+			} finally {
+				k32.CloseHandle(snapshot)
+			}
+		}
+
+		else -> emptyList()
+	}
 }
 
-// Enumerating every process is orders of magnitude costlier than the loopback request it guards, so it
-// only runs to disambiguate a refused connection, and only this often.
-private val PROCESS_SCAN_INTERVAL = 10.seconds
-
-private fun Throwable.isConnectionRefused(): Boolean = generateSequence(this, Throwable::cause).any { it is ConnectException }
-
-private inline fun buildSteamVRDriverStep(driverEnabled: Boolean = true, connected: Boolean = false, installed: Boolean = true, blocked: Boolean = false, enabledInSteamVR: Boolean = true) = TrackingChecklistStep(
+private fun buildSteamVRDriverStep(driverEnabled: Boolean = true, connected: Boolean = false, installed: Boolean = true, blocked: Boolean = false, enabledInSteamVR: Boolean = true) = TrackingChecklistStep(
 	valid = connected,
 	enabled = driverEnabled,
 	ignorable = true,
@@ -105,7 +101,7 @@ private inline fun buildSteamVRDriverStep(driverEnabled: Boolean = true, connect
 		null
 	},
 )
-private inline fun buildStandableStep(supported: Boolean = true, installed: Boolean = false) = TrackingChecklistStep(valid = !installed, enabled = supported, visibility = TrackingChecklistStepVisibility.WHEN_INVALID)
+private fun buildStandableStep(supported: Boolean = true, installed: Boolean = false) = TrackingChecklistStep(valid = !installed, enabled = supported, visibility = TrackingChecklistStepVisibility.WHEN_INVALID)
 
 class SteamVRCheckBehaviour(private val server: VRServer, private val settings: Settings) : TrackingChecklistBehaviourType {
 	private val client = HttpClient(CIO)

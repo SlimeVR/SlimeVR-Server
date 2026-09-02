@@ -132,8 +132,11 @@ private suspend fun readDevice(connection: HidConnection, receiver: HIDReceiver,
 				-1
 			}
 			when {
-				// read error, device gone
-				read < 0 -> return
+				// The transport gave up on the device, so let the manager reopen it
+				read < 0 -> {
+					AppLogger.hid.info("HID read failed for ${receiver.context.state.value.serialNumber}, reopening")
+					return
+				}
 
 				read > 0 -> {
 					emptyReads = 0

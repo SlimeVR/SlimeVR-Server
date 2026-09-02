@@ -29,29 +29,29 @@ class ToeDirectLinkProcessorTest {
 			pausedProcessedBoneInputs = inputs,
 		)
 
-		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
+		processor.process(inputs, state.skeletonHeight)
 
 		val leftBigToeIsSameRotationAsLeftFoot =
-			newInputs[BodyPart.LEFT_BIG_TOE]?.rotation == newInputs[BodyPart.LEFT_FOOT]?.rotation
+			inputs[BodyPart.LEFT_BIG_TOE]?.rotation == inputs[BodyPart.LEFT_FOOT]?.rotation
 		val leftIndexToeIsSameRotationAsLeftBigToe =
-			newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation == newInputs[BodyPart.LEFT_BIG_TOE]?.rotation
+			inputs[BodyPart.LEFT_INDEX_TOE]?.rotation == inputs[BodyPart.LEFT_BIG_TOE]?.rotation
 		val leftMiddleToeIsSameRotationAsLeftIndexToe =
-			newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation
+			inputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation == inputs[BodyPart.LEFT_INDEX_TOE]?.rotation
 		val leftRingToeIsSameRotationAsLeftMiddleToe =
-			newInputs[BodyPart.LEFT_RING_TOE]?.rotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
+			inputs[BodyPart.LEFT_RING_TOE]?.rotation == inputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
+			inputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == inputs[BodyPart.LEFT_RING_TOE]?.rotation
 
 		val rightBigToeIsSameRotationAsRightFoot =
-			newInputs[BodyPart.RIGHT_BIG_TOE]?.rotation == newInputs[BodyPart.RIGHT_FOOT]?.rotation
+			inputs[BodyPart.RIGHT_BIG_TOE]?.rotation == inputs[BodyPart.RIGHT_FOOT]?.rotation
 		val rightIndexToeIsSameRotationAsRightBigToe =
-			newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation == newInputs[BodyPart.RIGHT_BIG_TOE]?.rotation
+			inputs[BodyPart.RIGHT_INDEX_TOE]?.rotation == inputs[BodyPart.RIGHT_BIG_TOE]?.rotation
 		val rightMiddleToeIsSameRotationAsRightIndexToe =
-			newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation
+			inputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation == inputs[BodyPart.RIGHT_INDEX_TOE]?.rotation
 		val rightRingToeIsSameRotationAsRightMiddleToe =
-			newInputs[BodyPart.RIGHT_RING_TOE]?.rotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
+			inputs[BodyPart.RIGHT_RING_TOE]?.rotation == inputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
+			inputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == inputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(
 			leftBigToeIsSameRotationAsLeftFoot &&
@@ -99,25 +99,25 @@ class ToeDirectLinkProcessorTest {
 			pausedProcessedBoneInputs = inputs,
 		)
 
-		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
+		processor.process(inputs, state.skeletonHeight)
 
 		val leftIndexToeIsSameRotationAsLeftBigToe =
-			newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation == newInputs[BodyPart.LEFT_BIG_TOE]?.rotation
+			inputs[BodyPart.LEFT_INDEX_TOE]?.rotation == inputs[BodyPart.LEFT_BIG_TOE]?.rotation
 		val leftMiddleToeIsSameRotationAsLeftIndexToe =
-			newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation
+			inputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation == inputs[BodyPart.LEFT_INDEX_TOE]?.rotation
 		val leftRingToeIsSameRotationAsLeftMiddleToe =
-			newInputs[BodyPart.LEFT_RING_TOE]?.rotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
+			inputs[BodyPart.LEFT_RING_TOE]?.rotation == inputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
+			inputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == inputs[BodyPart.LEFT_RING_TOE]?.rotation
 
 		val rightIndexToeIsSameRotationAsRightBigToe =
-			newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation == newInputs[BodyPart.RIGHT_BIG_TOE]?.rotation
+			inputs[BodyPart.RIGHT_INDEX_TOE]?.rotation == inputs[BodyPart.RIGHT_BIG_TOE]?.rotation
 		val rightMiddleToeIsSameRotationAsRightIndexToe =
-			newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation
+			inputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation == inputs[BodyPart.RIGHT_INDEX_TOE]?.rotation
 		val rightRingToeIsSameRotationAsRightMiddleToe =
-			newInputs[BodyPart.RIGHT_RING_TOE]?.rotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
+			inputs[BodyPart.RIGHT_RING_TOE]?.rotation == inputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
+			inputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == inputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(
 			leftIndexToeIsSameRotationAsLeftBigToe &&
@@ -172,21 +172,21 @@ class ToeDirectLinkProcessorTest {
 			pausedProcessedBoneInputs = inputs,
 		)
 
-		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
+		processor.process(inputs, state.skeletonHeight)
 
 		val leftMiddleToeIsSameRotationAsLeftIndexToe =
-			newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation
+			inputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation == inputs[BodyPart.LEFT_INDEX_TOE]?.rotation
 		val leftRingToeIsSameRotationAsLeftMiddleToe =
-			newInputs[BodyPart.LEFT_RING_TOE]?.rotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
+			inputs[BodyPart.LEFT_RING_TOE]?.rotation == inputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
+			inputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == inputs[BodyPart.LEFT_RING_TOE]?.rotation
 
 		val rightMiddleToeIsSameRotationAsRightIndexToe =
-			newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation
+			inputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation == inputs[BodyPart.RIGHT_INDEX_TOE]?.rotation
 		val rightRingToeIsSameRotationAsRightMiddleToe =
-			newInputs[BodyPart.RIGHT_RING_TOE]?.rotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
+			inputs[BodyPart.RIGHT_RING_TOE]?.rotation == inputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
+			inputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == inputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(
 			leftMiddleToeIsSameRotationAsLeftIndexToe &&
@@ -247,17 +247,17 @@ class ToeDirectLinkProcessorTest {
 			pausedProcessedBoneInputs = inputs,
 		)
 
-		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
+		processor.process(inputs, state.skeletonHeight)
 
 		val leftRingToeIsSameRotationAsLeftMiddleToe =
-			newInputs[BodyPart.LEFT_RING_TOE]?.rotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
+			inputs[BodyPart.LEFT_RING_TOE]?.rotation == inputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
+			inputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == inputs[BodyPart.LEFT_RING_TOE]?.rotation
 
 		val rightRingToeIsSameRotationAsRightMiddleToe =
-			newInputs[BodyPart.RIGHT_RING_TOE]?.rotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
+			inputs[BodyPart.RIGHT_RING_TOE]?.rotation == inputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
+			inputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == inputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(leftRingToeIsSameRotationAsLeftMiddleToe && leftLittleToeIsSameRotationAsLeftRingToe)
 		assertTrue(rightRingToeIsSameRotationAsRightMiddleToe && rightLittleToeIsSameRotationAsRightRingToe)
@@ -318,12 +318,12 @@ class ToeDirectLinkProcessorTest {
 			pausedProcessedBoneInputs = inputs,
 		)
 
-		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
+		processor.process(inputs, state.skeletonHeight)
 
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
+			inputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == inputs[BodyPart.LEFT_RING_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
+			inputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == inputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(leftLittleToeIsSameRotationAsLeftRingToe && rightLittleToeIsSameRotationAsRightRingToe)
 	}
