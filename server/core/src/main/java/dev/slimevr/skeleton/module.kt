@@ -16,6 +16,7 @@ import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ToeDirectLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.BustDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -182,6 +183,7 @@ class Skeleton(
 						BoneDirectLinkInputProcessor(),
 						FingerImputeInputProcessor(),
 						ToeDirectLinkInputProcessor(),
+						BustDirectLinkInputProcessor(),
 						BonePredictionInputProcessor(settings),
 						BoneSmoothingInputProcessor(settings),
 					),
