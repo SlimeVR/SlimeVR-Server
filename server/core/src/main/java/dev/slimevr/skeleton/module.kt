@@ -20,12 +20,9 @@ import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
-import java.util.concurrent.Executors
 import solarxr_protocol.rpc.SkeletonBone
 
 data class BoneInput(
@@ -172,14 +169,6 @@ class Skeleton(
 		const val DEFAULT_HZ = 500
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, hz: Int = DEFAULT_HZ): Skeleton {
-			// The tick loop parks its thread to hit its interval, so the module gets a thread of its
-			// own rather than holding up whatever else shares the caller's dispatcher
-			val dispatcher = Executors.newSingleThreadExecutor { runnable ->
-				Thread(runnable, "Skeleton").apply { isDaemon = true }
-			}.asCoroutineDispatcher()
-			scope.coroutineContext[Job]?.invokeOnCompletion { dispatcher.close() }
-			val moduleScope = CoroutineScope(scope.coroutineContext + dispatcher)
-
 			val settings = ctx.config.settings
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
@@ -215,7 +204,7 @@ class Skeleton(
 
 			val context = Context.create(
 				initialState = DEFAULT_SKELETON_STATE,
-				scope = moduleScope,
+				scope = scope,
 				reducer = ::reduce,
 				behaviours = behaviours,
 				name = "Skeleton",

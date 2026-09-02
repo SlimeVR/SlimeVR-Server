@@ -7,6 +7,8 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import java.util.EnumMap
+import java.util.concurrent.Executors
 import java.util.concurrent.locks.LockSupport
 import kotlin.math.cos
 import kotlin.math.sin
@@ -196,11 +199,19 @@ class ComputedSkeletonBehaviour(
 	}
 
 	override fun observe(receiver: Skeleton) {
+		// The loop parks its thread to hit its interval, so it gets one to itself. Sharing would
+		// starve everything else on the dispatcher, since parking blocks the thread rather than
+		// suspending the coroutine
+		val dispatcher = Executors.newSingleThreadExecutor { runnable ->
+			Thread(runnable, "Skeleton").apply { isDaemon = true }
+		}.asCoroutineDispatcher()
+		receiver.context.scope.coroutineContext[Job]?.invokeOnCompletion { dispatcher.close() }
+
 		var nextTick = timeSource.markNow()
 		val fkChangedParts = mutableSetOf<BodyPart>()
 		val timings = TickTimings(hz, 10.seconds, intervalDuration)
 
-		receiver.context.scope.launch {
+		receiver.context.scope.launch(dispatcher) {
 			while (true) {
 				try {
 					val tickStart = timeSource.markNow()
