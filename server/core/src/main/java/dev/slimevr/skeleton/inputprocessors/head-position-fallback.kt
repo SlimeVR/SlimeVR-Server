@@ -13,9 +13,9 @@ import solarxr_protocol.datatypes.BodyPart
 class HeadPositionFallbackProcessor(val settings: Settings) : SkeletonInputProcessor {
 	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
 		val headBone = inputSkeleton[BodyPart.HEAD] ?: return inputSkeleton
-		if (headBone.rawPosition != null) return inputSkeleton
+		if (headBone.position != null) return inputSkeleton
 
 		// Set the head position to the be standing up at the origin
-		return inputSkeleton.mutateCopy { it[BodyPart.HEAD] = headBone.copy(rawPosition = Vector3(0f, skeletonHeight, 0f)) }
+		return inputSkeleton.mutateCopy { it[BodyPart.HEAD] = headBone.copy(position = Vector3(0f, skeletonHeight, 0f)) }
 	}
 }

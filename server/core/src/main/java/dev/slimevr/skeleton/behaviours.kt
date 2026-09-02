@@ -117,9 +117,9 @@ class ComputedSkeletonBehaviour(
 						val targetState = receiver.context.state.value
 
 						// TODO find out a cleaner way to pause tracking that doesn't add 1 frame latency (not a priority)
-						val boneInputs = if (targetState.pausedBoneInputs != null) {
+						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
 							// Use already-processed paused tracking data except for the head
-							targetState.pausedBoneInputs.mutateCopy { it[BodyPart.HEAD] = targetState.boneInputs[BodyPart.HEAD] }
+							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = targetState.boneInputs[BodyPart.HEAD] }
 						} else {
 							// Run pre-FK processors
 							// TODO: Add a constrain processor (maybe not needed)
@@ -143,10 +143,10 @@ class ComputedSkeletonBehaviour(
 								val changedInputs = newInputs.filter { (part, boneInput) -> boneInput != inputs[part] }
 								fk = buildBones(newInputs, changedInputs.keys, fk)
 
-								// For bones with inactive position, update their input's position in state (needed for Localizer)
-								val changedPositionInputs = changedInputs.filter { (part, boneInput) -> boneInput.rawPosition != inputs[part]?.rawPosition }
+								// For changed bones with inactive positions, update their input's position in state (needed for Localizer)
+								val changedPositionInputs = changedInputs.filter { (part, boneInput) -> !boneInput.isPositionActive && boneInput.position != inputs[part]?.position }
 								for (input in changedPositionInputs) {
-									receiver.context.dispatch(SkeletonActions.SetBonePosition(input.key, input.value.rawPosition, false))
+									receiver.context.dispatch(SkeletonActions.SetBonePosition(input.key, input.value.position, false))
 								}
 							}
 							newInputs

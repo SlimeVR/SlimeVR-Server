@@ -30,9 +30,9 @@ class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputPr
 				val bone = inputSkeleton[bodyPartToSource.first] ?: continue
 				if (!bone.isRotationActive) continue
 
-				val sourceRotation = inputSkeleton[bodyPartToSource.second]?.rawRotation ?: continue
-				val alignedRotation = alignRoll(bone.rawRotation, sourceRotation)
-				updated[bodyPartToSource.first] = bone.copy(rawRotation = bone.rawRotation.interpQ(alignedRotation, ratio))
+				val sourceRotation = inputSkeleton[bodyPartToSource.second]?.rotation ?: continue
+				val alignedRotation = alignRoll(bone.rotation, sourceRotation)
+				updated[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpQ(alignedRotation, ratio))
 			}
 		}
 	}

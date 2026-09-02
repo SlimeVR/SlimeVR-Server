@@ -124,7 +124,7 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 									othersOverThreshold >= numberTrackersOverThreshold,
 									trackerTapDetectionState,
 									rawAcceleration,
-									motionState,
+									Motion.RESTING, // TODO motionState, disabled bc ZRock doesn't like it
 								)
 
 								if (tapTriggered) {

@@ -39,8 +39,8 @@ class FootPlantFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 				val input = it[bodyPart] ?: continue
 				val output = fk[bodyPart] ?: continue
 				it[bodyPart] = input.copy(
-					rawRotation = correctFootAttitude(
-						input.rawRotation,
+					rotation = correctFootAttitude(
+						input.rotation,
 						computeFootPlantRatio(
 							output.headPosition.y,
 							floorLevel,

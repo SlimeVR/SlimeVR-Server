@@ -12,11 +12,11 @@ class ToeDirectLinkProcessorTest {
 		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutateCopy { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rotation = Quaternion.fromRotationVector(10f, 40f, 15f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(20f, 50f, 25f),
+				rotation = Quaternion.fromRotationVector(20f, 50f, 25f),
 				isRotationActive = true,
 			)
 		}
@@ -26,32 +26,32 @@ class ToeDirectLinkProcessorTest {
 			skeletonHeight = 1.7f,
 			floorLevel = 0f,
 			paused = false,
-			pausedBoneInputs = inputs,
+			pausedProcessedBoneInputs = inputs,
 		)
 
 		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
 
 		val leftBigToeIsSameRotationAsLeftFoot =
-			newInputs[BodyPart.LEFT_BIG_TOE]?.rawRotation == newInputs[BodyPart.LEFT_FOOT]?.rawRotation
+			newInputs[BodyPart.LEFT_BIG_TOE]?.rotation == newInputs[BodyPart.LEFT_FOOT]?.rotation
 		val leftIndexToeIsSameRotationAsLeftBigToe =
-			newInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation == newInputs[BodyPart.LEFT_BIG_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation == newInputs[BodyPart.LEFT_BIG_TOE]?.rotation
 		val leftMiddleToeIsSameRotationAsLeftIndexToe =
-			newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rawRotation == newInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation
 		val leftRingToeIsSameRotationAsLeftMiddleToe =
-			newInputs[BodyPart.LEFT_RING_TOE]?.rawRotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_RING_TOE]?.rotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.LEFT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
 
 		val rightBigToeIsSameRotationAsRightFoot =
-			newInputs[BodyPart.RIGHT_BIG_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_FOOT]?.rawRotation
+			newInputs[BodyPart.RIGHT_BIG_TOE]?.rotation == newInputs[BodyPart.RIGHT_FOOT]?.rotation
 		val rightIndexToeIsSameRotationAsRightBigToe =
-			newInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_BIG_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation == newInputs[BodyPart.RIGHT_BIG_TOE]?.rotation
 		val rightMiddleToeIsSameRotationAsRightIndexToe =
-			newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation
 		val rightRingToeIsSameRotationAsRightMiddleToe =
-			newInputs[BodyPart.RIGHT_RING_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_RING_TOE]?.rotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(
 			leftBigToeIsSameRotationAsLeftFoot &&
@@ -74,19 +74,19 @@ class ToeDirectLinkProcessorTest {
 		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutateCopy { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rotation = Quaternion.fromRotationVector(10f, 40f, 15f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_BIG_TOE] = map.getValue(BodyPart.LEFT_BIG_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(11f, 41f, 16f),
+				rotation = Quaternion.fromRotationVector(11f, 41f, 16f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(20f, 50f, 25f),
+				rotation = Quaternion.fromRotationVector(20f, 50f, 25f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_BIG_TOE] = map.getValue(BodyPart.RIGHT_BIG_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(21f, 51f, 26f),
+				rotation = Quaternion.fromRotationVector(21f, 51f, 26f),
 				isRotationActive = true,
 			)
 		}
@@ -96,28 +96,28 @@ class ToeDirectLinkProcessorTest {
 			skeletonHeight = 1.7f,
 			floorLevel = 0f,
 			paused = false,
-			pausedBoneInputs = inputs,
+			pausedProcessedBoneInputs = inputs,
 		)
 
 		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
 
 		val leftIndexToeIsSameRotationAsLeftBigToe =
-			newInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation == newInputs[BodyPart.LEFT_BIG_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation == newInputs[BodyPart.LEFT_BIG_TOE]?.rotation
 		val leftMiddleToeIsSameRotationAsLeftIndexToe =
-			newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rawRotation == newInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation
 		val leftRingToeIsSameRotationAsLeftMiddleToe =
-			newInputs[BodyPart.LEFT_RING_TOE]?.rawRotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_RING_TOE]?.rotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.LEFT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
 
 		val rightIndexToeIsSameRotationAsRightBigToe =
-			newInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_BIG_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation == newInputs[BodyPart.RIGHT_BIG_TOE]?.rotation
 		val rightMiddleToeIsSameRotationAsRightIndexToe =
-			newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation
 		val rightRingToeIsSameRotationAsRightMiddleToe =
-			newInputs[BodyPart.RIGHT_RING_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_RING_TOE]?.rotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(
 			leftIndexToeIsSameRotationAsLeftBigToe &&
@@ -138,28 +138,28 @@ class ToeDirectLinkProcessorTest {
 		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutateCopy { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rotation = Quaternion.fromRotationVector(10f, 40f, 15f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_BIG_TOE] = map.getValue(BodyPart.LEFT_BIG_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(11f, 41f, 16f),
+				rotation = Quaternion.fromRotationVector(11f, 41f, 16f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_INDEX_TOE] = map.getValue(BodyPart.LEFT_INDEX_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(12f, 42f, 17f),
+				rotation = Quaternion.fromRotationVector(12f, 42f, 17f),
 				isRotationActive = true,
 			)
 
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(20f, 50f, 25f),
+				rotation = Quaternion.fromRotationVector(20f, 50f, 25f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_BIG_TOE] = map.getValue(BodyPart.RIGHT_BIG_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(21f, 51f, 26f),
+				rotation = Quaternion.fromRotationVector(21f, 51f, 26f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_INDEX_TOE] = map.getValue(BodyPart.RIGHT_INDEX_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(22f, 52f, 27f),
+				rotation = Quaternion.fromRotationVector(22f, 52f, 27f),
 				isRotationActive = true,
 			)
 		}
@@ -169,24 +169,24 @@ class ToeDirectLinkProcessorTest {
 			skeletonHeight = 1.7f,
 			floorLevel = 0f,
 			paused = false,
-			pausedBoneInputs = inputs,
+			pausedProcessedBoneInputs = inputs,
 		)
 
 		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
 
 		val leftMiddleToeIsSameRotationAsLeftIndexToe =
-			newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rawRotation == newInputs[BodyPart.LEFT_INDEX_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.LEFT_INDEX_TOE]?.rotation
 		val leftRingToeIsSameRotationAsLeftMiddleToe =
-			newInputs[BodyPart.LEFT_RING_TOE]?.rawRotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_RING_TOE]?.rotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.LEFT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
 
 		val rightMiddleToeIsSameRotationAsRightIndexToe =
-			newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_INDEX_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_INDEX_TOE]?.rotation
 		val rightRingToeIsSameRotationAsRightMiddleToe =
-			newInputs[BodyPart.RIGHT_RING_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_RING_TOE]?.rotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(
 			leftMiddleToeIsSameRotationAsLeftIndexToe &&
@@ -205,36 +205,36 @@ class ToeDirectLinkProcessorTest {
 		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutateCopy { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rotation = Quaternion.fromRotationVector(10f, 40f, 15f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_BIG_TOE] = map.getValue(BodyPart.LEFT_BIG_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(11f, 41f, 16f),
+				rotation = Quaternion.fromRotationVector(11f, 41f, 16f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_INDEX_TOE] = map.getValue(BodyPart.LEFT_INDEX_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(12f, 42f, 17f),
+				rotation = Quaternion.fromRotationVector(12f, 42f, 17f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_MIDDLE_TOE] = map.getValue(BodyPart.LEFT_MIDDLE_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(13f, 43f, 18f),
+				rotation = Quaternion.fromRotationVector(13f, 43f, 18f),
 				isRotationActive = true,
 			)
 
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(20f, 50f, 25f),
+				rotation = Quaternion.fromRotationVector(20f, 50f, 25f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_BIG_TOE] = map.getValue(BodyPart.RIGHT_BIG_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(21f, 51f, 26f),
+				rotation = Quaternion.fromRotationVector(21f, 51f, 26f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_INDEX_TOE] = map.getValue(BodyPart.RIGHT_INDEX_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(22f, 52f, 27f),
+				rotation = Quaternion.fromRotationVector(22f, 52f, 27f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_MIDDLE_TOE] = map.getValue(BodyPart.RIGHT_MIDDLE_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(23f, 53f, 28f),
+				rotation = Quaternion.fromRotationVector(23f, 53f, 28f),
 				isRotationActive = true,
 			)
 		}
@@ -244,20 +244,20 @@ class ToeDirectLinkProcessorTest {
 			skeletonHeight = 1.7f,
 			floorLevel = 0f,
 			paused = false,
-			pausedBoneInputs = inputs,
+			pausedProcessedBoneInputs = inputs,
 		)
 
 		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
 
 		val leftRingToeIsSameRotationAsLeftMiddleToe =
-			newInputs[BodyPart.LEFT_RING_TOE]?.rawRotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_RING_TOE]?.rotation == newInputs[BodyPart.LEFT_MIDDLE_TOE]?.rotation
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.LEFT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
 
 		val rightRingToeIsSameRotationAsRightMiddleToe =
-			newInputs[BodyPart.RIGHT_RING_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_RING_TOE]?.rotation == newInputs[BodyPart.RIGHT_MIDDLE_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(leftRingToeIsSameRotationAsLeftMiddleToe && leftLittleToeIsSameRotationAsLeftRingToe)
 		assertTrue(rightRingToeIsSameRotationAsRightMiddleToe && rightLittleToeIsSameRotationAsRightRingToe)
@@ -268,44 +268,44 @@ class ToeDirectLinkProcessorTest {
 		val processor = ToeDirectLinkInputProcessor()
 		val inputs = DEFAULT_SKELETON_STATE.boneInputs.mutateCopy { map ->
 			map[BodyPart.LEFT_FOOT] = map.getValue(BodyPart.LEFT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(10f, 40f, 15f),
+				rotation = Quaternion.fromRotationVector(10f, 40f, 15f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_BIG_TOE] = map.getValue(BodyPart.LEFT_BIG_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(11f, 41f, 16f),
+				rotation = Quaternion.fromRotationVector(11f, 41f, 16f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_INDEX_TOE] = map.getValue(BodyPart.LEFT_INDEX_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(12f, 42f, 17f),
+				rotation = Quaternion.fromRotationVector(12f, 42f, 17f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_MIDDLE_TOE] = map.getValue(BodyPart.LEFT_MIDDLE_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(15f, 45f, 19f),
+				rotation = Quaternion.fromRotationVector(15f, 45f, 19f),
 				isRotationActive = true,
 			)
 			map[BodyPart.LEFT_RING_TOE] = map.getValue(BodyPart.LEFT_RING_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(13f, 43f, 18f),
+				rotation = Quaternion.fromRotationVector(13f, 43f, 18f),
 				isRotationActive = true,
 			)
 
 			map[BodyPart.RIGHT_FOOT] = map.getValue(BodyPart.RIGHT_FOOT).copy(
-				rawRotation = Quaternion.fromRotationVector(20f, 50f, 25f),
+				rotation = Quaternion.fromRotationVector(20f, 50f, 25f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_BIG_TOE] = map.getValue(BodyPart.RIGHT_BIG_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(21f, 51f, 26f),
+				rotation = Quaternion.fromRotationVector(21f, 51f, 26f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_INDEX_TOE] = map.getValue(BodyPart.RIGHT_INDEX_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(22f, 52f, 27f),
+				rotation = Quaternion.fromRotationVector(22f, 52f, 27f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_MIDDLE_TOE] = map.getValue(BodyPart.RIGHT_MIDDLE_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(23f, 53f, 28f),
+				rotation = Quaternion.fromRotationVector(23f, 53f, 28f),
 				isRotationActive = true,
 			)
 			map[BodyPart.RIGHT_RING_TOE] = map.getValue(BodyPart.RIGHT_RING_TOE).copy(
-				rawRotation = Quaternion.fromRotationVector(24f, 54f, 29f),
+				rotation = Quaternion.fromRotationVector(24f, 54f, 29f),
 				isRotationActive = true,
 			)
 		}
@@ -315,15 +315,15 @@ class ToeDirectLinkProcessorTest {
 			skeletonHeight = 1.7f,
 			floorLevel = 0f,
 			paused = false,
-			pausedBoneInputs = inputs,
+			pausedProcessedBoneInputs = inputs,
 		)
 
 		val newInputs = processor.process(state.boneInputs, state.skeletonHeight)
 
 		val leftLittleToeIsSameRotationAsLeftRingToe =
-			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.LEFT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.LEFT_LITTLE_TOE]?.rotation == newInputs[BodyPart.LEFT_RING_TOE]?.rotation
 		val rightLittleToeIsSameRotationAsRightRingToe =
-			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rawRotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rawRotation
+			newInputs[BodyPart.RIGHT_LITTLE_TOE]?.rotation == newInputs[BodyPart.RIGHT_RING_TOE]?.rotation
 
 		assertTrue(leftLittleToeIsSameRotationAsLeftRingToe && rightLittleToeIsSameRotationAsRightRingToe)
 	}

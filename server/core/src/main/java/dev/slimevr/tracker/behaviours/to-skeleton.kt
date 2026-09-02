@@ -42,6 +42,7 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 							receiver.appContext.skeleton.context.dispatchAll(
 								listOfNotNull(
 									SkeletonActions.SetBoneRotation(bodyPart, trackerState.rotation),
+									SkeletonActions.SetBoneAcceleration(bodyPart, trackerState.acceleration),
 									if (trackerState.position != null) SkeletonActions.SetBonePosition(bodyPart, trackerState.position) else null,
 								),
 							)

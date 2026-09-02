@@ -7,7 +7,6 @@ import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.mapValues
 import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.FilteringType
 
@@ -18,7 +17,6 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 	private data class BoneVelocity(
 		val lastRotation: Quaternion,
 		val rotationDelta: Quaternion,
-		val lastOffset: Vector3,
 	)
 
 	private var velocities: BodyPartMap<BoneVelocity> = bodyPartMap()
@@ -48,29 +46,21 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 		val newBones = inputSkeleton.mapValues { bodyPart, bone ->
 			val prev = velocities[bodyPart]
 			if (prev == null) {
-				newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, Quaternion.IDENTITY, bone.offset)
+				newVelocities[bodyPart] = BoneVelocity(bone.rotation, Quaternion.IDENTITY)
 				return@mapValues bone
 			}
 
 			val bonePredictionAmount = predictionAmount * getMultiplier(bodyPart)
 
-			val rotationDelta = if (bone.rawRotation !== prev.lastRotation) {
-				bone.rawRotation * prev.lastRotation.inv()
+			val rotationDelta = if (bone.rotation !== prev.lastRotation) {
+				bone.rotation * prev.lastRotation.inv()
 			} else {
 				prev.rotationDelta
 			}
-			// Offsets only move on a proportion change, so the delta must not carry across frames
-			val lengthDelta = if (bone.offset != prev.lastOffset) {
-				bone.offset - prev.lastOffset
-			} else {
-				Vector3.NULL
-			}
-			newVelocities[bodyPart] = BoneVelocity(bone.rawRotation, rotationDelta, bone.offset)
+
+			newVelocities[bodyPart] = BoneVelocity(bone.rotation, rotationDelta)
 			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, bonePredictionAmount).unit()
-			bone.copy(
-				rawRotation = (scaledDelta * bone.rawRotation).unit(),
-				offset = bone.offset + lengthDelta * bonePredictionAmount,
-			)
+			bone.copy(rotation = (scaledDelta * bone.rotation).unit())
 		}
 		velocities = newVelocities
 		return newBones

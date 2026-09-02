@@ -86,7 +86,7 @@ fun rotateChain(
 			requireNotNull(boneInput) {
 				"The provided bone inputs are missing \"${bodyPart}\" from the IK chain."
 			}.copy(
-				rawRotation = rotation * boneInput.rawRotation,
+				rotation = rotation * boneInput.rotation,
 			)
 		}
 	}

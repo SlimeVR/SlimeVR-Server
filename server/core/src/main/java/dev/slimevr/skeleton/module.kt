@@ -5,7 +5,6 @@ import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
-import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
@@ -29,19 +28,25 @@ import solarxr_protocol.rpc.SkeletonBone
 data class BoneInput(
 	val bodyPart: BodyPart,
 	val offset: Vector3,
-	val rawRotation: Quaternion,
-	val rawPosition: Vector3?,
+	val rotation: Quaternion,
+	val acceleration: Vector3,
+	val position: Vector3?,
 	val isRotationActive: Boolean,
+	val isAccelerationActive: Boolean,
 	val isPositionActive: Boolean,
+	val angularVelocity: Vector3,
+	val linearVelocity: Vector3,
 )
 
 data class BoneState(
+	val parentBone: BoneState?,
 	val bodyPart: BodyPart,
 	val offset: Vector3,
-	val rotation: Quaternion = Quaternion.IDENTITY,
-	val headPosition: Vector3 = Vector3.NULL,
-	val tailPosition: Vector3 = Vector3.NULL,
-	val parentBone: BoneState? = null,
+	val rotation: Quaternion,
+	val headPosition: Vector3,
+	val tailPosition: Vector3,
+	val angularVelocity: Vector3,
+	val linearVelocity: Vector3,
 ) {
 	private val orientationOffset = when {
 		offset.len() == 0f -> Quaternion.IDENTITY
@@ -49,6 +54,7 @@ data class BoneState(
 		else -> Quaternion.fromTo(Vector3.NEG_Y, offset)
 	}
 	val orientation: Quaternion = rotation * orientationOffset
+
 	val localRotation: Quaternion
 		get() = parentBone?.let { it.rotation.inv() * rotation } ?: rotation
 	val localHeadPosition: Vector3
@@ -59,57 +65,47 @@ data class BoneState(
 typealias InputSkeleton = BodyPartMap<BoneInput>
 typealias ComputedSkeleton = BodyPartMap<BoneState>
 
-@JvmName("resolveAverageRotationForInput")
-fun InputSkeleton.resolveAverageRotationFor(bodyParts: Array<BodyPart>): Quaternion {
-	val rotations = bodyParts.mapNotNull { this[it]?.rawRotation }
-	return rotations.reduceIndexedOrNull { index, acc, rotation ->
-		acc.lerpQ(rotation, 1f / (index + 1))
-	} ?: Quaternion.IDENTITY
-}
-
-@JvmName("resolveAverageRotationForComputed")
-fun ComputedSkeleton.resolveAverageRotationFor(bodyParts: Array<BodyPart>): Quaternion {
-	val rotations = bodyParts.mapNotNull { this[it]?.rotation }
-	return rotations.reduceIndexedOrNull { index, acc, rotation ->
-		acc.lerpQ(rotation, 1f / (index + 1))
-	} ?: Quaternion.IDENTITY
-}
-
 data class SkeletonState(
 	val boneInputs: InputSkeleton,
 	val skeletonHeight: Float,
 	val floorLevel: Float,
 	val paused: Boolean,
-	val pausedBoneInputs: InputSkeleton?,
+	val pausedProcessedBoneInputs: InputSkeleton?,
 )
 
 val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
 	boneInputs = DEFAULT_PROPORTIONS.toBoneOffsets().mapValues { bodyPart, tailOffset ->
 		BoneInput(
-			rawRotation = Quaternion.IDENTITY,
 			bodyPart = bodyPart,
 			offset = tailOffset,
-			rawPosition = null,
+			rotation = Quaternion.IDENTITY,
+			acceleration = Vector3.NULL,
+			position = null,
 			isRotationActive = false,
+			isAccelerationActive = false,
 			isPositionActive = false,
+			angularVelocity = Vector3.NULL,
+			linearVelocity = Vector3.NULL,
 		)
 	},
 	skeletonHeight = DEFAULT_HEIGHT,
 	floorLevel = 0f,
 	paused = false,
-	pausedBoneInputs = null,
+	pausedProcessedBoneInputs = null,
 )
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?): BoneState {
-	// Raw position of the bone input is used for the head bone
-	val headPosition = parentBone?.tailPosition ?: bone.rawPosition ?: Vector3.NULL
+	// Raw position of the bone input is used for BodyPart.HEAD since it has no parent
+	val headPosition = parentBone?.tailPosition ?: bone.position ?: Vector3.NULL
 	return BoneState(
+		parentBone = parentBone,
 		bodyPart = bone.bodyPart,
 		offset = bone.offset,
+		rotation = bone.rotation,
 		headPosition = headPosition,
-		rotation = bone.rawRotation,
-		tailPosition = headPosition + bone.rawRotation.sandwich(bone.offset),
-		parentBone = parentBone,
+		tailPosition = headPosition + bone.rotation.sandwich(bone.offset),
+		angularVelocity = bone.angularVelocity,
+		linearVelocity = bone.linearVelocity,
 	)
 }
 
@@ -132,13 +128,14 @@ fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPart
 
 sealed interface SkeletonActions {
 	data class SetBoneRotation(val bodyPart: BodyPart, val rotation: Quaternion, val setActive: Boolean = true) : SkeletonActions
+	data class SetBoneAcceleration(val bodyPart: BodyPart, val acceleration: Vector3, val setActive: Boolean = true) : SkeletonActions
 	data class SetBonePosition(val bodyPart: BodyPart, val position: Vector3?, val setActive: Boolean = true) : SkeletonActions
 	data class DisableBone(val bodyPart: BodyPart) : SkeletonActions
 	data class SetProportions(val lengths: Map<SkeletonBone, Float>) : SkeletonActions
 	data class PauseTracking(val pause: Boolean) : SkeletonActions
 	data class SetPausedBoneInputs(val pausedBoneInputs: InputSkeleton) : SkeletonActions
-	data object ComputeFloorLevel : SkeletonActions
 	data object ResetHeadPosition : SkeletonActions
+	data object ComputeFloorLevel : SkeletonActions
 }
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
@@ -164,7 +161,7 @@ class Skeleton(
 	fun startObserving() = context.observeAll(this)
 
 	companion object {
-		const val DEFAULT_HZ = 300
+		const val DEFAULT_HZ = 400
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
@@ -189,7 +186,7 @@ class Skeleton(
 						BoneSmoothingInputProcessor(settings),
 					),
 					fkProcessors = listOf(
-						LocalizerFkProcessor(settings),
+// 						LocalizerFkProcessor(settings),
 						FootPlantFkProcessor(settings),
 						ToeSnapFkProcessor(settings),
 					),

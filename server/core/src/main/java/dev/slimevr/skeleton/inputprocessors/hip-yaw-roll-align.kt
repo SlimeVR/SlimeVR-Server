@@ -4,7 +4,6 @@ import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.mutateCopy
-import dev.slimevr.skeleton.resolveAverageRotationFor
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
@@ -12,18 +11,17 @@ import solarxr_protocol.datatypes.BodyPart
  * Handles rotating the hip' yaw and roll to match the upper legs' yaw and roll.
  */
 class HipYawRollAlignInputProcessor(val settings: Settings) : SkeletonInputProcessor {
-
-	val source = arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)
-
 	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float): InputSkeleton {
 		val hipBone = inputSkeleton[BodyPart.HIP] ?: return inputSkeleton
 		if (hipBone.isRotationActive) return inputSkeleton
+		val leftUpperLegBone = inputSkeleton[BodyPart.LEFT_UPPER_LEG] ?: return inputSkeleton
+		val rightUpperLegBone = inputSkeleton[BodyPart.RIGHT_UPPER_LEG] ?: return inputSkeleton
 
 		return inputSkeleton.mutateCopy { updated ->
 			val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
-			val sourceRotation = updated.resolveAverageRotationFor(source)
-			val alignedRotation = alignYawRoll(hipBone.rawRotation, sourceRotation)
-			updated[BodyPart.HIP] = hipBone.copy(rawRotation = hipBone.rawRotation.interpQ(alignedRotation, ratio))
+			val sourceRotation = leftUpperLegBone.rotation.lerpQ(rightUpperLegBone.rotation, 0.5f)
+			val alignedRotation = alignYawRoll(hipBone.rotation, sourceRotation)
+			updated[BodyPart.HIP] = hipBone.copy(rotation = hipBone.rotation.interpQ(alignedRotation, ratio))
 		}
 	}
 

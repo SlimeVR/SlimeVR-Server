@@ -31,7 +31,7 @@ class BoneActiveLinkInputProcessor : SkeletonInputProcessor {
 			val closestActiveBone = sources.firstNotNullOfOrNull { part ->
 				inputSkeleton[part]?.takeIf { it.isRotationActive }
 			} ?: continue
-			updated[bodyPart] = bone.copy(rawRotation = closestActiveBone.rawRotation)
+			updated[bodyPart] = bone.copy(rotation = closestActiveBone.rotation)
 		}
 	}
 }

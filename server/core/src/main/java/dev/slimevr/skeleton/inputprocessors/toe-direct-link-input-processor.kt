@@ -34,7 +34,7 @@ class ToeDirectLinkInputProcessor : SkeletonInputProcessor {
 			if (bone.isRotationActive) continue
 			val sourceBone = updated[source]
 			updated[bodyPart] =
-				bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
+				bone.copy(rotation = sourceBone?.rotation ?: bone.rotation)
 		}
 	}
 }

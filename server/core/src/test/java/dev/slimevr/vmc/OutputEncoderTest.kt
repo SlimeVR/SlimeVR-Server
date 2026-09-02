@@ -19,11 +19,14 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 private fun bone(bodyPart: BodyPart, rotation: Quaternion = Quaternion.IDENTITY) = BoneState(
+	parentBone = null,
 	bodyPart = bodyPart,
 	offset = Vector3(0f, -0.1f, 0f),
 	rotation = rotation,
 	headPosition = Vector3(0f, 1f, 0f),
 	tailPosition = Vector3(0f, 0.9f, 0f),
+	angularVelocity = Vector3.NULL,
+	linearVelocity = Vector3.NULL,
 )
 
 private fun messages(bundle: OscBundle): List<OscMessage> = bundle.contents.map { (it as OscContent.Message).msg }

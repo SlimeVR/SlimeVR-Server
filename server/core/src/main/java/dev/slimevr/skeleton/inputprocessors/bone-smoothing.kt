@@ -9,16 +9,13 @@ import dev.slimevr.skeleton.mapValues
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.rpc.FilteringType
 
 /**
- * Running average of bones to smooth them out.
+ * Running average of bone rotations to smooth them out.
  */
 class BoneSmoothingInputProcessor(val settings: Settings) : SkeletonInputProcessor {
-	private data class SmoothedBone(val rotation: Quaternion, val offset: Vector3)
-
-	private var smoothed: BodyPartMap<SmoothedBone> = bodyPartMap()
+	private var smoothed: BodyPartMap<Quaternion> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
 	// TODO this isn't linear. Do we want linear smoothing like in main?
@@ -38,13 +35,12 @@ class BoneSmoothingInputProcessor(val settings: Settings) : SkeletonInputProcess
 		val smoothingAmount = SMOOTH_MIN + config.amount.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN)
 		val alpha = ((1 - smoothingAmount) * lastFrameTimeSeconds * SMOOTHING_MULTIPLIER).coerceIn(0f, 1f)
 
-		val newSmoothed = bodyPartMap<SmoothedBone>()
+		val newSmoothed = bodyPartMap<Quaternion>()
 		val newBones = inputSkeleton.mapValues { bodyPart, bone ->
-			val prev = smoothed[bodyPart] ?: SmoothedBone(bone.rawRotation, bone.offset)
-			val rotation = prev.rotation.lerpR(bone.rawRotation, alpha).unit()
-			val offset = prev.offset + (bone.offset - prev.offset) * alpha
-			newSmoothed[bodyPart] = SmoothedBone(rotation, offset)
-			bone.copy(rawRotation = rotation, offset = offset)
+			val prev = smoothed[bodyPart] ?: bone.rotation
+			val rotation = prev.lerpR(bone.rotation, alpha).unit()
+			newSmoothed[bodyPart] = rotation
+			bone.copy(rotation = rotation)
 		}
 		smoothed = newSmoothed
 		return newBones

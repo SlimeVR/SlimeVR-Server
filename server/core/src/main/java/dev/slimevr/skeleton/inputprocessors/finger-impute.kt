@@ -54,7 +54,7 @@ class FingerImputeInputProcessor : SkeletonInputProcessor {
 			if (bone.isRotationActive) continue
 
 			val sourceBone = updated[source]
-			updated[bodyPart] = bone.copy(rawRotation = sourceBone?.rawRotation ?: bone.rawRotation)
+			updated[bodyPart] = bone.copy(rotation = sourceBone?.rotation ?: bone.rotation)
 		}
 	}
 }

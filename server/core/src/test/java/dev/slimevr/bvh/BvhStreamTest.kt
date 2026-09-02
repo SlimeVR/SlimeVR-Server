@@ -19,12 +19,12 @@ class BvhStreamTest {
 		val initialBones = buildBones(DEFAULT_SKELETON_STATE.boneInputs)
 		val firstFrame = buildBones(
 			DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
-				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(rawPosition = Vector3(1f, 2f, 3f))
+				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(1f, 2f, 3f))
 			},
 		)
 		val secondFrame = buildBones(
 			DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
-				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(rawPosition = Vector3(4f, 5f, 6f))
+				it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(4f, 5f, 6f))
 			},
 		)
 
@@ -54,7 +54,7 @@ class BvhStreamTest {
 		stream.writeFrame(
 			buildBones(
 				DEFAULT_SKELETON_STATE.boneInputs.mutateCopy {
-					it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(rawPosition = Vector3(7f, 8f, 9f))
+					it[BodyPart.HEAD] = it.getValue(BodyPart.HEAD).copy(position = Vector3(7f, 8f, 9f))
 				},
 			),
 		)

@@ -1,10 +1,11 @@
 package dev.slimevr.skeleton.inputprocessors
 
 import dev.slimevr.config.Settings
+import dev.slimevr.skeleton.BoneInput
 import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.mutateCopy
-import dev.slimevr.skeleton.resolveAverageRotationFor
+import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -87,10 +88,10 @@ class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor
 					reliabilityOf(bodyPart, toSource),
 				)
 
-				val fromRotation = inputSkeleton.resolveAverageRotationFor(fromSource.parts)
-				val toRotation = inputSkeleton.resolveAverageRotationFor(toSource.parts)
+				val fromRotation = averageRotation(inputSkeleton, fromSource.parts)
+				val toRotation = averageRotation(inputSkeleton, toSource.parts)
 
-				updated[bodyPart] = bone.copy(rawRotation = fromRotation.interpQ(toRotation, interpolateRatio))
+				updated[bodyPart] = bone.copy(rotation = fromRotation.interpQ(toRotation, interpolateRatio))
 			}
 		}
 	}
@@ -130,4 +131,12 @@ class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor
 	}
 
 	private fun lerp(from: Float, to: Float, t: Float): Float = from + (to - from) * t
+
+	private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<BodyPart> = arrayOf()): Quaternion {
+		val bonesToAverage = inputSkeleton.values.filter { it.bodyPart in takeBodyParts }
+		return bonesToAverage.map { it.rotation }
+			.reduceIndexedOrNull { index, acc, rotation ->
+				acc.lerpQ(rotation, 1f / (index + 1))
+			} ?: Quaternion.IDENTITY
+	}
 }
