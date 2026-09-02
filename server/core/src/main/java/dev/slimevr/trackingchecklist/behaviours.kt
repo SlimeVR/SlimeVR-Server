@@ -83,7 +83,7 @@ data class ChecklistTracker(
 	val hasPosition: Boolean,
 )
 
-internal fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
+fun checklistTracker(tracker: TrackerState) = ChecklistTracker(
 	id = tracker.id,
 	origin = tracker.origin,
 	status = tracker.status,
@@ -187,30 +187,32 @@ class SteamVRHandsCheckBehaviour(
 	private val server: VRServer,
 	private val boneRouting: BoneRoutingManager,
 ) : TrackingChecklistBehaviourType {
-	private val HAND_BONES = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+	companion object {
+		private val HAND_BONES = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
 
-	private fun computeStep(
-		trackers: List<ChecklistTracker>,
-		routes: Routes,
-		driverConnected: Boolean,
-	): TrackingChecklistStep {
-		// The skeleton computes a hand bone from the arm chain, so routing one sends a hand
-		// tracker to SteamVR whether or not the user wears anything on that hand.
-		val handsSentToDriver = HAND_BONES.any { hand -> routes[hand]?.contains(RoutingOutput.DRIVER) == true }
-		val handTrackers = trackers.filter { tracker -> tracker.bodyPart in HAND_BONES }
-		// Controllers reach us back through the driver, anything else on a hand is a
-		// tracker the user actually wears.
-		val hasControllers = handTrackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
-		val hasHandTrackers = handTrackers.any { tracker ->
-			tracker.origin != DeviceOrigin.DRIVER && tracker.origin != DeviceOrigin.VRC
+		fun computeStep(
+			trackers: List<ChecklistTracker>,
+			routes: Routes,
+			driverConnected: Boolean,
+		): TrackingChecklistStep {
+			// The skeleton computes a hand bone from the arm chain, so routing one sends a hand
+			// tracker to SteamVR whether or not the user wears anything on that hand.
+			val handsSentToDriver = HAND_BONES.any { hand -> routes[hand]?.contains(RoutingOutput.DRIVER) == true }
+			val handTrackers = trackers.filter { tracker -> tracker.bodyPart in HAND_BONES }
+			// Controllers reach us back through the driver, anything else on a hand is a
+			// tracker the user actually wears.
+			val hasControllers = handTrackers.any { tracker -> tracker.origin == DeviceOrigin.DRIVER }
+			val hasHandTrackers = handTrackers.any { tracker ->
+				tracker.origin != DeviceOrigin.DRIVER && tracker.origin != DeviceOrigin.VRC
+			}
+
+			return TrackingChecklistStep(
+				valid = !handsSentToDriver || (!hasControllers && hasHandTrackers),
+				enabled = driverConnected,
+				ignorable = true,
+				visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
+			)
 		}
-
-		return TrackingChecklistStep(
-			valid = !handsSentToDriver || (!hasControllers && hasHandTrackers),
-			enabled = driverConnected,
-			ignorable = true,
-			visibility = TrackingChecklistStepVisibility.WHEN_INVALID,
-		)
 	}
 
 	override fun observe(receiver: TrackingChecklist) {

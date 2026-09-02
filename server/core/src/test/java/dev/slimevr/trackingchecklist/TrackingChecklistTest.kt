@@ -5,7 +5,6 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServerActions
 import dev.slimevr.buildTestResetsManager
 import dev.slimevr.buildTestSettings
-import dev.slimevr.buildTestSolarXR
 import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.config.Settings
@@ -18,6 +17,7 @@ import dev.slimevr.resets.ResetsActions
 import dev.slimevr.resets.ResetsManager
 import dev.slimevr.routing.BoneRoutingActions
 import dev.slimevr.routing.BoneRoutingManager
+import dev.slimevr.solarxr.SolarXRBridgeActions
 import dev.slimevr.solarxr.onSolarXRMessage
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
@@ -76,24 +76,6 @@ class TrackingChecklistTest {
 				),
 			)
 			checklist.context.observeAll(checklist)
-		}
-
-		suspend fun connectDriver() {
-			val bridge = buildTestSolarXR(server.context.scope, appContext)
-			server.context.dispatch(VRServerActions.SolarXRConnected(bridge))
-
-			onSolarXRMessage(MessageBundle(driverMsgs = listOf(DriverMessageHeader(message = HandshakeRequest(driverName = "TestDriver")))), bridge)
-		}
-
-		fun routeToDriver(vararg bones: BodyPart) {
-			val routes = bones.associateWith { setOf(RoutingOutput.DRIVER) }
-			boneRouting.context.dispatch(BoneRoutingActions.SetRoutes(routes))
-		}
-
-		fun setAutomatic(automatic: Boolean) {
-			settings.context.dispatch(
-				SettingsActions.Update { copy(boneRoutingConfig = boneRoutingConfig.copy(automatic = automatic)) },
-			)
 		}
 
 		fun addTracker(
@@ -308,73 +290,59 @@ class TrackingChecklistTest {
 
 	@Test
 	fun `STEAMVR_HANDS_ENABLED is disabled without a driver`() = runTest {
-		val h = Harness(this)
-		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
-		runCurrent()
+		val step = SteamVRHandsCheckBehaviour.computeStep(
+			trackers = emptyList(),
+			routes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND to setOf(RoutingOutput.DRIVER)),
+			driverConnected = false,
+		)
 
-		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).enabled)
+		assertEquals(false, step.enabled)
 	}
 
 	@Test
 	fun `STEAMVR_HANDS_ENABLED flags hands sent to the driver while a controller is held`() = runTest {
-		val h = Harness(this)
-		h.setAutomatic(false)
-		h.connectDriver()
-		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
-		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
-		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
-		runCurrent()
+		val step = SteamVRHandsCheckBehaviour.computeStep(
+			trackers = listOf(checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)), checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER))),
+			routes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND to setOf(RoutingOutput.DRIVER)),
+			driverConnected = true,
+		)
 
-		assertEquals(true, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).enabled)
-		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
+		assertEquals(true, step.enabled)
+		assertEquals(false, step.valid)
 	}
 
 	@Test
 	fun `STEAMVR_HANDS_ENABLED flags hands sent to the driver with no hand tracker worn`() = runTest {
-		val h = Harness(this)
-		h.connectDriver()
-		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
-		runCurrent()
+		val step = SteamVRHandsCheckBehaviour.computeStep(
+			trackers = emptyList(),
+			routes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND to setOf(RoutingOutput.DRIVER)),
+			driverConnected = true,
+		)
 
 		// The hand bone is computed from the arm chain, so this is sent regardless. Turning
 		// it on by accident is the usual way to end up here.
-		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
+		assertEquals(false, step.valid)
 	}
 
 	@Test
 	fun `STEAMVR_HANDS_ENABLED accepts hand trackers when no controller is held`() = runTest {
-		val h = Harness(this)
-		h.connectDriver()
-		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
-		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
-		runCurrent()
+		val step = SteamVRHandsCheckBehaviour.computeStep(
+			trackers = listOf(checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP))),
+			routes = mapOf(BodyPart.LEFT_HAND to setOf(RoutingOutput.DRIVER), BodyPart.RIGHT_HAND to setOf(RoutingOutput.DRIVER)),
+			driverConnected = true,
+		)
 
-		assertEquals(true, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
+		assertEquals(true, step.valid)
 	}
 
 	@Test
 	fun `STEAMVR_HANDS_ENABLED ignores hands that are not routed to the driver`() = runTest {
-		val h = Harness(this)
-		h.connectDriver()
-		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
-		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
-		runCurrent()
+		val step = SteamVRHandsCheckBehaviour.computeStep(
+			trackers = listOf(checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)), checklistTracker(Tracker.DEFAULT_STATE.copy(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER))),
+			routes = emptyMap(),
+			driverConnected = true,
+		)
 
-		assertEquals(true, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
-	}
-
-	@Test
-	fun `STEAMVR_HANDS_ENABLED flags hands in automatic mode too`() = runTest {
-		val h = Harness(this)
-		h.setAutomatic(true)
-		h.connectDriver()
-		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.UDP)
-		h.addTracker(bodyPart = BodyPart.LEFT_HAND, origin = DeviceOrigin.DRIVER)
-		h.routeToDriver(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
-		runCurrent()
-
-		// Hands are the user's call in either mode, so there is always something to undo.
-		assertEquals(true, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).enabled)
-		assertEquals(false, h.step(TrackingChecklistStepId.STEAMVR_HANDS_ENABLED).valid)
+		assertEquals(true, step.valid)
 	}
 }

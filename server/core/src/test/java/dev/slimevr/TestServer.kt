@@ -197,17 +197,6 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 	return Settings(context, scope, NoopConfigStorage, "settings")
 }
 
-fun buildTestSolarXR(scope: CoroutineScope, appContext: AppContextProvider): SolarXRBridge {
-	val context = Context.create(
-		initialState = SolarXRBridgeState(),
-		scope = scope,
-		reducer = ::reduceSolarXR,
-		behaviours = listOf(DriverHandshakeBehaviour(appContext)),
-		name = "SolarXR[test]",
-	)
-	return SolarXRBridge(id = 0, context = context, appContext = appContext)
-}
-
 fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: CoroutineScope): HeightCalibrationManager {
 	val initialState = HeightCalibrationState(status = UserHeightCalibrationStatus.NONE, currentHeight = 1.6f, canDoUserHeightCalibration = true)
 	val context = Context.create<HeightCalibrationState, HeightCalibrationActions>(
