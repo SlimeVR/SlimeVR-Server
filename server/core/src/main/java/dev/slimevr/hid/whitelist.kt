@@ -19,3 +19,8 @@ fun isCompatibleHidTracker(vid: Int, pid: Int) = TRACKER_PRODUCT_RULES.any { rul
 }
 
 fun isCompatibleHidDevice(vid: Int, pid: Int) = isCompatibleHidReceiver(vid, pid) || isCompatibleHidTracker(vid, pid)
+
+fun hidVendorIds(directTrackersEnabled: Boolean): Set<Int> {
+	val rules = if (directTrackersEnabled) RECEIVER_PRODUCT_RULES + TRACKER_PRODUCT_RULES else RECEIVER_PRODUCT_RULES
+	return rules.mapTo(mutableSetOf()) { rule -> rule.vendorId }
+}

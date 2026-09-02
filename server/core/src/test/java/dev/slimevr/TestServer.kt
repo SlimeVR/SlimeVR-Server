@@ -1,10 +1,10 @@
-@file:OptIn(kotlin.concurrent.atomics.ExperimentalAtomicApi::class)
-
 package dev.slimevr
 
 import dev.slimevr.bvh.BVHManager
 import dev.slimevr.config.AppConfig
 import dev.slimevr.config.ConfigStorage
+import dev.slimevr.config.GlobalConfig
+import dev.slimevr.config.GlobalConfigState
 import dev.slimevr.config.Settings
 import dev.slimevr.config.SettingsConfigState
 import dev.slimevr.config.SettingsState
@@ -62,7 +62,6 @@ import dev.slimevr.config.reduce as reduceConfig
 import dev.slimevr.heightcalibration.reduce as reduceHeightCalibration
 import dev.slimevr.resets.reduce as reduceResets
 import dev.slimevr.skeleton.reduce as reduceSkeleton
-import dev.slimevr.solarxr.reduce as reduceSolarXR
 import dev.slimevr.tracker.reduce as reduceTracker
 import dev.slimevr.udp.reduce as reduceUdpServer
 
@@ -199,7 +198,7 @@ fun buildTestSettings(scope: CoroutineScope): Settings {
 
 fun buildTestHeightCalibration(server: VRServer, userConfig: UserConfig, scope: CoroutineScope): HeightCalibrationManager {
 	val initialState = HeightCalibrationState(status = UserHeightCalibrationStatus.NONE, currentHeight = 1.6f, canDoUserHeightCalibration = true)
-	val context = Context.create<HeightCalibrationState, HeightCalibrationActions>(
+	val context = Context.create(
 		initialState = initialState,
 		scope = scope,
 		reducer = ::reduceHeightCalibration,
@@ -222,10 +221,29 @@ fun buildTestAppContext(server: VRServer): AppContextProvider = object : TestApp
 	override val server: VRServer = server
 }
 
+fun buildTestAppConfig(scope: CoroutineScope): AppConfig {
+	val globalContext = Context.create(
+		initialState = GlobalConfigState(),
+		scope = scope,
+		reducer = ::reduceConfig,
+		name = "GlobalConfig[test]",
+	)
+	return AppConfig(
+		globalConfig = GlobalConfig(globalContext).also { it.startObserving() },
+		userConfig = buildTestUserConfig(scope),
+		settings = buildTestSettings(scope),
+	)
+}
+
+fun buildTestAppContext(server: VRServer, config: AppConfig): AppContextProvider = object : TestAppContext() {
+	override val server: VRServer = server
+	override val config: AppConfig = config
+}
+
 private fun buildTestUdpServer(): dev.slimevr.udp.UdpServer {
 	val context = Context.create(
 		initialState = dev.slimevr.udp.UdpServerState(emptyMap()),
-		scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Job()),
+		scope = CoroutineScope(kotlinx.coroutines.Job()),
 		reducer = ::reduceUdpServer,
 		name = "TestUdpServer",
 	)
