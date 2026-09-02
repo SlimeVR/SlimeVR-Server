@@ -293,6 +293,9 @@ function initializePreview(
       skeleton.forEach(
         (bone) => bone instanceof BoneKind && bone.updateData(bones)
       );
+      // The mesh helper reads bone.matrixWorld alongside the raw orientations,
+      // and the scene traverses it before this tree, so refresh it here.
+      skeleton[0].updateMatrixWorld(true);
       if (skeletonHelper instanceof BasedSkeletonMeshHelper) {
         skeletonHelper.setProportions(deriveSkeletonProportions(bones));
       }
@@ -402,6 +405,7 @@ function SkeletonVisualizer({
     const context = previewContext.current;
     if (!context || disabled) return;
     context.rebuildSkeleton(createChildren(bones, BoneKind.root), bones);
+    console.log('rebuild');
   }, [bones.size, disabled]);
 
   useEffect(() => {
