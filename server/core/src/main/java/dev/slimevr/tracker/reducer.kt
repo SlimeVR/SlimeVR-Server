@@ -11,14 +11,13 @@ private const val UNRELIABLE_ANGLE_CHANGE_THRESHOLD = 135 * FastMath.DEG_TO_RAD
 private fun trackPolarity(
 	newRotation: Quaternion,
 	oldRotation: Quaternion,
-	bodyPart: BodyPart?,
-	headTrackerRotation: Quaternion? = null,
+	polarityFallbackRotation: Quaternion? = null,
 ): Quaternion {
 	val absAngleChange = newRotation.angleToR(oldRotation)
-	if (absAngleChange > UNRELIABLE_ANGLE_CHANGE_THRESHOLD && bodyPart != BodyPart.HEAD && headTrackerRotation != null) {
+	if (absAngleChange > UNRELIABLE_ANGLE_CHANGE_THRESHOLD && polarityFallbackRotation != null) {
 		// Rotation rotated too much since last SetRotation; we're not sure which direction the tracker rotated.
-		// Solution: align polarity with the head tracker since the user is likely to be spinning their whole body.
-		return newRotation.twinNearest(headTrackerRotation)
+		// Solution: align polarity with another tracker's rotation instead.
+		return newRotation.twinNearest(polarityFallbackRotation)
 	}
 
 	// Track polarity compared to the last rotation
@@ -59,8 +58,7 @@ fun reduce(
 				trackPolarity(
 					applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation),
 					state.rotation,
-					state.bodyPart,
-					action.headTrackerRotation,
+					action.polarityFallbackRotation,
 				)
 			} else {
 				state.rotation
