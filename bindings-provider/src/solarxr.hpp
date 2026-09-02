@@ -11,13 +11,33 @@
 
 class SolarXRConnection {
 private:
-#if defined(__linux__)
-    int fd{ -1 };
-#elif defined(_WIN32)
-    HANDLE pipe{ INVALID_HANDLE_VALUE };
+#ifdef _WIN32
+    using Socket = SOCKET;
+    constexpr static Socket InvalidSocket = INVALID_SOCKET;
+    constexpr static int SocketError = SOCKET_ERROR;
 #else
-#error "Unsupported platform"
+    using Socket = int;
+    constexpr static Socket InvalidSocket = -1;
+    constexpr static int SocketError = -1;
 #endif
+
+    static inline int GetLastSocketError() {
+#ifdef _WIN32
+        return WSAGetLastError();
+#else
+        return errno;
+#endif
+    }
+
+    static inline int CloseSocket(Socket fd) {
+#ifdef _WIN32
+        return closesocket(fd);
+#else
+        return close(fd);
+#endif
+    }
+
+    Socket fd = InvalidSocket;
 
     static std::filesystem::path getSocketPath();
 

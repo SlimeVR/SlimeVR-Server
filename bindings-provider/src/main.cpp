@@ -16,6 +16,8 @@
 #include "openvr.h"
 
 #ifdef _WIN32
+#define WIN32_MEAN_AND_LEAN
+#define NOMINMAX
 #include <Windows.h>
 #else
 #include <cstdlib>
