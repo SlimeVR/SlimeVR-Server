@@ -42,7 +42,6 @@ class TapDetectionTest {
 			trackerId = 1,
 			tapsNeeded = tapsNeeded,
 		)
-		val trackersOverThreshold = mutableSetOf<Int>()
 		val behaviour = TapDetectionBasicBehaviour()
 
 		val timeSource = TestTimeSource()
