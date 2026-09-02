@@ -161,7 +161,7 @@ class Skeleton(
 	fun startObserving() = context.observeAll(this)
 
 	companion object {
-		const val DEFAULT_HZ = 400
+		const val DEFAULT_HZ = 500
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
