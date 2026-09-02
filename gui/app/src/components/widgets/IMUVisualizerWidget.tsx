@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BoardType, TrackerDataT } from 'solarxr-protocol';
+import { BoardType } from 'solarxr-protocol';
 import { useTracker } from '@/hooks/tracker';
 import { Typography } from '@/components/commons/Typography';
 import { formatVector3 } from '@/utils/formatting';
