@@ -6,16 +6,6 @@
 #include <string>
 #include <system_error>
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <Winsock2.h>
-#include <afunix.h>
-#else
-#include <sys/socket.h>
-#include <sys/un.h>
-#endif
-
 namespace fs = std::filesystem;
 
 static std::string getenvSafe(const char *env) {

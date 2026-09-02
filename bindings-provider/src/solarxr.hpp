@@ -2,9 +2,14 @@
 
 #include <filesystem>
 
-#if defined(_WIN32)
+#ifdef _WIN32
 #define WIN32_MEAN_AND_LEAN
-#include <Windows.h>
+#define NOMINMAX
+#include <Winsock2.h>
+#include <afunix.h>
+#else
+#include <sys/socket.h>
+#include <sys/un.h>
 #endif
 
 #include "flatbuffers/flatbuffer_builder.h"
