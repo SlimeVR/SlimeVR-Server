@@ -85,7 +85,7 @@ SolarXRConnection::~SolarXRConnection() {
 }
 
 bool SolarXRConnection::connected() {
-    if (read(fd, nullptr, 0) == SocketError) {
+    if (recv(fd, nullptr, 0, 0) == SocketError) {
         return !(errno == EBADF || errno == EINVAL);
     }
 
@@ -100,13 +100,13 @@ void SolarXRConnection::sendMsg(flatbuffers::FlatBufferBuilder &fbb) {
     if constexpr (std::endian::native != std::endian::little)
         size = std::byteswap(size);
 
-    if (write(fd, reinterpret_cast<const char *>(&size), sizeof(size)) == SocketError) {
+    if (send(fd, reinterpret_cast<const char *>(&size), sizeof(size), 0) == SocketError) {
         Logger::get().warning("Failed to write message size to socket: {}",
                               std::error_code(GetLastSocketError(), std::system_category()).message());
         return;
     }
 
-    if (write(fd, reinterpret_cast<const char *>(fbb.GetBufferPointer()), fbb.GetSize()) == SocketError) {
+    if (send(fd, reinterpret_cast<const char *>(fbb.GetBufferPointer()), fbb.GetSize(), 0) == SocketError) {
         Logger::get().warning("Failed to write message to socket: {}",
                               std::error_code(GetLastSocketError(), std::system_category()).message());
         return;
