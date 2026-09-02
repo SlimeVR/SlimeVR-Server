@@ -734,7 +734,6 @@ onboarding-connect_tracker-next = Ich habe alle meine Tracker verbunden.
 
 onboarding-assign_trackers-title = Tracker zuweisen
 onboarding-assign_trackers-description = Wählen Sie nun aus, welcher Tracker wo befestigt ist. Klicken Sie auf einen Ort, an dem der Tracker platziert ist.
-onboarding-assign_trackers-unassign_all = Alle Trackerzuweisungen aufheben
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server

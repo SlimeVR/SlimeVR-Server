@@ -3,6 +3,7 @@ import {
   AssignTrackerRequestT,
   BodyPart,
   QuatT,
+  ResetTrackerAssignmentsT,
   RpcMessage,
   TapDetectionSetupModeRequestT,
   TapDetectionSetupNotificationT,
@@ -44,7 +45,7 @@ export function useTrackerAssignment(mode: AssignmentMode) {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const sendAssign = useAssignTracker();
   const shell = usePickerShell();
-  const { assignedTrackers, trackerByPart, flatTrackers } = shell;
+  const { trackerByPart, flatTrackers } = shell;
 
   const [pending, setPending] = useState<Pending>(null);
   const [panelOpen, setPanelOpen] = useState(false);
@@ -132,9 +133,7 @@ export function useTrackerAssignment(mode: AssignmentMode) {
   };
 
   const unassignAll = () => {
-    assignedTrackers.forEach((td) =>
-      sendAssign(td.tracker.trackerId, BodyPart.NONE, null)
-    );
+    sendRPCPacket(RpcMessage.ResetTrackerAssignments, new ResetTrackerAssignmentsT());
     clearPending();
   };
 

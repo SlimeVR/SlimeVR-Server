@@ -1098,7 +1098,7 @@ onboarding-connect_tracker-next = I connected all my trackers
 ## Tracker assignment setup
 onboarding-assign_trackers-title = Assign trackers
 onboarding-assign_trackers-description = Let's choose which tracker goes where. Click on a location where you want to place a tracker
-onboarding-assign_trackers-unassign_all = Unassign all trackers
+onboarding-assign_trackers-reset_assignments = Reset all assignments
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server

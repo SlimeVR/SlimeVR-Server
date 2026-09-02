@@ -55,7 +55,7 @@ function DesktopTrackerAssign() {
               <Button
                 variant="secondary"
                 onClick={unassignAll}
-                id="onboarding-assign_trackers-unassign_all"
+                id="onboarding-assign_trackers-reset_assignments"
               />
             }
           />

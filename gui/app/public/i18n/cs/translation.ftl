@@ -704,7 +704,6 @@ onboarding-connect_tracker-next = Připojil jsem všechny své trackery
 
 onboarding-assign_trackers-title = Přiřazení trackerů
 onboarding-assign_trackers-description = Vyberte, na jakou končetinu každý tracker patří. Klikněte na místo, kam chcete umístit tracker
-onboarding-assign_trackers-unassign_all = Zrušit přiřazení všech trackerů
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server

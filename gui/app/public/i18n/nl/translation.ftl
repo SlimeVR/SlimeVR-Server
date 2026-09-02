@@ -814,7 +814,6 @@ onboarding-connect_tracker-next = Ik heb al mijn trackers verbonden
 
 onboarding-assign_trackers-title = Trackers toewijzen
 onboarding-assign_trackers-description = Laten we de bevesteging van je trackers bepalen. Klik op de lichaamslocatie waar je een tracker wilt toewijzen.
-onboarding-assign_trackers-unassign_all = Alle trackers toewijzing verwijderen
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server

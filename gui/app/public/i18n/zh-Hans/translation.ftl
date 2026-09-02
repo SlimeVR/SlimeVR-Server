@@ -851,7 +851,6 @@ onboarding-connect_tracker-next = 所有的追踪器都连接好了
 
 onboarding-assign_trackers-title = 分配追踪器
 onboarding-assign_trackers-description = 让我们选择追踪器的佩戴位置。点击对应部位即可分配。
-onboarding-assign_trackers-unassign_all = 取消分配所有追踪器
 # Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
