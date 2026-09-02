@@ -59,7 +59,9 @@ class AssignTrackerBehaviour(
 			// First unassign all trackers so that we don't have conflicts.
 			trackers.forEach { tracker ->
 				val intendedBodyPart = tracker.context.state.value.intendedBodyPart
-				intendedBodyParts.putIfAbsent(intendedBodyPart, tracker)
+				if (intendedBodyPart != null) {
+					intendedBodyParts.putIfAbsent(intendedBodyPart, tracker)
+				}
 
 				tracker.context.dispatch(
 					TrackerActions.Update {
