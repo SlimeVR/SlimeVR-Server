@@ -6,6 +6,7 @@ import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
+import dev.slimevr.skeleton.fkprocessors.VelocityFkProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BonePredictionInputProcessor
@@ -15,7 +16,6 @@ import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
-import dev.slimevr.skeleton.inputprocessors.ToeDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -25,6 +25,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.SkeletonBone
 
+data class Velocity(
+	/** In meters/s */
+	val linear: Vector3,
+	/** In radians/s */
+	val angular: Vector3,
+)
+
+/** Pre-FK */
 data class BoneInput(
 	val bodyPart: BodyPart,
 	val offset: Vector3,
@@ -34,19 +42,19 @@ data class BoneInput(
 	val isRotationActive: Boolean,
 	val isAccelerationActive: Boolean,
 	val isPositionActive: Boolean,
-	val angularVelocity: Vector3,
-	val linearVelocity: Vector3,
+	val velocity: Velocity
 )
 
+/** Post-FK */
 data class BoneState(
 	val parentBone: BoneState?,
 	val bodyPart: BodyPart,
 	val offset: Vector3,
 	val rotation: Quaternion,
+	val acceleration: Vector3,
 	val headPosition: Vector3,
 	val tailPosition: Vector3,
-	val angularVelocity: Vector3,
-	val linearVelocity: Vector3,
+	val velocity: Velocity
 ) {
 	// FK rebuilds most of the skeleton every frame, so anything read less often than that is
 	// computed on demand rather than per bone
@@ -78,19 +86,23 @@ data class SkeletonState(
 	val pausedProcessedBoneInputs: InputSkeleton?,
 )
 
-val DEFAULT_SKELETON_STATE: SkeletonState = SkeletonState(
+val DEFAULT_BONE_INPUT = BoneInput(
+	bodyPart = BodyPart.NONE,
+	offset = Vector3.NULL,
+	rotation = Quaternion.IDENTITY,
+	acceleration = Vector3.NULL,
+	position = null,
+	isRotationActive = false,
+	isAccelerationActive = false,
+	isPositionActive = false,
+	velocity = Velocity(Vector3.NULL, Vector3.NULL)
+)
+
+val DEFAULT_SKELETON_STATE = SkeletonState(
 	boneInputs = DEFAULT_PROPORTIONS.toBoneOffsets().mapValues { bodyPart, tailOffset ->
-		BoneInput(
+		DEFAULT_BONE_INPUT.copy(
 			bodyPart = bodyPart,
 			offset = tailOffset,
-			rotation = Quaternion.IDENTITY,
-			acceleration = Vector3.NULL,
-			position = null,
-			isRotationActive = false,
-			isAccelerationActive = false,
-			isPositionActive = false,
-			angularVelocity = Vector3.NULL,
-			linearVelocity = Vector3.NULL,
 		)
 	},
 	skeletonHeight = DEFAULT_HEIGHT,
@@ -107,10 +119,10 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?): BoneState {
 		bodyPart = bone.bodyPart,
 		offset = bone.offset,
 		rotation = bone.rotation,
+		acceleration = bone.acceleration,
 		headPosition = headPosition,
 		tailPosition = headPosition + bone.rotation.sandwich(bone.offset),
-		angularVelocity = bone.angularVelocity,
-		linearVelocity = bone.linearVelocity,
+		velocity = bone.velocity,
 	)
 }
 
@@ -186,12 +198,13 @@ class Skeleton(
 						UpperLegsRollAlignInputProcessor(settings),
 						BoneDirectLinkInputProcessor(),
 						FingerImputeInputProcessor(),
-						ToeDirectLinkInputProcessor(),
 						BonePredictionInputProcessor(settings),
 						BoneSmoothingInputProcessor(settings),
 					),
 					fkProcessors = listOf(
+						VelocityFkProcessor(),
 // 						LocalizerFkProcessor(settings),
+						// TODO move prediction and smoothing here?
 						FootPlantFkProcessor(settings),
 						ToeSnapFkProcessor(settings),
 					),

@@ -65,10 +65,13 @@ export function useBonesDataFeedConfig() {
   const dataFeedConfig = new DataFeedConfigT();
   const boneMask = new BoneMaskT();
   boneMask.bodyPart = true;
-  boneMask.orientationG = true;
-  boneMask.rotationG = false;
   boneMask.boneLength = true;
-  boneMask.headPositionG = true;
+  boneMask.rotation = false;
+  boneMask.orientation = true;
+  boneMask.headPosition = true;
+  boneMask.tailPosition = false;
+  boneMask.angularVelocity = false;
+  boneMask.angularVelocity = false;
   dataFeedConfig.boneMask = boneMask;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   return dataFeedConfig;

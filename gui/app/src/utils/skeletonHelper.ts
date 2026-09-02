@@ -146,23 +146,23 @@ export class BoneKind extends Bone {
     const parent = BoneKind.parent(this.boneT.bodyPart);
     const parentBone = parent === null ? undefined : bones.get(parent);
     if (this.boneT.bodyPart === BoneKind.root) {
-      this.position.set(0, this.boneT.headPositionG?.y ?? 0, 0);
+      this.position.set(0, this.boneT.headPosition?.y ?? 0, 0);
       return;
     }
 
     if (!this.tail) {
-      const localPosition = Vector3FromVec3fT(this.boneT.headPositionG).sub(
+      const localPosition = Vector3FromVec3fT(this.boneT.headPosition).sub(
         Vector3FromVec3fT(
           parentBone === undefined
             ? new Vector3(0, 0, 0)
-            : Vector3FromVec3fT(parentBone.headPositionG)
+            : Vector3FromVec3fT(parentBone.headPosition)
         )
       );
       this.position.copy(localPosition);
       return;
     }
 
-    const quat = QuaternionFromQuatT(this.boneT.orientationG).normalize();
+    const quat = QuaternionFromQuatT(this.boneT.orientation).normalize();
 
     this.position.set(0, -this.boneT.boneLength, 0);
     this.position.applyQuaternion(quat);

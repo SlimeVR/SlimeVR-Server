@@ -44,8 +44,8 @@ export function computeUserHeight(bones: Map<BodyPart, BoneT>) {
 
 export function computeHeadYOffset(bones: Map<BodyPart, BoneT>) {
   const hmd = bones.get(BodyPart.HEAD);
-  if (hmd?.headPositionG?.y && hmd.headPositionG.y > 0) {
-    return hmd.headPositionG.y / EYE_HEIGHT_TO_HEIGHT_RATIO;
+  if (hmd?.headPosition?.y && hmd.headPosition.y > 0) {
+    return hmd.headPosition.y / EYE_HEIGHT_TO_HEIGHT_RATIO;
   }
   const yLength = sumBoneLengths(bones, Y_PARTS);
   if (yLength === null) return 0;
