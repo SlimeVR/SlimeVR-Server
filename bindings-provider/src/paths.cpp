@@ -1,5 +1,11 @@
 #include "paths.hpp"
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#endif
+
 namespace fs = std::filesystem;
 
 fs::path Paths::getDataPath() {
