@@ -390,9 +390,7 @@ export function TrackerSettingsPage() {
               </>
             )}
           </div>
-          {tracker?.tracker && (
-            <IMUVisualizerWidget tracker={tracker?.tracker} />
-          )}
+          {tracker && <IMUVisualizerWidget td={tracker} />}
         </div>
         <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
           <ArrowLink to="/">

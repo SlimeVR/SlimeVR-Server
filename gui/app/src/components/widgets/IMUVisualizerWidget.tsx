@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { TrackerDataT } from 'solarxr-protocol';
+import { BoardType, TrackerDataT } from 'solarxr-protocol';
 import { useTracker } from '@/hooks/tracker';
 import { Typography } from '@/components/commons/Typography';
 import { formatVector3 } from '@/utils/formatting';
@@ -26,9 +26,10 @@ import { useLocalization } from '@fluent/react';
 import { Vector3Object, Vector3FromVec3fT } from '@/maths/vector3';
 import { ErrorBoundary } from 'react-error-boundary';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
+import { FlatDeviceTracker } from '@/store/app-store';
+import { BUTTERFLY_BOARDS } from '@/components/commons/BodyPartIcon';
 
 const GROUND_COLOR = '#4444aa';
-const MODEL_SCALE = 6.5;
 const CANVAS_HEIGHT = 200;
 
 // Three.js context - isolated from React
@@ -46,7 +47,8 @@ type IMUVisualizerContext = {
 
 async function initializeIMUVisualizer(
   canvas: HTMLCanvasElement,
-  modelPath: string
+  modelPath: string,
+  modelScale: number
 ): Promise<IMUVisualizerContext> {
   const scene = new Scene();
 
@@ -76,7 +78,7 @@ async function initializeIMUVisualizer(
   const loader = new GLTFLoader();
   const gltf = await loader.loadAsync(modelPath);
   const modelGroup = new Group();
-  modelGroup.scale.setScalar(MODEL_SCALE);
+  modelGroup.scale.setScalar(modelScale);
   modelGroup.rotation.x = Math.PI / 2;
   modelGroup.add(gltf.scene);
   trackerGroup.add(modelGroup);
@@ -173,11 +175,13 @@ function IMUVisualizerCanvas({
   vec,
   mag,
   model,
+  scale,
 }: {
   quat: QuatObject;
   vec: Vector3Object;
   mag: Vector3Object;
   model: string;
+  scale: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<IMUVisualizerContext | null>(null);
@@ -188,7 +192,7 @@ function IMUVisualizerCanvas({
 
     let mounted = true;
 
-    initializeIMUVisualizer(canvasRef.current, model)
+    initializeIMUVisualizer(canvasRef.current, model, scale)
       .then((ctx) => {
         if (mounted) {
           contextRef.current = ctx;
@@ -231,10 +235,17 @@ function IMUVisualizerCanvas({
   );
 }
 
-export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
+export function IMUVisualizerWidget({ td }: { td: FlatDeviceTracker }) {
+  if (!td.tracker) return <></>;
+  const tracker = td.tracker;
   const { l10n } = useLocalization();
   const [enabled, setEnabled] = useState(false);
-  const isExtension = false; // TODO Do we want to display extensions?
+  const isExtension =
+    (td.device?.trackers.findIndex((t) => t.trackerId == tracker.trackerId) ??
+      0) > 0;
+  const boardType =
+    td.device?.hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN;
+  const isButterfly = BUTTERFLY_BOARDS.has(boardType);
 
   useEffect(() => {
     const state = localStorage.getItem('modelPreview');
@@ -266,10 +277,10 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
     [tracker?.rawMagneticVector]
   );
 
-  const model = useMemo(
-    () => (isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'),
-    [isExtension]
-  );
+  const model = useMemo(() => {
+    if (isButterfly) return '/models/butterfly_slime.gltf';
+    return isExtension ? '/models/extension.gltf' : '/models/tracker.gltf';
+  }, [isExtension, isButterfly]);
 
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
@@ -362,6 +373,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
               quat={quat}
               vec={vec}
               mag={mag}
+              scale={isButterfly ? 10 : 6.3}
               model={model}
             />
           </ErrorBoundary>
