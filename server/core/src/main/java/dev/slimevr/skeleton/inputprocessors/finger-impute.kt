@@ -47,16 +47,15 @@ class FingerImputeInputProcessor : SkeletonInputProcessor {
 	)
 
 	// TODO : There's more math to do here. Reference the original code.
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
+	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		for ((bodyPart, source) in fingerToSource) {
-			val bone = inputSkeleton[bodyPart] ?: continue
+			val bone = mutableInputSkeleton[bodyPart] ?: continue
 			if (bone.isRotationActive) continue
 
-			val rotation = inputSkeleton[source]?.rotation ?: continue
-			// Writing back the rotation the bone already carries would only allocate a new BoneInput
+			val rotation = mutableInputSkeleton[source]?.rotation ?: continue
 			if (rotation == bone.rotation) continue
 
-			inputSkeleton[bodyPart] = bone.copy(rotation = rotation)
+			mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation)
 		}
 	}
 }

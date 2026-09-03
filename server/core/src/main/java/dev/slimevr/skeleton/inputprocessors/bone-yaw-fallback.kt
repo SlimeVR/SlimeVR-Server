@@ -12,20 +12,17 @@ import kotlin.collections.set
  * falling back to their parent's yaw.
  */
 class BoneYawFallbackInputProcessor : SkeletonInputProcessor {
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
-		inputSkeleton.forEachBone { parentPart, parentBone ->
+	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
+		mutableInputSkeleton.forEachBone { parentPart, parentBone ->
 			if (!parentBone.isRotationActive) return@forEachBone // Parent needs to be active
-			val children = iterateBodyPartHierarchy(parentPart, true)
-			// Depends only on the parent, so every child below reuses it
-			val yaw = parentBone.rotation.project(Vector3.POS_Y).unit()
 
-			for (childPart in children) {
-				val childBone = inputSkeleton[childPart.second] ?: continue
+			val parentYaw = parentBone.rotation.project(Vector3.POS_Y).unit()
+			for (childPart in iterateBodyPartHierarchy(parentPart, true)) {
+				val childBone = mutableInputSkeleton[childPart.second] ?: continue
 				if (childBone.isRotationActive) continue // Child needs to be inactive
-				// Writing back the rotation the bone already carries would only allocate a new BoneInput
-				if (yaw == childBone.rotation) continue
+				if (parentYaw == childBone.rotation) continue
 
-				inputSkeleton[childPart.second] = childBone.copy(rotation = yaw)
+				mutableInputSkeleton[childPart.second] = childBone.copy(rotation = parentYaw)
 			}
 		}
 	}

@@ -42,7 +42,7 @@ data class BoneInput(
 	val isRotationActive: Boolean,
 	val isAccelerationActive: Boolean,
 	val isPositionActive: Boolean,
-	val velocity: Velocity
+	val velocity: Velocity,
 )
 
 /** Post-FK */
@@ -54,7 +54,7 @@ data class BoneState(
 	val acceleration: Vector3,
 	val headPosition: Vector3,
 	val tailPosition: Vector3,
-	val velocity: Velocity
+	val velocity: Velocity,
 ) {
 	// FK rebuilds most of the skeleton every frame, so anything read less often than that is
 	// computed on demand rather than per bone
@@ -95,7 +95,7 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	isRotationActive = false,
 	isAccelerationActive = false,
 	isPositionActive = false,
-	velocity = Velocity(Vector3.NULL, Vector3.NULL)
+	velocity = Velocity(Vector3.NULL, Vector3.NULL),
 )
 
 val DEFAULT_SKELETON_STATE = SkeletonState(
@@ -158,14 +158,14 @@ sealed interface SkeletonActions {
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
 typealias SkeletonBehaviour = Behaviour<Skeleton>
 interface SkeletonInputProcessor {
-	fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float)
+	fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float)
 }
 interface SkeletonFkProcessor {
-	fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
+	fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
-	fun process(fk: ComputedSkeleton, ikTargets: IKTargets, floorLevel: Float): IKTargets
+	fun process(mutableIkTargets: IKTargets, fk: ComputedSkeleton, floorLevel: Float)
 }
 
 class Skeleton(

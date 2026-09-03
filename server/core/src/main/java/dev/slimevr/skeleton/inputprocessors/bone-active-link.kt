@@ -22,19 +22,18 @@ class BoneActiveLinkInputProcessor : SkeletonInputProcessor {
 		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
 	)
 
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
+	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		for ((bodyPart, sources) in linkedToSources) {
-			val bone = inputSkeleton[bodyPart] ?: continue
+			val bone = mutableInputSkeleton[bodyPart] ?: continue
 			if (bone.isRotationActive) continue
 
-			// Only inactive inputSkeleton are written, so one written here can never become a source below
+			// Only inactive bones are written, so one written here can never become a source below
 			val closestActiveBone = sources.firstNotNullOfOrNull { part ->
-				inputSkeleton[part]?.takeIf { it.isRotationActive }
+				mutableInputSkeleton[part]?.takeIf { it.isRotationActive }
 			} ?: continue
-			// Writing back the rotation the bone already carries would only allocate a new BoneInput
 			if (closestActiveBone.rotation == bone.rotation) continue
 
-			inputSkeleton[bodyPart] = bone.copy(rotation = closestActiveBone.rotation)
+			mutableInputSkeleton[bodyPart] = bone.copy(rotation = closestActiveBone.rotation)
 		}
 	}
 }

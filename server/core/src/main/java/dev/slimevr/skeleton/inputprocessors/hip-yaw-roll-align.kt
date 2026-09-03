@@ -10,18 +10,6 @@ import solarxr_protocol.datatypes.BodyPart
  * Handles rotating the hip' yaw and roll to match the upper legs' yaw and roll.
  */
 class HipYawRollAlignInputProcessor(val settings: Settings) : SkeletonInputProcessor {
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
-		val hipBone = inputSkeleton[BodyPart.HIP] ?: return
-		if (hipBone.isRotationActive) return
-		val leftUpperLegBone = inputSkeleton[BodyPart.LEFT_UPPER_LEG] ?: return
-		val rightUpperLegBone = inputSkeleton[BodyPart.RIGHT_UPPER_LEG] ?: return
-
-		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
-		val sourceRotation = leftUpperLegBone.rotation.lerpQ(rightUpperLegBone.rotation, 0.5f)
-		val alignedRotation = alignYawRoll(hipBone.rotation, sourceRotation)
-		inputSkeleton[BodyPart.HIP] = hipBone.copy(rotation = hipBone.rotation.interpQ(alignedRotation, ratio))
-	}
-
 	/**
 	 * Rotates the first Quaternion to match its yaw and roll to the rotation of
 	 * the second Quaternion
@@ -34,5 +22,17 @@ class HipYawRollAlignInputProcessor(val settings: Settings) : SkeletonInputProce
 		val r = from.inv() * to
 		val c = Quaternion(r.w, -r.x, 0f, 0f)
 		return (from * r * c).unit()
+	}
+
+	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
+		val hipBone = mutableInputSkeleton[BodyPart.HIP] ?: return
+		if (hipBone.isRotationActive) return
+		val leftUpperLegBone = mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG] ?: return
+		val rightUpperLegBone = mutableInputSkeleton[BodyPart.RIGHT_UPPER_LEG] ?: return
+
+		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
+		val sourceRotation = leftUpperLegBone.rotation.lerpQ(rightUpperLegBone.rotation, 0.5f)
+		val alignedRotation = alignYawRoll(hipBone.rotation, sourceRotation)
+		mutableInputSkeleton[BodyPart.HIP] = hipBone.copy(rotation = hipBone.rotation.interpQ(alignedRotation, ratio))
 	}
 }

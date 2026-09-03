@@ -27,7 +27,7 @@ private fun bone(bodyPart: BodyPart, rotation: Quaternion = Quaternion.IDENTITY)
 	acceleration = Vector3.NULL,
 	headPosition = Vector3(0f, 1f, 0f),
 	tailPosition = Vector3(0f, 0.9f, 0f),
-	velocity = Velocity(Vector3.NULL, Vector3.NULL)
+	velocity = Velocity(Vector3.NULL, Vector3.NULL),
 )
 
 private fun messages(bundle: OscBundle): List<OscMessage> = bundle.contents.map { (it as OscContent.Message).msg }

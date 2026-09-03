@@ -19,7 +19,7 @@ class BoneSmoothingInputProcessor(val settings: Settings) : SkeletonInputProcess
 	private var lastProcessTime = timeSource.markNow()
 
 	// TODO this isn't linear. Do we want linear smoothing like in main?
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
+	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.SMOOTHING) {
 			// Drop stale poses so re-enabling doesn't blend out of an outdated frame
@@ -36,11 +36,11 @@ class BoneSmoothingInputProcessor(val settings: Settings) : SkeletonInputProcess
 		val alpha = ((1 - smoothingAmount) * lastFrameTimeSeconds * SMOOTHING_MULTIPLIER).coerceIn(0f, 1f)
 
 		val newSmoothed = bodyPartMap<Quaternion>()
-		inputSkeleton.forEachBone { bodyPart, bone ->
+		mutableInputSkeleton.forEachBone { bodyPart, bone ->
 			val prev = smoothed[bodyPart] ?: bone.rotation
 			val rotation = prev.lerpR(bone.rotation, alpha).unit()
 			newSmoothed[bodyPart] = rotation
-			if (rotation != bone.rotation) inputSkeleton[bodyPart] = bone.copy(rotation = rotation)
+			if (rotation != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation)
 		}
 		smoothed = newSmoothed
 	}

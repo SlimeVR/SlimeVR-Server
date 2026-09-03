@@ -2,7 +2,6 @@ package dev.slimevr.skeleton.targetprocessors
 
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.BodyPartMap
-import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.IKTargets
 import dev.slimevr.skeleton.SkeletonTargetProcessor
@@ -10,7 +9,6 @@ import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
-import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 import kotlin.time.ComparableTimeMark
@@ -33,9 +31,9 @@ const val FOOT_VELOCITY_SENSITIVITY = 1f
 const val FOOT_ACCELERATION_SENSITIVITY = 1f
 
 const val SKATING_LOCK_ENGAGE_PERCENT = 1.1f
-const val SKATING_DISTANCE_THRESHOLD = 0.5f
 
 // All squared for performance
+const val SKATING_DISTANCE_THRESHOLD = 0.25f
 const val SKATING_LINEAR_VELOCITY_THRESHOLD = 5.76f
 const val SKATING_ANGULAR_VELOCITY_THRESHOLD = 20.25f
 const val SKATING_ACCELERATION_THRESHOLD = 0.49f
@@ -60,17 +58,19 @@ val BODY_PART_MASSES = mapOf(
 )
 
 // TODO Implement feet accel/velocity sensitivity calculation
+// TODO check if the first line (with SKATING_DISTANCE_THRESHOLD) is correct
 fun shouldLock(
 	position: Vector3,
+	lastPosition: Vector3,
 	acceleration: Vector3,
 	velocity: Velocity,
 	thresholdMultiplier: Float,
 	floorLevel: Float,
-): Boolean = // (velocity.horizontalDistance <= SKATING_DISTANCE_THRESHOLD * thresholdMultiplier) && TODO
+): Boolean = ((position - lastPosition).let { Vector3(it.x, 0f, it.z) }.lenSq() <= SKATING_DISTANCE_THRESHOLD * thresholdMultiplier) &&
 	(velocity.linear.lenSq() <= SKATING_LINEAR_VELOCITY_THRESHOLD * thresholdMultiplier) &&
-		(velocity.angular.lenSq() <= SKATING_ANGULAR_VELOCITY_THRESHOLD * thresholdMultiplier) &&
-		(position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier) &&
-		(acceleration.lenSq() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier)
+	(velocity.angular.lenSq() <= SKATING_ANGULAR_VELOCITY_THRESHOLD * thresholdMultiplier) &&
+	(position.y - floorLevel <= FLOOR_DISTANCE_THRESHOLD * thresholdMultiplier) &&
+	(acceleration.lenSq() <= SKATING_ACCELERATION_THRESHOLD * thresholdMultiplier)
 
 // TODO Use this to calculate feet pressure
 fun centerOfMass(
@@ -123,11 +123,12 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) : SkeletonTargetP
 	// Centre of mass
 	var comState: COMState? = null
 
+	val lastLockedPositions: BodyPartMap<Vector3> = bodyPartMap()
 	val lockState: BodyPartMap<LockState> = bodyPartMap()
 
-	override fun process(fk: ComputedSkeleton, ikTargets: IKTargets, floorLevel: Float): IKTargets {
+	override fun process(mutableIkTargets: IKTargets, fk: ComputedSkeleton, floorLevel: Float) {
 		val skeletonConfig = settings.context.state.value.data.skeletonConfig
-		if (!skeletonConfig.toggles.skatingCorrection) return ikTargets
+		if (!skeletonConfig.toggles.skatingCorrection) return
 
 		val curTime = timeSource.markNow()
 
@@ -142,12 +143,14 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) : SkeletonTargetP
 
 		for (bodyPart in VELOCITY_BODY_PARTS) {
 			val curBone = fk[bodyPart] ?: continue
+			val curPosition = curBone.tailPosition
 
 			// Consider locking BodyPart
 			val lastState = lockState[bodyPart]
 			val wasLocked = lastState?.locked == true
 			val isLocked = shouldLock(
-				curBone.tailPosition,
+				curPosition,
+				lastLockedPositions[bodyPart] ?: curPosition,
 				curBone.acceleration,
 				curBone.velocity,
 				if (wasLocked) SKATING_LOCK_ENGAGE_PERCENT else 1f,
@@ -157,7 +160,7 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) : SkeletonTargetP
 			val activeState = computeLockState(
 				wasLocked,
 				isLocked,
-				curBone.tailPosition,
+				curPosition,
 			)?.also {
 				// Track lock state changes
 				lockState[bodyPart] = it
@@ -165,9 +168,9 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) : SkeletonTargetP
 			} ?: lastState ?: continue
 
 			if (activeState.locked) {
-				ikTargets[bodyPart] = activeState.position
+				mutableIkTargets[bodyPart] = activeState.position
+				lastLockedPositions[bodyPart] = activeState.position
 			}
 		}
-		return ikTargets
 	}
 }

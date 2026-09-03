@@ -20,21 +20,6 @@ class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputPr
 		BodyPart.RIGHT_UPPER_LEG to BodyPart.RIGHT_LOWER_LEG,
 	)
 
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
-		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsTwistWithLowerLegs
-		if (ratio == 0f) return
-
-		// Upper legs are written, lower legs are read, so the two never overlap
-		for (bodyPartToSource in bodyPartToSources) {
-			val bone = inputSkeleton[bodyPartToSource.first] ?: continue
-			if (!bone.isRotationActive) continue
-
-			val sourceRotation = inputSkeleton[bodyPartToSource.second]?.rotation ?: continue
-			val alignedRotation = alignRoll(bone.rotation, sourceRotation)
-			inputSkeleton[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpQ(alignedRotation, ratio))
-		}
-	}
-
 	/**
 	 * Rotates the first Quaternion to match its roll to the rotation of
 	 * the second Quaternion
@@ -47,5 +32,20 @@ class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputPr
 		val r = to.inv() * from
 		val c = Quaternion(r.w, 0f, -r.y, 0f)
 		return (to * r * c).unit()
+	}
+
+	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
+		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateUpperLegsTwistWithLowerLegs
+		if (ratio == 0f) return
+
+		// Upper legs are written, lower legs are read, so the two never overlap
+		for (bodyPartToSource in bodyPartToSources) {
+			val bone = mutableInputSkeleton[bodyPartToSource.first] ?: continue
+			if (!bone.isRotationActive) continue
+
+			val sourceRotation = mutableInputSkeleton[bodyPartToSource.second]?.rotation ?: continue
+			val alignedRotation = alignRoll(bone.rotation, sourceRotation)
+			mutableInputSkeleton[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpQ(alignedRotation, ratio))
+		}
 	}
 }

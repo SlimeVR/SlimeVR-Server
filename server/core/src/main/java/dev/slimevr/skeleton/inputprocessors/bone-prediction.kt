@@ -40,7 +40,7 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 		else -> 1f
 	}
 
-	override fun process(inputSkeleton: InputSkeleton, skeletonHeight: Float) {
+	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.PREDICTION) {
 			// Drop stale velocities so re-enabling doesn't diff against a long outdated pose
@@ -51,7 +51,7 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 		val now = timeSource.markNow()
 
 		val newVelocities = bodyPartMap<BoneVelocity>()
-		inputSkeleton.forEachBone { bodyPart, bone ->
+		mutableInputSkeleton.forEachBone { bodyPart, bone ->
 			val prev = velocities[bodyPart]
 			if (prev == null) {
 				newVelocities[bodyPart] = BoneVelocity(bone.rotation, Quaternion.IDENTITY, now)
@@ -71,7 +71,7 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 			newVelocities[bodyPart] = BoneVelocity(bone.rotation, rotationDelta, if (changed) now else prev.lastChange)
 			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, bonePredictionAmount).unit()
 			val predicted = (scaledDelta * bone.rotation).unit()
-			if (predicted != bone.rotation) inputSkeleton[bodyPart] = bone.copy(rotation = predicted)
+			if (predicted != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = predicted)
 		}
 		velocities = newVelocities
 	}

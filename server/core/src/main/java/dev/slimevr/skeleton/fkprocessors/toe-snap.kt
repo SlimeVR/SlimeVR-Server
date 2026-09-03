@@ -49,14 +49,14 @@ fun snapToes(
 class ToeSnapFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
-	override fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
+	override fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		if (!settings.context.state.value.data.skeletonConfig.toggles.toeSnap) return
 
 		// TODO This loop format should be turned into a function
 		for (bodyPart in bodyParts) {
-			val input = inputSkeleton[bodyPart] ?: continue
+			val input = mutableInputSkeleton[bodyPart] ?: continue
 			val output = fk[bodyPart] ?: continue
-			inputSkeleton[bodyPart] = input.copy(
+			mutableInputSkeleton[bodyPart] = input.copy(
 				rotation = snapToes(
 					input.rotation,
 					computeToeSnapRatio(

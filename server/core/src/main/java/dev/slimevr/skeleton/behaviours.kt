@@ -6,9 +6,9 @@ import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import io.ktor.utils.io.CancellationException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.launchIn
@@ -22,9 +22,9 @@ import java.util.concurrent.locks.LockSupport
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.time.Duration
-import kotlin.time.TimeSource
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 import kotlin.time.measureTime
 
 class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
@@ -99,18 +99,6 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 			}
 		}
 	}
-}
-
-/**
- * Runs [processors] over a copy of [boneInputs].
- *
- * The processors share one buffer and write into it, so the copy here is what keeps the caller's
- * map, and the state it came from, untouched.
- */
-private fun runInputProcessors(processors: List<SkeletonInputProcessor>, boneInputs: InputSkeleton, skeletonHeight: Float): InputSkeleton {
-	val bones = EnumMap(boneInputs)
-	for (processor in processors) processor.process(bones, skeletonHeight)
-	return bones
 }
 
 private class TickTimings(private val hz: Int, private val window: Duration, private val target: Duration) {
@@ -198,6 +186,18 @@ class ComputedSkeletonBehaviour(
 		return next
 	}
 
+	/**
+	 * Runs [processors] over a copy of [boneInputs].
+	 *
+	 * The processors share one buffer and write into it, so the copy here is what keeps the caller's
+	 * map, and the state it came from, untouched.
+	 */
+	private fun runInputProcessors(processors: List<SkeletonInputProcessor>, boneInputs: InputSkeleton, skeletonHeight: Float): InputSkeleton {
+		val bones = EnumMap(boneInputs)
+		for (processor in processors) processor.process(bones, skeletonHeight)
+		return bones
+	}
+
 	override fun observe(receiver: Skeleton) {
 		// The loop parks its thread to hit its interval, so it gets one to itself. Sharing would
 		// starve everything else on the dispatcher, since parking blocks the thread rather than
@@ -220,8 +220,8 @@ class ComputedSkeletonBehaviour(
 					val processTime = measureTime {
 						val targetState = receiver.context.state.value
 
-						// TODO find out a cleaner way to pause tracking that doesn't add 1 frame latency (not a priority)
 						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
+							// TODO improve pause tracking code
 							// Use already-processed paused tracking data except for the head
 							val headBone = targetState.boneInputs[BodyPart.HEAD]
 							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]?.position) }
@@ -240,9 +240,9 @@ class ComputedSkeletonBehaviour(
 						// Run initial FK
 						var fk = buildBones(boneInputs)
 
-						// Run FK processors. They write into boneInputs, and this snapshot is what says
-						// which bones each one moved, so a processor only has to write
-						val beforeFk = EnumMap(boneInputs)
+						// Run FK processors. They write into boneInputs, and beforeFk allows figuring out
+						// which bones changed.
+						val beforeFk = BodyPartMap(boneInputs)
 						for (processor in fkProcessors) {
 							processor.process(boneInputs, fk, targetState.floorLevel)
 
@@ -265,7 +265,8 @@ class ComputedSkeletonBehaviour(
 						}
 
 						// Run IK processors
-						val ikTargets = targetProcessors.fold(bodyPartMap<Vector3>()) { targets, processor -> processor.process(fk, targets, targetState.floorLevel) }
+						val ikTargets = bodyPartMap<Vector3>()
+						for (processor in targetProcessors) processor.process(ikTargets, fk, targetState.floorLevel)
 
 						// Run IK
 						val ikOutput = ccdIk(

@@ -99,8 +99,8 @@ private fun isUserSitting(fk: ComputedSkeleton): Boolean {
 }
 
 class LocalizerFkProcessor(val settings: Settings) : SkeletonFkProcessor {
-	override fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
-		val headInput = inputSkeleton[BodyPart.HEAD] ?: return
+	override fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
+		val headInput = mutableInputSkeleton[BodyPart.HEAD] ?: return
 		if (headInput.isPositionActive || !settings.context.state.value.data.skeletonConfig.toggles.mocapMode) {
 			return
 		}
@@ -116,6 +116,6 @@ class LocalizerFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 		}
 
 		val newHeadPosition = (headInput.position ?: Vector3.NULL) - travel
-		inputSkeleton[BodyPart.HEAD] = headInput.copy(position = newHeadPosition)
+		mutableInputSkeleton[BodyPart.HEAD] = headInput.copy(position = newHeadPosition)
 	}
 }

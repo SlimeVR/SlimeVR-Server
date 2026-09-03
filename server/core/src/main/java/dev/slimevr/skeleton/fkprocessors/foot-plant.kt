@@ -30,13 +30,13 @@ fun correctFootAttitude(
 class FootPlantFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 	val bodyParts: Array<BodyPart> = arrayOf(BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 
-	override fun process(inputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
+	override fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		if (!settings.context.state.value.data.skeletonConfig.toggles.footPlant) return
 
 		for (bodyPart in bodyParts) {
-			val input = inputSkeleton[bodyPart] ?: continue
+			val input = mutableInputSkeleton[bodyPart] ?: continue
 			val output = fk[bodyPart] ?: continue
-			inputSkeleton[bodyPart] = input.copy(
+			mutableInputSkeleton[bodyPart] = input.copy(
 				rotation = correctFootAttitude(
 					input.rotation,
 					computeFootPlantRatio(
