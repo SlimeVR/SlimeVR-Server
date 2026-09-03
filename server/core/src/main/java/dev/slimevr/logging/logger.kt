@@ -35,6 +35,11 @@ object AppLogger {
 
 	val coroutines = noCoLogger("Coroutines")
 	val console = noCoLogger("Console")
+
+	object ShouldDebug {
+		var skeletonTicks = false
+		var eventDispatcher = false
+	}
 }
 
 private const val CONSOLE_SINK = "console"

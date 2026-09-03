@@ -60,7 +60,6 @@ class EventDispatcher<T : Any>(
 	scope: CoroutineScope,
 	private val capacity: Int = 64,
 	onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
-	verboseMetrics: Boolean = false,
 ) {
 	private class Sub<T : Any>(val type: KClass<*>, val action: suspend (T) -> Unit)
 
@@ -85,7 +84,8 @@ class EventDispatcher<T : Any>(
 	// pause without that also delaying the warning.
 	private val warnDepth = (capacity / 4).coerceAtLeast(1)
 
-	private val metrics = if (verboseMetrics) DispatcherMetrics(name) else null
+	private val dispatcherMetrics = DispatcherMetrics(name)
+	private val metrics get() = if (AppLogger.ShouldDebug.eventDispatcher) dispatcherMetrics else null
 
 	private val mailbox = Channel<Envelope<T>>(capacity, onBufferOverflow) {
 		dropped.incrementAndGet()
@@ -103,11 +103,11 @@ class EventDispatcher<T : Any>(
 					continue
 				}
 
-				metrics.recordQueueWait(System.nanoTime() - envelope.enqueuedAtNanos, envelope.enqueueDepth)
+				metrics?.recordQueueWait(System.nanoTime() - envelope.enqueuedAtNanos, envelope.enqueueDepth)
 				for (sub in handlersFor(type)) {
 					val start = System.nanoTime()
 					sub.action(envelope.payload)
-					metrics.recordHandler(System.nanoTime() - start, type)
+					metrics?.recordHandler(System.nanoTime() - start, type)
 				}
 			}
 		}

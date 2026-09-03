@@ -138,8 +138,7 @@ fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPart
 			iterateBodyPartHierarchy(parentOf(bodyPart) ?: bodyPart, bodyPart != BodyPart.HEAD).forEach { (parentPart, childPart) ->
 				val rawBone = boneInputs[childPart] ?: return@forEach
 				val parentBone = parentPart?.let { result[it] }
-				// Velocity is written onto the computed bones, not the inputs, so a rebuilt bone
-				// keeps what the last pass measured
+				// Velocity is written directly during the skeleton loop computed bones; keep it.
 				result[childPart] = buildBone(rawBone, parentBone, result[childPart]?.velocity ?: ZERO_VELOCITY)
 			}
 		}
