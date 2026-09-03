@@ -7,6 +7,7 @@ import dev.slimevr.osc.OscSender
 import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.formatExceptionMessage
 import dev.slimevr.util.timeSource
 import kotlinx.coroutines.flow.combine
@@ -35,10 +36,10 @@ class VMCOutputBehaviour(
 		var sender: OscSender? = null
 		var vrm: VrmGeometry? = null
 		var sendFailing = false
-		var nextFrameRetryAt: TimeSource.Monotonic.ValueTimeMark? = null
+		var nextFrameRetryAt: MonotonicValueTimeMark? = null
 
 		/** Start of the current unbroken run of successful sends, null while sends are failing. */
-		var healthySince: TimeSource.Monotonic.ValueTimeMark? = null
+		var healthySince: MonotonicValueTimeMark? = null
 	}
 
 	override fun observe(receiver: VMCManager) {
@@ -163,7 +164,7 @@ class VMCOutputBehaviour(
 		bones: ComputedSkeleton,
 		routedBones: Set<BodyPart>,
 		config: VMCConfig,
-		startedAt: TimeSource.Monotonic.ValueTimeMark,
+		startedAt: MonotonicValueTimeMark,
 	) {
 		val sender = runtime.sender ?: return
 		val status = receiver.context.state.value.status

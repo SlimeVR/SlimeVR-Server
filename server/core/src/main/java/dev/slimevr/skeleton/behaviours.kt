@@ -2,6 +2,7 @@ package dev.slimevr.skeleton
 
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -24,7 +25,6 @@ import kotlin.math.sin
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource
 import kotlin.time.measureTime
 
 class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehaviour {
@@ -113,7 +113,7 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 	private var nextOverrunReport = timeSource.markNow() + OVERRUN_WINDOW
 
 	/** Called with the start of a tick, so the gap between two starts is what gets measured */
-	fun started(at: TimeSource.Monotonic.ValueTimeMark) {
+	fun started(at: MonotonicValueTimeMark) {
 		sinceLastStart = at - lastStart
 		lastStart = at
 	}
@@ -180,7 +180,7 @@ class ComputedSkeletonBehaviour(
 	 * measured from when the tick actually ran, which always trails its deadline by the wake
 	 * latency, so only a materially short gap costs a slot.
 	 */
-	private fun slotAfter(slot: TimeSource.Monotonic.ValueTimeMark, tickStart: TimeSource.Monotonic.ValueTimeMark): TimeSource.Monotonic.ValueTimeMark {
+	private fun slotAfter(slot: MonotonicValueTimeMark, tickStart: MonotonicValueTimeMark): MonotonicValueTimeMark {
 		var next = slot
 		while (next - tickStart < minimumGap) next += intervalDuration
 		return next

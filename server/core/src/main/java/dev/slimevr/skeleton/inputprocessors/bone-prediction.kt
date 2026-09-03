@@ -6,6 +6,7 @@ import dev.slimevr.skeleton.InputSkeleton
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.forEachBone
+import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
@@ -23,7 +24,7 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 	private data class BoneVelocity(
 		val lastRotation: Quaternion,
 		val rotationDelta: Quaternion,
-		val lastChange: TimeSource.Monotonic.ValueTimeMark,
+		val lastChange: MonotonicValueTimeMark,
 	)
 
 	private var velocities: BodyPartMap<BoneVelocity> = bodyPartMap()
