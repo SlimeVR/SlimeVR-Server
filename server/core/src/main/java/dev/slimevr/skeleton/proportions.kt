@@ -120,6 +120,8 @@ fun Map<SkeletonBone, Float>.toBoneOffsets(): BodyPartMap<Vector3> {
 	this[SkeletonBone.HAND_Y]?.let { offsets.putAll(getFingerOffsets(it)) }
 	// Toes
 	this[SkeletonBone.FOOT_LENGTH]?.let { offsets.putAll(getToeOffsets(it)) }
+	// Bust
+	this[SkeletonBone.CHEST]?.let { offsets.putAll(getBustOffsets(it)) }
 	return offsets
 }
 
@@ -218,3 +220,13 @@ private fun getToeOffsets(footLength: Float) = (
 	).map { it.second }.associateWith {
 	Vector3(0f, 0f, -footLength * 0.2f)
 }
+
+/**
+ * Returns the offsets for the bust bones scaled from the chestLength.
+ */
+private fun getBustOffsets(bustLength: Float) = (
+	iterateBodyPartHierarchy(BodyPart.LEFT_BUST, true) +
+		iterateBodyPartHierarchy(BodyPart.RIGHT_BUST, true)
+	).map { it.second }.associateWith {
+		Vector3(0f, 0f, bustLength * 0.2f)
+	}

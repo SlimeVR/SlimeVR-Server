@@ -47,13 +47,13 @@ private fun processBust(
 		listOf(
 			OscContent.Message(
 				OscMessage(
-					"/avatar/parameters/${side.oscName}Bust",
+					"/avatar/parameters/${side.oscName}BustPitch",
 					listOf(OscArg.Float(bustPitch))
 				)
 			),
 			OscContent.Message(
 				OscMessage(
-					"/avatar/parameters/${side.oscName}Bust",
+					"/avatar/parameters/${side.oscName}BustYaw",
 					listOf(OscArg.Float(bustYaw))
 				)
 			),
