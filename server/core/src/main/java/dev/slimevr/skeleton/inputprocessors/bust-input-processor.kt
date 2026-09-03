@@ -110,7 +110,7 @@ class BustInputProcessor : SkeletonInputProcessor {
 
 			// Convert absolute bust rotation into chest-local rotation.
 			val localRotation =
-				chestRotation.inverse() * bone.rotation
+				chestRotation.inv() * bone.rotation
 
 			// Modify only the rotation relative to the chest.
 			val correctedLocalRotation =
