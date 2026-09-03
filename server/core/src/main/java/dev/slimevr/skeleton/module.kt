@@ -17,6 +17,7 @@ import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
+import dev.slimevr.util.PreciseWaiter
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.CoroutineScope
@@ -180,7 +181,7 @@ class Skeleton(
 	companion object {
 		const val DEFAULT_HZ = 500
 
-		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, hz: Int = DEFAULT_HZ): Skeleton {
+		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
@@ -189,6 +190,7 @@ class Skeleton(
 // 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					hz = hz,
+					waiter = waiter,
 					inputProcessors = listOf(
 						BonePredictionInputProcessor(settings),
 						BoneSmoothingInputProcessor(settings),

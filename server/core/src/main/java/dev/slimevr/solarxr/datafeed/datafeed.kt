@@ -15,8 +15,6 @@ import dev.slimevr.solarxr.createBone
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
@@ -40,6 +38,8 @@ import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource
 
 private fun ipv4AddressFromString(address: String): UInt {
 	val parts = address.split('.')
@@ -193,7 +193,11 @@ fun createDatafeedFrame(
 	)
 }
 
-class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : SolarXRBridgeBehaviour {
+class DataFeedInitBehaviour(
+	val server: VRServer,
+	val skeleton: Skeleton,
+	private val timeSource: TimeSource.WithComparableMarks,
+) : SolarXRBridgeBehaviour {
 	override fun observe(receiver: SolarXRBridge) {
 		receiver.dataFeedDispatcher.on<StartDataFeed> { event ->
 			val dataFeeds = event.dataFeeds ?: return@on
@@ -202,8 +206,13 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 
 			val timers = dataFeeds.mapIndexed { index, config ->
 				receiver.context.scope.launch {
-					val minTime = config.minimumTimeSinceLast.toLong()
-					while (isActive) {
+					val interval = config.minimumTimeSinceLast.toLong().milliseconds
+					var nextSend = timeSource.markNow()
+
+					skeleton.computed.collect {
+						val now = timeSource.markNow()
+						if (now < nextSend) return@collect
+
 						try {
 							receiver.sendDataFeed(
 								createDatafeedFrame(
@@ -218,7 +227,9 @@ class DataFeedInitBehaviour(val server: VRServer, val skeleton: Skeleton) : Sola
 						} catch (e: Exception) {
 							AppLogger.solarxr.error(e, "Error sending data feed")
 						}
-						delay(minTime)
+
+						nextSend += interval
+						if (nextSend < now) nextSend = now + interval
 					}
 				}
 			}
