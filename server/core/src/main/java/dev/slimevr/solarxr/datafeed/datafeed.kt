@@ -85,14 +85,15 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	origin = tracker.origin,
 )
 
+private const val DEVICE_STATS_WINDOW_MS = 5_000L
+
 private fun createDevice(
 	device: Device,
 	trackers: List<TrackerState>,
 	datafeedConfig: DataFeedConfig,
-	windowMs: Long,
 ): DeviceData {
 	val deviceState = device.context.state.value
-	val stats = device.getStatsForWindow(windowMs)
+	val stats = device.getStatsForWindow(DEVICE_STATS_WINDOW_MS)
 	val trackerMask = datafeedConfig.dataMask?.trackerData
 
 	return DeviceData(
@@ -105,8 +106,8 @@ private fun createDevice(
 			rssi = stats.rssiAvg?.toShort(),
 			rssiMin = stats.rssiMin?.toShort(),
 			rssiMax = stats.rssiMax?.toShort(),
-			packetsReceived = deviceState.packetsReceived.toInt(),
-			packetsLost = deviceState.packetsLost.toInt(),
+			packetsReceived = stats.packetsReceived,
+			packetsLost = stats.packetsLost,
 			packetLoss = stats.packetLoss,
 			// TODO missing fields
 		),
@@ -167,9 +168,8 @@ fun createDatafeedFrame(
 ): DataFeedMessageHeader {
 	val serverState = server.context.state.value
 	val trackers = serverState.trackers.values.map { it.context.state.value }
-	val windowMs = datafeedConfig.minimumTimeSinceLast.toLong().coerceAtLeast(50L)
 	val devices = if (datafeedConfig.dataMask?.deviceData != null) {
-		serverState.devices.values.map { device -> createDevice(device, trackers, datafeedConfig, windowMs) }
+		serverState.devices.values.map { device -> createDevice(device, trackers, datafeedConfig) }
 	} else {
 		null
 	}

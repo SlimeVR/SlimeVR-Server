@@ -3,15 +3,12 @@ package dev.slimevr.solarxr.rpc
 import dev.slimevr.VRServer
 import dev.slimevr.device.Device
 import dev.slimevr.device.DevicePacketSample
-import dev.slimevr.device.computeWindowedStats
+import dev.slimevr.device.isOutage
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.SolarXRBridgeBehaviour
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.TrackerStatus
@@ -21,23 +18,13 @@ import solarxr_protocol.rpc.TelemetryGapEvent
 import solarxr_protocol.rpc.TelemetryGapResponse
 import solarxr_protocol.rpc.TelemetrySample
 import solarxr_protocol.rpc.TelemetryUpdateResponse
-import kotlin.math.max
 
-private fun Device.isDeviceOk(server: VRServer): Boolean {
-	val deviceState = context.state.value
+private fun isDeviceOk(device: Device, server: VRServer): Boolean {
+	val deviceState = device.context.state.value
 	if (deviceState.status == TrackerStatus.OK) return true
 	val deviceTrackers = server.context.state.value.trackers.values
 		.filter { it.context.state.value.deviceId == deviceState.id }
 	return deviceTrackers.any { it.context.state.value.status == TrackerStatus.OK }
-}
-
-private fun Device.getMeasuredTps(server: VRServer): Double {
-	val deviceState = context.state.value
-	val deviceTrackers = server.context.state.value.trackers.values
-		.filter { it.context.state.value.deviceId == deviceState.id }
-	return deviceTrackers
-		.mapNotNull { it.context.state.value.tps.toDouble().takeIf { t -> t > 0.0 } }
-		.maxOrNull() ?: 100.0
 }
 
 class TelemetryBehaviour(private val server: VRServer) : SolarXRBridgeBehaviour {
@@ -62,24 +49,20 @@ class TelemetryBehaviour(private val server: VRServer) : SolarXRBridgeBehaviour 
 
 						for (id in deviceIds) {
 							val device = server.getDevice(id.toInt()) ?: continue
-							val isOk = device.isDeviceOk(server)
+							val isOk = isDeviceOk(device, server)
 
-							val deviceSamples = device.context.state.value.samples
-							val stats = computeWindowedStats(deviceSamples, windowMs = 1000L, now = now)
-							val lastSample = deviceSamples.lastOrNull()
-
-							val isTotalLoss = !isOk || (stats.packetLoss != null && stats.packetLoss >= 1.0f)
+							val stats = device.getStatsForWindow(windowMs = 1000L, now = now)
 
 							samples.add(
 								TelemetrySample(
 									deviceId = id,
 									time = now.toULong(),
-									rssi = if (isTotalLoss) null else stats.rssiAvg?.toShort(),
-									rssiMin = if (isTotalLoss) null else stats.rssiMin?.toShort(),
-									rssiMax = if (isTotalLoss) null else stats.rssiMax?.toShort(),
-									packetLossPct = if (!isOk) null else stats.packetLoss,
-									packetsLost = lastSample?.packetsLost?.toInt(),
-									packetsReceived = lastSample?.packetsReceived?.toInt(),
+									rssi = if (isOk) stats.rssiAvg?.toShort() else null,
+									rssiMin = if (isOk) stats.rssiMin?.toShort() else null,
+									rssiMax = if (isOk) stats.rssiMax?.toShort() else null,
+									packetLossPct = if (isOk) stats.packetLoss else null,
+									packetsLost = if (isOk) stats.packetsLost else null,
+									packetsReceived = if (isOk) stats.packetsReceived else null,
 								),
 							)
 						}
@@ -98,37 +81,28 @@ class TelemetryBehaviour(private val server: VRServer) : SolarXRBridgeBehaviour 
 				jobs.add(
 					receiver.context.scope.launch {
 						var prevSample: DevicePacketSample? = null
-						device.context.state
-							.map { it.samples.lastOrNull() }
-							.distinctUntilChanged()
-							.filterNotNull()
+						device.packetHistory.latest
 							.collect { cur ->
 								val p = prevSample
-								if (p != null && device.isDeviceOk(server)) {
-									val durationMs = (cur.time - p.time).coerceAtLeast(0L)
-									val hasPacketLoss = cur.packetsLost != null && p.packetsLost != null && cur.packetsLost > p.packetsLost
-
-									val deviceTps = device.getMeasuredTps(server)
-									val expectedIntervalMs = 1000.0 / deviceTps.coerceIn(5.0, 200.0)
-									val thresholdMs = max(3.0 * expectedIntervalMs, 30.0)
-
-									if (hasPacketLoss && durationMs.toDouble() >= thresholdMs) {
-										val lostDiff = (cur.packetsLost - p.packetsLost).toUInt()
-										receiver.sendRpc(
-											TelemetryGapResponse(
-												events = listOf(
-													TelemetryGapEvent(
-														deviceId = id,
-														time = cur.time.toULong(),
-														durationMs = durationMs.toUInt(),
-														packetsLost = lostDiff,
-													),
-												),
-											),
-										)
-									}
-								}
 								prevSample = cur
+								if (p == null || !isDeviceOk(device, server)) return@collect
+
+								if (!isOutage(cur)) return@collect
+
+								val durationMs = (cur.time - p.time).coerceAtLeast(0L)
+
+								receiver.sendRpc(
+									TelemetryGapResponse(
+										events = listOf(
+											TelemetryGapEvent(
+												deviceId = id,
+												time = cur.time.toULong(),
+												durationMs = durationMs.toUInt(),
+												packetsLost = cur.lost.toUInt(),
+											),
+										),
+									),
+								)
 							}
 					},
 				)

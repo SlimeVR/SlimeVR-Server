@@ -45,33 +45,33 @@ class PacketBehaviour : UDPConnectionBehaviour {
 	}
 }
 
+/**
+ * Packets missing between [last] and [num]. A number at or below the mark arrived, so it is not
+ * loss, whether it is a duplicate or one that overtook its neighbours.
+ */
+internal fun packetsLostBetween(last: Long?, num: Long): Int = when {
+	last == null || num <= last -> 0
+	else -> (num - last - 1).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+}
+
 class PacketLossBehaviour : UDPConnectionBehaviour {
 	override fun observe(receiver: UDPConnection) {
-		var totalPacketsReceived = 0L
-		var acceptedPackets = 0L
-		var lastPacketCounterReset = System.currentTimeMillis()
-		var lastPacketNumber = 0L
+		var lastPacketNumber: Long? = null
+
+		// A tracker restarts its counter when it reconnects
+		receiver.context.state
+			.distinctUntilChangedBy { it.lastHandshake }
+			.onEach { lastPacketNumber = null }
+			.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.on<PacketEvent<UDPPacket>> { packet ->
 			val num = packet.packetNumber ?: return@on
-			val now = System.currentTimeMillis()
+			val last = lastPacketNumber
+			val lost = packetsLostBetween(last, num)
+			// Highest number seen wins, so a late arrival cannot drag the mark backwards
+			lastPacketNumber = if (last == null) num else maxOf(last, num)
 
-			if (now - lastPacketCounterReset >= 10_000L) {
-				totalPacketsReceived = 0L
-				acceptedPackets = 0L
-				lastPacketCounterReset = now
-			}
-
-			totalPacketsReceived++
-			val accepted = num == 0L || num > lastPacketNumber
-			if (accepted) {
-				lastPacketNumber = num
-				acceptedPackets++
-			}
-
-			receiver.getDevice()?.context?.dispatch(
-				DeviceActions.PacketStats(packetsReceived = totalPacketsReceived, packetsLost = totalPacketsReceived - acceptedPackets),
-			)
+			receiver.getDevice()?.recordPacketStats(received = 1, lost = lost, at = System.currentTimeMillis())
 		}.launchIn(receiver.context.scope)
 	}
 }
@@ -273,6 +273,7 @@ class DeviceStatsBehaviour : UDPConnectionBehaviour {
 		receiver.packetEvents.onPacket<SignalStrength> { event ->
 			val device = receiver.getDevice() ?: return@onPacket
 			device.context.dispatch(DeviceActions.Update { copy(signalStrength = event.data.signal) })
+			device.recordRssi(event.data.signal)
 		}.launchIn(receiver.context.scope)
 	}
 }

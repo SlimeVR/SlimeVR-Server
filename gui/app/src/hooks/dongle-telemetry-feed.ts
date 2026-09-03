@@ -16,6 +16,17 @@ const TARGET_FPS = 20;
 const FRAME_INTERVAL_MS = 1000 / TARGET_FPS; // 50ms interval for smooth 20 FPS rolling
 const MAX_DISPLAY_POINTS = 250; // Cap rendered chart points to guarantee flat, constant CPU usage over time
 
+/** Highest loss any tracker reports in this row, null when none of them reported one */
+function rowLossPeak(row: ChartRow): number | null {
+  let peak: number | null = null;
+  for (const key in row) {
+    if (!key.endsWith('_loss')) continue;
+    const val = row[key];
+    if (val != null && (peak == null || val > peak)) peak = val;
+  }
+  return peak;
+}
+
 function downsampleChartRows(
   rows: ChartRow[],
   windowSec: number,
@@ -25,16 +36,32 @@ function downsampleChartRows(
 
   const slotSec = Math.max(0.1, windowSec / maxPoints);
   const result: ChartRow[] = [];
-  let lastSlot = -1;
 
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-    const slot = Math.floor(row.t / slotSec);
-    if (slot !== lastSlot) {
-      result.push(row);
-      lastSlot = slot;
+  // The lossiest row wins its slot, so decimation cannot swallow a spike
+  const flushSlot = (start: number, end: number) => {
+    let best = rows[start];
+    let bestPeak = rowLossPeak(best);
+    for (let i = start + 1; i < end; i++) {
+      const peak = rowLossPeak(rows[i]);
+      if (peak != null && (bestPeak == null || peak > bestPeak)) {
+        best = rows[i];
+        bestPeak = peak;
+      }
+    }
+    result.push(best);
+  };
+
+  let slotStart = 0;
+  let currentSlot = Math.floor(rows[0].t / slotSec);
+  for (let i = 1; i < rows.length; i++) {
+    const slot = Math.floor(rows[i].t / slotSec);
+    if (slot !== currentSlot) {
+      flushSlot(slotStart, i);
+      slotStart = i;
+      currentSlot = slot;
     }
   }
+  flushSlot(slotStart, rows.length);
 
   return result;
 }
