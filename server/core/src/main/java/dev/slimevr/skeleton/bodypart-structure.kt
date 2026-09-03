@@ -51,11 +51,11 @@ val BODY_PART_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 		BodyPart.RIGHT_LITTLE_PROXIMAL to arrayOf(BodyPart.RIGHT_LITTLE_INTERMEDIATE),
 		BodyPart.RIGHT_LITTLE_INTERMEDIATE to arrayOf(BodyPart.RIGHT_LITTLE_DISTAL),
 
-		BodyPart.UPPER_CHEST to arrayOf(BodyPart.CHEST),
-		BodyPart.CHEST to arrayOf(
+		BodyPart.UPPER_CHEST to arrayOf(
 			BodyPart.LEFT_BUST,
 			BodyPart.RIGHT_BUST,
-			BodyPart.WAIST),
+			BodyPart.CHEST),
+		BodyPart.CHEST to arrayOf(BodyPart.WAIST),
 		BodyPart.WAIST to arrayOf(BodyPart.HIP),
 		BodyPart.HIP to arrayOf(BodyPart.LEFT_HIP, BodyPart.RIGHT_HIP),
 

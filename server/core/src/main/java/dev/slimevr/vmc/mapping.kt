@@ -145,7 +145,7 @@ val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 			BodyPart.RIGHT_RING_TOE,
 			BodyPart.RIGHT_LITTLE_TOE,
 		),
-		BodyPart.CHEST to arrayOf(
+		BodyPart.UPPER_CHEST to arrayOf(
 			BodyPart.LEFT_BUST,
 			BodyPart.RIGHT_BUST
 		),

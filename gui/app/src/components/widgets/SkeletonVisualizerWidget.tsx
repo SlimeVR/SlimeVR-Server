@@ -1,8 +1,7 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import { useMemo, useEffect, useState, useRef, useLayoutEffect } from 'react';
-import {
-  BoneKind,
+import BoneKind, {
   createChildren,
   BasedSkeletonHelper,
 } from '@/utils/skeletonHelper';

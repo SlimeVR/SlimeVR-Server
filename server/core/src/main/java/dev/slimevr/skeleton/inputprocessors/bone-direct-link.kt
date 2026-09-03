@@ -47,8 +47,8 @@ class BoneDirectLinkInputProcessor : SkeletonInputProcessor {
 		BodyPart.RIGHT_RING_TOE to BodyPart.RIGHT_MIDDLE_TOE,
 		BodyPart.RIGHT_LITTLE_TOE to BodyPart.RIGHT_RING_TOE,
 
-		BodyPart.LEFT_BUST to BodyPart.CHEST,
-		BodyPart.RIGHT_BUST to BodyPart.CHEST
+		BodyPart.LEFT_BUST to BodyPart.UPPER_CHEST,
+		BodyPart.RIGHT_BUST to BodyPart.UPPER_CHEST
 	)
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {

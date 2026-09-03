@@ -224,9 +224,10 @@ private fun getToeOffsets(footLength: Float) = (
 /**
  * Returns the offsets for the bust bones scaled from the chestLength.
  */
-private fun getBustOffsets(bustLength: Float) = (
-	iterateBodyPartHierarchy(BodyPart.LEFT_BUST, true) +
-		iterateBodyPartHierarchy(BodyPart.RIGHT_BUST, true)
-	).map { it.second }.associateWith {
-		Vector3(0f, 0f, bustLength * 0.2f)
-	}
+private fun getBustOffsets(bustLength: Float): BodyPartMap<Vector3> =
+	BodyPartMap(
+		mapOf(
+			BodyPart.LEFT_BUST to Vector3(0f, 0f, -bustLength * 0.2f),
+			BodyPart.RIGHT_BUST to Vector3(0f, 0f, -bustLength * 0.2f),
+		),
+	)

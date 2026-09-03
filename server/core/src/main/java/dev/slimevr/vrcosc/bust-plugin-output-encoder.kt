@@ -12,7 +12,7 @@ private const val MAXIMUM_ABSOLUTE_BUST_RANGE = 90
 
 internal fun buildBustMessages(bones: Map<BodyPart, BoneState>): List<OscContent> {
 	val messages = mutableListOf<OscContent>()
-	val chest = bones[BodyPart.CHEST]
+	val chest = bones[BodyPart.UPPER_CHEST]
 
 	if(chest != null) {
 		val leftBust = bones[BodyPart.LEFT_BUST]

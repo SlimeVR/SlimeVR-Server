@@ -1,6 +1,6 @@
 import { Matrix4, Mesh, Object3D, Quaternion, Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { BoneKind, getBoneList } from './skeletonHelper';
+import BoneKind, { getBoneList } from './skeletonHelper';
 import {
   BoneShapeConfig,
   CYLINDER_GEOMETRY,

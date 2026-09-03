@@ -125,7 +125,7 @@ export function getBoneList(object: Object3D): Bone[] {
   return boneList;
 }
 
-export class BoneKind extends Bone {
+class BoneKind extends Bone {
   boneT: BoneT;
   tail: boolean;
 
@@ -182,6 +182,10 @@ export class BoneKind extends Bone {
         return new Color('purple');
       case BodyPart.WAIST:
         return new Color('red');
+      case BodyPart.LEFT_BUST:
+        return new Color('green');
+      case BodyPart.RIGHT_BUST:
+        return new Color('green');
       case BodyPart.HIP:
         return new Color('orange');
       case BodyPart.LEFT_UPPER_LEG:
@@ -264,7 +268,7 @@ export class BoneKind extends Bone {
       case BodyPart.NECK:
         return [BodyPart.UPPER_CHEST, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER];
       case BodyPart.UPPER_CHEST:
-        return [BodyPart.CHEST];
+        return [BodyPart.LEFT_BUST, BodyPart.RIGHT_BUST, BodyPart.CHEST];
       case BodyPart.CHEST:
         return [BodyPart.WAIST];
       case BodyPart.WAIST:
@@ -389,7 +393,6 @@ export class BoneKind extends Bone {
         return [BodyPart.RIGHT_LITTLE_DISTAL];
       case BodyPart.RIGHT_LITTLE_DISTAL:
         return [];
-        return [];
       case BodyPart.LEFT_BIG_TOE:
       case BodyPart.LEFT_INDEX_TOE:
       case BodyPart.LEFT_MIDDLE_TOE:
@@ -400,6 +403,8 @@ export class BoneKind extends Bone {
       case BodyPart.RIGHT_MIDDLE_TOE:
       case BodyPart.RIGHT_RING_TOE:
       case BodyPart.RIGHT_LITTLE_TOE:
+      case BodyPart.LEFT_BUST:
+      case BodyPart.RIGHT_BUST:
         return [];
     }
   }
@@ -418,6 +423,10 @@ export class BoneKind extends Bone {
         return BodyPart.UPPER_CHEST;
       case BodyPart.WAIST:
         return BodyPart.CHEST;
+      case BodyPart.LEFT_BUST:
+        return BodyPart.UPPER_CHEST;
+      case BodyPart.RIGHT_BUST:
+        return BodyPart.UPPER_CHEST;
       case BodyPart.HIP:
         return BodyPart.WAIST;
 
@@ -537,6 +546,8 @@ export class BoneKind extends Bone {
     }
   }
 }
+
+export default BoneKind;
 
 export function createChildren(
   bones: Map<BodyPart, BoneT>,

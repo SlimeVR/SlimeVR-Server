@@ -21,12 +21,12 @@ export interface BoneShapeConfig {
     scaleRatio: Vector3
   ) => { scaleX: number; scaleY: number; scaleZ: number };
 }
-
 export interface BonePartConfig {
   visible: boolean;
   joint?: number;
   shapes: BoneShapeConfig[];
 }
+export const BUST_GEOMETRY: BufferGeometry = new SphereGeometry(1, 20, 16);
 
 /** Flat-capped tube spanning `y` in [-1, 1], radius 1 (default primitive). */
 export const CYLINDER_GEOMETRY: BufferGeometry = new CylinderGeometry(1, 1, 2, 20);
@@ -98,6 +98,25 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
       }
     ),
   ]),
+  [BodyPart.LEFT_BUST]: part(
+    shape(
+      { x: 4, y: 4, z: 4 },
+      {
+        geometry: BUST_GEOMETRY,
+        localOffset: new Vector3(0.05, -0.01, 0.0),
+      }
+    )
+  ),
+
+  [BodyPart.RIGHT_BUST]: part(
+    shape(
+      { x: 4, y: 4, z: 4 },
+      {
+        geometry: BUST_GEOMETRY,
+        localOffset: new Vector3(-0.05, -0.01, -0.0),
+      }
+    )
+  ),
 
   [BodyPart.WAIST]: part(
     shape({ x: 0.45, y: 1.05, z: 0.45 }, { modelUrl: '/models/skeleton/spine.gltf' })
