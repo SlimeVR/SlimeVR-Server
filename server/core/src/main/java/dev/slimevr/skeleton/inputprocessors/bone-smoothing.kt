@@ -11,6 +11,10 @@ import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.rpc.FilteringType
 
+private const val SMOOTHING_MULTIPLIER = 100f
+private const val SMOOTH_MIN = 0.6f
+private const val SMOOTH_MAX = 0.95f
+
 /**
  * Running average of bone rotations to smooth them out.
  */
@@ -43,11 +47,5 @@ class BoneSmoothingInputProcessor(val settings: Settings) : SkeletonInputProcess
 			if (rotation != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation)
 		}
 		smoothed = newSmoothed
-	}
-
-	companion object {
-		private const val SMOOTHING_MULTIPLIER = 100f
-		private const val SMOOTH_MIN = 0.6f
-		private const val SMOOTH_MAX = 0.95f
 	}
 }

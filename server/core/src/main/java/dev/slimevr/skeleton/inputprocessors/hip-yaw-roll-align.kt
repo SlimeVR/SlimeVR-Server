@@ -7,23 +7,23 @@ import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
 /**
+ * Rotates the first Quaternion to match its yaw and roll to the rotation of
+ * the second Quaternion
+ *
+ * @param from the first Quaternion
+ * @param to the second Quaternion
+ * @return the rotated Quaternion
+ */
+private fun alignYawRoll(from: Quaternion, to: Quaternion): Quaternion {
+	val r = from.inv() * to
+	val c = Quaternion(r.w, -r.x, 0f, 0f)
+	return (from * r * c).unit()
+}
+
+/**
  * Handles rotating the hip' yaw and roll to match the upper legs' yaw and roll.
  */
 class HipYawRollAlignInputProcessor(val settings: Settings) : SkeletonInputProcessor {
-	/**
-	 * Rotates the first Quaternion to match its yaw and roll to the rotation of
-	 * the second Quaternion
-	 *
-	 * @param from the first Quaternion
-	 * @param to the second Quaternion
-	 * @return the rotated Quaternion
-	 */
-	private fun alignYawRoll(from: Quaternion, to: Quaternion): Quaternion {
-		val r = from.inv() * to
-		val c = Quaternion(r.w, -r.x, 0f, 0f)
-		return (from * r * c).unit()
-	}
-
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val hipBone = mutableInputSkeleton[BodyPart.HIP] ?: return
 		if (hipBone.isRotationActive) return

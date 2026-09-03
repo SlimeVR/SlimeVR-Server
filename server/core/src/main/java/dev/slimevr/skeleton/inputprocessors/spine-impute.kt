@@ -10,6 +10,71 @@ import solarxr_protocol.datatypes.BodyPart
 // At this default value, the user's spine should behave as we meant it to.
 const val DEFAULT_SPINE_RATIO = 0.5f
 
+private enum class SpineSource(val parts: Array<BodyPart>) {
+	CHEST(arrayOf(BodyPart.CHEST)),
+	HIP(arrayOf(BodyPart.HIP)),
+	WAIST(arrayOf(BodyPart.WAIST)),
+	UPPER_LEGS(arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)),
+}
+
+/**
+ * Returns the interpolation ratio modified with the reliability and curve.
+ * If a single bone is missing, ratio is reliability adjusted.
+ * At 0.0 curve, ratio is raw.
+ * At 0.5 curve, ratio is reliability adjusted.
+ * At 1.0 curve, ratio is 0 for the first in chain and 1 for the last in chain.
+ */
+private fun interpolateRatio(chainIndex: Int, chainSize: Int, fromUpperToLower: Float, curvature: Float, fromReliability: Float, toReliability: Float): Float {
+	val reliabilityAdjusted = remapRatioWithReliability(fromUpperToLower, fromReliability, toReliability)
+	if (chainSize <= 1) return reliabilityAdjusted // Single missing bone; reliability adjusted
+
+	return if (curvature <= DEFAULT_SPINE_RATIO) {
+		// Raw to reliability adjusted
+		FastMath.lerp(fromUpperToLower, reliabilityAdjusted, curvature * 2f)
+	} else {
+		// Reliability adjusted to max curve
+		val maxCurve = chainIndex / (chainSize - 1).toFloat()
+		FastMath.lerp(reliabilityAdjusted, maxCurve, (curvature - DEFAULT_SPINE_RATIO) * 2f)
+	}
+}
+
+/**
+ * Remaps a ratio This assumes a default ratio of 50%.
+ */
+private fun remapRatioWithReliability(ratio: Float, fromReliability: Float, toReliability: Float): Float {
+	val reliability = (fromReliability / toReliability) * DEFAULT_SPINE_RATIO
+
+	return if (ratio <= DEFAULT_SPINE_RATIO) {
+		ratio * 2f * reliability
+	} else {
+		reliability + (ratio - DEFAULT_SPINE_RATIO) * 2f * (1f - reliability)
+	}
+}
+
+private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<BodyPart> = arrayOf()): Quaternion {
+	val bonesToAverage = inputSkeleton.values.filter { it.bodyPart in takeBodyParts }
+	return bonesToAverage.map { it.rotation }
+		.reduceIndexedOrNull { index, acc, rotation ->
+			acc.lerpQ(rotation, 1f / (index + 1))
+		} ?: Quaternion.IDENTITY
+}
+
+private fun reliabilityOf(bodyPart: BodyPart, source: SpineSource): Float = when (bodyPart) {
+	BodyPart.WAIST -> when (source) {
+		SpineSource.CHEST -> 0.6f
+		SpineSource.HIP, SpineSource.UPPER_LEGS -> 1.0f
+		else -> error("Invalid spine combination $bodyPart, $source")
+	}
+
+	BodyPart.HIP -> when (source) {
+		SpineSource.CHEST, SpineSource.UPPER_LEGS -> 1.0f
+		SpineSource.WAIST -> 0.8f
+		else -> error("Invalid spine combination $bodyPart, $source")
+	}
+
+	else -> error("Invalid missing spine body part $bodyPart")
+}
+
 /**
  * Handles imputing the rotation of spine bones that are not actively receiving data from the rotations
  * of nearby bones.
@@ -17,71 +82,6 @@ const val DEFAULT_SPINE_RATIO = 0.5f
  * Similar to FallbackProcessor specifically for the waist and hip.
  */
 class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor {
-	private enum class SpineSource(val parts: Array<BodyPart>) {
-		CHEST(arrayOf(BodyPart.CHEST)),
-		HIP(arrayOf(BodyPart.HIP)),
-		WAIST(arrayOf(BodyPart.WAIST)),
-		UPPER_LEGS(arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)),
-	}
-
-	/**
-	 * Returns the interpolation ratio modified with the reliability and curve.
-	 * If a single bone is missing, ratio is reliability adjusted.
-	 * At 0.0 curve, ratio is raw.
-	 * At 0.5 curve, ratio is reliability adjusted.
-	 * At 1.0 curve, ratio is 0 for the first in chain and 1 for the last in chain.
-	 */
-	private fun interpolateRatio(chainIndex: Int, chainSize: Int, fromUpperToLower: Float, curvature: Float, fromReliability: Float, toReliability: Float): Float {
-		val reliabilityAdjusted = remapRatioWithReliability(fromUpperToLower, fromReliability, toReliability)
-		if (chainSize <= 1) return reliabilityAdjusted // Single missing bone; reliability adjusted
-
-		return if (curvature <= DEFAULT_SPINE_RATIO) {
-			// Raw to reliability adjusted
-			FastMath.lerp(fromUpperToLower, reliabilityAdjusted, curvature * 2f)
-		} else {
-			// Reliability adjusted to max curve
-			val maxCurve = chainIndex / (chainSize - 1).toFloat()
-			FastMath.lerp(reliabilityAdjusted, maxCurve, (curvature - DEFAULT_SPINE_RATIO) * 2f)
-		}
-	}
-
-	/**
-	 * Remaps a ratio This assumes a default ratio of 50%.
-	 */
-	private fun remapRatioWithReliability(ratio: Float, fromReliability: Float, toReliability: Float): Float {
-		val reliability = (fromReliability / toReliability) * DEFAULT_SPINE_RATIO
-
-		return if (ratio <= DEFAULT_SPINE_RATIO) {
-			ratio * 2f * reliability
-		} else {
-			reliability + (ratio - DEFAULT_SPINE_RATIO) * 2f * (1f - reliability)
-		}
-	}
-
-	private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<BodyPart> = arrayOf()): Quaternion {
-		val bonesToAverage = inputSkeleton.values.filter { it.bodyPart in takeBodyParts }
-		return bonesToAverage.map { it.rotation }
-			.reduceIndexedOrNull { index, acc, rotation ->
-				acc.lerpQ(rotation, 1f / (index + 1))
-			} ?: Quaternion.IDENTITY
-	}
-
-	private fun reliabilityOf(bodyPart: BodyPart, source: SpineSource): Float = when (bodyPart) {
-		BodyPart.WAIST -> when (source) {
-			SpineSource.CHEST -> 0.6f
-			SpineSource.HIP, SpineSource.UPPER_LEGS -> 1.0f
-			else -> error("Invalid spine combination $bodyPart, $source")
-		}
-
-		BodyPart.HIP -> when (source) {
-			SpineSource.CHEST, SpineSource.UPPER_LEGS -> 1.0f
-			SpineSource.WAIST -> 0.8f
-			else -> error("Invalid spine combination $bodyPart, $source")
-		}
-
-		else -> error("Invalid missing spine body part $bodyPart")
-	}
-
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val ratios = settings.context.state.value.data.skeletonConfig.ratios
 

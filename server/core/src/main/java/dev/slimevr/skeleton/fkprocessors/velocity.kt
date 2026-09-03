@@ -14,31 +14,31 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.time.ComparableTimeMark
 
+data class VelocityBoneData(
+	val rotation: Quaternion,
+	val tailPosition: Vector3,
+)
+
+fun computeVelocity(
+	currentBone: BoneState,
+	lastVelocityData: VelocityBoneData,
+	lastTime: ComparableTimeMark,
+): Velocity {
+	val deltaPosition = currentBone.tailPosition - lastVelocityData.tailPosition
+	val deltaRotation = currentBone.rotation / lastVelocityData.rotation
+	val deltaTime = (timeSource.markNow() - lastTime).inFloatingSeconds
+	return Velocity(
+		linear = deltaPosition / deltaTime,
+		angular = deltaRotation.toRotationVector() / deltaTime,
+	)
+}
+
 /**
  * Computes linear (m/s) and angular (rad/s) velocity for the bones.
  */
 class VelocityFkProcessor : SkeletonFkProcessor {
-	private data class VelocityBoneData(
-		val rotation: Quaternion,
-		val tailPosition: Vector3,
-	)
-
 	private val lastVelocityBoneData: BodyPartMap<VelocityBoneData> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
-
-	private fun computeVelocity(
-		currentBone: BoneState,
-		lastVelocityData: VelocityBoneData,
-		lastTime: ComparableTimeMark,
-	): Velocity {
-		val deltaPosition = currentBone.tailPosition - lastVelocityData.tailPosition
-		val deltaRotation = currentBone.rotation / lastVelocityData.rotation
-		val deltaTime = (timeSource.markNow() - lastTime).inFloatingSeconds
-		return Velocity(
-			linear = deltaPosition / deltaTime,
-			angular = deltaRotation.toRotationVector() / deltaTime,
-		)
-	}
 
 	override fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
 		fk.forEachBone { part, bone ->

@@ -204,7 +204,6 @@ class Skeleton(
 					fkProcessors = listOf(
 						VelocityFkProcessor(),
 // 						LocalizerFkProcessor(settings),
-						// TODO move prediction and smoothing here?
 						FootPlantFkProcessor(settings),
 						ToeSnapFkProcessor(settings),
 					),
