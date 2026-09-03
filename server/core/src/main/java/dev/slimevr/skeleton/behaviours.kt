@@ -222,6 +222,7 @@ class ComputedSkeletonBehaviour(
 
 						val boneInputs = if (targetState.pausedProcessedBoneInputs != null) {
 							// TODO improve pause tracking code
+							//  and also possibly head default position (HeadPositionFallbackProcessor)
 							// Use already-processed paused tracking data except for the head
 							val headBone = targetState.boneInputs[BodyPart.HEAD]
 							targetState.pausedProcessedBoneInputs.mutateCopy { it[BodyPart.HEAD] = headBone?.copy(position = if (headBone.isPositionActive) headBone.position else it[BodyPart.HEAD]?.position) }

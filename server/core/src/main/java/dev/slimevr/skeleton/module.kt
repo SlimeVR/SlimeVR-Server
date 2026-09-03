@@ -190,6 +190,8 @@ class Skeleton(
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					inputProcessors = listOf(
+						BonePredictionInputProcessor(settings),
+						BoneSmoothingInputProcessor(settings),
 						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
 						BoneActiveLinkInputProcessor(),
@@ -198,8 +200,6 @@ class Skeleton(
 						UpperLegsRollAlignInputProcessor(settings),
 						BoneDirectLinkInputProcessor(),
 						FingerImputeInputProcessor(),
-						BonePredictionInputProcessor(settings),
-						BoneSmoothingInputProcessor(settings),
 					),
 					fkProcessors = listOf(
 						VelocityFkProcessor(),

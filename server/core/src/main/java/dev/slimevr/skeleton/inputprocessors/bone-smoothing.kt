@@ -41,6 +41,8 @@ class BoneSmoothingInputProcessor(val settings: Settings) : SkeletonInputProcess
 
 		val newSmoothed = bodyPartMap<Quaternion>()
 		mutableInputSkeleton.forEachBone { bodyPart, bone ->
+			if (!bone.isRotationActive) return@forEachBone
+
 			val prev = smoothed[bodyPart] ?: bone.rotation
 			val rotation = prev.lerpR(bone.rotation, alpha).unit()
 			newSmoothed[bodyPart] = rotation

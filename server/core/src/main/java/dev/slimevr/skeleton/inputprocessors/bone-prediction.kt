@@ -53,6 +53,8 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 
 		val newVelocities = bodyPartMap<BoneVelocity>()
 		mutableInputSkeleton.forEachBone { bodyPart, bone ->
+			if (!bone.isRotationActive) return@forEachBone
+
 			val prev = velocities[bodyPart]
 			if (prev == null) {
 				newVelocities[bodyPart] = BoneVelocity(bone.rotation, Quaternion.IDENTITY, now)
