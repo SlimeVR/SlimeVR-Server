@@ -3,6 +3,7 @@ package dev.slimevr.skeleton
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.util.MonotonicValueTimeMark
+import dev.slimevr.util.PreciseWaiter
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -166,6 +167,7 @@ class ComputedSkeletonBehaviour(
 	val inputProcessors: List<SkeletonInputProcessor> = emptyList(),
 	val fkProcessors: List<SkeletonFkProcessor> = emptyList(),
 	val targetProcessors: List<SkeletonTargetProcessor> = emptyList(),
+	val waiter: PreciseWaiter
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
 
@@ -301,7 +303,7 @@ class ComputedSkeletonBehaviour(
 					nextTick = slotAfter(nextTick, tickStart)
 					var remaining = -nextTick.elapsedNow()
 					while (remaining > Duration.ZERO) {
-						LockSupport.parkNanos(remaining.inWholeNanoseconds)
+						waiter.sleep(remaining)
 						coroutineContext.ensureActive()
 						remaining = -nextTick.elapsedNow()
 					}
