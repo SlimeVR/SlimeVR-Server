@@ -1,10 +1,9 @@
-package dev.slimevr.skeleton.fkprocessors
+package dev.slimevr.skeleton.computedprocessors
 
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
-import dev.slimevr.skeleton.InputSkeleton
-import dev.slimevr.skeleton.SkeletonFkProcessor
+import dev.slimevr.skeleton.SkeletonComputedProcessor
 import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.forEachBone
@@ -12,7 +11,6 @@ import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import kotlin.time.ComparableTimeMark
 
 data class VelocityBoneData(
 	val rotation: Quaternion,
@@ -22,11 +20,10 @@ data class VelocityBoneData(
 fun computeVelocity(
 	currentBone: BoneState,
 	lastVelocityData: VelocityBoneData,
-	lastTime: ComparableTimeMark,
+	deltaTime: Float,
 ): Velocity {
 	val deltaPosition = currentBone.tailPosition - lastVelocityData.tailPosition
 	val deltaRotation = currentBone.rotation / lastVelocityData.rotation
-	val deltaTime = (timeSource.markNow() - lastTime).inFloatingSeconds
 	return Velocity(
 		linear = deltaPosition / deltaTime,
 		angular = deltaRotation.toRotationVector() / deltaTime,
@@ -36,20 +33,23 @@ fun computeVelocity(
 /**
  * Computes linear (m/s) and angular (rad/s) velocity for the bones.
  */
-class VelocityFkProcessor : SkeletonFkProcessor {
+class VelocityComputedProcessor : SkeletonComputedProcessor {
 	private val lastVelocityBoneData: BodyPartMap<VelocityBoneData> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
-	override fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float) {
-		fk.forEachBone { part, bone ->
+	override fun process(mutableComputedSkeleton: ComputedSkeleton, floorLevel: Float) {
+		// One clock read for the whole pass, so every bone shares the same interval
+		val now = timeSource.markNow()
+		val deltaTime = (now - lastProcessTime).inFloatingSeconds
+		lastProcessTime = now
+
+		mutableComputedSkeleton.forEachBone { part, bone ->
 			val lastVelocityData = lastVelocityBoneData[part]
 			if (lastVelocityData != null) {
-				val velocity = computeVelocity(bone, lastVelocityData, lastProcessTime)
-				mutableInputSkeleton[part] = mutableInputSkeleton[part]?.copy(velocity = velocity)
+				mutableComputedSkeleton[part] = bone.copy(velocity = computeVelocity(bone, lastVelocityData, deltaTime))
 			}
 
 			lastVelocityBoneData[part] = VelocityBoneData(bone.rotation, bone.tailPosition)
 		}
-		lastProcessTime = timeSource.markNow()
 	}
 }

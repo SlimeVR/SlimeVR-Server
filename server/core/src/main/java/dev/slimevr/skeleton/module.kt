@@ -4,9 +4,9 @@ import dev.slimevr.Phase1ContextProvider
 import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
 import dev.slimevr.skeleton.fkprocessors.FootPlantFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
-import dev.slimevr.skeleton.fkprocessors.VelocityFkProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BonePredictionInputProcessor
@@ -33,6 +33,8 @@ data class Velocity(
 	val angular: Vector3,
 )
 
+val ZERO_VELOCITY = Velocity(Vector3.NULL, Vector3.NULL)
+
 /** Pre-FK */
 data class BoneInput(
 	val bodyPart: BodyPart,
@@ -43,7 +45,6 @@ data class BoneInput(
 	val isRotationActive: Boolean,
 	val isAccelerationActive: Boolean,
 	val isPositionActive: Boolean,
-	val velocity: Velocity,
 )
 
 /** Post-FK */
@@ -96,7 +97,6 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	isRotationActive = false,
 	isAccelerationActive = false,
 	isPositionActive = false,
-	velocity = Velocity(Vector3.NULL, Vector3.NULL),
 )
 
 val DEFAULT_SKELETON_STATE = SkeletonState(
@@ -112,7 +112,7 @@ val DEFAULT_SKELETON_STATE = SkeletonState(
 	pausedProcessedBoneInputs = null,
 )
 
-fun buildBone(bone: BoneInput, parentBone: BoneState?): BoneState {
+fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO_VELOCITY): BoneState {
 	// Raw position of the bone input is used for BodyPart.HEAD since it has no parent
 	val headPosition = parentBone?.tailPosition ?: bone.position ?: Vector3.NULL
 	return BoneState(
@@ -123,7 +123,7 @@ fun buildBone(bone: BoneInput, parentBone: BoneState?): BoneState {
 		acceleration = bone.acceleration,
 		headPosition = headPosition,
 		tailPosition = headPosition + bone.rotation.sandwich(bone.offset),
-		velocity = bone.velocity,
+		velocity = velocity,
 	)
 }
 
@@ -138,7 +138,9 @@ fun buildBones(boneInputs: InputSkeleton, changedParts: Set<BodyPart> = headPart
 			iterateBodyPartHierarchy(parentOf(bodyPart) ?: bodyPart, bodyPart != BodyPart.HEAD).forEach { (parentPart, childPart) ->
 				val rawBone = boneInputs[childPart] ?: return@forEach
 				val parentBone = parentPart?.let { result[it] }
-				result[childPart] = buildBone(rawBone, parentBone)
+				// Velocity is written onto the computed bones, not the inputs, so a rebuilt bone
+				// keeps what the last pass measured
+				result[childPart] = buildBone(rawBone, parentBone, result[childPart]?.velocity ?: ZERO_VELOCITY)
 			}
 		}
 	}
@@ -163,6 +165,9 @@ interface SkeletonInputProcessor {
 }
 interface SkeletonFkProcessor {
 	fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
+}
+interface SkeletonComputedProcessor {
+	fun process(mutableComputedSkeleton: ComputedSkeleton, floorLevel: Float)
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
@@ -203,8 +208,10 @@ class Skeleton(
 						BoneDirectLinkInputProcessor(),
 						FingerImputeInputProcessor(),
 					),
+					computedProcessors = listOf(
+						VelocityComputedProcessor(),
+					),
 					fkProcessors = listOf(
-						VelocityFkProcessor(),
 // 						LocalizerFkProcessor(settings),
 						FootPlantFkProcessor(settings),
 						ToeSnapFkProcessor(settings),

@@ -165,6 +165,7 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 class ComputedSkeletonBehaviour(
 	val hz: Int,
 	val inputProcessors: List<SkeletonInputProcessor> = emptyList(),
+	val computedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val fkProcessors: List<SkeletonFkProcessor> = emptyList(),
 	val targetProcessors: List<SkeletonTargetProcessor> = emptyList(),
 	val waiter: PreciseWaiter
@@ -242,6 +243,10 @@ class ComputedSkeletonBehaviour(
 
 						// Run initial FK
 						var fk = buildBones(boneInputs)
+
+						// These write into fk, not the inputs, so the rebuilds below carry their
+						// values forward
+						for (processor in computedProcessors) processor.process(fk, targetState.floorLevel)
 
 						// Run FK processors. They write into boneInputs, and beforeFk allows figuring out
 						// which bones changed.

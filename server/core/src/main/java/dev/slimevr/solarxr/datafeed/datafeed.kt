@@ -15,6 +15,8 @@ import dev.slimevr.solarxr.createBone
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
@@ -38,6 +40,7 @@ import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
 
@@ -209,10 +212,7 @@ class DataFeedInitBehaviour(
 					val interval = config.minimumTimeSinceLast.toLong().milliseconds
 					var nextSend = timeSource.markNow()
 
-					skeleton.computed.collect {
-						val now = timeSource.markNow()
-						if (now < nextSend) return@collect
-
+					while (isActive) {
 						try {
 							receiver.sendDataFeed(
 								createDatafeedFrame(
@@ -228,8 +228,17 @@ class DataFeedInitBehaviour(
 							AppLogger.solarxr.error(e, "Error sending data feed")
 						}
 
+						// Sleeping to an absolute deadline takes the send's own duration out of the
+						// gap instead of adding it on top
 						nextSend += interval
-						if (nextSend < now) nextSend = now + interval
+						val remaining = -nextSend.elapsedNow()
+						if (remaining > Duration.ZERO) {
+							delay(remaining)
+						} else {
+							// A send that outran the interval gives up the slots it missed rather
+							// than firing back to back to catch up
+							nextSend = timeSource.markNow()
+						}
 					}
 				}
 			}
