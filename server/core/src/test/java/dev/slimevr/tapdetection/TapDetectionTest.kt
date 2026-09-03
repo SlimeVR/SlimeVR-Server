@@ -18,7 +18,7 @@ class TapDetectionTest {
 	val highAccel = Vector3(0f, 0f, TapDetectionBasicBehaviour.NEEDED_ACCEL_DELTA * 3f)
 
 	// Low accel needed as rest between taps
-	val lowAccel = Vector3.NULL
+	val lowAccel = Vector3.ZERO
 
 	// Accelerations needed for a tap happen with this delay
 	val accelDelay = TapDetectionBasicBehaviour.ACCEL_WINDOW * 0.9

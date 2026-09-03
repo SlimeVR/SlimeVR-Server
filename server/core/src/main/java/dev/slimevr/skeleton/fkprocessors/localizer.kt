@@ -56,17 +56,17 @@ private fun getPlantedFootTravel(fk: ComputedSkeleton): Vector3 {
 		MovementStates.RIGHT_LOCKED -> fk[BodyPart.RIGHT_FOOT]
 		else -> null
 	}
-	if (footBone == null) return Vector3.NULL
+	if (footBone == null) return Vector3.ZERO
 
 	// Get foot travel
 	val footPosition: Vector3 = footBone.headPosition
-	return footPosition - Vector3.NULL
+	return footPosition - Vector3.ZERO
 }
 
 // Gets the sitting travel (emulates hip lock)
 private fun computeSittingTravel(fk: ComputedSkeleton): Vector3 {
-	val hip = fk[BodyPart.HIP]?.headPosition ?: return Vector3.NULL
-	return Vector3.NULL
+	val hip = fk[BodyPart.HIP]?.headPosition ?: return Vector3.ZERO
+	return Vector3.ZERO
 }
 
 // Returns true if either foot's position is below 0
@@ -112,10 +112,10 @@ class LocalizerFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 
 			MovementStates.FOLLOW_SITTING -> computeSittingTravel(fk)
 
-			else -> Vector3.NULL
+			else -> Vector3.ZERO
 		}
 
-		val newHeadPosition = (headInput.position ?: Vector3.NULL) - travel
+		val newHeadPosition = (headInput.position ?: Vector3.ZERO) - travel
 		mutableInputSkeleton[BodyPart.HEAD] = headInput.copy(position = newHeadPosition)
 	}
 }

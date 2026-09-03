@@ -113,7 +113,7 @@ fun Map<SkeletonBone, Float>.toBoneOffsets(): BodyPartMap<Vector3> {
 	for ((cfg, length) in this) {
 		val boneOffsets = BONE_VALUE_TO_OFFSETS[cfg] ?: continue
 		for ((bone, vec) in boneOffsets) {
-			offsets[bone] = (offsets[bone] ?: Vector3.NULL) + length * vec
+			offsets[bone] = (offsets[bone] ?: Vector3.ZERO) + length * vec
 		}
 	}
 	// Fingers

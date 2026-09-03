@@ -22,7 +22,7 @@ data class COMState(
 
 data class LockState(
 	val locked: Boolean,
-	val position: Vector3 = Vector3.NULL,
+	val position: Vector3 = Vector3.ZERO,
 )
 
 val VELOCITY_BODY_PARTS = arrayOf(BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG)
@@ -75,7 +75,7 @@ fun shouldLock(
 // TODO Use this to calculate feet pressure
 fun centerOfMass(
 	bones: ComputedSkeleton,
-): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.NULL) { acc: Vector3, massEntry ->
+): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.ZERO) { acc: Vector3, massEntry ->
 	val bone = bones[massEntry.key] ?: return@fold acc
 	val boneCenter = (bone.headPosition + bone.tailPosition) / 2f
 	return@fold acc + (boneCenter * massEntry.value)
@@ -95,8 +95,8 @@ fun computeComState(time: ComparableTimeMark, last: COMState?, com: Vector3): CO
 	COMState(
 		time,
 		com,
-		Vector3.NULL,
-		Vector3.NULL,
+		Vector3.ZERO,
+		Vector3.ZERO,
 	)
 }
 

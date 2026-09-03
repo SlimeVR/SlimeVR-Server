@@ -20,6 +20,7 @@ suspend fun createDesktopWaiter(): PreciseWaiter = when (CURRENT_PLATFORM) {
 	// A Windows park resolves to the scheduler tick, 1ms at best and 15.6ms by default, so a 2ms
 	// deadline wakes two ticks late and a 500Hz loop settles near 330Hz
 	Platform.WINDOWS -> createWindowsWaiter()
+
 	Platform.LINUX, Platform.OSX, Platform.UNKNOWN -> ParkWaiter
 }
 

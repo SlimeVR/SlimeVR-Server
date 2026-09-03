@@ -247,7 +247,7 @@ data class Rotation(override val sensorId: Int = 0, val rotation: Quaternion = Q
 	}
 }
 
-data class Accel(val acceleration: Vector3 = Vector3.NULL, override val sensorId: Int = 0) : SensorSpecificPacket {
+data class Accel(val acceleration: Vector3 = Vector3.ZERO, override val sensorId: Int = 0) : SensorSpecificPacket {
 	companion object {
 		fun read(src: Source) = Accel(
 			Vector3(src.readSafeFloat(), src.readSafeFloat(), src.readSafeFloat()),
@@ -420,7 +420,7 @@ data class FeatureFlags(val firmwareFeatures: FirmwareFeatures = FirmwareFeature
 data class RotationAndAccel(
 	override val sensorId: Int = 0,
 	val rotation: Quaternion = Quaternion.IDENTITY,
-	val acceleration: Vector3 = Vector3.NULL,
+	val acceleration: Vector3 = Vector3.ZERO,
 ) : SensorSpecificPacket {
 	companion object {
 		fun read(src: Source): RotationAndAccel {
@@ -467,7 +467,7 @@ data class FlexData(override val sensorId: Int = 0, val flexData: Float = 0f) : 
 	}
 }
 
-data class PositionPacket(override val sensorId: Int = 0, val position: Vector3 = Vector3.NULL) : SensorSpecificPacket {
+data class PositionPacket(override val sensorId: Int = 0, val position: Vector3 = Vector3.ZERO) : SensorSpecificPacket {
 	companion object {
 		fun read(src: Source) = PositionPacket(src.readU8(), Vector3(src.readSafeFloat(), src.readSafeFloat(), src.readSafeFloat()))
 	}

@@ -33,7 +33,7 @@ data class Velocity(
 	val angular: Vector3,
 )
 
-val ZERO_VELOCITY = Velocity(Vector3.NULL, Vector3.NULL)
+val ZERO_VELOCITY = Velocity(Vector3.ZERO, Vector3.ZERO)
 
 /** Pre-FK */
 data class BoneInput(
@@ -90,9 +90,9 @@ data class SkeletonState(
 
 val DEFAULT_BONE_INPUT = BoneInput(
 	bodyPart = BodyPart.NONE,
-	offset = Vector3.NULL,
+	offset = Vector3.ZERO,
 	rotation = Quaternion.IDENTITY,
-	acceleration = Vector3.NULL,
+	acceleration = Vector3.ZERO,
 	position = null,
 	isRotationActive = false,
 	isAccelerationActive = false,
@@ -114,7 +114,7 @@ val DEFAULT_SKELETON_STATE = SkeletonState(
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO_VELOCITY): BoneState {
 	// Raw position of the bone input is used for BodyPart.HEAD since it has no parent
-	val headPosition = parentBone?.tailPosition ?: bone.position ?: Vector3.NULL
+	val headPosition = parentBone?.tailPosition ?: bone.position ?: Vector3.ZERO
 	return BoneState(
 		parentBone = parentBone,
 		bodyPart = bone.bodyPart,
