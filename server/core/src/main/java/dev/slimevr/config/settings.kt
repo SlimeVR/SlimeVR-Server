@@ -2,6 +2,7 @@ package dev.slimevr.config
 
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.inputprocessors.DEFAULT_SPINE_RATIO
 import io.github.axisangles.ktmath.Quaternion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -139,8 +140,8 @@ data class SkeletonTogglesConfig(
 // Used in SkeletonConfig
 @Serializable
 data class SkeletonRatiosConfig(
-	val imputeSpineFromUpperToLower: Float = 0.5f,
-	val imputeSpineCurvature: Float = 0.5f,
+	val imputeSpineFromUpperToLower: Float = DEFAULT_SPINE_RATIO,
+	val imputeSpineCurvature: Float = DEFAULT_SPINE_RATIO,
 	val interpolateHipWithUpperLegs: Float = 0.25f,
 	val interpolateUpperLegsTwistWithLowerLegs: Float = 0.85f,
 	val skatingCorrectionStrength: Float = 0.3f,

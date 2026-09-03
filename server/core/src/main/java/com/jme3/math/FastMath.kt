@@ -663,4 +663,9 @@ object FastMath {
 				or ((f shr 13) and 0x03ff)
 			).toShort()
 	}
+
+	/**
+	 * Linearly interpolates between 2 numbers
+	 */
+	fun lerp(from: Float, to: Float, t: Float): Float = from + (to - from) * t
 }

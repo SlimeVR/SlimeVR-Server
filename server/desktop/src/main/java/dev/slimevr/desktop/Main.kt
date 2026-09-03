@@ -24,6 +24,7 @@ import dev.slimevr.desktop.keybind.isGnome
 import dev.slimevr.desktop.networkprofile.setupDesktopNetworkProfileChecker
 import dev.slimevr.desktop.serial.DesktopFirmwareFlasher
 import dev.slimevr.desktop.serial.createDesktopSerialServer
+import dev.slimevr.desktop.timing.createDesktopWaiter
 import dev.slimevr.desktop.trackingchecklist.SteamVRCheckBehaviour
 import dev.slimevr.desktop.udp.resolveDesktopUdpAddress
 import dev.slimevr.desktop.vrchat.createDesktopVRCConfigManager
@@ -126,7 +127,7 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 	val firmwareManager = FirmwareManager.create(ctx = phase1, scope = this, flasher = DesktopFirmwareFlasher)
 	val vrcConfigManager = createDesktopVRCConfigManager(ctx = phase1, scope = this)
 	val networkProfileManager = NetworkProfileManager.create(scope = this, isSupported = CURRENT_PLATFORM == Platform.WINDOWS)
-	val skeleton = Skeleton.create(scope = this, ctx = phase1)
+	val skeleton = Skeleton.create(scope = this, ctx = phase1, waiter = createDesktopWaiter())
 	val provisioningManager = ProvisioningManager.create(ctx = phase1, scope = this)
 	val heightCalibrationManager = HeightCalibrationManager.create(ctx = phase1, scope = this)
 	val trackingChecklist = TrackingChecklist.create(scope = this, extraBehaviours = { appContext ->

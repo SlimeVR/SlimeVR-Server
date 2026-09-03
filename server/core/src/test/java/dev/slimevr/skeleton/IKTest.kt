@@ -10,65 +10,25 @@ class IKTest {
 	@Test
 	fun testCcdIk() {
 		val boneInputs: InputSkeleton = bodyPartMap()
-		boneInputs[BodyPart.NECK] = BoneInput(
+		boneInputs[BodyPart.NECK] = DEFAULT_BONE_INPUT.copy(
 			bodyPart = BodyPart.NECK,
 			offset = Vector3.NEG_Y,
-			rotation = Quaternion.IDENTITY,
-			position = Vector3.NULL,
-			acceleration = Vector3.NULL,
-			isRotationActive = false,
-			isPositionActive = false,
-			isAccelerationActive = false,
-			angularVelocity = Vector3.NULL,
-			linearVelocity = Vector3.NULL,
 		)
-		boneInputs[BodyPart.UPPER_CHEST] = BoneInput(
+		boneInputs[BodyPart.UPPER_CHEST] = DEFAULT_BONE_INPUT.copy(
 			bodyPart = BodyPart.UPPER_CHEST,
 			offset = Vector3.NEG_Y,
-			rotation = Quaternion.IDENTITY,
-			position = Vector3.NULL,
-			acceleration = Vector3.NULL,
-			isRotationActive = false,
-			isPositionActive = false,
-			isAccelerationActive = false,
-			angularVelocity = Vector3.NULL,
-			linearVelocity = Vector3.NULL,
 		)
-		boneInputs[BodyPart.CHEST] = BoneInput(
+		boneInputs[BodyPart.CHEST] = DEFAULT_BONE_INPUT.copy(
 			bodyPart = BodyPart.CHEST,
 			offset = Vector3.NEG_Y,
-			rotation = Quaternion.IDENTITY,
-			position = Vector3.NULL,
-			acceleration = Vector3.NULL,
-			isRotationActive = false,
-			isPositionActive = false,
-			isAccelerationActive = false,
-			angularVelocity = Vector3.NULL,
-			linearVelocity = Vector3.NULL,
 		)
-		boneInputs[BodyPart.WAIST] = BoneInput(
+		boneInputs[BodyPart.WAIST] = DEFAULT_BONE_INPUT.copy(
 			bodyPart = BodyPart.WAIST,
 			offset = Vector3.NEG_Y,
-			rotation = Quaternion.IDENTITY,
-			position = Vector3.NULL,
-			acceleration = Vector3.NULL,
-			isRotationActive = false,
-			isPositionActive = false,
-			isAccelerationActive = false,
-			angularVelocity = Vector3.NULL,
-			linearVelocity = Vector3.NULL,
 		)
-		boneInputs[BodyPart.HIP] = BoneInput(
+		boneInputs[BodyPart.HIP] = DEFAULT_BONE_INPUT.copy(
 			bodyPart = BodyPart.HIP,
 			offset = Vector3.NEG_Y,
-			rotation = Quaternion.IDENTITY,
-			position = Vector3.NULL,
-			acceleration = Vector3.NULL,
-			isRotationActive = false,
-			isPositionActive = false,
-			isAccelerationActive = false,
-			angularVelocity = Vector3.NULL,
-			linearVelocity = Vector3.NULL,
 		)
 
 		val bones = buildBones(boneInputs)

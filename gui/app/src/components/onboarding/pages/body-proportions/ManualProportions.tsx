@@ -318,7 +318,7 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
   };
   const beneathFloor = useMemo(() => {
     const head = bones.find((bone) => bone.bodyPart === BodyPart.HEAD);
-    return !(head?.headPositionG && head.headPositionG.y >= MIN_HEIGHT);
+    return !(head?.headPosition && head.headPosition.y >= MIN_HEIGHT);
   }, [bones]);
 
   const canUseFineTuning = !beneathFloor || import.meta.env.DEV;

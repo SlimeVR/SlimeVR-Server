@@ -7,6 +7,7 @@ import dev.slimevr.osc.OscContent
 import dev.slimevr.osc.OscMessage
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.BoneState
+import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.bodyPartMap
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -23,10 +24,10 @@ private fun bone(bodyPart: BodyPart, rotation: Quaternion = Quaternion.IDENTITY)
 	bodyPart = bodyPart,
 	offset = Vector3(0f, -0.1f, 0f),
 	rotation = rotation,
+	acceleration = Vector3.NULL,
 	headPosition = Vector3(0f, 1f, 0f),
 	tailPosition = Vector3(0f, 0.9f, 0f),
-	angularVelocity = Vector3.NULL,
-	linearVelocity = Vector3.NULL,
+	velocity = Velocity(Vector3.NULL, Vector3.NULL),
 )
 
 private fun messages(bundle: OscBundle): List<OscMessage> = bundle.contents.map { (it as OscContent.Message).msg }

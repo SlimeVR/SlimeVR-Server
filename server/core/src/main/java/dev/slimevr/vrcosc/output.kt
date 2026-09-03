@@ -8,6 +8,7 @@ import dev.slimevr.routing.BoneRoutingManager
 import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.Skeleton
+import dev.slimevr.util.MonotonicValueTimeMark
 import dev.slimevr.util.formatExceptionMessage
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
@@ -38,8 +39,8 @@ class VRCOSCOutputBehaviour(
 	private class OutputRuntime {
 		var sender: OscSender? = null
 		var sendFailing = false
-		var nextFrameRetryAt: TimeSource.Monotonic.ValueTimeMark? = null
-		var healthySince: TimeSource.Monotonic.ValueTimeMark? = null
+		var nextFrameRetryAt: MonotonicValueTimeMark? = null
+		var healthySince: MonotonicValueTimeMark? = null
 	}
 
 	override fun observe(receiver: VRCOSCManager) {

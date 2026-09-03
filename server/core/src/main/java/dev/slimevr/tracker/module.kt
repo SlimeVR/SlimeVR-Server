@@ -110,7 +110,7 @@ sealed interface TrackerActions {
 		val magnetometer: Vector3? = null,
 		val position: Vector3? = null,
 		val newData: Boolean = true,
-		val headTrackerRotation: Quaternion? = null,
+		val polarityFallbackRotation: Quaternion? = null,
 	) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
@@ -141,9 +141,14 @@ class Tracker(
 		position: Vector3? = null,
 		newData: Boolean = true,
 	) {
-		val headTrackerRotation = appContext.server.context.state.value.trackers.values
-			.map { it.context.state.value }
-			.getFirstActiveFor(BodyPart.HEAD)?.rotation
+		// TODO if there's still centaur bug, we can use the nearest parent tracker's rotation instead of head.
+		val polarityFallbackRotation = if (context.state.value.bodyPart != BodyPart.HEAD) {
+			appContext.server.context.state.value.trackers.values
+				.map { it.context.state.value }
+				.getFirstActiveFor(BodyPart.HEAD)?.rotation
+		} else {
+			null
+		}
 		context.dispatch(
 			@Suppress("DEPRECATION_ERROR")
 			TrackerActions.SetRotation(
@@ -152,7 +157,7 @@ class Tracker(
 				magnetometer = magnetometer,
 				position = position,
 				newData = newData,
-				headTrackerRotation = headTrackerRotation,
+				polarityFallbackRotation = polarityFallbackRotation,
 			),
 		)
 	}

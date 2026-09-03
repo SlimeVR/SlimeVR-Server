@@ -9,6 +9,7 @@ import dev.slimevr.buildTestSkeleton
 import dev.slimevr.buildTestUserConfig
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.context.Context
+import dev.slimevr.skeleton.Skeleton
 import dev.slimevr.solarxr.datafeed.DataFeedInitBehaviour
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -21,9 +22,13 @@ import solarxr_protocol.data_feed.PollDataFeed
 import solarxr_protocol.data_feed.StartDataFeed
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+
+private class TestConn(val bridge: SolarXRBridge, val skeleton: Skeleton)
 
 @OptIn(ExperimentalCoroutinesApi::class)
-private fun TestScope.testConn(onSend: suspend (ByteArray) -> Unit): SolarXRBridge {
+private fun TestScope.testConn(onSend: suspend (ByteArray) -> Unit): TestConn {
 	val server = buildTestVrServer(backgroundScope)
 	val skeleton = buildTestSkeleton(backgroundScope)
 	val settings = buildTestSettings(backgroundScope)
@@ -40,7 +45,7 @@ private fun TestScope.testConn(onSend: suspend (ByteArray) -> Unit): SolarXRBrid
 		initialState = SolarXRBridgeState(dataFeedConfigs = listOf()),
 		scope = backgroundScope,
 		reducer = ::reduce,
-		behaviours = listOf(DataFeedInitBehaviour(server, skeleton)),
+		behaviours = listOf(DataFeedInitBehaviour(server, skeleton, testScheduler.timeSource)),
 		name = "SolarXRDataFeedTest",
 	)
 	val bridge = SolarXRBridge(
@@ -56,10 +61,25 @@ private fun TestScope.testConn(onSend: suspend (ByteArray) -> Unit): SolarXRBrid
 	// launchIn registers the handler synchronously, but the dispatcher's own drain loop still has to
 	// start before anything emitted here can reach it.
 	runCurrent()
-	return bridge
+	return TestConn(bridge, skeleton)
 }
 
 private fun config(intervalMs: Int) = DataFeedConfig(minimumTimeSinceLast = intervalMs.toUShort())
+
+/** Drives [Skeleton.computed] the way the 500Hz loop does, so the feed's gate has a clock to ride */
+@OptIn(ExperimentalCoroutinesApi::class)
+private fun TestScope.tickSkeleton(conn: TestConn, duration: Duration, tick: Duration = 2.milliseconds) {
+	// Let a freshly started feed subscribe and take the replayed frame before the clock moves
+	runCurrent()
+	val frame = conn.skeleton.currentComputed
+	var elapsed = Duration.ZERO
+	while (elapsed < duration) {
+		advanceTimeBy(tick)
+		conn.skeleton.computed.tryEmit(frame)
+		runCurrent()
+		elapsed += tick
+	}
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DataFeedTest {
@@ -69,10 +89,10 @@ class DataFeedTest {
 		var sendCount = 0
 		val conn = testConn { sendCount++ }
 
-		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
+		conn.bridge.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
 
 		// fires at t=0, t=100, t=200
-		advanceTimeBy(250)
+		tickSkeleton(conn, 250.milliseconds)
 		assertEquals(3, sendCount)
 	}
 
@@ -81,11 +101,11 @@ class DataFeedTest {
 		var sendCount = 0
 		val conn = testConn { sendCount++ }
 
-		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100), config(200))))
+		conn.bridge.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100), config(200))))
 
 		// 100ms feed: t=0, t=100, t=200 -> 3 sends
 		// 200ms feed: t=0, t=200 -> 2 sends
-		advanceTimeBy(250)
+		tickSkeleton(conn, 250.milliseconds)
 		assertEquals(5, sendCount)
 	}
 
@@ -94,9 +114,9 @@ class DataFeedTest {
 		var sendCount = 0
 		val conn = testConn { sendCount++ }
 
-		conn.dataFeedDispatcher.emit(PollDataFeed(config = config(100)))
+		conn.bridge.dataFeedDispatcher.emit(PollDataFeed(config = config(100)))
 
-		advanceTimeBy(500)
+		tickSkeleton(conn, 500.milliseconds)
 		assertEquals(1, sendCount)
 	}
 
@@ -105,14 +125,14 @@ class DataFeedTest {
 		var sendCount = 0
 		val conn = testConn { sendCount++ }
 
-		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
-		advanceTimeBy(250)
+		conn.bridge.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
+		tickSkeleton(conn, 250.milliseconds)
 		assertEquals(3, sendCount)
 
-		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
+		conn.bridge.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
 		sendCount = 0
 
-		advanceTimeBy(250)
+		tickSkeleton(conn, 250.milliseconds)
 		assertEquals(3, sendCount)
 	}
 
@@ -121,14 +141,14 @@ class DataFeedTest {
 		var sendCount = 0
 		val conn = testConn { sendCount++ }
 
-		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
-		advanceTimeBy(250)
+		conn.bridge.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = listOf(config(100))))
+		tickSkeleton(conn, 250.milliseconds)
 		assertEquals(3, sendCount)
 
-		conn.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = emptyList()))
+		conn.bridge.dataFeedDispatcher.emit(StartDataFeed(dataFeeds = emptyList()))
 		sendCount = 0
 
-		advanceTimeBy(500)
+		tickSkeleton(conn, 500.milliseconds)
 		assertEquals(0, sendCount)
 	}
 

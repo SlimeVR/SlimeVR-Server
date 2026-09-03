@@ -134,7 +134,7 @@ export class BasedSkeletonMeshHelper extends Object3D {
       position.setFromMatrixPosition(boneMatrix); // head joint position
 
       const boneLength = Math.max(bone.boneT.boneLength, 1e-4);
-      const o = bone.boneT.orientationG;
+      const o = bone.boneT.orientation;
       if (o) quat.set(o.x, o.y, o.z, o.w).normalize();
       else quat.identity();
 
