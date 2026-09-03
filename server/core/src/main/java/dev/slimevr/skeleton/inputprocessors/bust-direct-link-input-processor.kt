@@ -6,7 +6,7 @@ import dev.slimevr.skeleton.mutateCopy
 import solarxr_protocol.datatypes.BodyPart
 
 /**
- * Handles rotations of inactive toe bones.
+ * Handles rotations of inactive bust bones.
  */
 class BustDirectLinkInputProcessor : SkeletonInputProcessor {
 	/**

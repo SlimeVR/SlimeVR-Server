@@ -22,7 +22,10 @@ object ResetBodyParts {
 		BodyPart.RIGHT_RING_TOE,
 		BodyPart.RIGHT_LITTLE_TOE,
 	)
-
+    val BUST = setOf(
+		BodyPart.LEFT_BUST,
+		BodyPart.RIGHT_BUST
+	)
 	val FEET = setOf(
 		BodyPart.LEFT_FOOT,
 		BodyPart.RIGHT_FOOT,
