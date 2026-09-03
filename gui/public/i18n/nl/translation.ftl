@@ -96,7 +96,7 @@ body_part-RIGHT_LITTLE_DISTAL = Rechter kleine vinger distaal
 
 board_type-UNKNOWN = Onbekend
 board_type-NODEMCU = NodeMCU
-board_type-CUSTOM = Custom bord
+board_type-CUSTOM = Gemodificeerd bord
 board_type-WROOM32 = WROOM32
 board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
