@@ -24,7 +24,7 @@ version_update-close = Sluiten
 
 ## Tips
 
-tips-find_tracker = Weet je niet welke tracker welke is? Schud een tracker en het corresponderende item zal worden gemarkeerd.
+tips-find_tracker = Weet je niet welke tracker welke is? Schud een tracker en het bijbehorende item zal worden gemarkeerd.
 tips-do_not_move_heels = Zorg ervoor dat je hielen niet bewegen tijdens de opname!
 tips-file_select = Sleep bestanden naar hier om ze te gebruiken of <u>blader</u>.
 tips-tap_setup = Je kan langzaam 2 keer op je tracker tikken om deze te kiezen in plaats van deze in het menu te selecteren.
@@ -267,7 +267,7 @@ reset-error-yaw-need_full_reset = Je hebt een volledige reset nodig voordat je e
 
 serial_detection-new_device-p0 = Nieuw serieel apparaat gedetecteerd!
 serial_detection-new_device-p1 = Voer je WiFi-inloggegevens in!
-serial_detection-new_device-p2 = Selecteer wat je wil doen
+serial_detection-new_device-p2 = Selecteer wat je hiermee wilt doen
 serial_detection-open_wifi = Verbind met Wi-Fi
 serial_detection-open_serial = Seriële console openen
 serial_detection-submit = Verzenden!
@@ -311,7 +311,7 @@ widget-clear_mounting = Reset montage legen
 
 ## Widget: Developer settings
 
-widget-developer_mode = Developer Mode
+widget-developer_mode = Ontwikkelaarsstand
 widget-developer_mode-high_contrast = Hoog contrast
 widget-developer_mode-precise_rotation = Precieze rotatie
 widget-developer_mode-fast_data_feed = Snelle data feed
@@ -325,7 +325,7 @@ widget-developer_mode-more_info = Meer informatie
 widget-imu_visualizer = Rotatie
 widget-imu_visualizer-preview = Voorbeeld
 widget-imu_visualizer-hide = Verbergen
-widget-imu_visualizer-rotation_raw = Rauw
+widget-imu_visualizer-rotation_raw = Ruwe rotatie
 widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-acceleration = Versnelling
 widget-imu_visualizer-position = Positie
@@ -416,7 +416,7 @@ tracker-settings-use_mag = Sta de magnetometer toe op deze tracker.
 tracker-settings-use_mag-description =
     Wilt je dat deze tracker de magnetometer gebruikt om drift te verminderen wanneer de magnetometer is toegestaan? <b>Zet de tracker niet uit terwijl je dit aan of uit zet.</b>
     Je moet eerst de magnetometer toestemming geven,<magSetting>click hier om naar de instellingen te gaan</magSetting>.
-tracker-settings-use_mag-label = Laat magnetometer toe
+tracker-settings-use_mag-label = Sta magnetometer toe
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Trackernaam
@@ -514,8 +514,8 @@ settings-sidebar-utils = Hulpmiddelen
 settings-sidebar-serial = Serieel console
 settings-sidebar-appearance = Uiterlijk
 settings-sidebar-home = Startscherm
-settings-sidebar-checklist = Tracking checklist
-settings-sidebar-notifications = Notificaties
+settings-sidebar-checklist = Tracking controlelijst
+settings-sidebar-notifications = Meldingen
 settings-sidebar-behavior = Gedrag
 settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-vrc_warnings = VRChat Configuratie-waarschuwingen
@@ -572,7 +572,7 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Compenseert voor IMU yaw drift door de toevoeging van een omgekeerde rotatie.
     Veranderd de sterkte van de compensatie en de hoeveelheid resets die worden gebruikt.
     Dit is enkel nodig indien je heel vaak moet resetten!
-settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensate
+settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensatie
 settings-general-tracker_mechanics-drift_compensation-prediction = Voorspelling van driftcompensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
@@ -749,7 +749,7 @@ settings-interface-appearance-decorations-label = Gebruik de native decoraties
 
 ## Notification settings
 
-settings-interface-notifications = Notificaties
+settings-interface-notifications = Meldingen
 settings-general-interface-serial_detection = Detectie van seriële apparaten
 settings-general-interface-serial_detection-description = Met deze optie verschijnt er elke keer dat je een nieuw serieel apparaat aansluit dat mogelijk een tracker is, een pop-up. Dit helpt bij het verbeteren van het instelproces van een tracker.
 settings-general-interface-serial_detection-label = Detectie van seriële apparaten
