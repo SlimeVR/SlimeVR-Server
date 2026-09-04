@@ -166,7 +166,7 @@ interface SkeletonFkProcessor {
 	fun process(mutableInputSkeleton: InputSkeleton, fk: ComputedSkeleton, floorLevel: Float)
 }
 interface SkeletonComputedProcessor {
-	fun process(mutableComputedSkeleton: ComputedSkeleton, floorLevel: Float)
+	fun process(mutableComputedSkeleton: ComputedSkeleton)
 }
 typealias IKTargets = BodyPartMap<Vector3>
 interface SkeletonTargetProcessor {
@@ -207,7 +207,7 @@ class Skeleton(
 						BoneDirectLinkInputProcessor(),
 						FingerImputeInputProcessor(),
 					),
-					computedProcessors = listOf(
+					fkComputedProcessors = listOf(
 						VelocityComputedProcessor(),
 					),
 					fkProcessors = listOf(
@@ -218,6 +218,9 @@ class Skeleton(
 					targetProcessors = listOf(
 // 						FloorClipTargetProcessor(settings),
 // 						SkatingCorrectionTargetProcessor(settings),
+					),
+					ikComputedProcessors = listOf(
+						VelocityComputedProcessor(),
 					),
 				),
 			)

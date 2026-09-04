@@ -165,9 +165,10 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 class ComputedSkeletonBehaviour(
 	val hz: Int,
 	val inputProcessors: List<SkeletonInputProcessor> = emptyList(),
-	val computedProcessors: List<SkeletonComputedProcessor> = emptyList(),
+	val fkComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val fkProcessors: List<SkeletonFkProcessor> = emptyList(),
 	val targetProcessors: List<SkeletonTargetProcessor> = emptyList(),
+	val ikComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
@@ -245,7 +246,7 @@ class ComputedSkeletonBehaviour(
 						var fk = buildBones(boneInputs)
 
 						// These write into fk, not the inputs, and the rebuilds below carry their values forward
-						for (processor in computedProcessors) processor.process(fk, targetState.floorLevel)
+						for (processor in fkComputedProcessors) processor.process(fk)
 
 						// Run FK processors. They write into boneInputs, and beforeFk allows figuring out
 						// which bones changed.
@@ -289,6 +290,9 @@ class ComputedSkeletonBehaviour(
 							0.01f,
 							100,
 						)
+
+						// Run ik computed processors. These are used to update values for consumers (e.g. drivers wants velocity after IK)
+						for (processor in ikComputedProcessors) processor.process(ikOutput.bones)
 
 						// Updated the computed skeleton with the result
 						receiver.computed.tryEmit(ikOutput.bones)

@@ -101,6 +101,10 @@ class Vector3(val x: Float, val y: Float, val z: Float) {
 
 	fun isNear(other: Vector3, maxError: Float = 1e-6f) = abs(x - other.x) <= maxError && abs(y - other.y) <= maxError && abs(z - other.z) <= maxError
 
+	fun lerp(other: Vector3, t: Float): Vector3 = this + ((other - this) * t)
+
+	fun nlerp(other: Vector3, t: Float): Vector3 = (this + ((other - this) * t)).unit()
+
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (other !is Vector3) return false

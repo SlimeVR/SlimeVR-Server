@@ -1,32 +1,41 @@
 package dev.slimevr.skeleton.computedprocessors
 
 import dev.slimevr.skeleton.BodyPartMap
-import dev.slimevr.skeleton.BoneState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.SkeletonComputedProcessor
 import dev.slimevr.skeleton.Velocity
+import dev.slimevr.skeleton.ZERO_VELOCITY
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.forEachBone
 import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
+import kotlin.time.Duration.Companion.milliseconds
 
-data class VelocityBoneData(
+private data class VelocityBoneData(
 	val rotation: Quaternion,
-	val tailPosition: Vector3,
+	val position: Vector3,
 )
 
-fun computeVelocity(
-	currentBone: BoneState,
-	lastVelocityData: VelocityBoneData,
-	deltaTime: Float,
-): Velocity {
-	val deltaPosition = currentBone.tailPosition - lastVelocityData.tailPosition
-	val deltaRotation = currentBone.rotation / lastVelocityData.rotation
+private fun computeVelocity(currentVelocityData: VelocityBoneData, lastVelocityData: VelocityBoneData, deltaTime: Float): Velocity {
+	val deltaPosition = currentVelocityData.position - lastVelocityData.position
+	val deltaRotation = currentVelocityData.rotation / lastVelocityData.rotation
 	return Velocity(
 		linear = deltaPosition / deltaTime,
 		angular = deltaRotation.toRotationVector() / deltaTime,
+	)
+}
+
+// We smooth out the velocity since if a tracker is sending at 100tps and skeleton is at 500hz,
+//  4 frames out of 5 will have little to no velocity, so we need to smooth at least across those frames.
+private val SMOOTHING_WINDOW = 40.milliseconds.inFloatingSeconds
+private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, deltaTime: Float): Velocity {
+	val t = (deltaTime / SMOOTHING_WINDOW).coerceAtMost(1f)
+	return Velocity(
+		linear = lastVelocity.linear.lerp(currentVelocity.linear, t),
+		angular = lastVelocity.angular.nlerp(currentVelocity.angular, t),
 	)
 }
 
@@ -34,10 +43,13 @@ fun computeVelocity(
  * Computes linear (m/s) and angular (rad/s) velocity for the bones.
  */
 class VelocityComputedProcessor : SkeletonComputedProcessor {
+	private val lastVelocities: BodyPartMap<Velocity> = bodyPartMap()
 	private val lastVelocityBoneData: BodyPartMap<VelocityBoneData> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
-	override fun process(mutableComputedSkeleton: ComputedSkeleton, floorLevel: Float) {
+	// TODO consider smoothing lastVelocityBoneData instead of lastVelocities
+	//  so we don't have to nlerp
+	override fun process(mutableComputedSkeleton: ComputedSkeleton) {
 		// One clock read for the whole pass, so every bone shares the same interval
 		val now = timeSource.markNow()
 		val deltaTime = (now - lastProcessTime).inFloatingSeconds
@@ -45,11 +57,18 @@ class VelocityComputedProcessor : SkeletonComputedProcessor {
 
 		mutableComputedSkeleton.forEachBone { part, bone ->
 			val lastVelocityData = lastVelocityBoneData[part]
-			if (lastVelocityData != null) {
-				mutableComputedSkeleton[part] = bone.copy(velocity = computeVelocity(bone, lastVelocityData, deltaTime))
-			}
+			val lastVelocity = lastVelocities[part] ?: ZERO_VELOCITY
 
-			lastVelocityBoneData[part] = VelocityBoneData(bone.rotation, bone.tailPosition)
+			// Compute current velocity
+			val currentVelocityData = VelocityBoneData(bone.rotation, bone.tailPosition)
+			val currentVelocity = lastVelocityData?.let { computeVelocity(currentVelocityData, it, deltaTime) } ?: ZERO_VELOCITY
+
+			// Smooth velocity before setting it
+			val newVelocity = smoothVelocity(currentVelocity, lastVelocity, deltaTime)
+			mutableComputedSkeleton[part] = bone.copy(velocity = newVelocity)
+
+			lastVelocityBoneData[part] = currentVelocityData
+			lastVelocities[part] = newVelocity
 		}
 	}
 }

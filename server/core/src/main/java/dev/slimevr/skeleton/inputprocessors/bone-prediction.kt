@@ -41,6 +41,7 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 		else -> 1f
 	}
 
+	// TODO: find a way to improve prediction to make it less jittery
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		if (config.type != FilteringType.PREDICTION) {
