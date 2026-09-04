@@ -651,9 +651,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = Position data
 settings-general-fk_settings-ik-use_position = Use Position data
 settings-general-fk_settings-ik-use_position-description = Enables the use of position data from trackers that provide it. When enabling this make sure to full reset and recalibrate in game.
-settings-general-fk_settings-velocity_settings = Velocity Settings
-settings-general-fk_settings-velocity_settings-description = Send derived velocity data to SteamVR. Required for Natural Locomotion support. May cause jitter in FBT.
-settings-general-fk_settings-velocity_settings-send_derived_velocity = Send derived velocity to driver
 settings-general-fk_settings-resets_settings = Resets Settings
 settings-general-fk_settings-reset_settings-reset_positional_head_attitude = Reset positional head attitude
 settings-general-fk_settings-reset_settings-reset_positional_head_attitude-description = Reset a positional head tracker's vertical rotation upon doing a full reset. Useful if wearing a Vive tracker or HMD on the forehead for VTubing or mocap. Do not enable for VR.
