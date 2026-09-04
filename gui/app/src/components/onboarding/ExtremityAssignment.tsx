@@ -1,7 +1,6 @@
-import { ReactNode, useCallback, useMemo } from 'react';
+import { HTMLAttributes, ReactNode, useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { BodyPart } from 'solarxr-protocol';
-import { BodySlotStyler } from '@/components/commons/BodyInteractions';
 import { ExtremityFigure } from '@/components/commons/ExtremityFigure';
 import {
   DigitFlow,
@@ -12,7 +11,7 @@ import {
 import { ExtremityDescriptor, ExtremitySide } from '@/utils/extremities';
 import { BodyPartError } from '@/hooks/tracker-picker';
 import {
-  assignedTrackersAtom,
+  assignedRolesAtom,
   FlatDeviceTracker,
   trackerByBodyPartAtom,
 } from '@/store/app-store';
@@ -46,7 +45,9 @@ export function ExtremityAssignment({
   rolesWithErrors = {},
   onRoleSelected,
   renderGroup,
-  slotStyle,
+  dotClass,
+  dotProps,
+  activeParts,
 }: {
   descriptor: ExtremityDescriptor;
   side: ExtremitySide;
@@ -57,19 +58,13 @@ export function ExtremityAssignment({
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
   onRoleSelected: (role: BodyPart) => void;
   renderGroup: ExtremityGroupRenderer;
-  slotStyle?: BodySlotStyler;
+  dotClass?: (part: BodyPart) => string | undefined;
+  dotProps?: (part: BodyPart) => HTMLAttributes<HTMLDivElement>;
+  activeParts?: BodyPart[];
 }) {
-  const assignedTrackers = useAtomValue(assignedTrackersAtom);
+  const assignedRoles = useAtomValue(assignedRolesAtom);
   const trackerByPart = useAtomValue(trackerByBodyPartAtom);
   const { digits, root } = descriptor.sides[side];
-
-  const assignedRoles = useMemo(
-    () =>
-      assignedTrackers.map(
-        ({ tracker }) => tracker.info?.bodyPart || BodyPart.NONE
-      ),
-    [assignedTrackers]
-  );
 
   const sideNames = useMemo(() => {
     const names = new Set(
@@ -91,19 +86,18 @@ export function ExtremityAssignment({
     return numbers;
   }, [descriptor, digits]);
 
-  const numberedSlotStyle: BodySlotStyler = useCallback(
+  const dotContent = useCallback(
     (part: BodyPart) => {
       const number = partNumbers.get(part);
-      return {
-        ...slotStyle?.(part),
-        content: number && (
+      return (
+        number && (
           <span className="text-[10px] font-bold leading-none text-background-90">
             {number}
           </span>
-        ),
-      };
+        )
+      );
     },
-    [partNumbers, slotStyle]
+    [partNumbers]
   );
 
   const cell = useCallback(
@@ -171,7 +165,10 @@ export function ExtremityAssignment({
       figure,
       interactions: {
         dotsSize: dotSize,
-        slotStyle: numberedSlotStyle,
+        dotClass,
+        dotContent,
+        dotProps,
+        activeParts,
         sideNames,
         assignedRoles,
         highlightedRoles,
@@ -184,7 +181,10 @@ export function ExtremityAssignment({
       digit,
       figure,
       dotSize,
-      numberedSlotStyle,
+      dotClass,
+      dotContent,
+      dotProps,
+      activeParts,
       sideNames,
       assignedRoles,
       highlightedRoles,

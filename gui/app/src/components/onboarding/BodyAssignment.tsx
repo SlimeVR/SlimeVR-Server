@@ -1,12 +1,15 @@
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
-import { Fragment, useCallback, useMemo } from 'react';
+import {
+  Fragment,
+  HTMLAttributes,
+  ReactNode,
+  useCallback,
+  useMemo,
+} from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
-import {
-  BodyInteractions,
-  BodySlotStyler,
-} from '@/components/commons/BodyInteractions';
+import { BodyInteractions } from '@/components/commons/BodyInteractions';
 import { CheckboxInternal } from '@/components/commons/Checkbox';
 import { CompareIcon } from '@/components/commons/icon/CompareIcon';
 import { TogglePill, TogglePillOption } from '@/components/commons/TogglePill';
@@ -20,7 +23,7 @@ import {
 } from '@/hooks/tracker-picker';
 import { PersonFrontIcon, SIDES } from '@/components/commons/PersonFrontIcon';
 import { useAtomValue } from 'jotai';
-import { assignedTrackersAtom, trackerByBodyPartAtom } from '@/store/app-store';
+import { assignedRolesAtom, trackerByBodyPartAtom } from '@/store/app-store';
 
 type BodySide = (typeof SIDES)[number];
 
@@ -69,30 +72,26 @@ export function MirrorLegend({ compact }: { compact?: boolean }) {
   const { config, setConfig } = useConfig();
   const mirror = config?.mirrorView ?? false;
 
+  const pill = (side: 'left' | 'right') => {
+    const oposite = side == 'left' ? 'right' : 'left';
+    if (mirror) side = oposite;
+    return (
+      <TogglePillOption
+        compact={compact}
+        dotClass={`outline-assign-${side}`}
+        labelId={`onboarding-assign_trackers-side-${side}`}
+      />
+    );
+  };
+
   return (
     <TogglePill
       compact={compact}
       onClick={() => setConfig({ mirrorView: !mirror })}
     >
-      <TogglePillOption
-        compact={compact}
-        dotClass="outline-assign-left"
-        labelId={
-          mirror
-            ? 'onboarding-assign_trackers-side-left'
-            : 'onboarding-assign_trackers-side-right'
-        }
-      />
+      {pill('left')}
       <CompareIcon width={22} />
-      <TogglePillOption
-        compact={compact}
-        dotClass="outline-assign-right"
-        labelId={
-          mirror
-            ? 'onboarding-assign_trackers-side-right'
-            : 'onboarding-assign_trackers-side-left'
-        }
-      />
+      {pill('right')}
     </TogglePill>
   );
 }
@@ -105,7 +104,10 @@ export function BodyAssignment({
   dotSize,
   fillHeight,
   renderCard,
-  slotStyle,
+  dotClass,
+  dotContent,
+  dotProps,
+  activeParts,
 }: {
   mirror: boolean;
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
@@ -114,29 +116,34 @@ export function BodyAssignment({
   dotSize?: number;
   fillHeight?: boolean;
   renderCard?: PartCardRenderer;
-  slotStyle?: BodySlotStyler;
+  dotClass?: (part: BodyPart) => string | undefined;
+  dotContent?: (part: BodyPart) => ReactNode;
+  dotProps?: (part: BodyPart) => HTMLAttributes<HTMLDivElement>;
+  activeParts?: BodyPart[];
 }) {
   const assignMode = useAssignMode();
-  const assignedTrackers = useAtomValue(assignedTrackersAtom);
+  const assignedRoles = useAtomValue(assignedRolesAtom);
   const trackerByPart = useAtomValue(trackerByBodyPartAtom);
-
-  const assignedRoles = useMemo(
-    () =>
-      assignedTrackers.map(
-        ({ tracker }) => tracker.info?.bodyPart || BodyPart.NONE
-      ),
-    [assignedTrackers]
-  );
 
   const left = +!mirror;
   const right = +mirror;
 
   const sideNames = useMemo(
     () => ({
-      left: new Set(Object.values(SIDES[left]).map((part) => BodyPart[part])),
-      right: new Set(Object.values(SIDES[right]).map((part) => BodyPart[part])),
+      left: new Set(Object.values(SIDES[0]).map((part) => BodyPart[part])),
+      right: new Set(Object.values(SIDES[1]).map((part) => BodyPart[part])),
     }),
-    [left, right]
+    []
+  );
+
+  const figure = useMemo(
+    () => (
+      <PersonFrontIcon
+        mirror={mirror}
+        className={fillHeight ? 'absolute inset-0 h-full w-full' : 'w-full'}
+      />
+    ),
+    [mirror, fillHeight]
   );
 
   const hasBodyPart = useCallback(
@@ -184,14 +191,12 @@ export function BodyAssignment({
   return (
     <BodyInteractions
       dotsSize={dotSize}
-      slotStyle={slotStyle}
+      dotClass={dotClass}
+      dotContent={dotContent}
+      dotProps={dotProps}
+      activeParts={activeParts}
       sideNames={sideNames}
-      figure={
-        <PersonFrontIcon
-          mirror={mirror}
-          className={fillHeight ? 'absolute inset-0 h-full w-full' : 'w-full'}
-        />
-      }
+      figure={figure}
       assignedRoles={assignedRoles}
       highlightedRoles={highlightedRoles}
       onSelectRole={onRoleSelected}

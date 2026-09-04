@@ -1,7 +1,12 @@
 import classNames from 'classnames';
-import { MouseEvent, ReactNode, useCallback } from 'react';
+import {
+  HTMLAttributes,
+  MouseEvent,
+  ReactNode,
+  useCallback,
+  useMemo,
+} from 'react';
 import { BodyPart } from 'solarxr-protocol';
-import { BodySlotStyler } from '@/components/commons/BodyInteractions';
 import {
   BodyAssignment,
   MirrorLegend,
@@ -37,18 +42,6 @@ import {
   usePicker,
 } from '@/hooks/tracker-picker';
 
-/** Dots double as drop targets while dragging */
-function useSlotStyle(): BodySlotStyler {
-  const { mode } = useAssignment();
-
-  return useCallback(
-    (part: BodyPart) => ({
-      props: mode === 'drag' ? bodyPartDropProps(part) : undefined,
-    }),
-    [mode]
-  );
-}
-
 /**
  * The figure and its cards, for any flow that picks a body part. What a tap
  * does and what a card shows come from the picker in context and the renderers.
@@ -60,7 +53,7 @@ export function PickerPanel({
   dots,
   renderCard,
   renderGroup,
-  slotStyle,
+  dotProps,
 }: {
   headerAction?: ReactNode;
   legendAction?: ReactNode;
@@ -68,7 +61,7 @@ export function PickerPanel({
   dots: 'drag' | 'tap';
   renderCard?: PartCardRenderer;
   renderGroup: ExtremityGroupRenderer;
-  slotStyle?: BodySlotStyler;
+  dotProps?: (part: BodyPart) => HTMLAttributes<HTMLDivElement>;
 }) {
   const { config } = useConfig();
   const {
@@ -82,16 +75,16 @@ export function PickerPanel({
   } = usePicker();
   const { isMobile: isTight } = useBreakpoint('mobile');
 
-  const dotStyle: BodySlotStyler = useCallback(
-    (part: BodyPart) => ({
-      connected: activePart === part,
-      className:
-        activePart === part
-          ? 'scale-150 ring-3 ring-accent-background-30'
-          : undefined,
-      ...slotStyle?.(part),
-    }),
-    [activePart, slotStyle]
+  const activeParts = useMemo(
+    () => (activePart != null ? [activePart] : []),
+    [activePart]
+  );
+  const dotClass = useCallback(
+    (part: BodyPart) =>
+      part === activePart
+        ? 'scale-150 ring-3 ring-accent-background-30'
+        : undefined,
+    [activePart]
   );
 
   const { view, dotSize } = PICKER_TABS[tab];
@@ -148,7 +141,9 @@ export function PickerPanel({
               rolesWithErrors={rolesWithErrors}
               onRoleSelected={selectPart}
               renderGroup={renderGroup}
-              slotStyle={dotStyle}
+              dotClass={dotClass}
+              dotProps={dotProps}
+              activeParts={activeParts}
             />
           ) : (
             <BodyAssignment
@@ -159,7 +154,9 @@ export function PickerPanel({
               mirror={config?.mirrorView ?? false}
               onRoleSelected={selectPart}
               renderCard={renderCard}
-              slotStyle={dotStyle}
+              dotClass={dotClass}
+              dotProps={dotProps}
+              activeParts={activeParts}
             />
           )}
         </div>
@@ -178,7 +175,8 @@ export function BodyAssignmentPanel({
   compact?: boolean;
 }) {
   const assignment = useAssignment();
-  const slotStyle = useSlotStyle();
+  /** Dots double as drop targets while dragging */
+  const dotProps = assignment.mode === 'drag' ? bodyPartDropProps : undefined;
 
   const renderCard: PartCardRenderer = (props) => (
     <BodyPartCard key={props.role} {...props} />
@@ -212,7 +210,7 @@ export function BodyAssignmentPanel({
         dots={assignment.mode}
         renderCard={renderCard}
         renderGroup={renderGroup}
-        slotStyle={slotStyle}
+        dotProps={dotProps}
       />
     </PickerContext.Provider>
   );
