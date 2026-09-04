@@ -16,10 +16,9 @@ import { TogglePill, TogglePillOption } from '@/components/commons/TogglePill';
 import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';
 import { PartCardRenderer } from './parts/PartCard';
 import {
-  ASSIGNMENT_MODES,
   BodyPartError,
   COMMONS,
-  useAssignMode,
+  useSuggestedBodyParts,
 } from '@/hooks/tracker-picker';
 import { PersonFrontIcon, SIDES } from '@/components/commons/PersonFrontIcon';
 import { useAtomValue } from 'jotai';
@@ -121,7 +120,7 @@ export function BodyAssignment({
   dotProps?: (part: BodyPart) => HTMLAttributes<HTMLDivElement>;
   activeParts?: BodyPart[];
 }) {
-  const assignMode = useAssignMode();
+  const suggestedBodyParts = useSuggestedBodyParts();
   const assignedRoles = useAtomValue(assignedRolesAtom);
   const trackerByPart = useAtomValue(trackerByBodyPartAtom);
 
@@ -148,8 +147,10 @@ export function BodyAssignment({
 
   const hasBodyPart = useCallback(
     (part: BodyPart) =>
-      COMMONS.includes(part) || ASSIGNMENT_MODES[assignMode].includes(part),
-    [assignMode]
+      COMMONS.includes(part) ||
+      suggestedBodyParts.includes(part) ||
+      assignedRoles.includes(part),
+    [suggestedBodyParts, assignedRoles]
   );
 
   const card: PartCardRenderer =

@@ -55,19 +55,49 @@ export const useTracker = (tracker: TrackerDataT) => {
 };
 
 export const useVelocity = (tracker?: TrackerDataT): number => {
+  const trackers = useMemo(() => (tracker ? [tracker] : []), [tracker]);
+
+  return useTrackersVelocity(trackers);
+};
+
+export const useTrackersVelocity = (trackers: TrackerDataT[]): number => {
   const { feedMaxTps } = useDataFeedConfig();
-  const previousRot = useRef<Quaternion>(QuaternionFromQuatT(tracker?.rotation));
-  const previousAcc = useRef<Vector3>(Vector3FromVec3fT(tracker?.linearAcceleration));
+  const previous = useRef<
+    Record<
+      number,
+      {
+        rot: Quaternion;
+        acc: Vector3;
+        deltas: number[];
+      }
+    >
+  >({});
   const [velocity, setVelocity] = useState<number>(0);
-  const [deltas] = useState<number[]>([]);
 
   useEffect(() => {
-    if (tracker?.rotation) {
+    const trackerIds = new Set(trackers.map((tracker) => tracker.trackerId));
+    Object.keys(previous.current).forEach((trackerId) => {
+      if (!trackerIds.has(Number(trackerId))) {
+        delete previous.current[Number(trackerId)];
+      }
+    });
+
+    const velocities = trackers.map((tracker) => {
+      if (!tracker.rotation) return 0;
+
+      const trackerId = tracker.trackerId;
+      previous.current[trackerId] ??= {
+        rot: QuaternionFromQuatT(tracker.rotation),
+        acc: Vector3FromVec3fT(tracker.linearAcceleration),
+        deltas: [],
+      };
+      const trackerPrevious = previous.current[trackerId];
+
       const rot = QuaternionFromQuatT(tracker.rotation).multiply(
-        previousRot.current.clone().invert()
+        trackerPrevious.rot.clone().invert()
       );
       const acc = Vector3FromVec3fT(tracker.linearAcceleration).sub(
-        previousAcc.current
+        trackerPrevious.acc
       );
       const dif = Math.min(
         1,
@@ -76,23 +106,24 @@ export const useVelocity = (tracker?: TrackerDataT): number => {
       );
       // Use sum of the rotation and acceleration delta vector lengths over 0.3sec
       // for smoother movement and better detection of slow movement.
-      if (deltas.length >= 0.5 * feedMaxTps) {
-        deltas.shift();
+      if (trackerPrevious.deltas.length >= 0.5 * feedMaxTps) {
+        trackerPrevious.deltas.shift();
       }
-      deltas.push(dif);
-      setVelocity(
-        Math.min(
-          1,
-          Math.max(
-            0,
-            deltas.reduce((a, b) => a + b)
-          )
+      trackerPrevious.deltas.push(dif);
+      trackerPrevious.rot = QuaternionFromQuatT(tracker.rotation);
+      trackerPrevious.acc = Vector3FromVec3fT(tracker.linearAcceleration);
+
+      return Math.min(
+        1,
+        Math.max(
+          0,
+          trackerPrevious.deltas.reduce((a, b) => a + b, 0)
         )
       );
-      previousRot.current = QuaternionFromQuatT(tracker.rotation);
-      previousAcc.current = Vector3FromVec3fT(tracker.linearAcceleration);
-    }
-  }, [tracker?.rotation]);
+    });
+
+    setVelocity(Math.max(0, ...velocities));
+  }, [trackers, feedMaxTps]);
 
   return velocity;
 };
