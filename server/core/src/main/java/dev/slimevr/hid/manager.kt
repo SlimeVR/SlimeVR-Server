@@ -122,6 +122,11 @@ private suspend fun readDevice(connection: HidConnection, receiver: HIDReceiver,
 		val buffer = ByteArray(HID_READ_BUFFER_SIZE)
 		var emptyReads = 0
 
+		// Negotiate the protocol on every fresh connection. The first report decides it: a
+		// 205 Dongle Info means v3, anything else means the dongle never answered and is legacy v2.
+		sendHidCommand(connection, encodeServerHello())
+		var protocol: Int? = null
+
 		while (currentCoroutineContext().isActive) {
 			val read = try {
 				connection.read(buffer, HID_READ_TIMEOUT_MS)
@@ -140,7 +145,17 @@ private suspend fun readDevice(connection: HidConnection, receiver: HIDReceiver,
 
 				read > 0 -> {
 					emptyReads = 0
-					parseHIDPackets(buffer, read).forEach { receiver.packetEvents.emit(it) }
+					if (protocol == null) {
+						protocol = if (buffer[1].toUByte().toInt() == HIDPacketIdV3.DONGLE_INFO.id) HID_PROTOCOL_V3 else HID_PROTOCOL_LEGACY
+						receiver.observeProtocol(protocol)
+						if (protocol == HID_PROTOCOL_V3) sendHidCommand(connection, encodeSendTrackersList())
+					}
+					val packets = if (protocol == HID_PROTOCOL_V3) {
+						parseHIDBundleV3(buffer, read)
+					} else {
+						parseLegacyHIDPackets(buffer, read)
+					}
+					packets.forEach { receiver.packetEvents.emit(it) }
 				}
 
 				// A timeout with no data: the read already blocked, so just go again, unless the
