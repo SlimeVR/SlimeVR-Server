@@ -12,7 +12,6 @@ import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.FilteringType
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeSource
 
 /** How far ahead the prediction reaches at amount 1, scaled down by the configured amount */
 val PREDICTION_LEAD = 10.milliseconds
@@ -44,12 +43,12 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 	// TODO: find a way to improve prediction to make it less jittery
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
-		if (config.type != FilteringType.PREDICTION) {
+		val filteringAmount = config.amount
+		if (config.type != FilteringType.PREDICTION || filteringAmount <= 0f) {
 			// Drop stale velocities so re-enabling doesn't diff against a long outdated pose
 			if (velocities.isNotEmpty()) velocities.clear()
 			return
 		}
-		val predictionAmount = config.amount
 		val now = timeSource.markNow()
 
 		val newVelocities = bodyPartMap<BoneVelocity>()
@@ -62,7 +61,7 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 				return@forEachBone
 			}
 
-			val bonePredictionAmount = predictionAmount * getMultiplier(bodyPart)
+			val bonePredictionAmount = filteringAmount * getMultiplier(bodyPart)
 
 			val changed = bone.rotation !== prev.lastRotation
 			val rotationDelta = if (changed) {

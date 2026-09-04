@@ -12,7 +12,7 @@ import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.rpc.FilteringType
 
 private const val SMOOTHING_MULTIPLIER = 100f
-private const val SMOOTH_MIN = 0.55f
+private const val SMOOTH_MIN = 0.54f
 private const val SMOOTH_MAX = 0.95f
 
 /**
@@ -25,7 +25,8 @@ class BoneSmoothingInputProcessor(val settings: Settings) : SkeletonInputProcess
 	// TODO this isn't linear. Do we want linear smoothing like in main?
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
-		if (config.type != FilteringType.SMOOTHING) {
+		val filteringAmount = config.amount
+		if (config.type != FilteringType.SMOOTHING || filteringAmount <= 0f) {
 			// Drop stale poses so re-enabling doesn't blend out of an outdated frame
 			if (smoothed.isNotEmpty()) smoothed.clear()
 			lastProcessTime = timeSource.markNow()
@@ -36,7 +37,7 @@ class BoneSmoothingInputProcessor(val settings: Settings) : SkeletonInputProcess
 		val lastFrameTimeSeconds = lastProcessTime.elapsedNow().inFloatingSeconds
 		lastProcessTime = timeSource.markNow()
 
-		val smoothingAmount = SMOOTH_MIN + config.amount.coerceIn(0f, 1f) * (SMOOTH_MAX - SMOOTH_MIN)
+		val smoothingAmount = SMOOTH_MIN + filteringAmount * (SMOOTH_MAX - SMOOTH_MIN)
 		val alpha = ((1 - smoothingAmount) * lastFrameTimeSeconds * SMOOTHING_MULTIPLIER).coerceIn(0f, 1f)
 
 		val newSmoothed = bodyPartMap<Quaternion>()
