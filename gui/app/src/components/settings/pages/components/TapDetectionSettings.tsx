@@ -13,7 +13,7 @@ import { NumberSelector } from '@/components/commons/NumberSelector';
 import { Typography } from '@/components/commons/Typography';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Dropdown } from '@/components/commons/Dropdown';
-import { ASSIGNMENT_MODES } from '@/hooks/tracker-picker';
+import { TAP_DETECTION_BODY_PARTS } from '@/hooks/tracker-picker';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { isEqual } from '@react-hookz/deep-equal';
 import { selectAtom } from 'jotai/utils';
@@ -74,7 +74,7 @@ export function TapDetectionSettings() {
 
   const bodyParts: { value: string; label: string }[] = Object.values(BodyPart)
     .filter((v): v is BodyPart => typeof v === 'number')
-    .filter((v) => ASSIGNMENT_MODES['full-body'].includes(v as BodyPart))
+    .filter((v) => TAP_DETECTION_BODY_PARTS.includes(v as BodyPart))
     .map((value) => ({
       value: String(value),
       label: l10n.getString(`body_part-${BodyPart[value]}`),
