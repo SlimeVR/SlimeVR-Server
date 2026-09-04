@@ -1,13 +1,15 @@
 import classNames from 'classnames';
 import {
+  CSSProperties,
   ReactNode,
   useRef,
   useState,
   ReactElement,
   useLayoutEffect,
   MutableRefObject,
-  useMemo,
   createElement,
+  useEffect,
+  useId,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Typography } from './Typography';
@@ -27,207 +29,74 @@ interface TooltipProps {
   bindTo?: string;
 }
 
-interface TooltipPos {
-  left: number;
-  top: number;
-  width: number;
-  height?: number;
-}
-
-type Rect = {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
+type PopoverElement = HTMLDivElement & {
+  showPopover?: () => void;
+  hidePopover?: () => void;
 };
 
-function overlapArea(rect1: Rect, rect2: Rect) {
-  // Find the overlap in the x direction (width)
-  const overlapWidth = Math.max(
-    0,
-    Math.min(rect1.left + rect1.width, rect2.left + rect2.width) -
-      Math.max(rect1.left, rect2.left)
-  );
-
-  // Find the overlap in the y direction (height)
-  const overlapHeight = Math.max(
-    0,
-    Math.min(rect1.top + rect1.height, rect2.top + rect2.height) -
-      Math.max(rect1.top, rect2.top)
-  );
-
-  // If there is an overlap, return the area; otherwise, return 0
-  return overlapWidth * overlapHeight;
-}
-
-function isNotInside(rect1: Rect, rect2: Rect) {
-  // Check if rect1 is not inside rect2 or rect2 is not inside rect1
-  const rect1InsideRect2 =
-    rect1.left >= rect2.left &&
-    rect1.left + rect1.width <= rect2.left + rect2.width &&
-    rect1.top >= rect2.top &&
-    rect1.top + rect1.height <= rect2.top + rect2.height;
-
-  const rect2InsideRect1 =
-    rect2.left >= rect1.left &&
-    rect2.left + rect2.width <= rect1.left + rect1.width &&
-    rect2.top >= rect1.top &&
-    rect2.top + rect2.height <= rect1.top + rect1.height;
-
-  // If neither is inside the other, return true
-  return !(rect1InsideRect2 || rect2InsideRect1);
-}
-
-const clamp = (v: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, v));
-
-const getFloatingTooltipPosition = (
+const getPositionArea = (
   preferedDirection: TooltipProps['preferedDirection'],
-  blockedDirections: Direction[],
-  mode: TooltipProps['mode'],
-  childrenRect: DOMRect,
-  tooltipRect: DOMRect,
-  spacing: number
+  mode: TooltipProps['mode']
 ) => {
-  const getPosition = (
-    direction: TooltipProps['preferedDirection']
-  ): TooltipPos => {
-    switch (direction) {
+  if (mode === 'corner') {
+    switch (preferedDirection) {
       case 'top':
-        return {
-          top: childrenRect.y - tooltipRect.height - spacing,
-          left:
-            childrenRect.x +
-            (mode === 'center'
-              ? childrenRect.width / 2 - tooltipRect.width / 2
-              : 0),
-          width: tooltipRect.width,
-        };
-      case 'left':
-        return {
-          top:
-            childrenRect.y +
-            (mode === 'center'
-              ? childrenRect.height / 2 - tooltipRect.height / 2
-              : 0),
-          left: childrenRect.x - tooltipRect.width - spacing,
-          width: tooltipRect.width,
-        };
-      case 'right':
-        return {
-          top:
-            childrenRect.y +
-            (mode === 'center'
-              ? childrenRect.height / 2 - tooltipRect.height / 2
-              : 0),
-          left: childrenRect.x + childrenRect.width + spacing,
-          width: tooltipRect.width,
-        };
+        return 'top span-right';
       case 'bottom':
-        return {
-          top: childrenRect.y + childrenRect.height + spacing,
-          left:
-            childrenRect.x +
-            (mode === 'center'
-              ? childrenRect.width / 2 - tooltipRect.width / 2
-              : 0),
-          width: tooltipRect.width,
-        };
+        return 'bottom span-right';
+      case 'left':
+        return 'span-bottom left';
+      case 'right':
+        return 'span-bottom right';
     }
+  }
+
+  switch (preferedDirection) {
+    case 'top':
+      return 'top center';
+    case 'bottom':
+      return 'bottom center';
+    case 'left':
+      return 'center left';
+    case 'right':
+      return 'center right';
+  }
+};
+
+const getPositionTryFallbacks = (
+  preferedDirection: TooltipProps['preferedDirection'],
+  blockedDirections: Direction[]
+) => {
+  const oppositeDirection: Record<Direction, Direction> = {
+    top: 'bottom',
+    bottom: 'top',
+    left: 'right',
+    right: 'left',
   };
 
-  const windowRect = document.body.getBoundingClientRect();
-
-  const pos = getPosition(preferedDirection);
-  if (isNotInside({ ...pos, height: tooltipRect.height }, windowRect)) {
-    const [firstPos] = ['left', 'top', 'right', 'bottom']
-      .filter((dir) => !blockedDirections.includes(dir as Direction))
-      .map((dir) => ({
-        dir,
-        area: getPosition(dir as Direction),
-      }))
-      .toSorted(
-        (a, b) =>
-          overlapArea({ ...b.area, height: tooltipRect.height }, windowRect) -
-          overlapArea({ ...a.area, height: tooltipRect.height }, windowRect)
-      );
-
-    if (
-      isNotInside({ ...firstPos.area, height: tooltipRect.height }, windowRect)
-    ) {
-      switch (firstPos.dir) {
-        case 'top':
-          return {
-            top: clamp(firstPos.area.top, spacing, childrenRect.y - spacing),
-            left: clamp(firstPos.area.left, spacing, childrenRect.x - spacing),
-            width: clamp(
-              firstPos.area.width,
-              0,
-              windowRect.width - spacing * 2
-            ),
-            height: clamp(
-              tooltipRect.height,
-              spacing,
-              childrenRect.y - spacing * 2
-            ),
-          };
-        case 'left':
-          return {
-            top: clamp(firstPos.area.top, spacing, windowRect.height - spacing),
-            left: clamp(firstPos.area.left, spacing, childrenRect.x - spacing),
-            width: clamp(firstPos.area.width, 0, childrenRect.x - spacing * 2),
-            height: clamp(
-              tooltipRect.height,
-              spacing,
-              windowRect.height - spacing * 2
-            ),
-          };
-        case 'right':
-          return {
-            top: clamp(firstPos.area.top, spacing, windowRect.height - spacing),
-            left: clamp(
-              firstPos.area.left,
-              childrenRect.x + childrenRect.width + spacing,
-              windowRect.width - spacing
-            ),
-            width: clamp(
-              firstPos.area.width,
-              0,
-              windowRect.width - spacing - firstPos.area.left
-            ),
-            height: clamp(
-              tooltipRect.height,
-              spacing,
-              windowRect.height - spacing * 2
-            ),
-          };
-        case 'bottom':
-          return {
-            top: clamp(
-              firstPos.area.top,
-              childrenRect.y + childrenRect.height + spacing,
-              windowRect.height - childrenRect.y + childrenRect.height + spacing
-            ),
-            left: clamp(firstPos.area.left, spacing, windowRect.width),
-            width: clamp(
-              firstPos.area.width,
-              0,
-              windowRect.width - spacing * 2
-            ),
-            height: clamp(
-              tooltipRect.height,
-              firstPos.area.top + childrenRect.height + spacing,
-              windowRect.height -
-                (childrenRect.y + childrenRect.height) -
-                spacing * 2
-            ),
-          };
-      }
-    }
-
-    return firstPos.area;
+  if (blockedDirections.includes(oppositeDirection[preferedDirection])) {
+    return undefined;
   }
-  return pos;
+
+  return preferedDirection === 'top' || preferedDirection === 'bottom'
+    ? 'flip-block'
+    : 'flip-inline';
+};
+
+const getSpacingStyle = (
+  preferedDirection: TooltipProps['preferedDirection'],
+  spacing: number
+): CSSProperties => {
+  switch (preferedDirection) {
+    case 'top':
+      return { marginBottom: spacing };
+    case 'bottom':
+      return { marginTop: spacing };
+    case 'left':
+      return { marginRight: spacing };
+    case 'right':
+      return { marginLeft: spacing };
+  }
 };
 
 export function FloatingTooltip({
@@ -244,73 +113,80 @@ export function FloatingTooltip({
   TooltipProps,
   'mode' | 'preferedDirection' | 'blockedDirections' | 'spacing'
 >) {
-  const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const [tooltipStyle, setTooltipStyle] = useState<TooltipPos | undefined>();
-
-  const onMouseEnter = () => {
-    if (!childRef.current || !tooltipRef.current)
-      throw new Error('invalid state');
-
-    const childrenRect = childRef.current.children[0].getBoundingClientRect();
-    const tooltipRect = tooltipRef.current.getBoundingClientRect();
-
-    setTooltipStyle(
-      getFloatingTooltipPosition(
-        preferedDirection,
-        blockedDirections,
-        mode,
-        childrenRect,
-        tooltipRect,
-        spacing ?? 20
-      )
-    );
-  };
-
-  const onMouseLeave = () => {
-    if (!childRef.current || !tooltipRef.current)
-      throw new Error('invalid state');
-    setTooltipStyle(undefined);
-  };
-
-  const onResize = () => {
-    setTooltipStyle(undefined);
-  };
+  const anchorName = `--tooltip-anchor-${useId().replace(/:/g, '')}`;
+  const tooltipRef = useRef<PopoverElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useLayoutEffect(() => {
     if (childRef.current && childRef.current.children[0]) {
       const elem = childRef.current.children[0] as HTMLElement;
-      elem.addEventListener('mouseenter', onMouseEnter);
-      elem.addEventListener('mouseleave', onMouseLeave);
+      elem.style.setProperty('anchor-name', anchorName);
+
+      const open = () => setIsOpen(true);
+      const close = () => setIsOpen(false);
+
+      elem.addEventListener('mouseenter', open);
+      elem.addEventListener('mouseleave', close);
+      elem.addEventListener('focus', open);
+      elem.addEventListener('blur', close);
 
       return () => {
-        elem.removeEventListener('mouseenter', onMouseEnter);
-        elem.removeEventListener('mouseleave', onMouseLeave);
+        elem.style.removeProperty('anchor-name');
+        elem.removeEventListener('mouseenter', open);
+        elem.removeEventListener('mouseleave', close);
+        elem.removeEventListener('focus', open);
+        elem.removeEventListener('blur', close);
       };
     }
-  }, []);
+  }, [anchorName, childRef]);
 
-  useLayoutEffect(() => {
-    window.addEventListener('resize', onResize);
+  useEffect(() => {
+    const close = () => setIsOpen(false);
+    window.addEventListener('resize', close);
+    window.addEventListener('scroll', close, true);
     return () => {
-      window.removeEventListener('resize', onResize);
+      window.removeEventListener('resize', close);
+      window.removeEventListener('scroll', close, true);
     };
   }, []);
 
-  const style = useMemo(() => {
-    if (!tooltipStyle) return { opacity: 0, top: 0 };
-    return tooltipStyle;
-  }, [tooltipStyle]);
+  useEffect(() => {
+    const el = tooltipRef.current;
+    if (!el?.showPopover) return;
+
+    try {
+      const isOpenNow = el.matches(':popover-open');
+
+      if (isOpen && !isOpenNow) {
+        el.showPopover();
+      } else if (!isOpen && isOpenNow) {
+        el.hidePopover?.();
+      }
+    } catch {
+      setIsOpen(false);
+    }
+  }, [isOpen]);
 
   return (
     <div
-      className={classNames('fixed z-50 pointer-events-none')}
+      className="fixed inset-auto m-0 border-0 bg-transparent p-0 outline-none backdrop:bg-transparent pointer-events-none"
       ref={tooltipRef}
-      style={style}
+      {...({ popover: 'manual' } as any)}
+      style={
+        {
+          positionAnchor: anchorName,
+          positionArea: getPositionArea(preferedDirection, mode),
+          positionTryFallbacks: getPositionTryFallbacks(
+            preferedDirection,
+            blockedDirections
+          ),
+          width: 'max-content',
+          maxWidth: 'calc(100vw - 20px)',
+          ...getSpacingStyle(preferedDirection, spacing ?? 20),
+        } as CSSProperties
+      }
     >
-      <div
-        className="bg-background-90 rounded-md p-2 text-background-10 overflow-auto"
-        style={style}
-      >
+      <div className="bg-background-90 rounded-md p-2 text-background-10 overflow-auto">
         {children}
       </div>
     </div>
