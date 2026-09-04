@@ -24,7 +24,7 @@ private fun computeVelocity(currentVelocityData: VelocityBoneData, lastVelocityD
 	val deltaRotation = currentVelocityData.rotation / lastVelocityData.rotation
 	return Velocity(
 		linear = deltaPosition / deltaTime,
-		angular = deltaRotation.toRotationVector() / deltaTime,
+		angular = currentVelocityData.rotation.sandwich(deltaRotation.toRotationVector()) / deltaTime,
 	)
 }
 
@@ -35,7 +35,7 @@ private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, de
 	val t = (deltaTime / SMOOTHING_WINDOW).coerceAtMost(1f)
 	return Velocity(
 		linear = lastVelocity.linear.lerp(currentVelocity.linear, t),
-		angular = lastVelocity.angular.nlerp(currentVelocity.angular, t),
+		angular = lastVelocity.angular.lerp(currentVelocity.angular, t),
 	)
 }
 
@@ -47,8 +47,6 @@ class VelocityComputedProcessor : SkeletonComputedProcessor {
 	private val lastVelocityBoneData: BodyPartMap<VelocityBoneData> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
-	// TODO consider smoothing lastVelocityBoneData instead of lastVelocities
-	//  so we don't have to nlerp
 	override fun process(mutableComputedSkeleton: ComputedSkeleton) {
 		// One clock read for the whole pass, so every bone shares the same interval
 		val now = timeSource.markNow()
