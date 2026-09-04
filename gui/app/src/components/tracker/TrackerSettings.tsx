@@ -364,9 +364,9 @@ export function TrackerSettingsPage() {
               </Typography>
               <Typography>
                 {tracker?.device?.hardwareStatus?.packetLoss != null
-                  ? `${(
-                      tracker.device.hardwareStatus.packetLoss * 100
-                    ).toFixed(0)}%`
+                  ? `${(tracker.device.hardwareStatus.packetLoss * 100).toFixed(
+                      0
+                    )}%`
                   : '--'}
               </Typography>
             </div>
