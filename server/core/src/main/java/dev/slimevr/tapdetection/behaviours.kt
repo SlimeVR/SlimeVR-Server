@@ -203,6 +203,8 @@ class TapDetectionBasicBehaviour : TapDetectionBehaviour {
 		trackerAcceleration: Vector3,
 		trackerMotion: Motion,
 	): Boolean {
+		// TODO check logic against main since taps seem harder to trigger
+
 		// Remove old stored accelerations (if they are too old)
 		while (trackerTapDetectionState.accelList.isNotEmpty() && (trackerTapDetectionState.accelList.first().second + ACCEL_WINDOW).hasPassedNow()) {
 			trackerTapDetectionState.accelList.removeFirst()

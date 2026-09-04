@@ -35,12 +35,11 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 		BodyPart.RIGHT_UPPER_ARM,
 		BodyPart.LEFT_LOWER_ARM,
 		BodyPart.RIGHT_LOWER_ARM,
-		-> 1.5f
+		-> 1.4f
 
 		else -> 1f
 	}
 
-	// TODO: find a way to improve prediction to make it less jittery
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val config = settings.context.state.value.data.skeletonConfig.filtering
 		val filteringAmount = config.amount
