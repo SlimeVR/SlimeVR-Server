@@ -86,7 +86,8 @@ data class HIDTrackerListEntry(
 	val sensorCount: Int,
 	/** Firmware status byte; the enum it maps to is not defined by the proposal yet. */
 	val stateRaw: Int,
-) : HIDTrackerPacket, HIDSeqPacket {
+) : HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int) = HIDTrackerListEntry(
 			seq = readU8(data, i),
@@ -98,7 +99,9 @@ data class HIDTrackerListEntry(
 	}
 }
 
-data class HIDRssi(override val seq: Int, override val hidId: Int, val rssi: Int) : HIDTrackerPacket, HIDSeqPacket {
+data class HIDRssi(override val seq: Int, override val hidId: Int, val rssi: Int) :
+	HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int) = HIDRssi(seq = readU8(data, i), hidId = readU8(data, i + 2), rssi = -readU8(data, i + 3))
 	}
@@ -109,7 +112,8 @@ data class HIDRotationV3(
 	override val hidId: Int,
 	val sensorId: Int?,
 	val rotation: Quaternion,
-) : HIDTrackerPacket, HIDSeqPacket {
+) : HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int, sensor: Boolean) = HIDRotationV3(
 			seq = readU8(data, i),
@@ -125,7 +129,8 @@ data class HIDAccelerationV3(
 	override val hidId: Int,
 	val sensorId: Int?,
 	val acceleration: Vector3,
-) : HIDTrackerPacket, HIDSeqPacket {
+) : HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int, sensor: Boolean) = HIDAccelerationV3(
 			seq = readU8(data, i),
@@ -141,7 +146,8 @@ data class HIDMagnetometerV3(
 	override val hidId: Int,
 	val sensorId: Int?,
 	val magnetometer: Vector3,
-) : HIDTrackerPacket, HIDSeqPacket {
+) : HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int, sensor: Boolean) = HIDMagnetometerV3(
 			seq = readU8(data, i),
@@ -163,7 +169,8 @@ data class HIDDeviceInfoV3(
 	val deviceType: Int,
 	val firmwareVersion: String,
 	val firmwareDate: String,
-) : HIDTrackerPacket, HIDSeqPacket {
+) : HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int) = HIDDeviceInfoV3(
 			seq = readU8(data, i),
@@ -180,7 +187,9 @@ data class HIDDeviceInfoV3(
 	}
 }
 
-data class HIDCustomBoardId(override val seq: Int, override val hidId: Int, val boardName: String) : HIDTrackerPacket, HIDSeqPacket {
+data class HIDCustomBoardId(override val seq: Int, override val hidId: Int, val boardName: String) :
+	HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int) = HIDCustomBoardId(readU8(data, i), readU8(data, i + 2), asciiString(data, i + 3, 13))
 	}
@@ -194,7 +203,8 @@ data class HIDSensorInfo(
 	val magStatus: MagnetometerStatus,
 	val sensorState: Int,
 	val defaultBodyPosition: Int,
-) : HIDTrackerPacket, HIDSeqPacket {
+) : HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int) = HIDSensorInfo(
 			seq = readU8(data, i),
@@ -219,7 +229,8 @@ data class HIDDeviceStateV3(
 	val stateRaw: Int,
 	/** Predicted runtime in seconds, or [HID_TIME_UNKNOWN]. */
 	val runtimeSeconds: Long,
-) : HIDTrackerPacket, HIDSeqPacket {
+) : HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int) = HIDDeviceStateV3(
 			seq = readU8(data, i),
@@ -240,7 +251,8 @@ data class HIDTimeout(
 	val reason: Int,
 	/** Seconds until timeout, or [HID_TIME_UNKNOWN]. 0 = timeout activated now. */
 	val secondsUntilTimeout: Long,
-) : HIDTrackerPacket, HIDSeqPacket {
+) : HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int) = HIDTimeout(
 			seq = readU8(data, i),
@@ -256,7 +268,8 @@ data class HIDButton(
 	override val hidId: Int,
 	val buttonId: Int,
 	val state: Int,
-) : HIDTrackerPacket, HIDSeqPacket {
+) : HIDTrackerPacket,
+	HIDSeqPacket {
 	companion object {
 		fun decode(data: ByteArray, i: Int) = HIDButton(
 			seq = readU8(data, i),
@@ -271,8 +284,7 @@ data class HIDButton(
 fun decodeHwid(data: ByteArray, offset: Int): String = "%016X".format(readLE64Unsigned(data, offset))
 
 /** UNIX seconds → ISO `yyyy-MM-dd`, matching the string shape [formatFwDate] produces. */
-private fun formatUnixDate(epochSeconds: Long): String =
-	LocalDate.ofInstant(Instant.ofEpochSecond(epochSeconds), ZoneOffset.UTC).toString()
+private fun formatUnixDate(epochSeconds: Long): String = LocalDate.ofInstant(Instant.ofEpochSecond(epochSeconds), ZoneOffset.UTC).toString()
 
 /** int8 celsius (no scale or offset defined by the proposal); raw 0 is treated as "no reading". */
 private fun decodeTemp(data: ByteArray, offset: Int): Float? = readI8(data, offset).takeIf { it != 0 }?.toFloat()
