@@ -48,12 +48,7 @@ enum class HIDPacketIdV3(val id: Int, val length: Int, val decode: ((ByteArray, 
 	}
 }
 
-/**
- * Packet 205: one metadata field the dongle shares, fully decoded by its data type. A `null` from
- * [decode] means an unknown data type or a too-short payload the walker should skip.
- */
 sealed interface HIDDongleInfo : HIDSeqPacket {
-	/** Data type 1: 8-byte HWID, dongle class/type (unused), hardware type, hardware revision. */
 	data class BasicInfo(
 		override val seq: Int,
 		val hwid: String,
@@ -84,7 +79,6 @@ sealed interface HIDDongleInfo : HIDSeqPacket {
 	}
 }
 
-/** One entry of the dongle's paired-tracker list (packet 208). `hidId` 255 means unpaired. */
 data class HIDTrackerListEntry(
 	override val seq: Int,
 	override val hidId: Int,
