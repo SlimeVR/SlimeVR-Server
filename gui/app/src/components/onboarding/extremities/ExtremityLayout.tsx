@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { Children, createContext, ReactNode, useContext } from 'react';
+import { Children, createContext, ReactNode, useContext, useMemo } from 'react';
 import {
   BodyInteractions,
   BodyInteractionsProps,
@@ -137,11 +137,15 @@ export function ExtremityFrame({
   const { mirrored, interactions, figure } = useExtremityLayout();
   const left = mirrored ? far : near;
   const right = mirrored ? near : far;
+  const figureNode = useMemo(
+    () => figure(figureHeight),
+    [figure, figureHeight]
+  );
 
   return (
     <BodyInteractions
       {...interactions}
-      figure={figure(figureHeight)}
+      figure={figureNode}
       leftControls={
         left && (
           <Slot direction="right" edge="side">

@@ -4,6 +4,7 @@ import { BodyPart } from 'solarxr-protocol';
 import { useAtomValue } from 'jotai';
 import { AssignMode, useConfig } from './config';
 import {
+  assignedRolesAtom,
   assignedTrackersAtom,
   connectedIMUTrackersAtom,
   flatTrackersAtom,
@@ -167,21 +168,20 @@ export function usePickerShell() {
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
   const trackerByPart = useAtomValue(trackerByBodyPartAtom);
   const flatTrackers = useAtomValue(flatTrackersAtom);
+  const assignedRoles = useAtomValue(assignedRolesAtom);
 
   const currentAssignMode = useAssignMode();
   const expectedTrackersCount = ASSIGN_MODE_OPTIONS[currentAssignMode];
 
   const assignedPartsCount = useMemo(
     () =>
-      ASSIGNMENT_MODES[currentAssignMode].filter((part) => !!trackerByPart[part])
+      ASSIGNMENT_MODES[currentAssignMode].filter((part) => assignedRoles.includes(part))
         .length,
-    [currentAssignMode, trackerByPart]
+    [currentAssignMode, assignedRoles]
   );
 
   const rolesWithErrors = useMemo(() => {
-    const trackerRoles = flatTrackers.map(
-      ({ tracker }) => tracker.info?.bodyPart || BodyPart.NONE
-    );
+    const trackerRoles = assignedRoles;
 
     const message = (assignedRole: BodyPart): BodyPartError | undefined => {
       const unassignedRoles: [BodyPart | BodyPart[], boolean][] = (
@@ -218,9 +218,9 @@ export function usePickerShell() {
       };
     };
 
-    const assignedRoles = trackerRoles.toSorted((a, b) => a - b);
+    const sortedRoles = trackerRoles.toSorted((a, b) => a - b);
 
-    return assignedRoles.reduce<Partial<Record<BodyPart, BodyPartError>>>(
+    return sortedRoles.reduce<Partial<Record<BodyPart, BodyPartError>>>(
       (errors, role) => {
         const error = message(role);
         if (error) errors[role] = error;
@@ -228,7 +228,7 @@ export function usePickerShell() {
       },
       {}
     );
-  }, [flatTrackers]);
+  }, [assignedRoles]);
 
   const firstError = Object.values(rolesWithErrors).find((r) => !!r);
 

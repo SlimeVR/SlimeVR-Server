@@ -13,21 +13,17 @@ import { useBreakpoint } from '@/hooks/breakpoint';
 
 const DOT_HIT_PADDING = 12;
 
-export interface BodySlotStyle {
-  props?: HTMLAttributes<HTMLDivElement>;
-  className?: string;
-  connected?: boolean;
-  content?: ReactNode;
-}
-
-export type BodySlotStyler = (part: BodyPart) => BodySlotStyle;
-
 export interface BodySideNames {
   left: Set<string>;
   right: Set<string>;
 }
 
-const NO_SLOT_STYLE: BodySlotStyle = {};
+const bodyPartFromName = (name: string): BodyPart | null => {
+  const part = (BodyPart as unknown as Record<string, number | undefined>)[
+    name
+  ];
+  return typeof part === 'number' ? part : null;
+};
 
 const boxOf = (el: HTMLElement, offset: { left: number; top: number }) => {
   const rect = el.getBoundingClientRect();
@@ -85,7 +81,10 @@ export interface BodyInteractionsProps {
   assignedRoles: BodyPart[];
   onSelectRole: (role: BodyPart) => void;
   highlightedRoles: BodyPart[];
-  slotStyle?: BodySlotStyler;
+  dotClass?: (part: BodyPart) => string | undefined;
+  dotContent?: (part: BodyPart) => ReactNode;
+  dotProps?: (part: BodyPart) => HTMLAttributes<HTMLDivElement>;
+  activeParts?: BodyPart[];
   figure: ReactNode;
   sideNames: BodySideNames;
 }
@@ -99,7 +98,10 @@ export function BodyInteractions({
   assignedRoles,
   dotsSize = 15,
   onSelectRole,
-  slotStyle,
+  dotClass,
+  dotContent,
+  dotProps,
+  activeParts = [],
   figure,
   sideNames,
 }: BodyInteractionsProps) {
@@ -124,6 +126,7 @@ export function BodyInteractions({
   const [slotsButtonsPos, setSlotsButtonPos] = useState<
     {
       id: string;
+      part: BodyPart | null;
       left: number;
       top: number;
       height: number;
@@ -201,6 +204,7 @@ export function BodyInteractions({
       return {
         ...slotPosition,
         id: slot.id,
+        part: bodyPartFromName(slot.id),
         hidden: !controlsPosIds.includes(slot.id),
         buttonOffset: {
           left: canvasBox.left - personBox.left,
@@ -218,12 +222,12 @@ export function BodyInteractions({
       const controls = controlsPos.filter(
         ({ id, dataset }) => id === slot.id && dataset.connector !== 'off'
       );
-      const isAssigned = assignedRoles.includes((BodyPart as any)[slot.id]);
-      const { connected } = slotStyle?.((BodyPart as any)[slot.id]) ?? {};
+      const isAssigned = slot.part != null && assignedRoles.includes(slot.part);
+      const isActive = slot.part != null && activeParts.includes(slot.part);
 
-      ctx.lineWidth = slot.id === hoveredControl || connected ? 4 : 2;
+      ctx.lineWidth = slot.id === hoveredControl || isActive ? 4 : 2;
       ctx.strokeStyle =
-        isAssigned || connected
+        isAssigned || isActive
           ? leftPartNames.has(slot.id)
             ? ASSIGN_LEFT
             : rightPartNames.has(slot.id)
@@ -290,10 +294,14 @@ export function BodyInteractions({
     () => [...assignedRoles].sort((a, b) => a - b).join(','),
     [assignedRoles]
   );
+  const activeKey = useMemo(
+    () => [...activeParts].sort((a, b) => a - b).join(','),
+    [activeParts]
+  );
 
   useEffect(() => {
     updateSlots();
-  }, [figure, assignedKey, slotStyle, hoveredControl]);
+  }, [figure, assignedKey, activeKey, hoveredControl]);
 
   useEffect(() => {
     if (
@@ -372,17 +380,24 @@ export function BodyInteractions({
           >
             {figure}
             {slotsButtonsPos.map(
-              ({ top, left, height, width, id, hidden, buttonOffset }) => {
-                const style =
-                  slotStyle?.((BodyPart as any)[id]) ?? NO_SLOT_STYLE;
+              ({
+                top,
+                left,
+                height,
+                width,
+                id,
+                part,
+                hidden,
+                buttonOffset,
+              }) => {
                 const hitSize = dotsSize + DOT_HIT_PADDING * 2;
 
                 return (
                   <div
                     key={id}
-                    {...style.props}
+                    {...(part != null ? dotProps?.(part) : undefined)}
                     className={classNames('absolute z-10')}
-                    onClick={() => onSelectRole((BodyPart as any)[id])}
+                    onClick={() => part != null && onSelectRole(part)}
                     style={{
                       width: hitSize,
                       height: hitSize,
@@ -395,7 +410,8 @@ export function BodyInteractions({
                       style={{ top: DOT_HIT_PADDING, left: DOT_HIT_PADDING }}
                     >
                       {!hidden &&
-                        highlightedRoles.includes((BodyPart as any)[id]) && (
+                        part != null &&
+                        highlightedRoles.includes(part) && (
                           <div
                             className={classNames(
                               'absolute rounded-full bg-status-warning',
@@ -413,14 +429,14 @@ export function BodyInteractions({
                           'absolute rounded-full outline-background-90 transition duration-150 ease-linear box-border',
                           'hover:bg-accent-background-40',
                           'flex items-center justify-center',
-                          assignedRoles.includes((BodyPart as any)[id])
+                          part != null && assignedRoles.includes(part)
                             ? 'bg-status-success'
                             : 'bg-background-10',
                           leftPartNames.has(id) &&
                             'border-4 border-assign-left',
                           rightPartNames.has(id) &&
                             'border-4 border-assign-right',
-                          style.className,
+                          part != null && dotClass?.(part),
                           hidden ? 'opacity-0' : 'opacity-100'
                         )}
                         style={{
@@ -429,7 +445,7 @@ export function BodyInteractions({
                           boxShadow: '0px 0px 4px black',
                         }}
                       >
-                        {style.content}
+                        {part != null && dotContent?.(part)}
                       </div>
                     </div>
                   </div>
