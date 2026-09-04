@@ -121,6 +121,7 @@ private fun createDevice(
 			firmwareDate = deviceState.firmwareDate,
 			ipAddress = ipv4AddressFromString(deviceState.address),
 			hardwareIdentifier = deviceState.macAddress,
+			networkProtocolVersion = deviceState.protocolVersion.toUShort(),
 			// TODO missing fields
 		),
 		trackers = if (trackerMask != null) {
@@ -156,6 +157,7 @@ private fun createDongle(dongle: HIDReceiverState, mask: DongleDataMask): Dongle
 	boardType = dongle.boardType.takeIf { mask.boardType },
 	devicesIds = dongle.trackers.values.map { it.deviceId.toUShort() }.distinct().takeIf { mask.devicesIds },
 	status = dongle.status.takeIf { mask.status } ?: DongleStatus.NONE,
+	protocolVersion = dongle.protocolVersion?.toUShort().takeIf { mask.protocolVersion },
 )
 
 fun createDatafeedFrame(
