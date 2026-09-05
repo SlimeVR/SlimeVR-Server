@@ -37,7 +37,7 @@ class DriverHandshakeBehaviour(
 			}.launchIn(receiver.context.scope)
 
 		receiver.onDriverMessage<HandshakeRequest> { req, replyTo ->
-			val name = req.driverName?.takeIf { it.isNotEmpty() } ?: run {
+			val name = req.driverName.takeIf { it.isNotEmpty() } ?: run {
 				AppLogger.solarxr.info("Rejecting driver handshake because it's unnamed")
 				receiver.sendDriverMessage(HandshakeResponse(status = HandshakeStatus.REJECTED_UNNAMED), replyTo = replyTo)
 				return@onDriverMessage
