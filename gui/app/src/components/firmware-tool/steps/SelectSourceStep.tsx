@@ -22,7 +22,7 @@ function Selector({
   text: string;
   active: boolean;
   official?: boolean;
-  tag?: 'official' | 'dev';
+  tag?: 'official' | 'dev' | 'latest';
   disabled?: boolean;
   onClick: () => void;
 }) {
@@ -61,6 +61,18 @@ function Selector({
         >
           <Localized id="firmware_tool-select_source-dev">
             <Typography color="text-background-90" />
+          </Localized>
+        </div>
+      )}
+      {tag === 'latest' && (
+        <div
+          className={classNames(
+            'absolute px-2 py-0.5 rounded-md bg-accent-background-20 -top-2 -right-2',
+            { 'brightness-20': disabled, 'brightness-50': !active }
+          )}
+        >
+          <Localized id="firmware_tool-select_source-latest">
+            <Typography />
           </Localized>
         </div>
       )}
@@ -269,7 +281,7 @@ export function SelectSourceSetep({
                     <Typography variant="section-title" />
                   </Localized>
                   <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
-                    {possibleVersions?.map(({ name, disabled }) => (
+                    {possibleVersions?.map(({ name, disabled }, i) => (
                       <Selector
                         active={partialBoard?.version === name}
                         disabled={disabled}
@@ -278,7 +290,9 @@ export function SelectSourceSetep({
                           partialBoard?.source?.startsWith('SlimeVR/') &&
                           name === 'llelievr/board-defaults'
                             ? 'dev'
-                            : undefined
+                            : i == 0
+                              ? 'latest'
+                              : undefined
                         }
                         onClick={() => {
                           setPartialBoard((curr) => ({
