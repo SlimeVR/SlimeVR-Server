@@ -58,7 +58,7 @@ private fun getSourceToFollow(fk: ComputedSkeleton): FollowSource = if (isUserSi
 	// One of the user's foot is on the ground
 	FollowSource.FOOT
 } else {
-	// The user is neither sitting nor has a foot on the ground. Use Center Of Mass.
+	// The user is neither sitting nor has a foot on the ground. Use Centre Of Mass.
 	FollowSource.COM
 }
 
@@ -113,14 +113,14 @@ object COMLocalizer {
 // 		var buf = bufCur
 // 		val timeStart: Long = buf.timeOfFrame
 // 		var timeEnd = timeStart - VELOCITY_SAMPLE_RATE
-// 		val comPosStart: Vector3 = buf.centerOfMass
+// 		val comPosStart: Vector3 = buf.centreOfMass
 //
 // 		// get the buffer that occurred VELOCITY_SAMPLE_RATE ago in time
 // 		while (buf.timeOfFrame > timeEnd && buf.parent != null) {
 // 			buf = buf.parent!!
 // 		}
 //
-// 		val comPosEnd: Vector3 = buf.centerOfMass
+// 		val comPosEnd: Vector3 = buf.centreOfMass
 // 		timeEnd = buf.timeOfFrame
 //
 // 		// calculate the velocity

@@ -26,7 +26,7 @@ object TrackerYawCorrection {
 	 */
 	private data class YawErrors(
 		var lockedError: AngleErrors = AngleErrors(),
-		var centerError: AngleErrors = AngleErrors(),
+		var centreError: AngleErrors = AngleErrors(),
 		var neighbourError: AngleErrors = AngleErrors(),
 	)
 
@@ -99,13 +99,13 @@ object TrackerYawCorrection {
 		applyYawCorrection: Angle,
 		config: StayAlignedConfig,
 	): Angle? {
-		val centerYaw = YawUtils.centerYawOfTrackers(trackerStates) ?: return null
+		val centreYaw = YawUtils.centreYawOfTrackers(trackerStates) ?: return null
 		val relaxedPose = RelaxedPose.forPose(PlayerPose.of(trackerStates), config) ?: return null
 
 		return adjustByError(trackerState, applyYawCorrection) { yawCorrection ->
 			YawErrors().also {
 				val yawCorrectedRotation = computeYawCorrectedRotation(yawCorrection, trackerState)
-				it.centerError.add(getCenterError(yawCorrectedRotation, trackerState, centerYaw, relaxedPose))
+				it.centreError.add(getCentreError(yawCorrectedRotation, trackerState, centreYaw, relaxedPose))
 				it.neighbourError.add(getNeighbourError(yawCorrectedRotation, trackerState, relaxedPose, trackerStates))
 			}
 		}
@@ -114,7 +114,7 @@ object TrackerYawCorrection {
 	/**
 	 * Returns an error based off the yaw difference from a tracker and the centre yaw.
 	 */
-	private fun getCenterError(yawCorrectedRotation: Quaternion, trackerState: TrackerState, centerYaw: Angle, relaxedPose: RelaxedPose): Angle {
+	private fun getCentreError(yawCorrectedRotation: Quaternion, trackerState: TrackerState, centreYaw: Angle, relaxedPose: RelaxedPose): Angle {
 		val bodyPart = trackerState.bodyPart
 		val side = bodyPart?.side ?: Side.LEFT
 
@@ -139,7 +139,7 @@ object TrackerYawCorrection {
 			else -> return Angle.ZERO
 		}
 
-		return centerYaw + poseYaw - trackerYaw(yawCorrectedRotation)
+		return centreYaw + poseYaw - trackerYaw(yawCorrectedRotation)
 	}
 
 	/**
@@ -288,8 +288,8 @@ object TrackerYawCorrection {
 	 */
 	private fun gradient(errors: YawErrors, base: YawErrors) = (errors.lockedError.toL2Norm() - base.lockedError.toL2Norm()) *
 		StayAlignedDefaults.YAW_ERRORS_LOCKED_ERROR_WEIGHT +
-		(errors.centerError.toL2Norm() - base.centerError.toL2Norm()) *
-		StayAlignedDefaults.YAW_ERRORS_CENTER_ERROR_WEIGHT +
+		(errors.centreError.toL2Norm() - base.centreError.toL2Norm()) *
+		StayAlignedDefaults.YAW_ERRORS_CENTRE_ERROR_WEIGHT +
 		(errors.neighbourError.toL2Norm() - base.neighbourError.toL2Norm()) *
 		StayAlignedDefaults.YAW_ERRORS_NEIGHBOUR_ERROR_WEIGHT
 

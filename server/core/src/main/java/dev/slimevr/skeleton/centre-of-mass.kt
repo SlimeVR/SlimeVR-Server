@@ -32,8 +32,8 @@ fun centreOfMass(
 	bones: ComputedSkeleton,
 ): Vector3 = BODY_PART_MASSES.entries.fold(Vector3.ZERO) { acc: Vector3, massEntry ->
 	val bone = bones[massEntry.key] ?: return@fold acc
-	val boneCenter = (bone.headPosition + bone.tailPosition) / 2f
-	return@fold acc + (boneCenter * massEntry.value)
+	val boneCentre = (bone.headPosition + bone.tailPosition) / 2f
+	return@fold acc + (boneCentre * massEntry.value)
 }
 
 fun computeComState(time: ComparableTimeMark, last: COMState?, com: Vector3): COMState = if (last != null) {
