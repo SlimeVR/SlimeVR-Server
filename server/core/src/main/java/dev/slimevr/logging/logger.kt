@@ -59,8 +59,6 @@ suspend fun configureLogging(consoleSink: SinkConfiguration, logDirectory: Path?
 		}
 	}
 
-	captureStandardStreams()
-
 	val failure = fileSender?.exceptionOrNull()
 	when {
 		fileSender == null ->
@@ -73,4 +71,6 @@ suspend fun configureLogging(consoleSink: SinkConfiguration, logDirectory: Path?
 
 		else -> AppLogger.logging.info("Writing logs to $logDirectory")
 	}
+
+	captureStandardStreams()
 }
