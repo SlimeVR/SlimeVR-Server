@@ -1,11 +1,9 @@
-import { Matrix4, Mesh, Object3D, Quaternion, Vector3 } from 'three';
+import { Box3, Matrix4, Mesh, Object3D, Quaternion, Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { BoneKind, getBoneList } from './skeletonHelper';
 import {
   BoneShapeConfig,
-  CYLINDER_GEOMETRY,
-  JOINT_GEOMETRY,
-  JOINT_MATERIAL,
+  ModelDimensions,
   SKELETON_PART_PRESETS,
   computeShapeScale,
   getPartMaterial,
@@ -17,10 +15,9 @@ const boneMatrix = new Matrix4();
 const position = new Vector3();
 const shapePos = new Vector3();
 const quat = new Quaternion();
-const boneDir = new Vector3();
 const localOffset = new Vector3();
 
-const DOWN = new Vector3(0, -1, 0);
+const modelBox = new Box3();
 
 // Shared loader + cache: each model URL is fetched and parsed once, then cloned
 // per instance. Same pattern as the tracker preview (IMUVisualizerWidget).
@@ -32,7 +29,10 @@ function loadModel(url: string): Promise<Object3D | null> {
     p = gltfLoader
       .loadAsync(url)
       .then((gltf) => gltf.scene)
-      .catch(() => null); // no file yet -> keep the primitive
+      .catch((err) => {
+        console.error('MODEL LOAD FAIL', url, err);
+        return null;
+      }); // nothing to draw for this bone yet
     modelCache.set(url, p);
   }
   return p;
@@ -41,12 +41,11 @@ function loadModel(url: string): Promise<Object3D | null> {
 interface AttachedShape {
   config: BoneShapeConfig;
   node: Object3D;
+  model: ModelDimensions | null;
 }
 
 interface BonePart {
   bone: BoneKind;
-  jointMesh: Mesh | null;
-  jointRatio: number;
   shapes: AttachedShape[];
 }
 
@@ -76,47 +75,55 @@ export class BasedSkeletonMeshHelper extends Object3D {
 
       const material = getPartMaterial(bone.boneColor);
 
-      let jointMesh: Mesh | null = null;
-      if (config.joint) {
-        jointMesh = new Mesh(JOINT_GEOMETRY, JOINT_MATERIAL);
-        jointMesh.matrixAutoUpdate = false;
-        jointMesh.frustumCulled = false;
-        this.add(jointMesh);
-      }
-
       const shapes: AttachedShape[] = [];
       for (const shapeConfig of config.shapes) {
         const node = new Object3D();
         node.matrixAutoUpdate = false;
-        const primitive = new Mesh(shapeConfig.geometry ?? CYLINDER_GEOMETRY, material);
-        primitive.frustumCulled = false;
-        node.add(primitive);
         this.add(node);
+
+        const attached: AttachedShape = {
+          config: shapeConfig,
+          node,
+          model: null,
+        };
 
         if (shapeConfig.modelUrl) {
           loadModel(shapeConfig.modelUrl).then((scene) => {
             if (!scene || this.disposed) return;
             const model = scene.clone(true);
+            modelBox.makeEmpty();
             model.traverse((o) => {
+              if (o !== model) {
+                // The exporter parks the model at its bone's rest pose; the
+                // part config says how it sits on the bone instead.
+                o.position.set(0, 0, 0);
+                o.quaternion.identity();
+                o.scale.set(1, 1, 1);
+              }
               if (o instanceof Mesh) {
                 o.material = material;
                 o.frustumCulled = false;
+                o.geometry.computeBoundingBox();
+                if (o.geometry.boundingBox) modelBox.union(o.geometry.boundingBox);
               }
             });
+            // The export writes each model in its bone's frame, running down
+            // -Y off the bone's head, so it needs no orienting here.
+            attached.model = {
+              width: modelBox.max.x - modelBox.min.x,
+              depth: modelBox.max.z - modelBox.min.z,
+              length: Math.abs(modelBox.min.y),
+            };
+
             node.clear();
             node.add(model);
           });
         }
 
-        shapes.push({ config: shapeConfig, node });
+        shapes.push(attached);
       }
 
-      this.parts.push({
-        bone,
-        jointMesh,
-        jointRatio: config.joint ?? 0.45,
-        shapes,
-      });
+      this.parts.push({ bone, shapes });
     }
   }
 
@@ -128,54 +135,35 @@ export class BasedSkeletonMeshHelper extends Object3D {
     matrixWorldInv.copy(this.root.matrixWorld).invert();
 
     for (const part of this.parts) {
-      const { bone, jointMesh, jointRatio, shapes } = part;
+      const { bone, shapes } = part;
 
       boneMatrix.multiplyMatrices(matrixWorldInv, bone.matrixWorld);
-      position.setFromMatrixPosition(boneMatrix); // head joint position
-
+      position.setFromMatrixPosition(boneMatrix);
+      quat.copy(bone.orientation);
       const boneLength = Math.max(bone.boneT.boneLength, 1e-4);
-      const o = bone.boneT.orientation;
-      if (o) quat.set(o.x, o.y, o.z, o.w).normalize();
-      else quat.identity();
-
-      boneDir.copy(DOWN).applyQuaternion(quat);
-
-      let maxGirth = 0;
 
       for (const attached of shapes) {
-        const { config, node } = attached;
-        const { scaleX, scaleY, scaleZ } = computeShapeScale(
+        const { config, node, model } = attached;
+        const size = computeShapeScale(
           config,
           this.proportions,
-          boneLength
+          boneLength,
+          model ?? undefined
         );
-        maxGirth = Math.max(maxGirth, scaleX, scaleZ);
 
         shapePos.copy(position);
-        // Default midpoint + optional along-bone offset
-        shapePos.addScaledVector(
-          boneDir,
-          boneLength / 2 + (config.offset ?? 0) * boneLength
-        );
-
-        if (config.localOffset) {
+        if (config.offset && model) {
           localOffset
-            .copy(config.localOffset)
-            .multiplyScalar(this.proportions.bodyScale)
+            .copy(config.offset({ model, proportions: this.proportions, boneLength }))
             .applyQuaternion(quat);
           shapePos.add(localOffset);
         }
 
         node.position.copy(shapePos);
         node.quaternion.copy(quat);
-        node.scale.set(scaleX, scaleY, scaleZ);
+        if (config.rotation) node.quaternion.multiply(config.rotation);
+        node.scale.set(size.width, size.length, size.depth);
         node.updateMatrix();
-      }
-
-      if (jointMesh) {
-        jointMesh.position.copy(position);
-        jointMesh.scale.setScalar(jointRatio * maxGirth);
-        jointMesh.updateMatrix();
       }
     }
 
@@ -185,7 +173,6 @@ export class BasedSkeletonMeshHelper extends Object3D {
   dispose() {
     this.disposed = true;
     for (const part of this.parts) {
-      if (part.jointMesh) this.remove(part.jointMesh);
       for (const attached of part.shapes) {
         this.remove(attached.node);
       }

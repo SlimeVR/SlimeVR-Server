@@ -1,4 +1,4 @@
-import { Bone, Color, Matrix4, Object3D, Vector2, Vector3 } from 'three';
+import { Bone, Color, Matrix4, Object3D, Quaternion, Vector2, Vector3 } from 'three';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
@@ -139,6 +139,11 @@ export class BoneKind extends Bone {
     this.name = BodyPart[bodyPart];
     this.tail = tail;
     this.updateData(bones);
+  }
+
+  /** How the bone lies, as the server gives it. */
+  get orientation(): Quaternion {
+    return QuaternionFromQuatT(this.boneT.orientation).normalize();
   }
 
   updateData(bones: Map<BodyPart, BoneT>) {

@@ -1,49 +1,191 @@
 import { BodyPart } from 'solarxr-protocol';
 import {
-  BufferGeometry,
   Color,
-  CylinderGeometry,
+  DoubleSide,
+  Euler,
+  MathUtils,
   MeshLambertMaterial,
-  SphereGeometry,
+  Quaternion,
   Vector3,
 } from 'three';
 import { SkeletonProportions } from './skeletonProportions';
 
+/**
+ * Measured off the loaded glTF. The model is drawn in Blender bone space, so
+ * its own axes are x across the bone, y through it, and z along it -- none of
+ * them the scene's up. These are named for the body so the axes can't be
+ * misread: a bone's `rotation` is what puts them onto the scene.
+ */
+export interface ModelDimensions {
+  /** Left to right across the bone. */
+  width: number;
+  /** Front to back through the bone. */
+  depth: number;
+  /** How far the model reaches down the bone from its origin. */
+  length: number;
+}
+
+export interface ShapeScaleContext {
+  model: ModelDimensions;
+  proportions: SkeletonProportions;
+  boneLength: number;
+}
+
+/**
+ * Applied after the model is rotated, so these are the bone's own axes however
+ * the model is turned onto it.
+ */
+export interface ShapeSize {
+  /** Left to right across the bone. */
+  width: number;
+  /** Front to back through the bone. */
+  depth: number;
+  /** Along the bone. */
+  length: number;
+}
+
+export interface ShapeScale {
+  compute: (ctx: ShapeScaleContext) => ShapeSize;
+}
+
+/**
+ * What a part's girth follows. Height suits a limb, but the torso should widen
+ * with the body it sits in rather than with how tall it is.
+ */
+type GirthBasis = 'height' | 'shoulders' | 'hips';
+
+/**
+ * Ratios against the model as authored, so 1 is its own size at the body's
+ * scale. `length` measures against whatever that builder sizes the model to.
+ */
+type ModelRatios = {
+  width?: number;
+  depth?: number;
+  length?: number;
+  girthFrom?: GirthBasis;
+};
+
+const RIG_SHOULDER_WIDTH = 0.338;
+const RIG_HIP_WIDTH = 0.26;
+
+const girthScale = (proportions: SkeletonProportions, basis: GirthBasis) => {
+  if (basis === 'shoulders' && proportions.shoulderWidth > 0) {
+    return proportions.shoulderWidth / RIG_SHOULDER_WIDTH;
+  }
+  if (basis === 'hips' && proportions.hipWidth > 0) {
+    return proportions.hipWidth / RIG_HIP_WIDTH;
+  }
+  return proportions.bodyScale;
+};
+
+export const spanBone = ({
+  width = 1,
+  depth = 1,
+  length = 1,
+  girthFrom = 'height',
+}: ModelRatios = {}): ShapeScale => ({
+  compute: ({ model, proportions, boneLength }) => {
+    const girth = girthScale(proportions, girthFrom);
+    return {
+      width: width * girth,
+      depth: depth * girth,
+      length: (boneLength / model.length) * length,
+    };
+  },
+});
+
+/**
+ * Keeps the model's authored length, for bones whose length isn't the span the
+ * model was drawn to: the hip is a structural connector, and the head bone is
+ * an offset out to the HMD rather than the skull.
+ */
+export const authoredSize = ({
+  width = 1,
+  depth = 1,
+  length = 1,
+  girthFrom = 'height',
+}: ModelRatios = {}): ShapeScale => ({
+  compute: ({ proportions }) => {
+    const girth = girthScale(proportions, girthFrom);
+    return {
+      width: width * girth,
+      depth: depth * girth,
+      length: length * proportions.bodyScale,
+    };
+  },
+});
+
+/**
+ * How far around a limb measures, as a fraction of its own length. Limbs are
+ * measured this way, and a bone gives its length directly, so this needs no
+ * body height: a short arm is thin and a long one thick, whatever the body's
+ * size.
+ *
+ * From ANSUR II (2012 US Army survey, 4082 men and 1986 women), taking each
+ * limb's circumference over the length between the joints that bound it. The
+ * two sexes agree to within about 0.1, so one number per limb serves.
+ */
+export const byCircumference = (
+  circumference: number,
+  { length = 1 }: { length?: number } = {}
+): ShapeScale => ({
+  compute: ({ model, boneLength }) => {
+    const modelCircumference = (Math.PI * (model.width + model.depth)) / 2;
+    const girth = (circumference * boneLength) / modelCircumference;
+    return { width: girth, depth: girth, length: (boneLength / model.length) * length };
+  },
+});
+
+/**
+ * Where the model sits, from the bone's head, in the bone's own axes. Worked
+ * out per bone like {@link ShapeScale}, so a part says what its offset
+ * measures against rather than the two being mixed together.
+ */
+export type ShapeOffset = (ctx: ShapeScaleContext) => Vector3;
+
+export const inBoneLengths =
+  ({ width = 0, depth = 0, length = 0 }: ModelRatios): ShapeOffset =>
+  ({ boneLength }) =>
+    new Vector3(width, length, depth).multiplyScalar(boneLength);
+
+export const inMetres =
+  ({ width = 0, depth = 0, length = 0 }: ModelRatios): ShapeOffset =>
+  ({ proportions }) =>
+    new Vector3(width, length, depth).multiplyScalar(proportions.bodyScale);
+
+export const turn = ({
+  width = 0,
+  depth = 0,
+  length = 0,
+}: ModelRatios = {}): Quaternion =>
+  new Quaternion().setFromEuler(
+    new Euler(
+      MathUtils.degToRad(width),
+      MathUtils.degToRad(length),
+      MathUtils.degToRad(depth)
+    )
+  );
+
+export const otherSide = (scale: ShapeScale): ShapeScale => ({
+  compute: (ctx) => {
+    const size = scale.compute(ctx);
+    return { ...size, width: -size.width };
+  },
+});
+
 export interface BoneShapeConfig {
-  geometry?: BufferGeometry;
-  scaleRatio: Vector3;
-  offset?: number;
-  localOffset?: Vector3;
   modelUrl?: string;
-  customScale?: (
-    boneLength: number,
-    proportions: SkeletonProportions,
-    scaleRatio: Vector3
-  ) => { scaleX: number; scaleY: number; scaleZ: number };
+  offset?: ShapeOffset;
+  rotation?: Quaternion;
+  scale?: ShapeScale;
 }
 
 export interface BonePartConfig {
   visible: boolean;
-  joint?: number;
   shapes: BoneShapeConfig[];
 }
 
-/** Flat-capped tube spanning `y` in [-1, 1], radius 1 (default primitive). */
-export const CYLINDER_GEOMETRY: BufferGeometry = new CylinderGeometry(1, 1, 2, 20);
-
-/** Small dark ball joints. */
-export const JOINT_GEOMETRY: BufferGeometry = new SphereGeometry(1, 12, 9);
-export const JOINT_MATERIAL = new MeshLambertMaterial({ color: '#24242b' });
-
-export const shape = (
-  scaleRatio: Vector3 | { x: number; y?: number; z?: number },
-  overrides: Partial<Omit<BoneShapeConfig, 'scaleRatio'>> = {}
-): BoneShapeConfig => ({
-  scaleRatio:
-    scaleRatio instanceof Vector3
-      ? scaleRatio
-      : new Vector3(scaleRatio.x, scaleRatio.y ?? 1.0, scaleRatio.z ?? scaleRatio.x),
-  offset: 0,
+export const shape = (overrides: Partial<BoneShapeConfig> = {}): BoneShapeConfig => ({
   ...overrides,
 });
 
@@ -56,175 +198,167 @@ const part = (
   ...overrides,
 });
 
-const finger = (): BonePartConfig =>
-  part(shape({ x: 0.15, y: 0.9, z: 0.15 }), { visible: false });
+const model = (
+  file: string,
+  overrides: Omit<BoneShapeConfig, 'modelUrl'> = {}
+): BoneShapeConfig => ({
+  modelUrl: `/models/skeleton/${file}.gltf`,
+  ...overrides,
+});
+
+const finger = (file: string) => part(model(file));
+const fingerRight = (file: string) =>
+  part(model(file, { scale: otherSide(spanBone()) }));
+
+const toe = (file: string) => part(model(file));
+const toeRight = (file: string) => part(model(file, { scale: otherSide(spanBone()) }));
+
+const shoulderScale = spanBone({ width: 0.68, depth: 0.68, length: 1.1 });
+const handScale = spanBone({ width: 1.14, depth: 1.14, length: 1.1 });
+const upperArmScale = byCircumference(0.95, { length: 1.1 });
+const lowerArmScale = byCircumference(0.89, { length: 1.1 });
+const upperLegScale = byCircumference(1.3, { length: 1.1 });
+const lowerLegScale = byCircumference(0.75);
+const footScale = authoredSize({ width: 0.99, depth: 1.26 });
 
 export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
-  [BodyPart.NONE]: part(shape({ x: 0.1, y: 1.0, z: 0.1 }), { visible: false }),
-  [BodyPart.HEAD]: part(
-    shape(
-      { x: 0.155, y: 1.4, z: 0.18 },
-      {
-        localOffset: new Vector3(0, 0, 0.02),
-        modelUrl: '/models/skeleton/head.gltf',
-        customScale: (boneLength, proportions, ratio) => ({
-          scaleX: (ratio.x * proportions.bodyScale) / 2,
-          scaleY: (boneLength * ratio.y) / 2,
-          scaleZ: (ratio.z * proportions.bodyScale) / 2,
-        }),
-      }
-    )
-  ),
+  [BodyPart.NONE]: part(shape(), { visible: false }),
 
+  [BodyPart.HEAD]: part(
+    model('head', {
+      rotation: turn({ width: 90 }),
+      offset: inBoneLengths({ length: -1 }),
+      scale: authoredSize({ width: 0.84, depth: 0.76, length: 0.8 }),
+    })
+  ),
   [BodyPart.NECK]: part(
-    shape({ x: 0.6, y: 1.05, z: 0.6 }, { modelUrl: '/models/skeleton/spine.gltf' }),
-    { joint: 0.45 }
+    model('neck', {
+      scale: spanBone({ width: 1, depth: 1, length: -1 }),
+      offset: inBoneLengths({ length: -0.5 }),
+    })
   ),
   [BodyPart.UPPER_CHEST]: part(
-    shape({ x: 0.35, y: 1.05, z: 0.35 }, { modelUrl: '/models/skeleton/spine.gltf' })
+    model('upper_chest', {
+      scale: spanBone({ girthFrom: 'shoulders', length: 1, width: 0.8, depth: 0.8 }),
+      offset: inBoneLengths({ length: -0.2 }),
+    })
   ),
-  [BodyPart.CHEST]: part([
-    shape({ x: 0.35, y: 1.05, z: 0.35 }, { modelUrl: '/models/skeleton/spine.gltf' }),
-    shape(
-      { x: 0.72, y: 1.5, z: 0.47 },
-      {
-        offset: -0.4,
-        modelUrl: '/models/skeleton/chest.gltf',
-        customScale: (boneLength, proportions, ratio) => ({
-          scaleX: (ratio.x * proportions.shoulderWidth) / 2,
-          scaleY: (boneLength * ratio.y) / 2,
-          scaleZ: (ratio.z * proportions.shoulderWidth) / 2,
-        }),
-      }
-    ),
-  ]),
-
+  [BodyPart.CHEST]: part(
+    model('chest', {
+      scale: spanBone({ girthFrom: 'shoulders', length: 1, width: 0.8, depth: 0.8 }),
+      offset: inBoneLengths({ length: 0 }),
+    })
+  ),
   [BodyPart.WAIST]: part(
-    shape({ x: 0.45, y: 1.05, z: 0.45 }, { modelUrl: '/models/skeleton/spine.gltf' })
+    model('waist', {
+      scale: spanBone({ girthFrom: 'hips', length: 1.3, width: 0.8, depth: 0.8 }),
+      offset: inBoneLengths({ length: 0 }),
+    })
   ),
   [BodyPart.HIP]: part(
-    shape({ x: 0.45, y: 1.05, z: 0.45 }, { modelUrl: '/models/skeleton/spine.gltf' })
+    model('hip', {
+      scale: spanBone({ girthFrom: 'hips', width: 1, depth: 0.8, length: 2 }),
+      offset: inBoneLengths({ length: -0.2 }),
+    })
   ),
-  [BodyPart.LEFT_SHOULDER]: part(
-    shape(
-      { x: 0.55, y: 1.0, z: 0.47 },
-      { modelUrl: '/models/skeleton/shoulder_cap.gltf' }
-    )
-  ),
+
+  [BodyPart.LEFT_SHOULDER]: part(model('shoulder', { scale: shoulderScale })),
   [BodyPart.RIGHT_SHOULDER]: part(
-    shape(
-      { x: 0.55, y: 1.0, z: 0.47 },
-      { modelUrl: '/models/skeleton/shoulder_cap.gltf' }
-    )
+    model('shoulder', { scale: otherSide(shoulderScale) })
   ),
-  [BodyPart.LEFT_UPPER_ARM]: part(
-    shape(
-      { x: 0.32, y: 1.0, z: 0.29 },
-      { modelUrl: '/models/skeleton/upper_arm.gltf' }
-    ),
-    { joint: 0.5 }
-  ),
+  [BodyPart.LEFT_UPPER_ARM]: part(model('upper_arm', { scale: upperArmScale })),
   [BodyPart.RIGHT_UPPER_ARM]: part(
-    shape(
-      { x: 0.32, y: 1.0, z: 0.29 },
-      { modelUrl: '/models/skeleton/upper_arm.gltf' }
-    ),
-    { joint: 0.5 }
+    model('upper_arm', { scale: otherSide(upperArmScale) })
   ),
-  [BodyPart.LEFT_LOWER_ARM]: part(
-    shape({ x: 0.28, y: 1.0, z: 0.25 }, { modelUrl: '/models/skeleton/forearm.gltf' }),
-    { joint: 0.5 }
-  ),
+  [BodyPart.LEFT_LOWER_ARM]: part(model('lower_arm', { scale: lowerArmScale })),
   [BodyPart.RIGHT_LOWER_ARM]: part(
-    shape({ x: 0.28, y: 1.0, z: 0.25 }, { modelUrl: '/models/skeleton/forearm.gltf' }),
-    { joint: 0.5 }
+    model('lower_arm', { scale: otherSide(lowerArmScale) })
   ),
-  [BodyPart.LEFT_HAND]: part(shape({ x: 0.75, y: 1.0, z: 0.3 }), { joint: 0.45 }),
-  [BodyPart.RIGHT_HAND]: part(shape({ x: 0.75, y: 1.0, z: 0.3 }), { joint: 0.45 }),
-  [BodyPart.LEFT_HIP]: part(shape({ x: 0.85, y: 1.05, z: 0.85 })),
-  [BodyPart.RIGHT_HIP]: part(shape({ x: 0.85, y: 1.05, z: 0.85 })),
-  [BodyPart.LEFT_UPPER_LEG]: part(
-    shape({ x: 0.32, y: 1.0, z: 0.29 }, { modelUrl: '/models/skeleton/thigh.gltf' }),
-    { joint: 0.35 }
-  ),
+  [BodyPart.LEFT_HAND]: part(model('hand', { scale: handScale })),
+  [BodyPart.RIGHT_HAND]: part(model('hand', { scale: otherSide(handScale) })),
+
+  [BodyPart.LEFT_HIP]: { visible: false, shapes: [] },
+  [BodyPart.RIGHT_HIP]: { visible: false, shapes: [] },
+
+  [BodyPart.LEFT_UPPER_LEG]: part(model('upper_leg', { scale: upperLegScale })),
   [BodyPart.RIGHT_UPPER_LEG]: part(
-    shape({ x: 0.32, y: 1.0, z: 0.29 }, { modelUrl: '/models/skeleton/thigh.gltf' }),
-    { joint: 0.35 }
+    model('upper_leg', { scale: otherSide(upperLegScale) })
   ),
-  [BodyPart.LEFT_LOWER_LEG]: part(
-    shape({ x: 0.26, y: 1.0, z: 0.24 }, { modelUrl: '/models/skeleton/calf.gltf' }),
-    { joint: 0.45 }
-  ),
+  [BodyPart.LEFT_LOWER_LEG]: part(model('lower_leg', { scale: lowerLegScale })),
   [BodyPart.RIGHT_LOWER_LEG]: part(
-    shape({ x: 0.26, y: 1.0, z: 0.24 }, { modelUrl: '/models/skeleton/calf.gltf' }),
-    { joint: 0.45 }
+    model('lower_leg', { scale: otherSide(lowerLegScale) })
   ),
   [BodyPart.LEFT_FOOT]: part(
-    shape({ x: 0.65, y: 1.0, z: 0.42 }, { modelUrl: '/models/skeleton/foot.gltf' }),
-    { joint: 0.45 }
+    model('foot', {
+      offset: inBoneLengths({ depth: -0.7 }),
+      scale: footScale,
+      rotation: turn({ width: -42 }),
+    })
   ),
   [BodyPart.RIGHT_FOOT]: part(
-    shape({ x: 0.65, y: 1.0, z: 0.42 }, { modelUrl: '/models/skeleton/foot.gltf' }),
-    { joint: 0.45 }
+    model('foot', {
+      offset: inBoneLengths({ depth: -0.7 }),
+      scale: otherSide(footScale),
+      rotation: turn({ width: -42 }),
+    })
   ),
-  [BodyPart.LEFT_THUMB_METACARPAL]: finger(),
-  [BodyPart.LEFT_THUMB_PROXIMAL]: finger(),
-  [BodyPart.LEFT_THUMB_DISTAL]: finger(),
-  [BodyPart.LEFT_INDEX_PROXIMAL]: finger(),
-  [BodyPart.LEFT_INDEX_INTERMEDIATE]: finger(),
-  [BodyPart.LEFT_INDEX_DISTAL]: finger(),
-  [BodyPart.LEFT_MIDDLE_PROXIMAL]: finger(),
-  [BodyPart.LEFT_MIDDLE_INTERMEDIATE]: finger(),
-  [BodyPart.LEFT_MIDDLE_DISTAL]: finger(),
-  [BodyPart.LEFT_RING_PROXIMAL]: finger(),
-  [BodyPart.LEFT_RING_INTERMEDIATE]: finger(),
-  [BodyPart.LEFT_RING_DISTAL]: finger(),
-  [BodyPart.LEFT_LITTLE_PROXIMAL]: finger(),
-  [BodyPart.LEFT_LITTLE_INTERMEDIATE]: finger(),
-  [BodyPart.LEFT_LITTLE_DISTAL]: finger(),
-  [BodyPart.RIGHT_THUMB_METACARPAL]: finger(),
-  [BodyPart.RIGHT_THUMB_PROXIMAL]: finger(),
-  [BodyPart.RIGHT_THUMB_DISTAL]: finger(),
-  [BodyPart.RIGHT_INDEX_PROXIMAL]: finger(),
-  [BodyPart.RIGHT_INDEX_INTERMEDIATE]: finger(),
-  [BodyPart.RIGHT_INDEX_DISTAL]: finger(),
-  [BodyPart.RIGHT_MIDDLE_PROXIMAL]: finger(),
-  [BodyPart.RIGHT_MIDDLE_INTERMEDIATE]: finger(),
-  [BodyPart.RIGHT_MIDDLE_DISTAL]: finger(),
-  [BodyPart.RIGHT_RING_PROXIMAL]: finger(),
-  [BodyPart.RIGHT_RING_INTERMEDIATE]: finger(),
-  [BodyPart.RIGHT_RING_DISTAL]: finger(),
-  [BodyPart.RIGHT_LITTLE_PROXIMAL]: finger(),
-  [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: finger(),
-  [BodyPart.RIGHT_LITTLE_DISTAL]: finger(),
 
-  [BodyPart.LEFT_BIG_TOE]: finger(),
-  [BodyPart.LEFT_INDEX_TOE]: finger(),
-  [BodyPart.LEFT_MIDDLE_TOE]: finger(),
-  [BodyPart.LEFT_RING_TOE]: finger(),
-  [BodyPart.LEFT_LITTLE_TOE]: finger(),
-  [BodyPart.RIGHT_BIG_TOE]: finger(),
-  [BodyPart.RIGHT_MIDDLE_TOE]: finger(),
-  [BodyPart.RIGHT_INDEX_TOE]: finger(),
-  [BodyPart.RIGHT_RING_TOE]: finger(),
-  [BodyPart.RIGHT_LITTLE_TOE]: finger(),
+  [BodyPart.LEFT_THUMB_METACARPAL]: finger('thumb_metacarpal'),
+  [BodyPart.LEFT_THUMB_PROXIMAL]: finger('thumb_proximal'),
+  [BodyPart.LEFT_THUMB_DISTAL]: finger('thumb_distal'),
+  [BodyPart.LEFT_INDEX_PROXIMAL]: finger('index_proximal'),
+  [BodyPart.LEFT_INDEX_INTERMEDIATE]: finger('index_intermediate'),
+  [BodyPart.LEFT_INDEX_DISTAL]: finger('index_distal'),
+  [BodyPart.LEFT_MIDDLE_PROXIMAL]: finger('middle_proximal'),
+  [BodyPart.LEFT_MIDDLE_INTERMEDIATE]: finger('middle_intermediate'),
+  [BodyPart.LEFT_MIDDLE_DISTAL]: finger('middle_distal'),
+  [BodyPart.LEFT_RING_PROXIMAL]: finger('ring_proximal'),
+  [BodyPart.LEFT_RING_INTERMEDIATE]: finger('ring_intermediate'),
+  [BodyPart.LEFT_RING_DISTAL]: finger('ring_distal'),
+  [BodyPart.LEFT_LITTLE_PROXIMAL]: finger('little_proximal'),
+  [BodyPart.LEFT_LITTLE_INTERMEDIATE]: finger('little_intermediate'),
+  [BodyPart.LEFT_LITTLE_DISTAL]: finger('little_distal'),
+
+  [BodyPart.RIGHT_THUMB_METACARPAL]: fingerRight('thumb_metacarpal'),
+  [BodyPart.RIGHT_THUMB_PROXIMAL]: fingerRight('thumb_proximal'),
+  [BodyPart.RIGHT_THUMB_DISTAL]: fingerRight('thumb_distal'),
+  [BodyPart.RIGHT_INDEX_PROXIMAL]: fingerRight('index_proximal'),
+  [BodyPart.RIGHT_INDEX_INTERMEDIATE]: fingerRight('index_intermediate'),
+  [BodyPart.RIGHT_INDEX_DISTAL]: fingerRight('index_distal'),
+  [BodyPart.RIGHT_MIDDLE_PROXIMAL]: fingerRight('middle_proximal'),
+  [BodyPart.RIGHT_MIDDLE_INTERMEDIATE]: fingerRight('middle_intermediate'),
+  [BodyPart.RIGHT_MIDDLE_DISTAL]: fingerRight('middle_distal'),
+  [BodyPart.RIGHT_RING_PROXIMAL]: fingerRight('ring_proximal'),
+  [BodyPart.RIGHT_RING_INTERMEDIATE]: fingerRight('ring_intermediate'),
+  [BodyPart.RIGHT_RING_DISTAL]: fingerRight('ring_distal'),
+  [BodyPart.RIGHT_LITTLE_PROXIMAL]: fingerRight('little_proximal'),
+  [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: fingerRight('little_intermediate'),
+  [BodyPart.RIGHT_LITTLE_DISTAL]: fingerRight('little_distal'),
+
+  [BodyPart.LEFT_BIG_TOE]: toe('big_toe'),
+  [BodyPart.LEFT_INDEX_TOE]: toe('index_toe'),
+  [BodyPart.LEFT_MIDDLE_TOE]: toe('middle_toe'),
+  [BodyPart.LEFT_RING_TOE]: toe('ring_toe'),
+  [BodyPart.LEFT_LITTLE_TOE]: toe('little_toe'),
+  [BodyPart.RIGHT_BIG_TOE]: toeRight('big_toe'),
+  [BodyPart.RIGHT_INDEX_TOE]: toeRight('index_toe'),
+  [BodyPart.RIGHT_MIDDLE_TOE]: toeRight('middle_toe'),
+  [BodyPart.RIGHT_RING_TOE]: toeRight('ring_toe'),
+  [BodyPart.RIGHT_LITTLE_TOE]: toeRight('little_toe'),
 };
+
+const DEFAULT_SCALE = spanBone();
 
 export function computeShapeScale(
   config: BoneShapeConfig,
   proportions: SkeletonProportions,
-  boneLength: number
+  boneLength: number,
+  model?: ModelDimensions
 ) {
-  if (config.customScale) {
-    return config.customScale(boneLength, proportions, config.scaleRatio);
-  }
+  const scale = config.scale ?? DEFAULT_SCALE;
+  if (!model) return { width: 1, depth: 1, length: 1 };
 
-  const length = Math.max(boneLength, 0.05);
-  const scaleX = (config.scaleRatio.x * length) / 2;
-  const scaleY = (boneLength * config.scaleRatio.y) / 2;
-  const scaleZ = (config.scaleRatio.z * length) / 2;
-
-  return { scaleX, scaleY, scaleZ };
+  return scale.compute({ model, proportions, boneLength });
 }
 
 const materialCache = new Map<string, MeshLambertMaterial>();
@@ -233,7 +367,7 @@ export function getPartMaterial(color: Color) {
   const key = color.getHexString();
   let material = materialCache.get(key);
   if (!material) {
-    material = new MeshLambertMaterial({ color });
+    material = new MeshLambertMaterial({ color, side: DoubleSide });
     materialCache.set(key, material);
   }
   return material;
