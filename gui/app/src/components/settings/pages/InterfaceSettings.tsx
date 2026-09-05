@@ -137,6 +137,7 @@ export function InterfaceSettings() {
         duration: 0,
       });
     }
+
     setConfig({
       watchNewDevices: values.notifications.watchNewDevices,
       feedbackSound: values.notifications.feedbackSound,
@@ -166,7 +167,7 @@ export function InterfaceSettings() {
   useEffect(() => {
     const subscription = watch(() => handleSubmit(onSubmit)());
     return () => subscription.unsubscribe();
-  }, []);
+  }, [onSubmit]);
 
   const devToggles = {
     highContrast: 'high_contrast',
