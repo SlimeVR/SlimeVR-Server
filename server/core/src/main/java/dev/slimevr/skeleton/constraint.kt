@@ -1,0 +1,159 @@
+package dev.slimevr.skeleton
+
+import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
+import kotlin.math.abs
+import kotlin.math.min
+import kotlin.math.sign
+import kotlin.math.sin
+import kotlin.math.sqrt
+
+// TODO Actually rewrite, currently still using original server code
+interface Constraint {
+	/**
+	 * Applies the constraint to a local rotation.
+	 * @return The constrained local rotation.
+	 */
+	fun apply(localRotation: Quaternion): Quaternion
+
+	/**
+	 * Applies the constraint to a global rotation using its parent rotation.
+	 * @return The constrained global rotation.
+	 */
+	fun apply(parentRotation: Quaternion, childRotation: Quaternion): Quaternion = parentRotation * apply(parentRotation.inv() * childRotation)
+}
+
+class CompleteConstraint : Constraint {
+	override fun apply(localRotation: Quaternion): Quaternion = localRotation
+}
+
+data class TwistSwingConstraint(
+	/**
+	 * Twist range in radians.
+	 */
+	val twist: Float = 0.0f,
+	/**
+	 * Swing range in radians.
+	 */
+	val swing: Float = 0.0f,
+	val allowedDeviation: Float = 0f,
+	val maxDeviationFromTracker: Float = 15f,
+) : Constraint {
+	override fun apply(localRotation: Quaternion): Quaternion {
+		var (swingQ, twistQ) = decomposeToSwingTwist(localRotation, Vector3.NEG_Y)
+		swingQ = constrain(swingQ, swing)
+		twistQ = constrain(twistQ, twist)
+		return swingQ * twistQ
+	}
+}
+
+data class HingeConstraint(
+	/**
+	 * Minimum rotation in radians.
+	 */
+	val min: Float = 0.0f,
+	/**
+	 * Maximum rotation in radians.
+	 */
+	val max: Float = 0.0f,
+	val allowedDeviation: Float = 0f,
+	val maxDeviationFromTracker: Float = 15f,
+) : Constraint {
+	override fun apply(localRotation: Quaternion): Quaternion {
+		val (_, hingeAxisRot) = decomposeToSwingTwist(localRotation, Vector3.NEG_X)
+		return constrainOnAxis(hingeAxisRot, min, max, Vector3.NEG_X)
+	}
+}
+
+data class LooseHingeConstraint(
+	/**
+	 * Minimum rotation in radians.
+	 */
+	val min: Float = 0.0f,
+	/**
+	 * Maximum rotation in radians.
+	 */
+	val max: Float = 0.0f,
+	val allowedDeviation: Float = 0f,
+	val maxDeviationFromTracker: Float = 15f,
+) : Constraint {
+	override fun apply(localRotation: Quaternion): Quaternion {
+		var (nonHingeRot, hingeAxisRot) = decomposeToSwingTwist(
+			localRotation,
+			Vector3.NEG_X,
+		)
+		hingeAxisRot = constrainOnAxis(hingeAxisRot, min, max, Vector3.NEG_X)
+		nonHingeRot = constrain(nonHingeRot, allowedDeviation)
+		return nonHingeRot * hingeAxisRot
+	}
+}
+
+fun decomposeToSwingTwist(
+	rotation: Quaternion,
+	twistAxis: Vector3,
+): Pair<Quaternion, Quaternion> {
+	val projection = rotation.project(twistAxis).unit()
+	val twist = Quaternion(
+		sqrt(1.0f - projection.xyz.lenSq()) * if (rotation.w >= 0f) 1f else -1f,
+		projection.xyz,
+	).unit()
+	val swing = (rotation * twist.inv()).unit()
+	return Pair(swing, twist)
+}
+
+fun constrain(rotation: Quaternion, angle: Float): Quaternion {
+	// Use angle to get the maximum magnitude the vector part of rotation can be
+	// before it has violated a constraint.
+	// Multiplying by 0.5 uniquely maps angles 0-180 degrees to 0-1 which works
+	// nicely with unit quaternions.
+	val magnitude = sin(angle * 0.5f)
+	val magnitudeSqr = magnitude * magnitude
+	val sign = if (rotation.w >= 0f) 1f else -1f
+	val vector = rotation.xyz
+
+	return if (vector.lenSq() > magnitudeSqr) {
+		Quaternion(
+			sqrt(1f - magnitudeSqr) * sign,
+			vector.unit() * magnitude,
+		)
+	} else {
+		rotation.unit()
+	}
+}
+
+fun constrainOnAxis(
+	rotation: Quaternion,
+	minAngle: Float,
+	maxAngle: Float,
+	axis: Vector3,
+): Quaternion {
+	val magnitudeMin = sin(minAngle * 0.5f)
+	val magnitudeMax = sin(maxAngle * 0.5f)
+	val magnitudeSqrMin = magnitudeMin * magnitudeMin * if (minAngle >= 0f) 1f else -1f
+	val magnitudeSqrMax = magnitudeMax * magnitudeMax * if (maxAngle >= 0f) 1f else -1f
+	val vector = rotation.xyz
+
+	val rotMagnitude =
+		vector.lenSq() * if (vector.dot(axis) * sign(rotation.w) < 0) -1f else 1f
+	return if (rotMagnitude !in magnitudeSqrMin..magnitudeSqrMax) {
+		val distToMin = min(
+			abs(rotMagnitude - magnitudeSqrMin),
+			abs(rotMagnitude + magnitudeSqrMin),
+		)
+		val distToMax = min(
+			abs(rotMagnitude - magnitudeSqrMax),
+			abs(rotMagnitude + magnitudeSqrMax),
+		)
+
+		val magnitude = if (distToMin < distToMax) magnitudeMin else magnitudeMax
+		val magnitudeSqr =
+			abs(if (distToMin < distToMax) magnitudeSqrMin else magnitudeSqrMax)
+
+		Quaternion(
+			sqrt(1.0f - magnitudeSqr),
+			vector.unit() * -magnitude,
+		)
+	} else {
+		rotation.unit()
+	}
+}

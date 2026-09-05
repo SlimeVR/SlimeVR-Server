@@ -20,7 +20,12 @@
       ];
 
       perSystem =
-        { lib, pkgs, ... }:
+        {
+          system,
+          lib,
+          pkgs,
+          ...
+        }:
         let
           runtimeLibs = [
             pkgs.alsa-lib
@@ -59,67 +64,59 @@
             pkgs.libxcrypt-legacy
           ];
 
-          toolDirectoryName =
-            if pkgs.stdenv.hostPlatform.isDarwin then
-              "darwin"
-            else if pkgs.stdenv.hostPlatform.isLinux then
-              {
-                "armv7l-linux" = "linux-arm32";
-                "aarch64-linux" = "linux-arm64";
-                "i686-linux" = "linux-ia32";
-                "x86_64-linux" = "linux-x64";
-              }
-              ."${pkgs.stdenv.hostPlatform.system}"
-            else
-              throw "Unsupported platform";
-
-          # we use fuse2
+          # we use static runtime
           # https://github.com/electron-userland/electron-builder/blob/a6117b3011a105204af8cc2eca02a56976d1ef29/packages/app-builder-lib/src/toolsets/linux.ts#L122
-          runtime = pkgs.stdenvNoCC.mkDerivation {
+          appImageTools = pkgs.stdenvNoCC.mkDerivation {
             name = "electron-builder-appimage-runtime";
-            src = pkgs.fetchurl {
-              url = "https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage-12.0.1/appimage-12.0.1.7z";
-              hash = "sha256-0S/3648dHsRlLKUjen+9yjOswMdYBFY2/spi3G7LjsQ=";
-            };
-            # https://github.com/NixOS/nixpkgs/blob/7890ba0a99c064446fe2178ef2f8e3abdf6ec42a/pkgs/by-name/lo/losslesscut-bin/build-from-windows.nix#L20
-            nativeBuildInputs = [ pkgs.p7zip ];
-            unpackPhase = ''
-              runHook preUnpack
-              7z x "$src"
-              runHook postUnpack
-            '';
+            src =
+              let
+                # Keep in sync with "appimage" toolset version in gui/electron/electron-builder.yml
+                appimageToolsVersion = "1.0.3";
+              in
+              pkgs.fetchzip {
+                url = "https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage@${appimageToolsVersion}/appimage-tools-runtime-20251108.tar.gz";
+                hash = "sha256-Iqhvyp6BNpH+tXvVO7MLgYbsJ6va4lXO7El3wtyWBII=";
+                stripRoot = false;
+              };
+
             installPhase = ''
               mkdir $out
-              cp -r -t $out/ \
-                lib/ \
-                runtime-*
+              cp -r -t $out/ lib/ runtimes/
+              ln -s -t $out \
+                "${pkgs.desktop-file-utils}/bin/desktop-file-validate" \
+                "${pkgs.squashfsTools}/bin/mksquashfs"
             '';
           };
 
-          appImageTools = pkgs.stdenvNoCC.mkDerivation {
-            name = "electron-builder-appimage-tools";
-            dontUnpack = true;
-
-            installPhase = ''
-              mkdir -p "$out/${toolDirectoryName}"
-              ln -s -t $out/${toolDirectoryName} \
-                "${pkgs.desktop-file-utils}/bin/desktop-file-validate" \
-                "${pkgs.squashfsTools}/bin/mksquashfs"
-              ln -s ${runtime}/runtime-* $out/
-              ln -s ${runtime}/lib $out/lib
-            '';
+          buildToolsVersion = "36.0.0";
+          androidComposition = pkgs.androidenv.composeAndroidPackages {
+            buildToolsVersions = [
+              buildToolsVersion
+            ];
+            platformVersions = [
+              "36"
+            ];
           };
         in
         {
-          devShells.default = pkgs.mkShell {
+          # For Android SDK
+          _module.args.pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            config.android_sdk.accept_license = true;
+          };
+
+          devShells.default = pkgs.mkShell rec {
             packages = [
               # for running the jar
-              pkgs.jdk17
+              pkgs.jdk25
+
               # for build
               pkgs.electron
               pkgs.rpm
               pkgs.fpm
               pkgs.p7zip
+              # For Windows GUI cross-build
               pkgs.wineWow64Packages.stable
               pkgs.zlib
               pkgs.squashfsTools
@@ -136,19 +133,9 @@
               pkgs.binutils
               pkgs.git
               pkgs.node-gyp-build
+              androidComposition.androidsdk
             ];
             buildInputs = runtimeLibs;
-
-            JAVA_HOME = "${pkgs.jdk17}/lib/openjdk";
-            USE_SYSTEM_FPM = "true";
-            ELECTRON_BUILDER_7ZIP_PATH = "${pkgs.p7zip}/bin/7za";
-            APPIMAGE_TOOLS_PATH = "${appImageTools}";
-            #ELECTRON_SKIP_BINARY_DOWNLOAD = true;
-            #ELECTRON_DIST = "${pkgs.electron.dist}";
-            #ELECTRON_VERSION = "${pkgs.electron.version}";
-
-            # for electron-vite, so `pnpm gui` works
-            ELECTRON_EXEC_PATH = "${pkgs.electron}/bin/electron";
 
             shellHook = ''
               export LD_LIBRARY_PATH="${
@@ -157,7 +144,54 @@
                   pkgs.hidapi
                 ]
               }:$LD_LIBRARY_PATH"
+
+              # IntelliJ's built-in profiler self-extracts its bundled
+              # `jattach` helper (used to stop/attach to the profiled JVM) as
+              # a plain generic-Linux binary, which NixOS's default loader
+              # stub can't run. Point IntelliJ's own process at a re-linked
+              # copy via the documented `idea.async.profiler.jattach.path`
+              # system property, set through a generated custom vmoptions
+              # file (this property must be set on IntelliJ's own JVM, not
+              # the profiled app's. It's IntelliJ that invokes jattach as an
+              # external tool against the profiled process). Everything here
+              # is discovered from whatever IntelliJ is already installed
+              # locally, never declared as a flake dependency, so none of
+              # this can trigger a download of its own.
+              async_jar=$(find /nix/store -maxdepth 6 -path "*/idea/lib/intellij.profiler.asyncOne.jar" 2>/dev/null | head -1)
+              if [ -n "$async_jar" ]; then
+                idea_home="$(dirname "$(dirname "$async_jar")")"
+                default_vmopts="$idea_home/bin/idea64.vmoptions"
+                jattach_bin="$PWD/.cache/slimevr-nix/jattach"
+                mkdir -p "$(dirname "$jattach_bin")"
+                if [ ! -x "$jattach_bin" ]; then
+                  ${pkgs.unzip}/bin/unzip -p "$async_jar" binaries/linux/jattach > "$jattach_bin" 2>/dev/null
+                  chmod +x "$jattach_bin"
+                  ${pkgs.patchelf}/bin/patchelf \
+                    --set-interpreter "${pkgs.glibc}/lib/ld-linux-x86-64.so.2" \
+                    --set-rpath "${pkgs.glibc}/lib" \
+                    "$jattach_bin" 2>/dev/null
+                fi
+
+                if [ -x "$jattach_bin" ] && [ -f "$default_vmopts" ]; then
+                  custom_vmopts="$PWD/.cache/slimevr-nix/idea.vmoptions"
+                  if [ ! -f "$custom_vmopts" ] || ! grep -q "idea.async.profiler.jattach.path" "$custom_vmopts" 2>/dev/null; then
+                    cp "$default_vmopts" "$custom_vmopts"
+                    chmod u+w "$custom_vmopts"
+                    echo "-Didea.async.profiler.jattach.path=$jattach_bin" >> "$custom_vmopts"
+                  fi
+                  export IDEA_VM_OPTIONS="$custom_vmopts"
+                fi
+              fi
             '';
+
+            JAVA_HOME = "${pkgs.jdk25}/lib/openjdk";
+            USE_SYSTEM_FPM = "true";
+            ELECTRON_BUILDER_7ZIP_PATH = "${pkgs.p7zip}/bin/7za";
+            APPIMAGE_TOOLS_PATH = "${appImageTools}";
+            # for electron-vite, so `pnpm gui` works
+            ELECTRON_EXEC_PATH = "${pkgs.electron}/bin/electron";
+            ANDROID_HOME = "${androidComposition.androidsdk}/libexec/android-sdk";
+            GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolsVersion}/aapt2";
           };
         };
     };

@@ -5,11 +5,9 @@ package io.github.axisangles.ktmath
 import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-@JvmInline
 @Serializable
-value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
+class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
-		val NULL = Quaternion(0f, 0f, 0f, 0f)
 		val IDENTITY = Quaternion(1f, 0f, 0f, 0f)
 		val I = Quaternion(0f, 1f, 0f, 0f)
 		val J = Quaternion(0f, 0f, 1f, 0f)
@@ -161,7 +159,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun unit(): Quaternion {
 		val m = len()
-		return if (m == 0f) NULL else (this / m)
+		return if (m == 0f) this else (this / m)
 	}
 
 	operator fun times(that: Float): Quaternion = Quaternion(
@@ -493,6 +491,22 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	fun toEulerAngles(order: EulerOrder): EulerAngles = this.toMatrix().toEulerAnglesAssumingOrthonormal(order)
 
 	fun toObject() = ObjectQuaternion(w, x, y, z)
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is Quaternion) return false
+		return w == other.w && x == other.x && y == other.y && z == other.z
+	}
+
+	override fun hashCode(): Int {
+		var result = w.hashCode()
+		result = 31 * result + x.hashCode()
+		result = 31 * result + y.hashCode()
+		result = 31 * result + z.hashCode()
+		return result
+	}
+
+	override fun toString(): String = "Quaternion(w=$w, x=$x, y=$y, z=$z)"
 }
 
 data class ObjectQuaternion(val w: Float, val x: Float, val y: Float, val z: Float) {

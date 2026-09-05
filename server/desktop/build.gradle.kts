@@ -7,9 +7,11 @@
  */
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 
 plugins {
 	kotlin("jvm")
+	kotlin("plugin.serialization")
 	application
 	id("com.gradleup.shadow")
 	id("com.github.gmazzo.buildconfig")
@@ -17,17 +19,17 @@ plugins {
 
 kotlin {
 	jvmToolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(25))
 	}
 }
 java {
 	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(17))
+		languageVersion.set(JavaLanguageVersion.of(25))
 	}
 }
 tasks.withType<KotlinCompile> {
 	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_17)
+		jvmTarget.set(JvmTarget.JVM_25)
 		freeCompilerArgs.set(listOf("-Xvalue-classes"))
 	}
 }
@@ -55,17 +57,40 @@ allprojects {
 
 dependencies {
 	implementation(project(":server:core"))
-	implementation(project(":solarxr-protocol"))
+	implementation(project(":solarxr-protocol:generated"))
+	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
+	implementation("com.squareup.okio:okio:3.18.1")
 
-	implementation("commons-cli:commons-cli:1.11.0")
-	implementation("org.apache.commons:commons-lang3:3.20.0")
-	implementation("com.google.protobuf:protobuf-java:4.31.1")
+	implementation("com.github.loucass003:EspflashKotlin:v0.11.0")
+
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 	implementation("com.fazecast:jSerialComm:2.11.3") {
 		exclude(group = "com.fazecast", module = "android")
 	}
 	implementation("org.hid4java:hid4java:0.8.0")
+
+	// mDNS for OSCQuery, resolves to the JmDNS-backed jvm variant
+	implementation("com.appstractive:dns-sd-kt:1.1.0")
+
+	implementation("io.klogging:klogging:0.11.7")
+	// SLF4J provider, so what ktor and the discovery libraries log reaches our sinks
+	runtimeOnly("io.klogging:slf4j-klogging:0.11.7")
+
+	// Global keybinds: JIntellitype on Windows, dbus xdg-desktop-portal on Linux
+	implementation("com.melloware:jintellitype:1.+")
+	implementation("com.github.HannahPadd:DbusGlobalShortcutsWayland:v0.1.0")
+
+	val ktorVersion = "3.4.1"
+	implementation("io.ktor:ktor-client-core:$ktorVersion")
+	implementation("io.ktor:ktor-client-cio:$ktorVersion")
+	implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+	implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+	implementation("io.ktor:ktor-server-websockets-jvm:$ktorVersion")
+
+	testImplementation(kotlin("test"))
 }
 
 tasks.shadowJar {
@@ -73,8 +98,10 @@ tasks.shadowJar {
 		exclude(dependency("com.fazecast:jSerialComm:.*"))
 		exclude(dependency("net.java.dev.jna:.*:.*"))
 		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
+		exclude(dependency("com.melloware:jintellitype:.*"))
+		exclude(dependency("com.github.HannahPadd:DbusGlobalShortcutsWayland:.*"))
 
-		exclude(project(":solarxr-protocol"))
+		exclude(project(":solarxr-protocol:generated"))
 	}
 	archiveBaseName.set("slimevr")
 	archiveClassifier.set("")
@@ -82,6 +109,7 @@ tasks.shadowJar {
 }
 application {
 	mainClass.set("dev.slimevr.desktop.Main")
+	applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
 }
 
 buildConfig {
@@ -90,16 +118,16 @@ buildConfig {
 
 	val gitCommitHash = providers.exec {
 		commandLine("git", "rev-parse", "--short=8", "HEAD")
-	}.standardOutput.asText.get().trim()
+	}.standardOutput.asText.map { it.trim() }
 	val gitVersionTag = providers.exec {
-		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD")
-	}.standardOutput.asText.get().trim()
+		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD", "-l", "v*")
+	}.standardOutput.asText.map { it.trim().lineSequence().firstOrNull() ?: "" }
 	val gitIsClean = providers.exec {
 		commandLine("git", "status", "--porcelain")
-	}.standardOutput.asText.get().trim().isEmpty()
-	buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash}\"")
-	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
-	buildConfigField("boolean", "GIT_CLEAN", gitIsClean.toString())
+	}.standardOutput.asText.map { it.trim().isEmpty() }
+	buildConfigField("String", "GIT_COMMIT_HASH", gitCommitHash.map { "\"$it\"" })
+	buildConfigField("String", "GIT_VERSION_TAG", gitVersionTag.map { "\"$it\"" })
+	buildConfigField("boolean", "GIT_CLEAN", gitIsClean.map { it.toString() })
 }
 
 tasks.run<JavaExec> {

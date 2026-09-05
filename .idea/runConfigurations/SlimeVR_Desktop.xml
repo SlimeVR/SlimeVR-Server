@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SlimeVR Desktop" type="JetRunConfigurationType" factoryName="Kotlin">
+    <module name="SlimeVR_Server.server.desktop.main" />
+    <option name="MAIN_CLASS_NAME" value="dev.slimevr.desktop.Main" />
+    <option name="VM_PARAMETERS" value="--enable-native-access=ALL-UNNAMED" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server/desktop" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

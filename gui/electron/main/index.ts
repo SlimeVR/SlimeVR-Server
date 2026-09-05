@@ -10,7 +10,7 @@ import {
   shell,
   Tray,
 } from 'electron';
-import { IPC_CHANNELS } from '../shared';
+import { GHGet, GHReturn, IPC_CHANNELS } from '@slimevr/gui-shared';
 import path, { dirname, join } from 'path';
 import open from 'open';
 import trayIcon from '../resources/icons/icon.png?asset';
@@ -33,7 +33,7 @@ import { closeLogger, logger } from './logger';
 import { spawn } from 'node:child_process';
 import { discordPresence } from './presence';
 import { options } from './cli';
-import { ServerStatusEvent } from 'electron/preload/interface';
+import { ServerStatusEvent } from '@slimevr/gui-shared';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { MenuItem } from 'electron/main';
 
@@ -65,22 +65,31 @@ protocol.registerSchemesAsPrivileged([
 
 let mainWindow: BrowserWindow | null = null;
 
-handleIpc(IPC_CHANNELS.GH_FETCH, async (e, options) => {
-  if (options.type === 'fw-releases') {
-    return fetch(
-      'https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases'
-    ).then((res) => res.json());
+handleIpc(
+  IPC_CHANNELS.GH_FETCH,
+  async <T extends GHGet>(_e: unknown, options: T): Promise<GHReturn[T['type']]> => {
+    switch (options.type) {
+      case 'fw-releases': {
+        return fetch(
+          'https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases'
+        ).then((res) => res.json()) as Promise<GHReturn[T['type']]>;
+      }
+      case 'asset': {
+        if (
+          !options.url.startsWith(
+            'https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download'
+          )
+        )
+          return null;
+        return fetch(options.url).then((res) => res.json()) as Promise<
+          GHReturn[T['type']]
+        >;
+      }
+      default:
+        throw 'unhandled type';
+    }
   }
-  if (options.type === 'asset') {
-    if (
-      !options.url.startsWith(
-        'https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download'
-      )
-    )
-      return null;
-    return fetch(options.url).then((res) => res.json());
-  }
-});
+);
 
 handleIpc(IPC_CHANNELS.OS_STATS, async () => {
   return {
@@ -404,7 +413,7 @@ const spawnServer = async () => {
   if (!javaBin) {
     dialog.showErrorBox(
       'SlimeVR',
-      'Unable to find a compatible Java version, please download Java 17 or higher'
+      'Unable to find a compatible Java version, Make sure to use the latest SlimeVR installer. Or install java 25 or higher'
     );
     app.quit();
     return;

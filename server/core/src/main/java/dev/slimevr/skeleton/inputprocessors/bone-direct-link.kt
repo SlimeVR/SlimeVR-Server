@@ -1,0 +1,62 @@
+package dev.slimevr.skeleton.inputprocessors
+
+import dev.slimevr.skeleton.InputSkeleton
+import dev.slimevr.skeleton.SkeletonInputProcessor
+import solarxr_protocol.datatypes.BodyPart
+
+/**
+ * Handles setting the rotation of an inactive bone with its source bone.
+ */
+class BoneDirectLinkInputProcessor : SkeletonInputProcessor {
+	/**
+	 * First element is the linked BodyPart.
+	 *
+	 * Second element is the BodyPart the first element is linked to.
+	 */
+	private val linkedToSource = arrayOf(
+		BodyPart.HEAD to BodyPart.NECK,
+		BodyPart.NECK to BodyPart.HEAD,
+
+		BodyPart.LEFT_HIP to BodyPart.HIP,
+		BodyPart.RIGHT_HIP to BodyPart.HIP,
+
+		BodyPart.LEFT_FOOT to BodyPart.LEFT_LOWER_LEG,
+		BodyPart.RIGHT_FOOT to BodyPart.RIGHT_LOWER_LEG,
+
+		BodyPart.LEFT_SHOULDER to BodyPart.UPPER_CHEST,
+		BodyPart.RIGHT_SHOULDER to BodyPart.UPPER_CHEST,
+
+		BodyPart.LEFT_UPPER_ARM to BodyPart.LEFT_SHOULDER,
+		BodyPart.RIGHT_UPPER_ARM to BodyPart.RIGHT_SHOULDER,
+
+		BodyPart.LEFT_LOWER_ARM to BodyPart.LEFT_UPPER_ARM,
+		BodyPart.RIGHT_LOWER_ARM to BodyPart.RIGHT_UPPER_ARM,
+
+		BodyPart.LEFT_HAND to BodyPart.LEFT_LOWER_ARM,
+		BodyPart.RIGHT_HAND to BodyPart.RIGHT_LOWER_ARM,
+
+		BodyPart.LEFT_BIG_TOE to BodyPart.LEFT_FOOT,
+		BodyPart.LEFT_INDEX_TOE to BodyPart.LEFT_BIG_TOE,
+		BodyPart.LEFT_MIDDLE_TOE to BodyPart.LEFT_INDEX_TOE,
+		BodyPart.LEFT_RING_TOE to BodyPart.LEFT_MIDDLE_TOE,
+		BodyPart.LEFT_LITTLE_TOE to BodyPart.LEFT_RING_TOE,
+
+		BodyPart.RIGHT_BIG_TOE to BodyPart.RIGHT_FOOT,
+		BodyPart.RIGHT_INDEX_TOE to BodyPart.RIGHT_BIG_TOE,
+		BodyPart.RIGHT_MIDDLE_TOE to BodyPart.RIGHT_INDEX_TOE,
+		BodyPart.RIGHT_RING_TOE to BodyPart.RIGHT_MIDDLE_TOE,
+		BodyPart.RIGHT_LITTLE_TOE to BodyPart.RIGHT_RING_TOE,
+	)
+
+	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
+		for ((bodyPart, source) in linkedToSource) {
+			val bone = mutableInputSkeleton[bodyPart] ?: continue
+			if (bone.isRotationActive) continue
+
+			val rotation = mutableInputSkeleton[source]?.rotation ?: continue
+			if (rotation == bone.rotation) continue
+
+			mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation)
+		}
+	}
+}

@@ -1,5 +1,11 @@
 #include "paths.hpp"
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#endif
+
 namespace fs = std::filesystem;
 
 fs::path Paths::getDataPath() {
@@ -31,3 +37,17 @@ fs::path Paths::getDataPath() {
 }
 
 fs::path Paths::getLogPath() { return Paths::getDataPath() / "logs"; }
+
+fs::path Paths::getTempPath() noexcept {
+#ifdef _WIN32
+    WCHAR tmp_dir[MAX_PATH + 1];
+    GetTempPathW(std::size(tmp_dir), tmp_dir);
+    return tmp_dir;
+#else
+    if (const char *tmp_dir = getenv("TMPDIR")) {
+        return tmp_dir;
+    }
+
+    return "/tmp";
+#endif
+}

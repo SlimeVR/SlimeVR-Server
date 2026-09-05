@@ -1,0 +1,72 @@
+package dev.slimevr.bvh
+
+import dev.slimevr.config.ConfigStorage
+import dev.slimevr.logging.AppLogger
+import dev.slimevr.skeleton.Skeleton
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+
+private suspend fun resolveBvhPath(storage: ConfigStorage, path: String): String? {
+	if (path.lowercase().endsWith(".bvh")) return path
+	if (!storage.ensureDirectory(path)) {
+		AppLogger.bvh.error("Failed to create recording directory \"${storage.displayPath(path)}\"")
+		return null
+	}
+
+	var index = 1
+	while (true) {
+		val candidate = "$path/BVH-Recording${index++}.bvh"
+		if (!storage.exists(candidate)) return candidate
+	}
+}
+
+class BVHRecordingBehaviour(
+	private val skeleton: Skeleton,
+	private val storage: ConfigStorage,
+) : BVHBehaviourType {
+	override fun observe(receiver: BVHManager) {
+		var stream: BvhStream? = null
+
+		receiver.context.state
+			.distinctUntilChanged { old, new -> old.recording == new.recording && old.recordingPath == new.recordingPath }
+			.onEach {
+				if (it.recording && stream == null) {
+					val resolvedPath = resolveBvhPath(storage, it.recordingPath ?: return@onEach)
+					if (resolvedPath == null) {
+						receiver.context.dispatch(BVHActions.StopRecording)
+						return@onEach
+					}
+					try {
+						AppLogger.bvh.info("Opening BVH recording at ${storage.displayPath(resolvedPath)}")
+						stream = BvhStream(storage.openTextFile(resolvedPath)).also {
+							it.writeHeader(skeleton.currentComputed)
+							// TODO: we could write the initial T-Pose or whatever here
+						}
+					} catch (e: Exception) {
+						AppLogger.bvh.error("Failed to start BVH recording", e)
+						receiver.context.dispatch(BVHActions.StopRecording)
+					}
+				} else if (!it.recording && stream != null) {
+					try {
+						AppLogger.bvh.info("Finalizing BVH recording")
+						stream?.close()
+					} catch (e: Exception) {
+						AppLogger.bvh.error("Failed to finalize BVH recording", e)
+					} finally {
+						stream = null
+					}
+				}
+			}.launchIn(receiver.context.scope)
+
+		skeleton.computed.onEach { computedSkeleton ->
+			try {
+				stream?.writeFrame(computedSkeleton)
+			} catch (e: Exception) {
+				AppLogger.bvh.error("Failed to write BVH frame", e)
+				receiver.context.dispatch(BVHActions.StopRecording)
+			}
+		}.launchIn(receiver.context.scope)
+	}
+}
