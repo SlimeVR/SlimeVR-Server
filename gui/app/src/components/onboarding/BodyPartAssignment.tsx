@@ -1,5 +1,11 @@
 import classNames from 'classnames';
-import { HTMLAttributes, ReactNode, useCallback, useMemo } from 'react';
+import {
+  Fragment,
+  HTMLAttributes,
+  ReactNode,
+  useCallback,
+  useMemo,
+} from 'react';
 import { useAtomValue } from 'jotai';
 import { BodyPart } from 'solarxr-protocol';
 import {
@@ -227,14 +233,16 @@ function BodyAssignmentView({
     >
       {groups.map((group, index) => (
         <div key={index} className="flex flex-col gap-2">
-          {group.filter(hasBodyPart).map((role) =>
-            card({
-              role,
-              direction,
-              td: trackerByPart[role],
-              roleError: rolesWithErrors[role]?.label,
-            })
-          )}
+          {group.filter(hasBodyPart).map((role) => (
+            <Fragment key={role}>
+              {card({
+                role,
+                direction,
+                td: trackerByPart[role],
+                roleError: rolesWithErrors[role]?.label,
+              })}
+            </Fragment>
+          ))}
         </div>
       ))}
     </div>

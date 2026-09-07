@@ -11,7 +11,7 @@ import {
   velocityGlowStyle,
 } from '@/hooks/tracker';
 import { FlatDeviceTracker } from '@/store/app-store';
-import { ExtremityRow } from '@/components/onboarding/ExtremityAssignment';
+import type { ExtremityRow } from '@/components/onboarding/BodyPartAssignment';
 import { DigitFlow } from '@/components/onboarding/extremities/ExtremityLayout';
 
 export type PartCardProps = {

@@ -7,14 +7,11 @@ import {
   useMemo,
 } from 'react';
 import { BodyPart } from 'solarxr-protocol';
+import { MirrorLegend } from '@/components/onboarding/BodyAssignment';
 import {
-  BodyAssignment,
-  MirrorLegend,
-} from '@/components/onboarding/BodyAssignment';
-import {
-  ExtremityAssignment,
+  BodyPartAssignment,
   ExtremityGroupRenderer,
-} from '@/components/onboarding/ExtremityAssignment';
+} from '@/components/onboarding/BodyPartAssignment';
 import {
   AssignedTrackerLabel,
   ExtremityGroupCard,
@@ -131,8 +128,8 @@ export function PickerPanel({
           )}
         >
           {extremity ? (
-            <ExtremityAssignment
-              descriptor={extremity}
+            <BodyPartAssignment
+              view={{ kind: 'extremity', descriptor: extremity }}
               side={side}
               dotSize={dotSize[dots]}
               compact={isTight}
@@ -146,7 +143,8 @@ export function PickerPanel({
               activeParts={activeParts}
             />
           ) : (
-            <BodyAssignment
+            <BodyPartAssignment
+              view={{ kind: 'body' }}
               dotSize={dotSize[dots]}
               fillHeight
               highlightedRoles={firstError?.affectedRoles || []}
