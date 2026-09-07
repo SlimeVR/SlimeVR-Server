@@ -214,14 +214,21 @@ export function BodyAssignmentPanel({
   );
 }
 
-export function PickerTabs({ compact }: { compact?: boolean }) {
+export function PickerTabs({
+  compact,
+  className,
+}: {
+  compact?: boolean;
+  className?: string;
+}) {
   const { tab, setTab } = usePicker();
 
   return (
     <div
       className={classNames(
         'flex items-center bg-background-70 rounded-lg w-fit',
-        compact ? 'gap-0.5 p-0.5' : 'gap-1 p-1'
+        compact ? 'gap-0.5 p-0.5' : 'gap-1 p-1',
+        className
       )}
     >
       {PICKER_TAB_ORDER.map((key) => (
@@ -267,7 +274,7 @@ function Tab({
   );
 }
 
-function ExtremitySideToggle({
+export function ExtremitySideToggle({
   compact,
   descriptor,
   side,

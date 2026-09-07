@@ -16,6 +16,7 @@ export type DigitFlow = 'rows' | 'columns';
 
 export type ExtremityLayoutValue = {
   compact: boolean;
+  fitContent?: boolean;
   mirrored: boolean;
   digit: (name: string, slot: ExtremitySlot, flow: DigitFlow) => ReactNode;
   figure: (height?: number) => ReactNode;
@@ -76,8 +77,16 @@ export function DigitColumn({
   className?: string;
   children: ReactNode;
 }) {
+  const { fitContent } = useExtremityLayout();
+
   return (
-    <div className={classNames('flex flex-col gap-2 h-full', className)}>
+    <div
+      className={classNames(
+        'flex flex-col gap-2',
+        fitContent ? 'h-fit' : 'h-full',
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -107,11 +116,13 @@ function Slot({
   edge,
   children,
 }: ExtremitySlot & { children: ReactNode }) {
+  const { fitContent } = useExtremityLayout();
+
   return (
     <SlotContext.Provider value={{ direction, edge }}>
       <div
         className={classNames(
-          edge === 'side' && 'h-full',
+          edge === 'side' && !fitContent && 'h-full',
           direction === 'right' && 'text-right'
         )}
       >
