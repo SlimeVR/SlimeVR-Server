@@ -35,7 +35,7 @@ class BustInputProcessor : SkeletonInputProcessor {
 		/**
 		 * How strongly vertical acceleration affects pitch.
 		 */
-		private const val ACCELERATION_SENSITIVITY = 0.12f
+		private const val ACCELERATION_SENSITIVITY = 0.6f
 
 		/**
 		 * How strongly the temporary pitch offset is pulled back toward zero.
@@ -154,14 +154,14 @@ class BustInputProcessor : SkeletonInputProcessor {
 		// in the wrong direction:
 		//
 		// state.pitchVelocity -= ...
-		state.pitchVelocity +=
+		state.pitchVelocity -=
 			acceleration *
 				ACCELERATION_SENSITIVITY *
 				deltaTime
 
 		// Damped spring pulling the offset back toward zero.
 		val springAcceleration =
-			(-SPRING_STRENGTH * state.pitchOffset) -
+			(SPRING_STRENGTH * state.pitchOffset) -
 				(DAMPING * state.pitchVelocity)
 
 		state.pitchVelocity += springAcceleration * deltaTime
