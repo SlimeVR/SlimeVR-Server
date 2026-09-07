@@ -55,9 +55,9 @@ export function MirrorLegend({ compact }: { compact?: boolean }) {
       compact={compact}
       onClick={() => setConfig({ mirrorView: !mirror })}
     >
-      {pill('left')}
-      <CompareIcon width={22} />
       {pill('right')}
+      <CompareIcon width={22} />
+      {pill('left')}
     </TogglePill>
   );
 }
