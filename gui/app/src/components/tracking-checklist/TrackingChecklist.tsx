@@ -371,7 +371,7 @@ const stepContentLookup: Record<
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row flex-wrap">
             <Button
               variant="primary"
-              to="/vrc-warnings"
+              to="/settings/vrc-warnings"
               id="tracking_checklist-VRCHAT_SETTINGS-open"
             />
             {step.ignorable && (

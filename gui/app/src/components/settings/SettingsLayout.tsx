@@ -58,7 +58,7 @@ export function SettingSelectorMobile() {
         ? [
             {
               label: l10n.getString('settings-sidebar-vrc_warnings'),
-              value: { url: '/vrc-warnings' },
+              value: { url: '/settings/vrc-warnings' },
             },
           ]
         : []),
