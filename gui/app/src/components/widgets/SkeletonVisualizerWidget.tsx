@@ -405,7 +405,6 @@ function SkeletonVisualizer({
     const context = previewContext.current;
     if (!context || disabled) return;
     context.rebuildSkeleton(createChildren(bones, BoneKind.root), bones);
-    console.log('rebuild');
   }, [bones.size, disabled]);
 
   useEffect(() => {
