@@ -178,7 +178,7 @@ fun createAndroidSerialServer(context: Context, scope: CoroutineScope): SerialSe
 		openPort = { portLocation, onDataReceived, onPortDisconnected ->
 			openAndroidPort(portLocation, usbManager, scope, onDataReceived, onPortDisconnected)
 		},
-		openFlashingPort = { AndroidFlashingHandler(usbManager) },
+		openFlashingPort = { AndroidFlashingHandler(context, usbManager) },
 		scope = scope,
 	)
 
