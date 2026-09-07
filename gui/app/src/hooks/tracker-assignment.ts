@@ -15,7 +15,7 @@ import { playTapSetupSound } from '@/sounds/sounds';
 import { useAtomValue } from 'jotai';
 import { donglesAtom } from '@/store/app-store';
 import { hoveredBodyPartAtom } from './tracker-drag';
-import { usePickerShell } from './tracker-picker';
+import { providePicker } from './tracker-picker';
 
 export type AssignmentMode = 'drag' | 'tap';
 
@@ -44,7 +44,7 @@ export function useTrackerAssignment(mode: AssignmentMode) {
   const { config } = useConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const sendAssign = useAssignTracker();
-  const shell = usePickerShell();
+  const shell = providePicker();
   const { trackerByPart, flatTrackers } = shell;
 
   const [pending, setPending] = useState<Pending>(null);

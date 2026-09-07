@@ -156,7 +156,7 @@ export const PICKER_TABS: Record<PickerTab, PickerTabSpec> = {
 
 export const PICKER_TAB_ORDER: PickerTab[] = ['body', 'fingers', 'toes'];
 
-export function usePickerShell() {
+export function providePicker() {
   const { l10n } = useLocalization();
 
   const [tab, setTab] = useState<PickerTab>('body');
@@ -243,7 +243,7 @@ export function usePickerShell() {
   };
 }
 
-export type PickerShell = ReturnType<typeof usePickerShell>;
+export type PickerShell = ReturnType<typeof providePicker>;
 
 export type Picker = PickerShell & {
   activePart: BodyPart;

@@ -63,23 +63,19 @@ export function SingleTrackerBodyAssignmentMenu({
                 </Button>
               </div>
               <ShowAllPartsToggle />
+              <MirrorLegend />
+              <Button
+                variant="secondary"
+                onClick={() => onRoleSelected(BodyPart.NONE)}
+              >
+                {l10n.getString('body_assignment_menu-unassign_tracker')}
+              </Button>
             </div>
             <div className="flex flex-col gap-4 rounded-xl fill-background-50 py-2 xsAssign:flex-grow">
-              <div className="flex justify-center">
-                <MirrorLegend />
-              </div>
               <BodyAssignment
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
               />
-              <div className="flex justify-center">
-                <Button
-                  variant="secondary"
-                  onClick={() => onRoleSelected(BodyPart.NONE)}
-                >
-                  {l10n.getString('body_assignment_menu-unassign_tracker')}
-                </Button>
-              </div>
             </div>
           </div>
         </div>
