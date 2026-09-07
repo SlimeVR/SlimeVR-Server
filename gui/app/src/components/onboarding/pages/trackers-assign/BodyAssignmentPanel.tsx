@@ -216,7 +216,7 @@ export function BodyAssignmentPanel({
   );
 }
 
-function PickerTabs({ compact }: { compact?: boolean }) {
+export function PickerTabs({ compact }: { compact?: boolean }) {
   const { tab, setTab } = usePicker();
 
   return (

@@ -397,7 +397,9 @@ export function BodyInteractions({
                     key={id}
                     {...(part != null ? dotProps?.(part) : undefined)}
                     className={classNames('absolute z-10')}
-                    onClick={() => part != null && onSelectRole(part)}
+                    onClick={() =>
+                      !hidden && part != null && onSelectRole(part)
+                    }
                     style={{
                       width: hitSize,
                       height: hitSize,

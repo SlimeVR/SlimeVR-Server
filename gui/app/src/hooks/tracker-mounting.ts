@@ -8,7 +8,7 @@ import {
 } from '@/maths/quaternion';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { useAssignTracker } from './tracker-assignment';
-import { usePickerShell } from './tracker-picker';
+import { providePicker } from './tracker-picker';
 
 export function useMountingOrientation(td: FlatDeviceTracker | undefined) {
   const assignTracker = useAssignTracker();
@@ -37,7 +37,7 @@ export function useMountingOrientation(td: FlatDeviceTracker | undefined) {
 }
 
 export function useMountingSelection() {
-  const shell = usePickerShell();
+  const shell = providePicker();
   const [target, setTarget] = useState<BodyPart>(BodyPart.NONE);
 
   const td = shell.trackerByPart[target];
