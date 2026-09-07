@@ -23,6 +23,7 @@ import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.FirmwareUpdateStatus
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 private fun fakePortHandle(loc: String) = SerialPortHandle(
 	portLocation = loc,
@@ -93,7 +94,7 @@ class DoSerialFlashTest {
 	}
 
 	@Test
-	fun `emits ERROR_DEVICE_NOT_FOUND when port already has a connection`() = runTest {
+	fun `closes existing connection before flashing`() = runTest {
 		val server = buildSerialServer(backgroundScope)
 		server.onPortDetected(fakePort())
 		server.openConnection("COM1")
@@ -113,7 +114,8 @@ class DoSerialFlashTest {
 			scope = this,
 		)
 
-		assertEquals(FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND, statuses.last())
+		assertEquals(FirmwareUpdateStatus.ERROR_UPLOAD_FAILED, statuses.last())
+		assertNull(server.context.state.value.connections["COM1"])
 	}
 
 	@Test
@@ -137,6 +139,7 @@ class DoSerialFlashTest {
 		)
 
 		assertEquals(FirmwareUpdateStatus.ERROR_UPLOAD_FAILED, statuses.last())
+		assertNull(server.context.state.value.connections["COM1"])
 	}
 
 	@OptIn(ExperimentalCoroutinesApi::class)

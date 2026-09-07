@@ -5,7 +5,6 @@ import dev.slimevr.context.Context
 import dev.slimevr.hid.isCompatibleHidReceiver
 import dev.slimevr.hid.isCompatibleHidTracker
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import solarxr_protocol.rpc.SerialDevice
 import solarxr_protocol.rpc.SerialDeviceType
 
@@ -113,14 +112,18 @@ class SerialServer(
 
 	suspend fun openForFlashing(portLocation: String): FlashingHandler? {
 		val state = context.state.value
-		if (!state.availablePorts.containsKey(portLocation) || state.connections.containsKey(portLocation)) return null
+		if (!state.availablePorts.containsKey(portLocation)) return null
+		if (state.connections[portLocation] is SerialConnection.Flashing) return null
 		closeConnection(portLocation)
 		val handler = openFlashingPortFactory()
 		context.dispatch(SerialServerActions.RegisterConnection(portLocation, SerialConnection.Flashing))
 		return object : FlashingHandler by handler {
 			override fun closeSerial() {
-				handler.closeSerial()
-				context.scope.launch { context.dispatch(SerialServerActions.RemoveConnection(portLocation)) }
+				try {
+					handler.closeSerial()
+				} finally {
+					context.dispatch(SerialServerActions.RemoveConnection(portLocation))
+				}
 			}
 		}
 	}
