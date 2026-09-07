@@ -376,7 +376,7 @@ export function BodyInteractions({
           </div>
           <div
             ref={personRef}
-            className="relative flex justify-center flex-grow"
+            className="relative flex h-full min-w-0 flex-grow justify-center"
           >
             {figure}
             {slotsButtonsPos.map(

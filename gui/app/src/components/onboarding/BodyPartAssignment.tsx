@@ -15,7 +15,6 @@ import {
 } from '@/components/commons/BodyInteractions';
 import { ExtremityFigure } from '@/components/commons/ExtremityFigure';
 import { PersonFrontIcon, SIDES } from '@/components/commons/PersonFrontIcon';
-import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';
 import {
   BodyPartError,
   COMMONS,
@@ -33,7 +32,11 @@ import {
   ExtremityLayoutValue,
   ExtremitySlot,
 } from './extremities/ExtremityLayout';
-import { ExtremityGroupCard, PartCardRenderer } from './parts/PartCard';
+import {
+  AssignmentPartCard,
+  ExtremityGroupCard,
+  PartCardRenderer,
+} from './parts/PartCard';
 
 type BodySide = (typeof SIDES)[number];
 
@@ -94,6 +97,7 @@ export type ExtremityAssignmentViewProps = CommonAssignmentProps & {
   view: { kind: 'extremity'; descriptor: ExtremityDescriptor };
   side: ExtremitySide;
   compact?: boolean;
+  fitContent?: boolean;
   renderGroup?: ExtremityGroupRenderer;
 };
 
@@ -118,14 +122,8 @@ type AssignmentRenderState = {
 
 const defaultCard =
   (onRoleSelected: (role: BodyPart) => void): PartCardRenderer =>
-  ({ role, direction, td, roleError }) => (
-    <TrackerPartCard
-      roleError={roleError}
-      td={td}
-      role={role}
-      onClick={() => onRoleSelected(role)}
-      direction={direction}
-    />
+  (props) => (
+    <AssignmentPartCard {...props} onClick={() => onRoleSelected(props.role)} />
   );
 
 const defaultGroup =
@@ -265,6 +263,7 @@ function ExtremityAssignmentView({
   side,
   fillHeight,
   compact = false,
+  fitContent = false,
   rolesWithErrors = {},
   onRoleSelected,
   renderGroup,
@@ -369,6 +368,7 @@ function ExtremityAssignmentView({
   const layout = useMemo<ExtremityLayoutValue>(
     () => ({
       compact,
+      fitContent,
       mirrored,
       digit,
       figure,
@@ -380,6 +380,7 @@ function ExtremityAssignmentView({
     }),
     [
       compact,
+      fitContent,
       mirrored,
       digit,
       figure,

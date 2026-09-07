@@ -160,6 +160,7 @@ export function TrackerSettingsPage() {
         isOpen={selectBodyPart}
         onClose={() => setSelectBodyPart(false)}
         onRoleSelected={onRoleSelected}
+        bodyPart={tracker?.tracker.info?.bodyPart}
       />
       <MountingSelectionMenu
         bodyPart={tracker?.tracker.info?.bodyPart}

@@ -156,6 +156,30 @@ export const PICKER_TABS: Record<PickerTab, PickerTabSpec> = {
 
 export const PICKER_TAB_ORDER: PickerTab[] = ['body', 'fingers', 'toes'];
 
+export function getPickerSelection(bodyPart?: BodyPart): {
+  tab: PickerTab;
+  side: ExtremitySide;
+} {
+  if (bodyPart == null) return { tab: 'body', side: 'right' };
+
+  for (const tab of PICKER_TAB_ORDER) {
+    const view = PICKER_TABS[tab].view;
+    if (view.kind !== 'extremity') continue;
+
+    for (const side of ['left', 'right'] as ExtremitySide[]) {
+      const extremity = view.descriptor.sides[side];
+      if (
+        extremity.root === bodyPart ||
+        Object.values(extremity.digits).some((parts) => parts.includes(bodyPart))
+      ) {
+        return { tab, side };
+      }
+    }
+  }
+
+  return { tab: 'body', side: 'right' };
+}
+
 export function providePicker() {
   const { l10n } = useLocalization();
 
