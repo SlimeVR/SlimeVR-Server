@@ -65,6 +65,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 			imuType = tracker.imuType ?: ImuType.UNKNOWN,
 			bodyPart = tracker.bodyPart ?: BodyPart.NONE,
 			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
+			mountingResetOrientation = tracker.sessionCalibration.headingAlignment.let { Quat(it.x, it.y, it.z, it.w) },
 			displayName = tracker.name,
 			customName = tracker.customName,
 			lastMountingMethod = tracker.lastMountingMethod,
@@ -82,7 +83,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null, // FIXME: uses reference adjusted
 	rawMagneticVector = if (trackerMask.rawMagneticVector && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.let { Vec3f(it.x, it.y, it.z) } else null,
 	stayAligned = if (trackerMask.stayAligned) StayAlignedTracker(tracker.stayAlignedData.yawCorrection.toDeg(), tracker.motion == Motion.RESTING) else null,
-	origin = tracker.origin,
+	origin = if (trackerMask.origin) tracker.origin else null,
 )
 
 private const val DEVICE_STATS_WINDOW_MS = 5_000L
