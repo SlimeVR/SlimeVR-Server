@@ -92,8 +92,6 @@ data class TapDetectionConfig(
 data class ResetsConfig(
 	/** Always reset mounting for feet */
 	val resetMountingFeet: Boolean = false,
-	/** Always reset mounting for fingers */
-	val resetMountingFingers: Boolean = false,
 	/** Reset mode used for the arms */
 	val armsResetMode: ArmsResetMode = ArmsResetMode.BACK,
 	/** Yaw reset smoothing time in seconds */
@@ -101,7 +99,7 @@ data class ResetsConfig(
 	/** Save automatic mounting reset calibration */
 	val saveMountingReset: Boolean = false,
 	/** Reset a positional tracker's attitude full reset */
-	val resetPositionalHeadAttitude: Boolean = false, // TODO
+	val resetPositionalHeadAttitude: Boolean = false,
 	/** Used as preferred mounting method and tracking checklist */
 	val lastMountingMethod: MountingMethod = MountingMethod.POSE,
 )
@@ -129,7 +127,7 @@ fun defaultKeybinds(): List<KeybindConfig> = listOf(
 data class SkeletonTogglesConfig(
 	val floorClip: Boolean = true,
 	val skatingCorrection: Boolean = true,
-	val toeSnap: Boolean = true, // TODO this was false in main
+	val toeSnap: Boolean = true, // TODO this was false in main, evaluate if we want it on by default
 	val footPlant: Boolean = true,
 	val mocapMode: Boolean = false,
 	val useTrackerPositions: Boolean = true,

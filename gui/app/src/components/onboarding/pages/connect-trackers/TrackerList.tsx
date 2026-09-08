@@ -483,9 +483,7 @@ function EmptyTrackerListIllustration({
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 h-full min-h-[220px] gap-3 text-center p-6 my-auto">
-      <LoaderIcon
-        slimeState={isError ? SlimeState.SAD : SlimeState.JUMPY}
-      />
+      <LoaderIcon slimeState={isError ? SlimeState.SAD : SlimeState.JUMPY} />
       <div className="flex flex-col gap-1 max-w-xs">
         <Typography
           bold

@@ -185,10 +185,7 @@ export function DriverSettings() {
             </div>
           </div>
 
-          <Typography
-            variant="section-title"
-            id="settings-driver-velocity"
-          />
+          <Typography variant="section-title" id="settings-driver-velocity" />
           <div className="pt-1 pb-2">
             <Typography id="settings-driver-velocity-description" />
           </div>
@@ -197,9 +194,7 @@ export function DriverSettings() {
             outlined
             control={control}
             name="sendVelocity"
-            label={l10n.getString(
-              'settings-driver-velocity'
-            )}
+            label={l10n.getString('settings-driver-velocity')}
           />
         </>
       </SettingsPagePaneLayout>

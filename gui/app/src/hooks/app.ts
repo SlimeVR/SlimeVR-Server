@@ -89,14 +89,14 @@ export function useProvideAppContext(): AppContext {
     const handleBlur = () => {
       document.documentElement.classList.add('freeze-animations');
     };
-    
+
     const handleFocus = () => {
       document.documentElement.classList.remove('freeze-animations');
     };
 
     window.addEventListener('blur', handleBlur);
     window.addEventListener('focus', handleFocus);
-    
+
     return () => {
       window.removeEventListener('blur', handleBlur);
       window.removeEventListener('focus', handleFocus);
