@@ -162,7 +162,6 @@ export function AssignmentNavFooter({
 
 export function AssignmentEmptyState({
   kind,
-  iconSize = 56,
   className,
 }: {
   kind: 'no-trackers' | 'all-assigned';
@@ -189,7 +188,7 @@ export function AssignmentEmptyState({
         className
       )}
     >
-      <LoaderIcon slimeState={slimeState} size={iconSize} />
+      <LoaderIcon slimeState={slimeState} />
       <div className="flex flex-col gap-1 max-w-xs">
         <Typography
           bold
