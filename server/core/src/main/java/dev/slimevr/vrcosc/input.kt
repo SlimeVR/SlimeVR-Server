@@ -163,7 +163,7 @@ class VRCOSCInputBehaviour(
 		message: String,
 		throwable: Throwable,
 	) {
-		AppLogger.vrc.error(message, throwable)
+		AppLogger.vrc.error(throwable, message)
 		receiver.context.dispatch(
 			VRCOSCActions.SetInput(
 				state = VRCOSCInputState.ERROR,

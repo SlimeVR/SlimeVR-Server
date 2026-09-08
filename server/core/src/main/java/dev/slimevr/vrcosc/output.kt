@@ -217,7 +217,7 @@ class VRCOSCOutputBehaviour(
 		targetPort: Int?,
 		targetSource: VRCOSCTargetSource,
 	) {
-		AppLogger.vrc.error(message, throwable)
+		AppLogger.vrc.error(throwable, message)
 		receiver.context.dispatch(
 			VRCOSCActions.SetOutput(
 				state = VRCOSCOutputState.ERROR,

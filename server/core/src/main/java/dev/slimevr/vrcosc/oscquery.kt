@@ -61,7 +61,7 @@ class VRCOSCOscQueryBehaviour(
 		try {
 			runtime.server?.close()
 		} catch (e: Exception) {
-			AppLogger.vrc.error("Failed to stop VRChat OSCQuery", e)
+			AppLogger.vrc.error(e, "Failed to stop VRChat OSCQuery")
 		}
 		runtime.server = null
 
@@ -172,7 +172,7 @@ class VRCOSCOscQueryBehaviour(
 		throwable: Throwable,
 		advertisedPort: Int? = null,
 	) {
-		AppLogger.vrc.error(message, throwable)
+		AppLogger.vrc.error(throwable, message)
 		receiver.context.dispatch(
 			VRCOSCActions.SetOscQuery(
 				state = VRCOSCOscQueryState.ERROR,

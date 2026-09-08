@@ -68,7 +68,7 @@ class VMCOutputBehaviour(
 				} catch (e: Exception) {
 					runtime.vrm = null
 					val message = "Failed to parse VRM JSON"
-					AppLogger.vmc.error(message, e)
+					AppLogger.vmc.error(e, message)
 					receiver.context.dispatch(
 						VMCActions.SetVrm(state = VMCOSCVrmState.ERROR, error = formatExceptionMessage(message, e)),
 					)
@@ -216,7 +216,7 @@ class VMCOutputBehaviour(
 		targetAddress: String?,
 		targetPort: Int?,
 	) {
-		AppLogger.vmc.error(message, throwable)
+		AppLogger.vmc.error(throwable, message)
 		receiver.context.dispatch(
 			VMCActions.SetOutput(
 				state = VMCOSCOutputState.ERROR,
