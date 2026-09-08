@@ -26,7 +26,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from 'three';
-import { BodyPart, BoneT } from 'solarxr-protocol';
+import { BodyPart, BoneT, MountingMethod } from 'solarxr-protocol';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
@@ -401,7 +401,9 @@ function SkeletonVisualizer({
       trackers.set(bodyPart, {
         trackerId: tracker.trackerId,
         mountingOrientation: QuaternionFromQuatT(
-          tracker.info?.mountingOrientation
+          tracker.info?.lastMountingMethod == MountingMethod.MANUAL
+            ? tracker.info?.mountingOrientation
+            : tracker.info?.mountingResetOrientation
         ).normalize(),
         boneOffset: getTrackerBoneOffset(bodyPart),
       });
