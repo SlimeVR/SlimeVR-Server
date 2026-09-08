@@ -1,7 +1,9 @@
 package dev.slimevr.tracker
 
 import com.jme3.math.FastMath
+import dev.slimevr.logging.AppLogger
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.MountingMethod
 import kotlin.time.Duration
@@ -12,11 +14,14 @@ private fun trackPolarity(
 	newRotation: Quaternion,
 	oldRotation: Quaternion,
 	polarityFallbackRotation: Quaternion? = null,
+	debugBodyPart: BodyPart? = null,
 ): Quaternion {
 	val absAngleChange = newRotation.angleToR(oldRotation)
 	if (absAngleChange > UNRELIABLE_ANGLE_CHANGE_THRESHOLD && polarityFallbackRotation != null) {
 		// Rotation rotated too much since last SetRotation; we're not sure which direction the tracker rotated.
 		// Solution: align polarity with another tracker's rotation instead.
+		// TODO don't forget to remove log
+		AppLogger.console.warn("$debugBodyPart tracker rotated ${absAngleChange * FastMath.RAD_TO_DEG} in one tick. Assuming shortest rotation to head.")
 		return newRotation.twinNearest(polarityFallbackRotation)
 	}
 
@@ -37,7 +42,7 @@ fun reduce(
 	is TrackerActions.SetDriverName -> state.copy(driverName = action.driverName)
 
 	is TrackerActions.SetRotation -> {
-		val accumulatedTicks = if (action.newData && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
+		val accumulatedTicks = if (!action.resetRefresh && action.rotation != null) (state.accumulatedTicks + 1u).toUShort() else state.accumulatedTicks
 
 		// Rotation
 		val rawRotation: RawRotation = action.rotation ?: state.rawRotation
@@ -55,11 +60,19 @@ fun reduce(
 		// Rotation calibration
 		val rotation: CalibratedRotation =
 			if (action.rotation != null) {
-				trackPolarity(
-					applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation),
-					state.rotation,
-					action.polarityFallbackRotation,
-				)
+				val calibratedRotation = applyCalibration(correctedRawRotation, cal.headingCorrection, cal.attitudeAlignment, cal.headingAlignment, state.restOrientation)
+				if (action.resetRefresh) {
+					// Assume shortest path <180d
+					calibratedRotation.twinNearest(action.polarityFallbackRotation)
+				} else {
+					// Track polarity to go over >180d
+					trackPolarity(
+						calibratedRotation,
+						state.rotation,
+						action.polarityFallbackRotation,
+						state.bodyPart,
+					)
+				}
 			} else {
 				state.rotation
 			}
@@ -136,8 +149,6 @@ fun reduce(
 				attitudeAlignment = attitudeAlignment,
 				headingAlignment = headingAlignment,
 			),
-			// Reset polarity tracking
-			rotation = state.rotation.twinNearest(Quaternion.IDENTITY),
 			// Full reset snaps: cancel any in-progress yaw smoothing.
 			yawResetSmoothing = null,
 		)
