@@ -1,6 +1,7 @@
 package dev.slimevr.firmware
 
 import dev.slimevr.VRServer
+import dev.slimevr.logging.AppLogger
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.BoundDatagramSocket
 import io.ktor.network.sockets.Datagram
@@ -104,7 +105,7 @@ internal suspend fun uploadFirmware(
 		output.writeFully(firmware, offset, offset + chunkLen)
 		offset += chunkLen
 
-		withTimeout(1_000) { input.discardExact(4) }
+		withTimeout(5_000) { input.discardExact(4) }
 	}
 
 	output.flush()
@@ -151,6 +152,9 @@ suspend fun doOtaFlash(
 			}
 
 			if (uploaded.isFailure) {
+				uploaded.exceptionOrNull()?.let { e ->
+					AppLogger.firmware.error(e, "OTA firmware upload failed")
+				}
 				onStatus(FirmwareUpdateStatus.ERROR_UPLOAD_FAILED, 0)
 				return
 			}
