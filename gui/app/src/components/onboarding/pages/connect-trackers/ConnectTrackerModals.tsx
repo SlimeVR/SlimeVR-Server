@@ -27,7 +27,7 @@ export function ErrorDetailModal({
       className="max-w-md w-full p-6 flex flex-col gap-4 bg-background-70 rounded-xl border border-background-60"
     >
       <div className="flex flex-col items-center text-center gap-3">
-        <LoaderIcon slimeState={SlimeState.SAD} size={56} />
+        <LoaderIcon slimeState={SlimeState.SAD} />
 
         <div className="flex flex-col gap-1">
           <Typography
@@ -73,7 +73,7 @@ export function NoSerialLogsModal({
       className="max-w-md w-full p-6 flex flex-col gap-4 bg-background-70 rounded-xl border border-background-60"
     >
       <div className="flex flex-col items-center text-center gap-3">
-        <LoaderIcon slimeState={SlimeState.SAD} size={56} />
+        <LoaderIcon slimeState={SlimeState.SAD} />
 
         <div className="flex flex-col gap-1">
           <Typography

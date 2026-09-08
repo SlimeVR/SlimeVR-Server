@@ -77,6 +77,10 @@ body {
   }
 }
 
+.freeze-animations .animate-low-priority {
+  animation: none !important;
+}
+
 /* Colors have to be in RGB format currently */
 :root {
   --background-10: 255, 255, 255;
