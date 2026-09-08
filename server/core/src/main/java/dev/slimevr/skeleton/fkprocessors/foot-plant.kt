@@ -35,6 +35,7 @@ class FootPlantFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 
 		for (bodyPart in bodyParts) {
 			val input = mutableInputSkeleton[bodyPart] ?: continue
+			if (input.isRotationActive) continue
 			val output = fk[bodyPart] ?: continue
 			mutableInputSkeleton[bodyPart] = input.copy(
 				rotation = correctFootAttitude(
