@@ -135,13 +135,14 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				bodyParts.contains(it.context.state.value.bodyPart)
 			}
 		} else {
-			// Exclude foot and finger trackers from mounting reset except if forced
+			// Exclude feet, fingers and toes from mounting reset except if forced
 			allTrackers.filter {
 				val bodyPart = it.context.state.value.bodyPart
 				resetType != ResetType.POSE_MOUNTING ||
 					(
 						(config.resetMountingFeet || bodyPart !in ResetBodyParts.FEET) &&
-							(config.resetMountingFingers || bodyPart !in ResetBodyParts.FINGERS)
+							(config.resetMountingFingers || bodyPart !in ResetBodyParts.FINGERS) &&
+							bodyPart !in ResetBodyParts.TOES
 						)
 			}
 		}.filter { resetType == ResetType.FULL || it.context.state.value.position == null } // Positional trackers only full reset
