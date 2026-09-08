@@ -610,7 +610,8 @@ export function TrackingChecklist({
                   'bg-status-success': completion === 'complete',
                   'bg-status-critical animate-pulse animate-low-priority':
                     completion === 'incomplete',
-                  'bg-status-warning animate-pulse animate-low-priority': completion === 'partial',
+                  'bg-status-warning animate-pulse animate-low-priority':
+                    completion === 'partial',
                 })}
               />
             </div>
@@ -657,7 +658,7 @@ export function TrackingChecklist({
 
           <div className="absolute bottom-0 right-0 w-20 h-20 overflow-clip pointer-events-none">
             <div className="-rotate-45 translate-x-3.5 translate-y-3.5">
-              <LoaderIcon slimeState={slimeState} lowPriority/>
+              <LoaderIcon slimeState={slimeState} lowPriority />
             </div>
           </div>
         </div>

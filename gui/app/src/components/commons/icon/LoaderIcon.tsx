@@ -37,7 +37,7 @@ export function LoaderIcon({
       if (!videoRef.current) return;
 
       if (isVisible) {
-        videoRef.current.play().catch(() => { });
+        videoRef.current.play().catch(() => {});
       } else {
         videoRef.current.pause();
         videoRef.current.currentTime = 0;
@@ -58,14 +58,13 @@ export function LoaderIcon({
       if (!lowPriority) return;
 
       setIsPageVisible(true);
-      videoRef.current?.play().catch(() => { });
+      videoRef.current?.play().catch(() => {});
     };
 
     if (!lowPriority && videoRef.current) {
       setIsPageVisible(true);
-      videoRef.current.play().catch(() => { });
-    }
-    else if (lowPriority && (document.hidden || !document.hasFocus())) {
+      videoRef.current.play().catch(() => {});
+    } else if (lowPriority && (document.hidden || !document.hasFocus())) {
       setIsPageVisible(false);
       if (videoRef.current) {
         videoRef.current.pause();
@@ -83,7 +82,6 @@ export function LoaderIcon({
       window.removeEventListener('focus', handleFocus);
     };
   }, [lowPriority]);
-
 
   return (
     <video
