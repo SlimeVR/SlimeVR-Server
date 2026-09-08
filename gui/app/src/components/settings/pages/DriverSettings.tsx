@@ -27,10 +27,12 @@ import { SteamIcon } from '@/components/commons/icon/SteamIcon';
 
 type DriverForm = {
   enabled: boolean;
+  sendVelocity: boolean;
 };
 
 const defaultValues: DriverForm = {
   enabled: true,
+  sendVelocity: false,
 };
 
 type Badge = 'connected' | 'waiting' | 'disabled' | 'unavailable';
@@ -98,6 +100,7 @@ export function DriverSettings() {
   const onSubmit = (values: DriverForm) => {
     const settingsReq = new ChangeDriverSettingsRequestT();
     settingsReq.enabled = values.enabled;
+    settingsReq.sendVelocity = values.sendVelocity;
     sendRPCPacket(RpcMessage.ChangeDriverSettingsRequest, settingsReq);
   };
 
@@ -122,6 +125,7 @@ export function DriverSettings() {
     if (!settings) return;
     const formData: DefaultValues<DriverForm> = {
       enabled: settings.enabled,
+      sendVelocity: settings.sendVelocity,
     };
     reset({ ...getValues(), ...formData });
   }, [settings]);
@@ -180,6 +184,23 @@ export function DriverSettings() {
               />
             </div>
           </div>
+
+          <Typography
+            variant="section-title"
+            id="settings-driver-velocity"
+          />
+          <div className="pt-1 pb-2">
+            <Typography id="settings-driver-velocity-description" />
+          </div>
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="sendVelocity"
+            label={l10n.getString(
+              'settings-driver-velocity'
+            )}
+          />
         </>
       </SettingsPagePaneLayout>
     </SettingsPageLayout>

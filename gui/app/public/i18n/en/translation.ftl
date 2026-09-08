@@ -536,6 +536,8 @@ settings-driver-status-connection-unavailable = This output does not exist on th
 settings-driver-bones = Bones sent
 settings-driver-bones-description = Which bones this output sends is configured in Bone Routing.
 settings-driver-bones-link = Open Bone Routing
+settings-driver-velocity = Send velocity
+settings-driver-velocity-description = Send linear and angular velocity data to the driver. Allows SteamVR/Monado tracker pose prediction and compatibility with applications that expect this data.
 
 ## Tracker mechanics
 settings-general-trackers_settings = Trackers Settings
