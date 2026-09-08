@@ -58,40 +58,40 @@ class FirmwareManager(
 		ssid: String?,
 		password: String?,
 		server: VRServer,
-		) {
-			runningJobs[portLocation]?.cancelAndJoin()
-			runningJobs[portLocation] = scope.launch {
-				try {
-					doSerialFlash(
-						portLocation = portLocation,
-						parts = parts,
-						needManualReboot = needManualReboot,
-						ssid = ssid,
-						password = password,
-						serialServer = serialServer,
-						settings = settings,
-						server = server,
-						flasher = flasher,
-						onStatus = { status, progress ->
-							context.dispatch(
-								FirmwareManagerActions.UpdateJob(
-									FirmwareJobStatus(
-										portLocation = portLocation,
-										firmwareDeviceId = SerialDevicePort(port = portLocation),
-										status = status,
-										progress = progress,
-									),
+	) {
+		runningJobs[portLocation]?.cancelAndJoin()
+		runningJobs[portLocation] = scope.launch {
+			try {
+				doSerialFlash(
+					portLocation = portLocation,
+					parts = parts,
+					needManualReboot = needManualReboot,
+					ssid = ssid,
+					password = password,
+					serialServer = serialServer,
+					settings = settings,
+					server = server,
+					flasher = flasher,
+					onStatus = { status, progress ->
+						context.dispatch(
+							FirmwareManagerActions.UpdateJob(
+								FirmwareJobStatus(
+									portLocation = portLocation,
+									firmwareDeviceId = SerialDevicePort(port = portLocation),
+									status = status,
+									progress = progress,
 								),
-							)
-						},
-						scope = scope,
-					)
-				} finally {
-					runningJobs.remove(portLocation)
-					context.dispatch(FirmwareManagerActions.RemoveJob(portLocation))
-				}
+							),
+						)
+					},
+					scope = scope,
+				)
+			} finally {
+				runningJobs.remove(portLocation)
+				context.dispatch(FirmwareManagerActions.RemoveJob(portLocation))
 			}
 		}
+	}
 
 	suspend fun otaFlash(
 		deviceIp: String,
