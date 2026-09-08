@@ -151,9 +151,7 @@ class AndroidFlashingHandler(
 		readTimeout = timeout.toInt().coerceAtLeast(1)
 	}
 
-	override fun availableBytes(): Int {
-		return pendingBytes.size
-	}
+	override fun availableBytes(): Int = pendingBytes.size
 
 	override fun flushIOBuffers() {
 		val p = port ?: error("no port to flush")
@@ -166,13 +164,12 @@ class AndroidFlashingHandler(
 	}
 }
 
-private fun Intent.getUsbDeviceExtra(): UsbDevice? =
-	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-		getParcelableExtra(UsbManager.EXTRA_DEVICE, UsbDevice::class.java)
-	} else {
-		@Suppress("DEPRECATION")
-		getParcelableExtra(UsbManager.EXTRA_DEVICE)
-	}
+private fun Intent.getUsbDeviceExtra(): UsbDevice? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+	getParcelableExtra(UsbManager.EXTRA_DEVICE, UsbDevice::class.java)
+} else {
+	@Suppress("DEPRECATION")
+	getParcelableExtra(UsbManager.EXTRA_DEVICE)
+}
 
 object AndroidFirmwareFlasher : FirmwareFlasher {
 	override suspend fun flash(
