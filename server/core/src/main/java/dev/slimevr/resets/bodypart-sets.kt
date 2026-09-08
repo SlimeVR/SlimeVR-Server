@@ -49,11 +49,11 @@ object ResetBodyParts {
 	)
 
 	val LEFT_FINGERS_NO_THUMB = LEFT_FINGERS -
-			setOf(
-				BodyPart.LEFT_THUMB_METACARPAL,
-				BodyPart.LEFT_THUMB_PROXIMAL,
-				BodyPart.LEFT_THUMB_DISTAL,
-			)
+		setOf(
+			BodyPart.LEFT_THUMB_METACARPAL,
+			BodyPart.LEFT_THUMB_PROXIMAL,
+			BodyPart.LEFT_THUMB_DISTAL,
+		)
 
 	val RIGHT_FINGERS = setOf(
 		BodyPart.RIGHT_THUMB_METACARPAL,
@@ -74,11 +74,11 @@ object ResetBodyParts {
 	)
 
 	val RIGHT_FINGERS_NO_THUMB = RIGHT_FINGERS -
-			setOf(
-				BodyPart.RIGHT_THUMB_METACARPAL,
-				BodyPart.RIGHT_THUMB_PROXIMAL,
-				BodyPart.RIGHT_THUMB_DISTAL,
-			)
+		setOf(
+			BodyPart.RIGHT_THUMB_METACARPAL,
+			BodyPart.RIGHT_THUMB_PROXIMAL,
+			BodyPart.RIGHT_THUMB_DISTAL,
+		)
 
 	val FINGERS = LEFT_FINGERS + RIGHT_FINGERS
 
