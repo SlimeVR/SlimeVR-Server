@@ -1,4 +1,4 @@
-import { Box3, Matrix4, Mesh, Object3D, Quaternion, Vector3 } from 'three';
+import { Box3, Color, Matrix4, Mesh, Object3D, Quaternion, Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { BoneKind, getBoneList } from './skeletonHelper';
 import {
@@ -68,12 +68,13 @@ export class BasedSkeletonMeshHelper extends Object3D {
     this.matrix = root.matrixWorld;
     this.matrixAutoUpdate = false;
 
+    const m0 = getPartMaterial(new Color('#cccccc'));
+    const m1 = getPartMaterial(new Color('#ad0ccc'));
+
     for (const bone of getBoneList(root)) {
       if (!(bone instanceof BoneKind) || bone.tail) continue;
       const config = SKELETON_PART_PRESETS[bone.boneT.bodyPart];
       if (!config.visible) continue;
-
-      const material = getPartMaterial(bone.boneColor);
 
       const shapes: AttachedShape[] = [];
       for (const shapeConfig of config.shapes) {
@@ -101,7 +102,12 @@ export class BasedSkeletonMeshHelper extends Object3D {
                 o.scale.set(1, 1, 1);
               }
               if (o instanceof Mesh) {
-                o.material = material;
+                if (o.material !== undefined && o.material.color.r < 0.7) {
+                  o.material = m1;
+                } else {
+                  o.material = m0;
+                }
+
                 o.frustumCulled = false;
                 o.geometry.computeBoundingBox();
                 if (o.geometry.boundingBox) modelBox.union(o.geometry.boundingBox);
