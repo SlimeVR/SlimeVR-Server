@@ -21,6 +21,8 @@ import { useConfig } from '@/hooks/config';
 import { useBHV } from '@/hooks/bvh';
 import { usePauseTracking } from '@/hooks/pause-tracking';
 import { PlayIcon } from './commons/icon/PlayIcon';
+import { CubeIcon } from './commons/icon/CubeIcon';
+import { LineIcon } from './commons/icon/LineIcon';
 
 export function PreviewControls({ open }: { open: boolean }) {
   const [userHeight, setUserHeight] = useState('');
@@ -193,6 +195,23 @@ function PreviewSection({ open }: { open: boolean }) {
           onClick={() => toggleRender()}
         >
           <EyeIcon width={18} closed={!disabledRender} />
+        </div>
+      </Tooltip>
+      <Tooltip
+        preferedDirection="bottom"
+        content={<Typography id="preview-render_mode" />}
+      >
+        <div
+          className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-14 top-2 bg-background-60 hover:bg-background-50"
+          onClick={() =>
+            setConfig({
+              skeletonPreviewStyle:
+                config?.skeletonPreviewStyle == 'lines' ? 'mesh' : 'lines',
+            })
+          }
+        >
+          {config?.skeletonPreviewStyle == 'lines' && <CubeIcon width={18} />}
+          {config?.skeletonPreviewStyle == 'mesh' && <LineIcon size={18} />}
         </div>
       </Tooltip>
       <PreviewControls open={open} />
