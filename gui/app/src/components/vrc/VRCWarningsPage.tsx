@@ -18,7 +18,6 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
-import { BugIcon } from '@/components/commons/icon/BugIcon';
 
 function SettingRow({
   name,
