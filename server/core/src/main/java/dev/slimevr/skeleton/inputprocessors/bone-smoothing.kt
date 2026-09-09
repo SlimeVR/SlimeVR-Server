@@ -14,7 +14,7 @@ import solarxr_protocol.rpc.FilteringType
 import solarxr_protocol.rpc.ResetType
 
 private const val SMOOTHING_MULTIPLIER = 100f
-private const val SMOOTH_MIN = 0.54f
+private const val SMOOTH_MIN = 0.52f
 private const val SMOOTH_MAX = 0.95f
 
 /**
@@ -56,7 +56,7 @@ class BoneSmoothingInputProcessor(val settings: Settings) :
 		smoothed = newSmoothed
 	}
 
-	override fun reset() {
+	override fun reset(resetType: ResetType) {
 		smoothed.clear()
 	}
 }

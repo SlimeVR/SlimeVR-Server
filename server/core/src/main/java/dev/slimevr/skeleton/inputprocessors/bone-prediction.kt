@@ -3,6 +3,7 @@ package dev.slimevr.skeleton.inputprocessors
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
+import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.forEachBone
@@ -11,6 +12,7 @@ import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.FilteringType
+import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration.Companion.milliseconds
 
 /** How far ahead the prediction reaches at amount 1, scaled down by the configured amount */
@@ -19,7 +21,9 @@ val PREDICTION_LEAD = 10.milliseconds
 /**
  * Tries to predict future rotations of bones.
  */
-class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProcessor {
+class BonePredictionInputProcessor(val settings: Settings) :
+	SkeletonInputProcessor,
+	ResettableSkeletonProcessor {
 	private data class BoneVelocity(
 		val lastRotation: Quaternion,
 		val rotationDelta: Quaternion,
@@ -76,5 +80,9 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 			if (predicted != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = predicted)
 		}
 		velocities = newVelocities
+	}
+
+	override fun reset(resetType: ResetType) {
+		velocities.clear()
 	}
 }

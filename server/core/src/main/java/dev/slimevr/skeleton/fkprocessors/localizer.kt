@@ -241,11 +241,13 @@ class LocalizerFkProcessor(val settings: Settings) :
 		mutableInputSkeleton[BodyPart.HEAD] = headInput.copy(position = newHeadPosition)
 	}
 
-	override fun reset() {
-		targetFoot = Vector3.ZERO
-		sittingTime = Duration.ZERO
-		targetHip = Vector3.ZERO
-		comVelocity = Vector3.ZERO
-		targetCOM = Vector3.ZERO
+	override fun reset(resetType: ResetType) {
+		if (resetType == ResetType.FULL) {
+			targetFoot = Vector3.ZERO
+			sittingTime = Duration.ZERO
+			targetHip = Vector3.ZERO
+			comVelocity = Vector3.ZERO
+			targetCOM = Vector3.ZERO
+		}
 	}
 }

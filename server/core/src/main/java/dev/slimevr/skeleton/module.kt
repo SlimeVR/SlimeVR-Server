@@ -164,7 +164,7 @@ typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
 typealias SkeletonBehaviour = Behaviour<Skeleton>
 
 interface ResettableSkeletonProcessor {
-	fun reset()
+	fun reset(resetType: ResetType)
 }
 interface SkeletonInputProcessor {
 	fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float)
@@ -189,8 +189,8 @@ class Skeleton(
 
 	fun startObserving() = context.observeAll(this)
 
-	fun resetProcessors() {
-		resettableSkeletonProcessors.forEach { it.reset() }
+	fun resetProcessors(resetType: ResetType) {
+		resettableSkeletonProcessors.forEach { it.reset(resetType) }
 	}
 
 	companion object {
@@ -209,7 +209,7 @@ class Skeleton(
 					hz = hz,
 					waiter = waiter,
 					inputProcessors = listOf(
-						BonePredictionInputProcessor(settings),
+						BonePredictionInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 						BoneSmoothingInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
@@ -221,7 +221,7 @@ class Skeleton(
 						FingerImputeInputProcessor(),
 					),
 					fkComputedProcessors = listOf(
-						VelocityComputedProcessor(),
+						VelocityComputedProcessor().also { resettableSkeletonProcessors.add(it) },
 					),
 					fkProcessors = listOf(
 						LocalizerFkProcessor(settings).also { resettableSkeletonProcessors.add(it) },
@@ -230,10 +230,10 @@ class Skeleton(
 					),
 					targetProcessors = listOf(
 // 						FloorClipTargetProcessor(settings),
-//						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
+						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 					),
 					ikComputedProcessors = listOf(
-						VelocityComputedProcessor(),
+						VelocityComputedProcessor().also { resettableSkeletonProcessors.add(it) },
 					),
 				),
 			)
