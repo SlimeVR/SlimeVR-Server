@@ -18,6 +18,7 @@ import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
+import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
 import dev.slimevr.util.PreciseWaiter
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -25,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.SkeletonBone
 
 data class Velocity(
@@ -160,6 +162,10 @@ sealed interface SkeletonActions {
 
 typealias SkeletonContext = Context<SkeletonState, SkeletonActions>
 typealias SkeletonBehaviour = Behaviour<Skeleton>
+
+interface ResettableSkeletonProcessor {
+	fun reset()
+}
 interface SkeletonInputProcessor {
 	fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float)
 }
@@ -176,29 +182,35 @@ interface SkeletonTargetProcessor {
 
 class Skeleton(
 	val context: SkeletonContext,
-	val settings: Settings,
 	val computed: MutableSharedFlow<ComputedSkeleton>,
+	private val resettableSkeletonProcessors: Set<ResettableSkeletonProcessor>,
 ) {
 	val currentComputed: ComputedSkeleton get() = computed.replayCache.first()
 
 	fun startObserving() = context.observeAll(this)
+
+	fun resetProcessors() {
+		resettableSkeletonProcessors.forEach { it.reset() }
+	}
 
 	companion object {
 		const val DEFAULT_HZ = 500
 
 		fun create(scope: CoroutineScope, ctx: Phase1ContextProvider, waiter: PreciseWaiter, hz: Int = DEFAULT_HZ): Skeleton {
 			val settings = ctx.config.settings
+
+			val resettableSkeletonProcessors = mutableSetOf<ResettableSkeletonProcessor>()
 			val behaviours = listOf(
 				ProportionsBehaviour(ctx.config.userConfig),
 				HeightLogBehaviour(),
-				LocalizerResetBehaviour(),
+				LocalizerResetBehaviour(settings),
 // 				YouSpinMeRightRoundBehaviour(inputHz = 50f),
 				ComputedSkeletonBehaviour(
 					hz = hz,
 					waiter = waiter,
 					inputProcessors = listOf(
 						BonePredictionInputProcessor(settings),
-						BoneSmoothingInputProcessor(settings),
+						BoneSmoothingInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
 						BoneActiveLinkInputProcessor(),
@@ -212,13 +224,13 @@ class Skeleton(
 						VelocityComputedProcessor(),
 					),
 					fkProcessors = listOf(
-// 						LocalizerFkProcessor(settings),
+						LocalizerFkProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 						FootPlantFkProcessor(settings),
 						ToeSnapFkProcessor(settings),
 					),
 					targetProcessors = listOf(
 // 						FloorClipTargetProcessor(settings),
-// 						SkatingCorrectionTargetProcessor(settings),
+//						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 					),
 					ikComputedProcessors = listOf(
 						VelocityComputedProcessor(),
@@ -240,7 +252,7 @@ class Skeleton(
 			)
 			computed.tryEmit(buildBones(context.state.value.boneInputs))
 
-			return Skeleton(context, settings, computed)
+			return Skeleton(context, computed, resettableSkeletonProcessors)
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package dev.slimevr.skeleton
 
+import dev.slimevr.config.Settings
 import dev.slimevr.config.UserConfig
 import dev.slimevr.logging.AppLogger
 import dev.slimevr.util.MonotonicValueTimeMark
@@ -55,9 +56,9 @@ class HeightLogBehaviour : SkeletonBehaviour {
 /**
  * Handles resetting the head position whenever mocap mode gets disabled
  */
-class LocalizerResetBehaviour : SkeletonBehaviour {
+class LocalizerResetBehaviour(val settings: Settings) : SkeletonBehaviour {
 	override fun observe(receiver: Skeleton) {
-		receiver.settings.context.state.distinctUntilChangedBy { it.data.skeletonConfig.toggles.mocapMode }.onEach {
+		settings.context.state.distinctUntilChangedBy { it.data.skeletonConfig.toggles.mocapMode }.onEach {
 			if (!it.data.skeletonConfig.toggles.mocapMode) receiver.context.dispatch(SkeletonActions.ResetHeadPosition)
 		}.launchIn(receiver.context.scope)
 	}
