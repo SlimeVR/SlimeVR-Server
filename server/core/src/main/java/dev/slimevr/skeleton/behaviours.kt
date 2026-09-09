@@ -158,7 +158,7 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 
 	companion object {
 		private val OVERRUN_WINDOW = 2.minutes
-		private const val MINIMUM_OVERRUNS_TO_LOG = 10
+		private const val MINIMUM_OVERRUNS_TO_LOG = 100
 	}
 }
 
