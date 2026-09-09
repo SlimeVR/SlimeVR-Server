@@ -69,7 +69,7 @@ object YawUtils {
 		return targetYaw - yaw
 	}
 
-	fun centerYawOfTrackers(
+	fun centreYawOfTrackers(
 		trackerStates: List<TrackerState>,
 	): Angle? {
 		val head = trackerStates.getFirstActiveFor(StayAlignedBodyParts.head) // Optional
@@ -82,30 +82,30 @@ object YawUtils {
 
 		// Need a minimum set of trackers, and the trackers need to be oriented in a
 		// way where we can actually calculate its yaw.
-		val hasCenterYaw =
+		val hasCentreYaw =
 			upperBody.map { it.rotation }.all(::hasTrackerYaw) &&
 				hasTrackerYaw(leftUpperLeg.rotation) &&
 				hasTrackerYaw(rightUpperLeg.rotation) &&
 				hasTrackerYaw(leftLowerLeg.rotation) &&
 				hasTrackerYaw(rightLowerLeg.rotation)
-		if (!hasCenterYaw) return null
+		if (!hasCentreYaw) return null
 
 		// Calculate average yaw of the body
 		val averageYaw = AngleAverage()
 
 		if (head != null && hasTrackerYaw(head.rotation)) {
-			averageYaw.add(trackerYaw(head.rotation), StayAlignedDefaults.CENTER_ERROR_HEAD_WEIGHT)
+			averageYaw.add(trackerYaw(head.rotation), StayAlignedDefaults.CENTRE_ERROR_HEAD_WEIGHT)
 		}
 
 		upperBody.forEach {
-			averageYaw.add(trackerYaw(it.rotation), StayAlignedDefaults.CENTER_ERROR_UPPER_BODY_WEIGHT)
+			averageYaw.add(trackerYaw(it.rotation), StayAlignedDefaults.CENTRE_ERROR_UPPER_BODY_WEIGHT)
 		}
 
-		averageYaw.add(trackerYaw(leftUpperLeg.rotation), StayAlignedDefaults.CENTER_ERROR_UPPER_LEG_WEIGHT)
-		averageYaw.add(trackerYaw(rightUpperLeg.rotation), StayAlignedDefaults.CENTER_ERROR_UPPER_LEG_WEIGHT)
+		averageYaw.add(trackerYaw(leftUpperLeg.rotation), StayAlignedDefaults.CENTRE_ERROR_UPPER_LEG_WEIGHT)
+		averageYaw.add(trackerYaw(rightUpperLeg.rotation), StayAlignedDefaults.CENTRE_ERROR_UPPER_LEG_WEIGHT)
 
-		averageYaw.add(trackerYaw(leftLowerLeg.rotation), StayAlignedDefaults.CENTER_ERROR_LOWER_LEG_WEIGHT)
-		averageYaw.add(trackerYaw(rightLowerLeg.rotation), StayAlignedDefaults.CENTER_ERROR_LOWER_LEG_WEIGHT)
+		averageYaw.add(trackerYaw(leftLowerLeg.rotation), StayAlignedDefaults.CENTRE_ERROR_LOWER_LEG_WEIGHT)
+		averageYaw.add(trackerYaw(rightLowerLeg.rotation), StayAlignedDefaults.CENTRE_ERROR_LOWER_LEG_WEIGHT)
 
 		return averageYaw.toAngle()
 	}

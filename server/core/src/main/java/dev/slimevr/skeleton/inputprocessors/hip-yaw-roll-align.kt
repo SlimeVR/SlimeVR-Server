@@ -29,6 +29,7 @@ class HipYawRollAlignInputProcessor(val settings: Settings) : SkeletonInputProce
 		if (hipBone.isRotationActive) return
 		val leftUpperLegBone = mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG] ?: return
 		val rightUpperLegBone = mutableInputSkeleton[BodyPart.RIGHT_UPPER_LEG] ?: return
+		if (!leftUpperLegBone.isRotationActive || !rightUpperLegBone.isRotationActive) return
 
 		val ratio = settings.context.state.value.data.skeletonConfig.ratios.interpolateHipWithUpperLegs
 		val sourceRotation = leftUpperLegBone.rotation.lerpQ(rightUpperLegBone.rotation, 0.5f)

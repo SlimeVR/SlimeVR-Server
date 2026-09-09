@@ -25,13 +25,11 @@ class DriverIncomingTrackersBehaviour(
 		val server = appContext.server
 
 		receiver.onDriverMessage<AddTrackerRequest> { req, replyTo ->
-			val driverName = receiver.context.state.value.driverName
-			val hardwareId = req.hardwareIdentifier
-
-			if (hardwareId == null || driverName == null) {
+			val driverName = receiver.context.state.value.driverName ?: run {
 				receiver.sendDriverMessage(AddTrackerResponse(status = AddTrackerStatus.ERROR), replyTo = replyTo)
 				return@onDriverMessage
 			}
+			val hardwareId = req.hardwareIdentifier
 
 			val existing = server.context.state.value.trackers.values
 				.find { it.context.state.value.hardwareId == hardwareId }

@@ -91,9 +91,9 @@ data class VrmGeometry(
 
 fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
 	val bindOffsets = BodyPartMap(
-		BODY_PART_TO_UNITY_BONE.mapValues { (_, unityNames) -> reader.offsetForBone(unityNames.first()) ?: Vector3.NULL },
+		BODY_PART_TO_UNITY_BONE.mapValues { (_, unityNames) -> reader.offsetForBone(unityNames.first()) ?: Vector3.ZERO },
 	)
-	fun offset(bodyPart: BodyPart) = bindOffsets[bodyPart] ?: Vector3.NULL
+	fun offset(bodyPart: BodyPart) = bindOffsets[bodyPart] ?: Vector3.ZERO
 
 	val hipLocalPosition = offset(BodyPart.HIP)
 

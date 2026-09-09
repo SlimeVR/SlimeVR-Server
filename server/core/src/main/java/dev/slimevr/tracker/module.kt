@@ -105,12 +105,12 @@ sealed interface TrackerActions {
 		level = DeprecationLevel.ERROR,
 	)
 	constructor(
-		val rotation: Quaternion? = null,
-		val acceleration: Vector3? = null,
-		val magnetometer: Vector3? = null,
-		val position: Vector3? = null,
-		val newData: Boolean = true,
-		val polarityFallbackRotation: Quaternion? = null,
+		val rotation: Quaternion?,
+		val acceleration: Vector3?,
+		val magnetometer: Vector3?,
+		val position: Vector3?,
+		val resetRefresh: Boolean,
+		val polarityFallbackRotation: Quaternion,
 	) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
@@ -139,7 +139,7 @@ class Tracker(
 		acceleration: Vector3? = null,
 		magnetometer: Vector3? = null,
 		position: Vector3? = null,
-		newData: Boolean = true,
+		resetRefresh: Boolean = false,
 	) {
 		// TODO if there's still centaur bug, we can use the nearest parent tracker's rotation instead of head.
 		val polarityFallbackRotation = if (context.state.value.bodyPart != BodyPart.HEAD) {
@@ -148,7 +148,7 @@ class Tracker(
 				.getFirstActiveFor(BodyPart.HEAD)?.rotation
 		} else {
 			null
-		}
+		} ?: Quaternion.IDENTITY
 		context.dispatch(
 			@Suppress("DEPRECATION_ERROR")
 			TrackerActions.SetRotation(
@@ -156,7 +156,7 @@ class Tracker(
 				acceleration = acceleration,
 				magnetometer = magnetometer,
 				position = position,
-				newData = newData,
+				resetRefresh = resetRefresh,
 				polarityFallbackRotation = polarityFallbackRotation,
 			),
 		)
@@ -243,9 +243,9 @@ class Tracker(
 			sessionCalibration = SessionCalibration(),
 			rawRotation = Quaternion.IDENTITY,
 			rotation = Quaternion.IDENTITY,
-			rawAcceleration = Vector3.NULL,
-			acceleration = Vector3.NULL,
-			rawMagnetometer = Vector3.NULL,
+			rawAcceleration = Vector3.ZERO,
+			acceleration = Vector3.ZERO,
+			rawMagnetometer = Vector3.ZERO,
 			position = null,
 			imuTemp = null,
 			accumulatedTicks = 0u,

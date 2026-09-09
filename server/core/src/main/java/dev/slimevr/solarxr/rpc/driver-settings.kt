@@ -30,8 +30,8 @@ class DriverSettingsBehaviour(
 			val config = settings.context.state.value.data.driverConfig
 			receiver.sendRpc(
 				DriverSettingsResponse(
-					sendDerivedVelocity = config.sendDerivedVelocity,
 					enabled = config.enabled,
+					sendVelocity = config.sendVelocity,
 				),
 			)
 		}.launchIn(receiver.context.scope)
@@ -40,8 +40,8 @@ class DriverSettingsBehaviour(
 			.drop(1)
 			.map {
 				DriverSettingsResponse(
-					sendDerivedVelocity = it.data.driverConfig.sendDerivedVelocity,
 					enabled = it.data.driverConfig.enabled,
+					sendVelocity = it.data.driverConfig.sendVelocity,
 				)
 			}
 			.distinctUntilChanged()
@@ -53,8 +53,8 @@ class DriverSettingsBehaviour(
 				SettingsActions.Update {
 					copy(
 						driverConfig = driverConfig.copy(
-							sendDerivedVelocity = req.sendDerivedVelocity,
 							enabled = req.enabled,
+							sendVelocity = req.sendVelocity,
 						),
 					)
 				},

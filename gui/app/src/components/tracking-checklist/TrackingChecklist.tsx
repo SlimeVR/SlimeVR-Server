@@ -91,7 +91,7 @@ function Step({
                 'h-[12px] w-[12px] rounded-full',
                 optional && 'bg-background-40',
                 !optional &&
-                  'bg-accent-background-10 animate-pulse brightness-75'
+                  'bg-accent-background-10 animate-pulse animate-low-priority brightness-75'
               )}
             />
           )}
@@ -371,7 +371,7 @@ const stepContentLookup: Record<
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row flex-wrap">
             <Button
               variant="primary"
-              to="/vrc-warnings"
+              to="/settings/vrc-warnings"
               id="tracking_checklist-VRCHAT_SETTINGS-open"
             />
             {step.ignorable && (
@@ -608,9 +608,10 @@ export function TrackingChecklist({
               <div
                 className={classNames('h-[12px] w-[12px] rounded-full', {
                   'bg-status-success': completion === 'complete',
-                  'bg-status-critical animate-pulse':
+                  'bg-status-critical animate-pulse animate-low-priority':
                     completion === 'incomplete',
-                  'bg-status-warning animate-pulse': completion === 'partial',
+                  'bg-status-warning animate-pulse animate-low-priority':
+                    completion === 'partial',
                 })}
               />
             </div>
@@ -657,7 +658,7 @@ export function TrackingChecklist({
 
           <div className="absolute bottom-0 right-0 w-20 h-20 overflow-clip pointer-events-none">
             <div className="-rotate-45 translate-x-3.5 translate-y-3.5">
-              <LoaderIcon slimeState={slimeState} />
+              <LoaderIcon slimeState={slimeState} lowPriority />
             </div>
           </div>
         </div>

@@ -32,6 +32,7 @@ import dev.slimevr.desktop.vrchat.resolveDesktopLocalIpAddress
 import dev.slimevr.firmware.FirmwareManager
 import dev.slimevr.heightcalibration.HeightCalibrationManager
 import dev.slimevr.keybind.KeybindManager
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.provisioning.ProvisioningManager
 import dev.slimevr.resets.ResetsManager
@@ -86,6 +87,10 @@ fun main(args: Array<String>) = runBlocking<Unit>(appCoroutineExceptionHandler +
 			}
 
 			"--no-udev", "-u" -> featureFlags.skipCheckUdev = true
+
+			"--skeleton-ticks", "-st" -> AppLogger.ShouldDebug.skeletonTicks = true
+
+			"--event-dispatcher", "-ed" -> AppLogger.ShouldDebug.eventDispatcher = true
 		}
 	}
 	if (CURRENT_PLATFORM != Platform.LINUX) featureFlags.skipCheckUdev = true

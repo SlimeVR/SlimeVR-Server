@@ -55,6 +55,7 @@ class ToeSnapFkProcessor(val settings: Settings) : SkeletonFkProcessor {
 		// TODO This loop format should be turned into a function
 		for (bodyPart in bodyParts) {
 			val input = mutableInputSkeleton[bodyPart] ?: continue
+			if (input.isRotationActive) continue
 			val output = fk[bodyPart] ?: continue
 			mutableInputSkeleton[bodyPart] = input.copy(
 				rotation = snapToes(

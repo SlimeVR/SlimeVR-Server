@@ -45,7 +45,7 @@ class BVHRecordingBehaviour(
 							// TODO: we could write the initial T-Pose or whatever here
 						}
 					} catch (e: Exception) {
-						AppLogger.bvh.error("Failed to start BVH recording", e)
+						AppLogger.bvh.error(e, "Failed to start BVH recording")
 						receiver.context.dispatch(BVHActions.StopRecording)
 					}
 				} else if (!it.recording && stream != null) {
@@ -53,7 +53,7 @@ class BVHRecordingBehaviour(
 						AppLogger.bvh.info("Finalizing BVH recording")
 						stream?.close()
 					} catch (e: Exception) {
-						AppLogger.bvh.error("Failed to finalize BVH recording", e)
+						AppLogger.bvh.error(e, "Failed to finalize BVH recording")
 					} finally {
 						stream = null
 					}
@@ -64,7 +64,7 @@ class BVHRecordingBehaviour(
 			try {
 				stream?.writeFrame(computedSkeleton)
 			} catch (e: Exception) {
-				AppLogger.bvh.error("Failed to write BVH frame", e)
+				AppLogger.bvh.error(e, "Failed to write BVH frame")
 				receiver.context.dispatch(BVHActions.StopRecording)
 			}
 		}.launchIn(receiver.context.scope)

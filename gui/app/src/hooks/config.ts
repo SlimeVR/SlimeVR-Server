@@ -13,14 +13,6 @@ export interface WindowConfig {
   y: number;
 }
 
-export enum AssignMode {
-  LowerBody = 'lower-body',
-  Core = 'core',
-  EnhancedCore = 'enhanced-core',
-  FullBody = 'full-body',
-  All = 'all',
-}
-
 export interface DeveloperModeConfig {
   highContrast: boolean;
   preciseRotation: boolean;

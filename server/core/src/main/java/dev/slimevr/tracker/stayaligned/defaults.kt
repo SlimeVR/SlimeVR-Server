@@ -2,7 +2,6 @@ package dev.slimevr.tracker.stayaligned
 
 import dev.slimevr.math.angle.Angle
 import dev.slimevr.tracker.stayaligned.poses.RelaxedPose
-import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.hardware_info.ImuType
 
 /**
@@ -20,14 +19,14 @@ object StayAlignedDefaults {
 		)
 
 	// Weights to calculate the average yaw of the skeleton
-	const val CENTER_ERROR_HEAD_WEIGHT = 0.5f
-	const val CENTER_ERROR_UPPER_BODY_WEIGHT = 1.0f
-	const val CENTER_ERROR_UPPER_LEG_WEIGHT = 0.4f
-	const val CENTER_ERROR_LOWER_LEG_WEIGHT = 0.3f
+	const val CENTRE_ERROR_HEAD_WEIGHT = 0.5f
+	const val CENTRE_ERROR_UPPER_BODY_WEIGHT = 1.0f
+	const val CENTRE_ERROR_UPPER_LEG_WEIGHT = 0.4f
+	const val CENTRE_ERROR_LOWER_LEG_WEIGHT = 0.3f
 
 	// Weight of each force
 	const val YAW_ERRORS_LOCKED_ERROR_WEIGHT = 10.0f
-	const val YAW_ERRORS_CENTER_ERROR_WEIGHT = 2.0f
+	const val YAW_ERRORS_CENTRE_ERROR_WEIGHT = 2.0f
 	const val YAW_ERRORS_NEIGHBOUR_ERROR_WEIGHT = 1.0f
 
 	// Yaw correction for each type of IMU

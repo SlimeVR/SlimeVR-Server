@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import java.util.EnumMap
 import java.util.concurrent.Executors
-import java.util.concurrent.locks.LockSupport
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.time.Duration
@@ -128,6 +127,7 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 
 	/** The line to log once a window has passed, or null while one is still filling */
 	fun report(): String? {
+		if (!AppLogger.ShouldDebug.skeletonTicks) return null
 		if (!nextReport.hasPassedNow()) return null
 		val compute = computeNanos.copyOf(count).also { it.sort() }
 		val interval = intervalNanos.copyOf(count).also { it.sort() }
@@ -157,7 +157,7 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 	private fun micros(sortedNanos: LongArray, percentile: Double): Double = sortedNanos[((sortedNanos.size - 1) * percentile).toInt()] / 1000.0
 
 	companion object {
-		private val OVERRUN_WINDOW = 1.minutes
+		private val OVERRUN_WINDOW = 2.minutes
 		private const val MINIMUM_OVERRUNS_TO_LOG = 10
 	}
 }
@@ -165,9 +165,11 @@ private class TickTimings(private val hz: Int, private val window: Duration, pri
 class ComputedSkeletonBehaviour(
 	val hz: Int,
 	val inputProcessors: List<SkeletonInputProcessor> = emptyList(),
+	val fkComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
 	val fkProcessors: List<SkeletonFkProcessor> = emptyList(),
 	val targetProcessors: List<SkeletonTargetProcessor> = emptyList(),
-	val waiter: PreciseWaiter
+	val ikComputedProcessors: List<SkeletonComputedProcessor> = emptyList(),
+	val waiter: PreciseWaiter,
 ) : SkeletonBehaviour {
 	private val intervalDuration = (1.0 / hz).seconds
 
@@ -243,6 +245,9 @@ class ComputedSkeletonBehaviour(
 						// Run initial FK
 						var fk = buildBones(boneInputs)
 
+						// These write into fk, not the inputs, and the rebuilds below carry their values forward
+						for (processor in fkComputedProcessors) processor.process(fk)
+
 						// Run FK processors. They write into boneInputs, and beforeFk allows figuring out
 						// which bones changed.
 						val beforeFk = BodyPartMap(boneInputs)
@@ -285,6 +290,9 @@ class ComputedSkeletonBehaviour(
 							0.01f,
 							100,
 						)
+
+						// Run ik computed processors. These are used to update values for consumers (e.g. drivers wants velocity after IK)
+						for (processor in ikComputedProcessors) processor.process(ikOutput.bones)
 
 						// Updated the computed skeleton with the result
 						receiver.computed.tryEmit(ikOutput.bones)

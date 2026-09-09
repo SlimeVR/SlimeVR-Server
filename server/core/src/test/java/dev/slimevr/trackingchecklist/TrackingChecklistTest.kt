@@ -8,17 +8,13 @@ import dev.slimevr.buildTestSettings
 import dev.slimevr.buildTestTracker
 import dev.slimevr.buildTestVrServer
 import dev.slimevr.config.Settings
-import dev.slimevr.config.SettingsActions
 import dev.slimevr.networkprofile.NetworkInfo
 import dev.slimevr.networkprofile.NetworkProfileActions
 import dev.slimevr.networkprofile.NetworkProfileManager
 import dev.slimevr.resets.ResetBodyParts
 import dev.slimevr.resets.ResetsActions
 import dev.slimevr.resets.ResetsManager
-import dev.slimevr.routing.BoneRoutingActions
 import dev.slimevr.routing.BoneRoutingManager
-import dev.slimevr.solarxr.SolarXRBridgeActions
-import dev.slimevr.solarxr.onSolarXRMessage
 import dev.slimevr.tracker.Tracker
 import dev.slimevr.tracker.TrackerActions
 import io.github.axisangles.ktmath.Vector3
@@ -28,13 +24,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
 import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
-import solarxr_protocol.driver_protocol.DriverMessageHeader
-import solarxr_protocol.driver_protocol.HandshakeRequest
 import solarxr_protocol.rpc.ResetType
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.TrackingChecklistStep
@@ -217,7 +210,7 @@ class TrackingChecklistTest {
 	fun `UNASSIGNED_HMD is invalid until the HMD is assigned to the head`() = runTest {
 		val h = Harness(this)
 		// An HMD is a DRIVER-origin tracker with a computed position
-		val hmd = h.addTracker(bodyPart = null, intendedBodyPart = BodyPart.HEAD, origin = DeviceOrigin.DRIVER, imuType = null, position = Vector3.NULL)
+		val hmd = h.addTracker(bodyPart = null, intendedBodyPart = BodyPart.HEAD, origin = DeviceOrigin.DRIVER, imuType = null, position = Vector3.ZERO)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)

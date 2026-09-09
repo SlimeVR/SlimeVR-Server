@@ -27,12 +27,12 @@ import { SteamIcon } from '@/components/commons/icon/SteamIcon';
 
 type DriverForm = {
   enabled: boolean;
-  sendDerivedVelocity: boolean;
+  sendVelocity: boolean;
 };
 
 const defaultValues: DriverForm = {
   enabled: true,
-  sendDerivedVelocity: false,
+  sendVelocity: false,
 };
 
 type Badge = 'connected' | 'waiting' | 'disabled' | 'unavailable';
@@ -100,7 +100,7 @@ export function DriverSettings() {
   const onSubmit = (values: DriverForm) => {
     const settingsReq = new ChangeDriverSettingsRequestT();
     settingsReq.enabled = values.enabled;
-    settingsReq.sendDerivedVelocity = values.sendDerivedVelocity;
+    settingsReq.sendVelocity = values.sendVelocity;
     sendRPCPacket(RpcMessage.ChangeDriverSettingsRequest, settingsReq);
   };
 
@@ -125,7 +125,7 @@ export function DriverSettings() {
     if (!settings) return;
     const formData: DefaultValues<DriverForm> = {
       enabled: settings.enabled,
-      sendDerivedVelocity: settings.sendDerivedVelocity,
+      sendVelocity: settings.sendVelocity,
     };
     reset({ ...getValues(), ...formData });
   }, [settings]);
@@ -185,21 +185,16 @@ export function DriverSettings() {
             </div>
           </div>
 
-          <Typography
-            variant="section-title"
-            id="settings-general-fk_settings-velocity_settings"
-          />
+          <Typography variant="section-title" id="settings-driver-velocity" />
           <div className="pt-1 pb-2">
-            <Typography id="settings-general-fk_settings-velocity_settings-description" />
+            <Typography id="settings-driver-velocity-description" />
           </div>
           <CheckBox
             variant="toggle"
             outlined
             control={control}
-            name="sendDerivedVelocity"
-            label={l10n.getString(
-              'settings-general-fk_settings-velocity_settings-send_derived_velocity'
-            )}
+            name="sendVelocity"
+            label={l10n.getString('settings-driver-velocity')}
           />
         </>
       </SettingsPagePaneLayout>
