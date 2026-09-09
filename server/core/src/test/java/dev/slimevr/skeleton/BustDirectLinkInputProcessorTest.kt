@@ -1,7 +1,7 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
-import dev.slimevr.skeleton.inputprocessors.ToeDirectLinkInputProcessor
+import dev.slimevr.skeleton.inputprocessors.BustInputProcessor
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.Test
 import solarxr_protocol.datatypes.BodyPart
