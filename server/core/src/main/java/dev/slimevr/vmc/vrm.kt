@@ -1,11 +1,19 @@
 package dev.slimevr.vmc
 
+import dev.slimevr.config.Settings
+import dev.slimevr.logging.AppLogger
 import dev.slimevr.skeleton.BodyPartMap
+import dev.slimevr.util.formatExceptionMessage
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.VMCOSCVrmState
 
 private val vrmJsonParser = Json { ignoreUnknownKeys = true }
 
@@ -87,6 +95,8 @@ data class Node(
 data class VrmGeometry(
 	val bindOffsets: BodyPartMap<Vector3>,
 	val hipLocalPosition: Vector3,
+	/** Floor-to-neck height, on the same basis as Skeleton.skeletonHeight. Used to scale VMC input positions. */
+	val vrmHeight: Float,
 )
 
 fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
@@ -97,8 +107,44 @@ fun buildVrmGeometry(reader: VrmReader): VrmGeometry {
 
 	val hipLocalPosition = offset(BodyPart.HIP)
 
+	val vrmHeight = (
+		offset(BodyPart.HIP) +
+			offset(BodyPart.WAIST) +
+			offset(BodyPart.CHEST) +
+			offset(BodyPart.UPPER_CHEST) +
+			offset(BodyPart.NECK)
+		).y
+
 	return VrmGeometry(
 		bindOffsets = bindOffsets,
 		hipLocalPosition = hipLocalPosition,
+		vrmHeight = vrmHeight,
 	)
+}
+
+class VMCVrmBehaviour(private val settings: Settings) : VMCBehaviour {
+	override fun observe(receiver: VMCManager) {
+		settings.context.state
+			.map { it.data.vmcConfig.vrmJson }
+			.distinctUntilChanged()
+			.onEach { vrmJson ->
+				val json = vrmJson?.takeIf { it.isNotEmpty() }
+				if (json == null) {
+					receiver.context.dispatch(VMCActions.SetVrm(state = VMCOSCVrmState.NONE))
+					return@onEach
+				}
+
+				try {
+					val vrm = buildVrmGeometry(VrmReader(json))
+					receiver.context.dispatch(VMCActions.SetVrm(state = VMCOSCVrmState.LOADED, vrm = vrm))
+				} catch (e: Exception) {
+					val message = "Failed to parse VRM JSON"
+					AppLogger.vmc.error(e, message)
+					receiver.context.dispatch(
+						VMCActions.SetVrm(state = VMCOSCVrmState.ERROR, error = formatExceptionMessage(message, e)),
+					)
+				}
+			}
+			.launchIn(receiver.context.scope)
+	}
 }

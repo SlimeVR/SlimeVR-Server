@@ -19,9 +19,7 @@ import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.VMCOSCOutputState
-import solarxr_protocol.rpc.VMCOSCVrmState
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource
 
 private val FRAME_RETRY_DELAY = 2.seconds
 
@@ -34,7 +32,6 @@ class VMCOutputBehaviour(
 ) : VMCBehaviour {
 	private class OutputRuntime {
 		var sender: OscSender? = null
-		var vrm: VrmGeometry? = null
 		var sendFailing = false
 		var nextFrameRetryAt: MonotonicValueTimeMark? = null
 
@@ -45,36 +42,8 @@ class VMCOutputBehaviour(
 	override fun observe(receiver: VMCManager) {
 		val runtime = OutputRuntime()
 
-		observeVrm(receiver, runtime)
 		observeTargetChanges(receiver, runtime)
 		observeFrames(receiver, runtime)
-	}
-
-	private fun observeVrm(receiver: VMCManager, runtime: OutputRuntime) {
-		settings.context.state
-			.map { it.data.vmcConfig.vrmJson }
-			.distinctUntilChanged()
-			.onEach { vrmJson ->
-				val json = vrmJson?.takeIf { it.isNotEmpty() }
-				if (json == null) {
-					runtime.vrm = null
-					receiver.context.dispatch(VMCActions.SetVrm(state = VMCOSCVrmState.NONE))
-					return@onEach
-				}
-
-				try {
-					runtime.vrm = buildVrmGeometry(VrmReader(json))
-					receiver.context.dispatch(VMCActions.SetVrm(state = VMCOSCVrmState.LOADED))
-				} catch (e: Exception) {
-					runtime.vrm = null
-					val message = "Failed to parse VRM JSON"
-					AppLogger.vmc.error(e, message)
-					receiver.context.dispatch(
-						VMCActions.SetVrm(state = VMCOSCVrmState.ERROR, error = formatExceptionMessage(message, e)),
-					)
-				}
-			}
-			.launchIn(receiver.context.scope)
 	}
 
 	private fun observeTargetChanges(receiver: VMCManager, runtime: OutputRuntime) {
@@ -170,7 +139,7 @@ class VMCOutputBehaviour(
 		val status = receiver.context.state.value.status
 		if (runtime.sendFailing && runtime.nextFrameRetryAt?.hasPassedNow() == false) return
 
-		val bundle = buildOutgoingBundle(bones, routedBones, config, runtime.vrm, startedAt.elapsedNow())
+		val bundle = buildOutgoingBundle(bones, routedBones, config, receiver.context.state.value.vrm, startedAt.elapsedNow())
 
 		try {
 			sender.send(bundle)
