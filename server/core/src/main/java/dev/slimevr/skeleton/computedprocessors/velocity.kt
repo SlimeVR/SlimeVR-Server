@@ -2,6 +2,7 @@ package dev.slimevr.skeleton.computedprocessors
 
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.ComputedSkeleton
+import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonComputedProcessor
 import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.ZERO_VELOCITY
@@ -11,15 +12,15 @@ import dev.slimevr.util.inFloatingSeconds
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration.Companion.milliseconds
 
-private data class VelocityBoneData(
+private data class VelocityData(
 	val rotation: Quaternion,
 	val position: Vector3,
 )
 
-private fun computeVelocity(currentVelocityData: VelocityBoneData, lastVelocityData: VelocityBoneData, deltaTime: Float): Velocity {
+private fun computeVelocity(currentVelocityData: VelocityData, lastVelocityData: VelocityData, deltaTime: Float): Velocity {
 	val deltaPosition = currentVelocityData.position - lastVelocityData.position
 	val deltaRotation = currentVelocityData.rotation / lastVelocityData.rotation
 	return Velocity(
@@ -42,9 +43,11 @@ private fun smoothVelocity(currentVelocity: Velocity, lastVelocity: Velocity, de
 /**
  * Computes linear (m/s) and angular (rad/s) velocity for the bones.
  */
-class VelocityComputedProcessor : SkeletonComputedProcessor {
+class VelocityComputedProcessor :
+	SkeletonComputedProcessor,
+	ResettableSkeletonProcessor {
 	private val lastVelocities: BodyPartMap<Velocity> = bodyPartMap()
-	private val lastVelocityBoneData: BodyPartMap<VelocityBoneData> = bodyPartMap()
+	private val lastVelocityData: BodyPartMap<VelocityData> = bodyPartMap()
 	private var lastProcessTime = timeSource.markNow()
 
 	override fun process(mutableComputedSkeleton: ComputedSkeleton) {
@@ -54,19 +57,24 @@ class VelocityComputedProcessor : SkeletonComputedProcessor {
 		lastProcessTime = now
 
 		mutableComputedSkeleton.forEachBone { part, bone ->
-			val lastVelocityData = lastVelocityBoneData[part]
+			val lastVelocityData = lastVelocityData[part]
 			val lastVelocity = lastVelocities[part] ?: ZERO_VELOCITY
 
 			// Compute current velocity
-			val currentVelocityData = VelocityBoneData(bone.rotation, bone.tailPosition)
+			val currentVelocityData = VelocityData(bone.rotation, bone.tailPosition)
 			val currentVelocity = lastVelocityData?.let { computeVelocity(currentVelocityData, it, deltaTime) } ?: ZERO_VELOCITY
 
 			// Smooth velocity before setting it
 			val newVelocity = smoothVelocity(currentVelocity, lastVelocity, deltaTime)
 			mutableComputedSkeleton[part] = bone.copy(velocity = newVelocity)
 
-			lastVelocityBoneData[part] = currentVelocityData
+			this@VelocityComputedProcessor.lastVelocityData[part] = currentVelocityData
 			lastVelocities[part] = newVelocity
 		}
+	}
+
+	override fun reset(resetType: ResetType) {
+		lastVelocities.clear()
+		lastVelocityData.clear()
 	}
 }

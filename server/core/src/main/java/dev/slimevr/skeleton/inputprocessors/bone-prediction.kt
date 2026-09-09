@@ -3,6 +3,7 @@ package dev.slimevr.skeleton.inputprocessors
 import dev.slimevr.config.Settings
 import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.InputSkeleton
+import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonInputProcessor
 import dev.slimevr.skeleton.bodyPartMap
 import dev.slimevr.skeleton.forEachBone
@@ -11,6 +12,7 @@ import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.rpc.FilteringType
+import solarxr_protocol.rpc.ResetType
 import kotlin.time.Duration.Companion.milliseconds
 
 /** How far ahead the prediction reaches at amount 1, scaled down by the configured amount */
@@ -19,14 +21,16 @@ val PREDICTION_LEAD = 10.milliseconds
 /**
  * Tries to predict future rotations of bones.
  */
-class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProcessor {
-	private data class BoneVelocity(
+class BonePredictionInputProcessor(val settings: Settings) :
+	SkeletonInputProcessor,
+	ResettableSkeletonProcessor {
+	private data class BoneDelta(
 		val lastRotation: Quaternion,
 		val rotationDelta: Quaternion,
 		val lastChange: MonotonicValueTimeMark,
 	)
 
-	private var velocities: BodyPartMap<BoneVelocity> = bodyPartMap()
+	private var deltas: BodyPartMap<BoneDelta> = bodyPartMap()
 
 	private fun getMultiplier(bodyPart: BodyPart) = when (bodyPart) {
 		BodyPart.LEFT_SHOULDER,
@@ -45,18 +49,18 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 		val filteringAmount = config.amount
 		if (config.type != FilteringType.PREDICTION || filteringAmount <= 0f) {
 			// Drop stale velocities so re-enabling doesn't diff against a long outdated pose
-			if (velocities.isNotEmpty()) velocities.clear()
+			if (deltas.isNotEmpty()) deltas.clear()
 			return
 		}
 		val now = timeSource.markNow()
 
-		val newVelocities = bodyPartMap<BoneVelocity>()
+		val newVelocities = bodyPartMap<BoneDelta>()
 		mutableInputSkeleton.forEachBone { bodyPart, bone ->
 			if (!bone.isRotationActive) return@forEachBone
 
-			val prev = velocities[bodyPart]
+			val prev = deltas[bodyPart]
 			if (prev == null) {
-				newVelocities[bodyPart] = BoneVelocity(bone.rotation, Quaternion.IDENTITY, now)
+				newVelocities[bodyPart] = BoneDelta(bone.rotation, Quaternion.IDENTITY, now)
 				return@forEachBone
 			}
 
@@ -70,11 +74,15 @@ class BonePredictionInputProcessor(val settings: Settings) : SkeletonInputProces
 				prev.rotationDelta
 			}
 
-			newVelocities[bodyPart] = BoneVelocity(bone.rotation, rotationDelta, if (changed) now else prev.lastChange)
+			newVelocities[bodyPart] = BoneDelta(bone.rotation, rotationDelta, if (changed) now else prev.lastChange)
 			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, bonePredictionAmount).unit()
 			val predicted = (scaledDelta * bone.rotation).unit()
 			if (predicted != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = predicted)
 		}
-		velocities = newVelocities
+		deltas = newVelocities
+	}
+
+	override fun reset(resetType: ResetType) {
+		deltas.clear()
 	}
 }
