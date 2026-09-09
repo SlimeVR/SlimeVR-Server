@@ -57,6 +57,7 @@ class BoneSmoothingInputProcessor(val settings: Settings) :
 	}
 
 	override fun reset(resetType: ResetType) {
+		lastProcessTime = timeSource.markNow()
 		smoothed.clear()
 	}
 }
