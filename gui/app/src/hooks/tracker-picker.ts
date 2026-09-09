@@ -67,6 +67,10 @@ export const ALL_ASSIGNABLE_PARTS = [
   BodyPart.NECK,
   BodyPart.LEFT_SHOULDER,
   BodyPart.RIGHT_SHOULDER,
+  
+  BodyPart.LEFT_BUST,
+  BodyPart.RIGHT_BUST,
+
   BodyPart.LEFT_HAND,
   BodyPart.RIGHT_HAND,
   BodyPart.LEFT_FOOT,

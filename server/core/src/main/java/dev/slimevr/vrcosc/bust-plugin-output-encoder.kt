@@ -28,7 +28,7 @@ private class BustOutputState {
 	): List<OscContent> {
 		val messages = mutableListOf<OscContent>()
 
-		val chest = bones[BodyPart.CHEST]
+		val chest = bones[BodyPart.UPPER_CHEST]
 		val leftBust = bones[BodyPart.LEFT_BUST]
 		val rightBust = bones[BodyPart.RIGHT_BUST]
 
