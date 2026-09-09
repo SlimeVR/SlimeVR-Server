@@ -116,10 +116,12 @@ class DriverIncomingTrackersBehaviour(
 			val trackerId = event.trackerId.toInt()
 			if (trackerId == 0) return@on
 
-			server.getTracker(trackerId)?.setRotation(
-				rotation = event.rotation?.let { Quaternion(it.w, it.x, it.y, it.z) },
-				position = event.position?.let { Vector3(it.x, it.y, it.z) },
-				// TODO: send velocity?
+			// TODO: receive velocity, mapping to accel?
+			server.getTracker(trackerId)?.context?.dispatch(
+				TrackerActions.SetRotation(
+					rotation = event.rotation?.let { Quaternion(it.w, it.x, it.y, it.z) },
+					position = event.position?.let { Vector3(it.x, it.y, it.z) },
+				),
 			)
 		}.launchIn(receiver.context.scope)
 	}

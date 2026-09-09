@@ -95,23 +95,7 @@ sealed interface TrackerActions {
 	data class SetMagStatus(val status: MagnetometerStatus) : TrackerActions
 	data class SetStatus(val status: TrackerStatus) : TrackerActions
 	data class SetDriverName(val driverName: String?) : TrackerActions
-
-	/**
-	 * Do not instantiate [SetRotation] directly. Use [Tracker.setRotation] instead so `headTrackerRotation` is automatically included.
-	 */
-	data class SetRotation
-	@Deprecated(
-		message = "Do not instantiate SetRotation directly. Use tracker.setRotation(...) instead so headTrackerRotation is automatically included.",
-		level = DeprecationLevel.ERROR,
-	)
-	constructor(
-		val rotation: Quaternion?,
-		val acceleration: Vector3?,
-		val magnetometer: Vector3?,
-		val position: Vector3?,
-		val resetRefresh: Boolean,
-		val polarityFallbackRotation: Quaternion,
-	) : TrackerActions
+	data class SetRotation(val rotation: Quaternion? = null, val acceleration: Vector3? = null, val magnetometer: Vector3? = null, val position: Vector3? = null, val newData: Boolean = true) : TrackerActions
 	data class SetMountingOrientation(val mountingOrientation: HeadingAlignment) : TrackerActions
 	data class SetRestOrientation(val restOrientation: Quaternion) : TrackerActions
 	data class FullReset(val referenceRotation: Quaternion, val resetPositionalHeadAttitude: Boolean = false) : TrackerActions
@@ -133,34 +117,6 @@ class Tracker(
 	val settings: Settings,
 ) {
 	fun startObserving() = context.observeAll(this)
-
-	fun setRotation(
-		rotation: Quaternion? = null,
-		acceleration: Vector3? = null,
-		magnetometer: Vector3? = null,
-		position: Vector3? = null,
-		resetRefresh: Boolean = false,
-	) {
-		// TODO if there's still centaur bug, we can use the nearest parent tracker's rotation instead of head.
-		val polarityFallbackRotation = if (context.state.value.bodyPart != BodyPart.HEAD) {
-			appContext.server.context.state.value.trackers.values
-				.map { it.context.state.value }
-				.getFirstActiveFor(BodyPart.HEAD)?.rotation
-		} else {
-			null
-		} ?: Quaternion.IDENTITY
-		context.dispatch(
-			@Suppress("DEPRECATION_ERROR")
-			TrackerActions.SetRotation(
-				rotation = rotation,
-				acceleration = acceleration,
-				magnetometer = magnetometer,
-				position = position,
-				resetRefresh = resetRefresh,
-				polarityFallbackRotation = polarityFallbackRotation,
-			),
-		)
-	}
 
 	companion object {
 		fun create(
@@ -214,10 +170,7 @@ class Tracker(
 				scope = scope,
 				reducer = ::reduce,
 				behaviours = behaviours,
-				debugMiddleware = LoggingMiddleware(
-					block = setOf(TrackerActions.SetRotation::class),
-					diffStyle = DiffStyle.MULTILINE,
-				),
+				debugMiddleware = LoggingMiddleware(diffStyle = DiffStyle.MULTILINE),
 				name = "Tracker[$hardwareId]",
 			)
 			val tracker = Tracker(context = context, appContext, settings)
