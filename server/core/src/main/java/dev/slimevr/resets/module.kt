@@ -91,10 +91,10 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 			if (resetType == ResetType.FULL) {
 				// Tell the skeleton to set the floor level and try resetting the head position (for mocap mode)
 				skeleton.context.dispatchAll(listOf(SkeletonActions.ResetHeadPosition, SkeletonActions.ComputeFloorLevel))
-
-				// Reset the skeleton processors that keep data not in states (smoothing, localizer, skating correction, etc.)
-				skeleton.resetProcessors()
 			}
+
+			// Reset the skeleton processors that store temporary data (smoothing, localizer, skating correction, etc.)
+			skeleton.resetProcessors(resetType)
 
 			// Update state and config
 			context.dispatch(ResetsActions.EndReset(resetType, bodyParts, settings.context.state.value.data.resetsConfig.resetMountingFeet))

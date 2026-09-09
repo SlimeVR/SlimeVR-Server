@@ -129,9 +129,11 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) :
 		}
 	}
 
-	override fun reset() {
-		comState = null
-		lastLockedPositions.clear()
-		lockState.clear()
+	override fun reset(resetType: ResetType) {
+		if (resetType == ResetType.FULL) {
+			comState = null
+			lastLockedPositions.clear()
+			lockState.clear()
+		}
 	}
 }
