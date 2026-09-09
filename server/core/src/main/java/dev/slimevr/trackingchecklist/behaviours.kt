@@ -266,6 +266,7 @@ class NetworkProfileCheckBehaviour(
 				TrackingChecklistStep(
 					valid = state.publicNetworks.isEmpty(),
 					enabled = state.isSupported,
+					ignorable = true,
 					extraData = if (state.publicNetworks.isNotEmpty()) {
 						TrackingChecklistPublicNetworks(
 							adapters = state.publicNetworks.map {
