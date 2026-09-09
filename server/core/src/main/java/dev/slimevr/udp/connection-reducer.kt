@@ -9,7 +9,12 @@ fun reduce(state: UDPConnectionState, action: UDPConnectionActions): UDPConnecti
 
 	is UDPConnectionActions.StartPing -> state.copy(lastPing = state.lastPing.copy(startTime = action.startTime, id = action.pingId))
 
-	is UDPConnectionActions.Handshake -> state.copy(didHandshake = true, lastHandshake = System.currentTimeMillis(), deviceId = action.deviceId)
+	is UDPConnectionActions.Handshake -> state.copy(
+		didHandshake = true,
+		lastHandshake = System.currentTimeMillis(),
+		deviceId = action.deviceId,
+		lastPacketNum = 0,
+	)
 
 	is UDPConnectionActions.AssignTracker -> state.copy(trackerIds = state.trackerIds + action.trackerId)
 

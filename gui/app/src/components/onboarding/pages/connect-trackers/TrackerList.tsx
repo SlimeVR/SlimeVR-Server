@@ -305,7 +305,7 @@ export function ErrorDetailModal({
       className="max-w-md w-full p-6 flex flex-col gap-4 bg-background-70 rounded-xl border border-background-60"
     >
       <div className="flex flex-col items-center text-center gap-3">
-        <LoaderIcon slimeState={SlimeState.SAD} size={56} />
+        <LoaderIcon slimeState={SlimeState.SAD} />
 
         <div className="flex flex-col gap-1">
           <Typography
@@ -351,7 +351,7 @@ export function NoSerialLogsModal({
       className="max-w-md w-full p-6 flex flex-col gap-4 bg-background-70 rounded-xl border border-background-60"
     >
       <div className="flex flex-col items-center text-center gap-3">
-        <LoaderIcon slimeState={SlimeState.SAD} size={56} />
+        <LoaderIcon slimeState={SlimeState.SAD} />
 
         <div className="flex flex-col gap-1">
           <Typography
@@ -483,10 +483,7 @@ function EmptyTrackerListIllustration({
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 h-full min-h-[220px] gap-3 text-center p-6 my-auto">
-      <LoaderIcon
-        slimeState={isError ? SlimeState.SAD : SlimeState.JUMPY}
-        size={56}
-      />
+      <LoaderIcon slimeState={isError ? SlimeState.SAD : SlimeState.JUMPY} />
       <div className="flex flex-col gap-1 max-w-xs">
         <Typography
           bold

@@ -132,14 +132,6 @@ function Layout() {
             }
           />
           <Route
-            path="/vrc-warnings"
-            element={
-              <MainLayout isMobile={isMobile}>
-                <VRCWarningsPage />
-              </MainLayout>
-            }
-          />
-          <Route
             path="/settings"
             element={
               <SettingsLayout>
@@ -158,6 +150,7 @@ function Layout() {
             <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />
             <Route path="keybinds" element={<KeybindSettings />} />
+            <Route path="vrc-warnings" element={<VRCWarningsPage />} />
           </Route>
           <Route
             path="/onboarding"

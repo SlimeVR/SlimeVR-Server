@@ -45,6 +45,9 @@ build/
 .direnv/
 .devenv
 
+# Git worktrees
+.worktree/
+
 # Ignore Android local properties
 local.properties
 

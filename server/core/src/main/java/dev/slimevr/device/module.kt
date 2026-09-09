@@ -30,15 +30,10 @@ data class DeviceState(
 	val status: TrackerStatus,
 	val origin: DeviceOrigin,
 	val driverName: String? = null,
-	val packetsReceived: Long,
-	val packetsLost: Long,
-	val packetLossRecent: Float? = null,
-	val samples: List<DevicePacketSample> = emptyList(),
 )
 
 sealed interface DeviceActions {
 	data class Update(val transform: DeviceState.() -> DeviceState) : DeviceActions
-	data class PacketStats(val packetsReceived: Long, val packetsLost: Long) : DeviceActions
 }
 
 typealias DeviceContext = Context<DeviceState, DeviceActions>
@@ -48,7 +43,17 @@ class Device(
 	val context: DeviceContext,
 	val appContext: AppContextProvider,
 ) {
-	fun getStatsForWindow(windowMs: Long, now: Long = System.currentTimeMillis()): WindowedDeviceStats = computeWindowedStats(context.state.value.samples, windowMs, now)
+	val packetHistory = DevicePacketHistory()
+
+	fun recordPacketStats(received: Int, lost: Int, at: Long = System.currentTimeMillis()) {
+		packetHistory.record(DevicePacketSample(time = at, received = received, lost = lost))
+	}
+
+	fun recordRssi(rssi: Int, at: Long = System.currentTimeMillis()) {
+		packetHistory.recordRssi(DeviceRssiSample(time = at, rssi = rssi))
+	}
+
+	fun getStatsForWindow(windowMs: Long, now: Long = System.currentTimeMillis()): WindowedDeviceStats = packetHistory.statsForWindow(windowMs, now)
 
 	fun startObserving() = context.observeAll(this)
 
@@ -84,9 +89,6 @@ class Device(
 				boardType = BoardType.UNKNOWN,
 				firmwareVersion = null,
 				firmwareDate = null,
-				packetsReceived = 0L,
-				packetsLost = 0L,
-				packetLossRecent = null,
 			)
 
 			val context = Context.create(
@@ -94,7 +96,6 @@ class Device(
 				scope = scope,
 				reducer = ::reduce,
 				debugMiddleware = LoggingMiddleware(
-					block = setOf(DeviceActions.PacketStats::class),
 					diffStyle = DiffStyle.MULTILINE,
 				),
 				name = "Device[$address]",

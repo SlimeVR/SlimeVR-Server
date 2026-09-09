@@ -69,7 +69,7 @@ class VMCInputBehaviour(private val settings: Settings) : VMCBehaviour {
 		message: String,
 		throwable: Throwable,
 	) {
-		AppLogger.vmc.error(message, throwable)
+		AppLogger.vmc.error(throwable, message)
 		receiver.context.dispatch(
 			VMCActions.SetInput(
 				state = VMCOSCInputState.ERROR,

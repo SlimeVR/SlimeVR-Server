@@ -160,6 +160,7 @@ export function TrackerSettingsPage() {
         isOpen={selectBodyPart}
         onClose={() => setSelectBodyPart(false)}
         onRoleSelected={onRoleSelected}
+        bodyPart={tracker?.tracker.info?.bodyPart}
       />
       <MountingSelectionMenu
         bodyPart={tracker?.tracker.info?.bodyPart}
@@ -358,37 +359,34 @@ export function TrackerSettingsPage() {
                 {tracker?.device?.hardwareInfo?.networkProtocolVersion || '--'}
               </Typography>
             </div>
-            {tracker?.device?.hardwareStatus?.packetsReceived !== null && (
-              <>
-                <div className="flex justify-between">
-                  <Typography>
-                    {l10n.getString('tracker-infos-packet_loss')}
-                  </Typography>
-                  <Typography>
-                    {(
-                      (tracker?.device?.hardwareStatus?.packetLoss ?? 0) * 100
-                    ).toFixed(0)}
-                    %
-                  </Typography>
-                </div>
-                <div className="flex justify-between">
-                  <Typography>
-                    {l10n.getString('tracker-infos-packets_lost')}
-                  </Typography>
-                  <Typography>
-                    {tracker?.device?.hardwareStatus?.packetsLost ?? '0'}
-                  </Typography>
-                </div>
-                <div className="flex justify-between">
-                  <Typography>
-                    {l10n.getString('tracker-infos-packets_received')}
-                  </Typography>
-                  <Typography>
-                    {tracker?.device?.hardwareStatus?.packetsReceived ?? '0'}
-                  </Typography>
-                </div>
-              </>
-            )}
+            <div className="flex justify-between">
+              <Typography>
+                {l10n.getString('tracker-infos-packet_loss')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareStatus?.packetLoss != null
+                  ? `${(tracker.device.hardwareStatus.packetLoss * 100).toFixed(
+                      0
+                    )}%`
+                  : '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography>
+                {l10n.getString('tracker-infos-packets_lost')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareStatus?.packetsLost ?? '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography>
+                {l10n.getString('tracker-infos-packets_received')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareStatus?.packetsReceived ?? '--'}
+              </Typography>
+            </div>
           </div>
           {tracker && <IMUVisualizerWidget td={tracker} />}
         </div>

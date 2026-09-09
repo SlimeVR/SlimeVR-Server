@@ -15,9 +15,13 @@ export const Y_PARTS = [
 ];
 
 /**
- * Height the proportion presets in `skeletonParts.ts` are authored against.
+ * Height the proportion presets in `skeletonParts.ts` are authored against:
+ * the rig the models came from, measured the same way {@link computeUserHeight}
+ * measures the user, so the two are the same kind of number. Its headset sits
+ * at 1.583, which over {@link EYE_HEIGHT_TO_HEIGHT_RATIO} is this. Its meshes
+ * agree, running 1.704 from the top of the skull to the sole of the foot.
  */
-const REFERENCE_HEIGHT = 1.65;
+const REFERENCE_HEIGHT = 1.691;
 
 export interface SkeletonProportions {
   /** User height relative to {@link REFERENCE_HEIGHT}. */

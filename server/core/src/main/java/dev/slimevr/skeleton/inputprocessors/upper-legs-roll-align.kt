@@ -45,7 +45,7 @@ class UpperLegsRollAlignInputProcessor(val settings: Settings) : SkeletonInputPr
 
 			val sourceRotation = mutableInputSkeleton[bodyPartToSource.second]?.rotation ?: continue
 			val alignedRotation = alignRoll(bone.rotation, sourceRotation)
-			mutableInputSkeleton[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpQ(alignedRotation, ratio))
+			mutableInputSkeleton[bodyPartToSource.first] = bone.copy(rotation = bone.rotation.interpR(alignedRotation, ratio))
 		}
 	}
 }

@@ -57,7 +57,7 @@ class BvhStream(
 			lastFrameTime = now
 
 			val head = bones[BodyPart.HEAD]
-			val pos = head?.headPosition ?: Vector3.NULL
+			val pos = head?.headPosition ?: Vector3.ZERO
 			file.write("${pos.x * POSITION_SCALE} ${pos.y * POSITION_SCALE} ${pos.z * POSITION_SCALE}")
 			writeRotations(BodyPart.HEAD, bones)
 			file.write("\n")
@@ -96,7 +96,7 @@ class BvhStream(
 	}
 
 	private fun getBvhOffset(parentPart: BodyPart, bones: ComputedSkeleton): Vector3 {
-		val offset = bones[parentPart]?.offset ?: return Vector3.NULL
+		val offset = bones[parentPart]?.offset ?: return Vector3.ZERO
 		return offset * OFFSET_SCALE
 	}
 

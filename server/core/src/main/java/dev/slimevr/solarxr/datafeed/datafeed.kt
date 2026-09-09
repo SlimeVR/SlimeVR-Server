@@ -15,6 +15,8 @@ import dev.slimevr.solarxr.createBone
 import dev.slimevr.tracker.Motion
 import dev.slimevr.tracker.TrackerState
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import solarxr_protocol.data_feed.DataFeedConfig
 import solarxr_protocol.data_feed.DataFeedMessageHeader
@@ -38,6 +40,7 @@ import solarxr_protocol.datatypes.hardware_info.HardwareStatus
 import solarxr_protocol.datatypes.hardware_info.ImuType
 import solarxr_protocol.datatypes.math.Quat
 import solarxr_protocol.datatypes.math.Vec3f
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
 
@@ -62,6 +65,7 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 			imuType = tracker.imuType ?: ImuType.UNKNOWN,
 			bodyPart = tracker.bodyPart ?: BodyPart.NONE,
 			mountingOrientation = tracker.mountingOrientation.let { Quat(it.x, it.y, it.z, it.w) },
+			mountingResetOrientation = tracker.sessionCalibration.headingAlignment.let { Quat(it.x, it.y, it.z, it.w) },
 			displayName = tracker.name,
 			customName = tracker.customName,
 			lastMountingMethod = tracker.lastMountingMethod,
@@ -79,17 +83,18 @@ private fun createTracker(device: DeviceState, tracker: TrackerState, trackerMas
 	rotationIdentityAdjusted = if (trackerMask.rotationIdentityAdjusted) tracker.rotation.let { Quat(it.x, it.y, it.z, it.w) } else null, // FIXME: uses reference adjusted
 	rawMagneticVector = if (trackerMask.rawMagneticVector && tracker.magStatus == MagnetometerStatus.ENABLED) tracker.rawMagnetometer.let { Vec3f(it.x, it.y, it.z) } else null,
 	stayAligned = if (trackerMask.stayAligned) StayAlignedTracker(tracker.stayAlignedData.yawCorrection.toDeg(), tracker.motion == Motion.RESTING) else null,
-	origin = tracker.origin,
+	origin = if (trackerMask.origin) tracker.origin else null,
 )
+
+private const val DEVICE_STATS_WINDOW_MS = 5_000L
 
 private fun createDevice(
 	device: Device,
 	trackers: List<TrackerState>,
 	datafeedConfig: DataFeedConfig,
-	windowMs: Long,
 ): DeviceData {
 	val deviceState = device.context.state.value
-	val stats = device.getStatsForWindow(windowMs)
+	val stats = device.getStatsForWindow(DEVICE_STATS_WINDOW_MS)
 	val trackerMask = datafeedConfig.dataMask?.trackerData
 
 	return DeviceData(
@@ -102,8 +107,8 @@ private fun createDevice(
 			rssi = stats.rssiAvg?.toShort(),
 			rssiMin = stats.rssiMin?.toShort(),
 			rssiMax = stats.rssiMax?.toShort(),
-			packetsReceived = deviceState.packetsReceived.toInt(),
-			packetsLost = deviceState.packetsLost.toInt(),
+			packetsReceived = stats.packetsReceived,
+			packetsLost = stats.packetsLost,
 			packetLoss = stats.packetLoss,
 			// TODO missing fields
 		),
@@ -117,6 +122,7 @@ private fun createDevice(
 			firmwareDate = deviceState.firmwareDate,
 			ipAddress = ipv4AddressFromString(deviceState.address),
 			hardwareIdentifier = deviceState.macAddress,
+			networkProtocolVersion = deviceState.protocolVersion.toUShort(),
 			// TODO missing fields
 		),
 		trackers = if (trackerMask != null) {
@@ -152,6 +158,7 @@ private fun createDongle(dongle: HIDReceiverState, mask: DongleDataMask): Dongle
 	boardType = dongle.boardType.takeIf { mask.boardType },
 	devicesIds = dongle.trackers.values.map { it.deviceId.toUShort() }.distinct().takeIf { mask.devicesIds },
 	status = dongle.status.takeIf { mask.status } ?: DongleStatus.NONE,
+	protocolVersion = dongle.protocolVersion?.toUShort().takeIf { mask.protocolVersion },
 )
 
 fun createDatafeedFrame(
@@ -164,9 +171,8 @@ fun createDatafeedFrame(
 ): DataFeedMessageHeader {
 	val serverState = server.context.state.value
 	val trackers = serverState.trackers.values.map { it.context.state.value }
-	val windowMs = datafeedConfig.minimumTimeSinceLast.toLong().coerceAtLeast(50L)
 	val devices = if (datafeedConfig.dataMask?.deviceData != null) {
-		serverState.devices.values.map { device -> createDevice(device, trackers, datafeedConfig, windowMs) }
+		serverState.devices.values.map { device -> createDevice(device, trackers, datafeedConfig) }
 	} else {
 		null
 	}
@@ -209,10 +215,7 @@ class DataFeedInitBehaviour(
 					val interval = config.minimumTimeSinceLast.toLong().milliseconds
 					var nextSend = timeSource.markNow()
 
-					skeleton.computed.collect {
-						val now = timeSource.markNow()
-						if (now < nextSend) return@collect
-
+					while (isActive) {
 						try {
 							receiver.sendDataFeed(
 								createDatafeedFrame(
@@ -228,8 +231,17 @@ class DataFeedInitBehaviour(
 							AppLogger.solarxr.error(e, "Error sending data feed")
 						}
 
+						// Sleeping to an absolute deadline takes the send's own duration out of the
+						// gap instead of adding it on top
 						nextSend += interval
-						if (nextSend < now) nextSend = now + interval
+						val remaining = -nextSend.elapsedNow()
+						if (remaining > Duration.ZERO) {
+							delay(remaining)
+						} else {
+							// A send that outran the interval gives up the slots it missed rather
+							// than firing back to back to catch up
+							nextSend = timeSource.markNow()
+						}
 					}
 				}
 			}

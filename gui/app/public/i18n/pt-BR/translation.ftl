@@ -502,8 +502,6 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-descr
 settings-general-fk_settings-ik = Dados de posição
 settings-general-fk_settings-ik-use_position = Usar dados de posição
 settings-general-fk_settings-ik-use_position-description = Ativa o uso de dados de posição dos trackers que os fornecem. Ao ativar isso, certifique-se de executar "Redefinir Tudo" e recalibrar no jogo.
-settings-general-fk_settings-velocity_settings = Configurações de Velocidade
-settings-general-fk_settings-velocity_settings-description = Envia dados de velocidade derivados para o SteamVR. Necessário para suporte ao Natural Locomotion. Pode causar instabilidade no FBT.
 settings-general-fk_settings-arm_fk-reset_mode-description = Altera qual pose de braço é esperada para a calibração de montagem.
 settings-general-fk_settings-arm_fk-back = Atrás
 settings-general-fk_settings-arm_fk-back-description = O modo padrão, com os braços voltados para trás e os antebraços para frente.

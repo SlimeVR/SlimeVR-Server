@@ -1,17 +1,17 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import { useMemo, useEffect, useState, useRef, useLayoutEffect } from 'react';
-import BoneKind, {
-  createChildren,
+import {
   BasedSkeletonHelper,
+  TrackerPreviewData,
 } from '@/utils/skeletonHelper';
 import { BasedSkeletonMeshHelper } from '@/utils/skeletonMeshHelper';
+import { getTrackerBoneOffset } from '@/utils/skeletonParts';
 import {
   computeHeadYOffset,
   deriveSkeletonProportions,
 } from '@/utils/skeletonProportions';
 import {
-  Bone,
   Color,
   DirectionalLight,
   Group,
@@ -26,14 +26,14 @@ import {
   Vector3,
   WebGLRenderer,
 } from 'three';
-import { BodyPart, BoneT } from 'solarxr-protocol';
+import { BodyPart, BoneT, MountingMethod } from 'solarxr-protocol';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Typography } from '@/components/commons/Typography';
 import { useAtomValue } from 'jotai';
-import { bonesAtom } from '@/store/app-store';
+import { assignedTrackersAtom, bonesAtom } from '@/store/app-store';
 import { Config, useConfig } from '@/hooks/config';
 import { Tween } from '@tweenjs/tween.js';
 import { EyeIcon } from '@/components/commons/icon/EyeIcon';
@@ -144,7 +144,7 @@ function createRadialFloorMesh(size = 8.0): Mesh {
 
 function initializePreview(
   canvas: HTMLCanvasElement,
-  skeleton: (BoneKind | Bone)[],
+  bones: Map<BodyPart, BoneT>,
   style: Config['skeletonPreviewStyle']
 ) {
   let lastRenderTimeRef = 0;
@@ -173,40 +173,33 @@ function initializePreview(
   const floor = createRadialFloorMesh(6.0);
   scene.add(floor);
 
-  const makeHelper = (root: Bone | BoneKind): SkeletonHelper => {
+  const makeHelper = (bones: Map<BodyPart, BoneT>): SkeletonHelper => {
     if (style === 'lines') {
-      const helper = new BasedSkeletonHelper(root);
+      const helper = new BasedSkeletonHelper(bones);
       helper.resolution.copy(resolution);
       return helper;
     }
-    return new BasedSkeletonMeshHelper(root);
+    return new BasedSkeletonMeshHelper(bones);
   };
 
   const skeletonGroup = new Group();
-  let skeletonHelper = makeHelper(skeleton[0]);
+  let skeletonHelper = makeHelper(bones);
   skeletonGroup.add(skeletonHelper);
 
   scene.add(skeletonGroup);
-  scene.add(skeleton[0]);
 
   let heightOffset = 0;
 
-  const rebuildSkeleton = (
-    newSkeleton: (BoneKind | Bone)[],
-    bones: Map<BodyPart, BoneT>
-  ) => {
+  const rebuildSkeleton = (newBones: Map<BodyPart, BoneT>) => {
     skeletonGroup.remove(skeletonHelper);
     skeletonHelper.dispose();
-    scene.remove(skeleton[0]);
+    bones = newBones;
 
-    skeleton = newSkeleton;
-
-    skeletonHelper = makeHelper(newSkeleton[0]);
+    skeletonHelper = makeHelper(bones);
     if (skeletonHelper instanceof BasedSkeletonMeshHelper) {
       skeletonHelper.setProportions(deriveSkeletonProportions(bones));
     }
     skeletonGroup.add(skeletonHelper);
-    scene.add(newSkeleton[0]);
 
     const hmd = bones.get(BodyPart.HEAD);
     const quat = QuaternionFromQuatT(hmd?.orientation).normalize().invert();
@@ -219,6 +212,10 @@ function initializePreview(
     const yawReset = new Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
 
     skeletonGroup.rotation.setFromQuaternion(yawReset);
+  };
+
+  const updateTrackers = (trackers: Map<BodyPart, TrackerPreviewData>) => {
+    skeletonHelper.setTrackers(trackers);
   };
 
   const render = (delta: number) => {
@@ -288,13 +285,9 @@ function initializePreview(
       frameInterval = interval;
     },
     rebuildSkeleton,
-    updatesBones: (bones: Map<BodyPart, BoneT>) => {
-      skeleton.forEach(
-        (bone) => bone instanceof BoneKind && bone.updateData(bones)
-      );
-      // The mesh helper reads bone.matrixWorld alongside the raw orientations,
-      // and the scene traverses it before this tree, so refresh it here.
-      skeleton[0].updateMatrixWorld(true);
+    updatesBones: (newBones: Map<BodyPart, BoneT>) => {
+      bones = newBones;
+      skeletonHelper.setBones(bones);
       if (skeletonHelper instanceof BasedSkeletonMeshHelper) {
         skeletonHelper.setProportions(deriveSkeletonProportions(bones));
       }
@@ -306,6 +299,7 @@ function initializePreview(
         });
       }
     },
+    updateTrackers,
     destroy: () => {
       cancelAnimationFrame(animationFrameId);
       skeletonHelper.dispose();
@@ -394,24 +388,48 @@ function SkeletonVisualizer({
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
   const bonesList = useAtomValue(bonesAtom);
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
   const bones = useMemo(() => {
     return new Map(bonesList.map((b) => [b.bodyPart, b]));
   }, [bonesList]);
+  const trackersByPart = useMemo(() => {
+    const trackers = new Map<BodyPart, TrackerPreviewData>();
+    for (const { tracker } of assignedTrackers) {
+      const bodyPart = tracker.info?.bodyPart;
+      if (bodyPart == null || bodyPart === BodyPart.NONE) continue;
+      trackers.set(bodyPart, {
+        trackerId: tracker.trackerId,
+        mountingOrientation: QuaternionFromQuatT(
+          tracker.info?.lastMountingMethod == MountingMethod.MANUAL
+            ? tracker.info?.mountingOrientation
+            : tracker.info?.mountingResetOrientation
+        ).normalize(),
+        boneOffset: getTrackerBoneOffset(bodyPart),
+      });
+    }
+    return trackers;
+  }, [assignedTrackers]);
 
   useEffect(() => {
     if (bones.size === 0) return;
     const context = previewContext.current;
     if (!context || disabled) return;
-    context.rebuildSkeleton(createChildren(bones, BoneKind.root), bones);
-    console.log('rebuild');
+    context.rebuildSkeleton(bones);
   }, [bones.size, disabled]);
 
   useEffect(() => {
     const context = previewContext.current;
     if (!context || disabled) return;
     context.updatesBones(bones);
+    context.updateTrackers(trackersByPart);
   }, [bones, disabled]);
+
+  useEffect(() => {
+    const context = previewContext.current;
+    if (!context || disabled) return;
+    context.updateTrackers(trackersByPart);
+  }, [trackersByPart, disabled]);
 
   const onResize = (e: ResizeObserverEntry) => {
     const context = previewContext.current;
@@ -439,11 +457,7 @@ function SkeletonVisualizer({
       throw 'invalid state - no canvas or container';
     resizeObserver.current.observe(containerRef.current);
 
-    previewContext.current = initializePreview(
-      canvasRef.current,
-      createChildren(bones, BoneKind.root),
-      style
-    );
+    previewContext.current = initializePreview(canvasRef.current, bones, style);
     if (!config?.devSettings.fastDataFeed)
       previewContext.current.setFrameInterval(1000 / LOW_FRAMERATE);
 

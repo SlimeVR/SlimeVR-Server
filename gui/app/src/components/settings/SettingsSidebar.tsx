@@ -146,7 +146,7 @@ export function SettingsSidebar() {
           <SettingsLink to="/onboarding/home" id="navbar-onboarding" />
           {vrcConfigState?.isSupported && (
             <SettingsLink
-              to="/vrc-warnings"
+              to="/settings/vrc-warnings"
               id="settings-sidebar-vrc_warnings"
             />
           )}
