@@ -230,7 +230,7 @@ class Skeleton(
 					),
 					targetProcessors = listOf(
 // 						FloorClipTargetProcessor(settings),
-						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
+// 						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 					),
 					ikComputedProcessors = listOf(
 						VelocityComputedProcessor().also { resettableSkeletonProcessors.add(it) },

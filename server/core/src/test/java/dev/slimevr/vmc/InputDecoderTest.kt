@@ -21,8 +21,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
-private fun assertApprox(expected: Vector3, actual: Vector3, message: String = "") =
-	vectorAssertEquals(expected, actual, message = message)
+private fun assertApprox(expected: Vector3, actual: Vector3, message: String = "") = vectorAssertEquals(expected, actual, message = message)
 
 // Quaternions q and -q represent the same rotation, so either sign is an acceptable match.
 private fun assertApprox(expected: Quaternion, actual: Quaternion, message: String = "") {

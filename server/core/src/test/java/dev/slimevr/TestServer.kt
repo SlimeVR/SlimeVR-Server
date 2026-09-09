@@ -117,7 +117,7 @@ fun buildTestSkeleton(scope: CoroutineScope): Skeleton {
 		onBufferOverflow = BufferOverflow.DROP_OLDEST,
 	)
 	computed.tryEmit(buildBones(context.state.value.boneInputs))
-	val skeleton = Skeleton(context, buildTestSettings(scope), computed)
+	val skeleton = Skeleton(context, computed, emptySet())
 	skeleton.startObserving()
 	return skeleton
 }
