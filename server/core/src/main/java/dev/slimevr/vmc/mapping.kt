@@ -163,10 +163,11 @@ private class VmcBoneTree(hierarchy: BodyPartMap<Array<BodyPart>>) {
 val VMC_OUTPUT_BONE_PARENTS: BodyPartMap<BodyPart?> = VmcBoneTree(VMC_HIERARCHY_MAP).parents
 
 val VMC_INPUT_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
-	VMC_HIERARCHY_MAP + mapOf(
-		BodyPart.CHEST to arrayOf(BodyPart.UPPER_CHEST),
-		BodyPart.UPPER_CHEST to arrayOf(BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
-	),
+	VMC_HIERARCHY_MAP +
+		mapOf(
+			BodyPart.CHEST to arrayOf(BodyPart.UPPER_CHEST),
+			BodyPart.UPPER_CHEST to arrayOf(BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
+		),
 )
 private val vmcInputTree = VmcBoneTree(VMC_INPUT_HIERARCHY_MAP)
 val VMC_INPUT_BONE_ORDER: List<BodyPart> = vmcInputTree.order

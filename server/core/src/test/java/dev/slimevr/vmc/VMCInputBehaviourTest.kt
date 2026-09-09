@@ -63,8 +63,7 @@ private fun transformArgs(name: String, pos: Vector3, rot: Quaternion): List<Osc
 
 private fun bundleOf(vararg messages: OscMessage) = OscBundle(1L, messages.map { OscContent.Message(it) })
 
-private fun boneBundle(unityName: String, pos: Vector3, rot: Quaternion) =
-	bundleOf(OscMessage("/VMC/Ext/Bone/Pos", transformArgs(unityName, pos, rot)))
+private fun boneBundle(unityName: String, pos: Vector3, rot: Quaternion) = bundleOf(OscMessage("/VMC/Ext/Bone/Pos", transformArgs(unityName, pos, rot)))
 
 // Quaternions q and -q represent the same rotation, so either sign is an acceptable match.
 private fun assertApprox(expected: Quaternion, actual: Quaternion) {

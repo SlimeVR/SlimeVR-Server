@@ -212,14 +212,14 @@ class VMCInputBehaviour(
 			val unityName = BODY_PART_TO_UNITY_BONE[bodyPart]?.first() ?: continue
 			val tracker = registry.boneTracker(bodyPart, unityName)
 			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
-			tracker.setRotation(rotation = transform.rotation, position = transform.position)
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = transform.rotation, position = transform.position))
 		}
 
 		for (pose in frame.poseTrackers.values) {
 			val tracker = registry.poseTracker(pose.serial)
 			val position = if (pose.deviceScale) pose.position else pose.position * scale
 			tracker.context.dispatch(TrackerActions.SetStatus(TrackerStatus.OK))
-			tracker.setRotation(rotation = pose.rotation, position = position)
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = pose.rotation, position = position))
 		}
 
 		registry.setStatus(TrackerStatus.OK)
