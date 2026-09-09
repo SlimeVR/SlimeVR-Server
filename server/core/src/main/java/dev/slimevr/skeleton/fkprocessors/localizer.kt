@@ -173,7 +173,7 @@ object COMLocalizer {
 class LocalizerFkProcessor(val settings: Settings) :
 	SkeletonFkProcessor,
 	ResettableSkeletonProcessor {
-	private var plantedFoot = FootLocalizer.PlantedFoot.LEFT
+	private var plantedFoot = FootLocalizer.PlantedFoot.NONE
 	private var targetFoot = Vector3.ZERO
 
 	private var sittingTime = Duration.ZERO
@@ -243,11 +243,13 @@ class LocalizerFkProcessor(val settings: Settings) :
 
 	override fun reset(resetType: ResetType) {
 		if (resetType == ResetType.FULL) {
+			plantedFoot = FootLocalizer.PlantedFoot.NONE
 			targetFoot = Vector3.ZERO
 			sittingTime = Duration.ZERO
 			targetHip = Vector3.ZERO
 			comVelocity = Vector3.ZERO
 			targetCOM = Vector3.ZERO
+			lastProcessTime = timeSource.markNow()
 		}
 	}
 }

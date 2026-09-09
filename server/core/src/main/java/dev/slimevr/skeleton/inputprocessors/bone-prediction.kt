@@ -24,13 +24,13 @@ val PREDICTION_LEAD = 10.milliseconds
 class BonePredictionInputProcessor(val settings: Settings) :
 	SkeletonInputProcessor,
 	ResettableSkeletonProcessor {
-	private data class BoneVelocity(
+	private data class BoneDelta(
 		val lastRotation: Quaternion,
 		val rotationDelta: Quaternion,
 		val lastChange: MonotonicValueTimeMark,
 	)
 
-	private var velocities: BodyPartMap<BoneVelocity> = bodyPartMap()
+	private var deltas: BodyPartMap<BoneDelta> = bodyPartMap()
 
 	private fun getMultiplier(bodyPart: BodyPart) = when (bodyPart) {
 		BodyPart.LEFT_SHOULDER,
@@ -49,18 +49,18 @@ class BonePredictionInputProcessor(val settings: Settings) :
 		val filteringAmount = config.amount
 		if (config.type != FilteringType.PREDICTION || filteringAmount <= 0f) {
 			// Drop stale velocities so re-enabling doesn't diff against a long outdated pose
-			if (velocities.isNotEmpty()) velocities.clear()
+			if (deltas.isNotEmpty()) deltas.clear()
 			return
 		}
 		val now = timeSource.markNow()
 
-		val newVelocities = bodyPartMap<BoneVelocity>()
+		val newVelocities = bodyPartMap<BoneDelta>()
 		mutableInputSkeleton.forEachBone { bodyPart, bone ->
 			if (!bone.isRotationActive) return@forEachBone
 
-			val prev = velocities[bodyPart]
+			val prev = deltas[bodyPart]
 			if (prev == null) {
-				newVelocities[bodyPart] = BoneVelocity(bone.rotation, Quaternion.IDENTITY, now)
+				newVelocities[bodyPart] = BoneDelta(bone.rotation, Quaternion.IDENTITY, now)
 				return@forEachBone
 			}
 
@@ -74,15 +74,15 @@ class BonePredictionInputProcessor(val settings: Settings) :
 				prev.rotationDelta
 			}
 
-			newVelocities[bodyPart] = BoneVelocity(bone.rotation, rotationDelta, if (changed) now else prev.lastChange)
+			newVelocities[bodyPart] = BoneDelta(bone.rotation, rotationDelta, if (changed) now else prev.lastChange)
 			val scaledDelta = Quaternion.IDENTITY.lerpR(rotationDelta, bonePredictionAmount).unit()
 			val predicted = (scaledDelta * bone.rotation).unit()
 			if (predicted != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = predicted)
 		}
-		velocities = newVelocities
+		deltas = newVelocities
 	}
 
 	override fun reset(resetType: ResetType) {
-		velocities.clear()
+		deltas.clear()
 	}
 }
