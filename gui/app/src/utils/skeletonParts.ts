@@ -185,7 +185,6 @@ export interface BonePartConfig {
   /** Where an assigned tracker sits from this bone's head (0) to tail (1). */
   trackerOffset?: number;
 }
-export const BUST_GEOMETRY: BufferGeometry = new SphereGeometry(1, 20, 16);
 
 export const shape = (overrides: Partial<BoneShapeConfig> = {}): BoneShapeConfig => ({
   ...overrides,
@@ -265,23 +264,17 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
     { trackerOffset: CHEST_TRACKER_OFFSET }
   ),
   [BodyPart.LEFT_BUST]: part(
-    shape(
-      { x: 4, y: 4, z: 4 },
-      {
-        geometry: BUST_GEOMETRY,
-        localOffset: new Vector3(0.05, -0.01, 0.0),
-      }
-    )
+    model('bust', {
+      scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
+      offset: inMetres({ width: 0.07, length: -0.12 }),
+    })
   ),
 
   [BodyPart.RIGHT_BUST]: part(
-    shape(
-      { x: 4, y: 4, z: 4 },
-      {
-        geometry: BUST_GEOMETRY,
-        localOffset: new Vector3(-0.05, -0.01, -0.0),
-      }
-    )
+    model('bust', {
+      scale: authoredSize({ width: 0.08, depth: 0.08, length: 0.08 }),
+      offset: inMetres({ width: -0.07, length: -0.12 }),
+    })
   ),
 
   [BodyPart.WAIST]: part(
