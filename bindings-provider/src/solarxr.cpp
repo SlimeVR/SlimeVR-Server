@@ -24,7 +24,7 @@ fs::path SolarXRConnection::getSocketPath() {
 #define MAKE_SOCKET_PATH(PATH) \
     std::make_pair(PATH##sv, getenvSafe(PATH))
 
-    std::array<std::pair<std::string_view, fs::path>, 5> socketPaths{
+    std::vector<std::pair<std::string_view, fs::path>> socketPaths{
         MAKE_SOCKET_PATH("SLIMEVR_SOCKET_DIR"),
 #ifndef _WIN32
         { "Steam socket path", Paths::getDataPath() },
@@ -41,9 +41,17 @@ fs::path SolarXRConnection::getSocketPath() {
                 "Skipping socket directory '{}' because it doesn't exist", name);
             continue;
         }
+
         fs::path socketPath = path / socketName;
-        if (fs::exists(socketPath))
+
+        std::error_code ec;
+        if (fs::exists(socketPath, ec)
+#ifdef _WIN32
+            || ec.value() == ERROR_CANT_ACCESS_FILE // Windows moment???
+#endif
+        ) {
             return socketPath;
+        }
 
         Logger::get().info(
             "Skipping socket directory '{}' because socket does not exist", name);
@@ -53,6 +61,13 @@ fs::path SolarXRConnection::getSocketPath() {
 }
 
 SolarXRConnection::SolarXRConnection() {
+#ifdef _WIN32
+    WSADATA _ws_data;
+    if (int ret = WSAStartup(MAKEWORD(2, 2), &_ws_data); ret != 0) {
+        throw std::system_error(ret, std::system_category(), "WSAStartup() failed");
+    }
+#endif
+
     const fs::path path = getSocketPath();
     struct sockaddr_un addr{
         .sun_family = AF_UNIX,
@@ -67,21 +82,23 @@ SolarXRConnection::SolarXRConnection() {
     fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (fd == InvalidSocket) {
         int e = GetLastSocketError();
-        throw std::runtime_error(
-            std::format("Failed to create listen socket: {}", std::error_code(e, std::system_category()).message()));
+        throw std::system_error(e, std::system_category(), "socket() failed");
     }
 
     if (connect(fd, reinterpret_cast<const struct sockaddr *>(&addr), sizeof(addr)) == SocketError) {
         int e = GetLastSocketError();
         CloseSocket(fd);
-        throw std::runtime_error(std::format("Failed to connect to socket {}: {}",
-                                             addr.sun_path, std::error_code(e, std::system_category()).message()));
+        throw std::system_error(e, std::system_category(), std::format("connect() failed for path {}", path.string()));
     }
 }
 
 SolarXRConnection::~SolarXRConnection() {
     if (fd != InvalidSocket)
         CloseSocket(fd);
+
+#ifdef _WIN32
+    WSACleanup();
+#endif
 }
 
 bool SolarXRConnection::connected() {

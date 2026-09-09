@@ -93,6 +93,9 @@ class ResetsManager(val context: ResetsContext, val server: VRServer, val settin
 				skeleton.context.dispatchAll(listOf(SkeletonActions.ResetHeadPosition, SkeletonActions.ComputeFloorLevel))
 			}
 
+			// Reset the skeleton processors that store temporary data (smoothing, localizer, skating correction, etc.)
+			skeleton.resetProcessors(resetType)
+
 			// Update state and config
 			context.dispatch(ResetsActions.EndReset(resetType, bodyParts, settings.context.state.value.data.resetsConfig.resetMountingFeet))
 			settings.context.dispatch(

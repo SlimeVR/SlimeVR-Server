@@ -8,27 +8,28 @@ import dev.slimevr.hid.HIDRotationBatteryLegacy
 import dev.slimevr.hid.HIDRotationButtonLegacy
 import dev.slimevr.hid.HIDRotationLegacy
 import dev.slimevr.hid.HIDRotationMagLegacy
+import dev.slimevr.tracker.TrackerActions
 
 class HIDRotationBehaviour : HIDReceiverBehaviour {
 	override fun observe(receiver: HIDReceiver) {
 		receiver.packetEvents.on<HIDRotationLegacy> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@on
-			tracker.setRotation(rotation = packet.rotation, acceleration = packet.acceleration)
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.on<HIDRotationBatteryLegacy> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@on
-			tracker.setRotation(rotation = packet.rotation, acceleration = packet.acceleration)
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.on<HIDRotationMagLegacy> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@on
-			tracker.setRotation(rotation = packet.rotation, magnetometer = packet.magnetometer)
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, magnetometer = packet.magnetometer))
 		}.launchIn(receiver.context.scope)
 
 		receiver.packetEvents.on<HIDRotationButtonLegacy> { packet ->
 			val tracker = receiver.getTracker(packet.hidId) ?: return@on
-			tracker.setRotation(rotation = packet.rotation, acceleration = packet.acceleration)
+			tracker.context.dispatch(TrackerActions.SetRotation(rotation = packet.rotation, acceleration = packet.acceleration))
 		}.launchIn(receiver.context.scope)
 	}
 }

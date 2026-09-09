@@ -5,6 +5,7 @@ import dev.slimevr.skeleton.BodyPartMap
 import dev.slimevr.skeleton.COMState
 import dev.slimevr.skeleton.ComputedSkeleton
 import dev.slimevr.skeleton.IKTargets
+import dev.slimevr.skeleton.ResettableSkeletonProcessor
 import dev.slimevr.skeleton.SkeletonTargetProcessor
 import dev.slimevr.skeleton.Velocity
 import dev.slimevr.skeleton.bodyPartMap
@@ -13,6 +14,7 @@ import dev.slimevr.skeleton.computeComState
 import dev.slimevr.util.timeSource
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.ResetType
 
 data class LockState(
 	val locked: Boolean,
@@ -69,7 +71,9 @@ fun computeLockState(
 	null
 }
 
-class SkatingCorrectionTargetProcessor(val settings: Settings) : SkeletonTargetProcessor {
+class SkatingCorrectionTargetProcessor(val settings: Settings) :
+	SkeletonTargetProcessor,
+	ResettableSkeletonProcessor {
 	// Centre of mass
 	var comState: COMState? = null
 
@@ -122,6 +126,14 @@ class SkatingCorrectionTargetProcessor(val settings: Settings) : SkeletonTargetP
 				mutableIkTargets[bodyPart] = activeState.position
 				lastLockedPositions[bodyPart] = activeState.position
 			}
+		}
+	}
+
+	override fun reset(resetType: ResetType) {
+		if (resetType == ResetType.FULL) {
+			comState = null
+			lastLockedPositions.clear()
+			lockState.clear()
 		}
 	}
 }
