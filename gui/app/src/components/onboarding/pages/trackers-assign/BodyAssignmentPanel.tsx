@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { Clickable } from '@/components/commons/Clickable';
 import {
   HTMLAttributes,
   MouseEvent,
@@ -259,8 +260,10 @@ function Tab({
   onClick?: () => void;
 }) {
   return (
-    <div
-      onClick={disabled || active ? undefined : onClick}
+    <Clickable
+      disabled={disabled || active}
+      pressed={active}
+      onClick={onClick}
       className={classNames(
         'rounded-md',
         compact ? 'px-3 py-1' : 'px-4 py-2',
@@ -270,7 +273,7 @@ function Tab({
       )}
     >
       <Typography bold={active} id={labelId} />
-    </div>
+    </Clickable>
   );
 }
 
@@ -410,8 +413,7 @@ function TapBodyPartCard({
   const awaitingTracker = pendingTrackerId != null;
 
   return (
-    <button
-      type="button"
+    <Clickable
       id={BodyPart[role]}
       data-connector={connector ? undefined : 'off'}
       onClick={() => selectPart(role)}
@@ -451,6 +453,6 @@ function TapBodyPartCard({
           id="body_part-NONE"
         />
       )}
-    </button>
+    </Clickable>
   );
 }

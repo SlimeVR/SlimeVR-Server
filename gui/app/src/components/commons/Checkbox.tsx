@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { forwardRef, useMemo } from 'react';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
-import { FOCUS_RING, FOCUS_RING_PEER, FOCUS_RING_WITHIN } from '@/utils/a11y';
+import { FOCUS_RING_PEER, FOCUS_RING_WITHIN } from '@/utils/a11y';
 
 export const CHECKBOX_CLASSES =
   'bg-background-50 border-background-50 cursor-pointer rounded-md w-5 h-5 text-accent-background-30 focus:border-accent-background-40';
@@ -32,13 +32,15 @@ export const CheckboxInternal = forwardRef<
   ref
 ) {
   const classes = useMemo(() => {
-    // Outlined rows carry the ring on the card itself (FOCUS_RING_WITHIN), so the
-    // control keeps its own ring only when it is standalone.
+    // Outlined rows carry focus on the card (FOCUS_RING_WITHIN); the control's own
+    // focus outline is suppressed there so it doesn't double up.
     const vriantsMap = {
       checkbox: {
-        checkbox: classNames(CHECKBOX_CLASSES, !outlined && FOCUS_RING, {
-          'brightness-50 hover:cursor-not-allowed': disabled,
-        }),
+        checkbox: classNames(
+          CHECKBOX_CLASSES,
+          outlined && 'focus-visible:outline-none',
+          { 'brightness-50 hover:cursor-not-allowed': disabled }
+        ),
         toggle: '',
         pin: '',
       },

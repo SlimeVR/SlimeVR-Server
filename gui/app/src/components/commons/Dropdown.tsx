@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { Clickable } from './Clickable';
 import {
   CSSProperties,
   forwardRef,
@@ -20,7 +21,7 @@ import {
 import { ArrowDownIcon, ArrowUpIcon } from './icon/ArrowIcons';
 import { CheckIcon } from './icon/CheckIcon';
 import { ProgressBar } from './ProgressBar';
-import { FOCUS_RING, a11yClick } from '@/utils/a11y';
+import { a11yClick } from '@/utils/a11y';
 import './Dropdown.scss';
 import { Typography } from './Typography';
 import {
@@ -258,8 +259,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
     >
       {multiple && (onSelectAll || onDeselectAll) && (
         <div className="flex items-center justify-between px-3 py-2 border-b border-background-10/10 text-xs font-bold bg-background-80/60 select-none">
-          <button
-            type="button"
+          <Clickable
             onClick={(e) => {
               e.stopPropagation();
               onSelectAll?.();
@@ -267,9 +267,8 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
             className="text-background-10 hover:text-background-20 transition-colors"
           >
             <Typography id="dropdown_select-all" />
-          </button>
-          <button
-            type="button"
+          </Clickable>
+          <Clickable
             onClick={(e) => {
               e.stopPropagation();
               onDeselectAll?.();
@@ -277,7 +276,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
             className="text-background-30 hover:text-background-10 transition-colors"
           >
             <Typography id="dropdown_unselect-all" />
-          </button>
+          </Clickable>
         </div>
       )}
       <ul
@@ -494,7 +493,6 @@ export function DropdownInside(
           }}
           className={classNames(
             'flex flex-row items-center gap-2 pl-3 pr-11 rounded-md relative min-h-[48px] min-w-0 overflow-hidden',
-            FOCUS_RING,
             labelInside ? FLOATING_LABEL_PADDING : 'py-3',
             loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
             variantStyles[variant]

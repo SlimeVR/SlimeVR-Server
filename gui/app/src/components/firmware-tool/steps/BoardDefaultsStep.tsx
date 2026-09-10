@@ -14,6 +14,7 @@ import { DropdownInside } from '@/components/commons/Dropdown';
 import classNames from 'classnames';
 import { Button } from '@/components/commons/Button';
 import { TrashIcon } from '@/components/commons/icon/TrashIcon';
+import { IconButton } from '@/components/commons/IconButton';
 
 function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
   const { l10n } = useLocalization();
@@ -39,12 +40,13 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
           <div className="flex justify-between items-center">
             <Typography variant="section-title">{c.label}</Typography>
             {onDelete && (
-              <div
+              <IconButton
+                labelId="firmware_tool-board_defaults-remove"
                 className="p-2 rounded-full fill-background-10 hover:bg-background-50 hover:fill-status-critical cursor-pointer"
-                onClick={() => onDelete && onDelete()}
+                onClick={() => onDelete()}
               >
                 <TrashIcon size={20} />
-              </div>
+              </IconButton>
             )}
           </div>
           <div

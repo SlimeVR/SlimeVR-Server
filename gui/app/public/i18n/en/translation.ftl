@@ -37,6 +37,28 @@ dropdown_select-all = Select All
 dropdown_unselect-all = Unselect All
 
 
+## Text input
+# Accessible name for the eye button that reveals/hides a typed password
+input-password-show = Show password
+input-password-hide = Hide password
+
+
+## File input
+# Accessible name and tooltip for the icon-only button that clears a picked path
+file_input-clear = Clear file
+file_input-clear_folder = Clear folder
+
+
+## Window controls
+# Accessible names for the icon-only buttons in the title bar
+titlebar-docs = Open documentation
+titlebar-settings = Open settings
+titlebar-update = Download update
+titlebar-minimize = Minimize
+titlebar-maximize = Maximize
+titlebar-close = Close
+
+
 ## Body parts
 body_part-NONE = Unassigned
 body_part-HEAD = Head
@@ -412,6 +434,9 @@ dongle-settings-telemetry-chart_rssi = RSSI · dBm
 dongle-settings-telemetry-chart_loss = Packet loss · %
 dongle-settings-telemetry-chart_gaps = Loss gap events · TPS-relative packet gaps
 dongle-settings-telemetry-footnote = Loss gap events mark regions where packet updates were delayed relative to the tracker's TPS rate. Darker and wider marks indicate longer drop durations.
+# Accessible name and tooltip for the icon-only button that pauses/resumes the live telemetry feed
+dongle-settings-telemetry-live-pause = Pause live feed
+dongle-settings-telemetry-live-resume = Resume live feed
 
 
 ## Tracker part card info
@@ -1383,6 +1408,11 @@ home-settings = Home Page Settings
 home-settings-close = Close
 home-connection_group-wifi = Wi-Fi Trackers
 home-connection_group-driver = VR Devices
+# Accessible names and tooltips for the icon-only buttons in a connection group's toolbox
+tracker-connection-metrics = Live telemetry
+tracker-connection-dongle_settings = Dongle settings
+tracker-connection-collapse = Collapse group
+tracker-connection-expand = Expand group
 
 ## Trackers Still On notification
 trackers_still_on-modal-title = Trackers still on
@@ -1423,6 +1453,8 @@ firmware_tool-select_source-no_versions = No available versions for this source
 firmware_tool-board_defaults = Configure your board
 firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware
 firmware_tool-board_defaults-add = Add
+# Accessible name for the trash icon that removes a component
+firmware_tool-board_defaults-remove = Remove
 firmware_tool-board_defaults-reset = Reset to Default
 firmware_tool-board_defaults-error-required = Required field
 firmware_tool-board_defaults-error-format = Invalid format
@@ -1593,6 +1625,9 @@ error_collection_modal-cancel = I don't want to
 tracking_checklist = Tracking Checklist
 tracking_checklist-settings = Tracking Checklist Settings
 tracking_checklist-settings-close = Close
+# Accessible name and tooltip for the icon-only button that collapses/expands the checklist panel
+tracking_checklist-collapse = Collapse checklist
+tracking_checklist-expand = Expand checklist
 tracking_checklist-status-incomplete = You are not prepared to use SlimeVR!
 tracking_checklist-status-partial = {$count ->
     [one] You have 1 warning!

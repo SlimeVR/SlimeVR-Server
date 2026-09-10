@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { forwardRef, MouseEvent, useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import {
   Control,
   Controller,
@@ -9,9 +9,9 @@ import {
   UseControllerProps,
 } from 'react-hook-form';
 import { EyeIcon } from './icon/EyeIcon';
+import { IconButton } from './IconButton';
 import { Typography } from './Typography';
 import { FLOATING_LABEL_PADDING, FloatingLabel } from './FloatingLabel';
-import { FOCUS_RING } from '@/utils/a11y';
 
 interface InputProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
@@ -51,10 +51,7 @@ export const InputInside = forwardRef<
   const [forceText, setForceText] = useState(false);
   const [focused, setFocused] = useState(false);
 
-  const togglePassword = (e: MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setForceText(!forceText);
-  };
+  const togglePassword = () => setForceText(!forceText);
 
   const classes = useMemo(() => {
     const variantsMap = {
@@ -81,7 +78,6 @@ export const InputInside = forwardRef<
     return classNames(
       variantsMap[variant],
       'w-full min-h-[48px] z-10 rounded-md focus:border-accent-background-40',
-      FOCUS_RING,
       'text-standard text-background-10 relative transition-colors',
       error && 'border-status-critical border-1'
     );
@@ -139,12 +135,15 @@ export const InputInside = forwardRef<
           <FloatingLabel label={floatingText} floating={floating} />
         )}
         {type === 'password' && (
-          <div
+          <IconButton
+            labelId={forceText ? 'input-password-hide' : 'input-password-show'}
+            pressed={forceText}
+            tooltip={false}
             className="fill-background-10 absolute inset-y-0 right-0 pr-6 z-10 my-auto w-[16px] h-[16px] cursor-pointer"
             onClick={togglePassword}
           >
             <EyeIcon width={16} closed={forceText} />
-          </div>
+          </IconButton>
         )}
         {error?.message && (
           <div

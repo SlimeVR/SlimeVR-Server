@@ -38,10 +38,7 @@ const BONE_COLOR_GROUPS: [BodyPart[], string][] = [
 ];
 
 export function getBoneColor(bodyPart: BodyPart) {
-  if (
-    FINGER_BODY_PARTS.includes(bodyPart) ||
-    TOE_BODY_PARTS.includes(bodyPart)
-  ) {
+  if (FINGER_BODY_PARTS.includes(bodyPart) || TOE_BODY_PARTS.includes(bodyPart)) {
     return new Color('pink');
   }
   const color = BONE_COLOR_GROUPS.find(([parts]) => parts.includes(bodyPart))?.[1];

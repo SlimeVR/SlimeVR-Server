@@ -353,6 +353,25 @@ const config = {
     plugin(function ({ addVariant }) {
       addVariant('checked-hover', ['&:hover', '&[data-checked=true]']);
     }),
+    plugin(function ({ addBase }) {
+      // One focus style for the whole app. `outline` (not a box-shadow ring) so
+      // it never fights an element's own shadow and follows border-radius.
+      const formEls =
+        "[type='text'],[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[type='checkbox'],[type='radio'],[multiple],textarea,select";
+      addBase({
+        // Neutralise the @tailwindcss/forms per-type :focus ring.
+        [`:is(${formEls}):focus`]: {
+          boxShadow: 'none',
+          outline: '2px solid transparent',
+          outlineOffset: '2px',
+        },
+        // Keyboard focus only.
+        [`:focus-visible, :is(${formEls}):focus-visible`]: {
+          outline: '2px solid rgb(var(--accent-background-10))',
+          outlineOffset: '2px',
+        },
+      });
+    }),
   ],
 } satisfies Config;
 

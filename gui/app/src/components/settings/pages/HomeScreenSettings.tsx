@@ -1,4 +1,5 @@
 import { CheckBox } from '@/components/commons/Checkbox';
+import { Clickable } from '@/components/commons/Clickable';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { HomeIcon } from '@/components/commons/icon/HomeIcon';
 import { Typography } from '@/components/commons/Typography';
@@ -107,9 +108,10 @@ export function LayoutSelector({
   onClick: () => void;
 }) {
   return (
-    <div
+    <Clickable
+      pressed={active}
       className={classNames(
-        'w-40 aspect-video bg-background-70 flex-col flex rounded-lg border-2 group cursor-pointer',
+        'w-40 aspect-video bg-background-70 flex-col flex rounded-lg border-2 group cursor-pointer text-left',
         {
           'border-accent-background-20': active,
           'border-background-50 hover:border-background-40': !active,
@@ -127,7 +129,7 @@ export function LayoutSelector({
         })}
       />
       {children}
-    </div>
+    </Clickable>
   );
 }
 

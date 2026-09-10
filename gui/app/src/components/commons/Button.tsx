@@ -1,9 +1,9 @@
 import classNames from 'classnames';
+import { Clickable } from './Clickable';
 import React, { ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LoaderIcon, SlimeState } from './icon/LoaderIcon';
 import { Localized, LocalizedProps } from '@fluent/react';
-import { FOCUS_RING } from '@/utils/a11y';
 
 function ButtonContent({
   loading,
@@ -94,7 +94,6 @@ export function Button({
     };
     return classNames(
       variantsMap[variant],
-      FOCUS_RING,
       'text-center relative flex items-center justify-center',
       {
         'rounded-full p-2 text-center min-h-[35px] min-w-[35px]': rounded,
@@ -127,7 +126,7 @@ export function Button({
       </ButtonContent>
     </NavLink>
   ) : (
-    <button type="button" {...props} className={classes} disabled={disabled}>
+    <Clickable {...props} className={classes} disabled={disabled}>
       <ButtonContent icon={icon} loading={loading}>
         {id && (
           <Localized attrs={attrs} vars={vars} elems={elems} id={id}>
@@ -136,7 +135,7 @@ export function Button({
         )}
         {!id && children}
       </ButtonContent>
-    </button>
+    </Clickable>
   );
 
   return content;

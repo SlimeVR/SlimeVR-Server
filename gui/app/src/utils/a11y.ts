@@ -1,7 +1,9 @@
 import { error } from './logging';
 
-export const FOCUS_RING =
-  'focus:ring-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-background-10';
+// The default focus style lives in tailwind.config.ts (addBase, a global
+// :focus-visible outline). These two cover cases that a global rule can't:
+// FOCUS_RING_PEER  - the real focus target is a visually-hidden `peer` input.
+// FOCUS_RING_WITHIN - the ring belongs on a wrapper, keyed off a focused child.
 export const FOCUS_RING_PEER =
   'peer-focus:ring-0 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-accent-background-10';
 export const FOCUS_RING_WITHIN =

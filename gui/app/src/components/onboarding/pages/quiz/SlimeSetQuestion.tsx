@@ -1,4 +1,5 @@
 import { useOnboarding } from '@/hooks/onboarding';
+import { Clickable } from '@/components/commons/Clickable';
 import { ReactNode } from 'react';
 import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
@@ -17,8 +18,9 @@ export function QuizButton({
   onClick: () => void;
 }) {
   return (
-    <div
+    <Clickable
       onClick={onClick}
+      pressed={active}
       className={classNames(
         'flex rounded-lg bg-background-60 hover:bg-background-50 cursor-pointer',
         'p-4 outline outline-2 flex-col gap-4 items-center justify-between fill-background-20',
@@ -30,7 +32,7 @@ export function QuizButton({
     >
       {icon}
       <Typography id={name} variant="section-title" />
-    </div>
+    </Clickable>
   );
 }
 
