@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import { forwardRef, useMemo } from 'react';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
+import { FOCUS_RING, FOCUS_RING_PEER, FOCUS_RING_WITHIN } from '@/utils/a11y';
 
-export const CHECKBOX_CLASSES = classNames(
-  'bg-background-50 border-background-50 cursor-pointer rounded-md w-5 h-5 text-accent-background-30 focus:border-accent-background-40 focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent'
-);
+export const CHECKBOX_CLASSES =
+  'bg-background-50 border-background-50 cursor-pointer rounded-md w-5 h-5 text-accent-background-30 focus:border-accent-background-40';
 
 export const CheckboxInternal = forwardRef<
   HTMLInputElement,
@@ -32,24 +32,29 @@ export const CheckboxInternal = forwardRef<
   ref
 ) {
   const classes = useMemo(() => {
+    // Outlined rows carry the ring on the card itself (FOCUS_RING_WITHIN), so the
+    // control keeps its own ring only when it is standalone.
     const vriantsMap = {
       checkbox: {
-        checkbox: classNames(CHECKBOX_CLASSES, {
+        checkbox: classNames(CHECKBOX_CLASSES, !outlined && FOCUS_RING, {
           'brightness-50 hover:cursor-not-allowed': disabled,
         }),
         toggle: '',
         pin: '',
       },
       toggle: {
-        checkbox: classNames('hidden'),
-        toggle: classNames('w-10 h-4 rounded-full relative transition-colors'),
+        checkbox: classNames('peer sr-only'),
+        toggle: classNames(
+          'w-10 h-4 rounded-full relative transition-colors',
+          !outlined && FOCUS_RING_PEER
+        ),
         pin: classNames(
           'h-2 w-2 bg-background-10 rounded-full absolute m-1 transition-opacity'
         ),
       },
     };
     return vriantsMap[variant];
-  }, [variant, disabled]);
+  }, [variant, disabled, outlined]);
 
   return (
     <div
@@ -62,6 +67,7 @@ export const CheckboxInternal = forwardRef<
           'bg-background-70': outlined && color === 'secondary',
           'bg-background-50': outlined && color === 'tertiary',
         },
+        outlined && FOCUS_RING_WITHIN,
         'flex items-center gap-2 w-full'
       )}
     >

@@ -11,6 +11,7 @@ import {
 import { EyeIcon } from './icon/EyeIcon';
 import { Typography } from './Typography';
 import { FLOATING_LABEL_PADDING, FloatingLabel } from './FloatingLabel';
+import { FOCUS_RING } from '@/utils/a11y';
 
 interface InputProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
@@ -79,8 +80,8 @@ export const InputInside = forwardRef<
 
     return classNames(
       variantsMap[variant],
-      'w-full focus:ring-transparent focus:ring-offset-transparent min-h-[48px] z-10',
-      'focus:outline-transparent rounded-md focus:border-accent-background-40',
+      'w-full min-h-[48px] z-10 rounded-md focus:border-accent-background-40',
+      FOCUS_RING,
       'text-standard text-background-10 relative transition-colors',
       error && 'border-status-critical border-1'
     );

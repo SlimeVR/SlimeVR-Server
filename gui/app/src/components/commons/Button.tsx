@@ -3,6 +3,7 @@ import React, { ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LoaderIcon, SlimeState } from './icon/LoaderIcon';
 import { Localized, LocalizedProps } from '@fluent/react';
+import { FOCUS_RING } from '@/utils/a11y';
 
 function ButtonContent({
   loading,
@@ -93,7 +94,8 @@ export function Button({
     };
     return classNames(
       variantsMap[variant],
-      'focus:ring-4 text-center relative flex items-center justify-center',
+      FOCUS_RING,
+      'text-center relative flex items-center justify-center',
       {
         'rounded-full p-2 text-center min-h-[35px] min-w-[35px]': rounded,
         'rounded-md px-5 py-3 min-h-[48px]': !rounded,
