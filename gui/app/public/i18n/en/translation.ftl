@@ -1154,6 +1154,10 @@ onboarding-assign_trackers-tab-fingers = Fingers
 onboarding-assign_trackers-tab-toes = Toes
 onboarding-assign_trackers-side-right = Right
 onboarding-assign_trackers-side-left = Left
+# Accessible name for the left/right pill radiogroup in the assignment panel header
+onboarding-assign_trackers-side = Body side
+# Accessible name for the mirror-view pill toggle in the assignment panel header
+onboarding-assign_trackers-mirror = Mirror view
 onboarding-assign_trackers-finger-thumb = Thumb
 onboarding-assign_trackers-finger-index = Index finger
 onboarding-assign_trackers-finger-middle = Middle finger
