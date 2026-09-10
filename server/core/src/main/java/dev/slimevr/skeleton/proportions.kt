@@ -18,7 +18,7 @@ val DEFAULT_PROPORTIONS = mapOf(
 	SkeletonBone.HIPS_WIDTH to 0.26f,
 	SkeletonBone.UPPER_LEG to 0.42f,
 	SkeletonBone.LOWER_LEG to 0.5f,
-	SkeletonBone.FOOT_LENGTH to 0.12f,
+	SkeletonBone.FOOT_LENGTH to 0.13f,
 	SkeletonBone.FOOT_SHIFT to -0.05f,
 	SkeletonBone.SHOULDERS_DISTANCE to 0.06f,
 	SkeletonBone.SHOULDERS_WIDTH to 0.35f,
@@ -184,7 +184,7 @@ private val FINGERS = listOf(
 		),
 		lengthFraction = 0.805f,
 		knuckle = Vector3(0.03f, 0.05f, -0.34f),
-		lean = Vector3(0f, 0f, -0.12f),
+		lean = Vector3.ZERO,
 	),
 	Finger(
 		listOf(
@@ -194,7 +194,7 @@ private val FINGERS = listOf(
 		),
 		lengthFraction = 0.92f,
 		knuckle = Vector3(0.04f, 0f, -0.11f),
-		lean = Vector3(0f, 0f, -0.02f),
+		lean = Vector3.ZERO,
 	),
 	Finger(
 		listOf(
@@ -204,7 +204,7 @@ private val FINGERS = listOf(
 		),
 		lengthFraction = 0.805f,
 		knuckle = Vector3(0.03f, 0.03f, 0.11f),
-		lean = Vector3(0f, 0f, 0.05f),
+		lean = Vector3.ZERO,
 	),
 	Finger(
 		listOf(
@@ -214,7 +214,7 @@ private val FINGERS = listOf(
 		),
 		lengthFraction = 0.69f,
 		knuckle = Vector3(0f, 0.1f, 0.31f),
-		lean = Vector3(0f, 0f, 0.14f),
+		lean = Vector3.ZERO,
 	),
 )
 
@@ -247,27 +247,57 @@ private fun getFingerHeadOffsets(handLength: Float): Map<BodyPart, Vector3> = bu
 	}
 }
 
+private class Toe(
+	val segments: Pair<BodyPart, BodyPart>,
+	val lengthFraction: Float,
+	val headOffset: Vector3,
+)
+
+private val TOES = listOf(
+	Toe(
+		BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
+		lengthFraction = 0.27f,
+		headOffset = Vector3(0.28f, 0f, 0f),
+	),
+	Toe(
+		BodyPart.LEFT_INDEX_TOE to BodyPart.RIGHT_INDEX_TOE,
+		lengthFraction = 0.25f,
+		headOffset = Vector3(0.12f, 0f, 0f),
+	),
+	Toe(
+		BodyPart.LEFT_MIDDLE_TOE to BodyPart.RIGHT_MIDDLE_TOE,
+		lengthFraction = 0.22f,
+		headOffset = Vector3(0f, 0f, 0f),
+	),
+	Toe(
+		BodyPart.LEFT_RING_TOE to BodyPart.RIGHT_RING_TOE,
+		lengthFraction = 0.21f,
+		headOffset = Vector3(-0.12f, 0f, 0f),
+	),
+	Toe(
+		BodyPart.LEFT_LITTLE_TOE to BodyPart.RIGHT_LITTLE_TOE,
+		lengthFraction = 0.2f,
+		headOffset = Vector3(-0.26f, 0f, 0f),
+	),
+)
+
 /**
  * Returns the offsets for the toe bones scaled from the footLength.
  */
-private fun getToeOffsets(footLength: Float) = (
-	iterateBodyPartHierarchy(BodyPart.LEFT_FOOT, true) +
-		iterateBodyPartHierarchy(BodyPart.RIGHT_FOOT, true)
-	).map { it.second }.associateWith {
-	Vector3(0f, 0f, -footLength * 0.2f)
+private fun getToeOffsets(footLength: Float) = buildMap {
+	for (toe in TOES) {
+		val toeLength = footLength * toe.lengthFraction
+		put(toe.segments.first, Vector3(0f, 0f, -toeLength))
+		put(toe.segments.second, Vector3(0f, 0f, -toeLength))
+	}
 }
 
 // Head offsets spread the toe roots across the forefoot. X is the foot's medial-lateral axis in
 // foot-local space, positive toward the big toe of a left foot. Values are fractions of footLength.
-private fun getToeHeadOffsets(footLength: Float): Map<BodyPart, Vector3> = mapOf(
-	BodyPart.LEFT_BIG_TOE to Vector3(footLength * 0.28f, 0f, 0f),
-	BodyPart.LEFT_INDEX_TOE to Vector3(footLength * 0.12f, 0f, 0f),
-	BodyPart.LEFT_MIDDLE_TOE to Vector3(0f, 0f, 0f),
-	BodyPart.LEFT_RING_TOE to Vector3(footLength * -0.12f, 0f, 0f),
-	BodyPart.LEFT_LITTLE_TOE to Vector3(footLength * -0.26f, 0f, 0f),
-	BodyPart.RIGHT_BIG_TOE to Vector3(footLength * -0.28f, 0f, 0f),
-	BodyPart.RIGHT_INDEX_TOE to Vector3(footLength * -0.12f, 0f, 0f),
-	BodyPart.RIGHT_MIDDLE_TOE to Vector3(0f, 0f, 0f),
-	BodyPart.RIGHT_RING_TOE to Vector3(footLength * 0.12f, 0f, 0f),
-	BodyPart.RIGHT_LITTLE_TOE to Vector3(footLength * 0.26f, 0f, 0f),
-)
+private fun getToeHeadOffsets(footLength: Float): Map<BodyPart, Vector3> = buildMap {
+	for (toe in TOES) {
+		val k = toe.headOffset
+		put(toe.segments.first, Vector3(k.x * footLength, k.y * footLength, k.z * footLength))
+		put(toe.segments.second, Vector3(-k.x * footLength, k.y * footLength, k.z * footLength))
+	}
+}
