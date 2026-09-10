@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { useLocalization } from '@fluent/react';
 import { Clickable } from '@/components/commons/Clickable';
 import {
   HTMLAttributes,
@@ -265,14 +266,19 @@ function Tab({
       pressed={active}
       onClick={onClick}
       className={classNames(
-        'rounded-md',
+        'grid place-items-center rounded-md',
         compact ? 'px-3 py-1' : 'px-4 py-2',
         active && 'bg-background-50',
         disabled && 'opacity-40 cursor-not-allowed',
         !disabled && !active && 'cursor-pointer hover:bg-background-60'
       )}
     >
-      <Typography bold={active} id={labelId} />
+      <div aria-hidden className="invisible col-start-1 row-start-1">
+        <Typography bold id={labelId} />
+      </div>
+      <div className="col-start-1 row-start-1">
+        <Typography bold={active} id={labelId} />
+      </div>
     </Clickable>
   );
 }
@@ -288,9 +294,12 @@ export function ExtremitySideToggle({
   side: ExtremitySide;
   onChange: (side: ExtremitySide) => void;
 }) {
+  const { l10n } = useLocalization();
+
   const option = (value: ExtremitySide, dotClass: string) => (
     <TogglePillOption
       compact={compact}
+      radio
       dotClass={dotClass}
       active={side === value}
       onClick={() => onChange(value)}
@@ -299,7 +308,10 @@ export function ExtremitySideToggle({
   );
 
   return (
-    <TogglePill compact={compact}>
+    <TogglePill
+      compact={compact}
+      radiogroupLabel={l10n.getString('onboarding-assign_trackers-side')}
+    >
       {option('left', 'outline-assign-left')}
       {option('right', 'outline-assign-right')}
     </TogglePill>

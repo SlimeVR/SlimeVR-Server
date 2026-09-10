@@ -35,6 +35,7 @@ export function ShowAllPartsToggle({ compact }: { compact?: boolean }) {
 }
 
 export function MirrorLegend({ compact }: { compact?: boolean }) {
+  const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
   const mirror = config?.mirrorView ?? false;
 
@@ -53,6 +54,8 @@ export function MirrorLegend({ compact }: { compact?: boolean }) {
   return (
     <TogglePill
       compact={compact}
+      pressed={mirror}
+      label={l10n.getString('onboarding-assign_trackers-mirror')}
       onClick={() => setConfig({ mirrorView: !mirror })}
     >
       {pill('right')}
