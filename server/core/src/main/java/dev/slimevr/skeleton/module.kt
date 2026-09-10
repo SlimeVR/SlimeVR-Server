@@ -1,7 +1,6 @@
 package dev.slimevr.skeleton
 
 import dev.slimevr.Phase1ContextProvider
-import dev.slimevr.config.Settings
 import dev.slimevr.context.Behaviour
 import dev.slimevr.context.Context
 import dev.slimevr.skeleton.computedprocessors.VelocityComputedProcessor
@@ -10,14 +9,14 @@ import dev.slimevr.skeleton.fkprocessors.LocalizerFkProcessor
 import dev.slimevr.skeleton.fkprocessors.ToeSnapFkProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneActiveLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
-import dev.slimevr.skeleton.inputprocessors.BonePredictionInputProcessor
-import dev.slimevr.skeleton.inputprocessors.BoneSmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneYawFallbackInputProcessor
 import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
-import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
+import dev.slimevr.skeleton.inputprocessors.PredictionInputProcessor
+import dev.slimevr.skeleton.inputprocessors.RelaxedSpineInputProcessor
+import dev.slimevr.skeleton.inputprocessors.SmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
 import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
@@ -221,12 +220,12 @@ class Skeleton(
 					hz = hz,
 					waiter = waiter,
 					inputProcessors = listOf(
-						BonePredictionInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
-						BoneSmoothingInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
+						PredictionInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
+						SmoothingInputProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 						HeadPositionFallbackProcessor(settings),
 						BoneYawFallbackInputProcessor(),
 						BoneActiveLinkInputProcessor(),
-						SpineImputeInputProcessor(settings),
+						RelaxedSpineInputProcessor(settings),
 						HipYawRollAlignInputProcessor(settings),
 						UpperLegsRollAlignInputProcessor(settings),
 						BustInputProcessor(),
