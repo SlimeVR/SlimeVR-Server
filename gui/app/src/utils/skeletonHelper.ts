@@ -39,8 +39,6 @@ const BONE_COLOR_GROUPS: [BodyPart[], string][] = [
 
 export function getBoneColor(bodyPart: BodyPart) {
   if (
-    bodyPart === BodyPart.LEFT_HIP ||
-    bodyPart === BodyPart.RIGHT_HIP ||
     FINGER_BODY_PARTS.includes(bodyPart) ||
     TOE_BODY_PARTS.includes(bodyPart)
   ) {

@@ -278,19 +278,6 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
     }),
     { trackerOffset: HIP_TRACKER_OFFSET }
   ),
-  [BodyPart.LEFT_HIP]: part(
-    model('hip_ball', {
-      scale: spanBone({ girthFrom: 'hips', length: 0.6 }),
-      offset: inBoneLengths({ depth: 0.8, length: -0.8 }),
-    })
-  ),
-  [BodyPart.RIGHT_HIP]: part(
-    model('hip_ball', {
-      scale: spanBone({ girthFrom: 'hips', length: 0.6 }),
-      offset: inBoneLengths({ depth: 0.8, length: -0.8 }),
-    })
-  ),
-
   [BodyPart.LEFT_SHOULDER]: part(
     model('shoulder', {
       scale: shoulderScale,

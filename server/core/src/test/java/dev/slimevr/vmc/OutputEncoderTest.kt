@@ -22,6 +22,7 @@ import kotlin.time.Duration.Companion.seconds
 private fun bone(bodyPart: BodyPart, rotation: Quaternion = Quaternion.IDENTITY) = BoneState(
 	parentBone = null,
 	bodyPart = bodyPart,
+	headOffset = Vector3.ZERO,
 	offset = Vector3(0f, -0.1f, 0f),
 	rotation = rotation,
 	acceleration = Vector3.ZERO,

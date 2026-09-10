@@ -21,20 +21,6 @@ fun chainDistanceFromTarget(
 	return (target - chainTail).len()
 }
 
-fun chainCanReach(
-	bones: ComputedSkeleton,
-	chain: IKChain,
-	target: Vector3,
-): Boolean {
-	val chainHead = requireBone(bones, chain.first()).headPosition
-
-	val chainLength = chain.fold(0f) { acc, bodyPart ->
-		val boneLength = requireBone(bones, bodyPart).offset.len()
-		acc + boneLength
-	}
-	return (target - chainHead).len() <= chainLength
-}
-
 private val oppositeRotation = Quaternion.rotationAroundZAxis(FastMath.PI)
 fun fromChainToTarget(
 	bodyPart: BodyPart,

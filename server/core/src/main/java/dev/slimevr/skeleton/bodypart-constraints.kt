@@ -60,10 +60,6 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			120f * FastMath.DEG_TO_RAD,
 		),
 
-		BodyPart.LEFT_HIP to TwistSwingConstraint(
-			0f * FastMath.DEG_TO_RAD,
-			15f * FastMath.DEG_TO_RAD,
-		),
 		BodyPart.LEFT_UPPER_LEG to TwistSwingConstraint(
 			120f * FastMath.DEG_TO_RAD,
 			180f * FastMath.DEG_TO_RAD,
@@ -78,10 +74,6 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			60f * FastMath.DEG_TO_RAD,
 		),
 
-		BodyPart.RIGHT_HIP to TwistSwingConstraint(
-			0f * FastMath.DEG_TO_RAD,
-			15f * FastMath.DEG_TO_RAD,
-		),
 		BodyPart.RIGHT_UPPER_LEG to TwistSwingConstraint(
 			120f * FastMath.DEG_TO_RAD,
 			180f * FastMath.DEG_TO_RAD,
