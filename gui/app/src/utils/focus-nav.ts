@@ -1,12 +1,5 @@
-/**
- * Spatial focus navigation over the DOM: which elements can take focus, and
- * which one lies nearest in a given direction. No input-device knowledge and no
- * state, so it is driven by whatever wants to move a cursor around.
- */
-
 export type Direction = 'up' | 'down' | 'left' | 'right';
 
-/** Everything a user can put focus on. */
 export const FOCUSABLE_SELECTOR = [
   'a[href]',
   'button',
@@ -57,25 +50,10 @@ export function collectFocusables(root: ParentNode = document): HTMLElement[] {
   );
 }
 
-/**
- * A layout marks each of its areas `data-nav-region="page"` or `"shell"`, shell
- * meaning the furniture around the content: top bar, navbar, settings sidebar.
- *
- * Two things come from that. The cursor starts in a page region rather than in
- * the shell, and a move prefers to stay in the region it began in. Areas are
- * marked one by one because a grid places them as siblings, so there is no
- * wrapper to point at, and because the navbar and the top bar have to count as
- * different regions even though both are shell.
- */
 export function pageRegions(): HTMLElement[] {
   return Array.from(document.querySelectorAll<HTMLElement>('[data-nav-region="page"]'));
 }
 
-/**
- * Visible right now, as opposed to merely present. Something scrolled above the
- * viewport reports a negative `top` and would win "topmost"; something inside a
- * collapsed panel still reports a full-size rect while clipped to nothing.
- */
 function onScreen(el: HTMLElement, r: DOMRect): boolean {
   if (r.bottom <= 0 || r.right <= 0) return false;
   if (r.top >= window.innerHeight || r.left >= window.innerWidth) return false;
@@ -91,18 +69,6 @@ function onScreen(el: HTMLElement, r: DOMRect): boolean {
   return true;
 }
 
-/**
- * Where the cursor starts. `data-nav-entry` is how a page says so, because the
- * starting control is a design decision rather than something derivable.
- *
- * Without one, fall back to topmost then leftmost of the page's visible
- * controls. Geometric rather than DOM order, since a grid places its areas in
- * whatever order the template says: in the main layout the toolbar renders
- * after the content yet sits above it.
- *
- * Returns nothing when the page has no visible controls yet, meaning it is
- * still rendering.
- */
 export function firstFocusable(): HTMLElement | undefined {
   const entry = document.querySelector<HTMLElement>('[data-nav-entry]');
   if (entry) {
@@ -132,16 +98,6 @@ export function firstFocusable(): HTMLElement | undefined {
   return firstRow.reduce((a, b) => (b.r.left < a.r.left ? b : a)).el;
 }
 
-/**
- * Best focus target from origin rect `o` moving in `dir`, or null. `from` is the
- * element the move starts at, excluded from the results.
- *
- * Candidates are ranked by region before distance: the region the move started
- * in, then any page region, then the shell. The top bar spans the window and the
- * navbar runs its full height, so on distance alone either one steals moves that
- * had a perfectly good target in the page. Every region stays reachable, just
- * only once the better-ranked ones have nothing left in the travel direction.
- */
 export function pickBest(
   o: DOMRect,
   dir: Direction,
@@ -152,8 +108,6 @@ export function pickBest(
   const horizontal = dir === 'left' || dir === 'right';
 
   const regionOf = (el: Element) => el.closest('[data-nav-region]');
-  // Null origin region means there is nothing to compare against, as when
-  // resuming from a remembered rect whose element is long gone.
   const originRegion = from ? regionOf(from) : null;
   const rankOf = (el: Element) => {
     const region = regionOf(el);
@@ -198,7 +152,6 @@ export function pickBest(
     const overlapRatio =
       overlapLen / Math.max(1, Math.min(oEnd - oStart, cEnd - cStart));
 
-    // Candidates that only touch at a corner.
     if (primaryGap <= 2 && overlapRatio === 0) continue;
 
     const euclid = Math.hypot(cCx - oCx, cCy - oCy);
@@ -216,10 +169,6 @@ export function pickBest(
   return best;
 }
 
-/**
- * Nearest ancestor of `el` that scrolls along `dir`'s axis and is not already
- * at its edge that way.
- */
 export function scrollableToward(el: HTMLElement, dir: Direction): HTMLElement | null {
   const vertical = dir === 'up' || dir === 'down';
   for (let n = el.parentElement; n; n = n.parentElement) {

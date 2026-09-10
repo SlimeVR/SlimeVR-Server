@@ -531,6 +531,7 @@ export function SkeletonVisualizerWidget({
         )}
       >
         <Clickable
+          aria-hidden={disabled}
           disabled={!toggleDisabled}
           className={classNames(
             'bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center',
