@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { Clickable } from '@/components/commons/Clickable';
 import { useLocalization } from '@fluent/react';
 import { CSSProperties, ReactNode, useMemo } from 'react';
 import { BodyPart, DeviceDataT, TrackerDataT } from 'solarxr-protocol';
@@ -46,7 +47,7 @@ export function TrackerAssignmentList() {
   const variant = state.alonePage ? 'primary' : 'tertiary';
 
   return (
-    <div className="w-[380px] lg:w-[400px] xl:w-[440px] p-4 flex flex-col gap-4 shrink-0 min-h-0 border-r border-background-60">
+    <div className="w-[380px] lg:w-[400px] xl:w-[440px] p-4 flex flex-col gap-2 shrink-0 min-h-0 border-r border-background-60">
       <div className="flex flex-col gap-1 shrink-0">
         <Typography
           variant="mobile-title"
@@ -84,7 +85,7 @@ export function TrackerAssignmentList() {
 
       <div
         {...bodyPartDropProps(BodyPart.NONE)}
-        className="flex flex-col gap-4 min-h-0 flex-1 overflow-y-auto -mx-2 px-2"
+        className="flex flex-col gap-4 min-h-0 flex-1 overflow-y-auto -mx-2 px-2 pt-1.5"
       >
         {trackers.length === 0 ? (
           <AssignmentEmptyState
@@ -330,8 +331,7 @@ export function SimpleTrackerRow({
   if (!onClick) return row;
 
   return (
-    <button
-      type="button"
+    <Clickable
       onClick={onClick}
       className={classNames(
         'w-full text-left rounded-lg transition-shadow',
@@ -339,7 +339,7 @@ export function SimpleTrackerRow({
       )}
     >
       {row}
-    </button>
+    </Clickable>
   );
 }
 

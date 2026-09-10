@@ -1,4 +1,5 @@
 import { Localized } from '@fluent/react';
+import { Clickable } from '@/components/commons/Clickable';
 import { Typography } from '@/components/commons/Typography';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { useFirmwareTool } from '@/hooks/firmware-tool';
@@ -27,18 +28,18 @@ function Selector({
   onClick: () => void;
 }) {
   return (
-    <div
+    <Clickable
+      disabled={disabled}
+      pressed={active}
       className={classNames(
-        'p-3 rounded-md hover:bg-background-50 w-full cursor-pointer relative',
+        'p-3 rounded-md hover:bg-background-50 w-full cursor-pointer relative text-left',
         {
           'bg-background-50 text-background-10': active,
           'bg-background-60': !active,
           'bg-background-80 text-background-50': disabled,
         }
       )}
-      onClick={() => {
-        if (!disabled) onClick();
-      }}
+      onClick={onClick}
     >
       {tag === 'official' && (
         <div
@@ -77,7 +78,7 @@ function Selector({
         </div>
       )}
       {text}
-    </div>
+    </Clickable>
   );
 }
 

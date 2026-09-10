@@ -1,4 +1,5 @@
 import { useLocalization } from '@fluent/react';
+import { Clickable } from '@/components/commons/Clickable';
 import classNames from 'classnames';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import {
@@ -26,7 +27,6 @@ import {
   CHECKBOX_CLASSES,
   CheckboxInternal,
 } from '@/components/commons/Checkbox';
-import { FOCUS_RING } from '@/utils/a11y';
 import {
   StatusBadge,
   StatusRow,
@@ -292,7 +292,6 @@ function RouteCell({
       type="checkbox"
       className={classNames(
         CHECKBOX_CLASSES,
-        FOCUS_RING,
         lockedId && 'brightness-50 hover:cursor-not-allowed',
         duplicate && 'outline outline-2 outline-status-warning'
       )}
@@ -600,8 +599,7 @@ export function BoneRoutingSettings() {
                         key={group.id}
                         className="border-b border-background-50 last:border-b-0"
                       >
-                        <button
-                          type="button"
+                        <Clickable
                           onClick={() => toggleGroup(group.id)}
                           className={classNames(
                             'w-full flex items-center gap-4 pl-4 pr-4 h-12 bg-background-60 hover:bg-background-50 fill-background-10 transition-colors',
@@ -620,7 +618,7 @@ export function BoneRoutingSettings() {
                               <ArrowDownIcon size={20} />
                             )}
                           </div>
-                        </button>
+                        </Clickable>
 
                         {open && (
                           <div className="divide-y divide-background-60">

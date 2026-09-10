@@ -1,4 +1,10 @@
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import {
+  ComponentProps,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
   RpcMessage,
@@ -17,6 +23,7 @@ import { DownloadIcon } from './commons/icon/DownloadIcon';
 import { DOCS_SITE, GH_REPO, VersionContext } from '@/App';
 import classNames from 'classnames';
 import { QuestionIcon } from './commons/icon/QuestionIcon';
+import { IconButton } from './commons/IconButton';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { GearIcon } from './commons/icon/GearIcon';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
@@ -27,21 +34,40 @@ import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { useElectron } from '@/hooks/electron';
 import { openUrl } from '@/hooks/crossplatform';
 
-export function VersionTag() {
+// Title bar buttons share one round hit target.
+const TITLE_BAR_BUTTON_CLASS =
+  'flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7 cursor-pointer';
+
+function TitleBarButton({
+  className,
+  ...props
+}: ComponentProps<typeof IconButton>) {
   return (
-    <div
+    <IconButton
+      {...props}
+      className={classNames(TITLE_BAR_BUTTON_CLASS, className)}
+    />
+  );
+}
+
+export function VersionTag() {
+  const url = `https://github.com/${GH_REPO}/releases`;
+
+  return (
+    <a
+      href={url}
       className={classNames(
         'flex justify-around flex-col text-standard-bold',
         'text-status-success bg-status-success bg-opacity-20 rounded-lg',
         'px-3 select-text cursor-pointer shrink-0 whitespace-nowrap'
       )}
-      onClick={() => {
-        const url = `https://github.com/${GH_REPO}/releases`;
+      onClick={(e) => {
+        e.preventDefault();
         openUrl(url);
       }}
     >
       {(__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty')}
-    </div>
+    </a>
   );
 }
 
@@ -176,8 +202,8 @@ export function TopBar({
               )}
 
               {version && electron.isElectron && (
-                <div
-                  className="cursor-pointer"
+                <TitleBarButton
+                  labelId="titlebar-update"
                   onClick={() => {
                     const url =
                       electron.data().os.type === 'windows'
@@ -187,7 +213,7 @@ export function TopBar({
                   }}
                 >
                   <DownloadIcon />
-                </div>
+                </TitleBarButton>
               )}
             </div>
           </div>
@@ -210,45 +236,44 @@ export function TopBar({
           </div>
           <div className="flex justify-end items-center px-2 gap-2 z-50">
             {actions}
-            <NavLink
+            <TitleBarButton
+              labelId="titlebar-settings"
               to="/settings/trackers"
-              className="flex justify-around flex-col select-all fill-background-50"
+              className="fill-background-50"
               state={{ scrollTo: 'output' }}
             >
               <GearIcon />
-            </NavLink>
+            </TitleBarButton>
 
             {!isMobile && (
-              <div
-                className={classNames(
-                  'flex items-center justify-center stroke-window-icon',
-                  'hover:bg-background-60 rounded-full w-7 h-7 cursor-pointer'
-                )}
+              <TitleBarButton
+                labelId="titlebar-docs"
+                className="stroke-window-icon"
                 onClick={() => openUrl(DOCS_SITE)}
               >
                 <QuestionIcon />
-              </div>
+              </TitleBarButton>
             )}
             {electron.isElectron && (
               <>
-                <div
-                  className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
+                <TitleBarButton
+                  labelId="titlebar-minimize"
                   onClick={() => electron.api.minimize()}
                 >
                   <MinimiseIcon />
-                </div>
-                <div
-                  className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
+                </TitleBarButton>
+                <TitleBarButton
+                  labelId="titlebar-maximize"
                   onClick={() => electron.api.toggleMaximize()}
                 >
                   <MaximiseIcon />
-                </div>
-                <div
-                  className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
+                </TitleBarButton>
+                <TitleBarButton
+                  labelId="titlebar-close"
                   onClick={() => tryCloseApp()}
                 >
                   <CloseIcon />
-                </div>
+                </TitleBarButton>
               </>
             )}
           </div>

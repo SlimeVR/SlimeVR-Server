@@ -1,4 +1,5 @@
 import { Input } from '@/components/commons/Input';
+import { Clickable } from '@/components/commons/Clickable';
 import { Typography } from '@/components/commons/Typography';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { EYE_HEIGHT_TO_HEIGHT_RATIO } from '@/hooks/height';
@@ -37,7 +38,8 @@ function IncrementButton({
   }, [currentLocales, value]);
 
   return (
-    <div
+    <Clickable
+      disabled={disabled}
       className={classNames(
         'no-user-drag flex rounded-md items-center justify-center flex-row xs:flex-col w-full gap-1 p-3 xs:p-2 xs:w-[75px] xs:h-[75px]',
         {
@@ -45,7 +47,7 @@ function IncrementButton({
           'bg-background-50 hover:bg-background-40 cursor-pointer': !disabled,
         }
       )}
-      onClick={() => !disabled && onClick()}
+      onClick={onClick}
     >
       <Typography
         variant={isXs ? 'mobile-title' : 'section-title'}
@@ -59,7 +61,7 @@ function IncrementButton({
           color={disabled ? 'text-background-40' : 'primary'}
         />
       )}
-    </div>
+    </Clickable>
   );
 }
 
@@ -73,7 +75,8 @@ function UnitSelector({
   onClick: () => void;
 }) {
   return (
-    <div
+    <Clickable
+      pressed={active}
       className={classNames(
         {
           'bg-accent-background-30': active,
@@ -84,7 +87,7 @@ function UnitSelector({
       onClick={onClick}
     >
       <Typography id={name} />
-    </div>
+    </Clickable>
   );
 }
 

@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { Clickable } from '@/components/commons/Clickable';
 import { MouseEventHandler } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { getTrackerName } from '@/hooks/tracker';
@@ -19,7 +20,7 @@ export function TrackerPartCard({
   role: BodyPart;
   roleError: string | undefined;
   direction: 'left' | 'right';
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }) {
   const { isXs } = useBreakpoint('xs');
   const { l10n } = useLocalization();
@@ -27,7 +28,7 @@ export function TrackerPartCard({
   const name = td && getTrackerName(td.tracker.info);
 
   return (
-    <div
+    <Clickable
       className={classNames(
         'flex flex-col gap-1 control xs:w-auto hover:bg-background-50 cursor-pointer px-2 py-1 rounded-md relative transition-[box-shadow] duration-200 ease-linear',
         direction === 'left' ? 'items-start' : 'items-end'
@@ -54,6 +55,6 @@ export function TrackerPartCard({
       <Typography color={name ? undefined : 'secondary'}>
         {name || l10n.getString('tracker-part_card-unassigned')}
       </Typography>
-    </div>
+    </Clickable>
   );
 }

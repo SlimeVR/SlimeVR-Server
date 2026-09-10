@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { Clickable } from './Clickable';
 import { ReactNode } from 'react';
 import { Typography } from './Typography';
 
@@ -11,17 +12,18 @@ export function TogglePill({
   onClick?: () => void;
   children: ReactNode;
 }) {
+  const className = classNames(
+    'flex items-center gap-1 bg-background-80 rounded-full w-fit',
+    onClick && 'cursor-pointer',
+    compact ? 'p-0.5' : 'p-1'
+  );
+
+  if (!onClick) return <div className={className}>{children}</div>;
+
   return (
-    <div
-      onClick={onClick}
-      className={classNames(
-        'flex items-center gap-1 bg-background-80 rounded-full w-fit',
-        onClick && 'cursor-pointer',
-        compact ? 'p-0.5' : 'p-1'
-      )}
-    >
+    <Clickable onClick={onClick} className={className}>
       {children}
-    </div>
+    </Clickable>
   );
 }
 
@@ -38,17 +40,16 @@ export function TogglePillOption({
   active?: boolean;
   onClick?: () => void;
 }) {
-  return (
-    <div
-      onClick={onClick}
-      className={classNames(
-        'flex items-center rounded-full',
-        compact ? 'gap-1.5 px-2 py-0.5' : 'gap-2 px-3 py-1',
-        onClick && 'cursor-pointer',
-        active === true && 'bg-background-60',
-        active === false && 'opacity-50'
-      )}
-    >
+  const className = classNames(
+    'flex items-center rounded-full',
+    compact ? 'gap-1.5 px-2 py-0.5' : 'gap-2 px-3 py-1',
+    onClick && 'cursor-pointer',
+    active === true && 'bg-background-60',
+    active === false && 'opacity-50'
+  );
+
+  const content = (
+    <>
       <span
         className={classNames(
           'w-2.5 h-2.5 rounded-full bg-background-10 outline outline-4',
@@ -56,6 +57,14 @@ export function TogglePillOption({
         )}
       />
       <Typography bold id={labelId} />
-    </div>
+    </>
+  );
+
+  if (!onClick) return <div className={className}>{content}</div>;
+
+  return (
+    <Clickable onClick={onClick} pressed={active} className={className}>
+      {content}
+    </Clickable>
   );
 }

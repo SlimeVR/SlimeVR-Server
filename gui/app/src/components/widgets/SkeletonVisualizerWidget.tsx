@@ -1,4 +1,5 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Clickable } from '@/components/commons/Clickable';
 
 import { useMemo, useEffect, useState, useRef, useLayoutEffect } from 'react';
 import {
@@ -529,7 +530,8 @@ export function SkeletonVisualizerWidget({
           { 'opacity-0 pointer-events-none': !disabled || error }
         )}
       >
-        <div
+        <Clickable
+          disabled={!toggleDisabled}
           className={classNames(
             'bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center',
             {
@@ -541,7 +543,7 @@ export function SkeletonVisualizerWidget({
         >
           <EyeIcon closed width={20} />
           <Typography id="preview-disabled_render" />
-        </div>
+        </Clickable>
       </div>
       <div
         className={classNames(

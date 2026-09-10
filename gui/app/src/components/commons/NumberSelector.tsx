@@ -1,10 +1,9 @@
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
-import classNames from 'classnames';
+import { Clickable } from './Clickable';
 import { FieldCaption } from './FloatingLabel';
 import { Typography } from './Typography';
 import { KeyboardEvent, useCallback, useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
-import { FOCUS_RING } from '@/utils/a11y';
 
 export function NumberSelector<T extends FieldValues = FieldValues>({
   label,
@@ -112,14 +111,10 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
               aria-valuemax={max}
               aria-valuetext={typeof shown === 'string' ? shown : undefined}
               onKeyDown={onKeyDown}
-              className={classNames(
-                'relative flex items-stretch min-h-[48px] overflow-hidden rounded-md bg-background-60',
-                FOCUS_RING
-              )}
+              className="relative flex items-stretch min-h-[48px] overflow-hidden rounded-md bg-background-60"
             >
               {doubleStep !== undefined && (
-                <button
-                  type="button"
+                <Clickable
                   tabIndex={-1}
                   className={segment}
                   onClick={() => bump(false, true)}
@@ -128,32 +123,29 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
                   {showButtonWithNumber
                     ? decimalFormat.format(-doubleStep)
                     : '--'}
-                </button>
+                </Clickable>
               )}
-              <button
-                type="button"
+              <Clickable
                 tabIndex={-1}
                 className={segment}
                 onClick={() => bump(false)}
                 disabled={stepFn(value, false) < min || disabled}
               >
                 −
-              </button>
+              </Clickable>
               <div className="flex flex-grow items-center justify-center px-2 select-none">
                 <Typography variant="standard">{shown}</Typography>
               </div>
-              <button
-                type="button"
+              <Clickable
                 tabIndex={-1}
                 className={segment}
                 onClick={() => bump(true)}
                 disabled={stepFn(value, true) > max || disabled}
               >
                 +
-              </button>
+              </Clickable>
               {doubleStep !== undefined && (
-                <button
-                  type="button"
+                <Clickable
                   tabIndex={-1}
                   className={segment}
                   onClick={() => bump(true, true)}
@@ -162,7 +154,7 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
                   {showButtonWithNumber
                     ? decimalFormat.format(doubleStep)
                     : '++'}
-                </button>
+                </Clickable>
               )}
             </div>
           </div>

@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
-import { FOCUS_RING } from '@/utils/a11y';
 
 export function Range<T extends FieldValues = FieldValues>({
   control,
@@ -27,10 +26,7 @@ export function Range<T extends FieldValues = FieldValues>({
         <label className="text-standard w-full text-center flex items-center flex-col">
           <input
             type="range"
-            className={classNames(
-              'text-background-10 border-accent-background-30',
-              FOCUS_RING
-            )}
+            className="text-background-10 border-accent-background-30"
             style={{
               width: 'calc(88% - 0.5vw)',
             }}
