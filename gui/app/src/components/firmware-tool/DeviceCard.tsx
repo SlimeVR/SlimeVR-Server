@@ -1,4 +1,5 @@
 import { CHECKBOX_CLASSES } from '@/components/commons/Checkbox';
+import { FOCUS_RING } from '@/utils/a11y';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { Typography } from '@/components/commons/Typography';
 import {
@@ -97,7 +98,7 @@ export function DeviceCardControl<T extends FieldValues = FieldValues>({
                 <input
                   ref={ref}
                   onChange={onChange}
-                  className={CHECKBOX_CLASSES}
+                  className={classNames(CHECKBOX_CLASSES, FOCUS_RING)}
                   checked={value || false}
                   type="checkbox"
                   disabled={disabled}

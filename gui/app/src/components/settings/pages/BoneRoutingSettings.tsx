@@ -26,6 +26,7 @@ import {
   CHECKBOX_CLASSES,
   CheckboxInternal,
 } from '@/components/commons/Checkbox';
+import { FOCUS_RING } from '@/utils/a11y';
 import {
   StatusBadge,
   StatusRow,
@@ -291,6 +292,7 @@ function RouteCell({
       type="checkbox"
       className={classNames(
         CHECKBOX_CLASSES,
+        FOCUS_RING,
         lockedId && 'brightness-50 hover:cursor-not-allowed',
         duplicate && 'outline outline-2 outline-status-warning'
       )}

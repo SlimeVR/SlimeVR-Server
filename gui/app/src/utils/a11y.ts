@@ -1,5 +1,12 @@
 import { error } from './logging';
 
+export const FOCUS_RING =
+  'focus:ring-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-background-10';
+export const FOCUS_RING_PEER =
+  'peer-focus:ring-0 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-accent-background-10';
+export const FOCUS_RING_WITHIN =
+  'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent-background-10';
+
 export function a11yClick(event: React.KeyboardEvent | React.MouseEvent) {
   if (event.type === 'click') {
     return true;

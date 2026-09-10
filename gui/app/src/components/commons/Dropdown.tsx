@@ -20,7 +20,7 @@ import {
 import { ArrowDownIcon, ArrowUpIcon } from './icon/ArrowIcons';
 import { CheckIcon } from './icon/CheckIcon';
 import { ProgressBar } from './ProgressBar';
-import { a11yClick } from '@/utils/a11y';
+import { FOCUS_RING, a11yClick } from '@/utils/a11y';
 import './Dropdown.scss';
 import { Typography } from './Typography';
 import {
@@ -493,7 +493,8 @@ export function DropdownInside(
             if (!loading) setIsOpen((o) => !o);
           }}
           className={classNames(
-            'flex flex-row items-center gap-2 pl-3 pr-11 rounded-md focus:ring-4 relative min-h-[48px] min-w-0 overflow-hidden',
+            'flex flex-row items-center gap-2 pl-3 pr-11 rounded-md relative min-h-[48px] min-w-0 overflow-hidden',
+            FOCUS_RING,
             labelInside ? FLOATING_LABEL_PADDING : 'py-3',
             loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
             variantStyles[variant]
