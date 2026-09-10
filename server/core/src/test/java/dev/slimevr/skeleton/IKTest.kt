@@ -18,12 +18,16 @@ class IKTest {
 			bodyPart = BodyPart.UPPER_CHEST,
 			offset = Vector3.NEG_Y,
 		)
-		boneInputs[BodyPart.CHEST] = DEFAULT_BONE_INPUT.copy(
-			bodyPart = BodyPart.CHEST,
+		boneInputs[BodyPart.LOWER_CHEST] = DEFAULT_BONE_INPUT.copy(
+			bodyPart = BodyPart.LOWER_CHEST,
 			offset = Vector3.NEG_Y,
 		)
-		boneInputs[BodyPart.WAIST] = DEFAULT_BONE_INPUT.copy(
-			bodyPart = BodyPart.WAIST,
+		boneInputs[BodyPart.UPPER_WAIST] = DEFAULT_BONE_INPUT.copy(
+			bodyPart = BodyPart.UPPER_WAIST,
+			offset = Vector3.NEG_Y,
+		)
+		boneInputs[BodyPart.LOWER_WAIST] = DEFAULT_BONE_INPUT.copy(
+			bodyPart = BodyPart.LOWER_WAIST,
 			offset = Vector3.NEG_Y,
 		)
 		boneInputs[BodyPart.HIP] = DEFAULT_BONE_INPUT.copy(
@@ -32,13 +36,14 @@ class IKTest {
 		)
 
 		val bones = buildBones(boneInputs)
-		val target = Vector3.POS_X * 4f
+		val target = Vector3.POS_X * 3f
 		val goal = IKChainGoal(
 			listOf(
 				BodyPart.NECK,
 				BodyPart.UPPER_CHEST,
-				BodyPart.CHEST,
-				BodyPart.WAIST,
+				BodyPart.LOWER_CHEST,
+				BodyPart.UPPER_WAIST,
+				BodyPart.LOWER_WAIST,
 				BodyPart.HIP,
 			),
 			target,

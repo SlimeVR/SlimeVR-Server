@@ -45,7 +45,7 @@ const defaultValues: TapDetectionForm = {
   yawResetTaps: 2,
   fullResetTaps: 2,
   mountingResetTaps: 2,
-  yawResetTracker: String(BodyPart.CHEST),
+  yawResetTracker: String(BodyPart.UPPER_CHEST),
   fullResetTracker: String(BodyPart.LEFT_UPPER_LEG),
   mountingResetTracker: String(BodyPart.RIGHT_UPPER_LEG),
   numberTrackersOverThreshold: 1,

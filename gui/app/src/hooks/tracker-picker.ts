@@ -39,8 +39,9 @@ export const LOWER_BODY = new Set([
 ]);
 export const SPINE_PARTS = [
   BodyPart.UPPER_CHEST,
-  BodyPart.CHEST,
-  BodyPart.WAIST,
+  BodyPart.LOWER_CHEST,
+  BodyPart.UPPER_WAIST,
+  BodyPart.LOWER_WAIST,
   BodyPart.HIP,
 ];
 export const ASSIGNMENT_RULES: Partial<Record<BodyPart, (BodyPart | BodyPart[])[]>> = {
@@ -54,8 +55,9 @@ export const ASSIGNMENT_RULES: Partial<Record<BodyPart, (BodyPart | BodyPart[])[
   [BodyPart.RIGHT_LOWER_LEG]: [BodyPart.RIGHT_UPPER_LEG, SPINE_PARTS],
   [BodyPart.LEFT_UPPER_LEG]: [SPINE_PARTS],
   [BodyPart.RIGHT_UPPER_LEG]: [SPINE_PARTS],
-  [BodyPart.HIP]: [BodyPart.CHEST],
-  [BodyPart.WAIST]: [BodyPart.CHEST],
+  [BodyPart.HIP]: [BodyPart.UPPER_CHEST],
+  [BodyPart.LOWER_WAIST]: [BodyPart.UPPER_CHEST],
+  [BodyPart.UPPER_WAIST]: [BodyPart.UPPER_CHEST],
   // TODO chest OR upperChest.
   //  Also don't warn if no legs.
 };
@@ -77,7 +79,7 @@ export const ALL_ASSIGNABLE_PARTS = [
 ];
 
 export const TAP_DETECTION_BODY_PARTS = [
-  BodyPart.CHEST,
+  BodyPart.UPPER_CHEST,
   BodyPart.HIP,
   BodyPart.LEFT_UPPER_ARM,
   BodyPart.RIGHT_UPPER_ARM,
@@ -95,13 +97,13 @@ export const getSuggestedBodyParts = (
 ): BodyPart[] => {
   const parts = new Set<BodyPart>();
 
-  addParts(parts, [BodyPart.CHEST, ...LEGS_PARTS]);
+  addParts(parts, [BodyPart.UPPER_CHEST, ...LEGS_PARTS]);
   if (connectedIMUTrackersCount >= 6) parts.add(BodyPart.HIP);
-  if (connectedIMUTrackersCount === 7) parts.add(BodyPart.WAIST);
+  if (connectedIMUTrackersCount === 7) parts.add(BodyPart.LOWER_WAIST);
   if (connectedIMUTrackersCount >= 8) {
     addParts(parts, [BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT]);
   }
-  if (connectedIMUTrackersCount >= 9) parts.add(BodyPart.WAIST);
+  if (connectedIMUTrackersCount >= 9) parts.add(BodyPart.LOWER_WAIST);
   if (connectedIMUTrackersCount >= 10) {
     addParts(parts, [BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM]);
   }
@@ -214,7 +216,9 @@ export function providePicker() {
 
       // Special exception for waist/hip: https://github.com/SlimeVR/SlimeVR-Server/issues/612
       if (
-        (assignedRole === BodyPart.HIP || assignedRole === BodyPart.WAIST) &&
+        (assignedRole === BodyPart.HIP ||
+          assignedRole === BodyPart.LOWER_WAIST ||
+          assignedRole === BodyPart.UPPER_WAIST) &&
         !trackerRoles.some((t) => LOWER_BODY.has(t))
       ) {
         return;

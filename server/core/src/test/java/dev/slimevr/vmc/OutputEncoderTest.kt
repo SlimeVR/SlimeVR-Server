@@ -60,7 +60,7 @@ class OutputEncoderTest {
 		val bones = BodyPartMap(
 			mapOf(
 				BodyPart.HIP to bone(BodyPart.HIP),
-				BodyPart.WAIST to bone(BodyPart.WAIST),
+				BodyPart.LOWER_WAIST to bone(BodyPart.LOWER_WAIST),
 			),
 		)
 
@@ -80,7 +80,7 @@ class OutputEncoderTest {
 	fun testSkipsRoutedBonesMissingFromTheSkeleton() {
 		val bundle = buildOutgoingBundle(
 			bones = BodyPartMap(mapOf(BodyPart.HIP to bone(BodyPart.HIP))),
-			routedBones = setOf(BodyPart.HIP, BodyPart.WAIST),
+			routedBones = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST),
 			config = defaultConfig,
 			vrm = null,
 			elapsed = 0.seconds,
@@ -122,10 +122,10 @@ class OutputEncoderTest {
 		val bones = BodyPartMap(
 			mapOf(
 				BodyPart.HIP to bone(BodyPart.HIP),
-				BodyPart.WAIST to bone(BodyPart.WAIST),
+				BodyPart.LOWER_WAIST to bone(BodyPart.LOWER_WAIST),
 			),
 		)
-		val routed = setOf(BodyPart.HIP, BodyPart.WAIST)
+		val routed = setOf(BodyPart.HIP, BodyPart.LOWER_WAIST)
 		val vrm = buildVrmGeometry(VrmReader(VRM_JSON))
 
 		val bundle = buildOutgoingBundle(bones, routed, defaultConfig, vrm, 0.seconds)

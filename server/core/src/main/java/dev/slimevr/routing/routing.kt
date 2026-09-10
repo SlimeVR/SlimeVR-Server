@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import solarxr_protocol.datatypes.BodyPart
 import solarxr_protocol.datatypes.DeviceOrigin
-import solarxr_protocol.datatypes.TrackerStatus
 import solarxr_protocol.rpc.RoutingOutput
 import solarxr_protocol.rpc.RoutingOutputState
 import solarxr_protocol.rpc.VRCOSCOutputState
@@ -159,10 +158,10 @@ fun applyRoutingChange(
 }
 
 private val candidateToFineBodyParts = mapOf(
-	BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST),
+	BodyPart.UPPER_CHEST to setOf(BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST),
 	BodyPart.LEFT_UPPER_ARM to setOf(BodyPart.LEFT_UPPER_ARM, BodyPart.LEFT_LOWER_ARM),
 	BodyPart.RIGHT_UPPER_ARM to setOf(BodyPart.RIGHT_UPPER_ARM, BodyPart.RIGHT_LOWER_ARM),
-	BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
+	BodyPart.HIP to setOf(BodyPart.HIP, BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST, BodyPart.LOWER_CHEST, BodyPart.UPPER_CHEST),
 	BodyPart.LEFT_UPPER_LEG to setOf(BodyPart.LEFT_UPPER_LEG),
 	BodyPart.RIGHT_UPPER_LEG to setOf(BodyPart.RIGHT_UPPER_LEG),
 	BodyPart.LEFT_FOOT to setOf(BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG, BodyPart.LEFT_UPPER_LEG),

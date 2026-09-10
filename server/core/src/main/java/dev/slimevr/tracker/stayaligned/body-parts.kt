@@ -13,8 +13,9 @@ object StayAlignedBodyParts {
 	val upperBodyGroup = listOf(
 		BodyPart.NECK,
 		BodyPart.UPPER_CHEST,
-		BodyPart.CHEST,
-		BodyPart.WAIST,
+		BodyPart.LOWER_CHEST,
+		BodyPart.UPPER_WAIST,
+		BodyPart.LOWER_WAIST,
 		BodyPart.HIP,
 	)
 	val upperBodyOrder = upperBodyGroup.withIndex().associate { it.value to it.index }

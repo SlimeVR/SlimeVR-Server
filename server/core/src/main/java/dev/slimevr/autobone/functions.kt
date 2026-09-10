@@ -19,8 +19,9 @@ fun slideContributionWeight(ankleA: Vector3, ankleB: Vector3, localBoneTailA: Ve
 // TODO This is a placeholder
 val PLACEHOLDER_BODY_PARTS_TO_ADJUST = arrayOf(
 	BodyPart.UPPER_CHEST,
-	BodyPart.CHEST,
-	BodyPart.WAIST,
+	BodyPart.LOWER_CHEST,
+	BodyPart.UPPER_WAIST,
+	BodyPart.LOWER_WAIST,
 	BodyPart.HIP,
 	// etc.
 )

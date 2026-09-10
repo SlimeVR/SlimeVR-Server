@@ -48,11 +48,15 @@ val BODY_PART_CONSTRAINT_MAP: BodyPartMap<Constraint> = BodyPartMap(
 			90f * FastMath.DEG_TO_RAD,
 			120f * FastMath.DEG_TO_RAD,
 		),
-		BodyPart.CHEST to TwistSwingConstraint(
+		BodyPart.LOWER_CHEST to TwistSwingConstraint(
 			60f * FastMath.DEG_TO_RAD,
 			120f * FastMath.DEG_TO_RAD,
 		),
-		BodyPart.WAIST to TwistSwingConstraint(
+		BodyPart.UPPER_WAIST to TwistSwingConstraint(
+			60f * FastMath.DEG_TO_RAD,
+			120f * FastMath.DEG_TO_RAD,
+		),
+		BodyPart.LOWER_WAIST to TwistSwingConstraint(
 			60f * FastMath.DEG_TO_RAD,
 			120f * FastMath.DEG_TO_RAD,
 		),
