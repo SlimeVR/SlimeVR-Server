@@ -52,16 +52,6 @@ fun fromChainToTarget(
 	}
 }
 
-fun constrainOffset(
-	constraint: Constraint,
-	parent: Quaternion,
-	bone: Quaternion,
-	offset: Quaternion,
-): Quaternion {
-	// TODO: Ensure the quaternion multiplication order is correct here
-	return constraint.apply(parent, offset * bone) * bone.inv()
-}
-
 fun rotateChain(
 	boneInputs: InputSkeleton,
 	chain: IKChain,
@@ -91,24 +81,20 @@ fun ccdIkIteration(
 	val offset = fromChainToTarget(bodyPart, bones, chain, target) ?: return bones
 
 	// We only need to constrain the bone that we are adjusting
-	val constrainedOffset = constraints?.get(bodyPart)?.let { constraint ->
-		constrainOffset(
-			constraint,
-			parentOf(bodyPart)?.let { parent ->
-				bones[parent]?.rotation
-			} ?: Quaternion.IDENTITY,
-			requireBone(bones, bodyPart).rotation,
+	val constrainedOffset = constraints?.let {
+		constrainOffsetWithSkeleton(
+			bodyPart,
 			offset,
+			bones,
+			it,
 		)
 	} ?: offset
 
 	// Mutate the input skeleton
-	val lastBoneInputs = BodyPartMap(boneInputs)
 	rotateChain(boneInputs, chain, constrainedOffset)
 
 	// Only build bones for inputs that were changed
-	val changedParts = boneInputs.filter { (part, boneInput) -> boneInput != lastBoneInputs[part] }.keys
-	return buildBones(boneInputs, changedParts, bones)
+	return buildBones(boneInputs, chain.toSet(), bones)
 }
 
 typealias IKChain = List<BodyPart>

@@ -13,11 +13,13 @@ import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BonePredictionInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneSmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneYawFallbackInputProcessor
+import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
+import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
 import dev.slimevr.util.PreciseWaiter
 import io.github.axisangles.ktmath.Quaternion
@@ -228,6 +230,7 @@ class Skeleton(
 						UpperLegsRollAlignInputProcessor(settings),
 						BoneDirectLinkInputProcessor(),
 						FingerImputeInputProcessor(),
+						ConstraintInputProcessor(settings),
 					),
 					fkComputedProcessors = listOf(
 						VelocityComputedProcessor().also { resettableSkeletonProcessors.add(it) },
