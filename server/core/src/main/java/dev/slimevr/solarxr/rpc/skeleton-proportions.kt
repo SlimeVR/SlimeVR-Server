@@ -27,6 +27,9 @@ import solarxr_protocol.rpc.SkeletonProportionsResponse
 
 private const val MIN_HEIGHT = 0.9f
 
+// Bones whose value is a signed offset rather than a length, so negatives are valid.
+private val SIGNED_BONES = setOf(SkeletonBone.FOOT_SHIFT)
+
 class SkeletonProportionsBehaviour(
 	private val userConfig: UserConfig,
 	private val skeleton: Skeleton,
@@ -82,7 +85,7 @@ class SkeletonProportionsBehaviour(
 		receiver.rpcDispatcher.on<ChangeSkeletonProportionsRequest> { req ->
 			val bone = req.bone
 			if (bone == SkeletonBone.NONE) return@on
-			val value = req.value.coerceAtLeast(0f)
+			val value = if (bone in SIGNED_BONES) req.value else req.value.coerceAtLeast(0f)
 
 			userConfig.context.dispatch(UserConfigActions.Update { copy(proportions = proportions + (bone.name to value)) })
 		}.launchIn(receiver.context.scope)
