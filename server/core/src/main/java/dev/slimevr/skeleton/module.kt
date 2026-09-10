@@ -241,8 +241,8 @@ class Skeleton(
 						ToeSnapFkProcessor(settings),
 					),
 					targetProcessors = listOf(
-// 						FloorClipTargetProcessor(settings),
-// 						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
+						FloorClipTargetProcessor(settings),
+						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 					),
 					ikComputedProcessors = listOf(
 						VelocityComputedProcessor().also { resettableSkeletonProcessors.add(it) },
