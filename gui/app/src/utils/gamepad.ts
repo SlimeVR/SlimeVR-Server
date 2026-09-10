@@ -46,6 +46,33 @@ export function pressedDirections(
   return dirs;
 }
 
+/** Screen bearing of a vector, degrees clockwise from straight up. */
+function bearingOf(x: number, y: number): number {
+  return (Math.atan2(x, -y) * (180 / Math.PI) + 360) % 360;
+}
+
+/**
+ * Where the stick or D-pad points, as a bearing clockwise from up, or null when
+ * nothing is held. For dial-style widgets that aim rather than step: the stick
+ * gives its real angle, the D-pad resolves its (possibly diagonal) combination.
+ */
+export function aimBearing(frame: GamepadFrame): number | null {
+  const mag = Math.max(Math.abs(frame.axX), Math.abs(frame.axY));
+  if (mag >= DEADZONE_ENTER) return bearingOf(frame.axX, frame.axY);
+
+  let x = 0;
+  let y = 0;
+  for (const i of frame.buttons) {
+    const dir = DPAD[i];
+    if (dir === 'up') y -= 1;
+    else if (dir === 'down') y += 1;
+    else if (dir === 'left') x -= 1;
+    else if (dir === 'right') x += 1;
+  }
+  if (x === 0 && y === 0) return null;
+  return bearingOf(x, y);
+}
+
 export function resolveStick(
   axX: number,
   axY: number,

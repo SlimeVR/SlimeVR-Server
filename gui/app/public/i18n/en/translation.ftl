@@ -792,7 +792,7 @@ settings-interface-behavior-skeleton_mesh = Skeleton preview style
 settings-interface-behavior-skeleton_mesh-description = Draw the body preview with solid 3D shapes instead of simple lines. Turn this off on low-end machines.
 settings-interface-behavior-skeleton_mesh-label = Use 3D shapes
 settings-interface-behavior-controller_nav = Game controller navigation
-settings-interface-behavior-controller_nav-description = Move focus around the interface with a game controller. The D-pad or left stick move between controls, A activates, B goes back. Only active while a controller is connected.
+settings-interface-behavior-controller_nav-description = Move focus around the interface with a game controller: the D-pad or left stick move between controls, A activates, B goes back, only while a controller is connected. Holding Ctrl or Alt with the arrow keys always moves focus the same way.
 settings-interface-behavior-controller_nav-label = Navigate with a controller
 
 ## Serial settings
