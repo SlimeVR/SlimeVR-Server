@@ -128,7 +128,10 @@ fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
 		tail.putAll(getToeOffsets(it))
 		head.putAll(getToeHeadOffsets(it))
 	}
-	this[SkeletonBone.CHEST]?.let { offsets.putAll(getBustOffsets(it)) }
+	lengths[SkeletonBone.CHEST]?.let {
+		tail.putAll(getBustOffsets(it))
+		head.putAll(getBustHeadOffsets(it))
+	}
 	return BoneOffsets(tail, head)
 }
 
@@ -303,13 +306,39 @@ private fun getToeHeadOffsets(footLength: Float): Map<BodyPart, Vector3> = build
 	}
 }
 
+
+private class Bust(
+	val segments: Pair<BodyPart, BodyPart>,
+	val lengthFraction: Float,
+	val headOffset: Vector3,
+)
+
+private val BUST = listOf(
+	Bust(
+		BodyPart.LEFT_BUST to BodyPart.RIGHT_BUST,
+		lengthFraction = 0.27f,
+		headOffset = Vector3(0.28f, 0f, 0f),
+	),
+)
+
+
 /**
- * Returns the offsets for the bust bones scaled from the chestLength.
+ * Returns the offsets for the bust bones scaled from the chest.
  */
-private fun getBustOffsets(bustLength: Float): BodyPartMap<Vector3> =
-	BodyPartMap(
-		mapOf(
-			BodyPart.LEFT_BUST to Vector3(0f, 0f, -bustLength * 0.2f),
-			BodyPart.RIGHT_BUST to Vector3(0f, 0f, -bustLength * 0.2f),
-		),
-	)
+private fun getBustOffsets(bustLength: Float) = buildMap {
+	for (bust in BUST) {
+		val bustLength = bustLength * bust.lengthFraction
+		put(bust.segments.first, Vector3(0f, 0f, -bustLength * 0.2f))
+		put(bust.segments.second, Vector3(0f, 0f, -bustLength * 0.2f))
+	}
+}
+
+// Head offsets spread the bust roots across the chest. X is the chest's medial-lateral axis in
+// bust-local space, positive toward the left bust. Values are fractions of bustLength.
+private fun getBustHeadOffsets(bustLength: Float): Map<BodyPart, Vector3> = buildMap {
+	for (bust in BUST) {
+		val k = bust.headOffset
+		put(bust.segments.first, Vector3(k.x * bustLength, k.y * bustLength, k.z * bustLength))
+		put(bust.segments.second, Vector3(-k.x * bustLength, k.y * bustLength, k.z * bustLength))
+	}
+}
