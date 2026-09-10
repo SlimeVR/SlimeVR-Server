@@ -257,16 +257,28 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
       offset: inBoneLengths({ length: -0.2 }),
     })
   ),
-  [BodyPart.CHEST]: part(
+  [BodyPart.LOWER_CHEST]: part(
     model('chest', {
-      scale: spanBone({ girthFrom: 'shoulders', length: 1, width: 0.95, depth: 0.95 }),
+      scale: spanBone({
+        girthFrom: 'shoulders',
+        length: 0.95,
+        width: 0.95,
+        depth: 0.95,
+      }),
       offset: inBoneLengths({ length: 0 }),
     }),
     { trackerOffset: CHEST_TRACKER_OFFSET }
   ),
-  [BodyPart.WAIST]: part(
+  [BodyPart.UPPER_WAIST]: part(
     model('waist', {
-      scale: spanBone({ girthFrom: 'hips', length: 1.1, width: 0.95, depth: 0.95 }),
+      scale: spanBone({ girthFrom: 'hips', length: 0.95, width: 0.95, depth: 0.95 }),
+      offset: inBoneLengths({ length: 0.1 }),
+    }),
+    { trackerOffset: WAIST_TRACKER_OFFSET }
+  ),
+  [BodyPart.LOWER_WAIST]: part(
+    model('waist', {
+      scale: spanBone({ girthFrom: 'hips', length: 1, width: 0.95, depth: 0.95 }),
       offset: inBoneLengths({ length: -0.05 }),
     }),
     { trackerOffset: WAIST_TRACKER_OFFSET }

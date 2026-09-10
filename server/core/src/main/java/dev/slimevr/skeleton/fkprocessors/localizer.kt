@@ -155,7 +155,7 @@ object HipLocalizer {
 }
 
 object COMLocalizer {
-	private val TORSO_TRACKERS = setOf(BodyPart.UPPER_CHEST, BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP)
+	private val TORSO_TRACKERS = setOf(BodyPart.UPPER_CHEST, BodyPart.LOWER_CHEST, BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST, BodyPart.HIP)
 
 	/** Get the average accel of the torso bones */
 	fun getTorsoAccel(inputs: InputSkeleton): Vector3 {
