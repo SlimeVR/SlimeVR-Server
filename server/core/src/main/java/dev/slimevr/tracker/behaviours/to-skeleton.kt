@@ -24,10 +24,13 @@ class TrackerToSkeletonBehaviour : TrackerBehaviour {
 			.onEach { _ ->
 				// Tell the skeleton the tracker has stopped sending data to the last bone it was sending data to.
 				lastBodyPartSent?.let {
-					receiver.appContext.skeleton.context.dispatch(
-						SkeletonActions.DisableBone(it),
-					)
-					lastBodyPartSent = null
+					val trackerState = receiver.context.state.value
+					if ((!trackerState.status.isActive() && trackerState.status != TrackerStatus.OCCLUDED) || trackerState.bodyPart != lastBodyPartSent) {
+						receiver.appContext.skeleton.context.dispatch(
+							SkeletonActions.DisableBone(it),
+						)
+						lastBodyPartSent = null
+					}
 				}
 			}
 			.flatMapLatest { _ ->
