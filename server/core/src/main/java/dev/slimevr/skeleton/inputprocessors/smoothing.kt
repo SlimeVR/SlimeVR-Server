@@ -49,7 +49,7 @@ class SmoothingInputProcessor(val settings: Settings) :
 			if (!bone.isRotationActive) return@forEachBone
 
 			val prev = smoothed[bodyPart] ?: bone.rotation
-			val rotation = prev.lerpR(bone.rotation, alpha).unit()
+			val rotation = prev.lerpQ(bone.rotation, alpha).unit()
 			newSmoothed[bodyPart] = rotation
 			if (rotation != bone.rotation) mutableInputSkeleton[bodyPart] = bone.copy(rotation = rotation)
 		}
