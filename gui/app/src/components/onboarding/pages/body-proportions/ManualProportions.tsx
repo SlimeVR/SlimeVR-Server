@@ -69,7 +69,7 @@ function ActionButton({
         onClick={onClick}
         disabled={disabled}
         className={classNames(
-          'flex flex-col rounded-md p-2 justify-between gap-1 items-center text-standard fill-background-10',
+          'flex flex-col rounded-md p-2 justify-between gap-1 items-center text-standard fill-background-10 text-center',
           disabled
             ? 'cursor-not-allowed opacity-30'
             : 'hover:bg-background-50 cursor-pointer',

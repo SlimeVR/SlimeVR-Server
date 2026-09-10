@@ -169,6 +169,8 @@ function DropdownItem({
   );
 }
 
+export type DropdownAction = 'all' | 'none';
+
 type DropdownListProps = {
   isOpen: boolean;
   onSelect: (item: DropdownItem) => void;
@@ -177,6 +179,7 @@ type DropdownListProps = {
   onSelectAll?: () => void;
   onDeselectAll?: () => void;
   innerFocusValue: string | null;
+  focusedAction: DropdownAction | null;
   anchorName: string;
 } & Pick<
   Required<DropdownProps>,
@@ -198,6 +201,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
     onSelectAll,
     onDeselectAll,
     innerFocusValue,
+    focusedAction,
     display,
     alignment,
     direction,
@@ -261,20 +265,28 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
       {multiple && (onSelectAll || onDeselectAll) && (
         <div className="flex items-center justify-between px-3 py-2 border-b border-background-10/10 text-xs font-bold bg-background-80/60 select-none">
           <Clickable
+            id={`__dropdownList-${name}-action-all`}
             onClick={(e) => {
               e.stopPropagation();
               onSelectAll?.();
             }}
-            className="text-background-10 hover:text-background-20 transition-colors"
+            className={classNames(
+              'text-background-10 hover:text-background-20 transition-colors rounded',
+              focusedAction === 'all' && 'ring-2 ring-accent-background-10'
+            )}
           >
             <Typography id="dropdown_select-all" />
           </Clickable>
           <Clickable
+            id={`__dropdownList-${name}-action-none`}
             onClick={(e) => {
               e.stopPropagation();
               onDeselectAll?.();
             }}
-            className="text-background-30 hover:text-background-10 transition-colors"
+            className={classNames(
+              'text-background-30 hover:text-background-10 transition-colors rounded',
+              focusedAction === 'none' && 'ring-2 ring-accent-background-10'
+            )}
           >
             <Typography id="dropdown_unselect-all" />
           </Clickable>
@@ -368,29 +380,47 @@ export function DropdownInside(
     }
   };
 
+  const selectAll = () =>
+    props.multiple && props.onChange(items.map((i) => i.value));
+  const deselectAll = () => props.multiple && props.onChange([]);
+
+  /**
+   * The header select-all / unselect-all buttons sit before the items in the
+   * roving order, so arrows reach them like any option.
+   */
+  const actionKeys: DropdownAction[] = props.multiple ? ['all', 'none'] : [];
+  const navCount = actionKeys.length + items.length;
+  const resolveNav = (
+    index: number | null
+  ): { action: DropdownAction | null; item: DropdownItem | null } => {
+    if (index === null || index < 0) return { action: null, item: null };
+    if (index < actionKeys.length)
+      return { action: actionKeys[index] ?? null, item: null };
+    return { action: null, item: items[index - actionKeys.length] ?? null };
+  };
+
   const ref = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
   const anchorName = `--dropdown-anchor-${useId().replace(/:/g, '')}`;
 
   const [innerFocusIndex, setInnerFocusIndex] = useState<number | null>(null);
-  // Index may point past the array (items changed, empty list) - resolve safely.
-  const focusedItem =
-    innerFocusIndex === null ? null : (items[innerFocusIndex] ?? null);
+  // Index may point past the range (items changed, empty list) - resolve safely.
+  const { action: focusedAction, item: focusedItem } =
+    resolveNav(innerFocusIndex);
   const getCurrentActiveIndex = () => {
-    return props.multiple
+    const i = props.multiple
       ? items.findIndex((item) => props.value.includes(item.value))
       : items.findIndex((item) => item.value === props.value);
+    return i >= 0 ? i + actionKeys.length : actionKeys.length;
   };
   const innerFocusPrev = () => {
     const current = innerFocusIndex ?? getCurrentActiveIndex();
-
-    setInnerFocusIndex(current > 0 ? current - 1 : current);
+    setInnerFocusIndex(Math.max(0, current - 1));
   };
   const innerFocusNext = () => {
     const current = innerFocusIndex ?? getCurrentActiveIndex();
-
-    setInnerFocusIndex(current < items.length - 1 ? current + 1 : current);
+    setInnerFocusIndex(Math.min(navCount - 1, current + 1));
   };
 
   useEffect(() => {
@@ -442,7 +472,9 @@ export function DropdownInside(
               items.length > 0 &&
               (e.key === 'ArrowDown' || e.key === 'ArrowUp')
             ) {
-              setInnerFocusIndex(e.key === 'ArrowDown' ? 0 : items.length - 1);
+              setInnerFocusIndex(
+                e.key === 'ArrowDown' ? actionKeys.length : navCount - 1
+              );
               setIsOpen(true);
               e.preventDefault();
             }
@@ -450,6 +482,8 @@ export function DropdownInside(
           } else {
             if (a11yClick(e)) {
               e.preventDefault();
+              if (focusedAction === 'all') return selectAll();
+              if (focusedAction === 'none') return deselectAll();
               if (!focusedItem) {
                 setIsOpen(false);
                 return;
@@ -476,7 +510,7 @@ export function DropdownInside(
                 setInnerFocusIndex(0);
                 return;
               case 'End':
-                setInnerFocusIndex(items.length - 1);
+                setInnerFocusIndex(navCount - 1);
                 return;
             }
           }
@@ -507,9 +541,11 @@ export function DropdownInside(
           aria-controls={`__dropdownList-${name}`}
           aria-expanded={isOpen}
           aria-activedescendant={
-            focusedItem
-              ? `__dropdownList-${name}-item-${focusedItem.value}`
-              : ''
+            focusedAction
+              ? `__dropdownList-${name}-action-${focusedAction}`
+              : focusedItem
+                ? `__dropdownList-${name}-item-${focusedItem.value}`
+                : ''
           }
           role="combobox"
         >
@@ -545,10 +581,8 @@ export function DropdownInside(
           isOpen={isOpen}
           items={items}
           multiple={props.multiple}
-          onSelectAll={() =>
-            props.multiple && props.onChange(items.map((i) => i.value))
-          }
-          onDeselectAll={() => props.multiple && props.onChange([])}
+          onSelectAll={selectAll}
+          onDeselectAll={deselectAll}
           onSelect={(item: DropdownItem) => {
             ref.current?.focus();
             selectItem(item);
@@ -559,6 +593,7 @@ export function DropdownInside(
           ref={listRef}
           anchorName={anchorName}
           innerFocusValue={focusedItem?.value ?? null}
+          focusedAction={focusedAction}
           name={name}
         />
       </div>

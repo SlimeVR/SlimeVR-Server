@@ -194,6 +194,7 @@ export const KeybindRecorder = forwardRef<
         <input
           className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
           ref={inputRef}
+          data-nav-raw
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           onKeyDown={handleKeyDown}
