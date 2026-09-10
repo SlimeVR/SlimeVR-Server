@@ -65,7 +65,8 @@ private val BONE_VALUE_TO_HEAD_OFFSETS: Map<SkeletonBone, BodyPartMap<Vector3>> 
 )
 
 // Inverts an offset table so a resolved offset vector can be turned back into a SkeletonBone value.
-// The vector is inverted too ((vec/len)/len == 1/vec) so hadamard + len recovers the scalar.
+// Each direction is divided by its squared length so a dot product with the resolved offset
+// recovers the signed scalar.
 private fun invertOffsetTable(table: Map<SkeletonBone, BodyPartMap<Vector3>>): BodyPartMap<Map<SkeletonBone, Vector3>> = BodyPartMap(
 	table
 		.flatMap { (cfg, bones) -> bones.map { (bone, vec) -> bone to (cfg to vec / vec.lenSq()) } }
@@ -132,7 +133,7 @@ fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
 
 fun toBoneValues(tailOffsets: BodyPartMap<Vector3>, headOffsets: BodyPartMap<Vector3>): Map<SkeletonBone, Float> {
 	fun invert(offsets: BodyPartMap<Vector3>, table: BodyPartMap<Map<SkeletonBone, Vector3>>) = offsets.flatMap { (bone, vec) ->
-		table[bone]?.map { (cfg, cfgVec) -> cfg to vec.hadamard(cfgVec).len() } ?: emptyList()
+		table[bone]?.map { (cfg, cfgVec) -> cfg to vec.dot(cfgVec) } ?: emptyList()
 	}
 
 	return (invert(tailOffsets, BONE_OFFSET_TO_VALUES) + invert(headOffsets, BONE_HEAD_OFFSET_TO_VALUES))
