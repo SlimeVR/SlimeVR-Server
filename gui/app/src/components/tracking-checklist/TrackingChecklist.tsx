@@ -5,6 +5,7 @@ import {
   trackingchecklistIdtoLabel,
 } from '@/hooks/tracking-checklist';
 import classNames from 'classnames';
+import { Clickable } from '@/components/commons/Clickable';
 import {
   EnableSteamVRDriverRequestT,
   ResetType,
@@ -34,6 +35,7 @@ import {
 } from '@/components/commons/icon/ArrowIcons';
 import { Localized, useLocalization } from '@fluent/react';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcon';
+import { IconButton } from '@/components/commons/IconButton';
 import { TrackingChecklistModal } from './TrackingChecklistModal';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '@/hooks/breakpoint';
@@ -64,14 +66,14 @@ function Step({
         status !== 'complete' || (firstRequired && 'border-dashed')
       )}
     >
-      <div
+      <Clickable
+        disabled={!canBeOpened}
+        expanded={canBeOpened ? open : undefined}
         className={classNames(
-          'flex w-full gap-2 ',
+          'flex w-full gap-2 text-left',
           canBeOpened && 'group cursor-pointer'
         )}
-        onClick={() => {
-          if (canBeOpened) setOpen((open) => !open);
-        }}
+        onClick={() => setOpen((open) => !open)}
       >
         <div
           className={classNames(
@@ -104,7 +106,7 @@ function Step({
             </div>
           )}
         </div>
-      </div>
+      </Clickable>
       {(firstRequired || open) && children && (
         <div className="pt-2 pl-5">{children}</div>
       )}
@@ -559,20 +561,27 @@ export function TrackingChecklist({
             <Typography variant="section-title" id="tracking_checklist" />
           </div>
           <div className="flex gap-1">
-            <div
+            <IconButton
+              labelId="tracking_checklist-settings"
               className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
               onClick={() => setSettingsOpen(true)}
             >
               <WrenchIcon width={15} />
-            </div>
+            </IconButton>
             {closable && (
-              <div
+              <IconButton
+                labelId={
+                  closed
+                    ? 'tracking_checklist-expand'
+                    : 'tracking_checklist-collapse'
+                }
+                expanded={!closed}
                 className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
                 onClick={() => toggleClosed()}
               >
                 {closed && <ArrowDownIcon size={25} />}
                 {!closed && <CrossIcon size={25} />}
-              </div>
+              </IconButton>
             )}
           </div>
         </div>
@@ -597,8 +606,10 @@ export function TrackingChecklist({
             }
           )}
         >
-          <div
-            className={classNames('flex w-full gap-2 z-10', {
+          <Clickable
+            disabled={!closed}
+            expanded={closed ? false : undefined}
+            className={classNames('flex w-full gap-2 z-10 text-left', {
               'cursor-pointer': closed,
               'pointer-events-none': !closed,
             })}
@@ -636,7 +647,7 @@ export function TrackingChecklist({
                 />
               )}
             </div>
-          </div>
+          </Clickable>
         </div>
         <div
           className={classNames('w-full flex relative p-3 pr-12', {

@@ -53,12 +53,16 @@ export function ArrowLink({
 
   if (isExternal) {
     return (
-      <span
-        onClick={() => openUrl(to)}
+      <a
+        href={to}
+        onClick={(e) => {
+          e.preventDefault();
+          openUrl(to);
+        }}
         className={classNames(classes, 'cursor-pointer')}
       >
         {content}
-      </span>
+      </a>
     );
   }
 

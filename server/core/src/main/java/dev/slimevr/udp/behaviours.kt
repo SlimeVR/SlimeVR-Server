@@ -35,9 +35,9 @@ class PacketBehaviour : UDPConnectionBehaviour {
 			val now = System.currentTimeMillis()
 			val num = packet.packetNumber
 			if (num == 0L && now - state.lastPacket > CONNECTION_TIMEOUT_MS) {
-				AppLogger.udp.info("[${state.address}] Reconnecting")
+				AppLogger.udp.info("Reconnecting")
 			} else if (num != null && num != 0L && num <= state.lastPacketNum) {
-				AppLogger.udp.warn("[${state.address}] Received packet with wrong packet number")
+				AppLogger.udp.warn("Received packet with wrong packet number")
 				return@on
 			}
 			receiver.context.dispatch(UDPConnectionActions.LastPacket(packetNum = num, time = now))
@@ -97,7 +97,7 @@ class PingBehaviour : UDPConnectionBehaviour {
 			val deviceId = state.deviceId ?: return@onPacket
 
 			if (packet.data.pingId != state.lastPing.id) {
-				AppLogger.udp.warn("[${state.address}] Ping ID does not match, ignoring ${packet.data.pingId} != ${state.lastPing.id}")
+				AppLogger.udp.warn("Ping ID does not match, ignoring ${packet.data.pingId} != ${state.lastPing.id}")
 				return@onPacket
 			}
 
@@ -150,7 +150,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 			if (mac != null) {
 				val settings = receiver.appContext.config.settings.context.state.value.data
 				if (mac !in settings.allowedUdpDevices) {
-					AppLogger.udp.info("[${state.address}] Unknown MAC $mac, notifying solarxr")
+					AppLogger.udp.info("Unknown MAC $mac, notifying solarxr")
 					receiver.appContext.server.context.scope.launch {
 						receiver.appContext.server.sendSolarxrRpc(
 							UnknownDeviceHandshakeNotification(macAddress = mac),
@@ -165,7 +165,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 			} else {
 				receiver.context.dispatch(UDPConnectionActions.Handshake(state.deviceId))
 				receiver.getDevice() ?: run {
-					AppLogger.udp.warn("[${state.address}] Reconnect handshake but device ${state.deviceId} not found")
+					AppLogger.udp.warn("Reconnect handshake but device ${state.deviceId} not found")
 					receiver.send(Handshake())
 					return@onPacket
 				}
@@ -173,7 +173,7 @@ class HandshakeBehaviour : UDPConnectionBehaviour {
 
 			val previousStatus = device.context.state.value.status
 			if (previousStatus != TrackerStatus.OK) {
-				AppLogger.udp.info("[${state.address}] Handshake from ${device.context.state.value.macAddress}, was $previousStatus")
+				AppLogger.udp.info("Handshake from ${device.context.state.value.macAddress}, was $previousStatus")
 			}
 
 			// Apply handshake fields to device, always, for both first connect and reconnect
@@ -219,7 +219,7 @@ class TimeoutBehaviour : UDPConnectionBehaviour {
 				val timeUntilTimeout = CONNECTION_TIMEOUT_MS - (System.currentTimeMillis() - state.lastPacket)
 				if (timeUntilTimeout <= 0) {
 					if (updateConnectionStatus(receiver, TrackerStatus.TIMED_OUT)) {
-						AppLogger.udp.info("[${state.address}] Connection timed out")
+						AppLogger.udp.info("Connection timed out")
 					}
 					delay(500)
 				} else {
@@ -241,7 +241,7 @@ class DisconnectBehaviour : UDPConnectionBehaviour {
 				}
 				val timeUntilRemoval = receiver.appContext.config.settings.context.state.value.data.trackersConfig.timeoutDelay.toDouble().seconds - (System.currentTimeMillis() - state.lastPacket).milliseconds
 				if (timeUntilRemoval <= 0.milliseconds) {
-					AppLogger.udp.info("[${state.address}] Connection removed after extended timeout")
+					AppLogger.udp.info("Connection removed after extended timeout")
 					receiver.appContext.udpServer.removeConnection(state.address)
 					updateConnectionStatus(receiver, TrackerStatus.DISCONNECTED)
 					break
@@ -282,7 +282,7 @@ class SensorInfoBehaviour : UDPConnectionBehaviour {
 	private suspend fun assignTracker(receiver: UDPConnection, device: Device, event: PacketEvent<SensorInfo>): Pair<Tracker, Boolean> {
 		val deviceState = device.context.state.value
 		val mac = deviceState.macAddress ?: run {
-			AppLogger.udp.warn("[${deviceState.address}] No MAC address available, falling back to IP for hardware ID")
+			AppLogger.udp.warn("No MAC address available, falling back to IP for hardware ID")
 			deviceState.address
 		}
 		val hardwareId = "$mac:${event.data.sensorId}"

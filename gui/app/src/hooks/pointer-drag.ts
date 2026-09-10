@@ -1,6 +1,14 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { selectAtom } from 'jotai/utils';
-import { MouseEvent, PointerEvent, useEffect, useRef, useState } from 'react';
+import {
+  KeyboardEvent as ReactKeyboardEvent,
+  MouseEvent,
+  PointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { a11yClick } from '@/utils/a11y';
 
 const DRAG_THRESHOLD = 6;
 
@@ -38,8 +46,18 @@ export const createPointerDrag = <P, T>(codec: DropTargetCodec<T>) => {
     [codec.attribute]: codec.serialize(target),
   });
 
-  /** A null payload means there is nothing to drag here. */
-  const useDraggable = (payload: P | null, onDrop: (target: T | null) => void) => {
+  /**
+   * A null payload means there is nothing to drag here.
+   *
+   * Passing `onTap` also makes the surface activatable: it fires on a click
+   * that was not the tail of a drag, and on Enter or Space via the returned
+   * `tapProps` (spread those onto the element alongside `dragProps`).
+   */
+  const useDraggable = (
+    payload: P | null,
+    onDrop: (target: T | null) => void,
+    onTap?: () => void
+  ) => {
     const setDrag = useSetAtom(stateAtom);
     const [start, setStart] = useState<{ x: number; y: number } | null>(null);
     const [isDragging, setIsDragging] = useState(false);
@@ -94,7 +112,9 @@ export const createPointerDrag = <P, T>(codec: DropTargetCodec<T>) => {
         suppressNextClickRef.current = false;
         e.preventDefault();
         e.stopPropagation();
+        return;
       }
+      onTap?.();
     };
 
     useEffect(() => {
@@ -115,6 +135,17 @@ export const createPointerDrag = <P, T>(codec: DropTargetCodec<T>) => {
         onPointerCancel,
         onClick,
       },
+      tapProps: onTap
+        ? {
+            role: 'button',
+            tabIndex: 0,
+            onKeyDown: (e: ReactKeyboardEvent) => {
+              if (!a11yClick(e)) return;
+              e.preventDefault();
+              onTap();
+            },
+          }
+        : undefined,
       isDragging,
     };
   };

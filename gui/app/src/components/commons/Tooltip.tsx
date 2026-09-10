@@ -15,7 +15,7 @@ import { createPortal } from 'react-dom';
 import { Typography } from './Typography';
 import { CloseIcon } from './icon/CloseIcon';
 
-type Direction = 'top' | 'left' | 'right' | 'bottom';
+export type Direction = 'top' | 'left' | 'right' | 'bottom';
 interface TooltipProps {
   content: ReactNode;
   children: ReactElement;

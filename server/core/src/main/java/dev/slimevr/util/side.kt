@@ -18,7 +18,6 @@ val Side.opposite: Side
 
 val BodyPart.side: Side?
 	get() = when (this) {
-		BodyPart.LEFT_HIP,
 		BodyPart.LEFT_UPPER_LEG,
 		BodyPart.LEFT_LOWER_LEG,
 		BodyPart.LEFT_FOOT,
@@ -43,7 +42,6 @@ val BodyPart.side: Side?
 		BodyPart.LEFT_LITTLE_DISTAL,
 		-> Side.LEFT
 
-		BodyPart.RIGHT_HIP,
 		BodyPart.RIGHT_UPPER_LEG,
 		BodyPart.RIGHT_LOWER_LEG,
 		BodyPart.RIGHT_FOOT,

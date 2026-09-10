@@ -44,6 +44,7 @@ import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
+import { useControllerNav } from './hooks/controller-nav';
 import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
@@ -74,6 +75,7 @@ const SentryRoutes = withSentryReactRouterV6Routing(Routes);
 function Layout() {
   const { isMobile } = useBreakpoint('mobile');
   useDiscordPresence();
+  useControllerNav();
 
   return (
     <>

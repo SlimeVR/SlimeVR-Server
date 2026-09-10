@@ -80,14 +80,10 @@ class UDPConnection(
 		packetChannel.close()
 	}
 
-	fun getDevice(): Device? {
-		val deviceId = context.state.value.deviceId
-		return if (deviceId != null) appContext.server.getDevice(deviceId) else null
-	}
+	fun getDevice(): Device? = context.state.value.deviceId?.let { id -> appContext.server.getDevice(id) }
 
-	fun getTracker(id: Int): Tracker? {
-		val trackerId = context.state.value.trackerIds.find { it.sensorId == id }
-		return if (trackerId != null) appContext.server.getTracker(trackerId.trackerId) else null
+	fun getTracker(id: Int): Tracker? = context.state.value.trackerIds.find { it.sensorId == id }?.let { trackerId ->
+		appContext.server.getTracker(trackerId.trackerId)
 	}
 
 	companion object {

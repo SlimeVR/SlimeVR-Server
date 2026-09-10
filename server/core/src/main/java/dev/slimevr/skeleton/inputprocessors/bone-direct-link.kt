@@ -17,9 +17,6 @@ class BoneDirectLinkInputProcessor : SkeletonInputProcessor {
 		BodyPart.HEAD to BodyPart.NECK,
 		BodyPart.NECK to BodyPart.HEAD,
 
-		BodyPart.LEFT_HIP to BodyPart.HIP,
-		BodyPart.RIGHT_HIP to BodyPart.HIP,
-
 		BodyPart.LEFT_FOOT to BodyPart.LEFT_LOWER_LEG,
 		BodyPart.RIGHT_FOOT to BodyPart.RIGHT_LOWER_LEG,
 

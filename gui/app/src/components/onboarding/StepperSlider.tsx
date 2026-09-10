@@ -1,12 +1,6 @@
 import classNames from 'classnames';
-import {
-  FC,
-  MouseEventHandler,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Clickable } from '@/components/commons/Clickable';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { useElemSize } from '@/hooks/layout';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { Typography } from '@/components/commons/Typography';
@@ -73,10 +67,11 @@ export function StepDot({
 }: {
   active?: boolean;
   done?: boolean;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: () => void;
 }) {
   return (
-    <div
+    <Clickable
+      current={active ? 'step' : undefined}
       className={classNames(
         'flex h-4 w-4 rounded-full justify-center items-center fill-background-10 transition-all',
         active || done ? 'bg-accent-background-20 ' : 'bg-background-60'
@@ -85,7 +80,7 @@ export function StepDot({
     >
       {active && <div className="flex h-2 w-2 rounded-full bg-background-10" />}
       {done && <CheckIcon />}
-    </div>
+    </Clickable>
   );
 }
 

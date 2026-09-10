@@ -1,4 +1,5 @@
 import { Typography } from './Typography';
+import { Clickable } from './Clickable';
 import { Control, useWatch } from 'react-hook-form';
 import { KeybindForm } from '@/components/settings/pages/KeybindSettings';
 import { NumberSelector } from './NumberSelector';
@@ -49,8 +50,7 @@ function ResetButton({
       content={<Typography id="settings-keybinds-reset-single" />}
       preferedDirection="top"
     >
-      <button
-        type="button"
+      <Clickable
         disabled={!isModified}
         className={classNames(
           'w-7 h-7 rounded-xl flex items-center justify-center transition-all',
@@ -63,7 +63,7 @@ function ResetButton({
         onClick={onClick}
       >
         <ResetIcon size={16} />
-      </button>
+      </Clickable>
     </Tooltip>
   );
 }
@@ -133,12 +133,12 @@ export function KeybindsRow({
             content={<Typography id="settings-keybinds-change-shortcut" />}
             preferedDirection="top"
           >
-            <div
+            <Clickable
               className="cursor-pointer rounded-xl transition-all hover:scale-105 active:scale-95"
               onClick={() => openKeybindRecorderModal(index)}
             >
               <KeyBindKeyList keybind={binding} />
-            </div>
+            </Clickable>
           </Tooltip>
         </div>
       </td>

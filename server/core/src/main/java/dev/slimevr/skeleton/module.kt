@@ -13,11 +13,13 @@ import dev.slimevr.skeleton.inputprocessors.BoneDirectLinkInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BonePredictionInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneSmoothingInputProcessor
 import dev.slimevr.skeleton.inputprocessors.BoneYawFallbackInputProcessor
+import dev.slimevr.skeleton.inputprocessors.ConstraintInputProcessor
 import dev.slimevr.skeleton.inputprocessors.FingerImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.HeadPositionFallbackProcessor
 import dev.slimevr.skeleton.inputprocessors.HipYawRollAlignInputProcessor
 import dev.slimevr.skeleton.inputprocessors.SpineImputeInputProcessor
 import dev.slimevr.skeleton.inputprocessors.UpperLegsRollAlignInputProcessor
+import dev.slimevr.skeleton.targetprocessors.FloorClipTargetProcessor
 import dev.slimevr.skeleton.targetprocessors.SkatingCorrectionTargetProcessor
 import dev.slimevr.skeleton.inputprocessors.BustInputProcessor
 import dev.slimevr.util.PreciseWaiter
@@ -42,6 +44,7 @@ val ZERO_VELOCITY = Velocity(Vector3.ZERO, Vector3.ZERO)
 /** Pre-FK */
 data class BoneInput(
 	val bodyPart: BodyPart,
+	val headOffset: Vector3,
 	val offset: Vector3,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
@@ -55,6 +58,7 @@ data class BoneInput(
 data class BoneState(
 	val parentBone: BoneState?,
 	val bodyPart: BodyPart,
+	val headOffset: Vector3,
 	val offset: Vector3,
 	val rotation: Quaternion,
 	val acceleration: Vector3,
@@ -94,6 +98,7 @@ data class SkeletonState(
 
 val DEFAULT_BONE_INPUT = BoneInput(
 	bodyPart = BodyPart.NONE,
+	headOffset = Vector3.ZERO,
 	offset = Vector3.ZERO,
 	rotation = Quaternion.IDENTITY,
 	acceleration = Vector3.ZERO,
@@ -103,25 +108,31 @@ val DEFAULT_BONE_INPUT = BoneInput(
 	isPositionActive = false,
 )
 
-val DEFAULT_SKELETON_STATE = SkeletonState(
-	boneInputs = DEFAULT_PROPORTIONS.toBoneOffsets().mapValues { bodyPart, tailOffset ->
-		DEFAULT_BONE_INPUT.copy(
-			bodyPart = bodyPart,
-			offset = tailOffset,
-		)
-	},
-	skeletonHeight = DEFAULT_HEIGHT,
-	floorLevel = 0f,
-	paused = false,
-	pausedProcessedBoneInputs = null,
-)
+val DEFAULT_SKELETON_STATE = run {
+	val offsets = toBoneOffsets(DEFAULT_PROPORTIONS)
+	SkeletonState(
+		boneInputs = offsets.tail.mapValues { bodyPart, tailOffset ->
+			DEFAULT_BONE_INPUT.copy(
+				bodyPart = bodyPart,
+				headOffset = offsets.head[bodyPart] ?: Vector3.ZERO,
+				offset = tailOffset,
+			)
+		},
+		skeletonHeight = DEFAULT_HEIGHT,
+		floorLevel = 0f,
+		paused = false,
+		pausedProcessedBoneInputs = null,
+	)
+}
 
 fun buildBone(bone: BoneInput, parentBone: BoneState?, velocity: Velocity = ZERO_VELOCITY): BoneState {
 	// Raw position of the bone input is used for BodyPart.HEAD since it has no parent
-	val headPosition = parentBone?.tailPosition ?: bone.position ?: Vector3.ZERO
+	val headPosition = parentBone?.let { it.tailPosition + it.rotation.sandwich(bone.headOffset) }
+		?: bone.position ?: Vector3.ZERO
 	return BoneState(
 		parentBone = parentBone,
 		bodyPart = bone.bodyPart,
+		headOffset = bone.headOffset,
 		offset = bone.offset,
 		rotation = bone.rotation,
 		acceleration = bone.acceleration,
@@ -221,6 +232,7 @@ class Skeleton(
 						BustInputProcessor(),
 						BoneDirectLinkInputProcessor(),
 						FingerImputeInputProcessor(),
+						ConstraintInputProcessor(settings),
 					),
 					fkComputedProcessors = listOf(
 						VelocityComputedProcessor().also { resettableSkeletonProcessors.add(it) },
@@ -231,8 +243,8 @@ class Skeleton(
 						ToeSnapFkProcessor(settings),
 					),
 					targetProcessors = listOf(
-// 						FloorClipTargetProcessor(settings),
-// 						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
+						FloorClipTargetProcessor(settings),
+						SkatingCorrectionTargetProcessor(settings).also { resettableSkeletonProcessors.add(it) },
 					),
 					ikComputedProcessors = listOf(
 						VelocityComputedProcessor().also { resettableSkeletonProcessors.add(it) },
