@@ -97,6 +97,8 @@ export function PreviewControls({ open }: { open: boolean }) {
               preferedDirection="top"
             >
               <Clickable
+                disabled={!open}
+                aria-disabled={!open}
                 pressed={bvhState !== 'idle'}
                 className={classNames(
                   'flex justify-center items-center w-10 h-10 rounded-full hover:bg-background-60 cursor-pointer',
@@ -121,6 +123,8 @@ export function PreviewControls({ open }: { open: boolean }) {
             preferedDirection="top"
           >
             <Clickable
+              disabled={!open}
+              aria-disabled={!open}
               pressed={paused}
               className="flex justify-center items-center w-14 h-14 rounded-full bg-background-60 hover:bg-background-50 cursor-pointer"
               onClick={() => toggleTracking()}
@@ -172,7 +176,7 @@ function PreviewSection({ open }: { open: boolean }) {
       )}
     >
       <SkeletonVisualizerWidget
-        disabled={disabledRender}
+        disabled={disabledRender || !open}
         toggleDisabled={() => toggleRender()}
         onInit={(context) => {
           context.addView({
@@ -194,6 +198,8 @@ function PreviewSection({ open }: { open: boolean }) {
         content={<Typography id="preview-disable_render" />}
       >
         <Clickable
+          disabled={!open}
+          aria-hidden={!open}
           pressed={!disabledRender}
           className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50"
           onClick={() => toggleRender()}
@@ -206,6 +212,8 @@ function PreviewSection({ open }: { open: boolean }) {
         content={<Typography id="preview-render_mode" />}
       >
         <Clickable
+          disabled={!open}
+          aria-hidden={!open}
           className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-14 top-2 bg-background-60 hover:bg-background-50"
           onClick={() =>
             setConfig({
