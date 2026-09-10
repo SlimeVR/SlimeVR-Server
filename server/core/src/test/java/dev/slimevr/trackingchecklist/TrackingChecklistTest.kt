@@ -113,7 +113,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `FULL_RESET flags a connected assigned tracker and clears on full reset`() = runTest {
 		val h = Harness(this)
-		val tracker = h.addTracker(bodyPart = BodyPart.CHEST)
+		val tracker = h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.FULL_RESET).enabled)
@@ -132,7 +132,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `FULL_RESET flags a tracker that reconnects`() = runTest {
 		val h = Harness(this)
-		val tracker = h.addTracker(bodyPart = BodyPart.CHEST)
+		val tracker = h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
 		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
 		runCurrent()
@@ -150,7 +150,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `adding a tracker does not re-flag the existing already-reset trackers`() = runTest {
 		val h = Harness(this)
-		h.addTracker(bodyPart = BodyPart.CHEST)
+		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
 		h.resetsManager.context.dispatch(ResetsActions.EndReset(ResetType.FULL))
 		runCurrent()
@@ -172,7 +172,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `MOUNTING_CALIBRATION is enabled with an IMU tracker and valid after a mounting reset`() = runTest {
 		val h = Harness(this)
-		h.addTracker(bodyPart = BodyPart.CHEST)
+		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.MOUNTING_CALIBRATION).enabled)
@@ -200,7 +200,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `FEET_MOUNTING_CALIBRATION is disabled without a foot tracker`() = runTest {
 		val h = Harness(this)
-		h.addTracker(bodyPart = BodyPart.CHEST)
+		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
 
 		assertEquals(false, h.step(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION).enabled)
@@ -224,7 +224,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `UNASSIGNED_HMD is disabled without a driver tracker`() = runTest {
 		val h = Harness(this)
-		h.addTracker(bodyPart = BodyPart.CHEST)
+		h.addTracker(bodyPart = BodyPart.LOWER_CHEST)
 		runCurrent()
 
 		assertEquals(false, h.step(TrackingChecklistStepId.UNASSIGNED_HMD).enabled)
@@ -233,7 +233,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `TRACKER_ERROR is invalid while an assigned tracker is in error`() = runTest {
 		val h = Harness(this)
-		val tracker = h.addTracker(bodyPart = BodyPart.CHEST, status = TrackerStatus.ERROR)
+		val tracker = h.addTracker(bodyPart = BodyPart.LOWER_CHEST, status = TrackerStatus.ERROR)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.TRACKER_ERROR).enabled)
@@ -247,7 +247,7 @@ class TrackingChecklistTest {
 	@Test
 	fun `TRACKERS_REST_CALIBRATION is invalid until an uncalibrated tracker finishes rest calibration`() = runTest {
 		val h = Harness(this)
-		val tracker = h.addTracker(bodyPart = BodyPart.CHEST, completedRestCalibration = false)
+		val tracker = h.addTracker(bodyPart = BodyPart.LOWER_CHEST, completedRestCalibration = false)
 		runCurrent()
 
 		assertEquals(true, h.step(TrackingChecklistStepId.TRACKERS_REST_CALIBRATION).enabled)

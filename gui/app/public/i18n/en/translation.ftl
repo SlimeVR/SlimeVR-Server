@@ -72,8 +72,9 @@ body_part-RIGHT_UPPER_LEG = Right thigh
 body_part-RIGHT_LOWER_LEG = Right ankle
 body_part-RIGHT_FOOT = Right foot
 body_part-UPPER_CHEST = Upper chest
-body_part-CHEST = Chest
-body_part-WAIST = Waist
+body_part-LOWER_CHEST = Lower chest
+body_part-UPPER_WAIST = Upper waist
+body_part-LOWER_WAIST = Lower waist
 body_part-HIP = Hip
 body_part-LEFT_SHOULDER = Left shoulder
 body_part-LEFT_BUST = Left bust
@@ -175,19 +176,24 @@ skeleton_bone-UPPER_CHEST-desc =
     This is the distance from the base of your neck to the middle of your chest.
     To adjust it, adjust your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
-skeleton_bone-CHEST = Chest Length
-skeleton_bone-CHEST-desc =
+skeleton_bone-LOWER_CHEST = Lower Chest Length
+skeleton_bone-LOWER_CHEST-desc =
     This is the distance from the middle of your chest to the middle of your spine.
     To adjust it, adjust your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
-skeleton_bone-WAIST = Waist Length
-skeleton_bone-WAIST-desc =
-    This is the distance from the middle of your spine to your belly button.
+skeleton_bone-UPPER_WAIST = Upper Waist Length
+skeleton_bone-UPPER_WAIST-desc =
+    This is the distance from the middle of your spine to a bit above your belly button.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
+skeleton_bone-LOWER_WAIST = Lower Waist Length
+skeleton_bone-LOWER_WAIST-desc =
+    This is the distance from a bit above your belly button to a bit below it.
     To adjust it, adjust your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP-desc =
-    This is the distance from your belly button to your hips.
+    This is the distance from a bit bellow your belly button to your hips.
     To adjust it, set your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
 skeleton_bone-HIPS_WIDTH = Hips Width
@@ -694,7 +700,7 @@ settings-general-fk_settings-arm_fk-forward-description = Expects your arms to b
 settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
 settings-general-fk_settings-skeleton_settings-impute_spine_from_upper_to_lower = Estimate missing spine trackers from upper to lower
-settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature of adjacent missing spine trackers
+settings-general-fk_settings-skeleton_settings-impute_spine_curvature = Spine curvature
 settings-general-fk_settings-skeleton_settings-interpolate_hip_with_upper_legs = Interpolate the hip with the upper legs
 settings-general-fk_settings-skeleton_settings-interpolate_upper_legs_twist_with_lower_legs = Interpolate the upper legs' twists with the lower legs'
 settings-general-fk_settings-self_localization-title = Mocap mode

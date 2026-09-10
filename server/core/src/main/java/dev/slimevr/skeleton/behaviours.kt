@@ -78,7 +78,7 @@ class YouSpinMeRightRoundBehaviour(val inputHz: Float = 1f) : SkeletonBehaviour 
 
 				receiver.context.dispatch(
 					SkeletonActions.SetBoneRotation(
-						BodyPart.CHEST,
+						BodyPart.LOWER_CHEST,
 						Quaternion.fromRotationVector(Vector3(cos(elapsed), sin(elapsed), 0f)),
 					),
 				)

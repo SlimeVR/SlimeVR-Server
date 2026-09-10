@@ -34,7 +34,7 @@ class YawResetSmoothingTest {
 			appContext,
 			settings,
 			id = 0,
-			bodyPart = BodyPart.CHEST,
+			bodyPart = BodyPart.LOWER_CHEST,
 			status = TrackerStatus.OK,
 			rawRotation = raw,
 			additionalBehaviours = listOf(TrackerYawResetSmoothingBehaviour()),

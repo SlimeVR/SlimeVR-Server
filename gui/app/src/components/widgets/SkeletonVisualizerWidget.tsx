@@ -201,7 +201,7 @@ function initializePreview(
     const root =
       bones.get(BodyPart.HEAD) ??
       bones.get(BodyPart.HIP) ??
-      bones.get(BodyPart.WAIST);
+      bones.get(BodyPart.LOWER_WAIST);
     if (!root) return out.copy(followOffset);
     out.copy(Vector3FromVec3fT(root.headPosition));
     skeletonGroup.updateWorldMatrix(true, false);

@@ -7,8 +7,9 @@ import { EYE_HEIGHT_TO_HEIGHT_RATIO } from '@/hooks/height';
 export const Y_PARTS = [
   BodyPart.NECK,
   BodyPart.UPPER_CHEST,
-  BodyPart.CHEST,
-  BodyPart.WAIST,
+  BodyPart.LOWER_CHEST,
+  BodyPart.UPPER_WAIST,
+  BodyPart.LOWER_WAIST,
   BodyPart.HIP,
   BodyPart.LEFT_UPPER_LEG,
   BodyPart.LEFT_LOWER_LEG,

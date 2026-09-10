@@ -124,8 +124,8 @@ class InputDecoderTest {
 		val bones = BodyPartMap(
 			mapOf(
 				BodyPart.HIP to bone(BodyPart.HIP, Quaternion.rotationAroundYAxis(0.1f), Vector3.ZERO),
-				BodyPart.WAIST to bone(BodyPart.WAIST, Quaternion.rotationAroundXAxis(0.2f), Vector3(0f, 0.15f, 0f)),
-				BodyPart.CHEST to bone(BodyPart.CHEST, chestRotation, chestHead),
+				BodyPart.LOWER_WAIST to bone(BodyPart.LOWER_WAIST, Quaternion.rotationAroundXAxis(0.2f), Vector3(0f, 0.15f, 0f)),
+				BodyPart.LOWER_CHEST to bone(BodyPart.LOWER_CHEST, chestRotation, chestHead),
 				BodyPart.UPPER_CHEST to bone(BodyPart.UPPER_CHEST, chestRotation, chestHead),
 				BodyPart.NECK to bone(BodyPart.NECK, Quaternion.rotationAroundZAxis(0.15f), Vector3(0f, 0.5f, 0f)),
 				BodyPart.HEAD to bone(BodyPart.HEAD, Quaternion.rotationAroundXAxis(-0.1f), Vector3(0f, 0.65f, 0f)),
