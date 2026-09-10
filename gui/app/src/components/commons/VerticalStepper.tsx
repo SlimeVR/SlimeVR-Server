@@ -44,6 +44,12 @@ export function VerticalStep({
     setShouldAnimate(true);
   }, [active]);
 
+  // A collapsed step is only clipped, not unmounted, so keep its controls out
+  // of the tab order and out of spatial focus nav until the step is open.
+  useEffect(() => {
+    if (ref.current) ref.current.inert = !isSelected;
+  }, [isSelected]);
+
   // Make it so it wont try to animate the size
   // if we are not changing active step
   useDebouncedEffect(
