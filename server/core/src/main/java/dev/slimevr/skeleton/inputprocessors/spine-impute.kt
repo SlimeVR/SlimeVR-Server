@@ -11,9 +11,10 @@ import solarxr_protocol.datatypes.BodyPart
 const val DEFAULT_SPINE_RATIO = 0.5f
 
 private enum class SpineSource(val parts: Array<BodyPart>) {
-	CHEST(arrayOf(BodyPart.CHEST)),
+	LOWER_CHEST(arrayOf(BodyPart.LOWER_CHEST)),
+	UPPER_WAIST(arrayOf(BodyPart.UPPER_WAIST)),
+	LOWER_WAIST(arrayOf(BodyPart.LOWER_WAIST)),
 	HIP(arrayOf(BodyPart.HIP)),
-	WAIST(arrayOf(BodyPart.WAIST)),
 	UPPER_LEGS(arrayOf(BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG)),
 }
 
@@ -42,7 +43,7 @@ private fun interpolateRatio(chainIndex: Int, chainSize: Int, fromUpperToLower: 
  * Remaps a ratio This assumes a default ratio of 50%.
  */
 private fun remapRatioWithReliability(ratio: Float, fromReliability: Float, toReliability: Float): Float {
-	val reliability = (fromReliability / toReliability) * DEFAULT_SPINE_RATIO
+	val reliability = (toReliability / fromReliability) * DEFAULT_SPINE_RATIO
 
 	return if (ratio <= DEFAULT_SPINE_RATIO) {
 		ratio * 2f * reliability
@@ -60,15 +61,45 @@ private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<B
 }
 
 private fun reliabilityOf(bodyPart: BodyPart, source: SpineSource): Float = when (bodyPart) {
-	BodyPart.WAIST -> when (source) {
-		SpineSource.CHEST -> 0.6f
-		SpineSource.HIP, SpineSource.UPPER_LEGS -> 1.0f
+	BodyPart.UPPER_WAIST -> when (source) {
+		// From
+		SpineSource.LOWER_CHEST -> 1f
+
+		// To
+		SpineSource.LOWER_WAIST -> 1.2f
+
+		SpineSource.HIP -> 0.45f
+
+		SpineSource.UPPER_LEGS -> 0.4f
+
+		else -> error("Invalid spine combination $bodyPart, $source")
+	}
+
+	BodyPart.LOWER_WAIST -> when (source) {
+		// From
+		SpineSource.LOWER_CHEST -> 1f
+
+		SpineSource.UPPER_WAIST -> 1.2f
+
+		// To
+		SpineSource.HIP -> 0.75f
+
+		SpineSource.UPPER_LEGS -> 0.7f
+
 		else -> error("Invalid spine combination $bodyPart, $source")
 	}
 
 	BodyPart.HIP -> when (source) {
-		SpineSource.CHEST, SpineSource.UPPER_LEGS -> 1.0f
-		SpineSource.WAIST -> 0.8f
+		// From
+		SpineSource.LOWER_CHEST -> 1.25f
+
+		SpineSource.LOWER_WAIST -> 1.3f
+
+		SpineSource.UPPER_WAIST -> 1.35f
+
+		// To
+		SpineSource.UPPER_LEGS -> 1.6f
+
 		else -> error("Invalid spine combination $bodyPart, $source")
 	}
 
@@ -85,12 +116,14 @@ class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val ratios = settings.context.state.value.data.skeletonConfig.ratios
 
-		val hasChest = mutableInputSkeleton[BodyPart.UPPER_CHEST]?.isRotationActive == true || mutableInputSkeleton[BodyPart.CHEST]?.isRotationActive == true
-		val hasWaist = mutableInputSkeleton[BodyPart.WAIST]?.isRotationActive == true
+		val hasChest = mutableInputSkeleton[BodyPart.UPPER_CHEST]?.isRotationActive == true || mutableInputSkeleton[BodyPart.LOWER_CHEST]?.isRotationActive == true
+		val hasUpperWaist = mutableInputSkeleton[BodyPart.UPPER_WAIST]?.isRotationActive == true
+		val hasLowerWaist = mutableInputSkeleton[BodyPart.LOWER_WAIST]?.isRotationActive == true
 		val hasHip = mutableInputSkeleton[BodyPart.HIP]?.isRotationActive == true
 		val hasUpperLegs = mutableInputSkeleton[BodyPart.LEFT_UPPER_LEG]?.isRotationActive == true && mutableInputSkeleton[BodyPart.RIGHT_UPPER_LEG]?.isRotationActive == true
 		val missingSpineParts = buildList {
-			if (!hasWaist) add(BodyPart.WAIST)
+			if (!hasUpperWaist) add(BodyPart.UPPER_WAIST)
+			if (!hasLowerWaist) add(BodyPart.LOWER_WAIST)
 			if (!hasHip) add(BodyPart.HIP)
 		}
 
@@ -99,8 +132,23 @@ class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor
 
 			// Get the first active bones above and below this one in the chain
 			val (fromSource, toSource) = when (bodyPart) {
-				BodyPart.WAIST -> {
-					val from = SpineSource.CHEST.takeIf { hasChest } ?: continue
+				BodyPart.UPPER_WAIST -> {
+					val from = SpineSource.LOWER_CHEST.takeIf { hasChest } ?: continue
+					val to = when {
+						hasLowerWaist -> SpineSource.LOWER_WAIST
+						hasHip -> SpineSource.HIP
+						hasUpperLegs -> SpineSource.UPPER_LEGS
+						else -> continue
+					}
+					from to to
+				}
+
+				BodyPart.LOWER_WAIST -> {
+					val from = when {
+						hasUpperWaist -> SpineSource.UPPER_WAIST
+						hasChest -> SpineSource.LOWER_CHEST
+						else -> continue
+					}
 					val to = when {
 						hasHip -> SpineSource.HIP
 						hasUpperLegs -> SpineSource.UPPER_LEGS
@@ -111,8 +159,9 @@ class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor
 
 				BodyPart.HIP -> {
 					val from = when {
-						hasWaist -> SpineSource.WAIST
-						hasChest -> SpineSource.CHEST
+						hasLowerWaist -> SpineSource.LOWER_WAIST
+						hasUpperWaist -> SpineSource.UPPER_WAIST
+						hasChest -> SpineSource.LOWER_CHEST
 						else -> continue
 					}
 					val to = SpineSource.UPPER_LEGS.takeIf { hasUpperLegs } ?: continue

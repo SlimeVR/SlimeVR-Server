@@ -16,10 +16,11 @@ class BoneActiveLinkInputProcessor : SkeletonInputProcessor {
 	 * Only active bones will be used.
 	 */
 	private val linkedToSources = arrayOf(
-		BodyPart.UPPER_CHEST to arrayOf(BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP),
-		BodyPart.CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.WAIST, BodyPart.HIP),
-		BodyPart.WAIST to arrayOf(BodyPart.CHEST, BodyPart.HIP, BodyPart.UPPER_CHEST),
-		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.CHEST, BodyPart.UPPER_CHEST),
+		BodyPart.UPPER_CHEST to arrayOf(BodyPart.LOWER_CHEST, BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST, BodyPart.HIP),
+		BodyPart.LOWER_CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.UPPER_WAIST, BodyPart.LOWER_WAIST, BodyPart.HIP),
+		BodyPart.UPPER_WAIST to arrayOf(BodyPart.LOWER_WAIST, BodyPart.LOWER_CHEST, BodyPart.HIP, BodyPart.UPPER_CHEST),
+		BodyPart.LOWER_WAIST to arrayOf(BodyPart.UPPER_WAIST, BodyPart.LOWER_CHEST, BodyPart.HIP, BodyPart.UPPER_CHEST),
+		BodyPart.HIP to arrayOf(BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST, BodyPart.LOWER_CHEST, BodyPart.UPPER_CHEST),
 
 		BodyPart.LEFT_BIG_TOE to arrayOf(BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_FOOT),
 		BodyPart.LEFT_INDEX_TOE to arrayOf(BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_FOOT),

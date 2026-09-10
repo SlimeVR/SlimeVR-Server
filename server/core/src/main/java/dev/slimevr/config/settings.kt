@@ -77,7 +77,7 @@ data class TapDetectionConfig(
 	var fullResetEnabled: Boolean = true,
 	var mountingResetEnabled: Boolean = true,
 	@Serializable(with = BodyPartSerializer::class)
-	var yawResetBodyPart: BodyPart? = BodyPart.CHEST,
+	var yawResetBodyPart: BodyPart? = BodyPart.UPPER_CHEST,
 	@Serializable(with = BodyPartSerializer::class)
 	var mountingResetBodyPart: BodyPart? = BodyPart.RIGHT_UPPER_LEG,
 	@Serializable(with = BodyPartSerializer::class)
