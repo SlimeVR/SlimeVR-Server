@@ -38,6 +38,8 @@ export function TrackerAssignmentList() {
     assignedPartsCount,
     expectedTrackersCount,
     handleDropTracker,
+    selectTracker,
+    pendingTrackerId,
   } = useAssignment();
   const assignedCount = assignedTrackers.length;
   const groups = useMemo(
@@ -108,6 +110,8 @@ export function TrackerAssignmentList() {
                 tracker={td.tracker}
                 device={td.device}
                 variant={variant}
+                selected={pendingTrackerId === td.tracker.trackerId}
+                onSelect={() => selectTracker(td.tracker.trackerId)}
                 onDrop={(bodyPart) =>
                   handleDropTracker(td.tracker.trackerId, bodyPart)
                 }
@@ -347,6 +351,8 @@ export function DraggableTracker({
   trackerId,
   label,
   onDrop,
+  onSelect,
+  selected,
   className,
   style,
   children,
@@ -354,20 +360,29 @@ export function DraggableTracker({
   trackerId: number;
   label: string;
   onDrop: (bodyPart: BodyPart | null) => void;
+  onSelect?: () => void;
+  selected?: boolean;
   className?: string;
   style?: CSSProperties;
   children: ReactNode;
 }) {
   const isBeingDragged = useIsTrackerBeingDragged(trackerId);
-  const { dragProps } = trackerDrag.useDraggable({ trackerId, label }, onDrop);
+  const { dragProps, tapProps } = trackerDrag.useDraggable(
+    { trackerId, label },
+    onDrop,
+    onSelect
+  );
 
   return (
     <div
       {...dragProps}
+      {...tapProps}
+      aria-pressed={onSelect ? selected : undefined}
       className={classNames(
-        'touch-none cursor-grab active:cursor-grabbing select-none',
+        'touch-none cursor-grab active:cursor-grabbing select-none rounded-lg',
         'transition-[transform,opacity] hover:scale-[1.02] hover:animate-wiggle',
         isBeingDragged && 'opacity-40',
+        selected && 'ring-2 ring-accent-background-30',
         className
       )}
       style={style}
@@ -382,16 +397,22 @@ function DraggableTrackerCard({
   device,
   variant,
   onDrop,
+  onSelect,
+  selected,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
   variant: 'primary' | 'secondary' | 'tertiary';
   onDrop: (bodyPart: BodyPart) => void;
+  onSelect?: () => void;
+  selected?: boolean;
 }) {
   return (
     <DraggableTracker
       trackerId={tracker.trackerId}
       label={getTrackerName(tracker.info) || 'unknown'}
+      onSelect={onSelect}
+      selected={selected}
       onDrop={(bodyPart) => {
         if (bodyPart !== null && bodyPart !== BodyPart.NONE) onDrop(bodyPart);
       }}

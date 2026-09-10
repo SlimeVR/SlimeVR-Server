@@ -2,8 +2,9 @@ import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { Clickable } from './Clickable';
 import { FieldCaption } from './FloatingLabel';
 import { Typography } from './Typography';
-import { KeyboardEvent, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
+import { stepKeys } from '@/utils/a11y';
 
 export function NumberSelector<T extends FieldValues = FieldValues>({
   label,
@@ -67,33 +68,15 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
           !disabled &&
           onChange(clamp(big ? doubleStepFn(value, add) : stepFn(value, add)));
 
-        const onKeyDown = (e: KeyboardEvent) => {
-          switch (e.key) {
-            case 'ArrowUp':
-            case 'ArrowRight':
-              bump(true);
-              break;
-            case 'ArrowDown':
-            case 'ArrowLeft':
-              bump(false);
-              break;
-            case 'PageUp':
-              bump(true, doubleStep !== undefined);
-              break;
-            case 'PageDown':
-              bump(false, doubleStep !== undefined);
-              break;
-            case 'Home':
-              if (!disabled) onChange(min);
-              break;
-            case 'End':
-              if (!disabled) onChange(max);
-              break;
-            default:
-              return;
-          }
-          e.preventDefault();
-        };
+        const onKeyDown = stepKeys({
+          value: Number(value),
+          min,
+          max,
+          step: stepFn,
+          bigStep: doubleStep !== undefined ? doubleStepFn : undefined,
+          onChange,
+          disabled,
+        });
 
         // Flat full-height stepper segments hugging the box edges.
         const segment =
@@ -103,6 +86,7 @@ export function NumberSelector<T extends FieldValues = FieldValues>({
             {hasLabel && <FieldCaption>{label}</FieldCaption>}
             <div
               role="spinbutton"
+              data-nav-edit
               tabIndex={disabled ? -1 : 0}
               aria-label={label}
               aria-disabled={disabled || undefined}

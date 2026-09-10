@@ -103,16 +103,30 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <div className="settings-layout h-full">
-        <div style={{ gridArea: 't' }}>
+        <div
+          data-nav-region="shell"
+          data-nav-area="topbar"
+          style={{ gridArea: 't' }}
+        >
           <TopBar />
         </div>
-        <div style={{ gridArea: 'n' }}>
+        <div
+          data-nav-region="shell"
+          data-nav-area="navbar"
+          style={{ gridArea: 'n' }}
+        >
           <Navbar />
         </div>
-        <div style={{ gridArea: 's' }} className="my-2 mobile:hidden">
+        <div
+          data-nav-region="shell"
+          data-nav-area="settings-nav"
+          style={{ gridArea: 's' }}
+          className="my-2 mobile:hidden"
+        >
           <SettingsSidebar />
         </div>
         <div
+          data-nav-region="page"
           style={{ gridArea: 'c' }}
           className="xs:pl-2 xs:pb-2 xs:mt-2 mobile:mt-7 overflow-y-auto"
         >

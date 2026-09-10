@@ -371,6 +371,24 @@ const config = {
           outline: '2px solid rgb(var(--accent-background-10))',
           outlineOffset: '2px',
         },
+        // Gamepad navigation: programmatic .focus() doesn't trigger
+        // :focus-visible, so force the same ring while a controller is driving.
+        'html.controller-active :focus': {
+          outline: '2px solid rgb(var(--accent-background-10))',
+          outlineOffset: '2px',
+        },
+        [`html.controller-active :is(${formEls}):focus`]: {
+          boxShadow: 'none',
+          outline: '2px solid rgb(var(--accent-background-10))',
+          outlineOffset: '2px',
+        },
+        // "Edit mode": the cursor has stepped into a value widget and arrows
+        // now change its value. The extra `:focus` keeps this ahead of the
+        // plain focus rule above.
+        'html.controller-active .nav-editing:focus': {
+          outline: '3px solid rgb(var(--accent-background-10))',
+          outlineOffset: '3px',
+        },
       });
     }),
   ],

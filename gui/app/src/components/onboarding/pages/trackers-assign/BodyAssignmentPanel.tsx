@@ -1,13 +1,7 @@
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { Clickable } from '@/components/commons/Clickable';
-import {
-  HTMLAttributes,
-  MouseEvent,
-  ReactNode,
-  useCallback,
-  useMemo,
-} from 'react';
+import { HTMLAttributes, ReactNode, useCallback, useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { MirrorLegend } from '@/components/onboarding/BodyAssignment';
 import {
@@ -262,7 +256,7 @@ function Tab({
 }) {
   return (
     <Clickable
-      disabled={disabled || active}
+      disabled={disabled}
       pressed={active}
       onClick={onClick}
       className={classNames(
@@ -299,10 +293,8 @@ export function ExtremitySideToggle({
   const option = (value: ExtremitySide, dotClass: string) => (
     <TogglePillOption
       compact={compact}
-      radio
       dotClass={dotClass}
       active={side === value}
-      onClick={() => onChange(value)}
       labelId={'body_part-' + BodyPart[descriptor.sides[value].root]}
     />
   );
@@ -310,7 +302,11 @@ export function ExtremitySideToggle({
   return (
     <TogglePill
       compact={compact}
-      radiogroupLabel={l10n.getString('onboarding-assign_trackers-side')}
+      onClick={() => onChange(side === 'left' ? 'right' : 'left')}
+      label={l10n.getString('onboarding-assign_trackers-side')}
+      value={l10n.getString(
+        'body_part-' + BodyPart[descriptor.sides[side].root]
+      )}
     >
       {option('left', 'outline-assign-left')}
       {option('right', 'outline-assign-right')}
@@ -338,10 +334,12 @@ function DragBodyPartCard({
   connector = true,
   labelId,
 }: PartCardProps) {
-  const { armedPart, selectPart, handleDropTracker } = useAssignment();
+  const { armedPart, selectPart, handleDropTracker, pendingTrackerId } =
+    useAssignment();
   const isHovering = trackerDrag.useIsDragHovering(role);
-  const isDragActive = trackerDrag.useIsDragActive();
-  const { dragProps, isDragging } = trackerDrag.useDraggable(
+  const isTargeting =
+    trackerDrag.useIsDragActive() || pendingTrackerId !== null;
+  const { dragProps, tapProps, isDragging } = trackerDrag.useDraggable(
     td
       ? {
           trackerId: td.tracker.trackerId,
@@ -351,22 +349,18 @@ function DragBodyPartCard({
     (bodyPart) => {
       if (td)
         handleDropTracker(td.tracker.trackerId, bodyPart ?? BodyPart.NONE);
-    }
+    },
+    () => selectPart(role)
   );
-
-  const onClick = (event: MouseEvent<HTMLDivElement>) => {
-    dragProps.onClick(event);
-    if (event.defaultPrevented) return;
-    selectPart(role);
-  };
 
   return (
     <div
       {...bodyPartDropProps(role)}
       {...dragProps}
+      {...tapProps}
       id={BodyPart[role]}
       data-connector={connector ? undefined : 'off'}
-      onClick={onClick}
+      aria-pressed={armedPart === role}
       className={classNames(
         'flex flex-col control rounded-md relative touch-none select-none',
         'transition-colors duration-150 ease-linear',
@@ -378,7 +372,7 @@ function DragBodyPartCard({
           ? 'bg-background-50'
           : armedPart === role
             ? 'bg-accent-background-30/40'
-            : isDragActive
+            : isTargeting
               ? 'bg-background-50/50'
               : 'hover:bg-background-50'
       )}
