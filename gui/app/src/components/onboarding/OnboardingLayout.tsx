@@ -14,7 +14,11 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
 
   return !state.alonePage ? (
     <div className="onboarding-layout h-full">
-      <div style={{ gridArea: 't' }}>
+      <div
+        data-nav-region="shell"
+        data-nav-area="topbar"
+        style={{ gridArea: 't' }}
+      >
         <TopBar
           progress={state.progress}
           actions={
@@ -26,7 +30,11 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
           }
         />
       </div>
-      <div style={{ gridArea: 'c' }} className="mt-2 relative">
+      <div
+        data-nav-region="page"
+        style={{ gridArea: 'c' }}
+        className="mt-2 relative"
+      >
         <div className="h-full w-full overflow-y-auto">{children}</div>
         <SkipSetupWarningModal
           accept={skipSetup}

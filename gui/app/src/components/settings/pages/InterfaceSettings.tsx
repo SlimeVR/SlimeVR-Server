@@ -34,6 +34,7 @@ interface InterfaceSettingsForm {
     errorTracking: boolean;
     bvhDirectory: string | null;
     skeletonMesh: boolean;
+    controllerNav: boolean;
   };
   notifications: {
     watchNewDevices: boolean;
@@ -77,6 +78,7 @@ export function InterfaceSettings() {
         skeletonMesh:
           (config?.skeletonPreviewStyle ??
             defaultConfig.skeletonPreviewStyle) === 'mesh',
+        controllerNav: config?.controllerNav ?? defaultConfig.controllerNav,
       },
       developer: {
         enabled: config?.debug ?? defaultConfig.debug,
@@ -153,6 +155,7 @@ export function InterfaceSettings() {
       errorTracking: values.behavior.errorTracking,
       bvhDirectory: values.behavior.bvhDirectory,
       skeletonPreviewStyle: values.behavior.skeletonMesh ? 'mesh' : 'lines',
+      controllerNav: values.behavior.controllerNav,
 
       debug: values.developer.enabled,
       devSettings: values.developer,
@@ -356,6 +359,28 @@ export function InterfaceSettings() {
                   name="behavior.skeletonMesh"
                   label={l10n.getString(
                     'settings-interface-behavior-skeleton_mesh-label'
+                  )}
+                />
+              </div>
+
+              <Typography variant="section-title">
+                {l10n.getString('settings-interface-behavior-controller_nav')}
+              </Typography>
+              <div className="flex flex-col pt-1 pb-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-interface-behavior-controller_nav-description'
+                  )}
+                </Typography>
+              </div>
+              <div className="grid sm:grid-cols-2 pb-4">
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  outlined
+                  name="behavior.controllerNav"
+                  label={l10n.getString(
+                    'settings-interface-behavior-controller_nav-label'
                   )}
                 />
               </div>

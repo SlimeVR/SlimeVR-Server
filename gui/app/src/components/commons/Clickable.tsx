@@ -6,7 +6,7 @@ import { Typography } from './Typography';
 
 type NativeButtonProps = Omit<
   ComponentProps<'button'>,
-  'type' | 'aria-pressed' | 'aria-expanded' | 'aria-current' | 'aria-label'
+  'aria-pressed' | 'aria-expanded' | 'aria-current' | 'aria-label'
 >;
 
 type CommonProps = {
@@ -40,8 +40,8 @@ type LinkProps = CommonProps &
 
 /**
  * A clickable surface that keeps whatever styling you give it and only adds
- * the semantics: tab focus, Enter/Space, and the `type="button"` that stops a
- * `<button>` submitting a surrounding form.
+ * the semantics: tab focus, Enter/Space, and a default `type="button"` so a
+ * `<button>` does not submit a surrounding form unless asked to.
  *
  * Pass `to` and it renders a router `NavLink` instead, so the same call site
  * covers both an action and a navigation.
@@ -49,10 +49,10 @@ type LinkProps = CommonProps &
  * Reach for this anywhere you would have put `onClick` on a `<div>`. Use
  * `Button` for the styled variants and `IconButton` for icon-only controls.
  *
- * No tooltip by default — the children are already the label. Pass `tooltipId`
- * where the extra explanation earns its place.
+ * No tooltip by default, since the children are already the label. Pass
+ * `tooltipId` where the extra explanation earns its place.
  *
- * It cannot wrap another button or link — if the surface already contains one,
+ * It cannot wrap another button or link. If the surface already contains one,
  * leave the container inert and make the inner control the real button.
  */
 export function Clickable({
@@ -75,8 +75,8 @@ export function Clickable({
       />
     ) : (
       <button
-        {...(props as ButtonProps)}
         type="button"
+        {...(props as ButtonProps)}
         aria-pressed={pressed}
         aria-expanded={expanded}
         aria-current={current}

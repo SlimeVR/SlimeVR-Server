@@ -1,6 +1,22 @@
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 import ReactModal from 'react-modal';
+import { collectFocusables } from '@/utils/focus-nav';
+
+/**
+ * `react-modal` parks focus on its own `tabindex="-1"` content node, which is
+ * not something a user can act on. Runs a frame late to land after react-modal's
+ * own focus call, and leaves an explicit `autoFocus` in the content alone.
+ *
+ * FIXME: replace react-modal; its focus handling keeps forcing workarounds.
+ */
+function focusFirstControl(contentEl: HTMLDivElement) {
+  requestAnimationFrame(() => {
+    const active = document.activeElement;
+    if (active && active !== contentEl && contentEl.contains(active)) return;
+    collectFocusables(contentEl)[0]?.focus();
+  });
+}
 
 export function BaseModal({
   children,
@@ -17,6 +33,10 @@ export function BaseModal({
   return (
     <ReactModal
       {...props}
+      onAfterOpen={(obj) => {
+        props.onAfterOpen?.(obj);
+        if (obj?.contentEl) focusFirstControl(obj.contentEl);
+      }}
       shouldCloseOnOverlayClick={closeable}
       shouldCloseOnEsc={closeable}
       overlayClassName={

@@ -10,8 +10,8 @@ type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
  * Icon-only button. `labelId` does double duty: it names the control for screen
  * readers and renders as the tooltip, so an icon never ships unlabelled.
  *
- * The tooltip is on by default here — unlike `Clickable`, there is no visible
- * text to fall back on. Pass `tooltip={false}` where it would just be noise.
+ * The tooltip is on by default here, since unlike `Clickable` there is no
+ * visible text to fall back on. Pass `tooltip={false}` where it would be noise.
  *
  * Inherits `Clickable`'s link mode: pass `to` and it renders a `NavLink`.
  */

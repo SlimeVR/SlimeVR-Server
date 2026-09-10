@@ -137,7 +137,8 @@ function DropdownItem({
       className={classNames(
         'py-2 px-2 min-w-max cursor-pointer transition-colors select-none',
         variantStyles[variant],
-        innerFocusValue === item.value && 'ring-inset ring-4'
+        innerFocusValue === item.value &&
+          'ring-inset ring-2 ring-accent-background-10'
       )}
       onClick={(e) => {
         e.stopPropagation();
@@ -373,6 +374,9 @@ export function DropdownInside(
   const anchorName = `--dropdown-anchor-${useId().replace(/:/g, '')}`;
 
   const [innerFocusIndex, setInnerFocusIndex] = useState<number | null>(null);
+  // Index may point past the array (items changed, empty list) - resolve safely.
+  const focusedItem =
+    innerFocusIndex === null ? null : (items[innerFocusIndex] ?? null);
   const getCurrentActiveIndex = () => {
     return props.multiple
       ? items.findIndex((item) => props.value.includes(item.value))
@@ -433,36 +437,35 @@ export function DropdownInside(
               return;
             }
 
-            if (e.key === 'ArrowDown') {
-              setInnerFocusIndex(0);
+            // Up/Down opens the list (APG combobox pattern).
+            if (
+              items.length > 0 &&
+              (e.key === 'ArrowDown' || e.key === 'ArrowUp')
+            ) {
+              setInnerFocusIndex(e.key === 'ArrowDown' ? 0 : items.length - 1);
               setIsOpen(true);
               e.preventDefault();
-              return;
             }
-
-            if (e.key === 'ArrowUp') {
-              setInnerFocusIndex(items.length - 1);
-              setIsOpen(true);
-              e.preventDefault();
-              return;
-            }
+            return;
           } else {
             if (a11yClick(e)) {
               e.preventDefault();
-              if (innerFocusIndex === null) {
+              if (!focusedItem) {
                 setIsOpen(false);
                 return;
               }
 
-              selectItem(items[innerFocusIndex]);
+              selectItem(focusedItem);
               if (!props.multiple) setIsOpen(false);
             }
             switch (e.key) {
               case 'ArrowUp':
+              case 'ArrowLeft':
                 innerFocusPrev();
                 e.preventDefault();
                 return;
               case 'ArrowDown':
+              case 'ArrowRight':
                 innerFocusNext();
                 e.preventDefault();
                 return;
@@ -502,10 +505,11 @@ export function DropdownInside(
           ref={ref}
           style={{ anchorName } as CSSProperties}
           aria-controls={`__dropdownList-${name}`}
+          aria-expanded={isOpen}
           aria-activedescendant={
-            innerFocusIndex === null
-              ? ''
-              : `__dropdownList-${name}-item-${items[innerFocusIndex].value}`
+            focusedItem
+              ? `__dropdownList-${name}-item-${focusedItem.value}`
+              : ''
           }
           role="combobox"
         >
@@ -554,9 +558,7 @@ export function DropdownInside(
           isSelected={(value) => isItemSelected(props, value)}
           ref={listRef}
           anchorName={anchorName}
-          innerFocusValue={
-            innerFocusIndex === null ? null : items[innerFocusIndex].value
-          }
+          innerFocusValue={focusedItem?.value ?? null}
           name={name}
         />
       </div>
