@@ -177,7 +177,7 @@ fun reduce(
 		state.copy(
 			sessionCalibration = state.sessionCalibration.copy(headingAlignment = headingAlignment),
 			lastMountingMethod = MountingMethod.POSE,
-			rawRotation = shortestRawRotation
+			rawRotation = shortestRawRotation,
 		)
 	}
 
