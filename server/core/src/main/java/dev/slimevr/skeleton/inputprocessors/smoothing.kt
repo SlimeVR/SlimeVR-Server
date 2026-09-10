@@ -20,7 +20,7 @@ private const val SMOOTH_MAX = 0.95f
 /**
  * Running average of bone rotations to smooth them out.
  */
-class BoneSmoothingInputProcessor(val settings: Settings) :
+class SmoothingInputProcessor(val settings: Settings) :
 	SkeletonInputProcessor,
 	ResettableSkeletonProcessor {
 	private var smoothed: BodyPartMap<Quaternion> = bodyPartMap()
