@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import {
+  FocusEvent,
   HTMLAttributes,
   PointerEvent,
   ReactNode,
@@ -282,11 +283,22 @@ export function BodyInteractions({
     setSlotsButtonPos(slots);
   };
 
-  const onControlPointerOver = (event: PointerEvent<HTMLDivElement>) => {
-    const control = (event.target as HTMLElement).closest<HTMLElement>(
+  const highlightFrom = (target: EventTarget | null) => {
+    const control = (target as HTMLElement | null)?.closest<HTMLElement>(
       '.control'
     );
     setHoveredControl(control?.id || null);
+  };
+
+  const onControlPointerOver = (event: PointerEvent<HTMLDivElement>) =>
+    highlightFrom(event.target);
+
+  const controlFocusProps = {
+    onPointerOver: onControlPointerOver,
+    onPointerLeave: () => setHoveredControl(null),
+    onFocusCapture: (event: FocusEvent<HTMLDivElement>) =>
+      highlightFrom(event.target),
+    onBlurCapture: () => setHoveredControl(null),
   };
 
   updateSlotsRef.current = updateSlots;
@@ -357,21 +369,11 @@ export function BodyInteractions({
         height="100%"
       />
       <div className="flex flex-col w-full h-full">
-        <div
-          ref={topContainerRef}
-          className="z-10"
-          onPointerOver={onControlPointerOver}
-          onPointerLeave={() => setHoveredControl(null)}
-        >
+        <div ref={topContainerRef} className="z-10" {...controlFocusProps}>
           {topControls}
         </div>
         <div className="flex flex-grow min-h-0 gap-5">
-          <div
-            ref={leftContainerRef}
-            className="z-10"
-            onPointerOver={onControlPointerOver}
-            onPointerLeave={() => setHoveredControl(null)}
-          >
+          <div ref={leftContainerRef} className="z-10" {...controlFocusProps}>
             {leftControls}
           </div>
           <div
@@ -396,7 +398,11 @@ export function BodyInteractions({
                   <div
                     key={id}
                     {...(part != null ? dotProps?.(part) : undefined)}
-                    className={classNames('absolute z-10')}
+                    aria-hidden="true"
+                    className={classNames(
+                      'absolute z-10',
+                      hidden && 'pointer-events-none'
+                    )}
                     onClick={() =>
                       !hidden && part != null && onSelectRole(part)
                     }
@@ -455,21 +461,11 @@ export function BodyInteractions({
               }
             )}
           </div>
-          <div
-            ref={rightContainerRef}
-            className="z-10"
-            onPointerOver={onControlPointerOver}
-            onPointerLeave={() => setHoveredControl(null)}
-          >
+          <div ref={rightContainerRef} className="z-10" {...controlFocusProps}>
             {rightControls}
           </div>
         </div>
-        <div
-          ref={bottomContainerRef}
-          className="z-10"
-          onPointerOver={onControlPointerOver}
-          onPointerLeave={() => setHoveredControl(null)}
-        >
+        <div ref={bottomContainerRef} className="z-10" {...controlFocusProps}>
           {bottomControls}
         </div>
       </div>

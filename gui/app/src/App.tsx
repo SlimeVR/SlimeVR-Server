@@ -45,6 +45,7 @@ import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
 import { useControllerNav } from './hooks/controller-nav';
+import { useInternalLinkGuard } from './hooks/internal-links';
 import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
@@ -76,6 +77,7 @@ function Layout() {
   const { isMobile } = useBreakpoint('mobile');
   useDiscordPresence();
   useControllerNav();
+  useInternalLinkGuard();
 
   return (
     <>
@@ -236,22 +238,6 @@ export default function App() {
       setUpdateFound(releases[0].tag_name);
     }
   };
-
-  useEffect(() => {
-    const onKeydown: (arg0: KeyboardEvent) => void = function (event) {
-      // prevent search bar keybind
-      if (
-        event.key === 'F3' ||
-        (event.ctrlKey && event.key === 'f') ||
-        (event.metaKey && event.key === 'f')
-      ) {
-        event.preventDefault();
-      }
-    };
-
-    window.addEventListener('keydown', onKeydown);
-    return () => window.removeEventListener('keydown', onKeydown);
-  }, []);
 
   useEffect(() => {
     fetchReleases().catch((e) => error(e, 'failed to fetch releases'));

@@ -29,6 +29,7 @@ import {
 } from 'three';
 import { BodyPart, BoneT, MountingMethod } from 'solarxr-protocol';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
+import { Vector3FromVec3fT } from '@/maths/vector3';
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -146,8 +147,9 @@ function createRadialFloorMesh(size = 8.0): Mesh {
 function initializePreview(
   canvas: HTMLCanvasElement,
   bones: Map<BodyPart, BoneT>,
-  style: Config['skeletonPreviewStyle']
+  initialStyle: Config['skeletonPreviewStyle']
 ) {
+  let style = initialStyle;
   let lastRenderTimeRef = 0;
   let frameInterval = 0;
 
@@ -191,6 +193,23 @@ function initializePreview(
 
   let heightOffset = 0;
 
+  const followOffset = new Vector3();
+  const desiredFollow = new Vector3();
+  const followDelta = new Vector3();
+
+  const computeFollow = (out: Vector3) => {
+    const root =
+      bones.get(BodyPart.HEAD) ??
+      bones.get(BodyPart.HIP) ??
+      bones.get(BodyPart.WAIST);
+    if (!root) return out.copy(followOffset);
+    out.copy(Vector3FromVec3fT(root.headPosition));
+    skeletonGroup.updateWorldMatrix(true, false);
+    skeletonGroup.localToWorld(out);
+    out.y = 0;
+    return out;
+  };
+
   const rebuildSkeleton = (newBones: Map<BodyPart, BoneT>) => {
     skeletonGroup.remove(skeletonHelper);
     skeletonHelper.dispose();
@@ -219,7 +238,23 @@ function initializePreview(
     skeletonHelper.setTrackers(trackers);
   };
 
+  const setStyle = (newStyle: Config['skeletonPreviewStyle']) => {
+    if (newStyle === style) return;
+    style = newStyle;
+    rebuildSkeleton(bones);
+  };
+
   const render = (delta: number) => {
+    computeFollow(desiredFollow);
+    followDelta.subVectors(desiredFollow, followOffset);
+    if (followDelta.lengthSq() > 0) {
+      views.forEach((v) => {
+        v.camera.position.add(followDelta);
+        v.controls.target.add(followDelta);
+      });
+      followOffset.copy(desiredFollow);
+    }
+
     views.forEach((v) => {
       if (v.hidden || !renderer) return;
       v.controls.update(delta);
@@ -286,6 +321,7 @@ function initializePreview(
       frameInterval = interval;
     },
     rebuildSkeleton,
+    setStyle,
     updatesBones: (newBones: Map<BodyPart, BoneT>) => {
       bones = newBones;
       skeletonHelper.setBones(bones);
@@ -297,6 +333,7 @@ function initializePreview(
         heightOffset = newHeight;
         views.forEach((v) => {
           v.onHeightChange(v, heightOffset);
+          v.controls.target.add(followOffset);
         });
       }
     },
@@ -343,12 +380,12 @@ function initializePreview(
 
       const tween = new Tween(position)
         .onUpdate(() => {
-          camera.position.copy(position);
+          camera.position.copy(position).add(followOffset);
         })
         .onStart(() => (frameInterval = 0))
         .onComplete(() => (frameInterval = 1000 / LOW_FRAMERATE));
 
-      camera.position.copy(position);
+      camera.position.copy(position).add(followOffset);
 
       const view: SkeletonPreviewView = {
         camera,
@@ -432,6 +469,14 @@ function SkeletonVisualizer({
     context.updateTrackers(trackersByPart);
   }, [trackersByPart, disabled]);
 
+  useEffect(() => {
+    const context = previewContext.current;
+    if (!context || disabled) return;
+    context.setStyle(style);
+    context.updatesBones(bones);
+    context.updateTrackers(trackersByPart);
+  }, [style, disabled]);
+
   const onResize = (e: ResizeObserverEntry) => {
     const context = previewContext.current;
     if (!context || !containerRef.current || !canvasRef.current) return;
@@ -479,7 +524,7 @@ function SkeletonVisualizer({
       containerRef.current.removeEventListener('mouseenter', onEnter);
       containerRef.current.removeEventListener('mouseleave', onLeave);
     };
-  }, [disabled, style]);
+  }, [disabled]);
 
   return (
     <div ref={containerRef} className={classNames('w-full h-full')}>

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import ReactModal from 'react-modal';
 import { useEffect, useRef } from 'react';
 import { BodyPart } from 'solarxr-protocol';
+import { BaseModal } from '@/components/commons/BaseModal';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
@@ -51,9 +51,16 @@ export function SingleTrackerBodyAssignmentMenu({
 
   const picker = {
     ...pickerShell,
-    activePart: BodyPart.NONE,
+    activePart: bodyPart ?? BodyPart.NONE,
     selectPart: tryOpenChokerWarning,
   };
+
+  const activeParts =
+    bodyPart != null && bodyPart !== BodyPart.NONE ? [bodyPart] : [];
+  const dotClass = (part: BodyPart) =>
+    part === bodyPart
+      ? 'scale-150 ring-3 ring-accent-background-30'
+      : undefined;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -77,11 +84,10 @@ export function SingleTrackerBodyAssignmentMenu({
 
   return (
     <>
-      <ReactModal
+      <BaseModal
         isOpen={isOpen}
-        shouldCloseOnOverlayClick
-        shouldCloseOnEsc
         onRequestClose={onClose}
+        aria={{ labelledby: 'single-tracker-assign-title' }}
         overlayClassName={classNames(
           'fixed inset-0 flex bg-background-90 bg-opacity-90 z-20'
         )}
@@ -107,7 +113,10 @@ export function SingleTrackerBodyAssignmentMenu({
           >
             <div className="flex min-w-0 flex-col gap-3">
               <div className="flex items-center gap-2">
-                <div className="min-w-0 flex-1 [overflow-wrap:anywhere]">
+                <div
+                  id="single-tracker-assign-title"
+                  className="min-w-0 flex-1 [overflow-wrap:anywhere]"
+                >
                   <Typography
                     variant={isMobile ? 'section-title' : 'main-title'}
                     bold
@@ -155,6 +164,7 @@ export function SingleTrackerBodyAssignmentMenu({
           </div>
           <div
             ref={selectionRef}
+            data-nav-entry
             className={classNames(
               'flex min-h-0 min-w-0 flex-col gap-3',
               isMobile ? 'h-full min-h-0' : 'h-full p-4'
@@ -188,6 +198,8 @@ export function SingleTrackerBodyAssignmentMenu({
                         compact={isMobile}
                         fitContent={isMobile}
                         fillHeight
+                        activeParts={activeParts}
+                        dotClass={dotClass}
                         onRoleSelected={picker.selectPart}
                       />
                     ) : (
@@ -196,6 +208,8 @@ export function SingleTrackerBodyAssignmentMenu({
                         mirror={config?.mirrorView ?? false}
                         dotSize={dotSize.tap}
                         fillHeight
+                        activeParts={activeParts}
+                        dotClass={dotClass}
                         onRoleSelected={picker.selectPart}
                       />
                     )}
@@ -233,7 +247,7 @@ export function SingleTrackerBodyAssignmentMenu({
             </PickerContext.Provider>
           </div>
         )}
-      </ReactModal>
+      </BaseModal>
 
       <NeckWarningModal
         isOpen={shouldShowChokerWarn}

@@ -121,13 +121,23 @@ type AssignmentRenderState = {
 };
 
 const defaultCard =
-  (onRoleSelected: (role: BodyPart) => void): PartCardRenderer =>
+  (
+    onRoleSelected: (role: BodyPart) => void,
+    activeParts: BodyPart[] = []
+  ): PartCardRenderer =>
   (props) => (
-    <AssignmentPartCard {...props} onClick={() => onRoleSelected(props.role)} />
+    <AssignmentPartCard
+      {...props}
+      pressed={activeParts.includes(props.role)}
+      onClick={() => onRoleSelected(props.role)}
+    />
   );
 
 const defaultGroup =
-  (onRoleSelected: (role: BodyPart) => void): ExtremityGroupRenderer =>
+  (
+    onRoleSelected: (role: BodyPart) => void,
+    activeParts: BodyPart[] = []
+  ): ExtremityGroupRenderer =>
   ({ id, labelId, direction, rows, edge, flow }) => (
     <ExtremityGroupCard
       key={id}
@@ -137,7 +147,7 @@ const defaultGroup =
       direction={direction}
       rows={rows}
       renderRow={(props) =>
-        defaultCard(onRoleSelected)({ ...props, compact: true })
+        defaultCard(onRoleSelected, activeParts)({ ...props, compact: true })
       }
     />
   );
@@ -194,7 +204,8 @@ function BodyAssignmentView({
     state;
   const left = +!mirror;
   const right = +mirror;
-  const card = renderCard ?? defaultCard(onRoleSelected);
+  const card =
+    renderCard ?? defaultCard(onRoleSelected, interactions.activeParts);
 
   const sideNames = useMemo<BodySideNames>(
     () => ({
@@ -317,7 +328,8 @@ function ExtremityAssignmentView({
     [trackerByPart, rolesWithErrors]
   );
 
-  const group = renderGroup ?? defaultGroup(onRoleSelected);
+  const group =
+    renderGroup ?? defaultGroup(onRoleSelected, interactions.activeParts);
 
   const digit = useCallback(
     (name: string, { direction, edge }: ExtremitySlot, flow: DigitFlow) => {

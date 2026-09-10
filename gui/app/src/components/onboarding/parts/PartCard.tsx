@@ -37,7 +37,8 @@ export function AssignmentPartCard({
   compact = false,
   number,
   connector = true,
-}: PartCardProps & { onClick?: () => void }) {
+  pressed,
+}: PartCardProps & { onClick?: () => void; pressed?: boolean }) {
   const velocity = useVelocity(td?.tracker);
 
   return (
@@ -45,6 +46,7 @@ export function AssignmentPartCard({
       type="button"
       id={BodyPart[role]}
       data-connector={connector ? undefined : 'off'}
+      aria-pressed={pressed}
       onClick={onClick}
       style={velocityGlowStyle(velocity)}
       className={classNames(
@@ -52,7 +54,8 @@ export function AssignmentPartCard({
         compact
           ? 'gap-0 w-full px-1.5 py-0.5'
           : 'gap-1 w-[88px] smol:w-[120px] sm:w-[150px] px-2 py-1',
-        direction === 'left' ? 'text-left' : 'text-right'
+        direction === 'left' ? 'text-left' : 'text-right',
+        pressed && 'bg-accent-background-30/40'
       )}
     >
       <PartCardWarning error={roleError} direction={direction} />

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   ARROW_KEY,
@@ -9,6 +9,7 @@ import {
   type Direction,
 } from '@/utils/focus-nav';
 import {
+  aimBearing,
   BUTTON_A,
   BUTTON_B,
   decodeInput,
@@ -22,6 +23,40 @@ const EDIT_CLASS = 'nav-editing';
 
 const ARROW_OWNER = '[aria-expanded="true"],[data-nav-arrows]';
 const EDIT_WIDGET = '[data-nav-edit]';
+/** A widget that reads the stick angle itself; the nav layer leaves its directions alone. */
+const AIM_WIDGET = '[data-nav-aim]';
+
+const KEY_DIR: Record<string, Direction | undefined> = {
+  ArrowUp: 'up',
+  ArrowDown: 'down',
+  ArrowLeft: 'left',
+  ArrowRight: 'right',
+};
+
+const TEXT_INPUT_TYPES = new Set([
+  'text',
+  'search',
+  'url',
+  'tel',
+  'email',
+  'password',
+  'number',
+  'date',
+  'datetime-local',
+  'month',
+  'week',
+  'time',
+]);
+
+/** A field where keystrokes are text. The nav layer stays out. */
+function isTextEntry(el: EventTarget | null): boolean {
+  if (!(el instanceof HTMLElement)) return false;
+  if (el.isContentEditable) return true;
+  const tag = el.tagName;
+  if (tag === 'TEXTAREA' || tag === 'SELECT') return true;
+  if (tag === 'INPUT') return TEXT_INPUT_TYPES.has((el as HTMLInputElement).type);
+  return false;
+}
 
 const REPEAT_DELAY_MS = 400;
 const REPEAT_INTERVAL_MS = 120;
@@ -39,9 +74,11 @@ const nav = {
   held: new Map<Direction, { firedAt: number; repeating: boolean }>(),
   prevButtons: new Set<number>(),
   stickDir: null as Direction | null,
+  /** A dial-style widget listening for the raw stick/D-pad angle. */
+  aim: null as ((bearing: number | null) => void) | null,
   pads: new Set<number>(),
   rafId: 0,
-  listening: false,
+  kbStarts: 0,
   starts: 0,
 };
 
@@ -130,6 +167,9 @@ function doMove(dir: Direction) {
   markActive();
   const active = document.activeElement as HTMLElement | null;
 
+  // A dial-style widget owns every direction while focused.
+  if (active?.closest(AIM_WIDGET)) return;
+
   if (nav.editing) {
     if (active === nav.editing) {
       synthKey(nav.editing, ARROW_KEY[dir]);
@@ -204,6 +244,9 @@ function poll() {
   const now = performance.now();
   const frame = decodeInput(navigator.getGamepads());
 
+  // A dial widget wants the real angle, not the four-way resolution.
+  if (nav.aim) nav.aim(aimBearing(frame));
+
   nav.stickDir = resolveStick(frame.axX, frame.axY, nav.stickDir);
   const pressedDirs = pressedDirections(frame, nav.stickDir);
 
@@ -225,9 +268,7 @@ function startLoop() {
 }
 
 function onConnect(e: GamepadEvent) {
-  const wasEmpty = nav.pads.size === 0;
   nav.pads.add(e.gamepad.index);
-  if (wasEmpty) activateListeners();
   startLoop();
   markActive();
   nav.shellHref = null;
@@ -236,15 +277,56 @@ function onConnect(e: GamepadEvent) {
 
 function onDisconnect(e: GamepadEvent) {
   nav.pads.delete(e.gamepad.index);
-  if (nav.pads.size === 0) deactivateListeners();
 }
 
 function onInterrupt() {
   resetHeld();
 }
 
-function onUserInput(e: Event) {
+function onPointerInput(e: Event) {
   if (!e.isTrusted) return;
+  clearActive();
+}
+
+function onKeyNav(e: KeyboardEvent) {
+  if (!e.isTrusted) return;
+  // A widget that records or interprets raw keystrokes owns every key.
+  if ((e.target as HTMLElement | null)?.closest('[data-nav-raw]')) return;
+
+  const dir = KEY_DIR[e.key];
+  if (dir && (e.ctrlKey || e.altKey) && !e.shiftKey && !e.metaKey) {
+    e.preventDefault();
+    markActive();
+    doMove(dir);
+    return;
+  }
+
+  if (isTextEntry(e.target)) return;
+
+  if (e.key === 'Enter' || e.key === ' ') {
+    const active = document.activeElement as HTMLElement | null;
+    const shell = active?.closest<HTMLElement>('[data-nav-region="shell"]');
+    nav.shellHref = shell ? (active?.getAttribute('href') ?? null) : null;
+    nav.shellArea = shell?.dataset.navArea ?? null;
+
+    if ((e.ctrlKey || e.altKey) && !e.metaKey && active) {
+      e.preventDefault();
+      markActive();
+      if (!synthKey(active, 'Enter')) active.click();
+    }
+    return;
+  }
+
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+  if (e.key === 'Escape') {
+    if (nav.editing) {
+      exitEdit();
+      e.stopPropagation();
+    }
+    return;
+  }
+
   clearActive();
 }
 
@@ -255,24 +337,22 @@ function onFocusOut(e: FocusEvent) {
   nav.origin = el.getBoundingClientRect();
 }
 
-function activateListeners() {
-  if (nav.listening) return;
-  nav.listening = true;
+function startKeyboard() {
+  if (++nav.kbStarts > 1) return;
   document.addEventListener('focusout', onFocusOut, true);
-  window.addEventListener('pointerdown', onUserInput, true);
-  window.addEventListener('keydown', onUserInput, true);
+  window.addEventListener('pointerdown', onPointerInput, true);
+  window.addEventListener('keydown', onKeyNav, true);
 }
 
-function deactivateListeners() {
-  if (!nav.listening) return;
-  nav.listening = false;
+function stopKeyboard() {
+  if (--nav.kbStarts > 0) return;
   document.removeEventListener('focusout', onFocusOut, true);
-  window.removeEventListener('pointerdown', onUserInput, true);
-  window.removeEventListener('keydown', onUserInput, true);
+  window.removeEventListener('pointerdown', onPointerInput, true);
+  window.removeEventListener('keydown', onKeyNav, true);
   clearActive();
 }
 
-function start() {
+function startPad() {
   if (++nav.starts > 1) return;
   if (typeof navigator === 'undefined' || !navigator.getGamepads) return;
 
@@ -284,13 +364,10 @@ function start() {
   for (const pad of navigator.getGamepads()) {
     if (pad) nav.pads.add(pad.index);
   }
-  if (nav.pads.size) {
-    activateListeners();
-    startLoop();
-  }
+  if (nav.pads.size) startLoop();
 }
 
-function stop() {
+function stopPad() {
   if (--nav.starts > 0) return;
 
   if (nav.rafId) cancelAnimationFrame(nav.rafId);
@@ -299,7 +376,6 @@ function stop() {
   window.removeEventListener('gamepaddisconnected', onDisconnect);
   window.removeEventListener('blur', onInterrupt);
   document.removeEventListener('visibilitychange', onInterrupt);
-  deactivateListeners();
   resetHeld();
   nav.pads.clear();
   nav.origin = null;
@@ -308,17 +384,43 @@ function stop() {
 export function useControllerNav() {
   const { config } = useConfig();
   const location = useLocation();
-  const enabled = config?.controllerNav !== false;
+  const padEnabled = config?.controllerNav !== false;
 
   useEffect(() => {
-    if (!enabled) return;
-    start();
-    return stop;
-  }, [enabled]);
+    startKeyboard();
+    return stopKeyboard;
+  }, []);
+
+  useEffect(() => {
+    if (!padEnabled) return;
+    startPad();
+    return stopPad;
+  }, [padEnabled]);
 
   useEffect(() => {
     nav.origin = null;
-    if (!enabled || !isActive()) return;
+    if (!isActive()) return;
     placeCursorSoon();
-  }, [location.pathname, enabled]);
+  }, [location.pathname]);
+}
+
+/**
+ * Receive the raw stick / D-pad bearing (degrees clockwise from up) each frame
+ * while `enabled`, for a widget that aims rather than steps. Rides the nav poll
+ * loop, so it only fires while a pad is connected and pad nav is on. Mark the
+ * element `data-nav-aim` so the nav layer leaves its directions alone.
+ */
+export function useNavAim(enabled: boolean, onAim: (bearing: number) => void) {
+  const onAimRef = useRef(onAim);
+  onAimRef.current = onAim;
+
+  useEffect(() => {
+    if (!enabled) return;
+    nav.aim = (bearing) => {
+      if (bearing !== null) onAimRef.current(bearing);
+    };
+    return () => {
+      nav.aim = null;
+    };
+  }, [enabled]);
 }
