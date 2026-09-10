@@ -338,7 +338,7 @@ private fun getBustOffsets(bustLength: Float) = buildMap {
 private fun getBustHeadOffsets(bustLength: Float): Map<BodyPart, Vector3> = buildMap {
 	for (bust in BUST) {
 		val k = bust.headOffset
-		put(bust.segments.first, Vector3(k.x * bustLength, k.y * bustLength, k.z * bustLength))
-		put(bust.segments.second, Vector3(-k.x * bustLength, k.y * bustLength, k.z * bustLength))
+		put(bust.segments.first, Vector3(k.x * -bustLength * 0.12f, k.y * bustLength, k.z * bustLength))
+		put(bust.segments.second, Vector3(-k.x * -bustLength * 0.12f, k.y * bustLength, k.z * bustLength))
 	}
 }
