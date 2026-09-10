@@ -90,7 +90,6 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
           <InputInside
             name={c.label}
             label={c.label}
-            placeholder={c.label}
             value={c.value}
             type={c.format === 'number' ? 'number' : 'text'}
             error={
@@ -107,20 +106,18 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
 
     if (c.type === 'dropdown') {
       return (
-        <div
-          className="flex flex-col pt-2 gap-1 min-w-0"
-          key={c.path.join('/')}
-        >
-          <Typography>{c.label}</Typography>
+        <div className="flex flex-col pt-2 min-w-0" key={c.path.join('/')}>
           <DropdownInside
             items={c.items.map((i) => ({ value: i, label: i }))}
             name={c.label}
+            label={c.label}
             onChange={c.onMutate}
             error={
               c.error
                 ? { type: 'validate', message: l10n.getString(c.error) }
                 : undefined
             }
+            inside="label"
             placeholder={c.label}
             display="block"
             value={c.value}

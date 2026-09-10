@@ -10,6 +10,7 @@ import {
 } from 'react-hook-form';
 import { EyeIcon } from './icon/EyeIcon';
 import { Typography } from './Typography';
+import { FLOATING_LABEL_PADDING, FloatingLabel } from './FloatingLabel';
 
 interface InputProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
@@ -47,6 +48,7 @@ export const InputInside = forwardRef<
   ref
 ) {
   const [forceText, setForceText] = useState(false);
+  const [focused, setFocused] = useState(false);
 
   const togglePassword = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -77,7 +79,7 @@ export const InputInside = forwardRef<
 
     return classNames(
       variantsMap[variant],
-      'w-full focus:ring-transparent focus:ring-offset-transparent min-h-[42px] z-10',
+      'w-full focus:ring-transparent focus:ring-offset-transparent min-h-[48px] z-10',
       'focus:outline-transparent rounded-md focus:border-accent-background-40',
       'text-standard text-background-10 relative transition-colors',
       error && 'border-status-critical border-1'
@@ -90,9 +92,18 @@ export const InputInside = forwardRef<
       ? value
       : '';
 
+  // The label sits inside the field as a floating label: centered while the
+  // field is empty and unfocused, shrunk to the top-left once focused or filled.
+  // A bare placeholder with no label behaves the same way.
+  const floatingText = label || placeholder;
+  const hasFloatingLabel = !!floatingText && !disabled;
+  const hasValue =
+    value !== undefined && value !== null && String(value).length > 0;
+  const floating = focused || hasValue;
+
   return (
     <label className="flex flex-col gap-1">
-      {label && <Typography>{label}</Typography>}
+      {label && !hasFloatingLabel && <Typography>{label}</Typography>}
       <div className="relative w-full">
         <input
           type={forceText ? 'text' : type}
@@ -100,18 +111,32 @@ export const InputInside = forwardRef<
             classes,
             {
               'pr-10 sentry-mask': type === 'password',
+              [FLOATING_LABEL_PADDING]: hasFloatingLabel,
             },
             className
           )}
-          placeholder={placeholder || undefined}
+          placeholder={
+            hasFloatingLabel
+              ? focused && placeholder && placeholder !== floatingText
+                ? placeholder
+                : undefined
+              : placeholder || undefined
+          }
           autoComplete={autocomplete ? 'off' : 'on'}
           onChange={onChange}
+          onFocus={() => setFocused(true)}
           name={name}
           value={computedValue} // Do we want that behaviour ?
           disabled={disabled}
           ref={ref}
-          onBlur={onBlur}
+          onBlur={() => {
+            setFocused(false);
+            onBlur?.();
+          }}
         />
+        {hasFloatingLabel && (
+          <FloatingLabel label={floatingText} floating={floating} />
+        )}
         {type === 'password' && (
           <div
             className="fill-background-10 absolute inset-y-0 right-0 pr-6 z-10 my-auto w-[16px] h-[16px] cursor-pointer"
@@ -123,7 +148,8 @@ export const InputInside = forwardRef<
         {error?.message && (
           <div
             className={classNames(
-              'absolute top-[38px] z-0 pt-1.5  px-1 w-full rounded-b-md bg-dark-background-600 text-status-critical',
+              'absolute z-0 pt-1.5 px-1 w-full rounded-b-md bg-dark-background-600 text-status-critical',
+              hasFloatingLabel ? 'top-[calc(100%-4px)]' : 'top-[44px]',
               errorClassName
             )}
           >

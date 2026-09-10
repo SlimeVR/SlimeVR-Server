@@ -67,7 +67,7 @@ export const CheckboxInternal = forwardRef<
     >
       <label
         className={classNames(
-          'w-full h-[42px] flex gap-2 items-center text-standard-bold',
+          'w-full h-[48px] flex gap-2 items-center text-standard-bold',
           {
             'px-3': outlined,
             'cursor-pointer': !disabled || !loading,

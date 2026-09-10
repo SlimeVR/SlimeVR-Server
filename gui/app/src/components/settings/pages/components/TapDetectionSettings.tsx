@@ -201,48 +201,36 @@ export function TapDetectionSettings() {
           />
         </div>
         <div className="grid sm:grid-cols-3 gap-5 pb-2">
-          <div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-gesture_control-yawResetTracker'
-              )}
-            </Typography>
-            <Dropdown
-              display="block"
-              control={control}
-              placeholder={''}
-              name="yawResetTracker"
-              items={bodyParts}
-            />
-          </div>
-          <div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-gesture_control-fullResetTracker'
-              )}
-            </Typography>
-            <Dropdown
-              display="block"
-              control={control}
-              placeholder={''}
-              name="fullResetTracker"
-              items={bodyParts}
-            />
-          </div>
-          <div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-gesture_control-mountingResetTracker'
-              )}
-            </Typography>
-            <Dropdown
-              display="block"
-              control={control}
-              placeholder={''}
-              name="mountingResetTracker"
-              items={bodyParts}
-            />
-          </div>
+          <Dropdown
+            display="block"
+            control={control}
+            placeholder={''}
+            label={l10n.getString(
+              'settings-general-gesture_control-yawResetTracker'
+            )}
+            name="yawResetTracker"
+            items={bodyParts}
+          />
+          <Dropdown
+            display="block"
+            control={control}
+            placeholder={''}
+            label={l10n.getString(
+              'settings-general-gesture_control-fullResetTracker'
+            )}
+            name="fullResetTracker"
+            items={bodyParts}
+          />
+          <Dropdown
+            display="block"
+            control={control}
+            placeholder={''}
+            label={l10n.getString(
+              'settings-general-gesture_control-mountingResetTracker'
+            )}
+            name="mountingResetTracker"
+            items={bodyParts}
+          />
         </div>
       </div>
       <div className="grid sm:grid-cols-3 gap-5 pb-2">
