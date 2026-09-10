@@ -32,8 +32,9 @@ class SkeletonProportionsBehaviour(
 	private val skeleton: Skeleton,
 ) : SolarXRBridgeBehaviour {
 	private fun buildConfigResponse(boneInputs: InputSkeleton): SkeletonProportionsResponse {
-		val boneOffsets = BodyPartMap(boneInputs.mapValues { it.value.offset })
-		val boneValues = boneOffsets.toBoneValues()
+		val tailOffsets = BodyPartMap(boneInputs.mapValues { it.value.offset })
+		val headOffsets = BodyPartMap(boneInputs.mapValues { it.value.headOffset })
+		val boneValues = toBoneValues(tailOffsets, headOffsets)
 		val skeletonParts = boneValues.map { (offset, bone) -> SkeletonPart(offset, bone) }
 		return SkeletonProportionsResponse(skeletonParts = skeletonParts, skeletonHeight = boneValues.height())
 	}
@@ -41,7 +42,11 @@ class SkeletonProportionsBehaviour(
 	override fun observe(receiver: SolarXRBridge) {
 		skeleton.context.state
 			.map { it.boneInputs }
-			.distinctUntilChanged { old, new -> ALL_BODY_PARTS.all { part -> old[part]?.offset == new[part]?.offset } }
+			.distinctUntilChanged { old, new ->
+				ALL_BODY_PARTS.all { part ->
+					old[part]?.offset == new[part]?.offset && old[part]?.headOffset == new[part]?.headOffset
+				}
+			}
 			.drop(1)
 			.onEach { boneInputs ->
 				val configResponse = buildConfigResponse(boneInputs)

@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import solarxr_protocol.datatypes.BodyPart
+import solarxr_protocol.rpc.ResetType
 import java.util.EnumMap
 import java.util.concurrent.Executors
 import kotlin.math.cos
@@ -36,6 +37,7 @@ class ProportionsBehaviour(private val userConfig: UserConfig) : SkeletonBehavio
 			.onEach { proportions ->
 				if (proportions.isNotEmpty()) {
 					receiver.context.dispatch(SkeletonActions.SetProportions(configToBoneValues(proportions)))
+					receiver.resetProcessors(ResetType.FULL)
 				}
 			}
 			.launchIn(receiver.context.scope)
