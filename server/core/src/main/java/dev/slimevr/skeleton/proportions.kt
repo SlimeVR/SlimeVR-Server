@@ -171,7 +171,9 @@ private val FINGERS = listOf(
 			BodyPart.LEFT_THUMB_PROXIMAL to BodyPart.RIGHT_THUMB_PROXIMAL,
 			BodyPart.LEFT_THUMB_DISTAL to BodyPart.RIGHT_THUMB_DISTAL,
 		),
-		lengthFraction = 0.72f, knuckle = Vector3(0.16f, 0.3f, -0.28f), lean = Vector3(0.05f, 0f, -0.7f),
+		lengthFraction = 0.72f,
+		knuckle = Vector3(0.16f, 0.3f, -0.28f),
+		lean = Vector3(0.05f, 0f, -0.7f),
 	),
 	Finger(
 		listOf(
@@ -179,7 +181,9 @@ private val FINGERS = listOf(
 			BodyPart.LEFT_INDEX_INTERMEDIATE to BodyPart.RIGHT_INDEX_INTERMEDIATE,
 			BodyPart.LEFT_INDEX_DISTAL to BodyPart.RIGHT_INDEX_DISTAL,
 		),
-		lengthFraction = 0.805f, knuckle = Vector3(0.03f, 0.05f, -0.34f), lean = Vector3(0f, 0f, -0.12f),
+		lengthFraction = 0.805f,
+		knuckle = Vector3(0.03f, 0.05f, -0.34f),
+		lean = Vector3(0f, 0f, -0.12f),
 	),
 	Finger(
 		listOf(
@@ -187,7 +191,9 @@ private val FINGERS = listOf(
 			BodyPart.LEFT_MIDDLE_INTERMEDIATE to BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
 			BodyPart.LEFT_MIDDLE_DISTAL to BodyPart.RIGHT_MIDDLE_DISTAL,
 		),
-		lengthFraction = 0.92f, knuckle = Vector3(0.04f, 0f, -0.11f), lean = Vector3(0f, 0f, -0.02f),
+		lengthFraction = 0.92f,
+		knuckle = Vector3(0.04f, 0f, -0.11f),
+		lean = Vector3(0f, 0f, -0.02f),
 	),
 	Finger(
 		listOf(
@@ -195,7 +201,9 @@ private val FINGERS = listOf(
 			BodyPart.LEFT_RING_INTERMEDIATE to BodyPart.RIGHT_RING_INTERMEDIATE,
 			BodyPart.LEFT_RING_DISTAL to BodyPart.RIGHT_RING_DISTAL,
 		),
-		lengthFraction = 0.805f, knuckle = Vector3(0.03f, 0.03f, 0.11f), lean = Vector3(0f, 0f, 0.05f),
+		lengthFraction = 0.805f,
+		knuckle = Vector3(0.03f, 0.03f, 0.11f),
+		lean = Vector3(0f, 0f, 0.05f),
 	),
 	Finger(
 		listOf(
@@ -203,7 +211,9 @@ private val FINGERS = listOf(
 			BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
 			BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
 		),
-		lengthFraction = 0.69f, knuckle = Vector3(0f, 0.1f, 0.31f), lean = Vector3(0f, 0f, 0.14f),
+		lengthFraction = 0.69f,
+		knuckle = Vector3(0f, 0.1f, 0.31f),
+		lean = Vector3(0f, 0f, 0.14f),
 	),
 )
 
