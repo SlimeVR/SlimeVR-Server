@@ -22,17 +22,17 @@ class BoneActiveLinkInputProcessor : SkeletonInputProcessor {
 		BodyPart.LOWER_WAIST to arrayOf(BodyPart.UPPER_WAIST, BodyPart.LOWER_CHEST, BodyPart.HIP, BodyPart.UPPER_CHEST),
 		BodyPart.HIP to arrayOf(BodyPart.LOWER_WAIST, BodyPart.UPPER_WAIST, BodyPart.LOWER_CHEST, BodyPart.UPPER_CHEST),
 
-		BodyPart.LEFT_BIG_TOE to arrayOf(BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_FOOT),
-		BodyPart.LEFT_INDEX_TOE to arrayOf(BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_FOOT),
-		BodyPart.LEFT_MIDDLE_TOE to arrayOf(BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_FOOT),
-		BodyPart.LEFT_RING_TOE to arrayOf(BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_FOOT),
-		BodyPart.LEFT_LITTLE_TOE to arrayOf(BodyPart.LEFT_RING_TOE, BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_FOOT),
+		BodyPart.LEFT_BIG_TOE to arrayOf(BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
+		BodyPart.LEFT_INDEX_TOE to arrayOf(BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
+		BodyPart.LEFT_MIDDLE_TOE to arrayOf(BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_RING_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
+		BodyPart.LEFT_RING_TOE to arrayOf(BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_LITTLE_TOE, BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
+		BodyPart.LEFT_LITTLE_TOE to arrayOf(BodyPart.LEFT_RING_TOE, BodyPart.LEFT_MIDDLE_TOE, BodyPart.LEFT_INDEX_TOE, BodyPart.LEFT_BIG_TOE, BodyPart.LEFT_FOOT, BodyPart.LEFT_LOWER_LEG),
 
-		BodyPart.RIGHT_BIG_TOE to arrayOf(BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_LITTLE_TOE, BodyPart.RIGHT_FOOT),
-		BodyPart.RIGHT_INDEX_TOE to arrayOf(BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_LITTLE_TOE, BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_FOOT),
-		BodyPart.RIGHT_MIDDLE_TOE to arrayOf(BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_LITTLE_TOE, BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_FOOT),
-		BodyPart.RIGHT_RING_TOE to arrayOf(BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_LITTLE_TOE, BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_FOOT),
-		BodyPart.RIGHT_LITTLE_TOE to arrayOf(BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_FOOT),
+		BodyPart.RIGHT_BIG_TOE to arrayOf(BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_LITTLE_TOE, BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
+		BodyPart.RIGHT_INDEX_TOE to arrayOf(BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_LITTLE_TOE, BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
+		BodyPart.RIGHT_MIDDLE_TOE to arrayOf(BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_LITTLE_TOE, BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
+		BodyPart.RIGHT_RING_TOE to arrayOf(BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_LITTLE_TOE, BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
+		BodyPart.RIGHT_LITTLE_TOE to arrayOf(BodyPart.RIGHT_RING_TOE, BodyPart.RIGHT_MIDDLE_TOE, BodyPart.RIGHT_INDEX_TOE, BodyPart.RIGHT_BIG_TOE, BodyPart.RIGHT_FOOT, BodyPart.RIGHT_LOWER_LEG),
 	)
 
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
