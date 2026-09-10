@@ -4,7 +4,7 @@ import { Button } from '@/components/commons/Button';
 import { useAtomValue } from 'jotai';
 import { serverGuardsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import {
   CancelUserHeightCalibrationT,
   ChangeUserHeightRequestT,
@@ -17,7 +17,8 @@ import {
   UserHeightCalibrationStatus,
   UserHeightRecordingStatusResponseT,
 } from 'solarxr-protocol';
-import { HeightSelectionInput } from './HeightInput';
+import { HeightSelectionInput, formatFullHeight } from './HeightInput';
+import { useLocaleConfig } from '@/i18n/config';
 import { Tooltip } from '@/components/commons/Tooltip';
 import classNames from 'classnames';
 import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
@@ -26,6 +27,10 @@ import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { restartAndPlay, scaledProportionsClick } from '@/sounds/sounds';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+} from '@/components/commons/icon/ArrowIcons';
 import { TipBox } from '@/components/commons/TipBox';
 import { Localized } from '@fluent/react';
 import { ResetButton } from '@/components/home/ResetButton';
@@ -233,6 +238,120 @@ function UserHeightStatus({
   );
 }
 
+function HeightControls({
+  hmdHeight,
+  unit,
+  onUnitChange,
+  alonePage,
+  canCalibrate,
+  showTitle = true,
+  onHeightChange,
+  onCalculate,
+}: {
+  hmdHeight: number;
+  unit: 'meter' | 'foot';
+  onUnitChange: (unit: 'meter' | 'foot') => void;
+  alonePage: boolean;
+  canCalibrate: boolean;
+  showTitle?: boolean;
+  onHeightChange: (height: number) => void;
+  onCalculate: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-3">
+      {showTitle && (
+        <Typography variant="mobile-title" id="onboarding-user_height-title" />
+      )}
+      <HeightSelectionInput
+        hmdHeight={hmdHeight}
+        unit={unit}
+        onUnitChange={onUnitChange}
+        setHmdHeight={onHeightChange}
+      />
+      <Tooltip
+        disabled={canCalibrate}
+        preferedDirection="top"
+        content={<Typography id="onboarding-user_height-need_head_tracker" />}
+      >
+        <Button
+          variant="primary"
+          disabled={!canCalibrate}
+          onClick={onCalculate}
+          id="onboarding-user_height-calculate"
+        />
+      </Tooltip>
+      <div className="w-full flex gap-2 justify-between">
+        {alonePage && (
+          <>
+            <Button
+              variant="tertiary"
+              id="onboarding-user_height-manual-proportions"
+              to="/onboarding/body-proportions/manual"
+              state={{ alonePage }}
+            />
+            <ResetButton
+              type={ResetType.FULL}
+              className="bg-background-50 hover:bg-background-40 text-background-10"
+            />
+          </>
+        )}
+        {!alonePage && (
+          <Button
+            variant="primary"
+            id="onboarding-user_height-next_step"
+            to="/onboarding/quiz/usage"
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function FloatingHeightPanel({
+  alonePage,
+  summary,
+  children,
+}: {
+  alonePage: boolean;
+  summary: ReactNode;
+  children: ReactNode;
+}) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <div
+      className={classNames(
+        'fixed inset-x-3 z-40 mx-auto max-w-2xl pointer-events-none',
+        alonePage ? 'bottom-[70px]' : 'bottom-3'
+      )}
+    >
+      <div className="rounded-xl bg-background-60 border border-background-50/60 overflow-hidden pointer-events-auto">
+        <button
+          type="button"
+          className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-background-60 hover:bg-background-50/50 transition-colors"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <div className="flex items-center gap-3 min-w-0 flex-1 text-left">
+            {summary}
+          </div>
+          <div className="fill-background-10 shrink-0">
+            {isOpen ? <ArrowDownIcon size={16} /> : <ArrowUpIcon size={16} />}
+          </div>
+        </button>
+        <div
+          className={classNames(
+            'overflow-y-auto px-3 transition-all duration-200',
+            isOpen ? 'pb-3 pt-1' : 'max-h-0'
+          )}
+          style={isOpen ? { maxHeight: 'calc(70vh - 60px)' } : undefined}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ScaledProportionsPage() {
   const [hmdHeight, setHmdHeight] = useState(0);
   const [tmpHeight, setTmpHeight] = useState(0);
@@ -246,6 +365,8 @@ export function ScaledProportionsPage() {
   const [auto, setAuto] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [resetModal, setResetModal] = useState<null | 'manual' | 'auto'>(null);
+  const [heightUnit, setHeightUnit] = useState<'meter' | 'foot'>('meter');
+  const { currentLocales } = useLocaleConfig();
 
   applyProgress(0.9);
 
@@ -373,12 +494,52 @@ export function ScaledProportionsPage() {
     setResetModal(null);
   };
 
+  const handleHeightChange = (height: number) => {
+    if (
+      config?.lastUsedProportions != null &&
+      config.lastUsedProportions !== 'scaled'
+    ) {
+      setTmpHeight(height);
+      setResetModal('manual');
+    } else {
+      applyHeight(height);
+    }
+    setAuto(false);
+  };
+
+  const handleCalculate = () => {
+    if (
+      config?.lastUsedProportions != null &&
+      config.lastUsedProportions !== 'scaled'
+    ) {
+      setResetModal('auto');
+    } else {
+      start();
+    }
+  };
+
+  const { isMobile } = useBreakpoint('mobile');
+  const floating = isMobile && !auto;
+
+  const controls = (
+    <HeightControls
+      hmdHeight={hmdHeight}
+      unit={heightUnit}
+      onUnitChange={setHeightUnit}
+      alonePage={state.alonePage}
+      canCalibrate={!!serverGuards?.canDoUserHeightCalibration}
+      showTitle={!floating}
+      onHeightChange={handleHeightChange}
+      onCalculate={handleCalculate}
+    />
+  );
+
   return (
     <div
       className={classNames(
         'flex gap-2 w-full h-full relative justify-center z-10',
         {
-          'p-4': !state.alonePage,
+          'p-4': !state.alonePage && !floating,
           'bg-background-70': state.alonePage,
         }
       )}
@@ -388,96 +549,66 @@ export function ScaledProportionsPage() {
         onClose={() => setResetModal(null)}
         accept={acceptHeight}
       />
-      <div className="h-full max-w-2xl w-full flex flex-col justify-end xs:py-2 z-10 xs:gap-2 pointer-events-none">
-        {!auto && (
-          <div className="p-0 xs:p-2">
-            <Localized id="onboarding-user_height-manual-tip">
-              <TipBox className="p-2 xs:p-4">PRO TIP</TipBox>
-            </Localized>
-          </div>
-        )}
-        <div
-          className={classNames(
-            'flex-grow transition-opacity duration-200 overflow-hidden',
-            { 'opacity-0': !auto, 'opacity-100 pointer-events-auto': auto }
+      {!floating && (
+        <div className="h-full max-w-2xl w-full flex flex-col justify-end xs:py-2 z-10 xs:gap-2 pointer-events-none">
+          {!auto && (
+            <div className="p-0 xs:p-2">
+              <Localized id="onboarding-user_height-manual-tip">
+                <TipBox className="p-2 xs:p-4">PRO TIP</TipBox>
+              </Localized>
+            </div>
           )}
-        >
-          {status && <UserHeightStatus status={status} />}
-        </div>
-
-        <div
-          className={classNames(
-            'flex flex-col gap-3 p-4 bg-background-60 rounded-b-lg xs:rounded-t-lg pointer-events-auto',
-            { 'rounded-t-lg': !auto }
-          )}
-        >
-          <Typography
-            variant="mobile-title"
-            id="onboarding-user_height-title"
-          />
-          <HeightSelectionInput
-            hmdHeight={hmdHeight}
-            setHmdHeight={(height) => {
-              if (
-                config?.lastUsedProportions != null &&
-                config.lastUsedProportions !== 'scaled'
-              ) {
-                setTmpHeight(height);
-                setResetModal('manual');
-              } else {
-                applyHeight(height);
-              }
-              setAuto(false);
-            }}
-          />
-          <Tooltip
-            disabled={serverGuards?.canDoUserHeightCalibration}
-            preferedDirection="top"
-            content={
-              <Typography id="onboarding-user_height-need_head_tracker" />
-            }
+          <div
+            className={classNames(
+              'flex-grow transition-opacity duration-200 overflow-hidden',
+              { 'opacity-0': !auto, 'opacity-100 pointer-events-auto': auto }
+            )}
           >
-            <Button
-              variant="primary"
-              disabled={!serverGuards?.canDoUserHeightCalibration}
-              onClick={() => {
-                if (
-                  config?.lastUsedProportions != null &&
-                  config.lastUsedProportions !== 'scaled'
-                ) {
-                  setResetModal('auto');
-                } else {
-                  start();
-                }
-              }}
-              id="onboarding-user_height-calculate"
-            />
-          </Tooltip>
-          <div className="w-full flex gap-2 justify-between">
-            {state.alonePage && (
-              <>
-                <Button
-                  variant="tertiary"
-                  id="onboarding-user_height-manual-proportions"
-                  to="/onboarding/body-proportions/manual"
-                  state={{ alonePage: state.alonePage }}
-                />
-                <ResetButton
-                  type={ResetType.FULL}
-                  className="bg-background-50 hover:bg-background-40 text-background-10"
-                />
-              </>
+            {status && <UserHeightStatus status={status} />}
+          </div>
+
+          <div
+            className={classNames(
+              'flex flex-col gap-3 p-4 bg-background-60 rounded-b-lg xs:rounded-t-lg pointer-events-auto',
+              { 'rounded-t-lg': !auto }
             )}
-            {!state.alonePage && (
-              <Button
-                variant="primary"
-                id="onboarding-user_height-next_step"
-                to="/onboarding/quiz/usage"
-              />
-            )}
+          >
+            {controls}
           </div>
         </div>
-      </div>
+      )}
+      {floating && (
+        <FloatingHeightPanel
+          alonePage={state.alonePage}
+          summary={
+            <div className="flex flex-1 min-w-0 items-center justify-between gap-2">
+              <Typography
+                bold
+                truncate
+                variant="section-title"
+                id="onboarding-user_height-title"
+              />
+              {hmdHeight > 0 && (
+                <Typography
+                  bold
+                  variant="section-title"
+                  color="text-accent-background-10"
+                  whitespace="whitespace-nowrap"
+                >
+                  {formatFullHeight(hmdHeight, heightUnit, currentLocales)}
+                </Typography>
+              )}
+            </div>
+          }
+        >
+          <div className="flex flex-col gap-3">
+            <Localized id="onboarding-user_height-manual-tip">
+              <TipBox className="p-2">PRO TIP</TipBox>
+            </Localized>
+            {controls}
+          </div>
+        </FloatingHeightPanel>
+      )}
       <div className="absolute top-0 left-0 w-full h-full">
         <SkeletonVisualizerWidget
           onInit={(context) => {

@@ -239,7 +239,7 @@ export function TopBar({
             <TitleBarButton
               labelId="titlebar-settings"
               to="/settings/trackers"
-              className="fill-background-50"
+              className="fill-background-50 hover:fill-background-10"
               state={{ scrollTo: 'output' }}
             >
               <GearIcon />
