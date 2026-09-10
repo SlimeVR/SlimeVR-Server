@@ -7,13 +7,14 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.BodyPart
 
+// TODO how to handle UPPER_WAIST?
 val BODY_PART_TO_UNITY_BONE: BodyPartMap<Array<String>> = BodyPartMap(
 	mapOf(
 		BodyPart.HEAD to arrayOf("Head"),
 		BodyPart.NECK to arrayOf("Neck"),
 		BodyPart.UPPER_CHEST to arrayOf("UpperChest"),
-		BodyPart.CHEST to arrayOf("Chest"),
-		BodyPart.WAIST to arrayOf("Spine"),
+		BodyPart.LOWER_CHEST to arrayOf("Chest"),
+		BodyPart.LOWER_WAIST to arrayOf("Spine"),
 		BodyPart.HIP to arrayOf("Hips"),
 		BodyPart.LEFT_SHOULDER to arrayOf("LeftShoulder"),
 		BodyPart.RIGHT_SHOULDER to arrayOf("RightShoulder"),
@@ -82,9 +83,9 @@ val VMC_SUPPORTED_BONES: Set<BodyPart> = BODY_PART_TO_UNITY_BONE.keys
 //  and figure out how to deal with it (check if present in VRM?)
 val VMC_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 	mapOf(
-		BodyPart.HIP to arrayOf(BodyPart.WAIST, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG),
-		BodyPart.WAIST to arrayOf(BodyPart.CHEST),
-		BodyPart.CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
+		BodyPart.HIP to arrayOf(BodyPart.LOWER_WAIST, BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG),
+		BodyPart.LOWER_WAIST to arrayOf(BodyPart.LOWER_CHEST),
+		BodyPart.LOWER_CHEST to arrayOf(BodyPart.UPPER_CHEST, BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
 		BodyPart.NECK to arrayOf(BodyPart.HEAD),
 		BodyPart.LEFT_UPPER_LEG to arrayOf(BodyPart.LEFT_LOWER_LEG),
 		BodyPart.RIGHT_UPPER_LEG to arrayOf(BodyPart.RIGHT_LOWER_LEG),
@@ -171,7 +172,7 @@ val VMC_OUTPUT_BONE_PARENTS: BodyPartMap<BodyPart?> = VmcBoneTree(VMC_HIERARCHY_
 val VMC_INPUT_HIERARCHY_MAP: BodyPartMap<Array<BodyPart>> = BodyPartMap(
 	VMC_HIERARCHY_MAP +
 		mapOf(
-			BodyPart.CHEST to arrayOf(BodyPart.UPPER_CHEST),
+			BodyPart.LOWER_CHEST to arrayOf(BodyPart.UPPER_CHEST),
 			BodyPart.UPPER_CHEST to arrayOf(BodyPart.NECK, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER),
 		),
 )
