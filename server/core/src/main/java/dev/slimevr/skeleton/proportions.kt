@@ -131,7 +131,7 @@ fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
 		tail.putAll(getToeOffsets(it))
 		head.putAll(getToeHeadOffsets(it))
 	}
-	lengths[SkeletonBone.CHEST]?.let {
+	lengths[SkeletonBone.UPPER_CHEST]?.let {
 		tail.putAll(getBustOffsets(it))
 		head.putAll(getBustHeadOffsets(it))
 	}

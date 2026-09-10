@@ -287,7 +287,7 @@ export const SKELETON_PART_PRESETS: Record<BodyPart, BonePartConfig> = {
       offset: inBoneLengths({ length: 0.1 }),
     }),
     { trackerOffset: WAIST_TRACKER_OFFSET }
-  },
+  ),
   [BodyPart.LOWER_WAIST]: part(
     model('waist', {
       scale: spanBone({ girthFrom: 'hips', length: 1, width: 0.95, depth: 0.95 }),
