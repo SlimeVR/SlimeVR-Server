@@ -12,11 +12,15 @@ export function A({
   className?: string;
 }) {
   return (
-    <span
-      onClick={() => href && openUrl(href)}
+    <a
+      href={href}
+      onClick={(e) => {
+        e.preventDefault();
+        if (href) openUrl(href);
+      }}
       className={classNames(className, 'underline', 'cursor-pointer')}
     >
       {children}
-    </span>
+    </a>
   );
 }

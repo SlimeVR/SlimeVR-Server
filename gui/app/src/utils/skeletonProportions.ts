@@ -59,8 +59,8 @@ export function computeHeadYOffset(bones: Map<BodyPart, BoneT>) {
 /**
  * Derives the few body measurements the mesh preview needs from the skeleton.
  *
- * `BoneT` only carries lengths, so girths have to come from the bones that
- * happen to run sideways: the shoulder and hip bones.
+ * Shoulder girth comes from the sideways-running shoulder bones. Hip girth is the
+ * gap between the two upper-leg heads, which the hip width spreads apart.
  */
 export function deriveSkeletonProportions(
   bones: Map<BodyPart, BoneT>
@@ -70,7 +70,17 @@ export function deriveSkeletonProportions(
 
   const shoulderWidth =
     sumBoneLengths(bones, [BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER]) ?? 0;
-  const hipWidth = sumBoneLengths(bones, [BodyPart.LEFT_HIP, BodyPart.RIGHT_HIP]) ?? 0;
+
+  const leftLegHead = bones.get(BodyPart.LEFT_UPPER_LEG)?.headPosition;
+  const rightLegHead = bones.get(BodyPart.RIGHT_UPPER_LEG)?.headPosition;
+  const hipWidth =
+    leftLegHead && rightLegHead
+      ? Math.hypot(
+          leftLegHead.x - rightLegHead.x,
+          leftLegHead.y - rightLegHead.y,
+          leftLegHead.z - rightLegHead.z
+        )
+      : 0;
 
   return {
     bodyScale,

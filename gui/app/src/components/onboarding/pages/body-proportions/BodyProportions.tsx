@@ -1,4 +1,5 @@
 import { useLocalization } from '@fluent/react';
+import { Clickable } from '@/components/commons/Clickable';
 import classNames from 'classnames';
 import { MouseEventHandler, ReactNode, useMemo, useState } from 'react';
 import {
@@ -21,11 +22,11 @@ function IncrementButton({
   bgDark,
 }: {
   children: ReactNode;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   bgDark: boolean;
 }) {
   return (
-    <div
+    <Clickable
       onClick={onClick}
       className={classNames(
         'no-user-drag p-3 rounded-lg xs:w-10 xs:h-10 flex flex-col justify-center items-center cursor-pointer',
@@ -36,7 +37,7 @@ function IncrementButton({
       <Typography variant="vr-accessible" bold>
         {children}
       </Typography>
-    </div>
+    </Clickable>
   );
 }
 
@@ -52,7 +53,9 @@ function OpenGroupButton({
   const { isXs } = useBreakpoint('xs');
 
   return (
-    <div
+    <Clickable
+      disabled={part.type === 'bone'}
+      expanded={part.type === 'bone' ? undefined : open}
       className={classNames(
         'flex items-center fill-background-20',
         part.type === 'bone' && 'opacity-50 cursor-not-allowed',
@@ -65,7 +68,7 @@ function OpenGroupButton({
       ) : (
         <ArrowDownIcon size={isXs ? 50 : 30} />
       )}
-    </div>
+    </Clickable>
   );
 }
 

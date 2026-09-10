@@ -63,14 +63,24 @@ export function MainLayout({
         'checklist-ok': completion === 'complete',
       })}
     >
-      <div style={{ gridArea: 't' }}>
+      <div
+        data-nav-region="shell"
+        data-nav-area="topbar"
+        style={{ gridArea: 't' }}
+      >
         <TopBar />
       </div>
-      <div style={{ gridArea: 'n' }} className="overflow-y-auto">
+      <div
+        data-nav-region="shell"
+        data-nav-area="navbar"
+        style={{ gridArea: 'n' }}
+        className="overflow-y-auto"
+      >
         <Navbar />
       </div>
 
       <div
+        data-nav-region="page"
         style={{ gridArea: 'c' }}
         className={classNames(
           'overflow-auto mr-2 my-2 mobile:m-0 [container-type:inline-size]',
@@ -85,12 +95,12 @@ export function MainLayout({
         <TrackingChecklistMobile />
       )}
       {full && (
-        <div style={{ gridArea: 'b' }}>
+        <div data-nav-region="page" style={{ gridArea: 'b' }}>
           <Toolbar />
         </div>
       )}
       {!isMobile && full && (
-        <div style={{ gridArea: 's' }} className="mr-2">
+        <div data-nav-region="page" style={{ gridArea: 's' }} className="mr-2">
           <Sidebar />
         </div>
       )}

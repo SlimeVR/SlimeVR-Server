@@ -1,4 +1,5 @@
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
+import { Clickable } from './commons/Clickable';
 import { TrackingChecklist } from './tracking-checklist/TrackingChecklist';
 import { SkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
@@ -95,7 +96,10 @@ export function PreviewControls({ open }: { open: boolean }) {
               }
               preferedDirection="top"
             >
-              <div
+              <Clickable
+                disabled={!open}
+                aria-disabled={!open}
+                pressed={bvhState !== 'idle'}
                 className={classNames(
                   'flex justify-center items-center w-10 h-10 rounded-full hover:bg-background-60 cursor-pointer',
                   { 'bg-background-60': bvhState !== 'idle' }
@@ -106,7 +110,7 @@ export function PreviewControls({ open }: { open: boolean }) {
                 {bvhState !== 'idle' && (
                   <div className="w-5 h-5 rounded-full bg-status-critical animate-pulse" />
                 )}
-              </div>
+              </Clickable>
             </Tooltip>
           )}
           <Tooltip
@@ -118,13 +122,16 @@ export function PreviewControls({ open }: { open: boolean }) {
             }
             preferedDirection="top"
           >
-            <div
+            <Clickable
+              disabled={!open}
+              aria-disabled={!open}
+              pressed={paused}
               className="flex justify-center items-center w-14 h-14 rounded-full bg-background-60 hover:bg-background-50 cursor-pointer"
               onClick={() => toggleTracking()}
             >
               {!paused && <PauseIcon width={25} />}
               {paused && <PlayIcon width={25} />}
-            </div>
+            </Clickable>
           </Tooltip>
           <Tooltip
             content={
@@ -169,7 +176,7 @@ function PreviewSection({ open }: { open: boolean }) {
       )}
     >
       <SkeletonVisualizerWidget
-        disabled={disabledRender}
+        disabled={disabledRender || !open}
         toggleDisabled={() => toggleRender()}
         onInit={(context) => {
           context.addView({
@@ -190,18 +197,23 @@ function PreviewSection({ open }: { open: boolean }) {
         preferedDirection="bottom"
         content={<Typography id="preview-disable_render" />}
       >
-        <div
+        <Clickable
+          disabled={!open}
+          aria-hidden={!open}
+          pressed={!disabledRender}
           className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50"
           onClick={() => toggleRender()}
         >
           <EyeIcon width={18} closed={!disabledRender} />
-        </div>
+        </Clickable>
       </Tooltip>
       <Tooltip
         preferedDirection="bottom"
         content={<Typography id="preview-render_mode" />}
       >
-        <div
+        <Clickable
+          disabled={!open}
+          aria-hidden={!open}
           className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-14 top-2 bg-background-60 hover:bg-background-50"
           onClick={() =>
             setConfig({
@@ -212,7 +224,7 @@ function PreviewSection({ open }: { open: boolean }) {
         >
           {config?.skeletonPreviewStyle == 'lines' && <CubeIcon width={18} />}
           {config?.skeletonPreviewStyle == 'mesh' && <LineIcon size={18} />}
-        </div>
+        </Clickable>
       </Tooltip>
       <PreviewControls open={open} />
     </div>

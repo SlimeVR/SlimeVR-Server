@@ -1,4 +1,5 @@
 import { Localized } from '@fluent/react';
+import { IconButton } from './IconButton';
 import classNames from 'classnames';
 import {
   forwardRef,
@@ -92,8 +93,8 @@ export const FileInputContentFile = ({
           <span>{importedFileName}</span>
         </div>
         <span className="flex-grow" />
-        <a
-          href=""
+        <IconButton
+          labelId={directory ? 'file_input-clear_folder' : 'file_input-clear'}
           className="h-12 w-12 hover:bg-accent-background-20 cursor-pointer"
           onClick={(ev) => {
             ev.preventDefault();
@@ -105,7 +106,7 @@ export const FileInputContentFile = ({
             className="stroke-background-20 hover:stroke-background-90"
             size={48}
           />
-        </a>
+        </IconButton>
       </div>
     </div>
   );

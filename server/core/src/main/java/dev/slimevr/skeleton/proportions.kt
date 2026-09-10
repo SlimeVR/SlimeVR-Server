@@ -18,7 +18,7 @@ val DEFAULT_PROPORTIONS = mapOf(
 	SkeletonBone.HIPS_WIDTH to 0.26f,
 	SkeletonBone.UPPER_LEG to 0.42f,
 	SkeletonBone.LOWER_LEG to 0.5f,
-	SkeletonBone.FOOT_LENGTH to 0.12f,
+	SkeletonBone.FOOT_LENGTH to 0.13f,
 	SkeletonBone.FOOT_SHIFT to -0.05f,
 	SkeletonBone.SHOULDERS_DISTANCE to 0.06f,
 	SkeletonBone.SHOULDERS_WIDTH to 0.35f,
@@ -48,7 +48,6 @@ private val BONE_VALUE_TO_OFFSETS: Map<SkeletonBone, BodyPartMap<Vector3>> = map
 	SkeletonBone.CHEST to BodyPartMap(mapOf(BodyPart.CHEST to Vector3.NEG_Y)),
 	SkeletonBone.WAIST to BodyPartMap(mapOf(BodyPart.WAIST to Vector3.NEG_Y)),
 	SkeletonBone.HIP to BodyPartMap(mapOf(BodyPart.HIP to Vector3.NEG_Y)),
-	SkeletonBone.HIPS_WIDTH to BodyPartMap(mapOf(BodyPart.LEFT_HIP to Vector3.NEG_X / 2f, BodyPart.RIGHT_HIP to Vector3.POS_X / 2f)),
 	SkeletonBone.UPPER_LEG to BodyPartMap(mapOf(BodyPart.LEFT_UPPER_LEG to Vector3.NEG_Y, BodyPart.RIGHT_UPPER_LEG to Vector3.NEG_Y)),
 	SkeletonBone.LOWER_LEG to BodyPartMap(mapOf(BodyPart.LEFT_LOWER_LEG to Vector3.NEG_Y, BodyPart.RIGHT_LOWER_LEG to Vector3.NEG_Y)),
 	SkeletonBone.FOOT_LENGTH to BodyPartMap(mapOf(BodyPart.LEFT_FOOT to Vector3.NEG_Z, BodyPart.RIGHT_FOOT to Vector3.NEG_Z)),
@@ -61,22 +60,22 @@ private val BONE_VALUE_TO_OFFSETS: Map<SkeletonBone, BodyPartMap<Vector3>> = map
 	SkeletonBone.HAND_Z to BodyPartMap(mapOf(BodyPart.LEFT_HAND to Vector3.NEG_Z, BodyPart.RIGHT_HAND to Vector3.NEG_Z)),
 )
 
-private val BONE_OFFSET_TO_VALUES: BodyPartMap<Map<SkeletonBone, Vector3>> = BodyPartMap(
-	BONE_VALUE_TO_OFFSETS
-		.flatMap { (cfg, bones) ->
-			// Invert map, splitting entries [ List<Pair<BodyPart, Pair<SkeletonBone, Vector3>>> ]
-			// Vector also needs to be inverted ((vec/len)/len)==(1/vec)
-			bones.map { (bone, vec) -> bone to (cfg to vec / vec.lenSq()) }
-		}
-		// Merge entries, creating a map again [ Map<BodyPart, List<Pair<SkeletonBone, Vector3>>> ]
+private val BONE_VALUE_TO_HEAD_OFFSETS: Map<SkeletonBone, BodyPartMap<Vector3>> = mapOf(
+	SkeletonBone.HIPS_WIDTH to BodyPartMap(mapOf(BodyPart.LEFT_UPPER_LEG to Vector3.NEG_X / 2f, BodyPart.RIGHT_UPPER_LEG to Vector3.POS_X / 2f)),
+)
+
+// Inverts an offset table so a resolved offset vector can be turned back into a SkeletonBone value.
+// Each direction is divided by its squared length so a dot product with the resolved offset
+// recovers the signed scalar.
+private fun invertOffsetTable(table: Map<SkeletonBone, BodyPartMap<Vector3>>): BodyPartMap<Map<SkeletonBone, Vector3>> = BodyPartMap(
+	table
+		.flatMap { (cfg, bones) -> bones.map { (bone, vec) -> bone to (cfg to vec / vec.lenSq()) } }
 		.groupBy({ it.first }, { it.second })
-		// Transform the values into maps [ Map<BodyPart, Map<SkeletonBone, Vector3>> ]
 		.mapValues { it.value.toMap() },
 )
 
-// Maps each SolarXR SkeletonBone to the BodyPart(s) it controls in the skeleton.
-// Symmetric bones (legs, arms) map to both left and right sides.
-val SKELETON_BONE_TO_BODY_PARTS: Map<SkeletonBone, Set<BodyPart>> = BONE_VALUE_TO_OFFSETS.mapValues { it.value.keys }
+private val BONE_OFFSET_TO_VALUES: BodyPartMap<Map<SkeletonBone, Vector3>> = invertOffsetTable(BONE_VALUE_TO_OFFSETS)
+private val BONE_HEAD_OFFSET_TO_VALUES: BodyPartMap<Map<SkeletonBone, Vector3>> = invertOffsetTable(BONE_VALUE_TO_HEAD_OFFSETS)
 
 // Sum of default bone lengths for height-contributing bones
 // Used to normalize HEIGHT_SCALED_BONE_RATIOS.
@@ -107,118 +106,201 @@ fun computeAllDefaultProportionsByBone(height: Float): Map<String, Float> {
 	return nonScaled + heightScaled
 }
 
-fun Map<SkeletonBone, Float>.toBoneOffsets(): BodyPartMap<Vector3> {
-	val offsets = bodyPartMap<Vector3>()
-	// Normal bones
-	for ((cfg, length) in this) {
-		val boneOffsets = BONE_VALUE_TO_OFFSETS[cfg] ?: continue
-		for ((bone, vec) in boneOffsets) {
-			offsets[bone] = (offsets[bone] ?: Vector3.ZERO) + length * vec
-		}
+// Resolved bone geometry for a set of proportions. tail is the head->tail vector in the bone's own
+// frame; head is the parent-tail->head vector in the parent's frame (Vector3.ZERO for most bones).
+data class BoneOffsets(
+	val tail: BodyPartMap<Vector3>,
+	val head: BodyPartMap<Vector3>,
+)
+
+fun toBoneOffsets(lengths: Map<SkeletonBone, Float>): BoneOffsets {
+	val tail = bodyPartMap<Vector3>()
+	val head = bodyPartMap<Vector3>()
+	for ((cfg, length) in lengths) {
+		BONE_VALUE_TO_OFFSETS[cfg]?.let { for ((bone, vec) in it) tail[bone] = (tail[bone] ?: Vector3.ZERO) + length * vec }
+		BONE_VALUE_TO_HEAD_OFFSETS[cfg]?.let { for ((bone, vec) in it) head[bone] = (head[bone] ?: Vector3.ZERO) + length * vec }
 	}
-	// Fingers
-	this[SkeletonBone.HAND_Y]?.let { offsets.putAll(getFingerOffsets(it)) }
-	// Toes
-	this[SkeletonBone.FOOT_LENGTH]?.let { offsets.putAll(getToeOffsets(it)) }
-	// Bust
+	lengths[SkeletonBone.HAND_Y]?.let {
+		tail.putAll(getFingerOffsets(it))
+		head.putAll(getFingerHeadOffsets(it))
+	}
+	lengths[SkeletonBone.FOOT_LENGTH]?.let {
+		tail.putAll(getToeOffsets(it))
+		head.putAll(getToeHeadOffsets(it))
+	}
 	this[SkeletonBone.CHEST]?.let { offsets.putAll(getBustOffsets(it)) }
-	return offsets
+	return BoneOffsets(tail, head)
 }
 
-fun BodyPartMap<Vector3>.toBoneValues(): Map<SkeletonBone, Float> = this
-	.flatMap { (bone, vec) ->
-		BONE_OFFSET_TO_VALUES[bone]?.map { (cfg, cfgVec) -> cfg to vec.hadamard(cfgVec).len() } ?: emptyList()
+fun toBoneValues(tailOffsets: BodyPartMap<Vector3>, headOffsets: BodyPartMap<Vector3>): Map<SkeletonBone, Float> {
+	fun invert(offsets: BodyPartMap<Vector3>, table: BodyPartMap<Map<SkeletonBone, Vector3>>) = offsets.flatMap { (bone, vec) ->
+		table[bone]?.map { (cfg, cfgVec) -> cfg to vec.dot(cfgVec) } ?: emptyList()
 	}
-	.groupBy({ it.first }, { it.second })
-	.mapValues { it.value.first() }
-// TODO: ?? ^ I don't really know what's going on here, or understand the original intent behind the code,
-// but the doubling of proportions was caused by this. It used to be .mapValues { it.value.sum() }, but for `SkeletonBone`s
-// that contribute to the offsets of multiple `BodyPart`s (e.g. HIP_WIDTH contributes to LEFT_HIP and RIGHT_HIP,
-// UPPER_ARM contributes to LEFT_UPPER_ARM and RIGHT_UPPER_ARM) the offsets are in the values twice.
+
+	return (invert(tailOffsets, BONE_OFFSET_TO_VALUES) + invert(headOffsets, BONE_HEAD_OFFSET_TO_VALUES))
+		.groupBy({ it.first }, { it.second })
+		.mapValues { it.value.first() }
+}
 
 fun configToBoneValues(proportions: Map<String, Float>): Map<SkeletonBone, Float> = proportions.mapKeys {
 	SkeletonBone.entries.firstOrNull { cfg -> cfg.name == it.key } ?: SkeletonBone.NONE
 }
 
+// Fraction of a finger's length taken by each phalanx, hand-ward to tip-ward. Sums to 1.
+private val PHALANX_RATIOS = floatArrayOf(0.5f, 0.283f, 0.217f)
+
 /**
- * Returns the offsets for the finger bones scaled from the handLength.
+ * A finger in the hand's rest frame. The hand hangs with the palm toward the thigh, so for the left
+ * hand +X points to the palm (medial), -Y toward the fingertips, -Z forward; the right hand mirrors X.
+ * The knuckles fan front-to-back: the index sits forward near the thumb, the little finger back.
+ *
+ * @param segments the three bones hand-ward to tip-ward
+ * @param lengthFraction the whole finger's length as a fraction of handLength
+ * @param knuckle the first bone's head vs the hand's tail, fractions of handLength
+ * @param lean how the finger drifts as it extends, per unit of segment length (the -Y fall is on top)
  */
-private fun getFingerOffsets(handLength: Float) = (
-	iterateBodyPartHierarchy(BodyPart.LEFT_HAND, true) +
-		iterateBodyPartHierarchy(BodyPart.RIGHT_HAND, true)
-	).map { it.second }.associateWith {
-	when (it) {
-		BodyPart.LEFT_THUMB_METACARPAL, BodyPart.RIGHT_THUMB_METACARPAL,
-		-> {
-			val length = handLength * 0.72f * PROXIMAL_RATIO
-			Vector3(0f, -length, -length * 0.5f)
+private class Finger(
+	val segments: List<Pair<BodyPart, BodyPart>>,
+	val lengthFraction: Float,
+	val knuckle: Vector3,
+	val lean: Vector3,
+)
+
+private val FINGERS = listOf(
+	Finger(
+		listOf(
+			BodyPart.LEFT_THUMB_METACARPAL to BodyPart.RIGHT_THUMB_METACARPAL,
+			BodyPart.LEFT_THUMB_PROXIMAL to BodyPart.RIGHT_THUMB_PROXIMAL,
+			BodyPart.LEFT_THUMB_DISTAL to BodyPart.RIGHT_THUMB_DISTAL,
+		),
+		lengthFraction = 0.72f,
+		knuckle = Vector3(0.16f, 0.3f, -0.28f),
+		lean = Vector3(0.05f, 0f, -0.7f),
+	),
+	Finger(
+		listOf(
+			BodyPart.LEFT_INDEX_PROXIMAL to BodyPart.RIGHT_INDEX_PROXIMAL,
+			BodyPart.LEFT_INDEX_INTERMEDIATE to BodyPart.RIGHT_INDEX_INTERMEDIATE,
+			BodyPart.LEFT_INDEX_DISTAL to BodyPart.RIGHT_INDEX_DISTAL,
+		),
+		lengthFraction = 0.805f,
+		knuckle = Vector3(0.03f, 0.05f, -0.34f),
+		lean = Vector3.ZERO,
+	),
+	Finger(
+		listOf(
+			BodyPart.LEFT_MIDDLE_PROXIMAL to BodyPart.RIGHT_MIDDLE_PROXIMAL,
+			BodyPart.LEFT_MIDDLE_INTERMEDIATE to BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
+			BodyPart.LEFT_MIDDLE_DISTAL to BodyPart.RIGHT_MIDDLE_DISTAL,
+		),
+		lengthFraction = 0.92f,
+		knuckle = Vector3(0.04f, 0f, -0.11f),
+		lean = Vector3.ZERO,
+	),
+	Finger(
+		listOf(
+			BodyPart.LEFT_RING_PROXIMAL to BodyPart.RIGHT_RING_PROXIMAL,
+			BodyPart.LEFT_RING_INTERMEDIATE to BodyPart.RIGHT_RING_INTERMEDIATE,
+			BodyPart.LEFT_RING_DISTAL to BodyPart.RIGHT_RING_DISTAL,
+		),
+		lengthFraction = 0.805f,
+		knuckle = Vector3(0.03f, 0.03f, 0.11f),
+		lean = Vector3.ZERO,
+	),
+	Finger(
+		listOf(
+			BodyPart.LEFT_LITTLE_PROXIMAL to BodyPart.RIGHT_LITTLE_PROXIMAL,
+			BodyPart.LEFT_LITTLE_INTERMEDIATE to BodyPart.RIGHT_LITTLE_INTERMEDIATE,
+			BodyPart.LEFT_LITTLE_DISTAL to BodyPart.RIGHT_LITTLE_DISTAL,
+		),
+		lengthFraction = 0.69f,
+		knuckle = Vector3(0f, 0.1f, 0.31f),
+		lean = Vector3.ZERO,
+	),
+)
+
+/**
+ * head to tail vectors for every finger bone, scaled from handLength. The three phalanges of a finger
+ * share a direction and split the finger's length by [PHALANX_RATIOS].
+ */
+private fun getFingerOffsets(handLength: Float): Map<BodyPart, Vector3> = buildMap {
+	for (finger in FINGERS) {
+		val fingerLength = handLength * finger.lengthFraction
+		val dir = Vector3(finger.lean.x, -1f + finger.lean.y, finger.lean.z).unit()
+		finger.segments.forEachIndexed { i, (left, right) ->
+			val segment = fingerLength * PHALANX_RATIOS[i]
+			put(left, dir * segment)
+			put(right, Vector3(-dir.x, dir.y, dir.z) * segment)
 		}
-
-		BodyPart.LEFT_THUMB_PROXIMAL, BodyPart.RIGHT_THUMB_PROXIMAL,
-		-> {
-			val length = handLength * 0.72f * INTERMEDIATE_RATIO
-			Vector3(0f, -length, -length * 0.5f)
-		}
-
-		BodyPart.LEFT_THUMB_DISTAL, BodyPart.RIGHT_THUMB_DISTAL,
-		-> {
-			val length = handLength * 0.72f * DISTAL_RATIO
-			Vector3(0f, -length, -length * 0.5f)
-		}
-
-		BodyPart.LEFT_INDEX_PROXIMAL, BodyPart.RIGHT_INDEX_PROXIMAL,
-		-> Vector3(0f, -handLength * 0.805f * PROXIMAL_RATIO, 0f)
-
-		BodyPart.LEFT_INDEX_INTERMEDIATE, BodyPart.RIGHT_INDEX_INTERMEDIATE,
-		-> Vector3(0f, -handLength * 0.805f * INTERMEDIATE_RATIO, 0f)
-
-		BodyPart.LEFT_INDEX_DISTAL, BodyPart.RIGHT_INDEX_DISTAL,
-		-> Vector3(0f, -handLength * 0.805f * DISTAL_RATIO, 0f)
-
-		BodyPart.LEFT_MIDDLE_PROXIMAL, BodyPart.RIGHT_MIDDLE_PROXIMAL,
-		-> Vector3(0f, -handLength * 0.92f * PROXIMAL_RATIO, 0f)
-
-		BodyPart.LEFT_MIDDLE_INTERMEDIATE, BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
-		-> Vector3(0f, -handLength * 0.92f * INTERMEDIATE_RATIO, 0f)
-
-		BodyPart.LEFT_MIDDLE_DISTAL, BodyPart.RIGHT_MIDDLE_DISTAL,
-		-> Vector3(0f, -handLength * 0.92f * DISTAL_RATIO, 0f)
-
-		BodyPart.LEFT_RING_PROXIMAL, BodyPart.RIGHT_RING_PROXIMAL,
-		-> Vector3(0f, -handLength * 0.805f * PROXIMAL_RATIO, 0f)
-
-		BodyPart.LEFT_RING_INTERMEDIATE, BodyPart.RIGHT_RING_INTERMEDIATE,
-		-> Vector3(0f, -handLength * 0.805f * INTERMEDIATE_RATIO, 0f)
-
-		BodyPart.LEFT_RING_DISTAL, BodyPart.RIGHT_RING_DISTAL,
-		-> Vector3(0f, -handLength * 0.805f * DISTAL_RATIO, 0f)
-
-		BodyPart.LEFT_LITTLE_PROXIMAL, BodyPart.RIGHT_LITTLE_PROXIMAL,
-		-> Vector3(0f, -handLength * 0.69f * PROXIMAL_RATIO, 0f)
-
-		BodyPart.LEFT_LITTLE_INTERMEDIATE, BodyPart.RIGHT_LITTLE_INTERMEDIATE,
-		-> Vector3(0f, -handLength * 0.69f * INTERMEDIATE_RATIO, 0f)
-
-		BodyPart.LEFT_LITTLE_DISTAL, BodyPart.RIGHT_LITTLE_DISTAL,
-		-> Vector3(0f, -handLength * 0.69f * DISTAL_RATIO, 0f)
-
-		else -> error("$it is not expected as child of hands.")
 	}
 }
 
-// Ratios for finger lengths. They should sum up to 1.
-private const val PROXIMAL_RATIO = 0.5f
-private const val INTERMEDIATE_RATIO = 0.283f
-private const val DISTAL_RATIO = 0.217f
+/**
+ * head offset for each finger's first bone, fanning the knuckles across the palm.
+ * The other bones chain tail-to-head and are absent here.
+ */
+private fun getFingerHeadOffsets(handLength: Float): Map<BodyPart, Vector3> = buildMap {
+	for (finger in FINGERS) {
+		val (left, right) = finger.segments.first()
+		val k = finger.knuckle
+		put(left, Vector3(k.x * handLength, k.y * handLength, k.z * handLength))
+		put(right, Vector3(-k.x * handLength, k.y * handLength, k.z * handLength))
+	}
+}
+
+private class Toe(
+	val segments: Pair<BodyPart, BodyPart>,
+	val lengthFraction: Float,
+	val headOffset: Vector3,
+)
+
+private val TOES = listOf(
+	Toe(
+		BodyPart.LEFT_BIG_TOE to BodyPart.RIGHT_BIG_TOE,
+		lengthFraction = 0.27f,
+		headOffset = Vector3(0.28f, 0f, 0f),
+	),
+	Toe(
+		BodyPart.LEFT_INDEX_TOE to BodyPart.RIGHT_INDEX_TOE,
+		lengthFraction = 0.25f,
+		headOffset = Vector3(0.12f, 0f, 0f),
+	),
+	Toe(
+		BodyPart.LEFT_MIDDLE_TOE to BodyPart.RIGHT_MIDDLE_TOE,
+		lengthFraction = 0.22f,
+		headOffset = Vector3(0f, 0f, 0f),
+	),
+	Toe(
+		BodyPart.LEFT_RING_TOE to BodyPart.RIGHT_RING_TOE,
+		lengthFraction = 0.21f,
+		headOffset = Vector3(-0.12f, 0f, 0f),
+	),
+	Toe(
+		BodyPart.LEFT_LITTLE_TOE to BodyPart.RIGHT_LITTLE_TOE,
+		lengthFraction = 0.2f,
+		headOffset = Vector3(-0.26f, 0f, 0f),
+	),
+)
 
 /**
- * Returns the offsets for the toe bones scaled from the handLength.
+ * Returns the offsets for the toe bones scaled from the footLength.
  */
-private fun getToeOffsets(footLength: Float) = (
-	iterateBodyPartHierarchy(BodyPart.LEFT_FOOT, true) +
-		iterateBodyPartHierarchy(BodyPart.RIGHT_FOOT, true)
-	).map { it.second }.associateWith {
-	Vector3(0f, 0f, -footLength * 0.2f)
+private fun getToeOffsets(footLength: Float) = buildMap {
+	for (toe in TOES) {
+		val toeLength = footLength * toe.lengthFraction
+		put(toe.segments.first, Vector3(0f, 0f, -toeLength))
+		put(toe.segments.second, Vector3(0f, 0f, -toeLength))
+	}
+}
+
+// Head offsets spread the toe roots across the forefoot. X is the foot's medial-lateral axis in
+// foot-local space, positive toward the big toe of a left foot. Values are fractions of footLength.
+private fun getToeHeadOffsets(footLength: Float): Map<BodyPart, Vector3> = buildMap {
+	for (toe in TOES) {
+		val k = toe.headOffset
+		put(toe.segments.first, Vector3(k.x * footLength, k.y * footLength, k.z * footLength))
+		put(toe.segments.second, Vector3(-k.x * footLength, k.y * footLength, k.z * footLength))
+	}
 }
 
 /**

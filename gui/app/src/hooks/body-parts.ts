@@ -84,7 +84,5 @@ export const ALL_BODY_PARTS = [
   ...SPINE_BODY_PARTS,
   ...LEG_BODY_PARTS,
   ...ARM_BODY_PARTS,
-  BodyPart.LEFT_HIP,
-  BodyPart.RIGHT_HIP,
   ...FINGER_BODY_PARTS,
 ];

@@ -24,6 +24,7 @@ import { useMemo, useState } from 'react';
 import { HomeSettingsModal } from './HomeSettingsModal';
 import { GroupTelemetryOverlay } from './GroupTelemetryOverlay';
 import { LayoutIcon } from '@/components/commons/icon/LayoutIcon';
+import { IconButton } from '@/components/commons/IconButton';
 
 export function Home() {
   const { config } = useConfig();
@@ -74,12 +75,13 @@ export function Home() {
             vars={{ count: trackers.length }}
           />
           <div className="bg-background-50 h-[2px] rounded-lg flex-grow" />
-          <div
+          <IconButton
+            labelId="home-settings"
             className="fill-background-30 hover:fill-background-20 cursor-pointer"
             onClick={() => setSettingsOpen(true)}
           >
             <LayoutIcon size={18} />
-          </div>
+          </IconButton>
         </div>
         {config?.homeLayout == 'default' && groups.length > 0 && (
           <div className="pl-2 pr-2 flex flex-col gap-4 pb-4">

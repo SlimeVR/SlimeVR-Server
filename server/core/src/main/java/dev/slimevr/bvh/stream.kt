@@ -95,9 +95,12 @@ class BvhStream(
 		return intervalString.padEnd(9)
 	}
 
-	private fun getBvhOffset(parentPart: BodyPart, bones: ComputedSkeleton): Vector3 {
-		val offset = bones[parentPart]?.offset ?: return Vector3.ZERO
-		return offset * OFFSET_SCALE
+	// A joint's BVH OFFSET is the vector from the parent joint's origin to this joint's, in the
+	// parent's frame: the parent's own head->tail offset plus this bone's head displacement.
+	private fun getBvhOffset(childPart: BodyPart, parentPart: BodyPart, bones: ComputedSkeleton): Vector3 {
+		val parentOffset = bones[parentPart]?.offset ?: Vector3.ZERO
+		val childHeadOffset = bones[childPart]?.headOffset ?: Vector3.ZERO
+		return (parentOffset + childHeadOffset) * OFFSET_SCALE
 	}
 
 	private suspend fun writeRotations(part: BodyPart, bones: ComputedSkeleton) {
@@ -118,7 +121,7 @@ class BvhStream(
 			file.write("${childIndent}OFFSET 0.0 0.0 0.0\n")
 			file.write("${childIndent}CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation\n")
 		} else {
-			val offset = getBvhOffset(parent, bones)
+			val offset = getBvhOffset(part, parent, bones)
 			file.write("${childIndent}OFFSET ${offset.x} ${offset.y} ${offset.z}\n")
 			file.write("${childIndent}CHANNELS 3 Zrotation Xrotation Yrotation\n")
 		}

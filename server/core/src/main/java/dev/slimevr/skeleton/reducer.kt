@@ -37,9 +37,12 @@ fun reduce(state: SkeletonState, action: SkeletonActions): SkeletonState = when 
 	}
 
 	is SkeletonActions.SetProportions -> {
-		val bones = action.lengths.toBoneOffsets()
+		val offsets = toBoneOffsets(action.lengths)
 		val newBones = state.boneInputs.mapValues { bodyPart, bone ->
-			bone.copy(offset = bones[bodyPart] ?: bone.offset)
+			bone.copy(
+				headOffset = offsets.head[bodyPart] ?: bone.headOffset,
+				offset = offsets.tail[bodyPart] ?: bone.offset,
+			)
 		}
 		state.copy(boneInputs = newBones, skeletonHeight = action.lengths.height())
 	}

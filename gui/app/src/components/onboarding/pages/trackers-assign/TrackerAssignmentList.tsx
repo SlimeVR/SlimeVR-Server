@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { Clickable } from '@/components/commons/Clickable';
 import { useLocalization } from '@fluent/react';
 import { CSSProperties, ReactNode, useMemo } from 'react';
 import { BodyPart, DeviceDataT, TrackerDataT } from 'solarxr-protocol';
@@ -37,6 +38,8 @@ export function TrackerAssignmentList() {
     assignedPartsCount,
     expectedTrackersCount,
     handleDropTracker,
+    selectTracker,
+    pendingTrackerId,
   } = useAssignment();
   const assignedCount = assignedTrackers.length;
   const groups = useMemo(
@@ -46,7 +49,7 @@ export function TrackerAssignmentList() {
   const variant = state.alonePage ? 'primary' : 'tertiary';
 
   return (
-    <div className="w-[380px] lg:w-[400px] xl:w-[440px] p-4 flex flex-col gap-4 shrink-0 min-h-0 border-r border-background-60">
+    <div className="w-[380px] lg:w-[400px] xl:w-[440px] p-4 flex flex-col gap-2 shrink-0 min-h-0 border-r border-background-60">
       <div className="flex flex-col gap-1 shrink-0">
         <Typography
           variant="mobile-title"
@@ -84,7 +87,7 @@ export function TrackerAssignmentList() {
 
       <div
         {...bodyPartDropProps(BodyPart.NONE)}
-        className="flex flex-col gap-4 min-h-0 flex-1 overflow-y-auto -mx-2 px-2"
+        className="flex flex-col gap-4 min-h-0 flex-1 overflow-y-auto -mx-2 px-2 pt-1.5"
       >
         {trackers.length === 0 ? (
           <AssignmentEmptyState
@@ -107,6 +110,8 @@ export function TrackerAssignmentList() {
                 tracker={td.tracker}
                 device={td.device}
                 variant={variant}
+                selected={pendingTrackerId === td.tracker.trackerId}
+                onSelect={() => selectTracker(td.tracker.trackerId)}
                 onDrop={(bodyPart) =>
                   handleDropTracker(td.tracker.trackerId, bodyPart)
                 }
@@ -330,8 +335,7 @@ export function SimpleTrackerRow({
   if (!onClick) return row;
 
   return (
-    <button
-      type="button"
+    <Clickable
       onClick={onClick}
       className={classNames(
         'w-full text-left rounded-lg transition-shadow',
@@ -339,7 +343,7 @@ export function SimpleTrackerRow({
       )}
     >
       {row}
-    </button>
+    </Clickable>
   );
 }
 
@@ -347,6 +351,8 @@ export function DraggableTracker({
   trackerId,
   label,
   onDrop,
+  onSelect,
+  selected,
   className,
   style,
   children,
@@ -354,20 +360,29 @@ export function DraggableTracker({
   trackerId: number;
   label: string;
   onDrop: (bodyPart: BodyPart | null) => void;
+  onSelect?: () => void;
+  selected?: boolean;
   className?: string;
   style?: CSSProperties;
   children: ReactNode;
 }) {
   const isBeingDragged = useIsTrackerBeingDragged(trackerId);
-  const { dragProps } = trackerDrag.useDraggable({ trackerId, label }, onDrop);
+  const { dragProps, tapProps } = trackerDrag.useDraggable(
+    { trackerId, label },
+    onDrop,
+    onSelect
+  );
 
   return (
     <div
       {...dragProps}
+      {...tapProps}
+      aria-pressed={onSelect ? selected : undefined}
       className={classNames(
-        'touch-none cursor-grab active:cursor-grabbing select-none',
+        'touch-none cursor-grab active:cursor-grabbing select-none rounded-lg',
         'transition-[transform,opacity] hover:scale-[1.02] hover:animate-wiggle',
         isBeingDragged && 'opacity-40',
+        selected && 'ring-2 ring-accent-background-30',
         className
       )}
       style={style}
@@ -382,16 +397,22 @@ function DraggableTrackerCard({
   device,
   variant,
   onDrop,
+  onSelect,
+  selected,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
   variant: 'primary' | 'secondary' | 'tertiary';
   onDrop: (bodyPart: BodyPart) => void;
+  onSelect?: () => void;
+  selected?: boolean;
 }) {
   return (
     <DraggableTracker
       trackerId={tracker.trackerId}
       label={getTrackerName(tracker.info) || 'unknown'}
+      onSelect={onSelect}
+      selected={selected}
       onDrop={(bodyPart) => {
         if (bodyPart !== null && bodyPart !== BodyPart.NONE) onDrop(bodyPart);
       }}

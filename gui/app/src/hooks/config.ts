@@ -70,6 +70,7 @@ export interface Config {
   lastUsedProportions: 'manual' | 'autobone' | 'scaled' | null;
   dontShowUdevModal: boolean;
   collapsedConnectionGroups: Record<string, boolean>;
+  controllerNav: boolean;
 }
 
 export interface ConfigContext {
@@ -105,6 +106,7 @@ export const defaultConfig: Config = {
   lastUsedProportions: null,
   dontShowUdevModal: false,
   collapsedConnectionGroups: {},
+  controllerNav: true,
 };
 
 const localStore: CrossStorage = {
