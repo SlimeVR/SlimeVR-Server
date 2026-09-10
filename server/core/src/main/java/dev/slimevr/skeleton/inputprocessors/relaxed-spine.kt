@@ -56,7 +56,7 @@ private fun reliabilityOf(bodyPart: BodyPart, source: SpineSource): Float = when
 		// From
 		SpineSource.UPPER_CHEST -> 10f
 
-		// To
+		// To (negative to relax the spine
 		SpineSource.UPPER_WAIST -> -1.5f
 
 		SpineSource.LOWER_WAIST -> -2f
@@ -119,7 +119,7 @@ private fun reliabilityOf(bodyPart: BodyPart, source: SpineSource): Float = when
  *
  * Similar to FallbackProcessor specifically for the waist and hip.
  */
-class SpineImputeInputProcessor(val settings: Settings) : SkeletonInputProcessor {
+class RelaxedSpineInputProcessor(val settings: Settings) : SkeletonInputProcessor {
 	override fun process(mutableInputSkeleton: InputSkeleton, skeletonHeight: Float) {
 		val ratios = settings.context.state.value.data.skeletonConfig.ratios
 

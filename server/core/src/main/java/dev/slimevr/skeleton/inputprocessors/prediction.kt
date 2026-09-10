@@ -21,7 +21,7 @@ val PREDICTION_LEAD = 10.milliseconds
 /**
  * Tries to predict future rotations of bones.
  */
-class BonePredictionInputProcessor(val settings: Settings) :
+class PredictionInputProcessor(val settings: Settings) :
 	SkeletonInputProcessor,
 	ResettableSkeletonProcessor {
 	private data class BoneDelta(
