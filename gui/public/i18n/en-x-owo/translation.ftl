@@ -98,6 +98,8 @@ board_type-WEMOSD1MINI = wemo d1 meenee
 board_type-TTGO_TBASE = ttgo tbase
 board_type-ESP01 = esp01
 board_type-SLIMEVR = swimevr
+board_type-SLIMEVR_DEV = Swimevr Dev Boawd
+board_type-SLIMEVR_V1_2 = SwimeVR v1.2
 board_type-LOLIN_C3_MINI = lol c3 meenee
 board_type-BEETLE32C3 = 🪲 (beetle) esp32-c3
 board_type-ESP32C3DEVKITM1 = expressive esp32-c3 devkitm1
@@ -151,6 +153,8 @@ reset-reset_all_warning_default-v2 =
     are u REALLY sure you want to do this?! <~<
 reset-full = fuww weset~
 reset-mounting = weset meownting
+reset-mounting-feet = Weset Pawb Meownting
+reset-mounting-fingers = Weset Bean Meownting
 reset-yaw = yaw weset
 
 ## Serial detection stuff
@@ -243,6 +247,7 @@ tracker-table-column-temperature = temp. °C
 tracker-table-column-linear-acceleration = accew. X/Y/Z
 tracker-table-column-rotation = wotaytion x/y/z
 tracker-table-column-position = pawsytion x/y/z
+tracker-table-column-stay_aligned = Staw Awinged
 tracker-table-column-url = uawl
 
 ## Tracker rotation
@@ -293,6 +298,11 @@ tracker-settings-drift_compensation_section = awwow dwift compensation
 tracker-settings-drift_compensation_section-description = shouwd this twackew compensate fow its dwift when dwift compensation is enabwed?
 tracker-settings-drift_compensation_section-edit = awwow dwift compensation
 tracker-settings-use_mag = awwow magentometer on dis twackew
+# Multiline!
+tracker-settings-use_mag-description =
+    shuld dis twackew use magnetowometew to weduce dwift wen magnetowometew usage is awwowed? <b>pwease don't shutdown youw twackew whiwe toggwing dis!</b>
+    
+    u need to awwow magnetowometew usage fiwst, <magSetting>bap hewe to go to da settin</magSetting>.
 tracker-settings-use_mag-label = awwow magnetomemer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -303,8 +313,11 @@ tracker-settings-name_section-label = twackaw name
 tracker-settings-forget = *forgors the tracker*
 tracker-settings-forget-description = remooves teh twackew fwom da SwimeVR sewvew n pwevent it frum conecting to it til fhe sewvew iz westawtied. the cowonfigyuwatsin of da twackew woant b wost.
 tracker-settings-forget-label = *forgors the tracker*
+tracker-settings-update-unavailable-v2 = Nyo Weweases Fwound
+tracker-settings-update-incompatible = cannot upwate. incompawtibwe bowrd or fiwmwawe vewsion~
 tracker-settings-update-up_to_date = up to dayte!! ^w^
 tracker-settings-update = uwupdate meow!
+tracker-settings-update-title = fiwmwawe vewsion
 
 ## Tracker part card info
 
@@ -381,6 +394,8 @@ settings-sidebar-serial = sewiaw cownsaw
 settings-sidebar-appearance = appeawance
 settings-sidebar-notifications = notificashuns
 settings-sidebar-behavior = behavur
+settings-sidebar-firmware-tool = DIY fiwmwawe toow
+settings-sidebar-advanced = awadvanced
 
 ## SteamVR settings
 
@@ -435,7 +450,20 @@ settings-general-tracker_mechanics-drift_compensation-description =
     compensates imu yaw dwift by appwying an invewse wotation.
     change amownt of compensation and how many wesets awe taken into accouwnt.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = dwift compensation
+settings-general-tracker_mechanics-drift_compensation-prediction = dwift compensashun pwedicshun
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    pwedics nyaw dwift compensashun bewond pweviouswy measuwed wange.
+    enabwe dis if youw twackews r continuwouswy spinnin on teh nyaw axis.
+settings-general-tracker_mechanics-drift_compensation-prediction-label = dwift compensashun pwedicshun
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>wawning!!!!!!</b> ownwy use dwift compensashun if u need 2 weset
+    vewy vewy awften (evewy ~5 to 10 minuwutes).
+    
+    sum imuwus dat weset awften aw:
+    jowoycon, owo!!!twack and emm pee-yews (wifout wecent fiwmwawe).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = cancew :o
+settings-general-tracker_mechanics-drift_compensation_warning-done = i undewstand~
 settings-general-tracker_mechanics-drift_compensation-amount-label = compensation amownt
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew of wesets uwsed
 settings-general-tracker_mechanics-save_mounting_reset = saiv awtomatic meownting weset calibwaytion
@@ -443,6 +471,7 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     saves the auwtoemyatic meownting weset cawybwationz for da twackews betwean westawts. useful
     wen weawing a sUwUit whewe twackews dont  move between sesshuns. <b>nawt wecomended for noarmal UwUsews!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = save meownting weset
+settings-general-tracker_mechanics-use_mag_on_all_trackers = use magnemomometew on aww imuwu twackews dat suppowt it
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     uses magnemometer on da twackews dat have a compatubble firmwear fow it, weduces dwift in stable magnettic enviwoments.
     can be disable per twackew in da twackew setting! <b>pwease dont shut down any twackew when u toggle dis!</b>
@@ -591,6 +620,8 @@ settings-general-interface-discord_presence-message =
         [one] using 1 twackew
        *[other] using { $amount } twackewz
     }
+settings-interface-behavior-error_tracking = ewwow cowwecshun viwa sentry.io
+settings-interface-behavior-error_tracking-label = send ewwows to devewopews
 
 ## Serial settings
 
@@ -1003,6 +1034,7 @@ onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 onboarding-manual_proportions-title = manyuaw bodee pwopowtiesions
 onboarding-manual_proportions-fine_tuning_button = automaticawwy fine tuwune propowtions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = pwease connect a vr headset to use automatic fine tuwuning
+onboarding-manual_proportions-file_type = body pawpowshuns file
 
 ## Tracker automatic proportions setup
 
@@ -1227,3 +1259,7 @@ unknown_device-modal-forget = ignowe it
 
 ## Tracking checklist section
 
+tracking_checklist-status-incomplete = yu awe nyot pwepawed to use swimevr!
+tracking_checklist-status-complete = yu awe pwepawed to use swimevr!
+tracking_checklist-MOUNTING_CALIBRATION = pewfowm a meownting calibwation
+tracking_checklist-FEET_MOUNTING_CALIBRATION = pewfowm a pawsies meownting calibwation ^w^

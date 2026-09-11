@@ -145,6 +145,7 @@ reset-mounting-fingers = Obnovit pozice nasazení prstů
 reset-yaw = Rychlý reset
 reset-error-no_feet_tracker = Žádný tracker nohou nebyl přiřazen
 reset-error-no_fingers_tracker = Žádné trackery prstů nebyly přiřazeny
+reset-error-mounting-need_full_reset = Před nasazením je potřeba úplné obnovení
 
 ## Serial detection stuff
 
@@ -533,6 +534,8 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Opr
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Opravit rotaci kloubů, když překročí svůj limit
 settings-general-fk_settings-ik = Data pozice
 settings-general-fk_settings-ik-use_position = Použít Data pozice
+settings-general-fk_settings-velocity_settings = Nastavení rychlosti
+settings-general-fk_settings-velocity_settings-send_derived_velocity = Odeslat vypočítanou rychlost ovladači
 settings-general-fk_settings-arm_fk = Trackování ramen
 settings-general-fk_settings-arm_fk-description = Vynutit sledování rukou z VR headsetu, i když jsou k dispozici údaje o poloze rukou z trackerů.
 settings-general-fk_settings-arm_fk-force_arms = Vynutit ruce z VR Headsetu
@@ -680,6 +683,8 @@ settings-serial-factory_reset-warning-cancel = Zrušit
 settings-serial-serial_select = Vyberte sériový port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skenovat WiFi
+settings-serial-calibrate = Kalibrovat
+settings-serial-meow = Mňau!
 settings-serial-file_type = Prostý text
 settings-serial-save_logs = Uložit jako soubor
 settings-serial-send_command = Odeslat
@@ -838,9 +843,16 @@ onboarding-setup_warning-cancel = Pokračovat v nastavení
 
 ## Quiz
 
+onboarding-quiz_continue = Pokračovat
+onboarding-quiz-slimeset-title = Jaký typ trackerů připojujete?
+onboarding-quiz-runtime-answer-steamvr = SteamVR
+onboarding-quiz-mocap_preferences-head_tracker-yes = Ano
+onboarding-quiz-mocap_preferences-head_tracker-no = Ne
+onboarding-quiz-mocap_preferences-head_tracker_location-face = Obličej
 
 ## Wi-Fi setup
 
+onboarding-wifi_creds-back-v2 = Zpět
 onboarding-wifi_creds-v2 = Trackey používající Wi-Fi
 onboarding-wifi_creds-skip = Přeskočit nastavení Wi-Fi
 onboarding-wifi_creds-submit = Odeslat!
@@ -874,6 +886,7 @@ onboarding-reset_tutorial-1 =
 
 ## Install info
 
+install-info_udev-rules_modal_button = Zavřít
 
 ## Setup start
 
@@ -1279,6 +1292,7 @@ firmware_tool-flashing_step-description = Probíhá flashování vašich tracker
 firmware_tool-flashing_step-warning-v2 = Během procesu nahrávání prosíme NEVYPÍNEJTE ani NEODPOJUJTE vaše trackery pokud k tomu nejste vyzváni, učiněním můžete způsobit že deska trackeru se stane nefunkční.
 firmware_tool-flashing_step-flash_more = Flashnout více trackerů
 firmware_tool-flashing_step-exit = Odejít
+firmware_tool-flashing_step-onboarding_continue = Pokračovat
 
 ## firmware tool build status
 
@@ -1408,11 +1422,16 @@ tracking_checklist-status-complete = Jste připravení k použití SlimeVR
 tracking_checklist-FULL_RESET = Proveďte plné obnovení
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR není zapnut
 tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR není zapnut. Používáte ho pro VR?
+tracking_checklist-STEAMVR_DISCONNECTED-driver_disabled-desc = Ovladač je vypnutý v nastavení SteamVR.
+tracking_checklist-STEAMVR_DISCONNECTED-driver_not_installed-desc = Ovladač není nainstalovaný.
 tracking_checklist-STEAMVR_DISCONNECTED-open = Spusťte SteamVR
+tracking_checklist-STEAMVR_DISCONNECTED-enable = Povolit ovladač
 tracking_checklist-TRACKERS_REST_CALIBRATION = Kalibrujte vaše trackery
 tracking_checklist-TRACKER_ERROR = Trackery s chybami
 tracking_checklist-VRCHAT_SETTINGS = Nakonfigurujte nastavení VRChat
 tracking_checklist-VRCHAT_SETTINGS-open = Přejít k varování ve VRChat
+tracking_checklist-UNASSIGNED_HMD = VR headset není přiřazen k hlavě
+tracking_checklist-UNASSIGNED_HMD-desc = Váš VR Headset by měl být přiřazen jako tracker hlavy.
 tracking_checklist-NETWORK_PROFILE_PUBLIC = Změňte profil sítě
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Otevřete Ovládací Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Nakonfigurujte Zůstaň Srovnaný
