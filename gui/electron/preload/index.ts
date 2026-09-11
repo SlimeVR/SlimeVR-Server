@@ -48,4 +48,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setPresence: (options) => ipcRenderer.invoke(IPC_CHANNELS.DISCORD_PRESENCE, options),
   getInstallDir: () => ipcRenderer.invoke(IPC_CHANNELS.GET_FOLDER, 'exe'),
   isSteam: () => ipcRenderer.invoke(IPC_CHANNELS.IS_STEAM),
+  setKeybindRecording: (recording) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SET_KEYBIND_RECORDING, recording),
 } satisfies IElectronAPI);

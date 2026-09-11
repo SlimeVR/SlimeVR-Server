@@ -65,6 +65,14 @@ protocol.registerSchemesAsPrivileged([
 
 let mainWindow: BrowserWindow | null = null;
 
+// While the keybind recorder is open, F3/F5/F7/F12/Ctrl+R must reach the renderer as
+// ordinary keydowns instead of being eaten by hardenWindow's reload/devtools guards below,
+// otherwise those keys can never be captured into a shortcut at all.
+let recordingKeybind = false;
+handleIpc(IPC_CHANNELS.SET_KEYBIND_RECORDING, (e, recording) => {
+  recordingKeybind = recording;
+});
+
 handleIpc(
   IPC_CHANNELS.GH_FETCH,
   async <T extends GHGet>(_e: unknown, options: T): Promise<GHReturn[T['type']]> => {
@@ -279,6 +287,7 @@ function hardenWindow(win: BrowserWindow) {
   const devMode = !!process.env.ELECTRON_RENDERER_URL;
   win.webContents.on('before-input-event', (event, input) => {
     if (input.type !== 'keyDown') return;
+    if (recordingKeybind) return;
     const key = input.key.toLowerCase();
     const mod = input.control || input.meta;
 

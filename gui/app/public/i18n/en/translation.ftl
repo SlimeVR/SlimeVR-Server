@@ -636,6 +636,7 @@ settings-keybinds_pause-tracking = Pause Tracking
 settings-keybinds_reset-all-button = Reset all
 settings-keybinds-system-managed-description = Your desktop manages global shortcuts itself, so they have to be changed from your system settings.
 settings-keybinds-open-system-settings-button = Open system settings
+settings-keybinds-system-managed-hint = Set in system settings
 settings-keybinds-unsupported-description = Global keybinds are not supported on this platform.
 settings-sidebar-keybinds = Keybinds
 settings-keybinds-recorder-modal-title = Assign keybind for
@@ -649,9 +650,9 @@ settings-keybinds-already-assigned = Already used by { $name }
 settings-keybinds-click-to-record = Click to record shortcut
 settings-keybinds-change-shortcut = Click to change shortcut
 settings-keybinds-reset-single = Reset keybind to default
-settings-keybinds-recorder-hint-recording = Hold Ctrl, Alt, or Super, then press a letter or number
-settings-keybinds-error-letters-numbers-only = That key can't be used, pick a letter or number
-settings-keybinds-error-add-modifier = You can only start a combination with Ctrl, Alt, or Super
+settings-keybinds-recorder-hint-recording = Hold the keys you want, then release them
+settings-keybinds-error-unsupported-key = That key can't be used in a shortcut
+settings-keybinds-error-add-modifier = Hold Ctrl, Alt, or Super with that key
 
 
 ## FK/Tracking settings
