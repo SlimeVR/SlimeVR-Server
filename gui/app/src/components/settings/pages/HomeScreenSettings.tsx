@@ -1,4 +1,4 @@
-import { CheckBox } from '@/components/commons/Checkbox';
+import { CheckBox, CheckboxInternal } from '@/components/commons/Checkbox';
 import { Clickable } from '@/components/commons/Clickable';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { HomeIcon } from '@/components/commons/icon/HomeIcon';
@@ -7,7 +7,15 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
-import { Config, useConfig } from '@/hooks/config';
+import {
+  Config,
+  defaultTrackerDisplay,
+  defaultTrackersTableColumns,
+  TrackerDisplayConfig,
+  trackersTableColumnOrder,
+  TrackersTableColumnsConfig,
+  useConfig,
+} from '@/hooks/config';
 import {
   trackingchecklistIdtoLabel,
   useTrackingChecklist,
@@ -133,6 +141,110 @@ export function LayoutSelector({
   );
 }
 
+const trackersTableColumnLabel: Record<
+  keyof TrackersTableColumnsConfig,
+  string
+> = {
+  type: 'tracker-table-column-type',
+  battery: 'tracker-table-column-battery',
+  ping: 'tracker-table-column-ping',
+  tps: 'tracker-table-column-tps',
+  rotation: 'tracker-table-column-rotation',
+  temperature: 'tracker-table-column-temperature',
+  linearAcceleration: 'tracker-table-column-linear-acceleration',
+  position: 'tracker-table-column-position',
+  stayAligned: 'tracker-table-column-stay_aligned',
+  url: 'tracker-table-column-url',
+};
+
+export function TrackersTableColumnsSettings({
+  variant,
+}: {
+  variant: 'settings' | 'modal';
+}) {
+  const { l10n } = useLocalization();
+  const { config, setConfig } = useConfig();
+  const columns = config?.trackersTableColumns ?? defaultTrackersTableColumns;
+
+  const toggleColumn = (key: keyof TrackersTableColumnsConfig) => {
+    setConfig({
+      trackersTableColumns: { ...columns, [key]: !columns[key] },
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-col pt-4 pb-2">
+        <Typography bold id="settings-home-table_columns" />
+        <Typography color="secondary" id="settings-home-table_columns-desc" />
+      </div>
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
+        {trackersTableColumnOrder.map((key) => (
+          <CheckboxInternal
+            key={key}
+            variant="toggle"
+            outlined
+            color={variant === 'settings' ? 'primary' : 'secondary'}
+            name={key}
+            checked={columns[key]}
+            onChange={() => toggleColumn(key)}
+            label={l10n.getString(trackersTableColumnLabel[key])}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const trackerDisplayToggleOrder: (keyof TrackerDisplayConfig)[] = [
+  'showBatteryVoltage',
+  'showNumericSignal',
+];
+
+const trackerDisplayToggleLabel: Record<keyof TrackerDisplayConfig, string> = {
+  showBatteryVoltage: 'settings-home-tracker_display-battery_voltage',
+  showNumericSignal: 'settings-home-tracker_display-numeric_signal',
+};
+
+export function TrackerDisplaySettings({
+  variant,
+}: {
+  variant: 'settings' | 'modal';
+}) {
+  const { l10n } = useLocalization();
+  const { config, setConfig } = useConfig();
+  const trackerDisplay = config?.trackerDisplay ?? defaultTrackerDisplay;
+
+  const toggle = (key: keyof TrackerDisplayConfig) => {
+    setConfig({
+      trackerDisplay: { ...trackerDisplay, [key]: !trackerDisplay[key] },
+    });
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-col pt-4 pb-2">
+        <Typography bold id="settings-home-tracker_display" />
+        <Typography color="secondary" id="settings-home-tracker_display-desc" />
+      </div>
+      <div className="grid sm:grid-cols-2 gap-2">
+        {trackerDisplayToggleOrder.map((key) => (
+          <CheckboxInternal
+            key={key}
+            variant="toggle"
+            outlined
+            color={variant === 'settings' ? 'primary' : 'secondary'}
+            name={key}
+            checked={trackerDisplay[key]}
+            onChange={() => toggle(key)}
+            label={l10n.getString(trackerDisplayToggleLabel[key])}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function HomeLayoutSettings({
   variant,
 }: {
@@ -179,6 +291,10 @@ export function HomeLayoutSettings({
           </div>
         </LayoutSelector>
       </div>
+      <TrackerDisplaySettings variant={variant} />
+      {config?.homeLayout === 'table' && (
+        <TrackersTableColumnsSettings variant={variant} />
+      )}
     </div>
   );
 }

@@ -129,7 +129,11 @@ export const KeybindRecorder = forwardRef<
 
     const modifierName = modifierNameForKey(e.key);
     if (modifierName) {
-      dispatch({ type: 'keydown', code: e.code, keys: modifiersFromHeld(new Set(state.held).add(e.code)) });
+      dispatch({
+        type: 'keydown',
+        code: e.code,
+        keys: modifiersFromHeld(new Set(state.held).add(e.code)),
+      });
       return;
     }
 
