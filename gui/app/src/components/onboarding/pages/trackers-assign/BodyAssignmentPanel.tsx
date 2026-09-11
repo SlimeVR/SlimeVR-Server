@@ -364,7 +364,7 @@ function DragBodyPartCard({
       className={classNames(
         'flex flex-col control rounded-md relative touch-none select-none',
         'transition-colors duration-150 ease-linear',
-        compact ? 'gap-0 w-full px-1.5 py-0.5' : 'gap-1 w-40 px-2 py-1',
+        'gap-0 w-full px-1.5 py-2',
         td ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer',
         isDragging && 'opacity-40',
         direction === 'left' ? 'items-start' : 'items-end',
@@ -384,21 +384,19 @@ function DragBodyPartCard({
         number={number}
         labelId={labelId}
       />
-      <div className={compact ? 'min-h-6 w-full' : 'min-h-10'}>
-        {td ? (
-          <AssignedTrackerLabel tracker={td} compact={compact} />
-        ) : (
-          <div
-            className={classNames(
-              'flex items-center',
-              compact ? 'h-6' : 'h-8',
-              direction === 'right' && 'justify-end'
-            )}
-          >
-            <Typography color="text-background-30" id="body_part-NONE" />
-          </div>
-        )}
-      </div>
+      {td ? (
+        <AssignedTrackerLabel tracker={td} compact={compact} />
+      ) : (
+        <div
+          className={classNames(
+            'flex items-center',
+            compact ? 'h-6' : 'h-8',
+            direction === 'right' && 'justify-end'
+          )}
+        >
+          <Typography color="text-background-30" id="body_part-NONE" />
+        </div>
+      )}
     </div>
   );
 }
