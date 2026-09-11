@@ -277,15 +277,6 @@ reset-error-mounting-need_full_reset = Need a full reset before mounting
 reset-error-yaw-need_full_reset = Need a full reset before yaw reset
 reset-error-no_feet_tracker = No feet tracker assigned / available
 
-## Serial detection stuff
-serial_detection-new_device-p0 = New serial device detected!
-serial_detection-new_device-p1 = Enter your Wi-Fi credentials!
-serial_detection-new_device-p2 = Please select what you want to do with it
-serial_detection-open_wifi = Connect to Wi-Fi
-serial_detection-open_serial = Open USB Serial Console
-serial_detection-submit = Submit!
-serial_detection-close = Close
-
 ## Navigation bar
 navbar-home = Home
 navbar-body_proportions = Body Proportions
@@ -754,9 +745,6 @@ settings-interface-appearance-font_size-description = This affects the font size
 
 ## Notification settings
 settings-interface-notifications = Notifications
-settings-general-interface-serial_detection = Serial device detection
-settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug in a new serial device that could be a tracker. It helps to improve the setup process of a tracker.
-settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option plays a sound when a reset is triggered.
 settings-general-interface-feedback_sound-label = Feedback sound

@@ -95,7 +95,6 @@ export interface Config {
   debug: boolean;
   lang: string;
   doneOnboarding: boolean;
-  watchNewDevices: boolean;
   devSettings: DeveloperModeConfig;
   dongleTelemetry: DongleTelemetryConfig;
   trackersTableColumns: TrackersTableColumnsConfig;
@@ -133,7 +132,6 @@ export const defaultConfig: Config = {
   lang: 'en',
   debug: false,
   doneOnboarding: false,
-  watchNewDevices: true,
   feedbackSound: true,
   feedbackSoundVolume: 0.5,
   connectedTrackersWarning: true,
