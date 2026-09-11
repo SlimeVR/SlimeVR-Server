@@ -1,4 +1,5 @@
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
+import { NavLink } from 'react-router-dom';
 import { Clickable } from './commons/Clickable';
 import { TrackingChecklist } from './tracking-checklist/TrackingChecklist';
 import { SkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
@@ -68,17 +69,19 @@ export function PreviewControls({ open }: { open: boolean }) {
           <Typography id="onboarding-manual_proportions-estimated_height" />
         }
       >
-        <div
+        <NavLink
+          to="/onboarding/body-proportions/scaled"
+          state={{ alonePage: true }}
           className={classNames(
-            'h-10 bg-background-60 p-4 flex items-center rounded-lg justify-center cursor-help w-fit top-2 left-2 absolute',
+            'h-10 bg-background-60 p-4 flex items-center rounded-lg justify-center cursor-pointer hover:bg-background-50 w-fit top-2 left-2 absolute',
             {
-              'opacity-0': !open,
+              'opacity-0 pointer-events-none': !open,
               'opacity-100': open,
             }
           )}
         >
           <Typography variant="section-title">{userHeight}</Typography>
-        </div>
+        </NavLink>
       </Tooltip>
       <div className="absolute bottom-0 pb-4 flex justify-center w-full">
         <div className="flex bg-background-80 bg-opacity-70 rounded-lg gap-2 px-4 py-2 items-center fill-background-10">
