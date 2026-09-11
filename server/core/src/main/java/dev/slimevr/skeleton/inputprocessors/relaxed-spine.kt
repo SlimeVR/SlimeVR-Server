@@ -146,6 +146,25 @@ private fun averageRotation(inputSkeleton: InputSkeleton, takeBodyParts: Array<B
 }
 
 /**
+ * Interpolates between 2 quaternions but with the absolute of the ratio for the twist part.
+ */
+private fun interpolateAbsTwist(fromRotation: Quaternion, toRotation: Quaternion, ratio: Float): Quaternion {
+	if (ratio >= 0f) return fromRotation.interpQ(toRotation, ratio)
+
+	// Deconstruct the twist and swing of the rotations
+	val fromTwist = fromRotation.twist()
+	val fromSwing = fromRotation / fromTwist
+	val toTwist = toRotation.twist()
+	val toSwing = toRotation / toTwist
+
+	// Interpolate each part separately
+	val interpolatedTwist = fromTwist.interpQ(toTwist, -ratio)
+	val interpolatedSwing = fromSwing.interpQ(toSwing, ratio)
+
+	return interpolatedSwing * interpolatedTwist
+}
+
+/**
  * Handles imputing the rotation of spine bones that are not actively receiving data from the rotations
  * of nearby bones.
  *
@@ -192,10 +211,17 @@ class RelaxedSpineInputProcessor(val settings: Settings) : SkeletonInputProcesso
 				sourceActive,
 			)
 
-			// Interpolate between from and to using the ratio.
-			val fromRotation = averageRotation(boneInputs, fromSpineSource.parts)
-			val toRotation = averageRotation(boneInputs, toSpineSource.parts)
-			mutableInputSkeleton[bodyPart] = bone.copy(rotation = fromRotation.interpQ(toRotation, interpolateRatio))
+			// If from is null, use to as from and use to's to as to
+			val fromParts = if (fromIndex != null) fromSpineSource.parts else SPINE_SOURCES[toIndex].parts
+			val toParts = toSpineSource.parts
+			// Interpolate between from and to using our interpolation ratio.
+			mutableInputSkeleton[bodyPart] = bone.copy(
+				rotation = interpolateAbsTwist(
+					averageRotation(boneInputs, fromParts),
+					averageRotation(boneInputs, toParts),
+					interpolateRatio,
+				),
+			)
 		}
 	}
 }
