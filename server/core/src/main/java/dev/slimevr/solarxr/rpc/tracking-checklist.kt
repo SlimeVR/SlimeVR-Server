@@ -1,0 +1,80 @@
+package dev.slimevr.solarxr.rpc
+
+import dev.slimevr.config.Settings
+import dev.slimevr.config.SettingsActions
+import dev.slimevr.solarxr.SolarXRBridge
+import dev.slimevr.solarxr.SolarXRBridgeBehaviour
+import dev.slimevr.trackingchecklist.TrackingChecklist
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import solarxr_protocol.rpc.IgnoreTrackingChecklistStepRequest
+import solarxr_protocol.rpc.TrackingChecklistRequest
+import solarxr_protocol.rpc.TrackingChecklistResponse
+import solarxr_protocol.rpc.TrackingChecklistStepId
+
+private val CHECKLIST_STEP_ORDER: List<TrackingChecklistStepId> = listOf(
+	TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC,
+	TrackingChecklistStepId.STEAMVR_DISCONNECTED,
+	TrackingChecklistStepId.STANDABLE_INSTALLED,
+	TrackingChecklistStepId.STEAMVR_HANDS_ENABLED,
+	TrackingChecklistStepId.TRACKER_ERROR,
+	TrackingChecklistStepId.TRACKERS_REST_CALIBRATION,
+	TrackingChecklistStepId.FULL_RESET,
+	TrackingChecklistStepId.MOUNTING_CALIBRATION,
+	TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION,
+	TrackingChecklistStepId.UNASSIGNED_HMD,
+	TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED,
+	TrackingChecklistStepId.VRCHAT_SETTINGS,
+)
+
+private fun stepOrder(id: TrackingChecklistStepId): Int {
+	val order = CHECKLIST_STEP_ORDER.indexOf(id)
+	require(order >= 0) { "Checklist step $id is missing from CHECKLIST_STEP_ORDER" }
+	return order
+}
+
+class TrackingChecklistBehaviour(
+	private val checklist: TrackingChecklist,
+	private val settings: Settings,
+) : SolarXRBridgeBehaviour {
+
+	private fun parseMutedSteps(): Set<TrackingChecklistStepId> = settings.context.state.value.data.mutedChecklistSteps
+		.mapNotNull { name -> TrackingChecklistStepId.entries.firstOrNull { stepId -> stepId.name == name } }
+		.toSet()
+
+	private fun buildResponse(): TrackingChecklistResponse {
+		val steps = checklist.context.state.value.steps.entries
+			.sortedBy { stepOrder(it.key) }
+			.map { it.value.copy(id = it.key) }
+		return TrackingChecklistResponse(
+			steps = steps,
+			ignoredSteps = parseMutedSteps().toList(),
+		)
+	}
+
+	override fun observe(receiver: SolarXRBridge) {
+		combine(
+			checklist.context.state,
+			settings.context.state.map { state -> state.data.mutedChecklistSteps },
+		) { _, _ -> buildResponse() }
+			.onEach { response -> receiver.sendRpc(response) }
+			.launchIn(receiver.context.scope)
+
+		receiver.rpcDispatcher.on<TrackingChecklistRequest> {
+			receiver.sendRpc(buildResponse())
+		}.launchIn(receiver.context.scope)
+
+		receiver.rpcDispatcher.on<IgnoreTrackingChecklistStepRequest> { req ->
+			val stepId = req.stepId
+			if (stepId == TrackingChecklistStepId.UNKNOWN) return@on
+			val name = stepId.name
+			settings.context.dispatch(
+				SettingsActions.Update {
+					copy(mutedChecklistSteps = if (req.ignore) mutedChecklistSteps + name else mutedChecklistSteps - name)
+				},
+			)
+		}.launchIn(receiver.context.scope)
+	}
+}

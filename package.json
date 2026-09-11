@@ -5,13 +5,16 @@
   "packageManager": "pnpm@10.33.0",
   "workspaces": [
     "solarxr-protocol",
-    "gui"
+    "gui/app",
+    "gui/electron",
+    "gui/shared"
   ],
   "scripts": {
-    "gui": "pnpm run update-solarxr && cd gui && pnpm run gui",
-    "lint:fix": "cd gui && pnpm lint:fix",
-    "skipbundler": "cd gui && pnpm run skipbundler",
-    "build": "cd gui && pnpm build",
+    "gui": "pnpm run update-solarxr && pnpm --filter @slimevr/gui-electron dev",
+    "lint": "pnpm --filter @slimevr/gui-shared lint && pnpm --filter @slimevr/gui-app lint && pnpm --filter @slimevr/gui-electron lint",
+    "lint:fix": "pnpm --filter @slimevr/gui-app lint:fix && pnpm --filter @slimevr/gui-electron format",
+    "skipbundler": "pnpm --filter @slimevr/gui-app build",
+    "build": "pnpm run update-solarxr && pnpm --filter @slimevr/gui-electron build",
     "update-solarxr": "cd solarxr-protocol && pnpm run build",
     "prepare": "husky && pnpm run update-solarxr",
     "preinstall": "npx only-allow pnpm"

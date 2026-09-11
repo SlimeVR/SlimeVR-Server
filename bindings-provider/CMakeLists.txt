@@ -49,6 +49,9 @@ add_executable("${PROJECT_NAME}"
 set_target_properties("${PROJECT_NAME}" PROPERTIES CXX_STANDARD 23)
 target_include_directories("${PROJECT_NAME}" PRIVATE "${SOLARXR_PROTOCOL_ROOT}/lib/flatbuffers/include" "${SOLARXR_PROTOCOL_ROOT}/lib/flatbuffers/" "${FLATBUFFERS_GENERATED_ROOT}/include" "${CMAKE_CURRENT_SOURCE_DIR}/include" "${OPENVR_ROOT}/headers")
 target_link_libraries("${PROJECT_NAME}" PRIVATE "${OPENVR_LIBRARY}")
+if(WIN32)
+    target_link_libraries("${PROJECT_NAME}" PRIVATE ws2_32)
+endif()
 
 if(LINUX)
     set_target_properties("${PROJECT_NAME}" PROPERTIES OUTPUT_NAME slimevr-bindings-provider)
