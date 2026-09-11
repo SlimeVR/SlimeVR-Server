@@ -211,6 +211,11 @@ class DataFeedInitBehaviour(
 
 			receiver.datafeedTimers.forEach { it.cancelAndJoin() }
 
+			AppLogger.solarxr.info(
+				"SolarXR[${receiver.id}] data feed started: " +
+					dataFeeds.joinToString { "every ${it.minimumTimeSinceLast}ms" },
+			)
+
 			val timers = dataFeeds.mapIndexed { index, config ->
 				receiver.context.scope.launch {
 					val interval = config.minimumTimeSinceLast.toLong().milliseconds

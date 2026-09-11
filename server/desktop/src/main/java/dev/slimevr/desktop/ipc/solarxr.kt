@@ -75,6 +75,7 @@ class OpenBindingsProviderBehaviour : SolarXRBridgeBehaviour {
 
 suspend fun handleSolarXRBridge(
 	appContext: AppContextProvider,
+	transport: String,
 	messages: Flow<Buffer>,
 	send: suspend (Buffer) -> Unit,
 ) = coroutineScope {
@@ -91,6 +92,7 @@ suspend fun handleSolarXRBridge(
 		},
 	)
 
+	AppLogger.solarxr.info("SolarXR[${bridge.id}] connected ($transport)")
 	appContext.server.context.dispatch(VRServerActions.SolarXRConnected(bridge))
 
 	// One builder and one send buffer for the life of the connection. clear() keeps the buffer it has
@@ -121,6 +123,7 @@ suspend fun handleSolarXRBridge(
 			onSolarXRMessage(MessageBundle.decode(reader, reader.getInt(0)), bridge)
 		}
 	} finally {
+		AppLogger.solarxr.info("SolarXR[${bridge.id}] disconnected ($transport)")
 		bridge.disconnect()
 		coroutineContext.cancelChildren()
 	}

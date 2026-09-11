@@ -6,6 +6,7 @@ import dev.slimevr.VRServerActions
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferReader
 import dev.slimevr.fbscodegen.runtime.JvmFlatBufferWriter
 import dev.slimevr.logging.AppLogger
+import dev.slimevr.solarxr.OutboundProbe
 import dev.slimevr.solarxr.SolarXRBridge
 import dev.slimevr.solarxr.onSolarXRMessage
 import io.ktor.server.application.install
@@ -31,7 +32,6 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 
 		routing {
 			webSocket {
-				AppLogger.ipc.info("New connection")
 				coroutineScope {
 					val bridge = SolarXRBridge.create(
 						id = appContext.server.nextHandle(),
@@ -39,12 +39,18 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 						scope = this,
 					)
 
+					AppLogger.ipc.info("SolarXR[${bridge.id}] connected (websocket)")
 					appContext.server.context.dispatch(VRServerActions.SolarXRConnected(bridge))
+
+					val probe = OutboundProbe(bridge.id, "websocket")
 
 					bridge.outbound.on<MessageBundle> { bundle ->
 						val fbb = FlatBufferBuilder(256)
 						fbb.finish(bundle.encode(JvmFlatBufferWriter(fbb)))
-						send(Frame.Binary(fin = true, data = fbb.dataBuffer().moveToByteArray()))
+						val data = fbb.dataBuffer().moveToByteArray()
+						val sendStartNanos = System.nanoTime()
+						send(Frame.Binary(fin = true, data = data))
+						probe.record(bundle, data.size, System.nanoTime() - sendStartNanos)
 					}.launchIn(this)
 
 					bridge.startObserving()
@@ -54,7 +60,7 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 							for (frame in incoming) {
 								when (frame) {
 									is Frame.Binary -> emit(frame.data)
-									is Frame.Close -> AppLogger.ipc.info("Connection closed")
+									is Frame.Close -> AppLogger.ipc.info("SolarXR[${bridge.id}] connection closed")
 									else -> {}
 								}
 							}
@@ -63,6 +69,7 @@ suspend fun createAndroidSolarXRWebsocketServer(appContext: AppContextProvider) 
 							onSolarXRMessage(MessageBundle.decode(reader, reader.getInt(0)), bridge)
 						}
 					} finally {
+						AppLogger.ipc.info("SolarXR[${bridge.id}] disconnected (websocket)")
 						bridge.disconnect()
 					}
 				}
