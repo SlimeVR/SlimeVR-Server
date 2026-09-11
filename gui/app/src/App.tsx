@@ -24,7 +24,6 @@ import { ManualMountingPage } from './components/onboarding/pages/mounting/Manua
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
 import { DonglePage } from './components/onboarding/pages/Dongle';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
-import { SerialDetectionModal } from './components/SerialDetectionModal';
 import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { BoneRoutingSettings } from './components/settings/pages/BoneRoutingSettings';
 import { DriverSettings } from './components/settings/pages/DriverSettings';
@@ -81,7 +80,6 @@ function Layout() {
 
   return (
     <>
-      <SerialDetectionModal />
       <VersionUpdateModal />
       <UnknownDeviceModal />
       <UdevRulesModal />
