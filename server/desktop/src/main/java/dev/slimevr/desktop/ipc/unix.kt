@@ -27,6 +27,7 @@ suspend fun createUnixSolarXRSocket(appContext: AppContextProvider) = acceptUnix
 	val writer = FramedWriter(channel)
 	handleSolarXRBridge(
 		appContext = appContext,
+		transport = "ipc",
 		messages = readFramedMessages(channel),
 		send = { frame -> writer.write(frame) },
 	)
