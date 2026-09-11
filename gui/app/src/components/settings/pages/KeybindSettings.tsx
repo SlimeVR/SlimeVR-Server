@@ -352,23 +352,24 @@ export function KeybindSettings() {
                 />
               </div>
 
-              {support === KeybindSupport.APP_MANAGED && editedIndex != null && (
-                <KeybindRecorderModal
-                  id={fields[editedIndex].name}
-                  control={control}
-                  name={`keybinds.${editedIndex}.binding`}
-                  isVisisble={isOpen}
-                  onClose={onClose}
-                  onUnbind={() => {
-                    setValue(`keybinds.${editedIndex}.binding`, []);
-                    onSubmitIndex(editedIndex);
-                  }}
-                  onSubmit={() => onSubmitIndex(editedIndex)}
-                  onReset={() => handleResetSingle(editedIndex)}
-                  takenBindings={takenBindings}
-                  activatedError={collisionError}
-                />
-              )}
+              {support === KeybindSupport.APP_MANAGED &&
+                editedIndex != null && (
+                  <KeybindRecorderModal
+                    id={fields[editedIndex].name}
+                    control={control}
+                    name={`keybinds.${editedIndex}.binding`}
+                    isVisisble={isOpen}
+                    onClose={onClose}
+                    onUnbind={() => {
+                      setValue(`keybinds.${editedIndex}.binding`, []);
+                      onSubmitIndex(editedIndex);
+                    }}
+                    onSubmit={() => onSubmitIndex(editedIndex)}
+                    onReset={() => handleResetSingle(editedIndex)}
+                    takenBindings={takenBindings}
+                    activatedError={collisionError}
+                  />
+                )}
             </FormProvider>
           )}
         </div>

@@ -310,9 +310,7 @@ widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
 widget-developer_mode-precise_rotation = Precise rotation
 widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-sort_by_name = Sort by name
 widget-developer_mode-raw_slime_rotation = Raw rotation
-widget-developer_mode-more_info = More info
 
 ## Widget: IMU Visualizer
 widget-imu_visualizer = Tracking data
@@ -981,6 +979,14 @@ settings-home-list-layout = Trackers list layout
 settings-home-list-layout-desc = Select one of the possible layouts of the home screen
 settings-home-list-layout-grid = Grid
 settings-home-list-layout-table = Table
+
+settings-home-table_columns = Table columns
+settings-home-table_columns-desc = Choose which columns are shown in the trackers table
+
+settings-home-tracker_display = Tracker info
+settings-home-tracker_display-desc = Choose which extra details are shown on trackers
+settings-home-tracker_display-battery_voltage = Battery voltage
+settings-home-tracker_display-numeric_signal = Numeric signal strength
 
 ## Tracking Checklist
 settings-tracking_checklist-active_steps = Active Steps

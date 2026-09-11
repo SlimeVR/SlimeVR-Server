@@ -91,14 +91,9 @@ export function InterfaceSettings() {
         fastDataFeed:
           config?.devSettings?.fastDataFeed ??
           defaultConfig.devSettings.fastDataFeed,
-        sortByName:
-          config?.devSettings?.sortByName ??
-          defaultConfig.devSettings.sortByName,
         rawSlimeRotation:
           config?.devSettings?.rawSlimeRotation ??
           defaultConfig.devSettings.rawSlimeRotation,
-        moreInfo:
-          config?.devSettings?.moreInfo ?? defaultConfig.devSettings.moreInfo,
       },
     },
   });
@@ -176,9 +171,7 @@ export function InterfaceSettings() {
     highContrast: 'high_contrast',
     preciseRotation: 'precise_rotation',
     fastDataFeed: 'fast_data_feed',
-    sortByName: 'sort_by_name',
     rawSlimeRotation: 'raw_slime_rotation',
-    moreInfo: 'more_info',
   };
 
   return (

@@ -1,8 +1,19 @@
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num';
-import { ReactNode, useMemo } from 'react';
-import { useConfig } from '@/hooks/config';
-import { useTracker, velocityGlowStyle } from '@/hooks/tracker';
+import { ReactNode, useMemo, useState } from 'react';
+import {
+  defaultTrackersTableColumns,
+  trackersTableColumnOrder,
+  TrackersTableColumnsConfig,
+  TrackersTableOptionalColumn,
+  useConfig,
+} from '@/hooks/config';
+import {
+  getLocalizedTrackerName,
+  useTracker,
+  velocityGlowStyle,
+} from '@/hooks/tracker';
+import { ReactLocalization, useLocalization } from '@fluent/react';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Typography } from '@/components/commons/Typography';
 import { formatVector3 } from '@/utils/formatting';
@@ -10,6 +21,10 @@ import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
 import { FlatDeviceTracker, TrackerConnectionGroup } from '@/store/app-store';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+} from '@/components/commons/icon/ArrowIcons';
 import {
   TrackerConnectionGroupDefaultToolbox,
   TrackerConnectionGroupSection,
@@ -31,8 +46,64 @@ import {
   useTrackingChecklist,
 } from '@/hooks/tracking-checklist';
 
-const trackerSortName = ({ tracker }: FlatDeviceTracker) =>
-  tracker?.info?.customName?.toString() || '';
+function lastVisibleColumn(
+  columns: TrackersTableColumnsConfig
+): TrackersTableOptionalColumn | null {
+  for (let i = trackersTableColumnOrder.length - 1; i >= 0; i--) {
+    const column = trackersTableColumnOrder[i];
+    if (columns[column]) return column;
+  }
+  return null;
+}
+
+function columnProps(
+  column: TrackersTableOptionalColumn,
+  columns: TrackersTableColumnsConfig,
+  lastColumn: TrackersTableOptionalColumn | null
+): { show: boolean; last: boolean } {
+  return { show: columns[column], last: lastColumn === column };
+}
+
+type SortColumn = 'name' | 'type' | 'battery' | 'ping' | 'tps' | 'temperature';
+type SortDirection = 'asc' | 'desc';
+type SortState = { column: SortColumn; direction: SortDirection } | null;
+
+const trackerSortValue = (
+  { tracker, device }: FlatDeviceTracker,
+  column: SortColumn,
+  l10n: ReactLocalization
+): string | number => {
+  switch (column) {
+    case 'name':
+      return getLocalizedTrackerName(l10n, tracker?.info ?? null).toString();
+    case 'type':
+      return device?.hardwareInfo?.manufacturer?.toString() || '';
+    case 'battery':
+      return device?.hardwareStatus?.batteryPctEstimate ?? -1;
+    case 'ping':
+      return device?.hardwareStatus?.rssi ?? -Infinity;
+    case 'tps':
+      return tracker.tps ?? -1;
+    case 'temperature':
+      return tracker.temp ?? -Infinity;
+  }
+};
+
+function compareTrackers(
+  a: FlatDeviceTracker,
+  b: FlatDeviceTracker,
+  sortState: SortState,
+  l10n: ReactLocalization
+) {
+  if (!sortState) return 0;
+  const av = trackerSortValue(a, sortState.column, l10n);
+  const bv = trackerSortValue(b, sortState.column, l10n);
+  const result =
+    typeof av === 'string' && typeof bv === 'string'
+      ? av.localeCompare(bv)
+      : (av as number) - (bv as number);
+  return sortState.direction === 'asc' ? result : -result;
+}
 
 export function TrackerNameCell({
   tracker,
@@ -111,22 +182,44 @@ function Header({
   first = false,
   last = false,
   show = true,
+  sortKey,
+  sortState,
+  onSort,
 }: {
   first?: boolean;
   last?: boolean;
   name: string;
   className?: string;
   show?: boolean;
+  sortKey?: SortColumn;
+  sortState?: SortState;
+  onSort?: (column: SortColumn) => void;
 }) {
+  const sortable = !!sortKey && !!onSort;
+  const active = sortable && sortState?.column === sortKey;
+
   return (
     <div
-      className={classNames('text-start px-2 flex items-center', {
+      className={classNames('text-start px-2 flex items-center gap-1', {
         hidden: !show,
         'pl-4': first,
         'pr-4': last,
+        'cursor-pointer select-none hover:text-background-10': sortable,
       })}
+      onClick={sortable ? () => onSort!(sortKey!) : undefined}
     >
       <Typography id={name} whitespace="whitespace-nowrap" />
+      {sortable && (
+        <span
+          className={classNames({ 'opacity-0': !active }, 'fill-background-10')}
+        >
+          {active && sortState?.direction === 'desc' ? (
+            <ArrowDownIcon size={12} />
+          ) : (
+            <ArrowUpIcon size={12} />
+          )}
+        </span>
+      )}
     </div>
   );
 }
@@ -161,15 +254,20 @@ function Row({
   highlightedTrackers,
   clickedTracker,
   gridTemplateColumns,
+  columns,
+  lastColumn,
 }: {
   data: FlatDeviceTracker;
   highlightedTrackers: highlightedTrackers | undefined;
   clickedTracker: (tracker: TrackerDataT) => void;
   gridTemplateColumns: string;
+  columns: TrackersTableColumnsConfig;
+  lastColumn: TrackersTableOptionalColumn | null;
 }) {
   const { config } = useConfig();
   const fontColor = config?.devSettings?.highContrast ? 'primary' : 'secondary';
-  const moreInfo = config?.devSettings?.moreInfo;
+  const col = (column: TrackersTableOptionalColumn) =>
+    columnProps(column, columns, lastColumn);
 
   const { tracker, device } = data;
   const { useVelocity } = useTracker(tracker);
@@ -209,31 +307,30 @@ function Row({
             style={{ gridTemplateColumns }}
             onClick={() => clickedTracker(tracker)}
           >
-            <Cell first>
+            <Cell first last={!lastColumn}>
               <TrackerNameCell
                 tracker={tracker}
                 device={device}
                 warning={warning}
               />
             </Cell>
-            <Cell>
+            <Cell {...col('type')}>
               <Typography color={fontColor}>
                 {device?.hardwareInfo?.manufacturer || '--'}
               </Typography>
             </Cell>
-            <Cell>
+            <Cell {...col('battery')}>
               {device?.hardwareStatus?.batteryPctEstimate != null && (
                 <TrackerBattery
                   value={device.hardwareStatus.batteryPctEstimate / 100}
                   voltage={device.hardwareStatus.batteryVoltage}
                   runtime={device.hardwareStatus.batteryRuntimeEstimate}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                  moreInfo={config?.debug && config?.devSettings.moreInfo}
                   textColor={fontColor}
                 />
               )}
             </Cell>
-            <Cell>
+            <Cell {...col('ping')}>
               {(device?.hardwareStatus?.rssi != null ||
                 device?.hardwareStatus?.ping != null) && (
                 <TrackerWifi
@@ -249,14 +346,14 @@ function Row({
                 />
               )}
             </Cell>
-            <Cell>
+            <Cell {...col('tps')}>
               {tracker.tps !== null && (
                 <Typography color={fontColor}>
                   {tracker.tps.toString()}
                 </Typography>
               )}
             </Cell>
-            <Cell>
+            <Cell {...col('rotation')}>
               <TrackerRotCell
                 tracker={tracker}
                 precise={config?.devSettings?.preciseRotation}
@@ -264,31 +361,31 @@ function Row({
                 color={fontColor}
               />
             </Cell>
-            <Cell last={!moreInfo}>
+            <Cell {...col('temperature')}>
               {tracker?.temp && tracker?.temp != 0 && (
                 <Typography color={fontColor} whitespace="whitespace-nowrap">
                   {tracker.temp.toFixed(2)}
                 </Typography>
               )}
             </Cell>
-            <Cell show={moreInfo}>
+            <Cell {...col('linearAcceleration')}>
               {tracker.linearAcceleration && (
                 <Typography color={fontColor} whitespace="whitespace-nowrap">
                   {formatVector3(tracker.linearAcceleration, 1)}
                 </Typography>
               )}
             </Cell>
-            <Cell show={moreInfo}>
+            <Cell {...col('position')}>
               {tracker.position && (
                 <Typography color={fontColor} whitespace="whitespace-nowrap">
                   {formatVector3(tracker.position, 2)}
                 </Typography>
               )}
             </Cell>
-            <Cell show={moreInfo}>
+            <Cell {...col('stayAligned')}>
               <StayAlignedInfo color={fontColor} tracker={tracker} />
             </Cell>
-            <Cell last={moreInfo} show={moreInfo}>
+            <Cell {...col('url')}>
               <Typography color={fontColor} whitespace="whitespace-nowrap">
                 udp://
                 {IPv4.fromNumber(
@@ -314,42 +411,56 @@ export function TrackersTable({
 }) {
   const { config } = useConfig();
   const { highlightedTrackers } = useTrackingChecklist();
+  const { l10n } = useLocalization();
 
-  const sortingEnabled = config?.debug && config?.devSettings?.sortByName;
+  const [sortState, setSortState] = useState<SortState>(null);
+
+  const onSort = (column: SortColumn) => {
+    setSortState((curr) => {
+      if (curr?.column !== column) return { column, direction: 'asc' };
+      if (curr.direction === 'asc') return { column, direction: 'desc' };
+      return null;
+    });
+  };
 
   const sortedGroups = useMemo(() => {
-    if (!sortingEnabled) return groups;
-    const byName = (a: FlatDeviceTracker, b: FlatDeviceTracker) =>
-      trackerSortName(a).localeCompare(trackerSortName(b));
+    if (!sortState) return groups;
+    const cmp = (a: FlatDeviceTracker, b: FlatDeviceTracker) =>
+      compareTrackers(a, b, sortState, l10n);
     return groups.map((group) => ({
       ...group,
-      assigned: group.assigned.toSorted(byName),
-      unassigned: group.unassigned.toSorted(byName),
+      assigned: group.assigned.toSorted(cmp),
+      unassigned: group.unassigned.toSorted(cmp),
     }));
-  }, [groups, sortingEnabled]);
+  }, [groups, sortState, l10n]);
 
-  const moreInfo = config?.devSettings?.moreInfo;
+  const columns = config?.trackersTableColumns ?? defaultTrackersTableColumns;
+  const lastColumn = useMemo(() => lastVisibleColumn(columns), [columns]);
+  const col = (column: TrackersTableOptionalColumn) =>
+    columnProps(column, columns, lastColumn);
+  const sortProps = (column: SortColumn) => ({
+    sortKey: column,
+    sortState,
+    onSort,
+  });
 
   const gridTemplateColumns = useMemo(() => {
-    const cols = [
-      'minmax(15rem, 1.5fr)', // Name
-      '9rem', // Type
-      '9rem', // Battery
-      '9rem', // Ping (w-24)
-      '5rem', // TPS
-      config?.devSettings?.preciseRotation ? '11rem' : '9rem', // Rotation
-      '9rem', // Temp
-    ];
+    const cols = ['minmax(15rem, 1.5fr)']; // Name
 
-    if (moreInfo) {
-      cols.push('9rem'); // Linear Acc
-      cols.push('9rem'); // Position
-      cols.push('9rem'); // Stay Aligned
-      cols.push('11rem'); // URL
-    }
+    if (columns.type) cols.push('9rem');
+    if (columns.battery) cols.push('9rem');
+    if (columns.ping) cols.push('9rem'); // (w-24)
+    if (columns.tps) cols.push('5rem');
+    if (columns.rotation)
+      cols.push(config?.devSettings?.preciseRotation ? '11rem' : '9rem');
+    if (columns.temperature) cols.push('9rem');
+    if (columns.linearAcceleration) cols.push('9rem');
+    if (columns.position) cols.push('9rem');
+    if (columns.stayAligned) cols.push('9rem');
+    if (columns.url) cols.push('11rem');
 
     return cols.join(' ');
-  }, [config?.devSettings?.preciseRotation, moreInfo]);
+  }, [columns, config?.devSettings?.preciseRotation]);
 
   return (
     <div className="w-full py-2 px-2">
@@ -361,30 +472,54 @@ export function TrackersTable({
             className="grid items-center mb-1"
             style={{ gridTemplateColumns }}
           >
-            <Header name={'tracker-table-column-name'} first />
-            <Header name={'tracker-table-column-type'} />
-            <Header name={'tracker-table-column-battery'} />
-            <Header name={'tracker-table-column-ping'} />
-            <Header name={'tracker-table-column-tps'} />
-            <Header name={'tracker-table-column-rotation'} />
+            <Header
+              name={'tracker-table-column-name'}
+              first
+              last={!lastColumn}
+              {...sortProps('name')}
+            />
+            <Header
+              name={'tracker-table-column-type'}
+              {...col('type')}
+              {...sortProps('type')}
+            />
+            <Header
+              name={'tracker-table-column-battery'}
+              {...col('battery')}
+              {...sortProps('battery')}
+            />
+            <Header
+              name={'tracker-table-column-ping'}
+              {...col('ping')}
+              {...sortProps('ping')}
+            />
+            <Header
+              name={'tracker-table-column-tps'}
+              {...col('tps')}
+              {...sortProps('tps')}
+            />
+            <Header
+              name={'tracker-table-column-rotation'}
+              {...col('rotation')}
+            />
             <Header
               name={'tracker-table-column-temperature'}
-              last={!moreInfo}
+              {...col('temperature')}
+              {...sortProps('temperature')}
             />
             <Header
               name={'tracker-table-column-linear-acceleration'}
-              show={moreInfo}
+              {...col('linearAcceleration')}
             />
-            <Header name={'tracker-table-column-position'} show={moreInfo} />
+            <Header
+              name={'tracker-table-column-position'}
+              {...col('position')}
+            />
             <Header
               name={'tracker-table-column-stay_aligned'}
-              show={moreInfo}
+              {...col('stayAligned')}
             />
-            <Header
-              name={'tracker-table-column-url'}
-              show={moreInfo}
-              last={moreInfo}
-            />
+            <Header name={'tracker-table-column-url'} {...col('url')} />
           </div>
         </div>
         <div className="flex flex-col gap-2.5">
@@ -408,6 +543,8 @@ export function TrackersTable({
                     data={data}
                     highlightedTrackers={highlightedTrackers}
                     gridTemplateColumns={gridTemplateColumns}
+                    columns={columns}
+                    lastColumn={lastColumn}
                   />
                 ))}
                 {group.assigned.length > 0 && group.unassigned.length > 0 && (
@@ -423,6 +560,8 @@ export function TrackersTable({
                     data={data}
                     highlightedTrackers={highlightedTrackers}
                     gridTemplateColumns={gridTemplateColumns}
+                    columns={columns}
+                    lastColumn={lastColumn}
                   />
                 ))}
               </div>
