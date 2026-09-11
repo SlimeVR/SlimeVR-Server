@@ -232,32 +232,11 @@ function PreviewSection({ open }: { open: boolean }) {
 }
 
 export function Sidebar() {
-  const { completion } = useTrackingChecklist();
-  const [closed, setClosed] = useState(true);
-  const [closing, setClosing] = useState(false);
+  const { closed, closing, toggleClosed } = useTrackingChecklist();
 
   const closedHight = '90px';
   const checklistSize = closed ? closedHight : 'calc(100% - 16px)';
   const previewSize = closed ? `calc(100% - ${closedHight} - 24px)` : '0%';
-
-  const toggleClosed = () => setClosed((closed) => !closed);
-
-  useLayoutEffect(() => {
-    setClosing(true);
-    const ref = setTimeout(() => setClosing(false), 1000);
-    return () => {
-      clearTimeout(ref);
-      setClosing(false);
-    };
-  }, [closed]);
-
-  useEffect(() => {
-    if (completion === 'complete') {
-      setClosed(true);
-    } else if (completion === 'incomplete') {
-      setClosed(false);
-    }
-  }, [completion]);
 
   return (
     <>
