@@ -11,58 +11,26 @@ import { Kbd } from './Kbd';
 import classNames from 'classnames';
 import { useLocalization } from '@fluent/react';
 import './KeybindRow.scss';
-
-const MODIFIER_ORDER = ['CTRL', 'ALT', 'SHIFT', 'SUPER'];
-const NON_SHIFT_MODIFIERS = ['CTRL', 'ALT', 'SUPER'];
-const MODIFIER_KEY_NAMES: Record<string, string> = {
-  CONTROL: 'CTRL',
-  ALT: 'ALT',
-  SHIFT: 'SHIFT',
-  META: 'SUPER',
-  OS: 'SUPER',
-};
+import {
+  MODIFIER_ORDER,
+  keybindLabel,
+  modifierNameForKey,
+  modifiersFromHeld,
+  resolveKey,
+} from './keybind-keys';
 
 const maxKeybindLength = 5;
 
-function orderModifiers(mods: string[]): string[] {
-  return MODIFIER_ORDER.filter((m) => mods.includes(m));
-}
-
-export function isValidKeybind(keys: string[]): boolean {
-  const main = keys.filter((k) => !MODIFIER_ORDER.includes(k));
-  if (main.length !== 1 || !/^[A-Z0-9]$/.test(main[0])) return false;
-  return keys.some((k) => NON_SHIFT_MODIFIERS.includes(k));
-}
-
-export function keybindKey(keys: string[]): string {
-  return [...keys].sort().join('+');
-}
-
-function resolveMainKey(code: string): string | null {
-  if (code.startsWith('Key')) return code.slice(3);
-  if (code.startsWith('Digit')) return code.slice(5);
-  if (code.startsWith('Numpad') && code.length === 7 && /^\d$/.test(code[6]))
-    return code[6];
-  return null;
-}
-
-function modifiersFromEvent(e: React.KeyboardEvent): string[] {
-  const mods: string[] = [];
-  if (e.ctrlKey) mods.push('CTRL');
-  if (e.altKey) mods.push('ALT');
-  if (e.shiftKey) mods.push('SHIFT');
-  if (e.metaKey) mods.push('SUPER');
-  return orderModifiers(mods);
-}
-
 type RecorderState = {
-  preview: string[] | null;
+  held: Set<string>;
+  best: string[] | null;
   flash: { slot: number; msgId: string } | null;
 };
 
 type RecorderAction =
-  | { type: 'preview'; keys: string[] }
-  | { type: 'clearPreview' }
+  | { type: 'keydown'; code: string; keys: string[] }
+  | { type: 'keyup'; code: string }
+  | { type: 'clear' }
   | { type: 'flash'; slot: number; msgId: string }
   | { type: 'clearFlash' };
 
@@ -71,10 +39,24 @@ function recorderReducer(
   action: RecorderAction
 ): RecorderState {
   switch (action.type) {
-    case 'preview':
-      return { preview: action.keys, flash: null };
-    case 'clearPreview':
-      return { ...state, preview: null };
+    case 'keydown': {
+      const held = new Set(state.held);
+      held.add(action.code);
+      const hasMain = action.keys.some((k) => !MODIFIER_ORDER.includes(k));
+      const bestHasMain = (state.best ?? []).some(
+        (k) => !MODIFIER_ORDER.includes(k)
+      );
+      const best =
+        hasMain || !bestHasMain ? action.keys : (state.best ?? action.keys);
+      return { held, best, flash: null };
+    }
+    case 'keyup': {
+      const held = new Set(state.held);
+      held.delete(action.code);
+      return { ...state, held };
+    }
+    case 'clear':
+      return { held: new Set(), best: null, flash: null };
     case 'flash':
       return { ...state, flash: { slot: action.slot, msgId: action.msgId } };
     case 'clearFlash':
@@ -98,16 +80,18 @@ export const KeybindRecorder = forwardRef<
 ) {
   const { l10n } = useLocalization();
   const [state, dispatch] = useReducer(recorderReducer, {
-    preview: null,
+    held: new Set<string>(),
+    best: null,
     flash: null,
   });
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   useImperativeHandle(ref, () => inputRef.current!, []);
 
-  const showing = state.preview ?? keys;
+  const recording = state.held.size > 0;
+  const showing = recording ? (state.best ?? []) : keys;
   const activeIndex = showing.length;
-  const slotCount = state.preview
+  const slotCount = recording
     ? Math.min(showing.length + 1, maxKeybindLength)
     : Math.max(showing.length, 1);
   const displayError = state.flash ? l10n.getString(state.flash.msgId) : error;
@@ -124,58 +108,64 @@ export const KeybindRecorder = forwardRef<
   }, [state.flash]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+    const hasModifier = state.held.size > 0;
 
-    if (e.key === 'Escape') {
+    if (!hasModifier && e.key === 'Escape') {
       onCloseModal?.();
       return;
     }
-    if (e.key === 'Backspace' || e.key === 'Delete') {
+    if (!hasModifier && (e.key === 'Backspace' || e.key === 'Delete')) {
       onUnbindModal?.();
       return;
     }
-    if (e.key === 'Enter') {
+    if (!hasModifier && e.key === 'Enter') {
       onSubmitModal?.();
       return;
     }
 
-    const modifiers = modifiersFromEvent(e);
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.repeat) return;
 
-    if (MODIFIER_KEY_NAMES[e.key.toUpperCase()]) {
-      dispatch({ type: 'preview', keys: modifiers });
+    const modifierName = modifierNameForKey(e.key);
+    if (modifierName) {
+      dispatch({ type: 'keydown', code: e.code, keys: modifiersFromHeld(new Set(state.held).add(e.code)) });
       return;
     }
 
-    const mainKey = resolveMainKey(e.code);
-    if (!mainKey) {
+    const key = resolveKey(e);
+    if (!key) {
       dispatch({
         type: 'flash',
         slot: activeIndex,
-        msgId: 'settings-keybinds-error-letters-numbers-only',
+        msgId: 'settings-keybinds-error-unsupported-key',
       });
       return;
     }
 
-    dispatch({ type: 'clearPreview' });
-    onKeysChange([...modifiers, mainKey]);
+    dispatch({
+      type: 'keydown',
+      code: e.code,
+      keys: [...modifiersFromHeld(state.held), key],
+    });
   };
 
   const handleKeyUp = (e: React.KeyboardEvent) => {
-    if (state.preview === null) return;
-    if (
-      e.key === 'Escape' ||
-      e.key === 'Enter' ||
-      e.key === 'Backspace' ||
-      e.key === 'Delete'
-    )
-      return;
-    const modifiers = modifiersFromEvent(e);
-    dispatch(
-      modifiers.length > 0
-        ? { type: 'preview', keys: modifiers }
-        : { type: 'clearPreview' }
-    );
+    const wasRecording = state.held.size > 0;
+    dispatch({ type: 'keyup', code: e.code });
+
+    if (!wasRecording) return;
+    const stillHeld = new Set(state.held);
+    stillHeld.delete(e.code);
+    if (stillHeld.size === 0 && state.best) {
+      onKeysChange(state.best);
+      dispatch({ type: 'clear' });
+    }
+  };
+
+  const handleBlur = () => {
+    setFocused(false);
+    if (state.held.size > 0) dispatch({ type: 'clear' });
   };
 
   return (
@@ -196,7 +186,7 @@ export const KeybindRecorder = forwardRef<
           ref={inputRef}
           data-nav-raw
           onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           onKeyUp={handleKeyUp}
         />
@@ -218,7 +208,7 @@ export const KeybindRecorder = forwardRef<
                   variant={variant}
                   className="px-4 py-2 min-w-[54px] h-[48px]"
                 >
-                  {key ?? (isActive ? '...' : '')}
+                  {key != null ? keybindLabel(key) : isActive ? '...' : ''}
                 </Kbd>
                 {i < slotCount - 1 && (
                   <Typography variant="standard" bold textAlign="text-center">

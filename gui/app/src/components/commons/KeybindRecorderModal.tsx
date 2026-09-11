@@ -6,7 +6,8 @@ import {
   FieldValues,
   FieldPath,
 } from 'react-hook-form';
-import { KeybindRecorder, isValidKeybind, keybindKey } from './KeybindRecorder';
+import { KeybindRecorder } from './KeybindRecorder';
+import { isValidKeybind, keybindKey } from './keybind-keys';
 import { Kbd } from './Kbd';
 import { Typography } from './Typography';
 import { KeyboardIcon } from './icon/KeyboardIcon';
@@ -30,6 +31,7 @@ export function KeybindRecorderModal<T extends FieldValues = FieldValues>({
   onUnbind,
   onSubmit,
   takenBindings,
+  activatedError,
 }: {
   id?: string;
   control: Control<T>;
@@ -40,6 +42,7 @@ export function KeybindRecorderModal<T extends FieldValues = FieldValues>({
   onSubmit: () => void;
   onReset?: () => void;
   takenBindings?: { name: string; binding: string[] }[];
+  activatedError?: string | null;
 }) {
   const keybindlocalization = 'settings-keybinds_' + id;
   const { l10n } = useLocalization();
@@ -92,7 +95,7 @@ export function KeybindRecorderModal<T extends FieldValues = FieldValues>({
               keys={field.value ?? []}
               onKeysChange={field.onChange}
               ref={field.ref}
-              error={fieldState.error?.message}
+              error={activatedError ?? fieldState.error?.message}
               onSubmitModal={handleModalSubmit}
               onUnbindModal={onUnbind}
               onCloseModal={onClose}
