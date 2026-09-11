@@ -1422,6 +1422,10 @@ home-settings = Home Page Settings
 home-settings-close = Close
 home-connection_group-wifi = Wi-Fi Trackers
 home-connection_group-driver = VR Devices
+home-no_trackers-title = No trackers connected
+home-no_trackers-description = Connect a tracker or turn on your existing trackers to get started
+home-no_trackers-connect = Connect trackers
+home-no_trackers-guide = View setup guide
 # Accessible names and tooltips for the icon-only buttons in a connection group's toolbox
 tracker-connection-metrics = Live telemetry
 tracker-connection-dongle_settings = Dongle settings
